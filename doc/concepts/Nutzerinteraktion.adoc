@@ -1,0 +1,153 @@
+= Mause- und Tastenbeschreibungen
+
+== Selektion in der Scene
+
+=== Linksklick
+Normale Selektion von einem Objekt. Dieses wird anschließend als markiert gekennzeichnet. Im Menübaum (linkes Menü) wird das Objekt hervorgehoben. Zudem wird das Objekt mit einer anderen Farbe eingefärbt. Bei Selektion werden alle Unterobjekte mit selektiert, d.h. Bei einer Wand mit einem oder mehreren Fenstern werden Wand und Fenster markiert. Falls Verschattungselemente enthalten sind werden diese ebenfalls mitmarkiert.
+
+=== Ctr + Alt + Linksklick
+Zusätzlich zum "normalen" Linksklick werden alle Elemente der gleichen Unterebene und die nächsthöhere Ebene selektiert. Falls eine Wand mit Ctr + Alt + Linksklick selektiert wird werden alle Hüllflächen (Wände, Böden, Decken, Dächer, usw.) mit ihren Unterelemente und der Raumluftknoten selektiert.
+
+=== Shift + Linksklick
+Nur das aktuell anvisierte Objekt wird selektiert. Keine Elementebenen darüber oder darunter werden zusätzlich selektiert.
+
+=== Rechtsklick
+Kontextmenü Szene. ToDo Andreas hier brauchen wir was anderes wenn du nicht mehr diese so nutzen willst.
+
+=== Mausradklick
+Ursprung des lokalen Koordinatensystems wird an dem am nächsten liegenden Punktes zum aktuellen Punkt des ersten Objekts in Raytrace-Richtung gesetzt. Dies kann auch die GroundPlane (Gitterpunkt) sein.
+
+=== Ctr + A
+Alle Objekte werden selektiert.
+
+=== Ctr + D
+Alle selektierten Objekte werden abgewählt. Anschließend ist nichts mehr selektiert.
+
+=== Ctr + I
+Isometrie zum Gesamtobjekt wird hergestellt. Dabei wird immer die gleiche Kameraperspektive eingenommen. Der Abstand zum Gesamtobjekt wird immer wieder neu skaliert, sodass alles in den Bildschirm passt.
+
+=== Entf
+Löscht alle selektierten Objekte. Die Objekte müssen sichtbar sein (unsichtbare Objekte werden nicht gelöscht). Damit bleiben auch Objekte die in der Hierarchie höher stehen und selektiert und sichtbar sind erhalten wenn sie unsichtbare selektierte Unterobjekte haben.
+Beispiel eine Zone hat 5 Hüllflächen und einen Raumluftknoten, d.h. 6 Objekte. Eine Hüllfäche ist unsichtbar alles andere ist sichtbar. Selektiert ist alles. Nach dem Drücken der Entf.-Taste bleibt Raumluftknoten und die unsichtbare Hüllfläche erhalten.
+
+=== WSAD...
+W - Vorwärtsgehen in Richtung der Kameranormalen
+S - Rückwärtsgehen in Richtung der Kameranormalen
+A - Seitwärt (nach links) in Richtung horizontaler Bildschirmachse
+D - wie A nur nach rechts
+Q - Drehung um die eigene Achse (Kamera) nach links
+E - wie Q nur Drehung nach rechts
+R - wie A nur in vertikale Bildschirmachse nach oben
+F - wie R nur nach unten
+
+=== Ctr + F
+Suchfunktion. Durch die Eingabe eines Suchstrings werden alle Objekte durchsucht. Dabei gelten folgende Regeln:
+Zur Verfügung stehende Objekte:
+
+* Wall_1
+* Wall_2
+* Wall_3
+* Floor_1
+* Roof_1
+* Raum
+
+
+[width="100%",options="header"]
+|====================
+| Suchstring | Ergebnis 
+| Wall | keine Selektion 
+| Wall* | Wall_1, Wall_2, Wall_3 selektiert 
+| *_1 | Wall_1, Floor_1 selektiert 
+| * _ * keine Ahnung wie man das richtig schreibt SternUnderLineStern sollte der Suchstring sein ToDo Andreas | Wall_1, Wall_2, Wall_3, Floor_1, Roof_1 selektiert  
+| Wall_1; Wall_2 | Wall_1, Wall_2 selektiert
+| Raum | Raum selektiert (Mit zusätzlicher Option "Unterelemente selektieren" werden alle Unterebenen mit ausgewählt)
+|====================
+
+Option "Unterelemente selektieren" -> Unterelemente werden zusätzlich selektiert.
+
+=== XYZ
+Die Achse X, Y, Z wird gesperrt Translationen sind nur noch entlang dieser Achse möglich. Das gilt fürs Verschieben von Objekten als auch bei Messungen.
+Wenn alle Achsen entsperrt sind wird mit einem Druck auf X,Y,Z die jeweilige Achse gesperrt. Drück man zuerst X wird die X-Achse gesperrt drückt man erneut X wird diese wieder entsperrt. Drückt man zuerst X wird die X-Achse gesperrt. Drückt man anschließend Y wird die X-Achse entsperrt und die Y-Achse gesperrt. etc.
+
+=== Ctr + C
+Kopiert alle selektierten und sichtbaren Objekte.
+Diese sind automatisch dupliziert im Menübaum und müssen nach abgesetzt werden. Dazu muss mit der Maus in die Scene gedrückt werden.
+
+=== Ctr + S
+Speichern des aktiven Projekts
+
+=== F1
+Hilfemenü im neuen Dialog wird aufgerufen
+
+=== F3
+Snap ein-/ausschalten
+
+=== F4
+Gitter ein-/ausschalten
+
+=== F12
+Screenshot
+
+== Navigation in der Scene
+
+=== Translation
+Gedrücktes Mausrad bewegt die Scene. Bewegung nach links, Translation nach links zum aktuellen Kameravektor.
+
+=== Rotation
+Durch gedrückten Linksklick auf ein Objekt oder die Groundplane wird eine Drehpunkt abgesetzt. Bewegung der Maus nach oben kippt die Scene um die Horizontale Achse zur Kameraposition nach hinten. Bewegung der Maus horizontal nach rechts dreht die Scene um die vertikale Achse zur Kameraposition nach rechts.
+
+=== Translation/Rotation mit Shift oder Leertaste
+Bei gedrückter Shift oder Leertaste wird die Aktion verlangsamt oder verschnellert. Den Faktor kann man unter den Einstellungen setzen.
+
+= Farbansichten (Falschfarbendarstellungen)
+
+== Materialansicht
+Diese Ansicht stellt die aktuell zugewiesene Farbe der Fläche dar. Dabei stellt diese Farbe die in Realität verwendeten Farben/Anstriche dar. Diese wird im Anstrichdialog gesetzt. Die visuelle Berechnung (Simulation) nimmt diese Farbeinstellungen als Grundlage für die jeweilige Fläche. Standardmäßig sind Dächer rötlich, Wände beige und Böden dunkelblau dargestellt.
+
+== Konstruktion
+Alle Objekte erhalten die Farben, die in den Dialogen "opaker Konstruktionsdialog", "transparenter Konstruktionsdialog" und "Verschattungsdialog" eingestellt sind.
+
+== Thermische Randbedingungen (dieser Name sollte überarbeitet werden !!! ToDo Andreas)
+Hier werden alle Flächen aufgrund ihrer Verknüpfungseigenschaften dargestellt.
+
+[width="100%",options="header"]
+|====================
+| Bezug | Farbe
+| Außenluft | gelb
+| Erdkontakt | braun
+| Innenwandöberflächen | rot 
+| Innendecken | Boden->dunkleres blau; Decke->orange 
+| Adiabat | Grün
+|====================
+
+== Verknüpfte Flächen
+Alle Objekte werden halbtransparent dargestellt. Zusätzlich werden kleine nichttransparente rote Quader zwischen den Mittelpunkten zweier verlinkter Flächen dargestellt.
+
+== Eingangs- und Ergebnisdarstellung
+
+=== U-Werte
+Die Objekte mit einem Parameter U-Wert werden nach einer Farblegende die vom Nutzer festgelegt werden kann dargestellt. Dabei kann der Nutzer den Min- und Maxwert anpassen.
+
+=== Temperaturen
+
+Da Temperaturen zeitlich dynamisch vorliegen wird ein Zeitpunkt für die Ergebnisausgaben vom Nutzer eingestellt. Dafür gibt es einen separaten Dialog.
+
+==== Oberflächen
+Die Temperaturen jedes Objekts, dass eine Oberflächentemperatur laut einer Ausgabedatei besitzt wird durch eine Farblegende dargestellt (siehe U-Wert). Beachtet werden muss um welchen Temperaturen es sich handelt (Innen- oder Außenoberflächentemperaturen).
+
+==== Lufttemperaturen
+Wie Oberflächentemperaturen nur mit der Ergebnisdatei Lufttemperaturen. Hierbei nehmen alle Objekte einer Zonen die gleiche Farbe nach Ergebnisdatei an.
+
+= Funktionsbeschreibung
+
+== Translation
+Eingabe erfolgt entweder durch relative oder absolute Koordinaten. Alle selektierten und sichtbaren Objekte werden entlang des aktuellen lokalen Koordinatensystems verschoben. Dieses kann anders als das Weltkoordinatensystem sein. Nach Verlassen des Textfeldes wird die Aktion ausgeführt.
+
+== Rotation
+Nach Eintrag ins Textfeld werden alle selektierten und sichtbaren Objekte gedreht. Bezugsachsen bildet das lokale Koordinatensystems
+
+== Skalierung
+Falls "alles skalieren" aktiviert wurde werden alle Achsenrichtungen gleich skaliert. Falls nicht wird nur die ausgewählte Achse skaliert. Skaliert wird immer ausgehen vom aktuellen lokalen Ursprung.
+
+
+
