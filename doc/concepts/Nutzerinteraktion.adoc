@@ -5,30 +5,56 @@
 === Linksklick
 Normale Selektion von einem Objekt. Dieses wird anschließend als markiert gekennzeichnet. Im Menübaum (linkes Menü) wird das Objekt hervorgehoben. Zudem wird das Objekt mit einer anderen Farbe eingefärbt. Bei Selektion werden alle Unterobjekte mit selektiert, d.h. Bei einer Wand mit einem oder mehreren Fenstern werden Wand und Fenster markiert. Falls Verschattungselemente enthalten sind werden diese ebenfalls mitmarkiert.
 
-=== Ctr + Alt + Linksklick
-Zusätzlich zum "normalen" Linksklick werden alle Elemente der gleichen Unterebene und die nächsthöhere Ebene selektiert. Falls eine Wand mit Ctr + Alt + Linksklick selektiert wird werden alle Hüllflächen (Wände, Böden, Decken, Dächer, usw.) mit ihren Unterelemente und der Raumluftknoten selektiert.
+[NOTE]
+====
+. Ausgeführt beim "Mouse Release"-Ereignis
+. drag/move Bedingung prüfen, wenn mouse-Delta != 0 -> navigate event
+. pick() -> erkennen der markierten Fläche -> keine ausgewählt? nichts tun
+. über Objektzugehörigkeit Bauteil bestimmen
+. senden von "Auswahl"-Ergeignis an Datenmanager -> "Selection"-Event an UI und Scene
+. "Selection"-Event in Scene -> Objektattribute "Highlighed" setzen, Farbanpassung der betroffenen Konstruktionen im Farbpuffer -> Scene-Update -> render
+====
+
+=== Ctrl + Alt + Linksklick
+Zusätzlich zum "normalen" Linksklick werden alle Elemente der gleichen Unterebene und die nächsthöhere Ebene selektiert. Falls eine Wand mit `Ctrl + Alt + Linksklick` selektiert wird werden alle Hüllflächen (Wände, Böden, Decken, Dächer, usw.) mit ihren Unterelemente und der Raumluftknoten selektiert.
+
+[NOTE]
+====
+- wie beim regulären Selection-Event, mit Anpassung von Schritt 4
+====
 
 === Shift + Linksklick
 Nur das aktuell anvisierte Objekt wird selektiert. Keine Elementebenen darüber oder darunter werden zusätzlich selektiert.
 
+[NOTE]
+====
+- wie beim regulären Selection-Event, mit Anpassung von Schritt 4
+====
+
 === Rechtsklick
-Kontextmenü Szene. ToDo Andreas hier brauchen wir was anderes wenn du nicht mehr diese so nutzen willst.
+??? noch unbelegt
 
 === Mausradklick
-Ursprung des lokalen Koordinatensystems wird an dem am nächsten liegenden Punktes zum aktuellen Punkt des ersten Objekts in Raytrace-Richtung gesetzt. Dies kann auch die GroundPlane (Gitterpunkt) sein.
+Ursprung des lokalen Koordinatensystems wird an dem am nächsten liegenden Punktes zum aktuellen Punkt des ersten Objekts in Raytrace-Richtung gesetzt. Dies kann auch ein Gitterpunkt in der Groundplane sein.
 
 === Ctr + A
-Alle Objekte werden selektiert.
+Alle (sichtbaren und auswählbaren) Objekte werden selektiert.
 
 === Ctr + D
 Alle selektierten Objekte werden abgewählt. Anschließend ist nichts mehr selektiert.
 
+>> AN: Eventuell ESC-Taste dafür verwenden, wie in DELPHIN?
+
 === Ctr + I
 Isometrie zum Gesamtobjekt wird hergestellt. Dabei wird immer die gleiche Kameraperspektive eingenommen. Der Abstand zum Gesamtobjekt wird immer wieder neu skaliert, sodass alles in den Bildschirm passt.
+
+>> AN: Müsste das nicht ein Umschaltfeature sein, d.h. von perspektivischer Darstellung zu isometrischer Darstellung?
 
 === Entf
 Löscht alle selektierten Objekte. Die Objekte müssen sichtbar sein (unsichtbare Objekte werden nicht gelöscht). Damit bleiben auch Objekte die in der Hierarchie höher stehen und selektiert und sichtbar sind erhalten wenn sie unsichtbare selektierte Unterobjekte haben.
 Beispiel eine Zone hat 5 Hüllflächen und einen Raumluftknoten, d.h. 6 Objekte. Eine Hüllfäche ist unsichtbar alles andere ist sichtbar. Selektiert ist alles. Nach dem Drücken der Entf.-Taste bleibt Raumluftknoten und die unsichtbare Hüllfläche erhalten.
+
+>> AN: "Unsichtbar" heißt hier nicht, außerhalb des Viewports, oder? Wenn man beim Unsichtbarschalten automatisch die "Auswahl"-Eigenschaft löscht, dann ist das schonmal sichergestellt, dass man keine unsichtbaren Elemente löschen kann.
 
 === WSAD...
 W - Vorwärtsgehen in Richtung der Kameranormalen
@@ -39,6 +65,8 @@ Q - Drehung um die eigene Achse (Kamera) nach links
 E - wie Q nur Drehung nach rechts
 R - wie A nur in vertikale Bildschirmachse nach oben
 F - wie R nur nach unten
+
+>> AN: D und E würde ich entfernen, da bereits durch Mausbewegung abgebildet. Macht es auch einfacher - Tastatur = Translation, Maus = Rotation
 
 === Ctr + F
 Suchfunktion. Durch die Eingabe eines Suchstrings werden alle Objekte durchsucht. Dabei gelten folgende Regeln:
@@ -69,11 +97,16 @@ Option "Unterelemente selektieren" -> Unterelemente werden zusätzlich selektier
 Die Achse X, Y, Z wird gesperrt Translationen sind nur noch entlang dieser Achse möglich. Das gilt fürs Verschieben von Objekten als auch bei Messungen.
 Wenn alle Achsen entsperrt sind wird mit einem Druck auf X,Y,Z die jeweilige Achse gesperrt. Drück man zuerst X wird die X-Achse gesperrt drückt man erneut X wird diese wieder entsperrt. Drückt man zuerst X wird die X-Achse gesperrt. Drückt man anschließend Y wird die X-Achse entsperrt und die Y-Achse gesperrt. etc.
 
-=== Ctr + C
+=== Ctrl + C
 Kopiert alle selektierten und sichtbaren Objekte.
-Diese sind automatisch dupliziert im Menübaum und müssen nach abgesetzt werden. Dazu muss mit der Maus in die Scene gedrückt werden.
+Diese sind automatisch dupliziert im Menübaum und müssen nach abgesetzt werden. Dazu muss mit der Maus in die Scene links gedrückt werden.
 
-=== Ctr + S
+[NOTE]
+====
+Spezialbehandlung bei Links-Mausbutton-Release: wenn im "Einfüge"-Modus, wird hier sofort die Einfügeoperation ausgelöst, d.h. keine Selekt-Operation durchgeführt.
+====
+
+=== Ctrl + S
 Speichern des aktiven Projekts
 
 === F1
