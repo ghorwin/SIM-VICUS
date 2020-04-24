@@ -1,4 +1,4 @@
-= Mause- und Tastenbeschreibungen
+= Maus- und Tastenbeschreibungen
 
 == Selektion in der Scene
 
@@ -148,6 +148,38 @@ Nach Eintrag ins Textfeld werden alle selektierten und sichtbaren Objekte gedreh
 
 == Skalierung
 Falls "alles skalieren" aktiviert wurde werden alle Achsenrichtungen gleich skaliert. Falls nicht wird nur die ausgewählte Achse skaliert. Skaliert wird immer ausgehen vom aktuellen lokalen Ursprung.
+
+= Raumerstellung
+
+Wie wird ein Raum erstellt? Dies kann auf mehreren Wege durchgeführt werden.
+
+== Raumerstellung direkt über den Raumbutton
+Falls das Projekt komplett leer ist und man den Raumerstellungsbutton drückt werden mehrere Funktionen durchgeführt.
+
+. Automatische Erstellung eines Gebäudeobjektes. Hierbei wird der Name abgefragt über einen TextInputDialog.
+. Automatische Erstellung eines Geschossobjektes (Unterobjekt von Gebäude oder falls es Gebäudeteil noch gibt ein Unterobjekt dessen). Hierbei wird der Name abgefragt über einen TextInputDialog.
+. Wechsel der rechten Menüfensters in den Raumerstellungsdialog. Folgende Eingaben sind dort möglich
+    * Textfeld für den Raumnamen
+    * Textfeld (double) für die Höhe (Extrusion des Polgons) des Raumes (Standard 3m)
+    * Wahl der Konstruktionen für Außenwand, Boden zur Außenfseite, Dach zur Außenseite (falls keine Konstruktionen gesetzt wurden sind die Standardkonstruktionen zu nehmen ansonsten die letzten Zuweisungen die in diesem Dialog betätig wurden.
+    * Wahl des Gebäudes, Geschosses, Gebäudeteils (Voreinstellungen mit den letzten ausgewählten Objektes)
+    * Liste mit den Punktkoordinaten der abgeklickten Punkte (am Anfang leer) dabei kann durch anklicken eines Punktes dieser aus dem Polygonzug entfernt werden.
+
+Falls die Gebäude und Geschoss vorhanden sind wird das letzte aktive Geschoss als Standard gesetzt.
+
+Anschließend kann in der Scene ein Polygonzug gezeichnet werden. Dabei wird nach dem ersten Punkt absetzen eine rote Linie zwischen allen abgesetzen Punkten + dem Mauszeiger erstellt. Die Zone wird zusätzlich 3D-Transparent dargestellt sobald des 3 Punkte gibt die nicht kolinear sind. Dabei wird das Objekt nach der eingebenen Höhe extrudiert.
+
+Das Niveau auf der der Polygonzug erstellt wird wird vom Geschoss abgefragt. Dies kann im Geschossmanager eingestellt werden. Alle Punkte weisen die gleiche Z-Koordinate auf.
+
+
+Im Datenmodell wird folgendes erstellt:
+
+    * eine Bodenfläche bestehend aus dem Polygonzugmit der Normalen nach unten.
+    * eine Deckefläche gleich der Bodenflächen mit einer Höhenebene von Bodenfläche + Extrusionshöhe. Normale zeigt nach oben.
+    * Wandflächen mit zwei aufeinanderfolgenden Punkten aus dem Polgonzug vom Boden und die dazugehörigen Punkte aus dem Deckenpolygonzug. Jede Wandflächennormale zeigt nach außen, d.h. weg vom Luftknoten.
+
+    
+    
 
 
 
