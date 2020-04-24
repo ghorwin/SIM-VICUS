@@ -1,0 +1,7 @@
+# User Interaction
+
+This document describes the individual operations a user can do with the 3D scene. The keybindings (mouse/keyboard) can be configured by users. Default keybindings are listed at the end of the document.
+
+## Selection Operations
+
+## Navigation
