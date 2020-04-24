@@ -1,7 +1,100 @@
-# User Interaction
+# User Interaction with 3D Scene
 
-This document describes the individual operations a user can do with the 3D scene. The keybindings (mouse/keyboard) can be configured by users. Default keybindings are listed at the end of the document.
+This document describes the individual operations a user can do with the 3D scene (not with the rest of the UI). The keybindings (mouse/keyboard) can be configured by users. Default keybindings are given for each of the operation.
+
+Actions can be bound to keyboard, mouse, trackball, space navigator etc.
 
 ## Selection Operations
+[NOTE]
+====
+Selection operations may be also the result of user interaction with the rest of the user interface (i.e. click in tree view or using search+selection operation).
+====
+
+### Select single object
+Defaul key binding: Left mouse button click (without movement between click and release)
+
+### Select object and child objects
+Defaul key binding: Left mouse button click while holding Ctrl  (without movement between click and release)
+
+### Select object and other objects of same hierarchy level
+Defaul key binding: Left mouse button click while holding Ctrl + Alt  (without movement between click and release)
+
+### Select all selectable
+Defaul key binding: Ctrl + A
+
+(only visible, and objects without selection property disabled)
+
+### Deselect all
+Defaul key binding: Ctrl + D
+
 
 ## Navigation
+
+### Rotating view (free look)
+Defaul key binding: Hold right mouse button and drag mouse
+
+Activated with toggle key (e.g. right mouse button)
+
+Input up/down = rotate around camera-right-vector
+Input left/right = rotate around camera-up-vector
+
+### Rotate around target point
+Defaul key binding: Left click and hold while dragging mouse
+
+Input up/down = rotate in vertical plane, spanned by target point and current camera position, using cylindrical coordinates (up/down distance = rotation angle)
+Input left/right = rotate in horizontal XZ-plane, around target point, using cylindrical coordinates (left/right distance = rotation angle)
+
+### Translate Left
+Defaul key binding: A; Hold middle mouse button and move mouse
+
+### Translate Right
+Defaul key binding: D; Hold middle mouse button and move mouse
+
+### Translate Up
+Defaul key binding: R; Hold middle mouse button and move mouse
+
+### Translate Down
+Defaul key binding: F; Hold middle mouse button and move mouse
+
+### Translate Forward
+Defaul key binding: W; Hold middle mouse button and move mouse
+
+### Translate Back
+Defaul key binding: S; Hold middle mouse button and move mouse
+
+
+### Toggle Translation Speed
+Defaul key binding: Hold shift
+
+(pressing toggle key = slow movement)
+
+### Fast forward
+Defaul key binding: Scroll wheel forward
+
+### Fast backward
+Defaul key binding: Scroll wheel backward
+
+### Toggle X-Axis lock
+If enabled, keeps x-coordinate constant during translation operations.
+
+### Toggle Y-Axis lock
+If enabled, keeps y-coordinate constant during translation operations.
+
+### Toggle Z-Axis lock
+If enabled, keeps z-coordinate constant during translation operations.
+
+
+
+## Moving (Editing) Coordinate System
+
+The following operations move and align the current editing coordinate system.
+
+### Move coordinate system's origin to next snap point
+
+Snap points are:
+
+- nearest point on a selected plane
+- nearest grid point (grid line intersection) in xz-plane when no plane/object is selected
+
+
+
