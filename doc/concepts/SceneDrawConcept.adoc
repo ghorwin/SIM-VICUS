@@ -1,0 +1,157 @@
+# Rendering concept and low-level data structures
+
+## Goal
+
+- render scene with as few draw calls and OpenGL state changes as possible
+- static scenes (no model animations)
+- working on world coordinates only (no model-to-world transformation matrixes)
+
+## Drawable objects
+
+- different parts of the scene are grouped in drawable objects
+- grouping is done such, that geometry in one drawable object can be drawn with few draw calls, using the same shaders
+
+Draw object list:
+
+### Grid
+
+The grid on the floor.
+
+- Geometry: p1 and p2 vertexes (start and end of lines) (`GL_LINES`)
+- Vertex data: Only position array
+- Shader #1: Simple passthrough vertex shader, fragmentation shader takes color as uniform
+- Viewport: full
+
+### Koordinate system
+
+Visualization of the scene's coordinate system.
+
+- Geometry: triangles (`GL_TRIANGLES`)
+- Vertex data: position, normals and colors
+- Shader #2: standard Phong-Shader
+- Viewport: bottom-left subview
+
+### Orientation box
+
+Visualization of the scene's orientation (box with east, south, west, ...)
+
+- Geometry: triangles (`GL_TRIANGLES`)
+- Vertex data: position, normals and colors
+- Shader #2: standard Phong-Shader
+- Viewport: bottom-right subview
+
+### Sun position
+
+Visualization of current's sun position
+
+- Geometry: sphere made of triangles (`GL_TRIANGLES`)
+- Vertex data: position, normals and colors
+- Shader #2: standard Phong-Shader
+- Viewport: full
+
+### Sun position trails
+
+Visualization of sun position over year.
+
+- Geometry: sets of p1 and p2 vertexes (start and end of lines) (`GL_LINES`)
+- Vertex data: Positions and colors array
+- Shader #3: Pos and color passthrough vertex shader, fragmentation shader using line colors
+- Viewport: full
+
+Also: text
+
+
+### Opaque building geometry
+
+- Geometry: triangles (`GL_TRIANGLES`)
+- Vertex data: position, normals and colors
+- Shader #2: standard Phong-Shader
+- Viewport: full
+
+
+### Transparent building geometry
+
+- Geometry: triangles (`GL_TRIANGLES`)
+- Vertex data: position, colors
+- Shader #4: transparent Shader
+- Viewport: full
+
+Note: no sorting needed since all transparent planes have same color (or color blending is not important)
+
+### Editing coordinate system axes
+
+- Geometry: colored lines (`GL_LINES`)
+- Vertex data: Positions and colors array
+- Shader #3: Pos and color passthrough vertex shader, fragmentation shader using line colors
+- Viewport: full
+
+### Editing coordinate system ends
+
+- Geometry: triangles (`GL_TRIANGLES`)
+- Vertex data: position, normals and colors
+- Shader #2: standard Phong-Shader
+- Viewport: full
+
+Note: geometry of coordinate system can change to indicate current operation
+
+
+## Vertex data types
+
+. Position (vec)
+. Position (vec3), color (vec3)
+. Position (vec3), color (vec3), normal(vec3)
+
+Mind: Currently no texture or material (lighting) information needed.
+
+## Shaders
+
+
+### #1 Uniformly colored lines with fog effect (grid shader)
+
+... see tutorial 05
+
+### #2a Standard Phong-Shading effect on opaque materials
+
+... see tutorial 11
+
+Specular/Diffuse material property built-in into fragment shader.
+
+### #2b Standard Phong-Shading effect on opaque materials, with shadow map/volume
+
+In addition to 2a, includes shadow map depths texture.
+
+### #3 Colored lines shader
+
+Draws colored lines, simple passthrough fragment shader
+
+### #4 Transparent objects shader
+
+Only uses positions. Renders object with transparent color from uniform.
+
+
+## Data update concept
+
+- changes in source data model affecting visualization are stored in Changes-set, which holds the information of what should be changed -> this then allows individual updates of subsets of data.
+
+TODO: Need to clarify how to group modification effects.
+
+
+### Changing selection/markup color
+
+- requires color change of all or subset of opaque building data
+
+[IMPORTANT]
+====
+Transparent planes can be selected as well. If selected, they are shown as opaque planes. Thus, their color in the transparent array has to be made fully translucent and their color in the opaque geometry range has to be changed to selection color. They also need to be added to opaque geometry set.
+====
+
+- color array is stored as continuous buffer - updating part of full buffer can be done quickly
+
+### Changing visibility of objects
+
+- needs adjustment of draw buffers (full update), if too slow, single buffer should be split into several smaller
+
+### Geometry change
+
+- positions and normals are store in continuous arrays, update of portions can be done quickly without touching other arrays
+
