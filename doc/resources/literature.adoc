@@ -1,2 +1,5 @@
+# Shadow calculation
 
+- pixel counting technique
 
+https://www.researchgate.net/profile/Nathaniel_Jones9/publication/233259424_Fast_computer_graphics_techniques_for_calculating_direct_solar_radiation_on_complex_building_surfaces/links/5bb78a614585159e8d87020f/Fast-computer-graphics-techniques-for-calculating-direct-solar-radiation-on-complex-building-surfaces.pdf
