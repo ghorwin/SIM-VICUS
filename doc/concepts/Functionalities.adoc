@@ -1,0 +1,199 @@
+# Ziele SIM-Vicus
+
+## Funktionalitäten:
+
+### Für die Anwendung durch Planer
+* Bauphysikalische Anwendung
+* thermische Gebäudesimulation NANDRAD
+** thermische Gebäudesimulation EnergyPlus
+** Tageslichtsimulation Radiance (inklusive DaySim)
+** CFD Anbindung OpenFOAM (nicht priorisiert)
+** Normnachweise
+*** Heizlast DIN EN 12873
+*** Kühllast VDI 2078
+*** Behaglichkeit DIN EN ISO 15251
+*** Tageslichtnutzung 5045???
+*** Heat Island Effect
+** Mengenermittlung
+** Zertifizierungen
+*** BNB
+*** DGNB
+*** LEED
+
+* Baubetriebliche Anwendung 
+** Mengen-/Volumenermittlung
+** Kostenermittling
+
+* Ökologische Bewertung
+
+### Technische Funktionalitäten
+
+#### Import
+
+Import von Daten.
+
+##### Wetterdaten
+
+* EPW
+* CCM
+* DAT (BBSR-Datenformat TRY2010 & 2017)
+* WAC (Wufi)
+* TMY ?
+
+##### CAD-Formate
+
+* IFC
+* DWG/DXF
+* SKP (Sketchup)
+* Open-Street-Map
+
+##### Formate für Gebäudesimulationen 
+
+* IDF
+* NANDRAD
+
+##### Bibliotheken
+
+* Material/Konstruktionsdaten
+* EPD-Daten aus z.B. Ökobaudat
+* ...
+
+#### Geometrieerstellung/-bearbeitung
+
+Erstellen von Flächen, Körpern sowie Bauteilen und Räumen. Diese müssen in unterschiedliche Detail- und Parametrisierungsstufen verwaltet werden.
+
+* geometrische Flächen/Körper ohne weitere Attribute
+* Flächen/Körper mit zusätzlichen Attributen bspw.:
+** Objekte für thermische Gebäudesimulation mit Parameterierungen für diese
+** Objekte für Tageslichtsimulationen
+
+Bearbeitung von Flächen und Körpern über Schnittalgorithmen (CSG). Translation, Rotation, Skalierung, Spiegeln von Objekten/Punkten/Teileelemente.
+
+Allgemeine Funktionen wie:
+
+* Kopieren
+* Einfügen
+* Ausschneiden
+* Gruppieren
+
+#### Menübaum
+
+ Baustelle -> Gebäude -> Gebäueteil -> Etage -> Raum -> Oberfläche -> Suboberfläche -> dyn. Verschattungsobjekt
+ 
+
+
+
+#### Dialog für Parametrierung
+
+Diese Dialoge werden aus einer Datenbank gespeist, die evtl. vom Nutzer angepasst und/oder erweitert werden kann.
+
+Standardisiert wird immer eine ID mitgeführt.
+
+Für alle Produktspezifischen Dialoge sollten folgende Attribute standardmäßig eingeführt werden.
+
+* Hersteller
+* Quelle
+
+##### EPD-Dialog
+
+EPD Datensatz sowie ID
+
+##### Materialdialog
+
+Im Materialdialog werden die thermischen Parameter  (&#955;, &#961;, c~e~, &#956;...) und die Zuordnung zum EPD-Datensatz erstellt.
+
+** Opak/Transparent mit entsprechend unterschiedlichen Parametern
+** Material-Id/-Name
+*** Opak
+**** Wärmeleitfähigkeit &#955; [W/mK] 
+**** Dichte &#961; [kg/m^3^]
+**** Wärmekapazität c~p~ [J/kgK]
+**** Thermischer Widerstand R [m^2^K/W]
+**** Darstellungsfarbe
+
+*** Transparent
+**** Scheiben/Gase
+**** Dicke
+**** Wärmeleitfähigkeit &#955; [W/mK] 
+**** Solare Kennwerte 
+**** Sichtbarkeitskennwerte
+**** Infrarotkennwerte
+**** Darstellungsfarbe
+
+weitere Parameter:
+
+* Name
+
+##### Konstruktionsdialog
+
+** Material-Id/-Name sowie Schichtdicke
+** Rand- und Übergangsbedinungen
+** thermische Parameter (h~ci~,h~ce~, &#945;)
+** Tageslichtparameter (RGB-Wert, Specularity, Roughness)
+** Opak: Schicktaufbau, Dicke & bauphysikalische Parameter jeder Schicht
+** Transparent: U-Wert, g-Wert, Rahmenparameter
+
+##### Dialog für dynamische Verschattungsobjekte
+
+* Angebot verschiedener Systeme mit individuell anpassbaren bauphysikalischen Parametern.
+
+
+#### Dialoge
+
+* Geschossmanager
+* Raummanager
+* Zonenmanager
+
+#### Prüffunktionalitäten
+
+* Parametrierungen eines Objektes auf Zulässigkeit der Werte prüfen.
+
+##### Messfunktionalitäten
+
+* Winkel
+* Distanz
+* Flächen
+* Volumen
+
+##### Anzeigemodi/False-Color-Behandlung
+
+* Realfarbenmodus (Darstellung der Oberflächenfarben)
+* Konstruktionsansicht (Darstellung jedes Objektes mit seiner Konstruktionsfarbe)
+* Zonenansicht (Darstellung aller Objekte eines Raumluftknoten (Zone) mit dem zugehörigen Farbschema der (Sub-)Nutzungsprofile)
+* Flächenlinks (zeigt thermische Verknüpfung zwischen Oberflächen)
+* Anlagentechnik (ToDo Dirk)
+
+weitere Darstellungen
+
+* Darstellung der Flächennormalen
+* Globales/lokales Koordinatensystem
+* Weltwürfel
+* Fangball
+* Legende
+
+#### Ergebnisdarstellung
+
+Darstellung von skaleren Werten in einem Kurvendiagram, dazu gehören Wärmeströme, Temperaturen (Diagramme wie PostProc oder Einbindung von PostProc).
+Darstellung von Charts zur Leuchtdichteverteilung, etc.
+Einfärbung von Modellobjekten z.B. Flächen mit entsprechenden Ergebniswerten z.B. Temperaturen oder auch Eingangsparameter z.B. U-Wert.
+
+#### Berichterstellung
+
+Direkte Berichte für Normnachweise z.B. Heizlast, etc.
+
+##### Berichtaufbau
+
+Darstellung der modularen Funktionalitäten eines Berichts.
+
+##### Eingaben
+
+#### Projektmanager
+
+Der Projektmanager hält folgende Daten:
+
+* Bearbeiter
+* Kontaktdaten
+* Objektname
+* Objektadressdaten (Land, Plz, Ort, Str)
+* Beschreibung
+* Bemerkungen
