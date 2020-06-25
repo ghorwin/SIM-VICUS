@@ -197,3 +197,27 @@ Der Projektmanager hält folgende Daten:
 * Objektadressdaten (Land, Plz, Ort, Str)
 * Beschreibung
 * Bemerkungen
+
+## Use Case
+
+ Bsp.: Hotel/SAB
+[options="header",cols="3,^2,^2"]
+|=======================
+||SIM-Vicus     |Simquality
+|Import (Plan, DXF, IFC, Klima)   |&#10003;      |&#10003; 
+
+|Aufsetzen der Räume   |&#10003;     |&#10003; 
+|Editieren    |&#10003;     |&#10003; 
+|Schneiden    |&#10003; |&#x2717;
+|Linken    |&#10003; |&#x2717;
+|Material/Konstruktion   |&#10003;|&#10003;
+|Nutzungsprofile   |&#10003;|&#10003;
+|Solvereinstellungen    |&#10003;|&#10003;
+|Export an NANDRAD    |&#10003;|&#10003;
+|Import Kurven (d6o, Balkendiagramm)   |&#10003;|&#x2717;
+|Berichterstellung   |&#10003;|&#x2717;
+|Nachweise (Kühllast, SWS,...)    |&#10003;|&#x2717;
+|Ausgaben|&#10003;|&#10003;
+|=======================
+
+

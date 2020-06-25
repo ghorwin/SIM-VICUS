@@ -1,0 +1,25 @@
+# SIM Vicus
+
+## Forschungsfragen/Forschungslücke
+
+* Lösen verschiedener bauphysikalischer Fragestellungen mittels einer einzigen Nutzeroberfläche 
+** Warum?
+*** Workflow an einem einzigen Gesamtmodell für bauphysikalische Belange, daher nur eine Modelltransformation (CAD -> Bauphysikalisches Format) notwendig
+*** Fehlerreduktion durch entfallende Transformationen
+*** Verbesserte Qualität der Daten, da sie alle auf eine gemeinsame Datenbasis zurückgehen und automatisiert synchronisiert werden
+*** Unmittelbare und kontinuierliche Verfügbarkeit aller aktuellen und relevanten Daten für alle Beteiligten
+*** Verbesserter Informationsaustausch zwischen Planungsbeteiligten
+*** Komplexe Gebäudegeometrien effizient umsetzbar (Am Markt angewandte Software kann dies nur bedingt oder unter erheblichem  Mehraufwand)
+*** Potentielle Zeit- & Kostenersparnis
+* Zertifizierung
+** Warum gibt es heutzutage noch kein Softwarewerkzeug zur automatischen Zertifizierung (13 Jahre nach Einführung der Zertifikate)?
+* Entwicklung / Verbesserung von Import, Export- und Transformationsmethodik für Datenmodelle
+** Warum?
+*** Vermeidung von Redundanzmodellen
+*** Vermeidung zeitintensiver händischer Nachbearbeitung nach einem Transformationsprozess
+*** Fehlerreduktion bei Transformationsprozessen
+
+* Simulationen lohnen sich aufgrund des hohen Aufwandes erst bei großen Projekten
+** 
+
+
