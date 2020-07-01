@@ -19,54 +19,25 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\IBKMK.h" />
-    <ClInclude Include="..\..\src\IBKMKC_band_matrix.h" />
     <ClInclude Include="..\..\src\IBKMKC_dense_matrix.h" />
     <ClInclude Include="..\..\src\IBKMKC_ilut.h" />
     <ClInclude Include="..\..\src\IBKMKC_sparse_matrix.h" />
-    <ClInclude Include="..\..\src\IBKMKC_tridiag_matrix.h" />
     <ClInclude Include="..\..\src\IBKMKC_vector_operations.h" />
-    <ClInclude Include="..\..\src\IBKMK_BandMatrix.h" />
-    <ClInclude Include="..\..\src\IBKMK_BlockBandMatrix.h" />
-    <ClInclude Include="..\..\src\IBKMK_BlockSparseMatrix.h" />
-    <ClInclude Include="..\..\src\IBKMK_BlockTridiagMatrix.h" />
-    <ClInclude Include="..\..\src\IBKMK_BlockVector.h" />
     <ClInclude Include="..\..\src\IBKMK_common_defines.h" />
-    <ClInclude Include="..\..\src\IBKMK_CRSpline.h" />
-    <ClInclude Include="..\..\src\IBKMK_CuthillMcKee.h" />
     <ClInclude Include="..\..\src\IBKMK_DenseMatrix.h" />
-    <ClInclude Include="..\..\src\IBKMK_IndexGenerator.h" />
-    <ClInclude Include="..\..\src\IBKMK_minimization.h" />
-    <ClInclude Include="..\..\src\IBKMK_numerics.h" />
-    <ClInclude Include="..\..\src\IBKMK_random.h" />
-    <ClInclude Include="..\..\src\IBKMK_rational_number.h" />
     <ClInclude Include="..\..\src\IBKMK_SparseMatrix.h" />
     <ClInclude Include="..\..\src\IBKMK_SparseMatrixCSR.h" />
-    <ClInclude Include="..\..\src\IBKMK_SparseMatrixEID.h" />
     <ClInclude Include="..\..\src\IBKMK_SparseMatrixPattern.h" />
-    <ClInclude Include="..\..\src\IBKMK_TridiagMatrix.h" />
     <ClInclude Include="..\..\src\IBKMK_Vector3D.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\IBKMKC_band_matrix.c" />
     <ClCompile Include="..\..\src\IBKMKC_dense_matrix.c" />
     <ClCompile Include="..\..\src\IBKMKC_ilut.c" />
     <ClCompile Include="..\..\src\IBKMKC_sparse_matrix.c" />
-    <ClCompile Include="..\..\src\IBKMKC_tridiag_matrix.c" />
     <ClCompile Include="..\..\src\IBKMKC_vector_operations.c" />
-    <ClCompile Include="..\..\src\IBKMK_BandMatrix.cpp" />
-    <ClCompile Include="..\..\src\IBKMK_BlockBandMatrix.cpp" />
-    <ClCompile Include="..\..\src\IBKMK_BlockSparseMatrix.cpp" />
-    <ClCompile Include="..\..\src\IBKMK_BlockTridiagMatrix.cpp" />
-    <ClCompile Include="..\..\src\IBKMK_CRSpline.cpp" />
-    <ClCompile Include="..\..\src\IBKMK_CuthillMcKee.cpp" />
     <ClCompile Include="..\..\src\IBKMK_DenseMatrix.cpp" />
-    <ClCompile Include="..\..\src\IBKMK_IndexGenerator.cpp" />
-    <ClCompile Include="..\..\src\IBKMK_numerics.cpp" />
     <ClCompile Include="..\..\src\IBKMK_SparseMatrixCSR.cpp" />
-    <ClCompile Include="..\..\src\IBKMK_SparseMatrixEID.cpp" />
     <ClCompile Include="..\..\src\IBKMK_SparseMatrixPattern.cpp" />
-    <ClCompile Include="..\..\src\IBKMK_TridiagMatrix.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A81BBB5A-756A-40D8-ACF1-D5AD16C6F95F}</ProjectGuid>
