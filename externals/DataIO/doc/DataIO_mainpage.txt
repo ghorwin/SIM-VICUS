@@ -1,0 +1,530 @@
+/*! \file DataIO
+	\brief Main include file for DataIO library.
+
+\mainpage An introduction to the DataIO library and tutorial
+
+\section intro_sec Overview of the DataIO Library
+
+DataIO is a library for reading and writing data files that contain simulation
+results. Specifically, the library is particularly useful for storing
+simulation results obtained from transient
+transport simulation programs such as DELPHIN.
+
+DELPHIN is a simulation program for 1D, 2D and 3D heat and mass transport in
+porous media. During the simulation the program computes
+states in each element, fluxes across element
+interfaces and boundaries and other time-dependent quantities.
+The output data is typically a subset of the computed information, which may
+be further modified by data reduction operations, for example time/spatial
+integration and averaging.
+
+The output data and additional meta information are stored efficiently in
+DataIO containers. The DataIO library assists developers in
+reading/writing such data containers.
+
+An important reference to be read alongside the API documentation is the article:
+
+Vogelsang, S. and Nicolai, A., <b>2011</b>, <i>"Delphin 6 Output File Specification"</i>,
+Technical Report, http://nbn-resolving.de/urn:nbn:de:bsz:14-qucosa-70337
+
+This page serves as quick-reference and starting point for your own code.
+
+\tableofcontents
+
+\subsection Key Features
+The library was written with large output files in mind, in particular files
+with sizes > 500 MB that are created by
+2D and 3D simulations. Hence, the library is designed for very fast
+reading of files, for both binary and ASCII file formats. When using the
+binary format, the library is also tuned to be very memory efficient.
+It uses lazy evaluation techniques to provide the data and
+initially only scans the files for necessary meta data. Upon first access to
+the data of a given time point, this data is parsed/accessed and than
+cached for fast access.
+
+\subsubsection lazy_evaluation_concepts Lazy Evaluation Concepts
+
+Lazy-evaluation or rather lazy-reading of output files is an important feature of the DataIO library.
+This is mainly necessary for large output files in order to:
+- limit memory requirements by selectively reading only data actually accessed by the user,
+- speed up reading by delaying string parsing to the time the data is first accessed.
+
+Regarding library functionality, there is a large difference between binary and ASCII data formats.
+When reading binary data files, only the header is read, and all time points stored in the data section, but
+not the data itself. Thus, the memory needed for reading a binary file is quite small. Later, when data is accessed,
+only the data for the selected time index is read from file and stored in the data structure. Hence, the
+data structure will gradually grow until the memory limit has been reached.
+
+When reading ASCII files, the whole file is read to memory. However, the lines holding the data are stored as strings and
+only the time point values are parsed and placed in the time points vector. Later, when data is accessed, the
+corresponding strings are converted into data vectors. Afterwards, the original strings are discarded, hereby freeing
+up memory. So, for ASCII files, the memory needed reduces gradually, when more and more data is accessed. The delayed
+reading of ASCII files is mainly a feature to speed up reading of ASCII files, not to reduce memory consumption.
+
+\subsection fileformats File Formats
+
+When creating output files with the library, two types of files need to be written:
+- data files (extension d6o or d6b)
+- geometry files (extension g6a or g6b)
+
+Output files are written either in ASCII or binary format.  Geometry files can also be
+written either as ASCII or binary files. This is indicated by
+the letter 'o'/'a' or 'b' in the file extension. Reading and writing of binary files is
+generally much faster, since string to double conversion routines are not needed.
+Also, binary data files allow just-in-time reading of data, which greatly reduces
+the memory requirements when working with large output files.
+
+Details of the file format are described in a technical report referenced above in section \ref intro_sec.
+
+\subsubsection olderFormats Support for older File Formats
+
+The library also support reading of DELPHIN 5 output files (*.out), which may
+contain geometry data internally.  It is not possible to write Delphin 5 output data.
+The library always writes DataIO containers in the most recent format.
+
+\section licensing License
+The DataIO library is published under an Open-Source license:
+
+	Copyright (c) 2001-2017, Institut für Bauklimatik, TU Dresden, Germany
+
+	Written by A. Nicolai, St. Vogelsang
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without modification,
+	are permitted provided that the following conditions are met:
+
+	1. Redistributions of source code must retain the above copyright notice, this
+	   list of conditions and the following disclaimer.
+
+	2. Redistributions in binary form must reproduce the above copyright notice,
+	   this list of conditions and the following disclaimer in the documentation
+	   and/or other materials provided with the distribution.
+
+	3. Neither the name of the copyright holder nor the names of its contributors
+	   may be used to endorse or promote products derived from this software without
+	   specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+	ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+	WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+	ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+	(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+	LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+	ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+	(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+\section using Using the DataIO library
+
+\subsection include Include files
+All classes, types and functions of the library are embedded in the namespace DATAIO.
+
+The DataIO library has a central include file to use in your code:
+\code
+#include <DataIO>
+\endcode
+
+\subsection importantClasses Important classes
+
+The library is centered around the class DATAIO::DataIO. This class wraps the
+content of a data file. The second most
+important class is DATAIO::GeoFile, which holds all meta information
+related to the simulated geometry.
+
+\subsection typicalUseCases Typical uses for the DataIO library
+
+- reading and accessing data stored in data and geometry files
+- creating geometry files
+- creating and storing data files
+
+\subsection accessingData Reading data and geometry files and accessing data
+
+\subsubsection readingDataIO Reading DataIO containers
+
+The member function read() can be used to read the complete file
+at once. For performance reasons, the file is read quickly in binary mode and
+the parsing of the values is done on demand when the function data() is called. The following
+example illustrates the principle usage:
+\code
+DATAIO::DataIO dataFile;
+// read file
+try {
+	IBK::Path dataFilePath("some_file.d6o");
+	dataFile.read(dataFilePath);
+}
+catch (IBK::Exception & ex) {
+	// error handling
+	ex.writeMsgStackToError();
+}
+\endcode
+
+\subsubsection readingGeoFile Reading associated geometry files
+
+Each DataIO file stores the relative file path to its geometry file in the header. The following code illustrates
+the generation of the file path and reading of the geometry file.
+
+\code
+// using the following variables:
+//
+// dataFilePath - file path to the DataIO file
+// dataFile     - DataIO file object, already read from file
+
+DATAIO::GeoFile geoFile;
+// read geometry file
+try {
+	IBK::Path geoFilePath = dataFilePath.parentPath() / dataFile.m_geoFileName;
+	geoFile.read(geoFilePath);
+}
+catch (IBK::Exception & ex) {
+	// error handling
+	ex.writeMsgStackToError();
+}
+\endcode
+
+\note A geometry file is typically referenced by several DataIO files. Therefore, it is sufficient to read it only once.
+
+\note For 2D output data (either of type DATAIO::DataIO::T_REFERENCE or holding 2D data points) a geometry file is
+not necessary, since x-y plot can be generated with the data alone. In such cases, the member variable m_geoFileName may
+be empty.
+
+\subsubsection retrievingData Retrieving data for individual time indexes/time points
+
+Once a DataIO container was read (i.e. parsed for meta information), you can check for the number
+of time indexes/time points stored in the file.
+\code
+// you can access the header data directly through public member variables
+std::cout << "Number of time points = " << dataFile.m_timepoints.size() << std::endl;
+\endcode
+
+For each time index the associated data array can be accessed using the DATAIO::DataIO::data() member function. This function
+returns a pointer to a continuous memory array of size returned by DATAIO::DataIO::nValues().
+
+\code
+// data can be requested via the function data().
+// for example, access data at time point with time index 10
+std::cout << "Retrieving data for time index 10, time = " << dataFile.m_timepoints[10] << " s" << std::endl;
+try {
+	const double * valdata_t10 = dataFile.data(10);
+	// The pointer returned by the data() function is valid as long as the DataIO object
+	// is not modified, or moved around in memory.
+
+	// For permanent access even if DataIO object is lost,
+	// copy the data into some other memory block:
+	// nValues() holds number of points in vector
+	unsigned int N = dataFile.nValues();
+	std::vector<double> values(valdata_t10, valdata_t10 + N);
+}
+catch (IBK::Exception & ex) {
+	ex.writeMsgStackToError();
+}
+// to access the last data set, use
+const double * lastData = dataFile.data(dataFile.m_timepoints.size() - 1);
+\endcode
+
+\subsubsection retrievingDataVector Retrieving vector of first values for all time indexes
+
+For 2D data sets, for each time point only a single value is stored. For convenience, a vector holding
+all these values for all time points can be accessed by calling the member function DATAIO::DataIO::dataVector().
+
+\code
+const double * values = dataFile.dataVector();
+// this vector has the same number of values as there are time points
+unsigned int N = dataFile.m_timepoints.size();
+\endcode
+
+\subsubsection determiningDataFormat Determining the data format of data stored in DataIO containers
+
+Depending on the selection of elements/sides and the simulation grid, the data represented
+by the file may be of different data formats (see DATAIO::DataIO::dataFormat_t). If you have the
+geometry file read you can use the member function
+DATAIO::DataIO::determineDataFormat() to determine the data format of a specific
+DataIO container.
+
+\code
+// geoFile  - a geometry file instance holding geometry data
+// dataFile - instance of a DataIO container
+DATAIO::DataIO::dataFormat_t df = dataFile.determineDataFormat(geoFile);
+\endcode
+
+The data format can then be used to switch between different forms of postprocessing operations/diagram options.
+
+\subsubsection generatingPlots Generating 2D/3D plots from data
+
+DataIO containers store many values per time index/time point, whereas the values are mapped to integer numbers stored
+as part of the file header. The spatial coordinate of such a value (via its ID number) can only be obtained with the geometry file.
+As soon as the geometry file has been parsed all information is present to generate 2D and 3D plots via a suitable plotting
+engine (gnuplot, Tecplot etc.).
+
+\todo Add example to create gnuplot files, or use converter as example???
+
+\subsection writingGeometryFiles Creating geometry files
+When creating output files containing simulation output from simulated numerical grids, the associated geometry
+is needed in post-processing/plotting operations. Since this data is shared among several data files, it is stored
+in a separate file, the Geometry file. Before writing DataIO containers the geometry file must be created and a
+hash-code of the content of the geometry file must be computed.
+
+\note The use of hash codes allows checking for correct geometry file association to match the data stored in a DataIO
+container.
+
+The documentation of the member variables of class DATAIO::GeoFile explains the required data in detail, more theoretical
+background can be found in the publication referenced in section \ref intro_sec.
+The following code piece demonstrates the basic steps for creating a geometry file.
+
+When writing a geometry file you need to specify all relevant member variables,
+as in the example below:
+\code
+// using vectors materials, elements, sides from your code
+// boolean variable use_binary_format also from your code
+
+// create new DATAIO::GeoFile instance
+DATAIO::GeoFile geofile;
+
+// *** Populate data tables ***
+
+// compose material data table (the vector materials is from your code)
+for (unsigned int i=0; i<materials.size(); ++i) {
+	// GeoFile::Material is a class holding all information of a single material definition
+	DATAIO::GeoFile::Material mat;
+	mat.name  = "some name"; // some descriptive name
+	mat.color = IBK::Color::fromHtml("#121212"); // some color, see IBK::Color
+	mat.ID    = i; // unique material ID, referenced in elements table below
+	// add material definition to list of materials in geofile
+	geofile.m_matDefs.push_back(mat);
+}
+
+// compose element data table (the vector elements is from your code)
+std::vector<double> xWidths;
+for (unsigned int i=0; i<elements.size(); ++i) {
+	// GeoFile::Element holds all element-specific information
+	DATAIO::GeoFile::Element el;
+	// specify index of material in MATERIALS table
+	el.matnr = 0; // first material in table
+	// specify unique element number
+	el.n = i;
+	// specify grid coordinates (3D grid, coordinate system starting left-bottom-back)
+	el.i = i;
+	el.j = 0;
+	el.k = 0;
+	// specify element center coordinates (typically in [m], 3D grid, coordinate system
+	// starting left-bottom-back)
+	el.x = 0.005 + i*0.01;
+	el.y = 0.5;
+	el.z = 0.5;
+	// append element width to vector (for later use)
+	xWidths.push_back(0.01);
+	// add element information to vector with elements
+	geofile.m_elementsVec.push_back(el);
+}
+
+// compose sides data table (vector sides is from your code)
+for (unsigned int i=0; i<sides.size(); ++i) {
+	// GeoFile::Side holds all side-specific information
+	DATAIO::GeoFile::Side sid;
+	// specify unique side number
+	sid.n = i;
+	// specify side orientation
+	sid.orientation = DATAIO::GeoFile::X_DIRECTION;
+	// specify grid line coordinates (see above)
+	sid.i = i;
+	sid.j = 0;
+	sid.k = 0;
+	// specify grid line center coordinates (typically in [m], see above)
+	sid.x = i*0.01;
+	sid.y = 0.5;
+	sid.z = 0.5;
+	// add side information to vector with sides
+	geofile.m_sidesVec.push_back(sid);
+}
+
+// compose grid data, basically all column, row, stack widths
+geofile.m_grid.xwidths.swap(xWidths);
+geofile.m_grid.ywidths.push_back(1);
+geofile.m_grid.zwidths.push_back(1);
+
+// *** Compose file name according to naming convention ***
+
+// Set the string projectContent to some relevant data describing the simulation project,
+// at least material references, grid options, everything that determines the content of
+// the geometry file.
+std::string projectContent  = "input file content or some unique ASCII "
+							  "representation of input data that matches this grid";
+
+// compute project file hash code, include IBK_crypt.h for function SuperFastHash().
+unsigned int projectFileHashCode = IBK::SuperFastHash(projectContent);
+std::string projectFileHash = IBK::val2string<unsigned int>(projectFileHashCode);
+
+IBK::Path projectFilePath("some_project.d6p");
+IBK::Path resultsPath("some_project/results");
+// projectFilePath and resultsPath (from your code) hold the filename
+// of the project file without path and the target directory for the geometry
+// file, respectively.
+
+IBK::Path geoFilePath = resultsPath / (projectFilePath.withoutExtension() + "_" + projectFileHash);
+
+// append extension based on binary/ASCII format
+if (use_binary_format)		geoFilePath.addExtension("g6b");
+else						geoFilePath.addExtension("g6a");
+
+// *** write geometry file ***
+try {
+	geofile.m_filename = geoFilePath; // set new geometry filename
+	geofile.m_isBinary = use_binary_format; // determines binary format writing
+	geofile.write();
+}
+catch (IBK::Exception & ex) {
+	ex.writeMsgStackToError();
+}
+\endcode
+In all DataIO containers that are created based on this geometry, the relative file path to the geometry file
+and the hash code needs to be set. The hash code is computed as follows:
+\code
+// compute hash code for writing DataIO containers
+unsigned int geofileHash = geofile.hashCode();
+\endcode
+
+\subsection writingDataFiles Writing data files
+Writing DataIO containers requires setting the header data of the DataIO container, which is mostly the same for
+several DataIO files written within the same simulation run.
+
+Afterwards it is possible to write data files in two modes:
+1. store complete data and write file at once
+2. write only the header and the append data progressively to the file
+
+It is also possible to reopen an existing file and continue appending data to it, a very useful feature when a
+simulation is stopped and restarted afterwards, see section \ref reopeningDataFiles.
+
+\subsubsection dataFileHeader Setting header data for DataIO container
+
+Before calling either write() or writeHeader(), you have to specify all relevant information in
+the DataIO instance, as in the following example:
+\code
+DATAIO::DataIO d;
+// specify start year, needed to map simulation/output time offsets to actual date/time stamps
+d.m_startYear = 2000;
+// set the file data type
+d.m_type = DATAIO::DataIO::T_FIELD; // used for the keyword ELEMENTS or SIDES and in the header
+// store project file name (optional)
+d.m_projectFileName = "some_project.d6p";
+// store geometry file and hash of the geometry file content
+d.m_geoFileName = "some_project_54293221.g6o";
+d.m_geoFileHash = 1293211332;
+// store quantity information
+d.m_quantity = "Thermodynamic Temperature"; // used as axis/series label
+d.m_quantityKeyword = "Temperature"; // may be used by post-processing to group series with same type of quantity
+// store data and time format
+d.m_spaceType = DATAIO::DataIO::ST_SINGLE;
+d.m_timeType  = DATAIO::DataIO::TT_NONE;
+// store IO units
+d.m_timeUnit  = "h";
+d.m_valueUnit = "C";
+// store number of values and element numbers (or side numbers, if writing fluxes)
+d.m_nums = element_numbers; // element_numbers holds as many unique element numbers as values stored per time index
+\endcode
+
+Once the data has been stored in the object, it can be written to file.
+\code
+// finally write the file header
+d.writeHeader();
+\endcode
+
+
+\subsubsection writingDataFilesAtOnce Writing data files at once
+This is meaningful if the data to be stored is available completely (and fits into memory). In this case, all data
+can be set in the DataIO container and be written at once.
+
+As described above, create a DataIO container and first store all header data in the object.
+
+\code
+DATAIO::DataIO dataFile;
+// ... store complete set of mandatory header data
+\endcode
+
+Next, set the data to be stored in the file. You need the time points vector and the
+corresponding vector with values. Mind that time points must be in seconds.
+
+\code
+// copy data over
+dataFile.setData(myTimePointsVector, myValueVector);
+// myTimePointsVector is a std::vector<double>
+// myValueVector is a std::vector<std::vector<double> >
+
+// or, if original data is no longer needed afterwards, use the more efficient swap() member function of std::vector
+dataFile.swapData(myTimePointsVector, myValueVector);
+\endcode
+
+Lastly, set filepath and write complete output data to file.
+\code
+dataFile.m_filename ="/path/to/my/output/file.d6o";
+dataFile.m_isBinary = true; // use binary output format
+// finally write data to file
+dataFile.write();
+\endcode
+
+\subsubsection writingDataFilesIncrementally Writing data files incrementally
+
+This is most useful when creating data files while a simulation is running and continuously generating results. Whenever
+data for a new output time point has been created, the function appendData() can be called to write this data directly
+to file. Note that the data is not stored in the DataIO object, which does not serve as a data container in this case.
+Hence, no additional storage memory is needed when calling appendData(). This allows writing of many large output files that
+would normally not fit into memory alltogether.
+
+Before calling appendData() the DataIO object has to be initialized correctly with all required header data, see
+\ref dataFileHeader.
+
+The following code example illustrates the use of DATAIO::DataIO::appendData():
+\code
+std::vector<double> outputVector(numValues);
+std::vector<DATAIO::DataIO*> dataIOs;
+// ...
+
+while (t < t_end) {
+
+	// ...
+
+	if (have_outputs) {
+		// process all output files
+		for (unsigned int i=0; i<numDataIO; ++i) {
+			// generate output data for DataIO container 'i', store/copy output data in vector outputVector
+			generateOutputData(i, outputVector);
+			// now append data to DataIO file
+			dataIOs[i]->appendData(t, &outputVector[0]);
+		}
+	}
+
+}
+\endcode
+
+\subsubsection reopeningDataFiles Reopening data files to continue adding data
+
+DataIO files can be re-opened and more data values can be added. Since header data is already stored in the files,
+only the file path is needed, as in the following example:
+
+\code
+DATAIO::DataIO dataFile;
+try {
+	IBK::Path dataFilePath("some_file.d6o");
+	dataFile.reopenForWriting(dataFilePath);
+	// now the header data members have been read from file and the output stream is positioned at the end of the file
+
+	// suppose you have a vector with data to add
+	double tp = 24*3600; // time point to add in seconds
+	std::vector<double> dataVec;
+	// ... set some data in dataVec
+
+	// ensure size matches
+	IBK_ASSERT(dataVec.size() == dataFile.nValues());
+
+	// now add data to file
+	dataFile.appendData(tp, &dataVec[0]);
+}
+catch (IBK::Exception & ex) {
+	ex.writeMsgStackToError();
+}
+\endcode
+
+
+\example main_demo.cpp
+An example to illustrate reading and writing of DataIO containers.
+
+*/
