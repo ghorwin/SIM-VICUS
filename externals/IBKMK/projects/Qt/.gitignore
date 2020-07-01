@@ -1,1 +1,3 @@
 *.qmake.stash
+/Makefile
+/Makefile.IBKMK
