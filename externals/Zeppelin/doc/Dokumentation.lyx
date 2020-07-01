@@ -1,0 +1,555 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\usepackage{parskip}
+
+% captions
+\usepackage[font=small, labelfont=bf, format=hang]{caption}
+
+\usepackage[hang,scriptsize]{subfigure}
+\usepackage{float}
+\usepackage{color}
+\usepackage{calc}
+
+\definecolor{linkblue}{rgb}{0,0,0.4}
+\definecolor{navy}{rgb}{0,0,0.3}
+\definecolor{light-gray}{gray}{0.98}
+\definecolor{dark-gray}{gray}{0.45}
+
+\usepackage{dsfont}
+
+\usepackage[utf8]{inputenc}
+
+\newcommand{\wframe}[1]{\frame{#1}}
+
+\usepackage{booktabs}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language ngerman
+\language_package default
+\inputencoding utf8
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement th
+\paperfontsize 10
+\spacing single
+\use_hyperref true
+\pdf_author "Andreas Nicolai"
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder true
+\pdf_colorlinks true
+\pdf_backref false
+\pdf_pdfusetitle true
+\pdf_quoted_options "linkcolor=linkblue, citecolor=linkblue, urlcolor=linkblue"
+\papersize a4paper
+\use_geometry true
+\use_package amsmath 2
+\use_package amssymb 2
+\use_package cancel 0
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 0
+\use_package mhchem 1
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\index Stichwortverzeichnis
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.5cm
+\topmargin 2.5cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language german
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\listings_params "basicstyle={\footnotesize\ttfamily\color{black}},breaklines=false,captionpos=b,commentstyle={\ttfamily\itshape\color{dark-gray}},frame=single,keywordstyle={\ttfamily\bfseries},numbers=none,showspaces=false,showstringspaces=false,showtabs=false,tabsize=4,texcl=true"
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+
+\shape smallcaps
+\size larger
+Dokumentation der ZEPPELIN-Bibliothek
+\end_layout
+
+\begin_layout Section
+Graphenobjekte
+\end_layout
+
+\begin_layout Standard
+Der Graph wird beschrieben durch Objekte, welche durch gerichtete Abhängigkeiten
+ miteinander verkettet sind.
+ Hierbei gibt es keine Einschränkungen an die Anzahl und Zielobjekte der
+ Verknüpfung.
+ Daher ist der originale Graph zwar gerichtet, kann aber per se nicht näher
+ charakterisiert werden (als Baum, Liste o.ä.).
+\end_layout
+
+\begin_layout Subsubsection*
+DependencyObject:
+\end_layout
+
+\begin_layout Standard
+Ein verknüpfungsfähiges Graphenobjekt.
+ Die Klasse hält Zeiger auf andere solche Objekte, welche als Abhängigkeiten
+ gedeutet werden, sowie umgekehrt gerichtete Pointer auf die Adressaten.
+ Mittels der Funktion
+\series bold
+ dependsOn()
+\series default
+ wird eine neue Verknüpfung gesetzt, und zwar vom aktuellen Objekt zu einem
+ anderen.
+ Hierbei werden als Richtung des Graphenkanten nicht der Datenfluss, sondern
+ die Datenanfragen vom abhängigen zum unabhängigen Objekt verstanden.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+newline
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In Folge der beliebigen Verknüpfungsmöglichkeiten muss nicht nur eine Umstruktur
+ierung sondern auch eine Umgruppierung des Graphen vorgenommen werden, um
+ eine auswertbare Ordnung erzeugen zu können.
+ Zu diesem Zweck können Graphenobjekte gekapselt werden, die entweder eineindeut
+ige (sequentielle) Verknüpfungen untereinander oder zyklische Zusammenhänge
+ aufweisen.
+ Der Graph kann also alternativ als zyklenfreier Graph von gruppierten Modellobj
+ekten begriffen werden.
+\end_layout
+
+\begin_layout Subsubsection*
+DependencyGroup:
+\end_layout
+
+\begin_layout Standard
+Kapselt mehrere Modellobjekte, fasst ihre Abhängigkeiten und Adressaten
+ zusammen.
+ Folglich kann die 
+\series bold
+DependencyGroup
+\series default
+ ebenso als Objekt eines gerichteten Graphen gedeutet werden und leitet
+ von 
+\series bold
+DependencyObject
+\series default
+ ab.
+ Durch die Funktion
+\series bold
+ insert()
+\series default
+ kann ein neues Gruppenobjekt hinzugefügt werden.
+ Dabei werden alle Gruppenmitglieder als ungruppierte Objekte abgelegt.
+ Dies bedeutet, das Hinzufügen einer DependencyGroup als Objekt einer anderen
+ Gruppe würde zur Auflösung der hinzugefügten Gruppe führen, eine mehr als
+ einstufige Kapselung ist nicht vorgesehen.
+ Außerdem impliziert diese Einstufigkeit, dass innerhalb von Zyklen stets
+ die größte Menge an zyklisch verknüpften Elementen abgelegt wird (also
+ alle Elemente, die durch die Verknüpfungen untereineinander von sich selbst
+ aus erreichbar sind), analog gilt dies auch für Sequenzen.
+ Zyklische oder sequentielle Gruppen innerhalb von Gruppen müssten anderenfalls
+ zugelassen werden, um einen azyklischen Graphen zu garantieren.
+ Mit 
+\series bold
+erase()
+\series default
+ kann ein Gruppenmitglied wieder entfernt werden.
+ Des Weiteren müssen bei der Erstellung von Gruppen unter Umständen Mengenoperat
+ionen wie Zusammenfassen, Schneiden und Komplementbildung ausgeführt werden,
+ die im Fall sequentieller oder zyklischer Gruppen speziellen Regeln genügen.
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+newline
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Wie bereits implizit aufgeführt, ist letztendlich lediglich der geornete
+ Graph von Interesse.
+ Um diesen zu erstellen, muss allerdings zunächst ein zyklenfreier Graphen
+ erstellt werden, also Graphen aus diesen DependencyGroups.
+\end_layout
+
+\begin_layout Subsubsection*
+DependencyGraph:
+\end_layout
+
+\begin_layout Standard
+Graph in mehreren Erscheinungsformen.
+ Neben der azyklische Graphenstruktur aus gekapselten Gruppenobjekten (vom
+ Typ 
+\series bold
+DependencyGroup
+\series default
+/
+\series bold
+DependencyObject
+\series default
+) ist der Graph in seiner geordneten Form (als sortierte Liste von Elementen
+ des Types 
+\series bold
+DependencyObject
+\series default
+ und 
+\series bold
+ParallelObjects
+\series default
+) abglegt.
+ Der DatenTyp 
+\series bold
+ParallelObjects 
+\series default
+repräsentiert hierbei einen Container parallel liegender Graphenknoten in
+ Form von Objekten oder Gruppen, die später als parallel auswertbare Modellobjek
+te gedeutet werden können.
+ Es werden stets alle drei Erscheinungsformen in der Speicherstruktur gehalten.
+ Dies bedeutet, direkt bei der Initialisierung des Graphens durch die Graphenobj
+ekte werden mehrere Datencontainer erzeugt: der gruppierte azyklische Graph
+ (
+\begin_inset Quotes gld
+\end_inset
+
+
+\shape italic
+m_objects
+\shape default
+
+\begin_inset Quotes grd
+\end_inset
+
+), der geordnete Graph (
+\shape italic
+
+\begin_inset Quotes gld
+\end_inset
+
+m_orderedObjects
+\shape default
+
+\begin_inset Quotes grd
+\end_inset
+
+) und der geordnete Graph mit parallelen Gruppen (
+\begin_inset Quotes gld
+\end_inset
+
+
+\shape italic
+m_orderedParallelObjects
+\shape default
+
+\begin_inset Quotes grd
+\end_inset
+
+).
+ Hierfür werden nacheinander Funktionen für die Objektgruppierung 
+\series bold
+clusterGraph()
+\series default
+ und die Graphensortierung 
+\series bold
+orderGraph()
+\series default
+ aufgerufen, welche die zugehörigen Algorithmen enthalten.
+\end_layout
+
+\begin_layout Section
+Cluster- und Sortieralgorithmus
+\end_layout
+
+\begin_layout Standard
+Die Ordnung des Graphen erfolgt hierarchisch in drei Schritten: die Gruppierung
+ für zyklische und sequentielle Zusammenhänge, die Bestimmung paralleler
+ Gruppen als Übereinheit, und die Bestimmung einer Auswertungsreihenfolge
+ von parallelen Gruppen durch Einbettung in eine geordnete Liste.
+\end_layout
+
+\begin_layout Standard
+Für die Clusterung werden zunächst alle sequentiellen Zusammenhänge bestimmt,
+ welche durch eineindeutige Verknüpfungen zueinander charakterisiert und
+ sofort durch Verfolgung der Abhängigkeiten durch den ungeordneten Graphen
+ auffindbar sind.
+ Konkret werden für jeden ungeprüften Knoten die in einer Sequenz verbundenen
+ Adressaten und Abhängigkeiten bestimmt und in Gruppen zusammengefasst.
+ Einzelne, nicht in Sequenzen zusammengefasste Objekte bilden hierbei einelement
+ige Gruppen.
+ Nach diesem ersten Schritt können alle Graphknoten durch disjunkte ein-
+ oder mehrelementige Objektgruppen ersetzt werden.
+\end_layout
+
+\begin_layout Standard
+Zyklische Zusammenhänge sind gegenüber sequentiellen Zusammenhängen übergeordnet.
+ Dies bedeutet, Zyklen können Sequenzen enthalten, Sequenzen allerdings
+ keine Zyklen.
+ Daher ist die Zyklensuche algorithmisch nach der Sequenzensuche durchzuführen.
+ Bei der Suche werden zu jedem ungeprüften Knoten alle vorhandenen Abhängigkeite
+n rekursiv Ast für Ast durchlaufen und die zugehörigen Knoten markiert.
+ Ein Zyklus bildet einen Schluss der markierten Knotenkette und kann einfach
+ erkannt werden.
+ Allerdings müssen nicht alle Zyklen disjunkt sein, beispielsweise können
+ größere Zyklen kleinere enthalten.
+ Deshalb muss nach Abschluss der rekursiven Suche von jedem Startknoten
+ eine Zusammenfassung aller gefundenen Gruppen erfolgen.
+ Alle Graphenknoten, die in Zyklen enthalten sind, sind entsprechend zu
+ ersetzen, so dass der Graph am Ende wiederum nur disjunkte Gruppen enthält.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename figs/UnorderedGraph.eps
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/OrderedGraph.eps
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Graphenerscheidnungsformen für Beispiel 1 in ZeppelinTest: ungeordneter
+ Graph (links), gruppierter und geordneter Graph (rechts)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Parallel zur Ersetzung der Graphenobjekte durch übergeordnete Gruppenstrukturen
+ werden alle neu entstandenen Graphenkanten zwischen verschiedenen Objektgruppen
+ additiv den Objektabhängigkeiten hinzugefügt.
+\end_layout
+
+\begin_layout Standard
+Die Auswertung paralleler Gruppen und die Ordnung des Graphen erfolgt gleichzeit
+ig.
+ Beginnend bei den Knotenenden, also Graphenobjekten ohne Abhängigkeiten
+ zu anderen Knoten, kann der gruppierte Graph schrittweise abgetragen werden.
+ Parallele Gruppen sind hierbei Endknoten desselben Teilgraphen, die folglich
+ nicht voneinander abhängen und parallel ausgewertet werden können.
+ Bei Abtragung der Knotenenden eines jeden Teilgraphen werden die parallelen
+ Gruppen in einen Container gestapelt und bilden nach Abschluss der Funktion
+ den geordneten Graphen.
+ 
+\end_layout
+
+\begin_layout Standard
+Das Beispiel 1, sowie ein weiteres Beispiel 2 sind Bestandteil des Testprojektes
+ 
+\shape italic
+ZeppelinTest
+\shape default
+, dokumentiert unter 
+\shape italic
+/doc/example1
+\shape default
+ und
+\shape italic
+ /doc/example2
+\shape default
+.
+ In beiden Testvarianten wird ein ungeordneter Graph eingelesen, gruppiert
+ und geordnet ausgegeben.
+\end_layout
+
+\begin_layout Section
+Erweiterung für die Modellberechnungen am Beispiel der Gebäudesimulationsplattfo
+rm
+\end_layout
+
+\begin_layout Standard
+Um die Graphenalgorithmen für eine Modellberechnung nutzen zu können, müssen
+ die zunächst nur als Knoten interpretierten Objekte um eine Modellberechnungsfu
+nktionalität erweitert werden.
+ Mit Hilfe der Graphenalgorithmen kann dann eine Modellordnung erzeugt werden,
+ welche die richtige Reihenfolge bei Auswertung der Modelle für geänderte
+ Randbedingungen garantiert.
+ Prinzipiell ist für Modellobjekte, deren Ergebnis von den Berechnungen
+ anderer Modellgrößen abhängt, die Vererbung aus der 
+\shape italic
+DependencyObject
+\shape default
+-Klasse sinnvoll.
+ 
+\end_layout
+
+\begin_layout Standard
+Die Entscheidung, welche Graphen erzeugt und mit welchen konkreten Objekten
+ befüllt werden, birgt allerlings zusätzliche Freiheit.
+ Am Beispiel der Gebäudesimulation wird deutlich, dass es sowohl Größen
+ gibt, welche sich nur in Abhängigkeit der Zeit ändern und für alle davon
+ abhängigen Berechnungsgrößen eine Aktualisierung anfordern.
+ Als rein zeitabhängig sind Größen wie das Außenklima oder ein Nutzerverhalten
+ zu deuten, welches durch einen Zeitplan beschrieben ist.
+ Eine Aktualisierung der abhängigen Größen wie die Wärmeströme innerhalb
+ der Außenwände müßte hier bei Änderung eines jeden Zeitschrittes erfolgen.
+ Dasselbe gilt für rein zustandsabhängige Größen, welche sich ändern, sobald
+ ein übergeordnetes Lösungsverfahren einen neuen Lösungsvorschlag erstellt.
+ Im Fall der Gebäudesimulation sind dies Raum und Wandtemperaturen, und
+ eine Änderung des Lösungsvorschlages würde eine Vielzahl an Modellberechnungsgr
+ößen verändern wie zum Beispiel die Empfindungstemperatur, Heizregelgrößen
+ und Wärmeströme.
+ 
+\end_layout
+
+\begin_layout Standard
+Diese Überlegungen führen dazu, dass die Modelle mit zwei verschiedenen
+ Berechnungsfunktionalitäten ausgestattet sein müssen: eine Aktualisierung
+ aller Modellgrößen zu Änderung des Zeitschrittes und eine Aktualisierung
+ aller Modellgrößen bei Änderung des globalen Lösungsvorschlages durch das
+ umliegende Zeitintegrationsverfahren oder nichtlineare Lösungverfahren.
+ Demzufolge ist es sinnvoll, zwei unterschiedliche Graphen aufzubauen, je
+ einen für jede Berechungsfunktionalität.
+\end_layout
+
+\begin_layout Standard
+Des Weiteren kann es vorkommen, dass die Ordnung von Modellobjekten in der
+ Berechnungsreihenfolge bekannt ist.
+ Dies trifft für von anderen Ergebnissen unabhängige Modellberechnungen
+ zu, sowie implizit bekannte Modelle.
+ Bei der Gebäudesimulationsplattform ist dieser Aspekt wesentlich, da hier
+ eine Kombination vordefinierter und nutzerdefinierter Modelle vorliegt.
+ Dies bedeutet, Teilkomponenten innerhalb des Graphen und ihre Verknüpfungen
+ untereinander sind bereits bekannt wie zum Beispiel die Wärmestromberechnung
+ durch Wände und die Auswertung der Innen- sowie Außenrandbedingungen.
+ Für diese Teilgraphen ist die Berechnungsreihenfolge ersichtlich und kann
+ ohne Bemühung der Graphenalgorithmen angegeben werden.
+ Es kann also ein Graph allein aus nutzerdefinierten Modellobjekten erstellt
+ werden, auch wenn diese Verknüpgungen zu vordefinierten Modellergebnissen
+ aufweisen.
+ Die Erzeugung von Teilgraphen mit Verknüpfungen zu Objekten außerhalb des
+ Graphen ist explizit erlaubt.
+\end_layout
+
+\begin_layout Standard
+Die Initialisierung des Graphen erzeugt aus den Modellobjekten eine Liste
+ von Gruppen (
+\shape italic
+DependencyGroup
+\shape default
+), die als Argument zurückgegeben werden.
+ DesWeiteren ist der gruppierte Graph in geordneter Form als 
+\shape italic
+orderedObjects()
+\shape default
+ oder
+\shape italic
+ parallelOrderedObjects() 
+\shape default
+abrufbar.
+ Zu beachten ist dabei allerdings, dass die Berechnungsvorschrift der einzelnen
+ Modellobjekte unzureichend ist, um den gruppierten Graph auszuwerten.
+ Insbesondere für Modellobjekte, die in einer zyklischen Abhängigkeit stehen,
+ ist die Implementierung der Auswertungsfunktionalität der zugeordneten
+ Gruppe unumgänglich.
+ Zu jeder DependencyGroup muss daher ein eigenes Modellobjekt (abgeleitet
+ aus 
+\shape italic
+DependencyObject
+\shape default
+) erstellt werden, welches die Modellberechnungen der enthaltenen Modellobjekte
+ koordiniert, wie es beispielsweise bei der Gebäudesimulation der Fall ist.
+ In diesem Anwendungsfall hat sich für zyklische Modellgruppen eine Auswertung
+ durch das Newton-Verfahren bewährt.
+\end_layout
+
+\begin_layout Standard
+Zur globalen Auswertung der Modellgruppen kann der geordnete Graphen genutzt
+ werden (Zugriff über 
+\shape italic
+orderedObjects()
+\shape default
+ oder
+\shape italic
+ parallelOrderedObjects()
+\shape default
+), wobei die Modellberechnung für geordnete Ebenen nacheinander, für parallele
+ Objekte gleichzeitig durchgeführt werden kann.
+ Dabei entspricht die Listenreihenfolge einem auswertbaren Stapel, das erste
+ Element ist also stets das zuerst auswertbare, das letzte Element muss
+ zu Ende der Modellberechnung aktualisiert werden.
+\end_layout
+
+\end_body
+\end_document
