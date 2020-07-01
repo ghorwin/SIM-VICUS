@@ -144,6 +144,9 @@ bool MessageHandler::openLogFile(const std::string& logfile, bool append, std::s
 	if (logfile.empty())
 		return true;
 
+	if (m_requestedLogfileVerbosityLevel == 0)
+		return true; // no log file writing
+
 	if (append) {
 
 #if defined(_WIN32) && !defined(__MINGW32__)
@@ -199,6 +202,9 @@ void MessageHandler::msg(const std::string& msg, msg_type_t t, const char * func
 #endif
 
 	std::string vbStr;
+
+	// Uncomment the following section to check the correct verbosity level of individual messages
+	// but remember to turn it off again after testing!
 //#define PRINT_VERBOSITY_LEVEL
 #ifdef PRINT_VERBOSITY_LEVEL
 	std::stringstream strm;
@@ -333,7 +339,6 @@ void MessageHandler::msg(const std::string& msg, msg_type_t t, const char * func
 			IBK::set_console_text_color(IBK::CF_GREY);
 #endif // _WIN32
 			break;
-		default : ; // do nothing
 	}
 
 	if (m_logfile != NULL)
