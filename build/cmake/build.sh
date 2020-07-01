@@ -131,12 +131,12 @@ fi
 cd $BUILDDIR && cmake $CMAKE_OPTIONS $CMAKE_BUILD_TYPE $CMAKE_COMPILER_OPTIONS $CMAKELISTSDIR && make -j$MAKE_CPUCOUNT && 
 cd $CMAKELISTSDIR &&
 mkdir -p ../../bin/release &&
-echo "*** Copying CCMEditor to bin/release ***" &&
-if [ -d $BUILDDIR/CCMEditor/CCMEditor.app ]
+echo "*** Copying SIM-VICUS to bin/release ***" &&
+if [ -d $BUILDDIR/SIM-VICUS/SIM-VICUS.app ]
 then
-    rm -rf ../../bin/release/CCMEditor.app
-    cp -r $BUILDDIR/CCMEditor/CCMEditor.app ../../bin/release/CCMEditor.app
+    rm -rf ../../bin/release/SIM-VICUS.app
+    cp -r $BUILDDIR/SIM-VICUS/SIM-VICUS.app ../../bin/release/SIM-VICUS.app
 else
-    cp $BUILDDIR/CCMEditor/CCMEditor ../../bin/release/CCMEditor
+    cp $BUILDDIR/SIM-VICUS/SIM-VICUS ../../bin/release/SIM-VICUS
 fi
 

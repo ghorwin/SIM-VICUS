@@ -34,7 +34,7 @@ if ERRORLEVEL 1 GOTO fail
 popd
 
 :: copy executable to bin/release dir
-xcopy /Y .\bb_VC_x64\CCMEditor\CCMEditor.exe ..\..\bin\release_x64
+xcopy /Y .\bb_VC_x64\SIM-VICUS\SIM-VICUS.exe ..\..\bin\release_x64
 
 exit /b 0
 

@@ -1,7 +1,7 @@
-# CMakeLists.txt file for CCMEditor and dependent libraries
+# CMakeLists.txt file for SIM-VICUS and dependent libraries
 
 # The project name
-project( CCMEditor )
+project( SIM-VICUS )
 
 # Require a fairly recent cmake version
 cmake_minimum_required( VERSION 2.8.12 )
@@ -100,6 +100,13 @@ if( APPLE )
 endif( APPLE )
 
 # -------------------------------------------------------------
+# Tools of the build chain
+# -------------------------------------------------------------
+
+# KeywordListCreator
+add_subdirectory( ../../externals/KeywordListCreator/projects keywordlistcreator )
+
+# -------------------------------------------------------------
 # subdirectories and subprojects
 # -------------------------------------------------------------
 
@@ -107,10 +114,12 @@ endif( APPLE )
 add_subdirectory( ../../externals/CCM/projects/cmake_local CCM )
 add_subdirectory( ../../externals/DataIO/projects/cmake_local DataIO )
 add_subdirectory( ../../externals/IBK/projects/cmake_local IBK )
-add_subdirectory( ../../externals/qwt/projects/cmake_local qwt )
-add_subdirectory( ../../externals/QtExt/projects/cmake_local QtExt )
-set(SCICHART_HAS_EMFENGINE ON CACHE BOOL "Build SciChart with EMFEngine" FORCE)
-add_subdirectory( ../../externals/SciChart/projects/cmake_local SciChart )
+add_subdirectory( ../../externals/SuiteSparse/projects/cmake_local SuiteSparse )
+add_subdirectory( ../../externals/zlib/projects/cmake_local zlib )
+#add_subdirectory( ../../externals/qwt/projects/cmake_local qwt )
+#add_subdirectory( ../../externals/QtExt/projects/cmake_local QtExt )
+#set(SCICHART_HAS_EMFENGINE ON CACHE BOOL "Build SciChart with EMFEngine" FORCE)
+#add_subdirectory( ../../externals/SciChart/projects/cmake_local SciChart )
 add_subdirectory( ../../externals/TiCPP/projects/cmake_local TiCPP )
 
 if( WIN32 )
@@ -122,7 +131,7 @@ endif( WIN32 )
 # main project
 # -------------------------------------------------------------
 
-add_subdirectory( ../../CCMEditor/projects/cmake_local CCMEditor)
+add_subdirectory( ../../SIM-VICUS/projects/cmake_local SIM-VICUS)
 #add_subdirectory( ../../CCD2C6BConverter/projects/cmake_local CCD2C6BConverter)
 
 
