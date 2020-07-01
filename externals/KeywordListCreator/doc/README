@@ -1,0 +1,17 @@
+KeywordListCreator README
+=========================
+
+Syntax:
+
+keywordlistcreator <path to Delphin src> <path to DSix src>
+
+Generates the following files:
+
+DELPHIN_KeywordList.h
+DELPHIN_KeywordList.cpp
+
+The following files contain the Qt translations.
+
+DelKeywordListTranslations.h
+DelKeywordListTranslations.cpp
+
