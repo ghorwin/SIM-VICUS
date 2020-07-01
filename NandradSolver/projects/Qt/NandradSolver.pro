@@ -14,11 +14,7 @@ CONFIG -= app_bundle
 
 LIBS += \
 	-lNandradModel \
-	-lWindowModel \
-	-lWallModel \
 	-lZeppelin \
-	-lDelphinLight \
-	-lMaterials \
 	-lIntegratorFramework \
 	-lDataIO \
 	-lNandrad \
@@ -41,11 +37,8 @@ INCLUDEPATH = \
 	../../../externals/IBKMK/src \
 	../../../externals/IntegratorFramework/src \
 	../../../externals/Zeppelin/src \
-	../../../externals/Materials/src \
-	../../../externals/Delphin/src \
 	../../../externals/DataIO/src \
-	../../../externals/Nandrad/src \
-	../../../externals/NandradModel/src
+	../../../externals/Nandrad/src
 
 SOURCES += \
 	../../src/main.cpp
