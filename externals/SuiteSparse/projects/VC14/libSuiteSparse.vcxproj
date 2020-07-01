@@ -167,7 +167,6 @@
     <ClCompile Include="..\..\src\AMD\Source\amd_control.c" />
     <ClCompile Include="..\..\src\AMD\Source\amd_defaults.c" />
     <ClCompile Include="..\..\src\AMD\Source\amd_dump.c" />
-    <ClCompile Include="..\..\src\AMD\Source\amd_global.c" />
     <ClCompile Include="..\..\src\AMD\Source\amd_info.c" />
     <ClCompile Include="..\..\src\AMD\Source\amd_order.c" />
     <ClCompile Include="..\..\src\AMD\Source\amd_postorder.c" />

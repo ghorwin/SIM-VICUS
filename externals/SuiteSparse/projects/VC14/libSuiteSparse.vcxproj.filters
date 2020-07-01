@@ -90,9 +90,6 @@
     <ClCompile Include="..\..\src\AMD\Source\amd_dump.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\AMD\Source\amd_global.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\AMD\Source\amd_info.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
