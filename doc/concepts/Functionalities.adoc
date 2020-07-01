@@ -4,7 +4,7 @@
 
 ### Für die Anwendung durch Planer
 * Bauphysikalische Anwendung
-* thermische Gebäudesimulation NANDRAD
+** thermische Gebäudesimulation NANDRAD
 ** thermische Gebäudesimulation EnergyPlus
 ** Tageslichtsimulation Radiance (inklusive DaySim)
 ** CFD Anbindung OpenFOAM (nicht priorisiert)
