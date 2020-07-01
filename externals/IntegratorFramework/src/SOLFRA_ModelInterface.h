@@ -176,8 +176,8 @@ public:
 		The collected statistics will be printed just below the LES solver statistics block.
 		When re-implementing this function, please use the same formatting/layout for the table to
 		give a consistent view.
-	\param simtime Totel elapsed wall clock time of simulation in [s] (needed for percentage calculation)
-	\param metricsFile If not NULL, computer-readible metrics are written to the file.
+		\param simtime Totel elapsed wall clock time of simulation in [s] (needed for percentage calculation)
+		\param metricsFile If not NULL, computer-readible metrics are written to the file.
 	*/
 	virtual void writeMetrics(double simtime, std::ostream * metricsFile = NULL) { (void)simtime; (void)metricsFile; }
 
