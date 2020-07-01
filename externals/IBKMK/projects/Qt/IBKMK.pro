@@ -29,16 +29,20 @@ INCLUDEPATH = \
 
 
 SOURCES += \
+	../../src/IBKMKC_dense_matrix.c \
 	../../src/IBKMKC_sparse_matrix.c \
 	../../src/IBKMKC_vector_operations.c \
+	../../src/IBKMK_DenseMatrix.cpp \
 	../../src/IBKMK_SparseMatrixCSR.cpp \
 	../../src/IBKMK_SparseMatrixPattern.cpp \
 	../../src/IBKMKC_ilut.c
 
 HEADERS += \
+	../../src/IBKMKC_dense_matrix.h \
 	../../src/IBKMKC_ilut.h \
 	../../src/IBKMKC_sparse_matrix.h \
 	../../src/IBKMKC_vector_operations.h \
+	../../src/IBKMK_DenseMatrix.h \
 	../../src/IBKMK_SparseMatrix.h \
 	../../src/IBKMK_SparseMatrixCSR.h \
 	../../src/IBKMK_SparseMatrixPattern.h \
