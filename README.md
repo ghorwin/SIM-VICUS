@@ -27,6 +27,11 @@ the output in `docs/api`.
 
 ### Coding Style
 
+#### Indentation and line length limit
+
+- only tabs for indentation, shown in display as 4 spaces
+- line length not strictly limited, but keep it below 120 (good for most screens nowadays)
+
 #### Files
 
 - Line endings LR (Unix/Linux)
@@ -36,7 +41,7 @@ the output in `docs/api`.
 
 #### Namespaces
 
-Each library has its own namespace, matching the file prefix. Example: `NANDRAD::Project` -> `NANDRAD_Project.h`
+Each library has its own namespace, matching the file prefix. Example: `NANDRAD::Project` get `NANDRAD_Project.h`
 
 #### Class and variable naming
 
@@ -54,3 +59,12 @@ Example:
 ```
 !!! **never ever** write `getXXX` !!!!!
 
+#### Documentation
+
+Doxygen-style, prefer:
+
+```c++
+    /*! Brief description of function.
+
+
+```
