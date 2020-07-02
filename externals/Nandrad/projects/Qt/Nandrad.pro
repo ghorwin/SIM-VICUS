@@ -21,6 +21,8 @@ INCLUDEPATH = \
 	../../../IBK/src \
 	../../../TiCPP/src
 
+DEPENDPATH = $${INCLUDEPATH}
+
 HEADERS += \
 	../../src/NANDRAD_ArgsParser.h \
 	../../src/NANDRAD_Constants.h

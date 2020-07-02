@@ -13,41 +13,31 @@
 #include <SOLFRA_SolverControlFramework.h>
 #include <SOLFRA_IntegratorSundialsCVODE.h>
 
-// include model implementation class
-#include "NM_NandradModel.h"
-
-// include project class (holds input data)
-#include <NANDRAD_Project.h>
 // include header for command line argument parser
 #include <NANDRAD_ArgsParser.h>
 
+// include model implementation class
+#include "NM_NandradModel.h"
 
 const char * const PROGRAM_INFO =
 	"NANDRAD Solver\n"
 	"All rights reserved.\n\n"
 	"The NANDRAD Development Team:\n"
-	"Anne Paepcke, Andreas Nicolai, Stefan Vogelsang\n"
+	"Anne Paepcke, Andreas Nicolai\n"
 	"Contact: \n"
 	"  anne.paepcke [at] tu-dresden.de\n"
 	"  andreas.nicolai [at] tu-dresden.de\n\n";
 
 
 int main(int argc, char * argv[]) {
-	const char * const FUNC_ID = "[main]";
-
-	NANDRAD_MODEL::NandradModel model;
-
-	NANDRAD::ArgsParser args;
-
-	IBK::StopWatch initWatch;
+	FUNCID(main);
 
 	try {
+		// a stopwatch to measure time needed for solver initialization
+		IBK::StopWatch initWatch;
+
 		// *** Command line parsing ***
-#ifdef WIN32
-		args.setAppName("NandradSolver");
-#else
-		args.setAppName("NandradSolver");
-#endif
+		NANDRAD::ArgsParser args;
 		args.parse(argc, argv);
 		// handle default arguments like help and man-page requests, which are printed to std::cout
 		if (args.handleDefaultFlags(std::cout))
@@ -57,6 +47,7 @@ int main(int argc, char * argv[]) {
 			std::cout << PROGRAM_INFO << std::endl;
 			NANDRAD_MODEL::NandradModel::printVersionStrings();
 			SOLFRA::SolverControlFramework::printVersionInfo();
+			IBK::IBK_Message("\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 			return EXIT_SUCCESS;
 		}
 
@@ -64,10 +55,12 @@ int main(int argc, char * argv[]) {
 		if (args.handleErrors(std::cerr))
 			return EXIT_FAILURE;
 
+		// *** create main model instance ***
+		NANDRAD_MODEL::NandradModel model;
+
 		// *** create directory structure ***
 		model.setupDirectories(args, args.m_projectFile);
 		// now we have a log directory and can write our messages to the log file
-
 
 		// *** setup message handler ***
 
@@ -77,15 +70,13 @@ int main(int argc, char * argv[]) {
 		messageHandlerPtr->setLogfileVerbosityLevel(verbosityLevel);
 		messageHandlerPtr->m_contextIndentation = 48;
 		std::string errmsg;
-//#define NO_LOGFILE
-#ifndef NO_LOGFILE
+
 		IBK::Path logfile = model.dirs().m_logDir / "screenlog.txt";
 		bool success = messageHandlerPtr->openLogFile(logfile.str(), args.m_restart, errmsg);
 		if (!success) {
 			IBK::IBK_Message(errmsg, IBK::MSG_WARNING, FUNC_ID);
 			IBK::IBK_Message("Cannot create log file, outputs will only be printed on screen.", IBK::MSG_WARNING, FUNC_ID);
 		}
-#endif // NO_LOGFILE
 
 		// *** write program/copyright info ***
 		IBK::IBK_Message(PROGRAM_INFO, IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
@@ -97,109 +88,8 @@ int main(int argc, char * argv[]) {
 
 		// init model (first read project, then initialize model)
 		model.init(args);
-		IBK::IBK_Message( IBK::FormatString("Model initialization complete, duration: %1\n\n").arg(initWatch.diff_str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-
-		// *** if designday option is set, additionally calculate design data
-		if (static_cast<IBK::ArgParser>(args).flagEnabled("designday")) {
-			// create a new file including design parameters
-			model.createHeatingDesignDayCalculationProject();
-			model.createCoolingDesignDayCalculationProject();
-			// create a new model for design calculation
-			NANDRAD::ArgsParser argsDesign(args);
-			argsDesign.m_projectFile = model.dirs().m_heatingDesignRootDir;
-			argsDesign.m_projectFile.addExtension("nandrad");
-			// set output directory
-			argsDesign.options(IBK::SolverArgsParser::GO_OUTPUT_DIR).push_back(model.dirs().m_heatingDesignResultsDir.str());
-			NANDRAD_MODEL::NandradModel modelHeatingDesignCalc;
-			// set all directories
-			modelHeatingDesignCalc.setupDirectories(argsDesign, argsDesign.m_projectFile);
-			// initialize model
-			modelHeatingDesignCalc.init(argsDesign);
-			// and run model
-			IBK::IBK_Message("Precalulate heating design day\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-			SOLFRA::SolverControlFramework solverHeatingDesignCalc(&modelHeatingDesignCalc);
-			solverHeatingDesignCalc.m_useStepStatistics = argsDesign.flagEnabled(IBK::SolverArgsParser::DO_STEP_STATS);
-			solverHeatingDesignCalc.m_logDirectory = modelHeatingDesignCalc.dirs().m_logDir.str();
-			solverHeatingDesignCalc.run();
-			// write results file
-
-			// the same with cooling
-			argsDesign.m_projectFile = model.dirs().m_coolingDesignRootDir;
-			argsDesign.m_projectFile.addExtension("nandrad");
-			argsDesign.options(IBK::SolverArgsParser::GO_OUTPUT_DIR).clear();
-			argsDesign.options(IBK::SolverArgsParser::GO_OUTPUT_DIR).push_back(model.dirs().m_coolingDesignResultsDir.str());
-			NANDRAD_MODEL::NandradModel modelCoolingDesignCalc;
-			// set all directories
-			modelCoolingDesignCalc.setupDirectories(argsDesign, argsDesign.m_projectFile);
-			// initialize model
-			modelCoolingDesignCalc.init(argsDesign);
-			// and run model
-			IBK::IBK_Message("Precalulate cooling design day\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-			SOLFRA::SolverControlFramework solverCoolingDesignCalc(&modelCoolingDesignCalc);
-			solverCoolingDesignCalc.m_useStepStatistics = argsDesign.flagEnabled(IBK::SolverArgsParser::DO_STEP_STATS);
-			solverCoolingDesignCalc.m_logDirectory = modelCoolingDesignCalc.dirs().m_logDir.str();
-			solverCoolingDesignCalc.run();
-
-			// write results file
-			model.writeDesignDaySummary( );
-			return EXIT_SUCCESS;
-		}
-
-		// *** if FMU option is set, generate FMU container
-		if (static_cast<IBK::ArgParser>(args).hasOption("fmu-export")) {
-			// generate FMU
-			std::string targetFileStr = static_cast<IBK::ArgParser>(args).option("fmu-export");
-			// special format for fmu report
-			if (targetFileStr.empty()) {
-				throw IBK::Exception("Missing target file for option 'fmu-export'!", "[main]");
-			}
-			IBK::Path targetFile(targetFileStr);
-
-			// special format for fmu report
-			if(static_cast<IBK::ArgParser>(args).hasOption("fmu-report-format")) {
-				std::string reportExtension = static_cast<IBK::ArgParser>(args).option("fmu-report-format");
-				model.export2FMU(args.m_executablePath.parentPath(), args.m_projectFile, targetFile, reportExtension);
-			}
-			else {
-				model.export2FMU(args.m_executablePath.parentPath(), args.m_projectFile, targetFile);
-			}
-			// create wrapper file for modelica environment
-			if(static_cast<IBK::ArgParser>(args).flagEnabled("fmu-modelica-wrapper")) {
-				// generate wrapper file
-				model.createModelicaFMUAdapterAndWrapper(IBK::Path(targetFile));
-			}
-
-			return EXIT_SUCCESS;
-		}
-
-		// *** if write-project option is set, additionally write project file with all included directives
-		// and references
-		if (static_cast<IBK::ArgParser>(args).hasOption("write-project")) {
-			std::string targetFileStr = static_cast<IBK::ArgParser>(args).option("write-project");
-			// special format for fmu report
-			if (targetFileStr.empty()) {
-				throw IBK::Exception("Missing target file for option 'write-project'!", "[main]");
-			}
-			IBK::Path targetFile(targetFileStr);
-
-			IBK::Path projectDirectory(targetFile);
-			projectDirectory = projectDirectory.absolutePath();
-			projectDirectory = projectDirectory.parentPath();
-
-			if (!projectDirectory.isDirectory()) {
-				IBK::IBK_Message(IBK::FormatString("Creating project output '%1'\n").arg(projectDirectory.absolutePath()),
-					IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-				IBK::Path::makePath(projectDirectory);
-			}
-
-			NANDRAD::Project project = model.project();
-			project.m_outputsReference.clear();
-			project.m_schedulesReference.clear();
-			// get path of project file output
-			project.writeXML(targetFile);
-
-			return EXIT_SUCCESS;
-		}
+		IBK::IBK_Message( IBK::FormatString("Model initialization complete, duration: %1\n\n").arg(initWatch.diff_str()),
+						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
 		// *** Run model through solver control framework ***
 		IBK::IBK_Message("Creating solver framework\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);

@@ -20,11 +20,6 @@ Lesser General Public License for more details.
 
 #include "NM_Directories.h"
 
-#ifdef _WIN32
-  #include <windows.h>
-  #include <shlobj.h>
-#endif // _WIN32
-
 #include <functional>
 #include <cstdlib>
 #include <ctime>
@@ -38,55 +33,7 @@ Lesser General Public License for more details.
 
 namespace NANDRAD_MODEL {
 
-Directories::Directories() {
-	// create all global pathes
-	#ifdef _WIN32
-		// retreive windows folder for temporary data 
-		wchar_t tmpDirWChar[MAX_PATH];
-
-		if (GetTempPathW(MAX_PATH, tmpDirWChar)) {
-			char tmpDirChar[MAX_PATH];
-			wcstombs(tmpDirChar, tmpDirWChar, sizeof(tmpDirChar));
-			// on Windows, we store temporary data at %TMP%
-			m_tmpDir = IBK::Path(tmpDirChar);
-		}
-
-		// retreive windows folder for local user data 
-		wchar_t usrDirWChar[ MAX_PATH ];
-
-		if (SHGetFolderPathW(NULL, CSIDL_LOCAL_APPDATA, NULL, 0, usrDirWChar) == S_OK) {
-			char usrDirChar[MAX_PATH];
-			wcstombs(usrDirChar, usrDirWChar, sizeof(usrDirChar));
-			// on Windows, we store user data at %HOME%/AppData/Local
-			m_userDataDir = IBK::Path(usrDirChar + std::string("/../IBK/Nandrad"));
-
-			// create directory if not existent
-			if(!m_userDataDir.isDirectory()) {
-				IBK::Path::makePath(m_userDataDir);
-			}
-		}
-
-	#else
-		// on Unix/Mac OS we use global tmp dir
-		m_tmpDir = IBK::Path("/tmp");
-
-		// on Unix/Mac OS we store user data under home directory
-		 const char *homeDir = getenv("HOME");
-
-		if(homeDir) {
-			m_userDataDir = IBK::Path(homeDir + std::string("/.ibk/Nandrad"));
-			// create directory if not existent
-			if(!m_userDataDir.isDirectory()) {
-				IBK::Path::makePath(m_userDataDir);
-			}
-		}
-
-	#endif // _WIN32
-}
-
-
 void Directories::create(const IBK::Path & projectRootPath) {
-
 	const char * const FUNC_ID = "[Directories::create]";
 
 	m_rootDir.clear();
@@ -130,13 +77,14 @@ void Directories::create(const IBK::Path & projectRootPath) {
 	m_resultsDir = outPath;
 	m_heatingDesignRootDir = IBK::Path(projectRootPath.str()
 		+ std::string("_heatingDesignDay") );
-	m_coolingDesignRootDir = IBK::Path(m_rootDir.str() 
+	m_coolingDesignRootDir = IBK::Path(m_rootDir.str()
 		+ std::string("_coolingDesignDay") );
 	m_heatingDesignResultsDir = m_heatingDesignRootDir / "results";
 	m_coolingDesignResultsDir = m_coolingDesignRootDir / "results";
 
 	// create directory for temporary files
 }
+
 
 void Directories::createFMUSlavesDirectory() {
 	const char * const FUNC_ID = "[Directories::createFMUSlavesDirectory]";

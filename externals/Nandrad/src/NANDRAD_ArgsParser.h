@@ -25,11 +25,12 @@ Lesser General Public License for more details.
 
 namespace NANDRAD {
 
-/*! Re-implementation of IBK::SolverArgsParser to add Nandrad-specific options. */
+/*! Re-implementation of IBK::SolverArgsParser to add NANDRAD-specific options. */
 class ArgsParser : public IBK::SolverArgsParser {
 public:
-
 	ArgsParser();
+
+	virtual void printHelp(std::ostream & out) const override;
 };
 
 } // namespace NANDRAD

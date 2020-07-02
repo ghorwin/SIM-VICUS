@@ -13,18 +13,17 @@ CONFIG += console
 CONFIG -= app_bundle
 
 LIBS += \
-	-lNandradModel \
-	-lZeppelin \
 	-lIntegratorFramework \
-	-lDataIO \
 	-lNandrad \
 	-lIBKMK \
-	-lIBK \
+	-lZeppelin \
+	-lDataIO \
 	-lCCM \
+	-lIBK \
 	-lTiCPP \
 	-lsundials \
-	-lSuiteSparse \
-	-lzlib
+	-lSuiteSparse
+#	-lzlib
 
 unix|mac {
 	LIBS += -ldl
@@ -33,14 +32,22 @@ unix|mac {
 
 
 INCLUDEPATH = \
+	../../../externals/CCM/src \
 	../../../externals/IBK/src \
 	../../../externals/IBKMK/src \
 	../../../externals/IntegratorFramework/src \
 	../../../externals/Zeppelin/src \
 	../../../externals/DataIO/src \
-	../../../externals/Nandrad/src
+	../../../externals/Nandrad/src \
+	../../../externals/sundials/src/include
+
+DEPENDPATH = $${INCLUDEPATH}
 
 SOURCES += \
+	../../src/NM_Directories.cpp \
+	../../src/NM_NandradModel.cpp \
 	../../src/main.cpp
 
-HEADERS +=
+HEADERS += \
+	../../src/NM_Directories.h \
+	../../src/NM_NandradModel.h

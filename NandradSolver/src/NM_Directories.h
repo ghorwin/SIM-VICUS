@@ -27,14 +27,9 @@ Lesser General Public License for more details.
 
 namespace NANDRAD_MODEL {
 
-/*!	\brief Declaration for class Directories
-
-*/
-/*! Wraps the model's directory structure. */
+/*!	Wraps the model's directory handling. */
 class Directories {
 public:
-
-	Directories();
 	/*! Creates the directory structure for a given project.
 		Throws an exception if the directories cannot be created.
 		After successful completion, the member variables contain the
@@ -60,9 +55,6 @@ public:
 	IBK::Path		m_coolingDesignRootDir;	///< Root directory for cooling design calculation (without trailing slash).
 	IBK::Path		m_heatingDesignResultsDir;	///< Results directory for heating design calculation (without trailing slash).
 	IBK::Path		m_coolingDesignResultsDir;	///< Results directory for cooling design calculation (without trailing slash).
-
-	IBK::Path		m_tmpDir;			///< Project directory for temporary files (without trailing slash).
-	IBK::Path		m_userDataDir;		///< Directory for local user data (without trailing slash).
 };
 
 
