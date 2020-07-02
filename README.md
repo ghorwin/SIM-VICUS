@@ -46,11 +46,11 @@ Each library has its own namespace, matching the file prefix. Example: `NANDRAD:
 - getter/setter functions follow Qt-Pattern:
 
 Example:
-```
+```c++
 	std::string m_myStringMember;
 	
 	const std::string & myStringMember() const;
 	void setMyStringMember(const std::string & str);
 ```
--> **never ever** write `getXXX` !!!!!
+!!! **never ever** write `getXXX` !!!!!
 
