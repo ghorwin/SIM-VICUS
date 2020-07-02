@@ -173,10 +173,8 @@ public:
 	static void printRestartFileInfo(const IBK::Path & restartFilePath);
 
 
-	/*! Full path to log file directory, by default empty (solver executable working directory).
-		\todo refactor to IBK::Path
-	*/
-	std::string				m_logDirectory;
+	/*! Full path to log file directory, by default empty (solver executable working directory). */
+	IBK::Path				m_logDirectory;
 
 	/*! Full path to the file name of restart file.
 		By default this is empty, so no restart data is being written.

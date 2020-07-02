@@ -471,7 +471,7 @@ const double * IntegratorSundialsCVODE::yOut(double t_out) const {
 }
 
 
-void IntegratorSundialsCVODE::writeStatisticsHeader(const std::string & logfilePath, bool doRestart) {
+void IntegratorSundialsCVODE::writeStatisticsHeader(const IBK::Path & logfilePath, bool doRestart) {
 	if (doRestart) {
 		m_impl->m_statsFileStream = new std::ofstream( (logfilePath + "/integrator_cvode_stats.tsv").c_str(), ios_base::app);
 	}

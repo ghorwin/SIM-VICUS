@@ -4,6 +4,8 @@
 #include <string>
 #include <iostream> // needed for delete operator in destructor
 
+#include <IBK_Path.h>
+
 namespace SOLFRA {
 
 class ModelInterface;
@@ -123,12 +125,12 @@ public:
 		\param logfilePath set a path to a statistics file.
 		\param doRestart set this to true to append to an existing statistics file.
 	*/
-	virtual void writeStatisticsHeader(const std::string & logfilePath, bool doRestart) { (void)logfilePath; (void)doRestart; }
+	virtual void writeStatisticsHeader(const IBK::Path & logfilePath, bool doRestart) { (void)logfilePath; (void)doRestart; }
 
 	/*! Writes currently collected statistics.
 		\param t Current simulation time point.
 	*/
-    virtual void writeStatistics(double t) { (void)t; }
+	virtual void writeStatistics(double t) { (void)t; }
 
 	/*! Holds number of RHS function evaluations (ydot()/residual() calls) used for generating
 		the preconditioner.

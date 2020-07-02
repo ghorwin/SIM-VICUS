@@ -18,8 +18,9 @@
 #ifndef IntegratorInterfaceH
 #define IntegratorInterfaceH
 
-#include <string>
 #include <iosfwd>
+
+#include <IBK_Path.h>
 
 namespace SOLFRA {
 
@@ -99,7 +100,7 @@ public:
 	virtual const double * yOut(double t_out) const = 0;
 
 	/*! Called from the framework to write create statistics file and write its header. */
-	virtual void writeStatisticsHeader(const std::string & /* logfilePath */, bool /* doRestart */) {}
+	virtual void writeStatisticsHeader(const IBK::Path & /* logfilePath */, bool /* doRestart */) {}
 
 	/*! Writes currently collected statistics to log file. */
 	virtual void writeStatistics() {}

@@ -29,7 +29,7 @@ public:
 	{}
 
 	/*! Called from the framework to create statistics file and write its header. */
-	virtual void writeStatisticsHeader(const std::string & logfilePath, bool doRestart) override;
+	virtual void writeStatisticsHeader(const IBK::Path & logfilePath, bool doRestart) override;
 
 	/*! Write statistics for iterative les solvers. */
 	virtual void writeStatistics(double t) override;

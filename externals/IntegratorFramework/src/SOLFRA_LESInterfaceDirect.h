@@ -37,7 +37,7 @@ public:
 		\param logfilePath set a path to a statistics file.
 		\param doRestart set this to true to append to an existing statistics file.
 	*/
-	virtual void writeStatisticsHeader(const std::string & logfilePath, bool doRestart) override;
+	virtual void writeStatisticsHeader(const IBK::Path & logfilePath, bool doRestart) override;
 
 	/*! Writes currently collected statistics.
 		\param t Current simulation time point.

@@ -430,24 +430,33 @@ debug_x64/SOLFRA_Constants.o: ../../src/SOLFRA_Constants.cpp ../../src/SOLFRA_Co
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug_x64/SOLFRA_Constants.o ../../src/SOLFRA_Constants.cpp
 
 debug_x64/SOLFRA_IntegratorErrorControlled.o: ../../src/SOLFRA_IntegratorErrorControlled.cpp ../../src/SOLFRA_IntegratorErrorControlled.h \
-		../../src/SOLFRA_IntegratorInterface.h
+		../../src/SOLFRA_IntegratorInterface.h \
+		../../../IBK/src/IBK_Path.h \
+		../../../IBK/src/IBK_StringUtils.h \
+		../../../IBK/src/IBK_Exception.h \
+		../../../IBK/src/IBK_FormatString.h \
+		../../../IBK/src/IBK_configuration.h \
+		../../../IBK/src/IBK_BuildFlags.h \
+		../../../IBK/src/IBK_MultiLanguageString.h \
+		../../../IBK/src/fast_double_parser/fast_double_parser.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug_x64/SOLFRA_IntegratorErrorControlled.o ../../src/SOLFRA_IntegratorErrorControlled.cpp
 
 debug_x64/SOLFRA_IntegratorSundialsCVODE.o: ../../src/SOLFRA_IntegratorSundialsCVODE.cpp ../../src/SOLFRA_IntegratorSundialsCVODE.h \
 		../../src/SOLFRA_IntegratorErrorControlled.h \
 		../../src/SOLFRA_IntegratorInterface.h \
-		../../../IBK/src/IBK_messages.h \
+		../../../IBK/src/IBK_Path.h \
+		../../../IBK/src/IBK_StringUtils.h \
+		../../../IBK/src/IBK_Exception.h \
 		../../../IBK/src/IBK_FormatString.h \
 		../../../IBK/src/IBK_configuration.h \
 		../../../IBK/src/IBK_BuildFlags.h \
 		../../../IBK/src/IBK_MultiLanguageString.h \
+		../../../IBK/src/fast_double_parser/fast_double_parser.h \
+		../../../IBK/src/IBK_messages.h \
 		../../../IBK/src/IBK_MessageHandlerRegistry.h \
 		../../../IBK/src/IBK_Constants.h \
 		../../../IBK/src/IBK_MessageHandler.h \
-		../../../IBK/src/IBK_Exception.h \
 		../../../IBK/src/IBK_assert.h \
-		../../../IBK/src/IBK_StringUtils.h \
-		../../../IBK/src/fast_double_parser/fast_double_parser.h \
 		../../../IBK/src/IBK_Time.h \
 		../../../IBK/src/IBK_StopWatch.h \
 		../../../sundials/src/include/sundials/sundials_types.h \
@@ -502,6 +511,7 @@ debug_x64/SOLFRA_JacobianSparseCSR.o: ../../src/SOLFRA_JacobianSparseCSR.cpp ../
 		../../src/SOLFRA_ModelInterface.h \
 		../../../IBK/src/IBK_Time.h \
 		../../src/SOLFRA_IntegratorInterface.h \
+		../../../IBK/src/IBK_Path.h \
 		../../../sundials/src/include/cvode/cvode.h \
 		../../../sundials/src/include/sundials/sundials_nvector.h \
 		../../../sundials/src/include/sundials/sundials_types.h \
@@ -516,6 +526,14 @@ debug_x64/SOLFRA_JacobianSparseCSR.o: ../../src/SOLFRA_JacobianSparseCSR.cpp ../
 debug_x64/SOLFRA_LESBiCGStab.o: ../../src/SOLFRA_LESBiCGStab.cpp ../../src/SOLFRA_LESBiCGStab.h \
 		../../src/SOLFRA_LESInterfaceIterative.h \
 		../../src/SOLFRA_LESInterface.h \
+		../../../IBK/src/IBK_Path.h \
+		../../../IBK/src/IBK_StringUtils.h \
+		../../../IBK/src/IBK_Exception.h \
+		../../../IBK/src/IBK_FormatString.h \
+		../../../IBK/src/IBK_configuration.h \
+		../../../IBK/src/IBK_BuildFlags.h \
+		../../../IBK/src/IBK_MultiLanguageString.h \
+		../../../IBK/src/fast_double_parser/fast_double_parser.h \
 		../../src/SOLFRA_IntegratorSundialsCVODE.h \
 		../../src/SOLFRA_IntegratorErrorControlled.h \
 		../../src/SOLFRA_IntegratorInterface.h \
@@ -528,11 +546,6 @@ debug_x64/SOLFRA_LESBiCGStab.o: ../../src/SOLFRA_LESBiCGStab.cpp ../../src/SOLFR
 		../../../sundials/src/include/sundials/sundials_types.h \
 		../../../sundials/src/include/sundials/sundials_config.h \
 		../../../sundials/src/include/sundials/sundials_spbcgs.h \
-		../../../IBK/src/IBK_Exception.h \
-		../../../IBK/src/IBK_FormatString.h \
-		../../../IBK/src/IBK_configuration.h \
-		../../../IBK/src/IBK_BuildFlags.h \
-		../../../IBK/src/IBK_MultiLanguageString.h \
 		../../../IBK/src/IBK_messages.h \
 		../../../IBK/src/IBK_MessageHandlerRegistry.h \
 		../../../IBK/src/IBK_Constants.h \
@@ -542,6 +555,14 @@ debug_x64/SOLFRA_LESBiCGStab.o: ../../src/SOLFRA_LESBiCGStab.cpp ../../src/SOLFR
 debug_x64/SOLFRA_LESDense.o: ../../src/SOLFRA_LESDense.cpp ../../src/SOLFRA_LESDense.h \
 		../../src/SOLFRA_LESInterfaceDirect.h \
 		../../src/SOLFRA_LESInterface.h \
+		../../../IBK/src/IBK_Path.h \
+		../../../IBK/src/IBK_StringUtils.h \
+		../../../IBK/src/IBK_Exception.h \
+		../../../IBK/src/IBK_FormatString.h \
+		../../../IBK/src/IBK_configuration.h \
+		../../../IBK/src/IBK_BuildFlags.h \
+		../../../IBK/src/IBK_MultiLanguageString.h \
+		../../../IBK/src/fast_double_parser/fast_double_parser.h \
 		../../src/SOLFRA_IntegratorInterface.h \
 		../../src/SOLFRA_IntegratorSundialsCVODE.h \
 		../../src/SOLFRA_IntegratorErrorControlled.h \
@@ -549,14 +570,7 @@ debug_x64/SOLFRA_LESDense.o: ../../src/SOLFRA_LESDense.cpp ../../src/SOLFRA_LESD
 		../../../IBK/src/IBK_Time.h \
 		../../src/SOLFRA_JacobianInterface.h \
 		../../../IBKMK/src/IBKMK_DenseMatrix.h \
-		../../../IBK/src/IBK_configuration.h \
-		../../../IBK/src/IBK_BuildFlags.h \
 		../../../IBK/src/IBK_assert.h \
-		../../../IBK/src/IBK_Exception.h \
-		../../../IBK/src/IBK_FormatString.h \
-		../../../IBK/src/IBK_MultiLanguageString.h \
-		../../../IBK/src/IBK_StringUtils.h \
-		../../../IBK/src/fast_double_parser/fast_double_parser.h \
 		../../../IBK/src/IBK_messages.h \
 		../../../IBK/src/IBK_MessageHandlerRegistry.h \
 		../../../IBK/src/IBK_Constants.h \
@@ -575,6 +589,14 @@ debug_x64/SOLFRA_LESDense.o: ../../src/SOLFRA_LESDense.cpp ../../src/SOLFRA_LESD
 debug_x64/SOLFRA_LESGMRES.o: ../../src/SOLFRA_LESGMRES.cpp ../../src/SOLFRA_LESGMRES.h \
 		../../src/SOLFRA_LESInterfaceIterative.h \
 		../../src/SOLFRA_LESInterface.h \
+		../../../IBK/src/IBK_Path.h \
+		../../../IBK/src/IBK_StringUtils.h \
+		../../../IBK/src/IBK_Exception.h \
+		../../../IBK/src/IBK_FormatString.h \
+		../../../IBK/src/IBK_configuration.h \
+		../../../IBK/src/IBK_BuildFlags.h \
+		../../../IBK/src/IBK_MultiLanguageString.h \
+		../../../IBK/src/fast_double_parser/fast_double_parser.h \
 		../../src/SOLFRA_IntegratorSundialsCVODE.h \
 		../../src/SOLFRA_IntegratorErrorControlled.h \
 		../../src/SOLFRA_IntegratorInterface.h \
@@ -594,15 +616,8 @@ debug_x64/SOLFRA_LESGMRES.o: ../../src/SOLFRA_LESGMRES.cpp ../../src/SOLFRA_LESG
 		../../../sundials/src/include/sundials/sundials_dense.h \
 		../../../sundials/src/include/sundials/sundials_direct.h \
 		../../../sundials/src/include/nvector/nvector_serial.h \
-		../../../IBK/src/IBK_Exception.h \
-		../../../IBK/src/IBK_FormatString.h \
-		../../../IBK/src/IBK_configuration.h \
-		../../../IBK/src/IBK_BuildFlags.h \
-		../../../IBK/src/IBK_MultiLanguageString.h \
 		../../../IBK/src/IBK_math.h \
 		../../../IBK/src/IBK_assert.h \
-		../../../IBK/src/IBK_StringUtils.h \
-		../../../IBK/src/fast_double_parser/fast_double_parser.h \
 		../../../IBK/src/IBK_messages.h \
 		../../../IBK/src/IBK_MessageHandlerRegistry.h \
 		../../../IBK/src/IBK_Constants.h \
@@ -611,6 +626,14 @@ debug_x64/SOLFRA_LESGMRES.o: ../../src/SOLFRA_LESGMRES.cpp ../../src/SOLFRA_LESG
 
 debug_x64/SOLFRA_LESInterfaceDirect.o: ../../src/SOLFRA_LESInterfaceDirect.cpp ../../src/SOLFRA_LESInterfaceDirect.h \
 		../../src/SOLFRA_LESInterface.h \
+		../../../IBK/src/IBK_Path.h \
+		../../../IBK/src/IBK_StringUtils.h \
+		../../../IBK/src/IBK_Exception.h \
+		../../../IBK/src/IBK_FormatString.h \
+		../../../IBK/src/IBK_configuration.h \
+		../../../IBK/src/IBK_BuildFlags.h \
+		../../../IBK/src/IBK_MultiLanguageString.h \
+		../../../IBK/src/fast_double_parser/fast_double_parser.h \
 		../../../sundials/src/include/cvode/cvode_direct.h \
 		../../../sundials/src/include/sundials/sundials_direct.h \
 		../../../sundials/src/include/sundials/sundials_types.h \
@@ -619,13 +642,6 @@ debug_x64/SOLFRA_LESInterfaceDirect.o: ../../src/SOLFRA_LESInterfaceDirect.cpp .
 		../../../sundials/src/include/cvode/cvode.h \
 		../../../sundials/src/include/sundials/sundials_timer.h \
 		../../../IBK/src/IBK_assert.h \
-		../../../IBK/src/IBK_configuration.h \
-		../../../IBK/src/IBK_BuildFlags.h \
-		../../../IBK/src/IBK_Exception.h \
-		../../../IBK/src/IBK_FormatString.h \
-		../../../IBK/src/IBK_MultiLanguageString.h \
-		../../../IBK/src/IBK_StringUtils.h \
-		../../../IBK/src/fast_double_parser/fast_double_parser.h \
 		../../../IBK/src/IBK_Time.h \
 		../../../IBK/src/IBK_messages.h \
 		../../../IBK/src/IBK_MessageHandlerRegistry.h \
@@ -639,14 +655,15 @@ debug_x64/SOLFRA_LESInterfaceDirect.o: ../../src/SOLFRA_LESInterfaceDirect.cpp .
 
 debug_x64/SOLFRA_LESInterfaceIterative.o: ../../src/SOLFRA_LESInterfaceIterative.cpp ../../src/SOLFRA_LESInterfaceIterative.h \
 		../../src/SOLFRA_LESInterface.h \
-		../../../IBK/src/IBK_assert.h \
-		../../../IBK/src/IBK_configuration.h \
-		../../../IBK/src/IBK_BuildFlags.h \
+		../../../IBK/src/IBK_Path.h \
+		../../../IBK/src/IBK_StringUtils.h \
 		../../../IBK/src/IBK_Exception.h \
 		../../../IBK/src/IBK_FormatString.h \
+		../../../IBK/src/IBK_configuration.h \
+		../../../IBK/src/IBK_BuildFlags.h \
 		../../../IBK/src/IBK_MultiLanguageString.h \
-		../../../IBK/src/IBK_StringUtils.h \
 		../../../IBK/src/fast_double_parser/fast_double_parser.h \
+		../../../IBK/src/IBK_assert.h \
 		../../../IBK/src/IBK_Time.h \
 		../../../IBK/src/IBK_messages.h \
 		../../../IBK/src/IBK_MessageHandlerRegistry.h \
@@ -668,18 +685,19 @@ debug_x64/SOLFRA_LESInterfaceIterative.o: ../../src/SOLFRA_LESInterfaceIterative
 debug_x64/SOLFRA_LESKLU.o: ../../src/SOLFRA_LESKLU.cpp ../../src/SOLFRA_LESKLU.h \
 		../../src/SOLFRA_LESInterfaceDirect.h \
 		../../src/SOLFRA_LESInterface.h \
-		../../../IBKMK/src/IBKMK_SparseMatrixCSR.h \
-		../../../IBKMK/src/IBKMK_SparseMatrix.h \
-		../../../IBK/src/IBK_InputOutput.h \
-		../../../IBK/src/IBK_NotificationHandler.h \
+		../../../IBK/src/IBK_Path.h \
+		../../../IBK/src/IBK_StringUtils.h \
 		../../../IBK/src/IBK_Exception.h \
 		../../../IBK/src/IBK_FormatString.h \
 		../../../IBK/src/IBK_configuration.h \
 		../../../IBK/src/IBK_BuildFlags.h \
 		../../../IBK/src/IBK_MultiLanguageString.h \
-		../../../IBK/src/IBK_assert.h \
-		../../../IBK/src/IBK_StringUtils.h \
 		../../../IBK/src/fast_double_parser/fast_double_parser.h \
+		../../../IBKMK/src/IBKMK_SparseMatrixCSR.h \
+		../../../IBKMK/src/IBKMK_SparseMatrix.h \
+		../../../IBK/src/IBK_InputOutput.h \
+		../../../IBK/src/IBK_NotificationHandler.h \
+		../../../IBK/src/IBK_assert.h \
 		../../../IBK/src/IBK_messages.h \
 		../../../IBK/src/IBK_MessageHandlerRegistry.h \
 		../../../IBK/src/IBK_Constants.h \
@@ -710,14 +728,15 @@ debug_x64/SOLFRA_OutputScheduler.o: ../../src/SOLFRA_OutputScheduler.cpp ../../s
 
 debug_x64/SOLFRA_PrecondILU.o: ../../src/SOLFRA_PrecondILU.cpp ../../src/SOLFRA_PrecondILU.h \
 		../../src/SOLFRA_PrecondInterface.h \
-		../../../IBK/src/IBK_assert.h \
-		../../../IBK/src/IBK_configuration.h \
-		../../../IBK/src/IBK_BuildFlags.h \
+		../../../IBK/src/IBK_Path.h \
+		../../../IBK/src/IBK_StringUtils.h \
 		../../../IBK/src/IBK_Exception.h \
 		../../../IBK/src/IBK_FormatString.h \
+		../../../IBK/src/IBK_configuration.h \
+		../../../IBK/src/IBK_BuildFlags.h \
 		../../../IBK/src/IBK_MultiLanguageString.h \
-		../../../IBK/src/IBK_StringUtils.h \
 		../../../IBK/src/fast_double_parser/fast_double_parser.h \
+		../../../IBK/src/IBK_assert.h \
 		../../../IBKMK/src/IBKMK_SparseMatrix.h \
 		../../../IBK/src/IBK_InputOutput.h \
 		../../../IBK/src/IBK_NotificationHandler.h \
@@ -735,6 +754,14 @@ debug_x64/SOLFRA_PrecondILU.o: ../../src/SOLFRA_PrecondILU.cpp ../../src/SOLFRA_
 
 debug_x64/SOLFRA_PrecondILUT.o: ../../src/SOLFRA_PrecondILUT.cpp ../../src/SOLFRA_PrecondILUT.h \
 		../../src/SOLFRA_PrecondInterface.h \
+		../../../IBK/src/IBK_Path.h \
+		../../../IBK/src/IBK_StringUtils.h \
+		../../../IBK/src/IBK_Exception.h \
+		../../../IBK/src/IBK_FormatString.h \
+		../../../IBK/src/IBK_configuration.h \
+		../../../IBK/src/IBK_BuildFlags.h \
+		../../../IBK/src/IBK_MultiLanguageString.h \
+		../../../IBK/src/fast_double_parser/fast_double_parser.h \
 		../../src/SOLFRA_IntegratorInterface.h \
 		../../src/SOLFRA_JacobianSparseCSR.h \
 		../../src/SOLFRA_JacobianSparse.h \
@@ -742,16 +769,9 @@ debug_x64/SOLFRA_PrecondILUT.o: ../../src/SOLFRA_PrecondILUT.cpp ../../src/SOLFR
 		../../../IBKMK/src/IBKMK_SparseMatrix.h \
 		../../../IBK/src/IBK_InputOutput.h \
 		../../../IBK/src/IBK_NotificationHandler.h \
-		../../../IBK/src/IBK_Exception.h \
-		../../../IBK/src/IBK_FormatString.h \
-		../../../IBK/src/IBK_configuration.h \
-		../../../IBK/src/IBK_BuildFlags.h \
-		../../../IBK/src/IBK_MultiLanguageString.h \
 		../../../IBK/src/IBK_StopWatch.h \
 		../../../IBKMK/src/IBKMK_SparseMatrixCSR.h \
 		../../../IBK/src/IBK_assert.h \
-		../../../IBK/src/IBK_StringUtils.h \
-		../../../IBK/src/fast_double_parser/fast_double_parser.h \
 		../../src/SOLFRA_ModelInterface.h \
 		../../../IBK/src/IBK_Time.h \
 		../../../IBKMK/src/IBKMKC_vector_operations.h \
@@ -759,7 +779,15 @@ debug_x64/SOLFRA_PrecondILUT.o: ../../src/SOLFRA_PrecondILUT.cpp ../../src/SOLFR
 		../../../IBKMK/src/IBKMKC_ilut.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug_x64/SOLFRA_PrecondILUT.o ../../src/SOLFRA_PrecondILUT.cpp
 
-debug_x64/SOLFRA_PrecondInterface.o: ../../src/SOLFRA_PrecondInterface.cpp ../../src/SOLFRA_PrecondInterface.h
+debug_x64/SOLFRA_PrecondInterface.o: ../../src/SOLFRA_PrecondInterface.cpp ../../src/SOLFRA_PrecondInterface.h \
+		../../../IBK/src/IBK_Path.h \
+		../../../IBK/src/IBK_StringUtils.h \
+		../../../IBK/src/IBK_Exception.h \
+		../../../IBK/src/IBK_FormatString.h \
+		../../../IBK/src/IBK_configuration.h \
+		../../../IBK/src/IBK_BuildFlags.h \
+		../../../IBK/src/IBK_MultiLanguageString.h \
+		../../../IBK/src/fast_double_parser/fast_double_parser.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug_x64/SOLFRA_PrecondInterface.o ../../src/SOLFRA_PrecondInterface.cpp
 
 debug_x64/SOLFRA_SolverControlFramework.o: ../../src/SOLFRA_SolverControlFramework.cpp ../../src/SOLFRA_SolverControlFramework.h \
@@ -805,7 +833,11 @@ debug_x64/SOLFRA_SolverFeedback.o: ../../src/SOLFRA_SolverFeedback.cpp ../../src
 		../../../IBK/src/IBK_Constants.h \
 		../../../IBK/src/IBK_MessageHandler.h \
 		../../src/SOLFRA_ModelInterface.h \
-		../../src/SOLFRA_IntegratorInterface.h
+		../../src/SOLFRA_IntegratorInterface.h \
+		../../../IBK/src/IBK_Path.h \
+		../../../IBK/src/IBK_StringUtils.h \
+		../../../IBK/src/IBK_Exception.h \
+		../../../IBK/src/fast_double_parser/fast_double_parser.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug_x64/SOLFRA_SolverFeedback.o ../../src/SOLFRA_SolverFeedback.cpp
 
 ####### Install

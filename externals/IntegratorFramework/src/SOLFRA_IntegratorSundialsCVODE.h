@@ -72,7 +72,7 @@ public:
 	virtual const double * yOut(double t_out) const override;
 
 	/*! Called from the framework to write create statistics file and write its header. */
-	virtual void writeStatisticsHeader(const std::string & logfilePath, bool doRestart) override;
+	virtual void writeStatisticsHeader(const IBK::Path & logfilePath, bool doRestart) override;
 
 	/*! Writes currently collected statistics. */
 	virtual void writeStatistics() override;

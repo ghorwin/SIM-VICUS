@@ -17,7 +17,7 @@
 
 namespace SOLFRA {
 
-void LESInterfaceDirect::writeStatisticsHeader(const std::string & logfilePath, bool doRestart) {
+void LESInterfaceDirect::writeStatisticsHeader(const IBK::Path & logfilePath, bool doRestart) {
 
 	if (doRestart) {
 		m_statsFileStream = new std::ofstream( (logfilePath + "/LES_direct_stats.tsv").c_str(), std::ios_base::app);

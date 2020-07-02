@@ -18,7 +18,7 @@
 
 namespace SOLFRA {
 
-void LESInterfaceIterative::writeStatisticsHeader(const std::string & logfilePath, bool doRestart ) {
+void LESInterfaceIterative::writeStatisticsHeader(const IBK::Path & logfilePath, bool doRestart ) {
 
 	if (doRestart) {
 		m_statsFileStream = new std::ofstream( (logfilePath + "/LES_iterative_stats.tsv").c_str(), std::ios_base::app);

@@ -640,7 +640,7 @@ void SolverControlFramework::writeMetrics() {
 	std::auto_ptr<std::ofstream> of_ptr;
 #endif
 	std::ofstream * of = NULL;
-	if (!m_logDirectory.empty()) {
+	if (m_logDirectory.isValid()) {
 		of_ptr.reset( new std::ofstream( (m_logDirectory + "/summary.txt").c_str() ) );
 		of = of_ptr.get();
 		*of << "WallClockTime=" << wct << std::endl;
