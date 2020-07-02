@@ -1,0 +1,80 @@
+The NANDRAD CodeGenerator
+=========================
+Andreas Nicolai <andreas.nicolai@tu-dresden.de>
+v1.0.0, June 2020
+:Author Initials: AN
+:toc: left
+:toclevels: 3
+:toc-title: Table of Contents
+:icons: font
+:imagesdir: ./images
+:numbered:
+:website: https://github.com/ghorwin/SIM-VICUS
+:source-highlighter: rouge
+:rouge-style: custom
+:title-page:
+:stylesdir: ../adoc_utils/css
+:stylesheet: roboto_ubuntu.css
+
+
+[[overview]]
+## Overview
+
+What is the NANDRAD-Code-Generator? Basically, it is a tool to parse NANDRAD header files, pick up lines with special comments and then generate code for:
+
+- translating enumeration values into strings, descriptions, colors and units (very handy for physical parameter lists)
+- reading and writing xml data structures (elements and attributes) for designated member variables
+
+### How does it work? 
+
+The code generator is called as part of the CMake build chain. It detects changes in header files, and then updates the respective generated files. It places the generated files into a subdirectory `ncg` (for **N**ANDRAD **C**ode **G**enerator files) where they are compiled just as any other cpp file of the project.
+
+Since the generated code is plain C++ code, it can be parsed and debugged with any IDE just as regular code. Just remember:
+
+[CAUTION]
+====
+Any changes made to generated code will be overwritten!
+====
+
+## Functionality Example
+
+### Keyword support
+
+You may have a class header, that looks as follows:
+[source,c++]
+----
+class Interval {
+public:
+	/*! Parameters. */
+	enum para_t {
+		IP_START,		// Keyword: Start		[d] 'Start time point.'
+		IP_END,			// Keyword: End			[d] 'End time point.'
+		IP_STEPSIZE,	// Keyword: StepSize	[h] 'StepSize.'
+		NUM_IP
+	};
+	
+	...
+	
+	/*! The parameters defining the interval. */
+	IBK::Parameter   m_para[NUM_IP];
+};
+----
+
+Here, you have a list of enumeration values. These are used to index one of the parameters in the member variable array `m_para`. In the code, you will use these enumerations like:
+
+[source,c++]
+----
+double endtime = m_para[Interval::IP_END].value;
+----
+
+Sometimes, however, you need the keyword as a string, or need to get the unit written in the comment line. So, you write code like:
+
+[source,c++]
+----
+// construct a parameter
+m_para[Interval::IP_END].set(
+    NANDRAD::KeywordList::Keyword("Interval::para_t", Interval::IP_END), // the keyword is used as name
+    24, // 
+    "h");
+    
+----
