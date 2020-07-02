@@ -23,3 +23,34 @@ Source code documentation is done with Doxygen, which generates its documentatio
 the output in `docs/api`.
 
 
+## Developer Info
+
+### Coding Style
+
+#### Files
+
+- Line endings LR (Unix/Linux)
+- UTF-8 encoding
+- File name pattern:   `<lib>_<NameInCamelCase>.*`, for example: `IBK_ArgsParser.h` or `NANDRAD_Project.h`
+- Header guards: `#ifndef <filenameWithoutExtension>H`, example: `#ifndef NANDRAD_ArgsParserH`
+
+#### Namespaces
+
+Each library has its own namespace, matching the file prefix. Example: `NANDRAD::Project` -> `NANDRAD_Project.h`
+
+#### Class and variable naming
+
+- camel case for variable/type names, example: `thisNiceVariable`
+- type/class names start with capital letter, example: `MyClassType` 
+- member variables start with `m_`, example: `m_myMemberVariableObject`
+- getter/setter functions follow Qt-Pattern:
+
+Example:
+```
+	std::string m_myStringMember;
+	
+	const std::string & myStringMember() const;
+	void setMyStringMember(const std::string & str);
+```
+-> **never ever** write `getXXX` !!!!!
+
