@@ -71,15 +71,11 @@ public:
 
 	/*! Sets up directories so that log files and output files can be written.
 		Throws an exception if the project file doesn't exist or the directories
-		cannot be created.
-		\param args Command-line arguments.
-		\param executablePath Full/relative path to solver executable.
-		\param projectFile full/relative path to project file.
-
-		The paths are stored in the respective member variables of the solver object.
+		cannot be created. Also, the command-line option -o is handled here.
+		The paths are stored in the m_dirs object.
+		\param args Command-line argument parser object.
 	*/
-	void setupDirectories(const NANDRAD::ArgsParser & args,
-		const IBK::Path & projectFile);
+	void setupDirectories(const NANDRAD::ArgsParser & args);
 
 	/*! Returns solver/project directories, initialized in init(). */
 	const Directories & dirs() const { return m_dirs; }

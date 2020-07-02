@@ -174,16 +174,16 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 }
 
 
-void NandradModel::setupDirectories(const NANDRAD::ArgsParser & args, const IBK::Path & projectFile) {
+void NandradModel::setupDirectories(const NANDRAD::ArgsParser & args) {
 	FUNCID(NandradModel::setupDirectories);
 
+	m_projectFilePath = args.m_projectFile;
 	try {
 		// ***** Check if project file exists *****
-		if (!projectFile.isFile())
-			throw IBK::Exception( IBK::FormatString("Project file '%1' does not exist (or access denied).").arg(projectFile), FUNC_ID);
+		if (!m_projectFilePath.isFile())
+			throw IBK::Exception( IBK::FormatString("Project file '%1' does not exist (or access denied).").arg(m_projectFilePath), FUNC_ID);
 
 		// ***** Create directory structure for solver log and output files *****
-		m_projectFilePath = projectFile;
 
 		if (args.hasOption(IBK::SolverArgsParser::GO_OUTPUT_DIR)) {
 			m_dirs.create( IBK::Path(args.option(IBK::SolverArgsParser::GO_OUTPUT_DIR)) );
@@ -194,11 +194,11 @@ void NandradModel::setupDirectories(const NANDRAD::ArgsParser & args, const IBK:
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Initialization of Nandrad Model for project '%1' failed.")
-			.arg(projectFile), FUNC_ID);
+			.arg(m_projectFilePath), FUNC_ID);
 	}
 	catch (std::exception & ex) {
 		throw IBK::Exception(IBK::FormatString("Initialization of Nandrad Model for project '%1' failed "
-			"with error message:%2\n").arg(projectFile).arg(ex.what()), FUNC_ID);
+			"with error message:%2\n").arg(m_projectFilePath).arg(ex.what()), FUNC_ID);
 	}
 }
 

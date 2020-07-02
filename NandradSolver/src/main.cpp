@@ -1,17 +1,11 @@
 #include <iostream>
-#include <iomanip>
-#include <cstdlib>
-#include <memory>
 
-#include <IBK_StringUtils.h>
-#include <IBK_Exception.h>
 #include <IBK_MessageHandler.h>
 #include <IBK_MessageHandlerRegistry.h>
 #include <IBK_messages.h>
 
 // include solver control framework and integrator
 #include <SOLFRA_SolverControlFramework.h>
-#include <SOLFRA_IntegratorSundialsCVODE.h>
 
 // include header for command line argument parser
 #include <NANDRAD_ArgsParser.h>
@@ -59,7 +53,7 @@ int main(int argc, char * argv[]) {
 		NANDRAD_MODEL::NandradModel model;
 
 		// *** create directory structure ***
-		model.setupDirectories(args, args.m_projectFile);
+		model.setupDirectories(args);
 		// now we have a log directory and can write our messages to the log file
 
 		// *** setup message handler ***
@@ -95,9 +89,9 @@ int main(int argc, char * argv[]) {
 		IBK::IBK_Message("Creating solver framework\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		SOLFRA::SolverControlFramework solver(&model);
 		solver.m_useStepStatistics = args.flagEnabled(IBK::SolverArgsParser::DO_STEP_STATS);
-		solver.m_logDirectory = model.dirs().m_logDir.str();
+		solver.m_logDirectory = model.dirs().m_logDir;
 		solver.m_stopAfterSolverInit = args.flagEnabled(IBK::SolverArgsParser::GO_TEST_INIT);
-		solver.m_restartFilename = model.dirs().m_varDir.str() + "/restart.bin";
+		solver.m_restartFilename = model.dirs().m_varDir / "restart.bin";
 
 		// depending on the restart settings, either run from start or continue simulation
 		if (args.m_restartFrom) {
