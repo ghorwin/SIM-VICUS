@@ -19,7 +19,7 @@ NandradSolver - sources for the NANDRAD command line solver
 The `README.md` files are written with MarkDown syntax, GitHub flavour, so that they can be read in the web-view of github.
 All extensive documentation is written in AsciiDoctor format inside the doc directory.
 
-Source code documentation is done with Doxygen, which generates its documentation for the _entire_ src directory and stores
+Source code documentation is done with Doxygen, which generates its documentation for the _entire_ source code and stores
 the output in `docs/api`.
 
 
