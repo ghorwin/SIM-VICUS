@@ -71,7 +71,7 @@ Doxygen-style, prefer:
     */
     void setParams(int arg1, double temperature);
     
-    /!* Mean temperature in [C]. */
+    /*! Mean temperature in [C]. */
     double m_meanTemperature;
 ```
 
