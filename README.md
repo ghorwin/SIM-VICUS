@@ -65,6 +65,15 @@ Doxygen-style, prefer:
 
 ```c++
     /*! Brief description of function.
-
-
+        Longer multi-line documentation of function.
+	\param arg1 The first argument.
+	\param temperature A temperature in [C]
+    */
+    void setParams(int arg1, double temperature);
+    
+    /!* Mean temperature in [C]. */
+    double m_meanTemperature;
 ```
+
+Mind to specify **always** physical units for physical value parameters and member variables!
+
