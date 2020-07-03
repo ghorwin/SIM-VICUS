@@ -26,7 +26,7 @@ ArgsParser::ArgsParser() {
 	setAppName("NandradSolver");
 	addOption(0, "fmu-export",
 		"(optional) Generate FMU based on project file specification.",
-		"<FMU file name>",
+		"FMU file name",
 		"");
 	addFlag(0, "fmu-modelica-wrapper",
 		"(optional) If set to 'true' a Modelica wrapper for fmu exported file is created. Only in combination with 'fmu-export'");
