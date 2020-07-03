@@ -32,6 +32,7 @@ Lesser General Public License for more details.
 
 #include <NANDRAD_ArgsParser.h>
 #include <NANDRAD_Constants.h>
+#include <NANDRAD_Project.h>
 
 #include <SOLFRA_IntegratorSundialsCVODE.h>
 #include <SOLFRA_JacobianSparseCSR.h>
@@ -57,6 +58,7 @@ Lesser General Public License for more details.
 namespace NANDRAD_MODEL {
 
 NandradModel::NandradModel() :
+	m_project(new NANDRAD::Project),
 	m_lesSolver(nullptr),
 	m_jacobian(nullptr),
 	m_preconditioner(nullptr),
@@ -67,6 +69,7 @@ NandradModel::NandradModel() :
 
 NandradModel::~NandradModel() {
 	// free memory of owned instances
+	delete m_project;
 	delete m_lesSolver;
 	delete m_jacobian;
 	delete m_preconditioner;

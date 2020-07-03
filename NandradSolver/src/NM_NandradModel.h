@@ -51,6 +51,7 @@ Lesser General Public License for more details.
 
 namespace NANDRAD {
 	class ArgsParser;
+	class Project;
 }
 
 namespace NANDRAD_MODEL {
@@ -196,6 +197,9 @@ private:
 	IBK::Path												m_projectFilePath;
 	/*! Directories related to the project. */
 	Directories												m_dirs;
+
+	/*! The actual NANDRAD project data (owned). */
+	NANDRAD::Project										*m_project;
 
 	/*! Cached total number of unknowns (number of rooms + all elements in all walls). */
 	unsigned int											m_n;
