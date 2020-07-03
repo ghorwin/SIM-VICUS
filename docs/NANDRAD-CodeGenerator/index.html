@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<meta name="author" content="Andreas Nicolai">
+<title>The NANDRAD CodeGenerator</title>
+<style>
+/* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
+
+@import url(https://fonts.googleapis.com/css?family=Roboto+Condensed);
+@import url(../css/asciidoctor.css); /* Default asciidoc style framework - important */
+
+/* CUSTOMISATIONS */
+/* Change the values in root for quick customisation. If you want even more fine grain... venture further. */
+
+:root{
+--maincolor:#FFFFFF;
+--primarycolor:#a90e22;
+--secondarycolor:#9f1d0b;
+--tertiarycolor: #772953;
+--sidebarbackground:#CCC;
+--linkcolor:#b71c1c;
+--linkcoloralternate:#f44336;
+--white:#FFFFFF;
+--black:#000000;
+}
+
+/* Text styles */
+body{font-family: "Roboto Condensed",sans-serif;}
+
+h1,h2{color:var(--primarycolor) !important;font-family:"Roboto Condensed",sans-serif;}
+h3,h4,h5,h6{color:var(--secondarycolor);font-family: "Roboto Condensed",sans-serif; }
+.title{color:(--primarycolor) !important;font-family:"Roboto Condensed",sans-serif;font-style: normal; font-weight: normal;}
+p{font-family: "Roboto Condensed",sans-serif ! important}
+#toc.toc2 a{font-family:"Roboto Condensed",sans-serif;}
+/*#toc.toc2 a:link{color:(--linkcolor) !important}
+a:visited {color: #ffdbad;}
+a.bare:visited {color: #204f83;}
+a:hover {color: #317ed4;}
+#toc.toc2 a:hover {color: #f1b464;}*/
+/* code{background-color: var(--secondarycolor) !important;color:var(--white)} */
+code,kbd,pre,samp{font-family:monospace;font-size:0.8em}
+
+/* Table styles */
+th{background-color: var(--tertiarycolor);color:var(--white) !important;}
+
+#toctitle{color:var(--primarycolor);font-family: "Roboto Condensed",sans-serif;font-size: 1.6875em;}
+#toc.toc2{background-color:#f4f8fd;}
+/*#toc.toc2{background-color:#2C001E;color:white;}
+#toc.toc2.a{color:white;}
+*/
+
+/* Responsiveness fixes */
+video {
+  max-width: 100%;
+}
+
+@media all and (max-width: 600px) {
+table {
+  width: 55vw!important;
+  font-size: 3vw;
+}
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>The NANDRAD CodeGenerator</h1>
+<div class="details">
+<span id="author" class="author">Andreas Nicolai</span><br>
+<span id="email" class="email"><a href="mailto:andreas.nicolai@tu-dresden.de">andreas.nicolai@tu-dresden.de</a></span><br>
+<span id="revnumber">version 1.0.0,</span>
+<span id="revdate">June 2020</span>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#overview">1. Overview</a>
+<ul class="sectlevel2">
+<li><a href="#_how_does_it_work">1.1. How does it work?</a></li>
+</ul>
+</li>
+<li><a href="#_functionality_example">2. Functionality Example</a>
+<ul class="sectlevel2">
+<li><a href="#_keyword_support">2.1. Keyword support</a></li>
+<li><a href="#_usage">2.2. Usage</a></li>
+<li><a href="#_cmake_automation">2.3. CMake automation</a></li>
+</ul>
+</li>
+<li><a href="#_readwrite_to_xml_support_and_other_utility_functions">3. Read/write to XML support, and other utility functions</a>
+<ul class="sectlevel2">
+<li><a href="#_readwrite_code">3.1. Read/write code</a></li>
+<li><a href="#_is_default_functionality">3.2. "Is default" functionality</a></li>
+<li><a href="#_custom_readwrite_functionality">3.3. Custom read/write functionality</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="overview">1. Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>What is the NANDRAD-Code-Generator? Basically, it is a tool to parse NANDRAD header files, pick up lines with special comments and then generate code for:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>translating enumeration values into strings, descriptions, colors and units (very handy for physical parameter lists)</p>
+</li>
+<li>
+<p>reading and writing xml data structures (elements and attributes) for designated member variables</p>
+</li>
+<li>
+<p>comparing data structures with default instances (so that only modified members are written to file), and other utility functions</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_how_does_it_work">1.1. How does it work?</h3>
+<div class="paragraph">
+<p>The code generator is called as part of the CMake build chain. It detects changes in header files, and then updates the respective generated files, including the file <code>NANDRAD_KeywordList.cpp</code>. It places the class-specific generated files into a subdirectory <code>ncg</code> (for <strong>N</strong>ANDRAD <strong>C</strong>ode <strong>G</strong>enerator files) where they are compiled just as any other cpp file of the project.</p>
+</div>
+<div class="paragraph">
+<p>Since the generated code is plain C++ code, it can be parsed and debugged with any IDE just as regular code. Just remember:</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Any changes made to generated code will be overwritten!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_functionality_example">2. Functionality Example</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_keyword_support">2.1. Keyword support</h3>
+<div class="paragraph">
+<p>You may have a class header, that looks as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">Interval</span> <span class="p">{</span>
+<span class="nl">public:</span>
+	<span class="cm">/*! Parameters. */</span>
+	<span class="k">enum</span> <span class="n">para_t</span> <span class="p">{</span>
+		<span class="n">IP_START</span><span class="p">,</span>		<span class="c1">// Keyword: Start		[d] 'Start time point'</span>
+		<span class="n">IP_END</span><span class="p">,</span>			<span class="c1">// Keyword: End			[d] 'End time point'</span>
+		<span class="n">IP_STEPSIZE</span><span class="p">,</span>	<span class="c1">// Keyword: StepSize	[h] 'StepSize'</span>
+		<span class="n">NUM_IP</span>
+	<span class="p">};</span>
+
+	<span class="p">...</span>
+
+	<span class="cm">/*! The parameters defining the interval. */</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Parameter</span>   <span class="n">m_para</span><span class="p">[</span><span class="n">NUM_IP</span><span class="p">];</span>
+<span class="p">};</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here, you have a list of enumeration values. These are used to index one of the parameters in the member variable array <code>m_para</code>. In the code, you will use these enumerations like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="kt">double</span> <span class="n">endtime</span> <span class="o">=</span> <span class="n">m_para</span><span class="p">[</span><span class="n">Interval</span><span class="o">::</span><span class="n">IP_END</span><span class="p">].</span><span class="n">value</span><span class="p">;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sometimes, however, you need the keyword as a string, or need to get the unit written in the comment line. So, you write code like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="c1">// construct a parameter</span>
+<span class="n">m_para</span><span class="p">[</span><span class="n">Interval</span><span class="o">::</span><span class="n">IP_END</span><span class="p">].</span><span class="n">set</span><span class="p">(</span>
+        <span class="n">NANDRAD</span><span class="o">::</span><span class="n">KeywordList</span><span class="o">::</span><span class="n">Keyword</span><span class="p">(</span><span class="s">"Interval::para_t"</span><span class="p">,</span> <span class="n">Interval</span><span class="o">::</span><span class="n">IP_END</span><span class="p">),</span> <span class="c1">// the keyword is used as name</span>
+        <span class="mi">24</span><span class="p">,</span> <span class="c1">// value</span>
+        <span class="n">NANDRAD</span><span class="o">::</span><span class="n">KeywordList</span><span class="o">::</span><span class="n">Unit</span><span class="p">(</span><span class="s">"Interval::para_t"</span><span class="p">,</span> <span class="n">Interval</span><span class="o">::</span><span class="n">IP_END</span><span class="p">)</span> <span class="c1">// the unit</span>
+    <span class="p">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Normally, the unit is only meaningful for user interface representation, or when the value is printed to the user as default output/disply unit.</p>
+</div>
+<div class="paragraph">
+<p>Also useful is the description, mostly in informative/error messages. Recommended would be:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">if</span> <span class="p">(</span><span class="n">condition_failed</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">IBK</span><span class="o">::</span><span class="n">IBK_Message</span><span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="s">"Parameter %1 (%2) is required."</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">arg</span><span class="p">(</span><span class="n">KeywordList</span><span class="o">::</span><span class="n">Keyword</span><span class="p">(</span><span class="s">"Interval::para_t"</span><span class="p">,</span> <span class="n">Interval</span><span class="o">::</span><span class="n">IP_END</span><span class="p">))</span>
+        <span class="p">.</span><span class="n">arg</span><span class="p">(</span><span class="n">KeywordList</span><span class="o">::</span><span class="n">Description</span><span class="p">(</span><span class="s">"Interval::para_t"</span><span class="p">,</span> <span class="n">Interval</span><span class="o">::</span><span class="n">IP_END</span><span class="p">))</span> <span class="p">);</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Also, when parsing user data, for example from format:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Start"</span> <span class="na">unit=</span><span class="s">"d"</span><span class="nt">&gt;</span>36<span class="nt">&lt;/IBK:Parameter&gt;</span>
+<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"End"</span> <span class="na">unit=</span><span class="s">"d"</span><span class="nt">&gt;</span>72<span class="nt">&lt;/IBK:Parameter&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You may need code like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="n">nameAttrib</span> <span class="o">=</span> <span class="n">getAttributeText</span><span class="p">(</span><span class="n">xmlTag</span><span class="p">,</span> <span class="s">"name"</span><span class="p">);</span> <span class="c1">// might be 'End'</span>
+
+<span class="c1">// resolve enumeration value</span>
+<span class="n">Interval</span><span class="o">::</span><span class="n">para_t</span> <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">Interval</span><span class="o">::</span><span class="n">para_t</span><span class="p">)</span><span class="n">KeywordList</span><span class="o">::</span><span class="n">Enumeration</span><span class="p">(</span><span class="s">"Interval::para_t"</span><span class="p">,</span> <span class="n">nameAttrib</span><span class="p">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The code generator will now create the implementation of the functions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>KeywordList::Enumeration</code></p>
+</li>
+<li>
+<p><code>KeywordList::Description</code></p>
+</li>
+<li>
+<p><code>KeywordList::Keyword</code></p>
+</li>
+<li>
+<p><code>KeywordList::Unit</code></p>
+</li>
+<li>
+<p><code>KeywordList::Color</code> - meaningful for coloring types in user interfaces</p>
+</li>
+<li>
+<p><code>KeywordList::DefaultValue</code> - can be used as default value in user interfaces</p>
+</li>
+<li>
+<p><code>KeywordList::Count</code> - returns number of enumeration values in this category</p>
+</li>
+<li>
+<p><code>KeywordList::KeywordExists</code> - convenience function, same as comparing result of <code>Enumeration()</code> with -1</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_usage">2.2. Usage</h3>
+<div class="paragraph">
+<p>The header file <code>NANDRAD_KeywordList.h</code> is always the same and can be included directory. The corresponding implementation file <code>NANDRAD_KeywordList.cpp</code> is generated in the same directory as the NANDRAD header files.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_cmake_automation">2.3. CMake automation</h3>
+<div class="paragraph">
+<p>The automatic update of the keyword list is triggered by a custom rule in the NANDRAD CMake project file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="cmake"><span class="c1"># collect a list of all header files of the Nandrad library</span>
+<span class="nb">file</span><span class="p">(</span> GLOB Nandrad_HDRS <span class="si">${</span><span class="nv">PROJECT_SOURCE_DIR</span><span class="si">}</span>/../../src/*.h <span class="p">)</span>
+
+<span class="c1"># run the NandradCodeGenerator tool whenever the header files have changed</span>
+<span class="c1"># to update the NANDRAD_KeywordList.h and NANDRAD_KeywordList.cpp file</span>
+<span class="nb">add_custom_command</span> <span class="p">(</span>
+	OUTPUT   <span class="si">${</span><span class="nv">PROJECT_SOURCE_DIR</span><span class="si">}</span>/../../src/NANDRAD_KeywordList.cpp
+	DEPENDS  <span class="si">${</span><span class="nv">Nandrad_HDRS</span><span class="si">}</span> NandradCodeGenerator
+	COMMAND  NandradCodeGenerator
+	ARGS     NANDRAD <span class="si">${</span><span class="nv">PROJECT_SOURCE_DIR</span><span class="si">}</span>/../../src
+<span class="p">)</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>where <code>NandradCodeGenerator</code> is built as part of the tool chain as well. The rule has all header files as dependencies so that any change in any header file will result in a call to the code generator. The code generator will then create the file <code>NANDRAD_KeywordList.cpp</code>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_readwrite_to_xml_support_and_other_utility_functions">3. Read/write to XML support, and other utility functions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A second task for the code generator is to create functions for serialization of data structures to XML files. Hereby, the TinyXML-library is used.</p>
+</div>
+<div class="sect2">
+<h3 id="_readwrite_code">3.1. Read/write code</h3>
+<div class="paragraph">
+<p>Since reading/writing XML code is pretty straight forward, much of this code writing can be generalized. Let&#8217;s take a look at a simple example.</p>
+</div>
+<div class="listingblock">
+<div class="title">Class Sensor, with declarations of <code>readXML()</code> and <code>writeXML()</code> functions</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">Sensor</span> <span class="p">{</span>
+<span class="nl">public:</span>
+	<span class="cm">/*! Default constructor. */</span>
+	<span class="n">Sensor</span><span class="p">()</span> <span class="o">:</span> <span class="n">m_id</span><span class="p">(</span><span class="n">NANDRAD</span><span class="o">::</span><span class="n">INVALID_ID</span><span class="p">)</span> <span class="p">{}</span>
+
+	<span class="kt">void</span> <span class="n">readXML</span><span class="p">(</span><span class="k">const</span> <span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">element</span><span class="p">);</span>
+	<span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">writeXML</span><span class="p">(</span><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">parent</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">detailedOutput</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+
+	<span class="c1">// *** PUBLIC MEMBER VARIABLES ***</span>
+
+	<span class="cm">/*! Unique ID-number of the sensor.*/</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span>						<span class="n">m_id</span><span class="p">;</span>
+	<span class="cm">/*! Name of the measured quantity */</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">string</span>							<span class="n">m_quantity</span><span class="p">;</span>
+<span class="p">};</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The two members are written into file as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Sensor</span> <span class="na">id=</span><span class="s">"12"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;Quantity&gt;</span>Temperature<span class="nt">&lt;/Quantity&gt;</span>
+<span class="nt">&lt;/Sensor&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The implementation looks as follows:</p>
+</div>
+<div id="generated_readXML" class="listingblock">
+<div class="title">Implementation of <code>Sensor::readXML()</code></div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="kt">void</span> <span class="n">Sensor</span><span class="o">::</span><span class="n">readXML</span><span class="p">(</span><span class="k">const</span> <span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">element</span><span class="p">)</span> <span class="p">{</span>
+	<span class="n">FUNCID</span><span class="p">(</span><span class="n">Sensor</span><span class="o">::</span><span class="n">readXML</span><span class="p">);</span>
+
+	<span class="k">try</span> <span class="p">{</span>
+		<span class="c1">// read attributes</span>
+		<span class="k">const</span> <span class="n">TiXmlAttribute</span> <span class="o">*</span> <span class="n">attrib</span> <span class="o">=</span> <span class="n">TiXmlAttribute</span><span class="o">::</span><span class="n">attributeByName</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="s">"id"</span><span class="p">);</span>
+		<span class="k">if</span> <span class="p">(</span><span class="n">attrib</span> <span class="o">!=</span> <span class="nb">nullptr</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="n">XML_READ_ERROR</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">element</span><span class="o">-&gt;</span><span class="n">Row</span><span class="p">()).</span><span class="n">arg</span><span class="p">(</span>
+				<span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="s">"Missing 'id' attribute."</span><span class="p">)</span> <span class="p">),</span> <span class="n">FUNC_ID</span><span class="p">);</span>
+		<span class="p">}</span>
+		<span class="c1">// convert attribute to value</span>
+		<span class="k">try</span> <span class="p">{</span>
+			<span class="n">m_id</span> <span class="o">=</span> <span class="n">IBK</span><span class="o">::</span><span class="n">string2val</span><span class="o">&lt;</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">attrib</span><span class="o">-&gt;</span><span class="n">ValueStr</span><span class="p">());</span>
+		<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span> <span class="o">&amp;</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span> <span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="n">XML_READ_ERROR</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">element</span><span class="o">-&gt;</span><span class="n">Row</span><span class="p">()).</span><span class="n">arg</span><span class="p">(</span>
+				<span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="s">"Invalid value for 'id' attribute."</span><span class="p">)</span> <span class="p">),</span> <span class="n">FUNC_ID</span><span class="p">);</span>
+		<span class="p">}</span>
+
+		<span class="c1">// read parameters</span>
+		<span class="k">for</span> <span class="p">(</span><span class="k">const</span> <span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">c</span> <span class="o">=</span> <span class="n">element</span><span class="o">-&gt;</span><span class="n">FirstChildElement</span><span class="p">();</span> <span class="n">c</span><span class="p">;</span> <span class="n">c</span> <span class="o">=</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">NextSiblingElement</span><span class="p">())</span> <span class="p">{</span>
+			<span class="c1">// determine data based on element name</span>
+			<span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">cname</span> <span class="o">=</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">Value</span><span class="p">();</span>
+			<span class="k">if</span> <span class="p">(</span><span class="n">cname</span> <span class="o">==</span> <span class="s">"Quantity"</span><span class="p">)</span> <span class="p">{</span>
+				<span class="n">m_quantity</span> <span class="o">=</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">GetText</span><span class="p">();</span>
+				<span class="k">if</span> <span class="p">(</span><span class="n">m_quantity</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span>
+					<span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="n">XML_READ_ERROR</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">element</span><span class="o">-&gt;</span><span class="n">Row</span><span class="p">()).</span><span class="n">arg</span><span class="p">(</span>
+						<span class="s">"Tag 'Quantity' must not be empty."</span><span class="p">),</span> <span class="n">FUNC_ID</span><span class="p">);</span>
+			<span class="p">}</span>
+			<span class="k">else</span> <span class="p">{</span>
+				<span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="n">XML_READ_ERROR</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">element</span><span class="o">-&gt;</span><span class="n">Row</span><span class="p">()).</span><span class="n">arg</span><span class="p">(</span>
+					<span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="s">"Undefined tag '%1'."</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">cname</span><span class="p">)</span> <span class="p">),</span> <span class="n">FUNC_ID</span><span class="p">);</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="k">catch</span> <span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span> <span class="o">&amp;</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span> <span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="s">"Error reading 'Sensor' element."</span><span class="p">),</span> <span class="n">FUNC_ID</span><span class="p">);</span>
+	<span class="p">}</span>
+	<span class="k">catch</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">exception</span> <span class="o">&amp;</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="s">"%1</span><span class="se">\n</span><span class="s">Error reading 'Sensor' element."</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">ex</span><span class="p">.</span><span class="n">what</span><span class="p">()),</span> <span class="n">FUNC_ID</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this function there is a lot of code that is repeated nearly identical in all files of the data model. For example, reading of attributes, converting them to number values (including error checking), testing for known child elements (and error handling) and the outer exception catch clauses. Similarly, this looks for the <code>writeXML()</code> function.</p>
+</div>
+<div class="listingblock">
+<div class="title">Implementation of <code>Sensor::writeXML()</code></div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">Sensor</span><span class="o">::</span><span class="n">writeXML</span><span class="p">(</span><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">parent</span><span class="p">,</span> <span class="kt">bool</span> <span class="cm">/*detailedOutput*/</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+	<span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">e</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TiXmlElement</span><span class="p">(</span><span class="s">"Sensor"</span><span class="p">);</span>
+	<span class="n">parent</span><span class="o">-&gt;</span><span class="n">LinkEndChild</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
+
+	<span class="n">e</span><span class="o">-&gt;</span><span class="n">SetAttribute</span><span class="p">(</span><span class="s">"id"</span><span class="p">,</span> <span class="n">IBK</span><span class="o">::</span><span class="n">val2string</span><span class="o">&lt;</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_id</span><span class="p">));</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">m_quantity</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span>
+		<span class="n">TiXmlElement</span><span class="o">::</span><span class="n">appendSingleAttributeElement</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s">"Quantity"</span><span class="p">,</span> <span class="nb">nullptr</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(),</span> <span class="n">m_quantity</span><span class="p">);</span>
+	<span class="k">return</span> <span class="n">e</span><span class="p">;</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In order for the code generator to create these two functions, we need to add some comments to original class. Let&#8217;s start with the <code>writeXML()</code> function:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>XML-Element name is always the same as the class name, so that&#8217;s known to the code generator</p>
+</li>
+<li>
+<p><code>m_id</code> should be written as attribute to <code>Sensor</code>, we need to tell the code generator that this is an attribute. The conversion <code>unsigned int</code> to string is known from the type declaration.</p>
+</li>
+<li>
+<p><code>m_quantity</code> should be written as child-element to <code>Sensor</code>. We also need to tell the code generator, that this is to be an element. Also, we need to write the code to check that the attribute must not be empty before writing it. We should tell the code generator somehow, that the value must not appear as empty string <code>""</code> in the xml file.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This leads to some annotation comments in the header file:</p>
+</div>
+<div class="listingblock">
+<div class="title">Class Sensor, with declarations of <code>readXML()</code> and <code>writeXML()</code> functions</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">Sensor</span> <span class="p">{</span>
+<span class="nl">public:</span>
+	<span class="cm">/*! Default constructor. */</span>
+	<span class="n">Sensor</span><span class="p">()</span> <span class="o">:</span> <span class="n">m_id</span><span class="p">(</span><span class="n">NANDRAD</span><span class="o">::</span><span class="n">INVALID_ID</span><span class="p">)</span> <span class="p">{}</span>
+
+	<span class="kt">void</span> <span class="n">readXML</span><span class="p">(</span><span class="k">const</span> <span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">element</span><span class="p">);</span>
+	<span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">writeXML</span><span class="p">(</span><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">parent</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">detailedOutput</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+
+	<span class="c1">// *** PUBLIC MEMBER VARIABLES ***</span>
+
+	<span class="cm">/*! Unique ID-number of the sensor.*/</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span>						<span class="n">m_id</span><span class="p">;</span>			<span class="c1">// XML-A:</span>
+	<span class="cm">/*! Name of the measured quantity */</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">string</span>							<span class="n">m_quantity</span><span class="p">;</span>		<span class="c1">// XML-E:not-empty</span>
+<span class="p">};</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>// XML-A:</code> says: make this an attribute. The <code>// XML-E:</code> says: make this a child-element. The additional <code>not-empty</code> keyword means: do not allow this string to be empty (only meaningful for string data types, obviously).</p>
+</div>
+<div class="paragraph">
+<p>With this given information, we can also generate the entire <code>readXML()</code> function.</p>
+</div>
+<div class="paragraph">
+<p>Lastly, since the declaration for the <code>readXML()</code> and <code>writeXML()</code> functions are always the same, we can avoid typing errors by using a define:</p>
+</div>
+<div class="listingblock">
+<div class="title">Global code generator helpers</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="cp">#define NANDRAD_READWRITE \
+	void readXML(const TiXmlElement * element); \
+	TiXmlElement * writeXML(TiXmlElement * parent, bool detailedOutput) const;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The header is now very short:</p>
+</div>
+<div class="listingblock">
+<div class="title">Class Sensor, using code generator</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">Sensor</span> <span class="p">{</span>
+<span class="nl">public:</span>
+	<span class="cm">/*! Default constructor. */</span>
+	<span class="n">Sensor</span><span class="p">()</span> <span class="o">:</span> <span class="n">m_id</span><span class="p">(</span><span class="n">NANDRAD</span><span class="o">::</span><span class="n">INVALID_ID</span><span class="p">)</span> <span class="p">{}</span>
+
+	<span class="n">NANDRAD_READWRITE</span>
+
+	<span class="cm">/*! Unique ID-number of the sensor.*/</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span>						<span class="n">m_id</span><span class="p">;</span>			<span class="c1">// XML-A:</span>
+	<span class="cm">/*! Name of the measured quantity */</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">string</span>							<span class="n">m_quantity</span><span class="p">;</span>		<span class="c1">// XML-E:not-empty</span>
+<span class="p">};</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The implementation file <code>NANDRAD_Sensor.cpp</code> is no longer needed and can be removed.</p>
+</div>
+<div class="paragraph">
+<p>The code generator will create a file: <code>ncg_NANDRAD_Sensor.cpp</code> with the functions <code>Sensor::readXML()</code> and <code>Sensor::writeXML()</code>.</p>
+</div>
+<div class="paragraph">
+<p>To avoid regenerating (and recompiling) all <code>ncg_*</code> files whenever <em>one</em> header file is modified, the code generator inspects the file creation times of the <code>ncg_XXX.cpp</code> file with the latest modification/creation data of the respective <code>ncg_XXX.h</code> file. The code is only generated, if header file is newer than the generated file.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_is_default_functionality">3.2. "Is default" functionality</h3>
+<div class="paragraph">
+<p>Suppose now a data member like <code>Sensor</code> is used in some other class in the hierarchy. There, the member variable may be uninitialized (sensor ID == <code>NANDRAD::INVALID_ID</code>). We want to avoid writing the <code>&lt;Sensor&gt;</code> xml tag alltogether in this case.</p>
+</div>
+<div class="paragraph">
+<p>The typical code looks like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="c1">// only write sensor if different from default</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">detailedOutput</span> <span class="o">||</span> <span class="n">m_sensor</span> <span class="o">!=</span> <span class="n">Sensor</span><span class="p">())</span> <span class="p">{</span>
+    <span class="n">m_sensor</span><span class="p">.</span><span class="n">writeXML</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">detailedOutput</span><span class="p">);</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For this code to work, we need a comparison operator defined in class <code>Sensor</code>, again something that the code generator provides:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="kt">bool</span> <span class="n">Sensor</span><span class="o">::</span><span class="k">operator</span><span class="o">!=</span><span class="p">(</span><span class="k">const</span> <span class="n">Sensor</span> <span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">m_id</span> <span class="o">!=</span> <span class="n">other</span><span class="p">.</span><span class="n">m_id</span><span class="p">)</span>				<span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">m_quantity</span> <span class="o">!=</span> <span class="n">other</span><span class="p">.</span><span class="n">m_quantity</span><span class="p">)</span>	<span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+	<span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Again, the declaration is pretty standard and can be replaced by a define:</p>
+</div>
+<div class="listingblock">
+<div class="title">Global code generator helpers</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="cp">#define NANDRAD_COMP(X) \
+	bool operator!=(const X &amp; other) const;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>So the class declaration becomes:</p>
+</div>
+<div class="listingblock">
+<div class="title">Class Sensor, using code generator</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">Sensor</span> <span class="p">{</span>
+<span class="nl">public:</span>
+	<span class="cm">/*! Default constructor. */</span>
+	<span class="n">Sensor</span><span class="p">()</span> <span class="o">:</span> <span class="n">m_id</span><span class="p">(</span><span class="n">NANDRAD</span><span class="o">::</span><span class="n">INVALID_ID</span><span class="p">)</span> <span class="p">{}</span>
+
+	<span class="n">NANDRAD_READWRITE</span>
+	<span class="n">NANDRAD_COMP</span><span class="p">(</span><span class="n">Sensor</span><span class="p">)</span>
+
+	<span class="cm">/*! Unique ID-number of the sensor.*/</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span>						<span class="n">m_id</span><span class="p">;</span>			<span class="c1">// XML-A:</span>
+	<span class="cm">/*! Name of the measured quantity */</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">string</span>							<span class="n">m_quantity</span><span class="p">;</span>		<span class="c1">// XML-E:not-empty</span>
+<span class="p">};</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_custom_readwrite_functionality">3.3. Custom read/write functionality</h3>
+<div class="paragraph">
+<p>Sometimes, the default read/write code is not enough, because something special needs to be written/read as well. Here, you can simply use an additional define:</p>
+</div>
+<div class="listingblock">
+<div class="title">Global code generator helpers</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="cp">#define NANDRAD_READWRITE_PRIVATE \
+	void readXMLPrivate(const TiXmlElement * element); \
+	TiXmlElement * writeXMLPrivate(TiXmlElement * parent, bool detailedOutput) const;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and implement <code>readXML()</code> and <code>writeXML()</code> manually, hereby re-using the auto-generated functionality. The header then looks like:</p>
+</div>
+<div class="listingblock">
+<div class="title">Class Sensor, using code generator with private read/write functions</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">Sensor</span> <span class="p">{</span>
+	<span class="n">NANDRAD_READWRITE_PRIVATE</span>
+<span class="nl">public:</span>
+	<span class="cm">/*! Default constructor. */</span>
+	<span class="n">Sensor</span><span class="p">()</span> <span class="o">:</span> <span class="n">m_id</span><span class="p">(</span><span class="n">NANDRAD</span><span class="o">::</span><span class="n">INVALID_ID</span><span class="p">)</span> <span class="p">{}</span>
+
+	<span class="n">NANDRAD_READWRITE</span>
+	<span class="n">NANDRAD_COMP</span><span class="p">(</span><span class="n">Sensor</span><span class="p">)</span>
+
+	<span class="cm">/*! Unique ID-number of the sensor.*/</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span>						<span class="n">m_id</span><span class="p">;</span>			<span class="c1">// XML-A:</span>
+	<span class="cm">/*! Name of the measured quantity */</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">string</span>							<span class="n">m_quantity</span><span class="p">;</span>		<span class="c1">// XML-E:not-empty</span>
+<span class="p">};</span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Implementation file <code>NANDRAD_Sensor.cpp</code></div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="kt">void</span> <span class="n">Sensor</span><span class="o">::</span><span class="n">readXML</span><span class="p">(</span><span class="k">const</span> <span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">element</span><span class="p">)</span> <span class="p">{</span>
+	<span class="c1">// simply reuse generated code</span>
+	<span class="n">readXMLPrivate</span><span class="p">(</span><span class="n">element</span><span class="p">);</span>
+
+	<span class="c1">// ... read other data from element</span>
+<span class="p">}</span>
+
+
+<span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">Sensor</span><span class="o">::</span><span class="n">writeXML</span><span class="p">(</span><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">parent</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">detailedOutput</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+	<span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">e</span> <span class="o">=</span> <span class="n">writeXMLPrivate</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">detailedOutput</span><span class="p">);</span>
+
+	<span class="c1">// .... append other data to e</span>
+	<span class="k">return</span> <span class="n">e</span><span class="p">;</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>When the code generator creates <code>readXMLPrivate()</code> functions, the check for unknown elements is not generated (see <a href="#generated_readXML">original readXML-function</a>, since it can be expected that other (custom) elements are present inside the parsed XML-tag.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Version 1.0.0<br>
+Last updated 2020-07-03 14:29:06 +0200
+</div>
+</div>
+<style>
+pre.rouge table td { padding: 5px; }
+pre.rouge table pre { margin: 0; }
+pre.rouge .cm {
+  color: #999988;
+  font-style: italic;
+}
+pre.rouge .cp {
+  color: #999999;
+  font-weight: bold;
+}
+pre.rouge .c1 {
+  color: #999988;
+  font-style: italic;
+}
+pre.rouge .cs {
+  color: #999999;
+  font-weight: bold;
+  font-style: italic;
+}
+pre.rouge .c, pre.rouge .ch, pre.rouge .cd, pre.rouge .cpf {
+  color: #999988;
+  font-style: italic;
+}
+pre.rouge .err {
+  color: #a61717;
+  background-color: #e3d2d2;
+}
+pre.rouge .gd {
+  color: #000000;
+  background-color: #ffdddd;
+}
+pre.rouge .ge {
+  color: #000000;
+  font-style: italic;
+}
+pre.rouge .gr {
+  color: #aa0000;
+}
+pre.rouge .gh {
+  color: #999999;
+}
+pre.rouge .gi {
+  color: #000000;
+  background-color: #ddffdd;
+}
+pre.rouge .go {
+  color: #888888;
+}
+pre.rouge .gp {
+  color: #555555;
+}
+pre.rouge .gs {
+  font-weight: bold;
+}
+pre.rouge .gu {
+  color: #aaaaaa;
+}
+pre.rouge .gt {
+  color: #aa0000;
+}
+pre.rouge .kc {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kd {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kn {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kp {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kr {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kt {
+  color: #445588;
+  font-weight: bold;
+}
+pre.rouge .k, pre.rouge .kv {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .mf {
+  color: #009999;
+}
+pre.rouge .mh {
+  color: #009999;
+}
+pre.rouge .il {
+  color: #009999;
+}
+pre.rouge .mi {
+  color: #009999;
+}
+pre.rouge .mo {
+  color: #009999;
+}
+pre.rouge .m, pre.rouge .mb, pre.rouge .mx {
+  color: #009999;
+}
+pre.rouge .sb {
+  color: #d14;
+}
+pre.rouge .sc {
+  color: #d14;
+}
+pre.rouge .sd {
+  color: #d14;
+}
+pre.rouge .s2 {
+  color: #d14;
+}
+pre.rouge .se {
+  color: #d14;
+}
+pre.rouge .sh {
+  color: #d14;
+}
+pre.rouge .si {
+  color: #d14;
+}
+pre.rouge .sx {
+  color: #d14;
+}
+pre.rouge .sr {
+  color: #009926;
+}
+pre.rouge .s1 {
+  color: #d14;
+}
+pre.rouge .ss {
+  color: #990073;
+}
+pre.rouge .s, pre.rouge .sa, pre.rouge .dl {
+  color: #d14;
+}
+pre.rouge .na {
+  color: #008080;
+}
+pre.rouge .bp {
+  color: #999999;
+}
+pre.rouge .nb {
+  color: #0086B3;
+}
+pre.rouge .nc {
+  color: #445588;
+  font-weight: bold;
+}
+pre.rouge .no {
+  color: #008080;
+}
+pre.rouge .nd {
+  color: #3c5d5d;
+  font-weight: bold;
+}
+pre.rouge .ni {
+  color: #800080;
+}
+pre.rouge .ne {
+  color: #990000;
+  font-weight: bold;
+}
+pre.rouge .nf, pre.rouge .fm {
+  color: #990000;
+  font-weight: bold;
+}
+pre.rouge .nl {
+  color: #990000;
+  font-weight: bold;
+}
+pre.rouge .nn {
+  color: #555555;
+}
+pre.rouge .nt {
+  color: #000080;
+}
+pre.rouge .vc {
+  color: #008080;
+}
+pre.rouge .vg {
+  color: #008080;
+}
+pre.rouge .vi {
+  color: #008080;
+}
+pre.rouge .nv, pre.rouge .vm {
+  color: #008080;
+}
+pre.rouge .ow {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .o {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .w {
+  color: #bbbbbb;
+}
+pre.rouge {
+  background-color: #f8f8f8;
+}
+</style>
+</body>
+</html>

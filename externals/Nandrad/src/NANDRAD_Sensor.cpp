@@ -19,9 +19,6 @@ Lesser General Public License for more details.
 */
 
 #include "NANDRAD_Sensor.h"
-#include "NANDRAD_Constants.h"
-#include "NANDRAD_KeywordList.h"
-#include "NANDRAD_ObjectList.h"
 
 #include <IBK_Parameter.h>
 #include <IBK_Exception.h>
@@ -31,34 +28,22 @@ Lesser General Public License for more details.
 
 namespace NANDRAD {
 
-Sensor::Sensor() :
-	m_id(NANDRAD::INVALID_ID)
-{
-}
-
-void Sensor::readXML(const TiXmlElement * element) {
-#if 0
-	const char * const FUNC_ID = "[Sensor::readXML]";
+void Sensor::readXMLPrivate(const TiXmlElement * element) {
+	FUNCID(Sensor::readXMLPrivate);
 
 	try {
 		// read attributes
 		const TiXmlAttribute * attrib = TiXmlAttribute::attributeByName(element, "id");
-		if (!attrib)
-		{
+		if (attrib != nullptr) {
 			throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing 'id' attribute.")
-				), FUNC_ID);
+				IBK::FormatString("Missing 'id' attribute.") ), FUNC_ID);
 		}
-
+		// convert attribute to value
 		try {
-			m_id = IBK::string2val<unsigned int>(attrib->Value());
-			NANDRAD::IDGeneratorSingleton::instance().setNextFreeId( NANDRAD::IDGeneratorSingleton::IDS_Sensor, m_id+1 );
-		}
-		// Error obtaining id number
-		catch (IBK::Exception & ex) {
-			throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Error reading 'id' attribute.")
-				), FUNC_ID);
+			m_id = IBK::string2val<unsigned int>(attrib->ValueStr());
+		} catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Invalid value for 'id' attribute.") ), FUNC_ID);
 		}
 
 		// read parameters
@@ -67,35 +52,59 @@ void Sensor::readXML(const TiXmlElement * element) {
 			std::string cname = c->Value();
 			if (cname == "Quantity") {
 				m_quantity = c->GetText();
+				if (m_quantity.empty())
+					throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+						"Tag 'Quantity' must not be empty."), FUNC_ID);
 			}
 			else {
-				// every remaining tag interpret as a generic parameter block
-				readGenericParameterElement(c);
+				throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+					IBK::FormatString("Undefined tag '%1'.").arg(cname) ), FUNC_ID);
 			}
 		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Error reading 'Sensor' element."), FUNC_ID);
 	}
-	catch (std::exception & ex2) {
-		throw IBK::Exception(IBK::FormatString("%1\nError reading 'Sensor' element.").arg(ex2.what()), FUNC_ID);
+	catch (std::exception & ex) {
+		throw IBK::Exception(IBK::FormatString("%1\nError reading 'Sensor' element.").arg(ex.what()), FUNC_ID);
 	}
-#endif
 }
 
-void Sensor::writeXML(TiXmlElement * parent, bool detailedOutput) const {
-#if 0
+
+TiXmlElement * Sensor::writeXMLPrivate(TiXmlElement * parent, bool /*detailedOutput*/) const {
 	TiXmlElement * e = new TiXmlElement("Sensor");
 	parent->LinkEndChild(e);
 
-	e->SetAttribute("id",IBK::val2string<unsigned int>(m_id));
+	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 
 	if (!m_quantity.empty())
-		TiXmlElement::appendSingleAttributeElement(e, "Quantity", NULL, std::string(), m_quantity);
+		TiXmlElement::appendSingleAttributeElement(e, "Quantity", nullptr, std::string(), m_quantity);
 
-	// write all parameters
-	writeGenericParameters(e,detailedOutput);
-#endif
+	return e;
+}
+
+
+void Sensor::readXML(const TiXmlElement * element) {
+	// simply reuse generated code
+	readXMLPrivate(element);
+
+	// ... read other data from element
+}
+
+
+TiXmlElement * Sensor::writeXML(TiXmlElement * parent, bool detailedOutput) const {
+	TiXmlElement * e = writeXMLPrivate(parent, detailedOutput);
+
+	// .... append other data to e
+	return e;
+}
+
+
+
+bool Sensor::operator!=(const Sensor & other) const {
+	if (m_id != other.m_id)				return true;
+	if (m_quantity != other.m_quantity)	return true;
+	return false;
 }
 
 } // namespace NANDRAD

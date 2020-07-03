@@ -22,10 +22,22 @@ Lesser General Public License for more details.
 #define NANDRAD_SensorH
 
 #include <string>
-#include <map>
-#include <vector>
+
+#include "NANDRAD_Constants.h"
 
 class TiXmlElement;
+
+#define NANDRAD_READWRITE \
+	void readXML(const TiXmlElement * element); \
+	TiXmlElement * writeXML(TiXmlElement * parent, bool detailedOutput) const;
+
+#define NANDRAD_READWRITE_PRIVATE \
+	void readXMLPrivate(const TiXmlElement * element); \
+	TiXmlElement * writeXMLPrivate(TiXmlElement * parent, bool detailedOutput) const;
+
+#define NANDRAD_COMP(X) \
+	bool operator!=(const X & other) const;
+
 
 namespace NANDRAD {
 
@@ -36,28 +48,22 @@ namespace NANDRAD {
 	the description block of the building component that offers the quantity.
 */
 class Sensor {
+	NANDRAD_READWRITE_PRIVATE
 public:
-
 	/*! Default constructor. */
-	Sensor();
+	Sensor() : m_id(NANDRAD::INVALID_ID) {}
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	/*! Reads the data from the xml element.
-		Throws an IBK::Exception if a syntax error occurs.
-	*/
-	void readXML(const TiXmlElement * element);
-	/*! Appends the element to the parent xml element.
-		Throws an IBK::Exception in case of invalid data.
-	*/
-	void writeXML(TiXmlElement * parent, bool detailedOutput) const;
+	NANDRAD_READWRITE
+	NANDRAD_COMP(Sensor)
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID-number of the sensor.*/
-	unsigned int						m_id;
+	unsigned int						m_id;			// XML-A:
 	/*! Name of the measured quantity */
-	std::string							m_quantity;
+	std::string							m_quantity;		// XML-E:not-empty
 };
 
 } // namespace NANDRAD
