@@ -3,4 +3,4 @@ The css directory contains the global style imported by all html AsciiDoctor pag
 
 ## Available documentation
 
-- (NANDRAD-CodeGenerator/index.html)[NANDRAD-CodeGenerator]
+- [NANDRAD-CodeGenerator](NANDRAD-CodeGenerator/index.html)
