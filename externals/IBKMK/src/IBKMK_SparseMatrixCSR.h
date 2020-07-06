@@ -100,7 +100,7 @@ public:
 		\sa resize
 	*/
 	SparseMatrixCSR(unsigned int n, unsigned int nnz, const unsigned int * ia, const unsigned int * ja,
-		const unsigned int * iaT = NULL, const unsigned int * jaT = NULL) {
+		const unsigned int * iaT = nullptr, const unsigned int * jaT = nullptr) {
 		resize(n, nnz, ia, ja, iaT, jaT);
 	}
 
@@ -203,8 +203,8 @@ public:
 	unsigned int * jaT() { if(!m_jaT.empty()) return &m_jaT[0]; return &m_ja[0]; }
 
 	/*! Resizes the matrix.
-		If NULL is passed for arguments iaT and jaT, the matrix has a symmetric pattern.
-		For non-symmetric matrix patterns, both pointers iaT and jaT must be valid and not NULL.
+		If nullptr is passed for arguments iaT and jaT, the matrix has a symmetric pattern.
+		For non-symmetric matrix patterns, both pointers iaT and jaT must be valid and not nullptr.
 		\param n Dimension of the matrix, n x n
 		\param nnz Total number of nonzeros values.
 		\param ia Row index vector (size n+1)
@@ -213,13 +213,13 @@ public:
 		\param jaT Column index vector of the transposed matrix (only for nonsysmmetric matrices)
 	*/
 	void resize(unsigned int n, unsigned int nnz, const unsigned int * ia, const unsigned int * ja,
-		const unsigned int * iaT = NULL, const unsigned int * jaT = NULL);
+		const unsigned int * iaT = nullptr, const unsigned int * jaT = nullptr);
 
 	/*! Resize the matrix from EID format.
 		\param n Dimension of the matrix, n x n
 		\param elementsPerRow Number of values per row for ellpack-itpack
 		\param indices Vector of size n*elementsPerRow holding the indices for ellpack-itpack format.
-		If index vector is NULL pointer this function throws an exception.
+		If index vector is nullptr pointer this function throws an exception.
 	*/
 	void resizeFromEID(unsigned int n, unsigned int elementsPerRow, const unsigned int * indices);
 
@@ -227,7 +227,7 @@ public:
 		Ensure that you resized the matrix using resizeFromeid() befor calling parseFromeid().
 		\param n Dimension of the matrix, n x n
 		\param elementsPerRow Number of values per row
-		\param indices Vector of size n*elementsPerRow holding the indices. If a NULL pointer (the default),
+		\param indices Vector of size n*elementsPerRow holding the indices. If a nullptr pointer (the default),
 			   the index vector is initialized with 0 (first column vector of full matrix).
 		\param Data vector of the elpack-itpack matrix.
 	*/

@@ -126,7 +126,7 @@ void SparseMatrixCSR::resize(unsigned int n, unsigned int nnz, const unsigned in
 	std::memcpy((void*)&m_ja[0], (const void*)ja, sizeof(unsigned int)*m_nnz);
 
 	// empty tranpose indices mean symmetric matrix pattern
-	if (iaT == NULL || jaT == NULL) {
+	if (iaT == nullptr || jaT == nullptr) {
 		m_iaT.clear();
 		m_jaT.clear();
 		m_patternMode = PM_Symmetric;
@@ -148,7 +148,7 @@ void SparseMatrixCSR::resizeFromEID(unsigned int n, unsigned int elementsPerRow,
 		throw IBK::Exception("Invalid input in n.", FUNC_ID);
 	if (elementsPerRow == 0)
 		throw IBK::Exception("Invalid input in elementsPerRow.", FUNC_ID);
-	if (indices == NULL)
+	if (indices == nullptr)
 		throw IBK::Exception("Invalid input in indices.", FUNC_ID);
 
 	m_n = n;
@@ -184,9 +184,9 @@ void SparseMatrixCSR::parseFromEID(unsigned int n, unsigned int elementsPerRow, 
 		throw IBK::Exception("Wrong matrix size! Call 'resizeFromEID' before parsing!", FUNC_ID);
 	if (elementsPerRow == 0)
 		throw IBK::Exception("Invalid input in elementsPerRow.", FUNC_ID);
-	if (indices == NULL)
+	if (indices == nullptr)
 		throw IBK::Exception("Invalid input in indices.", FUNC_ID);
-	if (data == NULL)
+	if (data == nullptr)
 		throw IBK::Exception("Invalid input in data.", FUNC_ID);
 
 	// now fill data

@@ -132,13 +132,13 @@ public:
 
 	/*! Dumps the matrix to an output stream in human-readibly.
 		\param out Output stream (ASCII).
-		\param b Pointer to vector to print alongside matrix, size = n, NULL if no vector to print.
+		\param b Pointer to vector to print alongside matrix, size = n, nullptr if no vector to print.
 		\param eulerFormat If true, prints in Euler-Mathtoolbox format
 		\param width Column width for matrix output (precision is expected to be set as stream property)
 		\param matrixLabel The label to be used for defining the matrix in Euler format, defaults to 'A'
 		\param vectorLabel The label to be used for defining the vector b in Euler format, defaults to 'b'
 	*/
-	void write(std::ostream & out, double * b = NULL, bool eulerFormat = false, unsigned int width=4,
+	void write(std::ostream & out, double * b = nullptr, bool eulerFormat = false, unsigned int width=4,
 					   const char * const matrixLabel = "A", const char * const vectorLabel = "b") const
 	{
 		IBK::write_matrix(out, *this, b, eulerFormat, width, matrixLabel, vectorLabel);
