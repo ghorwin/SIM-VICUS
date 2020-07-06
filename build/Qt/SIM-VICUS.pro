@@ -11,11 +11,13 @@ SUBDIRS = \
 	SuiteSparse \
 	sundials \
 	TiCPP \
-	Zeppelin
+	Zeppelin \
+	NandradCodeGenerator
 
 # where to find the sub projects
 #SIM-VICUS.file = ../../SIM-VICUS/projects/Qt/SIM-VICUS.pro
 NandradSolver.file = ../../NandradSolver/projects/Qt/NandradSolver.pro
+NandradCodeGenerator.file = ../../NandradCodeGenerator/projects/Qt/NandradCodeGenerator.pro
 
 CCM.file = ../../externals/CCM/projects/Qt/CCM.pro
 DataIO.file = ../../externals/DataIO/projects/Qt/DataIO.pro
@@ -30,6 +32,7 @@ Zeppelin.file = ../../externals/Zeppelin/projects/Qt/Zeppelin.pro
 
 # dependencies
 NandradSolver.depends = DataIO CCM TiCPP IBK
+NandradCodeCreator.depends = IBK
 
 CCM.depends = IBK TiCPP
 DataIO.depends = IBK
