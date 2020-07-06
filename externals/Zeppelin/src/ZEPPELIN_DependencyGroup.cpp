@@ -132,7 +132,7 @@ void DependencyGroup::createEulerPathesInDirectedSubGraph(std::vector<std::list<
 
 			// in a euler graph the number of forward connections must equal the
 			// number of backward connections
-			// otherwise we create invalid connections 
+			// otherwise we create invalid connections
 			if (forwardConnections.size() > backwardConnections.size()) {
 				for (unsigned int j = (unsigned int)backwardConnections.size();
 					j < (unsigned int)forwardConnections.size(); ++j)
@@ -146,7 +146,7 @@ void DependencyGroup::createEulerPathesInDirectedSubGraph(std::vector<std::list<
 		}
 
 		// subgraph must include the same number of missing forward and backward connections
-		assert(objectsWithMissingBackwardConnections.size() == 
+		assert(objectsWithMissingBackwardConnections.size() ==
 			objectsWithMissingForwardConnections.size());
 
 		// connect pairs of nodes
@@ -189,9 +189,9 @@ void DependencyGroup::createEulerPathesInDirectedSubGraph(std::vector<std::list<
 		std::list<const ObjectWithIndex*>::iterator startNode =
 			eulerCycle.begin();
 
-		// if all connections of all nodes are registered we continue in global loop 
+		// if all connections of all nodes are registered we continue in global loop
 		while (startNode != eulerCycle.end()) {
-			
+
 			// startNode was visited already
 			if (startNodes.find(*startNode) != startNodes.end()) {
 				++startNode;
@@ -212,7 +212,7 @@ void DependencyGroup::createEulerPathesInDirectedSubGraph(std::vector<std::list<
 				startNode;
 			++insertPos;
 
-			const ObjectWithIndex* nextNode = NULL;
+			const ObjectWithIndex* nextNode = nullptr;
 
 			std::list<const ObjectWithIndex*> newPath;
 
@@ -437,7 +437,7 @@ void DependencyGroup::createEulerPathesInUndirectedSubGraph(std::vector<std::lis
 		std::list<const ObjectWithIndex*>::iterator startNode =
 			eulerCycle.begin();
 
-		// if all connections of all nodes are registered we continue in global loop 
+		// if all connections of all nodes are registered we continue in global loop
 		while (startNode != eulerCycle.end()) {
 
 			// startNode was visited already
@@ -462,7 +462,7 @@ void DependencyGroup::createEulerPathesInUndirectedSubGraph(std::vector<std::lis
 				startNode;
 			++insertPos;
 
-			const ObjectWithIndex* nextNode = NULL;
+			const ObjectWithIndex* nextNode = nullptr;
 
 			std::list<const ObjectWithIndex*> newPath;
 
@@ -559,7 +559,7 @@ void DependencyGroup::insert(DependencyObject* o) {
 	// object is a group itself
 	DependencyGroup *group = dynamic_cast<DependencyGroup *>(o);
 	// resove groups before inserting the elements
-	if(group != NULL)
+	if(group != nullptr)
 	{
 		// insert all group elements: note that we are only allowed to use
 		// the internal insert function
