@@ -34,3 +34,4 @@
 Makefile*
 *.pro.user
 *.pyc
+*.pdb
