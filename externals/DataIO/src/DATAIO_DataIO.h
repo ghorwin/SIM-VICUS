@@ -160,7 +160,7 @@ public:
 		\sa TextNotificationHandler
 	*/
 	void read(const IBK::Path & fname, bool headerOnly = false,
-		IBK::NotificationHandler * notify = NULL);
+		IBK::NotificationHandler * notify = nullptr);
 
 	/*! Returns data for time index time_idx.
 
@@ -253,7 +253,7 @@ public:
 		\sa appendData()
 		\sa TextNotificationHandler
 	*/
-	void write(IBK::NotificationHandler * notify = NULL) const;
+	void write(IBK::NotificationHandler * notify = nullptr) const;
 
 	/*! Function for creating an output file and writing the header, but no data.
 		Throws an IBK::Exception if writing fails.

@@ -281,7 +281,7 @@ public:
 		\param fname	The file path to the geometry file (utf8 encoded).
 		\param notify	An optional pointer to a notification object, to be called repeatedly while read() is executed.
 	*/
-	void read(const IBK::Path & fname, IBK::NotificationHandler * notify = NULL);
+	void read(const IBK::Path & fname, IBK::NotificationHandler * notify = nullptr);
 
 	/*! Adjusts filename and extension based on binary flag. ASCII files receive the g6a extension, binary files
 		get g6b as file extension. This function expects a filename to be set already, otherwise it
@@ -294,7 +294,7 @@ public:
 		Throws an IBK::Exception in case of an error.
 		\param notify	An optional pointer to a notification object, to be called repeatedly while write() is executed.
 	*/
-	void write(IBK::NotificationHandler * notify = NULL) const;
+	void write(IBK::NotificationHandler * notify = nullptr) const;
 
 	/*! Returns the hash code for the current content of the GeoFile instance.
 		Hash function uses current content in member variables.

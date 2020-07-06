@@ -116,8 +116,8 @@ int FileReaderDataProcessorAddData::lineCount() const {
 
 
 DataIO::DataIO() :
-	m_ofstream(NULL),
-	m_geometryData(NULL)
+	m_ofstream(nullptr),
+	m_geometryData(nullptr)
 {
 	clear();
 	// confirm correct seconds unit
@@ -128,9 +128,9 @@ DataIO::DataIO() :
 
 DataIO::~DataIO() {
 	delete m_ofstream;
-	m_ofstream = NULL;
+	m_ofstream = nullptr;
 	delete m_geometryData;
-	m_geometryData = NULL;
+	m_geometryData = nullptr;
 }
 // ----------------------------------------------------------------------------
 
@@ -172,9 +172,9 @@ void DataIO::clear() {
 	m_valueVector.clear();
 
 	delete m_ofstream;
-	m_ofstream = NULL;
+	m_ofstream = nullptr;
 	delete m_geometryData;
-	m_geometryData = NULL;
+	m_geometryData = nullptr;
 }
 // ----------------------------------------------------------------------------
 
@@ -256,7 +256,7 @@ void DataIO::read(const IBK::Path &fname, bool headerOnly,
 
 			} // else D5 ASCII format
 
-			if (m_geometryData != NULL) {
+			if (m_geometryData != nullptr) {
 				// in Delphin 5, the matnr of the geometry file has to be interpreted as ID matching one of
 				// the IDs in the material definitions table
 
@@ -280,7 +280,7 @@ void DataIO::read(const IBK::Path &fname, bool headerOnly,
 
 		} // D6 m_isBinary
 
-		if (notify != NULL)	notify->notify(1); // we are done
+		if (notify != nullptr)	notify->notify(1); // we are done
 	}
 	catch (IBK::Exception &ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Error reading DataIO file '%1'").arg(fname), FUNC_ID);
@@ -534,7 +534,7 @@ void DataIO::writeHeader() const {
 	const char * const FUNC_ID = "[DataIO::writeHeader]";
 
 	delete m_ofstream; // delete old file stream (does nothing, if no file was open)
-	m_ofstream = NULL;
+	m_ofstream = nullptr;
 
 	if (!m_filename.isValid())
 		throw IBK::Exception("Invalid filename or no filename set.", FUNC_ID);
@@ -570,7 +570,7 @@ void DataIO::writeHeader() const {
 	// check if successful
 	if (!m_ofstream->good()) {
 		delete m_ofstream;
-		m_ofstream = NULL;
+		m_ofstream = nullptr;
 		throw IBK::Exception( IBK::FormatString("Couldn't open output file '%1'.").arg(m_filename), FUNC_ID);
 	}
 	std::ostream & out = *m_ofstream; // readability improvement
@@ -603,7 +603,7 @@ void DataIO::writeHeader() const {
 		out.write(reinterpret_cast<const char *>(&m_geoFileHash), sizeof(unsigned int));
 
 		// created time
-		int64_t t = static_cast<int>(time(NULL));
+		int64_t t = static_cast<int>(time(nullptr));
 		out.write(reinterpret_cast<char *>(&t), sizeof(int64_t));
 
 		// quantity description
@@ -641,7 +641,7 @@ void DataIO::writeHeader() const {
 		out << "\n";
 		out << "TYPE          = " << type2string(m_type) << '\n';
 		out << "PROJECT_FILE  = " << m_projectFileName << '\n';
-		std::time_t t = time(NULL);
+		std::time_t t = time(nullptr);
 		out << "CREATED       = " << std::ctime(&t);
 		out << "GEO_FILE      = " << m_geoFileName << '\n';
 		out << "GEO_FILE_HASH = " << m_geoFileHash << '\n';
@@ -677,7 +677,7 @@ void DataIO::writeHeader() const {
 void DataIO::appendData(double t, const double * values) const {
 	const char * const FUNC_ID = "[DataIO::appendData]";
 
-	if (m_ofstream == NULL)
+	if (m_ofstream == nullptr)
 		throw IBK::Exception("File not opened for writing.", FUNC_ID);
 
 	std::ostream & out = *m_ofstream; // readability improvement
@@ -710,7 +710,7 @@ void DataIO::reopenForWriting(const IBK::Path &fname) {
 
 	try {
 		std::ifstream in;
-		openAndReadHeader(fname, in, NULL);
+		openAndReadHeader(fname, in, nullptr);
 
 		// we have read the header, we have no need for the file stream anylonger
 		in.close();
@@ -749,7 +749,7 @@ void DataIO::reopenForWriting(const IBK::Path &fname) {
 	// check if successful
 	if (!m_ofstream->good()) {
 		delete m_ofstream;
-		m_ofstream = NULL;
+		m_ofstream = nullptr;
 		throw IBK::Exception( IBK::FormatString("Couldn't open output file '%1'.").arg(fname), FUNC_ID);
 	}
 
@@ -767,10 +767,10 @@ void DataIO::reopenForWriting(const IBK::Path &fname) {
 
 
 void DataIO::close() const {
-	if (m_ofstream != NULL) {
+	if (m_ofstream != nullptr) {
 		m_ofstream->close();
 		delete m_ofstream;
-		m_ofstream = NULL;
+		m_ofstream = nullptr;
 	}
 }
 
@@ -1309,7 +1309,7 @@ void DataIO::readBinaryHeaderPreV6(std::istream& in) {
 		if (m_nValues == 1 || m_type == T_REFERENCE)
 			// for 2D and Reference type files
 			m_dataFormat = DF_2D;
-		else if (m_geometryData != NULL) {
+		else if (m_geometryData != nullptr) {
 			// and for D5 outputs with embedded geometry data
 			try {
 				determineDataFormat(*m_geometryData);
@@ -1561,7 +1561,7 @@ void DataIO::readASCIIHeader(const IBK::Path & fname, IBK::NotificationHandler *
 		if (m_nValues == 1 || m_type == T_REFERENCE)
 			// for 2D and Reference type files
 			m_dataFormat = DF_2D;
-		else if (m_geometryData != NULL) {
+		else if (m_geometryData != nullptr) {
 			// and for D5 outputs with embedded geometry data
 			try {
 				determineDataFormat(*m_geometryData);

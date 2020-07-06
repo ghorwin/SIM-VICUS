@@ -762,7 +762,7 @@ unsigned int GeoFile::hashCode() {
 		else {
 			// create string with all data
 			std::stringstream	stream;
-			writeGeometryData(stream, NULL);
+			writeGeometryData(stream, nullptr);
 			// get char array for it and return the hash value
 			return IBK::SuperFastHash( stream.str() );
 		}
