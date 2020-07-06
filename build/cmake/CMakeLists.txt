@@ -44,18 +44,18 @@ MARK_AS_ADVANCED(EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH)
 
 # Set default build type
 if (NOT CMAKE_BUILD_TYPE)
-set( CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
-"Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
+	set( CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
+		"Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
 endif (NOT CMAKE_BUILD_TYPE)
 
 # on Unix we want really detailed warnings
 if (UNIX)
-ADD_DEFINITIONS( -Wall -fPIC)
+	ADD_DEFINITIONS( -Wall -fPIC)
 endif (UNIX)
 
 # add VC compiler-specific flags (NONMINMAX define and disable "unsafe" warnings)
 if (MSVC)
-set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D\"NOMINMAX\" /wd4996" )
+	set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D\"NOMINMAX\" /wd4996" )
 endif (MSVC)
 
 # -------------------------------------------------------------
@@ -64,7 +64,6 @@ endif (MSVC)
 
 # automatically add CMAKE_CURRENT_SOURCE_DIR and CMAKE_CURRENT_BINARY_DIR to the include directories in every processed CMakeLists.txt
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Xml REQUIRED)
@@ -115,7 +114,8 @@ add_subdirectory( ../../externals/CCM/projects/cmake_local CCM )
 add_subdirectory( ../../externals/DataIO/projects/cmake_local DataIO )
 add_subdirectory( ../../externals/IBK/projects/cmake_local IBK )
 add_subdirectory( ../../externals/SuiteSparse/projects/cmake_local SuiteSparse )
-add_subdirectory( ../../externals/zlib/projects/cmake_local zlib )
+
+#add_subdirectory( ../../externals/zlib/projects/cmake_local zlib )
 #add_subdirectory( ../../externals/qwt/projects/cmake_local qwt )
 #add_subdirectory( ../../externals/QtExt/projects/cmake_local QtExt )
 #set(SCICHART_HAS_EMFENGINE ON CACHE BOOL "Build SciChart with EMFEngine" FORCE)
@@ -123,7 +123,7 @@ add_subdirectory( ../../externals/zlib/projects/cmake_local zlib )
 add_subdirectory( ../../externals/TiCPP/projects/cmake_local TiCPP )
 
 if( WIN32 )
-	add_subdirectory( ../../externals/EmfEngine/projects/cmake_local EmfEngine )
+#	add_subdirectory( ../../externals/EmfEngine/projects/cmake_local EmfEngine )
 endif( WIN32 )
 
 
@@ -131,7 +131,7 @@ endif( WIN32 )
 # main project
 # -------------------------------------------------------------
 
-add_subdirectory( ../../SIM-VICUS/projects/cmake_local SIM-VICUS)
+#add_subdirectory( ../../SIM-VICUS/projects/cmake_local SIM-VICUS)
 #add_subdirectory( ../../CCD2C6BConverter/projects/cmake_local CCD2C6BConverter)
 
 

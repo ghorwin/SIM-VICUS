@@ -35,3 +35,5 @@ Makefile*
 *.pro.user
 *.pyc
 *.pdb
+/build/build-*
+
