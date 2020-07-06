@@ -107,23 +107,23 @@ namespace IBK {
 		char delims[] = "\n";
 		char* line = strtok(buffer, delims);
 
-		while (line != NULL && (found_vmrss == 0 || found_vmsize == 0) )
+		while (line != nullptr && (found_vmrss == 0 || found_vmsize == 0) )
 		{
 			search_result = strstr(line, "VmRSS:");
-			if (search_result != NULL)
+			if (search_result != nullptr)
 			{
 				sscanf(line, "%*s %llu", vmrss_kb);
 				found_vmrss = 1;
 			}
 
 			search_result = strstr(line, "VmSize:");
-			if (search_result != NULL)
+			if (search_result != nullptr)
 			{
 				sscanf(line, "%*s %llu", vmsize_kb);
 				found_vmsize = 1;
 			}
 
-			line = strtok(NULL, delims);
+			line = strtok(nullptr, delims);
 		}
 
 		return (found_vmrss == 1 && found_vmsize == 1) ? 0 : 1;
@@ -191,7 +191,7 @@ namespace IBK {
 
 		DWORD processID = GetCurrentProcessId();
 		HANDLE hprocess = OpenProcess(  PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, false, processID );
-		if( hprocess == 0)
+		if( hprocess == nullptr)
 			return 1;
 		PROCESS_MEMORY_COUNTERS pmc;
 		if ( !GetProcessMemoryInfo( hprocess, &pmc, sizeof(pmc)) )

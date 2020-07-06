@@ -64,11 +64,11 @@ bool read_vector(const std::string& data, std::vector<double>& vec, std::string 
 		vec.push_back(para);
 	// check if stream end was really reached (otherwise an error had occured while reading)
 	if(!strm.eof() ) {
-		*errmsg = FormatString("Couldn't read a vector from string '%1': string contains invalid data.").arg(data.c_str()).str();	
+		*errmsg = FormatString("Couldn't read a vector from string '%1': string contains invalid data.").arg(data.c_str()).str();
 		return false;
 	}
 	if (vec.size() < 2)  {
-		if (errmsg != NULL) {
+		if (errmsg != nullptr) {
 			*errmsg = FormatString("Couldn't read a vector from string '%1'.").arg(data.c_str()).str();
 		}
 		return false;

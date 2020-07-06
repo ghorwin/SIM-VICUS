@@ -127,8 +127,8 @@ private:
 	// specify tokens to stop reading
 	std::vector<std::string> tokens; // none
 
-	// use static readAll function, skipBytes = 0 (read from start), notify = NULL
-	long long lastPos = IBK::FileReader::readAll(IBK::Path("/home/user/mylongfile.txt"), lines, tokens, 0, NULL);
+	// use static readAll function, skipBytes = 0 (read from start), notify = nullptr
+	long long lastPos = IBK::FileReader::readAll(IBK::Path("/home/user/mylongfile.txt"), lines, tokens, 0, nullptr);
 	// lastPos == filesize when reading was successful
 	// in case of error, an IBK::Exception is thrown
 	\endcode

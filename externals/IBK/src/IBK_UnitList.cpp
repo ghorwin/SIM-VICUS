@@ -107,12 +107,12 @@ bool UnitList::read_default() {
 	std::vector<std::vector<char> > lines;
 	// divide unit list into lines
 	char* line = std::strtok(defaultList, ";");
-	while( line != NULL) {
+	while( line != nullptr) {
 		std::vector<char> tmp;
 		std::copy(line, line + std::strlen(line), std::back_inserter(tmp));
 		tmp.push_back('\0');
 		lines.push_back(tmp);
-		line = strtok(NULL, ";");
+		line = strtok(nullptr, ";");
 	}
 
 	std::set<std::string> all_units; // temporary set of units, used in duplicate check
@@ -121,7 +121,7 @@ bool UnitList::read_default() {
 	for( unsigned int i=0; i<lines.size(); ++i) {
 		char* line = &(lines[i][0]);
 		char* str = std::strtok(line, "\t ");
-		if( str == NULL)
+		if( str == nullptr)
 			continue;
 
 		// sanity check, ensure uniqueness of units
@@ -130,10 +130,10 @@ bool UnitList::read_default() {
 		all_units.insert(str);
 
 		add(new UnitData(current_index, str, base_index, 1.0, OP_NONE));
-		char* op = strtok(NULL, "\t ");
-		while( op != NULL) {
-			char* fact = strtok(NULL, "\t ");
-			if( fact == NULL)
+		char* op = strtok(nullptr, "\t ");
+		while( op != nullptr) {
+			char* fact = strtok(nullptr, "\t ");
+			if( fact == nullptr)
 				break;
 #ifdef NO_ATOF
 			double factor = IBK::string2val<double>(fact);
@@ -141,8 +141,8 @@ bool UnitList::read_default() {
 			double factor = std::atof(fact);
 #endif // NO_ATOF
 
-			str = strtok(NULL, "\t ");
-			if( str == NULL)
+			str = strtok(nullptr, "\t ");
+			if( str == nullptr)
 				break;
 
 			// sanity check, ensure uniqueness of units
@@ -166,7 +166,7 @@ bool UnitList::read_default() {
 			else {
 				add(new UnitData(current_index, str, base_index, factor, op_id));
 			}
-			op = strtok(NULL, "\t ");
+			op = strtok(nullptr, "\t ");
 		}
 		current_index++;          // next unit
 		base_index=current_index; // is also the base unit
@@ -366,7 +366,7 @@ const UnitData* UnitList::retrieve(const std::string &str) const {
 			return unit;
 		++it;
 	};
-	return NULL;
+	return nullptr;
 }
 // ---------------------------------------------------------------------------
 

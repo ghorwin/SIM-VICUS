@@ -154,11 +154,11 @@ bool LinearSpline::read(const std::string& x_data, const std::string& y_data, st
 //	std::copy(std::istream_iterator<double>(ystrm), std::istream_iterator<double>(), std::back_inserter(tmp_y) );
 
 	if (tmp_x.empty()) {
-		if (errorMsg != NULL) *errorMsg = "Missing data to read!";
+		if (errorMsg != nullptr) *errorMsg = "Missing data to read!";
 		return false;
 	}
 	if (tmp_x.size() != tmp_y.size()) {
-		if (errorMsg != NULL) {
+		if (errorMsg != nullptr) {
 			std::stringstream errstrm;
 			errstrm << "Number of x [" << tmp_x.size() << "] and y ["<< tmp_y.size() <<"] values differs!";
 			*errorMsg = errstrm.str();

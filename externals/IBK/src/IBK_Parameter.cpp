@@ -75,7 +75,7 @@ bool Parameter::set(double val, Unit unit, std::string * errmsg) {
 		UnitList::instance().convert( IO_unit, Unit(IO_unit.base_id()), value);
 	}
 	catch (IBK::Exception & ex) {
-		if (errmsg != NULL) *errmsg = ex.what();
+		if (errmsg != nullptr) *errmsg = ex.what();
 		return false;
 	}
 	return true;
@@ -97,7 +97,7 @@ bool Parameter::set(const std::string& str, const std::string& valstr, std::stri
 	std::string ustr;
 	lstrm >> value >> ustr;
 	if (ustr.empty() || !lstrm) {
-		if (errmsg != NULL) *errmsg = (FormatString("Error reading parameter from string '%1'.") .arg(valstr)).str();
+		if (errmsg != nullptr) *errmsg = (FormatString("Error reading parameter from string '%1'.") .arg(valstr)).str();
 		return false;
 	}
 	return set(str, value, ustr, errmsg);

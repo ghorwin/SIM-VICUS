@@ -122,7 +122,7 @@ template <class T>
 void matrix_view<T>::resize(std::size_t cols, std::size_t rows, T* storage) {
 	cols_=cols;
 	rows_=rows;
-	IBK_ASSERT(storage != NULL);
+	IBK_ASSERT(storage != nullptr);
 	storage_=storage;
 }
 

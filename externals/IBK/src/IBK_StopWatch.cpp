@@ -123,13 +123,13 @@ class StopWatchImpl {
 public:
 	/*! Starts the stop watch. */
 	void start() {
-		gettimeofday(&start_, NULL);
+		gettimeofday(&start_, nullptr);
 		stop_.tv_sec  = 0;
 	}
 
 	/*! Stops the stop watch. */
 	double stop() {
-		gettimeofday(&stop_, NULL);
+		gettimeofday(&stop_, nullptr);
 		return ((stop_.tv_sec  - start_.tv_sec) * 1000000u + stop_.tv_usec - start_.tv_usec) / 1.e3;
 	}
 
@@ -140,7 +140,7 @@ public:
 		}
 		else {
 			struct timeval ct;
-			gettimeofday(&ct, NULL);
+			gettimeofday(&ct, nullptr);
 			return ((ct.tv_sec  - start_.tv_sec) * 1000000u + ct.tv_usec - start_.tv_usec) / 1.e3;
 		}
 	}

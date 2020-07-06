@@ -65,7 +65,7 @@ public:
 		*/
 	void msg(	const std::string& msg,
 				msg_type_t t = MSG_PROGRESS,
-				const char * func_id = NULL,
+				const char * func_id = nullptr,
 				int verbose_level = VL_ALL)
 	{
 		m_msgHandler->msg(msg, t, func_id, verbose_level);

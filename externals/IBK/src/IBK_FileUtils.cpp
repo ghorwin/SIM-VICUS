@@ -189,7 +189,7 @@ IBK::Path userDirectory() {
 	// if we were able to get the shell malloc object, then
 	// proceed by fetching the pidl
 	LPITEMIDLIST  pidl;
-	HRESULT hdres = SHGetSpecialFolderLocation(NULL, CSIDL_APPDATA, &pidl);
+	HRESULT hdres = SHGetSpecialFolderLocation(nullptr, CSIDL_APPDATA, &pidl);
 	if(hdres == S_OK) {
 		// return is true if success
 		#ifdef IBK_ENABLE_UTF8
@@ -219,7 +219,7 @@ IBK::Path userDirectory() {
 
 	struct passwd *pw = getpwuid(getuid());
 
-	if (pw != NULL) {
+	if (pw != nullptr) {
 
 		const char *homedir = pw->pw_dir;
 		result = homedir;

@@ -113,13 +113,13 @@ inline const char * myFilename(const char * fullFilePath){
 	const char * posLastBackslash = std::strrchr( fullFilePath, '\\');
 	const char * posLastSlash = std::strrchr( fullFilePath, '/');
 
-	if (posLastSlash != NULL) {
-		if (posLastBackslash != NULL)
+	if (posLastSlash != nullptr) {
+		if (posLastBackslash != nullptr)
 			return (posLastBackslash > posLastSlash) ? posLastBackslash+1 : posLastSlash+1;
 		else
 			return posLastSlash+1;
 	}
-	else if (posLastBackslash != NULL)
+	else if (posLastBackslash != nullptr)
 		return posLastBackslash+1;
 
 	return fullFilePath;

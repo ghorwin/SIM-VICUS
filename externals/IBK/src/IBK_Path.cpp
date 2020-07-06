@@ -75,7 +75,7 @@ namespace IBK {
 class FileHandlerWrapper {
 public:
 	FileHandlerWrapper(const std::string& filename, bool write = false) :
-		m_handle(0),
+		m_handle(nullptr),
 		m_valid(false),
 		m_error(0)
 	{
@@ -83,8 +83,8 @@ public:
 			std::wstring wfilename = UTF8ToWstring(filename);
 			DWORD desiredAccess = write ? FILE_WRITE_ATTRIBUTES : 0;
 			DWORD shareMode = write ? FILE_SHARE_WRITE : FILE_SHARE_READ;
-			m_handle = CreateFileW(wfilename.c_str(), desiredAccess, shareMode, NULL,
-								OPEN_EXISTING, 0, NULL);
+			m_handle = CreateFileW(wfilename.c_str(), desiredAccess, shareMode, nullptr,
+								OPEN_EXISTING, 0, nullptr);
 			m_valid = m_handle != INVALID_HANDLE_VALUE;
 		}
 		catch(...) {
@@ -120,18 +120,18 @@ int64_t FileSizeReturner<8>(LARGE_INTEGER FileSize) {
 
 std::string GetLastErrorMessage(int id = 0) {
 	DWORD errorId = id == 0 ? GetLastError() : id;
-	char* lpMsgBuf = 0;
+	char* lpMsgBuf = nullptr;
 	FormatMessageA(
 		FORMAT_MESSAGE_ALLOCATE_BUFFER |
 		FORMAT_MESSAGE_FROM_SYSTEM |
 		FORMAT_MESSAGE_IGNORE_INSERTS,
-		NULL,
+		nullptr,
 		errorId,
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 		(LPSTR) &lpMsgBuf,
 		0,
-		NULL );
-	if(lpMsgBuf != 0) {
+		nullptr );
+	if(lpMsgBuf != nullptr) {
 		std::string errmsg = lpMsgBuf;
 		LocalFree(lpMsgBuf);
 		return errmsg.substr(0, errmsg.size() - 2); // remove EOL at end of string
@@ -1503,7 +1503,7 @@ bool Path::copy(const IBK::Path & source, const IBK::Path & target){
 				struct dirent *ep;
 				dp = opendir (source.absolutePath().str().c_str());
 
-				if (dp == NULL)
+				if (dp == nullptr)
 					return false; // should have been tested for before
 				// get file list
 				std::list<std::string> filelist;

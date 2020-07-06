@@ -55,15 +55,15 @@ class SimpleString {
 public:
 	/*! Constructor, creates an empty string. */
 	SimpleString()
-		: m_buf(NULL), m_len(0)
+		: m_buf(nullptr), m_len(0)
 	{
 	}
 
 	/*! Constructor, creates a string as copy of 'src'. */
 	SimpleString(const char* src)
-		: m_buf(NULL), m_len(0)
+		: m_buf(nullptr), m_len(0)
 	{
-		if (src != NULL) {
+		if (src != nullptr) {
 			std::size_t newlen = strlen(src);
 			try
 			{
@@ -74,7 +74,7 @@ public:
 			}
 			catch(...)
 			{
-				m_buf = 0;
+				m_buf = nullptr;
 				m_len = 0;
 			}
 		}
@@ -82,14 +82,14 @@ public:
 
 	/*! Constructor, creates a string as copy of 'src'. */
 	SimpleString(const std::string & str)
-		: m_buf(NULL), m_len(0)
+		: m_buf(nullptr), m_len(0)
 	{
 		*this = str;
 	}
 
 	/*! Copy constructor */
 	SimpleString(const SimpleString& src)
-		: m_buf(NULL), m_len(0)
+		: m_buf(nullptr), m_len(0)
 	{
 		if (src.m_len > 0)
 		{
@@ -141,7 +141,7 @@ public:
 	/*! Clears the string contents. */
 	void clear() {
 		delete[] m_buf;
-		m_buf = 0;
+		m_buf = nullptr;
 		m_len = 0;
 	}
 

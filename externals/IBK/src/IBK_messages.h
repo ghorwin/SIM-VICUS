@@ -59,7 +59,7 @@ namespace IBK {
 /*! Prototype for the message function.
 	The function will be called from certain IBK classes.
 */
-inline void IBK_Message(const std::string& msg, msg_type_t t = MSG_PROGRESS, const char * func_id = NULL, int verbose_level = VL_ALL) {
+inline void IBK_Message(const std::string& msg, msg_type_t t = MSG_PROGRESS, const char * func_id = nullptr, int verbose_level = VL_ALL) {
 #ifdef _OPENMP
 	#pragma omp master
 #endif
@@ -70,7 +70,7 @@ inline void IBK_Message(const std::string& msg, msg_type_t t = MSG_PROGRESS, con
 /*! Prototype for the message function.
 	The function will be called from certain IBK classes.
 */
-inline void IBK_Message(const IBK::FormatString& msg, msg_type_t t = MSG_PROGRESS, const char * func_id = NULL, int verbose_level = VL_ALL) {
+inline void IBK_Message(const IBK::FormatString& msg, msg_type_t t = MSG_PROGRESS, const char * func_id = nullptr, int verbose_level = VL_ALL) {
 #ifdef _OPENMP
 	#pragma omp master
 #endif

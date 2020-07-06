@@ -52,7 +52,7 @@ namespace IBK {
 
 Unit::Unit(const std::string& name) {
 	const UnitData* unit = UnitList::instance().retrieve(name);
-	if (unit==NULL)  throw IBK::Exception( FormatString("Unit '%1' not found.").arg(name),"[Unit::Unit]");
+	if (unit==nullptr)  throw IBK::Exception( FormatString("Unit '%1' not found.").arg(name),"[Unit::Unit]");
 	m_id=unit->id();
 #ifdef IBK_ENABLE_UNIT_NAME
 	m_name = unit->name();
@@ -66,7 +66,7 @@ Unit::Unit(unsigned int unitid) {
 	m_id=unitid;
 #ifdef IBK_ENABLE_UNIT_NAME
 	const UnitData* unit = UnitList::instance().retrieve(unitid);
-	if (unit==NULL)  throw IBK::Exception( FormatString("Unit with ID '%1' not found.").arg(unitid),"[Unit::Unit]");
+	if (unit==nullptr)  throw IBK::Exception( FormatString("Unit with ID '%1' not found.").arg(unitid),"[Unit::Unit]");
 	m_name = unit->name();
 #endif // IBK_ENABLE_UNIT_NAME
 }
@@ -83,7 +83,7 @@ void Unit::set(unsigned int unitid) {
 
 void  Unit::set(const std::string& name) {
 	const UnitData* unit = UnitList::instance().retrieve(name);
-	if (unit==NULL)  throw IBK::Exception( FormatString("Unit '%1' not found.").arg(name),"[Unit::set]");
+	if (unit==nullptr)  throw IBK::Exception( FormatString("Unit '%1' not found.").arg(name),"[Unit::set]");
 	m_id=unit->id();
 #ifdef IBK_ENABLE_UNIT_NAME
 	m_name = unit->name();

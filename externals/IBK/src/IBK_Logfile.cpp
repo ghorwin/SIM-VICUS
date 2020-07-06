@@ -50,7 +50,7 @@ namespace IBK {
 
 // Constructor
 Logfile::Logfile(std::ostream& original, const std::string& filename, std::ios_base::openmode ioflags)
-	: m_original(NULL), m_buffer(NULL)
+	: m_original(nullptr), m_buffer(nullptr)
 {
 	m_filestream.open(filename.c_str(), ioflags);
 	if (!m_filestream) {
@@ -64,7 +64,7 @@ Logfile::Logfile(std::ostream& original, const std::string& filename, std::ios_b
 
 // Destructor
 Logfile::~Logfile() {
-	if ((m_original!=NULL) && (m_buffer!=NULL))
+	if ((m_original!=nullptr) && (m_buffer!=nullptr))
 		m_original->rdbuf(m_buffer);
 }
 
@@ -84,7 +84,7 @@ void Logfile::redirect(const std::string& filename, std::ios_base::openmode iofl
 		IBK::IBK_Message(FormatString("Couldn't create file '%1'.") .arg(filename), MSG_ERROR, "[Logfile::redirect]", 3);
 		return;
 	}
-	if ((m_original!=NULL) && (m_buffer!=NULL))
+	if ((m_original!=nullptr) && (m_buffer!=nullptr))
 		m_original->rdbuf(m_filestream.rdbuf());
 }
 

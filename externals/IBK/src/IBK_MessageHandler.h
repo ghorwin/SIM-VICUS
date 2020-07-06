@@ -98,7 +98,7 @@ public:
 	/*! Re-implemented message function. */
 	virtual void msg(	const std::string& msg,
 						msg_type_t t = MSG_PROGRESS,
-						const char * func_id = NULL,
+						const char * func_id = nullptr,
 						int verbose_level = VL_ALL);
 
 	/*! Sets the desired console verbosity level.
