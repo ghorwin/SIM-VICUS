@@ -62,7 +62,7 @@ void Project::readXML(const IBK::Path & filename) {
 			m_projectInfo.readXML(xmlElem);
 			// check for duplicate sections
 			xmlElem = xmlRoot.Child("ProjectInfo", 1).Element();
-			if (xmlElem != NULL) {
+			if (xmlElem != nullptr) {
 				throw IBK::Exception(IBK::FormatString("Duplicate section 'ProjectInfo'."), FUNC_ID);
 			}
 		}
@@ -74,7 +74,7 @@ void Project::readXML(const IBK::Path & filename) {
 			readDirectoryPlaceholdersXML(xmlElem);
 			// check for duplicate sections
 			xmlElem = xmlRoot.Child("DirectoryPlaceholders", 1).Element();
-			if (xmlElem != NULL) {
+			if (xmlElem != nullptr) {
 				throw IBK::Exception(IBK::FormatString("Duplicate section 'DirectoryPlaceholders'."), FUNC_ID);
 			}
 		}
@@ -88,7 +88,7 @@ void Project::readXML(const IBK::Path & filename) {
 			readDataBaseXML(xmlElem);
 			// check for duplicate sections
 			xmlElem = xmlRoot.Child("Database", 1).Element();
-			if (xmlElem != NULL) {
+			if (xmlElem != nullptr) {
 				throw IBK::Exception(IBK::FormatString("Duplicate section 'Database'."), FUNC_ID);
 			}
 		}
@@ -99,7 +99,7 @@ void Project::readXML(const IBK::Path & filename) {
 			m_buildingType.readXML(xmlElem);
 			// check for duplicate sections
 			xmlElem = xmlRoot.Child("BuildingType", 1).Element();
-			if (xmlElem != NULL) {
+			if (xmlElem != nullptr) {
 				throw IBK::Exception(IBK::FormatString("Duplicate section 'BuildingType'."), FUNC_ID);
 			}
 		}
@@ -110,7 +110,7 @@ void Project::readXML(const IBK::Path & filename) {
 			m_spaceTypes.readXML(xmlElem);
 			// check for duplicate sections
 			xmlElem = xmlRoot.Child("SpaceTypes", 1).Element();
-			if (xmlElem != NULL) {
+			if (xmlElem != nullptr) {
 				throw IBK::Exception(IBK::FormatString("Duplicate section 'SpaceTypes'."), FUNC_ID);
 			}
 		}
@@ -121,7 +121,7 @@ void Project::readXML(const IBK::Path & filename) {
 			m_parametrizationDefaults.readXML(xmlElem);
 			// check for duplicate sections
 			xmlElem = xmlRoot.Child("ParametrizationDefaults", 1).Element();
-			if (xmlElem != NULL) {
+			if (xmlElem != nullptr) {
 				throw IBK::Exception(IBK::FormatString("Duplicate section 'ParametrizationDefaults'."), FUNC_ID);
 			}
 		}
@@ -132,7 +132,7 @@ void Project::readXML(const IBK::Path & filename) {
 			m_simulationParameter.readXML(xmlElem);
 			// check for duplicate sections
 			xmlElem = xmlRoot.Child("SimulationParameter", 1).Element();
-			if (xmlElem != NULL) {
+			if (xmlElem != nullptr) {
 				throw IBK::Exception(IBK::FormatString("Duplicate section 'SimulationParameter'."), FUNC_ID);
 			}
 		}
@@ -143,7 +143,7 @@ void Project::readXML(const IBK::Path & filename) {
 			m_solverParameter.readXML(xmlElem);
 			// check for duplicate sections
 			xmlElem = xmlRoot.Child("SolverParameter", 1).Element();
-			if (xmlElem != NULL) {
+			if (xmlElem != nullptr) {
 				throw IBK::Exception(IBK::FormatString("Duplicate section 'SolverParameter'."), FUNC_ID);
 			}
 		}
@@ -156,7 +156,7 @@ void Project::readXML(const IBK::Path & filename) {
 			IBK::read_range_XML(xmlElem->FirstChildElement(), m_zones);
 			// check for duplicate sections
 			xmlElem = xmlRoot.Child("Zones", 1).Element();
-			if (xmlElem != NULL) {
+			if (xmlElem != nullptr) {
 				throw IBK::Exception(IBK::FormatString("Duplicate section 'Zones'."), FUNC_ID);
 			}
 		}
@@ -168,7 +168,7 @@ void Project::readXML(const IBK::Path & filename) {
 			IBK::read_range_XML(xmlElem->FirstChildElement(), m_zoneLists);
 			// check for duplicate sections
 			xmlElem = xmlRoot.Child("ZoneLists", 1).Element();
-			if (xmlElem != NULL) {
+			if (xmlElem != nullptr) {
 				throw IBK::Exception(IBK::FormatString("Duplicate section 'ZoneLists'."), FUNC_ID);
 			}
 		}
@@ -181,7 +181,7 @@ void Project::readXML(const IBK::Path & filename) {
 			IBK::read_range_XML(xmlElem->FirstChildElement(), m_constructionInstances);
 			// check for duplicate sections
 			xmlElem = xmlRoot.Child("ConstructionInstances", 1).Element();
-			if (xmlElem != NULL) {
+			if (xmlElem != nullptr) {
 				throw IBK::Exception(IBK::FormatString("Duplicate section 'ConstructionInstances'."), FUNC_ID);
 			}
 		}
@@ -192,7 +192,7 @@ void Project::readXML(const IBK::Path & filename) {
 			m_location.readXML(xmlElem);
 			// check for duplicate sections
 			xmlElem = xmlRoot.Child("Location", 1).Element();
-			if (xmlElem != NULL) {
+			if (xmlElem != nullptr) {
 				throw IBK::Exception(IBK::FormatString("Duplicate section 'Location'."), FUNC_ID);
 			}
 		}
@@ -203,7 +203,7 @@ void Project::readXML(const IBK::Path & filename) {
 			m_models.readXML(xmlElem);
 			// check for duplicate sections
 			xmlElem = xmlRoot.Child("Models", 1).Element();
-			if (xmlElem != NULL) {
+			if (xmlElem != nullptr) {
 				throw IBK::Exception(IBK::FormatString("Duplicate section 'Models'."), FUNC_ID);
 			}
 		}
@@ -214,7 +214,7 @@ void Project::readXML(const IBK::Path & filename) {
 			m_modelGroups.readXML(xmlElem);
 			// check for duplicate sections
 			xmlElem = xmlRoot.Child("ModelGroups", 1).Element();
-			if (xmlElem != NULL) {
+			if (xmlElem != nullptr) {
 				throw IBK::Exception(IBK::FormatString("Duplicate section 'ModelGroups'."), FUNC_ID);
 			}
 		}
@@ -226,7 +226,7 @@ void Project::readXML(const IBK::Path & filename) {
 			m_schedules.readXML(xmlElem);
 			// check for duplicate sections
 			xmlElem = xmlRoot.Child("Schedules", 1).Element();
-			if (xmlElem != NULL) {
+			if (xmlElem != nullptr) {
 				throw IBK::Exception(IBK::FormatString("Duplicate section 'Schedules'."), FUNC_ID);
 			}
 		}
@@ -237,7 +237,7 @@ void Project::readXML(const IBK::Path & filename) {
 			m_outputs.readXML(xmlElem);
 			// check for duplicate sections
 			xmlElem = xmlRoot.Child("Outputs", 1).Element();
-			if (xmlElem != NULL) {
+			if (xmlElem != nullptr) {
 				throw IBK::Exception(IBK::FormatString("Duplicate section 'Outputs'."), FUNC_ID);
 			}
 		}
@@ -248,7 +248,7 @@ void Project::readXML(const IBK::Path & filename) {
 			m_objectLists.readXML(xmlElem);
 			// check for duplicate sections
 			xmlElem = xmlRoot.Child("ObjectLists", 1).Element();
-			if (xmlElem != NULL) {
+			if (xmlElem != nullptr) {
 				throw IBK::Exception(IBK::FormatString("Duplicate section 'ObjectLists'."), FUNC_ID);
 			}
 		}
@@ -259,7 +259,7 @@ void Project::readXML(const IBK::Path & filename) {
 			readGeometriesXML(xmlElem);
 			// check for duplicate sections
 			xmlElem = xmlRoot.Child("Geometries", 1).Element();
-			if (xmlElem != NULL) {
+			if (xmlElem != nullptr) {
 				throw IBK::Exception(IBK::FormatString("Duplicate section 'Geometries'."), FUNC_ID);
 			}
 		}
@@ -289,14 +289,14 @@ void Project::readXML(const IBK::Path & filename) {
 					m_buildingType.readXML(xmlElem);
 					// check for duplicate sections
 					xmlElem = xmlRoot.Child("BuildingType", 1).Element();
-					if (xmlElem != NULL) {
+					if (xmlElem != nullptr) {
 						throw IBK::Exception(IBK::FormatString("Duplicate section 'BuildingType'."), FUNC_ID);
 					}
 				}
 
 				// check for duplicate sections
 				xmlElem = xmlRoot.Child("BuildingTypeReference", 1).Element();
-				if (xmlElem != NULL) {
+				if (xmlElem != nullptr) {
 					throw IBK::Exception(IBK::FormatString("Duplicate section 'BuildingTypeReference'."), FUNC_ID);
 				}
 			}
@@ -319,7 +319,7 @@ void Project::readXML(const IBK::Path & filename) {
 					m_spaceTypes.readXML(xmlElem);
 					// check for duplicate sections
 					xmlElem = xmlRoot.Child("SpaceTypes", 1).Element();
-					if (xmlElem != NULL) {
+					if (xmlElem != nullptr) {
 						throw IBK::Exception(IBK::FormatString("Duplicate section 'SpaceTypes'."), FUNC_ID);
 					}
 				}
@@ -337,7 +337,7 @@ void Project::readXML(const IBK::Path & filename) {
 #endif
 				// check for duplicate sections
 				xmlElem = xmlRoot.Child("SpaceTypesReference", 1).Element();
-				if (xmlElem != NULL) {
+				if (xmlElem != nullptr) {
 					throw IBK::Exception(IBK::FormatString("Duplicate section 'SpaceTypesReference'."), FUNC_ID);
 				}
 			}
@@ -364,14 +364,14 @@ void Project::readXML(const IBK::Path & filename) {
 					m_schedules.readXML(xmlElem);
 					// check for duplicate sections
 					xmlElem = xmlRoot.Child("Schedules", 1).Element();
-					if (xmlElem != NULL) {
+					if (xmlElem != nullptr) {
 						throw IBK::Exception(IBK::FormatString("Duplicate section 'Schedules'."), FUNC_ID);
 					}
 				}
 
 				// check for duplicate sections
 				xmlElem = xmlRoot.Child("SchedulesReference", 1).Element();
-				if (xmlElem != NULL) {
+				if (xmlElem != nullptr) {
 					throw IBK::Exception(IBK::FormatString("Duplicate section 'SchedulesReference'."), FUNC_ID);
 				}
 			}
@@ -406,14 +406,14 @@ void Project::readXML(const IBK::Path & filename) {
 					m_outputs.readXML(xmlElem);
 					// check for duplicate sections
 					xmlElem = xmlRoot.Child("Outputs", 1).Element();
-					if (xmlElem != NULL) {
+					if (xmlElem != nullptr) {
 						throw IBK::Exception(IBK::FormatString("Duplicate section 'Outputs'."), FUNC_ID);
 					}
 				}
 
 				// check for duplicate sections
 				xmlElem = xmlRoot.Child("OutputsReference", 1).Element();
-				if (xmlElem != NULL) {
+				if (xmlElem != nullptr) {
 					throw IBK::Exception(IBK::FormatString("Duplicate section 'OutputsReference'."), FUNC_ID);
 				}
 			}
@@ -546,7 +546,7 @@ void Project::readDirectoryPlaceholdersXML(const TiXmlElement * element) {
 		if (name == "Placeholder") {
 			// search for attribute with given name
 			const TiXmlAttribute* attrib = TiXmlAttribute::attributeByName(e, "name");
-			if (attrib == NULL) {
+			if (attrib == nullptr) {
 				IBK::IBK_Message(IBK::FormatString(
 						"Missing '%1' attribute in Placeholder element.").arg("name"), IBK::MSG_WARNING);
 				continue;

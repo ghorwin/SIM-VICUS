@@ -34,7 +34,7 @@ namespace NANDRAD {
 
 Interface::Interface() :
 	m_id(INVALID_ID),
-	m_zoneRef(NULL)
+	m_zoneRef(nullptr)
 {
 }
 
@@ -136,7 +136,7 @@ void Interface::writeXML(TiXmlElement * parent, bool detailedOutput) const {
 	e->SetAttribute("location", KeywordList::Keyword("Interface::location_t",m_location));
 
 	// write all references
-	TiXmlElement::appendSingleAttributeElement(e, "ZoneID", NULL, std::string(),IBK::val2string<unsigned int>(m_zoneId));
+	TiXmlElement::appendSingleAttributeElement(e, "ZoneID", nullptr, std::string(),IBK::val2string<unsigned int>(m_zoneId));
 
 	// write all model parameters
 	if( m_heatConduction.m_modelType != InterfaceHeatConduction::NUM_MT)

@@ -37,15 +37,15 @@ void ProjectInfo::readXML(const TiXmlElement * element) {
 
 	// read optional attributes
 	const TiXmlAttribute * attrib = TiXmlAttribute::attributeByName(element, "version");
-	if (attrib != NULL)
+	if (attrib != nullptr)
 		m_version = attrib->Value();
 
 	attrib = TiXmlAttribute::attributeByName(element, "created");
-	if (attrib != NULL)
+	if (attrib != nullptr)
 		m_created = attrib->Value();
 
 	attrib = TiXmlAttribute::attributeByName(element, "lastEdited");
-	if (attrib != NULL)
+	if (attrib != nullptr)
 		m_lastEdited = attrib->Value();
 
 	// loop over all elements in this XML element
@@ -132,7 +132,7 @@ void ProjectInfo::writeXML(TiXmlElement * parent) const {
 		e1->SetAttribute("lastEdited", m_lastEdited);
 
 	if (!m_comment.empty())
-		TiXmlElement::appendSingleAttributeElement(e1, "Comment", NULL, std::string(), m_comment);
+		TiXmlElement::appendSingleAttributeElement(e1, "Comment", nullptr, std::string(), m_comment);
 
 	TiXmlElement * e2 = new TiXmlElement( "GridParameter" );
 	e1->LinkEndChild( e2 );

@@ -45,7 +45,7 @@ void AnnualSchedules::readXML(const TiXmlElement * element) {
 			std::string cname = c->Value();
 			if (cname == "SpaceTypeGroup") {
 				const TiXmlAttribute * attrib = TiXmlAttribute::attributeByName(c, "spaceTypeName");
-				if (attrib == NULL)
+				if (attrib == nullptr)
 					throw IBK::Exception( IBK::FormatString( XML_READ_ERROR ).arg(c->Row()).arg(
 						"Missing 'spaceTypeName' attribute in SpaceTypeGroup tag."
 						), FUNC_ID);

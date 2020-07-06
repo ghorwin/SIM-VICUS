@@ -52,7 +52,7 @@ TiXmlElement * openXMLFile(const std::map<std::string,IBK::Path> & pathPlaceHold
 	// read root element
 	TiXmlElement * xmlElem = xmlHandleDoc.FirstChildElement().Element();
 	if (!xmlElem)
-		return NULL; // empty file?
+		return nullptr; // empty file?
 	std::string rootnode = xmlElem->Value();
 	if (rootnode != parentXmlTag)
 		throw IBK::Exception( IBK::FormatString("Expected '%1' as root node in XML file.").arg(parentXmlTag), FUNC_ID);

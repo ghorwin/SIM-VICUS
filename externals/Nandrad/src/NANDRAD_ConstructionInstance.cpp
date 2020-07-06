@@ -177,7 +177,7 @@ void ConstructionInstance::writeXML(TiXmlElement * parent, bool detailedOutput) 
 	writeGenericParameters(e, detailedOutput);
 
 	// write all references
-	TiXmlElement::appendSingleAttributeElement(e, "ConstructionTypeID", NULL, std::string(),IBK::val2string<unsigned int>(m_constructionTypeId));
+	TiXmlElement::appendSingleAttributeElement(e, "ConstructionTypeID", nullptr, std::string(),IBK::val2string<unsigned int>(m_constructionTypeId));
 
 	// now write interfaces
 	TiXmlElement * child = new TiXmlElement("Interfaces");

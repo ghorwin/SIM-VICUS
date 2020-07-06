@@ -195,15 +195,15 @@ void SolverParameter::writeXML(TiXmlElement * parent, bool detailedOutput) const
 	// add sub-elements
 	if (m_integrator != NUM_I)
 		TiXmlElement::appendSingleAttributeElement(e, "Integrator",
-												   NULL, std::string(),
+												   nullptr, std::string(),
 												   KeywordList::Keyword("SolverParameter::integrator_t", m_integrator));
 	if (m_lesSolver != NUM_LES)
 		TiXmlElement::appendSingleAttributeElement(e, "LESSolver",
-												   NULL, std::string(),
+												   nullptr, std::string(),
 												   KeywordList::Keyword("SolverParameter::lesSolver_t", m_lesSolver));
 	if (m_preconditioner != NUM_PRE)
 		TiXmlElement::appendSingleAttributeElement(e, "Preconditioner",
-												   NULL, std::string(),
+												   nullptr, std::string(),
 												   KeywordList::Keyword("SolverParameter::precond_t", m_preconditioner));
 
 	// write parameter

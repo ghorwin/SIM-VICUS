@@ -58,7 +58,7 @@ public:
 		\param no_description	The optional argument is set to true, if there was no description
 		for this keyword, otherwise to false.
 	*/
-	static const char * Description(const char * const enumtype, int t, bool * no_description = NULL);
+	static const char * Description(const char * const enumtype, int t, bool * no_description = nullptr);
 
 	/*! Returns a default unit for an enum value t of type enumtype.
 		This function throws an exception if the enumeration type is invalid or unknown.
@@ -90,7 +90,7 @@ public:
 		\param kw 			The keyword string.
 		\param deprecated 	The optional argument is set the true if the keyword kw is deprecated.
 	*/
-	static int Enumeration(const char * const enumtype, const std::string & kw, bool * deprecated = NULL);
+	static int Enumeration(const char * const enumtype, const std::string & kw, bool * deprecated = nullptr);
 
 
 	/*!	Returns the maximum index for entries of a category in the keyword list.

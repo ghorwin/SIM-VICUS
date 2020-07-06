@@ -150,12 +150,12 @@ void ObjectList::writeXML(TiXmlElement * parent, bool detailedOutput) const {
 	e->SetAttribute("name",m_name);
 	TiXmlElement::appendSingleAttributeElement(	e,
 												"FilterType",
-												NULL, std::string(),
+												nullptr, std::string(),
 												KeywordList::Keyword("ModelInputReference::referenceType_t",m_filterType));
 	if (!m_filterID.empty()) {
 		TiXmlElement::appendSingleAttributeElement(	e,
 													"FilterID",
-													NULL, std::string(),
+													nullptr, std::string(),
 													m_filterID.encodedString());
 	}
 	if (!m_filterSpaceType.empty()) {
@@ -167,7 +167,7 @@ void ObjectList::writeXML(TiXmlElement * parent, bool detailedOutput) const {
 		}
 		TiXmlElement::appendSingleAttributeElement(	e,
 													"FilterSpaceType",
-													NULL, std::string(),
+													nullptr, std::string(),
 													spaceTypeString);
 	}
 	if (!m_filterDisplayName.empty()) {
@@ -175,7 +175,7 @@ void ObjectList::writeXML(TiXmlElement * parent, bool detailedOutput) const {
 			TiXmlComment::addComment(e,"Regular Expressions that are used for displayName string comparison.");
 		TiXmlElement::appendSingleAttributeElement(	e,
 													"FilterDisplayName",
-													NULL, std::string(),
+													nullptr, std::string(),
 													m_filterDisplayName);
 	}
 #endif

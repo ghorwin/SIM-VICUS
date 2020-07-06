@@ -165,7 +165,7 @@ void Schedules::DefaultParameters::writeXML(TiXmlElement * parent, bool detailed
 				days +=  ",";
 			days += KeywordList::Keyword("Schedules::day_t",*it);
 		}
-		TiXmlElement::appendSingleAttributeElement(e,"WeekEndDays",NULL,std::string(),days);
+		TiXmlElement::appendSingleAttributeElement(e,"WeekEndDays",nullptr,std::string(),days);
 	}
 
 	if (!m_holidays.empty()) {

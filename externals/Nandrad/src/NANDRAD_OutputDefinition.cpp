@@ -37,7 +37,7 @@ namespace NANDRAD {
 OutputDefinition::OutputDefinition():
 	m_fileType(FT_DATAIO),
 	m_timeType(OTT_NONE),
-	m_objectListRef(NULL)
+	m_objectListRef(nullptr)
 {
 }
 
@@ -108,24 +108,24 @@ void OutputDefinition::writeXML(TiXmlElement * parent) const {
 	parent->LinkEndChild(e);
 
 	if (!m_gridName.empty())
-		TiXmlElement::appendSingleAttributeElement(	e, "OutputGridName", NULL, std::string(), m_gridName);
+		TiXmlElement::appendSingleAttributeElement(	e, "OutputGridName", nullptr, std::string(), m_gridName);
 
 	if (!m_quantityName.empty()) {
-		TiXmlElement::appendSingleAttributeElement(e, "QuantityName", NULL, std::string(), m_quantityName);
+		TiXmlElement::appendSingleAttributeElement(e, "QuantityName", nullptr, std::string(), m_quantityName);
 	}
 	if (m_fileType != FT_DATAIO)
-		TiXmlElement::appendSingleAttributeElement(e, "FileType", NULL, std::string(),
+		TiXmlElement::appendSingleAttributeElement(e, "FileType", nullptr, std::string(),
 			KeywordList::Keyword("OutputDefinition::fileType_t", m_fileType));
 	if (m_timeType != OTT_NONE)
-		TiXmlElement::appendSingleAttributeElement(	e, "TimeType", NULL, std::string(),
+		TiXmlElement::appendSingleAttributeElement(	e, "TimeType", nullptr, std::string(),
 													KeywordList::Keyword("OutputDefinition::timeType_t",m_timeType));
 	if (!m_timeUnit.empty())
-		TiXmlElement::appendSingleAttributeElement(e, "TimeUnit", NULL, std::string(), m_timeUnit);
+		TiXmlElement::appendSingleAttributeElement(e, "TimeUnit", nullptr, std::string(), m_timeUnit);
 
 	if (!m_objectListName.empty())
-		TiXmlElement::appendSingleAttributeElement(	e, "ObjectListName", NULL, std::string(), m_objectListName);
+		TiXmlElement::appendSingleAttributeElement(	e, "ObjectListName", nullptr, std::string(), m_objectListName);
 	if (!m_quantity.empty())
-		TiXmlElement::appendSingleAttributeElement(	e, "Quantity", NULL, std::string(), m_quantity);
+		TiXmlElement::appendSingleAttributeElement(	e, "Quantity", nullptr, std::string(), m_quantity);
 }
 
 

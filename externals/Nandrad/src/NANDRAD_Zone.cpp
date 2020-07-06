@@ -35,7 +35,7 @@ Zone::Zone() :
 	m_spaceType("Default"),
 	m_zoneType(NUM_ZT),
 	m_location(NUM_ZL),
-	m_spaceTypeRef(NULL)
+	m_spaceTypeRef(nullptr)
 {
 }
 
@@ -224,7 +224,7 @@ void Zone::writeXML(TiXmlElement * parent, bool detailedOutput) const {
 		e->SetAttribute("location", KeywordList::Keyword("Zone::location_t", m_location));
 
 	if (m_spaceType != std::string("Default") )
-		TiXmlElement::appendSingleAttributeElement(e,"SpaceTypeName", NULL, std::string(), m_spaceType);
+		TiXmlElement::appendSingleAttributeElement(e,"SpaceTypeName", nullptr, std::string(), m_spaceType);
 
 	// write zone parameters
 	for (unsigned int i=0; i<NUM_ZP; ++i) {
@@ -244,7 +244,7 @@ void Zone::writeXML(TiXmlElement * parent, bool detailedOutput) const {
 					IBK::val2string<unsigned int>(m_viewFactors[i].first.second) + std::string(" ") +
 					IBK::val2string<double>(m_viewFactors[i].second) + std::string("\n");
 		}
-		TiXmlElement::appendSingleAttributeElement(e,"ViewFactors", NULL, std::string(), str);
+		TiXmlElement::appendSingleAttributeElement(e,"ViewFactors", nullptr, std::string(), str);
 	}
 	// write climate reference file
 	if (!m_climateFileDisplayName.empty() && !m_climateFileName.str().empty()) {
@@ -252,7 +252,7 @@ void Zone::writeXML(TiXmlElement * parent, bool detailedOutput) const {
 			m_climateFileName.c_str());
 	}
 	else if (!m_climateFileName.str().empty()) {
-		TiXmlElement::appendSingleAttributeElement(e, "ClimateReference", NULL, std::string(),
+		TiXmlElement::appendSingleAttributeElement(e, "ClimateReference", nullptr, std::string(),
 			m_climateFileName.c_str());
 	}
 	// FMU export definitions
