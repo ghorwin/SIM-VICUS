@@ -8,6 +8,9 @@
 /*! Contains information parsed from a header file. */
 class ClassInfo {
 public:
+	// Note: the Keyword-struct contains redundant data, for example the prefix in the category, which is
+	//       the same for the entire class. This is mainly a convenience issue, so that all keywords from all
+	//       files can be written together.
 	struct Keyword {
 		std::string		category;			// The enumeration type (full C++ type including class prefix)
 		std::string		keyword;			// The keyword as string
@@ -35,6 +38,8 @@ public:
 
 	void parse(const IBK::Path & filepath);
 
+	/*! Keywords collected from this class file. */
+	std::vector<Keyword>	m_keywords;
 };
 
 #endif // CLASSINFO_H
