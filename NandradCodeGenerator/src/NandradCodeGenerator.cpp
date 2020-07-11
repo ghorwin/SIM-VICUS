@@ -67,6 +67,16 @@ static std::string QT_HEADER;
 static std::string QT_CPP_HEADER;
 static std::string QT_CPP_FOOTER;
 
+const char * const SYNTAX =
+		"SYNTAX:  NandradCodeGenerator <namespace> <path/to/src> <generateQtSrc> <prefix> <ncg-dir>\n"
+		"         <namespace> is either DELPHIN or MM (used also to compose file names).\n"
+		"         <path/to/<lib>/src> is + separated list of input directories to read the header files from.\n"
+		"         Keyword list is written into the first (or only) source directory.\n"
+		"         <prefix> is the file prefix <prefix>_KeywordList.cpp.\n"
+		"         <generateQtSrc> is 1 when Qt source should be generated, 0 otherwise.\n"
+		"         <ncg-dir> is the path to the directory where ncg_xxx.cpp files are written to.\n";
+
+
 const char * const QT_HEADER_TEMPLATE =
 
 "#ifndef ${PREFIX}_KeywordListQtH\n"
@@ -339,24 +349,17 @@ const char * const CPP_FOOTER =
 
 int main(int argc, char *argv[]) {
 	std::cout << "-----------------------------------------------------------------------" << std::endl;
-	std::cout << "KeywordListCreator, copyright 2011 by Andreas Nicolai, Stefan Vogelsang" << std::endl;
+	std::cout << "NandradCodeGenerator, based on IBK KeywordListCreator" << std::endl;
 	std::cout << "Extracting keywords from header files..." << std::endl;
 
 
-	if (argc < 4 || argc > 6) {
-		std::cerr << "Arguments received(" << argc << ")" << std::endl;
+	if (argc != 6) {
+		std::cerr << argc << "Arguments received" << std::endl;
 		for (int i=0; i<argc; ++i)
 			std::cerr << "  " << argv[i] << std::endl;
 		std::cerr << std::endl;
+		std::cerr << SYNTAX << std::endl;
 
-		std::cerr << "SYNTAX:  keywordlistcreator <namespace> <path/to/src> <generateQtSrc> <prefix>" << std::endl << std::endl;
-		std::cerr << "         <namespace> is either DELPHIN or MM (used also to compose file names)." << std::endl;
-		std::cerr << "         <path/to/<lib>/src> is a '+' separated list of input directories, for example\n"
-					"         \"/home/me/model/src+/home/me/model/src/submodels\"\n"
-					"         Keyword list is written to first directory in list." << std::endl;
-		std::cerr << "         <generateQtSrc> is 1 when Qt source should be generated, 0 otherwise." << std::endl;
-		std::cerr << "         <prefix> is the file prefix <prefix>_KeywordList.*, <namespace> is used if prefix\n"
-					"         is not given." << std::endl;
 		return EXIT_FAILURE;
 	}
 
@@ -399,11 +402,11 @@ int main(int argc, char *argv[]) {
 	if ( isOt == "1")
 		isQtOutputRequired = true;
 
-	// optional fourth argument is file prefix
-	std::string prefix = NAMESPACE;
-	if (argc > 4)
-		prefix = argv[4];
+	// fourth argument is file prefix
+	std::string prefix = argv[4];
 
+	// target directory for ncg files
+	std::string ncg_dir = argv[5];
 
 	CPP_HEADER = CPP_HEADER_TEMPLATE;
 	HEADER = HEADER_TEMPLATE;
@@ -435,9 +438,6 @@ int main(int argc, char *argv[]) {
 	QT_CPP_HEADER.replace(QT_CPP_HEADER.find("${NAMESPACE}"),12, NAMESPACE);
 	QT_CPP_HEADER.replace(QT_CPP_HEADER.find("${PREFIX}"),9, prefix);
 
-
-
-
 	// write qt header
 	if ( isQtOutputRequired ) {
 		std::string fnameQt = inputDirectories[0] + "/../srcTranslations/" + prefix +"_KeywordListQt.h";
@@ -450,8 +450,8 @@ int main(int argc, char *argv[]) {
 	if (!file_exists(fname))
 		generate_header_code( fname, false );
 
+	// now process all source directories and parse input files
 	std::vector<ClassInfo::Keyword> keywordlist;
-
 	std::vector<ClassInfo> classInfo;
 
 	// parse all directories
@@ -476,8 +476,6 @@ int main(int argc, char *argv[]) {
 				classInfo.push_back(c);
 				keywordlist.insert(keywordlist.end(), c.m_keywords.begin(), c.m_keywords.end());
 			}
-//			if (!parse_headers((*it), hfiles, keywordlist ))
-//				return EXIT_FAILURE;
 			std::cout << keywordlist.size() - lastCount << " keywords in " << *it << std::endl;
 			lastCount = keywordlist.size();
 		}

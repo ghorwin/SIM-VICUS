@@ -38,8 +38,13 @@ public:
 
 	void parse(const IBK::Path & filepath);
 
+	IBK::Path				m_sourceHeaderFile;
+
 	/*! Keywords collected from this class file. */
 	std::vector<Keyword>	m_keywords;
+	std::vector<EnumInfo>	m_enumInfo;
+	std::vector<XMLInfo>	m_xmlInfo;
+
 };
 
 #endif // CLASSINFO_H
