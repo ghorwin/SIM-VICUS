@@ -51,7 +51,6 @@ Example syntax:
 
 bool file_exists(const std::string& dirname);
 bool listHeaders(const std::string & dir, std::vector<std::string> & files);
-double string2val(const std::string& str);
 
 bool write_keyword_data(const std::string& output_file, const std::vector<ClassInfo::Keyword>& keywordlist);
 bool generate_keywordlist_code(const std::string& output_file, const std::vector<ClassInfo::Keyword>& keywordlist );
@@ -69,9 +68,9 @@ static std::string QT_CPP_FOOTER;
 
 const char * const SYNTAX =
 		"SYNTAX:  NandradCodeGenerator <namespace> <path/to/src> <generateQtSrc> <prefix> <ncg-dir>\n"
-		"         <namespace> is either DELPHIN or MM (used also to compose file names).\n"
+		"         <namespace> is usually NANDRAD (used also to compose file names).\n"
 		"         <path/to/<lib>/src> is + separated list of input directories to read the header files from.\n"
-		"         Keyword list is written into the first (or only) source directory.\n"
+		"         Keywordlist-source files are written into the first (or only) source directory.\n"
 		"         <prefix> is the file prefix <prefix>_KeywordList.cpp.\n"
 		"         <generateQtSrc> is 1 when Qt source should be generated, 0 otherwise.\n"
 		"         <ncg-dir> is the path to the directory where ncg_xxx.cpp files are written to.\n";
@@ -354,7 +353,8 @@ int main(int argc, char *argv[]) {
 
 
 	if (argc != 6) {
-		std::cerr << argc << "Arguments received" << std::endl;
+		std::cerr << "Invalid syntax." << std::endl;
+		std::cerr << argc << " Arguments received" << std::endl;
 		for (int i=0; i<argc; ++i)
 			std::cerr << "  " << argv[i] << std::endl;
 		std::cerr << std::endl;
@@ -970,20 +970,5 @@ bool write_keyword_data(const std::string& output_file, const std::vector<ClassI
 		}
 	}
 	return out.good();
-}
-
-/*! Attempts to extract a numerical value from a string.
-	\code
-	double val = string2val<double>("2.5");
-	\endcode
-*/
-double string2val(const std::string& str) {
-	double val;
-	if (str=="1.#QNAN")
-		return std::numeric_limits<double>::quiet_NaN();
-	std::stringstream strm(str);
-	if (!(strm >> val))
-		throw std::runtime_error( "Could not convert"+str+"into value." );
-	return val;
 }
 

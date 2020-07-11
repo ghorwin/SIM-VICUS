@@ -45,6 +45,11 @@ public:
 	std::vector<EnumInfo>	m_enumInfo;
 	std::vector<XMLInfo>	m_xmlInfo;
 
+private:
+	Keyword parseKeywordLine(const std::string& line, std::map< std::string, int > mapReplacementsToInt );
 };
+
+double string2val(const std::string& str);
+
 
 #endif // CLASSINFO_H

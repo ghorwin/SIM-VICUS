@@ -1,11 +1,54 @@
 #include "ClassInfo.h"
 
-// Prototypes
-//ClassInfo::Keyword parse_keyword_line(const std::string & line, std::map< std::string, int > mapReplacementsToInt );
-//void trim(std::string& str);
-//std::string stripSpaces(const std::string & input);
-//void trimLastBracket(std::string& str);
-//bool parse_headers(const std::string& src_dir, const std::vector<std::string>& hfiles, std::vector<Keyword>& keywordlist );
+#include <iostream>
+#include <fstream>
+#include <stdexcept>
+
+
+void trim(std::string& str) {
+	size_t f = str.find_first_not_of(" \t\r\n");
+	size_t l = str.find_last_not_of(" \t\r\n");
+	if (f!=std::string::npos && l!=std::string::npos)
+		str = str.substr(f,l-f+1);
+}
+
+void trimLastBracket(std::string& str) {
+	size_t l = str.find_last_not_of("{");
+	if (l!=std::string::npos)
+		str = str.substr(0,l+1);
+}
+
+
+std::string stripSpaces(const std::string & input) {
+	std::string tmp;
+
+	for (unsigned int inputStringIndex = 0, stringSize = input.size();
+		inputStringIndex < stringSize; inputStringIndex++ )
+	{
+
+		if (input[inputStringIndex] != ' ' && input[inputStringIndex] != '\t'){
+			tmp.push_back(input[inputStringIndex]);
+		}
+
+	}
+	return tmp;
+}
+
+
+/*! Attempts to extract a numerical value from a string.
+	\code
+	double val = string2val<double>("2.5");
+	\endcode
+*/
+double string2val(const std::string& str) {
+	double val;
+	if (str=="1.#QNAN")
+		return std::numeric_limits<double>::quiet_NaN();
+	std::stringstream strm(str);
+	if (!(strm >> val))
+		throw std::runtime_error( "Could not convert"+str+"into value." );
+	return val;
+}
 
 
 ClassInfo::ClassInfo() {
@@ -15,6 +58,291 @@ ClassInfo::ClassInfo() {
 
 void ClassInfo::parse(const IBK::Path & filepath) {
 
+	// store time stamp of input file
+
+	// open file
+	std::ifstream in(filepath.c_str());
+	if (!in) {
+		std::cerr << "Error opening file '" << filepath.str() << "'!"<< std::endl;
+		throw std::runtime_error("read error");
+	}
+
+	std::string line, classname, enumname;
+	std::size_t pos;
+
+	// read line by line until end of file is found
+	while (getline(in, line)) {
+		// get class declaration and remember in which class we are
+		pos = line.find("class");
+		if (pos != std::string::npos) {
+			classname = line.substr(pos+6); // might be "ThisAndThat: public Parent {"
+			pos = classname.find_first_of(" \t{:/\n");
+			classname = classname.substr(0, pos);
+		}
+
+		// get enum name
+		pos = line.find("enum");
+		if (pos != std::string::npos) {
+			enumname = line.substr(pos+4);
+			pos = enumname.find_first_of(" \t{/\n");
+			enumname = enumname.substr(0, pos);
+		}
+
+		// now look for comments of certain type
+		pos = line.find("// Keyword:");
+		if (pos != std::string::npos) {
+			// this line holds an enumeration value
+//			std::string kwenum = line.substr(0, pos);
+//			std::string kwline;
+//			pos = enumname.find_first_of(" \t{/\n");
+//			enumname = enumname.substr(0, pos);
+		}
+	}
+
+}
+
+
+
+
+/*!
+	return type kw.index
+	0...32000 setup index
+	-1 error
+	-2 enumeration without set index
+*/
+ClassInfo::Keyword ClassInfo::parseKeywordLine(const std::string& line, std::map< std::string, int > mapReplacementsToInt ) {
+
+	Keyword kw;
+	kw.index = -2;
+	unsigned int base;
+	int resultI = 0;
+	unsigned int size;
+
+
+	// search for a = to fix enumeration
+	size_t posEqual = line.find("=");
+	size_t pos = line.find("Keyword:");
+
+	// we found an enumeration now we have to extract it
+	if (posEqual<pos){
+
+		// get substring containing only the number
+		std::string number;
+		size_t posNumberEnd = line.find(",");
+		if ( posNumberEnd != std::string::npos ) {
+			number = line.substr( posEqual+1, posNumberEnd-posEqual-1 );
+		} else {
+			size_t posNumberEnd = line.find("/");
+			number = line.substr( posEqual+1, posNumberEnd-posEqual-1 );
+		}
+
+		// strip all spaces
+		number = stripSpaces(number);
+
+		// check if number needs to be replaced by integer representing value
+		for (
+			 std::map< std::string, int >::const_iterator it = mapReplacementsToInt.begin(),
+			 end = mapReplacementsToInt.end();
+			 it != end;
+			 ++it
+			)
+		{
+
+			// check if we can find th complete replacement code
+			size_t posReplacements = number.find( it->first );
+			if ( posReplacements != std::string::npos ){
+				// found it so we assign the kw index and go
+				kw.index = it->second;
+				goto noParsingNeeded;
+			}
+
+		}
+
+
+		// hex or no hex
+		posEqual = number.find("0x");
+		if ( posEqual == std::string::npos ){
+
+			// unsigned int or int found
+			posEqual = number.find("-");
+			base = 1;
+			if ( posEqual == std::string::npos ){
+
+				// unsigned int found
+				// copy number in reverse
+				// convert hex string to unsigned int
+				size = number.size();
+				while (size--){
+
+					// is character a number
+					if ( number[size] < 58 && number[size] > 47 ){
+						resultI += (number[size]-48) * base;
+						base *= 10;
+					} else {
+						throw std::runtime_error("Invalid decimal format in line '"+line+"'.");
+					}
+
+				} // while (size--){
+
+
+			} else {
+
+				// int found
+				throw std::runtime_error("Invalid int format not supported yet.");
+
+			}
+
+		} else {
+
+			// copy number in reverse
+			// hexadecimal number found
+			// convert hex string to unsigned int
+
+			// strip hex preface
+			number = number.substr( posEqual+2 );
+			// strip spaces
+			size = number.size();
+			base = 1;
+
+			while (size--){
+
+				// is character a number
+				if ( number[size] < 58 && number[size] > 47 ){
+
+					resultI += (number[size]-48) * base;
+					base *= 16;
+
+				} else {
+
+					// upper case ascii hex
+					if ( number[size] < 71 && number[size] > 64 ){
+
+						resultI += (number[size]-55) * base;
+						base *= 16;
+
+					} else {
+
+						// lower case ascii hex
+						if ( number[size] < 103 && number[size] > 96 ){
+
+							resultI += (number[size]-87) * base;
+							base *= 16;
+
+						} else {
+
+							// error during parsing
+							/// \todo print some error here
+							throw std::runtime_error("Invalid hexadecimal format.");
+
+						} // else if (number[size]){
+
+					} // else if (number[size]){
+
+				}  // else if ( number[size] < 58 && number[size] > 47 ){
+
+			} // while (size--) {
+
+		} // else if ( posEqual == std::string::npos ){
+
+		kw.index = resultI;
+
+	} // if (posEqual!=std::string::npos){
+
+
+	// this is ugly I know but we can shortcut a lot of code here
+	noParsingNeeded:
+
+	if (pos==std::string::npos){
+		kw.index = -1;
+		return kw; // index==-1  -> no Keyword extracted
+	}
+
+	std::string remaining_line = line.substr(pos+9, std::string::npos);
+	trim(remaining_line);
+
+	if (remaining_line.empty()){
+		kw.index = -1;
+		return kw; // index==-1  -> no Keyword extracted
+	}
+
+	// we parse the string back to front, starting with the description text
+	size_t substart = remaining_line.find('\'');
+	size_t subend = remaining_line.rfind('\'');
+	if (substart != std::string::npos && subend != std::string::npos) {
+		if (subend == substart)
+			throw std::runtime_error("Found only on ' in keyword line.");
+		kw.description = remaining_line.substr(substart+1, subend - substart - 1);
+		trim(kw.description);
+		remaining_line = remaining_line.substr(0, substart);
+		trim(remaining_line);
+	}
+
+
+	// do we have a default value?
+	kw.defaultValue = std::numeric_limits<double>::quiet_NaN();
+	subend = remaining_line.rfind('}');
+	substart = remaining_line.rfind('{', subend);
+	if (substart != std::string::npos) {
+		if (subend == std::string::npos)
+			throw std::runtime_error("Missing closing } in keyword line.");
+		std::string defaultValue = remaining_line.substr(substart+1, subend - substart - 1);
+		trim(defaultValue);
+		// convert
+		try {
+			kw.defaultValue=string2val(defaultValue);
+		} catch(...){
+				throw std::runtime_error("Double conversion failed.");
+		}
+		remaining_line = remaining_line.substr(0, substart);
+		trim(remaining_line);
+	}
+	else {
+		if (subend != std::string::npos)
+			throw std::runtime_error("Found closing } without opening { in keyword line.");
+	}
+
+
+	// do we have a color value?
+	kw.color = "#FFFFFF";
+	subend = remaining_line.rfind('>');
+	substart = remaining_line.rfind('<', subend);
+	if (substart != std::string::npos) {
+		if (subend == std::string::npos)
+			throw std::runtime_error("Missing closing > in keyword line.");
+		std::string colorValue = remaining_line.substr(substart+1, subend - substart - 1);
+		trim(colorValue);
+		kw.color = colorValue;
+		remaining_line = remaining_line.substr(0, substart);
+		trim(remaining_line);
+	}
+	else {
+		if (subend != std::string::npos)
+			throw std::runtime_error("Found closing > without opening < in keyword line.");
+	}
+
+
+	// do we have a default unit?
+	subend = remaining_line.rfind(']');
+	substart = remaining_line.rfind('[', subend);
+	if (substart != std::string::npos) {
+		if (subend == std::string::npos)
+			throw std::runtime_error("Missing closing ] in keyword line.");
+		kw.unit = remaining_line.substr(substart+1, subend - substart - 1);
+		trim(kw.unit);
+		remaining_line = remaining_line.substr(0, substart);
+		trim(remaining_line);
+	}
+	else {
+		if (subend != std::string::npos)
+			throw std::runtime_error("Found closing ] without opening [ in keyword line.");
+	}
+
+
+	if (remaining_line.empty())
+		throw std::runtime_error("Missing keyword before unit or description.");
+	kw.keyword = remaining_line; // may contain multiple keywords
+
+	return kw;
 }
 
 
@@ -435,276 +763,5 @@ bool parse_headers(const std::string& src_dir, const std::vector<std::string>& h
 	return true;
 }
 
-
-void trim(std::string& str) {
-	size_t f = str.find_first_not_of(" \t\r\n");
-	size_t l = str.find_last_not_of(" \t\r\n");
-	if (f!=std::string::npos && l!=std::string::npos)
-		str = str.substr(f,l-f+1);
-}
-
-void trimLastBracket(std::string& str) {
-	size_t l = str.find_last_not_of("{");
-	if (l!=std::string::npos)
-		str = str.substr(0,l+1);
-}
-
-
-std::string stripSpaces(const std::string & input) {
-	std::string tmp;
-
-	for (unsigned int inputStringIndex = 0, stringSize = input.size();
-		inputStringIndex < stringSize; inputStringIndex++ )
-	{
-
-		if (input[inputStringIndex] != ' ' && input[inputStringIndex] != '\t'){
-			tmp.push_back(input[inputStringIndex]);
-		}
-
-	}
-	return tmp;
-}
-
-
-/*!
-	return type kw.index
-	0...32000 setup index
-	-1 error
-	-2 enumeration without set index
-*/
-Keyword parse_keyword_line(const std::string& line, std::map< std::string, int > mapReplacementsToInt ) {
-
-	Keyword kw;
-	kw.index = -2;
-	unsigned int base;
-	int resultI = 0;
-	unsigned int size;
-
-
-	// search for a = to fix enumeration
-	size_t posEqual = line.find("=");
-	size_t pos = line.find("Keyword:");
-
-	// we found an enumeration now we have to extract it
-	if (posEqual<pos){
-
-		// get substring containing only the number
-		std::string number;
-		size_t posNumberEnd = line.find(",");
-		if ( posNumberEnd != std::string::npos ) {
-			number = line.substr( posEqual+1, posNumberEnd-posEqual-1 );
-		} else {
-			size_t posNumberEnd = line.find("/");
-			number = line.substr( posEqual+1, posNumberEnd-posEqual-1 );
-		}
-
-		// strip all spaces
-		number = stripSpaces(number);
-
-		// check if number needs to be replaced by integer representing value
-		for (
-			 std::map< std::string, int >::const_iterator it = mapReplacementsToInt.begin(),
-			 end = mapReplacementsToInt.end();
-			 it != end;
-			 ++it
-			)
-		{
-
-			// check if we can find th complete replacement code
-			size_t posReplacements = number.find( it->first );
-			if ( posReplacements != std::string::npos ){
-				// found it so we assign the kw index and go
-				kw.index = it->second;
-				goto noParsingNeeded;
-			}
-
-		}
-
-
-		// hex or no hex
-		posEqual = number.find("0x");
-		if ( posEqual == std::string::npos ){
-
-			// unsigned int or int found
-			posEqual = number.find("-");
-			base = 1;
-			if ( posEqual == std::string::npos ){
-
-				// unsigned int found
-				// copy number in reverse
-				// convert hex string to unsigned int
-				size = number.size();
-				while (size--){
-
-					// is character a number
-					if ( number[size] < 58 && number[size] > 47 ){
-						resultI += (number[size]-48) * base;
-						base *= 10;
-					} else {
-						throw std::runtime_error("Invalid decimal format in line '"+line+"'.");
-					}
-
-				} // while (size--){
-
-
-			} else {
-
-				// int found
-				throw std::runtime_error("Invalid int format not supported yet.");
-
-			}
-
-		} else {
-
-			// copy number in reverse
-			// hexadecimal number found
-			// convert hex string to unsigned int
-
-			// strip hex preface
-			number = number.substr( posEqual+2 );
-			// strip spaces
-			size = number.size();
-			base = 1;
-
-			while (size--){
-
-				// is character a number
-				if ( number[size] < 58 && number[size] > 47 ){
-
-					resultI += (number[size]-48) * base;
-					base *= 16;
-
-				} else {
-
-					// upper case ascii hex
-					if ( number[size] < 71 && number[size] > 64 ){
-
-						resultI += (number[size]-55) * base;
-						base *= 16;
-
-					} else {
-
-						// lower case ascii hex
-						if ( number[size] < 103 && number[size] > 96 ){
-
-							resultI += (number[size]-87) * base;
-							base *= 16;
-
-						} else {
-
-							// error during parsing
-							/// \todo print some error here
-							throw std::runtime_error("Invalid hexadecimal format.");
-
-						} // else if (number[size]){
-
-					} // else if (number[size]){
-
-				}  // else if ( number[size] < 58 && number[size] > 47 ){
-
-			} // while (size--) {
-
-		} // else if ( posEqual == std::string::npos ){
-
-		kw.index = resultI;
-
-	} // if (posEqual!=std::string::npos){
-
-
-	// this is ugly I know but we can shortcut a lot of code here
-	noParsingNeeded:
-
-	if (pos==std::string::npos){
-		kw.index = -1;
-		return kw; // index==-1  -> no Keyword extracted
-	}
-
-	std::string remaining_line = line.substr(pos+9, std::string::npos);
-	trim(remaining_line);
-
-	if (remaining_line.empty()){
-		kw.index = -1;
-		return kw; // index==-1  -> no Keyword extracted
-	}
-
-	// we parse the string back to front, starting with the description text
-	size_t substart = remaining_line.find('\'');
-	size_t subend = remaining_line.rfind('\'');
-	if (substart != std::string::npos && subend != std::string::npos) {
-		if (subend == substart)
-			throw std::runtime_error("Found only on ' in keyword line.");
-		kw.description = remaining_line.substr(substart+1, subend - substart - 1);
-		trim(kw.description);
-		remaining_line = remaining_line.substr(0, substart);
-		trim(remaining_line);
-	}
-
-
-	// do we have a default value?
-	kw.defaultValue = std::numeric_limits<double>::quiet_NaN();
-	subend = remaining_line.rfind('}');
-	substart = remaining_line.rfind('{', subend);
-	if (substart != std::string::npos) {
-		if (subend == std::string::npos)
-			throw std::runtime_error("Missing closing } in keyword line.");
-		std::string defaultValue = remaining_line.substr(substart+1, subend - substart - 1);
-		trim(defaultValue);
-		// convert
-		try {
-			kw.defaultValue=string2val(defaultValue);
-		} catch(...){
-				throw std::runtime_error("Double conversion failed.");
-		}
-		remaining_line = remaining_line.substr(0, substart);
-		trim(remaining_line);
-	}
-	else {
-		if (subend != std::string::npos)
-			throw std::runtime_error("Found closing } without opening { in keyword line.");
-	}
-
-
-	// do we have a color value?
-	kw.color = "#FFFFFF";
-	subend = remaining_line.rfind('>');
-	substart = remaining_line.rfind('<', subend);
-	if (substart != std::string::npos) {
-		if (subend == std::string::npos)
-			throw std::runtime_error("Missing closing > in keyword line.");
-		std::string colorValue = remaining_line.substr(substart+1, subend - substart - 1);
-		trim(colorValue);
-		kw.color = colorValue;
-		remaining_line = remaining_line.substr(0, substart);
-		trim(remaining_line);
-	}
-	else {
-		if (subend != std::string::npos)
-			throw std::runtime_error("Found closing > without opening < in keyword line.");
-	}
-
-
-	// do we have a default unit?
-	subend = remaining_line.rfind(']');
-	substart = remaining_line.rfind('[', subend);
-	if (substart != std::string::npos) {
-		if (subend == std::string::npos)
-			throw std::runtime_error("Missing closing ] in keyword line.");
-		kw.unit = remaining_line.substr(substart+1, subend - substart - 1);
-		trim(kw.unit);
-		remaining_line = remaining_line.substr(0, substart);
-		trim(remaining_line);
-	}
-	else {
-		if (subend != std::string::npos)
-			throw std::runtime_error("Found closing ] without opening [ in keyword line.");
-	}
-
-
-	if (remaining_line.empty())
-		throw std::runtime_error("Missing keyword before unit or description.");
-	kw.keyword = remaining_line; // may contain multiple keywords
-
-	return kw;
-}
 
 #endif
