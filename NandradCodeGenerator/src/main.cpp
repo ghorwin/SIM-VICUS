@@ -28,14 +28,14 @@ const char * const SYNTAX =
 // ******* MAIN ********
 
 int main(int argc, char *argv[]) {
-	std::cout << "-----------------------------------------------------------------------" << std::endl;
-	std::cout << "NandradCodeGenerator, based on IBK KeywordListCreator" << std::endl;
-	std::cout << "Extracting keywords from header files..." << std::endl;
+	std::cout << "--------------------------------------------------------------------------" << std::endl;
+	std::cout << "NandradCodeGenerator - SIM-VICUS project (based on IBK-KeywordListCreator)" << std::endl;
+	std::cout << "--------------------------------------------------------------------------" << std::endl;
 
 	if (argc != 6) {
 		std::cerr << "Invalid syntax." << std::endl;
-		std::cerr << argc << " Arguments received" << std::endl;
-		for (int i=0; i<argc; ++i)
+		std::cerr << argc-1 << " Arguments received" << std::endl;
+		for (int i=1; i<argc; ++i)
 			std::cerr << "  " << argv[i] << std::endl;
 		std::cerr << std::endl;
 		std::cerr << SYNTAX << std::endl;
@@ -52,6 +52,8 @@ int main(int argc, char *argv[]) {
 
 	cg.generateKeywordList();
 	cg.generateReadWriteCode();
+
+	std::cout << "--------------------------------------------------------------------------" << std::endl;
 
 	return EXIT_SUCCESS;
 }

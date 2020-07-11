@@ -4,13 +4,7 @@
 #include <fstream>
 #include <stdexcept>
 
-
-void trim(std::string& str) {
-	size_t f = str.find_first_not_of(" \t\r\n");
-	size_t l = str.find_last_not_of(" \t\r\n");
-	if (f!=std::string::npos && l!=std::string::npos)
-		str = str.substr(f,l-f+1);
-}
+#include <IBK_StringUtils.h>
 
 void trimLastBracket(std::string& str) {
 	size_t l = str.find_last_not_of("{");
@@ -35,22 +29,6 @@ std::string stripSpaces(const std::string & input) {
 }
 
 
-/*! Attempts to extract a numerical value from a string.
-	\code
-	double val = string2val<double>("2.5");
-	\endcode
-*/
-double string2val(const std::string& str) {
-	double val;
-	if (str=="1.#QNAN")
-		return std::numeric_limits<double>::quiet_NaN();
-	std::stringstream strm(str);
-	if (!(strm >> val))
-		throw std::runtime_error( "Could not convert"+str+"into value." );
-	return val;
-}
-
-
 bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 
 	// store time stamp of input file
@@ -62,38 +40,56 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 		throw std::runtime_error("read error");
 	}
 
+	m_sourceHeaderFile = headerFilePath;
+
 	std::string line, classname, enumname;
 	std::size_t pos;
 
 	// read line by line until end of file is found
 	while (getline(in, line)) {
-		// get class declaration and remember in which class we are
-		pos = line.find("class");
-		if (pos != std::string::npos) {
-			classname = line.substr(pos+6); // might be "ThisAndThat: public Parent {"
-			pos = classname.find_first_of(" \t{:/\n");
-			classname = classname.substr(0, pos);
-		}
+		try {
 
-		// get enum name
-		pos = line.find("enum");
-		if (pos != std::string::npos) {
-			enumname = line.substr(pos+4);
-			pos = enumname.find_first_of(" \t{/\n");
-			enumname = enumname.substr(0, pos);
-		}
+			// get class declaration and remember in which class we are
+			pos = line.find("class");
+			if (pos != std::string::npos && pos+6 < line.size()) {
+				classname = line.substr(pos+6); // might be "ThisAndThat: public Parent {"
+				pos = classname.find_first_of(" \t{:/\n");
+				// guard against pure forward-declaration, in which case the first char after the class will be a ;
+				classname = classname.substr(0, pos);
+				IBK::trim(classname);
+				if (classname.back() == ';')
+					continue; // skip this line
+	//			std::cout << line << std::endl;
+	//			std::cout << "class " << classname << std::endl;
+				continue;
+			}
 
-		// now look for comments of certain type
-		pos = line.find("// Keyword:");
-		if (pos != std::string::npos) {
-			// this line holds an enumeration value
-//			std::string kwenum = line.substr(0, pos);
-//			std::string kwline;
-//			pos = enumname.find_first_of(" \t{/\n");
-//			enumname = enumname.substr(0, pos);
+			// get enum name
+			pos = line.find("enum ");
+			if (pos != std::string::npos) {
+				enumname = line.substr(pos+4);
+				IBK::trim(enumname);
+				pos = enumname.find_first_of(" \t{/\n");
+				enumname = enumname.substr(0, pos);
+	//			std::cout << line << std::endl;
+				std::cout << "enum " << classname << "::" << enumname << std::endl;
+				continue;
+			}
+
+			// now look for comments of certain type
+			pos = line.find("// Keyword:");
+			if (pos != std::string::npos) {
+				// this line holds an enumeration value
+	//			std::string kwenum = line.substr(0, pos);
+	//			std::string kwline;
+	//			pos = enumname.find_first_of(" \t{/\n");
+	//			enumname = enumname.substr(0, pos);
+			}
+		} catch (...) {
+			std::cerr << "Parse error in line '"<< line << "'" << std::endl;
 		}
 	}
-
+	return true;
 }
 
 
@@ -253,7 +249,7 @@ ClassInfo::Keyword ClassInfo::parseKeywordLine(const std::string& line, std::map
 	}
 
 	std::string remaining_line = line.substr(pos+9, std::string::npos);
-	trim(remaining_line);
+	IBK::trim(remaining_line);
 
 	if (remaining_line.empty()){
 		kw.index = -1;
@@ -267,9 +263,9 @@ ClassInfo::Keyword ClassInfo::parseKeywordLine(const std::string& line, std::map
 		if (subend == substart)
 			throw std::runtime_error("Found only on ' in keyword line.");
 		kw.description = remaining_line.substr(substart+1, subend - substart - 1);
-		trim(kw.description);
+		IBK::trim(kw.description);
 		remaining_line = remaining_line.substr(0, substart);
-		trim(remaining_line);
+		IBK::trim(remaining_line);
 	}
 
 
@@ -281,15 +277,15 @@ ClassInfo::Keyword ClassInfo::parseKeywordLine(const std::string& line, std::map
 		if (subend == std::string::npos)
 			throw std::runtime_error("Missing closing } in keyword line.");
 		std::string defaultValue = remaining_line.substr(substart+1, subend - substart - 1);
-		trim(defaultValue);
+		IBK::trim(defaultValue);
 		// convert
 		try {
-			kw.defaultValue=string2val(defaultValue);
+			kw.defaultValue = IBK::string2val<double>(defaultValue);
 		} catch(...){
 				throw std::runtime_error("Double conversion failed.");
 		}
 		remaining_line = remaining_line.substr(0, substart);
-		trim(remaining_line);
+		IBK::trim(remaining_line);
 	}
 	else {
 		if (subend != std::string::npos)
@@ -305,10 +301,10 @@ ClassInfo::Keyword ClassInfo::parseKeywordLine(const std::string& line, std::map
 		if (subend == std::string::npos)
 			throw std::runtime_error("Missing closing > in keyword line.");
 		std::string colorValue = remaining_line.substr(substart+1, subend - substart - 1);
-		trim(colorValue);
+		IBK::trim(colorValue);
 		kw.color = colorValue;
 		remaining_line = remaining_line.substr(0, substart);
-		trim(remaining_line);
+		IBK::trim(remaining_line);
 	}
 	else {
 		if (subend != std::string::npos)
@@ -323,9 +319,9 @@ ClassInfo::Keyword ClassInfo::parseKeywordLine(const std::string& line, std::map
 		if (subend == std::string::npos)
 			throw std::runtime_error("Missing closing ] in keyword line.");
 		kw.unit = remaining_line.substr(substart+1, subend - substart - 1);
-		trim(kw.unit);
+		IBK::trim(kw.unit);
 		remaining_line = remaining_line.substr(0, substart);
-		trim(remaining_line);
+		IBK::trim(remaining_line);
 	}
 	else {
 		if (subend != std::string::npos)
@@ -372,7 +368,7 @@ bool parse_headers(const std::string& src_dir, const std::vector<std::string>& h
 				pos = line.find("class");
 				if (pos != std::string::npos && (pos+6<line.size()) ) {
 					classname = line.substr(pos+6);
-					trim(classname);
+					IBK::trim(classname);
 					trimLastBracket(classname);
 					if (classname.empty()) {
 						in >> classname;
@@ -422,7 +418,7 @@ bool parse_headers(const std::string& src_dir, const std::vector<std::string>& h
 					std::string partLine = line.substr(pos+20, std::string::npos);
 
 					// trim both ends of spaces
-					trim(partLine);
+					IBK::trim(partLine);
 
 					// split line at space
 					size_t posSpace = partLine.find_first_of(" \t");
@@ -432,8 +428,8 @@ bool parse_headers(const std::string& src_dir, const std::vector<std::string>& h
 					std::string path = partLine.substr(posSpace, std::string::npos);
 
 					// trim again
-					trim(constant);
-					trim(path);
+					IBK::trim(constant);
+					IBK::trim(path);
 
 					// assign
 					constantsMappings[constant] = path;
@@ -502,7 +498,7 @@ bool parse_headers(const std::string& src_dir, const std::vector<std::string>& h
 								pos = includeLine.find("class");
 								if (pos != std::string::npos && (pos+6<includeLine.size()) ) {
 									includeClassName = includeLine.substr(pos+6);
-									trim(includeClassName);
+									IBK::trim(includeClassName);
 									trimLastBracket(includeClassName);
 									if (includeClassName.empty()) {
 										inIncludeFile >> includeClassName;
@@ -707,7 +703,7 @@ bool parse_headers(const std::string& src_dir, const std::vector<std::string>& h
 						return false;
 					}
 					category.erase( pos );
-					trim(category);
+					IBK::trim(category);
 					keycount=0;
 
 					continue;
