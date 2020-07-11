@@ -34,10 +34,9 @@ public:
 		std::string		typeStr;	// C++ type string
 	};
 
-	ClassInfo();
 
-
-	void parse(const IBK::Path & filepath);
+	/*! This function parses the given header file and extracts all data needed by the code generator. */
+	bool parse(const IBK::Path & headerFilePath);
 
 	IBK::Path				m_sourceHeaderFile;
 

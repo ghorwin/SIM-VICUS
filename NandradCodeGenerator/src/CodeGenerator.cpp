@@ -113,8 +113,10 @@ bool CodeGenerator::parseDirectories() {
 	{
 		// get list of header files
 		std::vector< std::string> hfiles;
-		if (!listHeaders(*it, hfiles))
-			return false;
+		if (!listHeaders(*it, hfiles)) {
+			std::cerr << "Please check the supplied list of input directories!" << std::endl;
+			return false; // something wrong with the input directories
+		}
 
 		try {
 			// parse files
@@ -122,7 +124,10 @@ bool CodeGenerator::parseDirectories() {
 			std::cout << "Parsing " << hfiles.size() << " header files" << std::endl;
 			for (const std::string & h : hfiles) {
 				ClassInfo c;
-				c.parse(IBK::Path(*it) / h);
+				if (!c.parse(IBK::Path(*it) / h)) {
+					std::cerr << "Error while parsing input files." << std::endl;
+					return false;
+				}
 				m_classInfo.push_back(c);
 				m_keywordlist.insert(m_keywordlist.end(), c.m_keywords.begin(), c.m_keywords.end());
 			}

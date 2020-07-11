@@ -51,19 +51,14 @@ double string2val(const std::string& str) {
 }
 
 
-ClassInfo::ClassInfo() {
-
-}
-
-
-void ClassInfo::parse(const IBK::Path & filepath) {
+bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 
 	// store time stamp of input file
 
 	// open file
-	std::ifstream in(filepath.c_str());
+	std::ifstream in(headerFilePath.c_str());
 	if (!in) {
-		std::cerr << "Error opening file '" << filepath.str() << "'!"<< std::endl;
+		std::cerr << "Error opening file '" << headerFilePath.str() << "'!"<< std::endl;
 		throw std::runtime_error("read error");
 	}
 

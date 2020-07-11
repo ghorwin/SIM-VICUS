@@ -1,9 +1,14 @@
 /*!
+
 NandradCodeGenerator - creates NANDRAD_KeywordList.cpp and class-specific implementation files
+This file is part of the SIM-VICUS project. See LICENSE file for details.
+
+Authors: Andreas Nicolai @ IBK/TU-Dresden
 
 Example syntax:
 
-> NandradCodeGenerator NANDRAD /path/to/NANDRAD/src
+	> NandradCodeGenerator NANDRAD /path/to/NANDRAD/src
+
 */
 
 #include <iostream>
