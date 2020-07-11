@@ -25,6 +25,7 @@ public:
 
 	struct EnumInfo {
 		std::string		categoryName;
+		std::string		enumNUM;
 		int				count;
 	};
 
@@ -46,7 +47,12 @@ public:
 	std::vector<XMLInfo>	m_xmlInfo;
 
 private:
-	Keyword parseKeywordLine(const std::string& line, std::map< std::string, int > mapReplacementsToInt );
+	/*! Takes the string kwpara, searches for given delimiters (2) at end of string, and if presents takes
+		the string between the delimiters and returns the string in as token. Also trimmes the kwpara string to exclude
+		the extracted string and delimiters.
+		If delimiters are not found, kwpara remains unmodified.
+	*/
+	void extractToken(std::string & kwpara, char delimiter, std::string & token);
 };
 
 
