@@ -432,3 +432,100 @@ TiXmlElement * Sensor::writeXML(TiXmlElement * parent, bool detailedOutput) cons
 ====
 When the code generator creates `readXMLPrivate()` functions, the check for unknown elements is not generated (see <<generated_readXML, original readXML-function>>, since it can be expected that other (custom) elements are present inside the parsed XML-tag.
 ====
+
+## Specifications
+
+### Keyword List Support
+
+The parse requires fairly consistent code to be recognized, with the following rules. Look at the following example:
+
+[source,c++]
+----
+class MyClass {
+public:
+
+
+    enum parameterSet {
+        PS_PARA1,      // Keyword: PARA1     'some lengthy description'
+        PS_PARA2,      // Keyword: PARA2     [K] <#4512FF> {273.15} 'A temperature parameter'
+        NUM_PS
+    }
+    
+    enum otherPara_t {
+        OP_P1,         // Keyword: P1
+        OP_P2,         // Keyword: P2
+        OP_P3,         // Keyword: P3
+        NUM_OP
+    }
+...
+}
+----
+
+Here are the rules/conventions (how the parser operates):
+
+- a class scope is recognized by a string `class xxxx` (same line)
+- an enum scope is recognized by a string `enum yyyy` (same line)
+- a keyword specification is recognized by the string `// Keyword:` (with space between `//` and `Keyword:`!)
+- either _all_ enumeration values (except the line with `NUM_XXX`) must have a keyword specification, or _none_  (the keyword spec is used to increment the enum counter)
+- you *must not* assign a value to the enumeration like `MY_ENUM = 15,` - the parser does not support this format. With proper scoping, you won't need such assignments for parameter lists.
+
+
+[CAUTION]
+====
+The parser isn't a c++ parser and does not know about comments. If the strings mentioned above are found inside a comment, the parser will not know the difference. As a consequence, the following code will confuse the parser and generate wrong keyword categories:
+
+[source,c++]
+----
+class MyClass {
+public:
+
+    /* Inside this 
+       class my stuff will work 
+       perfectly!
+    */
+
+    enum para_t {
+    ...
+    }
+...
+}
+----
+
+This will generate the keyword category `my::para_t` because `class my` is recognized as class scope. So, **do not do this**! Same applies to enum documentation. 
+
+Thankfully, documentation is to be placed above the class/enum declaration lines and should not interfere with the parsing.
+====
+
+When using class forward declarations, always put only the class declaration on a single line without comments afterwards:
+
+[source,c++]
+----
+// forward declarations
+class OtherClass;
+class OtherParentClass;
+class YetAnotherClass;
+----
+
+The parser will detect forward declarations when the line is ended with a `;` character. Again, this should normally not be an issue, unless someone uses a forward declaration of a class _inside_ a class scope.
+
+### Keyword Parameters
+
+A keyword specification line has the following format:
+
+----
+KW_ENUM_VALUE,  // Keyword:   Keyword-Name  [unit]  <color>  {default value} 'description'
+----
+
+The `Keyword-Name` can be actually a list of white-space separated keywords that are used to convert to the enumeration value: for example:
+
+----
+SP_HEATCONDCOEFF, // Keyword: HEATCONDCOEFF ALPHA [W/m2K] 'Heat conduction coefficient'
+----
+
+Allows to convert strings `HEATCONDCOEFF` and `ALPHA` to enum value `SP_HEATCONDCOEFF`, but conversion from `SP_HEATCONDCOEFF` to string always yields the first keyword `HEATCONDCOEFF` in the list.
+
+The remaining parameters _unit_, _color_, _default value_ and _description_ are **optional**. But if present, they must appear in the order shown above. This is just to avoid nesting problems and is strictly only required from the description, since this may potentially contain the characters `<>[]{}`.
+
+The _default value_ must be a floating point number in C locale format. Similarly as color and unit, this parameter is meaningful for user interfaces with somewhat generic parameter input handling.
+
+

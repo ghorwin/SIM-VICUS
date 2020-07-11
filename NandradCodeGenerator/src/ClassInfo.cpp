@@ -54,16 +54,19 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 			// get class declaration and remember in which class we are
 			pos = line.find("class");
 			if (pos != std::string::npos && pos+6 < line.size()) {
-				classname = line.substr(pos+6); // might be "ThisAndThat: public Parent {"
-				pos = classname.find_first_of(" \t{:/\n");
-				// guard against pure forward-declaration, in which case the first char after the class will be a ;
-				classname = classname.substr(0, pos);
-				IBK::trim(classname);
-				if (classname.back() == ';')
-					continue; // skip this line
-	//			std::cout << line << std::endl;
-	//			std::cout << "class " << classname << std::endl;
-				continue;
+				// check that there is nothing but whitespace before the class
+				if (line.find_first_not_of(" \t") == pos) {
+					classname = line.substr(pos+6); // might be "ThisAndThat: public Parent {"
+					pos = classname.find_first_of(" \t{:/\n");
+					// guard against pure forward-declaration, in which case the first char after the class will be a ;
+					classname = classname.substr(0, pos);
+					IBK::trim(classname);
+					if (classname.back() == ';')
+						continue; // skip this line
+		//			std::cout << line << std::endl;
+		//			std::cout << "class " << classname << std::endl;
+					continue;
+				}
 			}
 
 			// get enum name

@@ -98,6 +98,12 @@ table {
 <li><a href="#_custom_readwrite_functionality">3.3. Custom read/write functionality</a></li>
 </ul>
 </li>
+<li><a href="#_specifications">4. Specifications</a>
+<ul class="sectlevel2">
+<li><a href="#_keyword_list_support">4.1. Keyword List Support</a></li>
+<li><a href="#_keyword_parameters">4.2. Keyword Parameters</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -618,11 +624,145 @@ table {
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_specifications">4. Specifications</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_keyword_list_support">4.1. Keyword List Support</h3>
+<div class="paragraph">
+<p>The parse requires fairly consistent code to be recognized, with the following rules. Look at the following example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">MyClass</span> <span class="p">{</span>
+<span class="nl">public:</span>
+
+
+    <span class="k">enum</span> <span class="n">parameterSet</span> <span class="p">{</span>
+        <span class="n">PS_PARA1</span><span class="p">,</span>      <span class="c1">// Keyword: PARA1     'some lengthy description'</span>
+        <span class="n">PS_PARA2</span><span class="p">,</span>      <span class="c1">// Keyword: PARA2     [K] &lt;#4512FF&gt; {273.15} 'A temperature parameter'</span>
+        <span class="n">NUM_PS</span>
+    <span class="p">}</span>
+
+    <span class="k">enum</span> <span class="n">otherPara_t</span> <span class="p">{</span>
+        <span class="n">OP_P1</span><span class="p">,</span>         <span class="c1">// Keyword: P1</span>
+        <span class="n">OP_P2</span><span class="p">,</span>         <span class="c1">// Keyword: P2</span>
+        <span class="n">OP_P3</span><span class="p">,</span>         <span class="c1">// Keyword: P3</span>
+        <span class="n">NUM_OP</span>
+    <span class="p">}</span>
+<span class="p">...</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here are the rules/conventions (how the parser operates):</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a class scope is recognized by a string <code>class xxxx</code> (same line)</p>
+</li>
+<li>
+<p>an enum scope is recognized by a string <code>enum yyyy</code> (same line)</p>
+</li>
+<li>
+<p>a keyword specification is recognized by the string <code>// Keyword:</code> (with space between <code>//</code> and <code>Keyword:</code>!)</p>
+</li>
+<li>
+<p>either <em>all</em> enumeration values (except the line with <code>NUM_XXX</code>) must have a keyword specification, or <em>none</em>  (the keyword spec is used to increment the enum counter)</p>
+</li>
+<li>
+<p>you <strong>must not</strong> assign a value to the enumeration like <code>MY_ENUM = 15,</code> - the parser does not support this format. With proper scoping, you won&#8217;t need such assignments for parameter lists.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The parser isn&#8217;t a c++ parser and does not know about comments. If the strings mentioned above are found inside a comment, the parser will not know the difference. As a consequence, the following code will confuse the parser and generate wrong keyword categories:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">MyClass</span> <span class="p">{</span>
+<span class="nl">public:</span>
+
+    <span class="cm">/* Inside this
+       class my stuff will work
+       perfectly!
+    */</span>
+
+    <span class="k">enum</span> <span class="n">para_t</span> <span class="p">{</span>
+    <span class="p">...</span>
+    <span class="p">}</span>
+<span class="p">...</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will generate the keyword category <code>my::para_t</code> because <code>class my</code> is recognized as class scope. So, <strong>do not do this</strong>! Same applies to enum documentation.</p>
+</div>
+<div class="paragraph">
+<p>Thankfully, documentation is to be placed above the class/enum declaration lines and should not interfere with the parsing.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>When using class forward declarations, always put only the class declaration on a single line without comments afterwards:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="c1">// forward declarations</span>
+<span class="k">class</span> <span class="nc">OtherClass</span><span class="p">;</span>
+<span class="k">class</span> <span class="nc">OtherParentClass</span><span class="p">;</span>
+<span class="k">class</span> <span class="nc">YetAnotherClass</span><span class="p">;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The parser will detect forward declarations when the line is ended with a <code>;</code> character. Again, this should normally not be an issue, unless someone uses a forward declaration of a class <em>inside</em> a class scope.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_keyword_parameters">4.2. Keyword Parameters</h3>
+<div class="paragraph">
+<p>A keyword specification line has the following format:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>KW_ENUM_VALUE,  // Keyword:   Keyword-Name  [unit]  &lt;color&gt;  {default value} 'description'</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>Keyword-Name</code> can be actually a list of white-space separated keywords that are used to convert to the enumeration value: for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>SP_HEATCONDCOEFF, // Keyword: HEATCONDCOEFF ALPHA [W/m2K] 'Heat conduction coefficient'</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Allows to convert strings <code>HEATCONDCOEFF</code> and <code>ALPHA</code> to enum value <code>SP_HEATCONDCOEFF</code>, but conversion from <code>SP_HEATCONDCOEFF</code> to string always yields the first keyword <code>HEATCONDCOEFF</code> in the list.</p>
+</div>
+<div class="paragraph">
+<p>The remaining parameters <em>unit</em>, <em>color</em>, <em>default value</em> and <em>description</em> are <strong>optional</strong>. But if present, they must appear in the order shown above. This is just to avoid nesting problems and is strictly only required from the description, since this may potentially contain the characters <code>&lt;&gt;[]{}</code>.</p>
+</div>
+<div class="paragraph">
+<p>The <em>default value</em> must be a floating point number in C locale format. Similarly as color and unit, this parameter is meaningful for user interfaces with somewhat generic parameter input handling.</p>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated 2020-07-03 14:29:06 +0200
+Last updated 2020-07-11 21:56:52 +0200
 </div>
 </div>
 <style>

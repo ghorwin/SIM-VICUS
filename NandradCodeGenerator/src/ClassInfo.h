@@ -26,7 +26,7 @@ public:
 	struct EnumInfo {
 		std::string		categoryName;
 		std::string		enumNUM;
-		int				count;
+		unsigned int	count;
 	};
 
 	struct XMLInfo {
