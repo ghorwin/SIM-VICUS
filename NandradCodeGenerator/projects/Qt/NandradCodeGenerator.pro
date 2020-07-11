@@ -21,6 +21,6 @@ DEPENDPATH = $${INCLUDEPATH}
 
 SOURCES += \
 	../../src/ClassInfo.cpp \
-	../../src/NandradCodeGenerator.cpp
+	../../src/main.cpp
 HEADERS += \
 	../../src/ClassInfo.h
