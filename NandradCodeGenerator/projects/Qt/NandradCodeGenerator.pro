@@ -21,6 +21,10 @@ DEPENDPATH = $${INCLUDEPATH}
 
 SOURCES += \
 	../../src/ClassInfo.cpp \
+	../../src/CodeGenerator.cpp \
+	../../src/constants.cpp \
 	../../src/main.cpp
 HEADERS += \
-	../../src/ClassInfo.h
+	../../src/ClassInfo.h \
+	../../src/CodeGenerator.h \
+	../../src/constants.h
