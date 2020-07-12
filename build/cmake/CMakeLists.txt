@@ -103,7 +103,7 @@ endif( APPLE )
 # -------------------------------------------------------------
 
 # KeywordListCreator
-add_subdirectory( ../../externals/KeywordListCreator/projects keywordlistcreator )
+add_subdirectory( ../../NandradCodeGenerator/projects/cmake_local NandradCodeGenerator )
 
 # -------------------------------------------------------------
 # subdirectories and subprojects

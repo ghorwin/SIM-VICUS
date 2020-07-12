@@ -126,6 +126,7 @@ bool CodeGenerator::parseDirectories() {
 
 	} // for all directories in list
 
+	return true;
 }
 
 
@@ -247,11 +248,14 @@ bool CodeGenerator::listHeaders(const std::string & dir, std::vector<std::string
 }
 
 
+// ********* Code Generation Functions **************
+
 void CodeGenerator::generateHeaderCode(const IBK::Path & headerFilePath, bool qtHeader) const {
 	FUNCID(CodeGenerator::generateHeaderCode);
 	std::ofstream hpp(headerFilePath.c_str());
 	if (!hpp)
 		throw IBK::Exception(IBK::FormatString("Cannot create '%1'.").arg(headerFilePath), FUNC_ID);
+	std::cout << "Writing '"<< headerFilePath.str() << "'" << std::endl;
 	// write file header
 	if (qtHeader){
 		hpp << QT_HEADER;
@@ -262,61 +266,12 @@ void CodeGenerator::generateHeaderCode(const IBK::Path & headerFilePath, bool qt
 
 
 void CodeGenerator::generateKeywordlistCode(const IBK::Path & keywordListCpp) {
-
-}
-
-
-void CodeGenerator::generateKeywordlistCodeQt(const IBK::Path & keywordListCpp)
-{
-
-}
-
-
-
-
-#if 0
-
-// ********* Code Generation Functions **************
-
-bool generate_header_code(const std::string& fname, bool qtHeader){
-
-}
-
-bool generate_keywordlist_qt( const std::string& fname, const std::vector<ClassInfo::Keyword>& keywordlist ) {
-
+	FUNCID(CodeGenerator::generateKeywordlistCode);
 	// first we generate the header file
-	std::ofstream cpp(fname.c_str());
-	if (!cpp) {
-		std::cerr << "Cannot create '" + fname + "'." << std::endl;
-		return false;
-	}
-	// write file header
-	cpp << QT_CPP_HEADER;
-
-	// for all description place tr macros here
-	for (unsigned int i=0; i<keywordlist.size(); ++i) {
-		std::string desc = keywordlist[i].description;
-		if (desc.empty()) {
-			cpp << "	tr(\"" << keywordlist[i].keyword << "\");\n";
-		}
-		else {
-			cpp << "	tr(\"" << desc << "\");\n";
-		}
-	}
-
-	// write footer
-	cpp << QT_CPP_FOOTER;
-
-	return true;
-}
-
-bool generate_keywordlist_code( const std::string& fname, const std::vector<ClassInfo::Keyword>& keywordlist ) {
-	// first we generate the header file
-	std::ofstream cpp(fname.c_str());
-	if (!cpp) {
-		std::cerr << "Cannot create '" + fname + "'." << std::endl;
-		return false;
-	}
+	std::ofstream cpp(keywordListCpp.c_str());
+	if (!cpp)
+		throw IBK::Exception(IBK::FormatString("Cannot create '%1'.").arg(keywordListCpp), FUNC_ID);
+	std::cout << "Writing '"<< keywordListCpp.str() << "'" << std::endl;
 	// write file header
 	cpp << CPP_HEADER;
 	cpp <<
@@ -326,17 +281,16 @@ bool generate_keywordlist_code( const std::string& fname, const std::vector<Clas
 	// get category list
 	std::string lastCategory;
 	std::vector<std::string> catnames;
-	for (unsigned int i=0; i<keywordlist.size(); ++i) {
+	for (unsigned int i=0; i<m_keywordlist.size(); ++i) {
 		// new category = new declaration
-		if (keywordlist[i].category != lastCategory) {
-			lastCategory = keywordlist[i].category;
+		if (m_keywordlist[i].category != lastCategory) {
+			lastCategory = m_keywordlist[i].category;
 			catnames.push_back(lastCategory);
 		}
 	}
-	if (catnames.empty()) {
-		std::cerr << "No categories extracted!" << std::endl;
-		return false;
-	}
+	if (catnames.empty())
+		throw IBK::Exception("No categories extracted!", FUNC_ID);
+
 	// write category array
 	cpp <<
 		"	/*! Holds a list of all enum types/categories. */\n"
@@ -368,25 +322,25 @@ bool generate_keywordlist_code( const std::string& fname, const std::vector<Clas
 	lastCategory.clear();
 	int switchIndex = 0;
 //	int localSwitchIndex = 0;
-	for (unsigned int i=0; i<keywordlist.size(); ++i) {
+	for (unsigned int i=0; i<m_keywordlist.size(); ++i) {
 		// new category = new switch clause
-		if (keywordlist[i].category != lastCategory) {
+		if (m_keywordlist[i].category != lastCategory) {
 			// if last category wasn't empty, close last switch clause
 			if (!lastCategory.empty()) {
 				cpp << "			} break; \n";
 				++switchIndex;
 			}
-			lastCategory = keywordlist[i].category;
+			lastCategory = m_keywordlist[i].category;
 			// open new switch clause
 			cpp << "			// "<< lastCategory <<" \n";
 			cpp << "			case "<< switchIndex <<" :\n";
 			cpp << "			switch (t) { \n";
 		}
-		std::string kw = keywordlist[i].keyword;
+		std::string kw = m_keywordlist[i].keyword;
 		size_t space = kw.find_first_of(" \t");
 		if (space != std::string::npos)
 			kw = kw.substr(0,space);
-		cpp << "				case " << keywordlist[i].index << " : return \"" << kw << "\";\n";
+		cpp << "				case " << m_keywordlist[i].index << " : return \"" << kw << "\";\n";
 	}
 	// close last switch clause and close switch statement
 	cpp << "			} break; \n";
@@ -402,21 +356,21 @@ bool generate_keywordlist_code( const std::string& fname, const std::vector<Clas
 
 	lastCategory.clear();
 	switchIndex = 0;
-	for (unsigned int i=0; i<keywordlist.size(); ++i) {
+	for (unsigned int i=0; i<m_keywordlist.size(); ++i) {
 		// new category = new switch clause
-		if (keywordlist[i].category != lastCategory) {
+		if (m_keywordlist[i].category != lastCategory) {
 			// if last category wasn't empty, close last switch clause
 			if (!lastCategory.empty()) {
 				cpp << "			} break; \n";
 				++switchIndex;
 			}
-			lastCategory = keywordlist[i].category;
+			lastCategory = m_keywordlist[i].category;
 			// open new switch clause
 			cpp << "			// "<< lastCategory <<" \n";
 			cpp << "			case "<< switchIndex <<" :\n";
 			cpp << "			switch (t) { \n";
 		}
-		cpp << "				case " << keywordlist[i].index << " : return \"" << keywordlist[i].keyword << "\";\n";
+		cpp << "				case " << m_keywordlist[i].index << " : return \"" << m_keywordlist[i].keyword << "\";\n";
 	}
 	// close last switch clause and close switch statement
 	cpp << "			} break; \n";
@@ -431,27 +385,27 @@ bool generate_keywordlist_code( const std::string& fname, const std::vector<Clas
 			"		switch (enum2index(enumtype)) {\n";
 	lastCategory.clear();
 	switchIndex = 0;
-	for (unsigned int i=0; i<keywordlist.size(); ++i) {
+	for (unsigned int i=0; i<m_keywordlist.size(); ++i) {
 		// new category = new switch clause
-		if (keywordlist[i].category != lastCategory) {
+		if (m_keywordlist[i].category != lastCategory) {
 			// if last category wasn't empty, close last switch clause
 			if (!lastCategory.empty()) {
 				cpp << "			} break; \n";
 				++switchIndex;
 			}
-			lastCategory = keywordlist[i].category;
+			lastCategory = m_keywordlist[i].category;
 			// open new switch clause
 			cpp << "			// "<< lastCategory <<" \n";
 			cpp << "			case "<< switchIndex <<" :\n";
 			cpp << "			switch (t) { \n";
 		}
 
-		std::string desc = keywordlist[i].description;
+		std::string desc = m_keywordlist[i].description;
 		if (desc.empty()) {
-			cpp << "				case " << keywordlist[i].index << " : if (no_description != NULL) *no_description = true; return \"" << keywordlist[i].keyword << "\";\n";
+			cpp << "				case " << m_keywordlist[i].index << " : if (no_description != NULL) *no_description = true; return \"" << m_keywordlist[i].keyword << "\";\n";
 		}
 		else {
-			cpp << "				case " << keywordlist[i].index << " : return \"" << desc << "\";\n";
+			cpp << "				case " << m_keywordlist[i].index << " : return \"" << desc << "\";\n";
 		}
 	}
 
@@ -467,21 +421,21 @@ bool generate_keywordlist_code( const std::string& fname, const std::vector<Clas
 			"		switch (enum2index(enumtype)) {\n";
 	lastCategory.clear();
 	switchIndex = 0;
-	for (unsigned int i=0; i<keywordlist.size(); ++i) {
+	for (unsigned int i=0; i<m_keywordlist.size(); ++i) {
 		// new category = new switch clause
-		if (keywordlist[i].category != lastCategory) {
+		if (m_keywordlist[i].category != lastCategory) {
 			// if last category wasn't empty, close last switch clause
 			if (!lastCategory.empty()) {
 				cpp << "			} break; \n";
 				++switchIndex;
 			}
-			lastCategory = keywordlist[i].category;
+			lastCategory = m_keywordlist[i].category;
 			// open new switch clause
 			cpp << "			// "<< lastCategory <<" \n";
 			cpp << "			case "<< switchIndex <<" :\n";
 			cpp << "			switch (t) { \n";
 		}
-		cpp << "				case " << keywordlist[i].index << " : return \"" << keywordlist[i].unit << "\";\n";
+		cpp << "				case " << m_keywordlist[i].index << " : return \"" << m_keywordlist[i].unit << "\";\n";
 	}
 
 	cpp <<	"			} break; \n"
@@ -496,21 +450,21 @@ bool generate_keywordlist_code( const std::string& fname, const std::vector<Clas
 			"		switch (enum2index(enumtype)) {\n";
 	lastCategory.clear();
 	switchIndex = 0;
-	for (unsigned int i=0; i<keywordlist.size(); ++i) {
+	for (unsigned int i=0; i<m_keywordlist.size(); ++i) {
 		// new category = new switch clause
-		if (keywordlist[i].category != lastCategory) {
+		if (m_keywordlist[i].category != lastCategory) {
 			// if last category wasn't empty, close last switch clause
 			if (!lastCategory.empty()) {
 				cpp << "			} break; \n";
 				++switchIndex;
 			}
-			lastCategory = keywordlist[i].category;
+			lastCategory = m_keywordlist[i].category;
 			// open new switch clause
 			cpp << "			// "<< lastCategory <<" \n";
 			cpp << "			case "<< switchIndex <<" :\n";
 			cpp << "			switch (t) { \n";
 		}
-		cpp << "				case " << keywordlist[i].index << " : return \"" << keywordlist[i].color << "\";\n";
+		cpp << "				case " << m_keywordlist[i].index << " : return \"" << m_keywordlist[i].color << "\";\n";
 	}
 
 	cpp <<	"			} break; \n"
@@ -525,24 +479,24 @@ bool generate_keywordlist_code( const std::string& fname, const std::vector<Clas
 			"		switch (enum2index(enumtype)) {\n";
 	lastCategory.clear();
 	switchIndex = 0;
-	for (unsigned int i=0; i<keywordlist.size(); ++i) {
+	for (unsigned int i=0; i<m_keywordlist.size(); ++i) {
 		// new category = new switch clause
-		if (keywordlist[i].category != lastCategory) {
+		if (m_keywordlist[i].category != lastCategory) {
 			// if last category wasn't empty, close last switch clause
 			if (!lastCategory.empty()) {
 				cpp << "			} break; \n";
 				++switchIndex;
 			}
-			lastCategory = keywordlist[i].category;
+			lastCategory = m_keywordlist[i].category;
 			// open new switch clause
 			cpp << "			// "<< lastCategory <<" \n";
 			cpp << "			case "<< switchIndex <<" :\n";
 			cpp << "			switch (t) { \n";
 		}
-		if ( keywordlist[i].defaultValue == keywordlist[i].defaultValue ) {
-			cpp << "				case " << keywordlist[i].index << " : return " << keywordlist[i].defaultValue << ";\n";
+		if ( m_keywordlist[i].defaultValue == m_keywordlist[i].defaultValue ) {
+			cpp << "				case " << m_keywordlist[i].index << " : return " << m_keywordlist[i].defaultValue << ";\n";
 		} else {
-			cpp << "				case " << keywordlist[i].index << " : return std::numeric_limits<double>::quiet_NaN();\n";
+			cpp << "				case " << m_keywordlist[i].index << " : return std::numeric_limits<double>::quiet_NaN();\n";
 		}
 	}
 
@@ -560,10 +514,10 @@ bool generate_keywordlist_code( const std::string& fname, const std::vector<Clas
 	lastCategory.clear();
 	switchIndex = 0;
 	unsigned int categoryCount = 0;
-	for (unsigned int i=0; i<keywordlist.size(); ++i) {
+	for (unsigned int i=0; i<m_keywordlist.size(); ++i) {
 
 		// new category = new entry in switch
-		if (keywordlist[i].category != lastCategory) {
+		if (m_keywordlist[i].category != lastCategory) {
 
 			// if last category wasn't empty, close last case clause
 			if (!lastCategory.empty()) {
@@ -572,7 +526,7 @@ bool generate_keywordlist_code( const std::string& fname, const std::vector<Clas
 				categoryCount = 0;
 			}
 
-			lastCategory = keywordlist[i].category;
+			lastCategory = m_keywordlist[i].category;
 			// open new case clause
 			cpp << "			// "<< lastCategory <<" \n";
 			cpp << "			case "<< switchIndex <<" : return ";
@@ -592,19 +546,19 @@ bool generate_keywordlist_code( const std::string& fname, const std::vector<Clas
 	lastCategory.clear();
 	switchIndex = 0;
 	categoryCount = 0;
-	for (unsigned int i=0; i<keywordlist.size(); ++i) {
+	for (unsigned int i=0; i<m_keywordlist.size(); ++i) {
 
 		// new category = new entry in switch
-		if (keywordlist[i].category != lastCategory) {
+		if (m_keywordlist[i].category != lastCategory) {
 
 			// if last category wasn't empty, close last case clause
 			if (!lastCategory.empty()) {
-				cpp << keywordlist[i-1].maxIndexInCategory << ";\n";
+				cpp << m_keywordlist[i-1].maxIndexInCategory << ";\n";
 				++switchIndex;
 				categoryCount = 0;
 			}
 
-			lastCategory = keywordlist[i].category;
+			lastCategory = m_keywordlist[i].category;
 			// open new case clause
 			cpp << "			// "<< lastCategory <<" \n";
 			cpp << "			case "<< switchIndex <<" : return ";
@@ -612,7 +566,7 @@ bool generate_keywordlist_code( const std::string& fname, const std::vector<Clas
 		++categoryCount;
 	}
 
-	cpp << keywordlist[keywordlist.size()-1].maxIndexInCategory << ";\n"
+	cpp << m_keywordlist[m_keywordlist.size()-1].maxIndexInCategory << ";\n"
 			"		} // switch\n"
 			"		throw IBK::Exception(IBK::FormatString(\"Invalid enumeration type '%1'.\")\n"
 			"			.arg(enumtype), \"[KeywordList::MaxIndex]\");\n"
@@ -621,13 +575,43 @@ bool generate_keywordlist_code( const std::string& fname, const std::vector<Clas
 
 	// write file footer
 	cpp << CPP_FOOTER;
-	cpp << "} // namespace " << NAMESPACE << std::endl;
-	return true;
+	cpp << "} // namespace " << m_namespace << std::endl;
 }
+
+
+void CodeGenerator::generateKeywordlistCodeQt(const IBK::Path & keywordListCpp) {
+	FUNCID(CodeGenerator::generateKeywordlistCodeQt);
+	// first we generate the header file
+	std::ofstream cpp(keywordListCpp.c_str());
+	if (!cpp)
+		throw IBK::Exception(IBK::FormatString("Cannot create '%1'.").arg(keywordListCpp), FUNC_ID);
+
+	std::cout << "Writing '"<< keywordListCpp.str() << "'" << std::endl;
+	// write file header
+	cpp << QT_CPP_HEADER;
+
+	// for all description place tr macros here
+	for (unsigned int i=0; i<m_keywordlist.size(); ++i) {
+		std::string desc = m_keywordlist[i].description;
+		if (desc.empty()) {
+			cpp << "	tr(\"" << m_keywordlist[i].keyword << "\");\n";
+		}
+		else {
+			cpp << "	tr(\"" << desc << "\");\n";
+		}
+	}
+
+	// write footer
+	cpp << QT_CPP_FOOTER;
+}
+
+
+
 
 std::ostream& operator<<(std::ostream& os, const ClassInfo::Keyword& kw) {
 	return os << "   \"" << kw.category << "  " << std::setw(2) << kw.index  << "  " << kw.keyword << "\\n\"" << std::endl;
 }
+
 
 bool write_keyword_data(const std::string& output_file, const std::vector<ClassInfo::Keyword>& keywordlist) {
 	std::string outfile = output_file;
@@ -657,4 +641,3 @@ bool write_keyword_data(const std::string& output_file, const std::vector<ClassI
 	}
 	return out.good();
 }
-#endif

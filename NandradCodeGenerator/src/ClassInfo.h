@@ -17,7 +17,7 @@ public:
 		std::string		keyword;			// The keyword as string
 		std::string		description;		// The english description text (optional)
 		std::string		unit;				// The default unit (if any, otherwise an empty string)
-		double			defaultValue;		// The default value in default unit if any
+		double			defaultValue =  std::numeric_limits<double>::quiet_NaN();		// The default value in default unit if any
 		int				index;				// The index/enumeration number
 		int				maxIndexInCategory; // Category related maximum index
 		std::string		color;				// Color assigned to this keyword; default color is black #FFFFFF
