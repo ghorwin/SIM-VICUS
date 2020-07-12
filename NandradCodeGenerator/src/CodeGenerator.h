@@ -3,11 +3,9 @@
 
 #include "ClassInfo.h"
 
-/*! This class does the actual code generation. */
+/*! This main implementation class of the code generator. */
 class CodeGenerator {
 public:
-	CodeGenerator();
-
 	void handleArguments(const char * const argv[]);
 
 	bool parseDirectories();
@@ -19,6 +17,10 @@ public:
 private:
 	/*! Returns a sorted list of *.h files in the given directory. */
 	static bool listHeaders(const std::string & dir, std::vector<std::string> & files);
+
+	void generateHeaderCode(const IBK::Path & headerFilePath, bool qtHeader) const;
+	void generateKeywordlistCode(const IBK::Path & keywordListCpp);
+	void generateKeywordlistCodeQt(const IBK::Path & keywordListCpp);
 
 	std::vector<ClassInfo::Keyword> m_keywordlist;
 	std::vector<ClassInfo>			m_classInfo;

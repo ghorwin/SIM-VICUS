@@ -16,8 +16,6 @@
 #ifdef WIN32
 
 #undef UNICODE
-#include <cstdlib>
-#include <cstdio>
 #include <direct.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -31,29 +29,16 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <errno.h>
-#include <limits.h>
-#include <stdlib.h>
-#include <errno.h>
 #include <string.h>
-#include <cstdio>
-#include <map>
 
 #endif // WIN32
 
+#include "constants.h"
 
-bool file_exists(const std::string& dirname);
 bool listHeaders(const std::string & dir, std::vector<std::string> & files);
 
 bool write_keyword_data(const std::string& output_file, const std::vector<ClassInfo::Keyword>& keywordlist);
-bool generate_keywordlist_code(const std::string& output_file, const std::vector<ClassInfo::Keyword>& keywordlist );
-bool generate_header_code(const std::string& output_file, bool isQt);
-bool generate_keywordlist_qt(const std::string& output_file, const std::vector<ClassInfo::Keyword>& keywordlist );
 
-
-CodeGenerator::CodeGenerator()
-{
-
-}
 
 void CodeGenerator::handleArguments(const char * const argv[]) {
 	// first argument is namespace
@@ -145,7 +130,8 @@ bool CodeGenerator::parseDirectories() {
 
 
 void CodeGenerator::generateKeywordList() {
-#if 0
+	FUNCID(CodeGenerator::generateKeywordList);
+
 	CPP_HEADER = CPP_HEADER_TEMPLATE;
 	HEADER = HEADER_TEMPLATE;
 
@@ -178,37 +164,41 @@ void CodeGenerator::generateKeywordList() {
 
 	// write qt header
 	if ( m_isQtOutputRequired ) {
-		std::string fnameQt = m_inputDirectories[0] + "/../srcTranslations/" + m_prefix +"_KeywordListQt.h";
-		if (!file_exists(fnameQt))
-			generate_header_code( fnameQt, m_isQtOutputRequired );
+		IBK::Path outputPath(m_inputDirectories[0] + "/../srcTranslations");
+		if (!outputPath.exists())
+			throw IBK::Exception(IBK::FormatString("Output directory '%1' doesn't exist.").arg(outputPath), FUNC_ID);
+		IBK::Path fnameQt = outputPath / (m_prefix +"_KeywordListQt.h");
+		if (!fnameQt.exists())
+			generateHeaderCode( fnameQt, true );
 	}
 
 	// write header
-	std::string fname = m_inputDirectories[0] + "/" + m_prefix +"_KeywordList.h";
-	if (!file_exists(fname))
-		generate_header_code( fname, false );
+	IBK::Path fname = IBK::Path(m_inputDirectories[0]) / (m_prefix +"_KeywordList.h");
+	if (!fname.exists())
+		generateHeaderCode( fname, false );
 
 	// now process all source directories and parse input files
 
 	try {
 		// generate code
-		std::string fname = m_inputDirectories[0] + "/" + m_prefix +"_KeywordList.cpp";
-		if (!generate_keywordlist_code(fname, m_keywordlist))
-			return EXIT_FAILURE;
+		IBK::Path fnameCPP = IBK::Path(m_inputDirectories[0]) / (m_prefix +"_KeywordList.cpp");
+		generateKeywordlistCode(fnameCPP);
 		// generate qt code
-		if ( isQtOutputRequired ){
-			std::string fnameQt = inputDirectories[0] + "/../srcTranslations/" + prefix +"_KeywordListQt.cpp";
-			if (!generate_keywordlist_qt(fnameQt, keywordlist))
-				return EXIT_FAILURE;
+		if ( m_isQtOutputRequired ){
+			IBK::Path outputPath(m_inputDirectories[0] + "/../srcTranslations");
+			IBK::Path fnameQt = outputPath / m_prefix +"_KeywordListQt.cpp";
+			generateKeywordlistCodeQt(fnameQt);
 		}
-		std::cout << keywordlist.size() << " keywords extracted!" << std::endl;
+		std::cout << m_keywordlist.size() << " keywords extracted!" << std::endl;
 		std::cout << "-----------------------------------------------------------------------" << std::endl;
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, "Error generating keyword list.", FUNC_ID);
 	}
 	catch (std::exception & ex) {
 		std::cerr << ex.what() << std::endl;
-		return EXIT_FAILURE;
+		throw IBK::Exception("Error generating keyword list.", FUNC_ID);
 	}
-#endif
 }
 
 
@@ -257,6 +247,31 @@ bool CodeGenerator::listHeaders(const std::string & dir, std::vector<std::string
 }
 
 
+void CodeGenerator::generateHeaderCode(const IBK::Path & headerFilePath, bool qtHeader) const {
+	FUNCID(CodeGenerator::generateHeaderCode);
+	std::ofstream hpp(headerFilePath.c_str());
+	if (!hpp)
+		throw IBK::Exception(IBK::FormatString("Cannot create '%1'.").arg(headerFilePath), FUNC_ID);
+	// write file header
+	if (qtHeader){
+		hpp << QT_HEADER;
+	} else {
+		hpp << HEADER;
+	}
+}
+
+
+void CodeGenerator::generateKeywordlistCode(const IBK::Path & keywordListCpp) {
+
+}
+
+
+void CodeGenerator::generateKeywordlistCodeQt(const IBK::Path & keywordListCpp)
+{
+
+}
+
+
 
 
 #if 0
@@ -264,19 +279,6 @@ bool CodeGenerator::listHeaders(const std::string & dir, std::vector<std::string
 // ********* Code Generation Functions **************
 
 bool generate_header_code(const std::string& fname, bool qtHeader){
-
-	std::ofstream hpp(fname.c_str());
-	if (!hpp) {
-		std::cerr << "Cannot create '" + fname + "'." << std::endl;
-		return false;
-	}
-	// write file header
-	if (qtHeader){
-		hpp << QT_HEADER;
-	} else {
-		hpp << HEADER;
-	}
-	return true;
 
 }
 
