@@ -101,12 +101,15 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	unsigned int				m_id;							///< Unique id number.
-	std::string					m_displayName;					///< IBK-language encoded name of construction instance.
-	unsigned int				m_constructionTypeId;			///< The id number of the corresponding construction type.
+	/*! Unique id number. */
+	unsigned int				m_id;							// XML:A
+	/*! IBK-language encoded name of construction instance. */
+	std::string					m_displayName;					// XML:E
+	/*! The id number of the corresponding construction type. */
+	unsigned int				m_constructionTypeId;			// XML:E
 
 	/*! List of parameters. */
-	IBK::Parameter				m_para[NUM_CP];
+	IBK::Parameter				m_para[NUM_CP];					// XML:E
 
 	/*! The interfaces (connections of construction sides to zones).
 		There can be maximum of 2 interfaces, one with the ID "Left" and one with the ID "Right". If either
@@ -115,7 +118,7 @@ public:
 		There must be at least one interface defined for a construction instance to be valid.
 		\sa Interface
 	*/
-	std::vector<Interface>		m_interfaces;
+	std::vector<Interface>		m_interfaces;					// XML:E
 
 	/*! All embedded objects. Embedded objects cut out an area of the current construction and substitute
 		wall simulation by an explicit simulation model.
