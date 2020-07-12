@@ -9,16 +9,17 @@ project( Nandrad )
 include_directories(
 	${PROJECT_SOURCE_DIR}/../../../IBK/src
 	${PROJECT_SOURCE_DIR}/../../../IBKMK/src
-	${PROJECT_SOURCE_DIR}/../../../DelphinLight/src
 	${PROJECT_SOURCE_DIR}/../../../TiCPP/src
 )
 
 # collect a list of all source files of the Nandrad library
 file( GLOB Nandrad_LIB_SRCS ${PROJECT_SOURCE_DIR}/../../src/*.cpp )
+file( GLOB Nandrad_NCG_LIB_SRCS ${PROJECT_SOURCE_DIR}/../../src/ncg/*.cpp )
 
 # add NANDRAD_KeywordList.cpp
 set( Nandrad_LIB_SRCS
 	${Nandrad_LIB_SRCS}
+	${Nandrad_NCG_LIB_SRCS}
 	${PROJECT_SOURCE_DIR}/../../src/NANDRAD_KeywordList.cpp
 )
 
@@ -29,9 +30,9 @@ file( GLOB Nandrad_HDRS ${PROJECT_SOURCE_DIR}/../../src/*.h )
 # to update the NANDRAD_KeywordList.h and NANDRAD_KeywordList.cpp file
 add_custom_command (
 	OUTPUT   ${PROJECT_SOURCE_DIR}/../../src/NANDRAD_KeywordList.cpp
-	DEPENDS  ${Nandrad_HDRS} keywordlistcreator
-	COMMAND  keywordlistcreator
-	ARGS     NANDRAD ${PROJECT_SOURCE_DIR}/../../src 1
+	DEPENDS  ${Nandrad_HDRS} NandradCodeGenerator
+	COMMAND  NandradCodeGenerator
+	ARGS     NANDRAD ${PROJECT_SOURCE_DIR}/../../src 0 NANDRAD ncg
 )
 
 

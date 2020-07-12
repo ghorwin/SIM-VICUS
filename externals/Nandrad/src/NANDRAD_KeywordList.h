@@ -1,5 +1,5 @@
 /*	The NANDRAD data model library.
-Copyright (c) 2012, Institut fuer Bauklimatik, TU Dresden, Germany
+Copyright (c) 2012-now, Institut fuer Bauklimatik, TU Dresden, Germany
 
 Written by
 A. Nicolai		<andreas.nicolai -[at]- tu-dresden.de>
@@ -25,6 +25,7 @@ Lesser General Public License for more details.
 #include <typeinfo>
 
 namespace NANDRAD {
+
 /*! The class KeywordList provides conversion functionality between keyword strings
 	and their respective enumeration values.
 	Keyword strings are used in the Delphin project files as identifyer. In the code

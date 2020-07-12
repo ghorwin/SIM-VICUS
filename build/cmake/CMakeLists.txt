@@ -114,6 +114,7 @@ add_subdirectory( ../../externals/CCM/projects/cmake_local CCM )
 add_subdirectory( ../../externals/DataIO/projects/cmake_local DataIO )
 add_subdirectory( ../../externals/IBK/projects/cmake_local IBK )
 add_subdirectory( ../../externals/SuiteSparse/projects/cmake_local SuiteSparse )
+add_subdirectory( ../../externals/Nandrad/projects/cmake_local Nandrad )
 
 #add_subdirectory( ../../externals/zlib/projects/cmake_local zlib )
 #add_subdirectory( ../../externals/qwt/projects/cmake_local qwt )

@@ -76,6 +76,7 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 
 				// we parse this back to front - and use the extractToken function
 				std::string description, defaultValue, colorHash, unit;
+				colorHash = "#FFFFFF"; // default color is black
 				extractToken(kwpara, '\'', description); // modifies kwpara and description
 				extractToken(kwpara, '{', defaultValue);
 				extractToken(kwpara, '<', colorHash);
@@ -96,6 +97,7 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 					throw std::runtime_error("error");
 				}
 				kw.category = classname + "::" + enumname;
+				kw.index = enumIdx;
 				m_keywords.push_back(kw);
 				++enumIdx;
 				continue;

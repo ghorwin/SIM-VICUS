@@ -303,7 +303,7 @@ void CodeGenerator::generateKeywordlistCode(const IBK::Path & keywordListCpp) {
 
 	// write middle part
 	cpp <<
-		"	/*! Converts a category string to respective enumeration value. */ \n"
+		"	/*! Converts a category string to respective enumeration value. */\n"
 		"	int enum2index(const std::string & enumtype) {\n"
 		"		for (int i=0; i<"<< catnames.size() << "; ++i) {\n"
 		"			if (enumtype == ENUM_TYPES[i]) return i;\n"
@@ -315,7 +315,7 @@ void CodeGenerator::generateKeywordlistCode(const IBK::Path & keywordListCpp) {
 
 	// *** write theKeyword() function ***
 	cpp <<
-		"	/*! Returns a keyword string for a given category (typenum) and type number t. */ \n"
+		"	/*! Returns a keyword string for a given category (typenum) and type number t. */\n"
 		"	const char * theKeyword(int typenum, int t) {\n"
 		"		switch (typenum) {\n";
 
@@ -327,14 +327,14 @@ void CodeGenerator::generateKeywordlistCode(const IBK::Path & keywordListCpp) {
 		if (m_keywordlist[i].category != lastCategory) {
 			// if last category wasn't empty, close last switch clause
 			if (!lastCategory.empty()) {
-				cpp << "			} break; \n";
+				cpp << "			} break;\n";
 				++switchIndex;
 			}
 			lastCategory = m_keywordlist[i].category;
 			// open new switch clause
-			cpp << "			// "<< lastCategory <<" \n";
+			cpp << "			// "<< lastCategory <<"\n";
 			cpp << "			case "<< switchIndex <<" :\n";
-			cpp << "			switch (t) { \n";
+			cpp << "			switch (t) {\n";
 		}
 		std::string kw = m_keywordlist[i].keyword;
 		size_t space = kw.find_first_of(" \t");
@@ -343,14 +343,14 @@ void CodeGenerator::generateKeywordlistCode(const IBK::Path & keywordListCpp) {
 		cpp << "				case " << m_keywordlist[i].index << " : return \"" << kw << "\";\n";
 	}
 	// close last switch clause and close switch statement
-	cpp << "			} break; \n";
+	cpp << "			} break;\n";
 	cpp << "		} // switch\n";
 	cpp <<	"		return INVALID_KEYWORD_INDEX_STRING;\n"
 			"	}\n\n";
 
 	// *** write allKeywords() function ***
 	cpp <<
-		"	/*! Returns all keywords including deprecated for a given category (typenum) and type number (t). */ \n"
+		"	/*! Returns all keywords including deprecated for a given category (typenum) and type number (t). */\n"
 		"	const char * allKeywords(int typenum, int t) {\n"
 		"		switch (typenum) {\n";
 
@@ -361,19 +361,19 @@ void CodeGenerator::generateKeywordlistCode(const IBK::Path & keywordListCpp) {
 		if (m_keywordlist[i].category != lastCategory) {
 			// if last category wasn't empty, close last switch clause
 			if (!lastCategory.empty()) {
-				cpp << "			} break; \n";
+				cpp << "			} break;\n";
 				++switchIndex;
 			}
 			lastCategory = m_keywordlist[i].category;
 			// open new switch clause
-			cpp << "			// "<< lastCategory <<" \n";
+			cpp << "			// "<< lastCategory <<"\n";
 			cpp << "			case "<< switchIndex <<" :\n";
-			cpp << "			switch (t) { \n";
+			cpp << "			switch (t) {\n";
 		}
 		cpp << "				case " << m_keywordlist[i].index << " : return \"" << m_keywordlist[i].keyword << "\";\n";
 	}
 	// close last switch clause and close switch statement
-	cpp << "			} break; \n";
+	cpp << "			} break;\n";
 	cpp << "		} // switch\n";
 	cpp <<	"		return INVALID_KEYWORD_INDEX_STRING;\n"
 			"	}\n\n";
@@ -390,14 +390,14 @@ void CodeGenerator::generateKeywordlistCode(const IBK::Path & keywordListCpp) {
 		if (m_keywordlist[i].category != lastCategory) {
 			// if last category wasn't empty, close last switch clause
 			if (!lastCategory.empty()) {
-				cpp << "			} break; \n";
+				cpp << "			} break;\n";
 				++switchIndex;
 			}
 			lastCategory = m_keywordlist[i].category;
 			// open new switch clause
-			cpp << "			// "<< lastCategory <<" \n";
+			cpp << "			// "<< lastCategory <<"\n";
 			cpp << "			case "<< switchIndex <<" :\n";
-			cpp << "			switch (t) { \n";
+			cpp << "			switch (t) {\n";
 		}
 
 		std::string desc = m_keywordlist[i].description;
@@ -409,7 +409,7 @@ void CodeGenerator::generateKeywordlistCode(const IBK::Path & keywordListCpp) {
 		}
 	}
 
-	cpp <<	"			} break; \n"
+	cpp <<	"			} break;\n"
 			"		} // switch\n"
 			"		throw IBK::Exception(IBK::FormatString(\"Cannot determine description for enumeration type '%1' and index '%2'.\")\n"
 			"			.arg(enumtype).arg(t), \"[KeywordList::Description]\");\n"
@@ -426,19 +426,19 @@ void CodeGenerator::generateKeywordlistCode(const IBK::Path & keywordListCpp) {
 		if (m_keywordlist[i].category != lastCategory) {
 			// if last category wasn't empty, close last switch clause
 			if (!lastCategory.empty()) {
-				cpp << "			} break; \n";
+				cpp << "			} break;\n";
 				++switchIndex;
 			}
 			lastCategory = m_keywordlist[i].category;
 			// open new switch clause
-			cpp << "			// "<< lastCategory <<" \n";
+			cpp << "			// "<< lastCategory <<"\n";
 			cpp << "			case "<< switchIndex <<" :\n";
-			cpp << "			switch (t) { \n";
+			cpp << "			switch (t) {\n";
 		}
 		cpp << "				case " << m_keywordlist[i].index << " : return \"" << m_keywordlist[i].unit << "\";\n";
 	}
 
-	cpp <<	"			} break; \n"
+	cpp <<	"			} break;\n"
 			"		} // switch\n"
 			"		throw IBK::Exception(IBK::FormatString(\"Cannot determine default unit for enumeration type '%1' and index '%2'.\")\n"
 			"			.arg(enumtype).arg(t), \"[KeywordList::Unit]\");\n"
@@ -455,19 +455,19 @@ void CodeGenerator::generateKeywordlistCode(const IBK::Path & keywordListCpp) {
 		if (m_keywordlist[i].category != lastCategory) {
 			// if last category wasn't empty, close last switch clause
 			if (!lastCategory.empty()) {
-				cpp << "			} break; \n";
+				cpp << "			} break;\n";
 				++switchIndex;
 			}
 			lastCategory = m_keywordlist[i].category;
 			// open new switch clause
-			cpp << "			// "<< lastCategory <<" \n";
+			cpp << "			// "<< lastCategory <<"\n";
 			cpp << "			case "<< switchIndex <<" :\n";
-			cpp << "			switch (t) { \n";
+			cpp << "			switch (t) {\n";
 		}
 		cpp << "				case " << m_keywordlist[i].index << " : return \"" << m_keywordlist[i].color << "\";\n";
 	}
 
-	cpp <<	"			} break; \n"
+	cpp <<	"			} break;\n"
 			"		} // switch\n"
 			"		throw IBK::Exception(IBK::FormatString(\"Cannot determine color for enumeration type '%1' and index '%2'.\")\n"
 			"			.arg(enumtype).arg(t), \"[KeywordList::Color]\");\n"
@@ -484,14 +484,14 @@ void CodeGenerator::generateKeywordlistCode(const IBK::Path & keywordListCpp) {
 		if (m_keywordlist[i].category != lastCategory) {
 			// if last category wasn't empty, close last switch clause
 			if (!lastCategory.empty()) {
-				cpp << "			} break; \n";
+				cpp << "			} break;\n";
 				++switchIndex;
 			}
 			lastCategory = m_keywordlist[i].category;
 			// open new switch clause
-			cpp << "			// "<< lastCategory <<" \n";
+			cpp << "			// "<< lastCategory <<"\n";
 			cpp << "			case "<< switchIndex <<" :\n";
-			cpp << "			switch (t) { \n";
+			cpp << "			switch (t) {\n";
 		}
 		if ( m_keywordlist[i].defaultValue == m_keywordlist[i].defaultValue ) {
 			cpp << "				case " << m_keywordlist[i].index << " : return " << m_keywordlist[i].defaultValue << ";\n";
@@ -500,7 +500,7 @@ void CodeGenerator::generateKeywordlistCode(const IBK::Path & keywordListCpp) {
 		}
 	}
 
-	cpp <<	"			} break; \n"
+	cpp <<	"			} break;\n"
 			"		} // switch\n"
 			"		throw IBK::Exception(IBK::FormatString(\"Cannot determine default value for enumeration type '%1' and index '%2'.\")\n"
 			"			.arg(enumtype).arg(t), \"[KeywordList::DefaultValue]\");\n"
@@ -508,7 +508,7 @@ void CodeGenerator::generateKeywordlistCode(const IBK::Path & keywordListCpp) {
 
 
 	// *** write Count() function ***
-	cpp <<	"	// number of entries in a keyword list \n";
+	cpp <<	"	// number of entries in a keyword list\n";
 	cpp <<	"	unsigned int KeywordList::Count(const char * const enumtype) {\n"
 			"		switch (enum2index(enumtype)) {\n";
 	lastCategory.clear();
@@ -528,7 +528,7 @@ void CodeGenerator::generateKeywordlistCode(const IBK::Path & keywordListCpp) {
 
 			lastCategory = m_keywordlist[i].category;
 			// open new case clause
-			cpp << "			// "<< lastCategory <<" \n";
+			cpp << "			// "<< lastCategory <<"\n";
 			cpp << "			case "<< switchIndex <<" : return ";
 		}
 		++categoryCount;
@@ -540,7 +540,7 @@ void CodeGenerator::generateKeywordlistCode(const IBK::Path & keywordListCpp) {
 			"			.arg(enumtype), \"[KeywordList::Count]\");\n"
 			"	}\n\n";
 
-	cpp <<	"	// max index for entries sharing a category in a keyword list \n";
+	cpp <<	"	// max index for entries sharing a category in a keyword list\n";
 	cpp <<	"	int KeywordList::MaxIndex(const char * const enumtype) {\n"
 			"		switch (enum2index(enumtype)) {\n";
 	lastCategory.clear();
@@ -560,7 +560,7 @@ void CodeGenerator::generateKeywordlistCode(const IBK::Path & keywordListCpp) {
 
 			lastCategory = m_keywordlist[i].category;
 			// open new case clause
-			cpp << "			// "<< lastCategory <<" \n";
+			cpp << "			// "<< lastCategory <<"\n";
 			cpp << "			case "<< switchIndex <<" : return ";
 		}
 		++categoryCount;
@@ -630,7 +630,7 @@ bool write_keyword_data(const std::string& output_file, const std::vector<ClassI
 		<< "//          All changes made to this file will be lost during the next build!\n\n";
 	while (getline(tmp, line)) {
 		if (!done && line.find("### KEYWORDDATA ###")!=std::string::npos) {
-			out << "const char * const KEYWORD_DATA = \n";
+			out << "const char * const KEYWORD_DATA =\n";
 			copy(keywordlist.begin(), keywordlist.end(), std::ostream_iterator<ClassInfo::Keyword>(out));
 			out << "    ;\n";
 			done = true;
