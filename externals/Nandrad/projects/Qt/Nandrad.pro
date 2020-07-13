@@ -27,6 +27,7 @@ DEPENDPATH = $${INCLUDEPATH}
 HEADERS += \
 	../../src/NANDRAD_AnnualSchedules.h \
 	../../src/NANDRAD_ArgsParser.h \
+	../../src/NANDRAD_CodeGenMacros.h \
 	../../src/NANDRAD_Constants.h \
 	../../src/NANDRAD_ConstructionInstance.h \
 	../../src/NANDRAD_DailyCycle.h \
@@ -95,4 +96,5 @@ SOURCES += \
 	../../src/NANDRAD_Utilities.cpp \
 	../../src/NANDRAD_Zone.cpp \
 	../../src/ncg/ncg_NANDRAD_ConstructionInstance.cpp \
-	../../src/ncg/ncg_NANDRAD_Interval.cpp
+	../../src/ncg/ncg_NANDRAD_Interval.cpp \
+	../../src/ncg/ncg_NANDRAD_Zone.cpp

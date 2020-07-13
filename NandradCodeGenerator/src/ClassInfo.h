@@ -26,6 +26,11 @@ public:
 		std::string		categoryName;		// The category name '<class>::<enum-name>'
 		std::string		enumNUM;
 		unsigned int	count;
+
+		std::string enumType() const {
+			std::string::size_type pos = categoryName.find("::");
+			return categoryName.substr(pos+2);
+		}
 	};
 
 	struct XMLInfo {

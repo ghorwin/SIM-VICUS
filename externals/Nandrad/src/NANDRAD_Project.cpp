@@ -773,7 +773,7 @@ void Project::writeZonesXML(TiXmlElement * parent, bool detailedOutput) const {
 	for (std::map< unsigned int, Zone >::const_iterator it = m_zones.begin();
 		it != m_zones.end(); ++it)
 	{
-		it->second.writeXML( child, detailedOutput );
+		it->second.writeXML( child );
 	}
 
 	TiXmlComment::addSeparatorComment(parent);

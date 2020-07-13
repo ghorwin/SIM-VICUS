@@ -103,7 +103,7 @@ bool CodeGenerator::parseDirectories() {
 		// get list of header files
 		std::vector< std::string> hfiles;
 		if (!listHeaders(*it, hfiles)) {
-			std::cerr << "Please check the supplied list of input directories!" << std::endl;
+			IBK::IBK_Message("Please check the supplied list of input directories!", IBK::MSG_ERROR, FUNC_ID);
 			return false; // something wrong with the input directories
 		}
 
@@ -306,6 +306,20 @@ void CodeGenerator::generateReadWriteCode() {
 				attribs += "	e->SetAttribute(\""+attribName+"\", m_" + attribName + ");\n";
 			}
 			else {
+				// check for enum types
+				bool hadEnumType = false;
+				for (const ClassInfo::EnumInfo & einfo : ci.m_enumInfo) {
+					if (einfo.enumType() == xmlInfo.typeStr) {
+						hadEnumType = true;
+						// generate write code for enum type
+						attribs += "	e->SetAttribute(\""+attribName+"\", KeywordList::Keyword(\""+ einfo.categoryName + "\",  m_" + attribName + "));\n";
+						includes.insert("NANDRAD_KeywordList.h");
+					}
+				}
+				if (hadEnumType) continue;
+
+				// other special cases
+
 				throw IBK::Exception(IBK::FormatString("Current unsupported xml attrib type '%1' for variable '%2'.")
 									 .arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
 			}
@@ -325,7 +339,10 @@ void CodeGenerator::generateReadWriteCode() {
 			// - IBK::Parameter
 			// - IBK::Flag
 			// - IBK::Parameter[NUM_xxx]
+			// - IBK::IntPara[NUM_xxx]
 			// - std::vector<xxx>
+			// - enumTypes
+
 			if (xmlInfo.typeStr == "int" ||
 				xmlInfo.typeStr == "unsigned int" ||
 				xmlInfo.typeStr == "double" ||
@@ -352,6 +369,25 @@ void CodeGenerator::generateReadWriteCode() {
 					elements += "	TiXmlElement::appendIBKParameterElement(e, m_"+varName+".name, m_"+varName+".IO_unit.name(), m_"+varName+".get_value());\n";
 				}
 			}
+			else if (xmlInfo.typeStr == "IBK::IntPara") {
+				// check for array syntax
+				std::string::size_type pos1 = varName.find("[");
+				if (pos1 != std::string::npos) {
+					// extract NUM type
+					std::string::size_type pos2 = varName.find("]");
+					std::string numType = varName.substr(pos1+1, pos2-pos1-1);
+					varName = varName.substr(0, pos1);
+
+					elements += "\n"
+						"	for (unsigned int i=0; i<"+numType+"; ++i) {\n"
+						"		if (!m_"+varName+"[i].name.empty())\n"
+						"			TiXmlElement::appendIBKParameterElement(e, m_"+varName+"[i].name, std::string(), m_"+varName+"[i].value, true);\n"
+						"	}\n";
+				}
+				else {
+					elements += "	TiXmlElement::appendIBKParameterElement(e, m_"+varName+".name, std::string(), m_"+varName+".value, true);\n";
+				}
+			}
 			else if (xmlInfo.typeStr == "IBK::Flag") {
 
 			}
@@ -376,6 +412,12 @@ void CodeGenerator::generateReadWriteCode() {
 
 			}
 			else {
+				// check for enum types
+				for (const ClassInfo::EnumInfo & einfo : ci.m_enumInfo) {
+					if (einfo.enumType() == xmlInfo.typeStr) {
+
+					}
+				}
 
 			}
 		}

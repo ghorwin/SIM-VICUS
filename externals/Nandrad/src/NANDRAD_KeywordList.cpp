@@ -68,7 +68,7 @@ namespace NANDRAD {
 		"SolverParameter::integrator_t",
 		"SolverParameter::lesSolver_t",
 		"SolverParameter::precond_t",
-		"Zone::zoneType_t",
+		"Zone::type_t",
 		"Zone::location_t",
 		"Zone::para_t",
 		"Zone::intpara_t"
@@ -348,7 +348,7 @@ namespace NANDRAD {
 				case 2 : return "ILU";
 				case 3 : return "auto";
 			} break;
-			// Zone::zoneType_t
+			// Zone::type_t
 			case 34 :
 			switch (t) {
 				case 0 : return "Constant";
@@ -370,9 +370,8 @@ namespace NANDRAD {
 				case 1 : return "RelativeHumidity";
 				case 2 : return "CO2Concentration";
 				case 3 : return "Area";
-				case 4 : return "Height";
-				case 5 : return "Volume";
-				case 6 : return "HeatCapacity";
+				case 4 : return "Volume";
+				case 5 : return "HeatCapacity";
 			} break;
 			// Zone::intpara_t
 			case 37 :
@@ -647,7 +646,7 @@ namespace NANDRAD {
 				case 2 : return "ILU";
 				case 3 : return "auto";
 			} break;
-			// Zone::zoneType_t
+			// Zone::type_t
 			case 34 :
 			switch (t) {
 				case 0 : return "Constant";
@@ -669,9 +668,8 @@ namespace NANDRAD {
 				case 1 : return "RelativeHumidity";
 				case 2 : return "CO2Concentration";
 				case 3 : return "Area";
-				case 4 : return "Height";
-				case 5 : return "Volume";
-				case 6 : return "HeatCapacity";
+				case 4 : return "Volume";
+				case 5 : return "HeatCapacity";
 			} break;
 			// Zone::intpara_t
 			case 37 :
@@ -947,7 +945,7 @@ namespace NANDRAD {
 				case 2 : return "Incomplete LU preconditioner";
 				case 3 : return "System selects preconditioner automatically.";
 			} break;
-			// Zone::zoneType_t
+			// Zone::type_t
 			case 34 :
 			switch (t) {
 				case 0 : return "Zone with constant temperatures.";
@@ -968,15 +966,14 @@ namespace NANDRAD {
 				case 0 : return "Temperature of the zone if set constant, or initial temperature for active zones [C].";
 				case 1 : return "Relative humidity of the zone if set constant, or initial humidity for active zones [%].";
 				case 2 : return "CO2 concentration of the zone if set constant, or initial concentration for active zones [g/m3].";
-				case 3 : return "Area of the ground floor [m2].";
-				case 4 : return "Zone height [m].";
-				case 5 : return "Zone volume [m3] (computed, if area and height are given).";
-				case 6 : return "Extra heat capacity [J/K].";
+				case 3 : return "Net usage area of the ground floor [m2] (for area-related outputs).";
+				case 4 : return "Zone air volume [m3].";
+				case 5 : return "Extra heat capacity [J/K].";
 			} break;
 			// Zone::intpara_t
 			case 37 :
 			switch (t) {
-				case 0 : return "ID reference to a mdoel with air parameter calculations.";
+				case 0 : return "ID reference to a model with air parameter calculations.";
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine description for enumeration type '%1' and index '%2'.")
@@ -1246,7 +1243,7 @@ namespace NANDRAD {
 				case 2 : return "";
 				case 3 : return "";
 			} break;
-			// Zone::zoneType_t
+			// Zone::type_t
 			case 34 :
 			switch (t) {
 				case 0 : return "";
@@ -1268,9 +1265,8 @@ namespace NANDRAD {
 				case 1 : return "%";
 				case 2 : return "g/m3";
 				case 3 : return "m2";
-				case 4 : return "m";
-				case 5 : return "m3";
-				case 6 : return "J/K";
+				case 4 : return "m3";
+				case 5 : return "J/K";
 			} break;
 			// Zone::intpara_t
 			case 37 :
@@ -1545,7 +1541,7 @@ namespace NANDRAD {
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
 			} break;
-			// Zone::zoneType_t
+			// Zone::type_t
 			case 34 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
@@ -1569,7 +1565,6 @@ namespace NANDRAD {
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
 				case 5 : return "#FFFFFF";
-				case 6 : return "#FFFFFF";
 			} break;
 			// Zone::intpara_t
 			case 37 :
@@ -1844,7 +1839,7 @@ namespace NANDRAD {
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// Zone::zoneType_t
+			// Zone::type_t
 			case 34 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
@@ -1868,7 +1863,6 @@ namespace NANDRAD {
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
-				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// Zone::intpara_t
 			case 37 :
@@ -1951,12 +1945,12 @@ namespace NANDRAD {
 			case 32 : return 8;
 			// SolverParameter::precond_t
 			case 33 : return 4;
-			// Zone::zoneType_t
+			// Zone::type_t
 			case 34 : return 4;
 			// Zone::location_t
 			case 35 : return 3;
 			// Zone::para_t
-			case 36 : return 7;
+			case 36 : return 6;
 			// Zone::intpara_t
 			case 37 : return 1;
 		} // switch
@@ -2035,12 +2029,12 @@ namespace NANDRAD {
 			case 32 : return 8;
 			// SolverParameter::precond_t
 			case 33 : return 4;
-			// Zone::zoneType_t
+			// Zone::type_t
 			case 34 : return 4;
 			// Zone::location_t
 			case 35 : return 3;
 			// Zone::para_t
-			case 36 : return 7;
+			case 36 : return 6;
 			// Zone::intpara_t
 			case 37 : return 1;
 		} // switch

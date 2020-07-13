@@ -28,6 +28,8 @@ Lesser General Public License for more details.
 #include <IBK_IntPara.h>
 #include <IBK_Path.h>
 
+#include "NANDRAD_CodeGenMacros.h"
+
 class TiXmlElement;
 
 namespace NANDRAD {
@@ -54,14 +56,13 @@ public:
 
 	typedef std::pair<unsigned int, unsigned int>  viewFactorPair;
 
-	// ***KEYWORDLIST-START***
 	/*! Type of zone. */
-	enum zoneType_t {
+	enum type_t {
 		ZT_CONSTANT,				// Keyword: Constant		'Zone with constant temperatures.'
 		ZT_ACTIVE,					// Keyword: Active			'Zone described by a temperature node in space.'
 		ZT_DETAILED,				// Keyword: Detailed		'Zone with detailed temperature in time and space.'
 		ZT_GROUND,					// Keyword: Ground			'Ground zone with temperatures from a CCD climate data file.'
-		NUM_ZT
+		NUM_T
 	};
 
 	/*! Location of a constant zone. */
@@ -77,61 +78,50 @@ public:
 		ZP_TEMPERATURE,				// Keyword: Temperature				[C]		'Temperature of the zone if set constant, or initial temperature for active zones [C].'
 		ZP_RELATIVE_HUMIDITY,		// Keyword: RelativeHumidity		[%]		'Relative humidity of the zone if set constant, or initial humidity for active zones [%].'
 		ZP_CO2_CONCENTRATION,		// Keyword: CO2Concentration		[g/m3]	'CO2 concentration of the zone if set constant, or initial concentration for active zones [g/m3].'
-		ZP_AREA,					// Keyword: Area					[m2]	'Area of the ground floor [m2].'
-		ZP_HEIGHT,					// Keyword: Height					[m]		'Zone height [m].'
-		ZP_VOLUME,					// Keyword: Volume					[m3]	'Zone volume [m3] (computed, if area and height are given).'
+		ZP_AREA,					// Keyword: Area					[m2]	'Net usage area of the ground floor [m2] (for area-related outputs).'
+		ZP_VOLUME,					// Keyword: Volume					[m3]	'Zone air volume [m3].'
 		ZP_HEATCAPACITY,			// Keyword: HeatCapacity			[J/K]	'Extra heat capacity [J/K].'
 		NUM_ZP
 	};
 
 	/*! Optional integer parameters. */
 	enum intpara_t {
-		ZI_AIRMATERIALREFERENCE,	// Keyword: AirMaterialReference	[---]	'ID reference to a mdoel with air parameter calculations.'
+		ZI_AIRMATERIALREFERENCE,	// Keyword: AirMaterialReference	[---]	'ID reference to a model with air parameter calculations.'
 		NUM_ZI
 	};
-	// ***KEYWORDLIST-END***
-
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	/*! Default constructor. */
 	Zone();
 
-	/*! Reads the data from the xml element.
-		Throws an IBK::Exception if a syntax error occurs.
-	*/
-	void readXML(const TiXmlElement * element);
-	/*! Appends the element to the parent xml element.
-		Throws an IBK::Exception in case of invalid data.
-	*/
-	void writeXML(TiXmlElement * parent, bool detailedOutput) const;
-
+	NANDRAD_READWRITE
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of the zone. */
-	unsigned int				m_id;
+	unsigned int				m_id;					// XML:A
 
-	/*! IBK-language encoded name of zone. */
-	std::string					m_displayName;
+	/*! Descriptive name of zone. */
+	std::string					m_displayName;			// XML:A:not-empty
 
 	/*! SpaceType ID name of current zone. */
-	std::string					m_spaceType;
+	std::string					m_spaceType;			// XML:E:not-empty
 
 	/*! Zone type (Constant, Active).
 		\sa zoneType_t
 	*/
-	zoneType_t					m_zoneType;
+	type_t					m_type;						// XML:A
 
 	/*! Zone location (Inside, Ground, Outside).
 	*/
-	location_t					m_location;
+	location_t					m_location;				// XML:A
 
 	/*! Physical parameters describing the zone. */
-	IBK::Parameter				m_para[NUM_ZP];
+	IBK::Parameter				m_para[NUM_ZP];			// XML:E
 
 	/*! Physical integer parameters describing the zone. */
-	IBK::IntPara				m_intpara[NUM_ZI];
+	IBK::IntPara				m_intpara[NUM_ZI];		// XML:E
 
 	/*! Optional name of a CCD climate data file: only for zones of type 'Ground'. */
 	IBK::Path					m_climateFileName;
@@ -142,11 +132,15 @@ public:
 	/*! Optional: view factors for all inisde interfaces of the current zone. */
 	std::vector<std::pair<viewFactorPair, double> >	m_viewFactors;
 
+
+	// *** Variables used only during simulation ***
+
 	/*! Pointer to the referenced space type property.
-		Is set to NULL after reading. Points to the
+		Is set to nullptr after reading. Points to the
 		corresponding NANDRAD::SpaceType object inside the model section!
 	*/
 	const SpaceType				*m_spaceTypeRef;
+
 }; // Zone
 
 

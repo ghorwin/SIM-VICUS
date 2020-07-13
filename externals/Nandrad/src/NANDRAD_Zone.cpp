@@ -33,7 +33,7 @@ namespace NANDRAD {
 Zone::Zone() :
 	m_id(NANDRAD::INVALID_ID),
 	m_spaceType("Default"),
-	m_zoneType(NUM_ZT),
+	m_type(NUM_T),
 	m_location(NUM_ZL),
 	m_spaceTypeRef(nullptr)
 {
@@ -203,8 +203,8 @@ void Zone::readXML(const TiXmlElement * element) {
 #endif
 }
 
-void Zone::writeXML(TiXmlElement * parent, bool detailedOutput) const {
 #if 0
+void Zone::writeXML(TiXmlElement * parent, bool detailedOutput) const {
 	// first add all comments
 	for ( std::set<std::string>::const_iterator it = m_comments.begin();
 								it != m_comments.end(); ++it)
@@ -267,8 +267,8 @@ void Zone::writeXML(TiXmlElement * parent, bool detailedOutput) const {
 	}
 	// write generic parameters
 	writeGenericParameters(e, detailedOutput);
-#endif
 }
+#endif
 
 } // namespace NANDRAD
 
