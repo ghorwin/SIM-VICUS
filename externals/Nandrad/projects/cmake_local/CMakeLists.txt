@@ -7,6 +7,7 @@
 project( Nandrad )
 
 include_directories(
+	${PROJECT_SOURCE_DIR}/../../src
 	${PROJECT_SOURCE_DIR}/../../../IBK/src
 	${PROJECT_SOURCE_DIR}/../../../IBKMK/src
 	${PROJECT_SOURCE_DIR}/../../../TiCPP/src

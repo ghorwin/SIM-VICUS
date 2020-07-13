@@ -94,4 +94,5 @@ SOURCES += \
 	../../src/NANDRAD_SpaceType.cpp \
 	../../src/NANDRAD_Utilities.cpp \
 	../../src/NANDRAD_Zone.cpp \
-	../../src/ncg/ncg_NANDRAD_ConstructionInstance.cpp
+	../../src/ncg/ncg_NANDRAD_ConstructionInstance.cpp \
+	../../src/ncg/ncg_NANDRAD_Interval.cpp

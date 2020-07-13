@@ -70,7 +70,7 @@ void DailyCycle::writeXML(TiXmlElement * parent, bool detailedOutput) const {
 	for (std::vector<Interval>::const_iterator it = m_intervals.begin();
 		it != m_intervals.end(); ++it)
 	{
-		it->writeXML(e, detailedOutput);
+		it->writeXML(e);
 	}
 	// write hourly values, if specified
 	for (std::vector<LinearSplineParameter>::const_iterator it = m_hourlyValues.begin();

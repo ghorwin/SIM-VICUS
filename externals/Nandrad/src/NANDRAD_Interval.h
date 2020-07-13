@@ -25,6 +25,8 @@ Lesser General Public License for more details.
 #include <iosfwd>
 #include <vector>
 
+#include <NANDRAD_CodeGenMacros.h>
+
 #include <IBK_Parameter.h>
 #include <IBK_math.h>
 
@@ -33,29 +35,20 @@ class TiXmlElement;
 namespace NANDRAD {
 
 /*!	The class Interval defines intervals of simulation time.
-	It is used to defined output grids or other intervals.
+	It is used to defined output grids.
 */
 class Interval {
 public:
 	/*! Parameters. */
-	// ***KEYWORDLIST-START***
 	enum para_t {
 		IP_START,		// Keyword: Start		[d] 'Start time point.'
 		IP_END,			// Keyword: End			[d] 'End time point.'
 		IP_STEPSIZE,	// Keyword: StepSize	[h] 'StepSize.'
 		NUM_IP
 	};
-	// ***KEYWORDLIST-END***
 
-	/*! Reads the data from the xml element.
-		Throws an IBK::Exception if a syntax error occurs.
-	*/
-	void readXML(const TiXmlElement * element);
+	NANDRAD_READWRITE
 
-	/*! Appends the element to the parent xml element.
-		Throws an IBK::Exception in case of invalid data.
-	*/
-	void writeXML(TiXmlElement * parent, bool detailedOutput) const;
 
 	/*! Compares this instance with another by value and returns true if they differ. */
 	bool operator!=(const Interval & other) const;
@@ -94,11 +87,8 @@ public:
 	*/
 	double endTime() const;
 
-	/// \todo we shouldn't use ibk parameter here, doesn't make sense, and we lose
-	/// 50 percent of the data type size
-
 	/*! The parameters defining the interval. */
-	IBK::Parameter						m_para[NUM_IP];
+	IBK::Parameter						m_para[NUM_IP];		// XML:E
 };
 
 } // namespace NANDRAD

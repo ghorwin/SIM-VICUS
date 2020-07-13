@@ -94,34 +94,6 @@ void Interval::readXML(const TiXmlElement * element) {
 }
 
 
-void Interval::writeXML(TiXmlElement * parent, bool detailedOutput) const {
-#if 0
-	// end time was set
-	bool endTimeChanged = !m_para[IP_END].name.empty();
-	bool startTimeChanged = !m_para[IP_START].name.empty();
-
-	TiXmlElement * e = new TiXmlElement("Interval");
-	parent->LinkEndChild(e);
-
-	for (unsigned int i=0; i<NUM_IP; ++i) {
-		if (m_para[i].name.empty()) continue;
-		// skip infinite end time
-		if (i == IP_END && (m_para[i].value == std::numeric_limits<double>::max()
-			|| !endTimeChanged) )
-			continue;
-		// skip infinite end time
-		if (i == IP_START && (m_para[i].value == 0
-			|| !startTimeChanged))
-			continue;
-		TiXmlElement::appendIBKParameterElement(e, m_para[i].name,
-			m_para[i].IO_unit.name(), m_para[i].get_value());
-	}
-
-	writeGenericParameters(e, detailedOutput);
-#endif
-}
-
-
 bool Interval::operator!=(const Interval & other) const {
 #if 0
 	if(GenericParametrizationObject::operator !=(other))

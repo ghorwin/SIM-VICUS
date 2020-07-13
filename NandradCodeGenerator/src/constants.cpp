@@ -382,7 +382,7 @@ const char * const CPP_READWRITE_HEADER =
 		"\n";
 
 const char * const CPP_WRITEXML =
-		"TiXmlElement * ConstructionInstance::writeXML(TiXmlElement * parent) const {\n"
+		"TiXmlElement * ${CLASSNAME}::writeXML(TiXmlElement * parent) const {\n"
 		"	TiXmlElement * e = new TiXmlElement(\"${CLASSNAME}\");\n"
 		"	parent->LinkEndChild(e);\n\n"
 		"${ATTRIBUTES}\n"

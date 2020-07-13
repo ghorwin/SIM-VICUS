@@ -83,7 +83,7 @@ void OutputGrid::writeXML(TiXmlElement * parent, bool detailedOutput) const {
 	// attributes
 	e->SetAttribute("name", m_name);
 	for (unsigned int i=0; i<m_intervals.size(); ++i) {
-		m_intervals[i].writeXML(e, detailedOutput);
+		m_intervals[i].writeXML(e);
 	}
 }
 //---------------------------------------------------------------------------

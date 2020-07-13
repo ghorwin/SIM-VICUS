@@ -282,7 +282,7 @@ void CodeGenerator::generateReadWriteCode() {
 		// *** writeXML() *** code
 
 		// start with the write code
-		fileContent += IBK::replace_string(CPP_WRITEXML, "${CLASSNAME}", ci.m_className, IBK::ReplaceFirst);
+		fileContent += IBK::replace_string(CPP_WRITEXML, "${CLASSNAME}", ci.m_className);
 
 		std::set<std::string> includes;
 

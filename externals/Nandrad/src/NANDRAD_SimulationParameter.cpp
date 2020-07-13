@@ -240,7 +240,7 @@ void SimulationParameter::writeXML(TiXmlElement * parent, bool detailedOutput) c
 	}
 
 	if (m_interval != tmp.m_interval)
-		m_interval.writeXML( e, false );
+		m_interval.writeXML( e );
 
 	TiXmlComment::addSeparatorComment(parent);
 }
