@@ -10,4 +10,7 @@ extern const char * const CPP_HEADER_TEMPLATE;
 extern const char * const CPP_FOOTER;
 
 
+extern const char * const CPP_READWRITE_HEADER;
+extern const char * const CPP_WRITEXML;
+
 #endif // CONSTANTS_H

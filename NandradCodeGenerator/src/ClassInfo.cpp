@@ -8,6 +8,7 @@
 
 
 bool ClassInfo::parse(const IBK::Path & headerFilePath) {
+	FUNCID(ClassInfo::parse);
 
 	// store time stamp of input file
 
@@ -20,7 +21,7 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 
 	m_sourceHeaderFile = headerFilePath;
 
-	std::string line, classname, enumname;
+	std::string line, enumname;
 	std::size_t pos;
 	bool inEnum = false;
 	unsigned int enumIdx = 0;
@@ -28,19 +29,30 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 	// read line by line until end of file is found
 	while (getline(in, line)) {
 		try {
+			if (line.find("NANDRAD_READWRITE_PRIVATE") != std::string::npos) {
+				m_requirePrivateReadWrite = false;
+				continue;
+			}
+			if (line.find("NANDRAD_COMP") != std::string::npos) {
+				m_requireComparisonFunction = false;
+				continue;
+			}
 
 			// get class declaration and remember in which class we are
 			pos = line.find("class");
 			if (pos != std::string::npos && pos+6 < line.size()) {
 				// check that there is nothing but whitespace before the class
 				if (line.find_first_not_of(" \t") == pos) {
-					classname = line.substr(pos+6); // might be "ThisAndThat: public Parent {"
-					pos = classname.find_first_of(" \t{:/\n");
+					if (!m_className.empty())
+						throw IBK::Exception("Multiple class declarations in source file are not supported.", FUNC_ID);
+					std::string cname = line.substr(pos+6); // might be "ThisAndThat: public Parent {"
+					pos = cname.find_first_of(" \t{:/\n");
 					// guard against pure forward-declaration, in which case the first char after the class will be a ;
-					classname = classname.substr(0, pos);
-					IBK::trim(classname);
-					if (classname.back() == ';')
+					cname = cname.substr(0, pos);
+					IBK::trim(cname);
+					if (cname.back() == ';')
 						continue; // skip this line
+					m_className = cname;
 		//			std::cout << line << std::endl;
 		//			std::cout << "class " << classname << std::endl;
 					continue;
@@ -96,7 +108,7 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 					std::cerr << "Error converting default value '"<< defaultValue << "' to number." << std::endl;
 					throw std::runtime_error("error");
 				}
-				kw.category = classname + "::" + enumname;
+				kw.category = m_className + "::" + enumname;
 				kw.index = enumIdx;
 				m_keywords.push_back(kw);
 				++enumIdx;
@@ -113,7 +125,7 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 
 					inEnum = false;
 					EnumInfo einfo;
-					einfo.categoryName = classname + "::" + enumname;
+					einfo.categoryName = m_className + "::" + enumname;
 					einfo.count = enumIdx;
 					einfo.enumNUM = enumName;
 					m_enumInfo.push_back(einfo);
@@ -162,6 +174,8 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 					std::cerr << "Invalid XML-spec '"<< xmlSpec << "' in line '"<< line << "'" << std::endl;
 					throw std::runtime_error("error");
 				}
+				xmlInfo.typeStr = typeStr;
+				xmlInfo.varName = varName;
 
 				// process flags
 				for (unsigned int i=1; i<tokens.size(); ++i) {

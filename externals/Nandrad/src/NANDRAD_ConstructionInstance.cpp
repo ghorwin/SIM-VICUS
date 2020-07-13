@@ -37,11 +37,11 @@ ConstructionInstance::ConstructionInstance() :
 {
 }
 
+#if 0
 void ConstructionInstance::readXML(const TiXmlElement * element) {
 	const char * const FUNC_ID = "[ConstructionInstance::readXML]";
 	// read attributes
 
-#if 0
 
 	try {
 		const TiXmlAttribute * attrib = TiXmlAttribute::attributeByName(element, "displayName");
@@ -152,64 +152,8 @@ void ConstructionInstance::readXML(const TiXmlElement * element) {
 	catch (std::exception & ex2) {
 		throw IBK::Exception( IBK::FormatString("%1\nError reading 'ConstructionInstance' element.").arg(ex2.what()), FUNC_ID);
 	}
-#endif
 }
-
-
-TiXmlElement * ConstructionInstance::writeXML(TiXmlElement * parent) const {
-	TiXmlElement * e = new TiXmlElement("ConstructionInstance");
-	parent->LinkEndChild(e);
-
-	if (!m_displayName.empty())
-		e->SetAttribute("displayName", m_displayName);
-
-	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-
-	// write all construction instance parameters
-	for (unsigned int i=0; i<NUM_CP; ++i) {
-		if (!m_para[i].name.empty())
-			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
-	}
-
-	TiXmlElement::appendSingleAttributeElement(e, "ConstructionTypeID", nullptr, std::string(),IBK::val2string<unsigned int>(m_constructionTypeId));
-
-	// now write interfaces
-	TiXmlElement * child = new TiXmlElement("Interfaces");
-	e->LinkEndChild(child);
-
-	for (std::vector<Interface>::const_iterator ifaceIt = m_interfaces.begin();
-		 ifaceIt != m_interfaces.end(); ++ifaceIt)
-	{
-		ifaceIt->writeXML(child, false);
-	}
-
-#if 0
-	// write all embedded objects
-	if (!m_embeddedObjects.empty()) {
-		TiXmlElement * child = new TiXmlElement("EmbeddedObjects");
-		e->LinkEndChild(child);
-
-		for (std::vector<EmbeddedObject>::const_iterator objectIt = m_embeddedObjects.begin();
-			 objectIt != m_embeddedObjects.end(); ++objectIt)
-		{
-			if(detailedOutput)
-				objectIt->writeCommentsXML(child);
-			objectIt->writeXML(child,detailedOutput);
-		}
-	}
-	// FMU export definitions
-	for (unsigned int i = 0; i < m_FMUExportReferences.size(); ++i) {
-		// write sensor output
-		m_FMUExportReferences[i].writeXML(e);
-	}
-	// FMU import definitions
-	for (unsigned int i = 0; i < m_FMUImportReferences.size(); ++i) {
-		// write sensor output
-		m_FMUImportReferences[i].writeXML(e);
-	}
 #endif
-	return e;
-}
 
 
 #if 0

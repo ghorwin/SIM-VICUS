@@ -12,6 +12,8 @@ Example syntax:
 */
 
 #include <iostream>
+#include <IBK_MessageHandler.h>
+#include <IBK_MessageHandlerRegistry.h>
 
 #include "CodeGenerator.h"
 
@@ -42,6 +44,8 @@ int main(int argc, char *argv[]) {
 
 		return EXIT_FAILURE;
 	}
+
+	IBK::MessageHandlerRegistry::instance().messageHandler()->setConsoleVerbosityLevel(IBK::VL_INFO);
 
 	CodeGenerator cg;
 	cg.handleArguments(argv);

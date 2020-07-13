@@ -123,7 +123,7 @@ void Interface::readXML(const TiXmlElement * element) {
 #endif
 }
 
-void Interface::writeXML(TiXmlElement * parent, bool detailedOutput) const {
+void Interface::writeXML(TiXmlElement * parent) const {
 #if 0
 
 	TiXmlElement * e = new TiXmlElement("Interface");

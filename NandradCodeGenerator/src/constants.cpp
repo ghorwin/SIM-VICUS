@@ -347,3 +347,46 @@ const char * const CPP_FOOTER =
 "	}\n"
 "\n";
 
+
+const char * const CPP_READWRITE_HEADER =
+		"/*	The NANDRAD data model library.\n"
+		"	Copyright (c) 2012-now, Institut fuer Bauklimatik, TU Dresden, Germany\n"
+		"\n"
+		"	Written by\n"
+		"	A. Nicolai		<andreas.nicolai -[at]- tu-dresden.de>\n"
+		"	A. Paepcke		<anne.paepcke -[at]- tu-dresden.de>\n"
+		"	St. Vogelsang	<stefan.vogelsang -[at]- tu-dresden.de>\n"
+		"	All rights reserved.\n"
+		"\n"
+		"	This library is free software; you can redistribute it and/or\n"
+		"	modify it under the terms of the GNU Lesser General Public\n"
+		"	License as published by the Free Software Foundation; either\n"
+		"	version 3 of the License, or (at your option) any later version.\n"
+		"\n"
+		"	This library is distributed in the hope that it will be useful,\n"
+		"	but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+		"	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n"
+		"	Lesser General Public License for more details.\n"
+		"*/\n"
+		"\n"
+		"#include <${HEADER_FILE}>\n"
+		"#include <NANDRAD_KeywordList.h>\n"
+		"\n"
+		"#include <IBK_Exception.h>\n"
+		"#include <IBK_StringUtils.h>\n"
+		"${OTHER_INCLUDES}"
+		"\n"
+		"#include <tinyxml.h>\n"
+		"\n"
+		"namespace NANDRAD {\n"
+		"\n";
+
+const char * const CPP_WRITEXML =
+		"TiXmlElement * ConstructionInstance::writeXML(TiXmlElement * parent) const {\n"
+		"	TiXmlElement * e = new TiXmlElement(\"${CLASSNAME}\");\n"
+		"	parent->LinkEndChild(e);\n\n"
+		"${ATTRIBUTES}\n"
+		"${CHILD_ELEMENTS}\n"
+		"	return e;\n"
+		"}\n";
+

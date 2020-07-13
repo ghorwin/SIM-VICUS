@@ -18,6 +18,7 @@ unix|mac {
 LIBS += -lIBK -lTiCPP
 
 INCLUDEPATH = \
+	../../src \
 	../../../IBK/src \
 	../../../TiCPP/src
 
@@ -92,4 +93,5 @@ SOURCES += \
 	../../src/NANDRAD_SolverParameter.cpp \
 	../../src/NANDRAD_SpaceType.cpp \
 	../../src/NANDRAD_Utilities.cpp \
-	../../src/NANDRAD_Zone.cpp
+	../../src/NANDRAD_Zone.cpp \
+	../../src/ncg/ncg_NANDRAD_ConstructionInstance.cpp

@@ -77,7 +77,7 @@ public:
 	/*! Reads the data from the xml element.
 		Throws an IBK::Exception if a syntax error occurs.
 	*/
-	void readXML(const TiXmlElement * element);
+	void readXML(const TiXmlElement * element) {}
 	/*! Appends the element to the parent xml element.
 		Throws an IBK::Exception in case of invalid data.
 	*/
@@ -101,7 +101,7 @@ public:
 	/*! Unique id number. */
 	unsigned int				m_id;							// XML:A
 	/*! IBK-language encoded name of construction instance. */
-	std::string					m_displayName;					// XML:E
+	std::string					m_displayName;					// XML:A:not-empty
 	/*! The id number of the corresponding construction type. */
 	unsigned int				m_constructionTypeId;			// XML:E
 
@@ -121,9 +121,6 @@ public:
 		wall simulation by an explicit simulation model.
 	*/
 //	std::vector<EmbeddedObject>	m_embeddedObjects;
-
-	/*! Names of the enclosing zones. */
-	std::vector<std::string>	m_zoneNames;
 };
 
 

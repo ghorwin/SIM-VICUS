@@ -33,6 +33,7 @@ public:
 		bool			element;	// if false, an attribute is written
 		bool			notEmpty;	// if true, string arguments are checked for emptiness after reading
 		std::string		typeStr;	// C++ type string
+		std::string		varName;	// Name of the variable without m_ prefix
 	};
 
 
@@ -40,6 +41,12 @@ public:
 	bool parse(const IBK::Path & headerFilePath);
 
 	IBK::Path				m_sourceHeaderFile;
+	std::string				m_className;
+
+	/*! Set to true if NANDRAD_READWRITE_PRIVATE macro is found in file. */
+	bool					m_requirePrivateReadWrite = false;
+	/*! Set to true, if NANDRAD_COMP macro is found in file. */
+	bool					m_requireComparisonFunction = false;
 
 	/*! Keywords collected from this class file. */
 	std::vector<Keyword>	m_keywords;
