@@ -55,6 +55,7 @@ HEADERS += \
 	../../src/NANDRAD_ScheduleGroup.h \
 	../../src/NANDRAD_Schedules.h \
 	../../src/NANDRAD_Sensor.h \
+	../../src/NANDRAD_SerializationTest.h \
 	../../src/NANDRAD_SimulationParameter.h \
 	../../src/NANDRAD_SolverParameter.h \
 	../../src/NANDRAD_SpaceType.h \

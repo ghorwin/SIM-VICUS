@@ -336,6 +336,8 @@ void CodeGenerator::generateReadWriteCode() {
 			std::string tagName = char(toupper(varName[0])) + varName.substr(1);
 			// we have special handling for:
 			// - simple tags (no attributes) for PODs, int, unsigned int, double, bool
+			// - std::string
+			// - IBK::Path
 			// - IBK::Parameter
 			// - IBK::Flag
 			// - IBK::Parameter[NUM_xxx]
@@ -349,6 +351,12 @@ void CodeGenerator::generateReadWriteCode() {
 				xmlInfo.typeStr == "bool")
 			{
 				elements += "\n	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), IBK::val2string<"+xmlInfo.typeStr+">(m_"+varName+"));\n";
+			}
+			else if (xmlInfo.typeStr == "std::string") {
+				elements += "\n	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+");\n";
+			}
+			else if (xmlInfo.typeStr == "IBK::Path") {
+				elements += "\n	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".str());\n";
 			}
 			else if (xmlInfo.typeStr == "IBK::Parameter") {
 				// check for array syntax

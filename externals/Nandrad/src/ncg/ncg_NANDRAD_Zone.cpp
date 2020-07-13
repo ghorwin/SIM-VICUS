@@ -39,6 +39,8 @@ TiXmlElement * Zone::writeXML(TiXmlElement * parent) const {
 	e->SetAttribute("type", KeywordList::Keyword("Zone::type_t",  m_type));
 	e->SetAttribute("location", KeywordList::Keyword("Zone::location_t",  m_location));
 
+	TiXmlElement::appendSingleAttributeElement(e, "SpaceType", nullptr, std::string(), m_spaceType);
+
 	for (unsigned int i=0; i<NUM_ZP; ++i) {
 		if (!m_para[i].name.empty())
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
