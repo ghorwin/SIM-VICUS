@@ -244,226 +244,249 @@ void CodeGenerator::generateReadWriteCode() {
 	// - start writing file by writing header
 	// - write writeXML() or writeXMLPrivate() function
 	for (const ClassInfo & ci : m_classInfo) {
+		try {
 
-		// skip files where code generation is not necessary
-		if (ci.m_xmlInfo.empty() && !ci.m_requireComparisonFunction)
-			continue;
+			// skip files where code generation is not necessary
+			if (ci.m_xmlInfo.empty() && !ci.m_requireComparisonFunction)
+				continue;
 
-		// compose path to target file
-		IBK::Path parentDir;
-		if (m_ncgOutputDir.isAbsolute())
-			parentDir = m_ncgOutputDir;
-		else
-			parentDir = ci.m_sourceHeaderFile.parentPath() / m_ncgOutputDir;
-		IBK::Path targetFile = parentDir / "ncg_" + ci.m_sourceHeaderFile.filename().withoutExtension().str() + ".cpp";
+			// compose path to target file
+			IBK::Path parentDir;
+			if (m_ncgOutputDir.isAbsolute())
+				parentDir = m_ncgOutputDir;
+			else
+				parentDir = ci.m_sourceHeaderFile.parentPath() / m_ncgOutputDir;
+			IBK::Path targetFile = parentDir / "ncg_" + ci.m_sourceHeaderFile.filename().withoutExtension().str() + ".cpp";
 
-		// check if it exists
-		if (targetFile.exists()) {
+			// check if it exists
+			if (targetFile.exists()) {
 #define DISABLE_TIME_CHECK
 #ifndef DISABLE_TIME_CHECK
-			// skip, if target file is already newer than source file
-			if (targetFile.fileTime() > ci.m_sourceHeaderFile.fileTime()) {
-				IBK::IBK_Message(IBK::FormatString("Target file '%1' is newer than '%2', skipped.\n")
-								 .arg(targetFile).arg(ci.m_sourceHeaderFile), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-				continue;
-			}
+				// skip, if target file is already newer than source file
+				if (targetFile.fileTime() > ci.m_sourceHeaderFile.fileTime()) {
+					IBK::IBK_Message(IBK::FormatString("Target file '%1' is newer than '%2', skipped.\n")
+									 .arg(targetFile).arg(ci.m_sourceHeaderFile), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+					continue;
+				}
 #endif // DISABLE_TIME_CHECK
-		}
-
-		// check if parent dir exits
-		if (!parentDir.exists()) {
-			if (!IBK::Path::makePath(parentDir))
-				throw IBK::Exception(IBK::FormatString("Cannot create target path '%1'.").arg(parentDir), FUNC_ID);
-		}
-
-		// now start writing the file
-		std::string fileContent;
-
-		// *** writeXML() *** code
-
-		// start with the write code
-		fileContent += IBK::replace_string(CPP_WRITEXML, "${CLASSNAME}", ci.m_className);
-
-		std::set<std::string> includes;
-
-		std::string attribs;
-		// generate attribute write code
-		for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
-			if (xmlInfo.element) continue;
-			std::string attribName = xmlInfo.varName;
-			// plain data types are always just written as attributes
-			if (xmlInfo.typeStr == "int" ||
-				xmlInfo.typeStr == "unsigned int" ||
-				xmlInfo.typeStr == "double" ||
-				xmlInfo.typeStr == "bool")
-			{
-				attribs += "	e->SetAttribute(\""+attribName+"\", IBK::val2string<"+xmlInfo.typeStr+">(m_"+attribName+"));\n";
 			}
-			else if (xmlInfo.typeStr == "std::string") {
-				if (xmlInfo.notEmpty) {
-					attribs += "	if (!m_" + attribName + ".empty())\n	";
+
+			// check if parent dir exits
+			if (!parentDir.exists()) {
+				if (!IBK::Path::makePath(parentDir))
+					throw IBK::Exception(IBK::FormatString("Cannot create target path '%1'.").arg(parentDir), FUNC_ID);
+			}
+
+			// now start writing the file
+			std::string fileContent;
+
+			// *** writeXML() *** code
+
+			// start with the write code
+			fileContent += IBK::replace_string(CPP_WRITEXML, "${CLASSNAME}", ci.m_className);
+
+			std::set<std::string> includes;
+
+			std::string attribs;
+			// generate attribute write code
+			for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
+				if (xmlInfo.element) continue;
+				std::string attribName = xmlInfo.varName;
+				// plain data types are always just written as attributes
+				if (xmlInfo.typeStr == "int" ||
+					xmlInfo.typeStr == "unsigned int" ||
+					xmlInfo.typeStr == "double" ||
+					xmlInfo.typeStr == "bool")
+				{
+					attribs += "	e->SetAttribute(\""+attribName+"\", IBK::val2string<"+xmlInfo.typeStr+">(m_"+attribName+"));\n";
 				}
-				attribs += "	e->SetAttribute(\""+attribName+"\", m_" + attribName + ");\n";
+				else if (xmlInfo.typeStr == "IBK::Path") {
+					if (xmlInfo.notEmpty) {
+						attribs += "	if (m_" + attribName + ".isValid())\n	";
+					}
+					attribs += "	e->SetAttribute(\""+attribName+"\", m_" + attribName + ".str());\n";
+				}
+				else if (xmlInfo.typeStr == "std::string") {
+					if (xmlInfo.notEmpty) {
+						attribs += "	if (!m_" + attribName + ".empty())\n	";
+					}
+					attribs += "	e->SetAttribute(\""+attribName+"\", m_" + attribName + ");\n";
+				}
+				else if (xmlInfo.typeStr == "IBK::Unit") {
+					attribs += "	e->SetAttribute(\""+attribName+"\", m_" + attribName + ".name());\n";
+				}
+				else {
+					// check for enum types
+					bool hadEnumType = false;
+					for (const ClassInfo::EnumInfo & einfo : ci.m_enumInfo) {
+						if (einfo.enumType() == xmlInfo.typeStr) {
+							hadEnumType = true;
+							// generate write code for enum type
+							attribs += "	e->SetAttribute(\""+attribName+"\", KeywordList::Keyword(\""+ einfo.categoryName + "\",  m_" + attribName + "));\n";
+							includes.insert("NANDRAD_KeywordList.h");
+						}
+					}
+					if (hadEnumType) continue;
+
+					// other special cases
+
+					throw IBK::Exception(IBK::FormatString("(Still) unsupported XML attrib type '%1' for variable '%2'.")
+										 .arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
+				}
 			}
-			else {
-				// check for enum types
-				bool hadEnumType = false;
-				for (const ClassInfo::EnumInfo & einfo : ci.m_enumInfo) {
-					if (einfo.enumType() == xmlInfo.typeStr) {
-						hadEnumType = true;
-						// generate write code for enum type
-						attribs += "	e->SetAttribute(\""+attribName+"\", KeywordList::Keyword(\""+ einfo.categoryName + "\",  m_" + attribName + "));\n";
-						includes.insert("NANDRAD_KeywordList.h");
+
+			fileContent = IBK::replace_string(fileContent, "${ATTRIBUTES}", attribs, IBK::ReplaceFirst);
+
+			// now the elements
+			std::string elements;
+
+			for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
+				if (!xmlInfo.element) continue;
+				std::string varName = xmlInfo.varName;
+				std::string tagName = char(toupper(varName[0])) + varName.substr(1);
+				// we have special handling for:
+				// - simple tags (no attributes) for PODs, int, unsigned int, double, bool
+				// - std::string
+				// - IBK::Path
+				// - IBK::Parameter
+				// - IBK::Flag
+				// - IBK::Parameter[NUM_xxx]
+				// - IBK::IntPara[NUM_xxx]
+				// - std::vector<xxx>
+				// - enumTypes
+
+				if (xmlInfo.typeStr == "int" ||
+					xmlInfo.typeStr == "unsigned int" ||
+					xmlInfo.typeStr == "double" ||
+					xmlInfo.typeStr == "bool")
+				{
+					elements += "\n	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), IBK::val2string<"+xmlInfo.typeStr+">(m_"+varName+"));\n";
+				}
+				else if (xmlInfo.typeStr == "std::string") {
+					elements += "\n	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+");\n";
+				}
+				else if (xmlInfo.typeStr == "IBK::Unit") {
+					elements += "\n	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".name());\n";
+				}
+				else if (xmlInfo.typeStr == "IBK::Path") {
+					elements += "\n	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".str());\n";
+				}
+				else if (xmlInfo.typeStr == "IBK::Parameter") {
+					// check for array syntax
+					std::string::size_type pos1 = varName.find("[");
+					if (pos1 != std::string::npos) {
+						// extract NUM type
+						std::string::size_type pos2 = varName.find("]");
+						std::string numType = varName.substr(pos1+1, pos2-pos1-1);
+						varName = varName.substr(0, pos1);
+
+						elements += "\n"
+							"	for (unsigned int i=0; i<"+numType+"; ++i) {\n"
+							"		if (!m_"+varName+"[i].name.empty())\n"
+							"			TiXmlElement::appendIBKParameterElement(e, m_"+varName+"[i].name, m_"+varName+"[i].IO_unit.name(), m_"+varName+"[i].get_value());\n"
+							"	}\n";
+					}
+					else {
+						elements += "\n	TiXmlElement::appendIBKParameterElement(e, m_"+varName+".name, m_"+varName+".IO_unit.name(), m_"+varName+".get_value());\n";
 					}
 				}
-				if (hadEnumType) continue;
+				else if (xmlInfo.typeStr == "IBK::IntPara") {
+					// check for array syntax
+					std::string::size_type pos1 = varName.find("[");
+					if (pos1 != std::string::npos) {
+						// extract NUM type
+						std::string::size_type pos2 = varName.find("]");
+						std::string numType = varName.substr(pos1+1, pos2-pos1-1);
+						varName = varName.substr(0, pos1);
 
-				// other special cases
-
-				throw IBK::Exception(IBK::FormatString("Current unsupported xml attrib type '%1' for variable '%2'.")
-									 .arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
-			}
-		}
-
-		fileContent = IBK::replace_string(fileContent, "${ATTRIBUTES}", attribs, IBK::ReplaceFirst);
-
-		// now the elements
-		std::string elements;
-
-		for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
-			if (!xmlInfo.element) continue;
-			std::string varName = xmlInfo.varName;
-			std::string tagName = char(toupper(varName[0])) + varName.substr(1);
-			// we have special handling for:
-			// - simple tags (no attributes) for PODs, int, unsigned int, double, bool
-			// - std::string
-			// - IBK::Path
-			// - IBK::Parameter
-			// - IBK::Flag
-			// - IBK::Parameter[NUM_xxx]
-			// - IBK::IntPara[NUM_xxx]
-			// - std::vector<xxx>
-			// - enumTypes
-
-			if (xmlInfo.typeStr == "int" ||
-				xmlInfo.typeStr == "unsigned int" ||
-				xmlInfo.typeStr == "double" ||
-				xmlInfo.typeStr == "bool")
-			{
-				elements += "\n	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), IBK::val2string<"+xmlInfo.typeStr+">(m_"+varName+"));\n";
-			}
-			else if (xmlInfo.typeStr == "std::string") {
-				elements += "\n	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+");\n";
-			}
-			else if (xmlInfo.typeStr == "IBK::Path") {
-				elements += "\n	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".str());\n";
-			}
-			else if (xmlInfo.typeStr == "IBK::Parameter") {
-				// check for array syntax
-				std::string::size_type pos1 = varName.find("[");
-				if (pos1 != std::string::npos) {
-					// extract NUM type
-					std::string::size_type pos2 = varName.find("]");
-					std::string numType = varName.substr(pos1+1, pos2-pos1-1);
-					varName = varName.substr(0, pos1);
-
-					elements += "\n"
-						"	for (unsigned int i=0; i<"+numType+"; ++i) {\n"
-						"		if (!m_"+varName+"[i].name.empty())\n"
-						"			TiXmlElement::appendIBKParameterElement(e, m_"+varName+"[i].name, m_"+varName+"[i].IO_unit.name(), m_"+varName+"[i].get_value());\n"
-						"	}\n";
-				}
-				else {
-					elements += "\n	TiXmlElement::appendIBKParameterElement(e, m_"+varName+".name, m_"+varName+".IO_unit.name(), m_"+varName+".get_value());\n";
-				}
-			}
-			else if (xmlInfo.typeStr == "IBK::IntPara") {
-				// check for array syntax
-				std::string::size_type pos1 = varName.find("[");
-				if (pos1 != std::string::npos) {
-					// extract NUM type
-					std::string::size_type pos2 = varName.find("]");
-					std::string numType = varName.substr(pos1+1, pos2-pos1-1);
-					varName = varName.substr(0, pos1);
-
-					elements += "\n"
-						"	for (unsigned int i=0; i<"+numType+"; ++i) {\n"
-						"		if (!m_"+varName+"[i].name.empty())\n"
-						"			TiXmlElement::appendIBKParameterElement(e, m_"+varName+"[i].name, std::string(), m_"+varName+"[i].value, true);\n"
-						"	}\n";
-				}
-				else {
-					elements += "\n	TiXmlElement::appendIBKParameterElement(e, m_"+varName+".name, std::string(), m_"+varName+".value, true);\n";
-				}
-			}
-			else if (xmlInfo.typeStr == "IBK::Flag") {
-				// check for array syntax
-				std::string::size_type pos1 = varName.find("[");
-				if (pos1 != std::string::npos) {
-					// extract NUM type
-					std::string::size_type pos2 = varName.find("]");
-					std::string numType = varName.substr(pos1+1, pos2-pos1-1);
-					varName = varName.substr(0, pos1);
-					elements += "\n"
-						"	for (int i=0; i<"+numType+"; ++i) {\n"
-						"		if (!m_flag[i].name().empty())\n"
-						"			TiXmlElement::appendSingleAttributeElement(e, \"IBK:Flag\", \"name\", m_"+varName+"[i].name(), m_"+varName+"[i].isEnabled() ? \"true\" : \"false\");\n"
-						"	}\n";
-				}
-				else {
-					elements += "\n	TiXmlElement::appendSingleAttributeElement(e, \"IBK:Flag\", \"name\", m_"+varName+".name(), m_"+varName+".isEnabled() ? \"true\" : \"false\");\n";
-				}
-			}
-			else if (xmlInfo.typeStr.find("std::vector<") == 0) {
-				// extract subtype
-				std::string::size_type pos1 = xmlInfo.typeStr.find("<");
-				std::string::size_type pos2 = xmlInfo.typeStr.find(">");
-				std::string childType = xmlInfo.typeStr.substr(pos1+1, pos2-pos1-1);
-				// we generate the parent element and afterwards the loop
-				elements += "\n"
-						"	if (!m_"+varName+".empty()) {\n"
-						"		TiXmlElement * child = new TiXmlElement(\""+tagName+"\");\n"
-						"		e->LinkEndChild(child);\n"
-						"\n"
-						"		for (std::vector<"+childType+">::const_iterator ifaceIt = m_"+varName+".begin();\n"
-						"			ifaceIt != m_"+varName+".end(); ++ifaceIt)\n"
-						"		{\n"
-						"			ifaceIt->writeXML(child);\n"
-						"		}\n"
-						"	}\n"
-						"\n";
-
-			}
-			else {
-				// check for enum types
-				for (const ClassInfo::EnumInfo & einfo : ci.m_enumInfo) {
-					if (einfo.enumType() == xmlInfo.typeStr) {
-
+						elements += "\n"
+							"	for (unsigned int i=0; i<"+numType+"; ++i) {\n"
+							"		if (!m_"+varName+"[i].name.empty())\n"
+							"			TiXmlElement::appendIBKParameterElement(e, m_"+varName+"[i].name, std::string(), m_"+varName+"[i].value, true);\n"
+							"	}\n";
+					}
+					else {
+						elements += "\n	TiXmlElement::appendIBKParameterElement(e, m_"+varName+".name, std::string(), m_"+varName+".value, true);\n";
 					}
 				}
+				else if (xmlInfo.typeStr == "IBK::Flag") {
+					// check for array syntax
+					std::string::size_type pos1 = varName.find("[");
+					if (pos1 != std::string::npos) {
+						// extract NUM type
+						std::string::size_type pos2 = varName.find("]");
+						std::string numType = varName.substr(pos1+1, pos2-pos1-1);
+						varName = varName.substr(0, pos1);
+						elements += "\n"
+							"	for (int i=0; i<"+numType+"; ++i) {\n"
+							"		if (!m_"+varName+"[i].name().empty())\n"
+							"			TiXmlElement::appendSingleAttributeElement(e, \"IBK:Flag\", \"name\", m_"+varName+"[i].name(), m_"+varName+"[i].isEnabled() ? \"true\" : \"false\");\n"
+							"	}\n";
+					}
+					else {
+						elements += "\n	TiXmlElement::appendSingleAttributeElement(e, \"IBK:Flag\", \"name\", m_"+varName+".name(), m_"+varName+".isEnabled() ? \"true\" : \"false\");\n";
+					}
+				}
+				else if (xmlInfo.typeStr.find("std::vector<") == 0) {
+					// extract subtype
+					std::string::size_type pos1 = xmlInfo.typeStr.find("<");
+					std::string::size_type pos2 = xmlInfo.typeStr.find(">");
+					std::string childType = xmlInfo.typeStr.substr(pos1+1, pos2-pos1-1);
+					// we generate the parent element and afterwards the loop
+					elements += "\n"
+							"	if (!m_"+varName+".empty()) {\n"
+							"		TiXmlElement * child = new TiXmlElement(\""+tagName+"\");\n"
+							"		e->LinkEndChild(child);\n"
+							"\n"
+							"		for (std::vector<"+childType+">::const_iterator ifaceIt = m_"+varName+".begin();\n"
+							"			ifaceIt != m_"+varName+".end(); ++ifaceIt)\n"
+							"		{\n"
+							"			ifaceIt->writeXML(child);\n"
+							"		}\n"
+							"	}\n"
+							"\n";
 
+				}
+				else {
+					bool hadEnumType = false;
+					for (const ClassInfo::EnumInfo & einfo : ci.m_enumInfo) {
+						if (einfo.enumType() == xmlInfo.typeStr) {
+							hadEnumType = true;
+							// generate write code for enum type
+							elements += "\n	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), KeywordList::Keyword(\""+ einfo.categoryName + "\",  m_" + varName + "));\n";
+
+							includes.insert("NANDRAD_KeywordList.h");
+						}
+					}
+					if (hadEnumType) continue;
+
+
+					throw IBK::Exception(IBK::FormatString("(Still) unsupported XML element type '%1' for variable '%2'.")
+										 .arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
+				}
 			}
+
+			fileContent = IBK::replace_string(fileContent, "${CHILD_ELEMENTS}", elements, IBK::ReplaceFirst);
+
+			std::string extraIncludes;
+			for (const std::string & inc : includes)
+				extraIncludes += "#include <"+inc+">\n";
+
+			std::string fileHeader = IBK::replace_string(CPP_READWRITE_HEADER, "${HEADER_FILE}", ci.m_sourceHeaderFile.filename().str(), IBK::ReplaceFirst);
+			fileHeader = IBK::replace_string(fileHeader, "${OTHER_INCLUDES}", extraIncludes, IBK::ReplaceFirst);
+
+			IBK::IBK_Message(IBK::FormatString("Generating file '%1'.\n").arg(targetFile), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+			std::ofstream out(targetFile.c_str(), std::ios_base::trunc);
+			out << fileHeader;
+			out << fileContent << std::endl;
+
+			out << "} // namespace NANDRAD\n";
+			out.close();
 		}
-
-		fileContent = IBK::replace_string(fileContent, "${CHILD_ELEMENTS}", elements, IBK::ReplaceFirst);
-
-		std::string extraIncludes;
-		for (const std::string & inc : includes)
-			extraIncludes += "#include <"+inc+">\n";
-
-		std::string fileHeader = IBK::replace_string(CPP_READWRITE_HEADER, "${HEADER_FILE}", ci.m_sourceHeaderFile.filename().str(), IBK::ReplaceFirst);
-		fileHeader = IBK::replace_string(fileHeader, "${OTHER_INCLUDES}", extraIncludes, IBK::ReplaceFirst);
-
-		IBK::IBK_Message(IBK::FormatString("Generating file '%1'.\n").arg(targetFile), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-		std::ofstream out(targetFile.c_str(), std::ios_base::trunc);
-		out << fileHeader;
-		out << fileContent << std::endl;
-
-		out << "} // namespace NANDRAD\n";
-		out.close();
-
+		catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error generating code for file '%1'").arg(ci.m_sourceHeaderFile.filename()), FUNC_ID);
+		}
 	}
-
 }
 
 

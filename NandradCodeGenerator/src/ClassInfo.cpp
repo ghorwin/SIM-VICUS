@@ -112,7 +112,9 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 				kw.index = enumIdx;
 				m_keywords.push_back(kw);
 				++enumIdx;
-				continue;
+				// if line has the token NUM_ fall through to handle this in the next section
+				if (line.find("NUM_") == std::string::npos)
+					continue;
 			}
 
 			// if we are still in an enumeration section, check for NUM_xxx tokens - usually without Keyword

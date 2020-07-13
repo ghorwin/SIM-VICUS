@@ -23,6 +23,7 @@
 
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
+#include <NANDRAD_KeywordList.h>
 
 #include <tinyxml.h>
 
@@ -42,6 +43,12 @@ TiXmlElement * SolverParameter::writeXML(TiXmlElement * parent) const {
 		if (!m_flag[i].name().empty())
 			TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_flag[i].name(), m_flag[i].isEnabled() ? "true" : "false");
 	}
+
+	TiXmlElement::appendSingleAttributeElement(e, "Integrator", nullptr, std::string(), KeywordList::Keyword("SolverParameter::integrator_t",  m_integrator));
+
+	TiXmlElement::appendSingleAttributeElement(e, "LesSolver", nullptr, std::string(), KeywordList::Keyword("SolverParameter::lesSolver_t",  m_lesSolver));
+
+	TiXmlElement::appendSingleAttributeElement(e, "Preconditioner", nullptr, std::string(), KeywordList::Keyword("SolverParameter::precond_t",  m_preconditioner));
 	return e;
 }
 

@@ -98,5 +98,6 @@ SOURCES += \
 	../../src/NANDRAD_Zone.cpp \
 	../../src/ncg/ncg_NANDRAD_ConstructionInstance.cpp \
 	../../src/ncg/ncg_NANDRAD_Interval.cpp \
+	../../src/ncg/ncg_NANDRAD_SerializationTest.cpp \
 	../../src/ncg/ncg_NANDRAD_SolverParameter.cpp \
 	../../src/ncg/ncg_NANDRAD_Zone.cpp
