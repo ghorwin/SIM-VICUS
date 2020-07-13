@@ -7,7 +7,7 @@ Authors: Andreas Nicolai @ IBK/TU-Dresden
 
 Example syntax:
 
-	> NandradCodeGenerator NANDRAD /path/to/NANDRAD/src
+	> NandradCodeGenerator NANDRAD /path/to/NANDRAD/src 0 NANDRAD ncg
 
 */
 

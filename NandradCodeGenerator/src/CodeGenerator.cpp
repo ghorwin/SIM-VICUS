@@ -33,6 +33,9 @@
 
 #endif // WIN32
 
+#include <IBK_messages.h>
+#include <IBK_assert.h>
+
 #include "constants.h"
 
 bool listHeaders(const std::string & dir, std::vector<std::string> & files);
@@ -88,6 +91,7 @@ void CodeGenerator::handleArguments(const char * const argv[]) {
 
 
 bool CodeGenerator::parseDirectories() {
+	FUNCID(CodeGenerator::parseDirectories);
 
 	// parse all directories
 	unsigned int lastCount = 0;
@@ -125,6 +129,31 @@ bool CodeGenerator::parseDirectories() {
 		}
 
 	} // for all directories in list
+
+	// we need to do some processing here
+
+#if 0
+	// some enums may not have a NUM_ line, so we manually need to determine the maximum index/enum count by
+	// counting the keywords for these category
+	// we do this by iterating over all keywords, trying to find the matching enuminfo - and if missing, we add it
+	// to the list
+	for (const ClassInfo::Keyword & kw : m_keywordlist) {
+		// get max count from enum info
+		const ClassInfo::EnumInfo * einfoptr = enumInfo(kw.category);
+		if (einfoptr==nullptr) {
+			IBK::IBK_Message(IBK::FormatString("Adding enum info for '%1'\n").arg(kw.category), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+			ClassInfo::EnumInfo einfo;
+			einfo.count = 0; // for now
+			einfo.categoryName = kw.category;
+			einfo.enumNUM = ""; // does not exist
+			insertEnumInfo(einfo);
+			einfoptr = enumInfo(kw.category);
+		}
+		// update enum info
+		if (einfoptr->count < kw.index+1)
+			const_cast<ClassInfo::EnumInfo *>(einfoptr)->count = kw.index+1;
+	}
+#endif
 
 	return true;
 }
@@ -553,7 +582,11 @@ void CodeGenerator::generateKeywordlistCode(const IBK::Path & keywordListCpp) {
 
 			// if last category wasn't empty, close last case clause
 			if (!lastCategory.empty()) {
-				cpp << m_keywordlist[i-1].maxIndexInCategory << ";\n";
+//				// get max count from enum info
+//				const ClassInfo::EnumInfo * einfo = enumInfo(lastCategory);
+//				if (einfo==nullptr)
+//					throw IBK::Exception(IBK::FormatString("Enumeration type '%1' not recorded.").arg(lastCategory), FUNC_ID);
+				cpp << m_keywordlist[i-1].index+1 << ";\n";
 				++switchIndex;
 				categoryCount = 0;
 			}
@@ -566,12 +599,14 @@ void CodeGenerator::generateKeywordlistCode(const IBK::Path & keywordListCpp) {
 		++categoryCount;
 	}
 
-	cpp << m_keywordlist[m_keywordlist.size()-1].maxIndexInCategory << ";\n"
+//	const ClassInfo::EnumInfo * einfo = enumInfo(lastCategory);
+//	if (einfo==nullptr)
+//		throw IBK::Exception(IBK::FormatString("Enumeration type '%1' not recorded.").arg(lastCategory), FUNC_ID);
+	cpp << m_keywordlist[m_keywordlist.size()-1].index+1 << ";\n"
 			"		} // switch\n"
 			"		throw IBK::Exception(IBK::FormatString(\"Invalid enumeration type '%1'.\")\n"
 			"			.arg(enumtype), \"[KeywordList::MaxIndex]\");\n"
 			"	}\n\n";
-
 
 	// write file footer
 	cpp << CPP_FOOTER;
@@ -606,6 +641,28 @@ void CodeGenerator::generateKeywordlistCodeQt(const IBK::Path & keywordListCpp) 
 }
 
 
+const ClassInfo::EnumInfo * CodeGenerator::enumInfo(const std::string & categoryName) const {
+	for (const ClassInfo & ci : m_classInfo) {
+		for (const ClassInfo::EnumInfo & ei : ci.m_enumInfo) {
+			if (ei.categoryName == categoryName)
+				return &ei;
+		}
+	}
+	return nullptr;
+}
+
+
+void CodeGenerator::insertEnumInfo(const ClassInfo::EnumInfo & einfo) {
+	// extract class name
+	std::string::size_type pos = einfo.categoryName.find("::");
+	IBK_ASSERT(pos != std::string::npos);
+	std::string className = einfo.categoryName.substr(0, pos);
+
+//	for (ClassInfo & ci : m_classInfo) {
+//		if (ci.)
+//	}
+
+}
 
 
 std::ostream& operator<<(std::ostream& os, const ClassInfo::Keyword& kw) {

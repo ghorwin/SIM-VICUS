@@ -19,12 +19,11 @@ public:
 		std::string		unit;				// The default unit (if any, otherwise an empty string)
 		double			defaultValue =  std::numeric_limits<double>::quiet_NaN();		// The default value in default unit if any
 		int				index;				// The index/enumeration number
-		int				maxIndexInCategory; // Category related maximum index
 		std::string		color;				// Color assigned to this keyword; default color is black #FFFFFF
 	};
 
 	struct EnumInfo {
-		std::string		categoryName;
+		std::string		categoryName;		// The category name '<class>::<enum-name>'
 		std::string		enumNUM;
 		unsigned int	count;
 	};

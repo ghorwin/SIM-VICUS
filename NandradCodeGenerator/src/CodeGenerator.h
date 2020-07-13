@@ -22,9 +22,16 @@ private:
 	void generateKeywordlistCode(const IBK::Path & keywordListCpp);
 	void generateKeywordlistCodeQt(const IBK::Path & keywordListCpp);
 
+	/*! Searches through class info vector and returns enum info record matching
+		the given category - or nullptr, if not found.
+	*/
+	const ClassInfo::EnumInfo * enumInfo(const std::string & categoryName) const;
+	/*! Looks up corresponding ClassInfo object and adds the enumInfo there. */
+	void insertEnumInfo(const ClassInfo::EnumInfo & einfo);
+
 	std::vector<ClassInfo::Keyword> m_keywordlist;
 	std::vector<ClassInfo>			m_classInfo;
-	std::vector< std::string >		m_inputDirectories;
+	std::vector<std::string>		m_inputDirectories;
 
 	/*! The namespace to put the KeywordList class and the ncg-class declarations into. */
 	std::string						m_namespace;

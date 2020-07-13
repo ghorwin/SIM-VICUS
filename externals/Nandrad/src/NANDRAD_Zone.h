@@ -57,34 +57,36 @@ public:
 	// ***KEYWORDLIST-START***
 	/*! Type of zone. */
 	enum zoneType_t {
-		ZT_CONSTANT,	// Keyword: Constant		'Zone with constant temperatures.'
-		ZT_ACTIVE,		// Keyword: Active			'Zone described by a temperature node in space.'
-		ZT_DETAILED,	// Keyword: Detailed		'Zone with detailed temperature in time and space.'
-		ZT_GROUND,		// Keyword: Ground			'Ground zone with temperatures from a CCD climate data file.'
+		ZT_CONSTANT,				// Keyword: Constant		'Zone with constant temperatures.'
+		ZT_ACTIVE,					// Keyword: Active			'Zone described by a temperature node in space.'
+		ZT_DETAILED,				// Keyword: Detailed		'Zone with detailed temperature in time and space.'
+		ZT_GROUND,					// Keyword: Ground			'Ground zone with temperatures from a CCD climate data file.'
 		NUM_ZT
 	};
+
 	/*! Location of a constant zone. */
 	enum location_t {
-		ZL_INSIDE,		// Keyword: Inside			'Zone is inside a building.'
-		ZL_GROUND,		// Keyword: Ground			'Zone represents ground.'
-		ZL_OUTSIDE,		// Keyword: Outside			'Zone respresents ambient climate.'
+		ZL_INSIDE,					// Keyword: Inside			'Zone is inside a building.'
+		ZL_GROUND,					// Keyword: Ground			'Zone represents ground.'
+		ZL_OUTSIDE,					// Keyword: Outside			'Zone respresents ambient climate.'
 		NUM_ZL
 	};
 
 	/*! Parameters of a zone. */
 	enum para_t {
-		ZP_TEMPERATURE,					// Keyword: Temperature				[C]		'Temperature of the zone if set constant, or initial temperature for active zones [C].'
-		ZP_RELATIVE_HUMIDITY,			// Keyword: RelativeHumidity		[%]		'Relative humidity of the zone if set constant, or initial humidity for active zones [%].'
-		ZP_CO2_CONCENTRATION,			// Keyword: CO2Concentration		[g/m3]	'CO2 concentration of the zone if set constant, or initial concentration for active zones [g/m3].'
-		ZP_AREA,						// Keyword: Area					[m2]	'Area of the ground floor [m2].'
-		ZP_HEIGHT,						// Keyword: Height					[m]		'Zone height [m].'
-		ZP_VOLUME,						// Keyword: Volume					[m3]	'Zone volume [m3] (computed, if area and height are given).'
-		ZP_HEATCAPACITY,				// Keyword: HeatCapacity			[J/K]	'Extra heat capacity [J/K].'
+		ZP_TEMPERATURE,				// Keyword: Temperature				[C]		'Temperature of the zone if set constant, or initial temperature for active zones [C].'
+		ZP_RELATIVE_HUMIDITY,		// Keyword: RelativeHumidity		[%]		'Relative humidity of the zone if set constant, or initial humidity for active zones [%].'
+		ZP_CO2_CONCENTRATION,		// Keyword: CO2Concentration		[g/m3]	'CO2 concentration of the zone if set constant, or initial concentration for active zones [g/m3].'
+		ZP_AREA,					// Keyword: Area					[m2]	'Area of the ground floor [m2].'
+		ZP_HEIGHT,					// Keyword: Height					[m]		'Zone height [m].'
+		ZP_VOLUME,					// Keyword: Volume					[m3]	'Zone volume [m3] (computed, if area and height are given).'
+		ZP_HEATCAPACITY,			// Keyword: HeatCapacity			[J/K]	'Extra heat capacity [J/K].'
 		NUM_ZP
 	};
+
 	/*! Optional integer parameters. */
 	enum intpara_t {
-		ZI_AIRMATERIALREFERENCE, // Keyword: AirMaterialReference	[---]	'ID reference to a mdoel with air parameter calculations.'
+		ZI_AIRMATERIALREFERENCE,	// Keyword: AirMaterialReference	[---]	'ID reference to a mdoel with air parameter calculations.'
 		NUM_ZI
 	};
 	// ***KEYWORDLIST-END***

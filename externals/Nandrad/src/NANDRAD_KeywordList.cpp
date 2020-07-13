@@ -1968,81 +1968,81 @@ namespace NANDRAD {
 	int KeywordList::MaxIndex(const char * const enumtype) {
 		switch (enum2index(enumtype)) {
 			// ConstructionInstance::para_t
-			case 0 : return 32577;
+			case 0 : return 3;
 			// EmbeddedObject::para_t
-			case 1 : return 32577;
+			case 1 : return 1;
 			// EmbeddedObject::objectType_t
-			case 2 : return 32577;
+			case 2 : return 3;
 			// EmbeddedObjectWindow::para_t
-			case 3 : return 32577;
+			case 3 : return 5;
 			// EmbeddedObjectWindow::modelType_t
-			case 4 : return 32577;
+			case 4 : return 3;
 			// Interface::location_t
-			case 5 : return 32577;
+			case 5 : return 2;
 			// Interface::condition_t
-			case 6 : return 32577;
+			case 6 : return 4;
 			// InterfaceAirFlow::splinePara_t
-			case 7 : return 32577;
+			case 7 : return 1;
 			// InterfaceAirFlow::modelType_t
-			case 8 : return 32577;
+			case 8 : return 1;
 			// InterfaceHeatConduction::para_t
-			case 9 : return 32577;
+			case 9 : return 1;
 			// InterfaceHeatConduction::modelType_t
-			case 10 : return 32577;
+			case 10 : return 1;
 			// InterfaceLongWaveEmission::para_t
-			case 11 : return 32577;
+			case 11 : return 1;
 			// InterfaceLongWaveEmission::modelType_t
-			case 12 : return 32577;
+			case 12 : return 1;
 			// InterfaceSolarAbsorption::para_t
-			case 13 : return 32577;
+			case 13 : return 1;
 			// InterfaceSolarAbsorption::modelType_t
-			case 14 : return 32577;
+			case 14 : return 1;
 			// InterfaceVaporDiffusion::para_t
-			case 15 : return 32577;
+			case 15 : return 1;
 			// InterfaceVaporDiffusion::modelType_t
-			case 16 : return 32577;
+			case 16 : return 1;
 			// Interval::para_t
-			case 17 : return 32577;
+			case 17 : return 3;
 			// LinearSplineParameter::interpolationMethod_t
-			case 18 : return 32577;
+			case 18 : return 2;
 			// Location::para_t
-			case 19 : return 32577;
+			case 19 : return 5;
 			// OutputDefinition::fileType_t
-			case 20 : return 32577;
+			case 20 : return 2;
 			// OutputDefinition::timeType_t
-			case 21 : return 32577;
+			case 21 : return 3;
 			// Schedule::type_t
-			case 22 : return 32577;
+			case 22 : return 11;
 			// Schedules::day_t
-			case 23 : return 32577;
+			case 23 : return 7;
 			// SimulationParameter::para_t
-			case 24 : return 32577;
+			case 24 : return 10;
 			// SimulationParameter::intpara_t
-			case 25 : return 32577;
+			case 25 : return 1;
 			// SimulationParameter::stringPara_t
-			case 26 : return 32577;
+			case 26 : return 2;
 			// SimulationParameter::flag_t
-			case 27 : return 32577;
+			case 27 : return 4;
 			// SolverParameter::para_t
-			case 28 : return 32577;
+			case 28 : return 22;
 			// SolverParameter::flag_t
-			case 29 : return 32577;
+			case 29 : return 3;
 			// SolverParameter::simpleTypesDesc
-			case 30 : return 32577;
+			case 30 : return 3;
 			// SolverParameter::integrator_t
-			case 31 : return 32577;
+			case 31 : return 4;
 			// SolverParameter::lesSolver_t
-			case 32 : return 32577;
+			case 32 : return 8;
 			// SolverParameter::precond_t
-			case 33 : return 32577;
+			case 33 : return 4;
 			// Zone::zoneType_t
-			case 34 : return 32577;
+			case 34 : return 4;
 			// Zone::location_t
-			case 35 : return 32577;
+			case 35 : return 3;
 			// Zone::para_t
-			case 36 : return 32577;
+			case 36 : return 7;
 			// Zone::intpara_t
-			case 37 : return 32577;
+			case 37 : return 1;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::MaxIndex]");
