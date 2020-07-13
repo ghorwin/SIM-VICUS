@@ -216,24 +216,6 @@ void ConstructionInstance::writeXML(TiXmlElement * parent, bool detailedOutput) 
 #endif
 }
 
-void ConstructionInstance::writeCommentsXML(TiXmlElement * parent) const {
-#if 0
-	// first add all comments
-	for ( std::set<std::string>::const_iterator it = m_comments.begin();
-								it != m_comments.end(); ++it)
-	{
-		TiXmlComment::addComment(parent,*it);
-	}
-
-	// add construction type infomation to comment
-	std::string referenceComment = std::string("Wall construction");
-	if (m_zoneNames.size() == 2) {
-		referenceComment += std::string(" between '") + m_zoneNames[0] + std::string("' and '") + m_zoneNames[1] + std::string("'");
-	}
-	referenceComment += std::string("'.");
-	TiXmlComment::addComment(parent,referenceComment);
-#endif
-}
 
 #if 0
 const EmbeddedObject & ConstructionInstance::embeddedObjectById( const unsigned int id) const {

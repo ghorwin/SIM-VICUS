@@ -82,9 +82,6 @@ public:
 		Throws an IBK::Exception in case of invalid data.
 	*/
 	void writeXML(TiXmlElement * parent, bool detailedOutput) const;
-	/*! Writes comments at the beginning of ConstrucionInstance tag.
-	*/
-	void writeCommentsXML(TiXmlElement * parent) const;
 
 	/*! Returns an embedded object selected by its Id.
 		Throws an exception if embedded object ID is not used in this construction instance.
