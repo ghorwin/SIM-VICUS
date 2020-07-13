@@ -28,7 +28,7 @@
 
 namespace NANDRAD {
 
-TiXmlElement * ConstructionInstance::writeXML(TiXmlElement * parent) const {
+TiXmlElement * Interval::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("Interval");
 	parent->LinkEndChild(e);
 
