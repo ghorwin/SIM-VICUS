@@ -39,7 +39,6 @@ TiXmlElement * Zone::writeXML(TiXmlElement * parent) const {
 	e->SetAttribute("type", KeywordList::Keyword("Zone::type_t",  m_type));
 	e->SetAttribute("location", KeywordList::Keyword("Zone::location_t",  m_location));
 
-
 	for (unsigned int i=0; i<NUM_ZP; ++i) {
 		if (!m_para[i].name.empty())
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
@@ -49,7 +48,6 @@ TiXmlElement * Zone::writeXML(TiXmlElement * parent) const {
 		if (!m_intpara[i].name.empty())
 			TiXmlElement::appendIBKParameterElement(e, m_intpara[i].name, std::string(), m_intpara[i].value, true);
 	}
-
 	return e;
 }
 

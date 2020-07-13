@@ -348,7 +348,7 @@ void CodeGenerator::generateReadWriteCode() {
 				xmlInfo.typeStr == "double" ||
 				xmlInfo.typeStr == "bool")
 			{
-				elements += "	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), IBK::val2string<"+xmlInfo.typeStr+">(m_"+varName+"));\n";
+				elements += "\n	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), IBK::val2string<"+xmlInfo.typeStr+">(m_"+varName+"));\n";
 			}
 			else if (xmlInfo.typeStr == "IBK::Parameter") {
 				// check for array syntax
@@ -366,7 +366,7 @@ void CodeGenerator::generateReadWriteCode() {
 						"	}\n";
 				}
 				else {
-					elements += "	TiXmlElement::appendIBKParameterElement(e, m_"+varName+".name, m_"+varName+".IO_unit.name(), m_"+varName+".get_value());\n";
+					elements += "\n	TiXmlElement::appendIBKParameterElement(e, m_"+varName+".name, m_"+varName+".IO_unit.name(), m_"+varName+".get_value());\n";
 				}
 			}
 			else if (xmlInfo.typeStr == "IBK::IntPara") {
@@ -385,11 +385,26 @@ void CodeGenerator::generateReadWriteCode() {
 						"	}\n";
 				}
 				else {
-					elements += "	TiXmlElement::appendIBKParameterElement(e, m_"+varName+".name, std::string(), m_"+varName+".value, true);\n";
+					elements += "\n	TiXmlElement::appendIBKParameterElement(e, m_"+varName+".name, std::string(), m_"+varName+".value, true);\n";
 				}
 			}
 			else if (xmlInfo.typeStr == "IBK::Flag") {
-
+				// check for array syntax
+				std::string::size_type pos1 = varName.find("[");
+				if (pos1 != std::string::npos) {
+					// extract NUM type
+					std::string::size_type pos2 = varName.find("]");
+					std::string numType = varName.substr(pos1+1, pos2-pos1-1);
+					varName = varName.substr(0, pos1);
+					elements += "\n"
+						"	for (int i=0; i<"+numType+"; ++i) {\n"
+						"		if (!m_flag[i].name().empty())\n"
+						"			TiXmlElement::appendSingleAttributeElement(e, \"IBK:Flag\", \"name\", m_"+varName+"[i].name(), m_"+varName+"[i].isEnabled() ? \"true\" : \"false\");\n"
+						"	}\n";
+				}
+				else {
+					elements += "\n	TiXmlElement::appendSingleAttributeElement(e, \"IBK:Flag\", \"name\", m_"+varName+".name(), m_"+varName+".isEnabled() ? \"true\" : \"false\");\n";
+				}
 			}
 			else if (xmlInfo.typeStr.find("std::vector<") == 0) {
 				// extract subtype

@@ -18,7 +18,7 @@
 	Lesser General Public License for more details.
 */
 
-#include <NANDRAD_ConstructionInstance.h>
+#include <NANDRAD_SolverParameter.h>
 #include <NANDRAD_KeywordList.h>
 
 #include <IBK_Exception.h>
@@ -28,32 +28,20 @@
 
 namespace NANDRAD {
 
-TiXmlElement * ConstructionInstance::writeXML(TiXmlElement * parent) const {
-	TiXmlElement * e = new TiXmlElement("ConstructionInstance");
+TiXmlElement * SolverParameter::writeXML(TiXmlElement * parent) const {
+	TiXmlElement * e = new TiXmlElement("SolverParameter");
 	parent->LinkEndChild(e);
 
-	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (!m_displayName.empty())
-		e->SetAttribute("displayName", m_displayName);
 
-	TiXmlElement::appendSingleAttributeElement(e, "ConstructionTypeId", nullptr, std::string(), IBK::val2string<unsigned int>(m_constructionTypeId));
-
-	for (unsigned int i=0; i<NUM_CP; ++i) {
+	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty())
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
 	}
 
-	if (!m_interfaces.empty()) {
-		TiXmlElement * child = new TiXmlElement("Interfaces");
-		e->LinkEndChild(child);
-
-		for (std::vector<Interface>::const_iterator ifaceIt = m_interfaces.begin();
-			ifaceIt != m_interfaces.end(); ++ifaceIt)
-		{
-			ifaceIt->writeXML(child);
-		}
+	for (int i=0; i<NUM_F; ++i) {
+		if (!m_flag[i].name().empty())
+			TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_flag[i].name(), m_flag[i].isEnabled() ? "true" : "false");
 	}
-
 	return e;
 }
 

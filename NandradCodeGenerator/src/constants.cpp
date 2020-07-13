@@ -385,8 +385,7 @@ const char * const CPP_WRITEXML =
 		"TiXmlElement * ${CLASSNAME}::writeXML(TiXmlElement * parent) const {\n"
 		"	TiXmlElement * e = new TiXmlElement(\"${CLASSNAME}\");\n"
 		"	parent->LinkEndChild(e);\n\n"
-		"${ATTRIBUTES}\n"
-		"${CHILD_ELEMENTS}\n"
+		"${ATTRIBUTES}${CHILD_ELEMENTS}"
 		"	return e;\n"
 		"}\n";
 

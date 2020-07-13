@@ -33,12 +33,10 @@ TiXmlElement * Interval::writeXML(TiXmlElement * parent) const {
 	parent->LinkEndChild(e);
 
 
-
 	for (unsigned int i=0; i<NUM_IP; ++i) {
 		if (!m_para[i].name.empty())
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
 	}
-
 	return e;
 }
 

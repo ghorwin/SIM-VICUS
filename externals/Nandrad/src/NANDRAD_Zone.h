@@ -111,7 +111,7 @@ public:
 	/*! Zone type (Constant, Active).
 		\sa zoneType_t
 	*/
-	type_t					m_type;						// XML:A
+	type_t						m_type;					// XML:A
 
 	/*! Zone location (Inside, Ground, Outside).
 	*/
