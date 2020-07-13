@@ -50,6 +50,7 @@ int main(int argc, char *argv[]) {
 	if (!cg.parseDirectories())
 		return EXIT_FAILURE;  // error messages where already written to file
 
+	std::cout << "--------------------------------------------------------------------------" << std::endl;
 	try {
 		cg.generateKeywordList();
 	} catch (IBK::Exception & ex) {
@@ -58,6 +59,7 @@ int main(int argc, char *argv[]) {
 		return EXIT_FAILURE;
 	}
 
+	std::cout << "--------------------------------------------------------------------------" << std::endl;
 	try {
 		cg.generateReadWriteCode();
 	} catch (IBK::Exception & ex) {

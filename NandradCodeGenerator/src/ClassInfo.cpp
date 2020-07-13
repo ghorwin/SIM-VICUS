@@ -145,7 +145,7 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 
 				std::string xmlSpec = line.substr(pos+7);
 				// we support only a subset of type declarations
-				std::cout << typeStr << " : " << varName << " : " << xmlSpec << std::endl;
+//				std::cout << typeStr << " : " << varName << " : " << xmlSpec << std::endl;
 
 				// explode XML-spec into tokens
 				std::vector<std::string> tokens;
@@ -173,8 +173,6 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 						throw std::runtime_error("error");
 					}
 				}
-
-				// TODO : sanity checking on parameter types
 
 				m_xmlInfo.push_back(xmlInfo);
 			}

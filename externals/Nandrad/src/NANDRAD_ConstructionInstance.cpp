@@ -156,27 +156,21 @@ void ConstructionInstance::readXML(const TiXmlElement * element) {
 }
 
 
-void ConstructionInstance::writeXML(TiXmlElement * parent, bool detailedOutput) const {
-#if 0
+TiXmlElement * ConstructionInstance::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("ConstructionInstance");
 	parent->LinkEndChild(e);
 
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
 
-	e->SetAttribute("id",IBK::val2string<unsigned int>(m_id));
+	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 
 	// write all construction instance parameters
 	for (unsigned int i=0; i<NUM_CP; ++i) {
-		if (m_para[i].name.empty()) continue;
-		if(detailedOutput)
-			TiXmlComment::addComment(e,KeywordList::Description("ConstructionInstance::para_t",i));
-		TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
+		if (!m_para[i].name.empty())
+			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
 	}
-	// write generic parameters
-	writeGenericParameters(e, detailedOutput);
 
-	// write all references
 	TiXmlElement::appendSingleAttributeElement(e, "ConstructionTypeID", nullptr, std::string(),IBK::val2string<unsigned int>(m_constructionTypeId));
 
 	// now write interfaces
@@ -186,10 +180,10 @@ void ConstructionInstance::writeXML(TiXmlElement * parent, bool detailedOutput) 
 	for (std::vector<Interface>::const_iterator ifaceIt = m_interfaces.begin();
 		 ifaceIt != m_interfaces.end(); ++ifaceIt)
 	{
-		if(detailedOutput)
-			ifaceIt->writeCommentsXML(child);
-		ifaceIt->writeXML(child,detailedOutput);
+		ifaceIt->writeXML(child, false);
 	}
+
+#if 0
 	// write all embedded objects
 	if (!m_embeddedObjects.empty()) {
 		TiXmlElement * child = new TiXmlElement("EmbeddedObjects");
@@ -214,6 +208,7 @@ void ConstructionInstance::writeXML(TiXmlElement * parent, bool detailedOutput) 
 		m_FMUImportReferences[i].writeXML(e);
 	}
 #endif
+	return e;
 }
 
 

@@ -220,7 +220,6 @@ void CodeGenerator::generateKeywordList() {
 			generateKeywordlistCodeQt(fnameQt);
 		}
 		std::cout << m_keywordlist.size() << " keywords extracted!" << std::endl;
-		std::cout << "-----------------------------------------------------------------------" << std::endl;
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, "Error generating keyword list.", FUNC_ID);

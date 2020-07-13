@@ -792,11 +792,8 @@ void Project::writeConstructionInstancesXML(TiXmlElement * parent, bool detailed
 	TiXmlElement * child = new TiXmlElement("ConstructionInstances");
 	parent->LinkEndChild(child);
 	std::map< unsigned int, ConstructionInstance >::const_iterator it = m_constructionInstances.begin();
-	for(;it != m_constructionInstances.end(); ++it)
-	{
-		if(detailedOutput)
-			it->second.writeCommentsXML(child);
-		it->second.writeXML(child, detailedOutput);
+	for(;it != m_constructionInstances.end(); ++it) {
+		it->second.writeXML(child);
 	}
 	TiXmlComment::addSeparatorComment(parent);
 }

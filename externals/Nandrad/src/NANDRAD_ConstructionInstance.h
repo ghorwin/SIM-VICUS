@@ -81,7 +81,7 @@ public:
 	/*! Appends the element to the parent xml element.
 		Throws an IBK::Exception in case of invalid data.
 	*/
-	void writeXML(TiXmlElement * parent, bool detailedOutput) const;
+	TiXmlElement * writeXML(TiXmlElement * parent) const;
 
 	/*! Returns an embedded object selected by its Id.
 		Throws an exception if embedded object ID is not used in this construction instance.
