@@ -34,11 +34,11 @@ public:
 	};
 
 	struct XMLInfo {
-		XMLInfo() : notEmpty(false) {}
-		bool			element;	// if false, an attribute is written
-		bool			notEmpty;	// if true, string arguments are checked for emptiness after reading
-		std::string		typeStr;	// C++ type string
-		std::string		varName;	// Name of the variable without m_ prefix
+		bool			element;			// if false, an attribute is written
+		bool			notEmpty = false;	// if true, string arguments are checked for emptiness after reading
+		bool			required = false;	// if true, attribute/element must be present
+		std::string		typeStr;			// C++ type string
+		std::string		varName;			// Name of the variable without m_ prefix
 	};
 
 

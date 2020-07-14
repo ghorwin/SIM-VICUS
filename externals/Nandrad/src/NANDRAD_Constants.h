@@ -32,6 +32,7 @@ extern const char * const LONG_VERSION;
 extern unsigned int INVALID_ID;
 
 extern const char * XML_READ_ERROR;
+extern const char * XML_READ_UNKNOWN_ATTRIBUTE;
 
 } // namespace NANDRAD
 

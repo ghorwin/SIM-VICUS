@@ -24,8 +24,13 @@ Lesser General Public License for more details.
 #include <string>
 #include <map>
 
+#include <tinyxml.h>
+
 #include <IBK_Path.h>
 #include <IBK_LinearSpline.h>
+#include <IBK_StringUtils.h>
+
+#include "NANDRAD_Constants.h"
 
 class TiXmlDocument;
 class TiXmlElement;
@@ -47,6 +52,17 @@ TiXmlElement * openXMLFile(const std::map<std::string,IBK::Path>  &pathPlaceHold
 	\endcode
 */
 void writeLinearSplineXML(TiXmlElement * parent, const std::string & name, const IBK::LinearSpline & spl, const std::string & xunit, const std::string & yunit);
+
+template <typename T>
+T readPODValue(const TiXmlElement * element, const TiXmlAttribute * attrib) {
+	FUNCID(NANDRAD::readPODValue);
+	try {
+		return IBK::string2val<T>(attrib->Value());
+	} catch (IBK::Exception & ex) {
+		throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+			IBK::FormatString("Error reading '"+attrib->NameStr()+"' attribute.") ), FUNC_ID);
+	}
+};
 
 } // namespace NANDRAD
 

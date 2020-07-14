@@ -15,7 +15,8 @@
 
 #define SERIALIZATION_TEST
 #ifdef SERIALIZATION_TEST
-#include "NANDRAD_SerializationTest.h"
+#include <NANDRAD_SerializationTest.h>"
+#include <NANDRAD_Utilities.h>
 #include <tinyxml.h>
 #endif // SERIALIZATION_TEST
 
@@ -43,7 +44,33 @@ int main(int argc, char * argv[]) {
 
 	// write all project parts
 	st.writeXML(root);
-	doc.SaveFile( "serializationtest.xml" );
+	IBK::Path filenamePath("serializationtest.xml");
+	doc.SaveFile( filenamePath.str() );
+
+	// now read in the file in separate object and compare
+
+	NANDRAD::SerializationTest st2;
+	TiXmlDocument doc2;
+	std::map<std::string,IBK::Path> placeholders;
+	TiXmlElement * xmlElem = NANDRAD::openXMLFile(placeholders, filenamePath, "NandradProject", doc2);
+	if (!xmlElem)
+		return 1; // empty project, this means we are using only defaults
+
+	// we read our subsections from this handle
+	TiXmlHandle xmlRoot = TiXmlHandle(xmlElem);
+
+	try {
+		// Project Info
+		xmlElem = xmlRoot.FirstChild("SerializationTest").Element();
+		st2.readXML(xmlElem);
+	}
+	catch (IBK::Exception &ex) {
+		throw IBK::Exception(ex, IBK::FormatString("Error in line %1 of project file '%2':\n%3")
+			.arg(xmlElem->Row())
+			.arg(filenamePath)
+			.arg(ex.what()), FUNC_ID);
+	}
+
 	return 0;
 
 #endif // SERIALIZATION_TEST

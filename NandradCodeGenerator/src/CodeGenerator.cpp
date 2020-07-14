@@ -484,6 +484,7 @@ void CodeGenerator::generateReadWriteCode() {
 			writeCode = IBK::replace_string(writeCode, "${CHILD_ELEMENTS}", elements, IBK::ReplaceFirst);
 
 
+
 			// *** Generate readXML() content ****
 
 			std::string readCode;
@@ -491,6 +492,133 @@ void CodeGenerator::generateReadWriteCode() {
 
 			attribs.clear();
 			elements.clear();
+
+			// generate code for attributes
+			for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
+				if (xmlInfo.element || !xmlInfo.required) continue;
+				std::string attribName = xmlInfo.varName;
+
+				attribs +=
+					"		// search for mandatory attributes\n"
+					"		if (!TiXmlAttribute::attributeByName(element, \""+attribName+"\"))\n"
+					"			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
+					"				IBK::FormatString(\"Missing required '"+attribName+"' attribute.\") ), FUNC_ID);\n"
+					"\n";
+			}
+
+			// generate reading code
+
+			attribs +=
+					"		const TiXmlAttribute * attrib = element->FirstAttribute();\n"
+					"		while (attrib) {\n"
+					"			const std::string & attribName = attrib->NameStr();\n";
+
+			for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
+				if (xmlInfo.element) continue;
+				std::string attribName = xmlInfo.varName;
+				attribs += "			if (attribName == \""+attribName+"\")\n";
+				// now type specific code
+				if (xmlInfo.typeStr == "int" ||
+					xmlInfo.typeStr == "unsigned int" ||
+					xmlInfo.typeStr == "double" ||
+					xmlInfo.typeStr == "bool")
+				{
+					attribs +=
+						"				m_"+attribName+" = readPODValue<"+xmlInfo.typeStr+">(element, attrib);\n";
+				}
+				else if (xmlInfo.typeStr == "IBK::Path") {
+					attribs +=
+						"				m_"+attribName+" = IBK::Path(attrib->Value());\n";
+				}
+				else if (xmlInfo.typeStr == "IBK::Unit") {
+					attribs +=
+						"				try {\n"
+						"					m_"+attribName+" = IBK::Unit(attrib->Value());\n"
+						"				}\n"
+						"				catch (IBK::Exception & ex) {\n"
+						"					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
+						"						IBK::FormatString(\"Error converting '\"+attrib->ValueStr()+\"' attribute (unknown unit).\") ), FUNC_ID);\n"
+						"				}\n";
+				}
+				else if (xmlInfo.typeStr == "std::string") {
+					attribs +=
+						"				m_"+attribName+" = attrib->Value();\n";
+				}
+				else {
+					// check for enum types
+					bool hadEnumType = false;
+					for (const ClassInfo::EnumInfo & einfo : ci.m_enumInfo) {
+						if (einfo.enumType() == xmlInfo.typeStr) {
+							hadEnumType = true;
+							// generate write code for enum type
+							attribs +=
+								"			try {\n"
+								"				m_"+attribName+" = ("+einfo.enumType()+")KeywordList::Enumeration(\""+einfo.categoryName+"\", attrib->Value());\n"
+								"			}\n"
+								"			catch (IBK::Exception & ex) {\n"
+								"				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
+								"					IBK::FormatString(\"Invalid or unknown keyword '\"+attrib->ValueStr()+\"'.\") ), FUNC_ID);\n"
+								"			}\n";
+							includes.insert("NANDRAD_KeywordList.h");
+						}
+					}
+					if (hadEnumType) continue;
+					throw IBK::Exception(IBK::FormatString("(Still) unsupported XML attrib type '%1' for variable '%2'.")
+										 .arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
+				}
+			} // end attribute reading loop
+			attribs +=
+					"			else {\n"
+					"				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
+					"			}\n"
+					"			attrib = attrib->Next();\n"
+					"		}\n";
+
+#if 0
+			for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
+				if (xmlInfo.element) continue;
+				std::string attribName = xmlInfo.varName;
+
+
+				else {
+					// check for enum types
+					bool hadEnumType = false;
+					for (const ClassInfo::EnumInfo & einfo : ci.m_enumInfo) {
+						if (einfo.enumType() == xmlInfo.typeStr) {
+							hadEnumType = true;
+							// generate write code for enum type
+							attribs +=
+								"			try {\n"
+								"				m_"+attribName+" = ("+einfo.enumType()+")KeywordList::Enumeration(\""+einfo.categoryName+"\", attrib->Value());\n"
+								"			}\n"
+								"			catch (IBK::Exception & ex) {\n"
+								"				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
+								"					IBK::FormatString(\"Invalid or unknown keyword '\"+attrib->ValueStr()+\"'.\") ), FUNC_ID);\n"
+								"			}\n"
+								"		}\n";
+							includes.insert("NANDRAD_KeywordList.h");
+						}
+					}
+					if (hadEnumType) continue;
+
+					// other special cases
+
+					throw IBK::Exception(IBK::FormatString("(Still) unsupported XML attrib type '%1' for variable '%2'.")
+										 .arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
+				}
+
+				attribs += "		}\n";
+			} // end attribute reading loop
+#endif
+
+			// now the elements
+			for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
+				if (!xmlInfo.element) continue;
+				std::string varName = xmlInfo.varName;
+				std::string tagName = char(toupper(varName[0])) + varName.substr(1);
+
+			} // end element reading loop
+
 
 
 			// insert code into readXML() function block

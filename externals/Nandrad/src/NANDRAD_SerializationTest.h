@@ -28,12 +28,12 @@ public:
 	NANDRAD_READWRITE
 
 	enum test_t {
-		t_x1,									// Keyword: X1
-		t_x2,									// Keyword: X2
+		t_x1,												// Keyword: X1
+		t_x2,												// Keyword: X2
 		NUM_test
 	};
 
-	int					m_id1		= 5;					// XML:A
+	int					m_id1		= 5;					// XML:A:required
 	unsigned int		m_id2		= 10;					// XML:A
 	bool				m_flag1		= false;				// XML:A
 	double				m_val1		= 42.42;				// XML:A

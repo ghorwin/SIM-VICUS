@@ -189,6 +189,9 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 					if (tokens[i] == "not-empty") {
 						xmlInfo.notEmpty = true;
 					}
+					else if (tokens[i] == "required") {
+						xmlInfo.required = true;
+					}
 					else {
 						std::cerr << "Invalid XML-spec '"<< xmlSpec << "' in line '"<< line << "'" << std::endl;
 						throw std::runtime_error("error");
