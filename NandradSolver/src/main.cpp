@@ -65,10 +65,9 @@ int main(int argc, char * argv[]) {
 		st2.readXML(xmlElem);
 	}
 	catch (IBK::Exception &ex) {
-		throw IBK::Exception(ex, IBK::FormatString("Error in line %1 of project file '%2':\n%3")
-			.arg(xmlElem->Row())
-			.arg(filenamePath)
-			.arg(ex.what()), FUNC_ID);
+		ex.writeMsgStackToError();
+		IBK::IBK_Message(IBK::FormatString("Error in line %1 of project file '%2'.")
+			.arg(xmlElem->Row()).arg(filenamePath), IBK::MSG_ERROR, FUNC_ID);
 	}
 
 	return 0;

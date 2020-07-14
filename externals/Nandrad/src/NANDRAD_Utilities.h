@@ -29,8 +29,11 @@ Lesser General Public License for more details.
 #include <IBK_Path.h>
 #include <IBK_LinearSpline.h>
 #include <IBK_StringUtils.h>
-
 #include "NANDRAD_Constants.h"
+
+namespace IBK {
+	class Unit;
+}
 
 class TiXmlDocument;
 class TiXmlElement;
@@ -43,6 +46,10 @@ namespace NANDRAD {
 TiXmlElement * openXMLFile(const std::map<std::string,IBK::Path>  &pathPlaceHolders, const IBK::Path & filename,
 	const std::string & parentXmlTag, TiXmlDocument & doc);
 
+/*! Reads a linear spline from XML element. */
+void readLinearSplineElement(const TiXmlElement * e, const std::string & eName,
+							 IBK::LinearSpline & spl, std::string & name, const std::string * xunit, const std::string * yunit);
+
 /*! Writes a linear spline into XML format.
 	\code
 	<IBK:LinearSpline name="MySpline">
@@ -51,13 +58,13 @@ TiXmlElement * openXMLFile(const std::map<std::string,IBK::Path>  &pathPlaceHold
 	</IBK:LinearSpline>
 	\endcode
 */
-void writeLinearSplineXML(TiXmlElement * parent, const std::string & name, const IBK::LinearSpline & spl, const std::string & xunit, const std::string & yunit);
+void writeLinearSplineElement(TiXmlElement * parent, const std::string & name, const IBK::LinearSpline & spl, const std::string & xunit, const std::string & yunit);
 
 template <typename T>
 T readPODAttributeValue(const TiXmlElement * element, const TiXmlAttribute * attrib) {
 	FUNCID(NANDRAD::readPODAttributeValue);
 	try {
-		return IBK::string2val<T>(attrib->Value());
+		return IBK::string2val<T>(attrib->ValueStr());
 	} catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 			IBK::FormatString("Error reading '"+attrib->NameStr()+"' attribute.") ), FUNC_ID);
@@ -65,15 +72,17 @@ T readPODAttributeValue(const TiXmlElement * element, const TiXmlAttribute * att
 };
 
 template <typename T>
-T readPODElementValue(const TiXmlElement * element, const std::string & eName) {
-	FUNCID(NANDRAD::readPODElementValue);
+T readPODElement(const TiXmlElement * element, const std::string & eName) {
+	FUNCID(NANDRAD::readPODElement);
 	try {
-		return IBK::string2val<T>(element->Value());
+		return IBK::string2val<T>(element->ValueStr());
 	} catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 			IBK::FormatString("Error reading '"+eName+"' tag.") ), FUNC_ID);
 	}
 };
+
+IBK::Unit readUnitElement(const TiXmlElement * element, const std::string & eName);
 
 } // namespace NANDRAD
 

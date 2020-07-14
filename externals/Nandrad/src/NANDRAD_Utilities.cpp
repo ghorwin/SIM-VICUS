@@ -25,6 +25,7 @@ Lesser General Public License for more details.
 #include <IBK_StringUtils.h>
 #include <IBK_FileUtils.h>
 #include <IBK_Path.h>
+#include <IBK_Unit.h>
 
 namespace NANDRAD {
 
@@ -61,9 +62,36 @@ TiXmlElement * openXMLFile(const std::map<std::string,IBK::Path> & pathPlaceHold
 }
 
 
-void writeLinearSplineXML(TiXmlElement * parent, const std::string & name, const IBK::LinearSpline & spl, const std::string & xunit, const std::string & yunit) {
+void readLinearSplineElement(const TiXmlElement * element, const std::string & eName,
+							 IBK::LinearSpline & spl, std::string & name, const std::string * xunit, const std::string * yunit)
+{
+	FUNCID(NANDRAD::readLinearSplineElement);
+	std::string xunitstr, yunitstr, interpolationMethod;
+	std::vector<double> x,y;
+	try {
+		TiXmlElement::readIBKLinearSplineElement(element, name, interpolationMethod, xunitstr, x, yunitstr, y);
+	}
+	catch (std::runtime_error & ex) {
+		throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+			IBK::FormatString("Error reading '"+eName+"' tag.") ), FUNC_ID);
+	}
+
+}
+
+void writeLinearSplineElement(TiXmlElement * parent, const std::string & name, const IBK::LinearSpline & spl, const std::string & xunit, const std::string & yunit) {
 	TiXmlElement::appendIBKLinearSplineElement(parent, name, "", xunit, spl.x(), yunit, spl.y());
 }
+
+
+IBK::Unit readUnitElement(const TiXmlElement * element, const std::string & eName) {
+	FUNCID(NANDRAD::readUnitElement);
+	try {
+		return IBK::Unit(element->ValueStr());
+	} catch (IBK::Exception & ex) {
+		throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+			IBK::FormatString("Error reading '"+eName+"' tag.") ), FUNC_ID);
+	}
+};
 
 
 } // namespace NANDRAD

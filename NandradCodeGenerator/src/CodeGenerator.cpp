@@ -377,7 +377,7 @@ void CodeGenerator::generateReadWriteCode() {
 				}
 				else if (xmlInfo.typeStr == "IBK::LinearSpline") {
 					includes.insert("NANDRAD_Utilities.h");
-					elements += "\n	writeLinearSplineXML(e, \""+tagName+"\", m_"+varName+", std::string(), std::string());\n";
+					elements += "\n	writeLinearSplineElement(e, \""+tagName+"\", m_"+varName+", std::string(), std::string());\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Parameter") {
 					// check for array syntax
@@ -494,6 +494,7 @@ void CodeGenerator::generateReadWriteCode() {
 			elements.clear();
 
 			// generate code for attributes
+			std::string elseStr;
 			for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
 				if (xmlInfo.element || !xmlInfo.required) continue;
 				std::string attribName = xmlInfo.varName;
@@ -514,7 +515,7 @@ void CodeGenerator::generateReadWriteCode() {
 			for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
 				if (xmlInfo.element) continue;
 				std::string attribName = xmlInfo.varName;
-				attribs += "			if (attribName == \""+attribName+"\")\n";
+				attribs += "			"+elseStr+"if (attribName == \""+attribName+"\")\n";
 				// now type specific code
 				if (xmlInfo.typeStr == "int" ||
 					xmlInfo.typeStr == "unsigned int" ||
@@ -523,15 +524,16 @@ void CodeGenerator::generateReadWriteCode() {
 				{
 					attribs +=
 						"				m_"+attribName+" = readPODAttributeValue<"+xmlInfo.typeStr+">(element, attrib);\n";
+					includes.insert("NANDRAD_Utilities.h");
 				}
 				else if (xmlInfo.typeStr == "IBK::Path") {
 					attribs +=
-						"				m_"+attribName+" = IBK::Path(attrib->Value());\n";
+						"				m_"+attribName+" = IBK::Path(attrib->ValueStr());\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Unit") {
 					attribs +=
 						"				try {\n"
-						"					m_"+attribName+" = IBK::Unit(attrib->Value());\n"
+						"					m_"+attribName+" = IBK::Unit(attrib->ValueStr());\n"
 						"				}\n"
 						"				catch (IBK::Exception & ex) {\n"
 						"					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
@@ -540,7 +542,7 @@ void CodeGenerator::generateReadWriteCode() {
 				}
 				else if (xmlInfo.typeStr == "std::string") {
 					attribs +=
-						"				m_"+attribName+" = attrib->Value();\n";
+						"				m_"+attribName+" = attrib->ValueStr();\n";
 				}
 				else {
 					// check for enum types
@@ -551,7 +553,7 @@ void CodeGenerator::generateReadWriteCode() {
 							// generate write code for enum type
 							attribs +=
 								"			try {\n"
-								"				m_"+attribName+" = ("+einfo.enumType()+")KeywordList::Enumeration(\""+einfo.categoryName+"\", attrib->Value());\n"
+								"				m_"+attribName+" = ("+einfo.enumType()+")KeywordList::Enumeration(\""+einfo.categoryName+"\", attrib->ValueStr());\n"
 								"			}\n"
 								"			catch (IBK::Exception & ex) {\n"
 								"				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
@@ -564,6 +566,7 @@ void CodeGenerator::generateReadWriteCode() {
 					throw IBK::Exception(IBK::FormatString("(Still) unsupported XML attrib type '%1' for variable '%2'.")
 										 .arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
 				}
+				elseStr = "else ";
 			} // end attribute reading loop
 			attribs +=
 					"			else {\n"
@@ -592,62 +595,81 @@ void CodeGenerator::generateReadWriteCode() {
 					"		while (c) {\n"
 					"			const std::string & cName = c->ValueStr();\n";
 
+			// first scan for all group-type xml tags
+			std::set<std::string> groupTags;
+			for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
+				if (!xmlInfo.element) continue;
+				if (xmlInfo.typeStr == "IBK::Parameter" ||
+					xmlInfo.typeStr == "IBK::Unit" ||
+					xmlInfo.typeStr == "IBK::LinearSpline" ||
+					xmlInfo.typeStr == "IBK::Flag" ||
+					xmlInfo.typeStr == "IBK::IntPara")
+				{
+					groupTags.insert(xmlInfo.typeStr);
+				}
+			}
+
+			elseStr.clear();
 			for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
 				if (!xmlInfo.element) continue;
 				std::string varName = xmlInfo.varName;
 				std::string tagName = char(toupper(varName[0])) + varName.substr(1);
-				elements += "			if (cName == \""+tagName+"\")\n";
 				// now type specific code
 				if (xmlInfo.typeStr == "int" ||
 					xmlInfo.typeStr == "unsigned int" ||
 					xmlInfo.typeStr == "double" ||
 					xmlInfo.typeStr == "bool")
 				{
+					includes.insert("NANDRAD_Utilities.h");
 					elements +=
-						"				m_"+varName+" = readPODElementValue<"+xmlInfo.typeStr+">(element, cName);\n";
-				}
-#if 0
-				else if (xmlInfo.typeStr == "IBK::Path") {
-					attribs +=
-						"				m_"+attribName+" = IBK::Path(attrib->Value());\n";
-				}
-				else if (xmlInfo.typeStr == "IBK::Unit") {
-					attribs +=
-						"				try {\n"
-						"					m_"+attribName+" = IBK::Unit(attrib->Value());\n"
-						"				}\n"
-						"				catch (IBK::Exception & ex) {\n"
-						"					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
-						"						IBK::FormatString(\"Error converting '\"+attrib->ValueStr()+\"' attribute (unknown unit).\") ), FUNC_ID);\n"
-						"				}\n";
+						"			"+elseStr+"if (cName == \""+tagName+"\")\n"
+						"				m_"+varName+" = readPODElement<"+xmlInfo.typeStr+">(element, cName);\n";
 				}
 				else if (xmlInfo.typeStr == "std::string") {
-					attribs +=
-						"				m_"+attribName+" = attrib->Value();\n";
+					elements +=
+						"			"+elseStr+"if (cName == \""+tagName+"\")\n"
+						"				m_"+varName+" = c->ValueStr();\n";
 				}
-				else {
-					// check for enum types
-					bool hadEnumType = false;
-					for (const ClassInfo::EnumInfo & einfo : ci.m_enumInfo) {
-						if (einfo.enumType() == xmlInfo.typeStr) {
-							hadEnumType = true;
-							// generate write code for enum type
-							attribs +=
-								"			try {\n"
-								"				m_"+attribName+" = ("+einfo.enumType()+")KeywordList::Enumeration(\""+einfo.categoryName+"\", attrib->Value());\n"
-								"			}\n"
-								"			catch (IBK::Exception & ex) {\n"
-								"				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
-								"					IBK::FormatString(\"Invalid or unknown keyword '\"+attrib->ValueStr()+\"'.\") ), FUNC_ID);\n"
-								"			}\n";
-							includes.insert("NANDRAD_KeywordList.h");
-						}
+				else if (xmlInfo.typeStr == "IBK::Unit") {
+					includes.insert("NANDRAD_Utilities.h");
+					elements +=
+						"			"+elseStr+"if (cName == \""+tagName+"\")\n"
+						"				m_"+varName+" = readUnitElement(c, cName);\n";
+				}
+				else if (xmlInfo.typeStr == "IBK::Path") {
+					elements +=
+						"			"+elseStr+"if (cName == \""+tagName+"\")\n"
+						"				m_"+varName+" = IBK::Path(c->ValueStr());\n";
+				}
+
+				// for the group types, we generate the code only once and switch the parameter in an internal loop
+
+				else if (xmlInfo.typeStr == "IBK::LinearSpline" && groupTags.find("IBK::LinearSpline") != groupTags.end()) {
+					groupTags.erase(groupTags.find("IBK::LinearSpline")); // only generate code once
+					includes.insert("NANDRAD_Utilities.h");
+
+					elements +=
+						"			"+elseStr+"if (cName == \"IBK::LinearSpline\") {\n"
+						"				IBK::LinearSpline spl;\n"
+						"				std::string name;\n"
+						"				readLinearSplineElement(c, cName, spl, name, nullptr, nullptr);\n";
+					// now loop all linear spline variables and generate code for assigning these
+					std::string cases;
+					for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
+						if (!xmlInfo.element || xmlInfo.typeStr != "IBK::LinearSpline") continue;
+						if (cases.empty())
+							cases += "				if (cName == \""+tagName+"\")		m_"+varName+" = spl;\n";
+						else
+							cases += "				else if (cName == \""+tagName+"\")	m_"+varName+" = spl;\n";
 					}
-					if (hadEnumType) continue;
-					throw IBK::Exception(IBK::FormatString("(Still) unsupported XML variable type '%1' of variable '%2'.")
-										 .arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
+					elements += cases;
+					elements +=
+						"				else {\n"
+						"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
+						"				}\n"
+						"			}\n";
 				}
-#endif
+				elseStr = "else ";
 			} // end element reading loop
 			elements +=
 					"			else {\n"
@@ -655,7 +677,6 @@ void CodeGenerator::generateReadWriteCode() {
 					"			}\n"
 					"			c = c->NextSiblingElement();\n"
 					"		}\n";
-
 
 
 			// insert code into readXML() function block
