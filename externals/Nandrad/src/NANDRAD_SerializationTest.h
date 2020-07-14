@@ -19,6 +19,10 @@ public:
 	{
 		m_para[t_x1].set("X1", 12, "C");
 		m_flags[t_x2].set("X2", true);
+		m_interfaces.push_back(Interface());
+		std::vector<double> x = {0, 1, 1.4, 2};
+		std::vector<double> y = {1, 2, 3.4, 5};
+		m_spline.setValues(x,y);
 	}
 
 	NANDRAD_READWRITE
@@ -47,15 +51,14 @@ public:
 	IBK::Path			m_path2		= IBK::Path("/var");	// XML:E:not-empty
 	IBK::Unit			m_u2		= IBK::Unit("C");		// XML:E
 
-	Interface			m_iface;							// XMLS:E
+	Interface			m_iface;							// XML:E
 
 	std::vector<Interface>	m_interfaces;					// XML:E
 
 	IBK::Parameter		m_para[NUM_test];					// XML:E
 	IBK::Flag			m_flags[NUM_test];					// XML:E
 
-	IBK::LinearSpline	m_spline;							// XMLS:E
-
+	IBK::LinearSpline	m_spline;							// XML:E
 
 };
 

@@ -23,7 +23,9 @@ Lesser General Public License for more details.
 
 #include <string>
 #include <map>
+
 #include <IBK_Path.h>
+#include <IBK_LinearSpline.h>
 
 class TiXmlDocument;
 class TiXmlElement;
@@ -35,6 +37,16 @@ namespace NANDRAD {
 */
 TiXmlElement * openXMLFile(const std::map<std::string,IBK::Path>  &pathPlaceHolders, const IBK::Path & filename,
 	const std::string & parentXmlTag, TiXmlDocument & doc);
+
+/*! Writes a linear spline into XML format.
+	\code
+	<IBK:LinearSpline name="MySpline">
+		<X unit="m">0 1 1.4 2 </X>
+		<Y unit="C">1 2 3.4 5 </Y>
+	</IBK:LinearSpline>
+	\endcode
+*/
+void writeLinearSplineXML(TiXmlElement * parent, const std::string & name, const IBK::LinearSpline & spl, const std::string & xunit, const std::string & yunit);
 
 } // namespace NANDRAD
 

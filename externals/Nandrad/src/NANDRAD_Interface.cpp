@@ -123,49 +123,5 @@ void Interface::readXML(const TiXmlElement * element) {
 #endif
 }
 
-void Interface::writeXML(TiXmlElement * parent) const {
-#if 0
-
-	TiXmlElement * e = new TiXmlElement("Interface");
-	parent->LinkEndChild(e);
-
-	if(!m_displayName.empty())
-		e->SetAttribute("displayName", m_displayName);
-
-	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	e->SetAttribute("location", KeywordList::Keyword("Interface::location_t",m_location));
-
-	// write all references
-	TiXmlElement::appendSingleAttributeElement(e, "ZoneID", nullptr, std::string(),IBK::val2string<unsigned int>(m_zoneId));
-
-	// write all model parameters
-	if( m_heatConduction.m_modelType != InterfaceHeatConduction::NUM_MT)
-		m_heatConduction.writeXML(e, detailedOutput);
-	if( m_solarAbsorption.m_modelType != InterfaceSolarAbsorption::NUM_MT)
-		m_solarAbsorption.writeXML(e, detailedOutput);
-	if( m_longWaveEmission.m_modelType != InterfaceLongWaveEmission::NUM_MT)
-		m_longWaveEmission.writeXML(e, detailedOutput);
-	if (m_vaporDiffusion.m_modelType != InterfaceVaporDiffusion::NUM_MT)
-		m_vaporDiffusion.writeXML(e, detailedOutput);
-#endif
-}
-
-void Interface::writeCommentsXML(TiXmlElement * parent) const {
-#if 0
-	// first add all comments
-	for (std::set<std::string>::const_iterator it = m_comments.begin(); it != m_comments.end(); ++it)
-		TiXmlComment::addComment(parent,*it);
-	// add comments specifying the referenced zone
-	if(!m_zoneDisplayName.empty()) {
-		std::string referenceComment = std::string("Interface connecting wall surface '") +
-								KeywordList::Keyword("Interface::location_t",m_location) +
-								std::string("' with Zone '") +
-								m_zoneDisplayName + std::string("'.");
-
-		TiXmlComment::addComment(parent,referenceComment);
-	}
-#endif
-}
-
 } // namespace NANDRAD
 

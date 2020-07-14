@@ -373,6 +373,10 @@ void CodeGenerator::generateReadWriteCode() {
 				else if (xmlInfo.typeStr == "IBK::Path") {
 					elements += "\n	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".str());\n";
 				}
+				else if (xmlInfo.typeStr == "IBK::LinearSpline") {
+					includes.insert("NANDRAD_Utilities.h");
+					elements += "\n	writeLinearSplineXML(e, \""+tagName+"\", m_"+varName+", std::string(), std::string());\n";
+				}
 				else if (xmlInfo.typeStr == "IBK::Parameter") {
 					// check for array syntax
 					std::string::size_type pos1 = varName.find("[");
@@ -465,9 +469,10 @@ void CodeGenerator::generateReadWriteCode() {
 					}
 					if (hadEnumType) continue;
 
+					// we now assume a complex type, i.e. "Interface" where we can call writeXML() ourselves.
 
-					throw IBK::Exception(IBK::FormatString("(Still) unsupported XML element type '%1' for variable '%2'.")
-										 .arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
+					// TODO : add check for "not-default"
+					elements += "\n	m_" + varName + ".writeXML(e);\n";
 				}
 			}
 

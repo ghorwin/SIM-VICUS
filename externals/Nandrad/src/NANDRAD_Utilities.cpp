@@ -61,4 +61,9 @@ TiXmlElement * openXMLFile(const std::map<std::string,IBK::Path> & pathPlaceHold
 }
 
 
+void writeLinearSplineXML(TiXmlElement * parent, const std::string & name, const IBK::LinearSpline & spl, const std::string & xunit, const std::string & yunit) {
+	TiXmlElement::appendIBKLinearSplineElement(parent, name, "", xunit, spl.x(), yunit, spl.y());
+}
+
+
 } // namespace NANDRAD

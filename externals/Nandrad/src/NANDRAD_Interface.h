@@ -82,11 +82,7 @@ public:
 	/*! Appends the element to the parent xml element.
 		Throws an IBK::Exception in case of invalid data.
 	*/
-	void writeXML(TiXmlElement * parent) const;
-
-	/*! Writes comments at the beginning of ConstrucionInstance tag.
-	*/
-	void writeCommentsXML(TiXmlElement * parent) const;
+	TiXmlElement * writeXML(TiXmlElement * parent) const;
 
 	/*! Special form of comparison operator, tests if parameters that have an
 		impact on result calculation are the same (zone, location, physical parameters).
@@ -101,12 +97,15 @@ public:
 	}
 
 	// *** PUBLIC MEMBER VARIABLES ***
-	unsigned int								m_id;					///< ID of the referenced surface/interface.
+
+	/*! ID of the referenced surface/interface. */
+	unsigned int								m_id;					// XML:A
 	std::string									m_displayName;			///< IBK-language encoded name of interface.
 	location_t									m_location;				///< The position of the interface, left ore right of the construction.
 	unsigned int								m_zoneId;				///< The id number of the neighboring zone.
 	std::string									m_zoneDisplayName;		///< The name of the neighboring zone.
-	/*! Boundary conditions.*/
+
+	// Boundary condition parameters
 	InterfaceHeatConduction						m_heatConduction;		///< Model for heat transfer coefficient.
 	InterfaceSolarAbsorption					m_solarAbsorption;		///< Model for solar absorption coefficient.
 	InterfaceLongWaveEmission					m_longWaveEmission;		///< Model for long wave emissivity.
