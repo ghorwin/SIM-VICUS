@@ -623,12 +623,12 @@ void CodeGenerator::generateReadWriteCode() {
 					includes.insert("NANDRAD_Utilities.h");
 					elements +=
 						"			"+elseStr+"if (cName == \""+tagName+"\")\n"
-						"				m_"+varName+" = readPODElement<"+xmlInfo.typeStr+">(element, cName);\n";
+						"				m_"+varName+" = readPODElement<"+xmlInfo.typeStr+">(c, cName);\n";
 				}
 				else if (xmlInfo.typeStr == "std::string") {
 					elements +=
 						"			"+elseStr+"if (cName == \""+tagName+"\")\n"
-						"				m_"+varName+" = c->ValueStr();\n";
+						"				m_"+varName+" = c->GetText();\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Unit") {
 					includes.insert("NANDRAD_Utilities.h");
@@ -639,7 +639,7 @@ void CodeGenerator::generateReadWriteCode() {
 				else if (xmlInfo.typeStr == "IBK::Path") {
 					elements +=
 						"			"+elseStr+"if (cName == \""+tagName+"\")\n"
-						"				m_"+varName+" = IBK::Path(c->ValueStr());\n";
+						"				m_"+varName+" = IBK::Path(c->GetText());\n";
 				}
 
 				// for the group types, we generate the code only once and switch the parameter in an internal loop
@@ -649,7 +649,7 @@ void CodeGenerator::generateReadWriteCode() {
 					includes.insert("NANDRAD_Utilities.h");
 
 					elements +=
-						"			"+elseStr+"if (cName == \"IBK::LinearSpline\") {\n"
+						"			"+elseStr+"if (cName == \"IBK:LinearSpline\") {\n"
 						"				IBK::LinearSpline spl;\n"
 						"				std::string name;\n"
 						"				readLinearSplineElement(c, cName, spl, name, nullptr, nullptr);\n";
@@ -658,9 +658,9 @@ void CodeGenerator::generateReadWriteCode() {
 					for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
 						if (!xmlInfo.element || xmlInfo.typeStr != "IBK::LinearSpline") continue;
 						if (cases.empty())
-							cases += "				if (cName == \""+tagName+"\")		m_"+varName+" = spl;\n";
+							cases += "				if (name == \""+tagName+"\")		m_"+varName+" = spl;\n";
 						else
-							cases += "				else if (cName == \""+tagName+"\")	m_"+varName+" = spl;\n";
+							cases += "				else if (name == \""+tagName+"\")	m_"+varName+" = spl;\n";
 					}
 					elements += cases;
 					elements +=

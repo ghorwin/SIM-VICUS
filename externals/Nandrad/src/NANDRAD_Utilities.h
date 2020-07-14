@@ -75,7 +75,7 @@ template <typename T>
 T readPODElement(const TiXmlElement * element, const std::string & eName) {
 	FUNCID(NANDRAD::readPODElement);
 	try {
-		return IBK::string2val<T>(element->ValueStr());
+		return IBK::string2val<T>(element->GetText());
 	} catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 			IBK::FormatString("Error reading '"+eName+"' tag.") ), FUNC_ID);

@@ -15,7 +15,7 @@
 
 #define SERIALIZATION_TEST
 #ifdef SERIALIZATION_TEST
-#include <NANDRAD_SerializationTest.h>"
+#include <NANDRAD_SerializationTest.h>
 #include <NANDRAD_Utilities.h>
 #include <tinyxml.h>
 #endif // SERIALIZATION_TEST
