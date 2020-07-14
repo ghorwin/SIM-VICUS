@@ -39,6 +39,7 @@ INCLUDEPATH = \
 	../../../externals/Zeppelin/src \
 	../../../externals/DataIO/src \
 	../../../externals/Nandrad/src \
+	../../../externals/TiCPP/src \
 	../../../externals/sundials/src/include
 
 DEPENDPATH = $${INCLUDEPATH}

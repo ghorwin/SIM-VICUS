@@ -156,6 +156,11 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 
 				std::string varName = typeDeclaration.substr(pos2+2); // without m_
 				IBK::trim(varName, " \t;");
+				// varName may now be of format "m_path = IBK::Path("/tmp")" - we need to split the assignment operator
+				// for C++11 support
+				std::string::size_type equalPos = varName.find("=");
+				if (equalPos != std::string::npos)
+					varName = IBK::trim_copy(varName.substr(0, equalPos));
 
 				std::string xmlSpec = line.substr(pos+7);
 				// we support only a subset of type declarations

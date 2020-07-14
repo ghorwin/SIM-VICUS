@@ -322,7 +322,9 @@ void CodeGenerator::generateReadWriteCode() {
 						if (einfo.enumType() == xmlInfo.typeStr) {
 							hadEnumType = true;
 							// generate write code for enum type
-							attribs += "	e->SetAttribute(\""+attribName+"\", KeywordList::Keyword(\""+ einfo.categoryName + "\",  m_" + attribName + "));\n";
+							attribs +=
+								"	if (m_" + attribName + " != "+einfo.enumNUM+")\n"
+								"		e->SetAttribute(\""+attribName+"\", KeywordList::Keyword(\""+ einfo.categoryName + "\",  m_" + attribName + "));\n";
 							includes.insert("NANDRAD_KeywordList.h");
 						}
 					}
@@ -453,7 +455,10 @@ void CodeGenerator::generateReadWriteCode() {
 						if (einfo.enumType() == xmlInfo.typeStr) {
 							hadEnumType = true;
 							// generate write code for enum type
-							elements += "\n	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), KeywordList::Keyword(\""+ einfo.categoryName + "\",  m_" + varName + "));\n";
+
+							elements += "\n"
+										"	if (m_" + varName + " != "+einfo.enumNUM+")\n"
+										"		TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), KeywordList::Keyword(\""+ einfo.categoryName + "\",  m_" + varName + "));\n";
 
 							includes.insert("NANDRAD_KeywordList.h");
 						}

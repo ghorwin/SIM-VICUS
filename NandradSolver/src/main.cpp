@@ -13,6 +13,12 @@
 // include model implementation class
 #include "NM_NandradModel.h"
 
+#define SERIALIZATION_TEST
+#ifdef SERIALIZATION_TEST
+#include "NANDRAD_SerializationTest.h"
+#include <tinyxml.h>
+#endif // SERIALIZATION_TEST
+
 const char * const PROGRAM_INFO =
 	"NANDRAD Solver\n"
 	"All rights reserved.\n\n"
@@ -25,6 +31,22 @@ const char * const PROGRAM_INFO =
 
 int main(int argc, char * argv[]) {
 	FUNCID(main);
+
+#ifdef SERIALIZATION_TEST
+	NANDRAD::SerializationTest st;
+	TiXmlDocument doc;
+	TiXmlDeclaration * decl = new TiXmlDeclaration( "1.0", "UTF-8", "" );
+	doc.LinkEndChild( decl );
+
+	TiXmlElement * root = new TiXmlElement( "NandradProject" );
+	doc.LinkEndChild(root);
+
+	// write all project parts
+	st.writeXML(root);
+	doc.SaveFile( "serializationtest.xml" );
+	return 0;
+
+#endif // SERIALIZATION_TEST
 
 	try {
 		// a stopwatch to measure time needed for solver initialization
