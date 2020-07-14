@@ -389,3 +389,17 @@ const char * const CPP_WRITEXML =
 		"	return e;\n"
 		"}\n";
 
+const char * const CPP_READXML =
+		"void ${CLASSNAME}::readXML(const TiXmlElement * element) {\n"
+		"	FUNCID(\"${CLASSNAME}::readXML\");\n"
+		"\n"
+		"	try {\n"
+		"${ATTRIBUTES}${CHILD_ELEMENTS}"
+		"	}\n"
+		"	catch (IBK::Exception & ex) {\n"
+		"		throw IBK::Exception( ex, IBK::FormatString(\"Error reading '${CLASSNAME}' element.\"), FUNC_ID);\n"
+		"	}\n"
+		"	catch (std::exception & ex2) {\n"
+		"		throw IBK::Exception( IBK::FormatString(\"%1\\nError reading '${CLASSNAME}' element.\").arg(ex2.what()), FUNC_ID);\n"
+		"	}\n"
+		"}\n";

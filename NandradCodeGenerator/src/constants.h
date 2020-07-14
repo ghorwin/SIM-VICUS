@@ -12,5 +12,6 @@ extern const char * const CPP_FOOTER;
 
 extern const char * const CPP_READWRITE_HEADER;
 extern const char * const CPP_WRITEXML;
+extern const char * const CPP_READXML;
 
 #endif // CONSTANTS_H

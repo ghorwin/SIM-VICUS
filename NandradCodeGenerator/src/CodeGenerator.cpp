@@ -250,6 +250,10 @@ void CodeGenerator::generateReadWriteCode() {
 			if (ci.m_xmlInfo.empty() && !ci.m_requireComparisonFunction)
 				continue;
 
+			// development hack - only deal with SerializationTest for now
+			if (ci.m_className != "SerializationTest")
+				continue;
+
 			// compose path to target file
 			IBK::Path parentDir;
 			if (m_ncgOutputDir.isAbsolute())
@@ -278,14 +282,12 @@ void CodeGenerator::generateReadWriteCode() {
 			}
 
 			// now start writing the file
-			std::string fileContent;
-
-			// *** writeXML() *** code
-
-			// start with the write code
-			fileContent += IBK::replace_string(CPP_WRITEXML, "${CLASSNAME}", ci.m_className);
-
+			std::string writeCode;
 			std::set<std::string> includes;
+
+			// *** Generate writeXML() content ****
+
+			writeCode += IBK::replace_string(CPP_WRITEXML, "${CLASSNAME}", ci.m_className);
 
 			std::string attribs;
 			// generate attribute write code
@@ -337,7 +339,7 @@ void CodeGenerator::generateReadWriteCode() {
 				}
 			}
 
-			fileContent = IBK::replace_string(fileContent, "${ATTRIBUTES}", attribs, IBK::ReplaceFirst);
+
 
 			// now the elements
 			std::string elements;
@@ -476,7 +478,27 @@ void CodeGenerator::generateReadWriteCode() {
 				}
 			}
 
-			fileContent = IBK::replace_string(fileContent, "${CHILD_ELEMENTS}", elements, IBK::ReplaceFirst);
+
+			// insert code into writeXML() function block
+			writeCode = IBK::replace_string(writeCode, "${ATTRIBUTES}", attribs, IBK::ReplaceFirst);
+			writeCode = IBK::replace_string(writeCode, "${CHILD_ELEMENTS}", elements, IBK::ReplaceFirst);
+
+
+			// *** Generate readXML() content ****
+
+			std::string readCode;
+			readCode += IBK::replace_string(CPP_READXML, "${CLASSNAME}", ci.m_className);
+
+			attribs.clear();
+			elements.clear();
+
+
+			// insert code into readXML() function block
+			readCode = IBK::replace_string(readCode, "${ATTRIBUTES}", attribs, IBK::ReplaceFirst);
+			readCode = IBK::replace_string(readCode, "${CHILD_ELEMENTS}", elements, IBK::ReplaceFirst);
+
+
+			// *** Add header and footer and write file ****
 
 			std::string extraIncludes;
 			for (const std::string & inc : includes)
@@ -488,7 +510,8 @@ void CodeGenerator::generateReadWriteCode() {
 			IBK::IBK_Message(IBK::FormatString("Generating file '%1'.\n").arg(targetFile), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 			std::ofstream out(targetFile.c_str(), std::ios_base::trunc);
 			out << fileHeader;
-			out << fileContent << std::endl;
+			out << readCode << std::endl;
+			out << writeCode << std::endl;
 
 			out << "} // namespace NANDRAD\n";
 			out.close();
