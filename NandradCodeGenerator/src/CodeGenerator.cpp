@@ -334,7 +334,7 @@ void CodeGenerator::generateReadWriteCode() {
 
 					// other special cases
 
-					throw IBK::Exception(IBK::FormatString("(Still) unsupported XML attrib type '%1' for variable '%2'.")
+					throw IBK::Exception(IBK::FormatString("(Still) unsupported XML variable type '%1' of variable '%2'.")
 										 .arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
 				}
 			}
@@ -506,8 +506,6 @@ void CodeGenerator::generateReadWriteCode() {
 					"\n";
 			}
 
-			// generate reading code
-
 			attribs +=
 					"		const TiXmlAttribute * attrib = element->FirstAttribute();\n"
 					"		while (attrib) {\n"
@@ -524,7 +522,7 @@ void CodeGenerator::generateReadWriteCode() {
 					xmlInfo.typeStr == "bool")
 				{
 					attribs +=
-						"				m_"+attribName+" = readPODValue<"+xmlInfo.typeStr+">(element, attrib);\n";
+						"				m_"+attribName+" = readPODAttributeValue<"+xmlInfo.typeStr+">(element, attrib);\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Path") {
 					attribs +=
@@ -574,12 +572,59 @@ void CodeGenerator::generateReadWriteCode() {
 					"			attrib = attrib->Next();\n"
 					"		}\n";
 
-#if 0
+
+			// now read-code for elements/tags
 			for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
-				if (xmlInfo.element) continue;
-				std::string attribName = xmlInfo.varName;
+				if (!xmlInfo.element || !xmlInfo.required) continue;
+				std::string varName = xmlInfo.varName;
+				std::string tagName = char(toupper(varName[0])) + varName.substr(1);
 
+				elements +=
+					"		// search for mandatory elements\n"
+					"		if (!element->FirstChildElement(\""+tagName+"\")\n"
+					"			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
+					"				IBK::FormatString(\"Missing required '"+tagName+"' element.\") ), FUNC_ID);\n"
+					"\n";
+			}
 
+			elements +=
+					"		const TiXmlElement * c = element->FirstChildElement();\n"
+					"		while (c) {\n"
+					"			const std::string & cName = c->ValueStr();\n";
+
+			for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
+				if (!xmlInfo.element) continue;
+				std::string varName = xmlInfo.varName;
+				std::string tagName = char(toupper(varName[0])) + varName.substr(1);
+				elements += "			if (cName == \""+tagName+"\")\n";
+				// now type specific code
+				if (xmlInfo.typeStr == "int" ||
+					xmlInfo.typeStr == "unsigned int" ||
+					xmlInfo.typeStr == "double" ||
+					xmlInfo.typeStr == "bool")
+				{
+					elements +=
+						"				m_"+varName+" = readPODElementValue<"+xmlInfo.typeStr+">(element, cName);\n";
+				}
+#if 0
+				else if (xmlInfo.typeStr == "IBK::Path") {
+					attribs +=
+						"				m_"+attribName+" = IBK::Path(attrib->Value());\n";
+				}
+				else if (xmlInfo.typeStr == "IBK::Unit") {
+					attribs +=
+						"				try {\n"
+						"					m_"+attribName+" = IBK::Unit(attrib->Value());\n"
+						"				}\n"
+						"				catch (IBK::Exception & ex) {\n"
+						"					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
+						"						IBK::FormatString(\"Error converting '\"+attrib->ValueStr()+\"' attribute (unknown unit).\") ), FUNC_ID);\n"
+						"				}\n";
+				}
+				else if (xmlInfo.typeStr == "std::string") {
+					attribs +=
+						"				m_"+attribName+" = attrib->Value();\n";
+				}
 				else {
 					// check for enum types
 					bool hadEnumType = false;
@@ -594,30 +639,22 @@ void CodeGenerator::generateReadWriteCode() {
 								"			catch (IBK::Exception & ex) {\n"
 								"				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
 								"					IBK::FormatString(\"Invalid or unknown keyword '\"+attrib->ValueStr()+\"'.\") ), FUNC_ID);\n"
-								"			}\n"
-								"		}\n";
+								"			}\n";
 							includes.insert("NANDRAD_KeywordList.h");
 						}
 					}
 					if (hadEnumType) continue;
-
-					// other special cases
-
-					throw IBK::Exception(IBK::FormatString("(Still) unsupported XML attrib type '%1' for variable '%2'.")
+					throw IBK::Exception(IBK::FormatString("(Still) unsupported XML variable type '%1' of variable '%2'.")
 										 .arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
 				}
-
-				attribs += "		}\n";
-			} // end attribute reading loop
 #endif
-
-			// now the elements
-			for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
-				if (!xmlInfo.element) continue;
-				std::string varName = xmlInfo.varName;
-				std::string tagName = char(toupper(varName[0])) + varName.substr(1);
-
 			} // end element reading loop
+			elements +=
+					"			else {\n"
+					"				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
+					"			}\n"
+					"			c = c->NextSiblingElement();\n"
+					"		}\n";
 
 
 

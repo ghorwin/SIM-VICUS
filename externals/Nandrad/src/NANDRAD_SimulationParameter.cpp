@@ -64,7 +64,7 @@ void SimulationParameter::readXML(const TiXmlElement * element) {
 		for ( c = element->FirstChildElement(); c; c = c->NextSiblingElement()) {
 
 			// determine data based on element name
-			std::string cname = c->Value();
+			const std::string & cname = c->ValueStr();
 			if (cname == "IBK:Parameter") {
 
 				// use utility function to read parameter

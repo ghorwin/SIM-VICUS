@@ -54,13 +54,24 @@ TiXmlElement * openXMLFile(const std::map<std::string,IBK::Path>  &pathPlaceHold
 void writeLinearSplineXML(TiXmlElement * parent, const std::string & name, const IBK::LinearSpline & spl, const std::string & xunit, const std::string & yunit);
 
 template <typename T>
-T readPODValue(const TiXmlElement * element, const TiXmlAttribute * attrib) {
-	FUNCID(NANDRAD::readPODValue);
+T readPODAttributeValue(const TiXmlElement * element, const TiXmlAttribute * attrib) {
+	FUNCID(NANDRAD::readPODAttributeValue);
 	try {
 		return IBK::string2val<T>(attrib->Value());
 	} catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 			IBK::FormatString("Error reading '"+attrib->NameStr()+"' attribute.") ), FUNC_ID);
+	}
+};
+
+template <typename T>
+T readPODElementValue(const TiXmlElement * element, const std::string & eName) {
+	FUNCID(NANDRAD::readPODElementValue);
+	try {
+		return IBK::string2val<T>(element->Value());
+	} catch (IBK::Exception & ex) {
+		throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+			IBK::FormatString("Error reading '"+eName+"' tag.") ), FUNC_ID);
 	}
 };
 
