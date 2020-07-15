@@ -52,33 +52,33 @@ void LinearSplineParameter::readXML(const TiXmlElement * element) {
 			m_interpolationMethod = I_Linear; // the default
 		else {
 
-			if(!KeywordList::KeywordExists("LinearSplineParameter::interpolationMethod_t", 
+			if(!KeywordList::KeywordExists("LinearSplineParameter::interpolationMethod_t",
 				interpolationMethod) )
 			{
 				throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 							IBK::FormatString("Invalid/unknown interpolation method '%1'.").arg(interpolationMethod)
-							), FUNC_ID); 
+							), FUNC_ID);
 			}
 
 			m_interpolationMethod = (interpolationMethod_t)KeywordList::Enumeration(
 							"LinearSplineParameter::interpolationMethod_t", interpolationMethod);
 		}
 		// check for value units
-		try { 
-			m_xUnit.set(xUnit); 
+		try {
+			m_xUnit.set(xUnit);
 		}
-		catch (...) { 
+		catch (...) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Invalid/unknown xUnit.")
-				), FUNC_ID); 
+				), FUNC_ID);
 		}
-		try { 
-			m_yUnit.set(yUnit); 
+		try {
+			m_yUnit.set(yUnit);
 		}
-		catch (...) { 
+		catch (...) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Invalid/unknown yUnit.")
-				), FUNC_ID); 
+				), FUNC_ID);
 		}
 		// perform unit conversions
 		xData.m_unit = m_xUnit;
@@ -101,6 +101,7 @@ void LinearSplineParameter::readXML(const TiXmlElement * element) {
 
 
 void LinearSplineParameter::writeXML(TiXmlElement * parent) const {
+	return;
 	if (m_name.empty())
 		return; // no name = no spline data specified
 	IBK::UnitVector xData, yData;

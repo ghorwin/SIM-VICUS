@@ -469,19 +469,22 @@ void Project::writeXML(const IBK::Path & filename) const {
 	root->SetAttribute("xsi:schemaLocation", "http://www.bauklimatik-dresden.de NandradProject.xsd");
 	root->SetAttribute("fileVersion", VERSION);
 
-	// write all project parts
-	m_projectInfo.writeXML(root);
 	writeDirectoryPlaceholdersXML(root);
-	// for zones, construction instances and models allow additional comments
-
 	writeDataBaseXML(root);
-	m_simulationParameter.writeXML(root);
-	//m_solverParameter.writeXML(root);
-	m_location.writeXML(root);
-//	writeGeometriesXML(root);
-	writeZonesXML(root);
-//	writeZoneListsXML(root);
-	writeConstructionInstancesXML(root);
+
+	writeXMLPrivate(root);
+
+//	// write all project parts
+//	m_projectInfo.writeXML(root);
+//	// for zones, construction instances and models allow additional comments
+
+//	m_simulationParameter.writeXML(root);
+//	//m_solverParameter.writeXML(root);
+//	m_location.writeXML(root);
+////	writeGeometriesXML(root);
+//	writeZonesXML(root);
+////	writeZoneListsXML(root);
+//	writeConstructionInstancesXML(root);
 //	// write either Schedule reference or schedule definition section
 //	if (m_schedulesReference.m_filename.isValid()) {
 //		m_schedulesReference.writeXML(root);
@@ -495,8 +498,6 @@ void Project::writeXML(const IBK::Path & filename) const {
 //		m_outputs.writeXML(root);
 //	m_objectLists.writeXML(root);
 
-#if 0
-#endif
 	doc.SaveFile( filename.c_str() );
 
 }

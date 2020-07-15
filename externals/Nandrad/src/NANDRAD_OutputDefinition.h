@@ -84,6 +84,7 @@ public:
 	bool operator!=(const OutputDefinition & other) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
+
 	/*! Filename (if empty then automatic filename generation) */
 	std::string								m_filename;					// XML:E
 

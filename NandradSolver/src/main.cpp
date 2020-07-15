@@ -48,7 +48,7 @@ void createSim01(NANDRAD::Project &prj){
 	zone.m_para[NANDRAD::Zone::ZP_VOLUME].set("Volume", 30, IBK::Unit("m3"));
 	zone.m_para[NANDRAD::Zone::ZP_TEMPERATURE].set("Temperature", 5, IBK::Unit("C"));
 	//add zone to prj
-	prj.m_zones[zone.m_id] = zone;
+	prj.m_zones.push_back(zone);
 
 	prj.m_simulationParameter.m_intpara[NANDRAD::SimulationParameter::SIP_YEAR].set("StartYear", 2015);
 	prj.m_solverParameter.initDefaults();
@@ -87,7 +87,7 @@ void createSim01(NANDRAD::Project &prj){
 
 	conInsta.m_constructionTypeId = 10001;
 	//add construction instance
-	prj.m_constructionInstances[conInsta.m_id] = conInsta;
+	prj.m_constructionInstances.push_back(conInsta);
 
 	//outputs
 

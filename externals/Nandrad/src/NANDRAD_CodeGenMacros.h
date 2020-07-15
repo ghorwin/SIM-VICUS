@@ -10,6 +10,7 @@
 	TiXmlElement * writeXMLPrivate(TiXmlElement * parent) const;
 
 #define NANDRAD_COMP(X) \
-	bool operator!=(const X & other) const;
+	bool operator!=(const X & other) const; \
+	bool operator==(const X & other) { return !operator!=(other); }
 
 #endif // NANDRAD_CodeGenMacrosH

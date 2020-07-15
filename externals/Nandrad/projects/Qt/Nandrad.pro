@@ -96,6 +96,8 @@ SOURCES += \
 	../../src/NANDRAD_SpaceType.cpp \
 	../../src/NANDRAD_Utilities.cpp \
 	../../src/NANDRAD_Zone.cpp \
+	../../src/ncg/ncg_NANDRAD_ProjectInfo.cpp \
+	../../src/ncg/ncg_NANDRAD_Sensor.cpp \
 	../../src/ncg/ncg_NANDRAD_SimulationParameter.cpp \
 	../../src/ncg/ncg_NANDRAD_SolverParameter.cpp \
 	../../src/ncg/ncg_NANDRAD_Zone.cpp \

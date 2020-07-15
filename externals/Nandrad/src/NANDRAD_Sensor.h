@@ -45,9 +45,11 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	void readXML(const TiXmlElement * element);
-	TiXmlElement * writeXML(TiXmlElement * parent) const;
 	NANDRAD_COMP(Sensor)
+
+	void readXML(const TiXmlElement * element) { readXMLPrivate(element); }
+	TiXmlElement * writeXML(TiXmlElement * parent) const { if (*this != Sensor()) return writeXMLPrivate(parent); else return nullptr; }
+
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
