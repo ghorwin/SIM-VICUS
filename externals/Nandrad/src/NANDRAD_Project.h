@@ -103,10 +103,10 @@ public:
 
 
 	/*! All construction types reference construction parameters. */
-	std::vector<ConstructionType>					m_constructionType;					// XML:E
+	std::vector<ConstructionType>					m_constructionTypes;				// XML:E
 
 	/*! All material types. */
-	std::vector<Material>							m_material;							// XML:E
+	std::vector<Material>							m_materials;						// XML:E
 
 	/*! Simulation settings: all global parameters.*/
 	SimulationParameter								m_simulationParameter;				// XML:E
