@@ -122,7 +122,7 @@ void InterfaceSolarAbsorption::readXML(const TiXmlElement * element) {
 }
 
 
-void InterfaceSolarAbsorption::writeXML(TiXmlElement * parent, bool detailedOutput) const {
+void InterfaceSolarAbsorption::writeXML(TiXmlElement * parent) const {
 
 	TiXmlElement * e = new TiXmlElement("SolarAbsorption");
 	parent->LinkEndChild(e);
@@ -132,8 +132,6 @@ void InterfaceSolarAbsorption::writeXML(TiXmlElement * parent, bool detailedOutp
 	// write InterfaceSolarAbsorption parameters
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if(m_para[i].name.empty()) continue;
-		if(detailedOutput)
-			TiXmlComment::addComment(e,KeywordList::Description("InterfaceSolarAbsorption::para_t",i));
 		TiXmlElement::appendIBKParameterElement(e,
 			m_para[i].name,
 			m_para[i].IO_unit.name(),

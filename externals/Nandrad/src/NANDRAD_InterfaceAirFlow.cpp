@@ -73,7 +73,7 @@ void InterfaceAirFlow::readXML(const TiXmlElement * element) {
 				splineParameter.readXML(c);
 
 				// determine type of parameter
-				splinePara_t t = (splinePara_t)KeywordList::Enumeration("InterfaceAirFlow::splinePara_t", 
+				splinePara_t t = (splinePara_t)KeywordList::Enumeration("InterfaceAirFlow::splinePara_t",
 					splineParameter.m_name);
 
 				// check validity of parameter
@@ -124,7 +124,7 @@ void InterfaceAirFlow::readXML(const TiXmlElement * element) {
 }
 
 
-void InterfaceAirFlow::writeXML(TiXmlElement * parent, bool detailedOutput) const {
+void InterfaceAirFlow::writeXML(TiXmlElement * parent) const {
 
 	TiXmlElement * e = new TiXmlElement("AirFlow");
 	parent->LinkEndChild(e);
@@ -134,8 +134,6 @@ void InterfaceAirFlow::writeXML(TiXmlElement * parent, bool detailedOutput) cons
 	// write InterfaceAirFlow parameters
 	for (unsigned int i=0; i<NUM_SP; ++i) {
 		if(m_splinePara[i].m_name.empty()) continue;
-		if(detailedOutput)
-			TiXmlComment::addComment(e,KeywordList::Description("AirFlow::para_t",i));
 		m_splinePara[i].writeXML(e);
 	}
 }
@@ -144,7 +142,7 @@ void InterfaceAirFlow::writeXML(TiXmlElement * parent, bool detailedOutput) cons
 bool InterfaceAirFlow::operator!=(const InterfaceAirFlow & other) const {
 	// model comparison
 	if (m_modelType != other.m_modelType) return true;
-	if (m_modelTypeToSplineParameterMapping != other.m_modelTypeToSplineParameterMapping) 
+	if (m_modelTypeToSplineParameterMapping != other.m_modelTypeToSplineParameterMapping)
 		return true;
 	for (int i=0; i<NUM_SP; ++i)
 		if (m_splinePara[i] != other.m_splinePara[i]) return true;

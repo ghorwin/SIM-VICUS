@@ -66,7 +66,7 @@ void SpaceType::readXML(const TiXmlElement * element) {
 }
 
 
-void SpaceType::writeXML(TiXmlElement * parent, bool detailedOutput) const {
+void SpaceType::writeXML(TiXmlElement * parent) const {
 #if 0
 	/*SpaceType tmp;
 	// tmp.initDefaults();
@@ -82,7 +82,7 @@ void SpaceType::writeXML(TiXmlElement * parent, bool detailedOutput) const {
 	e->SetAttribute("name", m_name);
 
 	// write all generic parameters
-	writeGenericParameters(e, detailedOutput);
+	writeGenericParameters(e);
 #endif
 }
 

@@ -70,7 +70,7 @@ public:
 		/*! Appends the element to the parent xml element.
 			Throws an IBK::Exception in case of invalid data.
 		*/
-		void writeXML(TiXmlElement * parent, bool detailedOutput) const;
+		void writeXML(TiXmlElement * parent) const;
 
 		/*! Compares this instance with another by value and returns true if they differ. */
 		bool operator!=(const DefaultParameters & other) const;
@@ -96,7 +96,7 @@ public:
 	/*! Appends the element to the parent xml element.
 		Throws an IBK::Exception in case of invalid data.
 	*/
-	void writeXML(TiXmlElement * parent, bool detailedOutput) const;
+	void writeXML(TiXmlElement * parent) const;
 
 	/*! Compares this instance with another by value and returns true if they differ. */
 	bool operator!=(const Schedules & other) const;
@@ -146,7 +146,7 @@ private:
 		Throws an IBK::Exception in case of invalid data.
 		\param element XML Element pointing to the root "Schedules" tag.
 	*/
-	void writeXML2(TiXmlElement * element, bool detailedOutput) const;
+	void writeXML2(TiXmlElement * element) const;
 
 };
 

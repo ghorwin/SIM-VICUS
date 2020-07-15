@@ -148,7 +148,7 @@ void Schedules::DefaultParameters::readXML(const TiXmlElement * element) {
 }
 
 
-void Schedules::DefaultParameters::writeXML(TiXmlElement * parent, bool detailedOutput) const {
+void Schedules::DefaultParameters::writeXML(TiXmlElement * parent) const {
 
 	TiXmlElement * e = new TiXmlElement("Default");
 	parent->LinkEndChild(e);
@@ -240,7 +240,7 @@ void Schedules::readXML(const TiXmlElement * element) {
 // ----------------------------------------------------------------------------
 
 
-void Schedules::writeXML(TiXmlElement * parent, bool detailedOutput) const {
+void Schedules::writeXML(TiXmlElement * parent) const {
 #if 0
 	if (isDefault())
 		return;
@@ -257,7 +257,7 @@ void Schedules::writeXML(TiXmlElement * parent, bool detailedOutput) const {
 	TiXmlElement * e = new TiXmlElement("Schedules");
 	parent->LinkEndChild(e);
 
-	writeXML2(e, detailedOutput);
+	writeXML2(e);
 #endif
 }
 // ----------------------------------------------------------------------------
@@ -360,12 +360,12 @@ void Schedules::scheduleList(std::map< std::string, bool > & scheduleNames) cons
 }
 
 // ----------------------------------------------------------------------------
-void Schedules::writeXML2(TiXmlElement * e, bool detailedOutput) const {
+void Schedules::writeXML2(TiXmlElement * e) const {
 #if 0
 	// write default parameter settings
 	if (detailedOutput)
 		TiXmlComment::addComment(e,"Defaults for all Schedules.");
-//	m_defaults.writeXML(e, detailedOutput);
+//	m_defaults.writeXML(e);
 
 	if ( ! m_scheduleGroups.empty() ){
 
@@ -384,12 +384,12 @@ void Schedules::writeXML2(TiXmlElement * e, bool detailedOutput) const {
 		for (std::vector<ScheduleGroup>::const_iterator it = m_scheduleGroups.begin();
 			it != m_scheduleGroups.end(); ++it)
 		{
-			it->writeXML(e, detailedOutput);
+			it->writeXML(e);
 		}
 
 	}
 
-	m_annualSchedules.writeXML(e, detailedOutput);
+	m_annualSchedules.writeXML(e);
 #endif
 }
 // ----------------------------------------------------------------------------

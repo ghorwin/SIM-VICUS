@@ -121,7 +121,7 @@ void InterfaceLongWaveEmission::readXML(const TiXmlElement * element) {
 }
 
 
-void InterfaceLongWaveEmission::writeXML(TiXmlElement * parent, bool detailedOutput) const {
+void InterfaceLongWaveEmission::writeXML(TiXmlElement * parent) const {
 
 	TiXmlElement * e = new TiXmlElement("LongWaveEmission");
 	parent->LinkEndChild(e);
@@ -131,8 +131,6 @@ void InterfaceLongWaveEmission::writeXML(TiXmlElement * parent, bool detailedOut
 	// write InterfaceLongWaveEmission parameters
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if(m_para[i].name.empty()) continue;
-		if(detailedOutput)
-			TiXmlComment::addComment(e,KeywordList::Description("InterfaceLongWaveEmission::para_t",i));
 		TiXmlElement::appendIBKParameterElement(e,
 			m_para[i].name,
 			m_para[i].IO_unit.name(),

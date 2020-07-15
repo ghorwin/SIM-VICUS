@@ -138,7 +138,7 @@ void Location::readXML(const TiXmlElement * element) {
 }
 
 
-void Location::writeXML(TiXmlElement * parent, bool detailedOutput) const {
+void Location::writeXML(TiXmlElement * parent) const {
 #if 0
 
 	TiXmlComment::addComment(parent,
@@ -186,7 +186,7 @@ void Location::writeXML(TiXmlElement * parent, bool detailedOutput) const {
 	// sensors
 	for (unsigned int i = 0; i < m_sensors.size(); ++i) {
 		// write sensor output
-		m_sensors[i].writeXML(e, detailedOutput);
+		m_sensors[i].writeXML(e);
 	}
 	// FMU export definitions
 	for (unsigned int i = 0; i < m_FMUExportReferences.size(); ++i) {

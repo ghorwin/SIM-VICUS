@@ -29,11 +29,11 @@ class TiXmlElement;
 
 #define NANDRAD_READWRITE \
 	void readXML(const TiXmlElement * element); \
-	TiXmlElement * writeXML(TiXmlElement * parent, bool detailedOutput) const;
+	TiXmlElement * writeXML(TiXmlElement * parent) const;
 
 #define NANDRAD_READWRITE_PRIVATE \
 	void readXMLPrivate(const TiXmlElement * element); \
-	TiXmlElement * writeXMLPrivate(TiXmlElement * parent, bool detailedOutput) const;
+	TiXmlElement * writeXMLPrivate(TiXmlElement * parent) const;
 
 #define NANDRAD_COMP(X) \
 	bool operator!=(const X & other) const;

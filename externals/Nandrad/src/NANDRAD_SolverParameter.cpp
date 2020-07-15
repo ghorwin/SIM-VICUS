@@ -182,7 +182,7 @@ void SolverParameter::readXML(const TiXmlElement * element) {
 }
 
 #if 0
-void SolverParameter::writeXML(TiXmlElement * parent, bool detailedOutput) const {
+void SolverParameter::writeXML(TiXmlElement * parent) const {
 	SolverParameter tmp;
 	tmp.initDefaults();
 	if (*this == tmp && !detailedOutput)

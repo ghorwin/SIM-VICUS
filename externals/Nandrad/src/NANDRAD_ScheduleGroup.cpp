@@ -71,7 +71,7 @@ void ScheduleGroup::readXML(const TiXmlElement * element) {
 }
 
 
-void ScheduleGroup::writeXML(TiXmlElement * parent, bool detailedOutput) const {
+void ScheduleGroup::writeXML(TiXmlElement * parent) const {
 #if 0
 	// skip empty schedulegroups
 	if (m_spaceTypeGroups.empty() &&
@@ -86,7 +86,7 @@ void ScheduleGroup::writeXML(TiXmlElement * parent, bool detailedOutput) const {
 	if (!m_endDate.empty())
 		m_endDate.writeXML(e, false);
 
-	writeSpaceTypeGroupXML(e, detailedOutput);
+	writeSpaceTypeGroupXML(e);
 #endif
 }
 
@@ -152,7 +152,7 @@ void ScheduleGroup::readSpaceTypeGroupXML(const TiXmlElement * element) {
 }
 
 
-void ScheduleGroup::writeSpaceTypeGroupXML(TiXmlElement * parent, bool detailedOutput) const {
+void ScheduleGroup::writeSpaceTypeGroupXML(TiXmlElement * parent) const {
 	for (std::map<std::string, ScheduleMap>::const_iterator it = m_spaceTypeGroups.begin();
 		 it != m_spaceTypeGroups.end(); ++it)
 	{
@@ -163,7 +163,7 @@ void ScheduleGroup::writeSpaceTypeGroupXML(TiXmlElement * parent, bool detailedO
 		e->SetAttribute("spaceTypeName", it->first);
 
 		for (ScheduleMap::const_iterator sit = it->second.begin(); sit != it->second.end(); ++sit) {
-			sit->second.writeXML(e, detailedOutput);
+			sit->second.writeXML(e);
 		}
 	}
 }

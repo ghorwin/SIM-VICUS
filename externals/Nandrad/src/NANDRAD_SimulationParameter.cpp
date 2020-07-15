@@ -187,7 +187,7 @@ void SimulationParameter::readXML(const TiXmlElement * element) {
 }
 
 
-void SimulationParameter::writeXML(TiXmlElement * parent, bool detailedOutput) const {
+void SimulationParameter::writeXML(TiXmlElement * parent) const {
 
 	SimulationParameter tmp;
 	tmp.initDefaults( );

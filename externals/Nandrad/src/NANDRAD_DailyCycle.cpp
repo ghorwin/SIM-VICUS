@@ -61,12 +61,10 @@ void DailyCycle::readXML(const TiXmlElement * element) {
 }
 
 
-void DailyCycle::writeXML(TiXmlElement * parent, bool detailedOutput) const {
+void DailyCycle::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("DailyCycle");
 	parent->LinkEndChild(e);
 	// write intervals
-	if (detailedOutput)
-		TiXmlComment::addComment(e, "List of all time intervals and parameter settings.");
 	for (std::vector<Interval>::const_iterator it = m_intervals.begin();
 		it != m_intervals.end(); ++it)
 	{

@@ -99,13 +99,9 @@ void AnnualSchedules::readXML(const TiXmlElement * element) {
 }
 // ----------------------------------------------------------------------------
 
-void AnnualSchedules::writeXML(TiXmlElement * parent, bool detailedOutput) const {
+void AnnualSchedules::writeXML(TiXmlElement * parent) const {
 	if (m_parameters.empty())
 		return;
-
-	if (detailedOutput)
-		TiXmlComment::addComment(parent,
-			"AnnualSchedules section defines parameters via a linear spline over the whole year.");
 
 	TiXmlElement * e = new TiXmlElement("AnnualSchedules");
 	parent->LinkEndChild(e);

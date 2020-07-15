@@ -49,7 +49,7 @@ public:
 	/*! Appends the element to the parent xml element.
 		Throws an IBK::Exception in case of invalid data.
 	*/
-	void writeXML(TiXmlElement * parent, bool detailedOutput=false) const;
+	void writeXML(TiXmlElement * parent) const;
 
 	/*! Comparison operator by value. */
 	bool operator==(const OutputGrid & other) const;

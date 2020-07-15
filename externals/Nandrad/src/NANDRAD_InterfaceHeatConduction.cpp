@@ -120,7 +120,7 @@ void InterfaceHeatConduction::readXML(const TiXmlElement * element) {
 }
 
 
-void InterfaceHeatConduction::writeXML(TiXmlElement * parent, bool detailedOutput) const {
+void InterfaceHeatConduction::writeXML(TiXmlElement * parent) const {
 #if 0
 	TiXmlElement * e = new TiXmlElement("HeatConduction");
 	parent->LinkEndChild(e);
@@ -139,7 +139,7 @@ void InterfaceHeatConduction::writeXML(TiXmlElement * parent, bool detailedOutpu
 	}
 
 	// write all generic parameters
-	writeGenericParameters(e, detailedOutput);
+	writeGenericParameters(e);
 #endif
 }
 

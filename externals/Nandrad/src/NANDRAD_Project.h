@@ -128,8 +128,8 @@ private:
 	void readDataBaseXML(const TiXmlElement * element);
 	void writeDataBaseXML(TiXmlElement * parent) const;
 
-	void writeZonesXML(TiXmlElement * parent, bool detailedOutput) const;
-	void writeConstructionInstancesXML(TiXmlElement * parent, bool detailedOutput) const;
+	void writeZonesXML(TiXmlElement * parent) const;
+	void writeConstructionInstancesXML(TiXmlElement * parent) const;
 
 	void readGeometriesXML( const TiXmlElement * parent );
 	void writeGeometriesXML(TiXmlElement * parent) const;

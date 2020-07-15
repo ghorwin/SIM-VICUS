@@ -203,7 +203,7 @@ void Zone::readXML(const TiXmlElement * element) {
 }
 
 #if 0
-void Zone::writeXML(TiXmlElement * parent, bool detailedOutput) const {
+void Zone::writeXML(TiXmlElement * parent) const {
 	// first add all comments
 	for ( std::set<std::string>::const_iterator it = m_comments.begin();
 								it != m_comments.end(); ++it)
@@ -265,7 +265,7 @@ void Zone::writeXML(TiXmlElement * parent, bool detailedOutput) const {
 		m_FMUImportReferences[i].writeXML(e);
 	}
 	// write generic parameters
-	writeGenericParameters(e, detailedOutput);
+	writeGenericParameters(e);
 }
 #endif
 

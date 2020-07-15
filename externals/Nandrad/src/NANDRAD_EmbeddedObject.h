@@ -44,7 +44,6 @@ namespace NANDRAD {
 class EmbeddedObject {
 public:
 
-	// ***KEYWORDLIST-START***
 	/*! Parameters to be defined for the various object types and models. */
 	enum para_t {
 		P_Area,						// Keyword: Area						[m2]				'Area of the embedded object [m2].'
@@ -57,7 +56,6 @@ public:
 		OT_HOLE,			// Keyword: Hole			'Parametrization of an opening model.'
 		NUM_OT
 	};
-	// ***KEYWORDLIST-END***
 
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -73,11 +71,7 @@ public:
 	/*! Appends the element to the parent xml element.
 		Throws an IBK::Exception in case of invalid data.
 	*/
-	void writeXML(TiXmlElement * parent, bool detailedOutput) const;
-
-	/*! Writes comments at the beginning of ConstrucionInstance tag.
-	*/
-	void writeCommentsXML(TiXmlElement * parent) const;
+	void writeXML(TiXmlElement * parent) const;
 
 
 	// *** PUBLIC MEMBER VARIABLES ***

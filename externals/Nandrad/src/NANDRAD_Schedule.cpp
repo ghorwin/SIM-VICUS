@@ -83,7 +83,7 @@ void Schedule::readXML(const TiXmlElement * element) {
 }
 
 
-void Schedule::writeXML(TiXmlElement * parent, bool detailedOutput) const {
+void Schedule::writeXML(TiXmlElement * parent) const {
 
 	TiXmlElement * e = new TiXmlElement("Schedule");
 	parent->LinkEndChild(e);
@@ -93,7 +93,7 @@ void Schedule::writeXML(TiXmlElement * parent, bool detailedOutput) const {
 	for (std::vector<DailyCycle>::const_iterator it = m_dailyCycles.begin();
 		it != m_dailyCycles.end(); ++it)
 	{
-		it->writeXML(e, detailedOutput);
+		it->writeXML(e);
 	}
 }
 

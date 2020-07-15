@@ -92,8 +92,8 @@ void Sensor::readXML(const TiXmlElement * element) {
 }
 
 
-TiXmlElement * Sensor::writeXML(TiXmlElement * parent, bool detailedOutput) const {
-	TiXmlElement * e = writeXMLPrivate(parent, detailedOutput);
+TiXmlElement * Sensor::writeXML(TiXmlElement * parent) const {
+	TiXmlElement * e = writeXMLPrivate(parent);
 
 	// .... append other data to e
 	return e;

@@ -757,7 +757,7 @@ void Project::writeDataBaseXML(TiXmlElement * parent) const {
 }
 // ----------------------------------------------------------------------------
 
-void Project::writeZonesXML(TiXmlElement * parent, bool detailedOutput) const {
+void Project::writeZonesXML(TiXmlElement * parent) const {
 
 	// only write if we have any
 	if (m_zones.empty())
@@ -781,7 +781,7 @@ void Project::writeZonesXML(TiXmlElement * parent, bool detailedOutput) const {
 // ----------------------------------------------------------------------------
 
 
-void Project::writeConstructionInstancesXML(TiXmlElement * parent, bool detailedOutput) const {
+void Project::writeConstructionInstancesXML(TiXmlElement * parent) const {
 	// only write if we have any
 	if (m_constructionInstances.empty())
 		return;

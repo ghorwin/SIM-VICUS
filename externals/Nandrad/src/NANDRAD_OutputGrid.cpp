@@ -75,7 +75,7 @@ void OutputGrid::readXML(const TiXmlElement * element) {
 //---------------------------------------------------------------------------
 
 
-void OutputGrid::writeXML(TiXmlElement * parent, bool detailedOutput) const {
+void OutputGrid::writeXML(TiXmlElement * parent) const {
 	// only write if data has changed from defaults
 	if (m_name.empty() && m_intervals.empty()) return;
 	TiXmlElement * e = new TiXmlElement("OutputGrid");

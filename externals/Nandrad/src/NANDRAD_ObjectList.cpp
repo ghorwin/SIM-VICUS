@@ -136,7 +136,7 @@ void ObjectList::readXML(const TiXmlElement * element) {
 }
 
 
-void ObjectList::writeXML(TiXmlElement * parent, bool detailedOutput) const {
+void ObjectList::writeXML(TiXmlElement * parent) const {
 #if 0
 	// write output definition
 	if(detailedOutput)

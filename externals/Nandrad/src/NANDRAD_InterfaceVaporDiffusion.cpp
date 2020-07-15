@@ -122,7 +122,7 @@ void InterfaceVaporDiffusion::readXML(const TiXmlElement * element) {
 }
 
 
-void InterfaceVaporDiffusion::writeXML(TiXmlElement * parent, bool detailedOutput) const {
+void InterfaceVaporDiffusion::writeXML(TiXmlElement * parent) const {
 
 	TiXmlElement * e = new TiXmlElement("VaporDiffusion");
 	parent->LinkEndChild(e);
@@ -132,8 +132,6 @@ void InterfaceVaporDiffusion::writeXML(TiXmlElement * parent, bool detailedOutpu
 	// write InterfaceVaporDiffusion parameters
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if(m_para[i].name.empty()) continue;
-		if(detailedOutput)
-			TiXmlComment::addComment(e,KeywordList::Description("InterfaceVaporDiffusion::para_t",i));
 		TiXmlElement::appendIBKParameterElement(e,
 			m_para[i].name,
 			m_para[i].IO_unit.name(),

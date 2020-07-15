@@ -188,7 +188,7 @@ void EmbeddedObject::readXML(const TiXmlElement * element) {
 }
 
 
-void EmbeddedObject::writeXML(TiXmlElement * parent, bool detailedOutput) const {
+void EmbeddedObject::writeXML(TiXmlElement * parent) const {
 #if 0
 	TiXmlElement * e = new TiXmlElement("EmbeddedObject");
 	parent->LinkEndChild(e);
@@ -215,13 +215,13 @@ void EmbeddedObject::writeXML(TiXmlElement * parent, bool detailedOutput) const 
 	// write model parameter section
 	switch ( objectType() ) {
 		case OT_WINDOW :
-			m_window.writeXML(e, detailedOutput);
+			m_window.writeXML(e);
 			break;
 		case OT_DOOR :
-			m_door.writeXML(e, detailedOutput);
+			m_door.writeXML(e);
 			break;
 		case OT_HOLE :
-			m_hole.writeXML(e, detailedOutput);
+			m_hole.writeXML(e);
 			break;
 
 		default : ;
@@ -239,21 +239,6 @@ void EmbeddedObject::writeXML(TiXmlElement * parent, bool detailedOutput) const 
 #endif
 }
 
-
-void EmbeddedObject::writeCommentsXML(TiXmlElement * parent) const {
-#if 0
-	// first add all comments
-	for (std::set<std::string>::const_iterator it = m_comments.begin(); it != m_comments.end(); ++it)
-		TiXmlComment::addComment(parent,*it);
-
-	// add comments specifying the referenced zone
-	std::string referenceComment = KeywordList::Keyword("EmbeddedObject::modelType_t", objectType());
-	if (m_zoneNames.size() == 2) {
-		referenceComment += std::string(" between '") + m_zoneNames[0] + std::string("' and '") + m_zoneNames[1] + std::string("'.");
-	}
-	TiXmlComment::addComment(parent,referenceComment);
-#endif
-}
 
 } // namespace NANDRAD
 

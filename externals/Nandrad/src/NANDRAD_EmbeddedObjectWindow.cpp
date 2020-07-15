@@ -144,7 +144,7 @@ void EmbeddedObjectWindow::readXML(const TiXmlElement * element) {
 }
 
 
-void EmbeddedObjectWindow::writeXML(TiXmlElement * parent, bool detailedOutput) const {
+void EmbeddedObjectWindow::writeXML(TiXmlElement * parent) const {
 #if 0
 	TiXmlElement * e = new TiXmlElement("Window");
 	parent->LinkEndChild(e);
@@ -163,7 +163,7 @@ void EmbeddedObjectWindow::writeXML(TiXmlElement * parent, bool detailedOutput) 
 	}
 
 	// write all generic parameters
-	writeGenericParameters(e, detailedOutput);
+	writeGenericParameters(e);
 #endif
 }
 
