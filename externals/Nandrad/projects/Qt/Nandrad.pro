@@ -101,6 +101,7 @@ SOURCES += \
 	../../src/NANDRAD_SpaceType.cpp \
 	../../src/NANDRAD_Utilities.cpp \
 	../../src/NANDRAD_Zone.cpp \
+	../../src/ncg/ncg_NANDRAD_DailyCycle.cpp \
 	../../src/ncg/ncg_NANDRAD_ProjectInfo.cpp \
 	../../src/ncg/ncg_NANDRAD_Sensor.cpp \
 	../../src/ncg/ncg_NANDRAD_SimulationParameter.cpp \

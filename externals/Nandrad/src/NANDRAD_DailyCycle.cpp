@@ -238,7 +238,7 @@ double	DailyCycle::intervalEndInSeconds( unsigned int intervalIndex ) const{
 }
 
 bool DailyCycle::operator!=(const DailyCycle & other) const {
-//	if (m_intervals != other.m_intervals) return true;
+	if (m_intervals != other.m_intervals) return true;
 	if (m_hourlyValues != other.m_hourlyValues) return true;
 	return false;
 }

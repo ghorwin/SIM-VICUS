@@ -68,10 +68,10 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Parameter definition inside each schedule interval.*/
-	std::vector<Interval>				m_intervals;
+	std::vector<Interval>				m_intervals;				// XML:E
 
 	/*! Alternatively read hourly values into a linear spline. */
-	std::vector<LinearSplineParameter>	m_hourlyValues;
+	std::vector<LinearSplineParameter>	m_hourlyValues;				// XML:E
 };
 
 } // namespace NANDRAD
