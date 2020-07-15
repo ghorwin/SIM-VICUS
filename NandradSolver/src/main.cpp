@@ -107,7 +107,7 @@ int main(int argc, char * argv[]) {
 
 	NANDRAD::Project prj;
 	// parameter setzen
-
+	createSim01(prj);
 	prj.writeXML(IBK::Path("SimQuality1.xml"));
 
 #ifdef SERIALIZATION_TEST
