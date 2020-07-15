@@ -31,8 +31,8 @@ Lesser General Public License for more details.
 namespace NANDRAD {
 
 
-void ProjectInfo::readXML(const TiXmlElement * element) {
 #if 0
+void ProjectInfo::readXML(const TiXmlElement * element) {
 	const char * const FUNC_ID = "[ProjectInfo::readXML]";
 
 	// read optional attributes
@@ -111,13 +111,12 @@ void ProjectInfo::readXML(const TiXmlElement * element) {
 					"Unknown element '%1' in ProjectInfo section. Please check line: %2 ").arg(name).arg(e->Row()), FUNC_ID );
 		}
 	}
-#endif
 }
 // ----------------------------------------------------------------------------
 
 
 void ProjectInfo::writeXML(TiXmlElement * parent) const {
-#if 0
+
 	TiXmlComment::addComment(parent,
 		"General Project Information (author, date, project ID etc.)");
 
@@ -148,8 +147,8 @@ void ProjectInfo::writeXML(TiXmlElement * parent) const {
 	}
 
 	TiXmlComment::addSeparatorComment(parent);
-#endif
 }
+#endif
 // ----------------------------------------------------------------------------
 
 } // namespace NANDRAD

@@ -85,18 +85,24 @@ TiXmlElement * Sensor::writeXMLPrivate(TiXmlElement * parent) const {
 
 
 void Sensor::readXML(const TiXmlElement * element) {
+#if 0
 	// simply reuse generated code
 	readXMLPrivate(element);
 
 	// ... read other data from element
+
+#endif
 }
 
 
 TiXmlElement * Sensor::writeXML(TiXmlElement * parent) const {
+#if 0
 	TiXmlElement * e = writeXMLPrivate(parent);
 
 	// .... append other data to e
 	return e;
+#endif
+	return parent;
 }
 
 

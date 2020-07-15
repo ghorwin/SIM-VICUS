@@ -35,9 +35,9 @@ namespace NANDRAD {
 
 
 
+#if 0
 void OutputDefinition::readXML(const TiXmlElement * element) {
 	const char * const FUNC_ID = "[OutputDefinition::readXML]";
-#if 0
 	try {
 		// read sub-elements
 		for (const TiXmlElement * c = element->FirstChildElement(); c; c = c->NextSiblingElement()) {
@@ -77,12 +77,12 @@ void OutputDefinition::readXML(const TiXmlElement * element) {
 	catch (std::exception & ex2) {
 		throw IBK::Exception(IBK::FormatString("%1\nError reading 'OutputDefinition' element.").arg(ex2.what()), FUNC_ID);
 	}
-#endif
 }
 
 
+
 void OutputDefinition::writeXML(TiXmlElement * parent) const {
-#if 0
+
 	OutputDefinition tmp;
 	if (tmp == *this)
 		return;
@@ -109,8 +109,8 @@ void OutputDefinition::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(	e, "ObjectListName", nullptr, std::string(), m_objectListName);
 	if (!m_quantity.empty())
 		TiXmlElement::appendSingleAttributeElement(	e, "Quantity", nullptr, std::string(), m_quantity);
-#endif
 }
+#endif
 
 
 bool OutputDefinition::operator!=(const OutputDefinition & other) const {

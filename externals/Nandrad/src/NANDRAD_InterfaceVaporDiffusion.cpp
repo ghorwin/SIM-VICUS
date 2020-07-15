@@ -41,6 +41,7 @@ InterfaceVaporDiffusion::InterfaceVaporDiffusion() :
 }
 
 
+#if 0
 void InterfaceVaporDiffusion::readXML(const TiXmlElement * element) {
 	const char * const FUNC_ID = "[InterfaceVaporDiffusion::readXML]";
 
@@ -138,6 +139,7 @@ void InterfaceVaporDiffusion::writeXML(TiXmlElement * parent) const {
 			m_para[i].get_value());
 	}
 }
+#endif
 
 
 bool InterfaceVaporDiffusion::operator!=(const InterfaceVaporDiffusion & other) const {

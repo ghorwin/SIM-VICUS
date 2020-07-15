@@ -29,6 +29,7 @@ Lesser General Public License for more details.
 #include "NANDRAD_InterfaceSolarAbsorption.h"
 #include "NANDRAD_InterfaceLongWaveEmission.h"
 #include "NANDRAD_InterfaceVaporDiffusion.h"
+#include "NANDRAD_CodeGenMacros.h"
 
 class TiXmlElement;
 
@@ -78,12 +79,14 @@ public:
 	/*! Reads the data from the xml element.
 		Throws an IBK::Exception if a syntax error occurs.
 	*/
-	void readXML(const TiXmlElement * element);
+	//void readXML(const TiXmlElement * element);
+
+	NANDRAD_READWRITE
 
 	/*! Appends the element to the parent xml element.
 		Throws an IBK::Exception in case of invalid data.
 	*/
-	TiXmlElement * writeXML(TiXmlElement * parent) const;
+	//TiXmlElement * writeXML(TiXmlElement * parent) const;
 
 	/*! Special form of comparison operator, tests if parameters that have an
 		impact on result calculation are the same (zone, location, physical parameters).
@@ -100,21 +103,30 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! ID of the referenced surface/interface. */
-	unsigned int								m_id;					// XML:A
-	std::string									m_displayName;			///< IBK-language encoded name of interface.
-	location_t									m_location;				///< The position of the interface, left ore right of the construction.
-	unsigned int								m_zoneId;				///< The id number of the neighboring zone.
-	std::string									m_zoneDisplayName;		///< The name of the neighboring zone.
+	unsigned int								m_id;					// XML:A:required
+	/*! IBK-language encoded name of interface. */
+	std::string									m_displayName;			// XML:A
+	/*! The position of the interface, left ore right of the construction. */
+	location_t									m_location;				//
+	/*! The id number of the neighboring zone. */
+	unsigned int								m_zoneId;				// XML:E
+	/*! The name of the neighboring zone. */
+	std::string									m_zoneDisplayName;		// XML:E
 
 	/*! Enables the interface models. */
-	IBK::Flag									m_condition[NUM_IP];
+	IBK::Flag									m_condition[NUM_IP];	// XML:E
 
 	// Boundary condition parameters
-	InterfaceHeatConduction						m_heatConduction;		///< Model for heat transfer coefficient.
-	InterfaceSolarAbsorption					m_solarAbsorption;		///< Model for solar absorption coefficient.
-	InterfaceLongWaveEmission					m_longWaveEmission;		///< Model for long wave emissivity.
-	InterfaceVaporDiffusion						m_vaporDiffusion;		///< Model for vapor diffusion.
-	InterfaceAirFlow							m_airFlow;				///< Model for air flow calculation.
+	/*! Model for heat transfer coefficient. */
+	InterfaceHeatConduction						m_heatConduction;		// XML:E
+	/*! Model for solar absorption coefficient. */
+	InterfaceSolarAbsorption					m_solarAbsorption;		// XML:E
+	/*! Model for long wave emissivity. */
+	InterfaceLongWaveEmission					m_longWaveEmission;		// XML:E
+	/*! Model for vapor diffusion. */
+	InterfaceVaporDiffusion						m_vaporDiffusion;		// XML:E
+	/*! Model for air flow calculation. */
+	InterfaceAirFlow							m_airFlow;				// XML:E
 
 
 	/*! Reference to neighbor zone.*/

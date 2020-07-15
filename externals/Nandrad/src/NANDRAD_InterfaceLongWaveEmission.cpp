@@ -41,6 +41,7 @@ InterfaceLongWaveEmission::InterfaceLongWaveEmission() :
 }
 
 
+#if 0
 void InterfaceLongWaveEmission::readXML(const TiXmlElement * element) {
 	const char * const FUNC_ID = "[InterfaceLongWaveEmission::readXML]";
 	// read attributes
@@ -137,6 +138,7 @@ void InterfaceLongWaveEmission::writeXML(TiXmlElement * parent) const {
 			m_para[i].get_value());
 	}
 }
+#endif
 
 
 bool InterfaceLongWaveEmission::operator!=(const InterfaceLongWaveEmission & other) const {

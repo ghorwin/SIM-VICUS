@@ -454,6 +454,8 @@ void Project::readXML(const IBK::Path & filename) {
 
 
 void Project::writeXML(const IBK::Path & filename) const {
+
+
 	TiXmlDocument doc;
 	TiXmlDeclaration * decl = new TiXmlDeclaration( "1.0", "UTF-8", "" );
 	doc.LinkEndChild( decl );
@@ -474,7 +476,7 @@ void Project::writeXML(const IBK::Path & filename) const {
 
 	writeDataBaseXML(root);
 	m_simulationParameter.writeXML(root);
-	m_solverParameter.writeXML(root);
+	//m_solverParameter.writeXML(root);
 	m_location.writeXML(root);
 //	writeGeometriesXML(root);
 	writeZonesXML(root);
@@ -493,7 +495,10 @@ void Project::writeXML(const IBK::Path & filename) const {
 //		m_outputs.writeXML(root);
 //	m_objectLists.writeXML(root);
 
+#if 0
+#endif
 	doc.SaveFile( filename.c_str() );
+
 }
 // ----------------------------------------------------------------------------
 
@@ -722,7 +727,7 @@ void Project::writeDataBaseXML(TiXmlElement * parent) const {
 // ----------------------------------------------------------------------------
 
 void Project::writeZonesXML(TiXmlElement * parent) const {
-
+#if 0
 	// only write if we have any
 	if (m_zones.empty())
 		return;
@@ -741,11 +746,13 @@ void Project::writeZonesXML(TiXmlElement * parent) const {
 	}
 
 	TiXmlComment::addSeparatorComment(parent);
+#endif
 }
 // ----------------------------------------------------------------------------
 
 
 void Project::writeConstructionInstancesXML(TiXmlElement * parent) const {
+#if 0
 	// only write if we have any
 	if (m_constructionInstances.empty())
 		return;
@@ -760,6 +767,7 @@ void Project::writeConstructionInstancesXML(TiXmlElement * parent) const {
 		it->second.writeXML(child);
 	}
 	TiXmlComment::addSeparatorComment(parent);
+#endif
 }
 // ----------------------------------------------------------------------------
 

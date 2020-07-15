@@ -87,26 +87,26 @@ public:
 	std::vector< unsigned int > activeAreaPointIds( const unsigned int pointId ) const;
 
 	/*! Comments about the project. */
-	ProjectInfo										m_projectInfo;
+	ProjectInfo										m_projectInfo;						// XML:E
 
 	/*! Contains mapping of directory placeholders and absolute directory paths. */
 	std::map<std::string, IBK::Path>				m_placeholders;
 
 	/*! All active and constant thermal zones.*/
-	std::map< unsigned int, Zone>					m_zones;
+	std::map< unsigned int, Zone>					m_zones;							// XML:E
 
 	/*! All construction instances refernce a construction and a thermal zone
 		(key is construction instance ID, value is the construction instance definition). */
-	std::map< unsigned int, ConstructionInstance>	m_constructionInstances;
+	std::map< unsigned int, ConstructionInstance>	m_constructionInstances;			// XML:E
 
 	/*! Simulation settings: all global parameters.*/
-	SimulationParameter								m_simulationParameter;
+	SimulationParameter								m_simulationParameter;				// XML:E
 
 	/*! Solver settings: error tolerances and convergence coefficients*/
-	SolverParameter									m_solverParameter;
+	SolverParameter									m_solverParameter;					// XML:E
 
 	/*! Location of the building and climate data. */
-	Location										m_location;
+	Location										m_location;							// XML:E
 
 	/*! Space type properties.*/
 	std::map< unsigned int, SpaceType>				m_spaceTypes;
@@ -115,10 +115,10 @@ public:
 	Schedules										m_schedules;
 
 	/*! References to Output specifications.*/
-	Outputs											m_outputs;
+	Outputs											m_outputs;							// XML:E
 
 	/*! References to object lists.*/
-	std::vector<ObjectList>							m_objectLists;
+	std::vector<ObjectList>							m_objectLists;						// XML:E
 
 private:
 

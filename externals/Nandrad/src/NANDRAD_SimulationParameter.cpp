@@ -49,7 +49,6 @@ void SimulationParameter::initDefaults() {
 	m_interval.m_para[NANDRAD::Interval::IP_START]		= IBK::Parameter("Start",0.0,"s");
 	m_interval.m_para[NANDRAD::Interval::IP_END]		= IBK::Parameter("Duration", 365. * 24. * 3600. ,"s");
 
-	m_stringPara[SSP_WALLMOISTUREBALANCECALCULATIONMODE] = "None";
 }
 
 
@@ -260,8 +259,6 @@ bool SimulationParameter::operator!=(const SimulationParameter & other) const {
 		if (m_para[i] != other.m_para[i]) return true;
 	for (unsigned int i=0; i<NUM_SIP; ++i)
 		if (m_intpara[i] != other.m_intpara[i]) return true;
-	for (unsigned int i=0; i<NUM_SSP; ++i)
-		if (m_stringPara[i] != other.m_stringPara[i]) return true;
 
 	return false; // this and other hold the same data
 }

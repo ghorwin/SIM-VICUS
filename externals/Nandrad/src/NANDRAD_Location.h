@@ -26,6 +26,7 @@ Lesser General Public License for more details.
 #include <IBK_IntPara.h>
 
 #include "NANDRAD_Sensor.h"
+#include "NANDRAD_CodeGenMacros.h"
 
 class TiXmlElement;
 
@@ -59,26 +60,28 @@ public:
 	/*! Reads the data from the xml element.
 		Throws an IBK::Exception if a syntax error occurs.
 	*/
-	void readXML(const TiXmlElement * element);
+	//void readXML(const TiXmlElement * element);
 	/*! Appends the element to the parent xml element.
 		Throws an IBK::Exception in case of invalid data.
 	*/
-	void writeXML(TiXmlElement * parent) const;
+	//void writeXML(TiXmlElement * parent) const;
+
+	NANDRAD_READWRITE
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Parameter set.
 	*/
-	IBK::Parameter				m_para[NUM_LP];
+	IBK::Parameter				m_para[NUM_LP];							// XML:E
 
 	/*! Name of the climate data file. */
-	IBK::Path					m_climateFileName;
+	IBK::Path					m_climateFileName;						// XML:E
 
 	/*! Optional: name of the eyternal shading factor data file. */
-	IBK::Path					m_shadingFactorFileName;
+	IBK::Path					m_shadingFactorFileName;				// XML:E
 
 	/*! We may place one or more sensors in the building outsude. */
-	std::vector<Sensor>			m_sensors;
+	std::vector<Sensor>			m_sensors;								// XML:E
 
 };
 

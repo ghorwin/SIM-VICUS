@@ -26,6 +26,8 @@ class TiXmlElement;
 #include <IBK_Parameter.h>
 #include <IBK_Flag.h>
 
+#include "NANDRAD_CodeGenMacros.h"
+
 namespace NANDRAD {
 
 /*! Contains meta-information about the project, including GUI settings.
@@ -37,17 +39,19 @@ public:
 	/*! Reads the data from the xml element.
 		Throws an IBK::Exception if a syntax error occurs.
 	*/
-	void readXML(const TiXmlElement * element);
+	//void readXML(const TiXmlElement * element);
 	/*! Appends the element to the parent xml element.
 		Throws an IBK::Exception in case of invalid data.
 	*/
-	void writeXML(TiXmlElement * parent) const;
+	//void writeXML(TiXmlElement * parent) const;
+
+	NANDRAD_READWRITE
 
 	/*! Comments about the project. */
-	std::string							m_comment;
-	std::string							m_created;
-	std::string							m_lastEdited;
-	std::string							m_version;
+	std::string							m_comment;				// XML:E
+	std::string							m_created;				// XML:E
+	std::string							m_lastEdited;			// XML:E
+	std::string							m_version;				// XML:E
 };
 
 } // namespace NANDRAD

@@ -29,6 +29,7 @@ Lesser General Public License for more details.
 class TiXmlElement;
 
 #include "NANDRAD_Interval.h"
+#include "NANDRAD_CodeGenMacros.h"
 
 namespace NANDRAD {
 
@@ -64,11 +65,7 @@ public:
 		SIP_YEAR,								// Keyword: StartYear									'Start year of the simulation.'
 		NUM_SIP
 	};
-	enum stringPara_t {
-		SSP_COOLINGDESIGNCLIMATEDATAFILE,		// Keyword: CoolingDesignClimateDataFile				'Climate data file for a cooling design day. Parameter that is needed for FMU export.'
-		SSP_WALLMOISTUREBALANCECALCULATIONMODE,	// Keyword: WallMoistureBalanceCalculationMode			'String including key for wall mositure calculation method, default 'None'.
-		NUM_SSP
-	};
+
 	enum flag_t {
 		SF_ENABLE_MOISTURE_BALANCE,				// Keyword: EnableMoistureBalance						'Flag activating moisture balance calculation if enabled.'
 		SF_ENABLE_CO2_BALANCE,					// Keyword: EnableCO2Balance							'Flag activating CO2 balance calculation if enabled.'
@@ -86,12 +83,14 @@ public:
 	/*! Reads the data from the xml element.
 		Throws an IBK::Exception if a syntax error occurs.
 	*/
-	void readXML(const TiXmlElement * element);
+	//void readXML(const TiXmlElement * element);
 
 	/*! Appends the element to the parent xml element.
 		Throws an IBK::Exception in case of invalid data.
 	*/
-	TiXmlElement * writeXML(TiXmlElement * parent) const;
+	//TiXmlElement * writeXML(TiXmlElement * parent) const;
+
+	NANDRAD_READWRITE
 
 	/*! Compares this instance with another by value and returns true if they differ. */
 	bool operator!=(const SimulationParameter & other) const;
@@ -105,8 +104,6 @@ public:
 	IBK::Parameter		m_para[NUM_SP];					// XML:E
 	/*! Integer parameters. */
 	IBK::IntPara		m_intpara[NUM_SIP];				// XML:E
-	/*! List of string parameters. */
-	std::string			m_stringPara[NUM_SSP];			// XML:E
 	/*! List of flags. */
 	IBK::Flag			m_flags[NUM_SF];				// XML:E
 

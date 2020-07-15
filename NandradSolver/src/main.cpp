@@ -32,6 +32,13 @@ const char * const PROGRAM_INFO =
 
 
 void createSim01(NANDRAD::Project &prj){
+
+	//project info
+	prj.m_projectInfo.m_comment = "Yes we can!";
+	prj.m_projectInfo.m_created = "Now!";
+	prj.m_projectInfo.m_version = "NANDRAD 2.0";
+	prj.m_projectInfo.m_lastEdited = "Yesterday";
+
 	//create a zone
 	NANDRAD::Zone zone;
 	zone.m_id = 1;

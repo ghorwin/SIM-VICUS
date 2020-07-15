@@ -32,6 +32,7 @@ Lesser General Public License for more details.
 
 
 #include "NANDRAD_OutputDefinition.h"
+#include "NANDRAD_CodeGenMacros.h"
 
 class TiXmlElement;
 
@@ -51,11 +52,13 @@ public:
 	/*! Reads the data from the xml element.
 		Throws an IBK::Exception if a syntax error occurs.
 	*/
-	void readXML(const TiXmlElement * element);
+	//void readXML(const TiXmlElement * element);
 	/*! Appends the element to the parent xml element.
 		Throws an IBK::Exception in case of invalid data.
 	*/
-	void writeXML(TiXmlElement * parent) const;
+	//void writeXML(TiXmlElement * parent) const;
+
+	NANDRAD_READWRITE
 
 	/*! Comparison operator by value. */
 	bool operator==(const Outputs & other) const;
@@ -64,19 +67,19 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! List with output (file) definitions. */
-	std::vector<OutputDefinition>											m_outputDefinitions;
+	std::vector<OutputDefinition>											m_outputDefinitions;		// XML:E
 
 	/*! List with output grids. */
-	std::vector<OutputGrid >												m_grids;
+	std::vector<OutputGrid >												m_grids;					// XML:E
 
 	/*! (optional) The time unit to be used in all output files.
 		If not set (undefined unit), the time unit is selected automatically
 		based on the simulation duration.
 	*/
-	IBK::Unit																m_timeUnit;
+	IBK::Unit																m_timeUnit;					// XML:E
 
 	/*! (optional) If true, output files are written in binary format (the default, if flag is missing). */
-	IBK::Flag																m_binaryFormat;
+	IBK::Flag																m_binaryFormat;				// XML:E
 
 };
 

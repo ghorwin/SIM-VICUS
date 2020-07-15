@@ -41,8 +41,8 @@ InterfaceHeatConduction::InterfaceHeatConduction() :
 }
 
 
-void InterfaceHeatConduction::readXML(const TiXmlElement * element) {
 #if 0
+void InterfaceHeatConduction::readXML(const TiXmlElement * element) {
 	const char * const FUNC_ID = "[InterfaceHeatConduction::readXML]";
 	// read attributes
 	try {
@@ -116,12 +116,10 @@ void InterfaceHeatConduction::readXML(const TiXmlElement * element) {
 	catch (std::exception & ex2) {
 		throw IBK::Exception( IBK::FormatString("%1\nError reading 'HeatConduction' element.").arg(ex2.what()), FUNC_ID);
 	}
-#endif
 }
 
 
 void InterfaceHeatConduction::writeXML(TiXmlElement * parent) const {
-#if 0
 	TiXmlElement * e = new TiXmlElement("HeatConduction");
 	parent->LinkEndChild(e);
 
@@ -140,8 +138,8 @@ void InterfaceHeatConduction::writeXML(TiXmlElement * parent) const {
 
 	// write all generic parameters
 	writeGenericParameters(e);
-#endif
 }
+#endif
 
 
 bool InterfaceHeatConduction::operator!=(const InterfaceHeatConduction & other) const {

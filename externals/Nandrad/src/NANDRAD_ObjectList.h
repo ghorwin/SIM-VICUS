@@ -26,6 +26,7 @@ Lesser General Public License for more details.
 #include <vector>
 
 #include "NANDRAD_IDGroup.h"
+#include "NANDRAD_CodeGenMacros.h"
 
 class TiXmlElement;
 
@@ -57,16 +58,18 @@ public:
 	/*! Reads the data from the xml element.
 		Throws an IBK::Exception if a syntax error occurs.
 	*/
-	void readXML(const TiXmlElement * element);
+	//void readXML(const TiXmlElement * element);
 	/*! Appends the element to the parent xml element.
 		Throws an IBK::Exception in case of invalid data.
 	*/
-	void writeXML(TiXmlElement * parent) const;
+	//void writeXML(TiXmlElement * parent) const;
+
+	NANDRAD_READWRITE
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID-Name of the object list. */
-	std::string									m_name;
+	std::string									m_name;						// XML:E
 
 	/*! Encodes the referenced model IDs. */
 	IDGroup										m_filterID;

@@ -25,6 +25,8 @@ Lesser General Public License for more details.
 
 #include <IBK_Parameter.h>
 
+#include "NANDRAD_CodeGenMacros.h"
+
 class TiXmlElement;
 
 namespace NANDRAD {
@@ -39,7 +41,7 @@ namespace NANDRAD {
 class EmbeddedObjectWindow  {
 public:
 
-	
+
 	/*! Parameters to be defined for the various window model types. */
 	enum para_t {
 		P_GlassFraction,			// Keyword: GlassFraction				[---]		{1}		'Fraction of glass area versus total area [1 - no frame, 0 - all frame].'
@@ -57,7 +59,7 @@ public:
 		MT_DETAILED_WITH_STORAGE,	// Keyword: DetailedWithStorage		'Model with detailed layers and thermal storage of glass layers.'
 		NUM_MT
 	};
-	
+
 
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -68,25 +70,26 @@ public:
 	/*! Reads the data from the xml element.
 		Throws an IBK::Exception if a syntax error occurs.
 	*/
-	void readXML(const TiXmlElement * element);
+	//void readXML(const TiXmlElement * element);
 
 	/*! Appends the element to the parent xml element.
 		Throws an IBK::Exception in case of invalid data.
 	*/
-	void writeXML(TiXmlElement * parent) const;
+	//void writeXML(TiXmlElement * parent) const;
 
+	NANDRAD_READWRITE
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Model type. */
-	modelType_t							m_modelType;
+	modelType_t							m_modelType;								// XML:E
 	/*! Provided parameters for all model types, stored in a set of enums. */
-	std::map<int, std::set<int> >		m_modelTypeToParameterMapping;
+	std::map<int, std::set<int> >		m_modelTypeToParameterMapping;				// XML:E
 
 	/*! List of constant parameters.*/
-	IBK::Parameter						m_para[NUM_P];
+	IBK::Parameter						m_para[NUM_P];								// XML:E
 	/*! Path to a window type file for detailed calculation. Empty for model type 'Constant'*/
-	std::string							m_windowTypeReference;
+	std::string							m_windowTypeReference;						// XML:E
 
 }; // EmbeddedObjectWindow
 

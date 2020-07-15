@@ -55,8 +55,8 @@ EmbeddedObjectWindow::EmbeddedObjectWindow() :
 }
 
 
-void EmbeddedObjectWindow::readXML(const TiXmlElement * element) {
 #if 0
+void EmbeddedObjectWindow::readXML(const TiXmlElement * element) {
 	const char * const FUNC_ID = "[EmbeddedObjectWindow::readXML]";
 
 	try {
@@ -140,12 +140,10 @@ void EmbeddedObjectWindow::readXML(const TiXmlElement * element) {
 	catch (std::exception & ex2) {
 		throw IBK::Exception( IBK::FormatString("%1\nError reading constant 'Window' element.").arg(ex2.what()), FUNC_ID);
 	}
-#endif
 }
 
 
 void EmbeddedObjectWindow::writeXML(TiXmlElement * parent) const {
-#if 0
 	TiXmlElement * e = new TiXmlElement("Window");
 	parent->LinkEndChild(e);
 
@@ -164,8 +162,8 @@ void EmbeddedObjectWindow::writeXML(TiXmlElement * parent) const {
 
 	// write all generic parameters
 	writeGenericParameters(e);
-#endif
 }
+#endif
 
 
 } // namespace NANDRAD

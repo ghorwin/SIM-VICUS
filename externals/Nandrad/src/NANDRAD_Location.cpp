@@ -30,8 +30,8 @@ Lesser General Public License for more details.
 namespace NANDRAD {
 
 
-void Location::readXML(const TiXmlElement * element) {
 #if 0
+void Location::readXML(const TiXmlElement * element) {
 
 
 	const char * const FUNC_ID = "[Location::readXML]";
@@ -130,12 +130,11 @@ void Location::readXML(const TiXmlElement * element) {
 	catch (std::exception & ex2) {
 		throw IBK::Exception(IBK::FormatString("%1\nError reading 'Location' element.").arg(ex2.what()), FUNC_ID);
 	}
-#endif
+
 }
 
 
 void Location::writeXML(TiXmlElement * parent) const {
-#if 0
 
 	TiXmlComment::addComment(parent,
 		"Location of the building.");
@@ -190,8 +189,8 @@ void Location::writeXML(TiXmlElement * parent) const {
 		m_FMUExportReferences[i].writeXML(e);
 	}
 	TiXmlComment::addSeparatorComment(parent);
-#endif
 }
+#endif
 
 } // namespace NANDRAD
 

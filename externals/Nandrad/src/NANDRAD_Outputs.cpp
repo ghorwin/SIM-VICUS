@@ -38,8 +38,8 @@ bool Outputs::isDefault( ) const {
 }
 
 
+#if 0
 void Outputs::readXML(const TiXmlElement * element) {
-
 	const char * const FUNC_ID = "[Outputs::readXML]";
 
 	try {
@@ -113,7 +113,6 @@ void Outputs::readXML(const TiXmlElement * element) {
 
 
 void Outputs::writeXML(TiXmlElement * parent) const {
-
 	// if all lists are empty, and standard values are set, just return
 	if (isDefault())
 		return;
@@ -149,6 +148,7 @@ void Outputs::writeXML(TiXmlElement * parent) const {
 
 	TiXmlComment::addSeparatorComment(parent);
 }
+#endif
 
 
 bool Outputs::operator==(const Outputs & other) const {

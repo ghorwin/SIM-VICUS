@@ -33,7 +33,9 @@ Lesser General Public License for more details.
 
 namespace NANDRAD {
 
+#if 0
 void OutputGrid::readXML(const TiXmlElement * element) {
+
 	const char * const FUNC_ID = "[OutputGrid::readXML]";
 
 	try {
@@ -76,6 +78,7 @@ void OutputGrid::readXML(const TiXmlElement * element) {
 
 
 void OutputGrid::writeXML(TiXmlElement * parent) const {
+
 	// only write if data has changed from defaults
 	if (m_name.empty() && m_intervals.empty()) return;
 	TiXmlElement * e = new TiXmlElement("OutputGrid");
@@ -86,6 +89,7 @@ void OutputGrid::writeXML(TiXmlElement * parent) const {
 		m_intervals[i].writeXML(e);
 	}
 }
+#endif
 //---------------------------------------------------------------------------
 
 

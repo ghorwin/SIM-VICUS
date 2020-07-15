@@ -41,6 +41,7 @@ InterfaceAirFlow::InterfaceAirFlow() :
 }
 
 
+#if 0
 void InterfaceAirFlow::readXML(const TiXmlElement * element) {
 	const char * const FUNC_ID = "[InterfaceAirFlow::readXML]";
 
@@ -125,7 +126,6 @@ void InterfaceAirFlow::readXML(const TiXmlElement * element) {
 
 
 void InterfaceAirFlow::writeXML(TiXmlElement * parent) const {
-
 	TiXmlElement * e = new TiXmlElement("AirFlow");
 	parent->LinkEndChild(e);
 
@@ -137,6 +137,7 @@ void InterfaceAirFlow::writeXML(TiXmlElement * parent) const {
 		m_splinePara[i].writeXML(e);
 	}
 }
+#endif
 
 
 bool InterfaceAirFlow::operator!=(const InterfaceAirFlow & other) const {

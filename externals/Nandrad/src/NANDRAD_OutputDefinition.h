@@ -27,6 +27,7 @@ Lesser General Public License for more details.
 #include "NANDRAD_IDGroup.h"
 //#include "NANDRAD_ModelInputReference.h"
 #include "NANDRAD_ObjectList.h"
+#include "NANDRAD_CodeGenMacros.h"
 
 class TiXmlElement;
 
@@ -67,12 +68,14 @@ public:
 	/*! Reads the data from the xml element.
 		Throws an IBK::Exception if a syntax error occurs.
 	*/
-	void readXML(const TiXmlElement * element);
+	//void readXML(const TiXmlElement * element);
 
 	/*! Appends the element to the parent xml element.
 		Throws an IBK::Exception in case of invalid data.
 	*/
-	void writeXML(TiXmlElement * parent) const;
+	//void writeXML(TiXmlElement * parent) const;
+
+	NANDRAD_READWRITE
 
 	/*! Comparison operator by value. */
 	bool operator==(const OutputDefinition & other) const { return !operator!=(other); }
@@ -82,19 +85,19 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 	/*! Filename (if empty then automatic filename generation) */
-	std::string								m_filename;
+	std::string								m_filename;					// XML:E
 
 	/*! quantity id -> zone.AirTemperature */
-	std::string								m_quantity;
+	std::string								m_quantity;					// XML:E
 
 	/*! Time output type. */
-	timeType_t								m_timeType = NUM_OTT;
+	timeType_t								m_timeType = NUM_OTT;		// XML:E
 
 	/*! Name of the object list. */
-	std::string								m_objectListName;
+	std::string								m_objectListName;			// XML:E
 
 	/*! Rerefence name of output grid, corresponds to OutputGrid::m_name. */
-	std::string								m_gridName;
+	std::string								m_gridName;					// XML:E
 
 
 	// Variables only used during solver runtime

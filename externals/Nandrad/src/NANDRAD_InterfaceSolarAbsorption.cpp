@@ -41,6 +41,7 @@ InterfaceSolarAbsorption::InterfaceSolarAbsorption() :
 }
 
 
+#if 0
 void InterfaceSolarAbsorption::readXML(const TiXmlElement * element) {
 	const char * const FUNC_ID = "[InterfaceSolarAbsorption::readXML]";
 
@@ -123,7 +124,6 @@ void InterfaceSolarAbsorption::readXML(const TiXmlElement * element) {
 
 
 void InterfaceSolarAbsorption::writeXML(TiXmlElement * parent) const {
-
 	TiXmlElement * e = new TiXmlElement("SolarAbsorption");
 	parent->LinkEndChild(e);
 
@@ -138,6 +138,7 @@ void InterfaceSolarAbsorption::writeXML(TiXmlElement * parent) const {
 			m_para[i].get_value());
 	}
 }
+#endif
 
 
 bool InterfaceSolarAbsorption::operator!=(const InterfaceSolarAbsorption & other) const {
