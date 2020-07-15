@@ -21,13 +21,68 @@
 #include <NANDRAD_Zone.h>
 #include <NANDRAD_KeywordList.h>
 
+#include <IBK_messages.h>
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
+#include <NANDRAD_Constants.h>
 #include <NANDRAD_KeywordList.h>
+#include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
 
 namespace NANDRAD {
+
+void Zone::readXML(const TiXmlElement * element) {
+	FUNCID("Zone::readXML");
+
+	try {
+		const TiXmlAttribute * attrib = element->FirstAttribute();
+		while (attrib) {
+			const std::string & attribName = attrib->NameStr();
+			if (attribName == "id")
+				m_id = readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "displayName")
+				m_displayName = attrib->ValueStr();
+			else if (attribName == "type")
+			try {
+				m_type = (type_t)KeywordList::Enumeration("Zone::type_t", attrib->ValueStr());
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+					IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
+			}
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			attrib = attrib->Next();
+		}
+		const TiXmlElement * c = element->FirstChildElement();
+		while (c) {
+			const std::string & cName = c->ValueStr();
+			if (cName == "IBK:Parameter") {
+				IBK::Parameter p;
+				readParameterElement(c, cName, p);
+				if (p.name == "Para[NUM_ZP]") {
+				}
+				else {
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+				}
+			}
+			else if (cName == "ScheduleName")
+				m_scheduleName = c->GetText();
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			c = c->NextSiblingElement();
+		}
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Zone' element."), FUNC_ID);
+	}
+	catch (std::exception & ex2) {
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'Zone' element.").arg(ex2.what()), FUNC_ID);
+	}
+}
 
 TiXmlElement * Zone::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("Zone");
@@ -36,20 +91,15 @@ TiXmlElement * Zone::writeXML(TiXmlElement * parent) const {
 	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
-	e->SetAttribute("type", KeywordList::Keyword("Zone::type_t",  m_type));
-	e->SetAttribute("location", KeywordList::Keyword("Zone::location_t",  m_location));
-
-	TiXmlElement::appendSingleAttributeElement(e, "SpaceType", nullptr, std::string(), m_spaceType);
+	if (m_type != NUM_T)
+		e->SetAttribute("type", KeywordList::Keyword("Zone::type_t",  m_type));
 
 	for (unsigned int i=0; i<NUM_ZP; ++i) {
 		if (!m_para[i].name.empty())
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
 	}
 
-	for (unsigned int i=0; i<NUM_ZI; ++i) {
-		if (!m_intpara[i].name.empty())
-			TiXmlElement::appendIBKParameterElement(e, m_intpara[i].name, std::string(), m_intpara[i].value, true);
-	}
+	TiXmlElement::appendSingleAttributeElement(e, "ScheduleName", nullptr, std::string(), m_scheduleName);
 	return e;
 }
 

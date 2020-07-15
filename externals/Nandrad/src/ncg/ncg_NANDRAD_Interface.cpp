@@ -18,7 +18,7 @@
 	Lesser General Public License for more details.
 */
 
-#include <NANDRAD_Interval.h>
+#include <NANDRAD_Interface.h>
 #include <NANDRAD_KeywordList.h>
 
 #include <IBK_messages.h>
@@ -31,13 +31,15 @@
 
 namespace NANDRAD {
 
-void Interval::readXML(const TiXmlElement * element) {
-	FUNCID("Interval::readXML");
+void Interface::readXML(const TiXmlElement * element) {
+	FUNCID("Interface::readXML");
 
 	try {
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
+			if (attribName == "id")
+				m_id = readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -46,15 +48,6 @@ void Interval::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "IBK:Parameter") {
-				IBK::Parameter p;
-				readParameterElement(c, cName, p);
-				if (p.name == "Para[NUM_IP]") {
-				}
-				else {
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-				}
-			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -62,22 +55,18 @@ void Interval::readXML(const TiXmlElement * element) {
 		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Interval' element."), FUNC_ID);
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Interface' element."), FUNC_ID);
 	}
 	catch (std::exception & ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading 'Interval' element.").arg(ex2.what()), FUNC_ID);
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'Interface' element.").arg(ex2.what()), FUNC_ID);
 	}
 }
 
-TiXmlElement * Interval::writeXML(TiXmlElement * parent) const {
-	TiXmlElement * e = new TiXmlElement("Interval");
+TiXmlElement * Interface::writeXML(TiXmlElement * parent) const {
+	TiXmlElement * e = new TiXmlElement("Interface");
 	parent->LinkEndChild(e);
 
-
-	for (unsigned int i=0; i<NUM_IP; ++i) {
-		if (!m_para[i].name.empty())
-			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
-	}
+	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	return e;
 }
 

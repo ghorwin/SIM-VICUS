@@ -38,8 +38,8 @@ Interface::Interface() :
 {
 }
 
-void Interface::readXML(const TiXmlElement * element) {
 #if 0
+void Interface::readXML(const TiXmlElement * element) {
 	const char * const FUNC_ID = "[Interface::readXML]";
 	// read attributes
 	try {
@@ -120,8 +120,8 @@ void Interface::readXML(const TiXmlElement * element) {
 	catch (std::exception & ex2) {
 		throw IBK::Exception(IBK::FormatString("%1\nError reading 'Interface' element.").arg(ex2.what()), FUNC_ID);
 	}
-#endif
 }
+#endif
 
 } // namespace NANDRAD
 

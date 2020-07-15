@@ -21,12 +21,59 @@
 #include <NANDRAD_ConstructionInstance.h>
 #include <NANDRAD_KeywordList.h>
 
+#include <IBK_messages.h>
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
+#include <NANDRAD_Constants.h>
+#include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
 
 namespace NANDRAD {
+
+void ConstructionInstance::readXML(const TiXmlElement * element) {
+	FUNCID("ConstructionInstance::readXML");
+
+	try {
+		const TiXmlAttribute * attrib = element->FirstAttribute();
+		while (attrib) {
+			const std::string & attribName = attrib->NameStr();
+			if (attribName == "id")
+				m_id = readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "displayName")
+				m_displayName = attrib->ValueStr();
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			attrib = attrib->Next();
+		}
+		const TiXmlElement * c = element->FirstChildElement();
+		while (c) {
+			const std::string & cName = c->ValueStr();
+			if (cName == "ConstructionTypeId")
+				m_constructionTypeId = readPODElement<unsigned int>(c, cName);
+			else if (cName == "IBK:Parameter") {
+				IBK::Parameter p;
+				readParameterElement(c, cName, p);
+				if (p.name == "Para[NUM_CP]") {
+				}
+				else {
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+				}
+			}
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			c = c->NextSiblingElement();
+		}
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'ConstructionInstance' element."), FUNC_ID);
+	}
+	catch (std::exception & ex2) {
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'ConstructionInstance' element.").arg(ex2.what()), FUNC_ID);
+	}
+}
 
 TiXmlElement * ConstructionInstance::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("ConstructionInstance");

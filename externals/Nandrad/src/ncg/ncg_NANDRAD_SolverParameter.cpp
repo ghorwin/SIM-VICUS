@@ -21,13 +21,63 @@
 #include <NANDRAD_SolverParameter.h>
 #include <NANDRAD_KeywordList.h>
 
+#include <IBK_messages.h>
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
+#include <NANDRAD_Constants.h>
 #include <NANDRAD_KeywordList.h>
+#include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
 
 namespace NANDRAD {
+
+void SolverParameter::readXML(const TiXmlElement * element) {
+	FUNCID("SolverParameter::readXML");
+
+	try {
+		const TiXmlAttribute * attrib = element->FirstAttribute();
+		while (attrib) {
+			const std::string & attribName = attrib->NameStr();
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			attrib = attrib->Next();
+		}
+		const TiXmlElement * c = element->FirstChildElement();
+		while (c) {
+			const std::string & cName = c->ValueStr();
+			if (cName == "IBK:Parameter") {
+				IBK::Parameter p;
+				readParameterElement(c, cName, p);
+				if (p.name == "Para[NUM_P]") {
+				}
+				else {
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+				}
+			}
+			else if (cName == "IBK:Flag") {
+				IBK::Flag f;
+				readFlagElement(c, cName, f);
+				if (f.name() == "Flag[NUM_F]") {
+				}
+				else {
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+				}
+			}
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			c = c->NextSiblingElement();
+		}
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'SolverParameter' element."), FUNC_ID);
+	}
+	catch (std::exception & ex2) {
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'SolverParameter' element.").arg(ex2.what()), FUNC_ID);
+	}
+}
 
 TiXmlElement * SolverParameter::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("SolverParameter");
@@ -44,11 +94,14 @@ TiXmlElement * SolverParameter::writeXML(TiXmlElement * parent) const {
 			TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_flag[i].name(), m_flag[i].isEnabled() ? "true" : "false");
 	}
 
-	TiXmlElement::appendSingleAttributeElement(e, "Integrator", nullptr, std::string(), KeywordList::Keyword("SolverParameter::integrator_t",  m_integrator));
+	if (m_integrator != NUM_I)
+		TiXmlElement::appendSingleAttributeElement(e, "Integrator", nullptr, std::string(), KeywordList::Keyword("SolverParameter::integrator_t",  m_integrator));
 
-	TiXmlElement::appendSingleAttributeElement(e, "LesSolver", nullptr, std::string(), KeywordList::Keyword("SolverParameter::lesSolver_t",  m_lesSolver));
+	if (m_lesSolver != NUM_LES)
+		TiXmlElement::appendSingleAttributeElement(e, "LesSolver", nullptr, std::string(), KeywordList::Keyword("SolverParameter::lesSolver_t",  m_lesSolver));
 
-	TiXmlElement::appendSingleAttributeElement(e, "Preconditioner", nullptr, std::string(), KeywordList::Keyword("SolverParameter::precond_t",  m_preconditioner));
+	if (m_preconditioner != NUM_PRE)
+		TiXmlElement::appendSingleAttributeElement(e, "Preconditioner", nullptr, std::string(), KeywordList::Keyword("SolverParameter::precond_t",  m_preconditioner));
 	return e;
 }
 

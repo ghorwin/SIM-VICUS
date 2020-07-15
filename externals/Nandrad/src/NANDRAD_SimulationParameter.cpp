@@ -55,6 +55,7 @@ void SimulationParameter::initDefaults() {
 
 
 void SimulationParameter::readXML(const TiXmlElement * element) {
+#if 0
 	const char * const FUNC_ID = "[SimulationParameter::readXML]";
 	// read all parameters
 	const TiXmlElement * c;
@@ -184,10 +185,12 @@ void SimulationParameter::readXML(const TiXmlElement * element) {
 	catch (std::exception & ex2) {
 		throw IBK::Exception(IBK::FormatString("%1\nError reading 'SimulationParameter' element.").arg(ex2.what()), FUNC_ID);
 	}
+#endif
 }
 
 
 void SimulationParameter::writeXML(TiXmlElement * parent) const {
+#if 0
 
 	SimulationParameter tmp;
 	tmp.initDefaults( );
@@ -243,6 +246,7 @@ void SimulationParameter::writeXML(TiXmlElement * parent) const {
 		m_interval.writeXML( e );
 
 	TiXmlComment::addSeparatorComment(parent);
+#endif
 }
 
 
