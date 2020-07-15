@@ -17,6 +17,7 @@ include_directories(
 	${PROJECT_SOURCE_DIR}/../../../externals/Nandrad/src
 	${PROJECT_SOURCE_DIR}/../../../externals/NandradModel/src
 	${PROJECT_SOURCE_DIR}/../../../externals/IntegratorFramework/src
+	${PROJECT_SOURCE_DIR}/../../../externals/TiCPP/src
 )
 
 if (OPENMP_FOUND)
@@ -25,13 +26,9 @@ endif (OPENMP_FOUND)
 
 # set variable for dependent libraries
 set( LINK_LIBS
-	NandradModel
+#	NandradModel
 	IntegratorFramework 
 	Nandrad 
-	DelphinLight
-	Materials
-	WallModel
-	WindowModel
 	IBKMK
 	DataIO
 	CCM
@@ -45,16 +42,14 @@ set( LINK_LIBS
 	SuiteSparse
 )
 
-if( WIN32 )
-	set (LINK_LIBS ${LINK_LIBS} zlibstatic)
-else( WIN32 )
-	set (LINK_LIBS ${LINK_LIBS} zlib dl)
-endif( WIN32 )
+#if( WIN32 )
+#	set (LINK_LIBS ${LINK_LIBS} zlibstatic)
+#else( WIN32 )
+#	set (LINK_LIBS ${LINK_LIBS} zlib dl)
+#endif( WIN32 )
 
 add_executable( ${PROJECT_NAME}
 	${PROJECT_SOURCE_DIR}/../../src/main.cpp
-	${PROJECT_SOURCE_DIR}/../../resources/resource.h
-	${PROJECT_SOURCE_DIR}/../../resources/NandradSolver.rc
 )
 
 # link against the dependent libraries

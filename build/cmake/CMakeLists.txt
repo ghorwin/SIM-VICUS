@@ -113,8 +113,12 @@ add_subdirectory( ../../NandradCodeGenerator/projects/cmake_local NandradCodeGen
 add_subdirectory( ../../externals/CCM/projects/cmake_local CCM )
 add_subdirectory( ../../externals/DataIO/projects/cmake_local DataIO )
 add_subdirectory( ../../externals/IBK/projects/cmake_local IBK )
+add_subdirectory( ../../externals/IBKMK/projects/cmake_local IBKMK )
 add_subdirectory( ../../externals/SuiteSparse/projects/cmake_local SuiteSparse )
 add_subdirectory( ../../externals/Nandrad/projects/cmake_local Nandrad )
+add_subdirectory( ../../externals/IntegratorFramework/projects/cmake_local IntegratorFramework )
+add_subdirectory( ../../externals/Zeppelin/projects/cmake_local Zeppelin )
+add_subdirectory( ../../externals/sundials/src sundials)
 
 #add_subdirectory( ../../externals/zlib/projects/cmake_local zlib )
 #add_subdirectory( ../../externals/qwt/projects/cmake_local qwt )
@@ -132,7 +136,7 @@ endif( WIN32 )
 # main project
 # -------------------------------------------------------------
 
-#add_subdirectory( ../../SIM-VICUS/projects/cmake_local SIM-VICUS)
+add_subdirectory( ../../NandradSolver/projects/cmake_local NandradSolver)
 #add_subdirectory( ../../CCD2C6BConverter/projects/cmake_local CCD2C6BConverter)
 
 
