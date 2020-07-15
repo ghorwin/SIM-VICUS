@@ -65,14 +65,18 @@ endif (MSVC)
 # automatically add CMAKE_CURRENT_SOURCE_DIR and CMAKE_CURRENT_BINARY_DIR to the include directories in every processed CMakeLists.txt
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5Xml REQUIRED)
-find_package(Qt5Svg REQUIRED)
-find_package(Qt5PrintSupport REQUIRED)
-find_package(Qt5Network REQUIRED)
-find_package(Qt5Concurrent REQUIRED)
+if (DISABLE_QT)
+	message("*** Building without Qt5 ***")
+else (DISABLE_QT)
+	find_package(Qt5Widgets REQUIRED)
+	find_package(Qt5Xml REQUIRED)
+	find_package(Qt5Svg REQUIRED)
+	find_package(Qt5PrintSupport REQUIRED)
+	find_package(Qt5Network REQUIRED)
+	find_package(Qt5Concurrent REQUIRED)
 
-message("*** Building with Qt5, Version ${Qt5Widgets_VERSION} ***")
+	message("*** Building with Qt5, Version ${Qt5Widgets_VERSION} ***")
+endif (DISABLE_QT)
 
 # when building with gcc/icc add compile flag
 if (NOT MSVC)
@@ -102,7 +106,7 @@ endif( APPLE )
 # Tools of the build chain
 # -------------------------------------------------------------
 
-# KeywordListCreator
+# NandradCodeGenerator
 add_subdirectory( ../../NandradCodeGenerator/projects/cmake_local NandradCodeGenerator )
 
 # -------------------------------------------------------------
@@ -119,17 +123,23 @@ add_subdirectory( ../../externals/Nandrad/projects/cmake_local Nandrad )
 add_subdirectory( ../../externals/IntegratorFramework/projects/cmake_local IntegratorFramework )
 add_subdirectory( ../../externals/Zeppelin/projects/cmake_local Zeppelin )
 add_subdirectory( ../../externals/sundials/src sundials)
-
-#add_subdirectory( ../../externals/zlib/projects/cmake_local zlib )
-#add_subdirectory( ../../externals/qwt/projects/cmake_local qwt )
-#add_subdirectory( ../../externals/QtExt/projects/cmake_local QtExt )
-#set(SCICHART_HAS_EMFENGINE ON CACHE BOOL "Build SciChart with EMFEngine" FORCE)
-#add_subdirectory( ../../externals/SciChart/projects/cmake_local SciChart )
 add_subdirectory( ../../externals/TiCPP/projects/cmake_local TiCPP )
 
+if (NOT DISABLE_QT)
+	message("*** Building Qt-based libs ***")
+	
+#	add_subdirectory( ../../externals/qwt/projects/cmake_local qwt )
+#	add_subdirectory( ../../externals/QtExt/projects/cmake_local QtExt )
+#	set(SCICHART_HAS_EMFENGINE ON CACHE BOOL "Build SciChart with EMFEngine" FORCE)
+#	add_subdirectory( ../../externals/SciChart/projects/cmake_local SciChart )
 if( WIN32 )
 #	add_subdirectory( ../../externals/EmfEngine/projects/cmake_local EmfEngine )
 endif( WIN32 )
+
+endif (NOT DISABLE_QT)
+
+#add_subdirectory( ../../externals/zlib/projects/cmake_local zlib )
+
 
 
 # -------------------------------------------------------------

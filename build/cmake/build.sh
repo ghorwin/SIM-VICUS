@@ -13,6 +13,7 @@
 #   [verbose]					enable cmake to call verbose makefiles
 #   [lapack]					enable cmake to build with lapack support
 #   [skip-test]                 does not execute test-init script after successful build
+#   [no-gui]                    does not build Qt based libs and user interface
 #   []
 
 # path export for mac
@@ -42,6 +43,12 @@ do
     then
 		CMAKE_OPTIONS="$CMAKE_OPTIONS -DUSE_OPENMP:BOOL=ON"
 		echo "Using Open MP compile flags"
+    fi
+
+    if [[ $var = "no-gui"  ]]; 
+    then
+		CMAKE_OPTIONS="$CMAKE_OPTIONS -DDISABLE_QT:BOOL=ON"
+		echo "Disabling Qt libs"
     fi
 
     if [[ $var = "debug"  ]]; 
