@@ -67,7 +67,9 @@ void createSim01(NANDRAD::Project &prj){
 
 	conInsta.m_displayName = "South Wall";
 
-	//create interface
+	// create interfaces
+
+	// Inside interface
 	NANDRAD::Interface interface;
 	interface.m_id = 3;
 	interface.m_zoneId = 1;
@@ -77,7 +79,7 @@ void createSim01(NANDRAD::Project &prj){
 	//add first interface
 	conInsta.m_interfaces.push_back(interface);
 
-	//add second interface
+	// Outside interface
 	interface.m_location = NANDRAD::Interface::IT_B;
 	interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 8, IBK::Unit("W/m2K"));
 	interface.m_zoneId = 0;
@@ -89,11 +91,7 @@ void createSim01(NANDRAD::Project &prj){
 	//add construction instance
 	prj.m_constructionInstances.push_back(conInsta);
 
-	NANDRAD::ConstructionType conType;
-	conType.m_id = conInsta.m_constructionTypeId;
-	conType.m_displayName = "Exterior wall";
-
-	//material
+	// materials
 	NANDRAD::Material mat;
 	mat.m_id = 1001;
 	mat.m_displayName = "Concrete";
@@ -102,8 +100,6 @@ void createSim01(NANDRAD::Project &prj){
 	mat.m_para[NANDRAD::Material::MP_CONDUCTIVITY].set("Conductivity", 2.1, IBK::Unit("W/mK"));
 	prj.m_materials.push_back(mat);
 
-	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.2, mat.m_id));
-
 	mat.m_id = 1002;
 	mat.m_displayName = "Insulation";
 	mat.m_para[NANDRAD::Material::MP_DENSITY].set("Density", 30, IBK::Unit("kg/m3"));
@@ -111,11 +107,15 @@ void createSim01(NANDRAD::Project &prj){
 	mat.m_para[NANDRAD::Material::MP_CONDUCTIVITY].set("Conductivity", 0.04, IBK::Unit("W/mK"));
 	prj.m_materials.push_back(mat);
 
+	// Left side (A) = concrete (inside), right side (B) insulation (outside)
+	NANDRAD::ConstructionType conType;
+	conType.m_id = conInsta.m_constructionTypeId;
+	conType.m_displayName = "Exterior wall";
+	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.2, mat.m_id));
 	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.1, mat.m_id));
 
+	// add construction type
 	prj.m_constructionTypes.push_back(conType);
-
-	//construction type
 
 
 	//outputs
@@ -147,6 +147,7 @@ void createSim01(NANDRAD::Project &prj){
 
 	prj.m_objectLists.push_back(ol);
 }
+
 
 int main(int argc, char * argv[]) {
 	FUNCID(main);
