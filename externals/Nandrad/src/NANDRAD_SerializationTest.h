@@ -7,6 +7,7 @@
 #include <IBK_Path.h>
 #include <IBK_LinearSpline.h>
 #include <IBK_Unit.h>
+#include <IBK_IntPara.h>
 
 #include <NANDRAD_Interface.h>
 #include <NANDRAD_CodeGenMacros.h>
@@ -23,6 +24,9 @@ public:
 		std::vector<double> x = {0, 1, 1.4, 2};
 		std::vector<double> y = {1, 2, 3.4, 5};
 		m_spline.setValues(x,y);
+		m_intPara[IP_i1].set("I1", 13);
+		m_intPara[IP_i2].set("I2", 15);
+		m_f.set("F",true);
 	}
 
 	NANDRAD_READWRITE
@@ -31,6 +35,12 @@ public:
 		t_x1,												// Keyword: X1
 		t_x2,												// Keyword: X2
 		NUM_test
+	};
+
+	enum intPara_t {
+		IP_i1,												// Keyword: I1
+		IP_i2,												// Keyword: I2
+		NUM_IP
 	};
 
 	int					m_id1		= 5;					// XML:A:required
@@ -50,12 +60,15 @@ public:
 	std::string			m_str2		= "blabb";				// XML:E:not-empty
 	IBK::Path			m_path2		= IBK::Path("/var");	// XML:E:not-empty
 	IBK::Unit			m_u2		= IBK::Unit("C");		// XML:E
+	double				m_x5;								// XML:E
+	IBK::Flag			m_f;								// XML:E
 
 	Interface			m_iface;							// XML:E
 
 	std::vector<Interface>	m_interfaces;					// XML:E
 
 	IBK::Parameter		m_para[NUM_test];					// XML:E
+	IBK::IntPara		m_intPara[NUM_IP];					// XML:E
 	IBK::Flag			m_flags[NUM_test];					// XML:E
 
 	IBK::LinearSpline	m_spline;							// XML:E

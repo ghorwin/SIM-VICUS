@@ -600,7 +600,6 @@ void CodeGenerator::generateReadWriteCode() {
 			for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
 				if (!xmlInfo.element) continue;
 				if (xmlInfo.typeStr == "IBK::Parameter" ||
-					xmlInfo.typeStr == "IBK::Unit" ||
 					xmlInfo.typeStr == "IBK::LinearSpline" ||
 					xmlInfo.typeStr == "IBK::Flag" ||
 					xmlInfo.typeStr == "IBK::IntPara")
@@ -672,6 +671,29 @@ void CodeGenerator::generateReadWriteCode() {
 
 					elements +=
 						"			"+elseStr+"if (cName == \"IBK:Parameter\") {\n"
+						"				IBK::Parameter p;\n"
+						"				readParameterElement(c, cName, p);\n";
+					// now loop all IBK::Parameter variables and generate code for assigning these
+					std::string caseElse;
+					for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
+						if (!xmlInfo.element || xmlInfo.typeStr != "IBK::Parameter") continue;
+						// now determine if this is a scalar parameter or a para[xxx] variant
+						elements +=	"				"+caseElse+"if (p.name == \""+tagName+"\") {\n";
+						elements +=		"				}\n";
+						caseElse = "else ";
+					}
+					elements +=
+						"				else {\n"
+						"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
+						"				}\n"
+						"			}\n";
+				}
+				else if (xmlInfo.typeStr == "IBK::IntPara" && groupTags.find("IBK::IntPara") != groupTags.end()) {
+					groupTags.erase(groupTags.find("IBK::IntPara")); // only generate code once
+					includes.insert("NANDRAD_Utilities.h");
+
+					elements +=
+						"			"+elseStr+"if (cName == \"IBK:IntPara\") {\n"
 						"				IBK::Parameter p;\n"
 						"				readParameterElement(c, cName, p);\n";
 					// now loop all IBK::Parameter variables and generate code for assigning these

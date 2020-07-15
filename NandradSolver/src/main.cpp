@@ -9,6 +9,7 @@
 
 // include header for command line argument parser
 #include <NANDRAD_ArgsParser.h>
+#include <NANDRAD_Project.h>
 
 // include model implementation class
 #include "NM_NandradModel.h"
@@ -32,6 +33,10 @@ const char * const PROGRAM_INFO =
 
 int main(int argc, char * argv[]) {
 	FUNCID(main);
+
+	NANDRAD::Project prj;
+	// parameter setzen
+	prj.writeXML(IBK::Path("SimQuality1.xml"));
 
 #ifdef SERIALIZATION_TEST
 	NANDRAD::SerializationTest st;
