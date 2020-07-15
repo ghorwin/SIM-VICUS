@@ -31,11 +31,83 @@ const char * const PROGRAM_INFO =
 	"  andreas.nicolai [at] tu-dresden.de\n\n";
 
 
+void createSim01(NANDRAD::Project &prj){
+	//create a zone
+	NANDRAD::Zone zone;
+	zone.m_id = 1;
+	zone.m_displayName = "TestZone01";
+	zone.m_type = NANDRAD::Zone::ZT_ACTIVE;
+	zone.m_para[NANDRAD::Zone::ZP_AREA].set("Area", 10, IBK::Unit("m2"));
+	zone.m_para[NANDRAD::Zone::ZP_VOLUME].set("Volume", 30, IBK::Unit("m3"));
+	zone.m_para[NANDRAD::Zone::ZP_TEMPERATURE].set("Temperature", 5, IBK::Unit("C"));
+	//add zone to prj
+	prj.m_zones[zone.m_id] = zone;
+
+	prj.m_simulationParameter.m_intpara[NANDRAD::SimulationParameter::SIP_YEAR].set("StartYear", 2015);
+	prj.m_solverParameter.initDefaults();
+
+	prj.m_location.m_climateFileName = IBK::Path("climate\testClimate.epw");
+	prj.m_location.m_para[NANDRAD::Location::LP_LATITUDE].set("Latitude", 51, IBK::Unit("Deg"));
+	prj.m_location.m_para[NANDRAD::Location::LP_LONGITUDE].set("Longitude",13, IBK::Unit("Deg"));
+	prj.m_location.m_para[NANDRAD::Location::LP_ALTITUDE].set("Altitude",100, IBK::Unit("m"));
+	prj.m_location.m_para[NANDRAD::Location::LP_ALBEDO].set("Albedo", 0.2, IBK::Unit("-"));
+
+	NANDRAD::ConstructionInstance conInsta;
+	conInsta.m_id = 2;
+	conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 180, IBK::Unit("Deg"));
+	conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+	conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
+
+	conInsta.m_displayName = "South Wall";
+
+	//create interface
+	NANDRAD::Interface interface;
+	interface.m_id = 3;
+	interface.m_zoneId = 1;
+	interface.m_location = NANDRAD::Interface::IT_A;
+	interface.m_heatConduction.m_modelType = NANDRAD::InterfaceHeatConduction::MT_CONSTANT;
+	interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 2.5, IBK::Unit("W/m2K"));
+	//add first interface
+	conInsta.m_interfaces.push_back(interface);
+
+	//add second interface
+	interface.m_location = NANDRAD::Interface::IT_B;
+	interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 8, IBK::Unit("W/m2K"));
+	interface.m_zoneId = 0;
+	interface.m_id = 4;
+	//add second interface
+	conInsta.m_interfaces.push_back(interface);
+
+	conInsta.m_constructionTypeId = 10001;
+	//add construction instance
+	prj.m_constructionInstances[conInsta.m_id] = conInsta;
+
+	//outputs
+
+	NANDRAD::OutputGrid grid;
+	grid.m_name = "hourly";
+	NANDRAD::Interval intVal;
+	intVal.m_para[NANDRAD::Interval::IP_END].set("End", 1, IBK::Unit("h"));
+	intVal.m_para[NANDRAD::Interval::IP_STEPSIZE].set("StepSize", 1, IBK::Unit("h"));
+	grid.m_intervals.push_back(intVal);
+
+	NANDRAD::Outputs outputs;
+	outputs.m_grids.push_back(grid);
+	prj.m_outputs.m_grids.push_back(grid);
+
+	NANDRAD::OutputDefinition outDef;
+	outDef.m_quantity = "Temperature";
+
+	prj.m_outputs.m_outputDefinitions.push_back(outDef);
+
+}
+
 int main(int argc, char * argv[]) {
 	FUNCID(main);
 
 	NANDRAD::Project prj;
 	// parameter setzen
+
 	prj.writeXML(IBK::Path("SimQuality1.xml"));
 
 #ifdef SERIALIZATION_TEST
