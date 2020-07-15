@@ -94,7 +94,7 @@ void createSim01(NANDRAD::Project &prj){
 	NANDRAD::OutputGrid grid;
 	grid.m_name = "hourly";
 	NANDRAD::Interval intVal;
-	intVal.m_para[NANDRAD::Interval::IP_END].set("End", 1, IBK::Unit("h"));
+	intVal.m_para[NANDRAD::Interval::IP_END].set("End", 1, IBK::Unit("d"));
 	intVal.m_para[NANDRAD::Interval::IP_STEPSIZE].set("StepSize", 1, IBK::Unit("h"));
 	grid.m_intervals.push_back(intVal);
 
@@ -104,6 +104,8 @@ void createSim01(NANDRAD::Project &prj){
 
 	NANDRAD::OutputDefinition outDef;
 	outDef.m_quantity = "Temperature";
+	outDef.m_gridName = "hourly";
+	outDef.m_objectListName = "All zones";
 
 	prj.m_outputs.m_outputDefinitions.push_back(outDef);
 

@@ -108,21 +108,11 @@ public:
 	/*! Default constructor. */
 	SolverParameter();
 
-	/*! Init default values.
+	/*! Init default values (called before readXML()).
 		\note These values will be overwritten in readXML() when the respective property is set
 			  in the project file.
 	*/
 	void initDefaults();
-
-	/*! Reads the data from the xml element.
-		Throws an IBK::Exception if a syntax error occurs.
-	*/
-	//void readXML(const TiXmlElement * element);
-
-	/*! Appends the element to the parent xml element.
-		Throws an IBK::Exception in case of invalid data.
-	*/
-	//TiXmlElement * writeXML(TiXmlElement * parent) const;
 
 	NANDRAD_READWRITE
 

@@ -47,7 +47,14 @@ public:
 
 	NANDRAD_COMP(Sensor)
 
+	/*! Reads the data from the xml element.
+		Throws an IBK::Exception if a syntax error occurs.
+	*/
 	void readXML(const TiXmlElement * element) { readXMLPrivate(element); }
+
+	/*! Appends the element to the parent xml element.
+		Throws an IBK::Exception in case of invalid data.
+	*/
 	TiXmlElement * writeXML(TiXmlElement * parent) const { if (*this != Sensor()) return writeXMLPrivate(parent); else return nullptr; }
 
 

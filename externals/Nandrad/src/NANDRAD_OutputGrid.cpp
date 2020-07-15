@@ -33,72 +33,13 @@ Lesser General Public License for more details.
 
 namespace NANDRAD {
 
-#if 0
-void OutputGrid::readXML(const TiXmlElement * element) {
 
-	const char * const FUNC_ID = "[OutputGrid::readXML]";
-
-	try {
-		// read outputgrid name
-		const TiXmlAttribute * attrib = TiXmlAttribute::attributeByName(element, "name");
-		if (!attrib)
-		{
-			throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing 'name' attribute.")
-				), FUNC_ID);
-		}
-		m_name = attrib->Value();
-
-		// read sub-elements
-		for (const TiXmlElement * c = element->FirstChildElement(); c; c = c->NextSiblingElement()) {
-			// determine data based on element name
-			std::string cname = c->Value();
-			if (cname == "Interval") {
-				// create interval instance and read
-				Interval interval;
-				interval.readXML(c); // will throw if an error occurs
-				// if successfully read interval is inserted into interval vector
-				m_intervals.push_back(interval);
-			}
-			else {
-				throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
-					IBK::FormatString("Unknown XML tag '%1'.").arg(cname)
-					), FUNC_ID);
-			}
-		}
-	}
-	catch (IBK::Exception & ex) {
-		throw IBK::Exception(ex, IBK::FormatString("Error reading 'OutputGrid' element."), FUNC_ID);
-	}
-	catch (std::exception & ex2) {
-		throw IBK::Exception(IBK::FormatString("%1\nError reading 'OutputGrid' element.").arg(ex2.what()), FUNC_ID);
-	}
-}
-//---------------------------------------------------------------------------
-
-
-void OutputGrid::writeXML(TiXmlElement * parent) const {
-
-	// only write if data has changed from defaults
-	if (m_name.empty() && m_intervals.empty()) return;
-	TiXmlElement * e = new TiXmlElement("OutputGrid");
-	parent->LinkEndChild(e);
-	// attributes
-	e->SetAttribute("name", m_name);
-	for (unsigned int i=0; i<m_intervals.size(); ++i) {
-		m_intervals[i].writeXML(e);
-	}
-}
-#endif
-//---------------------------------------------------------------------------
-
-
-bool OutputGrid::operator==(const OutputGrid & other) const {
-	if (m_name != other.m_name) return false;
-	if (m_intervals.size() != other.m_intervals.size()) return false;
+bool OutputGrid::operator!=(const OutputGrid & other) const {
+	if (m_name != other.m_name) return true;
+	if (m_intervals.size() != other.m_intervals.size()) return true;
 	for (unsigned int i=0; i<m_intervals.size(); ++i)
-		if (!(m_intervals[i] == other.m_intervals[i])) return false;
-	return true;
+		if (!(m_intervals[i] != other.m_intervals[i])) return true;
+	return false;
 }
 //---------------------------------------------------------------------------
 

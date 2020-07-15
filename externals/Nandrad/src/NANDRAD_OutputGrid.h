@@ -43,19 +43,10 @@ public:
 	/*! Initializes parametrization defaults. */
 	void initDefaults();
 
-	/*! Reads the data from the xml element.
-		Throws an IBK::Exception if a syntax error occurs.
-	*/
-	//void readXML(const TiXmlElement * element);
-	/*! Appends the element to the parent xml element.
-		Throws an IBK::Exception in case of invalid data.
-	*/
-	//void writeXML(TiXmlElement * parent) const;
-
 	NANDRAD_READWRITE
 
 	/*! Comparison operator by value. */
-	bool operator==(const OutputGrid & other) const;
+	bool operator!=(const OutputGrid & other) const;
 
 	/*! Returns a parameter of the intervals handled in this OutputGrid, if needed, parameters
 		are created/computed on the fly.

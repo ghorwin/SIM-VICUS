@@ -463,10 +463,6 @@ void Project::writeXML(const IBK::Path & filename) const {
 	TiXmlElement * root = new TiXmlElement( "NandradProject" );
 	doc.LinkEndChild(root);
 
-	root->SetAttribute("xmlns", "http://www.bauklimatik-dresden.de");
-	root->SetAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-	root->SetAttribute("xmlns:IBK", "http://www.bauklimatik-dresden.de/IBK");
-	root->SetAttribute("xsi:schemaLocation", "http://www.bauklimatik-dresden.de NandradProject.xsd");
 	root->SetAttribute("fileVersion", VERSION);
 
 	writeDirectoryPlaceholdersXML(root);

@@ -319,7 +319,9 @@ void CodeGenerator::generateReadWriteCode() {
 							"		e->SetAttribute(\""+attribName+"\", m_" + attribName + ");\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Unit") {
-					attribs += "	e->SetAttribute(\""+attribName+"\", m_" + attribName + ".name());\n";
+					attribs +=
+							"	if (m_" + attribName + ".id() != 0)\n"
+							"		e->SetAttribute(\""+attribName+"\", m_" + attribName + ".name());\n";
 				}
 				else {
 					// check for enum types
@@ -376,7 +378,9 @@ void CodeGenerator::generateReadWriteCode() {
 							"		TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+");\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Unit") {
-					elements += "	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".name());\n";
+					elements +=
+							"	if (m_" + varName + ".id() != 0)\n"
+							"		TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".name());\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Path") {
 					elements +=
@@ -442,7 +446,9 @@ void CodeGenerator::generateReadWriteCode() {
 							"	}\n";
 					}
 					else {
-						elements += "	TiXmlElement::appendSingleAttributeElement(e, \"IBK:Flag\", \"name\", m_"+varName+".name(), m_"+varName+".isEnabled() ? \"true\" : \"false\");\n";
+						elements +=
+							"	if (!m_"+varName+".name().empty())\n"
+							"		TiXmlElement::appendSingleAttributeElement(e, \"IBK:Flag\", \"name\", m_"+varName+".name(), m_"+varName+".isEnabled() ? \"true\" : \"false\");\n";
 					}
 				}
 				else if (xmlInfo.typeStr.find("std::vector<") == 0) {
