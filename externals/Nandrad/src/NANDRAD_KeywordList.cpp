@@ -737,7 +737,7 @@ namespace NANDRAD {
 			// InterfaceHeatConduction::para_t
 			case 9 :
 			switch (t) {
-				case 0 : return "Constant heat transfer coefficient [W/m2K].";
+				case 0 : return "Constant heat transfer coefficient.";
 			} break;
 			// InterfaceHeatConduction::modelType_t
 			case 10 :
@@ -747,7 +747,7 @@ namespace NANDRAD {
 			// InterfaceLongWaveEmission::para_t
 			case 11 :
 			switch (t) {
-				case 0 : return "Constant Long wave Emissivity [0,...,1].";
+				case 0 : return "Constant Long wave emissivity.";
 			} break;
 			// InterfaceLongWaveEmission::modelType_t
 			case 12 :

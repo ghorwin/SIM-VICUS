@@ -7,6 +7,10 @@ class TiXmlElement;
 	void readXML(const TiXmlElement * element); \
 	TiXmlElement * writeXML(TiXmlElement * parent) const;
 
+#define NANDRAD_READWRITE_IFNOTEMPTY(X) \
+	void readXML(const TiXmlElement * element) { readXMLPrivate(element); } \
+	TiXmlElement * writeXML(TiXmlElement * parent) const { if (*this != X()) return writeXMLPrivate(parent); else return nullptr; }
+
 #define NANDRAD_READWRITE_PRIVATE \
 	void readXMLPrivate(const TiXmlElement * element); \
 	TiXmlElement * writeXMLPrivate(TiXmlElement * parent) const;

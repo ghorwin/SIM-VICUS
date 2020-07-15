@@ -43,16 +43,7 @@ public:
 		NUM_IP
 	};
 
-	/*! Reads the data from the xml element.
-		Throws an IBK::Exception if a syntax error occurs.
-	*/
-	void readXML(const TiXmlElement * element) { readXMLPrivate(element); }
-
-	/*! Appends the element to the parent xml element.
-		Throws an IBK::Exception in case of invalid data.
-	*/
-	TiXmlElement * writeXML(TiXmlElement * parent) const { if (*this != Interval()) return writeXMLPrivate(parent); else return nullptr; }
-
+	NANDRAD_READWRITE_IFNOTEMPTY(Interval)
 	NANDRAD_COMP(Interval)
 
 	/*! Convenience function to specify a parameter through start time point and end time point.

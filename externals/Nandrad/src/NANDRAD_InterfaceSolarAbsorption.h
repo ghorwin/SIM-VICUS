@@ -21,13 +21,8 @@ Lesser General Public License for more details.
 #ifndef NANDRAD_InterfaceSolarAbsorptionH
 #define NANDRAD_InterfaceSolarAbsorptionH
 
-#include <string>
-
 #include <IBK_Parameter.h>
-
 #include "NANDRAD_CodeGenMacros.h"
-
-class TiXmlElement;
 
 namespace NANDRAD {
 
@@ -39,8 +34,8 @@ namespace NANDRAD {
 	that defines the name for the calculation model and constant model parameters.
 */
 class InterfaceSolarAbsorption {
+	NANDRAD_READWRITE_PRIVATE
 public:
-
 
 	/*! Parameters to be defined for the various window model types. */
 	enum para_t {
@@ -53,37 +48,15 @@ public:
 		NUM_MT
 	};
 
-
-
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	/*! Default constructor. */
-	InterfaceSolarAbsorption();
-
-	/*! Reads the data from the xml element.
-		Throws an IBK::Exception if a syntax error occurs.
-	*/
-	//void readXML(const TiXmlElement * element);
-
-	/*! Appends the element to the parent xml element.
-		Throws an IBK::Exception in case of invalid data.
-	*/
-	//void writeXML(TiXmlElement * parent) const;
-
-	NANDRAD_READWRITE
-
-	/*! Compares this instance with another by value and returns true if they differ. */
-	bool operator!=(const InterfaceSolarAbsorption & other) const;
-
-	/*! Compares this instance with another by value and returns true if they are the same. */
-	bool operator==(const InterfaceSolarAbsorption & other) const { return ! operator!=(other); }
+	NANDRAD_READWRITE_IFNOTEMPTY(InterfaceSolarAbsorption)
+	NANDRAD_COMP(InterfaceSolarAbsorption)
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Model type. */
-	modelType_t							m_modelType;							// XML:E
-	/*! Provided parameters for all model types, stored in a set of enums. */
-	std::map<int, std::set<int> >		m_modelTypeToParameterMapping;
+	modelType_t							m_modelType = NUM_MT;					// XML:A:required
 	/*! List of constant parameters.*/
 	IBK::Parameter						m_para[NUM_P];							// XML:E
 

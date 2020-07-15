@@ -30,8 +30,7 @@ Lesser General Public License for more details.
 #include "NANDRAD_InterfaceLongWaveEmission.h"
 #include "NANDRAD_InterfaceVaporDiffusion.h"
 #include "NANDRAD_CodeGenMacros.h"
-
-class TiXmlElement;
+#include "NANDRAD_Constants.h"
 
 namespace NANDRAD {
 
@@ -73,20 +72,8 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	/*! Default constructor. */
-	Interface();
-
-	/*! Reads the data from the xml element.
-		Throws an IBK::Exception if a syntax error occurs.
-	*/
-	//void readXML(const TiXmlElement * element);
-
 	NANDRAD_READWRITE
-
-	/*! Appends the element to the parent xml element.
-		Throws an IBK::Exception in case of invalid data.
-	*/
-	//TiXmlElement * writeXML(TiXmlElement * parent) const;
+	NANDRAD_COMPARE_WITH_ID
 
 	/*! Special form of comparison operator, tests if parameters that have an
 		impact on result calculation are the same (zone, location, physical parameters).
@@ -103,15 +90,11 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! ID of the referenced surface/interface. */
-	unsigned int								m_id;					// XML:A:required
-	/*! IBK-language encoded name of interface. */
-	std::string									m_displayName;			// XML:A
+	unsigned int								m_id = INVALID_ID;		// XML:A:required
 	/*! The position of the interface, left ore right of the construction. */
-	location_t									m_location;				//
+	location_t									m_location;				// XML:A
 	/*! The id number of the neighboring zone. */
 	unsigned int								m_zoneId;				// XML:A
-	/*! The name of the neighboring zone. */
-	std::string									m_zoneDisplayName;		// XML:A
 
 	/*! Enables the interface models. */
 	IBK::Flag									m_condition[NUM_IP];	// XML:E
@@ -129,8 +112,10 @@ public:
 	InterfaceAirFlow							m_airFlow;				// XML:E
 
 
+	// *** Variables used only during simulation ***
+
 	/*! Reference to neighbor zone.*/
-	const Zone*									m_zoneRef;
+	const Zone*									m_zoneRef = nullptr;
 };
 
 } // namespace NANDRAD

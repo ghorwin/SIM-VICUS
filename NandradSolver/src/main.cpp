@@ -51,7 +51,7 @@ void createSim01(NANDRAD::Project &prj){
 	prj.m_zones.push_back(zone);
 
 	prj.m_simulationParameter.m_intpara[NANDRAD::SimulationParameter::SIP_YEAR].set("StartYear", 2015);
-	prj.m_solverParameter.initDefaults();
+//	prj.m_solverParameter.initDefaults();
 
 	prj.m_location.m_climateFileName = IBK::Path("climate\testClimate.epw");
 	prj.m_location.m_para[NANDRAD::Location::LP_LATITUDE].set("Latitude", 51, IBK::Unit("Deg"));

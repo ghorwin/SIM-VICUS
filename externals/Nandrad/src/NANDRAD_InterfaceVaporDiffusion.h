@@ -21,26 +21,15 @@ Lesser General Public License for more details.
 #ifndef NANDRAD_InterfaceVaporDiffusionH
 #define NANDRAD_InterfaceVaporDiffusionH
 
-#include <string>
-
 #include <IBK_Parameter.h>
-
 #include "NANDRAD_CodeGenMacros.h"
-
-class TiXmlElement;
 
 namespace NANDRAD {
 
-/*!	\brief Declaration for class InterfaceVaporDiffusion
-
-	An embedded object generally defines a wall opening (a window or a door).
-	That means, the calculation radiant heat fluxes and heat fluxes by heat transmission are performed
-	by a window model or door model. The embedded oject	stores an exchangable parameter model
-	that defines the name for the calculation model and constant model parameters.
-*/
+/*!	Contains parameters for vapor diffusion flux calculation. */
 class InterfaceVaporDiffusion {
+	NANDRAD_READWRITE_PRIVATE
 public:
-
 
 	/*! Parameters to be defined for the various window model types. */
 	enum para_t {
@@ -49,41 +38,19 @@ public:
 	};
 	/*! Model types supported by the window model. */
 	enum modelType_t {
-		MT_CONSTANT,				// Keyword: Constant		'Constant model.'
+		MT_CONSTANT,					// Keyword: Constant		'Constant model.'
 		NUM_MT
 	};
 
-
-
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	/*! Default constructor. */
-	InterfaceVaporDiffusion();
-
-	/*! Reads the data from the xml element.
-		Throws an IBK::Exception if a syntax error occurs.
-	*/
-	//void readXML(const TiXmlElement * element);
-
-	/*! Appends the element to the parent xml element.
-		Throws an IBK::Exception in case of invalid data.
-	*/
-	//void writeXML(TiXmlElement * parent) const;
-
-	NANDRAD_READWRITE
-
-	/*! Compares this instance with another by value and returns true if they differ. */
-	bool operator!=(const InterfaceVaporDiffusion & other) const;
-
-	/*! Compares this instance with another by value and returns true if they are the same. */
-	bool operator==(const InterfaceVaporDiffusion & other) const { return ! operator!=(other); }
+	NANDRAD_READWRITE_IFNOTEMPTY(InterfaceVaporDiffusion)
+	NANDRAD_COMP(InterfaceVaporDiffusion)
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Model type. */
-	modelType_t							m_modelType;							// XML:E
-	/*! Provided parameters for all model types, stored in a set of enums. */
-	std::map<int, std::set<int> >       m_modelTypeToParameterMapping;
+	modelType_t							m_modelType = NUM_MT;					// XML:A:required
 	/*! List of constant parameters.*/
 	IBK::Parameter						m_para[NUM_P];							// XML:E
 

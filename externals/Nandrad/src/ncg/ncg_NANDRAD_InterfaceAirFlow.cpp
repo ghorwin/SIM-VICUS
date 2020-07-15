@@ -31,10 +31,31 @@
 
 namespace NANDRAD {
 
-void InterfaceAirFlow::readXML(const TiXmlElement * element) {
-	FUNCID("InterfaceAirFlow::readXML");
+void InterfaceAirFlow::readXMLPrivate(const TiXmlElement * element) {
+	FUNCID("InterfaceAirFlow::readXMLPrivate");
 
 	try {
+		// search for mandatory attributes
+		if (!TiXmlAttribute::attributeByName(element, "modelType"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'modelType' attribute.") ), FUNC_ID);
+
+		const TiXmlAttribute * attrib = element->FirstAttribute();
+		while (attrib) {
+			const std::string & attribName = attrib->NameStr();
+			if (attribName == "modelType")
+			try {
+				m_modelType = (modelType_t)KeywordList::Enumeration("InterfaceAirFlow::modelType_t", attrib->ValueStr());
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+					IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
+			}
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			attrib = attrib->Next();
+		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'InterfaceAirFlow' element."), FUNC_ID);
@@ -44,13 +65,12 @@ void InterfaceAirFlow::readXML(const TiXmlElement * element) {
 	}
 }
 
-TiXmlElement * InterfaceAirFlow::writeXML(TiXmlElement * parent) const {
+TiXmlElement * InterfaceAirFlow::writeXMLPrivate(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("InterfaceAirFlow");
 	parent->LinkEndChild(e);
 
-
 	if (m_modelType != NUM_MT)
-		TiXmlElement::appendSingleAttributeElement(e, "ModelType", nullptr, std::string(), KeywordList::Keyword("InterfaceAirFlow::modelType_t",  m_modelType));
+		e->SetAttribute("modelType", KeywordList::Keyword("InterfaceAirFlow::modelType_t",  m_modelType));
 
 	m_splinePara[NUM_SP].writeXML(e);
 	return e;
