@@ -93,6 +93,6 @@ NANDRAD uses a bunch of external/third-party libraries:
 * **SuiteSparse** - implements sparse direct solver KLU
 * **sundials** - includes CVODE integrator, and GMRES and BiCGStab iterative les solvers
 * **ITSOL2** - implements ILUT preconditioner
-* **IntegratorFramework** - library that integrates all numerical library and provides a convenient framework to error-controlled time integration
+* **IntegratorFramework** - library that includes several numerical interation libraries and provides a convenient framework to error-controlled time integration
 * **NANDRAD** - the data model library (project handling)
 
