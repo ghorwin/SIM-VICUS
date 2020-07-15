@@ -52,27 +52,6 @@ void Interface::readXML(const TiXmlElement * element) {
 			}
 			attrib = attrib->Next();
 		}
-		const TiXmlElement * c = element->FirstChildElement();
-		while (c) {
-			const std::string & cName = c->ValueStr();
-			if (cName == "ZoneId")
-				m_zoneId = readPODElement<unsigned int>(c, cName);
-			else if (cName == "ZoneDisplayName")
-				m_zoneDisplayName = c->GetText();
-			else if (cName == "IBK:Flag") {
-				IBK::Flag f;
-				readFlagElement(c, cName, f);
-				if (f.name() == "Condition[NUM_IP]") {
-				}
-				else {
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-				}
-			}
-			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			c = c->NextSiblingElement();
-		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Interface' element."), FUNC_ID);
@@ -88,9 +67,7 @@ TiXmlElement * Interface::writeXML(TiXmlElement * parent) const {
 
 	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	e->SetAttribute("displayName", m_displayName);
-
 	TiXmlElement::appendSingleAttributeElement(e, "ZoneId", nullptr, std::string(), IBK::val2string<unsigned int>(m_zoneId));
-
 	TiXmlElement::appendSingleAttributeElement(e, "ZoneDisplayName", nullptr, std::string(), m_zoneDisplayName);
 
 	for (int i=0; i<NUM_IP; ++i) {

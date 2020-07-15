@@ -35,22 +35,6 @@ void OutputDefinition::readXML(const TiXmlElement * element) {
 	FUNCID("OutputDefinition::readXML");
 
 	try {
-		const TiXmlElement * c = element->FirstChildElement();
-		while (c) {
-			const std::string & cName = c->ValueStr();
-			if (cName == "Filename")
-				m_filename = c->GetText();
-			else if (cName == "Quantity")
-				m_quantity = c->GetText();
-			else if (cName == "ObjectListName")
-				m_objectListName = c->GetText();
-			else if (cName == "GridName")
-				m_gridName = c->GetText();
-			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			c = c->NextSiblingElement();
-		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'OutputDefinition' element."), FUNC_ID);
@@ -64,16 +48,12 @@ TiXmlElement * OutputDefinition::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("OutputDefinition");
 	parent->LinkEndChild(e);
 
-
 	TiXmlElement::appendSingleAttributeElement(e, "Filename", nullptr, std::string(), m_filename);
-
 	TiXmlElement::appendSingleAttributeElement(e, "Quantity", nullptr, std::string(), m_quantity);
 
 	if (m_timeType != NUM_OTT)
 		TiXmlElement::appendSingleAttributeElement(e, "TimeType", nullptr, std::string(), KeywordList::Keyword("OutputDefinition::timeType_t",  m_timeType));
-
 	TiXmlElement::appendSingleAttributeElement(e, "ObjectListName", nullptr, std::string(), m_objectListName);
-
 	TiXmlElement::appendSingleAttributeElement(e, "GridName", nullptr, std::string(), m_gridName);
 	return e;
 }

@@ -25,7 +25,6 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
-#include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
 
@@ -35,41 +34,6 @@ void SimulationParameter::readXML(const TiXmlElement * element) {
 	FUNCID("SimulationParameter::readXML");
 
 	try {
-		const TiXmlElement * c = element->FirstChildElement();
-		while (c) {
-			const std::string & cName = c->ValueStr();
-			if (cName == "IBK:Parameter") {
-				IBK::Parameter p;
-				readParameterElement(c, cName, p);
-				if (p.name == "Para[NUM_SP]") {
-				}
-				else {
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-				}
-			}
-			else if (cName == "IBK:IntPara") {
-				IBK::Parameter p;
-				readParameterElement(c, cName, p);
-				if (p.name == "Intpara[NUM_SIP]") {
-				}
-				else {
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-				}
-			}
-			else if (cName == "IBK:Flag") {
-				IBK::Flag f;
-				readFlagElement(c, cName, f);
-				if (f.name() == "Flags[NUM_SF]") {
-				}
-				else {
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-				}
-			}
-			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			c = c->NextSiblingElement();
-		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'SimulationParameter' element."), FUNC_ID);
@@ -91,7 +55,7 @@ TiXmlElement * SimulationParameter::writeXML(TiXmlElement * parent) const {
 
 	for (unsigned int i=0; i<NUM_SIP; ++i) {
 		if (!m_intpara[i].name.empty())
-			TiXmlElement::appendIBKParameterElement(e, m_intpara[i].name, std::string(), m_intpara[i].value, true);
+			TiXmlElement::appendSingleAttributeElement(e, "IBK:IntPara", "name", m_intpara[i].name, IBK::val2string(m_intpara[i].value));
 	}
 
 	for (int i=0; i<NUM_SF; ++i) {

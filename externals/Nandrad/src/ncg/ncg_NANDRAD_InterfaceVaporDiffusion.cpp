@@ -26,7 +26,6 @@
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
 #include <NANDRAD_KeywordList.h>
-#include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
 
@@ -36,23 +35,6 @@ void InterfaceVaporDiffusion::readXML(const TiXmlElement * element) {
 	FUNCID("InterfaceVaporDiffusion::readXML");
 
 	try {
-		const TiXmlElement * c = element->FirstChildElement();
-		while (c) {
-			const std::string & cName = c->ValueStr();
-			else if (cName == "IBK:Parameter") {
-				IBK::Parameter p;
-				readParameterElement(c, cName, p);
-				if (p.name == "Para[NUM_P]") {
-				}
-				else {
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-				}
-			}
-			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			c = c->NextSiblingElement();
-		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'InterfaceVaporDiffusion' element."), FUNC_ID);
@@ -69,8 +51,6 @@ TiXmlElement * InterfaceVaporDiffusion::writeXML(TiXmlElement * parent) const {
 
 	if (m_modelType != NUM_MT)
 		TiXmlElement::appendSingleAttributeElement(e, "ModelType", nullptr, std::string(), KeywordList::Keyword("InterfaceVaporDiffusion::modelType_t",  m_modelType));
-
-	m_modelTypeToParameterMapping.writeXML(e);
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty())

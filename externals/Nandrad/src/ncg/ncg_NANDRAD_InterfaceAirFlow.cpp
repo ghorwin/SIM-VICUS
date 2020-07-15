@@ -35,14 +35,6 @@ void InterfaceAirFlow::readXML(const TiXmlElement * element) {
 	FUNCID("InterfaceAirFlow::readXML");
 
 	try {
-		const TiXmlElement * c = element->FirstChildElement();
-		while (c) {
-			const std::string & cName = c->ValueStr();
-			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			c = c->NextSiblingElement();
-		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'InterfaceAirFlow' element."), FUNC_ID);
@@ -59,8 +51,6 @@ TiXmlElement * InterfaceAirFlow::writeXML(TiXmlElement * parent) const {
 
 	if (m_modelType != NUM_MT)
 		TiXmlElement::appendSingleAttributeElement(e, "ModelType", nullptr, std::string(), KeywordList::Keyword("InterfaceAirFlow::modelType_t",  m_modelType));
-
-	m_modelTypeToSplineParameterMapping.writeXML(e);
 
 	m_splinePara[NUM_SP].writeXML(e);
 	return e;

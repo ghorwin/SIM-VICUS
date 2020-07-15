@@ -47,23 +47,6 @@ void EmbeddedObject::readXML(const TiXmlElement * element) {
 			}
 			attrib = attrib->Next();
 		}
-		const TiXmlElement * c = element->FirstChildElement();
-		while (c) {
-			const std::string & cName = c->ValueStr();
-			else if (cName == "IBK:Parameter") {
-				IBK::Parameter p;
-				readParameterElement(c, cName, p);
-				if (p.name == "Para[NUM_P]") {
-				}
-				else {
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-				}
-			}
-			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			c = c->NextSiblingElement();
-		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'EmbeddedObject' element."), FUNC_ID);
@@ -79,18 +62,6 @@ TiXmlElement * EmbeddedObject::writeXML(TiXmlElement * parent) const {
 
 	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	e->SetAttribute("displayName", m_displayName);
-
-	if (!m_zoneNames.empty()) {
-		TiXmlElement * child = new TiXmlElement("ZoneNames");
-		e->LinkEndChild(child);
-
-		for (std::vector<std::string>::const_iterator ifaceIt = m_zoneNames.begin();
-			ifaceIt != m_zoneNames.end(); ++ifaceIt)
-		{
-			ifaceIt->writeXML(child);
-		}
-	}
-
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty())

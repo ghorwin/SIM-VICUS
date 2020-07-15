@@ -25,7 +25,6 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
-#include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
 
@@ -35,23 +34,6 @@ void Interval::readXMLPrivate(const TiXmlElement * element) {
 	FUNCID("Interval::readXMLPrivate");
 
 	try {
-		const TiXmlElement * c = element->FirstChildElement();
-		while (c) {
-			const std::string & cName = c->ValueStr();
-			if (cName == "IBK:Parameter") {
-				IBK::Parameter p;
-				readParameterElement(c, cName, p);
-				if (p.name == "Para[NUM_IP]") {
-				}
-				else {
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-				}
-			}
-			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			c = c->NextSiblingElement();
-		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Interval' element."), FUNC_ID);

@@ -77,68 +77,6 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 			}
 			attrib = attrib->Next();
 		}
-		const TiXmlElement * c = element->FirstChildElement();
-		while (c) {
-			const std::string & cName = c->ValueStr();
-			if (cName == "Id3")
-				m_id3 = readPODElement<int>(c, cName);
-			else if (cName == "Id4")
-				m_id4 = readPODElement<unsigned int>(c, cName);
-			else if (cName == "Flag2")
-				m_flag2 = readPODElement<bool>(c, cName);
-			else if (cName == "Val2")
-				m_val2 = readPODElement<double>(c, cName);
-			else if (cName == "Str2")
-				m_str2 = c->GetText();
-			else if (cName == "Path2")
-				m_path2 = IBK::Path(c->GetText());
-			else if (cName == "U2")
-				m_u2 = readUnitElement(c, cName);
-			else if (cName == "X5")
-				m_x5 = readPODElement<double>(c, cName);
-			else if (cName == "IBK:Flag") {
-				IBK::Flag f;
-				readFlagElement(c, cName, f);
-				if (f.name() == "F") {
-				}
-				else if (f.name() == "F") {
-				}
-				else {
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-				}
-			}
-			else if (cName == "IBK:Parameter") {
-				IBK::Parameter p;
-				readParameterElement(c, cName, p);
-				if (p.name == "Para[NUM_test]") {
-				}
-				else {
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-				}
-			}
-			else if (cName == "IBK:IntPara") {
-				IBK::Parameter p;
-				readParameterElement(c, cName, p);
-				if (p.name == "IntPara[NUM_IP]") {
-				}
-				else {
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-				}
-			}
-			else if (cName == "IBK:LinearSpline") {
-				IBK::LinearSpline spl;
-				std::string name;
-				readLinearSplineElement(c, cName, spl, name, nullptr, nullptr);
-				if (name == "Spline")		m_spline = spl;
-				else {
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-				}
-			}
-			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			c = c->NextSiblingElement();
-		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'SerializationTest' element."), FUNC_ID);
@@ -161,26 +99,18 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 	e->SetAttribute("str1", m_str1);
 	e->SetAttribute("path1", m_path1.str());
 	e->SetAttribute("u1", m_u1.name());
-
 	TiXmlElement::appendSingleAttributeElement(e, "Id3", nullptr, std::string(), IBK::val2string<int>(m_id3));
-
 	TiXmlElement::appendSingleAttributeElement(e, "Id4", nullptr, std::string(), IBK::val2string<unsigned int>(m_id4));
-
 	TiXmlElement::appendSingleAttributeElement(e, "Flag2", nullptr, std::string(), IBK::val2string<bool>(m_flag2));
-
 	TiXmlElement::appendSingleAttributeElement(e, "Val2", nullptr, std::string(), IBK::val2string<double>(m_val2));
 
 	if (m_testBlo != NUM_test)
 		TiXmlElement::appendSingleAttributeElement(e, "TestBlo", nullptr, std::string(), KeywordList::Keyword("SerializationTest::test_t",  m_testBlo));
-
-	TiXmlElement::appendSingleAttributeElement(e, "Str2", nullptr, std::string(), m_str2);
-
+	if (!m_str2.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "Str2", nullptr, std::string(), m_str2);
 	TiXmlElement::appendSingleAttributeElement(e, "Path2", nullptr, std::string(), m_path2.str());
-
 	TiXmlElement::appendSingleAttributeElement(e, "U2", nullptr, std::string(), m_u2.name());
-
 	TiXmlElement::appendSingleAttributeElement(e, "X5", nullptr, std::string(), IBK::val2string<double>(m_x5));
-
 	TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_f.name(), m_f.isEnabled() ? "true" : "false");
 
 	m_iface.writeXML(e);
@@ -204,14 +134,13 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 
 	for (unsigned int i=0; i<NUM_IP; ++i) {
 		if (!m_intPara[i].name.empty())
-			TiXmlElement::appendIBKParameterElement(e, m_intPara[i].name, std::string(), m_intPara[i].value, true);
+			TiXmlElement::appendSingleAttributeElement(e, "IBK:IntPara", "name", m_intPara[i].name, IBK::val2string(m_intPara[i].value));
 	}
 
 	for (int i=0; i<NUM_test; ++i) {
 		if (!m_flags[i].name().empty())
 			TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_flags[i].name(), m_flags[i].isEnabled() ? "true" : "false");
 	}
-
 	writeLinearSplineElement(e, "Spline", m_spline, std::string(), std::string());
 	return e;
 }

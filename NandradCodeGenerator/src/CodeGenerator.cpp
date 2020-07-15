@@ -492,6 +492,8 @@ void CodeGenerator::generateReadWriteCode() {
 			writeCode = IBK::replace_string(writeCode, "${ATTRIBUTES}", attribs, IBK::ReplaceFirst);
 			writeCode = IBK::replace_string(writeCode, "${CHILD_ELEMENTS}", elements, IBK::ReplaceFirst);
 
+
+
 			// *** Generate readXML() content ****
 
 			std::string readCode;
@@ -605,6 +607,7 @@ void CodeGenerator::generateReadWriteCode() {
 				break;
 			}
 
+			haveTags = false;
 			if (haveTags) {
 				// now read-code for elements/tags
 				for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
@@ -763,6 +766,10 @@ void CodeGenerator::generateReadWriteCode() {
 							"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
 							"				}\n"
 							"			}\n";
+					}
+					else {
+						IBK::IBK_Message(IBK::FormatString("(Still) unsupported XML attrib type '%1' for variable '%2'.").arg(xmlInfo.typeStr).arg(xmlInfo.varName), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+						continue;
 					}
 					elseStr = "else ";
 				} // end element reading loop

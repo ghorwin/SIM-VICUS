@@ -30,18 +30,10 @@
 
 namespace NANDRAD {
 
-void Project::readXML(const TiXmlElement * element) {
-	FUNCID("Project::readXML");
+void Project::readXMLPrivate(const TiXmlElement * element) {
+	FUNCID("Project::readXMLPrivate");
 
 	try {
-		const TiXmlElement * c = element->FirstChildElement();
-		while (c) {
-			const std::string & cName = c->ValueStr();
-			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			c = c->NextSiblingElement();
-		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Project' element."), FUNC_ID);
@@ -51,16 +43,36 @@ void Project::readXML(const TiXmlElement * element) {
 	}
 }
 
-TiXmlElement * Project::writeXML(TiXmlElement * parent) const {
+TiXmlElement * Project::writeXMLPrivate(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("Project");
 	parent->LinkEndChild(e);
 
 
 	m_projectInfo.writeXML(e);
 
-	m_zones.writeXML(e);
+	if (!m_zones.empty()) {
+		TiXmlElement * child = new TiXmlElement("Zones");
+		e->LinkEndChild(child);
 
-	m_constructionInstances.writeXML(e);
+		for (std::vector<Zone>::const_iterator ifaceIt = m_zones.begin();
+			ifaceIt != m_zones.end(); ++ifaceIt)
+		{
+			ifaceIt->writeXML(child);
+		}
+	}
+
+
+	if (!m_constructionInstances.empty()) {
+		TiXmlElement * child = new TiXmlElement("ConstructionInstances");
+		e->LinkEndChild(child);
+
+		for (std::vector<ConstructionInstance>::const_iterator ifaceIt = m_constructionInstances.begin();
+			ifaceIt != m_constructionInstances.end(); ++ifaceIt)
+		{
+			ifaceIt->writeXML(child);
+		}
+	}
+
 
 	m_simulationParameter.writeXML(e);
 

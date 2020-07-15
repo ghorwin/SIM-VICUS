@@ -52,25 +52,6 @@ void ConstructionInstance::readXML(const TiXmlElement * element) {
 			}
 			attrib = attrib->Next();
 		}
-		const TiXmlElement * c = element->FirstChildElement();
-		while (c) {
-			const std::string & cName = c->ValueStr();
-			if (cName == "ConstructionTypeId")
-				m_constructionTypeId = readPODElement<unsigned int>(c, cName);
-			else if (cName == "IBK:Parameter") {
-				IBK::Parameter p;
-				readParameterElement(c, cName, p);
-				if (p.name == "Para[NUM_CP]") {
-				}
-				else {
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-				}
-			}
-			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			c = c->NextSiblingElement();
-		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'ConstructionInstance' element."), FUNC_ID);
@@ -86,7 +67,6 @@ TiXmlElement * ConstructionInstance::writeXML(TiXmlElement * parent) const {
 
 	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	e->SetAttribute("displayName", m_displayName);
-
 	TiXmlElement::appendSingleAttributeElement(e, "ConstructionTypeId", nullptr, std::string(), IBK::val2string<unsigned int>(m_constructionTypeId));
 
 	for (unsigned int i=0; i<NUM_CP; ++i) {

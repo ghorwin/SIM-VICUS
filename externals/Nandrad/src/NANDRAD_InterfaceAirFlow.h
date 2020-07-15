@@ -82,9 +82,9 @@ public:
 	/*! Model type. */
 	modelType_t							m_modelType;								// XML:E
 	/*! Provided parameters for all model types, stored in a set of enums. */
-	std::map<int, std::set<int> >       m_modelTypeToSplineParameterMapping;		// XML:E
+	std::map<int, std::set<int> >		m_modelTypeToSplineParameterMapping;
 	/*! List of constant parameters.*/
-	NANDRAD::LinearSplineParameter		m_splinePara[NUM_SP];						// XML:E
+	LinearSplineParameter				m_splinePara[NUM_SP];						// XML:E
 
 }; // InterfaceAirFlow
 

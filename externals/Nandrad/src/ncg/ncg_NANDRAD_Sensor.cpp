@@ -31,8 +31,8 @@
 
 namespace NANDRAD {
 
-void Sensor::readXML(const TiXmlElement * element) {
-	FUNCID("Sensor::readXML");
+void Sensor::readXMLPrivate(const TiXmlElement * element) {
+	FUNCID("Sensor::readXMLPrivate");
 
 	try {
 		// search for mandatory attributes
@@ -50,16 +50,6 @@ void Sensor::readXML(const TiXmlElement * element) {
 			}
 			attrib = attrib->Next();
 		}
-		const TiXmlElement * c = element->FirstChildElement();
-		while (c) {
-			const std::string & cName = c->ValueStr();
-			if (cName == "Quantity")
-				m_quantity = c->GetText();
-			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			c = c->NextSiblingElement();
-		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Sensor' element."), FUNC_ID);
@@ -69,13 +59,13 @@ void Sensor::readXML(const TiXmlElement * element) {
 	}
 }
 
-TiXmlElement * Sensor::writeXML(TiXmlElement * parent) const {
+TiXmlElement * Sensor::writeXMLPrivate(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("Sensor");
 	parent->LinkEndChild(e);
 
 	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-
-	TiXmlElement::appendSingleAttributeElement(e, "Quantity", nullptr, std::string(), m_quantity);
+	if (!m_quantity.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "Quantity", nullptr, std::string(), m_quantity);
 	return e;
 }
 

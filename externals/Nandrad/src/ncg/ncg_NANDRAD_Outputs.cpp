@@ -25,7 +25,6 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
-#include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
 
@@ -35,25 +34,6 @@ void Outputs::readXML(const TiXmlElement * element) {
 	FUNCID("Outputs::readXML");
 
 	try {
-		const TiXmlElement * c = element->FirstChildElement();
-		while (c) {
-			const std::string & cName = c->ValueStr();
-			else if (cName == "TimeUnit")
-				m_timeUnit = readUnitElement(c, cName);
-			else if (cName == "IBK:Flag") {
-				IBK::Flag f;
-				readFlagElement(c, cName, f);
-				if (f.name() == "BinaryFormat") {
-				}
-				else {
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-				}
-			}
-			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			c = c->NextSiblingElement();
-		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Outputs' element."), FUNC_ID);
@@ -91,9 +71,7 @@ TiXmlElement * Outputs::writeXML(TiXmlElement * parent) const {
 		}
 	}
 
-
 	TiXmlElement::appendSingleAttributeElement(e, "TimeUnit", nullptr, std::string(), m_timeUnit.name());
-
 	TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_binaryFormat.name(), m_binaryFormat.isEnabled() ? "true" : "false");
 	return e;
 }

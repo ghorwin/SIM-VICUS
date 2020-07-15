@@ -34,18 +34,9 @@ Lesser General Public License for more details.
 
 namespace NANDRAD {
 
-<<<<<<< HEAD
-=======
-
->>>>>>> add NANDRAD_READWRITE
-
 bool Interval::operator!=(const Interval & other) const {
-#if 0
-	if(GenericParametrizationObject::operator !=(other))
-		return true;
 	for (int i=0; i<NUM_IP; ++i)
 		if (m_para[i] != other.m_para[i]) return true;
-#endif
 	return false; // this and other hold the same data
 }
 

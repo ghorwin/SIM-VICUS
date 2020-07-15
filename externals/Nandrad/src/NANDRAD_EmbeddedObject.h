@@ -76,6 +76,9 @@ public:
 
 	NANDRAD_READWRITE
 
+	/*! returns an object type if a model for an object was defined. */
+	objectType_t objectType() const;
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of the EmbeddedObject. */
@@ -83,9 +86,6 @@ public:
 
 	/*! IBK-language encoded name of the embedded object. */
 	std::string							m_displayName;						// XML:A
-
-	/*! returns an object type if a model for an object was defined. */
-	objectType_t objectType() const;
 
 //	/*! Data container for window model. */
 //	EmbeddedObjectWindow				m_window;
@@ -103,8 +103,8 @@ public:
 //	/*! List with FMU import quantity definitions. */
 //	std::vector<FMUImportReference>
 //										m_FMUImportReferences;
-	/*! Names of the enclosing zones. */
-	std::vector<std::string>			m_zoneNames;						// XML:E
+//	/*! Names of the enclosing zones. */
+//	std::vector<std::string>			m_zoneNames;
 
 	/*! List of constant parameters.*/
 	IBK::Parameter						m_para[NUM_P];						// XML:E

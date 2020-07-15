@@ -44,6 +44,7 @@ namespace NANDRAD {
 	The room description references constructions, window and shading types from the database.
 */
 class Project {
+	NANDRAD_READWRITE_PRIVATE
 public:
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -93,11 +94,11 @@ public:
 	std::map<std::string, IBK::Path>				m_placeholders;
 
 	/*! All active and constant thermal zones.*/
-	std::map< unsigned int, Zone>					m_zones;							// XML:E
+	std::vector<Zone>								m_zones;							// XML:E
 
 	/*! All construction instances refernce a construction and a thermal zone
 		(key is construction instance ID, value is the construction instance definition). */
-	std::map< unsigned int, ConstructionInstance>	m_constructionInstances;			// XML:E
+	std::vector<ConstructionInstance>				m_constructionInstances;			// XML:E
 
 	/*! Simulation settings: all global parameters.*/
 	SimulationParameter								m_simulationParameter;				// XML:E

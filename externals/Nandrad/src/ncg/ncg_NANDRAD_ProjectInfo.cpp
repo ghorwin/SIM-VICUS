@@ -34,22 +34,6 @@ void ProjectInfo::readXML(const TiXmlElement * element) {
 	FUNCID("ProjectInfo::readXML");
 
 	try {
-		const TiXmlElement * c = element->FirstChildElement();
-		while (c) {
-			const std::string & cName = c->ValueStr();
-			if (cName == "Comment")
-				m_comment = c->GetText();
-			else if (cName == "Created")
-				m_created = c->GetText();
-			else if (cName == "LastEdited")
-				m_lastEdited = c->GetText();
-			else if (cName == "Version")
-				m_version = c->GetText();
-			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			c = c->NextSiblingElement();
-		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'ProjectInfo' element."), FUNC_ID);
@@ -63,13 +47,9 @@ TiXmlElement * ProjectInfo::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("ProjectInfo");
 	parent->LinkEndChild(e);
 
-
 	TiXmlElement::appendSingleAttributeElement(e, "Comment", nullptr, std::string(), m_comment);
-
 	TiXmlElement::appendSingleAttributeElement(e, "Created", nullptr, std::string(), m_created);
-
 	TiXmlElement::appendSingleAttributeElement(e, "LastEdited", nullptr, std::string(), m_lastEdited);
-
 	TiXmlElement::appendSingleAttributeElement(e, "Version", nullptr, std::string(), m_version);
 	return e;
 }

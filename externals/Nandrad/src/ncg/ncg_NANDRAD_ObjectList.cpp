@@ -34,16 +34,6 @@ void ObjectList::readXML(const TiXmlElement * element) {
 	FUNCID("ObjectList::readXML");
 
 	try {
-		const TiXmlElement * c = element->FirstChildElement();
-		while (c) {
-			const std::string & cName = c->ValueStr();
-			if (cName == "Name")
-				m_name = c->GetText();
-			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			c = c->NextSiblingElement();
-		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'ObjectList' element."), FUNC_ID);
@@ -56,7 +46,6 @@ void ObjectList::readXML(const TiXmlElement * element) {
 TiXmlElement * ObjectList::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("ObjectList");
 	parent->LinkEndChild(e);
-
 
 	TiXmlElement::appendSingleAttributeElement(e, "Name", nullptr, std::string(), m_name);
 	return e;

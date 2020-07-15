@@ -83,7 +83,7 @@ public:
 	/*! Model type. */
 	modelType_t							m_modelType;							// XML:E
 	/*! Provided parameters for all model types, stored in a set of enums. */
-	std::map<int, std::set<int> >       m_modelTypeToParameterMapping;			// XML:E
+	std::map<int, std::set<int> >		m_modelTypeToParameterMapping;
 	/*! List of constant parameters.*/
 	IBK::Parameter						m_para[NUM_P];							// XML:E
 

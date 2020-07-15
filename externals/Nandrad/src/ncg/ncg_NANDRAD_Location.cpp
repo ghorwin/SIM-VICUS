@@ -25,7 +25,6 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
-#include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
 
@@ -35,27 +34,6 @@ void Location::readXML(const TiXmlElement * element) {
 	FUNCID("Location::readXML");
 
 	try {
-		const TiXmlElement * c = element->FirstChildElement();
-		while (c) {
-			const std::string & cName = c->ValueStr();
-			if (cName == "IBK:Parameter") {
-				IBK::Parameter p;
-				readParameterElement(c, cName, p);
-				if (p.name == "Para[NUM_LP]") {
-				}
-				else {
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-				}
-			}
-			else if (cName == "ClimateFileName")
-				m_climateFileName = IBK::Path(c->GetText());
-			else if (cName == "ShadingFactorFileName")
-				m_shadingFactorFileName = IBK::Path(c->GetText());
-			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			c = c->NextSiblingElement();
-		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Location' element."), FUNC_ID);
@@ -74,9 +52,7 @@ TiXmlElement * Location::writeXML(TiXmlElement * parent) const {
 		if (!m_para[i].name.empty())
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
 	}
-
 	TiXmlElement::appendSingleAttributeElement(e, "ClimateFileName", nullptr, std::string(), m_climateFileName.str());
-
 	TiXmlElement::appendSingleAttributeElement(e, "ShadingFactorFileName", nullptr, std::string(), m_shadingFactorFileName.str());
 
 	if (!m_sensors.empty()) {
