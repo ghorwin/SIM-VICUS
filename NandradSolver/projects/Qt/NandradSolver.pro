@@ -29,6 +29,13 @@ unix|mac {
 	LIBS += -ldl
 	QMAKE_CXXFLAGS +=  -std=c++11
 }
+win32{
+	LIBS += -lshell32
+
+#CONFIG(release, debug|release): LIBS += $$quote(C:/Program Files             (x86)/Microsoft SDKs/Windows/v7.1A/Lib/shell32.lib)
+#else:win32:CONFIG(debug, debug|release): LIBS += $$quote(C:/Program Files (x86)/Microsoft SDKs/Windows/v7.1A/Lib/shell32.lib)
+}
+
 
 
 INCLUDEPATH = \
