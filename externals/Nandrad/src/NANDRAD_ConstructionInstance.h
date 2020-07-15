@@ -59,14 +59,14 @@ namespace NANDRAD {
 
 class ConstructionInstance  {
 public:
-	// ***KEYWORDLIST-START***
+	
 	enum para_t {
 		CP_ORIENTATION,					// Keyword: Orientation				[Deg]	'Orientation of the wall [deg].'
 		CP_INCLINATION,					// Keyword: Inclination				[Deg]	'Inclination of the wall [deg].'
 		CP_AREA,						// Keyword: Area					[m2]	'Gross area of the wall [m2].'
 		NUM_CP
 	};
-	// ***KEYWORDLIST-END***
+	
 
 
 	// *** PUBLIC MEMBER FUNCTIONS ***

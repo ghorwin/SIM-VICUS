@@ -42,7 +42,7 @@ namespace NANDRAD {
 */
 class Schedules {
 public:
-	// ***KEYWORDLIST-START***
+	
 	enum day_t {
 		SD_MONDAY,		// Keyword: Mon		'Monday.'
 		SD_TUESDAY,		// Keyword: Tue		'Tuesday.'
@@ -53,7 +53,7 @@ public:
 		SD_SUNDAY,		// Keyword: Sun		'Sunday.'
 		NUM_SD
 	};
-	// ***KEYWORDLIST-END***
+	
 #if 0
 
 	/*! Defines all defaults for schedule elements. */

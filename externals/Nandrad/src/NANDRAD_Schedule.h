@@ -47,7 +47,7 @@ namespace NANDRAD {
 */
 class Schedule {
 public:
-	// ***KEYWORDLIST-START***
+
 
 	/*! Don't change order in this array since several conversions and GUI surface as well rely on that. */
 	enum type_t {
@@ -64,7 +64,7 @@ public:
 		ST_SUNDAY,		// Keyword: Sunday		'Special Weekday schedule: Sunday.'
 		NUM_ST
 	};
-	// ***KEYWORDLIST-END***
+
 
 
 

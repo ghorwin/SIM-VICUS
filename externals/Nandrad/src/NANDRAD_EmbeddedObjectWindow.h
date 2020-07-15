@@ -39,7 +39,7 @@ namespace NANDRAD {
 class EmbeddedObjectWindow  {
 public:
 
-	// ***KEYWORDLIST-START***
+	
 	/*! Parameters to be defined for the various window model types. */
 	enum para_t {
 		P_GlassFraction,			// Keyword: GlassFraction				[---]		{1}		'Fraction of glass area versus total area [1 - no frame, 0 - all frame].'
@@ -57,7 +57,7 @@ public:
 		MT_DETAILED_WITH_STORAGE,	// Keyword: DetailedWithStorage		'Model with detailed layers and thermal storage of glass layers.'
 		NUM_MT
 	};
-	// ***KEYWORDLIST-END***
+	
 
 
 	// *** PUBLIC MEMBER FUNCTIONS ***

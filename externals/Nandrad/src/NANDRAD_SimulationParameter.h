@@ -46,7 +46,7 @@ namespace NANDRAD {
 class SimulationParameter {
 public:
 
-	// ***KEYWORDLIST-START***
+	
 	enum para_t {
 		SP_RADIATIONLOADFRACTION,				// Keyword: RadiationLoadFraction				[%]		'Percentage of solar radiation gains attributed direcly to room 0..1.'
 		SP_USERTHERMALRADIATIONFRACTION,		// Keyword: UserThermalRadiationFraction		[---]	'Percentage of heat that is emitted by long wave radiation from persons.'
@@ -76,7 +76,7 @@ public:
 		SF_EXPORT_CLIMATE_DATA_FMU,				// Keyword: ExportClimateDataFMU						'Flag activating FMU export of climate data.'
 		NUM_SF
 	};
-	// ***KEYWORDLIST-END***
+	
 
 	/*! Sets default values. */
 	void initDefaults();
