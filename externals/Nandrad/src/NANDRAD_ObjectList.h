@@ -48,10 +48,6 @@ namespace NANDRAD {
 */
 class ObjectList {
 public:
-	/*! Retrieves or generates an object list that is referenced from an output definition. */
-	static ObjectList objectListFromDefinition(const std::string &filterType,
-											const IDGroup &filterIDs,
-											const std::vector<std::string> &spaceTypeFilter);
 
 	/*! Default constructor. */
 	ObjectList();
@@ -72,17 +68,8 @@ public:
 	/*! Unique ID-Name of the object list. */
 	std::string									m_name;
 
-	/*! Reference type of the listed objects. */
-//	ModelInputReference::referenceType_t		m_filterType;
-
 	/*! Encodes the referenced model IDs. */
 	IDGroup										m_filterID;
-
-	/*! Regular Expressions are used for name/string comparison. */
-	std::string									m_filterDisplayName;
-
-	/*! Space type names. */
-	std::vector<std::string>					m_filterSpaceType;
 };
 
 } // namespace NANDRAD

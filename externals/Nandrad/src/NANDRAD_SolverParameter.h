@@ -90,19 +90,15 @@ public:
 		implicit integrators.
 	*/
 	enum lesSolver_t {
-		LES_BTRIDIAG,					// Keyword: BTridiag					'Block-tridiagonal solver'
-		LES_BAND,						// Keyword: Band						'Band solver'
 		LES_DENSE,						// Keyword: Dense						'Dense solver'
 		LES_KLU,						// Keyword: KLU							'KLU sparse solver'
 		LES_GMRES,						// Keyword: GMRES						'GMRES iterative solver'
 		LES_BICGSTAB,					// Keyword: BiCGStab					'BICGSTAB iterative solver'
-		LES_TFQMR,						// Keyword: TFQMR						'TFQMR iterative solver'
 		NUM_LES							// Keyword: auto						'System selects les solver automatically.'
 	};
 
 	/*! Enumeration of available preconditioners, to be used with iterative LES solvers. */
 	enum precond_t {
-		PRE_BTRIDIAG,					// Keyword: BTridiag					'Block-tridiagonal preconditioner'
 		PRE_BAND,						// Keyword: Band						'Band preconditioner'
 		PRE_ILU,						// Keyword: ILU							'Incomplete LU preconditioner'
 		NUM_PRE							// Keyword: auto						'System selects preconditioner automatically.'

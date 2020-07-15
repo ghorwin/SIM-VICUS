@@ -47,7 +47,6 @@ public:
 	enum para_t {
 		LP_LATITUDE,				// Keyword: Latitude		[Deg]	'Latitude.'
 		LP_LONGITUDE,				// Keyword: Longitude		[Deg]	'Longitude.'
-		LP_ORIENTATION,				// Keyword: Orientation		[Deg]	'Orientation of the Building: 0 deg = surfaces with 0 deg orientation point to north.'
 		LP_ALBEDO,					// Keyword: Albedo			[%]		'Albedo value [0..100].'
 		LP_ALTITUDE,				// Keyword: Altitude		[m]		'Altitude of building as height above NN [m].'
 		NUM_LP
@@ -77,24 +76,12 @@ public:
 	/*! Name of the climate data file. */
 	IBK::Path					m_climateFileName;
 
-	/*! Display name for climate reference. */
-	std::string					m_climateFileDisplayName;
-
 	/*! Optional: name of the eyternal shading factor data file. */
 	IBK::Path					m_shadingFactorFileName;
-
-	/*! Display name for climate reference. */
-	std::string					m_shadingFactorFileDisplayName;
 
 	/*! We may place one or more sensors in the building outsude. */
 	std::vector<Sensor>			m_sensors;
 
-	/*! List with FMU export quantity definitions. */
-//	std::vector<FMUExportReference>
-//								m_FMUExportReferences;
-
-	/*! Flag indicating whether cyclic weather dasta are used or not. Default is true. */
-	bool						m_cyclic;
 };
 
 } // namespace NANDRAD

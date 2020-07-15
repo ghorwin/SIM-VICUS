@@ -34,7 +34,6 @@ Zone::Zone() :
 	m_id(NANDRAD::INVALID_ID),
 	m_spaceType("Default"),
 	m_type(NUM_T),
-	m_location(NUM_ZL),
 	m_spaceTypeRef(nullptr)
 {
 }

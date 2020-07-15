@@ -55,11 +55,6 @@ namespace NANDRAD {
 class OutputDefinition {
 public:
 	// ***KEYWORDLIST-START***
-	enum fileType_t {
-		FT_DATAIO,                  // Keyword: DataIO						'Write DataIO output format (*.d6o or *.d6b)'
-		FT_REPORT                   // Keyword: Report						'Write report output format (*.csv)'
-	};
-
 	enum timeType_t {
 		OTT_NONE,                  // Keyword: None							'Write values as calculated at output times'
 		OTT_MEAN,                  // Keyword: Mean							'Average values in time (mean value in output step)'
@@ -89,9 +84,11 @@ public:
 	bool operator!=(const OutputDefinition & other) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
+	/*! Filename (if empty then automatic filename generation) */
+	std::string								m_filename;
 
-	/*! Output file type: DataIO per default. */
-	fileType_t								m_fileType;
+	/*! quantity id -> zone.AirTemperature */
+	std::string								m_quantity;
 
 	/*! Time output type. */
 	timeType_t								m_timeType;
@@ -99,17 +96,12 @@ public:
 	/*! Name of the object list. */
 	std::string								m_objectListName;
 
-	/*! Time unit. Only supported for type 'Report'*/
-	std::string								m_timeUnit;
-
-	/*! Optional quantity name: needed for file name generation. */
-	std::string								m_quantityName;
-
-	/*! Quantity string for model output (may include more than one quantities for report output). */
-	std::string								m_quantity;
-
 	/*! Rerefence name of output grid, corresponds to OutputGrid::m_name. */
 	std::string								m_gridName;
+
+
+	// Variables only used during solver runtime
+
 
 	/*! Pointer to object list, assigned during project initialization within solver for fast access. */
 	const ObjectList						*m_objectListRef;
