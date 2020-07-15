@@ -83,16 +83,16 @@ Mind to specify **always** physical units for physical value parameters and memb
 
 NANDRAD uses a bunch of external/third-party libraries:
 
-* IBK - core utility library, extends c++ standard library by useful functions (so we do not need boost and other heavy libs)
-* IBKMK - IBK math kernel lib, low level optimized routines for efficient number crunching
-* DataIO - utility lib for writing DataIO output containers (needed when profiles across wall constructions are written)
-* CCM - _Climate Calculation Module_ (CCM), implements climate data loading and calculation of solar radiation loads
-* TiCPP - TinyXML parser library, used for reading/writing XML files
-* Zeppelin - graphing library (see [Graf Zeppelin](https://de.wikipedia.org/wiki/Ferdinand_von_Zeppelin) :-), needed to determine evaluation order
-* zlib - generation of zip files, needed for FMU export
-* SuiteSparse - implements sparse direct solver KLU
-* sundials - includes CVODE integrator, and GMRES and BiCGStab iterative les solvers
-* ITSOL2 - implements ILUT preconditioner
-* IntegratorFramework - library that integrates all numerical library and provides a convenient framework to error-controlled time integration
-* NANDRAD - the data model library (project handling)
+* **IBK** - core utility library, extends c++ standard library by useful functions (so we do not need boost and other heavy libs)
+* **IBKMK** - IBK math kernel lib, low level optimized routines for efficient number crunching
+* **DataIO** - utility lib for writing DataIO output containers (needed when profiles across wall constructions are written)
+* **CCM** - _Climate Calculation Module_ (CCM), implements climate data loading and calculation of solar radiation loads
+* **TiCPP** - TinyXML parser library, used for reading/writing XML files
+* **Zeppelin** - graphing library (see [Graf Zeppelin](https://de.wikipedia.org/wiki/Ferdinand_von_Zeppelin) :-), needed to determine evaluation order
+* **zlib** - generation of zip files, needed for FMU export
+* **SuiteSparse** - implements sparse direct solver KLU
+* **sundials** - includes CVODE integrator, and GMRES and BiCGStab iterative les solvers
+* **ITSOL2** - implements ILUT preconditioner
+* **IntegratorFramework** - library that integrates all numerical library and provides a convenient framework to error-controlled time integration
+* **NANDRAD** - the data model library (project handling)
 
