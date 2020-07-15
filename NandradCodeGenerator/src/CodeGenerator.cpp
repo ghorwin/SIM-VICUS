@@ -266,7 +266,7 @@ void CodeGenerator::generateReadWriteCode() {
 
 			// check if it exists
 			if (targetFile.exists()) {
-//#define DISABLE_TIME_CHECK
+#define DISABLE_TIME_CHECK
 #ifndef DISABLE_TIME_CHECK
 				// skip, if target file is already newer than source file
 				if (targetFile.fileTime() > ci.m_sourceHeaderFile.fileTime()) {
@@ -598,15 +598,18 @@ void CodeGenerator::generateReadWriteCode() {
 					}
 					elseStr = "else ";
 				} // end attribute reading loop
+				if (!elseStr.empty()) {
+					attribs +=
+							"			else {\n"
+							"				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
+							"			}\n";
+				}
 				attribs +=
-						"			else {\n"
-						"				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
-						"			}\n"
 						"			attrib = attrib->Next();\n"
 						"		}\n";
 			}
 
-			// check if we have any attributes to read
+			// check if we have any elements to read
 			bool haveTags = false;
 			for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
 				if (!xmlInfo.element) continue;
@@ -614,17 +617,17 @@ void CodeGenerator::generateReadWriteCode() {
 				break;
 			}
 
-			haveTags = false;
 			if (haveTags) {
 				// now read-code for elements/tags
+				elements +=
+					"		// search for mandatory elements\n";
 				for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
 					if (!xmlInfo.element || !xmlInfo.required) continue;
 					std::string varName = xmlInfo.varName;
 					std::string tagName = char(toupper(varName[0])) + varName.substr(1);
 
 					elements +=
-						"		// search for mandatory elements\n"
-						"		if (!element->FirstChildElement(\""+tagName+"\")\n"
+						"		if (!element->FirstChildElement(\""+tagName+"\"))\n"
 						"			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
 						"				IBK::FormatString(\"Missing required '"+tagName+"' element.\") ), FUNC_ID);\n"
 						"\n";
@@ -780,12 +783,16 @@ void CodeGenerator::generateReadWriteCode() {
 					}
 					elseStr = "else ";
 				} // end element reading loop
+				if (!elseStr.empty()) {
+					elements +=
+							"			else {\n"
+							"				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
+							"			}\n";
+				}
 				elements +=
-						"			else {\n"
-						"				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
-						"			}\n"
-						"			c = c->NextSiblingElement();\n"
-						"		}\n";
+							"			c = c->NextSiblingElement();\n"
+							"		}\n";
+
 			}
 
 			// insert code into readXML() function block
