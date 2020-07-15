@@ -39,7 +39,7 @@ namespace NANDRAD {
 class InterfaceLongWaveEmission {
 public:
 
-	// ***KEYWORDLIST-START***
+
 	/*! Parameters to be defined for the various window model types. */
 	enum para_t {
 		P_Emissivity,				// Keyword: Emissivity [---] 'Constant Long wave Emissivity [0,...,1].'
@@ -50,7 +50,7 @@ public:
 		MT_CONSTANT,				// Keyword: Constant		'Constant model.'
 		NUM_MT
 	};
-	// ***KEYWORDLIST-END***
+
 
 
 	// *** PUBLIC MEMBER FUNCTIONS ***

@@ -54,7 +54,7 @@ namespace NANDRAD {
 
 class OutputDefinition {
 public:
-	// ***KEYWORDLIST-START***
+
 	enum timeType_t {
 		OTT_NONE,                  // Keyword: None							'Write values as calculated at output times'
 		OTT_MEAN,                  // Keyword: Mean							'Average values in time (mean value in output step)'
@@ -62,7 +62,7 @@ public:
 		NUM_OTT
 	};
 
-	// ***KEYWORDLIST-END***
+
 
 	/*! Reads the data from the xml element.
 		Throws an IBK::Exception if a syntax error occurs.

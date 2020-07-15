@@ -66,9 +66,6 @@ public:
 	};
 
 
-
-
-
 	/*! Default constructor. */
 	Schedule();
 

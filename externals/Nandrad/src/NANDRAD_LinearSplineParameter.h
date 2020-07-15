@@ -41,14 +41,14 @@ namespace NANDRAD {
 */
 class LinearSplineParameter {
 public:
-	// ***KEYWORDLIST-START***
+
 	/*! Interpolation method to be used for this linear spline parameter. */
 	enum interpolationMethod_t {
 		I_Constant,	// Keyword: constant
 		I_Linear,	// Keyword: linear
 		NUM_I
 	};
-	// ***KEYWORDLIST-END***
+
 
 	/*! Default constructor. */
 	LinearSplineParameter();

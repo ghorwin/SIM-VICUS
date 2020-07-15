@@ -43,7 +43,7 @@ namespace NANDRAD {
 
 class Location {
 public:
-	// ***KEYWORDLIST-START***
+
 	enum para_t {
 		LP_LATITUDE,				// Keyword: Latitude		[Deg]	'Latitude.'
 		LP_LONGITUDE,				// Keyword: Longitude		[Deg]	'Longitude.'
@@ -51,7 +51,7 @@ public:
 		LP_ALTITUDE,				// Keyword: Altitude		[m]		'Altitude of building as height above NN [m].'
 		NUM_LP
 	};
-	// ***KEYWORDLIST-END***
+
 
 
 	// *** PUBLIC MEMBER FUNCTIONS ***

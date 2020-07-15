@@ -38,7 +38,7 @@ namespace NANDRAD {
 class InterfaceAirFlow {
 public:
 
-	// ***KEYWORDLIST-START***
+
 	/*! Parameters to be defined for the various window model types. */
 	enum splinePara_t {
 		SP_PressureCoefficient,				// Keyword: PressureCoefficient			[---]	'Pressure coeffient.'
@@ -49,7 +49,7 @@ public:
 		MT_WINDFLOW,						// Keyword: WindFlow							'Use results from external wind flow calculation.'
 		NUM_MT
 	};
-	// ***KEYWORDLIST-END***
+
 
 
 	// *** PUBLIC MEMBER FUNCTIONS ***

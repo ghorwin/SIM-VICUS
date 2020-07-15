@@ -61,6 +61,7 @@ EmbeddedObject::objectType_t EmbeddedObject::objectType() const {
 #endif
 
 #endif
+	return EmbeddedObject::NUM_OT;
 }
 
 

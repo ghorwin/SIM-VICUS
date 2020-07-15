@@ -39,7 +39,7 @@ namespace NANDRAD {
 class InterfaceVaporDiffusion {
 public:
 
-	// ***KEYWORDLIST-START***
+
 	/*! Parameters to be defined for the various window model types. */
 	enum para_t {
 		P_VaporTransferCoefficient,		// Keyword: VaporTransferCoefficient		[s/m]	'Vapor Transfer Coefficient.'
@@ -50,7 +50,7 @@ public:
 		MT_CONSTANT,				// Keyword: Constant		'Constant model.'
 		NUM_MT
 	};
-	// ***KEYWORDLIST-END***
+
 
 
 	// *** PUBLIC MEMBER FUNCTIONS ***

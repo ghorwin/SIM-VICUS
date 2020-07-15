@@ -22,6 +22,7 @@ Lesser General Public License for more details.
 #define NANDRAD_InterfaceH
 
 #include <IBK_Parameter.h>
+#include <IBK_Flag.h>
 
 #include "NANDRAD_InterfaceAirFlow.h"
 #include "NANDRAD_InterfaceHeatConduction.h"
@@ -52,7 +53,7 @@ class Zone;
 */
 class Interface {
 public:
-	// ***KEYWORDLIST-START***
+
 	enum location_t {
 		IT_A = 0,		// Keyword: A				'Interface is situated at left side labeled A.'
 		IT_B,			// Keyword: B				'Interface is situated at right side labeled B.'
@@ -67,7 +68,7 @@ public:
 		IP_VAPORDIFFUSION,		// Keyword: VaporDiffusion			'Vapor diffusion boundary condition.'
 		NUM_IP
 	};
-	// ***KEYWORDLIST-END***
+
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -104,6 +105,9 @@ public:
 	location_t									m_location;				///< The position of the interface, left ore right of the construction.
 	unsigned int								m_zoneId;				///< The id number of the neighboring zone.
 	std::string									m_zoneDisplayName;		///< The name of the neighboring zone.
+
+	/*! Enables the interface models. */
+	IBK::Flag									m_condition[NUM_IP];
 
 	// Boundary condition parameters
 	InterfaceHeatConduction						m_heatConduction;		///< Model for heat transfer coefficient.
