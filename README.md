@@ -1,5 +1,6 @@
 # SIM-VICUS
 
+![CI](https://github.com/ghorwin/SIM-VICUS/workflows/CI/badge.svg)
 
 ## Directory Structure
 
