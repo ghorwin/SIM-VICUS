@@ -53,8 +53,6 @@ public:
 	};
 	// ***KEYWORDLIST-END***
 
-	/*! Default constructor*/
-	Location();
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 

@@ -102,7 +102,6 @@ public:
 	std::string					m_scheduleName;			// XML:E
 
 
-
 	// *** Variables used only during simulation ***
 
 	/*! Optional: view factors for all inisde interfaces of the current zone. */

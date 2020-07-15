@@ -71,7 +71,7 @@ void Sensor::readXMLPrivate(const TiXmlElement * element) {
 }
 
 
-TiXmlElement * Sensor::writeXMLPrivate(TiXmlElement * parent, bool /*detailedOutput*/) const {
+TiXmlElement * Sensor::writeXMLPrivate(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("Sensor");
 	parent->LinkEndChild(e);
 

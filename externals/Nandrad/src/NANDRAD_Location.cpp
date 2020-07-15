@@ -29,10 +29,6 @@ Lesser General Public License for more details.
 
 namespace NANDRAD {
 
-Location::Location() :
-	m_cyclic(true)
-{}
-
 
 void Location::readXML(const TiXmlElement * element) {
 #if 0

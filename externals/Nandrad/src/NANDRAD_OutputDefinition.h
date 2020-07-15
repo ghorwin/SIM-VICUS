@@ -64,9 +64,6 @@ public:
 
 	// ***KEYWORDLIST-END***
 
-	/*! Default constructor. */
-	OutputDefinition();
-
 	/*! Reads the data from the xml element.
 		Throws an IBK::Exception if a syntax error occurs.
 	*/
@@ -91,7 +88,7 @@ public:
 	std::string								m_quantity;
 
 	/*! Time output type. */
-	timeType_t								m_timeType;
+	timeType_t								m_timeType = NUM_OTT;
 
 	/*! Name of the object list. */
 	std::string								m_objectListName;
@@ -104,7 +101,7 @@ public:
 
 
 	/*! Pointer to object list, assigned during project initialization within solver for fast access. */
-	const ObjectList						*m_objectListRef;
+	const ObjectList						*m_objectListRef = nullptr;
 };
 
 } // namespace NANDRAD

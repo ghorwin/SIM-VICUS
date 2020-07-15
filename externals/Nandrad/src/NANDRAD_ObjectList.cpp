@@ -34,31 +34,6 @@ ObjectList::ObjectList()
 {
 }
 
-ObjectList ObjectList::objectListFromDefinition(const std::string &filterType,
-											const IDGroup &filterIDs,
-											const std::vector<std::string> & /* spaceTypeFilter */)
-{
-	const char * const FUNC_ID = "[OutputDefinition::objectListFromDefinition]";
-	ObjectList objectList;
-#if 0
-	// add support for direct references of reference types with IDGroups
-	if (filterType.empty()) {
-		throw IBK::Exception( IBK::FormatString("Output definition does not contain an ObjectList or ReferenceType entry."), FUNC_ID);
-	}
-	// construct a temporary object list from direct reference
-	try {
-		objectList.m_filterType = (NANDRAD::ModelInputReference::referenceType_t) NANDRAD::KeywordList::Enumeration("ModelInputReference::referenceType_t", filterType);
-	}
-	catch (IBK::Exception & ex) {
-		throw IBK::Exception( ex, IBK::FormatString("Bad ReferenceType entry in Output definition."), FUNC_ID);
-	}
-	objectList.m_filterID = filterIDs;
-	objectList.m_name = filterIDs.encodedString();
-
-#endif
-	return objectList;
-}
-
 
 void ObjectList::readXML(const TiXmlElement * element) {
 #if 0

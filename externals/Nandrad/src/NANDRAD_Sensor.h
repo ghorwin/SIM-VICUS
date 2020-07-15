@@ -24,19 +24,9 @@ Lesser General Public License for more details.
 #include <string>
 
 #include "NANDRAD_Constants.h"
+#include "NANDRAD_CodeGenMacros.h"
 
 class TiXmlElement;
-
-#define NANDRAD_READWRITE \
-	void readXML(const TiXmlElement * element); \
-	TiXmlElement * writeXML(TiXmlElement * parent) const;
-
-#define NANDRAD_READWRITE_PRIVATE \
-	void readXMLPrivate(const TiXmlElement * element); \
-	TiXmlElement * writeXMLPrivate(TiXmlElement * parent) const;
-
-#define NANDRAD_COMP(X) \
-	bool operator!=(const X & other) const;
 
 
 namespace NANDRAD {
@@ -55,7 +45,8 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	NANDRAD_READWRITE
+	void readXML(const TiXmlElement * element);
+	TiXmlElement * writeXML(TiXmlElement * parent) const;
 	NANDRAD_COMP(Sensor)
 
 	// *** PUBLIC MEMBER VARIABLES ***
