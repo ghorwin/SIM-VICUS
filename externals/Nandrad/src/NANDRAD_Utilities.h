@@ -33,6 +33,8 @@ Lesser General Public License for more details.
 
 namespace IBK {
 	class Unit;
+	class Parameter;
+	class Flag;
 }
 
 class TiXmlDocument;
@@ -46,9 +48,9 @@ namespace NANDRAD {
 TiXmlElement * openXMLFile(const std::map<std::string,IBK::Path>  &pathPlaceHolders, const IBK::Path & filename,
 	const std::string & parentXmlTag, TiXmlDocument & doc);
 
-/*! Reads a linear spline from XML element. */
-void readLinearSplineElement(const TiXmlElement * e, const std::string & eName,
-							 IBK::LinearSpline & spl, std::string & name, const std::string * xunit, const std::string * yunit);
+/*! Reads a linear spline from XML element (with proper error handling). */
+void readLinearSplineElement(const TiXmlElement * element, const std::string & eName,
+							 IBK::LinearSpline & spl, std::string & name, IBK::Unit * xunit, IBK::Unit * yunit);
 
 /*! Writes a linear spline into XML format.
 	\code
@@ -59,6 +61,12 @@ void readLinearSplineElement(const TiXmlElement * e, const std::string & eName,
 	\endcode
 */
 void writeLinearSplineElement(TiXmlElement * parent, const std::string & name, const IBK::LinearSpline & spl, const std::string & xunit, const std::string & yunit);
+
+/*! Reads an IBK::Parameter from XML element (with proper error handling). */
+void readParameterElement(const TiXmlElement * element, const std::string & eName, IBK::Parameter & p);
+
+/*! Reads an IBK::Flag from XML element (with proper error handling). */
+void readFlagElement(const TiXmlElement * element, const std::string & eName, IBK::Flag & f);
 
 template <typename T>
 T readPODAttributeValue(const TiXmlElement * element, const TiXmlAttribute * attrib) {

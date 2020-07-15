@@ -25,6 +25,7 @@ Lesser General Public License for more details.
 #include <IBK_StringUtils.h>
 #include <IBK_FileUtils.h>
 #include <IBK_Path.h>
+#include <IBK_Flag.h>
 #include <IBK_Unit.h>
 
 namespace NANDRAD {
@@ -63,7 +64,7 @@ TiXmlElement * openXMLFile(const std::map<std::string,IBK::Path> & pathPlaceHold
 
 
 void readLinearSplineElement(const TiXmlElement * element, const std::string & eName,
-							 IBK::LinearSpline & spl, std::string & name, const std::string * xunit, const std::string * yunit)
+							 IBK::LinearSpline & spl, std::string & name, IBK::Unit * xunit, IBK::Unit * yunit)
 {
 	FUNCID(NANDRAD::readLinearSplineElement);
 	std::string xunitstr, yunitstr, interpolationMethod;
@@ -75,11 +76,76 @@ void readLinearSplineElement(const TiXmlElement * element, const std::string & e
 		throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 			IBK::FormatString("Error reading '"+eName+"' tag.") ), FUNC_ID);
 	}
-
+	try {
+		if (xunit != nullptr)
+			*xunit = IBK::Unit(xunitstr);
+		if (yunit != nullptr)
+			*yunit = IBK::Unit(yunitstr);
+		spl.setValues(x,y);
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+			 IBK::FormatString("Error reading '"+eName+"' tag.") ), FUNC_ID);
+	}
 }
 
-void writeLinearSplineElement(TiXmlElement * parent, const std::string & name, const IBK::LinearSpline & spl, const std::string & xunit, const std::string & yunit) {
-	TiXmlElement::appendIBKLinearSplineElement(parent, name, "", xunit, spl.x(), yunit, spl.y());
+
+void writeLinearSplineElement(TiXmlElement * parent, const std::string & eName, const IBK::LinearSpline & spl, const std::string & xunit, const std::string & yunit) {
+	TiXmlElement::appendIBKLinearSplineElement(parent, eName, "", xunit, spl.x(), yunit, spl.y());
+}
+
+
+void readParameterElement(const TiXmlElement * element, const std::string & eName, IBK::Parameter & p) {
+#if 0
+	std::string namestr, unitstr;
+	double value;
+	const TiXmlAttribute* attrib = TiXmlAttribute::attributeByName(element, "name");
+	if (attrib == NULL){
+		std::stringstream strm;
+		strm << "Error in XML file, line " << element->Row() << ": ";
+		strm << "Missing 'name' attribute in IBK:Parameter element.";
+		throw std::runtime_error(strm.str());
+	}
+	name = attrib->Value();
+	attrib = TiXmlAttribute::attributeByName(element, "unit");
+	if (attrib == NULL) {
+		std::stringstream strm;
+		strm << "Error in XML file, line " << element->Row() << ": ";
+		strm << "Missing 'unit' attribute in IBK:Parameter element.";
+		throw std::runtime_error(strm.str());
+	}
+	unit = attrib->Value();
+
+	const char * const str = element->GetText();
+	std::string valstr;
+	if (str)		valstr = str;
+	else			valstr.clear();
+	std::stringstream valstrm(valstr);
+	// NOTE: reading the parameter with stringstream is not very safe - values like "1,433" will be
+	//       read as 1 without raising an error. Hence, use the IBK::string2val<> function
+	if (!(valstrm >> value)) {
+		std::stringstream strm;
+		strm << "Error in XML file, line " << element->Row() << ": ";
+		strm << "Cannot read value in IBK:Parameter element.";
+		throw std::runtime_error(strm.str());
+	}
+#endif
+}
+
+void readFlagElement(const TiXmlElement * element, const std::string & eName, IBK::Flag & f) {
+	FUNCID(NANDRAD::readFlagElement);
+	std::string namestr;
+	std::string valueStr;
+	TiXmlElement::readSingleAttributeElement(element, "name", namestr, valueStr);
+	if (valueStr == "true" || valueStr == "1")
+		f.set(namestr, true);
+	else if (valueStr == "false" || valueStr == "0")
+		f.set(namestr, false);
+	else {
+		throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+			IBK::FormatString("Error reading '"+eName+"' tag, expected 'true' or 'false' as value.") ), FUNC_ID);
+	}
+
 }
 
 
@@ -92,6 +158,7 @@ IBK::Unit readUnitElement(const TiXmlElement * element, const std::string & eNam
 			IBK::FormatString("Error reading '"+eName+"' tag.") ), FUNC_ID);
 	}
 };
+
 
 
 } // namespace NANDRAD
