@@ -18,7 +18,7 @@
 	Lesser General Public License for more details.
 */
 
-#include <NANDRAD_Interface.h>
+#include <NANDRAD_ConstructionType.h>
 #include <NANDRAD_KeywordList.h>
 
 #include <IBK_messages.h>
@@ -31,8 +31,8 @@
 
 namespace NANDRAD {
 
-void Interface::readXML(const TiXmlElement * element) {
-	FUNCID("Interface::readXML");
+void ConstructionType::readXML(const TiXmlElement * element) {
+	FUNCID("ConstructionType::readXML");
 
 	try {
 		// search for mandatory attributes
@@ -47,10 +47,6 @@ void Interface::readXML(const TiXmlElement * element) {
 				m_id = readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName = attrib->ValueStr();
-			else if (attribName == "zoneId")
-				m_zoneId = readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "zoneDisplayName")
-				m_zoneDisplayName = attrib->ValueStr();
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -58,38 +54,31 @@ void Interface::readXML(const TiXmlElement * element) {
 		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Interface' element."), FUNC_ID);
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'ConstructionType' element."), FUNC_ID);
 	}
 	catch (std::exception & ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading 'Interface' element.").arg(ex2.what()), FUNC_ID);
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'ConstructionType' element.").arg(ex2.what()), FUNC_ID);
 	}
 }
 
-TiXmlElement * Interface::writeXML(TiXmlElement * parent) const {
-	TiXmlElement * e = new TiXmlElement("Interface");
+TiXmlElement * ConstructionType::writeXML(TiXmlElement * parent) const {
+	TiXmlElement * e = new TiXmlElement("ConstructionType");
 	parent->LinkEndChild(e);
 
 	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (!m_displayName.empty())
-		e->SetAttribute("displayName", m_displayName);
-	e->SetAttribute("zoneId", IBK::val2string<unsigned int>(m_zoneId));
-	if (!m_zoneDisplayName.empty())
-		e->SetAttribute("zoneDisplayName", m_zoneDisplayName);
+	e->SetAttribute("displayName", m_displayName);
 
-	for (int i=0; i<NUM_IP; ++i) {
-		if (!m_condition[i].name().empty())
-			TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_condition[i].name(), m_condition[i].isEnabled() ? "true" : "false");
+	if (!m_materialLayers.empty()) {
+		TiXmlElement * child = new TiXmlElement("MaterialLayers");
+		e->LinkEndChild(child);
+
+		for (std::vector<MaterialLayer>::const_iterator ifaceIt = m_materialLayers.begin();
+			ifaceIt != m_materialLayers.end(); ++ifaceIt)
+		{
+			ifaceIt->writeXML(child);
+		}
 	}
 
-	m_heatConduction.writeXML(e);
-
-	m_solarAbsorption.writeXML(e);
-
-	m_longWaveEmission.writeXML(e);
-
-	m_vaporDiffusion.writeXML(e);
-
-	m_airFlow.writeXML(e);
 	return e;
 }
 

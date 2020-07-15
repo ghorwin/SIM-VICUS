@@ -30,6 +30,7 @@ HEADERS += \
 	../../src/NANDRAD_CodeGenMacros.h \
 	../../src/NANDRAD_Constants.h \
 	../../src/NANDRAD_ConstructionInstance.h \
+	../../src/NANDRAD_ConstructionType.h \
 	../../src/NANDRAD_DailyCycle.h \
 	../../src/NANDRAD_EmbeddedObject.h \
 	../../src/NANDRAD_EmbeddedObjectWindow.h \
@@ -45,6 +46,8 @@ HEADERS += \
 	../../src/NANDRAD_KeywordList.h \
 	../../src/NANDRAD_LinearSplineParameter.h \
 	../../src/NANDRAD_Location.h \
+	../../src/NANDRAD_Material.h \
+	../../src/NANDRAD_MaterialLayer.h \
 	../../src/NANDRAD_ObjectList.h \
 	../../src/NANDRAD_OutputDefinition.h \
 	../../src/NANDRAD_OutputGrid.h \
@@ -67,6 +70,7 @@ SOURCES += \
 	../../src/NANDRAD_ArgsParser.cpp \
 	../../src/NANDRAD_Constants.cpp \
 	../../src/NANDRAD_ConstructionInstance.cpp \
+	../../src/NANDRAD_ConstructionType.cpp \
 	../../src/NANDRAD_DailyCycle.cpp \
 	../../src/NANDRAD_EmbeddedObject.cpp \
 	../../src/NANDRAD_EmbeddedObjectWindow.cpp \
@@ -81,6 +85,7 @@ SOURCES += \
 	../../src/NANDRAD_KeywordList.cpp \
 	../../src/NANDRAD_LinearSplineParameter.cpp \
 	../../src/NANDRAD_Location.cpp \
+	../../src/NANDRAD_Material.cpp \
 	../../src/NANDRAD_ObjectList.cpp \
 	../../src/NANDRAD_OutputDefinition.cpp \
 	../../src/NANDRAD_OutputGrid.cpp \
@@ -117,6 +122,9 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_OutputGrid.cpp \
 	../../src/ncg/ncg_NANDRAD_Outputs.cpp \
 	../../src/ncg/ncg_NANDRAD_Project.cpp \
+	../../src/ncg/ncg_NANDRAD_Material.cpp \
+	../../src/ncg/ncg_NANDRAD_MaterialLayer.cpp \
+	../../src/ncg/ncg_NANDRAD_ConstructionType.cpp \
 	../../src/ncg/ncg_NANDRAD_SerializationTest.cpp
 
 

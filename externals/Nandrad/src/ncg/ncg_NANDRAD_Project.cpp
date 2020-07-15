@@ -74,6 +74,30 @@ TiXmlElement * Project::writeXMLPrivate(TiXmlElement * parent) const {
 	}
 
 
+	if (!m_constructionType.empty()) {
+		TiXmlElement * child = new TiXmlElement("ConstructionType");
+		e->LinkEndChild(child);
+
+		for (std::vector<ConstructionType>::const_iterator ifaceIt = m_constructionType.begin();
+			ifaceIt != m_constructionType.end(); ++ifaceIt)
+		{
+			ifaceIt->writeXML(child);
+		}
+	}
+
+
+	if (!m_material.empty()) {
+		TiXmlElement * child = new TiXmlElement("Material");
+		e->LinkEndChild(child);
+
+		for (std::vector<Material>::const_iterator ifaceIt = m_material.begin();
+			ifaceIt != m_material.end(); ++ifaceIt)
+		{
+			ifaceIt->writeXML(child);
+		}
+	}
+
+
 	m_simulationParameter.writeXML(e);
 
 	m_solverParameter.writeXML(e);

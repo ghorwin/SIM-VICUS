@@ -36,7 +36,9 @@ class TiXmlElement;
 #include "NANDRAD_Outputs.h"
 #include "NANDRAD_Location.h"
 #include "NANDRAD_SpaceType.h"
-#include "NANDRAD_Zone.h"
+#include "NANDRAD_ConstructionType.h"
+#include "NANDRAD_Material.h"
+
 
 namespace NANDRAD {
 
@@ -96,9 +98,15 @@ public:
 	/*! All active and constant thermal zones.*/
 	std::vector<Zone>								m_zones;							// XML:E
 
-	/*! All construction instances refernce a construction and a thermal zone
-		(key is construction instance ID, value is the construction instance definition). */
+	/*! All construction instances refernce a construction and a thermal zone. */
 	std::vector<ConstructionInstance>				m_constructionInstances;			// XML:E
+
+
+	/*! All construction types reference construction parameters. */
+	std::vector<ConstructionType>					m_constructionType;					// XML:E
+
+	/*! All material types. */
+	std::vector<Material>							m_material;							// XML:E
 
 	/*! Simulation settings: all global parameters.*/
 	SimulationParameter								m_simulationParameter;				// XML:E
