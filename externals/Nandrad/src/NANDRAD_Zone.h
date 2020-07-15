@@ -109,7 +109,7 @@ public:
 	IBK::Parameter				m_para[NUM_ZP];			// XML:E
 
 	/*! Optional schedule reference name for constant zones. */
-	std::string					m_scheduleName;			// XML:E
+	std::string					m_scheduleName;			// XML:E:not-empty
 
 
 	// *** Variables used only during simulation ***

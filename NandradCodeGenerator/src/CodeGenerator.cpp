@@ -370,20 +370,23 @@ void CodeGenerator::generateReadWriteCode() {
 					xmlInfo.typeStr == "double" ||
 					xmlInfo.typeStr == "bool")
 				{
-					elements += "\n	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), IBK::val2string<"+xmlInfo.typeStr+">(m_"+varName+"));\n";
+					elements += "	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), IBK::val2string<"+xmlInfo.typeStr+">(m_"+varName+"));\n";
 				}
 				else if (xmlInfo.typeStr == "std::string") {
-					elements += "\n	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+");\n";
+					if (xmlInfo.notEmpty) {
+						elements += "	if (!m_" + varName + ".empty())\n	";
+					}
+					elements += "	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+");\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Unit") {
-					elements += "\n	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".name());\n";
+					elements += "	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".name());\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Path") {
-					elements += "\n	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".str());\n";
+					elements += "	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".str());\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::LinearSpline") {
 					includes.insert("NANDRAD_Utilities.h");
-					elements += "\n	writeLinearSplineElement(e, \""+tagName+"\", m_"+varName+", std::string(), std::string());\n";
+					elements += "	writeLinearSplineElement(e, \""+tagName+"\", m_"+varName+", std::string(), std::string());\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Parameter") {
 					// check for array syntax
@@ -401,7 +404,7 @@ void CodeGenerator::generateReadWriteCode() {
 							"	}\n";
 					}
 					else {
-						elements += "\n	TiXmlElement::appendIBKParameterElement(e, m_"+varName+".name, m_"+varName+".IO_unit.name(), m_"+varName+".get_value());\n";
+						elements += "	TiXmlElement::appendIBKParameterElement(e, m_"+varName+".name, m_"+varName+".IO_unit.name(), m_"+varName+".get_value());\n";
 					}
 				}
 				else if (xmlInfo.typeStr == "IBK::IntPara") {
@@ -416,11 +419,11 @@ void CodeGenerator::generateReadWriteCode() {
 						elements += "\n"
 							"	for (unsigned int i=0; i<"+numType+"; ++i) {\n"
 							"		if (!m_"+varName+"[i].name.empty())\n"
-							"			TiXmlElement::appendIBKParameterElement(e, m_"+varName+"[i].name, std::string(), m_"+varName+"[i].value, true);\n"
+							"			TiXmlElement::appendSingleAttributeElement(e, \"IBK:IntPara\", \"name\", m_"+varName+"[i].name, IBK::val2string(m_"+varName+"[i].value));\n"
 							"	}\n";
 					}
 					else {
-						elements += "\n	TiXmlElement::appendIBKParameterElement(e, m_"+varName+".name, std::string(), m_"+varName+".value, true);\n";
+						elements += "	TiXmlElement::appendSingleAttributeElement(e, \"IBK:IntPara\", \"name\", m_"+varName+".name, IBK::val2string(m_"+varName+".value));\n";
 					}
 				}
 				else if (xmlInfo.typeStr == "IBK::Flag") {
@@ -438,7 +441,7 @@ void CodeGenerator::generateReadWriteCode() {
 							"	}\n";
 					}
 					else {
-						elements += "\n	TiXmlElement::appendSingleAttributeElement(e, \"IBK:Flag\", \"name\", m_"+varName+".name(), m_"+varName+".isEnabled() ? \"true\" : \"false\");\n";
+						elements += "	TiXmlElement::appendSingleAttributeElement(e, \"IBK:Flag\", \"name\", m_"+varName+".name(), m_"+varName+".isEnabled() ? \"true\" : \"false\");\n";
 					}
 				}
 				else if (xmlInfo.typeStr.find("std::vector<") == 0) {
