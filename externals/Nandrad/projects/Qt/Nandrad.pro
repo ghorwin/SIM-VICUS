@@ -48,6 +48,7 @@ HEADERS += \
 	../../src/NANDRAD_Location.h \
 	../../src/NANDRAD_Material.h \
 	../../src/NANDRAD_MaterialLayer.h \
+	../../src/NANDRAD_ModelInputReference.h \
 	../../src/NANDRAD_ObjectList.h \
 	../../src/NANDRAD_OutputDefinition.h \
 	../../src/NANDRAD_OutputGrid.h \
@@ -86,6 +87,7 @@ SOURCES += \
 	../../src/NANDRAD_LinearSplineParameter.cpp \
 	../../src/NANDRAD_Location.cpp \
 	../../src/NANDRAD_Material.cpp \
+	../../src/NANDRAD_ModelInputReference.cpp \
 	../../src/NANDRAD_ObjectList.cpp \
 	../../src/NANDRAD_OutputDefinition.cpp \
 	../../src/NANDRAD_OutputGrid.cpp \

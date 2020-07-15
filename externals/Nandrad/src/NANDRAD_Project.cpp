@@ -470,14 +470,7 @@ void Project::writeXML(const IBK::Path & filename) const {
 
 	writeXMLPrivate(root);
 
-//	// write all project parts
-//	m_projectInfo.writeXML(root);
-//	// for zones, construction instances and models allow additional comments
-
-//	m_simulationParameter.writeXML(root);
-//	//m_solverParameter.writeXML(root);
-//	m_location.writeXML(root);
-////	writeGeometriesXML(root);
+	//	m_location.writeXML(root);
 //	writeZonesXML(root);
 ////	writeZoneListsXML(root);
 //	writeConstructionInstancesXML(root);
@@ -723,50 +716,6 @@ void Project::writeDataBaseXML(TiXmlElement * parent) const {
 }
 // ----------------------------------------------------------------------------
 
-void Project::writeZonesXML(TiXmlElement * parent) const {
-#if 0
-	// only write if we have any
-	if (m_zones.empty())
-		return;
-
-	// write neighboring zones
-	TiXmlComment::addComment(parent,
-		"All thermal zones.");
-
-	TiXmlElement * child = new TiXmlElement("Zones");
-	parent->LinkEndChild(child);
-
-	for (std::map< unsigned int, Zone >::const_iterator it = m_zones.begin();
-		it != m_zones.end(); ++it)
-	{
-		it->second.writeXML( child );
-	}
-
-	TiXmlComment::addSeparatorComment(parent);
-#endif
-}
-// ----------------------------------------------------------------------------
-
-
-void Project::writeConstructionInstancesXML(TiXmlElement * parent) const {
-#if 0
-	// only write if we have any
-	if (m_constructionInstances.empty())
-		return;
-
-	// write neighboring zones
-	TiXmlComment::addComment(parent,
-		"All wall constructions.");
-	TiXmlElement * child = new TiXmlElement("ConstructionInstances");
-	parent->LinkEndChild(child);
-	std::map< unsigned int, ConstructionInstance >::const_iterator it = m_constructionInstances.begin();
-	for(;it != m_constructionInstances.end(); ++it) {
-		it->second.writeXML(child);
-	}
-	TiXmlComment::addSeparatorComment(parent);
-#endif
-}
-// ----------------------------------------------------------------------------
 
 void Project::resolveReferenceNames() {
 #if 0

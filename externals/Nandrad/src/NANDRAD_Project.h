@@ -137,13 +137,6 @@ private:
 	void readDataBaseXML(const TiXmlElement * element);
 	void writeDataBaseXML(TiXmlElement * parent) const;
 
-	void writeZonesXML(TiXmlElement * parent) const;
-	void writeConstructionInstancesXML(TiXmlElement * parent) const;
-
-	void readGeometriesXML( const TiXmlElement * parent );
-	void writeGeometriesXML(TiXmlElement * parent) const;
-
-
 	/*!	Checks whether all construction types and materials have a unique ID number.
 	*/
 	void checkDatabaseIDs();

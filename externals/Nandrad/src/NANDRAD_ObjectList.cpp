@@ -30,51 +30,20 @@ Lesser General Public License for more details.
 
 namespace NANDRAD {
 
-ObjectList::ObjectList()
-{
-}
-
-
-#if 0
 void ObjectList::readXML(const TiXmlElement * element) {
-	const char * const FUNC_ID = "[ObjectList::readXML]";
+	FUNCID("ObjectList::readXML");
 
-	// read outputgrid name
+	// read base stuff
+	readXMLPrivate(element);
+#if 0
 	try {
-		const TiXmlAttribute * attrib = TiXmlAttribute::attributeByName(element, "name");
-		if (!attrib)
-			throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing 'name' attribute.")
-				), FUNC_ID);
-
-		m_name = attrib->Value();
-
-		// read sub-elements
+		// read filter ID
 		for (const TiXmlElement * c = element->FirstChildElement(); c; c = c->NextSiblingElement()) {
 			// determine data based on element name
 			std::string cname = c->Value();
-			if(cname == "FilterType") {
-				if(!KeywordList::KeywordExists("ModelInputReference::referenceType_t", c->GetText()) )
-				{
-					throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-						IBK::FormatString("Unknown FilterType '%1'.").arg(c->GetText())
-						), FUNC_ID);
-				}
-				m_filterType = (ModelInputReference::referenceType_t)
-						KeywordList::Enumeration("ModelInputReference::referenceType_t", c->GetText());
-			}
 			// location specification is found
-			else if(cname == "FilterID") {
+			if (cname == "FilterID") {
 				m_filterID.setEncodedString(c->GetText());
-			}
-			// space type specification is found
-			else if(cname == "FilterSpaceType") {
-				// space types are devided by ','
-				IBK::explode(c->GetText(),m_filterSpaceType,',',true);
-			}
-			// location specification is found
-			else if(cname == "FilterDisplayName") {
-				m_filterDisplayName = c->GetText();
 			}
 			else {
 				throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
@@ -107,17 +76,17 @@ void ObjectList::readXML(const TiXmlElement * element) {
 	catch (std::exception &ex2) {
 		throw IBK::Exception(IBK::FormatString("%1\nError reading 'ObjectList' element.").arg(ex2.what()), FUNC_ID);
 	}
+#endif
 }
 
 
-void ObjectList::writeXML(TiXmlElement * parent) const {
+TiXmlElement * ObjectList::writeXML(TiXmlElement * parent) const {
 
-	// write output definition
-	if(detailedOutput)
-		TiXmlComment::addComment(parent,IBK::FormatString("Specify all %1s that belong to '%2'.")
-							.arg(KeywordList::Keyword("ModelInputReference::referenceType_t", m_filterType) )
-							.arg(m_name)
-							.str());
+	// first basic code
+	TiXmlElement * e = writeXMLPrivate(parent);
+
+	// now write custom stuff
+#if 0
 	TiXmlElement * e = new TiXmlElement("ObjectList");
 	parent->LinkEndChild(e);
 
@@ -152,8 +121,9 @@ void ObjectList::writeXML(TiXmlElement * parent) const {
 													nullptr, std::string(),
 													m_filterDisplayName);
 	}
-}
 #endif
+	return e;
+}
 
 
 } // namespace NANDRAD

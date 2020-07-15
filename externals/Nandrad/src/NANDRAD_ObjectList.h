@@ -48,28 +48,17 @@ namespace NANDRAD {
 	<ObjectList>objectListName<\ObjectList>
 */
 class ObjectList {
+	NANDRAD_READWRITE_PRIVATE
 public:
 
-	/*! Default constructor. */
-	ObjectList();
-
 	// *** PUBLIC MEMBER FUNCTIONS ***
-
-	/*! Reads the data from the xml element.
-		Throws an IBK::Exception if a syntax error occurs.
-	*/
-	//void readXML(const TiXmlElement * element);
-	/*! Appends the element to the parent xml element.
-		Throws an IBK::Exception in case of invalid data.
-	*/
-	//void writeXML(TiXmlElement * parent) const;
 
 	NANDRAD_READWRITE
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID-Name of the object list. */
-	std::string									m_name;						// XML:E
+	std::string									m_name;						// XML:A:required
 
 	/*! Encodes the referenced model IDs. */
 	IDGroup										m_filterID;

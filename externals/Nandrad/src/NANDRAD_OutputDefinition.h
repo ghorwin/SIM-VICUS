@@ -101,8 +101,7 @@ public:
 	std::string								m_gridName;					// XML:E
 
 
-	// Variables only used during solver runtime
-
+	// *** Variables used only during simulation ***
 
 	/*! Pointer to object list, assigned during project initialization within solver for fast access. */
 	const ObjectList						*m_objectListRef = nullptr;
