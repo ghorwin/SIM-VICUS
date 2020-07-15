@@ -36,14 +36,6 @@ void SolverParameter::readXML(const TiXmlElement * element) {
 	FUNCID("SolverParameter::readXML");
 
 	try {
-		const TiXmlAttribute * attrib = element->FirstAttribute();
-		while (attrib) {
-			const std::string & attribName = attrib->NameStr();
-			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			attrib = attrib->Next();
-		}
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();

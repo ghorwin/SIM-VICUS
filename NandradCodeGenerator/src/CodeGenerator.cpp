@@ -495,256 +495,275 @@ void CodeGenerator::generateReadWriteCode() {
 			attribs.clear();
 			elements.clear();
 
-			// generate code for attributes
-			std::string elseStr;
-			for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
-				if (xmlInfo.element || !xmlInfo.required) continue;
-				std::string attribName = xmlInfo.varName;
-
-				attribs +=
-					"		// search for mandatory attributes\n"
-					"		if (!TiXmlAttribute::attributeByName(element, \""+attribName+"\"))\n"
-					"			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
-					"				IBK::FormatString(\"Missing required '"+attribName+"' attribute.\") ), FUNC_ID);\n"
-					"\n";
-			}
-
-			attribs +=
-					"		const TiXmlAttribute * attrib = element->FirstAttribute();\n"
-					"		while (attrib) {\n"
-					"			const std::string & attribName = attrib->NameStr();\n";
-
+			// check if we have any attributes to read
+			bool haveAttribs = false;
 			for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
 				if (xmlInfo.element) continue;
-				std::string attribName = xmlInfo.varName;
-				attribs += "			"+elseStr+"if (attribName == \""+attribName+"\")\n";
-				// now type specific code
-				if (xmlInfo.typeStr == "int" ||
-					xmlInfo.typeStr == "unsigned int" ||
-					xmlInfo.typeStr == "double" ||
-					xmlInfo.typeStr == "bool")
-				{
+				haveAttribs = true;
+				break;
+			}
+
+			// generate code for attributes
+			std::string elseStr;
+
+			if (haveAttribs) {
+				for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
+					if (xmlInfo.element || !xmlInfo.required) continue;
+					std::string attribName = xmlInfo.varName;
+
 					attribs +=
-						"				m_"+attribName+" = readPODAttributeValue<"+xmlInfo.typeStr+">(element, attrib);\n";
-					includes.insert("NANDRAD_Utilities.h");
+						"		// search for mandatory attributes\n"
+						"		if (!TiXmlAttribute::attributeByName(element, \""+attribName+"\"))\n"
+						"			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
+						"				IBK::FormatString(\"Missing required '"+attribName+"' attribute.\") ), FUNC_ID);\n"
+						"\n";
 				}
-				else if (xmlInfo.typeStr == "IBK::Path") {
-					attribs +=
-						"				m_"+attribName+" = IBK::Path(attrib->ValueStr());\n";
-				}
-				else if (xmlInfo.typeStr == "IBK::Unit") {
-					attribs +=
-						"				try {\n"
-						"					m_"+attribName+" = IBK::Unit(attrib->ValueStr());\n"
-						"				}\n"
-						"				catch (IBK::Exception & ex) {\n"
-						"					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
-						"						IBK::FormatString(\"Error converting '\"+attrib->ValueStr()+\"' attribute (unknown unit).\") ), FUNC_ID);\n"
-						"				}\n";
-				}
-				else if (xmlInfo.typeStr == "std::string") {
-					attribs +=
-						"				m_"+attribName+" = attrib->ValueStr();\n";
-				}
-				else {
-					// check for enum types
-					bool hadEnumType = false;
-					for (const ClassInfo::EnumInfo & einfo : ci.m_enumInfo) {
-						if (einfo.enumType() == xmlInfo.typeStr) {
-							hadEnumType = true;
-							// generate write code for enum type
-							attribs +=
-								"			try {\n"
-								"				m_"+attribName+" = ("+einfo.enumType()+")KeywordList::Enumeration(\""+einfo.categoryName+"\", attrib->ValueStr());\n"
-								"			}\n"
-								"			catch (IBK::Exception & ex) {\n"
-								"				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
-								"					IBK::FormatString(\"Invalid or unknown keyword '\"+attrib->ValueStr()+\"'.\") ), FUNC_ID);\n"
-								"			}\n";
-							includes.insert("NANDRAD_KeywordList.h");
-						}
+
+				attribs +=
+						"		const TiXmlAttribute * attrib = element->FirstAttribute();\n"
+						"		while (attrib) {\n"
+						"			const std::string & attribName = attrib->NameStr();\n";
+
+				for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
+					if (xmlInfo.element) continue;
+					std::string attribName = xmlInfo.varName;
+					attribs += "			"+elseStr+"if (attribName == \""+attribName+"\")\n";
+					// now type specific code
+					if (xmlInfo.typeStr == "int" ||
+						xmlInfo.typeStr == "unsigned int" ||
+						xmlInfo.typeStr == "double" ||
+						xmlInfo.typeStr == "bool")
+					{
+						attribs +=
+							"				m_"+attribName+" = readPODAttributeValue<"+xmlInfo.typeStr+">(element, attrib);\n";
+						includes.insert("NANDRAD_Utilities.h");
 					}
-					if (hadEnumType) continue;
-					throw IBK::Exception(IBK::FormatString("(Still) unsupported XML attrib type '%1' for variable '%2'.")
-										 .arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
-				}
-				elseStr = "else ";
-			} // end attribute reading loop
-			attribs +=
-					"			else {\n"
-					"				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
-					"			}\n"
-					"			attrib = attrib->Next();\n"
-					"		}\n";
+					else if (xmlInfo.typeStr == "IBK::Path") {
+						attribs +=
+							"				m_"+attribName+" = IBK::Path(attrib->ValueStr());\n";
+					}
+					else if (xmlInfo.typeStr == "IBK::Unit") {
+						attribs +=
+							"				try {\n"
+							"					m_"+attribName+" = IBK::Unit(attrib->ValueStr());\n"
+							"				}\n"
+							"				catch (IBK::Exception & ex) {\n"
+							"					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
+							"						IBK::FormatString(\"Error converting '\"+attrib->ValueStr()+\"' attribute (unknown unit).\") ), FUNC_ID);\n"
+							"				}\n";
+					}
+					else if (xmlInfo.typeStr == "std::string") {
+						attribs +=
+							"				m_"+attribName+" = attrib->ValueStr();\n";
+					}
+					else {
+						// check for enum types
+						bool hadEnumType = false;
+						for (const ClassInfo::EnumInfo & einfo : ci.m_enumInfo) {
+							if (einfo.enumType() == xmlInfo.typeStr) {
+								hadEnumType = true;
+								// generate write code for enum type
+								attribs +=
+									"			try {\n"
+									"				m_"+attribName+" = ("+einfo.enumType()+")KeywordList::Enumeration(\""+einfo.categoryName+"\", attrib->ValueStr());\n"
+									"			}\n"
+									"			catch (IBK::Exception & ex) {\n"
+									"				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
+									"					IBK::FormatString(\"Invalid or unknown keyword '\"+attrib->ValueStr()+\"'.\") ), FUNC_ID);\n"
+									"			}\n";
+								includes.insert("NANDRAD_KeywordList.h");
+							}
+						}
+						if (hadEnumType) continue;
+						throw IBK::Exception(IBK::FormatString("(Still) unsupported XML attrib type '%1' for variable '%2'.")
+											 .arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
+					}
+					elseStr = "else ";
+				} // end attribute reading loop
+				attribs +=
+						"			else {\n"
+						"				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
+						"			}\n"
+						"			attrib = attrib->Next();\n"
+						"		}\n";
+			}
 
-
-			// now read-code for elements/tags
+			// check if we have any attributes to read
+			bool haveTags = false;
 			for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
-				if (!xmlInfo.element || !xmlInfo.required) continue;
-				std::string varName = xmlInfo.varName;
-				std::string tagName = char(toupper(varName[0])) + varName.substr(1);
+				if (!xmlInfo.element) continue;
+				haveTags = true;
+				break;
+			}
+
+			if (haveTags) {
+				// now read-code for elements/tags
+				for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
+					if (!xmlInfo.element || !xmlInfo.required) continue;
+					std::string varName = xmlInfo.varName;
+					std::string tagName = char(toupper(varName[0])) + varName.substr(1);
+
+					elements +=
+						"		// search for mandatory elements\n"
+						"		if (!element->FirstChildElement(\""+tagName+"\")\n"
+						"			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
+						"				IBK::FormatString(\"Missing required '"+tagName+"' element.\") ), FUNC_ID);\n"
+						"\n";
+				}
 
 				elements +=
-					"		// search for mandatory elements\n"
-					"		if (!element->FirstChildElement(\""+tagName+"\")\n"
-					"			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
-					"				IBK::FormatString(\"Missing required '"+tagName+"' element.\") ), FUNC_ID);\n"
-					"\n";
+						"		const TiXmlElement * c = element->FirstChildElement();\n"
+						"		while (c) {\n"
+						"			const std::string & cName = c->ValueStr();\n";
+
+				// first scan for all group-type xml tags
+				std::set<std::string> groupTags;
+				for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
+					if (!xmlInfo.element) continue;
+					if (xmlInfo.typeStr == "IBK::Parameter" ||
+						xmlInfo.typeStr == "IBK::LinearSpline" ||
+						xmlInfo.typeStr == "IBK::Flag" ||
+						xmlInfo.typeStr == "IBK::IntPara")
+					{
+						groupTags.insert(xmlInfo.typeStr);
+					}
+				}
+
+				elseStr.clear();
+				for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
+					if (!xmlInfo.element) continue;
+					std::string varName = xmlInfo.varName;
+					std::string tagName = char(toupper(varName[0])) + varName.substr(1);
+					// now type specific code
+					if (xmlInfo.typeStr == "int" ||
+						xmlInfo.typeStr == "unsigned int" ||
+						xmlInfo.typeStr == "double" ||
+						xmlInfo.typeStr == "bool")
+					{
+						includes.insert("NANDRAD_Utilities.h");
+						elements +=
+							"			"+elseStr+"if (cName == \""+tagName+"\")\n"
+							"				m_"+varName+" = readPODElement<"+xmlInfo.typeStr+">(c, cName);\n";
+					}
+					else if (xmlInfo.typeStr == "std::string") {
+						elements +=
+							"			"+elseStr+"if (cName == \""+tagName+"\")\n"
+							"				m_"+varName+" = c->GetText();\n";
+					}
+					else if (xmlInfo.typeStr == "IBK::Unit") {
+						includes.insert("NANDRAD_Utilities.h");
+						elements +=
+							"			"+elseStr+"if (cName == \""+tagName+"\")\n"
+							"				m_"+varName+" = readUnitElement(c, cName);\n";
+					}
+					else if (xmlInfo.typeStr == "IBK::Path") {
+						elements +=
+							"			"+elseStr+"if (cName == \""+tagName+"\")\n"
+							"				m_"+varName+" = IBK::Path(c->GetText());\n";
+					}
+
+					// for the group types, we generate the code only once and switch the parameter in an internal loop
+
+					else if (xmlInfo.typeStr == "IBK::LinearSpline" && groupTags.find("IBK::LinearSpline") != groupTags.end()) {
+						groupTags.erase(groupTags.find("IBK::LinearSpline")); // only generate code once
+						includes.insert("NANDRAD_Utilities.h");
+
+						elements +=
+							"			"+elseStr+"if (cName == \"IBK:LinearSpline\") {\n"
+							"				IBK::LinearSpline spl;\n"
+							"				std::string name;\n"
+							"				readLinearSplineElement(c, cName, spl, name, nullptr, nullptr);\n";
+						// now loop all linear spline variables and generate code for assigning these
+						std::string caseElse;
+						for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
+							if (!xmlInfo.element || xmlInfo.typeStr != "IBK::LinearSpline") continue;
+							elements += "				"+caseElse+"if (name == \""+tagName+"\")		m_"+varName+" = spl;\n";
+							caseElse = "else ";
+						}
+						elements +=
+							"				else {\n"
+							"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
+							"				}\n"
+							"			}\n";
+					}
+					else if (xmlInfo.typeStr == "IBK::Parameter" && groupTags.find("IBK::Parameter") != groupTags.end()) {
+						groupTags.erase(groupTags.find("IBK::Parameter")); // only generate code once
+						includes.insert("NANDRAD_Utilities.h");
+
+						elements +=
+							"			"+elseStr+"if (cName == \"IBK:Parameter\") {\n"
+							"				IBK::Parameter p;\n"
+							"				readParameterElement(c, cName, p);\n";
+						// now loop all IBK::Parameter variables and generate code for assigning these
+						std::string caseElse;
+						for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
+							if (!xmlInfo.element || xmlInfo.typeStr != "IBK::Parameter") continue;
+							// now determine if this is a scalar parameter or a para[xxx] variant
+							elements +=	"				"+caseElse+"if (p.name == \""+tagName+"\") {\n";
+							elements +=		"				}\n";
+							caseElse = "else ";
+						}
+						elements +=
+							"				else {\n"
+							"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
+							"				}\n"
+							"			}\n";
+					}
+					else if (xmlInfo.typeStr == "IBK::IntPara" && groupTags.find("IBK::IntPara") != groupTags.end()) {
+						groupTags.erase(groupTags.find("IBK::IntPara")); // only generate code once
+						includes.insert("NANDRAD_Utilities.h");
+
+						elements +=
+							"			"+elseStr+"if (cName == \"IBK:IntPara\") {\n"
+							"				IBK::Parameter p;\n"
+							"				readParameterElement(c, cName, p);\n";
+						// now loop all IBK::Parameter variables and generate code for assigning these
+						std::string caseElse;
+						for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
+							if (!xmlInfo.element || xmlInfo.typeStr != "IBK::Parameter") continue;
+							// now determine if this is a scalar parameter or a para[xxx] variant
+							elements +=	"				"+caseElse+"if (p.name == \""+tagName+"\") {\n";
+							elements +=		"				}\n";
+							caseElse = "else ";
+						}
+						elements +=
+							"				else {\n"
+							"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
+							"				}\n"
+							"			}\n";
+					}
+					else if (xmlInfo.typeStr == "IBK::Flag" && groupTags.find("IBK::Flag") != groupTags.end()) {
+						groupTags.erase(groupTags.find("IBK::Flag")); // only generate code once
+						includes.insert("NANDRAD_Utilities.h");
+
+						elements +=
+							"			"+elseStr+"if (cName == \"IBK:Flag\") {\n"
+							"				IBK::Flag f;\n"
+							"				readFlagElement(c, cName, f);\n";
+						// now loop all IBK::Flag variables and generate code for assigning these
+						std::string caseElse;
+						for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
+							if (!xmlInfo.element || xmlInfo.typeStr != "IBK::Flag") continue;
+							// now determine if this is a scalar parameter or a flag[xxx] variant
+							elements +=	"				"+caseElse+"if (f.name() == \""+tagName+"\") {\n";
+							elements +=		"				}\n";
+							caseElse = "else ";
+						}
+						elements +=
+							"				else {\n"
+							"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
+							"				}\n"
+							"			}\n";
+					}
+					elseStr = "else ";
+				} // end element reading loop
+				elements +=
+						"			else {\n"
+						"				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
+						"			}\n"
+						"			c = c->NextSiblingElement();\n"
+						"		}\n";
 			}
-
-			elements +=
-					"		const TiXmlElement * c = element->FirstChildElement();\n"
-					"		while (c) {\n"
-					"			const std::string & cName = c->ValueStr();\n";
-
-			// first scan for all group-type xml tags
-			std::set<std::string> groupTags;
-			for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
-				if (!xmlInfo.element) continue;
-				if (xmlInfo.typeStr == "IBK::Parameter" ||
-					xmlInfo.typeStr == "IBK::LinearSpline" ||
-					xmlInfo.typeStr == "IBK::Flag" ||
-					xmlInfo.typeStr == "IBK::IntPara")
-				{
-					groupTags.insert(xmlInfo.typeStr);
-				}
-			}
-
-			elseStr.clear();
-			for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
-				if (!xmlInfo.element) continue;
-				std::string varName = xmlInfo.varName;
-				std::string tagName = char(toupper(varName[0])) + varName.substr(1);
-				// now type specific code
-				if (xmlInfo.typeStr == "int" ||
-					xmlInfo.typeStr == "unsigned int" ||
-					xmlInfo.typeStr == "double" ||
-					xmlInfo.typeStr == "bool")
-				{
-					includes.insert("NANDRAD_Utilities.h");
-					elements +=
-						"			"+elseStr+"if (cName == \""+tagName+"\")\n"
-						"				m_"+varName+" = readPODElement<"+xmlInfo.typeStr+">(c, cName);\n";
-				}
-				else if (xmlInfo.typeStr == "std::string") {
-					elements +=
-						"			"+elseStr+"if (cName == \""+tagName+"\")\n"
-						"				m_"+varName+" = c->GetText();\n";
-				}
-				else if (xmlInfo.typeStr == "IBK::Unit") {
-					includes.insert("NANDRAD_Utilities.h");
-					elements +=
-						"			"+elseStr+"if (cName == \""+tagName+"\")\n"
-						"				m_"+varName+" = readUnitElement(c, cName);\n";
-				}
-				else if (xmlInfo.typeStr == "IBK::Path") {
-					elements +=
-						"			"+elseStr+"if (cName == \""+tagName+"\")\n"
-						"				m_"+varName+" = IBK::Path(c->GetText());\n";
-				}
-
-				// for the group types, we generate the code only once and switch the parameter in an internal loop
-
-				else if (xmlInfo.typeStr == "IBK::LinearSpline" && groupTags.find("IBK::LinearSpline") != groupTags.end()) {
-					groupTags.erase(groupTags.find("IBK::LinearSpline")); // only generate code once
-					includes.insert("NANDRAD_Utilities.h");
-
-					elements +=
-						"			"+elseStr+"if (cName == \"IBK:LinearSpline\") {\n"
-						"				IBK::LinearSpline spl;\n"
-						"				std::string name;\n"
-						"				readLinearSplineElement(c, cName, spl, name, nullptr, nullptr);\n";
-					// now loop all linear spline variables and generate code for assigning these
-					std::string caseElse;
-					for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
-						if (!xmlInfo.element || xmlInfo.typeStr != "IBK::LinearSpline") continue;
-						elements += "				"+caseElse+"if (name == \""+tagName+"\")		m_"+varName+" = spl;\n";
-						caseElse = "else ";
-					}
-					elements +=
-						"				else {\n"
-						"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
-						"				}\n"
-						"			}\n";
-				}
-				else if (xmlInfo.typeStr == "IBK::Parameter" && groupTags.find("IBK::Parameter") != groupTags.end()) {
-					groupTags.erase(groupTags.find("IBK::Parameter")); // only generate code once
-					includes.insert("NANDRAD_Utilities.h");
-
-					elements +=
-						"			"+elseStr+"if (cName == \"IBK:Parameter\") {\n"
-						"				IBK::Parameter p;\n"
-						"				readParameterElement(c, cName, p);\n";
-					// now loop all IBK::Parameter variables and generate code for assigning these
-					std::string caseElse;
-					for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
-						if (!xmlInfo.element || xmlInfo.typeStr != "IBK::Parameter") continue;
-						// now determine if this is a scalar parameter or a para[xxx] variant
-						elements +=	"				"+caseElse+"if (p.name == \""+tagName+"\") {\n";
-						elements +=		"				}\n";
-						caseElse = "else ";
-					}
-					elements +=
-						"				else {\n"
-						"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
-						"				}\n"
-						"			}\n";
-				}
-				else if (xmlInfo.typeStr == "IBK::IntPara" && groupTags.find("IBK::IntPara") != groupTags.end()) {
-					groupTags.erase(groupTags.find("IBK::IntPara")); // only generate code once
-					includes.insert("NANDRAD_Utilities.h");
-
-					elements +=
-						"			"+elseStr+"if (cName == \"IBK:IntPara\") {\n"
-						"				IBK::Parameter p;\n"
-						"				readParameterElement(c, cName, p);\n";
-					// now loop all IBK::Parameter variables and generate code for assigning these
-					std::string caseElse;
-					for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
-						if (!xmlInfo.element || xmlInfo.typeStr != "IBK::Parameter") continue;
-						// now determine if this is a scalar parameter or a para[xxx] variant
-						elements +=	"				"+caseElse+"if (p.name == \""+tagName+"\") {\n";
-						elements +=		"				}\n";
-						caseElse = "else ";
-					}
-					elements +=
-						"				else {\n"
-						"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
-						"				}\n"
-						"			}\n";
-				}
-				else if (xmlInfo.typeStr == "IBK::Flag" && groupTags.find("IBK::Flag") != groupTags.end()) {
-					groupTags.erase(groupTags.find("IBK::Flag")); // only generate code once
-					includes.insert("NANDRAD_Utilities.h");
-
-					elements +=
-						"			"+elseStr+"if (cName == \"IBK:Flag\") {\n"
-						"				IBK::Flag f;\n"
-						"				readFlagElement(c, cName, f);\n";
-					// now loop all IBK::Flag variables and generate code for assigning these
-					std::string caseElse;
-					for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
-						if (!xmlInfo.element || xmlInfo.typeStr != "IBK::Flag") continue;
-						// now determine if this is a scalar parameter or a flag[xxx] variant
-						elements +=	"				"+caseElse+"if (f.name() == \""+tagName+"\") {\n";
-						elements +=		"				}\n";
-						caseElse = "else ";
-					}
-					elements +=
-						"				else {\n"
-						"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
-						"				}\n"
-						"			}\n";
-				}
-				elseStr = "else ";
-			} // end element reading loop
-			elements +=
-					"			else {\n"
-					"				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
-					"			}\n"
-					"			c = c->NextSiblingElement();\n"
-					"		}\n";
-
 
 			// insert code into readXML() function block
 			readCode = IBK::replace_string(readCode, "${ATTRIBUTES}", attribs, IBK::ReplaceFirst);

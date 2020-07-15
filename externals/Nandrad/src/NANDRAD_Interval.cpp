@@ -34,8 +34,8 @@ Lesser General Public License for more details.
 
 namespace NANDRAD {
 
-void Interval::readXML(const TiXmlElement * element) {
 #if 0
+void Interval::readXML(const TiXmlElement * element) {
 	const char * const FUNC_ID = "[Interval::readXML]";
 	try {
 		// store duration and end time
@@ -90,8 +90,8 @@ void Interval::readXML(const TiXmlElement * element) {
 	catch (std::exception & ex2) {
 		throw IBK::Exception(IBK::FormatString("%1\nError reading 'Interval' element.").arg(ex2.what()), FUNC_ID);
 	}
-#endif
 }
+#endif
 
 
 bool Interval::operator!=(const Interval & other) const {

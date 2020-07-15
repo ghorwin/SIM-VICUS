@@ -46,7 +46,7 @@ namespace NANDRAD {
 class SimulationParameter {
 public:
 
-	
+
 	enum para_t {
 		SP_RADIATIONLOADFRACTION,				// Keyword: RadiationLoadFraction				[%]		'Percentage of solar radiation gains attributed direcly to room 0..1.'
 		SP_USERTHERMALRADIATIONFRACTION,		// Keyword: UserThermalRadiationFraction		[---]	'Percentage of heat that is emitted by long wave radiation from persons.'
@@ -76,7 +76,7 @@ public:
 		SF_EXPORT_CLIMATE_DATA_FMU,				// Keyword: ExportClimateDataFMU						'Flag activating FMU export of climate data.'
 		NUM_SF
 	};
-	
+
 
 	/*! Sets default values. */
 	void initDefaults();
@@ -91,7 +91,7 @@ public:
 	/*! Appends the element to the parent xml element.
 		Throws an IBK::Exception in case of invalid data.
 	*/
-	void writeXML(TiXmlElement * parent) const;
+	TiXmlElement * writeXML(TiXmlElement * parent) const;
 
 	/*! Compares this instance with another by value and returns true if they differ. */
 	bool operator!=(const SimulationParameter & other) const;

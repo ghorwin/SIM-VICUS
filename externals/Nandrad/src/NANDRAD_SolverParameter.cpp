@@ -68,7 +68,7 @@ void SolverParameter::initDefaults() {
 	// this is not working with IBK::clear!!!!which sets values to 0
 }
 
-
+#if 0
 void SolverParameter::readXML(const TiXmlElement * element) {
 
 	const char * const FUNC_ID = "[SolverParameter::readXML]";
@@ -181,7 +181,6 @@ void SolverParameter::readXML(const TiXmlElement * element) {
 	}
 }
 
-#if 0
 void SolverParameter::writeXML(TiXmlElement * parent) const {
 	SolverParameter tmp;
 	tmp.initDefaults();

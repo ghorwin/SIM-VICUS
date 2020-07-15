@@ -36,9 +36,9 @@ Zone::Zone() :
 {
 }
 
+#if 0
 void Zone::readXML(const TiXmlElement * element) {
 	const char * const FUNC_ID = "[Zone::readXML]";
-#if 0
 	try {
 		// read attributes
 		const TiXmlAttribute * attrib = TiXmlAttribute::attributeByName(element, "displayName");
@@ -197,10 +197,8 @@ void Zone::readXML(const TiXmlElement * element) {
 	catch (std::exception & ex2) {
 		throw IBK::Exception(IBK::FormatString("%1\nError reading 'Zone' element.").arg(ex2.what()), FUNC_ID);
 	}
-#endif
 }
 
-#if 0
 void Zone::writeXML(TiXmlElement * parent) const {
 	// first add all comments
 	for ( std::set<std::string>::const_iterator it = m_comments.begin();
