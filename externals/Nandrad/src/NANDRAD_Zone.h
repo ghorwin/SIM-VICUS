@@ -22,15 +22,13 @@ Lesser General Public License for more details.
 #define NANDRAD_ZoneH
 
 #include <string>
-#include <set>
 
 #include <IBK_Parameter.h>
 #include <IBK_IntPara.h>
 #include <IBK_Path.h>
 
 #include "NANDRAD_CodeGenMacros.h"
-
-class TiXmlElement;
+#include "NANDRAD_Constants.h"
 
 namespace NANDRAD {
 
@@ -77,46 +75,34 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	/*! Default constructor. */
-	Zone();
-
-	/*! Reads the data from the xml element.
-		Throws an IBK::Exception if a syntax error occurs.
-	*/
-//	void readXML(const TiXmlElement * element);
-
-	/*! Appends the element to the parent xml element.
-		Throws an IBK::Exception in case of invalid data.
-	*/
-//	TiXmlElement * writeXML(TiXmlElement * parent) const;
-
 	NANDRAD_READWRITE
+	NANDRAD_COMPARE_WITH_ID
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of the zone. */
-	unsigned int				m_id;					// XML:A:required
+	unsigned int				m_id = INVALID_ID;					// XML:A:required
 
 	/*! Descriptive name of zone. */
-	std::string					m_displayName;			// XML:A
+	std::string					m_displayName;						// XML:A
 
 	/*! Zone type (Constant, Active).
 		\sa zoneType_t
 	*/
-	type_t						m_type;					// XML:A:required
+	type_t						m_type = NUM_T;						// XML:A:required
 
 	/*! Physical parameters describing the zone. */
-	IBK::Parameter				m_para[NUM_ZP];			// XML:E
+	IBK::Parameter				m_para[NUM_ZP];						// XML:E
 
 	/*! Optional schedule reference name for constant zones. */
-	std::string					m_scheduleName;			// XML:E
-
-
-	// *** Variables used only during simulation ***
+	std::string					m_scheduleName;						// XML:E
 
 	/*! Optional: view factors for all inisde interfaces of the current zone. */
 	//todo viewfactor class read, write, etc... ToDo Katja
 	std::vector<std::pair<viewFactorPair, double> >	m_viewFactors;
+
+	// *** Variables used only during simulation ***
+
 }; // Zone
 
 

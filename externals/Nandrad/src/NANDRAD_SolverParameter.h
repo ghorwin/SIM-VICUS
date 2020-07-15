@@ -27,8 +27,6 @@ Lesser General Public License for more details.
 
 #include "NANDRAD_CodeGenMacros.h"
 
-class TiXmlElement;
-
 namespace NANDRAD {
 
 /*!	\brief Declaration for class SolverParameters
@@ -105,8 +103,7 @@ public:
 	};
 
 
-	/*! Default constructor. */
-	SolverParameter();
+	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	/*! Init default values (called before readXML()).
 		\note These values will be overwritten in readXML() when the respective property is set
@@ -115,33 +112,29 @@ public:
 	void initDefaults();
 
 	NANDRAD_READWRITE
-
-	/*! Compares this instance with another by value and returns true if they differ. */
-	bool operator!=(const SolverParameter & other) const;
-	/*! Compares this instance with another by value and returns true if they are the same. */
-	bool operator==(const SolverParameter & other) const { return ! operator!=(other); }
+	NANDRAD_COMP(SolverParameter)
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! List of parameters. */
-	IBK::Parameter		m_para[NUM_P];			// XML:E
+	IBK::Parameter		m_para[NUM_P];					// XML:E
 	/*! List of flags. */
-	IBK::Flag			m_flag[NUM_F];			// XML:E
+	IBK::Flag			m_flag[NUM_F];					// XML:E
 
 	/*! Selected integrator engine.
 		\sa integrator_t
 	*/
-	integrator_t		m_integrator;			// XML:E
+	integrator_t		m_integrator = NUM_I;			// XML:E
 
 	/*! Selected LES solver.
 		\sa lesSolver_t
 	*/
-	lesSolver_t			m_lesSolver;			// XML:E
+	lesSolver_t			m_lesSolver = NUM_LES;			// XML:E
 
 	/*! Selected preconditioner.
 		\sa precond_t
 	*/
-	precond_t			m_preconditioner;		// XML:E
+	precond_t			m_preconditioner = NUM_PRE;		// XML:E
 };
 
 } // namespace NANDRAD

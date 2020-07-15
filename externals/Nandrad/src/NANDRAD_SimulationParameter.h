@@ -26,27 +26,14 @@ Lesser General Public License for more details.
 #include <IBK_IntPara.h>
 #include <IBK_Flag.h>
 
-class TiXmlElement;
-
 #include "NANDRAD_Interval.h"
 #include "NANDRAD_CodeGenMacros.h"
 
 namespace NANDRAD {
 
-/*!	\brief Declaration for class SimulationParameters
-
-	Simulation parameters select all parameter default values. Inside a zone or at an interface
-	these parameters can be redefined. The parameter value of the internal structure is always prefered.
-
-	Redefinitions that are possible:
-
-	Zone: ---
-	Interface:  HeatTransferResistance, AdsorbtionCoefficient
-
-*/
+/*!	Simulation parameters define global model settings. */
 class SimulationParameter {
 public:
-
 
 	enum para_t {
 		SP_RADIATIONLOADFRACTION,				// Keyword: RadiationLoadFraction				[%]		'Percentage of solar radiation gains attributed direcly to room 0..1.'
@@ -61,6 +48,7 @@ public:
 		SP_HEATINGDESIGNAMBIENTTEMPERATURE,		// Keyword: HeatingDesignAmbientTemperature		[C]		'Ambient temparture for a design day. Parameter that is needed for FMU export.'
 		NUM_SP
 	};
+
 	enum intpara_t {
 		SIP_YEAR,								// Keyword: StartYear									'Start year of the simulation.'
 		NUM_SIP
@@ -75,18 +63,16 @@ public:
 	};
 
 
-	/*! Sets default values. */
-	void initDefaults();
-
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
+	/*! Init default values (called before readXML()).
+		\note These values will be overwritten in readXML() when the respective property is set
+			  in the project file.
+	*/
+	void initDefaults();
+
 	NANDRAD_READWRITE
-
-	/*! Compares this instance with another by value and returns true if they differ. */
-	bool operator!=(const SimulationParameter & other) const;
-
-	/*! Compares this instance with another by value and returns true if they are the same. */
-	bool operator==(const SimulationParameter & other) const { return ! operator!=(other); }
+	NANDRAD_COMP(SimulationParameter)
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

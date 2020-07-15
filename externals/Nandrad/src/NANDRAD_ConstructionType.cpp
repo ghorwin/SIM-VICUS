@@ -1,21 +1,12 @@
 #include "NANDRAD_ConstructionType.h"
 
-
 namespace NANDRAD {
 
-
-bool ConstructionType::operator!=(const ConstructionType & other) const
-{
-	if(m_materialLayers.size() != other.m_materialLayers.size())
-		return true;
-
-	for (size_t i=0; i<m_materialLayers.size(); ++i) {
-		if( (m_materialLayers[i].m_thickness != other.m_materialLayers[i].m_thickness) ||
-				m_materialLayers[i].m_matId != other.m_materialLayers[i].m_matId)
-			return  true;
-	}
+bool ConstructionType::operator!=(const ConstructionType & other) const {
+	if (m_id != other.m_id) return true;
+	if (m_displayName != other.m_displayName) return true;
+	if (m_materialLayers != other.m_materialLayers) return true;
 	return  false;
 }
 
-
-}
+} // namespace NANDRAD

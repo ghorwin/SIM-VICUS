@@ -29,16 +29,12 @@ Lesser General Public License for more details.
 #include <IBK_StringUtils.h>
 #include <IBK_messages.h>
 
-#include <tinyxml.h>
-
 namespace NANDRAD {
 
 
 bool OutputGrid::operator!=(const OutputGrid & other) const {
 	if (m_name != other.m_name) return true;
-	if (m_intervals.size() != other.m_intervals.size()) return true;
-	for (unsigned int i=0; i<m_intervals.size(); ++i)
-		if (!(m_intervals[i] != other.m_intervals[i])) return true;
+	if (m_intervals != other.m_intervals) return true;
 	return false;
 }
 //---------------------------------------------------------------------------

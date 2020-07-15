@@ -22,7 +22,6 @@ Lesser General Public License for more details.
 #define NANDRAD_ConstructionInstanceH
 
 #include <string>
-#include <map>
 
 #include "NANDRAD_Interface.h"
 //#include "NANDRAD_EmbeddedObject.h"
@@ -31,8 +30,6 @@ Lesser General Public License for more details.
 namespace IBK {
 	class Parameter;
 }
-
-class TiXmlElement;
 
 namespace NANDRAD {
 
@@ -61,6 +58,7 @@ namespace NANDRAD {
 class ConstructionInstance  {
 public:
 
+	/*! Construction-specific parameters required by several models. */
 	enum para_t {
 		CP_ORIENTATION,					// Keyword: Orientation				[Deg]	'Orientation of the wall [deg].'
 		CP_INCLINATION,					// Keyword: Inclination				[Deg]	'Inclination of the wall [deg].'
@@ -68,21 +66,7 @@ public:
 		NUM_CP
 	};
 
-
-
 	// *** PUBLIC MEMBER FUNCTIONS ***
-
-	/*! Default constructor. */
-	ConstructionInstance();
-
-	/*! Reads the data from the xml element.
-		Throws an IBK::Exception if a syntax error occurs.
-	*/
-	//void readXML(const TiXmlElement * element);
-	/*! Appends the element to the parent xml element.
-		Throws an IBK::Exception in case of invalid data.
-	*/
-	//TiXmlElement * writeXML(TiXmlElement * parent) const;
 
 	NANDRAD_READWRITE
 
@@ -102,11 +86,11 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique id number. */
-	unsigned int				m_id;							// XML:A:required
+	unsigned int				m_id = INVALID_ID;				// XML:A:required
 	/*! IBK-language encoded name of construction instance. */
 	std::string					m_displayName;					// XML:A:
 	/*! The id number of the corresponding construction type. */
-	unsigned int				m_constructionTypeId;			// XML:E
+	unsigned int				m_constructionTypeId;			// XML:E:required
 
 	/*! List of parameters. */
 	IBK::Parameter				m_para[NUM_CP];					// XML:E

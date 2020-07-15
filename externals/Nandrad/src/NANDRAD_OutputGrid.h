@@ -22,12 +22,9 @@ Lesser General Public License for more details.
 #define NANDRAD_OutputGridH
 
 #include <string>
-#include <map>
 
 #include "NANDRAD_Interval.h"
 #include "NANDRAD_CodeGenMacros.h"
-
-class TiXmlElement;
 
 namespace NANDRAD {
 

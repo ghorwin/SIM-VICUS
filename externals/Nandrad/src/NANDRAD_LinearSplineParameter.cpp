@@ -30,10 +30,6 @@ Lesser General Public License for more details.
 
 namespace NANDRAD {
 
-LinearSplineParameter::LinearSplineParameter() :
-	m_interpolationMethod(I_Linear)
-{
-}
 
 void LinearSplineParameter::readXML(const TiXmlElement * element) {
 	const char * const FUNC_ID = "[LinearSplineParameter::readXML]";

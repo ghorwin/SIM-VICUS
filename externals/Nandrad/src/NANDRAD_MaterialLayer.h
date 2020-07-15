@@ -19,6 +19,11 @@ public:
 
 	NANDRAD_READWRITE
 
+	/*! Inequality operator. */
+	bool operator!=(const MaterialLayer & other) const { return (m_thickness != other.m_thickness || m_matId != other.m_matId);	}
+	/*! Equality operator. */
+	bool operator==(const MaterialLayer & other) const { return !operator!=(other); }
+
 	/*! Thickness in m. */
 	double					m_thickness;				// XML:A
 

@@ -21,8 +21,6 @@ Lesser General Public License for more details.
 #ifndef NANDRAD_ProjectInfoH
 #define NANDRAD_ProjectInfoH
 
-class TiXmlElement;
-
 #include <IBK_Parameter.h>
 #include <IBK_Flag.h>
 
@@ -30,20 +28,9 @@ class TiXmlElement;
 
 namespace NANDRAD {
 
-/*! Contains meta-information about the project, including GUI settings.
-*/
+/*! Contains meta-information about the project. */
 class ProjectInfo  {
 public:
-
-	// *** PUBLIC MEMBER FUNCTIONS ***
-	/*! Reads the data from the xml element.
-		Throws an IBK::Exception if a syntax error occurs.
-	*/
-	//void readXML(const TiXmlElement * element);
-	/*! Appends the element to the parent xml element.
-		Throws an IBK::Exception in case of invalid data.
-	*/
-	//void writeXML(TiXmlElement * parent) const;
 
 	NANDRAD_READWRITE
 

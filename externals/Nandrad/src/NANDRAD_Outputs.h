@@ -31,31 +31,17 @@ Lesser General Public License for more details.
 #include "NANDRAD_OutputDefinition.h"
 #include "NANDRAD_CodeGenMacros.h"
 
-class TiXmlElement;
-
 namespace NANDRAD {
 
-/*!	\brief Declaration for class Outputs
-
-	Class Outputs stores vectors with OutputGrid and OutputDefinition data.
-*/
+/*!	Stores vectors with OutputGrid and OutputDefinition data. */
 class Outputs {
 	NANDRAD_READWRITE_PRIVATE
 public:
+
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	/*! Comparison operator by value. */
-	bool operator!=(const Outputs & other) const;
-
-	/*! Reads the data from the xml element.
-		Throws an IBK::Exception if a syntax error occurs.
-	*/
-	void readXML(const TiXmlElement * element) { readXMLPrivate(element); }
-
-	/*! Appends the element to the parent xml element.
-		Throws an IBK::Exception in case of invalid data.
-	*/
-	TiXmlElement * writeXML(TiXmlElement * parent) const { if (*this != Outputs()) return writeXMLPrivate(parent); return nullptr; }
+	NANDRAD_READWRITE_IFNOTEMPTY(Outputs)
+	NANDRAD_COMP(Outputs)
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

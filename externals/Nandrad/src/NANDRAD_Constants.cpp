@@ -22,7 +22,7 @@ Lesser General Public License for more details.
 
 namespace NANDRAD {
 
-const char * const VERSION = "1.9";
+const char * const VERSION = "1.99";
 const char * const LONG_VERSION = "1.9.999";
 
 unsigned int INVALID_ID = 0xFFFFFFFF;

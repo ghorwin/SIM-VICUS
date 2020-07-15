@@ -122,6 +122,7 @@ void createSim01(NANDRAD::Project &prj){
 
 	NANDRAD::OutputGrid grid;
 	grid.m_name = "hourly";
+
 	NANDRAD::Interval intVal;
 	intVal.m_para[NANDRAD::Interval::IP_END].set("End", 1, IBK::Unit("d"));
 	intVal.m_para[NANDRAD::Interval::IP_STEPSIZE].set("StepSize", 1, IBK::Unit("h"));
@@ -138,6 +139,13 @@ void createSim01(NANDRAD::Project &prj){
 
 	prj.m_outputs.m_outputDefinitions.push_back(outDef);
 
+	// Object lists (needed by outputs)
+	NANDRAD::ObjectList ol;
+	ol.m_name = "All zones";
+	ol.m_filterID.setEncodedString("*"); // all
+	ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+
+	prj.m_objectLists.push_back(ol);
 }
 
 int main(int argc, char * argv[]) {

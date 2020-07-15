@@ -30,11 +30,6 @@ Lesser General Public License for more details.
 
 namespace NANDRAD {
 
-Schedule::Schedule() :
-	m_type(NUM_ST)
-{
-}
-
 
 void Schedule::readXML(const TiXmlElement * element) {
 

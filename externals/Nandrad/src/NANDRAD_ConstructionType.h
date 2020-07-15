@@ -1,32 +1,23 @@
-#ifndef NANDRAD_CONSTRUCTIONTYPE_H
-#define NANDRAD_CONSTRUCTIONTYPE_H
+#ifndef NANDRAD_ConstructionTypeH
+#define NANDRAD_ConstructionTypeH
 
 #include <vector>
-
 #include <IBK_Parameter.h>
 
 #include "NANDRAD_CodeGenMacros.h"
 #include "NANDRAD_MaterialLayer.h"
 
-class TiXmlElement;
-
 namespace NANDRAD {
 
-class Material;
-
-class ConstructionType
-{
+/*! Defines a multi-layered construction (without the boundary conditions). */
+class ConstructionType {
 public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	NANDRAD_READWRITE
-
-	/*! Compares this instance with another by physical values and returns true if they differ. */
-	bool operator!=(const ConstructionType & other) const;
-
-	/*! Compares this instance with another by physical values and returns true if they are the same. */
-	bool operator==(const ConstructionType & other) const { return ! operator!=(other); }
+	NANDRAD_COMP(ConstructionType)
+	NANDRAD_COMPARE_WITH_ID
 
 	// *** PUBLIC MEMBER VARIABLES ***
 	/*! Unique id number. */
@@ -38,6 +29,7 @@ public:
 	std::vector<MaterialLayer>	m_materialLayers;				// XML:E
 
 };
-}
 
-#endif // NANDRAD_CONSTRUCTIONTYPE_H
+} // namespace NANDRAD
+
+#endif // NANDRAD_ConstructionTypeH

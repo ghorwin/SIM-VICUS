@@ -48,9 +48,6 @@ namespace NANDRAD {
 class IDGroup {
 public:
 
-	/*! Default constructor */
-	IDGroup();
-
 	/*! Set ID group data from an encoded string.
 		This function throws an exception, if an invalid format is encountered or
 		IDs are specified in addition to a wildcard character.
@@ -83,7 +80,7 @@ public:
 	/*! If true, the encoded string containted a wildcard character * to indicate all IDs.
 		\warning A wildcard overrides all other IDs.
 	*/
-	bool												m_allIDs;
+	bool												m_allIDs = false;
 	/*! Set of individually listed IDs. */
 	std::set<unsigned int>								m_ids;
 	/*! Model id intervals.*/

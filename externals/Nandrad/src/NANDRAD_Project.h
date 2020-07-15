@@ -21,8 +21,6 @@ Lesser General Public License for more details.
 #ifndef NANDRAD_ProjectH
 #define NANDRAD_ProjectH
 
-class TiXmlElement;
-
 #include <string>
 #include <vector>
 #include <map>
@@ -39,7 +37,6 @@ class TiXmlElement;
 #include "NANDRAD_ConstructionType.h"
 #include "NANDRAD_Material.h"
 
-
 namespace NANDRAD {
 
 /*! Contains all input data that describes a room with walls, floor, ceiling, usage, HVAC etc.
@@ -48,6 +45,7 @@ namespace NANDRAD {
 class Project {
 	NANDRAD_READWRITE_PRIVATE
 public:
+
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	/*! Reads the project data from an XML file.
@@ -101,7 +99,6 @@ public:
 	/*! All construction instances refernce a construction and a thermal zone. */
 	std::vector<ConstructionInstance>				m_constructionInstances;			// XML:E
 
-
 	/*! All construction types reference construction parameters. */
 	std::vector<ConstructionType>					m_constructionTypes;				// XML:E
 
@@ -121,7 +118,7 @@ public:
 	std::map< unsigned int, SpaceType>				m_spaceTypes;
 
 	/*! References to all schedules.*/
-	Schedules										m_schedules;
+	Schedules										m_schedules;						// XML:E
 
 	/*! References to Output specifications.*/
 	Outputs											m_outputs;							// XML:E
@@ -134,11 +131,7 @@ private:
 	void readDirectoryPlaceholdersXML(const TiXmlElement * element);
 	void writeDirectoryPlaceholdersXML(TiXmlElement * parent) const;
 
-	void readDataBaseXML(const TiXmlElement * element);
-	void writeDataBaseXML(TiXmlElement * parent) const;
-
-	/*!	Checks whether all construction types and materials have a unique ID number.
-	*/
+	/*!	Checks whether all construction types and materials have a unique ID number. */
 	void checkDatabaseIDs();
 };
 

@@ -26,7 +26,7 @@ Lesser General Public License for more details.
 #include <IBK_LinearSpline.h>
 #include <IBK_Unit.h>
 
-class TiXmlElement;
+#include "NANDRAD_CodeGenMacros.h"
 
 namespace NANDRAD {
 
@@ -49,10 +49,6 @@ public:
 		NUM_I
 	};
 
-
-	/*! Default constructor. */
-	LinearSplineParameter();
-
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	/*! Reads the data from the xml element.
@@ -74,7 +70,7 @@ public:
 	/*! Parameter name.*/
 	std::string				m_name;
 	/*! Interpolation method to be used when computing values of this spline. */
-	interpolationMethod_t	m_interpolationMethod;
+	interpolationMethod_t	m_interpolationMethod = I_Linear;
 	/*! Data vectors including linear spline functionality (i.e. interpolation at any given value).
 		Values are stored in the respective Base-SI units of the input/output units m_xUnit and
 		m_yUnit. For example, if m_yUnit is 'C' (degree C), then the spline holds values in

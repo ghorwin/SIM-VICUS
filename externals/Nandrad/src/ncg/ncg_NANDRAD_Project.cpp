@@ -104,6 +104,8 @@ TiXmlElement * Project::writeXMLPrivate(TiXmlElement * parent) const {
 
 	m_location.writeXML(e);
 
+	m_schedules.writeXML(e);
+
 	m_outputs.writeXML(e);
 
 	if (!m_objectLists.empty()) {

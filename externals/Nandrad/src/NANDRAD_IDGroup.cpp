@@ -29,12 +29,6 @@ Lesser General Public License for more details.
 
 namespace NANDRAD {
 
-IDGroup::IDGroup():
-	m_allIDs(false)
-{
-}
-
-
 void IDGroup::setEncodedString(const std::string & encodedString) {
 	const char * const FUNC_ID = "[IDGroup::setEncodedString]";
 	// TODO: check for empty string
@@ -126,8 +120,8 @@ bool IDGroup::empty() const {
 	return (!m_allIDs && m_idIntervals.empty() && m_ids.empty());
 }
 
-bool IDGroup::contains(unsigned int id) const
-{
+
+bool IDGroup::contains(unsigned int id) const {
 	if(m_allIDs)
 		return true;
 	if(m_ids.find(id) != m_ids.end() )
@@ -143,8 +137,8 @@ bool IDGroup::contains(unsigned int id) const
 	return false;
 }
 
-const IDGroup IDGroup::operator+(const IDGroup &group)
-{
+
+const IDGroup IDGroup::operator+(const IDGroup &group) {
 	IDGroup mergedIDGroup;
 	// merge id groups
 	if(group.m_allIDs || m_allIDs) {

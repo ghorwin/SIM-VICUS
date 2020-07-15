@@ -30,8 +30,6 @@ Lesser General Public License for more details.
 
 #include "NANDRAD_DailyCycle.h"
 
-class TiXmlElement;
-
 namespace NANDRAD {
 
 /*!	\brief Declaration for class Schedule
@@ -48,8 +46,7 @@ namespace NANDRAD {
 class Schedule {
 public:
 
-
-	/*! Don't change order in this array since several conversions and GUI surface as well rely on that. */
+	/*! Don't change order in this array since several conversions rely on that. */
 	enum type_t {
 		ST_ALLDAYS,		// Keyword: AllDays		'All days (Weekend days and Weekdays).'
 		ST_WEEKDAY,		// Keyword: WeekDay		'Weekday schedule.'
@@ -65,9 +62,6 @@ public:
 		NUM_ST
 	};
 
-
-	/*! Default constructor. */
-	Schedule();
 
 	/*! Returns the priority of an selected schedule.*/
 	static int priority(type_t scheduleType);
@@ -104,13 +98,12 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	type_t					m_type;
+	type_t					m_type = NUM_ST;
 
 	/*! List of daily cycles that are used on day type specified above.
 		These cycles define different quantities/control parameters etc.
 	*/
 	std::vector<DailyCycle> m_dailyCycles;
-
 
 	/*! Conversion function for special schedule time format. */
 //	static void convertWeekDaysToIBKTime(const unsigned int year, const std::vector<day_t> &weekdays, std::vector<IBK::Time> &time);
