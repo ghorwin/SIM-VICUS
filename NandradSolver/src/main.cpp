@@ -98,22 +98,22 @@ void createSim01(NANDRAD::Project &prj){
 	mat.m_id = 1001;
 	mat.m_displayName = "Concrete";
 	mat.m_para[NANDRAD::Material::MP_DENSITY].set("Density", 2100, IBK::Unit("kg/m3"));
-	mat.m_para[NANDRAD::Material::MP_SPECHEAT].set("SpecHeat", 840, IBK::Unit("J/kgK"));
+	mat.m_para[NANDRAD::Material::MP_HEAT_CAPACITY].set("HeatCapacity", 840, IBK::Unit("J/kgK"));
 	mat.m_para[NANDRAD::Material::MP_CONDUCTIVITY].set("Conductivity", 2.1, IBK::Unit("W/mK"));
-	prj.m_material.push_back(mat);
+	prj.m_materials.push_back(mat);
 
 	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.2, mat.m_id));
 
 	mat.m_id = 1002;
 	mat.m_displayName = "Insulation";
 	mat.m_para[NANDRAD::Material::MP_DENSITY].set("Density", 30, IBK::Unit("kg/m3"));
-	mat.m_para[NANDRAD::Material::MP_SPECHEAT].set("SpecHeat", 1500, IBK::Unit("J/kgK"));
+	mat.m_para[NANDRAD::Material::MP_HEAT_CAPACITY].set("HeatCapacity", 1500, IBK::Unit("J/kgK"));
 	mat.m_para[NANDRAD::Material::MP_CONDUCTIVITY].set("Conductivity", 0.04, IBK::Unit("W/mK"));
-	prj.m_material.push_back(mat);
+	prj.m_materials.push_back(mat);
 
 	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.1, mat.m_id));
 
-	prj.m_constructionType.push_back(conType);
+	prj.m_constructionTypes.push_back(conType);
 
 	//construction type
 

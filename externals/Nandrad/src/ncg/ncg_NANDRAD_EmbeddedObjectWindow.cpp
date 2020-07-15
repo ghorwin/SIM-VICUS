@@ -56,7 +56,8 @@ TiXmlElement * EmbeddedObjectWindow::writeXML(TiXmlElement * parent) const {
 		if (!m_para[i].name.empty())
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
 	}
-	TiXmlElement::appendSingleAttributeElement(e, "WindowTypeReference", nullptr, std::string(), m_windowTypeReference);
+	if (!m_windowTypeReference.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "WindowTypeReference", nullptr, std::string(), m_windowTypeReference);
 	return e;
 }
 

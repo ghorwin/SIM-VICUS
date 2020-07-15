@@ -24,8 +24,6 @@ Lesser General Public License for more details.
 #include <string>
 #include "NANDRAD_CodeGenMacros.h"
 
-class TiXmlElement;
-
 namespace NANDRAD {
 
 class ObjectList;
@@ -68,7 +66,7 @@ public:
 		MRT_SENSOR,					// Keyword: Sensor					'Model references a sensor object.'
 		MRT_SCHEDULE,				// Keyword: Schedule				'Model references of scheduled data.'
 		MRT_MODEL,					// Keyword: Model					'Model references another generic model.'
-		MRT_GLOBAL,					// Keyword: Global                  'Model references to global physical quantities.'
+		MRT_GLOBAL,					// Keyword: Global					'Model references to global physical quantities.'
 		NUM_MRT
 	};
 

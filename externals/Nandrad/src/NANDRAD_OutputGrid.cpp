@@ -91,8 +91,18 @@ IBK::Parameter OutputGrid::intervalParameter(unsigned int intervalIndex, Interva
 IBK::Parameter OutputGrid::lastIntervalParameter(Interval::para_t p) const {
 	return intervalParameter( ((unsigned int) m_intervals.size() - 1), p );
 }
+//---------------------------------------------------------------------------
 
 void OutputGrid::setupIntervals() {
+	if (m_intervals.empty())
+		return;
+
+	// special case for first interval: set start parameter to 0 if not specified
+	if (m_intervals[0].m_para[NANDRAD::Interval::IP_START].name.empty()) {
+		m_intervals[0].m_para[NANDRAD::Interval::IP_START].set(
+			NANDRAD::KeywordList::Keyword("Interval::para_t", NANDRAD::Interval::IP_START), 0, "s");
+	}
+
 	// check that intervals are defined consecutively and that all parameters make sense
 	double startTime = 0;
 	for (unsigned int i = 0; i < m_intervals.size(); ++i) {
@@ -138,34 +148,12 @@ void OutputGrid::setupIntervals() {
 //---------------------------------------------------------------------------
 
 
-void OutputGrid::initDefaults() {
+
+void OutputGrid::checkIntervalDefinition() const {
+	FUNCID("OutputGrid::checkParameters");
 
 	if (m_intervals.empty())
-		return;
-
-	// special case for first interval: set start parameter to 0 if not specified
-	if (m_intervals[0].m_para[NANDRAD::Interval::IP_START].name.empty()) {
-		m_intervals[0].m_para[NANDRAD::Interval::IP_START].set(
-			NANDRAD::KeywordList::Keyword("Interval::para_t", NANDRAD::Interval::IP_START), 0, "s");
-	}
-
-}
-
-//---------------------------------------------------------------------------
-
-
-bool OutputGrid::checkIntervalDefinition(bool strict) const {
-	const char * const FUNC_ID = "[OutputGrid::checkParameters]";
-
-	if (m_intervals.empty()) {
-		if (strict)
-			throw IBK::Exception( IBK::FormatString("Output Grid '%1' does not have any intervals.").arg(m_name), FUNC_ID);
-		else {
-			IBK::IBK_Message( IBK::FormatString("Output Grid '%1' does not have any intervals.").arg(m_name),
-							  IBK::MSG_WARNING, FUNC_ID);
-			return false;
-		}
-	}
+		throw IBK::Exception( IBK::FormatString("Output Grid '%1' does not have any intervals.").arg(m_name), FUNC_ID);
 
 	bool dataOk = true;
 	double startTime = 0; // assume first interval starts at time 0 (offset to Midnight January 1st of the start year)
@@ -175,29 +163,16 @@ bool OutputGrid::checkIntervalDefinition(bool strict) const {
 		const Interval &interval = m_intervals[i];
 
 		// check all parameters in the interval for valid inputs
-		dataOk = interval.checkParameters(strict);
+		interval.checkParameters();
 
 		// check if stepSize parameter is defined
 		if (interval.m_para[Interval::IP_STEPSIZE].name.empty()) {
-			if (strict)
-				throw IBK::Exception( IBK::FormatString("Interval#%2 in output grid '%1' does not have a StepSize parameter.")
-									  .arg(m_name).arg(i+1), FUNC_ID);
-			else {
-				IBK::IBK_Message( IBK::FormatString("Interval#%2 in output grid '%1' does not have a StepSize parameter.").arg(m_name).arg(i+1),
-								  IBK::MSG_WARNING, FUNC_ID);
-				dataOk = false;
-			}
+			throw IBK::Exception( IBK::FormatString("Interval#%2 in output grid '%1' does not have a StepSize parameter.")
+								  .arg(m_name).arg(i+1), FUNC_ID);
 		}
 		else if (interval.m_para[Interval::IP_STEPSIZE].value <= 0) {
-			if (strict)
-				throw IBK::Exception( IBK::FormatString("StepSize parameter of interval #%1 in output grid '%2' is <= 0 (which is invalid).")
-					.arg(i+1).arg(m_name), FUNC_ID);
-			else {
-				IBK::IBK_Message( IBK::FormatString("StepSize parameter of interval #%1 in output grid '%2' is <= 0 (which is invalid).")
-								  .arg(i+1).arg(m_name),
-								  IBK::MSG_WARNING, FUNC_ID);
-				dataOk = false;
-			}
+			throw IBK::Exception( IBK::FormatString("StepSize parameter of interval #%1 in output grid '%2' is <= 0 (which is invalid).")
+				.arg(i+1).arg(m_name), FUNC_ID);
 		}
 
 		// compute interval start
@@ -208,18 +183,9 @@ bool OutputGrid::checkIntervalDefinition(bool strict) const {
 			else {
 				// check if end time is given in last interval
 				if (m_intervals[i-1].m_para[Interval::IP_END].name.empty()) {
-					// \todo: prove strict implementation
-					if (strict)
-						throw IBK::Exception( IBK::FormatString("'End' parameter in interval #%1, or Start parameter in "
-																"interval #%2 is required in output grid '%3'.")
-											.arg(i).arg(i+1).arg(m_name), FUNC_ID);
-					else {
-						IBK::IBK_Message( IBK::FormatString("'End' parameter in interval #%1, or Start parameter in "
+					throw IBK::Exception( IBK::FormatString("'End' parameter in interval #%1, or Start parameter in "
 															"interval #%2 is required in output grid '%3'.")
-											.arg(i).arg(i+1).arg(m_name),
-											IBK::MSG_WARNING, FUNC_ID);
-						dataOk = false;
-					}
+											.arg(i).arg(i+1).arg(m_name), FUNC_ID);
 				}
 				else {
 					// use end time point of last interval as start time for next interval
@@ -241,17 +207,9 @@ bool OutputGrid::checkIntervalDefinition(bool strict) const {
 			// ahead at the next Interval's Start parameter
 			if (i+1 != m_intervals.size()) {
 				if (m_intervals[i+1].m_para[Interval::IP_START].name.empty()) {
-					if (strict)
-						throw IBK::Exception( IBK::FormatString("'End' parameter in interval #%1, or Start parameter in "
-																"interval #%2 is required in output grid '%3'.")
-												.arg(i+1).arg(i+2).arg(m_name), FUNC_ID);
-					else {
-						IBK::IBK_Message( IBK::FormatString("'End' parameter in interval #%1, or Start parameter in "
+					throw IBK::Exception( IBK::FormatString("'End' parameter in interval #%1, or Start parameter in "
 															"interval #%2 is required in output grid '%3'.")
-											.arg(i+1).arg(i+2).arg(m_name),
-											IBK::MSG_WARNING, FUNC_ID);
-						dataOk = false;
-					}
+												.arg(i+1).arg(i+2).arg(m_name), FUNC_ID);
 				}
 				else
 					endTime = m_intervals[i+1].m_para[Interval::IP_START].value;
@@ -266,19 +224,11 @@ bool OutputGrid::checkIntervalDefinition(bool strict) const {
 
 		// now check that endTime  > startTime
 		if (endTime <= startTime) {
-			if (strict)
-				throw IBK::Exception( IBK::FormatString("Interval #%1 in output grid '%2' has a Start that lies past the interval End.")
-									  .arg(i+1).arg(m_name), FUNC_ID);
-			else {
-				IBK::IBK_Message( IBK::FormatString("Interval #%1 in output grid '%2' has a Start that lies past the interval End.")
-								  .arg(i+1).arg(m_name),
-								  IBK::MSG_WARNING, FUNC_ID);
-				dataOk = false;
-			}
+			throw IBK::Exception( IBK::FormatString("Interval #%1 in output grid '%2' has a Start that lies past the interval End.")
+								  .arg(i+1).arg(m_name), FUNC_ID);
 		}
 
 	}
-	return dataOk;
 }
 //---------------------------------------------------------------------------
 

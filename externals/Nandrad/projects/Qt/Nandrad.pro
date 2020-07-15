@@ -34,7 +34,6 @@ HEADERS += \
 	../../src/NANDRAD_DailyCycle.h \
 	../../src/NANDRAD_EmbeddedObject.h \
 	../../src/NANDRAD_EmbeddedObjectWindow.h \
-	../../src/NANDRAD_FindHelpers.h \
 	../../src/NANDRAD_IDGroup.h \
 	../../src/NANDRAD_Interface.h \
 	../../src/NANDRAD_InterfaceAirFlow.h \
@@ -87,7 +86,6 @@ SOURCES += \
 	../../src/NANDRAD_LinearSplineParameter.cpp \
 	../../src/NANDRAD_Location.cpp \
 	../../src/NANDRAD_Material.cpp \
-	../../src/NANDRAD_ModelInputReference.cpp \
 	../../src/NANDRAD_ObjectList.cpp \
 	../../src/NANDRAD_OutputDefinition.cpp \
 	../../src/NANDRAD_OutputGrid.cpp \

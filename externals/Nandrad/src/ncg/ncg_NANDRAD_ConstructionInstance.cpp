@@ -66,7 +66,8 @@ TiXmlElement * ConstructionInstance::writeXML(TiXmlElement * parent) const {
 	parent->LinkEndChild(e);
 
 	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	e->SetAttribute("displayName", m_displayName);
+	if (!m_displayName.empty())
+		e->SetAttribute("displayName", m_displayName);
 	TiXmlElement::appendSingleAttributeElement(e, "ConstructionTypeId", nullptr, std::string(), IBK::val2string<unsigned int>(m_constructionTypeId));
 
 	for (unsigned int i=0; i<NUM_CP; ++i) {

@@ -74,24 +74,24 @@ TiXmlElement * Project::writeXMLPrivate(TiXmlElement * parent) const {
 	}
 
 
-	if (!m_constructionType.empty()) {
-		TiXmlElement * child = new TiXmlElement("ConstructionType");
+	if (!m_constructionTypes.empty()) {
+		TiXmlElement * child = new TiXmlElement("ConstructionTypes");
 		e->LinkEndChild(child);
 
-		for (std::vector<ConstructionType>::const_iterator ifaceIt = m_constructionType.begin();
-			ifaceIt != m_constructionType.end(); ++ifaceIt)
+		for (std::vector<ConstructionType>::const_iterator ifaceIt = m_constructionTypes.begin();
+			ifaceIt != m_constructionTypes.end(); ++ifaceIt)
 		{
 			ifaceIt->writeXML(child);
 		}
 	}
 
 
-	if (!m_material.empty()) {
-		TiXmlElement * child = new TiXmlElement("Material");
+	if (!m_materials.empty()) {
+		TiXmlElement * child = new TiXmlElement("Materials");
 		e->LinkEndChild(child);
 
-		for (std::vector<Material>::const_iterator ifaceIt = m_material.begin();
-			ifaceIt != m_material.end(); ++ifaceIt)
+		for (std::vector<Material>::const_iterator ifaceIt = m_materials.begin();
+			ifaceIt != m_materials.end(); ++ifaceIt)
 		{
 			ifaceIt->writeXML(child);
 		}

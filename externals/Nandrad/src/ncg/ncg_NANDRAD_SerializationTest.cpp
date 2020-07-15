@@ -96,9 +96,11 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 	e->SetAttribute("val1", IBK::val2string<double>(m_val1));
 	if (m_testBla != NUM_test)
 		e->SetAttribute("testBla", KeywordList::Keyword("SerializationTest::test_t",  m_testBla));
-	e->SetAttribute("str1", m_str1);
-	e->SetAttribute("path1", m_path1.str());
-	e->SetAttribute("u1", m_u1.name());
+	if (!m_str1.empty())
+		e->SetAttribute("str1", m_str1);
+	if (m_path1.isValid())
+	if (m_u1.id() != 0)
+		e->SetAttribute("u1", m_u1.name());
 	TiXmlElement::appendSingleAttributeElement(e, "Id3", nullptr, std::string(), IBK::val2string<int>(m_id3));
 	TiXmlElement::appendSingleAttributeElement(e, "Id4", nullptr, std::string(), IBK::val2string<unsigned int>(m_id4));
 	TiXmlElement::appendSingleAttributeElement(e, "Flag2", nullptr, std::string(), IBK::val2string<bool>(m_flag2));
@@ -108,10 +110,13 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "TestBlo", nullptr, std::string(), KeywordList::Keyword("SerializationTest::test_t",  m_testBlo));
 	if (!m_str2.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "Str2", nullptr, std::string(), m_str2);
-	TiXmlElement::appendSingleAttributeElement(e, "Path2", nullptr, std::string(), m_path2.str());
-	TiXmlElement::appendSingleAttributeElement(e, "U2", nullptr, std::string(), m_u2.name());
+	if (m_path2.isValid())
+		TiXmlElement::appendSingleAttributeElement(e, "Path2", nullptr, std::string(), m_path2.str());
+	if (m_u2.id() != 0)
+		TiXmlElement::appendSingleAttributeElement(e, "U2", nullptr, std::string(), m_u2.name());
 	TiXmlElement::appendSingleAttributeElement(e, "X5", nullptr, std::string(), IBK::val2string<double>(m_x5));
-	TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_f.name(), m_f.isEnabled() ? "true" : "false");
+	if (!m_f.name().empty())
+		TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_f.name(), m_f.isEnabled() ? "true" : "false");
 
 	m_iface.writeXML(e);
 
@@ -141,7 +146,8 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 		if (!m_flags[i].name().empty())
 			TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_flags[i].name(), m_flags[i].isEnabled() ? "true" : "false");
 	}
-	writeLinearSplineElement(e, "Spline", m_spline, std::string(), std::string());
+	if (!m_spline.empty())
+		writeLinearSplineElement(e, "Spline", m_spline, std::string(), std::string());
 	return e;
 }
 

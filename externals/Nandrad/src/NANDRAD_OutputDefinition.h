@@ -22,14 +22,10 @@ Lesser General Public License for more details.
 #define NANDRAD_OutputDefinitionH
 
 #include <string>
-#include <map>
 
 #include "NANDRAD_IDGroup.h"
-//#include "NANDRAD_ModelInputReference.h"
 #include "NANDRAD_ObjectList.h"
 #include "NANDRAD_CodeGenMacros.h"
-
-class TiXmlElement;
 
 namespace NANDRAD {
 
@@ -39,49 +35,33 @@ namespace NANDRAD {
 	output file (in the case of a scalar quantity). They are specified
 	by a unique variable name and an object list with models containing
 	the requested quantity.
-	In the case of a vector valued quantity two definitions are valid:
+	In the case of a vector-valued quantity two definitions are valid:
 
-	1.) The complete vector valued quantity, use the name of the quantity
-	quantity = name
+	1.) The complete vector-valued quantity, use the name of the quantity
+		quantity = name
 	For the variable of each model a single output file will be
 	constructed.
 
 	2.) A single vector value:
-	quantity = name[<idstring>]
+		quantity = name[<idstring>]
 	The quantity will be treated like a scalar quantity.
 
 	The encoding of the ID string is documented for the class IDGroup.
 */
-
 class OutputDefinition {
 public:
 
 	enum timeType_t {
-		OTT_NONE,                  // Keyword: None							'Write values as calculated at output times'
-		OTT_MEAN,                  // Keyword: Mean							'Average values in time (mean value in output step)'
-		OTT_INTEGRAL,              // Keyword: Integral						'Integrate values in time'
+		OTT_NONE,		// Keyword: None			'Write values as calculated at output times'
+		OTT_MEAN,		// Keyword: Mean			'Average values in time (mean value in output step)'
+		OTT_INTEGRAL,	// Keyword: Integral		'Integrate values in time'
 		NUM_OTT
 	};
 
-
-
-	/*! Reads the data from the xml element.
-		Throws an IBK::Exception if a syntax error occurs.
-	*/
-	//void readXML(const TiXmlElement * element);
-
-	/*! Appends the element to the parent xml element.
-		Throws an IBK::Exception in case of invalid data.
-	*/
-	//void writeXML(TiXmlElement * parent) const;
+	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	NANDRAD_READWRITE
-
-	/*! Comparison operator by value. */
-	bool operator==(const OutputDefinition & other) const { return !operator!=(other); }
-
-	/*! Not-equal comparison operator by value. */
-	bool operator!=(const OutputDefinition & other) const;
+	NANDRAD_COMP(OutputDefinition)
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

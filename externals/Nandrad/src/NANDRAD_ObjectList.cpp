@@ -19,7 +19,6 @@ Lesser General Public License for more details.
 */
 
 #include "NANDRAD_ObjectList.h"
-#include "NANDRAD_FindHelpers.h"
 #include "NANDRAD_Constants.h"
 #include "NANDRAD_KeywordList.h"
 
@@ -35,7 +34,7 @@ void ObjectList::readXML(const TiXmlElement * element) {
 
 	// read base stuff
 	readXMLPrivate(element);
-#if 0
+
 	try {
 		// read filter ID
 		for (const TiXmlElement * c = element->FirstChildElement(); c; c = c->NextSiblingElement()) {
@@ -45,28 +44,26 @@ void ObjectList::readXML(const TiXmlElement * element) {
 			if (cname == "FilterID") {
 				m_filterID.setEncodedString(c->GetText());
 			}
-			else {
-				throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
-									IBK::FormatString("Unknown XML tag with name '%1'.").arg(cname)
-										), FUNC_ID);
+			else if (cname == "ReferenceType") {
+				if (!KeywordList::KeywordExists("ModelInputReference::referenceType_t", c->GetText()) ) {
+					throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
+				}
+				m_referenceType = (ModelInputReference::referenceType_t)
+						KeywordList::Enumeration("ModelInputReference::referenceType_t", c->GetText());
 			}
 		}
 		// check if we have found a type filter
-		if (m_filterType == ModelInputReference::NUM_MRT)
-		{
+		if (m_referenceType == ModelInputReference::NUM_MRT) {
 			throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing tag 'FilterType'.")
-				), FUNC_ID);
+				IBK::FormatString("Missing tag 'ReferenceType'.") ), FUNC_ID);
 		}
 		// need either ID filter or name filter
 		// exception: Filter type location and filter type schedule need no id filter
-		if(m_filterType != ModelInputReference::MRT_LOCATION && m_filterType != ModelInputReference::MRT_SCHEDULE)
-		{
-			if (m_filterID.empty() && m_filterDisplayName.empty() && m_filterSpaceType.empty())
-			{
+		if (m_referenceType != ModelInputReference::MRT_LOCATION && m_referenceType != ModelInputReference::MRT_SCHEDULE) {
+			if (m_filterID.empty()) {
 				throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-					IBK::FormatString("Neither Tag 'FilterID', 'FilterSpaceType' nor FilterDisplayName' is provided.")
-					), FUNC_ID);
+					IBK::FormatString("'FilterID' tag is required.") ), FUNC_ID);
 			}
 		}
 	}
@@ -76,7 +73,6 @@ void ObjectList::readXML(const TiXmlElement * element) {
 	catch (std::exception &ex2) {
 		throw IBK::Exception(IBK::FormatString("%1\nError reading 'ObjectList' element.").arg(ex2.what()), FUNC_ID);
 	}
-#endif
 }
 
 
@@ -85,43 +81,12 @@ TiXmlElement * ObjectList::writeXML(TiXmlElement * parent) const {
 	// first basic code
 	TiXmlElement * e = writeXMLPrivate(parent);
 
-	// now write custom stuff
-#if 0
-	TiXmlElement * e = new TiXmlElement("ObjectList");
-	parent->LinkEndChild(e);
+	if (!m_filterID.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "FilterID", nullptr, std::string(), m_filterID.encodedString());
 
-	e->SetAttribute("name",m_name);
-	TiXmlElement::appendSingleAttributeElement(	e,
-												"FilterType",
-												nullptr, std::string(),
-												KeywordList::Keyword("ModelInputReference::referenceType_t",m_filterType));
-	if (!m_filterID.empty()) {
-		TiXmlElement::appendSingleAttributeElement(	e,
-													"FilterID",
-													nullptr, std::string(),
-													m_filterID.encodedString());
-	}
-	if (!m_filterSpaceType.empty()) {
-		std::string spaceTypeString;
-		for (unsigned int i = 0; i < m_filterSpaceType.size(); ++i) {
-			if (i > 0)
-				spaceTypeString += std::string(",");
-			spaceTypeString += m_filterSpaceType[i];
-		}
-		TiXmlElement::appendSingleAttributeElement(	e,
-													"FilterSpaceType",
-													nullptr, std::string(),
-													spaceTypeString);
-	}
-	if (!m_filterDisplayName.empty()) {
-		if(detailedOutput)
-			TiXmlComment::addComment(e,"Regular Expressions that are used for displayName string comparison.");
-		TiXmlElement::appendSingleAttributeElement(	e,
-													"FilterDisplayName",
-													nullptr, std::string(),
-													m_filterDisplayName);
-	}
-#endif
+	TiXmlElement::appendSingleAttributeElement(	e,  "ReferenceType", nullptr, std::string(),
+												KeywordList::Keyword("ModelInputReference::referenceType_t", m_referenceType));
+
 	return e;
 }
 

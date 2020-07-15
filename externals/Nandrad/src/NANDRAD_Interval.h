@@ -22,20 +22,15 @@ Lesser General Public License for more details.
 #define NANDRAD_IntervalH
 
 #include <string>
-#include <iosfwd>
-#include <vector>
 
-#include <NANDRAD_CodeGenMacros.h>
+#include "NANDRAD_CodeGenMacros.h"
 
 #include <IBK_Parameter.h>
-#include <IBK_math.h>
-
-class TiXmlElement;
 
 namespace NANDRAD {
 
 /*!	The class Interval defines intervals of simulation time.
-	It is used to defined output grids.
+	It is used to define output grids and schedules.
 */
 class Interval {
 	NANDRAD_READWRITE_PRIVATE
@@ -58,11 +53,7 @@ public:
 	*/
 	TiXmlElement * writeXML(TiXmlElement * parent) const { if (*this != Interval()) return writeXMLPrivate(parent); else return nullptr; }
 
-	/*! Compares this instance with another by value and returns true if they differ. */
-	bool operator!=(const Interval & other) const;
-
-	/*! Compares this instance with another by value and returns true if they are the same. */
-	bool operator==(const Interval & other) const { return ! operator!=(other); }
+	NANDRAD_COMP(Interval)
 
 	/*! Convenience function to specify a parameter through start time point and end time point.
 		This sets parameters IP_START and IP_END to given values using the unit u for both parameters.
@@ -75,13 +66,9 @@ public:
 	/*! Checks input parameters.
 		Definition of Start and End intervals are optional. If provided, the values must be >= 0
 		and End time point must be always beyond start time point.
-		\param strict If true, an IBK::Exception is thrown whenever input values are wrong. If strict
-				is false, an error message is written to IBK::IBK_Message() for each error encountered
-				and the function returns false.
-		\return Returns true if all parameters are value. If strict is set to false, an error in the
-				parameters will cause the function to return with false.
+		Throws an IBK::Exception if conditions are not met.
 	*/
-	bool checkParameters(bool strict) const;
+	void checkParameters() const;
 
 	/*! Returns true, if t lies inside the internal.
 		This check requires a valid START parameter to be set.

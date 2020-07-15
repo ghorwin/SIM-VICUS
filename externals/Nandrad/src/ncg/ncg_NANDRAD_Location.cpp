@@ -52,8 +52,10 @@ TiXmlElement * Location::writeXML(TiXmlElement * parent) const {
 		if (!m_para[i].name.empty())
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
 	}
-	TiXmlElement::appendSingleAttributeElement(e, "ClimateFileName", nullptr, std::string(), m_climateFileName.str());
-	TiXmlElement::appendSingleAttributeElement(e, "ShadingFactorFileName", nullptr, std::string(), m_shadingFactorFileName.str());
+	if (m_climateFileName.isValid())
+		TiXmlElement::appendSingleAttributeElement(e, "ClimateFileName", nullptr, std::string(), m_climateFileName.str());
+	if (m_shadingFactorFileName.isValid())
+		TiXmlElement::appendSingleAttributeElement(e, "ShadingFactorFileName", nullptr, std::string(), m_shadingFactorFileName.str());
 
 	if (!m_sensors.empty()) {
 		TiXmlElement * child = new TiXmlElement("Sensors");

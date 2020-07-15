@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
 		return EXIT_FAILURE;
 	}
 
-	IBK::MessageHandlerRegistry::instance().messageHandler()->setConsoleVerbosityLevel(IBK::VL_INFO);
+	IBK::MessageHandlerRegistry::instance().messageHandler()->setConsoleVerbosityLevel(IBK::VL_STANDARD);
 
 	CodeGenerator cg;
 	cg.handleArguments(argv);

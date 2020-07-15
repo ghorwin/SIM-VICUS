@@ -30,10 +30,25 @@
 
 namespace NANDRAD {
 
-void ObjectList::readXML(const TiXmlElement * element) {
-	FUNCID("ObjectList::readXML");
+void ObjectList::readXMLPrivate(const TiXmlElement * element) {
+	FUNCID("ObjectList::readXMLPrivate");
 
 	try {
+		// search for mandatory attributes
+		if (!TiXmlAttribute::attributeByName(element, "name"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'name' attribute.") ), FUNC_ID);
+
+		const TiXmlAttribute * attrib = element->FirstAttribute();
+		while (attrib) {
+			const std::string & attribName = attrib->NameStr();
+			if (attribName == "name")
+				m_name = attrib->ValueStr();
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			attrib = attrib->Next();
+		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'ObjectList' element."), FUNC_ID);
@@ -43,11 +58,12 @@ void ObjectList::readXML(const TiXmlElement * element) {
 	}
 }
 
-TiXmlElement * ObjectList::writeXML(TiXmlElement * parent) const {
+TiXmlElement * ObjectList::writeXMLPrivate(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("ObjectList");
 	parent->LinkEndChild(e);
 
-	TiXmlElement::appendSingleAttributeElement(e, "Name", nullptr, std::string(), m_name);
+	if (!m_name.empty())
+		e->SetAttribute("name", m_name);
 	return e;
 }
 

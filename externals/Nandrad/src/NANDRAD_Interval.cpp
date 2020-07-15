@@ -50,49 +50,28 @@ void Interval::setStartEnd( double start, double endtime, IBK::Unit u ) {
 }
 
 
-bool Interval::checkParameters(bool strict) const {
-
-	const char * const FUNC_ID = "[Interval::checkParameters]";
-	bool ok = true;
+void Interval::checkParameters() const {
+	FUNCID("Interval::checkParameters");
 
 	// check start point
 	if (!m_para[Interval::IP_START].name.empty()) {
 		// start point is greater than zero
-		if (m_para[Interval::IP_START].value < 0) {
-			if (strict)
-				throw IBK::Exception( IBK::FormatString("Interval has an invalid Start parameter."), FUNC_ID);
-			else {
-				IBK::IBK_Message( IBK::FormatString("Interval has an invalid Start parameter."), IBK::MSG_WARNING, FUNC_ID );
-				ok = false;
-			}
-		}
+		if (m_para[Interval::IP_START].value < 0)
+			throw IBK::Exception( IBK::FormatString("Interval has an invalid Start parameter."), FUNC_ID);
 	}
 
 	// check end point
 	if (!m_para[Interval::IP_END].name.empty()) {
-
 		double endtime = m_para[Interval::IP_END].value;
-		if (endtime < 0) {
-			if (strict)
-				throw IBK::Exception( IBK::FormatString("Invalid End time point in Interval."), FUNC_ID);
-			else {
-				IBK::IBK_Message( IBK::FormatString("Invalid End time point in Interval."), IBK::MSG_WARNING, FUNC_ID );
-				ok = false;
-			}
-		}
+		if (endtime < 0)
+			throw IBK::Exception( IBK::FormatString("Invalid End time point in Interval."), FUNC_ID);
+
 		// check if end time point preceedes start time point
 		if (!m_para[Interval::IP_START].name.empty()
 			&& endtime <= m_para[Interval::IP_START].value)
 		{
-			if (strict) {
-				throw IBK::Exception( IBK::FormatString( "End time point preceedes Start time point "
-														 "in Interval, but End time point must be past the Start time."), FUNC_ID);
-			}
-			else {
-				IBK::IBK_Message( IBK::FormatString( "End time point preceedes Start time point "
-													 "in Interval, but End time point must be past the Start time."), IBK::MSG_WARNING, FUNC_ID );
-				ok = false;
-			}
+			throw IBK::Exception( IBK::FormatString( "End time point preceedes Start time point "
+													 "in Interval, but End time point must be past the Start time."), FUNC_ID);
 		}
 	}
 
@@ -100,19 +79,10 @@ bool Interval::checkParameters(bool strict) const {
 	unsigned int time_base_id = IBK::Unit("s").base_id();
 	for (unsigned int i=0; i<NUM_IP; ++i) {
 		if (!m_para[i].name.empty()) {
-			if (m_para[i].IO_unit.base_id() != time_base_id) {
-				if (strict) {
-					throw IBK::Exception( IBK::FormatString( "Parameter '%1' has an invalid unit, should be a time unit.").arg(m_para[i].name), FUNC_ID);
-				}
-				else {
-					IBK::IBK_Message( IBK::FormatString( "Parameter '%1' has an invalid unit, should be a time unit.").arg(m_para[i].name),
-									  IBK::MSG_WARNING, FUNC_ID );
-					ok = false;
-				}
-			}
+			if (m_para[i].IO_unit.base_id() != time_base_id)
+				throw IBK::Exception( IBK::FormatString( "Parameter '%1' has an invalid unit, should be a time unit.").arg(m_para[i].name), FUNC_ID);
 		}
 	}
-	return ok;
 }
 
 

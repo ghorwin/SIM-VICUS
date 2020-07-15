@@ -210,7 +210,7 @@ namespace NANDRAD {
 			case 20 :
 			switch (t) {
 				case 0 : return "Density";
-				case 1 : return "SpecHeat";
+				case 1 : return "HeatCapacity";
 				case 2 : return "Conductivity";
 			} break;
 			// ModelInputReference::referenceType_t
@@ -504,7 +504,7 @@ namespace NANDRAD {
 			case 20 :
 			switch (t) {
 				case 0 : return "Density";
-				case 1 : return "SpecHeat";
+				case 1 : return "HeatCapacity";
 				case 2 : return "Conductivity";
 			} break;
 			// ModelInputReference::referenceType_t
@@ -798,9 +798,9 @@ namespace NANDRAD {
 			// Material::para_t
 			case 20 :
 			switch (t) {
-				case 0 : return "Density of material.";
-				case 1 : return "Specific heat capacity of material.";
-				case 2 : return "Conductivity of material.";
+				case 0 : return "Dry density of the material.";
+				case 1 : return "Specific heat capacity of the material.";
+				case 2 : return "Thermal conductivity of the dry material.";
 			} break;
 			// ModelInputReference::referenceType_t
 			case 21 :

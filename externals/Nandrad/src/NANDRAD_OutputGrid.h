@@ -40,13 +40,18 @@ namespace NANDRAD {
 class OutputGrid {
 public:
 
-	/*! Initializes parametrization defaults. */
-	void initDefaults();
+	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	NANDRAD_READWRITE
+	NANDRAD_COMP(OutputGrid)
+	NANDRAD_COMPARE_WITH_NAME
 
-	/*! Comparison operator by value. */
-	bool operator!=(const OutputGrid & other) const;
+	/*! Checks input parameters and throws an IBK::Exception if
+		some input values are wrong.
+		\note This function should be called after readXML() during solver initialization, and before setupIntervals() is
+		called.
+	*/
+	void checkIntervalDefinition() const;
 
 	/*! Returns a parameter of the intervals handled in this OutputGrid, if needed, parameters
 		are created/computed on the fly.
@@ -58,15 +63,7 @@ public:
 	*/
 	IBK::Parameter lastIntervalParameter(Interval::para_t p) const;
 
-
-	/*! Checks input parameters and throws an IBK::Exception if
-		some input values are wrong. */
-
-	bool checkIntervalDefinition(bool strict) const;
-
-	/*! Computes START parameters in all intervals.
-		This is
-	*/
+	/*! Computes START parameters in all intervals. */
 	void setupIntervals();
 
 	/*! Returns true, if the time point t matches an
@@ -89,7 +86,7 @@ public:
 	/*! The start/duration/end of each interval in [s].
 		The time points are defined the same as the simulation time itself.
 	*/
-	std::vector< Interval >			m_intervals;							// XML:E
+	std::vector<Interval>			m_intervals;							// XML:E
 };
 
 

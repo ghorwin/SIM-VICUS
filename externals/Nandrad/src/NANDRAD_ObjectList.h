@@ -22,30 +22,22 @@ Lesser General Public License for more details.
 #define NANDRAD_ObjectListH
 
 #include <string>
-#include <map>
-#include <vector>
 
+#include "NANDRAD_ModelInputReference.h"
 #include "NANDRAD_IDGroup.h"
 #include "NANDRAD_CodeGenMacros.h"
-
-class TiXmlElement;
 
 namespace NANDRAD {
 
 /*!	\brief Declaration for class ObjectList
 
-	An ObjectList selects implicit or explicit models of one equal reference type (filter type).
+	An ObjectList selects implicit or explicit models of one equal reference type.
 	That may be zones, interfaces,	construction instances, embedded objects or explicit models.
 	It uses an id group or a name list to filter the model instances that should be selected.
 
-	The space type filter is only temporary. It selects models of type 'Zone' that are all
-	of one (or more than one) space type.
-
 	The object list name can be referenced from other structures.
 	Use the object list name reference for the definition of outputs, model references and implicit model
-	feedback:
-	\code
-	<ObjectList>objectListName<\ObjectList>
+	feedback.
 */
 class ObjectList {
 	NANDRAD_READWRITE_PRIVATE
@@ -54,11 +46,15 @@ public:
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	NANDRAD_READWRITE
+	NANDRAD_COMPARE_WITH_NAME
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID-Name of the object list. */
 	std::string									m_name;						// XML:A:required
+
+	/*! The type of model that we reference data from. */
+	ModelInputReference::referenceType_t		m_referenceType;
 
 	/*! Encodes the referenced model IDs. */
 	IDGroup										m_filterID;

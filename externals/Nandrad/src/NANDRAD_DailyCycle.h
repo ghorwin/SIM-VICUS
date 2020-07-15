@@ -27,8 +27,7 @@ Lesser General Public License for more details.
 #include <IBK_Parameter.h>
 #include "NANDRAD_LinearSplineParameter.h"
 #include "NANDRAD_Interval.h"
-
-class TiXmlElement;
+#include "NANDRAD_CodeGenMacros.h"
 
 namespace NANDRAD {
 
@@ -52,15 +51,8 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	/*! Reads the data from the xml element.
-		Throws an IBK::Exception if a syntax error occurs.
-	*/
-	void readXML(const TiXmlElement * element);
-
-	/*! Appends the element to the parent xml element.
-		Throws an IBK::Exception in case of invalid data.
-	*/
-	void writeXML(TiXmlElement * parent) const;
+	NANDRAD_READWRITE
+	NANDRAD_COMP(DailyCycle)
 
 	/*! Converts for interals or hourly values to a linear splin for a given quantity:
 		Returns an empty linear spline if quantity is undefined.*/
@@ -72,13 +64,6 @@ public:
 
 	/*! return the interval end in seconds for given interval index, if needed, parameters are conmputed on the fly. */
 	double	intervalEndInSeconds( unsigned int intervalIndex ) const;
-
-
-	/*! Compares this instance with another by value and returns true if they differ. */
-	bool operator!=(const DailyCycle & other) const;
-
-	/*! Compares this instance with another by value and returns true if they are the same. */
-	bool operator==(const DailyCycle & other) const { return ! operator!=(other); }
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

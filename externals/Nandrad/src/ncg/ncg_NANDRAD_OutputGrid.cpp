@@ -57,13 +57,14 @@ TiXmlElement * OutputGrid::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("OutputGrid");
 	parent->LinkEndChild(e);
 
-	e->SetAttribute("name", m_name);
+	if (!m_name.empty())
+		e->SetAttribute("name", m_name);
 
 	if (!m_intervals.empty()) {
 		TiXmlElement * child = new TiXmlElement("Intervals");
 		e->LinkEndChild(child);
 
-		for (std::vector< Interval >::const_iterator ifaceIt = m_intervals.begin();
+		for (std::vector<Interval>::const_iterator ifaceIt = m_intervals.begin();
 			ifaceIt != m_intervals.end(); ++ifaceIt)
 		{
 			ifaceIt->writeXML(child);

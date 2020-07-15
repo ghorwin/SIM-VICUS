@@ -48,13 +48,17 @@ TiXmlElement * OutputDefinition::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("OutputDefinition");
 	parent->LinkEndChild(e);
 
-	TiXmlElement::appendSingleAttributeElement(e, "Filename", nullptr, std::string(), m_filename);
-	TiXmlElement::appendSingleAttributeElement(e, "Quantity", nullptr, std::string(), m_quantity);
+	if (!m_filename.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "Filename", nullptr, std::string(), m_filename);
+	if (!m_quantity.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "Quantity", nullptr, std::string(), m_quantity);
 
 	if (m_timeType != NUM_OTT)
 		TiXmlElement::appendSingleAttributeElement(e, "TimeType", nullptr, std::string(), KeywordList::Keyword("OutputDefinition::timeType_t",  m_timeType));
-	TiXmlElement::appendSingleAttributeElement(e, "ObjectListName", nullptr, std::string(), m_objectListName);
-	TiXmlElement::appendSingleAttributeElement(e, "GridName", nullptr, std::string(), m_gridName);
+	if (!m_objectListName.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "ObjectListName", nullptr, std::string(), m_objectListName);
+	if (!m_gridName.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "GridName", nullptr, std::string(), m_gridName);
 	return e;
 }
 

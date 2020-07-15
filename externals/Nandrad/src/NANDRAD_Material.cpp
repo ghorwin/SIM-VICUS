@@ -2,14 +2,11 @@
 
 namespace NANDRAD {
 
-bool Material::operator!=(const Material & other) const
-{
-
+bool Material::operator!=(const Material & other) const {
 	for (size_t i=0; i<NUM_MP; ++i) {
-		if(m_para[i].get_value() != other.m_para[i].get_value())
+		if (m_para[i] != other.m_para[i])
 			return true;
 	}
-
 	return false;
 }
 

@@ -1,21 +1,18 @@
-#ifndef NANDRAD_MATERIALLAYER_H
-#define NANDRAD_MATERIALLAYER_H
-
+#ifndef NANDRAD_MaterialLayerH
+#define NANDRAD_MaterialLayerH
 
 #include "NANDRAD_CodeGenMacros.h"
 
-class TiXmlElement;
-
 namespace NANDRAD {
 
-
-class MaterialLayer
-{
+/*! A layer of a multi-layered construction. */
+class MaterialLayer {
 public:
-	MaterialLayer(){}
+	/*! Default c'tor. */
+	MaterialLayer() {}
 
 	/*! Simple Constructor with thickness in m and id. */
-	MaterialLayer(double thickness,unsigned int id):
+	MaterialLayer(double thickness, unsigned int id):
 		m_thickness(thickness),
 		m_matId(id)
 	{}
@@ -23,11 +20,12 @@ public:
 	NANDRAD_READWRITE
 
 	/*! Thickness in m. */
-	double					m_thickness;				// XML:E
+	double					m_thickness;				// XML:A
 
 	/*! Material id. */
 	unsigned int			m_matId;					// XML:A
 };
-}
 
-#endif // NANDRAD_MATERIALLAYER_H
+} // namespace NANDRAD
+
+#endif // NANDRAD_MaterialLayerH

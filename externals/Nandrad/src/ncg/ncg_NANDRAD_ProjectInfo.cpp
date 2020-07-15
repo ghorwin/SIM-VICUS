@@ -47,10 +47,14 @@ TiXmlElement * ProjectInfo::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("ProjectInfo");
 	parent->LinkEndChild(e);
 
-	TiXmlElement::appendSingleAttributeElement(e, "Comment", nullptr, std::string(), m_comment);
-	TiXmlElement::appendSingleAttributeElement(e, "Created", nullptr, std::string(), m_created);
-	TiXmlElement::appendSingleAttributeElement(e, "LastEdited", nullptr, std::string(), m_lastEdited);
-	TiXmlElement::appendSingleAttributeElement(e, "Version", nullptr, std::string(), m_version);
+	if (!m_comment.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "Comment", nullptr, std::string(), m_comment);
+	if (!m_created.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "Created", nullptr, std::string(), m_created);
+	if (!m_lastEdited.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "LastEdited", nullptr, std::string(), m_lastEdited);
+	if (!m_version.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "Version", nullptr, std::string(), m_version);
 	return e;
 }
 

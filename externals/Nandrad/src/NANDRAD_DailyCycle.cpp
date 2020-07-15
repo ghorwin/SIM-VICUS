@@ -22,62 +22,7 @@ Lesser General Public License for more details.
 #include "NANDRAD_DailyCycle.h"
 #include "NANDRAD_KeywordList.h"
 
-#include <IBK_StringUtils.h>
-
-#include <algorithm>
-
-#include <tinyxml.h>
-
 namespace NANDRAD {
-
-
-void DailyCycle::readXML(const TiXmlElement * element) {
-	const char * const FUNC_ID = "[DailyCycle::readXML]";
-	try {
-		// read sub-elements
-		for (const TiXmlElement * c = element->FirstChildElement(); c; c = c->NextSiblingElement()) {
-			// determine data based on element name
-			std::string cname = c->Value();
-			if (cname == "Interval") {
-				Interval interval;
-				interval.readXML(c);
-				m_intervals.push_back(interval);
-			}
-			else if (cname == "IBK:LinearSpline") {
-				LinearSplineParameter splineParameter;
-				splineParameter.readXML(c);
-				m_hourlyValues.push_back(splineParameter);
-			}
-			else {
-				throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
-					IBK::FormatString("Unknown XML tag with name '%1' in DailyCycle element.").arg(cname)
-					), FUNC_ID);
-			}
-		}
-	}
-	catch (IBK::Exception & ex) {
-		throw IBK::Exception(ex, IBK::FormatString("Error reading DailyCycle element."), FUNC_ID);
-	}
-}
-
-
-void DailyCycle::writeXML(TiXmlElement * parent) const {
-	TiXmlElement * e = new TiXmlElement("DailyCycle");
-	parent->LinkEndChild(e);
-	// write intervals
-	for (std::vector<Interval>::const_iterator it = m_intervals.begin();
-		it != m_intervals.end(); ++it)
-	{
-		it->writeXML(e);
-	}
-	// write hourly values, if specified
-	for (std::vector<LinearSplineParameter>::const_iterator it = m_hourlyValues.begin();
-		it != m_hourlyValues.end(); ++it)
-	{
-		it->writeXML(e);
-	}
-}
-
 
 void DailyCycle::createLinearSpline(const std::string &quantityName, IBK::LinearSpline &spline) const {
 #if 0
@@ -293,7 +238,7 @@ double	DailyCycle::intervalEndInSeconds( unsigned int intervalIndex ) const{
 }
 
 bool DailyCycle::operator!=(const DailyCycle & other) const {
-	if (m_intervals != other.m_intervals) return true;
+//	if (m_intervals != other.m_intervals) return true;
 	if (m_hourlyValues != other.m_hourlyValues) return true;
 	return false;
 }

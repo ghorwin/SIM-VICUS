@@ -30,8 +30,8 @@
 
 namespace NANDRAD {
 
-void Outputs::readXML(const TiXmlElement * element) {
-	FUNCID("Outputs::readXML");
+void Outputs::readXMLPrivate(const TiXmlElement * element) {
+	FUNCID("Outputs::readXMLPrivate");
 
 	try {
 	}
@@ -43,7 +43,7 @@ void Outputs::readXML(const TiXmlElement * element) {
 	}
 }
 
-TiXmlElement * Outputs::writeXML(TiXmlElement * parent) const {
+TiXmlElement * Outputs::writeXMLPrivate(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("Outputs");
 	parent->LinkEndChild(e);
 
@@ -64,15 +64,17 @@ TiXmlElement * Outputs::writeXML(TiXmlElement * parent) const {
 		TiXmlElement * child = new TiXmlElement("Grids");
 		e->LinkEndChild(child);
 
-		for (std::vector<OutputGrid >::const_iterator ifaceIt = m_grids.begin();
+		for (std::vector<OutputGrid>::const_iterator ifaceIt = m_grids.begin();
 			ifaceIt != m_grids.end(); ++ifaceIt)
 		{
 			ifaceIt->writeXML(child);
 		}
 	}
 
-	TiXmlElement::appendSingleAttributeElement(e, "TimeUnit", nullptr, std::string(), m_timeUnit.name());
-	TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_binaryFormat.name(), m_binaryFormat.isEnabled() ? "true" : "false");
+	if (m_timeUnit.id() != 0)
+		TiXmlElement::appendSingleAttributeElement(e, "TimeUnit", nullptr, std::string(), m_timeUnit.name());
+	if (!m_binaryFormat.name().empty())
+		TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_binaryFormat.name(), m_binaryFormat.isEnabled() ? "true" : "false");
 	return e;
 }
 

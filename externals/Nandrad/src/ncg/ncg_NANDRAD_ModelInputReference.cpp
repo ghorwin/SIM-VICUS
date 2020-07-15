@@ -18,7 +18,7 @@
 	Lesser General Public License for more details.
 */
 
-#include <NANDRAD_Material.h>
+#include <NANDRAD_ModelInputReference.h>
 #include <NANDRAD_KeywordList.h>
 
 #include <IBK_messages.h>
@@ -31,22 +31,15 @@
 
 namespace NANDRAD {
 
-void Material::readXML(const TiXmlElement * element) {
-	FUNCID("Material::readXML");
+void ModelInputReference::readXML(const TiXmlElement * element) {
+	FUNCID("ModelInputReference::readXML");
 
 	try {
-		// search for mandatory attributes
-		if (!TiXmlAttribute::attributeByName(element, "id"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
-
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
-			if (attribName == "id")
-				m_id = readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "displayName")
-				m_displayName = attrib->ValueStr();
+			if (attribName == "constant")
+				m_constant = readPODAttributeValue<bool>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -54,25 +47,24 @@ void Material::readXML(const TiXmlElement * element) {
 		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Material' element."), FUNC_ID);
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'ModelInputReference' element."), FUNC_ID);
 	}
 	catch (std::exception & ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading 'Material' element.").arg(ex2.what()), FUNC_ID);
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'ModelInputReference' element.").arg(ex2.what()), FUNC_ID);
 	}
 }
 
-TiXmlElement * Material::writeXML(TiXmlElement * parent) const {
-	TiXmlElement * e = new TiXmlElement("Material");
+TiXmlElement * ModelInputReference::writeXML(TiXmlElement * parent) const {
+	TiXmlElement * e = new TiXmlElement("ModelInputReference");
 	parent->LinkEndChild(e);
 
-	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (!m_displayName.empty())
-		e->SetAttribute("displayName", m_displayName);
-
-	for (unsigned int i=0; i<NUM_MP; ++i) {
-		if (!m_para[i].name.empty())
-			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
-	}
+	e->SetAttribute("constant", IBK::val2string<bool>(m_constant));
+	if (!m_targetName.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "TargetName", nullptr, std::string(), m_targetName);
+	if (!m_objectList.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "ObjectList", nullptr, std::string(), m_objectList);
+	if (!m_quantity.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "Quantity", nullptr, std::string(), m_quantity);
 	return e;
 }
 

@@ -266,7 +266,7 @@ void CodeGenerator::generateReadWriteCode() {
 
 			// check if it exists
 			if (targetFile.exists()) {
-#define DISABLE_TIME_CHECK
+//#define DISABLE_TIME_CHECK
 #ifndef DISABLE_TIME_CHECK
 				// skip, if target file is already newer than source file
 				if (targetFile.fileTime() > ci.m_sourceHeaderFile.fileTime()) {

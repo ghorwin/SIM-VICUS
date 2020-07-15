@@ -105,13 +105,13 @@ public:
 	/*! ID of the referenced surface/interface. */
 	unsigned int								m_id;					// XML:A:required
 	/*! IBK-language encoded name of interface. */
-	std::string									m_displayName;			// XML:A:not-empty
+	std::string									m_displayName;			// XML:A
 	/*! The position of the interface, left ore right of the construction. */
 	location_t									m_location;				//
 	/*! The id number of the neighboring zone. */
 	unsigned int								m_zoneId;				// XML:A
 	/*! The name of the neighboring zone. */
-	std::string									m_zoneDisplayName;		// XML:A:not-empty
+	std::string									m_zoneDisplayName;		// XML:A
 
 	/*! Enables the interface models. */
 	IBK::Flag									m_condition[NUM_IP];	// XML:E

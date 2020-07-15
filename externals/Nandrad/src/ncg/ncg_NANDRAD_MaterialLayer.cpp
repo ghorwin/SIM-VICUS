@@ -38,7 +38,9 @@ void MaterialLayer::readXML(const TiXmlElement * element) {
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
-			if (attribName == "matId")
+			if (attribName == "thickness")
+				m_thickness = readPODAttributeValue<double>(element, attrib);
+			else if (attribName == "matId")
 				m_matId = readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
@@ -58,8 +60,8 @@ TiXmlElement * MaterialLayer::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("MaterialLayer");
 	parent->LinkEndChild(e);
 
+	e->SetAttribute("thickness", IBK::val2string<double>(m_thickness));
 	e->SetAttribute("matId", IBK::val2string<unsigned int>(m_matId));
-	TiXmlElement::appendSingleAttributeElement(e, "Thickness", nullptr, std::string(), IBK::val2string<double>(m_thickness));
 	return e;
 }
 
