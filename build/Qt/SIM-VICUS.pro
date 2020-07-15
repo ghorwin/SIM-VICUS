@@ -31,7 +31,7 @@ TiCPP.file = ../../externals/TiCPP/projects/Qt/TiCPP.pro
 Zeppelin.file = ../../externals/Zeppelin/projects/Qt/Zeppelin.pro
 
 # dependencies
-NandradSolver.depends = DataIO CCM TiCPP IBK
+NandradSolver.depends = DataIO CCM TiCPP IBK IntegratorFramework
 NandradCodeCreator.depends = IBK
 
 CCM.depends = IBK TiCPP

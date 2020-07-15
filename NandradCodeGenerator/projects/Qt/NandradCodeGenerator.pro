@@ -2,20 +2,17 @@
 
 TARGET = NandradCodeGenerator
 TEMPLATE = app
-QT -= core gui
-CONFIG += console c++11
-CONFIG -= app_bundle
+
+# this pri must be sourced from all our libraries,
+# it contains all functions defined for casual libraries
+include( ../../../externals/IBK/projects/Qt/IBK.pri )
+
 
 INCLUDEPATH = \
 	../../../externals/IBK/src
 
 LIBS += \
-	-L../../../externals/lib_x64 \
 	-lIBK
-
-unix|mac {
-	QMAKE_CXXFLAGS +=  -std=c++11
-}
 
 DEPENDPATH = $${INCLUDEPATH}
 
