@@ -1258,8 +1258,9 @@ public:
 											bool useEmbeddedForm = false);
 
 
-	/*! Reads an IBK:Parameter element.
+	/*! Reads an IBK:Parameter element (due to error prone string2val conversion, do not use this function anylonger).
 		\sa appendIBKParameterElement().
+		\deprecated
 	*/
 	static void readIBKParameterElement( const TiXmlElement * parent,
 										 std::string & name,
