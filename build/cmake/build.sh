@@ -131,12 +131,13 @@ fi
 cd $BUILDDIR && cmake $CMAKE_OPTIONS $CMAKE_BUILD_TYPE $CMAKE_COMPILER_OPTIONS $CMAKELISTSDIR && make -j$MAKE_CPUCOUNT && 
 cd $CMAKELISTSDIR &&
 mkdir -p ../../bin/release &&
-echo "*** Copying SIM-VICUS to bin/release ***" &&
+echo "*** Copying NandradSolver and SIM-VICUS to bin/release ***" &&
 if [ -d $BUILDDIR/SIM-VICUS/SIM-VICUS.app ]
 then
     rm -rf ../../bin/release/SIM-VICUS.app
-    cp -r $BUILDDIR/SIM-VICUS/SIM-VICUS.app ../../bin/release/SIM-VICUS.app
+#    cp -r $BUILDDIR/SIM-VICUS/SIM-VICUS.app ../../bin/release/SIM-VICUS.app
 else
-    cp $BUILDDIR/SIM-VICUS/SIM-VICUS ../../bin/release/SIM-VICUS
+    cp $BUILDDIR/NandradSolver/NandradSolver ../../bin/release/NandradSolver
+#    cp $BUILDDIR/SIM-VICUS/SIM-VICUS ../../bin/release/SIM-VICUS
 fi
 

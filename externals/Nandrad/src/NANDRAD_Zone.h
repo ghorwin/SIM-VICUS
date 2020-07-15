@@ -98,7 +98,7 @@ public:
 	unsigned int				m_id;					// XML:A:required
 
 	/*! Descriptive name of zone. */
-	std::string					m_displayName;			// XML:A:not-empty
+	std::string					m_displayName;			// XML:A
 
 	/*! Zone type (Constant, Active).
 		\sa zoneType_t
@@ -109,7 +109,7 @@ public:
 	IBK::Parameter				m_para[NUM_ZP];			// XML:E
 
 	/*! Optional schedule reference name for constant zones. */
-	std::string					m_scheduleName;			// XML:E:not-empty
+	std::string					m_scheduleName;			// XML:E
 
 
 	// *** Variables used only during simulation ***

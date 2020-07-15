@@ -57,8 +57,8 @@ public:
 	bool				m_flag2		= true;					// XML:E
 	double				m_val2		= 41.41;				// XML:E
 	test_t				m_testBlo	= NUM_test;				// XML:E
-	std::string			m_str2		= "blabb";				// XML:E:not-empty
-	IBK::Path			m_path2		= IBK::Path("/var");	// XML:E:not-empty
+	std::string			m_str2		= "blabb";				// XML:E
+	IBK::Path			m_path2		= IBK::Path("/var");	// XML:E
 	IBK::Unit			m_u2		= IBK::Unit("C");		// XML:E
 	double				m_x5;								// XML:E
 	IBK::Flag			m_f;								// XML:E

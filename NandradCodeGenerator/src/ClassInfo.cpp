@@ -186,10 +186,7 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 
 				// process flags
 				for (unsigned int i=1; i<tokens.size(); ++i) {
-					if (tokens[i] == "not-empty") {
-						xmlInfo.notEmpty = true;
-					}
-					else if (tokens[i] == "required") {
+					if (tokens[i] == "required") {
 						xmlInfo.required = true;
 					}
 					else {

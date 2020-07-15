@@ -309,16 +309,14 @@ void CodeGenerator::generateReadWriteCode() {
 					attribs += "	e->SetAttribute(\""+attribName+"\", IBK::val2string<"+xmlInfo.typeStr+">(m_"+attribName+"));\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Path") {
-					if (xmlInfo.notEmpty) {
-						attribs += "	if (m_" + attribName + ".isValid())\n	";
-					}
-					attribs += "	e->SetAttribute(\""+attribName+"\", m_" + attribName + ".str());\n";
+					attribs +=
+							"	if (m_" + attribName + ".isValid())\n";
+							"		e->SetAttribute(\""+attribName+"\", m_" + attribName + ".str());\n";
 				}
 				else if (xmlInfo.typeStr == "std::string") {
-					if (xmlInfo.notEmpty) {
-						attribs += "	if (!m_" + attribName + ".empty())\n	";
-					}
-					attribs += "	e->SetAttribute(\""+attribName+"\", m_" + attribName + ");\n";
+					attribs +=
+							"	if (!m_" + attribName + ".empty())\n"
+							"		e->SetAttribute(\""+attribName+"\", m_" + attribName + ");\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Unit") {
 					attribs += "	e->SetAttribute(\""+attribName+"\", m_" + attribName + ".name());\n";
@@ -373,20 +371,23 @@ void CodeGenerator::generateReadWriteCode() {
 					elements += "	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), IBK::val2string<"+xmlInfo.typeStr+">(m_"+varName+"));\n";
 				}
 				else if (xmlInfo.typeStr == "std::string") {
-					if (xmlInfo.notEmpty) {
-						elements += "	if (!m_" + varName + ".empty())\n	";
-					}
-					elements += "	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+");\n";
+					elements +=
+							"	if (!m_" + varName + ".empty())\n"
+							"		TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+");\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Unit") {
 					elements += "	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".name());\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Path") {
-					elements += "	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".str());\n";
+					elements +=
+							"	if (m_" + varName + ".isValid())\n"
+							"		TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".str());\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::LinearSpline") {
 					includes.insert("NANDRAD_Utilities.h");
-					elements += "	writeLinearSplineElement(e, \""+tagName+"\", m_"+varName+", std::string(), std::string());\n";
+					elements +=
+							"	if (!m_" + varName + ".empty())\n"
+							"		writeLinearSplineElement(e, \""+tagName+"\", m_"+varName+", std::string(), std::string());\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Parameter") {
 					// check for array syntax

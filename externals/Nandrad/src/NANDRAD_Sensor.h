@@ -56,7 +56,7 @@ public:
 	/*! Unique ID-number of the sensor.*/
 	unsigned int						m_id;			// XML:A:required
 	/*! Name of the measured quantity */
-	std::string							m_quantity;		// XML:E:not-empty
+	std::string							m_quantity;		// XML:E
 
 };
 
