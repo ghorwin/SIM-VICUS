@@ -331,7 +331,7 @@ void Project::readXML(const IBK::Path & filename) {
 				spdoc.LinkEndChild(decl);
 
 				TiXmlElement * root = new TiXmlElement("SpaceTypes");
-				m_spaceTypes.writeXML(root, false);
+				m_spaceTypes.writeXML(root);
 				spdoc.LinkEndChild(root);
 				spdoc.SaveFile("spacetypes.xml");
 #endif
@@ -454,7 +454,6 @@ void Project::readXML(const IBK::Path & filename) {
 
 
 void Project::writeXML(const IBK::Path & filename) const {
-#if 0
 	TiXmlDocument doc;
 	TiXmlDeclaration * decl = new TiXmlDeclaration( "1.0", "UTF-8", "" );
 	doc.LinkEndChild( decl );
@@ -472,64 +471,29 @@ void Project::writeXML(const IBK::Path & filename) const {
 	m_projectInfo.writeXML(root);
 	writeDirectoryPlaceholdersXML(root);
 	// for zones, construction instances and models allow additional comments
-	bool haveDetailedOutput = false;
-	if (haveDetailedOutput) {
-		writeDataBaseXML(root);
-		m_buildingType.writeXML(root, true);
-		m_spaceTypes.writeXML(root, true);
-		m_parametrizationDefaults.writeXML(root,true);
-		m_simulationParameter.writeXML(root,true);
-		m_solverParameter.writeXML(root,true);
-		m_location.writeXML(root,true);
-		writeGeometriesXML(root);
-		writeZonesXML(root,true);
-		writeZoneListsXML(root, true);
-		writeConstructionInstancesXML(root,true);
-		m_models.writeXML(root,true);
-		m_modelGroups.writeXML(root,true);
-		// write either Schedule reference or schedule definition section
-		if (!m_schedulesReference.m_filename.isValid()) {
-			m_schedules.writeXML(root, haveDetailedOutput);
-		}
-		else
-			m_schedulesReference.writeXML(root);
-		// write either Output reference or output definition section
-		if (!m_outputsReference.m_filename.isValid())
-			m_outputs.writeXML(root);
-		else
-			m_outputsReference.writeXML(root);
-		m_objectLists.writeXML(root,true);
-	}
-	else {
-		writeDataBaseXML(root);
-		m_buildingType.writeXML(root, false);
-		m_spaceTypes.writeXML(root, false);
-		m_parametrizationDefaults.writeXML(root,false);
-		m_simulationParameter.writeXML(root,false);
-		m_solverParameter.writeXML(root,false);
-		m_location.writeXML(root,false);
-		writeGeometriesXML(root);
-		writeZonesXML(root,false);
-		writeZoneListsXML(root, false);
-		writeConstructionInstancesXML(root,false);
-		m_models.writeXML(root,false);
-		m_modelGroups.writeXML(root,false);
-		// write either Schedule reference or schedule definition section
-		if (m_schedulesReference.m_filename.isValid()) {
-			m_schedulesReference.writeXML(root);
-		}
-		else
-			m_schedules.writeXML(root, haveDetailedOutput);
-		// write either Output reference or output definition section
-		if (m_outputsReference.m_filename.isValid())
-			m_outputsReference.writeXML(root);
-		else
-			m_outputs.writeXML(root);
-		m_objectLists.writeXML(root,false);
-	}
+
+	writeDataBaseXML(root);
+	m_simulationParameter.writeXML(root);
+	m_solverParameter.writeXML(root);
+	m_location.writeXML(root);
+//	writeGeometriesXML(root);
+	writeZonesXML(root);
+//	writeZoneListsXML(root);
+	writeConstructionInstancesXML(root);
+//	// write either Schedule reference or schedule definition section
+//	if (m_schedulesReference.m_filename.isValid()) {
+//		m_schedulesReference.writeXML(root);
+//	}
+//	else
+//		m_schedules.writeXML(root, haveDetailedOutput);
+//	// write either Output reference or output definition section
+//	if (m_outputsReference.m_filename.isValid())
+//		m_outputsReference.writeXML(root);
+//	else
+//		m_outputs.writeXML(root);
+//	m_objectLists.writeXML(root);
 
 	doc.SaveFile( filename.c_str() );
-#endif
 }
 // ----------------------------------------------------------------------------
 

@@ -93,7 +93,7 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of the zone. */
-	unsigned int				m_id;					// XML:A
+	unsigned int				m_id;					// XML:A:required
 
 	/*! Descriptive name of zone. */
 	std::string					m_displayName;			// XML:A:not-empty
@@ -101,7 +101,7 @@ public:
 	/*! Zone type (Constant, Active).
 		\sa zoneType_t
 	*/
-	type_t						m_type;					// XML:A
+	type_t						m_type;					// XML:A:required
 
 	/*! Physical parameters describing the zone. */
 	IBK::Parameter				m_para[NUM_ZP];			// XML:E

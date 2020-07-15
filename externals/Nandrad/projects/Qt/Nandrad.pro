@@ -100,5 +100,6 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_Interface.cpp \
 	../../src/ncg/ncg_NANDRAD_Interval.cpp \
 	../../src/ncg/ncg_NANDRAD_SerializationTest.cpp \
+	../../src/ncg/ncg_NANDRAD_SimulationParameter.cpp \
 	../../src/ncg/ncg_NANDRAD_SolverParameter.cpp \
 	../../src/ncg/ncg_NANDRAD_Zone.cpp

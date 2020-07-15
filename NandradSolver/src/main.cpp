@@ -14,7 +14,7 @@
 // include model implementation class
 #include "NM_NandradModel.h"
 
-#define SERIALIZATION_TEST
+//#define SERIALIZATION_TEST
 #ifdef SERIALIZATION_TEST
 #include <NANDRAD_SerializationTest.h>
 #include <NANDRAD_Utilities.h>
@@ -109,6 +109,7 @@ int main(int argc, char * argv[]) {
 	// parameter setzen
 	createSim01(prj);
 	prj.writeXML(IBK::Path("SimQuality1.xml"));
+	return 0;
 
 #ifdef SERIALIZATION_TEST
 	NANDRAD::SerializationTest st;

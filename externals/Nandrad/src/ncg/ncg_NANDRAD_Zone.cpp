@@ -36,6 +36,16 @@ void Zone::readXML(const TiXmlElement * element) {
 	FUNCID("Zone::readXML");
 
 	try {
+		// search for mandatory attributes
+		if (!TiXmlAttribute::attributeByName(element, "id"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
+
+		// search for mandatory attributes
+		if (!TiXmlAttribute::attributeByName(element, "type"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'type' attribute.") ), FUNC_ID);
+
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();

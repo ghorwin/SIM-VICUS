@@ -102,17 +102,17 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! List of parameters. */
-	IBK::Parameter		m_para[NUM_SP];
+	IBK::Parameter		m_para[NUM_SP];					// XML:E
 	/*! Integer parameters. */
-	IBK::IntPara		m_intpara[NUM_SIP];
+	IBK::IntPara		m_intpara[NUM_SIP];				// XML:E
 	/*! List of string parameters. */
-	std::string			m_stringPara[NUM_SSP];
+	std::string			m_stringPara[NUM_SSP];			// XML:E
 	/*! List of flags. */
-	IBK::Flag			m_flags[NUM_SF];
+	IBK::Flag			m_flags[NUM_SF];				// XML:E
 
 	/*! The time interval of simulation beginning, offset
 		and duration from January 1, 0:00 of the start year. */
-	Interval			m_interval;
+	Interval			m_interval;						// XML:E
 };
 
 } // namespace NANDRAD
