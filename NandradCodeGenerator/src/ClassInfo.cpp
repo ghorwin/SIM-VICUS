@@ -30,7 +30,7 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 	while (getline(in, line)) {
 		try {
 			if (line.find("NANDRAD_READWRITE_PRIVATE") != std::string::npos) {
-				m_requirePrivateReadWrite = false;
+				m_requirePrivateReadWrite = true;
 				continue;
 			}
 			if (line.find("NANDRAD_COMP") != std::string::npos) {

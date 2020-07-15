@@ -34,73 +34,10 @@ Lesser General Public License for more details.
 
 namespace NANDRAD {
 
-#if 0
-void Interval::readXML(const TiXmlElement * element) {
-	const char * const FUNC_ID = "[Interval::readXML]";
-	try {
-		// store duration and end time
-		for (const TiXmlElement * e = element->FirstChildElement(); e; e = e->NextSiblingElement()) {
-
-			// determine data based on element name
-			std::string ename = e->Value();
-
-			// right now, we only support IBK:Parameter child tags
-			if (ename != "IBK:Parameter") {
-				throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(e->Row()).arg(
-						IBK::FormatString("Unknown tag '%1'.").arg(ename)
-						), FUNC_ID);
-			}
-
-			// read IBK parameter
-			std::string namestr, unitstr;
-			double value;
-			TiXmlElement::readIBKParameterElement(e, namestr, unitstr, value);
-
-			// check if we have a predefined parameter
-			if (KeywordList::KeywordExists("Interval::para_t", namestr) ) {
-				// determine type of parameter
-				para_t t = (para_t)KeywordList::Enumeration("Interval::para_t", namestr);
-				m_para[t].set(namestr, value, unitstr);
-				if (m_para[t].IO_unit.base_id() != IBK::Unit("s").base_id())
-					throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(e->Row()).arg(
-							IBK::FormatString("Invalid/missing unit for Interval parameter '%1', should be a time unit.")
-											  .arg(namestr)
-							), FUNC_ID);
-			}
-			// we have a generic parameter
-			else {
-				readGenericParameterElement(e);
-			}
-		}
-		// end of initialization: calculate missing parameters
-		// we only can calculate duration if start and end time are given
-		if(!m_para[IP_END].name.empty() && !m_para[IP_START].name.empty()) {
-			// error: wrong interval definition
-			if(m_para[IP_END].value < m_para[IP_START].value) {
-				throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-					IBK::FormatString("Error combining end time %1 s with start time %2 s!")
-					.arg(m_para[IP_END].value).arg(m_para[IP_START].value)
-					), FUNC_ID);
-			}
-		}
-	}
-	catch (IBK::Exception & ex) {
-		throw IBK::Exception(ex, IBK::FormatString("Error reading 'Interval' element."), FUNC_ID);
-	}
-	catch (std::exception & ex2) {
-		throw IBK::Exception(IBK::FormatString("%1\nError reading 'Interval' element.").arg(ex2.what()), FUNC_ID);
-	}
-}
-#endif
-
 
 bool Interval::operator!=(const Interval & other) const {
-#if 0
-	if(GenericParametrizationObject::operator !=(other))
-		return true;
 	for (int i=0; i<NUM_IP; ++i)
 		if (m_para[i] != other.m_para[i]) return true;
-#endif
 	return false; // this and other hold the same data
 }
 

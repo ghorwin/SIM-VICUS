@@ -290,6 +290,10 @@ void CodeGenerator::generateReadWriteCode() {
 			// *** Generate writeXML() content ****
 
 			writeCode += IBK::replace_string(CPP_WRITEXML, "${CLASSNAME}", ci.m_className);
+			if (ci.m_requirePrivateReadWrite)
+				writeCode = IBK::replace_string(writeCode, "${PRIVATE}", "Private");
+			else
+				writeCode = IBK::replace_string(writeCode, "${PRIVATE}", "");
 
 			std::string attribs;
 			// generate attribute write code
@@ -485,12 +489,14 @@ void CodeGenerator::generateReadWriteCode() {
 			writeCode = IBK::replace_string(writeCode, "${ATTRIBUTES}", attribs, IBK::ReplaceFirst);
 			writeCode = IBK::replace_string(writeCode, "${CHILD_ELEMENTS}", elements, IBK::ReplaceFirst);
 
-
-
 			// *** Generate readXML() content ****
 
 			std::string readCode;
 			readCode += IBK::replace_string(CPP_READXML, "${CLASSNAME}", ci.m_className);
+			if (ci.m_requirePrivateReadWrite)
+				readCode = IBK::replace_string(readCode, "${PRIVATE}", "Private");
+			else
+				readCode = IBK::replace_string(readCode, "${PRIVATE}", "");
 
 			attribs.clear();
 			elements.clear();

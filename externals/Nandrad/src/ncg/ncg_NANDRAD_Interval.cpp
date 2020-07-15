@@ -31,8 +31,8 @@
 
 namespace NANDRAD {
 
-void Interval::readXML(const TiXmlElement * element) {
-	FUNCID("Interval::readXML");
+void Interval::readXMLPrivate(const TiXmlElement * element) {
+	FUNCID("Interval::readXMLPrivate");
 
 	try {
 		const TiXmlElement * c = element->FirstChildElement();
@@ -61,7 +61,7 @@ void Interval::readXML(const TiXmlElement * element) {
 	}
 }
 
-TiXmlElement * Interval::writeXML(TiXmlElement * parent) const {
+TiXmlElement * Interval::writeXMLPrivate(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("Interval");
 	parent->LinkEndChild(e);
 

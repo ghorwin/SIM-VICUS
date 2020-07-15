@@ -384,7 +384,7 @@ const char * const CPP_READWRITE_HEADER =
 		"\n";
 
 const char * const CPP_WRITEXML =
-		"TiXmlElement * ${CLASSNAME}::writeXML(TiXmlElement * parent) const {\n"
+		"TiXmlElement * ${CLASSNAME}::writeXML${PRIVATE}(TiXmlElement * parent) const {\n"
 		"	TiXmlElement * e = new TiXmlElement(\"${CLASSNAME}\");\n"
 		"	parent->LinkEndChild(e);\n\n"
 		"${ATTRIBUTES}${CHILD_ELEMENTS}"
@@ -392,8 +392,8 @@ const char * const CPP_WRITEXML =
 		"}\n";
 
 const char * const CPP_READXML =
-		"void ${CLASSNAME}::readXML(const TiXmlElement * element) {\n"
-		"	FUNCID(\"${CLASSNAME}::readXML\");\n"
+		"void ${CLASSNAME}::readXML${PRIVATE}(const TiXmlElement * element) {\n"
+		"	FUNCID(\"${CLASSNAME}::readXML${PRIVATE}\");\n"
 		"\n"
 		"	try {\n"
 		"${ATTRIBUTES}${CHILD_ELEMENTS}"

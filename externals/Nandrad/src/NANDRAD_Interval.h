@@ -38,6 +38,7 @@ namespace NANDRAD {
 	It is used to defined output grids.
 */
 class Interval {
+	NANDRAD_READWRITE_PRIVATE
 public:
 	/*! Parameters. */
 	enum para_t {
@@ -47,8 +48,15 @@ public:
 		NUM_IP
 	};
 
-	NANDRAD_READWRITE
+	/*! Reads the data from the xml element.
+		Throws an IBK::Exception if a syntax error occurs.
+	*/
+	void readXML(const TiXmlElement * element) { readXMLPrivate(element); }
 
+	/*! Appends the element to the parent xml element.
+		Throws an IBK::Exception in case of invalid data.
+	*/
+	TiXmlElement * writeXML(TiXmlElement * parent) const { if (*this != Interval()) return writeXMLPrivate(parent); else return nullptr; }
 
 	/*! Compares this instance with another by value and returns true if they differ. */
 	bool operator!=(const Interval & other) const;
