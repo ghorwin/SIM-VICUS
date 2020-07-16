@@ -719,20 +719,53 @@ void CodeGenerator::generateReadWriteCode() {
 							"			"+elseStr+"if (cName == \"IBK:Parameter\") {\n"
 							"				IBK::Parameter p;\n"
 							"				readParameterElement(c, p);\n";
-						// now loop all IBK::Parameter variables and generate code for assigning these
+
+						// the read-code is structured as follows:
+						// - first generate read code for all scalar variables (varname without [])
+						// - then process all keyword-variants
+
+						std::string elementCodeScalar, elementCodeKeyword;
+
 						std::string caseElse;
-						for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
-							if (!xmlInfo.element || xmlInfo.typeStr != "IBK::Parameter") continue;
+						for (const ClassInfo::XMLInfo & xmlInfo2 : ci.m_xmlInfo) {
+							if (!xmlInfo2.element || xmlInfo2.typeStr != "IBK::Parameter") continue;
+							std::string varName2 = xmlInfo2.varName;
 							// now determine if this is a scalar parameter or a para[xxx] variant
-							elements +=	"				"+caseElse+"if (p.name == \""+tagName+"\") {\n";
-							elements +=		"				}\n";
+							std::string::size_type bpos1 = varName2.find("[");
+							if (bpos1 != std::string::npos) {
+								std::string::size_type bpos2 = varName2.find("]");
+								std::string numType = varName2.substr(bpos1+1, bpos2-bpos1-1);
+								varName2 = varName2.substr(0, bpos1);
+								std::string tagName2 = char(toupper(varName2[0])) + varName2.substr(1);
+								// find corresponding enum type
+								auto einfo_it = ci.m_enumInfo.begin();
+								for(; einfo_it != ci.m_enumInfo.end(); ++einfo_it)
+									if (einfo_it->enumNUM == numType) break;
+								if (einfo_it == ci.m_enumInfo.end())
+									throw IBK::Exception( IBK::FormatString("Unknown enum for array index '%1'").arg(numType), FUNC_ID);
+								const ClassInfo::EnumInfo & einfo = *einfo_it;
+								elementCodeKeyword +=
+										"				try {\n"
+										"					"+einfo.enumType()+" ptype = ("+einfo.enumType()+")KeywordList::Enumeration(\""+einfo.categoryName+"\", p.name);\n"
+										"					m_"+varName2+"[ptype] = p; success = true;\n"
+										"				}\n"
+										"				catch (...) { /* intentional fail */  }\n";
+							}
+							else {
+								std::string tagName2 = char(toupper(varName2[0])) + varName2.substr(1);
+								elementCodeScalar +=
+										"				"+caseElse+"if (p.name == \""+tagName2+"\") {\n"
+										"					m_"+varName2 + " = p; success = true;\n"
+										"				}\n";
+							}
 							caseElse = "else ";
 						}
 						elements +=
-							"				else {\n"
-							"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
-							"				}\n"
-							"			}\n";
+								"				bool success = false;\n" +
+								elementCodeScalar + elementCodeKeyword +
+								"				if (!success)\n"
+								"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
+								"			}\n";
 					}
 					else if (xmlInfo.typeStr == "IBK::IntPara" && groupTags.find("IBK::IntPara") != groupTags.end()) {
 						groupTags.erase(groupTags.find("IBK::IntPara")); // only generate code once
@@ -808,9 +841,11 @@ void CodeGenerator::generateReadWriteCode() {
 							caseElse = "else ";
 						}
 						elements +=
-							elementCodeScalar + elementCodeKeyword +
-							"				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
-							"			}\n";
+								"				bool success = false;\n" +
+								elementCodeScalar + elementCodeKeyword +
+								"				if (!success)\n"
+								"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
+								"			}\n";
 					}
 					else {
 						IBK::IBK_Message(IBK::FormatString("(Still) unsupported XML attrib type '%1' for variable '%2'.").arg(xmlInfo.typeStr).arg(xmlInfo.varName), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
