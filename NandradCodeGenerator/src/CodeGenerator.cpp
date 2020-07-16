@@ -250,7 +250,7 @@ void CodeGenerator::generateReadWriteCode() {
 			if (ci.m_xmlInfo.empty() && !ci.m_requireComparisonFunction)
 				continue;
 
-#if 0
+#if 1
 			// development hack - only deal with SerializationTest for now
 			if (ci.m_className != "SerializationTest")
 				continue;
@@ -266,7 +266,7 @@ void CodeGenerator::generateReadWriteCode() {
 
 			// check if it exists
 			if (targetFile.exists()) {
-//#define DISABLE_TIME_CHECK
+#define DISABLE_TIME_CHECK
 #ifndef DISABLE_TIME_CHECK
 				// skip, if target file is already newer than source file
 				if (targetFile.fileTime() > ci.m_sourceHeaderFile.fileTime()) {
@@ -461,20 +461,7 @@ void CodeGenerator::generateReadWriteCode() {
 					// special handling for vector of double or vector of int/unsigned int
 					if (childType == "double" || childType == "int" || childType == "unsigned int") {
 						// we generate the parent element and afterwards the loop
-						elements += "\n"
-								"	if (!m_"+varName+".empty()) {\n"
-								"		TiXmlElement * child = new TiXmlElement(\""+tagName+"\");\n"
-								"		e->LinkEndChild(child);\n"
-								"\n"
-								"		std::stringstream vals;\n"
-								"		for (unsigned int i=0; i<m_"+varName+".size(); ++i) {\n"
-								"			vals << m_"+varName+"[i];\n"
-								"			if (i<m_"+varName+".size()-1)  vals << \",\";\n"
-								"		}\n"
-								"		TiXmlText * text = new TiXmlText( vals.str() );\n"
-								"		child->LinkEndChild( text );\n"
-								"	}\n"
-								"\n";
+						elements += "	writeVector(e, \""+tagName+"\", m_"+varName+");\n";
 					}
 					else {
 						// we generate the parent element and afterwards the loop
@@ -492,6 +479,11 @@ void CodeGenerator::generateReadWriteCode() {
 								"\n";
 					}
 
+				}
+				else if (xmlInfo.typeStr == "DataTable") {
+					elements +=
+							"	if (!m_" + varName + ".m_values.empty())\n"
+							"		TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".encodedString());\n";
 				}
 				else {
 					bool hadEnumType = false;
@@ -634,6 +626,9 @@ void CodeGenerator::generateReadWriteCode() {
 						"		}\n";
 			}
 
+
+
+
 			// check if we have any elements to read
 			bool haveTags = false;
 			for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
@@ -678,6 +673,7 @@ void CodeGenerator::generateReadWriteCode() {
 				}
 
 				elseStr.clear();
+				std::set<std::string> handledVariables;
 				for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
 					if (!xmlInfo.element) continue;
 					std::string varName = xmlInfo.varName;
@@ -692,22 +688,26 @@ void CodeGenerator::generateReadWriteCode() {
 						elements +=
 							"			"+elseStr+"if (cName == \""+tagName+"\")\n"
 							"				m_"+varName+" = readPODElement<"+xmlInfo.typeStr+">(c, cName);\n";
+						handledVariables.insert(varName);
 					}
 					else if (xmlInfo.typeStr == "std::string") {
 						elements +=
 							"			"+elseStr+"if (cName == \""+tagName+"\")\n"
 							"				m_"+varName+" = c->GetText();\n";
+						handledVariables.insert(varName);
 					}
 					else if (xmlInfo.typeStr == "IBK::Unit") {
 						includes.insert("NANDRAD_Utilities.h");
 						elements +=
 							"			"+elseStr+"if (cName == \""+tagName+"\")\n"
 							"				m_"+varName+" = readUnitElement(c, cName);\n";
+						handledVariables.insert(varName);
 					}
 					else if (xmlInfo.typeStr == "IBK::Path") {
 						elements +=
 							"			"+elseStr+"if (cName == \""+tagName+"\")\n"
 							"				m_"+varName+" = IBK::Path(c->GetText());\n";
+						handledVariables.insert(varName);
 					}
 
 					// for the group types, we generate the code only once and switch the parameter in an internal loop
@@ -732,6 +732,7 @@ void CodeGenerator::generateReadWriteCode() {
 						for (const ClassInfo::XMLInfo & xmlInfo2 : ci.m_xmlInfo) {
 							if (!xmlInfo2.element || xmlInfo2.typeStr != "IBK::LinearSpline") continue;
 							std::string varName2 = xmlInfo2.varName;
+							handledVariables.insert(varName2);
 							// now determine if this is a scalar parameter or a spline[xxx] variant
 							std::string::size_type bpos1 = varName2.find("[");
 							if (bpos1 != std::string::npos) {
@@ -788,6 +789,7 @@ void CodeGenerator::generateReadWriteCode() {
 						for (const ClassInfo::XMLInfo & xmlInfo2 : ci.m_xmlInfo) {
 							if (!xmlInfo2.element || xmlInfo2.typeStr != "IBK::Parameter") continue;
 							std::string varName2 = xmlInfo2.varName;
+							handledVariables.insert(varName2);
 							// now determine if this is a scalar parameter or a para[xxx] variant
 							std::string::size_type bpos1 = varName2.find("[");
 							if (bpos1 != std::string::npos) {
@@ -843,6 +845,7 @@ void CodeGenerator::generateReadWriteCode() {
 						for (const ClassInfo::XMLInfo & xmlInfo2 : ci.m_xmlInfo) {
 							if (!xmlInfo2.element || xmlInfo2.typeStr != "IBK::IntPara") continue;
 							std::string varName2 = xmlInfo2.varName;
+							handledVariables.insert(varName2);
 							// now determine if this is a scalar parameter or a para[xxx] variant
 							std::string::size_type bpos1 = varName2.find("[");
 							if (bpos1 != std::string::npos) {
@@ -899,6 +902,7 @@ void CodeGenerator::generateReadWriteCode() {
 						for (const ClassInfo::XMLInfo & xmlInfo2 : ci.m_xmlInfo) {
 							if (!xmlInfo2.element || xmlInfo2.typeStr != "IBK::Flag") continue;
 							std::string varName2 = xmlInfo2.varName;
+							handledVariables.insert(varName2);
 							// now determine if this is a scalar parameter or a flag[xxx] variant
 							std::string::size_type bpos1 = varName2.find("[");
 							if (bpos1 != std::string::npos) {
@@ -936,11 +940,34 @@ void CodeGenerator::generateReadWriteCode() {
 								"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
 								"			}\n";
 					}
+					else if (xmlInfo.typeStr.find("std::vector<") != std::string::npos) {
+
+						// generate code for reading std::vector
+						handledVariables.insert(xmlInfo.varName);
+					}
 					else {
 
-						// no known type so far, must be one of the enum types in this class, so generate read code for all the enumeration values
-						continue;
-						throw IBK::Exception(IBK::FormatString("(Still) unsupported XML element type '%1' for variable '%2' in readXML.").arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
+						// now generate code for all variables where read code hasn't been generated for
+						std::string caseElse;
+						for (const ClassInfo::XMLInfo & xmlInfo2 : ci.m_xmlInfo) {
+							if (!xmlInfo2.element) continue;
+							std::string varName2 = xmlInfo2.varName;
+							if (handledVariables.find(varName2) != handledVariables.end()) continue;
+							std::string tagName2 = char(toupper(varName2[0])) + varName2.substr(1);
+
+							// check for enumeration types
+//							// no known type so far, must be one of the enum types in this class, so generate read code for all the enumeration values
+//							if (xmlInfo.varName.find("[") != std::string::npos) {
+
+//							}
+							// for all remaining tags generate generic code
+//							elements +=
+//									"			else if (cName == \""+tagName2+"\") \n"
+//									"				m_"+varName2+".readXML(c);\n";
+						}
+
+//						continue;
+//						throw IBK::Exception(IBK::FormatString("(Still) unsupported XML element type '%1' for variable '%2' in readXML.").arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
 					}
 					elseStr = "else ";
 				} // end element reading loop

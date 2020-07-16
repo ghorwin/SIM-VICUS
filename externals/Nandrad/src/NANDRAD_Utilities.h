@@ -74,6 +74,22 @@ void readIntParaElement(const TiXmlElement * element, IBK::IntPara & p);
 void readFlagElement(const TiXmlElement * element, IBK::Flag & f);
 
 template <typename T>
+void writeVector(TiXmlElement * parent, const std::string & name, const std::vector<T> & vec) {
+	if (!vec.empty()) {
+		TiXmlElement * child = new TiXmlElement(name);
+		parent->LinkEndChild(child);
+
+		std::stringstream vals;
+		for (unsigned int i=0; i<vec.size(); ++i) {
+			vals << vec[i];
+			if (i<vec.size()-1)  vals << ",";
+		}
+		TiXmlText * text = new TiXmlText( vals.str() );
+		child->LinkEndChild( text );
+	}
+}
+
+template <typename T>
 T readPODAttributeValue(const TiXmlElement * element, const TiXmlAttribute * attrib) {
 	FUNCID(NANDRAD::readPODAttributeValue);
 	try {
