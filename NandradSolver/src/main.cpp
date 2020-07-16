@@ -14,7 +14,9 @@
 // include model implementation class
 #include "NM_NandradModel.h"
 
-#define SERIALIZATION_TEST
+#define TEST_PROJECT_WRITING
+
+//#define SERIALIZATION_TEST
 #ifdef SERIALIZATION_TEST
 #include <NANDRAD_SerializationTest.h>
 #include <NANDRAD_Utilities.h>
@@ -34,7 +36,7 @@ const char * const PROGRAM_INFO =
 void createSim01(NANDRAD::Project &prj){
 
 	//project info
-	prj.m_projectInfo.m_comment = "Yes we can!";
+	prj.m_projectInfo.m_comment = "SimQuality TestCase 1";
 	prj.m_projectInfo.m_created = "Now!";
 	prj.m_projectInfo.m_version = "NANDRAD 2.0";
 	prj.m_projectInfo.m_lastEdited = "Yesterday";
@@ -51,9 +53,8 @@ void createSim01(NANDRAD::Project &prj){
 	prj.m_zones.push_back(zone);
 
 	prj.m_simulationParameter.m_intpara[NANDRAD::SimulationParameter::SIP_YEAR].set("StartYear", 2015);
-//	prj.m_solverParameter.initDefaults();
 
-	prj.m_location.m_climateFileName = IBK::Path("climate\testClimate.epw");
+	prj.m_location.m_climateFileName = IBK::Path("${Project Directory}/climate/testClimate.epw");
 	prj.m_location.m_para[NANDRAD::Location::LP_LATITUDE].set("Latitude", 51, IBK::Unit("Deg"));
 	prj.m_location.m_para[NANDRAD::Location::LP_LONGITUDE].set("Longitude",13, IBK::Unit("Deg"));
 	prj.m_location.m_para[NANDRAD::Location::LP_ALTITUDE].set("Altitude",100, IBK::Unit("m"));
@@ -117,14 +118,13 @@ void createSim01(NANDRAD::Project &prj){
 	// add construction type
 	prj.m_constructionTypes.push_back(conType);
 
-
 	//outputs
 
 	NANDRAD::OutputGrid grid;
 	grid.m_name = "hourly";
 
 	NANDRAD::Interval intVal;
-	intVal.m_para[NANDRAD::Interval::IP_END].set("End", 1, IBK::Unit("d"));
+	intVal.m_para[NANDRAD::Interval::IP_END].set("End", 365, IBK::Unit("d"));
 	intVal.m_para[NANDRAD::Interval::IP_STEPSIZE].set("StepSize", 1, IBK::Unit("h"));
 	grid.m_intervals.push_back(intVal);
 
@@ -133,17 +133,24 @@ void createSim01(NANDRAD::Project &prj){
 	prj.m_outputs.m_grids.push_back(grid);
 
 	NANDRAD::OutputDefinition outDef;
-	outDef.m_quantity = "Temperature";
+	outDef.m_quantity = "Location.AzimuthAngle";
 	outDef.m_gridName = "hourly";
-	outDef.m_objectListName = "All zones";
+	outDef.m_objectListName = "climate";
 
 	prj.m_outputs.m_outputDefinitions.push_back(outDef);
 
+	NANDRAD::OutputDefinition outDef2;
+	outDef2.m_quantity = "Location.ElevationAngle";
+	outDef2.m_gridName = "hourly";
+	outDef2.m_objectListName = "climate";
+
+	prj.m_outputs.m_outputDefinitions.push_back(outDef2);
+
 	// Object lists (needed by outputs)
 	NANDRAD::ObjectList ol;
-	ol.m_name = "All zones";
+	ol.m_name = "climate";
 	ol.m_filterID.setEncodedString("*"); // all
-	ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+	ol.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
 
 	prj.m_objectLists.push_back(ol);
 }
@@ -152,13 +159,15 @@ void createSim01(NANDRAD::Project &prj){
 int main(int argc, char * argv[]) {
 	FUNCID(main);
 
-	std::cout << FUNC_ID << std::endl;
+#ifdef TEST_PROJECT_WRITING
 
 	NANDRAD::Project prj;
 	// parameter setzen
 	createSim01(prj);
-	prj.writeXML(IBK::Path("SimQuality1.xml"));
-	std::cout << "Write 'SimQuality1.xml'." << std::endl;
+	prj.writeXML(IBK::Path("SimQuality_TestCase1.xml"));
+	std::cout << "Wrote 'SimQuality_TestCase1.xml'." << std::endl;
+	return EXIT_SUCCESS;
+#endif // TEST_PROJECT_WRITING
 
 #ifdef SERIALIZATION_TEST
 	NANDRAD::SerializationTest st;
