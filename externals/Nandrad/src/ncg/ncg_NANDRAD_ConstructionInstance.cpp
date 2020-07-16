@@ -32,7 +32,7 @@
 namespace NANDRAD {
 
 void ConstructionInstance::readXML(const TiXmlElement * element) {
-	FUNCID("ConstructionInstance::readXML");
+	FUNCID(ConstructionInstance::readXML);
 
 	try {
 		// search for mandatory attributes
@@ -40,6 +40,7 @@ void ConstructionInstance::readXML(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
 
+		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
@@ -51,6 +52,34 @@ void ConstructionInstance::readXML(const TiXmlElement * element) {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			attrib = attrib->Next();
+		}
+		// search for mandatory elements
+		if (!element->FirstChildElement("ConstructionTypeId"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'ConstructionTypeId' element.") ), FUNC_ID);
+
+		// reading elements
+		const TiXmlElement * c = element->FirstChildElement();
+		while (c) {
+			const std::string & cName = c->ValueStr();
+			if (cName == "ConstructionTypeId")
+				m_constructionTypeId = readPODElement<unsigned int>(c, cName);
+			else if (cName == "IBK:Parameter") {
+				IBK::Parameter p;
+				readParameterElement(c, p);
+				bool success = false;
+				try {
+					para_t ptype = (para_t)KeywordList::Enumeration("ConstructionInstance::para_t", p.name);
+					m_para[ptype] = p; success = true;
+				}
+				catch (...) { /* intentional fail */  }
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			c = c->NextSiblingElement();
 		}
 	}
 	catch (IBK::Exception & ex) {

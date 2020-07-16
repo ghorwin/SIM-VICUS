@@ -32,9 +32,11 @@
 namespace NANDRAD {
 
 void EmbeddedObject::readXML(const TiXmlElement * element) {
-	FUNCID("EmbeddedObject::readXML");
+	FUNCID(EmbeddedObject::readXML);
 
 	try {
+		// search for mandatory attributes
+		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
@@ -46,6 +48,28 @@ void EmbeddedObject::readXML(const TiXmlElement * element) {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			attrib = attrib->Next();
+		}
+		// search for mandatory elements
+		// reading elements
+		const TiXmlElement * c = element->FirstChildElement();
+		while (c) {
+			const std::string & cName = c->ValueStr();
+			if (cName == "IBK:Parameter") {
+				IBK::Parameter p;
+				readParameterElement(c, p);
+				bool success = false;
+				try {
+					para_t ptype = (para_t)KeywordList::Enumeration("EmbeddedObject::para_t", p.name);
+					m_para[ptype] = p; success = true;
+				}
+				catch (...) { /* intentional fail */  }
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			c = c->NextSiblingElement();
 		}
 	}
 	catch (IBK::Exception & ex) {

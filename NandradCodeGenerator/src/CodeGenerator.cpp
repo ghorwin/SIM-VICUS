@@ -250,7 +250,7 @@ void CodeGenerator::generateReadWriteCode() {
 			if (ci.m_xmlInfo.empty() && !ci.m_requireComparisonFunction)
 				continue;
 
-#if 1
+#if 0
 			// development hack - only deal with SerializationTest for now
 			if (ci.m_className != "SerializationTest")
 				continue;
@@ -266,7 +266,7 @@ void CodeGenerator::generateReadWriteCode() {
 
 			// check if it exists
 			if (targetFile.exists()) {
-#define DISABLE_TIME_CHECK
+//#define DISABLE_TIME_CHECK
 #ifndef DISABLE_TIME_CHECK
 				// skip, if target file is already newer than source file
 				if (targetFile.fileTime() > ci.m_sourceHeaderFile.fileTime()) {

@@ -26,13 +26,14 @@
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
 #include <NANDRAD_KeywordList.h>
+#include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
 
 namespace NANDRAD {
 
 void InterfaceLongWaveEmission::readXMLPrivate(const TiXmlElement * element) {
-	FUNCID("InterfaceLongWaveEmission::readXMLPrivate");
+	FUNCID(InterfaceLongWaveEmission::readXMLPrivate);
 
 	try {
 		// search for mandatory attributes
@@ -40,6 +41,7 @@ void InterfaceLongWaveEmission::readXMLPrivate(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'modelType' attribute.") ), FUNC_ID);
 
+		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
@@ -51,10 +53,29 @@ void InterfaceLongWaveEmission::readXMLPrivate(const TiXmlElement * element) {
 				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 					IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
 			}
-			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
 			attrib = attrib->Next();
+		}
+		// search for mandatory elements
+		// reading elements
+		const TiXmlElement * c = element->FirstChildElement();
+		while (c) {
+			const std::string & cName = c->ValueStr();
+			if (cName == "IBK:Parameter") {
+				IBK::Parameter p;
+				readParameterElement(c, p);
+				bool success = false;
+				try {
+					para_t ptype = (para_t)KeywordList::Enumeration("InterfaceLongWaveEmission::para_t", p.name);
+					m_para[ptype] = p; success = true;
+				}
+				catch (...) { /* intentional fail */  }
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			c = c->NextSiblingElement();
 		}
 	}
 	catch (IBK::Exception & ex) {

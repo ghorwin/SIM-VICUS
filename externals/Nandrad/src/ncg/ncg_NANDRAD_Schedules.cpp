@@ -18,21 +18,20 @@
 	Lesser General Public License for more details.
 */
 
-#include <NANDRAD_Interval.h>
+#include <NANDRAD_Schedules.h>
 #include <NANDRAD_KeywordList.h>
 
 #include <IBK_messages.h>
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
-#include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
 
 namespace NANDRAD {
 
-void Interval::readXMLPrivate(const TiXmlElement * element) {
-	FUNCID(Interval::readXMLPrivate);
+void Schedules::readXMLPrivate(const TiXmlElement * element) {
+	FUNCID(Schedules::readXMLPrivate);
 
 	try {
 		// search for mandatory elements
@@ -40,41 +39,35 @@ void Interval::readXMLPrivate(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "IBK:Parameter") {
-				IBK::Parameter p;
-				readParameterElement(c, p);
-				bool success = false;
-				try {
-					para_t ptype = (para_t)KeywordList::Enumeration("Interval::para_t", p.name);
-					m_para[ptype] = p; success = true;
-				}
-				catch (...) { /* intentional fail */  }
-				if (!success)
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
 			c = c->NextSiblingElement();
 		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Interval' element."), FUNC_ID);
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Schedules' element."), FUNC_ID);
 	}
 	catch (std::exception & ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading 'Interval' element.").arg(ex2.what()), FUNC_ID);
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'Schedules' element.").arg(ex2.what()), FUNC_ID);
 	}
 }
 
-TiXmlElement * Interval::writeXMLPrivate(TiXmlElement * parent) const {
-	TiXmlElement * e = new TiXmlElement("Interval");
+TiXmlElement * Schedules::writeXMLPrivate(TiXmlElement * parent) const {
+	TiXmlElement * e = new TiXmlElement("Schedules");
 	parent->LinkEndChild(e);
 
 
-	for (unsigned int i=0; i<NUM_IP; ++i) {
-		if (!m_para[i].name.empty())
-			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
+	if (!m_scheduleGroups.empty()) {
+		TiXmlElement * child = new TiXmlElement("ScheduleGroups");
+		e->LinkEndChild(child);
+
+		for (std::vector<ScheduleGroup>::const_iterator ifaceIt = m_scheduleGroups.begin();
+			ifaceIt != m_scheduleGroups.end(); ++ifaceIt)
+		{
+			ifaceIt->writeXML(child);
+		}
 	}
+
+
+	m_annualSchedules.writeXML(e);
 	return e;
 }
 

@@ -32,9 +32,11 @@
 namespace NANDRAD {
 
 void ModelInputReference::readXML(const TiXmlElement * element) {
-	FUNCID("ModelInputReference::readXML");
+	FUNCID(ModelInputReference::readXML);
 
 	try {
+		// search for mandatory attributes
+		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
@@ -44,6 +46,22 @@ void ModelInputReference::readXML(const TiXmlElement * element) {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			attrib = attrib->Next();
+		}
+		// search for mandatory elements
+		// reading elements
+		const TiXmlElement * c = element->FirstChildElement();
+		while (c) {
+			const std::string & cName = c->ValueStr();
+			if (cName == "TargetName")
+				m_targetName = c->GetText();
+			else if (cName == "ObjectList")
+				m_objectList = c->GetText();
+			else if (cName == "Quantity")
+				m_quantity = c->GetText();
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			c = c->NextSiblingElement();
 		}
 	}
 	catch (IBK::Exception & ex) {

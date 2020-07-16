@@ -32,9 +32,11 @@
 namespace NANDRAD {
 
 void MaterialLayer::readXML(const TiXmlElement * element) {
-	FUNCID("MaterialLayer::readXML");
+	FUNCID(MaterialLayer::readXML);
 
 	try {
+		// search for mandatory attributes
+		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();

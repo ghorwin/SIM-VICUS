@@ -32,7 +32,7 @@
 namespace NANDRAD {
 
 void ConstructionType::readXML(const TiXmlElement * element) {
-	FUNCID("ConstructionType::readXML");
+	FUNCID(ConstructionType::readXML);
 
 	try {
 		// search for mandatory attributes
@@ -40,6 +40,7 @@ void ConstructionType::readXML(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
 
+		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
@@ -51,6 +52,13 @@ void ConstructionType::readXML(const TiXmlElement * element) {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			attrib = attrib->Next();
+		}
+		// search for mandatory elements
+		// reading elements
+		const TiXmlElement * c = element->FirstChildElement();
+		while (c) {
+			const std::string & cName = c->ValueStr();
+			c = c->NextSiblingElement();
 		}
 	}
 	catch (IBK::Exception & ex) {

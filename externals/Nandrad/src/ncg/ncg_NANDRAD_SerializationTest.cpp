@@ -33,7 +33,7 @@
 namespace NANDRAD {
 
 void SerializationTest::readXML(const TiXmlElement * element) {
-	FUNCID("SerializationTest::readXML");
+	FUNCID(SerializationTest::readXML);
 
 	try {
 		// search for mandatory attributes
@@ -41,6 +41,7 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'id1' attribute.") ), FUNC_ID);
 
+		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
@@ -77,6 +78,82 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 			}
 			attrib = attrib->Next();
 		}
+		// search for mandatory elements
+		// reading elements
+		const TiXmlElement * c = element->FirstChildElement();
+		while (c) {
+			const std::string & cName = c->ValueStr();
+			if (cName == "Id3")
+				m_id3 = readPODElement<int>(c, cName);
+			else if (cName == "Id4")
+				m_id4 = readPODElement<unsigned int>(c, cName);
+			else if (cName == "Flag2")
+				m_flag2 = readPODElement<bool>(c, cName);
+			else if (cName == "Val2")
+				m_val2 = readPODElement<double>(c, cName);
+			else if (cName == "Str2")
+				m_str2 = c->GetText();
+			else if (cName == "Path2")
+				m_path2 = IBK::Path(c->GetText());
+			else if (cName == "U2")
+				m_u2 = readUnitElement(c, cName);
+			else if (cName == "X5")
+				m_x5 = readPODElement<double>(c, cName);
+			else if (cName == "IBK:Flag") {
+				IBK::Flag f;
+				readFlagElement(c, f);
+				bool success = false;
+				if (f.name() == "F") {
+					m_f = f; success=true;
+				}
+				try {
+					test_t ftype = (test_t)KeywordList::Enumeration("SerializationTest::test_t", f.name());
+					m_flags[ftype] = f; success=true;
+				}
+				catch (...) { /* intentional fail */  }
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			else if (cName == "IBK:Parameter") {
+				IBK::Parameter p;
+				readParameterElement(c, p);
+				bool success = false;
+				try {
+					test_t ptype = (test_t)KeywordList::Enumeration("SerializationTest::test_t", p.name);
+					m_para[ptype] = p; success = true;
+				}
+				catch (...) { /* intentional fail */  }
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			else if (cName == "IBK:IntPara") {
+				IBK::IntPara p;
+				readIntParaElement(c, p);
+				bool success = false;
+				try {
+					intPara_t ptype = (intPara_t)KeywordList::Enumeration("SerializationTest::intPara_t", p.name);
+					m_intPara[ptype] = p; success = true;
+				}
+				catch (...) { /* intentional fail */  }
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			else if (cName == "IBK:LinearSpline") {
+				IBK::LinearSpline p;
+				std::string name;
+				readLinearSplineElement(c, p, name, nullptr, nullptr);
+				bool success = false;
+				if (name == "Spline") {
+					m_spline = p; success = true;
+				}
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			c = c->NextSiblingElement();
+		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'SerializationTest' element."), FUNC_ID);
@@ -99,6 +176,7 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 	if (!m_str1.empty())
 		e->SetAttribute("str1", m_str1);
 	if (m_path1.isValid())
+		e->SetAttribute("path1", m_path1.str());
 	if (m_u1.id() != 0)
 		e->SetAttribute("u1", m_u1.name());
 	TiXmlElement::appendSingleAttributeElement(e, "Id3", nullptr, std::string(), IBK::val2string<int>(m_id3));
@@ -119,6 +197,22 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_f.name(), m_f.isEnabled() ? "true" : "false");
 
 	m_iface.writeXML(e);
+
+	m_table.writeXML(e);
+
+	if (!m_dblVec.empty()) {
+		TiXmlElement * child = new TiXmlElement("DblVec");
+		e->LinkEndChild(child);
+
+		std::stringstream vals;
+		for (unsigned int i=0; i<m_dblVec.size(); ++i) {
+			vals << m_dblVec[i];
+			if (i<m_dblVec.size()-1)  vals << ",";
+		}
+		TiXmlText * text = new TiXmlText( vals.str() );
+		child->LinkEndChild( text );
+	}
+
 
 	if (!m_interfaces.empty()) {
 		TiXmlElement * child = new TiXmlElement("Interfaces");
@@ -147,7 +241,7 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 			TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_flags[i].name(), m_flags[i].isEnabled() ? "true" : "false");
 	}
 	if (!m_spline.empty())
-		writeLinearSplineElement(e, "Spline", m_spline, std::string(), std::string());
+		writeLinearSplineElement(e, "Spline", m_spline, "-", "-");
 	return e;
 }
 

@@ -32,9 +32,27 @@
 namespace NANDRAD {
 
 void OutputDefinition::readXML(const TiXmlElement * element) {
-	FUNCID("OutputDefinition::readXML");
+	FUNCID(OutputDefinition::readXML);
 
 	try {
+		// search for mandatory elements
+		// reading elements
+		const TiXmlElement * c = element->FirstChildElement();
+		while (c) {
+			const std::string & cName = c->ValueStr();
+			if (cName == "Filename")
+				m_filename = c->GetText();
+			else if (cName == "Quantity")
+				m_quantity = c->GetText();
+			else if (cName == "ObjectListName")
+				m_objectListName = c->GetText();
+			else if (cName == "GridName")
+				m_gridName = c->GetText();
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			c = c->NextSiblingElement();
+		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'OutputDefinition' element."), FUNC_ID);

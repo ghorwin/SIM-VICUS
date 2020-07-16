@@ -25,15 +25,38 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
+#include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
 
 namespace NANDRAD {
 
 void Outputs::readXMLPrivate(const TiXmlElement * element) {
-	FUNCID("Outputs::readXMLPrivate");
+	FUNCID(Outputs::readXMLPrivate);
 
 	try {
+		// search for mandatory elements
+		// reading elements
+		const TiXmlElement * c = element->FirstChildElement();
+		while (c) {
+			const std::string & cName = c->ValueStr();
+			if (cName == "TimeUnit")
+				m_timeUnit = readUnitElement(c, cName);
+			else if (cName == "IBK:Flag") {
+				IBK::Flag f;
+				readFlagElement(c, f);
+				bool success = false;
+				if (f.name() == "BinaryFormat") {
+					m_binaryFormat = f; success=true;
+				}
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			c = c->NextSiblingElement();
+		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Outputs' element."), FUNC_ID);

@@ -25,15 +25,42 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
+#include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
 
 namespace NANDRAD {
 
 void Location::readXML(const TiXmlElement * element) {
-	FUNCID("Location::readXML");
+	FUNCID(Location::readXML);
 
 	try {
+		// search for mandatory elements
+		// reading elements
+		const TiXmlElement * c = element->FirstChildElement();
+		while (c) {
+			const std::string & cName = c->ValueStr();
+			if (cName == "IBK:Parameter") {
+				IBK::Parameter p;
+				readParameterElement(c, p);
+				bool success = false;
+				try {
+					para_t ptype = (para_t)KeywordList::Enumeration("Location::para_t", p.name);
+					m_para[ptype] = p; success = true;
+				}
+				catch (...) { /* intentional fail */  }
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			else if (cName == "ClimateFileName")
+				m_climateFileName = IBK::Path(c->GetText());
+			else if (cName == "ShadingFactorFileName")
+				m_shadingFactorFileName = IBK::Path(c->GetText());
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			c = c->NextSiblingElement();
+		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Location' element."), FUNC_ID);

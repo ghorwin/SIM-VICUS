@@ -31,7 +31,7 @@
 namespace NANDRAD {
 
 void ObjectList::readXMLPrivate(const TiXmlElement * element) {
-	FUNCID("ObjectList::readXMLPrivate");
+	FUNCID(ObjectList::readXMLPrivate);
 
 	try {
 		// search for mandatory attributes
@@ -39,6 +39,7 @@ void ObjectList::readXMLPrivate(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'name' attribute.") ), FUNC_ID);
 
+		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();

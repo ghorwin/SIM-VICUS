@@ -31,9 +31,16 @@
 namespace NANDRAD {
 
 void Project::readXMLPrivate(const TiXmlElement * element) {
-	FUNCID("Project::readXMLPrivate");
+	FUNCID(Project::readXMLPrivate);
 
 	try {
+		// search for mandatory elements
+		// reading elements
+		const TiXmlElement * c = element->FirstChildElement();
+		while (c) {
+			const std::string & cName = c->ValueStr();
+			c = c->NextSiblingElement();
+		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Project' element."), FUNC_ID);
