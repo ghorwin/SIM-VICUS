@@ -1,6 +1,6 @@
 # SIM-VICUS
 
-We have a CI (continuous integration) script running, that checks that all the pure C++ code builds through: ![CI](https://github.com/ghorwin/SIM-VICUS/workflows/CI/badge.svg)
+We have a CI (continuous integration) script running (build-test of all C/C++ code without UI): ![CI](https://github.com/ghorwin/SIM-VICUS/workflows/CI/badge.svg)
 
 ## Directory Structure
 
