@@ -161,11 +161,25 @@ int main(int argc, char * argv[]) {
 
 #ifdef TEST_PROJECT_WRITING
 
-	NANDRAD::Project prj;
-	// parameter setzen
-	createSim01(prj);
-	prj.writeXML(IBK::Path("SimQuality_TestCase1.xml"));
-	std::cout << "Wrote 'SimQuality_TestCase1.xml'." << std::endl;
+	{
+		NANDRAD::Project prj;
+		// parameter setzen
+		createSim01(prj);
+		prj.writeXML(IBK::Path("SimQuality_TestCase1.xml"));
+		std::cout << "Wrote 'SimQuality_TestCase1.xml'." << std::endl;
+	}
+	// now create a new project, read back the file and write it again with a different name
+	{
+
+		NANDRAD::Project prj;
+		try {
+			prj.readXML(IBK::Path("SimQuality_TestCase1.xml"));
+			prj.writeXML(IBK::Path("SimQuality_TestCase1_backup.xml"));
+			std::cout << "Wrote 'SimQuality_TestCase1_backup.xml'." << std::endl;
+		} catch (IBK::Exception & ex) {
+			ex.writeMsgStackToError();
+		}
+	}
 	return EXIT_SUCCESS;
 #endif // TEST_PROJECT_WRITING
 

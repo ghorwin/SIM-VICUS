@@ -36,7 +36,7 @@ Lesser General Public License for more details.
 #include <tinyxml.h>
 
 //#include "NANDRAD_Constants.h"
-//#include "NANDRAD_Utilities.h"
+#include "NANDRAD_Utilities.h"
 //#include "NANDRAD_OutputDefinition.h"
 
 namespace NANDRAD {
@@ -56,7 +56,6 @@ Project::Project() {
 
 void Project::readXML(const IBK::Path & filename) {
 	const char * const FUNC_ID = "[Project::readXML]";
-#if 0
 
 	TiXmlDocument doc;
 	IBK::Path filenamePath(filename);
@@ -67,6 +66,25 @@ void Project::readXML(const IBK::Path & filename) {
 	// we read our subsections from this handle
 	TiXmlHandle xmlRoot = TiXmlHandle(xmlElem);
 
+	// Directory Placeholders
+	xmlElem = xmlRoot.FirstChild("DirectoryPlaceholders").Element();
+	if (xmlElem) {
+		readDirectoryPlaceholdersXML(xmlElem);
+		// check for duplicate sections
+		xmlElem = xmlRoot.Child("DirectoryPlaceholders", 1).Element();
+		if (xmlElem != nullptr) {
+			throw IBK::Exception(IBK::FormatString("Duplicate section 'DirectoryPlaceholders'."), FUNC_ID);
+		}
+	}
+
+	// add the project directory to the placeholders map
+	m_placeholders[IBK::PLACEHOLDER_PROJECT_DIR] = filenamePath.parentPath();
+
+	xmlElem = xmlRoot.FirstChild("Project").Element();
+	if (xmlElem) {
+		readXMLPrivate(xmlElem);
+	}
+#if 0
 	try {
 		// Project Info
 		xmlElem = xmlRoot.FirstChild("ProjectInfo").Element();
