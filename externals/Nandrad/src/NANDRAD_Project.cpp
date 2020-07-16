@@ -28,7 +28,7 @@ Lesser General Public License for more details.
 #include <IBK_messages.h>
 //#include <IBK_FileUtils.h>
 //#include <IBK_StringUtils.h>
-//#include <IBK_assert.h>
+#include <IBK_assert.h>
 //#include <IBK_algorithm.h>
 //#include <IBK_Exception.h>
 //#include <IBK_UnitList.h>
@@ -41,6 +41,18 @@ Lesser General Public License for more details.
 
 namespace NANDRAD {
 
+Project * Project::m_self = nullptr;
+
+Project & Project::instance() {
+	IBK_ASSERT_X(m_self != nullptr,
+		"You must not access Project::instance() when the is no Project "
+		"instance (anylonger).");
+	return *m_self;
+}
+
+Project::Project() {
+	m_self = this;
+}
 
 void Project::readXML(const IBK::Path & filename) {
 	const char * const FUNC_ID = "[Project::readXML]";

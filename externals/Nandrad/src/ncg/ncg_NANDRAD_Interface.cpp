@@ -25,6 +25,8 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
+#include <NANDRAD_Project.h>
+#include <algorithm>
 #include <NANDRAD_KeywordList.h>
 #include <NANDRAD_Utilities.h>
 
@@ -106,6 +108,17 @@ void Interface::readXML(const TiXmlElement * element) {
 TiXmlElement * Interface::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("Interface");
 	parent->LinkEndChild(e);
+
+	TiXmlComment * com = new TiXmlComment();
+	if (m_zoneId == 0)
+		com->SetValue("Interface to outside");
+	else {
+		// lookup zone and its display name
+		std::vector<Zone>::const_iterator it = std::find(Project::instance().m_zones.begin(), Project::instance().m_zones.end(), m_zoneId);
+		if (it != Project::instance().m_zones.end() && !it->m_displayName.empty())
+			com->SetValue("Interface to '" + it->m_displayName + "'");
+	}
+	e->LinkEndChild(com);
 
 	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (m_location != NUM_IT)

@@ -46,6 +46,14 @@ class Project {
 	NANDRAD_READWRITE_PRIVATE
 public:
 
+	/*! Constructor, initializes global project pointer. */
+	Project();
+
+	/*! Returns a pointer to the Project instance.
+		Only access this function during the lifetime of Project object.
+	*/
+	static Project & instance();
+
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	/*! Reads the project data from an XML file.
@@ -133,6 +141,13 @@ private:
 
 	/*!	Checks whether all construction types and materials have a unique ID number. */
 	void checkDatabaseIDs();
+
+	/*! Global pointer to only project instance.
+		Initialized in the constructor and reset to nullptr in the destructor. So be sure that the object
+		exists before accessing Project::instance()
+	*/
+	static Project		*m_self;
+
 };
 
 

@@ -13,6 +13,8 @@ extern const char * const CPP_FOOTER;
 extern const char * const CPP_READWRITE_HEADER;
 extern const char * const CPP_WRITEXML;
 extern const char * const CPP_READXML;
+extern const char * const CPP_XML_INTERFACE_SPECIAL_HEADERS;
+extern const char * const CPP_XML_INTERFACE_SPECIAL_CODE;
 
 
 #endif // CONSTANTS_H

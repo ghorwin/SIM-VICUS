@@ -290,6 +290,7 @@ void CodeGenerator::generateReadWriteCode() {
 			// now start writing the file
 			std::string writeCode;
 			std::set<std::string> includes;
+			std::string extraIncludes;	// here we add extra include files to be added to the file - will inserted in string at the end
 
 			// *** Generate writeXML() content ****
 
@@ -298,6 +299,15 @@ void CodeGenerator::generateReadWriteCode() {
 				writeCode = IBK::replace_string(writeCode, "${PRIVATE}", "Private");
 			else
 				writeCode = IBK::replace_string(writeCode, "${PRIVATE}", "");
+
+			// now we have some special comment stuff, only for certain classes
+			if (ci.m_className == "Interface") {
+				writeCode = IBK::replace_string(writeCode, "${COMMENTS}", CPP_XML_INTERFACE_SPECIAL_CODE);
+				extraIncludes += CPP_XML_INTERFACE_SPECIAL_HEADERS;
+			}
+			else {
+				writeCode = IBK::replace_string(writeCode, "${COMMENTS}", "");
+			}
 
 			std::string attribs;
 			// generate attribute write code
@@ -1047,7 +1057,6 @@ void CodeGenerator::generateReadWriteCode() {
 
 			// *** Add header and footer and write file ****
 
-			std::string extraIncludes;
 			for (const std::string & inc : includes)
 				extraIncludes += "#include <"+inc+">\n";
 
