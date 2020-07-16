@@ -68,10 +68,10 @@ void writeLinearSplineElement(TiXmlElement * parent, const std::string & name, c
 void readParameterElement(const TiXmlElement * element, IBK::Parameter & p);
 
 /*! Reads an IBK::IntPara from XML element (with proper error handling). */
-void readIntParaElement(const TiXmlElement * element, const std::string & eName, IBK::IntPara & p);
+void readIntParaElement(const TiXmlElement * element, IBK::IntPara & p);
 
 /*! Reads an IBK::Flag from XML element (with proper error handling). */
-void readFlagElement(const TiXmlElement * element, const std::string & eName, IBK::Flag & f);
+void readFlagElement(const TiXmlElement * element, IBK::Flag & f);
 
 template <typename T>
 T readPODAttributeValue(const TiXmlElement * element, const TiXmlAttribute * attrib) {

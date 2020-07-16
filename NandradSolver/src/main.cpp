@@ -152,6 +152,8 @@ void createSim01(NANDRAD::Project &prj){
 int main(int argc, char * argv[]) {
 	FUNCID(main);
 
+	std::cout << FUNC_ID << std::endl;
+
 	NANDRAD::Project prj;
 	// parameter setzen
 	createSim01(prj);

@@ -100,7 +100,7 @@ void writeLinearSplineElement(TiXmlElement * parent, const std::string & eName, 
 
 
 void readParameterElement(const TiXmlElement * element, IBK::Parameter & p) {
-	FUNCID("NANDRAD::readParameterElement");
+	FUNCID(NANDRAD::readParameterElement);
 	const TiXmlAttribute* attrib = TiXmlAttribute::attributeByName(element, "name");
 	if (attrib == nullptr)
 		throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg("Missing 'name' attribute in IBK:Parameter element."), FUNC_ID);
@@ -122,15 +122,26 @@ void readParameterElement(const TiXmlElement * element, IBK::Parameter & p) {
 	} catch (...) {
 		throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg("Cannot read value in IBK:Parameter element."), FUNC_ID);
 	}
-
 }
 
 
-void readIntParaElement(const TiXmlElement * element, const std::string & eName, IBK::IntPara & p) {
-
+void readIntParaElement(const TiXmlElement * element, IBK::IntPara & p) {
+	FUNCID(NANDRAD::readIntParaElement);
+	const TiXmlAttribute* attrib = TiXmlAttribute::attributeByName(element, "name");
+	if (attrib == nullptr)
+		throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg("Missing 'name' attribute in IBK:IntPara element."), FUNC_ID);
+	const std::string & namestr = attrib->ValueStr();
+	const char * const str = element->GetText();
+	try {
+		int val = IBK::string2val<int>(str);
+		p.set(namestr, val);
+	} catch (...) {
+		throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg("Cannot read value in IBK:IntPara element."), FUNC_ID);
+	}
 }
 
-void readFlagElement(const TiXmlElement * element, const std::string & eName, IBK::Flag & f) {
+
+void readFlagElement(const TiXmlElement * element, IBK::Flag & f) {
 	FUNCID(NANDRAD::readFlagElement);
 	std::string namestr;
 	std::string valueStr;
@@ -141,7 +152,7 @@ void readFlagElement(const TiXmlElement * element, const std::string & eName, IB
 		f.set(namestr, false);
 	else {
 		throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-			IBK::FormatString("Error reading '"+eName+"' tag, expected 'true' or 'false' as value.") ), FUNC_ID);
+			IBK::FormatString("Error reading 'IBK:Flag' tag, expected 'true' or 'false' as value.") ), FUNC_ID);
 	}
 
 }

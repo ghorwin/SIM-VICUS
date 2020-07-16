@@ -51,7 +51,7 @@ void Interval::setStartEnd( double start, double endtime, IBK::Unit u ) {
 
 
 void Interval::checkParameters() const {
-	FUNCID("Interval::checkParameters");
+	FUNCID(Interval::checkParameters);
 
 	// check start point
 	if (!m_para[Interval::IP_START].name.empty()) {

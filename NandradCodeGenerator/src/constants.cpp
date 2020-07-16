@@ -393,7 +393,7 @@ const char * const CPP_WRITEXML =
 
 const char * const CPP_READXML =
 		"void ${CLASSNAME}::readXML${PRIVATE}(const TiXmlElement * element) {\n"
-		"	FUNCID(\"${CLASSNAME}::readXML${PRIVATE}\");\n"
+		"	FUNCID(${CLASSNAME}::readXML${PRIVATE});\n"
 		"\n"
 		"	try {\n"
 		"${ATTRIBUTES}${CHILD_ELEMENTS}"

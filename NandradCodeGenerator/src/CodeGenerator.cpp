@@ -761,7 +761,7 @@ void CodeGenerator::generateReadWriteCode() {
 						elements +=
 							"			"+elseStr+"if (cName == \"IBK:Flag\") {\n"
 							"				IBK::Flag f;\n"
-							"				readFlagElement(c, cName, f);\n";
+							"				readFlagElement(c, f);\n";
 						// now loop all IBK::Flag variables and generate code for assigning these
 						std::string caseElse;
 						for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {

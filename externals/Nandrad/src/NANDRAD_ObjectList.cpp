@@ -30,7 +30,7 @@ Lesser General Public License for more details.
 namespace NANDRAD {
 
 void ObjectList::readXML(const TiXmlElement * element) {
-	FUNCID("ObjectList::readXML");
+	FUNCID(ObjectList::readXML);
 
 	// read base stuff
 	readXMLPrivate(element);

@@ -146,7 +146,7 @@ void OutputGrid::setupIntervals() {
 
 
 void OutputGrid::checkIntervalDefinition() const {
-	FUNCID("OutputGrid::checkParameters");
+	FUNCID(OutputGrid::checkParameters);
 
 	if (m_intervals.empty())
 		throw IBK::Exception( IBK::FormatString("Output Grid '%1' does not have any intervals.").arg(m_name), FUNC_ID);
