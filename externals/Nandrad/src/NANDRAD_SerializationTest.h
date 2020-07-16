@@ -63,7 +63,7 @@ public:
 	unsigned int		m_id4		= 12;					// XML:E
 	bool				m_flag2		= true;					// XML:E
 	double				m_val2		= 41.41;				// XML:E
-	test_t				m_testBlo	= NUM_test;				// XML:E
+	test_t				m_testBlo	= t_x2;					// XML:E
 	std::string			m_str2		= "blabb";				// XML:E
 	IBK::Path			m_path2		= IBK::Path("/var");	// XML:E
 	IBK::Unit			m_u2		= IBK::Unit("C");		// XML:E
