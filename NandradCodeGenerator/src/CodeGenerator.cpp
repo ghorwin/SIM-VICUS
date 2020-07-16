@@ -392,7 +392,7 @@ void CodeGenerator::generateReadWriteCode() {
 					includes.insert("NANDRAD_Utilities.h");
 					elements +=
 							"	if (!m_" + varName + ".empty())\n"
-							"		writeLinearSplineElement(e, \""+tagName+"\", m_"+varName+", std::string(), std::string());\n";
+							"		writeLinearSplineElement(e, \""+tagName+"\", m_"+varName+", \"-\", \"-\");\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Parameter") {
 					// check for array syntax
@@ -467,10 +467,9 @@ void CodeGenerator::generateReadWriteCode() {
 								"		e->LinkEndChild(child);\n"
 								"\n"
 								"		std::stringstream vals;\n"
-								"		for (std::vector<"+childType+">::const_iterator ifaceIt = m_"+varName+".begin();\n"
-								"			ifaceIt != m_"+varName+".end(); ++ifaceIt)\n"
-								"		{\n"
-								"			vals << *ifaceIt;\n"
+								"		for (unsigned int i=0; i<m_"+varName+".size(); ++i) {\n"
+								"			vals << m_"+varName+"[i];\n"
+								"			if (i<m_"+varName+".size()-1)  vals << \",\";\n"
 								"		}\n"
 								"		TiXmlText * text = new TiXmlText( vals.str() );\n"
 								"		child->LinkEndChild( text );\n"
@@ -719,21 +718,56 @@ void CodeGenerator::generateReadWriteCode() {
 
 						elements +=
 							"			"+elseStr+"if (cName == \"IBK:LinearSpline\") {\n"
-							"				IBK::LinearSpline spl;\n"
+							"				IBK::LinearSpline p;\n"
 							"				std::string name;\n"
-							"				readLinearSplineElement(c, cName, spl, name, nullptr, nullptr);\n";
-						// now loop all linear spline variables and generate code for assigning these
+							"				readLinearSplineElement(c, p, name, nullptr, nullptr);\n";
+
+						// the read-code is structured as follows:
+						// - first generate read code for all scalar variables (varname without [])
+						// - then process all keyword-variants
+
+						std::string elementCodeScalar, elementCodeKeyword;
+
 						std::string caseElse;
-						for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
-							if (!xmlInfo.element || xmlInfo.typeStr != "IBK::LinearSpline") continue;
-							elements += "				"+caseElse+"if (name == \""+tagName+"\")		m_"+varName+" = spl;\n";
+						for (const ClassInfo::XMLInfo & xmlInfo2 : ci.m_xmlInfo) {
+							if (!xmlInfo2.element || xmlInfo2.typeStr != "IBK::LinearSpline") continue;
+							std::string varName2 = xmlInfo2.varName;
+							// now determine if this is a scalar parameter or a spline[xxx] variant
+							std::string::size_type bpos1 = varName2.find("[");
+							if (bpos1 != std::string::npos) {
+								std::string::size_type bpos2 = varName2.find("]");
+								std::string numType = varName2.substr(bpos1+1, bpos2-bpos1-1);
+								varName2 = varName2.substr(0, bpos1);
+								std::string tagName2 = char(toupper(varName2[0])) + varName2.substr(1);
+								// find corresponding enum type
+								auto einfo_it = ci.m_enumInfo.begin();
+								for(; einfo_it != ci.m_enumInfo.end(); ++einfo_it)
+									if (einfo_it->enumNUM == numType) break;
+								if (einfo_it == ci.m_enumInfo.end())
+									throw IBK::Exception( IBK::FormatString("Unknown enum for array index '%1'").arg(numType), FUNC_ID);
+								const ClassInfo::EnumInfo & einfo = *einfo_it;
+								elementCodeKeyword +=
+										"				try {\n"
+										"					"+einfo.enumType()+" ptype = ("+einfo.enumType()+")KeywordList::Enumeration(\""+einfo.categoryName+"\", name);\n"
+										"					m_"+varName2+"[ptype] = p; success = true;\n"
+										"				}\n"
+										"				catch (...) { /* intentional fail */  }\n";
+							}
+							else {
+								std::string tagName2 = char(toupper(varName2[0])) + varName2.substr(1);
+								elementCodeScalar +=
+										"				"+caseElse+"if (name == \""+tagName2+"\") {\n"
+										"					m_"+varName2 + " = p; success = true;\n"
+										"				}\n";
+							}
 							caseElse = "else ";
 						}
 						elements +=
-							"				else {\n"
-							"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
-							"				}\n"
-							"			}\n";
+								"				bool success = false;\n" +
+								elementCodeScalar + elementCodeKeyword +
+								"				if (!success)\n"
+								"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
+								"			}\n";
 					}
 					else if (xmlInfo.typeStr == "IBK::Parameter" && groupTags.find("IBK::Parameter") != groupTags.end()) {
 						groupTags.erase(groupTags.find("IBK::Parameter")); // only generate code once
@@ -794,25 +828,57 @@ void CodeGenerator::generateReadWriteCode() {
 					else if (xmlInfo.typeStr == "IBK::IntPara" && groupTags.find("IBK::IntPara") != groupTags.end()) {
 						groupTags.erase(groupTags.find("IBK::IntPara")); // only generate code once
 						includes.insert("NANDRAD_Utilities.h");
-
 						elements +=
 							"			"+elseStr+"if (cName == \"IBK:IntPara\") {\n"
 							"				IBK::IntPara p;\n"
 							"				readIntParaElement(c, p);\n";
-						// now loop all IBK::Parameter variables and generate code for assigning these
+
+						// the read-code is structured as follows:
+						// - first generate read code for all scalar variables (varname without [])
+						// - then process all keyword-variants
+
+						std::string elementCodeScalar, elementCodeKeyword;
+
 						std::string caseElse;
-						for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
-							if (!xmlInfo.element || xmlInfo.typeStr != "IBK::IntPara") continue;
+						for (const ClassInfo::XMLInfo & xmlInfo2 : ci.m_xmlInfo) {
+							if (!xmlInfo2.element || xmlInfo2.typeStr != "IBK::IntPara") continue;
+							std::string varName2 = xmlInfo2.varName;
 							// now determine if this is a scalar parameter or a para[xxx] variant
-							elements +=	"				"+caseElse+"if (p.name == \""+tagName+"\") {\n";
-							elements +=		"				}\n";
+							std::string::size_type bpos1 = varName2.find("[");
+							if (bpos1 != std::string::npos) {
+								std::string::size_type bpos2 = varName2.find("]");
+								std::string numType = varName2.substr(bpos1+1, bpos2-bpos1-1);
+								varName2 = varName2.substr(0, bpos1);
+								std::string tagName2 = char(toupper(varName2[0])) + varName2.substr(1);
+								// find corresponding enum type
+								auto einfo_it = ci.m_enumInfo.begin();
+								for(; einfo_it != ci.m_enumInfo.end(); ++einfo_it)
+									if (einfo_it->enumNUM == numType) break;
+								if (einfo_it == ci.m_enumInfo.end())
+									throw IBK::Exception( IBK::FormatString("Unknown enum for array index '%1'").arg(numType), FUNC_ID);
+								const ClassInfo::EnumInfo & einfo = *einfo_it;
+								elementCodeKeyword +=
+										"				try {\n"
+										"					"+einfo.enumType()+" ptype = ("+einfo.enumType()+")KeywordList::Enumeration(\""+einfo.categoryName+"\", p.name);\n"
+										"					m_"+varName2+"[ptype] = p; success = true;\n"
+										"				}\n"
+										"				catch (...) { /* intentional fail */  }\n";
+							}
+							else {
+								std::string tagName2 = char(toupper(varName2[0])) + varName2.substr(1);
+								elementCodeScalar +=
+										"				"+caseElse+"if (p.name == \""+tagName2+"\") {\n"
+										"					m_"+varName2 + " = p; success = true;\n"
+										"				}\n";
+							}
 							caseElse = "else ";
 						}
 						elements +=
-							"				else {\n"
-							"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
-							"				}\n"
-							"			}\n";
+								"				bool success = false;\n" +
+								elementCodeScalar + elementCodeKeyword +
+								"				if (!success)\n"
+								"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
+								"			}\n";
 					}
 					else if (xmlInfo.typeStr == "IBK::Flag" && groupTags.find("IBK::Flag") != groupTags.end()) {
 						groupTags.erase(groupTags.find("IBK::Flag")); // only generate code once
@@ -873,8 +939,8 @@ void CodeGenerator::generateReadWriteCode() {
 					else {
 
 						// no known type so far, must be one of the enum types in this class, so generate read code for all the enumeration values
-
-//						throw IBK::Exception(IBK::FormatString("(Still) unsupported XML element type '%1' for variable '%2' in readXML.").arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
+						continue;
+						throw IBK::Exception(IBK::FormatString("(Still) unsupported XML element type '%1' for variable '%2' in readXML.").arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
 					}
 					elseStr = "else ";
 				} // end element reading loop

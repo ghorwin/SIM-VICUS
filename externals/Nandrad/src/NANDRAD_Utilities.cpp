@@ -67,7 +67,7 @@ TiXmlElement * openXMLFile(const std::map<std::string,IBK::Path> & pathPlaceHold
 }
 
 
-void readLinearSplineElement(const TiXmlElement * element, const std::string & eName,
+void readLinearSplineElement(const TiXmlElement * element,
 							 IBK::LinearSpline & spl, std::string & name, IBK::Unit * xunit, IBK::Unit * yunit)
 {
 	FUNCID(NANDRAD::readLinearSplineElement);
@@ -78,7 +78,7 @@ void readLinearSplineElement(const TiXmlElement * element, const std::string & e
 	}
 	catch (std::runtime_error & ex) {
 		throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-			IBK::FormatString("Error reading '"+eName+"' tag.") ), FUNC_ID);
+			IBK::FormatString("Error reading 'IBK:LinearSpline' tag.") ), FUNC_ID);
 	}
 	try {
 		if (xunit != nullptr)
@@ -89,7 +89,7 @@ void readLinearSplineElement(const TiXmlElement * element, const std::string & e
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-			 IBK::FormatString("Error reading '"+eName+"' tag.") ), FUNC_ID);
+			 IBK::FormatString("Error reading 'IBK:LinearSpline' tag.") ), FUNC_ID);
 	}
 }
 

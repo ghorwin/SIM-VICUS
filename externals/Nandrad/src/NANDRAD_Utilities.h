@@ -51,7 +51,7 @@ TiXmlElement * openXMLFile(const std::map<std::string,IBK::Path>  &pathPlaceHold
 	const std::string & parentXmlTag, TiXmlDocument & doc);
 
 /*! Reads a linear spline from XML element (with proper error handling). */
-void readLinearSplineElement(const TiXmlElement * element, const std::string & eName,
+void readLinearSplineElement(const TiXmlElement * element,
 							 IBK::LinearSpline & spl, std::string & name, IBK::Unit * xunit, IBK::Unit * yunit);
 
 /*! Writes a linear spline into XML format.
