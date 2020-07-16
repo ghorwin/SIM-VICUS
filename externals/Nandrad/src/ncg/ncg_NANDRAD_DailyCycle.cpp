@@ -78,25 +78,11 @@ TiXmlElement * DailyCycle::writeXML(TiXmlElement * parent) const {
 
 	if (m_interpolation != NUM_IT)
 		e->SetAttribute("interpolation", KeywordList::Keyword("DailyCycle::interpolation_t",  m_interpolation));
-
-	if (!m_timePoints.empty()) {
-		TiXmlElement * child = new TiXmlElement("TimePoints");
-		e->LinkEndChild(child);
-
-		std::stringstream vals;
-		for (std::vector<double>::const_iterator ifaceIt = m_timePoints.begin();
-			ifaceIt != m_timePoints.end(); ++ifaceIt)
-		{
-			vals << *ifaceIt;
-		}
-		TiXmlText * text = new TiXmlText( vals.str() );
-		child->LinkEndChild( text );
-	}
-
+	writeVector(e, "TimePoints", m_timePoints);
 	if (m_timeUnit.id() != 0)
 		TiXmlElement::appendSingleAttributeElement(e, "TimeUnit", nullptr, std::string(), m_timeUnit.name());
-
-	m_values.writeXML(e);
+	if (!m_values.m_values.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "Values", nullptr, std::string(), m_values.encodedString());
 	return e;
 }
 

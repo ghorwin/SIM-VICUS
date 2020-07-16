@@ -197,22 +197,9 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_f.name(), m_f.isEnabled() ? "true" : "false");
 
 	m_iface.writeXML(e);
-
-	m_table.writeXML(e);
-
-	if (!m_dblVec.empty()) {
-		TiXmlElement * child = new TiXmlElement("DblVec");
-		e->LinkEndChild(child);
-
-		std::stringstream vals;
-		for (unsigned int i=0; i<m_dblVec.size(); ++i) {
-			vals << m_dblVec[i];
-			if (i<m_dblVec.size()-1)  vals << ",";
-		}
-		TiXmlText * text = new TiXmlText( vals.str() );
-		child->LinkEndChild( text );
-	}
-
+	if (!m_table.m_values.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "Table", nullptr, std::string(), m_table.encodedString());
+	writeVector(e, "DblVec", m_dblVec);
 
 	if (!m_interfaces.empty()) {
 		TiXmlElement * child = new TiXmlElement("Interfaces");

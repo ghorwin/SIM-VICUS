@@ -38,6 +38,10 @@
 
 #include "constants.h"
 
+
+//#define SERIALIZATION_TEST_ONLY
+//#define DISABLE_TIME_CHECK
+
 bool listHeaders(const std::string & dir, std::vector<std::string> & files);
 
 bool write_keyword_data(const std::string& output_file, const std::vector<ClassInfo::Keyword>& keywordlist);
@@ -250,7 +254,7 @@ void CodeGenerator::generateReadWriteCode() {
 			if (ci.m_xmlInfo.empty() && !ci.m_requireComparisonFunction)
 				continue;
 
-#if 1
+#ifdef SERIALIZATION_TEST_ONLY
 			// development hack - only deal with SerializationTest for now
 			if (ci.m_className != "SerializationTest")
 				continue;
@@ -266,7 +270,7 @@ void CodeGenerator::generateReadWriteCode() {
 
 			// check if it exists
 			if (targetFile.exists()) {
-#define DISABLE_TIME_CHECK
+
 #ifndef DISABLE_TIME_CHECK
 				// skip, if target file is already newer than source file
 				if (targetFile.fileTime() > ci.m_sourceHeaderFile.fileTime()) {
@@ -944,6 +948,7 @@ void CodeGenerator::generateReadWriteCode() {
 
 						// generate code for reading std::vector
 						handledVariables.insert(xmlInfo.varName);
+						continue;
 					}
 					else {
 
@@ -966,7 +971,7 @@ void CodeGenerator::generateReadWriteCode() {
 //									"				m_"+varName2+".readXML(c);\n";
 						}
 
-//						continue;
+						continue;
 //						throw IBK::Exception(IBK::FormatString("(Still) unsupported XML element type '%1' for variable '%2' in readXML.").arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
 					}
 					elseStr = "else ";
