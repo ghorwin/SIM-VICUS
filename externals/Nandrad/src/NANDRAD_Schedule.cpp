@@ -31,68 +31,6 @@ Lesser General Public License for more details.
 namespace NANDRAD {
 
 
-void Schedule::readXML(const TiXmlElement * element) {
-
-	const char * const FUNC_ID = "[Schedule::readXML]";
-
-	// read attributes
-	const TiXmlAttribute * attrib = TiXmlAttribute::attributeByName(element, "type");
-	if (!attrib)
-		throw IBK::Exception( IBK::FormatString( XML_READ_ERROR ).arg(element->Row()).arg(
-			"Expected 'type' attribute in Schedule tag."
-			), FUNC_ID);
-	try {
-		m_type = (type_t) KeywordList::Enumeration("Schedule::type_t", attrib->Value());
-	}
-	catch (IBK::Exception & ex) {
-		throw IBK::Exception(ex,  IBK::FormatString( XML_READ_ERROR ).arg(element->Row()).arg(
-			IBK::FormatString("Invalid name '%1' for 'type' attribute in Schedule tag.").arg(attrib->Value())
-			), FUNC_ID);
-	}
-
-	// now read data
-	const TiXmlElement * c;
-	try {
-		// read sub-elements
-		for (c = element->FirstChildElement(); c; c = c->NextSiblingElement()) {
-			// determine data based on element name
-			std::string cname = c->Value();
-			if (cname == "DailyCycle") {
-				DailyCycle dailyCycle;
-				dailyCycle.readXML(c);
-				m_dailyCycles.push_back(dailyCycle);
-			}
-			else {
-				throw IBK::Exception( IBK::FormatString( XML_READ_ERROR ).arg(c->Row()).arg(
-					IBK::FormatString("Unknown XML tag with name '%1' in Schedule section.").arg(cname)
-					), FUNC_ID);
-			}
-		}
-	}
-	catch (IBK::Exception & ex) {
-		throw IBK::Exception(ex, IBK::FormatString("Error reading Schedule data."), FUNC_ID);
-	}
-	catch (std::exception & ex) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading Schedule data.").arg(ex.what()), FUNC_ID);
-	}
-}
-
-
-void Schedule::writeXML(TiXmlElement * parent) const {
-
-	TiXmlElement * e = new TiXmlElement("Schedule");
-	parent->LinkEndChild(e);
-
-	e->SetAttribute("type", KeywordList::Keyword("Schedule::type_t",m_type));
-
-	for (std::vector<DailyCycle>::const_iterator it = m_dailyCycles.begin();
-		it != m_dailyCycles.end(); ++it)
-	{
-		it->writeXML(e);
-	}
-}
-
-
 bool Schedule::operator!=(const Schedule & other) const {
 	if (m_type != other.m_type) return true;
 	if (m_dailyCycles != other.m_dailyCycles) return true;

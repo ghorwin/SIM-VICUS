@@ -104,6 +104,7 @@ SOURCES += \
 	../../src/NANDRAD_Zone.cpp \
 	../../src/ncg/ncg_NANDRAD_DailyCycle.cpp \
 	../../src/ncg/ncg_NANDRAD_ProjectInfo.cpp \
+	../../src/ncg/ncg_NANDRAD_Schedule.cpp \
 	../../src/ncg/ncg_NANDRAD_Schedules.cpp \
 	../../src/ncg/ncg_NANDRAD_Sensor.cpp \
 	../../src/ncg/ncg_NANDRAD_SimulationParameter.cpp \

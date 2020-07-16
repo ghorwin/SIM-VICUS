@@ -79,6 +79,16 @@ void Interface::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
+			else if (cName == "InterfaceHeatConduction")
+				m_heatConduction.readXML(c);
+			else if (cName == "InterfaceSolarAbsorption")
+				m_solarAbsorption.readXML(c);
+			else if (cName == "InterfaceLongWaveEmission")
+				m_longWaveEmission.readXML(c);
+			else if (cName == "InterfaceVaporDiffusion")
+				m_vaporDiffusion.readXML(c);
+			else if (cName == "InterfaceAirFlow")
+				m_airFlow.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}

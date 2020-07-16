@@ -54,13 +54,6 @@ void InterfaceAirFlow::readXMLPrivate(const TiXmlElement * element) {
 			}
 			attrib = attrib->Next();
 		}
-		// search for mandatory elements
-		// reading elements
-		const TiXmlElement * c = element->FirstChildElement();
-		while (c) {
-			const std::string & cName = c->ValueStr();
-			c = c->NextSiblingElement();
-		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'InterfaceAirFlow' element."), FUNC_ID);
@@ -76,8 +69,6 @@ TiXmlElement * InterfaceAirFlow::writeXMLPrivate(TiXmlElement * parent) const {
 
 	if (m_modelType != NUM_MT)
 		e->SetAttribute("modelType", KeywordList::Keyword("InterfaceAirFlow::modelType_t",  m_modelType));
-
-	m_splinePara[NUM_SP].writeXML(e);
 	return e;
 }
 

@@ -56,6 +56,18 @@ void Location::readXML(const TiXmlElement * element) {
 				m_climateFileName = IBK::Path(c->GetText());
 			else if (cName == "ShadingFactorFileName")
 				m_shadingFactorFileName = IBK::Path(c->GetText());
+			else if (cName == "Sensors") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "Sensor")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					Sensor obj;
+					obj.readXML(c2);
+					m_sensors.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}

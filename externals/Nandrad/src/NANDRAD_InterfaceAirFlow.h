@@ -53,7 +53,7 @@ public:
 	/*! Model type. */
 	modelType_t							m_modelType = NUM_MT;						// XML:A:required
 	/*! List of constant parameters.*/
-	LinearSplineParameter				m_splinePara[NUM_SP];						// XML:E
+	LinearSplineParameter				m_splinePara[NUM_SP];
 
 }; // InterfaceAirFlow
 

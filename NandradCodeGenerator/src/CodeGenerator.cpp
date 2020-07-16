@@ -984,31 +984,50 @@ void CodeGenerator::generateReadWriteCode() {
 						handledVariables.insert(xmlInfo.varName);
 					}
 					else {
-
-						// now generate code for all variables where read code hasn't been generated for
-						std::string caseElse;
-						for (const ClassInfo::XMLInfo & xmlInfo2 : ci.m_xmlInfo) {
-							if (!xmlInfo2.element) continue;
-							std::string varName2 = xmlInfo2.varName;
-							if (handledVariables.find(varName2) != handledVariables.end()) continue;
-							std::string tagName2 = char(toupper(varName2[0])) + varName2.substr(1);
-
-							// check for enumeration types
-//							// no known type so far, must be one of the enum types in this class, so generate read code for all the enumeration values
-//							if (xmlInfo.varName.find("[") != std::string::npos) {
-
-//							}
-							// for all remaining tags generate generic code
-//							elements +=
-//									"			else if (cName == \""+tagName2+"\") \n"
-//									"				m_"+varName2+".readXML(c);\n";
-						}
-
-						continue;
-//						throw IBK::Exception(IBK::FormatString("(Still) unsupported XML element type '%1' for variable '%2' in readXML.").arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
+						continue; // skip for now, we'll handle these variables below
 					}
 					elseStr = "else ";
 				} // end element reading loop
+
+				// now generate code for all variables where read code hasn't been generated for
+				std::string caseElse;
+				for (const ClassInfo::XMLInfo & xmlInfo2 : ci.m_xmlInfo) {
+					if (!xmlInfo2.element) continue;
+					std::string varName2 = xmlInfo2.varName;
+					if (handledVariables.find(varName2) != handledVariables.end()) continue;
+					std::string tagName2 = char(toupper(varName2[0])) + varName2.substr(1);
+
+					// no known type so far, must be one of the enum types in this class, so generate read code for all the enumeration values
+					if (xmlInfo2.varName.find("[") != std::string::npos) {
+						throw IBK::Exception(IBK::FormatString("(Still) unsupported XML element type '%1' for variable '%2' in readXML.").arg(xmlInfo2.typeStr).arg(xmlInfo2.varName), FUNC_ID);
+					}
+
+					// lookup type in enum info
+					std::vector<ClassInfo::EnumInfo>::const_iterator it = ci.m_enumInfo.begin();
+					for (; it != ci.m_enumInfo.end(); ++it) {
+						if (it->enumType() == xmlInfo2.typeStr) break;
+					}
+					// not a known enumeration type? Generate generic readXML() code
+					if (it == ci.m_enumInfo.end()) {
+						elements +=
+								"			"+elseStr+"if (cName == \""+xmlInfo2.typeStr+"\")\n"
+								"				m_"+varName2+".readXML(c);\n";
+					}
+					else {
+						elements +=
+								"			"+elseStr+"if (cName == \""+tagName2+"\") {\n"
+								"				try {\n"
+								"					m_"+varName2+" = ("+it->enumType()+")KeywordList::Enumeration(\""+it->categoryName+"\", c->GetText());\n"
+								"				}\n"
+								"				catch (IBK::Exception & ex) {\n"
+								"					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
+								"						IBK::FormatString(\"Invalid or unknown keyword '\"+std::string(c->GetText())+\"'.\") ), FUNC_ID);\n"
+								"				}\n"
+								"			}\n";
+					}
+					elseStr = "else ";
+				}
+
 				if (!elseStr.empty()) {
 					elements +=
 							"			else {\n"

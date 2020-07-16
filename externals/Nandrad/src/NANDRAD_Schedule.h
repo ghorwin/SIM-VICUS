@@ -23,12 +23,12 @@ Lesser General Public License for more details.
 
 #include <string>
 #include <vector>
-#include <list>
 
 #include <IBK_Time.h>
 #include <IBK_Unit.h>
 
 #include "NANDRAD_DailyCycle.h"
+#include "NANDRAD_CodeGenMacros.h"
 
 namespace NANDRAD {
 
@@ -62,25 +62,10 @@ public:
 		NUM_ST
 	};
 
+	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	/*! Returns the priority of an selected schedule.*/
-	static int priority(type_t scheduleType);
-
-	/*! Reads the data from the xml element.
-		Throws an IBK::Exception if a syntax error occurs.
-	*/
-	void readXML(const TiXmlElement * element);
-
-	/*! Appends the element to the parent xml element.
-		Throws an IBK::Exception in case of invalid data.
-	*/
-	void writeXML(TiXmlElement * parent) const;
-
-	/*! Compares this instance with another by value and returns true if they differ. */
-	bool operator!=(const Schedule & other) const;
-
-	/*! Compares this instance with another by value and returns true if they are the same. */
-	bool operator==(const Schedule & other) const { return ! operator!=(other); }
+	NANDRAD_READWRITE
+	NANDRAD_COMP(Schedule)
 
 	/*! Populates set with quantities.
 		A quantity is uniquely defined through its ID name and base unit.
@@ -96,14 +81,19 @@ public:
 //			std::vector<IBK::Time> &time,
 //			bool &allDays) const;
 
+	// *** STATIC PUBLIC MEMBER FUNCTIONS ***
+
+	/*! Returns the priority of an selected schedule.*/
+	static int priority(type_t scheduleType);
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	type_t					m_type = NUM_ST;
+	type_t					m_type = NUM_ST;								// XML:A:required
 
 	/*! List of daily cycles that are used on day type specified above.
 		These cycles define different quantities/control parameters etc.
 	*/
-	std::vector<DailyCycle> m_dailyCycles;
+	std::vector<DailyCycle> m_dailyCycles;									// XML:E
 
 	/*! Conversion function for special schedule time format. */
 //	static void convertWeekDaysToIBKTime(const unsigned int year, const std::vector<day_t> &weekdays, std::vector<IBK::Time> &time);
@@ -112,6 +102,7 @@ public:
 		\return Returns the index of a week day.
 	*/
 //	static unsigned int calcWeekDay(const int year, const NANDRAD::Date &date);
+
 };
 
 } // namespace NANDRAD

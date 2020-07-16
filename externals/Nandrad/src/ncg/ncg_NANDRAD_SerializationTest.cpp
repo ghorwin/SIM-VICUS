@@ -165,6 +165,17 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
+			else if (cName == "TestBlo") {
+				try {
+					m_testBlo = (test_t)KeywordList::Enumeration("SerializationTest::test_t", c->GetText());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
+				}
+			}
+			else if (cName == "Schedule")
+				m_sched.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -212,7 +223,7 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 	if (!m_f.name().empty())
 		TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_f.name(), m_f.isEnabled() ? "true" : "false");
 
-	m_iface.writeXML(e);
+	m_sched.writeXML(e);
 	if (!m_table.m_values.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "Table", nullptr, std::string(), m_table.encodedString());
 	writeVector(e, "DblVec", m_dblVec);

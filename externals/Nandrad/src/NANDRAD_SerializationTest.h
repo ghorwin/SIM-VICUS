@@ -9,6 +9,7 @@
 #include <IBK_Unit.h>
 #include <IBK_IntPara.h>
 
+#include <NANDRAD_Schedule.h>
 #include <NANDRAD_Interface.h>
 #include <NANDRAD_CodeGenMacros.h>
 #include <NANDRAD_DataTable.h>
@@ -31,6 +32,8 @@ public:
 		m_dblVec.push_back(0);
 		m_dblVec.push_back(12);
 		m_dblVec.push_back(24);
+
+		m_sched.m_type = Schedule::ST_FRIDAY;
 
 		m_table.m_values["Col1"] = std::vector<double>{1,5,3};
 		m_table.m_values["Col2"] = std::vector<double>{7,2,2};
@@ -70,7 +73,7 @@ public:
 	double				m_x5;								// XML:E
 	IBK::Flag			m_f;								// XML:E
 
-	Interface			m_iface;							// XML:E
+	Schedule			m_sched;							// XML:E
 	DataTable			m_table;							// XML:E
 
 	std::vector<double>		m_dblVec;						// XML:E
