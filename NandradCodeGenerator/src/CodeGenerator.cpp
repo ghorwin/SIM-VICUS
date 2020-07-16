@@ -310,7 +310,7 @@ void CodeGenerator::generateReadWriteCode() {
 				}
 				else if (xmlInfo.typeStr == "IBK::Path") {
 					attribs +=
-							"	if (m_" + attribName + ".isValid())\n";
+							"	if (m_" + attribName + ".isValid())\n"
 							"		e->SetAttribute(\""+attribName+"\", m_" + attribName + ".str());\n";
 				}
 				else if (xmlInfo.typeStr == "std::string") {
@@ -340,7 +340,7 @@ void CodeGenerator::generateReadWriteCode() {
 
 					// other special cases
 
-					throw IBK::Exception(IBK::FormatString("(Still) unsupported XML variable type '%1' of variable '%2'.")
+					throw IBK::Exception(IBK::FormatString("(Still) unsupported XML variable type '%1' of variable '%2' in writeXML.")
 										 .arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
 				}
 			}
@@ -512,8 +512,9 @@ void CodeGenerator::generateReadWriteCode() {
 
 					// we now assume a complex type, i.e. "Interface" where we can call writeXML() ourselves.
 
-					// TODO : add check for "not-default"
 					elements += "\n	m_" + varName + ".writeXML(e);\n";
+
+					// Note: no error in case of unsupported element types, since here we always generate .writeXML() calls.
 				}
 			}
 
@@ -618,7 +619,7 @@ void CodeGenerator::generateReadWriteCode() {
 							}
 						}
 						if (hadEnumType) continue;
-						throw IBK::Exception(IBK::FormatString("(Still) unsupported XML attrib type '%1' for variable '%2'.")
+						throw IBK::Exception(IBK::FormatString("(Still) unsupported XML attrib type '%1' for variable '%2' in readXML.")
 											 .arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
 					}
 					elseStr = "else ";
@@ -870,8 +871,10 @@ void CodeGenerator::generateReadWriteCode() {
 								"			}\n";
 					}
 					else {
-						IBK::IBK_Message(IBK::FormatString("(Still) unsupported XML attrib type '%1' for variable '%2'.").arg(xmlInfo.typeStr).arg(xmlInfo.varName), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-						continue;
+
+						// no known type so far, must be one of the enum types in this class, so generate read code for all the enumeration values
+
+//						throw IBK::Exception(IBK::FormatString("(Still) unsupported XML element type '%1' for variable '%2' in readXML.").arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
 					}
 					elseStr = "else ";
 				} // end element reading loop
