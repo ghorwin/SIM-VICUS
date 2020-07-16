@@ -74,6 +74,20 @@ void readIntParaElement(const TiXmlElement * element, IBK::IntPara & p);
 void readFlagElement(const TiXmlElement * element, IBK::Flag & f);
 
 template <typename T>
+void readVector(const TiXmlElement * element, const std::string & name, std::vector<T> & vec) {
+	FUNCID(NANDRAD::readVector);
+	std::string text = element->GetText();
+	IBK::replace_string(text, ",", " ");
+	try {
+		IBK::string2valueVector(text, vec);
+	} catch (IBK::Exception & ex) {
+		throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+			IBK::FormatString("Error reading vector element '%1'.").arg(name) ), FUNC_ID);
+	}
+}
+
+
+template <typename T>
 void writeVector(TiXmlElement * parent, const std::string & name, const std::vector<T> & vec) {
 	if (!vec.empty()) {
 		TiXmlElement * child = new TiXmlElement(name);

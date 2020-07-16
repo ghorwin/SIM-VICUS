@@ -713,6 +713,12 @@ void CodeGenerator::generateReadWriteCode() {
 							"				m_"+varName+" = IBK::Path(c->GetText());\n";
 						handledVariables.insert(varName);
 					}
+					else if (xmlInfo.typeStr == "DataTable") {
+						elements +=
+							"			"+elseStr+"if (cName == \""+tagName+"\")\n"
+							"				m_"+varName+".setEncodedString(c->GetText());\n";
+						handledVariables.insert(varName);
+					}
 
 					// for the group types, we generate the code only once and switch the parameter in an internal loop
 
@@ -946,9 +952,36 @@ void CodeGenerator::generateReadWriteCode() {
 					}
 					else if (xmlInfo.typeStr.find("std::vector<") != std::string::npos) {
 
+						std::string::size_type pos1 = xmlInfo.typeStr.find("<");
+						std::string::size_type pos2 = xmlInfo.typeStr.find(">");
+						std::string childType = xmlInfo.typeStr.substr(pos1+1, pos2-pos1-1);
+
+						// special handling for vector of double or vector of int/unsigned int
+						if (childType == "double" || childType == "int" || childType == "unsigned int") {
+							// we generate the parent element and afterwards the loop
+							elements +=
+									"			"+elseStr+"if (cName == \""+tagName+"\")\n"
+									"				readVector(c, \""+tagName+"\", m_"+varName+");\n";
+						}
+						else {
+							// generate code for reading vector of complex data types with own readXML() functions
+							elements +=
+									"			"+elseStr+"if (cName == \""+tagName+"\") {\n"
+									"				const TiXmlElement * c2 = c->FirstChildElement();\n"
+									"				while (c2) {\n"
+									"					const std::string & c2Name = c2->ValueStr();\n"
+									"					if (c2Name != \""+childType+"\")\n"
+									"						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
+									"					"+childType+" obj;\n"
+									"					obj.readXML(c2);\n"
+									"					m_"+varName+".push_back(obj);\n"
+									"					c2 = c2->NextSiblingElement();\n"
+									"				}\n"
+									"			}\n";
+						}
+
 						// generate code for reading std::vector
 						handledVariables.insert(xmlInfo.varName);
-						continue;
 					}
 					else {
 

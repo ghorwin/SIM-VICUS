@@ -114,6 +114,22 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
+			else if (cName == "Table")
+				m_table.setEncodedString(c->GetText());
+			else if (cName == "DblVec")
+				readVector(c, "DblVec", m_dblVec);
+			else if (cName == "Interfaces") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "Interface")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					Interface obj;
+					obj.readXML(c2);
+					m_interfaces.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				readParameterElement(c, p);
