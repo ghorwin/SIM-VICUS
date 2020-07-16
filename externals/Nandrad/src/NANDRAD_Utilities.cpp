@@ -27,6 +27,10 @@ Lesser General Public License for more details.
 #include <IBK_Path.h>
 #include <IBK_Flag.h>
 #include <IBK_Unit.h>
+#include <IBK_Parameter.h>
+#include <IBK_IntPara.h>
+
+#include "NANDRAD_Constants.h"
 
 namespace NANDRAD {
 
@@ -95,41 +99,35 @@ void writeLinearSplineElement(TiXmlElement * parent, const std::string & eName, 
 }
 
 
-void readParameterElement(const TiXmlElement * element, const std::string & eName, IBK::Parameter & p) {
-#if 0
-	std::string namestr, unitstr;
-	double value;
+void readParameterElement(const TiXmlElement * element, IBK::Parameter & p) {
+	FUNCID("NANDRAD::readParameterElement");
 	const TiXmlAttribute* attrib = TiXmlAttribute::attributeByName(element, "name");
-	if (attrib == NULL){
-		std::stringstream strm;
-		strm << "Error in XML file, line " << element->Row() << ": ";
-		strm << "Missing 'name' attribute in IBK:Parameter element.";
-		throw std::runtime_error(strm.str());
-	}
-	name = attrib->Value();
+	if (attrib == nullptr)
+		throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg("Missing 'name' attribute in IBK:Parameter element."), FUNC_ID);
+	const std::string & namestr = attrib->ValueStr();
 	attrib = TiXmlAttribute::attributeByName(element, "unit");
-	if (attrib == NULL) {
-		std::stringstream strm;
-		strm << "Error in XML file, line " << element->Row() << ": ";
-		strm << "Missing 'unit' attribute in IBK:Parameter element.";
-		throw std::runtime_error(strm.str());
+	if (attrib == nullptr)
+		throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg("Missing 'unit' attribute in IBK:Parameter element."), FUNC_ID);
+	const std::string & unit = attrib->ValueStr();
+	IBK::Unit u;
+	try {
+		u.set("unit");
+	} catch (...) {
+		throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg("Unknown/invalid unit '"+unit+"' in IBK:Parameter element."), FUNC_ID);
 	}
-	unit = attrib->Value();
-
 	const char * const str = element->GetText();
-	std::string valstr;
-	if (str)		valstr = str;
-	else			valstr.clear();
-	std::stringstream valstrm(valstr);
-	// NOTE: reading the parameter with stringstream is not very safe - values like "1,433" will be
-	//       read as 1 without raising an error. Hence, use the IBK::string2val<> function
-	if (!(valstrm >> value)) {
-		std::stringstream strm;
-		strm << "Error in XML file, line " << element->Row() << ": ";
-		strm << "Cannot read value in IBK:Parameter element.";
-		throw std::runtime_error(strm.str());
+	try {
+		double val = IBK::string2val<double>(str);
+		p.set(namestr, val, u);
+	} catch (...) {
+		throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg("Cannot read value in IBK:Parameter element."), FUNC_ID);
 	}
-#endif
+
+}
+
+
+void readIntParaElement(const TiXmlElement * element, const std::string & eName, IBK::IntPara & p) {
+
 }
 
 void readFlagElement(const TiXmlElement * element, const std::string & eName, IBK::Flag & f) {

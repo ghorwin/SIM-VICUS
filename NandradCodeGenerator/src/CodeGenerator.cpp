@@ -715,7 +715,7 @@ void CodeGenerator::generateReadWriteCode() {
 						elements +=
 							"			"+elseStr+"if (cName == \"IBK:Parameter\") {\n"
 							"				IBK::Parameter p;\n"
-							"				readParameterElement(c, cName, p);\n";
+							"				readParameterElement(c, p);\n";
 						// now loop all IBK::Parameter variables and generate code for assigning these
 						std::string caseElse;
 						for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
@@ -738,7 +738,7 @@ void CodeGenerator::generateReadWriteCode() {
 						elements +=
 							"			"+elseStr+"if (cName == \"IBK:IntPara\") {\n"
 							"				IBK::Parameter p;\n"
-							"				readParameterElement(c, cName, p);\n";
+							"				readParameterElement(c, p);\n";
 						// now loop all IBK::Parameter variables and generate code for assigning these
 						std::string caseElse;
 						for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {

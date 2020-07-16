@@ -29,11 +29,13 @@ Lesser General Public License for more details.
 #include <IBK_Path.h>
 #include <IBK_LinearSpline.h>
 #include <IBK_StringUtils.h>
+
 #include "NANDRAD_Constants.h"
 
 namespace IBK {
 	class Unit;
 	class Parameter;
+	class IntPara;
 	class Flag;
 }
 
@@ -63,7 +65,10 @@ void readLinearSplineElement(const TiXmlElement * element, const std::string & e
 void writeLinearSplineElement(TiXmlElement * parent, const std::string & name, const IBK::LinearSpline & spl, const std::string & xunit, const std::string & yunit);
 
 /*! Reads an IBK::Parameter from XML element (with proper error handling). */
-void readParameterElement(const TiXmlElement * element, const std::string & eName, IBK::Parameter & p);
+void readParameterElement(const TiXmlElement * element, IBK::Parameter & p);
+
+/*! Reads an IBK::IntPara from XML element (with proper error handling). */
+void readIntParaElement(const TiXmlElement * element, const std::string & eName, IBK::IntPara & p);
 
 /*! Reads an IBK::Flag from XML element (with proper error handling). */
 void readFlagElement(const TiXmlElement * element, const std::string & eName, IBK::Flag & f);
