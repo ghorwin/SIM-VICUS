@@ -10,4 +10,4 @@ bool Material::operator!=(const Material & other) const {
 	return false;
 }
 
-}
+} // namespace NANDRAD

@@ -164,7 +164,7 @@ IBK::Unit readUnitElement(const TiXmlElement * element, const std::string & eNam
 		return IBK::Unit(element->GetText());
 	} catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-			IBK::FormatString("Error reading '"+eName+"' tag.") ), FUNC_ID);
+			IBK::FormatString("Error reading '"+eName+"' tag, invalid/unknown unit'"+element->GetText()+"'.") ), FUNC_ID);
 	}
 };
 
