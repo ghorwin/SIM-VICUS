@@ -219,27 +219,12 @@ void DailyCycle::checkIntervalDefinition() const {
 #endif
 }
 
-double	DailyCycle::intervalEndInSeconds( unsigned int intervalIndex ) const{
-
-	IBK::Parameter par = m_intervals[intervalIndex].m_para[ Interval::IP_END ];
-	std::string kwName = KeywordList::Keyword("Interval::para_t", Interval::IP_END );
-
-	if (par.name.empty()) {
-		// start with special handling of last interval
-		if (intervalIndex+1 == m_intervals.size()) {
-			par.set(kwName, 86399, "s" ); // till last second of the day
-		} else {
-			IBK_ASSERT_X(false, "Someone didn't tested correctness of parameters in Schedule::readxml.");
-		}
-	}
-
-	return par.get_value("s");
-
-}
 
 bool DailyCycle::operator!=(const DailyCycle & other) const {
-	if (m_intervals != other.m_intervals) return true;
-	if (m_hourlyValues != other.m_hourlyValues) return true;
+	if (m_interpolation != other.m_interpolation) return true;
+	if (m_timePoints != other.m_timePoints) return true;
+	if (m_timeUnit != other.m_timeUnit) return true;
+	if (m_values != other.m_values) return true;
 	return false;
 }
 

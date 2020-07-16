@@ -250,7 +250,7 @@ void CodeGenerator::generateReadWriteCode() {
 			if (ci.m_xmlInfo.empty() && !ci.m_requireComparisonFunction)
 				continue;
 
-#if 0
+#if 1
 			// development hack - only deal with SerializationTest for now
 			if (ci.m_className != "SerializationTest")
 				continue;
@@ -362,6 +362,7 @@ void CodeGenerator::generateReadWriteCode() {
 				// - IBK::Flag
 				// - IBK::Parameter[NUM_xxx]
 				// - IBK::IntPara[NUM_xxx]
+				// - std::vector<double>
 				// - std::vector<xxx>
 				// - enumTypes
 
@@ -456,19 +457,41 @@ void CodeGenerator::generateReadWriteCode() {
 					std::string::size_type pos1 = xmlInfo.typeStr.find("<");
 					std::string::size_type pos2 = xmlInfo.typeStr.find(">");
 					std::string childType = xmlInfo.typeStr.substr(pos1+1, pos2-pos1-1);
-					// we generate the parent element and afterwards the loop
-					elements += "\n"
-							"	if (!m_"+varName+".empty()) {\n"
-							"		TiXmlElement * child = new TiXmlElement(\""+tagName+"\");\n"
-							"		e->LinkEndChild(child);\n"
-							"\n"
-							"		for (std::vector<"+childType+">::const_iterator ifaceIt = m_"+varName+".begin();\n"
-							"			ifaceIt != m_"+varName+".end(); ++ifaceIt)\n"
-							"		{\n"
-							"			ifaceIt->writeXML(child);\n"
-							"		}\n"
-							"	}\n"
-							"\n";
+
+					// special handling for vector of double or vector of int/unsigned int
+					if (childType == "double" || childType == "int" || childType == "unsigned int") {
+						// we generate the parent element and afterwards the loop
+						elements += "\n"
+								"	if (!m_"+varName+".empty()) {\n"
+								"		TiXmlElement * child = new TiXmlElement(\""+tagName+"\");\n"
+								"		e->LinkEndChild(child);\n"
+								"\n"
+								"		std::stringstream vals;\n"
+								"		for (std::vector<"+childType+">::const_iterator ifaceIt = m_"+varName+".begin();\n"
+								"			ifaceIt != m_"+varName+".end(); ++ifaceIt)\n"
+								"		{\n"
+								"			vals << *ifaceIt;\n"
+								"		}\n"
+								"		TiXmlText * text = new TiXmlText( vals.str() );\n"
+								"		child->LinkEndChild( text );\n"
+								"	}\n"
+								"\n";
+					}
+					else {
+						// we generate the parent element and afterwards the loop
+						elements += "\n"
+								"	if (!m_"+varName+".empty()) {\n"
+								"		TiXmlElement * child = new TiXmlElement(\""+tagName+"\");\n"
+								"		e->LinkEndChild(child);\n"
+								"\n"
+								"		for (std::vector<"+childType+">::const_iterator ifaceIt = m_"+varName+".begin();\n"
+								"			ifaceIt != m_"+varName+".end(); ++ifaceIt)\n"
+								"		{\n"
+								"			ifaceIt->writeXML(child);\n"
+								"		}\n"
+								"	}\n"
+								"\n";
+					}
 
 				}
 				else {
@@ -826,8 +849,7 @@ void CodeGenerator::generateReadWriteCode() {
 								elementCodeKeyword +=
 										"				try {\n"
 										"					"+einfo.enumType()+" ftype = ("+einfo.enumType()+")KeywordList::Enumeration(\""+einfo.categoryName+"\", f.name());\n"
-										"					m_"+varName2+"[ftype] = f;\n"
-										"					continue;\n"
+										"					m_"+varName2+"[ftype] = f; success=true;\n"
 										"				}\n"
 										"				catch (...) { /* intentional fail */  }\n";
 							}
@@ -835,7 +857,7 @@ void CodeGenerator::generateReadWriteCode() {
 								std::string tagName2 = char(toupper(varName2[0])) + varName2.substr(1);
 								elementCodeScalar +=
 										"				"+caseElse+"if (f.name() == \""+tagName2+"\") {\n"
-										"					m_"+varName2 + " = f;\n"
+										"					m_"+varName2 + " = f; success=true;\n"
 										"				}\n";
 							}
 							caseElse = "else ";

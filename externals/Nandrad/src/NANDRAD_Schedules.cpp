@@ -193,75 +193,8 @@ bool Schedules::DefaultParameters::operator!=(const Schedules::DefaultParameters
 }
 
 #endif
+
 // *** Schedules ***
-
-void Schedules::readXML(const TiXmlElement * element) {
-	const char * const FUNC_ID = "[Schedules::readXML]";
-#if 0
-	// clear schedule groups and annual schedules
-	m_scheduleGroups.clear();
-	m_annualSchedules.m_parameters.clear();
-
-	const TiXmlElement * c;
-	try {
-		// read sub-elements
-		for ( c = element->FirstChildElement(); c; c = c->NextSiblingElement()) {
-			// determine data based on element name
-			std::string cname = c->Value();
-			if (cname == "Default") {
-				m_defaults.readXML(c);
-			}
-			else if (cname == "ScheduleGroup") {
-				ScheduleGroup scheduleGroup;
-				scheduleGroup.readXML(c);
-				m_scheduleGroups.push_back(scheduleGroup);
-			}
-			else if (cname == "AnnualSchedules") {
-				m_annualSchedules.readXML(c);
-			}
-			else {
-				throw IBK::Exception( IBK::FormatString( XML_READ_ERROR ).arg(c->Row()).arg(
-					IBK::FormatString("Unknown XML tag with name '%1' in Schedules section.").arg(cname)
-					), FUNC_ID);
-			}
-		}
-	}
-	catch (IBK::Exception & ex) {
-		throw IBK::Exception(ex, IBK::FormatString("Error reading Schedules data."), FUNC_ID);
-	}
-	catch (std::exception & ex) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading Schedules data.").arg(ex.what()), FUNC_ID);
-	}
-
-	if(m_scheduleGroups.empty() && m_annualSchedules.m_parameters.empty() )
-		initDefaults();
-#endif
-}
-// ----------------------------------------------------------------------------
-
-
-void Schedules::writeXML(TiXmlElement * parent) const {
-#if 0
-	if (isDefault())
-		return;
-
-	if (detailedOutput) {
-		TiXmlComment::addComment(parent,
-			"Schedules section defines user scenarios.");
-		TiXmlComment::addComment(parent,
-			"A scenario is defined by a single schedule group");
-		TiXmlComment::addComment(parent,
-			"containing different schedules for specific model components.");
-	}
-
-	TiXmlElement * e = new TiXmlElement("Schedules");
-	parent->LinkEndChild(e);
-
-	writeXML2(e);
-#endif
-}
-// ----------------------------------------------------------------------------
-
 
 bool Schedules::operator!=(const Schedules & other) const {
 //	if (m_defaults != other.m_defaults) return true;
@@ -359,40 +292,6 @@ void Schedules::scheduleList(std::map< std::string, bool > & scheduleNames) cons
 
 }
 
-// ----------------------------------------------------------------------------
-void Schedules::writeXML2(TiXmlElement * e) const {
-#if 0
-	// write default parameter settings
-	if (detailedOutput)
-		TiXmlComment::addComment(e,"Defaults for all Schedules.");
-//	m_defaults.writeXML(e);
-
-	if ( ! m_scheduleGroups.empty() ){
-
-		if (detailedOutput) {
-			// write all scehdule groups
-			TiXmlComment::addComment(e,
-				"A schedule group contains several schedules that define the course of.");
-			TiXmlComment::addComment(e,
-				"a physical quantity for a given time period. It includes a basic");
-			TiXmlComment::addComment(e,
-				"schedule for week days (all days), and then override schedules for");
-			TiXmlComment::addComment(e,
-				"weekends and holidays.");
-		}
-
-		for (std::vector<ScheduleGroup>::const_iterator it = m_scheduleGroups.begin();
-			it != m_scheduleGroups.end(); ++it)
-		{
-			it->writeXML(e);
-		}
-
-	}
-
-	m_annualSchedules.writeXML(e);
-#endif
-}
-// ----------------------------------------------------------------------------
 
 
 } // namespace NANDRAD

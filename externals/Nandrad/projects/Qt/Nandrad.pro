@@ -32,6 +32,7 @@ HEADERS += \
 	../../src/NANDRAD_ConstructionInstance.h \
 	../../src/NANDRAD_ConstructionType.h \
 	../../src/NANDRAD_DailyCycle.h \
+	../../src/NANDRAD_DataTable.h \
 	../../src/NANDRAD_EmbeddedObject.h \
 	../../src/NANDRAD_EmbeddedObjectWindow.h \
 	../../src/NANDRAD_IDGroup.h \
@@ -72,6 +73,7 @@ SOURCES += \
 	../../src/NANDRAD_ConstructionInstance.cpp \
 	../../src/NANDRAD_ConstructionType.cpp \
 	../../src/NANDRAD_DailyCycle.cpp \
+	../../src/NANDRAD_DataTable.cpp \
 	../../src/NANDRAD_EmbeddedObject.cpp \
 	../../src/NANDRAD_EmbeddedObjectWindow.cpp \
 	../../src/NANDRAD_IDGroup.cpp \
@@ -102,6 +104,7 @@ SOURCES += \
 	../../src/NANDRAD_Zone.cpp \
 	../../src/ncg/ncg_NANDRAD_DailyCycle.cpp \
 	../../src/ncg/ncg_NANDRAD_ProjectInfo.cpp \
+	../../src/ncg/ncg_NANDRAD_Schedules.cpp \
 	../../src/ncg/ncg_NANDRAD_Sensor.cpp \
 	../../src/ncg/ncg_NANDRAD_SimulationParameter.cpp \
 	../../src/ncg/ncg_NANDRAD_SolverParameter.cpp \

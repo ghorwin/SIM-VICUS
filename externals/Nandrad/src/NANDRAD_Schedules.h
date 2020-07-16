@@ -23,14 +23,10 @@ Lesser General Public License for more details.
 
 #include <string>
 #include <vector>
-#include <set>
-
-#include <IBK_UnitVector.h>
 
 #include "NANDRAD_ScheduleGroup.h"
 #include "NANDRAD_AnnualSchedules.h"
-
-class TiXmlElement;
+#include "NANDRAD_CodeGenMacros.h"
 
 namespace NANDRAD {
 
@@ -41,8 +37,9 @@ namespace NANDRAD {
 	for the current project and may be overwritten by a special schedule.
 */
 class Schedules {
+	NANDRAD_READWRITE_PRIVATE
 public:
-	
+
 	enum day_t {
 		SD_MONDAY,		// Keyword: Mon		'Monday.'
 		SD_TUESDAY,		// Keyword: Tue		'Tuesday.'
@@ -53,7 +50,7 @@ public:
 		SD_SUNDAY,		// Keyword: Sun		'Sunday.'
 		NUM_SD
 	};
-	
+
 #if 0
 
 	/*! Defines all defaults for schedule elements. */
@@ -88,22 +85,10 @@ public:
 
 #endif
 
-	/*! Reads the data from the xml element.
-		Throws an IBK::Exception if a syntax error occurs.
-	*/
-	void readXML(const TiXmlElement * element);
+	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	/*! Appends the element to the parent xml element.
-		Throws an IBK::Exception in case of invalid data.
-	*/
-	void writeXML(TiXmlElement * parent) const;
-
-	/*! Compares this instance with another by value and returns true if they differ. */
-	bool operator!=(const Schedules & other) const;
-
-	/*! Compares this instance with another by value and returns true if they are the same. */
-	bool operator==(const Schedules & other) const { return ! operator!=(other); }
-
+	NANDRAD_READWRITE_IFNOTEMPTY(Schedules)
+	NANDRAD_COMP(Schedules)
 
 	/*! Fill parameter with list of defined schedules.
 		Parameter ID-names have the format SpaceType:IDName. Boolean defines whether this
@@ -135,18 +120,10 @@ public:
 		for the requested time until a schedule group is found that
 		covers this time point.
 	*/
-	std::vector<ScheduleGroup>			m_scheduleGroups;
+	std::vector<ScheduleGroup>			m_scheduleGroups;				// XML:E
 
 	/*! Container for all annual schedules. */
-	AnnualSchedules						m_annualSchedules;
-
-private:
-
-	/*! Writes everything below the "Schedules" tag.
-		Throws an IBK::Exception in case of invalid data.
-		\param element XML Element pointing to the root "Schedules" tag.
-	*/
-	void writeXML2(TiXmlElement * element) const;
+	AnnualSchedules						m_annualSchedules;				// XML:E
 
 };
 

@@ -111,7 +111,7 @@ void readParameterElement(const TiXmlElement * element, IBK::Parameter & p) {
 	const std::string & unit = attrib->ValueStr();
 	IBK::Unit u;
 	try {
-		u.set("unit");
+		u.set(unit);
 	} catch (...) {
 		throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg("Unknown/invalid unit '"+unit+"' in IBK:Parameter element."), FUNC_ID);
 	}

@@ -26,7 +26,7 @@ Lesser General Public License for more details.
 
 #include <IBK_Parameter.h>
 #include "NANDRAD_LinearSplineParameter.h"
-#include "NANDRAD_Interval.h"
+#include "NANDRAD_DataTable.h"
 #include "NANDRAD_CodeGenMacros.h"
 
 namespace NANDRAD {
@@ -49,6 +49,15 @@ namespace NANDRAD {
 class DailyCycle {
 public:
 
+	/*! Interpolation method for daily cycle data.
+		Note that for constant values some ramping may be used to smoothen out the steps.
+	*/
+	enum interpolation_t {
+		IT_CONSTANT,	// Keyword: CONSTANT	'Constant hourly values, required 24 values in vectors.'
+		IT_LINEAR,		// Keyword: LINEAR		'Linear interpolation between values, requires timepoints from 0h to 24h.'
+		NUM_IT
+	};
+
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	NANDRAD_READWRITE
@@ -67,11 +76,18 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Parameter definition inside each schedule interval.*/
-	std::vector<Interval>				m_intervals;				// XML:E
+	interpolation_t						m_interpolation = NUM_IT;			// XML:A
 
-	/*! Alternatively read hourly values into a linear spline. */
-	std::vector<LinearSplineParameter>	m_hourlyValues;				// XML:E
+	/*! Time points, first must be 0, last must be end of day.
+		For hourly constant values, time unit must be 'h', and exactly 24 values must be in spline (0...23).
+	*/
+	std::vector<double>					m_timePoints;						// XML:E
+	IBK::Unit							m_timeUnit;							// XML:E
+
+	/*! Actual values, key of m_values.m_values is physical quantity/setpoint/... scheduled quantity, value is vector with values, same
+		number of values as in m_timePoints.
+	*/
+	DataTable							m_values;							// XML:E
 };
 
 } // namespace NANDRAD

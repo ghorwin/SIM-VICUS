@@ -11,6 +11,7 @@
 
 #include <NANDRAD_Interface.h>
 #include <NANDRAD_CodeGenMacros.h>
+#include <NANDRAD_DataTable.h>
 
 namespace NANDRAD {
 
@@ -27,6 +28,12 @@ public:
 		m_intPara[IP_i1].set("I1", 13);
 		m_intPara[IP_i2].set("I2", 15);
 		m_f.set("F",true);
+		m_dblVec.push_back(0);
+		m_dblVec.push_back(12);
+		m_dblVec.push_back(24);
+
+		m_table.m_values["Col1"] = std::vector<double>{1,5,3};
+		m_table.m_values["Col2"] = std::vector<double>{7,2,2};
 	}
 
 	NANDRAD_READWRITE
@@ -64,7 +71,9 @@ public:
 	IBK::Flag			m_f;								// XML:E
 
 	Interface			m_iface;							// XML:E
+	DataTable			m_table;							// XML:E
 
+	std::vector<double>		m_dblVec;						// XML:E
 	std::vector<Interface>	m_interfaces;					// XML:E
 
 	IBK::Parameter		m_para[NUM_test];					// XML:E

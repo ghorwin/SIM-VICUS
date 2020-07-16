@@ -14,7 +14,7 @@
 // include model implementation class
 #include "NM_NandradModel.h"
 
-//#define SERIALIZATION_TEST
+#define SERIALIZATION_TEST
 #ifdef SERIALIZATION_TEST
 #include <NANDRAD_SerializationTest.h>
 #include <NANDRAD_Utilities.h>
@@ -158,7 +158,7 @@ int main(int argc, char * argv[]) {
 	// parameter setzen
 	createSim01(prj);
 	prj.writeXML(IBK::Path("SimQuality1.xml"));
-	return 0;
+	std::cout << "Write 'SimQuality1.xml'." << std::endl;
 
 #ifdef SERIALIZATION_TEST
 	NANDRAD::SerializationTest st;
@@ -193,8 +193,8 @@ int main(int argc, char * argv[]) {
 	}
 	catch (IBK::Exception &ex) {
 		ex.writeMsgStackToError();
-		IBK::IBK_Message(IBK::FormatString("Error in line %1 of project file '%2'.")
-			.arg(xmlElem->Row()).arg(filenamePath), IBK::MSG_ERROR, FUNC_ID);
+		IBK::IBK_Message(IBK::FormatString("Error in project file '%1'.")
+			.arg(filenamePath), IBK::MSG_ERROR, FUNC_ID);
 	}
 
 	return 0;
