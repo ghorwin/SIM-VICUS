@@ -57,153 +57,24 @@ void Schedules::initDefaults() {
 }
 #endif
 
-//bool Schedules::isDefault() const {
-//	Schedules tmp;
-//	tmp.initDefaults();
-//	return (*this == tmp);
-//}
-#if 0
-Schedules::DefaultParameters::DefaultParameters() {
-	m_weekEndDays.insert( SD_SUNDAY );
-	m_weekEndDays.insert( SD_SATURDAY );
+void Schedules::readXML(const TiXmlElement * element) {
+
 }
 
-void Schedules::DefaultParameters::readXML(const TiXmlElement * element) {
-	const char * const FUNC_ID = "[DefaultParameters::readXML]";
-
-	const TiXmlElement *c;
-	try {
-		// read sub-elements
-		for (c = element->FirstChildElement(); c; c = c->NextSiblingElement()) {
-			// determine data based on element name
-			std::string cname = c->Value();
-
-			if (cname == "WeekEndDays") {
-				// clear defaults and old content if defined in project file
-				m_weekEndDays.clear();
-
-				std::list<std::string> dayList;
-				IBK::explode(c->GetText(),dayList,',',true);
-
-				// now read all weekend days
-				for(std::list<std::string>::const_iterator it = dayList.begin();
-					it != dayList.end(); ++it)
-				{
-					day_t day = (day_t) KeywordList::Enumeration("Schedules::day_t",*it);
-					m_weekEndDays.insert(day);
-				}
-
-			}
-			else if (cname == "Holidays" ) {
-
-				// get attribute for format
-				const TiXmlAttribute * attrib = TiXmlAttribute::attributeByName(c, "languageFormat");
-				if (!attrib)
-					throw IBK::Exception( IBK::FormatString( XML_READ_ERROR ).arg(c->Row()).arg(
-						"Expected 'languageFormat' attribute in Holidays tag."
-						), FUNC_ID);
-
-				std::string attribString = attrib->Value();
-				Date::LanguageID langID = (Date::LanguageID) KeywordList::Enumeration("Date::LanguageID", attribString);
-
-				// clear defaults and old content if defined in project file
-				m_holidays.clear();
-
-				// determine contents of comma separated list
-				std::string holidays = c->GetText();
-				std::list< std::string > listOfHolidays;
-
-				IBK::explode( holidays, listOfHolidays, ',', true );
-
-				for (std::list<std::string>::const_iterator it = listOfHolidays.begin();
-					it != listOfHolidays.end(); ++it)
-				{
-					Date date;
-					try {
-						date.decode( *it, langID );
-						m_holidays.insert( date );
-					}
-					catch( IBK::Exception & ex ) {
-						throw IBK::Exception(ex, IBK::FormatString( XML_READ_ERROR ).arg(c->Row()).arg(
-							IBK::FormatString("Couldn't decode date string '%1' in holidays tag.").arg(*it)
-							), FUNC_ID);
-
-					}
-				}
-			}
-			else {
-				throw IBK::Exception( IBK::FormatString( XML_READ_ERROR ).arg(c->Row()).arg(
-					IBK::FormatString("Unknown XML tag with name '%1' in DefaultParameters section.").arg(cname)
-					), FUNC_ID);
-			}
-		}
-
-	}
-	catch (IBK::Exception & ex) {
-		throw IBK::Exception(ex, IBK::FormatString("Error reading DefaultParameters data."), FUNC_ID);
-	}
-	catch (std::exception & ex) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading DefaultParameters data.").arg(ex.what()), FUNC_ID);
-	}
+TiXmlElement * Schedules::writeXML(TiXmlElement * parent) const {
+	return nullptr;
 }
 
-
-void Schedules::DefaultParameters::writeXML(TiXmlElement * parent) const {
-
-	TiXmlElement * e = new TiXmlElement("Default");
-	parent->LinkEndChild(e);
-
-	// write validity date of schedule
-	if(!m_weekEndDays.empty())  {
-
-		if (detailedOutput)
-			TiXmlComment::addComment(e, "List of all weekend days.");
-
-		std::string days;
-		for (std::set<day_t>::const_iterator it = m_weekEndDays.begin(); it != m_weekEndDays.end(); ++it) {
-			if (it != m_weekEndDays.begin())
-				days +=  ",";
-			days += KeywordList::Keyword("Schedules::day_t",*it);
-		}
-		TiXmlElement::appendSingleAttributeElement(e,"WeekEndDays",nullptr,std::string(),days);
-	}
-
-	if (!m_holidays.empty()) {
-
-		std::string holidays;
-		if (detailedOutput)
-			TiXmlComment::addComment(e, "List of all holidays.");
-
-
-		for (std::set<Date>::const_iterator it = m_holidays.begin(); it != m_holidays.end(); ++it) {
-			if (it != m_holidays.begin())
-				holidays +=  ",";
-			holidays += it->encode( NANDRAD::Date::L_EN );
-		}
-		TiXmlElement::appendSingleAttributeElement( e, "Holidays", "languageFormat",
-													KeywordList::Keyword( "Date::LanguageID", Date::L_EN ), holidays);
-	}
-}
-
-
-bool Schedules::DefaultParameters::operator!=(const Schedules::DefaultParameters & other) const {
-	if (m_holidays != other.m_holidays) return true;
-	if (m_weekEndDays != other.m_weekEndDays) return true;
-	return false;
-}
-
-#endif
-
-// *** Schedules ***
 
 bool Schedules::operator!=(const Schedules & other) const {
-//	if (m_defaults != other.m_defaults) return true;
-	if (m_scheduleGroups != other.m_scheduleGroups) return true;
+	if (m_holidays != other.m_holidays) return true;
+	if (m_weekEndDays != other.m_weekEndDays) return true;
+	if (m_schedules != other.m_schedules) return true;
 	if (m_annualSchedules != other.m_annualSchedules) return true;
 	return false;
 }
 // ----------------------------------------------------------------------------
-
+#if 0
 
 void Schedules::parameterList(std::map< std::string, bool > & parameterIDNames) const {
 
@@ -291,7 +162,7 @@ void Schedules::scheduleList(std::map< std::string, bool > & scheduleNames) cons
 	}
 
 }
-
+#endif
 
 
 } // namespace NANDRAD

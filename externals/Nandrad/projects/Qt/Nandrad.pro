@@ -25,7 +25,6 @@ INCLUDEPATH = \
 DEPENDPATH = $${INCLUDEPATH}
 
 HEADERS += \
-	../../src/NANDRAD_AnnualSchedules.h \
 	../../src/NANDRAD_ArgsParser.h \
 	../../src/NANDRAD_CodeGenMacros.h \
 	../../src/NANDRAD_Constants.h \
@@ -56,7 +55,6 @@ HEADERS += \
 	../../src/NANDRAD_Project.h \
 	../../src/NANDRAD_ProjectInfo.h \
 	../../src/NANDRAD_Schedule.h \
-	../../src/NANDRAD_ScheduleGroup.h \
 	../../src/NANDRAD_Schedules.h \
 	../../src/NANDRAD_Sensor.h \
 	../../src/NANDRAD_SerializationTest.h \
@@ -67,7 +65,6 @@ HEADERS += \
 	../../src/NANDRAD_Zone.h
 
 SOURCES += \
-	../../src/NANDRAD_AnnualSchedules.cpp \
 	../../src/NANDRAD_ArgsParser.cpp \
 	../../src/NANDRAD_Constants.cpp \
 	../../src/NANDRAD_ConstructionInstance.cpp \
@@ -94,7 +91,6 @@ SOURCES += \
 	../../src/NANDRAD_Project.cpp \
 	../../src/NANDRAD_ProjectInfo.cpp \
 	../../src/NANDRAD_Schedule.cpp \
-	../../src/NANDRAD_ScheduleGroup.cpp \
 	../../src/NANDRAD_Schedules.cpp \
 	../../src/NANDRAD_Sensor.cpp \
 	../../src/NANDRAD_SimulationParameter.cpp \
@@ -119,7 +115,6 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_Project.cpp \
 	../../src/ncg/ncg_NANDRAD_ProjectInfo.cpp \
 	../../src/ncg/ncg_NANDRAD_Schedule.cpp \
-	../../src/ncg/ncg_NANDRAD_Schedules.cpp \
 	../../src/ncg/ncg_NANDRAD_Sensor.cpp \
 	../../src/ncg/ncg_NANDRAD_SerializationTest.cpp \
 	../../src/ncg/ncg_NANDRAD_SimulationParameter.cpp \

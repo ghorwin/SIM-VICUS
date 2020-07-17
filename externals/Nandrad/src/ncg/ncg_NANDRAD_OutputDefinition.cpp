@@ -36,6 +36,18 @@ void OutputDefinition::readXML(const TiXmlElement * element) {
 
 	try {
 		// search for mandatory elements
+		if (!element->FirstChildElement("Quantity"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'Quantity' element.") ), FUNC_ID);
+
+		if (!element->FirstChildElement("ObjectListName"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'ObjectListName' element.") ), FUNC_ID);
+
+		if (!element->FirstChildElement("GridName"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'GridName' element.") ), FUNC_ID);
+
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {

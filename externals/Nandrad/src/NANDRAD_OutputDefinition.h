@@ -69,16 +69,16 @@ public:
 	std::string								m_filename;					// XML:E
 
 	/*! quantity id -> zone.AirTemperature */
-	std::string								m_quantity;					// XML:E
+	std::string								m_quantity;					// XML:E:required
 
-	/*! Time output type. */
+	/*! Time output type, if missing defaults to OTT_NONE. */
 	timeType_t								m_timeType = NUM_OTT;		// XML:E
 
 	/*! Name of the object list. */
-	std::string								m_objectListName;			// XML:E
+	std::string								m_objectListName;			// XML:E:required
 
 	/*! Rerefence name of output grid, corresponds to OutputGrid::m_name. */
-	std::string								m_gridName;					// XML:E
+	std::string								m_gridName;					// XML:E:required
 
 
 	// *** Variables used only during simulation ***

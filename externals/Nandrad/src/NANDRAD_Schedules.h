@@ -24,8 +24,7 @@ Lesser General Public License for more details.
 #include <string>
 #include <vector>
 
-#include "NANDRAD_ScheduleGroup.h"
-#include "NANDRAD_AnnualSchedules.h"
+#include "NANDRAD_Schedule.h"
 #include "NANDRAD_CodeGenMacros.h"
 
 namespace NANDRAD {
@@ -37,9 +36,9 @@ namespace NANDRAD {
 	for the current project and may be overwritten by a special schedule.
 */
 class Schedules {
-	NANDRAD_READWRITE_PRIVATE
 public:
 
+	/*! Day ids used to define "a weekend". */
 	enum day_t {
 		SD_MONDAY,		// Keyword: Mon		'Monday.'
 		SD_TUESDAY,		// Keyword: Tue		'Tuesday.'
@@ -51,45 +50,12 @@ public:
 		NUM_SD
 	};
 
-#if 0
-
-	/*! Defines all defaults for schedule elements. */
-	struct DefaultParameters {
-
-		/*! Initializes WeekEndDays with defaults. */
-		DefaultParameters();
-
-		/*! Reads the data from the xml element.
-			Throws an IBK::Exception if a syntax error occurs.
-		*/
-		void readXML(const TiXmlElement * element);
-
-		/*! Appends the element to the parent xml element.
-			Throws an IBK::Exception in case of invalid data.
-		*/
-		void writeXML(TiXmlElement * parent) const;
-
-		/*! Compares this instance with another by value and returns true if they differ. */
-		bool operator!=(const DefaultParameters & other) const;
-
-		/*! Compares this instance with another by value and returns true if they are the same. */
-		bool operator==(const DefaultParameters & other) const { return ! operator!=(other); }
-
-
-		/*! List of holiday dates. */
-		std::set< IBK::Time >		m_holidays;
-
-		/*! Weekend days. */
-		std::set< day_t >		m_weekEndDays;
-	};
-
-#endif
-
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	NANDRAD_READWRITE_IFNOTEMPTY(Schedules)
+	NANDRAD_READWRITE
 	NANDRAD_COMP(Schedules)
 
+#if 0
 	/*! Fill parameter with list of defined schedules.
 		Parameter ID-names have the format SpaceType:IDName. Boolean defines whether this
 		is a parameter defined via AnnualSchedule (true).
@@ -105,25 +71,23 @@ public:
 		Boolean defines whether this is has a parameter defined via AnnualSchedule (true).
 	*/
 	void scheduleList(std::map< std::string, bool > & scheduleNames) const;
-
+#endif
 	// *** PUBLIC MEMBER VARIABLES ***
 
 
-	/*! Definition of default parameters.*/
-//	DefaultParameters					m_defaults;
+	/*! List of holiday dates. */
+	std::set< IBK::Time >													m_holidays;
 
-	/*! Vector of schedule groups.
-		First and only the first schedule group must not have a start and end date and
-		last the whole year.
-		The lookup of schedules is done bottom-to-top. Starting from
-		last schedule group in vector, all schedule groups are tested
-		for the requested time until a schedule group is found that
-		covers this time point.
+	/*! Weekend days. */
+	std::set< day_t >														m_weekEndDays;
+
+	/*! Key is object list name, value is vector of schedules. */
+	std::map<std::string, std::vector<Schedule> >							m_schedules;
+	/*! Key is object list name, value is vector of linear splines, where each spline
+		defines a single scheduled quantity running the entire year.
 	*/
-	std::vector<ScheduleGroup>			m_scheduleGroups;				// XML:E
+	std::map<std::string, std::vector<NANDRAD::LinearSplineParameter> >		m_annualSchedules;
 
-	/*! Container for all annual schedules. */
-	AnnualSchedules						m_annualSchedules;				// XML:E
 
 };
 

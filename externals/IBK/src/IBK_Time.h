@@ -125,6 +125,11 @@ public:
 	*/
 	Time(int year, unsigned int month, unsigned int day, double seconds);
 
+	/*! Comparison operator. */
+	bool operator!=(const Time & other) const { return m_sec != other.m_sec || m_year != other.m_year; }
+	/*! Comparison operator. */
+	bool operator==(const Time & other) const { return m_sec == other.m_sec && m_year == other.m_year; }
+
 	/*! Sets the time for a reference time point.
 		\param year	The year in [years] since 0 AD.
 		\param sec	The time in [seconds] since midnight, January 1st of the given year.

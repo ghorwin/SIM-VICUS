@@ -698,8 +698,8 @@ namespace NANDRAD {
 			// DailyCycle::interpolation_t
 			case 1 :
 			switch (t) {
-				case 0 : return "Constant hourly values, required 24 values in vectors.";
-				case 1 : return "Linear interpolation between values, requires timepoints from 0h to 24h.";
+				case 0 : return "Constant values in defined intervals.";
+				case 1 : return "Linear interpolation between values.";
 			} break;
 			// EmbeddedObject::para_t
 			case 2 :

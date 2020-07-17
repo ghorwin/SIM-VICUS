@@ -746,11 +746,13 @@ void createSim03(NANDRAD::Project &prj){
 
 	conType.m_materialLayers.clear();
 	conType.m_id = 10002;
+	conType.m_displayName = "Construction 2";
 	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.1, prj.m_materials[1].m_id));
 	prj.m_constructionTypes.push_back(conType);
 
 	conType.m_materialLayers.clear();
 	conType.m_id = 10003;
+	conType.m_displayName = "Construction 3";
 	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.005, prj.m_materials[2].m_id));
 	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.1, prj.m_materials[1].m_id));
 	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.2, prj.m_materials[0].m_id));
@@ -758,6 +760,7 @@ void createSim03(NANDRAD::Project &prj){
 
 	conType.m_materialLayers.clear();
 	conType.m_id = 10004;
+	conType.m_displayName = "Construction 4";
 	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.2, prj.m_materials[0].m_id));
 	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.1, prj.m_materials[1].m_id));
 	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.005, prj.m_materials[2].m_id));
@@ -1193,11 +1196,13 @@ void createSim04(NANDRAD::Project &prj){
 
 	conType.m_materialLayers.clear();
 	conType.m_id = 10002;
+	conType.m_displayName = "Construction 2";
 	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.1, prj.m_materials[1].m_id));
 	prj.m_constructionTypes.push_back(conType);
 
 	conType.m_materialLayers.clear();
 	conType.m_id = 10003;
+	conType.m_displayName = "Construction 3";
 	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.005, prj.m_materials[2].m_id));
 	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.1, prj.m_materials[1].m_id));
 	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.2, prj.m_materials[0].m_id));
@@ -1205,6 +1210,7 @@ void createSim04(NANDRAD::Project &prj){
 
 	conType.m_materialLayers.clear();
 	conType.m_id = 10004;
+	conType.m_displayName = "Construction 4";
 	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.2, prj.m_materials[0].m_id));
 	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.1, prj.m_materials[1].m_id));
 	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.005, prj.m_materials[2].m_id));
@@ -1670,17 +1676,10 @@ void createSim05(NANDRAD::Project &prj){
 	daily.m_values.m_values["InfiltrationAirChangeRate"]= std::vector<double>(24,2);
 
 	NANDRAD::Schedule sched;
+	sched.m_type = NANDRAD::Schedule::ST_ALLDAYS;
 	sched.m_dailyCycles.push_back(daily);
 
-	NANDRAD::ScheduleGroup::ScheduleMap schedMap;
-	schedMap[NANDRAD::Schedule::ST_ALLDAYS] = sched;
-
-	NANDRAD::ScheduleGroup schedGrp;
-	schedGrp.m_spaceTypeGroups["TF05.1"] = schedMap;
-
-	NANDRAD::Schedules scheds;
-	scheds.m_scheduleGroups.push_back(schedGrp);
-
+	prj.m_schedules.m_schedules["All zones"].push_back(sched);
 
 	//outputs
 	NANDRAD::OutputGrid grid;

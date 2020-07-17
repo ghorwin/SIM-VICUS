@@ -90,6 +90,12 @@ public:
 
 	type_t					m_type = NUM_ST;								// XML:A:required
 
+	/*! Start date for the schedule, if not given, defaults to 1.1. */
+	IBK::Time				m_startDate;									// XMLS:E
+
+	/*! End date for the schedule, if not given, defaults to 31.12. */
+	IBK::Time				m_endDate;										// XMLS:E
+
 	/*! List of daily cycles that are used on day type specified above.
 		These cycles define different quantities/control parameters etc.
 	*/
