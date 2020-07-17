@@ -32,8 +32,6 @@ Lesser General Public License for more details.
 
 namespace NANDRAD {
 
-class SpaceType;
-
 /*!	\brief Declaration for class Zone
 
 	A zone defines a thermal zone/room with a single air temperature. The class Zone stores

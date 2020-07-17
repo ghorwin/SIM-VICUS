@@ -60,7 +60,6 @@ HEADERS += \
 	../../src/NANDRAD_SerializationTest.h \
 	../../src/NANDRAD_SimulationParameter.h \
 	../../src/NANDRAD_SolverParameter.h \
-	../../src/NANDRAD_SpaceType.h \
 	../../src/NANDRAD_Utilities.h \
 	../../src/NANDRAD_Zone.h
 
@@ -95,7 +94,6 @@ SOURCES += \
 	../../src/NANDRAD_Sensor.cpp \
 	../../src/NANDRAD_SimulationParameter.cpp \
 	../../src/NANDRAD_SolverParameter.cpp \
-	../../src/NANDRAD_SpaceType.cpp \
 	../../src/NANDRAD_Utilities.cpp \
 	../../src/NANDRAD_Zone.cpp \
 	../../src/ncg/ncg_NANDRAD_InterfaceAirFlow.cpp \

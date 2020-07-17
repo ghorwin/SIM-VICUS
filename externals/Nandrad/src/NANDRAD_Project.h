@@ -33,7 +33,6 @@ Lesser General Public License for more details.
 #include "NANDRAD_Schedules.h"
 #include "NANDRAD_Outputs.h"
 #include "NANDRAD_Location.h"
-#include "NANDRAD_SpaceType.h"
 #include "NANDRAD_ConstructionType.h"
 #include "NANDRAD_Material.h"
 
@@ -125,9 +124,6 @@ public:
 
 	/*! Location of the building and climate data. */
 	Location										m_location;							// XML:E
-
-	/*! Space type properties.*/
-	std::map< unsigned int, SpaceType>				m_spaceTypes;
 
 	/*! References to all schedules.*/
 	Schedules										m_schedules;						// XML:E

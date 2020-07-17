@@ -58,10 +58,33 @@ void Schedules::initDefaults() {
 #endif
 
 void Schedules::readXML(const TiXmlElement * element) {
-
 }
 
 TiXmlElement * Schedules::writeXML(TiXmlElement * parent) const {
+	TiXmlElement * e = new TiXmlElement("Schedules");
+	parent->LinkEndChild(e);
+
+	if (!m_holidays.empty()) {
+		TiXmlElement * c = new TiXmlElement("Holidays");
+		e->LinkEndChild(c);
+		// encode days
+		for (IBK::Time t : m_holidays)
+			TiXmlElement::appendSingleAttributeElement(c, "IBK::Time", nullptr, std::string(), t.toDateTimeFormat());
+	}
+
+	if (!m_weekEndDays.empty()) {
+		TiXmlElement * c = new TiXmlElement("WeekEndDays");
+		e->LinkEndChild(c);
+		// encode days
+		std::string days;
+		for (day_t t : m_weekEndDays)
+			days += std::string(",") + KeywordList::Keyword("Schedules::day_t", t);
+		TiXmlText * text = new TiXmlText( days.substr(1) ); // Mind: remove leading , from string
+		c->LinkEndChild(text);
+	}
+
+
+
 	return nullptr;
 }
 
