@@ -8,6 +8,7 @@
 #include <IBK_LinearSpline.h>
 #include <IBK_Unit.h>
 #include <IBK_IntPara.h>
+#include <IBK_Time.h>
 
 #include <NANDRAD_Schedule.h>
 #include <NANDRAD_Interface.h>
@@ -34,6 +35,8 @@ public:
 		m_dblVec.push_back(24);
 
 		m_sched.m_type = Schedule::ST_FRIDAY;
+
+		m_time1.set(2007,46032);
 
 		m_table.m_values["Col1"] = std::vector<double>{1,5,3};
 		m_table.m_values["Col2"] = std::vector<double>{7,2,2};
@@ -72,6 +75,8 @@ public:
 	IBK::Unit			m_u2		= IBK::Unit("C");		// XML:E
 	double				m_x5;								// XML:E
 	IBK::Flag			m_f;								// XML:E
+	IBK::Time			m_time1;							// XML:E
+	IBK::Time			m_time2;							// XML:E
 
 	Schedule			m_sched;							// XML:E
 	DataTable			m_table;							// XML:E

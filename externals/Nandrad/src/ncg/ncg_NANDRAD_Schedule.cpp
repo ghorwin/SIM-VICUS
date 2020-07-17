@@ -26,6 +26,7 @@
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
 #include <NANDRAD_KeywordList.h>
+#include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
 
@@ -59,7 +60,11 @@ void Schedule::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "DailyCycles") {
+			if (cName == "StartDate")
+				m_startDate = readTimeElement(c, cName);
+			else if (cName == "EndDate")
+				m_endDate = readTimeElement(c, cName);
+			else if (cName == "DailyCycles") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
@@ -91,6 +96,10 @@ TiXmlElement * Schedule::writeXML(TiXmlElement * parent) const {
 
 	if (m_type != NUM_ST)
 		e->SetAttribute("type", KeywordList::Keyword("Schedule::type_t",  m_type));
+	if (m_startDate != IBK::Time())
+		TiXmlElement::appendSingleAttributeElement(e, "StartDate", nullptr, std::string(), m_startDate.toShortDateFormat());
+	if (m_endDate != IBK::Time())
+		TiXmlElement::appendSingleAttributeElement(e, "EndDate", nullptr, std::string(), m_endDate.toShortDateFormat());
 
 	if (!m_dailyCycles.empty()) {
 		TiXmlElement * child = new TiXmlElement("DailyCycles");

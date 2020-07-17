@@ -374,6 +374,7 @@ void CodeGenerator::generateReadWriteCode() {
 				// - IBK::Path
 				// - IBK::Parameter
 				// - IBK::Flag
+				// - IBK::Time
 				// - IBK::Parameter[NUM_xxx]
 				// - IBK::IntPara[NUM_xxx]
 				// - std::vector<double>
@@ -396,6 +397,11 @@ void CodeGenerator::generateReadWriteCode() {
 					elements +=
 							"	if (m_" + varName + ".id() != 0)\n"
 							"		TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".name());\n";
+				}
+				else if (xmlInfo.typeStr == "IBK::Time") {
+					elements +=
+							"	if (m_" + varName + " != IBK::Time())\n"
+							"		TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".toShortDateFormat());\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Path") {
 					elements +=
@@ -715,6 +721,13 @@ void CodeGenerator::generateReadWriteCode() {
 						elements +=
 							"			"+elseStr+"if (cName == \""+tagName+"\")\n"
 							"				m_"+varName+" = readUnitElement(c, cName);\n";
+						handledVariables.insert(varName);
+					}
+					else if (xmlInfo.typeStr == "IBK::Time") {
+						includes.insert("NANDRAD_Utilities.h");
+						elements +=
+							"			"+elseStr+"if (cName == \""+tagName+"\")\n"
+							"				m_"+varName+" = readTimeElement(c, cName);\n";
 						handledVariables.insert(varName);
 					}
 					else if (xmlInfo.typeStr == "IBK::Path") {

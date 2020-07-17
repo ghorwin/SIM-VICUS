@@ -114,6 +114,10 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
+			else if (cName == "Time1")
+				m_time1 = readTimeElement(c, cName);
+			else if (cName == "Time2")
+				m_time2 = readTimeElement(c, cName);
 			else if (cName == "Table")
 				m_table.setEncodedString(c->GetText());
 			else if (cName == "DblVec")
@@ -222,6 +226,10 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 	TiXmlElement::appendSingleAttributeElement(e, "X5", nullptr, std::string(), IBK::val2string<double>(m_x5));
 	if (!m_f.name().empty())
 		TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_f.name(), m_f.isEnabled() ? "true" : "false");
+	if (m_time1 != IBK::Time())
+		TiXmlElement::appendSingleAttributeElement(e, "Time1", nullptr, std::string(), m_time1.toShortDateFormat());
+	if (m_time2 != IBK::Time())
+		TiXmlElement::appendSingleAttributeElement(e, "Time2", nullptr, std::string(), m_time2.toShortDateFormat());
 
 	m_sched.writeXML(e);
 	if (!m_table.m_values.empty())

@@ -27,6 +27,7 @@ Lesser General Public License for more details.
 #include <tinyxml.h>
 
 #include <IBK_Path.h>
+#include <IBK_Time.h>
 #include <IBK_LinearSpline.h>
 #include <IBK_StringUtils.h>
 
@@ -125,7 +126,10 @@ T readPODElement(const TiXmlElement * element, const std::string & eName) {
 	}
 };
 
+/*! Read an IBK:Unit tag. */
 IBK::Unit readUnitElement(const TiXmlElement * element, const std::string & eName);
+/*! Read an IBK:Time tag. */
+IBK::Time readTimeElement(const TiXmlElement * element, const std::string & eName);
 
 
 } // namespace NANDRAD
