@@ -1668,7 +1668,10 @@ void createSim05(NANDRAD::Project &prj){
 	//interval.m_para[NANDRAD::Interval::IP_END].set("End", 24, IBK::Unit("h"));			//	<<<< hier muss irgendwie der Wert für den Luftwechsel gesetzt werden ToDo Andreas abklären
 
 	NANDRAD::DailyCycle daily;
-	daily.m_intervals.push_back(interval);
+	daily.m_timeUnit = IBK::Unit("h");
+	daily.m_interpolation = NANDRAD::DailyCycle::IT_CONSTANT;
+	daily.m_timePoints = std::vector<double>{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23};
+	daily.m_values.m_values["InfiltrationAirChangeRate"]= std::vector<double>(24,2);
 
 	NANDRAD::Schedule sched;
 	sched.m_dailyCycles.push_back(daily);

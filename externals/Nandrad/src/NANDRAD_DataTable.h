@@ -16,6 +16,8 @@ public:
 		return m_values != other.m_values;
 	}
 
+	//ToDo Andreas bitte mal ein Beispiel einfügen
+
 	/*! Sets content of data table from encoded string.
 		Throws an IBK::Exception, if number of rows in columns mismatches.
 	*/
