@@ -36,7 +36,7 @@ const char * const PROGRAM_INFO =
 void createSim01(NANDRAD::Project &prj){
 
 	//project info
-	prj.m_projectInfo.m_comment = "SimQuality TestCase 1";
+	prj.m_projectInfo.m_comment = "Yes we can! TF01";
 	prj.m_projectInfo.m_created = "Now!";
 	prj.m_projectInfo.m_version = "NANDRAD 2.0";
 	prj.m_projectInfo.m_lastEdited = "Yesterday";
@@ -44,7 +44,7 @@ void createSim01(NANDRAD::Project &prj){
 	//create a zone
 	NANDRAD::Zone zone;
 	zone.m_id = 1;
-	zone.m_displayName = "TestZone01";
+	zone.m_displayName = "TF01";
 	zone.m_type = NANDRAD::Zone::ZT_ACTIVE;
 	zone.m_para[NANDRAD::Zone::ZP_AREA].set("Area", 10, IBK::Unit("m2"));
 	zone.m_para[NANDRAD::Zone::ZP_VOLUME].set("Volume", 30, IBK::Unit("m3"));
@@ -55,6 +55,14 @@ void createSim01(NANDRAD::Project &prj){
 	prj.m_simulationParameter.m_intpara[NANDRAD::SimulationParameter::SIP_YEAR].set("StartYear", 2015);
 
 	prj.m_location.m_climateFileName = IBK::Path("${Project Directory}/climate/testClimate.epw");
+
+	/* ToDo Andreas Dirk Anne Stephan
+		Falls der Klimastandort in der Klimadatei steht MUSS er daraus genommen werden.
+		Falls kein Standort vorhanden ist wird auf die Daten in der NANDRAD-Projekt-Datei zurückgegriffen
+		Für den Testfall 01 müssen die verschiedenen Standorte später durchgeändert werden Potsdam, Barrow, ...
+	*/
+	//prj.m_location.m_climateFileName = IBK::Path("climate/testClimate.epw");
+
 	prj.m_location.m_para[NANDRAD::Location::LP_LATITUDE].set("Latitude", 51, IBK::Unit("Deg"));
 	prj.m_location.m_para[NANDRAD::Location::LP_LONGITUDE].set("Longitude",13, IBK::Unit("Deg"));
 	prj.m_location.m_para[NANDRAD::Location::LP_ALTITUDE].set("Altitude",100, IBK::Unit("m"));
@@ -92,7 +100,12 @@ void createSim01(NANDRAD::Project &prj){
 	//add construction instance
 	prj.m_constructionInstances.push_back(conInsta);
 
-	// materials
+	//construction type
+	NANDRAD::ConstructionType conType;
+	conType.m_id = conInsta.m_constructionTypeId;
+	conType.m_displayName = "Exterior wall";
+
+	//material
 	NANDRAD::Material mat;
 	mat.m_id = 1001;
 	mat.m_displayName = "Concrete";
@@ -100,6 +113,8 @@ void createSim01(NANDRAD::Project &prj){
 	mat.m_para[NANDRAD::Material::MP_HEAT_CAPACITY].set("HeatCapacity", 840, IBK::Unit("J/kgK"));
 	mat.m_para[NANDRAD::Material::MP_CONDUCTIVITY].set("Conductivity", 2.1, IBK::Unit("W/mK"));
 	prj.m_materials.push_back(mat);
+	// Left side (A) = concrete (inside), right side (B) insulation (outside)
+	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.2, mat.m_id));
 
 	mat.m_id = 1002;
 	mat.m_displayName = "Insulation";
@@ -107,12 +122,6 @@ void createSim01(NANDRAD::Project &prj){
 	mat.m_para[NANDRAD::Material::MP_HEAT_CAPACITY].set("HeatCapacity", 1500, IBK::Unit("J/kgK"));
 	mat.m_para[NANDRAD::Material::MP_CONDUCTIVITY].set("Conductivity", 0.04, IBK::Unit("W/mK"));
 	prj.m_materials.push_back(mat);
-
-	// Left side (A) = concrete (inside), right side (B) insulation (outside)
-	NANDRAD::ConstructionType conType;
-	conType.m_id = conInsta.m_constructionTypeId;
-	conType.m_displayName = "Exterior wall";
-	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.2, mat.m_id));
 	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.1, mat.m_id));
 
 	// add construction type
@@ -124,7 +133,7 @@ void createSim01(NANDRAD::Project &prj){
 	grid.m_name = "hourly";
 
 	NANDRAD::Interval intVal;
-	intVal.m_para[NANDRAD::Interval::IP_END].set("End", 365, IBK::Unit("d"));
+	//intVal.m_para[NANDRAD::Interval::IP_END].set("End", 1, IBK::Unit("d"));
 	intVal.m_para[NANDRAD::Interval::IP_STEPSIZE].set("StepSize", 1, IBK::Unit("h"));
 	grid.m_intervals.push_back(intVal);
 
@@ -133,10 +142,1093 @@ void createSim01(NANDRAD::Project &prj){
 	prj.m_outputs.m_grids.push_back(grid);
 
 	NANDRAD::OutputDefinition outDef;
-	outDef.m_quantity = "Location.AzimuthAngle";
+	outDef.m_quantity = "Temperature";
 	outDef.m_gridName = "hourly";
-	outDef.m_objectListName = "climate";
+	outDef.m_objectListName = "All zones";
+	prj.m_outputs.m_outputDefinitions.push_back(outDef);
 
+	outDef.m_quantity = "ElevationAngle";
+	outDef.m_gridName = "hourly";
+	outDef.m_objectListName = "Location";
+	prj.m_outputs.m_outputDefinitions.push_back(outDef);
+
+	outDef.m_quantity = "AzimuthAngle";
+	outDef.m_gridName = "hourly";
+	outDef.m_objectListName = "Location";
+	prj.m_outputs.m_outputDefinitions.push_back(outDef);
+
+
+	// Object lists (needed by outputs)
+	NANDRAD::ObjectList ol;
+	ol.m_name = "All zones";
+	ol.m_filterID.setEncodedString("*"); // all
+	ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+	prj.m_objectLists.push_back(ol);
+
+	ol.m_name = "Location";
+	ol.m_filterID.setEncodedString("*"); // all
+	ol.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
+	prj.m_objectLists.push_back(ol);
+}
+
+void createSim02(NANDRAD::Project &prj){
+
+	//project info
+	prj.m_projectInfo.m_comment = "Yes we can! TF02";
+	prj.m_projectInfo.m_created = "Now!";
+	prj.m_projectInfo.m_version = "NANDRAD 2.0";
+	prj.m_projectInfo.m_lastEdited = "Yesterday";
+
+	//create a zone
+	NANDRAD::Zone zone;
+	zone.m_id = 1;
+	zone.m_displayName = "TF02";
+	zone.m_type = NANDRAD::Zone::ZT_ACTIVE;
+	zone.m_para[NANDRAD::Zone::ZP_AREA].set("Area", 10, IBK::Unit("m2"));
+	zone.m_para[NANDRAD::Zone::ZP_VOLUME].set("Volume", 30, IBK::Unit("m3"));
+	zone.m_para[NANDRAD::Zone::ZP_TEMPERATURE].set("Temperature", 5, IBK::Unit("C"));
+	//add zone to prj
+	prj.m_zones.push_back(zone);
+
+	prj.m_simulationParameter.m_intpara[NANDRAD::SimulationParameter::SIP_YEAR].set("StartYear", 2015);
+	//	prj.m_solverParameter.initDefaults();
+
+	prj.m_location.m_climateFileName = IBK::Path("climate/testClimate.epw");
+	prj.m_location.m_para[NANDRAD::Location::LP_LATITUDE].set("Latitude", 51, IBK::Unit("Deg"));
+	prj.m_location.m_para[NANDRAD::Location::LP_LONGITUDE].set("Longitude",13, IBK::Unit("Deg"));
+	prj.m_location.m_para[NANDRAD::Location::LP_ALTITUDE].set("Altitude",100, IBK::Unit("m"));
+	prj.m_location.m_para[NANDRAD::Location::LP_ALBEDO].set("Albedo", 0.2, IBK::Unit("-"));
+
+
+	std::vector<double> inclination {90,90,90,90,90,90,90,90,60,60,60,60,60,60,60,60,30,30,30,30,30,30,30,30,45,45,45,45,45,45,45,45,0};
+	std::vector<double> orientation {0,45,90,135,180,225,270,315,0,45,90,135,180,225,270,315,0,45,90,135,180,225,270,315,0,45,90,135,180,225,270,315,0};
+	std::vector<std::string> name {"North", "NorthEast", "East", "SouthEast", "South", "SouthWest", "West", "NorthWest"};
+
+	unsigned int conId=2;
+	for (size_t i=0; i<inclination.size(); ++i) {
+
+		NANDRAD::ConstructionInstance conInsta;
+		conInsta.m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", orientation[i], IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", inclination[i], IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 1, IBK::Unit("m2"));
+		conInsta.m_displayName = name[i%name.size()] + "_" + IBK::val2string(inclination[i]);
+
+		// create interfaces
+		// Inside interface
+		NANDRAD::Interface interface;
+		interface.m_id = conId++;
+		interface.m_zoneId = 1;
+		interface.m_location = NANDRAD::Interface::IT_A;
+		interface.m_heatConduction.m_modelType = NANDRAD::InterfaceHeatConduction::MT_CONSTANT;
+		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 2.5, IBK::Unit("W/m2K"));
+		//add first interface
+		conInsta.m_interfaces.push_back(interface);
+
+		// Outside interface
+		interface.m_id = conId++;
+		interface.m_location = NANDRAD::Interface::IT_B;
+		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 8, IBK::Unit("W/m2K"));
+		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
+		interface.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].set("Emissivity", 0, IBK::Unit("-"));
+		interface.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_CONSTANT;
+		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 1, IBK::Unit("-"));
+		interface.m_zoneId = 0;
+		//add second interface
+		conInsta.m_interfaces.push_back(interface);
+		conInsta.m_constructionTypeId = 10001;
+		//add construction instance
+		prj.m_constructionInstances.push_back(conInsta);
+	}
+
+	//construction type
+	NANDRAD::ConstructionType conType;
+	conType.m_id = prj.m_constructionInstances.back().m_constructionTypeId;
+	conType.m_displayName = "Exterior wall";
+
+	//material
+	NANDRAD::Material mat;
+	mat.m_id = 1001;
+	mat.m_displayName = "Concrete";
+	mat.m_para[NANDRAD::Material::MP_DENSITY].set("Density", 2100, IBK::Unit("kg/m3"));
+	mat.m_para[NANDRAD::Material::MP_HEAT_CAPACITY].set("HeatCapacity", 840, IBK::Unit("J/kgK"));
+	mat.m_para[NANDRAD::Material::MP_CONDUCTIVITY].set("Conductivity", 2.1, IBK::Unit("W/mK"));
+	prj.m_materials.push_back(mat);
+	// Left side (A) = concrete (inside), right side (B) insulation (outside)
+	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.2, mat.m_id));
+
+	mat.m_id = 1002;
+	mat.m_displayName = "Insulation";
+	mat.m_para[NANDRAD::Material::MP_DENSITY].set("Density", 30, IBK::Unit("kg/m3"));
+	mat.m_para[NANDRAD::Material::MP_HEAT_CAPACITY].set("HeatCapacity", 1500, IBK::Unit("J/kgK"));
+	mat.m_para[NANDRAD::Material::MP_CONDUCTIVITY].set("Conductivity", 0.04, IBK::Unit("W/mK"));
+	prj.m_materials.push_back(mat);
+	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.1, mat.m_id));
+
+	// add construction type
+	prj.m_constructionTypes.push_back(conType);
+
+	//outputs
+
+	NANDRAD::OutputGrid grid;
+	grid.m_name = "hourly";
+
+	NANDRAD::Interval intVal;
+	//intVal.m_para[NANDRAD::Interval::IP_END].set("End", 1, IBK::Unit("d"));
+	intVal.m_para[NANDRAD::Interval::IP_STEPSIZE].set("StepSize", 1, IBK::Unit("h"));
+	grid.m_intervals.push_back(intVal);
+
+	NANDRAD::Outputs outputs;
+	outputs.m_grids.push_back(grid);
+	prj.m_outputs.m_grids.push_back(grid);
+
+	NANDRAD::OutputDefinition outDef;
+	outDef.m_quantity = "Temperature";
+	outDef.m_gridName = "hourly";
+	outDef.m_objectListName = "All zones";
+	outDef.m_timeType = NANDRAD::OutputDefinition::OTT_NONE;
+	prj.m_outputs.m_outputDefinitions.push_back(outDef);
+
+	outDef.m_quantity = "ElevationAngle";
+	outDef.m_gridName = "hourly";
+	outDef.m_objectListName = "Location";
+	outDef.m_timeType = NANDRAD::OutputDefinition::OTT_NONE;
+	prj.m_outputs.m_outputDefinitions.push_back(outDef);
+
+	outDef.m_quantity = "AzimuthAngle";
+	outDef.m_gridName = "hourly";
+	outDef.m_objectListName = "Location";
+	outDef.m_timeType = NANDRAD::OutputDefinition::OTT_NONE;
+	prj.m_outputs.m_outputDefinitions.push_back(outDef);
+
+	outDef.m_quantity = "SWRadDiffuse";
+	outDef.m_gridName = "hourly";
+	outDef.m_objectListName = "Interface";
+	outDef.m_timeType = NANDRAD::OutputDefinition::OTT_INTEGRAL;
+	prj.m_outputs.m_outputDefinitions.push_back(outDef);
+
+	outDef.m_quantity = "SWRadDirect";
+	outDef.m_gridName = "hourly";
+	outDef.m_objectListName = "Interface";
+	outDef.m_timeType = NANDRAD::OutputDefinition::OTT_INTEGRAL;
+	prj.m_outputs.m_outputDefinitions.push_back(outDef);
+
+
+	// Object lists (needed by outputs)
+	NANDRAD::ObjectList ol;
+	ol.m_name = "All zones";
+	ol.m_filterID.setEncodedString("*"); // all
+	ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+	prj.m_objectLists.push_back(ol);
+
+	ol.m_name = "Location";
+	ol.m_filterID.setEncodedString("*"); // all
+	ol.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
+	prj.m_objectLists.push_back(ol);
+
+	ol.m_name = "Interface";
+	ol.m_filterID.setEncodedString("*"); // all
+	ol.m_referenceType = NANDRAD::ModelInputReference::MRT_INTERFACE;
+	prj.m_objectLists.push_back(ol);
+}
+
+/* ToDo Stephan ID-Space checken nicht das da welche ineinander laufen. */
+
+void createSim03(NANDRAD::Project &prj){
+
+	//project info
+	prj.m_projectInfo.m_comment = "Yes we can! TF03";
+	prj.m_projectInfo.m_created = "Now!";
+	prj.m_projectInfo.m_version = "NANDRAD 2.0";
+	prj.m_projectInfo.m_lastEdited = "Yesterday";
+
+	//create a zone
+	NANDRAD::Zone zone;
+	zone.m_id = 1;
+	zone.m_displayName = "TF03.1";
+	zone.m_type = NANDRAD::Zone::ZT_ACTIVE;
+	zone.m_para[NANDRAD::Zone::ZP_AREA].set("Area", 10, IBK::Unit("m2"));
+	zone.m_para[NANDRAD::Zone::ZP_VOLUME].set("Volume", 0.0001, IBK::Unit("m3"));
+	zone.m_para[NANDRAD::Zone::ZP_TEMPERATURE].set("Temperature", 5, IBK::Unit("C"));
+	//add zone to prj
+	prj.m_zones.push_back(zone);
+	++zone.m_id;
+	zone.m_displayName = "TF03.2";
+	//add zone to prj
+	prj.m_zones.push_back(zone);
+	++zone.m_id;
+	zone.m_displayName = "TF03.3";
+	//add zone to prj
+	prj.m_zones.push_back(zone);
+	++zone.m_id;
+	zone.m_displayName = "TF03.4";
+	//add zone to prj
+	prj.m_zones.push_back(zone);
+
+	prj.m_simulationParameter.m_intpara[NANDRAD::SimulationParameter::SIP_YEAR].set("StartYear", 2015);
+	//	prj.m_solverParameter.initDefaults();
+
+	prj.m_location.m_climateFileName = IBK::Path("climate/testClimate.epw");
+	prj.m_location.m_para[NANDRAD::Location::LP_LATITUDE].set("Latitude", 51, IBK::Unit("Deg"));
+	prj.m_location.m_para[NANDRAD::Location::LP_LONGITUDE].set("Longitude",13, IBK::Unit("Deg"));
+	prj.m_location.m_para[NANDRAD::Location::LP_ALTITUDE].set("Altitude",100, IBK::Unit("m"));
+	prj.m_location.m_para[NANDRAD::Location::LP_ALBEDO].set("Albedo", 0.2, IBK::Unit("-"));
+
+	unsigned int conId=2;
+	{
+		NANDRAD::ConstructionInstance conInsta;
+		conInsta.m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
+		conInsta.m_displayName = "North";
+
+		// create interfaces
+		// Inside interface
+		NANDRAD::Interface interface;
+		interface.m_id = conId++;
+		interface.m_zoneId = 1;
+		interface.m_location = NANDRAD::Interface::IT_A;
+		interface.m_heatConduction.m_modelType = NANDRAD::InterfaceHeatConduction::MT_CONSTANT;
+		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 2.5, IBK::Unit("W/m2K"));
+		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
+		interface.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].set("Emissivity", 0, IBK::Unit("-"));
+		interface.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_CONSTANT;
+		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 0, IBK::Unit("-"));
+		//add first interface
+		conInsta.m_interfaces.push_back(interface);
+
+		// Outside interface
+		interface.m_id = conId++;
+		interface.m_location = NANDRAD::Interface::IT_B;
+		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 8, IBK::Unit("W/m2K"));
+		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
+		interface.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].set("Emissivity", 0, IBK::Unit("-"));
+		interface.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_CONSTANT;
+		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 0, IBK::Unit("-"));
+		interface.m_zoneId = 0;
+		//add second interface
+		conInsta.m_interfaces.push_back(interface);
+		conInsta.m_constructionTypeId = 10001;
+		//add construction instance
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "South";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "East";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 15, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "West";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 270, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 15, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "Roof";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "Floor";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+	}
+	{
+		NANDRAD::ConstructionInstance conInsta;
+		conInsta.m_constructionTypeId = 10002;
+		conInsta.m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
+		conInsta.m_displayName = "North";
+
+		// create interfaces
+		// Inside interface
+		NANDRAD::Interface interface;
+		interface.m_id = conId++;
+		interface.m_zoneId = 2;
+		interface.m_location = NANDRAD::Interface::IT_A;
+		interface.m_heatConduction.m_modelType = NANDRAD::InterfaceHeatConduction::MT_CONSTANT;
+		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 2.5, IBK::Unit("W/m2K"));
+		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
+		interface.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].set("Emissivity", 0, IBK::Unit("-"));
+		interface.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_CONSTANT;
+		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 0, IBK::Unit("-"));
+		//add first interface
+		conInsta.m_interfaces.push_back(interface);
+
+		// Outside interface
+		interface.m_id = conId++;
+		interface.m_location = NANDRAD::Interface::IT_B;
+		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 8, IBK::Unit("W/m2K"));
+		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
+		interface.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].set("Emissivity", 0, IBK::Unit("-"));
+		interface.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_CONSTANT;
+		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 0, IBK::Unit("-"));
+		interface.m_zoneId = 0;
+		//add second interface
+		conInsta.m_interfaces.push_back(interface);
+
+		//add construction instance
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "South";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "East";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 15, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "West";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 270, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 15, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "Roof";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "Floor";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+	}
+	{
+		NANDRAD::ConstructionInstance conInsta;
+		conInsta.m_constructionTypeId = 10003;
+		conInsta.m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
+		conInsta.m_displayName = "North";
+
+		// create interfaces
+		// Inside interface
+		NANDRAD::Interface interface;
+		interface.m_id = conId++;
+		interface.m_zoneId = 3;
+		interface.m_location = NANDRAD::Interface::IT_A;
+		interface.m_heatConduction.m_modelType = NANDRAD::InterfaceHeatConduction::MT_CONSTANT;
+		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 2.5, IBK::Unit("W/m2K"));
+		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
+		interface.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].set("Emissivity", 0, IBK::Unit("-"));
+		interface.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_CONSTANT;
+		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 0, IBK::Unit("-"));
+		//add first interface
+		conInsta.m_interfaces.push_back(interface);
+
+		// Outside interface
+		interface.m_id = conId++;
+		interface.m_location = NANDRAD::Interface::IT_B;
+		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 8, IBK::Unit("W/m2K"));
+		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
+		interface.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].set("Emissivity", 0, IBK::Unit("-"));
+		interface.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_CONSTANT;
+		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 0, IBK::Unit("-"));
+		interface.m_zoneId = 0;
+		//add second interface
+		conInsta.m_interfaces.push_back(interface);
+
+		//add construction instance
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "South";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "East";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 15, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "West";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 270, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 15, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "Roof";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "Floor";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+	}
+	{
+		NANDRAD::ConstructionInstance conInsta;
+		conInsta.m_constructionTypeId = 10004;
+		conInsta.m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
+		conInsta.m_displayName = "North";
+
+		// create interfaces
+		// Inside interface
+		NANDRAD::Interface interface;
+		interface.m_id = conId++;
+		interface.m_zoneId = 4;
+		interface.m_location = NANDRAD::Interface::IT_A;
+		interface.m_heatConduction.m_modelType = NANDRAD::InterfaceHeatConduction::MT_CONSTANT;
+		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 2.5, IBK::Unit("W/m2K"));
+		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
+		interface.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].set("Emissivity", 0, IBK::Unit("-"));
+		interface.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_CONSTANT;
+		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 0, IBK::Unit("-"));
+		//add first interface
+		conInsta.m_interfaces.push_back(interface);
+
+		// Outside interface
+		interface.m_id = conId++;
+		interface.m_location = NANDRAD::Interface::IT_B;
+		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 8, IBK::Unit("W/m2K"));
+		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
+		interface.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].set("Emissivity", 0, IBK::Unit("-"));
+		interface.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_CONSTANT;
+		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 0, IBK::Unit("-"));
+		interface.m_zoneId = 0;
+		//add second interface
+		conInsta.m_interfaces.push_back(interface);
+
+		//add construction instance
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "South";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "East";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 15, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "West";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 270, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 15, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "Roof";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "Floor";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+	}
+
+	//construction type
+
+	//material
+	NANDRAD::Material mat;
+	mat.m_id = 1001;
+	mat.m_displayName = "Brick";
+	mat.m_para[NANDRAD::Material::MP_DENSITY].set("Density", 2000, IBK::Unit("kg/m3"));
+	mat.m_para[NANDRAD::Material::MP_HEAT_CAPACITY].set("HeatCapacity", 1000, IBK::Unit("J/kgK"));
+	mat.m_para[NANDRAD::Material::MP_CONDUCTIVITY].set("Conductivity", 1.2, IBK::Unit("W/mK"));
+	prj.m_materials.push_back(mat);
+	// Left side (A) = concrete (inside), right side (B) insulation (outside)
+
+	mat.m_id = 1002;
+	mat.m_displayName = "Insulation";
+	mat.m_para[NANDRAD::Material::MP_DENSITY].set("Density", 50, IBK::Unit("kg/m3"));
+	mat.m_para[NANDRAD::Material::MP_HEAT_CAPACITY].set("HeatCapacity", 1000, IBK::Unit("J/kgK"));
+	mat.m_para[NANDRAD::Material::MP_CONDUCTIVITY].set("Conductivity", 0.04, IBK::Unit("W/mK"));
+	prj.m_materials.push_back(mat);
+
+	mat.m_id = 1003;
+	mat.m_displayName = "Board";
+	mat.m_para[NANDRAD::Material::MP_DENSITY].set("Density", 800, IBK::Unit("kg/m3"));
+	mat.m_para[NANDRAD::Material::MP_HEAT_CAPACITY].set("HeatCapacity", 1500, IBK::Unit("J/kgK"));
+	mat.m_para[NANDRAD::Material::MP_CONDUCTIVITY].set("Conductivity", 0.14, IBK::Unit("W/mK"));
+	prj.m_materials.push_back(mat);
+
+	// add construction type
+	NANDRAD::ConstructionType conType;
+	conType.m_id = 10001;
+	conType.m_displayName = "Construction 1";
+	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.2, prj.m_materials[0].m_id));
+	prj.m_constructionTypes.push_back(conType);
+
+	conType.m_materialLayers.clear();
+	conType.m_id = 10002;
+	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.1, prj.m_materials[1].m_id));
+	prj.m_constructionTypes.push_back(conType);
+
+	conType.m_materialLayers.clear();
+	conType.m_id = 10003;
+	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.005, prj.m_materials[2].m_id));
+	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.1, prj.m_materials[1].m_id));
+	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.2, prj.m_materials[0].m_id));
+	prj.m_constructionTypes.push_back(conType);
+
+	conType.m_materialLayers.clear();
+	conType.m_id = 10004;
+	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.2, prj.m_materials[0].m_id));
+	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.1, prj.m_materials[1].m_id));
+	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.005, prj.m_materials[2].m_id));
+	prj.m_constructionTypes.push_back(conType);
+
+	//outputs
+
+	NANDRAD::OutputGrid grid;
+	grid.m_name = "hourly";
+
+	NANDRAD::Interval intVal;
+	//intVal.m_para[NANDRAD::Interval::IP_END].set("End", 1, IBK::Unit("d"));
+	intVal.m_para[NANDRAD::Interval::IP_STEPSIZE].set("StepSize", 1, IBK::Unit("h"));
+	grid.m_intervals.push_back(intVal);
+
+	NANDRAD::Outputs outputs;
+	outputs.m_grids.push_back(grid);
+	prj.m_outputs.m_grids.push_back(grid);
+
+	NANDRAD::OutputDefinition outDef;
+	outDef.m_quantity = "Temperature";
+	outDef.m_gridName = "hourly";
+	outDef.m_objectListName = "All zones";
+	outDef.m_timeType = NANDRAD::OutputDefinition::OTT_NONE;
+	prj.m_outputs.m_outputDefinitions.push_back(outDef);
+
+	// Object lists (needed by outputs)
+	NANDRAD::ObjectList ol;
+	ol.m_name = "All zones";
+	ol.m_filterID.setEncodedString("*"); // all
+	ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+	prj.m_objectLists.push_back(ol);
+
+	ol.m_name = "Location";
+	ol.m_filterID.setEncodedString("*"); // all
+	ol.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
+	prj.m_objectLists.push_back(ol);
+
+	ol.m_name = "Interface";
+	ol.m_filterID.setEncodedString("*"); // all
+	ol.m_referenceType = NANDRAD::ModelInputReference::MRT_INTERFACE;
+	prj.m_objectLists.push_back(ol);
+}
+
+void createSim04(NANDRAD::Project &prj){
+
+	//project info
+	prj.m_projectInfo.m_comment = "Yes we can! TF04";
+	prj.m_projectInfo.m_created = "Now!";
+	prj.m_projectInfo.m_version = "NANDRAD 2.0";
+	prj.m_projectInfo.m_lastEdited = "Yesterday";
+
+	//create a zone
+	NANDRAD::Zone zone;
+	zone.m_id = 1;
+	zone.m_displayName = "TF04.1";
+	zone.m_type = NANDRAD::Zone::ZT_ACTIVE;
+	zone.m_para[NANDRAD::Zone::ZP_AREA].set("Area", 10, IBK::Unit("m2"));
+	zone.m_para[NANDRAD::Zone::ZP_VOLUME].set("Volume", 30, IBK::Unit("m3"));
+	zone.m_para[NANDRAD::Zone::ZP_TEMPERATURE].set("Temperature", 5, IBK::Unit("C"));
+	//add zone to prj
+	prj.m_zones.push_back(zone);
+	++zone.m_id;
+	zone.m_displayName = "TF04.2";
+	//add zone to prj
+	prj.m_zones.push_back(zone);
+	++zone.m_id;
+	zone.m_displayName = "TF04.3 A";
+	//add zone to prj
+	prj.m_zones.push_back(zone);
+	++zone.m_id;
+	zone.m_displayName = "TF04.3 B";
+	//add zone to prj
+	prj.m_zones.push_back(zone);
+
+	prj.m_simulationParameter.m_intpara[NANDRAD::SimulationParameter::SIP_YEAR].set("StartYear", 2015);
+	//	prj.m_solverParameter.initDefaults();
+
+	prj.m_location.m_climateFileName = IBK::Path("climate/testClimate.epw");
+	prj.m_location.m_para[NANDRAD::Location::LP_LATITUDE].set("Latitude", 51, IBK::Unit("Deg"));
+	prj.m_location.m_para[NANDRAD::Location::LP_LONGITUDE].set("Longitude",13, IBK::Unit("Deg"));
+	prj.m_location.m_para[NANDRAD::Location::LP_ALTITUDE].set("Altitude",100, IBK::Unit("m"));
+	prj.m_location.m_para[NANDRAD::Location::LP_ALBEDO].set("Albedo", 0.2, IBK::Unit("-"));
+
+	unsigned int conId=2;
+	{
+		NANDRAD::ConstructionInstance conInsta;
+		conInsta.m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
+		conInsta.m_displayName = "North";
+
+		// create interfaces
+		// Inside interface
+		NANDRAD::Interface interface;
+		interface.m_id = conId++;
+		interface.m_zoneId = 1;
+		interface.m_location = NANDRAD::Interface::IT_A;
+		interface.m_heatConduction.m_modelType = NANDRAD::InterfaceHeatConduction::MT_CONSTANT;
+		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 2.5, IBK::Unit("W/m2K"));
+		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
+		interface.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].set("Emissivity", 0, IBK::Unit("-"));
+		interface.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_CONSTANT;
+		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 0, IBK::Unit("-"));
+		//add first interface
+		conInsta.m_interfaces.push_back(interface);
+
+		// Outside interface
+		interface.m_id = conId++;
+		interface.m_location = NANDRAD::Interface::IT_B;
+		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 8, IBK::Unit("W/m2K"));
+		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
+		interface.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].set("Emissivity", 0, IBK::Unit("-"));
+		interface.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_CONSTANT;
+		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 0, IBK::Unit("-"));
+		interface.m_zoneId = 0;
+		//add second interface
+
+		//conInsta.m_interfaces.push_back(interface);
+
+		conInsta.m_constructionTypeId = 10001;
+		//add construction instance
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "South";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		//conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "East";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces.push_back(interface);
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 15, IBK::Unit("m2"));
+		conInsta.m_constructionTypeId = 10002;
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "West";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 270, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 15, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "Roof";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "Floor";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
+		conInsta.m_interfaces.pop_back();
+		conInsta.m_constructionTypeId = 10001;
+		prj.m_constructionInstances.push_back(conInsta);
+	}
+
+	{
+		NANDRAD::ConstructionInstance conInsta;
+		conInsta.m_constructionTypeId = 10001;
+		conInsta.m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
+		conInsta.m_displayName = "North";
+
+		// create interfaces
+		// Inside interface
+		NANDRAD::Interface interface;
+		interface.m_id = conId++;
+		interface.m_zoneId = 2;
+		interface.m_location = NANDRAD::Interface::IT_A;
+		interface.m_heatConduction.m_modelType = NANDRAD::InterfaceHeatConduction::MT_CONSTANT;
+		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 2.5, IBK::Unit("W/m2K"));
+		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
+		interface.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].set("Emissivity", 0, IBK::Unit("-"));
+		interface.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_CONSTANT;
+		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 0, IBK::Unit("-"));
+		//add first interface
+		conInsta.m_interfaces.push_back(interface);
+
+		// Outside interface
+		interface.m_id = conId++;
+		interface.m_location = NANDRAD::Interface::IT_B;
+		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 8, IBK::Unit("W/m2K"));
+		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
+		interface.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].set("Emissivity", 0, IBK::Unit("-"));
+		interface.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_CONSTANT;
+		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 0, IBK::Unit("-"));
+		interface.m_zoneId = 0;
+		//add second interface
+		conInsta.m_interfaces.push_back(interface);
+
+		//add construction instance
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "South";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "East";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 15, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "West";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 270, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 15, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "Roof";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
+		conInsta.m_constructionTypeId = 10002;
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "Floor";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
+		conInsta.m_constructionTypeId = 10001;
+		prj.m_constructionInstances.push_back(conInsta);
+	}
+
+	//TF04.3
+	{
+		//Zone A
+		NANDRAD::ConstructionInstance conInsta;
+		conInsta.m_constructionTypeId = 10003;
+		conInsta.m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
+		conInsta.m_displayName = "North A";
+
+		// create interfaces
+		// Inside interface
+		NANDRAD::Interface interface;
+		interface.m_id = conId++;
+		interface.m_zoneId = 3;
+		interface.m_location = NANDRAD::Interface::IT_A;
+		interface.m_heatConduction.m_modelType = NANDRAD::InterfaceHeatConduction::MT_CONSTANT;
+		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 2.5, IBK::Unit("W/m2K"));
+		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
+		interface.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].set("Emissivity", 0, IBK::Unit("-"));
+		interface.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_CONSTANT;
+		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 0, IBK::Unit("-"));
+		//add first interface
+		conInsta.m_interfaces.push_back(interface);
+
+		// Outside interface
+		interface.m_id = conId++;
+		interface.m_location = NANDRAD::Interface::IT_B;
+		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 8, IBK::Unit("W/m2K"));
+		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
+		interface.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].set("Emissivity", 0, IBK::Unit("-"));
+		interface.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_CONSTANT;
+		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 0, IBK::Unit("-"));
+		interface.m_zoneId = 0;
+		//add second interface
+		conInsta.m_interfaces.push_back(interface);
+
+		//add construction instance
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "South A";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "East A";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 15, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "Roof A";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "Floor A";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		//Zone B
+		conInsta.m_constructionTypeId = 10004;
+		conInsta.m_interfaces[0].m_zoneId = 4;
+		conInsta.m_displayName = "North B";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "South B";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "West B";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 270, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 15, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "Roof B";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "Floor B";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+
+		conInsta.m_displayName = "Partition";
+		conInsta.m_constructionTypeId = 10001;
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_interfaces[0].m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set(2.5, IBK::Unit("W/m2K"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 270, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 15, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+	}
+
+	//construction type
+
+	//material
+	NANDRAD::Material mat;
+	mat.m_id = 1001;
+	mat.m_displayName = "Brick";
+	mat.m_para[NANDRAD::Material::MP_DENSITY].set("Density", 2000, IBK::Unit("kg/m3"));
+	mat.m_para[NANDRAD::Material::MP_HEAT_CAPACITY].set("HeatCapacity", 1000, IBK::Unit("J/kgK"));
+	mat.m_para[NANDRAD::Material::MP_CONDUCTIVITY].set("Conductivity", 1.2, IBK::Unit("W/mK"));
+	prj.m_materials.push_back(mat);
+	// Left side (A) = concrete (inside), right side (B) insulation (outside)
+
+	mat.m_id = 1002;
+	mat.m_displayName = "Insulation";
+	mat.m_para[NANDRAD::Material::MP_DENSITY].set("Density", 50, IBK::Unit("kg/m3"));
+	mat.m_para[NANDRAD::Material::MP_HEAT_CAPACITY].set("HeatCapacity", 1000, IBK::Unit("J/kgK"));
+	mat.m_para[NANDRAD::Material::MP_CONDUCTIVITY].set("Conductivity", 0.04, IBK::Unit("W/mK"));
+	prj.m_materials.push_back(mat);
+
+	mat.m_id = 1003;
+	mat.m_displayName = "Board";
+	mat.m_para[NANDRAD::Material::MP_DENSITY].set("Density", 800, IBK::Unit("kg/m3"));
+	mat.m_para[NANDRAD::Material::MP_HEAT_CAPACITY].set("HeatCapacity", 1500, IBK::Unit("J/kgK"));
+	mat.m_para[NANDRAD::Material::MP_CONDUCTIVITY].set("Conductivity", 0.14, IBK::Unit("W/mK"));
+	prj.m_materials.push_back(mat);
+
+	// add construction type
+	NANDRAD::ConstructionType conType;
+	conType.m_id = 10001;
+	conType.m_displayName = "Construction 1";
+	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.2, prj.m_materials[0].m_id));
+	prj.m_constructionTypes.push_back(conType);
+
+	conType.m_materialLayers.clear();
+	conType.m_id = 10002;
+	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.1, prj.m_materials[1].m_id));
+	prj.m_constructionTypes.push_back(conType);
+
+	conType.m_materialLayers.clear();
+	conType.m_id = 10003;
+	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.005, prj.m_materials[2].m_id));
+	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.1, prj.m_materials[1].m_id));
+	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.2, prj.m_materials[0].m_id));
+	prj.m_constructionTypes.push_back(conType);
+
+	conType.m_materialLayers.clear();
+	conType.m_id = 10004;
+	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.2, prj.m_materials[0].m_id));
+	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.1, prj.m_materials[1].m_id));
+	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.005, prj.m_materials[2].m_id));
+	prj.m_constructionTypes.push_back(conType);
+
+	//outputs
+
+	NANDRAD::OutputGrid grid;
+	grid.m_name = "hourly";
+
+	NANDRAD::Interval intVal;
+	//intVal.m_para[NANDRAD::Interval::IP_END].set("End", 1, IBK::Unit("d"));
+	intVal.m_para[NANDRAD::Interval::IP_STEPSIZE].set("StepSize", 1, IBK::Unit("h"));
+	grid.m_intervals.push_back(intVal);
+
+	NANDRAD::Outputs outputs;
+	outputs.m_grids.push_back(grid);
+	prj.m_outputs.m_grids.push_back(grid);
+
+	NANDRAD::OutputDefinition outDef;
+	outDef.m_quantity = "Temperature";
+	outDef.m_gridName = "hourly";
+	outDef.m_objectListName = "All zones";
+	outDef.m_timeType = NANDRAD::OutputDefinition::OTT_NONE;
 	prj.m_outputs.m_outputDefinitions.push_back(outDef);
 
 	NANDRAD::OutputDefinition outDef2;
@@ -148,41 +1240,517 @@ void createSim01(NANDRAD::Project &prj){
 
 	// Object lists (needed by outputs)
 	NANDRAD::ObjectList ol;
-	ol.m_name = "climate";
+	ol.m_name = "All zones";
+	ol.m_filterID.setEncodedString("*"); // all
+	ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+	prj.m_objectLists.push_back(ol);
+
+	ol.m_name = "Location";
 	ol.m_filterID.setEncodedString("*"); // all
 	ol.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
+	prj.m_objectLists.push_back(ol);
 
+	ol.m_name = "Interface";
+	ol.m_filterID.setEncodedString("*"); // all
+	ol.m_referenceType = NANDRAD::ModelInputReference::MRT_INTERFACE;
 	prj.m_objectLists.push_back(ol);
 }
 
+/* ToDo Stephan ich hab die Zone TF05.4 schon mal angelegt da muss dann die Lüftung rein die auf einen Zonentemperatursetwert reagiert. */
+
+void createSim05(NANDRAD::Project &prj){
+
+	//project info
+	prj.m_projectInfo.m_comment = "Yes we can! TF05";
+	prj.m_projectInfo.m_created = "Now!";
+	prj.m_projectInfo.m_version = "NANDRAD 2.0";
+	prj.m_projectInfo.m_lastEdited = "Yesterday";
+
+	//create a zone
+	NANDRAD::Zone zone;
+	zone.m_id = 1;
+	zone.m_displayName = "TF05.1";
+	zone.m_type = NANDRAD::Zone::ZT_ACTIVE;
+	zone.m_para[NANDRAD::Zone::ZP_AREA].set("Area", 10, IBK::Unit("m2"));
+	zone.m_para[NANDRAD::Zone::ZP_VOLUME].set("Volume", 0.0001, IBK::Unit("m3"));
+	zone.m_para[NANDRAD::Zone::ZP_TEMPERATURE].set("Temperature", 5, IBK::Unit("C"));
+	//add zone to prj
+	prj.m_zones.push_back(zone);
+	++zone.m_id;
+	zone.m_displayName = "TF05.2";
+	//add zone to prj
+	prj.m_zones.push_back(zone);
+	++zone.m_id;
+	zone.m_displayName = "TF05.3";
+	//add zone to prj
+	prj.m_zones.push_back(zone);
+	++zone.m_id;
+	zone.m_displayName = "TF05.4";
+	//add zone to prj
+	prj.m_zones.push_back(zone);
+
+	prj.m_simulationParameter.m_intpara[NANDRAD::SimulationParameter::SIP_YEAR].set("StartYear", 2015);
+	//	prj.m_solverParameter.initDefaults();
+
+	prj.m_location.m_climateFileName = IBK::Path("climate/testClimate.epw");
+	prj.m_location.m_para[NANDRAD::Location::LP_LATITUDE].set("Latitude", 51, IBK::Unit("Deg"));
+	prj.m_location.m_para[NANDRAD::Location::LP_LONGITUDE].set("Longitude",13, IBK::Unit("Deg"));
+	prj.m_location.m_para[NANDRAD::Location::LP_ALTITUDE].set("Altitude",100, IBK::Unit("m"));
+	prj.m_location.m_para[NANDRAD::Location::LP_ALBEDO].set("Albedo", 0.2, IBK::Unit("-"));
+
+	unsigned int conId=2;
+	{
+		NANDRAD::ConstructionInstance conInsta;
+		conInsta.m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
+		conInsta.m_displayName = "North";
+
+		// create interfaces
+		// Inside interface
+		NANDRAD::Interface interface;
+		interface.m_id = conId++;
+		interface.m_zoneId = 1;
+		interface.m_location = NANDRAD::Interface::IT_A;
+		interface.m_heatConduction.m_modelType = NANDRAD::InterfaceHeatConduction::MT_CONSTANT;
+		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 2.5, IBK::Unit("W/m2K"));
+		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
+		interface.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].set("Emissivity", 0, IBK::Unit("-"));
+		interface.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_CONSTANT;
+		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 0, IBK::Unit("-"));
+		//add first interface
+		conInsta.m_interfaces.push_back(interface);
+
+		// Outside interface
+		interface.m_id = conId++;
+		interface.m_location = NANDRAD::Interface::IT_B;
+		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 8, IBK::Unit("W/m2K"));
+		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
+		interface.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].set("Emissivity", 0, IBK::Unit("-"));
+		interface.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_CONSTANT;
+		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 0, IBK::Unit("-"));
+		interface.m_zoneId = 0;
+		//add second interface
+		conInsta.m_interfaces.push_back(interface);
+		conInsta.m_constructionTypeId = 10001;
+		//add construction instance
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "South";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "East";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 15, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "West";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 270, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 15, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "Roof";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "Floor";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+	}
+
+	{
+		NANDRAD::ConstructionInstance conInsta;
+		conInsta.m_constructionTypeId = 10001;
+		conInsta.m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
+		conInsta.m_displayName = "North";
+
+		// create interfaces
+		// Inside interface
+		NANDRAD::Interface interface;
+		interface.m_id = conId++;
+		interface.m_zoneId = 2;
+		interface.m_location = NANDRAD::Interface::IT_A;
+		interface.m_heatConduction.m_modelType = NANDRAD::InterfaceHeatConduction::MT_CONSTANT;
+		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 2.5, IBK::Unit("W/m2K"));
+		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
+		interface.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].set("Emissivity", 0, IBK::Unit("-"));
+		interface.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_CONSTANT;
+		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 0, IBK::Unit("-"));
+		//add first interface
+		conInsta.m_interfaces.push_back(interface);
+
+		// Outside interface
+		interface.m_id = conId++;
+		interface.m_location = NANDRAD::Interface::IT_B;
+		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 8, IBK::Unit("W/m2K"));
+		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
+		interface.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].set("Emissivity", 0, IBK::Unit("-"));
+		interface.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_CONSTANT;
+		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 0, IBK::Unit("-"));
+		interface.m_zoneId = 0;
+		//add second interface
+		conInsta.m_interfaces.push_back(interface);
+
+		//add construction instance
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "South";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "East";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 15, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "West";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 270, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 15, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "Roof";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "Floor";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+	}
+	{
+		NANDRAD::ConstructionInstance conInsta;
+		conInsta.m_constructionTypeId = 10001;
+		conInsta.m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
+		conInsta.m_displayName = "North";
+
+		// create interfaces
+		// Inside interface
+		NANDRAD::Interface interface;
+		interface.m_id = conId++;
+		interface.m_zoneId = 3;
+		interface.m_location = NANDRAD::Interface::IT_A;
+		interface.m_heatConduction.m_modelType = NANDRAD::InterfaceHeatConduction::MT_CONSTANT;
+		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 2.5, IBK::Unit("W/m2K"));
+		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
+		interface.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].set("Emissivity", 0, IBK::Unit("-"));
+		interface.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_CONSTANT;
+		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 0, IBK::Unit("-"));
+		//add first interface
+		conInsta.m_interfaces.push_back(interface);
+
+		// Outside interface
+		interface.m_id = conId++;
+		interface.m_location = NANDRAD::Interface::IT_B;
+		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 8, IBK::Unit("W/m2K"));
+		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
+		interface.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].set("Emissivity", 0, IBK::Unit("-"));
+		interface.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_CONSTANT;
+		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 0, IBK::Unit("-"));
+		interface.m_zoneId = 0;
+		//add second interface
+		conInsta.m_interfaces.push_back(interface);
+
+		//add construction instance
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "South";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "East";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 15, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "West";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 270, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 15, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "Roof";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "Floor";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+	}
+	{
+		NANDRAD::ConstructionInstance conInsta;
+		conInsta.m_constructionTypeId = 10001;
+		conInsta.m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
+		conInsta.m_displayName = "North";
+
+		// create interfaces
+		// Inside interface
+		NANDRAD::Interface interface;
+		interface.m_id = conId++;
+		interface.m_zoneId = 4;
+		interface.m_location = NANDRAD::Interface::IT_A;
+		interface.m_heatConduction.m_modelType = NANDRAD::InterfaceHeatConduction::MT_CONSTANT;
+		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 2.5, IBK::Unit("W/m2K"));
+		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
+		interface.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].set("Emissivity", 0, IBK::Unit("-"));
+		interface.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_CONSTANT;
+		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 0, IBK::Unit("-"));
+		//add first interface
+		conInsta.m_interfaces.push_back(interface);
+
+		// Outside interface
+		interface.m_id = conId++;
+		interface.m_location = NANDRAD::Interface::IT_B;
+		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 8, IBK::Unit("W/m2K"));
+		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
+		interface.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].set("Emissivity", 0, IBK::Unit("-"));
+		interface.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_CONSTANT;
+		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 0, IBK::Unit("-"));
+		interface.m_zoneId = 0;
+		//add second interface
+		conInsta.m_interfaces.push_back(interface);
+
+		//add construction instance
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "South";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "East";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 15, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "West";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 270, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 15, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "Roof";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+
+		conInsta.m_displayName = "Floor";
+		conInsta.m_id = conId++;
+		conInsta.m_interfaces[0].m_id = conId++;
+		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
+		prj.m_constructionInstances.push_back(conInsta);
+	}
+
+	//construction type
+
+	//material
+	NANDRAD::Material mat;
+	mat.m_id = 1001;
+	mat.m_displayName = "Brick";
+	mat.m_para[NANDRAD::Material::MP_DENSITY].set("Density", 2000, IBK::Unit("kg/m3"));
+	mat.m_para[NANDRAD::Material::MP_HEAT_CAPACITY].set("HeatCapacity", 1000, IBK::Unit("J/kgK"));
+	mat.m_para[NANDRAD::Material::MP_CONDUCTIVITY].set("Conductivity", 1.2, IBK::Unit("W/mK"));
+	prj.m_materials.push_back(mat);
+	// Left side (A) = concrete (inside), right side (B) insulation (outside)
+
+	mat.m_id = 1002;
+	mat.m_displayName = "Good Insulation";
+	mat.m_para[NANDRAD::Material::MP_DENSITY].set("Density", 50, IBK::Unit("kg/m3"));
+	mat.m_para[NANDRAD::Material::MP_HEAT_CAPACITY].set("HeatCapacity", 1000, IBK::Unit("J/kgK"));
+	mat.m_para[NANDRAD::Material::MP_CONDUCTIVITY].set("Conductivity", 0.02, IBK::Unit("W/mK"));
+	prj.m_materials.push_back(mat);
+
+	// add construction type
+	NANDRAD::ConstructionType conType;
+	conType.m_id = 10001;
+	conType.m_displayName = "Construction 1";
+	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.2, prj.m_materials[0].m_id));
+	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.3, prj.m_materials[1].m_id));
+	prj.m_constructionTypes.push_back(conType);
+
+	NANDRAD::Interval interval;
+	interval.m_para[NANDRAD::Interval::IP_END].set("End", 24, IBK::Unit("h"));
+	//interval.m_para[NANDRAD::Interval::IP_END].set("End", 24, IBK::Unit("h"));			//	<<<< hier muss irgendwie der Wert für den Luftwechsel gesetzt werden ToDo Andreas abklären
+
+	NANDRAD::DailyCycle daily;
+	daily.m_intervals.push_back(interval);
+
+	NANDRAD::Schedule sched;
+	sched.m_dailyCycles.push_back(daily);
+
+	NANDRAD::ScheduleGroup::ScheduleMap schedMap;
+	schedMap[NANDRAD::Schedule::ST_ALLDAYS] = sched;
+
+	NANDRAD::ScheduleGroup schedGrp;
+	schedGrp.m_spaceTypeGroups["TF05.1"] = schedMap;
+
+	NANDRAD::Schedules scheds;
+	scheds.m_scheduleGroups.push_back(schedGrp);
+
+
+	//outputs
+	NANDRAD::OutputGrid grid;
+	grid.m_name = "hourly";
+
+	NANDRAD::Interval intVal;
+	//intVal.m_para[NANDRAD::Interval::IP_END].set("End", 1, IBK::Unit("d"));
+	intVal.m_para[NANDRAD::Interval::IP_STEPSIZE].set("StepSize", 1, IBK::Unit("h"));
+	grid.m_intervals.push_back(intVal);
+
+	NANDRAD::Outputs outputs;
+	outputs.m_grids.push_back(grid);
+	prj.m_outputs.m_grids.push_back(grid);
+
+	NANDRAD::OutputDefinition outDef;
+	outDef.m_quantity = "Temperature";
+	outDef.m_gridName = "hourly";
+	outDef.m_objectListName = "All zones";
+	outDef.m_timeType = NANDRAD::OutputDefinition::OTT_NONE;
+	prj.m_outputs.m_outputDefinitions.push_back(outDef);
+
+	// Object lists (needed by outputs)
+	NANDRAD::ObjectList ol;
+	ol.m_name = "All zones";
+	ol.m_filterID.setEncodedString("*"); // all
+	ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+	prj.m_objectLists.push_back(ol);
+
+	ol.m_name = "Location";
+	ol.m_filterID.setEncodedString("*"); // all
+	ol.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
+	prj.m_objectLists.push_back(ol);
+
+	ol.m_name = "Interface";
+	ol.m_filterID.setEncodedString("*"); // all
+	ol.m_referenceType = NANDRAD::ModelInputReference::MRT_INTERFACE;
+	prj.m_objectLists.push_back(ol);
+}
 
 int main(int argc, char * argv[]) {
 	FUNCID(main);
 
 #ifdef TEST_PROJECT_WRITING
 
-	{
-		NANDRAD::Project prj;
-		// parameter setzen
-		createSim01(prj);
-		prj.writeXML(IBK::Path("SimQuality_TestCase1.xml"));
-		std::cout << "Wrote 'SimQuality_TestCase1.xml'." << std::endl;
-	}
-	// now create a new project, read back the file and write it again with a different name
-	{
+	std::cout << FUNC_ID << std::endl;
 
-		NANDRAD::Project prj;
-		try {
-			prj.readXML(IBK::Path("SimQuality_TestCase1.xml"));
-			prj.writeXML(IBK::Path("SimQuality_TestCase1_backup.xml"));
-			std::cout << "Wrote 'SimQuality_TestCase1_backup.xml'." << std::endl;
-		} catch (IBK::Exception & ex) {
-			ex.writeMsgStackToError();
-		}
-	}
+	NANDRAD::Project prj;
+	// parameter setzen
+	createSim01(prj);
+	prj.writeXML(IBK::Path("SimQuality1.xml"));
+
+	prj = NANDRAD::Project();
+	createSim02(prj);
+	prj.writeXML(IBK::Path("SimQuality2.xml"));
+
+	prj = NANDRAD::Project();
+	createSim03(prj);
+	prj.writeXML(IBK::Path("SimQuality3.xml"));
+
+	prj = NANDRAD::Project();
+	createSim04(prj);
+	prj.writeXML(IBK::Path("SimQuality4.xml"));
+
+	prj = NANDRAD::Project();
+	createSim05(prj);
+	prj.writeXML(IBK::Path("SimQuality5.xml"));
+
 	return EXIT_SUCCESS;
 #endif // TEST_PROJECT_WRITING
-
 #ifdef SERIALIZATION_TEST
 	NANDRAD::SerializationTest st;
 	TiXmlDocument doc;
