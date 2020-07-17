@@ -49,6 +49,12 @@ public:
 	/*! Constructor, initializes global project pointer. */
 	Project();
 
+	/*! Prevent assignment to avoid problems with self-pointer. */
+	Project & operator=(const Project &) = delete;
+
+	/*! Prevent assignment to avoid problems with self-pointer. */
+	Project(const Project &) = delete;
+
 	/*! Returns a pointer to the Project instance.
 		Only access this function during the lifetime of Project object.
 	*/
