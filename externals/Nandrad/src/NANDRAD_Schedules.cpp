@@ -57,8 +57,10 @@ void Schedules::initDefaults() {
 }
 #endif
 
+
 void Schedules::readXML(const TiXmlElement * element) {
 }
+
 
 TiXmlElement * Schedules::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("Schedules");
@@ -83,6 +85,22 @@ TiXmlElement * Schedules::writeXML(TiXmlElement * parent) const {
 		c->LinkEndChild(text);
 	}
 
+	// now write schedules
+	if (!m_scheduleGroups.empty()) {
+		TiXmlElement * c = new TiXmlElement("ScheduleGroups");
+		e->LinkEndChild(c);
+		for (const std::pair<const std::string, std::vector<Schedule> > & svec : m_scheduleGroups) {
+			// create tags like
+			// <ScheduleGroup objectList="objectListName">
+			//   <Schedule>...</Schedule>
+			// </ScheduleGroup>
+			TiXmlElement * g = new TiXmlElement("ScheduleGroup");
+			c->LinkEndChild(g);
+			g->SetAttribute("objectList", svec.first);
+			for (const Schedule & s : svec.second)
+				s.writeXML(g);
+		}
+	}
 
 
 	return nullptr;
@@ -92,7 +110,7 @@ TiXmlElement * Schedules::writeXML(TiXmlElement * parent) const {
 bool Schedules::operator!=(const Schedules & other) const {
 	if (m_holidays != other.m_holidays) return true;
 	if (m_weekEndDays != other.m_weekEndDays) return true;
-	if (m_schedules != other.m_schedules) return true;
+	if (m_scheduleGroups != other.m_scheduleGroups) return true;
 	if (m_annualSchedules != other.m_annualSchedules) return true;
 	return false;
 }

@@ -1672,14 +1672,14 @@ void createSim05(NANDRAD::Project &prj){
 	NANDRAD::DailyCycle daily;
 	daily.m_timeUnit = IBK::Unit("h");
 	daily.m_interpolation = NANDRAD::DailyCycle::IT_CONSTANT;
-	daily.m_timePoints = std::vector<double>{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23};
-	daily.m_values.m_values["InfiltrationAirChangeRate"]= std::vector<double>(24,2);
+	daily.m_timePoints = std::vector<double>{0};
+	daily.m_values.m_values["InfiltrationAirChangeRate"]= std::vector<double>(1,2);
 
 	NANDRAD::Schedule sched;
 	sched.m_type = NANDRAD::Schedule::ST_ALLDAYS;
 	sched.m_dailyCycles.push_back(daily);
 
-	prj.m_schedules.m_schedules["All zones"].push_back(sched);
+	prj.m_schedules.m_scheduleGroups["All zones"].push_back(sched);
 
 	//outputs
 	NANDRAD::OutputGrid grid;

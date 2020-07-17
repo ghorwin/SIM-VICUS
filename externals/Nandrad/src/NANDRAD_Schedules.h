@@ -82,7 +82,7 @@ public:
 	std::set< day_t >														m_weekEndDays;
 
 	/*! Key is object list name, value is vector of schedules. */
-	std::map<std::string, std::vector<Schedule> >							m_schedules;
+	std::map<std::string, std::vector<Schedule> >							m_scheduleGroups;
 	/*! Key is object list name, value is vector of linear splines, where each spline
 		defines a single scheduled quantity running the entire year.
 	*/
