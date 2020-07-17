@@ -149,7 +149,7 @@ add_custom_command (
 where `NandradCodeGenerator` is built as part of the tool chain as well. The rule has all header files as dependencies so that any change in any header file will result in a call to the code generator. The code generator will then create the file `NANDRAD_KeywordList.cpp`.
 
 
-## Read/write to XML support, and other utility functions
+## Read/write to XML support, and utility macros
 
 A second task for the code generator is to create functions for serialization of data structures to XML files. Hereby, the TinyXML-library is used.
 
@@ -162,20 +162,23 @@ Since reading/writing XML code is pretty straight forward, much of this code wri
 ----
 class Sensor {
 public:
-	/*! Default constructor. */
-	Sensor() : m_id(NANDRAD::INVALID_ID) {}
+	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	void readXML(const TiXmlElement * element);
-	TiXmlElement * writeXML(TiXmlElement * parent, bool detailedOutput) const;
+	TiXmlElement * writeXML(TiXmlElement * parent) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID-number of the sensor.*/
-	unsigned int						m_id;
+	unsigned int						m_id = NANDRAD::INVALID_ID;		// XML:A:required
 	/*! Name of the measured quantity */
-	std::string							m_quantity;
+	std::string							m_quantity;						// XML:E
 };
 ----
+[TIP]
+====
+Since we use C++11 code, member variable initialization with the `=` assignment in header is ok and saves creating default constructors. Do this!
+====
 
 The two members are written into file as follows:
 
@@ -196,41 +199,40 @@ void Sensor::readXML(const TiXmlElement * element) {
 	FUNCID(Sensor::readXML);
 
 	try {
-		// read attributes
-		const TiXmlAttribute * attrib = TiXmlAttribute::attributeByName(element, "id");
-		if (attrib != nullptr) {
-			throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing 'id' attribute.") ), FUNC_ID);
-		}
-		// convert attribute to value
-		try {
-			m_id = IBK::string2val<unsigned int>(attrib->ValueStr());
-		} catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Invalid value for 'id' attribute.") ), FUNC_ID);
-		}
+		// search for mandatory attributes
+		if (!TiXmlAttribute::attributeByName(element, "id"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
 
-		// read parameters
-		for (const TiXmlElement * c = element->FirstChildElement(); c; c = c->NextSiblingElement()) {
-			// determine data based on element name
-			std::string cname = c->Value();
-			if (cname == "Quantity") {
-				m_quantity = c->GetText();
-				if (m_quantity.empty())
-					throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-						"Tag 'Quantity' must not be empty."), FUNC_ID);
-			}
+		// reading attributes
+		const TiXmlAttribute * attrib = element->FirstAttribute();
+		while (attrib) {
+			const std::string & attribName = attrib->NameStr();
+			if (attribName == "id")
+				m_id = readPODAttributeValue<unsigned int>(element, attrib);
 			else {
-				throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-					IBK::FormatString("Undefined tag '%1'.").arg(cname) ), FUNC_ID);
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
+			attrib = attrib->Next();
+		}
+		// search for mandatory elements
+		// reading elements
+		const TiXmlElement * c = element->FirstChildElement();
+		while (c) {
+			const std::string & cName = c->ValueStr();
+			if (cName == "Quantity")
+				m_quantity = c->GetText();
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			c = c->NextSiblingElement();
 		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception(ex, IBK::FormatString("Error reading 'Sensor' element."), FUNC_ID);
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Sensor' element."), FUNC_ID);
 	}
-	catch (std::exception & ex) {
-		throw IBK::Exception(IBK::FormatString("%1\nError reading 'Sensor' element.").arg(ex.what()), FUNC_ID);
+	catch (std::exception & ex2) {
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'Sensor' element.").arg(ex2.what()), FUNC_ID);
 	}
 }
 ----
@@ -246,54 +248,48 @@ TiXmlElement * Sensor::writeXML(TiXmlElement * parent, bool /*detailedOutput*/) 
 	parent->LinkEndChild(e);
 
 	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-
 	if (!m_quantity.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "Quantity", nullptr, std::string(), m_quantity);
 	return e;
 }
 ----
 
-In order for the code generator to create these two functions, we need to add some comments to original class. Let's start with the `writeXML()` function:
+In order for the code generator to create these two functions, we need to add some _annotations_ to original class declaration:
 
-1. XML-Element name is always the same as the class name, so that's known to the code generator
-2. `m_id` should be written as attribute to `Sensor`, we need to tell the code generator that this is an attribute. The conversion `unsigned int` to string is known from the type declaration.
-3. `m_quantity` should be written as child-element to `Sensor`. We also need to tell the code generator, that this is to be an element. Also, we need to write the code to check that the attribute must not be empty before writing it. We should tell the code generator somehow, that the value must not appear as empty string `""` in the xml file.
-
-This leads to some annotation comments in the header file:
-
-
-.Class Sensor, with declarations of `readXML()` and `writeXML()` functions
+.Class Sensor, with annotations for read/write code generation
 [source,c++]
 ----
 class Sensor {
 public:
-	/*! Default constructor. */
-	Sensor() : m_id(NANDRAD::INVALID_ID) {}
-	
+	// *** PUBLIC MEMBER FUNCTIONS ***
+
 	void readXML(const TiXmlElement * element);
-	TiXmlElement * writeXML(TiXmlElement * parent, bool detailedOutput) const;
+	TiXmlElement * writeXML(TiXmlElement * parent) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID-number of the sensor.*/
-	unsigned int						m_id;			// XML-A:
+	unsigned int						m_id = NANDRAD::INVALID_ID;		// XML:A:required
 	/*! Name of the measured quantity */
-	std::string							m_quantity;		// XML-E:not-empty
+	std::string							m_quantity;						// XML:E
 };
 ----
 
-The `// XML-A:` says: make this an attribute. The `// XML-E:` says: make this a child-element. The additional `not-empty` keyword means: do not allow this string to be empty (only meaningful for string data types, obviously).
+The `// XML:A` says: make this an attribute. The `// XML:E` says: make this a child-element. The additional `required` keyword means: this attribute (or element) must be provided, otherwise `readXML()` will throw an exception.
 
-With this given information, we can also generate the entire `readXML()` function.
+The annotations can be used for quite a few data types. Rules for these are given in section <<xml_serialization_rules>>.
 
-Lastly, since the declaration for the `readXML()` and `writeXML()` functions are always the same, we can avoid typing errors by using a define:
+
+### Utility Macros
+
+Since the declaration for the `readXML()` and `writeXML()` functions are always the same, we can avoid typing errors by using a define:
 
 .Global code generator helpers
 [source,c++]
 ----
 #define NANDRAD_READWRITE \
 	void readXML(const TiXmlElement * element); \
-	TiXmlElement * writeXML(TiXmlElement * parent, bool detailedOutput) const;
+	TiXmlElement * writeXML(TiXmlElement * parent) const;
 ----
 
 The header is now very short:
@@ -303,15 +299,16 @@ The header is now very short:
 ----
 class Sensor {
 public:
-	/*! Default constructor. */
-	Sensor() : m_id(NANDRAD::INVALID_ID) {}
-	
+	// *** PUBLIC MEMBER FUNCTIONS ***
+
 	NANDRAD_READWRITE
 
+	// *** PUBLIC MEMBER VARIABLES ***
+
 	/*! Unique ID-number of the sensor.*/
-	unsigned int						m_id;			// XML-A:
+	unsigned int						m_id = NANDRAD::INVALID_ID;		// XML:A:required
 	/*! Name of the measured quantity */
-	std::string							m_quantity;		// XML-E:not-empty
+	std::string							m_quantity;						// XML:E
 };
 ----
 
@@ -321,22 +318,11 @@ The code generator will create a file: `ncg_NANDRAD_Sensor.cpp` with the functio
 
 To avoid regenerating (and recompiling) all `ncg_*` files whenever _one_ header file is modified, the code generator inspects the file creation times of the `ncg_XXX.cpp` file with the latest modification/creation data of the respective `ncg_XXX.h` file. The code is only generated, if header file is newer than the generated file.
 
-### "Is default" functionality
+#### Comparison operator macro
 
-Suppose now a data member like `Sensor` is used in some other class in the hierarchy. There, the member variable may be uninitialized (sensor ID == `NANDRAD::INVALID_ID`). We want to avoid writing the `<Sensor>` xml tag alltogether in this case.
+When checking, if the content of an object is effectively the same as that of another (possibly freshly constructed) object, we need a comparison operator. Actually, we usually need both `operator==` and `operator!=`. The code for the class `Sensor` normally looks like that:
 
-The typical code looks like:
-
-[source,c++]
-----
-// only write sensor if different from default
-if (detailedOutput || m_sensor != Sensor()) {
-    m_sensor.writeXML(element, detailedOutput);
-}
-----
-	
-For this code to work, we need a comparison operator defined in class `Sensor`, again something that the code generator provides:
-
+.Comparison operator (inequality)
 [source,c++]
 ----
 bool Sensor::operator!=(const Sensor & other) const {
@@ -345,6 +331,17 @@ bool Sensor::operator!=(const Sensor & other) const {
 	return false;
 }
 ----
+
+The other comparison operator is normally just implemented using the other:
+
+.Comparison operator (inequality)
+[source,c++]
+----
+bool operator==(const Sensor & other) const { return !operator!=(other); }
+----
+
+The declaration of the inequality 
+
 
 Again, the declaration is pretty standard and can be replaced by a define:
 
@@ -528,4 +525,16 @@ The remaining parameters _unit_, _color_, _default value_ and _description_ are 
 
 The _default value_ must be a floating point number in C locale format. Similarly as color and unit, this parameter is meaningful for user interfaces with somewhat generic parameter input handling.
 
+[[xml_serialization_rules]]
+### XML Serialization
 
+In order for the CodeGenerator to work correct, we need a [line-through]##few## lots of rules:
+
+
+. Let's start with the `writeXML()` function:
+
+1. XML-Element name is always the same as the class name, so that's known to the code generator
+2. `m_id` should be written as attribute to `Sensor`, we need to tell the code generator that this is an attribute. The conversion `unsigned int` to string is known from the type declaration.
+3. `m_quantity` should be written as child-element to `Sensor`. We also need to tell the code generator, that this is to be an element. Also, we need to write the code to check that the attribute must not be empty before writing it. We should tell the code generator somehow, that the value must not appear as empty string `""` in the xml file.
+
+This leads to some annotation comments in the header file:

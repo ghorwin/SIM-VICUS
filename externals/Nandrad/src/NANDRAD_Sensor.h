@@ -37,9 +37,6 @@ namespace NANDRAD {
 class Sensor {
 	NANDRAD_READWRITE_PRIVATE
 public:
-	/*! Default constructor. */
-	Sensor() : m_id(NANDRAD::INVALID_ID) {}
-
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	NANDRAD_READWRITE_IFNOTEMPTY(Sensor)
@@ -48,10 +45,9 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID-number of the sensor.*/
-	unsigned int						m_id;			// XML:A:required
+	unsigned int						m_id = NANDRAD::INVALID_ID;		// XML:A:required
 	/*! Name of the measured quantity */
-	std::string							m_quantity;		// XML:E
-
+	std::string							m_quantity;						// XML:E
 };
 
 } // namespace NANDRAD

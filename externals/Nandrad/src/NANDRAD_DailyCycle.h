@@ -31,20 +31,22 @@ Lesser General Public License for more details.
 
 namespace NANDRAD {
 
-/*!	\brief Declaration for class DailyCycle
+/*!	Defines the daily course of one or more physical quantities/setpoints.
 
-	A daily cycle provides the values of a scheduled quantity for the period of one day.
-	It uses a vector of intervals to specify time and values of the scheduled quantity.
-	Usually more than one quantities are defined within one interval.
+	The m_interpolation parameter defines how the tabulated data is interpreted.
 
-	The interval definition defines a time interval per default. The last interval of one
-	daily cycle does not need a time definition - it lasts until the end of day. The m_para
-	section of the interval provides information about the interval time, the m_genericParaConst
-	section provides the scheduled parameters with a constant value for each interval.
+	If m_interpolation == IT_CONSTANT, then the following rules apply:
+	- the time points in m_timePoints are interpreted as *start* of the next interval
+	- the first time point must be 0, all time points must be < 24 h
+	- the corresponding value is taken as constant during this interval
 
-	Alternatively scheduled quantities may directly be defined as a linear spline parameter. Use
-	the time in hours (for one complete day) as x-values and the hourly values of the quantity
-	as y-values for the spline.
+	For example, a time point vector 0,6,18 defines three intervals: 0-6, 6-18, 18-24 and
+	the data table must contain exactly 3 values.
+
+	If m_interpolation == IT_LINEAR, then the following rules apply:
+	- the time points in m_timePoints are points in time where associated values given
+	- the first time point must be always 0, the last one must be 24 h (1440 min, etc.)
+	- between time points the values are linearly interpolated
 */
 class DailyCycle {
 public:
@@ -53,8 +55,8 @@ public:
 		Note that for constant values some ramping may be used to smoothen out the steps.
 	*/
 	enum interpolation_t {
-		IT_CONSTANT,	// Keyword: CONSTANT	'Constant hourly values, required 24 values in vectors.'
-		IT_LINEAR,		// Keyword: LINEAR		'Linear interpolation between values, requires timepoints from 0h to 24h.'
+		IT_CONSTANT,	// Keyword: CONSTANT	'Constant values in defined intervals.'
+		IT_LINEAR,		// Keyword: LINEAR		'Linear interpolation between values.'
 		NUM_IT
 	};
 
@@ -78,9 +80,7 @@ public:
 
 	interpolation_t						m_interpolation = NUM_IT;			// XML:A
 
-	/*! Time points, first must be 0, last must be end of day.
-		For hourly constant values, time unit must be 'h', and exactly 24 values must be in spline (0...23).
-	*/
+	/*! Time points, first must be 0, last must be end of day when IT_LINEAR is used. */
 	std::vector<double>					m_timePoints;						// XML:E
 	IBK::Unit							m_timeUnit;							// XML:E
 
