@@ -45,13 +45,24 @@ Project * Project::m_self = nullptr;
 
 Project & Project::instance() {
 	IBK_ASSERT_X(m_self != nullptr,
-		"You must not access Project::instance() when the is no Project "
-		"instance (anylonger).");
+		"You must not access Project::instance() when there is no Project "
+		"instance (anylonger). Also, remember to call setSelf() after creating a new "
+		"project instance or use the create() factory function.");
 	return *m_self;
 }
 
 Project::Project() {
 	m_self = this;
+	// Mind: when you use code like
+	// prj = NANDRAD::Project();
+	// the m_self pointer is set to the adress of the temprary object
+	// that get's copied into prj. Hence, after the line was executed, the m_self pointer points
+	// to invalid memory and accessing it will get you an access violation.
+	// We could simply delete the assignment operator, but that would cause problems with using
+	// the NANDRAD::Project() storage inside other data storage environments.
+	// Rather, we require user code of 'm_self' (currently the writeXML() functionality, and later maybe
+	// the solver) to take care of calling setSelf() before working with the project. Also, not creating
+	// a copy of the project helps as well.
 }
 
 void Project::readXML(const IBK::Path & filename) {
@@ -98,6 +109,9 @@ void Project::readXML(const IBK::Path & filename) {
 
 
 void Project::writeXML(const IBK::Path & filename) const {
+	// ensure we have the correct self pointer
+	if (m_self != this)
+		m_self = const_cast<Project*>(this);
 	TiXmlDocument doc;
 	TiXmlDeclaration * decl = new TiXmlDeclaration( "1.0", "UTF-8", "" );
 	doc.LinkEndChild( decl );

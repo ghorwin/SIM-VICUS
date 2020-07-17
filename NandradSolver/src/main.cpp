@@ -1663,10 +1663,6 @@ void createSim05(NANDRAD::Project &prj){
 	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.3, prj.m_materials[1].m_id));
 	prj.m_constructionTypes.push_back(conType);
 
-	NANDRAD::Interval interval;
-	interval.m_para[NANDRAD::Interval::IP_END].set("End", 24, IBK::Unit("h"));
-	//interval.m_para[NANDRAD::Interval::IP_END].set("End", 24, IBK::Unit("h"));			//	<<<< hier muss irgendwie der Wert für den Luftwechsel gesetzt werden ToDo Andreas abklären
-
 	NANDRAD::DailyCycle daily;
 	daily.m_timeUnit = IBK::Unit("h");
 	daily.m_interpolation = NANDRAD::DailyCycle::IT_CONSTANT;
@@ -1729,10 +1725,7 @@ int main(int argc, char * argv[]) {
 
 #ifdef TEST_PROJECT_WRITING
 
-	std::cout << FUNC_ID << std::endl;
-
 	NANDRAD::Project prj;
-	// parameter setzen
 	createSim01(prj);
 	prj.writeXML(IBK::Path("SimQuality1.xml"));
 
@@ -1752,6 +1745,20 @@ int main(int argc, char * argv[]) {
 	createSim05(prj);
 	prj.writeXML(IBK::Path("SimQuality5.xml"));
 
+	// now read and write projects again to check if all data is read correctly back in
+	std::vector<std::string> projects = {"SimQuality1.xml", "SimQuality2.xml", "SimQuality3.xml", "SimQuality4.xml", "SimQuality5.xml"};
+
+	for (const std::string & p : projects) {
+		// now create a new project, read back the file and write it again with a different name
+		NANDRAD::Project prj;
+		try {
+			prj.readXML(IBK::Path(p));
+			prj.writeXML(IBK::Path(p).withoutExtension() + "_2.xml");
+			std::cout << "Wrote '" << p << "'." << std::endl;
+		} catch (IBK::Exception & ex) {
+			ex.writeMsgStackToError();
+		}
+	}
 	return EXIT_SUCCESS;
 #endif // TEST_PROJECT_WRITING
 #ifdef SERIALIZATION_TEST

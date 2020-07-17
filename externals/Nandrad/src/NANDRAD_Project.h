@@ -46,14 +46,12 @@ class Project {
 	NANDRAD_READWRITE_PRIVATE
 public:
 
-	/*! Constructor, initializes global project pointer. */
+	/*! Constructor, resets global project pointer. */
 	Project();
+	~Project() { m_self = nullptr; }
 
-	/*! Prevent assignment to avoid problems with self-pointer. */
-	Project & operator=(const Project &) = delete;
-
-	/*! Prevent assignment to avoid problems with self-pointer. */
-	Project(const Project &) = delete;
+	/*! Sets the global pointer to the project. */
+	void setSelf() { m_self = this; }
 
 	/*! Returns a pointer to the Project instance.
 		Only access this function during the lifetime of Project object.
