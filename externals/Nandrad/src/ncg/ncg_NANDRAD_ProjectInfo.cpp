@@ -48,7 +48,7 @@ void ProjectInfo::readXML(const TiXmlElement * element) {
 			else if (cName == "Version")
 				m_version = c->GetText();
 			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			c = c->NextSiblingElement();
 		}

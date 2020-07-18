@@ -79,7 +79,7 @@ void Interface::readXML(const TiXmlElement * element) {
 				}
 				catch (...) { /* intentional fail */  }
 				if (!success)
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			else if (cName == "InterfaceHeatConduction")
 				m_heatConduction.readXML(c);
@@ -92,7 +92,7 @@ void Interface::readXML(const TiXmlElement * element) {
 			else if (cName == "InterfaceAirFlow")
 				m_airFlow.readXML(c);
 			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			c = c->NextSiblingElement();
 		}

@@ -97,8 +97,8 @@ namespace NANDRAD {
 			// DailyCycle::interpolation_t
 			case 1 :
 			switch (t) {
-				case 0 : return "CONSTANT";
-				case 1 : return "LINEAR";
+				case 0 : return "Constant";
+				case 1 : return "Linear";
 			} break;
 			// EmbeddedObject::para_t
 			case 2 :
@@ -397,8 +397,8 @@ namespace NANDRAD {
 			// DailyCycle::interpolation_t
 			case 1 :
 			switch (t) {
-				case 0 : return "CONSTANT";
-				case 1 : return "LINEAR";
+				case 0 : return "Constant";
+				case 1 : return "Linear";
 			} break;
 			// EmbeddedObject::para_t
 			case 2 :

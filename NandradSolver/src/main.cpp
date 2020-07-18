@@ -1681,6 +1681,8 @@ void createSim05(NANDRAD::Project &prj){
 
 	prj.m_schedules.m_scheduleGroups["All zones"].push_back(sched);
 	prj.m_schedules.m_holidays.insert( IBK::Time::fromDateTimeFormat("27.02.1976 01:00:00"));
+	prj.m_schedules.m_weekEndDays.insert(NANDRAD::Schedules::SD_SATURDAY);
+	prj.m_schedules.m_weekEndDays.insert(NANDRAD::Schedules::SD_SUNDAY);
 
 	//outputs
 	NANDRAD::OutputGrid grid;

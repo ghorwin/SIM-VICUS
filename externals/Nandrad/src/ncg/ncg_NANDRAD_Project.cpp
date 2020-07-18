@@ -44,7 +44,7 @@ void Project::readXMLPrivate(const TiXmlElement * element) {
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
 					if (c2Name != "Zone")
-						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					Zone obj;
 					obj.readXML(c2);
 					m_zones.push_back(obj);
@@ -56,7 +56,7 @@ void Project::readXMLPrivate(const TiXmlElement * element) {
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
 					if (c2Name != "ConstructionInstance")
-						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					ConstructionInstance obj;
 					obj.readXML(c2);
 					m_constructionInstances.push_back(obj);
@@ -68,7 +68,7 @@ void Project::readXMLPrivate(const TiXmlElement * element) {
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
 					if (c2Name != "ConstructionType")
-						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					ConstructionType obj;
 					obj.readXML(c2);
 					m_constructionTypes.push_back(obj);
@@ -80,7 +80,7 @@ void Project::readXMLPrivate(const TiXmlElement * element) {
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
 					if (c2Name != "Material")
-						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					Material obj;
 					obj.readXML(c2);
 					m_materials.push_back(obj);
@@ -92,7 +92,7 @@ void Project::readXMLPrivate(const TiXmlElement * element) {
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
 					if (c2Name != "ObjectList")
-						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					ObjectList obj;
 					obj.readXML(c2);
 					m_objectLists.push_back(obj);
@@ -112,7 +112,7 @@ void Project::readXMLPrivate(const TiXmlElement * element) {
 			else if (cName == "Outputs")
 				m_outputs.readXML(c);
 			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			c = c->NextSiblingElement();
 		}

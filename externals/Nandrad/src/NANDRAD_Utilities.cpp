@@ -175,6 +175,7 @@ IBK::Time readTimeElement(const TiXmlElement * element, const std::string & eNam
 	if (!t.isValid())
 		throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 			IBK::FormatString("Error reading '"+eName+"' tag, invalid date/time format '"+element->GetText()+"', expected 'dd.MM.yyyy hh:mm:ss'.") ), FUNC_ID);
+	return t;
 }
 
 
