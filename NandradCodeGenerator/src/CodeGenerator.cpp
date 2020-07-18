@@ -800,7 +800,7 @@ void CodeGenerator::generateReadWriteCode() {
 								"				bool success = false;\n" +
 								elementCodeScalar + elementCodeKeyword +
 								"				if (!success)\n"
-								"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
+								"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
 								"			}\n";
 					}
 					else if (xmlInfo.typeStr == "IBK::Parameter" && groupTags.find("IBK::Parameter") != groupTags.end()) {
@@ -857,7 +857,7 @@ void CodeGenerator::generateReadWriteCode() {
 								"				bool success = false;\n" +
 								elementCodeScalar + elementCodeKeyword +
 								"				if (!success)\n"
-								"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
+								"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
 								"			}\n";
 					}
 					else if (xmlInfo.typeStr == "IBK::IntPara" && groupTags.find("IBK::IntPara") != groupTags.end()) {
@@ -913,7 +913,7 @@ void CodeGenerator::generateReadWriteCode() {
 								"				bool success = false;\n" +
 								elementCodeScalar + elementCodeKeyword +
 								"				if (!success)\n"
-								"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
+								"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
 								"			}\n";
 					}
 					else if (xmlInfo.typeStr == "IBK::Flag" && groupTags.find("IBK::Flag") != groupTags.end()) {
@@ -970,7 +970,7 @@ void CodeGenerator::generateReadWriteCode() {
 								"				bool success = false;\n" +
 								elementCodeScalar + elementCodeKeyword +
 								"				if (!success)\n"
-								"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
+								"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
 								"			}\n";
 					}
 					else if (xmlInfo.typeStr.find("std::vector<") != std::string::npos) {
@@ -994,7 +994,7 @@ void CodeGenerator::generateReadWriteCode() {
 									"				while (c2) {\n"
 									"					const std::string & c2Name = c2->ValueStr();\n"
 									"					if (c2Name != \""+childType+"\")\n"
-									"						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
+									"						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
 									"					"+childType+" obj;\n"
 									"					obj.readXML(c2);\n"
 									"					m_"+varName+".push_back(obj);\n"
@@ -1043,7 +1043,7 @@ void CodeGenerator::generateReadWriteCode() {
 								"					m_"+varName2+" = ("+it->enumType()+")KeywordList::Enumeration(\""+it->categoryName+"\", c->GetText());\n"
 								"				}\n"
 								"				catch (IBK::Exception & ex) {\n"
-								"					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
+								"					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(\n"
 								"						IBK::FormatString(\"Invalid or unknown keyword '\"+std::string(c->GetText())+\"'.\") ), FUNC_ID);\n"
 								"				}\n"
 								"			}\n";
@@ -1054,7 +1054,7 @@ void CodeGenerator::generateReadWriteCode() {
 				if (!elseStr.empty()) {
 					elements +=
 							"			else {\n"
-							"				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
+							"				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
 							"			}\n";
 				}
 				elements +=
