@@ -315,12 +315,14 @@ public:
 The implementation file `NANDRAD_Sensor.cpp` is no longer needed and can be removed.
 
 The code generator will create a file: `ncg_NANDRAD_Sensor.cpp` with the functions `Sensor::readXML()` and `Sensor::writeXML()`.
-
-To avoid regenerating (and recompiling) all `ncg_*` files whenever _one_ header file is modified, the code generator inspects the file creation times of the `ncg_XXX.cpp` file with the latest modification/creation data of the respective `ncg_XXX.h` file. The code is only generated, if header file is newer than the generated file.
+[NOTE]
+====
+To avoid regenerating (and recompiling) all `ncg_*` files whenever _one_ header file is modified, the code generator inspects the file creation times of the `ncg_XXX.cpp` file with the latest modification/creation data of the respective `ncg_XXX.h` file. The code is only generated, if the header file is newer than the generated file.
+====
 
 #### Comparison operator macro
 
-When checking, if the content of an object is effectively the same as that of another (possibly freshly constructed) object, we need a comparison operator. Actually, we usually need both `operator==` and `operator!=`. The code for the class `Sensor` normally looks like that:
+When checking if the content of an object is effectively the same as that of another (possibly freshly constructed) object, we need a comparison operator. Actually, we usually need both `operator==` and `operator!=` (depending on the alorithm used, either of the two is needed). The code for the class `Sensor` normally looks like that:
 
 .Comparison operator (inequality)
 [source,c++]
@@ -334,16 +336,13 @@ bool Sensor::operator!=(const Sensor & other) const {
 
 The other comparison operator is normally just implemented using the other:
 
-.Comparison operator (inequality)
+.Comparison operator (equality)
 [source,c++]
 ----
 bool operator==(const Sensor & other) const { return !operator!=(other); }
 ----
 
-The declaration of the inequality 
-
-
-Again, the declaration is pretty standard and can be replaced by a define:
+The declaration and the definition of the equality operator can be replaced by a define:
 
 .Global code generator helpers
 [source,c++]
@@ -354,37 +353,40 @@ Again, the declaration is pretty standard and can be replaced by a define:
 
 So the class declaration becomes:
 
-.Class Sensor, using code generator
+.Class Sensor, with comparison function declarations
 [source,c++]
 ----
 class Sensor {
 public:
-	/*! Default constructor. */
-	Sensor() : m_id(NANDRAD::INVALID_ID) {}
-	
+	// *** PUBLIC MEMBER FUNCTIONS ***
+
 	NANDRAD_READWRITE
 	NANDRAD_COMP(Sensor)
 
+	// *** PUBLIC MEMBER VARIABLES ***
+
 	/*! Unique ID-number of the sensor.*/
-	unsigned int						m_id;			// XML-A:
+	unsigned int						m_id = NANDRAD::INVALID_ID;		// XML:A:required
 	/*! Name of the measured quantity */
-	std::string							m_quantity;		// XML-E:not-empty
+	std::string							m_quantity;						// XML:E
 };
 ----
 
-### Custom read/write functionality
+#### Custom read/write functionality
 
-Sometimes, the default read/write code is not enough, because something special needs to be written/read as well. Here, you can simply use an additional define:
+Sometimes, the default read/write code is not enough, because something special needs to be written/read as well. Here, you can simply use an alternative define `NANDRAD_READWRITE_PRIVATE`:
 
 .Global code generator helpers
 [source,c++]
 ----
 #define NANDRAD_READWRITE_PRIVATE \
 	void readXMLPrivate(const TiXmlElement * element); \
-	TiXmlElement * writeXMLPrivate(TiXmlElement * parent, bool detailedOutput) const;
+	TiXmlElement * writeXMLPrivate(TiXmlElement * parent) const;
 ----
 
-and implement `readXML()` and `writeXML()` manually, hereby re-using the auto-generated functionality. The header then looks like:
+which tells the code generator to generate the read/write code inside the `XXXPrivate`-functions.
+
+You can now implement `readXML()` and `writeXML()` manually, hereby re-using the auto-generated functionality. Below is an example:
 
 .Class Sensor, using code generator with private read/write functions
 [source,c++]
@@ -392,19 +394,19 @@ and implement `readXML()` and `writeXML()` manually, hereby re-using the auto-ge
 class Sensor {
 	NANDRAD_READWRITE_PRIVATE
 public:
-	/*! Default constructor. */
-	Sensor() : m_id(NANDRAD::INVALID_ID) {}
-	
+	// *** PUBLIC MEMBER FUNCTIONS ***
+
 	NANDRAD_READWRITE
 	NANDRAD_COMP(Sensor)
 
+	// *** PUBLIC MEMBER VARIABLES ***
+
 	/*! Unique ID-number of the sensor.*/
-	unsigned int						m_id;			// XML-A:
+	unsigned int						m_id = NANDRAD::INVALID_ID;		// XML:A:required
 	/*! Name of the measured quantity */
-	std::string							m_quantity;		// XML-E:not-empty
+	std::string							m_quantity;						// XML:E
 };
 ----
-
 
 .Implementation file `NANDRAD_Sensor.cpp`
 [source,c++]
@@ -425,10 +427,63 @@ TiXmlElement * Sensor::writeXML(TiXmlElement * parent, bool detailedOutput) cons
 }
 ----
 
-[NOTE]
-====
-When the code generator creates `readXMLPrivate()` functions, the check for unknown elements is not generated (see <<generated_readXML, original readXML-function>>, since it can be expected that other (custom) elements are present inside the parsed XML-tag.
-====
+#### Only writing data if not still default content
+
+To avoid writing empty tags or default values, you can write code like:
+
+.Implmenetation of writeXML with default check
+[source,c++]
+----
+TiXmlElement * Sensor::writeXML(TiXmlElement * parent, bool detailedOutput) const {
+    // check if we still have default data
+    if (*this == Sensor())
+        return; // still default, do not write anything
+        
+	TiXmlElement * e = new TiXmlElement("Sensor");
+	parent->LinkEndChild(e);
+
+	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
+	if (!m_quantity.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "Quantity", nullptr, std::string(), m_quantity);
+	return e;
+}
+----
+
+However, the code generator cannot write this automatically, because sometimes it is desired to write even default content. Also, a comparison-operator is not always available.
+
+You can, however, use the macro `NANDRAD_READWRITE_IFNOTEMPTY(X)` instead of the regular `NANDRAD_READWRITE` macro for this:
+
+.Macro with check for default values
+[source,c++]
+----
+#define NANDRAD_READWRITE_IFNOTEMPTY(X) \
+	void readXML(const TiXmlElement * element) { readXMLPrivate(element); } \
+	TiXmlElement * writeXML(TiXmlElement * parent) const { if (*this != X()) return writeXMLPrivate(parent); else return nullptr; }
+----
+
+Since this macro uses the functions `readXMLPrivate()` and `writeXMLPrivate()` you also need to tell the code generator to use the private function versions, as in the following example:
+
+
+.Class Sensor, using code generator with private read/write functions and check to not write default data
+[source,c++]
+----
+class Sensor {
+	NANDRAD_READWRITE_PRIVATE
+public:
+	// *** PUBLIC MEMBER FUNCTIONS ***
+
+	NANDRAD_READWRITE_IFNOTEMPTY(Sensor)
+	NANDRAD_COMP(Sensor)
+
+	// *** PUBLIC MEMBER VARIABLES ***
+
+	/*! Unique ID-number of the sensor.*/
+	unsigned int						m_id = NANDRAD::INVALID_ID;		// XML:A:required
+	/*! Name of the measured quantity */
+	std::string							m_quantity;						// XML:E
+};
+----
+
 
 ## Specifications
 
