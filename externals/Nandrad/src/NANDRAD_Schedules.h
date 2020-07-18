@@ -29,11 +29,12 @@ Lesser General Public License for more details.
 
 namespace NANDRAD {
 
-/*!	\brief Declaration for class Schedules
+/*!	Schedules define purely time-dependent properties.
+	Schedules can be specified as regular schedules based on daily cycles (m_scheduleGroups) and
+	as annual schedules (m_annualSchedules).
 
-	A vector of all schedule groups.
-	The default parameter section defines holidays and week end days
-	for the current project and may be overwritten by a special schedule.
+	Via object lists the schedules are applied to one or more model objects. Hence, both schedule groups and annual
+	schedules have a m_name member variable that identifies the corresponding object list.
 */
 class Schedules {
 public:
