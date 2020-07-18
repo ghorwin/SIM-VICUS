@@ -42,6 +42,8 @@ namespace IBK {
 
 const unsigned int INVALID_ELEMENT = 0xFFFFFFFF;
 
+const int INVALID_YEAR = -1000000;
+
 const char * const VERSION = "4.2.4";
 
 

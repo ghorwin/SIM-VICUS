@@ -56,11 +56,9 @@
 namespace IBK {
 
 
-/// \todo move to constants
-inline int INVALID_YEAR() { return -1000000; }
 
 Time::Time() :
-	m_year(INVALID_YEAR()),
+	m_year(INVALID_YEAR),
 	m_sec(0)
 {
 }
@@ -84,7 +82,7 @@ Time::Time(unsigned int hour, unsigned int minute, unsigned int sec)  {
 	}
 	catch (std::exception & ) {
 		m_sec = 0;
-		m_year = INVALID_YEAR();
+		m_year = INVALID_YEAR;
 	}
 }
 // ---------------------------------------------------------------------------
@@ -96,7 +94,7 @@ Time::Time(int year, unsigned int month, unsigned int day, double seconds) {
 	}
 	catch (std::exception & ) {
 		m_sec = 0;
-		m_year = INVALID_YEAR();
+		m_year = INVALID_YEAR;
 	}
 }
 // ---------------------------------------------------------------------------
@@ -122,15 +120,15 @@ void Time::set(int year, double sec) {
 
 void Time::set(unsigned int hour, unsigned int minute, unsigned int sec) {
 	if (hour>23)    {
-		m_year = INVALID_YEAR();
+		m_year = INVALID_YEAR;
 		return;
 	}
 	if (minute>59)    {
-		m_year = INVALID_YEAR();
+		m_year = INVALID_YEAR;
 		return;
 	}
 	if (sec>59)    {
-		m_year = INVALID_YEAR();
+		m_year = INVALID_YEAR;
 		return;
 	}
 	m_year = 0;
@@ -161,7 +159,7 @@ void Time::set(int year, unsigned int month, unsigned int day, double sec) {
 
 
 bool Time::isValid() const {
-	return m_year != INVALID_YEAR();
+	return m_year != INVALID_YEAR;
 }
 // ---------------------------------------------------------------------------
 
@@ -228,7 +226,7 @@ Time& Time::operator-=(const Time& rhs) {
 	double diff_sec = m_sec - rhs.m_sec;
 	if (diff_sec < 0) {
 		m_sec = 0;
-		m_year = INVALID_YEAR();
+		m_year = INVALID_YEAR;
 	}
 	else {
 		m_year = 0;

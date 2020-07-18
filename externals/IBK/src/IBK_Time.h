@@ -42,6 +42,8 @@
 #include <string>
 #include <iosfwd>   // only include the iostream prototypes
 
+#include "IBK_Constants.h"
+
 namespace IBK {
 
 /*! Encapsulates the time consisting of a reference year and the seconds since the begin of this year.
@@ -129,6 +131,10 @@ public:
 	bool operator!=(const Time & other) const { return m_sec != other.m_sec || m_year != other.m_year; }
 	/*! Comparison operator. */
 	bool operator==(const Time & other) const { return m_sec == other.m_sec && m_year == other.m_year; }
+	/*! Comparison operator. */
+	bool operator<(const Time & other) const {
+		return (m_year*SECONDS_PER_YEAR + m_sec < other.m_year*SECONDS_PER_YEAR + other.m_sec);
+	}
 
 	/*! Sets the time for a reference time point.
 		\param year	The year in [years] since 0 AD.

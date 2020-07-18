@@ -44,6 +44,9 @@ namespace IBK {
 /*! used to specify a unused or invalid item index. */
 extern const unsigned int INVALID_ELEMENT;
 
+/*! Used to specify an invalid year in IBK::Time. */
+extern const int INVALID_YEAR;
+
 /*! The library version (full version number). */
 extern const char * const VERSION;
 
@@ -64,6 +67,8 @@ extern const unsigned int SECONDS_PER_DAY;
 
 /*! Current start id for user space in the various databases. */
 extern const unsigned int USER_ID_START;
+
+
 
 /*! ID used to identify VOID types, for example VOID materials.
 	\warning Changing this constant may cause problems with older project/data files that store
