@@ -79,6 +79,10 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 			attrib = attrib->Next();
 		}
 		// search for mandatory elements
+		if (!element->FirstChildElement("Id3"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'Id3' element.") ), FUNC_ID);
+
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
@@ -112,7 +116,7 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 				}
 				catch (...) { /* intentional fail */  }
 				if (!success)
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			else if (cName == "Time1")
 				m_time1 = readTimeElement(c, cName);
@@ -127,7 +131,7 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
 					if (c2Name != "Interface")
-						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					Interface obj;
 					obj.readXML(c2);
 					m_interfaces.push_back(obj);
@@ -144,7 +148,7 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 				}
 				catch (...) { /* intentional fail */  }
 				if (!success)
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			else if (cName == "IBK:IntPara") {
 				IBK::IntPara p;
@@ -156,7 +160,7 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 				}
 				catch (...) { /* intentional fail */  }
 				if (!success)
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			else if (cName == "IBK:LinearSpline") {
 				IBK::LinearSpline p;
@@ -167,21 +171,21 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 					m_spline = p; success = true;
 				}
 				if (!success)
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(name).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			else if (cName == "TestBlo") {
 				try {
 					m_testBlo = (test_t)KeywordList::Enumeration("SerializationTest::test_t", c->GetText());
 				}
 				catch (IBK::Exception & ex) {
-					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
 						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
 				}
 			}
 			else if (cName == "Schedule")
 				m_sched.readXML(c);
 			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			c = c->NextSiblingElement();
 		}

@@ -65,7 +65,7 @@ public:
 	IBK::Path			m_path1		= IBK::Path("/tmp");	// XML:A
 	IBK::Unit			m_u1		= IBK::Unit("K");		// XML:A
 
-	int					m_id3		= 10;					// XML:E
+	int					m_id3		= 10;					// XML:E:required
 	unsigned int		m_id4		= 12;					// XML:E
 	bool				m_flag2		= true;					// XML:E
 	double				m_val2		= 41.41;				// XML:E

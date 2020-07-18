@@ -97,7 +97,6 @@ void LinearSplineParameter::readXML(const TiXmlElement * element) {
 
 
 void LinearSplineParameter::writeXML(TiXmlElement * parent) const {
-	return;
 	if (m_name.empty())
 		return; // no name = no spline data specified
 	IBK::UnitVector xData, yData;

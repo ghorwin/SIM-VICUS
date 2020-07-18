@@ -25,6 +25,7 @@ Lesser General Public License for more details.
 
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
+#include <IBK_messages.h>
 
 #include <tinyxml.h>
 
@@ -59,6 +60,116 @@ void Schedules::initDefaults() {
 
 
 void Schedules::readXML(const TiXmlElement * element) {
+	FUNCID(Schedules::readXML);
+
+	// reading elements
+	const TiXmlElement * c = element->FirstChildElement();
+	while (c) {
+		const std::string & cName = c->ValueStr();
+		if (cName == "Holidays") {
+			const TiXmlElement * c2 = c->FirstChildElement();
+			while (c2) {
+				const std::string & c2Name = c2->ValueStr();
+				if (c2Name != "IBK:Time")
+					throw IBK::Exception(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), FUNC_ID);
+
+				IBK::Time t = IBK::Time::fromDateTimeFormat(c2->GetText());
+				if (!t.isValid())
+					throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(c2->Row())
+										 .arg("Invalid date/time format '"+std::string(c2->GetText())+"'"), FUNC_ID);
+				if (m_holidays.find(t) != m_holidays.end())
+					throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(c2->Row())
+										 .arg("Duplicate holiday date '"+std::string(c2->GetText())+"'"), FUNC_ID);
+				m_holidays.insert(t);
+
+				c2 = c2->NextSiblingElement();
+			}
+
+		}
+		else if (cName == "WeekEndDays") {
+			std::string days = c->GetText();
+			// split days at ,
+			std::vector<std::string> dayvec;
+			IBK::explode(days, dayvec, ",", IBK::EF_TrimTokens);
+			// convert all days into enums
+			for (const std::string & d : dayvec) {
+				try {
+					day_t dt = (day_t)KeywordList::Enumeration("Schedules::day_t", d);
+					m_weekEndDays.insert(dt);
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception(ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row())
+										 .arg("Invalid day name in 'WeekEndDays' tag."), FUNC_ID);
+				}
+			}
+		}
+		else if (cName == "ScheduleGroups") {
+			const TiXmlElement * c2 = c->FirstChildElement();
+			while (c2) {
+				const std::string & c2Name = c2->ValueStr();
+				if (c2Name != "ScheduleGroup")
+					throw IBK::Exception(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), FUNC_ID);
+
+				const TiXmlAttribute * attrib = TiXmlAttribute::attributeByName(c2, "objectList");
+				if (attrib == nullptr)
+					throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(c2->Row()).arg(
+						"Missing required 'objectList' attribute."), FUNC_ID);
+
+				std::string objectListName = attrib->ValueStr();
+				// ensure that we do not have duplicate definitions
+				if (m_scheduleGroups.find(objectListName) != m_scheduleGroups.end())
+					throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(c2->Row()).arg(
+						"ObjectList '"+objectListName+"' used for multiple ScheduleGroup elements."), FUNC_ID);
+
+				std::vector<Schedule> schedules;
+				// now read all the schedule subtags
+
+				const TiXmlElement * c3 = c2->FirstChildElement();
+				while (c3) {
+					const std::string & c3Name = c3->ValueStr();
+					if (c3Name != "Schedule")
+						throw IBK::Exception(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c3Name).arg(c3->Row()), FUNC_ID);
+
+					Schedule s;
+					try {
+						s.readXML(c3);
+					} catch (IBK::Exception & ex) {
+						throw IBK::Exception(ex, IBK::FormatString(XML_READ_ERROR).arg(c3->Row()).arg(
+							"Error reading 'Schedule' element."), FUNC_ID);
+					}
+					schedules.push_back(s);
+
+					c3 = c3->NextSiblingElement();
+				}
+
+				m_scheduleGroups[objectListName] = schedules;
+
+				c2 = c2->NextSiblingElement();
+			}
+		}
+		else if (cName == "AnnualSchedules") {
+			const TiXmlElement * c2 = c->FirstChildElement();
+			while (c2) {
+				const std::string & c2Name = c2->ValueStr();
+				if (c2Name != "IBK:LinearSpline")
+					throw IBK::Exception(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), FUNC_ID);
+				try {
+					NANDRAD::LinearSplineParameter spl;
+					spl.readXML(c2);
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception(ex, IBK::FormatString(XML_READ_ERROR).arg(c2->Row())
+										 .arg("Invalid data in 'IBK:LinearSpline' tag."), FUNC_ID);
+				}
+
+				c2 = c2->NextSiblingElement();
+			}
+		}
+		else {
+			IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+		}
+		c = c->NextSiblingElement();
+	}
 }
 
 
@@ -71,7 +182,7 @@ TiXmlElement * Schedules::writeXML(TiXmlElement * parent) const {
 		e->LinkEndChild(c);
 		// encode days
 		for (IBK::Time t : m_holidays)
-			TiXmlElement::appendSingleAttributeElement(c, "IBK::Time", nullptr, std::string(), t.toDateTimeFormat());
+			TiXmlElement::appendSingleAttributeElement(c, "IBK:Time", nullptr, std::string(), t.toDateTimeFormat());
 	}
 
 	if (!m_weekEndDays.empty()) {
@@ -102,6 +213,13 @@ TiXmlElement * Schedules::writeXML(TiXmlElement * parent) const {
 		}
 	}
 
+	// now write schedules
+	if (!m_annualSchedules.empty()) {
+		TiXmlElement * c = new TiXmlElement("AnnualSchedules");
+		e->LinkEndChild(c);
+		for (const NANDRAD::LinearSplineParameter & s : m_annualSchedules)
+			s.writeXML(e);
+	}
 
 	return nullptr;
 }

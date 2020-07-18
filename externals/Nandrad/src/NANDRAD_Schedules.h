@@ -83,10 +83,10 @@ public:
 
 	/*! Key is object list name, value is vector of schedules. */
 	std::map<std::string, std::vector<Schedule> >							m_scheduleGroups;
-	/*! Key is object list name, value is vector of linear splines, where each spline
-		defines a single scheduled quantity running the entire year.
+	/*! The LinearSplineParameter has a name, which corresponds to the
+		object list that this scheduled parameter is for.
 	*/
-	std::map<std::string, std::vector<NANDRAD::LinearSplineParameter> >		m_annualSchedules;
+	std::vector<NANDRAD::LinearSplineParameter>								m_annualSchedules;
 
 
 };
