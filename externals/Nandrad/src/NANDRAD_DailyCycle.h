@@ -55,8 +55,8 @@ public:
 		Note that for constant values some ramping may be used to smoothen out the steps.
 	*/
 	enum interpolation_t {
-		IT_CONSTANT,	// Keyword: CONSTANT	'Constant values in defined intervals.'
-		IT_LINEAR,		// Keyword: LINEAR		'Linear interpolation between values.'
+		IT_CONSTANT,	// Keyword: Constant	'Constant values in defined intervals.'
+		IT_LINEAR,		// Keyword: Linear		'Linear interpolation between values.'
 		NUM_IT
 	};
 
