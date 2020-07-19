@@ -23,18 +23,27 @@ public:
 	{
 		m_para[t_x1].set("X1", 12, "C");
 		m_flags[t_x2].set("X2", true);
-		m_interfaces.push_back(Interface());
+		Interface iface;
+		iface.m_id = 1;
+		iface.m_zoneId = 0;
+		m_interfaces.push_back(iface);
 		std::vector<double> x = {0, 1, 1.4, 2};
 		std::vector<double> y = {1, 2, 3.4, 5};
 		m_spline.setValues(x,y);
 		m_intPara[IP_i1].set("I1", 13);
 		m_intPara[IP_i2].set("I2", 15);
 		m_f.set("F",true);
-		m_dblVec.push_back(0);
-		m_dblVec.push_back(12);
-		m_dblVec.push_back(24);
+		m_dblVec = std::vector<double>{0, 12, 24};
 
 		m_sched.m_type = Schedule::ST_FRIDAY;
+		m_sched.m_startDate = IBK::Time(2007,4,1);
+		m_sched.m_endDate = IBK::Time(2007,8,30);
+		DailyCycle d;
+		d.m_interpolation = DailyCycle::IT_CONSTANT;
+		d.m_timeUnit.set("h");
+		d.m_timePoints = std::vector<double>{0,6,18};
+		d.m_values.m_values["Temperatures"] = std::vector<double>{0,6,18};
+		m_sched.m_dailyCycles.push_back( DailyCycle() );
 
 		m_time1.set(2007,46032);
 
@@ -73,12 +82,11 @@ public:
 	std::string			m_str2		= "blabb";				// XML:E
 	IBK::Path			m_path2		= IBK::Path("/var");	// XML:E
 	IBK::Unit			m_u2		= IBK::Unit("C");		// XML:E
-	double				m_x5;								// XML:E
+	double				m_x5		= 43.43;				// XML:E
 	IBK::Flag			m_f;								// XML:E
 	IBK::Time			m_time1;							// XML:E
 	IBK::Time			m_time2;							// XML:E
 
-	Schedule			m_sched;							// XML:E
 	DataTable			m_table;							// XML:E
 
 	std::vector<double>		m_dblVec;						// XML:E
@@ -90,6 +98,8 @@ public:
 
 	IBK::LinearSpline	m_spline;							// XML:E
 
+	// example for a generic class with own readXML() and writeXML() function
+	Schedule			m_sched;							// XML:E
 };
 
 }

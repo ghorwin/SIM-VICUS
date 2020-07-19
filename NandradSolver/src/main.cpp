@@ -14,9 +14,9 @@
 // include model implementation class
 #include "NM_NandradModel.h"
 
-#define TEST_PROJECT_WRITING
+//#define TEST_PROJECT_WRITING
 
-//#define SERIALIZATION_TEST
+#define SERIALIZATION_TEST
 #ifdef SERIALIZATION_TEST
 #include <NANDRAD_SerializationTest.h>
 #include <NANDRAD_Utilities.h>

@@ -91,17 +91,28 @@ table {
 <li><a href="#_cmake_automation">2.3. CMake automation</a></li>
 </ul>
 </li>
-<li><a href="#_readwrite_to_xml_support_and_other_utility_functions">3. Read/write to XML support, and other utility functions</a>
+<li><a href="#_readwrite_to_xml_support_and_utility_macros">3. Read/write to XML support, and utility macros</a>
 <ul class="sectlevel2">
 <li><a href="#_readwrite_code">3.1. Read/write code</a></li>
-<li><a href="#_is_default_functionality">3.2. "Is default" functionality</a></li>
-<li><a href="#_custom_readwrite_functionality">3.3. Custom read/write functionality</a></li>
+<li><a href="#_utility_macros">3.2. Utility Macros</a>
+<ul class="sectlevel3">
+<li><a href="#_comparison_operator_macro">3.2.1. Comparison operator macro</a></li>
+<li><a href="#xml_custom_readwrite">3.2.2. Custom read/write functionality</a></li>
+<li><a href="#_only_writing_data_if_not_still_default_content">3.2.3. Only writing data if not still default content</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#_specifications">4. Specifications</a>
 <ul class="sectlevel2">
 <li><a href="#_keyword_list_support">4.1. Keyword List Support</a></li>
 <li><a href="#_keyword_parameters">4.2. Keyword Parameters</a></li>
+<li><a href="#xml_serialization_rules">4.3. XML Serialization</a>
+<ul class="sectlevel3">
+<li><a href="#xml_complexTypes">4.3.1. Reading/writing custom complex types</a></li>
+<li><a href="#_unsupported_data_member_types">4.3.2. Unsupported data member types</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -300,7 +311,7 @@ table {
 </div>
 </div>
 <div class="sect1">
-<h2 id="_readwrite_to_xml_support_and_other_utility_functions">3. Read/write to XML support, and other utility functions</h2>
+<h2 id="_readwrite_to_xml_support_and_utility_macros">3. Read/write to XML support, and utility macros</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>A second task for the code generator is to create functions for serialization of data structures to XML files. Hereby, the TinyXML-library is used.</p>
@@ -315,20 +326,33 @@ table {
 <div class="content">
 <pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">Sensor</span> <span class="p">{</span>
 <span class="nl">public:</span>
-	<span class="cm">/*! Default constructor. */</span>
-	<span class="n">Sensor</span><span class="p">()</span> <span class="o">:</span> <span class="n">m_id</span><span class="p">(</span><span class="n">NANDRAD</span><span class="o">::</span><span class="n">INVALID_ID</span><span class="p">)</span> <span class="p">{}</span>
+	<span class="c1">// *** PUBLIC MEMBER FUNCTIONS ***</span>
 
 	<span class="kt">void</span> <span class="n">readXML</span><span class="p">(</span><span class="k">const</span> <span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">element</span><span class="p">);</span>
-	<span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">writeXML</span><span class="p">(</span><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">parent</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">detailedOutput</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+	<span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">writeXML</span><span class="p">(</span><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">parent</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
 
 	<span class="c1">// *** PUBLIC MEMBER VARIABLES ***</span>
 
 	<span class="cm">/*! Unique ID-number of the sensor.*/</span>
-	<span class="kt">unsigned</span> <span class="kt">int</span>						<span class="n">m_id</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span>						<span class="n">m_id</span> <span class="o">=</span> <span class="n">NANDRAD</span><span class="o">::</span><span class="n">INVALID_ID</span><span class="p">;</span>		<span class="c1">// XML:A:required</span>
 	<span class="cm">/*! Name of the measured quantity */</span>
-	<span class="n">std</span><span class="o">::</span><span class="n">string</span>							<span class="n">m_quantity</span><span class="p">;</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">string</span>							<span class="n">m_quantity</span><span class="p">;</span>						<span class="c1">// XML:E</span>
 <span class="p">};</span></code></pre>
 </div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Since we use C++11 code, member variable initialization with the <code>=</code> assignment in header is ok and saves creating default constructors. Do this!</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>The two members are written into file as follows:</p>
@@ -350,41 +374,40 @@ table {
 	<span class="n">FUNCID</span><span class="p">(</span><span class="n">Sensor</span><span class="o">::</span><span class="n">readXML</span><span class="p">);</span>
 
 	<span class="k">try</span> <span class="p">{</span>
-		<span class="c1">// read attributes</span>
-		<span class="k">const</span> <span class="n">TiXmlAttribute</span> <span class="o">*</span> <span class="n">attrib</span> <span class="o">=</span> <span class="n">TiXmlAttribute</span><span class="o">::</span><span class="n">attributeByName</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="s">"id"</span><span class="p">);</span>
-		<span class="k">if</span> <span class="p">(</span><span class="n">attrib</span> <span class="o">!=</span> <span class="nb">nullptr</span><span class="p">)</span> <span class="p">{</span>
-			<span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="n">XML_READ_ERROR</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">element</span><span class="o">-&gt;</span><span class="n">Row</span><span class="p">()).</span><span class="n">arg</span><span class="p">(</span>
-				<span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="s">"Missing 'id' attribute."</span><span class="p">)</span> <span class="p">),</span> <span class="n">FUNC_ID</span><span class="p">);</span>
-		<span class="p">}</span>
-		<span class="c1">// convert attribute to value</span>
-		<span class="k">try</span> <span class="p">{</span>
-			<span class="n">m_id</span> <span class="o">=</span> <span class="n">IBK</span><span class="o">::</span><span class="n">string2val</span><span class="o">&lt;</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">attrib</span><span class="o">-&gt;</span><span class="n">ValueStr</span><span class="p">());</span>
-		<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span> <span class="o">&amp;</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span>
-			<span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span> <span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="n">XML_READ_ERROR</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">element</span><span class="o">-&gt;</span><span class="n">Row</span><span class="p">()).</span><span class="n">arg</span><span class="p">(</span>
-				<span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="s">"Invalid value for 'id' attribute."</span><span class="p">)</span> <span class="p">),</span> <span class="n">FUNC_ID</span><span class="p">);</span>
-		<span class="p">}</span>
+		<span class="c1">// search for mandatory attributes</span>
+		<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">TiXmlAttribute</span><span class="o">::</span><span class="n">attributeByName</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="s">"id"</span><span class="p">))</span>
+			<span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span> <span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="n">XML_READ_ERROR</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">element</span><span class="o">-&gt;</span><span class="n">Row</span><span class="p">()).</span><span class="n">arg</span><span class="p">(</span>
+				<span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="s">"Missing required 'id' attribute."</span><span class="p">)</span> <span class="p">),</span> <span class="n">FUNC_ID</span><span class="p">);</span>
 
-		<span class="c1">// read parameters</span>
-		<span class="k">for</span> <span class="p">(</span><span class="k">const</span> <span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">c</span> <span class="o">=</span> <span class="n">element</span><span class="o">-&gt;</span><span class="n">FirstChildElement</span><span class="p">();</span> <span class="n">c</span><span class="p">;</span> <span class="n">c</span> <span class="o">=</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">NextSiblingElement</span><span class="p">())</span> <span class="p">{</span>
-			<span class="c1">// determine data based on element name</span>
-			<span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">cname</span> <span class="o">=</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">Value</span><span class="p">();</span>
-			<span class="k">if</span> <span class="p">(</span><span class="n">cname</span> <span class="o">==</span> <span class="s">"Quantity"</span><span class="p">)</span> <span class="p">{</span>
-				<span class="n">m_quantity</span> <span class="o">=</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">GetText</span><span class="p">();</span>
-				<span class="k">if</span> <span class="p">(</span><span class="n">m_quantity</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span>
-					<span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="n">XML_READ_ERROR</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">element</span><span class="o">-&gt;</span><span class="n">Row</span><span class="p">()).</span><span class="n">arg</span><span class="p">(</span>
-						<span class="s">"Tag 'Quantity' must not be empty."</span><span class="p">),</span> <span class="n">FUNC_ID</span><span class="p">);</span>
-			<span class="p">}</span>
+		<span class="c1">// reading attributes</span>
+		<span class="k">const</span> <span class="n">TiXmlAttribute</span> <span class="o">*</span> <span class="n">attrib</span> <span class="o">=</span> <span class="n">element</span><span class="o">-&gt;</span><span class="n">FirstAttribute</span><span class="p">();</span>
+		<span class="k">while</span> <span class="p">(</span><span class="n">attrib</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span> <span class="n">attribName</span> <span class="o">=</span> <span class="n">attrib</span><span class="o">-&gt;</span><span class="n">NameStr</span><span class="p">();</span>
+			<span class="k">if</span> <span class="p">(</span><span class="n">attribName</span> <span class="o">==</span> <span class="s">"id"</span><span class="p">)</span>
+				<span class="n">m_id</span> <span class="o">=</span> <span class="n">readPODAttributeValue</span><span class="o">&lt;</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">attrib</span><span class="p">);</span>
 			<span class="k">else</span> <span class="p">{</span>
-				<span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="n">XML_READ_ERROR</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">element</span><span class="o">-&gt;</span><span class="n">Row</span><span class="p">()).</span><span class="n">arg</span><span class="p">(</span>
-					<span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="s">"Undefined tag '%1'."</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">cname</span><span class="p">)</span> <span class="p">),</span> <span class="n">FUNC_ID</span><span class="p">);</span>
+				<span class="n">IBK</span><span class="o">::</span><span class="n">IBK_Message</span><span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="n">XML_READ_UNKNOWN_ATTRIBUTE</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">attribName</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">element</span><span class="o">-&gt;</span><span class="n">Row</span><span class="p">()),</span> <span class="n">IBK</span><span class="o">::</span><span class="n">MSG_WARNING</span><span class="p">,</span> <span class="n">FUNC_ID</span><span class="p">,</span> <span class="n">IBK</span><span class="o">::</span><span class="n">VL_STANDARD</span><span class="p">);</span>
 			<span class="p">}</span>
+			<span class="n">attrib</span> <span class="o">=</span> <span class="n">attrib</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">();</span>
+		<span class="p">}</span>
+		<span class="c1">// search for mandatory elements</span>
+		<span class="c1">// reading elements</span>
+		<span class="k">const</span> <span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">c</span> <span class="o">=</span> <span class="n">element</span><span class="o">-&gt;</span><span class="n">FirstChildElement</span><span class="p">();</span>
+		<span class="k">while</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span> <span class="n">cName</span> <span class="o">=</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">ValueStr</span><span class="p">();</span>
+			<span class="k">if</span> <span class="p">(</span><span class="n">cName</span> <span class="o">==</span> <span class="s">"Quantity"</span><span class="p">)</span>
+				<span class="n">m_quantity</span> <span class="o">=</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">GetText</span><span class="p">();</span>
+			<span class="k">else</span> <span class="p">{</span>
+				<span class="n">IBK</span><span class="o">::</span><span class="n">IBK_Message</span><span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="n">XML_READ_UNKNOWN_ELEMENT</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">cName</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">element</span><span class="o">-&gt;</span><span class="n">Row</span><span class="p">()),</span> <span class="n">IBK</span><span class="o">::</span><span class="n">MSG_WARNING</span><span class="p">,</span> <span class="n">FUNC_ID</span><span class="p">,</span> <span class="n">IBK</span><span class="o">::</span><span class="n">VL_STANDARD</span><span class="p">);</span>
+			<span class="p">}</span>
+			<span class="n">c</span> <span class="o">=</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">NextSiblingElement</span><span class="p">();</span>
 		<span class="p">}</span>
 	<span class="p">}</span>
 	<span class="k">catch</span> <span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span> <span class="o">&amp;</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span>
-		<span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span> <span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="s">"Error reading 'Sensor' element."</span><span class="p">),</span> <span class="n">FUNC_ID</span><span class="p">);</span>
+		<span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span> <span class="n">ex</span><span class="p">,</span> <span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="s">"Error reading 'Sensor' element."</span><span class="p">),</span> <span class="n">FUNC_ID</span><span class="p">);</span>
 	<span class="p">}</span>
-	<span class="k">catch</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">exception</span> <span class="o">&amp;</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span>
-		<span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="s">"%1</span><span class="se">\n</span><span class="s">Error reading 'Sensor' element."</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">ex</span><span class="p">.</span><span class="n">what</span><span class="p">()),</span> <span class="n">FUNC_ID</span><span class="p">);</span>
+	<span class="k">catch</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">exception</span> <span class="o">&amp;</span> <span class="n">ex2</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span> <span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="s">"%1</span><span class="se">\n</span><span class="s">Error reading 'Sensor' element."</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">ex2</span><span class="p">.</span><span class="n">what</span><span class="p">()),</span> <span class="n">FUNC_ID</span><span class="p">);</span>
 	<span class="p">}</span>
 <span class="p">}</span></code></pre>
 </div>
@@ -400,7 +423,6 @@ table {
 	<span class="n">parent</span><span class="o">-&gt;</span><span class="n">LinkEndChild</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
 
 	<span class="n">e</span><span class="o">-&gt;</span><span class="n">SetAttribute</span><span class="p">(</span><span class="s">"id"</span><span class="p">,</span> <span class="n">IBK</span><span class="o">::</span><span class="n">val2string</span><span class="o">&lt;</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_id</span><span class="p">));</span>
-
 	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">m_quantity</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span>
 		<span class="n">TiXmlElement</span><span class="o">::</span><span class="n">appendSingleAttributeElement</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s">"Quantity"</span><span class="p">,</span> <span class="nb">nullptr</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(),</span> <span class="n">m_quantity</span><span class="p">);</span>
 	<span class="k">return</span> <span class="n">e</span><span class="p">;</span>
@@ -408,59 +430,45 @@ table {
 </div>
 </div>
 <div class="paragraph">
-<p>In order for the code generator to create these two functions, we need to add some comments to original class. Let&#8217;s start with the <code>writeXML()</code> function:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>XML-Element name is always the same as the class name, so that&#8217;s known to the code generator</p>
-</li>
-<li>
-<p><code>m_id</code> should be written as attribute to <code>Sensor</code>, we need to tell the code generator that this is an attribute. The conversion <code>unsigned int</code> to string is known from the type declaration.</p>
-</li>
-<li>
-<p><code>m_quantity</code> should be written as child-element to <code>Sensor</code>. We also need to tell the code generator, that this is to be an element. Also, we need to write the code to check that the attribute must not be empty before writing it. We should tell the code generator somehow, that the value must not appear as empty string <code>""</code> in the xml file.</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>This leads to some annotation comments in the header file:</p>
+<p>In order for the code generator to create these two functions, we need to add some <em>annotations</em> to original class declaration:</p>
 </div>
 <div class="listingblock">
-<div class="title">Class Sensor, with declarations of <code>readXML()</code> and <code>writeXML()</code> functions</div>
+<div class="title">Class Sensor, with annotations for read/write code generation</div>
 <div class="content">
 <pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">Sensor</span> <span class="p">{</span>
 <span class="nl">public:</span>
-	<span class="cm">/*! Default constructor. */</span>
-	<span class="n">Sensor</span><span class="p">()</span> <span class="o">:</span> <span class="n">m_id</span><span class="p">(</span><span class="n">NANDRAD</span><span class="o">::</span><span class="n">INVALID_ID</span><span class="p">)</span> <span class="p">{}</span>
+	<span class="c1">// *** PUBLIC MEMBER FUNCTIONS ***</span>
 
 	<span class="kt">void</span> <span class="n">readXML</span><span class="p">(</span><span class="k">const</span> <span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">element</span><span class="p">);</span>
-	<span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">writeXML</span><span class="p">(</span><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">parent</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">detailedOutput</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+	<span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">writeXML</span><span class="p">(</span><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">parent</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
 
 	<span class="c1">// *** PUBLIC MEMBER VARIABLES ***</span>
 
 	<span class="cm">/*! Unique ID-number of the sensor.*/</span>
-	<span class="kt">unsigned</span> <span class="kt">int</span>						<span class="n">m_id</span><span class="p">;</span>			<span class="c1">// XML-A:</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span>						<span class="n">m_id</span> <span class="o">=</span> <span class="n">NANDRAD</span><span class="o">::</span><span class="n">INVALID_ID</span><span class="p">;</span>		<span class="c1">// XML:A:required</span>
 	<span class="cm">/*! Name of the measured quantity */</span>
-	<span class="n">std</span><span class="o">::</span><span class="n">string</span>							<span class="n">m_quantity</span><span class="p">;</span>		<span class="c1">// XML-E:not-empty</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">string</span>							<span class="n">m_quantity</span><span class="p">;</span>						<span class="c1">// XML:E</span>
 <span class="p">};</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>// XML-A:</code> says: make this an attribute. The <code>// XML-E:</code> says: make this a child-element. The additional <code>not-empty</code> keyword means: do not allow this string to be empty (only meaningful for string data types, obviously).</p>
+<p>The <code>// XML:A</code> says: make this an attribute. The <code>// XML:E</code> says: make this a child-element. The additional <code>required</code> keyword means: this attribute (or element) must be provided, otherwise <code>readXML()</code> will throw an exception.</p>
 </div>
 <div class="paragraph">
-<p>With this given information, we can also generate the entire <code>readXML()</code> function.</p>
+<p>The annotations can be used for quite a few data types. Rules for these are given in section <a href="#xml_serialization_rules">XML Serialization</a>.</p>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_utility_macros">3.2. Utility Macros</h3>
 <div class="paragraph">
-<p>Lastly, since the declaration for the <code>readXML()</code> and <code>writeXML()</code> functions are always the same, we can avoid typing errors by using a define:</p>
+<p>Since the declaration for the <code>readXML()</code> and <code>writeXML()</code> functions are always the same, we can avoid typing errors by using a define:</p>
 </div>
 <div class="listingblock">
 <div class="title">Global code generator helpers</div>
 <div class="content">
 <pre class="rouge highlight"><code data-lang="c++"><span class="cp">#define NANDRAD_READWRITE \
 	void readXML(const TiXmlElement * element); \
-	TiXmlElement * writeXML(TiXmlElement * parent, bool detailedOutput) const;</span></code></pre>
+	TiXmlElement * writeXML(TiXmlElement * parent) const;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -471,15 +479,16 @@ table {
 <div class="content">
 <pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">Sensor</span> <span class="p">{</span>
 <span class="nl">public:</span>
-	<span class="cm">/*! Default constructor. */</span>
-	<span class="n">Sensor</span><span class="p">()</span> <span class="o">:</span> <span class="n">m_id</span><span class="p">(</span><span class="n">NANDRAD</span><span class="o">::</span><span class="n">INVALID_ID</span><span class="p">)</span> <span class="p">{}</span>
+	<span class="c1">// *** PUBLIC MEMBER FUNCTIONS ***</span>
 
 	<span class="n">NANDRAD_READWRITE</span>
 
+	<span class="c1">// *** PUBLIC MEMBER VARIABLES ***</span>
+
 	<span class="cm">/*! Unique ID-number of the sensor.*/</span>
-	<span class="kt">unsigned</span> <span class="kt">int</span>						<span class="n">m_id</span><span class="p">;</span>			<span class="c1">// XML-A:</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span>						<span class="n">m_id</span> <span class="o">=</span> <span class="n">NANDRAD</span><span class="o">::</span><span class="n">INVALID_ID</span><span class="p">;</span>		<span class="c1">// XML:A:required</span>
 	<span class="cm">/*! Name of the measured quantity */</span>
-	<span class="n">std</span><span class="o">::</span><span class="n">string</span>							<span class="n">m_quantity</span><span class="p">;</span>		<span class="c1">// XML-E:not-empty</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">string</span>							<span class="n">m_quantity</span><span class="p">;</span>						<span class="c1">// XML:E</span>
 <span class="p">};</span></code></pre>
 </div>
 </div>
@@ -489,30 +498,27 @@ table {
 <div class="paragraph">
 <p>The code generator will create a file: <code>ncg_NANDRAD_Sensor.cpp</code> with the functions <code>Sensor::readXML()</code> and <code>Sensor::writeXML()</code>.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>To avoid regenerating (and recompiling) all <code>ncg_*</code> files whenever <em>one</em> header file is modified, the code generator inspects the file creation times of the <code>ncg_XXX.cpp</code> file with the latest modification/creation data of the respective <code>ncg_XXX.h</code> file. The code is only generated, if header file is newer than the generated file.</p>
+<p>To avoid regenerating (and recompiling) all <code>ncg_*</code> files whenever <em>one</em> header file is modified, the code generator inspects the file creation times of the <code>ncg_XXX.cpp</code> file with the latest modification/creation data of the respective <code>ncg_XXX.h</code> file. The code is only generated, if the header file is newer than the generated file.</p>
 </div>
+</td>
+</tr>
+</table>
 </div>
-<div class="sect2">
-<h3 id="_is_default_functionality">3.2. "Is default" functionality</h3>
+<div class="sect3">
+<h4 id="_comparison_operator_macro">3.2.1. Comparison operator macro</h4>
 <div class="paragraph">
-<p>Suppose now a data member like <code>Sensor</code> is used in some other class in the hierarchy. There, the member variable may be uninitialized (sensor ID == <code>NANDRAD::INVALID_ID</code>). We want to avoid writing the <code>&lt;Sensor&gt;</code> xml tag alltogether in this case.</p>
-</div>
-<div class="paragraph">
-<p>The typical code looks like:</p>
+<p>When checking if the content of an object is effectively the same as that of another (possibly freshly constructed) object, we need a comparison operator. Actually, we usually need both <code>operator==</code> and <code>operator!=</code> (depending on the alorithm used, either of the two is needed). The code for the class <code>Sensor</code> normally looks like that:</p>
 </div>
 <div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code data-lang="c++"><span class="c1">// only write sensor if different from default</span>
-<span class="k">if</span> <span class="p">(</span><span class="n">detailedOutput</span> <span class="o">||</span> <span class="n">m_sensor</span> <span class="o">!=</span> <span class="n">Sensor</span><span class="p">())</span> <span class="p">{</span>
-    <span class="n">m_sensor</span><span class="p">.</span><span class="n">writeXML</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">detailedOutput</span><span class="p">);</span>
-<span class="p">}</span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>For this code to work, we need a comparison operator defined in class <code>Sensor</code>, again something that the code generator provides:</p>
-</div>
-<div class="listingblock">
+<div class="title">Comparison operator (inequality)</div>
 <div class="content">
 <pre class="rouge highlight"><code data-lang="c++"><span class="kt">bool</span> <span class="n">Sensor</span><span class="o">::</span><span class="k">operator</span><span class="o">!=</span><span class="p">(</span><span class="k">const</span> <span class="n">Sensor</span> <span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
 	<span class="k">if</span> <span class="p">(</span><span class="n">m_id</span> <span class="o">!=</span> <span class="n">other</span><span class="p">.</span><span class="n">m_id</span><span class="p">)</span>				<span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
@@ -522,7 +528,16 @@ table {
 </div>
 </div>
 <div class="paragraph">
-<p>Again, the declaration is pretty standard and can be replaced by a define:</p>
+<p>The other comparison operator is normally just implemented using the other:</p>
+</div>
+<div class="listingblock">
+<div class="title">Comparison operator (equality)</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="kt">bool</span> <span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="k">const</span> <span class="n">Sensor</span> <span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="o">!</span><span class="k">operator</span><span class="o">!=</span><span class="p">(</span><span class="n">other</span><span class="p">);</span> <span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The declaration and the definition of the equality operator can be replaced by a define:</p>
 </div>
 <div class="listingblock">
 <div class="title">Global code generator helpers</div>
@@ -535,39 +550,43 @@ table {
 <p>So the class declaration becomes:</p>
 </div>
 <div class="listingblock">
-<div class="title">Class Sensor, using code generator</div>
+<div class="title">Class Sensor, with comparison function declarations</div>
 <div class="content">
 <pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">Sensor</span> <span class="p">{</span>
 <span class="nl">public:</span>
-	<span class="cm">/*! Default constructor. */</span>
-	<span class="n">Sensor</span><span class="p">()</span> <span class="o">:</span> <span class="n">m_id</span><span class="p">(</span><span class="n">NANDRAD</span><span class="o">::</span><span class="n">INVALID_ID</span><span class="p">)</span> <span class="p">{}</span>
+	<span class="c1">// *** PUBLIC MEMBER FUNCTIONS ***</span>
 
 	<span class="n">NANDRAD_READWRITE</span>
 	<span class="n">NANDRAD_COMP</span><span class="p">(</span><span class="n">Sensor</span><span class="p">)</span>
 
+	<span class="c1">// *** PUBLIC MEMBER VARIABLES ***</span>
+
 	<span class="cm">/*! Unique ID-number of the sensor.*/</span>
-	<span class="kt">unsigned</span> <span class="kt">int</span>						<span class="n">m_id</span><span class="p">;</span>			<span class="c1">// XML-A:</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span>						<span class="n">m_id</span> <span class="o">=</span> <span class="n">NANDRAD</span><span class="o">::</span><span class="n">INVALID_ID</span><span class="p">;</span>		<span class="c1">// XML:A:required</span>
 	<span class="cm">/*! Name of the measured quantity */</span>
-	<span class="n">std</span><span class="o">::</span><span class="n">string</span>							<span class="n">m_quantity</span><span class="p">;</span>		<span class="c1">// XML-E:not-empty</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">string</span>							<span class="n">m_quantity</span><span class="p">;</span>						<span class="c1">// XML:E</span>
 <span class="p">};</span></code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_custom_readwrite_functionality">3.3. Custom read/write functionality</h3>
+<div class="sect3">
+<h4 id="xml_custom_readwrite">3.2.2. Custom read/write functionality</h4>
 <div class="paragraph">
-<p>Sometimes, the default read/write code is not enough, because something special needs to be written/read as well. Here, you can simply use an additional define:</p>
+<p>Sometimes, the default read/write code is not enough, because something special needs to be written/read as well. Here, you can simply use an alternative define <code>NANDRAD_READWRITE_PRIVATE</code>:</p>
 </div>
 <div class="listingblock">
 <div class="title">Global code generator helpers</div>
 <div class="content">
 <pre class="rouge highlight"><code data-lang="c++"><span class="cp">#define NANDRAD_READWRITE_PRIVATE \
 	void readXMLPrivate(const TiXmlElement * element); \
-	TiXmlElement * writeXMLPrivate(TiXmlElement * parent, bool detailedOutput) const;</span></code></pre>
+	TiXmlElement * writeXMLPrivate(TiXmlElement * parent) const;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>and implement <code>readXML()</code> and <code>writeXML()</code> manually, hereby re-using the auto-generated functionality. The header then looks like:</p>
+<p>which tells the code generator to generate the read/write code inside the <code>XXXPrivate</code>-functions.</p>
+</div>
+<div class="paragraph">
+<p>You can now implement <code>readXML()</code> and <code>writeXML()</code> manually, hereby re-using the auto-generated functionality. Below is an example:</p>
 </div>
 <div class="listingblock">
 <div class="title">Class Sensor, using code generator with private read/write functions</div>
@@ -575,16 +594,17 @@ table {
 <pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">Sensor</span> <span class="p">{</span>
 	<span class="n">NANDRAD_READWRITE_PRIVATE</span>
 <span class="nl">public:</span>
-	<span class="cm">/*! Default constructor. */</span>
-	<span class="n">Sensor</span><span class="p">()</span> <span class="o">:</span> <span class="n">m_id</span><span class="p">(</span><span class="n">NANDRAD</span><span class="o">::</span><span class="n">INVALID_ID</span><span class="p">)</span> <span class="p">{}</span>
+	<span class="c1">// *** PUBLIC MEMBER FUNCTIONS ***</span>
 
 	<span class="n">NANDRAD_READWRITE</span>
 	<span class="n">NANDRAD_COMP</span><span class="p">(</span><span class="n">Sensor</span><span class="p">)</span>
 
+	<span class="c1">// *** PUBLIC MEMBER VARIABLES ***</span>
+
 	<span class="cm">/*! Unique ID-number of the sensor.*/</span>
-	<span class="kt">unsigned</span> <span class="kt">int</span>						<span class="n">m_id</span><span class="p">;</span>			<span class="c1">// XML-A:</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span>						<span class="n">m_id</span> <span class="o">=</span> <span class="n">NANDRAD</span><span class="o">::</span><span class="n">INVALID_ID</span><span class="p">;</span>		<span class="c1">// XML:A:required</span>
 	<span class="cm">/*! Name of the measured quantity */</span>
-	<span class="n">std</span><span class="o">::</span><span class="n">string</span>							<span class="n">m_quantity</span><span class="p">;</span>		<span class="c1">// XML-E:not-empty</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">string</span>							<span class="n">m_quantity</span><span class="p">;</span>						<span class="c1">// XML:E</span>
 <span class="p">};</span></code></pre>
 </div>
 </div>
@@ -607,19 +627,67 @@ table {
 <span class="p">}</span></code></pre>
 </div>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>When the code generator creates <code>readXMLPrivate()</code> functions, the check for unknown elements is not generated (see <a href="#generated_readXML">original readXML-function</a>, since it can be expected that other (custom) elements are present inside the parsed XML-tag.</p>
 </div>
-</td>
-</tr>
-</table>
+<div class="sect3">
+<h4 id="_only_writing_data_if_not_still_default_content">3.2.3. Only writing data if not still default content</h4>
+<div class="paragraph">
+<p>To avoid writing empty tags or default values, you can write code like:</p>
+</div>
+<div class="listingblock">
+<div class="title">Implmenetation of writeXML with default check</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">Sensor</span><span class="o">::</span><span class="n">writeXML</span><span class="p">(</span><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">parent</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">detailedOutput</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+    <span class="c1">// check if we still have default data</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">*</span><span class="k">this</span> <span class="o">==</span> <span class="n">Sensor</span><span class="p">())</span>
+        <span class="k">return</span><span class="p">;</span> <span class="c1">// still default, do not write anything</span>
+
+	<span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">e</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TiXmlElement</span><span class="p">(</span><span class="s">"Sensor"</span><span class="p">);</span>
+	<span class="n">parent</span><span class="o">-&gt;</span><span class="n">LinkEndChild</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
+
+	<span class="n">e</span><span class="o">-&gt;</span><span class="n">SetAttribute</span><span class="p">(</span><span class="s">"id"</span><span class="p">,</span> <span class="n">IBK</span><span class="o">::</span><span class="n">val2string</span><span class="o">&lt;</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_id</span><span class="p">));</span>
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">m_quantity</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span>
+		<span class="n">TiXmlElement</span><span class="o">::</span><span class="n">appendSingleAttributeElement</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s">"Quantity"</span><span class="p">,</span> <span class="nb">nullptr</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(),</span> <span class="n">m_quantity</span><span class="p">);</span>
+	<span class="k">return</span> <span class="n">e</span><span class="p">;</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>However, the code generator cannot write this automatically, because sometimes it is desired to write even default content. Also, a comparison-operator is not always available.</p>
+</div>
+<div class="paragraph">
+<p>You can, however, use the macro <code>NANDRAD_READWRITE_IFNOTEMPTY(X)</code> instead of the regular <code>NANDRAD_READWRITE</code> macro for this:</p>
+</div>
+<div class="listingblock">
+<div class="title">Macro with check for default values</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="cp">#define NANDRAD_READWRITE_IFNOTEMPTY(X) \
+	void readXML(const TiXmlElement * element) { readXMLPrivate(element); } \
+	TiXmlElement * writeXML(TiXmlElement * parent) const { if (*this != X()) return writeXMLPrivate(parent); else return nullptr; }</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Since this macro uses the functions <code>readXMLPrivate()</code> and <code>writeXMLPrivate()</code> you also need to tell the code generator to use the private function versions, as in the following example:</p>
+</div>
+<div class="listingblock">
+<div class="title">Class Sensor, using code generator with private read/write functions and check to not write default data</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">Sensor</span> <span class="p">{</span>
+	<span class="n">NANDRAD_READWRITE_PRIVATE</span>
+<span class="nl">public:</span>
+	<span class="c1">// *** PUBLIC MEMBER FUNCTIONS ***</span>
+
+	<span class="n">NANDRAD_READWRITE_IFNOTEMPTY</span><span class="p">(</span><span class="n">Sensor</span><span class="p">)</span>
+	<span class="n">NANDRAD_COMP</span><span class="p">(</span><span class="n">Sensor</span><span class="p">)</span>
+
+	<span class="c1">// *** PUBLIC MEMBER VARIABLES ***</span>
+
+	<span class="cm">/*! Unique ID-number of the sensor.*/</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span>						<span class="n">m_id</span> <span class="o">=</span> <span class="n">NANDRAD</span><span class="o">::</span><span class="n">INVALID_ID</span><span class="p">;</span>		<span class="c1">// XML:A:required</span>
+	<span class="cm">/*! Name of the measured quantity */</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">string</span>							<span class="n">m_quantity</span><span class="p">;</span>						<span class="c1">// XML:E</span>
+<span class="p">};</span></code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -756,13 +824,239 @@ table {
 <p>The <em>default value</em> must be a floating point number in C locale format. Similarly as color and unit, this parameter is meaningful for user interfaces with somewhat generic parameter input handling.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="xml_serialization_rules">4.3. XML Serialization</h3>
+<div class="paragraph">
+<p>In order for the CodeGenerator to work correct, we need a <span class="line-through">few</span> lots of conventions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>only one class per file</p>
+</li>
+<li>
+<p>only member variables with <code>// XML:A</code> or <code>// XML:E</code> annotations are written/read (code generated for them)</p>
+</li>
+<li>
+<p>all member variables must be prefixed <code>m_</code></p>
+</li>
+<li>
+<p>only the types used in the following test class are currently supported. Complex types with own <code>readXML()</code> and <code>writeXML()</code> functions are always supported (see section <a href="#xml_complexTypes">Reading/writing custom complex types</a>)</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">Example class with different types currently supported by code generator</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">SerializationTest</span> <span class="p">{</span>
+<span class="nl">public:</span>
+
+	<span class="n">NANDRAD_READWRITE</span>
+
+	<span class="k">enum</span> <span class="n">test_t</span> <span class="p">{</span>
+		<span class="n">t_x1</span><span class="p">,</span>												<span class="c1">// Keyword: X1</span>
+		<span class="n">t_x2</span><span class="p">,</span>												<span class="c1">// Keyword: X2</span>
+		<span class="n">NUM_test</span>
+	<span class="p">};</span>
+
+	<span class="k">enum</span> <span class="n">intPara_t</span> <span class="p">{</span>
+		<span class="n">IP_i1</span><span class="p">,</span>												<span class="c1">// Keyword: I1</span>
+		<span class="n">IP_i2</span><span class="p">,</span>												<span class="c1">// Keyword: I2</span>
+		<span class="n">NUM_IP</span>
+	<span class="p">};</span>
+
+	<span class="kt">int</span>					<span class="n">m_id1</span>		<span class="o">=</span> <span class="mi">5</span><span class="p">;</span>					<span class="c1">// XML:A:required</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span>		<span class="n">m_id2</span>		<span class="o">=</span> <span class="mi">10</span><span class="p">;</span>					<span class="c1">// XML:A</span>
+	<span class="kt">bool</span>				<span class="n">m_flag1</span>		<span class="o">=</span> <span class="nb">false</span><span class="p">;</span>				<span class="c1">// XML:A</span>
+	<span class="kt">double</span>				<span class="n">m_val1</span>		<span class="o">=</span> <span class="mf">42.42</span><span class="p">;</span>				<span class="c1">// XML:A</span>
+	<span class="n">test_t</span>				<span class="n">m_testBla</span>	<span class="o">=</span> <span class="n">t_x1</span><span class="p">;</span>					<span class="c1">// XML:A</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">string</span>			<span class="n">m_str1</span>		<span class="o">=</span> <span class="s">"Blubb"</span><span class="p">;</span>				<span class="c1">// XML:A</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Path</span>			<span class="n">m_path1</span>		<span class="o">=</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Path</span><span class="p">(</span><span class="s">"/tmp"</span><span class="p">);</span>	<span class="c1">// XML:A</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Unit</span>			<span class="n">m_u1</span>		<span class="o">=</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Unit</span><span class="p">(</span><span class="s">"K"</span><span class="p">);</span>		<span class="c1">// XML:A</span>
+
+	<span class="kt">int</span>					<span class="n">m_id3</span>		<span class="o">=</span> <span class="mi">10</span><span class="p">;</span>					<span class="c1">// XML:E:required</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span>		<span class="n">m_id4</span>		<span class="o">=</span> <span class="mi">12</span><span class="p">;</span>					<span class="c1">// XML:E</span>
+	<span class="kt">bool</span>				<span class="n">m_flag2</span>		<span class="o">=</span> <span class="nb">true</span><span class="p">;</span>					<span class="c1">// XML:E</span>
+	<span class="kt">double</span>				<span class="n">m_val2</span>		<span class="o">=</span> <span class="mf">41.41</span><span class="p">;</span>				<span class="c1">// XML:E</span>
+	<span class="n">test_t</span>				<span class="n">m_testBlo</span>	<span class="o">=</span> <span class="n">t_x2</span><span class="p">;</span>					<span class="c1">// XML:E</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">string</span>			<span class="n">m_str2</span>		<span class="o">=</span> <span class="s">"blabb"</span><span class="p">;</span>				<span class="c1">// XML:E</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Path</span>			<span class="n">m_path2</span>		<span class="o">=</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Path</span><span class="p">(</span><span class="s">"/var"</span><span class="p">);</span>	<span class="c1">// XML:E</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Unit</span>			<span class="n">m_u2</span>		<span class="o">=</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Unit</span><span class="p">(</span><span class="s">"C"</span><span class="p">);</span>		<span class="c1">// XML:E</span>
+	<span class="kt">double</span>				<span class="n">m_x5</span><span class="p">;</span>								<span class="c1">// XML:E</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Flag</span>			<span class="n">m_f</span><span class="p">;</span>								<span class="c1">// XML:E</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Time</span>			<span class="n">m_time1</span><span class="p">;</span>							<span class="c1">// XML:E</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Time</span>			<span class="n">m_time2</span><span class="p">;</span>							<span class="c1">// XML:E</span>
+
+	<span class="n">DataTable</span>			<span class="n">m_table</span><span class="p">;</span>							<span class="c1">// XML:E</span>
+
+	<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span>		<span class="n">m_dblVec</span><span class="p">;</span>						<span class="c1">// XML:E</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Interface</span><span class="o">&gt;</span>	<span class="n">m_interfaces</span><span class="p">;</span>					<span class="c1">// XML:E</span>
+
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Parameter</span>		<span class="n">m_para</span><span class="p">[</span><span class="n">NUM_test</span><span class="p">];</span>					<span class="c1">// XML:E</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">IntPara</span>		<span class="n">m_intPara</span><span class="p">[</span><span class="n">NUM_IP</span><span class="p">];</span>					<span class="c1">// XML:E</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Flag</span>			<span class="n">m_flags</span><span class="p">[</span><span class="n">NUM_test</span><span class="p">];</span>					<span class="c1">// XML:E</span>
+
+	<span class="n">IBK</span><span class="o">::</span><span class="n">LinearSpline</span>	<span class="n">m_spline</span><span class="p">;</span>							<span class="c1">// XML:E</span>
+
+	<span class="c1">// example for a generic class with own readXML() and writeXML() function</span>
+	<span class="n">Schedule</span>			<span class="n">m_sched</span><span class="p">;</span>							<span class="c1">// XML:E</span>
+
+<span class="p">};</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following conventions are used when composing the XML content:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>parent XML-Element name is always the same as the class name, so in the example above the xml-tag is <code>SerializationTest</code>.</p>
+</li>
+<li>
+<p>child tag names are composed of the capitalized variable name without <code>m_</code> prefix, so <code>m_testParameter</code> becomes <code>TestParameter</code></p>
+</li>
+<li>
+<p>attribute names are composed of the variable name without <code>m_</code> prefix, so <code>m_flagFive</code> becomes attribute <code>flagFive</code></p>
+</li>
+<li>
+<p>for vector quantities (for example <code>std::vector&lt;Interface&gt; m_interfaces</code>, the variable name is used to generate the list-type XML tag, here <code>Interfaces</code> (again just by capitalizing the variable name string). Inside the list the actual members are written, hereby calling <code>writeXML()</code> in the child elements (<code>Interface::writeXML()</code> in the example above)</p>
+</li>
+<li>
+<p>static arrays are supported, but only with enumeration index where the enum is parametrized with keyword list and <code>NUM_xxx</code> enumeration value as last enum value. The xml-tags are named as the keywords for the corresponding enum type).</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The following XML-output is generated from the class declaration above:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="cp">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;</span>
+<span class="nt">&lt;NandradProject&gt;</span>
+	<span class="nt">&lt;SerializationTest</span> <span class="na">id1=</span><span class="s">"5"</span> <span class="na">id2=</span><span class="s">"10"</span> <span class="na">flag1=</span><span class="s">"0"</span> <span class="na">val1=</span><span class="s">"42.42"</span> <span class="na">testBla=</span><span class="s">"X1"</span> <span class="na">str1=</span><span class="s">"Blubb"</span> <span class="na">path1=</span><span class="s">"/tmp"</span> <span class="na">u1=</span><span class="s">"K"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;Id3&gt;</span>10<span class="nt">&lt;/Id3&gt;</span>
+		<span class="nt">&lt;Id4&gt;</span>12<span class="nt">&lt;/Id4&gt;</span>
+		<span class="nt">&lt;Flag2&gt;</span>1<span class="nt">&lt;/Flag2&gt;</span>
+		<span class="nt">&lt;Val2&gt;</span>41.41<span class="nt">&lt;/Val2&gt;</span>
+		<span class="nt">&lt;TestBlo&gt;</span>X2<span class="nt">&lt;/TestBlo&gt;</span>
+		<span class="nt">&lt;Str2&gt;</span>blabb<span class="nt">&lt;/Str2&gt;</span>
+		<span class="nt">&lt;Path2&gt;</span>/var<span class="nt">&lt;/Path2&gt;</span>
+		<span class="nt">&lt;U2&gt;</span>C<span class="nt">&lt;/U2&gt;</span>
+		<span class="nt">&lt;X5&gt;</span>43.43<span class="nt">&lt;/X5&gt;</span>
+		<span class="nt">&lt;IBK:Flag</span> <span class="na">name=</span><span class="s">"F"</span><span class="nt">&gt;</span>true<span class="nt">&lt;/IBK:Flag&gt;</span>
+		<span class="nt">&lt;Time1&gt;</span>01.01.07 12:47:12<span class="nt">&lt;/Time1&gt;</span>
+		<span class="nt">&lt;Schedule</span> <span class="na">type=</span><span class="s">"Friday"</span><span class="nt">&gt;</span>
+			<span class="nt">&lt;StartDate&gt;</span>01.01.00  0:00:00<span class="nt">&lt;/StartDate&gt;</span>
+			<span class="nt">&lt;EndDate&gt;</span>01.01.00  0:00:00<span class="nt">&lt;/EndDate&gt;</span>
+			<span class="nt">&lt;DailyCycles&gt;</span>
+				<span class="nt">&lt;DailyCycle</span> <span class="nt">/&gt;</span>
+			<span class="nt">&lt;/DailyCycles&gt;</span>
+		<span class="nt">&lt;/Schedule&gt;</span>
+		<span class="nt">&lt;Table&gt;</span>Col1:1,5,3;Col2:7,2,2;<span class="nt">&lt;/Table&gt;</span>
+		<span class="nt">&lt;DblVec&gt;</span>0,12,24<span class="nt">&lt;/DblVec&gt;</span>
+		<span class="nt">&lt;Interfaces&gt;</span>
+			<span class="nt">&lt;Interface</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">location=</span><span class="s">"A"</span> <span class="na">zoneId=</span><span class="s">"0"</span><span class="nt">&gt;</span>
+				<span class="c">&lt;!--Interface to outside--&gt;</span>
+			<span class="nt">&lt;/Interface&gt;</span>
+		<span class="nt">&lt;/Interfaces&gt;</span>
+		<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"X1"</span> <span class="na">unit=</span><span class="s">"C"</span><span class="nt">&gt;</span>12<span class="nt">&lt;/IBK:Parameter&gt;</span>
+		<span class="nt">&lt;IBK:IntPara</span> <span class="na">name=</span><span class="s">"I1"</span><span class="nt">&gt;</span>13<span class="nt">&lt;/IBK:IntPara&gt;</span>
+		<span class="nt">&lt;IBK:IntPara</span> <span class="na">name=</span><span class="s">"I2"</span><span class="nt">&gt;</span>15<span class="nt">&lt;/IBK:IntPara&gt;</span>
+		<span class="nt">&lt;IBK:Flag</span> <span class="na">name=</span><span class="s">"X2"</span><span class="nt">&gt;</span>true<span class="nt">&lt;/IBK:Flag&gt;</span>
+		<span class="nt">&lt;IBK:LinearSpline</span> <span class="na">name=</span><span class="s">"Spline"</span><span class="nt">&gt;</span>
+			<span class="nt">&lt;X</span> <span class="na">unit=</span><span class="s">"-"</span><span class="nt">&gt;</span>0 1 1.4 2 <span class="nt">&lt;/X&gt;</span>
+			<span class="nt">&lt;Y</span> <span class="na">unit=</span><span class="s">"-"</span><span class="nt">&gt;</span>1 2 3.4 5 <span class="nt">&lt;/Y&gt;</span>
+		<span class="nt">&lt;/IBK:LinearSpline&gt;</span>
+	<span class="nt">&lt;/SerializationTest&gt;</span>
+<span class="nt">&lt;/NandradProject&gt;</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>When writing custom types like <code>Schedule</code> in the example above, you <strong>must only have one object</strong> declared as member variable, since the xml-tag is generated based on the variable type name. This is due to the fact, that the code generator currently just calls <code>writeXML()</code> inside such complex types and these classes (currently) set the child xml tag name to the class name. In the example above, the class name is <code>Schedule</code> and hence the xml-tag is named <code>Schedule</code> and not <code>Sched</code> as it would be according to the standard naming rules.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>For types <code>IBK::Parameter</code>, <code>IBK::IntPara</code>, <code>IBK::LinearSpline</code> and <code>IBK::Flag</code> the name must be set exactly to the name of the generated xml-tag name. So, a parameter with member variable <code>m_transferCoefficient</code> must be given the name <code>TransferCoefficient</code>. In case of static arrays, where the enumeration value determines keyword and thus xml-tag, the name is ignored.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The code generator creates additional code to prevent writing of undefined data:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>IBK::Parameter</code>, <code>IBK::IntPara</code> and <code>IBK::Flag</code> with empty name are not written</p>
+</li>
+<li>
+<p>enumeration values where the value matches the corresponding <code>NUM_xxx</code> value are not written</p>
+</li>
+<li>
+<p><code>IBK::Time</code> with invalid time/date are not written</p>
+</li>
+<li>
+<p>empty strings/paths are not written</p>
+</li>
+<li>
+<p>undefined units (id=0) are not written</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="xml_complexTypes">4.3.1. Reading/writing custom complex types</h4>
+<div class="paragraph">
+<p>Any data type not listed in the example above and with <code>// XML:E</code> annotation is treated by the code generator as a complex type with own functions <code>readXML()</code> and <code>writeXML()</code> according to the <code>NANDRAD_READWRITE</code> macro. The code generator with create code to simply call these functions when writing such code.</p>
+</div>
+<div class="paragraph">
+<p>When reading an XML-file, the tag is compared with the typename of the member variable (<code>Schedule</code> in the example above for member variable <code>m_sched</code>) and if matched, an object of said type is created and the <code>readXML()</code> function is called for this child tag. Then, the variable is <em>assigned</em> to the member variable. Hence, the complex type also requires an assignment operator. This is usually automatically generated, but for classes with pointers or special resource management, you may need to provide this assignment operator in addition to the <code>readXML() and `writeXML()</code> functions.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_unsupported_data_member_types">4.3.2. Unsupported data member types</h4>
+<div class="paragraph">
+<p>For any kind of special data types, like <code>std::map&lt;std::string, std::vector&lt;double&gt; &gt;</code> you cannot use the code generator to create read/write code for. When you add a read/write annotation to such variables, the code generator will complain about unsupported types and may generate not compiling code.</p>
+</div>
+<div class="paragraph">
+<p>In such cases you have two options:</p>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha">
+<li>
+<p>create your own <code>readXML()</code> and <code>writeXML()</code> functions (possibly by copy&amp;pasting other generated functions from <code>ncg_*</code> files and adjusting the code to your needs). For other member variables whose types are supported by the code generator, you may still use the code generator, but you must use the <code>NANDRAD_READWRITE_PRIVATE</code> macro (see example in section <a href="#xml_custom_readwrite">Custom read/write functionality</a>).</p>
+</li>
+<li>
+<p>change the type to something different, possibly creating another class with standardized behavior. So, for example, you could store <code>std::map&lt;std::string, std::vector&lt;double&gt; &gt;</code>  data in <code>std::vector&lt;NamedDblVector&gt;</code> where <code>NamedDblVector</code> contains a <code>std::string</code> and <code>std::vector&lt;double&gt;</code> members, both of which are fully supported by the code generator. You may need to code the check for duplicate names yourself.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated 2020-07-11 21:56:52 +0200
+Last updated 2020-07-19 17:30:34 +0200
 </div>
 </div>
 <style>

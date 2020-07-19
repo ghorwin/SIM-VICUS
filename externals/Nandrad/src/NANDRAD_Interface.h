@@ -92,9 +92,9 @@ public:
 	/*! ID of the referenced surface/interface. */
 	unsigned int								m_id = INVALID_ID;		// XML:A:required
 	/*! The position of the interface, left ore right of the construction. */
-	location_t									m_location;				// XML:A
+	location_t									m_location = IT_A;		// XML:A
 	/*! The id number of the neighboring zone. */
-	unsigned int								m_zoneId;				// XML:A
+	unsigned int								m_zoneId = 0;			// XML:A
 
 	/*! Enables the interface models. */
 	IBK::Flag									m_condition[NUM_IP];	// XML:E

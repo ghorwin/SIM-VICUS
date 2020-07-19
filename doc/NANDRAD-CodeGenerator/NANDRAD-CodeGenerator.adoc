@@ -372,6 +372,7 @@ public:
 };
 ----
 
+[[xml_custom_readwrite]]
 #### Custom read/write functionality
 
 Sometimes, the default read/write code is not enough, because something special needs to be written/read as well. Here, you can simply use an alternative define `NANDRAD_READWRITE_PRIVATE`:
@@ -583,13 +584,156 @@ The _default value_ must be a floating point number in C locale format. Similarl
 [[xml_serialization_rules]]
 ### XML Serialization
 
-In order for the CodeGenerator to work correct, we need a [line-through]##few## lots of rules:
+In order for the CodeGenerator to work correct, we need a [line-through]##few## lots of conventions:
+
+- only one class per file
+- only member variables with `// XML:A` or `// XML:E` annotations are written/read (code generated for them)  
+- all member variables must be prefixed `m_`
+- only the types used in the following test class are currently supported. Complex types with own `readXML()` and `writeXML()` functions are always supported (see section <<xml_complexTypes>>)
+
+.Example class with different types currently supported by code generator 
+[source,c++]
+----
+class SerializationTest {
+public:
+
+	NANDRAD_READWRITE
+
+	enum test_t {
+		t_x1,												// Keyword: X1
+		t_x2,												// Keyword: X2
+		NUM_test
+	};
+
+	enum intPara_t {
+		IP_i1,												// Keyword: I1
+		IP_i2,												// Keyword: I2
+		NUM_IP
+	};
+
+	int					m_id1		= 5;					// XML:A:required
+	unsigned int		m_id2		= 10;					// XML:A
+	bool				m_flag1		= false;				// XML:A
+	double				m_val1		= 42.42;				// XML:A
+	test_t				m_testBla	= t_x1;					// XML:A
+	std::string			m_str1		= "Blubb";				// XML:A
+	IBK::Path			m_path1		= IBK::Path("/tmp");	// XML:A
+	IBK::Unit			m_u1		= IBK::Unit("K");		// XML:A
+
+	int					m_id3		= 10;					// XML:E:required
+	unsigned int		m_id4		= 12;					// XML:E
+	bool				m_flag2		= true;					// XML:E
+	double				m_val2		= 41.41;				// XML:E
+	test_t				m_testBlo	= t_x2;					// XML:E
+	std::string			m_str2		= "blabb";				// XML:E
+	IBK::Path			m_path2		= IBK::Path("/var");	// XML:E
+	IBK::Unit			m_u2		= IBK::Unit("C");		// XML:E
+	double				m_x5;								// XML:E
+	IBK::Flag			m_f;								// XML:E
+	IBK::Time			m_time1;							// XML:E
+	IBK::Time			m_time2;							// XML:E
+
+	DataTable			m_table;							// XML:E
+
+	std::vector<double>		m_dblVec;						// XML:E
+	std::vector<Interface>	m_interfaces;					// XML:E
+
+	IBK::Parameter		m_para[NUM_test];					// XML:E
+	IBK::IntPara		m_intPara[NUM_IP];					// XML:E
+	IBK::Flag			m_flags[NUM_test];					// XML:E
+
+	IBK::LinearSpline	m_spline;							// XML:E
+
+	// example for a generic class with own readXML() and writeXML() function
+	Schedule			m_sched;							// XML:E
+
+};
+
+----
+
+The following conventions are used when composing the XML content:
+
+1. parent XML-Element name is always the same as the class name, so in the example above the xml-tag is `SerializationTest`.
+2. child tag names are composed of the capitalized variable name without `m_` prefix, so `m_testParameter` becomes `TestParameter` 
+3. attribute names are composed of the variable name without `m_` prefix, so `m_flagFive` becomes attribute `flagFive`
+4. for vector quantities (for example `std::vector<Interface> m_interfaces`, the variable name is used to generate the list-type XML tag, here `Interfaces` (again just by capitalizing the variable name string). Inside the list the actual members are written, hereby calling `writeXML()` in the child elements (`Interface::writeXML()` in the example above)
+5. static arrays are supported, but only with enumeration index where the enum is parametrized with keyword list and `NUM_xxx` enumeration value as last enum value. The xml-tags are named as the keywords for the corresponding enum type).
+
+The following XML-output is generated from the class declaration above:
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject>
+	<SerializationTest id1="5" id2="10" flag1="0" val1="42.42" testBla="X1" str1="Blubb" path1="/tmp" u1="K">
+		<Id3>10</Id3>
+		<Id4>12</Id4>
+		<Flag2>1</Flag2>
+		<Val2>41.41</Val2>
+		<TestBlo>X2</TestBlo>
+		<Str2>blabb</Str2>
+		<Path2>/var</Path2>
+		<U2>C</U2>
+		<X5>43.43</X5>
+		<IBK:Flag name="F">true</IBK:Flag>
+		<Time1>01.01.07 12:47:12</Time1>
+		<Schedule type="Friday">
+			<StartDate>01.01.00  0:00:00</StartDate>
+			<EndDate>01.01.00  0:00:00</EndDate>
+			<DailyCycles>
+				<DailyCycle />
+			</DailyCycles>
+		</Schedule>
+		<Table>Col1:1,5,3;Col2:7,2,2;</Table>
+		<DblVec>0,12,24</DblVec>
+		<Interfaces>
+			<Interface id="1" location="A" zoneId="0">
+				<!--Interface to outside-->
+			</Interface>
+		</Interfaces>
+		<IBK:Parameter name="X1" unit="C">12</IBK:Parameter>
+		<IBK:IntPara name="I1">13</IBK:IntPara>
+		<IBK:IntPara name="I2">15</IBK:IntPara>
+		<IBK:Flag name="X2">true</IBK:Flag>
+		<IBK:LinearSpline name="Spline">
+			<X unit="-">0 1 1.4 2 </X>
+			<Y unit="-">1 2 3.4 5 </Y>
+		</IBK:LinearSpline>
+	</SerializationTest>
+</NandradProject>
+----
+[CAUTION]
+====
+When writing custom types like `Schedule` in the example above, you **must only have one object** declared as member variable, since the xml-tag is generated based on the variable type name. This is due to the fact, that the code generator currently just calls `writeXML()` inside such complex types and these classes (currently) set the child xml tag name to the class name. In the example above, the class name is `Schedule` and hence the xml-tag is named `Schedule` and not `Sched` as it would be according to the standard naming rules.
+====
+
+[IMPORTANT]
+====
+For types `IBK::Parameter`, `IBK::IntPara`, `IBK::LinearSpline` and `IBK::Flag` the name must be set exactly to the name of the generated xml-tag name. So, a parameter with member variable `m_transferCoefficient` must be given the name `TransferCoefficient`. In case of static arrays, where the enumeration value determines keyword and thus xml-tag, the name is ignored.
+====
+
+The code generator creates additional code to prevent writing of undefined data:
+
+* `IBK::Parameter`, `IBK::IntPara` and `IBK::Flag` with empty name are not written
+* enumeration values where the value matches the corresponding `NUM_xxx` value are not written
+* `IBK::Time` with invalid time/date are not written
+* empty strings/paths are not written
+* undefined units (id=0) are not written
+
+[[xml_complexTypes]]
+#### Reading/writing custom complex types
+
+Any data type not listed in the example above and with `// XML:E` annotation is treated by the code generator as a complex type with own functions `readXML()` and `writeXML()` according to the `NANDRAD_READWRITE` macro. The code generator with create code to simply call these functions when writing such code.
+
+When reading an XML-file, the tag is compared with the typename of the member variable (`Schedule` in the example above for member variable `m_sched`) and if matched, an object of said type is created and the `readXML()` function is called for this child tag. Then, the variable is _assigned_ to the member variable. Hence, the complex type also requires an assignment operator. This is usually automatically generated, but for classes with pointers or special resource management, you may need to provide this assignment operator in addition to the `readXML() and `writeXML()` functions.
+
+#### Unsupported data member types
+
+For any kind of special data types, like `std::map<std::string, std::vector<double> >` you cannot use the code generator to create read/write code for. When you add a read/write annotation to such variables, the code generator will complain about unsupported types and may generate not compiling code.
+
+In such cases you have two options:
+
+a. create your own `readXML()` and `writeXML()` functions (possibly by copy&pasting other generated functions from `ncg_*` files and adjusting the code to your needs). For other member variables whose types are supported by the code generator, you may still use the code generator, but you must use the `NANDRAD_READWRITE_PRIVATE` macro (see example in section <<xml_custom_readwrite>>).
+
+b. change the type to something different, possibly creating another class with standardized behavior. So, for example, you could store `std::map<std::string, std::vector<double> >`  data in `std::vector<NamedDblVector>` where `NamedDblVector` contains a `std::string` and `std::vector<double>` members, both of which are fully supported by the code generator. You may need to code the check for duplicate names yourself.
 
 
-. Let's start with the `writeXML()` function:
-
-1. XML-Element name is always the same as the class name, so that's known to the code generator
-2. `m_id` should be written as attribute to `Sensor`, we need to tell the code generator that this is an attribute. The conversion `unsigned int` to string is known from the type declaration.
-3. `m_quantity` should be written as child-element to `Sensor`. We also need to tell the code generator, that this is to be an element. Also, we need to write the code to check that the attribute must not be empty before writing it. We should tell the code generator somehow, that the value must not appear as empty string `""` in the xml file.
-
-This leads to some annotation comments in the header file:
