@@ -112,10 +112,6 @@ public:
 	*/
 	virtual void initResults(const std::vector<AbstractModel*> & /* models */) = 0;
 
-private:
-
-	friend class NandradModel;
-	friend class StateModelGroup;
 };
 
 

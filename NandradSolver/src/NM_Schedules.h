@@ -28,6 +28,7 @@ Lesser General Public License for more details.
 #include <map>
 
 #include <IBK_Time.h>
+#include <IBK_LinearSpline.h>
 
 //#include "NM_ScheduleDays.h"
 #include "NM_AbstractModel.h"
@@ -49,13 +50,23 @@ namespace NANDRAD_MODEL {
 
 /*! Provides access to scheduled quantities.
 	Schedules provide by default only time-dependent values with no dependence on other
-	objects. Also, the evaluation is guaranteed to be done prior to any other models
-	Therefore the m_results vector is populated.
+	objects. Also, the evaluation is guaranteed to be done prior to any other models.
+
+	During initialization, the data from NANDRAD::Schedules is cached in this object such, that is can
+	be accessed by other models very efficiently. During the initialization, it is checked that:
+	- all schedules have definitions for a full time range (i.e. all days types are covered)
+	- each object list is referenced only once
+
+	Internally, for each scheduled quantity a linear spline vector is created and populated that is evaluated
+	in setTime() during solver runtime.
 */
 class Schedules : public AbstractModel, public AbstractTimeDependency {
 public:
 
-	/*! Available quantities from schedules. */
+	/*! Available quantities from schedules.
+		\todo Should this enum be moved to NANDRAD::Schedule, since it defines the names
+			allowed in Schedule definitions?
+	*/
 	enum Results {
 		R_HeatingSetPointTemperature,			// Keyword: HeatingSetPointTemperature				[C]			'Setpoint temperature for heating.'
 		R_CoolingSetPointTemperature,			// Keyword: CoolingSetPointTemperature				[C]			'Setpoint temperature for cooling.'
@@ -88,75 +99,86 @@ public:
 		NUM_R
 	};
 
-
+	// *** PUBLIC MEMBER FUNCTIONS
 
 	/*! Generate variable reference list from defined schedules. */
 	void setup(const NANDRAD::Project & project) ;
 
-	/*! Return unique class ID name of implemented model. */
-	virtual const char * ModelIDName() const { return "Schedules"; }
 
-	/*! Schedules always have the id 0. */
-	virtual unsigned int id() const {return 0;}
-
-	/*! Returns display name of this abstract state model. */
-	virtual const std::string &displayName() const { return m_displayName;  }
+	// *** Re-implemented from AbstractModel
 
 	/*! Schedules can be referenced via MRT_SCHEDULE. */
-	virtual NANDRAD::ModelInputReference::referenceType_t referenceType() const {
+	virtual NANDRAD::ModelInputReference::referenceType_t referenceType() const override {
 		return NANDRAD::ModelInputReference::MRT_SCHEDULE;
 	}
 
-	/*! Returns vector of all scalar and vector valued results pointer.
-	*/
-	virtual void resultValueRefs(std::vector<const double *> &res) const;
+	/*! Return unique class ID name of implemented model. */
+	virtual const char * ModelIDName() const override { return "Schedules"; }
 
-	/*! Retrieves reference pointer to a value with given quantity ID name.
-		\param quantityName An identifier for the quantity of format '<spaceTypeID>:<quantityID>'
-		\return Returns pointer to memory location with this quantity, otherwise NULL if parameter ID was not found.
-	*/
-	virtual const double * resultValueRef(const QuantityName & quantityName) const;
+	/*! Schedules always have the id 0. */
+	virtual unsigned int id() const override { return 0; }
+
+	/*! Returns display name of this abstract state model. */
+	virtual const std::string &displayName() const override { return m_displayName;  }
 
 	/*! Populates the vector refDesc with descriptions of all parameters defined in the schedules.
 		\warning This function generates and populates the vector refDesc from scratch and
 			is not the fastest. If you need to access the reference description several
 			times, consider caching the resulting vector.
 	*/
-	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const;
+	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const override;
+
+	/*! Returns vector of all scalar and vector valued results pointer. */
+	virtual void resultValueRefs(std::vector<const double *> &res) const override;
+
+	/*! Retrieves reference pointer to a value with given quantity ID name.
+		\param quantityName An identifier for the quantity of format '<spaceTypeID>:<quantityID>'
+		\return Returns pointer to memory location with this quantity, otherwise NULL if parameter ID was not found.
+	*/
+	virtual const double * resultValueRef(const QuantityName & quantityName) const override;
+
+	/*! \todo document. */
+	virtual void initResults(const std::vector<AbstractModel*> &  models) override;
+
+
+	// *** Re-implemented from AbstractTimeDependency
 
 	/*! Updates the state of the schedules object to the time point stored in AbstractTimeStateObject::m_t.
 		This function updates all internally cached results to match the new time point.
 		Afterwards, these time points can be retrieved very efficiently several times
 		through the various access functions.
 	*/
-	virtual int setTime(double t);
+	virtual int setTime(double t) override;
 
-	/*! This function is ignored.
-	*/
-	virtual void initResults(const std::vector<AbstractModel*> &  models);
 
-	/*! Returns start value of a quantity. Throws an exception, if quantity does not exist.
-	*/
+
+	/*! Returns start value of a quantity. Throws an exception, if quantity does not exist. */
 	double startValue(const QuantityName & quantityName) const;
-
-	/*! Constant access to schedule. */
-	const NANDRAD::Schedules *schedules() const;
 
 private:
 	/*! Display name stored for return function. */
 	std::string												m_displayName = "Schedules";
-	/*! Pointer to NANDRAD project. */
-	const NANDRAD::Project*								   m_project = nullptr;
 	/*! Pointer to start time from the beginning of the year in [s]. */
 	const double											m_startTime = 0;
+
+	/*! Contains all prepared linear splines, with x as time in [s], and y in the quantitiy identified by
+		the enum value in the static array.
+		The map itself stores the quantities for object list names (=key of the map). If a quantity is not
+		defined at all, the map can be empty.
+
+		During calculation, the values are interpolated and stored in the m_results vector.
+	*/
+	std::map<std::string, IBK::LinearSpline> m_scheduledQuantities[NUM_R];
+
 	/*! Variables, computed/updated during the calculation. */
 	std::vector<IBK::Parameter>								m_results;
-	/*! Schedule parameters. */
+
+//	/*! Schedule parameters. */
 //	std::vector<ScheduleParameter>							m_scheduleParameters;
-	/*! Annual schedule parameters. */
+//	/*! Annual schedule parameters. */
 //	std::vector<NANDRAD::LinearSplineParameter>				m_annualScheduleParameters;
-	/*! Schedule time definition key: provides encoding and decoding
-		of schedule time definition. */
+//	/*! Schedule time definition key: provides encoding and decoding
+//		of schedule time definition. */
 //	ScheduleDays											m_scheduleDays;
 };
 

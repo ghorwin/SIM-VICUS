@@ -107,7 +107,7 @@ protected:
 		Suggested default procedure when re-implementing this function:
 
 		Re-implement this function and call DefaultModel::initResults().
-		Resize all vector valued results with a given set of indices afterwards.
+		Resize all vector-valued results with a given set of indices afterwards.
 	*/
 	virtual void initResults(const std::vector<AbstractModel*> & models) override;
 

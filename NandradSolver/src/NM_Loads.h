@@ -79,6 +79,8 @@ public:
 		NUM_VVR
 	};
 
+	// *** PUBLIC MEMBER FUNCTIONS
+
 	/*! Constructor, initializes data vectors with 0, so that calculation is always possible. */
 	Loads() : DefaultModel(0, "Loads") {}
 
@@ -89,24 +91,28 @@ public:
 	void setup(const NANDRAD::Location & location, const NANDRAD::SimulationParameter &simPara,
 				const std::map<std::string, IBK::Path> & pathPlaceHolders) ;
 
-	// *** re-implemented from AbstractModel
 
-	/*! Return unique class ID name of implemented model. */
-	virtual const char * ModelIDName() const override { return "Loads"; }
+	// *** Re-implemented from AbstractModel
 
 	/*! Climatic loads can be referenced as MRT_LOCATION. */
 	virtual NANDRAD::ModelInputReference::referenceType_t referenceType() const override {
 		return NANDRAD::ModelInputReference::MRT_LOCATION;
 	}
 
-	/*! Resizes m_results vector. */
-	virtual void initResults(const std::vector<AbstractModel*> & /* models */) override;
+	/*! Return unique class ID name of implemented model. */
+	virtual const char * ModelIDName() const override { return "Loads"; }
 
 	/*! Populates the vector resDesc with descriptions of all results provided by this model. */
 	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const override;
 
 	/*! Retrieves reference pointer to a value with given input reference name. */
 	virtual const double * resultValueRef(const QuantityName & quantityName) const override;
+
+	/*! Resizes m_results vector. */
+	virtual void initResults(const std::vector<AbstractModel*> & /* models */) override;
+
+
+	// *** Re-implemented from AbstractTimeDependency
 
 	/*! Updates the state of the loads object to the time point stored in DefaultTimeStateModel::m_t.
 		This function updates all internally cached results to match the new time point.
@@ -119,8 +125,6 @@ public:
 			  absolute time reference. Then it is passed to the climate calculation module.
 	*/
 	virtual int setTime(double t) override;
-
-
 
 
 

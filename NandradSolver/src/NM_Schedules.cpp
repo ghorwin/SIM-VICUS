@@ -613,11 +613,11 @@ void Schedules::resultDescriptions(std::vector<QuantityDescription> & resDesc) c
 	}
 }
 
-const NANDRAD::Schedules *Schedules::schedules() const {
-	if (m_project != NULL)
-		return &m_project->m_schedules;
-	return NULL;
-}
+//const NANDRAD::Schedules *Schedules::schedules() const {
+//	if (m_project != NULL)
+//		return &m_project->m_schedules;
+//	return NULL;
+//}
 
 
 } // namespace NANDRAD_MODEL
