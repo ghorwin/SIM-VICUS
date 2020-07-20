@@ -22,8 +22,8 @@ const char * const SYNTAX =
 		"         <namespace> is usually NANDRAD (used also to compose file names).\n"
 		"         <path/to/<lib>/src> is + separated list of input directories to read the header files from.\n"
 		"         Keywordlist-source files are written into the first (or only) source directory.\n"
-		"         <prefix> is the file prefix <prefix>_KeywordList.cpp.\n"
 		"         <generateQtSrc> is 1 when Qt source should be generated, 0 otherwise.\n"
+		"         <prefix> is the file prefix <prefix>_KeywordList.cpp.\n"
 		"         <ncg-dir> is the path to the directory where ncg_xxx.cpp files are written to.\n";
 
 
