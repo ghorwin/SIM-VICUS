@@ -25,6 +25,11 @@ Lesser General Public License for more details.
 
 namespace ZEPPELIN {
 
+// Dummy implementation of destructor to avoid v-table warning
+DependencyObject::~DependencyObject() {
+}
+
+
 void DependencyGraph::setObjects(DependencyObject::DependencySequence & objects,
 								 std::list<DependencyGroup> &objectGroups)
 {
@@ -50,7 +55,7 @@ void DependencyGraph::clusterGraph(std::list<DependencyGroup> &objectGroups) {
 	// identify all sequeneces and cycles
 	std::vector<DependencyObject::DependencySequence> sequences, cycles;
 	findCyclesAndSequences(cycles, sequences);
-	
+
 	for(unsigned int i = 0; i < sequences.size(); ++i) {
 		DependencyGroup group(DependencyGroup::SEQUENTIAL);
 		// add objects to group
@@ -233,7 +238,7 @@ void DependencyGraph::popSourcesFromGraph( DependencyObject::DependencySequence 
 		DependencyObject *node = graph[i];
 		// count all dependencies that are part of the graph
 		unsigned int pars = 0;
-		for(DependencyObject::DependencySequence::const_iterator nodeIt = 
+		for(DependencyObject::DependencySequence::const_iterator nodeIt =
 			node->parents().begin(); nodeIt != node->parents().end();
 			++nodeIt) {
 			// parent of onself
@@ -252,7 +257,7 @@ void DependencyGraph::popSourcesFromGraph( DependencyObject::DependencySequence 
 		}
 	}
 	// erase sources and sinks from graph
-	for(DependencyObject::DependencySequence::iterator nodeIt = 
+	for(DependencyObject::DependencySequence::iterator nodeIt =
 		sources.begin(); nodeIt != sources.end();
 		++nodeIt) {
 
@@ -274,7 +279,7 @@ void DependencyGraph::popSinksFromGraph(DependencyObject::DependencySequence &si
 		DependencyObject *node = graph[i];
 		// count all dependencies that are part of the graph
 		unsigned int deps = 0;
-		for(DependencyObject::DependencySequence::const_iterator nodeIt = 
+		for(DependencyObject::DependencySequence::const_iterator nodeIt =
 			node->dependencies().begin(); nodeIt != node->dependencies().end();
 			++nodeIt) {
 			// dependency of onself
@@ -293,7 +298,7 @@ void DependencyGraph::popSinksFromGraph(DependencyObject::DependencySequence &si
 		}
 	}
 	// erase sinks from graph
-	for(DependencyObject::DependencySequence::iterator nodeIt = 
+	for(DependencyObject::DependencySequence::iterator nodeIt =
 		sinks.begin(); nodeIt != sinks.end();
 		++nodeIt) {
 
@@ -306,7 +311,7 @@ void DependencyGraph::popSinksFromGraph(DependencyObject::DependencySequence &si
 
 
 void DependencyGraph::popNextCycleFromGraph( DependencyObject::DependencySequence &cycle,
-		DependencyObject::DependencySequence &graph) 
+		DependencyObject::DependencySequence &graph)
 {
 	// cyclic dependencies cannot be removed as source or sink
 	// fidn first cycle beginning at the first reimaning graph element
@@ -319,7 +324,7 @@ void DependencyGraph::popNextCycleFromGraph( DependencyObject::DependencySequenc
 	for(unsigned int c = 0; c < cycle.size(); ++c) {
 
 		DependencyObject::DependencySequence::iterator
-			nodeInGraphIt = std::find(graph.begin(), graph.end(), 
+			nodeInGraphIt = std::find(graph.begin(), graph.end(),
 			cycle[c]);
 		assert(nodeInGraphIt != graph.end() );
 		graph.erase(nodeInGraphIt);
@@ -327,7 +332,7 @@ void DependencyGraph::popNextCycleFromGraph( DependencyObject::DependencySequenc
 }
 
 void DependencyGraph::findFirstConnectedNodesInGraph(DependencyObject::DependencySequence &connectedNodes,
-					const DependencyObject::DependencySequence &graph, 
+					const DependencyObject::DependencySequence &graph,
 					bool forwardSearch)
 {
 	if(!connectedNodes.empty())
@@ -354,7 +359,7 @@ void DependencyGraph::findFirstConnectedNodesInGraph(DependencyObject::Dependenc
 			nextNodes = node->parents();
 
 		// add all dependend objects
-		for(DependencyObject::DependencySequence::iterator nodeIt = 
+		for(DependencyObject::DependencySequence::iterator nodeIt =
 			nextNodes.begin(); nodeIt != nextNodes.end();
 			++nodeIt) {
 			// skip nodes that are not part of the current graph

@@ -52,8 +52,8 @@ public:
 		The objects and object groups will not be owned by the DependencyGraph
 		instance. Therefore, the input of object and object group vectors
 		are enforced.
-		\para objects vector of the dependency object pointers forming the graph
-		\para objectGroups empty vector of dependency groups that will be filled
+		\param objects vector of the dependency object pointers forming the graph
+		\param objectGroups empty vector of dependency groups that will be filled
 
 		Suppose you have the following dependency objects:
 		\code
@@ -104,60 +104,60 @@ protected:
 	void orderGraph();
 
 #ifdef USE_EAS_ALGORITHM
-	/*! Selects cyclic and sequential connected nodes of the graph. The algorithm 
+	/*! Selects cyclic and sequential connected nodes of the graph. The algorithm
 		iteratively erases all sources and sinks from the graph. These sources and
-		sinks are checked for sequential connections (only one child and one parent 
+		sinks are checked for sequential connections (only one child and one parent
 		per pair of nodes) and sorted into sequence container. The remaining graph nodes
 		are assumed to include a cyclic connection. This cycle is searched for and erased
-		from the graph. The described procedure is repeated until all nodes are sorted into one 
+		from the graph. The described procedure is repeated until all nodes are sorted into one
 		container.
-		\para cycles container including all cyclic connected nodes
-		\para sequences container including all sequential connected nodes
+		\param cycles container including all cyclically connected nodes
+		\param sequences container including all sequentialally connected nodes
 	*/
 	void findCyclesAndSequences(std::vector<DependencyObject::DependencySequence> &cycles,
-							std::vector<DependencyObject::DependencySequence> &sequences);	
-	
+							std::vector<DependencyObject::DependencySequence> &sequences);
+
 	/*! Erases all source nodes from a given graph or subgraph.
-		\para sources container including source nodes
-		\para graph subset of graph nodes excluding all sources
+		\param sources container including source nodes
+		\param graph subset of graph nodes excluding all sources
 	*/
 	static void popSourcesFromGraph( DependencyObject::DependencySequence &sources,
 		DependencyObject::DependencySequence &graph);
 
 	/*! Erases all sink nodes from a given graph or subgraph.
-		\para sinks container including sink nodes
-		\para graph subset of graph nodes excluding all sinks
+		\param sinks container including sink nodes
+		\param graph subset of graph nodes excluding all sinks
 	*/
 	static void popSinksFromGraph( DependencyObject::DependencySequence &sinks,
 		DependencyObject::DependencySequence &graph);
 
 	/*! Erases the next cyclic connection from a graph or subgraph. The graph is assumed
-		to be free of sources and sinks. Starting from the first node all forward connections 
-		are passed and all connected transitively nodes sorted into a subgraph. The same 
+		to be free of sources and sinks. Starting from the first node all forward connections
+		are passed and all connected transitively nodes sorted into a subgraph. The same
 		search is performed backward in order to filter only cyclic connections.
-		\para cycle maximum subset of cyclic connected nodes that include the first graph node, 
+		\param cycle maximum subset of cyclic connected nodes that include the first graph node,
 			if no suitable cyclic connection is found an empty container is returned
-		\para graph subset of graph nodes excluding the cycle nodes
+		\param graph subset of graph nodes excluding the cycle nodes
 	*/
 	static void popNextCycleFromGraph( DependencyObject::DependencySequence &cycle,
 		DependencyObject::DependencySequence &graph);
 
 	/*! Selects all nodes that are causaly connected to the first graph node.
-		\para connectedNodes subset of nodes causaly connected to the first graph node
-		\para graph graph nodes for search
-		\para forwardSearch causality, true if graph is searched in the direction of
+		\param connectedNodes subset of nodes causaly connected to the first graph node
+		\param graph graph nodes for search
+		\param forwardSearch causality, true if graph is searched in the direction of
 		dependencies (childs), false otherwise (parent direction)
 	*/
 	static void findFirstConnectedNodesInGraph( DependencyObject::DependencySequence &connectedNodes,
-					const DependencyObject::DependencySequence &graph, 
+					const DependencyObject::DependencySequence &graph,
 					bool forwardSearch = true);
 #else
 	/*! Recursive cycle search (starting from an arbirtary root node).
-		\para depth recursion depth
-		\para nodes nodes from which the cyle search continues
-		\para markedGraph list of all objects that have been touched by the cyle search
+		\param depth recursion depth
+		\param nodes nodes from which the cyle search continues
+		\param markedGraph list of all objects that have been touched by the cyle search
 		already
-		\para markedBranch current path of cycle search (a branch of the graph)
+		\param markedBranch current path of cycle search (a branch of the graph)
 	*/
 	void findCycles(const unsigned int depth,
 					const DependencyObject::DependencySet &nodes,

@@ -30,6 +30,14 @@ namespace ZEPPELIN {
 	order and detect cyclic clusters.
 	This implementation provides the convenience function dependsOn()
 	and manages dependencies internally.
+
+	Parent and childs are defined as follows:
+
+	If object A depends on object B (for example via call to A.dependsOn(B) ), the object
+	B becomes a child of object A. This can be a bit misleading, since normally parents care
+	for their kids and thus kids depend on the parents, but think of the elderly where the parents
+	eventually depend on their kids :-)
+
 	\sa DependencyGraph
 */
 class DependencyObject {
@@ -38,7 +46,7 @@ public:
 	typedef std::vector<DependencyObject*>		DependencySequence;
 
 	/*! Virtual destructor. */
-	virtual ~DependencyObject() {}
+	virtual ~DependencyObject();
 
 	/*! Set backward connections. */
 	void updateParents() {
@@ -57,10 +65,8 @@ public:
 
 	/*! Registers an object dependency. */
 	void dependsOn(const DependencyObject & o) {
-		if (std::find(m_childs.begin(), m_childs.end(), &o) ==
-			m_childs.end()) {
+		if (std::find(m_childs.begin(), m_childs.end(), &o) ==  m_childs.end())
 			m_childs.push_back(const_cast<DependencyObject*>(&o));
-		}
 	}
 
 	/*! Clears list of dependend objects and parents. */
