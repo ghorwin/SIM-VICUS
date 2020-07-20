@@ -13,10 +13,6 @@
 
 namespace NANDRAD_MODEL {
 
-//#define DEBUG_OBJECT_SIGNATURE(x) (std::cout << x << std::endl)
-//#undef DEBUG_OBJECT_SIGNATURE
-#define DEBUG_OBJECT_SIGNATURE(x) ;
-
 /*!	\brief Declaration for class AbstractStateDependency, the base class of all models that have input dependencies.
 
 	This class declares the interface required by all state-object type sub-models.
@@ -29,6 +25,9 @@ namespace NANDRAD_MODEL {
 */
 class AbstractStateDependency : public ZEPPELIN::DependencyObject {
 public:
+
+	/*! Dummy d'tor. */
+	~AbstractStateDependency();
 
 	/*! Returns a priority offset for all models at the end of model evaluation.*/
 	static const int priorityOffsetTail = 100000;
@@ -121,13 +120,12 @@ public:
 	virtual int update() = 0;
 
 protected:
-	/*! This variable allows specifies the model type using bit-code hierarchies.
-	*/
+	/*! This variable allows specifies the model type using bit-code hierarchies. */
 	unsigned int m_modelTypeId;
 
 private:
 
-	friend class NandradModelImpl;
+	friend class NandradModel;
 	friend class StateModelGroup;
 };
 

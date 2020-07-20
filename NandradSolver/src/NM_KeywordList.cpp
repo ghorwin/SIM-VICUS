@@ -72,7 +72,7 @@ namespace NANDRAD_MODEL {
 				case 14 : return "AzimuthAngle";
 				case 15 : return "Albedo";
 				case 16 : return "Latitude";
-				case 17 : return "Orientation";
+				case 17 : return "Longitude";
 			} break;
 			// Loads::VectorValuedResults
 			case 1 :
@@ -138,7 +138,7 @@ namespace NANDRAD_MODEL {
 				case 14 : return "AzimuthAngle";
 				case 15 : return "Albedo";
 				case 16 : return "Latitude";
-				case 17 : return "Orientation";
+				case 17 : return "Longitude";
 			} break;
 			// Loads::VectorValuedResults
 			case 1 :
@@ -205,7 +205,7 @@ namespace NANDRAD_MODEL {
 				case 14 : return "Solar azimuth (0 - north).";
 				case 15 : return "Albedo value of the surrounding [0..1].";
 				case 16 : return "Latitude.";
-				case 17 : return "Orientation of the building (0 deg - north).";
+				case 17 : return "Longitude.";
 			} break;
 			// Loads::VectorValuedResults
 			case 1 :

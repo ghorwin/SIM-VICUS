@@ -23,26 +23,27 @@ Lesser General Public License for more details.
 
 namespace NANDRAD_MODEL {
 
-/*!	\brief Declaration for class AbstractTimeDependency
-	\author Andreas Nicolai <andreas.nicolai -[at]- tu-dresden.de>
-	This class handles time-dependent models.
+/*!	This class handles time-dependent models.
 	Child classes must implement timeChanged() and
-	AbstractStateDependency::referenceType(). 
-	
+	AbstractStateDependency::referenceType().
+
 	A time dependent model object integrates the
 	model and the state dependency properties. Therefore, it needs to inherit both from
-	AbstractModel and AbstractTimeDependency. If the model is also state-dependent, you 
+	AbstractModel and AbstractTimeDependency. If the model is also state-dependent, you
 	should also inherit from AbstractStateDependency.
 */
 class AbstractTimeDependency {
 public:
 
+	/*! Dummy destructor. */
+	virtual ~AbstractTimeDependency();
+
 	/*! Main state-changing function.
 		This function sets the new time point state and calls timeChanged()
-		whenever the time point has changed.
-		\param t Simulation time in [s].
+		whenever the time point has changed. Must be implemented in derived models.
+		\param t Simulation time in [s] (solver time).
 		\return Returns 0 when calculation was successful, 1 when a recoverable error has been detected, 2 when something is badly wrong
-		*/
+	*/
 	virtual int setTime(double t) = 0;
 
 	/*! Informs the model that a step was successfully completed.
@@ -53,10 +54,6 @@ public:
 		\param t Simulation time in [s].
 	*/
 	virtual void stepCompleted(double t) { (void)t; }
-
-private:
-
-	friend class NandradModelImpl;
 };
 
 

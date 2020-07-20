@@ -57,17 +57,16 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Parameter set.
-	*/
+	/*! Parameter set. */
 	IBK::Parameter				m_para[NUM_LP];							// XML:E
 
 	/*! Name of the climate data file. */
 	IBK::Path					m_climateFileName;						// XML:E
 
-	/*! Optional: name of the eyternal shading factor data file. */
+	/*! Optional: name of the external shading factor data file. */
 	IBK::Path					m_shadingFactorFileName;				// XML:E
 
-	/*! We may place one or more sensors in the building outsude. */
+	/*! We may place one or more sensors outside. */
 	std::vector<Sensor>			m_sensors;								// XML:E
 
 };

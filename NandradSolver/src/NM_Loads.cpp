@@ -44,7 +44,7 @@ Lesser General Public License for more details.
 
 #include "NM_KeywordList.h"
 
-using namespace std;
+#include <CCM_Defines.h>  // include this last, since here we have defines that would otherwise conflict with included files
 
 namespace NANDRAD_MODEL {
 
@@ -67,19 +67,11 @@ public:
 
 // *** Loads ***
 
-Loads::Loads() : DefaultModel(0,std::string()),
-				m_year(0),
-				m_startTime(NULL),
-				m_t(-1),
-				m_location(NULL),
-				m_indexOfLastAcceptedTimePoint(-1)
-{
-}
 
 void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationParameter &simPara,
-	const std::map<std::string, IBK::Path> & pathPlaceHolders) {
-
-	const char * const FUNC_ID = "[Loads::setup]";
+	const std::map<std::string, IBK::Path> & pathPlaceHolders)
+{
+	FUNCID(Loads::setup);
 
 	try {
 		// fill m_dataset vector
@@ -96,16 +88,74 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 				.arg(climateFile.str()), FUNC_ID);
 		}
 
-		// set location pointer
-		m_location = &location;
+		// cache required location properties and check for mandatory parameters
 
+
+		// *** location and albedo
+
+		// Note: we should now have the parameters from the climate data loader:
+
+		// - m_solarRadiationModel.m_climateDataLoader.m_latitudeInDegree
+		// - m_solarRadiationModel.m_climateDataLoader.m_longitudeInDegree
+
+		// However, the user may have specified also latitude/longitude in the project file. If these values are provided,
+		// we should overwrite the location settings in the climate data file, even though this may lead in some
+		// cases to completely wrong results (at least, when latitude is changed).
+
+
+		IBK::IBK_Message(IBK::FormatString("Climate data set location: %1 deg. latitude, %2 deg. longitude\n")
+						 .arg(m_solarRadiationModel.m_climateDataLoader.m_latitudeInDegree)
+						 .arg(m_solarRadiationModel.m_climateDataLoader.m_longitudeInDegree), IBK::MSG_PROGRESS,
+						 FUNC_ID, IBK::VL_INFO);
+
+		// latitude
+		const IBK::Parameter &latitude = location.m_para[NANDRAD::Location::LP_LATITUDE];
+		if (!latitude.name.empty()) {
+			double latInDeg = latitude.get_value("Deg");
+			if (latInDeg < -90 || latInDeg > 90) {
+				throw IBK::Exception(IBK::FormatString("Error initializing climate data: "
+					"Location parameter 'Latitude' is expected to be between -90 and 90 degrees."), FUNC_ID);
+			}
+			IBK::IBK_Message(IBK::FormatString("Setting latitude to %1 deg\n").arg(latInDeg),
+							 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+			m_solarRadiationModel.m_climateDataLoader.m_latitudeInDegree = latInDeg;
+		}
+
+		// longitude
+		const IBK::Parameter &longitude = location.m_para[NANDRAD::Location::LP_LONGITUDE];
+		if (!longitude.name.empty()) {
+			double longInDeg = longitude.get_value("Deg");
+			if (longInDeg < -180 || longInDeg > 180) {
+				throw IBK::Exception(IBK::FormatString("Error initializing climate data: "
+					"Location parameter 'Longitude' is expected to be between -180 and 180 degrees."), FUNC_ID);
+			}
+			IBK::IBK_Message(IBK::FormatString("Setting latitude to %1 deg\n").arg(longInDeg),
+							 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+			m_solarRadiationModel.m_climateDataLoader.m_longitudeInDegree = longInDeg;
+		}
+
+		// albeda
+		const IBK::Parameter &albedo = location.m_para[NANDRAD::Location::LP_ALBEDO];
+		if (albedo.name.empty())
+			throw IBK::Exception(IBK::FormatString("Error initializing climate data: Missing parameter 'Albedo'."), FUNC_ID);
+		if (albedo.value < 0 || albedo.value > 1) {
+			throw IBK::Exception(IBK::FormatString("Error initializing climate data: "
+				"Location parameter 'Albedo' is expected between 0 and 1."), FUNC_ID);
+		}
+		m_solarRadiationModel.m_albedo = albedo.value;
+
+		// finally update the latitude and longitude in the sunPositionModel
+		m_solarRadiationModel.m_sunPositionModel.m_latitude = m_solarRadiationModel.m_sunPositionModel.m_latitude * DEG2RAD;
+		m_solarRadiationModel.m_sunPositionModel.m_longitude = m_solarRadiationModel.m_sunPositionModel.m_longitude * DEG2RAD;
+
+		// store start time offset as year and start time
 		m_year = simPara.m_intpara[NANDRAD::SimulationParameter::SIP_YEAR].value;
-		// set start year for climate data container
-		m_solarRadiationModel.m_climateDataLoader.m_startYear = m_year;
+		m_startTime = simPara.m_interval.m_para[NANDRAD::Interval::IP_START].value;
 
-		// retreive start time offset
-		IBK_ASSERT(!simPara.m_interval.m_para[NANDRAD::Interval::IP_START].name.empty());
-		m_startTime = &simPara.m_interval.m_para[NANDRAD::Interval::IP_START].value;
+
+		// *** shading factors ***
+
+		// if we have a shading factor file given, read it and cache it in memory (not file access during simulation)
 
 		// create a data IO file for shading factor
 		if (!location.m_shadingFactorFileName.str().empty()) {
@@ -136,7 +186,7 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 		for (unsigned int i = 0; i < location.m_sensors.size(); ++i) {
 			const NANDRAD::Sensor &sensor = location.m_sensors[i];
 			const std::string quantity = sensor.m_quantity;
-			// error: wrong quantity requested
+			// check if sensor quantity is supported
 			if (quantity != KeywordList::Keyword("Loads::VectorValuedResults", VVR_SWRadOnPlane)) {
 				throw IBK::Exception(IBK::FormatString("Quantity '%1' of sensor with id #%2 is not supported!")
 					.arg(quantity).arg(sensor.m_id), FUNC_ID);
@@ -152,8 +202,9 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 					.arg(sensor.m_id), FUNC_ID);
 			double inclination = sensor.m_inclination.value;
 
+			// register sensor surface with solar radiation model
 			unsigned int surfaceID = m_solarRadiationModel.addSurface(orientation, inclination);
-			// store mapping of obejct 2 surface id
+			// and remember the surface ID from the solar radiation model for the sensor id
 			m_sensorID2surfaceID[sensor.m_id] = surfaceID;
 		}
 	}
@@ -164,76 +215,33 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 
 
 void Loads::initResults(const std::vector<AbstractModel*> & models) {
-	const char * const FUNC_ID = "[Loads::initResults]";
+//	FUNCID(Loads::initResults);
 	// resize m_results vector from keyword list
 	DefaultModel::initResults(models);
-	// check if model was setup already
-	IBK_ASSERT(m_location != NULL);
-	// check validity of the parameter data
-	const char * const MISSING_PARAMETER_MESSAGE = "Error initializing climate data: "
-			"Parameter '%1' is not defined.";
-	// latitude
-	const IBK::Parameter &latitude = m_location->m_para[NANDRAD::Location::LP_LATITUDE];
-	if (latitude.name.empty())
-		throw IBK::Exception(IBK::FormatString(MISSING_PARAMETER_MESSAGE).arg("Latitude"), FUNC_ID);
-	if (latitude.get_value("Deg") < -90 || latitude.get_value("Deg") > 90) {
-		throw IBK::Exception(IBK::FormatString("Error initializing climate data: "
-			"Location parameter 'Latitude' is expected between -90 and 90 degrees."), FUNC_ID);
-	}
-	m_solarRadiationModel.m_sunPositionModel.m_latitude = latitude.value;
 
-	// longitude
-	const IBK::Parameter &longitude = m_location->m_para[NANDRAD::Location::LP_LONGITUDE];
-	if (longitude.name.empty())
-		throw IBK::Exception(IBK::FormatString(MISSING_PARAMETER_MESSAGE).arg("Longitude"), FUNC_ID);
-	if (longitude.get_value("Deg") < -180 || longitude.get_value("Deg") > 180) {
-		throw IBK::Exception(IBK::FormatString("Error initializing climate data: "
-			"Location parameter 'Longitude' is expected between -180 and 180 degrees."), FUNC_ID);
-	}
-	m_solarRadiationModel.m_sunPositionModel.m_longitude = longitude.value;
-
-	// albeda
-	const IBK::Parameter &albedo = m_location->m_para[NANDRAD::Location::LP_ALBEDO];
-	if (albedo.name.empty())
-		throw IBK::Exception(IBK::FormatString(MISSING_PARAMETER_MESSAGE).arg("Albedo"), FUNC_ID);
-	if (albedo.value < 0 || albedo.value > 1) {
-		throw IBK::Exception(IBK::FormatString("Error initializing climate data: "
-			"Location parameter 'Albedo' is expected between 0 and 1."), FUNC_ID);
-	}
-	m_solarRadiationModel.m_albedo = albedo.value;
-
-	// height is optional for now -> defaults to zero
-	const IBK::Parameter &height = m_location->m_para[NANDRAD::Location::LP_ALTITUDE];
-	if (!height.name.empty()) {
-		if (height.value < 0) {
-			throw IBK::Exception(IBK::FormatString("Error initializing climate data: "
-				"Location parameter 'Altitude' is expected greater than 0."), FUNC_ID);
-		}
-	}
-
-	// transfer constant parameters
-	m_results[R_Albedo]		= albedo;
-	m_results[R_Latitude]	= latitude;
+	// transfer constant parameters - other models may access these values, but they are constant values and
+	// never updated during the simulation.
+	m_results[R_Albedo].set("Albedo", m_solarRadiationModel.m_albedo, "---");
+	m_results[R_Latitude].set("Latitude", m_solarRadiationModel.m_climateDataLoader.m_latitudeInDegree, "Deg");
+	m_results[R_Longitude].set("Longitude", m_solarRadiationModel.m_climateDataLoader.m_longitudeInDegree, "Deg");
 	m_results[R_CO2Concentration].value = 0.000450;
 }
 
 
 int Loads::setTime(double t) {
-	const char * const FUNC_ID = "[Loads::setTime]";
+	FUNCID(Loads::setTime);
 
 	if (m_t == t)
 		// signal success
 		return 0;
 
-
-	// set time
-	m_t = t ;
+	// cache time
+	m_t = t;
 
 	try {
-		IBK_ASSERT(m_startTime != NULL);
-		double t_climate = *m_startTime + m_t;
-		while (t_climate >= 365*24*3600)
-			t_climate -= 365*24*3600;
+		double t_climate = m_startTime + m_t;
+		// Mind: if the climate data is not a cyclic (annual) data set, this is handled inside the solar radiation model
+		//       hence, we do not need to apply cyclic clipping here
 		m_solarRadiationModel.setTime(m_year, t_climate);
 	}
 	catch(IBK::Exception &ex) {
@@ -241,7 +249,7 @@ int Loads::setTime(double t) {
 				.arg(t), FUNC_ID);
 	}
 
-	// now copy calculated angles to varaibles vector
+	// now copy calculated angles to variables vector
 	m_results[R_DeclinationAngle].value			= m_solarRadiationModel.m_sunPositionModel.m_declination;
 	m_results[R_ElevationAngle].value			= m_solarRadiationModel.m_sunPositionModel.m_elevation;
 	m_results[R_AzimuthAngle].value				= m_solarRadiationModel.m_sunPositionModel.m_azimuth;
@@ -251,7 +259,7 @@ int Loads::setTime(double t) {
 	m_results[R_SWRadDirectNormal].value		= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::DirectRadiationNormal];
 	m_results[R_SWRadDiffuseHorizontal].value	= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::DiffuseRadiationHorizontal];
 	m_results[R_LWSkyRadiation].value			= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::LongWaveCounterRadiation];
-	m_results[R_WindDirection].value			= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::WindDirection] * IBK::DEG2RAD;
+	m_results[R_WindDirection].value			= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::WindDirection] * DEG2RAD;
 	m_results[R_WindVelocity].value				= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::WindVelocity];
 	m_results[R_AirPressure].value				= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::AirPressure];
 
@@ -326,9 +334,8 @@ int Loads::setTime(double t) {
 #endif // TODO
 
 
-	// signal success
 	if (m_sensorID2surfaceID.empty())
-		return 0;
+		return 0; // signal success
 
 	IBK_ASSERT(m_sensorID2surfaceID.size() == m_vectorValuedResults[VVR_SWRadOnPlane].size());
 	// update all sensor values
@@ -355,46 +362,6 @@ int Loads::setTime(double t) {
 }
 
 
-void Loads::stepCompleted(double t) {
-#ifdef TODO
-	const char * const FUNC_ID = "[Loads::stepCompleted]";
-	if (m_shadingFactorFile.m_filename.str().empty())
-		return;
-
-	// correct cyclic time
-	IBK_ASSERT(m_startTime != NULL);
-	double time = *m_startTime + t;
-
-	// set starting point for search
-	unsigned int i = 0;
-	if (m_indexOfLastAcceptedTimePoint >= 0)
-		i = m_indexOfLastAcceptedTimePoint;
-
-	// cyclic behaviour: set to start if wqe exceed
-	// period of 1 year
-	while (time >= 365. * 24. * 3600.) {
-		time -= 365. * 24. * 3600.;
-	}
-	// reset counter
-	if (m_shadingFactorFile.m_timepoints[i] > time) {
-		i = 0;
-	}
-	// set a new starter index for next time step
-	for (;  i < m_shadingFactorFile.m_timepoints.size(); ++i) {
-		if (m_shadingFactorFile.m_timepoints[i] > time)
-			break;
-	}
-	// we exceed index
-	if (i == m_shadingFactorFile.m_timepoints.size()) {
-		throw IBK::Exception(IBK::FormatString("Missing shading factors for time point #%1! "
-			"We expect shading factor values for one year!")
-			.arg(t), FUNC_ID);
-	}
-	IBK_ASSERT(i > 0);
-	m_indexOfLastAcceptedTimePoint = i - 1;
-#endif
-}
-
 // use default implementation
 void Loads::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 
@@ -402,22 +369,25 @@ void Loads::resultDescriptions(std::vector<QuantityDescription> & resDesc) const
 
 	if (m_sensorID2surfaceID.empty())
 		return;
+
 	// select all sensor ids:
 	// at the moment we only measure short wave radiation
 	std::set<unsigned int> sensorIds;
 	for (std::map<unsigned int, unsigned int>::const_iterator
 		it = m_sensorID2surfaceID.begin();
 		it != m_sensorID2surfaceID.end(); ++it)
+	{
 		sensorIds.insert(it->first);
+	}
 
 	std::string category = "Loads::VectorValuedResults";
-	// resizte sensor quantities
+	// resize sensor quantities
 	for (unsigned int i = 0; i < resDesc.size(); ++i) {
 
 		// vector valued quantity descriptions store the description
 		// of the quantity itself as well as key strings and descriptions
 		// for all vector elements
-		if(resDesc[i].m_name == KeywordList::Keyword(category.c_str(), VVR_SWRadOnPlane))
+		if (resDesc[i].m_name == KeywordList::Keyword(category.c_str(), VVR_SWRadOnPlane))
 			resDesc[i].resize(sensorIds, VectorValuedQuantityIndex::IK_ModelID);
 	}
 }
@@ -498,6 +468,7 @@ void Loads::FMU2ExportReference(const QuantityName &targetName,
 }
 #endif
 
+#if 0
 void Loads::addSurface(unsigned int objectID, double orientation, double inclination) {
 	const char * const FUNC_ID = "[Loads::addSurface]";
 
@@ -520,7 +491,7 @@ void Loads::addSurface(unsigned int objectID, double orientation, double inclina
 
 		double skyVisibility = 0.0;
 		bool flatRoof = nearlyEqual(inclination, 0);
-		bool verticalWall = nearlyEqual(inclination, 0.5 * IBK::PI);
+		bool verticalWall = nearlyEqual(inclination, 0.5 * PI);
 		// for flat roofs we can directly return the (measured) horizontal values
 		if (flatRoof) {
 			skyVisibility = 1.0;
@@ -565,10 +536,11 @@ void Loads::addSurface(unsigned int objectID, double orientation, double inclina
 #endif // TODO
 
 }
+#endif
 
 
 double Loads::qSWRad(unsigned int objectID, double & qRadDir, double & qRadDiff, double & incidenceAngle) const {
-	const char * const FUNC_ID = "[Loads::qSWRad]";
+	FUNCID(Loads::qSWRad);
 	try {
 		// find unique surface id
 		std::map<unsigned int, unsigned int>::const_iterator it =
@@ -596,7 +568,7 @@ double Loads::qSWRad(unsigned int objectID, double & qRadDir, double & qRadDiff,
 	}
 	catch(IBK::Exception &ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Error calulation solar radiation on object with id %1 at time %2!")
-			.arg(objectID).arg(*m_startTime + m_t), FUNC_ID);
+			.arg(objectID).arg(m_startTime + m_t), FUNC_ID);
 	}
 }
 

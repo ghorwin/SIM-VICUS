@@ -35,6 +35,9 @@ namespace NANDRAD {
 	A sensor places a measured component for later referencing. It may be
 	parametrized with string, constant parameters or flags. Use sensors inside
 	the description block of the building component that offers the quantity.
+
+	The quantity name must be recognized by the solver, see NANDRAD_MODEL::Loads::VectorValuedResults.
+	For now it must be always equal to 'SWRadOnPlane'.
 */
 class Sensor {
 	NANDRAD_READWRITE_PRIVATE

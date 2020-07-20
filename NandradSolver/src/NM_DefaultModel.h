@@ -28,49 +28,41 @@ Lesser General Public License for more details.
 
 namespace NANDRAD_MODEL {
 
-//#define DEBUG_OBJECT_SIGNATURE(x) (std::cout << x << std::endl)
-//#undef DEBUG_OBJECT_SIGNATURE
-#define DEBUG_OBJECT_SIGNATURE(x) ;
-
-/*!	\brief Declaration for class DefaultModel, the base class of all models.
-	\author Andreas Nicolai <andreas.nicolai -[at]- tu-dresden.de>
-	This class declares provides a default implementation for a model.
-*/
+/*!	This class declares provides a default implementation for a model. */
 class DefaultModel : public AbstractModel {
 public:
 
 	/*! Standard constructor.
-		An instance of a default model stores an ID and a display name for access through the 
-		framework. These properties must be known whenever a model instance is created. 
-		By default, the model copies the ID from the NANDRAD data object it is generated from 
+		An instance of a default model stores an ID and a display name for access through the
+		framework. These properties must be known whenever a model instance is created.
+		By default, the model copies the ID from the NANDRAD data object it is generated from
 		(zone, constructionInstance, interface or model).
 	*/
 	DefaultModel(unsigned int id, const std::string &displayName) :
-		m_id(id), 
+		m_id(id),
 		m_displayName(displayName)
 	{
 	}
 
 	/*! Returns unique ID of this model instance. */
-	virtual unsigned int id() const { return m_id; }
+	virtual unsigned int id() const override { return m_id; }
 
 	/*! Returns display name of this model instance. */
-	virtual const std::string &displayName() const { return m_displayName; }
+	virtual const std::string &displayName() const override { return m_displayName; }
 
 	/*! Populates the vector resDesc with descriptions of all results provided by this model
-		instance. Vector valued result quantities usually are resized after the 
+		instance. Vector valued result quantities usually are resized after the
 		initResults()-routine was called. If the result descriptions are requested before
-		initializing the m_vectorValuedResults vector only descriptions without index information 
+		initializing the m_vectorValuedResults vector only descriptions without index information
 		are composed.
 		\warning This function generates and populates the vector resDesc from the m_results
-			and m_vectorValuedResults vectors and is not the fastest. If you need to access 
+			and m_vectorValuedResults vectors and is not the fastest. If you need to access
 			the reference description several times, consider caching the description vector.
 	*/
-	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const;
+	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const override;
 
-	/*! Returns vector of all scalar and vector valued results pointer.
-	*/
-	virtual void resultValueRefs(std::vector<const double *> &res) const;
+	/*! Returns vector of all scalar and vector valued results pointer. */
+	virtual void resultValueRefs(std::vector<const double *> &res) const override;
 
 	/*! Looks up a referenced quantity and returns a pointer to the
 		double value memory location.
@@ -83,7 +75,7 @@ public:
 		\note If a vector quantity is requested without indication of an index, the pointer returned points to
 			the begin of the memory array holding the vector data.
 	*/
-	virtual const double * resultValueRef(const QuantityName & quantityName) const;
+	virtual const double * resultValueRef(const QuantityName & quantityName) const override;
 
 	/*! Transforms a target name into a target identifier for a scalar quantity.
 		Returns -1 for missing quantity.
@@ -91,25 +83,25 @@ public:
 	virtual int decodeResultType(const std::string &quantity) const;
 
 	/*! Transforms a target name into a target identifier for a vector valued quantity.
-	Returns -1 for missing quantity.
+		Returns -1 for missing quantity.
 	*/
 	virtual int decodeVectorValuedResultType(const std::string &quantity) const;
 
 protected:
 
 	/*! Invalid index, returned from vectorVariableIndex(). */
- 	static const unsigned int InvalidVectorIndex;
+	static const unsigned int InvalidVectorIndex;
 
 	/*! Resizes m_results and m_vectorValuedResults vectors.
 		This function is called when all models are already initialized (constructed).
 
 		When re-implementing this class, make sure that m_results and
-		m_vectorValuedResults a fully resized and defined. Ensure, that the functions 
+		m_vectorValuedResults a fully resized and defined. Ensure, that the functions
 		resultDescriptions() and resultValueRef() can be called afterwards.
 
-		The default implementation uses the keyword list and expects the 
-		enumerations Variables to be present in derived classes. It 
-		resizes and fills the m_results and m_vectorValuedResults vectors. 
+		The default implementation uses the keyword list and expects the
+		enumerations Variables to be present in derived classes. It
+		resizes and fills the m_results and m_vectorValuedResults vectors.
 		It then initializes IBK::Parameters/IBK::UnitLists with name and unit.
 
 		Suggested default procedure when re-implementing this function:
@@ -117,7 +109,7 @@ protected:
 		Re-implement this function and call DefaultModel::initResults().
 		Resize all vector valued results with a given set of indices afterwards.
 	*/
-	virtual void initResults(const std::vector<AbstractModel*> & models );
+	virtual void initResults(const std::vector<AbstractModel*> & models) override;
 
 	/*! Informs the model that a step was successfully completed.
 		The time point and value vector passed to the function correspond to

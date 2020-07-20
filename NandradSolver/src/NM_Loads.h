@@ -69,55 +69,60 @@ public:
 		R_AzimuthAngle,				// Keyword: AzimuthAngle				[Deg]	'Solar azimuth (0 - north).'
 		R_Albedo,					// Keyword: Albedo						[---]	'Albedo value of the surrounding [0..1].'
 		R_Latitude,					// Keyword: Latitude					[Deg]	'Latitude.'
-		R_Orientation,				// Keyword: Orientation					[Deg]	'Orientation of the building (0 deg - north).'
+		R_Longitude,				// Keyword: Longitude					[Deg]	'Longitude.'
 		NUM_R
 	};
-	/*! Optional sensor values.
-	*/
+
+	/*! Optional sensor values. */
 	enum VectorValuedResults {
 		VVR_SWRadOnPlane,			// Keyword: SWRadOnPlane				[W/m2]	'Short wave radiation on a given plane.'
 		NUM_VVR
 	};
 
 	/*! Constructor, initializes data vectors with 0, so that calculation is always possible. */
-	Loads();
+	Loads() : DefaultModel(0, "Loads") {}
 
-	/*! Return unique class ID name of implemented model. */
-	virtual const char * ModelIDName() const { return "Loads";}
-
-	/*! Climatic loads can be referenced as MRT_LOCATION. */
-	virtual NANDRAD::ModelInputReference::referenceType_t referenceType() const {
-		return NANDRAD::ModelInputReference::MRT_LOCATION;
-	}
-
-	/*! Specifies albedo and latitude.
+	/*! Initializes object.
 		\param location Location data.
 		\param pathPlaceHolders Path placeholders to resolve path to climate data
 	*/
 	void setup(const NANDRAD::Location & location, const NANDRAD::SimulationParameter &simPara,
 				const std::map<std::string, IBK::Path> & pathPlaceHolders) ;
 
-	/*! Resizes m_results vector.*/
+	// *** re-implemented from AbstractModel
 
-	virtual void initResults(const std::vector<AbstractModel*> & /* models */);
+	/*! Return unique class ID name of implemented model. */
+	virtual const char * ModelIDName() const override { return "Loads"; }
 
-	/*! Populates the vector resDesc with descriptions of all results provided by this model.
-	*/
-	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const;
+	/*! Climatic loads can be referenced as MRT_LOCATION. */
+	virtual NANDRAD::ModelInputReference::referenceType_t referenceType() const override {
+		return NANDRAD::ModelInputReference::MRT_LOCATION;
+	}
 
-	/*! Retrieves reference pointer to a value with given input reference name.
-	*/
-	virtual const double * resultValueRef(const QuantityName & quantityName) const;
+	/*! Resizes m_results vector. */
+	virtual void initResults(const std::vector<AbstractModel*> & /* models */) override;
+
+	/*! Populates the vector resDesc with descriptions of all results provided by this model. */
+	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const override;
+
+	/*! Retrieves reference pointer to a value with given input reference name. */
+	virtual const double * resultValueRef(const QuantityName & quantityName) const override;
 
 	/*! Updates the state of the loads object to the time point stored in DefaultTimeStateModel::m_t.
 		This function updates all internally cached results to match the new time point.
 		Afterwards, these time points can be retrieved very efficiently several times
 		through the various access functions.
-	*/
-	virtual int setTime(double t);
 
-	/*! Clears all containers for shading factor calculation. */
-	virtual void stepCompleted(double t);
+		\param t The simulation time (relative to simulation start) in s.
+
+		\note The simulation time is shifted by the offset from start year and start time to get an
+			  absolute time reference. Then it is passed to the climate calculation module.
+	*/
+	virtual int setTime(double t) override;
+
+
+
+
 
 	/*! Adds a surface to the list of computable surfaces.
 		For all surfaces added to the loads class, the computation function calculates
@@ -133,7 +138,7 @@ public:
 				this function and the query function below.
 		\return Returns the ID of the new surface (can also be used to query results).
 	*/
-	void addSurface(unsigned int objectID, double orientation, double inclination);
+//	void addSurface(unsigned int objectID, double orientation, double inclination);
 
 	/*! Returns the direct and diffuse radiation on a given surface.
 		This function works essentially as the function above, but identifies the surface via a surfaceId.
@@ -151,46 +156,33 @@ public:
 	*/
 	double skyVisibility(unsigned int objectID) const;
 
-	/*! Constant access to location data object.
-	*/
-	const NANDRAD::Location *location() const { return m_location;  }
-
 private:
 	/*! Year of simulation. */
-	unsigned int				m_year;
+	int										m_year = 0;
 	/*! Pointer to start time from the beginning of the year in [s]. */
-	const double				*m_startTime;
+	double									m_startTime = 0;
 	/*! Simulation time.*/
-	double						m_t;
-	/*! Pointer to location data. */
-	const NANDRAD::Location		*m_location;
+	double									m_t = 0;
 
 	/*! The solar radiation model from CCM, includes the Climate data loader. */
-	CCM::SolarRadiationModel	m_solarRadiationModel;
+	CCM::SolarRadiationModel				m_solarRadiationModel;
 	/*! Mapping of object id to a solar radiation surface id. */
-	std::map<unsigned int, unsigned int>
-								m_objectID2surfaceID;
+	std::map<unsigned int, unsigned int>	m_objectID2surfaceID;
 	/*! Mapping of sensor id to a solar radiation surface id. */
-	std::map<unsigned int, unsigned int>
-								m_sensorID2surfaceID;
+	std::map<unsigned int, unsigned int>	m_sensorID2surfaceID;
 	/*! Mapping of object id to a long wave radiation surface id. */
-	std::map<unsigned int, unsigned int>
-								m_objectID2inclinations;
+	std::map<unsigned int, unsigned int>	m_objectID2inclinations;
 	/*! Vector of surfaces with different inclination for calculation of
 		sky long wave radiation (in [rad]).
 	*/
-	std::vector< double >		m_inclinations;
-	/*! Vector of sky visibility for all inclinations (in [---]).
-	*/
-	std::vector< double >		m_skyVisbility;
+	std::vector< double >					m_inclinations;
+	/*! Vector of sky visibility for all inclinations (in [---]). */
+	std::vector< double >					m_skyVisbility;
 
 	/*! Vector containing shading factors for current time point. */
-	std::vector<double>			m_shadingFactors;
+	std::vector<double>						m_shadingFactors;
 	/*! References to shading factors for each outside surface and embedded object id. */
-	std::map<unsigned int, const double*>
-								m_shadingFactorsForObjectID;
-	/*! Index of the last loaded time point from shading factor file. */
-	int							m_indexOfLastAcceptedTimePoint;
+	std::map<unsigned int, const double*>	m_shadingFactorsForObjectID;
 };
 
 } // namespace NANDRAD_MODEL

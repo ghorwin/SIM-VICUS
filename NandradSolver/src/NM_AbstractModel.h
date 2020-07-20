@@ -80,8 +80,7 @@ public:
 	*/
 	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const = 0;
 
-	/*! Returns vector of all scalar and vector valued results pointer.
-	*/
+	/*! Returns vector of all scalar and vector valued results pointer. */
 	virtual void resultValueRefs(std::vector<const double *> &res) const = 0;
 
 	/*! Looks up a result quantity and returns a pointer to the
@@ -115,7 +114,7 @@ public:
 
 private:
 
-	friend class NandradModelImpl;
+	friend class NandradModel;
 	friend class StateModelGroup;
 };
 
