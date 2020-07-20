@@ -163,26 +163,26 @@ int CVSpilsPrecSetupFn_f(realtype t, N_Vector y, N_Vector fy,
 	int res = 0;
 
 	IntegratorSundialsCVODEImpl * cvodeMem = reinterpret_cast<IntegratorSundialsCVODEImpl *>(user_data);
-	IBK_ASSERT(cvodeMem != NULL);
+	IBK_ASSERT(cvodeMem != nullptr);
 	// cast user data to jacobian interface
 	JacobianInterface * jacobian = cvodeMem->m_jacobian;
 	// update Jacobian if dedicated implementation is provided and if CVODE signals
 	// that Jacobian is outdated
 	bool jacGenerated = false;
-	if (jacobian != NULL && jok != TRUE) {
+	if (jacobian != nullptr && jok != TRUE) {
 		// update df/dy
 		SUNDIALS_TIMED_FUNCTION(SUNDIALS_TIMER_JACOBIAN_GENERATION,
-			res = jacobian->setup(t, NV_DATA(y), NV_DATA(fy), NULL, gamma);
+			res = jacobian->setup(t, NV_DATA(y), NV_DATA(fy), nullptr, gamma);
 		);
 		jacGenerated = true;
 	}
 	// cast user data to pre-conditioner interface
 	PrecondInterface * precond = cvodeMem->m_precond;
 	bool jacUpdated = false;
-	if (precond != NULL) {
+	if (precond != nullptr) {
 		// now call setup in precond
 		SUNDIALS_TIMED_FUNCTION(SUNDIALS_TIMER_PRE_SETUP,
-			res = precond->setup(t, NV_DATA(y), NV_DATA(fy), NULL, (jok == TRUE), jacUpdated, gamma);
+			res = precond->setup(t, NV_DATA(y), NV_DATA(fy), nullptr, (jok == TRUE), jacUpdated, gamma);
 		);
 	}
 	if (jacUpdated || jacGenerated )		*jcurPtr |= TRUE;
@@ -199,12 +199,12 @@ int CVSpilsPrecSolveFn_f(realtype t, N_Vector y, N_Vector fy,
 {
 	(void)tmp;
 	IntegratorSundialsCVODEImpl * cvodeMem = reinterpret_cast<IntegratorSundialsCVODEImpl *>(user_data);
-	IBK_ASSERT(cvodeMem != NULL);
+	IBK_ASSERT(cvodeMem != nullptr);
 	// cast user data to pre-conditioner interface
 	PrecondInterface * precond = cvodeMem->m_precond;
-	if (precond != NULL) {
+	if (precond != nullptr) {
 		// now call setup in precond
-		return precond->solve(t, NV_DATA(y), NV_DATA(fy), NULL, NV_DATA(r), NV_DATA(z), gamma, delta, lr);
+		return precond->solve(t, NV_DATA(y), NV_DATA(fy), nullptr, NV_DATA(r), NV_DATA(z), gamma, delta, lr);
 	}
 
 	// no preconditioner, simply copy r to z
@@ -226,7 +226,7 @@ int CVSpilsJacTimesVecFn_f(N_Vector v, N_Vector Jv, realtype t,
 	(void)t;
 	// cast user data to pre-conditioner interface
 	JacobianInterface * jacobian = reinterpret_cast<IntegratorSundialsCVODEImpl *>(user_data)->m_jacobian;
-	IBK_ASSERT(jacobian != NULL);
+	IBK_ASSERT(jacobian != nullptr);
 	// now call J*v in precond
 	return jacobian->jacTimesVec(NV_DATA(v), NV_DATA(Jv));
 }
@@ -237,7 +237,7 @@ int CVSpilsJacTimesVecFn_f(N_Vector v, N_Vector Jv, realtype t,
 
 
 IntegratorSundialsCVODE::IntegratorSundialsCVODE() :
-	m_impl(NULL)
+	m_impl(nullptr)
 {
 	m_dtMin				= 0;
 	m_dtMax				= 3600;
@@ -264,9 +264,9 @@ void IntegratorSundialsCVODE::init(ModelInterface * model, double t0,
 {
 	const char * const FUNC_ID = "[IntegratorSundialsCVODE::init]";
 
-	if (m_impl != NULL) {
+	if (m_impl != nullptr) {
 		delete m_impl;
-		m_impl = NULL;
+		m_impl = nullptr;
 	}
 	m_impl = new IntegratorSundialsCVODEImpl;
 
@@ -275,7 +275,7 @@ void IntegratorSundialsCVODE::init(ModelInterface * model, double t0,
 
 	// store model pointer for later access
 	m_impl->m_model = model;
-	IBK_ASSERT(m_impl->m_model != NULL);
+	IBK_ASSERT(m_impl->m_model != nullptr);
 
 	// determine number of elements per balance equation
 
@@ -348,7 +348,7 @@ void IntegratorSundialsCVODE::init(ModelInterface * model, double t0,
 	}
 
 	// *** Initialize Jacobian matrix generator ***
-	if (jacobian != NULL) {
+	if (jacobian != nullptr) {
 		IBK::IBK_Message( IBK::FormatString("Initializing Jacobian implementation\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		jacobian->init(model);
 	}
@@ -361,12 +361,12 @@ void IntegratorSundialsCVODE::init(ModelInterface * model, double t0,
 
 	// The SUNDIALS iterative solvers will only use the Jacobian matrix during
 	// the setup phase, if a preconditioner is specified.
-	// So, even if we de-selected a preconditioner (precond == NULL), we need
+	// So, even if we de-selected a preconditioner (precond == nullptr), we need
 	// to call CVSpilsSetPreconditioner() if we have a jacobian matrix generator.
 	// The call back functions CVSpilsPrecSetupFn_f() and CVSpilsPrecSolveFn_f()
 	// distinguish automatically between the case jac+precond and jac alone.
-	if (dynamic_cast<SOLFRA::LESInterfaceIterative*>(lesSolver) != NULL &&
-			(precond != NULL || jacobian != NULL))
+	if (dynamic_cast<SOLFRA::LESInterfaceIterative*>(lesSolver) != nullptr &&
+			(precond != nullptr || jacobian != nullptr))
 	{
 		// connect pre-conditioner to CVode
 		int res = CVSpilsSetPreconditioner(m_impl->m_mem,
@@ -375,7 +375,7 @@ void IntegratorSundialsCVODE::init(ModelInterface * model, double t0,
 		if (res != CV_SUCCESS)
 			throw IBK::Exception("Error registering CVSpilsPrecSetupFn_f and/or CVSpilsPrecSolveFn_f.", FUNC_ID);
 		// set JacTimesVec function when available
-		if (jacobian != NULL) {
+		if (jacobian != nullptr) {
 			IBK::IBK_Message( IBK::FormatString("Registering own Jacobian implementation with J*v function.\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 			res = CVSpilsSetJacTimesVecFn(m_impl->m_mem, CVSpilsJacTimesVecFn_f);
 		}
@@ -384,7 +384,7 @@ void IntegratorSundialsCVODE::init(ModelInterface * model, double t0,
 		}
 
 		// now initialize pre-conditioner
-		if (precond != NULL) {
+		if (precond != nullptr) {
 			IBK::IBK_Message( IBK::FormatString("Initializing Preconditioner implementation\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 			precond->init(model, this, jacobian);
 		}
@@ -555,7 +555,7 @@ void IntegratorSundialsCVODE::writeMetrics(double simtime, std::ostream * metric
 		.arg(tsolve/simtime*100, 5, 'f', 2)
 		.arg((unsigned int)m_impl->m_statNumNIters,8),
 		IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-	if (metricsFile != NULL) {
+	if (metricsFile != nullptr) {
 		*metricsFile << "IntegratorSteps=" << m_impl->m_statNumSteps << std::endl;
 		*metricsFile << "IntegratorErrorTestFails=" << m_impl->m_statNumErrFails << std::endl;
 		*metricsFile << "IntegratorNonLinearConvFails=" << m_impl->m_statNumNCFails << std::endl;
@@ -570,8 +570,8 @@ void IntegratorSundialsCVODE::writeMetrics(double simtime, std::ostream * metric
 
 
 void * IntegratorSundialsCVODE::cvodeMem() const {
-	if (m_impl == NULL)
-		return NULL;
+	if (m_impl == nullptr)
+		return nullptr;
 	else
 		return m_impl->m_mem;
 }
@@ -603,7 +603,7 @@ std::size_t IntegratorSundialsCVODE::serializationSize() const {
 	std::size_t s = CVodeSerializationSize(m_impl->m_mem);
 	s += 2*sizeof(double); // also cache m_t and m_dt
 	// store m_yStorage vector
-	CVODE_SERIALIZE_NVECTOR(SUNDIALS_SERIALIZATION_OPERATION_SIZE, NULL, m_impl->m_yStorage, s);
+	CVODE_SERIALIZE_NVECTOR(SUNDIALS_SERIALIZATION_OPERATION_SIZE, nullptr, m_impl->m_yStorage, s);
 
 	return s;
 }
@@ -637,14 +637,14 @@ void IntegratorSundialsCVODE::deserialize(void* & dataPtr) {
 // *** Implementation of IntegratorSundialsCVODEImpl ***
 
 IntegratorSundialsCVODEImpl::IntegratorSundialsCVODEImpl() :
-	m_mem(NULL),
-	m_yStorage(NULL),
-	m_yStorageOutput(NULL),
-	m_yStorageLast(NULL),
-	m_errEstimates(NULL),
-	m_absTolVec(NULL),
-	m_errWeights(NULL),
-	m_statsFileStream(NULL),
+	m_mem(nullptr),
+	m_yStorage(nullptr),
+	m_yStorageOutput(nullptr),
+	m_yStorageLast(nullptr),
+	m_errEstimates(nullptr),
+	m_absTolVec(nullptr),
+	m_errWeights(nullptr),
+	m_statsFileStream(nullptr),
 	m_statNumSteps(0),
 	m_statNumRHSEvals(0),
 	m_statNumLinSetups(0),
@@ -655,28 +655,28 @@ IntegratorSundialsCVODEImpl::IntegratorSundialsCVODEImpl() :
 }
 
 IntegratorSundialsCVODEImpl::~IntegratorSundialsCVODEImpl() {
-	if (m_mem!=NULL)
+	if (m_mem!=nullptr)
 		CVodeFree(&m_mem);
-	if (m_yStorage!=NULL)
+	if (m_yStorage!=nullptr)
 		N_VDestroy(m_yStorage);
-	if (m_yStorageOutput!=NULL)
+	if (m_yStorageOutput!=nullptr)
 		N_VDestroy(m_yStorageOutput);
-	if (m_yStorageLast!=NULL)
+	if (m_yStorageLast!=nullptr)
 		N_VDestroy(m_yStorageLast);
-	if (m_errEstimates!=NULL)
+	if (m_errEstimates!=nullptr)
 		N_VDestroy(m_errEstimates);
-	if (m_absTolVec!=NULL)
+	if (m_absTolVec!=nullptr)
 		N_VDestroy(m_absTolVec);
-	if (m_errWeights!=NULL)
+	if (m_errWeights!=nullptr)
 		N_VDestroy(m_errWeights);
 
-	m_mem = NULL;
-	m_yStorage = NULL;
-	m_yStorageOutput = NULL;
-	m_yStorageLast = NULL;
-	m_errEstimates = NULL;
-	m_absTolVec = NULL;
-	m_errWeights = NULL;
+	m_mem = nullptr;
+	m_yStorage = nullptr;
+	m_yStorageOutput = nullptr;
+	m_yStorageLast = nullptr;
+	m_errEstimates = nullptr;
+	m_absTolVec = nullptr;
+	m_errWeights = nullptr;
 
 	delete m_statsFileStream;
 }

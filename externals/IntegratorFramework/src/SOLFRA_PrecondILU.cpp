@@ -17,14 +17,14 @@ namespace SOLFRA {
 
 PrecondILU::PrecondILU(PreconditionerType precondType) :
 	PrecondInterface(precondType),
-	m_jacobianSparse(NULL),
-	m_precondMatrix(NULL)
+	m_jacobianSparse(nullptr),
+	m_precondMatrix(nullptr)
 {
 }
 
 
 PrecondILU::~PrecondILU() {
-	if (m_precondMatrix != NULL)
+	if (m_precondMatrix != nullptr)
 		delete m_precondMatrix;
 }
 
@@ -40,7 +40,7 @@ void PrecondILU::init(ModelInterface * model, IntegratorInterface * integrator,
 
 	// transfer jacobian matrix and ensure it is a sparse Jacobian implementation
 	m_jacobianSparse = dynamic_cast<const JacobianSparse*>(jacobianInterface);
-	IBK_ASSERT(m_jacobianSparse != NULL);
+	IBK_ASSERT(m_jacobianSparse != nullptr);
 
 	// let Jacobian implementation construct a copy for us and transfer ownership
 	m_precondMatrix = m_jacobianSparse->createAndReleaseJacobianCopy();
@@ -63,7 +63,7 @@ int PrecondILU::setup(double t, const double * y, const double * ydot, const dou
 //#define DUMP_SPARSE_JACOBIANS
 #ifdef DUMP_SPARSE_JACOBIANS
 		std::ofstream jacdump2("jacobian_dfdy_sparse_CSR_from_ILU.txt");
-		m_precondMatrix->write(jacdump2, NULL, false, 15);
+		m_precondMatrix->write(jacdump2, nullptr, false, 15);
 		jacdump2.close();
 #endif
 
@@ -75,7 +75,7 @@ int PrecondILU::setup(double t, const double * y, const double * ydot, const dou
 
 #ifdef DUMP_SPARSE_JACOBIANS
 		std::ofstream jacdump1("jacobian_sparse_CSR_from_ILU.txt");
-		m_precondMatrix->write(jacdump1, NULL, false, 15);
+		m_precondMatrix->write(jacdump1, nullptr, false, 15);
 		jacdump1.close();
 #endif
 	// perform incomplete LU-factorization
@@ -83,7 +83,7 @@ int PrecondILU::setup(double t, const double * y, const double * ydot, const dou
 
 #ifdef DUMP_SPARSE_JACOBIANS
 		std::ofstream jacdump("jacobian_sparse_CSR_from_ILU_factorized.txt");
-		m_precondMatrix->write(jacdump, NULL, false, 15);
+		m_precondMatrix->write(jacdump, nullptr, false, 15);
 		jacdump.close();
 		throw IBK::Exception("Done with test-dump of Jacobian", "[PrecondILU::setup]");
 #endif

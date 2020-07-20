@@ -22,7 +22,7 @@ JacobianSparseCSR::JacobianSparseCSR(unsigned int n, unsigned int nnz, const uns
 	IBKMK::SparseMatrixCSR(n, nnz, ia, ja, iaT, jaT),
 	m_relToleranceDQ(1e-7),
 	m_absToleranceDQ(1e-8),
-	m_model(NULL),
+	m_model(nullptr),
 	m_nRhsEvals(0)
 {
 }
@@ -116,7 +116,7 @@ int JacobianSparseCSR::setup(double t, const double * y, const double * ydot, co
 	(void)t;
 	(void)residuals;
 	(void)gamma;
-	IBK_ASSERT(m_model != NULL);
+	IBK_ASSERT(m_model != nullptr);
 
 	// store current solution guess
 	std::memcpy(&m_yMod[0], y, m_n*sizeof(double));
@@ -181,7 +181,7 @@ int JacobianSparseCSR::setup(double t, const double * y, const double * ydot, co
 // dump defines are defined in SOLFRA_JacobianInterface.h
 #ifdef DUMP_JACOBIAN_TEXT
 	std::ofstream jacdump("jacobian_sparse_CSR.txt");
-	write(jacdump, NULL, false, 15);
+	write(jacdump, nullptr, false, 15);
 	jacdump.close();
 	throw IBK::Exception("Done with test-dump of Jacobian", "[JacobianSparseCSR::setup]");
 #endif

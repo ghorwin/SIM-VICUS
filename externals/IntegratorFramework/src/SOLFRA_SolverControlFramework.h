@@ -65,7 +65,7 @@ public:
 		the corresponding object lives as long as the solver control framework instance
 		is in use.
 	*/
-	SolverControlFramework(ModelInterface * model = NULL);
+	SolverControlFramework(ModelInterface * model = nullptr);
 	/*! Virtual destructor, so that this class can be derived and reimplemented. */
 	virtual ~SolverControlFramework();
 
@@ -224,7 +224,7 @@ protected:
 	bool readRestartFile(int step,
 		double t_restart,
 		double & t, double * y,
-		std::ostream * restartFileCopy = NULL) const;
+		std::ostream * restartFileCopy = nullptr) const;
 
 	/*! Pointer to model implementation (not owned). */
 	ModelInterface			*m_model;

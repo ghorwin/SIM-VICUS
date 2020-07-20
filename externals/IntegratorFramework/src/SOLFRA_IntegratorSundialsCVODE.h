@@ -30,9 +30,9 @@ public:
 
 	/*! Initializes the Integrator.
 		\param model The physical model instance.
-		\param lesSolver Linear equation system solver, can be NULL if (explicit) solver doesn't need LES solver functionality.
+		\param lesSolver Linear equation system solver, can be nullptr if (explicit) solver doesn't need LES solver functionality.
 		\param precond Preconditioner, in case that an iterative linear equation system solver is used.
-			If NULL, no preconditioner is specified.
+			If nullptr, no preconditioner is specified.
 		\param t0 Starting time point.
 		\param y0 Pointer to linear memory array of size model->n() holding the initial conditions.
 	*/
@@ -79,9 +79,9 @@ public:
 
 	/*! Writes currently collected solver metrics/statistics to output.
 		\param simtime Totel elapsed wall clock time of simulation in [s] (needed for percentage calculation)
-		\param metricsFile If not NULL, computer-readible metrics are written to the file.
+		\param metricsFile If not nullptr, computer-readible metrics are written to the file.
 	*/
-	virtual void writeMetrics(double simtime, std::ostream * metricsFile=NULL) override;
+	virtual void writeMetrics(double simtime, std::ostream * metricsFile=nullptr) override;
 
 	/*! Returns memory to CVODE solver for direct access to SUNDIALS API.
 		The pointer will be initialized after a successful call to init(),

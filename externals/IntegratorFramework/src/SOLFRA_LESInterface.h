@@ -43,9 +43,9 @@ public:
 	/*! Default constructor */
 	LESInterface():
 		m_statNumRhsEvals(0),
-		m_integrator(NULL),
-		m_model(NULL),
-		m_statsFileStream(NULL),
+		m_integrator(nullptr),
+		m_model(nullptr),
+		m_statsFileStream(nullptr),
 		m_relToleranceDQ(1e-7),
 		m_absToleranceDQ(1e-8)
 	{
@@ -94,9 +94,9 @@ public:
 
 	/*! Writes currently collected solver metrics/statistics to output.
 		\param simtime Totel elapsed wall clock time of simulation in [s] (needed for percentage calculation)
-		\param metricsFile If not NULL, computer-readible metrics are written to the file.
+		\param metricsFile If not nullptr, computer-readible metrics are written to the file.
 	*/
-	virtual void writeMetrics(double simtime, std::ostream * metricsFile=NULL) { (void)simtime; (void)metricsFile; }
+	virtual void writeMetrics(double simtime, std::ostream * metricsFile=nullptr) { (void)simtime; (void)metricsFile; }
 
 	/*! Updates cached statistics when using SUNDIALS solvers, which do not write
 		statistics variables automatically.

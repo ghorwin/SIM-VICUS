@@ -96,10 +96,10 @@ void LESInterfaceIterative::writeMetrics(double simtime, std::ostream * metricsF
 	double tPreSetup = TimerSum(SUNDIALS_TIMER_PRE_SETUP);
 	double tPreSolve = TimerSum(SUNDIALS_TIMER_PRE_SOLVE);
 	unsigned int nFeJacSetup = 0;
-	if (m_jacobian != NULL)
+	if (m_jacobian != nullptr)
 		nFeJacSetup = m_jacobian->nRHSEvals();
 	unsigned int nFePrecSetup = 0;
-	if (m_precond != NULL)
+	if (m_precond != nullptr)
 		nFePrecSetup = m_precond->nRHSEvals();
 
 	// write metrics to screen
@@ -144,7 +144,7 @@ void LESInterfaceIterative::writeMetrics(double simtime, std::ostream * metricsF
 		.arg(m_statNumPrecSolves,8),
 		IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
-	if (metricsFile != NULL) {
+	if (metricsFile != nullptr) {
 		*metricsFile << "LESLinearIters=" << m_statNumLinIters << std::endl;
 		*metricsFile << "LESLinearConvFails=" << m_statNumLinConvFails << std::endl;
 		*metricsFile << "LESRHSEvals=" << m_statNumRhsEvals << std::endl;

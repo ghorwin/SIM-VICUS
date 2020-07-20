@@ -123,33 +123,33 @@ public:
 	virtual void stepCompleted(double t, const double * y) { (void)t; (void)y; }
 
 	/*! Returns linear equation system solver.
-		Default implementation returns NULL, which means that the
+		Default implementation returns nullptr, which means that the
 		SundialsDense is used for both CVODE and IDA.
 	*/
-	virtual LESInterface * lesInterface() { return NULL; }
+	virtual LESInterface * lesInterface() { return nullptr; }
 
 	/*! Returns integrator to be used for this model.
-		Default implementation returns NULL, which results in CVODE integrator for
+		Default implementation returns nullptr, which results in CVODE integrator for
 		ODE type models and IDA for DAE-type models.
 	*/
-	virtual IntegratorInterface * integratorInterface() { return NULL; }
+	virtual IntegratorInterface * integratorInterface() { return nullptr; }
 
 	/*! Returns model-specific pre-conditioner for use with iterative LES solvers.
-		Default implementation returns NULL (no preconditioner).
+		Default implementation returns nullptr (no preconditioner).
 	*/
-	virtual PrecondInterface * preconditionerInterface() { return NULL; }
+	virtual PrecondInterface * preconditionerInterface() { return nullptr; }
 
 	/*! Returns model-specific Jacobian matrix generation method for use with iterative LES solvers.
-		Default implementation returns NULL (no jacobian generator).
+		Default implementation returns nullptr (no jacobian generator).
 	*/
-	virtual JacobianInterface * jacobianInterface() { return NULL; }
+	virtual JacobianInterface * jacobianInterface() { return nullptr; }
 
 	/*! Returns output scheduler to be used with the framework.
-		Default implementation returns NULL (standard output scheduler).
+		Default implementation returns nullptr (standard output scheduler).
 	*/
-	virtual OutputScheduler * outputScheduler() { return NULL; }
+	virtual OutputScheduler * outputScheduler() { return nullptr; }
 
-	/*! Returns error weights to the integrator if defined. Otherwise NULL.
+	/*! Returns error weights to the integrator if defined. Otherwise nullptr.
 		\todo make this function const
 	*/
 	virtual CalculationResult calculateErrorWeights(const double *y, double *weights) {(void) y; (void) weights; return CalculationAbort; }
@@ -177,9 +177,9 @@ public:
 		When re-implementing this function, please use the same formatting/layout for the table to
 		give a consistent view.
 		\param simtime Totel elapsed wall clock time of simulation in [s] (needed for percentage calculation)
-		\param metricsFile If not NULL, computer-readible metrics are written to the file.
+		\param metricsFile If not nullptr, computer-readible metrics are written to the file.
 	*/
-	virtual void writeMetrics(double simtime, std::ostream * metricsFile = NULL) { (void)simtime; (void)metricsFile; }
+	virtual void writeMetrics(double simtime, std::ostream * metricsFile = nullptr) { (void)simtime; (void)metricsFile; }
 
 private:
 	/*! Copy constructor, private and not implemented : model may not be copied. */

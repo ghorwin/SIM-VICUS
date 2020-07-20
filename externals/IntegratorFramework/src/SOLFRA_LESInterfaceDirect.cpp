@@ -52,7 +52,7 @@ void LESInterfaceDirect::updateSUNDIALSStatistics() {
 	if (IntegratorSundialsCVODE* intCVODE = dynamic_cast<IntegratorSundialsCVODE*>(m_integrator)) {
 		long statDummy;
 		// for sparse solver LESKLU the function updateSUNDIALSStatistics() is overridden
-		IBK_ASSERT(dynamic_cast<LESKLU*>(this) == NULL);
+		IBK_ASSERT(dynamic_cast<LESKLU*>(this) == nullptr);
 		CVDlsGetNumJacEvals(intCVODE->cvodeMem(),&statDummy);
 		m_statNumJacEvals = statDummy;
 		CVDlsGetNumRhsEvals(intCVODE->cvodeMem(),&statDummy);
@@ -96,7 +96,7 @@ void LESInterfaceDirect::writeMetrics(double simtime, std::ostream * metricsFile
 		.arg(m_statNumRhsEvals,8),
 		IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
-	if (metricsFile != NULL) {
+	if (metricsFile != nullptr) {
 		*metricsFile << "LESSetups=" << nLinSetups << std::endl;
 		*metricsFile << "LESJacEvals=" << m_statNumJacEvals << std::endl;
 		*metricsFile << "LESTimeJacEvals=" << tfactor << std::endl;

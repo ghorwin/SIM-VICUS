@@ -26,7 +26,7 @@ void LESBiCGStab::init(ModelInterface *  model, IntegratorInterface * integrator
 	m_precond		= precond;
 
 	// determine which preconditioner we are using
-	if (precond == NULL)
+	if (precond == nullptr)
 		IBK::IBK_Message(IBK::FormatString("No Preconditioner is set for LESBiCGStab linear equation solver."), IBK::MSG_WARNING, FUNC_ID, IBK::VL_ALL );
 
 	// determine which integrator we are using
@@ -34,9 +34,9 @@ void LESBiCGStab::init(ModelInterface *  model, IntegratorInterface * integrator
 		// create and register CVSpbcg with integrator
 		int sundialsPrecType = PREC_NONE; // by default preconditioner is disabled
 		// if we have a Jacobian matrix implementation, we need the preconditioner to be a dummy left-sided Preconditioner
-		if (jacobian != NULL)
+		if (jacobian != nullptr)
 			sundialsPrecType = PREC_LEFT;
-		if (precond != NULL) {
+		if (precond != nullptr) {
 			switch (precond->preconditionerType()) {
 				case PrecondInterface::Left		: sundialsPrecType = PREC_LEFT; break;
 				case PrecondInterface::Right	: sundialsPrecType = PREC_RIGHT; break;

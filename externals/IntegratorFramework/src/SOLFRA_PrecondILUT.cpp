@@ -48,10 +48,10 @@ public:
 
 PrecondILUT::PrecondILUT(PreconditionerType precondType, unsigned int maxFillinLevel) :
 	PrecondInterface(precondType),
-	m_jacobianSparse(NULL),
-	m_precondMatrixCSR(NULL),
-	m_itsolMatrix(NULL),
-	m_factorizedItsolMatrix(NULL),
+	m_jacobianSparse(nullptr),
+	m_precondMatrixCSR(nullptr),
+	m_itsolMatrix(nullptr),
+	m_factorizedItsolMatrix(nullptr),
 	m_maxLevelOfFillIn(maxFillinLevel),
 	m_tolerance(1e-3)
 {
@@ -59,11 +59,11 @@ PrecondILUT::PrecondILUT(PreconditionerType precondType, unsigned int maxFillinL
 
 
 PrecondILUT::~PrecondILUT() {
-	if (m_precondMatrixCSR != NULL)
+	if (m_precondMatrixCSR != nullptr)
 		delete m_precondMatrixCSR;
-	if (m_itsolMatrix != NULL)
+	if (m_itsolMatrix != nullptr)
 		delete m_itsolMatrix;
-	if (m_factorizedItsolMatrix != NULL)
+	if (m_factorizedItsolMatrix != nullptr)
 		delete m_factorizedItsolMatrix;
 }
 
@@ -84,11 +84,11 @@ void PrecondILUT::init(SOLFRA::ModelInterface * model, SOLFRA::IntegratorInterfa
 	// transfer jacobian matrix and ensure it is a sparse Jacobian implementation
 	// do we have a CSR Jacobian interface?
 	const SOLFRA::JacobianSparseCSR * jacCSR = dynamic_cast<const SOLFRA::JacobianSparseCSR*>(jacobianInterface);
-	IBK_ASSERT (jacCSR != NULL);
+	IBK_ASSERT (jacCSR != nullptr);
 
 	// let Jacobian implementation construct a copy for us and transfer ownership
 	m_precondMatrixCSR = dynamic_cast<IBKMK::SparseMatrixCSR*>(jacCSR->createAndReleaseJacobianCopy());
-	IBK_ASSERT(m_precondMatrixCSR != NULL);
+	IBK_ASSERT(m_precondMatrixCSR != nullptr);
 
 	// create a itsol sparse m,atrix and copy precond matrix pointer
 	m_itsolMatrix = new IBKMK::SpaFmt;
@@ -114,10 +114,10 @@ void PrecondILUT::init(SOLFRA::ModelInterface * model, SOLFRA::IntegratorInterfa
 	}
 
 	m_factorizedItsolMatrix = new IBKMK::ILUfac;
-	m_factorizedItsolMatrix->L = NULL;
-	m_factorizedItsolMatrix->U = NULL;
-	m_factorizedItsolMatrix->D = NULL;
-	m_factorizedItsolMatrix->work = NULL;
+	m_factorizedItsolMatrix->L = nullptr;
+	m_factorizedItsolMatrix->U = nullptr;
+	m_factorizedItsolMatrix->D = nullptr;
+	m_factorizedItsolMatrix->work = nullptr;
 }
 
 
@@ -131,7 +131,7 @@ int PrecondILUT::setup(double t, const double * y, const double * ydot, const do
 	(void)jacUpdated;
 	(void)jacOk;
 
-	double * jacData = NULL;
+	double * jacData = nullptr;
 
 	// restore partial Jacobian data in our local copy
 	jacData = m_precondMatrixCSR->data();
@@ -140,7 +140,7 @@ int PrecondILUT::setup(double t, const double * y, const double * ydot, const do
 //#define DUMP_SPARSE_JACOBIANS
 #ifdef DUMP_SPARSE_JACOBIANS
 	std::ofstream jacdump("jacobian_dfdy_sparse_CSR_from_ILUT.txt");
-	m_precondMatrixCSR->write(jacdump, NULL, false, 15);
+	m_precondMatrixCSR->write(jacdump, nullptr, false, 15);
 	jacdump.close();
 #endif
 
@@ -152,7 +152,7 @@ int PrecondILUT::setup(double t, const double * y, const double * ydot, const do
 
 #ifdef DUMP_SPARSE_JACOBIANS
 		std::ofstream jacdump1("jacobian_sparse_CSR_from_ILUT.txt");
-		m_precondMatrixCSR->write(jacdump1, NULL, false, 15);
+		m_precondMatrixCSR->write(jacdump1, nullptr, false, 15);
 		jacdump1.close();
 #endif
 
@@ -164,7 +164,7 @@ int PrecondILUT::setup(double t, const double * y, const double * ydot, const do
 #ifdef DUMP_SPARSE_JACOBIANS
 		std::ofstream jacdump2("jacobian_sparse_CSR_from_ILUT_factorized.txt");
 		ILUTWrapper wrapper(m_factorizedItsolMatrix);
-		IBK::write_matrix(jacdump2, wrapper, NULL, false, 15, "A", "b");
+		IBK::write_matrix(jacdump2, wrapper, nullptr, false, 15, "A", "b");
 		jacdump2.close();
 		throw IBK::Exception("Done with test-dump of Jacobian", "[PrecondILU::setup]");
 #endif

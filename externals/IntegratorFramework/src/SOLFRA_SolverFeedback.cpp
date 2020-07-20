@@ -33,7 +33,7 @@ void SolverFeedback::setup(std::ostream * progressLog, double t0, double tEnd, c
 	m_outputCounter = 41;
 
 	// write header
-	if (progressLog != NULL)
+	if (progressLog != nullptr)
 		*progressLog << std::setw(15) << "Simtime [s] " << '\t' << std::setw(15) << "Realtime [s]" << '\t' << std::setw(15) << "Percentage [%]" << '\n';
 
 	m_stopWatch.start();
@@ -119,7 +119,7 @@ void SolverFeedback::writeFeedback(double t, bool betweenOutputs) {
 	IBK::IBK_Message( strm.str(), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
 	// write progress log
-	if (m_progressLog != NULL && !betweenOutputs && elapsedSimTime != 0) {
+	if (m_progressLog != nullptr && !betweenOutputs && elapsedSimTime != 0) {
 		*m_progressLog << std::setprecision(14) << std::setw(15) << std::right << t << '\t'
 					   << std::setprecision(7) << std::setw(15) << std::right << elapsedSeconds << '\t'
 					   << std::setprecision(5) << std::setw(15) << std::right << t*100/m_progressTEnd << std::endl;

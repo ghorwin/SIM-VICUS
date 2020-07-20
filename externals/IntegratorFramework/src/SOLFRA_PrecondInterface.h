@@ -27,9 +27,9 @@ public:
 
 	/*! Default constructor */
 	PrecondInterface(PreconditionerType precondType = PrecondInterface::Left):
-		m_statsFileStream(NULL),
-		m_integrator(NULL),
-		m_model(NULL),
+		m_statsFileStream(nullptr),
+		m_integrator(nullptr),
+		m_model(nullptr),
 		m_precondType(precondType)
 	{
 	}
@@ -50,7 +50,7 @@ public:
 		framework before integration is started.
 		\param model Pointer to model implementation object.
 		\param integrator Pointer to integrator object (only needed for specific Sundials features).
-		\param jacobian Pointer to Jacobian implementation (if NULL, no dedicated Jacobian implementation is
+		\param jacobian Pointer to Jacobian implementation (if nullptr, no dedicated Jacobian implementation is
 				provided and the preconditioner should implement its own Jacobian generation method).
 	*/
 	virtual void init(ModelInterface * model, IntegratorInterface * integrator, const JacobianInterface * jacobian) = 0;

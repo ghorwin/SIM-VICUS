@@ -22,7 +22,7 @@ class ModelInterface;
 class SolverFeedback {
 public:
 	/*! Setup of the feedback class.
-		\param progressLog		Stream to a log file containing realtime, simtime, and gliding average (NULL to disable log file).
+		\param progressLog		Stream to a log file containing realtime, simtime, and gliding average (nullptr to disable log file).
 		\param t0 Simulation starting time point in [s].
 		\param tEnd Simulation ending time point in [s].
 		\param interimMessage	Message to show in regular intervals instead of header captions, for example

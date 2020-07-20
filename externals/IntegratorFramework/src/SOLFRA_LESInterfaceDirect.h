@@ -51,9 +51,9 @@ public:
 
 	/*! Writes currently collected solver metrics/statistics to output.
 		\param simtime Totel elapsed wall clock time of simulation in [s] (needed for percentage calculation)
-		\param metricsFile If not NULL, computer-readible metrics are written to the file.
+		\param metricsFile If not nullptr, computer-readible metrics are written to the file.
 	*/
-	virtual void writeMetrics(double simtime, std::ostream * metricsFile=NULL) override;
+	virtual void writeMetrics(double simtime, std::ostream * metricsFile=nullptr) override;
 
 	/*! Number of Jacobian evaluations (df/dy). */
 	unsigned int							m_statNumJacEvals;

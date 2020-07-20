@@ -58,11 +58,11 @@ public:
 		\param model The physical model instance.
 		\param t0 Starting time point.
 		\param y0 Pointer to linear memory array of size model->n() holding the initial conditions.
-		\param lesSolver Linear equation system solver, can be NULL if (explicit) solver doesn't need LES solver functionality.
+		\param lesSolver Linear equation system solver, can be nullptr if (explicit) solver doesn't need LES solver functionality.
 		\param precond Preconditioner, in case that an iterative linear equation system solver is used.
-			If NULL, no preconditioner is specified.
+			If nullptr, no preconditioner is specified.
 		\param jacobain Jacobian matrix implementation (generation and J*v), in case that an iterative linear
-			equation system solver is used. If NULL, default Jacobian functionality via direction derivatives is specified.
+			equation system solver is used. If nullptr, default Jacobian functionality via direction derivatives is specified.
 	*/
 	virtual void init(ModelInterface * model, double t0, const double * y0,
 					  LESInterface * lesSolver,
@@ -107,9 +107,9 @@ public:
 
 	/*! Writes currently collected solver metrics/statistics to output.
 		\param simtime Totel elapsed wall clock time of simulation in [s] (needed for percentage calculation)
-		\param metricsFile If not NULL, computer-readible metrics are written to the file.
+		\param metricsFile If not nullptr, computer-readible metrics are written to the file.
 	*/
-	virtual void writeMetrics(double simtime, std::ostream * metricsFile=NULL) { (void)simtime; (void)metricsFile; }
+	virtual void writeMetrics(double simtime, std::ostream * metricsFile=nullptr) { (void)simtime; (void)metricsFile; }
 
 	// Serialization/Deserialization
 

@@ -33,7 +33,7 @@ inline int CVSlsSparseJacFn_f(realtype t, N_Vector y, N_Vector ydot,
 
 	IntegratorSundialsCVODEImpl * cvodeWrapper = static_cast<IntegratorSundialsCVODEImpl*>(user_data);
 	ModelInterface * model = cvodeWrapper->m_model;
-	IBK_ASSERT(model != NULL);
+	IBK_ASSERT(model != nullptr);
 
 	// update y, ydot vectors and sparse Jacobian
 	SUNDIALS_TIMED_FUNCTION(SUNDIALS_TIMER_FEVAL_JACOBIAN_GENERATION,
@@ -45,16 +45,16 @@ inline int CVSlsSparseJacFn_f(realtype t, N_Vector y, N_Vector ydot,
 	++(lesSolver->m_statNumRhsEvals);
 
 	double gamma = model->integratorInterface()->dt();
-	model->jacobianInterface()->setup(t, NV_DATA_S(y), NV_DATA_S(ydot), NULL,
+	model->jacobianInterface()->setup(t, NV_DATA_S(y), NV_DATA_S(ydot), nullptr,
 		 gamma);
 
 	// we only accept sparse jacobian CSR
 	SOLFRA::JacobianSparseCSR* jacSparse = dynamic_cast<SOLFRA::JacobianSparseCSR*>
 		(model->jacobianInterface());
-	IBK_ASSERT(jacSparse != NULL);
+	IBK_ASSERT(jacSparse != nullptr);
 	const IBKMK::SparseMatrixCSR *sparseMat = dynamic_cast<const IBKMK::SparseMatrixCSR*>
 		(jacSparse->jacobian());
-	IBK_ASSERT(sparseMat != NULL);
+	IBK_ASSERT(sparseMat != nullptr);
 
 	// no data
 	IBK_ASSERT(sparseMat->dataSize() > 0);
@@ -83,7 +83,7 @@ inline int CVSlsSparseJacFn_f(realtype t, N_Vector y, N_Vector ydot,
 
 
 LESKLU::LESKLU() :
-	m_jacobian(NULL)
+	m_jacobian(nullptr)
 {
 }
 
@@ -98,19 +98,19 @@ void LESKLU::init(ModelInterface * model, IntegratorInterface * integrator,
 	m_integrator = integrator;
 	m_model = model;
 
-	if (model == NULL)
+	if (model == nullptr)
 		throw IBK::Exception("Missing model.", FUNC_ID);
 
 	// determine which preconditioner we are using
-	if (precond != NULL)
+	if (precond != nullptr)
 		IBK::IBK_Message( "LESKLU linear solver is chosen: Preconditioner will be ignored.", IBK::MSG_WARNING, FUNC_ID);
 
-	if (jacobian == NULL) {
+	if (jacobian == nullptr) {
 		throw IBK::Exception("Error initializing LESKLU linear solver: missing Jacobian.", FUNC_ID);
 	}
 	// copy jacobian
 	JacobianSparseCSR *jacSparse = dynamic_cast<JacobianSparseCSR *>(jacobian);
-	if (jacSparse == NULL) {
+	if (jacSparse == nullptr) {
 		throw IBK::Exception("Error initializing LESKLU linear solver: only JacobianSparseCSR  is allowed.", FUNC_ID);
 	}
 	m_jacobian = jacSparse;

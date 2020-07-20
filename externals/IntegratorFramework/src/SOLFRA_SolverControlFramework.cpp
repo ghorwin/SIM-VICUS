@@ -78,13 +78,13 @@ SolverControlFramework::SolverControlFramework(ModelInterface * model) :
 	m_stopAfterSolverInit(false),
 	m_useStepStatistics(false),
 	m_model(model),
-	m_integrator(NULL),
-	m_outputScheduler(NULL),
-	m_defaultIntegrator(NULL),
-	m_defaultLES(NULL),
-	m_defaultOutputScheduler(NULL)
+	m_integrator(nullptr),
+	m_outputScheduler(nullptr),
+	m_defaultIntegrator(nullptr),
+	m_defaultLES(nullptr),
+	m_defaultOutputScheduler(nullptr)
 {
-	if (model != NULL)
+	if (model != nullptr)
 		setModel(model); // this will extract integrator, preconditioner, output scheduler from model
 }
 
@@ -101,18 +101,18 @@ void SolverControlFramework::setModel(ModelInterface * model) {
 	const char * const FUNC_ID = "[SolverControlFramework::setModel]";
 	// clean up previously created
 	delete m_defaultIntegrator;
-	m_defaultIntegrator = NULL;
+	m_defaultIntegrator = nullptr;
 	delete m_defaultLES;
-	m_defaultLES = NULL;
+	m_defaultLES = nullptr;
 	delete m_defaultOutputScheduler;
-	m_defaultOutputScheduler = NULL;
+	m_defaultOutputScheduler = nullptr;
 
 	// store pointer to model
 	m_model = model;
 
 	// store pointer to integrator
 	m_integrator = model->integratorInterface();
-	if (m_integrator == NULL) {
+	if (m_integrator == nullptr) {
 		// construct integrator when model doesn't specify one
 		m_defaultIntegrator = new IntegratorSundialsCVODE;
 		m_integrator = m_defaultIntegrator;
@@ -129,7 +129,7 @@ void SolverControlFramework::setModel(ModelInterface * model) {
 
 	// store pointer to output scheduler
 	m_outputScheduler = model->outputScheduler();
-	if (m_outputScheduler == NULL) {
+	if (m_outputScheduler == nullptr) {
 		// if none is given, construct default scheduler
 		m_defaultOutputScheduler = new OutputScheduler;
 		m_outputScheduler = m_defaultOutputScheduler;
@@ -178,7 +178,7 @@ void SolverControlFramework::setRestartInfoInterval(double simTimeDt, double rea
 
 void SolverControlFramework::restartFrom(double t_restart) {
 	const char * const FUNC_ID = "[SolverControlFramework::restartFrom]";
-	if (m_model == NULL || m_integrator == NULL || m_outputScheduler == NULL)
+	if (m_model == nullptr || m_integrator == nullptr || m_outputScheduler == nullptr)
 		throw IBK::Exception("Invalid pointers to model, integrator or outputScheduler.", FUNC_ID);
 	std::vector<double> tmp(m_model->n());
 	double t;
@@ -203,7 +203,7 @@ void SolverControlFramework::restartFrom(double t_restart) {
 
 void SolverControlFramework::restart(int step) {
 	const char * const FUNC_ID = "[SolverControlFramework::restart]";
-	if (m_model == NULL || m_integrator == NULL || m_outputScheduler == NULL)
+	if (m_model == nullptr || m_integrator == nullptr || m_outputScheduler == nullptr)
 		throw IBK::Exception("Missing model, integrator or outputScheduler.", FUNC_ID);
 
 	if (step == 0) {
@@ -333,7 +333,7 @@ void SolverControlFramework::printVersionInfo() {
 void SolverControlFramework::run(double t) {
 
 	const char * const FUNC_ID = "[SolverControlFramework::run]";
-	if (m_model == NULL || m_integrator == NULL || m_outputScheduler == NULL)
+	if (m_model == nullptr || m_integrator == nullptr || m_outputScheduler == nullptr)
 		throw IBK::Exception("Missing model, integrator or outputScheduler.", FUNC_ID);
 
 	IBK::IBK_Message( "\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD );
@@ -369,9 +369,9 @@ void SolverControlFramework::run(double t) {
 
 		// write statistics files
 		m_integrator->writeStatisticsHeader(m_logDirectory, restarting);
-		if (m_lesSolver != NULL)
+		if (m_lesSolver != nullptr)
 			m_lesSolver->writeStatisticsHeader(m_logDirectory, restarting);
-		if (m_precondInterface != NULL)
+		if (m_precondInterface != nullptr)
 			m_precondInterface->writeStatisticsHeader(m_logDirectory, restarting);
 
 		bool hadRestartAtFinalOutput = false; // this flag is set to true, when the final restart file had been written
@@ -452,9 +452,9 @@ void SolverControlFramework::run(double t) {
 			// write statistics if we had an output, or if we had step-by-step statistics enabled
 			if (had_output || m_useStepStatistics) {
 				m_integrator->writeStatistics();
-				if (m_lesSolver != NULL)
+				if (m_lesSolver != nullptr)
 					m_lesSolver->writeStatistics(t);
-				if (m_precondInterface != NULL)
+				if (m_precondInterface != nullptr)
 					m_precondInterface->writeStatistics(t);
 			}
 
@@ -575,7 +575,7 @@ bool SolverControlFramework::readRestartFile(int step,
 			IBK::IBK_Message( IBK::FormatString("Error reading last block in restart file."), IBK::MSG_ERROR);
 			return false;
 		}
-		if (restartFileCopy != NULL) {
+		if (restartFileCopy != nullptr) {
 			// since we continue from last step, we now need to copy the whole file into our temporary file
 			in.seekg(0, std::ios_base::beg);
 			*restartFileCopy << in.rdbuf();
@@ -607,7 +607,7 @@ bool SolverControlFramework::readRestartFile(int step,
 			return false;
 		}
 		// write previously read data to temporary file, if given
-		if (restartFileCopy != NULL) {
+		if (restartFileCopy != nullptr) {
 			restartFileCopy ->write((const char *)&t, sizeof(double) );
 			restartFileCopy ->write((const char *)&n, sizeof(unsigned int) );
 			restartFileCopy ->write((const char *)&tmp[0], sizeof(double)*n);
@@ -639,7 +639,7 @@ void SolverControlFramework::writeMetrics() {
 #else
 	std::auto_ptr<std::ofstream> of_ptr;
 #endif
-	std::ofstream * of = NULL;
+	std::ofstream * of = nullptr;
 	if (m_logDirectory.isValid()) {
 		of_ptr.reset( new std::ofstream( (m_logDirectory + "/summary.txt").c_str() ) );
 		of = of_ptr.get();
@@ -658,13 +658,13 @@ void SolverControlFramework::writeMetrics() {
 		.arg(tstepcompletedeval/wct*100, 5, 'f', 2),
 //		.arg(m_statNumRHSEvals,8),
 		IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-	if (of != NULL) {
+	if (of != nullptr) {
 		*of << "FrameworkTimeWriteOutputs=" << toutputeval << std::endl;
 		*of << "FrameworkTimeStepCompleted=" << tstepcompletedeval << std::endl;
 	}
 	m_integrator->writeMetrics(wct, of);
 
-	if (m_lesSolver != NULL)
+	if (m_lesSolver != nullptr)
 		m_lesSolver->writeMetrics(wct, of);
 
 	m_model->writeMetrics(wct, of);

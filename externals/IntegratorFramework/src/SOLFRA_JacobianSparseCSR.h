@@ -27,7 +27,7 @@ public:
 		\sa IBK::SparseMatrix
 	*/
 	JacobianSparseCSR(unsigned int n, unsigned int nnz, const unsigned int *ia, const unsigned int * ja,
-					  const unsigned int *iaT = NULL, const unsigned int *jaT = NULL);
+					  const unsigned int *iaT = nullptr, const unsigned int *jaT = nullptr);
 
 	/*! Initializes sparse matrix. */
 	virtual void init(ModelInterface * model) override;

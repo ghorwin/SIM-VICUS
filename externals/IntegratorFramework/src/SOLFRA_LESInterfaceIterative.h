@@ -24,8 +24,8 @@ public:
 		m_statNumPrecEvals(0),
 		m_statNumPrecSolves(0),
 		m_statNumJacTimesEvals(0),
-		m_precond(NULL),
-		m_jacobian(NULL)
+		m_precond(nullptr),
+		m_jacobian(nullptr)
 	{}
 
 	/*! Called from the framework to create statistics file and write its header. */
@@ -41,9 +41,9 @@ public:
 
 	/*! Writes currently collected solver metrics/statistics to output.
 		\param simtime Totel elapsed wall clock time of simulation in [s] (needed for percentage calculation)
-		\param metricsFile If not NULL, computer-readible metrics are written to the file.
+		\param metricsFile If not nullptr, computer-readible metrics are written to the file.
 	*/
-	virtual void writeMetrics(double simtime, std::ostream * metricsFile=NULL) override;
+	virtual void writeMetrics(double simtime, std::ostream * metricsFile=nullptr) override;
 
 
 	/***********************************************

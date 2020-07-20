@@ -18,7 +18,7 @@
 namespace SOLFRA {
 
 LESDense::LESDense() :
-	m_jacobian(NULL)
+	m_jacobian(nullptr)
 {
 }
 
@@ -38,7 +38,7 @@ void LESDense::init(ModelInterface * model, IntegratorInterface * integrator,
 	m_integrator = integrator;
 
 	// determine which preconditioner we are using
-	if(precond != NULL)
+	if(precond != nullptr)
 		IBK::IBK_Message( "LESDense solver is chosen: Preconditioner will be ignored.", IBK::MSG_WARNING, FUNC_ID);
 
 	// determine which integrator we are using
@@ -72,7 +72,7 @@ void LESDense::setup(const double * y, const double * ydot, const double * /* re
 		m_yMod[j] += m_ydiff[j];
 
 		// update model
-		if (m_model != NULL) {
+		if (m_model != nullptr) {
 			// calculate modified right hand side
 			m_model->setY(&m_yMod[0]);
 			// calculate modified right hand side of the model, and store f(t,y) in m_FMod
@@ -96,7 +96,7 @@ void LESDense::setup(const double * y, const double * ydot, const double * /* re
 	}
 #ifdef DUMP_JACOBIAN_TEXT
 	std::ofstream jacdump("jacobian_dense.txt");
-	m_jacobian->write(jacdump, NULL, false, 15);
+	m_jacobian->write(jacdump, nullptr, false, 15);
 	jacdump.close();
 	throw IBK::Exception("Done with test-dump of Jacobian", "[LESDense::setup]");
 #endif
