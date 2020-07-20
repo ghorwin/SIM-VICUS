@@ -19,15 +19,15 @@ cmake_minimum_required( VERSION 2.8.12 )
 
 MACRO(HIDE_VARIABLE var)
   IF(DEFINED ${var})
-SET(${var} "${${var}}" CACHE INTERNAL "")
+    SET(${var} "${${var}}" CACHE INTERNAL "")
   ENDIF(DEFINED ${var})
 ENDMACRO(HIDE_VARIABLE)
 
 MACRO(SHOW_VARIABLE var type doc default)
   IF(DEFINED ${var})
-SET(${var} "${${var}}" CACHE "${type}" "${doc}" FORCE)
+    SET(${var} "${${var}}" CACHE "${type}" "${doc}" FORCE)
   ELSE(DEFINED ${var})
-SET(${var} "${default}" CACHE "${type}" "${doc}")
+    SET(${var} "${default}" CACHE "${type}" "${doc}")
   ENDIF(DEFINED ${var})
 ENDMACRO(SHOW_VARIABLE)
 
@@ -48,15 +48,29 @@ if (NOT CMAKE_BUILD_TYPE)
 		"Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
 endif (NOT CMAKE_BUILD_TYPE)
 
-# on Unix we want really detailed warnings
-if (UNIX)
-	ADD_DEFINITIONS( -Wall -fPIC)
-endif (UNIX)
-
-# add VC compiler-specific flags (NONMINMAX define and disable "unsafe" warnings)
 if (MSVC)
+
+	# add VC compiler-specific flags (NONMINMAX define and disable "unsafe" warnings)
 	set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D\"NOMINMAX\" /wd4996" )
+
+else (MSVC)
+
+	# on Unix we want really detailed warnings
+	ADD_DEFINITIONS( -Wall -fPIC)
+	# when building with gcc/icc add compile flag
+	if (APPLE)
+		#message( STATUS "Mac compiler ID = ${CMAKE_C_COMPILER_ID}" )
+		if ( CMAKE_C_COMPILER_ID MATCHES "GNU")
+			set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11" )
+		else ( CMAKE_C_COMPILER_ID MATCHES "GNU")
+			set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++" )
+		endif ( CMAKE_C_COMPILER_ID MATCHES "GNU")
+	else (APPLE)
+		set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -std=gnu++11" )
+	endif (APPLE)
+
 endif (MSVC)
+
 
 # -------------------------------------------------------------
 # Packages
@@ -78,16 +92,6 @@ else (DISABLE_QT)
 	message("*** Building with Qt5, Version ${Qt5Widgets_VERSION} ***")
 endif (DISABLE_QT)
 
-# when building with gcc/icc add compile flag
-if (NOT MSVC)
-	if (APPLE)
-	  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++" )
-	else (APPLE)
-	  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -std=gnu++11" )
-	endif (APPLE)
-endif (NOT MSVC)
-
-
 if( APPLE )
 	find_library(IOKIT NAMES IOKit REQUIRED)
 	find_library(COREFOUNDATION NAMES CoreFoundation REQUIRED)
@@ -103,6 +107,38 @@ if( APPLE )
 endif( APPLE )
 
 # -------------------------------------------------------------
+# Support for build flags
+# -------------------------------------------------------------
+include( ../../externals/IBK/projects/cmake_local/cmake_pri/CMakeLists.txt  )
+
+# -------------------------------------------------------------
+# Which modules to build?
+# -------------------------------------------------------------
+
+option( BUILD_SUNDIALS "Compile Sundials library" ON )
+# hide the options of the sundials lib that we don't need
+MARK_AS_ADVANCED(BUILD_ARKODE)
+SET(BUILD_ARKODE OFF CACHE BOOL "ARKODE off" FORCE)
+MARK_AS_ADVANCED(BUILD_CVODE)
+MARK_AS_ADVANCED(BUILD_CVODES)
+set(BUILD_CVODES OFF CACHE BOOL "CVODES off" FORCE)
+MARK_AS_ADVANCED(BUILD_IDA)
+MARK_AS_ADVANCED(BUILD_IDAS)
+set(BUILD_IDA OFF CACHE BOOL "IDA off" FORCE)
+set(BUILD_IDAS OFF CACHE BOOL "IDAS off" FORCE)
+MARK_AS_ADVANCED(BUILD_KINSOL)
+MARK_AS_ADVANCED(BUILD_FCMIX)
+set(BUILD_FCMIX OFF CACHE BOOL "FCMIX off" FORCE)
+MARK_AS_ADVANCED(BUILD_SHARED_LIBS)
+MARK_AS_ADVANCED(PRECISION)
+MARK_AS_ADVANCED(EXAMPLES_ENABLE)
+set(EXAMPLES_ENABLE OFF CACHE BOOL "EXAMPLES off" FORCE)
+
+# activate options for KLU solver
+set(KLU_ENABLE ON CACHE BOOL "KLU on" FORCE)
+set(KLU_INCLUDE_DIR ../../../externals/SuiteSparse/src/include)
+
+# -------------------------------------------------------------
 # Tools of the build chain
 # -------------------------------------------------------------
 
@@ -114,15 +150,14 @@ add_subdirectory( ../../NandradCodeGenerator/projects/cmake_local NandradCodeGen
 # -------------------------------------------------------------
 
 # add subdirectories for all builds
+add_subdirectory( ../../externals/sundials/src sundials)
+add_subdirectory( ../../externals/SuiteSparse/projects/cmake_local SuiteSparse )
 add_subdirectory( ../../externals/CCM/projects/cmake_local CCM )
-add_subdirectory( ../../externals/DataIO/projects/cmake_local DataIO )
 add_subdirectory( ../../externals/IBK/projects/cmake_local IBK )
 add_subdirectory( ../../externals/IBKMK/projects/cmake_local IBKMK )
-add_subdirectory( ../../externals/SuiteSparse/projects/cmake_local SuiteSparse )
 add_subdirectory( ../../externals/Nandrad/projects/cmake_local Nandrad )
 add_subdirectory( ../../externals/IntegratorFramework/projects/cmake_local IntegratorFramework )
 add_subdirectory( ../../externals/Zeppelin/projects/cmake_local Zeppelin )
-add_subdirectory( ../../externals/sundials/src sundials)
 add_subdirectory( ../../externals/TiCPP/projects/cmake_local TiCPP )
 
 if (NOT DISABLE_QT)

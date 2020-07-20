@@ -234,8 +234,6 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "Time1", nullptr, std::string(), m_time1.toShortDateFormat());
 	if (m_time2 != IBK::Time())
 		TiXmlElement::appendSingleAttributeElement(e, "Time2", nullptr, std::string(), m_time2.toShortDateFormat());
-
-	m_sched.writeXML(e);
 	if (!m_table.m_values.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "Table", nullptr, std::string(), m_table.encodedString());
 	writeVector(e, "DblVec", m_dblVec);
@@ -268,6 +266,8 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 	}
 	if (!m_spline.empty())
 		writeLinearSplineElement(e, "Spline", m_spline, "-", "-");
+
+	m_sched.writeXML(e);
 	return e;
 }
 

@@ -17,7 +17,6 @@ LIBS += \
 	-lNandrad \
 	-lIBKMK \
 	-lZeppelin \
-	-lDataIO \
 	-lCCM \
 	-lIBK \
 	-lTiCPP \
@@ -39,12 +38,12 @@ win32{
 
 
 INCLUDEPATH = \
+	../../src \
 	../../../externals/CCM/src \
 	../../../externals/IBK/src \
 	../../../externals/IBKMK/src \
 	../../../externals/IntegratorFramework/src \
 	../../../externals/Zeppelin/src \
-	../../../externals/DataIO/src \
 	../../../externals/Nandrad/src \
 	../../../externals/TiCPP/src \
 	../../../externals/sundials/src/include
@@ -52,10 +51,31 @@ INCLUDEPATH = \
 DEPENDPATH = $${INCLUDEPATH}
 
 SOURCES += \
+	../../src/NM_AbstractModel.cpp \
+	../../src/NM_DefaultModel.cpp \
 	../../src/NM_Directories.cpp \
+	../../src/NM_KeywordList.cpp \
+	../../src/NM_Loads.cpp \
 	../../src/NM_NandradModel.cpp \
+	../../src/NM_QuantityName.cpp \
+	../../src/NM_Schedules.cpp \
+	../../src/NM_VectorValuedQuantity.cpp \
+	../../src/NM_VectorValuedQuantityIndex.cpp \
 	../../src/main.cpp
 
 HEADERS += \
+	../../src/NM_AbstractModel.h \
+	../../src/NM_AbstractStateDependency.h \
+	../../src/NM_AbstractTimeDependency.h \
+	../../src/NM_DefaultModel.h \
 	../../src/NM_Directories.h \
-	../../src/NM_NandradModel.h
+	../../src/NM_InputReference.h \
+	../../src/NM_KeywordList.h \
+	../../src/NM_Loads.h \
+	../../src/NM_NandradModel.h \
+	../../src/NM_Physics.h \
+	../../src/NM_QuantityDescription.h \
+	../../src/NM_QuantityName.h \
+	../../src/NM_Schedules.h \
+	../../src/NM_VectorValuedQuantity.h \
+	../../src/NM_VectorValuedQuantityIndex.h

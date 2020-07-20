@@ -28,7 +28,6 @@ Lesser General Public License for more details.
 #include <IBK_messages.h>
 #include <IBK_FormatString.h>
 
-#include <DATAIO_Constants.h>
 #include <CCM_Constants.h>
 
 #include <NANDRAD_ArgsParser.h>
@@ -59,6 +58,9 @@ Lesser General Public License for more details.
 #define NANDRAD_TIMER_YDOT 18
 #endif
 
+#include "NM_Loads.h"
+#include "NM_Schedules.h"
+
 namespace NANDRAD_MODEL {
 
 NandradModel::NandradModel() :
@@ -78,6 +80,29 @@ NandradModel::~NandradModel() {
 	delete m_jacobian;
 	delete m_preconditioner;
 	delete m_integrator;
+
+//	for (std::vector<OutputFile*>::iterator it = m_outputFiles.begin();
+//		it != m_outputFiles.end(); ++it)
+//	{
+//		delete *it;
+//	}
+	for (std::vector<AbstractModel*>::iterator it = m_modelContainer.begin();
+		it != m_modelContainer.end(); ++it)
+	{
+		delete *it;
+	}
+//	for (std::set<StateModelGroup*>::iterator it = m_stateModelGroups.begin();
+//		it != m_stateModelGroups.end(); ++it)
+//	{
+//		delete *it;
+//	}
+	delete m_lesSolver;
+	delete m_preconditioner;
+	delete m_integrator;
+//	delete m_FMU2ModelDescription;
+
+	// note: m_loads and m_schedules are only quick-references to the model objects stored
+	//		 in m_modelContainer. They are deleted along with all other generated model objects.
 }
 
 
@@ -127,9 +152,9 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 	initSolverParameter(args);
 	// *** Initialize simulation parameters ***
 	initSimulationParameter();
-#if 0
 	// *** Initialize Climatic Loads ***
 	initClimateData();
+#if 0
 	// *** Initialize Schedules ***
 	initSchedules();
 	// *** Initialize Global Parameters ***
@@ -701,7 +726,6 @@ void NandradModel::printVersionStrings() {
 	IBK::IBK_Message("\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK::IBK_Message("NANDRAD version                                  " + std::string(NANDRAD::LONG_VERSION) + "\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK::IBK_Message("IBK library version                              " + std::string(IBK::VERSION) + "\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-	IBK::IBK_Message("DATAIO library version                           " + std::string(DATAIO::LONG_VERSION) + "\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK::IBK_Message("CCM library version                              " + std::string(CCM::LONG_VERSION) + "\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 }
 
@@ -908,6 +932,46 @@ void NandradModel::initSimulationParameter() {
 }
 
 
+void NandradModel::initClimateData() {
+	FUNCID(NandradModel::initClimateData);
+
+	IBK::IBK_Message(IBK::FormatString("Initializing Climatic Data\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	IBK::MessageIndentor indent; (void)indent;
+
+	try {
+		m_loads = new Loads;
+		// insert loads into model container
+		m_modelContainer.push_back(m_loads); // now owns the model
+											 // insert loads into time model container
+		m_timeModelContainer.push_back(m_loads);
+
+		m_loads->setup(m_project->m_location, m_project->m_simulationParameter,
+			m_project->m_placeholders);
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, IBK::FormatString("Error initializing climatic loads model."), FUNC_ID);
+	}
+
+	// loads model is _not_ registered as time state model, because we manually evaluate it first in setTime()
+}
+
+
+void NandradModel::initSchedules() {
+	FUNCID(NandradModel::initSchedules);
+	IBK::IBK_Message(IBK::FormatString("Initializing Schedules\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	IBK::MessageIndentor indent; (void)indent;
+
+	m_schedules = new Schedules;
+	// insert schedules into model container
+	m_modelContainer.push_back(m_schedules); // now owns the model
+											 // insert schedules into model container
+	m_timeModelContainer.push_back(m_schedules); // now owns the model
+
+												 // init schedules
+	m_schedules->setup(*m_project);
+
+	// schedules model is _not_ registered as time state model, because we manually evaluate it first in setTime()
+}
 
 } // namespace NANDRAD_MODEL
 

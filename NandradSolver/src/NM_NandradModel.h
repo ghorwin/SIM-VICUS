@@ -45,7 +45,11 @@ Lesser General Public License for more details.
 #include <SOLFRA_OutputScheduler.h>
 #include <SOLFRA_SolverFeedback.h>
 
+#include <IBKMK_SparseMatrixPattern.h>
+
 #include <NANDRAD_ArgsParser.h>
+
+#include <ZEPPELIN_DependencyGraph.h>
 
 #include "NM_Directories.h"
 
@@ -56,11 +60,32 @@ namespace NANDRAD {
 
 namespace NANDRAD_MODEL {
 
+class AbstractModel;
+class AbstractODEStatesModel;
+class AbstractODEBalanceModel;
+class AbstractTimeDependency;
+class AbstractStateDependency;
+class SteadyStateSolver;
+class StateModelGroup;
+class ParallelStateObjects;
+
+class Loads;
+class Schedules;
+
 /*! Main NANDRAD model implementation class.
 	This class implements the interface of SOLFRA::ModelInterface and SOLFRA::OutputScheduler.
 */
 class NandradModel : public SOLFRA::ModelInterface, public SOLFRA::OutputScheduler {
 public:
+
+	// *** typedefs
+
+	/*! Vector holding references/pointers to time-state objects. */
+	typedef std::vector<AbstractStateDependency*>			ParallelTimeStateObjects;
+	/*! Vector holding references/pointers to state objects. */
+	typedef std::vector<AbstractStateDependency*>			ParallelStateObjects;
+
+
 
 	/*! Constructor. */
 	NandradModel();
@@ -195,14 +220,21 @@ private:
 
 	/*! Initializes/checks solver parameter.
 		Override-optiones specified via command line are used to modify the
-		m_project.m_solverParameter data structure.
+		m_project->m_solverParameter data structure.
 	*/
 	void initSolverParameter(const NANDRAD::ArgsParser & args);
 	/*! Initializes/checks simulation parameter.*/
 	void initSimulationParameter();
+	/*! Loads climate data and creates Loads. */
+	void initClimateData();
+	/*! Loads schedule data and creates Schedules + Schedule parameters. */
+	void initSchedules();
 
 	/*! Vectors storing sparse matrix pattern (CSR format): number of nonzero elements: */
 	unsigned int nnz() const  { return (unsigned int) m_ja.size(); }
+
+
+	// *** PRIVATE MEMBER VARIABLES ***
 
 	/*! Cached project file path. */
 	IBK::Path												m_projectFilePath;
@@ -211,6 +243,9 @@ private:
 
 	/*! The actual NANDRAD project data (owned). */
 	NANDRAD::Project										*m_project;
+
+
+	// *** Core Solver Variables ***
 
 	/*! Cached total number of unknowns (number of rooms + all elements in all walls). */
 	unsigned int											m_n;
@@ -279,6 +314,98 @@ private:
 		Set in initSolverVariables().
 	*/
 	bool													m_useSerialCode;
+
+
+	// *** State model containers and organization data structures ***
+
+	/*! This list contains and owns all models (at the end, all models in this container must
+		be deleted from the heap).
+	*/
+	std::vector<AbstractModel*>								m_modelContainer;
+
+	/*! Container for all pairs of ODE states and ODE balance models.
+	*/
+	std::vector<std::pair<AbstractODEStatesModel*, AbstractODEBalanceModel*> >
+															m_ODEStatesAndBalanceModelContainer;
+
+	/*! Vector with offsets for variable ranges of solution vector. */
+	std::vector<unsigned int>								m_ODEVariableOffset;
+
+	/*! Container for all time-dependent models created dynamically on the heap (owned).
+		The models are owned by the NandradModelImpl class and released within the clear()
+		function (and thus destructor).
+		The evaluation models is sequential.
+	*/
+	std::vector<AbstractTimeDependency*>					m_timeModelContainer;
+
+	/*! Container for all time-dependent models that need to complete an integrator step when
+		output writing is requested (in order to update referenceable results).
+	*/
+	std::vector<AbstractTimeDependency*>					m_stepCompletedForOutputWriting;
+
+	/*! Container for all staedy state models that inherit from SOLFRA::ModelInterface.
+	The evaluation models is sequential.
+	*/
+	std::vector<SteadyStateSolver*>							m_steadyStateModelContainer;
+
+	/*! Container for all state-dependent models created dynamically on the heap (owned).
+	The models are owned by the NandradModelImpl class and released within the clear()
+	function (and thus destructor).
+	*/
+	std::vector<AbstractStateDependency*>					m_stateModelContainer;
+
+	/*! Graph that stores all elements and functions of the underlying graph*/
+	ZEPPELIN::DependencyGraph								m_stateDependencyGraph;
+
+	/*! Clusters from the DependencyGraph sortimg algorithm. Used to generate state model groups*/
+	std::list<ZEPPELIN::DependencyGroup>					m_stateDependencyGroups;
+
+	/*! Container for groups of models (that are in cyclic or sequential dependency). Only used
+	 * for ownership of generated state model groups.
+	*/
+	std::set<StateModelGroup*>								m_stateModelGroups;
+
+	/*! Vector containing several vectors with references to state-dependent sub-models
+		in the order of evaluation.
+		The pointers are only references to sub-models distributed throughout the data
+		structure of the model. The objects in these containers are not owned,
+		only referenced and must not be deleted.
+		The function update() is called in all objects in this container.
+		\note This container owns instances of AbstractStateModelGroup, which are
+			  deleted in the destructor.
+	*/
+	std::vector<ParallelStateObjects>						m_orderedStateDependentSubModels;
+
+	/*! Vector of unordered state dependencies*/
+	std::vector<AbstractStateDependency*>					m_unorderedStateDependencies;
+	/*! Vector of of already sorted state dependencies: head*/
+	std::vector<ParallelStateObjects>						m_orderedStateDependentSubModelsHead;
+	/*! Vector of of already sorted state dependencies: tail*/
+	std::vector<ParallelStateObjects>						m_orderedStateDependentSubModelsTail;
+
+	/*! Stores different dependency patterns.
+		Index 0: ydot-y dependencies
+		Index 1: ydot-FMU input dependencies (only if inputs and outputs exist)
+		Index 2: FMU output-y dependencies (only if inputs and outputs exist)
+		Index 3: FMU output-input dependencies (only if inputs and outputs exist)
+	*/
+	std::vector<IBKMK::SparseMatrixPattern>					m_dependencyPatterns;
+
+
+	// *** Models and sub-models ***
+
+	/*! Climatic loads calculation model (exists as single instance).
+		\todo Rename to ClimaticLoadsModel
+		This is merely a quick-access pointer to the loads model, but it does
+		not own the model. The Loads model is inserted into m_modelContainer like
+		any other model.
+		\note The loads object is _not_ inserted in the m_stateModelContainer
+			  because it is always evaluated first on each call to setTime().
+	*/
+	Loads													*m_loads;
+
+	/*! Single object/model providing schedules quantities. */
+	Schedules												*m_schedules;
 
 
 	// *** STATISTICS ***

@@ -58,6 +58,19 @@ void Sensor::readXMLPrivate(const TiXmlElement * element) {
 			const std::string & cName = c->ValueStr();
 			if (cName == "Quantity")
 				m_quantity = c->GetText();
+			else if (cName == "IBK:Parameter") {
+				IBK::Parameter p;
+				readParameterElement(c, p);
+				bool success = false;
+				if (p.name == "Orientation") {
+					m_orientation = p; success = true;
+				}
+				else if (p.name == "Inclination") {
+					m_inclination = p; success = true;
+				}
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -79,6 +92,8 @@ TiXmlElement * Sensor::writeXMLPrivate(TiXmlElement * parent) const {
 	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_quantity.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "Quantity", nullptr, std::string(), m_quantity);
+	TiXmlElement::appendIBKParameterElement(e, m_orientation.name, m_orientation.IO_unit.name(), m_orientation.get_value());
+	TiXmlElement::appendIBKParameterElement(e, m_inclination.name, m_inclination.IO_unit.name(), m_inclination.get_value());
 	return e;
 }
 

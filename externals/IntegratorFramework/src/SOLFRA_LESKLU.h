@@ -14,7 +14,7 @@ public:
 	LESKLU();
 
 	/*! Destructor, releases memory. */
-	~LESKLU();
+	~LESKLU() override;
 
 	/*! Re-implemented from LESInterface::init(). 	*/
 	void init(ModelInterface * model, IntegratorInterface * integrator,

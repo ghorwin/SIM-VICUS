@@ -26,9 +26,9 @@ What is the NANDRAD-Code-Generator? Basically, it is a tool to parse NANDRAD hea
 - reading and writing xml data structures (elements and attributes) for designated member variables
 - comparing data structures with default instances (so that only modified members are written to file), and other utility functions
 
-### How does it work? 
+### How does it work?
 
-The code generator is called as part of the CMake build chain. It detects changes in header files, and then updates the respective generated files, including the file `NANDRAD_KeywordList.cpp`. It places the class-specific generated files into a subdirectory `ncg` (for **N**ANDRAD **C**ode **G**enerator files) where they are compiled just as any other cpp file of the project.
+The code generator is called as part of the CMake build chain (see sections <<command_line, command line options>> and <<cmake_automation, CMake Automation>>). It detects changes in header files and then updates the respective generated files, including the file `NANDRAD_KeywordList.cpp`. It places the class-specific generated files into a subdirectory `ncg` (for **N**ANDRAD **C**ode **G**enerator files) where they are compiled just as any other cpp file of the project.
 
 Since the generated code is plain C++ code, it can be parsed and debugged with any IDE just as regular code. Just remember:
 
@@ -127,6 +127,7 @@ The code generator will now create the implementation of the functions:
 
 The header file `NANDRAD_KeywordList.h` is always the same and can be included directory. The corresponding implementation file `NANDRAD_KeywordList.cpp` is generated in the same directory as the NANDRAD header files.
 
+[[cmake_automation]]
 ### CMake automation
 
 The automatic update of the keyword list is triggered by a custom rule in the NANDRAD CMake project file:
@@ -211,7 +212,8 @@ void Sensor::readXML(const TiXmlElement * element) {
 			if (attribName == "id")
 				m_id = readPODAttributeValue<unsigned int>(element, attrib);
 			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName)
+				    .arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			attrib = attrib->Next();
 		}
@@ -223,16 +225,19 @@ void Sensor::readXML(const TiXmlElement * element) {
 			if (cName == "Quantity")
 				m_quantity = c->GetText();
 			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName)
+				    .arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			c = c->NextSiblingElement();
 		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Sensor' element."), FUNC_ID);
+		throw IBK::Exception( ex, 
+		    IBK::FormatString("Error reading 'Sensor' element."), FUNC_ID);
 	}
 	catch (std::exception & ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading 'Sensor' element.").arg(ex2.what()), FUNC_ID);
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'Sensor' element.")
+		    .arg(ex2.what()), FUNC_ID);
 	}
 }
 ----
@@ -243,13 +248,14 @@ In this function there is a lot of code that is repeated nearly identical in all
 .Implementation of `Sensor::writeXML()`
 [source,c++]
 ----
-TiXmlElement * Sensor::writeXML(TiXmlElement * parent, bool /*detailedOutput*/) const {
+TiXmlElement * Sensor::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("Sensor");
 	parent->LinkEndChild(e);
 
 	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_quantity.empty())
-		TiXmlElement::appendSingleAttributeElement(e, "Quantity", nullptr, std::string(), m_quantity);
+		TiXmlElement::appendSingleAttributeElement(e, 
+		    "Quantity", nullptr, std::string(), m_quantity);
 	return e;
 }
 ----
@@ -420,8 +426,8 @@ void Sensor::readXML(const TiXmlElement * element) {
 }
 
 
-TiXmlElement * Sensor::writeXML(TiXmlElement * parent, bool detailedOutput) const {
-	TiXmlElement * e = writeXMLPrivate(parent, detailedOutput);
+TiXmlElement * Sensor::writeXML(TiXmlElement * parent) const {
+	TiXmlElement * e = writeXMLPrivate(parent);
 
 	// .... append other data to e
 	return e;
@@ -432,10 +438,10 @@ TiXmlElement * Sensor::writeXML(TiXmlElement * parent, bool detailedOutput) cons
 
 To avoid writing empty tags or default values, you can write code like:
 
-.Implmenetation of writeXML with default check
+.Implementation of writeXML with default check
 [source,c++]
 ----
-TiXmlElement * Sensor::writeXML(TiXmlElement * parent, bool detailedOutput) const {
+TiXmlElement * Sensor::writeXML(TiXmlElement * parent) const {
     // check if we still have default data
     if (*this == Sensor())
         return; // still default, do not write anything
@@ -445,7 +451,8 @@ TiXmlElement * Sensor::writeXML(TiXmlElement * parent, bool detailedOutput) cons
 
 	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_quantity.empty())
-		TiXmlElement::appendSingleAttributeElement(e, "Quantity", nullptr, std::string(), m_quantity);
+		TiXmlElement::appendSingleAttributeElement(e, 
+		    "Quantity", nullptr, std::string(), m_quantity);
 	return e;
 }
 ----
@@ -487,6 +494,39 @@ public:
 
 
 ## Specifications
+
+[[command_line]]
+### Command line arguments for the code generator
+
+The code generator is called with the following syntax:
+
+----
+SYNTAX:  NandradCodeGenerator <namespace> <path/to/src> <generateQtSrc> <prefix> <ncg-dir>
+         <namespace> is usually NANDRAD (used also to compose file names).
+         <path/to/<lib>/src> is + separated list of input directories to read the header files
+         from.
+         Keywordlist-source files are written into the first (or only) source directory.
+         <prefix> is the file prefix <prefix>_KeywordList.cpp.
+         <generateQtSrc> is 1 when Qt source should be generated, 0 otherwise.
+         <ncg-dir> is the path to the directory where ncg_xxx.cpp files are written to.
+----
+
+Running the code generator with argument `--help` prints this help page.
+
+Example:
+
+[source,bash]
+----
+> NandradCodeGenerator NANDRAD ~/git/SIM-VICUS/externals/Nandrad/src NANDRAD 0 ncg
+----
+
+or 
+
+[source,bash]
+----
+> NandradCodeGenerator NANDRAD_MODEL ~/git/SIM-VICUS/NandradSolver/src NM 0 ncg
+----
+
 
 ### Keyword List Support
 

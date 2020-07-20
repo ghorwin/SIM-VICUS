@@ -23,6 +23,8 @@ Lesser General Public License for more details.
 
 #include <string>
 
+#include <IBK_Parameter.h>
+
 #include "NANDRAD_Constants.h"
 #include "NANDRAD_CodeGenMacros.h"
 
@@ -48,6 +50,11 @@ public:
 	unsigned int						m_id = NANDRAD::INVALID_ID;		// XML:A:required
 	/*! Name of the measured quantity */
 	std::string							m_quantity;						// XML:E
+
+	/*! Orientation of the radiation load sensor. */
+	IBK::Parameter						m_orientation;					// XML:E
+	/*! Inclination of the radiation load sensor. */
+	IBK::Parameter						m_inclination;					// XML:E
 };
 
 } // namespace NANDRAD

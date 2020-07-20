@@ -88,7 +88,7 @@ table {
 <ul class="sectlevel2">
 <li><a href="#_keyword_support">2.1. Keyword support</a></li>
 <li><a href="#_usage">2.2. Usage</a></li>
-<li><a href="#_cmake_automation">2.3. CMake automation</a></li>
+<li><a href="#cmake_automation">2.3. CMake automation</a></li>
 </ul>
 </li>
 <li><a href="#_readwrite_to_xml_support_and_utility_macros">3. Read/write to XML support, and utility macros</a>
@@ -105,12 +105,13 @@ table {
 </li>
 <li><a href="#_specifications">4. Specifications</a>
 <ul class="sectlevel2">
-<li><a href="#_keyword_list_support">4.1. Keyword List Support</a></li>
-<li><a href="#_keyword_parameters">4.2. Keyword Parameters</a></li>
-<li><a href="#xml_serialization_rules">4.3. XML Serialization</a>
+<li><a href="#command_line">4.1. Command line arguments for the code generator</a></li>
+<li><a href="#_keyword_list_support">4.2. Keyword List Support</a></li>
+<li><a href="#_keyword_parameters">4.3. Keyword Parameters</a></li>
+<li><a href="#xml_serialization_rules">4.4. XML Serialization</a>
 <ul class="sectlevel3">
-<li><a href="#xml_complexTypes">4.3.1. Reading/writing custom complex types</a></li>
-<li><a href="#_unsupported_data_member_types">4.3.2. Unsupported data member types</a></li>
+<li><a href="#xml_complexTypes">4.4.1. Reading/writing custom complex types</a></li>
+<li><a href="#_unsupported_data_member_types">4.4.2. Unsupported data member types</a></li>
 </ul>
 </li>
 </ul>
@@ -141,7 +142,7 @@ table {
 <div class="sect2">
 <h3 id="_how_does_it_work">1.1. How does it work?</h3>
 <div class="paragraph">
-<p>The code generator is called as part of the CMake build chain. It detects changes in header files, and then updates the respective generated files, including the file <code>NANDRAD_KeywordList.cpp</code>. It places the class-specific generated files into a subdirectory <code>ncg</code> (for <strong>N</strong>ANDRAD <strong>C</strong>ode <strong>G</strong>enerator files) where they are compiled just as any other cpp file of the project.</p>
+<p>The code generator is called as part of the CMake build chain (see sections <a href="#command_line">command line options</a> and <a href="#cmake_automation">CMake Automation</a>). It detects changes in header files and then updates the respective generated files, including the file <code>NANDRAD_KeywordList.cpp</code>. It places the class-specific generated files into a subdirectory <code>ncg</code> (for <strong>N</strong>ANDRAD <strong>C</strong>ode <strong>G</strong>enerator files) where they are compiled just as any other cpp file of the project.</p>
 </div>
 <div class="paragraph">
 <p>Since the generated code is plain C++ code, it can be parsed and debugged with any IDE just as regular code. Just remember:</p>
@@ -285,7 +286,7 @@ table {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_cmake_automation">2.3. CMake automation</h3>
+<h3 id="cmake_automation">2.3. CMake automation</h3>
 <div class="paragraph">
 <p>The automatic update of the keyword list is triggered by a custom rule in the NANDRAD CMake project file:</p>
 </div>
@@ -386,7 +387,8 @@ table {
 			<span class="k">if</span> <span class="p">(</span><span class="n">attribName</span> <span class="o">==</span> <span class="s">"id"</span><span class="p">)</span>
 				<span class="n">m_id</span> <span class="o">=</span> <span class="n">readPODAttributeValue</span><span class="o">&lt;</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">attrib</span><span class="p">);</span>
 			<span class="k">else</span> <span class="p">{</span>
-				<span class="n">IBK</span><span class="o">::</span><span class="n">IBK_Message</span><span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="n">XML_READ_UNKNOWN_ATTRIBUTE</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">attribName</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">element</span><span class="o">-&gt;</span><span class="n">Row</span><span class="p">()),</span> <span class="n">IBK</span><span class="o">::</span><span class="n">MSG_WARNING</span><span class="p">,</span> <span class="n">FUNC_ID</span><span class="p">,</span> <span class="n">IBK</span><span class="o">::</span><span class="n">VL_STANDARD</span><span class="p">);</span>
+				<span class="n">IBK</span><span class="o">::</span><span class="n">IBK_Message</span><span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="n">XML_READ_UNKNOWN_ATTRIBUTE</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">attribName</span><span class="p">)</span>
+				    <span class="p">.</span><span class="n">arg</span><span class="p">(</span><span class="n">element</span><span class="o">-&gt;</span><span class="n">Row</span><span class="p">()),</span> <span class="n">IBK</span><span class="o">::</span><span class="n">MSG_WARNING</span><span class="p">,</span> <span class="n">FUNC_ID</span><span class="p">,</span> <span class="n">IBK</span><span class="o">::</span><span class="n">VL_STANDARD</span><span class="p">);</span>
 			<span class="p">}</span>
 			<span class="n">attrib</span> <span class="o">=</span> <span class="n">attrib</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">();</span>
 		<span class="p">}</span>
@@ -398,16 +400,19 @@ table {
 			<span class="k">if</span> <span class="p">(</span><span class="n">cName</span> <span class="o">==</span> <span class="s">"Quantity"</span><span class="p">)</span>
 				<span class="n">m_quantity</span> <span class="o">=</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">GetText</span><span class="p">();</span>
 			<span class="k">else</span> <span class="p">{</span>
-				<span class="n">IBK</span><span class="o">::</span><span class="n">IBK_Message</span><span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="n">XML_READ_UNKNOWN_ELEMENT</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">cName</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">element</span><span class="o">-&gt;</span><span class="n">Row</span><span class="p">()),</span> <span class="n">IBK</span><span class="o">::</span><span class="n">MSG_WARNING</span><span class="p">,</span> <span class="n">FUNC_ID</span><span class="p">,</span> <span class="n">IBK</span><span class="o">::</span><span class="n">VL_STANDARD</span><span class="p">);</span>
+				<span class="n">IBK</span><span class="o">::</span><span class="n">IBK_Message</span><span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="n">XML_READ_UNKNOWN_ELEMENT</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">cName</span><span class="p">)</span>
+				    <span class="p">.</span><span class="n">arg</span><span class="p">(</span><span class="n">element</span><span class="o">-&gt;</span><span class="n">Row</span><span class="p">()),</span> <span class="n">IBK</span><span class="o">::</span><span class="n">MSG_WARNING</span><span class="p">,</span> <span class="n">FUNC_ID</span><span class="p">,</span> <span class="n">IBK</span><span class="o">::</span><span class="n">VL_STANDARD</span><span class="p">);</span>
 			<span class="p">}</span>
 			<span class="n">c</span> <span class="o">=</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">NextSiblingElement</span><span class="p">();</span>
 		<span class="p">}</span>
 	<span class="p">}</span>
 	<span class="k">catch</span> <span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span> <span class="o">&amp;</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span>
-		<span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span> <span class="n">ex</span><span class="p">,</span> <span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="s">"Error reading 'Sensor' element."</span><span class="p">),</span> <span class="n">FUNC_ID</span><span class="p">);</span>
+		<span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span> <span class="n">ex</span><span class="p">,</span>
+		    <span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="s">"Error reading 'Sensor' element."</span><span class="p">),</span> <span class="n">FUNC_ID</span><span class="p">);</span>
 	<span class="p">}</span>
 	<span class="k">catch</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">exception</span> <span class="o">&amp;</span> <span class="n">ex2</span><span class="p">)</span> <span class="p">{</span>
-		<span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span> <span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="s">"%1</span><span class="se">\n</span><span class="s">Error reading 'Sensor' element."</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">ex2</span><span class="p">.</span><span class="n">what</span><span class="p">()),</span> <span class="n">FUNC_ID</span><span class="p">);</span>
+		<span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span> <span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="s">"%1</span><span class="se">\n</span><span class="s">Error reading 'Sensor' element."</span><span class="p">)</span>
+		    <span class="p">.</span><span class="n">arg</span><span class="p">(</span><span class="n">ex2</span><span class="p">.</span><span class="n">what</span><span class="p">()),</span> <span class="n">FUNC_ID</span><span class="p">);</span>
 	<span class="p">}</span>
 <span class="p">}</span></code></pre>
 </div>
@@ -418,13 +423,14 @@ table {
 <div class="listingblock">
 <div class="title">Implementation of <code>Sensor::writeXML()</code></div>
 <div class="content">
-<pre class="rouge highlight"><code data-lang="c++"><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">Sensor</span><span class="o">::</span><span class="n">writeXML</span><span class="p">(</span><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">parent</span><span class="p">,</span> <span class="kt">bool</span> <span class="cm">/*detailedOutput*/</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+<pre class="rouge highlight"><code data-lang="c++"><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">Sensor</span><span class="o">::</span><span class="n">writeXML</span><span class="p">(</span><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">parent</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
 	<span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">e</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TiXmlElement</span><span class="p">(</span><span class="s">"Sensor"</span><span class="p">);</span>
 	<span class="n">parent</span><span class="o">-&gt;</span><span class="n">LinkEndChild</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
 
 	<span class="n">e</span><span class="o">-&gt;</span><span class="n">SetAttribute</span><span class="p">(</span><span class="s">"id"</span><span class="p">,</span> <span class="n">IBK</span><span class="o">::</span><span class="n">val2string</span><span class="o">&lt;</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_id</span><span class="p">));</span>
 	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">m_quantity</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span>
-		<span class="n">TiXmlElement</span><span class="o">::</span><span class="n">appendSingleAttributeElement</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s">"Quantity"</span><span class="p">,</span> <span class="nb">nullptr</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(),</span> <span class="n">m_quantity</span><span class="p">);</span>
+		<span class="n">TiXmlElement</span><span class="o">::</span><span class="n">appendSingleAttributeElement</span><span class="p">(</span><span class="n">e</span><span class="p">,</span>
+		    <span class="s">"Quantity"</span><span class="p">,</span> <span class="nb">nullptr</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(),</span> <span class="n">m_quantity</span><span class="p">);</span>
 	<span class="k">return</span> <span class="n">e</span><span class="p">;</span>
 <span class="p">}</span></code></pre>
 </div>
@@ -619,8 +625,8 @@ table {
 <span class="p">}</span>
 
 
-<span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">Sensor</span><span class="o">::</span><span class="n">writeXML</span><span class="p">(</span><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">parent</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">detailedOutput</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
-	<span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">e</span> <span class="o">=</span> <span class="n">writeXMLPrivate</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">detailedOutput</span><span class="p">);</span>
+<span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">Sensor</span><span class="o">::</span><span class="n">writeXML</span><span class="p">(</span><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">parent</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+	<span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">e</span> <span class="o">=</span> <span class="n">writeXMLPrivate</span><span class="p">(</span><span class="n">parent</span><span class="p">);</span>
 
 	<span class="c1">// .... append other data to e</span>
 	<span class="k">return</span> <span class="n">e</span><span class="p">;</span>
@@ -634,9 +640,9 @@ table {
 <p>To avoid writing empty tags or default values, you can write code like:</p>
 </div>
 <div class="listingblock">
-<div class="title">Implmenetation of writeXML with default check</div>
+<div class="title">Implementation of writeXML with default check</div>
 <div class="content">
-<pre class="rouge highlight"><code data-lang="c++"><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">Sensor</span><span class="o">::</span><span class="n">writeXML</span><span class="p">(</span><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">parent</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">detailedOutput</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+<pre class="rouge highlight"><code data-lang="c++"><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">Sensor</span><span class="o">::</span><span class="n">writeXML</span><span class="p">(</span><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">parent</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
     <span class="c1">// check if we still have default data</span>
     <span class="k">if</span> <span class="p">(</span><span class="o">*</span><span class="k">this</span> <span class="o">==</span> <span class="n">Sensor</span><span class="p">())</span>
         <span class="k">return</span><span class="p">;</span> <span class="c1">// still default, do not write anything</span>
@@ -646,7 +652,8 @@ table {
 
 	<span class="n">e</span><span class="o">-&gt;</span><span class="n">SetAttribute</span><span class="p">(</span><span class="s">"id"</span><span class="p">,</span> <span class="n">IBK</span><span class="o">::</span><span class="n">val2string</span><span class="o">&lt;</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_id</span><span class="p">));</span>
 	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">m_quantity</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span>
-		<span class="n">TiXmlElement</span><span class="o">::</span><span class="n">appendSingleAttributeElement</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s">"Quantity"</span><span class="p">,</span> <span class="nb">nullptr</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(),</span> <span class="n">m_quantity</span><span class="p">);</span>
+		<span class="n">TiXmlElement</span><span class="o">::</span><span class="n">appendSingleAttributeElement</span><span class="p">(</span><span class="n">e</span><span class="p">,</span>
+		    <span class="s">"Quantity"</span><span class="p">,</span> <span class="nb">nullptr</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(),</span> <span class="n">m_quantity</span><span class="p">);</span>
 	<span class="k">return</span> <span class="n">e</span><span class="p">;</span>
 <span class="p">}</span></code></pre>
 </div>
@@ -696,7 +703,44 @@ table {
 <h2 id="_specifications">4. Specifications</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_keyword_list_support">4.1. Keyword List Support</h3>
+<h3 id="command_line">4.1. Command line arguments for the code generator</h3>
+<div class="paragraph">
+<p>The code generator is called with the following syntax:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>SYNTAX:  NandradCodeGenerator &lt;namespace&gt; &lt;path/to/src&gt; &lt;generateQtSrc&gt; &lt;prefix&gt; &lt;ncg-dir&gt;
+         &lt;namespace&gt; is usually NANDRAD (used also to compose file names).
+         &lt;path/to/&lt;lib&gt;/src&gt; is + separated list of input directories to read the header files
+         from.
+         Keywordlist-source files are written into the first (or only) source directory.
+         &lt;prefix&gt; is the file prefix &lt;prefix&gt;_KeywordList.cpp.
+         &lt;generateQtSrc&gt; is 1 when Qt source should be generated, 0 otherwise.
+         &lt;ncg-dir&gt; is the path to the directory where ncg_xxx.cpp files are written to.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Running the code generator with argument <code>--help</code> prints this help page.</p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="o">&gt;</span> NandradCodeGenerator NANDRAD ~/git/SIM-VICUS/externals/Nandrad/src NANDRAD 0 ncg</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="o">&gt;</span> NandradCodeGenerator NANDRAD_MODEL ~/git/SIM-VICUS/NandradSolver/src NM 0 ncg</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_keyword_list_support">4.2. Keyword List Support</h3>
 <div class="paragraph">
 <p>The parse requires fairly consistent code to be recognized, with the following rules. Look at the following example:</p>
 </div>
@@ -797,7 +841,7 @@ table {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_keyword_parameters">4.2. Keyword Parameters</h3>
+<h3 id="_keyword_parameters">4.3. Keyword Parameters</h3>
 <div class="paragraph">
 <p>A keyword specification line has the following format:</p>
 </div>
@@ -825,7 +869,7 @@ table {
 </div>
 </div>
 <div class="sect2">
-<h3 id="xml_serialization_rules">4.3. XML Serialization</h3>
+<h3 id="xml_serialization_rules">4.4. XML Serialization</h3>
 <div class="paragraph">
 <p>In order for the CodeGenerator to work correct, we need a <span class="line-through">few</span> lots of conventions:</p>
 </div>
@@ -1022,7 +1066,7 @@ table {
 </ul>
 </div>
 <div class="sect3">
-<h4 id="xml_complexTypes">4.3.1. Reading/writing custom complex types</h4>
+<h4 id="xml_complexTypes">4.4.1. Reading/writing custom complex types</h4>
 <div class="paragraph">
 <p>Any data type not listed in the example above and with <code>// XML:E</code> annotation is treated by the code generator as a complex type with own functions <code>readXML()</code> and <code>writeXML()</code> according to the <code>NANDRAD_READWRITE</code> macro. The code generator with create code to simply call these functions when writing such code.</p>
 </div>
@@ -1031,7 +1075,7 @@ table {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_unsupported_data_member_types">4.3.2. Unsupported data member types</h4>
+<h4 id="_unsupported_data_member_types">4.4.2. Unsupported data member types</h4>
 <div class="paragraph">
 <p>For any kind of special data types, like <code>std::map&lt;std::string, std::vector&lt;double&gt; &gt;</code> you cannot use the code generator to create read/write code for. When you add a read/write annotation to such variables, the code generator will complain about unsupported types and may generate not compiling code.</p>
 </div>
@@ -1056,7 +1100,7 @@ table {
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated 2020-07-19 17:30:34 +0200
+Last updated 2020-07-20 11:29:03 +0200
 </div>
 </div>
 <style>
