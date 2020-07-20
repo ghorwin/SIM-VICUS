@@ -41,14 +41,14 @@ void SimulationParameter::initDefaults() {
 	m_para[SP_LIGHTINGTHERMALRADIATIONFRACTION].set( KeywordList::Keyword("SimulationParameter::para_t", SP_LIGHTINGTHERMALRADIATIONFRACTION),	 0.72, IBK::Unit("---"));
 	m_para[SP_DOMESTICWATERHEATGAINFRACTION].set(KeywordList::Keyword("SimulationParameter::para_t", SP_DOMESTICWATERHEATGAINFRACTION), 0.0, IBK::Unit("---"));
 
-	m_flags[SF_ENABLE_MOISTURE_BALANCE].set(KeywordList::Keyword("SimulationParameter::flag_t", SF_ENABLE_MOISTURE_BALANCE), false);
-	m_flags[SF_ENABLE_CO2_BALANCE].set(KeywordList::Keyword("SimulationParameter::flag_t", SF_ENABLE_CO2_BALANCE), false);
-	m_flags[SF_ENABLE_JOINT_VENTILATION].set(KeywordList::Keyword("SimulationParameter::flag_t", SF_ENABLE_JOINT_VENTILATION), false);
-	m_flags[SF_EXPORT_CLIMATE_DATA_FMU].set(KeywordList::Keyword("SimulationParameter::flag_t", SF_EXPORT_CLIMATE_DATA_FMU), false);
+	// setting flags to false is normally not necessary, since the function Flag::isEnabled() returns false for undefined flags anyway
+//	m_flags[SF_ENABLE_MOISTURE_BALANCE].set(KeywordList::Keyword("SimulationParameter::flag_t", SF_ENABLE_MOISTURE_BALANCE), false);
+//	m_flags[SF_ENABLE_CO2_BALANCE].set(KeywordList::Keyword("SimulationParameter::flag_t", SF_ENABLE_CO2_BALANCE), false);
+//	m_flags[SF_ENABLE_JOINT_VENTILATION].set(KeywordList::Keyword("SimulationParameter::flag_t", SF_ENABLE_JOINT_VENTILATION), false);
+//	m_flags[SF_EXPORT_CLIMATE_DATA_FMU].set(KeywordList::Keyword("SimulationParameter::flag_t", SF_EXPORT_CLIMATE_DATA_FMU), false);
 
-	m_interval.m_para[NANDRAD::Interval::IP_START]		= IBK::Parameter("Start",0.0,"s");
-	m_interval.m_para[NANDRAD::Interval::IP_END]		= IBK::Parameter("Duration", 365. * 24. * 3600. ,"s");
-
+	m_interval.m_para[NANDRAD::Interval::IP_START]		= IBK::Parameter("Start", 0, "d");
+	m_interval.m_para[NANDRAD::Interval::IP_END]		= IBK::Parameter("End", 365, "d");
 }
 
 

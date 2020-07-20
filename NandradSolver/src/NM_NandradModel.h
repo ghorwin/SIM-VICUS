@@ -174,8 +174,8 @@ public:
 	virtual void deserialize(void* & dataPtr) override;
 
 	/*! Writes currently collected solver metrics/statistics to output.
-	\param simtime Totel elapsed wall clock time of simulation in [s] (needed for percentage calculation)
-	\param metricsFile If not nullptr, computer-readible metrics are written to the file.
+		\param simtime Totel elapsed wall clock time of simulation in [s] (needed for percentage calculation)
+		\param metricsFile If not nullptr, computer-readible metrics are written to the file.
 	*/
 	virtual void writeMetrics(double simtime, std::ostream * metricsFile = nullptr) override;
 
@@ -192,6 +192,15 @@ public:
 	static void printVersionStrings();
 
 private:
+
+	/*! Initializes/checks solver parameter.
+		Override-optiones specified via command line are used to modify the
+		m_project.m_solverParameter data structure.
+	*/
+	void initSolverParameter(const NANDRAD::ArgsParser & args);
+	/*! Initializes/checks simulation parameter.*/
+	void initSimulationParameter();
+
 
 	/*! Cached project file path. */
 	IBK::Path												m_projectFilePath;

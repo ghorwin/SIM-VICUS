@@ -16,7 +16,7 @@
 
 //#define TEST_PROJECT_WRITING
 
-#define SERIALIZATION_TEST
+//#define SERIALIZATION_TEST
 #ifdef SERIALIZATION_TEST
 #include <NANDRAD_SerializationTest.h>
 #include <NANDRAD_Utilities.h>
@@ -32,7 +32,7 @@ const char * const PROGRAM_INFO =
 	"  anne.paepcke [at] tu-dresden.de\n"
 	"  andreas.nicolai [at] tu-dresden.de\n\n";
 
-
+#ifdef TEST_PROJECT_WRITING
 void createSim01(NANDRAD::Project &prj){
 
 	//project info
@@ -1722,6 +1722,8 @@ void createSim05(NANDRAD::Project &prj){
 	prj.m_objectLists.push_back(ol);
 }
 
+#endif
+
 int main(int argc, char * argv[]) {
 	FUNCID(main);
 
@@ -1836,10 +1838,10 @@ int main(int argc, char * argv[]) {
 
 		// *** setup message handler ***
 
-		unsigned int verbosityLevel = IBK::string2val<int>(args.option(IBK::SolverArgsParser::DO_VERBOSITY_LEVEL));
+		unsigned int verbosityLevel = IBK::string2val<unsigned int>(args.option(IBK::SolverArgsParser::DO_VERBOSITY_LEVEL));
 		IBK::MessageHandler * messageHandlerPtr = IBK::MessageHandlerRegistry::instance().messageHandler();
-		messageHandlerPtr->setConsoleVerbosityLevel(verbosityLevel);
-		messageHandlerPtr->setLogfileVerbosityLevel(verbosityLevel);
+		messageHandlerPtr->setConsoleVerbosityLevel((int)verbosityLevel);
+		messageHandlerPtr->setLogfileVerbosityLevel((int)verbosityLevel);
 		messageHandlerPtr->m_contextIndentation = 48;
 		std::string errmsg;
 
@@ -1855,6 +1857,16 @@ int main(int argc, char * argv[]) {
 		NANDRAD_MODEL::NandradModel::printVersionStrings();
 		SOLFRA::SolverControlFramework::printVersionInfo();
 		IBK::IBK_Message("\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+
+		// *** OpenMP Info ***
+#if defined(_OPENMP)
+		IBK::IBK_Message( IBK::FormatString("OpenMP parallelization enabled: using %1 thread(s)\n\n")
+						  .arg(args.m_numParallelThreads), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		if (!args.hasOption(IBK::SolverArgsParser::GO_PARALLEL_THREADS)) {
+			IBK::IBK_Message( IBK::FormatString("Number of threads selected from variable OMP_NUM_THREADS = %1\n\n")
+							  .arg(args.m_numParallelThreads), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		}
+#endif // _OPENMP
 
 		// *** Initialize model. ***
 

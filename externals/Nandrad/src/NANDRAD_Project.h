@@ -69,6 +69,11 @@ public:
 	*/
 	void writeXML(const IBK::Path & filename) const;
 
+	/*! Initializes project defaults.
+		Default values can be overwritten during project file reading.
+	*/
+	void initDefaults();
+
 	/*! Sets all connections and reference names. */
 	void resolveReferenceNames();
 

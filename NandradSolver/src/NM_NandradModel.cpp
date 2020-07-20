@@ -26,6 +26,7 @@ Lesser General Public License for more details.
 
 #include <IBK_Version.h>
 #include <IBK_messages.h>
+#include <IBK_FormatString.h>
 
 #include <DATAIO_Constants.h>
 #include <CCM_Constants.h>
@@ -33,6 +34,7 @@ Lesser General Public License for more details.
 #include <NANDRAD_ArgsParser.h>
 #include <NANDRAD_Constants.h>
 #include <NANDRAD_Project.h>
+#include <NANDRAD_KeywordList.h>
 
 #include <SOLFRA_IntegratorSundialsCVODE.h>
 #include <SOLFRA_JacobianSparseCSR.h>
@@ -79,7 +81,7 @@ NandradModel::~NandradModel() {
 
 void NandradModel::init(const NANDRAD::ArgsParser & args) {
 	FUNCID(NandradModel::init);
-#if 0
+
 	// *** Write Information about project file and relevant directories ***
 
 	IBK::IBK_Message( IBK::FormatString("Executable path:    '%1'\n").arg(args.m_executablePath), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
@@ -97,18 +99,18 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 	// *** Create physical model implementation object and initialize with project. ***
 
 	// initialize project data structure with default values
-	m_project.initDefaults(nullptr);
+	m_project->initDefaults();
 
 	// read input data from file
 	IBK::IBK_Message( IBK::FormatString("Reading project file\n"), IBK::MSG_PROGRESS, FUNC_ID, 1);
-	m_project.readXML(args.m_projectFile);
+	m_project->readXML(args.m_projectFile);
 
 	// *** Print Out Placeholders ***
 	IBK::IBK_Message( IBK::FormatString("Path Placeholders\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 	{
 		IBK::MessageIndentor indent; (void)indent;
-		for (std::map<std::string, IBK::Path>::const_iterator it = m_project.m_placeholders.begin();
-			it != m_project.m_placeholders.end(); ++it)
+		for (std::map<std::string, IBK::Path>::const_iterator it = m_project->m_placeholders.begin();
+			it != m_project->m_placeholders.end(); ++it)
 		{
 			std::stringstream strm;
 			strm << std::setw(25) << std::left << it->first;
@@ -121,18 +123,9 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 
 	// *** Initialize simulation parameters ***
 	initSolverParameter(args);
-	// *** Initialize project parameters ***
-	initProjectParameter(args);
-	// *** Select all explicit object list definitions and fill m_objectLists vector to its full size***
-	initDefinitions();
-	// *** Connects all active zones to their space type object***
-	initConnections();
-	// *** Initialize construction type and material database ***
-	initDatabase();
-	// *** Initialize simulation parameters ***
-	initParametrizationDefaults();
 	// *** Initialize simulation parameters ***
 	initSimulationParameter();
+#if 0
 	// *** Initialize Climatic Loads ***
 	initClimateData();
 	// *** Initialize Schedules ***
@@ -144,7 +137,7 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 	// *** Initialize EnergyPerformanceIndicatorModels ***
 	initZoneLists();
 	// *** Remove duplicate construction IDs ***
-	m_project.mergeSameConstructions();
+	m_project->mergeSameConstructions();
 	// *** Initialize Wall and Construction BC Modules ***
 	initWallsAndInterfaces();
 	// *** Initialize Window Models ***
@@ -210,7 +203,7 @@ void NandradModel::setupDirectories(const NANDRAD::ArgsParser & args) {
 /*** Functions re-implemented from SOLFRA::ModelInterface. ***/
 
 double NandradModel::dt0() const {
-	return 0.1; // m_project.m_solverParameter.m_para[NANDRAD::SolverParameter::SP_INITIAL_DT].value;
+	return 0.1; // m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_INITIAL_DT].value;
 }
 
 
@@ -333,7 +326,7 @@ void NandradModel::writeOutputs(double t_out, const double * y_out) {
 	// call ydot() to trigger calculation?
 
 	// move (relative) simulation time to absolute time (offset to midnight, January 1st of the start year)
-	double t_secondsOfYear = t_out + m_project.m_simulationParameter.m_interval.m_para[NANDRAD::Interval::IP_START].value;
+	double t_secondsOfYear = t_out + m_project->m_simulationParameter.m_interval.m_para[NANDRAD::Interval::IP_START].value;
 
 	for(unsigned int i = 0; i < m_outputFiles.size(); ++i) {
 		m_outputFiles[i]->writeOutputs(t_secondsOfYear, y_out, nullptr);
@@ -355,8 +348,8 @@ void NandradModel::writeOutputs(double t_out, const double * y_out) {
 std::string NandradModel::simTime2DateTimeString(double t) const {
 	return std::string();
 	// add start time offset to t and then call parent function
-//	int startYear = m_project.m_simulationParameter.m_intpara[NANDRAD::SimulationParameter::SIP_YEAR].value;
-//	t += m_project.m_simulationParameter.m_interval.m_para[NANDRAD::Interval::IP_START].value;
+//	int startYear = m_project->m_simulationParameter.m_intpara[NANDRAD::SimulationParameter::SIP_YEAR].value;
+//	t += m_project->m_simulationParameter.m_interval.m_para[NANDRAD::Interval::IP_START].value;
 //	return IBK::Time(startYear, t).toShortDateFormat();
 }
 
@@ -396,7 +389,7 @@ SOLFRA::LESInterface * NandradModel::lesInterface() {
 	IBK_ASSERT(m_jacobian == nullptr);
 
 #if 0
-	if (m_project.m_solverParameter.m_integrator == NANDRAD::SolverParameter::I_EXPLICIT_EULER) {
+	if (m_project->m_solverParameter.m_integrator == NANDRAD::SolverParameter::I_EXPLICIT_EULER) {
 		IBK::IBK_Message("Linear Equation Solver Modules not needed for Explicit Euler.\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		return nullptr;
 	}
@@ -412,13 +405,13 @@ SOLFRA::LESInterface * NandradModel::lesInterface() {
 	unsigned int lesHbw = std::min((bandwidth() - 1)/2, (m_n - 1)/2 ); // half-band width for 1 equation
 	unsigned int preHbw = lesHbw;
 	// if given, use bandwidth from project structure
-	if (!m_project.m_solverParameter.m_para[NANDRAD::SolverParameter::SP_LES_BANDWIDTH].name.empty())
-		lesHbw = (unsigned int)m_project.m_solverParameter.m_para[NANDRAD::SolverParameter::SP_LES_BANDWIDTH].value;
-	if (!m_project.m_solverParameter.m_para[NANDRAD::SolverParameter::SP_PRE_BANDWIDTH].name.empty())
-		preHbw = (unsigned int)m_project.m_solverParameter.m_para[NANDRAD::SolverParameter::SP_PRE_BANDWIDTH].value;
+	if (!m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_LES_BANDWIDTH].name.empty())
+		lesHbw = (unsigned int)m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_LES_BANDWIDTH].value;
+	if (!m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_PRE_BANDWIDTH].name.empty())
+		preHbw = (unsigned int)m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_PRE_BANDWIDTH].value;
 
 	// create LES solver based on selected setting
-	switch (m_project.m_solverParameter.m_lesSolver) {
+	switch (m_project->m_solverParameter.m_lesSolver) {
 
 		// Block tridiag
 		case NANDRAD::SolverParameter::LES_BTRIDIAG: {
@@ -482,7 +475,7 @@ SOLFRA::LESInterface * NandradModel::lesInterface() {
 	std::string precondName = "no preconditioner";
 
 	// determine preconditioner type
-	switch (m_project.m_solverParameter.m_preconditioner) {
+	switch (m_project->m_solverParameter.m_preconditioner) {
 		// Band preconditioner
 		case NANDRAD::SolverParameter::PRE_BAND : {
 			// work with a sparse jacobian
@@ -515,9 +508,9 @@ SOLFRA::LESInterface * NandradModel::lesInterface() {
 			m_jacobian = jacSparse;
 
 			// ILUT preconditioner
-			if (!m_project.m_solverParameter.m_para[NANDRAD::SolverParameter::SP_PRE_ILUWIDTH].name.empty()/*
-				&& m_project.m_solverParameter.m_para[NANDRAD::SolverParameter::SP_PRE_ILUWIDTH].value > 0*/) {
-				unsigned int fillIn = (unsigned int)m_project.m_solverParameter.m_para[NANDRAD::SolverParameter::SP_PRE_ILUWIDTH].value;
+			if (!m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_PRE_ILUWIDTH].name.empty()/*
+				&& m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_PRE_ILUWIDTH].value > 0*/) {
+				unsigned int fillIn = (unsigned int)m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_PRE_ILUWIDTH].value;
 
 				m_preconditioner = new SOLFRA::PrecondILUT(SOLFRA::PrecondInterface::Right, fillIn);
 				precondName = IBK::FormatString("ILUT preconditioner").str();
@@ -538,8 +531,8 @@ SOLFRA::LESInterface * NandradModel::lesInterface() {
 	IBK_ASSERT(lesIter != nullptr);
 
 	// set iterative LES solver options
-	lesIter->m_maxKrylovDim = (unsigned int)m_project.m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MAX_KRYLOV_DIM].value;
-	lesIter->m_linIterConvCoeff = m_project.m_solverParameter.m_para[NANDRAD::SolverParameter::SP_ITERATIVESOLVERCONVCOEFF].value;
+	lesIter->m_maxKrylovDim = (unsigned int)m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MAX_KRYLOV_DIM].value;
+	lesIter->m_linIterConvCoeff = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_ITERATIVESOLVERCONVCOEFF].value;
 
 	IBK_Message(IBK::FormatString("%1 selected, MaxKrylovDim = %2\n")
 		.arg(precondName).arg(lesIter->m_maxKrylovDim),  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
@@ -563,38 +556,38 @@ SOLFRA::IntegratorInterface * NandradModel::integratorInterface() {
 	IBK::IBK_Message("Creating Integrator\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK::MessageIndentor indent; (void)indent;
 
-	if (m_project.m_solverParameter.m_integrator == NANDRAD::SolverParameter::I_EXPLICIT_EULER) {
+	if (m_project->m_solverParameter.m_integrator == NANDRAD::SolverParameter::I_EXPLICIT_EULER) {
 		IBK::IBK_Message("Using Explict Euler integrator.\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		SOLFRA::IntegratorExplicitEuler * integrator = new SOLFRA::IntegratorExplicitEuler();
 		integrator->m_dt = dt0();
 		m_integrator = integrator;
 	}
-	else if (m_project.m_solverParameter.m_integrator == NANDRAD::SolverParameter::I_IMPLICIT_EULER) {
+	else if (m_project->m_solverParameter.m_integrator == NANDRAD::SolverParameter::I_IMPLICIT_EULER) {
 		IBK::IBK_Message("Using Implicit Euler integrator.\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		SOLFRA::IntegratorImplicitEuler * integrator = new SOLFRA::IntegratorImplicitEuler();
 		// set parameters given by Solverparameter section
-		integrator->m_absTol = m_project.m_solverParameter.m_para[NANDRAD::SolverParameter::SP_ABSTOL].value;
-		integrator->m_relTol = m_project.m_solverParameter.m_para[NANDRAD::SolverParameter::SP_RELTOL].value;
-		integrator->m_nonLinConvCoeff = m_project.m_solverParameter.m_para[NANDRAD::SolverParameter::SP_NONLINSOLVERCONVCOEFF].value;
-		integrator->m_maximumNonlinearIterations = (unsigned int) m_project.m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MAX_NONLIN_ITER].value;
+		integrator->m_absTol = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_ABSTOL].value;
+		integrator->m_relTol = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_RELTOL].value;
+		integrator->m_nonLinConvCoeff = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_NONLINSOLVERCONVCOEFF].value;
+		integrator->m_maximumNonlinearIterations = (unsigned int) m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MAX_NONLIN_ITER].value;
 		/// \todo Specify ImplicitEuler parameters
 
 		m_integrator = integrator;
 	}
-	else if (m_project.m_solverParameter.m_integrator == NANDRAD::SolverParameter::I_CVODE ||
-		m_project.m_solverParameter.m_integrator == NANDRAD::SolverParameter::NUM_I)
+	else if (m_project->m_solverParameter.m_integrator == NANDRAD::SolverParameter::I_CVODE ||
+		m_project->m_solverParameter.m_integrator == NANDRAD::SolverParameter::NUM_I)
 	{
 		IBK::IBK_Message("Using CVODE integrator.\n", IBK::MSG_PROGRESS, FUNC_ID, 1);
 		SOLFRA::IntegratorSundialsCVODE * integrator = new SOLFRA::IntegratorSundialsCVODE();
 		// set parameters given by Solverparameter section
-		integrator->m_absTol = m_project.m_solverParameter.m_para[NANDRAD::SolverParameter::SP_ABSTOL].value;
-		integrator->m_relTol = m_project.m_solverParameter.m_para[NANDRAD::SolverParameter::SP_RELTOL].value;
-		integrator->m_dtMax = m_project.m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MAX_DT].value;
-		integrator->m_dtMin = m_project.m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MIN_DT].value;
-		integrator->m_maxOrder = (unsigned int)m_project.m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MAX_ORDER].value;
+		integrator->m_absTol = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_ABSTOL].value;
+		integrator->m_relTol = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_RELTOL].value;
+		integrator->m_dtMax = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MAX_DT].value;
+		integrator->m_dtMin = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MIN_DT].value;
+		integrator->m_maxOrder = (unsigned int)m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MAX_ORDER].value;
 		integrator->m_maxSteps = 100000000; // extremely large value
-		integrator->m_nonLinConvCoeff = m_project.m_solverParameter.m_para[NANDRAD::SolverParameter::SP_NONLINSOLVERCONVCOEFF].value;
-		integrator->m_maxNonLinIters = (unsigned int) m_project.m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MAX_NONLIN_ITER].value;
+		integrator->m_nonLinConvCoeff = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_NONLINSOLVERCONVCOEFF].value;
+		integrator->m_maxNonLinIters = (unsigned int) m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MAX_NONLIN_ITER].value;
 
 		m_integrator = integrator;
 	}
@@ -740,16 +733,16 @@ double NandradModel::nextOutputTime(double t) {
 	double tOutNext = std::numeric_limits<double>::max(); // largest possible value
 
 	// get time including start offset
-	double tWithStartOffset = t + m_project.m_simulationParameter.m_interval.m_para[NANDRAD::Interval::IP_START].value;
+	double tWithStartOffset = t + m_project->m_simulationParameter.m_interval.m_para[NANDRAD::Interval::IP_START].value;
 
-	for (std::vector<NANDRAD::OutputGrid>::const_iterator it = m_project.m_outputs.m_grids.begin();
-		 it != m_project.m_outputs.m_grids.end(); ++it)
+	for (std::vector<NANDRAD::OutputGrid>::const_iterator it = m_project->m_outputs.m_grids.begin();
+		 it != m_project->m_outputs.m_grids.end(); ++it)
 	{
 		tOutNext = std::min(tOutNext, it->computeNextOutputTime(tWithStartOffset));
 	}
 
 	// convert tOutNext back to simulation time
-	return tOutNext - m_project.m_simulationParameter.m_interval.m_para[NANDRAD::Interval::IP_START].value;
+	return tOutNext - m_project->m_simulationParameter.m_interval.m_para[NANDRAD::Interval::IP_START].value;
 #endif
 }
 
@@ -768,6 +761,209 @@ void NandradModel::printVersionStrings() {
 	IBK::IBK_Message("DATAIO library version                           " + std::string(DATAIO::LONG_VERSION) + "\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK::IBK_Message("CCM library version                              " + std::string(CCM::LONG_VERSION) + "\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 }
+
+
+void NandradModel::initSolverParameter(const NANDRAD::ArgsParser & args) {
+	FUNCID(NandradModel::initSolverParameter);
+
+	IBK::IBK_Message( IBK::FormatString("Initializing Solver Parameter\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+
+	NANDRAD::SolverParameter &solverParameter = m_project->m_solverParameter;
+
+	// process override command line flags/options
+
+	// --integrator
+	if (args.hasOption(NANDRAD::ArgsParser::OO_INTEGRATOR)) {
+		// check if this is a valid/known solver
+		std::string solverString = args.option(NANDRAD::ArgsParser::OO_INTEGRATOR);
+		if (IBK::toupper_string(solverString) == "CVODE") // CVode
+			solverParameter.m_integrator = NANDRAD::SolverParameter::I_CVODE;
+		else if (IBK::toupper_string(solverString) == "EXPLICITEULER") // ExplicitEuler
+			solverParameter.m_integrator = NANDRAD::SolverParameter::I_EXPLICIT_EULER;
+		else if (IBK::toupper_string(solverString) == "IMPLICITEULER") // ImplicitEuler
+			solverParameter.m_integrator = NANDRAD::SolverParameter::I_IMPLICIT_EULER;
+		else {
+			throw IBK::Exception( IBK::FormatString("Unknown/unsupported integrator '%1'.").arg(solverString), FUNC_ID);
+		}
+	}
+
+	// --les-solver
+	if (!args.m_lesSolverName.empty()) {
+		// check if this is a valid/known solver
+		if (IBK::toupper_string(args.m_lesSolverName) == "DENSE") {
+			solverParameter.m_lesSolver = NANDRAD::SolverParameter::LES_DENSE;
+			if (args.m_lesSolverOption != (unsigned int)-1)
+				throw IBK::Exception( IBK::FormatString("Invalid format of --les-solver=DENSE option."), FUNC_ID);
+		}
+		else if (IBK::toupper_string(args.m_lesSolverName) == "KLU") {
+			solverParameter.m_lesSolver = NANDRAD::SolverParameter::LES_KLU;
+			if (args.m_lesSolverOption != (unsigned int)-1)
+				throw IBK::Exception(IBK::FormatString("Invalid format of --les-solver=KLU option."), FUNC_ID);
+		}
+		else if (IBK::toupper_string(args.m_lesSolverName) == "GMRES") {
+			solverParameter.m_lesSolver = NANDRAD::SolverParameter::LES_GMRES;
+			if (args.m_lesSolverOption != (unsigned int)-1)
+				// also store Krylov subspace dimension
+				solverParameter.m_para[NANDRAD::SolverParameter::SP_MAX_KRYLOV_DIM].value = args.m_lesSolverOption;
+		}
+		else if (IBK::toupper_string(args.m_lesSolverName) == "BICGSTAB") {
+			solverParameter.m_lesSolver = NANDRAD::SolverParameter::LES_BICGSTAB;
+			if (args.m_lesSolverOption != (unsigned int)-1)
+				solverParameter.m_para[NANDRAD::SolverParameter::SP_MAX_KRYLOV_DIM].value = args.m_lesSolverOption;
+		}
+		else {
+			throw IBK::Exception( IBK::FormatString("Unknown/unsupported LES-solver '%1'.").arg(args.m_lesSolverName), FUNC_ID);
+		}
+	}
+
+	// --precond
+	if (!args.m_preconditionerName.empty()) {
+		// must have an iterative solver for preconditioner use
+		if (solverParameter.m_lesSolver != NANDRAD::SolverParameter::LES_GMRES &&
+			solverParameter.m_lesSolver != NANDRAD::SolverParameter::LES_BICGSTAB)
+		{
+			throw IBK::Exception( IBK::FormatString("Cannot use --precond option with direct LES-solver."), FUNC_ID);
+		}
+
+		// check if this is a valid/known preconditioner
+		if (IBK::toupper_string(args.m_preconditionerName) == "BAND") {
+			solverParameter.m_preconditioner = NANDRAD::SolverParameter::PRE_BAND;
+			if (args.m_preconditionerOption != (unsigned int)-1)
+				// also store bandwidth
+				solverParameter.m_para[NANDRAD::SolverParameter::SP_PRE_BANDWIDTH].set(
+					NANDRAD::KeywordList::Keyword("SolverParameter::para_t", NANDRAD::SolverParameter::SP_PRE_BANDWIDTH),
+					args.m_preconditionerOption, IBK::Unit("---"));
+		}
+		else if (IBK::toupper_string(args.m_preconditionerName) == "ILU") {
+			solverParameter.m_preconditioner = NANDRAD::SolverParameter::PRE_ILU;
+			if (args.m_preconditionerOption != (unsigned int)-1)
+				// also store bandwidth
+				solverParameter.m_para[NANDRAD::SolverParameter::SP_PRE_ILUWIDTH].set(
+					NANDRAD::KeywordList::Keyword("SolverParameter::para_t", NANDRAD::SolverParameter::SP_PRE_ILUWIDTH),
+					args.m_preconditionerOption, IBK::Unit("---"));
+		}
+		else {
+			throw IBK::Exception( IBK::FormatString("Unknown/unsupported preconditioner '%1'.").arg(args.m_preconditionerName), FUNC_ID);
+		}
+	}
+
+
+	// *** mandatory arguments (defaults are always specified) ***
+
+	const IBK::Parameter &absTol = solverParameter.m_para[NANDRAD::SolverParameter::SP_ABSTOL];
+	if (absTol.value <= 0.0)
+		throw IBK::Exception(IBK::FormatString("Error initializing wall solver: "
+			"SolverParameter 'AbsTol' is smaller than/ equal to zero."), FUNC_ID);
+
+	const IBK::Parameter &relTol = solverParameter.m_para[NANDRAD::SolverParameter::SP_RELTOL];
+	if (relTol.value <= 0.0)
+		throw IBK::Exception(IBK::FormatString("Error initializing wall solver: "
+			"SolverParameter 'RelTol' is smaller than/ equal to zero."), FUNC_ID);
+
+	const IBK::Parameter & minDx = solverParameter.m_para[NANDRAD::SolverParameter::SP_DISCRETIZATION_MIN_DX];
+	if (minDx.value <= 0)
+		throw IBK::Exception("Invalid parameter for DiscMinDx in SolverParameter settings.", FUNC_ID);
+
+	const IBK::Parameter & density = solverParameter.m_para[NANDRAD::SolverParameter::SP_DISCRETIZATION_DETAIL];
+	if (density.value < 1 && density.value != 0)
+		throw IBK::Exception("Invalid parameter for DiscDetailLevel in SolverParameter settings.", FUNC_ID);
+
+	const IBK::Parameter & krylovDim = solverParameter.m_para[NANDRAD::SolverParameter::SP_MAX_KRYLOV_DIM];
+	if ((int)krylovDim.value <= 0)
+		throw IBK::Exception("Invalid parameter for MaxKrylovDim in SolverParameter settings.", FUNC_ID);
+
+	const IBK::Parameter &nonlinConvCoeff = solverParameter.m_para[NANDRAD::SolverParameter::SP_NONLINSOLVERCONVCOEFF];
+	// check validity
+	if (nonlinConvCoeff.value <= 0.0)
+		throw IBK::Exception("Invalid parameter for NonlinSolverConvCoeff in SolverParameter settings.", FUNC_ID);
+
+	const IBK::Parameter &iterativeConvCoeff = solverParameter.m_para[NANDRAD::SolverParameter::SP_ITERATIVESOLVERCONVCOEFF];
+	// check validity
+	if (iterativeConvCoeff.value <= 0.0)
+		throw IBK::Exception(IBK::FormatString("Invalid parameter for IterativeSolverConvCoeff in SolverParameter settings."), FUNC_ID);
+
+	// *** optional arguments (without guaranteed default value) ***
+
+	const IBK::Parameter & initialDt = solverParameter.m_para[NANDRAD::SolverParameter::SP_INITIAL_DT];
+	if (initialDt.value <= 0)
+		throw IBK::Exception("Invalid parameter for InitialTimeStep in SolverParameter settings.", FUNC_ID);
+
+	if (static_cast<IBK::ArgParser>(args).flagEnabled("report")) {
+		IBK_ASSERT(!m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MIN_DT].name.empty());
+		IBK_ASSERT(!m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_INITIAL_DT].name.empty());
+		m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MIN_DT].value =
+			std::min(m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MIN_DT].value, 1e-08);
+		IBK_ASSERT(!m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MIN_DT].name.empty());
+		m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_INITIAL_DT].value =
+			std::min(m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_INITIAL_DT].value, 1e-04);
+	}
+
+	// *** Define standard behavior if definitions are missing ***
+
+	if (m_project->m_solverParameter.m_integrator != NANDRAD::SolverParameter::I_EXPLICIT_EULER) {
+		// if no LES solver has been specified, default to GMRES with ILU preconditioner
+		if (m_project->m_solverParameter.m_lesSolver == NANDRAD::SolverParameter::NUM_LES) {
+			m_project->m_solverParameter.m_lesSolver = NANDRAD::SolverParameter::LES_GMRES;
+			m_project->m_solverParameter.m_preconditioner = NANDRAD::SolverParameter::PRE_ILU;
+			IBK::IBK_Message("Auto-selecting GMRES with ILU preconditioner.\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		}
+	}
+
+	// *** Parallel Code Setup ***
+#ifdef _OPENMP
+#pragma omp parallel
+	{
+#pragma omp master
+		{
+			m_numThreads = omp_get_num_threads();
+		}
+	}
+	IBK::IBK_Message(IBK::FormatString("Parallel solver version, running with %1 threads\n").arg(m_numThreads), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+
+#else // _OPENMP
+	m_numThreads = 1;
+#endif // _OPENMP
+}
+
+
+void NandradModel::initSimulationParameter() {
+	FUNCID(NandradModel::initSimulationParameter);
+
+	IBK::IBK_Message( IBK::FormatString("Initializing Simulation Parameter\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+
+	const NANDRAD::SimulationParameter &simPara = m_project->m_simulationParameter;
+
+	// check validity of the parameter data
+	const IBK::Parameter &gammaRad = simPara.m_para[NANDRAD::SimulationParameter::SP_RADIATIONLOADFRACTION];
+	if (gammaRad.name.empty()) {
+		throw IBK::Exception(IBK::FormatString("Error initializing wall solver: "
+			"SimulationParameter 'GammaRad' is not defined."), FUNC_ID);
+	}
+
+	// Set simulation interval.
+	// Simulation time always starts with zero (=solver time).
+	// All models dealing with absolute time reference (climate data and schedules) will
+	// get a time that is shifted by the start time/year offset.
+	m_t0  = 0;
+
+	// We always have end time and start time given, as part of the simulation defaults
+	// project file may have different values, but by reading project file, settings cannot be removed.
+
+	m_tEnd = simPara.m_interval.m_para[NANDRAD::Interval::IP_END].value -
+		simPara.m_interval.m_para[NANDRAD::Interval::IP_START].value;
+
+	int startYear = 2001;
+	if (!simPara.m_intpara[NANDRAD::SimulationParameter::SIP_YEAR].name.empty())
+		startYear = simPara.m_intpara[NANDRAD::SimulationParameter::SIP_YEAR].value;
+
+	if (m_tEnd <= 0)
+		throw IBK::Exception(IBK::FormatString("End time point %1 preceedes start time point %2 (must be later than start time!)")
+							 .arg(IBK::Time(startYear, simPara.m_interval.m_para[NANDRAD::Interval::IP_END].value).toDateTimeFormat())
+							 .arg(IBK::Time(startYear, simPara.m_interval.m_para[NANDRAD::Interval::IP_START].value).toDateTimeFormat()), FUNC_ID);
+
+	/// \todo check simulation parameters for meaningful values, since they are user-defined and can be "unsuitable"
+}
+
 
 
 } // namespace NANDRAD_MODEL

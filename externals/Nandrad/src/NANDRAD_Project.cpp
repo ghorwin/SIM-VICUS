@@ -129,6 +129,13 @@ void Project::writeXML(const IBK::Path & filename) const {
 // ----------------------------------------------------------------------------
 
 
+void Project::initDefaults() {
+	m_solverParameter.initDefaults();
+	m_simulationParameter.initDefaults();
+}
+// ----------------------------------------------------------------------------
+
+
 void Project::readDirectoryPlaceholdersXML(const TiXmlElement * element) {
 
 	// loop over all elements in this XML element
