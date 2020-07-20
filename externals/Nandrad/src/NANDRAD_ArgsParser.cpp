@@ -31,7 +31,7 @@ ArgsParser::ArgsParser() {
 	addFlag(0, "fmu-modelica-wrapper",
 		"(optional) If set to 'true' a Modelica wrapper for fmu exported file is created. Only in combination with 'fmu-export'");
 
-	// TODO : adjust options for les-solver, integrator and precond to show only the options available for NANDRAD
+	/// \todo adjust options for les-solver, integrator and precond to show only the options available for NANDRAD
 }
 
 

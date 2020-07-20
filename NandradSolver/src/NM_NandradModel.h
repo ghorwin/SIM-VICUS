@@ -201,6 +201,8 @@ private:
 	/*! Initializes/checks simulation parameter.*/
 	void initSimulationParameter();
 
+	/*! Vectors storing sparse matrix pattern (CSR format): number of nonzero elements: */
+	unsigned int nnz() const  { return (unsigned int) m_ja.size(); }
 
 	/*! Cached project file path. */
 	IBK::Path												m_projectFilePath;

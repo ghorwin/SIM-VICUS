@@ -31,6 +31,8 @@ HEADERS += \
 	../../src/SOLFRA_Constants.h \
 	../../src/SOLFRA_FMUModelInterface.h \
 	../../src/SOLFRA_IntegratorErrorControlled.h \
+	../../src/SOLFRA_IntegratorExplicitEuler.h \
+	../../src/SOLFRA_IntegratorImplicitEuler.h \
 	../../src/SOLFRA_IntegratorInterface.h \
 	../../src/SOLFRA_IntegratorSundialsCVODE.h \
 	../../src/SOLFRA_IntegratorSundialsCVODEImpl.h \
@@ -55,6 +57,8 @@ HEADERS += \
 SOURCES += \
 	../../src/SOLFRA_Constants.cpp \
 	../../src/SOLFRA_IntegratorErrorControlled.cpp \
+	../../src/SOLFRA_IntegratorExplicitEuler.cpp \
+	../../src/SOLFRA_IntegratorImplicitEuler.cpp \
 	../../src/SOLFRA_IntegratorSundialsCVODE.cpp \
 	../../src/SOLFRA_JacobianSparseCSR.cpp \
 	../../src/SOLFRA_LESBiCGStab.cpp \

@@ -37,6 +37,8 @@ Lesser General Public License for more details.
 #include <NANDRAD_KeywordList.h>
 
 #include <SOLFRA_IntegratorSundialsCVODE.h>
+#include <SOLFRA_IntegratorExplicitEuler.h>
+#include <SOLFRA_IntegratorImplicitEuler.h>
 #include <SOLFRA_JacobianSparseCSR.h>
 
 #include <SOLFRA_LESGMRES.h>
@@ -388,7 +390,6 @@ SOLFRA::LESInterface * NandradModel::lesInterface() {
 	IBK_ASSERT(m_preconditioner == nullptr);
 	IBK_ASSERT(m_jacobian == nullptr);
 
-#if 0
 	if (m_project->m_solverParameter.m_integrator == NANDRAD::SolverParameter::I_EXPLICIT_EULER) {
 		IBK::IBK_Message("Linear Equation Solver Modules not needed for Explicit Euler.\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		return nullptr;
@@ -398,36 +399,9 @@ SOLFRA::LESInterface * NandradModel::lesInterface() {
 	IBK::IBK_Message("Creating Linear Equation Solver Modules\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK::MessageIndentor indent; (void)indent;
 	IBK::IBK_Message( IBK::FormatString("Number of unknowns: %1\n").arg(m_n), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-	IBK::IBK_Message( IBK::FormatString("Bandwidth: %1\n").arg(bandwidth()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-
-	// compute half band width of system
-	/// \todo check this!
-	unsigned int lesHbw = std::min((bandwidth() - 1)/2, (m_n - 1)/2 ); // half-band width for 1 equation
-	unsigned int preHbw = lesHbw;
-	// if given, use bandwidth from project structure
-	if (!m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_LES_BANDWIDTH].name.empty())
-		lesHbw = (unsigned int)m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_LES_BANDWIDTH].value;
-	if (!m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_PRE_BANDWIDTH].name.empty())
-		preHbw = (unsigned int)m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_PRE_BANDWIDTH].value;
 
 	// create LES solver based on selected setting
 	switch (m_project->m_solverParameter.m_lesSolver) {
-
-		// Block tridiag
-		case NANDRAD::SolverParameter::LES_BTRIDIAG: {
-			m_lesSolver = new SOLFRA::LESBand(1, 1);
-			IBK_Message(IBK::FormatString("Using generic Block tridiag solver!\n"),
-				IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-			return m_lesSolver;
-		}
-
-		// Band
-		case NANDRAD::SolverParameter::LES_BAND : {
-			m_lesSolver = new SOLFRA::LESBand(lesHbw, lesHbw);
-			IBK_Message( IBK::FormatString("Using generic Band solver with bandwidth %1!\n").arg(lesHbw + lesHbw + 1),
-				IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-			return m_lesSolver;
-		}
 
 		// Dense
 		case NANDRAD::SolverParameter::LES_DENSE : {
@@ -461,12 +435,6 @@ SOLFRA::LESInterface * NandradModel::lesInterface() {
 			IBK_Message(IBK::FormatString("Using BiCGStab solver\n"),  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		} break;
 
-		// TFQMR
-		case NANDRAD::SolverParameter::LES_TFQMR : {
-			m_lesSolver = new SOLFRA::LESTFQMR;
-			IBK_Message(IBK::FormatString("Using TFQMR solver\n"),  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-		} break;
-
 		default:
 			throw IBK::Exception("Unknown or undefined LES solver.", FUNC_ID);
 	}
@@ -476,35 +444,13 @@ SOLFRA::LESInterface * NandradModel::lesInterface() {
 
 	// determine preconditioner type
 	switch (m_project->m_solverParameter.m_preconditioner) {
-		// Band preconditioner
-		case NANDRAD::SolverParameter::PRE_BAND : {
-			// work with a sparse jacobian
-			// m_jacobian = new SOLFRA::JacobianDense();
-#ifdef ELLPACK_ITPACK
-			SOLFRA::JacobianSparseEID *jacSparse = new SOLFRA::JacobianSparseEID(n(), sparseMatrixElementsPerRow(), sparseMatrixIndices(),true);
-			jacSparse->setColoringType(SOLFRA::JacobianSparseEID::Automatic);
-#else
-			SOLFRA::JacobianSparseCSR *jacSparse = new SOLFRA::JacobianSparseCSR(n(), nnz(), &m_ia[0], &m_ja[0],
-				&m_iaT[0], &m_jaT[0]);
-#endif
-			m_jacobian = jacSparse;
-			// create band preconditioner
-			SOLFRA::PrecondBand *preconditioner = new SOLFRA::PrecondBand(preHbw, preHbw, SOLFRA::PrecondInterface::Right);
-			m_preconditioner = preconditioner;
-
-			precondName = IBK::FormatString("band preconditioner with bandwidth (%1)").arg(preHbw + preHbw + 1).str();
-		} break;
 
 		// ILU preconditioner
 		case NANDRAD::SolverParameter::PRE_ILU : {
 			// work with a sparse jacobian
-#ifdef ELLPACK_ITPACK
-			SOLFRA::JacobianSparseEID *jacSparse = new SOLFRA::JacobianSparseEID(n(), sparseMatrixElementsPerRow(), sparseMatrixIndices(),true);
-			jacSparse->setColoringType(SOLFRA::JacobianSparseEID::Automatic);
-#else
 			SOLFRA::JacobianSparseCSR *jacSparse = new SOLFRA::JacobianSparseCSR(n(), nnz(), &m_ia[0], &m_ja[0],
 				&m_iaT[0], &m_jaT[0]);
-#endif
+
 			m_jacobian = jacSparse;
 
 			// ILUT preconditioner
@@ -525,7 +471,7 @@ SOLFRA::LESInterface * NandradModel::lesInterface() {
 		// no preconditioner
 		case NANDRAD::SolverParameter::NUM_PRE :
 		default : ;
-	};
+	}
 
 	SOLFRA::LESInterfaceIterative * lesIter = dynamic_cast<SOLFRA::LESInterfaceIterative *>(m_lesSolver);
 	IBK_ASSERT(lesIter != nullptr);
@@ -536,7 +482,7 @@ SOLFRA::LESInterface * NandradModel::lesInterface() {
 
 	IBK_Message(IBK::FormatString("%1 selected, MaxKrylovDim = %2\n")
 		.arg(precondName).arg(lesIter->m_maxKrylovDim),  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-#endif
+
 	return m_lesSolver;
 }
 
@@ -547,7 +493,7 @@ SOLFRA::JacobianInterface *  NandradModel::jacobianInterface() {
 
 
 SOLFRA::IntegratorInterface * NandradModel::integratorInterface() {
-#if 0
+
 	const char * const FUNC_ID = "[NandradModel::integratorInterface]";
 	if (m_integrator != nullptr)
 		return m_integrator;
@@ -591,7 +537,6 @@ SOLFRA::IntegratorInterface * NandradModel::integratorInterface() {
 
 		m_integrator = integrator;
 	}
-#endif
 	return m_integrator;
 }
 
@@ -727,12 +672,11 @@ void NandradModel::writeMetrics(double simtime, std::ostream * metricsFile) {
 /*** Functions re-implemented from SOLFRA::OutputScheduler. ***/
 
 double NandradModel::nextOutputTime(double t) {
-	return 3600;
-#if 0
+
 	// loop over all defined output grids and search for next scheduled output
 	double tOutNext = std::numeric_limits<double>::max(); // largest possible value
 
-	// get time including start offset
+	// get time including start offset, since output intervals are defined in terms of absolute time reference
 	double tWithStartOffset = t + m_project->m_simulationParameter.m_interval.m_para[NANDRAD::Interval::IP_START].value;
 
 	for (std::vector<NANDRAD::OutputGrid>::const_iterator it = m_project->m_outputs.m_grids.begin();
@@ -741,9 +685,8 @@ double NandradModel::nextOutputTime(double t) {
 		tOutNext = std::min(tOutNext, it->computeNextOutputTime(tWithStartOffset));
 	}
 
-	// convert tOutNext back to simulation time
+	// convert tOutNext back to simulation time by subtracting offset
 	return tOutNext - m_project->m_simulationParameter.m_interval.m_para[NANDRAD::Interval::IP_START].value;
-#endif
 }
 
 
