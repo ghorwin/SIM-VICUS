@@ -306,7 +306,7 @@ void CodeGenerator::generateReadWriteCode() {
 			else {
 				std::string commentCode =
 						"	TiXmlComment * com = new TiXmlComment();\n"
-						"	com->SetValue(\"" + ci.m_comment + "\");\n"
+						"	com->SetValue(m_" + ci.m_comment + ");\n"
 						"	e->LinkEndChild(com);\n\n";
 				writeCode = IBK::replace_string(writeCode, "${COMMENTS}", commentCode);
 			}

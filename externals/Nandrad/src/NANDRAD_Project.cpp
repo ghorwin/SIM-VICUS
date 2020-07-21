@@ -21,23 +21,14 @@ Lesser General Public License for more details.
 #include "NANDRAD_Project.h"
 #include "NANDRAD_KeywordList.h"
 
-//#include <iostream>
-//#include <sstream>
-//#include <fstream>
+#include <algorithm>
 
 #include <IBK_messages.h>
-//#include <IBK_FileUtils.h>
-//#include <IBK_StringUtils.h>
 #include <IBK_assert.h>
-//#include <IBK_algorithm.h>
-//#include <IBK_Exception.h>
-//#include <IBK_UnitList.h>
 
 #include <tinyxml.h>
 
-//#include "NANDRAD_Constants.h"
 #include "NANDRAD_Utilities.h"
-//#include "NANDRAD_OutputDefinition.h"
 
 namespace NANDRAD {
 
@@ -96,9 +87,25 @@ void Project::writeXML(const IBK::Path & filename) const {
 	root->SetAttribute("fileVersion", VERSION);
 
 	// update interface-zone comment
-	for (ConstructionInstance & con : const_cast<std::vector<ConstructionInstance>&>(m_constructionInstances))
-		for (Interface & ifac : con.m_interfaces)
-			ifac.updateComment(m_zones);
+	for (ConstructionInstance & con : const_cast<std::vector<ConstructionInstance>&>(m_constructionInstances)) {
+		for (Interface & ifac : con.m_interfaces) {
+			if (ifac.m_zoneId == 0)
+				ifac.m_comment = "Interface to outside";
+			else {
+				// lookup zone and its display name\n"
+				std::vector<Zone>::const_iterator it = std::find(m_zones.begin(), m_zones.end(), ifac.m_zoneId);
+				if (it != m_zones.end()) {
+					if (!it->m_displayName.empty())
+						ifac.m_comment = IBK::FormatString("Interface to '%1'").arg(it->m_displayName).str();
+					else
+						ifac.m_comment = IBK::FormatString("Interface to anonymous zone with id #%1").arg(ifac.m_zoneId).str();
+				}
+				else {
+					ifac.m_comment = IBK::FormatString("ERROR: Zone with id #%1 does not exist.").arg(ifac.m_zoneId).str();
+				}
+			}
+		}
+	}
 
 	writeDirectoryPlaceholdersXML(root);
 	writeXMLPrivate(root);

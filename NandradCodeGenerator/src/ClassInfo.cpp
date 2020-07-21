@@ -185,6 +185,7 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 						throw IBK::Exception(IBK::FormatString("Invalid XML-spec '%1' in line '%2'").arg(xmlSpec).arg(line)
 											 .arg("Comment variables must have type std::string."), FUNC_ID);
 					m_comment = varName;
+					continue; // comments are not stored as regular variables
 				}
 				else {
 					throw IBK::Exception(IBK::FormatString("Invalid XML-spec '%1' in line '%2'").arg(xmlSpec).arg(line)

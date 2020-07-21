@@ -57,8 +57,6 @@ void Interface::readXML(const TiXmlElement * element) {
 			}
 			else if (attribName == "zoneId")
 				m_zoneId = readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "comment")
-				m_comment = attrib->ValueStr();
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -110,15 +108,13 @@ TiXmlElement * Interface::writeXML(TiXmlElement * parent) const {
 	parent->LinkEndChild(e);
 
 	TiXmlComment * com = new TiXmlComment();
-	com->SetValue("comment");
+	com->SetValue(m_comment);
 	e->LinkEndChild(com);
 
 	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (m_location != NUM_IT)
 		e->SetAttribute("location", KeywordList::Keyword("Interface::location_t",  m_location));
 	e->SetAttribute("zoneId", IBK::val2string<unsigned int>(m_zoneId));
-	if (!m_comment.empty())
-		e->SetAttribute("comment", m_comment);
 
 	for (int i=0; i<NUM_IP; ++i) {
 		if (!m_condition[i].name().empty())

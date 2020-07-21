@@ -36,20 +36,13 @@ namespace NANDRAD {
 
 class Zone;
 
-/*!	\brief
-	An Interface identifies a surface of a wall and stores all data that are needed for boundary
-	condition calculation. Its position at the wall is identified by the type_t-attribute, either
-	left or right side of the construction. The interface position corresponds to the layer assembly
-	defined inside the construction type of the superior construction instance
-	(the construction type itself defines the layer geometry from left to right).
+/*!	An Interface identifies a surface of a wall and stores all data that are needed for boundary
+	condition calculation. Its position at the wall is identified by the location_t-attribute, either
+	A or B side of the construction (A - layer index 0, B - other side).
 
 	The zone at the other side of the wall surface is identified by its zone ID.
 	The zone ID = 0 indicates ambient climate. If the construction is adiabatic,
 	there must not be an interface defined for this side.
-
-	HeatTransferResistance and Absorption coefficient are optional parameters. If no parameters are
-	given they are copied from simulation parameter settings.
-
 */
 class Interface {
 public:
@@ -86,11 +79,6 @@ public:
 				m_vaporDiffusion == other.m_vaporDiffusion);
 	}
 
-	/*! Looks up the zone this interface connects to and generates a meaningful
-		comment string.
-	*/
-	void updateComment(const std::vector<Zone> & zoneList);
-
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! ID of the referenced surface/interface. */
@@ -116,7 +104,8 @@ public:
 	InterfaceAirFlow							m_airFlow;				// XML:E
 
 	/*! Comment, indicating the zone this interface links to.
-		Can be set manually, or with function updateComment().
+		\warning This comment is set automatically when the project is written
+				 with Project::writeXML(). Any existing text will be overwritten.
 	*/
 	std::string									m_comment;				// XML:C
 
