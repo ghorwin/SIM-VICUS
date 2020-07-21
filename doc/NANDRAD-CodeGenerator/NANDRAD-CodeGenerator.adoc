@@ -777,3 +777,43 @@ a. create your own `readXML()` and `writeXML()` functions (possibly by copy&past
 b. change the type to something different, possibly creating another class with standardized behavior. So, for example, you could store `std::map<std::string, std::vector<double> >`  data in `std::vector<NamedDblVector>` where `NamedDblVector` contains a `std::string` and `std::vector<double>` members, both of which are fully supported by the code generator. You may need to code the check for duplicate names yourself.
 
 
+#### XML Comments
+Sometimes, it is nice to add comments about certain data members in the file. These are not xml tags, but merely xml comments and as such have no meaning for the project (only for humans reading the file in the text editor).
+
+Since comments may add quite a bit of text to project files and enlarge these without adding actual data, care should be taken to only add comments when necessary/helpful for manually checking the content of files.
+
+Currently, only one string comment is allowed per class, and it will be written right after the opening tag of the class XML tag. To add a comment, you must create a `std::string` variable with a `XML:C` annotation.
+
+For example:
+
+.Using a comment annotation on a string variable
+[source,c++]
+----
+class Interface {
+public:
+
+    ...
+
+	/*! Comment, indicating the zone this interface links to. */
+	std::string									m_comment;				// XML:C
+	
+	...
+}
+----
+
+Suppose the string `m_comment` contains the text _Interface to 'TF05.1_, then the generated XML content will look like:
+
+[source,xml]
+----
+<Interface id="12" location="A" zoneId="1">
+	<!--Interface to 'TF05.1'-->
+	<InterfaceHeatConduction modelType="Constant">
+    ...
+</Interface>
+----
+
+[NOTE]
+====
+You can have multi-line comments, by adding `\n` in the string, but the indentation in the XML file will be missing in subsequent lines. Generally, don't do this.
+====
+
