@@ -69,7 +69,6 @@ public:
 		NUM_IP
 	};
 
-
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	NANDRAD_READWRITE
@@ -86,6 +85,11 @@ public:
 				m_longWaveEmission == other.m_longWaveEmission &&
 				m_vaporDiffusion == other.m_vaporDiffusion);
 	}
+
+	/*! Looks up the zone this interface connects to and generates a meaningful
+		comment string.
+	*/
+	void updateComment(const std::vector<Zone> & zoneList);
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -111,6 +115,10 @@ public:
 	/*! Model for air flow calculation. */
 	InterfaceAirFlow							m_airFlow;				// XML:E
 
+	/*! Comment, indicating the zone this interface links to.
+		Can be set manually, or with function updateComment().
+	*/
+	std::string									m_comment;				// XML:C
 
 	// *** Variables used only during simulation ***
 

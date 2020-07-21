@@ -407,20 +407,3 @@ const char * const CPP_READXML =
 		"}\n";
 
 
-// this is NANDRAD type specific stuff that get's added in certain locations - not really generic, that is!
-
-const char * const CPP_XML_INTERFACE_SPECIAL_HEADERS =
-		"#include <NANDRAD_Project.h>\n"
-		"#include <algorithm>\n";
-
-const char * const CPP_XML_INTERFACE_SPECIAL_CODE =
-		"	TiXmlComment * com = new TiXmlComment();\n"
-		"	if (m_zoneId == 0)\n"
-		"		com->SetValue(\"Interface to outside\");\n"
-		"	else {\n"
-		"		// lookup zone and its display name\n"
-		"		std::vector<Zone>::const_iterator it = std::find(Project::instance().m_zones.begin(), Project::instance().m_zones.end(), m_zoneId);\n"
-		"		if (it != Project::instance().m_zones.end() && !it->m_displayName.empty())\n"
-		"			com->SetValue(\"Interface to '\" + it->m_displayName + \"'\");\n"
-		"	}\n"
-		"	e->LinkEndChild(com);\n\n";

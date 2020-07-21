@@ -301,12 +301,14 @@ void CodeGenerator::generateReadWriteCode() {
 				writeCode = IBK::replace_string(writeCode, "${PRIVATE}", "");
 
 			// now we have some special comment stuff, only for certain classes
-			if (ci.m_className == "Interface") {
-				writeCode = IBK::replace_string(writeCode, "${COMMENTS}", CPP_XML_INTERFACE_SPECIAL_CODE);
-				extraIncludes += CPP_XML_INTERFACE_SPECIAL_HEADERS;
-			}
-			else {
+			if (ci.m_comment.empty())
 				writeCode = IBK::replace_string(writeCode, "${COMMENTS}", "");
+			else {
+				std::string commentCode =
+						"	TiXmlComment * com = new TiXmlComment();\n"
+						"	com->SetValue(\"" + ci.m_comment + "\");\n"
+						"	e->LinkEndChild(com);\n\n";
+				writeCode = IBK::replace_string(writeCode, "${COMMENTS}", commentCode);
 			}
 
 			std::string attribs;

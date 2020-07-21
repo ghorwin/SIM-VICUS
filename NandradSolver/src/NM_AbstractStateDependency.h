@@ -19,8 +19,10 @@ namespace NANDRAD_MODEL {
 	All state-object models must derive from this interface and must implement the
 	pure virtual functions.
 
-	A state dependent model object integrates the
-	model and the state dependency properties. Therefore, it needs to inherit both from
+	The actual model evaluation code goes into function update(), which is called, whenever all objects have been updated,
+	that this model depends on.
+
+	A state-dependent model object needs to inherit both from
 	AbstractModel and AbstractStateDependency.
 */
 class AbstractStateDependency : public ZEPPELIN::DependencyObject {
@@ -45,8 +47,7 @@ public:
 	*/
 	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const  = 0;
 
-	/*! Returns vector with pointers to memory locations matching input value references.
-	*/
+	/*! Returns vector with pointers to memory locations matching input value references. */
 	virtual const std::vector<const double *> & inputValueRefs() const = 0;
 
 	/*! Returns a pattern of direkt computational dependencies between input values
@@ -115,7 +116,8 @@ public:
 
 	/*! This function is called whenever result quantities of other models change.
 		Re-implement this function in derived classes and handle all your update-functionality here.
-		\return Returns 0 when calculation was successful, 1 when a recoverable error has been detected, 2 when something is badly wrong
+		\return Returns 0 when calculation was successful, 1 when a recoverable error has been detected,
+			2 when something is badly wrong
 	*/
 	virtual int update() = 0;
 

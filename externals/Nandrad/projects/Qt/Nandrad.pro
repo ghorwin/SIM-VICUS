@@ -73,6 +73,7 @@ SOURCES += \
 	../../src/NANDRAD_EmbeddedObject.cpp \
 	../../src/NANDRAD_EmbeddedObjectWindow.cpp \
 	../../src/NANDRAD_IDGroup.cpp \
+	../../src/NANDRAD_Interface.cpp \
 	../../src/NANDRAD_InterfaceAirFlow.cpp \
 	../../src/NANDRAD_InterfaceHeatConduction.cpp \
 	../../src/NANDRAD_InterfaceLongWaveEmission.cpp \

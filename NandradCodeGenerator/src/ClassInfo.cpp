@@ -177,9 +177,18 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 					xmlInfo.element = false;
 				else if (tokens[0] == "E")
 					xmlInfo.element = true;
+				else if (tokens[0] == "C") {
+					if (!m_comment.empty())
+						throw IBK::Exception(IBK::FormatString("Invalid XML-spec '%1' in line '%2'").arg(xmlSpec).arg(line)
+											 .arg("Only one comment variable allowed in class."), FUNC_ID);
+					if (typeStr != "std::string")
+						throw IBK::Exception(IBK::FormatString("Invalid XML-spec '%1' in line '%2'").arg(xmlSpec).arg(line)
+											 .arg("Comment variables must have type std::string."), FUNC_ID);
+					m_comment = varName;
+				}
 				else {
-					std::cerr << "Invalid XML-spec '"<< xmlSpec << "' in line '"<< line << "'" << std::endl;
-					throw std::runtime_error("error");
+					throw IBK::Exception(IBK::FormatString("Invalid XML-spec '%1' in line '%2'").arg(xmlSpec).arg(line)
+										 .arg("Only XML:A, XML:E and XML:C supported so far."), FUNC_ID);
 				}
 				xmlInfo.typeStr = typeStr;
 				xmlInfo.varName = varName;

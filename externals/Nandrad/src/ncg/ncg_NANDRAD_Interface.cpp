@@ -25,8 +25,6 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
-#include <NANDRAD_Project.h>
-#include <algorithm>
 #include <NANDRAD_KeywordList.h>
 #include <NANDRAD_Utilities.h>
 
@@ -59,6 +57,8 @@ void Interface::readXML(const TiXmlElement * element) {
 			}
 			else if (attribName == "zoneId")
 				m_zoneId = readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "comment")
+				m_comment = attrib->ValueStr();
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -110,20 +110,15 @@ TiXmlElement * Interface::writeXML(TiXmlElement * parent) const {
 	parent->LinkEndChild(e);
 
 	TiXmlComment * com = new TiXmlComment();
-	if (m_zoneId == 0)
-		com->SetValue("Interface to outside");
-	else {
-		// lookup zone and its display name
-		std::vector<Zone>::const_iterator it = std::find(Project::instance().m_zones.begin(), Project::instance().m_zones.end(), m_zoneId);
-		if (it != Project::instance().m_zones.end() && !it->m_displayName.empty())
-			com->SetValue("Interface to '" + it->m_displayName + "'");
-	}
+	com->SetValue("comment");
 	e->LinkEndChild(com);
 
 	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (m_location != NUM_IT)
 		e->SetAttribute("location", KeywordList::Keyword("Interface::location_t",  m_location));
 	e->SetAttribute("zoneId", IBK::val2string<unsigned int>(m_zoneId));
+	if (!m_comment.empty())
+		e->SetAttribute("comment", m_comment);
 
 	for (int i=0; i<NUM_IP; ++i) {
 		if (!m_condition[i].name().empty())

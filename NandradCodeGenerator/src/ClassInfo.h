@@ -46,6 +46,7 @@ public:
 
 	IBK::Path				m_sourceHeaderFile;
 	std::string				m_className;
+	std::string				m_comment; // holds variable name with comment string to be added directly after the tag name - XML:C annotation
 
 	/*! Set to true if NANDRAD_READWRITE_PRIVATE macro is found in file. */
 	bool					m_requirePrivateReadWrite = false;

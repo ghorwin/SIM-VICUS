@@ -23,33 +23,32 @@ Lesser General Public License for more details.
 
 namespace NANDRAD_MODEL {
 
-/*!	This class handles time-dependent models.
-	Child classes must implement timeChanged() and
-	AbstractStateDependency::referenceType().
+/*!	This abstract class interface declares functions needed for time-dependent models.
+	Child classes must implement setTime() and optionally stepCompleted().
 
-	A time dependent model object integrates the
-	model and the state dependency properties. Therefore, it needs to inherit both from
-	AbstractModel and AbstractTimeDependency. If the model is also state-dependent, you
-	should also inherit from AbstractStateDependency.
+	When implementing a time-dependent model, you need to inherit both from AbstractModel and
+	AbstractTimeDependency. If the model is also state-dependent, you
+	also need to inherit from AbstractStateDependency.
 */
 class AbstractTimeDependency {
 public:
 
-	/*! Dummy destructor. */
+	/*! Dummy destructor (for v-table placement). */
 	virtual ~AbstractTimeDependency();
 
 	/*! Main state-changing function.
-		This function sets the new time point state and calls timeChanged()
-		whenever the time point has changed. Must be implemented in derived models.
+		This function sets the new time point state. Must be implemented in derived models.
 		\param t Simulation time in [s] (solver time).
-		\return Returns 0 when calculation was successful, 1 when a recoverable error has been detected, 2 when something is badly wrong
+		\return Returns 0 when calculation was successful, 1 when a recoverable error has been detected,
+			2 when something is badly wrong
 	*/
 	virtual int setTime(double t) = 0;
 
 	/*! Informs the model that a step was successfully completed.
 		The time point and value vector passed to the function correspond to
 		the current state in the integrator object.
-		This function can be used to write restart info.
+		This function can be used to write restart info, or adjust the state of the model discretely
+		between integration steps.
 		Default implementation does nothing.
 		\param t Simulation time in [s].
 	*/
