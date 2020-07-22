@@ -51,7 +51,7 @@ namespace NANDRAD_MODEL {
 int Schedules::setTime(double t) {
 #if 0
 	if (t == -1) return 0; // setTime wasn't called yet
-	IBK_ASSERT(m_startTime != NULL);
+	IBK_ASSERT(m_startTime != nullptr);
 	// caluclate all parameter values
 	for(unsigned int i = 0; i < m_scheduleParameters.size(); ++i)
 	{
@@ -445,7 +445,7 @@ double Schedules::startValue(const QuantityName &quantity) const {
 
 	// found in schedule parameters
 	if (paraIt != m_scheduleParameters.end()) {
-		IBK_ASSERT(m_startTime != NULL);
+		IBK_ASSERT(m_startTime != nullptr);
 		return paraIt->value(*m_startTime);
 	}
 	// find quantity name in annual schedules
@@ -455,7 +455,7 @@ double Schedules::startValue(const QuantityName &quantity) const {
 			NANDRAD::FindByName<NANDRAD::LinearSplineParameter>(quantityName));
 	// found in annual schedule parameters
 	if (splineParaIt != m_annualScheduleParameters.end()) {
-		IBK_ASSERT(m_startTime != NULL);
+		IBK_ASSERT(m_startTime != nullptr);
 		if (splineParaIt->m_interpolationMethod == NANDRAD::LinearSplineParameter::I_Constant) {
 			return splineParaIt->m_values.nonInterpolatedValue(*m_startTime);
 		}
@@ -489,7 +489,7 @@ const double * Schedules::resultValueRef(const QuantityName & quantityName) cons
 			return &m_results[i].value;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 
@@ -614,9 +614,9 @@ void Schedules::resultDescriptions(std::vector<QuantityDescription> & resDesc) c
 }
 
 //const NANDRAD::Schedules *Schedules::schedules() const {
-//	if (m_project != NULL)
+//	if (m_project != nullptr)
 //		return &m_project->m_schedules;
-//	return NULL;
+//	return nullptr;
 //}
 
 

@@ -157,7 +157,7 @@ const double * DefaultModel::resultValueRef(const QuantityName & quantityName) c
 		// scalar results
 		if (quantity != -1 && quantityName.index() == -1) {
 			if (quantity >= (int)m_results.size())
-				return NULL;
+				return nullptr;
 
 			// wrong definition
 			IBK_ASSERT_XX(quantityName.index() == -1,
@@ -172,17 +172,17 @@ const double * DefaultModel::resultValueRef(const QuantityName & quantityName) c
 
 		// inbvylid quantity
 		if (quantity == -1)
-			return NULL;
+			return nullptr;
 
 		if (quantity >= (int)m_vectorValuedResults.size())
-			return NULL;
+			return nullptr;
 
 		// no index is given
 		if (quantityName.index() == -1) {
 			// return access to the first vector element
 			if (!m_vectorValuedResults[quantity].empty())
 				return &m_vectorValuedResults[quantity].m_data[0];
-			return NULL;
+			return nullptr;
 		}
 		// index definition
 		else {
@@ -191,11 +191,11 @@ const double * DefaultModel::resultValueRef(const QuantityName & quantityName) c
 			// return access to the requested vector element
 			if (vecElem != m_vectorValuedResults[quantity].end())
 				return &(*vecElem);
-			return NULL;
+			return nullptr;
 		}
 	}
 	catch (IBK::Exception) {
-		return NULL;
+		return nullptr;
 	}
 }
 

@@ -108,7 +108,7 @@ public:
 		needs to store a vector of InputValues and a mapping information. If the
 		routine is called the model searches the corresponding value reference inside
 		the vector. Note that the value pointer itself can only be modified by NandradModelImpl
-		and is set to NULL per default.
+		and is set to nullptr per default.
 		If the vector is completely filled the reference values can be obtained by the model
 		by calling *inputValueRef(quantity type, (id));
 	*/

@@ -182,7 +182,7 @@ namespace NANDRAD_MODEL {
 	}
 
 	const char * KeywordList::Description(const char * const enumtype, int t, bool * no_description) {
-		if (no_description != NULL)
+		if (no_description != nullptr)
 			*no_description = false; // we are optimistic
 		switch (enum2index(enumtype)) {
 			// Loads::Results
