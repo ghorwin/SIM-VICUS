@@ -971,10 +971,757 @@ void NandradModel::initGlobals()
 
 }
 
-void NandradModel::initZones()
-{
 
+void NandradModel::initZones() {
+	const char * const FUNC_ID = "[NandradModelImpl::initActiveZones]";
+	IBK::IBK_Message( IBK::FormatString("Initializing Zones\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+	IBK::MessageIndentor indent; (void)indent;
+
+	// create model instances for all active zones
+	// for each active zone, we need:
+	// - a RoomBalanceModel
+	// - a RoomThermalLoadsModel (collects heating loads from model instances)
+
+	// created models are added to m_stateModelContainer (which owns them)
+	// a reference is also placed in m_roomStateModelContainer, which is used by the
+
+	// remember all zones that require a room state model
+	std::vector<const NANDRAD::Zone*> activeZones;
+	// process all active zones in list of zones
+	for (const NANDRAD::Zone & zone : m_project->m_zones) {
+
+		const NANDRAD::SimulationParameter &simPara = m_project->m_simulationParameter;
+
+		IBK::IBK_Message( IBK::FormatString("Zone [%1] '%2' -> %3\n").arg(zone.m_id).arg(zone.m_displayName)
+			.arg( zone.m_type == NANDRAD::Zone::ZT_CONSTANT ? "CONSTANT" : "ACTIVE"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+
+		switch (zone.m_type) {
+			case NANDRAD::Zone::ZT_ACTIVE : {
+				// create implicit room state model
+				RoomBalanceModel * roomBalanceModel = NULL;
+				RoomStatesModel * roomStatesModel = NULL;
+
+				// invalid request for CO2 balance without conmsideriung moisture balance
+				if (!m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled()
+					&& m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_CO2_BALANCE].isEnabled()) {
+					throw IBK::Exception(IBK::FormatString("CO2 balance may only be activied in combiniation with moisture balance!"),
+						FUNC_ID);
+				}
+				// heat and moisture and CO2 balance
+				if (m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled() &&
+					m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_CO2_BALANCE].isEnabled()) {
+					roomBalanceModel = new RoomBalanceMoistureAndCO2Model(zone.m_id, zone.m_displayName);
+					roomStatesModel = new RoomStatesMoistureAndCO2Model(zone.m_id, zone.m_displayName);
+				}
+				// heat and moisture balance
+				else if (m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled()) {
+					roomBalanceModel = new RoomBalanceMoistureModel(zone.m_id, zone.m_displayName);
+					roomStatesModel = new RoomStatesMoistureModel(zone.m_id, zone.m_displayName);
+				}
+				// single heat balance
+				else {
+					roomBalanceModel = new RoomBalanceModel(zone.m_id, zone.m_displayName);
+					roomStatesModel = new RoomStatesModel(zone.m_id, zone.m_displayName);
+				}
+
+				// initialize room state model
+				try {
+					roomBalanceModel->setup(simPara);
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception(ex, IBK::FormatString("Error in setup for #%1 for zone with id #%2")
+						.arg(roomBalanceModel->ModelIDName())
+						.arg(zone.m_id), FUNC_ID);
+				}
+
+				// always put the model first into our central model storage
+				m_modelContainer.push_back(roomBalanceModel); // this container now owns the model
+																// sort into the state model container ...
+				registerStateDependendModel(roomBalanceModel);
+				m_stateModelContainer.push_back(roomBalanceModel);
+
+				// initialize room state model
+				try {
+					roomStatesModel->setup(zone, defaultPara);
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception(ex, IBK::FormatString("Error in setup for #%1 for zone with id #%2")
+						.arg(roomStatesModel->ModelIDName())
+						.arg(zone.m_id), FUNC_ID);
+				}
+
+				// also remember this model in the container with room state models m_roomBalanceModelContainer
+				// because we need to call ydot().
+				m_roomBalanceModelContainer.push_back(roomBalanceModel);
+
+				// always put the model first into our central model storage
+				m_modelContainer.push_back(roomStatesModel); // this container now owns the model
+
+																// sort into the state model container - this model only
+																// provides references to y and constant project parameters
+				registerStateDependendModel(roomStatesModel);
+
+				// also remember this model in the container with room state models m_roomBalanceModelContainer
+				// because we need to call yInitial().
+				m_roomStatesModelContainer.push_back(roomStatesModel);
+				// remember current zone
+				activeZones.push_back(&zone);
+
+			} break;
+
+
+			case NANDRAD::Zone::ZT_DETAILED :
+			{
+				// create implicit room state model
+				RoomBalanceModel * roomBalanceModel = NULL;
+				RoomStatesModel * roomStatesModel = NULL;
+
+				// only CO2 in combination with moisture balance is allowed
+				if (!m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled()
+					&& m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_CO2_BALANCE].isEnabled()) {
+					throw IBK::Exception(IBK::FormatString("CO2 balance may only be activied in combiniation with moisture balance!"),
+						FUNC_ID);
+				}
+				// heat, moisture and CO2 balance
+				if (m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled()
+					&& m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_CO2_BALANCE].isEnabled()) {
+					roomBalanceModel = new RoomBalanceMoistureAndCO2Model(zone.m_id, zone.m_displayName);
+					roomStatesModel = new RoomStatesMoistureAndCO2Model(zone.m_id, zone.m_displayName);
+				}
+				// heat and moisture balance
+				else if (m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled()) {
+					roomBalanceModel = new RoomBalanceMoistureModel(zone.m_id, zone.m_displayName);
+					roomStatesModel = new RoomStatesMoistureModel(zone.m_id, zone.m_displayName);
+				}
+				// single heat balance
+				else {
+					roomBalanceModel = new RoomBalanceModel(zone.m_id, zone.m_displayName);
+					roomStatesModel = new RoomStatesModel(zone.m_id, zone.m_displayName);
+				}
+
+				// initialize room state model
+				try {
+					roomBalanceModel->setup(simPara);
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception(ex, IBK::FormatString("Error in setup for RoomBalanceModel for zone with id #%1")
+						.arg(zone.m_id), FUNC_ID);
+				}
+
+				// always put the model first into our central model storage
+				m_modelContainer.push_back(roomBalanceModel); // this container now owns the model
+				// sort into the state model container
+				registerStateDependendModel(roomBalanceModel);
+
+				// initialize room state model
+				try {
+					roomStatesModel->setup(zone, defaultPara);
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception(ex, IBK::FormatString("Error in setup for RoomStatesModel for zone with id #%1")
+						.arg(zone.m_id), FUNC_ID);
+				}
+
+				// also remember this model in the container with room state models m_roomBalanceModelContainer
+				// because we need to call ydot().
+				m_roomBalanceModelContainer.push_back(roomBalanceModel);
+
+				// always put the model first into our central model storage
+				m_modelContainer.push_back(roomStatesModel); // this container now owns the model
+
+																// sort into the state model container - this model only
+																// provides references to y and constant project parameters
+				registerStateDependendModel(roomStatesModel);
+
+				// also remember this model in the container with room state models m_roomBalanceModelContainer
+				// because we need to call yInitial().
+				m_roomStatesModelContainer.push_back(roomStatesModel);
+
+				// remember current zone
+				activeZones.push_back(&zone);
+
+			} break;
+
+
+			// initialise a constant zone model
+			case NANDRAD::Zone::ZT_CONSTANT :
+			{
+				// create implicit room state model
+				ConstantZoneModel * constantZoneModel = NULL;
+
+				// coupled heat anmd moisture balance
+				if (m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled()) {
+					constantZoneModel = new ConstantZoneMoistureModel(zone.m_id, zone.m_displayName);
+				}
+				// isolated energy balance
+				else{
+					constantZoneModel  = new ConstantZoneModel(zone.m_id, zone.m_displayName);
+				}
+
+				// initialize room state model
+				try {
+					constantZoneModel->setup(zone);
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception(ex, IBK::FormatString("Error in setup for #%1 for zone with id #%2")
+													.arg(constantZoneModel->ModelIDName())
+													.arg(zone.m_id), FUNC_ID);
+				}
+
+				// always put the model first into our central model storage
+				m_modelContainer.push_back(constantZoneModel); // this container now owns the model
+
+				// sort into the state model container
+				registerStateDependendModel(constantZoneModel);
+
+			} break;
+
+			case NANDRAD::Zone::ZT_GROUND:
+			{
+				// create implicit room state model
+				GroundZoneModel * groundZoneModel = NULL;
+
+				// coupled heat anmd moisture balance
+				if (m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled()) {
+					groundZoneModel = new GroundZoneMoistureModel(zone.m_id, zone.m_displayName);
+				}
+				// isolated energy balance
+				else {
+					groundZoneModel = new GroundZoneModel(zone.m_id, zone.m_displayName);
+				}
+
+				// initialize room state model
+				try {
+					groundZoneModel->setup(zone, m_project->m_simulationParameter, m_project->m_placeholders);
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception(ex, IBK::FormatString("Error in setup for GroundZoneModel for zone with id #%1")
+						.arg(zone.m_id), FUNC_ID);
+				}
+
+				// always put the model first into our central model storage
+				m_modelContainer.push_back(groundZoneModel); // this container now owns the model
+				// register model as time dependend
+				m_timeModelContainer.push_back(groundZoneModel);
+			} break;
+
+			case NANDRAD::Zone::NUM_ZT :
+			default :
+				throw IBK::Exception( IBK::FormatString("Undefined or unsupported zone type in zone with id #%1")
+													.arg(zone.m_id), FUNC_ID);
+		} // switch
+	} // for (Zones)
+
+	// create model instances for all loads of the given _active_ zones
+	for (unsigned int i=0; i<activeZones.size(); ++i) {
+
+		const NANDRAD::Zone  *zone = activeZones[i];
+
+		// *** WallsThermalLoadModel ***
+
+		// for each room balance model create a heat conduction loads model
+		// this collects all convective heat transfer fluxes from all walls
+		WallsThermalLoadModel * wallsThermalLoadModel = new WallsThermalLoadModel(zone->m_id, zone->m_displayName);
+		// initialize heat conduction load model from given construction instance vector
+		try {
+			wallsThermalLoadModel->setup();
+		}
+		catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error in setup for WallsThermalLoadModel for zone with id #%1")
+											.arg(zone->m_id), FUNC_ID);
+		}
+		// always put the model first into our central model storage
+		m_modelContainer.push_back(wallsThermalLoadModel); // this container now owns the model
+		// sort into the state model container
+		registerStateDependendModel(wallsThermalLoadModel);
+
+		// *** WindowsLoadModel ***
+
+		// for each room balance model create a windows loads model
+		// this collects all solar radiation fluxes towards the room
+		WindowsLoadModel * windowsLoadModel = new WindowsLoadModel(zone->m_id,
+																	zone->m_displayName);
+		// initialize heat conduction load model from given construction instance vector
+		try {
+			windowsLoadModel->setup();
+		}
+		catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error in setup for WindowsLoadModel for zone with id #%1")
+											.arg(zone->m_id), FUNC_ID);
+		}
+
+		// always put the model first into our central model storage
+		m_modelContainer.push_back(windowsLoadModel); // this container now owns the model
+
+		// sort into the state model container
+		registerStateDependendModel(windowsLoadModel);
+
+		// *** Long wave radiation balance load model ***
+
+		// for each room balance model create a long wave radiation balance load
+		// this collects all long wave radiation fluxes at the windows inside surface and
+		// directs it towardsthe room
+		LWRadBalanceLoadModel * lWRadBalanceLoadModel = new LWRadBalanceLoadModel(zone->m_id,
+																	zone->m_displayName);
+		// initialize heat conduction load model from given construction instance vector
+		try {
+			lWRadBalanceLoadModel->setup(*zone);
+		}
+		catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error in setup for LWRadBalanceLoadModel for zone with id #%1")
+											.arg(zone->m_id), FUNC_ID);
+		}
+
+		// always put the model first into our central model storage
+		m_modelContainer.push_back(lWRadBalanceLoadModel); // this container now owns the model
+
+		// sort into the state model container
+		registerStateDependendModel(lWRadBalanceLoadModel);
+
+
+		// *** Short wave radiation balance load model ***
+
+		// for each room balance model create a short wave radiation balance load
+		// this collects all short wave radiation fluxes at the windows inside surface and
+		// directs it towards the room
+		SWRadBalanceLoadModel * sWRadBalanceLoadModel = new SWRadBalanceLoadModel(zone->m_id,
+			zone->m_displayName);
+		// initialize heat conduction load model from given construction instance vector
+		try {
+			sWRadBalanceLoadModel->setup(*zone);
+		}
+		catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error in setup for LWRadBalanceLoadModel for zone with id #%1")
+				.arg(zone->m_id), FUNC_ID);
+		}
+
+		// always put the model first into our central model storage
+		m_modelContainer.push_back(sWRadBalanceLoadModel); // this container now owns the model
+
+														   // sort into the state model container ...
+		registerStateDependendModel(sWRadBalanceLoadModel);
+
+
+		// *** CoolingsLoadModel ***
+
+		// for each room balance model create a windows loads model
+		CoolingsLoadModel * coolingsLoadModel = new CoolingsLoadModel(zone->m_id,
+																		zone->m_displayName);
+		// initialize heat conduction load model from object lists vector
+		try {
+			coolingsLoadModel->setup(*zone);
+		}
+		catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error in setup for CoolingsLoadModel for zone with id #%1")
+											.arg(zone->m_id), FUNC_ID);
+		}
+
+		// always put the model first into our central model storage
+		m_modelContainer.push_back(coolingsLoadModel); // this container now owns the model
+
+		// sort into the state model container
+		registerStateDependendModel(coolingsLoadModel);
+
+		// *** HeatingsLoadModel ***
+
+		// for each room balance model create a windows loads model
+		HeatingsLoadModel * heatingsLoadModel = new HeatingsLoadModel(zone->m_id,
+																		zone->m_displayName);
+		// initialize heat conduction load model from object lists vector
+		try {
+			heatingsLoadModel->setup(*zone);
+		}
+		catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error in setup for HeatingsLoadModel for zone with id #%1")
+											.arg(zone->m_id), FUNC_ID);
+		}
+
+		// always put the model first into our central model storage
+		m_modelContainer.push_back(heatingsLoadModel); // this container now owns the model
+
+		// sort into the state model container
+		registerStateDependendModel(heatingsLoadModel);
+
+		// *** User loads model ***
+
+		UsersThermalLoadModel * userLoadsModel =
+			new UsersThermalLoadModel(zone->m_id, zone->m_displayName);
+		// initialize heat conduction load model from object lists vector
+		try {
+			userLoadsModel->setup();
+		}
+		catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error in setup for UsersThermalLoadModel for zone with id #%1")
+											.arg(zone->m_id), FUNC_ID);
+		}
+		// add model to model storage
+		m_modelContainer.push_back(userLoadsModel);
+
+		// sort into the state model container structure
+		registerStateDependendModel(userLoadsModel);
+
+		// *** Equipment loads model ***
+
+		EquipmentLoadModel * equipmentLoadsModel =
+			new EquipmentLoadModel(zone->m_id, zone->m_displayName);
+		// initialize heat conduction load model from object lists vector
+		try {
+			equipmentLoadsModel->setup();
+		}
+		catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error in setup for EquipmentLoadModel for zone with id %1")
+											.arg(zone->m_id), FUNC_ID);
+		}
+		// add model to model storage
+		m_modelContainer.push_back(equipmentLoadsModel);
+
+		// sort into the state model container structure
+		registerStateDependendModel(equipmentLoadsModel);
+
+
+		// *** Lighting loads model ***
+
+		LightingLoadModel * lightingLoadModel =
+			new LightingLoadModel(zone->m_id, zone->m_displayName);
+		// initialize heat conduction load model from object lists vector
+		try {
+			lightingLoadModel->setup();
+		}
+		catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error in setup for LightingLoadModel for zone with id %1")
+											.arg(zone->m_id), FUNC_ID);
+		}
+		// add model to model storage
+		m_modelContainer.push_back(lightingLoadModel);
+
+		// sort into the state model container structure
+		registerStateDependendModel(lightingLoadModel);
+
+
+		// *** Natural ventilation loads model ***
+
+		NaturalVentilationLoadModel * naturalVentilationLoadModel =
+			new NaturalVentilationLoadModel(zone->m_id, zone->m_displayName);
+		// initialize heat conduction load model from object lists vector
+		try {
+			naturalVentilationLoadModel->setup(*zone, m_project);
+		}
+		catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error in setup for NaturalVentilationLoadModel for zone with id %1")
+											.arg(zone->m_id), FUNC_ID);
+		}
+		// add model to model storage
+		m_modelContainer.push_back(naturalVentilationLoadModel);
+
+		// sort into the state model container
+		registerStateDependendModel(naturalVentilationLoadModel);
+
+
+		// *** Air condition load model ***
+
+		AirConditionLoadModel * airConditionLoadModel =
+			new AirConditionLoadModel(zone->m_id, zone->m_displayName);
+		// initialize heat conduction load model from object lists vector
+		try {
+			airConditionLoadModel->setup(*zone, m_project);
+		}
+		catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error in setup for AirConditionLoadModel for zone with id %1")
+				.arg(zone->m_id), FUNC_ID);
+		}
+		// add model to model storage
+		m_modelContainer.push_back(airConditionLoadModel);
+
+		// sort into the state model container
+		registerStateDependendModel(airConditionLoadModel);
+
+
+		// *** Domestic water consumption model ***
+
+		DomesticWaterConsumptionModel * domesticWaterConsumptionModel =
+			new DomesticWaterConsumptionModel(zone->m_id, zone->m_displayName);
+		// initialize heat conduction load model from object lists vector
+		try {
+			domesticWaterConsumptionModel->setup(*zone, m_project->m_simulationParameter);
+		}
+		catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error in setup for NaturalVentilationThermalLoadModel for zone with id %1")
+				.arg(zone->m_id), FUNC_ID);
+		}
+		// add model to model storage
+		m_modelContainer.push_back(domesticWaterConsumptionModel);
+
+		// sort into the state model container
+		registerStateDependendModel(domesticWaterConsumptionModel);
+
+
+		// *** InsideBCWindowsLoadModel ***
+
+		// create a splitting model for radiation loads at all internal surfaces
+		InsideBCWindowsLoadModel * qWindowsLoad = new InsideBCWindowsLoadModel(zone->m_id,
+																			zone->m_displayName);
+		// initialize model
+		qWindowsLoad->setup();
+
+		// add model to model storage
+		m_modelContainer.push_back(qWindowsLoad);
+
+		// register model as state dependend
+		registerStateDependendModel(qWindowsLoad);
+
+		// *** InsideBCLWRadExchangeModel ***
+
+		// create a splitting model for radiation loads at all internal surfaces
+		InsideBCLWRadExchangeModel * qLWRadExchange = new InsideBCLWRadExchangeModel(zone->m_id,
+																zone->m_displayName);
+		// initialize model
+		qLWRadExchange->setup(*zone, m_project->m_parametrizationDefaults);
+
+		// add model to model storage
+		m_modelContainer.push_back(qLWRadExchange);
+
+		// register model as state dependend
+		registerStateDependendModel(qLWRadExchange);
+
+
+		// *** InsideBCSWRadExchangeModel ***
+
+		// create a splitting model for (diffuse) short wave radiation exchange of all internal surfaces
+		InsideBCSWRadExchangeModel * qSWRadExchange = new InsideBCSWRadExchangeModel(zone->m_id,
+			zone->m_displayName);
+		// initialize model
+		qSWRadExchange->setup(*zone, m_project->m_parametrizationDefaults);
+
+		// add model to model storage
+		m_modelContainer.push_back(qSWRadExchange);
+
+		// register model as state dependend
+		registerStateDependendModel(qSWRadExchange);
+
+
+		// *** InsideBCHeatingsLoadModel ***
+
+		// create a splitting model for radiation loads at all internal surfaces
+		InsideBCHeatingsLoadModel * qHeatingsLoad = new InsideBCHeatingsLoadModel(zone->m_id,
+																				zone->m_displayName);
+		// initialize model
+		qHeatingsLoad->setup();
+
+		// add model to model storage
+		m_modelContainer.push_back(qHeatingsLoad);
+
+		// register model as state dependend
+		registerStateDependendModel(qHeatingsLoad);
+
+
+		// *** InsideBCCoolingsLoadModel ***
+
+		// create a splitting model for radiation loads at all internal surfaces
+		InsideBCCoolingsLoadModel * qCoolingsLoad = new InsideBCCoolingsLoadModel(zone->m_id,
+																				zone->m_displayName);
+		// initialize model
+		qCoolingsLoad->setup();
+
+		// add model to model storage
+		m_modelContainer.push_back(qCoolingsLoad);
+
+		// register model as state dependend
+		registerStateDependendModel(qCoolingsLoad);
+
+
+		// *** InsideBCUsersThermalLoadModel ***
+
+		// create a splitting model for radiation loads at all internal surfaces
+		InsideBCUsersThermalLoadModel * qUsersLoad = new InsideBCUsersThermalLoadModel(zone->m_id,
+																				zone->m_displayName);
+		// initialize model
+		qUsersLoad->setup();
+
+		// add model to model storage
+		m_modelContainer.push_back(qUsersLoad);
+
+		// register model as state dependend
+		registerStateDependendModel(qUsersLoad);
+
+		// *** InsideBCEquipmentLoadModel ***
+
+		// create a splitting model for radiation loads at all internal surfaces
+		InsideBCEquipmentLoadModel * qEquipmentLoad = new InsideBCEquipmentLoadModel(zone->m_id,
+																				zone->m_displayName);
+		// initialize model
+		qEquipmentLoad->setup();
+
+		// add model to model storage
+		m_modelContainer.push_back(qEquipmentLoad);
+
+		// register model as state dependend
+		registerStateDependendModel(qEquipmentLoad);
+
+
+		// *** InsideBCLightingsLoadModel ***
+
+		// create a splitting model for radiation loads at all internal surfaces
+		InsideBCLightingsLoadModel * qLightingLoad = new InsideBCLightingsLoadModel(zone->m_id,
+																				zone->m_displayName);
+		// initialize model
+		qLightingLoad->setup();
+
+		// add model to model storage
+		m_modelContainer.push_back(qLightingLoad);
+
+		// register model as state dependend
+		registerStateDependendModel(qLightingLoad);
+
+
+		// *** Moisture sources ***
+
+		if (m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled()) {
+
+			// *** Walls moisture and enthalpy release model ***
+
+			// check for wall moisture calculation
+			ConstructionSolverModel::WallMoistureBalanceCalculationMode wallCalcMode
+				= ConstructionSolverModel::CM_None;
+
+			if (m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled())
+			{
+				const std::string wallModeStr = m_project->m_simulationParameter.m_stringPara[NANDRAD::SimulationParameter::
+					SSP_WALLMOISTUREBALANCECALCULATIONMODE];
+
+				try {
+					wallCalcMode = (ConstructionSolverModel::WallMoistureBalanceCalculationMode)
+						KeywordList::Enumeration("ConstructionSolverModel::WallMoistureBalanceCalculationMode",
+							wallModeStr);
+				}
+				catch (IBK::Exception) {
+					throw IBK::Exception(IBK::FormatString("Unknown value '%1' for string parameter "
+						"'%2' in SimulationParameter tag!")
+						.arg(wallModeStr)
+						.arg(NANDRAD::KeywordList::Keyword("SimulationParameter::stringPara_t",
+							NANDRAD::SimulationParameter::SSP_WALLMOISTUREBALANCECALCULATIONMODE)),
+						FUNC_ID);
+				}
+			}
+
+			WallsMoistureLoadModel * wallsMoistLoadModel =
+				new WallsMoistureLoadModel(zone->m_id, zone->m_displayName);
+			// initialize heat conduction load model from object lists vector
+			try {
+				wallsMoistLoadModel->setup(wallCalcMode);
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, IBK::FormatString("Error in setup for NaturalVentilationMoistureLoadModel "
+					"for zone with id %1")
+					.arg(zone->m_id), FUNC_ID);
+			}
+			// add model to model storage
+			m_modelContainer.push_back(wallsMoistLoadModel);
+
+			// sort into the state model container
+			registerStateDependendModel(wallsMoistLoadModel);
+
+			// *** User mositure sources model ***
+
+
+			MoistureLoadModel * moistLoadModel =
+				new MoistureLoadModel(zone->m_id, zone->m_displayName);
+			// initialize heat conduction load model from object lists vector
+			try {
+				moistLoadModel->setup();
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, IBK::FormatString("Error in setup for UsersMoistureLoadModel for zone with id %1")
+					.arg(zone->m_id), FUNC_ID);
+			}
+			// add model to model storage
+			m_modelContainer.push_back(moistLoadModel);
+
+			// sort into the state model container
+			registerStateDependendModel(moistLoadModel);
+
+			UsersMoistureLoadModel * userMoistLoadModel =
+				new UsersMoistureLoadModel(zone->m_id, zone->m_displayName);
+			// initialize heat conduction load model from object lists vector
+			try {
+				userMoistLoadModel->setup();
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, IBK::FormatString("Error in setup for UsersMoistureLoadModel for zone with id %1")
+					.arg(zone->m_id), FUNC_ID);
+			}
+			// add model to model storage
+			m_modelContainer.push_back(userMoistLoadModel);
+
+			// sort into the state model container
+			registerStateDependendModel(userMoistLoadModel);
+		}
+
+		// *** CO2 sources ***
+
+		if (m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_CO2_BALANCE].isEnabled()) {
+
+			// *** User CO2 emission model ***
+
+			UsersCO2LoadModel * userCO2LoadModel =
+				new UsersCO2LoadModel(zone->m_id, zone->m_displayName);
+			// initialize heat conduction load model from object lists vector
+			try {
+				userCO2LoadModel->setup();
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, IBK::FormatString("Error in setup for UsersCO2LoadModel for zone with id %1")
+					.arg(zone->m_id), FUNC_ID);
+			}
+			// add model to model storage
+			m_modelContainer.push_back(userCO2LoadModel);
+
+			// sort into the state model container
+			registerStateDependendModel(userCO2LoadModel);
+		}
+
+		// *** ScheduledZoneParameterModel ***
+
+		ScheduledZoneParameterModel * scheduledZoneParameterModel =
+			new ScheduledZoneParameterModel;
+		// initialize model
+		scheduledZoneParameterModel->setup(*zone, *m_schedules);
+		// add model to model storage
+		m_modelContainer.push_back(scheduledZoneParameterModel);
+
+		// register model as state dependend
+		registerStateDependendModel(scheduledZoneParameterModel);
+
+		// validity check of parameter names is done inside "initInputReferences" after all models are setup
+
+		// *** ThermalComfortModel ***
+		ThermalComfortModel * thermalComfortModel =
+			new ThermalComfortModel(zone->m_id, zone->m_displayName);
+		// initialize model
+		thermalComfortModel->setup();
+		// add model to model storage
+		m_modelContainer.push_back(thermalComfortModel);
+		// classify model as time dependent
+
+		// register model as state dependend
+		registerStateDependendModel(thermalComfortModel);
+
+
+		// *** EnergyIndicatorModel ***
+		EnergyPerformanceModel * energyPerformanceModel =
+			new EnergyPerformanceModel(zone->m_id, zone->m_displayName);
+		// initialize model
+		energyPerformanceModel->setup(*zone);
+		// add model to model storage
+		m_modelContainer.push_back(energyPerformanceModel);
+		// register model as state dependend
+		registerStateDependendModel(energyPerformanceModel);
+	}
+
+
+	m_nZones = (unsigned int) m_roomBalanceModelContainer.size();
+	IBK::IBK_Message( IBK::FormatString("%1 active zones.\n").arg(m_nZones), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 }
+
 
 void NandradModel::initWallsAndInterfaces()
 {

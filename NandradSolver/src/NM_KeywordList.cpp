@@ -182,7 +182,7 @@ namespace NANDRAD_MODEL {
 	}
 
 	const char * KeywordList::Description(const char * const enumtype, int t, bool * no_description) {
-		if (no_description != nullptr)
+		if (no_description != NULL)
 			*no_description = false; // we are optimistic
 		switch (enum2index(enumtype)) {
 			// Loads::Results
@@ -210,7 +210,7 @@ namespace NANDRAD_MODEL {
 			// Loads::VectorValuedResults
 			case 1 :
 			switch (t) {
-				case 0 : return "Short wave radiation on a given plane.";
+				case 0 : return "Global short wave radiation on a given plane.";
 			} break;
 			// Schedules::Results
 			case 2 :

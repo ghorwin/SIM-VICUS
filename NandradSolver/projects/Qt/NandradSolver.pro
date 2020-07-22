@@ -58,6 +58,8 @@ SOURCES += \
 	../../src/NM_Loads.cpp \
 	../../src/NM_NandradModel.cpp \
 	../../src/NM_QuantityName.cpp \
+	../../src/NM_RoomBalanceModel.cpp \
+	../../src/NM_RoomStatesModel.cpp \
 	../../src/NM_Schedules.cpp \
 	../../src/NM_VectorValuedQuantity.cpp \
 	../../src/NM_VectorValuedQuantityIndex.cpp \
@@ -76,6 +78,8 @@ HEADERS += \
 	../../src/NM_Physics.h \
 	../../src/NM_QuantityDescription.h \
 	../../src/NM_QuantityName.h \
+	../../src/NM_RoomBalanceModel.h \
+	../../src/NM_RoomStatesModel.h \
 	../../src/NM_Schedules.h \
 	../../src/NM_VectorValuedQuantity.h \
 	../../src/NM_VectorValuedQuantityIndex.h
