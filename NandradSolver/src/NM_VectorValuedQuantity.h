@@ -27,14 +27,9 @@ Lesser General Public License for more details.
 
 namespace NANDRAD_MODEL {
 
-//#define DEBUG_OBJECT_SIGNATURE(x) (std::cout << x << std::endl)
-//#undef DEBUG_OBJECT_SIGNATURE
-#define DEBUG_OBJECT_SIGNATURE(x) ;
-
 /*!	\brief Declaration for class SortedUnitList.
 	This class is an extension of the unit list containing index information.
 */
-
 class VectorValuedQuantity: public IBK::UnitVector {
 public:
 

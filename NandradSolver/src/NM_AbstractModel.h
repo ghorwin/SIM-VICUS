@@ -80,11 +80,12 @@ public:
 	*/
 	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const = 0;
 
-	/*! Returns vector of all scalar and vector valued results pointer. */
+	/*! Returns vector of all scalar and vector valued results pointer.
+		\param res Vector with pointers to resulting values.
+	*/
 	virtual void resultValueRefs(std::vector<const double *> &res) const = 0;
 
-	/*! Looks up a result quantity and returns a pointer to the
-		double value memory location.
+	/*! Looks up a result quantity and returns a pointer to the double value memory location.
 		This memory location must be, once reported to the framework, persistant throughout
 		the lifetime of the model object.
 		\return A const pointer to the double, or NULL of no such quantity was found.

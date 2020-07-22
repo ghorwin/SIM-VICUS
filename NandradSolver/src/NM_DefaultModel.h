@@ -50,18 +50,22 @@ public:
 	/*! Returns display name of this model instance. */
 	virtual const std::string &displayName() const override { return m_displayName; }
 
-	/*! Populates the vector resDesc with descriptions of all results provided by this model
-		instance. Vector valued result quantities usually are resized after the
-		initResults()-routine was called. If the result descriptions are requested before
-		initializing the m_vectorValuedResults vector only descriptions without index information
-		are composed.
-		\warning This function generates and populates the vector resDesc from the m_results
-			and m_vectorValuedResults vectors and is not the fastest. If you need to access
-			the reference description several times, consider caching the description vector.
+	/*! Populates the vector resDesc with descriptions of all results based on enumerations Results
+		and VectorValuedResults and the KeywordList.
+		\warning This function generates and populates the vector resDesc using the KeywordList. It includes
+			quite a lot of string operations and, hence, the function is not the fastest. If you need
+			the descriptions several times, you should consider caching the vector.
+		\note Vector valued result quantities usually are resized after the
+			initResults()-routine was called. If the result descriptions are requested before
+			initializing the m_vectorValuedResults vector only descriptions without index information
+			are composed.
 	*/
 	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const override;
 
-	/*! Returns vector of all scalar and vector valued results pointer. */
+	/*! Returns vector of all scalar and vector-valued results pointer.
+		\param res Vector with pointers to resulting values. First the addresses to all m_value members in
+			the m_results vector are added, then the addresses of the vector valued quantities are added.
+	*/
 	virtual void resultValueRefs(std::vector<const double *> &res) const override;
 
 	/*! Looks up a referenced quantity and returns a pointer to the
@@ -100,9 +104,9 @@ protected:
 		resultDescriptions() and resultValueRef() can be called afterwards.
 
 		The default implementation uses the keyword list and expects the
-		enumerations Variables to be present in derived classes. It
-		resizes and fills the m_results and m_vectorValuedResults vectors.
-		It then initializes IBK::Parameters/IBK::UnitLists with name and unit.
+		enumerations Results and VectorValuedResults to be present in derived classes.
+		It resizes and fills the m_results and m_vectorValuedResults vectors.
+		It then initializes IBK::Parameters/IBK::UnitVector with name and unit.
 
 		Suggested default procedure when re-implementing this function:
 

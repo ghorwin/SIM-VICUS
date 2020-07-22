@@ -34,39 +34,42 @@ namespace NANDRAD_MODEL {
 const unsigned int DefaultModel::InvalidVectorIndex = std::numeric_limits<unsigned int>::max();
 
 void DefaultModel::initResults(const std::vector<AbstractModel*> & /* models */) {
-	// retreive all result quantities from quantity description list
+	FUNCID(DefaultModel::initResults);
+
+	// retrieve all result quantities from quantity description list
 	std::vector<QuantityDescription> resDesc;
 
 	resultDescriptions(resDesc);
 	for (unsigned int i = 0; i < resDesc.size(); ++i) {
 
 		const QuantityDescription &desc = resDesc[i];
-		// skip constant descriptions (no quantity is necessary)
-		if (desc.m_constant)
-			continue;
 
+		// check for correct unit
+		IBK::Unit valueUnit;
+		try {
+			valueUnit = IBK::Unit(desc.m_unit);
+		}
+		catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Quantity description '%1' has invalid/undefined unit.")
+								 .arg(desc.m_unit), FUNC_ID);
+		}
+
+		// distinguish between scalar results (no keys and size = 1)
+		// and vector-valued results
 		if (desc.m_size == 1 && desc.m_indexKeys.empty()) {
 			// scalar results are stored as IBK::Parameter
-			m_results.push_back(IBK::Parameter(
-				desc.m_name,
-				0,
-				desc.m_unit));
+			m_results.push_back(IBK::Parameter(desc.m_name, 0, valueUnit));
 		}
 		else  {
-			// vector valued results are stored as IBK::UnitList
-			VectorValuedQuantity quantity(desc.m_name,
-				IBK::Unit(desc.m_unit));
-			// resize quantity
+			// vector valued results are stored as IBK::UnitVector
+			VectorValuedQuantity quantity(desc.m_name, valueUnit);
+			// if index keys are given, resize quantity
 			if (!desc.m_indexKeys.empty()) {
-				const std::vector<VectorValuedQuantityIndex> &indexKeys =
-					desc.m_indexKeys;
-				// tralste into vector
-				std::set<unsigned int> keys;
-				for (unsigned int i = 0; i < indexKeys.size(); ++i) {
-					keys.insert(indexKeys[i].m_keyValue);
-				}
-				quantity.resize(keys, indexKeys.front().m_keyType);
+				IBK_ASSERT(desc.m_indexKeyType != VectorValuedQuantityIndex::NUM_IndexKeyType);
+				quantity.resize(desc.m_indexKeys, desc.m_indexKeyType);
 			}
+			// Mind: index keys may initialy be empty and be populated later
+
 			// store result
 			m_vectorValuedResults.push_back(quantity);
 		}
@@ -77,14 +80,15 @@ void DefaultModel::initResults(const std::vector<AbstractModel*> & /* models */)
 	// numbers or IDs and use this set for resizing.
 }
 
-void DefaultModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 
-	const char * const FUNC_ID = "[DefaultModel::resultDescriptions]";
+void DefaultModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
+	FUNCID(DefaultModel::resultDescriptions);
+
 	// fill result discriptions with informations from the keyword list
 	std::string category = std::string(ModelIDName()) + "::Results";
 
 	try {
-		if(KeywordList::CategoryExists(category.c_str()) ) {
+		if (KeywordList::CategoryExists(category.c_str()) ) {
 			for (unsigned int varIndex = 0; varIndex <= (unsigned int) KeywordList::MaxIndex(category.c_str()); ++varIndex) {
 				bool constant = false;
 				resDesc.push_back( QuantityDescription(
@@ -98,22 +102,22 @@ void DefaultModel::resultDescriptions(std::vector<QuantityDescription> & resDesc
 		// the vector is filled it contains all information about the vector elements
 		// including indices that are occupied.
 		category = std::string(ModelIDName()) + "::VectorValuedResults";
-		if(KeywordList::CategoryExists(category.c_str()) ) {
+		if (KeywordList::CategoryExists(category.c_str()) ) {
 			for (unsigned int varIndex = 0; varIndex <= (unsigned int) KeywordList::MaxIndex(category.c_str()); ++varIndex) {
 				bool constant = false;
 				// retreive index information from vector valued results
-				std::vector<VectorValuedQuantityIndex> indexKeys;
+				std::set<unsigned int> indexKeys;
 				std::vector<std::string> indexKeyDescriptions;
 				// store name, unit and description of the vector quantity
 				const std::string &quantityName = KeywordList::Keyword( category.c_str(), varIndex );
 				const std::string &quantityUnit = KeywordList::Unit( category.c_str(), varIndex );
 				const std::string &quantityDescription = KeywordList::Description( category.c_str(), varIndex );
-				// vector valued quantity descriptions store the description
+				// vector-valued quantity descriptions store the description
 				// of the quantity itself as well as key strings and descriptions
 				// for all vector elements
 				resDesc.push_back( QuantityDescription(
-					quantityName, quantityUnit,quantityDescription,
-					constant,indexKeys, indexKeyDescriptions) );
+					quantityName, quantityUnit, quantityDescription,
+					constant, VectorValuedQuantityIndex::IK_Index, indexKeys) );
 			}
 		}
 	}
@@ -135,14 +139,14 @@ void DefaultModel::resultValueRefs(std::vector<const double *> &res) const {
 
 	for (unsigned int i = 0; i < m_vectorValuedResults.size(); ++i) {
 		// loop over all vector valued results
-		for(std::vector<double>::const_iterator valueIt =
-			m_vectorValuedResults[i].begin();
-			valueIt != m_vectorValuedResults[i].end();
-			++valueIt)
+		for (std::vector<double>::const_iterator valueIt = m_vectorValuedResults[i].begin();
+			valueIt != m_vectorValuedResults[i].end(); ++valueIt)
+		{
 			res.push_back(&(*valueIt));
+		}
 	}
-
 }
+
 
 const double * DefaultModel::resultValueRef(const QuantityName & quantityName) const {
 	//const char * const FUNC_ID ="[DefaultModel::resultValueRef]";

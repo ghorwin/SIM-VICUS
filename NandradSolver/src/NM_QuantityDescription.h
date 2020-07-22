@@ -37,15 +37,14 @@ namespace NANDRAD_MODEL {
 
 /*! Datatype returned by resultDescriptions() and inputReferenceDescriptions(). It contains
 	definitions of result values and input references as name and physical unit. For
-	vector valued results or input references to vector valued target quantities additional
-	vector information (size, indices of occupied vector elements, description string) is provided.
+	vector-valued results or input references to vector-valued target quantities additional
+	vector information (size, indices of occupied vector elements and index key type) is provided.
 */
 struct QuantityDescription {
 
 	QuantityDescription() :
 		m_minMaxValue(std::make_pair<double, double>
-		(-std::numeric_limits<double>::max(), std::numeric_limits<double>::max())),
-		m_size(1)
+		(-std::numeric_limits<double>::max(), std::numeric_limits<double>::max()))
 	{}
 
 	/*! Constructor for scalar valued quantities.*/
@@ -54,17 +53,15 @@ struct QuantityDescription {
 		m_name(name),
 		m_unit(unit),
 		m_description(description),
-		m_minMaxValue(std::make_pair<double, double>
-		(-std::numeric_limits<double>::max(), std::numeric_limits<double>::max())),
-		m_constant(constant),
-		m_size(1)
+		m_minMaxValue(std::make_pair<double, double>(-std::numeric_limits<double>::max(), std::numeric_limits<double>::max())),
+		m_constant(constant)
 	{
 	}
 
 	/*! Constructor for vector valued quantities.*/
 	QuantityDescription(const std::string & name, const std::string & unit, const std::string & description,
-						const bool constant, const std::vector<VectorValuedQuantityIndex> &indexKeys,
-						const std::vector<std::string> &indexKeyDescriptions) :
+						const bool constant, VectorValuedQuantityIndex::IndexKeyType indexKeyType,
+						const std::set<unsigned int> &indexKeys) :
 		m_name(name),
 		m_unit(unit),
 		m_description(description),
@@ -72,11 +69,12 @@ struct QuantityDescription {
 		(-std::numeric_limits<double>::max(), std::numeric_limits<double>::max())),
 		m_constant(constant),
 		m_size((unsigned int) indexKeys.size()),
-		m_indexKeys(indexKeys),
-		m_indexKeyDescriptions(indexKeyDescriptions)
+		m_indexKeyType(indexKeyType),
+		m_indexKeys(indexKeys)
 	{
 	}
 
+#if 0
 	std::vector<VectorValuedQuantityIndex>::iterator find(unsigned int index) {
 		// resize index and index description vectors
 		std::vector<unsigned int> idx;
@@ -109,46 +107,27 @@ struct QuantityDescription {
 		int pos = (int) (it - idx.begin());
 		return m_indexKeys.begin() + pos;
 	}
+#endif
 
 
+	/*! Sets index key type and indexes to initialize vector valued quantity description. */
 	void resize(const std::set<unsigned int> &indexes, VectorValuedQuantityIndex::IndexKeyType keyType) {
-		clear();
-		// resize index and index description vectors
-		for (std::set<unsigned int>::const_iterator
-			it = indexes.begin();
-			it != indexes.end(); ++it)
-		{
-			VectorValuedQuantityIndex indexKey(keyType, *it);
-			m_indexKeys.push_back(indexKey);
-			m_indexKeyDescriptions.push_back(indexKey.toString());
-		}
+		m_indexKeys = indexes;
+		m_indexKeyType = keyType;
 		m_size = indexes.size();
 	}
 
+
+	/*! Resizes index set to given size (using continuous numbering) and sets indexKeyType to IK_Index. */
 	void resize(unsigned int size) {
-		clear();
+		m_indexKeys.clear();
+
 		// resize index and index description vectors
 		for (unsigned int i = 0;  i < size; ++i)
-		{
-			VectorValuedQuantityIndex indexKey(VectorValuedQuantityIndex::IK_Index, i);
-			m_indexKeys.push_back(indexKey);
-			m_indexKeyDescriptions.push_back(indexKey.toString());
-		}
+			m_indexKeys.insert(i);
+
+		m_indexKeyType = VectorValuedQuantityIndex::IK_Index;
 		m_size = size;
-	}
-
-	void clear() {
-		m_size = 0;
-		if (!m_indexKeys.empty())
-			m_indexKeys.clear();
-		if (!m_indexKeyDescriptions.empty())
-			m_indexKeyDescriptions.clear();
-	}
-
-	void indexes(std::vector<unsigned int> &idx) const {
-		idx.clear();
-		for (unsigned int i = 0; i < m_indexKeys.size(); ++i)
-			idx.push_back(m_indexKeys[i].m_keyValue);
 	}
 
 	/*! Declare comparison operator with string to find QuantityDescription by m_name. */
@@ -167,36 +146,17 @@ struct QuantityDescription {
 	/*! Attribute determining whether the quantity is a constant or not. Parameters
 		from project files will always be marked as constant while result quantities from
 		models will be treated as non-constant.*/
-	bool									m_constant;
-	/*! Attributes for vector valued quantities: */
+	bool									m_constant = false;
+
+	// Attributes for vector valued quantities
 	/*! Vector size, = 1 for scalar quantities.*/
-	unsigned int							m_size;
-	/*! Vector of indices for each vector element.*/
-	std::vector<VectorValuedQuantityIndex>	m_indexKeys;
-	/*! Vector of strings that describe each vector element.*/
-	std::vector<std::string>				m_indexKeyDescriptions;
+	unsigned int							m_size = 1;
+	/*! Type of index (id or index) to be used to identify vector elements. */
+	VectorValuedQuantityIndex::IndexKeyType	m_indexKeyType = VectorValuedQuantityIndex::NUM_IndexKeyType;
+	/*! Set of indices for each vector element (size is m_size).*/
+	std::set<unsigned int>					m_indexKeys;
 };
 
-
-/*! Utility functor for finding AbstractStateDependency::QuantityDescription in a vector
-	by its quantity name.
-	\code
-	... = std::find_if(refDescs.begin(), refDescs.end(), FindQuantityDescriptionByName(quantityIDName));
-	\endcode
-*/
-class FindQuantityDescriptionByName {
-public:
-	FindQuantityDescriptionByName(const std::string& name) :
-	  m_name(name)
-	{
-	}
-
-	bool operator()(const QuantityDescription& desc) const {
-		return desc.m_name == m_name;
-	}
-
-	std::string		m_name;
-};
 
 } // namespace NANDRAD_MODEL
 
