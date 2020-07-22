@@ -151,16 +151,43 @@ void Schedules::readXML(const TiXmlElement * element) {
 			const TiXmlElement * c2 = c->FirstChildElement();
 			while (c2) {
 				const std::string & c2Name = c2->ValueStr();
-				if (c2Name != "IBK:LinearSpline")
+				if (c2Name != "ScheduleGroup")
 					throw IBK::Exception(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), FUNC_ID);
-				try {
+
+				const TiXmlAttribute * attrib = TiXmlAttribute::attributeByName(c2, "objectList");
+				if (attrib == nullptr)
+					throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(c2->Row()).arg(
+						"Missing required 'objectList' attribute."), FUNC_ID);
+
+				std::string objectListName = attrib->ValueStr();
+				// ensure that we do not have duplicate definitions
+				if (m_scheduleGroups.find(objectListName) != m_scheduleGroups.end())
+					throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(c2->Row()).arg(
+						"ObjectList '"+objectListName+"' used for multiple ScheduleGroup elements."), FUNC_ID);
+
+				std::vector<NANDRAD::LinearSplineParameter> schedules;
+				// now read all the schedule subtags
+
+				const TiXmlElement * c3 = c2->FirstChildElement();
+				while (c3) {
+					const std::string & c3Name = c3->ValueStr();
+					if (c3Name != "AnnualSchedule")
+						throw IBK::Exception(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c3Name).arg(c3->Row()), FUNC_ID);
+
 					NANDRAD::LinearSplineParameter spl;
-					spl.readXML(c2);
+					try {
+						spl.readXML(c2);
+					}
+					catch (IBK::Exception & ex) {
+						throw IBK::Exception(ex, IBK::FormatString(XML_READ_ERROR).arg(c2->Row())
+											 .arg("Invalid data in 'IBK:LinearSpline' tag."), FUNC_ID);
+					}
+					schedules.push_back(spl);
+
+					c3 = c3->NextSiblingElement();
 				}
-				catch (IBK::Exception & ex) {
-					throw IBK::Exception(ex, IBK::FormatString(XML_READ_ERROR).arg(c2->Row())
-										 .arg("Invalid data in 'IBK:LinearSpline' tag."), FUNC_ID);
-				}
+
+				m_annualSchedules[objectListName] = schedules;
 
 				c2 = c2->NextSiblingElement();
 			}
@@ -217,8 +244,17 @@ TiXmlElement * Schedules::writeXML(TiXmlElement * parent) const {
 	if (!m_annualSchedules.empty()) {
 		TiXmlElement * c = new TiXmlElement("AnnualSchedules");
 		e->LinkEndChild(c);
-		for (const NANDRAD::LinearSplineParameter & s : m_annualSchedules)
-			s.writeXML(e);
+		for (const std::pair<const std::string, std::vector<NANDRAD::LinearSplineParameter> > & svec : m_annualSchedules) {
+			// create tags like
+			// <AnnualSchedule objectList="objectListName">
+			//   ...
+			// </AnnualSchedule>
+			TiXmlElement * g = new TiXmlElement("AnnualSchedule");
+			c->LinkEndChild(g);
+			g->SetAttribute("objectList", svec.first);
+			for (const NANDRAD::LinearSplineParameter & s : svec.second)
+				s.writeXML(g);
+		}
 	}
 
 	return nullptr;

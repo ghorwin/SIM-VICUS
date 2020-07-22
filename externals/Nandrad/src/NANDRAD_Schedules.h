@@ -30,11 +30,10 @@ Lesser General Public License for more details.
 namespace NANDRAD {
 
 /*!	Schedules define purely time-dependent properties.
-	Schedules can be specified as regular schedules based on daily cycles (m_scheduleGroups) and
-	as annual schedules (m_annualSchedules).
 
-	Via object lists the schedules are applied to one or more model objects. Hence, both schedule groups and annual
-	schedules have a m_name member variable that identifies the corresponding object list.
+	Scheduled quantities are associated with models via object lists. The object list
+	names are the keys to the maps m_scheduleGroups and m_annualSchedules.
+
 */
 class Schedules {
 public:
@@ -84,12 +83,11 @@ public:
 
 	/*! Key is object list name, value is vector of schedules. */
 	std::map<std::string, std::vector<Schedule> >							m_scheduleGroups;
-	/*! The LinearSplineParameter has a name, which corresponds to the
-		object list that this scheduled parameter is for.
+	/*! Key is object list name, value is vector of LinearSplineParameter.
+		The LinearSplineParameter has a name, which corresponds to the
+		quantity that this scheduled parameter is for.
 	*/
-	std::vector<NANDRAD::LinearSplineParameter>								m_annualSchedules;
-
-
+	std::map<std::string, std::vector<NANDRAD::LinearSplineParameter> >		m_annualSchedules;
 };
 
 } // namespace NANDRAD
