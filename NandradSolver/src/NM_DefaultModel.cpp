@@ -149,47 +149,44 @@ void DefaultModel::resultValueRefs(std::vector<const double *> &res) const {
 
 
 const double * DefaultModel::resultValueRef(const QuantityName & quantityName) const {
-	//const char * const FUNC_ID ="[DefaultModel::resultValueRef]";
+	// const char * const FUNC_ID ="[DefaultModel::resultValueRef]";
 
 	try {
 		// find corresponding quantity description
-		int quantity = decodeResultType(quantityName.name());
+		int resultsIndex = decodeResultType(quantityName.m_name);
 		// scalar results
-		if (quantity != -1 && quantityName.index() == -1) {
-			if (quantity >= (int)m_results.size())
+		if (resultsIndex != -1 && quantityName.m_index == -1) {
+
+			// check that the index does not exceed available storage memory location
+			if (resultsIndex >= (int)m_results.size())
 				return nullptr;
 
-			// wrong definition
-			IBK_ASSERT_XX(quantityName.index() == -1,
-				IBK::FormatString("Invalid index definition for scalar quantity %1.")
-				.arg(quantityName.name()));
-
-			return &m_results[quantity].value;
+			return &m_results[resultsIndex].value;
 		}
 
 		// a vector valued result
-		quantity = decodeVectorValuedResultType(quantityName.name());
+		resultsIndex = decodeVectorValuedResultType(quantityName.m_name);
 
-		// inbvylid quantity
-		if (quantity == -1)
+		// invalid quantity
+		if (resultsIndex == -1)
 			return nullptr;
 
-		if (quantity >= (int)m_vectorValuedResults.size())
+		if (resultsIndex >= (int)m_vectorValuedResults.size())
 			return nullptr;
 
 		// no index is given
-		if (quantityName.index() == -1) {
+		if (quantityName.m_index == -1) {
 			// return access to the first vector element
-			if (!m_vectorValuedResults[quantity].empty())
-				return &m_vectorValuedResults[quantity].m_data[0];
+			if (!m_vectorValuedResults[resultsIndex].empty())
+				return &m_vectorValuedResults[resultsIndex].m_data[0];
 			return nullptr;
 		}
 		// index definition
 		else {
 			std::vector<double>::const_iterator vecElem =
-				m_vectorValuedResults[quantity].find(quantityName.index());
+				m_vectorValuedResults[resultsIndex].find(quantityName.m_index);
 			// return access to the requested vector element
-			if (vecElem != m_vectorValuedResults[quantity].end())
+			if (vecElem != m_vectorValuedResults[resultsIndex].end())
 				return &(*vecElem);
 			return nullptr;
 		}
@@ -200,9 +197,7 @@ const double * DefaultModel::resultValueRef(const QuantityName & quantityName) c
 }
 
 
-int DefaultModel::decodeResultType(
-	const std::string &quantity) const
-{
+int DefaultModel::decodeResultType(const std::string &quantity) const {
 	//const char * const FUNC_ID = "[DefaultStateDependency::decodeResultType]";
 
 	// first check results
@@ -225,20 +220,17 @@ int DefaultModel::decodeResultType(
 		return -1;
 	}
 
-
-	// vector results are listed in another routine
+	// vector results are tested for in decodeVectorValuedResultType()
 	if (resDescIt->m_size != 1 || !resDescIt->m_indexKeys.empty())
 		return -1;
 
-	int quantityType = (int) (resDescIt - resDesc.begin());
+	int resultsVectorIndex = (int) (resDescIt - resDesc.begin());
 
-	return quantityType;
+	return resultsVectorIndex;
 }
 
 
-int DefaultModel::decodeVectorValuedResultType(
-	const std::string &quantity) const
-{
+int DefaultModel::decodeVectorValuedResultType(const std::string &quantity) const {
 	//const char * const FUNC_ID = "[DefaultStateDependency::decodeResultType]";
 
 	// first check results
@@ -261,16 +253,16 @@ int DefaultModel::decodeVectorValuedResultType(
 		return -1;
 	}
 
-	/// a scalör result
+	// a scalar result
 	if (resDescIt->m_size == 1 && resDescIt->m_indexKeys.empty()) {
 		return -1;
 	}
 
-	int quantityType = (int)(resDescIt - resDesc.begin());
+	int vectorValuedResultsIndex = (int)(resDescIt - resDesc.begin());
 	// vector results are listed after scalar results
-	quantityType -= (int)m_results.size();
+	vectorValuedResultsIndex -= (int)m_results.size();
 
-	return quantityType;
+	return vectorValuedResultsIndex; // this is the index in vector m_vectorValuedResults
 }
 
 

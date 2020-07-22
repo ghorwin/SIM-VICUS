@@ -244,12 +244,12 @@ int Loads::setTime(double t) {
 		//       hence, we do not need to apply cyclic clipping here
 		m_solarRadiationModel.setTime(m_year, t_climate);
 	}
-	catch(IBK::Exception &ex) {
+	catch (IBK::Exception &ex) {
 			throw IBK::Exception(ex, IBK::FormatString("Error setting time at time point %1 inside loads model!")
 				.arg(t), FUNC_ID);
 	}
 
-	// now copy calculated angles to variables vector
+	// now copy calculated angles to variables vector, but mind the base SI unit that we store our values in
 	m_results[R_DeclinationAngle].value			= m_solarRadiationModel.m_sunPositionModel.m_declination;
 	m_results[R_ElevationAngle].value			= m_solarRadiationModel.m_sunPositionModel.m_elevation;
 	m_results[R_AzimuthAngle].value				= m_solarRadiationModel.m_sunPositionModel.m_azimuth;
@@ -263,7 +263,7 @@ int Loads::setTime(double t) {
 	m_results[R_WindVelocity].value				= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::WindVelocity];
 	m_results[R_AirPressure].value				= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::AirPressure];
 
-	// calculate moisture relatied quantities
+	// calculate moisture related quantities
 	const double pSaturation = IBK::f_psat(m_results[R_Temperature].value);
 	const double airTemperature = m_results[R_Temperature].value;
 	const double vaporPressure = m_results[R_RelativeHumidity].value * pSaturation;
@@ -334,27 +334,25 @@ int Loads::setTime(double t) {
 #endif // TODO
 
 
-	if (m_sensorID2surfaceID.empty())
-		return 0; // signal success
+	if (!m_sensorID2surfaceID.empty()) {
+		IBK_ASSERT(m_sensorID2surfaceID.size() == m_vectorValuedResults[VVR_SWRadOnPlane].size());
+		// update all sensor values
+		std::vector<double>::iterator sensorValIt = m_vectorValuedResults[VVR_SWRadOnPlane].begin();
 
-	IBK_ASSERT(m_sensorID2surfaceID.size() == m_vectorValuedResults[VVR_SWRadOnPlane].size());
-	// update all sensor values
-	std::vector<double>::iterator sensorValIt = m_vectorValuedResults[VVR_SWRadOnPlane].begin();
-
-	// loop over all sensors
-	for (std::map<unsigned int, unsigned int>::const_iterator
-		sensorIt = m_sensorID2surfaceID.begin();
-		sensorIt != m_sensorID2surfaceID.end();
-		++sensorIt, ++sensorValIt) {
-		// update value
-		// a sensor: n o shading is considered
-		unsigned int surfaceId = sensorIt->second;
-		// we only need surface id for radiant loads calculation
-		// (surface is equal for all surface with same incidenceAngle)
-		double qRadDir, qRadDiff, incidenceAngle;
-		m_solarRadiationModel.radiationLoad(surfaceId, qRadDir, qRadDiff, incidenceAngle);
-		// store value
-		*sensorValIt = qRadDir + qRadDiff;
+		// loop over all sensors
+		for (std::map<unsigned int, unsigned int>::const_iterator sensorIt = m_sensorID2surfaceID.begin();
+			sensorIt != m_sensorID2surfaceID.end(); ++sensorIt, ++sensorValIt)
+		{
+			// update value
+			// a sensor: no shading is considered
+			unsigned int surfaceId = sensorIt->second;
+			// we only need surface id for radiant loads calculation
+			// (surface is equal for all surface with same incidenceAngle)
+			double qRadDir, qRadDiff, incidenceAngle;
+			m_solarRadiationModel.radiationLoad(surfaceId, qRadDir, qRadDiff, incidenceAngle);
+			// store value
+			*sensorValIt = qRadDir + qRadDiff;
+		}
 	}
 
 	// signal success
@@ -395,81 +393,12 @@ void Loads::resultDescriptions(std::vector<QuantityDescription> & resDesc) const
 	}
 }
 
+
 const double * Loads::resultValueRef(const QuantityName & quantityName) const {
-	/// \todo  check for special namings "SWRadDirect_xxx" and "SWRadDiffuse_xxx"
-
-
 	// otherwise fall back to original implementation
 	return DefaultModel::resultValueRef(quantityName);
 }
 
-
-#if 0
-unsigned int Loads::FMU2Interfaces() const {
-	return FMU2QuantityDescription::ID_Climate;
-}
-
-void Loads::FMU2ExportReference(const QuantityName &targetName,
-	unsigned int &sourceID, int &modelType,
-	QuantityName &quantity, bool &constant) const {
-
-	std::string categoryTarget = "FMU2ExportModel::InputReferences";
-	std::string categorySource = "Loads::Results";
-	// extract quantity
-	IBK_ASSERT(KeywordList::KeywordExists(categoryTarget.c_str(), targetName.name()));
-
-	FMU2ExportModel::InputReferences targetQuantity =
-		(FMU2ExportModel::InputReferences)
-		KeywordList::Enumeration(categoryTarget.c_str(), targetName.name());
-
-	quantity.clear();
-	// decide which quantity to use
-	switch (targetQuantity) {
-	case FMU2ExportModel::InputRef_AmbientAirTemperature:
-		quantity = KeywordList::Keyword(categorySource.c_str(), R_Temperature);
-	break;
-	case FMU2ExportModel::InputRef_AmbientAirRelativeHumidity:
-		quantity = KeywordList::Keyword(categorySource.c_str(), R_RelativeHumidity);
-	break;
-	case FMU2ExportModel::InputRef_DirectRadiationNormal:
-		quantity = KeywordList::Keyword(categorySource.c_str(), R_SWRadDirectNormal);
-	break;
-	case FMU2ExportModel::InputRef_DiffuseRadiationHorizontal:
-		quantity = KeywordList::Keyword(categorySource.c_str(), R_SWRadDiffuseHorizontal);
-	break;
-	case FMU2ExportModel::InputRef_WindVelocity:
-		quantity = KeywordList::Keyword(categorySource.c_str(), R_WindVelocity);
-	break;
-	case FMU2ExportModel::InputRef_WindDirection:
-		quantity = KeywordList::Keyword(categorySource.c_str(), R_WindDirection);
-	break;
-	case FMU2ExportModel::InputRef_LongWaveSkyRadiation:
-		quantity = KeywordList::Keyword(categorySource.c_str(), R_LWSkyRadiation);
-	break;
-	case FMU2ExportModel::InputRef_AzimuthAngle:
-		quantity = KeywordList::Keyword(categorySource.c_str(), R_AzimuthAngle);
-	break;
-	case FMU2ExportModel::InputRef_ElevationAngle:
-		quantity = KeywordList::Keyword(categorySource.c_str(), R_ElevationAngle);
-	break;
-	case FMU2ExportModel::InputRef_AmbientAirPressure:
-		quantity = KeywordList::Keyword(categorySource.c_str(), R_AirPressure);
-	break;
-	case FMU2ExportModel::InputRef_AmbientAirCO2Concentration:
-		quantity = KeywordList::Keyword(categorySource.c_str(), R_CO2Concentration);
-	break;
-	default: break;
-	}
-
-	// no quantity: skip
-	if (quantity.empty())
-		return;
-
-	sourceID = id();
-	modelType = (int) referenceType();
-	constant = false;
-}
-#endif
 
 #if 0
 void Loads::addSurface(unsigned int objectID, double orientation, double inclination) {

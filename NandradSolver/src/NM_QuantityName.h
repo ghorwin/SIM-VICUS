@@ -36,34 +36,20 @@ namespace NANDRAD_MODEL {
 	quantities (target and source).
 */
 class QuantityName {
-
 public:
 	QuantityName() : m_index(-1) { }
 	QuantityName(const std::string &name, int index) :
 		m_name(name), m_index(index) { }
-	QuantityName(const char *name, int index) :
-		m_name(name), m_index(index) { }
-	QuantityName(const char *name, unsigned int index) :
-		m_name(name), m_index((int)index) { }
-	QuantityName(const std::string &name, unsigned int index) :
-		m_name(name), m_index((int)index) { }
-	QuantityName(const std::string &name) : 
+	QuantityName(const std::string &name) :
 		m_name(name), m_index(-1) { }
-	QuantityName(const char *name): 
-		m_name(name), m_index(-1) { }
-	// copy constructor
-	QuantityName(const QuantityName &name) { *this = name; }
 
-	// access to name
-	const std::string &name() const { return m_name; }
-	// access to index
-	int index() const { return m_index; }
-
-	// extract from a given quantity
+	/*! Extract name and possibly index from a given quantity.
+		Possible variants are "Temperature", "Temperature[index=5]" and "Temperature[id=4]"
+	*/
 	void fromEncodedString(const std::string &quantity);
-	// clear name and index
+	/*! Clears name and sets index to -1 (uninitialized/empty). */
 	void clear();
-	// flag indicating an uninialized object
+	/*! Flag indicating an uninialized object (name is empty). */
 	bool empty();
 
 	/*! Compares this instance with another by value and returns true if they differ. */
@@ -71,8 +57,9 @@ public:
 	/*! Compares this instance with another by value and returns true if they are the same. */
 	bool operator==(const QuantityName & other) const { return !operator!=(other); }
 
-private:
+	/*! Quantity identification name without [xx] */
 	std::string		m_name;
+	/*! Index, either -1 for scalar quantity or containing index extracted from qualified name. */
 	int				m_index;
 };
 

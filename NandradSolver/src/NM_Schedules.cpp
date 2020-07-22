@@ -485,7 +485,7 @@ const double * Schedules::resultValueRef(const QuantityName & quantityName) cons
 
 	// search all results for current name
 	for (unsigned int i = 0; i < m_results.size(); ++i) {
-		if (m_results[i].name == quantityName.name())
+		if (m_results[i].name == quantityName.m_name)
 			return &m_results[i].value;
 	}
 
@@ -515,8 +515,8 @@ void Schedules::resultDescriptions(std::vector<QuantityDescription> & resDesc) c
 		keyTarget.fromEncodedString(keyname);
 
 		// check vaidity of target
-		IBK_ASSERT(KeywordList::KeywordExists("Schedules::Results", keyTarget.name()));
-		Results resEnum = (Results) KeywordList::Enumeration("Schedules::Results", keyTarget.name());
+		IBK_ASSERT(KeywordList::KeywordExists("Schedules::Results", keyTarget.m_name));
+		Results resEnum = (Results) KeywordList::Enumeration("Schedules::Results", keyTarget.m_name);
 		// copy description
 		result.m_description = KeywordList::Description("Schedules::Results", resEnum);
 

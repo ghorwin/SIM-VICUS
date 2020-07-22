@@ -44,6 +44,12 @@ namespace NANDRAD_MODEL {
 	Note that Loads only provides time-dependent results and therefore defines all values
 	as parameters rather than variables. For all other models these appear as constants
 	since it is guaranteed that the Loads object is evaluated before any other models.
+
+	The Loads model provides the result values in the Results enumeration, and sensor
+	values defined in VectorValuedResults enum.
+
+	Climatic loads and location data can be addressed for example by : "Location::Temperature"
+	or "Location::SWRadOnPlane[id=2]".
 */
 class Loads : public DefaultModel, public AbstractTimeDependency {
 public:
@@ -75,7 +81,7 @@ public:
 
 	/*! Optional sensor values. */
 	enum VectorValuedResults {
-		VVR_SWRadOnPlane,			// Keyword: SWRadOnPlane				[W/m2]	'Short wave radiation on a given plane.'
+		VVR_SWRadOnPlane,			// Keyword: SWRadOnPlane				[W/m2]	'Global short wave radiation on a given plane.'
 		NUM_VVR
 	};
 
@@ -102,7 +108,10 @@ public:
 	/*! Return unique class ID name of implemented model. */
 	virtual const char * ModelIDName() const override { return "Loads"; }
 
-	/*! Populates the vector resDesc with descriptions of all results provided by this model. */
+	/*! Populates the vector resDesc with descriptions of all results provided by this model.
+		Results are all quantities listed in Results enum, and also a vector-valued quantity
+		SWRadOnPlane with radiation sensor values.
+	*/
 	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const override;
 
 	/*! Retrieves reference pointer to a value with given input reference name. */
