@@ -843,7 +843,7 @@ void CodeGenerator::generateReadWriteCode() {
 										"				try {\n"
 										"					"+einfo.enumType()+" ptype = ("+einfo.enumType()+")KeywordList::Enumeration(\""+einfo.categoryName+"\", p.name);\n"
 										"					m_"+varName2+"[ptype] = p;\n"
-										"					std::string refUnit = KeywordList::Unit(\"SimulationParameter::para_t\", ptype);\n"
+										"					std::string refUnit = KeywordList::Unit(\""+einfo.categoryName+"\", ptype);\n"
 										"					if (!refUnit.empty() && (p.IO_unit.base_id() != IBK::Unit(refUnit).base_id())) {\n"
 										"						throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(c->Row())\n"
 										"											  .arg(\"Incompatible unit '\"+p.IO_unit.name()+\"', expected '\"+refUnit +\"'.\"), FUNC_ID);\n"
