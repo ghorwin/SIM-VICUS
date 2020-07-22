@@ -67,7 +67,7 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Parameter name.*/
+	/*! Parameter name (in context of schedules used as scheduled quantity). */
 	std::string				m_name;
 	/*! Interpolation method to be used when computing values of this spline. */
 	interpolationMethod_t	m_interpolationMethod = I_Linear;
