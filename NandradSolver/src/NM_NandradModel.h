@@ -288,13 +288,13 @@ private:
 	// ***  Solver specification. ***
 
 	/*! Linear equation solver. */
-	SOLFRA::LESInterface									*m_lesSolver;
+	SOLFRA::LESInterface									*m_lesSolver = nullptr;
 	/*! Jacobian. */
-	SOLFRA::JacobianInterface								*m_jacobian;
+	SOLFRA::JacobianInterface								*m_jacobian = nullptr;
 	/*! Preconditioner. */
-	SOLFRA::PrecondInterface								*m_preconditioner;
+	SOLFRA::PrecondInterface								*m_preconditioner = nullptr;
 	/*! Integrator. */
-	SOLFRA::IntegratorInterface								*m_integrator;
+	SOLFRA::IntegratorInterface								*m_integrator = nullptr;
 
 	/*! Sparse matrix indices. */
 	std::vector<unsigned int>								m_ia;
@@ -395,23 +395,22 @@ private:
 	// *** Models and sub-models ***
 
 	/*! Climatic loads calculation model (exists as single instance).
-		\todo Rename to ClimaticLoadsModel
 		This is merely a quick-access pointer to the loads model, but it does
 		not own the model. The Loads model is inserted into m_modelContainer like
 		any other model.
 		\note The loads object is _not_ inserted in the m_stateModelContainer
 			  because it is always evaluated first on each call to setTime().
 	*/
-	Loads													*m_loads;
+	Loads													*m_loads = nullptr;
 
 	/*! Single object/model providing schedules quantities. */
-	Schedules												*m_schedules;
+	Schedules												*m_schedules = nullptr;
 
 
 	// *** STATISTICS ***
 
 	/*! Log file containing realtime, simtime, and gliding average. */
-	std::ostream											*m_progressLog;
+	std::ostream											*m_progressLog = nullptr;
 	/*! Holds seconds elapsed in last run in case solver was continued.
 		This value is normally = 0, except when the solver was restarted. Then, the
 		time needed in the previous run is stored in this variable.

@@ -64,11 +64,7 @@ Lesser General Public License for more details.
 namespace NANDRAD_MODEL {
 
 NandradModel::NandradModel() :
-	m_project(new NANDRAD::Project),
-	m_lesSolver(nullptr),
-	m_jacobian(nullptr),
-	m_preconditioner(nullptr),
-	m_integrator(nullptr)
+	m_project(new NANDRAD::Project)
 {
 }
 
@@ -80,6 +76,7 @@ NandradModel::~NandradModel() {
 	delete m_jacobian;
 	delete m_preconditioner;
 	delete m_integrator;
+	//	delete m_FMU2ModelDescription;
 
 //	for (std::vector<OutputFile*>::iterator it = m_outputFiles.begin();
 //		it != m_outputFiles.end(); ++it)
@@ -96,10 +93,6 @@ NandradModel::~NandradModel() {
 //	{
 //		delete *it;
 //	}
-	delete m_lesSolver;
-	delete m_preconditioner;
-	delete m_integrator;
-//	delete m_FMU2ModelDescription;
 
 	// note: m_loads and m_schedules are only quick-references to the model objects stored
 	//		 in m_modelContainer. They are deleted along with all other generated model objects.
@@ -126,6 +119,7 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 	// *** Create physical model implementation object and initialize with project. ***
 
 	// initialize project data structure with default values
+	// (these values may be overwritten by project data and command line options)
 	m_project->initDefaults();
 
 	// read input data from file
@@ -154,9 +148,9 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 	initSimulationParameter();
 	// *** Initialize Climatic Loads ***
 	initClimateData();
-#if 0
 	// *** Initialize Schedules ***
 	initSchedules();
+#if 0
 	// *** Initialize Global Parameters ***
 	initGlobals();
 	// *** Initialize RoomBalanceModels and ConstantZoneModels ***
@@ -734,6 +728,7 @@ void NandradModel::initSolverParameter(const NANDRAD::ArgsParser & args) {
 	FUNCID(NandradModel::initSolverParameter);
 
 	IBK::IBK_Message( IBK::FormatString("Initializing Solver Parameter\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	IBK::MessageIndentor indent; (void)indent;
 
 	NANDRAD::SolverParameter &solverParameter = m_project->m_solverParameter;
 
@@ -941,8 +936,8 @@ void NandradModel::initClimateData() {
 	try {
 		m_loads = new Loads;
 		// insert loads into model container
-		m_modelContainer.push_back(m_loads); // now owns the model
-											 // insert loads into time model container
+		m_modelContainer.push_back(m_loads);	// now owns the model and handles memory cleanup
+		// insert loads into time model container
 		m_timeModelContainer.push_back(m_loads);
 
 		m_loads->setup(m_project->m_location, m_project->m_simulationParameter,
@@ -963,11 +958,11 @@ void NandradModel::initSchedules() {
 
 	m_schedules = new Schedules;
 	// insert schedules into model container
-	m_modelContainer.push_back(m_schedules); // now owns the model
-											 // insert schedules into model container
-	m_timeModelContainer.push_back(m_schedules); // now owns the model
+	m_modelContainer.push_back(m_schedules); // now owns the model and handles memory cleanup
+	// insert schedules into model container
+	m_timeModelContainer.push_back(m_schedules);
 
-												 // init schedules
+	// init schedules
 	m_schedules->setup(*m_project);
 
 	// schedules model is _not_ registered as time state model, because we manually evaluate it first in setTime()
