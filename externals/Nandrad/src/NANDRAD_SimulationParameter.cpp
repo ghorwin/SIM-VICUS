@@ -32,14 +32,17 @@ namespace NANDRAD {
 
 void SimulationParameter::initDefaults() {
 
-	m_intpara[SIP_YEAR].set( KeywordList::Keyword("SimulationParameter::intpara_t", SIP_YEAR), 2001);
-	m_para[SP_RADIATIONLOADFRACTION].set( KeywordList::Keyword("SimulationParameter::para_t", SP_RADIATIONLOADFRACTION),	 0.5, IBK::Unit("---"));
+	m_para[SP_INITIAL_TEMPERATURE].set( KeywordList::Keyword("SimulationParameter::para_t", SP_INITIAL_TEMPERATURE),	 20, IBK::Unit("C"));
+	m_para[SP_INITIAL_RELATIVE_HUMIDITY].set( KeywordList::Keyword("SimulationParameter::para_t", SP_INITIAL_RELATIVE_HUMIDITY),	 50, IBK::Unit("%"));
+	m_para[SP_RADIATION_LOAD_FRACTION].set( KeywordList::Keyword("SimulationParameter::para_t", SP_RADIATION_LOAD_FRACTION),	 0.5, IBK::Unit("---"));
 	m_para[SP_USERTHERMALRADIATIONFRACTION].set( KeywordList::Keyword("SimulationParameter::para_t", SP_USERTHERMALRADIATIONFRACTION),	 0.3, IBK::Unit("---"));
 	m_para[SP_EQUIPMENTTHERMALLOSSFRACTION].set( KeywordList::Keyword("SimulationParameter::para_t", SP_EQUIPMENTTHERMALLOSSFRACTION),	 0.1, IBK::Unit("---"));
 	m_para[SP_EQUIPMENTTHERMALRADIATIONFRACTION].set( KeywordList::Keyword("SimulationParameter::para_t", SP_EQUIPMENTTHERMALRADIATIONFRACTION),	 0.3, IBK::Unit("---"));
 	m_para[SP_LIGHTINGVISIBLERADIATIONFRACTION].set( KeywordList::Keyword("SimulationParameter::para_t", SP_LIGHTINGVISIBLERADIATIONFRACTION),	 0.18, IBK::Unit("---"));
 	m_para[SP_LIGHTINGTHERMALRADIATIONFRACTION].set( KeywordList::Keyword("SimulationParameter::para_t", SP_LIGHTINGTHERMALRADIATIONFRACTION),	 0.72, IBK::Unit("---"));
 	m_para[SP_DOMESTICWATERHEATGAINFRACTION].set(KeywordList::Keyword("SimulationParameter::para_t", SP_DOMESTICWATERHEATGAINFRACTION), 0.0, IBK::Unit("---"));
+
+	m_intpara[SIP_YEAR].set( KeywordList::Keyword("SimulationParameter::intpara_t", SIP_YEAR), 2001);
 
 	// setting flags to false is normally not necessary, since the function Flag::isEnabled() returns false for undefined flags anyway
 //	m_flags[SF_ENABLE_MOISTURE_BALANCE].set(KeywordList::Keyword("SimulationParameter::flag_t", SF_ENABLE_MOISTURE_BALANCE), false);

@@ -36,7 +36,9 @@ class SimulationParameter {
 public:
 
 	enum para_t {
-		SP_RADIATIONLOADFRACTION,				// Keyword: RadiationLoadFraction				[%]		'Percentage of solar radiation gains attributed direcly to room 0..1.'
+		SP_INITIAL_TEMPERATURE,					// Keyword: InitialTemperature					[C]		'Global initial temperature [C].'
+		SP_INITIAL_RELATIVE_HUMIDITY,			// Keyword: InitialRelativeHumidity				[%]		'Global initial relative humidity [%].'
+		SP_RADIATION_LOAD_FRACTION,				// Keyword: RadiationLoadFraction				[%]		'Percentage of solar radiation gains attributed direcly to room 0..1.'
 		SP_USERTHERMALRADIATIONFRACTION,		// Keyword: UserThermalRadiationFraction		[---]	'Percentage of heat that is emitted by long wave radiation from persons.'
 		SP_EQUIPMENTTHERMALLOSSFRACTION,		// Keyword: EquipmentThermalLossFraction		[---]	'Percentage of energy from equipment load that is not available as thermal heat.'
 		SP_EQUIPMENTTHERMALRADIATIONFRACTION,	// Keyword: EquipmentThermalRadiationFraction	[---]	'Percentage of heat that is emitted by long wave radiation from equipment.'
