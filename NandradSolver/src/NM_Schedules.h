@@ -37,11 +37,6 @@ Lesser General Public License for more details.
 #include "NM_VectorValuedQuantity.h"
 
 namespace NANDRAD {
-	class AnnualSchedules;
-	class Schedules;
-	class Schedule;
-	class SpaceTypes;
-	class DailyCycle;
 	class Project;
 }
 
@@ -56,16 +51,13 @@ namespace NANDRAD_MODEL {
 	be accessed by other models very efficiently. During the initialization, it is checked that:
 	- all schedules have definitions for a full time range (i.e. all days types are covered)
 	- each object list is referenced only once
-
-	Internally, for each scheduled quantity a linear spline vector is created and populated that is evaluated
-	in setTime() during solver runtime.
 */
 class Schedules : public AbstractModel, public AbstractTimeDependency {
 public:
 
 	/*! Available quantities from schedules.
-		\todo Should this enum be moved to NANDRAD::Schedule, since it defines the names
-			allowed in Schedule definitions?
+		While this enum could be moved to NANDRAD::Schedule, we keep it here to reuse DefaultModel implementation
+		for generating QuantityDescriptions.
 	*/
 	enum Results {
 		R_HeatingSetPointTemperature,			// Keyword: HeatingSetPointTemperature				[C]			'Setpoint temperature for heating.'

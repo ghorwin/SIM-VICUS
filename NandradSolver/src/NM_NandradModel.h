@@ -229,6 +229,41 @@ private:
 	void initClimateData();
 	/*! Loads schedule data and creates Schedules + Schedule parameters. */
 	void initSchedules();
+	/*! Initialises all global parameters and models. */
+	void initGlobals();
+	/*! Loads BIM data and creates RoomBalanceModels, Summation and Splitting models. */
+	void initZones();
+	/*! Loads BIM data and creates ConstructionSolverModel, initialises WallSolver, creates
+		ConstructionBCModels (only for active walls and interfaces).*/
+	void initWallsAndInterfaces();
+	/*! Loads BIM data and creates WindowModel.*/
+//	void initEmbeddedObjects();
+	/*! With the knowledge of all available zones and space type remove space type references by zone references
+		inside all object lists.*/
+	void initObjectLists();
+	/*! Connects implicit and explicit models according to input references, calls
+		modelInputReference() of each model. .*/
+	void initModelDependencies();
+	/*! Creates the state model dependency graph, performs a sequencial or cyclic
+		mdoel grouping and fills m_orderedTimeStateDependentSubModels, m_orderedStateDependentSubModels vectors
+		with sorted parallel object groups.*/
+	void initModelGraph();
+	/*! Creates a list of all available output quantities.*/
+	void initOutputReferenceList();
+	/*! Initialises all outputFile - data structures and DataIO containers.
+		\param restart If true, output files are re-opened for writing (and are expected to exist).
+	*/
+	void initOutputs(bool restart);
+	/*! Resizes solution vectors and stores vector offset for wall solver and room solver results.*/
+	void initSolverVariables();
+	/*! Selects information about the discretisation matrix and provide optimal ordering for band matrices,
+		index vector for sparse matrices.*/
+	void initSolverMatrix();
+	/*! Initializes model-specific statistics output files.
+		\param restart If true, the statistics file is opened in append mode.
+	*/
+	void initStatistics(SOLFRA::ModelInterface * modelInterface, bool restart);
+
 
 	/*! Vectors storing sparse matrix pattern (CSR format): number of nonzero elements: */
 	unsigned int nnz() const  { return (unsigned int) m_ja.size(); }

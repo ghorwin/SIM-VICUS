@@ -387,6 +387,9 @@ void Loads::resultDescriptions(std::vector<QuantityDescription> & resDesc) const
 		// vector valued quantity descriptions store the description
 		// of the quantity itself as well as key strings and descriptions
 		// for all vector elements
+
+		// If we this is the result of a radiation sensor, we add ids to the vector value result,
+		// so that lookup is possible via "SWRadOnPlane[id=14]"
 		if (resDesc[i].m_name == KeywordList::Keyword(category.c_str(), VVR_SWRadOnPlane))
 			resDesc[i].resize(sensorIds, VectorValuedQuantityIndex::IK_ModelID);
 	}

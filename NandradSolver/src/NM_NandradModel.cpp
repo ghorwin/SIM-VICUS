@@ -150,25 +150,24 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 	initClimateData();
 	// *** Initialize Schedules ***
 	initSchedules();
-#if 0
 	// *** Initialize Global Parameters ***
 	initGlobals();
 	// *** Initialize RoomBalanceModels and ConstantZoneModels ***
 	initZones();
 	// *** Initialize EnergyPerformanceIndicatorModels ***
-	initZoneLists();
+//	initZoneLists();
 	// *** Remove duplicate construction IDs ***
 	m_project->mergeSameConstructions();
 	// *** Initialize Wall and Construction BC Modules ***
 	initWallsAndInterfaces();
 	// *** Initialize Window Models ***
-	initEmbeddedObjects();
+//	initEmbeddedObjects();
 	// *** Initialize ModelGroups ***
-	initModelGroups();
+//	initModelGroups();
 	// *** Initialize SubModels ***
-	initExplicitModels();
+//	initExplicitModels();
 	// *** Initialize all internal fmus ***
-	initFMUComponents();
+//	initFMUComponents();
 	// *** Initialize Object Lists ***
 	initObjectLists();
 	// *** Setup model dependencies ***
@@ -180,14 +179,13 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 	// *** Initialize outputs ***
 	initOutputs(args.m_restart || args.m_restartFrom);
 	// *** Check validity for all model initial values ***
-	prepareInialModelCalculation();
+//	prepareInitialModelCalculation();
 	// *** Initialize Global Solver ***
 	initSolverVariables();
 	// *** Initialize sparse solver matrix ***
 	initSolverMatrix();
 	// *** Init statistics/feedback output ***
-	initStatistics(modelInterface, args.m_restart);
-#endif
+	initStatistics(this, args.m_restart);
 }
 
 
@@ -966,6 +964,61 @@ void NandradModel::initSchedules() {
 	m_schedules->setup(*m_project);
 
 	// schedules model is _not_ registered as time state model, because we manually evaluate it first in setTime()
+}
+
+void NandradModel::initGlobals()
+{
+
+}
+
+void NandradModel::initZones()
+{
+
+}
+
+void NandradModel::initWallsAndInterfaces()
+{
+
+}
+
+void NandradModel::initObjectLists()
+{
+
+}
+
+void NandradModel::initModelDependencies()
+{
+
+}
+
+void NandradModel::initModelGraph()
+{
+
+}
+
+void NandradModel::initOutputReferenceList()
+{
+
+}
+
+void NandradModel::initOutputs(bool restart)
+{
+
+}
+
+void NandradModel::initSolverVariables()
+{
+
+}
+
+void NandradModel::initSolverMatrix()
+{
+
+}
+
+void NandradModel::initStatistics(SOLFRA::ModelInterface * modelInterface, bool restart)
+{
+
 }
 
 } // namespace NANDRAD_MODEL
