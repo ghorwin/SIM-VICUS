@@ -125,7 +125,7 @@ public:
 
 	/*! Retrieves reference pointer to a value with given quantity ID name.
 		\param quantityName An identifier for the quantity of format '<spaceTypeID>:<quantityID>'
-		\return Returns pointer to memory location with this quantity, otherwise NULL if parameter ID was not found.
+		\return Returns pointer to memory location with this quantity, otherwise nullptr if parameter ID was not found.
 	*/
 	virtual const double * resultValueRef(const QuantityName & quantityName) const override;
 

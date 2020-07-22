@@ -279,7 +279,7 @@ int Loads::setTime(double t) {
 	// calculate shading factors for current time points
 	if (!m_shadingFactorFile.m_filename.str().empty()) {
 
-		IBK_ASSERT(m_startTime != NULL);
+		IBK_ASSERT(m_startTime != nullptr);
 		// correct cyclic time
 		double time = *m_startTime + m_t;
 
@@ -563,7 +563,7 @@ double Loads::qSWRad(unsigned int objectID, double & qRadDir, double & qRadDiff,
 			= m_shadingFactorsForObjectID.find(objectID);
 		// we alread checked validity
 		IBK_ASSERT(valueIt != m_shadingFactorsForObjectID.end());
-		IBK_ASSERT(valueIt->second != NULL);
+		IBK_ASSERT(valueIt->second != nullptr);
 		const double shadingFactor = *valueIt->second;
 		// reduce radiation
 

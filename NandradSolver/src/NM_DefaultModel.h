@@ -75,7 +75,7 @@ public:
 		The function then returns a pointer to the respective memory location.
 		This memory location must be, once reported to the framework, persistant throughout
 		the lifetime of the model object.
-		\return A const pointer to the double, or NULL of no such quantity was found.
+		\return A const pointer to the double, or nullptr of no such quantity was found.
 		\note If a vector quantity is requested without indication of an index, the pointer returned points to
 			the begin of the memory array holding the vector data.
 	*/
