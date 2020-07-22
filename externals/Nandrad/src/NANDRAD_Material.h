@@ -24,6 +24,9 @@ public:
 	NANDRAD_COMP(Material)
 	NANDRAD_COMPARE_WITH_ID
 
+	/*! Returns true, if all parameters are the same (id and displayname are ignored). */
+	bool behavesLike(const Material & other) const;
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique id number. */
