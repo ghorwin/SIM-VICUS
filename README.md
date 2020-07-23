@@ -60,7 +60,7 @@ Example:
 ```
 !!! **never ever** write `getXXX` !!!!!
 
-#### Documentation
+### Documentation
 
 Doxygen-style, prefer:
 
@@ -78,6 +78,18 @@ Doxygen-style, prefer:
 
 Mind to specify **always** physical units for physical value parameters and member variables!
 
+### Git Workflow
+
+Since we are a small team, and we want to have close communication of new features/code changes, and also short code-review cycles, we use a single development branch *master* with the following rules:
+
+- CI is set up and ensures that after each push to *origin/master* the entire code builds without errors - so before pushing your changes, make sure the stuff builds
+- commit/push early and often, this will avoid getting weird merge conflicts and possibly breaking other peoples code
+- when pulling, use *rebase* to get a nice clean commit history (just as with subversion) - makes it easier to track changes and resolve errors arising in a specific commit (see solver regression tests)
+- before pulling (potentially conflicting) changes from *origin/master*, commit all your local changes and ideally get rid of temporary files -> avoid stashing your files, since applying the stash may also give rise to conflicts and not everyone can handle this nicely
+- resolve any conflicts locally in your working directory, and take care not to overwrite other people's code
+- use different commits for different features so that later we can distingish based on commit logs when a certain change was made
+
+For now, try to avoid (lengthy) feature branches, but if you plan to do a larger change and possibly work on the master at the same time, feature branches are the way to go :-)
 
 ### Libraries
 
