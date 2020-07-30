@@ -39,6 +39,14 @@ namespace NANDRAD_MODEL {
 	definitions of result values and input references as name and physical unit. For
 	vector-valued results or input references to vector-valued target quantities additional
 	vector information (size, indices of occupied vector elements and index key type) is provided.
+
+	This description is obtained from each model instance generating results. Since there may be several instances
+	(with different IDs), the actual value reference is obtained by completing this description with
+	type and ID of the generating model instance.
+
+	For example: a RoomStateModel generates an AirTemperature. Since we may have several rooms, each of the room instances
+	will provide a memory slot with the air temperature. So once we have the quantity description, we expand by adding
+	reference type ZONE and ids of the zone to actually 3 value references.
 */
 struct QuantityDescription {
 
@@ -135,13 +143,13 @@ struct QuantityDescription {
 
 	// *** General attributes ***
 
-	/*! Quantity name */
+	/*! Quantity/variable name */
 	std::string								m_name;
 	/*! Quantity unit */
 	std::string								m_unit;
-	/*! Description string for the current quantity */
+	/*! Description string for the current quantity (optional). */
 	std::string								m_description;
-	/*! lower and upper value limit, (-\infty, +\infty) perdefault */
+	/*! Lower and upper value limit, (-\infty, +\infty) perdefault */
 	std::pair<double, double>				m_minMaxValue;
 	/*! Attribute determining whether the quantity is a constant or not. Parameters
 		from project files will always be marked as constant while result quantities from

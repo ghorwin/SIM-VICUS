@@ -30,15 +30,12 @@ Lesser General Public License for more details.
 
 namespace NANDRAD_MODEL {
 
-/*! This class substitutes the NANDRAD::ModelInputReference inside all
-	AbstractStateDependencies.
-	Contrarily to the NANDRAD::ModelInputReference structure it 
-	references just one single id.
+/*! This class substitutes the NANDRAD::ModelInputReference inside all AbstractStateDependencies.
+	Contrarily to the NANDRAD::ModelInputReference structure it references just one single id.
 	Generate a vector of InputReferences from every single
 	ModelInputReference inside the initInputReferences() function as soon
 	as all encoded model instances are common.
 */
-
 class InputReference {
 public:
 	/*! Default constructor. */
@@ -48,19 +45,19 @@ public:
 		m_constant(false)
 	{}
 
-	/*! Target name: name of the input quantity inside the dependend
-		model*/
-	QuantityName									m_targetName;
 	/*! ReferenceType: zone, model or constructionInstance */
 	NANDRAD::ModelInputReference::referenceType_t	m_referenceType;
-	/*! Name of the result quantity inside the referenced model.*/
-	QuantityName									m_sourceName;
 	/*! ID of the referenced source model/parametrization entity.*/
 	unsigned int									m_id;
+	/*! Name of the result quantity inside the referenced model.*/
+	QuantityName									m_sourceName;
 	/*! True, if referenced quantity is to be treated constant during
 		update cycles (essentially prevents adding an evaluation dependency).
 	*/
 	bool											m_constant;
+
+	/*! \deprecated Target name: name of the input quantity inside the dependend model */
+	QuantityName									m_targetName;
 };
 
 } // namespace NANDRAD_MODEL

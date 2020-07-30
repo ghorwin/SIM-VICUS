@@ -32,26 +32,26 @@ namespace NANDRAD_MODEL {
 int RoomBalanceModel::priorityOfModelEvaluation() const {
 	// We have the following model dependency sequence at the end of evaluation stack:
 	// ...
-	// HeatingsLoadModel	  +		WindowModel	      +    LightingLoadModel 	  (at priorityOffsetTail)		
-	//	^	^						^						^									
-	//	|	|						|						|									
+	// HeatingsLoadModel	  +		WindowModel	      +    LightingLoadModel 	  (at priorityOffsetTail)
+	//	^	^						^						^
+	//	|	|						|						|
 	//InsideBCHeatingsLoadModel + WindowsLoadModel + InsideBCLightingsLoadModel
 	//	|	^				^		^						  ^
 	//	|	|				|		|						  |
 	//	InsideBCLWRadExchangeModel + InsideBCWindowsLoadModel |
-	//	|   |				^		 ^						  |					
-	//	|	|				|		 |						  |				
-	//	|   |  LWRadBalanceLoadModel + InsideBCSWRadExchangeModel									
-	//	|	|			    |	^	 ^	 					^									
-	//	|	|			    |	|	 |	  					|									
-	//	|    ConstructionInsideBCModel	  +			SWRadBalanceLoadModel						
-	//	|				^		|		  				    ^									
-	//	|				|		|		   					|									
-	//	|		ConstructionSolverModel 					|									
-	//	|				|		|		   					|									
-	//	|		WallsThermalLoadModel	  					|									
-	//	|				^		|		  					|									
-	//	|				|		|		  					|									
+	//	|   |				^		 ^						  |
+	//	|	|				|		 |						  |
+	//	|   |  LWRadBalanceLoadModel + InsideBCSWRadExchangeModel
+	//	|	|			    |	^	 ^	 					^
+	//	|	|			    |	|	 |	  					|
+	//	|    ConstructionInsideBCModel	  +			SWRadBalanceLoadModel
+	//	|				^		|		  				    ^
+	//	|				|		|		   					|
+	//	|		ConstructionSolverModel 					|
+	//	|				|		|		   					|
+	//	|		WallsThermalLoadModel	  					|
+	//	|				^		|		  					|
+	//	|				|		|		  					|
 	// ********** RoomBalanceModel **********************************************
 	return AbstractStateDependency::priorityOffsetTail + 7;
 }
@@ -71,7 +71,7 @@ void RoomBalanceModel::initResults(const std::vector<AbstractModel*> & models) {
 	// resize m_results from keyword list
 	DefaultModel::initResults(models);
 
-	const IBK::Parameter &RadiationLoadFraction = m_simulationParameter->m_para[NANDRAD::SimulationParameter::SP_RADIATIONLOADFRACTION];
+	const IBK::Parameter &RadiationLoadFraction = m_simulationParameter->m_para[NANDRAD::SimulationParameter::SP_RADIATION_LOAD_FRACTION];
 	// retrieve radiation load fraction from simulation parameter
 	if(RadiationLoadFraction.name.empty() )
 	{
@@ -258,7 +258,7 @@ const double * RoomBalanceModel::resultValueRef(const QuantityName & quantityNam
 	// Here: radiation load fraction
 	if(quantityName== KeywordList::Keyword("RoomBalanceModel::InputReferences",InputRef_RadiationLoadFraction) )
 	{
-		return &m_simulationParameter->m_para[NANDRAD::SimulationParameter::SP_RADIATIONLOADFRACTION].value;
+		return &m_simulationParameter->m_para[NANDRAD::SimulationParameter::SP_RADIATION_LOAD_FRACTION].value;
 	}
 	// Additionally we provide a reference to the solution quantity.
 	// This reference will be accessed by the corresponding RoomStatesModel.
@@ -298,6 +298,7 @@ void RoomBalanceModel::resultDescriptions(std::vector<QuantityDescription> & res
 	resDesc.push_back(result);
 }
 
+#if 0
 void RoomBalanceModel::stateDependencies(std::vector< std::pair<const double *, const double *> > &resultInputValueReferences) const
 {
 	// clear pattern
@@ -321,6 +322,7 @@ void RoomBalanceModel::stateDependencies(std::vector< std::pair<const double *, 
 			std::make_pair(valueRef, inputValue) );
 	}
 }
+#endif
 
 int RoomBalanceModel::update() {
 

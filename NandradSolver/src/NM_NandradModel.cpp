@@ -58,8 +58,15 @@ Lesser General Public License for more details.
 #define NANDRAD_TIMER_YDOT 18
 #endif
 
+// Models
+
 #include "NM_Loads.h"
 #include "NM_Schedules.h"
+#include "NM_RoomStatesModel.h"
+#include "NM_RoomBalanceModel.h"
+#include "NM_OutputFile.h"
+#include "NM_StateModelGroup.h"
+#include "NM_ValueReference.h"
 
 namespace NANDRAD_MODEL {
 
@@ -78,21 +85,21 @@ NandradModel::~NandradModel() {
 	delete m_integrator;
 	//	delete m_FMU2ModelDescription;
 
-//	for (std::vector<OutputFile*>::iterator it = m_outputFiles.begin();
-//		it != m_outputFiles.end(); ++it)
-//	{
-//		delete *it;
-//	}
+	for (std::vector<OutputFile*>::iterator it = m_outputFiles.begin();
+		it != m_outputFiles.end(); ++it)
+	{
+		delete *it;
+	}
 	for (std::vector<AbstractModel*>::iterator it = m_modelContainer.begin();
 		it != m_modelContainer.end(); ++it)
 	{
 		delete *it;
 	}
-//	for (std::set<StateModelGroup*>::iterator it = m_stateModelGroups.begin();
-//		it != m_stateModelGroups.end(); ++it)
-//	{
-//		delete *it;
-//	}
+	for (std::set<StateModelGroup*>::iterator it = m_stateModelGroups.begin();
+		it != m_stateModelGroups.end(); ++it)
+	{
+		delete *it;
+	}
 
 	// note: m_loads and m_schedules are only quick-references to the model objects stored
 	//		 in m_modelContainer. They are deleted along with all other generated model objects.
@@ -123,7 +130,7 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 	m_project->initDefaults();
 
 	// read input data from file
-	IBK::IBK_Message( IBK::FormatString("Reading project file\n"), IBK::MSG_PROGRESS, FUNC_ID, 1);
+	IBK::IBK_Message( IBK::FormatString("Reading project file\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	m_project->readXML(args.m_projectFile);
 
 	// *** Print Out Placeholders ***
@@ -139,10 +146,16 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 		}
 	}
 
-	IBK::IBK_Message( IBK::FormatString("Initializing model\n"), IBK::MSG_PROGRESS, FUNC_ID, 1);
+	// *** Remove duplicate construction IDs ***
+	m_project->mergeSameConstructions();
+
+	// Now, the data model (i.e. m_project) is unmodified structurally in memory and persistant pointers can be stored
+	// to data entries for fast access during simulation.
+
+	IBK::IBK_Message( IBK::FormatString("Initializing model\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK::MessageIndentor indent; (void)indent;
 
-	// *** Initialize simulation parameters ***
+	// *** Initialize solver parameters (and apply command line overrides) ***
 	initSolverParameter(args);
 	// *** Initialize simulation parameters ***
 	initSimulationParameter();
@@ -156,8 +169,6 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 	initZones();
 	// *** Initialize EnergyPerformanceIndicatorModels ***
 //	initZoneLists();
-	// *** Remove duplicate construction IDs ***
-	m_project->mergeSameConstructions();
 	// *** Initialize Wall and Construction BC Modules ***
 	initWallsAndInterfaces();
 	// *** Initialize Window Models ***
@@ -243,7 +254,6 @@ SOLFRA::ModelInterface::CalculationResult NandradModel::setTime(double t) {
 SOLFRA::ModelInterface::CalculationResult NandradModel::setY(const double * y) {
 	// \todo memcpy y -> m_y
 #if 0
-	// all other models depend on the room state, so we update this model first
 	// map input y to model y
 	bool different = false;
 	for (unsigned int i=0; i<m_n; ++i) {
@@ -365,11 +375,10 @@ void NandradModel::writeOutputs(double t_out, const double * y_out) {
 
 
 std::string NandradModel::simTime2DateTimeString(double t) const {
-	return std::string();
 	// add start time offset to t and then call parent function
-//	int startYear = m_project->m_simulationParameter.m_intpara[NANDRAD::SimulationParameter::SIP_YEAR].value;
-//	t += m_project->m_simulationParameter.m_interval.m_para[NANDRAD::Interval::IP_START].value;
-//	return IBK::Time(startYear, t).toShortDateFormat();
+	int startYear = m_project->m_simulationParameter.m_intpara[NANDRAD::SimulationParameter::SIP_YEAR].value;
+	t += m_project->m_simulationParameter.m_interval.m_para[NANDRAD::Interval::IP_START].value;
+	return IBK::Time(startYear, t).toShortDateFormat();
 }
 
 
@@ -540,7 +549,7 @@ SOLFRA::IntegratorInterface * NandradModel::integratorInterface() {
 	else if (m_project->m_solverParameter.m_integrator == NANDRAD::SolverParameter::I_CVODE ||
 		m_project->m_solverParameter.m_integrator == NANDRAD::SolverParameter::NUM_I)
 	{
-		IBK::IBK_Message("Using CVODE integrator.\n", IBK::MSG_PROGRESS, FUNC_ID, 1);
+		IBK::IBK_Message("Using CVODE integrator.\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		SOLFRA::IntegratorSundialsCVODE * integrator = new SOLFRA::IntegratorSundialsCVODE();
 		// set parameters given by Solverparameter section
 		integrator->m_absTol = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_ABSTOL].value;
@@ -848,16 +857,6 @@ void NandradModel::initSolverParameter(const NANDRAD::ArgsParser & args) {
 	if (initialDt.value <= 0)
 		throw IBK::Exception("Invalid parameter for InitialTimeStep in SolverParameter settings.", FUNC_ID);
 
-	if (static_cast<IBK::ArgParser>(args).flagEnabled("report")) {
-		IBK_ASSERT(!m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MIN_DT].name.empty());
-		IBK_ASSERT(!m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_INITIAL_DT].name.empty());
-		m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MIN_DT].value =
-			std::min(m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MIN_DT].value, 1e-08);
-		IBK_ASSERT(!m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MIN_DT].name.empty());
-		m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_INITIAL_DT].value =
-			std::min(m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_INITIAL_DT].value, 1e-04);
-	}
-
 	// *** Define standard behavior if definitions are missing ***
 
 	if (m_project->m_solverParameter.m_integrator != NANDRAD::SolverParameter::I_EXPLICIT_EULER) {
@@ -894,20 +893,21 @@ void NandradModel::initSimulationParameter() {
 	const NANDRAD::SimulationParameter &simPara = m_project->m_simulationParameter;
 
 	// check validity of the parameter data
-	const IBK::Parameter &gammaRad = simPara.m_para[NANDRAD::SimulationParameter::SP_RADIATIONLOADFRACTION];
+	const IBK::Parameter &gammaRad = simPara.m_para[NANDRAD::SimulationParameter::SP_RADIATION_LOAD_FRACTION];
 	if (gammaRad.name.empty()) {
 		throw IBK::Exception(IBK::FormatString("Error initializing wall solver: "
 			"SimulationParameter 'GammaRad' is not defined."), FUNC_ID);
 	}
 
-	// Set simulation interval.
+	// Set simulation interval
+
 	// Simulation time always starts with zero (=solver time).
 	// All models dealing with absolute time reference (climate data and schedules) will
-	// get a time that is shifted by the start time/year offset.
+	// shift the simulation time by the start time/year offset.
 	m_t0  = 0;
 
-	// We always have end time and start time given, as part of the simulation defaults
-	// project file may have different values, but by reading project file, settings cannot be removed.
+	// We always have end time and start time given, as part of the simulation defaults.
+	// Project file may have different values, but by reading project file, settings cannot be removed.
 
 	m_tEnd = simPara.m_interval.m_para[NANDRAD::Interval::IP_END].value -
 		simPara.m_interval.m_para[NANDRAD::Interval::IP_START].value;
@@ -921,7 +921,13 @@ void NandradModel::initSimulationParameter() {
 							 .arg(IBK::Time(startYear, simPara.m_interval.m_para[NANDRAD::Interval::IP_END].value).toDateTimeFormat())
 							 .arg(IBK::Time(startYear, simPara.m_interval.m_para[NANDRAD::Interval::IP_START].value).toDateTimeFormat()), FUNC_ID);
 
-	/// \todo check simulation parameters for meaningful values, since they are user-defined and can be "unsuitable"
+	// check simulation parameters for meaningful values, since they are user-defined and can be "unsuitable"
+
+	if (simPara.m_para[NANDRAD::SimulationParameter::SP_INITIAL_TEMPERATURE].value < 123.15)
+		throw IBK::Exception(IBK::FormatString("Invalid initial temperature %1 in SimulationParameters.")
+							 .arg(simPara.m_para[NANDRAD::SimulationParameter::SP_INITIAL_TEMPERATURE].get_value("C")), FUNC_ID);
+
+	/// \todo other checks
 }
 
 
@@ -938,8 +944,7 @@ void NandradModel::initClimateData() {
 		// insert loads into time model container
 		m_timeModelContainer.push_back(m_loads);
 
-		m_loads->setup(m_project->m_location, m_project->m_simulationParameter,
-			m_project->m_placeholders);
+		m_loads->setup(m_project->m_location, m_project->m_simulationParameter, m_project->m_placeholders);
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Error initializing climatic loads model."), FUNC_ID);
@@ -966,8 +971,8 @@ void NandradModel::initSchedules() {
 	// schedules model is _not_ registered as time state model, because we manually evaluate it first in setTime()
 }
 
-void NandradModel::initGlobals()
-{
+
+void NandradModel::initGlobals() {
 
 }
 
@@ -984,6 +989,7 @@ void NandradModel::initZones() {
 
 	// created models are added to m_stateModelContainer (which owns them)
 	// a reference is also placed in m_roomStateModelContainer, which is used by the
+#if 0
 
 	// remember all zones that require a room state model
 	std::vector<const NANDRAD::Zone*> activeZones;
@@ -994,158 +1000,62 @@ void NandradModel::initZones() {
 
 		IBK::IBK_Message( IBK::FormatString("Zone [%1] '%2' -> %3\n").arg(zone.m_id).arg(zone.m_displayName)
 			.arg( zone.m_type == NANDRAD::Zone::ZT_CONSTANT ? "CONSTANT" : "ACTIVE"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-
 		switch (zone.m_type) {
 			case NANDRAD::Zone::ZT_ACTIVE : {
 				// create implicit room state model
-				RoomBalanceModel * roomBalanceModel = NULL;
-				RoomStatesModel * roomStatesModel = NULL;
-
-				// invalid request for CO2 balance without conmsideriung moisture balance
-				if (!m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled()
-					&& m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_CO2_BALANCE].isEnabled()) {
-					throw IBK::Exception(IBK::FormatString("CO2 balance may only be activied in combiniation with moisture balance!"),
-						FUNC_ID);
-				}
-				// heat and moisture and CO2 balance
-				if (m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled() &&
-					m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_CO2_BALANCE].isEnabled()) {
-					roomBalanceModel = new RoomBalanceMoistureAndCO2Model(zone.m_id, zone.m_displayName);
-					roomStatesModel = new RoomStatesMoistureAndCO2Model(zone.m_id, zone.m_displayName);
-				}
-				// heat and moisture balance
-				else if (m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled()) {
-					roomBalanceModel = new RoomBalanceMoistureModel(zone.m_id, zone.m_displayName);
-					roomStatesModel = new RoomStatesMoistureModel(zone.m_id, zone.m_displayName);
-				}
-				// single heat balance
-				else {
-					roomBalanceModel = new RoomBalanceModel(zone.m_id, zone.m_displayName);
-					roomStatesModel = new RoomStatesModel(zone.m_id, zone.m_displayName);
-				}
+				RoomBalanceModel * roomBalanceModel = new RoomBalanceModel(zone.m_id, zone.m_displayName);
+				RoomStatesModel * roomStatesModel = new RoomStatesModel(zone.m_id, zone.m_displayName);
 
 				// initialize room state model
 				try {
 					roomBalanceModel->setup(simPara);
 				}
 				catch (IBK::Exception & ex) {
-					throw IBK::Exception(ex, IBK::FormatString("Error in setup for #%1 for zone with id #%2")
+					throw IBK::Exception(ex, IBK::FormatString("Error in setup of model '%1' for zone #%2 '%3'")
 						.arg(roomBalanceModel->ModelIDName())
-						.arg(zone.m_id), FUNC_ID);
+						.arg(zone.m_id).arg(zone.m_displayName), FUNC_ID);
 				}
 
 				// always put the model first into our central model storage
 				m_modelContainer.push_back(roomBalanceModel); // this container now owns the model
-																// sort into the state model container ...
-				registerStateDependendModel(roomBalanceModel);
-				m_stateModelContainer.push_back(roomBalanceModel);
-
-				// initialize room state model
-				try {
-					roomStatesModel->setup(zone, defaultPara);
-				}
-				catch (IBK::Exception & ex) {
-					throw IBK::Exception(ex, IBK::FormatString("Error in setup for #%1 for zone with id #%2")
-						.arg(roomStatesModel->ModelIDName())
-						.arg(zone.m_id), FUNC_ID);
-				}
-
 				// also remember this model in the container with room state models m_roomBalanceModelContainer
 				// because we need to call ydot().
 				m_roomBalanceModelContainer.push_back(roomBalanceModel);
+
+				// sort into the state model container ...
+//				registerStateDependendModel(roomBalanceModel);
+//				m_stateModelContainer.push_back(roomBalanceModel);
+
+				// initialize room state model
+				try {
+					roomStatesModel->setup(zone);
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception(ex, IBK::FormatString("Error in setup of model '%1' for zone #%2 '%3'")
+						.arg(roomBalanceModel->ModelIDName())
+						.arg(zone.m_id).arg(zone.m_displayName), FUNC_ID);
+				}
+
 
 				// always put the model first into our central model storage
 				m_modelContainer.push_back(roomStatesModel); // this container now owns the model
 
 																// sort into the state model container - this model only
 																// provides references to y and constant project parameters
-				registerStateDependendModel(roomStatesModel);
+//				registerStateDependendModel(roomStatesModel);
 
 				// also remember this model in the container with room state models m_roomBalanceModelContainer
 				// because we need to call yInitial().
 				m_roomStatesModelContainer.push_back(roomStatesModel);
 				// remember current zone
 				activeZones.push_back(&zone);
-
-			} break;
-
-
-			case NANDRAD::Zone::ZT_DETAILED :
-			{
-				// create implicit room state model
-				RoomBalanceModel * roomBalanceModel = NULL;
-				RoomStatesModel * roomStatesModel = NULL;
-
-				// only CO2 in combination with moisture balance is allowed
-				if (!m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled()
-					&& m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_CO2_BALANCE].isEnabled()) {
-					throw IBK::Exception(IBK::FormatString("CO2 balance may only be activied in combiniation with moisture balance!"),
-						FUNC_ID);
-				}
-				// heat, moisture and CO2 balance
-				if (m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled()
-					&& m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_CO2_BALANCE].isEnabled()) {
-					roomBalanceModel = new RoomBalanceMoistureAndCO2Model(zone.m_id, zone.m_displayName);
-					roomStatesModel = new RoomStatesMoistureAndCO2Model(zone.m_id, zone.m_displayName);
-				}
-				// heat and moisture balance
-				else if (m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled()) {
-					roomBalanceModel = new RoomBalanceMoistureModel(zone.m_id, zone.m_displayName);
-					roomStatesModel = new RoomStatesMoistureModel(zone.m_id, zone.m_displayName);
-				}
-				// single heat balance
-				else {
-					roomBalanceModel = new RoomBalanceModel(zone.m_id, zone.m_displayName);
-					roomStatesModel = new RoomStatesModel(zone.m_id, zone.m_displayName);
-				}
-
-				// initialize room state model
-				try {
-					roomBalanceModel->setup(simPara);
-				}
-				catch (IBK::Exception & ex) {
-					throw IBK::Exception(ex, IBK::FormatString("Error in setup for RoomBalanceModel for zone with id #%1")
-						.arg(zone.m_id), FUNC_ID);
-				}
-
-				// always put the model first into our central model storage
-				m_modelContainer.push_back(roomBalanceModel); // this container now owns the model
-				// sort into the state model container
-				registerStateDependendModel(roomBalanceModel);
-
-				// initialize room state model
-				try {
-					roomStatesModel->setup(zone, defaultPara);
-				}
-				catch (IBK::Exception & ex) {
-					throw IBK::Exception(ex, IBK::FormatString("Error in setup for RoomStatesModel for zone with id #%1")
-						.arg(zone.m_id), FUNC_ID);
-				}
-
-				// also remember this model in the container with room state models m_roomBalanceModelContainer
-				// because we need to call ydot().
-				m_roomBalanceModelContainer.push_back(roomBalanceModel);
-
-				// always put the model first into our central model storage
-				m_modelContainer.push_back(roomStatesModel); // this container now owns the model
-
-																// sort into the state model container - this model only
-																// provides references to y and constant project parameters
-				registerStateDependendModel(roomStatesModel);
-
-				// also remember this model in the container with room state models m_roomBalanceModelContainer
-				// because we need to call yInitial().
-				m_roomStatesModelContainer.push_back(roomStatesModel);
-
-				// remember current zone
-				activeZones.push_back(&zone);
-
 			} break;
 
 
 			// initialise a constant zone model
 			case NANDRAD::Zone::ZT_CONSTANT :
 			{
+#if 0
 				// create implicit room state model
 				ConstantZoneModel * constantZoneModel = NULL;
 
@@ -1173,11 +1083,13 @@ void NandradModel::initZones() {
 
 				// sort into the state model container
 				registerStateDependendModel(constantZoneModel);
-
+#endif
 			} break;
+
 
 			case NANDRAD::Zone::ZT_GROUND:
 			{
+#if 0
 				// create implicit room state model
 				GroundZoneModel * groundZoneModel = NULL;
 
@@ -1203,6 +1115,7 @@ void NandradModel::initZones() {
 				m_modelContainer.push_back(groundZoneModel); // this container now owns the model
 				// register model as time dependend
 				m_timeModelContainer.push_back(groundZoneModel);
+#endif
 			} break;
 
 			case NANDRAD::Zone::NUM_ZT :
@@ -1211,7 +1124,7 @@ void NandradModel::initZones() {
 													.arg(zone.m_id), FUNC_ID);
 		} // switch
 	} // for (Zones)
-
+#if 0
 	// create model instances for all loads of the given _active_ zones
 	for (unsigned int i=0; i<activeZones.size(); ++i) {
 
@@ -1717,6 +1630,8 @@ void NandradModel::initZones() {
 		registerStateDependendModel(energyPerformanceModel);
 	}
 
+#endif
+#endif
 
 	m_nZones = (unsigned int) m_roomBalanceModelContainer.size();
 	IBK::IBK_Message( IBK::FormatString("%1 active zones.\n").arg(m_nZones), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
@@ -1728,13 +1643,508 @@ void NandradModel::initWallsAndInterfaces()
 
 }
 
+
+void NandradModel::initEmbeddedObjects() {
+
+}
+
+
 void NandradModel::initObjectLists()
 {
 
 }
 
-void NandradModel::initModelDependencies()
-{
+void NandradModel::initModelDependencies() {
+	FUNCID(NandradModel::initModelDependencies);
+
+	// *** complete initialization for all models ***
+
+	// prepare for parallelization - get number of threads and prepare thread-storage vectors
+#if defined(_OPENMP)
+	// for openMP we need to collect vector within each loop and merge them into the central map together - this avoids synchronization overhead during runtime
+	// since each thread can operate in its own memory vector
+	std::vector<std::vector<std::pair<ValueReference, AbstractModel*> > > modelResultReferencesVec(m_numThreads);
+	std::vector<std::vector<std::pair<ValueReference, AbstractStateDependency*> > > modelInputReferencesVec(m_numThreads);
+	std::vector<std::string> threadErrors(m_numThreads);
+#endif
+
+	IBK::StopWatch timer;
+
+	// *** initializing model results ***
+
+	IBK::IBK_Message(IBK::FormatString("Initializing all model results\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+
+	// maps result variable and model that generates this variable; ValueReference
+
+	// The key is of type ValueReference, a simply class that identifies a variable based on reference type and id
+	// (both addressing an object) and variable name (identifying the variable of the object).
+	// The map can be used to quickly find the object the holds a required result variable.
+	std::map<ValueReference, AbstractModel*> modelResultReferences;
+
+#pragma omp parallel for schedule(static,200)
+	for (int i = 0; i < (int)m_modelContainer.size(); ++i) { // omp loop variables must be int's for Visual Studio
+
+		// progress is handled by master thread only
+#if defined(_OPENMP)
+		if (omp_get_thread_num()==0) {
+#else
+		{
+#endif
+			if (timer.intervalCompleted()) // side-effect guarded by _OPENMP ifdef
+				IBK::IBK_Message(IBK::FormatString("  Loop 1: %1 %% done\n").arg(i*100.0 / m_modelContainer.size()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		} // end master section
+
+		// currentModel is the model that we current look up input references for
+		AbstractModel * currentModel = m_modelContainer[i];
+		try {
+			// let models initialize their results, i.e. generate information on computed results
+			currentModel->initResults(m_modelContainer);
+
+			// ask model implementation for published results
+			std::vector<QuantityDescription> resDescs;
+			currentModel->resultDescriptions(resDescs);
+			// now
+			for (unsigned int j = 0; j < resDescs.size(); ++j) {
+				const QuantityDescription &resDesc = resDescs[j];
+				// we only register base name (also for vector valued quantities)
+				ValueReference resRef;
+				resRef.m_id = currentModel->id();
+				resRef.m_referenceType = currentModel->referenceType();
+				resRef.m_name = resDesc.m_name;
+
+				IBK_ASSERT(modelResultReferences.find(resRef) ==
+					modelResultReferences.end());
+
+#if defined(_OPENMP)
+				// store in thread-specific vector
+				modelResultReferencesVec[omp_get_thread_num()].push_back(std::make_pair(resRef, currentModel));
+#else
+				// single-core run, store directly in map
+				modelResultReferences[resRef] = currentModel;
+#endif
+
+			}
+		}
+		catch (IBK::Exception &ex) {
+#if defined(_OPENMP)
+			threadErrors[omp_get_thread_num()] += ex.msgStack() + "\n" + IBK::FormatString("Error initializing results "
+																						   "for model #%1 with id #%2!\n")
+																						   .arg(currentModel->ModelIDName())
+																						   .arg(currentModel->id()).str();
+#else
+			throw IBK::Exception(ex, IBK::FormatString("Error initializing results "
+				"for model #%1 with id #%2!")
+				.arg(currentModel->ModelIDName())
+				.arg(currentModel->id()),
+				FUNC_ID);
+#endif // _OPENMP
+		}
+	} // end - pragma parallel omp for
+
+#if defined(_OPENMP)
+	// error checking
+	for (int i=0; i<m_numThreads; ++i)
+		if (!threadErrors[i].empty()) {
+			throw IBK::Exception(threadErrors[i], FUNC_ID);
+		}
+
+	// merge thread-specific vectors into global map
+	for (unsigned int i=0; i<(unsigned int)m_numThreads; ++i) {
+		IBK::IBK_Message(IBK::FormatString("  Loop 1: merging %1 model result references from thread #%2\n")
+						 .arg(modelResultReferencesVec[i].size()).arg(i), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		for (unsigned int j=0; j<modelResultReferencesVec[i].size(); ++j)
+			modelResultReferences[ modelResultReferencesVec[i][j].first] = modelResultReferencesVec[i][j].second;
+	}
+#endif
+
+
+	// *** initializing model input references ***
+
+	std::map<ValueReference, AbstractStateDependency*> modelInputReferences;
+	IBK::IBK_Message(IBK::FormatString("Initializing all model input references\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+#pragma omp parallel for schedule(static,200)
+	for (int i = 0; i < (int) m_modelContainer.size(); ++i) {
+		// progress is handled by master thread only
+#if defined(_OPENMP)
+		if (omp_get_thread_num()==0) {
+#else
+		{
+#endif
+			if (timer.intervalCompleted()) // side-effect guarded by _OPENMP ifdef
+				IBK::IBK_Message(IBK::FormatString("  Loop 2: %1 %% done\n").arg(i*100.0 / m_modelContainer.size()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		} // end master section
+
+		AbstractModel * currentModel = m_modelContainer[i];
+		// currentModel is the model that we current look up input references for
+		AbstractStateDependency * currentStateDependency = dynamic_cast<AbstractStateDependency *> (m_modelContainer[i]);
+		// skip all models that are not states dependend
+		if (currentStateDependency == NULL)
+			continue;
+
+		try {
+			currentStateDependency->initInputReferences(m_modelContainer);
+
+			// insert input references
+			std::vector<QuantityDescription> inputDescs;
+			currentStateDependency->inputReferenceDescriptions(inputDescs);
+			for (unsigned int j = 0; j < inputDescs.size(); ++j) {
+				const QuantityDescription &inputDesc = inputDescs[j];
+				// we only register base name (also for vector valued quantities)
+				ValueReference inputRef;
+				inputRef.m_id = m_modelContainer[i]->id();
+				inputRef.m_referenceType = m_modelContainer[i]->referenceType();
+				inputRef.m_name = inputDesc.m_name;
+				inputRef.m_unit = inputDesc.m_unit;
+
+#if defined(_OPENMP)
+				modelInputReferencesVec[omp_get_thread_num()].push_back(std::make_pair(inputRef, currentStateDependency));
+#else
+				modelInputReferences[inputRef] = currentStateDependency;
+#endif
+			}
+		}
+		catch (IBK::Exception &ex) {
+			/// \todo OpenMP error handling! For now, solver will simply hang when error occurs
+			throw IBK::Exception(ex, IBK::FormatString("Error initializing input references "
+				"for model #%1 with id #%2!")
+				.arg(currentModel->ModelIDName())
+				.arg(currentModel->id()),
+				FUNC_ID);
+		}
+	} // end - pragma parallel omp for
+
+#if defined(_OPENMP)
+	for (unsigned int i=0; i<(unsigned int)m_numThreads; ++i) {
+		for (unsigned int j=0; j<modelInputReferencesVec[i].size(); ++j)
+			modelInputReferences[ modelInputReferencesVec[i][j].first] = modelInputReferencesVec[i][j].second;
+	}
+#endif
+
+	// *** create input references from implicit model feedbacks ***
+
+	IBK::IBK_Message(IBK::FormatString("Initializing all implicit model feedback references (%1 models)\n")
+		.arg(m_modelContainer.size()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+
+	std::set<ValueReference> overwritingFeedbacks;
+
+	int explicitModelCount = 0;
+
+	for (unsigned int i = 0; i < m_modelContainer.size(); ++i) {
+		// currentModel is the model to which we set the input references
+		AbstractModel *currentModel = m_modelContainer[i];
+		AbstractGenericModel *explicitModel = dynamic_cast<AbstractGenericModel*>(currentModel);
+
+		if (explicitModel == NULL)
+			continue;
+
+		++explicitModelCount;
+
+		try {
+			// retrieve implicit model feedback vector
+			std::vector<ImplicitModelFeedback> implicitModelFeedbacks;
+
+			explicitModel->implicitModelFeedbacks(implicitModelFeedbacks);
+
+			for (unsigned int feedback = 0; feedback < implicitModelFeedbacks.size(); ++feedback) {
+				const ImplicitModelFeedback &implicitModelFeedback =
+					implicitModelFeedbacks[feedback];
+
+				// find the corresponding model
+				ValueReference valueRef;
+				valueRef.m_id = implicitModelFeedback.m_id;
+				valueRef.m_referenceType = implicitModelFeedback.m_referenceType;
+
+				// target quantity does not contain vector index
+				valueRef.m_name = implicitModelFeedback.m_targetName.name();
+
+				// check if we have an overwriting feedback
+				if (implicitModelFeedback.m_operation == NANDRAD::ImplicitModelFeedback::IFO_OVERWRITE) {
+					// overwriting feedbacks may only be defined once
+					if (overwritingFeedbacks.find(valueRef) != overwritingFeedbacks.end()) {
+						throw IBK::Exception(IBK::FormatString("Duplicate ImplicitModelFeedback to target '%1' "
+							"of #%2 with id #%3: Operation 'Overwrite' allows adressing only once!")
+							.arg(valueRef.m_name)
+							.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",
+								valueRef.m_referenceType))
+							.arg(valueRef.m_id),
+							FUNC_ID);
+					}
+					// store feedback
+					overwritingFeedbacks.insert(valueRef);
+				}
+
+				std::map<ValueReference, AbstractStateDependency*>::iterator refIt =
+					modelInputReferences.find(valueRef);
+
+				bool resolved = false;
+
+				// and set resolved attribute
+				if (refIt != modelInputReferences.end()) {
+					resolved = refIt->second->registerInputReference(implicitModelFeedback.m_sourceId,
+						implicitModelFeedback.m_sourceReferenceType,
+						implicitModelFeedback.m_sourceName, implicitModelFeedback.m_targetName,
+						implicitModelFeedback.m_operation);
+				}
+
+				// error: we did not find a model for current feedback
+				if (!resolved) {
+					throw IBK::Exception(IBK::FormatString("Missing quantity %1 in "
+						"%2 model with id #%3!")
+						.arg(implicitModelFeedback.m_targetName.name())
+						.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",
+							implicitModelFeedback.m_referenceType))
+						.arg(implicitModelFeedback.m_id),
+						FUNC_ID);
+				}
+			}
+		}
+		catch (IBK::Exception &ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error resolving implicit model feedback "
+				"for model #%1 with id #%2!")
+				.arg(currentModel->ModelIDName())
+				.arg(currentModel->id()),
+				FUNC_ID);
+		}
+	}
+	IBK::IBK_Message(IBK::FormatString("Processed %1 explicit models\n").arg(explicitModelCount), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+
+
+	// *** create input references for FMU import export model (only imported quantities) ***
+
+	// retrieve implicit model feedback vector
+	std::vector<ImplicitModelFeedback> implicitModelFeedbacksFMU;
+	m_FMU2ImportModel->implicitModelFeedbacks(implicitModelFeedbacksFMU);
+	if (!implicitModelFeedbacksFMU.empty())
+		IBK::IBK_Message(IBK::FormatString("Initializing all references due to FMU import\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+
+	for (unsigned int feedback = 0; feedback < implicitModelFeedbacksFMU.size(); ++feedback) {
+		const ImplicitModelFeedback &implicitModelFeedback =
+			implicitModelFeedbacksFMU[feedback];
+
+		try {
+			// retrieve quantity
+			const QuantityName &sourceQuantity = implicitModelFeedback.m_sourceName;
+			const QuantityName &targetQuantity = implicitModelFeedback.m_targetName;
+			const NANDRAD::ImplicitModelFeedback::operation_t operation
+				= implicitModelFeedback.m_operation;
+			const NANDRAD::ModelInputReference::referenceType_t sourceReferenceType
+				= implicitModelFeedback.m_sourceReferenceType;
+			unsigned int sourceId = implicitModelFeedback.m_sourceId;
+
+			// find the corresponding model
+			ValueReference valueRef;
+			valueRef.m_id = implicitModelFeedback.m_id;
+			valueRef.m_referenceType = implicitModelFeedback.m_referenceType;
+			// target quantity does not contain vector index
+			valueRef.m_name = targetQuantity.name();
+
+			std::map<ValueReference, AbstractStateDependency*>::iterator refIt =
+				modelInputReferences.find(valueRef);
+
+			bool resolved = false;
+
+			// and set resolved attribute
+			if (refIt != modelInputReferences.end()) {
+				resolved = refIt->second->registerInputReference(sourceId,
+					sourceReferenceType, sourceQuantity, targetQuantity, operation);
+			}
+
+			// error: we did not find a model for current feedback
+			if (!resolved) {
+				throw IBK::Exception(IBK::FormatString("Missing quantity %1 in "
+					"%2 model with id #%3!")
+					.arg(implicitModelFeedback.m_targetName.name())
+					.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",
+						implicitModelFeedback.m_referenceType))
+					.arg(implicitModelFeedback.m_id),
+					FUNC_ID);
+			}
+		}
+		catch (IBK::Exception &ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error resolving implicit model feedback "
+				"for model #%1 with id #%2!")
+				.arg(m_FMU2ImportModel->ModelIDName())
+				.arg(m_FMU2ImportModel->id()),
+				FUNC_ID);
+		}
+	}
+
+
+	// *** resolve input references: set value references to other model results and connect model dependencies ***
+
+	IBK::IBK_Message(IBK::FormatString("Resolving inter-model dependencies\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+
+
+	// process all models - use dynamic scheduling, since we have non-linear complexity
+#pragma omp parallel for schedule(static,10)
+	for (int i = 0; i < (int) m_modelContainer.size(); ++i) {
+		// progress is handled by master thread only
+#if defined(_OPENMP)
+		if (omp_get_thread_num()==0) {
+#else
+		{
+#endif
+			if (timer.intervalCompleted()) {
+				IBK::IBK_Message(IBK::FormatString("  Loop 3: %1 %% done\n").arg(i*100.0 / m_modelContainer.size()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+			}
+		} // end master section
+
+		// currentModel is the model that we current look up input references for
+		AbstractModel * currentModel = m_modelContainer[i];
+		AbstractStateDependency * currentStateDependency = dynamic_cast<AbstractStateDependency*>(m_modelContainer[i]);
+
+		// skip all pure time dependend models
+		if (currentStateDependency == NULL)
+			continue;
+
+		try {
+
+			// retrieve list of model references
+			std::vector<InputReference> inputReferences;
+			currentStateDependency->inputReferences(inputReferences);
+
+			IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("  %1[%2] has %3 input references:\n")
+				.arg(currentModel->ModelIDName())
+				.arg(currentModel->id())
+				.arg((unsigned int)inputReferences.size()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
+
+			// store all input reference descriptions
+			std::vector<QuantityDescription> inputDescs;
+			currentStateDependency->inputReferenceDescriptions(inputDescs);
+
+			// process all model input references (j is the index of the currently processed input reference)
+			for (unsigned int j = 0; j < inputReferences.size(); ++j) {
+
+				const InputReference &inputRef = inputReferences[j];
+				const QuantityName &targetQuantity = inputRef.m_targetName;
+				const QuantityName &sourceQuantity = inputRef.m_sourceName;
+
+
+				// find the corresponding model
+				ValueReference valueRef;
+				valueRef.m_id = inputRef.m_id;
+				valueRef.m_referenceType = inputRef.m_referenceType;
+				// target quantity does not contain vector index
+				valueRef.m_name = sourceQuantity.name();
+
+				std::map<ValueReference, AbstractModel*>::iterator refIt =
+					modelResultReferences.find(valueRef);
+
+				bool resolved = false;
+
+				// and set resolved attribute
+				if (refIt != modelResultReferences.end()) {
+#ifdef IBK_DEBUG
+					// skip "y" and "ydot" and all inactive references
+					if (valueRef.m_name != std::string("y") && valueRef.m_name != std::string("ydot") ) {
+						// find reference
+						std::vector<QuantityDescription>::iterator descIt =
+							std::find_if(inputDescs.begin(), inputDescs.end(),
+								NANDRAD::FindByName<QuantityDescription>(targetQuantity.name()));
+
+						IBK_ASSERT(descIt != inputDescs.end());
+
+						IBK::Parameter paraTarget(valueRef.m_name, 0, IBK::Unit(descIt->m_unit));
+
+						// unit differs from parameter unit
+						std::string paraUnit = refIt->first.m_unit;
+						if (paraTarget.IO_unit.name() != paraUnit) {
+							try {
+								paraTarget.get_value(paraUnit);
+							}
+							catch (IBK::Exception &ex) {
+								throw IBK::Exception(ex, IBK::FormatString("Expected unit '#%1' for quantity '#%2' "
+									"referenced from '#%3' with id #%4!")
+									.arg(paraUnit)
+									.arg(valueRef.m_name)
+									.arg(currentModel->ModelIDName())
+									.arg(currentModel->id()), FUNC_ID);
+							}
+						}
+					}
+#endif // IBK_DEBUG
+					// resolve reference
+					AbstractModel *sourceModel = refIt->second;
+
+					// check unit
+					// now check if model offers requested quantity
+					const double * valuePtr = sourceModel->resultValueRef(sourceQuantity);
+					if (valuePtr != NULL) {
+						resolved = true;
+						// register this model as dependency: avoid dependencies if there is a direct connection
+						// to y-vector or if the referenced value is a constant
+						if (!inputRef.m_constant) {
+							// do have a graph element
+							const ZEPPELIN::DependencyObject *sourceObject = dynamic_cast<ZEPPELIN::DependencyObject*> (sourceModel);
+							if (sourceObject != NULL)
+								currentStateDependency->dependsOn(*sourceObject);
+								// Note: we are calling the const-variant, so that sourceObject won't
+								//       be modified and this function remains thread-safe. The parents are set after this
+								//       parallel for loop has completed.
+						}
+
+						try {
+							// store pointer at index j of input values
+							currentStateDependency->setInputValueRef(valuePtr, targetQuantity);
+						}
+						catch (IBK::Exception &ex) {
+							throw IBK::Exception(ex, IBK::FormatString("Could not resolve reference to quantity %1 "
+								"of %2 with id #%3!")
+								.arg(inputRef.m_sourceName.name())
+								.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",
+									inputRef.m_referenceType))
+								.arg(inputRef.m_id)
+								, FUNC_ID);
+						}
+					}
+				}
+				if (!resolved) {
+					// error: reference was not resolved
+					throw IBK::Exception(IBK::FormatString("Could not resolve reference to quantity %1 "
+						"of %2 with id #%3!")
+						.arg(inputRef.m_sourceName.name())
+						.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",
+							inputRef.m_referenceType))
+						.arg(inputRef.m_id)
+						, FUNC_ID);
+				}
+			} // for (unsigned int j=0; j<inputReferences.size(); ++j)
+		}
+		catch (IBK::Exception &ex) {
+			/// \todo OpenMP error handling here
+			throw IBK::Exception(ex, IBK::FormatString("Error resolving input references "
+				"for model #%1 with id #%2!")
+				.arg(currentModel->ModelIDName())
+				.arg(currentModel->id()),
+				FUNC_ID);
+		}
+	} // for (unsigned int i=0; i<m_modelContainer.size(); ++i)
+	// parallel region done
+
+	// set backward connections for all objects
+	// before initializing model graph
+	// we will need parents for identifying single sequential connections
+	for (unsigned int i = 0; i < m_modelContainer.size(); ++i) {
+		// progress is handled by master thread only
+		AbstractStateDependency * currentStateDependency = dynamic_cast<AbstractStateDependency*>(m_modelContainer[i]);
+
+		// skip all pure time dependend models
+		if (currentStateDependency == NULL)
+			continue;
+
+		currentStateDependency->updateParents();
+	}
+
+	// *** resolve input references for all ODE states and balance models
+	for (unsigned int i = 0; i < m_ODEStatesAndBalanceModelContainer.size(); ++i) {
+		AbstractODEStatesModel* statesModel = m_ODEStatesAndBalanceModelContainer[i].first;
+		AbstractODEBalanceModel* balanceModel = m_ODEStatesAndBalanceModelContainer[i].second;
+		// connect states
+		const double *y = balanceModel->ODEStatesValueRef();
+		IBK_ASSERT(y != NULL);
+		// set states reference
+		statesModel->setODEStatesInputValueRef(y);
+	}
 
 }
 
@@ -1743,10 +2153,74 @@ void NandradModel::initModelGraph()
 
 }
 
-void NandradModel::initOutputReferenceList()
-{
+void NandradModel::initOutputReferenceList() {
+	const char * const FUNC_ID = "[NandradModelImpl::initOutputReferenceList]";
+	IBK::IBK_Message( IBK::FormatString("Initializing Output Quantity List\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+	IBK::MessageIndentor indent; (void)indent;
+	// generate and dump calculation results of all models
+	std::map<std::string, QuantityDescription> refDescs;
+	for (unsigned int i=0; i<m_modelContainer.size(); ++i) {
+		AbstractModel * currentModel = m_modelContainer[i];
+		std::vector<QuantityDescription> varDescs;
+		currentModel->resultDescriptions(varDescs);
+		NANDRAD::ModelInputReference::referenceType_t refType = currentModel->referenceType();
+		try {
+			std::string refTypeName = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", refType);
+			for (unsigned int j=0; j<varDescs.size(); ++j) {
+				std::stringstream description;
+				if (varDescs[j].m_size == 0)
+					continue;
+				description << refTypeName << "." << varDescs[j].m_name;
+				if (!varDescs[j].m_indexKeys.empty())
+					description << "(" << varDescs[j].m_size << ")";
+				refDescs[description.str()] = varDescs[j];
 
+				// for schedules add reduced definition
+				if (refType == NANDRAD::ModelInputReference::MRT_SCHEDULE) {
+					std::string reducedName = varDescs[j].m_name;
+					std::string::size_type pos = reducedName.rfind(':');
+					IBK_ASSERT(pos != std::string::npos);
+					reducedName = reducedName.substr(pos + 1);
+					// create a reduced description
+					std::stringstream reducedDescription;
+					reducedDescription << refTypeName << "." << reducedName;
+					// create a new quantity description
+					QuantityDescription reducedDesc = varDescs[j];
+					reducedDesc.m_name = reducedName;
+					// store
+					refDescs[reducedDescription.str()] = reducedDesc;
+				}
+			}
+		}
+		catch (IBK::Exception & ex) {
+			IBK::IBK_Message(ex.what(), IBK::MSG_ERROR, FUNC_ID);
+		}
+	}
+
+	// dump output reference list to file
+#ifdef _WIN32
+	#if defined(_MSC_VER)
+		std::ofstream outputList( (m_dirs.m_varDir / "output_reference_list.txt").wstr().c_str() );
+	#else
+		std::string outputStrAnsi = IBK::WstringToANSI((m_dirs.m_varDir / "output_reference_list.txt").wstr(), false);
+		std::ofstream outputList(outputStrAnsi.c_str());
+	#endif
+#else
+	std::ofstream outputList( (m_dirs.m_varDir / "output_reference_list.txt").str().c_str() );
+#endif
+
+	for (std::map<std::string, QuantityDescription>::const_iterator it = refDescs.begin();
+		it != refDescs.end(); ++it)
+	{
+		outputList << std::setw(30) << std::left << it->first << " \t[" << it->second.m_unit << "] \t" << it->second.m_description << std::endl;
+		std::stringstream strm;
+		strm << std::setw(30) << std::left << it->first << " \t[" << it->second.m_unit << "] \t" << it->second.m_description;
+		IBK::IBK_Message( IBK::FormatString("%1\n").arg(strm.str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+	}
+	outputList.flush();
+	outputList.close();
 }
+
 
 void NandradModel::initOutputs(bool restart)
 {

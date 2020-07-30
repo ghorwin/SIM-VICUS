@@ -13,14 +13,15 @@
 
 namespace NANDRAD_MODEL {
 
-/*!	\brief Declaration for class AbstractStateDependency, the base class of all models that have input dependencies.
+/*!	Class AbstractStateDependency is the base class of all models that
+	have input dependencies.
 
 	This class declares the interface required by all state-object type sub-models.
 	All state-object models must derive from this interface and must implement the
 	pure virtual functions.
 
-	The actual model evaluation code goes into function update(), which is called, whenever all objects have been updated,
-	that this model depends on.
+	The actual model evaluation code goes into function update(), which is called,
+	whenever all objects have been updated, that this model depends on.
 
 	A state-dependent model object needs to inherit both from
 	AbstractModel and AbstractStateDependency.

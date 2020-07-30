@@ -21,35 +21,24 @@ Lesser General Public License for more details.
 #ifndef VectorValuedQuantityH
 #define VectorValuedQuantityH
 
+#include <vector>
 #include <set>
-#include <IBK_UnitVector.h>
+
 #include "NM_VectorValuedQuantityIndex.h"
 
 namespace NANDRAD_MODEL {
 
-/*!	\brief Declaration for class SortedUnitList.
-	This class is an extension of the unit list containing index information.
-*/
-class VectorValuedQuantity: public IBK::UnitVector {
+/*!	This class wraps a std::vector and provides index/id lookup information. */
+class VectorValuedQuantity {
 public:
 
 	explicit VectorValuedQuantity(unsigned int n);
 
 	/*! Constructor (creates a vector with 'size' elements and the IO-unit 'ioUnit') and keyType.*/
-	VectorValuedQuantity(unsigned int n, IBK::Unit IO_unit, VectorValuedQuantityIndex::IndexKeyType keyType);
+	VectorValuedQuantity(unsigned int n, VectorValuedQuantityIndex::IndexKeyType keyType);
 
 	/*! Constructor (creates a vector with 'size' elements, initial values 'value' and the IO-unit 'ioUnit') and keyType. */
-	VectorValuedQuantity(unsigned int n, double value, IBK::Unit IO_unit, VectorValuedQuantityIndex::IndexKeyType keyType);
-
-	/*! Constructor (creates a vector with 0 elements, a name 'name' and the IO-unit 'ioUnit'). For an empty vector it is always
-		possible to chose an abitrary key type.*/
-	VectorValuedQuantity(const std::string & name, IBK::Unit IO_unit);
-
-	/*! Constructor (creates a vector with 0 elements, a name 'name' and the IO-unit 'ioUnit') for the case we do
-		not want to chose classical index notation. Therefore, for a given vector size we need
-		to specify all index keys.*/
-	VectorValuedQuantity(const std::string & name, IBK::Unit IO_unit, VectorValuedQuantityIndex::IndexKeyType keyType,
-		const std::set<unsigned int> &indexKeys);
+	VectorValuedQuantity(unsigned int n, double value, VectorValuedQuantityIndex::IndexKeyType keyType);
 
 	VectorValuedQuantityIndex::IndexKeyType keyType() const	{ return m_keyType; }
 
@@ -104,6 +93,7 @@ public:
 	const double & operator[] (unsigned int i) const;
 
 private:
+	std::vector<double>						m_data;
 	/*! Key type (for stringv output). */
 	VectorValuedQuantityIndex::IndexKeyType m_keyType;
 	/*! Set of key values. */

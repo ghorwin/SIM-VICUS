@@ -129,7 +129,7 @@ public:
 	*/
 	virtual const double * resultValueRef(const QuantityName & quantityName) const override;
 
-	/*! \todo document. */
+	/*! Resizes m_results vector. */
 	virtual void initResults(const std::vector<AbstractModel*> &  models) override;
 
 
@@ -143,6 +143,7 @@ public:
 	virtual int setTime(double t) override;
 
 
+	// *** Other public member functions
 
 	/*! Returns start value of a quantity. Throws an exception, if quantity does not exist. */
 	double startValue(const QuantityName & quantityName) const;

@@ -71,6 +71,9 @@ class ParallelStateObjects;
 
 class Loads;
 class Schedules;
+class RoomBalanceModel;
+class RoomStatesModel;
+class OutputFile;
 
 /*! Main NANDRAD model implementation class.
 	This class implements the interface of SOLFRA::ModelInterface and SOLFRA::OutputScheduler.
@@ -237,7 +240,7 @@ private:
 		ConstructionBCModels (only for active walls and interfaces).*/
 	void initWallsAndInterfaces();
 	/*! Loads BIM data and creates WindowModel.*/
-//	void initEmbeddedObjects();
+	void initEmbeddedObjects();
 	/*! With the knowledge of all available zones and space type remove space type references by zone references
 		inside all object lists.*/
 	void initObjectLists();
@@ -427,6 +430,14 @@ private:
 	std::vector<IBKMK::SparseMatrixPattern>					m_dependencyPatterns;
 
 
+	/*! Holds references to room state models (does not own the models). */
+	std::vector<RoomStatesModel*>							m_roomStatesModelContainer;
+	/*! Holds references to room balance models (does not own the models). */
+	std::vector<RoomBalanceModel*>							m_roomBalanceModelContainer;
+	/*! Vector with offsets for room state models. */
+	std::vector<unsigned int>								m_zoneVariableOffset;
+
+
 	// *** Models and sub-models ***
 
 	/*! Climatic loads calculation model (exists as single instance).
@@ -441,6 +452,11 @@ private:
 	/*! Single object/model providing schedules quantities. */
 	Schedules												*m_schedules = nullptr;
 
+
+	// *** Outputs ***
+
+	/*! Vector with output file objects (DataIO containers) for each output file (size m_nOutputs). */
+	std::vector<OutputFile*>			m_outputFiles;
 
 	// *** STATISTICS ***
 

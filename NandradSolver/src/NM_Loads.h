@@ -136,6 +136,7 @@ public:
 	virtual int setTime(double t) override;
 
 
+	// *** Other public member functions
 
 	/*! Adds a surface to the list of computable surfaces.
 		For all surfaces added to the loads class, the computation function calculates

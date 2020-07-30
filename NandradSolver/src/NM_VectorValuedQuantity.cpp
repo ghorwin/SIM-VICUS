@@ -28,52 +28,36 @@ Lesser General Public License for more details.
 
 namespace NANDRAD_MODEL {
 
-VectorValuedQuantity::VectorValuedQuantity(unsigned int n, IBK::Unit IO_unit,
-	VectorValuedQuantityIndex::IndexKeyType keyType) :
-	IBK::UnitVector(n, IO_unit),
-	m_keyType(keyType) {
+VectorValuedQuantity::VectorValuedQuantity(unsigned int n,  VectorValuedQuantityIndex::IndexKeyType keyType) :
+	m_data(n),
+	m_keyType(keyType)
+{
 	for(unsigned int i = 0; i < n; ++i)
 	{
 		m_indexKeys.insert(i);
 	}
 }
 
-VectorValuedQuantity::VectorValuedQuantity(unsigned int n, double value, IBK::Unit IO_unit,
-	VectorValuedQuantityIndex::IndexKeyType keyType) :
-	IBK::UnitVector(n, value, IO_unit),
-	m_keyType(keyType) {
-	for(unsigned int i = 0; i < n; ++i)
-	{
+VectorValuedQuantity::VectorValuedQuantity(unsigned int n, double value, VectorValuedQuantityIndex::IndexKeyType keyType) :
+	m_data(n, value),
+	m_keyType(keyType)
+{
+	for(unsigned int i = 0; i < n; ++i) {
 		m_indexKeys.insert(i);
 	}
 }
 
-VectorValuedQuantity::VectorValuedQuantity(const std::string & name, IBK::Unit IO_unit) :
-	IBK::UnitVector(name, IO_unit),
-	m_keyType(VectorValuedQuantityIndex::IK_Index) {
-}
 
-VectorValuedQuantity::VectorValuedQuantity(const std::string & name, IBK::Unit IO_unit,
-	VectorValuedQuantityIndex::IndexKeyType keyType, const std::set<unsigned int> &indexKeys) :
-	IBK::UnitVector(name, IO_unit),
-	m_keyType(keyType),
-	m_indexKeys(indexKeys) {
-	IBK::UnitVector::resize((unsigned int)indexKeys.size());
-}
-
-void VectorValuedQuantity::resize(unsigned int n,
-	VectorValuedQuantityIndex::IndexKeyType keyType) {
-	IBK::UnitVector::resize(n);
+void VectorValuedQuantity::resize(unsigned int n, VectorValuedQuantityIndex::IndexKeyType keyType) {
+	m_data.resize(n);
 	m_keyType = keyType;
-	for(unsigned int i = 0; i < n; ++i)
-	{
+	for (unsigned int i = 0; i < n; ++i) {
 		m_indexKeys.insert(i);
 	}
 }
 
-void VectorValuedQuantity::resize(const std::set<unsigned int> &indexKeys,
-	VectorValuedQuantityIndex::IndexKeyType keyType) {
-	IBK::UnitVector::resize((unsigned int)indexKeys.size());
+void VectorValuedQuantity::resize(const std::set<unsigned int> &indexKeys, VectorValuedQuantityIndex::IndexKeyType keyType) {
+	m_data.resize((unsigned int)indexKeys.size());
 	m_keyType = keyType;
 	m_indexKeys = indexKeys;
 }
@@ -120,10 +104,9 @@ double & VectorValuedQuantity::operator[] (unsigned int i) {
 	// calculate the vector position of the requested element
 	int index = (int)std::distance(m_indexKeys.begin(), it.first);
 	// the element exists already
-	if(!insertedNew)
-	{
+	if(!insertedNew) {
 		// choose the IBK::UnitVector function for vector access
-		return IBK::UnitVector::operator[](index);
+		return m_data[index];
 	}
 	// a new element was inserted
 	else {
@@ -143,7 +126,7 @@ const double & VectorValuedQuantity::operator[] (unsigned int i) const {
 	// calculate vector position
 	int index = (int)std::distance(m_indexKeys.begin(), it);
 	// choose the IBK::UnitVector function for vector access
-	return IBK::UnitVector::operator[](index);
+	return m_data[index];
 }
 
 } // namespace NANDRAD_MODEL

@@ -53,14 +53,18 @@ DEPENDPATH = $${INCLUDEPATH}
 SOURCES += \
 	../../src/NM_AbstractModel.cpp \
 	../../src/NM_DefaultModel.cpp \
+	../../src/NM_DefaultStateDependency.cpp \
 	../../src/NM_Directories.cpp \
 	../../src/NM_KeywordList.cpp \
 	../../src/NM_Loads.cpp \
 	../../src/NM_NandradModel.cpp \
+	../../src/NM_OutputFile.cpp \
 	../../src/NM_QuantityName.cpp \
 	../../src/NM_RoomBalanceModel.cpp \
 	../../src/NM_RoomStatesModel.cpp \
 	../../src/NM_Schedules.cpp \
+	../../src/NM_StateModelGroup.cpp \
+	../../src/NM_SteadyStateSolver.cpp \
 	../../src/NM_VectorValuedQuantity.cpp \
 	../../src/NM_VectorValuedQuantityIndex.cpp \
 	../../src/main.cpp
@@ -70,16 +74,21 @@ HEADERS += \
 	../../src/NM_AbstractStateDependency.h \
 	../../src/NM_AbstractTimeDependency.h \
 	../../src/NM_DefaultModel.h \
+	../../src/NM_DefaultStateDependency.h \
 	../../src/NM_Directories.h \
 	../../src/NM_InputReference.h \
 	../../src/NM_KeywordList.h \
 	../../src/NM_Loads.h \
 	../../src/NM_NandradModel.h \
+	../../src/NM_OutputFile.h \
 	../../src/NM_Physics.h \
 	../../src/NM_QuantityDescription.h \
 	../../src/NM_QuantityName.h \
 	../../src/NM_RoomBalanceModel.h \
 	../../src/NM_RoomStatesModel.h \
 	../../src/NM_Schedules.h \
+	../../src/NM_StateModelGroup.h \
+	../../src/NM_SteadyStateSolver.h \
+	../../src/NM_ValueReference.h \
 	../../src/NM_VectorValuedQuantity.h \
 	../../src/NM_VectorValuedQuantityIndex.h

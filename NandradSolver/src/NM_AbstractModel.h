@@ -32,15 +32,9 @@ Lesser General Public License for more details.
 
 namespace NANDRAD_MODEL {
 
-//#define DEBUG_OBJECT_SIGNATURE(x) (std::cout << x << std::endl)
-//#undef DEBUG_OBJECT_SIGNATURE
-#define DEBUG_OBJECT_SIGNATURE(x) ;
-
-/*!	\brief Declaration for class AbstractModel, the base class of all models.
-	\author Andreas Nicolai <andreas.nicolai -[at]- tu-dresden.de>
-	This class is the base class for all models. A model should define
-	a unqiue model name and provide result quantities. For each model instance
-	unqiue id number should be reserved.
+/*!	Class AbstractModel is the base class of all models.
+	A model should define a unqiue ModelIDName and provide result quantities. For each model
+	instance a unqiue id number should be reserved.
 */
 class AbstractModel {
 public:
@@ -53,7 +47,7 @@ public:
 	*/
 	virtual ~AbstractModel();
 
-	/*! Returns a reference type which is unqiue in conjunction with the model name and model ID.
+	/*! Returns a reference type which is unqiue in conjunction with the model ID.
 		The reference type is needed because the id spaces of BIM components and
 		explicit models may overlap. Use ModelIDName, reference type and model ID
 		to unqiuely identify a model (in order to look-up its state object in a vector of state objects).
@@ -82,6 +76,8 @@ public:
 
 	/*! Returns vector of all scalar and vector valued results pointer.
 		\param res Vector with pointers to resulting values.
+
+		\todo Clarify, when this is needed...for iterative solution of cycles?
 	*/
 	virtual void resultValueRefs(std::vector<const double *> &res) const = 0;
 
