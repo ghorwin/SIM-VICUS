@@ -77,7 +77,13 @@ void Zone::readXML(const TiXmlElement * element) {
 				bool success = false;
 				try {
 					para_t ptype = (para_t)KeywordList::Enumeration("Zone::para_t", p.name);
-					m_para[ptype] = p; success = true;
+					m_para[ptype] = p;
+					std::string refUnit = KeywordList::Unit("Zone::para_t", ptype);
+					if (!refUnit.empty() && (p.IO_unit.base_id() != IBK::Unit(refUnit).base_id())) {
+						throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(c->Row())
+											  .arg("Incompatible unit '"+p.IO_unit.name()+"', expected '"+refUnit +"'."), FUNC_ID);
+					}
+					success = true;
 				}
 				catch (...) { /* intentional fail */  }
 				if (!success)
@@ -106,7 +112,7 @@ TiXmlElement * Zone::writeXML(TiXmlElement * parent) const {
 	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
-	if (m_type != NUM_T)
+	if (m_type != NUM_ZT)
 		e->SetAttribute("type", KeywordList::Keyword("Zone::type_t",  m_type));
 
 	for (unsigned int i=0; i<NUM_ZP; ++i) {

@@ -57,7 +57,7 @@ public:
 		ZT_CONSTANT,				// Keyword: Constant		'Zone with constant/predefined temperatures. (schedule) '
 		ZT_ACTIVE,					// Keyword: Active			'Zone described by a temperature node in space.'
 		ZT_GROUND,					// Keyword: Ground			'Ground zone (calculates temperature based on standard ToDo Katja).'
-		NUM_T
+		NUM_ZT
 	};
 
 	/*! Parameters of a zone. */
@@ -87,7 +87,7 @@ public:
 	/*! Zone type (Constant, Active).
 		\sa zoneType_t
 	*/
-	type_t						m_type = NUM_T;						// XML:A:required
+	type_t						m_type = NUM_ZT;						// XML:A:required
 
 	/*! Physical parameters describing the zone. */
 	IBK::Parameter				m_para[NUM_ZP];						// XML:E

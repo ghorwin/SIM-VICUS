@@ -46,7 +46,13 @@ void Interval::readXMLPrivate(const TiXmlElement * element) {
 				bool success = false;
 				try {
 					para_t ptype = (para_t)KeywordList::Enumeration("Interval::para_t", p.name);
-					m_para[ptype] = p; success = true;
+					m_para[ptype] = p;
+					std::string refUnit = KeywordList::Unit("Interval::para_t", ptype);
+					if (!refUnit.empty() && (p.IO_unit.base_id() != IBK::Unit(refUnit).base_id())) {
+						throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(c->Row())
+											  .arg("Incompatible unit '"+p.IO_unit.name()+"', expected '"+refUnit +"'."), FUNC_ID);
+					}
+					success = true;
 				}
 				catch (...) { /* intentional fail */  }
 				if (!success)

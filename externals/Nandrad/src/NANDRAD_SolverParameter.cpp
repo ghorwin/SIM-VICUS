@@ -53,10 +53,9 @@ void SolverParameter::initDefaults() {
 	m_flag[SF_DETECT_MAX_DT].set( KeywordList::Keyword("SolverParameter::flag_t", SF_DETECT_MAX_DT), true );
 	m_flag[SF_KINSOL_DISABLE_LINE_SEARCH].set(KeywordList::Keyword("SolverParameter::flag_t", SF_KINSOL_DISABLE_LINE_SEARCH), false);
 
-	// no defaults: SP_LES_BANDWIDTH, SP_PRE_BANDWIDTH, SP_PRE_ILUWIDTH, because default values for these parameters are determined
+	// no defaults: SP_PRE_BANDWIDTH, SP_PRE_ILUWIDTH, because default values for these parameters are determined
 	//              with an algorithm inside the NandradModel/Solver
 
-	// this is not working with IBK::clear!!!!which sets values to 0
 }
 
 

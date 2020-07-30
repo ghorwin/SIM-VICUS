@@ -47,6 +47,8 @@ class ObjectList;
 	(wall layer heating ...) or to retrieve temperature profiles etc.
 
 	Interfaces (MRT_INTERFACE) can be queried for wall surface temperatures.
+
+	\note Do not use as storage member, this is purely an internal class with keyword list support.
 */
 class ModelInputReference {
 public:
@@ -72,28 +74,30 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	NANDRAD_READWRITE
+//	NANDRAD_READWRITE
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Name of the property inside the dependent (this) model. */
-	std::string							m_targetName;		// XML:E
+	std::string							m_targetName;		/// XML:E
 	/*! Name of the object list.*/
-	std::string							m_objectList;		// XML:E
+	std::string							m_objectList;		/// XML:E
 	/*! Name of the input reference */
-	std::string							m_quantity;			// XML:E
+	std::string							m_quantity;			/// XML:E
 
 	/*! True, if referenced quantity is to be treated constant during
 		update cycles (essentially prevents adding a evaluation dependency).
 	*/
-	bool								m_constant = false;	// XML:A
+	bool								m_constant = false;	/// XML:A
 
 
 	// *** Variables used only during simulation ***
 
 	/*! Pointer to the referenced object list.
 		Is set to zero after reading. Connect to the
-		corresponding object list inside the model section!*/
+		corresponding object list inside the model section!
+		\todo deprecated?
+	*/
 	const NANDRAD::ObjectList			*m_objectListRef = nullptr;
 };
 

@@ -105,7 +105,6 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_Location.cpp \
 	../../src/ncg/ncg_NANDRAD_Material.cpp \
 	../../src/ncg/ncg_NANDRAD_MaterialLayer.cpp \
-	../../src/ncg/ncg_NANDRAD_ModelInputReference.cpp \
 	../../src/ncg/ncg_NANDRAD_ObjectList.cpp \
 	../../src/ncg/ncg_NANDRAD_OutputDefinition.cpp \
 	../../src/ncg/ncg_NANDRAD_OutputGrid.cpp \
