@@ -30,33 +30,34 @@ Lesser General Public License for more details.
 
 namespace NANDRAD_MODEL {
 
-/*! This class substitutes the NANDRAD::ModelInputReference inside all AbstractStateDependencies.
-	Contrarily to the NANDRAD::ModelInputReference structure it references just one single id.
-	Generate a vector of InputReferences from every single
-	ModelInputReference inside the initInputReferences() function as soon
-	as all encoded model instances are common.
+/*! This data type is used to formulate and input variable requirement from point of view of a model object.
+	It contains the information referenceType and id to address an object, and a quantity name (which basically
+	is the variable name with optional vector index/id information) to lookup the variable.
+
+	Further, it expresses whether this variables is to be treated as constant, and whether it is required by the model,
+	or can be missing.
 */
 class InputReference {
 public:
-	/*! Default constructor. */
-	InputReference() :
-		m_referenceType(NANDRAD::ModelInputReference::NUM_MRT),
-		m_id(0),
-		m_constant(false)
-	{}
-
 	/*! ReferenceType: zone, model or constructionInstance */
-	NANDRAD::ModelInputReference::referenceType_t	m_referenceType;
+	NANDRAD::ModelInputReference::referenceType_t	m_referenceType = NANDRAD::ModelInputReference::NUM_MRT;
 	/*! ID of the referenced source model/parametrization entity.*/
-	unsigned int									m_id;
+	unsigned int									m_id = 0;
 	/*! Name of the result quantity inside the referenced model.*/
 	QuantityName									m_sourceName;
 	/*! True, if referenced quantity is to be treated constant during
 		update cycles (essentially prevents adding an evaluation dependency).
 	*/
-	bool											m_constant;
+	bool											m_constant = false;
+	/*! For input references, indicates, that the model requires this input and cannot work (correctly) without.
+		For loads/fluxes, a missing input may be treated as 0 flux, and hence required may be false for
+		such quantities.
+	*/
+	bool											m_required = true;
 
-	/*! \deprecated Target name: name of the input quantity inside the dependend model */
+
+
+	/*! \deprecated Target name: name of the input quantity inside the dependent model */
 	QuantityName									m_targetName;
 };
 

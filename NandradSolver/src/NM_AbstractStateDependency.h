@@ -35,11 +35,6 @@ public:
 	/*! Returns a priority offset for all models at the end of model evaluation.*/
 	static const int priorityOffsetTail = 100000;
 
-	/*! Populates the vector refDesc with descriptions of all input references
-		requested by this model.
-	*/
-	virtual void inputReferenceDescriptions(std::vector<QuantityDescription> & refDesc) const = 0;
-
 	/*! Returns vector with model input references.
 		Implicit models must generate their own model input references and populate the
 		vector argument.

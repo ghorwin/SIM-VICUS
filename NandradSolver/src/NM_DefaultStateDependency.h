@@ -22,7 +22,7 @@ Lesser General Public License for more details.
 #define DefaultStateDependencyH
 
 #include "NM_AbstractStateDependency.h"
-#include "NM_InputReferenceToVectorValuedTarget.h"
+//#include "NM_InputReferenceToVectorValuedTarget.h"
 
 #include <IBK_Parameter.h>
 
@@ -44,22 +44,11 @@ public:
 		ODE			= 0x04
 	};
 
-	/*! Standard constructor.
-	*/
+	/*! Standard constructor. */
 	DefaultStateDependency(unsigned int modelTypeID);
 
 	/*! Copies the m_inputReferences - vector into the external inputRefs object. */
-	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const;
-
-	/*! Populates the vector refDesc with descriptions of all input references
-		requested by this model. The descriptions both include name, unit of
-		single reference quantities and	the index string of multiple references
-		(which are interpreted as vector valued input quantity from different
-		sources with the same target name).
-		If inputReferenceDescriptions() is called before initInputReferences(),
-		than vector valued references are empty.
-	*/
-	virtual void inputReferenceDescriptions(std::vector<QuantityDescription> & refDesc) const;
+	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const override;
 
 	/*! Returns vector with pointers to input values.
 		Each element of the reference vector refers to an element in the m_inputReferences vector
@@ -76,15 +65,18 @@ public:
 		quantity type and a source model id. Alternatively use 'inputValueRefs(quantityType)'
 		that provides an iterator to the first value reference of a given quantity type.
 	*/
-	virtual const std::vector<const double *> & inputValueRefs() const { return m_inputValueRefs; }
+	virtual const std::vector<const double *> & inputValueRefs() const override { return m_inputValueRefs; }
+
+
 
 	/*! Function for access an input value reference to a scalar target via enumeration.*/
 	const double *inputValueRef(int quantityType) const;
-	/*! Function for access an input referencean to a vector valued target.
-		It returns an iterator at the starting position for the requested quantity
-		type inside the m_inputValueRefs vector.*/
-	std::vector<const double *>::const_iterator inputValueRefs(int quantityType) const;
 
+	/*! Function for access an input referenced to a vector valued target.
+		It returns an iterator at the starting position for the requested quantity
+		type inside the m_inputValueRefs vector.
+	*/
+	std::vector<const double *>::const_iterator inputValueRefs(int quantityType) const;
 
 protected:
 
@@ -92,30 +84,19 @@ protected:
 		valid as long as only single reference values to one quantity are needed. In the
 		case of multiple references overwrite this function!
 	*/
-	virtual void initInputReferences(const std::vector<AbstractModel*> & models) { }
-
-	/*! Creates a model input reference from an implicit model feedback.
-		This function is only called for implicit models and has to be
-		implemented in a few special cases that	allow registration explicitely.
-		Thus, the default implementation does nothing.
-	*/
-	virtual bool registerInputReference(unsigned int sourceID,
-		NANDRAD::ModelInputReference::referenceType_t referenceType,
-		const QuantityName &quantity,
-		const QuantityName &targetName,
-		NANDRAD::ImplicitModelFeedback::operation_t operation);
+	virtual void initInputReferences(const std::vector<AbstractModel*> & /*models*/) override { }
 
 	/*! Returns a pattern of direkt computational dependencies between input values
 		and result values of the current model (the first pair entry correspondss
 		to the result value, the second one to the input value of a dependency).
 	*/
-	virtual void stateDependencies(std::vector< std::pair<const double *, const double *> > &resultInputValueReferences) const;
+	virtual void stateDependencies(std::vector< std::pair<const double *, const double *> > &resultInputValueReferences) const override;
 
 	/*! Defines constraints for all result values sorted via value reference:
-	< value reference , < minimum value (-inf if undefined), maximum value (inf if undefined)>
-	Default implementation return an empty map
+		< value reference , < minimum value (-inf if undefined), maximum value (inf if undefined)>
+		Default implementation return an empty map
 	*/
-	virtual void constraints(std::map< const double *, std::pair<double, double> > &constraintsPerValueRef) const;
+	virtual void constraints(std::map< const double *, std::pair<double, double> > &constraintsPerValueRef) const override;
 
 	/*! Function for access an input reference to a scalar target via enumeration and vector index.
 		If the input reference is missing a new element is inserted into the m_inputRferences vector.*/
@@ -141,19 +122,22 @@ private:
 		quantity name. Note that the storage organization is private and performed by
 		the current default implementation itself.
 	*/
-	virtual void setInputValueRef(const double *resultValueRef, const QuantityName &targetName);
+	virtual void setInputValueRef(const double *resultValueRef, const QuantityName &targetName) override;
 
-	/*! Model references defined by all models. */
-	std::vector<InputReferenceToVectorValuedTarget>	m_inputReferences;
+//	/*! Model references defined by all models. */
+//	std::vector<InputReferenceToVectorValuedTarget>	m_inputReferences;
 
 	/*! Vector with pointer to input values.
 		This vector is resized and filled by the framework.
-		\sa inputValueRefs() */
+		\sa inputValueRefs()
+	*/
 	std::vector<const double *>			m_inputValueRefs;
 	/*! Offset of input values for each input reference target. */
 	std::vector<unsigned int>			m_inputValueOffset;
 
-	/*! Only the NandradModelImpl class has access to the private functions. */
+
+	// grant access to private/protected members
+
 	friend class NandradModelImpl;
 	friend class StateModelGroup;
 };

@@ -34,12 +34,11 @@ Lesser General Public License for more details.
 
 namespace NANDRAD_MODEL {
 
-DefaultStateDependency::DefaultStateDependency(unsigned int modelTypeID)
-{
+DefaultStateDependency::DefaultStateDependency(unsigned int modelTypeID) {
 	AbstractStateDependency::m_modelTypeId = modelTypeID;
 }
 
-
+#if 0
 void DefaultStateDependency::inputReferenceDescriptions(std::vector<QuantityDescription> & refDesc) const {
 
 	const char * const FUNC_ID = "[DefaultStateDependency::inputReferenceDescriptions]";
@@ -146,27 +145,12 @@ void DefaultStateDependency::inputReferenceDescriptions(std::vector<QuantityDesc
 			.arg(model->ModelIDName()).arg(model->id()), FUNC_ID);
 	}
 }
-
-
-bool DefaultStateDependency::registerInputReference(unsigned int sourceID,
-	NANDRAD::ModelInputReference::referenceType_t referenceType,
-	const QuantityName &quantity,
-	const QuantityName &targetName,
-	NANDRAD::ImplicitModelFeedback::operation_t operation)
-{
-	(void) sourceID;
-	(void) referenceType;
-	(void) quantity;
-	(void) targetName;
-	(void) operation;
-	// suppress this operation per default
-	return false;
-}
+#endif
 
 void DefaultStateDependency::inputReferences(std::vector<InputReference>  & inputRefs) const {
 
 	// copy references into vector
-	inputRefs.insert(inputRefs.end(), m_inputReferences.begin(),m_inputReferences.end() );
+//	inputRefs.insert(inputRefs.end(), m_inputReferences.begin(),m_inputReferences.end() );
 }
 
 void DefaultStateDependency::setInputValueRef(const double *resultValueRef, const QuantityName &targetName) {
@@ -302,11 +286,10 @@ void DefaultStateDependency::setInputValueRef(const double *resultValueRef, cons
 											.arg(model->id()),
 											FUNC_ID);
 	}
+#endif
 }
 
-void DefaultStateDependency::stateDependencies(std::vector< std::pair<const double *, const double *> >
-	&resultInputValueReferences) const
-{
+void DefaultStateDependency::stateDependencies(std::vector< std::pair<const double *, const double *> >	&resultInputValueReferences) const {
 	// No state dependend model object without the model properties!!!
 	const AbstractModel* model = dynamic_cast<const AbstractModel*>(this);
 	IBK_ASSERT(model != NULL);
@@ -401,8 +384,8 @@ void DefaultStateDependency::constraints(std::map< const double *,
 }
 
 
-InputReference & DefaultStateDependency::inputReference(int quantityType, int index)
-{
+InputReference & DefaultStateDependency::inputReference(int quantityType, int index) {
+#if 0
 	// first seach the lower bound/ equal element
 	std::vector<InputReferenceToVectorValuedTarget>::iterator it =
 		std::find_if(m_inputReferences.begin(), m_inputReferences.end(),
@@ -430,10 +413,12 @@ InputReference & DefaultStateDependency::inputReference(int quantityType, int in
 	// and return the corresponding iterator. The larger element will be shifted
 	// for one vector position.
 	return *m_inputReferences.insert(it,inputRef);
+#endif
 }
 
-const InputReference & DefaultStateDependency::inputReference(int quantityType, int index) const
-{
+
+const InputReference & DefaultStateDependency::inputReference(int quantityType, int index) const {
+#if 0
 	const char * const FUNC_ID = "[DefaultStateDependency::inputReference]";
 	// find the input reference matching quantity type and index
 	std::vector<InputReferenceToVectorValuedTarget>::const_iterator it =
@@ -459,10 +444,12 @@ const InputReference & DefaultStateDependency::inputReference(int quantityType, 
 	}
 	errmsg += std::string("! Input reference does not exist.");
 	throw IBK::Exception(errmsg, FUNC_ID);
+#endif
 }
 
 
 std::vector<const double *>::const_iterator DefaultStateDependency::inputValueRefs(int quantityType) const {
+#if 0
 //	const char * const FUNC_ID = "[DefaultStateDependency::inputValueRef]";
 	IBK_ASSERT(dynamic_cast<const AbstractModel*>(this) != NULL);
 	// error: wrong quantity type is requested
@@ -483,11 +470,12 @@ std::vector<const double *>::const_iterator DefaultStateDependency::inputValueRe
 		return m_inputValueRefs.end();
 
 	return m_inputValueRefs.begin() + offset;
+#endif
 }
 
 
-const double *DefaultStateDependency::inputValueRef(int quantityType) const
-{
+const double *DefaultStateDependency::inputValueRef(int quantityType) const {
+#if 0
 //	const char * const FUNC_ID = "[DefaultStateDependency::inputValueRef]";
 	IBK_ASSERT(dynamic_cast<const AbstractModel*>(this) != NULL);
 	// error: wrong quantity type is requested
@@ -507,12 +495,11 @@ const double *DefaultStateDependency::inputValueRef(int quantityType) const
 		return NULL;
 
 	return m_inputValueRefs[offset];
+#endif
 }
 
 
-int DefaultStateDependency::decodeInputReferenceTargeType(
-	const std::string &targetName) const
-{
+int DefaultStateDependency::decodeInputReferenceTargeType(const std::string &targetName) const {
 	const AbstractModel * model = dynamic_cast<const AbstractModel*>(this);
 	IBK_ASSERT(model != NULL);
 

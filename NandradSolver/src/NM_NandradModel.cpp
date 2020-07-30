@@ -1659,15 +1659,6 @@ void NandradModel::initModelDependencies() {
 
 	// *** complete initialization for all models ***
 
-	// prepare for parallelization - get number of threads and prepare thread-storage vectors
-#if defined(_OPENMP)
-	// for openMP we need to collect vector within each loop and merge them into the central map together - this avoids synchronization overhead during runtime
-	// since each thread can operate in its own memory vector
-	std::vector<std::vector<std::pair<ValueReference, AbstractModel*> > > modelResultReferencesVec(m_numThreads);
-	std::vector<std::vector<std::pair<ValueReference, AbstractStateDependency*> > > modelInputReferencesVec(m_numThreads);
-	std::vector<std::string> threadErrors(m_numThreads);
-#endif
-
 	IBK::StopWatch timer;
 
 	// *** initializing model results ***
@@ -1680,6 +1671,14 @@ void NandradModel::initModelDependencies() {
 	// (both addressing an object) and variable name (identifying the variable of the object).
 	// The map can be used to quickly find the object the holds a required result variable.
 	std::map<ValueReference, AbstractModel*> modelResultReferences;
+
+	// prepare for parallelization - get number of threads and prepare thread-storage vectors
+#if defined(_OPENMP)
+	// for openMP we need to collect vector within each loop and merge them into the central map together - this avoids synchronization overhead during runtime
+	// since each thread can operate in its own memory vector
+	std::vector<std::vector<std::pair<ValueReference, AbstractModel*> > > modelResultReferencesVec(m_numThreads);
+	std::vector<std::string> threadErrors(m_numThreads);
+#endif
 
 #pragma omp parallel for schedule(static,200)
 	for (int i = 0; i < (int)m_modelContainer.size(); ++i) { // omp loop variables must be int's for Visual Studio
@@ -1700,40 +1699,41 @@ void NandradModel::initModelDependencies() {
 			// let models initialize their results, i.e. generate information on computed results
 			currentModel->initResults(m_modelContainer);
 
-			// ask model implementation for published results
+			// ask model instance for published results
 			std::vector<QuantityDescription> resDescs;
 			currentModel->resultDescriptions(resDescs);
-			// now
+			// now process all published variables
 			for (unsigned int j = 0; j < resDescs.size(); ++j) {
 				const QuantityDescription &resDesc = resDescs[j];
-				// we only register base name (also for vector valued quantities)
+				// now create our "key" data type for the lookup map
 				ValueReference resRef;
 				resRef.m_id = currentModel->id();
 				resRef.m_referenceType = currentModel->referenceType();
 				resRef.m_name = resDesc.m_name;
 
-				IBK_ASSERT(modelResultReferences.find(resRef) ==
-					modelResultReferences.end());
-
 #if defined(_OPENMP)
 				// store in thread-specific vector
 				modelResultReferencesVec[omp_get_thread_num()].push_back(std::make_pair(resRef, currentModel));
 #else
+				// ensure that this variable is not yet existing in our map, this would be a programming
+				// error, since global uniqueness would not be guaranteed
+				IBK_ASSERT(modelResultReferences.find(resRef) == modelResultReferences.end());
+
 				// single-core run, store directly in map
 				modelResultReferences[resRef] = currentModel;
 #endif
-
 			}
 		}
 		catch (IBK::Exception &ex) {
 #if defined(_OPENMP)
+			// OpenMP code may not throw exceptions beyond parallel region, hence only store errors in error list for
+			// later evaluation
 			threadErrors[omp_get_thread_num()] += ex.msgStack() + "\n" + IBK::FormatString("Error initializing results "
 																						   "for model #%1 with id #%2!\n")
 																						   .arg(currentModel->ModelIDName())
 																						   .arg(currentModel->id()).str();
 #else
-			throw IBK::Exception(ex, IBK::FormatString("Error initializing results "
-				"for model #%1 with id #%2!")
+			throw IBK::Exception(ex, IBK::FormatString("Error initializing results for model #%1 with id #%2!")
 				.arg(currentModel->ModelIDName())
 				.arg(currentModel->id()),
 				FUNC_ID);
@@ -1760,7 +1760,6 @@ void NandradModel::initModelDependencies() {
 
 	// *** initializing model input references ***
 
-	std::map<ValueReference, AbstractStateDependency*> modelInputReferences;
 	IBK::IBK_Message(IBK::FormatString("Initializing all model input references\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 #pragma omp parallel for schedule(static,200)
 	for (int i = 0; i < (int) m_modelContainer.size(); ++i) {
@@ -1777,292 +1776,117 @@ void NandradModel::initModelDependencies() {
 		AbstractModel * currentModel = m_modelContainer[i];
 		// currentModel is the model that we current look up input references for
 		AbstractStateDependency * currentStateDependency = dynamic_cast<AbstractStateDependency *> (m_modelContainer[i]);
-		// skip all models that are not states dependend
-		if (currentStateDependency == NULL)
+		// skip all models that are not state-dependent and have no input requirements
+		if (currentStateDependency == nullptr)
 			continue;
 
 		try {
+			// tell model to initialize its inputs
 			currentStateDependency->initInputReferences(m_modelContainer);
 
-			// insert input references
+			// request published input variables from model instance
 			std::vector<QuantityDescription> inputDescs;
 			currentStateDependency->inputReferenceDescriptions(inputDescs);
+			// process and lookup all of variables
 			for (unsigned int j = 0; j < inputDescs.size(); ++j) {
 				const QuantityDescription &inputDesc = inputDescs[j];
-				// we only register base name (also for vector valued quantities)
+				// compose search key
 				ValueReference inputRef;
 				inputRef.m_id = m_modelContainer[i]->id();
 				inputRef.m_referenceType = m_modelContainer[i]->referenceType();
 				inputRef.m_name = inputDesc.m_name;
-				inputRef.m_unit = inputDesc.m_unit;
 
-#if defined(_OPENMP)
-				modelInputReferencesVec[omp_get_thread_num()].push_back(std::make_pair(inputRef, currentStateDependency));
-#else
-				modelInputReferences[inputRef] = currentStateDependency;
-#endif
+//				QuantityName targetName(inputDesc.m_name, inputDesc.m)
+
+				// now lookup variable
+
+				AbstractModel* srcObject = nullptr;
+
+				// 1. FMU overrides
+
+				// First check FMU import model - it may override variables by providing
+				// exactly the same ValueReference as those of other models. E.g., an FMU import
+				// may generate a variable Zone:13:AirTemperature and thus override the air temperature
+				// variable generated by the zone itself. All models using this temperature will
+				// now use the variable from the FMI import model.
+				/// \todo FMU Import model
+
+
+				// 2. regular lookup
+				if (srcObject == nullptr) {
+					std::map<ValueReference, AbstractModel*>::const_iterator it = modelResultReferences.find(inputRef);
+					if (it != modelResultReferences.end())
+						srcObject = it->second;
+				}
+
+
+				// 3. schedule lookup
+
+				// Schedules are defined for object lists, which in turn reference objects via reference types and
+				// id groups
+				// Schedule object has a function to lookup matching schedules, so simply call upon this function
+				// and let the schedule object resolve the schedule model
+
+				if (srcObject == nullptr) {
+					// if (m_schedules->providesResult(inputRef))
+					//	srcObject = m_schedules;
+				}
+
+				// 4. check if object actually provides the data needed by our model instance
+
+				if (srcObject != nullptr) {
+
+				}
+				else {
+					// we didn't find a source object, raise an exception if the requested variable
+					// was a required input
+
+					if (inputDesc.m_required) {
+						// error: reference was not resolved
+						throw IBK::Exception(IBK::FormatString("Could not resolve reference to quantity %1 of %2 with id #%3!")
+							.arg(inputRef.m_name)
+							.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", inputRef.m_referenceType))
+							.arg(inputRef.m_id), FUNC_ID);
+					}
+					else {
+						// tell the model object that we do not have such an input
+						currentStateDependency->setInputValueRef(nullptr, targetName);
+
+					}
+
+				}
+
 			}
 		}
 		catch (IBK::Exception &ex) {
-			/// \todo OpenMP error handling! For now, solver will simply hang when error occurs
-			throw IBK::Exception(ex, IBK::FormatString("Error initializing input references "
-				"for model #%1 with id #%2!")
+#if defined(_OPENMP)
+			// OpenMP code may not throw exceptions beyond parallel region, hence only store errors in error list for
+			// later evaluation
+			threadErrors[omp_get_thread_num()] += ex.msgStack() + "\n" + IBK::FormatString("Error initializing results "
+																						   "for model #%1 with id #%2!\n")
+																						   .arg(currentModel->ModelIDName())
+																						   .arg(currentModel->id()).str();
+#else
+			throw IBK::Exception(ex, IBK::FormatString("Error initializing input references for model #%1 with id #%2!")
 				.arg(currentModel->ModelIDName())
 				.arg(currentModel->id()),
 				FUNC_ID);
+#endif // _OPENMP
 		}
 	} // end - pragma parallel omp for
 
 #if defined(_OPENMP)
+	// error checking
+	for (int i=0; i<m_numThreads; ++i)
+		if (!threadErrors[i].empty()) {
+			throw IBK::Exception(threadErrors[i], FUNC_ID);
+		}
+
 	for (unsigned int i=0; i<(unsigned int)m_numThreads; ++i) {
 		for (unsigned int j=0; j<modelInputReferencesVec[i].size(); ++j)
 			modelInputReferences[ modelInputReferencesVec[i][j].first] = modelInputReferencesVec[i][j].second;
 	}
 #endif
-
-	// *** create input references from implicit model feedbacks ***
-
-	IBK::IBK_Message(IBK::FormatString("Initializing all implicit model feedback references (%1 models)\n")
-		.arg(m_modelContainer.size()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-
-	std::set<ValueReference> overwritingFeedbacks;
-
-	int explicitModelCount = 0;
-
-	for (unsigned int i = 0; i < m_modelContainer.size(); ++i) {
-		// currentModel is the model to which we set the input references
-		AbstractModel *currentModel = m_modelContainer[i];
-		AbstractGenericModel *explicitModel = dynamic_cast<AbstractGenericModel*>(currentModel);
-
-		if (explicitModel == NULL)
-			continue;
-
-		++explicitModelCount;
-
-		try {
-			// retrieve implicit model feedback vector
-			std::vector<ImplicitModelFeedback> implicitModelFeedbacks;
-
-			explicitModel->implicitModelFeedbacks(implicitModelFeedbacks);
-
-			for (unsigned int feedback = 0; feedback < implicitModelFeedbacks.size(); ++feedback) {
-				const ImplicitModelFeedback &implicitModelFeedback =
-					implicitModelFeedbacks[feedback];
-
-				// find the corresponding model
-				ValueReference valueRef;
-				valueRef.m_id = implicitModelFeedback.m_id;
-				valueRef.m_referenceType = implicitModelFeedback.m_referenceType;
-
-				// target quantity does not contain vector index
-				valueRef.m_name = implicitModelFeedback.m_targetName.name();
-
-				// check if we have an overwriting feedback
-				if (implicitModelFeedback.m_operation == NANDRAD::ImplicitModelFeedback::IFO_OVERWRITE) {
-					// overwriting feedbacks may only be defined once
-					if (overwritingFeedbacks.find(valueRef) != overwritingFeedbacks.end()) {
-						throw IBK::Exception(IBK::FormatString("Duplicate ImplicitModelFeedback to target '%1' "
-							"of #%2 with id #%3: Operation 'Overwrite' allows adressing only once!")
-							.arg(valueRef.m_name)
-							.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",
-								valueRef.m_referenceType))
-							.arg(valueRef.m_id),
-							FUNC_ID);
-					}
-					// store feedback
-					overwritingFeedbacks.insert(valueRef);
-				}
-
-				std::map<ValueReference, AbstractStateDependency*>::iterator refIt =
-					modelInputReferences.find(valueRef);
-
-				bool resolved = false;
-
-				// and set resolved attribute
-				if (refIt != modelInputReferences.end()) {
-					resolved = refIt->second->registerInputReference(implicitModelFeedback.m_sourceId,
-						implicitModelFeedback.m_sourceReferenceType,
-						implicitModelFeedback.m_sourceName, implicitModelFeedback.m_targetName,
-						implicitModelFeedback.m_operation);
-				}
-
-				// error: we did not find a model for current feedback
-				if (!resolved) {
-					throw IBK::Exception(IBK::FormatString("Missing quantity %1 in "
-						"%2 model with id #%3!")
-						.arg(implicitModelFeedback.m_targetName.name())
-						.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",
-							implicitModelFeedback.m_referenceType))
-						.arg(implicitModelFeedback.m_id),
-						FUNC_ID);
-				}
-			}
-		}
-		catch (IBK::Exception &ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error resolving implicit model feedback "
-				"for model #%1 with id #%2!")
-				.arg(currentModel->ModelIDName())
-				.arg(currentModel->id()),
-				FUNC_ID);
-		}
-	}
-	IBK::IBK_Message(IBK::FormatString("Processed %1 explicit models\n").arg(explicitModelCount), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-
-
-	// *** create input references for FMU import export model (only imported quantities) ***
-
-	// retrieve implicit model feedback vector
-	std::vector<ImplicitModelFeedback> implicitModelFeedbacksFMU;
-	m_FMU2ImportModel->implicitModelFeedbacks(implicitModelFeedbacksFMU);
-	if (!implicitModelFeedbacksFMU.empty())
-		IBK::IBK_Message(IBK::FormatString("Initializing all references due to FMU import\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-
-	for (unsigned int feedback = 0; feedback < implicitModelFeedbacksFMU.size(); ++feedback) {
-		const ImplicitModelFeedback &implicitModelFeedback =
-			implicitModelFeedbacksFMU[feedback];
-
-		try {
-			// retrieve quantity
-			const QuantityName &sourceQuantity = implicitModelFeedback.m_sourceName;
-			const QuantityName &targetQuantity = implicitModelFeedback.m_targetName;
-			const NANDRAD::ImplicitModelFeedback::operation_t operation
-				= implicitModelFeedback.m_operation;
-			const NANDRAD::ModelInputReference::referenceType_t sourceReferenceType
-				= implicitModelFeedback.m_sourceReferenceType;
-			unsigned int sourceId = implicitModelFeedback.m_sourceId;
-
-			// find the corresponding model
-			ValueReference valueRef;
-			valueRef.m_id = implicitModelFeedback.m_id;
-			valueRef.m_referenceType = implicitModelFeedback.m_referenceType;
-			// target quantity does not contain vector index
-			valueRef.m_name = targetQuantity.name();
-
-			std::map<ValueReference, AbstractStateDependency*>::iterator refIt =
-				modelInputReferences.find(valueRef);
-
-			bool resolved = false;
-
-			// and set resolved attribute
-			if (refIt != modelInputReferences.end()) {
-				resolved = refIt->second->registerInputReference(sourceId,
-					sourceReferenceType, sourceQuantity, targetQuantity, operation);
-			}
-
-			// error: we did not find a model for current feedback
-			if (!resolved) {
-				throw IBK::Exception(IBK::FormatString("Missing quantity %1 in "
-					"%2 model with id #%3!")
-					.arg(implicitModelFeedback.m_targetName.name())
-					.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",
-						implicitModelFeedback.m_referenceType))
-					.arg(implicitModelFeedback.m_id),
-					FUNC_ID);
-			}
-		}
-		catch (IBK::Exception &ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error resolving implicit model feedback "
-				"for model #%1 with id #%2!")
-				.arg(m_FMU2ImportModel->ModelIDName())
-				.arg(m_FMU2ImportModel->id()),
-				FUNC_ID);
-		}
-	}
-
-
-	// *** resolve input references: set value references to other model results and connect model dependencies ***
-
-	IBK::IBK_Message(IBK::FormatString("Resolving inter-model dependencies\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-
-
-	// process all models - use dynamic scheduling, since we have non-linear complexity
-#pragma omp parallel for schedule(static,10)
-	for (int i = 0; i < (int) m_modelContainer.size(); ++i) {
-		// progress is handled by master thread only
-#if defined(_OPENMP)
-		if (omp_get_thread_num()==0) {
-#else
-		{
-#endif
-			if (timer.intervalCompleted()) {
-				IBK::IBK_Message(IBK::FormatString("  Loop 3: %1 %% done\n").arg(i*100.0 / m_modelContainer.size()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-			}
-		} // end master section
-
-		// currentModel is the model that we current look up input references for
-		AbstractModel * currentModel = m_modelContainer[i];
-		AbstractStateDependency * currentStateDependency = dynamic_cast<AbstractStateDependency*>(m_modelContainer[i]);
-
-		// skip all pure time dependend models
-		if (currentStateDependency == NULL)
-			continue;
-
-		try {
-
-			// retrieve list of model references
-			std::vector<InputReference> inputReferences;
-			currentStateDependency->inputReferences(inputReferences);
-
-			IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("  %1[%2] has %3 input references:\n")
-				.arg(currentModel->ModelIDName())
-				.arg(currentModel->id())
-				.arg((unsigned int)inputReferences.size()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
-
-			// store all input reference descriptions
-			std::vector<QuantityDescription> inputDescs;
-			currentStateDependency->inputReferenceDescriptions(inputDescs);
-
-			// process all model input references (j is the index of the currently processed input reference)
-			for (unsigned int j = 0; j < inputReferences.size(); ++j) {
-
-				const InputReference &inputRef = inputReferences[j];
-				const QuantityName &targetQuantity = inputRef.m_targetName;
-				const QuantityName &sourceQuantity = inputRef.m_sourceName;
-
-
-				// find the corresponding model
-				ValueReference valueRef;
-				valueRef.m_id = inputRef.m_id;
-				valueRef.m_referenceType = inputRef.m_referenceType;
-				// target quantity does not contain vector index
-				valueRef.m_name = sourceQuantity.name();
-
-				std::map<ValueReference, AbstractModel*>::iterator refIt =
-					modelResultReferences.find(valueRef);
-
-				bool resolved = false;
-
-				// and set resolved attribute
-				if (refIt != modelResultReferences.end()) {
-#ifdef IBK_DEBUG
-					// skip "y" and "ydot" and all inactive references
-					if (valueRef.m_name != std::string("y") && valueRef.m_name != std::string("ydot") ) {
-						// find reference
-						std::vector<QuantityDescription>::iterator descIt =
-							std::find_if(inputDescs.begin(), inputDescs.end(),
-								NANDRAD::FindByName<QuantityDescription>(targetQuantity.name()));
-
-						IBK_ASSERT(descIt != inputDescs.end());
-
-						IBK::Parameter paraTarget(valueRef.m_name, 0, IBK::Unit(descIt->m_unit));
-
-						// unit differs from parameter unit
-						std::string paraUnit = refIt->first.m_unit;
-						if (paraTarget.IO_unit.name() != paraUnit) {
-							try {
-								paraTarget.get_value(paraUnit);
-							}
-							catch (IBK::Exception &ex) {
-								throw IBK::Exception(ex, IBK::FormatString("Expected unit '#%1' for quantity '#%2' "
-									"referenced from '#%3' with id #%4!")
-									.arg(paraUnit)
-									.arg(valueRef.m_name)
-									.arg(currentModel->ModelIDName())
-									.arg(currentModel->id()), FUNC_ID);
-							}
-						}
-					}
-#endif // IBK_DEBUG
 					// resolve reference
 					AbstractModel *sourceModel = refIt->second;
 
