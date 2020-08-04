@@ -2,3 +2,44 @@
 
 ## Output definitions
 
+Outputs are defined via:
+
+- Grid (when outputs are to be written)
+- Variable/Quantity ID name
+- Object List (selects object to retrieve data from)
+- m_timeType (how to handle time averaging/integration)
+- (optional) target filename
+
+
+## Rules
+
+### When no filename is given
+
+Target file name(s) are automatically defined.
+
+All outputs a grouped by:
+
+- grid and quantity type (Load, Schedule, State, Flux, Misc), quantity type is predefined for most quantity IDs (unknowns -> Misc)
+
+- for each used grid:
+  - states -> `states_<gridname>.tsv`
+  - loads -> `loads_<gridname>.tsv`
+  - fluxes -> `fluxes_<gridname>.tsv`
+  - fluxes (integrated) -> `flux_integrals_<gridname>.tsv`
+
+Special rule: when only one grid is used, and grid has hourly steps all year round, the suffix `_<gridname>` is omitted.
+
+### When a filename is given
+
+- check: all output definitions using this filename must use the *same* grid (same time points for all columns required!)
+
+- all quantities (regardless of type) are written to this file
+
+
+## Binary Format
+
+First record: unsigned int - n (number of columns)
+Next n records: binary strings, leading size (unsigned int) and termination character (sanity checking)
+
+Next ?? records: unsigned int - n (for checking) and afterwards n doubles
+
