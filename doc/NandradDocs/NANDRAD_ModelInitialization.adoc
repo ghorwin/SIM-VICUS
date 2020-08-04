@@ -8,13 +8,13 @@ The following steps are done when initializing the model:
 - setting up directory structure and message handler/log file
 - creating `NANDRAD::Project` instance
 - setting default values via call to `NANDRAD::Project::initDefaults()`
-- reading the project file (only syntactical checks are done), may overwrite defaults
-- checking for valid parametrization and added default values were missing (via call to `NANDRAD::Project::checkParameters()`)
-- apply global defaults read in project to individual objects, i.e. initial temperatures of zones/constructions with `NANDRAD::Project::applyGlobalDefaults()`
+- reading the project file (only syntactical checks are done, and for IBK::Parameter static arrays with default units in keyword list, a check for compatible units is made), may overwrite defaults; correct units should be expected in the data model after reading the project file (maybe add suitable annotation to code generator?)
+- merge similarly behaving construction instances (reduce data structure size)
 
-** From now on the project data structure remains unmodified in memory until end of solver runtime and persistent pointers can be used to address parameter sets. **
+**From now on the project data structure remains unmodified in memory until end of solver runtime and persistent pointers can be used to address parameter sets. This means no vector resizing is allowed, no more data members may be added/removed. **
 
 - setup fast-access connections between parameter data sets (zones to interfaces and vice versa) in Project data structure
+
 
 Now the actual model initialization starts.
 

@@ -1,0 +1,74 @@
+# Schedules
+
+## Overview
+
+Schedules provide purely time-dependent quantities, similar to climatic loads. 
+
+Different to other results-producing models, schedules generate variables for sets of dependent models. As such, a schedule is formulated for an object list, which selects a set of objects taking the provided values.
+
+For example, a schedule defines heating set points (HeatingSetPoint) for living room zones. These are selected by an object list "Living room", which selects _Zone_-type objects with a certain ID range.
+
+
+## Defining schedules
+
+### Rules
+
+#### A certain variable must be only defined once per object list
+
+For example, if you have a regular daily-cycle-based schedule for "HeatingSetPoint" and zone object list "office spaces", there must not be an annual schedule for "HeatingSetPoint" and the same object list name "office spaces"
+
+#### A variable must be defined unambiguously with respect to addressed object
+
+For example, you may have a "HeatingSetPoint" for zone object list "office spaces" and this object list addresses zones with IDs 1 and 4. Now there is a second object list "all spaces", with wildcard ID=* (hereby addressing all zones). You *most not* define the variable "HeatingSetPoint" again for this object list, since otherwise you would get ambiguous defintions of this variable for zones 1 and 4.
+
+#### Annual schedules must begin at simulation start (past the end, values are constant extrapolated)
+
+For annual cyclic schedules, the schedule must start with time 0. For non-cyclic schedules, the schedule must start at latest at actual simulation start, so that start year <= simulation start year and if same year, start time < simulation start time. Basically, the solver must be able to query a value at simulation start.
+
+If simulation continues past the end of an annual schedule, the last value will be simply kept (constant extrapolation).
+
+
+### Regular schedules (based on daily cycles)
+...
+
+### Annual schedules (as linearly interpolated splines)
+...
+
+
+## Implementation
+
+Schedules do not have any dependencies, and are not part of the model graph. They are updated just as climatic loads whenever time changes.
+
+Instead of generated a (potentially large) set of variables for each object adressed by the object list, schedules provide result variable slots for each object list and scheduled quantity. The individual model instances requesting their scheduled parameters share the same variable slot.
+
+For example, two zones of the same object list request a variable reference (pointer to variable slot) from the schedule object, and will get the same pointer for the same variable.
+
+Schedules do not implement the regular model interfaces and are not included in the model graph. Instead, they are handled in a special way by the framework.
+
+### Variable lookup
+
+1. Schedules define variables for object lists.
+2. Object lists address a range of objects based on filter criteria, such as object reference type (e.g. Zone, ConstructionInstance, Interface), and id group/range (a set of IDs)
+
+When a certain object (e.g. a zone with a given ID) wants to get access to a parameter defined for it, a `ValueReference` can be created with:
+
+- reference type = `ZONE`
+- id = zone-id
+- variable_name = required scheduled parameter name
+
+and the schedule object may then lookup the variable as follows:
+
+- cycle through all known object lists (i.e. object lists used in schedule definitions)
+- check if reference type matches, and if id-name is in ID group of object list
+- if object list was found, resolve variable name (from enumeration `Results`)
+- search map for this parameter name for a key that matches the object list's name
+- if match was found, return offset/pointer to the respective result variable
+- in all other cases, return nullptr
+
+### Variable lookup for outputs
+
+
+
+When model input variables are resolved, schedules are the 
+
+
