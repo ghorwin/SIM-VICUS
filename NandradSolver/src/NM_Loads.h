@@ -91,6 +91,7 @@ public:
 	Loads() : DefaultModel(0, "Loads") {}
 
 	/*! Initializes object.
+		This function checks for parameters.
 		\param location Location data.
 		\param pathPlaceHolders Path placeholders to resolve path to climate data
 	*/
@@ -139,20 +140,26 @@ public:
 	// *** Other public member functions
 
 	/*! Adds a surface to the list of computable surfaces.
-		For all surfaces added to the loads class, the computation function calculates
-		radiation loads.
-		You can call this function multiply times with the same arguments, it will only add
-		each surface once.
+		For all surfaces added to the loads class, the computation function calculates radiation loads.
+		You can call this function multiply times with the same arguments, it will only add each surface once.
+
+		This function is usually called when a construction with outside surface is instantiated.
 
 		\param orientation	Orientation of the surface in [deg] (0 - north, 90 - east, ...).
 		\param inclination	Inclination of the surface in [deg] in range [0..180] (0 - roof, 90 - wall, 180 - facing downwards).
 
 		\warning For now, rounding errors in orientation and inclination are not handled properly.
 				So be careful to pass exactly the same orientation and inclination to
-				this function and the query function below.
+				this function and the query function below. Otherwise small rounding errors will cause
+				the function to register multiply surfaces for nearly same orientations, and do unnecessary calculations.
+
+		\todo Compute scalar product between all normal vectors of already registered surfaces and the normal vector
+				of the new surfaces, and if angle between normals is less than a threshold (say 0.1 deg), treat
+				surfaces as the same.
+
 		\return Returns the ID of the new surface (can also be used to query results).
 	*/
-//	void addSurface(unsigned int objectID, double orientation, double inclination);
+	void addSurface(unsigned int objectID, double orientation, double inclination);
 
 	/*! Returns the direct and diffuse radiation on a given surface.
 		This function works essentially as the function above, but identifies the surface via a surfaceId.
@@ -173,7 +180,7 @@ public:
 private:
 	/*! Year of simulation. */
 	int										m_year = 0;
-	/*! Pointer to start time from the beginning of the year in [s]. */
+	/*! Time from the beginning of the year in [s]. */
 	double									m_startTime = 0;
 	/*! Simulation time.*/
 	double									m_t = 0;

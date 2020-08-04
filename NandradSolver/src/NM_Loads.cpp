@@ -331,7 +331,6 @@ int Loads::setTime(double t) {
 			m_shadingFactors[i] = alpha * nextData[i] +	beta * lastData[i];
 		}
 	}
-#endif // TODO
 
 
 	if (!m_sensorID2surfaceID.empty()) {
@@ -354,6 +353,7 @@ int Loads::setTime(double t) {
 			*sensorValIt = qRadDir + qRadDiff;
 		}
 	}
+#endif // TODO
 
 	// signal success
 	return 0;
@@ -400,8 +400,8 @@ const double * Loads::resultValueRef(const QuantityName & quantityName) const {
 }
 
 
-#if 0
 void Loads::addSurface(unsigned int objectID, double orientation, double inclination) {
+#if 0
 	const char * const FUNC_ID = "[Loads::addSurface]";
 
 	unsigned int surfaceID = m_solarRadiationModel.addSurface(orientation, inclination);
@@ -467,8 +467,8 @@ void Loads::addSurface(unsigned int objectID, double orientation, double inclina
 	}
 #endif // TODO
 
-}
 #endif
+}
 
 
 double Loads::qSWRad(unsigned int objectID, double & qRadDir, double & qRadDiff, double & incidenceAngle) const {
