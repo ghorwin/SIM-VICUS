@@ -20,15 +20,15 @@ Lesser General Public License for more details.
 
 #include "NM_StateModelGroup.h"
 
-#include "NM_AbstractStateDependency.h"
-#include "NM_HydraulicCircuidModel.h"
-#include "NM_DAEMatrixPattern.h"
-#include "NM_DetailedWindowModel.h"
-#include "NM_AbstractODEBalanceModel.h"
+#include "NM_DefaultStateDependency.h"
+//#include "NM_HydraulicCircuidModel.h"
+//#include "NM_DAEMatrixPattern.h"
+//#include "NM_DetailedWindowModel.h"
+//#include "NM_AbstractODEBalanceModel.h"
 
 #include <NANDRAD_SolverParameter.h>
 
-#include <SOLFRA_JacobianDense.h>
+//#include <SOLFRA_JacobianDense.h>
 #include <SOLFRA_JacobianSparseCSR.h>
 
 #include <IBK_assert.h>
@@ -125,7 +125,7 @@ void StateModelGroup::init(const ZEPPELIN::DependencyGroup &group,
 	m_groupType = group.type();
 
 	m_modelTypeId |= DefaultStateDependency::SteadyState;
-	if (m_groupType == ZEPPELIN::DependencyGroup::CYCLIC) 
+	if (m_groupType == ZEPPELIN::DependencyGroup::CYCLIC)
 		m_modelTypeId |= DefaultStateDependency::CyclicGroup;
 
 	// retrieve optional settings for relative and absolute tolerance
@@ -180,7 +180,7 @@ void StateModelGroup::stateDependencies(std::vector< std::pair<const double *, c
 
 
 void StateModelGroup::initResultValueRefs() {
-
+#if 0
 	m_modelResultsOffset.push_back(0);
 	for (std::vector<AbstractStateDependency*>::const_iterator it = m_models.begin();
 		it != m_models.end(); ++it)
@@ -239,6 +239,7 @@ void StateModelGroup::initResultValueRefs() {
 		// store offset for next model results
 		m_modelResultsOffset.push_back((unsigned int) m_resultValueRefs.size());
 	}
+#endif
 }
 
 
@@ -267,7 +268,7 @@ void StateModelGroup::initConstraints() {
 		if (localConstraintsPerValueRef.empty())
 			continue;
 		// copy into rows vector
-		constraintsPerValueRef.insert(localConstraintsPerValueRef.begin(), 
+		constraintsPerValueRef.insert(localConstraintsPerValueRef.begin(),
 			localConstraintsPerValueRef.end());
 	}
 	// no constraints
@@ -296,7 +297,7 @@ void StateModelGroup::initSparseSolver(IBKMK::SparseMatrixPattern &pattern,
 	IBKMK::SparseMatrixPattern &patternTranspose)
 {
 	const char * const FUNC_ID = "[StateModelGroup::initSparseSolver]";
-
+#if 0
 	if (m_resultValueRefs.empty()) {
 		// generate all dependency information
 		initResultValueRefs();
@@ -462,6 +463,7 @@ void StateModelGroup::initSparseSolver(IBKMK::SparseMatrixPattern &pattern,
 	}
 
 	SteadyStateSolver::setOptions(options);
+#endif
 }
 
 
@@ -560,7 +562,7 @@ int StateModelGroup::update() {
 				// enforce solver abort
 				if (result > 1)
 					return result;
-				// transfer initial solution for kinsol run 
+				// transfer initial solution for kinsol run
 				std::memcpy(&m_yPrev[0], &m_y[0], n() * sizeof(double));
 			}
 
@@ -569,7 +571,7 @@ int StateModelGroup::update() {
 				IBK_ASSERT(!m_sc.empty());
 				// calculate new factors
 				for (unsigned int i = 0; i < n(); ++i) {
-					m_sc[i] = std::min(std::max(1.0 / (std::fabs(m_y[i]) + m_absoluteToleranceBand), 
+					m_sc[i] = std::min(std::max(1.0 / (std::fabs(m_y[i]) + m_absoluteToleranceBand),
 						1e-07), 1e+07);
 				}
 			}
@@ -586,19 +588,19 @@ int StateModelGroup::update() {
 					"Try again with updated Jacobain or reduce time step.\n"),
 					IBK::MSG_WARNING, FUNC_ID);
 				// signal error
- 				return 1;
+				return 1;
 			}
 			else {
 				// set states to new solution
 				updateStates();
-				// transfer initial solution for kinsol run 
+				// transfer initial solution for kinsol run
 				std::memcpy(&m_yPrev[0], &m_y[0], n() * sizeof(double));
 				// signal success
 				return 0;
 			}
 
 		} break;
-		default : 
+		default :
 			return 0;
 		break;
 	}
@@ -671,9 +673,9 @@ SOLFRA::ModelInterface::CalculationResult StateModelGroup::ydot(double * ydot) {
 			++rowIdx;
 		}
 	}
-
+#if 0
 	if (dynamic_cast<SOLFRA::JacobianDense*> (jacobianInterface()) != NULL) {
-		
+
 		// we frequently update all models and compare values afterward
 		for (unsigned int modelIdx = 0; modelIdx < m_models.size(); ++modelIdx) {
 			// do not allow empty model references
@@ -754,6 +756,7 @@ SOLFRA::ModelInterface::CalculationResult StateModelGroup::ydot(double * ydot) {
 				return SOLFRA::ModelInterface::CalculationRecoverableError;
 		}
 	}
+#endif
 	// copy values
 	std::memcpy(ydot, &m_ydot[0], n() * sizeof(double));
 

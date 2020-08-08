@@ -28,104 +28,45 @@ Lesser General Public License for more details.
 
 namespace NANDRAD_MODEL {
 
-VectorValuedQuantity::VectorValuedQuantity(unsigned int n,  VectorValuedQuantityIndex::IndexKeyType keyType) :
-	m_data(n),
-	m_keyType(keyType)
-{
-	for(unsigned int i = 0; i < n; ++i)
-	{
-		m_indexKeys.insert(i);
-	}
-}
-
-VectorValuedQuantity::VectorValuedQuantity(unsigned int n, double value, VectorValuedQuantityIndex::IndexKeyType keyType) :
+VectorValuedQuantity::VectorValuedQuantity(unsigned int n, double value) :
 	m_data(n, value),
-	m_keyType(keyType)
+	m_keyType(VectorValuedQuantityIndex::IK_Index)
 {
-	for(unsigned int i = 0; i < n; ++i) {
-		m_indexKeys.insert(i);
-	}
+	m_indexKeys.resize(n);
+
+	for (unsigned int i = 0; i < n; ++i)
+		m_indexKeys[i] = i;
 }
 
 
-void VectorValuedQuantity::resize(unsigned int n, VectorValuedQuantityIndex::IndexKeyType keyType) {
-	m_data.resize(n);
-	m_keyType = keyType;
-	for (unsigned int i = 0; i < n; ++i) {
-		m_indexKeys.insert(i);
-	}
-}
-
-void VectorValuedQuantity::resize(const std::set<unsigned int> &indexKeys, VectorValuedQuantityIndex::IndexKeyType keyType) {
-	m_data.resize((unsigned int)indexKeys.size());
-	m_keyType = keyType;
-	m_indexKeys = indexKeys;
-}
-
-std::vector<double>::iterator VectorValuedQuantity::find(unsigned int i) {
+const double & VectorValuedQuantity::operator[](unsigned int i) const {
+	FUNCID(VectorValuedQuantity::operator[]);
 	// debug check: have data and key vectors the same size
 	IBK_ASSERT(m_data.size() == m_indexKeys.size() );
-	// find index element
-	std::set<unsigned int>::iterator it = m_indexKeys.find(i);
-	// element undefined
-	if(it == m_indexKeys.end() )
-		return m_data.end();
+	// find index/modelID
+	std::vector<unsigned int>::const_iterator it = std::find(m_indexKeys.begin(), m_indexKeys.end(), i);
+	if (it == m_indexKeys.end())
+		throw IBK::Exception(IBK::FormatString("Index/modelID %1 not in list of available indexes/model IDs.").arg(i), FUNC_ID);
+
 	// calculate vector position
-	int index = (int)std::distance(m_indexKeys.begin(), it);
-	IBK_ASSERT(index < (int) m_data.size() );
-	// construct a data iterator
-	std::vector<double>::iterator dataIt = m_data.begin() + index;
-	return dataIt;
-}
-
-std::vector<double>::const_iterator VectorValuedQuantity::find(unsigned int i) const{
-	// debug check: have data and key vectors the same size
-	IBK_ASSERT(m_data.size() == m_indexKeys.size() );
-	// find index element
-	std::set<unsigned int>::const_iterator it = m_indexKeys.find(i);
-	// element undefined
-	if(it == m_indexKeys.end() )
-		return m_data.end();
-	// calculate vector position
-	int index = (int)std::distance(m_indexKeys.begin(), it);
-	IBK_ASSERT(index < (int) m_data.size() );
-	// construct a data iterator
-	std::vector<double>::const_iterator dataIt = m_data.begin() + index;
-	return dataIt;
+	size_t index = (size_t)std::distance(m_indexKeys.begin(), it);
+	return m_data[index];
 }
 
 
-double & VectorValuedQuantity::operator[] (unsigned int i) {
+const double & VectorValuedQuantity::insert(unsigned int i) {
 	// debug check: have data and key vectors the same size
 	IBK_ASSERT(m_data.size() == m_indexKeys.size() );
-	// find the corresponding index or insert a new one if the index does not exist already
-	std::pair<std::set<unsigned int>::iterator,bool> it = m_indexKeys.insert(i);
-	bool insertedNew = it.second;
-	// calculate the vector position of the requested element
-	int index = (int)std::distance(m_indexKeys.begin(), it.first);
-	// the element exists already
-	if(!insertedNew) {
-		// choose the IBK::UnitVector function for vector access
-		return m_data[index];
+	// find index/modelID
+	std::vector<unsigned int>::iterator it = std::find(m_indexKeys.begin(), m_indexKeys.end(), i);
+	if (it == m_indexKeys.end()) {
+		m_data.push_back(0);
+		m_indexKeys.push_back(i);
+		return m_data.back();
 	}
-	// a new element was inserted
-	else {
-		IBK_ASSERT(index < (int) m_data.size() );
-		// add a new element to unit vector
-		std::vector<double>::iterator dataIt = m_data.insert(m_data.begin() + index, 0.0);
-		// and return its data
-		return *dataIt;
-	}
-}
 
-const double & VectorValuedQuantity::operator[] (unsigned int i) const {
-	// debug check: have data and key vectors the same size
-	IBK_ASSERT(m_data.size() == m_indexKeys.size() );
-	// find index element
-	std::set<unsigned int>::const_iterator it = m_indexKeys.find(i);
 	// calculate vector position
-	int index = (int)std::distance(m_indexKeys.begin(), it);
-	// choose the IBK::UnitVector function for vector access
+	size_t index = (size_t)std::distance(m_indexKeys.begin(), it);
 	return m_data[index];
 }
 

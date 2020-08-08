@@ -60,6 +60,7 @@ void VectorValuedQuantityIndex::set(const std::string &keyString) {
 	}
 }
 
+
 void VectorValuedQuantityIndex::set(const IndexKeyType keyType, const unsigned int keyValue) {
 	const char * const FUNC_ID = "[VectorValuedQuantityIndex::set]";
 	// check if keyType is correct
@@ -70,6 +71,7 @@ void VectorValuedQuantityIndex::set(const IndexKeyType keyType, const unsigned i
 	m_keyValue = keyValue;
 }
 
+
 std::string VectorValuedQuantityIndex::toString() const {
 	if (m_keyType == IK_Index)
 		return IBK::val2string<unsigned int>(m_keyValue);
@@ -77,5 +79,6 @@ std::string VectorValuedQuantityIndex::toString() const {
 		return std::string("id=") + IBK::val2string<unsigned int>(m_keyValue);
 	throw IBK::Exception("Cannot generate encoded index string from invalid vector index (type is invalid).", "[VectorValuedQuantityIndex::toString]");
 }
+
 
 } // namespace NANDRAD_MODEL

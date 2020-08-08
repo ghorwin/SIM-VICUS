@@ -20,16 +20,16 @@ Lesser General Public License for more details.
 
 #include "NM_ThermalComfortModel.h"
 
-#include "NM_ConstructionInsideBCModel.h"
-#include "NM_ConstructionStatesModel.h"
+//#include "NM_ConstructionInsideBCModel.h"
+//#include "NM_ConstructionStatesModel.h"
 #include "NM_KeywordList.h"
 #include "NM_RoomBalanceModel.h"
-#include "NM_ConstantWindowModel.h"
+//#include "NM_ConstantWindowModel.h"
 
 #include <NANDRAD_ModelInputReference.h>
 #include <NANDRAD_Zone.h>
 #include <NANDRAD_Interface.h>
-#include <NANDRAD_ParametrizationDefaults.h>
+//#include <NANDRAD_ParametrizationDefaults.h>
 #include <NANDRAD_SimulationParameter.h>
 
 using namespace std;
@@ -47,6 +47,7 @@ int ThermalComfortModel::priorityOfModelEvaluation() const {
 }
 
 void ThermalComfortModel::inputReferenceDescriptions(std::vector<QuantityDescription> & refDesc) const {
+#if 0
 	// use default model implementation
 	DefaultStateDependency::inputReferenceDescriptions(refDesc);
 	// exclude inactive references to interfaces embedded objects
@@ -63,10 +64,11 @@ void ThermalComfortModel::inputReferenceDescriptions(std::vector<QuantityDescrip
 		// resize surface area
 		refDesc[InputRef_Area].resize(m_surfaceIds, VectorValuedQuantityIndex::IK_ModelID);
 	}
+#endif
 }
 
 void ThermalComfortModel::initInputReferences(const std::vector<AbstractModel*> & models) {
-
+#if 0
 	const char * const FUNC_ID = "[ThermalComfortModel::initInputReferences]";
 
 	/*! Pointer to all inside interfaces of the current room. */
@@ -104,7 +106,7 @@ void ThermalComfortModel::initInputReferences(const std::vector<AbstractModel*> 
 		}
 	}
 
-	// retrieve names of the requested quantities using the keyword list 
+	// retrieve names of the requested quantities using the keyword list
 	// information
 	std::string sourceCategory	= "ConstructionStatesModel::Results";
 	std::string targetCategory	= ModelIDName() + std::string("::InputReferences");
@@ -157,7 +159,7 @@ void ThermalComfortModel::initInputReferences(const std::vector<AbstractModel*> 
 		// wall surface temperatures we compose an input reference to a vector valued target
 		// using the interface id-number as index identification
 		targetName = QuantityName(
-			KeywordList::Keyword(targetCategory.c_str(), InputRef_RadiantTemperature), 
+			KeywordList::Keyword(targetCategory.c_str(), InputRef_RadiantTemperature),
 			windowIds[i]);
 		// construct a new input reference
 		InputReference windowTempRef;
@@ -178,7 +180,7 @@ void ThermalComfortModel::initInputReferences(const std::vector<AbstractModel*> 
 	roomTempRef.m_targetName    = targetName;
 	// we retrieve this quantity from a zone calculatioon model
 	roomTempRef.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
-	roomTempRef.m_id = id(); 
+	roomTempRef.m_id = id();
 	roomTempRef.m_sourceName    = targetName;
 	// using the quantity type sort reference into
 	// m_inputReferences vector
@@ -196,7 +198,7 @@ void ThermalComfortModel::initInputReferences(const std::vector<AbstractModel*> 
 		wallAreaRef.m_sourceName = KeywordList::Keyword(targetCategory.c_str(), InputRef_Area);
 		wallAreaRef.m_referenceType	   = NANDRAD::ModelInputReference::MRT_INTERFACE;
 		// interface id number
-		wallAreaRef.m_id			   = iface.m_id; 
+		wallAreaRef.m_id			   = iface.m_id;
 		wallAreaRef.m_targetName	   = targetName;
 		// set reference to constant
 		wallAreaRef.m_constant = true;
@@ -225,6 +227,7 @@ void ThermalComfortModel::initInputReferences(const std::vector<AbstractModel*> 
 		// m_inpoutReferences vector
 		inputReference(InputRef_Area, windowIds[i]) = windowAreaRef;
 	}
+#endif
 }
 
 int ThermalComfortModel::update() {
@@ -256,8 +259,8 @@ int ThermalComfortModel::update() {
 	std::vector<const double *>::const_iterator areaIt	   = inputValueRefs(InputRef_Area);
 
 	// loop over all enclosing surfaces
-	for(std::set<unsigned int>::const_iterator 
-		surfaceIt = m_surfaceIds.begin(); 
+	for(std::set<unsigned int>::const_iterator
+		surfaceIt = m_surfaceIds.begin();
 		surfaceIt != m_surfaceIds.end();
 		++surfaceIt, ++surfTempIt, ++areaIt)
 	{
@@ -290,7 +293,7 @@ int ThermalComfortModel::update() {
 }
 
 
-void ThermalComfortModel::stateDependencies(std::vector< std::pair<const double *, const double *> > 
+void ThermalComfortModel::stateDependencies(std::vector< std::pair<const double *, const double *> >
 							&resultInputValueReferences) const {
 
 	// connect all convective and radiant sources
@@ -323,7 +326,7 @@ void ThermalComfortModel::stateDependencies(std::vector< std::pair<const double 
 			resultInputValueReferences.push_back(std::make_pair(valueRef, inputRef)  );
 		}
 	}
-	// connect operative temperature to all temepratures 
+	// connect operative temperature to all temepratures
 	// connect all convective and radiant sources
 	valueRef = &m_results[R_OperativeTemperature].value;
 	// room air temperature

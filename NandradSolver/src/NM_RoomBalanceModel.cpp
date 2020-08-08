@@ -19,7 +19,7 @@ Lesser General Public License for more details.
 */
 
 #include "NM_RoomBalanceModel.h"
-#include "NM_Constants.h"
+//#include "NM_Constants.h"
 #include "NM_KeywordList.h"
 
 #include <NANDRAD_ModelInputReference.h>
@@ -28,6 +28,8 @@ Lesser General Public License for more details.
 using namespace std;
 
 namespace NANDRAD_MODEL {
+
+#if 0
 
 int RoomBalanceModel::priorityOfModelEvaluation() const {
 	// We have the following model dependency sequence at the end of evaluation stack:
@@ -407,7 +409,7 @@ int RoomBalanceModel::update() {
 	// signal success
 	return 0;
 }
-
+#endif
 
 void RoomBalanceModel::setY(const double * y) {
 	m_y[0] = y[0];

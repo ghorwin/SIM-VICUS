@@ -40,13 +40,14 @@ namespace NANDRAD_MODEL {
 	update procedure calulates the sum of fluxes and divergences into
 	the room.
 */
-class RoomBalanceModel : public DefaultModel, public DefaultStateDependency {
+class RoomBalanceModel : public DefaultModel, public AbstractStateDependency {
 public:
 
 	enum Results {
-		R_CompleteThermalLoad,								// Keyword: CompleteThermalLoad				[W]		'Sum of all thermal fluxes into the room.'
+		R_CompleteThermalLoad,								// Keyword: CompleteThermalLoad							[W]		'Sum of all thermal fluxes into the room.'
 		NUM_R
 	};
+
 	enum InputReferences {
 		InputRef_RadiationLoadFraction,						// Keyword: RadiationLoadFraction						[%]		'Percentage of solar radiation gains attributed direcly to current room.'
 		InputRef_WallsHeatConductionLoad,					// Keyword: WallsHeatConductionLoad						[W]		'Heat load by heat conduction through all enclosing walls.'

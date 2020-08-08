@@ -28,7 +28,16 @@ Lesser General Public License for more details.
 
 namespace NANDRAD_MODEL {
 
-/*!	This class declares provides a default implementation for a model. */
+/*!	This class declares provides a default implementation for a model.
+	The class is a convenience implementation that provides defaults for
+	publishing calculation results based on enumeration values.
+
+	It expects implementing classes to provide the enumerations Results and
+	VectorValuedResults (both optional), with corresponding keyword definitions.
+	Then, the default implementation will create storage space for the
+	computed quantities (m_results and m_vectorValuedResults) and generate
+	QuantityDescription for each provided result.
+*/
 class DefaultModel : public AbstractModel {
 public:
 
@@ -43,6 +52,11 @@ public:
 		m_displayName(displayName)
 	{
 	}
+
+	/*! Copy constructor is not available (disable copy). */
+	DefaultModel(const DefaultModel &) = delete;
+	/*! Assignment operator is not available (disable copy). */
+	const DefaultModel & operator=(const DefaultModel &) = delete;
 
 	/*! Returns unique ID of this model instance. */
 	virtual unsigned int id() const override { return m_id; }
@@ -68,28 +82,14 @@ public:
 	*/
 	virtual void resultValueRefs(std::vector<const double *> &res) const override;
 
-	/*! Looks up a referenced quantity and returns a pointer to the
-		double value memory location.
-		The default implementation uses the KeywordList and searches
-		Variables enumerations for matching quantity names.
+	/*! Looks up a referenced quantity and returns a pointer to the double value memory location.
+		The default implementation uses the KeywordList and searches enumeration 'Results' for matching quantity names.
 		The function then returns a pointer to the respective memory location.
-		This memory location must be, once reported to the framework, persistant throughout
-		the lifetime of the model object.
 		\return A const pointer to the double, or nullptr of no such quantity was found.
 		\note If a vector quantity is requested without indication of an index, the pointer returned points to
 			the begin of the memory array holding the vector data.
 	*/
 	virtual const double * resultValueRef(const QuantityName & quantityName) const override;
-
-	/*! Transforms a target name into a target identifier for a scalar quantity.
-		Returns -1 for missing quantity.
-	*/
-	virtual int decodeResultType(const std::string &quantity) const;
-
-	/*! Transforms a target name into a target identifier for a vector valued quantity.
-		Returns -1 for missing quantity.
-	*/
-	virtual int decodeVectorValuedResultType(const std::string &quantity) const;
 
 protected:
 
@@ -115,13 +115,17 @@ protected:
 	*/
 	virtual void initResults(const std::vector<AbstractModel*> & models) override;
 
-	/*! Informs the model that a step was successfully completed.
-		The time point and value vector passed to the function correspond to
-		the current state in the integrator object.
-		This function can be used to write restart info.
-		Default implementation does nothing.
+
+
+	/*! Transforms a target name into a target identifier for a scalar quantity.
+		Returns -1 for missing quantity.
 	*/
-	virtual void stepCompleted(double /*t*/) { }
+	int decodeResultType(const std::string &quantity) const;
+
+	/*! Transforms a target name into a target identifier for a vector valued quantity.
+		Returns -1 for missing quantity.
+	*/
+	int decodeVectorValuedResultType(const std::string &quantity) const;
 
 	/*! Results, computed/updated during the calculation. */
 	std::vector<IBK::Parameter>			m_results;
@@ -129,10 +133,6 @@ protected:
 	std::vector<VectorValuedQuantity>	m_vectorValuedResults;
 
 private:
-	/*! Copy constructor is private and not implemented (disable copy). */
-	DefaultModel(const DefaultModel &);
-	/*! Assignment operator is private and not implemented (disable copy). */
-	const DefaultModel & operator=(const DefaultModel &);
 
 	/*! The (unique) ID of this model instance. */
 	unsigned int						m_id;

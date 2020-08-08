@@ -20,7 +20,7 @@ Lesser General Public License for more details.
 
 #include "NM_SteadyStateSolver.h"
 
-#include <SOLFRA_JacobianDense.h>
+//#include <SOLFRA_JacobianDense.h>
 #include <SOLFRA_JacobianSparseCSR.h>
 
 #include <IBK_assert.h>
@@ -67,7 +67,7 @@ inline int KINSysFn_f(N_Vector y, N_Vector res, void *user_data) {
 	// set y value and calculate corresponding residuals
 	int result = stateModel->updateStatesAndResiduals(NV_DATA(y));
 	// return error
- 	if (result > 0)
+	if (result > 0)
 		return result;
 	// copy residuals
 	std::memcpy(NV_DATA(res), stateModel->residuals(), stateModel->n() * sizeof(double));
@@ -75,7 +75,7 @@ inline int KINSysFn_f(N_Vector y, N_Vector res, void *user_data) {
 }
 // ---------------------------------------------------------------------------
 
-/*! Wrapper function called from Kinsol solver for calculation of the Jacobian. 
+/*! Wrapper function called from Kinsol solver for calculation of the Jacobian.
 We need this function in order to specially treat singular matrix entries.
 \param y Estimated solution vector at current solution state.
 \param res Residual vector at current solution state.
@@ -94,7 +94,7 @@ inline int KINDlsDenseJacFn_f(long int n, N_Vector y, N_Vector res,
 	// return error
 	if (result > 0)
 		return result;
-
+#if 0
 	// we only accept dense jacobian
 	SOLFRA::JacobianDense* jacDense = dynamic_cast<SOLFRA::JacobianDense*> (stateModel->jacobianInterface());
 	IBK_ASSERT(jacDense != NULL);
@@ -105,6 +105,7 @@ inline int KINDlsDenseJacFn_f(long int n, N_Vector y, N_Vector res,
 			DENSE_ELEM(J,i,j) = (*jacDense)(i, j);
 		}
 	}
+#endif
 	return 0; // Success
 }
 // ---------------------------------------------------------------------------
@@ -265,8 +266,9 @@ void SteadyStateSolver::initSparseSolver(const std::vector<unsigned int> &ia,
 }
 
 
-void SteadyStateSolver::initDenseSolver(unsigned int n)
-{
+
+void SteadyStateSolver::initDenseSolver(unsigned int n) {
+#if 0
 	const char * const FUNC_ID = "[SteadyStateSolver::initDenseSolver]";
 	// resize all vectors
 	m_y.resize(n, 0.0);
@@ -315,6 +317,7 @@ void SteadyStateSolver::initDenseSolver(unsigned int n)
 
 	// initialize local solution
 	std::memcpy(&m_y[0], y0(), n * sizeof(double));
+#endif
 }
 
 
@@ -383,7 +386,7 @@ void SteadyStateSolver::setMaxNonlinearIterations(unsigned int maxNonlinIter) {
 
 
 SOLFRA::ModelInterface::CalculationResult SteadyStateSolver::newtonIteration(const double *yscale,
- 																			 const double *fscale) {
+																			 const double *fscale) {
 
 	const char * const FUNC_ID = "[SteadyStateSolver::newtonIteration]";
 	// if no jacobian is defined set jacobian and solver to dense
@@ -395,7 +398,7 @@ SOLFRA::ModelInterface::CalculationResult SteadyStateSolver::newtonIteration(con
 
 	// get initial states
 	std::memcpy( &m_y[0], y0(), n() * sizeof(double));
-	// transfer initial solution for kinsol run 
+	// transfer initial solution for kinsol run
 	std::memcpy(NV_DATA(m_yStorageKinsol), &m_y[0], n() * sizeof(double));
 
 	if (yscale != NULL) {
@@ -491,8 +494,8 @@ int SteadyStateSolver::updateStatesAndResiduals(const double * y) {
 }
 
 
-int SteadyStateSolver::updateJacobian(const double * y)
-{
+int SteadyStateSolver::updateJacobian(const double * y) {
+#if 0
 	// start updating residuals for new Jacobian calculation
 	std::fill(m_zeroRows.begin(), m_zeroRows.end(), false);
 	// get current state and calculate residuals
@@ -561,6 +564,8 @@ int SteadyStateSolver::updateJacobian(const double * y)
 	}
 	// signal success
 	return res;
+#endif
+	return 0;
 }
 
 } // namespace NANDRAD_MODEL

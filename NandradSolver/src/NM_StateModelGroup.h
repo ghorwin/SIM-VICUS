@@ -168,11 +168,11 @@ protected:
 	/*! Does nothing.*/
 	virtual void inputReferences(std::vector<InputReference>  & /* inputRefs*/) const { }
 	/*! Does nothing.*/
-	virtual bool registerInputReference(unsigned int /*sourceID*/,
-		NANDRAD::ModelInputReference::referenceType_t /*referenceType*/,
-		const QuantityName &/*quantity*/,
-		const QuantityName &/*targetName*/,
-		NANDRAD::ImplicitModelFeedback::operation_t /*operation*/) { return false; }
+//	virtual bool registerInputReference(unsigned int /*sourceID*/,
+//		NANDRAD::ModelInputReference::referenceType_t /*referenceType*/,
+//		const QuantityName &/*quantity*/,
+//		const QuantityName &/*targetName*/,
+//		NANDRAD::ImplicitModelFeedback::operation_t /*operation*/) { return false; }
 	/*! Does nothing.*/
 	virtual void setInputValueRef(const double * /*resultValueRef*/, const QuantityName &/*targetName*/) { }
 

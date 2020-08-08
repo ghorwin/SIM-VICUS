@@ -324,6 +324,7 @@ void DefaultStateDependency::stateDependencies(std::vector< std::pair<const doub
 void DefaultStateDependency::constraints(std::map< const double *,
 	std::pair<double, double> > &constraintsPerValueRef) const
 {
+#if 0
 	if (!constraintsPerValueRef.empty())
 		constraintsPerValueRef.clear();
 
@@ -381,6 +382,7 @@ void DefaultStateDependency::constraints(std::map< const double *,
 			}
 		}
 	}
+#endif
 }
 
 

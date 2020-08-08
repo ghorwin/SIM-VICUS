@@ -101,8 +101,8 @@ NandradModel::~NandradModel() {
 		delete *it;
 	}
 
-	// note: m_loads and m_schedules are only quick-references to the model objects stored
-	//		 in m_modelContainer. They are deleted along with all other generated model objects.
+	delete m_schedules;
+	// note: m_loads is handled just as any other model and cleaned up as part of the m_modelContainer cleanup above
 }
 
 
@@ -959,9 +959,8 @@ void NandradModel::initSchedules() {
 	IBK::IBK_Message(IBK::FormatString("Initializing Schedules\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK::MessageIndentor indent; (void)indent;
 
-	m_schedules = new Schedules;
-	// insert schedules into model container
-	m_modelContainer.push_back(m_schedules); // now owns the model and handles memory cleanup
+	m_schedules = new Schedules; // owned, memory released in destructor
+
 	// insert schedules into model container
 	m_timeModelContainer.push_back(m_schedules);
 
@@ -1785,21 +1784,20 @@ void NandradModel::initModelDependencies() {
 			currentStateDependency->initInputReferences(m_modelContainer);
 
 			// request published input variables from model instance
-			std::vector<QuantityDescription> inputDescs;
-			currentStateDependency->inputReferenceDescriptions(inputDescs);
+			std::vector<InputReference> inputRefs;
+			currentStateDependency->inputReferences(inputRefs);
 			// process and lookup all of variables
-			for (unsigned int j = 0; j < inputDescs.size(); ++j) {
-				const QuantityDescription &inputDesc = inputDescs[j];
+			for (unsigned int j = 0; j < inputRefs.size(); ++j) {
+				const InputReference &inputRef = inputRefs[j];
 				// compose search key
-				ValueReference inputRef;
-				inputRef.m_id = m_modelContainer[i]->id();
-				inputRef.m_referenceType = m_modelContainer[i]->referenceType();
-				inputRef.m_name = inputDesc.m_name;
+				ValueReference valueRef;
+				valueRef.m_id = m_modelContainer[i]->id();
+				valueRef.m_referenceType = m_modelContainer[i]->referenceType();
+				valueRef.m_name = inputRef.m_sourceName.m_name;
 
-//				QuantityName targetName(inputDesc.m_name, inputDesc.m)
+				QuantityName targetName = inputRef.m_sourceName;
 
-				// now lookup variable
-
+				// now lookup object providing the variable
 				AbstractModel* srcObject = nullptr;
 
 				// 1. FMU overrides
@@ -1814,7 +1812,7 @@ void NandradModel::initModelDependencies() {
 
 				// 2. regular lookup
 				if (srcObject == nullptr) {
-					std::map<ValueReference, AbstractModel*>::const_iterator it = modelResultReferences.find(inputRef);
+					std::map<ValueReference, AbstractModel*>::const_iterator it = modelResultReferences.find(valueRef);
 					if (it != modelResultReferences.end())
 						srcObject = it->second;
 				}
@@ -1832,30 +1830,40 @@ void NandradModel::initModelDependencies() {
 					//	srcObject = m_schedules;
 				}
 
-				// 4. check if object actually provides the data needed by our model instance
 
+				const double * srcVarAddress = nullptr;
 				if (srcObject != nullptr) {
+					// request the address to the requested variable from the source object
+					srcVarAddress = srcObject->resultValueRef(inputRef.m_sourceName);
+					// Note: may be a nullptr
+				}
 
+				// if we didn't find a source object or source variable, raise an exception if the requested variable
+				// was a required input
+
+				if (inputRef.m_required) {
+					// error: reference was not resolved
+					throw IBK::Exception(IBK::FormatString("Could not resolve reference to quantity %1 of %2 with id #%3!")
+						.arg(valueRef.m_name)
+						.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", valueRef.m_referenceType))
+						.arg(valueRef.m_id), FUNC_ID);
 				}
 				else {
-					// we didn't find a source object, raise an exception if the requested variable
-					// was a required input
+					// tell the model object that we do not have such an input; the model must handle this appropriately
+					currentStateDependency->setInputValueRef(nullptr, targetName);
 
-					if (inputDesc.m_required) {
-						// error: reference was not resolved
-						throw IBK::Exception(IBK::FormatString("Could not resolve reference to quantity %1 of %2 with id #%3!")
-							.arg(inputRef.m_name)
-							.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", inputRef.m_referenceType))
-							.arg(inputRef.m_id), FUNC_ID);
+					// register this model as dependency: avoid dependencies if there is a direct connection
+					// to y-vector or if the referenced value is a constant
+					if (!inputRef.m_constant) {
+						// do have a graph element
+						const ZEPPELIN::DependencyObject *sourceObject = dynamic_cast<ZEPPELIN::DependencyObject*>(srcObject);
+						if (sourceObject != nullptr)
+							currentStateDependency->dependsOn(*sourceObject);
+							// Note: we are calling the const-variant, so that sourceObject won't
+							//       be modified and this function remains thread-safe. The parents are set after this
+							//       parallel for loop has completed.
 					}
-					else {
-						// tell the model object that we do not have such an input
-						currentStateDependency->setInputValueRef(nullptr, targetName);
-
-					}
-
 				}
-
 			}
 		}
 		catch (IBK::Exception &ex) {
@@ -1887,78 +1895,21 @@ void NandradModel::initModelDependencies() {
 			modelInputReferences[ modelInputReferencesVec[i][j].first] = modelInputReferencesVec[i][j].second;
 	}
 #endif
-					// resolve reference
-					AbstractModel *sourceModel = refIt->second;
 
-					// check unit
-					// now check if model offers requested quantity
-					const double * valuePtr = sourceModel->resultValueRef(sourceQuantity);
-					if (valuePtr != NULL) {
-						resolved = true;
-						// register this model as dependency: avoid dependencies if there is a direct connection
-						// to y-vector or if the referenced value is a constant
-						if (!inputRef.m_constant) {
-							// do have a graph element
-							const ZEPPELIN::DependencyObject *sourceObject = dynamic_cast<ZEPPELIN::DependencyObject*> (sourceModel);
-							if (sourceObject != NULL)
-								currentStateDependency->dependsOn(*sourceObject);
-								// Note: we are calling the const-variant, so that sourceObject won't
-								//       be modified and this function remains thread-safe. The parents are set after this
-								//       parallel for loop has completed.
-						}
-
-						try {
-							// store pointer at index j of input values
-							currentStateDependency->setInputValueRef(valuePtr, targetQuantity);
-						}
-						catch (IBK::Exception &ex) {
-							throw IBK::Exception(ex, IBK::FormatString("Could not resolve reference to quantity %1 "
-								"of %2 with id #%3!")
-								.arg(inputRef.m_sourceName.name())
-								.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",
-									inputRef.m_referenceType))
-								.arg(inputRef.m_id)
-								, FUNC_ID);
-						}
-					}
-				}
-				if (!resolved) {
-					// error: reference was not resolved
-					throw IBK::Exception(IBK::FormatString("Could not resolve reference to quantity %1 "
-						"of %2 with id #%3!")
-						.arg(inputRef.m_sourceName.name())
-						.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",
-							inputRef.m_referenceType))
-						.arg(inputRef.m_id)
-						, FUNC_ID);
-				}
-			} // for (unsigned int j=0; j<inputReferences.size(); ++j)
-		}
-		catch (IBK::Exception &ex) {
-			/// \todo OpenMP error handling here
-			throw IBK::Exception(ex, IBK::FormatString("Error resolving input references "
-				"for model #%1 with id #%2!")
-				.arg(currentModel->ModelIDName())
-				.arg(currentModel->id()),
-				FUNC_ID);
-		}
-	} // for (unsigned int i=0; i<m_modelContainer.size(); ++i)
-	// parallel region done
-
-	// set backward connections for all objects
-	// before initializing model graph
+	// set backward connections for all objects before initializing model graph
 	// we will need parents for identifying single sequential connections
 	for (unsigned int i = 0; i < m_modelContainer.size(); ++i) {
 		// progress is handled by master thread only
 		AbstractStateDependency * currentStateDependency = dynamic_cast<AbstractStateDependency*>(m_modelContainer[i]);
 
 		// skip all pure time dependend models
-		if (currentStateDependency == NULL)
+		if (currentStateDependency == nullptr)
 			continue;
 
 		currentStateDependency->updateParents();
 	}
 
+#if 0
 	// *** resolve input references for all ODE states and balance models
 	for (unsigned int i = 0; i < m_ODEStatesAndBalanceModelContainer.size(); ++i) {
 		AbstractODEStatesModel* statesModel = m_ODEStatesAndBalanceModelContainer[i].first;
@@ -1969,7 +1920,7 @@ void NandradModel::initModelDependencies() {
 		// set states reference
 		statesModel->setODEStatesInputValueRef(y);
 	}
-
+#endif
 }
 
 void NandradModel::initModelGraph()

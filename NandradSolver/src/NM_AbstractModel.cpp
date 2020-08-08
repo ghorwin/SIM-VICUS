@@ -1,5 +1,6 @@
 #include "NM_AbstractModel.h"
 #include "NM_AbstractTimeDependency.h"
+#include "NM_AbstractStateDependency.h"
 
 namespace NANDRAD_MODEL {
 
@@ -10,6 +11,10 @@ AbstractModel::~AbstractModel() {
 }
 
 AbstractTimeDependency::~AbstractTimeDependency() {
+
+}
+
+AbstractStateDependency::~AbstractStateDependency() {
 
 }
 

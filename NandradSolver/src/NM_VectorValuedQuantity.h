@@ -28,76 +28,56 @@ Lesser General Public License for more details.
 
 namespace NANDRAD_MODEL {
 
-/*!	This class wraps a std::vector and provides index/id lookup information. */
+/*!	This class wraps a std::vector and provides index/id lookup information.
+	To inialize a VectorValuedQuantity use one of the constructor variants.
+
+	\warning Neither for index or modelID key types it is required that
+		the indexes/modelIDs in m_indexKeys vector are monotonically increasing or
+		that there are no gaps in indexes! Do not make assumptions about index numbering,
+		but rather use operator[] or insert() to access elements.
+*/
 class VectorValuedQuantity {
 public:
 
-	explicit VectorValuedQuantity(unsigned int n);
+	/*! Constructor, creates a vector with 'n' elements, optional default value and keyType = IK_Index.
+		Index key vector is populated with index values increasing from 0 to n-1.
+	*/
+	VectorValuedQuantity(unsigned int n, double value = 0);
 
-	/*! Constructor (creates a vector with 'size' elements and the IO-unit 'ioUnit') and keyType.*/
-	VectorValuedQuantity(unsigned int n, VectorValuedQuantityIndex::IndexKeyType keyType);
+	/*! Constructor, initializes vector with modelIndexes.size() elements, keyType = IK_ModelID and
+		optional default value.
+	*/
+	VectorValuedQuantity(const std::vector<unsigned int> & modelIndexes, double value = 0);
 
-	/*! Constructor (creates a vector with 'size' elements, initial values 'value' and the IO-unit 'ioUnit') and keyType. */
-	VectorValuedQuantity(unsigned int n, double value, VectorValuedQuantityIndex::IndexKeyType keyType);
-
+	/*! Returns type of index. */
 	VectorValuedQuantityIndex::IndexKeyType keyType() const	{ return m_keyType; }
 
-	const std::set<unsigned int> &indexKeys() const	{return m_indexKeys; }
-
-	/*! Resizes content vector (provided for convenience) with
-	sequentual index keys starting from 0,1,... and ending with n. */
-	void resize(unsigned int n, VectorValuedQuantityIndex::IndexKeyType keyType);
-
-	/*! Resizes content vector with given index keys and key type. */
-	void resize(const std::set<unsigned int> &indexKeys, VectorValuedQuantityIndex::IndexKeyType keyType);
-
-	/*! Request whether a special key index exists or not. */
-	std::vector<double>::iterator find(unsigned int i);
-
-	/*! Request whether a special key index exists or not. */
-	std::vector<double>::const_iterator find(unsigned int i) const;
-
-	/*! Begin iterator for loops. */
-	std::vector<double>::iterator begin() { return m_data.begin(); }
-
-	/*! Begin iterator for loops. */
-	std::vector<double>::const_iterator begin() const { return m_data.begin(); }
-
-	/*! End iterator to identify invalid results of the find operation. */
-	std::vector<double>::iterator end() { return m_data.end(); }
-
-	/*! End iterator to identify invalid results of the find operation. */
-	std::vector<double>::const_iterator end() const { return m_data.end(); }
-
-	/*! Reverse begin iterator for loops. */
-	std::vector<double>::reverse_iterator rbegin() { return m_data.rbegin(); }
-
-	/*! Reverse begin iterator for loops. */
-	std::vector<double>::const_reverse_iterator rbegin() const { return m_data.rbegin(); }
-
-	/*! Reverse end iterator to identify invalid results of the find operation. */
-	std::vector<double>::reverse_iterator rend() { return m_data.rend(); }
-
-	/*! Reverse end iterator to identify invalid results of the find operation. */
-	std::vector<double>::const_reverse_iterator rend() const { return m_data.rend(); }
-	/*! Returns a reference to the vector element with index key i.
-		In debug mode it throws an out_of_range exception if the
-		indices are invalid.
-	*/
-	double & operator[] (unsigned int i);
+	/*! Returns registered indexes (not necessarily monotonically increasing). */
+	const std::vector<unsigned int> &indexKeys() const {return m_indexKeys; }
 
 	/*! Returns a constant reference to the vector element with index key i.
-		In debug mode it throws an out_of_range exception if the
-		indices are invalid.
+		\warning Throws IBK::Exception if index is not in indexKey vector.
+		\param i one of the index values in m_indexKeys
 	*/
 	const double & operator[] (unsigned int i) const;
 
+	/*! Inserts a new index into the vector.
+		If index 'i' already exists, functions works essentially as operator[](i).
+		Missing index is inserted (for indeyKey IK_Index this can lead to not monotonously increasing indexes)
+		and reference to element is returned.
+		\warning This operation invalidates all previously returned references to values.
+	*/
+	const double & insert(unsigned int i);
+
 private:
+	/*! Stores the actual data. */
 	std::vector<double>						m_data;
 	/*! Key type (for stringv output). */
 	VectorValuedQuantityIndex::IndexKeyType m_keyType;
-	/*! Set of key values. */
-	std::set<unsigned int>					m_indexKeys;
+	/*! Set of key values, size matches m_data.size().
+		Values in m_indexKeys are interpreted according to m_keyType.
+	*/
+	std::vector<unsigned int>				m_indexKeys;
 };
 
 } // namespace NANDRAD_MODEL

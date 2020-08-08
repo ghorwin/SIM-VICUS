@@ -61,7 +61,8 @@ void DefaultModel::initResults(const std::vector<AbstractModel*> & /* models */)
 			m_results.push_back(IBK::Parameter(desc.m_name, 0, valueUnit));
 		}
 		else  {
-			// vector valued results are stored as IBK::UnitVector
+#if 0
+			// vector valued results are
 			VectorValuedQuantity quantity(desc.m_name, valueUnit);
 			// if index keys are given, resize quantity
 			if (!desc.m_indexKeys.empty()) {
@@ -72,6 +73,7 @@ void DefaultModel::initResults(const std::vector<AbstractModel*> & /* models */)
 
 			// store result
 			m_vectorValuedResults.push_back(quantity);
+#endif
 		}
 	}
 	// After call of this routine all result vectors are prepared.
@@ -89,7 +91,7 @@ void DefaultModel::resultDescriptions(std::vector<QuantityDescription> & resDesc
 
 	try {
 		if (KeywordList::CategoryExists(category.c_str()) ) {
-			for (unsigned int varIndex = 0; varIndex <= (unsigned int) KeywordList::MaxIndex(category.c_str()); ++varIndex) {
+			for (int varIndex = 0; varIndex <= KeywordList::MaxIndex(category.c_str()); ++varIndex) {
 				bool constant = false;
 				resDesc.push_back( QuantityDescription(
 					KeywordList::Keyword( category.c_str(), varIndex ),
@@ -103,7 +105,7 @@ void DefaultModel::resultDescriptions(std::vector<QuantityDescription> & resDesc
 		// including indices that are occupied.
 		category = std::string(ModelIDName()) + "::VectorValuedResults";
 		if (KeywordList::CategoryExists(category.c_str()) ) {
-			for (unsigned int varIndex = 0; varIndex <= (unsigned int) KeywordList::MaxIndex(category.c_str()); ++varIndex) {
+			for (int varIndex = 0; varIndex <= KeywordList::MaxIndex(category.c_str()); ++varIndex) {
 				bool constant = false;
 				// retreive index information from vector valued results
 				std::set<unsigned int> indexKeys;
@@ -136,7 +138,7 @@ void DefaultModel::resultValueRefs(std::vector<const double *> &res) const {
 	for (unsigned int i = 0; i < m_results.size(); ++i) {
 		res.push_back(&m_results[i].value);
 	}
-
+#if 0
 	for (unsigned int i = 0; i < m_vectorValuedResults.size(); ++i) {
 		// loop over all vector valued results
 		for (std::vector<double>::const_iterator valueIt = m_vectorValuedResults[i].begin();
@@ -145,6 +147,7 @@ void DefaultModel::resultValueRefs(std::vector<const double *> &res) const {
 			res.push_back(&(*valueIt));
 		}
 	}
+#endif
 }
 
 
@@ -173,7 +176,7 @@ const double * DefaultModel::resultValueRef(const QuantityName & quantityName) c
 
 		if (resultsIndex >= (int)m_vectorValuedResults.size())
 			return nullptr;
-
+#if 0
 		// no index is given
 		if (quantityName.m_index == -1) {
 			// return access to the first vector element
@@ -190,8 +193,9 @@ const double * DefaultModel::resultValueRef(const QuantityName & quantityName) c
 				return &(*vecElem);
 			return nullptr;
 		}
+#endif
 	}
-	catch (IBK::Exception) {
+	catch (...) {
 		return nullptr;
 	}
 }

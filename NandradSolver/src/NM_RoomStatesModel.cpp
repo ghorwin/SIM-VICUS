@@ -117,6 +117,7 @@ void RoomStatesModel::resultDescriptions(std::vector<QuantityDescription> & resD
 	// fill result definitions from keyword list
 	DefaultModel::resultDescriptions(resDesc);
 
+#if 0
 	// set constraint for room  air temperature
 	std::vector<QuantityDescription>::iterator tempIt = std::find_if(resDesc.begin(), resDesc.end(),
 		FindQuantityDescriptionByName(KeywordList::Keyword("RoomStatesModel::Results", R_AirTemperature)));
@@ -175,10 +176,11 @@ void RoomStatesModel::resultDescriptions(std::vector<QuantityDescription> & resD
 		result.m_unit = genericParaIt->second.unit().name();
 		resDesc.push_back(result);
 	}
-
+#endif
 }
 
 const double * RoomStatesModel::resultValueRef(const QuantityName & quantityName) const {
+#if 0
 	// search inside keyword list result quantities
 	const double *refValue = DefaultModel::resultValueRef(quantityName);
 	if( refValue != NULL)
@@ -193,13 +195,13 @@ const double * RoomStatesModel::resultValueRef(const QuantityName & quantityName
 	{
 		return &m_zone->m_para[NANDRAD::KeywordList::Enumeration("Zone::para_t",quantityName.name())].value;
 	}
-
+#endif
 	return NULL;
 }
 
 
 void RoomStatesModel::yInitial(double * y) const {
-
+#if 0
 	// initial energy density is calculated from initial temperature
 	const double rhoAir		= m_fluid->density(293.15, 0.0);
 	const double cAir		= m_fluid->specificHeatCapacity(293.15, 0.0);
@@ -209,11 +211,11 @@ void RoomStatesModel::yInitial(double * y) const {
 
 	// return initial value to global solver
 	y[0] = TInitial * (rhoAir*cAir*Volume + CMass);
-
+#endif 0
 }
 
 int RoomStatesModel::update() {
-
+#if 0
 	// update procedure decomposes all solver quantities
 	IBK_ASSERT(inputValueRefs()[InputRef_InternalEnergy] != NULL);
 	// solver quantities are retrieved by a value reference to the
@@ -233,6 +235,7 @@ int RoomStatesModel::update() {
 	double TRoom = uR/(rhoAir*cAir*Volume + CMass);
 
 	m_results[R_AirTemperature].value = TRoom;
+#endif
 	// signal success
 	return 0;
 }
