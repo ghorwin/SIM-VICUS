@@ -49,6 +49,9 @@ class ObjectList;
 	Interfaces (MRT_INTERFACE) can be queried for wall surface temperatures.
 
 	\note Do not use as storage member, this is purely an internal class with keyword list support.
+
+	\todo Review this class and check whether this class is needed as such or whether the reference type
+		enum should rather be moved to NandradSolver.
 */
 class ModelInputReference {
 public:

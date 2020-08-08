@@ -17,6 +17,9 @@
 
 namespace NANDRAD {
 
+/*! Test class to check correct functionality of the NANDRAD code generator. 
+	\note This class is not used in the NANDRAD data model.
+*/
 class SerializationTest {
 public:
 	SerializationTest()

@@ -29,9 +29,7 @@ Lesser General Public License for more details.
 
 namespace NANDRAD {
 
-/*!	\brief Declaration for class OutputDefinition
-
-	The output definition class selects quantities that are written in one
+/*!	The output definition class selects quantities that are written in one
 	output file (in the case of a scalar quantity). They are specified
 	by a unique variable name and an object list with models containing
 	the requested quantity.
@@ -51,9 +49,13 @@ namespace NANDRAD {
 class OutputDefinition {
 public:
 
+	/*! Different options to handle time averaging/integration. */
 	enum timeType_t {
+		/*! Write outputs as calculated at output time points. */
 		OTT_NONE,		// Keyword: None			'Write values as calculated at output times'
+		/*! Average value in last output interval. */
 		OTT_MEAN,		// Keyword: Mean			'Average values in time (mean value in output step)'
+		/*! Time integral of output value. */
 		OTT_INTEGRAL,	// Keyword: Integral		'Integrate values in time'
 		NUM_OTT
 	};
@@ -65,19 +67,19 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Filename (if empty then automatic filename generation) */
+	/*! Filename (if empty then filename is generated automatically). */
 	std::string								m_filename;					// XML:E
 
-	/*! quantity id -> zone.AirTemperature */
+	/*! Quantity id (for example,  "AirTemperature"). */
 	std::string								m_quantity;					// XML:E:required
 
-	/*! Time output type, if missing defaults to OTT_NONE. */
+	/*! Time output type (defaults to OTT_NONE). */
 	timeType_t								m_timeType = NUM_OTT;		// XML:E
 
 	/*! Name of the object list. */
 	std::string								m_objectListName;			// XML:E:required
 
-	/*! Rerefence name of output grid, corresponds to OutputGrid::m_name. */
+	/*! Rerefence name of output grid (corresponds to OutputGrid::m_name). */
 	std::string								m_gridName;					// XML:E:required
 
 

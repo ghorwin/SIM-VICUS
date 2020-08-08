@@ -29,15 +29,12 @@ Lesser General Public License for more details.
 
 namespace NANDRAD {
 
-/*!	\brief Declaration for class ObjectList
-
-	An ObjectList selects implicit or explicit models of one equal reference type.
-	That may be zones, interfaces,	construction instances, embedded objects or explicit models.
-	It uses an id group or a name list to filter the model instances that should be selected.
+/*!	An ObjectList is used to select model instances based on reference type and ids.
+	That may be zones, interfaces,	construction instances, embedded objects etc.
+	It uses an id group to filter the model instances that should be selected.
 
 	The object list name can be referenced from other structures.
-	Use the object list name reference for the definition of outputs, model references and implicit model
-	feedback.
+	Use the object list name reference for the definition of outputs and model references.
 */
 class ObjectList {
 	NANDRAD_READWRITE_PRIVATE
