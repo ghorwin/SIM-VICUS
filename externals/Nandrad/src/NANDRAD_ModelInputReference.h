@@ -72,23 +72,19 @@ public:
 		NUM_MRT
 	};
 
-	// *** PUBLIC MEMBER FUNCTIONS ***
-
-//	NANDRAD_READWRITE
-
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Name of the property inside the dependent (this) model. */
-	std::string							m_targetName;		/// XML:E
+	std::string							m_targetName;
 	/*! Name of the object list.*/
-	std::string							m_objectList;		/// XML:E
+	std::string							m_objectList;
 	/*! Name of the input reference */
-	std::string							m_quantity;			/// XML:E
+	std::string							m_quantity;
 
 	/*! True, if referenced quantity is to be treated constant during
 		update cycles (essentially prevents adding a evaluation dependency).
 	*/
-	bool								m_constant = false;	/// XML:A
+	bool								m_constant = false;
 
 
 	// *** Variables used only during simulation ***

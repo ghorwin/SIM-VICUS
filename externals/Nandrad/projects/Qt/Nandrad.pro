@@ -96,12 +96,19 @@ SOURCES += \
 	../../src/NANDRAD_SolverParameter.cpp \
 	../../src/NANDRAD_Utilities.cpp \
 	../../src/NANDRAD_Zone.cpp \
+	../../src/ncg/ncg_NANDRAD_ConstructionInstance.cpp \
+	../../src/ncg/ncg_NANDRAD_ConstructionType.cpp \
+	../../src/ncg/ncg_NANDRAD_DailyCycle.cpp \
+	../../src/ncg/ncg_NANDRAD_EmbeddedObject.cpp \
+	../../src/ncg/ncg_NANDRAD_EmbeddedObjectWindow.cpp \
+	../../src/ncg/ncg_NANDRAD_Interface.cpp \
 	../../src/ncg/ncg_NANDRAD_InterfaceAirFlow.cpp \
 	../../src/ncg/ncg_NANDRAD_InterfaceHeatConduction.cpp \
 	../../src/ncg/ncg_NANDRAD_InterfaceLongWaveEmission.cpp \
 	../../src/ncg/ncg_NANDRAD_InterfaceSolarAbsorption.cpp \
 	../../src/ncg/ncg_NANDRAD_InterfaceVaporDiffusion.cpp \
 	../../src/ncg/ncg_NANDRAD_Interval.cpp \
+	../../src/ncg/ncg_NANDRAD_LinearSplineParameter.cpp \
 	../../src/ncg/ncg_NANDRAD_Location.cpp \
 	../../src/ncg/ncg_NANDRAD_Material.cpp \
 	../../src/ncg/ncg_NANDRAD_MaterialLayer.cpp \
@@ -116,13 +123,7 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_SerializationTest.cpp \
 	../../src/ncg/ncg_NANDRAD_SimulationParameter.cpp \
 	../../src/ncg/ncg_NANDRAD_SolverParameter.cpp \
-	../../src/ncg/ncg_NANDRAD_Zone.cpp \
-	../../src/ncg/ncg_NANDRAD_ConstructionInstance.cpp \
-	../../src/ncg/ncg_NANDRAD_ConstructionType.cpp \
-	../../src/ncg/ncg_NANDRAD_DailyCycle.cpp \
-	../../src/ncg/ncg_NANDRAD_EmbeddedObject.cpp \
-	../../src/ncg/ncg_NANDRAD_EmbeddedObjectWindow.cpp \
-	../../src/ncg/ncg_NANDRAD_Interface.cpp
+	../../src/ncg/ncg_NANDRAD_Zone.cpp
 
 
 
