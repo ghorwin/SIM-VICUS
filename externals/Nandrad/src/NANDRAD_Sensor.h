@@ -37,7 +37,10 @@ namespace NANDRAD {
 	the description block of the building component that offers the quantity.
 
 	The quantity name must be recognized by the solver, see NANDRAD_MODEL::Loads::VectorValuedResults.
-	For now it must be always equal to 'SWRadOnPlane'.
+	Sensors used within the Location data structured, must be short wave radiation sensors and the
+	quantity name must be equal to 'SWRadOnPlane' (or can be omitted).
+
+	\todo refactor to ShortWaveRadiationSensor and remove m_quantity altogether
 */
 class Sensor {
 	NANDRAD_READWRITE_PRIVATE
