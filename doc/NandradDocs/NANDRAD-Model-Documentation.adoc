@@ -16,6 +16,7 @@ v1.0.0, July 2020
 :stylesdir: ../adoc_utils/css
 :stylesheet: roboto_ubuntu.css
 
+This document contains a description of the various implemented models and the parametrization in the NANDRAD project file. It is therefore both input reference and model description.
 
 ## Overview
 
@@ -25,7 +26,7 @@ v1.0.0, July 2020
 - how is the absolute time obtained (start year and start time)
 - how are cyclic annual simulations handled, how are continuous multi-year simulations handled
 
-## Models
+## Models and Input Reference
 
 include::NANDRAD-Loads.adoc[leveloffset=+2]
 include::NANDRAD-Schedules.adoc[leveloffset=+2]

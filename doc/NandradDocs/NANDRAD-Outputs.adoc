@@ -1,10 +1,10 @@
-# Output definitions, conventions/rules and implementation aspects
+# Outputs: definitions, rules and implementation
 
 ## Output definitions
 
 Outputs are defined via:
 
-- Grid (when outputs are to be written)
+- Grid (defines when outputs are to be written)
 - Variable/Quantity ID name
 - Object List (selects object to retrieve data from)
 - Time handling (how to handle time averaging/integration)
@@ -57,10 +57,16 @@ Example:
 - Requesting energy supplied to layer in construction instance (floor heating): object list must reference construction instance, variable name must reference heat source + index of heat source (if several in construction): `<Quantity>HeatSource[1]</Quantity>` (first heat source in layer, counting from side A in construction, see <<construction_heat_sources, Heat sources in constructions/layers>>).
 
 
+## Variable lookup rules
+
+Quantities in output definitions define the ID names of the output quantities, optionally including an index notation when a single element of a vectorial quantity is requested. Hereby the following notations are allowed:
+
+- `HeatSource[1]` - index argument is interpreted as defined by the providing models, so when the model provides a vector-valued quantity with model ID indexing, then the argument is interpreted as object ID (otherwise as positional index)
+- `HeatSource[index=1]` - index argument is explicitely interpreted as position index (will raise an error when model provides quantity with model ID indexing)
+- `HeatSource[id=1]` - index argument is explicitely interpreted as object ID (will raise an error when model provides quantity with positional indexing)
 
 
-
-## Rules
+## Output file generation rules
 
 ### When no filename is given
 

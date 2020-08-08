@@ -84,12 +84,13 @@ table {
 <li><a href="#_simulation_time_and_absolute_time_reference">1.1. Simulation time and absolute time reference</a></li>
 </ul>
 </li>
-<li><a href="#_models">2. Models</a>
+<li><a href="#_models_and_input_reference">2. Models and Input Reference</a>
 <ul class="sectlevel2">
 <li><a href="#_climatic_loads">2.1. Climatic loads</a>
 <ul class="sectlevel3">
 <li><a href="#_overview_2">2.1.1. Overview</a></li>
-<li><a href="#_implementation">2.1.2. Implementation</a></li>
+<li><a href="#_specification">2.1.2. Specification</a></li>
+<li><a href="#_implementation">2.1.3. Implementation</a></li>
 </ul>
 </li>
 <li><a href="#_schedules">2.2. Schedules</a>
@@ -101,26 +102,34 @@ table {
 </li>
 </ul>
 </li>
-<li><a href="#_output_definitions_conventionsrules_and_implementation_aspects">3. Output definitions, conventions/rules and implementation aspects</a>
+<li><a href="#_outputs_definitions_rules_and_implementation">3. Outputs: definitions, rules and implementation</a>
 <ul class="sectlevel2">
 <li><a href="#_output_definitions">3.1. Output definitions</a>
 <ul class="sectlevel3">
 <li><a href="#_examples">3.1.1. Examples</a></li>
 </ul>
 </li>
-<li><a href="#_rules_2">3.2. Rules</a>
+<li><a href="#_variable_lookup_rules">3.2. Variable lookup rules</a></li>
+<li><a href="#_output_file_generation_rules">3.3. Output file generation rules</a>
 <ul class="sectlevel3">
-<li><a href="#_when_no_filename_is_given">3.2.1. When no filename is given</a></li>
-<li><a href="#_when_a_filename_is_given">3.2.2. When a filename is given</a></li>
+<li><a href="#_when_no_filename_is_given">3.3.1. When no filename is given</a></li>
+<li><a href="#_when_a_filename_is_given">3.3.2. When a filename is given</a></li>
 </ul>
 </li>
-<li><a href="#_binary_format">3.3. Binary Format</a></li>
+<li><a href="#_binary_format">3.4. Binary Format</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 <div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This document contains a description of the various implemented models and the parametrization in the NANDRAD project file. It is therefore both input reference and model description.</p>
+</div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="_overview">1. Overview</h2>
 <div class="sectionbody">
@@ -143,37 +152,72 @@ table {
 </div>
 </div>
 <div class="sect1">
-<h2 id="_models">2. Models</h2>
+<h2 id="_models_and_input_reference">2. Models and Input Reference</h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_climatic_loads">2.1. Climatic loads</h3>
 <div class="sect3">
 <h4 id="_overview_2">2.1.1. Overview</h4>
+<div class="paragraph">
+<p>The climatic loads model is a purely time-dependent model without other input dependencies. For solar radiation calculation, it needs information on the building location. Also, for most simulations, a climate data file is needed.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_specification">2.1.2. Specification</h4>
+<div class="paragraph">
+<p>Information about location and climate data is stored in the <code>Location</code> section of the project file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Location&gt;</span>
+	<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Latitude"</span> <span class="na">unit=</span><span class="s">"Deg"</span><span class="nt">&gt;</span>51<span class="nt">&lt;/IBK:Parameter&gt;</span>
+	<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Longitude"</span> <span class="na">unit=</span><span class="s">"Deg"</span><span class="nt">&gt;</span>13<span class="nt">&lt;/IBK:Parameter&gt;</span>
+	<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Albedo"</span> <span class="na">unit=</span><span class="s">"-"</span><span class="nt">&gt;</span>0.2<span class="nt">&lt;/IBK:Parameter&gt;</span>
+	<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Altitude"</span> <span class="na">unit=</span><span class="s">"m"</span><span class="nt">&gt;</span>100<span class="nt">&lt;/IBK:Parameter&gt;</span>
+	<span class="nt">&lt;ClimateFileName&gt;</span>${Project Directory}/climate/testClimate.epw<span class="nt">&lt;/ClimateFileName&gt;</span>
+<span class="nt">&lt;/Location&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The parameter <code>Albedo</code> is used for diffuse solar radiation calculation. <code>Altitude</code> is needed for specific altitude-related parameters (<strong>TODO</strong>).</p>
+</div>
+<div class="paragraph">
+<p>Parameters <code>Latitude</code> and <code>Longitude</code> are optional if a climate data file is given, otherwise they override the location parameters stored therein (see <a href="#location_settings">Building/Station location</a>).</p>
+</div>
+<div class="sect4">
+<h5 id="_climate_file_support">Climate File Support</h5>
+<div class="paragraph">
+<p>Currently, <code>c6b</code>, <code>wac</code> and <code>epw</code> files are supported (see CCM-Editor help).</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="location_settings">Building/Station location</h5>
+<div class="paragraph">
+<p>Typically, climate data files contain information on latitude and longitude of the weather station.</p>
+</div>
 <div class="ulist">
 <ul>
 <li>
-<p>time-dependent</p>
+<p>If these parameters are not specified explicitely in the project file, the latitude/longitude from the climate data file are used.</p>
 </li>
 <li>
-<p>climate data file reading</p>
-</li>
-<li>
-<p>location settings in climate data file</p>
-</li>
-<li>
-<p>location settings in NANDRAD project file &#8594; override rules</p>
-</li>
-<li>
-<p>albedo</p>
-</li>
-<li>
-<p>radiation sensors</p>
+<p>If parameters are specified in the project file, always <strong>both</strong> parameters must be given (and be valid) and then the these parameters from the project file are used instead of the climate data file location parameters.</p>
 </li>
 </ul>
 </div>
 </div>
+<div class="sect4">
+<h5 id="_additional_radiation_sensors">Additional radiation sensors</h5>
+<div class="paragraph">
+<p>It is possible to specify additional planes (sensors) to generate solar radiation load outputs.</p>
+</div>
+<div class="paragraph">
+<p>TODO</p>
+</div>
+</div>
+</div>
 <div class="sect3">
-<h4 id="_implementation">2.1.2. Implementation</h4>
+<h4 id="_implementation">2.1.3. Implementation</h4>
 <div class="paragraph">
 <p>The <code>Loads</code> model is a pre-defined model that is always evaluated first whenever the time point has changed. It does not have any other dependencies.</p>
 </div>
@@ -182,6 +226,15 @@ table {
 </div>
 <div class="paragraph">
 <p>With respect to solar radiation calculation, during initialization it registers all surfaces (with different orientation/inclination) and provides an ID for each surface. Then, models can request direct and diffuse radiation data, as well as incidence angle for each of the registered surfaces.</p>
+</div>
+<div class="sect4">
+<h5 id="_registering_surfaces">Registering surfaces</h5>
+<div class="paragraph">
+<p>Each construction surface (interface) with outside radiation loads registers itself with the Loads object, hereby passing the interface object ID as argument and orientation/inclination of the surface. The loads object itself registers this surface with the climate calculation module (CCM) and retrieves a surface ID. This surface ID may be the same for many interface IDs.</p>
+</div>
+<div class="paragraph">
+<p>The Loads object stores a mapping of all interface IDs to the respective surface IDs in the CCM. When requesting the result variable&#8217;s memory location, this mapping is used to deliver the correct input variable reference/memory location to the interface-specific solar radiation calculation object.</p>
+</div>
 </div>
 </div>
 </div>
@@ -317,7 +370,7 @@ table {
 </div>
 </div>
 <div class="sect1">
-<h2 id="_output_definitions_conventionsrules_and_implementation_aspects">3. Output definitions, conventions/rules and implementation aspects</h2>
+<h2 id="_outputs_definitions_rules_and_implementation">3. Outputs: definitions, rules and implementation</h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_output_definitions">3.1. Output definitions</h3>
@@ -327,7 +380,7 @@ table {
 <div class="ulist">
 <ul>
 <li>
-<p>Grid (when outputs are to be written)</p>
+<p>Grid (defines when outputs are to be written)</p>
 </li>
 <li>
 <p>Variable/Quantity ID name</p>
@@ -402,9 +455,28 @@ table {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_rules_2">3.2. Rules</h3>
+<h3 id="_variable_lookup_rules">3.2. Variable lookup rules</h3>
+<div class="paragraph">
+<p>Quantities in output definitions define the ID names of the output quantities, optionally including an index notation when a single element of a vectorial quantity is requested. Hereby the following notations are allowed:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>HeatSource[1]</code> - index argument is interpreted as defined by the providing models, so when the model provides a vector-valued quantity with model ID indexing, then the argument is interpreted as object ID (otherwise as positional index)</p>
+</li>
+<li>
+<p><code>HeatSource[index=1]</code> - index argument is explicitely interpreted as position index (will raise an error when model provides quantity with model ID indexing)</p>
+</li>
+<li>
+<p><code>HeatSource[id=1]</code> - index argument is explicitely interpreted as object ID (will raise an error when model provides quantity with positional indexing)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_output_file_generation_rules">3.3. Output file generation rules</h3>
 <div class="sect3">
-<h4 id="_when_no_filename_is_given">3.2.1. When no filename is given</h4>
+<h4 id="_when_no_filename_is_given">3.3.1. When no filename is given</h4>
 <div class="paragraph">
 <p>Target file name(s) are automatically defined.</p>
 </div>
@@ -438,7 +510,7 @@ table {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_when_a_filename_is_given">3.2.2. When a filename is given</h4>
+<h4 id="_when_a_filename_is_given">3.3.2. When a filename is given</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -452,7 +524,7 @@ table {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_binary_format">3.3. Binary Format</h3>
+<h3 id="_binary_format">3.4. Binary Format</h3>
 <div class="paragraph">
 <p>First record: unsigned int - n (number of columns)
 Next n records: binary strings, leading size (unsigned int) and termination character (sanity checking)</p>
@@ -467,7 +539,7 @@ Next n records: binary strings, leading size (unsigned int) and termination char
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated 2020-08-08 18:50:33 +0200
+Last updated 2020-08-08 21:59:37 +0200
 </div>
 </div>
 <style>

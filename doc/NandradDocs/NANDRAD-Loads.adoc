@@ -2,12 +2,45 @@
 
 ## Overview
 
-- time-dependent
-- climate data file reading
-- location settings in climate data file
-- location settings in NANDRAD project file -> override rules
-- albedo
-- radiation sensors
+The climatic loads model is a purely time-dependent model without other input dependencies. For solar radiation calculation, it needs information on the building location. Also, for most simulations, a climate data file is needed.
+
+## Specification
+
+Information about location and climate data is stored in the `Location` section of the project file:
+
+[source,xml]
+----
+<Location>
+	<IBK:Parameter name="Latitude" unit="Deg">51</IBK:Parameter>
+	<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
+	<IBK:Parameter name="Albedo" unit="-">0.2</IBK:Parameter>
+	<IBK:Parameter name="Altitude" unit="m">100</IBK:Parameter>
+	<ClimateFileName>${Project Directory}/climate/testClimate.epw</ClimateFileName>
+</Location>
+----
+
+The parameter `Albedo` is used for diffuse solar radiation calculation. `Altitude` is needed for specific altitude-related parameters (**TODO**).
+
+Parameters `Latitude` and `Longitude` are optional if a climate data file is given, otherwise they override the location parameters stored therein (see <<location_settings>>).
+
+### Climate File Support
+
+Currently, `c6b`, `wac` and `epw` files are supported (see CCM-Editor help).
+
+[[location_settings]]
+### Building/Station location
+
+Typically, climate data files contain information on latitude and longitude of the weather station. 
+
+- If these parameters are not specified explicitely in the project file, the latitude/longitude from the climate data file are used.
+- If parameters are specified in the project file, always **both** parameters must be given (and be valid) and then the these parameters from the project file are used instead of the climate data file location parameters.
+
+
+### Additional radiation sensors
+
+It is possible to specify additional planes (sensors) to generate solar radiation load outputs.
+
+TODO
 
 ## Implementation
 
@@ -16,4 +49,14 @@ The `Loads` model is a pre-defined model that is always evaluated first whenever
 It provides all resulting variables as `constant` (during iteration) result variables, which can be retrieved and utilized by any other model.
 
 With respect to solar radiation calculation, during initialization it registers all surfaces (with different orientation/inclination) and provides an ID for each surface. Then, models can request direct and diffuse radiation data, as well as incidence angle for each of the registered surfaces.
+
+### Registering surfaces
+
+Each construction surface (interface) with outside radiation loads registers itself with the Loads object, hereby passing the interface object ID as argument and orientation/inclination of the surface. The loads object itself registers this surface with the climate calculation module (CCM) and retrieves a surface ID. This surface ID may be the same for many interface IDs.
+
+The Loads object stores a mapping of all interface IDs to the respective surface IDs in the CCM. When requesting the result variable's memory location, this mapping is used to deliver the correct input variable reference/memory location to the interface-specific solar radiation calculation object.
+
+
+
+
 
