@@ -7,8 +7,57 @@ Outputs are defined via:
 - Grid (when outputs are to be written)
 - Variable/Quantity ID name
 - Object List (selects object to retrieve data from)
-- m_timeType (how to handle time averaging/integration)
+- Time handling (how to handle time averaging/integration)
 - (optional) target filename
+
+Example:
+[source,xml]
+----
+<!-- Definition of output grids -->
+<Grids>
+	<OutputGrid name="hourly">
+		<Intervals>
+			<Interval>
+				<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+			</Interval>
+		</Intervals>
+	</OutputGrid>
+</Grids>
+<!-- Definition of outputs -->
+<OutputDefinitions>
+    <OutputDefinition>
+    	<Quantity>Temperature</Quantity>
+    	<ObjectListName>All zones</ObjectListName>
+    	<GridName>hourly</GridName>
+    </OutputDefinition>
+    <OutputDefinition>
+    	<Quantity>NaturalVentilationFlux</Quantity>
+    	<ObjectListName>All zones</ObjectListName>
+    	<GridName>hourly</GridName>
+    	<TimeType>Integral</TimeType>
+    </OutputDefinition>
+</OutputDefinitions>
+
+
+<!-- Referenced object list -->
+<ObjectLists>
+	<ObjectList name="All zones">
+		<FilterID>*</FilterID>
+		<ReferenceType>Zone</ReferenceType>
+	</ObjectList>
+</ObjectLists>
+----
+
+`TimeType` is optional, same as `None` by default.
+`FileName` is optional (see below).
+
+### Examples
+
+- Requesting fluxes across construction interfaces: object list must reference interfaces
+- Requesting energy supplied to layer in construction instance (floor heating): object list must reference construction instance, variable name must reference heat source + index of heat source (if several in construction): `<Quantity>HeatSource[1]</Quantity>` (first heat source in layer, counting from side A in construction, see <<construction_heat_sources, Heat sources in constructions/layers>>).
+
+
+
 
 
 ## Rules

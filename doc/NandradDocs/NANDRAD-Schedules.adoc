@@ -32,7 +32,8 @@ If simulation continues past the end of an annual schedule, the last value will 
 ...
 
 ### Annual schedules (as linearly interpolated splines)
-...
+
+Annual schedules are basically data tables with 
 
 
 ## Implementation
