@@ -1,4 +1,4 @@
-# Model object concept
+# Model objects, published variables and variable look-up
 
 Physical models are implemented in model objects. That means the code lines/equations compute results based on input values.
 
@@ -6,7 +6,6 @@ Physical models are implemented in model objects. That means the code lines/equa
 ====
 A heating model takes room air temperature (state dependency) and a scheduled setpoint (time dependency) and computes a heating load as result.
 ====
-
 
 The result is stored in a **persistent memory location** where dependent models can directly access this value.
 
@@ -25,14 +24,21 @@ Each model instance stores its result values in own memory.
 
 ### Publishing model results
 
-The models must tell the solver framework what kind of outputs they generate. For this purpose, the framework requests a reference type (prefix) via  `AbstractModel::referenceType()`.
+The models must tell the solver framework what kind of outputs they generate. Objects generating results must derive from class `AbstractModel` (or derived helper classes) and implement the interface.
+
+[NOTE]
+====
+`Schedules` and `FMIInputOutput` models are handled differently.
+====
+
+The framework first requests a reference type (prefix) via  `AbstractModel::referenceType()` of the model object. This reference type is used to group model objects into meaningful object groups.
 
 .Reference types
 ====
-`MRT_ZONE` or `MRT_SCHEDULE`
+`MRT_ZONE` or `MRT_INTERFACE`
 ====
 
-Also, each invididual result variable is published by the model as `QuantityDescription`. The framework requests these via call to `AbstractModel::resultDescriptions()`. Here, the model will store for each computed quantity the following information:
+Each invididual result variable is published by the model as `QuantityDescription`. The framework requests these via call to `AbstractModel::resultDescriptions()`. Here, the model will store for each computed quantity the following information:
 
 - id-name (e.g. "Temperature")
 - physical display unit (e.g. "C") - interpreted as "display unit", calculations are always done in base SI units
@@ -61,7 +67,6 @@ When a so-called vector-valued quantity is generated, the following additional i
 - whether index-based or id-based access is anticipated
 - a list of ids/indexes matching the individual positions in the vector (the size of the vector is also the size of the vector-valued quantities)
 
-
 .ID-access example
 ====
 The aforementioned ventilation model may be published for zones with IDs 1,4,5,10 and 11. Then the resulting ventilation heat losses will be defined for those zones only. Hence, the published quantity will look like:
@@ -89,18 +94,65 @@ Each model object is requested by the framework in a call to `AbstractModel::ini
 Since the information collected in `initResults()` is also needed when publishing the results to the framework, the function `AbstractModel::initResults()` is called before `AbstractModel::resultDescriptions()`.
 
 
+
+[[model_input_refs]]
+## Model inputs
+
+Similarly as output variables, model objects need input variables. Models requiring input must implement the interface of `AbstractStateDependency`.
+
+[NOTE]
+====
+`FMIInputExport` model is handled separately.
+====
+
+Input variable requirements are published similarly to results when the framework requests them in a call to `AbstractStateDependency::inputReferences()`. The information on requested results is stored in objects of type `InputReference`.
+
+[NOTE]
+====
+A model may request scalar variable inputs only, even if the providing model generates these as a vector-valued quantity.
+====
+
+.Input reference to a zone air temperature inside a ventilation model
+====
+An input required by the ventilation model can be formulated with the follwing data:
+```
+- reference type = MRT_ZONE
+- object_id = 15 (id of the zone)
+- name = "AirTemperature"
+```
+====
+
+Given that information, the framework can effectively look-up the required variables.
+
+
+and tell the object by calling `AbstractStateDependency::setInputValueRef()` which variable identified through `QuantityName` has which memory address.
+
+### FMI Export (output) variables
+
+When FMI export is defined, i.e. output variables are declarted in the FMI interface, a list of global variable IDs to be exported is defined. For each of these variables an input reference is generated, just as for any other model as well.
+
+### Outputs
+
+When initializing outputs, any published variable can be collected. Outputs declare their variable needs just as any other model object.
+
+
+## Variable lookup
+
 ### Resolving persistant pointers to result locations
 
 Scalar variables are stored in double variables of the model. When using the convenience implementation in `DefaultModel` these are stored in vector `m_results`.
 
 Vector-valued variables are stored in consecutive memory arrays with size matching the size of the vector. When using the `DefaultModel` implementation, these are stored in `m_vectorValuedResults`, which is a vector of `VectorValuedResults`.
 
-Later, when the framework connects <<model_input_refs, model inputs>> with results, the framework requests models to provide persistant memory locations for previously published results. This is done by calling `AbstractModel::resultValueRef()` with a a quantity identification object `QuantityName`. 
+Later, when the framework connects <<model_input_refs, model inputs>> with results, the framework requests models to provide persistant memory locations for previously published results. This is done by calling `AbstractModel::resultValueRef()`, which get's a copy of the previously exported `InputReference`.
 
-In order to uniquely identify a result variable *within* a model, two things are needed:
+In order to uniquely identify a result variable *within* a model, normally only two things are needed:
 
 - the ID name of the variable,
 - and, _only in the case of vector-valued quantities_, the index/id.
+
+However, in some cases, a model may request a variable with the _same quantity_ name, yet from two different objects (for example, the air temperature of neighbouring zones). In this case, the quantity name alone is not sufficient. Hence, the full input reference including object ID is passed as identifier (**A change from NANDRAD 1!**).
+
 
 [NOTE]
 ====
@@ -141,36 +193,10 @@ Also, it is possible to specify a `constant` flag to indicate, that during itera
 If several model objects are addressed by the same reference-type and ID (see example with models from zone parameter block), the variable names must be unique among all of these models.
 ====
 
-
-[[model_input_refs]]
-## Model inputs
-
-Similarly as output variables, model objects need input variables. They publish these variables similarly to results when the framework requests them in a call to `AbstractStateDependency::inputReferences()`. The information on requested results is stored in objects of type `InputReference` again. 
-
-[NOTE]
-====
-A model may request scalar variable inputs only, even if the providing model generates these as a vector-valued quantities.
-====
-
-.Input reference to a zone air temperature inside a ventilation model
-====
-Then the inputs required by the ventilation model can be formulated with the follwing data:
-```
-- reference type = MRT_ZONE
-- object_id = 15 (id of the zone)
-- name = "Temperature"
-```
-====
-
-Given that information, the framework can effectively look-up the required variables and tell the object by calling `AbstractStateDependency::setInputValueRef()` which variable identified through `QuantityName` has which memory address.
-
 ### FMI Input variable overrides
 
 Any input variable requested by any other model can be overridden by FMU import variables. When the framework looks up global model references, and an FMU import model is present/parametrized, then first the FMI generated quantity descriptions are checked. The FMU import variables are exported as global variable references (with ObjectReference). Since these are then the same global variable identifiers as published by the models, they are found first in the search and dependent models will simply store points to the FMU variable memory.
 
-### FMI Export variable input references
-
-When FMI Export is parametrized, a list of global variable IDs to be exported is defined. For each of these variables an input reference is generated and the FMU export model gets addresses to these memory locations.
 
 ### Examples for referenced input quantities
 
@@ -188,5 +214,5 @@ Definition of the input reference for the zone air temperature is done as in the
 - name = "HeatingSetPoint"
 ```
 
-Now the models, that are created from the zone-parameter block 
+
 

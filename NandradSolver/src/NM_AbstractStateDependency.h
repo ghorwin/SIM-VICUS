@@ -3,9 +3,6 @@
 
 #include <ZEPPELIN_DependencyObject.h>
 
-//#include <NANDRAD_ImplicitModelFeedback.h>
-
-#include "NM_AbstractModel.h"
 #include "NM_InputReference.h"
 #include "NM_QuantityName.h"
 
@@ -13,8 +10,10 @@
 
 namespace NANDRAD_MODEL {
 
-/*!	Class AbstractStateDependency is the base class of all models that
-	have input dependencies.
+class AbstractModel;
+
+
+/*!	This is the base class of all models that have input dependencies.
 
 	This class declares the interface required by all state-object type sub-models.
 	All state-object models must derive from this interface and must implement the
@@ -99,16 +98,11 @@ public:
 		NANDRAD::ImplicitModelFeedback::operation_t operation) = 0;
 #endif
 
-	/*! Sets a single input value reference that refers to the requested
-		quantity name. This reference can be filled from NandradModelImpl. The model
-		needs to store a vector of InputValues and a mapping information. If the
-		routine is called the model searches the corresponding value reference inside
-		the vector. Note that the value pointer itself can only be modified by NandradModelImpl
-		and is set to nullptr per default.
-		If the vector is completely filled the reference values can be obtained by the model
-		by calling *inputValueRef(quantity type, (id));
+	/*! Sets a single input value reference (persistent memory location) that refers to the requested input reference.
+		\param inputRef An input reference from the previously published list of input references.
+		\param resultValueRef Persistent memory location to the variable slot.
 	*/
-	virtual void setInputValueRef(const double *resultValueRef, const QuantityName &targetName) = 0;
+	virtual void setInputValueRef(const InputReference &inputRef, const double *resultValueRef) = 0;
 
 	/*! This function is called whenever result quantities of other models change.
 		Re-implement this function in derived classes and handle all your update-functionality here.

@@ -35,7 +35,7 @@ namespace NANDRAD {
 
 namespace NANDRAD_MODEL {
 
-class ValueReference;
+class InputReference;
 
 
 /*! Provides access to scheduled quantities.
@@ -96,7 +96,7 @@ public:
 		\param quantityName An identifier for the quantity.
 		\return Returns pointer to memory location with this quantity, otherwise nullptr if parameter ID was not found.
 	*/
-	const double * resultValueRef(const ValueReference & quantityName) const;
+	const double * resultValueRef(const InputReference & valueRef) const;
 
 
 	// *** Re-implemented from AbstractTimeDependency

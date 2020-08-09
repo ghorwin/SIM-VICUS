@@ -11,15 +11,16 @@ namespace NANDRAD_MODEL {
 /*! Data type that uniquely identifies a (result) variable.
 
 	Reference type (m_referenceType) and id (m_id) identify the object that generates the data.
-	Variable name (m_name) identifies the name of the variable to retrieve.
+	Variable name (m_name) identifies the name of the variable to retrieve (may be a vector-valued variable name, without
+	index of course).
 
-	This data structure is used to determine the object a variable is requested from. After all results
-	have been collected from all object types, now a set of all variables of all instances is created
-	(hence the operator< in this class).
+	This data structure is used to determine the object a variable is requested from. The results
+	from all objects/model instances are stored in a map (from variable reference to object), hence
+	the operator< in this class.
 
-	Now, when looking up requested input from models, we simply search for this value reference, and hereby determine
+	When looking up requested input variables from models, we simply search for this value reference, and hereby determine
 	object and id and eventually get the object instance that provides the variable we need. Then, we can ask
-	the object instance to give is a persistent pointer to the result variable's memory location.
+	the object instance to give us a persistent pointer to the result variable's memory location.
 */
 class ValueReference {
 public:
@@ -30,9 +31,6 @@ public:
 
 	/*! Name of the result variable/quantity. */
 	std::string										m_name;
-
-	/*! Vector index/id. */
-//	unsigned int									m_vectorIndex = -1;
 
 
 	/*! Comparison operator for sorting result quantities. */

@@ -43,7 +43,7 @@ Lesser General Public License for more details.
 #include <NANDRAD_Schedule.h>
 #include <NANDRAD_SimulationParameter.h>
 
-#include "NM_ValueReference.h"
+#include "NM_InputReference.h"
 
 namespace NANDRAD_MODEL {
 
@@ -127,10 +127,11 @@ double Schedules::startValue(const QuantityName &quantity) const {
 	throw IBK::Exception(IBK::FormatString("Error retrieving start value for quantity '%1' " "from schedules! Parameter is undefined!")
 		.arg(quantityName), FUNC_ID);
 #endif
+	return 0;
 }
 
 
-const double * Schedules::resultValueRef(const ValueReference & quantityName) const {
+const double * Schedules::resultValueRef(const InputReference & quantityName) const {
 
 	// search all results for current name
 	/// \todo Anne

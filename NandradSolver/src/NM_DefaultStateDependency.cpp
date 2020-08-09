@@ -153,7 +153,7 @@ void DefaultStateDependency::inputReferences(std::vector<InputReference>  & inpu
 //	inputRefs.insert(inputRefs.end(), m_inputReferences.begin(),m_inputReferences.end() );
 }
 
-void DefaultStateDependency::setInputValueRef(const double *resultValueRef, const QuantityName &targetName) {
+void DefaultStateDependency::setInputValueRef(const InputReference &inputRef, const double *resultValueRef) {
 #if 0
 	const char * const FUNC_ID = "[DefaultStateDependency::setInputValueRef]";
 	// for the first call we need to resize all input value references

@@ -71,12 +71,22 @@ class ParallelStateObjects;
 
 class Loads;
 class Schedules;
+class FMIInputOutput;
 class RoomBalanceModel;
 class RoomStatesModel;
 class OutputFile;
 
 /*! Main NANDRAD model implementation class.
-	This class implements the interface of SOLFRA::ModelInterface and SOLFRA::OutputScheduler.
+	This class implements the interface of SOLFRA::ModelInterface and SOLFRA::OutputScheduler and contains
+	the entire logic of the model evaluation.
+
+	\section init Initialization
+
+	fdfs
+
+	\section eval Model evaluation
+
+
 */
 class NandradModel : public SOLFRA::ModelInterface, public SOLFRA::OutputScheduler {
 public:
@@ -232,6 +242,8 @@ private:
 	void initClimateData();
 	/*! Loads schedule data and creates Schedules + Schedule parameters. */
 	void initSchedules();
+	/*! FMI import/export initialization. */
+	void initFMI();
 	/*! Initialises all global parameters and models. */
 	void initGlobals();
 	/*! Loads BIM data and creates RoomBalanceModels, Summation and Splitting models. */
@@ -452,11 +464,14 @@ private:
 	/*! Single object/model providing schedules quantities. */
 	Schedules												*m_schedules = nullptr;
 
+	/*! FMI import/export model. */
+	FMIInputOutput											*m_fmiInputOutput = nullptr;
+
 
 	// *** Outputs ***
 
 	/*! Vector with output file objects (DataIO containers) for each output file (size m_nOutputs). */
-	std::vector<OutputFile*>			m_outputFiles;
+	std::vector<OutputFile*>								m_outputFiles;
 
 	// *** STATISTICS ***
 

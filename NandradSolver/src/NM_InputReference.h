@@ -30,7 +30,7 @@ Lesser General Public License for more details.
 
 namespace NANDRAD_MODEL {
 
-/*! This data type is used to formulate and input variable requirement from point of view of a model object.
+/*! This data type is used to formulate an input variable requirement from point of view of a model object.
 	It contains the information referenceType and id to address an object, and a quantity name (which basically
 	is the variable name with optional vector index/id information) to lookup the variable.
 

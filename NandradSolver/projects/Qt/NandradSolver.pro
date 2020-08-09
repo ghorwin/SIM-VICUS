@@ -55,6 +55,7 @@ SOURCES += \
 	../../src/NM_DefaultModel.cpp \
 	../../src/NM_DefaultStateDependency.cpp \
 	../../src/NM_Directories.cpp \
+	../../src/NM_FMIInputOutput.cpp \
 	../../src/NM_KeywordList.cpp \
 	../../src/NM_Loads.cpp \
 	../../src/NM_NandradModel.cpp \
@@ -71,12 +72,14 @@ SOURCES += \
 	../../src/main.cpp
 
 HEADERS += \
+	../../doc/NandradSolverMainPage.h \
 	../../src/NM_AbstractModel.h \
 	../../src/NM_AbstractStateDependency.h \
 	../../src/NM_AbstractTimeDependency.h \
 	../../src/NM_DefaultModel.h \
 	../../src/NM_DefaultStateDependency.h \
 	../../src/NM_Directories.h \
+	../../src/NM_FMIInputOutput.h \
 	../../src/NM_InputReference.h \
 	../../src/NM_KeywordList.h \
 	../../src/NM_Loads.h \
@@ -94,3 +97,5 @@ HEADERS += \
 	../../src/NM_ValueReference.h \
 	../../src/NM_VectorValuedQuantity.h \
 	../../src/NM_VectorValuedQuantityIndex.h
+
+DISTFILES +=

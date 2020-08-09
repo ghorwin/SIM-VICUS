@@ -35,3 +35,7 @@ include::NANDRAD-Outputs.adoc[leveloffset=+1]
 
 
 
+## Implementation Concepts
+
+include::NANDRAD-Variable-Referencing.adoc[leveloffset=+2]
+include::NANDRAD-Model-Init.adoc[leveloffset=+2]

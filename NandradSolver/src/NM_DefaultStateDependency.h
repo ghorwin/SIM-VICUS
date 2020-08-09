@@ -47,6 +47,11 @@ public:
 	/*! Standard constructor. */
 	DefaultStateDependency(unsigned int modelTypeID);
 
+	/*! Copy constructor is disabled. */
+	DefaultStateDependency(const DefaultStateDependency &) = delete;
+	/*! Assignment operator is disabled. */
+	const DefaultStateDependency & operator=(const DefaultStateDependency &) = delete;
+
 	/*! Copies the m_inputReferences - vector into the external inputRefs object. */
 	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const override;
 
@@ -66,8 +71,6 @@ public:
 		that provides an iterator to the first value reference of a given quantity type.
 	*/
 	virtual const std::vector<const double *> & inputValueRefs() const override { return m_inputValueRefs; }
-
-
 
 	/*! Function for access an input value reference to a scalar target via enumeration.*/
 	const double *inputValueRef(int quantityType) const;
@@ -111,18 +114,12 @@ protected:
 	virtual int decodeInputReferenceTargeType(const std::string &targetName) const;
 
 private:
-	/*! Copy constructor is private and not implemented (disable copy). */
-	DefaultStateDependency(const DefaultStateDependency &);
-	/*! Assignment operator is private and not implemented (disable copy). */
-	const DefaultStateDependency & operator=(const DefaultStateDependency &);
 
-	/*! When called the first time this routine resizes the m_inputValueRefs vector
-		and calculates iterator positions for all references. If all vectors are resized
-		it sets a single input value reference that refers to the requested
-		quantity name. Note that the storage organization is private and performed by
-		the current default implementation itself.
+	/*! Sets a single input value reference (persistent memory location) that refers to the requested input reference.
+		\param inputRef An input reference from the previously published list of input references.
+		\param resultValueRef Persistent memory location to the variable slot.
 	*/
-	virtual void setInputValueRef(const double *resultValueRef, const QuantityName &targetName) override;
+	virtual void setInputValueRef(const InputReference &inputRef, const double *resultValueRef) override;
 
 //	/*! Model references defined by all models. */
 //	std::vector<InputReferenceToVectorValuedTarget>	m_inputReferences;
