@@ -69,7 +69,8 @@ public:
 		MRT_EMBEDDED_OBJECT,		// Keyword: EmbeddedObject			'Model references an embedded object.'
 		MRT_ACTIVE_OBJECT,			// Keyword: ActiveObject			'Model references an active object.'
 		MRT_SENSOR,					// Keyword: Sensor					'Model references a sensor object.'
-		MRT_SCHEDULE,				// Keyword: Schedule				'Model references of scheduled data.'
+		MRT_SCHEDULE,				// Keyword: Schedule				'Model references scheduled data.'
+		MRT_OBJECTLIST,				// Keyword: ObjectList				'Model references an object list-specific value.'
 		MRT_MODEL,					// Keyword: Model					'Model references another generic model.'
 		MRT_GLOBAL,					// Keyword: Global					'Model references to global physical quantities.'
 		NUM_MRT

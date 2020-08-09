@@ -24,7 +24,7 @@ Lesser General Public License for more details.
 #include <string>
 #include <map>
 
-#include <IBK_LinearSpline.h>
+#include <NANDRAD_LinearSplineParameter.h>
 
 #include "NM_AbstractModel.h"
 #include "NM_AbstractTimeDependency.h"
@@ -129,7 +129,7 @@ private:
 
 		During calculation, the values are interpolated and stored in the m_results vector.
 	*/
-	std::map<std::string, IBK::LinearSpline>		m_scheduledQuantities[NUM_R];
+	std::map<std::string, NANDRAD::LinearSplineParameter>		m_scheduledQuantities[NUM_R];
 
 	/*! Variables, computed/updated during the calculation.
 		The vector follows the structore of the m_scheduledQuantities map and static array, such that

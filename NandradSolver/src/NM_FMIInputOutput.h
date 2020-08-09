@@ -129,9 +129,7 @@ public:
 	*/
 	virtual void setInputValueRef(const InputReference &inputRef, const double *resultValueRef) override;
 
-	/*! This function is called whenever result quantities of other models change.
-		Since FMI export only pulls data when master requests, we have nothing to do here.
-	*/
+	/*! Since FMI export only pulls data when master requests, we have nothing to do here. */
 	virtual int update() override { return 0; }
 
 
@@ -166,6 +164,11 @@ private:
 
 	/*! Stored value references (pointers to result variables exported via FMI). */
 	std::vector<const double *>		m_valueRefs;
+
+	/*! Cached current values, updated in setTime().
+		These values will be updated based on cached FMI variable input data.
+	*/
+	std::vector<double>				m_results;
 };
 
 } // namespace NANDRAD_MODEL

@@ -34,6 +34,7 @@ Lesser General Public License for more details.
 #include <IBK_FileUtils.h>
 #include <IBK_StringUtils.h>
 #include <IBK_Time.h>
+#include <IBK_Constants.h>
 
 #include <NANDRAD_DailyCycle.h>
 #include <NANDRAD_Interval.h>
@@ -49,24 +50,38 @@ namespace NANDRAD_MODEL {
 
 
 int Schedules::setTime(double t) {
-	if (t == -1) return 0; // setTime wasn't called yet
+	if (t == -1)
+		return 0; // initialization call, cannot calculate
 
+	/// \todo clarify cyclic vs. continuous handling, especially alignment of weekdays/weekends
+	///       Suppose we have a cyclic schedule, but change start year from 2008 to 2009, we will then have
+	///       different day types at the same date. This might be desirable, or annoying... discuss!
+
+	// now t is moved to absolute time offset within start year
 	t += m_startTime;
 
-	/// \todo think of handling multi-year splines vs. cyclic annual spline data. How do we distinguish that?
-	/// Also in terms of interpolation method - actually, constant interpolation is not really nice and should
-	/// by avoided at all cost - we need to store that extra information. IBK::LinearSpline has no storage members
-	/// for that, so we may need an "extended" IBK::LinearSpline, one, that handles cyclic-year time clipping gracefully
-	/// or simply holds a flag and we decided based on this flag, which time value to pass.
+	// compute cyclic time
+	double t_cyclic = t;
+	while (t_cyclic > IBK::SECONDS_PER_YEAR)
+		t_cyclic -= IBK::SECONDS_PER_YEAR;
+
+	/// \todo think about week cycle time, so that we have t_weekly running from t_weekly=0 -> start of monday
+	///       then we can work with weekly data
 
 	// calculate all parameter values
 	double * result = &m_results[0]; // points to first double in vector with calculated spline values
 	for (int i = 0; i < NUM_R; ++i) {
 
-		for (std::map<std::string, IBK::LinearSpline>::iterator it = m_scheduledQuantities[i].begin();
+		for (std::map<std::string, NANDRAD::LinearSplineParameter>::iterator it = m_scheduledQuantities[i].begin();
 			 it != m_scheduledQuantities[i].end(); ++it)
 		{
-			*result = it->second.value(t);
+			NANDRAD::LinearSplineParameter & p = it->second;
+			// depending on time cycling value, pass either t or t_cyclic
+			if (p.m_wrapMethod == NANDRAD::LinearSplineParameter::C_CYCLIC)
+				*result = p.m_values.value(t_cyclic);
+			else
+				*result = p.m_values.value(t);
+			// move memory slot forward
 			++result;
 		}
 	}
@@ -75,16 +90,19 @@ int Schedules::setTime(double t) {
 
 
 void Schedules::setup(const NANDRAD::Project &project) {
-	/// \todo Anne
-
 	// store start time offset as year and start time
 	m_year = project.m_simulationParameter.m_intpara[NANDRAD::SimulationParameter::SIP_YEAR].value;
 	m_startTime = project.m_simulationParameter.m_interval.m_para[NANDRAD::Interval::IP_START].value;
+
+	/// \todo prepare linear spline parameters
+
 }
 
 
 double Schedules::startValue(const QuantityName &quantity) const {
 	/// \todo why and what for is this needed?
+	/// Normally, calling setTime(0) should initialize outputs with the start value, which can then be retrieved as
+	/// usual.
 
 #if 0
 	const char* const FUNC_ID = "[Schedules::startValue]";
@@ -133,8 +151,24 @@ double Schedules::startValue(const QuantityName &quantity) const {
 
 const double * Schedules::resultValueRef(const InputReference & quantityName) const {
 
-	// search all results for current name
-	/// \todo Anne
+	// variable lookup rules:
+
+	// if type is an object list (MRT_OBJECTLIST), then search for quantity within stored object lists maps:
+	// - search until requested quantity is found
+	//   - if more than one match is found, throw an exception with "ambiguous schedule definition" error
+	//     (should not be possible, since no two schedules may be parametrized for the same object list - would
+	//     already fail during reading
+	//
+	// if type is zone (MRT_ZONE), then do the following search:
+	// - look for object lists that address zones
+	//   - look in each object list, if id is part of the id group
+	//     - in all remaining object lists, look if requested quantity is scheduled
+	//       - if more than one match is found, throw an exception with "ambiguous schedule definition" error
+	// finally, return memory address of searched quantity
+
+	// similar for other schedules/reference types
+
+	/// \todo implement
 
 	return nullptr;
 }

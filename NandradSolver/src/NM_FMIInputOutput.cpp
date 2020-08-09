@@ -8,7 +8,9 @@ void FMIInputOutput::setup(const NANDRAD::Project & prj) {
 }
 
 int FMIInputOutput::setTime(double t) {
-
+	// if interpolation of input variables is enabled, calculate
+	// value in integration interval based on Taylor series expansion rule
+	// and store in m_results
 }
 
 
