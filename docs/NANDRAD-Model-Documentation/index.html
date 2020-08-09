@@ -119,6 +119,24 @@ table {
 <li><a href="#_binary_format">3.4. Binary Format</a></li>
 </ul>
 </li>
+<li><a href="#_implementation_concepts">4. Implementation Concepts</a>
+<ul class="sectlevel2">
+<li><a href="#_model_objects_published_variables_and_variable_look_up">4.1. Model objects, published variables and variable look-up</a>
+<ul class="sectlevel3">
+<li><a href="#_model_instances">4.1.1. Model instances</a></li>
+<li><a href="#_model_results">4.1.2. Model results</a></li>
+<li><a href="#model_input_refs">4.1.3. Model inputs</a></li>
+<li><a href="#_variable_lookup_2">4.1.4. Variable lookup</a></li>
+</ul>
+</li>
+<li><a href="#_model_initialization_procedure">4.2. Model Initialization Procedure</a>
+<ul class="sectlevel3">
+<li><a href="#_pre_solver_setup_steps">4.2.1. Pre-Solver-Setup steps</a></li>
+<li><a href="#_model_setup">4.2.2. Model Setup</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -535,11 +553,451 @@ Next n records: binary strings, leading size (unsigned int) and termination char
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_implementation_concepts">4. Implementation Concepts</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_model_objects_published_variables_and_variable_look_up">4.1. Model objects, published variables and variable look-up</h3>
+<div class="paragraph">
+<p>Physical models are implemented in model objects. That means the code lines/equations compute results based on input values.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 1. Model object</div>
+<div class="content">
+<div class="paragraph">
+<p>A heating model takes room air temperature (state dependency) and a scheduled setpoint (time dependency) and computes a heating load as result.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The result is stored in a <strong>persistent memory location</strong> where dependent models can directly access this value.</p>
+</div>
+<div class="sect3">
+<h4 id="_model_instances">4.1.1. Model instances</h4>
+<div class="paragraph">
+<p>There can be several model instances - the actual object code resides only once in solver memory, but the functions are executed several times for each individual object (=model instance).</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 2. Model instance</div>
+<div class="content">
+<div class="paragraph">
+<p>You may have a model that computes heat flux between walls and zones. For each wall-zone interface, an object is instantiated.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Each model instance stores its result values in own memory.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_model_results">4.1.2. Model results</h4>
+<div class="sect4">
+<h5 id="_publishing_model_results">Publishing model results</h5>
+<div class="paragraph">
+<p>The models must tell the solver framework what kind of outputs they generate. Objects generating results must derive from class <code>AbstractModel</code> (or derived helper classes) and implement the interface.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>Schedules</code> and <code>FMIInputOutput</code> models are handled differently.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The framework first requests a reference type (prefix) via  <code>AbstractModel::referenceType()</code> of the model object. This reference type is used to group model objects into meaningful object groups.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 3. Reference types</div>
+<div class="content">
+<div class="paragraph">
+<p><code>MRT_ZONE</code> or <code>MRT_INTERFACE</code></p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Each invididual result variable is published by the model as <code>QuantityDescription</code>. The framework requests these via call to <code>AbstractModel::resultDescriptions()</code>. Here, the model will store for each computed quantity the following information:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>id-name (e.g. "Temperature")</p>
+</li>
+<li>
+<p>physical display unit (e.g. "C") - interpreted as "display unit", calculations are always done in base SI units</p>
+</li>
+<li>
+<p>a descriptive text (e.g. "Room air temperature")</p>
+</li>
+<li>
+<p>physical limits (min/max values)</p>
+</li>
+<li>
+<p>flag indicating whether this value will be constant over the lifetime of the solver</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>A note on units. The results are stored <em>always</em> in base SI units according to the UnitList. A well-behaving model will always store the result value in the basic SI unit, that is "K" for temperatures, "W" for thermal loads and so on (see <code>IBK::UnitList</code>).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The unit is really only provided for error message outputs and for checking of the base SI unit matches the base SI unit of the requested unit (as an additional sanity check).</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_vector_valued_results">Vector-valued results</h5>
+<div class="paragraph">
+<p>Sometimes, a model may compute a vector of values.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 4. Vector results</div>
+<div class="content">
+<div class="paragraph">
+<p>A ventilation model may compute ventilation heat loads for a number of zones (zones are identified via object lists).</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>When a so-called vector-valued quantity is generated, the following additional information is provided:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>whether index-based or id-based access is anticipated</p>
+</li>
+<li>
+<p>a list of ids/indexes matching the individual positions in the vector (the size of the vector is also the size of the vector-valued quantities)</p>
+</li>
+</ul>
+</div>
+<div class="exampleblock">
+<div class="title">Example 5. ID-access example</div>
+<div class="content">
+<div class="paragraph">
+<p>The aforementioned ventilation model may be published for zones with IDs 1,4,5,10 and 11. Then the resulting ventilation heat losses will be defined for those zones only. Hence, the published quantity will look like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>- name = "NaturalVentilationHeadLoad"
+- unit = "W"
+- description = "Natural ventilation heat load"
+- index-key-type = "ID"
+- ID-list = {1,4,5,10,11}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The id-names of quantities are unique within a model object, and vector-valued quantities may not have the same ID name as scalar quantities. More precisely, variables need to be globally unique (see lookup rules below). This means that when there are two models with the same model-reference-type, the variable names must be unique among all models with the same reference-type.</p>
+</div>
+<div class="paragraph">
+<p>For example: from a zone parametrization several models are instantiated with the same reference-type <code>MRT_ZONE</code>, for example <code>RoomBalanceModel</code> and <code>RoomStatesModel</code>. The resulting variables in both models must not have the same ID name, in order to be uniquely identified on global scope.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_initializing_memory_for_result_values">Initializing memory for result values</h5>
+<div class="paragraph">
+<p>Each model object is requested by the framework in a call to <code>AbstractModel::initResults()</code> to reserve memory for its result variables. For scalar variables this is usually just resizing of a vector of doubles to the required number of result values. For vector-valued quantities the actual size may only be known later, so frequently here just the vectors are created and their actual size is determined later.</p>
+</div>
+<div class="paragraph">
+<p>Since the information collected in <code>initResults()</code> is also needed when publishing the results to the framework, the function <code>AbstractModel::initResults()</code> is called before <code>AbstractModel::resultDescriptions()</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="model_input_refs">4.1.3. Model inputs</h4>
+<div class="paragraph">
+<p>Similarly as output variables, model objects need input variables. Models requiring input must implement the interface of <code>AbstractStateDependency</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>FMIInputExport</code> model is handled separately.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Input variable requirements are published similarly to results when the framework requests them in a call to <code>AbstractStateDependency::inputReferences()</code>. The information on requested results is stored in objects of type <code>InputReference</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>A model may request scalar variable inputs only, even if the providing model generates these as a vector-valued quantity.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="exampleblock">
+<div class="title">Example 6. Input reference to a zone air temperature inside a ventilation model</div>
+<div class="content">
+<div class="paragraph">
+<p>An input required by the ventilation model can be formulated with the follwing data:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>- reference type = MRT_ZONE
+- object_id = 15 (id of the zone)
+- name = "AirTemperature"</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Given that information, the framework can effectively look-up the required variables.</p>
+</div>
+<div class="paragraph">
+<p>and tell the object by calling <code>AbstractStateDependency::setInputValueRef()</code> which variable identified through <code>QuantityName</code> has which memory address.</p>
+</div>
+<div class="sect4">
+<h5 id="_fmi_export_output_variables">FMI Export (output) variables</h5>
+<div class="paragraph">
+<p>When FMI export is defined, i.e. output variables are declarted in the FMI interface, a list of global variable IDs to be exported is defined. For each of these variables an input reference is generated, just as for any other model as well.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_outputs">Outputs</h5>
+<div class="paragraph">
+<p>When initializing outputs, any published variable can be collected. Outputs declare their variable needs just as any other model object.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_variable_lookup_2">4.1.4. Variable lookup</h4>
+<div class="sect4">
+<h5 id="_resolving_persistant_pointers_to_result_locations">Resolving persistant pointers to result locations</h5>
+<div class="paragraph">
+<p>Scalar variables are stored in double variables of the model. When using the convenience implementation in <code>DefaultModel</code> these are stored in vector <code>m_results</code>.</p>
+</div>
+<div class="paragraph">
+<p>Vector-valued variables are stored in consecutive memory arrays with size matching the size of the vector. When using the <code>DefaultModel</code> implementation, these are stored in <code>m_vectorValuedResults</code>, which is a vector of <code>VectorValuedResults</code>.</p>
+</div>
+<div class="paragraph">
+<p>Later, when the framework connects <a href="#model_input_refs">model inputs</a> with results, the framework requests models to provide persistant memory locations for previously published results. This is done by calling <code>AbstractModel::resultValueRef()</code>, which get&#8217;s a copy of the previously exported <code>InputReference</code>.</p>
+</div>
+<div class="paragraph">
+<p>In order to uniquely identify a result variable <strong>within</strong> a model, normally only two things are needed:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the ID name of the variable,</p>
+</li>
+<li>
+<p>and, <em>only in the case of vector-valued quantities</em>, the index/id.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>However, in some cases, a model may request a variable with the <em>same quantity</em> name, yet from two different objects (for example, the air temperature of neighbouring zones). In this case, the quantity name alone is not sufficient. Hence, the full input reference including object ID is passed as identifier (<strong>A change from NANDRAD 1!</strong>).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>To identify an element within a vector-valued result it is not necessary to specify whether it should be index or id based - the model publishing the result defines whether it will be index or id based access.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Naturally, for scalar result variables the index/id property is ignored.</p>
+</div>
+<div class="paragraph">
+<p>The <code>QuantityName</code> struct contains this information (a string and an integer value).</p>
+</div>
+<div class="paragraph">
+<p>Now the model searches through its own results and tries to find a matching variable. In case of vector-valued quantities it also checks if the requested id is actually present in the model, and in case of index-based access, a check is done if the index is in the allowed range (0&#8230;&#8203;size-1).</p>
+</div>
+<div class="paragraph">
+<p>If a quantity could be found, the corresponding memory address is returned, otherwise a nullptr. The framework now can take the address and pass it to any object that requires this input.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_global_lookup_rulesglobal_variable_referencing">Global lookup rules/global variable referencing</h5>
+<div class="paragraph">
+<p>To uniquely reference a resulting variable (and its persistent memory location), first the actual model object/instance need to be selected with the following properties:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the type of object to search for (= reference-type property), for example <code>MRT_ZONE</code> or <code>MRT_CONSTRUCTIONINSTANCE</code></p>
+</li>
+<li>
+<p>ID of the referenced object, i.e. zone id oder construction id.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Some model objects exist only once, for example schedules or climatic loads. Here, the reference-type is already enough to uniquely select the object.</p>
+</div>
+<div class="paragraph">
+<p>Usually, the information above does select several objects that have been created from the parametrization related to that ID. For example, the zone parameter block for some zone ID generates several zone-related model instances, all of which have the same ID. Since their result variables are all different, the framework simply searches through all those objects until the correct variable is found. These model implementations can be thought of as one model whose equations are split up into several implementation units.</p>
+</div>
+<div class="paragraph">
+<p>The actual variable <em>within</em> the selected object is found by ID name and optionally vector-element id/index, as described above.</p>
+</div>
+<div class="paragraph">
+<p>The data is collected in the class <code>InputReference</code>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ObjectReference</code> ( holds reference-type and referenced-object ID )</p>
+</li>
+<li>
+<p><code>QuantityName</code> (holds variable name and in case of vector-valued quantities also ID/index)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Also, it is possible to specify a <code>constant</code> flag to indicate, that during iterations over cycles the variable is to be treated constant.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If several model objects are addressed by the same reference-type and ID (see example with models from zone parameter block), the variable names must be unique among all of these models.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_fmi_input_variable_overrides">FMI Input variable overrides</h5>
+<div class="paragraph">
+<p>Any input variable requested by any other model can be overridden by FMU import variables. When the framework looks up global model references, and an FMU import model is present/parametrized, then first the FMI generated quantity descriptions are checked. The FMU import variables are exported as global variable references (with ObjectReference). Since these are then the same global variable identifiers as published by the models, they are found first in the search and dependent models will simply store points to the FMU variable memory.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_examples_for_referenced_input_quantities">Examples for referenced input quantities</h5>
+<div class="sect5">
+<h6 id="_setpoint_from_schedules">Setpoint from schedules</h6>
+<div class="paragraph">
+<p>Schedules are defined for object lists. Suppose you have an object list name "Living rooms" and corresponding heating/cooling setpoints.</p>
+</div>
+<div class="paragraph">
+<p>Now a heating model may be defined that computes heating loads for a given zone. The heating model is implemented with a simple P-controller, that requires zone air temperature and zone heating setpoint.</p>
+</div>
+<div class="paragraph">
+<p>Definition of the input reference for the zone air temperature is done as in the example above. The setpoint will be similarly referenced:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>- reference type = MRT_ZONE
+- object_id = 15 (id of the zone)
+- name = "HeatingSetPoint"</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_model_initialization_procedure">4.2. Model Initialization Procedure</h3>
+<div class="sect3">
+<h4 id="_pre_solver_setup_steps">4.2.1. Pre-Solver-Setup steps</h4>
+<div class="paragraph">
+<p>The following steps are done when initializing the model:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>parsing command-line and handling early command line options</p>
+</li>
+<li>
+<p>setting up directory structure and message handler/log file</p>
+</li>
+<li>
+<p>creating <code>NANDRAD::Project</code> instance</p>
+</li>
+<li>
+<p>setting default values via call to <code>NANDRAD::Project::initDefaults()</code></p>
+</li>
+<li>
+<p>reading the project file (only syntactical checks are done, and for IBK::Parameter static arrays with default units in keyword list, a check for compatible units is made), may overwrite defaults; correct units should be expected in the data model after reading the project file (maybe add suitable annotation to code generator?)</p>
+</li>
+<li>
+<p>merge similarly behaving construction instances (reduce data structure size)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>From now on the project data structure remains unmodified in memory until end of solver runtime and persistent pointers can be used to address parameter sets. This means no vector resizing is allowed, no more data members may be added/removed. </strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>setup fast-access connections between parameter data sets (zones to interfaces and vice versa) in Project data structure</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Now the actual model initialization starts.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_model_setup">4.2.2. Model Setup</h4>
+
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated 2020-08-08 21:59:37 +0200
+Last updated 2020-08-09 12:35:42 +0200
 </div>
 </div>
 <style>
