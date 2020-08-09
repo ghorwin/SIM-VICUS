@@ -2031,81 +2031,81 @@ namespace NANDRAD {
 	int KeywordList::MaxIndex(const char * const enumtype) {
 		switch (enum2index(enumtype)) {
 			// ConstructionInstance::para_t
-			case 0 : return 3;
+			case 0 : return 2;
 			// DailyCycle::interpolation_t
-			case 1 : return 2;
+			case 1 : return 1;
 			// EmbeddedObject::para_t
-			case 2 : return 1;
+			case 2 : return 0;
 			// EmbeddedObject::objectType_t
-			case 3 : return 3;
+			case 3 : return 2;
 			// EmbeddedObjectWindow::para_t
-			case 4 : return 5;
+			case 4 : return 4;
 			// EmbeddedObjectWindow::modelType_t
-			case 5 : return 3;
+			case 5 : return 2;
 			// Interface::location_t
-			case 6 : return 2;
+			case 6 : return 1;
 			// Interface::condition_t
-			case 7 : return 4;
+			case 7 : return 3;
 			// InterfaceAirFlow::splinePara_t
-			case 8 : return 1;
+			case 8 : return 0;
 			// InterfaceAirFlow::modelType_t
-			case 9 : return 1;
+			case 9 : return 0;
 			// InterfaceHeatConduction::para_t
-			case 10 : return 1;
+			case 10 : return 0;
 			// InterfaceHeatConduction::modelType_t
-			case 11 : return 1;
+			case 11 : return 0;
 			// InterfaceLongWaveEmission::para_t
-			case 12 : return 1;
+			case 12 : return 0;
 			// InterfaceLongWaveEmission::modelType_t
-			case 13 : return 1;
+			case 13 : return 0;
 			// InterfaceSolarAbsorption::para_t
-			case 14 : return 1;
+			case 14 : return 0;
 			// InterfaceSolarAbsorption::modelType_t
-			case 15 : return 1;
+			case 15 : return 0;
 			// InterfaceVaporDiffusion::para_t
-			case 16 : return 1;
+			case 16 : return 0;
 			// InterfaceVaporDiffusion::modelType_t
-			case 17 : return 1;
+			case 17 : return 0;
 			// Interval::para_t
-			case 18 : return 3;
+			case 18 : return 2;
 			// LinearSplineParameter::interpolationMethod_t
-			case 19 : return 2;
+			case 19 : return 1;
 			// LinearSplineParameter::wrapMethod_t
-			case 20 : return 2;
+			case 20 : return 1;
 			// Location::para_t
-			case 21 : return 4;
+			case 21 : return 3;
 			// Material::para_t
-			case 22 : return 3;
+			case 22 : return 2;
 			// ModelInputReference::referenceType_t
-			case 23 : return 11;
+			case 23 : return 10;
 			// OutputDefinition::timeType_t
-			case 24 : return 3;
+			case 24 : return 2;
 			// Schedule::type_t
-			case 25 : return 11;
+			case 25 : return 10;
 			// Schedules::day_t
-			case 26 : return 7;
+			case 26 : return 6;
 			// SerializationTest::test_t
-			case 27 : return 2;
+			case 27 : return 1;
 			// SerializationTest::intPara_t
-			case 28 : return 2;
+			case 28 : return 1;
 			// SimulationParameter::para_t
-			case 29 : return 12;
+			case 29 : return 11;
 			// SimulationParameter::intpara_t
-			case 30 : return 1;
+			case 30 : return 0;
 			// SimulationParameter::flag_t
-			case 31 : return 4;
+			case 31 : return 3;
 			// SolverParameter::para_t
-			case 32 : return 22;
+			case 32 : return 21;
 			// SolverParameter::flag_t
-			case 33 : return 3;
+			case 33 : return 2;
 			// SolverParameter::integrator_t
-			case 34 : return 4;
+			case 34 : return 3;
 			// SolverParameter::lesSolver_t
-			case 35 : return 5;
+			case 35 : return 4;
 			// SolverParameter::precond_t
-			case 36 : return 3;
+			case 36 : return 2;
 			// Zone::type_t
-			case 37 : return 3;
+			case 37 : return 2;
 			// Zone::para_t
 			case 38 : return 6;
 		} // switch
