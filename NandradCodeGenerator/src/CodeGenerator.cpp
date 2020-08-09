@@ -1452,7 +1452,7 @@ void CodeGenerator::generateKeywordlistCode(const IBK::Path & keywordListCpp) {
 //				const ClassInfo::EnumInfo * einfo = enumInfo(lastCategory);
 //				if (einfo==nullptr)
 //					throw IBK::Exception(IBK::FormatString("Enumeration type '%1' not recorded.").arg(lastCategory), FUNC_ID);
-				cpp << m_keywordlist[i-1].index+1 << ";\n";
+				cpp << m_keywordlist[i-1].index << ";\n";
 				++switchIndex;
 				categoryCount = 0;
 			}
