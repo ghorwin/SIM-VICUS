@@ -34,7 +34,7 @@ namespace NANDRAD {
 
 
 void Project::readXML(const IBK::Path & filename) {
-	const char * const FUNC_ID = "[Project::readXML]";
+	FUNCID(Project::readXML);
 
 	TiXmlDocument doc;
 	IBK::Path filenamePath(filename);
@@ -59,9 +59,14 @@ void Project::readXML(const IBK::Path & filename) {
 	// add the project directory to the placeholders map
 	m_placeholders[IBK::PLACEHOLDER_PROJECT_DIR] = filenamePath.parentPath();
 
-	xmlElem = xmlRoot.FirstChild("Project").Element();
-	if (xmlElem) {
-		readXMLPrivate(xmlElem);
+	try {
+		xmlElem = xmlRoot.FirstChild("Project").Element();
+		if (xmlElem) {
+			readXMLPrivate(xmlElem);
+		}
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, IBK::FormatString("Error reading project '%1'.").arg(filename), FUNC_ID);
 	}
 #if 0
 	// check uniqueness of all geometry ids
