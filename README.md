@@ -96,7 +96,7 @@ Since we are a small team, and we want to have close communication of new featur
 - resolve any conflicts locally in your working directory, and take care not to overwrite other people's code
 - use different commits for different features so that later we can distingish based on commit logs when a certain change was made
 
-For now, try to avoid (lengthy) feature branches, but if you plan to do a larger change and possibly work on the master at the same time, feature branches are the way to go :-)
+For now, try to avoid (lengthy) feature branches. However, if you plan to do a larger change and possibly work on the master at the same time, feature branches are a good choice.
 
 ### Libraries
 
