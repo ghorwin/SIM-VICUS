@@ -840,17 +840,20 @@ void CodeGenerator::generateReadWriteCode() {
 									throw IBK::Exception( IBK::FormatString("Unknown enum for array index '%1'").arg(numType), FUNC_ID);
 								const ClassInfo::EnumInfo & einfo = *einfo_it;
 								elementCodeKeyword +=
+										"				"+einfo.enumType()+" ptype;\n"
 										"				try {\n"
-										"					"+einfo.enumType()+" ptype = ("+einfo.enumType()+")KeywordList::Enumeration(\""+einfo.categoryName+"\", p.name);\n"
+										"					ptype = ("+einfo.enumType()+")KeywordList::Enumeration(\""+einfo.categoryName+"\", p.name);\n"
 										"					m_"+varName2+"[ptype] = p;\n"
+										"					success = true;\n"
+										"				}\n"
+										"				catch (IBK::Exception & ex) { ex.writeMsgStackToError(); }\n"
+										"				if (success) {\n"
 										"					std::string refUnit = KeywordList::Unit(\""+einfo.categoryName+"\", ptype);\n"
 										"					if (!refUnit.empty() && (p.IO_unit.base_id() != IBK::Unit(refUnit).base_id())) {\n"
 										"						throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(c->Row())\n"
 										"											  .arg(\"Incompatible unit '\"+p.IO_unit.name()+\"', expected '\"+refUnit +\"'.\"), FUNC_ID);\n"
 										"					}\n"
-										"					success = true;\n"
-										"				}\n"
-										"				catch (...) { /* intentional fail */  }\n";
+										"				}\n";
 							}
 							else {
 								std::string tagName2 = char(toupper(varName2[0])) + varName2.substr(1);
