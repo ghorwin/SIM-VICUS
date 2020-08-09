@@ -77,11 +77,13 @@ Doxygen-style, prefer:
     */
     void setParams(int arg1, double temperature);
     
-    /*! Mean temperature in [C]. */
+    /*! Mean temperature in [K]. */
     double m_meanTemperature;
 ```
 
 Mind to specify **always** physical units for physical value parameters and member variables!
+Physical variables used for calculation should always be stored in base SI units.
+
 
 ### Git Workflow
 
