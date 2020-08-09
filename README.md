@@ -46,6 +46,9 @@ the output in `docs/api`. For this purpose run the `NandradSolver.doxyfile` in t
 
 Each library has its own namespace, matching the file prefix. Example: `NANDRAD::Project` get `NANDRAD_Project.h`
 
+
+!!! **never ever** write `import namespace XXX`, not even for namespace `std` !!!!!!
+
 #### Class and variable naming
 
 - camel case for variable/type names, example: `thisNiceVariable`
