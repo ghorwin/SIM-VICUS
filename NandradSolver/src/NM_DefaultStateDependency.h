@@ -28,11 +28,11 @@ Lesser General Public License for more details.
 
 namespace NANDRAD_MODEL {
 
-/*!	\brief Declaration for class DefaultStateDependency, the base class of all models.
-	\author Andreas Nicolai <andreas.nicolai -[at]- tu-dresden.de>
-	This class declares provides a default implementation for a state
-	dependend model.*/
+/*!	This class declares provides a default implementation for a state
+	dependend model.
 
+	\todo Document/Refactor
+*/
 class DefaultStateDependency : public AbstractStateDependency {
 public:
 

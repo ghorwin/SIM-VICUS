@@ -13,7 +13,7 @@ namespace NANDRAD_MODEL {
 class AbstractModel;
 
 
-/*!	This is the base class of all models that have input dependencies.
+/*!	This is the base class of all models that have input dependencies (from other models).
 
 	This class declares the interface required by all state-object type sub-models.
 	All state-object models must derive from this interface and must implement the

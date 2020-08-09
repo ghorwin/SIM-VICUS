@@ -27,7 +27,9 @@ Lesser General Public License for more details.
 
 namespace NANDRAD_MODEL {
 
-/*!	Wraps the model's directory handling. */
+/*!	Wraps the model's directory handling.
+	\todo Check if all directories/paths in this class are really needed.
+*/
 class Directories {
 public:
 	/*! Creates the directory structure for a given project.
@@ -46,13 +48,14 @@ public:
 	*/
 	void createFMUSlavesDirectory();
 
-	IBK::Path		m_rootDir;			///< Project root directory (without trailing slash).
-	IBK::Path		m_logDir;			///< Project log directory (without trailing slash).
-	IBK::Path		m_varDir;			///< Project var directory (without trailing slash).
-	IBK::Path		m_resultsDir;		///< Project output directory (without trailing slash).
-	IBK::Path		m_slavesDir;		///< Project output directory for fmu slaves (without trailing slash).
-	IBK::Path		m_heatingDesignRootDir;	///< Root directory for heating design calculation (without trailing slash).
-	IBK::Path		m_coolingDesignRootDir;	///< Root directory for cooling design calculation (without trailing slash).
+	IBK::Path		m_rootDir;					///< Project root directory (without trailing slash).
+	IBK::Path		m_logDir;					///< Project log directory (without trailing slash).
+	IBK::Path		m_varDir;					///< Project var directory (without trailing slash).
+	IBK::Path		m_resultsDir;				///< Project output directory (without trailing slash).
+	IBK::Path		m_slavesDir;				///< Project output directory for fmu slaves (without trailing slash).
+
+	IBK::Path		m_heatingDesignRootDir;		///< Root directory for heating design calculation (without trailing slash).
+	IBK::Path		m_coolingDesignRootDir;		///< Root directory for cooling design calculation (without trailing slash).
 	IBK::Path		m_heatingDesignResultsDir;	///< Results directory for heating design calculation (without trailing slash).
 	IBK::Path		m_coolingDesignResultsDir;	///< Results directory for cooling design calculation (without trailing slash).
 };

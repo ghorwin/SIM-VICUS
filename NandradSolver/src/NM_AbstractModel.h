@@ -32,7 +32,7 @@ Lesser General Public License for more details.
 
 namespace NANDRAD_MODEL {
 
-/*!	Class AbstractModel is the base class of all models.
+/*!	This is the base class of all models (that generate results).
 	A model should define a unqiue ModelIDName and provide result quantities. For each model
 	instance a unqiue id number should be reserved.
 */
