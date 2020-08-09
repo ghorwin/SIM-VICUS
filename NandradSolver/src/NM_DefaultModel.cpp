@@ -124,7 +124,7 @@ void DefaultModel::resultDescriptions(std::vector<QuantityDescription> & resDesc
 		}
 	}
 	catch (IBK::Exception &ex) {
-		throw IBK::Exception(ex, IBK::FormatString("Error initializing input reference description for Model #%1 with id #%2")
+		throw IBK::Exception(ex, IBK::FormatString("Error initializing result descriptions for model %1 with id #%2")
 			.arg(ModelIDName()).arg(id()), FUNC_ID);
 	}
 }

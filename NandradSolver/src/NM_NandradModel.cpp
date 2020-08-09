@@ -1755,11 +1755,11 @@ void NandradModel::initModelDependencies() {
 			// OpenMP code may not throw exceptions beyond parallel region, hence only store errors in error list for
 			// later evaluation
 			threadErrors[omp_get_thread_num()] += ex.msgStack() + "\n" + IBK::FormatString("Error initializing results "
-																						   "for model #%1 with id #%2!\n")
+																						   "for model %1 with id #%2!\n")
 																						   .arg(currentModel->ModelIDName())
 																						   .arg(currentModel->id()).str();
 #else
-			throw IBK::Exception(ex, IBK::FormatString("Error initializing results for model #%1 with id #%2!")
+			throw IBK::Exception(ex, IBK::FormatString("Error initializing results for model %1 with id #%2!")
 				.arg(currentModel->ModelIDName())
 				.arg(currentModel->id()),
 				FUNC_ID);
@@ -1908,7 +1908,7 @@ void NandradModel::initModelDependencies() {
 																						   .arg(currentModel->ModelIDName())
 																						   .arg(currentModel->id()).str();
 #else
-			throw IBK::Exception(ex, IBK::FormatString("Error initializing input references for model #%1 with id #%2!")
+			throw IBK::Exception(ex, IBK::FormatString("Error initializing input references for model %1 with id #%2!")
 				.arg(currentModel->ModelIDName())
 				.arg(currentModel->id()),
 				FUNC_ID);

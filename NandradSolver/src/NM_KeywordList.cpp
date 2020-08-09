@@ -765,21 +765,21 @@ namespace NANDRAD_MODEL {
 	int KeywordList::MaxIndex(const char * const enumtype) {
 		switch (enum2index(enumtype)) {
 			// Loads::Results
-			case 0 : return 18;
+			case 0 : return 17;
 			// Loads::VectorValuedResults
-			case 1 : return 1;
+			case 1 : return 0;
 			// RoomBalanceModel::Results
-			case 2 : return 1;
+			case 2 : return 0;
 			// RoomBalanceModel::InputReferences
-			case 3 : return 15;
+			case 3 : return 14;
 			// RoomStatesModel::Results
-			case 4 : return 1;
+			case 4 : return 0;
 			// RoomStatesModel::InputReferences
-			case 5 : return 1;
+			case 5 : return 0;
 			// Schedules::Results
-			case 6 : return 28;
+			case 6 : return 27;
 			// ThermalComfortModel::Results
-			case 7 : return 2;
+			case 7 : return 1;
 			// ThermalComfortModel::InputReferences
 			case 8 : return 3;
 		} // switch
