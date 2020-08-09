@@ -11,6 +11,8 @@ endif (CMAKE_COMPILER_IS_GNUCC)
 
 # add include directories
 include_directories(
+	${CMAKE_BINARY_DIR}/sundials/include
+	${PROJECT_SOURCE_DIR}/../../../externals/sundials/src/include
 	${PROJECT_SOURCE_DIR}/../../src
 	${PROJECT_SOURCE_DIR}/../../../externals/CCM/src
 	${PROJECT_SOURCE_DIR}/../../../externals/IBK/src
