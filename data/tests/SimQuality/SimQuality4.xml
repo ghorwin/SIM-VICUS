@@ -1,0 +1,828 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.99">
+	<Project>
+		<ProjectInfo>
+			<Comment>Yes we can! TF04</Comment>
+			<Created>Now!</Created>
+			<LastEdited>Yesterday</LastEdited>
+			<Version>NANDRAD 2.0</Version>
+		</ProjectInfo>
+		<Zones>
+			<Zone id="1" displayName="TF04.1" type="Active">
+				<IBK:Parameter name="Temperature" unit="C">5</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+			</Zone>
+			<Zone id="2" displayName="TF04.2" type="Active">
+				<IBK:Parameter name="Temperature" unit="C">5</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+			</Zone>
+			<Zone id="3" displayName="TF04.3 A" type="Active">
+				<IBK:Parameter name="Temperature" unit="C">5</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+			</Zone>
+			<Zone id="4" displayName="TF04.3 B" type="Active">
+				<IBK:Parameter name="Temperature" unit="C">5</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<ConstructionInstances>
+			<ConstructionInstance id="2" displayName="North">
+				<ConstructionTypeId>10001</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
+				<Interfaces>
+					<Interface id="3" location="A" zoneId="1">
+						<!--Interface to 'TF04.1'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+				</Interfaces>
+			</ConstructionInstance>
+			<ConstructionInstance id="5" displayName="South">
+				<ConstructionTypeId>10001</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
+				<Interfaces>
+					<Interface id="6" location="A" zoneId="1">
+						<!--Interface to 'TF04.1'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+				</Interfaces>
+			</ConstructionInstance>
+			<ConstructionInstance id="7" displayName="East">
+				<ConstructionTypeId>10002</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+				<Interfaces>
+					<Interface id="8" location="A" zoneId="1">
+						<!--Interface to 'TF04.1'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+					<Interface id="9" location="B" zoneId="0">
+						<!--Interface to outside-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+				</Interfaces>
+			</ConstructionInstance>
+			<ConstructionInstance id="10" displayName="West">
+				<ConstructionTypeId>10002</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+				<Interfaces>
+					<Interface id="11" location="A" zoneId="1">
+						<!--Interface to 'TF04.1'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+					<Interface id="12" location="B" zoneId="0">
+						<!--Interface to outside-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+				</Interfaces>
+			</ConstructionInstance>
+			<ConstructionInstance id="13" displayName="Roof">
+				<ConstructionTypeId>10002</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<Interfaces>
+					<Interface id="14" location="A" zoneId="1">
+						<!--Interface to 'TF04.1'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+					<Interface id="15" location="B" zoneId="0">
+						<!--Interface to outside-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+				</Interfaces>
+			</ConstructionInstance>
+			<ConstructionInstance id="16" displayName="Floor">
+				<ConstructionTypeId>10001</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<Interfaces>
+					<Interface id="17" location="A" zoneId="1">
+						<!--Interface to 'TF04.1'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+				</Interfaces>
+			</ConstructionInstance>
+			<ConstructionInstance id="19" displayName="North">
+				<ConstructionTypeId>10001</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
+				<Interfaces>
+					<Interface id="20" location="A" zoneId="2">
+						<!--Interface to 'TF04.2'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+					<Interface id="21" location="B" zoneId="0">
+						<!--Interface to outside-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+				</Interfaces>
+			</ConstructionInstance>
+			<ConstructionInstance id="22" displayName="South">
+				<ConstructionTypeId>10001</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
+				<Interfaces>
+					<Interface id="23" location="A" zoneId="2">
+						<!--Interface to 'TF04.2'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+					<Interface id="24" location="B" zoneId="0">
+						<!--Interface to outside-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+				</Interfaces>
+			</ConstructionInstance>
+			<ConstructionInstance id="25" displayName="East">
+				<ConstructionTypeId>10001</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+				<Interfaces>
+					<Interface id="26" location="A" zoneId="2">
+						<!--Interface to 'TF04.2'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+					<Interface id="27" location="B" zoneId="0">
+						<!--Interface to outside-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+				</Interfaces>
+			</ConstructionInstance>
+			<ConstructionInstance id="28" displayName="West">
+				<ConstructionTypeId>10001</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+				<Interfaces>
+					<Interface id="29" location="A" zoneId="2">
+						<!--Interface to 'TF04.2'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+					<Interface id="30" location="B" zoneId="0">
+						<!--Interface to outside-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+				</Interfaces>
+			</ConstructionInstance>
+			<ConstructionInstance id="31" displayName="Roof">
+				<ConstructionTypeId>10002</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<Interfaces>
+					<Interface id="32" location="A" zoneId="2">
+						<!--Interface to 'TF04.2'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+					<Interface id="33" location="B" zoneId="0">
+						<!--Interface to outside-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+				</Interfaces>
+			</ConstructionInstance>
+			<ConstructionInstance id="34" displayName="Floor">
+				<ConstructionTypeId>10001</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<Interfaces>
+					<Interface id="35" location="A" zoneId="2">
+						<!--Interface to 'TF04.2'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+					<Interface id="36" location="B" zoneId="0">
+						<!--Interface to outside-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+				</Interfaces>
+			</ConstructionInstance>
+			<ConstructionInstance id="37" displayName="North A">
+				<ConstructionTypeId>10003</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
+				<Interfaces>
+					<Interface id="38" location="A" zoneId="3">
+						<!--Interface to 'TF04.3 A'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+					<Interface id="39" location="B" zoneId="0">
+						<!--Interface to outside-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+				</Interfaces>
+			</ConstructionInstance>
+			<ConstructionInstance id="40" displayName="South A">
+				<ConstructionTypeId>10003</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
+				<Interfaces>
+					<Interface id="41" location="A" zoneId="3">
+						<!--Interface to 'TF04.3 A'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+					<Interface id="42" location="B" zoneId="0">
+						<!--Interface to outside-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+				</Interfaces>
+			</ConstructionInstance>
+			<ConstructionInstance id="43" displayName="East A">
+				<ConstructionTypeId>10003</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+				<Interfaces>
+					<Interface id="44" location="A" zoneId="3">
+						<!--Interface to 'TF04.3 A'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+					<Interface id="45" location="B" zoneId="0">
+						<!--Interface to outside-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+				</Interfaces>
+			</ConstructionInstance>
+			<ConstructionInstance id="46" displayName="Roof A">
+				<ConstructionTypeId>10003</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<Interfaces>
+					<Interface id="47" location="A" zoneId="3">
+						<!--Interface to 'TF04.3 A'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+					<Interface id="48" location="B" zoneId="0">
+						<!--Interface to outside-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+				</Interfaces>
+			</ConstructionInstance>
+			<ConstructionInstance id="49" displayName="Floor A">
+				<ConstructionTypeId>10003</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<Interfaces>
+					<Interface id="50" location="A" zoneId="3">
+						<!--Interface to 'TF04.3 A'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+					<Interface id="51" location="B" zoneId="0">
+						<!--Interface to outside-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+				</Interfaces>
+			</ConstructionInstance>
+			<ConstructionInstance id="52" displayName="North B">
+				<ConstructionTypeId>10004</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
+				<Interfaces>
+					<Interface id="53" location="A" zoneId="4">
+						<!--Interface to 'TF04.3 B'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+					<Interface id="54" location="B" zoneId="0">
+						<!--Interface to outside-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+				</Interfaces>
+			</ConstructionInstance>
+			<ConstructionInstance id="55" displayName="South B">
+				<ConstructionTypeId>10004</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
+				<Interfaces>
+					<Interface id="56" location="A" zoneId="4">
+						<!--Interface to 'TF04.3 B'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+					<Interface id="57" location="B" zoneId="0">
+						<!--Interface to outside-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+				</Interfaces>
+			</ConstructionInstance>
+			<ConstructionInstance id="58" displayName="West B">
+				<ConstructionTypeId>10004</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+				<Interfaces>
+					<Interface id="59" location="A" zoneId="4">
+						<!--Interface to 'TF04.3 B'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+					<Interface id="60" location="B" zoneId="0">
+						<!--Interface to outside-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+				</Interfaces>
+			</ConstructionInstance>
+			<ConstructionInstance id="61" displayName="Roof B">
+				<ConstructionTypeId>10004</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<Interfaces>
+					<Interface id="62" location="A" zoneId="4">
+						<!--Interface to 'TF04.3 B'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+					<Interface id="63" location="B" zoneId="0">
+						<!--Interface to outside-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+				</Interfaces>
+			</ConstructionInstance>
+			<ConstructionInstance id="64" displayName="Floor B">
+				<ConstructionTypeId>10004</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<Interfaces>
+					<Interface id="65" location="A" zoneId="4">
+						<!--Interface to 'TF04.3 B'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+					<Interface id="66" location="B" zoneId="0">
+						<!--Interface to outside-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+				</Interfaces>
+			</ConstructionInstance>
+			<ConstructionInstance id="67" displayName="Partition">
+				<ConstructionTypeId>10001</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+				<Interfaces>
+					<Interface id="68" location="A" zoneId="4">
+						<!--Interface to 'TF04.3 B'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+					<Interface id="69" location="B" zoneId="0">
+						<!--Interface to outside-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+					</Interface>
+				</Interfaces>
+			</ConstructionInstance>
+		</ConstructionInstances>
+		<ConstructionTypes>
+			<ConstructionType id="10001" displayName="Construction 1">
+				<MaterialLayers>
+					<MaterialLayer thickness="0.2" matId="1001" />
+				</MaterialLayers>
+			</ConstructionType>
+			<ConstructionType id="10002" displayName="Construction 2">
+				<MaterialLayers>
+					<MaterialLayer thickness="0.1" matId="1002" />
+				</MaterialLayers>
+			</ConstructionType>
+			<ConstructionType id="10003" displayName="Construction 3">
+				<MaterialLayers>
+					<MaterialLayer thickness="0.005" matId="1003" />
+					<MaterialLayer thickness="0.1" matId="1002" />
+					<MaterialLayer thickness="0.2" matId="1001" />
+				</MaterialLayers>
+			</ConstructionType>
+			<ConstructionType id="10004" displayName="Construction 4">
+				<MaterialLayers>
+					<MaterialLayer thickness="0.2" matId="1001" />
+					<MaterialLayer thickness="0.1" matId="1002" />
+					<MaterialLayer thickness="0.005" matId="1003" />
+				</MaterialLayers>
+			</ConstructionType>
+		</ConstructionTypes>
+		<Materials>
+			<Material id="1001" displayName="Brick">
+				<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+			</Material>
+			<Material id="1002" displayName="Insulation">
+				<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
+			</Material>
+			<Material id="1003" displayName="Board">
+				<IBK:Parameter name="Density" unit="kg/m3">800</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.14</IBK:Parameter>
+			</Material>
+		</Materials>
+		<SimulationParameter>
+			<IBK:IntPara name="StartYear">2015</IBK:IntPara>
+		</SimulationParameter>
+		<SolverParameter />
+		<Location>
+			<IBK:Parameter name="Latitude" unit="Deg">51</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<IBK:Parameter name="Altitude" unit="m">100</IBK:Parameter>
+			<ClimateFileName>climate/testClimate.epw</ClimateFileName>
+		</Location>
+		<Schedules />
+		<Outputs>
+			<OutputDefinitions>
+				<OutputDefinition>
+					<Quantity>Temperature</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>Location.ElevationAngle</Quantity>
+					<ObjectListName>climate</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+			</OutputDefinitions>
+			<Grids>
+				<OutputGrid name="hourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="All zones">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Location">
+				<FilterID>*</FilterID>
+				<ReferenceType>Location</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Interface">
+				<FilterID>*</FilterID>
+				<ReferenceType>Interface</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+	</Project>
+</NandradProject>
