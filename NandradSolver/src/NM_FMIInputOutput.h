@@ -67,7 +67,7 @@ public:
 	virtual unsigned int id() const override { return 0; }
 
 	/*! Not implemented, since not needed. */
-	virtual const std::string &displayName() const override { return "FMI interface model"; }
+	virtual const char * displayName() const override { return "FMI interface model"; }
 
 	/*! Not implemented, since not needed. */
 	virtual void resultDescriptions(std::vector<QuantityDescription> & /*resDesc*/) const override {}

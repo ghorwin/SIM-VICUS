@@ -62,7 +62,7 @@ public:
 	virtual unsigned int id() const override { return m_id; }
 
 	/*! Returns display name of this model instance. */
-	virtual const std::string &displayName() const override { return m_displayName; }
+	virtual const char * displayName() const override { return m_displayName.c_str(); }
 
 	/*! Populates the vector resDesc with descriptions of all results based on enumerations Results
 		and VectorValuedResults and the KeywordList.

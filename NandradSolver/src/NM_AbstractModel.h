@@ -65,7 +65,7 @@ public:
 	virtual unsigned int id() const = 0;
 
 	/*! Returns display name of this abstract state model. */
-	virtual const std::string &displayName() const= 0;
+	virtual const char * displayName() const= 0;
 
 	/*! Populates the vector resDesc with descriptions of all results provided by this model.
 		\warning This function generates and populates the vector refDesc from scratch and
