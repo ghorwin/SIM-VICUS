@@ -1,6 +1,6 @@
 # SIM-VICUS
 
-We have a CI (continuous integration) script running (build-test of all C/C++ code without UI): 
+We have a CI (continuous integration) script running (build-test of all C/C++ code without UI). For details, see ![Actions/build](https://github.com/ghorwin/SIM-VICUS/actions).
 
 ![CI](https://github.com/ghorwin/SIM-VICUS/workflows/CI/badge.svg)
 
