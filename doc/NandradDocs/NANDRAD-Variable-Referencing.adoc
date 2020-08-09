@@ -24,31 +24,32 @@ Each model instance stores its result values in own memory.
 
 ### Publishing model results
 
-The models must tell the solver framework what kind of outputs they generate. Objects generating results must derive from class `AbstractModel` (or derived helper classes) and implement the interface.
+The model instances/objects must tell the solver framework what kind of outputs they generate. Objects generating results must derive from class `AbstractModel` (or derived helper classes) and implement the abstract interface functions.
 
 [NOTE]
 ====
-`Schedules` and `FMIInputOutput` models are handled differently.
+`Schedules` and `FMIInputOutput` models are handled differently, when it comes to retrieving generated results.
 ====
 
 The framework first requests a reference type (prefix) via  `AbstractModel::referenceType()` of the model object. This reference type is used to group model objects into meaningful object groups.
 
 .Reference types
 ====
-`MRT_ZONE` or `MRT_INTERFACE`
+Typical examples are `MRT_ZONE` for zonal quantities, or `MRT_INTERFACE` for quantities (fluxes) across wall-surfaces.
 ====
 
-Each invididual result variable is published by the model as `QuantityDescription`. The framework requests these via call to `AbstractModel::resultDescriptions()`. Here, the model will store for each computed quantity the following information:
+Each invididual result variable is published by the model in an object of type `QuantityDescription`. The framework requests these via call to `AbstractModel::resultDescriptions()`. Within the `QuantityDescription` structure,  the model stores for each computed quantity the following information:
 
 - id-name (e.g. "Temperature")
 - physical display unit (e.g. "C") - interpreted as "display unit", calculations are always done in base SI units
-- a descriptive text (e.g. "Room air temperature")
-- physical limits (min/max values)
-- flag indicating whether this value will be constant over the lifetime of the solver
+- a descriptive text (e.g. "Room air temperature") (optional, for error/information messages)
+- physical limits (min/max values) (optional, may be used in iterative algorithms)
+- flag indicating whether this value will be constant over the lifetime of the solver/integration interval
 
+.A note on units
 [NOTE]
 ====
-A note on units. The results are stored _always_ in base SI units according to the UnitList. A well-behaving model will always store the result value in the basic SI unit, that is "K" for temperatures, "W" for thermal loads and so on (see `IBK::UnitList`).
+The results are stored _always_ in base SI units according to the IBK-UnitList. A well-behaving model will always store the result value in the basic SI unit, that is "K" for temperatures, "W" for thermal loads and so on (see `IBK::UnitList`).
 ====
 
 The unit is really only provided for error message outputs and for checking of the base SI unit matches the base SI unit of the requested unit (as an additional sanity check).
@@ -59,7 +60,7 @@ Sometimes, a model may compute a vector of values.
 
 .Vector results
 ====
-A ventilation model may compute ventilation heat loads for a number of zones (zones are identified via object lists). 
+A ventilation model may compute ventilation heat loads for a number of zones (zones that are identified via object lists).
 ====
 
 When a so-called vector-valued quantity is generated, the following additional information is provided:
@@ -69,7 +70,7 @@ When a so-called vector-valued quantity is generated, the following additional i
 
 .ID-access example
 ====
-The aforementioned ventilation model may be published for zones with IDs 1,4,5,10 and 11. Then the resulting ventilation heat losses will be defined for those zones only. Hence, the published quantity will look like:
+The aforementioned ventilation model may be assigned to zones with IDs 1,4,5,10 and 11. Then the resulting ventilation heat losses will be defined for those zones only. Hence, the published quantity will look like:
 
 ```
 - name = "NaturalVentilationHeadLoad"
@@ -80,36 +81,43 @@ The aforementioned ventilation model may be published for zones with IDs 1,4,5,1
 ```
 ====
 
+.Strong uniqueness requirement
 [IMPORTANT]
 ====
-The id-names of quantities are unique within a model object, and vector-valued quantities may not have the same ID name as scalar quantities. More precisely, variables need to be globally unique (see lookup rules below). This means that when there are two models with the same model-reference-type, the variable names must be unique among all models with the same reference-type.
+The id-names of quantities are unique within a model object, and vector-valued quantities may not have the same ID name as scalar quantities. More precisely, variables need to be globally unique (see <<variable_lookup, lookup rules>> below). This means that when there are two models with the same model-reference-type, the variable names must be unique among all models with the same reference-type.
 
-For example: from a zone parametrization several models are instantiated with the same reference-type `MRT_ZONE`, for example `RoomBalanceModel` and `RoomStatesModel`. The resulting variables in both models must not have the same ID name, in order to be uniquely identified on global scope.
+For example: from a zone parametrization several models are instantiated with the same reference-type `MRT_ZONE`, for example `RoomBalanceModel` and `RoomStatesModel`. The resulting variables in both models _must not_ have the same ID name, in order to be uniquely identified on global scope.
 ====
 
 ### Initializing memory for result values
 
 Each model object is requested by the framework in a call to `AbstractModel::initResults()` to reserve memory for its result variables. For scalar variables this is usually just resizing of a vector of doubles to the required number of result values. For vector-valued quantities the actual size may only be known later, so frequently here just the vectors are created and their actual size is determined later.
 
+[NOTE]
+====
 Since the information collected in `initResults()` is also needed when publishing the results to the framework, the function `AbstractModel::initResults()` is called before `AbstractModel::resultDescriptions()`.
+====
+
+#### Convenience implementation
+
+Scalar variables are stored in double variables of the model. When using the convenience implementation in `DefaultModel` these are stored in vector `m_results`.
+
+Vector-valued variables are stored in consecutive memory arrays with size matching the size of the vector. When using the `DefaultModel` implementation, these are stored in `m_vectorValuedResults`, which is a vector of `VectorValuedResults`.
+
+The `DefaultModel` implementation makes use of enumerations `Results` and `VectorValuedResults`.
 
 
 
 [[model_input_refs]]
 ## Model inputs
 
-Similarly as output variables, model objects need input variables. Models requiring input must implement the interface of `AbstractStateDependency`.
+Similarly as output variables, model objects need input variables. Models requiring input must implement the interface of class `AbstractStateDependency`.
+
+Input variable requirements are published similarly to results when the framework requests them in a call to `AbstractStateDependency::inputReferences()`. The information on requested results is stored in objects of type `InputReference`. The data in class `InputReference` is somewhat similar to that of `QuantityDescription` but contains additional data regarding the expectations of the model in the input variable.
 
 [NOTE]
 ====
-`FMIInputExport` model is handled separately.
-====
-
-Input variable requirements are published similarly to results when the framework requests them in a call to `AbstractStateDependency::inputReferences()`. The information on requested results is stored in objects of type `InputReference`.
-
-[NOTE]
-====
-A model may request scalar variable inputs only, even if the providing model generates these as a vector-valued quantity.
+A model may request scalar variable inputs only, even if the providing model generates these as a vector-valued quantity. That means, a model has the choice to request access to the entire vector-valued variable (and will usually get the address to the start of the vector-memory space), or a single component of the vector. In the latter case, the index/model-ID must be defined in the `InputReference` data structure.
 ====
 
 .Input reference to a zone air temperature inside a ventilation model
@@ -124,25 +132,30 @@ An input required by the ventilation model can be formulated with the follwing d
 
 Given that information, the framework can effectively look-up the required variables.
 
+Once the variable has been found, the framework will tell the object the memory location by calling `AbstractStateDependency::setInputValueRef()`.
 
-and tell the object by calling `AbstractStateDependency::setInputValueRef()` which variable identified through `QuantityName` has which memory address.
 
 ### FMI Export (output) variables
 
-When FMI export is defined, i.e. output variables are declarted in the FMI interface, a list of global variable IDs to be exported is defined. For each of these variables an input reference is generated, just as for any other model as well.
+When FMI export is defined, i.e. output variables are declarted in the FMI interface, a list of global variable IDs to be exported is defined. For each of these variables an input reference is generated (inside the `FMIInputOutput` model), just as for any other model as well.
+
+.FMI Output Variable example
+====
+Suppose an FMI exports the air temperature from zone id=15 and for that purpose needs to retrieve the currently computed temperature from the zone state model. The FMI output variable would be named _Zone[15].AirTemperature_ and the input reference would be created as in the example above. This way, the framework can simply provide a pointer to this memory slot to the `FMIInputOutput` model just as for any other model.
+====
 
 ### Outputs
 
-When initializing outputs, any published variable can be collected. Outputs declare their variable needs just as any other model object.
+When initializing outputs, any published variable can be collected. Outputs declare their input variables just as any other model object.
 
 
+[[variable_lookup]]
 ## Variable lookup
+
+The frameworks job is to collect all 
 
 ### Resolving persistant pointers to result locations
 
-Scalar variables are stored in double variables of the model. When using the convenience implementation in `DefaultModel` these are stored in vector `m_results`.
-
-Vector-valued variables are stored in consecutive memory arrays with size matching the size of the vector. When using the `DefaultModel` implementation, these are stored in `m_vectorValuedResults`, which is a vector of `VectorValuedResults`.
 
 Later, when the framework connects <<model_input_refs, model inputs>> with results, the framework requests models to provide persistant memory locations for previously published results. This is done by calling `AbstractModel::resultValueRef()`, which get's a copy of the previously exported `InputReference`.
 
