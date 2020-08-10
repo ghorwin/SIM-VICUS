@@ -68,7 +68,7 @@ void RoomStatesModel::setup(const NANDRAD::Zone & zone) {
 
 
 void RoomStatesModel::initResults(const std::vector<AbstractModel*> & models) {
-	FUNCID(RoomStatesModel::initResults);
+//	FUNCID(RoomStatesModel::initResults);
 
 	// resize m_results from keyword list
 	DefaultModel::initResults(models);
@@ -211,7 +211,7 @@ void RoomStatesModel::yInitial(double * y) const {
 
 	// return initial value to global solver
 	y[0] = TInitial * (rhoAir*cAir*Volume + CMass);
-#endif 0
+#endif
 }
 
 int RoomStatesModel::update() {

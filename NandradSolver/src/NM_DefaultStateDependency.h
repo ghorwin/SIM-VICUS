@@ -101,12 +101,14 @@ protected:
 	*/
 	virtual void constraints(std::map< const double *, std::pair<double, double> > &constraintsPerValueRef) const override;
 
+#if 0
 	/*! Function for access an input reference to a scalar target via enumeration and vector index.
 		If the input reference is missing a new element is inserted into the m_inputRferences vector.*/
 	InputReference &inputReference(int quantityType, int index = -1);
 	/*! Function for constant access  an input reference to a scalar target via enumeration and vector index.
 		If the input reference is missing an exception is thrown.*/
 	const InputReference &inputReference(int quantityType, int index = -1) const;
+#endif
 
 	/*! Transforms a target name into a target identifier for the mapping of input references.
 		Returns -1 for missing quantity.

@@ -296,8 +296,8 @@ void StateModelGroup::initConstraints() {
 void StateModelGroup::initSparseSolver(IBKMK::SparseMatrixPattern &pattern,
 	IBKMK::SparseMatrixPattern &patternTranspose)
 {
-	const char * const FUNC_ID = "[StateModelGroup::initSparseSolver]";
 #if 0
+	const char * const FUNC_ID = "[StateModelGroup::initSparseSolver]";
 	if (m_resultValueRefs.empty()) {
 		// generate all dependency information
 		initResultValueRefs();
@@ -631,7 +631,7 @@ SOLFRA::ModelInterface::CalculationResult StateModelGroup::ydot(double * ydot) {
 	// calculate residuals with updated y-vector
 	unsigned int rowIdx = 0;
 
-	int calculationResultFlag = 0;
+//	int calculationResultFlag = 0;
 	// with the current values we start a second call of the update
 	for (unsigned int modelIdx = 0; modelIdx < m_models.size(); ++modelIdx) {
 		// do not allow empty model references

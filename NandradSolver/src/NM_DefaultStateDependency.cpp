@@ -386,8 +386,8 @@ void DefaultStateDependency::constraints(std::map< const double *,
 }
 
 
-InputReference & DefaultStateDependency::inputReference(int quantityType, int index) {
 #if 0
+InputReference & DefaultStateDependency::inputReference(int quantityType, int index) {
 	// first seach the lower bound/ equal element
 	std::vector<InputReferenceToVectorValuedTarget>::iterator it =
 		std::find_if(m_inputReferences.begin(), m_inputReferences.end(),
@@ -415,12 +415,10 @@ InputReference & DefaultStateDependency::inputReference(int quantityType, int in
 	// and return the corresponding iterator. The larger element will be shifted
 	// for one vector position.
 	return *m_inputReferences.insert(it,inputRef);
-#endif
 }
 
 
 const InputReference & DefaultStateDependency::inputReference(int quantityType, int index) const {
-#if 0
 	const char * const FUNC_ID = "[DefaultStateDependency::inputReference]";
 	// find the input reference matching quantity type and index
 	std::vector<InputReferenceToVectorValuedTarget>::const_iterator it =
@@ -446,8 +444,8 @@ const InputReference & DefaultStateDependency::inputReference(int quantityType, 
 	}
 	errmsg += std::string("! Input reference does not exist.");
 	throw IBK::Exception(errmsg, FUNC_ID);
-#endif
 }
+#endif
 
 
 std::vector<const double *>::const_iterator DefaultStateDependency::inputValueRefs(int quantityType) const {
@@ -473,6 +471,7 @@ std::vector<const double *>::const_iterator DefaultStateDependency::inputValueRe
 
 	return m_inputValueRefs.begin() + offset;
 #endif
+	return m_inputValueRefs.begin();
 }
 
 
@@ -498,6 +497,7 @@ const double *DefaultStateDependency::inputValueRef(int quantityType) const {
 
 	return m_inputValueRefs[offset];
 #endif
+	return nullptr;
 }
 
 

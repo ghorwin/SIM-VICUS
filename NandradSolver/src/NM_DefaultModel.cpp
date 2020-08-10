@@ -194,6 +194,7 @@ const double * DefaultModel::resultValueRef(const QuantityName & quantityName) c
 			return nullptr;
 		}
 #endif
+		return nullptr;
 	}
 	catch (...) {
 		return nullptr;
