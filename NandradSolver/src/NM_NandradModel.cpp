@@ -180,14 +180,14 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 //	initFMUComponents();
 	// *** Initialize Object Lists ***
 	initObjectLists();
+	// *** Initialize outputs ***
+	initOutputs(args.m_restart || args.m_restartFrom);
 	// *** Setup model dependencies ***
 	initModelDependencies();
 	// *** Setup states model graph and generate model groups ***
 	initModelGraph();
 	// *** Initialize list with output references ***
 	initOutputReferenceList();
-	// *** Initialize outputs ***
-	initOutputs(args.m_restart || args.m_restartFrom);
 	// *** Check validity for all model initial values ***
 //	prepareInitialModelCalculation();
 	// *** Initialize Global Solver ***
@@ -272,8 +272,8 @@ SOLFRA::ModelInterface::CalculationResult NandradModel::setY(const double * y) {
 
 
 SOLFRA::ModelInterface::CalculationResult NandradModel::ydot(double * ydot) {
-	const char * const FUNC_ID = "[NandradModel::ydot]";
 #if 0
+	FUNCID(NandradModel::ydot);
 	try {
 		int calculationResultFlag = 0;
 		// only update if necessary
@@ -1677,6 +1677,26 @@ void NandradModel::initObjectLists() {
 
 }
 
+
+void NandradModel::initOutputs(bool restart) {
+	FUNCID(NandradModel::initOutputs);
+
+	try {
+		m_outputHandler = new OutputHandler;
+		m_outputHandler->init(restart, *m_project);
+
+		// now create the output file model objects
+
+
+		// and finally (re-)open the output files
+
+
+	} catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, "Error initializing outputs.", FUNC_ID);
+	}
+}
+
+
 void NandradModel::initModelDependencies() {
 	FUNCID(NandradModel::initModelDependencies);
 
@@ -2028,25 +2048,6 @@ void NandradModel::initOutputReferenceList() {
 	}
 	outputList.flush();
 	outputList.close();
-}
-
-
-void NandradModel::initOutputs(bool restart) {
-	FUNCID(NandradModel::initOutputs);
-
-	try {
-		m_outputHandler = new OutputHandler;
-		m_outputHandler->init(restart, *m_project);
-
-		// now create the output file model objects
-
-
-		// and finally (re-)open the output files
-
-
-	} catch (IBK::Exception & ex) {
-		throw IBK::Exception(ex, "Error initializing outputs.", FUNC_ID);
-	}
 }
 
 

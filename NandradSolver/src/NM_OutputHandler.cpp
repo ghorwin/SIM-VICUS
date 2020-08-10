@@ -11,6 +11,7 @@
 
 #include "NM_OutputFile.h"
 #include "NM_QuantityName.h"
+#include "NM_KeywordList.h"
 
 const char * const STATE_QUANTITIES[] = {
 	"Temperature"
@@ -70,7 +71,6 @@ void OutputHandler::init(bool restart, NANDRAD::Project & prj) {
 		// store pointer link to output grid
 		od.m_objectListRef = &(*oblst_it);
 
-		// store object list definition in map; those without filename are stored with key = string() = ""
 		std::string outputFname = IBK::trim_copy(od.m_filename);
 		// if output filename is not empty, make sure that all output definitions in same file use the
 		// same output grid
@@ -81,6 +81,8 @@ void OutputHandler::init(bool restart, NANDRAD::Project & prj) {
 									 .arg(i).arg(od.m_filename).arg(od.m_gridName).arg(targetFileMap[outputFname].back().m_gridName), FUNC_ID);
 			}
 		}
+
+		// store object list definition in map; those without filename are stored with key = string() = ""
 		targetFileMap[outputFname].push_back(od);
 	}
 
@@ -157,6 +159,77 @@ void OutputHandler::init(bool restart, NANDRAD::Project & prj) {
 	// now we have grouped all output definitions into files, and we can create output file objects for
 	// all non-empty groups
 
+	for (auto filegrp : targetFileMap) {
+		// automatically named files are skipped
+		if (filegrp.first.empty()) continue;
+
+		OutputFile * of = new OutputFile;
+		// take ownership of the created file
+		m_outputFiles.push_back(of);
+
+		// set filename
+		of->m_filename = filegrp.first;
+		// add file extension (tsv or btf see below)
+		if (prj.m_outputs.m_binaryFormat.isEnabled())
+			of->m_filename += ".btf";
+		else
+			of->m_filename += ".tsv";
+
+		// now set all output definitions
+		of->m_outputDefinitions = filegrp.second;
+
+		// store convenience pointer in file
+		of->m_gridRef = of->m_outputDefinitions.back().m_gridRef;
+
+		IBK::IBK_Message(IBK::FormatString("Output file '%1' registered with grid '%2' and %3 output definitions.\n")
+						 .arg(of->m_filename).arg(of->m_gridRef->m_name).arg(of->m_outputDefinitions.size()),
+						 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+	}
+
+	// now all the auto-generated files
+	for (auto filegrp : groupMap) {
+		// process all types
+		for (int i=0; i<NUM_OFN; ++i) {
+			// skip file types with empty lists
+			if (filegrp.second[i].empty()) continue;
+
+			// now create the file with the file name pattern:
+			// <filetype>_<gridname>.tsv or
+			// <filetype>_<gridname>.btf   (bt = binary table format)
+			//
+			// also: special handling: if only a single output grid is used, i.e. size of the groupMap is 1, skip
+			// the gridname suffix
+
+			std::string filename = NANDRAD_MODEL::KeywordList::Keyword("OutputHandler::OutputFileNames", i);
+			// add suffix
+			if (groupMap.size() != 1) {
+				filename += "_" + filegrp.first;
+			}
+
+			// now we can create the file
+			OutputFile * of = new OutputFile;
+			// take ownership of the created file
+			m_outputFiles.push_back(of);
+
+			// set filename
+			of->m_filename = filename;
+			// add file extension (tsv or btf see below)
+			if (prj.m_outputs.m_binaryFormat.isEnabled())
+				of->m_filename += ".btf";
+			else
+				of->m_filename += ".tsv";
+
+			// now set all output definitions
+			of->m_outputDefinitions = filegrp.second[i];
+
+			// store convenience pointer in file
+			of->m_gridRef = of->m_outputDefinitions.back().m_gridRef;
+
+			IBK::IBK_Message(IBK::FormatString("Output file '%1' registered with grid '%2' and %3 output definitions.\n")
+							 .arg(of->m_filename).arg(of->m_gridRef->m_name).arg(of->m_outputDefinitions.size()),
+							 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+		}
+	}
 
 }
 
