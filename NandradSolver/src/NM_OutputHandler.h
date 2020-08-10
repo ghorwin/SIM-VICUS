@@ -47,6 +47,7 @@ public:
 	*/
 	void init(bool restart, NANDRAD::Project & prj);
 
+
 	/*! Vector with output file objects. */
 	std::vector<OutputFile*>								m_outputFiles;
 

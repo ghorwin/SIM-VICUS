@@ -231,6 +231,15 @@ void OutputHandler::init(bool restart, NANDRAD::Project & prj) {
 		}
 	}
 
+
+	// *** create input references
+
+	// process all output files
+	for (OutputFile * of : m_outputFiles) {
+		// request each output file to generate input references for its output variables
+//		of->createInputReferences()
+
+	}
 }
 
 } // namespace NANDRAD_MODEL

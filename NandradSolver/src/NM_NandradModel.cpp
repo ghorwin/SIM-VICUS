@@ -1735,12 +1735,8 @@ void NandradModel::initOutputs(bool restart) {
 	IBK::MessageIndentor indent; (void)indent;
 
 	try {
-		m_outputHandler = new OutputHandler;
+		m_outputHandler = new OutputHandler; // we own the model, memory is released in destructor
 		m_outputHandler->init(restart, *m_project);
-
-		// now create the output file model objects
-		std::vector<NANDRAD_MODEL::AbstractModel*>	outputFileModels;
-//		m_outputHandler->createModelObjects(m_objectLists, outputFileModels);
 
 
 		// and finally (re-)open the output files
