@@ -492,10 +492,10 @@ void CodeGenerator::generateReadWriteCode() {
 								"		TiXmlElement * child = new TiXmlElement(\""+tagName+"\");\n"
 								"		e->LinkEndChild(child);\n"
 								"\n"
-								"		for (std::vector<"+childType+">::const_iterator ifaceIt = m_"+varName+".begin();\n"
-								"			ifaceIt != m_"+varName+".end(); ++ifaceIt)\n"
+								"		for (std::vector<"+childType+">::const_iterator it = m_"+varName+".begin();\n"
+								"			it != m_"+varName+".end(); ++it)\n"
 								"		{\n"
-								"			ifaceIt->writeXML(child);\n"
+								"			it->writeXML(child);\n"
 								"		}\n"
 								"	}\n"
 								"\n";
