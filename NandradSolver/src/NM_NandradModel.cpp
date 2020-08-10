@@ -174,14 +174,15 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 //	initEmbeddedObjects();
 	// *** Initialize ModelGroups ***
 //	initModelGroups();
-	// *** Initialize SubModels ***
-//	initExplicitModels();
 	// *** Initialize all internal fmus ***
 //	initFMUComponents();
 	// *** Initialize Object Lists ***
 	initObjectLists();
 	// *** Initialize outputs ***
 	initOutputs(args.m_restart || args.m_restartFrom);
+
+	// Here, *all* model objects must be created and stored in m_modelContainer !!!
+
 	// *** Setup model dependencies ***
 	initModelDependencies();
 	// *** Setup states model graph and generate model groups ***
@@ -1738,11 +1739,12 @@ void NandradModel::initOutputs(bool restart) {
 		m_outputHandler = new OutputHandler; // we own the model, memory is released in destructor
 		m_outputHandler->init(restart, *m_project);
 
-
-		// and finally (re-)open the output files
-
-
-	} catch (IBK::Exception & ex) {
+		// append the output file objects to the model container, so that variables can be resolved
+		m_modelContainer.insert(m_modelContainer.end(),
+								m_outputHandler->m_outputFiles.begin(),
+								m_outputHandler->m_outputFiles.end()); // transfers ownership
+	}
+	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, "Error initializing outputs.", FUNC_ID);
 	}
 }
@@ -1905,7 +1907,7 @@ void NandradModel::initModelDependencies() {
 					// since we only want to find the object that actually provides the *variable*
 					ValueReference valueRef;
 					valueRef.m_id = m_modelContainer[i]->id();
-					valueRef.m_referenceType = m_modelContainer[i]->referenceType();
+					valueRef.m_referenceType = inputRef.m_referenceType;
 					valueRef.m_name = inputRef.m_sourceName.m_name;
 
 					std::map<ValueReference, AbstractModel*>::const_iterator it = modelResultReferences.find(valueRef);

@@ -39,6 +39,21 @@ namespace NANDRAD_MODEL {
 */
 class InputReference {
 public:
+	/*! Comparison operator. */
+	bool operator==(const InputReference & other) const {
+		if (m_referenceType != other.m_referenceType) return false;
+		if (m_id != other.m_id) return false;
+		if (m_constant != other.m_constant) return false;
+		if (m_required != other.m_required) return false;
+		if (m_sourceName != other.m_sourceName) return false;
+		if (m_targetName != other.m_targetName) return false;
+		return true;
+	}
+	/*! Inequality operator. */
+	bool operator!=(const InputReference & other) const {
+		return !operator==(other);
+	}
+
 	/*! ReferenceType: zone, model or constructionInstance */
 	NANDRAD::ModelInputReference::referenceType_t	m_referenceType = NANDRAD::ModelInputReference::NUM_MRT;
 	/*! ID of the referenced source model/parametrization entity.*/
@@ -54,7 +69,6 @@ public:
 		such quantities.
 	*/
 	bool											m_required = true;
-
 
 
 	/*! \deprecated Target name: name of the input quantity inside the dependent model */

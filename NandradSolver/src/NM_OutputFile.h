@@ -5,15 +5,79 @@
 #include <vector>
 
 #include <NANDRAD_OutputDefinition.h>
+#include "NM_AbstractModel.h"
+#include "NM_AbstractStateDependency.h"
 
 namespace NANDRAD_MODEL {
 
 /*! Handles writing of a single tsv output file.
 	This class implements the model interface and requests input references for
 	all output quantities stored in the output file managed by this class.
+
+	To add OutputFile objects to the model container of NandradModel we need
+	to derive from AbstractModel, even though output files never generate results. Hence,
+	the implementation of the AbstractModel interface is just dummy code.
 */
-class OutputFile {
+class OutputFile : public AbstractModel, public AbstractStateDependency {
 public:
+
+	// *** Re-implemented from AbstractModel
+
+	/*! Not needed, FMI input vars are "overrding" variables and reference type is not really meaningful here. */
+	virtual NANDRAD::ModelInputReference::referenceType_t referenceType() const override {
+		return NANDRAD::ModelInputReference::MRT_GLOBAL;
+	}
+
+	/*! Return unique class ID name of implemented model. */
+	virtual const char * ModelIDName() const override { return "OutputFile"; }
+
+	/*! Not implemented, since not needed. */
+	virtual unsigned int id() const override { return 0; }
+
+	/*! Not implemented, since not needed. */
+	virtual const char * displayName() const override { return "OutputFile"; }
+
+	/*! Not implemented, since not needed. */
+	virtual void resultDescriptions(std::vector<QuantityDescription> & /*resDesc*/) const override {}
+
+	/*! Not implemented, since not needed (FMI result vars are handled in a special way). */
+	virtual const double * resultValueRef(const QuantityName & /*quantityName*/) const override { return nullptr; }
+
+	/*! Not implemented, since not needed (FMI result vars are handled in a special way). */
+	virtual void resultValueRefs(std::vector<const double *> & /*res*/) const override {}
+
+	/*! Not implemented, since not needed. */
+	virtual void initResults(const std::vector<AbstractModel*> & /* models */) override {}
+
+
+
+	// *** Re-implemented from AbstractStateDependency
+
+	/*! Returns vector with model input references. */
+	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const override { inputRefs = m_inputRefs; }
+
+	/*! Returns vector with pointers to memory locations matching input value references. */
+	virtual const std::vector<const double *> & inputValueRefs() const override { return m_valueRefs; }
+
+	/*! Not implemented, since already done in init(). */
+	virtual void initInputReferences(const std::vector<AbstractModel*> & /* models */) override {}
+
+	/*! Sets a single input value reference (persistent memory location) that refers to the requested input reference.
+		\param inputRef An input reference from the previously published list of input references.
+		\param resultValueRef Persistent memory location to the variable slot.
+	*/
+	virtual void setInputValueRef(const InputReference &inputRef, const double *resultValueRef) override;
+
+	/*! We have nothing to do here, output handling is done outside the actual evaluation. */
+	virtual int update() override { return 0; }
+
+
+	/*! In this function the output definitions are expanded into scalar variables and corresponding
+		input references.
+	*/
+	void createInputReferences();
+
+private:
 
 	/*! The target file name (within output directory). */
 	std::string									m_filename;
@@ -30,6 +94,14 @@ public:
 	*/
 	const NANDRAD::OutputGrid					*m_gridRef;
 
+
+	/*! Input references for all output variables written in the file handled by this object. */
+	std::vector<InputReference>					m_inputRefs;
+
+	/*! Pointers to variables to monitor. */
+	std::vector<const double*>					m_valueRefs;
+
+	friend class OutputHandler;
 };
 
 } // namespace NANDRAD_MODEL

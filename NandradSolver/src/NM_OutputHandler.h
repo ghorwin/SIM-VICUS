@@ -22,9 +22,6 @@ class OutputFile;
 class OutputHandler {
 public:
 
-	/*! D'tor, releases allocated memory. */
-	~OutputHandler();
-
 	/*! Different names for auto-generated files based on quantity type. */
 	enum OutputFileNames {
 		OFN_States,				// Keyword: states
@@ -48,9 +45,17 @@ public:
 	void init(bool restart, NANDRAD::Project & prj);
 
 
-	/*! Vector with output file objects. */
-	std::vector<OutputFile*>								m_outputFiles;
+	/*! Vector with output file objects.
+		Objects are not owned by us, but rather by NandradModel, since the output file objects
+		are also model objects and are inserted into the model container.
+	*/
+	std::vector<OutputFile*>					m_outputFiles;
 
+	/*! If true, solver is restarted.
+		This flag is used when the first output is being written to decide whether to
+		re-open files or to create files from scratch and writing headers.
+	*/
+	bool										m_restart;
 };
 
 

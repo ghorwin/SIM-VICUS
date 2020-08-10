@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <array>
+#include <memory>
 
 #include <IBK_StringUtils.h>
 #include <IBK_messages.h>
@@ -22,12 +23,6 @@ const char * const FLUX_QUANTITIES[] = {
 };
 
 namespace NANDRAD_MODEL {
-
-OutputHandler::~OutputHandler() {
-	for (OutputFile * of : m_outputFiles)
-		delete of;
-	m_outputFiles.clear();
-}
 
 
 void OutputHandler::init(bool restart, NANDRAD::Project & prj) {
@@ -159,13 +154,18 @@ void OutputHandler::init(bool restart, NANDRAD::Project & prj) {
 	// now we have grouped all output definitions into files, and we can create output file objects for
 	// all non-empty groups
 
+	// we first create the output files in shared ptr containers, so that memory is properly
+	// cleaned up in case of exceptions. At the end of the function, the objects
+	// are moved to m_outputFiles before they are copied into NandradModel::m_modelContainer (which
+	// owns them).
+	std::vector<std::unique_ptr<OutputFile> >					tmpOutputFiles;
+
 	for (auto filegrp : targetFileMap) {
 		// automatically named files are skipped
 		if (filegrp.first.empty()) continue;
 
-		OutputFile * of = new OutputFile;
-		// take ownership of the created file
-		m_outputFiles.push_back(of);
+		tmpOutputFiles.push_back( std::unique_ptr<OutputFile>(new OutputFile));
+		OutputFile * of = tmpOutputFiles.back().get();
 
 		// set filename
 		of->m_filename = filegrp.first;
@@ -206,10 +206,9 @@ void OutputHandler::init(bool restart, NANDRAD::Project & prj) {
 				filename += "_" + filegrp.first;
 			}
 
-			// now we can create the file
-			OutputFile * of = new OutputFile;
-			// take ownership of the created file
-			m_outputFiles.push_back(of);
+			// now we can create the file object
+			tmpOutputFiles.push_back( std::unique_ptr<OutputFile>(new OutputFile));
+			OutputFile * of = tmpOutputFiles.back().get();
 
 			// set filename
 			of->m_filename = filename;
@@ -235,10 +234,15 @@ void OutputHandler::init(bool restart, NANDRAD::Project & prj) {
 	// *** create input references
 
 	// process all output files
-	for (OutputFile * of : m_outputFiles) {
+	for (std::unique_ptr<OutputFile> & of : tmpOutputFiles) {
 		// request each output file to generate input references for its output variables
-//		of->createInputReferences()
+		of->createInputReferences(); // may throw exception
+	}
 
+	// *** transfer pointers
+
+	for (std::unique_ptr<OutputFile> & of : tmpOutputFiles) {
+		m_outputFiles.push_back(of.release());
 	}
 }
 
