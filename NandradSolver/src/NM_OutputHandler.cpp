@@ -200,7 +200,7 @@ void OutputHandler::init(bool restart, NANDRAD::Project & prj) {
 			// also: special handling: if only a single output grid is used, i.e. size of the groupMap is 1, skip
 			// the gridname suffix
 
-			std::string filename = NANDRAD_MODEL::KeywordList::Keyword("OutputHandler::OutputFileNames", i);
+			std::string filename = NANDRAD_MODEL::KeywordList::Keyword("OutputHandler::OutputFileNames", (int)i);
 			// add suffix
 			if (groupMap.size() != 1) {
 				filename += "_" + filegrp.first;
