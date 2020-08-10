@@ -60,6 +60,7 @@ SOURCES += \
 	../../src/NM_Loads.cpp \
 	../../src/NM_NandradModel.cpp \
 	../../src/NM_OutputFile.cpp \
+	../../src/NM_OutputHandler.cpp \
 	../../src/NM_QuantityName.cpp \
 	../../src/NM_RoomBalanceModel.cpp \
 	../../src/NM_RoomStatesModel.cpp \
@@ -85,6 +86,7 @@ HEADERS += \
 	../../src/NM_Loads.h \
 	../../src/NM_NandradModel.h \
 	../../src/NM_OutputFile.h \
+	../../src/NM_OutputHandler.h \
 	../../src/NM_Physics.h \
 	../../src/NM_QuantityDescription.h \
 	../../src/NM_QuantityName.h \

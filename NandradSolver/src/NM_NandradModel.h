@@ -74,7 +74,7 @@ class Schedules;
 class FMIInputOutput;
 class RoomBalanceModel;
 class RoomStatesModel;
-class OutputFile;
+class OutputHandler;
 
 /*! Main NANDRAD model implementation class.
 	This class implements the interface of SOLFRA::ModelInterface and SOLFRA::OutputScheduler and contains
@@ -265,7 +265,7 @@ private:
 	void initModelGraph();
 	/*! Creates a list of all available output quantities.*/
 	void initOutputReferenceList();
-	/*! Initialises all outputFile - data structures and DataIO containers.
+	/*! Initialises all outputs.
 		\param restart If true, output files are re-opened for writing (and are expected to exist).
 	*/
 	void initOutputs(bool restart);
@@ -470,8 +470,8 @@ private:
 
 	// *** Outputs ***
 
-	/*! Vector with output file objects (DataIO containers) for each output file (size m_nOutputs). */
-	std::vector<OutputFile*>								m_outputFiles;
+	/*! The central managing object for outputs. */
+	OutputHandler											*m_outputHandler = nullptr;
 
 	// *** STATISTICS ***
 

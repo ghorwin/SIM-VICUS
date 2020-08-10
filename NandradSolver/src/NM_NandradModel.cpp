@@ -86,11 +86,6 @@ NandradModel::~NandradModel() {
 	delete m_integrator;
 	//	delete m_FMU2ModelDescription;
 
-	for (std::vector<OutputFile*>::iterator it = m_outputFiles.begin();
-		it != m_outputFiles.end(); ++it)
-	{
-		delete *it;
-	}
 	for (std::vector<AbstractModel*>::iterator it = m_modelContainer.begin();
 		it != m_modelContainer.end(); ++it)
 	{
@@ -104,6 +99,7 @@ NandradModel::~NandradModel() {
 
 	delete m_schedules;
 	delete m_fmiInputOutput;
+	delete m_outputHandler;
 	// note: m_loads is handled just as any other model and cleaned up as part of the m_modelContainer cleanup above
 }
 
@@ -2034,8 +2030,29 @@ void NandradModel::initOutputReferenceList() {
 }
 
 
-void NandradModel::initOutputs(bool restart)
-{
+void NandradModel::initOutputs(bool restart) {
+	FUNCID(NandradModel::initOutputs);
+	// we create groups of output definitions, first based on target file name
+
+	// in the initial loop, we also create and store pointer references to output grids and object lists referenced
+	// from output definitions - in case of invalid definitions, we bail out with an error message
+	std::map<std::string, NANDRAD::OutputDefinition> targetFileMap;
+	for (unsigned int i=0; i<m_project->m_outputs.m_outputDefinitions.size(); ++i) {
+
+		NANDRAD::OutputDefinition & od = m_project->m_outputs.m_outputDefinitions[i];
+
+		// sanity checks are done on the fly
+		if (IBK::trim_copy(od.m_gridName).empty())
+			throw IBK::Exception(IBK::FormatString("Output definition #%1 has empty/invalid output grid name.").arg(i), FUNC_ID);
+
+		std::vector<NANDRAD::OutputGrid>::const_iterator grid_it = std::find(m_project->m_outputs.m_grids.begin(),
+																			 m_project->m_outputs.m_grids.end(),
+																			 od.m_gridName);
+		if (grid_it == m_project->m_outputs.m_grids.end())
+			throw IBK::Exception(IBK::FormatString("Output definition #%1 references unknown/undefined output grid '%2'").arg(i).arg(od.m_gridName), FUNC_ID);
+
+		// store pointer link to output grid
+	}
 
 }
 
