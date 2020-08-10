@@ -151,7 +151,6 @@ void OutputGrid::checkIntervalDefinition() const {
 	if (m_intervals.empty())
 		throw IBK::Exception( IBK::FormatString("Output Grid '%1' does not have any intervals.").arg(m_name), FUNC_ID);
 
-	bool dataOk = true;
 	double startTime = 0; // assume first interval starts at time 0 (offset to Midnight January 1st of the start year)
 
 	// check that intervals are defined consecutively and that all parameters make sense

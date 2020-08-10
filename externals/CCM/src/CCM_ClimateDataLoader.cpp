@@ -1238,7 +1238,7 @@ void ClimateDataLoader::writeClimateDataEPW(const IBK::Path & fname) {
 	std::vector<std::string> lines;
 	IBK::explode(m_comment, lines, "\n", IBK::EF_NoFlags);
 	if (!lines.empty()) {
-		for (int i=0; i<lines.size(); ++i)
+		for (unsigned int i=0; i<lines.size(); ++i)
 			epwHeader += IBK::FormatString("\nCOMMENTS %1,%2").arg(i+1).arg((lines[i])).str();
 	}
 	epwHeader += "\n" + IBK::FormatString("DATA PERIODS,%1,%2,%3,%4,%5,%6")

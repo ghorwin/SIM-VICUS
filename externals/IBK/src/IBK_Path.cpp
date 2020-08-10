@@ -1391,8 +1391,8 @@ bool Path::remove(const IBK::Path & p, bool quiet) {
 
 
 bool Path::copy(const IBK::Path & source, const IBK::Path & target){
-
-	const char* FUNC_ID = "[Path::copy]";
+	FUNCID(Path::copy);
+	(void)FUNC_ID; // silence warning about unused variable
 
 	if ( !source.exists() ) {
 		return false;
