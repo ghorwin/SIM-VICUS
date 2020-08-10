@@ -1680,6 +1680,8 @@ void NandradModel::initObjectLists() {
 
 void NandradModel::initOutputs(bool restart) {
 	FUNCID(NandradModel::initOutputs);
+	IBK::IBK_Message(IBK::FormatString("Initializing Outputs\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	IBK::MessageIndentor indent; (void)indent;
 
 	try {
 		m_outputHandler = new OutputHandler;

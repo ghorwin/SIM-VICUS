@@ -189,7 +189,7 @@ void OutputHandler::init(bool restart, NANDRAD::Project & prj) {
 	// now all the auto-generated files
 	for (auto filegrp : groupMap) {
 		// process all types
-		for (int i=0; i<NUM_OFN; ++i) {
+		for (unsigned int i=0; i<NUM_OFN; ++i) {
 			// skip file types with empty lists
 			if (filegrp.second[i].empty()) continue;
 
