@@ -52,10 +52,13 @@ public:
 		adresses of the input values and result values are requested.
 		This function is called after all result vectors are resized and the input value
 		references are filled with valid pointers.
+
+		Default implemmentation does nothing (i.e. no direct dependencies).
+
 		\param resultInputValueReferences pattern of results and input values that are directly
-		connected by a calculation rule
+			connected by a calculation rule
 	*/
-	virtual void stateDependencies(std::vector< std::pair<const double *, const double *> > &resultInputValueReferences) const = 0;
+	virtual void stateDependencies(std::vector< std::pair<const double *, const double *> > & resultInputValueReferences) const { (void)resultInputValueReferences; }
 
 	/*! Defines constraints for all result values sorted via value reference:
 		< value reference , < minimum value (-inf if undefined), maximum value (inf if undefined)>
@@ -77,7 +80,8 @@ public:
 		inputReferences() can be called afterwards (e.g. resize and fill a vector
 		of Type std::vector<ModelInputReference>).
 	*/
-	virtual void initInputReferences(const std::vector<AbstractModel*> & /* models */) = 0;
+	virtual void initInputReferences(const std::vector<AbstractModel*> & /* models */) {}
+
 #if 0
 	/*! Called from NandradModelImpl.
 		Creates a model input reference from an implicit model feedback.

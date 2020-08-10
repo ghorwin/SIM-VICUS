@@ -164,8 +164,6 @@ protected:
 	/********* Functions inherited from AbstractStateDependency. ********/
 
 	/*! Does nothing.*/
-	virtual void initInputReferences(const std::vector<AbstractModel*> & /* models */) { }
-	/*! Does nothing.*/
 	virtual void inputReferences(std::vector<InputReference>  & /* inputRefs*/) const { }
 	/*! Does nothing.*/
 //	virtual bool registerInputReference(unsigned int /*sourceID*/,

@@ -110,9 +110,6 @@ public:
 	/*! Returns vector with pointers to memory locations matching input value references. */
 	virtual const std::vector<const double *> & inputValueRefs() const override { return m_valueRefs; }
 
-	/*!	Not implemented, since not needed (FMIInput/Output model never appears in a cycle). */
-	virtual void stateDependencies(std::vector< std::pair<const double *, const double *> > & /*resultInputValueReferences*/) const override {}
-
 	/*! Sets all object dependencies.
 		Called when all model results have been initialized (i.e. the function
 		initResults() was called in all model objects).
