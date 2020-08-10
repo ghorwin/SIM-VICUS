@@ -68,6 +68,7 @@ Lesser General Public License for more details.
 #include "NM_StateModelGroup.h"
 #include "NM_ValueReference.h"
 #include "NM_FMIInputOutput.h"
+#include "NM_OutputHandler.h"
 
 namespace NANDRAD_MODEL {
 
@@ -2032,32 +2033,24 @@ void NandradModel::initOutputReferenceList() {
 
 void NandradModel::initOutputs(bool restart) {
 	FUNCID(NandradModel::initOutputs);
-	// we create groups of output definitions, first based on target file name
 
-	// in the initial loop, we also create and store pointer references to output grids and object lists referenced
-	// from output definitions - in case of invalid definitions, we bail out with an error message
-	std::map<std::string, NANDRAD::OutputDefinition> targetFileMap;
-	for (unsigned int i=0; i<m_project->m_outputs.m_outputDefinitions.size(); ++i) {
+	try {
+		m_outputHandler = new OutputHandler;
+		m_outputHandler->init(restart, *m_project);
 
-		NANDRAD::OutputDefinition & od = m_project->m_outputs.m_outputDefinitions[i];
+		// now create the output file model objects
 
-		// sanity checks are done on the fly
-		if (IBK::trim_copy(od.m_gridName).empty())
-			throw IBK::Exception(IBK::FormatString("Output definition #%1 has empty/invalid output grid name.").arg(i), FUNC_ID);
 
-		std::vector<NANDRAD::OutputGrid>::const_iterator grid_it = std::find(m_project->m_outputs.m_grids.begin(),
-																			 m_project->m_outputs.m_grids.end(),
-																			 od.m_gridName);
-		if (grid_it == m_project->m_outputs.m_grids.end())
-			throw IBK::Exception(IBK::FormatString("Output definition #%1 references unknown/undefined output grid '%2'").arg(i).arg(od.m_gridName), FUNC_ID);
+		// and finally (re-)open the output files
 
-		// store pointer link to output grid
+
+	} catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, "Error initializing outputs.", FUNC_ID);
 	}
-
 }
 
-void NandradModel::initSolverVariables()
-{
+
+void NandradModel::initSolverVariables() {
 
 }
 

@@ -3,6 +3,10 @@
 
 #include <vector>
 
+namespace NANDRAD {
+	class Project;
+}
+
 namespace NANDRAD_MODEL {
 
 class OutputFile;
@@ -18,10 +22,33 @@ class OutputFile;
 class OutputHandler {
 public:
 
+	/*! D'tor, releases allocated memory. */
+	~OutputHandler();
+
+	/*! Different names for auto-generated files based on quantity type. */
+	enum OutputFileNames {
+		OFN_States,				// Keyword: states
+		OFN_Loads,				// Keyword: loads
+		OFN_Fluxes,				// Keyword: fluxes
+		OFN_FluxIntegrals,		// Keyword: flux_integrals
+		OFN_Misc,				// Keyword: misc
+		NUM_OFN
+	};
+
+	/*! Main initialization function.
+
+		\note
+		During init, the OutputDefinitions in the project are modified such that the quick-access pointers
+		to grids and object lists are created. The vectors themselves remain unchanged (no invalidation of
+		previously obtained pointers).
+
+		\param restart If true, simulation was restarted and output files shall be continued, rather than re-created.
+		\param prj The project data structure with all input data.
+	*/
+	void init(bool restart, NANDRAD::Project & prj);
 
 	/*! Vector with output file objects. */
 	std::vector<OutputFile*>								m_outputFiles;
-
 
 };
 
