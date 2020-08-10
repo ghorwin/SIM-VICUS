@@ -23,14 +23,14 @@ Lesser General Public License for more details.
 
 #include <string>
 
-#include "NANDRAD_IDGroup.h"
-#include "NANDRAD_ObjectList.h"
 #include "NANDRAD_CodeGenMacros.h"
 
 namespace NANDRAD {
 
-/*!	The output definition class selects quantities that are written in one
-	output file (in the case of a scalar quantity). They are specified
+class ObjectList;
+class OutputGrid;
+
+/*!	The output definition class selects quantities to be logged. They are specified
 	by a unique variable name and an object list with models containing
 	the requested quantity.
 	In the case of a vector-valued quantity two definitions are valid:
@@ -85,10 +85,13 @@ public:
 
 	// *** Variables used only during simulation ***
 
+	/*! Pointer to output grid, assigned during project initialization within solver for fast access. */
+	const OutputGrid						*m_gridRef = nullptr;
+
 	/*! Pointer to object list, assigned during project initialization within solver for fast access. */
 	const ObjectList						*m_objectListRef = nullptr;
 };
 
 } // namespace NANDRAD
 
-#endif // ModelH
+#endif // NANDRAD_OutputDefinitionH

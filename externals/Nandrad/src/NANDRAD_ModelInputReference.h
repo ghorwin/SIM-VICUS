@@ -103,4 +103,4 @@ public:
 
 } // namespace NANDRAD
 
-#endif // ModelInputReferenceH
+#endif // NANDRAD_ModelInputReferenceH

@@ -113,4 +113,4 @@ public:
 
 } // namespace NANDRAD
 
-#endif // ConstructionInstanceH
+#endif // NANDRAD_ConstructionInstanceH

@@ -65,4 +65,4 @@ public:
 
 } // namespace NANDRAD
 
-#endif // OutputsH
+#endif // NANDRAD_OutputsH

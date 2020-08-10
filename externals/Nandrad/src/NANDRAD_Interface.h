@@ -117,4 +117,4 @@ public:
 
 } // namespace NANDRAD
 
-#endif // InterfaceH
+#endif // NANDRAD_InterfaceH

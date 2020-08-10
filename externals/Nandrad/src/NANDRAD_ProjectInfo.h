@@ -43,4 +43,4 @@ public:
 
 } // namespace NANDRAD
 
-#endif // ProjectH
+#endif // NANDRAD_ProjectInfoH

@@ -99,10 +99,10 @@ TiXmlElement * Outputs::writeXMLPrivate(TiXmlElement * parent) const {
 		TiXmlElement * child = new TiXmlElement("OutputDefinitions");
 		e->LinkEndChild(child);
 
-		for (std::vector<OutputDefinition>::const_iterator ifaceIt = m_outputDefinitions.begin();
-			ifaceIt != m_outputDefinitions.end(); ++ifaceIt)
+		for (std::vector<OutputDefinition>::const_iterator it = m_outputDefinitions.begin();
+			it != m_outputDefinitions.end(); ++it)
 		{
-			ifaceIt->writeXML(child);
+			it->writeXML(child);
 		}
 	}
 
@@ -111,10 +111,10 @@ TiXmlElement * Outputs::writeXMLPrivate(TiXmlElement * parent) const {
 		TiXmlElement * child = new TiXmlElement("Grids");
 		e->LinkEndChild(child);
 
-		for (std::vector<OutputGrid>::const_iterator ifaceIt = m_grids.begin();
-			ifaceIt != m_grids.end(); ++ifaceIt)
+		for (std::vector<OutputGrid>::const_iterator it = m_grids.begin();
+			it != m_grids.end(); ++it)
 		{
-			ifaceIt->writeXML(child);
+			it->writeXML(child);
 		}
 	}
 

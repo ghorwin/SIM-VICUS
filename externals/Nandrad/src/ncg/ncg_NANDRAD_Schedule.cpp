@@ -105,10 +105,10 @@ TiXmlElement * Schedule::writeXML(TiXmlElement * parent) const {
 		TiXmlElement * child = new TiXmlElement("DailyCycles");
 		e->LinkEndChild(child);
 
-		for (std::vector<DailyCycle>::const_iterator ifaceIt = m_dailyCycles.begin();
-			ifaceIt != m_dailyCycles.end(); ++ifaceIt)
+		for (std::vector<DailyCycle>::const_iterator it = m_dailyCycles.begin();
+			it != m_dailyCycles.end(); ++it)
 		{
-			ifaceIt->writeXML(child);
+			it->writeXML(child);
 		}
 	}
 

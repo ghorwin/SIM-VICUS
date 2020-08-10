@@ -92,4 +92,4 @@ public:
 
 } // namespace NANDRAD
 
-#endif // SimulationParameterH
+#endif // NANDRAD_SimulationParameterH

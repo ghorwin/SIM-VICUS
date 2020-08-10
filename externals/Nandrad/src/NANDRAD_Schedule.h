@@ -113,4 +113,4 @@ public:
 
 } // namespace NANDRAD
 
-#endif // ScheduleH
+#endif // NANDRAD_ScheduleH

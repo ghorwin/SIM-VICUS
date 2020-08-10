@@ -65,4 +65,4 @@ public:
 
 } // namespace NANDRAD
 
-#endif // SensorH
+#endif // NANDRAD_SensorH

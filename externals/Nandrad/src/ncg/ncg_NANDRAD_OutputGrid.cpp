@@ -88,10 +88,10 @@ TiXmlElement * OutputGrid::writeXML(TiXmlElement * parent) const {
 		TiXmlElement * child = new TiXmlElement("Intervals");
 		e->LinkEndChild(child);
 
-		for (std::vector<Interval>::const_iterator ifaceIt = m_intervals.begin();
-			ifaceIt != m_intervals.end(); ++ifaceIt)
+		for (std::vector<Interval>::const_iterator it = m_intervals.begin();
+			it != m_intervals.end(); ++it)
 		{
-			ifaceIt->writeXML(child);
+			it->writeXML(child);
 		}
 	}
 

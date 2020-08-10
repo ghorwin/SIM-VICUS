@@ -113,4 +113,4 @@ public:
 
 } // namespace NANDRAD
 
-#endif // ZoneH
+#endif // NANDRAD_EmbeddedObjectH

@@ -89,4 +89,4 @@ public:
 
 } // namespace NANDRAD
 
-#endif // ModelH
+#endif // NANDRAD_OutputGridH

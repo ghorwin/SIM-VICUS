@@ -84,4 +84,4 @@ public:
 
 } // namespace NANDRAD
 
-#endif // LinearSplineParameterH
+#endif // NANDRAD_LinearSplineParameterH

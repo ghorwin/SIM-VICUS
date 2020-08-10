@@ -94,4 +94,4 @@ public:
 
 } // namespace NANDRAD
 
-#endif // DailyCycleH
+#endif // NANDRAD_DailyCycleH

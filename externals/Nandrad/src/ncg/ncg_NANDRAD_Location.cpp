@@ -109,10 +109,10 @@ TiXmlElement * Location::writeXML(TiXmlElement * parent) const {
 		TiXmlElement * child = new TiXmlElement("Sensors");
 		e->LinkEndChild(child);
 
-		for (std::vector<Sensor>::const_iterator ifaceIt = m_sensors.begin();
-			ifaceIt != m_sensors.end(); ++ifaceIt)
+		for (std::vector<Sensor>::const_iterator it = m_sensors.begin();
+			it != m_sensors.end(); ++it)
 		{
-			ifaceIt->writeXML(child);
+			it->writeXML(child);
 		}
 	}
 

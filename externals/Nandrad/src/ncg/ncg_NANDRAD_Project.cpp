@@ -136,10 +136,10 @@ TiXmlElement * Project::writeXMLPrivate(TiXmlElement * parent) const {
 		TiXmlElement * child = new TiXmlElement("Zones");
 		e->LinkEndChild(child);
 
-		for (std::vector<Zone>::const_iterator ifaceIt = m_zones.begin();
-			ifaceIt != m_zones.end(); ++ifaceIt)
+		for (std::vector<Zone>::const_iterator it = m_zones.begin();
+			it != m_zones.end(); ++it)
 		{
-			ifaceIt->writeXML(child);
+			it->writeXML(child);
 		}
 	}
 
@@ -148,10 +148,10 @@ TiXmlElement * Project::writeXMLPrivate(TiXmlElement * parent) const {
 		TiXmlElement * child = new TiXmlElement("ConstructionInstances");
 		e->LinkEndChild(child);
 
-		for (std::vector<ConstructionInstance>::const_iterator ifaceIt = m_constructionInstances.begin();
-			ifaceIt != m_constructionInstances.end(); ++ifaceIt)
+		for (std::vector<ConstructionInstance>::const_iterator it = m_constructionInstances.begin();
+			it != m_constructionInstances.end(); ++it)
 		{
-			ifaceIt->writeXML(child);
+			it->writeXML(child);
 		}
 	}
 
@@ -160,10 +160,10 @@ TiXmlElement * Project::writeXMLPrivate(TiXmlElement * parent) const {
 		TiXmlElement * child = new TiXmlElement("ConstructionTypes");
 		e->LinkEndChild(child);
 
-		for (std::vector<ConstructionType>::const_iterator ifaceIt = m_constructionTypes.begin();
-			ifaceIt != m_constructionTypes.end(); ++ifaceIt)
+		for (std::vector<ConstructionType>::const_iterator it = m_constructionTypes.begin();
+			it != m_constructionTypes.end(); ++it)
 		{
-			ifaceIt->writeXML(child);
+			it->writeXML(child);
 		}
 	}
 
@@ -172,10 +172,10 @@ TiXmlElement * Project::writeXMLPrivate(TiXmlElement * parent) const {
 		TiXmlElement * child = new TiXmlElement("Materials");
 		e->LinkEndChild(child);
 
-		for (std::vector<Material>::const_iterator ifaceIt = m_materials.begin();
-			ifaceIt != m_materials.end(); ++ifaceIt)
+		for (std::vector<Material>::const_iterator it = m_materials.begin();
+			it != m_materials.end(); ++it)
 		{
-			ifaceIt->writeXML(child);
+			it->writeXML(child);
 		}
 	}
 
@@ -194,10 +194,10 @@ TiXmlElement * Project::writeXMLPrivate(TiXmlElement * parent) const {
 		TiXmlElement * child = new TiXmlElement("ObjectLists");
 		e->LinkEndChild(child);
 
-		for (std::vector<ObjectList>::const_iterator ifaceIt = m_objectLists.begin();
-			ifaceIt != m_objectLists.end(); ++ifaceIt)
+		for (std::vector<ObjectList>::const_iterator it = m_objectLists.begin();
+			it != m_objectLists.end(); ++it)
 		{
-			ifaceIt->writeXML(child);
+			it->writeXML(child);
 		}
 	}
 

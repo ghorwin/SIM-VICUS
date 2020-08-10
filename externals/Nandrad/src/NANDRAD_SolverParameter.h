@@ -139,4 +139,4 @@ public:
 
 } // namespace NANDRAD
 
-#endif // SolverParameterH
+#endif // NANDRAD_SolverParameterH

@@ -73,4 +73,4 @@ public:
 
 } // namespace NANDRAD
 
-#endif // LocationH
+#endif // NANDRAD_LocationH

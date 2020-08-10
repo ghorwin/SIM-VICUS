@@ -129,10 +129,10 @@ TiXmlElement * ConstructionInstance::writeXML(TiXmlElement * parent) const {
 		TiXmlElement * child = new TiXmlElement("Interfaces");
 		e->LinkEndChild(child);
 
-		for (std::vector<Interface>::const_iterator ifaceIt = m_interfaces.begin();
-			ifaceIt != m_interfaces.end(); ++ifaceIt)
+		for (std::vector<Interface>::const_iterator it = m_interfaces.begin();
+			it != m_interfaces.end(); ++it)
 		{
-			ifaceIt->writeXML(child);
+			it->writeXML(child);
 		}
 	}
 

@@ -35,6 +35,7 @@ Lesser General Public License for more details.
 #include "NANDRAD_Location.h"
 #include "NANDRAD_ConstructionType.h"
 #include "NANDRAD_Material.h"
+#include "NANDRAD_ObjectList.h"
 
 namespace NANDRAD {
 
@@ -132,12 +133,9 @@ private:
 	void readDirectoryPlaceholdersXML(const TiXmlElement * element);
 	void writeDirectoryPlaceholdersXML(TiXmlElement * parent) const;
 
-	/*!	Checks whether all construction types and materials have a unique ID number. */
-	void checkDatabaseIDs();
-
 };
 
 
 } // namespace NANDRAD
 
-#endif // ProjectH
+#endif // NANDRAD_ProjectH
