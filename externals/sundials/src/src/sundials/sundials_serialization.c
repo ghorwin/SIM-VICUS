@@ -51,6 +51,7 @@ void DeSerializeNVector(void **storageDataPtr, N_Vector vec) {
 void DeSerializeDlsMat(void **storageDataPtr, DlsMat mat) {
   size_t ldata;
   DESERIALIZE(size_t, *storageDataPtr, ldata);
+  (void)ldata; // remove compiler warning about unused variable in release mode
   assert(ldata == (size_t)mat->ldata);
   memcpy(mat->data, *storageDataPtr, sizeof(realtype)*(size_t)mat->ldata);
   *storageDataPtr = (char *)(*storageDataPtr) + sizeof(realtype)*(size_t)mat->ldata;

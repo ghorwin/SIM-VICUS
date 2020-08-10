@@ -98,7 +98,6 @@ SolverControlFramework::~SolverControlFramework() {
 
 void SolverControlFramework::setModel(ModelInterface * model) {
 
-	const char * const FUNC_ID = "[SolverControlFramework::setModel]";
 	// clean up previously created
 	delete m_defaultIntegrator;
 	m_defaultIntegrator = nullptr;
