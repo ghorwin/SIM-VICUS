@@ -975,7 +975,7 @@ void NandradModel::initFMI() {
 	/// \todo check here, if we are inside an FMU and only initialize FMI interface model when needed
 
 	FUNCID(NandradModel::initFMI);
-	IBK::IBK_Message(IBK::FormatString("Initializing FMI import/export\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	IBK::IBK_Message(IBK::FormatString("Initializing FMI interface\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK::MessageIndentor indent; (void)indent;
 
 
@@ -1673,7 +1673,58 @@ void NandradModel::initEmbeddedObjects() {
 
 
 void NandradModel::initObjectLists() {
-	// todo
+	FUNCID(NandradModelImpl::initObjectLists);
+	IBK::IBK_Message(IBK::FormatString("Initializing object lists\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	IBK::MessageIndentor indent; (void)indent;
+
+	// All object lists are checked for valid parameters.
+	// All ID groups are resolved and populated with lists of available model object IDs.
+	// Afterwards, it is possible to just use NANDRAD::ObjectList::m_ids when checking for IDs, however,
+	// testing with contains() may be faster (especially, when all IDs is set).
+
+	for (unsigned int i=0; i<m_project->m_objectLists.size(); ++i) {
+		NANDRAD::ObjectList & objectlist = m_project->m_objectLists[i];
+
+		// retrieve reference type
+		const NANDRAD::IDGroup  objectIDs = objectlist.m_filterID;
+
+		// check id intervals not allowing intervals including id 0, and valid range definition
+		for (auto interval : objectIDs.m_idIntervals) {
+			unsigned int lowerId = interval.first;
+			unsigned int upperId = interval.second;
+			if (lowerId == 0)
+				throw IBK::Exception(IBK::FormatString("Error initializing object list #%1 '%2': id 0 is not allowed in range.")
+					.arg(i).arg(objectlist.m_name), FUNC_ID);
+			if (upperId < lowerId)
+				throw IBK::Exception(IBK::FormatString("Error initializing object list #%1 '%2': incorrect interval definition")
+					.arg(i).arg(objectlist.m_name), FUNC_ID);
+		}
+
+		// resolve IDs by searching through model objects
+		std::set<unsigned int> resolvedIds;
+		// insert all models that match current definition
+		for (unsigned int i = 0; i < m_modelContainer.size(); ++i) {
+			const AbstractModel *model = m_modelContainer[i];
+			//skip models with wrong reference type
+			if (model->referenceType() != objectlist.m_referenceType)
+				continue;
+			// fill model ids that are inside the defined id space
+			if (objectlist.m_filterID.contains(model->id()) ) {
+				// fill the resolved list
+				resolvedIds.insert(model->id());
+				continue;
+			}
+		}
+		// fill the id filter
+		objectlist.m_filterID.m_ids.insert(resolvedIds.begin(), resolvedIds.end());
+
+		// set 0-id for schedules and location
+		if (objectlist.m_referenceType == NANDRAD::ModelInputReference::MRT_LOCATION ||
+			objectlist.m_referenceType == NANDRAD::ModelInputReference::MRT_SCHEDULE)
+		{
+			objectlist.m_filterID.m_ids.insert(0);
+		}
+	}
 
 }
 
@@ -1688,6 +1739,8 @@ void NandradModel::initOutputs(bool restart) {
 		m_outputHandler->init(restart, *m_project);
 
 		// now create the output file model objects
+		std::vector<NANDRAD_MODEL::AbstractModel*>	outputFileModels;
+//		m_outputHandler->createModelObjects(m_objectLists, outputFileModels);
 
 
 		// and finally (re-)open the output files

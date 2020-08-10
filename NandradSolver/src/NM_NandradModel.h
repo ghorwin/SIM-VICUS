@@ -253,8 +253,12 @@ private:
 	void initWallsAndInterfaces();
 	/*! Loads BIM data and creates WindowModel.*/
 	void initEmbeddedObjects();
-	/*! With the knowledge of all available zones and space type remove space type references by zone references
-		inside all object lists.*/
+	/*! With the knowledge of all available zone, construction, interface etc. models, resolve
+		object list ID groups and replace them with definite sets of IDs for the referenced
+		model types.
+		This modifies object lists in-place, yet does not change the vector. Previously
+		obtained pointers to object lists are not invalidated.
+	*/
 	void initObjectLists();
 	/*! Connects implicit and explicit models according to input references, calls
 		modelInputReference() of each model. .*/
