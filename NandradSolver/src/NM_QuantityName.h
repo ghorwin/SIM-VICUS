@@ -27,6 +27,7 @@ Lesser General Public License for more details.
 
 #include <IBK_Unit.h>
 
+#include <NANDRAD_CodeGenMacros.h>
 #include "NM_VectorValuedQuantityIndex.h"
 
 namespace NANDRAD_MODEL {
@@ -45,6 +46,7 @@ public:
 
 	/*! Extract name and possibly index from a given quantity.
 		Possible variants are "Temperature", "Temperature[index=5]" and "Temperature[id=4]"
+		Throws an IBK::Exception in case of invalid formats.
 	*/
 	void fromEncodedString(const std::string &quantity);
 	/*! Clears name and sets index to -1 (uninitialized/empty). */
@@ -52,10 +54,8 @@ public:
 	/*! Flag indicating an uninialized object (name is empty). */
 	bool empty();
 
-	/*! Compares this instance with another by value and returns true if they differ. */
-	bool operator!=(const QuantityName & other) const;
-	/*! Compares this instance with another by value and returns true if they are the same. */
-	bool operator==(const QuantityName & other) const { return !operator!=(other); }
+	// declare comparison operators
+	NANDRAD_COMP(QuantityName)
 
 	/*! Quantity identification name without [xx] */
 	std::string		m_name;

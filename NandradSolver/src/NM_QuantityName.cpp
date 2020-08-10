@@ -27,8 +27,8 @@ Lesser General Public License for more details.
 namespace NANDRAD_MODEL {
 
 void QuantityName::fromEncodedString(const std::string &quantity) {
+	FUNCID(QuantityName::fromEncodedString);
 
-	const char * const FUNC_ID = "[QuantityName::fromEncodedString]";
 	std::string::size_type firstPos = quantity.rfind("[");
 	std::string::size_type lastPos = quantity.rfind("]");
 
@@ -44,17 +44,15 @@ void QuantityName::fromEncodedString(const std::string &quantity) {
 			VectorValuedQuantityIndex indexKey;
 			indexKey.set(indexKeyStr);
 			// now retrieve key value from key string
-			m_index = indexKey.m_keyValue;
+			m_index = (int)indexKey.m_keyValue;
 		}
-		catch (IBK::Exception &ex)
-		{
+		catch (IBK::Exception &ex) {
 			throw IBK::Exception(ex, IBK::FormatString("Cannot split quantity name %1 "
-				"into name and index!")
-				.arg(quantity),
-				FUNC_ID);
+				"into name and index!").arg(quantity), FUNC_ID);
 		}
 	}
 }
+
 
 void QuantityName::clear() {
 	m_name.clear();
@@ -62,16 +60,16 @@ void QuantityName::clear() {
 
 }
 
+
 bool QuantityName::empty() {
 	return m_name.empty();
 }
 
 
 bool QuantityName::operator!=(const QuantityName & other) const {
-
-	if (m_name != other.m_name)
-		return true;
 	if (m_index != other.m_index)
+		return true;
+	if (m_name != other.m_name)
 		return true;
 	return false;
 }
