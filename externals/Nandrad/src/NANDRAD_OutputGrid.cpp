@@ -84,10 +84,12 @@ IBK::Parameter OutputGrid::intervalParameter(unsigned int intervalIndex, Interva
 }
 //---------------------------------------------------------------------------
 
+
 IBK::Parameter OutputGrid::lastIntervalParameter(Interval::para_t p) const {
 	return intervalParameter( ((unsigned int) m_intervals.size() - 1), p );
 }
 //---------------------------------------------------------------------------
+
 
 void OutputGrid::setupIntervals() {
 	if (m_intervals.empty())
@@ -140,9 +142,7 @@ void OutputGrid::setupIntervals() {
 		}
 	}
 }
-
 //---------------------------------------------------------------------------
-
 
 
 void OutputGrid::checkIntervalDefinition() const {

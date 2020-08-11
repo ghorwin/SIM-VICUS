@@ -43,8 +43,7 @@ public:
 	NANDRAD_COMP(OutputGrid)
 	NANDRAD_COMPARE_WITH_NAME
 
-	/*! Checks input parameters and throws an IBK::Exception if
-		some input values are wrong.
+	/*! Checks input parameters and throws an IBK::Exception if some input values are wrong.
 		\note This function should be called after readXML() during solver initialization, and before setupIntervals() is
 		called.
 	*/
@@ -60,7 +59,9 @@ public:
 	*/
 	IBK::Parameter lastIntervalParameter(Interval::para_t p) const;
 
-	/*! Computes START parameters in all intervals. */
+	/*! Computes START parameters in all intervals.
+		Call this function after interval parameters have been checked with checkIntervalDefinition().
+	*/
 	void setupIntervals();
 
 	/*! Returns true, if the time point t matches an
