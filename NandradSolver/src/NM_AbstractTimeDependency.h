@@ -45,8 +45,7 @@ public:
 	virtual int setTime(double t) = 0;
 
 	/*! Informs the model that a step was successfully completed.
-		The time point and value vector passed to the function correspond to
-		the current state in the integrator object.
+		The time point passed to the function correspond to the current state in the integrator object.
 		This function can be used to write restart info, or adjust the state of the model discretely
 		between integration steps.
 		Default implementation does nothing.
