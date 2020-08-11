@@ -351,22 +351,12 @@ void NandradModel::writeOutputs(double t_out, const double * y_out) {
 	for (unsigned int i = 0; i < m_steadyStateModelContainer.size(); ++i) {
 		m_steadyStateModelContainer[i]->stepCompleted(t_out, y_out);
 	}
-
-	// call ydot() to trigger calculation?
+#endif
 
 	// move (relative) simulation time to absolute time (offset to midnight, January 1st of the start year)
 	double t_secondsOfYear = t_out + m_project->m_simulationParameter.m_interval.m_para[NANDRAD::Interval::IP_START].value;
 
-	for(unsigned int i = 0; i < m_outputFiles.size(); ++i) {
-		m_outputFiles[i]->writeOutputs(t_secondsOfYear, y_out, nullptr);
-	}
-	// write wall solver outputs
-	for(unsigned int i = 0; i< m_wallSolverModelContainer.size(); ++i) {
-		IBK_ASSERT(m_wallSolverModelContainer[i] != nullptr);
-		m_wallSolverModelContainer[i]->writeOutputs(t_secondsOfYear);
-	}
-
-#endif
+	m_outputHandler->writeOutputs(t_out);
 
 	// write feedback to user
 	IBK_ASSERT(m_t == t_out);

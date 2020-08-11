@@ -28,6 +28,18 @@ namespace NANDRAD_MODEL {
 void OutputHandler::init(bool restart, NANDRAD::Project & prj) {
 	FUNCID(OutputHandler::init);
 
+	m_restart = restart; // store restart info flag
+
+	// initialize and check output grids
+	for (NANDRAD::OutputGrid & og : prj.m_outputs.m_grids) {
+		try {
+			og.checkIntervalDefinition();
+		} catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error in definition of output grid '%1'.").arg(og.m_name), FUNC_ID);
+		}
+		og.setupIntervals();
+	}
+
 	// we create groups of output definitions, first based on target file name
 
 	// in the initial loop, we also create and store pointer references to output grids and object lists referenced
@@ -239,11 +251,17 @@ void OutputHandler::init(bool restart, NANDRAD::Project & prj) {
 		of->createInputReferences(); // may throw exception
 	}
 
-	// *** transfer pointers
+	// *** transfer pointer
 
 	for (std::unique_ptr<OutputFile> & of : tmpOutputFiles) {
 		m_outputFiles.push_back(of.release());
 	}
 }
+
+
+void OutputHandler::writeOutputs(double t) {
+	//
+}
+
 
 } // namespace NANDRAD_MODEL

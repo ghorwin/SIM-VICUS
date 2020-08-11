@@ -44,6 +44,12 @@ public:
 	*/
 	void init(bool restart, NANDRAD::Project & prj);
 
+	/*! Appends outputs to files.
+		Actually, this function only caches current output values. Only when a certain
+		time has passed, the data is actually written to file.
+	*/
+	void writeOutputs(double t);
+
 
 	/*! Vector with output file objects.
 		Objects are not owned by us, but rather by NandradModel, since the output file objects

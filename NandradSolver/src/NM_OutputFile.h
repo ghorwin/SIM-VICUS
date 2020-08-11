@@ -7,6 +7,7 @@
 #include <NANDRAD_OutputDefinition.h>
 #include "NM_AbstractModel.h"
 #include "NM_AbstractStateDependency.h"
+#include "NM_AbstractTimeDependency.h"
 
 namespace NANDRAD_MODEL {
 
@@ -14,16 +15,19 @@ namespace NANDRAD_MODEL {
 	This class implements the model interface and requests input references for
 	all output quantities stored in the output file managed by this class.
 
+	The class also implements the AbstractTimeStateDependency interface, in order to
+	receive stepCompleted() calls, needed for time intergration.
+
 	To add OutputFile objects to the model container of NandradModel we need
 	to derive from AbstractModel, even though output files never generate results. Hence,
 	the implementation of the AbstractModel interface is just dummy code.
 */
-class OutputFile : public AbstractModel, public AbstractStateDependency {
+class OutputFile : public AbstractModel, public AbstractStateDependency, public AbstractTimeDependency {
 public:
 
 	// *** Re-implemented from AbstractModel
 
-	/*! Not needed, FMI input vars are "overrding" variables and reference type is not really meaningful here. */
+	/*! Not needed, output files do not generate results. */
 	virtual NANDRAD::ModelInputReference::referenceType_t referenceType() const override {
 		return NANDRAD::ModelInputReference::MRT_GLOBAL;
 	}
@@ -40,15 +44,30 @@ public:
 	/*! Not implemented, since not needed. */
 	virtual void resultDescriptions(std::vector<QuantityDescription> & /*resDesc*/) const override {}
 
-	/*! Not implemented, since not needed (FMI result vars are handled in a special way). */
+	/*! Not implemented, since not needed. */
 	virtual const double * resultValueRef(const QuantityName & /*quantityName*/) const override { return nullptr; }
 
-	/*! Not implemented, since not needed (FMI result vars are handled in a special way). */
+	/*! Not implemented, since not needed. */
 	virtual void resultValueRefs(std::vector<const double *> & /*res*/) const override {}
 
 	/*! Not implemented, since not needed. */
 	virtual void initResults(const std::vector<AbstractModel*> & /* models */) override {}
 
+
+
+	// *** Re-implemented from AbstractTimeDependency
+
+	/*! Not implemented, since not needed. */
+	virtual int setTime(double /*t*/) override {}
+
+	/*! Informs the model that a step was successfully completed.
+		The time point passed to the function correspond to the current state in the integrator object.
+		This function can be used to write restart info, or adjust the state of the model discretely
+		between integration steps.
+		Default implementation does nothing.
+		\param t Simulation time in [s].
+	*/
+	virtual void stepCompleted(double t) override;
 
 
 	// *** Re-implemented from AbstractStateDependency
