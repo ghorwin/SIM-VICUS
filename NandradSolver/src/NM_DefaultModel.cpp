@@ -38,8 +38,9 @@ void DefaultModel::initResults(const std::vector<AbstractModel*> & /* models */)
 
 	// retrieve all result quantities from quantity description list
 	std::vector<QuantityDescription> resDesc;
-
 	resultDescriptions(resDesc);
+
+	// now check the generate
 	for (unsigned int i = 0; i < resDesc.size(); ++i) {
 
 		const QuantityDescription &desc = resDesc[i];
@@ -57,8 +58,8 @@ void DefaultModel::initResults(const std::vector<AbstractModel*> & /* models */)
 		// distinguish between scalar results (no keys and size = 1)
 		// and vector-valued results
 		if (desc.m_size == 1 && desc.m_indexKeys.empty()) {
-			// scalar results are stored as IBK::Parameter
-			m_results.push_back(IBK::Parameter(desc.m_name, 0, valueUnit));
+			// scalar results are stored as plain double, with the convention that the value is always stored in base SI unit
+			m_results.push_back(0);
 		}
 		else  {
 #if 0
@@ -136,7 +137,7 @@ void DefaultModel::resultValueRefs(std::vector<const double *> &res) const {
 	// fill with all results and vector valued results
 
 	for (unsigned int i = 0; i < m_results.size(); ++i) {
-		res.push_back(&m_results[i].value);
+		res.push_back(&m_results[i]);
 	}
 #if 0
 	for (unsigned int i = 0; i < m_vectorValuedResults.size(); ++i) {
@@ -164,7 +165,7 @@ const double * DefaultModel::resultValueRef(const QuantityName & quantityName) c
 			if (resultsIndex >= (int)m_results.size())
 				return nullptr;
 
-			return &m_results[resultsIndex].value;
+			return &m_results[resultsIndex];
 		}
 
 		// a vector valued result

@@ -127,8 +127,12 @@ protected:
 	*/
 	int decodeVectorValuedResultType(const std::string &quantity) const;
 
-	/*! Results, computed/updated during the calculation. */
-	std::vector<IBK::Parameter>			m_results;
+	/*! Results, computed/updated during the calculation.
+		The values are stored in the base SI units of the quantities.
+		\note Even if the Results enum lists a parameter with (io-unit) [C], the actual calculated
+			value *must be* stored in m_results in [K].
+	*/
+	std::vector<double>					m_results;
 	/*! Vector valued results, computed/updated during the calculation. */
 	std::vector<VectorValuedQuantity>	m_vectorValuedResults;
 
