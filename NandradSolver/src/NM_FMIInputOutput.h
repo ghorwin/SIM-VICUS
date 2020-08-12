@@ -53,46 +53,12 @@ public:
 	*/
 	void setup(const NANDRAD::Project & prj);
 
-	// *** Re-implemented from AbstractModel
-
-	/*! Not needed, FMI input vars are "overrding" variables and reference type is not really meaningful here. */
-	virtual NANDRAD::ModelInputReference::referenceType_t referenceType() const override {
-		return NANDRAD::ModelInputReference::MRT_GLOBAL;
-	}
-
-	/*! Return unique class ID name of implemented model. */
-	virtual const char * ModelIDName() const override { return "FMIInputOutput"; }
-
-	/*! Not implemented, since not needed. */
-	virtual unsigned int id() const override { return 0; }
-
-	/*! Not implemented, since not needed. */
-	virtual const char * displayName() const override { return "FMI interface model"; }
-
-	/*! Not implemented, since not needed. */
-	virtual void resultDescriptions(std::vector<QuantityDescription> & /*resDesc*/) const override {}
-
-	/*! Not implemented, since not needed (FMI result vars are handled in a special way). */
-	virtual const double * resultValueRef(const QuantityName & /*quantityName*/) const override { return nullptr; }
-
-	/*! Not implemented, since not needed (FMI result vars are handled in a special way). */
-	virtual void resultValueRefs(std::vector<const double *> & /*res*/) const override {}
-
-	/*! Not implemented, since not needed. */
-	virtual void initResults(const std::vector<AbstractModel*> & /* models */) override {}
-
-
 	// *** Re-implemented from AbstractTimeDependency
 
-	/*! Updates the state of the loads object to the time point stored in DefaultTimeStateModel::m_t.
-		This function updates all internally cached results to match the new time point.
-		Afterwards, these time points can be retrieved very efficiently several times
-		through the various access functions.
-
-		\param t The simulation time (relative to simulation start) in s.
-
-		\note The simulation time is shifted by the offset from start year and start time to get an
-			  absolute time reference. Then it is passed to the climate calculation module.
+	/*! Updates the input values (optionally using input value interpolation) to current simulation time.
+		\param t Simulation time in [s] (solver time).
+		\return Returns 0 when calculation was successful, 1 when a recoverable error has been detected,
+			2 when something is badly wrong
 	*/
 	virtual int setTime(double t) override;
 

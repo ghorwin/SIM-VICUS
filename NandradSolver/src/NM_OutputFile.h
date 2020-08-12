@@ -25,40 +25,10 @@ namespace NANDRAD_MODEL {
 class OutputFile : public AbstractModel, public AbstractStateDependency, public AbstractTimeDependency {
 public:
 
-	// *** Re-implemented from AbstractModel
-
-	/*! Not needed, output files do not generate results. */
-	virtual NANDRAD::ModelInputReference::referenceType_t referenceType() const override {
-		return NANDRAD::ModelInputReference::MRT_GLOBAL;
-	}
-
-	/*! Return unique class ID name of implemented model. */
-	virtual const char * ModelIDName() const override { return "OutputFile"; }
-
-	/*! Not implemented, since not needed. */
-	virtual unsigned int id() const override { return 0; }
-
-	/*! Not implemented, since not needed. */
-	virtual const char * displayName() const override { return "OutputFile"; }
-
-	/*! Not implemented, since not needed. */
-	virtual void resultDescriptions(std::vector<QuantityDescription> & /*resDesc*/) const override {}
-
-	/*! Not implemented, since not needed. */
-	virtual const double * resultValueRef(const QuantityName & /*quantityName*/) const override { return nullptr; }
-
-	/*! Not implemented, since not needed. */
-	virtual void resultValueRefs(std::vector<const double *> & /*res*/) const override {}
-
-	/*! Not implemented, since not needed. */
-	virtual void initResults(const std::vector<AbstractModel*> & /* models */) override {}
-
-
-
 	// *** Re-implemented from AbstractTimeDependency
 
 	/*! Not implemented, since not needed. */
-	virtual int setTime(double /*t*/) override {}
+	virtual int setTime(double /*t*/) override { return 0; }
 
 	/*! Informs the model that a step was successfully completed.
 		The time point passed to the function correspond to the current state in the integrator object.
