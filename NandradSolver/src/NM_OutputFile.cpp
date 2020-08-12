@@ -6,7 +6,7 @@ namespace NANDRAD_MODEL {
 
 void OutputFile::stepCompleted(double t) {
 	// for output variables with time integration rule, do time integration here
-
+	(void)t;
 }
 
 
@@ -53,6 +53,27 @@ void OutputFile::createInputReferences() {
 			m_inputRefs.push_back(inref);
 		}
 	}
+}
+
+
+void OutputFile::createFile(double t_secondsOfYear, bool restart) {
+	//
+}
+
+
+void OutputFile::writeOutputs(double t_secondsOfYear) {
+	//
+}
+
+
+unsigned int OutputFile::cacheSize() const {
+	unsigned int cache = m_numCols * m_cache.size() * 2 * 8;
+	return cache;
+}
+
+
+void OutputFile::flushCache() {
+	// if
 }
 
 

@@ -7,6 +7,7 @@
 #include <IBK_StringUtils.h>
 #include <IBK_messages.h>
 #include <IBK_Exception.h>
+#include <IBK_StopWatch.h>
 
 #include <NANDRAD_Project.h>
 
@@ -24,11 +25,20 @@ const char * const FLUX_QUANTITIES[] = {
 
 namespace NANDRAD_MODEL {
 
+OutputHandler::~OutputHandler() {
+	delete m_outputTimer;
+	// Note: Objects m_outputFiles are owned by NandradModel (stored in m_modelContainer).
+}
+
 
 void OutputHandler::init(bool restart, NANDRAD::Project & prj) {
 	FUNCID(OutputHandler::init);
 
 	m_restart = restart; // store restart info flag
+
+
+	m_outputCacheLimit = 100000; // 100 Mb for starters
+	m_realTimeOutputDelay = 2; // wait one second simulation time before flushing the cache
 
 	// initialize and check output grids
 	for (NANDRAD::OutputGrid & og : prj.m_outputs.m_grids) {
@@ -259,8 +269,36 @@ void OutputHandler::init(bool restart, NANDRAD::Project & prj) {
 }
 
 
-void OutputHandler::writeOutputs(double t) {
-	//
+void OutputHandler::writeOutputs(double t_secondsOfYear) {
+	// if first call, create/re-open files
+	if (m_outputTimer == nullptr) {
+
+		for (OutputFile * of : m_outputFiles)
+			of->createFile(t_secondsOfYear, m_restart);
+		// Note: in createFile() also all integral quantities are initialized
+
+		// now create timer
+		m_outputTimer = new IBK::StopWatch; // starts automatically
+	}
+	else {
+
+		// now pass on the call to each file to cache current results
+		unsigned int storedBytes = 0;
+		for (OutputFile * of : m_outputFiles) {
+			of->writeOutputs(t_secondsOfYear);
+			storedBytes += of->cacheSize();
+		}
+
+		// flush cache to file once cached limit
+		if (m_outputTimer->difference()/1000.0 > m_realTimeOutputDelay ||
+			storedBytes > m_outputCacheLimit)
+		{
+			for (OutputFile * of : m_outputFiles)
+				of->flushCache();
+			// restart timer
+			m_outputTimer->start();
+		}
+	}
 }
 
 

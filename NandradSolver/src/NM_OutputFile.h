@@ -60,13 +60,36 @@ public:
 	/*! We have nothing to do here, output handling is done outside the actual evaluation. */
 	virtual int update() override { return 0; }
 
+private:
+
+	// *** Private member functions
 
 	/*! In this function the output definitions are expanded into scalar variables and corresponding
 		input references.
 	*/
 	void createInputReferences();
 
-private:
+	/*! Creates/re-opens output file and writes initial values.
+		Time-integral values will get 0 entries as initial value.
+		This function does not use the cache!
+	*/
+	void createFile(double t_secondsOfYear, bool restart);
+
+	/*! Appends outputs to files.
+		Actually, this function only caches current output values. Only when a certain
+		time has passed (or cached output data exceeds a certain limit), the data is actually written to file.
+
+		\param t_secondsOfYear Output time point as offset to Midnight January 1st in the start year.
+	*/
+	void writeOutputs(double t_secondsOfYear);
+
+	/*! Returns number of bytes currently cached in this file object. */
+	unsigned int cacheSize() const;
+
+	/*! Called from output handler once sufficient real time has elapsed or amount of data cache exceeds
+		defined limit.
+	*/
+	void flushCache();
 
 	/*! The target file name (within output directory). */
 	std::string									m_filename;
@@ -89,6 +112,15 @@ private:
 
 	/*! Pointers to variables to monitor. */
 	std::vector<const double*>					m_valueRefs;
+
+	/*! Number of columns with actual values in the output file. */
+	unsigned int								m_numCols = 0;
+
+	/*! The actual data cache. */
+	std::vector< std::vector<double> >			m_cache;
+
+	/*! The integral values. */
+	std::vector< std::vector<double> >			m_integrals;
 
 	friend class OutputHandler;
 };

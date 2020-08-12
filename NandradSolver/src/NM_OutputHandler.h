@@ -3,6 +3,10 @@
 
 #include <vector>
 
+namespace IBK {
+	class StopWatch;
+}
+
 namespace NANDRAD {
 	class Project;
 }
@@ -32,6 +36,9 @@ public:
 		NUM_OFN
 	};
 
+	/*! D'tor. */
+	~OutputHandler();
+
 	/*! Main initialization function.
 
 		\note
@@ -46,9 +53,11 @@ public:
 
 	/*! Appends outputs to files.
 		Actually, this function only caches current output values. Only when a certain
-		time has passed, the data is actually written to file.
+		time has passed (or cached output data exceeds a certain limit), the data is actually written to file.
+
+		\param t_secondsOfYear Output time point as offset to Midnight January 1st in the start year.
 	*/
-	void writeOutputs(double t);
+	void writeOutputs(double t_secondsOfYear);
 
 
 	/*! Vector with output file objects.
@@ -62,6 +71,17 @@ public:
 		re-open files or to create files from scratch and writing headers.
 	*/
 	bool										m_restart;
+
+	/*! A stop watch that monitors real time to check when outputs need to be written.
+		Object will be created on first writeOutputs() call, and is owned by this object.
+	*/
+	IBK::StopWatch								*m_outputTimer = nullptr;
+
+	/*! Number of bytes to hold in cache before flushing the cache. */
+	unsigned int								m_outputCacheLimit;
+
+	/*! Number of seconds to wait before before flushing the cache. */
+	double										m_realTimeOutputDelay;
 };
 
 
