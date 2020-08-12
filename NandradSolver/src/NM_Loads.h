@@ -81,7 +81,10 @@ public:
 
 	/*! Optional sensor values. */
 	enum VectorValuedResults {
-		VVR_SWRadOnPlane,			// Keyword: SWRadOnPlane				[W/m2]	'Global short wave radiation on a given plane.'
+		VVR_DirectSWRadOnPlane,				// Keyword: DirectSWRadOnPlane				[W/m2]	'Direct short wave radiation on a given plane.'
+		VVR_DiffuseSWRadOnPlane,			// Keyword: DiffuseSWRadOnPlane				[W/m2]	'Diffuse short wave radiation on a given plane.'
+		VVR_GlobalSWRadOnPlane,				// Keyword: GlobalSWRadOnPlane				[W/m2]	'Global short wave radiation on a given plane.'
+		VVR_IncidenceAngleOnPlane,			// Keyword: IncidenceAngleOnPlane			[%]		'The incidence angle of the sun's ray onto the surface (0 deg = directly perpendicular).'
 		NUM_VVR
 	};
 
@@ -187,9 +190,9 @@ private:
 
 	/*! The solar radiation model from CCM, includes the Climate data loader. */
 	CCM::SolarRadiationModel				m_solarRadiationModel;
-	/*! Mapping of object id to a solar radiation surface id. */
+	/*! Mapping of object id to a solar radiation surface id from CCM. */
 	std::map<unsigned int, unsigned int>	m_objectID2surfaceID;
-	/*! Mapping of sensor id to a solar radiation surface id. */
+	/*! Mapping of sensor id to a solar radiation surface id from CCM. */
 	std::map<unsigned int, unsigned int>	m_sensorID2surfaceID;
 	/*! Mapping of object id to a long wave radiation surface id. */
 	std::map<unsigned int, unsigned int>	m_objectID2inclinations;

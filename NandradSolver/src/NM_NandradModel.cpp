@@ -1732,7 +1732,7 @@ void NandradModel::initOutputs(bool restart) {
 
 	try {
 		m_outputHandler = new OutputHandler; // we own the model, memory is released in destructor
-		m_outputHandler->init(restart, *m_project, m_dirs.m_resultsDir);
+		m_outputHandler->setup(restart, *m_project, m_dirs.m_resultsDir);
 
 		// append the output file objects to the model container, so that variables can be resolved
 		m_modelContainer.insert(m_modelContainer.end(),

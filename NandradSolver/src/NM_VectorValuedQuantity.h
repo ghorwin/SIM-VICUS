@@ -69,6 +69,12 @@ public:
 	*/
 	const double & insert(unsigned int i);
 
+	/*! Returns number of elements/size of vector. */
+	unsigned int size() const { return m_data.size(); }
+
+	/*! Returns an iterator to the start of the storage vector. */
+	std::vector<double>::iterator begin() { return m_data.begin(); }
+
 private:
 	/*! Stores the actual data. */
 	std::vector<double>						m_data;

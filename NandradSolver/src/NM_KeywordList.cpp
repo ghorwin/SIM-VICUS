@@ -84,7 +84,10 @@ namespace NANDRAD_MODEL {
 			// Loads::VectorValuedResults
 			case 1 :
 			switch (t) {
-				case 0 : return "SWRadOnPlane";
+				case 0 : return "DirectSWRadOnPlane";
+				case 1 : return "DiffuseSWRadOnPlane";
+				case 2 : return "GlobalSWRadOnPlane";
+				case 3 : return "IncidenceAngleOnPlane";
 			} break;
 			// OutputHandler::OutputFileNames
 			case 2 :
@@ -206,7 +209,10 @@ namespace NANDRAD_MODEL {
 			// Loads::VectorValuedResults
 			case 1 :
 			switch (t) {
-				case 0 : return "SWRadOnPlane";
+				case 0 : return "DirectSWRadOnPlane";
+				case 1 : return "DiffuseSWRadOnPlane";
+				case 2 : return "GlobalSWRadOnPlane";
+				case 3 : return "IncidenceAngleOnPlane";
 			} break;
 			// OutputHandler::OutputFileNames
 			case 2 :
@@ -329,7 +335,10 @@ namespace NANDRAD_MODEL {
 			// Loads::VectorValuedResults
 			case 1 :
 			switch (t) {
-				case 0 : return "Global short wave radiation on a given plane.";
+				case 0 : return "Direct short wave radiation on a given plane.";
+				case 1 : return "Diffuse short wave radiation on a given plane.";
+				case 2 : return "Global short wave radiation on a given plane.";
+				case 3 : return "s ray onto the surface (0 deg = directly perpendicular).";
 			} break;
 			// OutputHandler::OutputFileNames
 			case 2 :
@@ -452,6 +461,9 @@ namespace NANDRAD_MODEL {
 			case 1 :
 			switch (t) {
 				case 0 : return "W/m2";
+				case 1 : return "W/m2";
+				case 2 : return "W/m2";
+				case 3 : return "%";
 			} break;
 			// OutputHandler::OutputFileNames
 			case 2 :
@@ -574,6 +586,9 @@ namespace NANDRAD_MODEL {
 			case 1 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
 			} break;
 			// OutputHandler::OutputFileNames
 			case 2 :
@@ -696,6 +711,9 @@ namespace NANDRAD_MODEL {
 			case 1 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// OutputHandler::OutputFileNames
 			case 2 :
@@ -796,7 +814,7 @@ namespace NANDRAD_MODEL {
 			// Loads::Results
 			case 0 : return 18;
 			// Loads::VectorValuedResults
-			case 1 : return 1;
+			case 1 : return 4;
 			// OutputHandler::OutputFileNames
 			case 2 : return 5;
 			// RoomBalanceModel::Results
@@ -824,7 +842,7 @@ namespace NANDRAD_MODEL {
 			// Loads::Results
 			case 0 : return 17;
 			// Loads::VectorValuedResults
-			case 1 : return 0;
+			case 1 : return 3;
 			// OutputHandler::OutputFileNames
 			case 2 : return 4;
 			// RoomBalanceModel::Results

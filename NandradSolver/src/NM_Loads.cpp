@@ -74,7 +74,9 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 	FUNCID(Loads::setup);
 
 	try {
-		// fill m_dataset vector
+		// for now we require a climate data file
+		// if dummy values are needed, it is possible to create a simple dummy climate data file
+		// with constant values throughout the year
 		if (location.m_climateFileName.str().empty())
 			throw IBK::Exception("Climate data location required (Location.ClimateReference).", FUNC_ID);
 
@@ -183,14 +185,23 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 		}
 
 		// setup all sensors
+		// 1. for all sensors check that the requested quantity is known to the model
+		// 2. register surface with CCM so that it will calculate radiation on those surfaces
+		//    (mind, different sensors may share the same orientation/inclination)
+		// 3. store the association between sensor ID and CCM-surface ID
 		for (unsigned int i = 0; i < location.m_sensors.size(); ++i) {
 			const NANDRAD::Sensor &sensor = location.m_sensors[i];
 			const std::string quantity = sensor.m_quantity;
 			// check if sensor quantity is supported
-			if (quantity != KeywordList::Keyword("Loads::VectorValuedResults", VVR_SWRadOnPlane)) {
-				throw IBK::Exception(IBK::FormatString("Quantity '%1' of sensor with id #%2 is not supported!")
-					.arg(quantity).arg(sensor.m_id), FUNC_ID);
+			bool found = false;
+			for (int j=0; j<NUM_VVR; ++j) {
+				if (quantity == KeywordList::Keyword("Loads::VectorValuedResults", j)) {
+					found = true;
+				}
 			}
+			if (!found)
+				throw IBK::Exception(IBK::FormatString("Quantity '%1' of sensor with id #%2 is not supported (yet)!")
+					.arg(quantity).arg(sensor.m_id), FUNC_ID);
 			// retrieve orientation and incliniation
 			if (sensor.m_orientation.name.empty())
 				throw IBK::Exception(IBK::FormatString("Missing Parameter 'Orientation' of sensor with id #%1!")
@@ -221,10 +232,10 @@ void Loads::initResults(const std::vector<AbstractModel*> & models) {
 
 	// transfer constant parameters - other models may access these values, but they are constant values and
 	// never updated during the simulation.
-	m_results[R_Albedo].set("Albedo", m_solarRadiationModel.m_albedo, "---");
-	m_results[R_Latitude].set("Latitude", m_solarRadiationModel.m_climateDataLoader.m_latitudeInDegree, "Deg");
-	m_results[R_Longitude].set("Longitude", m_solarRadiationModel.m_climateDataLoader.m_longitudeInDegree, "Deg");
-	m_results[R_CO2Concentration].value = 0.000450;
+	m_results[R_Albedo] = m_solarRadiationModel.m_albedo;
+	m_results[R_Latitude] = IBK::Parameter("Latitude", m_solarRadiationModel.m_climateDataLoader.m_latitudeInDegree, "Deg").value;
+	m_results[R_Longitude] = IBK::Parameter("Longitude", m_solarRadiationModel.m_climateDataLoader.m_longitudeInDegree, "Deg").value;
+	m_results[R_CO2Concentration] = 0.000450;
 }
 
 
@@ -250,30 +261,30 @@ int Loads::setTime(double t) {
 	}
 
 	// now copy calculated angles to variables vector, but mind the base SI unit that we store our values in
-	m_results[R_DeclinationAngle].value			= m_solarRadiationModel.m_sunPositionModel.m_declination;
-	m_results[R_ElevationAngle].value			= m_solarRadiationModel.m_sunPositionModel.m_elevation;
-	m_results[R_AzimuthAngle].value				= m_solarRadiationModel.m_sunPositionModel.m_azimuth;
+	m_results[R_DeclinationAngle]				= m_solarRadiationModel.m_sunPositionModel.m_declination;
+	m_results[R_ElevationAngle]					= m_solarRadiationModel.m_sunPositionModel.m_elevation;
+	m_results[R_AzimuthAngle]					= m_solarRadiationModel.m_sunPositionModel.m_azimuth;
 	// copy states
-	m_results[R_Temperature].value				= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::Temperature] + 273.15;
-	m_results[R_RelativeHumidity].value			= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::RelativeHumidity] / 100.0;
-	m_results[R_SWRadDirectNormal].value		= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::DirectRadiationNormal];
-	m_results[R_SWRadDiffuseHorizontal].value	= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::DiffuseRadiationHorizontal];
-	m_results[R_LWSkyRadiation].value			= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::LongWaveCounterRadiation];
-	m_results[R_WindDirection].value			= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::WindDirection] * DEG2RAD;
-	m_results[R_WindVelocity].value				= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::WindVelocity];
-	m_results[R_AirPressure].value				= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::AirPressure];
+	m_results[R_Temperature]					= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::Temperature] + 273.15;
+	m_results[R_RelativeHumidity]				= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::RelativeHumidity] / 100.0;
+	m_results[R_SWRadDirectNormal]				= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::DirectRadiationNormal];
+	m_results[R_SWRadDiffuseHorizontal]			= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::DiffuseRadiationHorizontal];
+	m_results[R_LWSkyRadiation]					= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::LongWaveCounterRadiation];
+	m_results[R_WindDirection]					= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::WindDirection] * DEG2RAD;
+	m_results[R_WindVelocity]					= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::WindVelocity];
+	m_results[R_AirPressure]					= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::AirPressure];
 
 	// calculate moisture related quantities
-	const double pSaturation = IBK::f_psat(m_results[R_Temperature].value);
-	const double airTemperature = m_results[R_Temperature].value;
-	const double vaporPressure = m_results[R_RelativeHumidity].value * pSaturation;
-	const double moistureDensity = vaporPressure / (IBK::R_VAPOR * m_results[R_Temperature].value);
-	const double CO2Density = m_results[R_CO2Concentration].value * MolarMassCO2 *
+	const double pSaturation = IBK::f_psat(m_results[R_Temperature]);
+	const double airTemperature = m_results[R_Temperature];
+	const double vaporPressure = m_results[R_RelativeHumidity] * pSaturation;
+	const double moistureDensity = vaporPressure / (IBK::R_VAPOR * m_results[R_Temperature]);
+	const double CO2Density = m_results[R_CO2Concentration] * MolarMassCO2 *
 		IBK::GASPRESS_REF /(IBK::R_IDEAL_GAS * airTemperature);
 
-	m_results[R_VaporPressure].value = vaporPressure;
-	m_results[R_MoistureDensity].value = moistureDensity;
-	m_results[R_CO2Density].value = CO2Density;
+	m_results[R_VaporPressure] = vaporPressure;
+	m_results[R_MoistureDensity] = moistureDensity;
+	m_results[R_CO2Density] = CO2Density;
 
 #ifdef TODO
 	// calculate shading factors for current time points
@@ -331,29 +342,37 @@ int Loads::setTime(double t) {
 			m_shadingFactors[i] = alpha * nextData[i] +	beta * lastData[i];
 		}
 	}
-
+#endif
 
 	if (!m_sensorID2surfaceID.empty()) {
-		IBK_ASSERT(m_sensorID2surfaceID.size() == m_vectorValuedResults[VVR_SWRadOnPlane].size());
+		IBK_ASSERT(m_sensorID2surfaceID.size() == m_vectorValuedResults[VVR_DirectSWRadOnPlane].size());
 		// update all sensor values
-		std::vector<double>::iterator sensorValIt = m_vectorValuedResults[VVR_SWRadOnPlane].begin();
+
+		std::vector<double>::iterator dirRadIt = m_vectorValuedResults[VVR_DirectSWRadOnPlane].begin();
+		std::vector<double>::iterator difRadIt = m_vectorValuedResults[VVR_DiffuseSWRadOnPlane].begin();
+		std::vector<double>::iterator globRadIt = m_vectorValuedResults[VVR_GlobalSWRadOnPlane].begin();
+		std::vector<double>::iterator incRadIt = m_vectorValuedResults[VVR_IncidenceAngleOnPlane].begin();
 
 		// loop over all sensors
 		for (std::map<unsigned int, unsigned int>::const_iterator sensorIt = m_sensorID2surfaceID.begin();
-			sensorIt != m_sensorID2surfaceID.end(); ++sensorIt, ++sensorValIt)
+			sensorIt != m_sensorID2surfaceID.end(); ++sensorIt, ++dirRadIt, ++difRadIt, ++globRadIt)
 		{
-			// update value
+			// map: key (first) = ID of the sensor
+			//      value (second) = ID of the CCM-surface
+
 			// a sensor: no shading is considered
 			unsigned int surfaceId = sensorIt->second;
 			// we only need surface id for radiant loads calculation
 			// (surface is equal for all surface with same incidenceAngle)
 			double qRadDir, qRadDiff, incidenceAngle;
 			m_solarRadiationModel.radiationLoad(surfaceId, qRadDir, qRadDiff, incidenceAngle);
-			// store value
-			*sensorValIt = qRadDir + qRadDiff;
+			// store values
+			*dirRadIt = qRadDir;
+			*difRadIt = qRadDiff;
+			*globRadIt = qRadDir + qRadDiff;
+			*incRadIt = incidenceAngle; // in rad
 		}
 	}
-#endif // TODO
 
 	// signal success
 	return 0;
@@ -363,13 +382,14 @@ int Loads::setTime(double t) {
 // use default implementation
 void Loads::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 
+	// generate result quantities from enums Results and VectorValuedResults
+	// Note: vector valued results have zero elements so far
 	DefaultModel::resultDescriptions(resDesc);
 
 	if (m_sensorID2surfaceID.empty())
 		return;
 
-	// select all sensor ids:
-	// at the moment we only measure short wave radiation
+	// select all sensor ids and store them in a vector
 	std::vector<unsigned int> sensorIds;
 	for (std::map<unsigned int, unsigned int>::const_iterator
 		it = m_sensorID2surfaceID.begin();
@@ -378,18 +398,19 @@ void Loads::resultDescriptions(std::vector<QuantityDescription> & resDesc) const
 		sensorIds.push_back(it->first);
 	}
 
-	std::string category = "Loads::VectorValuedResults";
-	// resize sensor quantities
-	for (unsigned int i = 0; i < resDesc.size(); ++i) {
+	// resize vector-valued sensor quantities
+	for (int j=0; j<NUM_VVR; ++j) {
+		for (unsigned int i = 0; i < resDesc.size(); ++i) {
 
-		// vector valued quantity descriptions store the description
-		// of the quantity itself as well as key strings and descriptions
-		// for all vector elements
+			// vector valued quantity descriptions store the description
+			// of the quantity itself as well as key strings and descriptions
+			// for all vector elements
 
-		// If we this is the result of a radiation sensor, we add ids to the vector value result,
-		// so that lookup is possible via "SWRadOnPlane[id=14]"
-		if (resDesc[i].m_name == KeywordList::Keyword(category.c_str(), VVR_SWRadOnPlane))
-			resDesc[i].resize(sensorIds, VectorValuedQuantityIndex::IK_ModelID);
+			// If we this is the result of a radiation sensor, we add ids to the vector value result,
+			// so that lookup is possible via "DirectSWRadOnPlane[id=14]"
+			if (resDesc[i].m_name == KeywordList::Keyword("Loads::VectorValuedResults", j))
+				resDesc[i].resize(sensorIds, VectorValuedQuantityIndex::IK_ModelID);
+		}
 	}
 }
 
@@ -401,11 +422,14 @@ const double * Loads::resultValueRef(const QuantityName & quantityName) const {
 
 
 void Loads::addSurface(unsigned int objectID, double orientation, double inclination) {
-#if 0
-	const char * const FUNC_ID = "[Loads::addSurface]";
+//	FUNCID(Loads::addSurface);
 
 	unsigned int surfaceID = m_solarRadiationModel.addSurface(orientation, inclination);
-	// store mapping of obejct 2 surface id
+	// store mapping of object 2 CCM-surface id
+	// Note: it is likely that several objects (i.e. outside surfaces of constructions) have the same orientation and
+	//       inclination, like on a multi-storey west facade. The CCM will only compute the radiation loads
+	//       for this surface once. And thanks to the mapping, we can retrieve pass the pointer to these results to
+	//       all dependent objects.
 	m_objectID2surfaceID[objectID] = surfaceID;
 
 	// store mapping of inclination
@@ -467,7 +491,6 @@ void Loads::addSurface(unsigned int objectID, double orientation, double inclina
 	}
 #endif // TODO
 
-#endif
 }
 
 

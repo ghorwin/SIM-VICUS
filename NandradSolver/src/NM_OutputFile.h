@@ -80,7 +80,6 @@ private:
 
 	/*! Creates/re-opens output file and writes initial values.
 		Time-integral values will get 0 entries as initial value.
-		This function does not use the cache!
 
 		\param t_out The time since begin of the start year already converted to the output unit.
 		\param restart If true, the existing output file should be appended, rather than re-created
@@ -90,13 +89,12 @@ private:
 	*/
 	void createFile(double t_out, bool restart, bool binary, const std::string & timeColumnLabel, const IBK::Path * outputPath);
 
-	/*! Appends outputs to files.
-		Actually, this function only caches current output values. Only when a certain
-		time has passed (or cached output data exceeds a certain limit), the data is actually written to file.
+	/*! Retrieves current output values and appends values to cache.
+		This function only caches current output values. The data is written to file in the next call to flushCache().
 
 		\param t_out The time since begin of the start year already converted to the output unit.
 	*/
-	void writeOutputs(double t_out);
+	void cacheOutputs(double t_out);
 
 	/*! Returns number of bytes currently cached in this file object. */
 	unsigned int cacheSize() const;
@@ -105,6 +103,10 @@ private:
 		defined limit.
 	*/
 	void flushCache();
+
+
+	/*! Cached flag to know whether to write in binary or ASCII mode. */
+	bool										m_binary;
 
 	/*! The target file name (within output directory). */
 	std::string									m_filename;
@@ -131,8 +133,9 @@ private:
 	*/
 	std::vector<unsigned int>					m_outputDefMap;
 
-	/*! Pointers to variables to monitor. */
+	/*! Pointers to variables to monitor (same size and order as m_inputRefs). */
 	std::vector<const double*>					m_valueRefs;
+	/*! Corresponding quantity descriptions (same size and order as m_inputRefs). */
 	std::vector<QuantityDescription>			m_quantityDescs;
 
 	/*! Number of columns with actual values in the output file.
@@ -144,8 +147,10 @@ private:
 	/*! The actual data cache. */
 	std::vector< std::vector<double> >			m_cache;
 
-	/*! The integral values. */
-	std::vector< std::vector<double> >			m_integrals;
+	/*! The integral values (updated in each stepCompleted() call). */
+	std::vector<double>							m_integrals;
+	/*! The current values (fluxes), updated in each stepCompleted() call. */
+	std::vector<double>							m_currentVals;
 
 	/*! Output file stream (owned and initialized in createFile()). */
 	std::ofstream								*m_ofstream = nullptr;

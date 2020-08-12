@@ -32,8 +32,8 @@ OutputHandler::~OutputHandler() {
 }
 
 
-void OutputHandler::init(bool restart, NANDRAD::Project & prj, const IBK::Path & outputPath) {
-	FUNCID(OutputHandler::init);
+void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path & outputPath) {
+	FUNCID(OutputHandler::setup);
 
 	// cache parameters needed to create output files
 	m_restart = restart; // store restart info flag
@@ -81,6 +81,7 @@ void OutputHandler::init(bool restart, NANDRAD::Project & prj, const IBK::Path &
 		// store pointer link to output grid
 		od.m_gridRef = &(*grid_it);
 
+
 		// ** resolve object list
 
 		if (IBK::trim_copy(od.m_objectListName).empty())
@@ -94,6 +95,14 @@ void OutputHandler::init(bool restart, NANDRAD::Project & prj, const IBK::Path &
 
 		// store pointer link to output grid
 		od.m_objectListRef = &(*oblst_it);
+
+
+		// ** defaults
+
+		if (od.m_timeType == NANDRAD::OutputDefinition::NUM_OTT)
+			od.m_timeType = NANDRAD::OutputDefinition::OTT_NONE;
+
+		// ** look for specified filename
 
 		std::string outputFname = IBK::trim_copy(od.m_filename);
 		// if output filename is not empty, make sure that all output definitions in same file use the
@@ -307,7 +316,7 @@ void OutputHandler::writeOutputs(double t_secondsOfYear) {
 		// now pass on the call to each file to cache current results
 		unsigned int storedBytes = 0;
 		for (OutputFile * of : m_outputFiles) {
-			of->writeOutputs(t_out);
+			of->cacheOutputs(t_out);
 			storedBytes += of->cacheSize();
 		}
 

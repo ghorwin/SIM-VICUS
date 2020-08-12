@@ -73,6 +73,8 @@ void OutputFile::createInputReferences() {
 void OutputFile::createFile(double t_out, bool restart, bool binary, const std::string & timeColumnLabel, const IBK::Path * outputPath) {
 	FUNCID(OutputFile::createFile);
 
+	m_binary = binary;
+
 	// NOTE: t_out is already converted to output time unit!!!
 
 	IBK_ASSERT(m_inputRefs.size() == m_valueRefs.size());
@@ -149,25 +151,27 @@ void OutputFile::createFile(double t_out, bool restart, bool binary, const std::
 	if (binary) {
 #if defined(_WIN32)
 	#if defined(_MSC_VER)
-		m_ofstream = new std::ofstream(outFilePath.wstr().c_str(), std::ios_base::binary);
+		std::wstring wfname = outFilePath.wstr();
+		m_ofstream = new std::ofstream(wfname.c_str(), std::ios_base::binary);
 	#else
 		std::string filenameAnsi = IBK::WstringToANSI(outFilePath.wstr(), false);
 		m_ofstream = new std::ofstream(filenameAnsi.c_str(), std::ios_base::binary);
 	#endif
 #else
-		m_ofstream = new std::ofstream(outFilePath.str().c_str(), std::ios_base::binary);
+		m_ofstream = new std::ofstream(outFilePath.c_str(), std::ios_base::binary);
 #endif
 	}
 	else {
 #if defined(_WIN32)
 	#if defined(_MSC_VER)
-		m_ofstream = new std::ofstream(outFilePath.wstr().c_str());
+		std::wstring wfname = outFilePath.wstr();
+		m_ofstream = new std::ofstream(wfname.c_str());
 	#else
 		std::string filenameAnsi = IBK::WstringToANSI(outFilePath.wstr(), false);
 		m_ofstream = new std::ofstream(filenameAnsi.c_str());
 	#endif
 #else
-		m_ofstream = new std::ofstream(outFilePath.str().c_str());
+		m_ofstream = new std::ofstream(outFilePath.c_str());
 #endif
 	}
 
@@ -217,23 +221,35 @@ void OutputFile::createFile(double t_out, bool restart, bool binary, const std::
 				*m_ofstream << "\t";
 			*m_ofstream << headerLabels[i];
 		}
-		// first values
-		for (unsigned int i=0; i<vals.size(); ++i) {
-			if (i != 0)
-				*m_ofstream << "\t";
-			*m_ofstream << vals[i];
-		}
+		*m_ofstream << '\n';
 	}
+
+	// now cache the initial values and flush the cache right afterwards
+	cacheOutputs(t_out);
+	flushCache();
 }
 
 
-void OutputFile::writeOutputs(double t_out) {
+void OutputFile::cacheOutputs(double t_out) {
 	// no outputs - nothing to do
 	if (m_numCols == 0)
 		return;
 
 	// NOTE: t_out is already converted to output time unit!!!
 
+	// append data to cache
+	std::vector<double> vals(m_numCols+1);
+	vals[0] = t_out;
+	unsigned int col=1; // Mind: column 0 is the time column
+	for (unsigned int i=0; i<m_valueRefs.size(); ++i) {
+		if (m_valueRefs[i] == nullptr) continue; // skip unavailable vars
+
+		// retrieve (initial) value for this variable
+		vals[col] = *m_valueRefs[i];
+		++col;
+	}
+
+	m_cache.emplace_back(vals); // like push-back, but without re-allocation
 }
 
 
@@ -248,7 +264,26 @@ void OutputFile::flushCache() {
 	if (m_numCols == 0)
 		return;
 
-	// if
+	// dump all rows of the cache into file
+	for (std::vector<double> & vals : m_cache) {
+		if (m_binary) {
+			/// \todo implement binary file writing
+		}
+		else {
+			// dump vector in ascii mode
+			// first values
+			for (unsigned int i=0; i<vals.size(); ++i) {
+				if (i != 0)
+					*m_ofstream << "\t";
+				*m_ofstream << vals[i];
+			}
+			*m_ofstream << '\n';
+		}
+	}
+	// flush stream
+	m_ofstream->flush();
+	// and clear cache
+	m_cache.clear();
 }
 
 

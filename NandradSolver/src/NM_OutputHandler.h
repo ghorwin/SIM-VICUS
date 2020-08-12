@@ -52,7 +52,7 @@ public:
 		\param restart If true, simulation was restarted and output files shall be continued, rather than re-created.
 		\param prj The project data structure with all input data.
 	*/
-	void init(bool restart, NANDRAD::Project & prj, const IBK::Path & outputPath);
+	void setup(bool restart, NANDRAD::Project & prj, const IBK::Path & outputPath);
 
 	/*! Appends outputs to files.
 		Actually, this function only caches current output values. Only when a certain

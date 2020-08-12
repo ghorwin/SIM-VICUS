@@ -244,8 +244,8 @@ int ThermalComfortModel::update() {
 	if(m_surfaceIds.empty())
 	{
 		// than set radiant temparture to 0
-		m_results[R_RadiantTemperature].value   = 0.0;
-		m_results[R_OperativeTemperature].value = RoomTemperature;
+		m_results[R_RadiantTemperature]   = 0.0;
+		m_results[R_OperativeTemperature] = RoomTemperature;
 		// signal success
 		return 0;
 	}
@@ -281,13 +281,13 @@ int ThermalComfortModel::update() {
 	// calculate mean value
 	RadiantTemperature /= ComleteWallArea;
 	// store wall temperature
-	m_results[R_RadiantTemperature].value   = RadiantTemperature;
+	m_results[R_RadiantTemperature]   = RadiantTemperature;
 
 	// calculate operative temperature as weighted average between room air and
 	// radiant temperature
 	double OperativeTemperature = 0.5 * (RadiantTemperature + RoomTemperature);
 	// store the result
-	m_results[R_OperativeTemperature].value = OperativeTemperature;
+	m_results[R_OperativeTemperature] = OperativeTemperature;
 	// signal success
 	return 0;
 }
@@ -297,7 +297,7 @@ void ThermalComfortModel::stateDependencies(std::vector< std::pair<const double 
 							&resultInputValueReferences) const {
 
 	// connect all convective and radiant sources
-	const double *valueRef = &m_results[R_RadiantTemperature].value;
+	const double *valueRef = &m_results[R_RadiantTemperature];
 	// retreive all fluxes
 	if(!m_surfaceIds.empty() ) {
 		std::vector<const double *>::const_iterator it =
@@ -328,7 +328,7 @@ void ThermalComfortModel::stateDependencies(std::vector< std::pair<const double 
 	}
 	// connect operative temperature to all temepratures
 	// connect all convective and radiant sources
-	valueRef = &m_results[R_OperativeTemperature].value;
+	valueRef = &m_results[R_OperativeTemperature];
 	// room air temperature
 	const double *inputRef  = inputValueRef(InputRef_AirTemperature);
 	resultInputValueReferences.push_back(std::make_pair(valueRef, inputRef) );

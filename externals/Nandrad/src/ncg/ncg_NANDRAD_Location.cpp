@@ -65,6 +65,16 @@ void Location::readXML(const TiXmlElement * element) {
 				m_climateFileName = IBK::Path(c->GetText());
 			else if (cName == "ShadingFactorFileName")
 				m_shadingFactorFileName = IBK::Path(c->GetText());
+			else if (cName == "IBK:Flag") {
+				IBK::Flag f;
+				readFlagElement(c, f);
+				bool success = false;
+				if (f.name() == "PerezDiffuseRadiationModel") {
+					m_perezDiffuseRadiationModel = f; success=true;
+				}
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
 			else if (cName == "Sensors") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
@@ -104,6 +114,8 @@ TiXmlElement * Location::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "ClimateFileName", nullptr, std::string(), m_climateFileName.str());
 	if (m_shadingFactorFileName.isValid())
 		TiXmlElement::appendSingleAttributeElement(e, "ShadingFactorFileName", nullptr, std::string(), m_shadingFactorFileName.str());
+	if (!m_perezDiffuseRadiationModel.name().empty())
+		TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_perezDiffuseRadiationModel.name(), m_perezDiffuseRadiationModel.isEnabled() ? "true" : "false");
 
 	if (!m_sensors.empty()) {
 		TiXmlElement * child = new TiXmlElement("Sensors");

@@ -417,7 +417,7 @@ void RoomBalanceModel::setY(const double * y) {
 
 int RoomBalanceModel::ydot(double* ydot) {
 	// solve the balance: ydot = sum loads
-	m_ydot[0] = m_results[R_CompleteThermalLoad].value;
+	m_ydot[0] = m_results[R_CompleteThermalLoad];
 	// and return ydot
 	std::memcpy(ydot, &m_ydot[0], m_ydot.size()*sizeof(double) );
 	// ydot is called at the end of an update cycle
