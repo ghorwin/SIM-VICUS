@@ -1,0 +1,12 @@
+#!wing
+#!version=5.0
+##################################################################
+# Wing IDE project file                                          #
+##################################################################
+[project attributes]
+proj.file-list = [loc('run_tests.py')]
+proj.file-type = 'shared'
+proj.launch-config = {loc('run_tests.py'): ('project',
+        (u'-p /home/ghorwin/svn/Delphin6_trunk/data/performance -s /home/ghorwin/svn/DelphinSolver_trunk/bin/release/DelphinSolver -e d6p --performance',
+         ''))}
+proj.main-file = loc('run_tests.py')
