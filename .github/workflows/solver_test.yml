@@ -2,13 +2,10 @@
 
 name: RegressionTest
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
+# Run 6 o'clock in the morning...
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  schedule:
+    - cron: '0 6 * * *'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
