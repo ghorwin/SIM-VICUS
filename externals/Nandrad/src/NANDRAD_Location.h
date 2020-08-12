@@ -22,8 +22,8 @@ Lesser General Public License for more details.
 #define NANDRAD_LocationH
 
 #include <IBK_Path.h>
+#include <IBK_Flag.h>
 #include <IBK_Parameter.h>
-#include <IBK_IntPara.h>
 
 #include "NANDRAD_Sensor.h"
 #include "NANDRAD_CodeGenMacros.h"
@@ -65,6 +65,9 @@ public:
 
 	/*! Optional: name of the external shading factor data file. */
 	IBK::Path					m_shadingFactorFileName;				// XML:E
+
+	/*! If enabled, Perez model for diffuse radiation is used. */
+	IBK::Flag					m_perezDiffuseRadiationModel;			// XML:E
 
 	/*! We may place one or more sensors outside. */
 	std::vector<Sensor>			m_sensors;								// XML:E
