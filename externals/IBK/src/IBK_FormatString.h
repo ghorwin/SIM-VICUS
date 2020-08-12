@@ -95,7 +95,7 @@ public:
 		\param		fieldWidth string field width, optional.
 		\return		FormatString including the substitution argument.
 	*/
-	FormatString & arg(const std::string & s, int fieldWidth=0);
+	FormatString & arg(const std::string & s, int fieldWidth=0, std::ios_base::fmtflags alignment=std::ios_base::right);
 	/*! Inserts MultiLanguageString at the next location of '%'.
 		\param		s		   MultiLanguageString for substitution of '%', uses the english string.
 		\param		fieldWidth string field width, optional.

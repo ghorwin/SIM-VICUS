@@ -93,6 +93,9 @@ public:
 	}
 };
 
+/*! Convenience macro that creates a message indentor object and adds a void cast to remove compiler warning. */
+#define IBK_MSG_INDENT IBK::MessageIndentor indent; (void)indent
+
 /*! Foreground and background colors. */
 enum ConsoleColor {
 	CF_BLACK 			= 0x00,

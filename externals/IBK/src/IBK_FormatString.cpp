@@ -98,12 +98,17 @@ std::string FormatString::str() const {
 	return s;
 }
 
-FormatString & FormatString::arg(const std::string & s, int fieldWidth) {
+FormatString & FormatString::arg(const std::string & s, int fieldWidth, std::ios_base::fmtflags alignment) {
 	if (fieldWidth == 0)
 		m_arguments.push_back(s);
 	else {
 		std::stringstream strm;
-		strm << setw(fieldWidth) << right << s;
+		strm << setw(fieldWidth);
+		switch (alignment) {
+			case std::ios_base::left : strm << left; break;
+			default : strm << right; break;
+		}
+		strm << s;
 		m_arguments.push_back(strm.str());
 	}
 	return *this;
