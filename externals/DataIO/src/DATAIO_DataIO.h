@@ -679,7 +679,7 @@ private:
 	/*! The file stream used for writing.
 		Holds a NULL pointer if file is not opened for writing. After a call to writeHeader() it holds
 		a pointer to the file stream.
-		*/
+	*/
 	mutable std::ofstream				*m_ofstream;
 
 
