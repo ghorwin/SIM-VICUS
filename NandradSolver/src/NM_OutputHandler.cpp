@@ -270,6 +270,8 @@ void OutputHandler::init(bool restart, NANDRAD::Project & prj) {
 
 
 void OutputHandler::writeOutputs(double t_secondsOfYear) {
+	FUNCID(OutputHandler::writeOutputs);
+
 	// if first call, create/re-open files
 	if (m_outputTimer == nullptr) {
 
@@ -293,6 +295,7 @@ void OutputHandler::writeOutputs(double t_secondsOfYear) {
 		if (m_outputTimer->difference()/1000.0 > m_realTimeOutputDelay ||
 			storedBytes > m_outputCacheLimit)
 		{
+			IBK::IBK_Message("Flushing output cache.\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
 			for (OutputFile * of : m_outputFiles)
 				of->flushCache();
 			// restart timer
