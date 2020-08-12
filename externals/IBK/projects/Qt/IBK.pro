@@ -117,7 +117,8 @@ HEADERS += \
 	../../src/IBK_openMP.h \
 	../../src/IBK_Version.h \
 	../../src/IBK_system.h \
-	../../src/IBK_IntPara.h
+	../../src/IBK_IntPara.h \
+	../../src/fast_double_parser/fast_double_parser.h
 
 DISTFILES += \
 	../../doc/LICENSE
