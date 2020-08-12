@@ -1906,6 +1906,7 @@ void NandradModel::initModelDependencies() {
 						srcObject = it->second;
 						// request the address to the requested variable from the source object
 						srcVarAddress = srcObject->resultValueRef(inputRef.m_sourceName);
+						IBK_ASSERT(srcVarAddress != nullptr);
 					}
 				}
 
@@ -1922,7 +1923,7 @@ void NandradModel::initModelDependencies() {
 				//          get the same memory storage pointer returned.
 
 				if (srcVarAddress == nullptr) {
-					srcVarAddress = m_fmiInputOutput->resultValueRef(inputRef);
+					srcVarAddress = m_schedules->resultValueRef(inputRef);
 				}
 
 
@@ -2068,6 +2069,8 @@ void NandradModel::initOutputReferenceList() {
 			IBK::IBK_Message(ex.what(), IBK::MSG_ERROR, FUNC_ID);
 		}
 	}
+
+	/// \todo append scheduled quantities
 
 	// dump output reference list to file
 #ifdef _WIN32

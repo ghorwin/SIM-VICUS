@@ -62,6 +62,7 @@ public:
 	QuantityName									m_sourceName;
 	/*! True, if referenced quantity is to be treated constant during
 		update cycles (essentially prevents adding an evaluation dependency).
+		\deprecated still needed?
 	*/
 	bool											m_constant = false;
 	/*! For input references, indicates, that the model requires this input and cannot work (correctly) without.

@@ -51,6 +51,39 @@ Example:
 `TimeType` is optional, same as `None` by default.
 `FileName` is optional (see below).
 
+### Output Grids
+
+Output grids define _when_ outputs are written. An output grid contains a list of intervals, with an output step size defined for each interval.
+
+The intervals are expected to follow in consecutive order, optionally with a gap in-between.
+
+Intervals can have up to 3 parameters:
+
+* `Start` - the start time of the interval (see explanation below)
+* `End`- the end time of the interval (see explanation below)
+* `StepSize` - the distance between outputs within the interval
+
+#### Time definitions
+
+Time points in `Start` and `End` parameters are defined with respect to Midnight January 1st of the year in which the simulation starts.
+
+
+
+#### Rules
+
+- the `Start` parameter is optional, under the following conditions:
+    * in the first interval, a missing `Start` parameter is automatically set to 0 (start of the year)
+    * in all other intervals, the `End` time of the preceeding interval is taken (see next rule below)
+- the end time of an interval is defined, either:
+    * by defining the `End` parameter,
+    * through definition of the `Start` parameter in next interval
+    * through simulation end time in last 
+das Intervall das letzte Intervall ist (in diesem Fall läuft das Interval bis zum Simulationsende)
+das darauffolgende Interval hat ein Start-Wert hat.
+Bei Angabe eines Start-Parameters muß der Zeitpunkt mindestens dem End-Zeitpunkt des vorangegangenen Intervalls entsprechen -> die Intervalle sind sequentiell geordnet und überschneiden nicht.
+Die Angabe des Parameters StepSize ist zwingend.
+
+
 ### Examples
 
 - Requesting fluxes across construction interfaces: object list must reference interfaces

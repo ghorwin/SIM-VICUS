@@ -32,9 +32,7 @@ void OutputFile::createInputReferences() {
 		const NANDRAD::ObjectList * ol = od.m_objectListRef;
 
 		// special handling for Location ref type
-		if (ol->m_referenceType == NANDRAD::ModelInputReference::MRT_LOCATION ||
-			ol->m_referenceType == NANDRAD::ModelInputReference::MRT_SENSOR)
-		{
+		if (ol->m_referenceType == NANDRAD::ModelInputReference::MRT_LOCATION) 	{
 			InputReference inref;
 			inref.m_id = 0;
 			inref.m_constant = true;
