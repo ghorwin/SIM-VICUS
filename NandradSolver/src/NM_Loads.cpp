@@ -370,12 +370,12 @@ void Loads::resultDescriptions(std::vector<QuantityDescription> & resDesc) const
 
 	// select all sensor ids:
 	// at the moment we only measure short wave radiation
-	std::set<unsigned int> sensorIds;
+	std::vector<unsigned int> sensorIds;
 	for (std::map<unsigned int, unsigned int>::const_iterator
 		it = m_sensorID2surfaceID.begin();
 		it != m_sensorID2surfaceID.end(); ++it)
 	{
-		sensorIds.insert(it->first);
+		sensorIds.push_back(it->first);
 	}
 
 	std::string category = "Loads::VectorValuedResults";

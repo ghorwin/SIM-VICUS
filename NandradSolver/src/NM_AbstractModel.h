@@ -21,14 +21,10 @@ Lesser General Public License for more details.
 #ifndef AbstractModelH
 #define AbstractModelH
 
-#include <IBK_Parameter.h>
-#include <IBK_UnitVector.h>
-
 #include <NANDRAD_ModelInputReference.h>
 
 #include "NM_QuantityDescription.h"
 #include "NM_QuantityName.h"
-#include "NM_VectorValuedQuantityIndex.h"
 
 namespace NANDRAD_MODEL {
 

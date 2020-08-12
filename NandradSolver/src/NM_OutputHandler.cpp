@@ -31,11 +31,14 @@ OutputHandler::~OutputHandler() {
 }
 
 
-void OutputHandler::init(bool restart, NANDRAD::Project & prj) {
+void OutputHandler::init(bool restart, NANDRAD::Project & prj, const IBK::Path & outputPath) {
 	FUNCID(OutputHandler::init);
 
 	m_restart = restart; // store restart info flag
 
+	m_outputPath = &outputPath;
+
+	m_binaryFiles = prj.m_outputs.m_binaryFormat.isEnabled();
 
 	m_outputCacheLimit = 100000; // 100 Mb for starters
 	m_realTimeOutputDelay = 2; // wait one second simulation time before flushing the cache
@@ -235,7 +238,7 @@ void OutputHandler::init(bool restart, NANDRAD::Project & prj) {
 			// set filename
 			of->m_filename = filename;
 			// add file extension (tsv or btf see below)
-			if (prj.m_outputs.m_binaryFormat.isEnabled())
+			if (m_binaryFiles)
 				of->m_filename += ".btf";
 			else
 				of->m_filename += ".tsv";
@@ -274,9 +277,14 @@ void OutputHandler::writeOutputs(double t_secondsOfYear) {
 
 	// if first call, create/re-open files
 	if (m_outputTimer == nullptr) {
+		if (m_restart)
+			IBK::IBK_Message("Re-opening output files:\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		else
+			IBK::IBK_Message("Creating output files:\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
+		IBK_MSG_INDENT;
 
 		for (OutputFile * of : m_outputFiles)
-			of->createFile(t_secondsOfYear, m_restart);
+			of->createFile(t_secondsOfYear, m_restart, m_binaryFiles, m_outputPath);
 		// Note: in createFile() also all integral quantities are initialized
 
 		// now create timer

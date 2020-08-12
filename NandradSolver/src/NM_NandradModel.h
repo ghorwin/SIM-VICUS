@@ -302,15 +302,15 @@ private:
 	// *** Core Solver Variables ***
 
 	/*! Cached total number of unknowns (number of rooms + all elements in all walls). */
-	unsigned int											m_n;
+	unsigned int											m_n = 0;
 	/*! Cached number of thermal (active) zones. */
-	unsigned int											m_nZones;
+	unsigned int											m_nZones = 0;
 	/*! Cached number of walls. */
-	unsigned int											m_nWalls;
+	unsigned int											m_nWalls = 0;
 	/*! Starting time point in [s]. */
-	double													m_t0;
+	double													m_t0 = 0;
 	/*! End time point in [s]. */
-	double													m_tEnd;
+	double													m_tEnd = 0;
 	/*! Vector with initial conditions.
 		Unlike m_y and m_ydot the values in yo are stored in solver-y-variable order.
 	*/

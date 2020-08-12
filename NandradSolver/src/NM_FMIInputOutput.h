@@ -90,7 +90,7 @@ public:
 		\param inputRef An input reference from the previously published list of input references.
 		\param resultValueRef Persistent memory location to the variable slot.
 	*/
-	virtual void setInputValueRef(const InputReference &inputRef, const double *resultValueRef) override;
+	virtual void setInputValueRef(const InputReference &inputRef, const QuantityDescription & resultDesc, const double *resultValueRef) override;
 
 	/*! Since FMI export only pulls data when master requests, we have nothing to do here. */
 	virtual int update() override { return 0; }
@@ -119,9 +119,10 @@ public:
 		Hereby, a potentially existing HeatingSetPoint schedule can be overwritten (or provided, if missing).
 
 		\return Returns a persistent pointer to the storage location or nullptr, if the requested
-			variable is not provided as FMU input/parameter variable.
+			variable is not provided as FMU input/parameter variable. If not a nullptr, the details of the requested variable
+			are stored in quantityDesc.
 	*/
-	const double * resultValueRef(const InputReference & valueRef) const;
+	const double * resolveResultReference(const InputReference & valueRef, QuantityDescription & quantityDesc) const;
 
 private:
 

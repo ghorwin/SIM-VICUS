@@ -21,11 +21,8 @@ Lesser General Public License for more details.
 #ifndef NM_QuantityDescriptionH
 #define NM_QuantityDescriptionH
 
-#include <algorithm>
 #include <limits>
-#include <string>
 #include <vector>
-#include <set>
 
 #include <IBK_Unit.h>
 
@@ -69,7 +66,7 @@ struct QuantityDescription {
 	/*! Constructor for vector valued quantities.*/
 	QuantityDescription(const std::string & name, const std::string & unit, const std::string & description,
 						const bool constant, VectorValuedQuantityIndex::IndexKeyType indexKeyType,
-						const std::set<unsigned int> &indexKeys) :
+						const std::vector<unsigned int> &indexKeys) :
 		m_name(name),
 		m_unit(unit),
 		m_description(description),
@@ -82,44 +79,9 @@ struct QuantityDescription {
 	{
 	}
 
-#if 0
-	std::vector<VectorValuedQuantityIndex>::iterator find(unsigned int index) {
-		// resize index and index description vectors
-		std::vector<unsigned int> idx;
-		indexes(idx);
-
-		std::vector<unsigned int>::const_iterator it =
-			std::find(idx.begin(), idx.end(), index);
-		// invalid element
-		if (it == idx.end())
-			return m_indexKeys.end();
-
-		// extract iterator position
-		int pos = (int) (it - idx.begin());
-		return m_indexKeys.begin() + pos;
-	}
-
-
-	std::vector<VectorValuedQuantityIndex>::const_iterator find(unsigned int index) const {
-		// resize index and index description vectors
-		std::vector<unsigned int> idx;
-		indexes(idx);
-
-		std::vector<unsigned int>::const_iterator it =
-			std::find(idx.begin(), idx.end(), index);
-		// invalid element
-		if (it == idx.end())
-			return m_indexKeys.end();
-
-		// extract iterator position
-		int pos = (int) (it - idx.begin());
-		return m_indexKeys.begin() + pos;
-	}
-#endif
-
 
 	/*! Sets index key type and indexes to initialize vector valued quantity description. */
-	void resize(const std::set<unsigned int> &indexes, VectorValuedQuantityIndex::IndexKeyType keyType) {
+	void resize(const std::vector<unsigned int> &indexes, VectorValuedQuantityIndex::IndexKeyType keyType) {
 		m_indexKeys = indexes;
 		m_indexKeyType = keyType;
 		m_size = indexes.size();
@@ -132,11 +94,12 @@ struct QuantityDescription {
 
 		// resize index and index description vectors
 		for (unsigned int i = 0;  i < size; ++i)
-			m_indexKeys.insert(i);
+			m_indexKeys.push_back(i);
 
 		m_indexKeyType = VectorValuedQuantityIndex::IK_Index;
 		m_size = size;
 	}
+
 
 	/*! Declare comparison operator with string to find QuantityDescription by m_name. */
 	NANDRAD_COMPARE_WITH_NAME
@@ -145,7 +108,10 @@ struct QuantityDescription {
 
 	/*! Quantity/variable name */
 	std::string								m_name;
-	/*! Quantity unit */
+	/*! Quantity unit, which is actually the input/output unit used for logging value in output files.
+		\note The value stored in the actual memory location corresponding to this variable is *always*
+			in the base SI unit.
+	*/
 	std::string								m_unit;
 	/*! Description string for the current quantity (optional). */
 	std::string								m_description;
@@ -162,7 +128,7 @@ struct QuantityDescription {
 	/*! Type of index (id or index) to be used to identify vector elements. */
 	VectorValuedQuantityIndex::IndexKeyType	m_indexKeyType = VectorValuedQuantityIndex::NUM_IndexKeyType;
 	/*! Set of indices for each vector element (size is m_size).*/
-	std::set<unsigned int>					m_indexKeys;
+	std::vector<unsigned int>				m_indexKeys;
 };
 
 

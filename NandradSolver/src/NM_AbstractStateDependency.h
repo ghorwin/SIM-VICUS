@@ -4,13 +4,13 @@
 #include <ZEPPELIN_DependencyObject.h>
 
 #include "NM_InputReference.h"
-#include "NM_QuantityName.h"
 
 #include <map>
 
 namespace NANDRAD_MODEL {
 
 class AbstractModel;
+class QuantityDescription;
 
 
 /*!	This is the base class of all models that have input dependencies (from other models).
@@ -104,9 +104,14 @@ public:
 
 	/*! Sets a single input value reference (persistent memory location) that refers to the requested input reference.
 		\param inputRef An input reference from the previously published list of input references.
+		\param resultDesc The corresponding quantity description with meta-data about the result quantity (needed by some models
+			to check for valid units).
 		\param resultValueRef Persistent memory location to the variable slot.
+
+		\todo Refactor to setInputValueRefs(
+				const std::vector<QuantityDescription> & quantityDescs, std::vector<const double *> resultValueRefs);
 	*/
-	virtual void setInputValueRef(const InputReference &inputRef, const double *resultValueRef) = 0;
+	virtual void setInputValueRef(const InputReference &inputRef, const QuantityDescription & resultDesc, const double *resultValueRef) = 0;
 
 	/*! This function is called whenever result quantities of other models change.
 		Re-implement this function in derived classes and handle all your update-functionality here.

@@ -116,7 +116,7 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 
 	IBK::IBK_Message( IBK::FormatString("Output root dir:    '%1'\n").arg(m_dirs.m_rootDir), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	{
-		IBK::MessageIndentor indent; (void)indent;
+		IBK_MSG_INDENT;
 		IBK::IBK_Message( IBK::FormatString("log directory:      '%1'\n").arg(m_dirs.m_logDir), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 		IBK::IBK_Message( IBK::FormatString("var/data directory: '%1'\n").arg(m_dirs.m_varDir), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 		IBK::IBK_Message( IBK::FormatString("results directory:  '%1'\n").arg(m_dirs.m_resultsDir), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
@@ -135,7 +135,7 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 	// *** Print Out Placeholders ***
 	IBK::IBK_Message( IBK::FormatString("Path Placeholders\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 	{
-		IBK::MessageIndentor indent; (void)indent;
+		IBK_MSG_INDENT;
 		for (std::map<std::string, IBK::Path>::const_iterator it = m_project->m_placeholders.begin();
 			it != m_project->m_placeholders.end(); ++it)
 		{
@@ -152,7 +152,7 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 	// to data entries for fast access during simulation.
 
 	IBK::IBK_Message( IBK::FormatString("Initializing model\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-	IBK::MessageIndentor indent; (void)indent;
+	IBK_MSG_INDENT;
 
 	// *** Initialize solver parameters (and apply command line overrides) ***
 	initSolverParameter(args);
@@ -413,7 +413,7 @@ SOLFRA::LESInterface * NandradModel::lesInterface() {
 
 	IBK::IBK_Message("\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK::IBK_Message("Creating Linear Equation Solver Modules\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-	IBK::MessageIndentor indent; (void)indent;
+	IBK_MSG_INDENT;
 	IBK::IBK_Message( IBK::FormatString("Number of unknowns: %1\n").arg(m_n), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
 	// create LES solver based on selected setting
@@ -516,7 +516,7 @@ SOLFRA::IntegratorInterface * NandradModel::integratorInterface() {
 
 	IBK::IBK_Message("\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK::IBK_Message("Creating Integrator\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-	IBK::MessageIndentor indent; (void)indent;
+	IBK_MSG_INDENT;
 
 	if (m_project->m_solverParameter.m_integrator == NANDRAD::SolverParameter::I_EXPLICIT_EULER) {
 		IBK::IBK_Message("Using Explict Euler integrator.\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
@@ -725,7 +725,7 @@ void NandradModel::initSolverParameter(const NANDRAD::ArgsParser & args) {
 	FUNCID(NandradModel::initSolverParameter);
 
 	IBK::IBK_Message( IBK::FormatString("Initializing Solver Parameter\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-	IBK::MessageIndentor indent; (void)indent;
+	IBK_MSG_INDENT;
 
 	NANDRAD::SolverParameter &solverParameter = m_project->m_solverParameter;
 
@@ -925,7 +925,7 @@ void NandradModel::initClimateData() {
 	FUNCID(NandradModel::initClimateData);
 
 	IBK::IBK_Message(IBK::FormatString("Initializing Climatic Data\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-	IBK::MessageIndentor indent; (void)indent;
+	IBK_MSG_INDENT;
 
 	try {
 		m_loads = new Loads;
@@ -945,7 +945,7 @@ void NandradModel::initClimateData() {
 void NandradModel::initSchedules() {
 	FUNCID(NandradModel::initSchedules);
 	IBK::IBK_Message(IBK::FormatString("Initializing Schedules\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-	IBK::MessageIndentor indent; (void)indent;
+	IBK_MSG_INDENT;
 
 	try {
 		m_schedules = new Schedules; // owned, memory released in destructor
@@ -967,7 +967,7 @@ void NandradModel::initFMI() {
 
 	FUNCID(NandradModel::initFMI);
 	IBK::IBK_Message(IBK::FormatString("Initializing FMI interface\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-	IBK::MessageIndentor indent; (void)indent;
+	IBK_MSG_INDENT;
 
 
 	try {
@@ -994,7 +994,7 @@ void NandradModel::initGlobals() {
 void NandradModel::initZones() {
 	const char * const FUNC_ID = "[NandradModelImpl::initActiveZones]";
 	IBK::IBK_Message( IBK::FormatString("Initializing Zones\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-	IBK::MessageIndentor indent; (void)indent;
+	IBK_MSG_INDENT;
 
 	// create model instances for all active zones
 	// for each active zone, we need:
@@ -1665,8 +1665,8 @@ void NandradModel::initEmbeddedObjects() {
 
 void NandradModel::initObjectLists() {
 	FUNCID(NandradModelImpl::initObjectLists);
-	IBK::IBK_Message(IBK::FormatString("Initializing object lists\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-	IBK::MessageIndentor indent; (void)indent;
+	IBK::IBK_Message(IBK::FormatString("Initializing Object Lists\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	IBK_MSG_INDENT;
 
 	// All object lists are checked for valid parameters.
 	// All ID groups are resolved and populated with lists of available model object IDs.
@@ -1723,11 +1723,11 @@ void NandradModel::initObjectLists() {
 void NandradModel::initOutputs(bool restart) {
 	FUNCID(NandradModel::initOutputs);
 	IBK::IBK_Message(IBK::FormatString("Initializing Outputs\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-	IBK::MessageIndentor indent; (void)indent;
+	IBK_MSG_INDENT;
 
 	try {
 		m_outputHandler = new OutputHandler; // we own the model, memory is released in destructor
-		m_outputHandler->init(restart, *m_project);
+		m_outputHandler->init(restart, *m_project, m_dirs.m_resultsDir);
 
 		// append the output file objects to the model container, so that variables can be resolved
 		m_modelContainer.insert(m_modelContainer.end(),
@@ -1750,7 +1750,7 @@ void NandradModel::initModelDependencies() {
 	// *** initializing model results ***
 
 	IBK::IBK_Message(IBK::FormatString("Initializing all model results\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-
+	std::unique_ptr<IBK::MessageIndentor> indent(new IBK::MessageIndentor);
 
 	// The key is of type ValueReference, a simply class that identifies a variable based on reference type and id
 	// (both addressing an object) and variable name (identifying the variable of the object).
@@ -1793,9 +1793,16 @@ void NandradModel::initModelDependencies() {
 				const QuantityDescription &resDesc = resDescs[j];
 				// now create our "key" data type for the lookup map
 				ValueReference resRef;
+				static_cast<QuantityDescription>(resRef) = resDesc;
 				resRef.m_id = currentModel->id();
 				resRef.m_referenceType = currentModel->referenceType();
 				resRef.m_name = resDesc.m_name;
+
+#if !defined(_OPENMP)
+				IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("%1(id=%2).%3 [%4]\n")
+												  .arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",resRef.m_referenceType))
+												  .arg(resRef.m_id).arg(resRef.m_name).arg(resDesc.m_unit), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
+#endif
 
 #if defined(_OPENMP)
 				// store in thread-specific vector
@@ -1847,6 +1854,8 @@ void NandradModel::initModelDependencies() {
 	// *** initializing model input references ***
 
 	IBK::IBK_Message(IBK::FormatString("Initializing all model input references\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	indent.reset(new IBK::MessageIndentor);
+
 #pragma omp parallel for schedule(static,200)
 	for (int i = 0; i < (int) m_modelContainer.size(); ++i) {
 		// progress is handled by master thread only
@@ -1876,6 +1885,7 @@ void NandradModel::initModelDependencies() {
 			// process and lookup all of the variables variables
 			for (unsigned int j = 0; j < inputRefs.size(); ++j) {
 				const InputReference &inputRef = inputRefs[j];
+				QuantityDescription quantityDesc; // here we store the quantity information of the variable
 
 				// now lookup address of requested variable
 				const double * srcVarAddress = nullptr;
@@ -1888,7 +1898,7 @@ void NandradModel::initModelDependencies() {
 				// may generate a variable Zone[13].AirTemperature and thus override the air temperature
 				// variable generated by the zone model (instance with id=13) itself. All models using this
 				// temperature will use the variable from the FMI import model, instead.
-				srcVarAddress = m_fmiInputOutput->resultValueRef(inputRef);
+				srcVarAddress = m_fmiInputOutput->resolveResultReference(inputRef, quantityDesc);
 
 
 				// 2. regular lookup (only if not yet found in FMU)
@@ -1898,14 +1908,15 @@ void NandradModel::initModelDependencies() {
 					ValueReference valueRef;
 					valueRef.m_id = m_modelContainer[i]->id();
 					valueRef.m_referenceType = inputRef.m_referenceType;
-					valueRef.m_name = inputRef.m_sourceName.m_name;
+					valueRef.m_name = inputRef.m_name.m_name;
 
 					std::map<ValueReference, AbstractModel*>::const_iterator it = modelResultReferences.find(valueRef);
 					if (it != modelResultReferences.end()) {
 						// remember source object's pointer, to create the dependency graph afterwards
 						srcObject = it->second;
+						quantityDesc = it->first; // Note: slicing is ok here, i.e. we go from ValueReference to QuantityDescription and loose id and reference type on the way, but that's ok.
 						// request the address to the requested variable from the source object
-						srcVarAddress = srcObject->resultValueRef(inputRef.m_sourceName);
+						srcVarAddress = srcObject->resultValueRef(inputRef.m_name);
 						IBK_ASSERT(srcVarAddress != nullptr);
 					}
 				}
@@ -1923,7 +1934,7 @@ void NandradModel::initModelDependencies() {
 				//          get the same memory storage pointer returned.
 
 				if (srcVarAddress == nullptr) {
-					srcVarAddress = m_schedules->resultValueRef(inputRef);
+					srcVarAddress = m_schedules->resolveResultReference(inputRef, quantityDesc);
 				}
 
 
@@ -1933,22 +1944,22 @@ void NandradModel::initModelDependencies() {
 					if (inputRef.m_required) {
 						// error: reference was not resolved
 						throw IBK::Exception(IBK::FormatString("Could not resolve reference to quantity %1 of %2 with id #%3!")
-							.arg(inputRef.m_sourceName.m_name)
+							.arg(inputRef.m_name.m_name)
 							.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_modelContainer[i]->referenceType()))
 							.arg(m_modelContainer[i]->id()), FUNC_ID);
 					}
 					else {
 						// if not required, tell the model object that we do not have such an input by giving a nullptr;
 						// the model must handle this appropriately
-						currentStateDependency->setInputValueRef(inputRef, nullptr);
+						currentStateDependency->setInputValueRef(inputRef, quantityDesc, nullptr);
 					}
 				}
 				else {
 					// tell model the persistent memory location of the requested input
-					currentStateDependency->setInputValueRef(inputRef, srcVarAddress);
+					currentStateDependency->setInputValueRef(inputRef, quantityDesc, srcVarAddress);
 					// register this model as dependency, but only if providing model was an object in the model graph
 					// and the input variable is not a constant
-					if (srcObject != nullptr && !inputRef.m_constant) {
+					if (srcObject != nullptr && !quantityDesc.m_constant) {
 						// add a graph element
 						const ZEPPELIN::DependencyObject *sourceObject = dynamic_cast<ZEPPELIN::DependencyObject*>(srcObject);
 						if (sourceObject != nullptr)
@@ -2029,14 +2040,17 @@ void NandradModel::initModelGraph()
 void NandradModel::initOutputReferenceList() {
 	const char * const FUNC_ID = "[NandradModelImpl::initOutputReferenceList]";
 	IBK::IBK_Message( IBK::FormatString("Initializing Output Quantity List\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-	IBK::MessageIndentor indent; (void)indent;
+	IBK_MSG_INDENT;
 	// generate and dump calculation results of all models
 	std::map<std::string, QuantityDescription> refDescs;
 	for (unsigned int i=0; i<m_modelContainer.size(); ++i) {
 		AbstractModel * currentModel = m_modelContainer[i];
+		NANDRAD::ModelInputReference::referenceType_t refType = currentModel->referenceType();
+		// skip models that do not generate outputs
+		if (refType == NANDRAD::ModelInputReference::NUM_MRT)
+			continue;
 		std::vector<QuantityDescription> varDescs;
 		currentModel->resultDescriptions(varDescs);
-		NANDRAD::ModelInputReference::referenceType_t refType = currentModel->referenceType();
 		try {
 			std::string refTypeName = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", refType);
 			for (unsigned int j=0; j<varDescs.size(); ++j) {

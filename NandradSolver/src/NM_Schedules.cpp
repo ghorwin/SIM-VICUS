@@ -149,7 +149,7 @@ double Schedules::startValue(const QuantityName &quantity) const {
 }
 
 
-const double * Schedules::resultValueRef(const InputReference & quantityName) const {
+const double * Schedules::resolveResultReference(const InputReference & valueRef, QuantityDescription & quantityDesc) const {
 
 	// variable lookup rules:
 

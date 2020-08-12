@@ -121,7 +121,7 @@ private:
 		\param inputRef An input reference from the previously published list of input references.
 		\param resultValueRef Persistent memory location to the variable slot.
 	*/
-	virtual void setInputValueRef(const InputReference &inputRef, const double *resultValueRef) override;
+	virtual void setInputValueRef(const InputReference &inputRef, const QuantityDescription & resultDesc, const double *resultValueRef) override;
 
 //	/*! Model references defined by all models. */
 //	std::vector<InputReferenceToVectorValuedTarget>	m_inputReferences;

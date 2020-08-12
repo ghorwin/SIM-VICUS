@@ -3,7 +3,8 @@
 
 #include <string>
 
-#include "NANDRAD_ModelInputReference.h"
+#include <NANDRAD_ModelInputReference.h>
+#include "NM_QuantityDescription.h"
 
 namespace NANDRAD_MODEL {
 
@@ -16,22 +17,19 @@ namespace NANDRAD_MODEL {
 
 	This data structure is used to determine the object a variable is requested from. The results
 	from all objects/model instances are stored in a map (from variable reference to object), hence
-	the operator< in this class.
+	the operator< in this class. It is actually an extended QuantityDescription, but with additional comparison
+	operator, that allows its efficient use in a map.
 
 	When looking up requested input variables from models, we simply search for this value reference, and hereby determine
 	object and id and eventually get the object instance that provides the variable we need. Then, we can ask
 	the object instance to give us a persistent pointer to the result variable's memory location.
 */
-class ValueReference {
+class ValueReference : public QuantityDescription {
 public:
 	/*! ReferenceType: zone, model or constructionInstance */
 	NANDRAD::ModelInputReference::referenceType_t	m_referenceType;
 	/*! ID of the referenced source model/parametrization entity.*/
 	unsigned int									m_id;
-
-	/*! Name of the result variable/quantity. */
-	std::string										m_name;
-
 
 	/*! Comparison operator for sorting result quantities. */
 	bool operator<(const ValueReference &other) const {

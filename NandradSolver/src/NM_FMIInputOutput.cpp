@@ -15,7 +15,9 @@ int FMIInputOutput::setTime(double t) {
 }
 
 
-const double * FMIInputOutput::resultValueRef(const NANDRAD_MODEL::InputReference & valueRef) const {
+const double * FMIInputOutput::resolveResultReference(const NANDRAD_MODEL::InputReference & valueRef,
+													  QuantityDescription & quantityDesc) const
+{
 
 	/// \todo implement
 
@@ -34,7 +36,7 @@ void FMIInputOutput::initInputReferences(const std::vector<AbstractModel *> &) {
 }
 
 
-void FMIInputOutput::setInputValueRef(const InputReference & inputRef, const double * resultValueRef) {
+void FMIInputOutput::setInputValueRef(const InputReference & inputRef, const QuantityDescription & resultDesc, const double * resultValueRef) {
 
 }
 

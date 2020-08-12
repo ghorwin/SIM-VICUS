@@ -229,7 +229,7 @@ void Project::mergeSameConstructions() {
 	const char * const FUNC_ID = "[Project::mergeSameConstructions]";
 
 	IBK::IBK_Message("Merging redundant construction instances\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-	IBK::MessageIndentor ident; (void)ident;
+	IBK_MSG_INDENT;
 
 #if 0
 

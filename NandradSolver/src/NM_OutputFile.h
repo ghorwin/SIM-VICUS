@@ -3,11 +3,17 @@
 
 #include <string>
 #include <vector>
+#include <iosfwd>
 
 #include <NANDRAD_OutputDefinition.h>
+
 #include "NM_AbstractModel.h"
 #include "NM_AbstractStateDependency.h"
 #include "NM_AbstractTimeDependency.h"
+
+namespace IBK {
+	class Path;
+}
 
 namespace NANDRAD_MODEL {
 
@@ -24,6 +30,9 @@ namespace NANDRAD_MODEL {
 */
 class OutputFile : public AbstractModel, public AbstractStateDependency, public AbstractTimeDependency {
 public:
+
+	/*! D'tor, released allocated memory. */
+	~OutputFile();
 
 	// *** Re-implemented from AbstractTimeDependency
 
@@ -55,7 +64,7 @@ public:
 		\param inputRef An input reference from the previously published list of input references.
 		\param resultValueRef Persistent memory location to the variable slot.
 	*/
-	virtual void setInputValueRef(const InputReference &inputRef, const double *resultValueRef) override;
+	virtual void setInputValueRef(const InputReference &inputRef, const QuantityDescription & resultDesc, const double *resultValueRef) override;
 
 	/*! We have nothing to do here, output handling is done outside the actual evaluation. */
 	virtual int update() override { return 0; }
@@ -73,7 +82,7 @@ private:
 		Time-integral values will get 0 entries as initial value.
 		This function does not use the cache!
 	*/
-	void createFile(double t_secondsOfYear, bool restart);
+	void createFile(double t_secondsOfYear, bool restart, bool binary, const IBK::Path * outputPath);
 
 	/*! Appends outputs to files.
 		Actually, this function only caches current output values. Only when a certain
@@ -112,8 +121,12 @@ private:
 
 	/*! Pointers to variables to monitor. */
 	std::vector<const double*>					m_valueRefs;
+	std::vector<QuantityDescription>			m_quantityDescs;
 
-	/*! Number of columns with actual values in the output file. */
+	/*! Number of columns with actual values in the output file.
+		Can (remain) 0 if non of the requested variables for this file are available from the model.
+		In this case the file is not created and writing outputs does nothing.
+	*/
 	unsigned int								m_numCols = 0;
 
 	/*! The actual data cache. */
@@ -121,6 +134,9 @@ private:
 
 	/*! The integral values. */
 	std::vector< std::vector<double> >			m_integrals;
+
+	/*! Output file stream (owned and initialized in createFile()). */
+	std::ofstream								*m_ofstream = nullptr;
 
 	friend class OutputHandler;
 };

@@ -94,9 +94,11 @@ public:
 
 	/*! Retrieves reference pointer to a value with given quantity ID name.
 		\param quantityName An identifier for the quantity.
-		\return Returns pointer to memory location with this quantity, otherwise nullptr if parameter ID was not found.
+		\return Returns a persistent pointer to the storage location or nullptr, if the requested
+			variable is not provided. If not a nullptr, the details of the requested variable
+			are stored in quantityDesc.
 	*/
-	const double * resultValueRef(const InputReference & valueRef) const;
+	const double * resolveResultReference(const InputReference & valueRef, QuantityDescription & quantityDesc) const;
 
 
 	// *** Re-implemented from AbstractTimeDependency

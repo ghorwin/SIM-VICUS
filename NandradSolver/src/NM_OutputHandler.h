@@ -5,6 +5,7 @@
 
 namespace IBK {
 	class StopWatch;
+	class Path;
 }
 
 namespace NANDRAD {
@@ -49,7 +50,7 @@ public:
 		\param restart If true, simulation was restarted and output files shall be continued, rather than re-created.
 		\param prj The project data structure with all input data.
 	*/
-	void init(bool restart, NANDRAD::Project & prj);
+	void init(bool restart, NANDRAD::Project & prj, const IBK::Path & outputPath);
 
 	/*! Appends outputs to files.
 		Actually, this function only caches current output values. Only when a certain
@@ -72,10 +73,16 @@ public:
 	*/
 	bool										m_restart;
 
+	/*! Cached flag if using binary files or not. */
+	bool										m_binaryFiles;
+
 	/*! A stop watch that monitors real time to check when outputs need to be written.
 		Object will be created on first writeOutputs() call, and is owned by this object.
 	*/
 	IBK::StopWatch								*m_outputTimer = nullptr;
+
+	/*! Pointer to path with output files (not owned). */
+	const IBK::Path								*m_outputPath = nullptr;
 
 	/*! Number of bytes to hold in cache before flushing the cache. */
 	unsigned int								m_outputCacheLimit;

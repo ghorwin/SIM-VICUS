@@ -43,10 +43,8 @@ public:
 	bool operator==(const InputReference & other) const {
 		if (m_referenceType != other.m_referenceType) return false;
 		if (m_id != other.m_id) return false;
-		if (m_constant != other.m_constant) return false;
 		if (m_required != other.m_required) return false;
-		if (m_sourceName != other.m_sourceName) return false;
-		if (m_targetName != other.m_targetName) return false;
+		if (m_name != other.m_name) return false;
 		return true;
 	}
 	/*! Inequality operator. */
@@ -59,21 +57,12 @@ public:
 	/*! ID of the referenced source model/parametrization entity.*/
 	unsigned int									m_id = 0;
 	/*! Name of the result quantity inside the referenced model.*/
-	QuantityName									m_sourceName;
-	/*! True, if referenced quantity is to be treated constant during
-		update cycles (essentially prevents adding an evaluation dependency).
-		\deprecated still needed?
-	*/
-	bool											m_constant = false;
+	QuantityName									m_name;
 	/*! For input references, indicates, that the model requires this input and cannot work (correctly) without.
 		For loads/fluxes, a missing input may be treated as 0 flux, and hence required may be false for
 		such quantities.
 	*/
 	bool											m_required = true;
-
-
-	/*! \deprecated Target name: name of the input quantity inside the dependent model */
-	QuantityName									m_targetName;
 };
 
 } // namespace NANDRAD_MODEL

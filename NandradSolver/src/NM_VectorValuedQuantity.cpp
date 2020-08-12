@@ -23,6 +23,7 @@ Lesser General Public License for more details.
 #include <NANDRAD_KeywordList.h>
 
 #include <limits>
+#include <algorithm>
 
 #include <IBK_assert.h>
 
