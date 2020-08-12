@@ -1363,24 +1363,31 @@ really_inline bool parse_number_base(const char *p, double *outDouble) {
   const char *first_after_period = NULL;
   if (is_one_of<DecSeparators...>(*p)) {
 	++p;
-	first_after_period = p;
-	if (is_integer(*p)) {
-	  unsigned char digit = *p - '0';
-	  ++p;
-	  i = i * 10 + digit; // might overflow + multiplication by 10 is likely
-						  // cheaper than arbitrary mult.
-	  // we will handle the overflow later
-	} else {
-	  return false;
+	if (unlikely(p[0] == '\0')) {
+		// special variant with trailing dec separator like "12."
+		--p;
 	}
-	while (is_integer(*p)) {
-	  unsigned char digit = *p - '0';
-	  ++p;
-	  i = i * 10 + digit; // in rare cases, this will overflow, but that's ok
-						  // because we have parse_highprecision_float later.
+	else {
+		first_after_period = p;
+		if (is_integer(*p)) {
+		  unsigned char digit = *p - '0';
+		  ++p;
+		  i = i * 10 + digit; // might overflow + multiplication by 10 is likely
+							  // cheaper than arbitrary mult.
+		  // we will handle the overflow later
+		} else {
+		  return false;
+		}
+		while (is_integer(*p)) {
+		  unsigned char digit = *p - '0';
+		  ++p;
+		  i = i * 10 + digit; // in rare cases, this will overflow, but that's ok
+							  // because we have parse_highprecision_float later.
+		}
+		exponent = first_after_period - p;
 	}
-	exponent = first_after_period - p;
   }
+  // Note: p may be \0 i.e. end of string
   int digit_count =
 	  int(p - start_digits - 1); // used later to guard against overflows
   int64_t exp_number = 0;   // exponential part
