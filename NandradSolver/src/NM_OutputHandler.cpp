@@ -8,6 +8,7 @@
 #include <IBK_messages.h>
 #include <IBK_Exception.h>
 #include <IBK_StopWatch.h>
+#include <IBK_UnitList.h>
 
 #include <NANDRAD_Project.h>
 
@@ -34,11 +35,14 @@ OutputHandler::~OutputHandler() {
 void OutputHandler::init(bool restart, NANDRAD::Project & prj, const IBK::Path & outputPath) {
 	FUNCID(OutputHandler::init);
 
+	// cache parameters needed to create output files
 	m_restart = restart; // store restart info flag
-
 	m_outputPath = &outputPath;
-
 	m_binaryFiles = prj.m_outputs.m_binaryFormat.isEnabled();
+	m_timeUnit = prj.m_outputs.m_timeUnit;
+	if (m_timeUnit.base_id() != IBK_UNIT_ID_SECONDS) {
+		throw IBK::Exception( IBK::FormatString("Output time unit '%1' is not a valid time unit.").arg(m_timeUnit.name()), FUNC_ID);
+	}
 
 	m_outputCacheLimit = 100000; // 100 Mb for starters
 	m_realTimeOutputDelay = 2; // wait one second simulation time before flushing the cache
@@ -275,6 +279,10 @@ void OutputHandler::init(bool restart, NANDRAD::Project & prj, const IBK::Path &
 void OutputHandler::writeOutputs(double t_secondsOfYear) {
 	FUNCID(OutputHandler::writeOutputs);
 
+	// convert to output time unit
+	double t_out = t_secondsOfYear;
+	IBK::UnitList::instance().convert(IBK::Unit(IBK_UNIT_ID_SECONDS), m_timeUnit, t_out);
+
 	// if first call, create/re-open files
 	if (m_outputTimer == nullptr) {
 		if (m_restart)
@@ -283,19 +291,23 @@ void OutputHandler::writeOutputs(double t_secondsOfYear) {
 			IBK::IBK_Message("Creating output files:\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
 		IBK_MSG_INDENT;
 
+		// compose time header and convert output time to output unit
+		std::string timeColumnHeader = "Time [" + m_timeUnit.name() + "]";
+
 		for (OutputFile * of : m_outputFiles)
-			of->createFile(t_secondsOfYear, m_restart, m_binaryFiles, m_outputPath);
+			of->createFile(t_out, m_restart, m_binaryFiles, timeColumnHeader, m_outputPath);
 		// Note: in createFile() also all integral quantities are initialized
 
-		// now create timer
-		m_outputTimer = new IBK::StopWatch; // starts automatically
+		// now create timer (becomes owned by us)
+		m_outputTimer = new IBK::StopWatch; // timer starts automatically
+
 	}
 	else {
 
 		// now pass on the call to each file to cache current results
 		unsigned int storedBytes = 0;
 		for (OutputFile * of : m_outputFiles) {
-			of->writeOutputs(t_secondsOfYear);
+			of->writeOutputs(t_out);
 			storedBytes += of->cacheSize();
 		}
 

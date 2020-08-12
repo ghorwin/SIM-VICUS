@@ -43,22 +43,25 @@ public:
 	bool operator==(const InputReference & other) const {
 		if (m_referenceType != other.m_referenceType) return false;
 		if (m_id != other.m_id) return false;
-		if (m_required != other.m_required) return false;
 		if (m_name != other.m_name) return false;
+		// note: required is additional information, not needed for comparison (i.e. input references are considered
+		//       the same, if refType, id and name match.
 		return true;
 	}
+
 	/*! Inequality operator. */
 	bool operator!=(const InputReference & other) const {
 		return !operator==(other);
 	}
 
-	/*! ReferenceType: zone, model or constructionInstance */
+
+	/*! ReferenceType: zone, construction instance, interface, etc. */
 	NANDRAD::ModelInputReference::referenceType_t	m_referenceType = NANDRAD::ModelInputReference::NUM_MRT;
 	/*! ID of the referenced source model/parametrization entity.*/
 	unsigned int									m_id = 0;
 	/*! Name of the result quantity inside the referenced model.*/
 	QuantityName									m_name;
-	/*! For input references, indicates, that the model requires this input and cannot work (correctly) without.
+	/*! For input references indicates, that the model requires this input and cannot work (correctly) without.
 		For loads/fluxes, a missing input may be treated as 0 flux, and hence required may be false for
 		such quantities.
 	*/

@@ -81,16 +81,22 @@ private:
 	/*! Creates/re-opens output file and writes initial values.
 		Time-integral values will get 0 entries as initial value.
 		This function does not use the cache!
+
+		\param t_out The time since begin of the start year already converted to the output unit.
+		\param restart If true, the existing output file should be appended, rather than re-created
+		\param binary If true, files are written in binary mode
+		\param timeUnit Output time unit, needed to compose output time header
+		\param
 	*/
-	void createFile(double t_secondsOfYear, bool restart, bool binary, const IBK::Path * outputPath);
+	void createFile(double t_out, bool restart, bool binary, const std::string & timeColumnLabel, const IBK::Path * outputPath);
 
 	/*! Appends outputs to files.
 		Actually, this function only caches current output values. Only when a certain
 		time has passed (or cached output data exceeds a certain limit), the data is actually written to file.
 
-		\param t_secondsOfYear Output time point as offset to Midnight January 1st in the start year.
+		\param t_out The time since begin of the start year already converted to the output unit.
 	*/
-	void writeOutputs(double t_secondsOfYear);
+	void writeOutputs(double t_out);
 
 	/*! Returns number of bytes currently cached in this file object. */
 	unsigned int cacheSize() const;
@@ -118,6 +124,12 @@ private:
 
 	/*! Input references for all output variables written in the file handled by this object. */
 	std::vector<InputReference>					m_inputRefs;
+	/*! Maps output variable (input reference) to output definition (index), this variable was created from.
+		\code
+		OutputDefinition of = m_outputDefinitions[ m_outputDefMap[inputRefIdx] ];
+		\endcode
+	*/
+	std::vector<unsigned int>					m_outputDefMap;
 
 	/*! Pointers to variables to monitor. */
 	std::vector<const double*>					m_valueRefs;

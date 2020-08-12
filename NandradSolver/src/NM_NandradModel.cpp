@@ -1725,6 +1725,11 @@ void NandradModel::initOutputs(bool restart) {
 	IBK::IBK_Message(IBK::FormatString("Initializing Outputs\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK_MSG_INDENT;
 
+	/// \todo if output time unit is missing, define one based on simulation duration
+	if (m_project->m_outputs.m_timeUnit.base_id() == 0) {
+		m_project->m_outputs.m_timeUnit.set("h"); // for now hours
+	}
+
 	try {
 		m_outputHandler = new OutputHandler; // we own the model, memory is released in destructor
 		m_outputHandler->init(restart, *m_project, m_dirs.m_resultsDir);

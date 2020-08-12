@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include <IBK_Unit.h>
+
 namespace IBK {
 	class StopWatch;
 	class Path;
@@ -75,6 +77,9 @@ public:
 
 	/*! Cached flag if using binary files or not. */
 	bool										m_binaryFiles;
+
+	/*! Unit to be used for time points in output files. */
+	IBK::Unit									m_timeUnit;
 
 	/*! A stop watch that monitors real time to check when outputs need to be written.
 		Object will be created on first writeOutputs() call, and is owned by this object.

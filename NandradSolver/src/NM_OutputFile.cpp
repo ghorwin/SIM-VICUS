@@ -40,7 +40,8 @@ void OutputFile::setInputValueRef(const InputReference & inputRef, const Quantit
 
 void OutputFile::createInputReferences() {
 	// process all output definitions
-	for (const NANDRAD::OutputDefinition & od : m_outputDefinitions) {
+	for (unsigned int i = 0; i < m_outputDefinitions.size(); ++i) {
+		 const NANDRAD::OutputDefinition & od = m_outputDefinitions[i];
 		// get the associated object list
 		const NANDRAD::ObjectList * ol = od.m_objectListRef;
 
@@ -52,6 +53,7 @@ void OutputFile::createInputReferences() {
 			inref.m_name = od.m_quantity;
 			inref.m_referenceType = ol->m_referenceType;
 			m_inputRefs.push_back(inref);
+			m_outputDefMap.push_back(i);
 			continue;
 		}
 		// process all IDs in the object list's id group
@@ -62,13 +64,16 @@ void OutputFile::createInputReferences() {
 			inref.m_name = od.m_quantity;
 			inref.m_referenceType = ol->m_referenceType;
 			m_inputRefs.push_back(inref);
+			m_outputDefMap.push_back(i);
 		}
 	}
 }
 
 
-void OutputFile::createFile(double t_secondsOfYear, bool restart, bool binary, const IBK::Path * outputPath) {
+void OutputFile::createFile(double t_out, bool restart, bool binary, const std::string & timeColumnLabel, const IBK::Path * outputPath) {
 	FUNCID(OutputFile::createFile);
+
+	// NOTE: t_out is already converted to output time unit!!!
 
 	IBK_ASSERT(m_inputRefs.size() == m_valueRefs.size());
 	// we go through all variables and count the number of non-zero values
@@ -76,13 +81,17 @@ void OutputFile::createFile(double t_secondsOfYear, bool restart, bool binary, c
 	bool haveIntegrals = false;
 	for (unsigned int i=0; i<m_valueRefs.size(); ++i) {
 		if (m_valueRefs[i] == nullptr) {
-			IBK::IBK_Message(IBK::FormatString("Output for %1[%2].%3 not available, skipped.")
+			IBK::IBK_Message(IBK::FormatString("Output for %1(id=%2).%3 not available, skipped.")
 							 .arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_inputRefs[i].m_referenceType))
 							 .arg(m_inputRefs[i].m_id)
 							 .arg(m_inputRefs[i].m_name.m_name), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
 		}
 		else {
 			++m_numCols;
+			// decide integration based on original output definition
+			const NANDRAD::OutputDefinition & od = m_outputDefinitions[ m_outputDefMap[i] ];
+			if (od.m_timeType != NANDRAD::OutputDefinition::OTT_NONE)
+				haveIntegrals = true;
 		}
 	}
 	// if we have no outputs in this file, we do nothing
@@ -170,26 +179,61 @@ void OutputFile::createFile(double t_secondsOfYear, bool restart, bool binary, c
 
 	// now write header
 
-	std::vector<double> vals(m_numCols,0);
-	for (unsigned int i=0, j=0; i<m_valueRefs.size(); ++i) {
+	std::vector<double> vals(m_numCols+1,0);
+	std::vector<std::string> headerLabels;
+
+	// add time column header
+	headerLabels.push_back( timeColumnLabel );
+
+	unsigned int col=1; // Mind: column 0 is the time column
+	for (unsigned int i=0; i<m_valueRefs.size(); ++i) {
 		if (m_valueRefs[i] == nullptr) continue; // skip unavailable vars
 
 		// retrieve (initial) value for this variable
-		vals[j] = *m_valueRefs[i];
+		vals[col] = *m_valueRefs[i];
 
 		// compose column title
+		const QuantityDescription & resultDesc = m_quantityDescs[i];
 
 
+		std::string header = IBK::FormatString("%1.[%2].%3 [%4]")
+				.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_inputRefs[i].m_referenceType))
+				.arg(m_inputRefs[i].m_id)
+				.arg(resultDesc.m_name)
+				.arg(resultDesc.m_unit).str();
+		headerLabels.push_back(header);
+		++col; // increase var counter
+	}
+	IBK_ASSERT(col == m_numCols+1);
 
-		++j; // increase var counter
+	// now we have the header completed, and the first row's values and we write to file
+	if (binary) {
+		/// \todo implement binary format writing
+	}
+	else {
+		// header
+		for (unsigned int i=0; i<headerLabels.size(); ++i) {
+			if (i != 0)
+				*m_ofstream << "\t";
+			*m_ofstream << headerLabels[i];
+		}
+		// first values
+		for (unsigned int i=0; i<vals.size(); ++i) {
+			if (i != 0)
+				*m_ofstream << "\t";
+			*m_ofstream << vals[i];
+		}
 	}
 }
 
 
-void OutputFile::writeOutputs(double t_secondsOfYear) {
+void OutputFile::writeOutputs(double t_out) {
 	// no outputs - nothing to do
 	if (m_numCols == 0)
 		return;
+
+	// NOTE: t_out is already converted to output time unit!!!
+
 }
 
 
