@@ -26,6 +26,7 @@
 #include <IBK_messages.h>
 #include <IBK_Path.h>
 #include <IBK_assert.h>
+#include <IBK_UnitList.h>
 
 #include <NANDRAD_ObjectList.h>
 #include <NANDRAD_KeywordList.h>
@@ -55,6 +56,13 @@ void OutputFile::setInputValueRef(const InputReference & inputRef, const Quantit
 
 	m_valueRefs.push_back(resultValueRef);
 	m_quantityDescs.push_back(resultDesc);
+	try {
+		m_valueUnits.push_back(IBK::Unit(resultDesc.m_unit));
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, IBK::FormatString("Invalid/unknown unit provided for quantity %1 ('%2').")
+							 .arg(resultDesc.m_name).arg(resultDesc.m_description), FUNC_ID);
+	}
 }
 
 
@@ -91,12 +99,10 @@ void OutputFile::createInputReferences() {
 }
 
 
-void OutputFile::createFile(double t_out, bool restart, bool binary, const std::string & timeColumnLabel, const IBK::Path * outputPath) {
+void OutputFile::createFile(bool restart, bool binary, const std::string & timeColumnLabel, const IBK::Path * outputPath) {
 	FUNCID(OutputFile::createFile);
 
 	m_binary = binary;
-
-	// NOTE: t_out is already converted to output time unit!!!
 
 	IBK_ASSERT(m_inputRefs.size() == m_valueRefs.size());
 	// we go through all variables and count the number of non-zero values
@@ -204,7 +210,6 @@ void OutputFile::createFile(double t_out, bool restart, bool binary, const std::
 
 	// now write header
 
-	std::vector<double> vals(m_numCols+1,0);
 	std::vector<std::string> headerLabels;
 
 	// add time column header
@@ -213,9 +218,6 @@ void OutputFile::createFile(double t_out, bool restart, bool binary, const std::
 	unsigned int col=1; // Mind: column 0 is the time column
 	for (unsigned int i=0; i<m_valueRefs.size(); ++i) {
 		if (m_valueRefs[i] == nullptr) continue; // skip unavailable vars
-
-		// retrieve (initial) value for this variable
-		vals[col] = *m_valueRefs[i];
 
 		// compose column title
 		const QuantityDescription & resultDesc = m_quantityDescs[i];
@@ -244,10 +246,6 @@ void OutputFile::createFile(double t_out, bool restart, bool binary, const std::
 		}
 		*m_ofstream << '\n';
 	}
-
-	// now cache the initial values and flush the cache right afterwards
-	cacheOutputs(t_out);
-	flushCache();
 }
 
 
@@ -267,6 +265,8 @@ void OutputFile::cacheOutputs(double t_out) {
 
 		// retrieve (initial) value for this variable
 		vals[col] = *m_valueRefs[i];
+		// perform target unit conversion
+		IBK::UnitList::instance().convert(m_valueUnits[i].base_unit(), m_valueUnits[i], vals[col]);
 		++col;
 	}
 

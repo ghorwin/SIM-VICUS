@@ -99,16 +99,14 @@ private:
 	*/
 	void createInputReferences();
 
-	/*! Creates/re-opens output file and writes initial values.
-		Time-integral values will get 0 entries as initial value.
+	/*! Creates/re-opens output file.
 
-		\param t_out The time since begin of the start year already converted to the output unit.
 		\param restart If true, the existing output file should be appended, rather than re-created
 		\param binary If true, files are written in binary mode
 		\param timeUnit Output time unit, needed to compose output time header
 		\param
 	*/
-	void createFile(double t_out, bool restart, bool binary, const std::string & timeColumnLabel, const IBK::Path * outputPath);
+	void createFile(bool restart, bool binary, const std::string & timeColumnLabel, const IBK::Path * outputPath);
 
 	/*! Retrieves current output values and appends values to cache.
 		This function only caches current output values. The data is written to file in the next call to flushCache().
@@ -154,10 +152,18 @@ private:
 	*/
 	std::vector<unsigned int>					m_outputDefMap;
 
-	/*! Pointers to variables to monitor (same size and order as m_inputRefs). */
+	/*! Pointers to variables to monitor (same size and order as m_inputRefs).
+		Populated in setInputValueRef().
+	*/
 	std::vector<const double*>					m_valueRefs;
-	/*! Corresponding quantity descriptions (same size and order as m_inputRefs). */
+	/*! Corresponding quantity descriptions (same size and order as m_inputRefs).
+		Populated in setInputValueRef().
+	*/
 	std::vector<QuantityDescription>			m_quantityDescs;
+	/*! Vector with output units; source values are always in base SI unit (same size and order as m_inputRefs).
+		Populated in setInputValueRef().
+	*/
+	std::vector<IBK::Unit>						m_valueUnits;
 
 	/*! Number of columns with actual values in the output file.
 		Can (remain) 0 if non of the requested variables for this file are available from the model.

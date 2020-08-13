@@ -46,6 +46,10 @@ class OutputFile;
 	reached in one of the ouput grids.
 
 	The output handler then notifies all output files to cache new output values (when respective grid is active).
+	After some real time (or when output cache exceeds a limit), the output handler requests the output files
+	to flush their caches.
+
+	Output files are created on first call.
 */
 class OutputHandler {
 public:

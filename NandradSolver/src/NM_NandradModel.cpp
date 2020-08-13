@@ -1016,10 +1016,10 @@ void NandradModel::initZones() {
 	for (const NANDRAD::Zone & zone : m_project->m_zones) {
 
 
-		IBK::IBK_Message( IBK::FormatString("Zone [%1] '%2':\n").arg(zone.m_id).arg(zone.m_displayName), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+		IBK::IBK_Message( IBK::FormatString("Zone [%1] '%2':").arg(zone.m_id).arg(zone.m_displayName), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 		switch (zone.m_type) {
 			case NANDRAD::Zone::ZT_ACTIVE : {
-				IBK::IBK_Message( IBK::FormatString("  ACTIVE\n").arg(zone.m_id).arg(zone.m_displayName), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+				IBK::IBK_Message( IBK::FormatString(" ACTIVE\n").arg(zone.m_id).arg(zone.m_displayName), IBK::MSG_CONTINUED, FUNC_ID, IBK::VL_INFO);
 				// create implicit room state and room balance models
 				RoomBalanceModel * roomBalanceModel = new RoomBalanceModel(zone.m_id, zone.m_displayName);
 				RoomStatesModel * roomStatesModel = new RoomStatesModel(zone.m_id, zone.m_displayName);

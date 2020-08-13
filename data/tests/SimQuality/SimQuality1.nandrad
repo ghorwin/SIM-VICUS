@@ -17,7 +17,9 @@
 		<SimulationParameter>
 			<IBK:IntPara name="StartYear">2015</IBK:IntPara>
 		</SimulationParameter>
-		<SolverParameter />
+		<SolverParameter>
+			<IBK:Parameter name="InitialTimeStep" unit="s">1800</IBK:Parameter>
+		</SolverParameter>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<ClimateFileName>${Project Directory}/climate/DEU_Potsdam_60.epw</ClimateFileName>
@@ -53,6 +55,13 @@
 			</OutputDefinitions>
 			<Grids>
 				<OutputGrid name="hourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+				<OutputGrid name="mix">
 					<Intervals>
 						<Interval>
 							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>

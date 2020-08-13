@@ -69,13 +69,36 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 	m_realTimeOutputDelay = 2; // wait one second simulation time before flushing the cache
 
 	// initialize and check output grids
-	for (NANDRAD::OutputGrid & og : prj.m_outputs.m_grids) {
-		try {
-			og.checkIntervalDefinition();
-		} catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error in definition of output grid '%1'.").arg(og.m_name), FUNC_ID);
+	{
+		IBK::IBK_Message("Initializing output grids\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		IBK_MSG_INDENT;
+
+		std::vector<NANDRAD::OutputGrid> usedGrids;
+		for (NANDRAD::OutputGrid & og : prj.m_outputs.m_grids) {
+			// search output definitions until we find one that uses this grid
+			for (const NANDRAD::OutputDefinition & od : prj.m_outputs.m_outputDefinitions) {
+				if (od.m_gridName == og.m_name) {
+					usedGrids.push_back(og);
+					break;
+				}
+			}
 		}
-		og.setupIntervals();
+		if (usedGrids.size() < prj.m_outputs.m_grids.size())
+			IBK::IBK_Message(IBK::FormatString("Removing %1 unused output grids").arg(prj.m_outputs.m_grids.size() - usedGrids.size()),
+							 IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+		prj.m_outputs.m_grids.swap(usedGrids);
+		for (NANDRAD::OutputGrid & og : prj.m_outputs.m_grids) {
+			IBK::IBK_Message(IBK::FormatString("Checking output grid '%1'\n").arg(og.m_name),
+							 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+
+			try {
+				og.checkIntervalDefinition();
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, IBK::FormatString("Error in definition of output grid '%1'.").arg(og.m_name), FUNC_ID);
+			}
+			og.setupIntervals();
+		}
 	}
 
 	// we create groups of output definitions, first based on target file name
@@ -301,18 +324,21 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 	for (std::unique_ptr<OutputFile> & of : tmpOutputFiles) {
 		m_outputFiles.push_back(of.release());
 	}
+
 }
 
 
 void OutputHandler::writeOutputs(double t_secondsOfYear) {
 	FUNCID(OutputHandler::writeOutputs);
 
-	// convert to output time unit
-	double t_out = t_secondsOfYear;
-	IBK::UnitList::instance().convert(IBK::Unit(IBK_UNIT_ID_SECONDS), m_timeUnit, t_out);
-
-	// if first call, create/re-open files
+	// On first call to writeOutputs() we can finally re-open/create the output files
+	// because only now we have the inputReferences resolved and have access to the
+	// result quantity descriptions. In setup() we do not yet have this info and
+	// therefore cannot create the output files there.
 	if (m_outputTimer == nullptr) {
+
+		// *** create/re-open output files
+
 		if (m_restart)
 			IBK::IBK_Message("Re-opening output files:\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		else
@@ -324,36 +350,42 @@ void OutputHandler::writeOutputs(double t_secondsOfYear) {
 
 		for (OutputFile * of : m_outputFiles) {
 			try {
-				of->createFile(t_out, m_restart, m_binaryFiles, timeColumnHeader, m_outputPath);
+				of->createFile(m_restart, m_binaryFiles, timeColumnHeader, m_outputPath);
 			} catch (IBK::Exception & ex) {
 				throw IBK::Exception(ex, IBK::FormatString("Error creating output file '%1'.").arg(of->m_filename), FUNC_ID);
 			}
 		}
 		// Note: in createFile() also all integral quantities are initialized
 
+		// *** initialize output flush timer
+
 		// now create timer (becomes owned by us)
 		m_outputTimer = new IBK::StopWatch; // timer starts automatically
 
 	}
-	else {
 
-		// now pass on the call to each file to cache current results
-		unsigned int storedBytes = 0;
-		for (OutputFile * of : m_outputFiles) {
+	// convert to output time unit
+	double t_out = t_secondsOfYear;
+	IBK::UnitList::instance().convert(IBK::Unit(IBK_UNIT_ID_SECONDS), m_timeUnit, t_out);
+
+	// now pass on the call to each file to cache current results
+	unsigned int storedBytes = 0;
+	for (OutputFile * of : m_outputFiles) {
+		// check if output grid is active and only write outputs if this is the case
+		if (of->m_gridRef->isActive(t_secondsOfYear))
 			of->cacheOutputs(t_out);
-			storedBytes += of->cacheSize();
-		}
+		storedBytes += of->cacheSize();
+	}
 
-		// flush cache to file once cached limit
-		if (m_outputTimer->difference()/1000.0 > m_realTimeOutputDelay ||
-			storedBytes > m_outputCacheLimit)
-		{
-			IBK::IBK_Message("Flushing output cache.\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
-			for (OutputFile * of : m_outputFiles)
-				of->flushCache();
-			// restart timer
-			m_outputTimer->start();
-		}
+	// flush cache to file once cached limit
+	if (m_outputTimer->difference()/1000.0 > m_realTimeOutputDelay ||
+		storedBytes > m_outputCacheLimit)
+	{
+		IBK::IBK_Message("Flushing output cache.\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
+		for (OutputFile * of : m_outputFiles)
+			of->flushCache();
+		// restart timer
+		m_outputTimer->start();
 	}
 }
 
