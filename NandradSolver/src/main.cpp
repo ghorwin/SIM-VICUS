@@ -1861,8 +1861,6 @@ int main(int argc, char * argv[]) {
 		solver.m_stopAfterSolverInit = args.flagEnabled(IBK::SolverArgsParser::GO_TEST_INIT);
 		solver.m_restartFilename = model.dirs().m_varDir / "restart.bin";
 
-		return EXIT_SUCCESS;
-
 		// depending on the restart settings, either run from start or continue simulation
 		if (args.m_restartFrom) {
 			IBK::IBK_Message("Continuing computation from selected check point\n\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
