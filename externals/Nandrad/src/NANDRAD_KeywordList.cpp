@@ -236,11 +236,10 @@ namespace NANDRAD {
 				case 3 : return "Interface";
 				case 4 : return "EmbeddedObject";
 				case 5 : return "ActiveObject";
-				case 6 : return "Sensor";
-				case 7 : return "Schedule";
-				case 8 : return "ObjectList";
-				case 9 : return "Model";
-				case 10 : return "Global";
+				case 6 : return "Schedule";
+				case 7 : return "ObjectList";
+				case 8 : return "Model";
+				case 9 : return "Global";
 			} break;
 			// OutputDefinition::timeType_t
 			case 24 :
@@ -545,11 +544,10 @@ namespace NANDRAD {
 				case 3 : return "Interface";
 				case 4 : return "EmbeddedObject";
 				case 5 : return "ActiveObject";
-				case 6 : return "Sensor";
-				case 7 : return "Schedule";
-				case 8 : return "ObjectList";
-				case 9 : return "Model";
-				case 10 : return "Global";
+				case 6 : return "Schedule";
+				case 7 : return "ObjectList";
+				case 8 : return "Model";
+				case 9 : return "Global";
 			} break;
 			// OutputDefinition::timeType_t
 			case 24 :
@@ -855,11 +853,10 @@ namespace NANDRAD {
 				case 3 : return "Model references a wall surface.";
 				case 4 : return "Model references an embedded object.";
 				case 5 : return "Model references an active object.";
-				case 6 : return "Model references a sensor object.";
-				case 7 : return "Model references scheduled data.";
-				case 8 : return "Model references an object list-specific value.";
-				case 9 : return "Model references another generic model.";
-				case 10 : return "Model references to global physical quantities.";
+				case 6 : return "Model references scheduled data.";
+				case 7 : return "Model references an object list-specific value.";
+				case 8 : return "Model references another generic model.";
+				case 9 : return "Model references to global physical quantities.";
 			} break;
 			// OutputDefinition::timeType_t
 			case 24 :
@@ -1168,7 +1165,6 @@ namespace NANDRAD {
 				case 7 : return "";
 				case 8 : return "";
 				case 9 : return "";
-				case 10 : return "";
 			} break;
 			// OutputDefinition::timeType_t
 			case 24 :
@@ -1477,7 +1473,6 @@ namespace NANDRAD {
 				case 7 : return "#FFFFFF";
 				case 8 : return "#FFFFFF";
 				case 9 : return "#FFFFFF";
-				case 10 : return "#FFFFFF";
 			} break;
 			// OutputDefinition::timeType_t
 			case 24 :
@@ -1786,7 +1781,6 @@ namespace NANDRAD {
 				case 7 : return std::numeric_limits<double>::quiet_NaN();
 				case 8 : return std::numeric_limits<double>::quiet_NaN();
 				case 9 : return std::numeric_limits<double>::quiet_NaN();
-				case 10 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// OutputDefinition::timeType_t
 			case 24 :
@@ -1991,7 +1985,7 @@ namespace NANDRAD {
 			// Material::para_t
 			case 22 : return 3;
 			// ModelInputReference::referenceType_t
-			case 23 : return 11;
+			case 23 : return 10;
 			// OutputDefinition::timeType_t
 			case 24 : return 3;
 			// Schedule::type_t
@@ -2077,7 +2071,7 @@ namespace NANDRAD {
 			// Material::para_t
 			case 22 : return 2;
 			// ModelInputReference::referenceType_t
-			case 23 : return 10;
+			case 23 : return 9;
 			// OutputDefinition::timeType_t
 			case 24 : return 2;
 			// Schedule::type_t

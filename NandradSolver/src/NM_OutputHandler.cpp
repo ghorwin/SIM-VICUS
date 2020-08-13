@@ -138,9 +138,7 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 		// determine quantity type
 
 		// anything related to climatic loads, will get into OFN_Loads
-		if (od.m_objectListRef->m_referenceType == NANDRAD::ModelInputReference::MRT_LOCATION ||
-			od.m_objectListRef->m_referenceType == NANDRAD::ModelInputReference::MRT_SENSOR)
-		{
+		if (od.m_objectListRef->m_referenceType == NANDRAD::ModelInputReference::MRT_LOCATION) {
 			groupMap[od.m_gridName][OFN_Loads].push_back(od);
 			continue;
 		}

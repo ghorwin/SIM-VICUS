@@ -56,78 +56,15 @@ void createSim01(NANDRAD::Project &prj){
 
 	prj.m_location.m_climateFileName = IBK::Path("${Project Directory}/climate/testClimate.epw");
 
-	/* ToDo Andreas Dirk Anne Stephan
-		Falls der Klimastandort in der Klimadatei steht MUSS er daraus genommen werden.
-		Falls kein Standort vorhanden ist wird auf die Daten in der NANDRAD-Projekt-Datei zurückgegriffen
-		Für den Testfall 01 müssen die verschiedenen Standorte später durchgeändert werden Potsdam, Barrow, ...
-	*/
-	//prj.m_location.m_climateFileName = IBK::Path("climate/testClimate.epw");
-
-	prj.m_location.m_para[NANDRAD::Location::LP_LATITUDE].set("Latitude", 51, IBK::Unit("Deg"));
-	prj.m_location.m_para[NANDRAD::Location::LP_LONGITUDE].set("Longitude",13, IBK::Unit("Deg"));
-	prj.m_location.m_para[NANDRAD::Location::LP_ALTITUDE].set("Altitude",100, IBK::Unit("m"));
 	prj.m_location.m_para[NANDRAD::Location::LP_ALBEDO].set("Albedo", 0.2, IBK::Unit("---"));
 
-	NANDRAD::ConstructionInstance conInsta;
-	conInsta.m_id = 2;
-	conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 180, IBK::Unit("Deg"));
-	conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
-	conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
 
-	conInsta.m_displayName = "South Wall";
+	// outputs
 
-	// create interfaces
+	NANDRAD::Outputs outputs;
 
-	// Inside interface
-	NANDRAD::Interface interface;
-	interface.m_id = 3;
-	interface.m_zoneId = 1;
-	interface.m_location = NANDRAD::Interface::IT_A;
-	interface.m_heatConduction.m_modelType = NANDRAD::InterfaceHeatConduction::MT_CONSTANT;
-	interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 2.5, IBK::Unit("W/m2K"));
-	//add first interface
-	conInsta.m_interfaces.push_back(interface);
 
-	// Outside interface
-	interface.m_location = NANDRAD::Interface::IT_B;
-	interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 8, IBK::Unit("W/m2K"));
-	interface.m_zoneId = 0;
-	interface.m_id = 4;
-	//add second interface
-	conInsta.m_interfaces.push_back(interface);
-
-	conInsta.m_constructionTypeId = 10001;
-	//add construction instance
-	prj.m_constructionInstances.push_back(conInsta);
-
-	//construction type
-	NANDRAD::ConstructionType conType;
-	conType.m_id = conInsta.m_constructionTypeId;
-	conType.m_displayName = "Exterior wall";
-
-	//material
-	NANDRAD::Material mat;
-	mat.m_id = 1001;
-	mat.m_displayName = "Concrete";
-	mat.m_para[NANDRAD::Material::MP_DENSITY].set("Density", 2100, IBK::Unit("kg/m3"));
-	mat.m_para[NANDRAD::Material::MP_HEAT_CAPACITY].set("HeatCapacity", 840, IBK::Unit("J/kgK"));
-	mat.m_para[NANDRAD::Material::MP_CONDUCTIVITY].set("Conductivity", 2.1, IBK::Unit("W/mK"));
-	prj.m_materials.push_back(mat);
-	// Left side (A) = concrete (inside), right side (B) insulation (outside)
-	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.2, mat.m_id));
-
-	mat.m_id = 1002;
-	mat.m_displayName = "Insulation";
-	mat.m_para[NANDRAD::Material::MP_DENSITY].set("Density", 30, IBK::Unit("kg/m3"));
-	mat.m_para[NANDRAD::Material::MP_HEAT_CAPACITY].set("HeatCapacity", 1500, IBK::Unit("J/kgK"));
-	mat.m_para[NANDRAD::Material::MP_CONDUCTIVITY].set("Conductivity", 0.04, IBK::Unit("W/mK"));
-	prj.m_materials.push_back(mat);
-	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.1, mat.m_id));
-
-	// add construction type
-	prj.m_constructionTypes.push_back(conType);
-
-	//outputs
+	// grids
 
 	NANDRAD::OutputGrid grid;
 	grid.m_name = "hourly";
@@ -137,9 +74,20 @@ void createSim01(NANDRAD::Project &prj){
 	intVal.m_para[NANDRAD::Interval::IP_STEPSIZE].set("StepSize", 1, IBK::Unit("h"));
 	grid.m_intervals.push_back(intVal);
 
-	NANDRAD::Outputs outputs;
 	outputs.m_grids.push_back(grid);
 	prj.m_outputs.m_grids.push_back(grid);
+
+	grid.m_name = "minutely";
+	grid.m_intervals.clear();
+
+	intVal.m_para[NANDRAD::Interval::IP_START].set("Start", 90720, IBK::Unit("min"));
+	intVal.m_para[NANDRAD::Interval::IP_END].set("End", 92160, IBK::Unit("min"));
+	intVal.m_para[NANDRAD::Interval::IP_STEPSIZE].set("StepSize", 1, IBK::Unit("min"));
+	grid.m_intervals.push_back(intVal);
+
+	outputs.m_grids.push_back(grid);
+	prj.m_outputs.m_grids.push_back(grid);
+
 
 	NANDRAD::OutputDefinition outDef;
 	outDef.m_quantity = "Temperature";
@@ -157,6 +105,15 @@ void createSim01(NANDRAD::Project &prj){
 	outDef.m_objectListName = "Location";
 	prj.m_outputs.m_outputDefinitions.push_back(outDef);
 
+	outDef.m_quantity = "ElevationAngle";
+	outDef.m_gridName = "minutely";
+	outDef.m_objectListName = "Location";
+	prj.m_outputs.m_outputDefinitions.push_back(outDef);
+
+	outDef.m_quantity = "AzimuthAngle";
+	outDef.m_gridName = "minutely";
+	outDef.m_objectListName = "Location";
+	prj.m_outputs.m_outputDefinitions.push_back(outDef);
 
 	// Object lists (needed by outputs)
 	NANDRAD::ObjectList ol;

@@ -62,7 +62,6 @@ void OutputFile::createInputReferences() {
 			inref.m_id = id;
 			inref.m_required = false;
 			inref.m_name = od.m_quantity;
-			inref.m_referenceType = ol->m_referenceType;
 			m_inputRefs.push_back(inref);
 			m_outputDefMap.push_back(i);
 		}
