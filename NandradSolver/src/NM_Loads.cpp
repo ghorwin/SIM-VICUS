@@ -84,6 +84,7 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 		IBK::Path climateFile = IBK::Path(location.m_climateFileName).withReplacedPlaceholders(pathPlaceHolders);
 
 		try {
+			IBK::IBK_Message(IBK::FormatString("Reading climate data file '%1'\n").arg(climateFile), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 			m_solarRadiationModel.m_climateDataLoader.readClimateData(climateFile);
 		}
 		catch (IBK::Exception &ex) {
@@ -106,7 +107,7 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 		// cases to completely wrong results (at least, when latitude is changed).
 
 
-		IBK::IBK_Message(IBK::FormatString("Climate data set location: %1 deg. latitude, %2 deg. longitude\n")
+		IBK::IBK_Message(IBK::FormatString("Climate data set location: Latitude: %1 deg, Longitude: %2 deg\n")
 						 .arg(m_solarRadiationModel.m_climateDataLoader.m_latitudeInDegree)
 						 .arg(m_solarRadiationModel.m_climateDataLoader.m_longitudeInDegree), IBK::MSG_PROGRESS,
 						 FUNC_ID, IBK::VL_INFO);
