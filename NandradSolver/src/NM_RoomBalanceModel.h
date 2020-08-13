@@ -49,13 +49,17 @@ namespace NANDRAD_MODEL {
 class RoomBalanceModel : public AbstractModel, public AbstractStateDependency {
 public:
 
+	/*! Results computed by the model. */
 	enum Results {
-		R_CompleteThermalLoad,								// Keyword: CompleteThermalLoad							[W]		'Sum of all thermal fluxes into the room.'
+		R_CompleteThermalLoad,								// Keyword: CompleteThermalLoad							[W]		'Sum of all thermal fluxes into the room and energy sources.'
+		R_CompleteMoistureLoad,								// Keyword: CompleteMoistureLoad						[kg/s]	'Sum of all moisture fluxes into the room and moisture sources.'
 		NUM_R
 	};
 
+	/*! Fluxes/loads types taken as input.
+		Note: some are scalars and some are expanded to several flux input quantities depending on number of models providing these values.
+	*/
 	enum InputReferences {
-		InputRef_RadiationLoadFraction,						// Keyword: RadiationLoadFraction						[%]		'Percentage of solar radiation gains attributed direcly to current room.'
 		InputRef_WallsHeatConductionLoad,					// Keyword: WallsHeatConductionLoad						[W]		'Heat load by heat conduction through all enclosing walls.'
 		InputRef_WindowsSWRadLoad,							// Keyword: WindowsSWRadLoad							[W]		'Heat loads by short wave radiation through all windows of a room.'
 		InputRef_WindowsHeatTransmissionLoad,				// Keyword: WindowsHeatTransmissionLoad					[W]		'Heat loads by heat transmission through all windows of a room.'
@@ -79,9 +83,9 @@ public:
 	{
 	}
 	/*! Copy constructor is not available (disable copy). */
-	RoomStatesModel(const RoomStatesModel &) = delete;
+	RoomBalanceModel(const RoomBalanceModel &) = delete;
 	/*! Assignment operator is not available (disable copy). */
-	const RoomStatesModel & operator=(const RoomStatesModel &) = delete;
+	const RoomBalanceModel & operator=(const RoomBalanceModel &) = delete;
 
 	/*! Initializes model by providing simulation parameters and resizing the y and ydot vectors. */
 	void setup( const NANDRAD::SimulationParameter &simPara);
@@ -97,6 +101,12 @@ public:
 	/*! Return unique class ID name of implemented model. */
 	virtual const char * ModelIDName() const override { return "RoomBalanceModel";}
 
+	/*! Returns unique ID of this model instance. */
+	virtual unsigned int id() const override { return m_id; }
+
+	/*! Returns display name of this model instance. */
+	virtual const char * displayName() const override { return m_displayName.c_str(); }
+
 	/*! Populates the vector resDesc with descriptions of all results provided by this model. */
 	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const override;
 
@@ -108,34 +118,23 @@ public:
 	*/
 	virtual const double * resultValueRef(const QuantityName & quantityName) const override;
 
-	/*! Resizes m_results vector.*/
-	virtual void initResults(const std::vector<AbstractModel*> & models) override;
 
+	// *** Re-implemented from AbstractStateDependency
 
-	// *** Other public member functions
-
-	/*! Returns constant reference to the vector of solver states.*/
-	const double *y() const { return &m_y[0]; }
-
-	/*! Returns number of primary state results (number of unknows). */
-	unsigned int nPrimaryStateResults() const { return 1; }
 
 	/*! Composes all input references.*/
-//	void initInputReferences(const std::vector<AbstractModel*> & models);
+	virtual void initInputReferences(const std::vector<AbstractModel*> & /* models */) override;
 
 	/*! Adds dependencies between ydot and y to default pattern. */
 //	void stateDependencies(std::vector< std::pair<const double *, const double *> > &resultInputValueReferences) const;
 
-	/*! Computes divergence of balance equations. */
-	int update();
+	/*! Sums up all provided input quantities and computes divergence of balance equations. */
+	int update() override;
 
-	/*! Sets new states by passing a linear memory array with the room states.
-		For now, the vector y only has a single value, the energy density.
-		This function is called from the main model interface setY() function.
-	*/
-	void setY(const double * y);
 
-	/*! Stores the divergences of all balance equations in vector ydot. */
+	// *** Other public member functions
+
+	/*! Stores the divergences of all balance equations in this zone in vector ydot. */
 	int ydot(double* ydot);
 
 
@@ -144,18 +143,18 @@ protected:
 	unsigned int									m_id;
 	/*! Display name (for error messages). */
 	std::string										m_displayName;
+	/*! True if moisture balance is enabled. */
+	bool											m_moistureBalanceEnabled;
 	/*! Data cache for calculated results (updated in call to update()).
 		Index matches enum values of Results.
 	*/
 	std::vector<double>								m_results;
 
-	/*! Vector with cached states, updated at last call to setY(). */
-	std::vector<double>								m_y;
 	/*! Vector with cached derivatives, updated at last call to update(). */
 	std::vector<double>								m_ydot;
 
 	/*! Constant pointer to the simulation parameter. */
-	const NANDRAD::SimulationParameter				*m_simulationParameter = nullptr;
+	const NANDRAD::SimulationParameter				*m_simPara = nullptr;
 };
 
 } // namespace NANDRAD_MODEL

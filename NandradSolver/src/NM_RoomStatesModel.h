@@ -138,6 +138,8 @@ private:
 	unsigned int									m_id;
 	/*! Display name (for error messages). */
 	std::string										m_displayName;
+	/*! True if moisture balance is enabled. */
+	bool											m_moistureBalanceEnabled;
 
 	/*! Zone air volume in [m3], cached in setup(). */
 	double											m_volume;

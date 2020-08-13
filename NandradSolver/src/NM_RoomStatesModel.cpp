@@ -62,8 +62,9 @@ void RoomStatesModel::setup(const NANDRAD::Zone & zone, const NANDRAD::Simulatio
 
 	// resize memory cache for results
 	// results depend on calculation mode
-	if (simPara.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled()) {
-		/// \todo hygrothermal implementation
+	m_moistureBalanceEnabled = simPara.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled();
+	if (m_moistureBalanceEnabled) {
+		m_results.resize(NUM_R);
 	}
 	else {
 		m_results.resize(1);
@@ -76,7 +77,7 @@ void RoomStatesModel::setup(const NANDRAD::Zone & zone, const NANDRAD::Simulatio
 
 void RoomStatesModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 	int varCount = 1; // room air temperature is always the first result
-	if (m_simPara->m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled()) {
+	if (m_moistureBalanceEnabled) {
 		varCount = NUM_R; // more variables for hygrothermal calculation
 	}
 
@@ -111,7 +112,7 @@ const double * RoomStatesModel::resultValueRef(const QuantityName & quantityName
 
 void RoomStatesModel::yInitial(double * y) const {
 	// different implementations based on thermal or hygrothermal calculation
-	if (m_simPara->m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled()) {
+	if (m_moistureBalanceEnabled) {
 		/// \todo hygrothermal implementation
 	}
 	else {
@@ -135,7 +136,7 @@ int RoomStatesModel::update(const double * y) {
 	// update procedure decomposes all solver quantities
 
 	// different implementations based on thermal or hygrothermal calculation
-	if (m_simPara->m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled()) {
+	if (m_moistureBalanceEnabled) {
 		/// \todo hygrothermal implementation
 	}
 	else {

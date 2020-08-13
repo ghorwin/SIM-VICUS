@@ -49,11 +49,15 @@ class QuantityDescription;
 class AbstractStateDependency : public ZEPPELIN::DependencyObject {
 public:
 
-	/*! Dummy d'tor. */
-	~AbstractStateDependency();
+	/*! Sets all object dependencies.
+		Called when all model results have been initialized (i.e. the function
+		initResults() was called in all model objects).
 
-	/*! Returns a priority offset for all models at the end of model evaluation.*/
-	static const int priorityOffsetTail = 100000;
+		Re-implement this function and provide all information, so that function
+		inputReferences() can be called afterwards (e.g. resize and fill a vector
+		of Type std::vector<ModelInputReference>).
+	*/
+	virtual void initInputReferences(const std::vector<AbstractModel*> & /* models */) {}
 
 	/*! Returns vector with model input references.
 		Implicit models must generate their own model input references and populate the
@@ -86,22 +90,6 @@ public:
 		Default implementation return an empty map
 	*/
 	virtual void constraints(std::map< const double *, std::pair<double, double> > &constraintsPerValueRef) const { constraintsPerValueRef.clear(); }
-
-	/*! Returns a priority number for the ordering in model evaluation: should only be implemented
-		for implicit models and is ignored for explicit models.
-		Default implementation returns -1 to indicate that ordering is unknown.
-	*/
-	virtual int priorityOfModelEvaluation() const { return -1; }
-
-	/*! Sets all object dependencies.
-		Called when all model results have been initialized (i.e. the function
-		initResults() was called in all model objects).
-
-		Re-implement this function and provide all information, so that function
-		inputReferences() can be called afterwards (e.g. resize and fill a vector
-		of Type std::vector<ModelInputReference>).
-	*/
-	virtual void initInputReferences(const std::vector<AbstractModel*> & /* models */) {}
 
 #if 0
 	/*! Called from NandradModelImpl.

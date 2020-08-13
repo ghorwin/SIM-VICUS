@@ -1,4 +1,4 @@
-/*	NANDRAD Solver Framework and Model Implementation.
+/*	The NANDRAD data model library.
 
 	Copyright (c) 2012-today, Institut für Bauklimatik, TU Dresden, Germany
 
@@ -102,25 +102,25 @@ namespace NANDRAD_MODEL {
 			case 3 :
 			switch (t) {
 				case 0 : return "CompleteThermalLoad";
+				case 1 : return "CompleteMoistureLoad";
 			} break;
 			// RoomBalanceModel::InputReferences
 			case 4 :
 			switch (t) {
-				case 0 : return "RadiationLoadFraction";
-				case 1 : return "WallsHeatConductionLoad";
-				case 2 : return "WindowsSWRadLoad";
-				case 3 : return "WindowsHeatTransmissionLoad";
-				case 4 : return "LWRadBalanceLoad";
-				case 5 : return "SWRadBalanceLoad";
-				case 6 : return "ConvectiveHeatingsLoad";
-				case 7 : return "ConvectiveCoolingsLoad";
-				case 8 : return "ConvectiveUsersLoad";
-				case 9 : return "ConvectiveEquipmentLoad";
-				case 10 : return "ConvectiveLightingLoad";
-				case 11 : return "UserVentilationThermalLoad";
-				case 12 : return "InfiltrationThermalLoad";
-				case 13 : return "AirConditionThermalLoad";
-				case 14 : return "DomesticWaterConsumptionSensitiveHeatGain";
+				case 0 : return "WallsHeatConductionLoad";
+				case 1 : return "WindowsSWRadLoad";
+				case 2 : return "WindowsHeatTransmissionLoad";
+				case 3 : return "LWRadBalanceLoad";
+				case 4 : return "SWRadBalanceLoad";
+				case 5 : return "ConvectiveHeatingsLoad";
+				case 6 : return "ConvectiveCoolingsLoad";
+				case 7 : return "ConvectiveUsersLoad";
+				case 8 : return "ConvectiveEquipmentLoad";
+				case 9 : return "ConvectiveLightingLoad";
+				case 10 : return "UserVentilationThermalLoad";
+				case 11 : return "InfiltrationThermalLoad";
+				case 12 : return "AirConditionThermalLoad";
+				case 13 : return "DomesticWaterConsumptionSensitiveHeatGain";
 			} break;
 			// RoomStatesModel::Results
 			case 5 :
@@ -224,25 +224,25 @@ namespace NANDRAD_MODEL {
 			case 3 :
 			switch (t) {
 				case 0 : return "CompleteThermalLoad";
+				case 1 : return "CompleteMoistureLoad";
 			} break;
 			// RoomBalanceModel::InputReferences
 			case 4 :
 			switch (t) {
-				case 0 : return "RadiationLoadFraction";
-				case 1 : return "WallsHeatConductionLoad";
-				case 2 : return "WindowsSWRadLoad";
-				case 3 : return "WindowsHeatTransmissionLoad";
-				case 4 : return "LWRadBalanceLoad";
-				case 5 : return "SWRadBalanceLoad";
-				case 6 : return "ConvectiveHeatingsLoad";
-				case 7 : return "ConvectiveCoolingsLoad";
-				case 8 : return "ConvectiveUsersLoad";
-				case 9 : return "ConvectiveEquipmentLoad";
-				case 10 : return "ConvectiveLightingLoad";
-				case 11 : return "UserVentilationThermalLoad";
-				case 12 : return "InfiltrationThermalLoad";
-				case 13 : return "AirConditionThermalLoad";
-				case 14 : return "DomesticWaterConsumptionSensitiveHeatGain";
+				case 0 : return "WallsHeatConductionLoad";
+				case 1 : return "WindowsSWRadLoad";
+				case 2 : return "WindowsHeatTransmissionLoad";
+				case 3 : return "LWRadBalanceLoad";
+				case 4 : return "SWRadBalanceLoad";
+				case 5 : return "ConvectiveHeatingsLoad";
+				case 6 : return "ConvectiveCoolingsLoad";
+				case 7 : return "ConvectiveUsersLoad";
+				case 8 : return "ConvectiveEquipmentLoad";
+				case 9 : return "ConvectiveLightingLoad";
+				case 10 : return "UserVentilationThermalLoad";
+				case 11 : return "InfiltrationThermalLoad";
+				case 12 : return "AirConditionThermalLoad";
+				case 13 : return "DomesticWaterConsumptionSensitiveHeatGain";
 			} break;
 			// RoomStatesModel::Results
 			case 5 :
@@ -346,26 +346,26 @@ namespace NANDRAD_MODEL {
 			// RoomBalanceModel::Results
 			case 3 :
 			switch (t) {
-				case 0 : return "Sum of all thermal fluxes into the room.";
+				case 0 : return "Sum of all thermal fluxes into the room and energy sources.";
+				case 1 : return "Sum of all moisture fluxes into the room and moisture sources.";
 			} break;
 			// RoomBalanceModel::InputReferences
 			case 4 :
 			switch (t) {
-				case 0 : return "Percentage of solar radiation gains attributed direcly to current room.";
-				case 1 : return "Heat load by heat conduction through all enclosing walls.";
-				case 2 : return "Heat loads by short wave radiation through all windows of a room.";
-				case 3 : return "Heat loads by heat transmission through all windows of a room.";
-				case 4 : return "Balance loads by long wave radiation exchange on all window inside surfaces.";
-				case 5 : return "Balance loads by short wave radiation exchange on all window inside surfaces.";
-				case 6 : return "Heat loads by convective heating.";
-				case 7 : return "Heat loss by convective cooling.";
-				case 8 : return "Loads by occupancy.";
-				case 9 : return "Electic equipment loads.";
-				case 10 : return "Heat gains by lighting.";
-				case 11 : return "Heat load by air ventilation.";
-				case 12 : return "Heat load by infiltration.";
-				case 13 : return "Heat load by air conditioning.";
-				case 14 : return "Sensitive heat gain towards the room by water consumption.";
+				case 0 : return "Heat load by heat conduction through all enclosing walls.";
+				case 1 : return "Heat loads by short wave radiation through all windows of a room.";
+				case 2 : return "Heat loads by heat transmission through all windows of a room.";
+				case 3 : return "Balance loads by long wave radiation exchange on all window inside surfaces.";
+				case 4 : return "Balance loads by short wave radiation exchange on all window inside surfaces.";
+				case 5 : return "Heat loads by convective heating.";
+				case 6 : return "Heat loss by convective cooling.";
+				case 7 : return "Loads by occupancy.";
+				case 8 : return "Electic equipment loads.";
+				case 9 : return "Heat gains by lighting.";
+				case 10 : return "Heat load by air ventilation.";
+				case 11 : return "Heat load by infiltration.";
+				case 12 : return "Heat load by air conditioning.";
+				case 13 : return "Sensitive heat gain towards the room by water consumption.";
 			} break;
 			// RoomStatesModel::Results
 			case 5 :
@@ -469,11 +469,12 @@ namespace NANDRAD_MODEL {
 			case 3 :
 			switch (t) {
 				case 0 : return "W";
+				case 1 : return "kg/s";
 			} break;
 			// RoomBalanceModel::InputReferences
 			case 4 :
 			switch (t) {
-				case 0 : return "%";
+				case 0 : return "W";
 				case 1 : return "W";
 				case 2 : return "W";
 				case 3 : return "W";
@@ -487,7 +488,6 @@ namespace NANDRAD_MODEL {
 				case 11 : return "W";
 				case 12 : return "W";
 				case 13 : return "W";
-				case 14 : return "W";
 			} break;
 			// RoomStatesModel::Results
 			case 5 :
@@ -591,6 +591,7 @@ namespace NANDRAD_MODEL {
 			case 3 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
 			} break;
 			// RoomBalanceModel::InputReferences
 			case 4 :
@@ -609,7 +610,6 @@ namespace NANDRAD_MODEL {
 				case 11 : return "#FFFFFF";
 				case 12 : return "#FFFFFF";
 				case 13 : return "#FFFFFF";
-				case 14 : return "#FFFFFF";
 			} break;
 			// RoomStatesModel::Results
 			case 5 :
@@ -713,6 +713,7 @@ namespace NANDRAD_MODEL {
 			case 3 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// RoomBalanceModel::InputReferences
 			case 4 :
@@ -731,7 +732,6 @@ namespace NANDRAD_MODEL {
 				case 11 : return std::numeric_limits<double>::quiet_NaN();
 				case 12 : return std::numeric_limits<double>::quiet_NaN();
 				case 13 : return std::numeric_limits<double>::quiet_NaN();
-				case 14 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// RoomStatesModel::Results
 			case 5 :
@@ -800,9 +800,9 @@ namespace NANDRAD_MODEL {
 			// OutputHandler::OutputFileNames
 			case 2 : return 5;
 			// RoomBalanceModel::Results
-			case 3 : return 1;
+			case 3 : return 2;
 			// RoomBalanceModel::InputReferences
-			case 4 : return 15;
+			case 4 : return 14;
 			// RoomStatesModel::Results
 			case 5 : return 3;
 			// Schedules::Results
@@ -826,9 +826,9 @@ namespace NANDRAD_MODEL {
 			// OutputHandler::OutputFileNames
 			case 2 : return 4;
 			// RoomBalanceModel::Results
-			case 3 : return 0;
+			case 3 : return 1;
 			// RoomBalanceModel::InputReferences
-			case 4 : return 14;
+			case 4 : return 13;
 			// RoomStatesModel::Results
 			case 5 : return 2;
 			// Schedules::Results

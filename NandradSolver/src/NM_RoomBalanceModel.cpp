@@ -30,323 +30,82 @@ using namespace std;
 
 namespace NANDRAD_MODEL {
 
-#if 0
-
-int RoomBalanceModel::priorityOfModelEvaluation() const {
-	// We have the following model dependency sequence at the end of evaluation stack:
-	// ...
-	// HeatingsLoadModel	  +		WindowModel	      +    LightingLoadModel 	  (at priorityOffsetTail)
-	//	^	^						^						^
-	//	|	|						|						|
-	//InsideBCHeatingsLoadModel + WindowsLoadModel + InsideBCLightingsLoadModel
-	//	|	^				^		^						  ^
-	//	|	|				|		|						  |
-	//	InsideBCLWRadExchangeModel + InsideBCWindowsLoadModel |
-	//	|   |				^		 ^						  |
-	//	|	|				|		 |						  |
-	//	|   |  LWRadBalanceLoadModel + InsideBCSWRadExchangeModel
-	//	|	|			    |	^	 ^	 					^
-	//	|	|			    |	|	 |	  					|
-	//	|    ConstructionInsideBCModel	  +			SWRadBalanceLoadModel
-	//	|				^		|		  				    ^
-	//	|				|		|		   					|
-	//	|		ConstructionSolverModel 					|
-	//	|				|		|		   					|
-	//	|		WallsThermalLoadModel	  					|
-	//	|				^		|		  					|
-	//	|				|		|		  					|
-	// ********** RoomBalanceModel **********************************************
-	return AbstractStateDependency::priorityOffsetTail + 7;
-}
-
 void RoomBalanceModel::setup( const NANDRAD::SimulationParameter &simPara) {
 	// copy all object pointers
-	m_simulationParameter     = &simPara;
+	m_simPara     = &simPara;
 
-	// resize solution variable
-	m_y.resize(nPrimaryStateResults());
-	// resize ydot vector
-	m_ydot.resize(nPrimaryStateResults());
-}
-
-void RoomBalanceModel::initResults(const std::vector<AbstractModel*> & models) {
-	const char* const FUNC_ID = "[RoomBalanceModel::initResults]";
-	// resize m_results from keyword list
-	DefaultModel::initResults(models);
-
-	const IBK::Parameter &RadiationLoadFraction = m_simulationParameter->m_para[NANDRAD::SimulationParameter::SP_RADIATION_LOAD_FRACTION];
-	// retrieve radiation load fraction from simulation parameter
-	if(RadiationLoadFraction.name.empty() )
-	{
-		throw IBK::Exception( IBK::FormatString(" Error initializing RoomBlanaceModel for Zone with id %1: "
-			  "Simulation parameter 'RadiationLoadFraction' is undefined!")
-			  .arg(id()) , FUNC_ID);
+	// results depend on calculation mode
+	m_moistureBalanceEnabled = simPara.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled();
+	if (m_moistureBalanceEnabled) {
+		m_results.resize(NUM_R);
+		// resize ydot vector - two balance equations
+		m_ydot.resize(2);
 	}
-	// check validity of parameter definition
-	const double radLoadFrac = RadiationLoadFraction.value;
-	if(radLoadFrac < 0.0 || radLoadFrac > 1.0)
-		throw IBK::Exception( IBK::FormatString(" Error initializing RoomBlanaceModel for Zone with id %1: "
-			  "Simulation parameter 'RadiationLoadFraction' is outside the interval [0,1]!")
-			  .arg(id()) , FUNC_ID);
+	else {
+		// resize results vector
+		m_results.resize(1);
+
+		// resize ydot vector - one balance equation
+		m_ydot.resize(1);
+	}
 }
 
-void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel*> & /*models*/) {
-	// prepare container seaching
-	std::string category = ModelIDName() + std::string("::InputReferences");
-	std::string sourceName;
 
-	// find input reference for RadiationLoadFraction
-	sourceName = KeywordList::Keyword(category.c_str(), InputRef_RadiationLoadFraction);
-	// create input references for RadiationLoadFraction
-	InputReference & radLoadFracRef = inputReference(InputRef_RadiationLoadFraction);
-	radLoadFracRef.m_referenceType	= NANDRAD::ModelInputReference::MRT_ZONE;
-	radLoadFracRef.m_id				= id();
-	radLoadFracRef.m_sourceName		= sourceName;
-	radLoadFracRef.m_targetName		= sourceName;
-	// we have a constant reference
-	radLoadFracRef.m_constant		= true;
+void RoomBalanceModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
+	int varCount = 1; // room air temperature is always the first result
+	if (m_simPara->m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled()) {
+		varCount = NUM_R; // more variables for hygrothermal calculation
+	}
 
-	// find input reference for heat condutcion loads model
-	sourceName = KeywordList::Keyword(category.c_str(), InputRef_WallsHeatConductionLoad);
-	// create input references for heat condutcion loads model
-	InputReference & heatCondRef	= inputReference(InputRef_WallsHeatConductionLoad);
-	heatCondRef.m_referenceType		= NANDRAD::ModelInputReference::MRT_ZONE;
-	heatCondRef.m_id				= id(); // only choose loads with reference to current zone
-	heatCondRef.m_sourceName		= sourceName;
-	heatCondRef.m_targetName		= sourceName;
+	/// \todo what about CO2 ???
 
-	// find input reference for long wave radiation load model
-	sourceName = KeywordList::Keyword(category.c_str(), InputRef_LWRadBalanceLoad);
-	// create input references for radiation loads model
-	InputReference & lwradRef		= inputReference(InputRef_LWRadBalanceLoad);
-	lwradRef.m_referenceType		= NANDRAD::ModelInputReference::MRT_ZONE;
-	lwradRef.m_id					= id(); // only choose loads with reference to current zone
-	lwradRef.m_sourceName			= sourceName;
-	lwradRef.m_targetName			= sourceName;
+	for (int i=0; i<varCount; ++i) {
+		QuantityDescription result;
+		result.m_constant = true;
+		result.m_description = NANDRAD_MODEL::KeywordList::Description("RoomBalanceModel::Results", i);
+		result.m_name = NANDRAD_MODEL::KeywordList::Keyword("RoomBalanceModel::Results", i);
+		result.m_unit = NANDRAD_MODEL::KeywordList::Unit("RoomBalanceModel::Results", i);
 
-	// find input reference for short wave radiation load model
-	sourceName = KeywordList::Keyword(category.c_str(), InputRef_SWRadBalanceLoad);
-	// create input references for radiation loads model
-	InputReference & swradRef		= inputReference(InputRef_SWRadBalanceLoad);
-	swradRef.m_referenceType		= NANDRAD::ModelInputReference::MRT_ZONE;
-	swradRef.m_id					= id(); // only choose loads with reference to current zone
-	swradRef.m_sourceName			= sourceName;
-	swradRef.m_targetName			= sourceName;
-
-	// find input reference for window short wave radiation load model
-	sourceName = KeywordList::Keyword(category.c_str(), InputRef_WindowsSWRadLoad);
-	// create input references for radiation loads model
-	InputReference & swRadRef		= inputReference(InputRef_WindowsSWRadLoad);
-	swRadRef.m_referenceType		= NANDRAD::ModelInputReference::MRT_ZONE;
-	swRadRef.m_id					= id(); // only choose loads with reference to current zone
-	swRadRef.m_sourceName			= sourceName;
-	swRadRef.m_targetName			= sourceName;
-
-	// find input reference for heat transmission loads model
-	sourceName = KeywordList::Keyword(category.c_str(), InputRef_WindowsHeatTransmissionLoad);
-	// create input references for heat transmission loads model
-	InputReference & heatTransRef	= inputReference(InputRef_WindowsHeatTransmissionLoad);
-	heatTransRef.m_referenceType	= NANDRAD::ModelInputReference::MRT_ZONE;
-	heatTransRef.m_id				= id(); // only choose loads with reference to current zone
-	heatTransRef.m_sourceName		= sourceName;
-	heatTransRef.m_targetName		= sourceName;
-
-	// find input reference for heatings load model
-	sourceName = KeywordList::Keyword(category.c_str(), InputRef_ConvectiveHeatingsLoad);
-	// create input references for heatings load model
-	InputReference & heatingRef		= inputReference(InputRef_ConvectiveHeatingsLoad);
-	heatingRef.m_referenceType		= NANDRAD::ModelInputReference::MRT_ZONE;
-	heatingRef.m_id					= id(); // only choose loads with reference to current zone
-	heatingRef.m_sourceName			= sourceName;
-	heatingRef.m_targetName			= sourceName;
-
-	// find input reference for coolings gains model
-	sourceName = KeywordList::Keyword(category.c_str(), InputRef_ConvectiveCoolingsLoad);
-	// create input references for coolings gains model
-	InputReference & coolingRef		= inputReference(InputRef_ConvectiveCoolingsLoad);
-	coolingRef.m_referenceType		= NANDRAD::ModelInputReference::MRT_ZONE;
-	coolingRef.m_id					= id(); // only choose loads with reference to current zone
-	coolingRef.m_sourceName			= sourceName;
-	coolingRef.m_targetName			= sourceName;
-
-	// find input reference for user loads model
-	sourceName = KeywordList::Keyword(category.c_str(), InputRef_ConvectiveUsersLoad);
-	// create input references for user gains model
-	InputReference & userRef		= inputReference(InputRef_ConvectiveUsersLoad);
-	userRef.m_referenceType			= NANDRAD::ModelInputReference::MRT_ZONE;
-	userRef.m_id					= id(); // only choose loads with reference to current zone
-	userRef.m_sourceName			= sourceName;
-	userRef.m_targetName			= sourceName;
-
-	// find input reference for equipment loads model
-	sourceName = KeywordList::Keyword(category.c_str(), InputRef_ConvectiveEquipmentLoad);
-	// create input references for equipment gains model
-	InputReference & eqipmentRef	= inputReference(InputRef_ConvectiveEquipmentLoad);
-	eqipmentRef.m_referenceType		= NANDRAD::ModelInputReference::MRT_ZONE;
-	eqipmentRef.m_id				= id(); // only choose loads with reference to current zone
-	eqipmentRef.m_sourceName		= sourceName;
-	eqipmentRef.m_targetName		= sourceName;
-
-	// find input reference for light loads model
-	sourceName = KeywordList::Keyword(category.c_str(), InputRef_ConvectiveLightingLoad);
-	// create input references for light gains model
-	InputReference & lightRef	= inputReference(InputRef_ConvectiveLightingLoad);
-	lightRef.m_referenceType	= NANDRAD::ModelInputReference::MRT_ZONE;
-	lightRef.m_id				= id(); // only choose loads with reference to current zone
-	lightRef.m_sourceName		= sourceName;
-	lightRef.m_targetName		= sourceName;
-
-	// find input reference for natural ventilation losses
-	sourceName = KeywordList::Keyword(category.c_str(), InputRef_UserVentilationThermalLoad);
-	// create input references for light gains model
-	InputReference & natVentRef	= inputReference(InputRef_UserVentilationThermalLoad);
-	natVentRef.m_referenceType	= NANDRAD::ModelInputReference::MRT_ZONE;
-	natVentRef.m_id				= id(); // only choose loads with reference to current zone
-	natVentRef.m_sourceName		= sourceName;
-	natVentRef.m_targetName		= sourceName;
-
-	// find input reference for infiltration losses
-	sourceName = KeywordList::Keyword(category.c_str(), InputRef_InfiltrationThermalLoad);
-	// create input references for light gains model
-	InputReference & infiltRef	= inputReference(InputRef_InfiltrationThermalLoad);
-	infiltRef.m_referenceType	= NANDRAD::ModelInputReference::MRT_ZONE;
-	infiltRef.m_id				= id(); // only choose loads with reference to current zone
-	infiltRef.m_sourceName		= sourceName;
-	infiltRef.m_targetName		= sourceName;
-
-	// find input reference for air condition losses
-	sourceName = KeywordList::Keyword(category.c_str(), InputRef_AirConditionThermalLoad);
-	// create input references for light gains model
-	InputReference & airCondRef = inputReference(InputRef_AirConditionThermalLoad);
-	airCondRef.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
-	airCondRef.m_id = id(); // only choose loads with reference to current zone
-	airCondRef.m_sourceName = sourceName;
-	airCondRef.m_targetName = sourceName;
-
-	// find input reference for domestic water consumption heat gains
-	sourceName = KeywordList::Keyword(category.c_str(), InputRef_DomesticWaterConsumptionSensitiveHeatGain);
-	// create input references for light gains model
-	InputReference & domWaterRef = inputReference(InputRef_DomesticWaterConsumptionSensitiveHeatGain);
-	domWaterRef.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
-	domWaterRef.m_id = id(); // only choose loads with reference to current zone
-	domWaterRef.m_sourceName = sourceName;
-	domWaterRef.m_targetName = sourceName;
+		resDesc.push_back(result);
+	}
 }
 
 
 void RoomBalanceModel::resultValueRefs(std::vector<const double *> &res) const {
 	// first seach in m_results vector
-	DefaultModel::resultValueRefs(res);
+	res.clear();
+	// fill with all results and vector valued results
 
-	// Additionally we provide a reference to the solution quantity.
-	// This reference will be accessed by the corresponding RoomStatesModel.
-	res.push_back(&m_y[0]);
-
-	// And we provide a reference to the divergences.
-	res.push_back(&m_ydot[0]);
+	for (unsigned int i = 0; i < m_results.size(); ++i) {
+		res.push_back(&m_results[i]);
+	}
 }
 
 
 const double * RoomBalanceModel::resultValueRef(const QuantityName & quantityName) const {
-	// first seach in m_results vector
-	const double *refValue = DefaultModel::resultValueRef(quantityName);
-	if( refValue != NULL)
-		return refValue;
-	// only scalar quantities are allowed any longer
-	if (quantityName.index() != -1)
-		return NULL;
+	// search inside keyword list result quantities
+	// Note: index in m_results corresponds to enumeration values in enum 'Results'
+	const char * const category = "RoomBalanceModel::Results";
 
-	// now check constant parameters (we provide project parameters as input references
-	// for the access by other models).
-	// Here: radiation load fraction
-	if(quantityName== KeywordList::Keyword("RoomBalanceModel::InputReferences",InputRef_RadiationLoadFraction) )
-	{
-		return &m_simulationParameter->m_para[NANDRAD::SimulationParameter::SP_RADIATION_LOAD_FRACTION].value;
+	if (KeywordList::CategoryExists(category) && KeywordList::KeywordExists(category, quantityName.m_name)) {
+		int resIdx = KeywordList::Enumeration(category, quantityName.m_name);
+		return &m_results[(unsigned int)resIdx];
 	}
-	// Additionally we provide a reference to the solution quantity.
-	// This reference will be accessed by the corresponding RoomStatesModel.
-	if(quantityName == std::string("y") )
-	{
-		return &m_y[0];
-	}
-	// And we provide a reference to the divergences.
-	if(quantityName == std::string("ydot") )
-	{
-		return &m_ydot[0];
-	}
-	return NULL;
+	else
+		return nullptr;
 }
 
 
-void RoomBalanceModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
-	// fill definitions from keyword list
-	DefaultModel::resultDescriptions(resDesc);
-	// add descriptions for all project parameters
-	QuantityDescription result;
-	result.m_name = KeywordList::Keyword("RoomBalanceModel::InputReferences", InputRef_RadiationLoadFraction);
-	result.m_description = KeywordList::Description("RoomBalanceModel::InputReferences", InputRef_RadiationLoadFraction);
-	result.m_unit = KeywordList::Unit("RoomBalanceModel::InputReferences", InputRef_RadiationLoadFraction);
-	result.m_constant = true;
-	resDesc.push_back(result);
-	// offer a reference to the solution quantity
-	result.m_name = std::string("y");
-	result.m_description = std::string("States");
-	result.m_unit = std::string("---");
-	result.m_constant = true;
-	resDesc.push_back(result);
-	// offer a reference to the divergences
-	result.m_name = std::string("ydot");
-	result.m_description = std::string("Divergences");
-	result.m_unit = std::string("---");
-	resDesc.push_back(result);
+void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & /*models*/) {
+	/// \todo
 }
 
-#if 0
-void RoomBalanceModel::stateDependencies(std::vector< std::pair<const double *, const double *> > &resultInputValueReferences) const
-{
-	// clear pattern
-	if(!resultInputValueReferences.empty() )
-		resultInputValueReferences.clear();
-	// only connect to ydot and ignore complete loads
-	const double *valueRef = &m_ydot[0];
-	IBK_ASSERT(valueRef != NULL);
-	// now we add a dependency between each result value and each input value
-	for(unsigned int i = 0; i < inputValueRefs().size(); ++i)
-	{
-		// skip references to RadiationLoadFraction
-		if( i == (unsigned int) InputRef_RadiationLoadFraction)
-			continue;
-		// retrieve value pointer
-		const double *inputValue = inputValueRefs()[i];
-		IBK_ASSERT(inputValue != NULL);
-		// store the pair of adresses of result value and input
-		// value inside pattern list (the pattern is dense)
-		resultInputValueReferences.push_back(
-			std::make_pair(valueRef, inputValue) );
-	}
-}
-#endif
 
 int RoomBalanceModel::update() {
 
-	// check validity of the definition
-	IBK_ASSERT(inputValueRefs()[InputRef_WallsHeatConductionLoad] != NULL);
-	IBK_ASSERT(inputValueRefs()[InputRef_RadiationLoadFraction] != NULL);
-	IBK_ASSERT(inputValueRefs()[InputRef_WindowsSWRadLoad] != NULL);
-	IBK_ASSERT(inputValueRefs()[InputRef_WindowsHeatTransmissionLoad] != NULL);
-	IBK_ASSERT(inputValueRefs()[InputRef_LWRadBalanceLoad] != NULL);
-	IBK_ASSERT(inputValueRefs()[InputRef_SWRadBalanceLoad] != NULL);
-	IBK_ASSERT(inputValueRefs()[InputRef_ConvectiveHeatingsLoad] != NULL);
-	IBK_ASSERT(inputValueRefs()[InputRef_ConvectiveCoolingsLoad] != NULL);
-	IBK_ASSERT(inputValueRefs()[InputRef_ConvectiveUsersLoad] != NULL);
-	IBK_ASSERT(inputValueRefs()[InputRef_ConvectiveEquipmentLoad] != NULL);
-	IBK_ASSERT(inputValueRefs()[InputRef_ConvectiveLightingLoad] != NULL);
-	IBK_ASSERT(inputValueRefs()[InputRef_UserVentilationThermalLoad] != NULL);
-	IBK_ASSERT(inputValueRefs()[InputRef_InfiltrationThermalLoad] != NULL);
-	IBK_ASSERT(inputValueRefs()[InputRef_AirConditionThermalLoad] != NULL);
-	IBK_ASSERT(inputValueRefs()[InputRef_DomesticWaterConsumptionSensitiveHeatGain] != NULL);
-
 	double SumQdot = 0.0;
+#if 0
+
 	// retrieve heat conduction fluxes from all walls (and revert the direction of loss)
 	const double QdotHeatCondWall = *inputValueRefs()[InputRef_WallsHeatConductionLoad];
 	// add heat conduction flux to room balance
@@ -404,29 +163,23 @@ int RoomBalanceModel::update() {
 	const double QdotDomesticWaterSensitiveGain = *inputValueRefs()[InputRef_DomesticWaterConsumptionSensitiveHeatGain];
 	// add heat gains
 	SumQdot += QdotDomesticWaterSensitiveGain;
+#endif
 
 	// store the sum of all loads
-	m_results[R_CompleteThermalLoad].value = SumQdot;
+	m_results[R_CompleteThermalLoad] = SumQdot;
+	// solve the balance: ydot = sum loads
+	m_ydot[0] = m_results[R_CompleteThermalLoad];
 	// signal success
 	return 0;
 }
-#endif
 
-void RoomBalanceModel::setY(const double * y) {
-	m_y[0] = y[0];
-}
 
 int RoomBalanceModel::ydot(double* ydot) {
-	// solve the balance: ydot = sum loads
-	m_ydot[0] = m_results[R_CompleteThermalLoad];
-	// and return ydot
-	std::memcpy(ydot, &m_ydot[0], m_ydot.size()*sizeof(double) );
-	// ydot is called at the end of an update cycle
-	// an non-linear iteration calls:
-	// - setTime()
-	// - setY()
-	// - update()
-	// - ydot()
+	// copy values to ydot
+	ydot[0] = m_ydot[0];
+	if (m_ydot.size() > 1) {
+		ydot[1] = m_ydot[1];
+	}
 	// signal success
 	return 0;
 }

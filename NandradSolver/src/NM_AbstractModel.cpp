@@ -35,8 +35,4 @@ AbstractTimeDependency::~AbstractTimeDependency() {
 
 }
 
-AbstractStateDependency::~AbstractStateDependency() {
-
-}
-
 } // namespace NANDRAD_MODEL
