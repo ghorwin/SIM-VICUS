@@ -235,7 +235,7 @@ void NandradModel::setupDirectories(const NANDRAD::ArgsParser & args) {
 /*** Functions re-implemented from SOLFRA::ModelInterface. ***/
 
 double NandradModel::dt0() const {
-	return 0.1; // m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_INITIAL_DT].value;
+	return m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_INITIAL_DT].value;
 }
 
 
