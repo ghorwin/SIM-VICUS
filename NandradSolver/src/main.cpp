@@ -1853,8 +1853,6 @@ int main(int argc, char * argv[]) {
 		IBK::IBK_Message( IBK::FormatString("Model initialization complete, duration: %1\n\n").arg(initWatch.diff_str()),
 						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
-		return EXIT_SUCCESS;
-
 		// *** Run model through solver control framework ***
 		IBK::IBK_Message("Creating solver framework\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		SOLFRA::SolverControlFramework solver(&model);
@@ -1862,6 +1860,8 @@ int main(int argc, char * argv[]) {
 		solver.m_logDirectory = model.dirs().m_logDir;
 		solver.m_stopAfterSolverInit = args.flagEnabled(IBK::SolverArgsParser::GO_TEST_INIT);
 		solver.m_restartFilename = model.dirs().m_varDir / "restart.bin";
+
+		return EXIT_SUCCESS;
 
 		// depending on the restart settings, either run from start or continue simulation
 		if (args.m_restartFrom) {

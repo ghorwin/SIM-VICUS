@@ -99,24 +99,24 @@ public:
 	StateModelGroup();
 
 	/*! Default destructor. */
-	~StateModelGroup();
+	~StateModelGroup() override;
 
 	/********* Functions inherited from AbstractStateDependency. ********/
 
 	/*! Reference descriptions are empty.*/
-	virtual void inputReferenceDescriptions(std::vector<QuantityDescription> & /*refDesc*/) const { }
+//	virtual void inputReferenceDescriptions(std::vector<QuantityDescription> & /*refDesc*/) const { }
 
 	/*! Return an empty vector.*/
-	virtual const std::vector<const double *> & inputValueRefs() const { return m_emptyInputReferenceVector; }
+	virtual const std::vector<const double *> & inputValueRefs() const override { return m_emptyInputReferenceVector; }
 
 	/*! Re-implement this function in derived classes and handle all your update-functionality here. */
-	virtual int update();
+	virtual int update() override;
 
 	/*! Returns a pattern of direkt computational dependencies between input values
 	and result values of the current model group (the first pair entry correspondss
 	to the input value, the second entry to the result value).
 	*/
-	virtual void stateDependencies(std::vector< std::pair<const double *, const double *> > &resultInputValueReferences) const;
+	virtual void stateDependencies(std::vector< std::pair<const double *, const double *> > &resultInputValueReferences) const override;
 
 
 	/********* Functions inherited from ModelInterface. ********/
@@ -149,8 +149,7 @@ public:
 	void resultValueRefs(std::vector<const double *> &res);
 
 	/*! Initializes group (non-linear solver) from a dependency group.*/
-	void init(const ZEPPELIN::DependencyGroup &group,
-		const NANDRAD::SolverParameter &solverPara);
+	void init(const ZEPPELIN::DependencyGroup &group, const NANDRAD::SolverParameter &solverPara);
 
 	/*! Initializes all states and y-values.*/
 	int initStates();
@@ -165,15 +164,9 @@ protected:
 	/********* Functions inherited from AbstractStateDependency. ********/
 
 	/*! Does nothing.*/
-	virtual void inputReferences(std::vector<InputReference>  & /* inputRefs*/) const { }
+	virtual void inputReferences(std::vector<InputReference>  & /* inputRefs*/) const override { }
 	/*! Does nothing.*/
-//	virtual bool registerInputReference(unsigned int /*sourceID*/,
-//		NANDRAD::ModelInputReference::referenceType_t /*referenceType*/,
-//		const QuantityName &/*quantity*/,
-//		const QuantityName &/*targetName*/,
-//		NANDRAD::ImplicitModelFeedback::operation_t /*operation*/) { return false; }
-	/*! Does nothing.*/
-	virtual void setInputValueRef(const double * /*resultValueRef*/, const QuantityName &/*targetName*/) { }
+	virtual void setInputValueRef(const InputReference &/*inputRef*/, const QuantityDescription & /*resultDesc*/, const double */*resultValueRef*/) override {}
 
 
 private:

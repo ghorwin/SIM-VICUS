@@ -190,8 +190,6 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 	initModelGraph();
 	// *** Initialize list with output references ***
 	initOutputReferenceList();
-	// *** Check validity for all model initial values ***
-//	prepareInitialModelCalculation();
 	// *** Initialize Global Solver ***
 	initSolverVariables();
 	// *** Initialize sparse solver matrix ***
@@ -2035,7 +2033,68 @@ void NandradModel::initModelDependencies() {
 
 
 void NandradModel::initModelGraph() {
+	FUNCID(NandradModelImpl::initModelGraph);
 
+	// *** create state dependency graph ***
+
+	IBK::IBK_Message(IBK::FormatString("Creating Dependency Graph for %1 State-Dependent Models\n").arg((int)
+		m_unorderedStateDependencies.size()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+
+	try {
+		std::vector<ZEPPELIN::DependencyObject*> stateDepObjects(m_unorderedStateDependencies.begin(),
+			m_unorderedStateDependencies.end());
+		try {
+			// set objects in graph and compute evaluation order
+			m_stateDependencyGraph.setObjects(stateDepObjects, m_stateDependencyGroups);
+		}
+		catch (std::exception &ex) {
+			throw IBK::Exception(ex.what(), FUNC_ID);
+		}
+
+		// retrieve parallel groups
+		const std::vector<ZEPPELIN::DependencyGraph::ParallelObjects> & orderedStateDependentObjects
+			= m_stateDependencyGraph.orderedParallelObjects();
+
+		// loop over all parallel groups in ordered vectors
+		for (unsigned int i = 0; i < orderedStateDependentObjects.size(); ++i) {
+			const ZEPPELIN::DependencyGraph::ParallelObjects & objects = orderedStateDependentObjects[i];
+
+			// insert a new vector of AbstractTimeStateObjects
+			m_orderedStateDependentSubModels.push_back(ParallelStateObjects());
+
+			ParallelStateObjects & objs = m_orderedStateDependentSubModels.back();
+			// loop over all parallel groups of one group vector
+			for (unsigned int j = 0; j < objects.size(); ++j) {
+				// select all objects of one group and sort into subModels-vector
+				const ZEPPELIN::DependencyGroup* objGroup = dynamic_cast<const ZEPPELIN::DependencyGroup*>(objects[j]);
+
+				// error
+				IBK_ASSERT(objGroup != NULL);
+
+				// construct a state object group
+				StateModelGroup *stateModelGroup = new StateModelGroup;
+				stateModelGroup->init(*objGroup, m_project->m_solverParameter);
+				// add to group container
+				m_stateModelGroups.insert(stateModelGroup);
+				// register group as state dependend object
+				m_stateModelContainer.push_back(stateModelGroup);
+				// insert into ordered vector
+				objs.push_back(stateModelGroup);
+			}
+		}
+	}
+	catch (IBK::Exception &ex) {
+		throw IBK::Exception(ex, IBK::FormatString("Error creating ordered state dependency graph!"),
+			FUNC_ID);
+	}
+
+	// insert head and tail
+	m_orderedStateDependentSubModels.insert(m_orderedStateDependentSubModels.begin(),
+		m_orderedStateDependentSubModelsHead.begin(),
+		m_orderedStateDependentSubModelsHead.end());
+	m_orderedStateDependentSubModels.insert(m_orderedStateDependentSubModels.end(),
+		m_orderedStateDependentSubModelsTail.begin(),
+		m_orderedStateDependentSubModelsTail.end());
 }
 
 
@@ -2117,7 +2176,104 @@ void NandradModel::initOutputReferenceList() {
 
 
 void NandradModel::initSolverVariables() {
+	FUNCID(NandradModelImpl::initSolverVariables);
 
+	// In this function the number of conserved variables is calculated (summing up states in zones and constructions)
+	// and linear memory arrays for y, y0 and ydot are created.
+
+	// Zone state variables are stored first, followed by wall (Finite-Volume) states.
+	// The offsets to the start of each memory block are stored in m_zoneVariableOffset and m_wallVariableOffset.
+
+//	m_wallVariableOffset.resize(m_nWalls,0);
+	m_zoneVariableOffset.resize(m_nZones,0);
+
+	m_n = 0;
+
+	// *** count number of unknowns in zones and initialize zone offsets ***
+
+	unsigned int numVarsPerZone = 1;
+	if (m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled())
+		numVarsPerZone = 2;
+
+	m_n = m_nZones*numVarsPerZone;
+
+	// populate vector with offsets to zone-balance variables in global vector
+	for (unsigned int i=0; i<m_nZones; ++i)
+		m_zoneVariableOffset[i] = i*numVarsPerZone;
+
+#if 0
+	// *** count number of unknowns in walls and initialize wall offsets ***
+
+	// m_n counts the number of unknowns. We start with 1 for the room balance.
+	for (unsigned int i=0; i<m_nWalls; ++i) {
+		// calculate position inside y-vector
+		m_wallVariableOffset[i] = m_n;
+		unsigned int n_elements = m_wallSolverModelContainer[i]->nPrimaryStateResults();
+		m_n += n_elements;
+	}
+
+	// *** set weighting factor
+	if(m_nWalls > 0) {
+		// calculate mean number of diecrtization elements for each wall
+		//m_weightsFactorZones =(double) (m_n - m_nZones)/ (double) m_nWalls;
+		m_weightsFactorZones = (double) (m_n - m_nZones)/ (double) m_nWalls;
+		// ensure that we are larger then 1
+		IBK_ASSERT(m_weightsFactorZones >= 1.0);
+	}
+
+	// *** count number of unknowns in explicit models and initialize corresponding offsets ***
+
+	if (!m_ODEStatesAndBalanceModelContainer.empty()) {
+		m_ODEVariableOffset.resize(m_ODEStatesAndBalanceModelContainer.size());
+		for (unsigned int i = 0; i < m_ODEStatesAndBalanceModelContainer.size(); ++i) {
+			AbstractODEBalanceModel *balanceModel = m_ODEStatesAndBalanceModelContainer[i].second;
+			// calculate position inside y-vector
+			m_ODEVariableOffset[i] = m_n;
+			// update solver quantity size
+			m_n += balanceModel->n();
+		}
+	}
+#endif
+
+	// resize storage vectors
+	m_y.resize(m_n);
+	m_y0.resize(m_n);
+	m_ydot.resize(m_n);
+
+	// *** Retrieve initial conditions ***
+	for (unsigned int i=0; i<m_nZones; ++i) {
+		m_roomStatesModelContainer[i]->yInitial(&m_y0[ m_zoneVariableOffset[i] ]);
+	}
+
+#if 0
+	// energy density of the walls
+	for (unsigned int i=0; i<m_nWalls; ++i) {
+		m_wallSolverModelContainer[i]->yInitial(&y0tmp[0] + m_wallVariableOffset[i]);
+	}
+
+	// explicit models
+	for (unsigned int i = 0; i<m_ODEStatesAndBalanceModelContainer.size(); ++i) {
+		AbstractODEBalanceModel *balanceModel = m_ODEStatesAndBalanceModelContainer[i].second;
+		std::memcpy(&y0tmp[0] + m_ODEVariableOffset[i], balanceModel->y0(),
+			balanceModel->n() * sizeof(double));
+	}
+#endif
+
+	// set time point to -1, which means the first call is the initialization call
+	m_t = -1;
+
+#if 0
+	// *** Select serial code for small problem sizes ***
+
+	if (m_numThreads > 1 && m_n > 1000) {
+		m_useSerialCode = false;
+	}
+	else {
+		if (m_numThreads > 1)
+			IBK::IBK_Message(IBK::FormatString("Only %1 unknowns, using serial code in model evaluation!\n").arg(m_n), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		m_useSerialCode = true;
+	}
+#endif
 }
 
 
