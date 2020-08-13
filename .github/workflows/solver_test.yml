@@ -20,5 +20,15 @@ jobs:
     - uses: actions/checkout@v2
 
     # Runs a single command using the runners shell
+    - name: build
+      run: (cd build/cmake; ./build.sh 8 no-gui release)
+
+  check:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+
     - name: test
       run: (cd build/cmake; ./run_tests.sh)
