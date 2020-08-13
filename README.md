@@ -72,9 +72,9 @@ Doxygen-style, prefer:
 
 ```c++
 /*! Brief description of function.
-	Longer multi-line documentation of function.
-	\param arg1 The first argument.
-	\param temperature A temperature in [C]
+    Longer multi-line documentation of function.
+    \param arg1 The first argument.
+    \param temperature A temperature in [C]
 */
 void setParams(int arg1, double temperature);
 
