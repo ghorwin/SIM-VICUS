@@ -1006,20 +1006,20 @@ void NandradModel::initZones() {
 
 	// created models are added to m_stateModelContainer (which owns them)
 	// a reference is also placed in m_roomStateModelContainer, which is used by the
-#if 0
+
+	const NANDRAD::SimulationParameter &simPara = m_project->m_simulationParameter;
 
 	// remember all zones that require a room state model
 	std::vector<const NANDRAD::Zone*> activeZones;
 	// process all active zones in list of zones
 	for (const NANDRAD::Zone & zone : m_project->m_zones) {
 
-		const NANDRAD::SimulationParameter &simPara = m_project->m_simulationParameter;
 
-		IBK::IBK_Message( IBK::FormatString("Zone [%1] '%2' -> %3\n").arg(zone.m_id).arg(zone.m_displayName)
-			.arg( zone.m_type == NANDRAD::Zone::ZT_CONSTANT ? "CONSTANT" : "ACTIVE"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+		IBK::IBK_Message( IBK::FormatString("Zone [%1] '%2':\n").arg(zone.m_id).arg(zone.m_displayName), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 		switch (zone.m_type) {
 			case NANDRAD::Zone::ZT_ACTIVE : {
-				// create implicit room state model
+				IBK::IBK_Message( IBK::FormatString("  ACTIVE\n").arg(zone.m_id).arg(zone.m_displayName), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+				// create implicit room state and room balance models
 				RoomBalanceModel * roomBalanceModel = new RoomBalanceModel(zone.m_id, zone.m_displayName);
 				RoomStatesModel * roomStatesModel = new RoomStatesModel(zone.m_id, zone.m_displayName);
 
@@ -1028,8 +1028,7 @@ void NandradModel::initZones() {
 					roomBalanceModel->setup(simPara);
 				}
 				catch (IBK::Exception & ex) {
-					throw IBK::Exception(ex, IBK::FormatString("Error in setup of model '%1' for zone #%2 '%3'")
-						.arg(roomBalanceModel->ModelIDName())
+					throw IBK::Exception(ex, IBK::FormatString("Error in setup of 'RoomBalanceModel' for zone #%1 '%2'")
 						.arg(zone.m_id).arg(zone.m_displayName), FUNC_ID);
 				}
 
@@ -1039,27 +1038,18 @@ void NandradModel::initZones() {
 				// because we need to call ydot().
 				m_roomBalanceModelContainer.push_back(roomBalanceModel);
 
-				// sort into the state model container ...
-//				registerStateDependendModel(roomBalanceModel);
-//				m_stateModelContainer.push_back(roomBalanceModel);
-
 				// initialize room state model
 				try {
-					roomStatesModel->setup(zone);
+					roomStatesModel->setup(zone, simPara);
 				}
 				catch (IBK::Exception & ex) {
-					throw IBK::Exception(ex, IBK::FormatString("Error in setup of model '%1' for zone #%2 '%3'")
-						.arg(roomBalanceModel->ModelIDName())
+					throw IBK::Exception(ex, IBK::FormatString("Error in setup of model 'RoomStatesModel' for zone #%1 '%2'")
 						.arg(zone.m_id).arg(zone.m_displayName), FUNC_ID);
 				}
 
 
 				// always put the model first into our central model storage
 				m_modelContainer.push_back(roomStatesModel); // this container now owns the model
-
-																// sort into the state model container - this model only
-																// provides references to y and constant project parameters
-//				registerStateDependendModel(roomStatesModel);
 
 				// also remember this model in the container with room state models m_roomBalanceModelContainer
 				// because we need to call yInitial().
@@ -1136,11 +1126,11 @@ void NandradModel::initZones() {
 			} break;
 
 			case NANDRAD::Zone::NUM_ZT :
-			default :
 				throw IBK::Exception( IBK::FormatString("Undefined or unsupported zone type in zone with id #%1")
 													.arg(zone.m_id), FUNC_ID);
 		} // switch
 	} // for (Zones)
+
 #if 0
 	// create model instances for all loads of the given _active_ zones
 	for (unsigned int i=0; i<activeZones.size(); ++i) {
@@ -1647,7 +1637,6 @@ void NandradModel::initZones() {
 		registerStateDependendModel(energyPerformanceModel);
 	}
 
-#endif
 #endif
 
 	m_nZones = (unsigned int) m_roomBalanceModelContainer.size();

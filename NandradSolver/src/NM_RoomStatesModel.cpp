@@ -35,7 +35,7 @@ void RoomStatesModel::setup(const NANDRAD::Zone & zone, const NANDRAD::Simulatio
 	FUNCID(RoomStatesModel::setup);
 
 	// Only initialization of zone with matching ID allowed
-	IBK_ASSERT(zone.m_id != id());
+	IBK_ASSERT(zone.m_id == id());
 
 	// store pointers to the NANDRAD parametrization objects
 	m_zone		= &zone;

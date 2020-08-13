@@ -101,6 +101,20 @@ void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & 
 }
 
 
+void RoomBalanceModel::inputReferences(std::vector<InputReference> & inputRefs) const {
+
+}
+
+const std::vector<const double *> & RoomBalanceModel::inputValueRefs() const {
+	return m_inputValueRefs;
+}
+
+void RoomBalanceModel::setInputValueRef(const InputReference & inputRef, const QuantityDescription & resultDesc, const double * resultValueRef) {
+	/// \todo
+
+}
+
+
 int RoomBalanceModel::update() {
 
 	double SumQdot = 0.0;

@@ -125,8 +125,22 @@ public:
 	/*! Composes all input references.*/
 	virtual void initInputReferences(const std::vector<AbstractModel*> & /* models */) override;
 
-	/*! Adds dependencies between ydot and y to default pattern. */
-//	void stateDependencies(std::vector< std::pair<const double *, const double *> > &resultInputValueReferences) const;
+	/*! Returns vector with model input references.
+		Implicit models must generate their own model input references and populate the
+		vector argument.
+		\note This function is not the fastest, so never call this function from within the solver
+		(except maybe for output writing).
+	*/
+	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const override;
+
+	/*! Returns vector with pointers to memory locations matching input value references. */
+	virtual const std::vector<const double *> & inputValueRefs() const override;
+
+	/*! Sets a single input value reference (persistent memory location) that refers to the requested input reference.
+		\param inputRef An input reference from the previously published list of input references.
+		\param resultValueRef Persistent memory location to the variable slot.
+	*/
+	virtual void setInputValueRef(const InputReference &inputRef, const QuantityDescription & resultDesc, const double *resultValueRef) override;
 
 	/*! Sums up all provided input quantities and computes divergence of balance equations. */
 	int update() override;
@@ -149,6 +163,13 @@ protected:
 		Index matches enum values of Results.
 	*/
 	std::vector<double>								m_results;
+
+	/*! Vector with pointer to input values.
+		This vector is resized and filled by the framework.
+		\sa inputValueRefs()
+	*/
+	std::vector<const double *>						m_inputValueRefs;
+
 
 	/*! Vector with cached derivatives, updated at last call to update(). */
 	std::vector<double>								m_ydot;
