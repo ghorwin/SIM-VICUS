@@ -18,7 +18,7 @@
 			<IBK:IntPara name="StartYear">2015</IBK:IntPara>
 		</SimulationParameter>
 		<SolverParameter>
-			<IBK:Parameter name="InitialTimeStep" unit="s">1800</IBK:Parameter>
+			<IBK:Parameter name="InitialTimeStep" unit="s">60</IBK:Parameter>
 		</SolverParameter>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>

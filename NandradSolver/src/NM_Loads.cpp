@@ -244,10 +244,6 @@ void Loads::initResults(const std::vector<AbstractModel*> & models) {
 int Loads::setTime(double t) {
 	FUNCID(Loads::setTime);
 
-	if (m_t == t)
-		// signal success
-		return 0;
-
 	// cache time
 	m_t = t;
 

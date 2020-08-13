@@ -254,28 +254,18 @@ SOLFRA::ModelInterface::CalculationResult NandradModel::setTime(double t) {
 
 
 SOLFRA::ModelInterface::CalculationResult NandradModel::setY(const double * y) {
-	// \todo memcpy y -> m_y
-#if 0
-	// map input y to model y
-	bool different = false;
-	for (unsigned int i=0; i<m_n; ++i) {
-		if (m_y[/* m_yIndexMap[*/i/*]*/ ] != y[i]) {
-			different = true;
-			m_y[ /*m_yIndexMap[*/i/*] */] = y[i];
-		}
-	}
+	// copy memory
+	std::memcpy(&m_y[0], y, m_n*sizeof(double));
 
 	// mark model as outdated
-	if (different)
-		m_yChanged = true;
-#endif
+	m_yChanged = true;
+
 	// fluxes and divergences are computed in ydot()
 	return SOLFRA::ModelInterface::CalculationSuccess;
 }
 
 
 SOLFRA::ModelInterface::CalculationResult NandradModel::ydot(double * ydot) {
-#if 0
 	FUNCID(NandradModel::ydot);
 	try {
 		int calculationResultFlag = 0;
@@ -319,9 +309,8 @@ SOLFRA::ModelInterface::CalculationResult NandradModel::ydot(double * ydot) {
 		if (ydot == nullptr)
 			return SOLFRA::ModelInterface::CalculationSuccess;
 
-		// *** map model ydot to output ydot ***
-		for (unsigned int i=0; i<m_n; ++i)
-			ydot[i] = m_ydot[ /*m_yIndexMap[*/i/*]*/ ];
+		// *** store ydot ***
+		std::memcpy(&ydot, &m_ydot[0], m_n*sizeof(double));
 
 		// *** feedback to user ***
 		IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("    ydot: t=%1 [%2]\n")
@@ -332,7 +321,7 @@ SOLFRA::ModelInterface::CalculationResult NandradModel::ydot(double * ydot) {
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, "Error retrieving divergences!", FUNC_ID);
 	}
-#endif
+
 	return SOLFRA::ModelInterface::CalculationSuccess;
 }
 
@@ -2320,6 +2309,43 @@ void NandradModel::initStatistics(SOLFRA::ModelInterface * modelInterface, bool 
 
 	// setup feedback object, this also starts the stopwatch
 	m_feedback.setup(m_progressLog, t0(), tEnd(), m_projectFilePath.str(), m_elapsedSecondsAtStart, m_elapsedSimTimeAtStart, modelInterface);
+}
+
+
+int NandradModel::updateTimeDependentModels() {
+	// *** update time in all directly time dependend models ***
+
+	int calculationResultFlag = 0;
+	for (std::vector<AbstractTimeDependency*>::iterator it1 = m_timeModelContainer.begin();
+		it1 != m_timeModelContainer.end(); ++it1)
+	{
+#ifdef IBK_STATISTICS
+		// set time for all objects independently
+		SUNDIALS_TIMED_FUNCTION(NANDRAD_TIMER_SETTIME,
+			calculationResultFlag |= (*it1)->setTime(m_t)
+		);
+		++m_nSetTimeCalls;
+#else
+		calculationResultFlag |= (*it1)->setTime(m_t);
+#endif
+	}
+	if (calculationResultFlag != 0) {
+		if (calculationResultFlag & 2)
+			return 2;
+		else
+			return 1;
+	}
+
+	// mark solution as updated
+	m_tChanged = false;
+	// signal success
+	return 0;
+}
+
+
+int NandradModel::updateStateDependentModels() {
+	// signal success
+	return 0;
 }
 
 

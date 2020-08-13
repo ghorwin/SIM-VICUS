@@ -271,6 +271,11 @@ private:
 	/*! Vectors storing sparse matrix pattern (CSR format): number of nonzero elements: */
 	unsigned int nnz() const  { return (unsigned int) m_ja.size(); }
 
+	/*! Updates all time dependent models due to their order in state dependency graph. */
+	int updateTimeDependentModels();
+	/*! Updates all state dependent models due to their order in state dependency graph. */
+	int updateStateDependentModels();
+
 
 	// *** PRIVATE MEMBER VARIABLES ***
 
