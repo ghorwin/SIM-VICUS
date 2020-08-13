@@ -14,48 +14,6 @@
 				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
 			</Zone>
 		</Zones>
-		<ConstructionInstances>
-			<ConstructionInstance id="2" displayName="South Wall">
-				<ConstructionTypeId>10001</ConstructionTypeId>
-				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
-				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
-				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
-				<Interfaces>
-					<Interface id="3" location="A" zoneId="1">
-						<!--Interface to 'TF01'-->
-						<InterfaceHeatConduction modelType="Constant">
-							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
-						</InterfaceHeatConduction>
-					</Interface>
-					<Interface id="4" location="B" zoneId="0">
-						<!--Interface to outside-->
-						<InterfaceHeatConduction modelType="Constant">
-							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
-						</InterfaceHeatConduction>
-					</Interface>
-				</Interfaces>
-			</ConstructionInstance>
-		</ConstructionInstances>
-		<ConstructionTypes>
-			<ConstructionType id="10001" displayName="Exterior wall">
-				<MaterialLayers>
-					<MaterialLayer thickness="0.2" matId="1001" />
-					<MaterialLayer thickness="0.1" matId="1002" />
-				</MaterialLayers>
-			</ConstructionType>
-		</ConstructionTypes>
-		<Materials>
-			<Material id="1001" displayName="Concrete">
-				<IBK:Parameter name="Density" unit="kg/m3">2100</IBK:Parameter>
-				<IBK:Parameter name="HeatCapacity" unit="J/kgK">840</IBK:Parameter>
-				<IBK:Parameter name="Conductivity" unit="W/mK">2.1</IBK:Parameter>
-			</Material>
-			<Material id="1002" displayName="Insulation">
-				<IBK:Parameter name="Density" unit="kg/m3">30</IBK:Parameter>
-				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
-				<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
-			</Material>
-		</Materials>
 		<SimulationParameter>
 			<IBK:IntPara name="StartYear">2015</IBK:IntPara>
 		</SimulationParameter>
@@ -82,12 +40,31 @@
 					<ObjectListName>Location</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>ElevationAngle</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>minutely</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>AzimuthAngle</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>minutely</GridName>
+				</OutputDefinition>
 			</OutputDefinitions>
 			<Grids>
 				<OutputGrid name="hourly">
 					<Intervals>
 						<Interval>
 							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+				<OutputGrid name="minutely">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="Start" unit="min">90720</IBK:Parameter>
+							<IBK:Parameter name="End" unit="min">92160</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
 						</Interval>
 					</Intervals>
 				</OutputGrid>
