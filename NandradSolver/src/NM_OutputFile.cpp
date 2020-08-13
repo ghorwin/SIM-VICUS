@@ -83,6 +83,7 @@ void OutputFile::createInputReferences() {
 			inref.m_id = id;
 			inref.m_required = false;
 			inref.m_name = od.m_quantity;
+			inref.m_referenceType = ol->m_referenceType;
 			m_inputRefs.push_back(inref);
 			m_outputDefMap.push_back(i);
 		}
@@ -103,7 +104,7 @@ void OutputFile::createFile(double t_out, bool restart, bool binary, const std::
 	bool haveIntegrals = false;
 	for (unsigned int i=0; i<m_valueRefs.size(); ++i) {
 		if (m_valueRefs[i] == nullptr) {
-			IBK::IBK_Message(IBK::FormatString("Output for %1(id=%2).%3 not available, skipped.")
+			IBK::IBK_Message(IBK::FormatString("Output for %1(id=%2).%3 not available, skipped.\n")
 							 .arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_inputRefs[i].m_referenceType))
 							 .arg(m_inputRefs[i].m_id)
 							 .arg(m_inputRefs[i].m_name.m_name), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);

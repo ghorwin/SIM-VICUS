@@ -38,7 +38,7 @@
 #include "NM_KeywordList.h"
 
 const char * const STATE_QUANTITIES[] = {
-	"Temperature"
+	"AirTemperature"
 };
 
 const char * const FLUX_QUANTITIES[] = {
@@ -322,8 +322,13 @@ void OutputHandler::writeOutputs(double t_secondsOfYear) {
 		// compose time header and convert output time to output unit
 		std::string timeColumnHeader = "Time [" + m_timeUnit.name() + "]";
 
-		for (OutputFile * of : m_outputFiles)
-			of->createFile(t_out, m_restart, m_binaryFiles, timeColumnHeader, m_outputPath);
+		for (OutputFile * of : m_outputFiles) {
+			try {
+				of->createFile(t_out, m_restart, m_binaryFiles, timeColumnHeader, m_outputPath);
+			} catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, IBK::FormatString("Error creating output file '%1'.").arg(of->m_filename), FUNC_ID);
+			}
+		}
 		// Note: in createFile() also all integral quantities are initialized
 
 		// now create timer (becomes owned by us)

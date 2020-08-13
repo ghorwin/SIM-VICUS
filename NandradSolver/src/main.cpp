@@ -1853,6 +1853,8 @@ int main(int argc, char * argv[]) {
 		IBK::IBK_Message( IBK::FormatString("Model initialization complete, duration: %1\n\n").arg(initWatch.diff_str()),
 						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
+		return EXIT_SUCCESS;
+
 		// *** Run model through solver control framework ***
 		IBK::IBK_Message("Creating solver framework\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		SOLFRA::SolverControlFramework solver(&model);

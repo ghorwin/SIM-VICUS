@@ -26,7 +26,7 @@
 		<Outputs>
 			<OutputDefinitions>
 				<OutputDefinition>
-					<Quantity>Temperature</Quantity>
+					<Quantity>AirTemperature</Quantity>
 					<ObjectListName>All zones</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>

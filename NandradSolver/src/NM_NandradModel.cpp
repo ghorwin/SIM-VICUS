@@ -1790,10 +1790,13 @@ void NandradModel::initModelDependencies() {
 				const QuantityDescription &resDesc = resDescs[j];
 				// now create our "key" data type for the lookup map
 				ValueReference resRef;
-				static_cast<QuantityDescription>(resRef) = resDesc;
+				// In case you don't know the syntax below: we copy the base class attributes to
+				// the derived class by casting the derived class to the base class and thus using
+				// base class to base class assignment operator.
+				static_cast<QuantityDescription&>(resRef) = resDesc;
+				// store additional information for object lookup (not included in QuantityDescription)
 				resRef.m_id = currentModel->id();
 				resRef.m_referenceType = currentModel->referenceType();
-				resRef.m_name = resDesc.m_name;
 
 #if !defined(_OPENMP)
 				IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("%1(id=%2).%3 [%4]\n")
@@ -1850,6 +1853,7 @@ void NandradModel::initModelDependencies() {
 
 	// *** initializing model input references ***
 
+	delete indent.release();
 	IBK::IBK_Message(IBK::FormatString("Initializing all model input references\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	indent.reset(new IBK::MessageIndentor);
 
@@ -1903,7 +1907,7 @@ void NandradModel::initModelDependencies() {
 					// compose search key - for vector valued quantities we ignore the index in ValueReference,
 					// since we only want to find the object that actually provides the *variable*
 					ValueReference valueRef;
-					valueRef.m_id = m_modelContainer[i]->id();
+					valueRef.m_id = inputRef.m_id;
 					valueRef.m_referenceType = inputRef.m_referenceType;
 					valueRef.m_name = inputRef.m_name.m_name;
 
@@ -2029,13 +2033,14 @@ void NandradModel::initModelDependencies() {
 #endif
 }
 
-void NandradModel::initModelGraph()
-{
+
+void NandradModel::initModelGraph() {
 
 }
 
+
 void NandradModel::initOutputReferenceList() {
-	const char * const FUNC_ID = "[NandradModelImpl::initOutputReferenceList]";
+	FUNCID(NandradModelImpl::initOutputReferenceList);
 	IBK::IBK_Message( IBK::FormatString("Initializing Output Quantity List\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 	IBK_MSG_INDENT;
 	// generate and dump calculation results of all models
@@ -2098,10 +2103,13 @@ void NandradModel::initOutputReferenceList() {
 	for (std::map<std::string, QuantityDescription>::const_iterator it = refDescs.begin();
 		it != refDescs.end(); ++it)
 	{
-		outputList << std::setw(30) << std::left << it->first << " \t[" << it->second.m_unit << "] \t" << it->second.m_description << std::endl;
 		std::stringstream strm;
-		strm << std::setw(30) << std::left << it->first << " \t[" << it->second.m_unit << "] \t" << it->second.m_description;
-		IBK::IBK_Message( IBK::FormatString("%1\n").arg(strm.str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+		strm << std::setw(30) << std::left << it->first << '\t'
+			 << std::setw(10) << std::left << ("[" + it->second.m_unit + "]") << '\t'
+			 << it->second.m_description << std::endl;
+		IBK::IBK_Message( IBK::FormatString("%1").arg(strm.str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+
+		outputList << strm.rdbuf();
 	}
 	outputList.flush();
 	outputList.close();
@@ -2112,15 +2120,16 @@ void NandradModel::initSolverVariables() {
 
 }
 
-void NandradModel::initSolverMatrix()
-{
+
+void NandradModel::initSolverMatrix() {
 
 }
 
-void NandradModel::initStatistics(SOLFRA::ModelInterface * modelInterface, bool restart)
-{
+
+void NandradModel::initStatistics(SOLFRA::ModelInterface * modelInterface, bool restart) {
 
 }
+
 
 } // namespace NANDRAD_MODEL
 
