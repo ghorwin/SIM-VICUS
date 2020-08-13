@@ -32,10 +32,9 @@ Lesser General Public License for more details.
 
 namespace NANDRAD {
 
-/*!	\brief Declaration for class Zone
+/*!	A zone defines a thermal zone/room with a single air temperature.
 
-	A zone defines a thermal zone/room with a single air temperature. The class Zone stores
-	all properties needed to compute zone temperature from zone energy.
+	The class Zone stores all properties needed to compute zone temperature from energy density (the conserved quantity).
 
 	Needed for the calculation is either floor area and height, or zone volume. If all parameters
 	are given, the volume property is computed from floor area and height.
@@ -56,7 +55,8 @@ public:
 	enum type_t {
 		ZT_CONSTANT,				// Keyword: Constant		'Zone with constant/predefined temperatures. (schedule) '
 		ZT_ACTIVE,					// Keyword: Active			'Zone described by a temperature node in space.'
-		ZT_GROUND,					// Keyword: Ground			'Ground zone (calculates temperature based on standard ToDo Katja).'
+		/// \todo research different models for ground temperature calculation
+		ZT_GROUND,					// Keyword: Ground			'Ground zone (calculates temperature based on standard).'
 		NUM_ZT
 	};
 
@@ -87,7 +87,7 @@ public:
 	/*! Zone type (Constant, Active).
 		\sa zoneType_t
 	*/
-	type_t						m_type = NUM_ZT;						// XML:A:required
+	type_t						m_type = NUM_ZT;					// XML:A:required
 
 	/*! Physical parameters describing the zone. */
 	IBK::Parameter				m_para[NUM_ZP];						// XML:E
@@ -96,10 +96,8 @@ public:
 	std::string					m_scheduleName;						// XML:E
 
 	/*! Optional: view factors for all inisde interfaces of the current zone. */
-	//todo viewfactor class read, write, etc... ToDo Katja
+	/// \todo viewfactor class read, write, etc... ToDo Katja
 	std::vector<std::pair<viewFactorPair, double> >	m_viewFactors;
-
-	// *** Variables used only during simulation ***
 
 }; // Zone
 
