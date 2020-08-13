@@ -1,4 +1,4 @@
-/*	The NANDRAD data model library.
+/*	NANDRAD Solver Framework and Model Implementation.
 
 	Copyright (c) 2012-today, Institut für Bauklimatik, TU Dresden, Germany
 
