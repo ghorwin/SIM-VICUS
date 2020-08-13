@@ -59,10 +59,10 @@ Each library has its own namespace, matching the file prefix. Example: `NANDRAD:
 
 Example:
 ```c++
-	std::string m_myStringMember;
-	
-	const std::string & myStringMember() const;
-	void setMyStringMember(const std::string & str);
+std::string m_myStringMember;
+
+const std::string & myStringMember() const;
+void setMyStringMember(const std::string & str);
 ```
 !!! **never ever** write `getXXX` !!!!!
 
@@ -71,15 +71,15 @@ Example:
 Doxygen-style, prefer:
 
 ```c++
-    /*! Brief description of function.
-        Longer multi-line documentation of function.
+/*! Brief description of function.
+	Longer multi-line documentation of function.
 	\param arg1 The first argument.
 	\param temperature A temperature in [C]
-    */
-    void setParams(int arg1, double temperature);
-    
-    /*! Mean temperature in [K]. */
-    double m_meanTemperature;
+*/
+void setParams(int arg1, double temperature);
+
+/*! Mean temperature in [K]. */
+double m_meanTemperature;
 ```
 
 Mind to specify **always** physical units for physical value parameters and member variables!
