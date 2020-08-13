@@ -23,27 +23,12 @@ Lesser General Public License for more details.
 
 #include "NM_RoomStatesModel.h"
 
-#include <NANDRAD_KeywordList.h>
 #include <NANDRAD_Zone.h>
 #include <NANDRAD_SimulationParameter.h>
 
-//#include "NM_Constants.h"
-//#include "NM_ConstructionStatesModel.h"
-//#include "NM_EquipmentLoadModel.h"
-//#include "NM_FluidModel.h"
-//#include "NM_LightingLoadModel.h"
-
 #include "NM_KeywordList.h"
-#include "NM_InputReference.h"
-
 
 namespace NANDRAD_MODEL {
-
-RoomStatesModel::RoomStatesModel(unsigned int id, const std::string & displayName)
-	: m_id(id), m_displayName(displayName)
-{
-}
-
 
 void RoomStatesModel::setup(const NANDRAD::Zone & zone, const NANDRAD::SimulationParameter & simPara) {
 	FUNCID(RoomStatesModel::setup);
@@ -133,13 +118,13 @@ void RoomStatesModel::yInitial(double * y) const {
 		// initial energy density is calculated from initial temperature
 
 		/// \todo if constants should be adjustable, create parameters in SimulationParameters data section and
-		/// uses these here.
+		/// use these here.
 
 		const double rhoAir		= IBK::RHO_AIR;
 		const double cAir		= IBK::C_AIR;
 		const double TInitial	= m_results[0];
 
-		// return initial value to global solver
+		// store initial value of conserved quantity
 		y[0] = TInitial * (rhoAir*cAir*m_volume + m_additionalHeatCapacity);
 	}
 }
@@ -153,10 +138,10 @@ int RoomStatesModel::update(const double * y) {
 		/// \todo hygrothermal implementation
 	}
 	else {
-		double uR = y[0];
+		double uR = y[0]; // first conserved quantity is energy density
 
 		/// \todo if constants should be adjustable, create parameters in SimulationParameters data section and
-		/// uses these here.
+		/// use these here.
 
 		const double rhoAir		= IBK::RHO_AIR;
 		const double cAir		= IBK::C_AIR;
@@ -173,4 +158,3 @@ int RoomStatesModel::update(const double * y) {
 
 
 } // namespace NANDRAD_MODEL
-

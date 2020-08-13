@@ -62,7 +62,10 @@ public:
 	};
 
 	/*! Constructor. */
-	RoomStatesModel(unsigned int id, const std::string &displayName);
+	RoomStatesModel(unsigned int id, const std::string &displayName) :
+		m_id(id), m_displayName(displayName)
+	{
+	}
 	/*! Copy constructor is not available (disable copy). */
 	RoomStatesModel(const RoomStatesModel &) = delete;
 	/*! Assignment operator is not available (disable copy). */

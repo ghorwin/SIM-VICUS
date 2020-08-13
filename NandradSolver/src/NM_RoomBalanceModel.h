@@ -21,8 +21,8 @@ Lesser General Public License for more details.
 #ifndef RoomBalanceModelH
 #define RoomBalanceModelH
 
-#include "NM_DefaultModel.h"
-#include "NM_DefaultStateDependency.h"
+#include "NM_AbstractModel.h"
+#include "NM_AbstractStateDependency.h"
 
 namespace NANDRAD {
 	class SimulationParameter;
@@ -35,12 +35,17 @@ namespace NANDRAD_MODEL {
 /*!	The room balance model handles the calculation of all heat fluxes
 	towards the room which are results of other model objects.
 
-	Additionally it communicates with the integrator that provides the solution
-	quantities and requests the ydot vector. For this purpose the
-	update procedure calulates the sum of fluxes and divergences into
-	the room.
+	The modell basically sums up all provided fluxes from constructions and equipment
+	and then computed the time derivative of the balanced energies. When moisture balance
+	is enabled, it also balances moisture content in the room air.
+
+	This is a "tail"-type model and explicitely evaluated last in the model evaluation.
+	It is not part of the dependency graph and the solver framework calls update() and ydot()
+	directly at the end of the model update.
+
+	The retrieved ydot values are then used by the time integrator.
 */
-class RoomBalanceModel : public DefaultModel, public AbstractStateDependency {
+class RoomBalanceModel : public AbstractModel, public AbstractStateDependency {
 public:
 
 	enum Results {
@@ -67,11 +72,15 @@ public:
 		NUM_InputRef
 	};
 
-	/*! Constructor, relays ID to DefaultStateDependency constructor. */
-	RoomBalanceModel(unsigned int id, const std::string &displayName):
-		DefaultModel(id, displayName)
+	/*! Constructor */
+	RoomBalanceModel(unsigned int id, const std::string &displayName) :
+		m_id(id), m_displayName(displayName)
 	{
 	}
+	/*! Copy constructor is not available (disable copy). */
+	RoomStatesModel(const RoomStatesModel &) = delete;
+	/*! Assignment operator is not available (disable copy). */
+	const RoomStatesModel & operator=(const RoomStatesModel &) = delete;
 
 	/*! Initializes model by providing simulation parameters and resizing the y and ydot vectors. */
 	void setup( const NANDRAD::SimulationParameter &simPara);
@@ -130,10 +139,20 @@ public:
 
 
 protected:
+	/*! Zone ID. */
+	unsigned int									m_id;
+	/*! Display name (for error messages). */
+	std::string										m_displayName;
+	/*! Data cache for calculated results (updated in call to update()).
+		Index matches enum values of Results.
+	*/
+	std::vector<double>								m_results;
+
 	/*! Vector with cached states, updated at last call to setY(). */
 	std::vector<double>								m_y;
 	/*! Vector with cached derivatives, updated at last call to update(). */
 	std::vector<double>								m_ydot;
+
 	/*! Constant pointer to the simulation parameter. */
 	const NANDRAD::SimulationParameter				*m_simulationParameter = nullptr;
 };
