@@ -86,6 +86,7 @@ NandradModel::~NandradModel() {
 	delete m_jacobian;
 	delete m_preconditioner;
 	delete m_integrator;
+
 	//	delete m_FMU2ModelDescription;
 
 	for (std::vector<AbstractModel*>::iterator it = m_modelContainer.begin();
@@ -103,6 +104,8 @@ NandradModel::~NandradModel() {
 	delete m_fmiInputOutput;
 	delete m_outputHandler;
 	// note: m_loads is handled just as any other model and cleaned up as part of the m_modelContainer cleanup above
+
+	delete m_progressLog;
 }
 
 
@@ -2283,7 +2286,40 @@ void NandradModel::initSolverMatrix() {
 
 
 void NandradModel::initStatistics(SOLFRA::ModelInterface * modelInterface, bool restart) {
+	if (restart) {
+		// m_secondsInLastRun is set in setRestart()
+		// m_simTimeAtStart is set in setRestart()
 
+		// re-open progressLog file for writing
+#ifdef _WIN32
+	#if defined(_MSC_VER)
+		m_progressLog = new std::ofstream( (m_dirs.m_logDir / "progress.tsv").wstr().c_str(), std::ios_base::app);
+	#else
+		std::string dirStrAnsi = IBK::WstringToANSI((m_dirs.m_logDir / "progress.tsv").wstr(), false);
+		m_progressLog = new std::ofstream(dirStrAnsi.c_str(), std::ios_base::app);
+	#endif
+#else
+		m_progressLog = new std::ofstream( (m_dirs.m_logDir / "progress.tsv").str().c_str(), std::ios_base::app);
+#endif
+	}
+	else {
+		m_elapsedSecondsAtStart = 0;
+		m_elapsedSimTimeAtStart = t0();
+		// open progressLog file for writing and write header
+#ifdef _WIN32
+	#if defined(_MSC_VER)
+		m_progressLog = new std::ofstream( (m_dirs.m_logDir / "progress.tsv").wstr().c_str());
+	#else
+		std::string dirStrAnsi = IBK::WstringToANSI((m_dirs.m_logDir / "progress.tsv").wstr(), false);
+		m_progressLog = new std::ofstream(dirStrAnsi.c_str());
+	#endif
+#else
+		m_progressLog = new std::ofstream( (m_dirs.m_logDir / "progress.tsv").str().c_str());
+#endif
+	}
+
+	// setup feedback object, this also starts the stopwatch
+	m_feedback.setup(m_progressLog, t0(), tEnd(), m_projectFilePath.str(), m_elapsedSecondsAtStart, m_elapsedSimTimeAtStart, modelInterface);
 }
 
 
