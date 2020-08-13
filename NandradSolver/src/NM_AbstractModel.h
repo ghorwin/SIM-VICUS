@@ -73,6 +73,23 @@ public:
 	*/
 	virtual const char * displayName() const { return ""; }
 
+	/*! This function is called when all models are already initialized (constructed).
+
+		Should be implemented by derived models that generate results.
+		Default implementation does nothing.
+
+		When re-implementing this class, ensure, that the functions
+		resultDescriptions() and resultValueRef() can be called afterwards.
+
+		For many models the available results are already known when setup() is called.
+		However, some models may need to know which dependend models are in the
+		list of models. These models may search through the provided model list
+		and determine the outputs to be generated.
+
+		\param models Vector of all models (already initialized).
+	*/
+	virtual void initResults(const std::vector<AbstractModel*> & models) { (void)models; }
+
 	/*! Populates the vector resDesc with descriptions of all results provided by this model.
 		Must be implemented by derived models that generate results.
 		Default implementation does nothing (i.e. no results generated).
@@ -105,27 +122,6 @@ public:
 	*/
 	virtual const double * resultValueRef(const QuantityName & quantityName) const { (void)quantityName; return nullptr; }
 
-	/*! Resizes m_results and m_vectorValuedResults vectors.
-		This function is called when all models are already initialized (constructed).
-
-		Must be implemented by derived models that generate results.
-		Default implementation does nothing.
-
-		When re-implementing this class, make sure that m_results and
-		m_vectorValuedResults a fully resized and defined. Ensure, that the functions
-		resultDescriptions() and resultValueRef() can be called afterwards.
-
-		The default implementation uses the keyword list and expects the
-		enumerations Variables to be present in derived classes. It
-		resizes and fills the m_results vectors. It then initializes
-		IBK::Parameters with name and unit.
-
-		Suggested default procedure when re-implementing this function:
-
-		Re-implement this function and call DefaultModel::initResults().
-		Resize all vector valued results (m_vectorValuedResults).
-	*/
-	virtual void initResults(const std::vector<AbstractModel*> & /* models */) {}
 };
 
 
