@@ -18,6 +18,7 @@
 			<IBK:IntPara name="StartYear">2015</IBK:IntPara>
 		</SimulationParameter>
 		<SolverParameter>
+			<Integrator>ExplicitEuler</Integrator>
 			<IBK:Parameter name="InitialTimeStep" unit="s">60</IBK:Parameter>
 		</SolverParameter>
 		<Location>
@@ -26,6 +27,7 @@
 		</Location>
 		<Schedules />
 		<Outputs>
+			<TimeUnit>min</TimeUnit>
 			<OutputDefinitions>
 				<OutputDefinition>
 					<Quantity>AirTemperature</Quantity>
@@ -70,9 +72,34 @@
 				</OutputGrid>
 				<OutputGrid name="minutely">
 					<Intervals>
+						<!-- 5. Mär -->
 						<Interval>
 							<IBK:Parameter name="Start" unit="min">90720</IBK:Parameter>
 							<IBK:Parameter name="End" unit="min">92160</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
+						</Interval>
+						<!-- 27. Jul -->
+						<Interval>
+							<IBK:Parameter name="Start" unit="min">298080</IBK:Parameter>
+							<IBK:Parameter name="End" unit="min">299520</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
+						</Interval>
+						<!-- 22. Sep -->
+						<Interval>
+							<IBK:Parameter name="Start" unit="min">380160</IBK:Parameter>
+							<IBK:Parameter name="End" unit="min">381600</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
+						</Interval>
+						<!-- 24. Okt -->
+						<Interval>
+							<IBK:Parameter name="Start" unit="min">426240</IBK:Parameter>
+							<IBK:Parameter name="End" unit="min">427680</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
+						</Interval>
+						<!-- 17. Dez -->
+						<Interval>
+							<IBK:Parameter name="Start" unit="min">504000</IBK:Parameter>
+							<IBK:Parameter name="End" unit="min">505440</IBK:Parameter>
 							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
 						</Interval>
 					</Intervals>
