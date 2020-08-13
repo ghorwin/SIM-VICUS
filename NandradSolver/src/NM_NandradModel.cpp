@@ -918,6 +918,8 @@ void NandradModel::initSimulationParameter() {
 							 .arg(simPara.m_para[NANDRAD::SimulationParameter::SP_INITIAL_TEMPERATURE].get_value("C")), FUNC_ID);
 
 	/// \todo other checks
+	///
+	/// \todo check relative humidity when moisture balance is enabled
 }
 
 
