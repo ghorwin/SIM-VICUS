@@ -995,7 +995,7 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "Zone with constant/predefined temperatures. (schedule)";
 				case 1 : return "Zone described by a temperature node in space.";
-				case 2 : return "Ground zone (calculates temperature based on standard ToDo Katja).";
+				case 2 : return "Ground zone (calculates temperature based on standard).";
 			} break;
 			// Zone::para_t
 			case 38 :
