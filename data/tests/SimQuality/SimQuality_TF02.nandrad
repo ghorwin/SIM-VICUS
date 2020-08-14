@@ -65,6 +65,12 @@
 					<GridName>minutely</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
+					<Quantity>DirectSWRadOnPlane[1]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>minutely</GridName>
+					<TimeType>Integral</TimeType>
+				</OutputDefinition>
+				<OutputDefinition>
 					<Quantity>DiffuseSWRadOnPlane[103]</Quantity>
 					<ObjectListName>Location</ObjectListName>
 					<GridName>minutely</GridName>
