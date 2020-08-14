@@ -1,4 +1,4 @@
-Time [min]	Location.[0].AzimuthAngle [Deg]	Location.[0].ElevationAngle [Deg]
+Time [min]	Location.AzimuthAngle [Deg]	Location.ElevationAngle [Deg]
 90720	250.125	-71.1056
 90721	249.878	-71.3406
 90722	249.625	-71.5753
