@@ -138,7 +138,7 @@ public:
 		This function may alter the state of the model implementation object to match
 		the output time and solution.
 		Default implementation does nothing.
-		\param t_out Output time point.
+		\param t_out Output time point (in seconds, simulation time).
 		\param y_out Pointer to linear memory array of size n() containing the corresponding solution.
 		\param ydot_out Pointer to linear memory array of size n() containing the corresponding
 			time derivatives (nullptr Pointer for ODE-type models).

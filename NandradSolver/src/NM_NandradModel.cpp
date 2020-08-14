@@ -347,7 +347,7 @@ void NandradModel::writeOutputs(double t_out, const double * y_out) {
 	// move (relative) simulation time to absolute time (offset to midnight, January 1st of the start year)
 	double t_secondsOfYear = t_out + m_project->m_simulationParameter.m_interval.m_para[NANDRAD::Interval::IP_START].value;
 
-	m_outputHandler->writeOutputs(t_secondsOfYear);
+	m_outputHandler->writeOutputs(t_out, t_secondsOfYear);
 
 	// write feedback to user
 	IBK_ASSERT(m_t == t_out);
