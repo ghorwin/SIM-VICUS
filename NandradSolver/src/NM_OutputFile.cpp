@@ -303,23 +303,24 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 	for (unsigned int i=0; i<m_valueRefs.size(); ++i) {
 		if (m_valueRefs[i] == nullptr) continue; // skip unavailable vars
 
-		// compose column title
-		const QuantityDescription & resultDesc = m_quantityDescs[i];
-
-		std::string header;
-
 		IBK::Unit u(m_valueUnits[i]);
 
+		// compose column title
+		std::string header;
+		std::string quantityString = m_inputRefs[i].m_name.m_name;
+		if (m_inputRefs[i].m_name.m_index != -1)
+			quantityString += "(id=" + IBK::val2string(m_inputRefs[i].m_name.m_index) + ")";
+
 		if (m_inputRefs[i].m_id != 0)
-			header = IBK::FormatString("%1[%2].%3 [%4]")
+			header = IBK::FormatString("%1(id=%2).%3 [%4]")
 					.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_inputRefs[i].m_referenceType))
 					.arg(m_inputRefs[i].m_id)
-					.arg(m_inputRefs[i].m_name.encodedString())
+					.arg(quantityString)
 					.arg(u.name()).str();
 		else
 			header = IBK::FormatString("%1.%2 [%3]")
 					.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_inputRefs[i].m_referenceType))
-					.arg(m_inputRefs[i].m_name.encodedString())
+					.arg(quantityString)
 					.arg(u.name()).str();
 		headerLabels.push_back(header);
 		++col; // increase var counter
@@ -362,9 +363,8 @@ void OutputFile::cacheOutputs(double t_out, double t_timeOfYear) {
 			default :
 				// retrieve value for this variable and store in cache vector
 				vals[col] = *m_valueRefs[i];
-				// perform target unit conversion
-				IBK::UnitList::instance().convert(m_valueUnits[i].base_unit(), m_valueUnits[i], vals[col]);
 			break;
+
 			case NANDRAD::OutputDefinition::OTT_MEAN :
 			break;
 
@@ -378,11 +378,16 @@ void OutputFile::cacheOutputs(double t_out, double t_timeOfYear) {
 				else {
 					IBK_ASSERT(m_tLast < m_tCurrent);
 					double alpha = (t_out-m_tLast)/(m_tCurrent - m_tLast);
-					vals[col] = m_integrals[1][col]*alpha + m_integrals[0][col]*(1-alpha);
+					// NOTE: the column index in the target vector 'vals' starts with 1 for the first value
+					//       since column 0 is the time column. In the m_integrals vector, however, the
+					//       first value is in column 0. Hence, we need to shift the column when retrieving the integral value.
+					vals[col] = m_integrals[1][col-1]*alpha + m_integrals[0][col-1]*(1-alpha);
 				}
 			break;
+		} // switch
 
-		}
+		// perform target unit conversion
+		IBK::UnitList::instance().convert(m_valueUnits[i].base_unit(), m_valueUnits[i], vals[col]);
 
 		++col;
 	}
