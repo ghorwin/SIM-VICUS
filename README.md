@@ -2,8 +2,12 @@
 
 We have a CI (continuous integration) script running (build-test of all C/C++ code without UI). For details, see [Actions/build](../../actions).
 
-- ![CI](https://github.com/ghorwin/SIM-VICUS/workflows/CI/badge.svg) : Continuous Integration (CI) (successfully building code)
-- ![RegressionTest](https://github.com/ghorwin/SIM-VICUS/workflows/RegressionTest/badge.svg) : Solver regression test (correctly simulating test suite)
+| Test | Result|
+|-----|-----|
+| Continuous Integration (CI) (successfully building code) | ![CI](https://github.com/ghorwin/SIM-VICUS/workflows/CI/badge.svg)  |
+| Solver regression test (correctly simulating test suite) | ![RegressionTest](https://github.com/ghorwin/SIM-VICUS/workflows/RegressionTest/badge.svg)  |
+
+
 
 ## Directory Structure
 
