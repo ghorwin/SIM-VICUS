@@ -22,35 +22,21 @@
 			<ClimateFileName>${Project Directory}/climate/DEU_Potsdam_60.epw</ClimateFileName>
 			<Sensors>
 				<!-- Flat roof -->
-				<Sensor id="1">
-					<Quantity>DirectSWRadOnPlane</Quantity>
-					<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
-					<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
-				</Sensor>
-				<Sensor id="100">
-					<Quantity>DiffuseSWRadOnPlane</Quantity>
+				<Sensor id="1000">
+					<Quantity>DirectSWRadOnPlane</Quantity>  
+					<!-- other sensor quantities like DiffuseSWRadOnPlane, GlobalSWRadOnPlane and IncidenceAngle are automatically added -->
 					<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
 					<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
 				</Sensor>
 				<!-- North wall -->
-				<Sensor id="2">
+				<Sensor id="100">
 					<Quantity>DirectSWRadOnPlane</Quantity>
-					<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
-					<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
-				</Sensor>
-				<Sensor id="102">
-					<Quantity>DiffuseSWRadOnPlane</Quantity>
 					<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
 					<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
 				</Sensor>
 				<!-- North roof -->
-				<Sensor id="3">
+				<Sensor id="101">
 					<Quantity>DirectSWRadOnPlane</Quantity>
-					<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
-					<IBK:Parameter name="Inclination" unit="Deg">30</IBK:Parameter>
-				</Sensor>
-				<Sensor id="103">
-					<Quantity>DiffuseSWRadOnPlane</Quantity>
 					<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
 					<IBK:Parameter name="Inclination" unit="Deg">30</IBK:Parameter>
 				</Sensor>
@@ -59,31 +45,75 @@
 		<Outputs>
 			<TimeUnit>min</TimeUnit>
 			<OutputDefinitions>
+				<!-- minutely values -->
 				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[1]</Quantity>
+					<Quantity>DirectSWRadOnPlane[1000]</Quantity>
 					<ObjectListName>Location</ObjectListName>
 					<GridName>minutely</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[1]</Quantity>
+					<Quantity>DiffuseSWRadOnPlane[1000]</Quantity>
 					<ObjectListName>Location</ObjectListName>
 					<GridName>minutely</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>DirectSWRadOnPlane[100]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>minutely</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>DiffuseSWRadOnPlane[100]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>minutely</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>DirectSWRadOnPlane[101]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>minutely</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>DiffuseSWRadOnPlane[101]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>minutely</GridName>
+				</OutputDefinition>
+				<!-- hourly values -->
+				<OutputDefinition>
+					<Quantity>DirectSWRadOnPlane[1000]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>DiffuseSWRadOnPlane[1000]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>DirectSWRadOnPlane[100]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>DiffuseSWRadOnPlane[100]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>DirectSWRadOnPlane[101]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>DiffuseSWRadOnPlane[101]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<!-- integral values -->
+				<OutputDefinition>
+					<Filename>load_integrals</Filename>
+					<Quantity>DirectSWRadOnPlane[1000]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>hourly</GridName>
 					<TimeType>Integral</TimeType>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[103]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[2]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[102]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
 				</OutputDefinition>
 			</OutputDefinitions>
 			<Grids>
