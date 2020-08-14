@@ -328,7 +328,7 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 }
 
 
-void OutputHandler::writeOutputs(double t_secondsOfYear) {
+void OutputHandler::writeOutputs(double t_out, double t_secondsOfYear) {
 	FUNCID(OutputHandler::writeOutputs);
 
 	// On first call to writeOutputs() we can finally re-open/create the output files
@@ -365,15 +365,15 @@ void OutputHandler::writeOutputs(double t_secondsOfYear) {
 	}
 
 	// convert to output time unit
-	double t_out = t_secondsOfYear;
-	IBK::UnitList::instance().convert(IBK::Unit(IBK_UNIT_ID_SECONDS), m_timeUnit, t_out);
+	double t_timeOfYear = t_secondsOfYear;
+	IBK::UnitList::instance().convert(IBK::Unit(IBK_UNIT_ID_SECONDS), m_timeUnit, t_timeOfYear);
 
 	// now pass on the call to each file to cache current results
 	unsigned int storedBytes = 0;
 	for (OutputFile * of : m_outputFiles) {
 		// check if output grid is active and only write outputs if this is the case
 		if (of->m_gridRef->isActive(t_secondsOfYear))
-			of->cacheOutputs(t_out);
+			of->cacheOutputs(t_out, t_timeOfYear);
 		storedBytes += of->cacheSize();
 	}
 
