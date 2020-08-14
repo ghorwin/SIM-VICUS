@@ -9,8 +9,8 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
+  # This workflow contains a single job called "build-and-check"
+  build-and-test:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -19,16 +19,6 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    # Runs a single command using the runners shell
-    - name: build
-      run: (cd build/cmake; ./build.sh 8 no-gui release)
-
-  check:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-    
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-
-    - name: test
+    # builds and runs regression test suite
+    - name: build-and-test
       run: (cd build/cmake; ./run_tests.sh)
