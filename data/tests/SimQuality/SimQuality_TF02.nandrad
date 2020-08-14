@@ -2,12 +2,12 @@
 <NandradProject fileVersion="1.99">
 	<Project>
 		<ProjectInfo>
-			<Comment>SimQuality TestCase 01.4 - Potsddam</Comment>
-			<Created>2020-08-10</Created>
+			<Comment>SimQuality TestCase 02</Comment>
+			<Created>2020-08-14</Created>
 			<LastEdited>2020-08-14</LastEdited>
 		</ProjectInfo>
 		<Zones>
-			<Zone id="1" displayName="TF01" type="Active">
+			<Zone id="1" displayName="Room" type="Active">
 				<IBK:Parameter name="Temperature" unit="C">5</IBK:Parameter>
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
@@ -20,15 +20,45 @@
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<ClimateFileName>${Project Directory}/climate/DEU_Potsdam_60.epw</ClimateFileName>
+			<Sensors>
+				<!-- Flat roof -->
+				<Sensor id="1">
+					<Quantity>DirectSWRadOnPlane</Quantity>
+					<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+					<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
+				</Sensor>
+				<Sensor id="100">
+					<Quantity>DiffuseSWRadOnPlane</Quantity>
+					<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+					<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
+				</Sensor>
+				<!-- North wall -->
+				<Sensor id="2">
+					<Quantity>DirectSWRadOnPlane</Quantity>
+					<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+					<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				</Sensor>
+				<Sensor id="102">
+					<Quantity>DiffuseSWRadOnPlane</Quantity>
+					<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+					<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				</Sensor>
+				<!-- North roof -->
+				<Sensor id="3">
+					<Quantity>DirectSWRadOnPlane</Quantity>
+					<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+					<IBK:Parameter name="Inclination" unit="Deg">30</IBK:Parameter>
+				</Sensor>
+				<Sensor id="103">
+					<Quantity>DiffuseSWRadOnPlane</Quantity>
+					<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+					<IBK:Parameter name="Inclination" unit="Deg">30</IBK:Parameter>
+				</Sensor>
+			</Sensors>
 		</Location>
 		<Outputs>
 			<TimeUnit>min</TimeUnit>
 			<OutputDefinitions>
-				<OutputDefinition>
-					<Quantity>AirTemperature</Quantity>
-					<ObjectListName>All zones</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>ElevationAngle</Quantity>
 					<ObjectListName>Location</ObjectListName>
