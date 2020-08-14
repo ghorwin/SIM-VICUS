@@ -4,8 +4,6 @@ name: RegressionTest
 
 # Run 6 o'clock in the morning...
 on:
-  push:
-    branches: [ master ]
   schedule:
     - cron: '0 6 * * *'
 
