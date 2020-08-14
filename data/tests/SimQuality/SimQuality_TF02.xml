@@ -60,22 +60,22 @@
 			<TimeUnit>min</TimeUnit>
 			<OutputDefinitions>
 				<OutputDefinition>
-					<Quantity>ElevationAngle</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>AzimuthAngle</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>ElevationAngle</Quantity>
+					<Quantity>DirectSWRadOnPlane[1]</Quantity>
 					<ObjectListName>Location</ObjectListName>
 					<GridName>minutely</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
-					<Quantity>AzimuthAngle</Quantity>
+					<Quantity>DiffuseSWRadOnPlane[103]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>minutely</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>DirectSWRadOnPlane[2]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>minutely</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>DiffuseSWRadOnPlane[102]</Quantity>
 					<ObjectListName>Location</ObjectListName>
 					<GridName>minutely</GridName>
 				</OutputDefinition>
