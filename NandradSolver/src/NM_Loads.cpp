@@ -149,8 +149,8 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 		m_solarRadiationModel.m_albedo = albedo.value;
 
 		// finally update the latitude and longitude in the sunPositionModel
-		m_solarRadiationModel.m_sunPositionModel.m_latitude = m_solarRadiationModel.m_sunPositionModel.m_latitude * DEG2RAD;
-		m_solarRadiationModel.m_sunPositionModel.m_longitude = m_solarRadiationModel.m_sunPositionModel.m_longitude * DEG2RAD;
+		m_solarRadiationModel.m_sunPositionModel.m_latitude = m_solarRadiationModel.m_climateDataLoader.m_latitudeInDegree * DEG2RAD;
+		m_solarRadiationModel.m_sunPositionModel.m_longitude = m_solarRadiationModel.m_climateDataLoader.m_longitudeInDegree * DEG2RAD;
 
 		// enable Perez-Model if requested
 		if (location.m_perezDiffuseRadiationModel.isEnabled())
