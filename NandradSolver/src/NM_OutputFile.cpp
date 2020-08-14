@@ -39,8 +39,36 @@ OutputFile::~OutputFile() {
 
 
 void OutputFile::stepCompleted(double t) {
-	// for output variables with time integration rule, do time integration here
-	(void)t;
+	// for output variables with time integration/averaging rule, do time integration here
+
+	if (!m_haveIntegrals)
+		return; // nothing to do
+
+	/// \todo we should add a minimum delay for executing this function - either here or in the framework itself
+	///       to avoid excessive overhead when evaluating stepCompleted() calls in tiny steps
+
+	// loop over all *available* variables and handle those with OTT_MEAN or OTT_INTEGRAL
+	unsigned int col=0; // storage column index
+	for (unsigned int i=0; i<m_valueRefs.size(); ++i) {
+		if (m_valueRefs[i] == nullptr) continue; // skip unavailable vars
+		const NANDRAD::OutputDefinition & od = m_outputDefinitions[ m_outputDefMap[i] ];
+		if (od.m_timeType != NANDRAD::OutputDefinition::OTT_NONE) {
+
+			// shift states
+			double dt = t - m_tCurrent;  // integration interval length in [s]
+			m_tLast = m_tCurrent;
+			m_tCurrent = t;
+			m_integrals[0][col] = m_integrals[1][col];
+			// now retrieve value
+			double val = *m_valueRefs[i];
+
+			// integrate over interval, using simple rectangular rule
+			double dVal = val*dt;
+			// add add to integral
+			m_integrals[1][col] = dVal + m_integrals[0][col];
+		}
+		++col;
+	}
 }
 
 
@@ -69,16 +97,53 @@ void OutputFile::setInputValueRef(const InputReference & inputRef, const Quantit
 		// add dummy unit, since result is not available
 		m_valueUnits.push_back(IBK::Unit());
 	}
+
+	// once we have all input value refs, we can initialize our cache vectors
+	if (m_valueRefs.size() == m_inputRefs.size()) {
+
+		// we go through all variables and count the number of non-zero values
+		m_numCols = 0;
+		m_haveIntegrals = false;
+		for (unsigned int i=0; i<m_valueRefs.size(); ++i) {
+			if (m_valueRefs[i] == nullptr) {
+				IBK::IBK_Message(IBK::FormatString("Output for %1(id=%2).%3 not available, skipped.\n")
+								 .arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_inputRefs[i].m_referenceType))
+								 .arg(m_inputRefs[i].m_id)
+								 .arg(m_inputRefs[i].m_name.m_name), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
+			}
+			else {
+				++m_numCols;
+				// decide integration based on original output definition
+				const NANDRAD::OutputDefinition & od = m_outputDefinitions[ m_outputDefMap[i] ];
+				if (od.m_timeType != NANDRAD::OutputDefinition::OTT_NONE)
+					m_haveIntegrals = true;
+			}
+		}
+
+		// if we have integral values, initialize integral data store with 0
+		if (m_haveIntegrals) {
+			m_integrals[0].resize(m_numCols, 0.0);
+			m_integrals[1].resize(m_numCols, 0.0);
+			m_tLast = 0;
+			m_tCurrent = 0;
+		}
+
+	}
+
 }
 
 
 
 void OutputFile::createInputReferences() {
+	m_haveIntegrals = false;
 	// process all output definitions
 	for (unsigned int i = 0; i < m_outputDefinitions.size(); ++i) {
 		 const NANDRAD::OutputDefinition & od = m_outputDefinitions[i];
 		// get the associated object list
 		const NANDRAD::ObjectList * ol = od.m_objectListRef;
+
+		if (od.m_timeType != NANDRAD::OutputDefinition::OTT_NONE)
+			m_haveIntegrals = true;
 
 		// special handling for Location ref type
 		if (ol->m_referenceType == NANDRAD::ModelInputReference::MRT_LOCATION) 	{
@@ -110,10 +175,7 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 
 	m_binary = binary;
 
-	IBK_ASSERT(m_inputRefs.size() == m_valueRefs.size());
-	// we go through all variables and count the number of non-zero values
-	m_numCols = 0;
-	bool haveIntegrals = false;
+	// write warning messages for unavailable output quantities
 	for (unsigned int i=0; i<m_valueRefs.size(); ++i) {
 		if (m_valueRefs[i] == nullptr) {
 			IBK::IBK_Message(IBK::FormatString("Output for %1(id=%2).%3 not available, skipped.\n")
@@ -121,20 +183,15 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 							 .arg(m_inputRefs[i].m_id)
 							 .arg(m_inputRefs[i].m_name.m_name), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
 		}
-		else {
-			++m_numCols;
-			// decide integration based on original output definition
-			const NANDRAD::OutputDefinition & od = m_outputDefinitions[ m_outputDefMap[i] ];
-			if (od.m_timeType != NANDRAD::OutputDefinition::OTT_NONE)
-				haveIntegrals = true;
-		}
 	}
+
 	// if we have no outputs in this file, we do nothing
 	if (m_numCols == 0) {
 		IBK::IBK_Message(IBK::FormatString("%1 : No output variables available, skipped\n")
 						 .arg(m_filename,20,std::ios_base::left), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		return;
 	}
+
 	// compose final file path
 	IBK::Path outFilePath = *outputPath / m_filename;
 	if (restart) {

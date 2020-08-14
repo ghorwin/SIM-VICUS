@@ -364,7 +364,6 @@ std::string NandradModel::simTime2DateTimeString(double t) const {
 
 
 void NandradModel::stepCompleted(double t, const double *y ) {
-#if 0
 
 	// tell all modules that need to remember the last integration step, that they
 	// can cache a new state
@@ -374,6 +373,7 @@ void NandradModel::stepCompleted(double t, const double *y ) {
 		(*it)->stepCompleted(t);
 	}
 
+#if 0
 	// update states in all exoplicit ODE models
 	for (unsigned int i = 0; i<m_ODEStatesAndBalanceModelContainer.size(); ++i) {
 		AbstractODEBalanceModel *balanceModel = m_ODEStatesAndBalanceModelContainer[i].second;
@@ -1720,6 +1720,11 @@ void NandradModel::initOutputs(bool restart) {
 		m_modelContainer.insert(m_modelContainer.end(),
 								m_outputHandler->m_outputFiles.begin(),
 								m_outputHandler->m_outputFiles.end()); // transfers ownership
+		for (NANDRAD_MODEL::OutputFile * of : m_outputHandler->m_outputFiles) {
+			// Only add those output files that have at least one integral value.
+			if (of->haveIntegrals())
+				m_timeModelContainer.push_back(of);
+		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, "Error initializing outputs.", FUNC_ID);

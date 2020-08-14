@@ -332,7 +332,7 @@ namespace NANDRAD_MODEL {
 				case 0 : return "Direct short wave radiation on a given plane.";
 				case 1 : return "Diffuse short wave radiation on a given plane.";
 				case 2 : return "Global short wave radiation on a given plane.";
-				case 3 : return "s ray onto the surface (0 deg = directly perpendicular).";
+				case 3 : return "The incidence angle of the suns ray onto the surface (0 deg = directly perpendicular).";
 			} break;
 			// OutputHandler::OutputFileNames
 			case 2 :

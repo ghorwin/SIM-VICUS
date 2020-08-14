@@ -48,6 +48,21 @@ namespace NANDRAD_MODEL {
 	To add OutputFile objects to the model container of NandradModel we need
 	to derive from AbstractModel, even though output files never generate results. Hence,
 	the implementation of the AbstractModel interface is just dummy code.
+
+
+	Initialization of OutputFiles is a bit tricky, since not all information is available during setup:
+
+	1. the object is created and mandatory parameters are stored (filename and output definitions)
+	2. call to createInputReferences() which composes input references from output definition. One output definition
+	   may expand to several input references, depending on object list ID filters. The mapping from input variable
+	   vector to original output definition is stored in m_outputDefMap.
+	3. the framework calls setInputValueRef(), and provides meta data about requested parameters (like the input/output unit).
+	   Only now we have all information to write the file header and retrieve output values.
+	   Once the last variable ref has been provided, we initialize the integral values, if integrals/mean values are requested.
+	4. the framework calls stepCompleted(), where we start integrating out values.
+	5. before the first call to writeOutputs(), the framework calls createFile(), where we create/reopen the file
+	6. the framework calls writeOutputs(), where we cache output data
+	7. the framework calls flushCache() (after some time) and we dump the collected values to file.
 */
 class OutputFile : public AbstractModel, public AbstractStateDependency, public AbstractTimeDependency {
 public:
@@ -95,6 +110,12 @@ public:
 	/*! We have nothing to do here, output handling is done outside the actual evaluation. */
 	virtual int update() override { return 0; }
 
+
+	// *** Other member functions
+
+	/*! Returns true if output file has at least one OTT_MEAN or OTT_INTEGRAL quantity and requires stepCompleted() calls. */
+	bool haveIntegrals() const { return m_haveIntegrals; }
+
 private:
 
 	// *** Private member functions
@@ -108,8 +129,8 @@ private:
 
 		\param restart If true, the existing output file should be appended, rather than re-created
 		\param binary If true, files are written in binary mode
-		\param timeUnit Output time unit, needed to compose output time header
-		\param
+		\param timeColumnLabel Label of the time column
+		\param outputPath Path to output directory.
 	*/
 	void createFile(bool restart, bool binary, const std::string & timeColumnLabel, const IBK::Path * outputPath);
 
@@ -140,6 +161,13 @@ private:
 	*/
 	std::vector<NANDRAD::OutputDefinition>		m_outputDefinitions;
 
+	/*! Set to true if at least one of the output definitions uses OTT_MEAN or OTT_INTEGRAL.
+		The value is initialized in createInputReferences().
+		\note It is possible that the requested output quantity is not available. Then, the flag
+			is cleared in function setInputValueRef(), when integral values are initialized.
+	*/
+	bool										m_haveIntegrals = false;
+
 	/*! Pointer to the output grid associated with this output file.
 		Outputs are only stored/written, when the output time matches an output time of this grid.
 		\note This pointer is just a convenience variable, since each of the output definitions
@@ -154,6 +182,8 @@ private:
 		\code
 		OutputDefinition of = m_outputDefinitions[ m_outputDefMap[inputRefIdx] ];
 		\endcode
+
+		This data can be used to obtain the timeTime of the output quantity.
 	*/
 	std::vector<unsigned int>					m_outputDefMap;
 
@@ -176,13 +206,25 @@ private:
 	*/
 	unsigned int								m_numCols = 0;
 
-	/*! The actual data cache. */
+	/*! The actual data cache.
+		New values are added in cacheOutputs(). In case of current values (OTT_NONE), the values are retrieved
+		from the result value references. In case of integral or mean values (OTT_MEAN and OTT_INTEGRAL), the
+		value is computed from the stored integral values.
+		Size of inner vector matches m_numCols+1, since time column is also added to cache as first column;
+	*/
 	std::vector< std::vector<double> >			m_cache;
 
-	/*! The integral values (updated in each stepCompleted() call). */
-	std::vector<double>							m_integrals;
-	/*! The current values (fluxes), updated in each stepCompleted() call. */
-	std::vector<double>							m_currentVals;
+
+	/*! Time point (simulation time) in [s] at previous stepCompleted() call (begin of integration interval). */
+	double										m_tLast;
+	/*! Time point (simulation time) in [s] at current stepCompleted() call (end of integration interval). */
+	double										m_tCurrent;
+	/*! The integral values (updated in each stepCompleted() call).
+		m_integrals[0] holds the values at m_tLast, m_integrals[1] holds the values at m_tCurrent. Size matches m_numCols
+		regardless whether the values are integral values or not.
+		Integral values are always store in the base SI unit (source unit of the associated value reference) times s.
+	*/
+	std::vector<double>							m_integrals[2];
 
 	/*! Output file stream (owned and initialized in createFile()). */
 	std::ofstream								*m_ofstream = nullptr;
