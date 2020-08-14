@@ -2,10 +2,9 @@
 <NandradProject fileVersion="1.99">
 	<Project>
 		<ProjectInfo>
-			<Comment>Yes we can! TF01</Comment>
-			<Created>Now!</Created>
-			<LastEdited>Yesterday</LastEdited>
-			<Version>NANDRAD 2.0</Version>
+			<Comment>SimQuality TestCase 01.4 - Potsddam</Comment>
+			<Created>2020-08-10</Created>
+			<LastEdited>2020-08-14</LastEdited>
 		</ProjectInfo>
 		<Zones>
 			<Zone id="1" displayName="TF01" type="Active">
@@ -14,9 +13,6 @@
 				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
 			</Zone>
 		</Zones>
-		<SimulationParameter>
-			<IBK:IntPara name="StartYear">2015</IBK:IntPara>
-		</SimulationParameter>
 		<SolverParameter>
 			<Integrator>ExplicitEuler</Integrator>
 			<IBK:Parameter name="InitialTimeStep" unit="s">60</IBK:Parameter>
@@ -25,7 +21,6 @@
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<ClimateFileName>${Project Directory}/climate/DEU_Potsdam_60.epw</ClimateFileName>
 		</Location>
-		<Schedules />
 		<Outputs>
 			<TimeUnit>min</TimeUnit>
 			<OutputDefinitions>
