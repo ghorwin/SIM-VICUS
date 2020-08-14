@@ -228,12 +228,19 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 		// compose column title
 		const QuantityDescription & resultDesc = m_quantityDescs[i];
 
+		std::string header;
 
-		std::string header = IBK::FormatString("%1.[%2].%3 [%4]")
-				.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_inputRefs[i].m_referenceType))
-				.arg(m_inputRefs[i].m_id)
-				.arg(m_inputRefs[i].m_name.encodedString())
-				.arg(resultDesc.m_unit).str();
+		if (m_inputRefs[i].m_id != 0)
+			header = IBK::FormatString("%1[%2].%3 [%4]")
+					.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_inputRefs[i].m_referenceType))
+					.arg(m_inputRefs[i].m_id)
+					.arg(m_inputRefs[i].m_name.encodedString())
+					.arg(resultDesc.m_unit).str();
+		else
+			header = IBK::FormatString("%1.%2 [%3]")
+					.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_inputRefs[i].m_referenceType))
+					.arg(m_inputRefs[i].m_name.encodedString())
+					.arg(resultDesc.m_unit).str();
 		headerLabels.push_back(header);
 		++col; // increase var counter
 	}
