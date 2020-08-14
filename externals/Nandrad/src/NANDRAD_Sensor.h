@@ -56,7 +56,7 @@ public:
 	/*! Unique ID-number of the sensor.*/
 	unsigned int						m_id = NANDRAD::INVALID_ID;		// XML:A:required
 	/*! Name of the measured quantity */
-	std::string							m_quantity;						// XML:E
+	std::string							m_quantity;						// XML:E:required
 
 	/*! Orientation of the radiation load sensor. */
 	IBK::Parameter						m_orientation;					// XML:E
