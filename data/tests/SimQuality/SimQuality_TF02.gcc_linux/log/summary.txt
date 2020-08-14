@@ -1,6 +1,6 @@
-WallClockTime=2.74481
+WallClockTime=1.86689
 FrameworkTimeWriteOutputs=0
-FrameworkTimeStepCompleted=0.01153
+FrameworkTimeStepCompleted=0.015493
 IntegratorSteps=525600
 IntegratorFunctionEvals=525601
-IntegratorTimeFunctionEvals=1.08888
+IntegratorTimeFunctionEvals=0.283442
