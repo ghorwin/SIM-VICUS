@@ -152,6 +152,11 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 		m_solarRadiationModel.m_sunPositionModel.m_latitude = m_solarRadiationModel.m_sunPositionModel.m_latitude * DEG2RAD;
 		m_solarRadiationModel.m_sunPositionModel.m_longitude = m_solarRadiationModel.m_sunPositionModel.m_longitude * DEG2RAD;
 
+		// enable Perez-Model if requested
+		if (location.m_perezDiffuseRadiationModel.isEnabled())
+			m_solarRadiationModel.m_diffuseRadiationPerezEnabled = true;
+
+
 		// store start time offset as year and start time
 		m_year = simPara.m_intpara[NANDRAD::SimulationParameter::SIP_YEAR].value;
 		m_startTime = simPara.m_interval.m_para[NANDRAD::Interval::IP_START].value;
@@ -193,17 +198,6 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 		// 3. store the association between sensor ID and CCM-surface ID
 		for (unsigned int i = 0; i < location.m_sensors.size(); ++i) {
 			const NANDRAD::Sensor &sensor = location.m_sensors[i];
-			const std::string quantity = sensor.m_quantity;
-			// check if sensor quantity is supported
-			bool found = false;
-			for (int j=0; j<NUM_VVR; ++j) {
-				if (quantity == KeywordList::Keyword("Loads::VectorValuedResults", j)) {
-					found = true;
-				}
-			}
-			if (!found)
-				throw IBK::Exception(IBK::FormatString("Quantity '%1' of sensor with id #%2 is not supported (yet)!")
-					.arg(quantity).arg(sensor.m_id), FUNC_ID);
 			// retrieve orientation and incliniation
 			if (sensor.m_orientation.name.empty())
 				throw IBK::Exception(IBK::FormatString("Missing Parameter 'Orientation' of sensor with id #%1!")

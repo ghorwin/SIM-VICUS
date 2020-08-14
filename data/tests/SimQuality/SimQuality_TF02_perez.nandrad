@@ -19,6 +19,7 @@
 		</SolverParameter>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<IBK:Flag name="PerezDiffuseRadiationModel">true</IBK:Flag>
 			<ClimateFileName>${Project Directory}/climate/DEU_Potsdam_60.epw</ClimateFileName>
 			<Sensors>
 				<!-- Radiation sensons automatically provide sensor quantities like DirectSWRadOnPlane, DiffuseSWRadOnPlane, GlobalSWRadOnPlane and IncidenceAngle, which

@@ -31,17 +31,12 @@
 
 namespace NANDRAD {
 
-/*!	\brief Declaration for class Sensor
+/*!	A sensor places a measured component for later referencing.
 
-	A sensor places a measured component for later referencing. It may be
-	parametrized with string, constant parameters or flags. Use sensors inside
-	the description block of the building component that offers the quantity.
-
-	The quantity name must be recognized by the solver, see NANDRAD_MODEL::Loads::VectorValuedResults.
-	Sensors used within the Location data structured, must be short wave radiation sensors and the
-	quantity name must be equal to 'SWRadOnPlane' (or can be omitted).
-
-	\todo refactor to ShortWaveRadiationSensor and remove m_quantity altogether
+	The quantity can be used for further classify the type of sensor. In some cases, like
+	in case of radiation sensors, the quantity can be omitted since placing the sensor
+	will automatically generate 4 quantities (direct, diffuse, global radiations and incidence angle).
+	The use of the quantity depends on the model implementing sensor support.
 */
 class Sensor {
 	NANDRAD_READWRITE_PRIVATE
@@ -56,7 +51,7 @@ public:
 	/*! Unique ID-number of the sensor.*/
 	unsigned int						m_id = NANDRAD::INVALID_ID;		// XML:A:required
 	/*! Name of the measured quantity */
-	std::string							m_quantity;						// XML:E:required
+	std::string							m_quantity;						// XML:E
 
 	/*! Orientation of the radiation load sensor. */
 	IBK::Parameter						m_orientation;					// XML:E
