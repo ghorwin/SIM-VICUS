@@ -91,6 +91,8 @@ public:
 		\return A const pointer to the double, or nullptr of no such quantity was found.
 		\note If a vector quantity is requested without indication of an index, the pointer returned points to
 			the begin of the memory array holding the vector data.
+
+		\warning Function throws an exception in case of invalid indexes for vector-valued quantities
 	*/
 	virtual const double * resultValueRef(const QuantityName & quantityName) const override;
 

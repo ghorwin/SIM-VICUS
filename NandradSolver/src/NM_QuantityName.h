@@ -45,6 +45,9 @@ public:
 	QuantityName(const std::string &name) :
 		m_name(name), m_index(-1) { }
 
+	/*! Returns the quantity name as encoded string. */
+	std::string encodedString() const;
+
 	/*! Extract name and possibly index from a given quantity.
 		Possible variants are "Temperature", "Temperature[index=5]" and "Temperature[id=4]"
 		Throws an IBK::Exception in case of invalid formats.

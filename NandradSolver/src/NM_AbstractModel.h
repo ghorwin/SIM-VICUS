@@ -120,6 +120,10 @@ public:
 		\return A const pointer to the double, or nullptr of no such quantity was found.
 		\note If a vector quantity is requested without indication of an index, the pointer returned points to
 			the begin of the memory array holding the vector data.
+
+		\warning Function may throw an exception in case of invalid indexes for vector-valued quantities. In these cases
+			the caller must be notified of possibly erroneous input data, so make sure to wrap the call to resultValueRef()
+			in a try-catch-clause!
 	*/
 	virtual const double * resultValueRef(const QuantityName & quantityName) const { (void)quantityName; return nullptr; }
 

@@ -20,15 +20,17 @@
 */
 
 #include "NM_DefaultModel.h"
-#include "NM_KeywordList.h"
-
-#include <NANDRAD_KeywordList.h>
 
 #include <algorithm>
 #include <limits>
 #include <stddef.h>
 
 #include <IBK_assert.h>
+#include <IBK_messages.h>
+
+#include <NANDRAD_KeywordList.h>
+
+#include "NM_KeywordList.h"
 
 namespace NANDRAD_MODEL {
 
@@ -154,53 +156,48 @@ void DefaultModel::resultValueRefs(std::vector<const double *> &res) const {
 
 
 const double * DefaultModel::resultValueRef(const QuantityName & quantityName) const {
-	// const char * const FUNC_ID ="[DefaultModel::resultValueRef]";
+	FUNCID(DefaultModel::resultValueRef);
 
-	try {
-		// find corresponding quantity description
-		int resultsIndex = decodeResultType(quantityName.m_name);
-		// scalar results
-		if (resultsIndex != -1 && quantityName.m_index == -1) {
+	// find corresponding quantity description
+	int resultsIndex = decodeResultType(quantityName.m_name);
+	// scalar results
+	if (resultsIndex != -1 && quantityName.m_index == -1) {
 
-			// check that the index does not exceed available storage memory location
-			if (resultsIndex >= (int)m_results.size())
-				return nullptr;
-
-			return &m_results[resultsIndex];
-		}
-
-		// a vector valued result
-		resultsIndex = decodeVectorValuedResultType(quantityName.m_name);
-
-		// invalid quantity
-		if (resultsIndex == -1)
+		// check that the index does not exceed available storage memory location
+		if (resultsIndex >= (int)m_results.size())
 			return nullptr;
 
-		if (resultsIndex >= (int)m_vectorValuedResults.size())
-			return nullptr;
-#if 0
-		// no index is given
-		if (quantityName.m_index == -1) {
-			// return access to the first vector element
-			if (!m_vectorValuedResults[resultsIndex].empty())
-				return &m_vectorValuedResults[resultsIndex].m_data[0];
-			return nullptr;
-		}
-		// index definition
-		else {
-			std::vector<double>::const_iterator vecElem =
-				m_vectorValuedResults[resultsIndex].find(quantityName.m_index);
-			// return access to the requested vector element
-			if (vecElem != m_vectorValuedResults[resultsIndex].end())
-				return &(*vecElem);
-			return nullptr;
-		}
-#endif
-		return nullptr;
+		return &m_results[(size_t)resultsIndex];
 	}
-	catch (...) {
+
+	// a vector valued result
+	resultsIndex = decodeVectorValuedResultType(quantityName.m_name);
+
+	// invalid quantity
+	if (resultsIndex == -1)
 		return nullptr;
+
+	/// \todo check this condition: Is this even possible when decodeVectorValuedResultType() returns a valid
+	/// index?
+	if (resultsIndex >= (int)m_vectorValuedResults.size())
+		return nullptr;
+
+	const VectorValuedQuantity & vecResults  = m_vectorValuedResults[(size_t)resultsIndex]; // reading improvement
+
+	// if vector is created but still empty, we have no result to return
+	if (vecResults.size() == 0)
+		return nullptr;
+
+	// no index is given (requesting entire vector?)
+	if (quantityName.m_index == -1) {
+		// return access to the first vector element
+		return &vecResults.data()[0];
 	}
+	// index definition
+	else {
+		return &vecResults[(size_t)quantityName.m_index];
+	}
+	// Note: function may throw an IBK::Exception
 }
 
 

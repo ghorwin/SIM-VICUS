@@ -56,12 +56,18 @@ void OutputFile::setInputValueRef(const InputReference & inputRef, const Quantit
 
 	m_valueRefs.push_back(resultValueRef);
 	m_quantityDescs.push_back(resultDesc);
-	try {
-		m_valueUnits.push_back(IBK::Unit(resultDesc.m_unit));
+	if (resultValueRef != nullptr) {
+		try {
+			m_valueUnits.push_back(IBK::Unit(resultDesc.m_unit));
+		}
+		catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Invalid/unknown unit provided for quantity %1 ('%2').")
+								 .arg(resultDesc.m_name).arg(resultDesc.m_description), FUNC_ID);
+		}
 	}
-	catch (IBK::Exception & ex) {
-		throw IBK::Exception(ex, IBK::FormatString("Invalid/unknown unit provided for quantity %1 ('%2').")
-							 .arg(resultDesc.m_name).arg(resultDesc.m_description), FUNC_ID);
+	else {
+		// add dummy unit, since result is not available
+		m_valueUnits.push_back(IBK::Unit());
 	}
 }
 
@@ -79,7 +85,7 @@ void OutputFile::createInputReferences() {
 			InputReference inref;
 			inref.m_id = 0;
 			inref.m_required = false;
-			inref.m_name = od.m_quantity;
+			inref.m_name.fromEncodedString(od.m_quantity);
 			inref.m_referenceType = ol->m_referenceType;
 			m_inputRefs.push_back(inref);
 			m_outputDefMap.push_back(i);
@@ -90,7 +96,7 @@ void OutputFile::createInputReferences() {
 			InputReference inref;
 			inref.m_id = id;
 			inref.m_required = false;
-			inref.m_name = od.m_quantity;
+			inref.m_name.fromEncodedString(od.m_quantity);
 			inref.m_referenceType = ol->m_referenceType;
 			m_inputRefs.push_back(inref);
 			m_outputDefMap.push_back(i);
@@ -226,7 +232,7 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 		std::string header = IBK::FormatString("%1.[%2].%3 [%4]")
 				.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_inputRefs[i].m_referenceType))
 				.arg(m_inputRefs[i].m_id)
-				.arg(resultDesc.m_name)
+				.arg(m_inputRefs[i].m_name.encodedString())
 				.arg(resultDesc.m_unit).str();
 		headerLabels.push_back(header);
 		++col; // increase var counter

@@ -22,10 +22,20 @@
 #include "NM_QuantityName.h"
 
 #include <IBK_Exception.h>
+#include <IBK_StringUtils.h>
 
 // include individual model implementation headers
 
 namespace NANDRAD_MODEL {
+
+
+std::string QuantityName::encodedString() const {
+	if (m_index == -1)
+		return m_name;
+	else
+		return m_name + "[" + IBK::val2string(m_index) + "]";
+}
+
 
 void QuantityName::fromEncodedString(const std::string &quantity) {
 	FUNCID(QuantityName::fromEncodedString);

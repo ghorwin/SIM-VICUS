@@ -1767,7 +1767,7 @@ void NandradModel::initModelDependencies() {
 		} // end master section
 
 		// currentModel is the model that we current look up input references for
-		AbstractModel * currentModel = m_modelContainer[i];
+		AbstractModel * currentModel = m_modelContainer[(size_t)i];
 		try {
 			// let models initialize their results, i.e. generate information on computed results
 			currentModel->initResults(m_modelContainer);
@@ -1859,9 +1859,9 @@ void NandradModel::initModelDependencies() {
 				IBK::IBK_Message(IBK::FormatString("  Loop 2: %1 %% done\n").arg(i*100.0 / m_modelContainer.size()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		} // end master section
 
-		AbstractModel * currentModel = m_modelContainer[i];
+		AbstractModel * currentModel = m_modelContainer[(size_t)i];
 		// currentModel is the model that we current look up input references for
-		AbstractStateDependency * currentStateDependency = dynamic_cast<AbstractStateDependency *> (m_modelContainer[i]);
+		AbstractStateDependency * currentStateDependency = dynamic_cast<AbstractStateDependency *> (m_modelContainer[(size_t)i]);
 		// skip all models that are not state-dependent and have no input requirements
 		if (currentStateDependency == nullptr)
 			continue;
@@ -1907,8 +1907,15 @@ void NandradModel::initModelDependencies() {
 						srcObject = it->second;
 						quantityDesc = it->first; // Note: slicing is ok here, i.e. we go from ValueReference to QuantityDescription and loose id and reference type on the way, but that's ok.
 						// request the address to the requested variable from the source object
-						srcVarAddress = srcObject->resultValueRef(inputRef.m_name);
-						IBK_ASSERT(srcVarAddress != nullptr);
+						try {
+							srcVarAddress = srcObject->resultValueRef(inputRef.m_name);
+							if (srcVarAddress == nullptr)
+								throw IBK::Exception("Object return nullptr reference for exported variable.", FUNC_ID);
+						} catch (IBK::Exception & ex) {
+							throw IBK::Exception(ex, IBK::FormatString("Error resolving variable reference %1(id=%2).%3.")
+								.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",valueRef.m_referenceType))
+								.arg(valueRef.m_id).arg(inputRef.m_name.encodedString()), FUNC_ID);
+						}
 					}
 				}
 
@@ -1937,7 +1944,7 @@ void NandradModel::initModelDependencies() {
 						throw IBK::Exception(IBK::FormatString("Could not resolve reference to quantity %1 of %2 with id #%3!")
 							.arg(inputRef.m_name.m_name)
 							.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_modelContainer[i]->referenceType()))
-							.arg(m_modelContainer[i]->id()), FUNC_ID);
+							.arg(m_modelContainer[(size_t)i]->id()), FUNC_ID);
 					}
 					else {
 						// if not required, tell the model object that we do not have such an input by giving a nullptr;
@@ -1971,7 +1978,7 @@ void NandradModel::initModelDependencies() {
 																						   .arg(currentModel->ModelIDName())
 																						   .arg(currentModel->id()).str();
 #else
-			throw IBK::Exception(ex, IBK::FormatString("Error initializing input references for model %1 with id #%2!")
+			throw IBK::Exception(ex, IBK::FormatString("Error initializing input references for model '%1' with id #%2!")
 				.arg(currentModel->ModelIDName())
 				.arg(currentModel->id()),
 				FUNC_ID);

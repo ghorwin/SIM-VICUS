@@ -53,7 +53,12 @@ class OutputFile : public AbstractModel, public AbstractStateDependency, public 
 public:
 
 	/*! D'tor, released allocated memory. */
-	~OutputFile();
+	~OutputFile() override;
+
+	// *** Re-implemented from AbstractModel
+
+	virtual const char * ModelIDName() const override { return "OutputFile"; }
+
 
 	// *** Re-implemented from AbstractTimeDependency
 
