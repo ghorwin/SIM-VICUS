@@ -7,7 +7,7 @@
 			<LastEdited>2020-08-14</LastEdited>
 		</ProjectInfo>
 		<Zones>
-			<Zone id="1" displayName="TF01" type="Active">
+			<Zone id="1" displayName="Room" type="Active">
 				<IBK:Parameter name="Temperature" unit="C">5</IBK:Parameter>
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
@@ -25,46 +25,17 @@
 			<TimeUnit>min</TimeUnit>
 			<OutputDefinitions>
 				<OutputDefinition>
-					<Quantity>AirTemperature</Quantity>
-					<ObjectListName>All zones</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>ElevationAngle</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
 					<Quantity>AzimuthAngle</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>ElevationAngle</Quantity>
 					<ObjectListName>Location</ObjectListName>
 					<GridName>minutely</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
-					<Quantity>AzimuthAngle</Quantity>
+					<Quantity>ElevationAngle</Quantity>
 					<ObjectListName>Location</ObjectListName>
 					<GridName>minutely</GridName>
 				</OutputDefinition>
 			</OutputDefinitions>
 			<Grids>
-				<OutputGrid name="hourly">
-					<Intervals>
-						<Interval>
-							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
-						</Interval>
-					</Intervals>
-				</OutputGrid>
-				<OutputGrid name="mix">
-					<Intervals>
-						<Interval>
-							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
-						</Interval>
-					</Intervals>
-				</OutputGrid>
 				<OutputGrid name="minutely">
 					<Intervals>
 						<!-- 5. Mär -->
