@@ -137,9 +137,11 @@ private:
 	/*! Retrieves current output values and appends values to cache.
 		This function only caches current output values. The data is written to file in the next call to flushCache().
 
-		\param t_out The time since begin of the start year already converted to the output unit.
+		\param t_out The time since begin of simulation, for output integral interpolation.
+		\param t_timeOfThe time since begin of the start year already converted to the output unit (this goes into the
+			time column of the output file).
 	*/
-	void cacheOutputs(double t_out);
+	void cacheOutputs(double t_out, double t_timeOfYear);
 
 	/*! Returns number of bytes currently cached in this file object. */
 	unsigned int cacheSize() const;

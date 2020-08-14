@@ -56,6 +56,15 @@ void OutputFile::stepCompleted(double t) {
 
 			// shift states
 			double dt = t - m_tCurrent;  // integration interval length in [s]
+			// special handling for initial call
+			if (m_tLast == -1) {
+				// on first call the step completed, usually t = 0, except in restart case
+				/// \todo think of a way to restore integral values in case of restarting
+				m_tLast = t;
+				m_tCurrent = t;
+				continue;
+			}
+
 			m_tLast = m_tCurrent;
 			m_tCurrent = t;
 			m_integrals[0][col] = m_integrals[1][col];
@@ -92,6 +101,17 @@ void OutputFile::setInputValueRef(const InputReference & inputRef, const Quantit
 			throw IBK::Exception(ex, IBK::FormatString("Invalid/unknown unit provided for quantity %1 ('%2').")
 								 .arg(resultDesc.m_name).arg(resultDesc.m_description), FUNC_ID);
 		}
+		// in case of integral quantities, generate time integral quantity from value
+		const NANDRAD::OutputDefinition & od = m_outputDefinitions[ m_outputDefMap[currentValueRefIndex] ];
+		if (od.m_timeType == NANDRAD::OutputDefinition::OTT_INTEGRAL) {
+			IBK::Unit u = IBK::UnitList::instance().integralQuantity(m_valueUnits.back(), false, true);
+			// special handling for energy units J and J/m2 - we rather want kWh and kWh/m2 as outputs
+			if (u.name() == "J/m2")
+				u.set("kWh/m2");
+			else if (u.name() == "J")
+					u.set("kWh");
+			m_valueUnits.back() = u;
+		}
 	}
 	else {
 		// add dummy unit, since result is not available
@@ -124,8 +144,9 @@ void OutputFile::setInputValueRef(const InputReference & inputRef, const Quantit
 		if (m_haveIntegrals) {
 			m_integrals[0].resize(m_numCols, 0.0);
 			m_integrals[1].resize(m_numCols, 0.0);
-			m_tLast = 0;
-			m_tCurrent = 0;
+			// time points of -1 mean "uninitialized" - the simulation may be continued from later time points
+			m_tLast = -1;
+			m_tCurrent = -1;
 		}
 
 	}
@@ -287,17 +308,19 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 
 		std::string header;
 
+		IBK::Unit u(m_valueUnits[i]);
+
 		if (m_inputRefs[i].m_id != 0)
 			header = IBK::FormatString("%1[%2].%3 [%4]")
 					.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_inputRefs[i].m_referenceType))
 					.arg(m_inputRefs[i].m_id)
 					.arg(m_inputRefs[i].m_name.encodedString())
-					.arg(resultDesc.m_unit).str();
+					.arg(u.name()).str();
 		else
 			header = IBK::FormatString("%1.%2 [%3]")
 					.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_inputRefs[i].m_referenceType))
 					.arg(m_inputRefs[i].m_name.encodedString())
-					.arg(resultDesc.m_unit).str();
+					.arg(u.name()).str();
 		headerLabels.push_back(header);
 		++col; // increase var counter
 	}
@@ -319,7 +342,7 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 }
 
 
-void OutputFile::cacheOutputs(double t_out) {
+void OutputFile::cacheOutputs(double t_out, double t_timeOfYear) {
 	// no outputs - nothing to do
 	if (m_numCols == 0)
 		return;
@@ -328,15 +351,39 @@ void OutputFile::cacheOutputs(double t_out) {
 
 	// append data to cache
 	std::vector<double> vals(m_numCols+1);
-	vals[0] = t_out;
+	vals[0] = t_timeOfYear;
 	unsigned int col=1; // Mind: column 0 is the time column
 	for (unsigned int i=0; i<m_valueRefs.size(); ++i) {
 		if (m_valueRefs[i] == nullptr) continue; // skip unavailable vars
 
-		// retrieve (initial) value for this variable
-		vals[col] = *m_valueRefs[i];
-		// perform target unit conversion
-		IBK::UnitList::instance().convert(m_valueUnits[i].base_unit(), m_valueUnits[i], vals[col]);
+		const NANDRAD::OutputDefinition & od = m_outputDefinitions[ m_outputDefMap[i] ];
+		switch (od.m_timeType) {
+			case NANDRAD::OutputDefinition::OTT_NONE :
+			default :
+				// retrieve value for this variable and store in cache vector
+				vals[col] = *m_valueRefs[i];
+				// perform target unit conversion
+				IBK::UnitList::instance().convert(m_valueUnits[i].base_unit(), m_valueUnits[i], vals[col]);
+			break;
+			case NANDRAD::OutputDefinition::OTT_MEAN :
+			break;
+
+			case NANDRAD::OutputDefinition::OTT_INTEGRAL :
+				// interpolate linearly in interval [t_mLast, t_mCurrent]
+				IBK_ASSERT(m_tLast <= t_out);
+				IBK_ASSERT(t_out <= m_tCurrent);
+				// special handling when m_tLast == m_tCurrent = t_start
+				if (m_tLast == m_tCurrent)
+					vals[col] = 0;
+				else {
+					IBK_ASSERT(m_tLast < m_tCurrent);
+					double alpha = (t_out-m_tLast)/(m_tCurrent - m_tLast);
+					vals[col] = m_integrals[1][col]*alpha + m_integrals[0][col]*(1-alpha);
+				}
+			break;
+
+		}
+
 		++col;
 	}
 
