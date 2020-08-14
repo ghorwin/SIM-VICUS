@@ -41,6 +41,14 @@ VectorValuedQuantity::VectorValuedQuantity(unsigned int n, double value) :
 }
 
 
+VectorValuedQuantity::VectorValuedQuantity(const std::vector<unsigned int> & modelIndexes, double value) :
+	m_data(modelIndexes.size(), value),
+	m_keyType(VectorValuedQuantityIndex::IK_ModelID),
+	m_indexKeys(modelIndexes)
+{
+}
+
+
 const double & VectorValuedQuantity::operator[](unsigned int i) const {
 	FUNCID(VectorValuedQuantity::operator[]);
 	// debug check: have data and key vectors the same size

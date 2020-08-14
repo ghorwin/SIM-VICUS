@@ -70,10 +70,12 @@ public:
 		\warning This function generates and populates the vector resDesc using the KeywordList. It includes
 			quite a lot of string operations and, hence, the function is not the fastest. If you need
 			the descriptions several times, you should consider caching the vector.
-		\note Vector valued result quantities usually are resized after the
+		\note Vector-valued result quantities usually are resized after the
 			initResults()-routine was called. If the result descriptions are requested before
 			initializing the m_vectorValuedResults vector only descriptions without index information
-			are composed.
+			are composed. If you know the size of the vectors already during setup, it is recommended that you
+			re-implement this function in the derived class and after a call to the DefaultModel::resultDescription()
+			function, adjust the genererated default descriptions for the vector-valued quantities.
 	*/
 	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const override;
 
@@ -101,18 +103,12 @@ protected:
 		This function is called when all models are already initialized (constructed).
 
 		When re-implementing this class, make sure that m_results and
-		m_vectorValuedResults a fully resized and defined. Ensure, that the functions
-		resultDescriptions() and resultValueRef() can be called afterwards.
+		m_vectorValuedResults a fully resized and defined. Ensure, that the function
+		resultValueRef() can be called afterwards.
 
-		The default implementation uses the keyword list and expects the
-		enumerations Results and VectorValuedResults to be present in derived classes.
-		It resizes and fills the m_results and m_vectorValuedResults vectors.
-		It then initializes IBK::Parameters/IBK::UnitVector with name and unit.
-
-		Suggested default procedure when re-implementing this function:
-
-		Re-implement this function and call DefaultModel::initResults().
-		Resize all vector-valued results with a given set of indices afterwards.
+		The default implementation first calls resultDescriptions() to obtain
+		a list of published variables (see default implementation in DefaultModel::resultDescriptions()).
+		Then, it resizes and fills the m_results and m_vectorValuedResults vectors.
 	*/
 	virtual void initResults(const std::vector<AbstractModel*> & models) override;
 

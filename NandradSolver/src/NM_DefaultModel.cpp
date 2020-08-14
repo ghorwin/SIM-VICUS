@@ -63,19 +63,19 @@ void DefaultModel::initResults(const std::vector<AbstractModel*> & /* models */)
 			m_results.push_back(0);
 		}
 		else  {
-#if 0
-			// vector valued results are
-			VectorValuedQuantity quantity(desc.m_name, valueUnit);
+			// Size of vector valued results depends on specific model capabilities
+			// and cannot be resized here. In many cases, the size can only be specified
+			// in a call to initResults() when all model objects are known.
+			// This specific code, however, has to be implemented in derived models.
+			VectorValuedQuantity quantity(1);
 			// if index keys are given, resize quantity
 			if (!desc.m_indexKeys.empty()) {
 				IBK_ASSERT(desc.m_indexKeyType != VectorValuedQuantityIndex::NUM_IndexKeyType);
-				quantity.resize(desc.m_indexKeys, desc.m_indexKeyType);
+				quantity = VectorValuedQuantity(desc.m_indexKeys);
 			}
-			// Mind: index keys may initialy be empty and be populated later
 
 			// store result
 			m_vectorValuedResults.push_back(quantity);
-#endif
 		}
 	}
 	// After call of this routine all result vectors are prepared.

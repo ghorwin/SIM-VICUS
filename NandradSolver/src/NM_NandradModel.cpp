@@ -313,9 +313,9 @@ SOLFRA::ModelInterface::CalculationResult NandradModel::ydot(double * ydot) {
 		std::memcpy(&ydot, &m_ydot[0], m_n*sizeof(double));
 
 		// *** feedback to user ***
-		IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("    ydot: t=%1 [%2]\n")
+		IBK_FastMessage(IBK::VL_DEVELOPER)(IBK::FormatString("    ydot: t=%1 [%2]\n")
 							.arg(m_t).arg(IBK::Time(2000,m_t).toTOYFormat()),
-							IBK::MSG_PROGRESS, FUNC_ID, 3);
+							IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DEVELOPER);
 		m_feedback.writeFeedbackFromF(m_t);
 	}
 	catch (IBK::Exception & ex) {

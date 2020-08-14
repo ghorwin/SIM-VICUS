@@ -363,6 +363,8 @@ int Loads::setTime(double t) {
 			// we only need surface id for radiant loads calculation
 			// (surface is equal for all surface with same incidenceAngle)
 			double qRadDir, qRadDiff, incidenceAngle;
+			// Note: the following call will only return the values cached for the surface
+			//       but not trigger any (expensive) re-calculation.
 			m_solarRadiationModel.radiationLoad(surfaceId, qRadDir, qRadDiff, incidenceAngle);
 			// store values
 			*dirRadIt = qRadDir;
