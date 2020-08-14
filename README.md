@@ -1,6 +1,6 @@
 # SIM-VICUS
 
-We have a CI (continuous integration) script running (build-test of all C/C++ code without UI). For details, see [Actions/build](../../actions).
+We have a continuous integration scripts running (build-test of all C/C++ code without UI and solver regression tests). For details, see [Actions/build](../../actions).
 
 | Test | Result|
 |-----|-----|
