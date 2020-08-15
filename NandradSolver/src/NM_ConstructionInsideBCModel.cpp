@@ -29,15 +29,13 @@
 
 #include <IBK_assert.h>
 #include <IBK_FormatString.h>
-#include <WM_Types.h>
 
 #include <NANDRAD_SimulationParameter.h>
-#include <NANDRAD_ParametrizationDefaults.h>
 
-using namespace std;
 
 namespace NANDRAD_MODEL {
 
+#if 0
 ConstructionInsideBCModel::ConstructionInsideBCModel(unsigned int id, const std::string &displayName) :
 	DefaultModel(id, displayName),
 	DefaultStateDependency(SteadyState),
@@ -520,6 +518,8 @@ const double *ConstructionInsideBCModel::swRadAbsorbed() const {
 void ConstructionInsideBCModel::setSurfaceTemperature(const double *temperature) {
 	m_surfaceTemperature = temperature;
 }
+
+#endif
 
 } // namespace NANDRAD_MODEL
 

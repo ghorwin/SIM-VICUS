@@ -21,16 +21,65 @@
 
 #include "NM_ConstructionStatesModel.h"
 
+#include <algorithm>
+
 #include <NANDRAD_ConstructionInstance.h>
+#include <NANDRAD_ConstructionType.h>
+#include <NANDRAD_SolverParameter.h>
+#include <NANDRAD_SimulationParameter.h>
 
 #include "NM_KeywordList.h"
-
-using namespace std;
 
 namespace NANDRAD_MODEL {
 
 
-void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con, const NANDRAD::SimulationParameter & simPara) {
+/*! A grid generation utility class. */
+class Mesh {
+public:
+	/*! Defines mesh type. */
+	enum MeshType {
+		Uniform,
+		TanHSingle,
+		TanHDouble
+	};
+
+	/*! Constructor, used to define a mesh type and its properties. */
+	Mesh(const MeshType type, const double density = 1, const double ratio=1);
+
+	/*! Populates the vector ds_vec with normalized element width based on the current
+		mesh settings. The sum in vector ds_vec will be always 1. If a single-sided
+		grid is used, element 0 of the vector will have the smallest size. */
+	void generate(const int n, std::vector<double> & ds_vec);
+
+	/*! Generates a grid between coordinates x1 and x2 and stores the new element widths
+		in vector dx_vec, and the element's center coordinates in vector x_vec. */
+	void generate(const int n, const double x1, const double x2,
+		std::vector<double> & dx_vec, std::vector<double> & x_vec);
+
+	/*! Returns a stretch factor for TanHDouble mesh type, where ds1 and ds2 are normalized
+		grid spacings at the left and right side of the grid. */
+	static double stretch(int n, double ds1, double ds2);
+
+	/*! Type of mesh.
+		\sa MeshType. */
+	MeshType t;
+
+	/*! Mesh density. */
+	double d;
+
+	/*! Ratio between boundary element widths dx_0 / dx_{n-1}. */
+	double r;
+};
+
+
+void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
+									const NANDRAD::SimulationParameter & simPara,
+									const NANDRAD::SolverParameter & solverPara)
+{
+	// cache pointers to input data structures
+	m_con = &con;
+	m_simPara = &simPara;
+	m_solverPara = &solverPara;
 
 	// we initialize only those variables needed for state calculation:
 	// - grid and grid-element to layer association
@@ -39,8 +88,6 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con, c
 	// *** grid generation
 
 	generateGrid();
-
-
 }
 
 
@@ -69,272 +116,15 @@ int ConstructionStatesModel::update(const double * y) {
 }
 
 
-#if 0
-void ConstructionStatesModel::initResults(const std::vector<AbstractModel*> &  models) {
-
-	const char * const FUNC_ID = "[ConstructionStatesModel::initResults]";
-
-	try {
-		std::string category = "ConstructionStatesModel::VectorValuedResults";
-
-		// resize layer temperatures
-		m_layerTemperatures.resize(m_wallModel->m_construction.m_materialLayers.size(),
-			VectorValuedQuantityIndex::IK_Index);
-	}
-	catch (IBK::Exception &ex) {
-		throw IBK::Exception(IBK::FormatString("Error inializing results for %1 with id #%2!")
-			.arg(ModelIDName()).arg(id()), FUNC_ID);
-	}
-}
-
-void ConstructionStatesModel::initInputReferences(const std::vector<AbstractModel*> &  /*models*/) {
-
-	std::string category	= "ConstructionStatesModel::InputReferences";
-	// compose a reference to the global solver solution quantity (internal energy desnity)
-	InputReference &yRef			= inputReference(InputRef_InternalEnergyDensity);
-	yRef.m_referenceType			= NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
-	yRef.m_id						= id(); // solution variable is provided by the corresponding room balance model
-	yRef.m_sourceName				= std::string("y");
-	yRef.m_targetName				= KeywordList::Keyword(category.c_str(), InputRef_InternalEnergyDensity);
-	yRef.m_constant					= true;
-
-	// compose a reference to the temperatures
-	InputReference &tempRef = inputReference(InputRef_Temperature);
-	tempRef.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
-	tempRef.m_id = id(); // solution variable is provided by the corresponding room balance model
-	tempRef.m_sourceName = KeywordList::Keyword(category.c_str(), InputRef_Temperature);
-	tempRef.m_targetName = KeywordList::Keyword(category.c_str(), InputRef_Temperature);
-	tempRef.m_constant = true;
-
-	// compose a reference to heat sources
-	InputReference &heatSourceRef = inputReference(InputRef_HeatSources);
-	heatSourceRef.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
-	heatSourceRef.m_id = id(); // solution variable is provided by the corresponding room balance model
-	heatSourceRef.m_sourceName = KeywordList::Keyword(category.c_str(), InputRef_HeatSources);
-	heatSourceRef.m_targetName = KeywordList::Keyword(category.c_str(), InputRef_HeatSources);
-	heatSourceRef.m_constant = true;
-}
-
-
-void ConstructionStatesModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const
-{
-	DefaultModel::resultDescriptions(resDesc);
-
-	std::string category = "ConstructionStatesModel::VectorValuedResults";
-	// delete missing entries
-	for (unsigned int i = 0; i < resDesc.size(); ++i) {
-		if (resDesc[i].m_name != KeywordList::Keyword(category.c_str(), VVR_LayerTemperature) )
-			continue;
-
-		resDesc[i].resize(m_wallModel->m_construction.m_materialLayers.size());
-	}
-
-	category = "ConstructionStatesModel::InputReferences";
-	// add wall temperatures
-	QuantityDescription result;
-	result.m_constant = true;
-	result.m_name = KeywordList::Keyword(category.c_str(), InputRef_Temperature);
-	result.m_description = KeywordList::Description(category.c_str(), InputRef_Temperature);
-	result.m_unit = KeywordList::Unit(category.c_str(), InputRef_Temperature);
-	result.m_size = m_wallModel->m_n;
-	resDesc.push_back(result);
-
-	// add heat sources
-	result.m_name = KeywordList::Keyword(category.c_str(), InputRef_HeatSources);
-	result.m_description = KeywordList::Description(category.c_str(), InputRef_HeatSources);
-	result.m_unit = KeywordList::Unit(category.c_str(), InputRef_HeatSources);
-	result.m_size = m_wallModel->m_n;
-	resDesc.push_back(result);
-}
-
-
-void ConstructionStatesModel::resultValueRefs(std::vector<const double *> &res) const {
-
-	// add surafce temperatures
-	res.push_back(&m_wallModel->m_surfaceTemperatureA);
-	res.push_back(&m_wallModel->m_surfaceTemperatureB);
-
-	// add layer temperatures
-	for (std::vector<double>::const_iterator it =
-		m_layerTemperatures.begin(); it != m_layerTemperatures.end(); ++it)
-		res.push_back(&(*it));
-
-	// add all wall temperatures
-	for(unsigned int i = 0; i < m_wallModel->
-		m_states[WALL_MODEL::WallModel::STATE_TEMPERATURE].size(); ++i)
-		res.push_back(&m_wallModel->m_states[WALL_MODEL::WallModel::STATE_TEMPERATURE][i]);
-	// add all wall heat sources
-	for (unsigned int i = 0; i < m_wallModel->
-		m_sources[WALL_MODEL::WallModel::SOURCE_HEAT_PRODUCTION_RATE].size(); ++i)
-		res.push_back(&m_wallModel->m_sources[WALL_MODEL::WallModel::SOURCE_HEAT_PRODUCTION_RATE][i]);
-}
-
-
-const double * ConstructionStatesModel::resultValueRef(const QuantityName & quantityName) const {
-
-	std::string category = "ConstructionStatesModel::Results";
-	// check scalar results
-	if (quantityName == KeywordList::Keyword(category.c_str(), R_SurfaceTemperatureA))
-	{
-		// only scalar quantities are allowed any longer
-		if (quantityName.index() != -1)
-			return nullptr;
-
-		return &m_wallModel->m_surfaceTemperatureA;
-	}
-	if (quantityName == KeywordList::Keyword(category.c_str(), R_SurfaceTemperatureB))
-	{
-		// only scalar quantities are allowed any longer
-		if (quantityName.index() != -1)
-			return nullptr;
-
-		return &m_wallModel->m_surfaceTemperatureB;
-	}
-
-	category = "ConstructionStatesModel::VectorValuedResults";
-	// check vector valued results
-	if (quantityName.name() == KeywordList::Keyword(category.c_str(), VVR_LayerTemperature)) {
-		// malformed index
-		if (quantityName.index() == -1) {
-			return nullptr;
-		}
-		//// invalid index
-		if ((unsigned int)quantityName.index() >= m_layerTemperatures.size())
-			return 0;
-		return &m_layerTemperatures[(unsigned int)quantityName.index()];
-	}
-
-	category = "ConstructionStatesModel::InputReferences";
-	// Additionally we provide a reference to the solution quantity.
-	// This reference will be accessed by the corresponding RoomStatesModel.
-	if (quantityName == KeywordList::Keyword(category.c_str(), InputRef_Temperature) )
-	{
-		return &m_wallModel->m_states[WALL_MODEL::WallModel::STATE_TEMPERATURE][0];
-	}
-	else if (quantityName == KeywordList::Keyword(category.c_str(), InputRef_HeatSources))
-	{
-		return &m_wallModel->m_sources[WALL_MODEL::WallModel::SOURCE_HEAT_PRODUCTION_RATE][0];
-	}
-	return nullptr;
-}
-
-int ConstructionStatesModel::update()
-{
-	const double *inputRef = &m_wallModel->m_states[WALL_MODEL::WallModel::STATE_TEMPERATURE][0];
-	std::vector<double>::iterator layerTempIt = m_layerTemperatures.begin();
-
-	// loop over active layers and their temperatures
-	for (std::set<unsigned int>::const_iterator
-		it = m_layerTemperatures.indexKeys().begin();
-		it != m_layerTemperatures.indexKeys().end(); ++it, ++layerTempIt) {
-
-		IBK_ASSERT(*it < m_wallModel->m_materialLayerElementOffset.size() - 1);
-		// for each requested layer calculate mean temperature
-		double layerTemperature = 0.0;
-		unsigned int nElements = m_wallModel->m_materialLayerElementOffset[*it + 1] -
-			m_wallModel->m_materialLayerElementOffset[*it];
-		IBK_ASSERT(nElements != nullptr);
-
-		// calculate average temperature
-		for (unsigned int index = m_wallModel->m_materialLayerElementOffset[*it];
-			index < m_wallModel->m_materialLayerElementOffset[*it + 1];
-			++index) {
-
-			const double temperature = *(inputRef + index);
-			layerTemperature += temperature /
-				double(nElements);
-		}
-		// copy temperature value
-		*layerTempIt = layerTemperature;
-	}
-
-	return 0;
-}
-
-
-void ConstructionStatesModel::stateDependencies(std::vector< std::pair<const double *, const double *> > &resultInputValueReferences) const
-{
-	// clear pattern
-	if(!resultInputValueReferences.empty() )
-		resultInputValueReferences.clear();
-
-	// register dependencies for wall temperatures (not explicitely listed but available
-	// as result value reference)
-	const double *inputRef = inputValueRefs()[InputRef_InternalEnergyDensity];
-	const double *resultRef = &m_wallModel->m_states[WALL_MODEL::WallModel::STATE_TEMPERATURE][0];
-	// create pattern for wall temperatures
-	for (unsigned int i = 0; i < m_wallModel->m_nElements; ++i,
-		++inputRef, ++resultRef)
-	{
-		resultInputValueReferences.push_back(
-			std::make_pair(resultRef, inputRef));
-	}
-
-	// mean layer temperatures
-	inputRef = &m_wallModel->m_states[WALL_MODEL::WallModel::STATE_TEMPERATURE][0];
-	std::vector<double>::const_iterator layerTempIt = m_layerTemperatures.begin();
-
-	// loop over all layers and their temperatures
-	for (std::set<unsigned int>::const_iterator
-		it = m_layerTemperatures.indexKeys().begin();
-		it != m_layerTemperatures.indexKeys().end(); ++it, ++layerTempIt) {
-
-		IBK_ASSERT(*it < m_wallModel->m_materialLayerElementOffset.size() - 1);
-		// register all tempertaure values of current layer
-		for (unsigned int index = m_wallModel->m_materialLayerElementOffset[*it];
-			index < m_wallModel->m_materialLayerElementOffset[*it + 1];
-			++index) {
-
-			resultInputValueReferences.push_back(
-				std::make_pair(&(*layerTempIt), inputRef + index) );
-		}
-	}
-
-	// connect first and second value of y...
-	inputRef = inputValueRefs()[InputRef_InternalEnergyDensity];
-	IBK_ASSERT(inputRef != nullptr);
-	IBK_ASSERT(inputRef + 1 != nullptr);
-	// ... to the surface temperature at location A
-	resultRef = &m_wallModel->m_surfaceTemperatureA;
-	IBK_ASSERT(resultRef != nullptr);
-	// store the pair of adresses of input value and result
-	// inside pattern list
-	resultInputValueReferences.push_back(
-		std::make_pair(resultRef, inputRef) );
-	resultInputValueReferences.push_back(
-		std::make_pair(resultRef, inputRef + 1));
-
-	unsigned int n = m_wallModel->m_n;
-	// connect last values of y...
-	inputRef = inputValueRefs()[InputRef_InternalEnergyDensity] + (int)(n - 2);
-	IBK_ASSERT(inputRef != nullptr);
-	IBK_ASSERT(inputRef + 1 != nullptr);
-	// ...to the surface temperature at location B
-	resultRef = &m_wallModel->m_surfaceTemperatureB;
-	IBK_ASSERT(resultRef != nullptr);
-	// store the pair of adresses of result value and input
-	// value inside pattern list
-	resultInputValueReferences.push_back(
-		std::make_pair(resultRef, inputRef) );
-	resultInputValueReferences.push_back(
-		std::make_pair(resultRef, inputRef + 1) );
-}
-
-const std::vector<size_t>	&ConstructionStatesModel::materialLayerElementOffset() const {
-	if (m_wallModel == nullptr)
-		return m_dummyVector;
-	return m_wallModel->m_materialLayerElementOffset;
-}
-
-#endif
-
 void ConstructionStatesModel::generateGrid() {
-	//Number of material layers
-	size_t nLayers = construction.m_materialLayers.size();
-	if (nLayers == 0) {
-		throw IBK::Exception(IBK::FormatString("Missing material layers."),
-			FUNC_ID);
-	}
+	FUNCID(ConstructionStatesModel::generateGrid);
+
+	// content checks of construction type and construction instance have been done already
+
+	// get pointer to construction type
+	const NANDRAD::ConstructionType * conType = m_con->m_constructionType;
+	// number of material layers
+	size_t nLayers = conType->m_materialLayers.size();
 
 	// Resize layer offsets
 	m_materialLayerElementOffset.resize(nLayers,0);
@@ -350,60 +140,21 @@ void ConstructionStatesModel::generateGrid() {
 	// current total material width
 	double x = 0;
 
-	if (elements != nullptr) {
-		// populate x_vec and dx_vec but merge in the middle
-
-		const std::vector<size_t> lOffsets = *layerOffsets;
-
-		// transfer left-most layer
-		m_materialLayerElementOffset[0] = 0;
-		for (int i=0; i<lOffsets[1]; ++i) {
-			x_vec.push_back((*elements)[i].x );
-			dx_vec.push_back((*elements)[i].dx);
-		}
-		if (nLayers > 1) {
-			m_materialLayerElementOffset[1] = lOffsets[1];
-
-			// now process all middle layers
-			for (int i=1; i<lOffsets.size()-2; ++i) {
-				unsigned int startElementIdx = lOffsets[i];
-				unsigned int endElementIdx = lOffsets[i+1];
-
-				double xLayerLeftCoord = (*elements)[startElementIdx].x - 0.5*(*elements)[startElementIdx].dx;
-				double xLayerRightCoord = (*elements)[endElementIdx].x - 0.5*(*elements)[endElementIdx].dx;
-				// first sum up entire layer width
-				double dxMergedLayer = xLayerRightCoord - xLayerLeftCoord;
-				x_vec.push_back( xLayerLeftCoord + 0.5*dxMergedLayer);
-				dx_vec.push_back( dxMergedLayer);
-				m_materialLayerElementOffset[i+1] = m_materialLayerElementOffset[i]+1;
-			}
-
-			// process last layer
-			for (int i=lOffsets[lOffsets.size()-2]; i<elements->size(); ++i) {
-				x_vec.push_back((*elements)[i].x );
-				dx_vec.push_back((*elements)[i].dx);
-			}
-			m_materialLayerElementOffset.push_back(x_vec.size());
-		}
-
-	}
+	// retrieve parameters regulating grid generation
+	double density = m_solverPara->m_para[NANDRAD::SolverParameter::SP_DISCRETIZATION_DETAIL].value;
+	double minDX = m_solverPara->m_para[NANDRAD::SolverParameter::SP_DISCRETIZATION_MIN_DX].value;
+	unsigned int maxElementsPerLayer = 10;
 
 	// case: density is set to 0
 	// internal layers are used as elements directly
 	// boundary layers are split into 2 elements
-	else if (discOptions.m_density == 0.0) {
+	if (density == 0.0) {
 		// loop over all material layers
 		for (unsigned int i=0; i<nLayers; ++i) {
 			// update element offset
 			m_materialLayerElementOffset[i] = dx_vec.size();
-			// material layer width
-			dLayer = construction.m_materialLayers[i].m_width.value;
-			// error empty or negative layer width
-			if (dLayer <= 0) {
-				throw IBK::Exception(IBK::FormatString("Invalid width %1m of material layer #%2!")
-					.arg(dLayer).arg(i),
-					FUNC_ID);
-			}
+			// material layer width, valid thickness has been tested already
+			dLayer = conType->m_materialLayers[i].m_thickness;
 			// boundary material layers are split into 2 equal sizes elements
 			if (i == 0 || i == nLayers - 1) {
 				dx_vec.push_back(dLayer/2);
@@ -421,31 +172,24 @@ void ConstructionStatesModel::generateGrid() {
 		}
 	}
 
-	// Case: m_density == 1, equidistant discretization
-	// element width is set with m_minDx
+	// Case: m_density == 1, attempt equidistant discretization with approximately
+	// element width as set by DiscMinDx parameter
 	else {
-		if (discOptions.m_density == 1.0) {
+		if (density == 1.0) {
 			// loop over all material layers
 			for (unsigned int i=0; i<nLayers; ++i) {
 				// update element offset
 				m_materialLayerElementOffset[i] = dx_vec.size();
-				// material layer width
-				dLayer = construction.m_materialLayers[i].m_width.value;
-				// error empty or negative layer width
-				if (dLayer <= 0) {
-					throw IBK::Exception(IBK::FormatString("Invalid width %1m of material layer #%2!")
-						.arg(dLayer).arg(i),
-						FUNC_ID);
-				}
+				// material layer width, valid thickness has been tested already
+				dLayer = conType->m_materialLayers[i].m_thickness;
 				// calculate number of discretized elements for current material layer
-				double n_x = dLayer / discOptions.m_minDx;
+				double n_x = dLayer / minDX;
 				// compute the size of the last element
-				double x_last = dLayer - (n_x - 1) * discOptions.m_minDx;
+				double x_last = dLayer - (n_x - 1) * minDX;
 				double dx_new;
 				// if the last element gets very small, neglect this element
-				if (x_last < discOptions.m_minDx/2){
+				if (x_last < minDX)
 					n_x -= 1;
-				}
 				// final element width
 				dx_new = dLayer / n_x;
 				// save elements in dx_vec and x_vec, and update current material width
@@ -454,23 +198,16 @@ void ConstructionStatesModel::generateGrid() {
 					x_vec.push_back(x + dx_new/2);
 					x += dx_new;
 				}
-
 			}
 		}
-		// Case: m_density != 0 and != 1
+		// all other cases: use stretching function to get variable discretization grid
 		else {
-			if (discOptions.m_density < 1) {
-				throw IBK::Exception( IBK::FormatString("Grid density must be == 0 or >= 1, density was %1.").arg(discOptions.m_density), FUNC_ID);
-			}
-			if (discOptions.m_minDx <= 1e-10) {
-				throw IBK::Exception( IBK::FormatString("Minimum element width is too small, element width was %1.").arg(discOptions.m_minDx), FUNC_ID);
-			}
-			Mesh grid(Mesh::TanHDouble, discOptions.m_density); // double-sided grid
+			Mesh grid(Mesh::TanHDouble, density); // double-sided grid
 
 			// determine required min dx by enforcing at least 3 elements per layer
 			double rmin_dx = 1;
 			for (unsigned int i=0; i<nLayers; ++i) {
-				rmin_dx = std::min(rmin_dx, construction.m_materialLayers[i].m_width.value/3.0); // three elements per layer
+				rmin_dx = std::min(rmin_dx, conType->m_materialLayers[i].m_thickness/3.0); // three elements per layer
 			}
 			// TODO : adjust min_dx or skip layer if very thin
 
@@ -483,22 +220,15 @@ void ConstructionStatesModel::generateGrid() {
 				m_materialLayerElementOffset[i] = dx_vec.size();
 
 				unsigned int n = 2;	// start with 2 elements per layer
-				dLayer = construction.m_materialLayers[i].m_width.value;
-				// error empty or negative layer width
-				if (dLayer <= 0) {
-					throw IBK::Exception(IBK::FormatString("Invalid width %1m of material layer #%2!")
-						.arg(dLayer).arg(i),
-						FUNC_ID);
-				}
+				dLayer = conType->m_materialLayers[i].m_thickness;
 				// repeatedly refine grid for this layer until our minimum element width at the boundary is no longer exceeded
 				do {
 					++n;
 					grid.generate(static_cast<int>(n), x, x + dLayer, dxElem, xElem);
-					if (dxElem[0] <= 1.1*discOptions.m_minDx) break;
-				} while (n < discOptions.m_nMaxElements); // do not go beyond maximum element count
-				if (n >= discOptions.m_nMaxElements) {
+					if (dxElem[0] <= 1.1*minDX) break;
+				} while (n < maxElementsPerLayer); // do not go beyond maximum element count
+				if (n >= maxElementsPerLayer)
 					throw IBK::Exception( IBK::FormatString("Maximum number of element per layer is reached in material layer #%1 (d=%2m).").arg(i+1).arg(dLayer), FUNC_ID);
-				}
 				// insert into into global discretization vector
 				x_vec.insert(x_vec.end(), xElem.begin(), xElem.end() );
 				dx_vec.insert(dx_vec.end(), dxElem.begin(), dxElem.end() );
@@ -510,7 +240,10 @@ void ConstructionStatesModel::generateGrid() {
 	// total number of discretized elements
 	m_nElements = dx_vec.size();
 	// total number of unkowns
-	m_n = m_nElements*m_nBalanceEquations;
+	if (m_moistureBalanceEnabled)
+		m_n = m_nElements*2;
+	else
+		m_n = m_nElements;
 	// total construction width
 	m_constructionWidth = x;
 
@@ -534,10 +267,109 @@ void ConstructionStatesModel::generateGrid() {
 			// internal elements
 			wR = dx_vec[i]/(dx_vec[i] + dx_vec[i+1]);
 		// add to element vector
-		m_elements.push_back(Element(i, x_vec[i], dx_vec[i], wL, wR, NULL));
+		m_elements.push_back(Element(i, x_vec[i], dx_vec[i], wL, wR, nullptr));
 	}
-
 }
+
+
+// Mesh implementation
+
+Mesh::Mesh(MeshType type, double density, double ratio)
+	: t(type), d(density), r(ratio)
+{
+}
+
+void Mesh::generate(int n, std::vector<double> & ds_vec) {
+	double s = 0;
+	ds_vec.resize(n);
+	for (int i=1; i<n; ++i) {
+		double xi = double(i)/n;
+		double s_next;
+		switch (t) {
+			case Uniform :
+				s_next = xi;
+				break;
+
+			case TanHSingle :
+				s_next = 1 + tanh(d*(xi-1))/tanh(d);
+				break;
+
+			case TanHDouble :
+			default :
+			{
+				double A = r*r;
+				double u = 0.5*(1 + tanh(d*(xi-0.5))/tanh(d/2));
+				s_next = u/(A + (1-A)*u);
+			} break;
+		}
+		ds_vec[i-1] = s_next-s;
+		s = s_next;
+	}
+	// compute last element such, that sum(ds) = 1
+	ds_vec[n-1] = 1 - s;
+}
+
+void Mesh::generate(const int n, const double x1, const double x2,
+	std::vector<double> & dx_vec, std::vector<double> & x_vec)
+{
+	generate(n, dx_vec); 	// dx_vec now holds normalized element widths
+	x_vec.resize(n);
+	double L = x2 - x1; 	// can be negative, if working left to right
+	double fabsL = fabs(L);
+	double x = x1;
+	for (int i=0; i<n; ++i) {
+		double next_x = x + L*dx_vec[i];
+		x_vec[i] = 0.5*(x + next_x);
+		dx_vec[i] *= fabsL; // scale element widths, all widths are always positive
+		x = next_x;
+	}
+	// if L is negative, we reverse the vector
+	if (L < 0) {
+		std::reverse(x_vec.begin(), x_vec.end());
+		std::reverse(dx_vec.begin(), dx_vec.end());
+	}
+	// The element's center coordinates are always sorted increasing.
+	// with dx_vec[0] = 2*(x_vec[0]-x1)
+}
+
+double f(double d, double B) {
+	return sinh(d)/d - B;
+}
+
+double Mesh::stretch(int n, double ds1, double ds2) {
+	double B = 1/(n*sqrt(ds1*ds2));
+	double a = 1e-6;
+	double b = 10;
+	double xm = a;
+	double f_1;
+	double f_2;
+	double f_m;
+	int iterations = 5000;
+	double eps = 1e-4;
+	while (--iterations) {
+		f_1 = f(a,B);
+		f_2 = f(b,B);
+		if (f_1==f_2) throw std::runtime_error("f(a)==f(b)!");
+		xm = b-f_2*(b-a)/(f_2-f_1);
+		f_m = f(xm,B);
+		if (std::fabs(f_m) < eps) return xm;
+		if ((f_m<0 && f_1>0) || (f_m>0 && f_1<0))  b = xm;
+		else                                       a = xm;
+	}
+	return xm;
+
+	/*	while (--iterations) {
+		df_1 = cosh(a)*1.0/a - 1.0/(d*d) df(a);
+		//if (df_1==0) throw IBK_exception("df(a)==0!","[newton_root]");
+		b = a-f(a)/df_1;
+		f_2 = f(b);
+		if (std::fabs(f_2) < eps) return b;
+		a = b;
+	}
+	return b;
+*/
+}
+
 
 } // namespace NANDRAD_MODEL
 

@@ -703,7 +703,7 @@ namespace NANDRAD {
 	}
 
 	const char * KeywordList::Description(const char * const enumtype, int t, bool * no_description) {
-		if (no_description != NULL)
+		if (no_description != nullptr)
 			*no_description = false; // we are optimistic
 		switch (enum2index(enumtype)) {
 			// ConstructionInstance::para_t
@@ -821,8 +821,8 @@ namespace NANDRAD {
 			// LinearSplineParameter::interpolationMethod_t
 			case 19 :
 			switch (t) {
-				case 0 : if (no_description != NULL) *no_description = true; return "constant";
-				case 1 : if (no_description != NULL) *no_description = true; return "linear";
+				case 0 : if (no_description != nullptr) *no_description = true; return "constant";
+				case 1 : if (no_description != nullptr) *no_description = true; return "linear";
 			} break;
 			// LinearSplineParameter::wrapMethod_t
 			case 20 :
@@ -895,14 +895,14 @@ namespace NANDRAD {
 			// SerializationTest::test_t
 			case 27 :
 			switch (t) {
-				case 0 : if (no_description != NULL) *no_description = true; return "X1";
-				case 1 : if (no_description != NULL) *no_description = true; return "X2";
+				case 0 : if (no_description != nullptr) *no_description = true; return "X1";
+				case 1 : if (no_description != nullptr) *no_description = true; return "X2";
 			} break;
 			// SerializationTest::intPara_t
 			case 28 :
 			switch (t) {
-				case 0 : if (no_description != NULL) *no_description = true; return "I1";
-				case 1 : if (no_description != NULL) *no_description = true; return "I2";
+				case 0 : if (no_description != nullptr) *no_description = true; return "I1";
+				case 1 : if (no_description != nullptr) *no_description = true; return "I2";
 			} break;
 			// SimulationParameter::para_t
 			case 29 :

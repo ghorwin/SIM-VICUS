@@ -40,6 +40,9 @@ bool ConstructionType::operator!=(const ConstructionType & other) const {
 void ConstructionType::checkParameters(const std::vector<Material> & materials) {
 	FUNCID(ConstructionType::checkParameters);
 
+	if (m_materialLayers.empty())
+		throw IBK::Exception(IBK::FormatString("Missing material layers."), FUNC_ID);
+
 	// process all material layers
 	for (MaterialLayer & ml : m_materialLayers) {
 		// valid layer thickness

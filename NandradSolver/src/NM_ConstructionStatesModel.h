@@ -29,6 +29,7 @@
 namespace NANDRAD {
 	class ConstructionInstance;
 	class SimulationParameter;
+	class SolverParameter;
 }
 
 namespace NANDRAD_MODEL {
@@ -60,7 +61,9 @@ public:
 	}
 
 	/*! Initializes model. */
-	void setup(const NANDRAD::ConstructionInstance & con, const NANDRAD::SimulationParameter & simPara);
+	void setup(const NANDRAD::ConstructionInstance & con,
+			   const NANDRAD::SimulationParameter & simPara,
+			   const NANDRAD::SolverParameter & solverPara);
 
 
 	// *** Re-implemented from AbstractModel
@@ -129,6 +132,8 @@ private:
 	const NANDRAD::ConstructionInstance *			m_con = nullptr;
 	/*! Cached pointer to source simulation parameter data structure. */
 	const NANDRAD::SimulationParameter *			m_simPara = nullptr;
+	/*! Cached pointer to source solver parameter data structure. */
+	const NANDRAD::SolverParameter *				m_solverPara = nullptr;
 
 	// the variables below are accessed/used also by the ConstructionBalanceModel
 
@@ -156,6 +161,8 @@ private:
 		last element contains m_nElements
 		size: m_construction.m_materialLayers.size() + 1. */
 	std::vector<size_t>				m_materialLayerElementOffset;
+	/*! Total construction width [m]. */
+	double							m_constructionWidth;
 };
 
 } // namespace NANDRAD_MODEL

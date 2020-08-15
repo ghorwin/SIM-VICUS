@@ -813,12 +813,12 @@ void NandradModel::initSolverParameter(const NANDRAD::ArgsParser & args) {
 			"SolverParameter 'RelTol' is smaller than/ equal to zero."), FUNC_ID);
 
 	const IBK::Parameter & minDx = solverParameter.m_para[NANDRAD::SolverParameter::SP_DISCRETIZATION_MIN_DX];
-	if (minDx.value <= 0)
-		throw IBK::Exception("Invalid parameter for DiscMinDx in SolverParameter settings.", FUNC_ID);
+	if (minDx.value <= 1e-10)
+		throw IBK::Exception("Invalid parameter for DiscMinDx in SolverParameter settings, should be > 1e-10 m.", FUNC_ID);
 
 	const IBK::Parameter & density = solverParameter.m_para[NANDRAD::SolverParameter::SP_DISCRETIZATION_DETAIL];
-	if (density.value < 1 && density.value != 0)
-		throw IBK::Exception("Invalid parameter for DiscDetailLevel in SolverParameter settings.", FUNC_ID);
+	if (density.value < 1 && density.value != 0.0)
+		throw IBK::Exception("Invalid parameter for DiscDetailLevel in SolverParameter settings (grid density must be == 0 or >= 1).", FUNC_ID);
 
 	const IBK::Parameter & krylovDim = solverParameter.m_para[NANDRAD::SolverParameter::SP_MAX_KRYLOV_DIM];
 	if ((int)krylovDim.value <= 0)
