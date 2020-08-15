@@ -27,9 +27,9 @@
 
 namespace NANDRAD {
 	class SimulationParameter;
+	class Zone;
 }
 
-#include <NANDRAD_Zone.h>
 
 namespace NANDRAD_MODEL {
 

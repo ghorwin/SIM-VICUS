@@ -20,11 +20,13 @@
 */
 
 #include "NM_RoomBalanceModel.h"
-//#include "NM_Constants.h"
-#include "NM_KeywordList.h"
 
 #include <NANDRAD_ModelInputReference.h>
 #include <NANDRAD_SimulationParameter.h>
+#include <NANDRAD_Zone.h>
+
+#include "NM_KeywordList.h"
+
 
 using namespace std;
 
