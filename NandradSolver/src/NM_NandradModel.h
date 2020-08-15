@@ -448,7 +448,7 @@ private:
 	/*! Holds references to construction state models (does not own the models), size m_nWalls. */
 	std::vector<ConstructionStatesModel*>					m_constructionStatesModelContainer;
 	/*! Holds references to construction balance models (does not own the models), size m_nWalls. */
-	std::vector<ConstructionStatesModel*>					m_constructionBalanceModelContainer;
+	std::vector<ConstructionBalanceModel*>					m_constructionBalanceModelContainer;
 	/*! Vector with offsets for conserved quantities of the construction models.
 		\code
 		statesIndex = m_constructionVariableOffset[constructionIndex];
