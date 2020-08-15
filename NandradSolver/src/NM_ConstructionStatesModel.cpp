@@ -33,7 +33,9 @@
 namespace NANDRAD_MODEL {
 
 
-/*! A grid generation utility class. */
+/*! A grid generation utility class.
+	Written by Andreas Nicolai for THERAKLES from IBK/TU Dresden.
+*/
 class Mesh {
 public:
 	/*! Defines mesh type. */
@@ -49,16 +51,12 @@ public:
 	/*! Populates the vector ds_vec with normalized element width based on the current
 		mesh settings. The sum in vector ds_vec will be always 1. If a single-sided
 		grid is used, element 0 of the vector will have the smallest size. */
-	void generate(const int n, std::vector<double> & ds_vec);
+	void generate(unsigned int n, std::vector<double> & ds_vec);
 
 	/*! Generates a grid between coordinates x1 and x2 and stores the new element widths
 		in vector dx_vec, and the element's center coordinates in vector x_vec. */
-	void generate(const int n, const double x1, const double x2,
+	void generate(const unsigned int n, const double x1, const double x2,
 		std::vector<double> & dx_vec, std::vector<double> & x_vec);
-
-	/*! Returns a stretch factor for TanHDouble mesh type, where ds1 and ds2 are normalized
-		grid spacings at the left and right side of the grid. */
-	static double stretch(int n, double ds1, double ds2);
 
 	/*! Type of mesh.
 		\sa MeshType. */
@@ -224,7 +222,7 @@ void ConstructionStatesModel::generateGrid() {
 				// repeatedly refine grid for this layer until our minimum element width at the boundary is no longer exceeded
 				do {
 					++n;
-					grid.generate(static_cast<int>(n), x, x + dLayer, dxElem, xElem);
+					grid.generate(n, x, x + dLayer, dxElem, xElem);
 					if (dxElem[0] <= 1.1*minDX) break;
 				} while (n < maxElementsPerLayer); // do not go beyond maximum element count
 				if (n >= maxElementsPerLayer)
@@ -279,10 +277,10 @@ Mesh::Mesh(MeshType type, double density, double ratio)
 {
 }
 
-void Mesh::generate(int n, std::vector<double> & ds_vec) {
+void Mesh::generate(unsigned int n, std::vector<double> & ds_vec) {
 	double s = 0;
 	ds_vec.resize(n);
-	for (int i=1; i<n; ++i) {
+	for (unsigned int i=1; i<n; ++i) {
 		double xi = double(i)/n;
 		double s_next;
 		switch (t) {
@@ -295,7 +293,6 @@ void Mesh::generate(int n, std::vector<double> & ds_vec) {
 				break;
 
 			case TanHDouble :
-			default :
 			{
 				double A = r*r;
 				double u = 0.5*(1 + tanh(d*(xi-0.5))/tanh(d/2));
@@ -309,7 +306,7 @@ void Mesh::generate(int n, std::vector<double> & ds_vec) {
 	ds_vec[n-1] = 1 - s;
 }
 
-void Mesh::generate(const int n, const double x1, const double x2,
+void Mesh::generate(const unsigned int n, const double x1, const double x2,
 	std::vector<double> & dx_vec, std::vector<double> & x_vec)
 {
 	generate(n, dx_vec); 	// dx_vec now holds normalized element widths
@@ -317,7 +314,7 @@ void Mesh::generate(const int n, const double x1, const double x2,
 	double L = x2 - x1; 	// can be negative, if working left to right
 	double fabsL = fabs(L);
 	double x = x1;
-	for (int i=0; i<n; ++i) {
+	for (unsigned int i=0; i<n; ++i) {
 		double next_x = x + L*dx_vec[i];
 		x_vec[i] = 0.5*(x + next_x);
 		dx_vec[i] *= fabsL; // scale element widths, all widths are always positive
@@ -330,44 +327,6 @@ void Mesh::generate(const int n, const double x1, const double x2,
 	}
 	// The element's center coordinates are always sorted increasing.
 	// with dx_vec[0] = 2*(x_vec[0]-x1)
-}
-
-double f(double d, double B) {
-	return sinh(d)/d - B;
-}
-
-double Mesh::stretch(int n, double ds1, double ds2) {
-	double B = 1/(n*sqrt(ds1*ds2));
-	double a = 1e-6;
-	double b = 10;
-	double xm = a;
-	double f_1;
-	double f_2;
-	double f_m;
-	int iterations = 5000;
-	double eps = 1e-4;
-	while (--iterations) {
-		f_1 = f(a,B);
-		f_2 = f(b,B);
-		if (f_1==f_2) throw std::runtime_error("f(a)==f(b)!");
-		xm = b-f_2*(b-a)/(f_2-f_1);
-		f_m = f(xm,B);
-		if (std::fabs(f_m) < eps) return xm;
-		if ((f_m<0 && f_1>0) || (f_m>0 && f_1<0))  b = xm;
-		else                                       a = xm;
-	}
-	return xm;
-
-	/*	while (--iterations) {
-		df_1 = cosh(a)*1.0/a - 1.0/(d*d) df(a);
-		//if (df_1==0) throw IBK_exception("df(a)==0!","[newton_root]");
-		b = a-f(a)/df_1;
-		f_2 = f(b);
-		if (std::fabs(f_2) < eps) return b;
-		a = b;
-	}
-	return b;
-*/
 }
 
 
