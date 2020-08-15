@@ -44,7 +44,7 @@ void DefaultStateDependency::inputReferenceDescriptions(std::vector<QuantityDesc
 	const char * const FUNC_ID = "[DefaultStateDependency::inputReferenceDescriptions]";
 	// No state dependend model object without the model properties!!!
 	const AbstractModel* model = dynamic_cast<const AbstractModel*>(this);
-	IBK_ASSERT(model != NULL);
+	IBK_ASSERT(model != nullptr);
 
 	// Retreive index information using the keyword list.
 	std::string category = std::string(model->ModelIDName()) + "::InputReferences";
@@ -158,7 +158,7 @@ void DefaultStateDependency::setInputValueRef(const InputReference &inputRef, co
 	const char * const FUNC_ID = "[DefaultStateDependency::setInputValueRef]";
 	// for the first call we need to resize all input value references
 	if(m_inputValueRefs.empty() && !m_inputReferences.empty())
-		m_inputValueRefs.resize(m_inputReferences.size(), NULL);
+		m_inputValueRefs.resize(m_inputReferences.size(), nullptr);
 
 	// find corresponding quantity description
 	std::vector<QuantityDescription> refDesc;
@@ -277,7 +277,7 @@ void DefaultStateDependency::setInputValueRef(const InputReference &inputRef, co
 	{
 		// cast to abstract model
 		const AbstractModel* model = dynamic_cast<const AbstractModel*>(this);
-		IBK_ASSERT(model != NULL);
+		IBK_ASSERT(model != nullptr);
 
 		throw IBK::Exception(ex, IBK::FormatString( "Error retrieving reference to target %1 "
 											"of model %2 with id %3!")
@@ -292,7 +292,7 @@ void DefaultStateDependency::setInputValueRef(const InputReference &inputRef, co
 void DefaultStateDependency::stateDependencies(std::vector< std::pair<const double *, const double *> >	&resultInputValueReferences) const {
 	// No state dependend model object without the model properties!!!
 	const AbstractModel* model = dynamic_cast<const AbstractModel*>(this);
-	IBK_ASSERT(model != NULL);
+	IBK_ASSERT(model != nullptr);
 
 	// clear pattern
 	if(!resultInputValueReferences.empty() )
@@ -330,7 +330,7 @@ void DefaultStateDependency::constraints(std::map< const double *,
 
 	const AbstractModel *model = dynamic_cast<const AbstractModel*>(this);
 	// each state depenmdency also is a model
-	IBK_ASSERT(model != NULL);
+	IBK_ASSERT(model != nullptr);
 
 	// check all result references for constraints
 	std::vector<QuantityDescription> resDescs;
@@ -347,7 +347,7 @@ void DefaultStateDependency::constraints(std::map< const double *,
 		// scalar quantity
 		if (resDesc.m_indexKeys.empty() && resDesc.m_size == 1) {
 			const double *valueRef = model->resultValueRef(resDesc.m_name);
-			IBK_ASSERT(valueRef != NULL);
+			IBK_ASSERT(valueRef != nullptr);
 			// add constraint
 			constraintsPerValueRef[valueRef] = resDesc.m_minMaxValue;
 		}
@@ -361,7 +361,7 @@ void DefaultStateDependency::constraints(std::map< const double *,
 				const QuantityName quantityName(resDesc.m_name, index.m_keyValue);
 				// search value reference
 				const double *valueRef = model->resultValueRef(quantityName);
-				IBK_ASSERT(valueRef != NULL);
+				IBK_ASSERT(valueRef != nullptr);
 				// add constraint
 				constraintsPerValueRef[valueRef] = resDesc.m_minMaxValue;
 			}
@@ -376,7 +376,7 @@ void DefaultStateDependency::constraints(std::map< const double *,
 				const QuantityName quantityName(resDesc.m_name, index.m_keyValue);
 				// search value reference
 				const double *valueRef = model->resultValueRef(quantityName);
-				IBK_ASSERT(valueRef != NULL);
+				IBK_ASSERT(valueRef != nullptr);
 				// add constraint
 				constraintsPerValueRef[valueRef] = resDesc.m_minMaxValue;
 			}
@@ -429,7 +429,7 @@ const InputReference & DefaultStateDependency::inputReference(int quantityType, 
 		return *it;
 	// exception: no element exists
 	const AbstractModel* model = dynamic_cast<const AbstractModel*>(this);
-	IBK_ASSERT(model != NULL);
+	IBK_ASSERT(model != nullptr);
 
 	std::string category = std::string(model->ModelIDName()) + "::InputReferences";
 	// construct error message
@@ -451,7 +451,7 @@ const InputReference & DefaultStateDependency::inputReference(int quantityType, 
 std::vector<const double *>::const_iterator DefaultStateDependency::inputValueRefs(int quantityType) const {
 #if 0
 //	const char * const FUNC_ID = "[DefaultStateDependency::inputValueRef]";
-	IBK_ASSERT(dynamic_cast<const AbstractModel*>(this) != NULL);
+	IBK_ASSERT(dynamic_cast<const AbstractModel*>(this) != nullptr);
 	// error: wrong quantity type is requested
 	IBK_ASSERT_X( quantityType >= 0 &&
 				  quantityType < (int) KeywordList::Count( (std::string(dynamic_cast<const AbstractModel*>(this)->ModelIDName()) + "::InputReferences").c_str()),
@@ -478,7 +478,7 @@ std::vector<const double *>::const_iterator DefaultStateDependency::inputValueRe
 const double *DefaultStateDependency::inputValueRef(int quantityType) const {
 #if 0
 //	const char * const FUNC_ID = "[DefaultStateDependency::inputValueRef]";
-	IBK_ASSERT(dynamic_cast<const AbstractModel*>(this) != NULL);
+	IBK_ASSERT(dynamic_cast<const AbstractModel*>(this) != nullptr);
 	// error: wrong quantity type is requested
 	IBK_ASSERT_X( quantityType >= 0 &&
 				  quantityType < (int) KeywordList::Count( (std::string(dynamic_cast<const AbstractModel*>(this)->ModelIDName()) + "::InputReferences").c_str()),
@@ -493,7 +493,7 @@ const double *DefaultStateDependency::inputValueRef(int quantityType) const {
 	// find the value to the requested quantity type in the input value vector
 	unsigned int offset = m_inputValueOffset[quantityType];
 	if (offset >= m_inputValueRefs.size())
-		return NULL;
+		return nullptr;
 
 	return m_inputValueRefs[offset];
 #endif
@@ -503,7 +503,7 @@ const double *DefaultStateDependency::inputValueRef(int quantityType) const {
 
 int DefaultStateDependency::decodeInputReferenceTargeType(const std::string &targetName) const {
 	const AbstractModel * model = dynamic_cast<const AbstractModel*>(this);
-	IBK_ASSERT(model != NULL);
+	IBK_ASSERT(model != nullptr);
 
 	std::string category = model->ModelIDName() + std::string("::InputReferences");
 

@@ -143,7 +143,7 @@ const double * ConstructionStatesModel::resultValueRef(const QuantityName & quan
 	{
 		// only scalar quantities are allowed any longer
 		if (quantityName.index() != -1)
-			return NULL;
+			return nullptr;
 
 		return &m_wallModel->m_surfaceTemperatureA;
 	}
@@ -151,7 +151,7 @@ const double * ConstructionStatesModel::resultValueRef(const QuantityName & quan
 	{
 		// only scalar quantities are allowed any longer
 		if (quantityName.index() != -1)
-			return NULL;
+			return nullptr;
 
 		return &m_wallModel->m_surfaceTemperatureB;
 	}
@@ -161,7 +161,7 @@ const double * ConstructionStatesModel::resultValueRef(const QuantityName & quan
 	if (quantityName.name() == KeywordList::Keyword(category.c_str(), VVR_LayerTemperature)) {
 		// malformed index
 		if (quantityName.index() == -1) {
-			return NULL;
+			return nullptr;
 		}
 		//// invalid index
 		if ((unsigned int)quantityName.index() >= m_layerTemperatures.size())
@@ -180,7 +180,7 @@ const double * ConstructionStatesModel::resultValueRef(const QuantityName & quan
 	{
 		return &m_wallModel->m_sources[WALL_MODEL::WallModel::SOURCE_HEAT_PRODUCTION_RATE][0];
 	}
-	return NULL;
+	return nullptr;
 }
 
 int ConstructionStatesModel::update()
@@ -198,7 +198,7 @@ int ConstructionStatesModel::update()
 		double layerTemperature = 0.0;
 		unsigned int nElements = m_wallModel->m_materialLayerElementOffset[*it + 1] -
 			m_wallModel->m_materialLayerElementOffset[*it];
-		IBK_ASSERT(nElements != NULL);
+		IBK_ASSERT(nElements != nullptr);
 
 		// calculate average temperature
 		for (unsigned int index = m_wallModel->m_materialLayerElementOffset[*it];
@@ -257,11 +257,11 @@ void ConstructionStatesModel::stateDependencies(std::vector< std::pair<const dou
 
 	// connect first and second value of y...
 	inputRef = inputValueRefs()[InputRef_InternalEnergyDensity];
-	IBK_ASSERT(inputRef != NULL);
-	IBK_ASSERT(inputRef + 1 != NULL);
+	IBK_ASSERT(inputRef != nullptr);
+	IBK_ASSERT(inputRef + 1 != nullptr);
 	// ... to the surface temperature at location A
 	resultRef = &m_wallModel->m_surfaceTemperatureA;
-	IBK_ASSERT(resultRef != NULL);
+	IBK_ASSERT(resultRef != nullptr);
 	// store the pair of adresses of input value and result
 	// inside pattern list
 	resultInputValueReferences.push_back(
@@ -272,11 +272,11 @@ void ConstructionStatesModel::stateDependencies(std::vector< std::pair<const dou
 	unsigned int n = m_wallModel->m_n;
 	// connect last values of y...
 	inputRef = inputValueRefs()[InputRef_InternalEnergyDensity] + (int)(n - 2);
-	IBK_ASSERT(inputRef != NULL);
-	IBK_ASSERT(inputRef + 1 != NULL);
+	IBK_ASSERT(inputRef != nullptr);
+	IBK_ASSERT(inputRef + 1 != nullptr);
 	// ...to the surface temperature at location B
 	resultRef = &m_wallModel->m_surfaceTemperatureB;
-	IBK_ASSERT(resultRef != NULL);
+	IBK_ASSERT(resultRef != nullptr);
 	// store the pair of adresses of result value and input
 	// value inside pattern list
 	resultInputValueReferences.push_back(
@@ -286,7 +286,7 @@ void ConstructionStatesModel::stateDependencies(std::vector< std::pair<const dou
 }
 
 const std::vector<size_t>	&ConstructionStatesModel::materialLayerElementOffset() const {
-	if (m_wallModel == NULL)
+	if (m_wallModel == nullptr)
 		return m_dummyVector;
 	return m_wallModel->m_materialLayerElementOffset;
 }

@@ -42,28 +42,21 @@ namespace NANDRAD_MODEL {
 class ConstructionStatesModel : public AbstractModel {
 public:
 
-	// ***KEYWORDLIST-START***
 	enum VectorValuedResults {
 		VVR_LayerTemperature			// Keyword: LayerTemperature		[C]		'Mean layer temperature for requested quanties.'
 	};
+
+	/// \todo maybe add integral quantities like total moisture mass stored in construction or total energy stored in construction
 	enum Results {
 		R_SurfaceTemperatureA,			// Keyword: SurfaceTemperatureA		[C]		'Surface temperature at interface A.'
 		R_SurfaceTemperatureB			// Keyword: SurfaceTemperatureB		[C]		'Surface temperature at interface B.'
 	};
-	enum InputReferences {
-		InputRef_InternalEnergyDensity,	// Keyword: InternalEnergyDensity	[W/m3]	'Internal energy density of the wall.'
-		InputRef_Temperature,			// Keyword: Temperature				[C]		'Wall temperatures.'
-		InputRef_HeatSources,			// Keyword: HeatSources				[W/m3]	'Wall heat sources.'
-		NUM_InputRef
-	};
-	// ***KEYWORDLIST-END***
 
 	/*! Constructor, relays ID to DefaultStateDependency constructor. */
 	ConstructionStatesModel(unsigned int id, const std::string &displayName) :
 		m_id(id), m_displayName(displayName)
 	{
 	}
-
 
 	/*! Construction solve model can be referenced via ConstructionInstance type and ID. */
 	virtual NANDRAD::ModelInputReference::referenceType_t referenceType() const {
@@ -87,16 +80,24 @@ public:
 	virtual void resultValueRefs(std::vector<const double *> &res) const;
 
 	/*! Retrieves reference pointer to a value with given quantity ID name.
-		\return Returns pointer to memory location with this quantity, otherwise NULL if parameter ID was not found.
+		\return Returns pointer to memory location with this quantity, otherwise nullptr if parameter ID was not found.
 	*/
 	virtual const double * resultValueRef(const QuantityName & quantityName) const;
 
 
 protected:
-	std::vector<double>				m_results;
+	/*! Construction instance ID. */
+	unsigned int									m_id;
+	/*! Display name (for error messages). */
+	std::string										m_displayName;
+	/*! True if moisture balance is enabled. */
+	bool											m_moistureBalanceEnabled;
 
-	/*! Results vector for mean layer temperatures (requested by any model input reference). */
-	VectorValuedQuantity			m_layerTemperatures;
+	/*! Results, computed/updated during the calculation. */
+	std::vector<double>								m_results;
+
+	/*! Vector valued results, computed/updated during the calculation. */
+	std::vector<VectorValuedQuantity>				m_vectorValuedResults;
 };
 
 } // namespace NANDRAD_MODEL

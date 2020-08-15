@@ -190,7 +190,7 @@ public:
 		if (m_moistureCalculationMode == CM_Detailed)
 			return m_nElements;
 		else if (m_moistureCalculationMode == CM_Average) {
-			IBK_ASSERT(m_coarseGridWallModel != NULL);
+			IBK_ASSERT(m_coarseGridWallModel != nullptr);
 			return (unsigned int)m_coarseGridWallModel->m_nElements;
 		}
 		return 0;
@@ -233,7 +233,7 @@ public:
 	virtual void resultValueRefs(std::vector<const double *> &res) const;
 
 	/*! Retrieves reference pointer to a value with given quantity ID name.
-		\return Returns pointer to memory location with this quantity, otherwise NULL if parameter ID was not found.
+		\return Returns pointer to memory location with this quantity, otherwise nullptr if parameter ID was not found.
 	*/
 	virtual const double * resultValueRef(const QuantityName & quantityName) const;
 
@@ -298,7 +298,7 @@ private:
 	double										m_surfaceRelativeHumidityA;
 	/*! Storage of solution quantities: relative humidity on right side of construction. */
 	double										m_surfaceRelativeHumidityB;
-	/*! Optional wall solver module witzh coarse discretization. NULL if detailed mode ore no moisture calculation
+	/*! Optional wall solver module witzh coarse discretization. nullptr if detailed mode ore no moisture calculation
 		are chosen.*/
 	WALL_MODEL::WallModel						*m_coarseGridWallModel;
 	/*! Output handler for coarse grid.*/

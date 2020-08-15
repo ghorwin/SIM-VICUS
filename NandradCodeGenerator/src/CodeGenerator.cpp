@@ -1126,7 +1126,7 @@ bool CodeGenerator::listHeaders(const std::string & dir, std::vector<std::string
 	DIR *dp;
 	struct dirent *ep;
 	dp = opendir(dir.c_str());
-	if (dp != NULL) {
+	if (dp != nullptr) {
 		while ( (ep = readdir (dp)) ) {
 			std::string f = ep->d_name;
 			if (f.size() > 2 && f.find(".h") == f.size()-2)
@@ -1275,7 +1275,7 @@ void CodeGenerator::generateKeywordlistCode(const IBK::Path & keywordListCpp) {
 
 	// *** write description function ***
 	cpp <<	"	const char * KeywordList::Description(const char * const enumtype, int t, bool * no_description) {\n"
-			"		if (no_description != NULL)\n"
+			"		if (no_description != nullptr)\n"
 			"			*no_description = false; // we are optimistic\n"
 			"		switch (enum2index(enumtype)) {\n";
 	lastCategory.clear();
@@ -1297,7 +1297,7 @@ void CodeGenerator::generateKeywordlistCode(const IBK::Path & keywordListCpp) {
 
 		std::string desc = m_keywordlist[i].description;
 		if (desc.empty()) {
-			cpp << "				case " << m_keywordlist[i].index << " : if (no_description != NULL) *no_description = true; return \"" << m_keywordlist[i].keyword << "\";\n";
+			cpp << "				case " << m_keywordlist[i].index << " : if (no_description != nullptr) *no_description = true; return \"" << m_keywordlist[i].keyword << "\";\n";
 		}
 		else {
 			cpp << "				case " << m_keywordlist[i].index << " : return \"" << desc << "\";\n";

@@ -49,27 +49,27 @@ ConstructionSolverModel::ConstructionSolverModel(unsigned int constructionSolver
 	DefaultStateDependency(SteadyState | ODE),
 	OutputHandler::OutputHandler(this),
 	m_moistureCalculationMode(CM_None),
-	m_boundaryConditionA(NULL),
-	m_boundaryConditionB(NULL),
+	m_boundaryConditionA(nullptr),
+	m_boundaryConditionB(nullptr),
 	m_surfaceTemperatureA(0),
 	m_surfaceTemperatureB(0),
 	m_surfaceVaporPressureA(0),
 	m_surfaceVaporPressureB(0),
 	m_surfaceRelativeHumidityA(0),
 	m_surfaceRelativeHumidityB(0),
-	m_coarseGridWallModel(NULL),
-	m_coarseGridOutputHandler(NULL),
+	m_coarseGridWallModel(nullptr),
+	m_coarseGridOutputHandler(nullptr),
 	m_t(-1),
-	m_constructionInstance(NULL),
-	m_outputGrid(NULL)
+	m_constructionInstance(nullptr),
+	m_outputGrid(nullptr)
 {
 }
 
 
 ConstructionSolverModel::~ConstructionSolverModel() {
-	if (m_coarseGridWallModel != NULL)
+	if (m_coarseGridWallModel != nullptr)
 		delete m_coarseGridWallModel;
-	if (m_coarseGridOutputHandler != NULL)
+	if (m_coarseGridOutputHandler != nullptr)
 		delete m_coarseGridOutputHandler;
 }
 
@@ -98,7 +98,7 @@ int ConstructionSolverModel::priorityOfModelEvaluation() const {
 unsigned int ConstructionSolverModel::nPrimaryStateResults() const {
 	// simple calculation accepts two states for moisture
 	if (m_moistureCalculationMode == CM_Average) {
-		IBK_ASSERT(m_coarseGridWallModel != NULL);
+		IBK_ASSERT(m_coarseGridWallModel != nullptr);
 		return m_nElements + m_coarseGridWallModel->m_nElements;
 	}
 	// otherwise all states are registered inside wall model
@@ -110,7 +110,7 @@ void ConstructionSolverModel::yInitial(double * y)  {
 
 	if (m_moistureCalculationMode == CM_Average) {
 
-		IBK_ASSERT(m_coarseGridWallModel != NULL);
+		IBK_ASSERT(m_coarseGridWallModel != nullptr);
 		// copy internal energy values from wall solver instance
 		for (unsigned int i = 0; i < m_nElements; ++i) {
 			y[m_energyBalanceEquation[i] ] = y0()[ 2 * i];
@@ -146,7 +146,7 @@ void ConstructionSolverModel::setY(const double * y) {
 
 		case CM_Average : {
 
-			IBK_ASSERT(m_coarseGridWallModel != NULL);
+			IBK_ASSERT(m_coarseGridWallModel != nullptr);
 			// copy thermal quantities
 			for (unsigned int i = 0; i < m_nElements; ++i) {
 				m_tempY[2 * i] = y[m_energyBalanceEquation[i]];
@@ -242,7 +242,7 @@ void ConstructionSolverModel::initOutputs(const std::string & outputDir,
 		return;
 
 	// Must have an output grid!
-	IBK_ASSERT(outputGrid != NULL);
+	IBK_ASSERT(outputGrid != nullptr);
 
 	// copy output grid
 	m_outputGrid = outputGrid;
@@ -262,7 +262,7 @@ void ConstructionSolverModel::initOutputs(const std::string & outputDir,
 
 		// additional outputs for coarse grid
 		if (m_moistureCalculationMode == CM_Average) {
-			IBK_ASSERT (m_coarseGridOutputHandler != NULL);
+			IBK_ASSERT (m_coarseGridOutputHandler != nullptr);
 			m_coarseGridOutputHandler->initOutputs(outputDir + std::string("_coarse"), m_outputDefs, construction_ID, constructionHash, startYear);
 		}
 	}
@@ -292,7 +292,7 @@ void ConstructionSolverModel::writeOutputs(double t)
 		WALL_MODEL::OutputHandler::writeOutputs(t);
 
 		if (m_moistureCalculationMode == CM_Average) {
-			IBK_ASSERT(m_coarseGridOutputHandler != NULL);
+			IBK_ASSERT(m_coarseGridOutputHandler != nullptr);
 			m_coarseGridOutputHandler->writeOutputs(t);
 		}
 	}
@@ -527,7 +527,7 @@ void ConstructionSolverModel::setBoundaryConditionB(ConstructionBoundaryConditio
 void ConstructionSolverModel::initResults(const std::vector<AbstractModel*> & models)
 {
 	// ensure that all pointers are set
-	IBK_ASSERT(m_constructionInstance != NULL);
+	IBK_ASSERT(m_constructionInstance != nullptr);
 	// resizes m_results vector from keyword list
 	DefaultModel::initResults(models);
 
@@ -577,7 +577,7 @@ void ConstructionSolverModel::resultValueRefs(std::vector<const double *> &res) 
 
 	// Add all boundary fluxes to result reference list.
 	// Location A:
-	if (m_boundaryConditionA != NULL) {
+	if (m_boundaryConditionA != nullptr) {
 		res.push_back(m_boundaryConditionA->heatConduction());
 		res.push_back(m_boundaryConditionA->swRadAbsorbed());
 		res.push_back(m_boundaryConditionA->lwRadBalance());
@@ -586,11 +586,11 @@ void ConstructionSolverModel::resultValueRefs(std::vector<const double *> &res) 
 			res.push_back(m_boundaryConditionA->vaporDiffusion());
 			res.push_back(m_boundaryConditionA->vaporEnthalpy());
 		}
-		if(m_boundaryConditionA->swRadOnPlane() != NULL)
+		if(m_boundaryConditionA->swRadOnPlane() != nullptr)
 			res.push_back(m_boundaryConditionA->swRadOnPlane());
 	}
 	// Location B:
-	if (m_boundaryConditionB != NULL) {
+	if (m_boundaryConditionB != nullptr) {
 		res.push_back(m_boundaryConditionB->heatConduction());
 		res.push_back(m_boundaryConditionB->swRadAbsorbed());
 		res.push_back(m_boundaryConditionB->lwRadBalance());
@@ -599,7 +599,7 @@ void ConstructionSolverModel::resultValueRefs(std::vector<const double *> &res) 
 			res.push_back(m_boundaryConditionB->vaporDiffusion());
 			res.push_back(m_boundaryConditionB->vaporEnthalpy());
 		}
-		if (m_boundaryConditionB->swRadOnPlane() != NULL)
+		if (m_boundaryConditionB->swRadOnPlane() != nullptr)
 			res.push_back(m_boundaryConditionB->swRadOnPlane());
 	}
 
@@ -617,7 +617,7 @@ void ConstructionSolverModel::resultValueRefs(std::vector<const double *> &res) 
 const double * ConstructionSolverModel::resultValueRef(const QuantityName & quantityName) const {
 	// first seach in m_results vector
 	const double *refValue = DefaultModel::resultValueRef(quantityName);
-	if (refValue != NULL)
+	if (refValue != nullptr)
 		return refValue;
 
 
@@ -632,7 +632,7 @@ const double * ConstructionSolverModel::resultValueRef(const QuantityName & quan
 			return &m_y[0];
 		// wrong index size
 		if ((unsigned int)quantityName.index() > m_y.size())
-			return NULL;
+			return nullptr;
 
 		return &m_y[(unsigned int)quantityName.index()];
 	}
@@ -645,7 +645,7 @@ const double * ConstructionSolverModel::resultValueRef(const QuantityName & quan
 				return &m_ydotAverage[0];
 			// wrong index size
 			if ((unsigned int)quantityName.index() > m_ydotAverage.size())
-				return NULL;
+				return nullptr;
 
 			return &m_ydotAverage[(unsigned int)quantityName.index()];
 		}
@@ -655,72 +655,72 @@ const double * ConstructionSolverModel::resultValueRef(const QuantityName & quan
 				return &m_ydot[0];
 			// wrong index size
 			if ((unsigned int)quantityName.index() > m_ydot.size())
-				return NULL;
+				return nullptr;
 
 			return &m_ydot[(unsigned int)quantityName.index()];
 		}
 	}
 	// Offer references to all fluxes on location A and B
 	if (quantityName == "HeatConductionA") {
-		if (m_boundaryConditionA == NULL)
-			return NULL;
+		if (m_boundaryConditionA == nullptr)
+			return nullptr;
 		return m_boundaryConditionA->heatConduction();
 	}
 	if (quantityName == "LWRadBalanceA") {
-		if (m_boundaryConditionA == NULL)
-			return NULL;
+		if (m_boundaryConditionA == nullptr)
+			return nullptr;
 		return m_boundaryConditionA->lwRadBalance();
 	}
 	if (quantityName == "SWRadAbsorbedA") {
-		if (m_boundaryConditionA == NULL)
-			return NULL;
+		if (m_boundaryConditionA == nullptr)
+			return nullptr;
 		return m_boundaryConditionA->swRadAbsorbed();
 	}
 	if (quantityName == "SWRadOnPlaneA") {
-		if (m_boundaryConditionA == NULL)
-			return NULL;
-		// this pointer may be NULL
+		if (m_boundaryConditionA == nullptr)
+			return nullptr;
+		// this pointer may be nullptr
 		return m_boundaryConditionA->swRadOnPlane();
 	}
 	if (quantityName == "VaporDiffusionA") {
-		if (m_boundaryConditionA == NULL)
-			return NULL;
+		if (m_boundaryConditionA == nullptr)
+			return nullptr;
 		return m_boundaryConditionA->vaporDiffusion();
 	}
 	if (quantityName == "VaporDiffusionEnthalpyA") {
-		if (m_boundaryConditionA == NULL)
-			return NULL;
+		if (m_boundaryConditionA == nullptr)
+			return nullptr;
 		return m_boundaryConditionA->vaporEnthalpy();
 	}
 	if (quantityName == "HeatConductionB") {
-		if (m_boundaryConditionB == NULL)
-			return NULL;
+		if (m_boundaryConditionB == nullptr)
+			return nullptr;
 		return m_boundaryConditionB->heatConduction();
 	}
 	if (quantityName == "SWRadAbsorbedB") {
-		if (m_boundaryConditionB == NULL)
-			return NULL;
-		// this pointer may be NULL
+		if (m_boundaryConditionB == nullptr)
+			return nullptr;
+		// this pointer may be nullptr
 		return m_boundaryConditionB->swRadAbsorbed();
 	}
 	if (quantityName == "SWRadOnPlaneB") {
-		if (m_boundaryConditionB == NULL)
-			return NULL;
+		if (m_boundaryConditionB == nullptr)
+			return nullptr;
 		return m_boundaryConditionB->swRadOnPlane();
 	}
 	if (quantityName == "LWRadBalanceB") {
-		if (m_boundaryConditionB == NULL)
-			return NULL;
+		if (m_boundaryConditionB == nullptr)
+			return nullptr;
 		return m_boundaryConditionB->lwRadBalance();
 	}
 	if (quantityName == "VaporDiffusionB") {
-		if (m_boundaryConditionB == NULL)
-			return NULL;
+		if (m_boundaryConditionB == nullptr)
+			return nullptr;
 		return m_boundaryConditionB->vaporDiffusion();
 	}
 	if (quantityName == "VaporDiffusionEnthalpyB") {
-		if (m_boundaryConditionB == NULL)
-			return NULL;
+		if (m_boundaryConditionB == nullptr)
+			return nullptr;
 		return m_boundaryConditionB->vaporEnthalpy();
 	}
 
@@ -729,17 +729,17 @@ const double * ConstructionSolverModel::resultValueRef(const QuantityName & quan
 	if (quantityName == std::string("FieldFlux") ) {
 		// Error: wrong index format
 		if (quantityName.index() < 0) {
-			return NULL;
+			return nullptr;
 		}
 		// Error: the material layer index exceeds wall layer count
 		if ((unsigned int)quantityName.index() >= m_layerSources.size()) {
-			return NULL;
+			return nullptr;
 		}
 		// Error: we already set a field condition to the current layer
 		std::set<unsigned int>::const_iterator actLayerIt =
 			m_activeLayerIndices.find((unsigned int)quantityName.index());
 		if (actLayerIt == m_activeLayerIndices.end()) {
-			return NULL;
+			return nullptr;
 		}
 		// Create a new input reference
 		std::vector<const double*>::const_iterator valueRefIt = inputValueRefs(InputRef_FieldFlux);
@@ -754,7 +754,7 @@ const double * ConstructionSolverModel::resultValueRef(const QuantityName & quan
 
 	// only scalar quantities are allowed any longer
 	if (quantityName.index() != -1)
-		return NULL;
+		return nullptr;
 
 	// check if we request a prededined construction instance parameter
 	if(NANDRAD::KeywordList::KeywordExists("ConstructionInstance::para_t",quantityName.name())
@@ -762,7 +762,7 @@ const double * ConstructionSolverModel::resultValueRef(const QuantityName & quan
 	{
 		return &constructionInstance()->m_para[NANDRAD::KeywordList::Enumeration("ConstructionInstance::para_t",quantityName.name())].value;
 	}
-	return NULL;
+	return nullptr;
 }
 
 
@@ -788,7 +788,7 @@ void ConstructionSolverModel::resultDescriptions(std::vector<QuantityDescription
 	resDesc.push_back(result);
 
 	// add all boundary condition flux densities: location A
-	if (m_boundaryConditionA != NULL) {
+	if (m_boundaryConditionA != nullptr) {
 		result.m_name = std::string("HeatConductionA");
 		result.m_description = std::string("Heat conduction flux density on location A.");
 		result.m_unit = std::string("W/m2");
@@ -823,7 +823,7 @@ void ConstructionSolverModel::resultDescriptions(std::vector<QuantityDescription
 		}
 	}
 	// add all boundary condition flux densities: location B
-	if (m_boundaryConditionB != NULL) {
+	if (m_boundaryConditionB != nullptr) {
 		result.m_name = std::string("HeatConductionB");
 		result.m_description = std::string("Heat conduction flux density on location B.");
 		result.m_unit = std::string("W/m2");
@@ -1001,73 +1001,73 @@ void ConstructionSolverModel::stateDependencies(std::vector< std::pair<const dou
 		std::vector<std::set<const double *> > depsEnerY(m_nElements);
 		std::vector<std::set<const double *> > depsMoistY(m_nElements);
 
-		if (m_boundaryConditionA != NULL) {
+		if (m_boundaryConditionA != nullptr) {
 			// heat conduction flux
 			// first matrix entries (boundary conditions at side A)
 			const double *inputValue = m_boundaryConditionA->heatConduction();
-			IBK_ASSERT(inputValue != NULL);
+			IBK_ASSERT(inputValue != nullptr);
 			// store the pair of adresses of result value and input
 			// value inside pattern list
 			depsThermalFluxesEner[0].insert(inputValue);
 			// m oisture balance
 			// absorbed short wave radiation flux
 			inputValue = m_boundaryConditionA->swRadAbsorbed();
-			IBK_ASSERT(inputValue != NULL);
+			IBK_ASSERT(inputValue != nullptr);
 			// store the pair of adresses of result value and input
 			// value inside pattern list
 			depsThermalFluxesEner[0].insert(inputValue);
 			// long wave radiation balance flux
 			inputValue = m_boundaryConditionA->lwRadBalance();
-			IBK_ASSERT(inputValue != NULL);
+			IBK_ASSERT(inputValue != nullptr);
 			// store the pair of adresses of result value and input
 			// value inside pattern list
 			depsThermalFluxesEner[0].insert(inputValue);
 			// add moisture boundary conditions an left construction side (location A)
 			inputValue = m_boundaryConditionA->vaporDiffusion();
-			IBK_ASSERT(inputValue != NULL);
+			IBK_ASSERT(inputValue != nullptr);
 			// store the pair of adresses of result value and input
 			// value inside pattern list
 			depsMoistureFluxesMoist[0].insert(inputValue);
 			depsMoistureFluxesEner[0].insert(inputValue);
 
 			inputValue = m_boundaryConditionA->vaporEnthalpy();
-			IBK_ASSERT(inputValue != NULL);
+			IBK_ASSERT(inputValue != nullptr);
 			// store the pair of adresses of result value and input
 			// value inside pattern list
 			depsThermalFluxesMoist[0].insert(inputValue);
 			depsThermalFluxesEner[0].insert(inputValue);
 		}
 
-		if (m_boundaryConditionB != NULL) {
+		if (m_boundaryConditionB != nullptr) {
 			// last matrix entries  (boundary conditions at side B)
 			// heat conduction flux
 			const double *inputValue = m_boundaryConditionB->heatConduction();
-			IBK_ASSERT(inputValue != NULL);
+			IBK_ASSERT(inputValue != nullptr);
 			// store the pair of adresses of result value and input
 			// value inside pattern list
 			depsThermalFluxesEner[m_nElements].insert(inputValue);
 			// absorbed short wave radiation flux
 			inputValue = m_boundaryConditionB->swRadAbsorbed();
-			IBK_ASSERT(inputValue != NULL);
+			IBK_ASSERT(inputValue != nullptr);
 			// store the pair of adresses of result value and input
 			// value inside pattern list
 			depsThermalFluxesEner[m_nElements].insert(inputValue);
 			// long wave radiation balance flux
 			inputValue = m_boundaryConditionB->lwRadBalance();
-			IBK_ASSERT(inputValue != NULL);
+			IBK_ASSERT(inputValue != nullptr);
 			// store the pair of adresses of result value and input
 			// value inside pattern list
 			depsThermalFluxesEner[m_nElements].insert(inputValue);
 			// add moisture boundary conditions an right construction side (location B)
 			inputValue = m_boundaryConditionB->vaporDiffusion();
-			IBK_ASSERT(inputValue != NULL);
+			IBK_ASSERT(inputValue != nullptr);
 			// store the pair of adresses of result value and input
 			// value inside pattern list
 			depsMoistureFluxesMoist[m_nElements].insert(inputValue);
 			depsMoistureFluxesEner[m_nElements].insert(inputValue);
 
 			inputValue = m_boundaryConditionB->vaporEnthalpy();
-			IBK_ASSERT(inputValue != NULL);
+			IBK_ASSERT(inputValue != nullptr);
 			// store the pair of adresses of result value and input
 			// value inside pattern list
 			depsThermalFluxesEner[m_nElements].insert(inputValue);
@@ -1227,7 +1227,7 @@ void ConstructionSolverModel::stateDependencies(std::vector< std::pair<const dou
 	else if (m_moistureCalculationMode == CM_Average) {
 
 		// always enforce existence of coarse grid wall model
-		IBK_ASSERT(m_coarseGridWallModel != NULL);
+		IBK_ASSERT(m_coarseGridWallModel != nullptr);
 
 		std::vector<std::set<const double *> > depsYdotFluxes(nPrimaryStateResults());
 		std::vector<std::set<const double *> > depsThermalFluxesEner(m_nElements + 1);
@@ -1239,73 +1239,73 @@ void ConstructionSolverModel::stateDependencies(std::vector< std::pair<const dou
 		std::vector<std::set<const double *> > depsMoistDetailedY(m_nElements);
 		std::vector<std::set<const double *> > depsMoistAverageY(m_coarseGridWallModel->m_nElements);
 
-		if (m_boundaryConditionA != NULL) {
+		if (m_boundaryConditionA != nullptr) {
 			// heat conduction flux
 			// first matrix entries (boundary conditions at side A)
 			const double *inputValue = m_boundaryConditionA->heatConduction();
-			IBK_ASSERT(inputValue != NULL);
+			IBK_ASSERT(inputValue != nullptr);
 			// store the pair of adresses of result value and input
 			// value inside pattern list
 			depsThermalFluxesEner[0].insert(inputValue);
 			// m oisture balance
 			// absorbed short wave radiation flux
 			inputValue = m_boundaryConditionA->swRadAbsorbed();
-			IBK_ASSERT(inputValue != NULL);
+			IBK_ASSERT(inputValue != nullptr);
 			// store the pair of adresses of result value and input
 			// value inside pattern list
 			depsThermalFluxesEner[0].insert(inputValue);
 			// long wave radiation balance flux
 			inputValue = m_boundaryConditionA->lwRadBalance();
-			IBK_ASSERT(inputValue != NULL);
+			IBK_ASSERT(inputValue != nullptr);
 			// store the pair of adresses of result value and input
 			// value inside pattern list
 			depsThermalFluxesEner[0].insert(inputValue);
 			// add moisture boundary conditions an left construction side (location A)
 			inputValue = m_boundaryConditionA->vaporDiffusion();
-			IBK_ASSERT(inputValue != NULL);
+			IBK_ASSERT(inputValue != nullptr);
 			// store the pair of adresses of result value and input
 			// value inside pattern list
 			depsMoistureFluxesMoist[0].insert(inputValue);
 			depsMoistureFluxesEner[0].insert(inputValue);
 
 			inputValue = m_boundaryConditionA->vaporEnthalpy();
-			IBK_ASSERT(inputValue != NULL);
+			IBK_ASSERT(inputValue != nullptr);
 			// store the pair of adresses of result value and input
 			// value inside pattern list
 			depsThermalFluxesMoist[0].insert(inputValue);
 			depsThermalFluxesEner[0].insert(inputValue);
 		}
 
-		if (m_boundaryConditionB != NULL) {
+		if (m_boundaryConditionB != nullptr) {
 			// last matrix entries  (boundary conditions at side B)
 			// heat conduction flux
 			const double *inputValue = m_boundaryConditionB->heatConduction();
-			IBK_ASSERT(inputValue != NULL);
+			IBK_ASSERT(inputValue != nullptr);
 			// store the pair of adresses of result value and input
 			// value inside pattern list
 			depsThermalFluxesEner[m_nElements].insert(inputValue);
 			// absorbed short wave radiation flux
 			inputValue = m_boundaryConditionB->swRadAbsorbed();
-			IBK_ASSERT(inputValue != NULL);
+			IBK_ASSERT(inputValue != nullptr);
 			// store the pair of adresses of result value and input
 			// value inside pattern list
 			depsThermalFluxesEner[m_nElements].insert(inputValue);
 			// long wave radiation balance flux
 			inputValue = m_boundaryConditionB->lwRadBalance();
-			IBK_ASSERT(inputValue != NULL);
+			IBK_ASSERT(inputValue != nullptr);
 			// store the pair of adresses of result value and input
 			// value inside pattern list
 			depsThermalFluxesEner[m_nElements].insert(inputValue);
 			// add moisture boundary conditions an right construction side (location B)
 			inputValue = m_boundaryConditionB->vaporDiffusion();
-			IBK_ASSERT(inputValue != NULL);
+			IBK_ASSERT(inputValue != nullptr);
 			// store the pair of adresses of result value and input
 			// value inside pattern list
 			depsMoistureFluxesMoist[m_coarseGridWallModel->m_nElements].insert(inputValue);
 			depsMoistureFluxesEner[m_coarseGridWallModel->m_nElements].insert(inputValue);
 
 			inputValue = m_boundaryConditionB->vaporEnthalpy();
-			IBK_ASSERT(inputValue != NULL);
+			IBK_ASSERT(inputValue != nullptr);
 			// store the pair of adresses of result value and input
 			// value inside pattern list
 			depsThermalFluxesEner[m_nElements].insert(inputValue);
@@ -1599,49 +1599,49 @@ void ConstructionSolverModel::stateDependencies(std::vector< std::pair<const dou
 		// heat conduction flux
 		for (unsigned int m = 0; m < m_nBalanceEquations; ++m) {
 
-			if (m_boundaryConditionA != NULL) {
+			if (m_boundaryConditionA != nullptr) {
 				// first matrix entries (boundary conditions at side A)
 				const double *inputValue = m_boundaryConditionA->heatConduction();
-				IBK_ASSERT(inputValue != NULL);
+				IBK_ASSERT(inputValue != nullptr);
 				// store the pair of adresses of result value and input
 				// value inside pattern list
 				deps[m].insert(inputValue);
 				deps[m_nBalanceEquations + m].insert(inputValue);
 				// absorbed short wave radiation flux
 				inputValue = m_boundaryConditionA->swRadAbsorbed();
-				IBK_ASSERT(inputValue != NULL);
+				IBK_ASSERT(inputValue != nullptr);
 				// store the pair of adresses of result value and input
 				// value inside pattern list
 				deps[m].insert(inputValue);
 				deps[m_nBalanceEquations + m].insert(inputValue);
 				// long wave radiation balance flux
 				inputValue = m_boundaryConditionA->lwRadBalance();
-				IBK_ASSERT(inputValue != NULL);
+				IBK_ASSERT(inputValue != nullptr);
 				// store the pair of adresses of result value and input
 				// value inside pattern list
 				deps[m].insert(inputValue);
 				deps[m_nBalanceEquations + m].insert(inputValue);
 			}
 
-			if (m_boundaryConditionB != NULL) {
+			if (m_boundaryConditionB != nullptr) {
 				// last matrix entries  (boundary conditions at side B)
 			// heat conduction flux
 				const double *inputValue = m_boundaryConditionB->heatConduction();
-				IBK_ASSERT(inputValue != NULL);
+				IBK_ASSERT(inputValue != nullptr);
 				// store the pair of adresses of result value and input
 				// value inside pattern list
 				deps[(m_nElements - 2) * m_nBalanceEquations + m].insert(inputValue);
 				deps[(m_nElements - 1) * m_nBalanceEquations + m].insert(inputValue);
 				// absorbed short wave radiation flux
 				inputValue = m_boundaryConditionB->swRadAbsorbed();
-				IBK_ASSERT(inputValue != NULL);
+				IBK_ASSERT(inputValue != nullptr);
 				// store the pair of adresses of result value and input
 				// value inside pattern list
 				deps[(m_nElements - 2) * m_nBalanceEquations + m].insert(inputValue);
 				deps[(m_nElements - 1) * m_nBalanceEquations + m].insert(inputValue);
 				// long wave radiation balance flux
 				inputValue = m_boundaryConditionB->lwRadBalance();
-				IBK_ASSERT(inputValue != NULL);
+				IBK_ASSERT(inputValue != nullptr);
 				// store the pair of adresses of result value and input
 				// value inside pattern list
 				deps[(m_nElements - 2) * m_nBalanceEquations + m].insert(inputValue);
@@ -1651,32 +1651,32 @@ void ConstructionSolverModel::stateDependencies(std::vector< std::pair<const dou
 			// special case: combined hygrothermal simulation
 			if (m_moistureCalculationMode != CM_None) {
 
-				if (m_boundaryConditionA != NULL) {
+				if (m_boundaryConditionA != nullptr) {
 					// add moisture boundary conditions an left construction side (location A)
 					const double* inputValue = m_boundaryConditionA->vaporDiffusion();
-					IBK_ASSERT(inputValue != NULL);
+					IBK_ASSERT(inputValue != nullptr);
 					// store the pair of adresses of result value and input
 					// value inside pattern list
 					deps[m].insert(inputValue);
 					deps[m_nBalanceEquations + m].insert(inputValue);
 					inputValue = m_boundaryConditionA->vaporEnthalpy();
-					IBK_ASSERT(inputValue != NULL);
+					IBK_ASSERT(inputValue != nullptr);
 					// store the pair of adresses of result value and input
 					// value inside pattern list
 					deps[m].insert(inputValue);
 					deps[m_nBalanceEquations + m].insert(inputValue);
 				}
 
-				if (m_boundaryConditionB != NULL) {
+				if (m_boundaryConditionB != nullptr) {
 					// add moisture boundary conditions an right construction side (location B)
 					const double* inputValue = m_boundaryConditionB->vaporDiffusion();
-					IBK_ASSERT(inputValue != NULL);
+					IBK_ASSERT(inputValue != nullptr);
 					// store the pair of adresses of result value and input
 					// value inside pattern list
 					deps[(m_nElements - 2) * m_nBalanceEquations + m].insert(inputValue);
 					deps[(m_nElements - 1) * m_nBalanceEquations + m].insert(inputValue);
 					inputValue = m_boundaryConditionB->vaporEnthalpy();
-					IBK_ASSERT(inputValue != NULL);
+					IBK_ASSERT(inputValue != nullptr);
 					// store the pair of adresses of result value and input
 					// value inside pattern list
 					deps[(m_nElements - 2) * m_nBalanceEquations + m].insert(inputValue);
@@ -1734,7 +1734,7 @@ void ConstructionSolverModel::stateDependencies(std::vector< std::pair<const dou
 			// retrieve input value pointer
 			IBK_ASSERT(fieldFluxIt != inputValueRefs().end());
 			const double *inputValue = *fieldFluxIt;
-			IBK_ASSERT(inputValue != NULL);
+			IBK_ASSERT(inputValue != nullptr);
 			// retreive value references: elements of the currentlayer
 			IBK_ASSERT(activeLayerIdx < m_materialLayerElementOffset.size());
 			// rtereive minimum and maximumelement number
@@ -1743,7 +1743,7 @@ void ConstructionSolverModel::stateDependencies(std::vector< std::pair<const dou
 
 			// set dependency between input model and time derivative of the source elements
 			for (unsigned int i = iMin; i < iMax; ++i) {
-				const double *valueRef = NULL;
+				const double *valueRef = nullptr;
 				if (m_moistureCalculationMode == CM_Average)
 					valueRef = &m_ydotAverage[m_energyBalanceEquation[i]];
 				else
@@ -1793,7 +1793,7 @@ int ConstructionSolverModel::update() {
 			// retrieve input value pointer
 			IBK_ASSERT(fieldFluxIt != inputValueRefs().end());
 			const double *fieldFluxRef = *fieldFluxIt;
-			IBK_ASSERT(fieldFluxRef != NULL);
+			IBK_ASSERT(fieldFluxRef != nullptr);
 			const double fieldFlux = *fieldFluxRef;
 			// translate into a field condition
 			m_layerSources[SOURCE_HEAT_PRODUCTION_RATE][activeLayerIdx] = fieldFlux/m_wallArea;
@@ -1808,15 +1808,15 @@ int ConstructionSolverModel::update() {
 	// *** update boundary conditions ***
 
 	// retrieve left side (A) and right side (B) boundary fluxes
-	const double * qHeatCond_A_Ptr = NULL;
-	const double * qHeatCond_B_Ptr = NULL;
+	const double * qHeatCond_A_Ptr = nullptr;
+	const double * qHeatCond_B_Ptr = nullptr;
 
-	if (m_boundaryConditionA != NULL)
+	if (m_boundaryConditionA != nullptr)
 		qHeatCond_A_Ptr = m_boundaryConditionA->heatConduction();
-	if (m_boundaryConditionB != NULL)
+	if (m_boundaryConditionB != nullptr)
 		qHeatCond_B_Ptr = m_boundaryConditionB->heatConduction();
 
-	if (qHeatCond_A_Ptr != NULL) {
+	if (qHeatCond_A_Ptr != nullptr) {
 		// specify heat conduction flux on the wall surface
 		m_fluxes[WALL_MODEL::WallModel::FLUX_HEAT_CONDUCTION][0]  = *qHeatCond_A_Ptr;
 	}
@@ -1824,7 +1824,7 @@ int ConstructionSolverModel::update() {
 		m_fluxes[WALL_MODEL::WallModel::FLUX_HEAT_CONDUCTION][0]  = 0.0;
 	}
 
-	if (qHeatCond_B_Ptr != NULL) {
+	if (qHeatCond_B_Ptr != nullptr) {
 		// specify heat conduction flux on the wall surface and revert heat flux direction
 		// (positive heat flux means heat loss to the environment)
 		m_fluxes[WALL_MODEL::WallModel::FLUX_HEAT_CONDUCTION][m_nElements]  = -*qHeatCond_B_Ptr;
@@ -1834,15 +1834,15 @@ int ConstructionSolverModel::update() {
 	}
 
 	// same for short wave radiation
-	const double * qSWRad_A_Ptr = NULL;
-	const double * qSWRad_B_Ptr = NULL;
+	const double * qSWRad_A_Ptr = nullptr;
+	const double * qSWRad_B_Ptr = nullptr;
 
-	if (m_boundaryConditionA != NULL)
+	if (m_boundaryConditionA != nullptr)
 		qSWRad_A_Ptr = m_boundaryConditionA->swRadAbsorbed();
-	if (m_boundaryConditionB != NULL)
+	if (m_boundaryConditionB != nullptr)
 		qSWRad_B_Ptr = m_boundaryConditionB->swRadAbsorbed();
 
-	if (qSWRad_A_Ptr != NULL) {
+	if (qSWRad_A_Ptr != nullptr) {
 		// specify radiation heat flux
 		m_fluxes[WALL_MODEL::WallModel::FLUX_SW_RADIATION][0] = *qSWRad_A_Ptr;
 	}
@@ -1850,7 +1850,7 @@ int ConstructionSolverModel::update() {
 		m_fluxes[WALL_MODEL::WallModel::FLUX_LW_RADIATION][0] = 0.0;
 	}
 
-	if (qSWRad_B_Ptr != NULL) {
+	if (qSWRad_B_Ptr != nullptr) {
 		// specify radiation heat flux on the wall surface and revert heat flux direction
 		// (positive heat flux means heat loss to the environment)
 		m_fluxes[WALL_MODEL::WallModel::FLUX_SW_RADIATION][m_nElements] = -*qSWRad_B_Ptr;
@@ -1860,15 +1860,15 @@ int ConstructionSolverModel::update() {
 	}
 
 	// same for long wave radiation
-	const double * qLWRad_A_Ptr = NULL;
-	const double * qLWRad_B_Ptr = NULL;
+	const double * qLWRad_A_Ptr = nullptr;
+	const double * qLWRad_B_Ptr = nullptr;
 
-	if (m_boundaryConditionA != NULL)
+	if (m_boundaryConditionA != nullptr)
 		qLWRad_A_Ptr = m_boundaryConditionA->lwRadBalance();
-	if (m_boundaryConditionB != NULL)
+	if (m_boundaryConditionB != nullptr)
 		qLWRad_B_Ptr = m_boundaryConditionB->lwRadBalance();
 
-	if (qLWRad_A_Ptr != NULL) {
+	if (qLWRad_A_Ptr != nullptr) {
 		// specify radiation heat flux
 		m_fluxes[WALL_MODEL::WallModel::FLUX_LW_RADIATION][0] = *qLWRad_A_Ptr;
 	}
@@ -1876,7 +1876,7 @@ int ConstructionSolverModel::update() {
 		m_fluxes[WALL_MODEL::WallModel::FLUX_LW_RADIATION][0] = 0.0;
 	}
 
-	if (qLWRad_B_Ptr != NULL) {
+	if (qLWRad_B_Ptr != nullptr) {
 		// specify radiation heat flux on the wall surface and revert heat flux direction
 		// (positive heat flux means heat loss to the environment)
 		m_fluxes[WALL_MODEL::WallModel::FLUX_LW_RADIATION][m_nElements] = -*qLWRad_B_Ptr;
@@ -1889,15 +1889,15 @@ int ConstructionSolverModel::update() {
 	switch (m_moistureCalculationMode) {
 		case CM_Detailed : {
 			// set vapor diffusion boundray condition
-			const double * vaporDiff_A_Ptr = NULL;
-			const double * vaporDiff_B_Ptr = NULL;
+			const double * vaporDiff_A_Ptr = nullptr;
+			const double * vaporDiff_B_Ptr = nullptr;
 
-			if (m_boundaryConditionA != NULL)
+			if (m_boundaryConditionA != nullptr)
 				vaporDiff_A_Ptr = m_boundaryConditionA->vaporDiffusion();
-			if (m_boundaryConditionB != NULL)
+			if (m_boundaryConditionB != nullptr)
 				vaporDiff_B_Ptr = m_boundaryConditionB->vaporDiffusion();
 
-			if (vaporDiff_A_Ptr != NULL) {
+			if (vaporDiff_A_Ptr != nullptr) {
 				// specify vapor diffusion flux
 				m_fluxes[WALL_MODEL::WallModel::FLUX_VAPOR_DIFFUSION][0] = *vaporDiff_A_Ptr;
 			}
@@ -1905,7 +1905,7 @@ int ConstructionSolverModel::update() {
 				m_fluxes[WALL_MODEL::WallModel::FLUX_VAPOR_DIFFUSION][0] = 0.0;
 			}
 
-			if (vaporDiff_B_Ptr != NULL) {
+			if (vaporDiff_B_Ptr != nullptr) {
 				// specify vapor diffusion flux on the wall surface and revert flux direction
 				// (positive flux means moisture dissipation to the environment)
 				m_fluxes[WALL_MODEL::WallModel::FLUX_VAPOR_DIFFUSION][m_nElements] = -*vaporDiff_B_Ptr;
@@ -1915,15 +1915,15 @@ int ConstructionSolverModel::update() {
 			}
 
 			// set vapor diffusion enthalpy flux at boundaries
-			const double * vaporDiffEnth_A_Ptr = NULL;
-			const double * vaporDiffEnth_B_Ptr = NULL;
+			const double * vaporDiffEnth_A_Ptr = nullptr;
+			const double * vaporDiffEnth_B_Ptr = nullptr;
 
-			if (m_boundaryConditionA != NULL)
+			if (m_boundaryConditionA != nullptr)
 				vaporDiffEnth_A_Ptr = m_boundaryConditionA->vaporEnthalpy();
-			if (m_boundaryConditionB != NULL)
+			if (m_boundaryConditionB != nullptr)
 				vaporDiffEnth_B_Ptr = m_boundaryConditionB->vaporEnthalpy();
 
-			if (vaporDiff_A_Ptr != NULL) {
+			if (vaporDiff_A_Ptr != nullptr) {
 				// specify vapor diffusion flux
 				m_fluxes[WALL_MODEL::WallModel::FLUX_VAPOR_DIFFUSION_ENTHALPY][0] = *vaporDiffEnth_A_Ptr;
 			}
@@ -1931,7 +1931,7 @@ int ConstructionSolverModel::update() {
 				m_fluxes[WALL_MODEL::WallModel::FLUX_VAPOR_DIFFUSION_ENTHALPY][0] = 0.0;
 			}
 
-			if (vaporDiff_B_Ptr != NULL) {
+			if (vaporDiff_B_Ptr != nullptr) {
 				// specify vapor diffusion flux on the wall surface and revert flux direction
 				// (positive flux means moisture dissipation to the environment)
 				m_fluxes[WALL_MODEL::WallModel::FLUX_VAPOR_DIFFUSION_ENTHALPY][m_nElements] = -*vaporDiffEnth_B_Ptr;
@@ -1945,18 +1945,18 @@ int ConstructionSolverModel::update() {
 
 		case CM_Average : {
 			// update average fluxes
-			IBK_ASSERT(m_coarseGridWallModel != NULL);
+			IBK_ASSERT(m_coarseGridWallModel != nullptr);
 
 			// set vapor diffusion boundray condition
-			const double * vaporDiff_A_Ptr = NULL;
-			const double * vaporDiff_B_Ptr = NULL;
+			const double * vaporDiff_A_Ptr = nullptr;
+			const double * vaporDiff_B_Ptr = nullptr;
 
-			if (m_boundaryConditionA != NULL)
+			if (m_boundaryConditionA != nullptr)
 				vaporDiff_A_Ptr = m_boundaryConditionA->vaporDiffusion();
-			if (m_boundaryConditionB != NULL)
+			if (m_boundaryConditionB != nullptr)
 				vaporDiff_B_Ptr = m_boundaryConditionB->vaporDiffusion();
 
-			if (vaporDiff_A_Ptr != NULL) {
+			if (vaporDiff_A_Ptr != nullptr) {
 				// specify vapor diffusion flux
 				m_coarseGridWallModel->m_fluxes[WALL_MODEL::WallModel::FLUX_VAPOR_DIFFUSION][0] = *vaporDiff_A_Ptr;
 			}
@@ -1964,7 +1964,7 @@ int ConstructionSolverModel::update() {
 				m_coarseGridWallModel->m_fluxes[WALL_MODEL::WallModel::FLUX_VAPOR_DIFFUSION][0] = 0.0;
 			}
 
-			if (vaporDiff_B_Ptr != NULL) {
+			if (vaporDiff_B_Ptr != nullptr) {
 				// specify vapor diffusion flux on the wall surface and revert flux direction
 				// (positive flux means moisture dissipation to the environment)
 				m_coarseGridWallModel->m_fluxes[WALL_MODEL::WallModel::FLUX_VAPOR_DIFFUSION][m_coarseGridWallModel->m_nElements] = -*vaporDiff_B_Ptr;
@@ -1974,15 +1974,15 @@ int ConstructionSolverModel::update() {
 			}
 
 			// set vapor diffusion enthalpy flux at boundaries: detailed thermnal balance
-			const double * vaporDiffEnth_A_Ptr = NULL;
-			const double * vaporDiffEnth_B_Ptr = NULL;
+			const double * vaporDiffEnth_A_Ptr = nullptr;
+			const double * vaporDiffEnth_B_Ptr = nullptr;
 
-			if (m_boundaryConditionA != NULL)
+			if (m_boundaryConditionA != nullptr)
 				vaporDiffEnth_A_Ptr = m_boundaryConditionA->vaporEnthalpy();
-			if (m_boundaryConditionB != NULL)
+			if (m_boundaryConditionB != nullptr)
 				vaporDiffEnth_B_Ptr = m_boundaryConditionB->vaporEnthalpy();
 
-			if (vaporDiff_A_Ptr != NULL) {
+			if (vaporDiff_A_Ptr != nullptr) {
 				// specify vapor diffusion flux
 				m_fluxes[WALL_MODEL::WallModel::FLUX_VAPOR_DIFFUSION_ENTHALPY][0] = *vaporDiffEnth_A_Ptr;
 			}
@@ -1990,7 +1990,7 @@ int ConstructionSolverModel::update() {
 				m_fluxes[WALL_MODEL::WallModel::FLUX_VAPOR_DIFFUSION_ENTHALPY][0] = 0.0;
 			}
 
-			if (vaporDiff_B_Ptr != NULL) {
+			if (vaporDiff_B_Ptr != nullptr) {
 				// specify vapor diffusion flux on the wall surface and revert flux direction
 				// (positive flux means moisture dissipation to the environment)
 				m_fluxes[WALL_MODEL::WallModel::FLUX_VAPOR_DIFFUSION_ENTHALPY][m_nElements] = -*vaporDiffEnth_B_Ptr;
@@ -2000,14 +2000,14 @@ int ConstructionSolverModel::update() {
 			}
 
 #ifdef CalculateVaporPressureAtFineGrid
-			if (vaporDiff_A_Ptr != NULL) {
+			if (vaporDiff_A_Ptr != nullptr) {
 				// specify vapor diffusion flux
 				m_fluxes[WALL_MODEL::WallModel::FLUX_VAPOR_DIFFUSION][0] = *vaporDiff_A_Ptr;
 			}
 			else {
 				m_fluxes[WALL_MODEL::WallModel::FLUX_VAPOR_DIFFUSION][0] = 0.0;
 			}
-			if (vaporDiff_B_Ptr != NULL) {
+			if (vaporDiff_B_Ptr != nullptr) {
 				// specify vapor diffusion flux on the wall surface and revert flux direction
 				// (positive flux means moisture dissipation to the environment)
 				m_fluxes[WALL_MODEL::WallModel::FLUX_VAPOR_DIFFUSION][m_nElements] = -*vaporDiff_B_Ptr;
@@ -2214,7 +2214,7 @@ void  ConstructionSolverModel::setupGridAveraging(
 void ConstructionSolverModel::averageFluxFromDetailedFlux(double *fluxAverage, const double *fluxDetailed) const {
 
 	// 2 element discretization automatically enables detailed calculation mode
-	IBK_ASSERT(m_coarseGridWallModel != NULL);
+	IBK_ASSERT(m_coarseGridWallModel != nullptr);
 	unsigned int nElements = (unsigned int)m_coarseGridWallModel->m_nElements;
 
 	// integrate moisture density for internal layers
@@ -2228,7 +2228,7 @@ void ConstructionSolverModel::averageFluxFromDetailedFlux(double *fluxAverage, c
 void ConstructionSolverModel::averageFieldFromDetailedField(double *vAverage, const double *vDetailed) const {
 
 	// 2 element discretization automatically enables detailed calculation mode
-	IBK_ASSERT(m_coarseGridWallModel != NULL);
+	IBK_ASSERT(m_coarseGridWallModel != nullptr);
 	unsigned int nElements = (unsigned int)m_coarseGridWallModel->m_nElements;
 
 	// integrate moisture density for internal layers
@@ -2256,7 +2256,7 @@ void ConstructionSolverModel::averageFieldFromDetailedField(double *vAverage, co
 void ConstructionSolverModel::detailedFieldFromAverageField(double *vDetailed, const double *vAverage) const {
 
 	// 2 element discretization automatically enables detailed calculation mode
-	IBK_ASSERT(m_coarseGridWallModel != NULL);
+	IBK_ASSERT(m_coarseGridWallModel != nullptr);
 	// we set a constant value
 	// at all inside elements and extrapolate boundary values
 	// with the help of external elements

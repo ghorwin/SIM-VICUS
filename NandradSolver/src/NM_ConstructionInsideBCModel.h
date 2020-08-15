@@ -151,17 +151,17 @@ public:
 
 	/*! Function for accessing solar imposed flux density from construction solver.
 	*/
-	virtual const double *swRadOnPlane() const { return NULL; }
+	virtual const double *swRadOnPlane() const { return nullptr; }
 
-	/*! Function for accessing vapor diffusion flux density from construction solver (= NULL for
+	/*! Function for accessing vapor diffusion flux density from construction solver (= nullptr for
 	thermal calculation).
 	*/
-	virtual const double *vaporDiffusion() const { return NULL; }
+	virtual const double *vaporDiffusion() const { return nullptr; }
 
-	/*! Function for accessing vapor enthalpy flux density from construction solver (= NULL for
+	/*! Function for accessing vapor enthalpy flux density from construction solver (= nullptr for
 	thermal calculation).
 	*/
-	virtual const double *vaporEnthalpy() const { return NULL; }
+	virtual const double *vaporEnthalpy() const { return nullptr; }
 
 	/*! Function for settuing surface temperature. Does nothing.
 	*/

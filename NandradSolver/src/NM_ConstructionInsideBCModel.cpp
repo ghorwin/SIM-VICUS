@@ -42,8 +42,8 @@ ConstructionInsideBCModel::ConstructionInsideBCModel(unsigned int id, const std:
 	DefaultModel(id, displayName),
 	DefaultStateDependency(SteadyState),
 	m_surfaceTemperature(0),
-	m_interface(NULL),
-	m_constructionInstance(NULL)
+	m_interface(nullptr),
+	m_constructionInstance(nullptr)
 {
 }
 
@@ -82,8 +82,8 @@ void ConstructionInsideBCModel::initResults(const std::vector<AbstractModel*> & 
 {
 	const char * const FUNC_ID = "[ConstructionOutsideBCModel::initResults]";
 	// ensure that all references are filled
-	IBK_ASSERT(m_interface != NULL);
-	IBK_ASSERT(m_constructionInstance != NULL);
+	IBK_ASSERT(m_interface != nullptr);
+	IBK_ASSERT(m_constructionInstance != nullptr);
 	// resize m_results vector
 	DefaultModel::initResults(models);
 
@@ -298,14 +298,14 @@ const double * ConstructionInsideBCModel::resultValueRef(const QuantityName & qu
 {
 	// access the result quantities
 	const double *valRef = DefaultModel::resultValueRef(quantityName);
-	if(valRef != NULL)
+	if(valRef != nullptr)
 		return valRef;
 
 	// reference to surface temperature
 	if (quantityName == "SurfaceTemperature")
 		return m_surfaceTemperature;
 
-	return NULL;
+	return nullptr;
 }
 
 
@@ -313,18 +313,18 @@ const double * ConstructionInsideBCModel::resultValueRef(const QuantityName & qu
 int ConstructionInsideBCModel::update() {
 	DEBUG_OBJECT_SIGNATURE("[ConstructionInsideBCModel::update()]");
 
-	IBK_ASSERT(inputValueRefs()[InputRef_AirTemperature] != NULL);
-	IBK_ASSERT(inputValueRefs()[InputRef_HeatTransferCoefficient] != NULL);
-	IBK_ASSERT(inputValueRefs()[InputRef_SWRadWindow] != NULL);
-	IBK_ASSERT(inputValueRefs()[InputRef_SWRadLighting] != NULL);
-	IBK_ASSERT(inputValueRefs()[InputRef_SWRadExchange] != NULL);
-	IBK_ASSERT(inputValueRefs()[InputRef_LWRadExchange] != NULL);
-	IBK_ASSERT(inputValueRefs()[InputRef_LWRadHeating] != NULL);
-	IBK_ASSERT(inputValueRefs()[InputRef_LWRadCooling] != NULL);
-	IBK_ASSERT(inputValueRefs()[InputRef_LWRadUserLoad] != NULL);
-	IBK_ASSERT(inputValueRefs()[InputRef_LWRadEquipmentLoad] != NULL);
-	IBK_ASSERT(inputValueRefs()[InputRef_LWRadLighting] != NULL);
-	IBK_ASSERT(m_surfaceTemperature != NULL);
+	IBK_ASSERT(inputValueRefs()[InputRef_AirTemperature] != nullptr);
+	IBK_ASSERT(inputValueRefs()[InputRef_HeatTransferCoefficient] != nullptr);
+	IBK_ASSERT(inputValueRefs()[InputRef_SWRadWindow] != nullptr);
+	IBK_ASSERT(inputValueRefs()[InputRef_SWRadLighting] != nullptr);
+	IBK_ASSERT(inputValueRefs()[InputRef_SWRadExchange] != nullptr);
+	IBK_ASSERT(inputValueRefs()[InputRef_LWRadExchange] != nullptr);
+	IBK_ASSERT(inputValueRefs()[InputRef_LWRadHeating] != nullptr);
+	IBK_ASSERT(inputValueRefs()[InputRef_LWRadCooling] != nullptr);
+	IBK_ASSERT(inputValueRefs()[InputRef_LWRadUserLoad] != nullptr);
+	IBK_ASSERT(inputValueRefs()[InputRef_LWRadEquipmentLoad] != nullptr);
+	IBK_ASSERT(inputValueRefs()[InputRef_LWRadLighting] != nullptr);
+	IBK_ASSERT(m_surfaceTemperature != nullptr);
 
 	// directly retrieve wall surface and zone air temperature from input reference values
 	const std::vector<const double *> & inputRef = inputValueRefs();
@@ -495,7 +495,7 @@ void ConstructionInsideBCModel::stateDependencies(std::vector< std::pair<const d
 
 const double *ConstructionInsideBCModel::heatConduction() const {
 	if (m_results.empty())
-		return NULL;
+		return nullptr;
 
 	return &m_results[R_HeatConduction].value;
 }
@@ -503,7 +503,7 @@ const double *ConstructionInsideBCModel::heatConduction() const {
 
 const double *ConstructionInsideBCModel::lwRadBalance() const {
 	if (m_results.empty())
-		return NULL;
+		return nullptr;
 
 	return &m_results[R_LWRadBalance].value;
 }
@@ -511,7 +511,7 @@ const double *ConstructionInsideBCModel::lwRadBalance() const {
 
 const double *ConstructionInsideBCModel::swRadAbsorbed() const {
 	if (m_results.empty())
-		return NULL;
+		return nullptr;
 
 	return &m_results[R_SWRadAbsorbed].value;
 }
