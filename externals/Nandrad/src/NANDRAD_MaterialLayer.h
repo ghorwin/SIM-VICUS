@@ -26,13 +26,15 @@
 
 namespace NANDRAD {
 
+class Material;
+
 /*! A layer of a multi-layered construction. */
 class MaterialLayer {
 public:
 	/*! Default c'tor. */
 	MaterialLayer() {}
 
-	/*! Simple Constructor with thickness in m and id. */
+	/*! Simple Constructor with thickness in [m] and material id. */
 	MaterialLayer(double thickness, unsigned int id):
 		m_thickness(thickness),
 		m_matId(id)
@@ -50,6 +52,11 @@ public:
 
 	/*! Material id. */
 	unsigned int			m_matId;					// XML:A
+
+	// *** Variables used only during simulation ***
+
+	/*! Quick-access pointer to referenced material. */
+	NANDRAD::Material		*m_material = nullptr;
 };
 
 } // namespace NANDRAD

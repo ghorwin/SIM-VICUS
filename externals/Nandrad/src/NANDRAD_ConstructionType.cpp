@@ -21,6 +21,8 @@
 
 #include "NANDRAD_ConstructionType.h"
 
+#include <IBK_Exception.h>
+
 namespace NANDRAD {
 
 bool ConstructionType::operator!=(const ConstructionType & other) const {
@@ -28,6 +30,19 @@ bool ConstructionType::operator!=(const ConstructionType & other) const {
 	if (m_displayName != other.m_displayName) return true;
 	if (m_materialLayers != other.m_materialLayers) return true;
 	return  false;
+}
+
+
+void ConstructionType::checkParameters(const std::vector<Material> & materials) {
+	FUNCID(ConstructionType::checkParameters);
+
+	// process all material layers
+	for (MaterialLayer & ml : m_materialLayers) {
+		// valid layer thickness
+		if (ml.m_thickness <= 0)
+			throw IBK::Exception
+	}
+
 }
 
 } // namespace NANDRAD

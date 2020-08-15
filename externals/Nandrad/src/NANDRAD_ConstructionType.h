@@ -23,7 +23,7 @@
 #define NANDRAD_ConstructionTypeH
 
 #include <vector>
-#include <IBK_Parameter.h>
+#include <string>
 
 #include "NANDRAD_CodeGenMacros.h"
 #include "NANDRAD_MaterialLayer.h"
@@ -40,7 +40,14 @@ public:
 	NANDRAD_COMP(ConstructionType)
 	NANDRAD_COMPARE_WITH_ID
 
+	/*! Checks for valid parameters in all material layers of the construction and
+		also creates quick-access pointers to materials.
+	*/
+	void checkParameters(const std::vector<Material> & materials);
+
+
 	// *** PUBLIC MEMBER VARIABLES ***
+
 	/*! Unique id number. */
 	unsigned int				m_id;							// XML:A:required
 	/*! IBK-language encoded name of construction. */
@@ -48,7 +55,6 @@ public:
 
 	/*! List of material layers. */
 	std::vector<MaterialLayer>	m_materialLayers;				// XML:E
-
 };
 
 } // namespace NANDRAD

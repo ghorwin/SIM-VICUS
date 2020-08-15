@@ -1634,8 +1634,26 @@ void NandradModel::initZones() {
 }
 
 
-void NandradModel::initWallsAndInterfaces()
-{
+void NandradModel::initWallsAndInterfaces() {
+	FUNCID(NandradModel::initWallsAndInterfaces);
+
+	// now process all construction types and:
+	// - check for valid parameters
+	// - check for valid material references (and update these material refs)
+
+	for (NANDRAD::ConstructionType & ct : m_project->m_constructionTypes) {
+		try {
+			ct.checkParameters(m_project->m_materials);
+		} catch (IBK::Exception & ex) {
+			throw IBK::Exception("Error initializing construction types.", FUNC_ID)
+
+		}
+	}
+
+	// process all construction instances and:
+	// - check if they are connected to at least one room - otherwise
+	// - check that the referenced construction type exists and create quick-access reference to construction instance
+
 
 }
 

@@ -34,7 +34,9 @@ namespace IBK {
 
 namespace NANDRAD {
 
-/*!	\brief Defines a wall/floor/ceiling instance.
+class ConstructionType;
+
+/*!	\brief Defines a wall/floor/ceiling construction instance.
 
 	A ConstructionInstance selects all information about a wall that are needed for wall
 	temperature simulation and loads from windows.
@@ -109,6 +111,11 @@ public:
 		wall simulation by an explicit simulation model.
 	*/
 //	std::vector<EmbeddedObject>	m_embeddedObjects;
+
+	// *** Variables used only during simulation ***
+
+	/*! Quick-access pointer to the underlying construction type. */
+	NANDRAD::ConstructionType	*m_constructionType = nullptr;
 };
 
 
