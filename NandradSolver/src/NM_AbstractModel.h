@@ -57,7 +57,7 @@ public:
 		Among these objects, all published variables must have unique names!
 
 		This function must be re-implemented by model objects that provide result variables.
-		Default implementation returns invalid reference type.
+		Default implementation returns invalid reference type (i.e. no results available).
 		\sa NANDRAD::ModelInputReference::referenceType_t
 	*/
 	virtual NANDRAD::ModelInputReference::referenceType_t referenceType() const { return NANDRAD::ModelInputReference::NUM_MRT; }

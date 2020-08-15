@@ -23,8 +23,8 @@
 #define ConstructionStatesModelH
 
 
-#include "NM_DefaultModel.h"
-#include "NM_DefaultStateDependency.h"
+#include "NM_AbstractModel.h"
+#include "NM_VectorValuedQuantity.h"
 
 namespace NANDRAD {
 	class ConstructionInstance;
@@ -53,14 +53,13 @@ public:
 		R_SurfaceTemperatureB			// Keyword: SurfaceTemperatureB		[C]		'Surface temperature at interface B.'
 	};
 
-	/*! Constructor, relays ID to DefaultStateDependency constructor. */
+	/*! Constructor */
 	ConstructionStatesModel(unsigned int id, const std::string &displayName) :
 		m_id(id), m_displayName(displayName)
 	{
 	}
 
-	/*! Initializes model.
-	*/
+	/*! Initializes model. */
 	void setup(const NANDRAD::ConstructionInstance & con, const NANDRAD::SimulationParameter & simPara);
 
 
@@ -91,6 +90,23 @@ public:
 	*/
 	virtual const double * resultValueRef(const QuantityName & quantityName) const override;
 
+
+	// *** Other public member functions
+
+	/*! Sets initial states in y vector.
+		This function is called after setup(), so that parameters needed for
+		computing the initial condition are already present.
+
+		\param Pointer to the memory array holding all initial states for this model (to be written into).
+	*/
+	void yInitial(double * y) const;
+
+	/*! Computes intensive variables in Finite Volumes of construction.
+		This function is called directly from NandradModel as first step in the model evaluation.
+
+		\param Pointer to the memory array holding all states for this room model.
+	*/
+	int update(const double * y);
 
 private:
 	/*! Generates computational grid and all associated data structures. */

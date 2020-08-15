@@ -117,7 +117,6 @@ public:
 
 	// *** Re-implemented from AbstractStateDependency
 
-
 	/*! Composes all input references.*/
 	virtual void initInputReferences(const std::vector<AbstractModel*> & /* models */) override;
 
@@ -147,8 +146,7 @@ public:
 	/*! Stores the divergences of all balance equations in this zone in vector ydot. */
 	int ydot(double* ydot);
 
-
-protected:
+private:
 	/*! Zone ID. */
 	unsigned int									m_id;
 	/*! Display name (for error messages). */

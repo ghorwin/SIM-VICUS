@@ -43,6 +43,32 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con, c
 
 }
 
+
+void ConstructionStatesModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
+
+}
+
+
+void ConstructionStatesModel::resultValueRefs(std::vector<const double *> & res) const {
+
+}
+
+const double * ConstructionStatesModel::resultValueRef(const QuantityName & quantityName) const {
+	return nullptr;
+
+}
+
+
+void ConstructionStatesModel::yInitial(double * y) const {
+
+}
+
+
+int ConstructionStatesModel::update(const double * y) {
+
+}
+
+
 #if 0
 void ConstructionStatesModel::initResults(const std::vector<AbstractModel*> &  models) {
 
