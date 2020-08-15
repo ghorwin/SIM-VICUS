@@ -73,6 +73,12 @@ public:
 
 	NANDRAD_READWRITE
 
+	/*! Checks for valid parameters and stores quick-access pointer to associated construction type.
+		\note This function throws an exception, if invalid parameters are defined, parameters are missing, or
+			the construction type ID is invalid/unknown.
+	*/
+	void checkParameters(const std::vector<ConstructionType> & conTypes);
+
 	/*! Returns an embedded object selected by its Id.
 		Throws an exception if embedded object ID is not used in this construction instance.
 	*/
@@ -115,7 +121,7 @@ public:
 	// *** Variables used only during simulation ***
 
 	/*! Quick-access pointer to the underlying construction type. */
-	NANDRAD::ConstructionType	*m_constructionType = nullptr;
+	const NANDRAD::ConstructionType		*m_constructionType = nullptr;
 };
 
 

@@ -1641,11 +1641,12 @@ void NandradModel::initWallsAndInterfaces() {
 	// - check for valid parameters
 	// - check for valid material references (and update these material refs)
 
-	for (NANDRAD::ConstructionType & ct : m_project->m_constructionTypes) {
+	for (unsigned int i=0; m_project->m_constructionTypes.size(); ++i) {
+		NANDRAD::ConstructionType & ct = m_project->m_constructionTypes[i];
 		try {
 			ct.checkParameters(m_project->m_materials);
 		} catch (IBK::Exception & ex) {
-			throw IBK::Exception("Error initializing construction types.", FUNC_ID)
+			throw IBK::Exception(ex, IBK::FormatString("Error initializing construction type #%1 '%2'.").arg(i).arg(ct.m_displayName), FUNC_ID);
 
 		}
 	}
@@ -1654,6 +1655,15 @@ void NandradModel::initWallsAndInterfaces() {
 	// - check if they are connected to at least one room - otherwise
 	// - check that the referenced construction type exists and create quick-access reference to construction instance
 
+	for (unsigned int i=0; m_project->m_constructionInstances.size(); ++i) {
+		NANDRAD::ConstructionInstance & ci = m_project->m_constructionInstances[i];
+		try {
+			ci.checkParameters(m_project->m_constructionTypes);
+		} catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error initializing construction instance #%1 '%2'.").arg(i).arg(ci.m_displayName), FUNC_ID);
+
+		}
+	}
 
 }
 

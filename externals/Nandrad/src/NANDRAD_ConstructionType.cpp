@@ -21,7 +21,11 @@
 
 #include "NANDRAD_ConstructionType.h"
 
+#include <algorithm>
+
 #include <IBK_Exception.h>
+
+#include "NANDRAD_Material.h"
 
 namespace NANDRAD {
 
@@ -40,7 +44,13 @@ void ConstructionType::checkParameters(const std::vector<Material> & materials) 
 	for (MaterialLayer & ml : m_materialLayers) {
 		// valid layer thickness
 		if (ml.m_thickness <= 0)
-			throw IBK::Exception
+			throw IBK::Exception("Invalid thickness in material layer.", FUNC_ID);
+
+		// now look for referenced material
+		std::vector<Material>::const_iterator it = std::find(materials.begin(), materials.end(), ml.m_matId);
+		if (it == materials.end())
+			throw IBK::Exception( IBK::FormatString("Invalid material ID %1.").arg(ml.m_matId), FUNC_ID);
+		ml.m_material = &(*it); // store pointer
 	}
 
 }

@@ -56,7 +56,7 @@ public:
 	// *** Variables used only during simulation ***
 
 	/*! Quick-access pointer to referenced material. */
-	NANDRAD::Material		*m_material = nullptr;
+	const NANDRAD::Material	*m_material = nullptr;
 };
 
 } // namespace NANDRAD
