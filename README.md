@@ -136,7 +136,7 @@ That should narrow it down a bit.
 
 NANDRAD creates model objects on the heap during initialization (never during solver runtime!). Since the model objects are first initialized before ownership is transferred, you should always ensure proper cleanup in case of init exceptions. Use code like:
 
-```
+```c++
 std::unique_ptr<ModelObject> modelObject(new ModelObject);
 
 modelObject->setup(...); // this may throw
