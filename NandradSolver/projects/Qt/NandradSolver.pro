@@ -52,6 +52,8 @@ DEPENDPATH = $${INCLUDEPATH}
 
 SOURCES += \
 	../../src/NM_AbstractModel.cpp \
+	../../src/NM_ConstructionBalanceModel.cpp \
+	../../src/NM_ConstructionInsideBCModel.cpp \
 	../../src/NM_ConstructionStatesModel.cpp \
 	../../src/NM_DefaultModel.cpp \
 	../../src/NM_DefaultStateDependency.cpp \
@@ -78,6 +80,8 @@ HEADERS += \
 	../../src/NM_AbstractModel.h \
 	../../src/NM_AbstractStateDependency.h \
 	../../src/NM_AbstractTimeDependency.h \
+	../../src/NM_ConstructionBalanceModel.h \
+	../../src/NM_ConstructionInsideBCModel.h \
 	../../src/NM_ConstructionStatesModel.h \
 	../../src/NM_DefaultModel.h \
 	../../src/NM_DefaultStateDependency.h \
