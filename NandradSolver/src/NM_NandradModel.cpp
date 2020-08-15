@@ -70,6 +70,8 @@
 #include "NM_ValueReference.h"
 #include "NM_FMIInputOutput.h"
 #include "NM_OutputHandler.h"
+#include "NM_ConstructionStatesModel.h"
+#include "NM_ConstructionBalanceModel.h"
 
 namespace NANDRAD_MODEL {
 
@@ -1010,8 +1012,8 @@ void NandradModel::initZones() {
 			case NANDRAD::Zone::ZT_ACTIVE : {
 				IBK::IBK_Message( IBK::FormatString(" ACTIVE\n").arg(zone.m_id).arg(zone.m_displayName), IBK::MSG_CONTINUED, FUNC_ID, IBK::VL_INFO);
 				// create implicit room state and room balance models
-				RoomBalanceModel * roomBalanceModel = new RoomBalanceModel(zone.m_id, zone.m_displayName);
-				RoomStatesModel * roomStatesModel = new RoomStatesModel(zone.m_id, zone.m_displayName);
+				std::unique_ptr<RoomBalanceModel> roomBalanceModel( new RoomBalanceModel(zone.m_id, zone.m_displayName) );
+				std::unique_ptr<RoomStatesModel> roomStatesModel( new RoomStatesModel(zone.m_id, zone.m_displayName) );
 
 				// initialize room state model
 				try {
@@ -1022,11 +1024,11 @@ void NandradModel::initZones() {
 						.arg(zone.m_id).arg(zone.m_displayName), FUNC_ID);
 				}
 
-				// always put the model first into our central model storage
-				m_modelContainer.push_back(roomBalanceModel); // this container now owns the model
 				// also remember this model in the container with room state models m_roomBalanceModelContainer
 				// because we need to call ydot().
-				m_roomBalanceModelContainer.push_back(roomBalanceModel);
+				m_roomBalanceModelContainer.push_back(roomBalanceModel.get());
+				// put the model into our central model storage
+				m_modelContainer.push_back(roomBalanceModel.release()); // transfer ownership
 
 				// initialize room state model
 				try {
@@ -1038,12 +1040,12 @@ void NandradModel::initZones() {
 				}
 
 
-				// always put the model first into our central model storage
-				m_modelContainer.push_back(roomStatesModel); // this container now owns the model
-
 				// also remember this model in the container with room state models m_roomBalanceModelContainer
 				// because we need to call yInitial().
-				m_roomStatesModelContainer.push_back(roomStatesModel);
+				m_roomStatesModelContainer.push_back(roomStatesModel.get());
+				// put the model into our central model storage
+				m_modelContainer.push_back(roomStatesModel.release()); // transfer ownership
+
 				// remember current zone
 				activeZones.push_back(&zone);
 			} break;
@@ -1645,9 +1647,9 @@ void NandradModel::initWallsAndInterfaces() {
 		NANDRAD::ConstructionType & ct = m_project->m_constructionTypes[i];
 		try {
 			ct.checkParameters(m_project->m_materials);
-		} catch (IBK::Exception & ex) {
+		}
+		catch (IBK::Exception & ex) {
 			throw IBK::Exception(ex, IBK::FormatString("Error initializing construction type #%1 '%2'.").arg(i).arg(ct.m_displayName), FUNC_ID);
-
 		}
 	}
 
@@ -1659,10 +1661,35 @@ void NandradModel::initWallsAndInterfaces() {
 		NANDRAD::ConstructionInstance & ci = m_project->m_constructionInstances[i];
 		try {
 			ci.checkParameters(m_project->m_constructionTypes);
-		} catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error initializing construction instance #%1 '%2'.").arg(i).arg(ci.m_displayName), FUNC_ID);
 
+			// we now have all parameters needed to create the ConstructionStatesModel and ConstructionsBalanceModel and
+			// associated boundary condition models
+
+			/// \todo filter out constructions that have no impact on calculation results of any zones...
+			///       but beware, this is tricky! Maybe it is best to keep the construction but later flag it as "unused"
+			///       and simply skip over it during calculation.
+
+			std::unique_ptr<ConstructionStatesModel>	statesModel(new ConstructionStatesModel(ci.m_id, ci.m_displayName));
+
+			// does the entire initialization
+			statesModel->setup(ci, m_project->m_simulationParameter);
+
+
+			// now also initialize balance model - hereby re-using data from states model
+			std::unique_ptr<ConstructionBalanceModel>	balanceModel(new ConstructionBalanceModel(ci.m_id, ci.m_displayName));
+
+			// does the entire initialization
+			balanceModel->setup(ci, m_project->m_simulationParameter, statesModel.get());
+
+
+			// remember "head" model in states container
+			m_constructionBalanceModelContainer.push_back(balanceModel.get());
+			m_modelContainer.push_back(balanceModel.release()); // transfer ownership
 		}
+		catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error initializing construction instance #%1 '%2'.").arg(i).arg(ci.m_displayName), FUNC_ID);
+		}
+
 	}
 
 }

@@ -60,6 +60,9 @@ class RoomBalanceModel;
 class RoomStatesModel;
 class OutputHandler;
 
+class ConstructionStatesModel;
+class ConstructionBalanceModel;
+
 /*! Main NANDRAD model implementation class.
 	This class implements the interface of SOLFRA::ModelInterface and SOLFRA::OutputScheduler and contains
 	the entire logic of the model evaluation.
@@ -387,7 +390,7 @@ private:
 	std::vector<AbstractTimeDependency*>					m_stepCompletedForOutputWriting;
 
 	/*! Container for all staedy state models that inherit from SOLFRA::ModelInterface.
-	The evaluation models is sequential.
+		The evaluation models is sequential.
 	*/
 	std::vector<SteadyStateSolver*>							m_steadyStateModelContainer;
 
@@ -435,12 +438,24 @@ private:
 	std::vector<IBKMK::SparseMatrixPattern>					m_dependencyPatterns;
 
 
-	/*! Holds references to room state models (does not own the models). */
+	/*! Holds references to room state models (does not own the models), size m_nZones. */
 	std::vector<RoomStatesModel*>							m_roomStatesModelContainer;
-	/*! Holds references to room balance models (does not own the models). */
+	/*! Holds references to room balance models (does not own the models), size m_nZones. */
 	std::vector<RoomBalanceModel*>							m_roomBalanceModelContainer;
-	/*! Vector with offsets for room state models. */
+	/*! Vector with offsets for conserved quantities of the room models. */
 	std::vector<unsigned int>								m_zoneVariableOffset;
+
+	/*! Holds references to construction state models (does not own the models), size m_nWalls. */
+	std::vector<ConstructionStatesModel*>					m_constructionStatesModelContainer;
+	/*! Holds references to construction balance models (does not own the models), size m_nWalls. */
+	std::vector<ConstructionStatesModel*>					m_constructionBalanceModelContainer;
+	/*! Vector with offsets for conserved quantities of the construction models.
+		\code
+		statesIndex = m_constructionVariableOffset[constructionIndex];
+		y[statesIndex] = <first conserved quantity of construction>;
+		\endcode
+	*/
+	std::vector<unsigned int>								m_constructionVariableOffset;
 
 
 	// *** Models and sub-models ***
