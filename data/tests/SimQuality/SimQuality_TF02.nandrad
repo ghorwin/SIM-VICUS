@@ -114,6 +114,14 @@
 					<GridName>hourly</GridName>
 					<TimeType>Integral</TimeType>
 				</OutputDefinition>
+				<!-- hourly mean values -->
+				<OutputDefinition>
+					<Filename>load_averages</Filename>
+					<Quantity>DirectSWRadOnPlane[1000]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>hourly</GridName>
+					<TimeType>Mean</TimeType>
+				</OutputDefinition>
 			</OutputDefinitions>
 			<Grids>
 				<OutputGrid name="hourly">

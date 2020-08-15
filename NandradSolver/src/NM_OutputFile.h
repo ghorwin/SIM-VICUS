@@ -218,15 +218,20 @@ private:
 
 
 	/*! Time point (simulation time) in [s] at previous stepCompleted() call (begin of integration interval). */
-	double										m_tLast;
+	double										m_tLastStep;
 	/*! Time point (simulation time) in [s] at current stepCompleted() call (end of integration interval). */
-	double										m_tCurrent;
+	double										m_tCurrentStep;
+	/*! Time point (simulation time) in [s] at last output. */
+	double										m_tLastOutput;
+
 	/*! The integral values (updated in each stepCompleted() call).
 		m_integrals[0] holds the values at m_tLast, m_integrals[1] holds the values at m_tCurrent. Size matches m_numCols
 		regardless whether the values are integral values or not.
 		Integral values are always store in the base SI unit (source unit of the associated value reference) times s.
 	*/
 	std::vector<double>							m_integrals[2];
+	/*! Cached values at last output time point, needed to compute integral mean values (size m_numCols). */
+	std::vector<double>							m_integralsAtLastOutput;
 
 	/*! Output file stream (owned and initialized in createFile()). */
 	std::ofstream								*m_ofstream = nullptr;

@@ -55,18 +55,18 @@ void OutputFile::stepCompleted(double t) {
 		if (od.m_timeType != NANDRAD::OutputDefinition::OTT_NONE) {
 
 			// shift states
-			double dt = t - m_tCurrent;  // integration interval length in [s]
+			double dt = t - m_tCurrentStep;  // integration interval length in [s]
 			// special handling for initial call
-			if (m_tLast == -1) {
+			if (m_tLastStep == -1) {
 				// on first call the step completed, usually t = 0, except in restart case
 				/// \todo think of a way to restore integral values in case of restarting
-				m_tLast = t;
-				m_tCurrent = t;
+				m_tLastStep = t;
+				m_tCurrentStep = t;
 				continue;
 			}
 
-			m_tLast = m_tCurrent;
-			m_tCurrent = t;
+			m_tLastStep = m_tCurrentStep;
+			m_tCurrentStep = t;
 			m_integrals[0][col] = m_integrals[1][col];
 			// now retrieve value
 			double val = *m_valueRefs[i];
@@ -144,9 +144,10 @@ void OutputFile::setInputValueRef(const InputReference & inputRef, const Quantit
 		if (m_haveIntegrals) {
 			m_integrals[0].resize(m_numCols, 0.0);
 			m_integrals[1].resize(m_numCols, 0.0);
+			m_integralsAtLastOutput.resize(m_numCols, 0.0);
 			// time points of -1 mean "uninitialized" - the simulation may be continued from later time points
-			m_tLast = -1;
-			m_tCurrent = -1;
+			m_tLastStep = -1;
+			m_tCurrentStep = -1;
 		}
 
 	}
@@ -366,23 +367,44 @@ void OutputFile::cacheOutputs(double t_out, double t_timeOfYear) {
 			break;
 
 			case NANDRAD::OutputDefinition::OTT_MEAN :
-			break;
-
-			case NANDRAD::OutputDefinition::OTT_INTEGRAL :
+			case NANDRAD::OutputDefinition::OTT_INTEGRAL : {
 				// interpolate linearly in interval [t_mLast, t_mCurrent]
-				IBK_ASSERT(m_tLast <= t_out);
-				IBK_ASSERT(t_out <= m_tCurrent);
+				IBK_ASSERT(m_tLastStep <= t_out);
+				IBK_ASSERT(t_out <= m_tCurrentStep);
 				// special handling when m_tLast == m_tCurrent = t_start
-				if (m_tLast == m_tCurrent)
+				if (m_tLastStep == m_tCurrentStep)
 					vals[col] = 0;
 				else {
-					IBK_ASSERT(m_tLast < m_tCurrent);
-					double alpha = (t_out-m_tLast)/(m_tCurrent - m_tLast);
+					IBK_ASSERT(m_tLastStep < m_tCurrentStep);
+					double alpha = (t_out-m_tLastStep)/(m_tCurrentStep - m_tLastStep);
 					// NOTE: the column index in the target vector 'vals' starts with 1 for the first value
 					//       since column 0 is the time column. In the m_integrals vector, however, the
 					//       first value is in column 0. Hence, we need to shift the column when retrieving the integral value.
 					vals[col] = m_integrals[1][col-1]*alpha + m_integrals[0][col-1]*(1-alpha);
 				}
+
+				// next part only for MEAN
+				if (od.m_timeType == NANDRAD::OutputDefinition::OTT_MEAN) {
+
+					// special handling for first output value: we store the current values
+					if (m_tLastStep == m_tCurrentStep) {
+						vals[col] = *m_valueRefs[i];
+						m_integralsAtLastOutput[col] = 0; // initialize last output values with 0
+					}
+					else {
+						// we first compute the change in integral values between integral value at last output and
+						// the current interval value stored in vals[col]
+						double deltaValue = vals[col] - m_integralsAtLastOutput[col];
+						double deltaTime = t_out - m_tLastOutput;
+						IBK_ASSERT(deltaTime > 0);
+						// store current integral value
+						m_integralsAtLastOutput[col] = vals[col];
+						// compute and store average value
+						vals[col] = deltaValue/deltaTime;
+					}
+					m_tLastOutput = t_out;
+				}
+			}
 			break;
 		} // switch
 
