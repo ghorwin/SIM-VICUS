@@ -132,7 +132,17 @@ SomeClass::myFunction                         [Error]           I got an invalid
 
 That should narrow it down a bit.
 
+### Avoiding memory leaks
 
+NANDRAD creates model objects on the heap during initialization (never during solver runtime!). Since the model objects are first initialized before ownership is transferred, you should always ensure proper cleanup in case of init exceptions. Use code like:
+
+```
+std::unique_ptr<ModelObject> modelObject(new ModelObject);
+
+modelObject->setup(...); // this may throw
+
+m_modelContainer.push_back(modelObject.release()); // transfer ownership
+```
 
 ### Documentation
 
