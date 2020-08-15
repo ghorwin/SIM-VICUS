@@ -1672,8 +1672,7 @@ void NandradModel::initWallsAndInterfaces() {
 			std::unique_ptr<ConstructionStatesModel>	statesModel(new ConstructionStatesModel(ci.m_id, ci.m_displayName));
 
 			// does the entire initialization
-			statesModel->setup(ci, m_project->m_simulationParameter);
-
+			statesModel->setup(ci, m_project->m_simulationParameter, m_project->m_solverParameter);
 
 			// now also initialize balance model - hereby re-using data from states model
 			std::unique_ptr<ConstructionBalanceModel>	balanceModel(new ConstructionBalanceModel(ci.m_id, ci.m_displayName));

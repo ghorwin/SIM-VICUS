@@ -61,7 +61,6 @@ SOURCES += \
 	../../src/NM_FMIInputOutput.cpp \
 	../../src/NM_KeywordList.cpp \
 	../../src/NM_Loads.cpp \
-	../../src/NM_Mesh.cpp \
 	../../src/NM_NandradModel.cpp \
 	../../src/NM_OutputFile.cpp \
 	../../src/NM_OutputHandler.cpp \
@@ -91,7 +90,6 @@ HEADERS += \
 	../../src/NM_InputReference.h \
 	../../src/NM_KeywordList.h \
 	../../src/NM_Loads.h \
-	../../src/NM_Mesh.h \
 	../../src/NM_NandradModel.h \
 	../../src/NM_OutputFile.h \
 	../../src/NM_OutputHandler.h \

@@ -140,15 +140,25 @@ private:
 	/*! Element structure, containing data FV-data for a single element (finite-volume). */
 	struct Element {
 		/*! Default constructor. */
-		Element();
+		Element() : i(0)
+		{
+		}
+
 		/*! Initializing constructor. */
-		Element(unsigned int i, double x, double dx, double wL, double wR, const NANDRAD_MODEL::Material * mat);
+		Element(unsigned int i_, double x_, double dx_, double wL_, double wR_) :
+			i(i_),
+			x(x_),
+			dx(dx_),
+			wL(wL_),
+			wR(wR_)
+		{
+		}
+
 		unsigned int					i;		///< Element index
 		double							x;		///< Element center points x-coordinate [m]
 		double							dx;		///< Element width [m]
 		double							wL;		///< Weight factor left
 		double							wR;		///< Weight factor right
-		const NANDRAD_MODEL::Material	*mat;	///< Pointer to material object.
 	};
 
 	/*! Vector containing all discretized elements, size: m_nElements. */

@@ -267,7 +267,7 @@ void ConstructionStatesModel::generateGrid() {
 			// internal elements
 			wR = dx_vec[i]/(dx_vec[i] + dx_vec[i+1]);
 		// add to element vector
-		m_elements.push_back(Element(i, x_vec[i], dx_vec[i], wL, wR, nullptr));
+		m_elements.push_back(Element(i, x_vec[i], dx_vec[i], wL, wR));
 	}
 }
 
