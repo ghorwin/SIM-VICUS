@@ -70,6 +70,70 @@ void setMyStringMember(const std::string & str);
 ```
 !!! **never ever** write `getXXX` !!!!!
 
+### Exception handling
+
+Basic rule:
+- during initialization, throw `IBK::Exception` objects (and **only** `IBK::Exception` objects in **all code that uses the IBK library**) : reason: cause of exception becomes reasonably clear from the exception message string and context and this makes catch-and-rethrow-code so much easier (see below).
+- **during calculation** (in parallel code sections), **avoid throwing Exceptions** (i.e. write code that cannot throw); in error cases (like div by zero), test explicitely for such failure conditions and leave function with error codes
+
+When throwing exceptions:
+- use function identifier created with `FUNCID()` macro:
+
+```c++
+void SomeClass::myFunction() {
+    FUNCID(SomeClass::myFunction);
+    
+    ...
+    throw IBK::Exception("Something went wrong", FUNC_ID);
+}
+```
+Do not include function arguments in `FUNCID()`, unless it is important to distinguish between overloaded functions.
+
+When raising exceptions, try to be verbose about the source of the exception, i.e. use `IBK::FormatString`:
+
+```c++
+void SomeClass::myFunction() {
+    FUNCID(SomeClass::myFunction);
+    
+    ...
+    throw IBK::Exception( IBK::FormatString("I got an invalid parameter '%1' in object #%2")
+        .arg(paraName).arg(objectIndex), FUNC_ID);
+}
+```
+See documentaition of class `IBK::FormatString` (and existing examples in the code).
+
+#### Exception hierarchies
+
+To trace the source of an error, keeping an exception trace is imported. When during simulation init you get an exception "Invalid unit ''" thrown from `IBK::Unit` somewhere, you'll have a hard time tracing the source (also, when this is reported as error by users and debugging isn't easily possible).
+
+Hence, if you call a function that might throw, wrap it into a try-catch clause and throw on:
+
+```c++
+void SomeClass::myFunction() {
+    FUNCID(SomeClass::myFunction);
+    
+    try {
+        someOtherFunctionThatMightThrow(); // we might get an exception here
+    }
+    catch (IBK::Exception & ex) {          // we can rely on IBK::Exception here, since nothing else is allowed in our code
+    
+        // rethrow exception, but mind the prepended ex argument!
+        throw IBK::Exception(ex, IBK::FormatString("I got an invalid parameter '%1' in object #%2")
+            .arg(paraName).arg(objectIndex), FUNC_ID);
+    }
+}
+```
+The error message stack will then look like:
+
+```
+SomeClass::someOtherFunctionThatMightThrow    [Error]           Something went terribly wrong.
+SomeClass::myFunction                         [Error]           I got an invalid parameter 'some parameter' in object #0815
+```
+
+That should narrow it down a bit.
+
+
+
 ### Documentation
 
 Doxygen-style, prefer:
