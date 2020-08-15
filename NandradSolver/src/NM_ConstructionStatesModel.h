@@ -26,6 +26,11 @@
 #include "NM_DefaultModel.h"
 #include "NM_DefaultStateDependency.h"
 
+namespace NANDRAD {
+	class ConstructionInstance;
+	class SimulationParameter;
+}
+
 namespace NANDRAD_MODEL {
 
 
@@ -39,11 +44,11 @@ public:
 
 	// ***KEYWORDLIST-START***
 	enum VectorValuedResults {
-		VVR_LayerTemperature		// Keyword: LayerTemperature		[C]		'Mean layer temperature for requested quanties.'
+		VVR_LayerTemperature			// Keyword: LayerTemperature		[C]		'Mean layer temperature for requested quanties.'
 	};
 	enum Results {
-		R_SurfaceTemperatureA,		// Keyword: SurfaceTemperatureA		[C]		'Surface temperature at interface A.'
-		R_SurfaceTemperatureB		// Keyword: SurfaceTemperatureB		[C]		'Surface temperature at interface B.'
+		R_SurfaceTemperatureA,			// Keyword: SurfaceTemperatureA		[C]		'Surface temperature at interface A.'
+		R_SurfaceTemperatureB			// Keyword: SurfaceTemperatureB		[C]		'Surface temperature at interface B.'
 	};
 	enum InputReferences {
 		InputRef_InternalEnergyDensity,	// Keyword: InternalEnergyDensity	[W/m3]	'Internal energy density of the wall.'
@@ -54,10 +59,11 @@ public:
 	// ***KEYWORDLIST-END***
 
 	/*! Constructor, relays ID to DefaultStateDependency constructor. */
-	ConstructionStatesModel(unsigned int ConstructionStatesId, const std::string &displayName);
+	ConstructionStatesModel(unsigned int id, const std::string &displayName) :
+		m_id(id), m_displayName(displayName)
+	{
+	}
 
-	/*! Destructor, free allocated memory for ModuleWallSolver instances. */
-	~ConstructionStatesModel();
 
 	/*! Construction solve model can be referenced via ConstructionInstance type and ID. */
 	virtual NANDRAD::ModelInputReference::referenceType_t referenceType() const {
@@ -67,51 +73,28 @@ public:
 	/*! Return unique class ID name of implemented model. */
 	virtual const char * ModelIDName() const { return "ConstructionStatesModel";}
 
-	/*! Returns a priority number for the ordering in model evaluation.*/
-	virtual int priorityOfModelEvaluation() const;
-
-	/*! Initializes model by storing a constant pointer to the corresponding wall model.
-		The wall model holds all current temperature values of the construction.
+	/*! Initializes model.
 	*/
-	void setup(const ConstructionSolverModel* wallModel);
+	void setup(const NANDRAD::ConstructionInstance & con, const NANDRAD::SimulationParameter & simPara);
 
 	/*! Deactive initResults(). States model does not own a results vector.*/
-
 	virtual void initResults(const std::vector<AbstractModel*> & models);
 
-	/*! Populates the vector resDesc with descriptions of all results provided by this model.
-	*/
+	/*! Populates the vector resDesc with descriptions of all results provided by this model. */
 	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const;
 
-	/*! Returns vector of all scalar and vector valued results pointer.
-	*/
+	/*! Returns vector of all scalar and vector valued results pointer. */
 	virtual void resultValueRefs(std::vector<const double *> &res) const;
 
 	/*! Retrieves reference pointer to a value with given quantity ID name.
-	\return Returns pointer to memory location with this quantity, otherwise NULL if parameter ID was not found.
+		\return Returns pointer to memory location with this quantity, otherwise NULL if parameter ID was not found.
 	*/
 	virtual const double * resultValueRef(const QuantityName & quantityName) const;
 
-	/*! We do not have any input references.*/
-
-	virtual void initInputReferences(const std::vector<AbstractModel*> & /*models*/);
-
-	/*! Adds dependencies between y and the surface temperatures to default pattern.
-	*/
-	virtual void stateDependencies(std::vector< std::pair<const double *, const double *> > &resultInputValueReferences) const;
-
-	/*! Does nothing. */
-	virtual int update();
-
-	/*! Vector containing offset of the element number for each material layer. */
-	const std::vector<size_t> & materialLayerElementOffset() const;
-
 
 protected:
-	/*! Dummy integer vector. */
-	std::vector<size_t>				m_dummyVector;
-	/*! Pointer to (owned) wall model. */
-	const ConstructionSolverModel	*m_wallModel;
+	std::vector<double>				m_results;
+
 	/*! Results vector for mean layer temperatures (requested by any model input reference). */
 	VectorValuedQuantity			m_layerTemperatures;
 };

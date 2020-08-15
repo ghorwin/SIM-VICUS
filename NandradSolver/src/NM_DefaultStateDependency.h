@@ -48,11 +48,6 @@ public:
 	/*! Standard constructor. */
 	DefaultStateDependency(unsigned int modelTypeID);
 
-	/*! Copy constructor is disabled. */
-	DefaultStateDependency(const DefaultStateDependency &) = delete;
-	/*! Assignment operator is disabled. */
-	const DefaultStateDependency & operator=(const DefaultStateDependency &) = delete;
-
 	/*! Copies the m_inputReferences - vector into the external inputRefs object. */
 	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const override;
 

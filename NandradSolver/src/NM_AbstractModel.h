@@ -35,6 +35,12 @@ namespace NANDRAD_MODEL {
 */
 class AbstractModel {
 public:
+	/*! Default C'tor. */
+	AbstractModel() {}
+	/*! Copy constructor is not available (disable copy). */
+	AbstractModel(const AbstractModel &) = delete;
+	/*! Assignment operator is not available (disable copy). */
+	const AbstractModel & operator=(const AbstractModel &) = delete;
 
 	/*! Virtual destructor.
 		\note Definition of abstractor code is in cpp file, which serves as 'first translation unit'

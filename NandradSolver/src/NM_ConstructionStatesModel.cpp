@@ -21,35 +21,16 @@
 
 #include "NM_ConstructionStatesModel.h"
 
-#include "NM_AbstractGenericModel.h"
-#include "NM_ConstructionSolverModel.h"
+#include <NANDRAD_ConstructionInstance.h>
+
 #include "NM_KeywordList.h"
 
 using namespace std;
 
 namespace NANDRAD_MODEL {
 
-ConstructionStatesModel::ConstructionStatesModel(unsigned int ConstructionStatesId, const std::string &displayName) :
-	DefaultModel(ConstructionStatesId, displayName),
-	DefaultStateDependency(SteadyState),
-	m_wallModel(NULL),
-	m_layerTemperatures(KeywordList::Keyword("ConstructionStatesModel::VectorValuedResults",
-		VVR_LayerTemperature),IBK::Unit("C"))
-{
-}
 
-
-ConstructionStatesModel::~ConstructionStatesModel() {
-}
-
-
-int ConstructionStatesModel::priorityOfModelEvaluation() const {
-	// the construction states are updated first
-	return 0;
-}
-
-void ConstructionStatesModel::setup(const ConstructionSolverModel* wallModel)
-{
+void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con, const NANDRAD::SimulationParameter & simPara) {
 	// copy wall model pointer
 	m_wallModel = wallModel;
 }

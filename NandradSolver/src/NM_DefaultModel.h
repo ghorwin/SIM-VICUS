@@ -54,11 +54,6 @@ public:
 	{
 	}
 
-	/*! Copy constructor is not available (disable copy). */
-	DefaultModel(const DefaultModel &) = delete;
-	/*! Assignment operator is not available (disable copy). */
-	const DefaultModel & operator=(const DefaultModel &) = delete;
-
 	/*! Returns unique ID of this model instance. */
 	virtual unsigned int id() const override { return m_id; }
 

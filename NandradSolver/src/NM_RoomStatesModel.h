@@ -67,10 +67,6 @@ public:
 		m_id(id), m_displayName(displayName)
 	{
 	}
-	/*! Copy constructor is not available (disable copy). */
-	RoomStatesModel(const RoomStatesModel &) = delete;
-	/*! Assignment operator is not available (disable copy). */
-	const RoomStatesModel & operator=(const RoomStatesModel &) = delete;
 
 	/*! Initializes model by providing zone parameters.
 		The relevant parameters are cached in the RoomStatesModel results for access by other models.

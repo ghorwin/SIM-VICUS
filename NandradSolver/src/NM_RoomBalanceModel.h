@@ -82,10 +82,6 @@ public:
 		m_id(id), m_displayName(displayName)
 	{
 	}
-	/*! Copy constructor is not available (disable copy). */
-	RoomBalanceModel(const RoomBalanceModel &) = delete;
-	/*! Assignment operator is not available (disable copy). */
-	const RoomBalanceModel & operator=(const RoomBalanceModel &) = delete;
 
 	/*! Initializes model by providing simulation parameters and resizing the y and ydot vectors. */
 	void setup( const NANDRAD::SimulationParameter &simPara);
