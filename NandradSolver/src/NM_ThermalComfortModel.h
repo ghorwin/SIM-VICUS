@@ -32,15 +32,14 @@ namespace NANDRAD
 
 namespace NANDRAD_MODEL {
 
-/*!	\brief Declaration for class ThermalComfortModel
-	\author Andreas Nicolai <andreas.nicolai -[at]- tu-dresden.de>
+/*!	The thermal comfort model calculates radiant temperature and operative
+	temperature for one zone.
 
-	The thermal comfort model calculates radiant temperature and operative
-	temperature for one zone. We obtain the radiant temperature by a area-weighted 
-	average of the surface temperatures of the enclosing walls and compose input 
+	We obtain the radiant temperature by a area-weighted
+	average of the surface temperatures of the enclosing walls and compose input
 	references to all inside surface temperatures and wall areas.
 	Note, that the current input references may be substituted by quantities
-	resulting from a more precise calculation rule, i.e. the references to wall 
+	resulting from a more precise calculation rule, i.e. the references to wall
 	area weighting factors may be substituted by precalculated view factors.
 */
 class ThermalComfortModel : public DefaultModel, public DefaultStateDependency {
@@ -93,7 +92,7 @@ public:
 	virtual int update();
 
 	/*! Returns all dependency pairs: radiant temperature and room air temperature
-		are not connected. 
+		are not connected.
 	*/
 	virtual void stateDependencies(std::vector< std::pair<const double *, const double *> > &resultInputValueReferences) const;
 
