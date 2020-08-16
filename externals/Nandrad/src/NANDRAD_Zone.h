@@ -63,9 +63,9 @@ public:
 
 	/*! Parameters of a zone. */
 	enum para_t {
-		ZP_TEMPERATURE,				// Keyword: Temperature				[C]		'Temperature of the zone if set constant, or initial temperature for active zones [C].'
-		ZP_RELATIVE_HUMIDITY,		// Keyword: RelativeHumidity		[%]		'Relative humidity of the zone if set constant, or initial humidity for active zones [%].'
-		ZP_CO2_CONCENTRATION,		// Keyword: CO2Concentration		[g/m3]	'CO2 concentration of the zone if set constant, or initial concentration for active zones [g/m3].'
+		ZP_TEMPERATURE,				// Keyword: Temperature				[C]		'Temperature of the zone if set constant [C].'
+		ZP_RELATIVE_HUMIDITY,		// Keyword: RelativeHumidity		[%]		'Relative humidity of the zone if set constant [%].'
+		ZP_CO2_CONCENTRATION,		// Keyword: CO2Concentration		[g/m3]	'CO2 concentration of the zone if set constant [g/m3].'
 		ZP_AREA,					// Keyword: Area					[m2]	'Net usage area of the ground floor [m2] (for area-related outputs and loads).'
 		ZP_VOLUME,					// Keyword: Volume					[m3]	'Zone air volume [m3].'
 		ZP_HEATCAPACITY,			// Keyword: HeatCapacity			[J/K]	'Extra heat capacity [J/K].'

@@ -8,7 +8,6 @@
 		</ProjectInfo>
 		<Zones>
 			<Zone id="1" displayName="Room" type="Active">
-				<IBK:Parameter name="Temperature" unit="C">5</IBK:Parameter>
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
 			</Zone>

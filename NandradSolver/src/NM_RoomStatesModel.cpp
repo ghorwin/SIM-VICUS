@@ -69,6 +69,12 @@ void RoomStatesModel::setup(const NANDRAD::Zone & zone, const NANDRAD::Simulatio
 	else {
 		m_results.resize(1);
 
+		// warn if temperature parameter is given in active zone
+		if (!zone.m_para[NANDRAD::Zone::ZP_TEMPERATURE].name.empty())
+			IBK::IBK_Message(IBK::FormatString("Temperature parameter in active zone with id=%1 '%2' "
+											   "ignored. Using global default initial temperature from simulation parameters.")
+							 .arg(zone.m_id).arg(zone.m_displayName), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+
 		// cache initial condition
 		m_results[0] = simPara.m_para[NANDRAD::SimulationParameter::SP_INITIAL_TEMPERATURE].value;
 	}
