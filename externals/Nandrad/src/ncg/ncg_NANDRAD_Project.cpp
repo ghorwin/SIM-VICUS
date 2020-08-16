@@ -102,12 +102,12 @@ void Project::readXMLPrivate(const TiXmlElement * element) {
 			}
 			else if (cName == "ProjectInfo")
 				m_projectInfo.readXML(c);
+			else if (cName == "Location")
+				m_location.readXML(c);
 			else if (cName == "SimulationParameter")
 				m_simulationParameter.readXML(c);
 			else if (cName == "SolverParameter")
 				m_solverParameter.readXML(c);
-			else if (cName == "Location")
-				m_location.readXML(c);
 			else if (cName == "Schedules")
 				m_schedules.readXML(c);
 			else if (cName == "Outputs")
@@ -132,6 +132,12 @@ TiXmlElement * Project::writeXMLPrivate(TiXmlElement * parent) const {
 
 
 	m_projectInfo.writeXML(e);
+
+	m_location.writeXML(e);
+
+	m_simulationParameter.writeXML(e);
+
+	m_solverParameter.writeXML(e);
 
 	if (!m_zones.empty()) {
 		TiXmlElement * child = new TiXmlElement("Zones");
@@ -180,12 +186,6 @@ TiXmlElement * Project::writeXMLPrivate(TiXmlElement * parent) const {
 		}
 	}
 
-
-	m_simulationParameter.writeXML(e);
-
-	m_solverParameter.writeXML(e);
-
-	m_location.writeXML(e);
 
 	m_schedules.writeXML(e);
 

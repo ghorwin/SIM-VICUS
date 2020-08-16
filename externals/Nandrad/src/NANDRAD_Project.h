@@ -99,6 +99,15 @@ public:
 	/*! Contains mapping of directory placeholders and absolute directory paths. */
 	std::map<std::string, IBK::Path>				m_placeholders;
 
+	/*! Location of the building and climate data. */
+	Location										m_location;							// XML:E
+
+	/*! Simulation settings: all global parameters.*/
+	SimulationParameter								m_simulationParameter;				// XML:E
+
+	/*! Solver settings: error tolerances and convergence coefficients*/
+	SolverParameter									m_solverParameter;					// XML:E
+
 	/*! All active and constant thermal zones.*/
 	std::vector<Zone>								m_zones;							// XML:E
 
@@ -110,15 +119,6 @@ public:
 
 	/*! All material types. */
 	std::vector<Material>							m_materials;						// XML:E
-
-	/*! Simulation settings: all global parameters.*/
-	SimulationParameter								m_simulationParameter;				// XML:E
-
-	/*! Solver settings: error tolerances and convergence coefficients*/
-	SolverParameter									m_solverParameter;					// XML:E
-
-	/*! Location of the building and climate data. */
-	Location										m_location;							// XML:E
 
 	/*! References to all schedules.*/
 	Schedules										m_schedules;						// XML:E
