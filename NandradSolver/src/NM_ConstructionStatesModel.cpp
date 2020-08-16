@@ -90,8 +90,8 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 	// *** grid generation
 
 	generateGrid();
-	IBK::IBK_Message(IBK::FormatString("Construction with id=%1 is discretized with %2 elements.\n")
-					 .arg(m_id).arg(m_elements.size()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+	IBK::IBK_Message(IBK::FormatString("Construction is discretized with %1 elements.\n")
+					 .arg(m_elements.size()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 }
 
 
@@ -231,8 +231,16 @@ void ConstructionStatesModel::generateGrid() {
 					grid.generate(n, x, x + dLayer, dxElem, xElem);
 					if (dxElem[0] <= 1.1*minDX) break;
 				} while (n < maxElementsPerLayer); // do not go beyond maximum element count
-				if (n >= maxElementsPerLayer)
-					throw IBK::Exception( IBK::FormatString("Maximum number of element per layer is reached in material layer #%1 (d=%2m).").arg(i+1).arg(dLayer), FUNC_ID);
+				if (n >= maxElementsPerLayer) {
+					Mesh grid2(grid);
+					do {
+						grid2.d *= 1.2;
+						grid2.generate(n, x, x + dLayer, dxElem, xElem);
+					} while (dxElem[0] > 1.1*minDX && n < maxElementsPerLayer*2); // do not go beyond maximum element count
+					IBK::IBK_Message( IBK::FormatString("Maximum number of elements per layer is reached in material "
+														"layer #%1 (d=%2m), stretch factor increased to %3")
+									  .arg(i+1).arg(dLayer).arg(grid2.d), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+				}
 				// insert into into global discretization vector
 				x_vec.insert(x_vec.end(), xElem.begin(), xElem.end() );
 				dx_vec.insert(dx_vec.end(), dxElem.begin(), dxElem.end() );

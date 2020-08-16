@@ -1671,6 +1671,9 @@ void NandradModel::initWallsAndInterfaces() {
 
 			std::unique_ptr<ConstructionStatesModel>	statesModel(new ConstructionStatesModel(ci.m_id, ci.m_displayName));
 
+			IBK::IBK_Message(IBK::FormatString("Initializating construction model (id=%1)\n").arg(ci.m_id),
+							 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+			IBK_MSG_INDENT;
 			// does the entire initialization
 			statesModel->setup(ci, m_project->m_simulationParameter, m_project->m_solverParameter);
 
