@@ -30,6 +30,7 @@ namespace NANDRAD {
 	class ConstructionInstance;
 	class SimulationParameter;
 	class SolverParameter;
+	class Material;
 }
 
 namespace NANDRAD_MODEL {
@@ -140,17 +141,18 @@ private:
 	/*! Element structure, containing data FV-data for a single element (finite-volume). */
 	struct Element {
 		/*! Default constructor. */
-		Element() : i(0)
+		Element() : i(0), mat(nullptr)
 		{
 		}
 
 		/*! Initializing constructor. */
-		Element(unsigned int i_, double x_, double dx_, double wL_, double wR_) :
+		Element(unsigned int i_, double x_, double dx_, double wL_, double wR_, const NANDRAD::Material * mat_) :
 			i(i_),
 			x(x_),
 			dx(dx_),
 			wL(wL_),
-			wR(wR_)
+			wR(wR_),
+			mat(mat_)
 		{
 		}
 
@@ -159,6 +161,7 @@ private:
 		double							dx;		///< Element width [m]
 		double							wL;		///< Weight factor left
 		double							wR;		///< Weight factor right
+		const NANDRAD::Material			*mat;	///< Pointer to material data.
 	};
 
 	/*! Vector containing all discretized elements, size: m_nElements. */
@@ -173,6 +176,24 @@ private:
 	std::vector<size_t>				m_materialLayerElementOffset;
 	/*! Total construction width [m]. */
 	double							m_constructionWidth;
+
+
+	/*! Energy densities in elements [J/m3] */
+	std::vector<double>				m_statesU;
+	/*! Temperatures in elements [T] */
+	std::vector<double>				m_statesT;
+
+	/*! Vector with heat conduction fluxes across elements.
+		Note: vector has size m_elements+1 and does only contain heat conduction fluxes
+			between elements. m_fluxes_q[0] and m_fluxes_q[m_nElements] are unused.
+	*/
+	std::vector<double>				m_fluxes_q;
+
+	/*! Pre-calculated energy storage capacity rho*ce in each element. */
+	std::vector<double>				m_rhoce;
+	/*! Inverse thermal resistance between element centers (size m_nElements + 1). */
+	std::vector<double>				m_rTInv;
+
 };
 
 } // namespace NANDRAD_MODEL

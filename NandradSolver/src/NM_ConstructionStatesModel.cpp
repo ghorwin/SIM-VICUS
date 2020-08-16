@@ -29,6 +29,7 @@
 #include <NANDRAD_ConstructionType.h>
 #include <NANDRAD_SolverParameter.h>
 #include <NANDRAD_SimulationParameter.h>
+#include <NANDRAD_Material.h>
 
 #include "NM_KeywordList.h"
 
@@ -92,6 +93,38 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 	generateGrid();
 	IBK::IBK_Message(IBK::FormatString("Construction is discretized with %1 elements.\n")
 					 .arg(m_elements.size()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+
+	// resize storage members
+	m_statesU.resize(m_nElements);
+	m_statesT.resize(m_nElements);
+
+	m_rhoce.resize(m_nElements);
+
+	m_fluxes_q.resize(m_nElements+1);
+	m_rTInv.resize(m_nElements+1);
+	// precalculate capacities and resistances
+	for (unsigned int i=0; i<m_nElements; ++i) {
+		const Element & E = m_elements[i];
+		// dry bulk density [kg/m3]
+		double rho = E.mat->m_para[NANDRAD::Material::MP_DENSITY].value;
+		// specific heat capacity [J/kgK]
+		double ce = E.mat->m_para[NANDRAD::Material::MP_HEAT_CAPACITY].value;
+		m_rhoce[i] = rho*ce;
+	}
+	// cache thermal resistances/U-values
+	for (unsigned int i=1; i<m_nElements; ++i) {
+		// thermal conductivity for dry material in [W/mK] - left
+		const Element & E_left = m_elements[i-1];
+		const Element & E_right = m_elements[i];
+		double lambda_left = E_left.mat->m_para[NANDRAD::Material::MP_CONDUCTIVITY].value;
+		double lambda_right = E_right.mat->m_para[NANDRAD::Material::MP_CONDUCTIVITY].value;
+		// harmonic average of thermal conductivities is the inverse of the thermal resistance between
+		// the centers of the elements
+		double lambda_mean = 2/(E_left.dx / lambda_left
+									 + E_right.dx / lambda_right); // 1/ (m / W/mK) = 1/m2K/W  = W/m2K -> U-value
+		m_rTInv[i] = lambda_mean;
+	}
+	// Note: m_rTInv[0] and m_rTInv[m_nElements] are not used and remain uninitialized.
 }
 
 
@@ -114,11 +147,86 @@ void ConstructionStatesModel::yInitial(double * y) const {
 
 }
 
+// helper define to get raw pointers from vector storage members
+#define DOUBLE_PTR(x) &x[0]
 
 int ConstructionStatesModel::update(const double * y) {
+	// here we compute all temperatures from conserved quantities (i.e. energy densities) and
+	// also compute all thermal fluxes across elements
 
+	if (!m_moistureBalanceEnabled) {
+
+		/// \todo switch between different loop kernels when PCM materials are in the construction
+
+		// decomposition algorithm for thermal balances only
+		// this is a speeded up version for thermal-only calculations
+		// does decomposition and internal flux calculation in one
+
+		double * states_u = DOUBLE_PTR(m_statesU);
+		double * states_T = DOUBLE_PTR(m_statesT);
+
+		double * vec_q = DOUBLE_PTR(m_fluxes_q);
+
+		double * rhoce = DOUBLE_PTR(m_rhoce);
+		double * rT_inv = DOUBLE_PTR(m_rTInv);
+
+		double u, T, T_last;
+
+		*states_u = u = *y;
+		// temperature in [K]
+		*states_T = T_last = u / (*rhoce);
+
+		double * states_uLast = states_u + m_nElements;
+
+		// fast loop kernel for constructions without PCM materials
+		// this loop kernel is much much faster (fits into CPU cache) than a more
+		// general case with if-clauses for each element as in the defined-out block below
+		while(++states_u != states_uLast) {
+			*states_u = u = *(++y);
+
+			// temperature in [K]
+			*(++states_T) = T = u / (*(++rhoce));
+
+			// compute heat conduction flux across element centers
+			*(++vec_q) = *(++rT_inv) * (T_last-T);
+
+			// update last element's values
+			T_last = T;
+		}
+	}
+
+#if 0
+	// the code below is the slow "very easy to read" code and only kept for documentation purposes
+	for (unsigned int i=0; i<m_nElements; ++i) {
+		const Element & E = m_elements[i];
+		// dry bulk density [kg/m3]
+		double rho = E.mat->m_para[NANDRAD::Material::MP_DENSITY].value;
+		// specific heat capacity [J/kgK]
+		double ce = E.mat->m_para[NANDRAD::Material::MP_HEAT_CAPACITY].value;
+
+		// *** thermal transport ***
+		if (!m_moistureBalanceEnabled) {
+			// *** primary state variable (extensive quantity) ***
+			double u = y[i];
+			// energy density [J/m3]
+			m_statesU[i]		= u;
+			// temperature in [K]
+			m_statesT[i]		= u / (rho*ce);
+			// thermal conductivity for dry material in [W/mK]
+			m_statesLambda[i]	= E.mat->m_para[NANDRAD::Material::MP_CONDUCTIVITY].value;
+		}
+
+		// *** hygrothermal transport ***
+		else {
+			/// \todo hygrothermal
+		}
+	}
+#endif
+	return 0; // signal success
 }
 
+
+// *** private member functions
 
 void ConstructionStatesModel::generateGrid() {
 	FUNCID(ConstructionStatesModel::generateGrid);
@@ -139,6 +247,8 @@ void ConstructionStatesModel::generateGrid() {
 	std::vector<double> dx_vec;
 	// vector containing all element midpoints
 	std::vector<double> x_vec;
+	// vector containing all element-specific material pointers
+	std::vector<const NANDRAD::Material *> mat_vec;
 	// layer width
 	double dLayer;
 	// current total material width
@@ -165,11 +275,14 @@ void ConstructionStatesModel::generateGrid() {
 				dx_vec.push_back(dLayer/2);
 				x_vec.push_back(x + dLayer/4);
 				x_vec.push_back(x + dLayer*3.0/4);
+				mat_vec.push_back(conType->m_materialLayers[i].m_material);
+				mat_vec.push_back(conType->m_materialLayers[i].m_material);
 			}
 			else {
 				// internal material layers are used as elements directly
 				dx_vec.push_back(dLayer);
 				x_vec.push_back(x + dLayer/2);
+				mat_vec.push_back(conType->m_materialLayers[i].m_material);
 			}
 			// update current material width
 			x += dLayer;
@@ -200,6 +313,7 @@ void ConstructionStatesModel::generateGrid() {
 				for (unsigned int e=0; e<n_x; ++e){
 					dx_vec.push_back(dx_new);
 					x_vec.push_back(x + dx_new/2);
+					mat_vec.push_back(conType->m_materialLayers[i].m_material);
 					x += dx_new;
 				}
 			}
@@ -244,6 +358,9 @@ void ConstructionStatesModel::generateGrid() {
 				// insert into into global discretization vector
 				x_vec.insert(x_vec.end(), xElem.begin(), xElem.end() );
 				dx_vec.insert(dx_vec.end(), dxElem.begin(), dxElem.end() );
+				// append material pointers
+				for (unsigned int j=0; j<n; ++j)
+					mat_vec.push_back(conType->m_materialLayers[i].m_material);
 				x += dLayer;
 			}
 		}
@@ -251,6 +368,7 @@ void ConstructionStatesModel::generateGrid() {
 
 	// total number of discretized elements
 	m_nElements = dx_vec.size();
+	IBK_ASSERT(mat_vec.size() == m_nElements);
 	// total number of unkowns
 	if (m_moistureBalanceEnabled)
 		m_n = m_nElements*2;
@@ -261,7 +379,7 @@ void ConstructionStatesModel::generateGrid() {
 
 	m_materialLayerElementOffset.push_back(m_nElements);
 
-	// compute weight factors for coefficient averaging
+	// compute weight factors for coefficient averaging and store material pointer
 	for (unsigned int i=0; i<m_nElements; ++i) {
 		double wL, wR;
 		// left weight factors
@@ -279,9 +397,13 @@ void ConstructionStatesModel::generateGrid() {
 			// internal elements
 			wR = dx_vec[i]/(dx_vec[i] + dx_vec[i+1]);
 		// add to element vector
-		m_elements.push_back(Element(i, x_vec[i], dx_vec[i], wL, wR));
+		m_elements.push_back(Element(i, x_vec[i], dx_vec[i], wL, wR, mat_vec[i]));
 	}
 }
+
+
+
+
 
 
 // Mesh implementation
