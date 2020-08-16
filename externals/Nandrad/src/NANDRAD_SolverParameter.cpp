@@ -45,7 +45,7 @@ void SolverParameter::initDefaults() {
 	m_para[SP_MAX_ORDER].set( KeywordList::Keyword("SolverParameter::para_t", SP_MAX_ORDER),							   5, IBK::Unit("---"));
 	m_para[SP_MAX_KRYLOV_DIM].set( KeywordList::Keyword("SolverParameter::para_t", SP_MAX_KRYLOV_DIM),					 50, IBK::Unit("---"));
 	m_para[SP_DISCRETIZATION_MIN_DX].set( KeywordList::Keyword("SolverParameter::para_t", SP_DISCRETIZATION_MIN_DX),	   2, IBK::Unit("mm"));
-	m_para[SP_DISCRETIZATION_DETAIL].set( KeywordList::Keyword("SolverParameter::para_t", SP_DISCRETIZATION_DETAIL),	   2, IBK::Unit("---"));
+	m_para[SP_DISCRETIZATION_STRECH_FACTOR].set( KeywordList::Keyword("SolverParameter::para_t", SP_DISCRETIZATION_STRECH_FACTOR),	   2, IBK::Unit("---"));
 	m_para[SP_VIEW_FACTOR_TILE_WIDTH].set( KeywordList::Keyword("SolverParameter::para_t", SP_VIEW_FACTOR_TILE_WIDTH),	   50, IBK::Unit("cm"));
 	m_para[SP_SURFACE_DISCRETIZATION_DENSITY].set( KeywordList::Keyword("SolverParameter::para_t", SP_SURFACE_DISCRETIZATION_DENSITY),	   1, IBK::Unit("---"));
 	m_para[SP_CONTROL_TEMPERATURE_TOLERANCE].set(KeywordList::Keyword("SolverParameter::para_t", SP_CONTROL_TEMPERATURE_TOLERANCE), 0.00001, IBK::Unit("K"));

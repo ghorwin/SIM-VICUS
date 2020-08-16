@@ -333,7 +333,7 @@ namespace NANDRAD {
 				case 11 : return "PreBandWidth";
 				case 12 : return "PreILUWidth";
 				case 13 : return "DiscMinDx";
-				case 14 : return "DiscDetailLevel";
+				case 14 : return "DiscStretchFactor";
 				case 15 : return "ViewfactorTileWidth";
 				case 16 : return "SurfaceDiscretizationDensity";
 				case 17 : return "ControlTemperatureTolerance";
@@ -641,7 +641,7 @@ namespace NANDRAD {
 				case 11 : return "PreBandWidth";
 				case 12 : return "PreILUWidth";
 				case 13 : return "DiscMinDx";
-				case 14 : return "DiscDetailLevel";
+				case 14 : return "DiscStretchFactor";
 				case 15 : return "ViewfactorTileWidth";
 				case 16 : return "SurfaceDiscretizationDensity";
 				case 17 : return "ControlTemperatureTolerance";
@@ -950,7 +950,7 @@ namespace NANDRAD {
 				case 11 : return "Maximum band width to be used for banded preconditioner.";
 				case 12 : return "Maximum level of fill-in to be used for ILU preconditioner.";
 				case 13 : return "Minimum element width for wall discretization.";
-				case 14 : return "Level of detail for wall discretization.";
+				case 14 : return "Stretch factor for variable wall discretizations (0-no disc, 1-equidistance, larger than 1 - variable).";
 				case 15 : return "Maximum dimension of a tile for calculation of view factors.";
 				case 16 : return "Number of surface discretization elements of a wall in each direction.";
 				case 17 : return "Temperature tolerance for ideal heating or cooling.";
@@ -1000,9 +1000,9 @@ namespace NANDRAD {
 			// Zone::para_t
 			case 38 :
 			switch (t) {
-				case 0 : return "Temperature of the zone if set constant, or initial temperature for active zones [C].";
-				case 1 : return "Relative humidity of the zone if set constant, or initial humidity for active zones [%].";
-				case 2 : return "CO2 concentration of the zone if set constant, or initial concentration for active zones [g/m3].";
+				case 0 : return "Temperature of the zone if set constant [C].";
+				case 1 : return "Relative humidity of the zone if set constant [%].";
+				case 2 : return "CO2 concentration of the zone if set constant [g/m3].";
 				case 3 : return "Net usage area of the ground floor [m2] (for area-related outputs and loads).";
 				case 4 : return "Zone air volume [m3].";
 				case 5 : return "Extra heat capacity [J/K].";
