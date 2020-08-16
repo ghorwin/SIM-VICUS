@@ -23,6 +23,8 @@
 
 #include <algorithm>
 
+#include <IBK_messages.h>
+
 #include <NANDRAD_ConstructionInstance.h>
 #include <NANDRAD_ConstructionType.h>
 #include <NANDRAD_SolverParameter.h>
@@ -46,7 +48,7 @@ public:
 	};
 
 	/*! Constructor, used to define a mesh type and its properties. */
-	Mesh(const MeshType type, const double density = 1, const double ratio=1);
+	Mesh(const MeshType type, const double stretch = 1, const double ratio=1);
 
 	/*! Populates the vector ds_vec with normalized element width based on the current
 		mesh settings. The sum in vector ds_vec will be always 1. If a single-sided
@@ -62,7 +64,7 @@ public:
 		\sa MeshType. */
 	MeshType t;
 
-	/*! Mesh density. */
+	/*! Mesh stretch factor/density (larger values - coarser grid). */
 	double d;
 
 	/*! Ratio between boundary element widths dx_0 / dx_{n-1}. */
@@ -74,6 +76,8 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 									const NANDRAD::SimulationParameter & simPara,
 									const NANDRAD::SolverParameter & solverPara)
 {
+	FUNCID(ConstructionStatesModel::setup);
+
 	// cache pointers to input data structures
 	m_con = &con;
 	m_simPara = &simPara;
@@ -86,6 +90,8 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 	// *** grid generation
 
 	generateGrid();
+	IBK::IBK_Message(IBK::FormatString("Construction with id=%1 is discretized with %2 elements.\n")
+					 .arg(m_id).arg(m_elements.size()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 }
 
 
@@ -139,14 +145,14 @@ void ConstructionStatesModel::generateGrid() {
 	double x = 0;
 
 	// retrieve parameters regulating grid generation
-	double density = m_solverPara->m_para[NANDRAD::SolverParameter::SP_DISCRETIZATION_DETAIL].value;
+	double stretch = m_solverPara->m_para[NANDRAD::SolverParameter::SP_DISCRETIZATION_STRECH_FACTOR].value;
 	double minDX = m_solverPara->m_para[NANDRAD::SolverParameter::SP_DISCRETIZATION_MIN_DX].value;
 	unsigned int maxElementsPerLayer = 10;
 
 	// case: density is set to 0
 	// internal layers are used as elements directly
 	// boundary layers are split into 2 elements
-	if (density == 0.0) {
+	if (stretch == 0.0) {
 		// loop over all material layers
 		for (unsigned int i=0; i<nLayers; ++i) {
 			// update element offset
@@ -173,7 +179,7 @@ void ConstructionStatesModel::generateGrid() {
 	// Case: m_density == 1, attempt equidistant discretization with approximately
 	// element width as set by DiscMinDx parameter
 	else {
-		if (density == 1.0) {
+		if (stretch == 1.0) {
 			// loop over all material layers
 			for (unsigned int i=0; i<nLayers; ++i) {
 				// update element offset
@@ -200,7 +206,7 @@ void ConstructionStatesModel::generateGrid() {
 		}
 		// all other cases: use stretching function to get variable discretization grid
 		else {
-			Mesh grid(Mesh::TanHDouble, density); // double-sided grid
+			Mesh grid(Mesh::TanHDouble, stretch); // double-sided grid
 
 			// determine required min dx by enforcing at least 3 elements per layer
 			double rmin_dx = 1;
@@ -272,8 +278,8 @@ void ConstructionStatesModel::generateGrid() {
 
 // Mesh implementation
 
-Mesh::Mesh(MeshType type, double density, double ratio)
-	: t(type), d(density), r(ratio)
+Mesh::Mesh(MeshType type, double stretch, double ratio)
+	: t(type), d(stretch), r(ratio)
 {
 }
 

@@ -816,7 +816,7 @@ void NandradModel::initSolverParameter(const NANDRAD::ArgsParser & args) {
 	if (minDx.value <= 1e-10)
 		throw IBK::Exception("Invalid parameter for DiscMinDx in SolverParameter settings, should be > 1e-10 m.", FUNC_ID);
 
-	const IBK::Parameter & density = solverParameter.m_para[NANDRAD::SolverParameter::SP_DISCRETIZATION_DETAIL];
+	const IBK::Parameter & density = solverParameter.m_para[NANDRAD::SolverParameter::SP_DISCRETIZATION_STRECH_FACTOR];
 	if (density.value < 1 && density.value != 0.0)
 		throw IBK::Exception("Invalid parameter for DiscDetailLevel in SolverParameter settings (grid density must be == 0 or >= 1).", FUNC_ID);
 
@@ -1643,7 +1643,7 @@ void NandradModel::initWallsAndInterfaces() {
 	// - check for valid parameters
 	// - check for valid material references (and update these material refs)
 
-	for (unsigned int i=0; m_project->m_constructionTypes.size(); ++i) {
+	for (unsigned int i=0; i<m_project->m_constructionTypes.size(); ++i) {
 		NANDRAD::ConstructionType & ct = m_project->m_constructionTypes[i];
 		try {
 			ct.checkParameters(m_project->m_materials);
@@ -1657,7 +1657,7 @@ void NandradModel::initWallsAndInterfaces() {
 	// - check if they are connected to at least one room - otherwise
 	// - check that the referenced construction type exists and create quick-access reference to construction instance
 
-	for (unsigned int i=0; m_project->m_constructionInstances.size(); ++i) {
+	for (unsigned int i=0; i<m_project->m_constructionInstances.size(); ++i) {
 		NANDRAD::ConstructionInstance & ci = m_project->m_constructionInstances[i];
 		try {
 			ci.checkParameters(m_project->m_constructionTypes);
