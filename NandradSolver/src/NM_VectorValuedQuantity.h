@@ -39,6 +39,8 @@ namespace NANDRAD_MODEL {
 */
 class VectorValuedQuantity {
 public:
+	/*! Default C'tor, only to allow this class to be used in std::vector. */
+	VectorValuedQuantity() {}
 
 	/*! Constructor, creates a vector with 'n' elements, optional default value and keyType = IK_Index.
 		Index key vector is populated with index values increasing from 0 to n-1.

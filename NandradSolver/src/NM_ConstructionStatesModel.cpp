@@ -86,6 +86,7 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 
 	// we initialize only those variables needed for state calculation:
 	// - grid and grid-element to layer association
+	// - precalculate variables needed for decomposition and flux calculation
 	// - initial conditions/states
 
 	// *** grid generation
@@ -93,6 +94,9 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 	generateGrid();
 	IBK::IBK_Message(IBK::FormatString("Construction is discretized with %1 elements.\n")
 					 .arg(m_elements.size()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+
+
+	// *** storage member initialization
 
 	// resize storage members
 	m_statesU.resize(m_nElements);
@@ -125,27 +129,102 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 		m_rTInv[i] = lambda_mean;
 	}
 	// Note: m_rTInv[0] and m_rTInv[m_nElements] are not used and remain uninitialized.
+
+
+	// *** now resize the memory cache for results
+
+	unsigned int skalarResultCount = 2;
+	if (m_moistureBalanceEnabled) {
+		/// \todo hygrothermal code
+	}
+	m_results.resize(skalarResultCount);
+	m_vectorValuedResults.resize(1);
+	m_vectorValuedResults[0] = VectorValuedQuantity(con.m_constructionType->m_materialLayers.size(), 0);
 }
 
 
 void ConstructionStatesModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
+	int skalarResultCount = 2;
+	if (m_moistureBalanceEnabled) {
+		/// \todo hygrothermal implementation
+//		varCount = 2; // more variables for hygrothermal calculation
+	}
 
+	for (int i=0; i<skalarResultCount; ++i) {
+		QuantityDescription result;
+		result.m_constant = true;
+		result.m_description = NANDRAD_MODEL::KeywordList::Description("ConstructionStatesModel::Results", i);
+		result.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::Results", i);
+		result.m_unit = NANDRAD_MODEL::KeywordList::Unit("ConstructionStatesModel::Results", i);
+
+		resDesc.push_back(result);
+	}
+
+	// add vector valued quantities
+	QuantityDescription res;
+	res.m_constant = true;
+	res.m_description = NANDRAD_MODEL::KeywordList::Description("ConstructionStatesModel::VectorValuedResults", VVR_LayerTemperature);
+	res.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::VectorValuedResults", VVR_LayerTemperature);
+	res.m_unit = NANDRAD_MODEL::KeywordList::Unit("ConstructionStatesModel::VectorValuedResults", VVR_LayerTemperature);
+	// this is a vector-valued quantity with as many elements as material layers
+	// and the temperatures returned are actually mean temperatures of the individual elements of the material layer
+	res.resize(m_con->m_constructionType->m_materialLayers.size());
+	resDesc.push_back(res);
 }
 
 
 void ConstructionStatesModel::resultValueRefs(std::vector<const double *> & res) const {
+	for (const double & r : m_results)
+		res.push_back(&r);
 
+	for (const VectorValuedQuantity & r : m_vectorValuedResults) {
+		res.push_back(&r.data()[0]);
+	}
 }
 
-const double * ConstructionStatesModel::resultValueRef(const QuantityName & quantityName) const {
-	return nullptr;
 
+const double * ConstructionStatesModel::resultValueRef(const QuantityName & quantityName) const {
+	// search inside keyword list result quantities
+	// Note: index in m_results corresponds to enumeration values in enum 'Results'
+	const char * const category = "ConstructionStatesModel::Results";
+
+	if (KeywordList::KeywordExists(category, quantityName.m_name)) {
+		int resIdx = KeywordList::Enumeration(category, quantityName.m_name);
+		return &m_results[(unsigned int)resIdx];
+	}
+
+	// search for vector-valued results and also check for valid indexes
+	// a vector valued result
+	const char * const categoryVectors = "ConstructionStatesModel::VectorValuedResults";
+
+	if (KeywordList::KeywordExists(categoryVectors, quantityName.m_name)) {
+		unsigned int resIdx = (unsigned int)KeywordList::Enumeration(categoryVectors, quantityName.m_name);
+		const VectorValuedQuantity & vecResults  = m_vectorValuedResults[resIdx]; // reading improvement
+		// no index is given (requesting entire vector?)
+		if (quantityName.m_index == -1) {
+			// return access to the first vector element
+			return &vecResults.data()[0];
+		}
+		// index definition
+		else {
+			return &vecResults[(size_t)quantityName.m_index];
+		}
+		// Note: function may throw an IBK::Exception if the requested index is out of range
+	}
+
+	return nullptr; // quantity not found
 }
 
 
 void ConstructionStatesModel::yInitial(double * y) const {
-
+	// retrieve initial temperature, which has already been checked for valid values
+	double T_initial = m_simPara->m_para[NANDRAD::SimulationParameter::SP_INITIAL_TEMPERATURE].value;
+	for (unsigned i=0; i<m_nElements; ++i) {
+		// energy density
+		y[i] = m_rhoce[i]*T_initial;
+	}
 }
+
 
 // helper define to get raw pointers from vector storage members
 #define DOUBLE_PTR(x) &x[0]
@@ -193,6 +272,21 @@ int ConstructionStatesModel::update(const double * y) {
 			// update last element's values
 			T_last = T;
 		}
+	}
+
+	// compute surface temperatures
+
+	// Special treatment: constant interpolation for only two elements, i.e. single-layer constructions
+	// without discretization
+	if (m_elements.size() == 2) {
+		m_TsA = m_TsB = m_statesT[0];
+	}
+	else {
+
+		// linear extrapolation of temperature
+		m_TsA = (1.0 + m_elements[0].wR) * m_statesT[0] - m_elements[0].wR * m_statesT[1];
+		m_TsB = (1.0 + m_elements[m_nElements-1].wL) * m_statesT[m_nElements-1]
+				- m_elements[m_nElements-1].wL * m_statesT[m_nElements-2];
 	}
 
 #if 0

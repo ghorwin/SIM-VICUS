@@ -2237,7 +2237,7 @@ void NandradModel::initOutputReferenceList() {
 
 
 void NandradModel::initSolverVariables() {
-	FUNCID(NandradModelImpl::initSolverVariables);
+//	FUNCID(NandradModelImpl::initSolverVariables);
 
 	// In this function the number of conserved variables is calculated (summing up states in zones and constructions)
 	// and linear memory arrays for y, y0 and ydot are created.

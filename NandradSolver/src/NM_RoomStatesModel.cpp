@@ -106,7 +106,7 @@ const double * RoomStatesModel::resultValueRef(const QuantityName & quantityName
 	// Note: index in m_results corresponds to enumeration values in enum 'Results'
 	const char * const category = "RoomStatesModel::Results";
 
-	if (KeywordList::CategoryExists(category) && KeywordList::KeywordExists(category, quantityName.m_name)) {
+	if (KeywordList::KeywordExists(category, quantityName.m_name)) {
 		int resIdx = KeywordList::Enumeration(category, quantityName.m_name);
 		return &m_results[(unsigned int)resIdx];
 	}

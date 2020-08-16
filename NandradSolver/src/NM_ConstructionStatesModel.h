@@ -46,13 +46,15 @@ class ConstructionStatesModel : public AbstractModel {
 public:
 
 	enum VectorValuedResults {
-		VVR_LayerTemperature			// Keyword: LayerTemperature		[C]		'Mean layer temperature for requested quanties.'
+		VVR_LayerTemperature,			// Keyword: LayerTemperature		[C]		'Mean layer temperature for requested quanties.'
+		NUM_VVR
 	};
 
 	/// \todo maybe add integral quantities like total moisture mass stored in construction or total energy stored in construction
 	enum Results {
 		R_SurfaceTemperatureA,			// Keyword: SurfaceTemperatureA		[C]		'Surface temperature at interface A.'
-		R_SurfaceTemperatureB			// Keyword: SurfaceTemperatureB		[C]		'Surface temperature at interface B.'
+		R_SurfaceTemperatureB,			// Keyword: SurfaceTemperatureB		[C]		'Surface temperature at interface B.'
+		NUM_R
 	};
 
 	/*! Constructor */
@@ -177,22 +179,26 @@ private:
 	/*! Total construction width [m]. */
 	double							m_constructionWidth;
 
-
 	/*! Energy densities in elements [J/m3] */
 	std::vector<double>				m_statesU;
-	/*! Temperatures in elements [T] */
+	/*! Temperatures in elements [K] */
 	std::vector<double>				m_statesT;
 
-	/*! Vector with heat conduction fluxes across elements.
+	/*! Vector with heat conduction fluxes [W/m2] across elements.
 		Note: vector has size m_elements+1 and does only contain heat conduction fluxes
 			between elements. m_fluxes_q[0] and m_fluxes_q[m_nElements] are unused.
 	*/
 	std::vector<double>				m_fluxes_q;
 
-	/*! Pre-calculated energy storage capacity rho*ce in each element. */
+	/*! Pre-calculated energy storage capacity rho*ce in each element [J/K]. */
 	std::vector<double>				m_rhoce;
-	/*! Inverse thermal resistance between element centers (size m_nElements + 1). */
+	/*! Inverse thermal resistance between element centers (size m_nElements + 1) [W/m2K]. */
 	std::vector<double>				m_rTInv;
+
+	/*! Surface temperature at left side (side A) [K]. */
+	double							m_TsA;
+	/*! Surface temperature at right side (side B) [K]. */
+	double							m_TsB;
 
 };
 
