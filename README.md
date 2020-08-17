@@ -151,7 +151,7 @@ Use valgrind to check for memory leaks in regular intervals:
 First run only initialization with `--test-init` flag.
 
 ```bash
-> valgrind valgrind --track-origins=yes --leak-check=full ./NandradSolver /path/to/project --test-init
+> valgrind --track-origins=yes --leak-check=full ./NandradSolver /path/to/project --test-init
 ```
 
 You should get an output like:
