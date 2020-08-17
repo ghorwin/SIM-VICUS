@@ -216,6 +216,13 @@ const double * ConstructionStatesModel::resultValueRef(const QuantityName & quan
 }
 
 
+unsigned int ConstructionStatesModel::nPrimaryStateResults() const {
+	// for now we have only thermal implementation, so number of elements is also
+	// the number of unknowns (i.e. energy densities in finite-volumes)
+	return m_nElements;
+}
+
+
 void ConstructionStatesModel::yInitial(double * y) const {
 	// retrieve initial temperature, which has already been checked for valid values
 	double T_initial = m_simPara->m_para[NANDRAD::SimulationParameter::SP_INITIAL_TEMPERATURE].value;

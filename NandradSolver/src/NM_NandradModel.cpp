@@ -1669,6 +1669,8 @@ void NandradModel::initWallsAndInterfaces() {
 			///       but beware, this is tricky! Maybe it is best to keep the construction but later flag it as "unused"
 			///       and simply skip over it during calculation.
 
+			// *** construction states model ***
+
 			std::unique_ptr<ConstructionStatesModel>	statesModel(new ConstructionStatesModel(ci.m_id, ci.m_displayName));
 
 			IBK::IBK_Message(IBK::FormatString("Initializating construction model (id=%1)\n").arg(ci.m_id),
@@ -1677,14 +1679,20 @@ void NandradModel::initWallsAndInterfaces() {
 			// does the entire initialization
 			statesModel->setup(ci, m_project->m_simulationParameter, m_project->m_solverParameter);
 
+			// remember "head" model in states container
+			m_constructionStatesModelContainer.push_back(statesModel.get());
+			m_modelContainer.push_back(statesModel.release()); // transfer ownership
+
+
+			// *** construction balance model ***
+
 			// now also initialize balance model - hereby re-using data from states model
 			std::unique_ptr<ConstructionBalanceModel>	balanceModel(new ConstructionBalanceModel(ci.m_id, ci.m_displayName));
 
 			// does the entire initialization
 			balanceModel->setup(ci, m_project->m_simulationParameter, statesModel.get());
 
-
-			// remember "head" model in states container
+			// remember "footer" model in balance container
 			m_constructionBalanceModelContainer.push_back(balanceModel.get());
 			m_modelContainer.push_back(balanceModel.release()); // transfer ownership
 		}
@@ -1693,6 +1701,8 @@ void NandradModel::initWallsAndInterfaces() {
 		}
 
 	}
+	m_nWalls = (unsigned int) m_constructionBalanceModelContainer.size();
+	IBK::IBK_Message( IBK::FormatString("%1 construction models.\n").arg(m_nZones), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 
 }
 
@@ -2252,6 +2262,7 @@ void NandradModel::initSolverVariables() {
 
 	// *** count number of unknowns in zones and initialize zone offsets ***
 
+	// all zones have the same number of unknowns
 	unsigned int numVarsPerZone = 1;
 	if (m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled())
 		numVarsPerZone = 2;
@@ -2262,18 +2273,26 @@ void NandradModel::initSolverVariables() {
 	for (unsigned int i=0; i<m_nZones; ++i)
 		m_zoneVariableOffset[i] = i*numVarsPerZone;
 
-#if 0
 	// *** count number of unknowns in walls and initialize wall offsets ***
 
-	// m_n counts the number of unknowns. We start with 1 for the room balance.
+	// m_n counts the number of unknowns
+	m_constructionVariableOffset.resize(m_nWalls);
 	for (unsigned int i=0; i<m_nWalls; ++i) {
-		// calculate position inside y-vector
-		m_wallVariableOffset[i] = m_n;
-		unsigned int n_elements = m_wallSolverModelContainer[i]->nPrimaryStateResults();
-		m_n += n_elements;
+		// store starting position inside y-vector
+		m_constructionVariableOffset[i] = m_n;
+		// number of unknowns/state variabes
+		unsigned int nUnknowns = m_constructionStatesModelContainer[i]->nPrimaryStateResults();
+		m_n += nUnknowns;
 	}
 
-	// *** set weighting factor
+	// *** set weighting factor ***
+
+	// Problem: there are many more construction elements/states than room states. When computing
+	//          WRMS-norms we sum up errors in all variables, and divide by total number (to get the mean square norm).
+	//          This, however, causes errors in room zones (i.e. temperature oscillations) to pass by undetected, since
+	//          their errors are just swamped by the chear mass of construction states.
+	//          Hence, we artifically increase the weight of zone balances by adding a weight factor for each
+	//          zone state that compensates this effect.
 	if(m_nWalls > 0) {
 		// calculate mean number of diecrtization elements for each wall
 		//m_weightsFactorZones =(double) (m_n - m_nZones)/ (double) m_nWalls;
@@ -2282,6 +2301,7 @@ void NandradModel::initSolverVariables() {
 		IBK_ASSERT(m_weightsFactorZones >= 1.0);
 	}
 
+#if 0
 	// *** count number of unknowns in explicit models and initialize corresponding offsets ***
 
 	if (!m_ODEStatesAndBalanceModelContainer.empty()) {
@@ -2306,12 +2326,12 @@ void NandradModel::initSolverVariables() {
 		m_roomStatesModelContainer[i]->yInitial(&m_y0[ m_zoneVariableOffset[i] ]);
 	}
 
-#if 0
-	// energy density of the walls
+	// energy density of the constructions
 	for (unsigned int i=0; i<m_nWalls; ++i) {
-		m_wallSolverModelContainer[i]->yInitial(&y0tmp[0] + m_wallVariableOffset[i]);
+		m_constructionStatesModelContainer[i]->yInitial(&m_y0[0] + m_constructionVariableOffset[i]);
 	}
 
+#if 0
 	// explicit models
 	for (unsigned int i = 0; i<m_ODEStatesAndBalanceModelContainer.size(); ++i) {
 		AbstractODEBalanceModel *balanceModel = m_ODEStatesAndBalanceModelContainer[i].second;
