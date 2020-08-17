@@ -97,8 +97,8 @@ void SolverFeedback::writeFeedback(double t, bool betweenOutputs) {
 	// write console output
 
 	// only write if at least half a second has passed
-//	if (elapsedSecondsThisStep < 0.5)
-//		return;
+	if (elapsedSecondsThisStep < 0.5)
+		return;
 
 	std::stringstream strm;
 	if (--m_outputCounter % 20 == 0) {
@@ -114,12 +114,12 @@ void SolverFeedback::writeFeedback(double t, bool betweenOutputs) {
 			<< std::setw(11) << std::left << IBK::Time::format_time_difference(elapsedSeconds) << " "
 			<< std::setw(12) << std::left << (IBK::Time::format_time_difference(averageSpeed)+"/s") << " "
 			<< std::setw(12) << std::left << (IBK::Time::format_time_difference(slidingAverageSpeed)+"/s") << " "
-			<< ((m_ETC == -1) ? std::string("---") : IBK::Time::format_time_difference(m_ETC))
+			<< ((m_ETC == -1.0) ? std::string("---") : IBK::Time::format_time_difference(m_ETC))
 			<< (betweenOutputs ? " *" : "") << "\n";
 	IBK::IBK_Message( strm.str(), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
 	// write progress log
-	if (m_progressLog != nullptr && !betweenOutputs && elapsedSimTime != 0) {
+	if (m_progressLog != nullptr && !betweenOutputs && elapsedSimTime != 0.0) {
 		*m_progressLog << std::setprecision(14) << std::setw(15) << std::right << t << '\t'
 					   << std::setprecision(7) << std::setw(15) << std::right << elapsedSeconds << '\t'
 					   << std::setprecision(5) << std::setw(15) << std::right << t*100/m_progressTEnd << std::endl;
