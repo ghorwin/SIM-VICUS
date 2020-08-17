@@ -315,8 +315,6 @@ private:
 	double													m_t;
 	/*! Factor for the error weights for all zones, 1 per default. */
 	double													m_weightsFactorZones;
-	/*! Factor for the error weights for all outputs, 1 per default. */
-	double													m_weightsFactorOutputs;
 	/*! Flag that indicates the m_y has changed.
 		This flag is queried in ydot() to determine if
 		a re-calculation is necessary.

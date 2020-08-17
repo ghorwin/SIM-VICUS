@@ -342,7 +342,7 @@ void OutputHandler::writeOutputs(double t_out, double t_secondsOfYear) {
 		if (m_restart)
 			IBK::IBK_Message("Re-opening output files:\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		else
-			IBK::IBK_Message("Creating output files:\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
+			IBK::IBK_Message("Creating output files:\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		IBK_MSG_INDENT;
 
 		// compose time header and convert output time to output unit

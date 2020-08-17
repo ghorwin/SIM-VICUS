@@ -138,7 +138,7 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 			m_solarRadiationModel.m_climateDataLoader.m_longitudeInDegree = longInDeg;
 		}
 
-		// albeda
+		// albedo
 		const IBK::Parameter &albedo = location.m_para[NANDRAD::Location::LP_ALBEDO];
 		if (albedo.name.empty())
 			throw IBK::Exception(IBK::FormatString("Error initializing climate data: Missing parameter 'Albedo'."), FUNC_ID);
@@ -208,6 +208,8 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 				throw IBK::Exception(IBK::FormatString("Missing Parameter 'Inclination' of sensor with id #%1!")
 					.arg(sensor.m_id), FUNC_ID);
 			double inclination = sensor.m_inclination.value;
+
+			/// \todo check value ranges
 
 			// register sensor surface with solar radiation model
 			unsigned int surfaceID = m_solarRadiationModel.addSurface(orientation, inclination);

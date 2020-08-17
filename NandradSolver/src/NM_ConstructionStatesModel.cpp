@@ -219,9 +219,14 @@ const double * ConstructionStatesModel::resultValueRef(const QuantityName & quan
 
 
 unsigned int ConstructionStatesModel::nPrimaryStateResults() const {
-	// for now we have only thermal implementation, so number of elements is also
-	// the number of unknowns (i.e. energy densities in finite-volumes)
-	return m_nElements;
+	if (!m_moistureBalanceEnabled) {
+		// *** thermal transport ***
+		return m_nElements;
+	}
+	// *** hygrothermal transport ***
+	else {
+		return m_nElements*2;
+	}
 }
 
 
@@ -282,13 +287,18 @@ int ConstructionStatesModel::update(const double * y) {
 			T_last = T;
 		}
 	}
+	// *** hygrothermal transport ***
+	else {
+		/// \todo hygrothermal
+	}
 
 	// compute surface temperatures
 
 	// Special treatment: constant interpolation for only two elements, i.e. single-layer constructions
 	// without discretization
 	if (m_elements.size() == 2) {
-		m_TsA = m_TsB = m_statesT[0];
+		m_TsA = m_statesT[0];
+		m_TsB = m_statesT[1];
 	}
 	else {
 

@@ -42,12 +42,15 @@ void RoomStatesModel::setup(const NANDRAD::Zone & zone, const NANDRAD::Simulatio
 	m_simPara	= &simPara;
 
 	// check for required parameters
+
+	// m_volume = checkParameter(zone.m_para[NANDRAD::Zone::ZP_VOLUME], "m3", 0, false, std::numeric_limits<double>::max(), false);
+
 	if (zone.m_para[NANDRAD::Zone::ZP_VOLUME].name.empty())
 		throw IBK::Exception(IBK::FormatString("Missing parameter 'Volume' in zone #%1 '%2'")
 							 .arg(zone.m_id).arg(zone.m_displayName), FUNC_ID);
 
 	// check for valid parameters
-	m_volume = zone.m_para[NANDRAD::Zone::ZP_VOLUME].value;
+	m_volume = zone.m_para[NANDRAD::Zone::ZP_VOLUME].get_value("m");
 	if (m_volume <= 0)
 		throw IBK::Exception(IBK::FormatString("'Volume' in zone #%1 '%2' must be > 0!")
 							 .arg(zone.m_id).arg(zone.m_displayName), FUNC_ID);
@@ -95,7 +98,6 @@ void RoomStatesModel::resultDescriptions(std::vector<QuantityDescription> & resD
 		result.m_name = NANDRAD_MODEL::KeywordList::Keyword("RoomStatesModel::Results", i);
 		result.m_unit = NANDRAD_MODEL::KeywordList::Unit("RoomStatesModel::Results", i);
 
-		/// \todo constraints?
 		resDesc.push_back(result);
 	}
 }

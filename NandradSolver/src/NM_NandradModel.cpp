@@ -116,11 +116,11 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 
 	// *** Write Information about project file and relevant directories ***
 
-	IBK::IBK_Message( IBK::FormatString("Executable path:    '%1'\n").arg(args.m_executablePath), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-	IBK::IBK_Message( IBK::FormatString("Project file:       '%1'\n").arg(args.m_projectFile), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-	IBK::IBK_Message( IBK::FormatString("Project directory:  '%1'\n").arg(m_projectFilePath), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+	IBK::IBK_Message( IBK::FormatString("Executable path:      '%1'\n").arg(args.m_executablePath), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+	IBK::IBK_Message( IBK::FormatString("Project file:         '%1'\n").arg(args.m_projectFile), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	IBK::IBK_Message( IBK::FormatString("Project directory:    '%1'\n").arg(m_projectFilePath.parentPath()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 
-	IBK::IBK_Message( IBK::FormatString("Output root dir:    '%1'\n").arg(m_dirs.m_rootDir), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	IBK::IBK_Message( IBK::FormatString("Output root dir:      '%1'\n").arg(m_dirs.m_rootDir), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	{
 		IBK_MSG_INDENT;
 		IBK::IBK_Message( IBK::FormatString("log directory:      '%1'\n").arg(m_dirs.m_logDir), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
@@ -875,12 +875,7 @@ void NandradModel::initSimulationParameter() {
 
 	const NANDRAD::SimulationParameter &simPara = m_project->m_simulationParameter;
 
-	// check validity of the parameter data
-	const IBK::Parameter &gammaRad = simPara.m_para[NANDRAD::SimulationParameter::SP_RADIATION_LOAD_FRACTION];
-	if (gammaRad.name.empty()) {
-		throw IBK::Exception(IBK::FormatString("Error initializing wall solver: "
-			"SimulationParameter 'GammaRad' is not defined."), FUNC_ID);
-	}
+	/// \todo check validity of the parameter data, since data may be overrided in project file
 
 	// Set simulation interval
 
@@ -968,7 +963,7 @@ void NandradModel::initFMI() {
 	try {
 		m_fmiInputOutput = new FMIInputOutput;
 		// insert into model container
-		m_modelContainer.push_back(m_loads);	// now owns the model and handles memory cleanup
+		m_modelContainer.push_back(m_fmiInputOutput);	// now owns the model and handles memory cleanup
 		// insert into time model container
 		m_timeModelContainer.push_back(m_fmiInputOutput);
 
@@ -1787,6 +1782,9 @@ void NandradModel::initOutputs(bool restart) {
 		m_modelContainer.insert(m_modelContainer.end(),
 								m_outputHandler->m_outputFiles.begin(),
 								m_outputHandler->m_outputFiles.end()); // transfers ownership
+
+		/// \todo add to "tail" model group
+
 		for (NANDRAD_MODEL::OutputFile * of : m_outputHandler->m_outputFiles) {
 			// Only add those output files that have at least one integral value.
 			if (of->haveIntegrals())
@@ -2437,6 +2435,86 @@ int NandradModel::updateTimeDependentModels() {
 
 
 int NandradModel::updateStateDependentModels() {
+
+	// *** update global states (head models) ***
+
+	// Only transfers room energy - cheap functions, does not need to be parallelized
+	for (unsigned int i = 0; i < m_roomStatesModelContainer.size(); ++i) {
+		m_roomStatesModelContainer[i]->update(&m_y[0] + m_zoneVariableOffset[i]);
+	}
+
+	// update states in all construction solver models
+	// Note: since setY() is already a very very fast function, this parallel loop is not
+	//       making much difference in the overall simulation performance of larger models.
+#ifdef _OPENMP
+	if (!m_useSerialCode) {
+#pragma omp parallel for
+		for (int i = 0; i < (int)m_constructionStatesModelContainer.size(); ++i) {
+			m_constructionStatesModelContainer[i]->setY(&m_y[0] + m_constructionVariableOffset[i]);
+		}
+}
+#endif // _OPENMP
+	if (m_useSerialCode) {
+		for (unsigned int i = 0; i < m_constructionStatesModelContainer.size(); ++i) {
+			m_constructionStatesModelContainer[i]->update(&m_y[0] + m_constructionVariableOffset[i]);
+		}
+	}
+
+
+
+	// evaluate ordered graph
+	int calculationResultFlag = 0;
+
+
+
+
+	// *** update ydot-values and store in (locally numbered) m_ydot vector***
+
+	// update states in all room state models
+	for (unsigned int i=0; i<m_roomBalanceModelContainer.size(); ++i) {
+#ifdef IBK_STATISTICS
+		SUNDIALS_TIMED_FUNCTION(NANDRAD_TIMER_YDOT,
+			calculationResultFlag |= m_roomBalanceModelContainer[i]->update();
+			calculationResultFlag |= m_roomBalanceModelContainer[i]->ydot(&m_ydot[0] + m_zoneVariableOffset[i]);
+		);
+#else
+		calculationResultFlag |= m_roomBalanceModelContainer[i]->ydot(&m_ydot[0] + m_zoneVariableOffset[i]);
+#endif
+	}
+	if (calculationResultFlag != 0) {
+		if (calculationResultFlag & 2)
+			return 2;
+		else
+			return 1;
+	}
+
+	// update states in all construction solver models
+	for (unsigned int i=0; i<m_constructionBalanceModelContainer.size(); ++i) {
+#ifdef IBK_STATISTICS
+		SUNDIALS_TIMED_FUNCTION(NANDRAD_TIMER_YDOT,
+			calculationResultFlag |= m_constructionBalanceModelContainer[i]->ydot(&m_ydot[0] + m_constructionVariableOffset[i]);
+		);
+		++m_nYdotCalls;
+#else
+		calculationResultFlag |= m_constructionBalanceModelContainer[i]->ydot(&m_ydot[0] + m_constructionVariableOffset[i]);
+#endif
+	}
+	if (calculationResultFlag != 0) {
+		if (calculationResultFlag & 2)
+			return 2;
+		else
+			return 1;
+	}
+
+
+	// update output file objects (they never publish results and are always evaluated last)
+
+	/// \todo create container for output files and loop over container
+
+
+	// mark solution as updated
+	m_yChanged = false;
+
 	// signal success
 	return 0;
 }
