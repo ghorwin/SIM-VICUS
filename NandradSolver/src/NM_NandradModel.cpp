@@ -312,7 +312,7 @@ SOLFRA::ModelInterface::CalculationResult NandradModel::ydot(double * ydot) {
 			return SOLFRA::ModelInterface::CalculationSuccess;
 
 		// *** store ydot ***
-		std::memcpy(&ydot, &m_ydot[0], m_n*sizeof(double));
+		std::memcpy(ydot, &m_ydot[0], m_n*sizeof(double));
 
 		// *** feedback to user ***
 		IBK_FastMessage(IBK::VL_DEVELOPER)(IBK::FormatString("    ydot: t=%1 [%2]\n")
@@ -2293,6 +2293,10 @@ void NandradModel::initSolverVariables() {
 	//          their errors are just swamped by the chear mass of construction states.
 	//          Hence, we artifically increase the weight of zone balances by adding a weight factor for each
 	//          zone state that compensates this effect.
+
+	/// \todo Enlarge weighting factor, since states of construction elements are in the order of 1e8
+	/// (example: 293.15*2000*870 = 510081000) wheres zone states are in the order of 1e5
+	/// (example: 293.15*30*1.2*1.006 = 10616.7204)
 	if(m_nWalls > 0) {
 		// calculate mean number of diecrtization elements for each wall
 		//m_weightsFactorZones =(double) (m_n - m_nZones)/ (double) m_nWalls;

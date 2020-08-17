@@ -12,6 +12,9 @@
 		</Location>
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<Interval>
+				<IBK:Parameter name="End" unit="h">1</IBK:Parameter>
+			</Interval>
 		</SimulationParameter>
 		<SolverParameter>
 			<IBK:Parameter name="DiscStretchFactor" unit="---">4</IBK:Parameter>

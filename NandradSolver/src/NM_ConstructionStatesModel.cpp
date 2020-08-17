@@ -84,6 +84,8 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 	m_simPara = &simPara;
 	m_solverPara = &solverPara;
 
+	m_moistureBalanceEnabled = m_simPara->m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled();
+
 	// we initialize only those variables needed for state calculation:
 	// - grid and grid-element to layer association
 	// - precalculate variables needed for decomposition and flux calculation
@@ -519,7 +521,7 @@ void Mesh::generate(unsigned int n, std::vector<double> & ds_vec) {
 	ds_vec.resize(n);
 	for (unsigned int i=1; i<n; ++i) {
 		double xi = double(i)/n;
-		double s_next;
+		double s_next = 0; // only to silence compiler warning; s_next is set in all switch cases below
 		switch (t) {
 			case Uniform :
 				s_next = xi;
