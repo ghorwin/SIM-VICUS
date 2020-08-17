@@ -144,6 +144,35 @@ modelObject->setup(...); // this may throw
 m_modelContainer.push_back(modelObject.release()); // transfer ownership
 ```
 
+#### Frequently check for potential memory leaks
+
+Use valgrind to check for memory leaks in regular intervals:
+
+First run only initialization with `--test-init` flag.
+
+```bash
+> valgrind valgrind --track-origins=yes --leak-check=full ./NandradSolver /path/to/project --test-init
+```
+
+You should get an output like:
+
+```
+...
+Stopping after successful initialization of integrator.
+Total initialization time: 802 ms
+==15560== 
+==15560== HEAP SUMMARY:
+==15560==     in use at exit: 0 bytes in 0 blocks
+==15560==   total heap usage: 3,776 allocs, 3,776 frees, 1,101,523 bytes allocated
+==15560== 
+==15560== All heap blocks were freed -- no leaks are possible
+==15560== 
+==15560== For counts of detected and suppressed errors, rerun with: -v
+==15560== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+```
+
+Then, also run a small part of the simulation, to check if something goes wrong during actual solver init and if tear-down is done correctly.
+
 ### Documentation
 
 Doxygen-style, prefer:
