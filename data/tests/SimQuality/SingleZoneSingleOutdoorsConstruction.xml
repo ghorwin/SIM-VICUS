@@ -13,11 +13,13 @@
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 			<Interval>
-				<IBK:Parameter name="End" unit="h">1</IBK:Parameter>
+<!--				<IBK:Parameter name="End" unit="h">1</IBK:Parameter> -->
 			</Interval>
 		</SimulationParameter>
 		<SolverParameter>
+			<Integrator>ExplicitEuler</Integrator>
 			<IBK:Parameter name="DiscStretchFactor" unit="---">4</IBK:Parameter>
+			<IBK:Parameter name="InitialTimeStep" unit="s">60</IBK:Parameter>
 		</SolverParameter>
 		<Zones>
 			<Zone id="1" displayName="Room" type="Active">
@@ -82,7 +84,7 @@
 		<Outputs>
 			<OutputDefinitions>
 				<OutputDefinition>
-					<Quantity>Temperature</Quantity>
+					<Quantity>AirTemperature</Quantity>
 					<TimeType>None</TimeType>
 					<ObjectListName>All zones</ObjectListName>
 					<GridName>hourly</GridName>
