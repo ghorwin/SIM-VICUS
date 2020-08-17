@@ -19,9 +19,13 @@ Information about location and climate data is stored in the `Location` section 
 </Location>
 ----
 
-The parameter `Albedo` is used for diffuse solar radiation calculation. `Altitude` is needed for specific altitude-related parameters (**TODO**).
+The parameter `Albedo` is used for diffuse solar radiation calculation. 
+`Altitude` is needed for specific altitude-related parameters (**TODO**).
 
 Parameters `Latitude` and `Longitude` are optional if a climate data file is given, otherwise they override the location parameters stored therein (see <<location_settings>>).
+
+Valid value range for `Latitude` is [-90,90] degrees (positive values are northern hemisphere), for `Longitude` it is [-180,180] degrees (positive values are east of Greenwich).
+
 
 ### Climate File Support
 
@@ -40,7 +44,8 @@ Typically, climate data files contain information on latitude and longitude of t
 
 It is possible to specify additional planes (sensors) to generate solar radiation load outputs.
 
-TODO
+This is done by specifying a `Sensor` definition.
+
 
 ## Implementation
 

@@ -106,7 +106,8 @@ table {
 <ul class="sectlevel2">
 <li><a href="#_output_definitions">3.1. Output definitions</a>
 <ul class="sectlevel3">
-<li><a href="#_examples">3.1.1. Examples</a></li>
+<li><a href="#_output_grids">3.1.1. Output Grids</a></li>
+<li><a href="#_examples">3.1.2. Examples</a></li>
 </ul>
 </li>
 <li><a href="#_variable_lookup_rules">3.2. Variable lookup rules</a></li>
@@ -126,7 +127,7 @@ table {
 <li><a href="#_model_instances">4.1.1. Model instances</a></li>
 <li><a href="#_model_results">4.1.2. Model results</a></li>
 <li><a href="#model_input_refs">4.1.3. Model inputs</a></li>
-<li><a href="#_variable_lookup_2">4.1.4. Variable lookup</a></li>
+<li><a href="#variable_lookup">4.1.4. Variable lookup</a></li>
 </ul>
 </li>
 <li><a href="#_model_initialization_procedure">4.2. Model Initialization Procedure</a>
@@ -459,7 +460,78 @@ table {
 <code>FileName</code> is optional (see below).</p>
 </div>
 <div class="sect3">
-<h4 id="_examples">3.1.1. Examples</h4>
+<h4 id="_output_grids">3.1.1. Output Grids</h4>
+<div class="paragraph">
+<p>Output grids define <em>when</em> outputs are written. An output grid contains a list of intervals, with an output step size defined for each interval.</p>
+</div>
+<div class="paragraph">
+<p>The intervals are expected to follow in consecutive order, optionally with a gap in-between.</p>
+</div>
+<div class="paragraph">
+<p>Intervals can have up to 3 parameters:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Start</code> - the start time of the interval (see explanation below)</p>
+</li>
+<li>
+<p><code>End</code>- the end time of the interval (see explanation below)</p>
+</li>
+<li>
+<p><code>StepSize</code> - the distance between outputs within the interval</p>
+</li>
+</ul>
+</div>
+<div class="sect4">
+<h5 id="_time_definitions">Time definitions</h5>
+<div class="paragraph">
+<p>Time points in <code>Start</code> and <code>End</code> parameters are defined with respect to Midnight January 1st of the year in which the simulation starts.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_rules_2">Rules</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>the <code>Start</code> parameter is optional, under the following conditions:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>in the first interval, a missing <code>Start</code> parameter is automatically set to 0 (start of the year)</p>
+</li>
+<li>
+<p>in all other intervals, the <code>End</code> time of the preceeding interval is taken (see next rule below)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>the end time of an interval is defined, either:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>by defining the <code>End</code> parameter,</p>
+</li>
+<li>
+<p>through definition of the <code>Start</code> parameter in next interval</p>
+</li>
+<li>
+<p>through simulation end time in last
+das Intervall das letzte Intervall ist (in diesem Fall läuft das Interval bis zum Simulationsende)
+das darauffolgende Interval hat ein Start-Wert hat.
+Bei Angabe eines Start-Parameters muß der Zeitpunkt mindestens dem End-Zeitpunkt des vorangegangenen Intervalls entsprechen &#8594; die Intervalle sind sequentiell geordnet und überschneiden nicht.
+Die Angabe des Parameters StepSize ist zwingend.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_examples">3.1.2. Examples</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -594,7 +666,7 @@ Next n records: binary strings, leading size (unsigned int) and termination char
 <div class="sect4">
 <h5 id="_publishing_model_results">Publishing model results</h5>
 <div class="paragraph">
-<p>The models must tell the solver framework what kind of outputs they generate. Objects generating results must derive from class <code>AbstractModel</code> (or derived helper classes) and implement the interface.</p>
+<p>The model instances/objects must tell the solver framework what kind of outputs they generate. Objects generating results must derive from class <code>AbstractModel</code> (or derived helper classes) and implement the abstract interface functions.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -604,7 +676,7 @@ Next n records: binary strings, leading size (unsigned int) and termination char
 </td>
 <td class="content">
 <div class="paragraph">
-<p><code>Schedules</code> and <code>FMIInputOutput</code> models are handled differently.</p>
+<p><code>Schedules</code> and <code>FMIInputOutput</code> models are handled differently, when it comes to retrieving generated results.</p>
 </div>
 </td>
 </tr>
@@ -617,12 +689,12 @@ Next n records: binary strings, leading size (unsigned int) and termination char
 <div class="title">Example 3. Reference types</div>
 <div class="content">
 <div class="paragraph">
-<p><code>MRT_ZONE</code> or <code>MRT_INTERFACE</code></p>
+<p>Typical examples are <code>MRT_ZONE</code> for zonal quantities, or <code>MRT_INTERFACE</code> for quantities (fluxes) across wall-surfaces.</p>
 </div>
 </div>
 </div>
 <div class="paragraph">
-<p>Each invididual result variable is published by the model as <code>QuantityDescription</code>. The framework requests these via call to <code>AbstractModel::resultDescriptions()</code>. Here, the model will store for each computed quantity the following information:</p>
+<p>Each invididual result variable is published by the model in an object of type <code>QuantityDescription</code>. The framework requests these via call to <code>AbstractModel::resultDescriptions()</code>. Within the <code>QuantityDescription</code> structure,  the model stores for each computed quantity the following information:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -633,13 +705,13 @@ Next n records: binary strings, leading size (unsigned int) and termination char
 <p>physical display unit (e.g. "C") - interpreted as "display unit", calculations are always done in base SI units</p>
 </li>
 <li>
-<p>a descriptive text (e.g. "Room air temperature")</p>
+<p>a descriptive text (e.g. "Room air temperature") (optional, for error/information messages)</p>
 </li>
 <li>
-<p>physical limits (min/max values)</p>
+<p>physical limits (min/max values) (optional, may be used in iterative algorithms)</p>
 </li>
 <li>
-<p>flag indicating whether this value will be constant over the lifetime of the solver</p>
+<p>flag indicating whether this value will be constant over the lifetime of the solver/integration interval</p>
 </li>
 </ul>
 </div>
@@ -650,8 +722,9 @@ Next n records: binary strings, leading size (unsigned int) and termination char
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
+<div class="title">A note on units</div>
 <div class="paragraph">
-<p>A note on units. The results are stored <em>always</em> in base SI units according to the UnitList. A well-behaving model will always store the result value in the basic SI unit, that is "K" for temperatures, "W" for thermal loads and so on (see <code>IBK::UnitList</code>).</p>
+<p>The results are stored <em>always</em> in base SI units according to the IBK-UnitList. A well-behaving model will always store the result value in the basic SI unit, that is "K" for temperatures, "W" for thermal loads and so on (see <code>IBK::UnitList</code>).</p>
 </div>
 </td>
 </tr>
@@ -670,7 +743,7 @@ Next n records: binary strings, leading size (unsigned int) and termination char
 <div class="title">Example 4. Vector results</div>
 <div class="content">
 <div class="paragraph">
-<p>A ventilation model may compute ventilation heat loads for a number of zones (zones are identified via object lists).</p>
+<p>A ventilation model may compute ventilation heat loads for a number of zones (zones that are identified via object lists).</p>
 </div>
 </div>
 </div>
@@ -691,7 +764,7 @@ Next n records: binary strings, leading size (unsigned int) and termination char
 <div class="title">Example 5. ID-access example</div>
 <div class="content">
 <div class="paragraph">
-<p>The aforementioned ventilation model may be published for zones with IDs 1,4,5,10 and 11. Then the resulting ventilation heat losses will be defined for those zones only. Hence, the published quantity will look like:</p>
+<p>The aforementioned ventilation model may be assigned to zones with IDs 1,4,5,10 and 11. Then the resulting ventilation heat losses will be defined for those zones only. Hence, the published quantity will look like:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -711,11 +784,12 @@ Next n records: binary strings, leading size (unsigned int) and termination char
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
+<div class="title">Strong uniqueness requirement</div>
 <div class="paragraph">
-<p>The id-names of quantities are unique within a model object, and vector-valued quantities may not have the same ID name as scalar quantities. More precisely, variables need to be globally unique (see lookup rules below). This means that when there are two models with the same model-reference-type, the variable names must be unique among all models with the same reference-type.</p>
+<p>The id-names of quantities are unique within a model object, and vector-valued quantities may not have the same ID name as scalar quantities. More precisely, variables need to be globally unique (see <a href="#variable_lookup">lookup rules</a> below). This means that when there are two models with the same model-reference-type, the variable names must be unique among all models with the same reference-type.</p>
 </div>
 <div class="paragraph">
-<p>For example: from a zone parametrization several models are instantiated with the same reference-type <code>MRT_ZONE</code>, for example <code>RoomBalanceModel</code> and <code>RoomStatesModel</code>. The resulting variables in both models must not have the same ID name, in order to be uniquely identified on global scope.</p>
+<p>For example: from a zone parametrization several models are instantiated with the same reference-type <code>MRT_ZONE</code>, for example <code>RoomBalanceModel</code> and <code>RoomStatesModel</code>. The resulting variables in both models <em>must not</em> have the same ID name, in order to be uniquely identified on global scope.</p>
 </div>
 </td>
 </tr>
@@ -727,15 +801,41 @@ Next n records: binary strings, leading size (unsigned int) and termination char
 <div class="paragraph">
 <p>Each model object is requested by the framework in a call to <code>AbstractModel::initResults()</code> to reserve memory for its result variables. For scalar variables this is usually just resizing of a vector of doubles to the required number of result values. For vector-valued quantities the actual size may only be known later, so frequently here just the vectors are created and their actual size is determined later.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
 <div class="paragraph">
 <p>Since the information collected in <code>initResults()</code> is also needed when publishing the results to the framework, the function <code>AbstractModel::initResults()</code> is called before <code>AbstractModel::resultDescriptions()</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect5">
+<h6 id="_convenience_implementation">Convenience implementation</h6>
+<div class="paragraph">
+<p>Scalar variables are stored in double variables of the model. When using the convenience implementation in <code>DefaultModel</code> these are stored in vector <code>m_results</code>.</p>
+</div>
+<div class="paragraph">
+<p>Vector-valued variables are stored in consecutive memory arrays with size matching the size of the vector. When using the <code>DefaultModel</code> implementation, these are stored in <code>m_vectorValuedResults</code>, which is a vector of <code>VectorValuedResults</code>.</p>
+</div>
+<div class="paragraph">
+<p>The <code>DefaultModel</code> implementation makes use of enumerations <code>Results</code> and <code>VectorValuedResults</code>.</p>
+</div>
 </div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="model_input_refs">4.1.3. Model inputs</h4>
 <div class="paragraph">
-<p>Similarly as output variables, model objects need input variables. Models requiring input must implement the interface of <code>AbstractStateDependency</code>.</p>
+<p>Similarly as output variables, model objects need input variables. Models requiring input must implement the interface of class <code>AbstractStateDependency</code>.</p>
+</div>
+<div class="paragraph">
+<p>Input variable requirements are published similarly to results when the framework requests them in a call to <code>AbstractStateDependency::inputReferences()</code>. The information on requested results is stored in objects of type <code>InputReference</code>. The data in class <code>InputReference</code> is somewhat similar to that of <code>QuantityDescription</code> but contains additional data regarding the expectations of the model in the input variable.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -745,24 +845,7 @@ Next n records: binary strings, leading size (unsigned int) and termination char
 </td>
 <td class="content">
 <div class="paragraph">
-<p><code>FMIInputExport</code> model is handled separately.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Input variable requirements are published similarly to results when the framework requests them in a call to <code>AbstractStateDependency::inputReferences()</code>. The information on requested results is stored in objects of type <code>InputReference</code>.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>A model may request scalar variable inputs only, even if the providing model generates these as a vector-valued quantity.</p>
+<p>A model may request scalar variable inputs only, even if the providing model generates these as a vector-valued quantity. That means, a model has the choice to request access to the entire vector-valued variable (and will usually get the address to the start of the vector-memory space), or a single component of the vector. In the latter case, the index/model-ID must be defined in the <code>InputReference</code> data structure.</p>
 </div>
 </td>
 </tr>
@@ -787,31 +870,36 @@ Next n records: binary strings, leading size (unsigned int) and termination char
 <p>Given that information, the framework can effectively look-up the required variables.</p>
 </div>
 <div class="paragraph">
-<p>and tell the object by calling <code>AbstractStateDependency::setInputValueRef()</code> which variable identified through <code>QuantityName</code> has which memory address.</p>
+<p>Once the variable has been found, the framework will tell the object the memory location by calling <code>AbstractStateDependency::setInputValueRef()</code>.</p>
 </div>
 <div class="sect4">
 <h5 id="_fmi_export_output_variables">FMI Export (output) variables</h5>
 <div class="paragraph">
-<p>When FMI export is defined, i.e. output variables are declarted in the FMI interface, a list of global variable IDs to be exported is defined. For each of these variables an input reference is generated, just as for any other model as well.</p>
+<p>When FMI export is defined, i.e. output variables are declarted in the FMI interface, a list of global variable IDs to be exported is defined. For each of these variables an input reference is generated (inside the <code>FMIInputOutput</code> model), just as for any other model as well.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 7. FMI Output Variable example</div>
+<div class="content">
+<div class="paragraph">
+<p>Suppose an FMI exports the air temperature from zone id=15 and for that purpose needs to retrieve the currently computed temperature from the zone state model. The FMI output variable would be named <em>Zone[15].AirTemperature</em> and the input reference would be created as in the example above. This way, the framework can simply provide a pointer to this memory slot to the <code>FMIInputOutput</code> model just as for any other model.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect4">
 <h5 id="_outputs">Outputs</h5>
 <div class="paragraph">
-<p>When initializing outputs, any published variable can be collected. Outputs declare their variable needs just as any other model object.</p>
+<p>When initializing outputs, any published variable can be collected. Outputs declare their input variables just as any other model object.</p>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_variable_lookup_2">4.1.4. Variable lookup</h4>
+<h4 id="variable_lookup">4.1.4. Variable lookup</h4>
+<div class="paragraph">
+<p>The frameworks job is to collect all</p>
+</div>
 <div class="sect4">
 <h5 id="_resolving_persistant_pointers_to_result_locations">Resolving persistant pointers to result locations</h5>
-<div class="paragraph">
-<p>Scalar variables are stored in double variables of the model. When using the convenience implementation in <code>DefaultModel</code> these are stored in vector <code>m_results</code>.</p>
-</div>
-<div class="paragraph">
-<p>Vector-valued variables are stored in consecutive memory arrays with size matching the size of the vector. When using the <code>DefaultModel</code> implementation, these are stored in <code>m_vectorValuedResults</code>, which is a vector of <code>VectorValuedResults</code>.</p>
-</div>
 <div class="paragraph">
 <p>Later, when the framework connects <a href="#model_input_refs">model inputs</a> with results, the framework requests models to provide persistant memory locations for previously published results. This is done by calling <code>AbstractModel::resultValueRef()</code>, which get&#8217;s a copy of the previously exported <code>InputReference</code>.</p>
 </div>
@@ -997,7 +1085,7 @@ Next n records: binary strings, leading size (unsigned int) and termination char
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated 2020-08-09 12:35:42 +0200
+Last updated 2020-08-17 13:29:10 +0200
 </div>
 </div>
 <style>
