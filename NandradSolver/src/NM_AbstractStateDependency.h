@@ -49,6 +49,18 @@ class QuantityDescription;
 class AbstractStateDependency : public ZEPPELIN::DependencyObject {
 public:
 
+	/*! Returns a priority offset for all models at the end of model evaluation.*/
+	static const int priorityOffsetTail = 100000;
+
+	/*! Returns a priority number for the ordering in model evaluation
+		Default implementation returns -1 to indicate that ordering is unknown. Evaluation order of
+		unordered models is determined with Zeppelin library.
+		Ordered models are placed in groups with same evaluation priority and evaluated
+		in parallel in the order of evaluation.
+	*/
+	virtual int priorityOfModelEvaluation() const { return -1; }
+
+
 	/*! Sets all object dependencies.
 		Called when all model results have been initialized (i.e. the function
 		initResults() was called in all model objects).

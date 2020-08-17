@@ -117,6 +117,9 @@ public:
 
 	// *** Re-implemented from AbstractStateDependency
 
+	/*! Returns model evaluation priority. */
+	int priorityOfModelEvaluation() const;
+
 	/*! Composes all input references.*/
 	virtual void initInputReferences(const std::vector<AbstractModel*> & /* models */) override;
 

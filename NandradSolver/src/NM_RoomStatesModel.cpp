@@ -50,7 +50,7 @@ void RoomStatesModel::setup(const NANDRAD::Zone & zone, const NANDRAD::Simulatio
 							 .arg(zone.m_id).arg(zone.m_displayName), FUNC_ID);
 
 	// check for valid parameters
-	m_volume = zone.m_para[NANDRAD::Zone::ZP_VOLUME].get_value("m");
+	m_volume = zone.m_para[NANDRAD::Zone::ZP_VOLUME].get_value("m3");
 	if (m_volume <= 0)
 		throw IBK::Exception(IBK::FormatString("'Volume' in zone #%1 '%2' must be > 0!")
 							 .arg(zone.m_id).arg(zone.m_displayName), FUNC_ID);

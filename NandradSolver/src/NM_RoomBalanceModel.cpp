@@ -98,6 +98,12 @@ const double * RoomBalanceModel::resultValueRef(const QuantityName & quantityNam
 }
 
 
+int RoomBalanceModel::priorityOfModelEvaluation() const {
+	// room balance model is evaluated one step before outputs
+	return AbstractStateDependency::priorityOffsetTail+5;
+}
+
+
 void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & /*models*/) {
 	/// \todo
 }

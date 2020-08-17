@@ -1006,11 +1006,28 @@ void NandradModel::initZones() {
 		switch (zone.m_type) {
 			case NANDRAD::Zone::ZT_ACTIVE : {
 				IBK::IBK_Message( IBK::FormatString(" ACTIVE\n").arg(zone.m_id).arg(zone.m_displayName), IBK::MSG_CONTINUED, FUNC_ID, IBK::VL_INFO);
+
 				// create implicit room state and room balance models
-				std::unique_ptr<RoomBalanceModel> roomBalanceModel( new RoomBalanceModel(zone.m_id, zone.m_displayName) );
-				std::unique_ptr<RoomStatesModel> roomStatesModel( new RoomStatesModel(zone.m_id, zone.m_displayName) );
+				RoomStatesModel * roomStatesModel = new RoomStatesModel(zone.m_id, zone.m_displayName);
+				m_modelContainer.push_back(roomStatesModel); // transfer ownership
 
 				// initialize room state model
+				try {
+					roomStatesModel->setup(zone, simPara);
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception(ex, IBK::FormatString("Error in setup of model 'RoomStatesModel' for zone #%1 '%2'")
+						.arg(zone.m_id).arg(zone.m_displayName), FUNC_ID);
+				}
+				// also remember this model in the container with room state models m_roomStatesModelContainer
+				// because we need to call yInitial() and update(y).
+				m_roomStatesModelContainer.push_back(roomStatesModel);
+
+
+				RoomBalanceModel * roomBalanceModel = new RoomBalanceModel(zone.m_id, zone.m_displayName);
+				m_modelContainer.push_back(roomBalanceModel); // transfer ownership
+
+				// initialize room balance model
 				try {
 					roomBalanceModel->setup(simPara);
 				}
@@ -1021,25 +1038,9 @@ void NandradModel::initZones() {
 
 				// also remember this model in the container with room state models m_roomBalanceModelContainer
 				// because we need to call ydot().
-				m_roomBalanceModelContainer.push_back(roomBalanceModel.get());
-				// put the model into our central model storage
-				m_modelContainer.push_back(roomBalanceModel.release()); // transfer ownership
-
-				// initialize room state model
-				try {
-					roomStatesModel->setup(zone, simPara);
-				}
-				catch (IBK::Exception & ex) {
-					throw IBK::Exception(ex, IBK::FormatString("Error in setup of model 'RoomStatesModel' for zone #%1 '%2'")
-						.arg(zone.m_id).arg(zone.m_displayName), FUNC_ID);
-				}
-
-
-				// also remember this model in the container with room state models m_roomBalanceModelContainer
-				// because we need to call yInitial().
-				m_roomStatesModelContainer.push_back(roomStatesModel.get());
-				// put the model into our central model storage
-				m_modelContainer.push_back(roomStatesModel.release()); // transfer ownership
+				m_roomBalanceModelContainer.push_back(roomBalanceModel);
+				// and register model for evaluation
+				registerStateDependendModel(roomBalanceModel);
 
 				// remember current zone
 				activeZones.push_back(&zone);
@@ -1666,7 +1667,8 @@ void NandradModel::initWallsAndInterfaces() {
 
 			// *** construction states model ***
 
-			std::unique_ptr<ConstructionStatesModel>	statesModel(new ConstructionStatesModel(ci.m_id, ci.m_displayName));
+			ConstructionStatesModel * statesModel = new ConstructionStatesModel(ci.m_id, ci.m_displayName);
+			m_modelContainer.push_back(statesModel); // transfer ownership
 
 			IBK::IBK_Message(IBK::FormatString("Initializating construction model (id=%1)\n").arg(ci.m_id),
 							 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
@@ -1674,22 +1676,25 @@ void NandradModel::initWallsAndInterfaces() {
 			// does the entire initialization
 			statesModel->setup(ci, m_project->m_simulationParameter, m_project->m_solverParameter);
 
-			// remember "head" model in states container
-			m_constructionStatesModelContainer.push_back(statesModel.get());
-			m_modelContainer.push_back(statesModel.release()); // transfer ownership
+			// remember model in states container, so that we can call update(y)
+			m_constructionStatesModelContainer.push_back(statesModel);
 
 
 			// *** construction balance model ***
 
 			// now also initialize balance model - hereby re-using data from states model
-			std::unique_ptr<ConstructionBalanceModel>	balanceModel(new ConstructionBalanceModel(ci.m_id, ci.m_displayName));
+			ConstructionBalanceModel * balanceModel = new ConstructionBalanceModel(ci.m_id, ci.m_displayName);
+			m_modelContainer.push_back(balanceModel); // transfer ownership
 
 			// does the entire initialization
-			balanceModel->setup(ci, m_project->m_simulationParameter, statesModel.get());
+			balanceModel->setup(ci, m_project->m_simulationParameter, statesModel);
 
-			// remember "footer" model in balance container
-			m_constructionBalanceModelContainer.push_back(balanceModel.get());
-			m_modelContainer.push_back(balanceModel.release()); // transfer ownership
+			// register model for evaluation
+			registerStateDependendModel(balanceModel);
+
+			// remember model in balance container, so that we can call ydot(ydot)
+			m_constructionBalanceModelContainer.push_back(balanceModel);
+
 		}
 		catch (IBK::Exception & ex) {
 			throw IBK::Exception(ex, IBK::FormatString("Error initializing construction instance #%1 '%2'.").arg(i).arg(ci.m_displayName), FUNC_ID);
@@ -2158,9 +2163,12 @@ void NandradModel::initModelGraph() {
 	}
 
 	// insert head and tail
+	// head models are prepended at start of queue
 	m_orderedStateDependentSubModels.insert(m_orderedStateDependentSubModels.begin(),
 		m_orderedStateDependentSubModelsHead.begin(),
 		m_orderedStateDependentSubModelsHead.end());
+
+	// tail models are appended at end of queue
 	m_orderedStateDependentSubModels.insert(m_orderedStateDependentSubModels.end(),
 		m_orderedStateDependentSubModelsTail.begin(),
 		m_orderedStateDependentSubModelsTail.end());
@@ -2245,16 +2253,13 @@ void NandradModel::initOutputReferenceList() {
 
 
 void NandradModel::initSolverVariables() {
-//	FUNCID(NandradModelImpl::initSolverVariables);
+	FUNCID(NandradModelImpl::initSolverVariables);
 
 	// In this function the number of conserved variables is calculated (summing up states in zones and constructions)
 	// and linear memory arrays for y, y0 and ydot are created.
 
 	// Zone state variables are stored first, followed by wall (Finite-Volume) states.
 	// The offsets to the start of each memory block are stored in m_zoneVariableOffset and m_wallVariableOffset.
-
-//	m_wallVariableOffset.resize(m_nWalls,0);
-	m_zoneVariableOffset.resize(m_nZones,0);
 
 	m_n = 0;
 
@@ -2268,6 +2273,7 @@ void NandradModel::initSolverVariables() {
 	m_n = m_nZones*numVarsPerZone;
 
 	// populate vector with offsets to zone-balance variables in global vector
+	m_zoneVariableOffset.resize(m_nZones,0);
 	for (unsigned int i=0; i<m_nZones; ++i)
 		m_zoneVariableOffset[i] = i*numVarsPerZone;
 
@@ -2295,7 +2301,7 @@ void NandradModel::initSolverVariables() {
 	/// \todo Enlarge weighting factor, since states of construction elements are in the order of 1e8
 	/// (example: 293.15*2000*870 = 510081000) wheres zone states are in the order of 1e5
 	/// (example: 293.15*30*1.2*1.006 = 10616.7204)
-	if(m_nWalls > 0) {
+	if (m_nWalls > 0) {
 		// calculate mean number of diecrtization elements for each wall
 		//m_weightsFactorZones =(double) (m_n - m_nZones)/ (double) m_nWalls;
 		m_weightsFactorZones = (double) (m_n - m_nZones)/ (double) m_nWalls;
@@ -2345,7 +2351,6 @@ void NandradModel::initSolverVariables() {
 	// set time point to -1, which means the first call is the initialization call
 	m_t = -1;
 
-#if 0
 	// *** Select serial code for small problem sizes ***
 
 	if (m_numThreads > 1 && m_n > 1000) {
@@ -2356,7 +2361,6 @@ void NandradModel::initSolverVariables() {
 			IBK::IBK_Message(IBK::FormatString("Only %1 unknowns, using serial code in model evaluation!\n").arg(m_n), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		m_useSerialCode = true;
 	}
-#endif
 }
 
 
@@ -2400,6 +2404,35 @@ void NandradModel::initStatistics(SOLFRA::ModelInterface * modelInterface, bool 
 
 	// setup feedback object, this also starts the stopwatch
 	m_feedback.setup(m_progressLog, t0(), tEnd(), m_projectFilePath.str(), m_elapsedSecondsAtStart, m_elapsedSimTimeAtStart, modelInterface);
+}
+
+
+void NandradModel::registerStateDependendModel(AbstractStateDependency *stateModel) {
+
+	unsigned int priority = (unsigned int)stateModel->priorityOfModelEvaluation();
+	if (priority == (unsigned int)-1) {
+		// set into state dependent stack (in order to enforace a correct update)
+		m_unorderedStateDependencies.push_back(stateModel);
+	}
+	else if (priority < AbstractStateDependency::priorityOffsetTail) {
+		// enlarge vector if necessary
+		if (m_orderedStateDependentSubModelsHead.size() < priority + 1)
+			m_orderedStateDependentSubModelsHead.resize(priority + 1);
+		// sort model into vector
+		m_orderedStateDependentSubModelsHead[priority].push_back(stateModel);
+		// register model as state dependend
+		m_stateModelContainer.push_back(stateModel);
+	}
+	else /*(priority >= AbstractStateDependency::priorityOffsetTail)*/ {
+		// enlarge vector if necessary
+		unsigned int pos = priority - AbstractStateDependency::priorityOffsetTail;
+		if (m_orderedStateDependentSubModelsTail.size() < pos + 1)
+			m_orderedStateDependentSubModelsTail.resize(pos + 1);
+		// sort model into vector
+		m_orderedStateDependentSubModelsTail[pos].push_back(stateModel);
+		// register model as state dependend
+		m_stateModelContainer.push_back(stateModel);
+	}
 }
 
 
@@ -2464,6 +2497,80 @@ int NandradModel::updateStateDependentModels() {
 
 	// evaluate ordered graph
 	int calculationResultFlag = 0;
+
+
+	// to keep original serial code performance, distinguish between serial and OpenMP code
+#ifdef _OPENMP
+	if (!m_useSerialCode) {
+
+		// create storage vector for thread-specific return codes
+		std::vector<int> calculationResultFlags(m_numThreads, 0);
+
+		// process all parallel object groups
+		for (unsigned int k = 0; k < m_orderedStateDependentSubModels.size(); ++k) {
+			ParallelStateObjects &parallelObjects = m_orderedStateDependentSubModels[k];
+
+	#pragma omp parallel
+			{
+				// store target location for thread-specific error codes
+				int & calculationResultFlag = calculationResultFlags[omp_get_thread_num()];
+	#pragma omp for
+				for (int i = 0; i < (int)parallelObjects.size(); ++i) {
+					calculationResultFlag |= parallelObjects[i]->update();
+				} // end for
+
+			} // end parallel region
+
+		} // end m_orderedStateDependentSubModels loop
+
+		// in multi-threaded code, check all return codes
+		for (int i=0; i<m_numThreads; ++i) {
+			if (calculationResultFlags[i] != 0) {
+	//			IBK::IBK_Message(IBK::FormatString("Error code %1 in thread #%2").arg(calculationResultFlags[i]).arg(i), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+				if (calculationResultFlags[i] & 2)
+					return 2;
+				else
+					return 1;
+			}
+		}
+	} // use serial code
+
+#endif // _OPENMP
+
+	if (m_useSerialCode) {
+		for (unsigned int k = 0; k < m_orderedStateDependentSubModels.size(); ++k) {
+			ParallelStateObjects &parallelObjects = m_orderedStateDependentSubModels[k];
+
+			// now begin parallel section
+			for (unsigned int i = 0; i < parallelObjects.size(); ++i) {
+
+#ifdef IBK_STATISTICS
+				if (parallelObjects[i]->m_modelTypeId & DefaultStateDependency::ODE) {
+					SUNDIALS_TIMED_FUNCTION(NANDRAD_TIMER_UPDATE_ODEMODELS,
+						calculationResultFlag |= parallelObjects[i]->update()
+					);
+					++m_nODEModelsUpdate;
+				}
+				else if (parallelObjects[i]->m_modelTypeId & DefaultStateDependency::CyclicGroup) {
+					SUNDIALS_TIMED_FUNCTION(NANDRAD_TIMER_UPDATE_MODELGROUPS,
+						calculationResultFlag |= parallelObjects[i]->update()
+					);
+					++m_nModelGroupsUpdate;
+				}
+				else {
+					SUNDIALS_TIMED_FUNCTION(NANDRAD_TIMER_UPDATE_MODELS,
+						calculationResultFlag |= parallelObjects[i]->update()
+					);
+					++m_nModelsUpdate;
+				}
+#else
+				calculationResultFlag |= parallelObjects[i]->update();
+#endif
+				if (calculationResultFlag != 0)
+					return calculationResultFlag;
+			}
+		}
+	} // useSerialCode
 
 
 

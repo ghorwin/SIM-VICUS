@@ -47,6 +47,13 @@ const double * ConstructionBalanceModel::resultValueRef(const QuantityName & qua
 
 }
 
+
+int ConstructionBalanceModel::priorityOfModelEvaluation() const {
+	// we are one step above room balance model
+	return AbstractStateDependency::priorityOffsetTail+4;
+}
+
+
 void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractModel *> &)
 {
 

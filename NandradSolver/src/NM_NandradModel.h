@@ -269,6 +269,11 @@ private:
 		\param restart If true, the statistics file is opened in append mode.
 	*/
 	void initStatistics(SOLFRA::ModelInterface * modelInterface, bool restart);
+	/*! Depending on model's priorityOfModelEvaluation() (-1 for unordered, or a number for
+		head/tail ordering) the model is added to m_orderedStateDependentSubModelsHead or
+		m_orderedStateDependentSubModelsTail.
+	*/
+	void registerStateDependendModel(AbstractStateDependency * stateModel);
 
 
 	/*! Vectors storing sparse matrix pattern (CSR format): number of nonzero elements: */
@@ -420,11 +425,23 @@ private:
 	*/
 	std::vector<ParallelStateObjects>						m_orderedStateDependentSubModels;
 
-	/*! Vector of unordered state dependencies*/
+	/*! Vector of unordered state dependencies.
+		This container holds all models with undefined priority (-1). Their evaluation order
+		is determined by the dependency pattern.
+		The container is populated in registerStateDependendModel().
+	*/
 	std::vector<AbstractStateDependency*>					m_unorderedStateDependencies;
-	/*! Vector of of already sorted state dependencies: head*/
+	/*! Vector of of already sorted state dependencies that are evaluated *before* the
+		graph of unordered models (head). The models in this container have a priority != -1 but
+		smaller than AbstractStateDependency::priorityOffsetTail.
+		The container is populated in registerStateDependendModel().
+	*/
 	std::vector<ParallelStateObjects>						m_orderedStateDependentSubModelsHead;
-	/*! Vector of of already sorted state dependencies: tail*/
+	/*! Vector of of already sorted state dependencies that are evaluated *after* the graph of
+		unordered models (tail). The models in this container have a priority larger than
+		AbstractStateDependency::priorityOffsetTail.
+		The container is populated in registerStateDependendModel().
+	*/
 	std::vector<ParallelStateObjects>						m_orderedStateDependentSubModelsTail;
 
 	/*! Stores different dependency patterns.

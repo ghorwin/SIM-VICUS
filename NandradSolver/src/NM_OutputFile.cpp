@@ -77,7 +77,13 @@ void OutputFile::stepCompleted(double t) {
 			m_integrals[1][col] = dVal + m_integrals[0][col];
 		}
 		++col;
-	}
+		}
+}
+
+
+int OutputFile::priorityOfModelEvaluation() const {
+	// output files are evaluated last - no results are published from files
+	return AbstractStateDependency::priorityOffsetTail+6;
 }
 
 
