@@ -33,13 +33,13 @@
 				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
 				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
-				<InterfaceA id="1" location="A" zoneId="1">
+				<InterfaceA id="1" zoneId="1">
 						<!--Interface to 'Room'-->
 						<InterfaceHeatConduction modelType="Constant">
 							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 						</InterfaceHeatConduction>
 				</InterfaceA>
-				<InterfaceB id="2" location="B" zoneId="0">
+				<InterfaceB id="2" zoneId="0">
 						<!--Interface to outside-->
 						<InterfaceHeatConduction modelType="Constant">
 							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
