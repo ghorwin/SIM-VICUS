@@ -156,7 +156,7 @@ void DefaultModel::resultValueRefs(std::vector<const double *> &res) const {
 
 
 const double * DefaultModel::resultValueRef(const QuantityName & quantityName) const {
-	FUNCID(DefaultModel::resultValueRef);
+//	FUNCID(DefaultModel::resultValueRef);
 
 	// find corresponding quantity description
 	int resultsIndex = decodeResultType(quantityName.m_name);

@@ -81,75 +81,74 @@ void OutputFile::stepCompleted(double t) {
 }
 
 
-void OutputFile::setInputValueRef(const InputReference & inputRef, const QuantityDescription & resultDesc, const double * resultValueRef) {
-	FUNCID(OutputFile::setInputValueRef);
-	// For now we assume that the framework will tell us the result value refs in the same
-	// order as we have published the input references.
-	// We do some checking, though.
+void OutputFile::setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions,
+								   const std::vector<const double *> & resultValueRefs)
+{
+	FUNCID(OutputFile::setInputValueRefs);
 
 	unsigned int currentValueRefIndex = m_valueRefs.size();
-	if (m_inputRefs[currentValueRefIndex] != inputRef)
-		throw IBK::Exception(IBK::FormatString("Input reference for provided value reference does not match original order."), FUNC_ID);
 
-	m_valueRefs.push_back(resultValueRef);
-	m_quantityDescs.push_back(resultDesc);
-	if (resultValueRef != nullptr) {
-		try {
-			m_valueUnits.push_back(IBK::Unit(resultDesc.m_unit));
-		}
-		catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Invalid/unknown unit provided for quantity %1 ('%2').")
-								 .arg(resultDesc.m_name).arg(resultDesc.m_description), FUNC_ID);
-		}
-		// in case of integral quantities, generate time integral quantity from value
-		const NANDRAD::OutputDefinition & od = m_outputDefinitions[ m_outputDefMap[currentValueRefIndex] ];
-		if (od.m_timeType == NANDRAD::OutputDefinition::OTT_INTEGRAL) {
-			IBK::Unit u = IBK::UnitList::instance().integralQuantity(m_valueUnits.back(), false, true);
-			// special handling for energy units J and J/m2 - we rather want kWh and kWh/m2 as outputs
-			if (u.name() == "J/m2")
-				u.set("kWh/m2");
-			else if (u.name() == "J")
-					u.set("kWh");
-			m_valueUnits.back() = u;
-		}
-	}
-	else {
-		// add dummy unit, since result is not available
-		m_valueUnits.push_back(IBK::Unit());
-	}
+	m_valueRefs = resultValueRefs;
+	m_quantityDescs = resultDescriptions;
 
-	// once we have all input value refs, we can initialize our cache vectors
-	if (m_valueRefs.size() == m_inputRefs.size()) {
-
-		// we go through all variables and count the number of non-zero values
-		m_numCols = 0;
-		m_haveIntegrals = false;
-		for (unsigned int i=0; i<m_valueRefs.size(); ++i) {
-			if (m_valueRefs[i] == nullptr) {
-				IBK::IBK_Message(IBK::FormatString("Output for %1(id=%2).%3 not available, skipped.\n")
-								 .arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_inputRefs[i].m_referenceType))
-								 .arg(m_inputRefs[i].m_id)
-								 .arg(m_inputRefs[i].m_name.m_name), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
+	// process all variables and cache units
+	for (unsigned int i=0; i<m_valueRefs.size(); ++i) {
+		const double * resultValueRef = m_valueRefs[i];
+		if (resultValueRef != nullptr) {
+			try {
+				m_valueUnits.push_back(IBK::Unit(m_quantityDescs[i].m_unit));
 			}
-			else {
-				++m_numCols;
-				// decide integration based on original output definition
-				const NANDRAD::OutputDefinition & od = m_outputDefinitions[ m_outputDefMap[i] ];
-				if (od.m_timeType != NANDRAD::OutputDefinition::OTT_NONE)
-					m_haveIntegrals = true;
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, IBK::FormatString("Invalid/unknown unit provided for quantity %1 ('%2').")
+									 .arg(m_quantityDescs[i].m_name).arg(m_quantityDescs[i].m_description), FUNC_ID);
+			}
+			// in case of integral quantities, generate time integral quantity from value
+			const NANDRAD::OutputDefinition & od = m_outputDefinitions[ m_outputDefMap[currentValueRefIndex] ];
+			if (od.m_timeType == NANDRAD::OutputDefinition::OTT_INTEGRAL) {
+				IBK::Unit u = IBK::UnitList::instance().integralQuantity(m_valueUnits.back(), false, true);
+				// special handling for energy units J and J/m2 - we rather want kWh and kWh/m2 as outputs
+				if (u.name() == "J/m2")
+					u.set("kWh/m2");
+				else if (u.name() == "J")
+						u.set("kWh");
+				m_valueUnits.back() = u;
 			}
 		}
-
-		// if we have integral values, initialize integral data store with 0
-		if (m_haveIntegrals) {
-			m_integrals[0].resize(m_numCols, 0.0);
-			m_integrals[1].resize(m_numCols, 0.0);
-			m_integralsAtLastOutput.resize(m_numCols, 0.0);
-			// time points of -1 mean "uninitialized" - the simulation may be continued from later time points
-			m_tLastStep = -1;
-			m_tCurrentStep = -1;
+		else {
+			// add dummy unit, since result is not available
+			m_valueUnits.push_back(IBK::Unit());
 		}
+	}
 
+	// initialize our cache vectors
+
+	// we go through all variables and count the number of non-zero values
+	m_numCols = 0;
+	m_haveIntegrals = false;
+	for (unsigned int i=0; i<m_valueRefs.size(); ++i) {
+		if (m_valueRefs[i] == nullptr) {
+			IBK::IBK_Message(IBK::FormatString("Output for %1(id=%2).%3 not available, skipped.\n")
+							 .arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_inputRefs[i].m_referenceType))
+							 .arg(m_inputRefs[i].m_id)
+							 .arg(m_inputRefs[i].m_name.m_name), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
+		}
+		else {
+			++m_numCols;
+			// decide integration based on original output definition
+			const NANDRAD::OutputDefinition & od = m_outputDefinitions[ m_outputDefMap[i] ];
+			if (od.m_timeType != NANDRAD::OutputDefinition::OTT_NONE)
+				m_haveIntegrals = true;
+		}
+	}
+
+	// if we have integral values, initialize integral data store with 0
+	if (m_haveIntegrals) {
+		m_integrals[0].resize(m_numCols, 0.0);
+		m_integrals[1].resize(m_numCols, 0.0);
+		m_integralsAtLastOutput.resize(m_numCols, 0.0);
+		// time points of -1 mean "uninitialized" - the simulation may be continued from later time points
+		m_tLastStep = -1;
+		m_tCurrentStep = -1;
 	}
 
 }

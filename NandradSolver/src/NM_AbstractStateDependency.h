@@ -92,7 +92,7 @@ public:
 		This function is called after all result vectors are resized and the input value
 		references are filled with valid pointers.
 
-		Default implemmentation does nothing (i.e. no direct dependencies).
+		Default implementation does nothing (i.e. no direct dependencies).
 
 		\param resultInputValueReferences pattern of results and input values that are directly
 			connected by a calculation rule
@@ -125,16 +125,15 @@ public:
 		NANDRAD::ImplicitModelFeedback::operation_t operation) = 0;
 #endif
 
-	/*! Sets a single input value reference (persistent memory location) that refers to the requested input reference.
-		\param inputRef An input reference from the previously published list of input references.
-		\param resultDesc The corresponding quantity description with meta-data about the result quantity (needed by some models
-			to check for valid units).
-		\param resultValueRef Persistent memory location to the variable slot.
-
-		\todo Refactor to setInputValueRefs(
-				const std::vector<QuantityDescription> & quantityDescs, std::vector<const double *> resultValueRefs);
+	/*! Provides the object with references to requested input variables (persistent memory location).
+		The vectors passed as argument have the same size as the requested input reference vector populated in function
+		inputReferences(). Also, the order of the variables matches the order of the requested input references.
+		\param resultDescriptions The corresponding quantity descriptions with meta-data about the result quantities
+			(needed by some models to obtain units or check for valid units).
+		\param resultValueRefs Persistent memory locations of all variable. Unavailable variables (not required) have
+			nullptr values. The corresponding QuantityDescription is also unused.
 	*/
-	virtual void setInputValueRef(const InputReference &inputRef, const QuantityDescription & resultDesc, const double *resultValueRef) = 0;
+	virtual void setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs) = 0;
 
 	/*! This function is called whenever result quantities of other models change.
 		Re-implement this function in derived classes and handle all your update-functionality here.

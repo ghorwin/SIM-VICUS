@@ -113,11 +113,8 @@ protected:
 
 private:
 
-	/*! Sets a single input value reference (persistent memory location) that refers to the requested input reference.
-		\param inputRef An input reference from the previously published list of input references.
-		\param resultValueRef Persistent memory location to the variable slot.
-	*/
-	virtual void setInputValueRef(const InputReference &inputRef, const QuantityDescription & resultDesc, const double *resultValueRef) override;
+	/*! Provides the object with references to requested input variables (persistent memory location). */
+	virtual void setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs) override;
 
 //	/*! Model references defined by all models. */
 //	std::vector<InputReferenceToVectorValuedTarget>	m_inputReferences;

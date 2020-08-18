@@ -112,11 +112,8 @@ public:
 	*/
 	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const override;
 
-	/*! Sets a single input value reference (persistent memory location) that refers to the requested input reference.
-		\param inputRef An input reference from the previously published list of input references.
-		\param resultValueRef Persistent memory location to the variable slot.
-	*/
-	virtual void setInputValueRef(const InputReference &inputRef, const QuantityDescription & resultDesc, const double *resultValueRef) override;
+	/*! Provides the object with references to requested input variables (persistent memory location). */
+	virtual void setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs) override;
 
 	/*! Sums up all provided input quantities and computes divergence of balance equations. */
 	int update() override;
@@ -157,7 +154,7 @@ private:
 	std::vector<double>								m_ydot;
 
 	/*! Vector with input references, first the NUM_InputRef scalar input refs, then the vector-valued. */
-	std::vector<const double*>						m_inputRefs;
+	std::vector<const double*>						m_valueRefs;
 
 	/*! Construction interface. */
 	const NANDRAD::ConstructionInstance				*m_con;

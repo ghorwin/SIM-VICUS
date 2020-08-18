@@ -113,11 +113,16 @@ void RoomBalanceModel::inputReferences(std::vector<InputReference> & inputRefs) 
 
 }
 
+void RoomBalanceModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/,
+										 const std::vector<const double *> & resultValueRefs)
+{
+	m_valueRefs = resultValueRefs;
 
-void RoomBalanceModel::setInputValueRef(const InputReference & inputRef, const QuantityDescription & resultDesc, const double * resultValueRef) {
-	/// \todo
+
 
 }
+
+
 
 
 int RoomBalanceModel::update() {

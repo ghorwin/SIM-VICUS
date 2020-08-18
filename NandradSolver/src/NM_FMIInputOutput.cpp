@@ -57,8 +57,9 @@ void FMIInputOutput::initInputReferences(const std::vector<AbstractModel *> &) {
 }
 
 
-void FMIInputOutput::setInputValueRef(const InputReference & inputRef, const QuantityDescription & resultDesc, const double * resultValueRef) {
-
+void FMIInputOutput::setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs) {
+	m_valueRefs = resultValueRefs;
+	/// \todo process result descriptions and check if they match FMI output variable specs
 }
 
 

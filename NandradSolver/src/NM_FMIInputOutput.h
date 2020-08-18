@@ -83,11 +83,8 @@ public:
 	*/
 	virtual void initInputReferences(const std::vector<AbstractModel*> & /* models */) override;
 
-	/*! Sets a single input value reference (persistent memory location) that refers to the requested input reference.
-		\param inputRef An input reference from the previously published list of input references.
-		\param resultValueRef Persistent memory location to the variable slot.
-	*/
-	virtual void setInputValueRef(const InputReference &inputRef, const QuantityDescription & resultDesc, const double *resultValueRef) override;
+	/*! Provides the object with references to requested input variables (persistent memory location). */
+	virtual void setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs) override;
 
 	/*! Since FMI export only pulls data when master requests, we have nothing to do here. */
 	virtual int update() override { return 0; }

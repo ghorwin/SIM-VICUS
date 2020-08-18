@@ -165,8 +165,9 @@ protected:
 
 	/*! Does nothing.*/
 	virtual void inputReferences(std::vector<InputReference>  & /* inputRefs*/) const override { }
-	/*! Does nothing.*/
-	virtual void setInputValueRef(const InputReference &/*inputRef*/, const QuantityDescription & /*resultDesc*/, const double */*resultValueRef*/) override {}
+	/*! Provides the object with references to requested input variables (persistent memory location). */
+	virtual void setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/,
+								   const std::vector<const double *> & /*resultValueRefs*/) override {}
 
 
 private:

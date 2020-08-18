@@ -131,11 +131,8 @@ public:
 	*/
 	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const override;
 
-	/*! Sets a single input value reference (persistent memory location) that refers to the requested input reference.
-		\param inputRef An input reference from the previously published list of input references.
-		\param resultValueRef Persistent memory location to the variable slot.
-	*/
-	virtual void setInputValueRef(const InputReference &inputRef, const QuantityDescription & resultDesc, const double *resultValueRef) override;
+	/*! Provides the object with references to requested input variables (persistent memory location). */
+	virtual void setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs) override;
 
 	/*! Sums up all provided input quantities and computes divergence of balance equations. */
 	int update() override;
@@ -162,7 +159,7 @@ private:
 		This vector is resized and filled by the framework.
 		\sa inputValueRefs()
 	*/
-	std::vector<const double *>						m_inputValueRefs;
+	std::vector<const double *>						m_valueRefs;
 
 
 	/*! Vector with cached derivatives, updated at last call to update(). */

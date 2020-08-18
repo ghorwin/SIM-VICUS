@@ -121,12 +121,14 @@ void ConstructionBalanceModel::inputReferences(std::vector<InputReference> & inp
 				inputRefs[InputRef_RoomATemperature] = ref;
 			}
 		}
-	}
+		}
 }
 
 
-void ConstructionBalanceModel::setInputValueRef(const InputReference & inputRef, const QuantityDescription & resultDesc, const double * resultValueRef) {
-
+void ConstructionBalanceModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/,
+												 const std::vector<const double *> & resultValueRefs)
+{
+	m_valueRefs = resultValueRefs;
 }
 
 
@@ -177,13 +179,13 @@ void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NAN
 		double Tambient;
 		if (zoneID == 0) {
 			// we need ambient temperature and our surface temperature
-			Tambient = *m_inputRefs[InputRef_AmbientTemperature];
+			Tambient = *m_valueRefs[InputRef_AmbientTemperature];
 		}
 		else {
 			if (sideA)
-				Tambient = *m_inputRefs[InputRef_RoomATemperature];
+				Tambient = *m_valueRefs[InputRef_RoomATemperature];
 			else
-				Tambient = *m_inputRefs[InputRef_RoomBTemperature];
+				Tambient = *m_valueRefs[InputRef_RoomBTemperature];
 		}
 		switch (iface.m_heatConduction.m_modelType) {
 			case NANDRAD::InterfaceHeatConduction::MT_CONSTANT : {

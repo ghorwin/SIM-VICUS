@@ -1952,8 +1952,8 @@ void NandradModel::initModelDependencies() {
 			std::vector<InputReference> inputRefs;
 			currentStateDependency->inputReferences(inputRefs);
 
-			/// \todo refactor to collect input ref pointers in vector first and then set entire input ref vector
-			///       in model object
+			std::vector<const double*> resultValueRefs;
+			std::vector<QuantityDescription> resultQuantityDescs;
 
 			// process and lookup all of the variables variables
 			for (unsigned int j = 0; j < inputRefs.size(); ++j) {
@@ -1963,7 +1963,8 @@ void NandradModel::initModelDependencies() {
 
 				// if inputRef.m_referenceType = NUM_MRT skip this and set nullptr directly
 				if (inputRef.m_referenceType == NANDRAD::ModelInputReference::NUM_MRT) {
-					currentStateDependency->setInputValueRef(inputRef, quantityDesc, nullptr);
+					resultValueRefs.push_back(nullptr);
+					resultQuantityDescs.push_back(quantityDesc);
 					continue;
 				}
 
@@ -2038,12 +2039,14 @@ void NandradModel::initModelDependencies() {
 					else {
 						// if not required, tell the model object that we do not have such an input by giving a nullptr;
 						// the model must handle this appropriately
-						currentStateDependency->setInputValueRef(inputRef, quantityDesc, nullptr);
+						resultValueRefs.push_back(nullptr);
+						resultQuantityDescs.push_back(quantityDesc);
 					}
 				}
 				else {
 					// tell model the persistent memory location of the requested input
-					currentStateDependency->setInputValueRef(inputRef, quantityDesc, srcVarAddress);
+					resultValueRefs.push_back(srcVarAddress);
+					resultQuantityDescs.push_back(quantityDesc);
 					// register this model as dependency, but only if providing model was an object in the model graph
 					// and the input variable is not a constant
 					if (srcObject != nullptr && !quantityDesc.m_constant) {
@@ -2056,7 +2059,10 @@ void NandradModel::initModelDependencies() {
 							//       parallel for-loop has completed.
 					}
 				}
-			}
+			} // input value refs loop
+
+			// set collected value refs in object
+			currentStateDependency->setInputValueRefs(resultQuantityDescs, resultValueRefs);
 		}
 		catch (IBK::Exception &ex) {
 #if defined(_OPENMP)
