@@ -73,9 +73,6 @@ public:
 	*/
 	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const override;
 
-	/*! Returns vector with pointers to memory locations matching input value references. */
-	virtual const std::vector<const double *> & inputValueRefs() const override { return m_valueRefs; }
-
 	/*! Sets all object dependencies.
 		Called when all model results have been initialized (i.e. the function
 		initResults() was called in all model objects).

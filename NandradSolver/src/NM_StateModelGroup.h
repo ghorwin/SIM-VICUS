@@ -107,7 +107,7 @@ public:
 //	virtual void inputReferenceDescriptions(std::vector<QuantityDescription> & /*refDesc*/) const { }
 
 	/*! Return an empty vector.*/
-	virtual const std::vector<const double *> & inputValueRefs() const override { return m_emptyInputReferenceVector; }
+	virtual void inputValueRefs(std::vector<const double *> & valueRefs) const override { (void)valueRefs; }
 
 	/*! Re-implement this function in derived classes and handle all your update-functionality here. */
 	virtual int update() override;
@@ -227,9 +227,6 @@ private:
 	/*! Transpose sparse matrix indices. */
 	std::vector<unsigned int>				m_iaT;
 	std::vector<unsigned int>				m_jaT;
-
-	/*! Empty reference vector for function call. */
-	static std::vector<const double *>		m_emptyInputReferenceVector;
 
 	friend class NandradModelImpl;
 };

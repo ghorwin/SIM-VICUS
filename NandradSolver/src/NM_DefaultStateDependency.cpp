@@ -303,7 +303,8 @@ void DefaultStateDependency::stateDependencies(std::vector< std::pair<const doub
 	model->resultValueRefs(valueRefs);
 
 	// retrieve input value references
-	std::vector<const double *> inputRefs = inputValueRefs();
+	std::vector<const double *> inputRefs;
+	inputValueRefs(inputRefs);
 
 	// now we add a dependency between each input value and each result value
 	for(unsigned int i = 0; i < valueRefs.size(); ++i)

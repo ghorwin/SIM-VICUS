@@ -66,7 +66,7 @@ public:
 		quantity type and a source model id. Alternatively use 'inputValueRefs(quantityType)'
 		that provides an iterator to the first value reference of a given quantity type.
 	*/
-	virtual const std::vector<const double *> & inputValueRefs() const override { return m_inputValueRefs; }
+	virtual void inputValueRefs(std::vector<const double *> & valueRefs) const override { valueRefs = m_inputValueRefs; }
 
 	/*! Function for access an input value reference to a scalar target via enumeration.*/
 	const double *inputValueRef(int quantityType) const;

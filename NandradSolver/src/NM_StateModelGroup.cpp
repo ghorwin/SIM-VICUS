@@ -42,8 +42,6 @@
 
 namespace NANDRAD_MODEL {
 
-std::vector<const double *>	StateModelGroup::m_emptyInputReferenceVector;
-
 
 // *** Implementation of StateModelGroup ***
 

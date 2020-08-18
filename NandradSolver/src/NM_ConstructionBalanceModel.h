@@ -112,9 +112,6 @@ public:
 	*/
 	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const override;
 
-	/*! Returns vector with pointers to memory locations matching input value references. */
-	virtual const std::vector<const double *> & inputValueRefs() const override;
-
 	/*! Sets a single input value reference (persistent memory location) that refers to the requested input reference.
 		\param inputRef An input reference from the previously published list of input references.
 		\param resultValueRef Persistent memory location to the variable slot.

@@ -79,8 +79,7 @@ public:
 	*/
 	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const  = 0;
 
-	/*! Returns vector with pointers to memory locations matching input value references. */
-	virtual const std::vector<const double *> & inputValueRefs() const = 0;
+	virtual void inputValueRefs(std::vector<const double *> & valueRefs) const {}
 
 	/*! Returns a pattern of direkt computational dependencies between input values
 		and result values of the current model (the first pair entry corresponds

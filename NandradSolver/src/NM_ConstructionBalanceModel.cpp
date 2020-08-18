@@ -125,11 +125,6 @@ void ConstructionBalanceModel::inputReferences(std::vector<InputReference> & inp
 }
 
 
-const std::vector<const double *> & ConstructionBalanceModel::inputValueRefs() const {
-
-}
-
-
 void ConstructionBalanceModel::setInputValueRef(const InputReference & inputRef, const QuantityDescription & resultDesc, const double * resultValueRef) {
 
 }

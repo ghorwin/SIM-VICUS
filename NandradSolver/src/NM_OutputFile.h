@@ -95,9 +95,6 @@ public:
 	/*! Returns vector with model input references. */
 	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const override { inputRefs = m_inputRefs; }
 
-	/*! Returns vector with pointers to memory locations matching input value references. */
-	virtual const std::vector<const double *> & inputValueRefs() const override { return m_valueRefs; }
-
 	/*! Not implemented, since already done in init(). */
 	virtual void initInputReferences(const std::vector<AbstractModel*> & /* models */) override {}
 

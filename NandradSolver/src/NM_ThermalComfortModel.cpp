@@ -233,8 +233,9 @@ void ThermalComfortModel::initInputReferences(const std::vector<AbstractModel*> 
 
 int ThermalComfortModel::update() {
 
+#if 0
 	// we start with scalar references
-	const double *roomTempRef = inputValueRefs()[InputRef_AirTemperature];
+	const double *roomTempRef = m_inputValueRefs()[InputRef_AirTemperature];
 
 	IBK_ASSERT(roomTempRef != NULL);
 	// retrieve room temperature
@@ -289,14 +290,16 @@ int ThermalComfortModel::update() {
 	double OperativeTemperature = 0.5 * (RadiantTemperature + RoomTemperature);
 	// store the result
 	m_results[R_OperativeTemperature] = OperativeTemperature;
+#endif
 	// signal success
 	return 0;
 }
 
 
 void ThermalComfortModel::stateDependencies(std::vector< std::pair<const double *, const double *> >
-							&resultInputValueReferences) const {
-
+							&resultInputValueReferences) const
+{
+#if 0
 	// connect all convective and radiant sources
 	const double *valueRef = &m_results[R_RadiantTemperature];
 	// retreive all fluxes
@@ -362,7 +365,7 @@ void ThermalComfortModel::stateDependencies(std::vector< std::pair<const double 
 			resultInputValueReferences.push_back(std::make_pair(valueRef, inputRef)  );
 		}
 	}
-
+#endif
 }
 
 
