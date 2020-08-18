@@ -22,13 +22,25 @@
 
 #include "NM_ConstructionBalanceModel.h"
 
+#include <NANDRAD_ConstructionInstance.h>
+
+#include "NM_ConstructionStatesModel.h"
+
 namespace NANDRAD_MODEL {
 
 
 void ConstructionBalanceModel::setup(const NANDRAD::ConstructionInstance & con,
 									 const NANDRAD::SimulationParameter & simPara,
-									 NANDRAD_MODEL::ConstructionStatesModel * statesModel)
+									 const ConstructionStatesModel * statesModel)
 {
+	m_con = &con;
+	m_statesModel = statesModel;
+
+	// cross section area in [m2]
+	m_area = con.m_para[NANDRAD::ConstructionInstance::CP_AREA].value;
+	/// \todo subtract areas of embedded objects to get net area
+
+	// resize storage vectors for divergences, sources, and initialize boundary conditions
 
 }
 
@@ -74,13 +86,51 @@ void ConstructionBalanceModel::setInputValueRef(const InputReference & inputRef,
 
 }
 
-int ConstructionBalanceModel::update()
-{
-
+int ConstructionBalanceModel::update() {
+	// process all interfaces
+	calculateBoundaryConditions(true, m_con->m_interfaceA);
+	calculateBoundaryConditions(false, m_con->m_interfaceB);
 }
 
 int ConstructionBalanceModel::ydot(double * ydot)
 {
+
+}
+
+void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NANDRAD::Interface & iface) {
+	// determine zone ID
+	unsigned int zoneID = iface.m_zoneId;
+	if (zoneID == 0) {
+		// outside location - process parametrized boundary conditions
+		if (iface.m_heatConduction.m_modelType != NANDRAD::InterfaceHeatConduction::NUM_MT) {
+			// we need ambient temperature and our surface temperature
+			double Tambient = *m_inputRefs[InputRef_AmbientTemperature];
+			switch (iface.m_heatConduction.m_modelType) {
+				case NANDRAD::InterfaceHeatConduction::MT_CONSTANT : {
+					// transfer coefficient
+					double alpha = iface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
+					double Ts = sideA ? m_statesModel->m_TsA : m_statesModel->m_TsB;
+
+					// flux density [W/m2] into left side construction
+					double fluxDensity = alpha*(Tambient - Ts);
+					// total flux [W]
+					double flux = fluxDensity*m_area;
+
+					// store results
+					if (sideA) {
+						m_fluxDensityHeatConductionA = fluxDensity;
+						m_results[R_FluxHeatConductionA] = flux;
+					}
+					else {
+						m_fluxDensityHeatConductionB = fluxDensity;
+						m_results[R_FluxHeatConductionB] = -flux; // Mind sign convention
+					}
+				}
+				case NANDRAD::InterfaceHeatConduction::NUM_MT: ;// nothing to do, just to silence compiler warning
+			}
+
+		}
+	}
 
 }
 

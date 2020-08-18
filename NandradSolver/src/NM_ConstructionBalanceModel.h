@@ -29,32 +29,33 @@
 namespace NANDRAD {
 	class ConstructionInstance;
 	class SimulationParameter;
+	class Interface;
 }
 
 namespace NANDRAD_MODEL {
 
 class ConstructionStatesModel;
 
-/*!	This model encapsulates the whole computation functionality for a
+/*!	This model encapsulates the most part of the computation functionality for a
 	1D construction solver.
+	It computes internal sources and boundary condition fluxes, and finally the divergences
+	of all balance equations in the model.
+
+	Depending on formulated boundary conditions, it requires input from RoomStatesModel and Loads models.
 */
 class ConstructionBalanceModel : public AbstractModel, public AbstractStateDependency {
 public:
 
-	enum WallMoistureBalanceCalculationMode {
-		CM_Average,							// Keyword: Average								'Vvapor transport calculation through average wall layers including boundaries.'
-		CM_Detailed,						// Keyword: Detailed							'Detailed vapor storage and transport calculation including spacial discretization.'
-		CM_None								// Keyword: None								'No wall moisture calculation.'
+	enum Results {
+		R_FluxHeatConductionA,				// Keyword: FluxHeatConductionA		[W]			'Heat conduction flux across interface A (into construction).'
+		R_FluxHeatConductionB,				// Keyword: FluxHeatConductionB		[W]			'Heat conduction flux across interface B (into construction).'
+		NUM_R
 	};
+
 	enum VectorValuedResults {
 		VVR_ThermalLoad,					// Keyword: ThermalLoad				[W]			'Optional field fluxes for all material layers with given layer index.'
 		NUM_VVR
 	};
-	enum InputReferences {
-		InputRef_FieldFlux,					// Keyword: FieldFlux				[W]			'Optional field flux for a given material layer.'
-		NUM_InputRef
-	};
-
 
 	/*! Constructor */
 	ConstructionBalanceModel(unsigned int id, const std::string &displayName) :
@@ -63,7 +64,8 @@ public:
 	}
 
 	/*! Initializes model. */
-	void setup(const NANDRAD::ConstructionInstance & con, const NANDRAD::SimulationParameter & simPara, ConstructionStatesModel * statesModel);
+	void setup(const NANDRAD::ConstructionInstance & con, const NANDRAD::SimulationParameter & simPara,
+			   const ConstructionStatesModel * statesModel);
 
 
 	// *** Re-implemented from AbstractModel
@@ -97,7 +99,7 @@ public:
 	// *** Re-implemented from AbstractStateDependency
 
 	/*! Return evaluation priority. */
-	int priorityOfModelEvaluation() const;
+	int priorityOfModelEvaluation() const override;
 
 	/*! Composes all input references.*/
 	virtual void initInputReferences(const std::vector<AbstractModel*> & /* models */) override;
@@ -129,16 +131,46 @@ public:
 	int ydot(double* ydot);
 
 private:
+	/*! Computes boundary condition fluxes. */
+	void calculateBoundaryConditions(bool sideA, const NANDRAD::Interface & iface);
+
+
+	/*! Enumeration types for ordered input references, some may be unused and remain nullptr. */
+	enum InputReferences {
+		InputRef_AmbientTemperature,
+		InputRef_RoomATemperature,
+		InputRef_RoomBTemperature,
+		NUM_InputRef
+	};
+
 	/*! Construction instance ID. */
 	unsigned int									m_id;
 	/*! Display name (for error messages). */
 	std::string										m_displayName;
 	/*! True if moisture balance is enabled. */
 	bool											m_moistureBalanceEnabled;
+	/*! Net cross section of construction in [m2]. */
+	double											m_area;
 	/*! Data cache for calculated results (updated in call to update()).
 		Index matches enum values of Results.
 	*/
 	std::vector<double>								m_results;
+
+
+	/*! Vector with input references, first the NUM_InputRef scalar input refs, then the vector-valued. */
+	std::vector<const double*>						m_inputRefs;
+
+	/*! Construction interface. */
+	const NANDRAD::ConstructionInstance				*m_con;
+	/*! Cached pointer to the corresponding states model. */
+	const ConstructionStatesModel					*m_statesModel;
+//	/*! Cached pointer to simulation settings. */
+//	const NANDRAD::SimulationParameter				*m_simPara;
+
+	/*! Heat conduction flux density at left side [W/m2] (positive from left to right). */
+	double											m_fluxDensityHeatConductionA = 0;
+	/*! Heat conduction flux density at right side [W/m2] (positive from left to right). */
+	double											m_fluxDensityHeatConductionB = 0;
 };
 
 } // namespace NANDRAD_MODEL

@@ -203,6 +203,8 @@ private:
 	/*! Surface temperature at right side (side B) [K]. */
 	double							m_TsB;
 
+
+	friend class ConstructionBalanceModel; // Our balance model can directly take the data from us
 };
 
 } // namespace NANDRAD_MODEL

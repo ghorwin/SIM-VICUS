@@ -48,10 +48,12 @@ class ConstructionType;
 	the wall area is interpreted as a wall consisting of only windows without an
 	construction behind.
 
-	Each constructionInstance stores its surface information inside the interface vector.
-	Maximum two interfaces are allowed, each of them characterized with the attribute
-	either Interface::type_t::IT_LEFT or Interface::type_t::IT_RIGHT. A non-existent interface
-	is equivalent to an adiabatic wall surface.
+	Each construction instance stores its surface information inside interface data structures
+	for side A and side B. Side A is besides construction layer index 0.
+	By default, an interface has no boundary condition information (model types are set to undefined)
+	and hence no fluxes are calculated.
+	There must be at least one interface with valid boundary condition parametrization for a construction
+	instance to be valid.
 
 	Construction and window information is referenced due to a single construction type and
 	window type id number. Only one window type and only one shading type are allowed. The
@@ -104,14 +106,10 @@ public:
 	/*! List of parameters. */
 	IBK::Parameter				m_para[NUM_CP];					// XML:E
 
-	/*! The interfaces (connections of construction sides to zones).
-		There can be maximum of 2 interfaces, one with the ID "Left" and one with the ID "Right". If either
-		one is missing, this side of the construction is considered to be adiabatic (has same conditions as
-		zone connected to with other interface).
-		There must be at least one interface defined for a construction instance to be valid.
-		\sa Interface
-	*/
-	std::vector<Interface>		m_interfaces;					// XML:E
+	/*! The interface at side A. */
+	Interface					m_interfaceA;					// XML:E
+	/*! The interface at side B. */
+	Interface					m_interfaceB;					// XML:E
 
 	/*! All embedded objects. Embedded objects cut out an area of the current construction and substitute
 		wall simulation by an explicit simulation model.

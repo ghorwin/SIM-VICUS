@@ -86,18 +86,10 @@ void ConstructionInstance::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
-			else if (cName == "Interfaces") {
-				const TiXmlElement * c2 = c->FirstChildElement();
-				while (c2) {
-					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "Interface")
-						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-					Interface obj;
-					obj.readXML(c2);
-					m_interfaces.push_back(obj);
-					c2 = c2->NextSiblingElement();
-				}
-			}
+			else if (cName == "Interface")
+				m_interfaceA.readXML(c);
+			else if (cName == "Interface")
+				m_interfaceB.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -126,17 +118,9 @@ TiXmlElement * ConstructionInstance::writeXML(TiXmlElement * parent) const {
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
 	}
 
-	if (!m_interfaces.empty()) {
-		TiXmlElement * child = new TiXmlElement("Interfaces");
-		e->LinkEndChild(child);
+	m_interfaceA.writeXML(e);
 
-		for (std::vector<Interface>::const_iterator it = m_interfaces.begin();
-			it != m_interfaces.end(); ++it)
-		{
-			it->writeXML(child);
-		}
-	}
-
+	m_interfaceB.writeXML(e);
 	return e;
 }
 

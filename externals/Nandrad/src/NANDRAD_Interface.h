@@ -48,12 +48,6 @@ class Zone;
 class Interface {
 public:
 
-	enum location_t {
-		IT_A = 0,		// Keyword: A				'Interface is situated at left side labeled A.'
-		IT_B,			// Keyword: B				'Interface is situated at right side labeled B.'
-		NUM_IT
-	};
-
 	/*! Boundary condition parameter blocks. */
 	enum condition_t {
 		IP_HEATCONDUCTION,		// Keyword: HeatConduction			'Heat conduction boundary condition.'
@@ -72,20 +66,20 @@ public:
 		impact on result calculation are the same (zone, location, physical parameters).
 	*/
 	bool behavesLike(const Interface & other) const {
-		return (m_location == other.m_location &&
-				m_zoneId == other.m_zoneId &&
+		return (m_zoneId == other.m_zoneId &&
 				m_heatConduction == other.m_heatConduction &&
 				m_solarAbsorption == other.m_solarAbsorption &&
 				m_longWaveEmission == other.m_longWaveEmission &&
 				m_vaporDiffusion == other.m_vaporDiffusion);
 	}
 
+	/*! Updates the comment regarding the zone this interface is connected to. */
+	void updateComment(const std::vector<Zone> & zones);
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! ID of the referenced surface/interface. */
 	unsigned int								m_id = INVALID_ID;		// XML:A:required
-	/*! The position of the interface, left ore right of the construction. */
-	location_t									m_location = IT_A;		// XML:A
 	/*! The id number of the neighboring zone. */
 	unsigned int								m_zoneId = 0;			// XML:A
 

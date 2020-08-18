@@ -365,7 +365,7 @@ std::string NandradModel::simTime2DateTimeString(double t) const {
 }
 
 
-void NandradModel::stepCompleted(double t, const double *y ) {
+void NandradModel::stepCompleted(double t, const double * /*y*/ ) {
 
 	// tell all modules that need to remember the last integration step, that they
 	// can cache a new state
@@ -621,6 +621,8 @@ void NandradModel::deserialize(void* & /*dataPtr*/) {
 
 
 void NandradModel::writeMetrics(double simtime, std::ostream * metricsFile) {
+	(void)simtime;
+	(void)metricsFile;
 
 #ifdef IBK_STATISTICS
 	const char * const FUNC_ID = "[NandradModel::writeMetrics]";
@@ -2018,7 +2020,7 @@ void NandradModel::initModelDependencies() {
 						// error: reference was not resolved
 						throw IBK::Exception(IBK::FormatString("Could not resolve reference to quantity %1 of %2 with id #%3!")
 							.arg(inputRef.m_name.m_name)
-							.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_modelContainer[i]->referenceType()))
+							.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_modelContainer[(size_t)i]->referenceType()))
 							.arg(m_modelContainer[(size_t)i]->id()), FUNC_ID);
 					}
 					else {

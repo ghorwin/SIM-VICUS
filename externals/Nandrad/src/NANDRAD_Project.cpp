@@ -94,23 +94,8 @@ void Project::writeXML(const IBK::Path & filename) const {
 
 	// update interface-zone comment
 	for (ConstructionInstance & con : const_cast<std::vector<ConstructionInstance>&>(m_constructionInstances)) {
-		for (Interface & ifac : con.m_interfaces) {
-			if (ifac.m_zoneId == 0)
-				ifac.m_comment = "Interface to outside";
-			else {
-				// lookup zone and its display name\n"
-				std::vector<Zone>::const_iterator it = std::find(m_zones.begin(), m_zones.end(), ifac.m_zoneId);
-				if (it != m_zones.end()) {
-					if (!it->m_displayName.empty())
-						ifac.m_comment = IBK::FormatString("Interface to '%1'").arg(it->m_displayName).str();
-					else
-						ifac.m_comment = IBK::FormatString("Interface to anonymous zone with id #%1").arg(ifac.m_zoneId).str();
-				}
-				else {
-					ifac.m_comment = IBK::FormatString("ERROR: Zone with id #%1 does not exist.").arg(ifac.m_zoneId).str();
-				}
-			}
-		}
+		con.m_interfaceA.updateComment(m_zones);
+		con.m_interfaceB.updateComment(m_zones);
 	}
 
 	writeDirectoryPlaceholdersXML(root);

@@ -26,7 +26,6 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
-#include <NANDRAD_KeywordList.h>
 #include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
@@ -48,14 +47,6 @@ void Interface::readXML(const TiXmlElement * element) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "id")
 				m_id = readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "location")
-			try {
-				m_location = (location_t)KeywordList::Enumeration("Interface::location_t", attrib->ValueStr());
-			}
-			catch (IBK::Exception & ex) {
-				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-					IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
-			}
 			else if (attribName == "zoneId")
 				m_zoneId = readPODAttributeValue<unsigned int>(element, attrib);
 			else {
@@ -113,8 +104,6 @@ TiXmlElement * Interface::writeXML(TiXmlElement * parent) const {
 	e->LinkEndChild(com);
 
 	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (m_location != NUM_IT)
-		e->SetAttribute("location", KeywordList::Keyword("Interface::location_t",  m_location));
 	e->SetAttribute("zoneId", IBK::val2string<unsigned int>(m_zoneId));
 
 	for (int i=0; i<NUM_IP; ++i) {
