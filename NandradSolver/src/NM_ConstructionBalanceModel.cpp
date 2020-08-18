@@ -41,7 +41,7 @@ void ConstructionBalanceModel::setup(const NANDRAD::ConstructionInstance & con,
 	/// \todo subtract areas of embedded objects to get net area
 
 	// resize storage vectors for divergences, sources, and initialize boundary conditions
-
+	m_ydot.resize(m_statesModel->m_n);
 }
 
 void ConstructionBalanceModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const
@@ -70,30 +70,70 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 
 }
 
+
 void ConstructionBalanceModel::inputReferences(std::vector<InputReference> & inputRefs) const {
-	//
+	// first add scalar input references
 	inputRefs.resize(NUM_InputRef);
 
 	// compute input references depending on requirements of interfaces
+
+	// side A
+
 	if (m_con->m_interfaceA.haveBCParameters()) {
 		// check if we have heat conduction
 		if (m_con->m_interfaceA.m_heatConduction.m_modelType != NANDRAD::InterfaceHeatConduction::NUM_MT) {
-			// for
+			// if ambient zone, create an input reference for
+			if (m_con->m_interfaceA.m_zoneId == 0) {
+				InputReference ref;
+				ref.m_id = 0;
+				ref.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
+				ref.m_name.m_name = "Temperature";
+				inputRefs[InputRef_AmbientTemperature] = ref;
+			}
+			else {
+				InputReference ref;
+				ref.m_id = m_con->m_interfaceA.m_zoneId;
+				ref.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+				ref.m_name.m_name = "AirTemperature";
+				inputRefs[InputRef_RoomATemperature] = ref;
+			}
 		}
 	}
 
+	// side B
+
+	if (m_con->m_interfaceB.haveBCParameters()) {
+		// check if we have heat conduction
+		if (m_con->m_interfaceB.m_heatConduction.m_modelType != NANDRAD::InterfaceHeatConduction::NUM_MT) {
+			// if ambient zone, create an input reference for
+			if (m_con->m_interfaceB.m_zoneId == 0) {
+				InputReference ref;
+				ref.m_id = 0;
+				ref.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
+				ref.m_name.m_name = "Temperature";
+				inputRefs[InputRef_AmbientTemperature] = ref;
+			}
+			else {
+				InputReference ref;
+				ref.m_id = m_con->m_interfaceB.m_zoneId;
+				ref.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+				ref.m_name.m_name = "AirTemperature";
+				inputRefs[InputRef_RoomATemperature] = ref;
+			}
+		}
+	}
+}
+
+
+const std::vector<const double *> & ConstructionBalanceModel::inputValueRefs() const {
 
 }
 
-const std::vector<const double *> & ConstructionBalanceModel::inputValueRefs() const
-{
+
+void ConstructionBalanceModel::setInputValueRef(const InputReference & inputRef, const QuantityDescription & resultDesc, const double * resultValueRef) {
 
 }
 
-void ConstructionBalanceModel::setInputValueRef(const InputReference & inputRef, const QuantityDescription & resultDesc, const double * resultValueRef)
-{
-
-}
 
 int ConstructionBalanceModel::update() {
 	// process all interfaces and compute boundary fluxes

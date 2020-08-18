@@ -1951,10 +1951,21 @@ void NandradModel::initModelDependencies() {
 			// request published input variables from model instance
 			std::vector<InputReference> inputRefs;
 			currentStateDependency->inputReferences(inputRefs);
+
+			/// \todo refactor to collect input ref pointers in vector first and then set entire input ref vector
+			///       in model object
+
 			// process and lookup all of the variables variables
 			for (unsigned int j = 0; j < inputRefs.size(); ++j) {
+
 				const InputReference &inputRef = inputRefs[j];
 				QuantityDescription quantityDesc; // here we store the quantity information of the variable
+
+				// if inputRef.m_referenceType = NUM_MRT skip this and set nullptr directly
+				if (inputRef.m_referenceType == NANDRAD::ModelInputReference::NUM_MRT) {
+					currentStateDependency->setInputValueRef(inputRef, quantityDesc, nullptr);
+					continue;
+				}
 
 				// now lookup address of requested variable
 				const double * srcVarAddress = nullptr;
