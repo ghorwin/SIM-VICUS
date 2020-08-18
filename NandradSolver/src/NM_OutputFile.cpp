@@ -81,12 +81,6 @@ void OutputFile::stepCompleted(double t) {
 }
 
 
-int OutputFile::priorityOfModelEvaluation() const {
-	// output files are evaluated last - no results are published from files
-	return AbstractStateDependency::priorityOffsetTail+6;
-}
-
-
 void OutputFile::setInputValueRef(const InputReference & inputRef, const QuantityDescription & resultDesc, const double * resultValueRef) {
 	FUNCID(OutputFile::setInputValueRef);
 	// For now we assume that the framework will tell us the result value refs in the same
