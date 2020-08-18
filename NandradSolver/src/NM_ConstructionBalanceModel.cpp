@@ -71,7 +71,16 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 }
 
 void ConstructionBalanceModel::inputReferences(std::vector<InputReference> & inputRefs) const {
-	// compute input references
+	//
+	inputRefs.resize(NUM_InputRef);
+
+	// compute input references depending on requirements of interfaces
+	if (m_con->m_interfaceA.haveBCParameters()) {
+		// check if we have heat conduction
+		if (m_con->m_interfaceA.m_heatConduction.m_modelType != NANDRAD::InterfaceHeatConduction::NUM_MT) {
+			// for
+		}
+	}
 
 
 }

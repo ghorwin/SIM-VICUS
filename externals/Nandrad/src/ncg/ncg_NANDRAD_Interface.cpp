@@ -59,19 +59,7 @@ void Interface::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "IBK:Flag") {
-				IBK::Flag f;
-				readFlagElement(c, f);
-				bool success = false;
-				try {
-					condition_t ftype = (condition_t)KeywordList::Enumeration("Interface::condition_t", f.name());
-					m_condition[ftype] = f; success=true;
-				}
-				catch (...) { /* intentional fail */  }
-				if (!success)
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			else if (cName == "InterfaceHeatConduction")
+			if (cName == "InterfaceHeatConduction")
 				m_heatConduction.readXML(c);
 			else if (cName == "InterfaceSolarAbsorption")
 				m_solarAbsorption.readXML(c);
@@ -105,11 +93,6 @@ TiXmlElement * Interface::writeXML(TiXmlElement * parent) const {
 
 	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	e->SetAttribute("zoneId", IBK::val2string<unsigned int>(m_zoneId));
-
-	for (int i=0; i<NUM_IP; ++i) {
-		if (!m_condition[i].name().empty())
-			TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_condition[i].name(), m_condition[i].isEnabled() ? "true" : "false");
-	}
 
 	m_heatConduction.writeXML(e);
 

@@ -48,15 +48,6 @@ class Zone;
 class Interface {
 public:
 
-	/*! Boundary condition parameter blocks. */
-	enum condition_t {
-		IP_HEATCONDUCTION,		// Keyword: HeatConduction			'Heat conduction boundary condition.'
-		IP_SOLARABSORPTION,		// Keyword: SolarAbsorption			'Short-wave solar absorption boundary condition.'
-		IP_LONGWAVEEMISSION,	// Keyword: LongWaveEmission		'Long wave emission (and counter radiation) boundary condition.'
-		IP_VAPORDIFFUSION,		// Keyword: VaporDiffusion			'Vapor diffusion boundary condition.'
-		NUM_IP
-	};
-
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	NANDRAD_READWRITE
@@ -76,15 +67,18 @@ public:
 	/*! Updates the comment regarding the zone this interface is connected to. */
 	void updateComment(const std::vector<Zone> & zones);
 
+	/*! Returns true, if any of the parameters blocks have boundary conditions defined.
+		If the model ID m_id is INVALID_ID, the function returns false (the default).
+		A boundary condition parameter block counts as defined, if the modelType is not NUM_MT.
+	*/
+	bool haveBCParameters() const;
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! ID of the referenced surface/interface. */
 	unsigned int								m_id = INVALID_ID;		// XML:A:required
 	/*! The id number of the neighboring zone. */
 	unsigned int								m_zoneId = 0;			// XML:A
-
-	/*! Enables the interface models. */
-	IBK::Flag									m_condition[NUM_IP];	// XML:E
 
 	// Boundary condition parameters
 	/*! Model for heat transfer coefficient. */
@@ -103,11 +97,6 @@ public:
 				 with Project::writeXML(). Any existing text will be overwritten.
 	*/
 	std::string									m_comment;				// XML:C
-
-	// *** Variables used only during simulation ***
-
-	/*! Reference to neighbor zone.*/
-	const Zone*									m_zoneRef = nullptr;
 };
 
 } // namespace NANDRAD

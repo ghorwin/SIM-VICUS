@@ -43,7 +43,18 @@ void Interface::updateComment(const std::vector<Zone> & zones) {
 		else {
 			m_comment = IBK::FormatString("ERROR: Zone with id #%1 does not exist.").arg(m_zoneId).str();
 		}
-	}
+		}
+}
+
+
+bool Interface::haveBCParameters() const {
+	if (m_id == INVALID_ID) return false;
+	if (m_heatConduction.m_modelType != InterfaceHeatConduction::NUM_MT) return true;
+	if (m_solarAbsorption.m_modelType != InterfaceSolarAbsorption::NUM_MT) return true;
+	if (m_longWaveEmission.m_modelType != InterfaceLongWaveEmission::NUM_MT) return true;
+	if (m_vaporDiffusion.m_modelType != InterfaceVaporDiffusion::NUM_MT) return true;
+	if (m_airFlow.m_modelType != InterfaceAirFlow::NUM_MT) return true;
+	return false;
 }
 
 } // namespace NANDRAD

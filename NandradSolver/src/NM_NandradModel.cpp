@@ -1790,7 +1790,8 @@ void NandradModel::initOutputs(bool restart) {
 								m_outputHandler->m_outputFiles.begin(),
 								m_outputHandler->m_outputFiles.end()); // transfers ownership
 
-		/// \todo add to "tail" model group
+		// NOTE: output file objects are not evaluated as other models in updateStateDependentModels().
+		//       Hence, we do not
 
 		for (NANDRAD_MODEL::OutputFile * of : m_outputHandler->m_outputFiles) {
 			// Only add those output files that have at least one integral value.
