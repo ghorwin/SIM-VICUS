@@ -156,6 +156,8 @@ private:
 	*/
 	std::vector<double>								m_results;
 
+	/*! Cached divergences of balance equations. */
+	std::vector<double>								m_ydot;
 
 	/*! Vector with input references, first the NUM_InputRef scalar input refs, then the vector-valued. */
 	std::vector<const double*>						m_inputRefs;

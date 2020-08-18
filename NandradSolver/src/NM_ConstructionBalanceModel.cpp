@@ -66,13 +66,13 @@ int ConstructionBalanceModel::priorityOfModelEvaluation() const {
 }
 
 
-void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractModel *> &)
-{
+void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractModel *> &) {
 
 }
 
-void ConstructionBalanceModel::inputReferences(std::vector<InputReference> & inputRefs) const
-{
+void ConstructionBalanceModel::inputReferences(std::vector<InputReference> & inputRefs) const {
+	// compute input references
+
 
 }
 
@@ -87,51 +87,88 @@ void ConstructionBalanceModel::setInputValueRef(const InputReference & inputRef,
 }
 
 int ConstructionBalanceModel::update() {
-	// process all interfaces
+	// process all interfaces and compute boundary fluxes
 	calculateBoundaryConditions(true, m_con->m_interfaceA);
 	calculateBoundaryConditions(false, m_con->m_interfaceB);
+
+	unsigned int nElements = m_statesModel->m_nElements;
+
+	// compute internal sources
+
+	// now compute all divergences in all elements
+
+	if (m_moistureBalanceEnabled) {
+		/// \todo hygrothermal code
+	}
+	else {
+		double * ydot = &m_ydot[0];
+		const double * qHeatCond = &m_statesModel->m_fluxes_q[0];
+		const ConstructionStatesModel::Element * E = &m_statesModel->m_elements[0];
+		ydot[0] = m_fluxDensityHeatConductionA;
+		for (unsigned int i=1; i<nElements; ++i) {
+			ydot[i-1] -= qHeatCond[i];	// Mind: we _subtract_ flux
+			ydot[i] = qHeatCond[i];		// Mind: we _set_ the positive flux
+			// finally divide by element volume (volume = dx * 1m2)
+			ydot[i-1] /= E[i-1].dx;
+		}
+		ydot[nElements-1] -= m_fluxDensityHeatConductionB;
+	}
+	return 0; // signal success
 }
 
-int ConstructionBalanceModel::ydot(double * ydot)
-{
 
+int ConstructionBalanceModel::ydot(double * ydot) {
+	std::memcpy(ydot, &m_ydot[0], sizeof(double)*m_ydot.size());
 }
+
 
 void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NANDRAD::Interface & iface) {
-	// determine zone ID
-	unsigned int zoneID = iface.m_zoneId;
-	if (zoneID == 0) {
-		// outside location - process parametrized boundary conditions
-		if (iface.m_heatConduction.m_modelType != NANDRAD::InterfaceHeatConduction::NUM_MT) {
+
+	// *** heat conduction boundary condition ***
+
+	if (iface.m_heatConduction.m_modelType != NANDRAD::InterfaceHeatConduction::NUM_MT) {
+
+		// determine zone ID
+		unsigned int zoneID = iface.m_zoneId;
+		double Tambient;
+		if (zoneID == 0) {
 			// we need ambient temperature and our surface temperature
-			double Tambient = *m_inputRefs[InputRef_AmbientTemperature];
-			switch (iface.m_heatConduction.m_modelType) {
-				case NANDRAD::InterfaceHeatConduction::MT_CONSTANT : {
-					// transfer coefficient
-					double alpha = iface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
-					double Ts = sideA ? m_statesModel->m_TsA : m_statesModel->m_TsB;
+			Tambient = *m_inputRefs[InputRef_AmbientTemperature];
+		}
+		else {
+			if (sideA)
+				Tambient = *m_inputRefs[InputRef_RoomATemperature];
+			else
+				Tambient = *m_inputRefs[InputRef_RoomBTemperature];
+		}
+		switch (iface.m_heatConduction.m_modelType) {
+			case NANDRAD::InterfaceHeatConduction::MT_CONSTANT : {
+				// transfer coefficient
+				double alpha = iface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
+				double Ts = sideA ? m_statesModel->m_TsA : m_statesModel->m_TsB;
 
-					// flux density [W/m2] into left side construction
-					double fluxDensity = alpha*(Tambient - Ts);
-					// total flux [W]
-					double flux = fluxDensity*m_area;
+				// flux density [W/m2] into left side construction
+				double fluxDensity = alpha*(Tambient - Ts);
+				// total flux [W]
+				double flux = fluxDensity*m_area;
 
-					// store results
-					if (sideA) {
-						m_fluxDensityHeatConductionA = fluxDensity;
-						m_results[R_FluxHeatConductionA] = flux;
-					}
-					else {
-						m_fluxDensityHeatConductionB = fluxDensity;
-						m_results[R_FluxHeatConductionB] = -flux; // Mind sign convention
-					}
+				// store results
+				if (sideA) {
+					m_fluxDensityHeatConductionA = fluxDensity;
+					m_results[R_FluxHeatConductionA] = flux;
 				}
-				case NANDRAD::InterfaceHeatConduction::NUM_MT: ;// nothing to do, just to silence compiler warning
-			}
+				else {
+					m_fluxDensityHeatConductionB = fluxDensity;
+					m_results[R_FluxHeatConductionB] = -flux; // Mind sign convention
+				}
+			} break;
 
+			case NANDRAD::InterfaceHeatConduction::NUM_MT: ;// nothing to do, just to silence compiler warning
 		}
 	}
 
+
+	// *** solar radiation boundary condition
 }
 
 
