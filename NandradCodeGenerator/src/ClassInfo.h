@@ -38,6 +38,7 @@ public:
 		bool			required = false;	// if true, attribute/element must be present
 		std::string		typeStr;			// C++ type string
 		std::string		varName;			// Name of the variable without m_ prefix
+		std::string		alternativeTagName;	// Alternative tag name to use instead of default type name (see docs for situations where this works)
 	};
 
 

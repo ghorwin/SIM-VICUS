@@ -30,6 +30,8 @@
 #include "NANDRAD_Constants.h"
 #include "NANDRAD_ConstructionType.h"
 
+#include <tinyxml.h>
+
 namespace NANDRAD {
 
 

@@ -523,9 +523,15 @@ void CodeGenerator::generateReadWriteCode() {
 					}
 					if (hadEnumType) continue;
 
-					// we now assume a complex type, i.e. "Interface" where we can call writeXML() ourselves.
-
-					elements += "\n	m_" + varName + ".writeXML(e);\n";
+					// we now assume a complex type, i.e. "Interface" where we can call writeXML() ourselves. We also
+					// look for alternative tag name
+					if (xmlInfo.alternativeTagName.empty()) {
+						elements += "\n	m_" + varName + ".writeXML(e);\n";
+					}
+					else {
+						elements += "\n	{\n		TiXmlElement * customElement = m_" + varName + ".writeXML(e);\n"
+								"		customElement->ToElement()->SetValue(\""+xmlInfo.alternativeTagName+"\");\n	}\n";
+					}
 
 					// Note: no error in case of unsupported element types, since here we always generate .writeXML() calls.
 				}
@@ -1043,8 +1049,12 @@ void CodeGenerator::generateReadWriteCode() {
 					}
 					// not a known enumeration type? Generate generic readXML() code
 					if (it == ci.m_enumInfo.end()) {
+						// check for custom tag name
+						std::string tagName = xmlInfo2.typeStr;
+						if (!xmlInfo2.alternativeTagName.empty())
+							tagName = xmlInfo2.alternativeTagName;
 						elements +=
-								"			"+elseStr+"if (cName == \""+xmlInfo2.typeStr+"\")\n"
+								"			"+elseStr+"if (cName == \""+tagName+"\")\n"
 								"				m_"+varName2+".readXML(c);\n";
 					}
 					else {

@@ -125,6 +125,8 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 				m_time2 = readTimeElement(c, cName);
 			else if (cName == "Table")
 				m_table.setEncodedString(c->GetText());
+			else if (cName == "Table2")
+				m_table2.setEncodedString(c->GetText());
 			else if (cName == "DblVec")
 				readVector(c, "DblVec", m_dblVec);
 			else if (cName == "Interfaces") {
@@ -192,6 +194,8 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
 				}
 			}
+			else if (cName == "InterfaceA")
+				m_interfaceA.readXML(c);
 			else if (cName == "Schedule")
 				m_sched.readXML(c);
 			else {
@@ -246,6 +250,8 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "Time2", nullptr, std::string(), m_time2.toShortDateFormat());
 	if (!m_table.m_values.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "Table", nullptr, std::string(), m_table.encodedString());
+	if (!m_table2.m_values.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "Table2", nullptr, std::string(), m_table2.encodedString());
 	writeVector(e, "DblVec", m_dblVec);
 
 	if (!m_interfaces.empty()) {
@@ -259,6 +265,11 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 		}
 	}
 
+
+	{
+		TiXmlElement * customElement = m_interfaceA.writeXML(e);
+		customElement->ToElement()->SetValue("InterfaceA");
+	}
 
 	for (unsigned int i=0; i<NUM_test; ++i) {
 		if (!m_para[i].name.empty())

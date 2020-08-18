@@ -107,9 +107,9 @@ public:
 	IBK::Parameter				m_para[NUM_CP];					// XML:E
 
 	/*! The interface at side A. */
-	Interface					m_interfaceA;					// XML:E
+	Interface					m_interfaceA;					// XML:E:tag=InterfaceA
 	/*! The interface at side B. */
-	Interface					m_interfaceB;					// XML:E
+	Interface					m_interfaceB;					// XML:E:tag=InterfaceB
 
 	/*! All embedded objects. Embedded objects cut out an area of the current construction and substitute
 		wall simulation by an explicit simulation model.

@@ -726,7 +726,7 @@ The following XML-output is generated from the class declaration above:
 		<Table>Col1:1,5,3;Col2:7,2,2;</Table>
 		<DblVec>0,12,24</DblVec>
 		<Interfaces>
-			<Interface id="1" location="A" zoneId="0">
+			<Interface id="1" zoneId="0">
 				<!--Interface to outside-->
 			</Interface>
 		</Interfaces>
@@ -765,6 +765,46 @@ The code generator creates additional code to prevent writing of undefined data:
 Any data type not listed in the example above and with `// XML:E` annotation is treated by the code generator as a complex type with own functions `readXML()` and `writeXML()` according to the `NANDRAD_READWRITE` macro. The code generator with create code to simply call these functions when writing such code.
 
 When reading an XML-file, the tag is compared with the typename of the member variable (`Schedule` in the example above for member variable `m_sched`) and if matched, an object of said type is created and the `readXML()` function is called for this child tag. Then, the variable is _assigned_ to the member variable. Hence, the complex type also requires an assignment operator. This is usually automatically generated, but for classes with pointers or special resource management, you may need to provide this assignment operator in addition to the `readXML() and `writeXML()` functions.
+
+#### Reading/writing custom complex types with user-defined tag names
+
+Normally, the tag names for complex types are generated based on the complex type's class name. For example:
+
+.Example for complex data member with automatic tag name generation
+[source,c++]
+----
+Interface m_iface;  // XML:E
+----
+
+will generate an XML-file with:
+[source,xml]
+----
+<Interface id="1" zoneId="0">
+	<!--Interface to outside-->
+</Interface>
+----
+
+If you would like to use a different tag name, for example to distinguish between different variables of the same complex type, you can use the `XML:E:tag=<custom tag name>` syntax.
+
+.Example for complex data member with custom tag name
+[source,c++]
+----
+Interface m_iface;  // XML:E:tag=MyFancyInterface
+----
+
+will generate an XML-file with:
+[source,xml]
+----
+<MyFancyInterface id="1" zoneId="0">
+	<!--Interface to outside-->
+</MyFancyInterface>
+----
+
+[CAUTION]
+====
+This feature works *only* with element tags and custom complex data types.
+====
+
 
 #### Unsupported data member types
 
@@ -805,7 +845,7 @@ Suppose the string `m_comment` contains the text _Interface to 'TF05.1_, then th
 
 [source,xml]
 ----
-<Interface id="12" location="A" zoneId="1">
+<Interface id="12" zoneId="1">
 	<!--Interface to 'TF05.1'-->
 	<InterfaceHeatConduction modelType="Constant">
     ...
@@ -817,3 +857,7 @@ Suppose the string `m_comment` contains the text _Interface to 'TF05.1_, then th
 You can have multi-line comments, by adding `\n` in the string, but the indentation in the XML file will be missing in subsequent lines. Generally, don't do this.
 ====
 
+[IMPORTANT]
+====
+You cannot combine `XML:C` with any other xml element option.
+====

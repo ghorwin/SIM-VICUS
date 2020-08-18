@@ -86,9 +86,9 @@ void ConstructionInstance::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
-			else if (cName == "Interface")
+			else if (cName == "InterfaceA")
 				m_interfaceA.readXML(c);
-			else if (cName == "Interface")
+			else if (cName == "InterfaceB")
 				m_interfaceB.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
@@ -118,9 +118,15 @@ TiXmlElement * ConstructionInstance::writeXML(TiXmlElement * parent) const {
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
 	}
 
-	m_interfaceA.writeXML(e);
+	{
+		TiXmlElement * customElement = m_interfaceA.writeXML(e);
+		customElement->ToElement()->SetValue("InterfaceA");
+	}
 
-	m_interfaceB.writeXML(e);
+	{
+		TiXmlElement * customElement = m_interfaceB.writeXML(e);
+		customElement->ToElement()->SetValue("InterfaceB");
+	}
 	return e;
 }
 

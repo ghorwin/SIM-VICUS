@@ -35,7 +35,7 @@
 // include model implementation class
 #include "NM_NandradModel.h"
 
-//#define TEST_PROJECT_WRITING
+#define TEST_PROJECT_WRITING
 
 //#define SERIALIZATION_TEST
 #ifdef SERIALIZATION_TEST
@@ -197,15 +197,13 @@ void createSim02(NANDRAD::Project &prj){
 		NANDRAD::Interface interface;
 		interface.m_id = conId++;
 		interface.m_zoneId = 1;
-		interface.m_location = NANDRAD::Interface::IT_A;
 		interface.m_heatConduction.m_modelType = NANDRAD::InterfaceHeatConduction::MT_CONSTANT;
 		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 2.5, IBK::Unit("W/m2K"));
 		//add first interface
-		conInsta.m_interfaces.push_back(interface);
+		conInsta.m_interfaceA = interface;
 
 		// Outside interface
 		interface.m_id = conId++;
-		interface.m_location = NANDRAD::Interface::IT_B;
 		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 8, IBK::Unit("W/m2K"));
 		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
 		interface.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].set("Emissivity", 0, IBK::Unit("---"));
@@ -213,7 +211,7 @@ void createSim02(NANDRAD::Project &prj){
 		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 1, IBK::Unit("---"));
 		interface.m_zoneId = 0;
 		//add second interface
-		conInsta.m_interfaces.push_back(interface);
+		conInsta.m_interfaceB = interface;
 		conInsta.m_constructionTypeId = 10001;
 		//add construction instance
 		prj.m_constructionInstances.push_back(conInsta);
@@ -366,7 +364,6 @@ void createSim03(NANDRAD::Project &prj){
 		NANDRAD::Interface interface;
 		interface.m_id = conId++;
 		interface.m_zoneId = 1;
-		interface.m_location = NANDRAD::Interface::IT_A;
 		interface.m_heatConduction.m_modelType = NANDRAD::InterfaceHeatConduction::MT_CONSTANT;
 		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 2.5, IBK::Unit("W/m2K"));
 		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
@@ -374,11 +371,10 @@ void createSim03(NANDRAD::Project &prj){
 		interface.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_CONSTANT;
 		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 0, IBK::Unit("---"));
 		//add first interface
-		conInsta.m_interfaces.push_back(interface);
+		conInsta.m_interfaceA = interface;
 
 		// Outside interface
 		interface.m_id = conId++;
-		interface.m_location = NANDRAD::Interface::IT_B;
 		interface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].set("HeatTransferCoefficient", 8, IBK::Unit("W/m2K"));
 		interface.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_CONSTANT;
 		interface.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].set("Emissivity", 0, IBK::Unit("---"));
@@ -386,15 +382,15 @@ void createSim03(NANDRAD::Project &prj){
 		interface.m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].set("AbsorptionCoefficient", 0, IBK::Unit("---"));
 		interface.m_zoneId = 0;
 		//add second interface
-		conInsta.m_interfaces.push_back(interface);
+		conInsta.m_interfaceB = interface;
 		conInsta.m_constructionTypeId = 10001;
 		//add construction instance
 		prj.m_constructionInstances.push_back(conInsta);
 
 		conInsta.m_displayName = "South";
 		conInsta.m_id = conId++;
-		conInsta.m_interfaces[0].m_id = conId++;
-		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_interfaceA.m_id = conId++;
+		conInsta.m_interfaceB.m_id = conId++;
 		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 180, IBK::Unit("Deg"));
 		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
 		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 6, IBK::Unit("m2"));
@@ -402,8 +398,8 @@ void createSim03(NANDRAD::Project &prj){
 
 		conInsta.m_displayName = "East";
 		conInsta.m_id = conId++;
-		conInsta.m_interfaces[0].m_id = conId++;
-		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_interfaceA.m_id = conId++;
+		conInsta.m_interfaceB.m_id = conId++;
 		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 90, IBK::Unit("Deg"));
 		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
 		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 15, IBK::Unit("m2"));
@@ -411,8 +407,8 @@ void createSim03(NANDRAD::Project &prj){
 
 		conInsta.m_displayName = "West";
 		conInsta.m_id = conId++;
-		conInsta.m_interfaces[0].m_id = conId++;
-		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_interfaceA.m_id = conId++;
+		conInsta.m_interfaceB.m_id = conId++;
 		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 270, IBK::Unit("Deg"));
 		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
 		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 15, IBK::Unit("m2"));
@@ -420,8 +416,8 @@ void createSim03(NANDRAD::Project &prj){
 
 		conInsta.m_displayName = "Roof";
 		conInsta.m_id = conId++;
-		conInsta.m_interfaces[0].m_id = conId++;
-		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_interfaceA.m_id = conId++;
+		conInsta.m_interfaceB.m_id = conId++;
 		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
 		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 0, IBK::Unit("Deg"));
 		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
@@ -429,13 +425,15 @@ void createSim03(NANDRAD::Project &prj){
 
 		conInsta.m_displayName = "Floor";
 		conInsta.m_id = conId++;
-		conInsta.m_interfaces[0].m_id = conId++;
-		conInsta.m_interfaces[1].m_id = conId++;
+		conInsta.m_interfaceA.m_id = conId++;
+		conInsta.m_interfaceB.m_id = conId++;
 		conInsta.m_para[NANDRAD::ConstructionInstance::CP_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
 		conInsta.m_para[NANDRAD::ConstructionInstance::CP_INCLINATION].set("Inclination", 180, IBK::Unit("Deg"));
 		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
 		prj.m_constructionInstances.push_back(conInsta);
 	}
+#if 0
+
 	{
 		NANDRAD::ConstructionInstance conInsta;
 		conInsta.m_constructionTypeId = 10002;
@@ -688,7 +686,7 @@ void createSim03(NANDRAD::Project &prj){
 		conInsta.m_para[NANDRAD::ConstructionInstance::CP_AREA].set("Area", 10, IBK::Unit("m2"));
 		prj.m_constructionInstances.push_back(conInsta);
 	}
-
+#endif
 	//construction type
 
 	//material
@@ -782,6 +780,7 @@ void createSim03(NANDRAD::Project &prj){
 	ol.m_referenceType = NANDRAD::ModelInputReference::MRT_INTERFACE;
 	prj.m_objectLists.push_back(ol);
 }
+#if 0
 
 void createSim04(NANDRAD::Project &prj){
 
@@ -1699,7 +1698,7 @@ void createSim05(NANDRAD::Project &prj){
 	ol.m_referenceType = NANDRAD::ModelInputReference::MRT_INTERFACE;
 	prj.m_objectLists.push_back(ol);
 }
-
+#endif
 #endif
 
 int main(int argc, char * argv[]) {
@@ -1719,13 +1718,13 @@ int main(int argc, char * argv[]) {
 	createSim03(prj);
 	prj.writeXML(IBK::Path("SimQuality3.xml"));
 
-	prj = NANDRAD::Project();
-	createSim04(prj);
-	prj.writeXML(IBK::Path("SimQuality4.xml"));
+//	prj = NANDRAD::Project();
+//	createSim04(prj);
+//	prj.writeXML(IBK::Path("SimQuality4.xml"));
 
-	prj = NANDRAD::Project();
-	createSim05(prj);
-	prj.writeXML(IBK::Path("SimQuality5.xml"));
+//	prj = NANDRAD::Project();
+//	createSim05(prj);
+//	prj.writeXML(IBK::Path("SimQuality5.xml"));
 
 	// now read and write projects again to check if all data is read correctly back in
 	std::vector<std::string> projects = {"SimQuality1.xml", "SimQuality2.xml", "SimQuality3.xml", "SimQuality4.xml", "SimQuality5.xml"};

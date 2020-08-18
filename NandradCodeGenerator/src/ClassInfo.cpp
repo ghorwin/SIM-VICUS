@@ -172,7 +172,7 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 
 				// store xml spec
 				XMLInfo xmlInfo;
-				// first token must be either A or E
+				// first token must be either A or E or C
 				if (tokens[0] == "A")
 					xmlInfo.element = false;
 				else if (tokens[0] == "E")
@@ -198,6 +198,12 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 				for (unsigned int i=1; i<tokens.size(); ++i) {
 					if (tokens[i] == "required") {
 						xmlInfo.required = true;
+					}
+					else if (tokens[i].find("tag=") == 0) {
+						std::string::size_type p = tokens[i].find("tag=");
+						std::string alternativeName = tokens[i].substr(p+4);
+						// we will use this tag name instead
+						xmlInfo.alternativeTagName = alternativeName;
 					}
 					else {
 						std::cerr << "Invalid XML-spec '"<< xmlSpec << "' in line '"<< line << "'" << std::endl;

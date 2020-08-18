@@ -38,7 +38,7 @@
 
 namespace NANDRAD {
 
-/*! Test class to check correct functionality of the NANDRAD code generator. 
+/*! Test class to check correct functionality of the NANDRAD code generator.
 	\note This class is not used in the NANDRAD data model.
 */
 class SerializationTest {
@@ -112,9 +112,12 @@ public:
 	IBK::Time			m_time2;							// XML:E
 
 	DataTable			m_table;							// XML:E
+	DataTable			m_table2;							// XML:E:tag=Table2
 
 	std::vector<double>		m_dblVec;						// XML:E
 	std::vector<Interface>	m_interfaces;					// XML:E
+
+	Interface				m_interfaceA;					// XML:E:tag=InterfaceA
 
 	IBK::Parameter		m_para[NUM_test];					// XML:E
 	IBK::IntPara		m_intPara[NUM_IP];					// XML:E
