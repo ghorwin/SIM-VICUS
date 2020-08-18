@@ -42,6 +42,7 @@ void ConstructionBalanceModel::setup(const NANDRAD::ConstructionInstance & con,
 
 	// resize storage vectors for divergences, sources, and initialize boundary conditions
 	m_ydot.resize(m_statesModel->m_n);
+	m_results.resize(NUM_R);
 }
 
 void ConstructionBalanceModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const
