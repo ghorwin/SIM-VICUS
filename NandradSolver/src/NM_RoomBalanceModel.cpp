@@ -26,9 +26,8 @@
 #include <NANDRAD_Zone.h>
 
 #include "NM_KeywordList.h"
+#include "NM_ConstructionBalanceModel.h"
 
-
-using namespace std;
 
 namespace NANDRAD_MODEL {
 
@@ -45,7 +44,7 @@ void RoomBalanceModel::setup( const NANDRAD::SimulationParameter &simPara) {
 	}
 	else {
 		// resize results vector
-		m_results.resize(1);
+		m_results.resize(2);
 
 		// resize ydot vector - one balance equation
 		m_ydot.resize(1);
@@ -54,7 +53,7 @@ void RoomBalanceModel::setup( const NANDRAD::SimulationParameter &simPara) {
 
 
 void RoomBalanceModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
-	int varCount = 1; // room air temperature is always the first result
+	int varCount = 2;
 	if (m_simPara->m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled()) {
 		varCount = NUM_R; // more variables for hygrothermal calculation
 	}
@@ -104,22 +103,60 @@ int RoomBalanceModel::priorityOfModelEvaluation() const {
 }
 
 
-void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & /*models*/) {
-	/// \todo
+void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & models) {
+	// we create batches of input references for all input quantities that we require in the room model
+
+	// *** heat conduction from walls ***
+
+	// search all models for construction models that have an interface to this zone
+	for (AbstractModel * model : models) {
+		if (model->referenceType() == NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE) {
+			// this might now be any model generated from a zone block, so first
+			// convert to
+			ConstructionBalanceModel* conMod = dynamic_cast<ConstructionBalanceModel*>(model);
+			if (conMod == nullptr) continue;
+
+			// check if either interface references us
+			if (conMod->interfaceAZoneID() == m_id) {
+				// create input reference to this zone
+				InputReference r;
+				r.m_id = conMod->id();
+				r.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
+				r.m_name.m_name = "FluxHeatConductionA";
+				m_heatCondValueRefs.push_back(nullptr);
+				m_inputRefs.push_back(r);
+			}
+			// check if either interface references us
+			if (conMod->interfaceBZoneID() == m_id) {
+				// create input reference to this zone
+				InputReference r;
+				r.m_id = conMod->id();
+				r.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
+				r.m_name.m_name = "FluxHeatConductionB";
+				m_heatCondValueRefs.push_back(nullptr);
+				m_inputRefs.push_back(r);
+			}
+		}
+	}
 }
 
 
 void RoomBalanceModel::inputReferences(std::vector<InputReference> & inputRefs) const {
-
+	inputRefs = m_inputRefs;
 }
 
 void RoomBalanceModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/,
 										 const std::vector<const double *> & resultValueRefs)
 {
-	m_valueRefs = resultValueRefs;
+	// copy value references as ordered by input references
+	std::vector<const double *>::const_iterator it = resultValueRefs.begin();
 
+	for (unsigned int i=0; i<m_heatCondValueRefs.size(); ++i) {
+		m_heatCondValueRefs[i] = *it;
+		++it;
+	}
 
-
+	// todo : other input fluxes that we sum up
 }
 
 
@@ -127,72 +164,19 @@ void RoomBalanceModel::setInputValueRefs(const std::vector<QuantityDescription> 
 
 int RoomBalanceModel::update() {
 
-	double SumQdot = 0.0;
-#if 0
+	double sumQHeatCondToWalls = 0.0; // sum of heat fluxes in [W] positive from wall surfaces to room
+	for (const double ** flux = m_heatCondValueRefs.data(), **fluxEnd = flux + m_heatCondValueRefs.size(); flux != fluxEnd; ++flux)
+		sumQHeatCondToWalls -= **flux;
 
-	// retrieve heat conduction fluxes from all walls (and revert the direction of loss)
-	const double QdotHeatCondWall = *inputValueRefs()[InputRef_WallsHeatConductionLoad];
-	// add heat conduction flux to room balance
-	SumQdot += QdotHeatCondWall;
-	// retrieve radiation fluxes from windows
-	const double gammaRad = *inputValueRefs()[InputRef_RadiationLoadFraction];
-	const double QdotSWRad = gammaRad * (*inputValueRefs()[InputRef_WindowsSWRadLoad]);
-	// add radiation loads
-	SumQdot += QdotSWRad;
-	// retrieve heat transfer fluxes from all embedded objects (and revert the flux direction)
-	const double QdotHeatTransmission = *inputValueRefs()[InputRef_WindowsHeatTransmissionLoad];
-	// add heat transfer losses
-	SumQdot += QdotHeatTransmission;
-	// retrieve long wave radiation balance fluxes at all windows (ignored by the windows surface equation)
-	const double QdotLWRadBalance = *inputValueRefs()[InputRef_LWRadBalanceLoad];
-	// add long wave radiation balance fluxes
-	SumQdot += QdotLWRadBalance;
-	// retrieve short wave radiation balance fluxes at all windows (ignored by the windows surface equation)
-	const double QdotSWRadBalance = *inputValueRefs()[InputRef_SWRadBalanceLoad];
-	// add short wave radiation balance fluxes
-	SumQdot += QdotSWRadBalance;
-	// retrieve convective heat fluxes from all heatings
-	const double QdotConvHeating = *inputValueRefs()[InputRef_ConvectiveHeatingsLoad];
-	// add heating loads
-	SumQdot += QdotConvHeating;
-	// retrieve losses from cooling (and revert the flux direction)
-	const double QdotConvCooling = *inputValueRefs()[InputRef_ConvectiveCoolingsLoad];
-	// add cooling losses
-	SumQdot += QdotConvCooling;
+	// store results
+	m_results[R_ConstructionHeatConductionLoad] = sumQHeatCondToWalls;
 
-	double OccupancyLoads = 0.0;
-	// retrieve heat gains from users
-	OccupancyLoads += *inputValueRefs()[InputRef_ConvectiveUsersLoad];
-	// retrieve heat gains from electric equipment
-	OccupancyLoads += *inputValueRefs()[InputRef_ConvectiveEquipmentLoad];
-	// retrieve heat gains from light
-	OccupancyLoads += *inputValueRefs()[InputRef_ConvectiveLightingLoad];
-
-	// add heat gains
-	SumQdot += OccupancyLoads;
-	// retrieve heat load from natural ventilation (and revert the flux direction)
-	const double QdotNaturalVentilation = *inputValueRefs()[InputRef_UserVentilationThermalLoad];
-	// add heat gains
-	SumQdot += QdotNaturalVentilation;
-	// retrieve heat load from infiltration (and revert the flux direction)
-	const double QdotInfiltration = *inputValueRefs()[InputRef_InfiltrationThermalLoad];
-	// add heat gains
-	SumQdot += QdotInfiltration;
-	// retrieve heat load from air condictioning (and revert the flux direction)
-	const double QdotAirCondition = *inputValueRefs()[InputRef_AirConditionThermalLoad];
-	// add heat gains
-	SumQdot += QdotAirCondition;
-
-	// retrieve heat gains from domestic water consumption
-	const double QdotDomesticWaterSensitiveGain = *inputValueRefs()[InputRef_DomesticWaterConsumptionSensitiveHeatGain];
-	// add heat gains
-	SumQdot += QdotDomesticWaterSensitiveGain;
-#endif
+	double SumQdot = sumQHeatCondToWalls;
 
 	// store the sum of all loads
 	m_results[R_CompleteThermalLoad] = SumQdot;
-	// solve the balance: ydot = sum loads
-	m_ydot[0] = m_results[R_CompleteThermalLoad];
+	// solve the balance: ydot = sum loads in [W] (no need to devide by volume since conserved quantity is energy of room air in Joule)
+	m_ydot[0] = SumQdot;
 	// signal success
 	return 0;
 }

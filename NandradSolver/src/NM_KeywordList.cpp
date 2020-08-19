@@ -155,7 +155,8 @@ namespace NANDRAD_MODEL {
 			case 9 :
 			switch (t) {
 				case 0 : return "CompleteThermalLoad";
-				case 1 : return "CompleteMoistureLoad";
+				case 1 : return "ConstructionHeatConductionLoad";
+				case 2 : return "CompleteMoistureLoad";
 			} break;
 			// RoomBalanceModel::InputReferences
 			case 10 :
@@ -324,7 +325,8 @@ namespace NANDRAD_MODEL {
 			case 9 :
 			switch (t) {
 				case 0 : return "CompleteThermalLoad";
-				case 1 : return "CompleteMoistureLoad";
+				case 1 : return "ConstructionHeatConductionLoad";
+				case 2 : return "CompleteMoistureLoad";
 			} break;
 			// RoomBalanceModel::InputReferences
 			case 10 :
@@ -494,7 +496,8 @@ namespace NANDRAD_MODEL {
 			case 9 :
 			switch (t) {
 				case 0 : return "Sum of all thermal fluxes into the room and energy sources.";
-				case 1 : return "Sum of all moisture fluxes into the room and moisture sources.";
+				case 1 : return "Sum of heat conduction fluxes from construction surfaces into the room.";
+				case 2 : return "Sum of all moisture fluxes into the room and moisture sources.";
 			} break;
 			// RoomBalanceModel::InputReferences
 			case 10 :
@@ -663,7 +666,8 @@ namespace NANDRAD_MODEL {
 			case 9 :
 			switch (t) {
 				case 0 : return "W";
-				case 1 : return "kg/s";
+				case 1 : return "W";
+				case 2 : return "kg/s";
 			} break;
 			// RoomBalanceModel::InputReferences
 			case 10 :
@@ -833,6 +837,7 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
 			} break;
 			// RoomBalanceModel::InputReferences
 			case 10 :
@@ -1002,6 +1007,7 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// RoomBalanceModel::InputReferences
 			case 10 :
@@ -1100,7 +1106,7 @@ namespace NANDRAD_MODEL {
 			// OutputHandler::OutputFileNames
 			case 8 : return 5;
 			// RoomBalanceModel::Results
-			case 9 : return 2;
+			case 9 : return 3;
 			// RoomBalanceModel::InputReferences
 			case 10 : return 14;
 			// RoomStatesModel::Results
@@ -1138,7 +1144,7 @@ namespace NANDRAD_MODEL {
 			// OutputHandler::OutputFileNames
 			case 8 : return 4;
 			// RoomBalanceModel::Results
-			case 9 : return 1;
+			case 9 : return 2;
 			// RoomBalanceModel::InputReferences
 			case 10 : return 13;
 			// RoomStatesModel::Results

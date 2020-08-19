@@ -413,7 +413,7 @@ void ConstructionStatesModel::generateGrid() {
 				// material layer width, valid thickness has been tested already
 				dLayer = conType->m_materialLayers[i].m_thickness;
 				// calculate number of discretized elements for current material layer
-				double n_x = dLayer / minDX;
+				unsigned int n_x = (unsigned int)std::ceil(dLayer / minDX);
 				// compute the size of the last element
 				double x_last = dLayer - (n_x - 1) * minDX;
 				double dx_new;

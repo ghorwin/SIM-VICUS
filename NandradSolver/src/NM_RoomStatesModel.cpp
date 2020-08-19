@@ -133,7 +133,7 @@ void RoomStatesModel::yInitial(double * y) const {
 		const double cAir		= IBK::C_AIR;
 		const double TInitial	= m_results[0];
 
-		// store initial value of conserved quantity
+		// store initial value of conserved quantity in [J]
 		y[0] = TInitial * (rhoAir*cAir*m_volume + m_additionalHeatCapacity);
 	}
 }

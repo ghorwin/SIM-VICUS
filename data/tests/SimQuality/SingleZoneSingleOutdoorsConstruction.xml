@@ -8,7 +8,7 @@
 			<IBK:Parameter name="Latitude" unit="Deg">51</IBK:Parameter>
 			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
-			<ClimateFileName>${Project Directory}/climate/TF03-Sprung.c6b</ClimateFileName>
+			<ClimateFileName>${Project Directory}/climate/TF03-Sprung2.c6b</ClimateFileName>
 		</Location>
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
@@ -18,8 +18,8 @@
 		</SimulationParameter>
 		<SolverParameter>
 			<Integrator>ExplicitEuler</Integrator>
-			<IBK:Parameter name="DiscStretchFactor" unit="---">4</IBK:Parameter>
-			<IBK:Parameter name="InitialTimeStep" unit="s">60</IBK:Parameter>
+			<IBK:Parameter name="DiscStretchFactor" unit="---">1</IBK:Parameter>
+			<IBK:Parameter name="InitialTimeStep" unit="s">10</IBK:Parameter>
 		</SolverParameter>
 		<Zones>
 			<Zone id="1" displayName="Room" type="Active">

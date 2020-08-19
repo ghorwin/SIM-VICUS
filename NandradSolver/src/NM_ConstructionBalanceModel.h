@@ -120,6 +120,11 @@ public:
 
 	// *** Other public member functions
 
+	/*! Returns ID of associated zone at interface A (> 0 if a room zone is connected). */
+	unsigned int interfaceAZoneID() const;
+	/*! Returns ID of associated zone at interface B (> 0 if a room zone is connected). */
+	unsigned int interfaceBZoneID() const;
+
 	/*! Stores the divergences of all balance equations in this zone in vector ydot. */
 	int ydot(double* ydot);
 

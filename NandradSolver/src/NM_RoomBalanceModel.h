@@ -52,6 +52,7 @@ public:
 	/*! Results computed by the model. */
 	enum Results {
 		R_CompleteThermalLoad,								// Keyword: CompleteThermalLoad							[W]		'Sum of all thermal fluxes into the room and energy sources.'
+		R_ConstructionHeatConductionLoad,					// Keyword: ConstructionHeatConductionLoad				[W]		'Sum of heat conduction fluxes from construction surfaces into the room.'
 		R_CompleteMoistureLoad,								// Keyword: CompleteMoistureLoad						[kg/s]	'Sum of all moisture fluxes into the room and moisture sources.'
 		NUM_R
 	};
@@ -120,8 +121,11 @@ public:
 	/*! Returns model evaluation priority. */
 	int priorityOfModelEvaluation() const override;
 
-	/*! Composes all input references.*/
-	virtual void initInputReferences(const std::vector<AbstractModel*> & /* models */) override;
+	/*! Composes all input references.
+		Here we collect all loads/fluxes into the room and store them such, that we can efficiently compute
+		sums, for example for all heat fluxes from constructions into the room etc.
+	*/
+	virtual void initInputReferences(const std::vector<AbstractModel*> & models) override;
 
 	/*! Returns vector with model input references.
 		Implicit models must generate their own model input references and populate the
@@ -155,12 +159,14 @@ private:
 	*/
 	std::vector<double>								m_results;
 
-	/*! Vector with pointer to input values.
-		This vector is resized and filled by the framework.
-		\sa inputValueRefs()
+	/*! Input references used by this object.
+		Inputs are populated in the following order:
+			- heat conduction [W] towards all walls (size m_heatCondValueRefs)
 	*/
-	std::vector<const double *>						m_valueRefs;
+	std::vector<InputReference>						m_inputRefs;
 
+	/*! Value references for heat conduction fluxes in [W] (positive if out-of-room). */
+	std::vector<const double *>						m_heatCondValueRefs;
 
 	/*! Vector with cached derivatives, updated at last call to update(). */
 	std::vector<double>								m_ydot;
