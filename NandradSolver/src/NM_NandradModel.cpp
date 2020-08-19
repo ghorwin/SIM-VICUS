@@ -25,6 +25,8 @@
 #include <omp.h>
 #endif // _OPENMP
 
+#include <memory>
+
 #include <IBK_Version.h>
 #include <IBK_messages.h>
 #include <IBK_FormatString.h>
