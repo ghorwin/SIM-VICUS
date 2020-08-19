@@ -301,11 +301,16 @@ int ConstructionStatesModel::update(const double * y) {
 		m_TsB = m_statesT[1];
 	}
 	else {
-
+#define CONSTANT_EXTRAPOLATION
+#ifdef CONSTANT_EXTRAPOLATION
+		m_TsA = m_statesT[0];
+		m_TsB = m_statesT[m_nElements-1];
+#else
 		// linear extrapolation of temperature
 		m_TsA = (1.0 + m_elements[0].wR) * m_statesT[0] - m_elements[0].wR * m_statesT[1];
 		m_TsB = (1.0 + m_elements[m_nElements-1].wL) * m_statesT[m_nElements-1]
 				- m_elements[m_nElements-1].wL * m_statesT[m_nElements-2];
+#endif
 	}
 
 #if 0

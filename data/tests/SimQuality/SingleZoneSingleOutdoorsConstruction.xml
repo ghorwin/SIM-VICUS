@@ -18,8 +18,9 @@
 		</SimulationParameter>
 		<SolverParameter>
 			<Integrator>ExplicitEuler</Integrator>
-			<IBK:Parameter name="DiscStretchFactor" unit="---">1</IBK:Parameter>
-			<IBK:Parameter name="InitialTimeStep" unit="s">10</IBK:Parameter>
+			<IBK:Parameter name="DiscStretchFactor" unit="---">4</IBK:Parameter>
+			<IBK:Parameter name="DiscMinDx" unit="mm">2</IBK:Parameter>
+			<IBK:Parameter name="InitialTimeStep" unit="s">0.01</IBK:Parameter>
 		</SolverParameter>
 		<Zones>
 			<Zone id="1" displayName="Room" type="Active">
