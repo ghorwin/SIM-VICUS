@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.99">
+	<Project>
+		<ProjectInfo>
+			<Comment>SimQuality TestCase 01.4 - Potsdam</Comment>
+			<Created>2020-08-10</Created>
+			<LastEdited>2020-08-14</LastEdited>
+		</ProjectInfo>
+		<Zones>
+			<Zone id="1" displayName="Room" type="Active">
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<SolverParameter>
+			<Integrator>ExplicitEuler</Integrator>
+			<IBK:Parameter name="InitialTimeStep" unit="s">60</IBK:Parameter>
+		</SolverParameter>
+		<Location>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<!-- <ClimateFileName>${Project Directory}/climate/DEU_Potsdam_60.epw</ClimateFileName> -->
+			<!-- <ClimateFileName>${Project Directory}/climate/USA_AK_Barrow.700260_TMY2.epw</ClimateFileName> -->
+			<!-- <ClimateFileName>${Project Directory}/climate/SGP_Singapore.486980_IWEC.epw</ClimateFileName> -->
+			<!-- <ClimateFileName>${Project Directory}/climate/PER_Lima.846280_IWEC.epw</ClimateFileName> -->
+			<ClimateFileName>${Project Directory}/climate/DenverDRYCOLDTMY_new.epw</ClimateFileName>
+			<!-- <ClimateFileName>${Project Directory}/climate/CHN_Xinjiang.Uygur.Kashi.517090_CSWD.epw</ClimateFileName> -->
+			<!-- <ClimateFileName>${Project Directory}/climate/CHN_Shanghai.Shanghai.583620_SWERA.epw</ClimateFileName> -->
+			<!-- <ClimateFileName>${Project Directory}/climate/AUS_VIC.Melbourne.948660_IWEC.epw</ClimateFileName> -->
+		</Location>
+		<Outputs>
+			<TimeUnit>min</TimeUnit>
+			<OutputDefinitions>
+				<OutputDefinition>
+					<Quantity>AzimuthAngle</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>minutely</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>ElevationAngle</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>minutely</GridName>
+				</OutputDefinition>
+			</OutputDefinitions>
+			<Grids>
+				<OutputGrid name="minutely">
+					<Intervals>
+						<!-- 5. Mär -->
+						<Interval>
+							<IBK:Parameter name="Start" unit="min">90720</IBK:Parameter>
+							<IBK:Parameter name="End" unit="min">92160</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
+						</Interval>
+						<!-- 27. Jul -->
+						<Interval>
+							<IBK:Parameter name="Start" unit="min">298080</IBK:Parameter>
+							<IBK:Parameter name="End" unit="min">299520</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
+						</Interval>
+						<!-- 22. Sep -->
+						<Interval>
+							<IBK:Parameter name="Start" unit="min">380160</IBK:Parameter>
+							<IBK:Parameter name="End" unit="min">381600</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
+						</Interval>
+						<!-- 24. Okt -->
+						<Interval>
+							<IBK:Parameter name="Start" unit="min">426240</IBK:Parameter>
+							<IBK:Parameter name="End" unit="min">427680</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
+						</Interval>
+						<!-- 17. Dez -->
+						<Interval>
+							<IBK:Parameter name="Start" unit="min">504000</IBK:Parameter>
+							<IBK:Parameter name="End" unit="min">505440</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="All zones">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Location">
+				<FilterID>*</FilterID>
+				<ReferenceType>Location</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+	</Project>
+</NandradProject>
