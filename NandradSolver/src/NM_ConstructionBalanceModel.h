@@ -64,7 +64,7 @@ public:
 	}
 
 	/*! Initializes model. */
-	void setup(const NANDRAD::ConstructionInstance & con, const NANDRAD::SimulationParameter & simPara,
+	void setup(const NANDRAD::ConstructionInstance & con,
 			   const ConstructionStatesModel * statesModel);
 
 
@@ -101,14 +101,13 @@ public:
 	/*! Return evaluation priority. */
 	int priorityOfModelEvaluation() const override;
 
-	/*! Composes all input references.*/
-	virtual void initInputReferences(const std::vector<AbstractModel*> & /* models */) override;
-
 	/*! Returns vector with model input references.
 		Implicit models must generate their own model input references and populate the
 		vector argument.
 		\note This function is not the fastest, so never call this function from within the solver
 		(except maybe for output writing).
+
+		\todo Implement as soon as
 	*/
 	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const override;
 

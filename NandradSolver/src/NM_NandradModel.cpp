@@ -1688,8 +1688,8 @@ void NandradModel::initWallsAndInterfaces() {
 			ConstructionBalanceModel * balanceModel = new ConstructionBalanceModel(ci.m_id, ci.m_displayName);
 			m_modelContainer.push_back(balanceModel); // transfer ownership
 
-			// does the entire initialization
-			balanceModel->setup(ci, m_project->m_simulationParameter, statesModel);
+			// does the entire initialization - balance model reuses data from statesModel
+			balanceModel->setup(ci, statesModel);
 
 			// register model for evaluation
 			registerStateDependendModel(balanceModel);

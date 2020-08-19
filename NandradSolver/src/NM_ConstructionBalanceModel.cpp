@@ -25,16 +25,17 @@
 #include <NANDRAD_ConstructionInstance.h>
 
 #include "NM_ConstructionStatesModel.h"
+#include "NM_KeywordList.h"
 
 namespace NANDRAD_MODEL {
 
 
 void ConstructionBalanceModel::setup(const NANDRAD::ConstructionInstance & con,
-									 const NANDRAD::SimulationParameter & simPara,
 									 const ConstructionStatesModel * statesModel)
 {
 	m_con = &con;
 	m_statesModel = statesModel;
+	m_moistureBalanceEnabled = statesModel->m_moistureBalanceEnabled;
 
 	// cross section area in [m2]
 	m_area = con.m_para[NANDRAD::ConstructionInstance::CP_AREA].value;
@@ -45,30 +46,51 @@ void ConstructionBalanceModel::setup(const NANDRAD::ConstructionInstance & con,
 	m_results.resize(NUM_R);
 }
 
-void ConstructionBalanceModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const
-{
 
+void ConstructionBalanceModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
+	// currently, we only publish boundary fluxes
+	for (int i=0; i<NUM_R; ++i) {
+		QuantityDescription result;
+		result.m_constant = true;
+		result.m_description = NANDRAD_MODEL::KeywordList::Description("ConstructionBalanceModel::Results", i);
+		result.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionBalanceModel::Results", i);
+		result.m_unit = NANDRAD_MODEL::KeywordList::Unit("ConstructionBalanceModel::Results", i);
+
+		resDesc.push_back(result);
+	}
+
+	/// \todo add layer temperatures
 }
 
-void ConstructionBalanceModel::resultValueRefs(std::vector<const double *> & res) const
-{
 
+void ConstructionBalanceModel::resultValueRefs(std::vector<const double *> & res) const {
+	for (const double & r : m_results)
+		res.push_back(&r);
+
+	/// \todo add layer temperatures
+//	for (const VectorValuedQuantity & r : m_vectorValuedResults) {
+//		res.push_back(&r.data()[0]);
+//	}
 }
 
-const double * ConstructionBalanceModel::resultValueRef(const QuantityName & quantityName) const
-{
 
+const double * ConstructionBalanceModel::resultValueRef(const QuantityName & quantityName) const {
+	// search inside keyword list result quantities
+	// Note: index in m_results corresponds to enumeration values in enum 'Results'
+	const char * const category = "ConstructionBalanceModel::Results";
+
+	if (KeywordList::KeywordExists(category, quantityName.m_name)) {
+		int resIdx = KeywordList::Enumeration(category, quantityName.m_name);
+		return &m_results[(unsigned int)resIdx];
+	}
+
+	return nullptr; // not found
 }
 
 
 int ConstructionBalanceModel::priorityOfModelEvaluation() const {
 	// we are one step above room balance model
 	return AbstractStateDependency::priorityOffsetTail+4;
-}
-
-
-void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractModel *> &) {
-
 }
 
 
@@ -166,6 +188,7 @@ int ConstructionBalanceModel::update() {
 
 int ConstructionBalanceModel::ydot(double * ydot) {
 	std::memcpy(ydot, &m_ydot[0], sizeof(double)*m_ydot.size());
+	return 0; // signal success
 }
 
 
