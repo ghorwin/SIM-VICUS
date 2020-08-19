@@ -66,7 +66,7 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 	}
 
 	m_outputCacheLimit = 100000; // 100 Mb for starters
-	m_realTimeOutputDelay = 2; // wait one second simulation time before flushing the cache
+	m_realTimeOutputDelay = 10; // wait a few seconds second simulation time before flushing the cache
 
 	// initialize and check output grids
 	{
@@ -381,7 +381,10 @@ void OutputHandler::writeOutputs(double t_out, double t_secondsOfYear) {
 	if (m_outputTimer->difference()/1000.0 > m_realTimeOutputDelay ||
 		storedBytes > m_outputCacheLimit)
 	{
-		IBK::IBK_Message("Flushing output cache.\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
+		if (storedBytes > m_outputCacheLimit)
+			IBK::IBK_Message("Flushing output cache (cache limit exceeded).\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
+		else
+			IBK::IBK_Message( IBK::FormatString("Flushing output cache (time delay reached, cache size = %1 Mb).\n").arg(storedBytes/1024./1024.), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
 		for (OutputFile * of : m_outputFiles)
 			of->flushCache();
 		// restart timer

@@ -418,7 +418,7 @@ void OutputFile::cacheOutputs(double t_out, double t_timeOfYear) {
 
 
 unsigned int OutputFile::cacheSize() const {
-	unsigned int cache = m_numCols * m_cache.size() * 2 * 8;
+	unsigned int cache = m_numCols * m_cache.size() * sizeof(double);
 	return cache;
 }
 

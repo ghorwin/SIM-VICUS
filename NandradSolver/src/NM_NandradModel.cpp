@@ -337,17 +337,6 @@ void NandradModel::writeOutputs(double t_out, const double * y_out) {
 	setY(y_out);
 	ydot(nullptr);
 
-#if 0
-	// call step completed for several mdoels
-	for (unsigned int i = 0; i < m_stepCompletedForOutputWriting.size(); ++i) {
-		m_stepCompletedForOutputWriting[i]->stepCompleted(t_out);
-	}
-	// call step completed for several mdoels
-	for (unsigned int i = 0; i < m_steadyStateModelContainer.size(); ++i) {
-		m_steadyStateModelContainer[i]->stepCompleted(t_out, y_out);
-	}
-#endif
-
 	// move (relative) simulation time to absolute time (offset to midnight, January 1st of the start year)
 	double t_secondsOfYear = t_out + m_project->m_simulationParameter.m_interval.m_para[NANDRAD::Interval::IP_START].value;
 
@@ -986,7 +975,7 @@ void NandradModel::initGlobals() {
 
 
 void NandradModel::initZones() {
-	const char * const FUNC_ID = "[NandradModelImpl::initActiveZones]";
+	FUNCID(NandradModel::initZones);
 	IBK::IBK_Message( IBK::FormatString("Initializing Zones\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 	IBK_MSG_INDENT;
 
@@ -1717,7 +1706,7 @@ void NandradModel::initEmbeddedObjects() {
 
 
 void NandradModel::initObjectLists() {
-	FUNCID(NandradModelImpl::initObjectLists);
+	FUNCID(NandradModel::initObjectLists);
 	IBK::IBK_Message(IBK::FormatString("Initializing Object Lists\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK_MSG_INDENT;
 
@@ -2129,7 +2118,7 @@ void NandradModel::initModelDependencies() {
 
 
 void NandradModel::initModelGraph() {
-	FUNCID(NandradModelImpl::initModelGraph);
+	FUNCID(NandradModel::initModelGraph);
 
 	// *** create state dependency graph ***
 
@@ -2198,7 +2187,7 @@ void NandradModel::initModelGraph() {
 
 
 void NandradModel::initOutputReferenceList() {
-	FUNCID(NandradModelImpl::initOutputReferenceList);
+	FUNCID(NandradModel::initOutputReferenceList);
 	IBK::IBK_Message( IBK::FormatString("Initializing Output Quantity List\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 	IBK_MSG_INDENT;
 	// generate and dump calculation results of all models
@@ -2275,7 +2264,7 @@ void NandradModel::initOutputReferenceList() {
 
 
 void NandradModel::initSolverVariables() {
-	FUNCID(NandradModelImpl::initSolverVariables);
+	FUNCID(NandradModel::initSolverVariables);
 
 	// In this function the number of conserved variables is calculated (summing up states in zones and constructions)
 	// and linear memory arrays for y, y0 and ydot are created.
@@ -2285,13 +2274,13 @@ void NandradModel::initSolverVariables() {
 
 	m_n = 0;
 
+	if (m_nZones == 0)
+		throw IBK::Exception("Currently, NANDRAD requires at last one active zone for calculation.", FUNC_ID);
+
 	// *** count number of unknowns in zones and initialize zone offsets ***
 
 	// all zones have the same number of unknowns
-	unsigned int numVarsPerZone = 1;
-	if (m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled())
-		numVarsPerZone = 2;
-
+	unsigned int numVarsPerZone = m_roomStatesModelContainer.front()->nPrimaryStateResults();
 	m_n = m_nZones*numVarsPerZone;
 
 	// populate vector with offsets to zone-balance variables in global vector
@@ -2387,8 +2376,23 @@ void NandradModel::initSolverVariables() {
 
 
 void NandradModel::initSolverMatrix() {
+	FUNCID(NandradModel::initSolverMatrix);
+
+	// define container for all value references with source name 'y'
+	IBK::IBK_Message("Creating Jacobian matrix pattern\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	IBK::MessageIndentor indent1; (void)indent1;
+
+	IBK::StopWatch timer;
+
+	IBK::IBK_Message(IBK::FormatString("Composing dependency pattern\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	// *** select all time differential results ***
+
+
+	/// \todo Anne, re-implement Jacoby matrix init code
 
 }
+
+
 
 
 void NandradModel::initStatistics(SOLFRA::ModelInterface * modelInterface, bool restart) {

@@ -117,6 +117,14 @@ const double * RoomStatesModel::resultValueRef(const QuantityName & quantityName
 }
 
 
+unsigned int RoomStatesModel::nPrimaryStateResults() const {
+	if (m_moistureBalanceEnabled)
+		return 2;
+	else
+		return 1;
+}
+
+
 void RoomStatesModel::yInitial(double * y) const {
 	// different implementations based on thermal or hygrothermal calculation
 	if (m_moistureBalanceEnabled) {

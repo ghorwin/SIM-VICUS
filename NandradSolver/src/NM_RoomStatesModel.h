@@ -106,6 +106,9 @@ public:
 	/*! Returns the underlying zone. */
 	const NANDRAD::Zone * zone() const {	return m_zone; }
 
+	/*! Returns number of conserved variables (i.e. length of y vector passed to yInitial() and update() ). */
+	unsigned int nPrimaryStateResults() const;
+
 	/*! Sets initial states in y vector.
 		This function is called after setup(), so that parameters needed for
 		computing the initial condition are already present.
