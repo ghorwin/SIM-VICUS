@@ -416,7 +416,9 @@ void SolverControlFramework::run(double t) {
 				double t_outNext = 0.0;
 
 				// tell m_model to write outputs
-				m_model->writeOutputs( t_out, y_out);
+				SUNDIALS_TIMED_FUNCTION( SUNDIALS_TIMER_WRITE_OUTPUTS,
+					m_model->writeOutputs( t_out, y_out);
+				);
 
 				// ensure that we write the final restart info _exactly_ at end of the simulation
 				// we add a small time difference to ensure that we are actually at end of simulation
@@ -484,6 +486,11 @@ void SolverControlFramework::run(double t) {
 
 		writeProgress(t, false);
 
+		// Ask model to write out any last outputs to files. Most models won't need this, but if value
+		// caching is implemented, this ensures that there is a mechanism to flush the cache to files.
+		SUNDIALS_TIMED_FUNCTION( SUNDIALS_TIMER_WRITE_OUTPUTS,
+			m_model->writeFinalOutputs();
+		);
 		m_stopWatch.stop();
 
 	}

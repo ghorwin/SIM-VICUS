@@ -106,6 +106,9 @@ public:
 		(void)t_out; (void)y_out;
 	}
 
+	/*! Called at end of simulation for final output file caching/closing of output files. */
+	virtual void writeFinalOutputs() {}
+
 	/*! Function to convert relative simulation time t into a date/time string representation.
 		Default implementation assumes simulation starts at midnight 2000 and returns a corresponding date/time string.
 	*/
