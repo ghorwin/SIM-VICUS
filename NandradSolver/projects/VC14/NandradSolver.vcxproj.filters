@@ -47,9 +47,6 @@
     <ClCompile Include="..\..\src\NM_ConstructionBalanceModel.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\NM_ConstructionInsideBCModel.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\NM_ConstructionStatesModel.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -131,9 +128,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\NM_ConstructionBalanceModel.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\NM_ConstructionInsideBCModel.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\NM_ConstructionStatesModel.h">

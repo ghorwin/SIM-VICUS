@@ -167,7 +167,6 @@
     <ClCompile Include="..\..\src\main.cpp" />
     <ClCompile Include="..\..\src\NM_AbstractModel.cpp" />
     <ClCompile Include="..\..\src\NM_ConstructionBalanceModel.cpp" />
-    <ClCompile Include="..\..\src\NM_ConstructionInsideBCModel.cpp" />
     <ClCompile Include="..\..\src\NM_ConstructionStatesModel.cpp" />
     <ClCompile Include="..\..\src\NM_DefaultModel.cpp" />
     <ClCompile Include="..\..\src\NM_DefaultStateDependency.cpp" />
@@ -228,7 +227,6 @@
     <ClInclude Include="..\..\src\NM_AbstractStateDependency.h" />
     <ClInclude Include="..\..\src\NM_AbstractTimeDependency.h" />
     <ClInclude Include="..\..\src\NM_ConstructionBalanceModel.h" />
-    <ClInclude Include="..\..\src\NM_ConstructionInsideBCModel.h" />
     <ClInclude Include="..\..\src\NM_ConstructionStatesModel.h" />
     <ClInclude Include="..\..\src\NM_DefaultModel.h" />
     <ClInclude Include="..\..\src\NM_DefaultStateDependency.h" />
