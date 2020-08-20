@@ -2046,11 +2046,7 @@ void NandradModel::initModelDependencies() {
 								.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_modelContainer[(size_t)i]->referenceType()))
 								.arg(m_modelContainer[(size_t)i]->id()), FUNC_ID);
 						else {
-							throw IBK::Exception(IBK::FormatString("Could not resolve reference to quantity %1 of %2 with id #%3! %4")
-								.arg(inputRef.m_name.m_name)
-								.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_modelContainer[(size_t)i]->referenceType()))
-								.arg(m_modelContainer[(size_t)i]->id())
-								.arg(lookupErrorMessage), FUNC_ID);
+							throw IBK::Exception(lookupErrorMessage, FUNC_ID);
 						}
 					}
 					else {
