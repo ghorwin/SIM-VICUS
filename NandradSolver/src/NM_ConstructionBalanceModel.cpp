@@ -153,7 +153,55 @@ void ConstructionBalanceModel::inputReferences(std::vector<InputReference> & inp
 
 
 void ConstructionBalanceModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
-	/// \todo implement Andreas
+
+	// this model computes:
+	//
+	// - ydot
+	// - FluxHeatConductionA
+	// - FluxHeatConductionB
+
+	// and takes input:
+	// - Zone temperatures
+	// - (indirectly) y-dots from ConstructionStatesModel through temperatures and calculated heat fluxes
+	//
+	// see update()
+
+	// Mind: we access some results of the ConstructionStatesModel directly, like surface temperatures and computed heat fluxes.
+	//       In the case of variables that are *not* exported (internal construction heat fluxes), we simply compute the dependencies
+	//       from the layer temperatures ourselves.
+
+	if (!m_moistureBalanceEnabled) {
+
+		// first we publish the dependencies of the boundary fluxes
+		if (m_con->m_interfaceA.m_heatConduction.m_modelType != NANDRAD::InterfaceHeatConduction::NUM_MT) {
+			if (m_valueRefs[InputRef_RoomATemperature] != nullptr) {
+				resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxHeatConductionA], m_valueRefs[InputRef_RoomATemperature]));
+				resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxHeatConductionA], &m_statesModel->m_results[ConstructionStatesModel::R_SurfaceTemperatureA]));
+			}
+		}
+		if (m_con->m_interfaceB.m_heatConduction.m_modelType != NANDRAD::InterfaceHeatConduction::NUM_MT) {
+			if (m_valueRefs[InputRef_RoomBTemperature] != nullptr) {
+				resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxHeatConductionB], m_valueRefs[InputRef_RoomBTemperature]));
+				resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxHeatConductionB], &m_statesModel->m_results[ConstructionStatesModel::R_SurfaceTemperatureB]));
+			}
+		}
+
+		// remaining dependency pattern
+		for (unsigned int i=0; i<m_statesModel->m_nElements; ++i) {
+			// each ydot depends on the temperature in the cell itself
+			resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], &m_statesModel->m_vectorValuedResults[ConstructionStatesModel::VVR_LayerTemperature].data()[i] ) );
+			// and on right-side element
+			if (i<m_statesModel->m_nElements-1)
+				resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], &m_statesModel->m_vectorValuedResults[ConstructionStatesModel::VVR_LayerTemperature].data()[i+1] ) );
+			// and on left-side element
+			if (i > 0)
+				resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], &m_statesModel->m_vectorValuedResults[ConstructionStatesModel::VVR_LayerTemperature].data()[i-1] ) );
+		}
+	}
+	else {
+		/// \todo hygrothermal code
+	}
+
 }
 
 
