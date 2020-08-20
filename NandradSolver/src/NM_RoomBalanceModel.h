@@ -111,6 +111,7 @@ public:
 	virtual void resultValueRefs(std::vector<const double *> &res) const override;
 
 	/*! Retrieves reference pointer to a value with given quantity ID name.
+		\note For quantity 'ydot' the memory with computed ydot-values is returned.
 		\return Returns pointer to memory location with this quantity, otherwise nullptr if parameter ID was not found.
 	*/
 	virtual const double * resultValueRef(const QuantityName & quantityName) const override;

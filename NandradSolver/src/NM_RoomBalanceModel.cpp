@@ -88,7 +88,10 @@ const double * RoomBalanceModel::resultValueRef(const QuantityName & quantityNam
 	// Note: index in m_results corresponds to enumeration values in enum 'Results'
 	const char * const category = "RoomBalanceModel::Results";
 
-	if (KeywordList::CategoryExists(category) && KeywordList::KeywordExists(category, quantityName.m_name)) {
+	if (quantityName.m_name == "ydot") {
+		return &m_ydot[0];
+	}
+	else if (KeywordList::CategoryExists(category) && KeywordList::KeywordExists(category, quantityName.m_name)) {
 		int resIdx = KeywordList::Enumeration(category, quantityName.m_name);
 		return &m_results[(unsigned int)resIdx];
 	}

@@ -91,6 +91,7 @@ public:
 	virtual void resultValueRefs(std::vector<const double *> &res) const override;
 
 	/*! Retrieves reference pointer to a value with given quantity ID name.
+		\note For quantity 'ydot' the memory with computed ydot-values is returned.
 		\return Returns pointer to memory location with this quantity, otherwise nullptr if parameter ID was not found.
 	*/
 	virtual const double * resultValueRef(const QuantityName & quantityName) const override;
@@ -106,8 +107,6 @@ public:
 		vector argument.
 		\note This function is not the fastest, so never call this function from within the solver
 		(except maybe for output writing).
-
-		\todo Implement as soon as
 	*/
 	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const override;
 

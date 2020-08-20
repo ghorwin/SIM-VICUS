@@ -80,7 +80,10 @@ const double * ConstructionBalanceModel::resultValueRef(const QuantityName & qua
 	// Note: index in m_results corresponds to enumeration values in enum 'Results'
 	const char * const category = "ConstructionBalanceModel::Results";
 
-	if (KeywordList::KeywordExists(category, quantityName.m_name)) {
+	if (quantityName.m_name == "ydot") {
+		return &m_ydot[0];
+	}
+	else if (KeywordList::KeywordExists(category, quantityName.m_name)) {
 		int resIdx = KeywordList::Enumeration(category, quantityName.m_name);
 		return &m_results[(unsigned int)resIdx];
 	}
