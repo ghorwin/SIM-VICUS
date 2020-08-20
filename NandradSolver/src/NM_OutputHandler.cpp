@@ -65,7 +65,7 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 		throw IBK::Exception( IBK::FormatString("Output time unit '%1' is not a valid time unit.").arg(m_timeUnit.name()), FUNC_ID);
 	}
 
-	m_outputCacheLimit = 100000; // 100 Mb for starters
+	m_outputCacheLimit = 100000000; // ~100 Mb for starters
 	m_realTimeOutputDelay = 10; // wait a few seconds second simulation time before flushing the cache
 
 	// initialize and check output grids
