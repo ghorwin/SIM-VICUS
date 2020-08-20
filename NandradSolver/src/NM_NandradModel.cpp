@@ -42,6 +42,10 @@
 #include <SOLFRA_IntegratorExplicitEuler.h>
 #include <SOLFRA_IntegratorImplicitEuler.h>
 #include <SOLFRA_JacobianSparseCSR.h>
+#include <SOLFRA_Constants.h>
+
+#include <sundials/sundials_config.h>
+#include <sundials/sundials_timer.h>
 
 #include <SOLFRA_LESGMRES.h>
 #include <SOLFRA_LESBiCGStab.h>
@@ -84,7 +88,7 @@ NandradModel::NandradModel() :
 
 
 NandradModel::~NandradModel() {
-	// final flush of outputs
+	// final flush of outputs - only needed in case of solver crash or manual abort
 	if (m_outputHandler != nullptr)
 		m_outputHandler->flushCache();
 
@@ -349,6 +353,13 @@ void NandradModel::writeOutputs(double t_out, const double * y_out) {
 	// write feedback to user
 	IBK_ASSERT(m_t == t_out);
 	m_feedback.writeFeedback(t_out, false);
+}
+
+
+void NandradModel::writeFinalOutputs() {
+	SUNDIALS_TIMED_FUNCTION( SUNDIALS_TIMER_WRITE_OUTPUTS,
+		m_outputHandler->flushCache();
+	);
 }
 
 

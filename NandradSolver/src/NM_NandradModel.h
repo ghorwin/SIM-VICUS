@@ -148,6 +148,9 @@ public:
 	*/
 	virtual void writeOutputs(double t_out, const double * y_out) override;
 
+	/*! Called at end of simulation for final output file caching/closing of output files. */
+	virtual void writeFinalOutputs() override;
+
 	/*! Function to convert relative simulation time t into a date/time string representation. */
 	virtual std::string simTime2DateTimeString(double t) const override;
 
