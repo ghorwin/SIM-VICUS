@@ -92,7 +92,8 @@ public:
 		This function is called after all result vectors are resized and the input value
 		references are filled with valid pointers.
 
-		Default implementation does nothing (i.e. no direct dependencies).
+		Default implementation does nothing (i.e. no dependencies, which is not likely and will probably yield
+		an invalid matrix pattern).
 
 		\param resultInputValueReferences pattern of results and input values that are directly
 			connected by a calculation rule

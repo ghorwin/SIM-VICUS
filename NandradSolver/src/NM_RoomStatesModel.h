@@ -95,6 +95,7 @@ public:
 	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const override;
 
 	/*! Retrieves reference pointer to a value with given quantity ID name.
+		\note Quantity name of "y" returns pointer to start of local y data vector.
 		\return Returns pointer to memory location with this quantity, otherwise NULL if parameter ID was not found.
 	*/
 	virtual const double * resultValueRef(const QuantityName & quantityName) const override;
@@ -108,6 +109,9 @@ public:
 
 	/*! Returns number of conserved variables (i.e. length of y vector passed to yInitial() and update() ). */
 	unsigned int nPrimaryStateResults() const;
+
+	/*! Returns a vector of dependencies of all result quantities (including ydots) from y input quantities). */
+	void stateDependencies(std::vector< std::pair<const double *, const double *> > & resultInputValueReferences) const;
 
 	/*! Sets initial states in y vector.
 		This function is called after setup(), so that parameters needed for
@@ -149,6 +153,9 @@ private:
 		Index matches enum values of Results.
 	*/
 	std::vector<double>								m_results;
+
+	/*! Cached input data vector (size nPrimaryStateResults()). */
+	std::vector<double>								m_y;
 
 };
 

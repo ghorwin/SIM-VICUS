@@ -67,6 +67,7 @@ void RoomStatesModel::setup(const NANDRAD::Zone & zone, const NANDRAD::Simulatio
 	// results depend on calculation mode
 	m_moistureBalanceEnabled = simPara.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled();
 	if (m_moistureBalanceEnabled) {
+		m_y.resize(2); // two conserved states
 		m_results.resize(NUM_R);
 	}
 	else {
@@ -79,6 +80,7 @@ void RoomStatesModel::setup(const NANDRAD::Zone & zone, const NANDRAD::Simulatio
 
 		// cache initial condition
 		m_results[0] = simPara.m_para[NANDRAD::SimulationParameter::SP_INITIAL_TEMPERATURE].value;
+		m_y.resize(1); // one state
 	}
 }
 
@@ -108,12 +110,16 @@ const double * RoomStatesModel::resultValueRef(const QuantityName & quantityName
 	// Note: index in m_results corresponds to enumeration values in enum 'Results'
 	const char * const category = "RoomStatesModel::Results";
 
-	if (KeywordList::KeywordExists(category, quantityName.m_name)) {
+	if (quantityName.m_name == "y") {
+		return &m_y[0];
+	}
+	else if (KeywordList::KeywordExists(category, quantityName.m_name)) {
 		int resIdx = KeywordList::Enumeration(category, quantityName.m_name);
 		return &m_results[(unsigned int)resIdx];
 	}
-	else
+	else {
 		return nullptr;
+	}
 }
 
 
@@ -122,6 +128,19 @@ unsigned int RoomStatesModel::nPrimaryStateResults() const {
 		return 2;
 	else
 		return 1;
+}
+
+
+void RoomStatesModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
+	// ok, we know our dependencies of our implemented equations
+
+	if (m_moistureBalanceEnabled) {
+		/// \todo hygrothermal implementation
+	}
+	else {
+		// temperature depends on energy density state
+		resultInputValueReferences.push_back(std::make_pair(&m_results[R_AirTemperature], &m_y[0]));
+	}
 }
 
 
@@ -152,10 +171,14 @@ int RoomStatesModel::update(const double * y) {
 
 	// different implementations based on thermal or hygrothermal calculation
 	if (m_moistureBalanceEnabled) {
+		// cache input quantities
 		/// \todo hygrothermal implementation
 	}
 	else {
-		double uR = y[0]; // first conserved quantity is energy density
+		// cache input quantities
+		m_y[0] = y[0];
+
+		double uR = y[0]; // conserved quantity is energy density
 
 		/// \todo if constants should be adjustable, create parameters in SimulationParameters data section and
 		/// use these here.
