@@ -106,9 +106,6 @@ public:
 	/*! Reference descriptions are empty.*/
 //	virtual void inputReferenceDescriptions(std::vector<QuantityDescription> & /*refDesc*/) const { }
 
-	/*! Return an empty vector.*/
-	virtual void inputValueRefs(std::vector<const double *> & valueRefs) const override { (void)valueRefs; }
-
 	/*! Re-implement this function in derived classes and handle all your update-functionality here. */
 	virtual int update() override;
 

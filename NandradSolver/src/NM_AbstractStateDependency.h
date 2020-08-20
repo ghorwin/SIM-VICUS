@@ -79,11 +79,6 @@ public:
 	*/
 	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const  = 0;
 
-	/*! Returns vector with pointers to memory locations matching input value references.
-		This is needed for solution of cyclic state model groups.
-	*/
-	virtual void inputValueRefs(std::vector<const double *> & valueRefs) const { (void)valueRefs; }
-
 	/*! Returns a pattern of direkt computational dependencies between input values
 		and result values of the current model (the first pair entry corresponds
 		to the result value, the second one to the input value of a dependency). This pattern can be
