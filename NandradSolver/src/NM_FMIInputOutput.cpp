@@ -19,7 +19,7 @@
 	Lesser General Public License for more details.
 */
 
-#include <NM_FMIInputOutput.h>
+#include "NM_FMIInputOutput.h"
 
 namespace NANDRAD_MODEL {
 
