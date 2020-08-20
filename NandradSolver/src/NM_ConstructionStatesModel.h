@@ -92,6 +92,7 @@ public:
 	virtual void resultValueRefs(std::vector<const double *> &res) const override;
 
 	/*! Retrieves reference pointer to a value with given quantity ID name.
+		\note Quantity "y" gives address of cached input states.
 		\return Returns pointer to memory location with this quantity, otherwise nullptr if parameter ID was not found.
 	*/
 	virtual const double * resultValueRef(const QuantityName & quantityName) const override;
@@ -101,6 +102,9 @@ public:
 
 	/*! Returns number of conserved variables (i.e. length of y vector passed to yInitial() and update() ). */
 	unsigned int nPrimaryStateResults() const;
+
+	/*! Returns a vector of dependencies of all result quantities (including ydots) from input variables). */
+	void stateDependencies(std::vector< std::pair<const double *, const double *> > & resultInputValueReferences) const;
 
 	/*! Sets initial states in y vector.
 		This function is called after setup(), so that parameters needed for
@@ -182,10 +186,8 @@ private:
 	/*! Total construction width [m]. */
 	double							m_constructionWidth;
 
-	/*! Energy densities in elements [J/m3] */
-	std::vector<double>				m_statesU;
-	/*! Temperatures in elements [K] */
-	std::vector<double>				m_statesT;
+	/*! Cached conserved quantities (size nPrimaryStateResults() ) */
+	std::vector<double>				m_y;
 
 	/*! Vector with heat conduction fluxes [W/m2] across elements.
 		Note: vector has size m_elements+1 and does only contain heat conduction fluxes

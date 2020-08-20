@@ -33,6 +33,8 @@
 
 #include "NM_KeywordList.h"
 
+#define CONSTANT_EXTRAPOLATION
+
 namespace NANDRAD_MODEL {
 
 
@@ -100,9 +102,7 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 
 	// *** storage member initialization
 
-	// resize storage members
-	m_statesU.resize(m_nElements);
-	m_statesT.resize(m_nElements);
+	m_y.resize(nPrimaryStateResults());
 
 	m_rhoce.resize(m_nElements);
 
@@ -141,7 +141,7 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 	}
 	m_results.resize(skalarResultCount);
 	m_vectorValuedResults.resize(1);
-	m_vectorValuedResults[0] = VectorValuedQuantity(con.m_constructionType->m_materialLayers.size(), 0);
+	m_vectorValuedResults[VVR_LayerTemperature] = VectorValuedQuantity(con.m_constructionType->m_materialLayers.size(), 0);
 }
 
 
@@ -190,7 +190,10 @@ const double * ConstructionStatesModel::resultValueRef(const QuantityName & quan
 	// Note: index in m_results corresponds to enumeration values in enum 'Results'
 	const char * const category = "ConstructionStatesModel::Results";
 
-	if (KeywordList::KeywordExists(category, quantityName.m_name)) {
+	if (quantityName.m_name == "y") {
+		return &m_y[0];
+	}
+	else if (KeywordList::KeywordExists(category, quantityName.m_name)) {
 		int resIdx = KeywordList::Enumeration(category, quantityName.m_name);
 		return &m_results[(unsigned int)resIdx];
 	}
@@ -230,6 +233,31 @@ unsigned int ConstructionStatesModel::nPrimaryStateResults() const {
 }
 
 
+void ConstructionStatesModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
+	if (m_moistureBalanceEnabled) {
+		/// \todo hygrothermal
+	}
+	else {
+		// we add dependencies of all scalar vars and all vector valued vars to the states vector m_y
+
+		// first scalar quantities
+
+		// surface temperatures depend on states in their elements
+		resultInputValueReferences.push_back(std::make_pair(&m_results[R_SurfaceTemperatureA], &m_y[0]) );
+		resultInputValueReferences.push_back(std::make_pair(&m_results[R_SurfaceTemperatureB], &m_y[m_nElements-1]) );
+#ifndef CONSTANT_EXTRAPOLATION
+		resultInputValueReferences.push_back(std::make_pair(&m_results[R_SurfaceTemperatureA], &m_y[1]) );
+		resultInputValueReferences.push_back(std::make_pair(&m_results[R_SurfaceTemperatureB], &m_y[m_nElements-2]) );
+#endif
+
+		// now vector-valued quantities
+		// temperatures in all elements depend on their respective energy densities
+		for (unsigned int i=0; i<m_nElements; ++i)
+			resultInputValueReferences.push_back(std::make_pair(&m_vectorValuedResults[VVR_LayerTemperature].data()[i], &m_y[i]) );
+	}
+}
+
+
 void ConstructionStatesModel::yInitial(double * y) const {
 	// retrieve initial temperature, which has already been checked for valid values
 	double T_initial = m_simPara->m_para[NANDRAD::SimulationParameter::SP_INITIAL_TEMPERATURE].value;
@@ -255,8 +283,8 @@ int ConstructionStatesModel::update(const double * y) {
 		// this is a speeded up version for thermal-only calculations
 		// does decomposition and internal flux calculation in one
 
-		double * states_u = DOUBLE_PTR(m_statesU);
-		double * states_T = DOUBLE_PTR(m_statesT);
+		double * states_u = DOUBLE_PTR(m_y); // in thermal calculation, m_y holds all energy densities [J/m3]
+		double * states_T = m_vectorValuedResults[VVR_LayerTemperature].dataPtr();
 
 		double * vec_q = DOUBLE_PTR(m_fluxes_q);
 
@@ -294,22 +322,23 @@ int ConstructionStatesModel::update(const double * y) {
 
 	// compute surface temperatures
 
+	double * states_T = m_vectorValuedResults[VVR_LayerTemperature].dataPtr();
 	// Special treatment: constant interpolation for only two elements, i.e. single-layer constructions
 	// without discretization
 	if (m_elements.size() == 2) {
-		m_TsA = m_statesT[0];
-		m_TsB = m_statesT[1];
+		m_TsA = states_T[0];
+		m_TsB = states_T[1];
 	}
 	else {
 #define CONSTANT_EXTRAPOLATION
 #ifdef CONSTANT_EXTRAPOLATION
-		m_TsA = m_statesT[0];
-		m_TsB = m_statesT[m_nElements-1];
+		m_TsA = states_T[0];
+		m_TsB = states_T[m_nElements-1];
 #else
 		// linear extrapolation of temperature
-		m_TsA = (1.0 + m_elements[0].wR) * m_statesT[0] - m_elements[0].wR * m_statesT[1];
-		m_TsB = (1.0 + m_elements[m_nElements-1].wL) * m_statesT[m_nElements-1]
-				- m_elements[m_nElements-1].wL * m_statesT[m_nElements-2];
+		m_TsA = (1.0 + m_elements[0].wR) * states_T[0] - m_elements[0].wR * states_T[1];
+		m_TsB = (1.0 + m_elements[m_nElements-1].wL) * states_T[m_nElements-1]
+				- m_elements[m_nElements-1].wL * states_T[m_nElements-2];
 #endif
 	}
 

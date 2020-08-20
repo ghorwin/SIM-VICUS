@@ -78,6 +78,9 @@ public:
 	/*! Returns an iterator to the start of the storage vector. */
 	std::vector<double>::iterator begin() { return m_data.begin(); }
 
+	/*! Return address of first element of vector. */
+	double * dataPtr() { return &m_data[0]; }
+
 	/*! Return read-only access to vector. */
 	const std::vector<double> & data() const { return m_data; }
 

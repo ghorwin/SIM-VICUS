@@ -110,7 +110,7 @@ public:
 	/*! Returns number of conserved variables (i.e. length of y vector passed to yInitial() and update() ). */
 	unsigned int nPrimaryStateResults() const;
 
-	/*! Returns a vector of dependencies of all result quantities (including ydots) from y input quantities). */
+	/*! Returns a vector of dependencies of all result quantities from y input quantities). */
 	void stateDependencies(std::vector< std::pair<const double *, const double *> > & resultInputValueReferences) const;
 
 	/*! Sets initial states in y vector.
