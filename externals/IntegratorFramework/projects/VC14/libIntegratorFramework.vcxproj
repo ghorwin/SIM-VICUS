@@ -92,7 +92,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../../IBK/src;../../../IBKMK/src;../../../sundials/src/include;../../../sundials/src/win32_include;../../../sundials/src/src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../IBK/src;../../../IBKMK/src;../../../sundials/src/include;../../../sundials/src/win32_include;../../../sundials/src/src</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -109,7 +109,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../../IBK/src;../../../IBKMK/src;../../../sundials/src/include;../../../sundials/src/win32_include;../../../sundials/src/src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../IBK/src;../../../IBKMK/src;../../../sundials/src/include;../../../sundials/src/win32_include;../../../sundials/src/src</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -127,7 +127,7 @@
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../../IBK/src;../../../IBKMK/src;../../../sundials/src/include;../../../sundials/src/win32_include;../../../sundials/src/src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../IBK/src;../../../IBKMK/src;../../../sundials/src/include;../../../sundials/src/win32_include;../../../sundials/src/src</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
@@ -145,7 +145,7 @@
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../../IBK/src;../../../IBKMK/src;../../../sundials/src/include;../../../sundials/src/win32_include;../../../sundials/src/src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../IBK/src;../../../IBKMK/src;../../../sundials/src/include;../../../sundials/src/win32_include;../../../sundials/src/src</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
@@ -161,6 +161,8 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\SOLFRA_Constants.cpp" />
     <ClCompile Include="..\..\src\SOLFRA_IntegratorErrorControlled.cpp" />
+    <ClCompile Include="..\..\src\SOLFRA_IntegratorExplicitEuler.cpp" />
+    <ClCompile Include="..\..\src\SOLFRA_IntegratorImplicitEuler.cpp" />
     <ClCompile Include="..\..\src\SOLFRA_IntegratorSundialsCVODE.cpp" />
     <ClCompile Include="..\..\src\SOLFRA_JacobianSparseCSR.cpp" />
     <ClCompile Include="..\..\src\SOLFRA_LESBiCGStab.cpp" />
@@ -180,6 +182,8 @@
     <ClInclude Include="..\..\src\SOLFRA_Constants.h" />
     <ClInclude Include="..\..\src\SOLFRA_FMUModelInterface.h" />
     <ClInclude Include="..\..\src\SOLFRA_IntegratorErrorControlled.h" />
+    <ClInclude Include="..\..\src\SOLFRA_IntegratorExplicitEuler.h" />
+    <ClInclude Include="..\..\src\SOLFRA_IntegratorImplicitEuler.h" />
     <ClInclude Include="..\..\src\SOLFRA_IntegratorInterface.h" />
     <ClInclude Include="..\..\src\SOLFRA_IntegratorSundialsCVODE.h" />
     <ClInclude Include="..\..\src\SOLFRA_IntegratorSundialsCVODEImpl.h" />
