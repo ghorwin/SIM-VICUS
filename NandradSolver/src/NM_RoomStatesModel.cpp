@@ -132,12 +132,12 @@ unsigned int RoomStatesModel::nPrimaryStateResults() const {
 
 
 void RoomStatesModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
-	// ok, we know our dependencies of our implemented equations
-
 	if (m_moistureBalanceEnabled) {
 		/// \todo hygrothermal implementation
 	}
 	else {
+		// for each computed quantity indicate which variables are needed for computation
+
 		// temperature depends on energy density state
 		resultInputValueReferences.push_back(std::make_pair(&m_results[R_AirTemperature], &m_y[0]));
 	}

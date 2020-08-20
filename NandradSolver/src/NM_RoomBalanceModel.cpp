@@ -150,7 +150,22 @@ void RoomBalanceModel::inputReferences(std::vector<InputReference> & inputRefs) 
 
 
 void RoomBalanceModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
-	/// \todo implement Andreas
+	if (m_moistureBalanceEnabled) {
+		/// \todo hygrothermal implementation
+	}
+	else {
+		// for each computed quantity indicate which variables are needed for computation
+
+		// add all heat conduction flux vars as input references
+		for (const double * heatCondVars : m_heatCondValueRefs) {
+			resultInputValueReferences.push_back(std::make_pair(&m_ydot[0], heatCondVars));
+			resultInputValueReferences.push_back(std::make_pair(&m_results[R_ConstructionHeatConductionLoad], heatCondVars));
+		}
+		/// \todo can we instead just add a dependency like:
+		/// resultInputValueReferences.push_back(std::make_pair(&m_ydot[0], &m_results[R_ConstructionHeatConductionLoad]));
+
+		/// \todo other variables with influence on room energy balance (see update())
+	}
 }
 
 
@@ -165,7 +180,7 @@ void RoomBalanceModel::setInputValueRefs(const std::vector<QuantityDescription> 
 		++it;
 	}
 
-	// todo : other input fluxes that we sum up
+	/// \todo other input fluxes that we sum up
 }
 
 
