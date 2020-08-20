@@ -1977,6 +1977,7 @@ void NandradModel::initModelDependencies() {
 				srcVarAddress = m_fmiInputOutput->resolveResultReference(inputRef, quantityDesc);
 
 
+				std::string lookupErrorMessage;
 				// 2. regular lookup (only if not yet found in FMU)
 				if (srcVarAddress == nullptr) {
 					// compose search key - for vector valued quantities we ignore the index in ValueReference,
@@ -1997,9 +1998,11 @@ void NandradModel::initModelDependencies() {
 							if (srcVarAddress == nullptr)
 								throw IBK::Exception("Object return nullptr reference for exported variable.", FUNC_ID);
 						} catch (IBK::Exception & ex) {
-							throw IBK::Exception(ex, IBK::FormatString("Error resolving variable reference %1(id=%2).%3.")
+							// in case of error, simply cache a warning to be used in the error message if this variable
+							// is required
+							lookupErrorMessage = IBK::FormatString("Error resolving variable reference %1(id=%2).%3. %4")
 								.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",valueRef.m_referenceType))
-								.arg(valueRef.m_id).arg(inputRef.m_name.encodedString()), FUNC_ID);
+								.arg(valueRef.m_id).arg(inputRef.m_name.encodedString()).arg(ex.what()).str();
 						}
 					}
 				}
@@ -2026,10 +2029,18 @@ void NandradModel::initModelDependencies() {
 				if (srcVarAddress == nullptr) {
 					if (inputRef.m_required) {
 						// error: reference was not resolved
-						throw IBK::Exception(IBK::FormatString("Could not resolve reference to quantity %1 of %2 with id #%3!")
-							.arg(inputRef.m_name.m_name)
-							.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_modelContainer[(size_t)i]->referenceType()))
-							.arg(m_modelContainer[(size_t)i]->id()), FUNC_ID);
+						if (lookupErrorMessage.empty())
+							throw IBK::Exception(IBK::FormatString("Could not resolve reference to quantity %1 of %2 with id #%3!")
+								.arg(inputRef.m_name.m_name)
+								.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_modelContainer[(size_t)i]->referenceType()))
+								.arg(m_modelContainer[(size_t)i]->id()), FUNC_ID);
+						else {
+							throw IBK::Exception(IBK::FormatString("Could not resolve reference to quantity %1 of %2 with id #%3! %4")
+								.arg(inputRef.m_name.m_name)
+								.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_modelContainer[(size_t)i]->referenceType()))
+								.arg(m_modelContainer[(size_t)i]->id())
+								.arg(lookupErrorMessage), FUNC_ID);
+						}
 					}
 					else {
 						// if not required, tell the model object that we do not have such an input by giving a nullptr;
