@@ -96,7 +96,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../../externals/IBK/src;../../../externals/Nandrad/src;../../../externals/NandradModel/src;../../../externals/IntegratorFramework/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../externals/IBK/src;../../../externals/IBKMK/src;../../../externals/CCM/src;../../../externals/Nandrad/src;../../../externals/IntegratorFramework/src;../../../externals/Zeppelin/src;../../../externals/sundials/src/include</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
@@ -113,7 +113,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../../externals/IBK/src;../../../externals/Nandrad/src;../../../externals/NandradModel/src;../../../externals/IntegratorFramework/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../externals/IBK/src;../../../externals/IBKMK/src;../../../externals/CCM/src;../../../externals/Nandrad/src;../../../externals/IntegratorFramework/src;../../../externals/Zeppelin/src;../../../externals/sundials/src/include</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
@@ -132,7 +132,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../../externals/IBK/src;../../../externals/Nandrad/src;../../../externals/NandradModel/src;../../../externals/IntegratorFramework/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../externals/IBK/src;../../../externals/IBKMK/src;../../../externals/CCM/src;../../../externals/Nandrad/src;../../../externals/IntegratorFramework/src;../../../externals/Zeppelin/src;../../../externals/sundials/src/include</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
@@ -152,7 +152,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../../externals/IBK/src;../../../externals/Nandrad/src;../../../externals/NandradModel/src;../../../externals/IntegratorFramework/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../externals/IBK/src;../../../externals/IBKMK/src;../../../externals/CCM/src;../../../externals/Nandrad/src;../../../externals/IntegratorFramework/src;../../../externals/Zeppelin/src;../../../externals/sundials/src/include</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
@@ -165,6 +165,28 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\main.cpp" />
+    <ClCompile Include="..\..\src\NM_AbstractModel.cpp" />
+    <ClCompile Include="..\..\src\NM_ConstructionBalanceModel.cpp" />
+    <ClCompile Include="..\..\src\NM_ConstructionInsideBCModel.cpp" />
+    <ClCompile Include="..\..\src\NM_ConstructionStatesModel.cpp" />
+    <ClCompile Include="..\..\src\NM_DefaultModel.cpp" />
+    <ClCompile Include="..\..\src\NM_DefaultStateDependency.cpp" />
+    <ClCompile Include="..\..\src\NM_Directories.cpp" />
+    <ClCompile Include="..\..\src\NM_FMIInputOutput.cpp" />
+    <ClCompile Include="..\..\src\NM_KeywordList.cpp" />
+    <ClCompile Include="..\..\src\NM_Loads.cpp" />
+    <ClCompile Include="..\..\src\NM_NandradModel.cpp" />
+    <ClCompile Include="..\..\src\NM_OutputFile.cpp" />
+    <ClCompile Include="..\..\src\NM_OutputHandler.cpp" />
+    <ClCompile Include="..\..\src\NM_QuantityName.cpp" />
+    <ClCompile Include="..\..\src\NM_RoomBalanceModel.cpp" />
+    <ClCompile Include="..\..\src\NM_RoomStatesModel.cpp" />
+    <ClCompile Include="..\..\src\NM_Schedules.cpp" />
+    <ClCompile Include="..\..\src\NM_StateModelGroup.cpp" />
+    <ClCompile Include="..\..\src\NM_SteadyStateSolver.cpp" />
+    <ClCompile Include="..\..\src\NM_ThermalComfortModel.cpp" />
+    <ClCompile Include="..\..\src\NM_VectorValuedQuantity.cpp" />
+    <ClCompile Include="..\..\src\NM_VectorValuedQuantityIndex.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\externals\CCM\projects\VC14\libCCM.vcxproj">
@@ -172,9 +194,6 @@
     </ProjectReference>
     <ProjectReference Include="..\..\..\externals\DataIO\projects\VC14\libDataIO.vcxproj">
       <Project>{9e663452-9758-4911-8cd7-bd52a4642d15}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\externals\DelphinLight\projects\VC14\libDelphinLight.vcxproj">
-      <Project>{ff955cc6-35d4-483a-8895-79091d84a0f2}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\..\externals\IBKMK\projects\VC14\libIBKMK.vcxproj">
       <Project>{a81bbb5a-756a-40d8-acf1-d5ad16c6f95f}</Project>
@@ -184,12 +203,6 @@
     </ProjectReference>
     <ProjectReference Include="..\..\..\externals\IntegratorFramework\projects\VC14\libIntegratorFramework.vcxproj">
       <Project>{8f01ea53-db2c-420c-94e0-dd2431d21355}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\externals\Materials\projects\VC14\libMaterials.vcxproj">
-      <Project>{0f4a4786-d7fa-4d64-83d4-1c7af97700f3}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\externals\NandradModel\projects\VC14\libNandradModel.vcxproj">
-      <Project>{0ce1338d-3180-46df-b3af-96e333e64acb}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\..\externals\Nandrad\projects\VC14\libNandrad.vcxproj">
       <Project>{6e73bde5-bbe4-4195-80e6-a7391a125350}</Project>
@@ -203,12 +216,6 @@
     <ProjectReference Include="..\..\..\externals\TiCPP\projects\VC14\libTiCPP.vcxproj">
       <Project>{51f2cf62-3d4d-4367-bd53-16026e36ee61}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\externals\WallModel\projects\VC14\libWallModel.vcxproj">
-      <Project>{54127787-cc06-434c-9787-a520e117565f}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\externals\WindowModel\projects\VC14\libWindowModel.vcxproj">
-      <Project>{02533f40-d254-4ed7-8cfe-db5723037649}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\externals\Zeppelin\projects\VC14\libZeppelin.vcxproj">
       <Project>{686c4d2e-9acf-41df-a02b-32d1e0d0c98b}</Project>
     </ProjectReference>
@@ -217,10 +224,35 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\NM_AbstractModel.h" />
+    <ClInclude Include="..\..\src\NM_AbstractStateDependency.h" />
+    <ClInclude Include="..\..\src\NM_AbstractTimeDependency.h" />
+    <ClInclude Include="..\..\src\NM_ConstructionBalanceModel.h" />
+    <ClInclude Include="..\..\src\NM_ConstructionInsideBCModel.h" />
+    <ClInclude Include="..\..\src\NM_ConstructionStatesModel.h" />
+    <ClInclude Include="..\..\src\NM_DefaultModel.h" />
+    <ClInclude Include="..\..\src\NM_DefaultStateDependency.h" />
+    <ClInclude Include="..\..\src\NM_Directories.h" />
+    <ClInclude Include="..\..\src\NM_FMIInputOutput.h" />
+    <ClInclude Include="..\..\src\NM_InputReference.h" />
+    <ClInclude Include="..\..\src\NM_KeywordList.h" />
+    <ClInclude Include="..\..\src\NM_Loads.h" />
+    <ClInclude Include="..\..\src\NM_NandradModel.h" />
+    <ClInclude Include="..\..\src\NM_OutputFile.h" />
+    <ClInclude Include="..\..\src\NM_OutputHandler.h" />
+    <ClInclude Include="..\..\src\NM_Physics.h" />
+    <ClInclude Include="..\..\src\NM_QuantityDescription.h" />
+    <ClInclude Include="..\..\src\NM_QuantityName.h" />
+    <ClInclude Include="..\..\src\NM_RoomBalanceModel.h" />
+    <ClInclude Include="..\..\src\NM_RoomStatesModel.h" />
+    <ClInclude Include="..\..\src\NM_Schedules.h" />
+    <ClInclude Include="..\..\src\NM_StateModelGroup.h" />
+    <ClInclude Include="..\..\src\NM_SteadyStateSolver.h" />
+    <ClInclude Include="..\..\src\NM_ThermalComfortModel.h" />
+    <ClInclude Include="..\..\src\NM_ValueReference.h" />
+    <ClInclude Include="..\..\src\NM_VectorValuedQuantity.h" />
+    <ClInclude Include="..\..\src\NM_VectorValuedQuantityIndex.h" />
     <ClInclude Include="resource.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="..\..\resources\NandradSolver.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
