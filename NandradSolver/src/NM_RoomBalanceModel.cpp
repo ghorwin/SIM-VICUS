@@ -148,6 +148,12 @@ void RoomBalanceModel::inputReferences(std::vector<InputReference> & inputRefs) 
 	inputRefs = m_inputRefs;
 }
 
+
+void RoomBalanceModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
+	/// \todo implement Andreas
+}
+
+
 void RoomBalanceModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/,
 										 const std::vector<const double *> & resultValueRefs)
 {

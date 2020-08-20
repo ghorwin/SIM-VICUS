@@ -148,7 +148,12 @@ void ConstructionBalanceModel::inputReferences(std::vector<InputReference> & inp
 				inputRefs[InputRef_RoomATemperature] = ref;
 			}
 		}
-	}
+		}
+}
+
+
+void ConstructionBalanceModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
+	/// \todo implement Andreas
 }
 
 
