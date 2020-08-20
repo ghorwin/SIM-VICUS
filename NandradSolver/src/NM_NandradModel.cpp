@@ -2799,6 +2799,14 @@ void NandradModel::initSolverMatrix() {
 		}
 		// set last element
 		m_ia.push_back((unsigned int)m_ja.size());
+
+		// clear iaT and jaT
+		if (!m_iaT.empty())
+			m_iaT.clear();
+		if (!m_jaT.empty())
+			m_jaT.clear();
+		// generate transpose index
+		IBKMK::SparseMatrixCSR::generateTransposedIndex(m_ia, m_ja, m_iaT, m_jaT);
 	}
 	catch (IBK::Exception &ex) {
 		throw IBK::Exception(ex, "Error initializing global solver matrix!", FUNC_ID);

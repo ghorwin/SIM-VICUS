@@ -53,6 +53,9 @@ namespace NANDRAD_MODEL {
 int Schedules::setTime(double t) {
 	if (t == -1)
 		return 0; // initialization call, cannot calculate
+	// no results
+	if (m_results.empty())
+		return 0;
 
 	/// \todo clarify cyclic vs. continuous handling, especially alignment of weekdays/weekends
 	///       Suppose we have a cyclic schedule, but change start year from 2008 to 2009, we will then have
