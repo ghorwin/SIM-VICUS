@@ -37,3 +37,7 @@ Makefile*
 *.pdb
 /build/build-*
 
+
+# misc
+*.tlog
+*.vcxproj.user
