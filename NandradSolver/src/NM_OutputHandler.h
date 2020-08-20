@@ -98,6 +98,8 @@ public:
 	*/
 	void writeOutputs(double t_out, double t_secondsOfYear);
 
+	/*! When called, asks all output files to flush their cached data to file. */
+	void flushCache();
 
 	/*! Vector with output file objects.
 		Objects are not owned by us, but rather by NandradModel, since the output file objects

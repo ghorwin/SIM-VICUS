@@ -385,11 +385,16 @@ void OutputHandler::writeOutputs(double t_out, double t_secondsOfYear) {
 			IBK::IBK_Message("Flushing output cache (cache limit exceeded).\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
 		else
 			IBK::IBK_Message( IBK::FormatString("Flushing output cache (time delay reached, cache size = %1 Mb).\n").arg(storedBytes/1024./1024.), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
-		for (OutputFile * of : m_outputFiles)
-			of->flushCache();
+		flushCache();
 		// restart timer
 		m_outputTimer->start();
 	}
+}
+
+
+void OutputHandler::flushCache() {
+	for (OutputFile * of : m_outputFiles)
+		of->flushCache();
 }
 
 

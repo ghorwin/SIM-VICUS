@@ -84,6 +84,10 @@ NandradModel::NandradModel() :
 
 
 NandradModel::~NandradModel() {
+	// final flush of outputs
+	if (m_outputHandler != nullptr)
+		m_outputHandler->flushCache();
+
 	// free memory of owned instances
 	delete m_project;
 	delete m_lesSolver;
@@ -838,8 +842,8 @@ void NandradModel::initSolverParameter(const NANDRAD::ArgsParser & args) {
 	if (m_project->m_solverParameter.m_integrator != NANDRAD::SolverParameter::I_EXPLICIT_EULER) {
 		// if no LES solver has been specified, default to GMRES with ILU preconditioner
 		if (m_project->m_solverParameter.m_lesSolver == NANDRAD::SolverParameter::NUM_LES) {
-			m_project->m_solverParameter.m_lesSolver = NANDRAD::SolverParameter::LES_GMRES;
-			m_project->m_solverParameter.m_preconditioner = NANDRAD::SolverParameter::PRE_ILU;
+			m_project->m_solverParameter.m_lesSolver = NANDRAD::SolverParameter::LES_KLU;
+//			m_project->m_solverParameter.m_preconditioner = NANDRAD::SolverParameter::PRE_ILU;
 			IBK::IBK_Message("Auto-selecting GMRES with ILU preconditioner.\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		}
 	}
@@ -2503,7 +2507,7 @@ void NandradModel::initSolverMatrix() {
 			// map storing local valueRefs according to their value pointers
 			std::set<const double*> registeredLocalValueRefs;
 			// sort values into glibal data container
-			for (unsigned int k = 0; k < m_roomStatesModelContainer[i]->nPrimaryStateResults(); 
+			for (unsigned int k = 0; k < m_roomStatesModelContainer[i]->nPrimaryStateResults();
 				++k) {
 				resultValueRefs[ydot + k] = nYStates + nYdotStates + k;
 				// register in local container
@@ -2542,7 +2546,7 @@ void NandradModel::initSolverMatrix() {
 		// ... and for all constructions
 		for (unsigned int i = 0; i < m_constructionBalanceModelContainer.size(); ++i) {
 
-			const ConstructionBalanceModel *constructionModel = 
+			const ConstructionBalanceModel *constructionModel =
 				m_constructionBalanceModelContainer[i];
 			// access internal y-vector
 			const double *ydot = constructionModel->resultValueRef(QuantityName("ydot"));
@@ -2589,7 +2593,7 @@ void NandradModel::initSolverMatrix() {
 		IBK_ASSERT(nYdotStates == (unsigned int)m_ydot.size());
 
 
-		// loop through all models and select algebraic result quantities: row/column nY + nYdot -> nUnknowns 
+		// loop through all models and select algebraic result quantities: row/column nY + nYdot -> nUnknowns
 		for (unsigned int i = 0; i < m_stateModelContainer.size(); ++i) {
 
 
