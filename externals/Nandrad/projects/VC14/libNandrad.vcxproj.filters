@@ -15,16 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\NANDRAD_ActivityTemplate.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_AnnualSchedules.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\NANDRAD_ArgsParser.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_BuildingType.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\NANDRAD_Constants.cpp">
@@ -33,52 +24,40 @@
     <ClCompile Include="..\..\src\NANDRAD_ConstructionInstance.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\NANDRAD_ConstructionType.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\NANDRAD_DailyCycle.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_Date.cpp">
+    <ClCompile Include="..\..\src\NANDRAD_DataTable.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\NANDRAD_EmbeddedObject.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_EmbeddedObjectDoor.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_EmbeddedObjectHole.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\NANDRAD_EmbeddedObjectWindow.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_ExternalFileReference.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_GenericParametrizationObject.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_Geometry.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_IDGeneratorSingleton.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\NANDRAD_IDGroup.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_ImplicitModelFeedback.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_Interface.cpp">
+    <ClCompile Include="..\..\src\NANDRAD_InterfaceAirFlow.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\NANDRAD_InterfaceHeatConduction.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\NANDRAD_Interface.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\NANDRAD_InterfaceLongWaveEmission.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\NANDRAD_InterfaceSolarAbsorption.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\NANDRAD_InterfaceVaporDiffusion.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\NANDRAD_Interval.cpp">
@@ -93,31 +72,10 @@
     <ClCompile Include="..\..\src\NANDRAD_Location.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_Model.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_ModelGroup.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_ModelGroupInputReference.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_ModelGroupOutputReference.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_ModelGroups.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_ModelInputReference.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_Models.cpp">
+    <ClCompile Include="..\..\src\NANDRAD_Material.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\NANDRAD_ObjectList.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_ObjectLists.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\NANDRAD_OutputDefinition.cpp">
@@ -129,31 +87,19 @@
     <ClCompile Include="..\..\src\NANDRAD_Outputs.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_ParametrizationDefaults.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_Point3D.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_Polygon.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\NANDRAD_Project.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\NANDRAD_ProjectInfo.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_QuadPointPolygon.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\NANDRAD_Schedule.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_ScheduleGroup.cpp">
+    <ClCompile Include="..\..\src\NANDRAD_Schedules.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_Schedules.cpp">
+    <ClCompile Include="..\..\src\NANDRAD_Sensor.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\NANDRAD_SimulationParameter.cpp">
@@ -162,51 +108,99 @@
     <ClCompile Include="..\..\src\NANDRAD_SolverParameter.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_SpaceType.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_SpaceTypes.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\NANDRAD_Utilities.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\NANDRAD_Zone.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_ZoneList.cpp">
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_ConstructionInstance.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_Connection.cpp">
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_ConstructionType.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_InterfaceVaporDiffusion.cpp">
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_DailyCycle.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_Sensor.cpp">
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_EmbeddedObject.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_InterfaceAirFlow.cpp">
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_EmbeddedObjectWindow.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_FMUExportReference.cpp">
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_Interface.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\NANDRAD_FMUImportReference.cpp">
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_InterfaceAirFlow.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_InterfaceHeatConduction.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_InterfaceLongWaveEmission.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_InterfaceSolarAbsorption.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_InterfaceVaporDiffusion.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_Interval.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_LinearSplineParameter.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_Location.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_Material.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_MaterialLayer.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_ObjectList.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_OutputDefinition.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_OutputGrid.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_Outputs.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_Project.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_ProjectInfo.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_Schedule.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_Sensor.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_SerializationTest.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_SimulationParameter.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_SolverParameter.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_Zone.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\NANDRAD_ActivityTemplate.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_AnnualSchedules.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\NANDRAD_ArgsParser.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_BuildingType.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\NANDRAD_Constants.h">
@@ -215,46 +209,28 @@
     <ClInclude Include="..\..\src\NANDRAD_ConstructionInstance.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\NANDRAD_ConstructionType.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\src\NANDRAD_DailyCycle.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_Date.h">
+    <ClInclude Include="..\..\src\NANDRAD_DataTable.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\NANDRAD_EmbeddedObject.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_EmbeddedObjectDoor.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_EmbeddedObjectHole.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\NANDRAD_EmbeddedObjectWindow.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_ExternalFileReference.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_FindHelpers.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_GenericParametrizationObject.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_Geometry.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_IDGeneratorSingleton.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\NANDRAD_IDGroup.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_ImplicitModelFeedback.h">
+    <ClInclude Include="..\..\src\NANDRAD_Interface.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_Interface.h">
+    <ClInclude Include="..\..\src\NANDRAD_InterfaceAirFlow.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\NANDRAD_InterfaceHeatConduction.h">
@@ -264,6 +240,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\NANDRAD_InterfaceSolarAbsorption.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\NANDRAD_InterfaceVaporDiffusion.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\NANDRAD_Interval.h">
@@ -278,31 +257,16 @@
     <ClInclude Include="..\..\src\NANDRAD_Location.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_Model.h">
+    <ClInclude Include="..\..\src\NANDRAD_Material.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_ModelGroup.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_ModelGroupInputReference.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_ModelGroupOutputReference.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_ModelGroups.h">
+    <ClInclude Include="..\..\src\NANDRAD_MaterialLayer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\NANDRAD_ModelInputReference.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_Models.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\NANDRAD_ObjectList.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_ObjectLists.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\NANDRAD_OutputDefinition.h">
@@ -314,37 +278,22 @@
     <ClInclude Include="..\..\src\NANDRAD_Outputs.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_ParametrizationDefaults.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_Point3D.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_Polygon.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\NANDRAD_Project.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\NANDRAD_ProjectInfo.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_ProjectParameter.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_QuadPoint.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_QuadPointPolygon.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\NANDRAD_Schedule.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_ScheduleGroup.h">
+    <ClInclude Include="..\..\src\NANDRAD_Schedules.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_Schedules.h">
+    <ClInclude Include="..\..\src\NANDRAD_Sensor.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\NANDRAD_SerializationTest.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\NANDRAD_SimulationParameter.h">
@@ -353,37 +302,13 @@
     <ClInclude Include="..\..\src\NANDRAD_SolverParameter.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_SpaceType.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_SpaceTypes.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\NANDRAD_Utilities.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\NANDRAD_Zone.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_ZoneList.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_Connection.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_InterfaceVaporDiffusion.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_Sensor.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_InterfaceAirFlow.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_FMUExportReference.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\NANDRAD_FMUImportReference.h">
+    <ClInclude Include="..\..\src\NANDRAD_CodeGenMacros.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

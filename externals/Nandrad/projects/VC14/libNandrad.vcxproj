@@ -19,27 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\NANDRAD_ActivityTemplate.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_AnnualSchedules.cpp" />
     <ClCompile Include="..\..\src\NANDRAD_ArgsParser.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_BuildingType.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_Connection.cpp" />
     <ClCompile Include="..\..\src\NANDRAD_Constants.cpp" />
     <ClCompile Include="..\..\src\NANDRAD_ConstructionInstance.cpp" />
+    <ClCompile Include="..\..\src\NANDRAD_ConstructionType.cpp" />
     <ClCompile Include="..\..\src\NANDRAD_DailyCycle.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_Date.cpp" />
+    <ClCompile Include="..\..\src\NANDRAD_DataTable.cpp" />
     <ClCompile Include="..\..\src\NANDRAD_EmbeddedObject.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_EmbeddedObjectDoor.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_EmbeddedObjectHole.cpp" />
     <ClCompile Include="..\..\src\NANDRAD_EmbeddedObjectWindow.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_ExternalFileReference.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_FMUExportReference.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_FMUImportReference.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_GenericParametrizationObject.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_Geometry.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_IDGeneratorSingleton.cpp" />
     <ClCompile Include="..\..\src\NANDRAD_IDGroup.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_ImplicitModelFeedback.cpp" />
     <ClCompile Include="..\..\src\NANDRAD_Interface.cpp" />
     <ClCompile Include="..\..\src\NANDRAD_InterfaceAirFlow.cpp" />
     <ClCompile Include="..\..\src\NANDRAD_InterfaceHeatConduction.cpp" />
@@ -50,59 +38,60 @@
     <ClCompile Include="..\..\src\NANDRAD_KeywordList.cpp" />
     <ClCompile Include="..\..\src\NANDRAD_LinearSplineParameter.cpp" />
     <ClCompile Include="..\..\src\NANDRAD_Location.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_Model.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_ModelGroup.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_ModelGroupInputReference.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_ModelGroupOutputReference.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_ModelGroups.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_ModelInputReference.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_Models.cpp" />
+    <ClCompile Include="..\..\src\NANDRAD_Material.cpp" />
     <ClCompile Include="..\..\src\NANDRAD_ObjectList.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_ObjectLists.cpp" />
     <ClCompile Include="..\..\src\NANDRAD_OutputDefinition.cpp" />
     <ClCompile Include="..\..\src\NANDRAD_OutputGrid.cpp" />
     <ClCompile Include="..\..\src\NANDRAD_Outputs.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_ParametrizationDefaults.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_Point3D.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_Polygon.cpp" />
     <ClCompile Include="..\..\src\NANDRAD_Project.cpp" />
     <ClCompile Include="..\..\src\NANDRAD_ProjectInfo.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_QuadPointPolygon.cpp" />
     <ClCompile Include="..\..\src\NANDRAD_Schedule.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_ScheduleGroup.cpp" />
     <ClCompile Include="..\..\src\NANDRAD_Schedules.cpp" />
     <ClCompile Include="..\..\src\NANDRAD_Sensor.cpp" />
     <ClCompile Include="..\..\src\NANDRAD_SimulationParameter.cpp" />
     <ClCompile Include="..\..\src\NANDRAD_SolverParameter.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_SpaceType.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_SpaceTypes.cpp" />
     <ClCompile Include="..\..\src\NANDRAD_Utilities.cpp" />
     <ClCompile Include="..\..\src\NANDRAD_Zone.cpp" />
-    <ClCompile Include="..\..\src\NANDRAD_ZoneList.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_ConstructionInstance.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_ConstructionType.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_DailyCycle.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_EmbeddedObject.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_EmbeddedObjectWindow.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_Interface.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_InterfaceAirFlow.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_InterfaceHeatConduction.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_InterfaceLongWaveEmission.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_InterfaceSolarAbsorption.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_InterfaceVaporDiffusion.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_Interval.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_LinearSplineParameter.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_Location.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_Material.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_MaterialLayer.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_ObjectList.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_OutputDefinition.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_OutputGrid.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_Outputs.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_Project.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_ProjectInfo.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_Schedule.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_Sensor.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_SerializationTest.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_SimulationParameter.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_SolverParameter.cpp" />
+    <ClCompile Include="..\..\src\ncg\ncg_NANDRAD_Zone.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\NANDRAD_ActivityTemplate.h" />
-    <ClInclude Include="..\..\src\NANDRAD_AnnualSchedules.h" />
     <ClInclude Include="..\..\src\NANDRAD_ArgsParser.h" />
-    <ClInclude Include="..\..\src\NANDRAD_BuildingType.h" />
-    <ClInclude Include="..\..\src\NANDRAD_Connection.h" />
+    <ClInclude Include="..\..\src\NANDRAD_CodeGenMacros.h" />
     <ClInclude Include="..\..\src\NANDRAD_Constants.h" />
     <ClInclude Include="..\..\src\NANDRAD_ConstructionInstance.h" />
+    <ClInclude Include="..\..\src\NANDRAD_ConstructionType.h" />
     <ClInclude Include="..\..\src\NANDRAD_DailyCycle.h" />
-    <ClInclude Include="..\..\src\NANDRAD_Date.h" />
+    <ClInclude Include="..\..\src\NANDRAD_DataTable.h" />
     <ClInclude Include="..\..\src\NANDRAD_EmbeddedObject.h" />
-    <ClInclude Include="..\..\src\NANDRAD_EmbeddedObjectDoor.h" />
-    <ClInclude Include="..\..\src\NANDRAD_EmbeddedObjectHole.h" />
     <ClInclude Include="..\..\src\NANDRAD_EmbeddedObjectWindow.h" />
-    <ClInclude Include="..\..\src\NANDRAD_ExternalFileReference.h" />
-    <ClInclude Include="..\..\src\NANDRAD_FindHelpers.h" />
-    <ClInclude Include="..\..\src\NANDRAD_FMUExportReference.h" />
-    <ClInclude Include="..\..\src\NANDRAD_FMUImportReference.h" />
-    <ClInclude Include="..\..\src\NANDRAD_GenericParametrizationObject.h" />
-    <ClInclude Include="..\..\src\NANDRAD_Geometry.h" />
-    <ClInclude Include="..\..\src\NANDRAD_IDGeneratorSingleton.h" />
     <ClInclude Include="..\..\src\NANDRAD_IDGroup.h" />
-    <ClInclude Include="..\..\src\NANDRAD_ImplicitModelFeedback.h" />
     <ClInclude Include="..\..\src\NANDRAD_Interface.h" />
     <ClInclude Include="..\..\src\NANDRAD_InterfaceAirFlow.h" />
     <ClInclude Include="..\..\src\NANDRAD_InterfaceHeatConduction.h" />
@@ -113,37 +102,23 @@
     <ClInclude Include="..\..\src\NANDRAD_KeywordList.h" />
     <ClInclude Include="..\..\src\NANDRAD_LinearSplineParameter.h" />
     <ClInclude Include="..\..\src\NANDRAD_Location.h" />
-    <ClInclude Include="..\..\src\NANDRAD_Model.h" />
-    <ClInclude Include="..\..\src\NANDRAD_ModelGroup.h" />
-    <ClInclude Include="..\..\src\NANDRAD_ModelGroupInputReference.h" />
-    <ClInclude Include="..\..\src\NANDRAD_ModelGroupOutputReference.h" />
-    <ClInclude Include="..\..\src\NANDRAD_ModelGroups.h" />
+    <ClInclude Include="..\..\src\NANDRAD_Material.h" />
+    <ClInclude Include="..\..\src\NANDRAD_MaterialLayer.h" />
     <ClInclude Include="..\..\src\NANDRAD_ModelInputReference.h" />
-    <ClInclude Include="..\..\src\NANDRAD_Models.h" />
     <ClInclude Include="..\..\src\NANDRAD_ObjectList.h" />
-    <ClInclude Include="..\..\src\NANDRAD_ObjectLists.h" />
     <ClInclude Include="..\..\src\NANDRAD_OutputDefinition.h" />
     <ClInclude Include="..\..\src\NANDRAD_OutputGrid.h" />
     <ClInclude Include="..\..\src\NANDRAD_Outputs.h" />
-    <ClInclude Include="..\..\src\NANDRAD_ParametrizationDefaults.h" />
-    <ClInclude Include="..\..\src\NANDRAD_Point3D.h" />
-    <ClInclude Include="..\..\src\NANDRAD_Polygon.h" />
     <ClInclude Include="..\..\src\NANDRAD_Project.h" />
     <ClInclude Include="..\..\src\NANDRAD_ProjectInfo.h" />
-    <ClInclude Include="..\..\src\NANDRAD_ProjectParameter.h" />
-    <ClInclude Include="..\..\src\NANDRAD_QuadPoint.h" />
-    <ClInclude Include="..\..\src\NANDRAD_QuadPointPolygon.h" />
     <ClInclude Include="..\..\src\NANDRAD_Schedule.h" />
-    <ClInclude Include="..\..\src\NANDRAD_ScheduleGroup.h" />
     <ClInclude Include="..\..\src\NANDRAD_Schedules.h" />
     <ClInclude Include="..\..\src\NANDRAD_Sensor.h" />
+    <ClInclude Include="..\..\src\NANDRAD_SerializationTest.h" />
     <ClInclude Include="..\..\src\NANDRAD_SimulationParameter.h" />
     <ClInclude Include="..\..\src\NANDRAD_SolverParameter.h" />
-    <ClInclude Include="..\..\src\NANDRAD_SpaceType.h" />
-    <ClInclude Include="..\..\src\NANDRAD_SpaceTypes.h" />
     <ClInclude Include="..\..\src\NANDRAD_Utilities.h" />
     <ClInclude Include="..\..\src\NANDRAD_Zone.h" />
-    <ClInclude Include="..\..\src\NANDRAD_ZoneList.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{6E73BDE5-BBE4-4195-80E6-A7391A125350}</ProjectGuid>
@@ -219,7 +194,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../../DelphinLight/src;../../../Materials/src;../../../IBK/src;../../../TiCPP/src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../src;../../../IBK/src;../../../TiCPP/src;</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -236,7 +211,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../../DelphinLight/src;../../../Materials/src;../../../IBK/src;../../../TiCPP/src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../src;../../../IBK/src;../../../TiCPP/src;</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -255,7 +230,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../../DelphinLight/src;../../../Materials/src;../../../IBK/src;../../../TiCPP/src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../src;../../../IBK/src;../../../TiCPP/src;</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
@@ -274,7 +249,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../../IBK/src;../../../TiCPP/src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../src;../../../IBK/src;../../../TiCPP/src;</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
