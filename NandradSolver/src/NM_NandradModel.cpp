@@ -2385,20 +2385,420 @@ void NandradModel::initSolverMatrix() {
 	IBK::StopWatch timer;
 
 	IBK::IBK_Message(IBK::FormatString("Composing dependency pattern\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-	// *** select all time differential results ***
-
-	// count global number of unknowns
-	unsigned int nUnknowns = m_y.size() + m_ydot.size();
-
-	/// create a sparse matrix pattern and a transpose pattern
-	IBKMK::SparseMatrixPattern pattern(nUnknowns);
-	IBKMK::SparseMatrixPattern transposePattern(nUnknowns);
 
 	try {
-		// calculate transitive closure over all algebraic dependencies
+
+		// global vector of result adresses with pattern index
+		std::map<const double*, unsigned int> resultValueRefs;
+
+		// count number of unknowns: we start at position 2 * n
+		unsigned int nUnknowns = (unsigned int) m_y.size() + (unsigned int) m_ydot.size();
+		// count number of registered y-states
+		unsigned int nYStates = 0;
+		// count number of registered ydot-states
+		unsigned int nYdotStates = 0;
+
+		// we list y-vector as results: rows and columns 0 -> nY
+		// all rooms
+		for (unsigned int i = 0; i < m_roomStatesModelContainer.size(); ++i) {
+
+			const RoomStatesModel *roomModel = m_roomStatesModelContainer[i];
+			// access internal y-vector
+			const double *y = roomModel->resultValueRef(QuantityName("y"));
+
+			// map storing local valueRefs according to their value pointers
+			std::set<const double*> registeredLocalValueRefs;
+			// sort values into glibal data container
+			for (unsigned int k = 0; k < roomModel->nPrimaryStateResults(); ++k) {
+				resultValueRefs[y + k] = nYStates + k;
+				// register in local container
+				registeredLocalValueRefs.insert(y + k);
+			}
+			nYStates += roomModel->nPrimaryStateResults();
+
+			// find all other unknowns
+			std::vector< std::pair<const double *, const double *> > dependenciesIJ;
+			// temporarilly store all elements that can be removed and that one that can be inserted
+			roomModel->stateDependencies(dependenciesIJ);
+
+			std::vector<std::pair<const double *, const double *> >::const_iterator
+				dependencyIJ = dependenciesIJ.begin();
+			// loop over all result quantities of the next pattern (elements aij)
+			for (; dependencyIJ != dependenciesIJ.end(); ++dependencyIJ)
+			{
+				// retrieve row and column storage adresses
+				const double * valueRef = dependencyIJ->first;
+
+				// already stored
+				if (registeredLocalValueRefs.find(valueRef) !=
+					registeredLocalValueRefs.end()) {
+					continue;
+				}
+
+				// insert element into map with index valueRefs.size()
+				registeredLocalValueRefs.insert(valueRef);
+				// store inside global container
+				resultValueRefs[valueRef] = nUnknowns;
+				// update counter
+				++nUnknowns;
+			}
+		}
+
+		// ... all constructions
+		for (unsigned int i = 0; i < m_constructionStatesModelContainer.size(); ++i) {
+
+			const ConstructionStatesModel *constructionModel = m_constructionStatesModelContainer[i];
+			// access internal y-vector
+			const double *y = constructionModel->resultValueRef(QuantityName("y"));
+
+			// map storing local valueRefs according to their value pointers
+			std::set<const double*> registeredLocalValueRefs;
+			// sort values into glibal data container
+			for (unsigned int k = 0; k < constructionModel->nPrimaryStateResults(); ++k) {
+				resultValueRefs[y + k] = nYStates + k;
+				// register in local container
+				registeredLocalValueRefs.insert(y + k);
+			}
+			nYStates += constructionModel->nPrimaryStateResults();
+
+			// find all other unknowns
+			std::vector< std::pair<const double *, const double *> > dependenciesIJ;
+			// temporarilly store all elements that can be removed and that one that can be inserted
+			constructionModel->stateDependencies(dependenciesIJ);
+
+			std::vector<std::pair<const double *, const double *> >::const_iterator
+				dependencyIJ = dependenciesIJ.begin();
+			// loop over all result quantities of the next pattern (elements aij)
+			for (; dependencyIJ != dependenciesIJ.end(); ++dependencyIJ)
+			{
+				// retrieve row and column storage adresses
+				const double * valueRef = dependencyIJ->first;
+
+				// already stored
+				if (registeredLocalValueRefs.find(valueRef) !=
+					registeredLocalValueRefs.end()) {
+					continue;
+				}
+
+				// insert element into map with index valueRefs.size()
+				registeredLocalValueRefs.insert(valueRef);
+				// store inside global container
+				resultValueRefs[valueRef] = nUnknowns;
+				// update counter
+				++nUnknowns;
+			}
+		}
+
+		// counted y-components must equal global y-vector size
+		IBK_ASSERT(nYStates == (unsigned int) m_y.size());
+
+		// next we list ydot-vector as results:: row and column nY -> nY + nYdot - 1
+		// for all rooms
+		for (unsigned int i = 0; i < m_roomBalanceModelContainer.size(); ++i) {
+
+			const RoomBalanceModel *roomModel = m_roomBalanceModelContainer[i];
+			// access internal y-vector
+			const double *ydot = roomModel->resultValueRef(QuantityName("ydot"));
+
+			// map storing local valueRefs according to their value pointers
+			std::set<const double*> registeredLocalValueRefs;
+			// sort values into glibal data container
+			for (unsigned int k = 0; k < m_roomStatesModelContainer[i]->nPrimaryStateResults(); 
+				++k) {
+				resultValueRefs[ydot + k] = nYStates + nYdotStates + k;
+				// register in local container
+				registeredLocalValueRefs.insert(ydot + k);
+			}
+			nYdotStates += m_roomStatesModelContainer[i]->nPrimaryStateResults();
+
+			// find all other unknowns
+			std::vector< std::pair<const double *, const double *> > dependenciesIJ;
+			// temporarilly store all elements that can be removed and that one that can be inserted
+			roomModel->stateDependencies(dependenciesIJ);
+
+			std::vector<std::pair<const double *, const double *> >::const_iterator
+				dependencyIJ = dependenciesIJ.begin();
+			// loop over all result quantities of the next pattern (elements aij)
+			for (; dependencyIJ != dependenciesIJ.end(); ++dependencyIJ)
+			{
+				// retrieve row and column storage adresses
+				const double * valueRef = dependencyIJ->first;
+
+				// already stored
+				if (registeredLocalValueRefs.find(valueRef) !=
+					registeredLocalValueRefs.end()) {
+					continue;
+				}
+
+				// insert element into map with index valueRefs.size()
+				registeredLocalValueRefs.insert(valueRef);
+				// store inside global container
+				resultValueRefs[valueRef] = nUnknowns;
+				// update counter
+				++nUnknowns;
+			}
+		}
+
+		// ... and for all constructions
+		for (unsigned int i = 0; i < m_constructionBalanceModelContainer.size(); ++i) {
+
+			const ConstructionBalanceModel *constructionModel = 
+				m_constructionBalanceModelContainer[i];
+			// access internal y-vector
+			const double *ydot = constructionModel->resultValueRef(QuantityName("ydot"));
+
+			// map storing local valueRefs according to their value pointers
+			std::set<const double*> registeredLocalValueRefs;
+			// sort values into glibal data container
+			for (unsigned int k = 0; k < m_constructionStatesModelContainer[i]->nPrimaryStateResults(); ++k) {
+				resultValueRefs[ydot + k] = nYStates + nYdotStates + k;
+				// register in local container
+				registeredLocalValueRefs.insert(ydot + k);
+			}
+			nYdotStates += m_constructionStatesModelContainer[i]->nPrimaryStateResults();
+
+			// find all other unknowns
+			std::vector< std::pair<const double *, const double *> > dependenciesIJ;
+			// temporarilly store all elements that can be removed and that one that can be inserted
+			constructionModel->stateDependencies(dependenciesIJ);
+
+			std::vector<std::pair<const double *, const double *> >::const_iterator
+				dependencyIJ = dependenciesIJ.begin();
+			// loop over all result quantities of the next pattern (elements aij)
+			for (; dependencyIJ != dependenciesIJ.end(); ++dependencyIJ)
+			{
+				// retrieve row and column storage adresses
+				const double * valueRef = dependencyIJ->first;
+
+				// already stored
+				if (registeredLocalValueRefs.find(valueRef) !=
+					registeredLocalValueRefs.end()) {
+					continue;
+				}
+
+				// insert element into map with index valueRefs.size()
+				registeredLocalValueRefs.insert(valueRef);
+				// store inside global container
+				resultValueRefs[valueRef] = nUnknowns;
+				// update counter
+				++nUnknowns;
+			}
+		}
+
+		// counted ydot-components must equal global ydot-vector size
+		IBK_ASSERT(nYdotStates == (unsigned int)m_ydot.size());
+
+
+		// loop through all models and select algebraic result quantities: row/column nY + nYdot -> nUnknowns 
+		for (unsigned int i = 0; i < m_stateModelContainer.size(); ++i) {
+
+
+			AbstractStateDependency *stateDep = m_stateModelContainer[i];
+			// skip room balance models and construction balance models
+			if (dynamic_cast<RoomBalanceModel*> (stateDep) != NULL)
+				continue;
+			if (dynamic_cast<ConstructionBalanceModel*> (stateDep) != NULL)
+				continue;
+
+			// local pattern of results and input references
+			std::vector< std::pair<const double *, const double *> > dependenciesIJ;
+			// temporarilly store all elements that can be removed and that one that can be inserted
+			stateDep->stateDependencies(dependenciesIJ);
+
+			// map storing local valueRefs according to their value pointers
+			std::set<const double*> registeredLocalValueRefs;
+
+			std::vector<std::pair<const double *, const double *> >::const_iterator
+				dependencyIJ = dependenciesIJ.begin();
+			// loop over all result quantities of the next pattern (elements aij)
+			for (; dependencyIJ != dependenciesIJ.end(); ++dependencyIJ)
+			{
+				// retrieve row and column storage adresses
+				const double * valueRef = dependencyIJ->first;
+
+				// already stored
+				if (registeredLocalValueRefs.find(valueRef) !=
+					registeredLocalValueRefs.end()) {
+					continue;
+				}
+
+				// insert element into map with index valueRefs.size()
+				registeredLocalValueRefs.insert(valueRef);
+				// store inside global container
+				resultValueRefs[valueRef] = nUnknowns;
+				// update counter
+				++nUnknowns;
+			}
+		}
+
+		/// create a sparse matrix pattern and a transpose pattern
+		IBKMK::SparseMatrixPattern pattern(nUnknowns);
+		IBKMK::SparseMatrixPattern transposePattern(nUnknowns);
+
+		// add all dependencies
+		// all room state models
+		for (unsigned int i = 0; i < m_roomStatesModelContainer.size(); ++i) {
+
+			const RoomStatesModel *roomModel = m_roomStatesModelContainer[i];
+			// find all dependencies
+			std::vector< std::pair<const double *, const double *> > dependenciesIJ;
+			// temporarilly store all elements that can be removed and that one that can be inserted
+			roomModel->stateDependencies(dependenciesIJ);
+
+			std::vector<std::pair<const double *, const double *> >::const_iterator
+				dependencyIJ = dependenciesIJ.begin();
+			// loop over all result quantities of the next pattern (elements aij)
+			for (; dependencyIJ != dependenciesIJ.end(); ++dependencyIJ)
+			{
+				// retrieve row and column storage adresses
+				const double * resultRef = dependencyIJ->first;
+				const double * inputRef = dependencyIJ->second;
+
+				// search for input value reference inside result vector
+				std::map<const double*, unsigned int>::const_iterator inputRefIt =
+					resultValueRefs.find(inputRef);
+
+				// skip all references to quantiteis that are no results
+				if (inputRefIt == resultValueRefs.end())
+					continue;
+
+				// search result reference
+				std::map<const double*, unsigned int>::const_iterator resultRefIt =
+					resultValueRefs.find(inputRef);
+				// result adress must! be given
+				IBK_ASSERT(resultRefIt != resultValueRefs.end());
+
+				// get local index
+				unsigned int i = resultRefIt->second;
+				unsigned int j = inputRefIt->second;
+				// register pattern entry
+				if (!pattern.test(i, j))
+					pattern.set(i, j);
+				// register transpose pattern entry
+				if (!transposePattern.test(j, i))
+					transposePattern.set(j, i);
+			}
+		}
+
+		// ... all construction states models
+		for (unsigned int i = 0; i < m_constructionStatesModelContainer.size(); ++i) {
+
+			const ConstructionStatesModel *constructionModel = m_constructionStatesModelContainer[i];
+			// find all dependencies
+			std::vector< std::pair<const double *, const double *> > dependenciesIJ;
+			// temporarilly store all elements that can be removed and that one that can be inserted
+			constructionModel->stateDependencies(dependenciesIJ);
+
+			std::vector<std::pair<const double *, const double *> >::const_iterator
+				dependencyIJ = dependenciesIJ.begin();
+			// loop over all result quantities of the next pattern (elements aij)
+			for (; dependencyIJ != dependenciesIJ.end(); ++dependencyIJ)
+			{
+				// retrieve row and column storage adresses
+				const double * resultRef = dependencyIJ->first;
+				const double * inputRef = dependencyIJ->second;
+
+				// search for input value reference inside result vector
+				std::map<const double*, unsigned int>::const_iterator inputRefIt =
+					resultValueRefs.find(inputRef);
+
+				// skip all references to quantiteis that are no results
+				if (inputRefIt == resultValueRefs.end())
+					continue;
+
+				// search result reference
+				std::map<const double*, unsigned int>::const_iterator resultRefIt =
+					resultValueRefs.find(inputRef);
+				// result adress must! be given
+				IBK_ASSERT(resultRefIt != resultValueRefs.end());
+
+				// get local index
+				unsigned int i = resultRefIt->second;
+				unsigned int j = inputRefIt->second;
+				// register pattern entry
+				if (!pattern.test(i, j))
+					pattern.set(i, j);
+				// register transpose pattern entry
+				if (!transposePattern.test(j, i))
+					transposePattern.set(j, i);
+			}
+		}
+
+		// ... and all remaining states model
+		for (unsigned int i = 0; i < m_stateModelContainer.size(); ++i) {
+
+			AbstractStateDependency *stateDep = m_stateModelContainer[i];
+
+			// local pattern of results and input references
+			std::vector< std::pair<const double *, const double *> > dependenciesIJ;
+			// temporarilly store all elements that can be removed and that one that can be inserted
+			stateDep->stateDependencies(dependenciesIJ);
+
+			std::vector<std::pair<const double *, const double *> >::const_iterator
+				dependencyIJ = dependenciesIJ.begin();
+			// loop over all result quantities of the next pattern (elements aij)
+			for (; dependencyIJ != dependenciesIJ.end(); ++dependencyIJ)
+			{
+				// retrieve row and column storage adresses
+				const double * resultRef = dependencyIJ->first;
+				const double * inputRef = dependencyIJ->second;
+
+				// search for input value reference inside result vector
+				std::map<const double*, unsigned int>::const_iterator inputRefIt =
+					resultValueRefs.find(inputRef);
+
+				// skip all references to quantiteis that are no results
+				if (inputRefIt == resultValueRefs.end())
+					continue;
+
+				// search result reference
+				std::map<const double*, unsigned int>::const_iterator resultRefIt =
+					resultValueRefs.find(inputRef);
+				// result adress must! be given
+				IBK_ASSERT(resultRefIt != resultValueRefs.end());
+
+				// get local index
+				unsigned int i = resultRefIt->second;
+				unsigned int j = inputRefIt->second;
+				// register pattern entry
+				if (!pattern.test(i, j))
+					pattern.set(i, j);
+				// register transpose pattern entry
+				if (!transposePattern.test(j, i))
+					transposePattern.set(j, i);
+			}
+		}
+
+		// calculate transitive closure over all algebraic dependencies (block nY + nYdot -> nUnknowns)
 		// this will add entries for ydot-y dependencies
 		IBKMK::SparseMatrixPattern::calculateTransitiveClosure(pattern, transposePattern,
-			nUnknowns, m_y.size() + m_ydot.size(), nUnknowns);
+			nUnknowns, nYStates + nYdotStates, nUnknowns);
+
+		// clear ia and ja
+		if (!m_ia.empty())
+			m_ia.clear();
+		if (!m_ja.empty())
+			m_ja.clear();
+
+		// calculate CSR pattern: we only consider ydot-> y block (row nY -> nY + nYdot - 1, column 0 -> nY)
+		for (unsigned int i = nYStates; i < nYStates + nYdotStates; ++i) {
+			// filter all value references refering to ydot
+			m_ia.push_back((unsigned int)m_ja.size());
+			// retreive all indices
+			std::vector<unsigned int> columns;
+			pattern.indexesPerRow(i, columns);
+			// fill all column entries into inderx vectoe
+			for (unsigned int jIdx = 0; jIdx < columns.size(); ++jIdx) {
+				// ignore columns that do not assign a y-component
+				unsigned int j = columns[jIdx];
+				if (j < nYStates)
+					continue;
+				// find index inside result index vector
+				m_ja.push_back(j);
+			}
+		}
+		// set last element
+		m_ia.push_back((unsigned int)m_ja.size());
 	}
 	catch (IBK::Exception &ex) {
 		throw IBK::Exception(ex, "Error initializing global solver matrix!", FUNC_ID);
