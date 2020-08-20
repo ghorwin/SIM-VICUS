@@ -126,7 +126,7 @@ __pragma(omp master) \
   TimerStart(COUNTER_IDX); \
   FUNCTION_CALL; \
 __pragma(omp master) \
-  TimerStop(COUNTER_IDX);
+  TimerStop(COUNTER_IDX)
 
 #else /* defined(_MSC_VER) */
 
@@ -135,7 +135,7 @@ _Pragma("omp master") \
   TimerStart(COUNTER_IDX); \
   FUNCTION_CALL; \
 _Pragma("omp master") \
-  TimerStop(COUNTER_IDX);
+  TimerStop(COUNTER_IDX)
 
 #endif /* defined(_MSC_VER) */
 
@@ -145,7 +145,7 @@ _Pragma("omp master") \
 #define SUNDIALS_TIMED_FUNCTION(COUNTER_IDX, FUNCTION_CALL) \
   TimerStart(COUNTER_IDX); \
   FUNCTION_CALL; \
-  TimerStop(COUNTER_IDX);
+  TimerStop(COUNTER_IDX)
 
 #endif
 
@@ -153,7 +153,7 @@ _Pragma("omp master") \
 #else /* SUNDIALS_USE_INSTRUMENTATION */
 
 #define SUNDIALS_TIMED_FUNCTION(COUNTER_IDX, FUNCTION_CALL) \
-  FUNCTION_CALL;
+  FUNCTION_CALL
 
 #endif /* SUNDIALS_USE_INSTRUMENTATION */
 
