@@ -2387,12 +2387,23 @@ void NandradModel::initSolverMatrix() {
 	IBK::IBK_Message(IBK::FormatString("Composing dependency pattern\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	// *** select all time differential results ***
 
+	// count global number of unknowns
+	unsigned int nUnknowns = m_y.size() + m_ydot.size();
 
-	/// \todo Anne, re-implement Jacoby matrix init code
+	/// create a sparse matrix pattern and a transpose pattern
+	IBKMK::SparseMatrixPattern pattern(nUnknowns);
+	IBKMK::SparseMatrixPattern transposePattern(nUnknowns);
 
+	try {
+		// calculate transitive closure over all algebraic dependencies
+		// this will add entries for ydot-y dependencies
+		IBKMK::SparseMatrixPattern::calculateTransitiveClosure(pattern, transposePattern,
+			nUnknowns, m_y.size() + m_ydot.size(), nUnknowns);
+	}
+	catch (IBK::Exception &ex) {
+		throw IBK::Exception(ex, "Error initializing global solver matrix!", FUNC_ID);
+	}
 }
-
-
 
 
 void NandradModel::initStatistics(SOLFRA::ModelInterface * modelInterface, bool restart) {
