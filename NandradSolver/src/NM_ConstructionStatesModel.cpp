@@ -141,7 +141,7 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 	}
 	m_results.resize(skalarResultCount);
 	m_vectorValuedResults.resize(1);
-	m_vectorValuedResults[VVR_LayerTemperature] = VectorValuedQuantity(con.m_constructionType->m_materialLayers.size(), 0);
+	m_vectorValuedResults[VVR_LayerTemperature] = VectorValuedQuantity(nPrimaryStateResults(), 0);
 }
 
 

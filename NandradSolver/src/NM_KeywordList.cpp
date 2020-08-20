@@ -34,11 +34,9 @@ namespace NANDRAD_MODEL {
 	const char * const INVALID_KEYWORD_INDEX_STRING = "KEYWORD_ERROR_STRING: Invalid type index";
 
 	/*! Holds a list of all enum types/categories. */
-	const char * const ENUM_TYPES[15] = {
+	const char * const ENUM_TYPES[13] = {
 		"ConstructionBalanceModel::Results",
 		"ConstructionBalanceModel::VectorValuedResults",
-		"ConstructionInsideBCModel::Results",
-		"ConstructionInsideBCModel::InputReferences",
 		"ConstructionStatesModel::VectorValuedResults",
 		"ConstructionStatesModel::Results",
 		"Loads::Results",
@@ -54,7 +52,7 @@ namespace NANDRAD_MODEL {
 
 	/*! Converts a category string to respective enumeration value. */
 	int enum2index(const std::string & enumtype) {
-		for (int i=0; i<15; ++i) {
+		for (int i=0; i<13; ++i) {
 			if (enumtype == ENUM_TYPES[i]) return i;
 		}
 		//std::cerr << "Unknown enumeration type '" << enumtype<< "'." << std::endl;
@@ -76,44 +74,19 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "ThermalLoad";
 			} break;
-			// ConstructionInsideBCModel::Results
-			case 2 :
-			switch (t) {
-				case 0 : return "HeatConduction";
-				case 1 : return "HeatConductionFlux";
-				case 2 : return "LWRadBalance";
-				case 3 : return "LWRadBalanceFlux";
-				case 4 : return "SWRadAbsorbed";
-				case 5 : return "SWRadAbsorbedFlux";
-				case 6 : return "Area";
-			} break;
-			// ConstructionInsideBCModel::InputReferences
-			case 3 :
-			switch (t) {
-				case 0 : return "AirTemperature";
-				case 1 : return "SWRadWindow";
-				case 2 : return "SWRadLighting";
-				case 3 : return "SWRadExchange";
-				case 4 : return "LWRadExchange";
-				case 5 : return "LWRadHeating";
-				case 6 : return "LWRadCooling";
-				case 7 : return "LWRadUserLoad";
-				case 8 : return "LWRadEquipmentLoad";
-				case 9 : return "LWRadLighting";
-			} break;
 			// ConstructionStatesModel::VectorValuedResults
-			case 4 :
+			case 2 :
 			switch (t) {
 				case 0 : return "LayerTemperature";
 			} break;
 			// ConstructionStatesModel::Results
-			case 5 :
+			case 3 :
 			switch (t) {
 				case 0 : return "SurfaceTemperatureA";
 				case 1 : return "SurfaceTemperatureB";
 			} break;
 			// Loads::Results
-			case 6 :
+			case 4 :
 			switch (t) {
 				case 0 : return "Temperature";
 				case 1 : return "RelativeHumidity";
@@ -135,7 +108,7 @@ namespace NANDRAD_MODEL {
 				case 17 : return "Longitude";
 			} break;
 			// Loads::VectorValuedResults
-			case 7 :
+			case 5 :
 			switch (t) {
 				case 0 : return "DirectSWRadOnPlane";
 				case 1 : return "DiffuseSWRadOnPlane";
@@ -143,7 +116,7 @@ namespace NANDRAD_MODEL {
 				case 3 : return "IncidenceAngleOnPlane";
 			} break;
 			// OutputHandler::OutputFileNames
-			case 8 :
+			case 6 :
 			switch (t) {
 				case 0 : return "states";
 				case 1 : return "loads";
@@ -152,14 +125,14 @@ namespace NANDRAD_MODEL {
 				case 4 : return "misc";
 			} break;
 			// RoomBalanceModel::Results
-			case 9 :
+			case 7 :
 			switch (t) {
 				case 0 : return "CompleteThermalLoad";
 				case 1 : return "ConstructionHeatConductionLoad";
 				case 2 : return "CompleteMoistureLoad";
 			} break;
 			// RoomBalanceModel::InputReferences
-			case 10 :
+			case 8 :
 			switch (t) {
 				case 0 : return "WallsHeatConductionLoad";
 				case 1 : return "WindowsSWRadLoad";
@@ -177,14 +150,14 @@ namespace NANDRAD_MODEL {
 				case 13 : return "DomesticWaterConsumptionSensitiveHeatGain";
 			} break;
 			// RoomStatesModel::Results
-			case 11 :
+			case 9 :
 			switch (t) {
 				case 0 : return "AirTemperature";
 				case 1 : return "RelativeHumidity";
 				case 2 : return "VaporPressure";
 			} break;
 			// Schedules::Results
-			case 12 :
+			case 10 :
 			switch (t) {
 				case 0 : return "HeatingSetPointTemperature";
 				case 1 : return "CoolingSetPointTemperature";
@@ -216,13 +189,13 @@ namespace NANDRAD_MODEL {
 				case 27 : return "ShadingFactor";
 			} break;
 			// ThermalComfortModel::Results
-			case 13 :
+			case 11 :
 			switch (t) {
 				case 0 : return "RadiantTemperature";
 				case 1 : return "OperativeTemperature";
 			} break;
 			// ThermalComfortModel::InputReferences
-			case 14 :
+			case 12 :
 			switch (t) {
 				case 0 : return "AirTemperature";
 				case 1 : return "RadiantTemperature";
@@ -246,44 +219,19 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "ThermalLoad";
 			} break;
-			// ConstructionInsideBCModel::Results
-			case 2 :
-			switch (t) {
-				case 0 : return "HeatConduction";
-				case 1 : return "HeatConductionFlux";
-				case 2 : return "LWRadBalance";
-				case 3 : return "LWRadBalanceFlux";
-				case 4 : return "SWRadAbsorbed";
-				case 5 : return "SWRadAbsorbedFlux";
-				case 6 : return "Area";
-			} break;
-			// ConstructionInsideBCModel::InputReferences
-			case 3 :
-			switch (t) {
-				case 0 : return "AirTemperature";
-				case 1 : return "SWRadWindow";
-				case 2 : return "SWRadLighting";
-				case 3 : return "SWRadExchange";
-				case 4 : return "LWRadExchange";
-				case 5 : return "LWRadHeating";
-				case 6 : return "LWRadCooling";
-				case 7 : return "LWRadUserLoad";
-				case 8 : return "LWRadEquipmentLoad";
-				case 9 : return "LWRadLighting";
-			} break;
 			// ConstructionStatesModel::VectorValuedResults
-			case 4 :
+			case 2 :
 			switch (t) {
 				case 0 : return "LayerTemperature";
 			} break;
 			// ConstructionStatesModel::Results
-			case 5 :
+			case 3 :
 			switch (t) {
 				case 0 : return "SurfaceTemperatureA";
 				case 1 : return "SurfaceTemperatureB";
 			} break;
 			// Loads::Results
-			case 6 :
+			case 4 :
 			switch (t) {
 				case 0 : return "Temperature";
 				case 1 : return "RelativeHumidity";
@@ -305,7 +253,7 @@ namespace NANDRAD_MODEL {
 				case 17 : return "Longitude";
 			} break;
 			// Loads::VectorValuedResults
-			case 7 :
+			case 5 :
 			switch (t) {
 				case 0 : return "DirectSWRadOnPlane";
 				case 1 : return "DiffuseSWRadOnPlane";
@@ -313,7 +261,7 @@ namespace NANDRAD_MODEL {
 				case 3 : return "IncidenceAngleOnPlane";
 			} break;
 			// OutputHandler::OutputFileNames
-			case 8 :
+			case 6 :
 			switch (t) {
 				case 0 : return "states";
 				case 1 : return "loads";
@@ -322,14 +270,14 @@ namespace NANDRAD_MODEL {
 				case 4 : return "misc";
 			} break;
 			// RoomBalanceModel::Results
-			case 9 :
+			case 7 :
 			switch (t) {
 				case 0 : return "CompleteThermalLoad";
 				case 1 : return "ConstructionHeatConductionLoad";
 				case 2 : return "CompleteMoistureLoad";
 			} break;
 			// RoomBalanceModel::InputReferences
-			case 10 :
+			case 8 :
 			switch (t) {
 				case 0 : return "WallsHeatConductionLoad";
 				case 1 : return "WindowsSWRadLoad";
@@ -347,14 +295,14 @@ namespace NANDRAD_MODEL {
 				case 13 : return "DomesticWaterConsumptionSensitiveHeatGain";
 			} break;
 			// RoomStatesModel::Results
-			case 11 :
+			case 9 :
 			switch (t) {
 				case 0 : return "AirTemperature";
 				case 1 : return "RelativeHumidity";
 				case 2 : return "VaporPressure";
 			} break;
 			// Schedules::Results
-			case 12 :
+			case 10 :
 			switch (t) {
 				case 0 : return "HeatingSetPointTemperature";
 				case 1 : return "CoolingSetPointTemperature";
@@ -386,13 +334,13 @@ namespace NANDRAD_MODEL {
 				case 27 : return "ShadingFactor";
 			} break;
 			// ThermalComfortModel::Results
-			case 13 :
+			case 11 :
 			switch (t) {
 				case 0 : return "RadiantTemperature";
 				case 1 : return "OperativeTemperature";
 			} break;
 			// ThermalComfortModel::InputReferences
-			case 14 :
+			case 12 :
 			switch (t) {
 				case 0 : return "AirTemperature";
 				case 1 : return "RadiantTemperature";
@@ -417,44 +365,19 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "Optional field fluxes for all material layers with given layer index.";
 			} break;
-			// ConstructionInsideBCModel::Results
-			case 2 :
-			switch (t) {
-				case 0 : return "Heat conduction (flux density).";
-				case 1 : return "Heat conduction (flux).";
-				case 2 : return "Long wave radiation balance (flux density).";
-				case 3 : return "Long wave radiation balance (flux).";
-				case 4 : return "Absorbed heat flux by short wave radiation at the wall surface  (flux density).";
-				case 5 : return "Absorbed heat flux by short wave radiation at the window surface  (flux).";
-				case 6 : return "Surface netto area";
-			} break;
-			// ConstructionInsideBCModel::InputReferences
-			case 3 :
-			switch (t) {
-				case 0 : return "Air temperature of the neighbor room.";
-				case 1 : return "Short wave radiation at inside wall (flux density).";
-				case 2 : return "Short wave radiation due to lighting at inside wall (flux density).";
-				case 3 : return "Short wave radiation exchange gains at inside wall (flux density).";
-				case 4 : return "Long wave radiation exchange gains at inside wall (flux density).";
-				case 5 : return "Long wave radiation due to heating at inside wall (flux density).";
-				case 6 : return "Long wave radiation due to cooling at inside wall (flux density).";
-				case 7 : return "Long wave radiation due to user load at inside wall (flux density).";
-				case 8 : return "Long wave radiation due to equipment load at inside wall (flux density).";
-				case 9 : return "Long wave radiation due to lighting load at inside wall (flux density).";
-			} break;
 			// ConstructionStatesModel::VectorValuedResults
-			case 4 :
+			case 2 :
 			switch (t) {
 				case 0 : return "Mean layer temperature for requested quanties.";
 			} break;
 			// ConstructionStatesModel::Results
-			case 5 :
+			case 3 :
 			switch (t) {
 				case 0 : return "Surface temperature at interface A.";
 				case 1 : return "Surface temperature at interface B.";
 			} break;
 			// Loads::Results
-			case 6 :
+			case 4 :
 			switch (t) {
 				case 0 : return "Outside temperature.";
 				case 1 : return "Relative humidity.";
@@ -476,7 +399,7 @@ namespace NANDRAD_MODEL {
 				case 17 : return "Longitude.";
 			} break;
 			// Loads::VectorValuedResults
-			case 7 :
+			case 5 :
 			switch (t) {
 				case 0 : return "Direct short wave radiation on a given plane.";
 				case 1 : return "Diffuse short wave radiation on a given plane.";
@@ -484,7 +407,7 @@ namespace NANDRAD_MODEL {
 				case 3 : return "The incidence angle of the suns ray onto the surface (0 deg = directly perpendicular).";
 			} break;
 			// OutputHandler::OutputFileNames
-			case 8 :
+			case 6 :
 			switch (t) {
 				case 0 : if (no_description != nullptr) *no_description = true; return "states";
 				case 1 : if (no_description != nullptr) *no_description = true; return "loads";
@@ -493,14 +416,14 @@ namespace NANDRAD_MODEL {
 				case 4 : if (no_description != nullptr) *no_description = true; return "misc";
 			} break;
 			// RoomBalanceModel::Results
-			case 9 :
+			case 7 :
 			switch (t) {
 				case 0 : return "Sum of all thermal fluxes into the room and energy sources.";
 				case 1 : return "Sum of heat conduction fluxes from construction surfaces into the room.";
 				case 2 : return "Sum of all moisture fluxes into the room and moisture sources.";
 			} break;
 			// RoomBalanceModel::InputReferences
-			case 10 :
+			case 8 :
 			switch (t) {
 				case 0 : return "Heat load by heat conduction through all enclosing walls.";
 				case 1 : return "Heat loads by short wave radiation through all windows of a room.";
@@ -518,14 +441,14 @@ namespace NANDRAD_MODEL {
 				case 13 : return "Sensitive heat gain towards the room by water consumption.";
 			} break;
 			// RoomStatesModel::Results
-			case 11 :
+			case 9 :
 			switch (t) {
 				case 0 : return "Room air temperature.";
 				case 1 : return "Room air relative humidity.";
 				case 2 : return "Room air vapor pressure.";
 			} break;
 			// Schedules::Results
-			case 12 :
+			case 10 :
 			switch (t) {
 				case 0 : return "Setpoint temperature for heating.";
 				case 1 : return "Setpoint temperature for cooling.";
@@ -557,13 +480,13 @@ namespace NANDRAD_MODEL {
 				case 27 : return "Shading factor [0...1].";
 			} break;
 			// ThermalComfortModel::Results
-			case 13 :
+			case 11 :
 			switch (t) {
 				case 0 : return "Mean surface temperature of all surfaces facing the room.";
 				case 1 : return "Operative temperature of the room.";
 			} break;
 			// ThermalComfortModel::InputReferences
-			case 14 :
+			case 12 :
 			switch (t) {
 				case 0 : return "Air temperature of the room.";
 				case 1 : return "Wall radiant temperature.";
@@ -587,44 +510,19 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "W";
 			} break;
-			// ConstructionInsideBCModel::Results
-			case 2 :
-			switch (t) {
-				case 0 : return "W/m2";
-				case 1 : return "W";
-				case 2 : return "W/m2";
-				case 3 : return "W";
-				case 4 : return "W/m2";
-				case 5 : return "W";
-				case 6 : return "m2";
-			} break;
-			// ConstructionInsideBCModel::InputReferences
-			case 3 :
-			switch (t) {
-				case 0 : return "C";
-				case 1 : return "W/m2";
-				case 2 : return "W/m2";
-				case 3 : return "W/m2";
-				case 4 : return "W/m2";
-				case 5 : return "W/m2";
-				case 6 : return "W/m2";
-				case 7 : return "W/m2";
-				case 8 : return "W/m2";
-				case 9 : return "W/m2";
-			} break;
 			// ConstructionStatesModel::VectorValuedResults
-			case 4 :
+			case 2 :
 			switch (t) {
 				case 0 : return "C";
 			} break;
 			// ConstructionStatesModel::Results
-			case 5 :
+			case 3 :
 			switch (t) {
 				case 0 : return "C";
 				case 1 : return "C";
 			} break;
 			// Loads::Results
-			case 6 :
+			case 4 :
 			switch (t) {
 				case 0 : return "C";
 				case 1 : return "%";
@@ -646,7 +544,7 @@ namespace NANDRAD_MODEL {
 				case 17 : return "Deg";
 			} break;
 			// Loads::VectorValuedResults
-			case 7 :
+			case 5 :
 			switch (t) {
 				case 0 : return "W/m2";
 				case 1 : return "W/m2";
@@ -654,7 +552,7 @@ namespace NANDRAD_MODEL {
 				case 3 : return "%";
 			} break;
 			// OutputHandler::OutputFileNames
-			case 8 :
+			case 6 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
@@ -663,14 +561,14 @@ namespace NANDRAD_MODEL {
 				case 4 : return "";
 			} break;
 			// RoomBalanceModel::Results
-			case 9 :
+			case 7 :
 			switch (t) {
 				case 0 : return "W";
 				case 1 : return "W";
 				case 2 : return "kg/s";
 			} break;
 			// RoomBalanceModel::InputReferences
-			case 10 :
+			case 8 :
 			switch (t) {
 				case 0 : return "W";
 				case 1 : return "W";
@@ -688,14 +586,14 @@ namespace NANDRAD_MODEL {
 				case 13 : return "W";
 			} break;
 			// RoomStatesModel::Results
-			case 11 :
+			case 9 :
 			switch (t) {
 				case 0 : return "C";
 				case 1 : return "%";
 				case 2 : return "Pa";
 			} break;
 			// Schedules::Results
-			case 12 :
+			case 10 :
 			switch (t) {
 				case 0 : return "C";
 				case 1 : return "C";
@@ -727,13 +625,13 @@ namespace NANDRAD_MODEL {
 				case 27 : return "---";
 			} break;
 			// ThermalComfortModel::Results
-			case 13 :
+			case 11 :
 			switch (t) {
 				case 0 : return "C";
 				case 1 : return "C";
 			} break;
 			// ThermalComfortModel::InputReferences
-			case 14 :
+			case 12 :
 			switch (t) {
 				case 0 : return "C";
 				case 1 : return "C";
@@ -757,44 +655,19 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
-			// ConstructionInsideBCModel::Results
-			case 2 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-				case 2 : return "#FFFFFF";
-				case 3 : return "#FFFFFF";
-				case 4 : return "#FFFFFF";
-				case 5 : return "#FFFFFF";
-				case 6 : return "#FFFFFF";
-			} break;
-			// ConstructionInsideBCModel::InputReferences
-			case 3 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-				case 2 : return "#FFFFFF";
-				case 3 : return "#FFFFFF";
-				case 4 : return "#FFFFFF";
-				case 5 : return "#FFFFFF";
-				case 6 : return "#FFFFFF";
-				case 7 : return "#FFFFFF";
-				case 8 : return "#FFFFFF";
-				case 9 : return "#FFFFFF";
-			} break;
 			// ConstructionStatesModel::VectorValuedResults
-			case 4 :
+			case 2 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
 			// ConstructionStatesModel::Results
-			case 5 :
+			case 3 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
 			// Loads::Results
-			case 6 :
+			case 4 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -816,7 +689,7 @@ namespace NANDRAD_MODEL {
 				case 17 : return "#FFFFFF";
 			} break;
 			// Loads::VectorValuedResults
-			case 7 :
+			case 5 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -824,7 +697,7 @@ namespace NANDRAD_MODEL {
 				case 3 : return "#FFFFFF";
 			} break;
 			// OutputHandler::OutputFileNames
-			case 8 :
+			case 6 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -833,14 +706,14 @@ namespace NANDRAD_MODEL {
 				case 4 : return "#FFFFFF";
 			} break;
 			// RoomBalanceModel::Results
-			case 9 :
+			case 7 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
 			// RoomBalanceModel::InputReferences
-			case 10 :
+			case 8 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -858,14 +731,14 @@ namespace NANDRAD_MODEL {
 				case 13 : return "#FFFFFF";
 			} break;
 			// RoomStatesModel::Results
-			case 11 :
+			case 9 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
 			// Schedules::Results
-			case 12 :
+			case 10 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -897,13 +770,13 @@ namespace NANDRAD_MODEL {
 				case 27 : return "#FFFFFF";
 			} break;
 			// ThermalComfortModel::Results
-			case 13 :
+			case 11 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
 			// ThermalComfortModel::InputReferences
-			case 14 :
+			case 12 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -927,44 +800,19 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// ConstructionInsideBCModel::Results
-			case 2 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-				case 2 : return std::numeric_limits<double>::quiet_NaN();
-				case 3 : return std::numeric_limits<double>::quiet_NaN();
-				case 4 : return std::numeric_limits<double>::quiet_NaN();
-				case 5 : return std::numeric_limits<double>::quiet_NaN();
-				case 6 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// ConstructionInsideBCModel::InputReferences
-			case 3 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-				case 2 : return std::numeric_limits<double>::quiet_NaN();
-				case 3 : return std::numeric_limits<double>::quiet_NaN();
-				case 4 : return std::numeric_limits<double>::quiet_NaN();
-				case 5 : return std::numeric_limits<double>::quiet_NaN();
-				case 6 : return std::numeric_limits<double>::quiet_NaN();
-				case 7 : return std::numeric_limits<double>::quiet_NaN();
-				case 8 : return std::numeric_limits<double>::quiet_NaN();
-				case 9 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
 			// ConstructionStatesModel::VectorValuedResults
-			case 4 :
+			case 2 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// ConstructionStatesModel::Results
-			case 5 :
+			case 3 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// Loads::Results
-			case 6 :
+			case 4 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -986,7 +834,7 @@ namespace NANDRAD_MODEL {
 				case 17 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// Loads::VectorValuedResults
-			case 7 :
+			case 5 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -994,7 +842,7 @@ namespace NANDRAD_MODEL {
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// OutputHandler::OutputFileNames
-			case 8 :
+			case 6 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -1003,14 +851,14 @@ namespace NANDRAD_MODEL {
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// RoomBalanceModel::Results
-			case 9 :
+			case 7 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// RoomBalanceModel::InputReferences
-			case 10 :
+			case 8 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -1028,14 +876,14 @@ namespace NANDRAD_MODEL {
 				case 13 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// RoomStatesModel::Results
-			case 11 :
+			case 9 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// Schedules::Results
-			case 12 :
+			case 10 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -1067,13 +915,13 @@ namespace NANDRAD_MODEL {
 				case 27 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// ThermalComfortModel::Results
-			case 13 :
+			case 11 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// ThermalComfortModel::InputReferences
-			case 14 :
+			case 12 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -1091,32 +939,28 @@ namespace NANDRAD_MODEL {
 			case 0 : return 2;
 			// ConstructionBalanceModel::VectorValuedResults
 			case 1 : return 1;
-			// ConstructionInsideBCModel::Results
-			case 2 : return 7;
-			// ConstructionInsideBCModel::InputReferences
-			case 3 : return 10;
 			// ConstructionStatesModel::VectorValuedResults
-			case 4 : return 1;
+			case 2 : return 1;
 			// ConstructionStatesModel::Results
-			case 5 : return 2;
+			case 3 : return 2;
 			// Loads::Results
-			case 6 : return 18;
+			case 4 : return 18;
 			// Loads::VectorValuedResults
-			case 7 : return 4;
+			case 5 : return 4;
 			// OutputHandler::OutputFileNames
-			case 8 : return 5;
+			case 6 : return 5;
 			// RoomBalanceModel::Results
-			case 9 : return 3;
+			case 7 : return 3;
 			// RoomBalanceModel::InputReferences
-			case 10 : return 14;
+			case 8 : return 14;
 			// RoomStatesModel::Results
-			case 11 : return 3;
+			case 9 : return 3;
 			// Schedules::Results
-			case 12 : return 28;
+			case 10 : return 28;
 			// ThermalComfortModel::Results
-			case 13 : return 2;
+			case 11 : return 2;
 			// ThermalComfortModel::InputReferences
-			case 14 : return 3;
+			case 12 : return 3;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::Count]");
@@ -1129,32 +973,28 @@ namespace NANDRAD_MODEL {
 			case 0 : return 1;
 			// ConstructionBalanceModel::VectorValuedResults
 			case 1 : return 0;
-			// ConstructionInsideBCModel::Results
-			case 2 : return 6;
-			// ConstructionInsideBCModel::InputReferences
-			case 3 : return 9;
 			// ConstructionStatesModel::VectorValuedResults
-			case 4 : return 0;
+			case 2 : return 0;
 			// ConstructionStatesModel::Results
-			case 5 : return 1;
+			case 3 : return 1;
 			// Loads::Results
-			case 6 : return 17;
+			case 4 : return 17;
 			// Loads::VectorValuedResults
-			case 7 : return 3;
+			case 5 : return 3;
 			// OutputHandler::OutputFileNames
-			case 8 : return 4;
+			case 6 : return 4;
 			// RoomBalanceModel::Results
-			case 9 : return 2;
+			case 7 : return 2;
 			// RoomBalanceModel::InputReferences
-			case 10 : return 13;
+			case 8 : return 13;
 			// RoomStatesModel::Results
-			case 11 : return 2;
+			case 9 : return 2;
 			// Schedules::Results
-			case 12 : return 27;
+			case 10 : return 27;
 			// ThermalComfortModel::Results
-			case 13 : return 1;
+			case 11 : return 1;
 			// ThermalComfortModel::InputReferences
-			case 14 : return 3;
+			case 12 : return 3;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::MaxIndex]");
