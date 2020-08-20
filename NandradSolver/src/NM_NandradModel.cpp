@@ -2664,7 +2664,7 @@ void NandradModel::initSolverMatrix() {
 
 				// search result reference
 				std::map<const double*, unsigned int>::const_iterator resultRefIt =
-					resultValueRefs.find(inputRef);
+					resultValueRefs.find(resultRef);
 				// result adress must! be given
 				IBK_ASSERT(resultRefIt != resultValueRefs.end());
 
@@ -2708,7 +2708,7 @@ void NandradModel::initSolverMatrix() {
 
 				// search result reference
 				std::map<const double*, unsigned int>::const_iterator resultRefIt =
-					resultValueRefs.find(inputRef);
+					resultValueRefs.find(resultRef);
 				// result adress must! be given
 				IBK_ASSERT(resultRefIt != resultValueRefs.end());
 
@@ -2753,7 +2753,7 @@ void NandradModel::initSolverMatrix() {
 
 				// search result reference
 				std::map<const double*, unsigned int>::const_iterator resultRefIt =
-					resultValueRefs.find(inputRef);
+					resultValueRefs.find(resultRef);
 				// result adress must! be given
 				IBK_ASSERT(resultRefIt != resultValueRefs.end());
 
@@ -2789,10 +2789,10 @@ void NandradModel::initSolverMatrix() {
 			pattern.indexesPerRow(i, columns);
 			// fill all column entries into inderx vectoe
 			for (unsigned int jIdx = 0; jIdx < columns.size(); ++jIdx) {
-				// ignore columns that do not assign a y-component
+				// ignore columns that do not assign a y-component (columnns are sorted)
 				unsigned int j = columns[jIdx];
-				if (j < nYStates)
-					continue;
+				if (j >= nYStates)
+					break;
 				// find index inside result index vector
 				m_ja.push_back(j);
 			}
