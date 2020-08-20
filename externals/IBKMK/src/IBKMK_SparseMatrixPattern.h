@@ -100,6 +100,21 @@ namespace IBKMK {
 
 class SparseMatrixPattern {
 public:
+	/*! Static function for calculation of transitive closure of a
+		matrix part.
+	\param pattern pattern whose transitive closure should be calculated.
+	\param transposePattern transpose pattern.
+	\param n matrix size.
+	\param startIndex start index of matrix part whose transitive closure should be calculated.
+	\param endIndex end index of matrix part whose transitive closure should be calculated.
+	*/
+	static void calculateTransitiveClosure(
+		SparseMatrixPattern &pattern, 
+		SparseMatrixPattern &transposePattern, 
+		unsigned int n,
+		unsigned int startIndex, 
+		unsigned int endIndex);
+
 	/*! Default constructor, registers size of index space.
 		\param n Matrix dimension.
 	*/

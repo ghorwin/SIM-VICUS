@@ -44,6 +44,71 @@
 
 namespace IBKMK {
 
+
+void SparseMatrixPattern::calculateTransitiveClosure(
+	SparseMatrixPattern &pattern,
+	SparseMatrixPattern &transposePattern,
+	unsigned int n,
+	unsigned int startIndex,
+	unsigned int endIndex) {
+
+	const char * const FUNC_ID = "[SparseMatrixPattern::calculateTransitiveClosure]";
+	// error: index exceeds matrix dimension
+	if (startIndex > n || endIndex > n) {
+		throw IBK::Exception(IBK::FormatString("Error "
+			"calculating transitive closure for matrix indexes (%1,%2): maximum "
+			"index is %3!")
+			.arg(startIndex).arg(endIndex).arg(n),
+			FUNC_ID);
+	}
+	if (startIndex > endIndex) {
+		throw IBK::Exception(IBK::FormatString("Error "
+			"calculating transitive closure for matrix indexes (%1,%2)!")
+			.arg(startIndex).arg(endIndex),
+			FUNC_ID);
+	}
+
+	// use Warshall algorithm for calculation of tarnsitive closure
+	for (unsigned int k = startIndex; k < endIndex; ++k) {
+		try {
+			// *** generate transitive closure using Warshalls algorithm ***
+
+			// find all indices for column equation
+			std::vector<unsigned int> rows;
+			std::vector<unsigned int> columns;
+			// find all rows and columns
+			pattern.indexesPerRow(k, columns);
+			transposePattern.indexesPerRow(k, rows);
+
+			// for i: dik == 1
+			for (unsigned int iIdx = 0; iIdx < rows.size(); ++iIdx) {
+				unsigned int i = rows[iIdx];
+				// skip equal rows
+				if (i == k)
+					continue;
+				// for j: dkj == 1
+				for (unsigned int jIdx = 0; jIdx < columns.size(); ++jIdx) {
+
+					unsigned int j = columns[jIdx];
+					// skip equal columns
+					if (j == k)
+						continue;
+					// fill di,j
+					if (!pattern.test(i, j))
+						pattern.set(i, j);
+					if (!transposePattern.test(j, i))
+						transposePattern.set(j, i);
+				}
+			}
+		}
+		catch (IBK::Exception &ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error eliminating equation %1 from sparse matrix pattern!")
+				.arg(k), FUNC_ID);
+		}
+	}
+}
+
+
 SparseMatrixPattern::SparseMatrixPattern(unsigned int n) {
 	const char * const FUNC_ID = "[SparseMatrixPattern::SparseMatrixPattern]";
 	// do not allow dimensions == 0
