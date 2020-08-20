@@ -41,3 +41,4 @@ Makefile*
 # misc
 *.tlog
 *.vcxproj.user
+*.~p2
