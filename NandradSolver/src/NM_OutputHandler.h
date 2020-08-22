@@ -67,6 +67,7 @@ public:
 	enum OutputFileNames {
 		OFN_States,				// Keyword: states
 		OFN_Loads,				// Keyword: loads
+		OFN_LoadIntegrals,		// Keyword: load_integrals
 		OFN_Fluxes,				// Keyword: fluxes
 		OFN_FluxIntegrals,		// Keyword: flux_integrals
 		OFN_Misc,				// Keyword: misc

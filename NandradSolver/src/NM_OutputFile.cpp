@@ -47,6 +47,22 @@ void OutputFile::stepCompleted(double t) {
 	/// \todo we should add a minimum delay for executing this function - either here or in the framework itself
 	///       to avoid excessive overhead when evaluating stepCompleted() calls in tiny steps
 
+	// shift states
+	// m_tCurrentStep has the value of t at the *last* call to stepCompleted(), so now this
+	// is actually out "last step's time point"
+	double dt = t - m_tCurrentStep;  // integration interval length in [s]
+	// special handling for initial call
+	if (m_tLastStep == -1) {
+		// here we end up on first call the step completed, usually t = 0, except in restart case
+		/// \todo think of a way to restore integral values in case of restarting
+		m_tLastStep = t;
+		m_tCurrentStep = t;
+		return; // we have initialized our time points, so let's bail out here... nothing to integrate so far
+	}
+	// update our time point values
+	m_tLastStep = m_tCurrentStep;
+	m_tCurrentStep = t;
+
 	// loop over all *available* variables and handle those with OTT_MEAN or OTT_INTEGRAL
 	unsigned int col=0; // storage column index
 	for (unsigned int i=0; i<m_valueRefs.size(); ++i) {
@@ -54,19 +70,6 @@ void OutputFile::stepCompleted(double t) {
 		const NANDRAD::OutputDefinition & od = m_outputDefinitions[ m_outputDefMap[i] ];
 		if (od.m_timeType != NANDRAD::OutputDefinition::OTT_NONE) {
 
-			// shift states
-			double dt = t - m_tCurrentStep;  // integration interval length in [s]
-			// special handling for initial call
-			if (m_tLastStep == -1) {
-				// on first call the step completed, usually t = 0, except in restart case
-				/// \todo think of a way to restore integral values in case of restarting
-				m_tLastStep = t;
-				m_tCurrentStep = t;
-				continue;
-			}
-
-			m_tLastStep = m_tCurrentStep;
-			m_tCurrentStep = t;
 			m_integrals[0][col] = m_integrals[1][col];
 			// now retrieve value
 			double val = *m_valueRefs[i];
@@ -77,7 +80,7 @@ void OutputFile::stepCompleted(double t) {
 			m_integrals[1][col] = dVal + m_integrals[0][col];
 		}
 		++col;
-		}
+	}
 }
 
 
@@ -303,6 +306,15 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 	for (unsigned int i=0; i<m_valueRefs.size(); ++i) {
 		if (m_valueRefs[i] == nullptr) continue; // skip unavailable vars
 
+		const NANDRAD::OutputDefinition & od = m_outputDefinitions[ m_outputDefMap[i] ];
+
+		// quantity suffix depends on time type
+		std::string quantitySuffix;
+		if (od.m_timeType == NANDRAD::OutputDefinition::OTT_MEAN)
+			quantitySuffix = "-average";
+		else if (od.m_timeType == NANDRAD::OutputDefinition::OTT_INTEGRAL)
+			quantitySuffix = "-integral";
+
 		IBK::Unit u(m_valueUnits[i]);
 
 		// compose column title
@@ -312,15 +324,17 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 			quantityString += "(id=" + IBK::val2string(m_inputRefs[i].m_name.m_index) + ")";
 
 		if (m_inputRefs[i].m_id != 0)
-			header = IBK::FormatString("%1(id=%2).%3 [%4]")
+			header = IBK::FormatString("%1(id=%2).%3%4 [%5]")
 					.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_inputRefs[i].m_referenceType))
 					.arg(m_inputRefs[i].m_id)
 					.arg(quantityString)
+					.arg(quantitySuffix)
 					.arg(u.name()).str();
 		else
-			header = IBK::FormatString("%1.%2 [%3]")
+			header = IBK::FormatString("%1.%2%3 [%4]")
 					.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_inputRefs[i].m_referenceType))
 					.arg(quantityString)
+					.arg(quantitySuffix)
 					.arg(u.name()).str();
 		headerLabels.push_back(header);
 		++col; // increase var counter
@@ -401,7 +415,6 @@ void OutputFile::cacheOutputs(double t_out, double t_timeOfYear) {
 						// compute and store average value
 						vals[col] = deltaValue/deltaTime;
 					}
-					m_tLastOutput = t_out;
 				}
 			}
 			break;
@@ -412,6 +425,8 @@ void OutputFile::cacheOutputs(double t_out, double t_timeOfYear) {
 
 		++col;
 	}
+	// finally update last outputs time point
+	m_tLastOutput = t_out;
 
 	m_cache.emplace_back(vals); // like push-back, but without re-allocation
 }

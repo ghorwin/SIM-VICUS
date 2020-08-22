@@ -120,9 +120,10 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "states";
 				case 1 : return "loads";
-				case 2 : return "fluxes";
-				case 3 : return "flux_integrals";
-				case 4 : return "misc";
+				case 2 : return "load_integrals";
+				case 3 : return "fluxes";
+				case 4 : return "flux_integrals";
+				case 5 : return "misc";
 			} break;
 			// RoomBalanceModel::Results
 			case 7 :
@@ -265,9 +266,10 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "states";
 				case 1 : return "loads";
-				case 2 : return "fluxes";
-				case 3 : return "flux_integrals";
-				case 4 : return "misc";
+				case 2 : return "load_integrals";
+				case 3 : return "fluxes";
+				case 4 : return "flux_integrals";
+				case 5 : return "misc";
 			} break;
 			// RoomBalanceModel::Results
 			case 7 :
@@ -411,9 +413,10 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : if (no_description != nullptr) *no_description = true; return "states";
 				case 1 : if (no_description != nullptr) *no_description = true; return "loads";
-				case 2 : if (no_description != nullptr) *no_description = true; return "fluxes";
-				case 3 : if (no_description != nullptr) *no_description = true; return "flux_integrals";
-				case 4 : if (no_description != nullptr) *no_description = true; return "misc";
+				case 2 : if (no_description != nullptr) *no_description = true; return "load_integrals";
+				case 3 : if (no_description != nullptr) *no_description = true; return "fluxes";
+				case 4 : if (no_description != nullptr) *no_description = true; return "flux_integrals";
+				case 5 : if (no_description != nullptr) *no_description = true; return "misc";
 			} break;
 			// RoomBalanceModel::Results
 			case 7 :
@@ -559,6 +562,7 @@ namespace NANDRAD_MODEL {
 				case 2 : return "";
 				case 3 : return "";
 				case 4 : return "";
+				case 5 : return "";
 			} break;
 			// RoomBalanceModel::Results
 			case 7 :
@@ -704,6 +708,7 @@ namespace NANDRAD_MODEL {
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
+				case 5 : return "#FFFFFF";
 			} break;
 			// RoomBalanceModel::Results
 			case 7 :
@@ -849,6 +854,7 @@ namespace NANDRAD_MODEL {
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
+				case 5 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// RoomBalanceModel::Results
 			case 7 :
@@ -948,7 +954,7 @@ namespace NANDRAD_MODEL {
 			// Loads::VectorValuedResults
 			case 5 : return 4;
 			// OutputHandler::OutputFileNames
-			case 6 : return 5;
+			case 6 : return 6;
 			// RoomBalanceModel::Results
 			case 7 : return 3;
 			// RoomBalanceModel::InputReferences
@@ -982,7 +988,7 @@ namespace NANDRAD_MODEL {
 			// Loads::VectorValuedResults
 			case 5 : return 3;
 			// OutputHandler::OutputFileNames
-			case 6 : return 4;
+			case 6 : return 5;
 			// RoomBalanceModel::Results
 			case 7 : return 2;
 			// RoomBalanceModel::InputReferences

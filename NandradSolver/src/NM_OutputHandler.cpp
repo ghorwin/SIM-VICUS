@@ -183,7 +183,11 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 
 		// anything related to climatic loads, will get into OFN_Loads
 		if (od.m_objectListRef->m_referenceType == NANDRAD::ModelInputReference::MRT_LOCATION) {
-			groupMap[od.m_gridName][OFN_Loads].push_back(od);
+			// time integral values?
+			if (od.m_timeType == NANDRAD::OutputDefinition::OTT_INTEGRAL)
+				groupMap[od.m_gridName][OFN_LoadIntegrals].push_back(od);
+			else
+				groupMap[od.m_gridName][OFN_Loads].push_back(od);
 			continue;
 		}
 
@@ -268,9 +272,13 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 
 	// now all the auto-generated files
 	for (auto filegrp : groupMap) {
+		// filegrp.first = output grid name
+		// filegrp.second = static array of vectors, array contains elements for each known/pre-defined file type
 		// process all types
 		for (unsigned int i=0; i<NUM_OFN; ++i) {
-			// skip file types with empty lists
+
+			// skip file types without any outputs (i.e. "loads" list may be empty if there are no requested "load"-outputs
+			// for this output grid.
 			if (filegrp.second[i].empty()) continue;
 
 			// now create the file with the file name pattern:
