@@ -129,7 +129,7 @@ public:
 	// *** SOLVER PARAMETERS ***
 
 	/*! Maximum number of non-linear iterations. */
-	unsigned int				m_maximumNonlinearIterations;
+	unsigned int				m_maxNonLinIters;
 	/*! Tolerance comparison to use in convergence test in Newton method. */
 	double						m_NLResidualTolerance;
 	/*! Safety factor to apply to Delta norm in Newton convergence test. */

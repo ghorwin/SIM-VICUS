@@ -48,7 +48,7 @@ inline const double * DOUBLE_PTR(const std::vector<double> & vec) { return &vec[
 const double ERROR_NORM_SAFETY = 6;
 
 IntegratorImplicitEuler::IntegratorImplicitEuler() :
-	m_maximumNonlinearIterations(3),
+	m_maxNonLinIters(3),
 	m_NLResidualTolerance(1e-5),
 	m_nonLinConvCoeff(0.1),
 	m_modifiedNewtonStrategy(MN_ONCE_AT_STEP_START),
@@ -134,7 +134,7 @@ void IntegratorImplicitEuler::init(	ModelInterface * model,
 		throw IBK::Exception("Invalid size of absTolVec.", FUNC_ID);
 
 	IBK::IBK_Message( IBK::FormatString("Setting NonlinConvCoef to %1.\n").arg(m_nonLinConvCoeff), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-	IBK::IBK_Message( IBK::FormatString("Setting MaxNonLinIters to %1.\n").arg(m_maximumNonlinearIterations), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	IBK::IBK_Message( IBK::FormatString("Setting MaxNonLinIters to %1.\n").arg(m_maxNonLinIters), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
 	// *** Initialize Linear Equation Solver ***
 	lesSolver->init(m_model, this, precond, jacobian);
@@ -700,7 +700,7 @@ IntegratorImplicitEuler::StepResult IntegratorImplicitEuler::newtonIteration() {
 		}
 
 		// *** Iteration limit check ***
-		if (m_nIterations >= m_maximumNonlinearIterations) {
+		if (m_nIterations >= m_maxNonLinIters) {
 			// doesn't work, only creates more error failes
 			//if (m_residualNorm/residualNormPred < 0.1 || deltaNorm/deltaNormPred < 0.1) {
 			//	break; // converged?
