@@ -404,7 +404,18 @@ void ConstructionStatesModel::generateGrid() {
 	// retrieve parameters regulating grid generation
 	double stretch = m_solverPara->m_para[NANDRAD::SolverParameter::SP_DISCRETIZATION_STRECH_FACTOR].value;
 	double minDX = m_solverPara->m_para[NANDRAD::SolverParameter::SP_DISCRETIZATION_MIN_DX].value;
-	unsigned int maxElementsPerLayer = 10;
+	unsigned int maxElementsPerLayer = m_solverPara->m_intPara[NANDRAD::SolverParameter::SIP_DISCRETIZATION_MAX_ELEMENTS_PER_LAYER].toUInt(true);
+	if (maxElementsPerLayer < 3) {
+		IBK::IBK_Message(IBK::FormatString("Instead of setting max. elements per layer to less than 3, you may want to use a stretch factor of 0 to disable grid generation."),
+						 IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+	}
+
+	// for about thin layers
+	for (unsigned int i=0; i<nLayers; ++i) {
+		if (conType->m_materialLayers[i].m_thickness < 0.001)
+			IBK::IBK_Message(IBK::FormatString("Thickness of layer #%1 is %2 m, which is so small that it will not affect heat transfer/storage capacity. To improve numerical performance, you should remove such small layers."),
+							 IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+	}
 
 	// case: density is set to 0
 	// internal layers are used as elements directly
@@ -497,10 +508,12 @@ void ConstructionStatesModel::generateGrid() {
 					do {
 						grid2.d *= 1.2;
 						grid2.generate(n, x, x + dLayer, dxElem, xElem);
-					} while (dxElem[0] > 1.1*minDX && n < maxElementsPerLayer*2); // do not go beyond maximum element count
-					IBK::IBK_Message( IBK::FormatString("Maximum number of elements per layer is reached in material "
-														"layer #%1 (d=%2m), stretch factor increased to %3")
-									  .arg(i+1).arg(dLayer).arg(grid2.d), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					} while (dxElem[0] > 1.1*minDX && grid.d < 100); // do not go beyond maximum element count
+					IBK::IBK_Message( IBK::FormatString("Maximum number of elements per layer (%1) is reached in material "
+														"layer #%2 (d=%3m), stretch factor increased to %4, resulting in %5 elements")
+									  .arg(maxElementsPerLayer)
+									  .arg(i+1).arg(dLayer).arg(grid2.d)
+									  .arg(n), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 				}
 				// insert into into global discretization vector
 				x_vec.insert(x_vec.end(), xElem.begin(), xElem.end() );
