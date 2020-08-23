@@ -61,6 +61,18 @@ void IntPara::set(const std::string& str, int val) {
 }
 
 
+unsigned int IntPara::toUInt(bool zeroExcluded, const char * const errormsg) const {
+	FUNCID(IntPara::toUInt);
+	if ((zeroExcluded && value < 1) || (!zeroExcluded && value < 0)) {
+		if (errormsg != nullptr)
+			throw IBK::Exception(errormsg, FUNC_ID);
+		else
+			throw IBK::Exception(IBK::FormatString("Invalid argument %1 to '%2' parameter!").arg(value).arg(name), FUNC_ID);
+	}
+	return static_cast<unsigned int>(value);
+}
+
+
 std::string IntPara::toString(bool without_name) const {
 	std::stringstream strm;
 	if (!without_name)

@@ -61,6 +61,12 @@ public:
 	/*! Sets name and value. */
 	void set(const std::string& str, int val);
 
+	/*! Returns the value as unsigned int, hereby also checking if zero is included/excluded.
+		If an optional error message is given, this will be used in the IBK::Exception text, otherwise
+		a generic error message is raised.
+	*/
+	unsigned int toUInt(bool zeroExcluded = false, const char * const errormsg = nullptr) const;
+
 	/*! Returns the IntPara fully formatted as std::string.
 		\param without_name If false, the IntPara string is of format "<name> = <value>", otherwise just
 				the value.
