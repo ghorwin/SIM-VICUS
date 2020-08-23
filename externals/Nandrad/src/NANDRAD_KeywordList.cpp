@@ -34,7 +34,7 @@ namespace NANDRAD {
 	const char * const INVALID_KEYWORD_INDEX_STRING = "KEYWORD_ERROR_STRING: Invalid type index";
 
 	/*! Holds a list of all enum types/categories. */
-	const char * const ENUM_TYPES[37] = {
+	const char * const ENUM_TYPES[38] = {
 		"ConstructionInstance::para_t",
 		"DailyCycle::interpolation_t",
 		"EmbeddedObject::para_t",
@@ -66,6 +66,7 @@ namespace NANDRAD {
 		"SimulationParameter::intpara_t",
 		"SimulationParameter::flag_t",
 		"SolverParameter::para_t",
+		"SolverParameter::intPara_t",
 		"SolverParameter::flag_t",
 		"SolverParameter::integrator_t",
 		"SolverParameter::lesSolver_t",
@@ -76,7 +77,7 @@ namespace NANDRAD {
 
 	/*! Converts a category string to respective enumeration value. */
 	int enum2index(const std::string & enumtype) {
-		for (int i=0; i<37; ++i) {
+		for (int i=0; i<38; ++i) {
 			if (enumtype == ENUM_TYPES[i]) return i;
 		}
 		//std::cerr << "Unknown enumeration type '" << enumtype<< "'." << std::endl;
@@ -310,31 +311,35 @@ namespace NANDRAD {
 				case 4 : return "InitialTimeStep";
 				case 5 : return "NonlinSolverConvCoeff";
 				case 6 : return "IterativeSolverConvCoeff";
-				case 7 : return "MaxOrder";
-				case 8 : return "MaxKrylovDim";
-				case 9 : return "MaxNonlinIter";
-				case 10 : return "LESBandWidth";
-				case 11 : return "PreBandWidth";
-				case 12 : return "PreILUWidth";
-				case 13 : return "DiscMinDx";
-				case 14 : return "DiscStretchFactor";
-				case 15 : return "ViewfactorTileWidth";
-				case 16 : return "SurfaceDiscretizationDensity";
-				case 17 : return "ControlTemperatureTolerance";
-				case 18 : return "KinsolRelTol";
-				case 19 : return "KinsolAbsTol";
-				case 20 : return "KinsolMaxNonlinIter";
-				case 21 : return "IntegralWeightsFactor";
+				case 7 : return "DiscMinDx";
+				case 8 : return "DiscStretchFactor";
+				case 9 : return "ViewfactorTileWidth";
+				case 10 : return "SurfaceDiscretizationDensity";
+				case 11 : return "ControlTemperatureTolerance";
+				case 12 : return "KinsolRelTol";
+				case 13 : return "KinsolAbsTol";
+				case 14 : return "IntegralWeightsFactor";
+			} break;
+			// SolverParameter::intPara_t
+			case 31 :
+			switch (t) {
+				case 0 : return "PreBandWidth";
+				case 1 : return "PreILUWidth";
+				case 2 : return "MaxKrylovDim";
+				case 3 : return "MaxNonlinIter";
+				case 4 : return "MaxOrder";
+				case 5 : return "KinsolMaxNonlinIter";
+				case 6 : return "DiscMaxElementsPerLayer";
 			} break;
 			// SolverParameter::flag_t
-			case 31 :
+			case 32 :
 			switch (t) {
 				case 0 : return "DetectMaxTimeStep";
 				case 1 : return "KinsolDisableLineSearch";
 				case 2 : return "KinsolStrictNewton";
 			} break;
 			// SolverParameter::integrator_t
-			case 32 :
+			case 33 :
 			switch (t) {
 				case 0 : return "CVODE";
 				case 1 : return "ExplicitEuler";
@@ -342,7 +347,7 @@ namespace NANDRAD {
 				case 3 : return "auto";
 			} break;
 			// SolverParameter::lesSolver_t
-			case 33 :
+			case 34 :
 			switch (t) {
 				case 0 : return "Dense";
 				case 1 : return "KLU";
@@ -351,21 +356,21 @@ namespace NANDRAD {
 				case 4 : return "auto";
 			} break;
 			// SolverParameter::precond_t
-			case 34 :
+			case 35 :
 			switch (t) {
 				case 0 : return "Band";
 				case 1 : return "ILU";
 				case 2 : return "auto";
 			} break;
 			// Zone::type_t
-			case 35 :
+			case 36 :
 			switch (t) {
 				case 0 : return "Constant";
 				case 1 : return "Active";
 				case 2 : return "Ground";
 			} break;
 			// Zone::para_t
-			case 36 :
+			case 37 :
 			switch (t) {
 				case 0 : return "Temperature";
 				case 1 : return "RelativeHumidity";
@@ -604,31 +609,35 @@ namespace NANDRAD {
 				case 4 : return "InitialTimeStep";
 				case 5 : return "NonlinSolverConvCoeff";
 				case 6 : return "IterativeSolverConvCoeff";
-				case 7 : return "MaxOrder";
-				case 8 : return "MaxKrylovDim";
-				case 9 : return "MaxNonlinIter";
-				case 10 : return "LESBandWidth";
-				case 11 : return "PreBandWidth";
-				case 12 : return "PreILUWidth";
-				case 13 : return "DiscMinDx";
-				case 14 : return "DiscStretchFactor";
-				case 15 : return "ViewfactorTileWidth";
-				case 16 : return "SurfaceDiscretizationDensity";
-				case 17 : return "ControlTemperatureTolerance";
-				case 18 : return "KinsolRelTol";
-				case 19 : return "KinsolAbsTol";
-				case 20 : return "KinsolMaxNonlinIter";
-				case 21 : return "IntegralWeightsFactor";
+				case 7 : return "DiscMinDx";
+				case 8 : return "DiscStretchFactor";
+				case 9 : return "ViewfactorTileWidth";
+				case 10 : return "SurfaceDiscretizationDensity";
+				case 11 : return "ControlTemperatureTolerance";
+				case 12 : return "KinsolRelTol";
+				case 13 : return "KinsolAbsTol";
+				case 14 : return "IntegralWeightsFactor";
+			} break;
+			// SolverParameter::intPara_t
+			case 31 :
+			switch (t) {
+				case 0 : return "PreBandWidth";
+				case 1 : return "PreILUWidth";
+				case 2 : return "MaxKrylovDim";
+				case 3 : return "MaxNonlinIter";
+				case 4 : return "MaxOrder";
+				case 5 : return "KinsolMaxNonlinIter";
+				case 6 : return "DiscMaxElementsPerLayer";
 			} break;
 			// SolverParameter::flag_t
-			case 31 :
+			case 32 :
 			switch (t) {
 				case 0 : return "DetectMaxTimeStep";
 				case 1 : return "KinsolDisableLineSearch";
 				case 2 : return "KinsolStrictNewton";
 			} break;
 			// SolverParameter::integrator_t
-			case 32 :
+			case 33 :
 			switch (t) {
 				case 0 : return "CVODE";
 				case 1 : return "ExplicitEuler";
@@ -636,7 +645,7 @@ namespace NANDRAD {
 				case 3 : return "auto";
 			} break;
 			// SolverParameter::lesSolver_t
-			case 33 :
+			case 34 :
 			switch (t) {
 				case 0 : return "Dense";
 				case 1 : return "KLU";
@@ -645,21 +654,21 @@ namespace NANDRAD {
 				case 4 : return "auto";
 			} break;
 			// SolverParameter::precond_t
-			case 34 :
+			case 35 :
 			switch (t) {
 				case 0 : return "Band";
 				case 1 : return "ILU";
 				case 2 : return "auto";
 			} break;
 			// Zone::type_t
-			case 35 :
+			case 36 :
 			switch (t) {
 				case 0 : return "Constant";
 				case 1 : return "Active";
 				case 2 : return "Ground";
 			} break;
 			// Zone::para_t
-			case 36 :
+			case 37 :
 			switch (t) {
 				case 0 : return "Temperature";
 				case 1 : return "RelativeHumidity";
@@ -899,31 +908,35 @@ namespace NANDRAD {
 				case 4 : return "Initial time step";
 				case 5 : return "Coefficient reducing nonlinear equation solver convergence limit.";
 				case 6 : return "Coefficient reducing iterative equation solver convergence limit.";
-				case 7 : return "Maximum order allowed for multi-step solver.";
-				case 8 : return "Maximum dimension of Krylov subspace.";
-				case 9 : return "Maximum number of nonlinear iterations.";
-				case 10 : return "Maximum band width to be used for band LES solver.";
-				case 11 : return "Maximum band width to be used for banded preconditioner.";
-				case 12 : return "Maximum level of fill-in to be used for ILU preconditioner.";
-				case 13 : return "Minimum element width for wall discretization.";
-				case 14 : return "Stretch factor for variable wall discretizations (0-no disc, 1-equidistance, larger than 1 - variable).";
-				case 15 : return "Maximum dimension of a tile for calculation of view factors.";
-				case 16 : return "Number of surface discretization elements of a wall in each direction.";
-				case 17 : return "Temperature tolerance for ideal heating or cooling.";
-				case 18 : return "Relative tolerance for Kinsol solver.";
-				case 19 : return "Absolute tolerance for Kinsol solver.";
-				case 20 : return "Maximum nonlinear iterations for Kinsol solver.";
-				case 21 : return "Optional weighting factor for integral outputs.";
+				case 7 : return "Minimum element width for wall discretization.";
+				case 8 : return "Stretch factor for variable wall discretizations (0-no disc, 1-equidistance, larger than 1 - variable).";
+				case 9 : return "Maximum dimension of a tile for calculation of view factors.";
+				case 10 : return "Number of surface discretization elements of a wall in each direction.";
+				case 11 : return "Temperature tolerance for ideal heating or cooling.";
+				case 12 : return "Relative tolerance for Kinsol solver.";
+				case 13 : return "Absolute tolerance for Kinsol solver.";
+				case 14 : return "Optional weighting factor for integral outputs.";
+			} break;
+			// SolverParameter::intPara_t
+			case 31 :
+			switch (t) {
+				case 0 : return "Maximum band width to be used for banded preconditioner.";
+				case 1 : return "Maximum level of fill-in to be used for ILU preconditioner.";
+				case 2 : return "Maximum dimension of Krylov subspace.";
+				case 3 : return "Maximum number of nonlinear iterations.";
+				case 4 : return "Maximum order allowed for multi-step solver.";
+				case 5 : return "Maximum nonlinear iterations for Kinsol solver.";
+				case 6 : return "Maximum number of elements per layer.";
 			} break;
 			// SolverParameter::flag_t
-			case 31 :
+			case 32 :
 			switch (t) {
 				case 0 : return "Check schedules to determine minimum distances between steps and adjust MaxTimeStep.";
 				case 1 : return "Disable line search for steady state cycles.";
 				case 2 : return "Enable strict Newton for steady state cycles.";
 			} break;
 			// SolverParameter::integrator_t
-			case 32 :
+			case 33 :
 			switch (t) {
 				case 0 : return "CVODE based solver";
 				case 1 : return "Explicit Euler solver";
@@ -931,7 +944,7 @@ namespace NANDRAD {
 				case 3 : return "System selects integrator automatically.";
 			} break;
 			// SolverParameter::lesSolver_t
-			case 33 :
+			case 34 :
 			switch (t) {
 				case 0 : return "Dense solver";
 				case 1 : return "KLU sparse solver";
@@ -940,21 +953,21 @@ namespace NANDRAD {
 				case 4 : return "System selects les solver automatically.";
 			} break;
 			// SolverParameter::precond_t
-			case 34 :
+			case 35 :
 			switch (t) {
 				case 0 : return "Band preconditioner";
 				case 1 : return "Incomplete LU preconditioner";
 				case 2 : return "System selects preconditioner automatically.";
 			} break;
 			// Zone::type_t
-			case 35 :
+			case 36 :
 			switch (t) {
 				case 0 : return "Zone with constant/predefined temperatures. (schedule)";
 				case 1 : return "Zone described by a temperature node in space.";
 				case 2 : return "Ground zone (calculates temperature based on standard).";
 			} break;
 			// Zone::para_t
-			case 36 :
+			case 37 :
 			switch (t) {
 				case 0 : return "Temperature of the zone if set constant [C].";
 				case 1 : return "Relative humidity of the zone if set constant [%].";
@@ -1193,31 +1206,35 @@ namespace NANDRAD {
 				case 4 : return "s";
 				case 5 : return "---";
 				case 6 : return "---";
-				case 7 : return "---";
+				case 7 : return "m";
 				case 8 : return "---";
-				case 9 : return "---";
+				case 9 : return "m";
 				case 10 : return "---";
-				case 11 : return "---";
+				case 11 : return "K";
 				case 12 : return "---";
-				case 13 : return "m";
+				case 13 : return "---";
 				case 14 : return "---";
-				case 15 : return "m";
-				case 16 : return "---";
-				case 17 : return "K";
-				case 18 : return "---";
-				case 19 : return "---";
-				case 20 : return "---";
-				case 21 : return "---";
+			} break;
+			// SolverParameter::intPara_t
+			case 31 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+				case 2 : return "";
+				case 3 : return "";
+				case 4 : return "";
+				case 5 : return "";
+				case 6 : return "";
 			} break;
 			// SolverParameter::flag_t
-			case 31 :
+			case 32 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
 			} break;
 			// SolverParameter::integrator_t
-			case 32 :
+			case 33 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
@@ -1225,7 +1242,7 @@ namespace NANDRAD {
 				case 3 : return "";
 			} break;
 			// SolverParameter::lesSolver_t
-			case 33 :
+			case 34 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
@@ -1234,21 +1251,21 @@ namespace NANDRAD {
 				case 4 : return "";
 			} break;
 			// SolverParameter::precond_t
-			case 34 :
-			switch (t) {
-				case 0 : return "";
-				case 1 : return "";
-				case 2 : return "";
-			} break;
-			// Zone::type_t
 			case 35 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
 			} break;
-			// Zone::para_t
+			// Zone::type_t
 			case 36 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+				case 2 : return "";
+			} break;
+			// Zone::para_t
+			case 37 :
 			switch (t) {
 				case 0 : return "C";
 				case 1 : return "%";
@@ -1495,23 +1512,27 @@ namespace NANDRAD {
 				case 12 : return "#FFFFFF";
 				case 13 : return "#FFFFFF";
 				case 14 : return "#FFFFFF";
-				case 15 : return "#FFFFFF";
-				case 16 : return "#FFFFFF";
-				case 17 : return "#FFFFFF";
-				case 18 : return "#FFFFFF";
-				case 19 : return "#FFFFFF";
-				case 20 : return "#FFFFFF";
-				case 21 : return "#FFFFFF";
+			} break;
+			// SolverParameter::intPara_t
+			case 31 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
+				case 4 : return "#FFFFFF";
+				case 5 : return "#FFFFFF";
+				case 6 : return "#FFFFFF";
 			} break;
 			// SolverParameter::flag_t
-			case 31 :
+			case 32 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
 			// SolverParameter::integrator_t
-			case 32 :
+			case 33 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -1519,7 +1540,7 @@ namespace NANDRAD {
 				case 3 : return "#FFFFFF";
 			} break;
 			// SolverParameter::lesSolver_t
-			case 33 :
+			case 34 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -1528,21 +1549,21 @@ namespace NANDRAD {
 				case 4 : return "#FFFFFF";
 			} break;
 			// SolverParameter::precond_t
-			case 34 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-				case 2 : return "#FFFFFF";
-			} break;
-			// Zone::type_t
 			case 35 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
-			// Zone::para_t
+			// Zone::type_t
 			case 36 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+			} break;
+			// Zone::para_t
+			case 37 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -1789,23 +1810,27 @@ namespace NANDRAD {
 				case 12 : return std::numeric_limits<double>::quiet_NaN();
 				case 13 : return std::numeric_limits<double>::quiet_NaN();
 				case 14 : return std::numeric_limits<double>::quiet_NaN();
-				case 15 : return std::numeric_limits<double>::quiet_NaN();
-				case 16 : return std::numeric_limits<double>::quiet_NaN();
-				case 17 : return std::numeric_limits<double>::quiet_NaN();
-				case 18 : return std::numeric_limits<double>::quiet_NaN();
-				case 19 : return std::numeric_limits<double>::quiet_NaN();
-				case 20 : return std::numeric_limits<double>::quiet_NaN();
-				case 21 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// SolverParameter::intPara_t
+			case 31 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
+				case 4 : return std::numeric_limits<double>::quiet_NaN();
+				case 5 : return std::numeric_limits<double>::quiet_NaN();
+				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SolverParameter::flag_t
-			case 31 :
+			case 32 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SolverParameter::integrator_t
-			case 32 :
+			case 33 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -1813,7 +1838,7 @@ namespace NANDRAD {
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SolverParameter::lesSolver_t
-			case 33 :
+			case 34 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -1822,21 +1847,21 @@ namespace NANDRAD {
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SolverParameter::precond_t
-			case 34 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-				case 2 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// Zone::type_t
 			case 35 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// Zone::para_t
+			// Zone::type_t
 			case 36 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// Zone::para_t
+			case 37 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -1914,19 +1939,21 @@ namespace NANDRAD {
 			// SimulationParameter::flag_t
 			case 29 : return 4;
 			// SolverParameter::para_t
-			case 30 : return 22;
+			case 30 : return 15;
+			// SolverParameter::intPara_t
+			case 31 : return 7;
 			// SolverParameter::flag_t
-			case 31 : return 3;
+			case 32 : return 3;
 			// SolverParameter::integrator_t
-			case 32 : return 4;
+			case 33 : return 4;
 			// SolverParameter::lesSolver_t
-			case 33 : return 5;
+			case 34 : return 5;
 			// SolverParameter::precond_t
-			case 34 : return 3;
-			// Zone::type_t
 			case 35 : return 3;
+			// Zone::type_t
+			case 36 : return 3;
 			// Zone::para_t
-			case 36 : return 6;
+			case 37 : return 6;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::Count]");
@@ -1996,19 +2023,21 @@ namespace NANDRAD {
 			// SimulationParameter::flag_t
 			case 29 : return 3;
 			// SolverParameter::para_t
-			case 30 : return 21;
+			case 30 : return 14;
+			// SolverParameter::intPara_t
+			case 31 : return 6;
 			// SolverParameter::flag_t
-			case 31 : return 2;
+			case 32 : return 2;
 			// SolverParameter::integrator_t
-			case 32 : return 3;
+			case 33 : return 3;
 			// SolverParameter::lesSolver_t
-			case 33 : return 4;
+			case 34 : return 4;
 			// SolverParameter::precond_t
-			case 34 : return 2;
-			// Zone::type_t
 			case 35 : return 2;
+			// Zone::type_t
+			case 36 : return 2;
 			// Zone::para_t
-			case 36 : return 6;
+			case 37 : return 6;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::MaxIndex]");

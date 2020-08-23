@@ -115,6 +115,7 @@ NandradModel::~NandradModel() {
 	delete m_schedules;
 	delete m_fmiInputOutput;
 	delete m_outputHandler;
+	m_outputHandler = nullptr;
 	// note: m_loads is handled just as any other model and cleaned up as part of the m_modelContainer cleanup above
 
 	delete m_progressLog;
@@ -469,9 +470,12 @@ SOLFRA::LESInterface * NandradModel::lesInterface() {
 			m_jacobian = jacSparse;
 
 			// ILUT preconditioner
-			if (!m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_PRE_ILUWIDTH].name.empty()/*
-				&& m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_PRE_ILUWIDTH].value > 0*/) {
-				unsigned int fillIn = (unsigned int)m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_PRE_ILUWIDTH].value;
+			if (!m_project->m_solverParameter.m_intPara[NANDRAD::SolverParameter::SIP_PRE_ILUWIDTH].name.empty()/*
+				&& m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_PRE_ILUWIDTH].value > 0*/)
+			{
+				/// \todo clarify, is zero allowed here? If yes, change code to toUInt() and also provide default value
+				/// in SolverParameter constructor
+				unsigned int fillIn = m_project->m_solverParameter.m_intPara[NANDRAD::SolverParameter::SIP_PRE_ILUWIDTH].toUInt(true);
 
 				m_preconditioner = new SOLFRA::PrecondILUT(SOLFRA::PrecondInterface::Right, fillIn);
 				precondName = IBK::FormatString("ILUT preconditioner").str();
@@ -492,7 +496,7 @@ SOLFRA::LESInterface * NandradModel::lesInterface() {
 	IBK_ASSERT(lesIter != nullptr);
 
 	// set iterative LES solver options
-	lesIter->m_maxKrylovDim = (unsigned int)m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MAX_KRYLOV_DIM].value;
+	lesIter->m_maxKrylovDim = m_project->m_solverParameter.m_intPara[NANDRAD::SolverParameter::SIP_MAX_KRYLOV_DIM].toUInt();
 	lesIter->m_linIterConvCoeff = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_ITERATIVESOLVERCONVCOEFF].value;
 
 	IBK_Message(IBK::FormatString("%1 selected, MaxKrylovDim = %2\n")
@@ -530,7 +534,7 @@ SOLFRA::IntegratorInterface * NandradModel::integratorInterface() {
 		integrator->m_absTol = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_ABSTOL].value;
 		integrator->m_relTol = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_RELTOL].value;
 		integrator->m_nonLinConvCoeff = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_NONLINSOLVERCONVCOEFF].value;
-		integrator->m_maximumNonlinearIterations = (unsigned int) m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MAX_NONLIN_ITER].value;
+		integrator->m_maxNonLinIters = m_project->m_solverParameter.m_intPara[NANDRAD::SolverParameter::SIP_MAX_NONLIN_ITER].toUInt(true);
 		/// \todo Specify ImplicitEuler parameters
 
 		m_integrator = integrator;
@@ -545,10 +549,10 @@ SOLFRA::IntegratorInterface * NandradModel::integratorInterface() {
 		integrator->m_relTol = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_RELTOL].value;
 		integrator->m_dtMax = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MAX_DT].value;
 		integrator->m_dtMin = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MIN_DT].value;
-		integrator->m_maxOrder = (unsigned int)m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MAX_ORDER].value;
+		integrator->m_maxOrder = m_project->m_solverParameter.m_intPara[NANDRAD::SolverParameter::SIP_MAX_ORDER].toUInt(true);
 		integrator->m_maxSteps = 100000000; // extremely large value
 		integrator->m_nonLinConvCoeff = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_NONLINSOLVERCONVCOEFF].value;
-		integrator->m_maxNonLinIters = (unsigned int) m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_MAX_NONLIN_ITER].value;
+		integrator->m_maxNonLinIters = m_project->m_solverParameter.m_intPara[NANDRAD::SolverParameter::SIP_MAX_NONLIN_ITER].toUInt(true);
 
 		m_integrator = integrator;
 	}
@@ -764,12 +768,12 @@ void NandradModel::initSolverParameter(const NANDRAD::ArgsParser & args) {
 			solverParameter.m_lesSolver = NANDRAD::SolverParameter::LES_GMRES;
 			if (args.m_lesSolverOption != (unsigned int)-1)
 				// also store Krylov subspace dimension
-				solverParameter.m_para[NANDRAD::SolverParameter::SP_MAX_KRYLOV_DIM].value = args.m_lesSolverOption;
+				solverParameter.m_para[NANDRAD::SolverParameter::SIP_MAX_KRYLOV_DIM].value = args.m_lesSolverOption;
 		}
 		else if (IBK::toupper_string(args.m_lesSolverName) == "BICGSTAB") {
 			solverParameter.m_lesSolver = NANDRAD::SolverParameter::LES_BICGSTAB;
 			if (args.m_lesSolverOption != (unsigned int)-1)
-				solverParameter.m_para[NANDRAD::SolverParameter::SP_MAX_KRYLOV_DIM].value = args.m_lesSolverOption;
+				solverParameter.m_para[NANDRAD::SolverParameter::SIP_MAX_KRYLOV_DIM].value = args.m_lesSolverOption;
 		}
 		else {
 			throw IBK::Exception( IBK::FormatString("Unknown/unsupported LES-solver '%1'.").arg(args.m_lesSolverName), FUNC_ID);
@@ -790,17 +794,17 @@ void NandradModel::initSolverParameter(const NANDRAD::ArgsParser & args) {
 			solverParameter.m_preconditioner = NANDRAD::SolverParameter::PRE_BAND;
 			if (args.m_preconditionerOption != (unsigned int)-1)
 				// also store bandwidth
-				solverParameter.m_para[NANDRAD::SolverParameter::SP_PRE_BANDWIDTH].set(
-					NANDRAD::KeywordList::Keyword("SolverParameter::para_t", NANDRAD::SolverParameter::SP_PRE_BANDWIDTH),
-					args.m_preconditionerOption, IBK::Unit("---"));
+				solverParameter.m_intPara[NANDRAD::SolverParameter::SIP_PRE_BANDWIDTH].set(
+					NANDRAD::KeywordList::Keyword("SolverParameter::intPara_t", NANDRAD::SolverParameter::SIP_PRE_BANDWIDTH),
+					(int)args.m_preconditionerOption);
 		}
 		else if (IBK::toupper_string(args.m_preconditionerName) == "ILU") {
 			solverParameter.m_preconditioner = NANDRAD::SolverParameter::PRE_ILU;
 			if (args.m_preconditionerOption != (unsigned int)-1)
 				// also store bandwidth
-				solverParameter.m_para[NANDRAD::SolverParameter::SP_PRE_ILUWIDTH].set(
-					NANDRAD::KeywordList::Keyword("SolverParameter::para_t", NANDRAD::SolverParameter::SP_PRE_ILUWIDTH),
-					args.m_preconditionerOption, IBK::Unit("---"));
+				solverParameter.m_intPara[NANDRAD::SolverParameter::SIP_PRE_ILUWIDTH].set(
+					NANDRAD::KeywordList::Keyword("SolverParameter::intPara_t", NANDRAD::SolverParameter::SIP_PRE_ILUWIDTH),
+					(int)args.m_preconditionerOption);
 		}
 		else {
 			throw IBK::Exception( IBK::FormatString("Unknown/unsupported preconditioner '%1'.").arg(args.m_preconditionerName), FUNC_ID);
@@ -828,9 +832,8 @@ void NandradModel::initSolverParameter(const NANDRAD::ArgsParser & args) {
 	if (density.value < 1 && density.value != 0.0)
 		throw IBK::Exception("Invalid parameter for DiscDetailLevel in SolverParameter settings (grid density must be == 0 or >= 1).", FUNC_ID);
 
-	const IBK::Parameter & krylovDim = solverParameter.m_para[NANDRAD::SolverParameter::SP_MAX_KRYLOV_DIM];
-	if ((int)krylovDim.value <= 0)
-		throw IBK::Exception("Invalid parameter for MaxKrylovDim in SolverParameter settings.", FUNC_ID);
+	solverParameter.m_intPara[NANDRAD::SolverParameter::SIP_MAX_KRYLOV_DIM].toUInt(true,
+		"Invalid parameter for MaxKrylovDim in SolverParameter settings.");
 
 	const IBK::Parameter &nonlinConvCoeff = solverParameter.m_para[NANDRAD::SolverParameter::SP_NONLINSOLVERCONVCOEFF];
 	// check validity

@@ -33,23 +33,27 @@ namespace NANDRAD {
 
 
 void SolverParameter::initDefaults() {
-	m_para[SP_RELTOL].set( KeywordList::Keyword("SolverParameter::para_t", SP_RELTOL),									1e-5, IBK::Unit("---"));
-	m_para[SP_ABSTOL].set( KeywordList::Keyword("SolverParameter::para_t", SP_ABSTOL),									1e-10, IBK::Unit("---"));
-	m_para[SP_MAX_DT].set( KeywordList::Keyword("SolverParameter::para_t", SP_MAX_DT),									   1, IBK::Unit("h"));
-	m_para[SP_MIN_DT].set( KeywordList::Keyword("SolverParameter::para_t", SP_MIN_DT),									   1e-12, IBK::Unit("s"));
-	m_para[SP_INITIAL_DT].set( KeywordList::Keyword("SolverParameter::para_t", SP_INITIAL_DT),							 0.1, IBK::Unit("s"));
+	m_para[SP_RELTOL].set( KeywordList::Keyword("SolverParameter::para_t", SP_RELTOL),																		1e-5, IBK::Unit("---"));
+	m_para[SP_ABSTOL].set( KeywordList::Keyword("SolverParameter::para_t", SP_ABSTOL),																		1e-10, IBK::Unit("---"));
+	m_para[SP_MAX_DT].set( KeywordList::Keyword("SolverParameter::para_t", SP_MAX_DT),																		1, IBK::Unit("h"));
+	m_para[SP_MIN_DT].set( KeywordList::Keyword("SolverParameter::para_t", SP_MIN_DT),																		1e-12, IBK::Unit("s"));
+	m_para[SP_INITIAL_DT].set( KeywordList::Keyword("SolverParameter::para_t", SP_INITIAL_DT),																0.1, IBK::Unit("s"));
 
-	m_para[SP_NONLINSOLVERCONVCOEFF].set( KeywordList::Keyword("SolverParameter::para_t", SP_NONLINSOLVERCONVCOEFF),		0.1, IBK::Unit("---"));
-	m_para[SP_ITERATIVESOLVERCONVCOEFF].set( KeywordList::Keyword("SolverParameter::para_t", SP_ITERATIVESOLVERCONVCOEFF),	0.05, IBK::Unit("---"));
+	m_para[SP_NONLINSOLVERCONVCOEFF].set( KeywordList::Keyword("SolverParameter::para_t", SP_NONLINSOLVERCONVCOEFF),										0.1, IBK::Unit("---"));
+	m_para[SP_ITERATIVESOLVERCONVCOEFF].set( KeywordList::Keyword("SolverParameter::para_t", SP_ITERATIVESOLVERCONVCOEFF),									0.05, IBK::Unit("---"));
 
-	m_para[SP_MAX_ORDER].set( KeywordList::Keyword("SolverParameter::para_t", SP_MAX_ORDER),							   5, IBK::Unit("---"));
-	m_para[SP_MAX_KRYLOV_DIM].set( KeywordList::Keyword("SolverParameter::para_t", SP_MAX_KRYLOV_DIM),					 50, IBK::Unit("---"));
-	m_para[SP_DISCRETIZATION_MIN_DX].set( KeywordList::Keyword("SolverParameter::para_t", SP_DISCRETIZATION_MIN_DX),	   2, IBK::Unit("mm"));
-	m_para[SP_DISCRETIZATION_STRECH_FACTOR].set( KeywordList::Keyword("SolverParameter::para_t", SP_DISCRETIZATION_STRECH_FACTOR),	   2, IBK::Unit("---"));
-	m_para[SP_VIEW_FACTOR_TILE_WIDTH].set( KeywordList::Keyword("SolverParameter::para_t", SP_VIEW_FACTOR_TILE_WIDTH),	   50, IBK::Unit("cm"));
-	m_para[SP_SURFACE_DISCRETIZATION_DENSITY].set( KeywordList::Keyword("SolverParameter::para_t", SP_SURFACE_DISCRETIZATION_DENSITY),	   1, IBK::Unit("---"));
-	m_para[SP_CONTROL_TEMPERATURE_TOLERANCE].set(KeywordList::Keyword("SolverParameter::para_t", SP_CONTROL_TEMPERATURE_TOLERANCE), 0.00001, IBK::Unit("K"));
-	m_para[SP_INTEGRAL_WEIGHTS_FACTOR].set(KeywordList::Keyword("SolverParameter::para_t", SP_INTEGRAL_WEIGHTS_FACTOR), 1e-05, IBK::Unit("---"));
+	m_intPara[SIP_MAX_ORDER].set( KeywordList::Keyword("SolverParameter::intPara_t", SIP_MAX_ORDER),															5);
+	m_intPara[SIP_MAX_NONLIN_ITER].set( KeywordList::Keyword("SolverParameter::intPara_t", SIP_MAX_NONLIN_ITER),												3);
+	m_intPara[SIP_MAX_KRYLOV_DIM].set( KeywordList::Keyword("SolverParameter::intPara_t", SIP_MAX_KRYLOV_DIM),													50);
+
+	m_para[SP_DISCRETIZATION_MIN_DX].set( KeywordList::Keyword("SolverParameter::para_t", SP_DISCRETIZATION_MIN_DX),											2, IBK::Unit("mm"));
+	m_para[SP_DISCRETIZATION_STRECH_FACTOR].set( KeywordList::Keyword("SolverParameter::para_t", SP_DISCRETIZATION_STRECH_FACTOR),								4, IBK::Unit("---"));
+	m_intPara[SIP_DISCRETIZATION_MAX_ELEMENTS_PER_LAYER].set( KeywordList::Keyword("SolverParameter::intPara_t", SIP_DISCRETIZATION_MAX_ELEMENTS_PER_LAYER),	10);
+
+	m_para[SP_VIEW_FACTOR_TILE_WIDTH].set( KeywordList::Keyword("SolverParameter::para_t", SP_VIEW_FACTOR_TILE_WIDTH),											50, IBK::Unit("cm"));
+	m_para[SP_SURFACE_DISCRETIZATION_DENSITY].set( KeywordList::Keyword("SolverParameter::para_t", SP_SURFACE_DISCRETIZATION_DENSITY),							 1, IBK::Unit("---"));
+	m_para[SP_CONTROL_TEMPERATURE_TOLERANCE].set(KeywordList::Keyword("SolverParameter::para_t", SP_CONTROL_TEMPERATURE_TOLERANCE),							0.00001, IBK::Unit("K"));
+	m_para[SP_INTEGRAL_WEIGHTS_FACTOR].set(KeywordList::Keyword("SolverParameter::para_t", SP_INTEGRAL_WEIGHTS_FACTOR),											1e-05, IBK::Unit("---"));
 
 	m_flag[SF_DETECT_MAX_DT].set( KeywordList::Keyword("SolverParameter::flag_t", SF_DETECT_MAX_DT), true );
 	m_flag[SF_KINSOL_DISABLE_LINE_SEARCH].set(KeywordList::Keyword("SolverParameter::flag_t", SF_KINSOL_DISABLE_LINE_SEARCH), false);

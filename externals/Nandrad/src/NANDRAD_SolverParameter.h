@@ -24,6 +24,7 @@
 
 #include <string>
 #include <IBK_Parameter.h>
+#include <IBK_IntPara.h>
 #include <IBK_Flag.h>
 
 #include "NANDRAD_CodeGenMacros.h"
@@ -49,12 +50,6 @@ public:
 		SP_INITIAL_DT,						// Keyword: InitialTimeStep					[s]		'Initial time step'
 		SP_NONLINSOLVERCONVCOEFF,			// Keyword: NonlinSolverConvCoeff			[---]	'Coefficient reducing nonlinear equation solver convergence limit.'
 		SP_ITERATIVESOLVERCONVCOEFF,		// Keyword: IterativeSolverConvCoeff		[---]	'Coefficient reducing iterative equation solver convergence limit.'
-		SP_MAX_ORDER,						// Keyword: MaxOrder						[---]	'Maximum order allowed for multi-step solver.'
-		SP_MAX_KRYLOV_DIM,					// Keyword: MaxKrylovDim					[---]	'Maximum dimension of Krylov subspace.'
-		SP_MAX_NONLIN_ITER,					// Keyword: MaxNonlinIter					[---]	'Maximum number of nonlinear iterations.'
-		SP_LES_BANDWIDTH,					// Keyword: LESBandWidth					[---]	'Maximum band width to be used for band LES solver.'
-		SP_PRE_BANDWIDTH,					// Keyword: PreBandWidth					[---]	'Maximum band width to be used for banded preconditioner.'
-		SP_PRE_ILUWIDTH,					// Keyword: PreILUWidth						[---]	'Maximum level of fill-in to be used for ILU preconditioner.'
 		SP_DISCRETIZATION_MIN_DX,			// Keyword: DiscMinDx						[m]		'Minimum element width for wall discretization.'
 		SP_DISCRETIZATION_STRECH_FACTOR,	// Keyword: DiscStretchFactor				[---]	'Stretch factor for variable wall discretizations (0-no disc, 1-equidistance, larger than 1 - variable).'
 		SP_VIEW_FACTOR_TILE_WIDTH,			// Keyword: ViewfactorTileWidth				[m]		'Maximum dimension of a tile for calculation of view factors.'
@@ -62,9 +57,20 @@ public:
 		SP_CONTROL_TEMPERATURE_TOLERANCE,	// Keyword: ControlTemperatureTolerance		[K]		'Temperature tolerance for ideal heating or cooling.'
 		SP_KINSOL_RELTOL,					// Keyword: KinsolRelTol					[---]	'Relative tolerance for Kinsol solver.'
 		SP_KINSOL_ABSTOL,					// Keyword: KinsolAbsTol					[---]	'Absolute tolerance for Kinsol solver.'
-		SP_KINSOL_MAX_NONLIN_ITER,			// Keyword: KinsolMaxNonlinIter				[---]	'Maximum nonlinear iterations for Kinsol solver.'
 		SP_INTEGRAL_WEIGHTS_FACTOR,			// Keyword: IntegralWeightsFactor			[---]	'Optional weighting factor for integral outputs.'
 		NUM_P
+	};
+
+	enum intPara_t {
+		/// \todo remove pre bandwidth and BAND preconditioner altogether?
+		SIP_PRE_BANDWIDTH,					// Keyword: PreBandWidth							'Maximum band width to be used for banded preconditioner.'
+		SIP_PRE_ILUWIDTH,					// Keyword: PreILUWidth								'Maximum level of fill-in to be used for ILU preconditioner.'
+		SIP_MAX_KRYLOV_DIM,					// Keyword: MaxKrylovDim							'Maximum dimension of Krylov subspace.'
+		SIP_MAX_NONLIN_ITER,				// Keyword: MaxNonlinIter							'Maximum number of nonlinear iterations.'
+		SIP_MAX_ORDER,						// Keyword: MaxOrder								'Maximum order allowed for multi-step solver.'
+		SIP_KINSOL_MAX_NONLIN_ITER,			// Keyword: KinsolMaxNonlinIter						'Maximum nonlinear iterations for Kinsol solver.'
+		SIP_DISCRETIZATION_MAX_ELEMENTS_PER_LAYER,	// Keyword: DiscMaxElementsPerLayer			'Maximum number of elements per layer.'
+		NUM_IP
 	};
 
 	/*! Flags.
@@ -119,6 +125,8 @@ public:
 
 	/*! List of parameters. */
 	IBK::Parameter		m_para[NUM_P];					// XML:E
+	/*! List of integer value parameters. */
+	IBK::IntPara		m_intPara[NUM_IP];					// XML:E
 	/*! List of flags. */
 	IBK::Flag			m_flag[NUM_F];					// XML:E
 

@@ -152,14 +152,9 @@ void StateModelGroup::init(const ZEPPELIN::DependencyGroup &group,
 		// copy value
 		m_absoluteToleranceBand = absTol/m_tolerance;
 	}
-	if (!solverPara.m_para[NANDRAD::SolverParameter::SP_KINSOL_MAX_NONLIN_ITER].name.empty()) {
-		unsigned int maxNonlinIter = (unsigned int) solverPara.m_para[NANDRAD::SolverParameter::SP_KINSOL_MAX_NONLIN_ITER].value;
-		if (maxNonlinIter < 0) {
-			throw IBK::Exception(IBK::FormatString("Error initializing StateModelGroup: "
-				"Mismatching value of parameter 'KinsolMaxNonlinIter' (must >= 0)!"), FUNC_ID);
-		}
-		// copy value
-		m_maximumNonlinearIterations = maxNonlinIter;
+	if (!solverPara.m_intPara[NANDRAD::SolverParameter::SIP_KINSOL_MAX_NONLIN_ITER].name.empty()) {
+		m_maximumNonlinearIterations = solverPara.m_intPara[NANDRAD::SolverParameter::SIP_KINSOL_MAX_NONLIN_ITER].toUInt(true,
+			"Mismatching value of parameter 'KinsolMaxNonlinIter' (must >= 0)!");
 	}
 }
 

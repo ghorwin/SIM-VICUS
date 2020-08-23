@@ -440,7 +440,7 @@ unsigned int OutputFile::cacheSize() const {
 
 void OutputFile::flushCache() {
 	// no outputs - nothing to do
-	if (m_numCols == 0)
+	if (m_numCols == 0 || m_ofstream == nullptr)
 		return;
 
 	// dump all rows of the cache into file
