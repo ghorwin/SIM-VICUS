@@ -2229,8 +2229,14 @@ void NandradModel::initOutputReferenceList() {
 				if (varDescs[j].m_size == 0)
 					continue;
 				description << refTypeName << "." << varDescs[j].m_name;
-				if (!varDescs[j].m_indexKeys.empty())
-					description << "(" << varDescs[j].m_size << ")";
+				if (!varDescs[j].m_indexKeys.empty()) {
+					description << "(";
+					if (varDescs[j].m_indexKeyType == VectorValuedQuantityIndex::IK_Index)
+						description << "index,";
+					else
+						description << "id,";
+					description << varDescs[j].m_size << ")";
+				}
 				refDescs[description.str()] = varDescs[j];
 
 				// for schedules add reduced definition
