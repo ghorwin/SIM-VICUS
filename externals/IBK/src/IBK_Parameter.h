@@ -239,6 +239,20 @@ public:
 	void checkIfValueIsUpperBound (	const IBK::Parameter& limit,
 							bool isGreaterEqual ) const;
 
+	/*! This function checks the parameter for given and valid unit that is convertible to 'targetUnit', converts
+		the current value to 'targetUnit' and then compares the value to minVal and maxVal. If the (converted) value
+		is outside the relevant bounds, it throws an IBK::Exception with an error text. If errmsg is not a null ptr, this
+		error message is appended to the error message.
+		Range checks are done as follows:
+
+		- value "greater than" minVal if isGreaterEqual = false
+		- value "greater or equal to" minVal isGreaterEqual = true
+
+		\return If checks are successful, the function returns the converted value.
+	*/
+	double checkedValue(const std::string & targetUnit, double minVal, bool isGreaterEqual, double maxVal, bool isLessEqual,
+		const char * const errmsg = nullptr) const;
+
 
 	// ****** member variables *************************************************
 
