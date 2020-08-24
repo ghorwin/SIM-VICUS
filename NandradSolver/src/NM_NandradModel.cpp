@@ -1676,6 +1676,14 @@ void NandradModel::initWallsAndInterfaces() {
 			///       but beware, this is tricky! Maybe it is best to keep the construction but later flag it as "unused"
 			///       and simply skip over it during calculation.
 
+			// For now, we simply check if either side has boundary conditions assigned and issue a warning if no boundary
+			// conditions are present.
+			if (!ci.m_interfaceA.haveBCParameters() && !ci.m_interfaceB.haveBCParameters()) {
+				IBK::IBK_Message("Construction instance #%1 '%2' doesn not have boundary conditions on either side. To "
+								 "improve performance, this construction instance should be removed, unless it is "
+								 "otherwise needed.", IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+
 			// *** construction states model ***
 
 			ConstructionStatesModel * statesModel = new ConstructionStatesModel(ci.m_id, ci.m_displayName);
