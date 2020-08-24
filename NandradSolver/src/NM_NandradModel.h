@@ -234,8 +234,6 @@ private:
 	void initSchedules();
 	/*! FMI import/export initialization. */
 	void initFMI();
-	/*! Initialises all global parameters and models. */
-	void initGlobals();
 	/*! Loads BIM data and creates RoomBalanceModels, Summation and Splitting models. */
 	void initZones();
 	/*! Loads BIM data and creates ConstructionSolverModel, initialises WallSolver, creates
@@ -243,6 +241,8 @@ private:
 	void initWallsAndInterfaces();
 	/*! Loads BIM data and creates WindowModel.*/
 	void initEmbeddedObjects();
+	/*! Initializes all models that are parametrized for several objects. */
+	void initModels();
 	/*! With the knowledge of all available zone, construction, interface etc. models, resolve
 		object list ID groups and replace them with definite sets of IDs for the referenced
 		model types.

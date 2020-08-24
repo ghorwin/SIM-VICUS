@@ -52,6 +52,8 @@ void NaturalVentilationModel::readXML(const TiXmlElement * element) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "id")
 				m_id = readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "displayName")
+				m_displayName = attrib->ValueStr();
 			else if (attribName == "model")
 			try {
 				m_model = (model_t)KeywordList::Enumeration("NaturalVentilationModel::model_t", attrib->ValueStr());
@@ -116,6 +118,8 @@ TiXmlElement * NaturalVentilationModel::writeXML(TiXmlElement * parent) const {
 	parent->LinkEndChild(e);
 
 	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
+	if (!m_displayName.empty())
+		e->SetAttribute("displayName", m_displayName);
 	if (m_model != NUM_M)
 		e->SetAttribute("model", KeywordList::Keyword("NaturalVentilationModel::model_t",  m_model));
 	if (!m_zoneObjectList.empty())

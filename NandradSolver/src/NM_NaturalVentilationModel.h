@@ -17,7 +17,7 @@ namespace NANDRAD_MODEL {
 	for all zones referenced in the object list.
 
 */
-class NaturalVentilationModel : public AbstractModel, AbstractStateDependency {
+class NaturalVentilationModel : public AbstractModel, public AbstractStateDependency {
 public:
 	/*! Computed results, provided with access via zone ID. */
 	enum VectorValuedResults {
@@ -89,7 +89,7 @@ public:
 
 private:
 	/*! Constant pointer to the referenced zone parameter block. */
-	const NANDRAD::NaturalVentilationModel			*m_zone = nullptr;
+	const NANDRAD::NaturalVentilationModel			*m_ventilationModel = nullptr;
 	/*! Reference to simulation parameter block. */
 	const NANDRAD::SimulationParameter				*m_simPara = nullptr;
 

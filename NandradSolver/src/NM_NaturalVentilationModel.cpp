@@ -1,16 +1,21 @@
 #include "NM_NaturalVentilationModel.h"
 
+#include <NANDRAD_SimulationParameter.h>
+
 namespace NANDRAD_MODEL {
 
 
 
-void NaturalVentilationModel::setup(const NANDRAD::NaturalVentilationModel & ventilationModel, const NANDRAD::SimulationParameter & simPara)
+void NaturalVentilationModel::setup(const NANDRAD::NaturalVentilationModel & ventilationModel,
+									const NANDRAD::SimulationParameter & simPara)
 {
+	m_ventilationModel = &ventilationModel;
+	m_moistureBalanceEnabled = simPara.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled();
 
 }
 
-void NaturalVentilationModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const
-{
+
+void NaturalVentilationModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 
 }
 

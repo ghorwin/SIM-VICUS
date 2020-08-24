@@ -78,6 +78,7 @@
 #include "NM_OutputHandler.h"
 #include "NM_ConstructionStatesModel.h"
 #include "NM_ConstructionBalanceModel.h"
+#include "NM_NaturalVentilationModel.h"
 
 namespace NANDRAD_MODEL {
 
@@ -179,8 +180,6 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 	initClimateData();
 	// *** Initialize Schedules ***
 	initSchedules();
-	// *** Initialize Global Parameters ***
-	initGlobals();
 	// *** Initialize RoomBalanceModels and ConstantZoneModels ***
 	initZones();
 	// *** Initialize EnergyPerformanceIndicatorModels ***
@@ -193,6 +192,8 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 //	initModelGroups();
 	// *** Initialize all internal fmus ***
 //	initFMUComponents();
+	// *** Initialize all models ***
+	initModels();
 	// *** Initialize Object Lists ***
 	initObjectLists();
 	// *** Initialize outputs ***
@@ -569,17 +570,16 @@ SOLFRA::ModelInterface::CalculationResult NandradModel::calculateErrorWeights(co
 	// tolerances are properties of all error controled integrators
 	SOLFRA::IntegratorErrorControlled *integrator =
 		dynamic_cast<SOLFRA::IntegratorErrorControlled *>(integratorInterface());
-	// wrong definition
+	// protect against invalid integrator
 	IBK_ASSERT(integrator != nullptr);
 	// start with the classic definition
 	const double absTol = integrator->m_absTol;
 	const double relTol = integrator->m_relTol;
 	// fill error weights with classical definition
-	for(unsigned int i = 0; i < m_n; ++i) {
+	for (unsigned int i = 0; i < m_n; ++i) {
 		weights[i] = 1.0/(relTol * std::fabs(y[i]) + absTol);
 	}
 
-#if 0
 	// modify weighting factor for all zones
 	for (unsigned int i=0; i<m_nZones; ++i) {
 		// currently each zone has exactly one state variable
@@ -588,22 +588,6 @@ SOLFRA::ModelInterface::CalculationResult NandradModel::calculateErrorWeights(co
 		weights[idx] *= m_weightsFactorZones;
 	}
 
-	unsigned int k = 0;
-	// set integral value references fo all outputs
-	for (unsigned int i = 0; i<m_outputFiles.size(); ++i) {
-
-		if (m_outputFiles[i]->timeType() == NANDRAD::OutputDefinition::OTT_NONE)
-			continue;
-		// modify weighting factor for all outputs
-		unsigned int idx = m_outputVariableOffset[k];
-
-		for (unsigned int n = 0; n < m_outputFiles[i]->m_nOutputValuesForOneTimeStep; ++n) {
-			// weight single zone balance with mean number of wall discrtization elements
-			weights[idx + n] *= m_weightsFactorOutputs;
-		}
-		++k;
-	}
-#endif
 	return SOLFRA::ModelInterface::CalculationSuccess;
 }
 
@@ -984,11 +968,6 @@ void NandradModel::initFMI() {
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Error initializing FMI interface model."), FUNC_ID);
 	}
-}
-
-
-void NandradModel::initGlobals() {
-
 }
 
 
@@ -1727,6 +1706,35 @@ void NandradModel::initWallsAndInterfaces() {
 
 
 void NandradModel::initEmbeddedObjects() {
+
+}
+
+
+void NandradModel::initModels() {
+	FUNCID(NandradModel::initModels);
+
+	IBK::IBK_Message(IBK::FormatString("Initializing Models\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	IBK_MSG_INDENT;
+
+	if (!m_project->m_models.m_naturalVentilationModels.empty()) {
+		IBK::IBK_Message(IBK::FormatString("Initializing natural ventilation models\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		IBK_MSG_INDENT;
+
+		for (const NANDRAD::NaturalVentilationModel & m : m_project->m_models.m_naturalVentilationModels) {
+			NANDRAD_MODEL::NaturalVentilationModel * mod = new NANDRAD_MODEL::NaturalVentilationModel(m.m_id, m.m_displayName);
+			m_modelContainer.push_back(mod); // transfer ownership
+
+			try {
+				mod->setup(m, m_project->m_simulationParameter);
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, IBK::FormatString("Error initializing natural ventilation model (id=%1).").arg(m.m_id), FUNC_ID);
+			}
+
+			registerStateDependendModel(mod);
+		}
+	}
+
 
 }
 

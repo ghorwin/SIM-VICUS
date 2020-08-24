@@ -29,6 +29,8 @@ public:
 
 	/*! Unique ID-number for this ventilation rate model. */
 	unsigned int						m_id = NANDRAD::INVALID_ID;		// XML:A:required
+	/*! Some display/comment name for this model (optional). */
+	std::string							m_displayName;					// XML:A
 
 	/*! Model type. */
 	model_t								m_model;						// XML:A:required
