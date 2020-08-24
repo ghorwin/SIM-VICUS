@@ -61,6 +61,7 @@ SOURCES += \
 	../../src/NM_KeywordList.cpp \
 	../../src/NM_Loads.cpp \
 	../../src/NM_NandradModel.cpp \
+	../../src/NM_NaturalVentilationModel.cpp \
 	../../src/NM_OutputFile.cpp \
 	../../src/NM_OutputHandler.cpp \
 	../../src/NM_QuantityName.cpp \
@@ -89,6 +90,7 @@ HEADERS += \
 	../../src/NM_KeywordList.h \
 	../../src/NM_Loads.h \
 	../../src/NM_NandradModel.h \
+	../../src/NM_NaturalVentilationModel.h \
 	../../src/NM_OutputFile.h \
 	../../src/NM_OutputHandler.h \
 	../../src/NM_Physics.h \

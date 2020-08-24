@@ -172,7 +172,12 @@ const double * Schedules::resolveResultReference(const InputReference & valueRef
 
 	// similar for other schedules/reference types
 
-	/// \todo implement
+
+	std::string objectListName;
+	if (valueRef.m_referenceType == NANDRAD::ModelInputReference::MRT_OBJECTLIST) {
+		// quantity name is composed of
+		//objectListName
+	}
 
 	return nullptr;
 }
