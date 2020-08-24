@@ -254,7 +254,7 @@ void Parameter::checkIfValueIsUpperBound (	const IBK::Parameter& limit,
 }
 
 
-double Parameter::checkedValue(const std::string & targetUnit, double minVal, bool isGreaterEqual,
+double Parameter::checkedValue(const std::string & targetUnit, const std::string & limitUnit, double minVal, bool isGreaterEqual,
 							   double maxVal, bool isLessEqual, const char * const errmsg) const
 {
 	FUNCID(Parameter::checkedValue);
@@ -264,35 +264,54 @@ double Parameter::checkedValue(const std::string & targetUnit, double minVal, bo
 	if (IO_unit.id() == 0)
 		throw IBK::Exception(IBK::FormatString("Undefined unit in parameter '%1'.%2").arg(name).arg(suffix), FUNC_ID);
 
-	// check 2: unit convertible
-	double val;
+	IBK::Unit targetU, limitU;
 	try {
-		IBK::UnitList::instance().convert(IO_unit, IBK::Unit(targetUnit), val);
+		targetU.set(targetUnit);
 	} catch (...) {
+		throw IBK::Exception(IBK::FormatString("Invalid target unit '%1'.").arg(targetUnit), FUNC_ID);
+	}
+	try {
+		limitU.set(limitUnit);
+	} catch (...) {
+		throw IBK::Exception(IBK::FormatString("Invalid unit for limits '%1'.").arg(limitUnit), FUNC_ID);
+	}
+
+	if (targetU.base_id() != limitU.base_id())
+		throw IBK::Exception(IBK::FormatString("Incompatible target unit '%1' and limit unit '%2'.")
+							 .arg(targetUnit).arg(limitUnit), FUNC_ID);
+
+	// check 2: unit convertible
+	double val = value;
+	double valLimit = value;
+	try {
+		IBK::UnitList::instance().convert(IO_unit.base_unit(), IBK::Unit(limitUnit), valLimit);
+		IBK::UnitList::instance().convert(IO_unit.base_unit(), IBK::Unit(targetUnit), val);
+	}
+	catch (...) {
 		throw IBK::Exception( IBK::FormatString("Mismatching units in parameter '%1', cannot convert from unit '%2' to '%3'.%4")
 							  .arg(name).arg(IO_unit.name()).arg(targetUnit).arg(suffix), FUNC_ID);
 	}
 
-	// now check lower and upper bound
+	// now check lower and upper bound, we use the value converted to limit unit
 	if (isGreaterEqual) {
-		if (! (val >= minVal ))
+		if (! (valLimit >= minVal ))
 			throw IBK::Exception(FormatString("Parameter '%1' out of range (must be >= %2 %3).%4")
-								 .arg(name).arg(minVal).arg(targetUnit).arg(suffix), FUNC_ID);
+								 .arg(name).arg(minVal).arg(limitUnit).arg(suffix), FUNC_ID);
 	}
 	else {
-		if (! (val > minVal ))
+		if (! (valLimit > minVal ))
 			throw IBK::Exception(FormatString("Parameter '%1' out of range (must be > %2 %3).%4")
-								 .arg(name).arg(minVal).arg(targetUnit).arg(suffix), FUNC_ID);
+								 .arg(name).arg(minVal).arg(limitUnit).arg(suffix), FUNC_ID);
 	}
 	if (isLessEqual) {
-		if (! (val <= maxVal ))
+		if (! (valLimit <= maxVal ))
 			throw IBK::Exception(FormatString("Parameter '%1' out of range (must be <= %2 %3).%4")
-								 .arg(name).arg(maxVal).arg(targetUnit).arg(suffix), FUNC_ID);
+								 .arg(name).arg(maxVal).arg(limitUnit).arg(suffix), FUNC_ID);
 	}
 	else {
-		if (! (val < maxVal ))
+		if (! (valLimit < maxVal ))
 			throw IBK::Exception(FormatString("Parameter '%1' out of range (must be < %2 %3).%4")
-								 .arg(name).arg(maxVal).arg(targetUnit).arg(suffix), FUNC_ID);
+								 .arg(name).arg(maxVal).arg(limitUnit).arg(suffix), FUNC_ID);
 	}
 	return val;
 }
@@ -306,33 +325,32 @@ void Parameter::test( const IBK::Parameter& val, oper_t op ) const {
 		case OP_GE :
 			if ( !( value >= val.value ) ) {
 				throw IBK::Exception(FormatString("Parameter '%1' out of range (must be >= %2 %3).")
-									 .arg(name) .arg( val.get_value() ) .arg( val.IO_unit ), FUNC_ID);
+									 .arg(name).arg( val.get_value() ).arg( val.IO_unit ), FUNC_ID);
 			}
 			break;
 
 		case OP_GT :
 			if (!(value > val.value)) {
 				throw IBK::Exception(FormatString("Parameter '%1' out of range (must be > %2 %3).")
-									 .arg(name) .arg( val.get_value() ) .arg( val.IO_unit ), FUNC_ID);
+									 .arg(name).arg( val.get_value() ).arg( val.IO_unit ), FUNC_ID);
 			}
 			break;
 
 		case OP_LE :
 			if (!(value <= val.value)) {
 				throw IBK::Exception( FormatString("Parameter '%1' out of range (must be <= %2 %3).")
-									  .arg(name) .arg( val.get_value() ) .arg( val.IO_unit ), FUNC_ID);
+									  .arg(name).arg( val.get_value() ).arg( val.IO_unit ), FUNC_ID);
 			}
 			break;
 
 		case OP_LT :
 			if (!(value < val.value)) {
 				throw IBK::Exception(FormatString("Parameter '%1' out of range (must be < %2 %3).")
-									 .arg(name) .arg( val.get_value() ) .arg( val.IO_unit ), FUNC_ID);
+									 .arg(name).arg( val.get_value() ).arg( val.IO_unit ), FUNC_ID);
 			}
 			break;
 	}
 }
-
 
 
 }  // namespace IBK

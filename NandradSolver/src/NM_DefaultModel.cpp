@@ -111,9 +111,8 @@ void DefaultModel::resultDescriptions(std::vector<QuantityDescription> & resDesc
 		if (KeywordList::CategoryExists(category.c_str()) ) {
 			for (int varIndex = 0; varIndex <= KeywordList::MaxIndex(category.c_str()); ++varIndex) {
 				bool constant = false;
-				// retreive index information from vector valued results
+				// retrieve index information from vector valued results
 				std::vector<unsigned int> indexKeys;
-				std::vector<std::string> indexKeyDescriptions;
 				// store name, unit and description of the vector quantity
 				const std::string &quantityName = KeywordList::Keyword( category.c_str(), varIndex );
 				const std::string &quantityUnit = KeywordList::Unit( category.c_str(), varIndex );

@@ -1725,7 +1725,7 @@ void NandradModel::initModels() {
 			m_modelContainer.push_back(mod); // transfer ownership
 
 			try {
-				mod->setup(m, m_project->m_simulationParameter);
+				mod->setup(m, m_project->m_simulationParameter, m_project->m_objectLists);
 			}
 			catch (IBK::Exception & ex) {
 				throw IBK::Exception(ex, IBK::FormatString("Error initializing natural ventilation model (id=%1).").arg(m.m_id), FUNC_ID);
@@ -1749,6 +1749,8 @@ void NandradModel::initObjectLists() {
 	// Afterwards, it is possible to just use NANDRAD::ObjectList::m_ids when checking for IDs, however,
 	// testing with contains() may be faster (especially, when all IDs is set).
 
+	// NOTE: We must not modify the object list vector here (add/remove entries), because other objects/models
+	//		 have already stored persistent pointers to individual object list entries.
 	for (unsigned int i=0; i<m_project->m_objectLists.size(); ++i) {
 		NANDRAD::ObjectList & objectlist = m_project->m_objectLists[i];
 
@@ -1772,7 +1774,7 @@ void NandradModel::initObjectLists() {
 		// insert all models that match current definition
 		for (unsigned int i = 0; i < m_modelContainer.size(); ++i) {
 			const AbstractModel *model = m_modelContainer[i];
-			//skip models with wrong reference type
+			// skip models with wrong reference type
 			if (model->referenceType() != objectlist.m_referenceType)
 				continue;
 			// fill model ids that are inside the defined id space
@@ -1782,7 +1784,8 @@ void NandradModel::initObjectLists() {
 				continue;
 			}
 		}
-		// fill the id filter
+		// fill the id filter, but only add resolved IDs (clear existing ones first)!
+		objectlist.m_filterID.m_ids.clear();
 		objectlist.m_filterID.m_ids.insert(resolvedIds.begin(), resolvedIds.end());
 
 		// set 0-id for schedules and location
@@ -1790,6 +1793,13 @@ void NandradModel::initObjectLists() {
 			objectlist.m_referenceType == NANDRAD::ModelInputReference::MRT_SCHEDULE)
 		{
 			objectlist.m_filterID.m_ids.insert(0);
+		}
+		else {
+			// issue a warning if the object list resolved no valid IDs
+			if (objectlist.m_filterID.m_ids.empty()) {
+				IBK::IBK_Message(IBK::FormatString("Object list '%1' did not select any valid/existing objects.")
+								 .arg(objectlist.m_name), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
 		}
 	}
 

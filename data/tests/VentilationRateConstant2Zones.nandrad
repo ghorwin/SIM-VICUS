@@ -35,7 +35,7 @@
 		</Location>
 		<Models>
 			<NaturalVentilationModel id="1" displayName="Wet zone vent" model="Constant">
-				<ZoneObjectList>Wet rooms</ZoneObjectList>
+				<ZoneObjectList>Wet areas</ZoneObjectList>
 				<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
 			</NaturalVentilationModel>
 		</Models>

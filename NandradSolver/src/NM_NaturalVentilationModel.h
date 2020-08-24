@@ -37,8 +37,11 @@ public:
 	/*! Initializes object.
 		\param ventilationModel Ventilation model data.
 		\param simPara Required simulation parameter.
+		\param objLists The object list stored in the project file (persistent, remains unmodified so that persistent
+			pointers to object list elements can be stored).
 	*/
-	void setup(const NANDRAD::NaturalVentilationModel & ventilationModel, const NANDRAD::SimulationParameter &simPara);
+	void setup(const NANDRAD::NaturalVentilationModel & ventilationModel, const NANDRAD::SimulationParameter &simPara,
+			   const std::vector<NANDRAD::ObjectList> & objLists);
 
 
 	// *** Re-implemented from AbstractModel
@@ -99,6 +102,12 @@ private:
 	std::string										m_displayName;
 	/*! True if moisture balance is enabled. */
 	bool											m_moistureBalanceEnabled;
+
+	/*! Constant ventilation rate in 1/s (only for constant model). */
+	double											m_ventilationRate;
+
+	/*! Quick access pointer to object list (for scheduled model). */
+	const NANDRAD::ObjectList						*m_objectList = nullptr;
 
 	/*! Vector valued results, computed/updated during the calculation. */
 	std::vector<VectorValuedQuantity>	m_vectorValuedResults;

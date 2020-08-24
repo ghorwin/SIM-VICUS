@@ -248,6 +248,11 @@ private:
 		model types.
 		This modifies object lists in-place, yet does not change the vector. Previously
 		obtained pointers to object lists are not invalidated.
+		\warning Object list ID groups are updated such, that the m_ids set of IDs will contain afterwards all
+			selected IDs of the given type (i.e. range and wildcards resolved) with matching and existing objects,
+			and *only* IDs of existing objects. For example, if the object list requests objects with IDs 10,11 and 12
+			but there are only objects of the requested type with IDs 1,2 and 4, then the object list's id set
+			will be *empty*!!!
 	*/
 	void initObjectLists();
 	/*! Connects implicit and explicit models according to input references, calls
