@@ -99,7 +99,7 @@ public:
 	/*! Unique id number. */
 	unsigned int				m_id = INVALID_ID;				// XML:A:required
 	/*! IBK-language encoded name of construction instance. */
-	std::string					m_displayName;					// XML:A:
+	std::string					m_displayName;					// XML:A
 	/*! The id number of the corresponding construction type. */
 	unsigned int				m_constructionTypeId;			// XML:E:required
 
