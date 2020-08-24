@@ -11,17 +11,42 @@ For example, a schedule defines heating set points (HeatingSetPoint) for living 
 
 ## Defining schedules
 
-### Rules
+### Simulation time to day type/local time mapping
+
+Simulation time runs from t=0 over the duration of the simulation. For the lookup of schedules, this time needs to be mapped to the local (building) time.
+
+For cyclic schedule data (i.e. flag "Cyclic" is set --> TODO : check this with the climate loads object, when cyclic is set, climatic loads *must not* be defined for continues data):
+
+- start year is always 2003
+- start time is given as parameter (as offset to Midnight January 1st 2003, or `"01.01.2003 00:00"`); for example, start time of `10.5 d` means simulation time 0 maps to `"10.01.2003 12:00"`
+- simulation time is wrapped at 365 d and yields directly the local time
+- leap days are never used, even if start year is set to 2000 and similar leap years
+- parameter "DayOfTheWeekAtStart" indicates which day of the week corresponds to the first day of simulation (i.e. the day of start time, for example, one could specify "Wed" as day type and in the example above the 10.01. would become a wednesday)
+
+For continuous schedule data (i.e. flag "Cyclic" is off; meaningful when re-calculating monitored building data with real calander reference), the following procedure is used:
+
+- start year is given as parameter
+- start time is given as parameter
+- flag indicates whether leap days are to be considered or not
+
+If leap days are considered, a calender model is used to compute the actual local date and time based on given start year and start time, and also computes day of the week.
+
+Without leap days, the following calculation is used:
+- simulation time is converted to date using regular 365 d years
+- parameter "DayOfTheWeekAtStart" indicates which day of the week corresponds to the first day of simulation
+
+
+### Data definition rules
 
 #### A certain variable must be only defined once per object list
 
-For example, if you have a regular daily-cycle-based schedule for "HeatingSetPoint" and zone object list "office spaces", there must not be an annual schedule for "HeatingSetPoint" and the same object list name "office spaces"
+For example, if you have a regular daily-cycle-based schedule for "HeatingSetPoint" and zone object list "office spaces", there must not be an annual schedule for "HeatingSetPoint" and the same object list name "office spaces". 
 
 #### A variable must be defined unambiguously with respect to addressed object
 
-For example, you may have a "HeatingSetPoint" for zone object list "office spaces" and this object list addresses zones with IDs 1 and 4. Now there is a second object list "all spaces", with wildcard ID=* (hereby addressing all zones). You *most not* define the variable "HeatingSetPoint" again for this object list, since otherwise you would get ambiguous defintions of this variable for zones 1 and 4.
+For example, you may have a "HeatingSetPoint" for zone object list "office spaces" and this object list addresses zones with IDs 1 and 4. Now there is a second object list "all spaces", with wildcard `ID=*` (hereby addressing all zones). You *must not* define the variable "HeatingSetPoint" again for this object list, since otherwise you would get ambiguous defintions of this variable for zones 1 and 4.
 
-#### Annual schedules must begin at simulation start (past the end, values are constant extrapolated)
+#### Cyclic annual schedules must begin at simulation start (past the end, values are constant extrapolated)
 
 For annual cyclic schedules, the schedule must start with time 0. For non-cyclic schedules, the schedule must start at latest at actual simulation start, so that start year <= simulation start year and if same year, start time < simulation start time. Basically, the solver must be able to query a value at simulation start.
 
@@ -66,10 +91,20 @@ and the schedule object may then lookup the variable as follows:
 - if match was found, return offset/pointer to the respective result variable
 - in all other cases, return nullptr
 
-### Variable lookup for outputs
+### Variable lookup for outputs/lookup by schedule name
+
+It may be possible to directly reference a scheduled parameter without going through the zone first. In this case, there is the problem, that an input reference cannot hold both quantity name *and* object list name.
+
+With the current data structure it is not possible, to identify a quantity and objectlist by separate data members. Hence, we need to combine the information into the quantity name.
+
+Such a reference could look like:
+
+- reference type = `SCHEDULE` (or `OBJECT_LIST`???)
+- id = 0 (unused)
+- variable_name = <object list name>.<required scheduled parameter name>
+
+For example. "All zones.HeatingSetPoint" would address the variable "HeatingSetPoint" defined for object list "All zones". Naturally, this implies that . characters are forbidden as object list or variable names.
 
 
-
-When model input variables are resolved, schedules are the 
 
 
