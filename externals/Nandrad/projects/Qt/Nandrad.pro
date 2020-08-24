@@ -116,7 +116,6 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_Location.cpp \
 	../../src/ncg/ncg_NANDRAD_Material.cpp \
 	../../src/ncg/ncg_NANDRAD_MaterialLayer.cpp \
-	../../src/ncg/ncg_NANDRAD_Models.cpp \
 	../../src/ncg/ncg_NANDRAD_NaturalVentilationModel.cpp \
 	../../src/ncg/ncg_NANDRAD_ObjectList.cpp \
 	../../src/ncg/ncg_NANDRAD_OutputDefinition.cpp \

@@ -65,9 +65,6 @@ public:
 	*/
 	void initDefaults();
 
-	/*! Sets all connections and reference names. */
-	void resolveReferenceNames();
-
 	/*! All constructions with same boundary conditions and construction type are merged into one
 		since the results will be the same for all constructions.
 		For each merged construction, a new construction is added to the end of the construction list.

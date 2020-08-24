@@ -169,48 +169,6 @@ void Project::writeDirectoryPlaceholdersXML(TiXmlElement * parent) const {
 // ----------------------------------------------------------------------------
 
 
-void Project::resolveReferenceNames() {
-#if 0
-	// loop over all constructionInstances
-	std::map<unsigned int, ConstructionInstance>::iterator
-		constructionIt = m_constructionInstances.begin();
-	for ( ; constructionIt != m_constructionInstances.end(); ++constructionIt) {
-		ConstructionInstance &conInstance = constructionIt->second;
-		// loop over all interfaces
-		std::vector<std::string> zoneNames;
-		std::vector<Interface>::iterator interfaceIt = conInstance.m_interfaces.begin();
-		for ( ; interfaceIt != conInstance.m_interfaces.end(); ++interfaceIt) {
-			Interface &iface = *interfaceIt;
-
-			// outside zone
-			if (iface.m_zoneId == 0) {
-				iface.m_zoneDisplayName = std::string("Outside zone");
-				zoneNames.push_back(iface.m_zoneDisplayName);
-				continue;
-			}
-
-			iface.m_zoneDisplayName = m_zones[iface.m_zoneId].m_displayName;
-			zoneNames.push_back(iface.m_zoneDisplayName);
-
-		}
-
-		// add all names to walls and embedded objects
-		for (unsigned int n = 0; n < zoneNames.size(); ++n) {
-			conInstance.m_zoneNames.push_back(zoneNames[n]);
-
-			std::vector<EmbeddedObject>::iterator embeddedObjectIt = conInstance.m_embeddedObjects.begin();
-
-			for ( ; embeddedObjectIt != conInstance.m_embeddedObjects.end(); ++embeddedObjectIt) {
-				EmbeddedObject &object = *embeddedObjectIt;
-				object.m_zoneNames.push_back(zoneNames[n]);
-			}
-		}
-
-	} // for ( ; constructionIt != m_constructionInstances.end(); ++constructionIt) {
-#endif
-}
-// ----------------------------------------------------------------------------
-
 void Project::mergeSameConstructions() {
 	const char * const FUNC_ID = "[Project::mergeSameConstructions]";
 

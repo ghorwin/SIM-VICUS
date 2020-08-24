@@ -12,7 +12,8 @@ class Models {
 public:
 	NANDRAD_READWRITE
 
-	std::vector<NaturalVentilationModel>	m_naturalVentilationModels;		// XML:E
+	/*! Container for all natural ventilation models. */
+	std::vector<NaturalVentilationModel>	m_naturalVentilationModels;
 };
 
 } // namespace NANDRAD
