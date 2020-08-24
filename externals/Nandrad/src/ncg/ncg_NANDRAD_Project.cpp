@@ -110,6 +110,8 @@ void Project::readXMLPrivate(const TiXmlElement * element) {
 				m_solverParameter.readXML(c);
 			else if (cName == "Schedules")
 				m_schedules.readXML(c);
+			else if (cName == "Models")
+				m_models.readXML(c);
 			else if (cName == "Outputs")
 				m_outputs.readXML(c);
 			else {
@@ -188,6 +190,8 @@ TiXmlElement * Project::writeXMLPrivate(TiXmlElement * parent) const {
 
 
 	m_schedules.writeXML(e);
+
+	m_models.writeXML(e);
 
 	m_outputs.writeXML(e);
 

@@ -37,6 +37,7 @@
 #include "NANDRAD_ConstructionType.h"
 #include "NANDRAD_Material.h"
 #include "NANDRAD_ObjectList.h"
+#include "NANDRAD_Models.h"
 
 namespace NANDRAD {
 
@@ -123,11 +124,15 @@ public:
 	/*! References to all schedules.*/
 	Schedules										m_schedules;						// XML:E
 
+	/*! Container for various model parametrization blocks. */
+	Models											m_models;							// XML:E
+
 	/*! References to Output specifications.*/
 	Outputs											m_outputs;							// XML:E
 
 	/*! References to object lists.*/
 	std::vector<ObjectList>							m_objectLists;						// XML:E
+
 
 private:
 

@@ -25,6 +25,8 @@ public:
 		NUM_P
 	};
 
+	NANDRAD_READWRITE
+
 	/*! Unique ID-number for this ventilation rate model. */
 	unsigned int						m_id = NANDRAD::INVALID_ID;		// XML:A:required
 
