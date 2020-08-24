@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.99">
+	<Project>
+		<ProjectInfo>
+			<Comment>Constant ventilation rate model test</Comment>
+			<Created>2020-08-24</Created>
+			<LastEdited>2020-08-24</LastEdited>
+		</ProjectInfo>
+		<Zones>
+			<Zone id="1" displayName="Office" type="Active">
+				<IBK:Parameter name="Area" unit="m2">30</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">90</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<Zones>
+			<Zone id="2" displayName="Kitchen" type="Active">
+				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">45</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<Zones>
+			<Zone id="3" displayName="Bathroom" type="Active">
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<SimulationParameter>
+			<Interval>
+				<IBK:Parameter name="End" unit="d">5</IBK:Parameter>
+			</Interval>
+		</SimulationParameter>
+		<Location>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<ClimateFileName>${Project Directory}/climate/DEU_Potsdam_60.c6b</ClimateFileName>
+		</Location>
+		<Models>
+			<NaturalVentilationModel id="1" displayName="Wet zone vent" model="Constant">
+				<ZoneObjectList>Wet rooms</ZoneObjectList>
+				<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
+			</NaturalVentilationModel>
+		</Models>
+		<Outputs>
+			<TimeUnit>h</TimeUnit>
+			<OutputDefinitions>
+				<!-- hourly values - None -->
+				<OutputDefinition>
+					<Quantity>VentilationRate</Quantity>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>AirTemperature</Quantity>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>VentilationHeatFlux</Quantity>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+			</OutputDefinitions>
+			<Grids>
+				<OutputGrid name="hourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="All zones">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Wet areas">
+				<FilterID>2,3</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+	</Project>
+</NandradProject>
