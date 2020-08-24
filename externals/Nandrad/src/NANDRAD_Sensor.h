@@ -22,8 +22,6 @@
 #ifndef NANDRAD_SensorH
 #define NANDRAD_SensorH
 
-#include <string>
-
 #include <IBK_Parameter.h>
 
 #include "NANDRAD_Constants.h"

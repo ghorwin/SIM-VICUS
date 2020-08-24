@@ -48,6 +48,7 @@ HEADERS += \
 	../../src/NANDRAD_Material.h \
 	../../src/NANDRAD_MaterialLayer.h \
 	../../src/NANDRAD_ModelInputReference.h \
+	../../src/NANDRAD_NaturalVentilationModel.h \
 	../../src/NANDRAD_ObjectList.h \
 	../../src/NANDRAD_OutputDefinition.h \
 	../../src/NANDRAD_OutputGrid.h \
