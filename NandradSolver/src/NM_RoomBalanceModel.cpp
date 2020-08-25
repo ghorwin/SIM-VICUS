@@ -233,6 +233,10 @@ int RoomBalanceModel::update() {
 
 	double SumQdot = sumQHeatCondToWalls;
 
+	// add ventilation rate flux
+	if (m_infiltrationValueRef != nullptr)
+		SumQdot += *m_infiltrationValueRef;
+
 	// store the sum of all loads
 	m_results[R_CompleteThermalLoad] = SumQdot;
 	// solve the balance: ydot = sum loads in [W] (no need to devide by volume since conserved quantity is energy of room air in Joule)

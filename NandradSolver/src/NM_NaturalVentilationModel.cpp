@@ -217,7 +217,7 @@ int NaturalVentilationModel::update() {
 		// store ventilation rate result
 		resultVentRate[i] = rate;
 		// compute ventilation heat flux in [W]
-		resultVentHeatFlux[i] = IBK::RHO_AIR*IBK::C_AIR*m_zoneVolumes[i]*(Tambient - Tzone);
+		resultVentHeatFlux[i] = IBK::RHO_AIR*IBK::C_AIR*m_zoneVolumes[i]*(Tambient - Tzone)*rate;
 	}
 
 	return 0; // signal success

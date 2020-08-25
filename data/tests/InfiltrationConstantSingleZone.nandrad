@@ -10,7 +10,8 @@
 			<Zone id="1" displayName="Office" type="Active">
 				<IBK:Parameter name="Area" unit="m2">30</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">90</IBK:Parameter>
-				<IBK:Parameter name="HeatCapacity" unit="kJ/K">100</IBK:Parameter>
+				<!-- 150 kg * 1000 J/kgK = 150 kJ/K -->
+				<IBK:Parameter name="HeatCapacity" unit="kJ/K">150</IBK:Parameter>
 			</Zone>
 		</Zones>
 		<SimulationParameter>
@@ -19,6 +20,9 @@
 				<IBK:Parameter name="End" unit="d">50</IBK:Parameter>
 			</Interval>
 		</SimulationParameter>
+		<SolverParameters>
+			<IBK:Parameter name="InitialTimeStep" unit="s">1</IBK:Parameter>
+		</SolverParameters>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<ClimateFileName>${Project Directory}/climate/Konstantopol_20C.c6b</ClimateFileName>
@@ -34,8 +38,8 @@
 			<OutputDefinitions>
 				<!-- hourly values - None -->
 				<OutputDefinition>
-					<Quantity>VentilationRate</Quantity>
-					<ObjectListName>All zones</ObjectListName>
+					<Quantity>InfiltrationRate[1]</Quantity>
+					<ObjectListName>Ventilation models</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 
@@ -46,7 +50,7 @@
 				</OutputDefinition>
 
 				<OutputDefinition>
-					<Quantity>InfiltrationHeatFlux</Quantity>
+					<Quantity>InfiltrationHeatLoad</Quantity>
 					<ObjectListName>All zones</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
@@ -65,6 +69,10 @@
 			<ObjectList name="All zones">
 				<FilterID>*</FilterID>
 				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Ventilation models">
+				<FilterID>501</FilterID>
+				<ReferenceType>Model</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
 	</Project>

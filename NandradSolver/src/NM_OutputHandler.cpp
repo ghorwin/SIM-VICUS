@@ -38,11 +38,15 @@
 #include "NM_KeywordList.h"
 
 const char * const STATE_QUANTITIES[] = {
-	"AirTemperature"
+	"AirTemperature",
+	"InfiltrationRate"
 };
 
 const char * const FLUX_QUANTITIES[] = {
-	"ConvectiveHeatFluxDensity"
+	"ConvectiveHeatFluxDensity",
+	"InfiltrationHeatLoad",
+	"CompleteThermalLoad",
+	"InfiltrationHeatFlux"
 };
 
 namespace NANDRAD_MODEL {

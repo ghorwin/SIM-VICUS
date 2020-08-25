@@ -135,8 +135,9 @@ namespace NANDRAD_MODEL {
 			case 8 :
 			switch (t) {
 				case 0 : return "CompleteThermalLoad";
-				case 1 : return "ConstructionHeatConductionLoad";
-				case 2 : return "CompleteMoistureLoad";
+				case 1 : return "InfiltrationHeatLoad";
+				case 2 : return "ConstructionHeatConductionLoad";
+				case 3 : return "CompleteMoistureLoad";
 			} break;
 			// RoomStatesModel::Results
 			case 9 :
@@ -269,8 +270,9 @@ namespace NANDRAD_MODEL {
 			case 8 :
 			switch (t) {
 				case 0 : return "CompleteThermalLoad";
-				case 1 : return "ConstructionHeatConductionLoad";
-				case 2 : return "CompleteMoistureLoad";
+				case 1 : return "InfiltrationHeatLoad";
+				case 2 : return "ConstructionHeatConductionLoad";
+				case 3 : return "CompleteMoistureLoad";
 			} break;
 			// RoomStatesModel::Results
 			case 9 :
@@ -404,8 +406,9 @@ namespace NANDRAD_MODEL {
 			case 8 :
 			switch (t) {
 				case 0 : return "Sum of all thermal fluxes into the room and energy sources.";
-				case 1 : return "Sum of heat conduction fluxes from construction surfaces into the room.";
-				case 2 : return "Sum of all moisture fluxes into the room and moisture sources.";
+				case 1 : return "Infiltration/natural ventilation heat flux into the room.";
+				case 2 : return "Sum of heat conduction fluxes from construction surfaces into the room.";
+				case 3 : return "Sum of all moisture fluxes into the room and moisture sources.";
 			} break;
 			// RoomStatesModel::Results
 			case 9 :
@@ -539,7 +542,8 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "W";
 				case 1 : return "W";
-				case 2 : return "kg/s";
+				case 2 : return "W";
+				case 3 : return "kg/s";
 			} break;
 			// RoomStatesModel::Results
 			case 9 :
@@ -674,6 +678,7 @@ namespace NANDRAD_MODEL {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
 			} break;
 			// RoomStatesModel::Results
 			case 9 :
@@ -808,6 +813,7 @@ namespace NANDRAD_MODEL {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// RoomStatesModel::Results
 			case 9 :
@@ -886,7 +892,7 @@ namespace NANDRAD_MODEL {
 			// OutputHandler::OutputFileNames
 			case 7 : return 6;
 			// RoomBalanceModel::Results
-			case 8 : return 3;
+			case 8 : return 4;
 			// RoomStatesModel::Results
 			case 9 : return 3;
 			// Schedules::Results
@@ -920,7 +926,7 @@ namespace NANDRAD_MODEL {
 			// OutputHandler::OutputFileNames
 			case 7 : return 5;
 			// RoomBalanceModel::Results
-			case 8 : return 2;
+			case 8 : return 3;
 			// RoomStatesModel::Results
 			case 9 : return 2;
 			// Schedules::Results

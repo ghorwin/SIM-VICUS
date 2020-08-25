@@ -52,6 +52,7 @@ public:
 	/*! Results computed by the model. */
 	enum Results {
 		R_CompleteThermalLoad,								// Keyword: CompleteThermalLoad							[W]		'Sum of all thermal fluxes into the room and energy sources.'
+		R_InfiltrationHeatLoad,								// Keyword: InfiltrationHeatLoad						[W]		'Infiltration/natural ventilation heat flux into the room.'
 		R_ConstructionHeatConductionLoad,					// Keyword: ConstructionHeatConductionLoad				[W]		'Sum of heat conduction fluxes from construction surfaces into the room.'
 		R_CompleteMoistureLoad,								// Keyword: CompleteMoistureLoad						[kg/s]	'Sum of all moisture fluxes into the room and moisture sources.'
 		NUM_R
