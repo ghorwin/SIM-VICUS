@@ -20,10 +20,6 @@
 				<IBK:Parameter name="End" unit="d">4</IBK:Parameter>
 			</Interval>
 		</SimulationParameter>
-		<SolverParameter>
-			<IBK:Parameter name="InitialTimeStep" unit="s">0.1</IBK:Parameter>
-			<IBK:Parameter name="RelTol" unit="---">1e-5</IBK:Parameter>
-		</SolverParameter>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<ClimateFileName>${Project Directory}/climate/Konstantopol_20C.c6b</ClimateFileName>
