@@ -38,10 +38,10 @@ class Interval {
 public:
 	/*! Parameters. */
 	enum para_t {
-		IP_START,		// Keyword: Start		[d] 'Start time point.'
-		IP_END,			// Keyword: End			[d] 'End time point.'
-		IP_STEPSIZE,	// Keyword: StepSize	[h] 'StepSize.'
-		NUM_IP
+		P_Start,		// Keyword: Start		[d] 'Start time point.'
+		P_End,			// Keyword: End			[d] 'End time point.'
+		P_StepSize,	// Keyword: StepSize	[h] 'StepSize.'
+		NUM_P
 	};
 
 	NANDRAD_READWRITE_IFNOTEMPTY(Interval)
@@ -75,7 +75,7 @@ public:
 	double endTime() const;
 
 	/*! The parameters defining the interval. */
-	IBK::Parameter						m_para[NUM_IP];		// XML:E
+	IBK::Parameter						m_para[NUM_P];		// XML:E
 };
 
 } // namespace NANDRAD

@@ -55,9 +55,9 @@ public:
 
 	/*! Model types supported by the window model. */
 	enum modelType_t {
-		MT_CONSTANT,				// Keyword: Constant				'Constant model.'
-		MT_DETAILED,				// Keyword: Detailed				'Model with detailed layers for calculation of long wave radiation, short wave radiation and gas convection transport.'
-		MT_DETAILED_WITH_STORAGE,	// Keyword: DetailedWithStorage		'Model with detailed layers and thermal storage of glass layers.'
+		MT_Constant,				// Keyword: Constant				'Constant model.'
+		MT_Detailed,				// Keyword: Detailed				'Model with detailed layers for calculation of long wave radiation, short wave radiation and gas convection transport.'
+		MT_DetailedWithStorage,		// Keyword: DetailedWithStorage		'Model with detailed layers and thermal storage of glass layers.'
 		NUM_MT
 	};
 

@@ -36,18 +36,18 @@
 namespace NANDRAD {
 
 bool Interval::operator!=(const Interval & other) const {
-	for (int i=0; i<NUM_IP; ++i)
+	for (int i=0; i<NUM_P; ++i)
 		if (m_para[i] != other.m_para[i]) return true;
 	return false; // this and other hold the same data
 }
 
 
 void Interval::setStartEnd( double start, double endtime, IBK::Unit u ) {
-	m_para[IP_START].set( KeywordList::Keyword("Interval::para_t", IP_START), start, u.name());
+	m_para[P_Start].set( KeywordList::Keyword("Interval::para_t", P_Start), start, u.name());
 	if (endtime == std::numeric_limits<double>::max())
-		m_para[IP_END].clear();
+		m_para[P_End].clear();
 	else
-		m_para[IP_END].set( KeywordList::Keyword("Interval::para_t", IP_END), endtime, u.name());
+		m_para[P_End].set( KeywordList::Keyword("Interval::para_t", P_End), endtime, u.name());
 }
 
 
@@ -55,21 +55,21 @@ void Interval::checkParameters() const {
 	FUNCID(Interval::checkParameters);
 
 	// check start point
-	if (!m_para[Interval::IP_START].name.empty()) {
+	if (!m_para[Interval::P_Start].name.empty()) {
 		// start point is greater than zero
-		if (m_para[Interval::IP_START].value < 0)
+		if (m_para[Interval::P_Start].value < 0)
 			throw IBK::Exception( IBK::FormatString("Interval has an invalid Start parameter."), FUNC_ID);
 	}
 
 	// check end point
-	if (!m_para[Interval::IP_END].name.empty()) {
-		double endtime = m_para[Interval::IP_END].value;
+	if (!m_para[Interval::P_End].name.empty()) {
+		double endtime = m_para[Interval::P_End].value;
 		if (endtime < 0)
 			throw IBK::Exception( IBK::FormatString("Invalid End time point in Interval."), FUNC_ID);
 
 		// check if end time point preceedes start time point
-		if (!m_para[Interval::IP_START].name.empty()
-			&& endtime <= m_para[Interval::IP_START].value)
+		if (!m_para[Interval::P_Start].name.empty()
+			&& endtime <= m_para[Interval::P_Start].value)
 		{
 			throw IBK::Exception( IBK::FormatString( "End time point preceedes Start time point "
 													 "in Interval, but End time point must be past the Start time."), FUNC_ID);
@@ -78,7 +78,7 @@ void Interval::checkParameters() const {
 
 	// check units for all provided parameters
 	unsigned int time_base_id = IBK::Unit("s").base_id();
-	for (unsigned int i=0; i<NUM_IP; ++i) {
+	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {
 			if (m_para[i].IO_unit.base_id() != time_base_id)
 				throw IBK::Exception( IBK::FormatString( "Parameter '%1' has an invalid unit, should be a time unit.").arg(m_para[i].name), FUNC_ID);
@@ -88,13 +88,13 @@ void Interval::checkParameters() const {
 
 
 bool Interval::isInInterval(double t) const {
-	return (IBK::f_fuzzyGTEQ(t, m_para[IP_START].value) && IBK::f_fuzzyLTEQ(t, endTime()) );
+	return (IBK::f_fuzzyGTEQ(t, m_para[P_Start].value) && IBK::f_fuzzyLTEQ(t, endTime()) );
 }
 
 
 double Interval::endTime() const {
-	if (!m_para[Interval::IP_END].name.empty())
-		return m_para[Interval::IP_END].value;
+	if (!m_para[Interval::P_End].name.empty())
+		return m_para[Interval::P_End].value;
 	// interval lasts until the end of simulation
 	return std::numeric_limits<double>::max();
 }

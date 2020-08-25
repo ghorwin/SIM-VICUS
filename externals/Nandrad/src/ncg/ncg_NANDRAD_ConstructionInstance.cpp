@@ -113,7 +113,7 @@ TiXmlElement * ConstructionInstance::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("displayName", m_displayName);
 	TiXmlElement::appendSingleAttributeElement(e, "ConstructionTypeId", nullptr, std::string(), IBK::val2string<unsigned int>(m_constructionTypeId));
 
-	for (unsigned int i=0; i<NUM_CP; ++i) {
+	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty())
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
 	}

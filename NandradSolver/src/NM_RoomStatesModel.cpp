@@ -45,27 +45,27 @@ void RoomStatesModel::setup(const NANDRAD::Zone & zone, const NANDRAD::Simulatio
 
 	// m_volume = checkParameter(zone.m_para[NANDRAD::Zone::ZP_VOLUME], "m3", 0, false, std::numeric_limits<double>::max(), false);
 
-	if (zone.m_para[NANDRAD::Zone::ZP_VOLUME].name.empty())
+	if (zone.m_para[NANDRAD::Zone::P_Volume].name.empty())
 		throw IBK::Exception(IBK::FormatString("Missing parameter 'Volume' in zone #%1 '%2'")
 							 .arg(zone.m_id).arg(zone.m_displayName), FUNC_ID);
 
 	// check for valid parameters
-	m_volume = zone.m_para[NANDRAD::Zone::ZP_VOLUME].get_value("m3");
+	m_volume = zone.m_para[NANDRAD::Zone::P_Volume].get_value("m3");
 	if (m_volume <= 0)
 		throw IBK::Exception(IBK::FormatString("'Volume' in zone #%1 '%2' must be > 0!")
 							 .arg(zone.m_id).arg(zone.m_displayName), FUNC_ID);
 
-	if (!zone.m_para[NANDRAD::Zone::ZP_HEATCAPACITY].name.empty() &&
-		zone.m_para[NANDRAD::Zone::ZP_HEATCAPACITY].value <= 0)
+	if (!zone.m_para[NANDRAD::Zone::P_HeatCapacity].name.empty() &&
+		zone.m_para[NANDRAD::Zone::P_HeatCapacity].value <= 0)
 	{
 		throw IBK::Exception(IBK::FormatString("'HeatCapacity' in zone #%1 '%2' must be > 0!")
 							 .arg(zone.m_id).arg(zone.m_displayName), FUNC_ID);
 	}
-	m_additionalHeatCapacity = zone.m_para[NANDRAD::Zone::ZP_HEATCAPACITY].value;
+	m_additionalHeatCapacity = zone.m_para[NANDRAD::Zone::P_HeatCapacity].value;
 
 	// resize memory cache for results
 	// results depend on calculation mode
-	m_moistureBalanceEnabled = simPara.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled();
+	m_moistureBalanceEnabled = simPara.m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].isEnabled();
 	if (m_moistureBalanceEnabled) {
 		m_y.resize(2); // two conserved states
 		m_results.resize(NUM_R);
@@ -74,12 +74,12 @@ void RoomStatesModel::setup(const NANDRAD::Zone & zone, const NANDRAD::Simulatio
 		m_results.resize(1);
 
 		// warn if temperature parameter is given in active zone
-		if (!zone.m_para[NANDRAD::Zone::ZP_TEMPERATURE].name.empty())
+		if (!zone.m_para[NANDRAD::Zone::P_Temperature].name.empty())
 			IBK::IBK_Message("Temperature parameter in active zone ignored. Using global default initial temperature "
 							 "from simulation parameters.", IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 
 		// cache initial condition
-		m_results[0] = simPara.m_para[NANDRAD::SimulationParameter::SP_INITIAL_TEMPERATURE].value;
+		m_results[0] = simPara.m_para[NANDRAD::SimulationParameter::P_InitialTemperature].value;
 		m_y.resize(1); // one state
 	}
 }

@@ -57,7 +57,7 @@ namespace NANDRAD {
 		"Location::para_t",
 		"Material::para_t",
 		"ModelInputReference::referenceType_t",
-		"NaturalVentilationModel::model_t",
+		"NaturalVentilationModel::modelType_t",
 		"NaturalVentilationModel::para_t",
 		"OutputDefinition::timeType_t",
 		"Schedule::type_t",
@@ -65,7 +65,7 @@ namespace NANDRAD {
 		"SerializationTest::test_t",
 		"SerializationTest::intPara_t",
 		"SimulationParameter::para_t",
-		"SimulationParameter::intpara_t",
+		"SimulationParameter::intPara_t",
 		"SimulationParameter::flag_t",
 		"SolverParameter::para_t",
 		"SolverParameter::intPara_t",
@@ -229,7 +229,7 @@ namespace NANDRAD {
 				case 8 : return "Model";
 				case 9 : return "Global";
 			} break;
-			// NaturalVentilationModel::model_t
+			// NaturalVentilationModel::modelType_t
 			case 22 :
 			switch (t) {
 				case 0 : return "Constant";
@@ -301,7 +301,7 @@ namespace NANDRAD {
 				case 10 : return "ShieldingCoefficient";
 				case 11 : return "HeatingDesignAmbientTemperature";
 			} break;
-			// SimulationParameter::intpara_t
+			// SimulationParameter::intPara_t
 			case 30 :
 			switch (t) {
 				case 0 : return "StartYear";
@@ -538,7 +538,7 @@ namespace NANDRAD {
 				case 8 : return "Model";
 				case 9 : return "Global";
 			} break;
-			// NaturalVentilationModel::model_t
+			// NaturalVentilationModel::modelType_t
 			case 22 :
 			switch (t) {
 				case 0 : return "Constant";
@@ -610,7 +610,7 @@ namespace NANDRAD {
 				case 10 : return "ShieldingCoefficient";
 				case 11 : return "HeatingDesignAmbientTemperature";
 			} break;
-			// SimulationParameter::intpara_t
+			// SimulationParameter::intPara_t
 			case 30 :
 			switch (t) {
 				case 0 : return "StartYear";
@@ -848,7 +848,7 @@ namespace NANDRAD {
 				case 8 : return "Model references another generic model.";
 				case 9 : return "Model references to global physical quantities.";
 			} break;
-			// NaturalVentilationModel::model_t
+			// NaturalVentilationModel::modelType_t
 			case 22 :
 			switch (t) {
 				case 0 : return "Constant ventilation rate";
@@ -920,7 +920,7 @@ namespace NANDRAD {
 				case 10 : return "Shielding coefficient for a given location and envelope type.";
 				case 11 : return "Ambient temparture for a design day. Parameter that is needed for FMU export.";
 			} break;
-			// SimulationParameter::intpara_t
+			// SimulationParameter::intPara_t
 			case 30 :
 			switch (t) {
 				case 0 : return "Start year of the simulation.";
@@ -1157,7 +1157,7 @@ namespace NANDRAD {
 				case 8 : return "";
 				case 9 : return "";
 			} break;
-			// NaturalVentilationModel::model_t
+			// NaturalVentilationModel::modelType_t
 			case 22 :
 			switch (t) {
 				case 0 : return "";
@@ -1229,7 +1229,7 @@ namespace NANDRAD {
 				case 10 : return "---";
 				case 11 : return "C";
 			} break;
-			// SimulationParameter::intpara_t
+			// SimulationParameter::intPara_t
 			case 30 :
 			switch (t) {
 				case 0 : return "";
@@ -1466,7 +1466,7 @@ namespace NANDRAD {
 				case 8 : return "#FFFFFF";
 				case 9 : return "#FFFFFF";
 			} break;
-			// NaturalVentilationModel::model_t
+			// NaturalVentilationModel::modelType_t
 			case 22 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
@@ -1538,7 +1538,7 @@ namespace NANDRAD {
 				case 10 : return "#FFFFFF";
 				case 11 : return "#FFFFFF";
 			} break;
-			// SimulationParameter::intpara_t
+			// SimulationParameter::intPara_t
 			case 30 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
@@ -1775,7 +1775,7 @@ namespace NANDRAD {
 				case 8 : return std::numeric_limits<double>::quiet_NaN();
 				case 9 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// NaturalVentilationModel::model_t
+			// NaturalVentilationModel::modelType_t
 			case 22 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
@@ -1847,7 +1847,7 @@ namespace NANDRAD {
 				case 10 : return std::numeric_limits<double>::quiet_NaN();
 				case 11 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// SimulationParameter::intpara_t
+			// SimulationParameter::intPara_t
 			case 30 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
@@ -1990,7 +1990,7 @@ namespace NANDRAD {
 			case 20 : return 3;
 			// ModelInputReference::referenceType_t
 			case 21 : return 10;
-			// NaturalVentilationModel::model_t
+			// NaturalVentilationModel::modelType_t
 			case 22 : return 2;
 			// NaturalVentilationModel::para_t
 			case 23 : return 1;
@@ -2006,7 +2006,7 @@ namespace NANDRAD {
 			case 28 : return 2;
 			// SimulationParameter::para_t
 			case 29 : return 12;
-			// SimulationParameter::intpara_t
+			// SimulationParameter::intPara_t
 			case 30 : return 1;
 			// SimulationParameter::flag_t
 			case 31 : return 4;
@@ -2078,7 +2078,7 @@ namespace NANDRAD {
 			case 20 : return 2;
 			// ModelInputReference::referenceType_t
 			case 21 : return 9;
-			// NaturalVentilationModel::model_t
+			// NaturalVentilationModel::modelType_t
 			case 22 : return 1;
 			// NaturalVentilationModel::para_t
 			case 23 : return 0;
@@ -2094,7 +2094,7 @@ namespace NANDRAD {
 			case 28 : return 1;
 			// SimulationParameter::para_t
 			case 29 : return 11;
-			// SimulationParameter::intpara_t
+			// SimulationParameter::intPara_t
 			case 30 : return 0;
 			// SimulationParameter::flag_t
 			case 31 : return 3;

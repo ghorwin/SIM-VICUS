@@ -45,11 +45,11 @@ class Location {
 public:
 
 	enum para_t {
-		LP_LATITUDE,				// Keyword: Latitude		[Deg]	'Latitude.'
-		LP_LONGITUDE,				// Keyword: Longitude		[Deg]	'Longitude.'
-		LP_ALBEDO,					// Keyword: Albedo			[%]		'Albedo value [0..100].'
-		LP_ALTITUDE,				// Keyword: Altitude		[m]		'Altitude of building as height above NN [m].'
-		NUM_LP
+		P_Latitude,					// Keyword: Latitude		[Deg]	'Latitude.'
+		P_Longitude,				// Keyword: Longitude		[Deg]	'Longitude.'
+		P_Albedo,					// Keyword: Albedo			[%]		'Albedo value [0..100].'
+		P_Altitude,					// Keyword: Altitude		[m]		'Altitude of building as height above NN [m].'
+		NUM_P
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -59,7 +59,7 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Parameter set. */
-	IBK::Parameter				m_para[NUM_LP];							// XML:E
+	IBK::Parameter				m_para[NUM_P];							// XML:E
 
 	/*! Name of the climate data file. */
 	IBK::Path					m_climateFileName;						// XML:E

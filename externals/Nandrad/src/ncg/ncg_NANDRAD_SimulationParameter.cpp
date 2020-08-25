@@ -67,8 +67,8 @@ void SimulationParameter::readXML(const TiXmlElement * element) {
 				readIntParaElement(c, p);
 				bool success = false;
 				try {
-					intpara_t ptype = (intpara_t)KeywordList::Enumeration("SimulationParameter::intpara_t", p.name);
-					m_intpara[ptype] = p; success = true;
+					intPara_t ptype = (intPara_t)KeywordList::Enumeration("SimulationParameter::intPara_t", p.name);
+					m_intPara[ptype] = p; success = true;
 				}
 				catch (...) { /* intentional fail */  }
 				if (!success)
@@ -107,17 +107,17 @@ TiXmlElement * SimulationParameter::writeXML(TiXmlElement * parent) const {
 	parent->LinkEndChild(e);
 
 
-	for (unsigned int i=0; i<NUM_SP; ++i) {
+	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty())
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
 	}
 
-	for (unsigned int i=0; i<NUM_SIP; ++i) {
-		if (!m_intpara[i].name.empty())
-			TiXmlElement::appendSingleAttributeElement(e, "IBK:IntPara", "name", m_intpara[i].name, IBK::val2string(m_intpara[i].value));
+	for (unsigned int i=0; i<NUM_IP; ++i) {
+		if (!m_intPara[i].name.empty())
+			TiXmlElement::appendSingleAttributeElement(e, "IBK:IntPara", "name", m_intPara[i].name, IBK::val2string(m_intPara[i].value));
 	}
 
-	for (int i=0; i<NUM_SF; ++i) {
+	for (int i=0; i<NUM_F; ++i) {
 		if (!m_flags[i].name().empty())
 			TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_flags[i].name(), m_flags[i].isEnabled() ? "true" : "false");
 	}

@@ -21,19 +21,19 @@ void NaturalVentilationModel::setup(const NANDRAD::NaturalVentilationModel & ven
 	FUNCID(NaturalVentilationModel::setup);
 
 	m_ventilationModel = &ventilationModel;
-	m_moistureBalanceEnabled = simPara.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled();
+	m_moistureBalanceEnabled = simPara.m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].isEnabled();
 	m_zones = &zones;
 
 	// check for mandatory parameters
-	switch (m_ventilationModel->m_model) {
-		case NANDRAD::NaturalVentilationModel::M_Constant :
+	switch (m_ventilationModel->m_modelType) {
+		case NANDRAD::NaturalVentilationModel::MT_Constant :
 			if (m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_VentilationRate].empty())
 				throw IBK::Exception(IBK::FormatString("Missing parameter 'VentilationRate'."), FUNC_ID);
 			m_ventilationRate = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_VentilationRate].checkedValue("1/s",
 				"1/h", 0, false, std::numeric_limits<double>::max(), false, "Invalid parameter.");
 		break;
 
-		case NANDRAD::NaturalVentilationModel::M_Scheduled : {
+		case NANDRAD::NaturalVentilationModel::MT_Scheduled : {
 		} break;
 
 		default:
@@ -81,7 +81,7 @@ void NaturalVentilationModel::initResults(const std::vector<AbstractModel *> &) 
 		const std::vector<NANDRAD::Zone>::const_iterator it = std::find(m_zones->begin(), m_zones->end(), id);
 		if (it == m_zones->end())
 			throw IBK::Exception("Zone with id '%1' is referenced in object list but does not exist (error in object list init code).", FUNC_ID);
-		m_zoneVolumes.push_back(it->m_para[NANDRAD::Zone::ZP_VOLUME].value);
+		m_zoneVolumes.push_back(it->m_para[NANDRAD::Zone::P_Volume].value);
 	}
 }
 

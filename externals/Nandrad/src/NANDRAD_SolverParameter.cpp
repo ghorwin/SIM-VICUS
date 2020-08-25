@@ -33,30 +33,30 @@ namespace NANDRAD {
 
 
 void SolverParameter::initDefaults() {
-	m_para[SP_RELTOL].set( KeywordList::Keyword("SolverParameter::para_t", SP_RELTOL),																		1e-5, IBK::Unit("---"));
-	m_para[SP_ABSTOL].set( KeywordList::Keyword("SolverParameter::para_t", SP_ABSTOL),																		1e-10, IBK::Unit("---"));
-	m_para[SP_MAX_DT].set( KeywordList::Keyword("SolverParameter::para_t", SP_MAX_DT),																		1, IBK::Unit("h"));
-	m_para[SP_MIN_DT].set( KeywordList::Keyword("SolverParameter::para_t", SP_MIN_DT),																		1e-12, IBK::Unit("s"));
-	m_para[SP_INITIAL_DT].set( KeywordList::Keyword("SolverParameter::para_t", SP_INITIAL_DT),																0.1, IBK::Unit("s"));
+	m_para[P_RelTol].set( KeywordList::Keyword("SolverParameter::para_t", P_RelTol),																		1e-5, IBK::Unit("---"));
+	m_para[P_AbsTol].set( KeywordList::Keyword("SolverParameter::para_t", P_AbsTol),																		1e-10, IBK::Unit("---"));
+	m_para[P_MaxTimeStep].set( KeywordList::Keyword("SolverParameter::para_t", P_MaxTimeStep),																		1, IBK::Unit("h"));
+	m_para[P_MinTimeStep].set( KeywordList::Keyword("SolverParameter::para_t", P_MinTimeStep),																		1e-12, IBK::Unit("s"));
+	m_para[P_InitialTimeStep].set( KeywordList::Keyword("SolverParameter::para_t", P_InitialTimeStep),																0.1, IBK::Unit("s"));
 
-	m_para[SP_NONLINSOLVERCONVCOEFF].set( KeywordList::Keyword("SolverParameter::para_t", SP_NONLINSOLVERCONVCOEFF),										0.1, IBK::Unit("---"));
-	m_para[SP_ITERATIVESOLVERCONVCOEFF].set( KeywordList::Keyword("SolverParameter::para_t", SP_ITERATIVESOLVERCONVCOEFF),									0.05, IBK::Unit("---"));
+	m_para[P_NonlinSolverConvCoeff].set( KeywordList::Keyword("SolverParameter::para_t", P_NonlinSolverConvCoeff),										0.1, IBK::Unit("---"));
+	m_para[P_IterativeSolverConvCoeff].set( KeywordList::Keyword("SolverParameter::para_t", P_IterativeSolverConvCoeff),									0.05, IBK::Unit("---"));
 
-	m_intPara[SIP_MAX_ORDER].set( KeywordList::Keyword("SolverParameter::intPara_t", SIP_MAX_ORDER),															5);
-	m_intPara[SIP_MAX_NONLIN_ITER].set( KeywordList::Keyword("SolverParameter::intPara_t", SIP_MAX_NONLIN_ITER),												3);
-	m_intPara[SIP_MAX_KRYLOV_DIM].set( KeywordList::Keyword("SolverParameter::intPara_t", SIP_MAX_KRYLOV_DIM),													50);
+	m_intPara[IP_MaxOrder].set( KeywordList::Keyword("SolverParameter::intPara_t", IP_MaxOrder),															5);
+	m_intPara[IP_MaxNonlinIter].set( KeywordList::Keyword("SolverParameter::intPara_t", IP_MaxNonlinIter),												3);
+	m_intPara[IP_MaxKrylovDim].set( KeywordList::Keyword("SolverParameter::intPara_t", IP_MaxKrylovDim),													50);
 
-	m_para[SP_DISCRETIZATION_MIN_DX].set( KeywordList::Keyword("SolverParameter::para_t", SP_DISCRETIZATION_MIN_DX),											2, IBK::Unit("mm"));
-	m_para[SP_DISCRETIZATION_STRECH_FACTOR].set( KeywordList::Keyword("SolverParameter::para_t", SP_DISCRETIZATION_STRECH_FACTOR),								4, IBK::Unit("---"));
-	m_intPara[SIP_DISCRETIZATION_MAX_ELEMENTS_PER_LAYER].set( KeywordList::Keyword("SolverParameter::intPara_t", SIP_DISCRETIZATION_MAX_ELEMENTS_PER_LAYER),	10);
+	m_para[P_DiscMinDx].set( KeywordList::Keyword("SolverParameter::para_t", P_DiscMinDx),											2, IBK::Unit("mm"));
+	m_para[P_DiscStretchFactor].set( KeywordList::Keyword("SolverParameter::para_t", P_DiscStretchFactor),								4, IBK::Unit("---"));
+	m_intPara[IP_DiscMaxElementsPerLayer].set( KeywordList::Keyword("SolverParameter::intPara_t", IP_DiscMaxElementsPerLayer),	10);
 
-	m_para[SP_VIEW_FACTOR_TILE_WIDTH].set( KeywordList::Keyword("SolverParameter::para_t", SP_VIEW_FACTOR_TILE_WIDTH),											50, IBK::Unit("cm"));
-	m_para[SP_SURFACE_DISCRETIZATION_DENSITY].set( KeywordList::Keyword("SolverParameter::para_t", SP_SURFACE_DISCRETIZATION_DENSITY),							 1, IBK::Unit("---"));
-	m_para[SP_CONTROL_TEMPERATURE_TOLERANCE].set(KeywordList::Keyword("SolverParameter::para_t", SP_CONTROL_TEMPERATURE_TOLERANCE),							0.00001, IBK::Unit("K"));
-	m_para[SP_INTEGRAL_WEIGHTS_FACTOR].set(KeywordList::Keyword("SolverParameter::para_t", SP_INTEGRAL_WEIGHTS_FACTOR),											1e-05, IBK::Unit("---"));
+	m_para[P_ViewfactorTileWidth].set( KeywordList::Keyword("SolverParameter::para_t", P_ViewfactorTileWidth),											50, IBK::Unit("cm"));
+	m_para[P_SurfaceDiscretizationDensity].set( KeywordList::Keyword("SolverParameter::para_t", P_SurfaceDiscretizationDensity),							 1, IBK::Unit("---"));
+	m_para[P_ControlTemperatureTolerance].set(KeywordList::Keyword("SolverParameter::para_t", P_ControlTemperatureTolerance),							0.00001, IBK::Unit("K"));
+	m_para[P_IntegralWeightsFactor].set(KeywordList::Keyword("SolverParameter::para_t", P_IntegralWeightsFactor),											1e-05, IBK::Unit("---"));
 
-	m_flag[SF_DETECT_MAX_DT].set( KeywordList::Keyword("SolverParameter::flag_t", SF_DETECT_MAX_DT), true );
-	m_flag[SF_KINSOL_DISABLE_LINE_SEARCH].set(KeywordList::Keyword("SolverParameter::flag_t", SF_KINSOL_DISABLE_LINE_SEARCH), false);
+	m_flag[F_DetectMaxTimeStep].set( KeywordList::Keyword("SolverParameter::flag_t", F_DetectMaxTimeStep), true );
+	m_flag[F_KinsolDisableLineSearch].set(KeywordList::Keyword("SolverParameter::flag_t", F_KinsolDisableLineSearch), false);
 
 	// no defaults: SP_PRE_BANDWIDTH, SP_PRE_ILUWIDTH, because default values for these parameters are determined
 	//              with an algorithm inside the NandradModel/Solver

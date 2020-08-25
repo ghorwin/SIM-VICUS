@@ -42,9 +42,9 @@ void NaturalVentilationModel::readXML(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
 
-		if (!TiXmlAttribute::attributeByName(element, "model"))
+		if (!TiXmlAttribute::attributeByName(element, "modelType"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'model' attribute.") ), FUNC_ID);
+				IBK::FormatString("Missing required 'modelType' attribute.") ), FUNC_ID);
 
 		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
@@ -54,9 +54,9 @@ void NaturalVentilationModel::readXML(const TiXmlElement * element) {
 				m_id = readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName = attrib->ValueStr();
-			else if (attribName == "model")
+			else if (attribName == "modelType")
 			try {
-				m_model = (model_t)KeywordList::Enumeration("NaturalVentilationModel::model_t", attrib->ValueStr());
+				m_modelType = (modelType_t)KeywordList::Enumeration("NaturalVentilationModel::modelType_t", attrib->ValueStr());
 			}
 			catch (IBK::Exception & ex) {
 				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
@@ -120,8 +120,8 @@ TiXmlElement * NaturalVentilationModel::writeXML(TiXmlElement * parent) const {
 	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
-	if (m_model != NUM_M)
-		e->SetAttribute("model", KeywordList::Keyword("NaturalVentilationModel::model_t",  m_model));
+	if (m_modelType != NUM_MT)
+		e->SetAttribute("modelType", KeywordList::Keyword("NaturalVentilationModel::modelType_t",  m_modelType));
 	if (!m_zoneObjectList.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "ZoneObjectList", nullptr, std::string(), m_zoneObjectList);
 

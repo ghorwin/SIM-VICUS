@@ -43,33 +43,33 @@ public:
 
 	/*! Parameter. */
 	enum para_t {
-		SP_RELTOL,							// Keyword: RelTol							[---]	'Relative tolerance for solver error check.'
-		SP_ABSTOL,							// Keyword: AbsTol							[---]	'Absolute tolerance for solver error check.'
-		SP_MAX_DT,							// Keyword: MaxTimeStep						[min]	'Maximum permitted time step for integration.'
-		SP_MIN_DT,							// Keyword: MinTimeStep						[s]		'Minimum accepted time step, before solver aborts with error.'
-		SP_INITIAL_DT,						// Keyword: InitialTimeStep					[s]		'Initial time step'
-		SP_NONLINSOLVERCONVCOEFF,			// Keyword: NonlinSolverConvCoeff			[---]	'Coefficient reducing nonlinear equation solver convergence limit.'
-		SP_ITERATIVESOLVERCONVCOEFF,		// Keyword: IterativeSolverConvCoeff		[---]	'Coefficient reducing iterative equation solver convergence limit.'
-		SP_DISCRETIZATION_MIN_DX,			// Keyword: DiscMinDx						[m]		'Minimum element width for wall discretization.'
-		SP_DISCRETIZATION_STRECH_FACTOR,	// Keyword: DiscStretchFactor				[---]	'Stretch factor for variable wall discretizations (0-no disc, 1-equidistance, larger than 1 - variable).'
-		SP_VIEW_FACTOR_TILE_WIDTH,			// Keyword: ViewfactorTileWidth				[m]		'Maximum dimension of a tile for calculation of view factors.'
-		SP_SURFACE_DISCRETIZATION_DENSITY,	// Keyword: SurfaceDiscretizationDensity	[---]	'Number of surface discretization elements of a wall in each direction.'
-		SP_CONTROL_TEMPERATURE_TOLERANCE,	// Keyword: ControlTemperatureTolerance		[K]		'Temperature tolerance for ideal heating or cooling.'
-		SP_KINSOL_RELTOL,					// Keyword: KinsolRelTol					[---]	'Relative tolerance for Kinsol solver.'
-		SP_KINSOL_ABSTOL,					// Keyword: KinsolAbsTol					[---]	'Absolute tolerance for Kinsol solver.'
-		SP_INTEGRAL_WEIGHTS_FACTOR,			// Keyword: IntegralWeightsFactor			[---]	'Optional weighting factor for integral outputs.'
+		P_RelTol,							// Keyword: RelTol							[---]	'Relative tolerance for solver error check.'
+		P_AbsTol,							// Keyword: AbsTol							[---]	'Absolute tolerance for solver error check.'
+		P_MaxTimeStep,						// Keyword: MaxTimeStep						[min]	'Maximum permitted time step for integration.'
+		P_MinTimeStep,						// Keyword: MinTimeStep						[s]		'Minimum accepted time step, before solver aborts with error.'
+		P_InitialTimeStep,					// Keyword: InitialTimeStep					[s]		'Initial time step'
+		P_NonlinSolverConvCoeff,			// Keyword: NonlinSolverConvCoeff			[---]	'Coefficient reducing nonlinear equation solver convergence limit.'
+		P_IterativeSolverConvCoeff,			// Keyword: IterativeSolverConvCoeff		[---]	'Coefficient reducing iterative equation solver convergence limit.'
+		P_DiscMinDx,						// Keyword: DiscMinDx						[m]		'Minimum element width for wall discretization.'
+		P_DiscStretchFactor,				// Keyword: DiscStretchFactor				[---]	'Stretch factor for variable wall discretizations (0-no disc, 1-equidistance, larger than 1 - variable).'
+		P_ViewfactorTileWidth,				// Keyword: ViewfactorTileWidth				[m]		'Maximum dimension of a tile for calculation of view factors.'
+		P_SurfaceDiscretizationDensity,		// Keyword: SurfaceDiscretizationDensity	[---]	'Number of surface discretization elements of a wall in each direction.'
+		P_ControlTemperatureTolerance,		// Keyword: ControlTemperatureTolerance		[K]		'Temperature tolerance for ideal heating or cooling.'
+		P_KinsolRelTol,						// Keyword: KinsolRelTol					[---]	'Relative tolerance for Kinsol solver.'
+		P_KinsolAbsTol,						// Keyword: KinsolAbsTol					[---]	'Absolute tolerance for Kinsol solver.'
+		P_IntegralWeightsFactor,			// Keyword: IntegralWeightsFactor			[---]	'Optional weighting factor for integral outputs.'
 		NUM_P
 	};
 
 	enum intPara_t {
 		/// \todo remove pre bandwidth and BAND preconditioner altogether?
-		SIP_PRE_BANDWIDTH,					// Keyword: PreBandWidth							'Maximum band width to be used for banded preconditioner.'
-		SIP_PRE_ILUWIDTH,					// Keyword: PreILUWidth								'Maximum level of fill-in to be used for ILU preconditioner.'
-		SIP_MAX_KRYLOV_DIM,					// Keyword: MaxKrylovDim							'Maximum dimension of Krylov subspace.'
-		SIP_MAX_NONLIN_ITER,				// Keyword: MaxNonlinIter							'Maximum number of nonlinear iterations.'
-		SIP_MAX_ORDER,						// Keyword: MaxOrder								'Maximum order allowed for multi-step solver.'
-		SIP_KINSOL_MAX_NONLIN_ITER,			// Keyword: KinsolMaxNonlinIter						'Maximum nonlinear iterations for Kinsol solver.'
-		SIP_DISCRETIZATION_MAX_ELEMENTS_PER_LAYER,	// Keyword: DiscMaxElementsPerLayer			'Maximum number of elements per layer.'
+		IP_PreBandWidth,					// Keyword: PreBandWidth							'Maximum band width to be used for banded preconditioner.'
+		IP_PreILUWidth,						// Keyword: PreILUWidth								'Maximum level of fill-in to be used for ILU preconditioner.'
+		IP_MaxKrylovDim,					// Keyword: MaxKrylovDim							'Maximum dimension of Krylov subspace.'
+		IP_MaxNonlinIter,					// Keyword: MaxNonlinIter							'Maximum number of nonlinear iterations.'
+		IP_MaxOrder,						// Keyword: MaxOrder								'Maximum order allowed for multi-step solver.'
+		IP_KinsolMaxNonlinIter,				// Keyword: KinsolMaxNonlinIter						'Maximum nonlinear iterations for Kinsol solver.'
+		IP_DiscMaxElementsPerLayer,			// Keyword: DiscMaxElementsPerLayer					'Maximum number of elements per layer.'
 		NUM_IP
 	};
 
@@ -77,17 +77,17 @@ public:
 		\note A flag that is not set is defined as off.
 	*/
 	enum flag_t {
-		SF_DETECT_MAX_DT,				// Keyword: DetectMaxTimeStep			'Check schedules to determine minimum distances between steps and adjust MaxTimeStep.'
-		SF_KINSOL_DISABLE_LINE_SEARCH,	// Keyword: KinsolDisableLineSearch		'Disable line search for steady state cycles.'
-		SF_KINSOL_STRICT_NEWTON,		// Keyword: KinsolStrictNewton			'Enable strict Newton for steady state cycles.'
+		F_DetectMaxTimeStep,				// Keyword: DetectMaxTimeStep			'Check schedules to determine minimum distances between steps and adjust MaxTimeStep.'
+		F_KinsolDisableLineSearch,			// Keyword: KinsolDisableLineSearch		'Disable line search for steady state cycles.'
+		F_KinsolStrictNewton,				// Keyword: KinsolStrictNewton			'Enable strict Newton for steady state cycles.'
 		NUM_F
 	};
 
 	/*! Enumeration of available integrators. */
 	enum integrator_t {
 		I_CVODE,						// Keyword: CVODE						'CVODE based solver'
-		I_EXPLICIT_EULER,				// Keyword: ExplicitEuler				'Explicit Euler solver'
-		I_IMPLICIT_EULER,				// Keyword: ImplicitEuler				'Implicit Euler solver'
+		I_ExplicitEuler,				// Keyword: ExplicitEuler				'Explicit Euler solver'
+		I_ImplicitEuler,				// Keyword: ImplicitEuler				'Implicit Euler solver'
 		NUM_I							// Keyword: auto						'System selects integrator automatically.'
 	};
 
@@ -95,16 +95,16 @@ public:
 		implicit integrators.
 	*/
 	enum lesSolver_t {
-		LES_DENSE,						// Keyword: Dense						'Dense solver'
+		LES_Dense,						// Keyword: Dense						'Dense solver'
 		LES_KLU,						// Keyword: KLU							'KLU sparse solver'
 		LES_GMRES,						// Keyword: GMRES						'GMRES iterative solver'
-		LES_BICGSTAB,					// Keyword: BiCGStab					'BICGSTAB iterative solver'
+		LES_BiCGStab,					// Keyword: BiCGStab					'BICGSTAB iterative solver'
 		NUM_LES							// Keyword: auto						'System selects les solver automatically.'
 	};
 
 	/*! Enumeration of available preconditioners, to be used with iterative LES solvers. */
 	enum precond_t {
-		PRE_BAND,						// Keyword: Band						'Band preconditioner'
+		PRE_Band,						// Keyword: Band						'Band preconditioner'
 		PRE_ILU,						// Keyword: ILU							'Incomplete LU preconditioner'
 		NUM_PRE							// Keyword: auto						'System selects preconditioner automatically.'
 	};
@@ -126,7 +126,7 @@ public:
 	/*! List of parameters. */
 	IBK::Parameter		m_para[NUM_P];					// XML:E
 	/*! List of integer value parameters. */
-	IBK::IntPara		m_intPara[NUM_IP];					// XML:E
+	IBK::IntPara		m_intPara[NUM_IP];				// XML:E
 	/*! List of flags. */
 	IBK::Flag			m_flag[NUM_F];					// XML:E
 

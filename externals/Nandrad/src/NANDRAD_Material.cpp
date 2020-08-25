@@ -28,7 +28,7 @@ bool Material::operator!=(const Material & other) const {
 		return true;
 	if (m_displayName != other.m_displayName)
 		return true;
-	for (size_t i=0; i<NUM_MP; ++i) {
+	for (size_t i=0; i<NUM_P; ++i) {
 		if (m_para[i] != other.m_para[i])
 			return true;
 	}
@@ -37,7 +37,7 @@ bool Material::operator!=(const Material & other) const {
 
 
 bool Material::behavesLike(const Material & other) const {
-	for (size_t i=0; i<NUM_MP; ++i) {
+	for (size_t i=0; i<NUM_P; ++i) {
 		if (m_para[i] != other.m_para[i])
 			return false;
 	}

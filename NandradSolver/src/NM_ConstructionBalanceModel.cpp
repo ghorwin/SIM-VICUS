@@ -39,7 +39,7 @@ void ConstructionBalanceModel::setup(const NANDRAD::ConstructionInstance & con,
 	m_moistureBalanceEnabled = statesModel->m_moistureBalanceEnabled;
 
 	// cross section area in [m2]
-	m_area = con.m_para[NANDRAD::ConstructionInstance::CP_AREA].value;
+	m_area = con.m_para[NANDRAD::ConstructionInstance::P_AREA].value;
 	/// \todo subtract areas of embedded objects to get net area
 
 	// resize storage vectors for divergences, sources, and initialize boundary conditions
@@ -283,7 +283,7 @@ void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NAN
 				Tambient = *m_valueRefs[InputRef_RoomBTemperature];
 		}
 		switch (iface.m_heatConduction.m_modelType) {
-			case NANDRAD::InterfaceHeatConduction::MT_CONSTANT : {
+			case NANDRAD::InterfaceHeatConduction::MT_Constant : {
 				// transfer coefficient
 				double alpha = iface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
 				double Ts = sideA ? m_statesModel->m_TsA : m_statesModel->m_TsB;

@@ -128,12 +128,12 @@ void StateModelGroup::init(const ZEPPELIN::DependencyGroup &group,
 		m_modelTypeId |= DefaultStateDependency::CyclicGroup;
 
 	// retrieve optional settings for relative and absolute tolerance
-	if (!solverPara.m_para[NANDRAD::SolverParameter::SP_KINSOL_RELTOL].name.empty()) {
-		double relTol = solverPara.m_para[NANDRAD::SolverParameter::SP_KINSOL_RELTOL].value;
+	if (!solverPara.m_para[NANDRAD::SolverParameter::P_KinsolRelTol].name.empty()) {
+		double relTol = solverPara.m_para[NANDRAD::SolverParameter::P_KinsolRelTol].value;
 		// we need to define a integrator realtive tolerance
-		IBK_ASSERT(!solverPara.m_para[NANDRAD::SolverParameter::SP_RELTOL].name.empty());
+		IBK_ASSERT(!solverPara.m_para[NANDRAD::SolverParameter::P_RelTol].name.empty());
 		// solver relative tolerance gives an upper limit for Kinsol tolerance
-		double integratorRelTol = solverPara.m_para[NANDRAD::SolverParameter::SP_RELTOL].value;
+		double integratorRelTol = solverPara.m_para[NANDRAD::SolverParameter::P_RelTol].value;
 		// check validity
 		if (relTol <= 0 || relTol > integratorRelTol) {
 			throw IBK::Exception(IBK::FormatString("Error initializing StateModelGroup: "
@@ -143,8 +143,8 @@ void StateModelGroup::init(const ZEPPELIN::DependencyGroup &group,
 		// copy value
 		m_tolerance = relTol;
 	}
-	if (!solverPara.m_para[NANDRAD::SolverParameter::SP_KINSOL_ABSTOL].name.empty()) {
-		double absTol = solverPara.m_para[NANDRAD::SolverParameter::SP_KINSOL_ABSTOL].value;
+	if (!solverPara.m_para[NANDRAD::SolverParameter::P_KinsolAbsTol].name.empty()) {
+		double absTol = solverPara.m_para[NANDRAD::SolverParameter::P_KinsolAbsTol].value;
 		if (absTol < 0) {
 			throw IBK::Exception(IBK::FormatString("Error initializing StateModelGroup: "
 				"Mismatching value of parameter 'KinsolAbsTol' (must >= 0)!"), FUNC_ID);
@@ -152,8 +152,8 @@ void StateModelGroup::init(const ZEPPELIN::DependencyGroup &group,
 		// copy value
 		m_absoluteToleranceBand = absTol/m_tolerance;
 	}
-	if (!solverPara.m_intPara[NANDRAD::SolverParameter::SIP_KINSOL_MAX_NONLIN_ITER].name.empty()) {
-		m_maximumNonlinearIterations = solverPara.m_intPara[NANDRAD::SolverParameter::SIP_KINSOL_MAX_NONLIN_ITER].toUInt(true,
+	if (!solverPara.m_intPara[NANDRAD::SolverParameter::IP_KinsolMaxNonlinIter].name.empty()) {
+		m_maximumNonlinearIterations = solverPara.m_intPara[NANDRAD::SolverParameter::IP_KinsolMaxNonlinIter].toUInt(true,
 			"Mismatching value of parameter 'KinsolMaxNonlinIter' (must >= 0)!");
 	}
 }
@@ -499,13 +499,13 @@ void StateModelGroup::initDenseSolver( )
 
 	int options = 0;
 	// add line search to solver options
-	if (m_solverParameter->m_flag[NANDRAD::SolverParameter::SF_KINSOL_DISABLE_LINE_SEARCH].name().empty()
-		|| !m_solverParameter->m_flag[NANDRAD::SolverParameter::SF_KINSOL_DISABLE_LINE_SEARCH].isEnabled()) {
+	if (m_solverParameter->m_flag[NANDRAD::SolverParameter::F_KinsolDisableLineSearch].name().empty()
+		|| !m_solverParameter->m_flag[NANDRAD::SolverParameter::F_KinsolDisableLineSearch].isEnabled()) {
 		options |= KinsolLineSearch;
 	}
 	// add strict Newton to solver options
-	if (!m_solverParameter->m_flag[NANDRAD::SolverParameter::SF_KINSOL_STRICT_NEWTON].name().empty()
-		&& m_solverParameter->m_flag[NANDRAD::SolverParameter::SF_KINSOL_STRICT_NEWTON].isEnabled()) {
+	if (!m_solverParameter->m_flag[NANDRAD::SolverParameter::F_KinsolStrictNewton].name().empty()
+		&& m_solverParameter->m_flag[NANDRAD::SolverParameter::F_KinsolStrictNewton].isEnabled()) {
 		options |= KinsolStrictNewton;
 	}
 	SteadyStateSolver::setOptions(options);

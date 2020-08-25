@@ -12,12 +12,12 @@ namespace NANDRAD {
 class NaturalVentilationModel {
 public:
 	/*! Different model variants. */
-	enum model_t {
+	enum modelType_t {
 		/*! Ventilation rate is given as constant parameter. */
-		M_Constant,			// Keyword: Constant	'Constant ventilation rate'
+		MT_Constant,			// Keyword: Constant	'Constant ventilation rate'
 		/*! Ventilation rate is provided as 'NaturalVentilationRate' schedule parameter. */
-		M_Scheduled,		// Keyword: Scheduled	'Scheduled ventilation rate'
-		NUM_M
+		MT_Scheduled,		// Keyword: Scheduled	'Scheduled ventilation rate'
+		NUM_MT
 	};
 
 	enum para_t {
@@ -33,7 +33,7 @@ public:
 	std::string							m_displayName;					// XML:A
 
 	/*! Model type. */
-	model_t								m_model;						// XML:A:required
+	modelType_t							m_modelType = NUM_MT;			// XML:A:required
 
 	/*! Object list with zones that this model is to be apply to. */
 	std::string							m_zoneObjectList;				// XML:E:required

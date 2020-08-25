@@ -36,7 +36,7 @@ void RoomBalanceModel::setup( const NANDRAD::SimulationParameter &simPara) {
 	m_simPara     = &simPara;
 
 	// results depend on calculation mode
-	m_moistureBalanceEnabled = simPara.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled();
+	m_moistureBalanceEnabled = simPara.m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].isEnabled();
 	if (m_moistureBalanceEnabled) {
 		m_results.resize(NUM_R);
 		// resize ydot vector - two balance equations
@@ -54,7 +54,7 @@ void RoomBalanceModel::setup( const NANDRAD::SimulationParameter &simPara) {
 
 void RoomBalanceModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 	int varCount = 2;
-	if (m_simPara->m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled()) {
+	if (m_simPara->m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].isEnabled()) {
 		varCount = NUM_R; // more variables for hygrothermal calculation
 	}
 

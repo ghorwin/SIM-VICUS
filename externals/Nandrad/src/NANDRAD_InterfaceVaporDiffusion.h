@@ -39,7 +39,7 @@ public:
 	};
 	/*! Model types supported by the window model. */
 	enum modelType_t {
-		MT_CONSTANT,					// Keyword: Constant		'Constant model.'
+		MT_Constant,					// Keyword: Constant		'Constant model.'
 		NUM_MT
 	};
 

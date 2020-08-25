@@ -65,10 +65,10 @@ public:
 
 	/*! Construction-specific parameters required by several models. */
 	enum para_t {
-		CP_ORIENTATION,					// Keyword: Orientation				[Deg]	'Orientation of the wall [deg].'
-		CP_INCLINATION,					// Keyword: Inclination				[Deg]	'Inclination of the wall [deg].'
-		CP_AREA,						// Keyword: Area					[m2]	'Gross area of the wall [m2].'
-		NUM_CP
+		P_ORIENTATION,					// Keyword: Orientation				[Deg]	'Orientation of the wall [deg].'
+		P_INCLINATION,					// Keyword: Inclination				[Deg]	'Inclination of the wall [deg].'
+		P_AREA,							// Keyword: Area					[m2]	'Gross area of the wall [m2].'
+		NUM_P
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -104,7 +104,7 @@ public:
 	unsigned int				m_constructionTypeId;			// XML:E:required
 
 	/*! List of parameters. */
-	IBK::Parameter				m_para[NUM_CP];					// XML:E
+	IBK::Parameter				m_para[NUM_P];					// XML:E
 
 	/*! The interface at side A. */
 	Interface					m_interfaceA;					// XML:E:tag=InterfaceA

@@ -43,16 +43,16 @@ EmbeddedObjectWindow::EmbeddedObjectWindow() :
 	parametersModelConstant.insert( (int) P_ThermalTransmittance);
 	parametersModelConstant.insert( (int) P_ShadingFactor);
 	parametersModelConstant.insert((int)P_LeakageCoefficient);
-	m_modelTypeToParameterMapping[MT_CONSTANT] = parametersModelConstant;
+	m_modelTypeToParameterMapping[MT_Constant] = parametersModelConstant;
 
 	// model patrameters for detailed model
 	std::set<int> parametersModelDetailed;
 	parametersModelDetailed.insert((int)P_ShadingFactor);
 	parametersModelDetailed.insert((int)P_LeakageCoefficient);
-	m_modelTypeToParameterMapping[MT_DETAILED] = parametersModelDetailed;
+	m_modelTypeToParameterMapping[MT_Detailed] = parametersModelDetailed;
 
 	// model patrameters for detailed ODE model
-	m_modelTypeToParameterMapping[MT_DETAILED_WITH_STORAGE] = parametersModelDetailed;
+	m_modelTypeToParameterMapping[MT_DetailedWithStorage] = parametersModelDetailed;
 }
 
 

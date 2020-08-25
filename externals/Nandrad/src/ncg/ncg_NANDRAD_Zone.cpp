@@ -119,7 +119,7 @@ TiXmlElement * Zone::writeXML(TiXmlElement * parent) const {
 	if (m_type != NUM_ZT)
 		e->SetAttribute("type", KeywordList::Keyword("Zone::type_t",  m_type));
 
-	for (unsigned int i=0; i<NUM_ZP; ++i) {
+	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty())
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
 	}

@@ -40,7 +40,7 @@ public:
 	};
 	/*! Model types supported by the window model. */
 	enum modelType_t {
-		MT_WINDFLOW,						// Keyword: WindFlow							'Use results from external wind flow calculation.'
+		MT_WindFlow,						// Keyword: WindFlow							'Use results from external wind flow calculation.'
 		NUM_MT
 	};
 

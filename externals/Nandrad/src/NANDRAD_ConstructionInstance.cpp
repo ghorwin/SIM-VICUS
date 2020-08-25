@@ -45,9 +45,9 @@ void ConstructionInstance::checkParameters(const std::vector<ConstructionType> &
 	m_constructionType = &(*it); // store pointer
 
 	// check parameters
-	if (m_para[CP_AREA].name.empty())
+	if (m_para[P_AREA].name.empty())
 		throw IBK::Exception( "Missing parameter 'Area'.", FUNC_ID);
-	if (m_para[CP_AREA].get_value("m2") <= 0) // get_value ensures unit conversion
+	if (m_para[P_AREA].get_value("m2") <= 0) // get_value ensures unit conversion
 		throw IBK::Exception( "Invalid value for parameter 'Area'.", FUNC_ID);
 
 	// Note: parameters orientation and inclination are only needed when an outdoor interface with solar radiation
@@ -62,15 +62,15 @@ void ConstructionInstance::checkParameters(const std::vector<ConstructionType> &
 	if (haveRadiationBC) {
 		// we have solar radiation to outside - and we need orientation and inclination for that
 		// check parameters
-		if (m_para[CP_ORIENTATION].name.empty())
+		if (m_para[P_ORIENTATION].name.empty())
 			throw IBK::Exception( "Missing parameter 'Orientation'.", FUNC_ID);
-		double orientationInDeg = m_para[CP_ORIENTATION].get_value("Deg");
+		double orientationInDeg = m_para[P_ORIENTATION].get_value("Deg");
 		if (orientationInDeg < 0 || orientationInDeg > 360)
 			throw IBK::Exception( "Parameter 'Orientation' outside allowed value range [0,360] Deg.", FUNC_ID);
 
-		if (m_para[CP_INCLINATION].name.empty())
+		if (m_para[P_INCLINATION].name.empty())
 			throw IBK::Exception( "Missing parameter 'Inclination'.", FUNC_ID);
-		double inclinationInDeg = m_para[CP_INCLINATION].get_value("Deg");
+		double inclinationInDeg = m_para[P_INCLINATION].get_value("Deg");
 		if (inclinationInDeg < 0 || inclinationInDeg > 180)
 			throw IBK::Exception( "Parameter 'Inclination' outside allowed value range [0,180] Deg.", FUNC_ID);
 	}
@@ -109,11 +109,11 @@ bool ConstructionInstance::behavesLike(const ConstructionInstance & other) const
 		return false;
 
 	// compare parameters
-	if (m_para[CP_AREA] != other.m_para[CP_AREA])
+	if (m_para[P_AREA] != other.m_para[P_AREA])
 		return false;
-	if (m_para[CP_ORIENTATION] != other.m_para[CP_ORIENTATION])
+	if (m_para[P_ORIENTATION] != other.m_para[P_ORIENTATION])
 		return false;
-	if (m_para[CP_INCLINATION] != other.m_para[CP_INCLINATION])
+	if (m_para[P_INCLINATION] != other.m_para[P_INCLINATION])
 		return false;
 
 	return true; // both construction instances would calculate effectively the same

@@ -113,7 +113,7 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 						 FUNC_ID, IBK::VL_INFO);
 
 		// latitude
-		const IBK::Parameter &latitude = location.m_para[NANDRAD::Location::LP_LATITUDE];
+		const IBK::Parameter &latitude = location.m_para[NANDRAD::Location::P_Latitude];
 		if (!latitude.name.empty()) {
 			double latInDeg = latitude.get_value("Deg");
 			if (latInDeg < -90 || latInDeg > 90) {
@@ -126,7 +126,7 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 		}
 
 		// longitude
-		const IBK::Parameter &longitude = location.m_para[NANDRAD::Location::LP_LONGITUDE];
+		const IBK::Parameter &longitude = location.m_para[NANDRAD::Location::P_Longitude];
 		if (!longitude.name.empty()) {
 			double longInDeg = longitude.get_value("Deg");
 			if (longInDeg < -180 || longInDeg > 180) {
@@ -139,7 +139,7 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 		}
 
 		// albedo
-		const IBK::Parameter &albedo = location.m_para[NANDRAD::Location::LP_ALBEDO];
+		const IBK::Parameter &albedo = location.m_para[NANDRAD::Location::P_Albedo];
 		if (albedo.name.empty())
 			throw IBK::Exception(IBK::FormatString("Error initializing climate data: Missing parameter 'Albedo'."), FUNC_ID);
 		if (albedo.value < 0 || albedo.value > 1) {
@@ -158,8 +158,8 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 
 
 		// store start time offset as year and start time
-		m_year = simPara.m_intpara[NANDRAD::SimulationParameter::SIP_YEAR].value;
-		m_startTime = simPara.m_interval.m_para[NANDRAD::Interval::IP_START].value;
+		m_year = simPara.m_intPara[NANDRAD::SimulationParameter::IP_StartYear].value;
+		m_startTime = simPara.m_interval.m_para[NANDRAD::Interval::P_Start].value;
 
 
 		// *** shading factors ***

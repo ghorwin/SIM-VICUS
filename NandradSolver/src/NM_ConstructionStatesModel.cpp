@@ -86,7 +86,7 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 	m_simPara = &simPara;
 	m_solverPara = &solverPara;
 
-	m_moistureBalanceEnabled = m_simPara->m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled();
+	m_moistureBalanceEnabled = m_simPara->m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].isEnabled();
 
 	// we initialize only those variables needed for state calculation:
 	// - grid and grid-element to layer association
@@ -112,9 +112,9 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 	for (unsigned int i=0; i<m_nElements; ++i) {
 		const Element & E = m_elements[i];
 		// dry bulk density [kg/m3]
-		double rho = E.mat->m_para[NANDRAD::Material::MP_DENSITY].value;
+		double rho = E.mat->m_para[NANDRAD::Material::P_Density].value;
 		// specific heat capacity [J/kgK]
-		double ce = E.mat->m_para[NANDRAD::Material::MP_HEAT_CAPACITY].value;
+		double ce = E.mat->m_para[NANDRAD::Material::P_HeatCapacity].value;
 		m_rhoce[i] = rho*ce;
 	}
 	// cache thermal resistances/U-values
@@ -122,8 +122,8 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 		// thermal conductivity for dry material in [W/mK] - left
 		const Element & E_left = m_elements[i-1];
 		const Element & E_right = m_elements[i];
-		double lambda_left = E_left.mat->m_para[NANDRAD::Material::MP_CONDUCTIVITY].value;
-		double lambda_right = E_right.mat->m_para[NANDRAD::Material::MP_CONDUCTIVITY].value;
+		double lambda_left = E_left.mat->m_para[NANDRAD::Material::P_Conductivity].value;
+		double lambda_right = E_right.mat->m_para[NANDRAD::Material::P_Conductivity].value;
 		// harmonic average of thermal conductivities is the inverse of the thermal resistance between
 		// the centers of the elements
 		double lambda_mean = 2/(E_left.dx / lambda_left
@@ -260,7 +260,7 @@ void ConstructionStatesModel::stateDependencies(std::vector<std::pair<const doub
 
 void ConstructionStatesModel::yInitial(double * y) const {
 	// retrieve initial temperature, which has already been checked for valid values
-	double T_initial = m_simPara->m_para[NANDRAD::SimulationParameter::SP_INITIAL_TEMPERATURE].value;
+	double T_initial = m_simPara->m_para[NANDRAD::SimulationParameter::P_InitialTemperature].value;
 	for (unsigned i=0; i<m_nElements; ++i) {
 		// energy density
 		y[i] = m_rhoce[i]*T_initial;
@@ -402,9 +402,9 @@ void ConstructionStatesModel::generateGrid() {
 	double x = 0;
 
 	// retrieve parameters regulating grid generation
-	double stretch = m_solverPara->m_para[NANDRAD::SolverParameter::SP_DISCRETIZATION_STRECH_FACTOR].value;
-	double minDX = m_solverPara->m_para[NANDRAD::SolverParameter::SP_DISCRETIZATION_MIN_DX].value;
-	unsigned int maxElementsPerLayer = m_solverPara->m_intPara[NANDRAD::SolverParameter::SIP_DISCRETIZATION_MAX_ELEMENTS_PER_LAYER].toUInt(true);
+	double stretch = m_solverPara->m_para[NANDRAD::SolverParameter::P_DiscStretchFactor].value;
+	double minDX = m_solverPara->m_para[NANDRAD::SolverParameter::P_DiscMinDx].value;
+	unsigned int maxElementsPerLayer = m_solverPara->m_intPara[NANDRAD::SolverParameter::IP_DiscMaxElementsPerLayer].toUInt(true);
 	if (maxElementsPerLayer < 3) {
 		IBK::IBK_Message(IBK::FormatString("Instead of setting max. elements per layer to less than 3, you may want to use a stretch factor of 0 to disable grid generation."),
 						 IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);

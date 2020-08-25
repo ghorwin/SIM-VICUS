@@ -95,8 +95,8 @@ int Schedules::setTime(double t) {
 
 void Schedules::setup(const NANDRAD::Project &project) {
 	// store start time offset as year and start time
-	m_year = project.m_simulationParameter.m_intpara[NANDRAD::SimulationParameter::SIP_YEAR].value;
-	m_startTime = project.m_simulationParameter.m_interval.m_para[NANDRAD::Interval::IP_START].value;
+	m_year = project.m_simulationParameter.m_intPara[NANDRAD::SimulationParameter::IP_StartYear].value;
+	m_startTime = project.m_simulationParameter.m_interval.m_para[NANDRAD::Interval::P_Start].value;
 
 	/// \todo prepare linear spline parameters
 

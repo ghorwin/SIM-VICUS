@@ -37,32 +37,32 @@ class SimulationParameter {
 public:
 
 	enum para_t {
-		SP_INITIAL_TEMPERATURE,					// Keyword: InitialTemperature					[C]		'Global initial temperature [C].'
-		SP_INITIAL_RELATIVE_HUMIDITY,			// Keyword: InitialRelativeHumidity				[%]		'Global initial relative humidity [%].'
-		SP_RADIATION_LOAD_FRACTION,				// Keyword: RadiationLoadFraction				[%]		'Percentage of solar radiation gains attributed direcly to room 0..1.'
-		SP_USERTHERMALRADIATIONFRACTION,		// Keyword: UserThermalRadiationFraction		[---]	'Percentage of heat that is emitted by long wave radiation from persons.'
-		SP_EQUIPMENTTHERMALLOSSFRACTION,		// Keyword: EquipmentThermalLossFraction		[---]	'Percentage of energy from equipment load that is not available as thermal heat.'
-		SP_EQUIPMENTTHERMALRADIATIONFRACTION,	// Keyword: EquipmentThermalRadiationFraction	[---]	'Percentage of heat that is emitted by long wave radiation from equipment.'
-		SP_LIGHTINGVISIBLERADIATIONFRACTION,	// Keyword: LightingVisibleRadiationFraction	[---]	'Percentage of energy from lighting that is transformed into visible short wave radiation.'
-		SP_LIGHTINGTHERMALRADIATIONFRACTION,	// Keyword: LightingThermalRadiationFraction	[---]	'Percentage of heat that is emitted by long wave radiation from lighting.'
-		SP_DOMESTICWATERHEATGAINFRACTION,		// Keyword: DomesticWaterSensitiveHeatGainFraction	[---]	'Percentage of sensitive heat from domestic water istributed towrads the room.'
-		SP_AIREXCHANGERATEN50,					// Keyword: AirExchangeRateN50					[1/h]	'Air exchange rate resulting from a pressure difference of 50 Pa between inside and outside.'
-		SP_SHIELDINGCOEFFICIENT,				// Keyword: ShieldingCoefficient				[---]	'Shielding coefficient for a given location and envelope type.'
-		SP_HEATINGDESIGNAMBIENTTEMPERATURE,		// Keyword: HeatingDesignAmbientTemperature		[C]		'Ambient temparture for a design day. Parameter that is needed for FMU export.'
-		NUM_SP
+		P_InitialTemperature,						// Keyword: InitialTemperature					[C]		'Global initial temperature [C].'
+		P_InitialRelativeHumidity,					// Keyword: InitialRelativeHumidity				[%]		'Global initial relative humidity [%].'
+		P_RadiationLoadFraction,					// Keyword: RadiationLoadFraction				[%]		'Percentage of solar radiation gains attributed direcly to room 0..1.'
+		P_UserThermalRadiationFraction,				// Keyword: UserThermalRadiationFraction		[---]	'Percentage of heat that is emitted by long wave radiation from persons.'
+		P_EquipmentThermalLossFraction,				// Keyword: EquipmentThermalLossFraction		[---]	'Percentage of energy from equipment load that is not available as thermal heat.'
+		P_EquipmentThermalRadiationFraction,		// Keyword: EquipmentThermalRadiationFraction	[---]	'Percentage of heat that is emitted by long wave radiation from equipment.'
+		P_LightingVisibleRadiationFraction,			// Keyword: LightingVisibleRadiationFraction	[---]	'Percentage of energy from lighting that is transformed into visible short wave radiation.'
+		P_LightingThermalRadiationFraction,			// Keyword: LightingThermalRadiationFraction	[---]	'Percentage of heat that is emitted by long wave radiation from lighting.'
+		P_DomesticWaterSensitiveHeatGainFraction,	// Keyword: DomesticWaterSensitiveHeatGainFraction	[---]	'Percentage of sensitive heat from domestic water istributed towrads the room.'
+		P_AirExchangeRateN50,						// Keyword: AirExchangeRateN50					[1/h]	'Air exchange rate resulting from a pressure difference of 50 Pa between inside and outside.'
+		P_ShieldingCoefficient,						// Keyword: ShieldingCoefficient				[---]	'Shielding coefficient for a given location and envelope type.'
+		P_HeatingDesignAmbientTemperature,			// Keyword: HeatingDesignAmbientTemperature		[C]		'Ambient temparture for a design day. Parameter that is needed for FMU export.'
+		NUM_P
 	};
 
-	enum intpara_t {
-		SIP_YEAR,								// Keyword: StartYear									'Start year of the simulation.'
-		NUM_SIP
+	enum intPara_t {
+		IP_StartYear,								// Keyword: StartYear									'Start year of the simulation.'
+		NUM_IP
 	};
 
 	enum flag_t {
-		SF_ENABLE_MOISTURE_BALANCE,				// Keyword: EnableMoistureBalance						'Flag activating moisture balance calculation if enabled.'
-		SF_ENABLE_CO2_BALANCE,					// Keyword: EnableCO2Balance							'Flag activating CO2 balance calculation if enabled.'
-		SF_ENABLE_JOINT_VENTILATION,			// Keyword: EnableJointVentilation						'Flag activating ventilation through joints and openings.'
-		SF_EXPORT_CLIMATE_DATA_FMU,				// Keyword: ExportClimateDataFMU						'Flag activating FMU export of climate data.'
-		NUM_SF
+		F_EnableMoistureBalance,					// Keyword: EnableMoistureBalance						'Flag activating moisture balance calculation if enabled.'
+		F_EnableCO2Balance,							// Keyword: EnableCO2Balance							'Flag activating CO2 balance calculation if enabled.'
+		F_EnableJointVentilation,					// Keyword: EnableJointVentilation						'Flag activating ventilation through joints and openings.'
+		F_ExportClimateDataFMU,						// Keyword: ExportClimateDataFMU						'Flag activating FMU export of climate data.'
+		NUM_F
 	};
 
 
@@ -80,11 +80,11 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! List of parameters. */
-	IBK::Parameter		m_para[NUM_SP];					// XML:E
+	IBK::Parameter		m_para[NUM_P];					// XML:E
 	/*! Integer parameters. */
-	IBK::IntPara		m_intpara[NUM_SIP];				// XML:E
+	IBK::IntPara		m_intPara[NUM_IP];				// XML:E
 	/*! List of flags. */
-	IBK::Flag			m_flags[NUM_SF];				// XML:E
+	IBK::Flag			m_flags[NUM_F];					// XML:E
 
 	/*! The time interval of simulation beginning, offset
 		and duration from January 1, 0:00 of the start year. */

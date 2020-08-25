@@ -33,10 +33,10 @@ class Material {
 public:
 
 	enum para_t {
-		MP_DENSITY,					// Keyword: Density				[kg/m3]	'Dry density of the material.'
-		MP_HEAT_CAPACITY,			// Keyword: HeatCapacity		[J/kgK]	'Specific heat capacity of the material.'
-		MP_CONDUCTIVITY,			// Keyword: Conductivity		[W/mK]	'Thermal conductivity of the dry material.'
-		NUM_MP
+		P_Density,					// Keyword: Density				[kg/m3]	'Dry density of the material.'
+		P_HeatCapacity,				// Keyword: HeatCapacity		[J/kgK]	'Specific heat capacity of the material.'
+		P_Conductivity,				// Keyword: Conductivity		[W/mK]	'Thermal conductivity of the dry material.'
+		NUM_P
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -55,7 +55,7 @@ public:
 	/*! Display name of material. */
 	std::string					m_displayName;					// XML:A
 	/*! List of parameters. */
-	IBK::Parameter				m_para[NUM_MP];					// XML:E
+	IBK::Parameter				m_para[NUM_P];					// XML:E
 
 };
 

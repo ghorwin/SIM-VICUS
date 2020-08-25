@@ -54,22 +54,22 @@ public:
 
 	/*! Type of zone. Defines whether zone is balanced and included in equation system. */
 	enum type_t {
-		ZT_CONSTANT,				// Keyword: Constant		'Zone with constant/predefined temperatures. (schedule) '
-		ZT_ACTIVE,					// Keyword: Active			'Zone described by a temperature node in space.'
+		ZT_Constant,				// Keyword: Constant		'Zone with constant/predefined temperatures. (schedule) '
+		ZT_Active,					// Keyword: Active			'Zone described by a temperature node in space.'
 		/// \todo research different models for ground temperature calculation
-		ZT_GROUND,					// Keyword: Ground			'Ground zone (calculates temperature based on standard).'
+		ZT_Ground,					// Keyword: Ground			'Ground zone (calculates temperature based on standard).'
 		NUM_ZT
 	};
 
 	/*! Parameters of a zone. */
 	enum para_t {
-		ZP_TEMPERATURE,				// Keyword: Temperature				[C]		'Temperature of the zone if set constant [C].'
-		ZP_RELATIVE_HUMIDITY,		// Keyword: RelativeHumidity		[%]		'Relative humidity of the zone if set constant [%].'
-		ZP_CO2_CONCENTRATION,		// Keyword: CO2Concentration		[g/m3]	'CO2 concentration of the zone if set constant [g/m3].'
-		ZP_AREA,					// Keyword: Area					[m2]	'Net usage area of the ground floor [m2] (for area-related outputs and loads).'
-		ZP_VOLUME,					// Keyword: Volume					[m3]	'Zone air volume [m3].'
-		ZP_HEATCAPACITY,			// Keyword: HeatCapacity			[J/K]	'Extra heat capacity [J/K].'
-		NUM_ZP
+		P_Temperature,				// Keyword: Temperature				[C]		'Temperature of the zone if set constant [C].'
+		P_RelativeHumidity,			// Keyword: RelativeHumidity		[%]		'Relative humidity of the zone if set constant [%].'
+		P_CO2Concentration,			// Keyword: CO2Concentration		[g/m3]	'CO2 concentration of the zone if set constant [g/m3].'
+		P_Area,						// Keyword: Area					[m2]	'Net usage area of the ground floor [m2] (for area-related outputs and loads).'
+		P_Volume,					// Keyword: Volume					[m3]	'Zone air volume [m3].'
+		P_HeatCapacity,				// Keyword: HeatCapacity			[J/K]	'Extra heat capacity [J/K].'
+		NUM_P
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -91,7 +91,7 @@ public:
 	type_t						m_type = NUM_ZT;					// XML:A:required
 
 	/*! Physical parameters describing the zone. */
-	IBK::Parameter				m_para[NUM_ZP];						// XML:E
+	IBK::Parameter				m_para[NUM_P];						// XML:E
 
 	/*! Optional schedule reference name for constant zones. */
 	std::string					m_scheduleName;						// XML:E
