@@ -15,9 +15,14 @@ python ../adoc_utils/scripts/adoc-image-prep.py html . &&
 
 echo '*** Copying files to ../../docs directory' &&
 
-mkdir ../../docs/$ADOC
+if [ ! -d "../../docs/$ADOC" ]; then
+	mkdir ../../docs/$ADOC
+fi &&
 mv $ADOC.html ../../docs/$ADOC/index.html &&
 mv $ADOC.pdf ../../docs &&
 
-cp -r ./images/* ../../docs/$ADOC/images
+imgFiles=(./images/*)
+if [ ${#files[@]} -gt 0 ]; then
+	cp -r ./images/* ../../docs/$ADOC/images
+fi
 
