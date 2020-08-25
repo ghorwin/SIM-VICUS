@@ -35,7 +35,7 @@
 // include model implementation class
 #include "NM_NandradModel.h"
 
-//#define TEST_PROJECT_WRITING
+#define TEST_PROJECT_WRITING
 
 //#define SERIALIZATION_TEST
 #ifdef SERIALIZATION_TEST

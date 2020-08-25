@@ -81,6 +81,9 @@ public:
 	/*! Return address of first element of vector. */
 	double * dataPtr() { return &m_data[0]; }
 
+	/*! Return address of first element of vector (const-version). */
+	const double * dataPtr() const { return &m_data[0]; }
+
 	/*! Return read-only access to vector. */
 	const std::vector<double> & data() const { return m_data; }
 

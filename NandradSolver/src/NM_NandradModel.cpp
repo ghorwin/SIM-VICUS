@@ -1725,7 +1725,7 @@ void NandradModel::initModels() {
 			m_modelContainer.push_back(mod); // transfer ownership
 
 			try {
-				mod->setup(m, m_project->m_simulationParameter, m_project->m_objectLists);
+				mod->setup(m, m_project->m_simulationParameter, m_project->m_objectLists, m_project->m_zones);
 			}
 			catch (IBK::Exception & ex) {
 				throw IBK::Exception(ex, IBK::FormatString("Error initializing natural ventilation model (id=%1).").arg(m.m_id), FUNC_ID);

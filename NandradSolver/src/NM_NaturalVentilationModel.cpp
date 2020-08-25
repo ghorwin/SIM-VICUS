@@ -5,6 +5,7 @@
 #include <NANDRAD_SimulationParameter.h>
 #include <NANDRAD_NaturalVentilationModel.h>
 #include <NANDRAD_ObjectList.h>
+#include <NANDRAD_Zone.h>
 
 #include "NM_KeywordList.h"
 
@@ -14,12 +15,14 @@ namespace NANDRAD_MODEL {
 
 void NaturalVentilationModel::setup(const NANDRAD::NaturalVentilationModel & ventilationModel,
 									const NANDRAD::SimulationParameter & simPara,
-									const std::vector<NANDRAD::ObjectList> & objLists)
+									const std::vector<NANDRAD::ObjectList> & objLists,
+									const std::vector<NANDRAD::Zone> & zones)
 {
 	FUNCID(NaturalVentilationModel::setup);
 
 	m_ventilationModel = &ventilationModel;
 	m_moistureBalanceEnabled = simPara.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled();
+	m_zones = &zones;
 
 	// check for mandatory parameters
 	switch (m_ventilationModel->m_model) {
@@ -53,8 +56,33 @@ void NaturalVentilationModel::setup(const NANDRAD::NaturalVentilationModel & ven
 		throw IBK::Exception(IBK::FormatString("Invalid reference type in object list '%1', expected type 'Zone'.")
 							 .arg(m_objectList->m_name), FUNC_ID);
 
+	// reserve storage memory for results
+	m_vectorValuedResults.resize(NUM_VVR);
 
 	// the rest of the initialization can only be done when the object lists have been initialized, i.e. this happens in resultDescriptions()
+}
+
+
+void NaturalVentilationModel::initResults(const std::vector<AbstractModel *> &) {
+	FUNCID(NaturalVentilationModel::initResults);
+
+	// no model IDs, nothing to do (see explanation in resultDescriptions())
+	if (m_objectList->m_filterID.m_ids.empty())
+		return; // nothing to compute, return
+	// get IDs of ventilated zones
+	std::vector<unsigned int> indexKeys(m_objectList->m_filterID.m_ids.begin(), m_objectList->m_filterID.m_ids.end());
+	// resize result vectors accordingly
+	for (unsigned int varIndex=0; varIndex<NUM_VVR; ++varIndex)
+		m_vectorValuedResults[varIndex] = VectorValuedQuantity(indexKeys);
+
+	// we also cache the zonal volumes for faster computation
+	for (unsigned int id : indexKeys) {
+		// find zone by ID
+		const std::vector<NANDRAD::Zone>::const_iterator it = std::find(m_zones->begin(), m_zones->end(), id);
+		if (it == m_zones->end())
+			throw IBK::Exception("Zone with id '%1' is referenced in object list but does not exist (error in object list init code).", FUNC_ID);
+		m_zoneVolumes.push_back(it->m_para[NANDRAD::Zone::ZP_VOLUME].value);
+	}
 }
 
 
@@ -89,31 +117,70 @@ void NaturalVentilationModel::resultDescriptions(std::vector<QuantityDescription
 
 
 const double * NaturalVentilationModel::resultValueRef(const QuantityName & quantityName) const {
-	return nullptr;
-
+	// determine variable enum index
+	unsigned int varIndex=0;
+	for (; varIndex<NUM_VVR; ++varIndex) {
+		if (KeywordList::Keyword("NaturalVentilationModel::VectorValuedResults", (VectorValuedResults)varIndex ) == quantityName.m_name)
+			break;
+	}
+	if (varIndex == NUM_VVR)
+		return nullptr;
+	// now check the index
+	if (quantityName.m_index == -1) // no index - return start of vector
+		return m_vectorValuedResults[varIndex].dataPtr();
+	// search for index
+	try {
+		const double & valRef = m_vectorValuedResults[varIndex][(unsigned int)quantityName.m_index];
+		return &valRef;
+	} catch (...) {
+		// exception is thrown when index is not available - return nullptr
+		return nullptr;
+	}
 }
 
 
-void NaturalVentilationModel::initResults(const std::vector<AbstractModel *> &) {
-}
-
-
-void NaturalVentilationModel::initInputReferences(const std::vector<AbstractModel *> & models) {
-
+void NaturalVentilationModel::initInputReferences(const std::vector<AbstractModel *> & ) {
+	if (m_objectList->m_filterID.m_ids.empty())
+		return; // nothing to compute, return
+	// size of value references is 1 for ambient temperature and n for all ventilated zones
+	m_valueRefs.resize(1 + m_objectList->m_filterID.m_ids.size());
 }
 
 
 void NaturalVentilationModel::inputReferences(std::vector<InputReference> & inputRefs) const {
+	if (m_objectList->m_filterID.m_ids.empty())
+		return; // nothing to compute, return
+
+	// We need ambient temperature from loads and we need air temperatures from all ventilated zones:
+	// 1. Loads.Temperature
+	// 2. Zone[id1].AirTemperature
+	// 3. Zone[id2].AirTemperature
+	// 4. ...
+	// where the zone IDs follow the order of the IDs in the object list
+
+	InputReference ref;
+	ref.m_id = 0;
+	ref.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
+	ref.m_name.m_name = "Temperature";
+	inputRefs.push_back(ref);
+	for (unsigned int id : m_objectList->m_filterID.m_ids) {
+		InputReference ref;
+		ref.m_id = id;
+		ref.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+		ref.m_name.m_name = "AirTemperature";
+		inputRefs.push_back(ref);
+	}
+}
+
+
+void NaturalVentilationModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
+	// we compute ventilation rates per zone and heat fluxes per zone, ventilation rates (currently) have
+	// no dependencies (only from schedules), but heat fluxes depend on ambient temperatures and on zone temperatures
 
 }
 
-void NaturalVentilationModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const
-{
 
-}
-
-void NaturalVentilationModel::setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs)
-{
+void NaturalVentilationModel::setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs) {
 
 }
 

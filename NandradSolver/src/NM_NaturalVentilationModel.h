@@ -8,6 +8,7 @@
 namespace NANDRAD {
 	class SimulationParameter;
 	class NaturalVentilationModel;
+	class Zone;
 }
 
 namespace NANDRAD_MODEL {
@@ -41,7 +42,7 @@ public:
 			pointers to object list elements can be stored).
 	*/
 	void setup(const NANDRAD::NaturalVentilationModel & ventilationModel, const NANDRAD::SimulationParameter &simPara,
-			   const std::vector<NANDRAD::ObjectList> & objLists);
+			   const std::vector<NANDRAD::ObjectList> & objLists, const std::vector<NANDRAD::Zone> & zones);
 
 
 	// *** Re-implemented from AbstractModel
@@ -54,14 +55,14 @@ public:
 	/*! Return unique class ID name of implemented model. */
 	virtual const char * ModelIDName() const override { return "NaturalVentilationModel"; }
 
+	/*! Resizes m_results vector. */
+	virtual void initResults(const std::vector<AbstractModel*> & /* models */) override;
+
 	/*! Populates the vector resDesc with descriptions of all results provided by this model. */
 	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const override;
 
 	/*! Retrieves reference pointer to a value with given input reference name. */
 	virtual const double * resultValueRef(const QuantityName & quantityName) const override;
-
-	/*! Resizes m_results vector. */
-	virtual void initResults(const std::vector<AbstractModel*> & /* models */) override;
 
 
 	// *** Re-implemented from AbstractStateDependency
@@ -109,8 +110,16 @@ private:
 	/*! Quick access pointer to object list (for scheduled model). */
 	const NANDRAD::ObjectList						*m_objectList = nullptr;
 
+	/*! Cached pointer to zone parameters, to access zone volumes during init. */
+	const std::vector<NANDRAD::Zone>				*m_zones = nullptr;
+
+	/*! Air volumes of the zones in [m3], size matches ids in m_objectList. */
+	std::vector<double>								m_zoneVolumes;
+
 	/*! Vector valued results, computed/updated during the calculation. */
-	std::vector<VectorValuedQuantity>	m_vectorValuedResults;
+	std::vector<VectorValuedQuantity>				m_vectorValuedResults;
+	/*! Vector with input references. */
+	std::vector<const double*>						m_valueRefs;
 };
 
 } // namespace NANDRAD_MODEL
