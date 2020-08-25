@@ -1,6 +1,7 @@
 #include "NM_NaturalVentilationModel.h"
 
 #include <IBK_Exception.h>
+#include <IBK_physics.h>
 
 #include <NANDRAD_SimulationParameter.h>
 #include <NANDRAD_NaturalVentilationModel.h>
@@ -139,14 +140,6 @@ const double * NaturalVentilationModel::resultValueRef(const QuantityName & quan
 }
 
 
-void NaturalVentilationModel::initInputReferences(const std::vector<AbstractModel *> & ) {
-	if (m_objectList->m_filterID.m_ids.empty())
-		return; // nothing to compute, return
-	// size of value references is 1 for ambient temperature and n for all ventilated zones
-	m_valueRefs.resize(1 + m_objectList->m_filterID.m_ids.size());
-}
-
-
 void NaturalVentilationModel::inputReferences(std::vector<InputReference> & inputRefs) const {
 	if (m_objectList->m_filterID.m_ids.empty())
 		return; // nothing to compute, return
@@ -162,14 +155,25 @@ void NaturalVentilationModel::inputReferences(std::vector<InputReference> & inpu
 	ref.m_id = 0;
 	ref.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
 	ref.m_name.m_name = "Temperature";
+	ref.m_required = true;
 	inputRefs.push_back(ref);
 	for (unsigned int id : m_objectList->m_filterID.m_ids) {
 		InputReference ref;
 		ref.m_id = id;
 		ref.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
 		ref.m_name.m_name = "AirTemperature";
+		ref.m_required = true;
 		inputRefs.push_back(ref);
 	}
+}
+
+
+void NaturalVentilationModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/,
+												const std::vector<const double *> & resultValueRefs)
+{
+	// simply store and check value references
+	IBK_ASSERT(resultValueRefs.size() == 1 + m_objectList->m_filterID.m_ids.size());
+	m_valueRefs = resultValueRefs; // Note: we set all our input refs as mandatory, so we can rely on getting valid pointers
 }
 
 
@@ -184,22 +188,39 @@ void NaturalVentilationModel::stateDependencies(std::vector<std::pair<const doub
 		// dependency on ambient temperature
 		/// \todo clarify, if we need to specify dependencies on purely time-dependent quantities
 		resultInputValueReferences.push_back(
-					std::make_pair(m_vectorValuedResults[VVR_VentilationHeatFlux].dataPtr() + i, m_valueRefs[0]) );
+					std::make_pair(m_vectorValuedResults[VVR_InfiltrationHeatFlux].dataPtr() + i, m_valueRefs[0]) );
 		// dependency on room air temperature of corresponding zone
 		resultInputValueReferences.push_back(
-					std::make_pair(m_vectorValuedResults[VVR_VentilationHeatFlux].dataPtr() + i, m_valueRefs[1+i]) );
+					std::make_pair(m_vectorValuedResults[VVR_InfiltrationHeatFlux].dataPtr() + i, m_valueRefs[1+i]) );
 	}
 }
 
 
-void NaturalVentilationModel::setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions,
-												const std::vector<const double *> & resultValueRefs)
-{
-
-}
-
 int NaturalVentilationModel::update() {
+	// get ambient temperature in  [K]
+	double Tambient = *m_valueRefs[0];
+	// loop over all zones
+	double * resultVentRate = m_vectorValuedResults[VVR_InfiltrationRate].dataPtr();
+	double * resultVentHeatFlux = m_vectorValuedResults[VVR_InfiltrationHeatFlux].dataPtr();
+	for (unsigned int i=0; i<m_zoneVolumes.size(); ++i) {
+		// get room air temperature in [K]
+		double Tzone = *m_valueRefs[i+1];
+		// get ventilation rate in [1/s]
+		double rate = m_ventilationRate;
+		switch (m_ventilationModel->m_modelType) {
+			case NANDRAD::NaturalVentilationModel::MT_Scheduled : {
+				/// \todo retrieve scheduled ventilation rate
+			} break;
+			default: ;
+		}
+		// store ventilation rate result
+		resultVentRate[i] = rate;
+		// compute ventilation heat flux in [W]
+		resultVentHeatFlux[i] = IBK::RHO_AIR*IBK::C_AIR*m_zoneVolumes[i]*(Tambient - Tzone);
+	}
+
 	return 0; // signal success
 }
+
 
 } // namespace NANDRAD_MODEL

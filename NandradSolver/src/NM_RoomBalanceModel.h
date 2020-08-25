@@ -57,27 +57,6 @@ public:
 		NUM_R
 	};
 
-	/*! Fluxes/loads types taken as input.
-		Note: some are scalars and some are expanded to several flux input quantities depending on number of models providing these values.
-	*/
-	enum InputReferences {
-		InputRef_WallsHeatConductionLoad,					// Keyword: WallsHeatConductionLoad						[W]		'Heat load by heat conduction through all enclosing walls.'
-		InputRef_WindowsSWRadLoad,							// Keyword: WindowsSWRadLoad							[W]		'Heat loads by short wave radiation through all windows of a room.'
-		InputRef_WindowsHeatTransmissionLoad,				// Keyword: WindowsHeatTransmissionLoad					[W]		'Heat loads by heat transmission through all windows of a room.'
-		InputRef_LWRadBalanceLoad,							// Keyword: LWRadBalanceLoad							[W]		'Balance loads by long wave radiation exchange on all window inside surfaces.'
-		InputRef_SWRadBalanceLoad,							// Keyword: SWRadBalanceLoad							[W]		'Balance loads by short wave radiation exchange on all window inside surfaces.'
-		InputRef_ConvectiveHeatingsLoad,					// Keyword: ConvectiveHeatingsLoad						[W]		'Heat loads by convective heating.'
-		InputRef_ConvectiveCoolingsLoad,					// Keyword: ConvectiveCoolingsLoad						[W]		'Heat loss by convective cooling.'
-		InputRef_ConvectiveUsersLoad,						// Keyword: ConvectiveUsersLoad							[W]		'Loads by occupancy.'
-		InputRef_ConvectiveEquipmentLoad,					// Keyword: ConvectiveEquipmentLoad						[W]		'Electic equipment loads.'
-		InputRef_ConvectiveLightingLoad,					// Keyword: ConvectiveLightingLoad						[W]		'Heat gains by lighting.'
-		InputRef_UserVentilationThermalLoad,				// Keyword: UserVentilationThermalLoad					[W]		'Heat load by air ventilation.'
-		InputRef_InfiltrationThermalLoad,					// Keyword: InfiltrationThermalLoad						[W]		'Heat load by infiltration.'
-		InputRef_AirConditionThermalLoad,					// Keyword: AirConditionThermalLoad						[W]		'Heat load by air conditioning.'
-		InputRef_DomesticWaterConsumptionSensitiveHeatGain,	// Keyword: DomesticWaterConsumptionSensitiveHeatGain	[W]		'Sensitive heat gain towards the room by water consumption.'
-		NUM_InputRef
-	};
-
 	/*! Constructor */
 	RoomBalanceModel(unsigned int id, const std::string &displayName) :
 		m_id(id), m_displayName(displayName)
@@ -136,11 +115,11 @@ public:
 	*/
 	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const override;
 
-	/*! Returns dependencies between result variables and input variables. */
-	virtual void stateDependencies(std::vector< std::pair<const double *, const double *> > & resultInputValueReferences) const override;
-
 	/*! Provides the object with references to requested input variables (persistent memory location). */
 	virtual void setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs) override;
+
+	/*! Returns dependencies between result variables and input variables. */
+	virtual void stateDependencies(std::vector< std::pair<const double *, const double *> > & resultInputValueReferences) const override;
 
 	/*! Sums up all provided input quantities and computes divergence of balance equations. */
 	int update() override;
@@ -171,6 +150,10 @@ private:
 
 	/*! Value references for heat conduction fluxes in [W] (positive if out-of-room). */
 	std::vector<const double *>						m_heatCondValueRefs;
+	/*! Number of infiltration model input refs that we have generated and that we get value refs for. */
+	unsigned int									m_infiltrationModelCount = 0;
+	/*! Value reference for natural ventilation/infiltration flux in [W] (positive if into-room). */
+	const double *									m_infiltrationValueRef = nullptr;
 
 	/*! Vector with cached derivatives, updated at last call to update(). */
 	std::vector<double>								m_ydot;

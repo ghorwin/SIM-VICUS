@@ -110,11 +110,11 @@ public:
 	*/
 	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const override;
 
-	/*! Returns dependencies between result variables and input variables. */
-	virtual void stateDependencies(std::vector< std::pair<const double *, const double *> > & resultInputValueReferences) const override;
-
 	/*! Provides the object with references to requested input variables (persistent memory location). */
 	virtual void setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs) override;
+
+	/*! Returns dependencies between result variables and input variables. */
+	virtual void stateDependencies(std::vector< std::pair<const double *, const double *> > & resultInputValueReferences) const override;
 
 	/*! Sums up all provided input quantities and computes divergence of balance equations. */
 	int update() override;

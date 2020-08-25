@@ -45,6 +45,13 @@ class QuantityDescription;
 
 	A state-dependent model object needs to inherit both from
 	AbstractModel and AbstractStateDependency.
+
+	Note: the calling order of the virtual functions by the framework during init is generally:
+
+	1. initInputReferences()
+	2. inputReferences() const
+	3. setInputValueRefs()
+	4. stateDependencies() const
 */
 class AbstractStateDependency : public ZEPPELIN::DependencyObject {
 public:
@@ -78,6 +85,16 @@ public:
 		(except maybe for output writing).
 	*/
 	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const  = 0;
+
+	/*! Provides the object with references to requested input variables (persistent memory location).
+		The vectors passed as argument have the same size as the requested input reference vector populated in function
+		inputReferences(). Also, the order of the variables matches the order of the requested input references.
+		\param resultDescriptions The corresponding quantity descriptions with meta-data about the result quantities
+			(needed by some models to obtain units or check for valid units).
+		\param resultValueRefs Persistent memory locations of all variable. Unavailable variables (not required) have
+			nullptr values. The corresponding QuantityDescription is also unused.
+	*/
+	virtual void setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs) = 0;
 
 	/*! Returns a pattern of direkt computational dependencies between input values
 		and result values of the current model (the first pair entry corresponds
@@ -120,16 +137,6 @@ public:
 		const QuantityName &targetName,
 		NANDRAD::ImplicitModelFeedback::operation_t operation) = 0;
 #endif
-
-	/*! Provides the object with references to requested input variables (persistent memory location).
-		The vectors passed as argument have the same size as the requested input reference vector populated in function
-		inputReferences(). Also, the order of the variables matches the order of the requested input references.
-		\param resultDescriptions The corresponding quantity descriptions with meta-data about the result quantities
-			(needed by some models to obtain units or check for valid units).
-		\param resultValueRefs Persistent memory locations of all variable. Unavailable variables (not required) have
-			nullptr values. The corresponding QuantityDescription is also unused.
-	*/
-	virtual void setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs) = 0;
 
 	/*! This function is called whenever result quantities of other models change.
 		Re-implement this function in derived classes and handle all your update-functionality here.

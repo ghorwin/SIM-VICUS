@@ -14,16 +14,16 @@ namespace NANDRAD {
 namespace NANDRAD_MODEL {
 
 /*! A model for natural ventilation rate.
+	The model instances is identified by reference type ZONE and the id of the NANDRAD model parametrization block.
 	It implements either constant or schedules ventilation rates and compute thermal ventilation loads
 	for all zones referenced in the object list.
-
 */
 class NaturalVentilationModel : public AbstractModel, public AbstractStateDependency {
 public:
 	/*! Computed results, provided with access via zone ID. */
 	enum VectorValuedResults {
-		VVR_VentilationRate,				// Keyword: VentilationRate					[1/h]	'Ventilation rate'
-		VVR_VentilationHeatFlux,			// Keyword: VentilationHeatFlux				[W]		'Ventilation heat flux'
+		VVR_InfiltrationRate,				// Keyword: InfiltrationRate					[1/h]	'Natural ventilation/infiltration air change rate'
+		VVR_InfiltrationHeatFlux,			// Keyword: InfiltrationHeatFlux				[W]		'Infiltration/natural ventilation heat flux'
 		NUM_VVR
 	};
 
@@ -55,6 +55,9 @@ public:
 	/*! Return unique class ID name of implemented model. */
 	virtual const char * ModelIDName() const override { return "NaturalVentilationModel"; }
 
+	/*! Returns unique ID of this model instance. */
+	virtual unsigned int id() const override { return m_id; }
+
 	/*! Resizes m_results vector. */
 	virtual void initResults(const std::vector<AbstractModel*> & /* models */) override;
 
@@ -67,12 +70,6 @@ public:
 
 	// *** Re-implemented from AbstractStateDependency
 
-	/*! Composes all input references.
-		Here we collect all loads/fluxes into the room and store them such, that we can efficiently compute
-		sums, for example for all heat fluxes from constructions into the room etc.
-	*/
-	virtual void initInputReferences(const std::vector<AbstractModel*> & models) override;
-
 	/*! Returns vector with model input references.
 		Implicit models must generate their own model input references and populate the
 		vector argument.
@@ -81,11 +78,12 @@ public:
 	*/
 	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const override;
 
+	/*! Provides the object with references to requested input variables (persistent memory location). */
+	virtual void setInputValueRefs(const std::vector<QuantityDescription> &,
+								   const std::vector<const double *> & resultValueRefs) override;
+
 	/*! Returns dependencies between result variables and input variables. */
 	virtual void stateDependencies(std::vector< std::pair<const double *, const double *> > & resultInputValueReferences) const override;
-
-	/*! Provides the object with references to requested input variables (persistent memory location). */
-	virtual void setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs) override;
 
 	/*! Sums up all provided input quantities and computes divergence of balance equations. */
 	int update() override;

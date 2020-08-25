@@ -152,6 +152,13 @@ void ConstructionBalanceModel::inputReferences(std::vector<InputReference> & inp
 }
 
 
+void ConstructionBalanceModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/,
+												 const std::vector<const double *> & resultValueRefs)
+{
+	m_valueRefs = resultValueRefs;
+}
+
+
 void ConstructionBalanceModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
 
 	// this model computes:
@@ -189,26 +196,19 @@ void ConstructionBalanceModel::stateDependencies(std::vector<std::pair<const dou
 		// remaining dependency pattern
 		for (unsigned int i=0; i<m_statesModel->m_nElements; ++i) {
 			// each ydot depends on the temperature in the cell itself
-			resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], &m_statesModel->m_vectorValuedResults[ConstructionStatesModel::VVR_LayerTemperature].data()[i] ) );
+			resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_statesModel->m_vectorValuedResults[ConstructionStatesModel::VVR_LayerTemperature].dataPtr() + i ) );
 			// and on right-side element
 			if (i<m_statesModel->m_nElements-1)
-				resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], &m_statesModel->m_vectorValuedResults[ConstructionStatesModel::VVR_LayerTemperature].data()[i+1] ) );
+				resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_statesModel->m_vectorValuedResults[ConstructionStatesModel::VVR_LayerTemperature].dataPtr() + i+1 ) );
 			// and on left-side element
 			if (i > 0)
-				resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], &m_statesModel->m_vectorValuedResults[ConstructionStatesModel::VVR_LayerTemperature].data()[i-1] ) );
+				resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_statesModel->m_vectorValuedResults[ConstructionStatesModel::VVR_LayerTemperature].dataPtr() + i-1 ) );
 		}
 	}
 	else {
 		/// \todo hygrothermal code
 	}
 
-}
-
-
-void ConstructionBalanceModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/,
-												 const std::vector<const double *> & resultValueRefs)
-{
-	m_valueRefs = resultValueRefs;
 }
 
 

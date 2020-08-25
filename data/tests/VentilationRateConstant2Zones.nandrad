@@ -34,7 +34,7 @@
 			<ClimateFileName>${Project Directory}/climate/DEU_Potsdam_60.c6b</ClimateFileName>
 		</Location>
 		<Models>
-			<NaturalVentilationModel id="1" displayName="Wet zone vent" model="Constant">
+			<NaturalVentilationModel id="1" displayName="Wet zone vent" modelType="Constant">
 				<ZoneObjectList>Wet areas</ZoneObjectList>
 				<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
 			</NaturalVentilationModel>
