@@ -17,7 +17,7 @@
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">5</IBK:Parameter>
 			<Interval>
-				<IBK:Parameter name="End" unit="d">50</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">4</IBK:Parameter>
 			</Interval>
 		</SimulationParameter>
 		<SolverParameters>
