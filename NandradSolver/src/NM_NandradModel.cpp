@@ -842,7 +842,7 @@ void NandradModel::initSolverParameter(const NANDRAD::ArgsParser & args) {
 		if (m_project->m_solverParameter.m_lesSolver == NANDRAD::SolverParameter::NUM_LES) {
 			m_project->m_solverParameter.m_lesSolver = NANDRAD::SolverParameter::LES_KLU;
 //			m_project->m_solverParameter.m_preconditioner = NANDRAD::SolverParameter::PRE_ILU;
-			IBK::IBK_Message("Auto-selecting GMRES with ILU preconditioner.\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+			IBK::IBK_Message("Auto-selecting KLU as linear equation system solver.\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		}
 	}
 

@@ -14,7 +14,7 @@ namespace NANDRAD {
 namespace NANDRAD_MODEL {
 
 /*! A model for natural ventilation rate.
-	The model instances is identified by reference type ZONE and the id of the NANDRAD model parametrization block.
+	The model instances is identified by reference type MODEL and the id of the NANDRAD model parametrization block.
 	It implements either constant or schedules ventilation rates and compute thermal ventilation loads
 	for all zones referenced in the object list.
 */
@@ -47,9 +47,9 @@ public:
 
 	// *** Re-implemented from AbstractModel
 
-	/*! Thermal ventilation loads can be requested via zone reference. */
+	/*! Thermal ventilation loads can be requested via MODEL reference. */
 	virtual NANDRAD::ModelInputReference::referenceType_t referenceType() const override {
-		return NANDRAD::ModelInputReference::MRT_ZONE;
+		return NANDRAD::ModelInputReference::MRT_MODEL;
 	}
 
 	/*! Return unique class ID name of implemented model. */

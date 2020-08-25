@@ -81,7 +81,8 @@ void NaturalVentilationModel::initResults(const std::vector<AbstractModel *> &) 
 		// find zone by ID
 		const std::vector<NANDRAD::Zone>::const_iterator it = std::find(m_zones->begin(), m_zones->end(), id);
 		if (it == m_zones->end())
-			throw IBK::Exception("Zone with id '%1' is referenced in object list but does not exist (error in object list init code).", FUNC_ID);
+			throw IBK::Exception(IBK::FormatString("Zone with id '%1' is referenced in object list '%2' but does not exist "
+								 "(error in object list init code).").arg(id).arg(m_objectList->m_name), FUNC_ID);
 		m_zoneVolumes.push_back(it->m_para[NANDRAD::Zone::P_Volume].value);
 	}
 }

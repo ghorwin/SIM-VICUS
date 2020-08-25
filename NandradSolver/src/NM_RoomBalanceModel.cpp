@@ -153,7 +153,7 @@ void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & 
 				++m_infiltrationModelCount;
 				InputReference r;
 				r.m_id = model->id();
-				r.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+				r.m_referenceType = NANDRAD::ModelInputReference::MRT_MODEL;
 				r.m_name.m_name = "InfiltrationHeatFlux";
 				r.m_name.m_index = (int)m_id; // select result for us (our zone id)
 				r.m_required = false;
