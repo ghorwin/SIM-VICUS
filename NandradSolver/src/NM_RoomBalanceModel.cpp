@@ -45,7 +45,7 @@ void RoomBalanceModel::setup( const NANDRAD::SimulationParameter &simPara) {
 	}
 	else {
 		// resize results vector
-		m_results.resize(2);
+		m_results.resize(R_CompleteMoistureLoad); // R_CompleteMoistureLoad = first moisture-related result
 
 		// resize ydot vector - one balance equation
 		m_ydot.resize(1);
@@ -54,7 +54,7 @@ void RoomBalanceModel::setup( const NANDRAD::SimulationParameter &simPara) {
 
 
 void RoomBalanceModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
-	int varCount = 2;
+	int varCount = R_CompleteMoistureLoad; // R_CompleteMoistureLoad = first moisture-related result
 	if (m_simPara->m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].isEnabled()) {
 		varCount = NUM_R; // more variables for hygrothermal calculation
 	}
@@ -210,8 +210,10 @@ void RoomBalanceModel::stateDependencies(std::vector<std::pair<const double *, c
 			resultInputValueReferences.push_back(std::make_pair(&m_results[R_ConstructionHeatConductionLoad], heatCondVars));
 		// total flux depends on all computed fluxes
 		resultInputValueReferences.push_back(std::make_pair(&m_results[R_CompleteThermalLoad], &m_results[R_ConstructionHeatConductionLoad]));
-		if (m_infiltrationValueRef != nullptr)
+		if (m_infiltrationValueRef != nullptr) {
 			resultInputValueReferences.push_back(std::make_pair(&m_results[R_CompleteThermalLoad], m_infiltrationValueRef));
+			resultInputValueReferences.push_back(std::make_pair(&m_results[R_InfiltrationHeatLoad], m_infiltrationValueRef));
+		}
 
 		// the room energy balance now depends on the sum of all heat fluxes
 		resultInputValueReferences.push_back(std::make_pair(&m_ydot[0], &m_results[R_CompleteThermalLoad]));
@@ -234,8 +236,10 @@ int RoomBalanceModel::update() {
 	double SumQdot = sumQHeatCondToWalls;
 
 	// add ventilation rate flux
-	if (m_infiltrationValueRef != nullptr)
+	if (m_infiltrationValueRef != nullptr) {
 		SumQdot += *m_infiltrationValueRef;
+		m_results[R_InfiltrationHeatLoad] = *m_infiltrationValueRef;
+	}
 
 	// store the sum of all loads
 	m_results[R_CompleteThermalLoad] = SumQdot;
