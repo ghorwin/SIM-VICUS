@@ -327,7 +327,7 @@ private:
 	/*! Cached time point in [s], updated at last call to setTime(). */
 	double													m_t;
 	/*! Factor for the error weights for all zones, 1 per default. */
-	double													m_weightsFactorZones;
+	double													m_weightsFactorZones = 1.0;
 	/*! Flag that indicates the m_y has changed.
 		This flag is queried in ydot() to determine if
 		a re-calculation is necessary.

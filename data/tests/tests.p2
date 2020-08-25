@@ -4,8 +4,9 @@
 	<Directories>
 		<Directory>
 			<Path>.</Path>
+			<SubDir Color="#416fce" Checked="1">InfiltrationConstantSingleZone</SubDir>
 			<SubDir Color="#416fce" Checked="1">InfiltrationConstantSingleZone.doc</SubDir>
-			<SubDir Color="#ffaa00" Checked="1">InfiltrationConstantSingleZone.gcc_linux</SubDir>
+			<SubDir Color="#ffaa00" Checked="0">InfiltrationConstantSingleZone.gcc_linux</SubDir>
 			<SubDir Color="#ff007f" Checked="0">IntegralMeanOutputs</SubDir>
 			<SubDir Color="#7141d1" Checked="0">IntegralMeanOutputs.gcc_linux</SubDir>
 			<SubDir Color="#416fce" Checked="0">SingleZoneSingleOutdoorsConstruction</SubDir>
@@ -81,6 +82,13 @@
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
+				<Extractor>
+					<DataIOFileName>InfiltrationConstantSingleZone/results/states.tsv?2</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
 			</Extractors>
 			<ChartModel chartType="2D">
 				<SeriesProperties>
@@ -95,6 +103,11 @@
 						<PenColor>#ffc120</PenColor>
 						<MarkerColor>#ffc120</MarkerColor>
 					</Series>
+					<Series>
+						<TitleText>Raumlufttemperatur (NANDRAD 2.0) - reltol = 1e-5</TitleText>
+						<PenColor>#004586</PenColor>
+						<MarkerColor>#004586</MarkerColor>
+					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
@@ -105,7 +118,7 @@
 						<Maximum>2</Maximum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
-						<DateTimeZero>978310800000</DateTimeZero>
+						<DateTimeZero>978314400000</DateTimeZero>
 					</Axis>
 					<Axis index="1">
 						<TitleText>$quantity [$unit]</TitleText>
