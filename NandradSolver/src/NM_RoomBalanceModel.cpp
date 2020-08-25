@@ -208,8 +208,10 @@ void RoomBalanceModel::stateDependencies(std::vector<std::pair<const double *, c
 		// add all heat conduction flux vars as input references for the summation heat flux
 		for (const double * heatCondVars : m_heatCondValueRefs)
 			resultInputValueReferences.push_back(std::make_pair(&m_results[R_ConstructionHeatConductionLoad], heatCondVars));
+		// total flux depends on all computed fluxes
+		resultInputValueReferences.push_back(std::make_pair(&m_results[R_CompleteThermalLoad], &m_results[R_ConstructionHeatConductionLoad]));
 		// the room energy balance now depends on this heat conduction flux sum
-		resultInputValueReferences.push_back(std::make_pair(&m_ydot[0], &m_results[R_ConstructionHeatConductionLoad]));
+		resultInputValueReferences.push_back(std::make_pair(&m_ydot[0], &m_results[R_CompleteThermalLoad]));
 
 		/// \todo other variables with influence on room energy balance (see update())
 	}
