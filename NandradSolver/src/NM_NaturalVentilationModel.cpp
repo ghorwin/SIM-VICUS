@@ -96,16 +96,16 @@ void NaturalVentilationModel::resultDescriptions(std::vector<QuantityDescription
 	if (m_objectList->m_filterID.m_ids.empty())
 		return; // nothing to compute, return
 
-	// for each of the zones in the object list, we generate vector-valued results as defined in the type VectorValuedResults
-	// retrieve index information from vector valued results
+	// Retrieve index information from vector valued results.
 	std::vector<unsigned int> indexKeys(m_objectList->m_filterID.m_ids.begin(), m_objectList->m_filterID.m_ids.end());
 
-	const char * const cat = "NaturalVentilationModel::VectorValuedResults";
+	// For each of the zones in the object list we generate vector-valued results as defined
+	// in the type VectorValuedResults.
 	for (int varIndex=0; varIndex<NUM_VVR; ++varIndex) {
 		// store name, unit and description of the vector quantity
-		const std::string &quantityName = KeywordList::Keyword(cat, varIndex );
-		const std::string &quantityUnit = KeywordList::Unit( cat, varIndex );
-		const std::string &quantityDescription = KeywordList::Description( cat, varIndex );
+		const std::string &quantityName = KeywordList::Keyword("NaturalVentilationModel::VectorValuedResults", varIndex );
+		const std::string &quantityUnit = KeywordList::Unit("NaturalVentilationModel::VectorValuedResults", varIndex );
+		const std::string &quantityDescription = KeywordList::Description("NaturalVentilationModel::VectorValuedResults", varIndex );
 		// vector-valued quantity descriptions store the description
 		// of the quantity itself as well as key strings and descriptions
 		// for all vector elements
@@ -174,13 +174,27 @@ void NaturalVentilationModel::inputReferences(std::vector<InputReference> & inpu
 
 
 void NaturalVentilationModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
+	if (m_objectList->m_filterID.m_ids.empty())
+		return; // nothing to compute, return
 	// we compute ventilation rates per zone and heat fluxes per zone, ventilation rates (currently) have
 	// no dependencies (only from schedules), but heat fluxes depend on ambient temperatures and on zone temperatures
+	for (unsigned int i=0; i<m_objectList->m_filterID.m_ids.size(); ++i) {
+		// pair: result - input
 
+		// dependency on ambient temperature
+		/// \todo clarify, if we need to specify dependencies on purely time-dependent quantities
+		resultInputValueReferences.push_back(
+					std::make_pair(m_vectorValuedResults[VVR_VentilationHeatFlux].dataPtr() + i, m_valueRefs[0]) );
+		// dependency on room air temperature of corresponding zone
+		resultInputValueReferences.push_back(
+					std::make_pair(m_vectorValuedResults[VVR_VentilationHeatFlux].dataPtr() + i, m_valueRefs[1+i]) );
+	}
 }
 
 
-void NaturalVentilationModel::setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs) {
+void NaturalVentilationModel::setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions,
+												const std::vector<const double *> & resultValueRefs)
+{
 
 }
 
