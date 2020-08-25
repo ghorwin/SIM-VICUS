@@ -188,8 +188,8 @@ void NaturalVentilationModel::stateDependencies(std::vector<std::pair<const doub
 
 		// dependency on ambient temperature
 		/// \todo clarify, if we need to specify dependencies on purely time-dependent quantities
-		resultInputValueReferences.push_back(
-					std::make_pair(m_vectorValuedResults[VVR_InfiltrationHeatFlux].dataPtr() + i, m_valueRefs[0]) );
+//		resultInputValueReferences.push_back(
+//					std::make_pair(m_vectorValuedResults[VVR_InfiltrationHeatFlux].dataPtr() + i, m_valueRefs[0]) );
 		// dependency on room air temperature of corresponding zone
 		resultInputValueReferences.push_back(
 					std::make_pair(m_vectorValuedResults[VVR_InfiltrationHeatFlux].dataPtr() + i, m_valueRefs[1+i]) );

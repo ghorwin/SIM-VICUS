@@ -144,8 +144,8 @@ void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & 
 				m_inputRefs.push_back(r);
 			}
 		}
-		// create input references for zone-specific inputs (optional)
-		else if (model->referenceType() == NANDRAD::ModelInputReference::MRT_ZONE) {
+		// create input references for model that generate zone-specific inputs (optional)
+		else if (model->referenceType() == NANDRAD::ModelInputReference::MRT_MODEL) {
 			// *** natural ventilation model ***
 
 			NaturalVentilationModel * natVentModel = dynamic_cast<NaturalVentilationModel *>(model);
@@ -210,9 +210,11 @@ void RoomBalanceModel::stateDependencies(std::vector<std::pair<const double *, c
 			resultInputValueReferences.push_back(std::make_pair(&m_results[R_ConstructionHeatConductionLoad], heatCondVars));
 		// total flux depends on all computed fluxes
 		resultInputValueReferences.push_back(std::make_pair(&m_results[R_CompleteThermalLoad], &m_results[R_ConstructionHeatConductionLoad]));
-		// the room energy balance now depends on this heat conduction flux sum
-		resultInputValueReferences.push_back(std::make_pair(&m_ydot[0], &m_results[R_CompleteThermalLoad]));
+		if (m_infiltrationValueRef != nullptr)
+			resultInputValueReferences.push_back(std::make_pair(&m_results[R_CompleteThermalLoad], m_infiltrationValueRef));
 
+		// the room energy balance now depends on the sum of all heat fluxes
+		resultInputValueReferences.push_back(std::make_pair(&m_ydot[0], &m_results[R_CompleteThermalLoad]));
 		/// \todo other variables with influence on room energy balance (see update())
 	}
 }
