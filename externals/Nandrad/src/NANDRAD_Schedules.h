@@ -56,23 +56,6 @@ public:
 	NANDRAD_READWRITE
 	NANDRAD_COMP(Schedules)
 
-#if 0
-	/*! Fill parameter with list of defined schedules.
-		Parameter ID-names have the format SpaceType:IDName. Boolean defines whether this
-		is a parameter defined via AnnualSchedule (true).
-	*/
-	void parameterList(std::map< std::string, bool > & parameterIDNames) const;
-
-	/*! Returns a unit vector with date/time-value pairs for a selected parameter.
-		Parameter must be one of the parameters returned from the parameterList() function.
-	*/
-	void parameterValues(const std::string & parameterIDName, NANDRAD::LinearSplineParameter & values) const;
-
-	/*! Fill parameter with list of defined schedules.
-		Boolean defines whether this is has a parameter defined via AnnualSchedule (true).
-	*/
-	void scheduleList(std::map< std::string, bool > & scheduleNames) const;
-#endif
 	// *** PUBLIC MEMBER VARIABLES ***
 
 
