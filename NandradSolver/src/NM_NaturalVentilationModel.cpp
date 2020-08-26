@@ -166,6 +166,19 @@ void NaturalVentilationModel::inputReferences(std::vector<InputReference> & inpu
 		ref.m_required = true;
 		inputRefs.push_back(ref);
 	}
+
+
+	// for scheduled ventilation model, also request zone-specific InfiltrationRate from schedules
+	if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_Scheduled) {
+		for (unsigned int id : m_objectList->m_filterID.m_ids) {
+			InputReference ref;
+			ref.m_id = id;
+			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+			ref.m_name.m_name = "InfiltrationRateSchedule"; // to avoid re-using the variable 'InfiltrationRate' that might be published by a zone model
+			ref.m_required = true;
+			inputRefs.push_back(ref);
+		}
+	}
 }
 
 
@@ -173,7 +186,10 @@ void NaturalVentilationModel::setInputValueRefs(const std::vector<QuantityDescri
 												const std::vector<const double *> & resultValueRefs)
 {
 	// simply store and check value references
-	IBK_ASSERT(resultValueRefs.size() == 1 + m_objectList->m_filterID.m_ids.size());
+	unsigned int expectedSize = 1 + m_objectList->m_filterID.m_ids.size();
+	if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_Scheduled)
+		expectedSize += m_objectList->m_filterID.m_ids.size();
+	IBK_ASSERT(resultValueRefs.size() == expectedSize);
 	m_valueRefs = resultValueRefs; // Note: we set all our input refs as mandatory, so we can rely on getting valid pointers
 }
 
@@ -198,19 +214,27 @@ void NaturalVentilationModel::stateDependencies(std::vector<std::pair<const doub
 
 
 int NaturalVentilationModel::update() {
+	unsigned int zoneCount = m_zoneVolumes.size();
+	// Note: order of value refs
+	//  - ambient temperature from loads
+	//  - zonal air temperatures (size = zoneCount)
+	//  - zonal infiltration rates from schedules (size = zoneCount)
+
+
 	// get ambient temperature in  [K]
 	double Tambient = *m_valueRefs[0];
 	// loop over all zones
 	double * resultVentRate = m_vectorValuedResults[VVR_InfiltrationRate].dataPtr();
 	double * resultVentHeatFlux = m_vectorValuedResults[VVR_InfiltrationHeatFlux].dataPtr();
-	for (unsigned int i=0; i<m_zoneVolumes.size(); ++i) {
+	for (unsigned int i=0; i<zoneCount; ++i) {
 		// get room air temperature in [K]
 		double Tzone = *m_valueRefs[i+1];
 		// get ventilation rate in [1/s]
 		double rate = m_ventilationRate;
 		switch (m_ventilationModel->m_modelType) {
 			case NANDRAD::NaturalVentilationModel::MT_Scheduled : {
-				/// \todo retrieve scheduled ventilation rate
+				// retrieve scheduled ventilation rate from schedules
+				rate = *m_valueRefs[1+zoneCount+i];
 			} break;
 			default: ;
 		}
