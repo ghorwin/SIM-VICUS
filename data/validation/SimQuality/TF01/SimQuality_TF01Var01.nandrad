@@ -12,10 +12,6 @@
 				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
 			</Zone>
 		</Zones>
-		<SolverParameter>
-			<Integrator>ExplicitEuler</Integrator>
-			<IBK:Parameter name="InitialTimeStep" unit="s">60</IBK:Parameter>
-		</SolverParameter>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<ClimateFileName>${Project Directory}/climate/DEU_Potsdam.c6b</ClimateFileName>
