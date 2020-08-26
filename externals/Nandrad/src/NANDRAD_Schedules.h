@@ -58,6 +58,9 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
+	/*! Does basic consistency checks. */
+	void checkParameters();
+
 
 	/*! List of holiday dates. */
 	std::set< IBK::Time >													m_holidays;

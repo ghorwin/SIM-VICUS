@@ -244,5 +244,10 @@ bool Schedules::operator!=(const Schedules & other) const {
 }
 
 
+void Schedules::checkParameters() {
+
+}
+
+
 } // namespace NANDRAD
 
