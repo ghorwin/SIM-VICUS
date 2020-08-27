@@ -245,6 +245,16 @@ bool Schedules::operator!=(const Schedules & other) const {
 
 
 void Schedules::checkParameters() {
+	// we collect all parameter names and their associated object lists
+	// then we check, that the same parameter is not defined several times for the same object list
+
+	// Note: there is a problem with duplicate definitions that is not easy to detect:
+	//       you may define an annual schedule parameter for "HeatingSetPoint" for zone object list "heated offices"
+	//       and also define a daily-cycle based parameter "HeatingSetPoint" for zone object list "ground floor offices".
+	//       If now the same zone is referenced by both object lists, there is a redundant definition of
+	//       the "HeatingSetPoint" definition, which is not allowed.
+	//       We cannot detect this until all object lists are resolved, so we leave this check to the schedule
+	//       model when it resolves the value references
 
 }
 
