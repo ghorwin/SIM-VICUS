@@ -69,19 +69,8 @@ public:
 	NANDRAD_READWRITE
 	NANDRAD_COMP(DailyCycle)
 
-	/*! Checks for valid parametrization and generates m_valueUnits map. */
+	/*! Checks for valid parametrization and generates m_valueNames, m_valueUnits and m_valueData. */
 	void prepareCalculation();
-
-	/*! Converts for interals or hourly values to a linear spline for a given quantity:
-		Returns an empty linear spline if quantity is undefined.*/
-	void createLinearSpline(const std::string &quantityName, IBK::LinearSpline &spline) const;
-
-	/*! Checks input intervals and throws an IBK::Exception if
-		some interval definition does not match definition rules. */
-	void checkIntervalDefinition() const;
-
-	/*! return the interval end in seconds for given interval index, if needed, parameters are conmputed on the fly. */
-//	double	intervalEndInSeconds( unsigned int intervalIndex ) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -98,13 +87,8 @@ public:
 
 	// *** solver runtime variables only (not written to file) ***
 
-	/*! This map holds the units matching the values in m_values.
-		This map is generated from m_values in call to prepareCalculation().
-		The key values of the map are just the plain variable names, for example "InfiltrationRateSchedule",
-		whereas the corresponding column caption in m_values will be "InfiltrationRateSchedule [1/h]".
-		The unit will be extracted from the brackets and stored as IBK::Unit in the value of the map.
-	*/
-	std::map<std::string, IBK::Unit>	m_valueUnits;
+	std::vector<std::string>			m_valueNames;
+	std::vector<IBK::Unit>				m_valueUnits;
 };
 
 } // namespace NANDRAD
