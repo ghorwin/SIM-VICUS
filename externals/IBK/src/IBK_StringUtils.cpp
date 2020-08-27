@@ -201,7 +201,7 @@ bool string_nocase_compare(const std::string& lhs, const std::string& rhs) {
 #if defined(_MSC_VER)
 	while (::tolower(*s1++)==::tolower(*s2++) && --n);
 #else
-	while (std::tolower(*s1++)==std::tolower(*s2++) && --n) {};
+	while (std::tolower(*s1++)==std::tolower(*s2++) && --n) {}
 #endif
 	return n==0;
 }
@@ -214,7 +214,7 @@ bool string_nocase_less(const std::string& lhs, const std::string& rhs) {
 #if defined(_MSC_VER)
 	while (::tolower(*s1++)==::tolower(*s2++) && --n);
 #else
-	while (std::tolower(*s1++)==std::tolower(*s2++) && --n) {};
+	while (std::tolower(*s1++)==std::tolower(*s2++) && --n) {}
 #endif
 	if (n==0)
 		return rhs.size() > lhs.size();
@@ -251,7 +251,7 @@ std::size_t string_nocase_find(const std::string& str, const std::string& substr
 #endif
 			if (!size2) return pos;
 			s2 = substr.data(); // prepare for next trial
-		};
+		}
 		++s1;
 		++pos;
 	}
@@ -852,7 +852,7 @@ std::string random_string(size_t length, unsigned int charTypes) {
 
 	static bool first = true;
 	if( first ) {
-		std::srand(static_cast<unsigned int>(std::time(0)));
+		std::srand(static_cast<unsigned int>(std::time(nullptr)));
 		first = false;
 	}
 	std::generate_n(std::back_inserter(res), length, random_char(charTypes));
@@ -905,7 +905,6 @@ std::string replace_string(const std::string& src, const std::string& old_patter
 				resstr = resstr.replace(lpos, old_pattern.size(), new_pattern);
 			break;
 		}
-		default: ;
 	}
 	return resstr;
 }
