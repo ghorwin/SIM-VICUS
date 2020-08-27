@@ -108,8 +108,7 @@ void Schedules::readXML(const TiXmlElement * element) {
 					try {
 						s.readXML(c3);
 					} catch (IBK::Exception & ex) {
-						throw IBK::Exception(ex, IBK::FormatString(XML_READ_ERROR).arg(c3->Row()).arg(
-							"Error reading 'Schedule' element."), FUNC_ID);
+						throw IBK::Exception(ex, "Error reading 'ScheduleGroup' element.", FUNC_ID);
 					}
 					schedules.push_back(s);
 

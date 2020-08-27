@@ -29,6 +29,22 @@
 				<ZoneObjectList>All zones</ZoneObjectList>
 			</NaturalVentilationModel>
 		</Models>
+		<Schedules>
+			<WeekEndDays>Sat,Sun</WeekEndDays>
+			<ScheduleGroups>
+				<ScheduleGroup objectList="All zones">
+					<Schedule type="AllDays">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimeUnit>h</TimeUnit>
+								<TimePoints>0 6 18</TimePoints>
+								<Values>InfiltrationRateSchedule [1/h]:2 0.5 2</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+			</ScheduleGroups>
+		</Schedules>
 		<Outputs>
 			<TimeUnit>h</TimeUnit>
 			<OutputDefinitions>

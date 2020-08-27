@@ -83,6 +83,7 @@ void DailyCycle::prepareCalculation() {
 						throw IBK::Exception(IBK::FormatString("Invalid/unrecognized unit '%1' "
 															   "in scheduled variable caption.").arg(unitName), FUNC_ID);
 					}
+					continue; // next column
 				}
 			}
 			throw IBK::Exception(IBK::FormatString("Invalid format of variable caption '%1', "

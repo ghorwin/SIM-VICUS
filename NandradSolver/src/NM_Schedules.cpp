@@ -95,7 +95,7 @@ int Schedules::setTime(double t) {
 
 
 void Schedules::setup(const NANDRAD::Project &project) {
-//	FUNCID(Schedules::setup);
+	FUNCID(Schedules::setup);
 	// store start time offset as year and start time
 	m_year = project.m_simulationParameter.m_intPara[NANDRAD::SimulationParameter::IP_StartYear].value;
 	m_startTime = project.m_simulationParameter.m_interval.m_para[NANDRAD::Interval::P_Start].value;
@@ -109,9 +109,21 @@ void Schedules::setup(const NANDRAD::Project &project) {
 	// loop over all daily cycle schedules and all linear spline schedules and remember the object lists
 	for (auto schedGroup : project.m_schedules.m_scheduleGroups) {
 		const std::string & objectListName = schedGroup.first;
-		objectListByName(objectListName); // tests for existace and throws exception in case of missing schedule
+		objectListByName(objectListName); // tests for existence and throws exception in case of missing schedule
 		// now search through all schedules and collect list of variable names
-		for (const NANDRAD::Schedule & sched : schedGroup.second) {
+		for (unsigned int i = 0; i < schedGroup.second.size(); ++i) {
+			NANDRAD::Schedule & sched = schedGroup.second[i];
+			// loop over all daily cycles and initialize them
+			for (NANDRAD::DailyCycle & dc : sched.m_dailyCycles) {
+				try {
+					dc.prepareCalculation();
+				} catch (IBK::Exception & ex) {
+					throw IBK::Exception(ex, IBK::FormatString("Error initializing DailyCycle in schedule #%1 of "
+															   "schedule group with object list '%2'.")
+										 .arg(i+1).arg(objectListName), FUNC_ID);
+
+				}
+			}
 
 		}
 	}

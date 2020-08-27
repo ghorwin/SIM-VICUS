@@ -41,7 +41,7 @@ namespace NANDRAD {
 	- the first time point must be 0, all time points must be < 24 h
 	- the corresponding value is taken as constant during this interval
 
-	For example, a time point vector 0,6,18 defines three intervals: 0-6, 6-18, 18-24 and
+	For example, a time point vector "0 6 18" defines three intervals: 0-6, 6-18, 18-24 and
 	the data table must contain exactly 3 values.
 
 	If m_interpolation == IT_LINEAR, then the following rules apply:

@@ -40,44 +40,19 @@ bool Schedule::operator!=(const Schedule & other) const {
 }
 
 int Schedule::priority(type_t scheduleType) {
-	switch(scheduleType)
-	{
-	case ST_ALLDAYS :
-		return 10;
-		break;
-	case ST_WEEKDAY :
-		return 8;
-		break;
-	case ST_WEEKEND :
-		return 9;
-		break;
-	case ST_HOLIDAY :
-		return 0;
-		break;
-	case ST_MONDAY :
-		return 1;
-		break;
-	case ST_TUESDAY :
-		return 2;
-		break;
-	case ST_WEDNESDAY :
-		return 3;
-		break;
-	case ST_THURSDAY :
-		return 4;
-		break;
-	case ST_FRIDAY :
-		return 5;
-		break;
-	case ST_SATURDAY :
-		return 6;
-		break;
-	case ST_SUNDAY :
-		return 7;
-		break;
-	case NUM_ST :
-		return -1;
-		break;
+	switch(scheduleType) {
+		case ST_ALLDAYS :		return 10;
+		case ST_WEEKDAY :		return 8;
+		case ST_WEEKEND :		return 9;
+		case ST_HOLIDAY :		return 0;
+		case ST_MONDAY :		return 1;
+		case ST_TUESDAY :		return 2;
+		case ST_WEDNESDAY :		return 3;
+		case ST_THURSDAY :		return 4;
+		case ST_FRIDAY :		return 5;
+		case ST_SATURDAY :		return 6;
+		case ST_SUNDAY :		return 7;
+		case NUM_ST :			return -1;
 	}
 	return -1;
 }
