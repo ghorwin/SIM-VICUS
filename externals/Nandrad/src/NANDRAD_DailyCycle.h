@@ -56,6 +56,7 @@ public:
 
 	/*! Interpolation method for daily cycle data.
 		Note that for constant values some ramping may be used to smoothen out the steps.
+		If not set, IT_LINEAR is used.
 	*/
 	enum interpolation_t {
 		IT_CONSTANT,	// Keyword: Constant	'Constant values in defined intervals.'
@@ -68,7 +69,10 @@ public:
 	NANDRAD_READWRITE
 	NANDRAD_COMP(DailyCycle)
 
-	/*! Converts for interals or hourly values to a linear splin for a given quantity:
+	/*! Checks for valid parametrization and generates m_valueUnits map. */
+	void prepareCalculation();
+
+	/*! Converts for interals or hourly values to a linear spline for a given quantity:
 		Returns an empty linear spline if quantity is undefined.*/
 	void createLinearSpline(const std::string &quantityName, IBK::LinearSpline &spline) const;
 
@@ -77,7 +81,7 @@ public:
 	void checkIntervalDefinition() const;
 
 	/*! return the interval end in seconds for given interval index, if needed, parameters are conmputed on the fly. */
-	double	intervalEndInSeconds( unsigned int intervalIndex ) const;
+//	double	intervalEndInSeconds( unsigned int intervalIndex ) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -91,6 +95,16 @@ public:
 		number of values as in m_timePoints.
 	*/
 	DataTable							m_values;							// XML:E
+
+	// *** solver runtime variables only (not written to file) ***
+
+	/*! This map holds the units matching the values in m_values.
+		This map is generated from m_values in call to prepareCalculation().
+		The key values of the map are just the plain variable names, for example "InfiltrationRateSchedule",
+		whereas the corresponding column caption in m_values will be "InfiltrationRateSchedule [1/h]".
+		The unit will be extracted from the brackets and stored as IBK::Unit in the value of the map.
+	*/
+	std::map<std::string, IBK::Unit>	m_valueUnits;
 };
 
 } // namespace NANDRAD

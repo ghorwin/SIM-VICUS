@@ -32,6 +32,7 @@
 
 namespace NANDRAD {
 	class Project;
+	class Schedules;
 }
 
 namespace NANDRAD_MODEL {
@@ -90,7 +91,7 @@ public:
 	// *** PUBLIC MEMBER FUNCTIONS
 
 	/*! Generate variable reference list from defined schedules. */
-	void setup(const NANDRAD::Project & project) ;
+	void setup(const NANDRAD::Project & project);
 
 
 	/*! Retrieves reference pointer to a value with given quantity ID name.
@@ -120,10 +121,22 @@ public:
 	double startValue(const QuantityName & quantityName) const;
 
 private:
+	/*! Utility function that retrieves an object list object for a given name (from schedule group). */
+	const NANDRAD::ObjectList * objectListByName(const std::string & objectListName) const;
+
+
 	/*! Year of simulation. */
 	int												m_year = 0;
 	/*! Time from the beginning of the year in [s]. */
 	double											m_startTime = 0;
+
+	/*! Pointer to all object lists defined in the project (initialized in setup). */
+	const std::vector<NANDRAD::ObjectList>			*m_objectLists = nullptr;
+	/*! This vector indicates which object lists are referenced by schedules. */
+	std::vector<unsigned int>						m_objectListIndexes;
+
+	/*! Pointer to the schedules data structure. */
+	const NANDRAD::Schedules						*m_schedules;
 
 	/*! Contains all prepared linear splines, with x as time in [s], and y in the quantitiy identified by
 		the enum value in the static array.
@@ -144,6 +157,8 @@ private:
 			- increase j (position in m_results)
 	*/
 	std::vector<double>								m_results;
+	/*! Names of variables in format '<objectListName>::<VariableName>' matching the results in m_results. */
+	std::vector<std::string>						m_variableNames;
 };
 
 

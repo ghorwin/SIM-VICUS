@@ -19,11 +19,49 @@
 	Lesser General Public License for more details.
 */
 
+#include <IBK_UnitList.h>
+
 #include "NANDRAD_Constants.h"
 #include "NANDRAD_DailyCycle.h"
 #include "NANDRAD_KeywordList.h"
 
 namespace NANDRAD {
+
+void DailyCycle::prepareCalculation() {
+	FUNCID(DailyCycle::prepareCalculation);
+
+	// empty daily cycle? throw exception
+	if (m_values.m_values.empty())
+		throw IBK::Exception("Missing DataTable values in DailyCycle.", FUNC_ID);
+
+	// empty time points? throw exception
+	if (m_timePoints.empty())
+		throw IBK::Exception("Missing time points values in DailyCycle.", FUNC_ID);
+
+	// time unit valid?
+	if (m_timeUnit.id() == 0 || m_timeUnit.base_id() != IBK_UNIT_ID_SECONDS)
+		throw IBK::Exception(IBK::FormatString("Invalid/undefined time unit '%1' in DailyCycle.")
+							 .arg(m_timeUnit.name()), FUNC_ID);
+
+	if (m_interpolation == NUM_IT)
+		m_interpolation = IT_LINEAR;
+	else if (m_interpolation != IT_CONSTANT)
+		throw IBK::Exception("Invalid/undefined interpolation type in DailyCycle.", FUNC_ID);
+
+	// first check correct number of values
+	unsigned int valueCount = m_values.m_values.begin()->second.size();
+	if (valueCount != m_timePoints.size())
+		throw IBK::Exception(IBK::FormatString("Mismatching number of values (=%1) compared to time points (=%2) in DailyCycle.")
+							 .arg(valueCount).arg(m_timePoints.size()), FUNC_ID);
+
+	// process column headers - extract units and variable names
+	for (auto v : m_values.m_values) {
+		// extract unit from parenthesis
+
+	}
+
+}
+
 
 void DailyCycle::createLinearSpline(const std::string &quantityName, IBK::LinearSpline &spline) const {
 #if 0

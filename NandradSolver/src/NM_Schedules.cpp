@@ -43,6 +43,7 @@
 #include <NANDRAD_LinearSplineParameter.h>
 #include <NANDRAD_Project.h>
 #include <NANDRAD_Schedule.h>
+#include <NANDRAD_Schedules.h>
 #include <NANDRAD_SimulationParameter.h>
 
 #include "NM_InputReference.h"
@@ -94,12 +95,26 @@ int Schedules::setTime(double t) {
 
 
 void Schedules::setup(const NANDRAD::Project &project) {
+//	FUNCID(Schedules::setup);
 	// store start time offset as year and start time
 	m_year = project.m_simulationParameter.m_intPara[NANDRAD::SimulationParameter::IP_StartYear].value;
 	m_startTime = project.m_simulationParameter.m_interval.m_para[NANDRAD::Interval::P_Start].value;
 
-	/// \todo prepare linear spline parameters
+	m_objectLists = &project.m_objectLists;
+	m_schedules = &project.m_schedules;
 
+	// this set will contain list of all variables ('objectlist::varname')
+	std::set<std::string> varlist;
+
+	// loop over all daily cycle schedules and all linear spline schedules and remember the object lists
+	for (auto schedGroup : project.m_schedules.m_scheduleGroups) {
+		const std::string & objectListName = schedGroup.first;
+		objectListByName(objectListName); // tests for existace and throws exception in case of missing schedule
+		// now search through all schedules and collect list of variable names
+		for (const NANDRAD::Schedule & sched : schedGroup.second) {
+
+		}
+	}
 }
 
 
@@ -153,7 +168,21 @@ double Schedules::startValue(const QuantityName &quantity) const {
 }
 
 
+const NANDRAD::ObjectList * Schedules::objectListByName(const std::string & objectListName) const {
+	FUNCID(Schedules::objectListByName);
+	// find this object list
+	std::vector<NANDRAD::ObjectList>::const_iterator it = std::find(m_objectLists->begin(),
+																	m_objectLists->end(),
+																	objectListName);
+	if (it == m_objectLists->end())
+		throw IBK::Exception( IBK::FormatString("Object list '%1' referenced from schedule group is not defined.")
+							  .arg(objectListName), FUNC_ID);
+	return &(*it);
+}
+
+
 const double * Schedules::resolveResultReference(const InputReference & valueRef, QuantityDescription & quantityDesc) const {
+	FUNCID(Schedules::resolveResultReference);
 
 	// variable lookup rules:
 
@@ -172,11 +201,37 @@ const double * Schedules::resolveResultReference(const InputReference & valueRef
 
 	// similar for other schedules/reference types
 
-
 	std::string objectListName;
 	if (valueRef.m_referenceType == NANDRAD::ModelInputReference::MRT_OBJECTLIST) {
 		// quantity name is composed of
 		//objectListName
+	}
+	else {
+		// find the object list that contains the requested object
+		// first search the schedule groups
+		for (auto schedGrp : m_schedules->m_scheduleGroups) {
+			const NANDRAD::ObjectList * objList = objectListByName(schedGrp.first);
+			IBK_ASSERT(objList != nullptr);
+			// correct reference type?
+			if (objList->m_referenceType != valueRef.m_referenceType)
+				continue; // not our input reference
+			// id range correct
+			if (!objList->m_filterID.contains(valueRef.m_id))
+				continue; // not our input reference
+			// search through results to find value
+			std::string valueName = objectListName + "::" + valueRef.m_name.m_name;
+			for (unsigned int i=0; i<m_variableNames.size(); ++i) {
+				if (m_variableNames[i] == valueName) {
+					// found the variable name - check that user did not (accidentally) request
+					// a vector-valued quantity
+					if (valueRef.m_name.m_index != -1)
+						throw IBK::Exception(IBK::FormatString("Vector-valued quantity '%1' matches a scheduled scalar "
+															   "parameter. This is an invalid reference.")
+											 .arg(valueRef.m_name.m_name), FUNC_ID);
+					return &m_results[i];
+				}
+			}
+		}
 	}
 
 	return nullptr;
