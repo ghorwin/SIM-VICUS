@@ -52,8 +52,6 @@ namespace NANDRAD_MODEL {
 
 
 int Schedules::setTime(double t) {
-	if (t == -1)
-		return 0; // initialization call, cannot calculate
 	// no results
 	if (m_results.empty())
 		return 0;
@@ -75,8 +73,12 @@ int Schedules::setTime(double t) {
 
 	// calculate all parameter values
 	double * result = &m_results[0]; // points to first double in vector with calculated spline values
-	for (int i = 0; i < m_results.size(); ++i) {
-
+	for (unsigned int i = 0; i<m_results.size(); ++i) {
+		/// \todo we need to handle the "constant value" case somehow
+		/// so, we first need to know which schedules are constant, and then
+		/// we need to ramp the value near the jump
+		/// for now, all splines are handled as linearly interpolated and the ramping
+		/// is added during spline generation
 		result[i] = m_valueSpline[i].value(t);
 	}
 	return 0;
