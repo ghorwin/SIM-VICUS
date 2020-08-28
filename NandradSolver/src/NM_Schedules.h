@@ -51,43 +51,6 @@ class InputReference;
 */
 class Schedules : public AbstractTimeDependency {
 public:
-
-	/*! Available quantities from schedules.
-		While this enum could be moved to NANDRAD::Schedule, we keep it here to reuse DefaultModel implementation
-		for generating QuantityDescriptions.
-	*/
-	enum Results {
-		R_HeatingSetPointTemperature,			// Keyword: HeatingSetPointTemperature				[C]			'Setpoint temperature for heating.'
-		R_CoolingSetPointTemperature,			// Keyword: CoolingSetPointTemperature				[C]			'Setpoint temperature for cooling.'
-		R_AirConditionSetPointTemperature,		// Keyword: AirConditionSetPointTemperature			[C]			'Setpoint temperature for air conditioning.'
-		R_AirConditionSetPointRelativeHumidity,	// Keyword: AirConditionSetPointRelativeHumidity	[%]			'Setpoint relative humidity for air conditioning.'
-		R_AirConditionSetPointMassFlux,			// Keyword: AirConditionSetPointMassFlux			[kg/s]		'Setpoint mass flux for air conditioning.'
-		R_HeatingLoad,							// Keyword: HeatingLoad								[W]			'Heating load.'
-		R_ThermalLoad,							// Keyword: ThermalLoad								[W]			'Thermal load (positive or negative).'
-		R_MoistureLoad,							// Keyword: MoistureLoad							[g/h]		'Moisture load.'
-		R_CoolingPower,							// Keyword: CoolingPower							[W]			'Cooling power.'
-		R_LightingPower,						// Keyword: LightingPower							[W]			'Lighting power.'
-		R_DomesticWaterSetpointTemperature,		// Keyword: DomesticWaterSetpointTemperature		[C]			'Setpoint temperature for domestic water.'
-		R_DomesticWaterMassFlow,				// Keyword: DomesticWaterMassFlow					[kg/s]		'Domestic water demand mass flow for the complete zone (hot water and equipment).'
-		R_ThermalEnergyLossPerPerson,			// Keyword: ThermalEnergyLossPerPerson				[W/Person]	'Energy of a single persons activities that is not available as thermal heat.'
-		R_TotalEnergyProductionPerPerson,		// Keyword: TotalEnergyProductionPerPerson			[W/Person]	'Total energy production of a single persons body at a certain activity.'
-		R_MoistureReleasePerPerson,				// Keyword: MoistureReleasePerPerson				[kg/s]		'Moisture release of a single persons body at a certain activity.'
-		R_CO2EmissionPerPerson,					// Keyword: CO2EmissionPerPerson					[kg/s]		'CO2 emission mass flux of a single person at a certain activity.'
-		R_MassFluxRate,							// Keyword: MassFluxRate							[---]		'Fraction of real mass flux to maximum  mass flux for different day times.'
-		R_PressureHead,							// Keyword: PressureHead							[Pa]		'Supply pressure head of a pump.'
-		R_OccupancyRate,						// Keyword: OccupancyRate							[---]		'Fraction of real occupancy to maximum  occupancy for different day times.'
-		R_EquipmentUtilizationRatio,			// Keyword: EquipmentUtilizationRatio				[---]		'Ratio of usage for existing electric equipment.'
-		R_LightingUtilizationRatio,				// Keyword: LightingUtilizationRatio				[---]		'Ratio of usage for lighting.'
-		R_MaximumSolarRadiationIntensity,		// Keyword: MaximumSolarRadiationIntensity			[W/m2]		'Maximum solar radiation intensity before shading is activated.'
-		R_UserVentilationAirChangeRate,			// Keyword: UserVentilationAirChangeRate			[1/h]		'Exchange rate for natural ventilation.'
-		R_UserVentilationComfortAirChangeRate,	// Keyword: UserVentilationComfortAirChangeRate		[1/h]		'Maximum air change rate = offset for user comfort.'
-		R_UserVentilationMinimumRoomTemperature,// Keyword: UserVentilationMinimumRoomTemperature	[C]			'Temperature limit over which comfort ventilation is activated.'
-		R_UserVentilationMaximumRoomTemperature,// Keyword: UserVentilationMaximumRoomTemperature	[C]			'Temperature limit below which comfort ventilation is activated.'
-		R_InfiltrationAirChangeRate,			// Keyword: InfiltrationAirChangeRate				[1/h]		'Exchange rate for infiltration.'
-		R_ShadingFactor,						// Keyword: ShadingFactor							[---]		'Shading factor [0...1].'
-		NUM_R
-	};
-
 	// *** PUBLIC MEMBER FUNCTIONS
 
 	/*! Generate variable reference list from defined schedules. */
@@ -138,27 +101,19 @@ private:
 	/*! Pointer to the schedules data structure. */
 	const NANDRAD::Schedules						*m_schedules;
 
-	/*! Contains all prepared linear splines, with x as time in [s], and y in the quantitiy identified by
-		the enum value in the static array.
-		The map itself stores the quantities for object list names (=key of the map). If a quantity is not
-		defined at all, the map can be empty.
 
-		During calculation, the values are interpolated and stored in the m_results vector.
-	*/
-	std::map<std::string, NANDRAD::LinearSplineParameter>		m_scheduledQuantities[NUM_R];
+	// The following vectors have all the same size and are resized in setup()
 
-	/*! Variables, computed/updated during the calculation.
-		The vector follows the structore of the m_scheduledQuantities map and static array, such that
-		if has the order:
-
-		j = 0
-		- loop over all Results-types
-		  - loop over all map values for current result type
-			- increase j (position in m_results)
-	*/
-	std::vector<double>								m_results;
 	/*! Names of variables in format '<objectListName>::<VariableName>' matching the results in m_results. */
 	std::vector<std::string>						m_variableNames;
+	/*! Corresponding input/output units (Note: results are always stored in the respective base SI unit). */
+	std::vector<IBK::Unit>							m_variableUnits;
+	/*! Linear splines with the actual data, x values are time points in [s], y values are the data values
+		in base SI units.
+	*/
+	std::vector<IBK::LinearSpline>					m_valueSpline;
+	/*! Variables, computed/updated during the calculation.	*/
+	std::vector<double>								m_results;
 };
 
 

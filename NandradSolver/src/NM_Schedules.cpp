@@ -75,20 +75,9 @@ int Schedules::setTime(double t) {
 
 	// calculate all parameter values
 	double * result = &m_results[0]; // points to first double in vector with calculated spline values
-	for (int i = 0; i < NUM_R; ++i) {
+	for (int i = 0; i < m_results.size(); ++i) {
 
-		for (std::map<std::string, NANDRAD::LinearSplineParameter>::iterator it = m_scheduledQuantities[i].begin();
-			 it != m_scheduledQuantities[i].end(); ++it)
-		{
-			NANDRAD::LinearSplineParameter & p = it->second;
-			// depending on time cycling value, pass either t or t_cyclic
-			if (p.m_wrapMethod == NANDRAD::LinearSplineParameter::C_CYCLIC)
-				*result = p.m_values.value(t_cyclic);
-			else
-				*result = p.m_values.value(t);
-			// move memory slot forward
-			++result;
-		}
+		result[i] = m_valueSpline[i].value(t);
 	}
 	return 0;
 }
@@ -103,11 +92,10 @@ void Schedules::setup(const NANDRAD::Project &project) {
 	m_objectLists = &project.m_objectLists;
 	m_schedules = &project.m_schedules;
 
-	// this set will contain list of all variables ('objectlist::varname')
-	std::set<std::string> varlist;
-
 	// loop over all daily cycle schedules and all linear spline schedules and remember the object lists
 	for (auto schedGroup : project.m_schedules.m_scheduleGroups) {
+		// this set will contain list of all variables in this schedule group
+		std::set< std::pair<std::string, IBK::Unit> > varlist;
 		const std::string & objectListName = schedGroup.first;
 		objectListByName(objectListName); // tests for existence and throws exception in case of missing schedule
 		// now search through all schedules and collect list of variable names
@@ -117,16 +105,23 @@ void Schedules::setup(const NANDRAD::Project &project) {
 			for (NANDRAD::DailyCycle & dc : sched.m_dailyCycles) {
 				try {
 					dc.prepareCalculation();
-				} catch (IBK::Exception & ex) {
+				}
+				catch (IBK::Exception & ex) {
 					throw IBK::Exception(ex, IBK::FormatString("Error initializing DailyCycle in schedule #%1 of "
 															   "schedule group with object list '%2'.")
 										 .arg(i+1).arg(objectListName), FUNC_ID);
-
 				}
+				// now we have a list of variables in this daily cycle - merge them with the global list of variables
+				for (unsigned int i=0; i<dc.m_valueNames.size(); ++i)
+					varlist.insert( std::make_pair(dc.m_valueNames[i], dc.m_valueUnits[i]) );  // note: it is normal if several DailyCycles in various schedules define the same variables
 			}
+		}
+		// now we process all collect variables and store meta data about these variables
+		for (auto var : varlist) {
 
 		}
 	}
+
 }
 
 
@@ -240,6 +235,9 @@ const double * Schedules::resolveResultReference(const InputReference & valueRef
 						throw IBK::Exception(IBK::FormatString("Vector-valued quantity '%1' matches a scheduled scalar "
 															   "parameter. This is an invalid reference.")
 											 .arg(valueRef.m_name.m_name), FUNC_ID);
+
+					/// \todo performance enhancement: remember, which of the schedules have been requested,
+					/// afterwards clear all linear splines that are unused and skip over these during model evaluation
 					return &m_results[i];
 				}
 			}
