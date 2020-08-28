@@ -103,24 +103,49 @@ void Schedules::setup(const NANDRAD::Project &project) {
 		// now search through all schedules and collect list of variable names
 		for (unsigned int i = 0; i < schedGroup.second.size(); ++i) {
 			NANDRAD::Schedule & sched = schedGroup.second[i];
-			// loop over all daily cycles and initialize them
+			try {
+				sched.prepareCalculation();
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, IBK::FormatString("Error initializing schedule #%1 of "
+														   "schedule group with object list '%2'.")
+									 .arg(i+1).arg(objectListName), FUNC_ID);
+			}
+			// now we have a list of variables in this daily cycle - merge them with the global list of variables
 			for (NANDRAD::DailyCycle & dc : sched.m_dailyCycles) {
-				try {
-					dc.prepareCalculation();
+				for (unsigned int i=0; i<dc.m_valueNames.size(); ++i) {
+					// Note: it is normal if several DailyCycles in various schedules define the same variables
+					//       However, they should all be defined with the same SI unit
+					for (auto p : varlist) {
+						if (p.first == dc.m_valueNames[i] &&
+							p.second != dc.m_valueUnits[i])
+						{
+							throw IBK::Exception(IBK::FormatString("A daily cycle defines parameter '%1' with unit '%2', and "
+																   "another daily cycle defines the same parameter with unit '%3'. "
+																   "This is likely an error and must be fixed.")
+								.arg(p.first).arg(p.second).arg(dc.m_valueUnits[i]), FUNC_ID);
+						}
+					}
+					// remember this parameter-unit combination
+					varlist.insert( std::make_pair(dc.m_valueNames[i], dc.m_valueUnits[i]) );
 				}
-				catch (IBK::Exception & ex) {
-					throw IBK::Exception(ex, IBK::FormatString("Error initializing DailyCycle in schedule #%1 of "
-															   "schedule group with object list '%2'.")
-										 .arg(i+1).arg(objectListName), FUNC_ID);
-				}
-				// now we have a list of variables in this daily cycle - merge them with the global list of variables
-				for (unsigned int i=0; i<dc.m_valueNames.size(); ++i)
-					varlist.insert( std::make_pair(dc.m_valueNames[i], dc.m_valueUnits[i]) );  // note: it is normal if several DailyCycles in various schedules define the same variables
 			}
 		}
 		// now we process all collect variables and store meta data about these variables
 		for (auto var : varlist) {
+			m_variableNames.push_back(objectListName + "::" + var.first);
+			m_variableUnits.push_back(var.second);
+			// now generate the linear splines
+			m_valueSpline.push_back(IBK::LinearSpline());
+			IBK::LinearSpline & spl = m_valueSpline.back();
 
+			NANDRAD::DailyCycle::interpolation_t interpolationType;
+			try {
+				m_schedules->generateLinearSpline(schedGroup.first, var.first, spl, interpolationType);
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, "Error initializing schedules (cannot generate schedule from daily cycle data).", FUNC_ID);
+			}
 		}
 	}
 
