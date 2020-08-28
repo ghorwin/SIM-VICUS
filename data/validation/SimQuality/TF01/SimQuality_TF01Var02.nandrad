@@ -24,7 +24,7 @@
 			<!-- <ClimateFileName>${Project Directory}/climate/PER_Lima.846280_IWEC.epw</ClimateFileName> -->
 			<!-- <ClimateFileName>${Project Directory}/climate/DenverDRYCOLDTMY_new.epw</ClimateFileName> -->
 			<!-- <ClimateFileName>${Project Directory}/climate/CHN_Xinjiang.Uygur.Kashi.517090_CSWD.epw</ClimateFileName> -->
-			<ClimateFileName>${Project Directory}/climate/CHN_Shanghai.Shanghai.583620_SWERA.epw</ClimateFileName>
+			<ClimateFileName>${Project Directory}/../climate/CHN_Shanghai.Shanghai.583620_SWERA.c6b</ClimateFileName>
 			<!-- <ClimateFileName>${Project Directory}/climate/AUS_VIC.Melbourne.948660_IWEC.epw</ClimateFileName> -->
 		</Location>
 		<Outputs>

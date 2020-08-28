@@ -20,7 +20,7 @@
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<!-- <ClimateFileName>${Project Directory}/climate/DEU_Potsdam_60.epw</ClimateFileName> -->
 			<!-- <ClimateFileName>${Project Directory}/climate/USA_AK_Barrow.700260_TMY2.epw</ClimateFileName> -->
-			<ClimateFileName>${Project Directory}/climate/SGP_Singapore.486980_IWEC.epw</ClimateFileName>
+			<ClimateFileName>${Project Directory}/../climate/SGP_Singapore.486980_IWEC.c6b</ClimateFileName>
 			<!-- <ClimateFileName>${Project Directory}/climate/PER_Lima.846280_IWEC.epw</ClimateFileName> -->
 			<!-- <ClimateFileName>${Project Directory}/climate/DenverDRYCOLDTMY_new.epw</ClimateFileName> -->
 			<!-- <ClimateFileName>${Project Directory}/climate/CHN_Xinjiang.Uygur.Kashi.517090_CSWD.epw</ClimateFileName> -->
