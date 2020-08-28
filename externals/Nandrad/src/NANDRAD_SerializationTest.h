@@ -60,8 +60,8 @@ public:
 		m_dblVec = std::vector<double>{0, 12, 24};
 
 		m_sched.m_type = Schedule::ST_FRIDAY;
-		m_sched.m_startDate = IBK::Time(2007,4,1);
-		m_sched.m_endDate = IBK::Time(2007,8,30);
+		m_sched.m_startDayOfTheYear = static_cast<unsigned int>(IBK::Time(2007,4,1).secondsOfYear()/(3600*24));
+		m_sched.m_endDayOfTheYear = static_cast<unsigned int>(IBK::Time(2007,10,1).secondsOfYear()/(3600*24));
 		DailyCycle d;
 		d.m_interpolation = DailyCycle::IT_CONSTANT;
 		d.m_timeUnit.set("h");

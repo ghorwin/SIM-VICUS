@@ -27,6 +27,7 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <IBK_messages.h>
+#include <IBK_UnitVector.h>
 
 #include <tinyxml.h>
 
@@ -41,20 +42,22 @@ void Schedules::readXML(const TiXmlElement * element) {
 	while (c) {
 		const std::string & cName = c->ValueStr();
 		if (cName == "Holidays") {
+			IBK::Time::TimeFormatInfo fmt = IBK::Time::formatInfo("dd.MM.");
 			const TiXmlElement * c2 = c->FirstChildElement();
 			while (c2) {
 				const std::string & c2Name = c2->ValueStr();
-				if (c2Name != "IBK:Time")
+				if (c2Name != "FirstDayOfYear")
 					throw IBK::Exception(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), FUNC_ID);
 
-				IBK::Time t = IBK::Time::fromDateTimeFormat(c2->GetText());
+				IBK::Time t = IBK::Time::fromString(c2->GetText(), fmt, false);
 				if (!t.isValid())
 					throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(c2->Row())
-										 .arg("Invalid date/time format '"+std::string(c2->GetText())+"'"), FUNC_ID);
-				if (m_holidays.find(t) != m_holidays.end())
+										 .arg("Invalid date format '"+std::string(c2->GetText())+"', expected date in format 'dd.MM.'."), FUNC_ID);
+				unsigned int dayOfYear = static_cast<unsigned int>(t.secondsOfYear()/(3600*24));
+				if (m_holidays.find(dayOfYear) != m_holidays.end())
 					throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(c2->Row())
 										 .arg("Duplicate holiday date '"+std::string(c2->GetText())+"'"), FUNC_ID);
-				m_holidays.insert(t);
+				m_holidays.insert(dayOfYear);
 
 				c2 = c2->NextSiblingElement();
 			}
@@ -181,8 +184,12 @@ TiXmlElement * Schedules::writeXML(TiXmlElement * parent) const {
 		TiXmlElement * c = new TiXmlElement("Holidays");
 		e->LinkEndChild(c);
 		// encode days
-		for (IBK::Time t : m_holidays)
-			TiXmlElement::appendSingleAttributeElement(c, "IBK:Time", nullptr, std::string(), t.toDateTimeFormat());
+		for (unsigned int dayOfYear : m_holidays) {
+			// compose IBK::Time object
+			IBK::Time t;
+			t.set(2003, dayOfYear*3600*24);
+			TiXmlElement::appendSingleAttributeElement(c, "IBK:Time", nullptr, std::string(), t.toDayMonthFormat());
+		}
 	}
 
 	if (!m_weekEndDays.empty()) {
@@ -243,7 +250,96 @@ bool Schedules::operator!=(const Schedules & other) const {
 }
 
 
-void Schedules::checkParameters() {
+void Schedules::generateLinearSpline(const std::string & objectListName, const std::string & parameterName,
+									 IBK::LinearSpline & spline, DailyCycle::interpolation_t & interpolationType) const
+{
+	/*
+	 - loop over all days (d=0,1,...,364)
+	- determine day type:
+	  d_dayOfWeek = (startDayOffset + d) % 7 (modulo 7)
+	- look up daily cycle:
+	  - find schedule where d in range:
+		- process daytypes in order Holidays, CurrentDayType, Weekdays/Weekends, AllDays
+		  - if parameter is found in any of these days, take daily course and add to spline for this day,
+		  - if parameter not found, skip and search through next schedule
+	*/
+
+	std::vector<double> tp;
+	IBK::UnitVector vals;
+	// loop over all days
+	for (unsigned int d=0; d<365; ++d) {
+		// compute date type
+		day_t dayOfWeek = (day_t)((d + m_firstDayOfYear) % 7);
+
+		// also determine if this day is a holiday
+		bool isHoliday = (m_holidays.find(d) != m_holidays.end());
+
+		// get vector of schedules for given object list
+		std::map<std::string, std::vector<Schedule> >::const_iterator it = m_scheduleGroups.find(parameterName);
+		IBK_ASSERT(it != m_scheduleGroups.end());
+		const std::vector<Schedule> & schedules = it->second;
+
+		std::vector<const Schedule *> scheduleCandidates[NANDRAD::Schedule::NUM_ST];
+
+		// now search through schedules and build a list of schedules sorted according to priority (i.e. daytype)
+		// hereby, we already filter out schedules that won't match our day type
+		for (std::vector<Schedule>::const_reverse_iterator schedIt = schedules.rbegin(); schedIt != schedules.rend(); ++schedIt) {
+			// check for correct interval
+			if (!schedIt->containsDay(d))
+				continue; // outside scheduled date range - skip
+
+			bool keep = false;
+			// AllDays are always kept
+			if (schedIt->m_type == NANDRAD::Schedule::ST_ALLDAYS)
+				keep = true;
+
+			// holidays are only kept if this is a holiday schedule
+			if (!keep && isHoliday && schedIt->m_type == NANDRAD::Schedule::ST_HOLIDAY)
+				keep = true;
+
+			// weekday schedules are only kept, if daytype is a weekday
+			if (!keep &&
+				dayOfWeek >= NANDRAD::Schedules::SD_MONDAY &&
+				dayOfWeek <= NANDRAD::Schedules::SD_FRIDAY &&
+				schedIt->m_type == NANDRAD::Schedule::ST_WEEKDAY)
+			{
+				keep = true;
+			}
+
+			// weekend schedules are only kept, if daytype is a weekend
+			if (!keep &&
+				dayOfWeek >= NANDRAD::Schedules::SD_SATURDAY &&
+				dayOfWeek <= NANDRAD::Schedules::SD_SUNDAY &&
+				schedIt->m_type == NANDRAD::Schedule::ST_WEEKEND)
+			{
+				keep = true;
+			}
+
+			// otherwise we only keep the schedule if this is a "our" day
+			if (!keep && schedIt->m_type == (int)dayOfWeek+NANDRAD::Schedule::ST_MONDAY) // mind the shift in enum numbers
+				keep = true;
+
+			if (!keep)
+				continue; // schedule was already filtered out, skip it
+
+			// check if schedule provides the requested parameter
+			// Note: this is a slow operation, so we do it last
+			if (schedIt->m_valueNames.find(parameterName) == schedIt->m_valueNames.end())
+				continue; // parameter not provided
+
+			// sort based on date type
+			scheduleCandidates[schedIt->m_type].push_back(&(*schedIt));
+		}
+
+		// now we have a set of schedules to take our parameter from
+		// each of the lists should have at max one parameter - otherwise we have an ambiguity
+
+	}
+
+}
+
+
+//void Schedules::checkParameters() {
 	// we collect all parameter names and their associated object lists
 	// then we check, that the same parameter is not defined several times for the same object list
 
@@ -255,7 +351,7 @@ void Schedules::checkParameters() {
 	//       We cannot detect this until all object lists are resolved, so we leave this check to the schedule
 	//       model when it resolves the value references
 
-}
+//}
 
 
 } // namespace NANDRAD

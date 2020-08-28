@@ -61,10 +61,10 @@ void Schedule::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "StartDate")
-				m_startDate = readTimeElement(c, cName);
-			else if (cName == "EndDate")
-				m_endDate = readTimeElement(c, cName);
+			if (cName == "StartDayOfTheYear")
+				m_startDayOfTheYear = readPODElement<unsigned int>(c, cName);
+			else if (cName == "EndDayOfTheYear")
+				m_endDayOfTheYear = readPODElement<unsigned int>(c, cName);
 			else if (cName == "DailyCycles") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
@@ -97,10 +97,8 @@ TiXmlElement * Schedule::writeXML(TiXmlElement * parent) const {
 
 	if (m_type != NUM_ST)
 		e->SetAttribute("type", KeywordList::Keyword("Schedule::type_t",  m_type));
-	if (m_startDate != IBK::Time())
-		TiXmlElement::appendSingleAttributeElement(e, "StartDate", nullptr, std::string(), m_startDate.toShortDateFormat());
-	if (m_endDate != IBK::Time())
-		TiXmlElement::appendSingleAttributeElement(e, "EndDate", nullptr, std::string(), m_endDate.toShortDateFormat());
+	TiXmlElement::appendSingleAttributeElement(e, "StartDayOfTheYear", nullptr, std::string(), IBK::val2string<unsigned int>(m_startDayOfTheYear));
+	TiXmlElement::appendSingleAttributeElement(e, "EndDayOfTheYear", nullptr, std::string(), IBK::val2string<unsigned int>(m_endDayOfTheYear));
 
 	if (!m_dailyCycles.empty()) {
 		TiXmlElement * child = new TiXmlElement("DailyCycles");

@@ -43,14 +43,21 @@ public:
 
 	/*! Parameter. */
 	enum para_t {
+		/*! Relative tolerance for solver error check,  default 1e-5. */
 		P_RelTol,							// Keyword: RelTol							[---]	'Relative tolerance for solver error check.'
+		/*! Absolute tolerance for solver error check, default 1e-10. */
 		P_AbsTol,							// Keyword: AbsTol							[---]	'Absolute tolerance for solver error check.'
+		/*! Maximum permitted time step for integration, default 1 h. */
 		P_MaxTimeStep,						// Keyword: MaxTimeStep						[min]	'Maximum permitted time step for integration.'
+		/*! Minimum accepted time step, before solver aborts with error, default 1e-12 s. */
 		P_MinTimeStep,						// Keyword: MinTimeStep						[s]		'Minimum accepted time step, before solver aborts with error.'
-		P_InitialTimeStep,					// Keyword: InitialTimeStep					[s]		'Initial time step'
+		/*! Initial time step size (or constant step size for ExplicitEuler integrator), default 0.1 s. */
+		P_InitialTimeStep,					// Keyword: InitialTimeStep					[s]		'Initial time step size (or constant step size for ExplicitEuler integrator).'
 		P_NonlinSolverConvCoeff,			// Keyword: NonlinSolverConvCoeff			[---]	'Coefficient reducing nonlinear equation solver convergence limit.'
 		P_IterativeSolverConvCoeff,			// Keyword: IterativeSolverConvCoeff		[---]	'Coefficient reducing iterative equation solver convergence limit.'
+		/*! Minimum element width for wall discretization, default 2 mm. */
 		P_DiscMinDx,						// Keyword: DiscMinDx						[m]		'Minimum element width for wall discretization.'
+		/*! Stretch factor for variable wall discretizations (0-no disc, 1-equidistance, larger than 1 - variable), default 4. */
 		P_DiscStretchFactor,				// Keyword: DiscStretchFactor				[---]	'Stretch factor for variable wall discretizations (0-no disc, 1-equidistance, larger than 1 - variable).'
 		P_ViewfactorTileWidth,				// Keyword: ViewfactorTileWidth				[m]		'Maximum dimension of a tile for calculation of view factors.'
 		P_SurfaceDiscretizationDensity,		// Keyword: SurfaceDiscretizationDensity	[---]	'Number of surface discretization elements of a wall in each direction.'

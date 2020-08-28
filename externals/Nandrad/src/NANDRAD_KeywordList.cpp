@@ -940,7 +940,7 @@ namespace NANDRAD {
 				case 1 : return "Absolute tolerance for solver error check.";
 				case 2 : return "Maximum permitted time step for integration.";
 				case 3 : return "Minimum accepted time step, before solver aborts with error.";
-				case 4 : return "Initial time step";
+				case 4 : return "Initial time step size (or constant step size for ExplicitEuler integrator).";
 				case 5 : return "Coefficient reducing nonlinear equation solver convergence limit.";
 				case 6 : return "Coefficient reducing iterative equation solver convergence limit.";
 				case 7 : return "Minimum element width for wall discretization.";

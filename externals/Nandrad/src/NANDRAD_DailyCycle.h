@@ -87,7 +87,9 @@ public:
 
 	// *** solver runtime variables only (not written to file) ***
 
+	/*! Names of all variables. */
 	std::vector<std::string>			m_valueNames;
+	/*! Corresponding units. */
 	std::vector<IBK::Unit>				m_valueUnits;
 };
 

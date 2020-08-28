@@ -39,10 +39,7 @@ namespace NANDRAD {
 	week end, holiday or all days. They contain one or more daily cycles
 	that specify the distribution for different scheduled quantities over
 	a period of one day.
-	Holidays and week end days can be specified using the default
-	definition defined in Schedules::DefaultParameters. Or the are overwritten
-	in the schedule definition.
-
+	Holidays and week end days are defined in Schedules.
 */
 class Schedule {
 public:
@@ -68,48 +65,45 @@ public:
 	NANDRAD_READWRITE
 	NANDRAD_COMP(Schedule)
 
-	/*! Populates set with quantities.
-		A quantity is uniquely defined through its ID name and base unit.
-		\param quantities Map with key-value - pairs of parameter ID names and corresponding base unit (value is always 0).
+	/*! Prepares calculation by initializing daily cycles and by collecting names of all scheduled parameters. */
+	void prepareCalculation();
+
+	/*! Returns true, if given day is inside the start and end date of the schedule. */
+	bool containsDay(unsigned int dayOfYear) const;
+
+	/*! Returns the priority of an selected schedule.
+		When looking for parameters, we use the following preference:
+		- holidays
+		- specific day
+		- weekend/weekday (if specific day matches either group)
+		- all days
 	*/
-	void collectQuantities(const std::string & prefix, std::map<std::string, IBK::Unit> & quantities) const;
-
-//	/*! Populates vector of IBK::Time elements from local schedule validity time definition.
-//	*/
-//	void collectValidDays(const unsigned int year,
-//			const std::list<Date> &defaultHolidays,
-//			const std::vector<day_t> &defaultWeekEndDays,
-//			std::vector<IBK::Time> &time,
-//			bool &allDays) const;
-
-	// *** STATIC PUBLIC MEMBER FUNCTIONS ***
-
-	/*! Returns the priority of an selected schedule.*/
-	static int priority(type_t scheduleType);
+	unsigned int priority() const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
+	/*! Type of day this schedule is defined for. */
 	type_t					m_type = NUM_ST;								// XML:A:required
 
-	/*! Start date for the schedule, if not given, defaults to 1.1. */
-	IBK::Time				m_startDate;									// XML:E
+	/*! Start day of the year for the schedule, if not given, defaults to 0 = 1.1. */
+	unsigned int			m_startDayOfTheYear = 0;						// XML:E
 
-	/*! End date for the schedule, if not given, defaults to 31.12. */
-	IBK::Time				m_endDate;										// XML:E
+	/*! End day for the schedule (includes the entire day), if not given, defaults 364 = 31.12. */
+	unsigned int			m_endDayOfTheYear = 364;						// XML:E
 
 	/*! List of daily cycles that are used on day type specified above.
 		These cycles define different quantities/control parameters etc.
 	*/
 	std::vector<DailyCycle> m_dailyCycles;									// XML:E
 
-	/*! Conversion function for special schedule time format. */
-//	static void convertWeekDaysToIBKTime(const unsigned int year, const std::vector<day_t> &weekdays, std::vector<IBK::Time> &time);
 
-	/*! Calculate the week day of a given date.
-		\return Returns the index of a week day.
+	// *** solver runtime variables only (not written to file) ***
+
+	/*! All value names provided by all of the daily cycles.
+		This set is composed during prepareCalculation() and primarily used to quickly check
+		if this schedule provides a required parameter at all.
 	*/
-//	static unsigned int calcWeekDay(const int year, const NANDRAD::Date &date);
-
+	std::set<std::string>	m_valueNames;
 };
 
 } // namespace NANDRAD

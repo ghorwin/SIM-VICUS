@@ -58,15 +58,28 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Does basic consistency checks. */
-	void checkParameters();
+	/*! This function does all the work in the actual schedule-by-daily-cycle implementation.
+		It constructs a linear spline for cyclic annual use by processing all days of the year,
+		looking up the respective parameter and combining day cycle values.
 
+		\param objectListName Name of schedule group (i.e. name of corresponding object list)
+		\param parameterName Name of scheduled parameter
+		\param spline Here the spline data will be stored, values are already converted to the base SI unit.
+		\param interpolationType Here the interpolation type set for the daily cycle will be set.
+	*/
+	void generateLinearSpline(const std::string & objectListName, const std::string & parameterName,
+							  IBK::LinearSpline & spline,
+							  DailyCycle::interpolation_t & interpolationType
+							  ) const;
 
-	/*! List of holiday dates. */
-	std::set< IBK::Time >													m_holidays;
+	/*! List of holiday days, stored in "day of the year", not including leap days. */
+	std::set< unsigned int>													m_holidays;
 
 	/*! Weekend days. */
 	std::set< day_t >														m_weekEndDays;
+
+	/*! The daytype of January 1st (offset of day of the week (0-Mon, ...6-Sun)) of the start year. */
+	day_t																	m_firstDayOfYear = SD_MONDAY;
 
 	/*! Key is object list name, value is vector of schedules. */
 	std::map<std::string, std::vector<Schedule> >							m_scheduleGroups;
