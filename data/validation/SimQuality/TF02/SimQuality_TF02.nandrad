@@ -879,6 +879,21 @@
 				</OutputDefinition>
 				<!-- hourly mean direct values -->
 				<OutputDefinition>
+					<Quantity>AzimuthAngle</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>hourly</GridName>
+					<TimeType>Mean</TimeType>
+					<Filename>load_integrals</Filename>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>ElevationAngle</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>hourly</GridName>
+					<TimeType>Mean</TimeType>
+					<Filename>load_integrals</Filename>
+				</OutputDefinition>
+
+				<OutputDefinition>
 					<Quantity>DirectSWRadOnPlane[1]</Quantity>
 					<ObjectListName>Location</ObjectListName>
 					<GridName>hourly</GridName>
