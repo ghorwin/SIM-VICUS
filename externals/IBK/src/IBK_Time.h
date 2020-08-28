@@ -243,8 +243,10 @@ public:
 	std::string toShortDateFormat() const;
 	/*! Returns the simulation time in the 17-character short english format '02/27/05 22:10:40'. */
 	std::string toShortDateFormatUS() const;
-	/*! Returns regular date/time format 'dd.mm.yyyy hh:mm:ss'. */
+	/*! Returns regular date/time format 'dd.MM.yyyy hh:mm:ss'. Very similar to toShortDateFormat(), but with 4-digit year. */
 	std::string toDateTimeFormat() const;
+	/*! Returns just the day and month in format 'dd.MM.'. */
+	std::string toDayMonthFormat() const;
 
 	/*! Format types for Time-Of-Year formats. */
 	enum TOYFormat {

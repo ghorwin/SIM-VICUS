@@ -353,6 +353,21 @@ std::string Time::toDateTimeFormat() const {
 // ---------------------------------------------------------------------------
 
 
+std::string Time::toDayMonthFormat() const {
+	int y;
+	unsigned int m, d;
+	double s;
+	decomposeDate(y, m, d, s);
+	IBK::Time t(0, s);
+	std::stringstream strm;
+	strm.fill('0');
+	strm << std::setw(2) << std::right << d+1 << "."
+		 << std::setw(2) << std::right << m+1 << ".";
+	return strm.str();
+}
+// ---------------------------------------------------------------------------
+
+
 std::string Time::toTOYFormat(TOYFormat format) const {
 	std::stringstream strm;
 	unsigned int tmp;
