@@ -41,11 +41,42 @@ Simulation takes 2 years, and starts in March 2nd, 12:00  (year 2003, but that i
 
 
 ```
-02.03. 12:00  -> t_start = (31+28+1)*
+02.03. 12:00  -> t_start = (31+28+1)*24+12 = 1452 h = 60.5 d
 
-t=0  -> t_sched = t_start
+t =   0 d -> t_sched = t_start + t = 60.5 d
+t = 365 d -> t_sched = t_start + t = 425.5 d
+
+t_sched > 365 ? -> t_sched = t_sched - 365 = 60.5 h
+
+Evaluation at runtime:
+scheduleData = scheduleTabulatedSplineData [t_sched=0...365 d]  -> interpolate at t_sched
+```
+
+##### Constructing spline data from input data
 
 ```
+- loop over all days (d=0,1,...,364)
+- determine day type:
+  d_dayOfWeek = (startDayOffset + d) % 7 (modulo 7)
+
+  startDayOffset = 0 for Monday, 1 for Tuesday, ... , 6 for Sunday
+  
+Example:
+  
+  d = 16  -> date = 16. January 2003
+  startDayOffset = "Wed" -> 2  (1.1.2003 was a wednesday)
+  
+  d_dayOfWeek -> 16 + 2 = 18   18 % 7 = 3  -> DayType = "Thursay" (Check: 16. January 2003 was a Thursday)
+  
+- look up daily cycle:
+  - find schedule (back to frond) where d in range:
+    - process daytypes in order Thursday, Weekdays, AllDays
+      - if parameter is found in any of these days, take daily course and add to spline for this day,
+      - if parameter not found, skip and search through next schedule
+```
+
+
+
 
 #### Continuous data
 
