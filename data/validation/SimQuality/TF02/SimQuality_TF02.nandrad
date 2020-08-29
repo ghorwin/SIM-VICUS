@@ -65,123 +65,43 @@
 					<IBK:Parameter name="Orientation" unit="Deg">315</IBK:Parameter>
 					<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
 				</Sensor>
-				<!-- North Wall 60 -->
-				<Sensor id="10">
-					<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
-					<IBK:Parameter name="Inclination" unit="Deg">60</IBK:Parameter>
-				</Sensor>
-				<!-- North East Wall 60 -->
-				<Sensor id="11">
-					<IBK:Parameter name="Orientation" unit="Deg">45</IBK:Parameter>
-					<IBK:Parameter name="Inclination" unit="Deg">60</IBK:Parameter>
-				</Sensor>
-				<!-- East Wall 60 -->
-				<Sensor id="12">
-					<IBK:Parameter name="Orientation" unit="Deg">90</IBK:Parameter>
-					<IBK:Parameter name="Inclination" unit="Deg">60</IBK:Parameter>
-				</Sensor>
-				<!-- South East Wall 60 -->
-				<Sensor id="13">
-					<IBK:Parameter name="Orientation" unit="Deg">135</IBK:Parameter>
-					<IBK:Parameter name="Inclination" unit="Deg">60</IBK:Parameter>
-				</Sensor>
-				<!-- South Wall 60 -->
-				<Sensor id="14">
-					<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
-					<IBK:Parameter name="Inclination" unit="Deg">60</IBK:Parameter>
-				</Sensor>
-				<!-- South West Wall 60 -->
-				<Sensor id="15">
-					<IBK:Parameter name="Orientation" unit="Deg">225</IBK:Parameter>
-					<IBK:Parameter name="Inclination" unit="Deg">60</IBK:Parameter>
-				</Sensor>
-				<!-- West Wall 60 -->
-				<Sensor id="16">
-					<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
-					<IBK:Parameter name="Inclination" unit="Deg">60</IBK:Parameter>
-				</Sensor>
-				<!-- North West Wall 60 -->
-				<Sensor id="17">
-					<IBK:Parameter name="Orientation" unit="Deg">315</IBK:Parameter>
-					<IBK:Parameter name="Inclination" unit="Deg">60</IBK:Parameter>
-				</Sensor>
-				<!-- North Wall 45 -->
-				<Sensor id="18">
-					<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
-					<IBK:Parameter name="Inclination" unit="Deg">45</IBK:Parameter>
-				</Sensor>
-				<!-- North East Wall 45 -->
-				<Sensor id="19">
-					<IBK:Parameter name="Orientation" unit="Deg">45</IBK:Parameter>
-					<IBK:Parameter name="Inclination" unit="Deg">45</IBK:Parameter>
-				</Sensor>
-				<!-- East Wall 45 -->
-				<Sensor id="20">
-					<IBK:Parameter name="Orientation" unit="Deg">90</IBK:Parameter>
-					<IBK:Parameter name="Inclination" unit="Deg">45</IBK:Parameter>
-				</Sensor>
-				<!-- South East Wall 45 -->
-				<Sensor id="21">
-					<IBK:Parameter name="Orientation" unit="Deg">135</IBK:Parameter>
-					<IBK:Parameter name="Inclination" unit="Deg">45</IBK:Parameter>
-				</Sensor>
-				<!-- South Wall 45 -->
-				<Sensor id="22">
-					<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
-					<IBK:Parameter name="Inclination" unit="Deg">45</IBK:Parameter>
-				</Sensor>
-				<!-- South West Wall 45 -->
-				<Sensor id="23">
-					<IBK:Parameter name="Orientation" unit="Deg">225</IBK:Parameter>
-					<IBK:Parameter name="Inclination" unit="Deg">45</IBK:Parameter>
-				</Sensor>
-				<!-- West Wall 45 -->
-				<Sensor id="24">
-					<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
-					<IBK:Parameter name="Inclination" unit="Deg">45</IBK:Parameter>
-				</Sensor>
-				<!-- North West Wall 45 -->
-				<Sensor id="25">
-					<IBK:Parameter name="Orientation" unit="Deg">315</IBK:Parameter>
-					<IBK:Parameter name="Inclination" unit="Deg">45</IBK:Parameter>
-				</Sensor>
 				<!-- North Wall 30 -->
-				<Sensor id="26">
+				<Sensor id="10">
 					<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
 					<IBK:Parameter name="Inclination" unit="Deg">30</IBK:Parameter>
 				</Sensor>
 				<!-- North East Wall 30 -->
-				<Sensor id="27">
+				<Sensor id="11">
 					<IBK:Parameter name="Orientation" unit="Deg">45</IBK:Parameter>
 					<IBK:Parameter name="Inclination" unit="Deg">30</IBK:Parameter>
 				</Sensor>
 				<!-- East Wall 30 -->
-				<Sensor id="28">
+				<Sensor id="12">
 					<IBK:Parameter name="Orientation" unit="Deg">90</IBK:Parameter>
 					<IBK:Parameter name="Inclination" unit="Deg">30</IBK:Parameter>
 				</Sensor>
 				<!-- South East Wall 30 -->
-				<Sensor id="29">
+				<Sensor id="13">
 					<IBK:Parameter name="Orientation" unit="Deg">135</IBK:Parameter>
 					<IBK:Parameter name="Inclination" unit="Deg">30</IBK:Parameter>
 				</Sensor>
 				<!-- South Wall 30 -->
-				<Sensor id="30">
+				<Sensor id="14">
 					<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
 					<IBK:Parameter name="Inclination" unit="Deg">30</IBK:Parameter>
 				</Sensor>
 				<!-- South West Wall 30 -->
-				<Sensor id="31">
+				<Sensor id="15">
 					<IBK:Parameter name="Orientation" unit="Deg">225</IBK:Parameter>
 					<IBK:Parameter name="Inclination" unit="Deg">30</IBK:Parameter>
 				</Sensor>
 				<!-- West Wall 30 -->
-				<Sensor id="32">
+				<Sensor id="16">
 					<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
 					<IBK:Parameter name="Inclination" unit="Deg">30</IBK:Parameter>
 				</Sensor>
 				<!-- North West Wall 30 -->
-				<Sensor id="33">
+				<Sensor id="17">
 					<IBK:Parameter name="Orientation" unit="Deg">315</IBK:Parameter>
 					<IBK:Parameter name="Inclination" unit="Deg">30</IBK:Parameter>
 				</Sensor>
@@ -289,86 +209,6 @@
 					<ObjectListName>Location</ObjectListName>
 					<GridName>minutely</GridName>
 				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[18]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[19]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[20]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[21]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[22]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[23]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[24]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[25]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[26]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[27]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[28]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[29]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[30]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[31]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[32]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[33]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
 
 				<OutputDefinition>
 					<Quantity>DiffuseSWRadOnPlane[1]</Quantity>
@@ -452,86 +292,6 @@
 				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>DiffuseSWRadOnPlane[17]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[18]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[19]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[20]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[21]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[22]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[23]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[24]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[25]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[26]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[27]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[28]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[29]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[30]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[31]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[32]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>minutely</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[33]</Quantity>
 					<ObjectListName>Location</ObjectListName>
 					<GridName>minutely</GridName>
 				</OutputDefinition>
@@ -633,86 +393,6 @@
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[18]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[19]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[20]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[21]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[22]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[23]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[24]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[25]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[26]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[27]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[28]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[29]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[30]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[31]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[32]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[33]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
 					<Quantity>DiffuseSWRadOnPlane[1]</Quantity>
 					<ObjectListName>Location</ObjectListName>
 					<GridName>hourly</GridName>
@@ -797,86 +477,6 @@
 					<ObjectListName>Location</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[18]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[19]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[20]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[21]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[22]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[23]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[24]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[25]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[26]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[27]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[28]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[29]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[30]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[31]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[32]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[33]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
 				<!-- hourly mean direct values -->
 				<OutputDefinition>
 					<Quantity>AzimuthAngle</Quantity>
@@ -892,7 +492,6 @@
 					<TimeType>Mean</TimeType>
 					<Filename>load_integrals</Filename>
 				</OutputDefinition>
-
 				<OutputDefinition>
 					<Quantity>DirectSWRadOnPlane[1]</Quantity>
 					<ObjectListName>Location</ObjectListName>
@@ -995,102 +594,6 @@
 					<GridName>hourly</GridName>
 					<TimeType>Mean</TimeType>
 					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[18]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[19]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[20]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[21]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[22]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[23]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[24]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[25]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[26]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[27]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[28]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[29]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[30]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[31]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[32]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[33]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
 				<!-- hourly mean diffuse values -->
 				<OutputDefinition>
 					<Quantity>DiffuseSWRadOnPlane[1]</Quantity>
@@ -1181,7 +684,8 @@
 					<ObjectListName>Location</ObjectListName>
 					<GridName>hourly</GridName>
 					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
+					<Filename>load_integrals</Filename>
+				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>DiffuseSWRadOnPlane[16]</Quantity>
 					<ObjectListName>Location</ObjectListName>
@@ -1190,102 +694,6 @@
 					<Filename>load_integrals</Filename></OutputDefinition>
 				<OutputDefinition>
 					<Quantity>DiffuseSWRadOnPlane[17]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[18]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[19]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[20]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[21]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[22]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[23]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[24]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[25]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[26]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[27]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[28]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[29]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[30]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[31]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[32]</Quantity>
-					<ObjectListName>Location</ObjectListName>
-					<GridName>hourly</GridName>
-					<TimeType>Mean</TimeType>
-					<Filename>load_integrals</Filename></OutputDefinition>
-				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[33]</Quantity>
 					<ObjectListName>Location</ObjectListName>
 					<GridName>hourly</GridName>
 					<TimeType>Mean</TimeType>
