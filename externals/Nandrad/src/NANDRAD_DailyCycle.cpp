@@ -38,15 +38,26 @@ void DailyCycle::prepareCalculation() {
 	if (m_timePoints.empty())
 		throw IBK::Exception("Missing time points values in DailyCycle.", FUNC_ID);
 
-	// time unit valid?
-	if (m_timeUnit.id() == 0 || m_timeUnit.base_id() != IBK_UNIT_ID_SECONDS)
-		throw IBK::Exception(IBK::FormatString("Invalid/undefined time unit '%1' in DailyCycle.")
-							 .arg(m_timeUnit.name()), FUNC_ID);
-
 	if (m_interpolation == NUM_IT)
 		m_interpolation = IT_LINEAR;
 	else if (m_interpolation != IT_CONSTANT)
 		throw IBK::Exception("Invalid/undefined interpolation type in DailyCycle.", FUNC_ID);
+
+	// check if time points follow the rules
+	if (m_timePoints[0] != 0.0)
+		throw IBK::Exception("Invalid time points in DailyCycle (must start with 0).", FUNC_ID);
+	if (m_interpolation == IT_LINEAR && m_timePoints.back() != 24.0)
+		throw IBK::Exception("Invalid time points in DailyCycle with linear interpolation (must have at least two time points and last time point must be 24 h).", FUNC_ID);
+
+	// check for monitonically increasing time points
+	double last  = m_timePoints[0];
+	for (unsigned int i=1; i<m_timePoints.size(); ++i) {
+		if (last >= m_timePoints[i])
+			throw IBK::Exception("Invalid time points in DailyCycle : time points must follow in strictly monotonic order.", FUNC_ID);
+		last = m_timePoints[i];
+	}
+
+
 
 	// first check correct number of values
 	unsigned int valueCount = m_values.m_values.begin()->second.size();
@@ -101,7 +112,6 @@ bool DailyCycle::operator!=(const DailyCycle & other) const {
 	// Note: we do not compare solver runtime parameters here!
 	if (m_interpolation != other.m_interpolation) return true;
 	if (m_timePoints != other.m_timePoints) return true;
-	if (m_timeUnit != other.m_timeUnit) return true;
 	if (m_values != other.m_values) return true;
 	return false;
 }

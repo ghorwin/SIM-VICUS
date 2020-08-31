@@ -46,7 +46,7 @@ namespace NANDRAD {
 
 	If m_interpolation == IT_LINEAR, then the following rules apply:
 	- the time points in m_timePoints are points in time where associated values given
-	- the first time point must be always 0, the last one must be < 24 h (< 1440 min, etc.),
+	- the first time point must be always 0, the last one must be < 24 h,
 	  because in cyclic usage, the time point at 24 h will be the same as for 0 h (and likewise
 	  the scheduled values)
 	- between time points the values are linearly interpolated
@@ -76,9 +76,8 @@ public:
 
 	interpolation_t						m_interpolation = NUM_IT;			// XML:A
 
-	/*! Time points, first must be 0, last must be end of day when IT_LINEAR is used. */
+	/*! Time points in [h], first must be 0, last must be end of day (=24) when IT_LINEAR is used. */
 	std::vector<double>					m_timePoints;						// XML:E
-	IBK::Unit							m_timeUnit;							// XML:E
 
 	/*! Actual values, key of m_values.m_values is physical quantity/setpoint/... scheduled quantity, value is vector with values, same
 		number of values as in m_timePoints.

@@ -59,8 +59,6 @@ void DailyCycle::readXML(const TiXmlElement * element) {
 			const std::string & cName = c->ValueStr();
 			if (cName == "TimePoints")
 				readVector(c, "TimePoints", m_timePoints);
-			else if (cName == "TimeUnit")
-				m_timeUnit = readUnitElement(c, cName);
 			else if (cName == "Values")
 				m_values.setEncodedString(c->GetText());
 			else {
@@ -84,8 +82,6 @@ TiXmlElement * DailyCycle::writeXML(TiXmlElement * parent) const {
 	if (m_interpolation != NUM_IT)
 		e->SetAttribute("interpolation", KeywordList::Keyword("DailyCycle::interpolation_t",  m_interpolation));
 	writeVector(e, "TimePoints", m_timePoints);
-	if (m_timeUnit.id() != 0)
-		TiXmlElement::appendSingleAttributeElement(e, "TimeUnit", nullptr, std::string(), m_timeUnit.name());
 	if (!m_values.m_values.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "Values", nullptr, std::string(), m_values.encodedString());
 	return e;
