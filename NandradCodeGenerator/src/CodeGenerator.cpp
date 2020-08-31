@@ -482,6 +482,7 @@ void CodeGenerator::generateReadWriteCode() {
 
 					// special handling for vector of double or vector of int/unsigned int
 					if (childType == "double" || childType == "int" || childType == "unsigned int") {
+						includes.insert("NANDRAD_Utilities.h");
 						// we generate the parent element and afterwards the loop
 						elements += "	writeVector(e, \""+tagName+"\", m_"+varName+");\n";
 					}
