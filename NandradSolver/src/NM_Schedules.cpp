@@ -85,7 +85,7 @@ int Schedules::setTime(double t) {
 }
 
 
-void Schedules::setup(const NANDRAD::Project &project) {
+void Schedules::setup(NANDRAD::Project &project) {
 	FUNCID(Schedules::setup);
 	// store start time offset as year and start time
 	m_year = project.m_simulationParameter.m_intPara[NANDRAD::SimulationParameter::IP_StartYear].value;
@@ -95,14 +95,17 @@ void Schedules::setup(const NANDRAD::Project &project) {
 	m_schedules = &project.m_schedules;
 
 	// loop over all daily cycle schedules and all linear spline schedules and remember the object lists
-	for (auto schedGroup : project.m_schedules.m_scheduleGroups) {
+	for (std::map<std::string, std::vector<NANDRAD::Schedule> >::iterator schedGroupIT = project.m_schedules.m_scheduleGroups.begin();
+		 schedGroupIT != project.m_schedules.m_scheduleGroups.end(); ++schedGroupIT)
+	{
+		std::vector<NANDRAD::Schedule> & schedules = schedGroupIT->second;
 		// this set will contain list of all variables in this schedule group
 		std::set< std::pair<std::string, IBK::Unit> > varlist;
-		const std::string & objectListName = schedGroup.first;
+		const std::string & objectListName = schedGroupIT->first;
 		objectListByName(objectListName); // tests for existence and throws exception in case of missing schedule
 		// now search through all schedules and collect list of variable names
-		for (unsigned int i = 0; i < schedGroup.second.size(); ++i) {
-			NANDRAD::Schedule & sched = schedGroup.second[i];
+		for (unsigned int i = 0; i < schedules.size(); ++i) {
+			NANDRAD::Schedule & sched = schedules[i];
 			try {
 				sched.prepareCalculation();
 			}
@@ -141,7 +144,7 @@ void Schedules::setup(const NANDRAD::Project &project) {
 
 			NANDRAD::DailyCycle::interpolation_t interpolationType;
 			try {
-				m_schedules->generateLinearSpline(schedGroup.first, var.first, spl, interpolationType);
+				m_schedules->generateLinearSpline(schedGroupIT->first, var.first, spl, interpolationType);
 			}
 			catch (IBK::Exception & ex) {
 				throw IBK::Exception(ex, "Error initializing schedules (cannot generate schedule from daily cycle data).", FUNC_ID);

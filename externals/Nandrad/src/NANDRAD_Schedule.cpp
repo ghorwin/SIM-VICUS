@@ -61,25 +61,5 @@ bool Schedule::containsDay(unsigned int dayOfYear) const {
 }
 
 
-unsigned int Schedule::priority() const {
-	FUNCID(Schedule::priority);
-	switch (m_type) {
-		case ST_ALLDAYS :		return 3;
-		case ST_WEEKDAY :		return 2;
-		case ST_WEEKEND :		return 2;
-		case ST_HOLIDAY :		return 0;
-		case ST_MONDAY :		return 1;
-		case ST_TUESDAY :		return 1;
-		case ST_WEDNESDAY :		return 1;
-		case ST_THURSDAY :		return 1;
-		case ST_FRIDAY :		return 1;
-		case ST_SATURDAY :		return 1;
-		case ST_SUNDAY :		return 1;
-		default :
-			throw IBK::Exception("Accessing undefined/invalid priority.", FUNC_ID);
-	}
-}
-
-
 } // namespace NANDRAD
 

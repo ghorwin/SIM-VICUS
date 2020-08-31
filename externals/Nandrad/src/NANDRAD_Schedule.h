@@ -44,7 +44,7 @@ namespace NANDRAD {
 class Schedule {
 public:
 
-	/*! Don't change order in this array since several conversions rely on that. */
+	/*! Different day types a schedule can be defined for. */
 	enum type_t {
 		ST_ALLDAYS,		// Keyword: AllDays		'All days (Weekend days and Weekdays).'
 		ST_WEEKDAY,		// Keyword: WeekDay		'Weekday schedule.'
@@ -70,15 +70,6 @@ public:
 
 	/*! Returns true, if given day is inside the start and end date of the schedule. */
 	bool containsDay(unsigned int dayOfYear) const;
-
-	/*! Returns the priority of an selected schedule.
-		When looking for parameters, we use the following preference:
-		- holidays
-		- specific day
-		- weekend/weekday (if specific day matches either group)
-		- all days
-	*/
-	unsigned int priority() const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

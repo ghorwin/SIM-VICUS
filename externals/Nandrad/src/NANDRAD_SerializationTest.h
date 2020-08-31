@@ -64,7 +64,6 @@ public:
 		m_sched.m_endDayOfTheYear = static_cast<unsigned int>(IBK::Time(2007,10,1).secondsOfYear()/(3600*24));
 		DailyCycle d;
 		d.m_interpolation = DailyCycle::IT_CONSTANT;
-		d.m_timeUnit.set("h");
 		d.m_timePoints = std::vector<double>{0,6,18};
 		d.m_values.m_values["Temperatures"] = std::vector<double>{0,6,18};
 		m_sched.m_dailyCycles.push_back( DailyCycle() );

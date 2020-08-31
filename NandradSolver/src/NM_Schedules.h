@@ -54,7 +54,7 @@ public:
 	// *** PUBLIC MEMBER FUNCTIONS
 
 	/*! Generate variable reference list from defined schedules. */
-	void setup(const NANDRAD::Project & project);
+	void setup(NANDRAD::Project & project);
 
 
 	/*! Retrieves reference pointer to a value with given quantity ID name.

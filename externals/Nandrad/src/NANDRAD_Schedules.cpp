@@ -253,15 +253,17 @@ bool Schedules::operator!=(const Schedules & other) const {
 void Schedules::generateLinearSpline(const std::string & objectListName, const std::string & parameterName,
 									 IBK::LinearSpline & spline, DailyCycle::interpolation_t & interpolationType) const
 {
+	FUNCID(Schedules::generateLinearSpline);
+
 	/*
-	 - loop over all days (d=0,1,...,364)
-	- determine day type:
-	  d_dayOfWeek = (startDayOffset + d) % 7 (modulo 7)
-	- look up daily cycle:
-	  - find schedule where d in range:
-		- process daytypes in order Holidays, CurrentDayType, Weekdays/Weekends, AllDays
-		  - if parameter is found in any of these days, take daily course and add to spline for this day,
-		  - if parameter not found, skip and search through next schedule
+		- loop over all days (d=0,1,...,364)
+		- determine day type:
+		  dayOfWeek = (startDayOffset + d) % 7 (modulo 7)
+		- look up daily cycle:
+		  - find schedule where d in range:
+			- process daytypes in order Holidays, CurrentDayType, Weekdays/Weekends, AllDays
+			  - if parameter is found in any of these days, take daily course and add to spline for this day,
+			  - if parameter not found, skip and search through next schedule
 	*/
 
 	std::vector<double> tp;
@@ -275,64 +277,86 @@ void Schedules::generateLinearSpline(const std::string & objectListName, const s
 		bool isHoliday = (m_holidays.find(d) != m_holidays.end());
 
 		// get vector of schedules for given object list
-		std::map<std::string, std::vector<Schedule> >::const_iterator it = m_scheduleGroups.find(parameterName);
+		std::map<std::string, std::vector<Schedule> >::const_iterator it = m_scheduleGroups.find(objectListName);
 		IBK_ASSERT(it != m_scheduleGroups.end());
 		const std::vector<Schedule> & schedules = it->second;
 
 		std::vector<const Schedule *> scheduleCandidates[NANDRAD::Schedule::NUM_ST];
 
 		// now search through schedules and build a list of schedules sorted according to priority (i.e. daytype)
-		// hereby, we already filter out schedules that won't match our day type
-		for (std::vector<Schedule>::const_reverse_iterator schedIt = schedules.rbegin(); schedIt != schedules.rend(); ++schedIt) {
+		for (const Schedule & sched : schedules) {
 			// check for correct interval
-			if (!schedIt->containsDay(d))
+			if (!sched.containsDay(d))
 				continue; // outside scheduled date range - skip
 
+			// look at schedule day type and see if our day fits
 			bool keep = false;
-			// AllDays are always kept
-			if (schedIt->m_type == NANDRAD::Schedule::ST_ALLDAYS)
-				keep = true;
+			switch (sched.m_type) {
+				// AllDays are always kept
+				case NANDRAD::Schedule::ST_ALLDAYS :
+					keep = true;
+				break;
 
-			// holidays are only kept if this is a holiday schedule
-			if (!keep && isHoliday && schedIt->m_type == NANDRAD::Schedule::ST_HOLIDAY)
-				keep = true;
+				// holidays are only kept if this is a holiday schedule
+				case NANDRAD::Schedule::ST_HOLIDAY :
+					if (isHoliday)
+						keep = true;
+				break;
 
-			// weekday schedules are only kept, if daytype is a weekday
-			if (!keep &&
-				dayOfWeek >= NANDRAD::Schedules::SD_MONDAY &&
-				dayOfWeek <= NANDRAD::Schedules::SD_FRIDAY &&
-				schedIt->m_type == NANDRAD::Schedule::ST_WEEKDAY)
-			{
-				keep = true;
+				case NANDRAD::Schedule::ST_WEEKDAY :
+					// weekday schedules are only kept, if daytype is a weekday
+					if (dayOfWeek >= NANDRAD::Schedules::SD_MONDAY &&
+						dayOfWeek <= NANDRAD::Schedules::SD_FRIDAY)
+					{
+						keep = true;
+					}
+				break;
+
+				case NANDRAD::Schedule::ST_WEEKEND :
+					// weekend schedules are only kept, if daytype is a weekend
+					if (dayOfWeek >= NANDRAD::Schedules::SD_SATURDAY &&
+						dayOfWeek <= NANDRAD::Schedules::SD_SUNDAY)
+					{
+						keep = true;
+					}
+				break;
+
+				default :
+					// otherwise we only keep the schedule if this is a "our" day
+					if (sched.m_type == (int)dayOfWeek+NANDRAD::Schedule::ST_MONDAY) // mind the shift in enum numbers
+						keep = true;
 			}
-
-			// weekend schedules are only kept, if daytype is a weekend
-			if (!keep &&
-				dayOfWeek >= NANDRAD::Schedules::SD_SATURDAY &&
-				dayOfWeek <= NANDRAD::Schedules::SD_SUNDAY &&
-				schedIt->m_type == NANDRAD::Schedule::ST_WEEKEND)
-			{
-				keep = true;
-			}
-
-			// otherwise we only keep the schedule if this is a "our" day
-			if (!keep && schedIt->m_type == (int)dayOfWeek+NANDRAD::Schedule::ST_MONDAY) // mind the shift in enum numbers
-				keep = true;
 
 			if (!keep)
-				continue; // schedule was already filtered out, skip it
+				continue; // schedule was filtered out, skip it
 
 			// check if schedule provides the requested parameter
 			// Note: this is a slow operation, so we do it last
-			if (schedIt->m_valueNames.find(parameterName) == schedIt->m_valueNames.end())
+			if (sched.m_valueNames.find(parameterName) == sched.m_valueNames.end())
 				continue; // parameter not provided
 
-			// sort based on date type
-			scheduleCandidates[schedIt->m_type].push_back(&(*schedIt));
+			// remember based on date type
+			scheduleCandidates[sched.m_type].push_back(&sched);
 		}
 
 		// now we have a set of schedules to take our parameter from
 		// each of the lists should have at max one parameter - otherwise we have an ambiguity
+
+		// check all lists types for duplicate schedules
+		for (unsigned int i=0; i<NANDRAD::Schedule::NUM_ST; ++i) {
+			IBK::Time dString(2003, (d + m_firstDayOfYear)*IBK::SECONDS_PER_DAY);
+			if (scheduleCandidates[i].size() > 1) {
+				/// \todo maybe add more info about the parameter lookup to help identifying the ambiguity
+				throw IBK::Exception(IBK::FormatString("Ambiguous schedule parameter definition for parameter '%1' at day '%2'. %3 "
+									 "schedules of day type %4 match this day.")
+									 .arg(parameterName).arg(dString.toDayMonthFormat())
+									 .arg(scheduleCandidates[i].size())
+									 .arg(NANDRAD::KeywordList::Keyword("Schedule::type_t", (int)i)), FUNC_ID);
+			}
+		}
+
+		// now finally append the daily spline to the global spline
+		// also, throw an exception if a parameter definition is missing for a day
 
 	}
 
