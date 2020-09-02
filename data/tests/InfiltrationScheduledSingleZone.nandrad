@@ -17,7 +17,7 @@
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">5</IBK:Parameter>
 			<Interval>
-				<IBK:Parameter name="End" unit="d">4</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">10</IBK:Parameter>
 			</Interval>
 		</SimulationParameter>
 		<Location>
@@ -33,12 +33,30 @@
 			<WeekEndDays>Sat,Sun</WeekEndDays>
 			<ScheduleGroups>
 				<ScheduleGroup objectList="All zones">
+					<!-- every day between 8-10 -->
 					<Schedule type="AllDays">
 						<DailyCycles>
 							<DailyCycle interpolation="Constant">
-								<TimeUnit>h</TimeUnit>
-								<TimePoints>0 6 18</TimePoints>
-								<Values>InfiltrationRateSchedule [1/h]:2 0.5 2</Values>
+								<TimePoints>0 6 10</TimePoints>
+								<Values>InfiltrationRateSchedule [1/h]:0 0.4 0</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+					<!-- Tuesday no ventilation -->
+					<Schedule type="Tuesday">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>InfiltrationRateSchedule [1/h]:0</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+					<!-- Weekend only on afternoon -->
+					<Schedule type="WeekEnd">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0 14 16</TimePoints>
+								<Values>InfiltrationRateSchedule [1/h]:0 0.1 0</Values>
 							</DailyCycle>
 						</DailyCycles>
 					</Schedule>
@@ -52,26 +70,26 @@
 				<OutputDefinition>
 					<Quantity>InfiltrationRate[1]</Quantity>
 					<ObjectListName>Ventilation models</ObjectListName>
-					<GridName>hourly</GridName>
+					<GridName>10 mins</GridName>
 				</OutputDefinition>
 
 				<OutputDefinition>
 					<Quantity>AirTemperature</Quantity>
 					<ObjectListName>All zones</ObjectListName>
-					<GridName>hourly</GridName>
+					<GridName>10 mins</GridName>
 				</OutputDefinition>
 
 				<OutputDefinition>
 					<Quantity>InfiltrationHeatLoad</Quantity>
 					<ObjectListName>All zones</ObjectListName>
-					<GridName>hourly</GridName>
+					<GridName>10 mins</GridName>
 				</OutputDefinition>
 			</OutputDefinitions>
 			<Grids>
-				<OutputGrid name="hourly">
+				<OutputGrid name="10 mins">
 					<Intervals>
 						<Interval>
-							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">10</IBK:Parameter>
 						</Interval>
 					</Intervals>
 				</OutputGrid>
