@@ -277,7 +277,7 @@ namespace NANDRAD {
 			// Schedules::flag_t
 			case 27 :
 			switch (t) {
-				case 0 : return "EnableCyclicYears";
+				case 0 : return "EnableCyclicSchedules";
 			} break;
 			// SerializationTest::test_t
 			case 28 :
@@ -591,7 +591,7 @@ namespace NANDRAD {
 			// Schedules::flag_t
 			case 27 :
 			switch (t) {
-				case 0 : return "EnableCyclicYears";
+				case 0 : return "EnableCyclicSchedules";
 			} break;
 			// SerializationTest::test_t
 			case 28 :

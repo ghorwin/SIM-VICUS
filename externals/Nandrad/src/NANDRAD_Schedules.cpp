@@ -432,7 +432,7 @@ void Schedules::generateLinearSpline(const std::string & objectListName, const s
 
 			// now finally append the daily spline to the global spline
 			for (unsigned int h=0; h<dc->m_timePoints.size(); ++h) {
-				double tpsec = dc->m_timePoints[h]*60 + d*IBK::SECONDS_PER_DAY;
+				double tpsec = dc->m_timePoints[h]*3600 + d*IBK::SECONDS_PER_DAY;
 				double val = (*valData.m_valueVec)[h];
 				if (tp.empty()) {
 					tp.push_back(tpsec);
@@ -466,6 +466,7 @@ void Schedules::generateLinearSpline(const std::string & objectListName, const s
 				}
 			}
 			dataAdded = true; // we have added data for the day
+			break; // break the loop, since we have found our parameter set
 		} // loop to process all cycles
 
 		// throw an exception if a parameter definition is missing for a day
