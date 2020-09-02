@@ -21,6 +21,8 @@
 
 #include "NANDRAD_DataTable.h"
 
+#include <algorithm>
+
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 
@@ -71,6 +73,15 @@ std::string DataTable::encodedString() const {
 		strm << ";";
 	}
 	return strm.str();
+}
+
+
+const std::vector<double> & DataTable::valueVector(const std::string & parameterName) const {
+	FUNCID(DataTable::valueVector);
+	std::map<std::string, std::vector<double> >::const_iterator it = m_values.find(parameterName);
+	if (it == m_values.end())
+		throw IBK::Exception(IBK::FormatString("Invalid/undefined parameter name '%1'.").arg(parameterName), FUNC_ID);
+	return it->second;
 }
 
 

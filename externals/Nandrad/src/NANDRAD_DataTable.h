@@ -51,6 +51,13 @@ public:
 	/*! Returns content of data table as encoded string using tab a value separator. */
 	std::string encodedString() const;
 
+	/*! Convenience function that looks up a parameter data vector in the map and returns
+		a const reference to it.
+		Throws an IBK::Exception if the parameter name doesn't exist.
+	*/
+	const std::vector<double> & valueVector(const std::string & parameterName) const;
+
+
 	/*! The actual data member. */
 	std::map<std::string, std::vector<double> >		m_values;
 };
