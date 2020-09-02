@@ -36,6 +36,12 @@
 namespace NANDRAD {
 
 
+void Schedules::initDefaults() {
+	m_flags[F_EnableCyclicYears].set(
+				NANDRAD::KeywordList::Keyword("Schedules::flag_t", F_EnableCyclicYears), true);
+}
+
+
 void Schedules::readXML(const TiXmlElement * element) {
 	FUNCID(Schedules::readXML);
 
@@ -81,6 +87,18 @@ void Schedules::readXML(const TiXmlElement * element) {
 										 .arg("Invalid day name in 'WeekEndDays' tag."), FUNC_ID);
 				}
 			}
+		}
+		else if (cName == "IBK:Flag") {
+			IBK::Flag f;
+			readFlagElement(c, f);
+			bool success = false;
+			try {
+				flag_t ftype = (flag_t)KeywordList::Enumeration("Schedules::flag_t", f.name());
+				m_flags[ftype] = f; success=true;
+			}
+			catch (...) { /* intentional fail */  }
+			if (!success)
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 		}
 		else if (cName == "ScheduleGroups") {
 			const TiXmlElement * c2 = c->FirstChildElement();
@@ -203,6 +221,11 @@ TiXmlElement * Schedules::writeXML(TiXmlElement * parent) const {
 			days += std::string(",") + KeywordList::Keyword("Schedules::day_t", t);
 		TiXmlText * text = new TiXmlText( days.substr(1) ); // Mind: remove leading , from string
 		c->LinkEndChild(text);
+	}
+
+	for (int i=0; i<NUM_F; ++i) {
+		if (!m_flags[i].name().empty())
+			TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_flags[i].name(), m_flags[i].isEnabled() ? "true" : "false");
 	}
 
 	// now write schedules
@@ -371,7 +394,7 @@ void Schedules::generateLinearSpline(const std::string & objectListName, const s
 
 		// search backwards so that we find the highest priority schedule
 		bool dataAdded = false;
-		for (int i=NANDRAD::Schedule::NUM_ST-1; i>=0; ++i) {
+		for (int i=NANDRAD::Schedule::NUM_ST-1; i>=0; --i) {
 			if (scheduleCandidates[i].empty())  continue; // skip day types without schedule
 			const NANDRAD::Schedule * sched = scheduleCandidates[i].front();
 			// find daily cycle that provides the parameter
@@ -442,6 +465,7 @@ void Schedules::generateLinearSpline(const std::string & objectListName, const s
 					}
 				}
 			}
+			dataAdded = true; // we have added data for the day
 		} // loop to process all cycles
 
 		// throw an exception if a parameter definition is missing for a day
@@ -463,6 +487,9 @@ void Schedules::generateLinearSpline(const std::string & objectListName, const s
 	vals.convert(IBK::Unit(vals.m_unit.base_id())); // does not throw
 	// now generate spline
 	spline.setValues(tp, vals.m_data); // does not throw
+
+	/// \todo remove redundant values from spline, i.e when you have {0, 0; 5,0; 10,0} you can drop the middle point
+	/// {0, 0; 10,0} without data loss
 	std::string errmsg;
 	bool success = spline.makeSpline(errmsg); // does not throw
 	if (!success)

@@ -109,6 +109,7 @@ void Project::writeXML(const IBK::Path & filename) const {
 void Project::initDefaults() {
 	m_solverParameter.initDefaults();
 	m_simulationParameter.initDefaults();
+	m_schedules.initDefaults();
 }
 // ----------------------------------------------------------------------------
 

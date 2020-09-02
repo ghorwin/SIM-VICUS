@@ -34,7 +34,7 @@ namespace NANDRAD {
 	const char * const INVALID_KEYWORD_INDEX_STRING = "KEYWORD_ERROR_STRING: Invalid type index";
 
 	/*! Holds a list of all enum types/categories. */
-	const char * const ENUM_TYPES[40] = {
+	const char * const ENUM_TYPES[41] = {
 		"ConstructionInstance::para_t",
 		"DailyCycle::interpolation_t",
 		"EmbeddedObject::para_t",
@@ -62,6 +62,7 @@ namespace NANDRAD {
 		"OutputDefinition::timeType_t",
 		"Schedule::type_t",
 		"Schedules::day_t",
+		"Schedules::flag_t",
 		"SerializationTest::test_t",
 		"SerializationTest::intPara_t",
 		"SimulationParameter::para_t",
@@ -79,7 +80,7 @@ namespace NANDRAD {
 
 	/*! Converts a category string to respective enumeration value. */
 	int enum2index(const std::string & enumtype) {
-		for (int i=0; i<40; ++i) {
+		for (int i=0; i<41; ++i) {
 			if (enumtype == ENUM_TYPES[i]) return i;
 		}
 		//std::cerr << "Unknown enumeration type '" << enumtype<< "'." << std::endl;
@@ -273,20 +274,25 @@ namespace NANDRAD {
 				case 5 : return "Sat";
 				case 6 : return "Sun";
 			} break;
-			// SerializationTest::test_t
+			// Schedules::flag_t
 			case 27 :
+			switch (t) {
+				case 0 : return "EnableCyclicYears";
+			} break;
+			// SerializationTest::test_t
+			case 28 :
 			switch (t) {
 				case 0 : return "X1";
 				case 1 : return "X2";
 			} break;
 			// SerializationTest::intPara_t
-			case 28 :
+			case 29 :
 			switch (t) {
 				case 0 : return "I1";
 				case 1 : return "I2";
 			} break;
 			// SimulationParameter::para_t
-			case 29 :
+			case 30 :
 			switch (t) {
 				case 0 : return "InitialTemperature";
 				case 1 : return "InitialRelativeHumidity";
@@ -302,12 +308,12 @@ namespace NANDRAD {
 				case 11 : return "HeatingDesignAmbientTemperature";
 			} break;
 			// SimulationParameter::intPara_t
-			case 30 :
+			case 31 :
 			switch (t) {
 				case 0 : return "StartYear";
 			} break;
 			// SimulationParameter::flag_t
-			case 31 :
+			case 32 :
 			switch (t) {
 				case 0 : return "EnableMoistureBalance";
 				case 1 : return "EnableCO2Balance";
@@ -315,7 +321,7 @@ namespace NANDRAD {
 				case 3 : return "ExportClimateDataFMU";
 			} break;
 			// SolverParameter::para_t
-			case 32 :
+			case 33 :
 			switch (t) {
 				case 0 : return "RelTol";
 				case 1 : return "AbsTol";
@@ -334,7 +340,7 @@ namespace NANDRAD {
 				case 14 : return "IntegralWeightsFactor";
 			} break;
 			// SolverParameter::intPara_t
-			case 33 :
+			case 34 :
 			switch (t) {
 				case 0 : return "PreBandWidth";
 				case 1 : return "PreILUWidth";
@@ -345,14 +351,14 @@ namespace NANDRAD {
 				case 6 : return "DiscMaxElementsPerLayer";
 			} break;
 			// SolverParameter::flag_t
-			case 34 :
+			case 35 :
 			switch (t) {
 				case 0 : return "DetectMaxTimeStep";
 				case 1 : return "KinsolDisableLineSearch";
 				case 2 : return "KinsolStrictNewton";
 			} break;
 			// SolverParameter::integrator_t
-			case 35 :
+			case 36 :
 			switch (t) {
 				case 0 : return "CVODE";
 				case 1 : return "ExplicitEuler";
@@ -360,7 +366,7 @@ namespace NANDRAD {
 				case 3 : return "auto";
 			} break;
 			// SolverParameter::lesSolver_t
-			case 36 :
+			case 37 :
 			switch (t) {
 				case 0 : return "Dense";
 				case 1 : return "KLU";
@@ -369,21 +375,21 @@ namespace NANDRAD {
 				case 4 : return "auto";
 			} break;
 			// SolverParameter::precond_t
-			case 37 :
+			case 38 :
 			switch (t) {
 				case 0 : return "Band";
 				case 1 : return "ILU";
 				case 2 : return "auto";
 			} break;
 			// Zone::type_t
-			case 38 :
+			case 39 :
 			switch (t) {
 				case 0 : return "Constant";
 				case 1 : return "Active";
 				case 2 : return "Ground";
 			} break;
 			// Zone::para_t
-			case 39 :
+			case 40 :
 			switch (t) {
 				case 0 : return "Temperature";
 				case 1 : return "RelativeHumidity";
@@ -582,20 +588,25 @@ namespace NANDRAD {
 				case 5 : return "Sat";
 				case 6 : return "Sun";
 			} break;
-			// SerializationTest::test_t
+			// Schedules::flag_t
 			case 27 :
+			switch (t) {
+				case 0 : return "EnableCyclicYears";
+			} break;
+			// SerializationTest::test_t
+			case 28 :
 			switch (t) {
 				case 0 : return "X1";
 				case 1 : return "X2";
 			} break;
 			// SerializationTest::intPara_t
-			case 28 :
+			case 29 :
 			switch (t) {
 				case 0 : return "I1";
 				case 1 : return "I2";
 			} break;
 			// SimulationParameter::para_t
-			case 29 :
+			case 30 :
 			switch (t) {
 				case 0 : return "InitialTemperature";
 				case 1 : return "InitialRelativeHumidity";
@@ -611,12 +622,12 @@ namespace NANDRAD {
 				case 11 : return "HeatingDesignAmbientTemperature";
 			} break;
 			// SimulationParameter::intPara_t
-			case 30 :
+			case 31 :
 			switch (t) {
 				case 0 : return "StartYear";
 			} break;
 			// SimulationParameter::flag_t
-			case 31 :
+			case 32 :
 			switch (t) {
 				case 0 : return "EnableMoistureBalance";
 				case 1 : return "EnableCO2Balance";
@@ -624,7 +635,7 @@ namespace NANDRAD {
 				case 3 : return "ExportClimateDataFMU";
 			} break;
 			// SolverParameter::para_t
-			case 32 :
+			case 33 :
 			switch (t) {
 				case 0 : return "RelTol";
 				case 1 : return "AbsTol";
@@ -643,7 +654,7 @@ namespace NANDRAD {
 				case 14 : return "IntegralWeightsFactor";
 			} break;
 			// SolverParameter::intPara_t
-			case 33 :
+			case 34 :
 			switch (t) {
 				case 0 : return "PreBandWidth";
 				case 1 : return "PreILUWidth";
@@ -654,14 +665,14 @@ namespace NANDRAD {
 				case 6 : return "DiscMaxElementsPerLayer";
 			} break;
 			// SolverParameter::flag_t
-			case 34 :
+			case 35 :
 			switch (t) {
 				case 0 : return "DetectMaxTimeStep";
 				case 1 : return "KinsolDisableLineSearch";
 				case 2 : return "KinsolStrictNewton";
 			} break;
 			// SolverParameter::integrator_t
-			case 35 :
+			case 36 :
 			switch (t) {
 				case 0 : return "CVODE";
 				case 1 : return "ExplicitEuler";
@@ -669,7 +680,7 @@ namespace NANDRAD {
 				case 3 : return "auto";
 			} break;
 			// SolverParameter::lesSolver_t
-			case 36 :
+			case 37 :
 			switch (t) {
 				case 0 : return "Dense";
 				case 1 : return "KLU";
@@ -678,21 +689,21 @@ namespace NANDRAD {
 				case 4 : return "auto";
 			} break;
 			// SolverParameter::precond_t
-			case 37 :
+			case 38 :
 			switch (t) {
 				case 0 : return "Band";
 				case 1 : return "ILU";
 				case 2 : return "auto";
 			} break;
 			// Zone::type_t
-			case 38 :
+			case 39 :
 			switch (t) {
 				case 0 : return "Constant";
 				case 1 : return "Active";
 				case 2 : return "Ground";
 			} break;
 			// Zone::para_t
-			case 39 :
+			case 40 :
 			switch (t) {
 				case 0 : return "Temperature";
 				case 1 : return "RelativeHumidity";
@@ -892,20 +903,25 @@ namespace NANDRAD {
 				case 5 : return "Saturday.";
 				case 6 : return "Sunday.";
 			} break;
-			// SerializationTest::test_t
+			// Schedules::flag_t
 			case 27 :
+			switch (t) {
+				case 0 : return "If enabled, schedules are treated as annually repeating schedules.";
+			} break;
+			// SerializationTest::test_t
+			case 28 :
 			switch (t) {
 				case 0 : if (no_description != nullptr) *no_description = true; return "X1";
 				case 1 : if (no_description != nullptr) *no_description = true; return "X2";
 			} break;
 			// SerializationTest::intPara_t
-			case 28 :
+			case 29 :
 			switch (t) {
 				case 0 : if (no_description != nullptr) *no_description = true; return "I1";
 				case 1 : if (no_description != nullptr) *no_description = true; return "I2";
 			} break;
 			// SimulationParameter::para_t
-			case 29 :
+			case 30 :
 			switch (t) {
 				case 0 : return "Global initial temperature [C].";
 				case 1 : return "Global initial relative humidity [%].";
@@ -921,12 +937,12 @@ namespace NANDRAD {
 				case 11 : return "Ambient temparture for a design day. Parameter that is needed for FMU export.";
 			} break;
 			// SimulationParameter::intPara_t
-			case 30 :
+			case 31 :
 			switch (t) {
 				case 0 : return "Start year of the simulation.";
 			} break;
 			// SimulationParameter::flag_t
-			case 31 :
+			case 32 :
 			switch (t) {
 				case 0 : return "Flag activating moisture balance calculation if enabled.";
 				case 1 : return "Flag activating CO2 balance calculation if enabled.";
@@ -934,7 +950,7 @@ namespace NANDRAD {
 				case 3 : return "Flag activating FMU export of climate data.";
 			} break;
 			// SolverParameter::para_t
-			case 32 :
+			case 33 :
 			switch (t) {
 				case 0 : return "Relative tolerance for solver error check.";
 				case 1 : return "Absolute tolerance for solver error check.";
@@ -953,7 +969,7 @@ namespace NANDRAD {
 				case 14 : return "Optional weighting factor for integral outputs.";
 			} break;
 			// SolverParameter::intPara_t
-			case 33 :
+			case 34 :
 			switch (t) {
 				case 0 : return "Maximum band width to be used for banded preconditioner.";
 				case 1 : return "Maximum level of fill-in to be used for ILU preconditioner.";
@@ -964,14 +980,14 @@ namespace NANDRAD {
 				case 6 : return "Maximum number of elements per layer.";
 			} break;
 			// SolverParameter::flag_t
-			case 34 :
+			case 35 :
 			switch (t) {
 				case 0 : return "Check schedules to determine minimum distances between steps and adjust MaxTimeStep.";
 				case 1 : return "Disable line search for steady state cycles.";
 				case 2 : return "Enable strict Newton for steady state cycles.";
 			} break;
 			// SolverParameter::integrator_t
-			case 35 :
+			case 36 :
 			switch (t) {
 				case 0 : return "CVODE based solver";
 				case 1 : return "Explicit Euler solver";
@@ -979,7 +995,7 @@ namespace NANDRAD {
 				case 3 : return "System selects integrator automatically.";
 			} break;
 			// SolverParameter::lesSolver_t
-			case 36 :
+			case 37 :
 			switch (t) {
 				case 0 : return "Dense solver";
 				case 1 : return "KLU sparse solver";
@@ -988,21 +1004,21 @@ namespace NANDRAD {
 				case 4 : return "System selects les solver automatically.";
 			} break;
 			// SolverParameter::precond_t
-			case 37 :
+			case 38 :
 			switch (t) {
 				case 0 : return "Band preconditioner";
 				case 1 : return "Incomplete LU preconditioner";
 				case 2 : return "System selects preconditioner automatically.";
 			} break;
 			// Zone::type_t
-			case 38 :
+			case 39 :
 			switch (t) {
 				case 0 : return "Zone with constant/predefined temperatures. (schedule)";
 				case 1 : return "Zone described by a temperature node in space.";
 				case 2 : return "Ground zone (calculates temperature based on standard).";
 			} break;
 			// Zone::para_t
-			case 39 :
+			case 40 :
 			switch (t) {
 				case 0 : return "Temperature of the zone if set constant [C].";
 				case 1 : return "Relative humidity of the zone if set constant [%].";
@@ -1201,20 +1217,25 @@ namespace NANDRAD {
 				case 5 : return "";
 				case 6 : return "";
 			} break;
-			// SerializationTest::test_t
+			// Schedules::flag_t
 			case 27 :
 			switch (t) {
 				case 0 : return "";
-				case 1 : return "";
 			} break;
-			// SerializationTest::intPara_t
+			// SerializationTest::test_t
 			case 28 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
-			// SimulationParameter::para_t
+			// SerializationTest::intPara_t
 			case 29 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+			} break;
+			// SimulationParameter::para_t
+			case 30 :
 			switch (t) {
 				case 0 : return "C";
 				case 1 : return "%";
@@ -1230,12 +1251,12 @@ namespace NANDRAD {
 				case 11 : return "C";
 			} break;
 			// SimulationParameter::intPara_t
-			case 30 :
+			case 31 :
 			switch (t) {
 				case 0 : return "";
 			} break;
 			// SimulationParameter::flag_t
-			case 31 :
+			case 32 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
@@ -1243,7 +1264,7 @@ namespace NANDRAD {
 				case 3 : return "";
 			} break;
 			// SolverParameter::para_t
-			case 32 :
+			case 33 :
 			switch (t) {
 				case 0 : return "---";
 				case 1 : return "---";
@@ -1262,7 +1283,7 @@ namespace NANDRAD {
 				case 14 : return "---";
 			} break;
 			// SolverParameter::intPara_t
-			case 33 :
+			case 34 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
@@ -1273,14 +1294,14 @@ namespace NANDRAD {
 				case 6 : return "";
 			} break;
 			// SolverParameter::flag_t
-			case 34 :
+			case 35 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
 			} break;
 			// SolverParameter::integrator_t
-			case 35 :
+			case 36 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
@@ -1288,7 +1309,7 @@ namespace NANDRAD {
 				case 3 : return "";
 			} break;
 			// SolverParameter::lesSolver_t
-			case 36 :
+			case 37 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
@@ -1297,21 +1318,21 @@ namespace NANDRAD {
 				case 4 : return "";
 			} break;
 			// SolverParameter::precond_t
-			case 37 :
-			switch (t) {
-				case 0 : return "";
-				case 1 : return "";
-				case 2 : return "";
-			} break;
-			// Zone::type_t
 			case 38 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
 			} break;
-			// Zone::para_t
+			// Zone::type_t
 			case 39 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+				case 2 : return "";
+			} break;
+			// Zone::para_t
+			case 40 :
 			switch (t) {
 				case 0 : return "C";
 				case 1 : return "%";
@@ -1510,20 +1531,25 @@ namespace NANDRAD {
 				case 5 : return "#FFFFFF";
 				case 6 : return "#FFFFFF";
 			} break;
-			// SerializationTest::test_t
+			// Schedules::flag_t
 			case 27 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
 			} break;
-			// SerializationTest::intPara_t
+			// SerializationTest::test_t
 			case 28 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
-			// SimulationParameter::para_t
+			// SerializationTest::intPara_t
 			case 29 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// SimulationParameter::para_t
+			case 30 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -1539,12 +1565,12 @@ namespace NANDRAD {
 				case 11 : return "#FFFFFF";
 			} break;
 			// SimulationParameter::intPara_t
-			case 30 :
+			case 31 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
 			// SimulationParameter::flag_t
-			case 31 :
+			case 32 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -1552,7 +1578,7 @@ namespace NANDRAD {
 				case 3 : return "#FFFFFF";
 			} break;
 			// SolverParameter::para_t
-			case 32 :
+			case 33 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -1571,7 +1597,7 @@ namespace NANDRAD {
 				case 14 : return "#FFFFFF";
 			} break;
 			// SolverParameter::intPara_t
-			case 33 :
+			case 34 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -1582,14 +1608,14 @@ namespace NANDRAD {
 				case 6 : return "#FFFFFF";
 			} break;
 			// SolverParameter::flag_t
-			case 34 :
+			case 35 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
 			// SolverParameter::integrator_t
-			case 35 :
+			case 36 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -1597,7 +1623,7 @@ namespace NANDRAD {
 				case 3 : return "#FFFFFF";
 			} break;
 			// SolverParameter::lesSolver_t
-			case 36 :
+			case 37 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -1606,21 +1632,21 @@ namespace NANDRAD {
 				case 4 : return "#FFFFFF";
 			} break;
 			// SolverParameter::precond_t
-			case 37 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-				case 2 : return "#FFFFFF";
-			} break;
-			// Zone::type_t
 			case 38 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
-			// Zone::para_t
+			// Zone::type_t
 			case 39 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+			} break;
+			// Zone::para_t
+			case 40 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -1819,20 +1845,25 @@ namespace NANDRAD {
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// SerializationTest::test_t
+			// Schedules::flag_t
 			case 27 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// SerializationTest::intPara_t
+			// SerializationTest::test_t
 			case 28 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// SimulationParameter::para_t
+			// SerializationTest::intPara_t
 			case 29 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// SimulationParameter::para_t
+			case 30 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -1848,12 +1879,12 @@ namespace NANDRAD {
 				case 11 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SimulationParameter::intPara_t
-			case 30 :
+			case 31 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SimulationParameter::flag_t
-			case 31 :
+			case 32 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -1861,7 +1892,7 @@ namespace NANDRAD {
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SolverParameter::para_t
-			case 32 :
+			case 33 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -1880,7 +1911,7 @@ namespace NANDRAD {
 				case 14 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SolverParameter::intPara_t
-			case 33 :
+			case 34 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -1891,14 +1922,14 @@ namespace NANDRAD {
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SolverParameter::flag_t
-			case 34 :
+			case 35 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SolverParameter::integrator_t
-			case 35 :
+			case 36 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -1906,7 +1937,7 @@ namespace NANDRAD {
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SolverParameter::lesSolver_t
-			case 36 :
+			case 37 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -1915,21 +1946,21 @@ namespace NANDRAD {
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SolverParameter::precond_t
-			case 37 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-				case 2 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// Zone::type_t
 			case 38 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// Zone::para_t
+			// Zone::type_t
 			case 39 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// Zone::para_t
+			case 40 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2000,32 +2031,34 @@ namespace NANDRAD {
 			case 25 : return 11;
 			// Schedules::day_t
 			case 26 : return 7;
+			// Schedules::flag_t
+			case 27 : return 1;
 			// SerializationTest::test_t
-			case 27 : return 2;
-			// SerializationTest::intPara_t
 			case 28 : return 2;
+			// SerializationTest::intPara_t
+			case 29 : return 2;
 			// SimulationParameter::para_t
-			case 29 : return 12;
+			case 30 : return 12;
 			// SimulationParameter::intPara_t
-			case 30 : return 1;
+			case 31 : return 1;
 			// SimulationParameter::flag_t
-			case 31 : return 4;
+			case 32 : return 4;
 			// SolverParameter::para_t
-			case 32 : return 15;
+			case 33 : return 15;
 			// SolverParameter::intPara_t
-			case 33 : return 7;
+			case 34 : return 7;
 			// SolverParameter::flag_t
-			case 34 : return 3;
+			case 35 : return 3;
 			// SolverParameter::integrator_t
-			case 35 : return 4;
+			case 36 : return 4;
 			// SolverParameter::lesSolver_t
-			case 36 : return 5;
+			case 37 : return 5;
 			// SolverParameter::precond_t
-			case 37 : return 3;
-			// Zone::type_t
 			case 38 : return 3;
+			// Zone::type_t
+			case 39 : return 3;
 			// Zone::para_t
-			case 39 : return 6;
+			case 40 : return 6;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::Count]");
@@ -2088,32 +2121,34 @@ namespace NANDRAD {
 			case 25 : return 10;
 			// Schedules::day_t
 			case 26 : return 6;
+			// Schedules::flag_t
+			case 27 : return 0;
 			// SerializationTest::test_t
-			case 27 : return 1;
-			// SerializationTest::intPara_t
 			case 28 : return 1;
+			// SerializationTest::intPara_t
+			case 29 : return 1;
 			// SimulationParameter::para_t
-			case 29 : return 11;
+			case 30 : return 11;
 			// SimulationParameter::intPara_t
-			case 30 : return 0;
+			case 31 : return 0;
 			// SimulationParameter::flag_t
-			case 31 : return 3;
+			case 32 : return 3;
 			// SolverParameter::para_t
-			case 32 : return 14;
+			case 33 : return 14;
 			// SolverParameter::intPara_t
-			case 33 : return 6;
+			case 34 : return 6;
 			// SolverParameter::flag_t
-			case 34 : return 2;
+			case 35 : return 2;
 			// SolverParameter::integrator_t
-			case 35 : return 3;
+			case 36 : return 3;
 			// SolverParameter::lesSolver_t
-			case 36 : return 4;
+			case 37 : return 4;
 			// SolverParameter::precond_t
-			case 37 : return 2;
-			// Zone::type_t
 			case 38 : return 2;
+			// Zone::type_t
+			case 39 : return 2;
 			// Zone::para_t
-			case 39 : return 6;
+			case 40 : return 6;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::MaxIndex]");

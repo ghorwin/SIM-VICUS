@@ -25,6 +25,8 @@
 #include <string>
 #include <vector>
 
+#include <IBK_Flag.h>
+
 #include "NANDRAD_Schedule.h"
 #include "NANDRAD_CodeGenMacros.h"
 
@@ -51,7 +53,18 @@ public:
 		NUM_SD
 	};
 
+	enum flag_t {
+		F_EnableCyclicYears,	// Keyword: EnableCyclicYears			'If enabled, schedules are treated as annually repeating schedules.'
+		NUM_F
+	};
+
 	// *** PUBLIC MEMBER FUNCTIONS ***
+
+	/*! Init default values (called before readXML()).
+		\note These values will be overwritten in readXML() when the respective property is set
+			  in the project file.
+	*/
+	void initDefaults();
 
 	NANDRAD_READWRITE
 	NANDRAD_COMP(Schedules)
@@ -80,6 +93,9 @@ public:
 
 	/*! The daytype of January 1st (offset of day of the week (0-Mon, ...6-Sun)) of the start year. */
 	day_t																	m_firstDayOfYear = SD_MONDAY;
+
+	/*! List of flags. */
+	IBK::Flag																m_flags[NUM_F];
 
 	/*! Key is object list name, value is vector of schedules. */
 	std::map<std::string, std::vector<Schedule> >							m_scheduleGroups;
