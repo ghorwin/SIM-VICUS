@@ -30,12 +30,4 @@ This document contains a description of the various implemented models and the p
 
 include::NANDRAD-Loads.adoc[leveloffset=+2]
 include::NANDRAD-Schedules.adoc[leveloffset=+2]
-
 include::NANDRAD-Outputs.adoc[leveloffset=+1]
-
-
-
-## Implementation Concepts
-
-include::NANDRAD-Variable-Referencing.adoc[leveloffset=+2]
-include::NANDRAD-Init.adoc[leveloffset=+2]
