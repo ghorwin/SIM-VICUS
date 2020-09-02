@@ -16,11 +16,14 @@ v1.0.0, July 2020
 :stylesdir: ../adoc_utils/css
 :stylesheet: roboto_ubuntu.css
 
+## Introduction
+
 This document is for NANDRAD and SIM-VICUS developers and covers the underlying concepts of the solver and user interface implementation.
 
-## Overview and General Information
+## General Information
 
 include::Coding-Guidelines.adoc[leveloffset=+2]
+include::Code-Quality-Checking.adoc[leveloffset=+2]
 
 ## NANDRAD Solver
 

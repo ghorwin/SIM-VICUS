@@ -44,7 +44,7 @@ footer:
   line-height: 1
   recto:
     left:
-      content: '_PostProc 2 Handbuch {revnumber}, {revdate}_'
+      content: '{title} {revnumber}, {revdate}_'
     right:
       content: '{section-or-chapter-title} | *{page-number}*'
   verso:

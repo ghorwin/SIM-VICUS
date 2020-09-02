@@ -1,0 +1,196 @@
+# Coding Guidelines and Rules
+
+Why coding guidelines and rules?
+
+Well, even if you write software just for yourself, once the code base reaches a certain limit, you will appriciate well written code, so that you:
+
+1. avoid wasting time looking for variables, types, functions etc.
+2. avoid re-writing similar functionality, simply because you don't rememeber/find the already existing code pieces
+3. avoid accidentilly breaking code because existing code is hard to read
+
+Bottom line:
+
+**Write clean and easy to read and maintain code, both for yourself and others in the team.**
+
+The big question is: What is clean and easy to read/maintain?
+
+Well, in my humble opinion this is mostly achieved by 
+
+- doing stuff (mostly) the same way as everywhere in the code
+- using conventions that makes it easy to exchange code with others
+- using conventions that save you the trouble of remembering each and every variable/function etc.
+- write code that makes it easy for your development environment to assist *you* (see also section <<qt_creator,Qt Creator>> below)
+
+Below I've collected a bunch of rules/guidelines that help us achieve this goal of getting nice code, without restricting the individual codeing style of each developer too much.
+
+## Programming efficiency
+
+We are a small team and need to get the most out of our programming time.
+
+Basic rule: **Know your tools and choose the right tool for the job!**
+
+For programmers, you need a good text edtor (for everything that's not actual code, or for quick hacks) and a decent development environment (IDE).  I'd say Qt Creator wins big time against Visial Studio, XCode and any other stuff out there, but let's not start an *emacs vs. the world* flame war here :-). 
+
+Of course, you also need to handle svn/git, diff and merge tools etc. but text editor and IDE are the most important.
+
+Knowing the capabilities of your particular IDE, you can write code such, that already while typing you can use auto-completion to its maximum. This will speed up your coding a lot and save you much unnecessary compilation time.
+With code-checking-while-typing (see clang checks in Qt Creator), you'll catch already 80% of typical compiler bugs, so we should use this.
+
+Also, some of the naming conventions below help in an IDE to be fast, for example the `m_` prefix in member variable names, really speed up coding. You need to access a member variable: type `m_` and you'll get only the member variables in the auto-completion, no mistake with local variables is possible. 
+
+## Indentation and line length limit
+
+- only tabs for indentation, shown in display as 4 spaces - especially on larger monitors with higher resolutions this will allow you to see indentation levels easiy; and since we are using tabs, you may still switch your development environment to use 2 or 8 spaces, without interrupting other author's code look
+
+- line length is not strictly limited, but keep it below 120 (good for most screens nowadays)
+
+## Character encoding and line endings
+
+- Line endings LR (Unix/Linux) - see also git configuration below
+- UTF-8 encoding
+
+## File naming and header guards
+
+- File name pattern:   `<lib>_<NameInCamelCase>.*`, for example: `IBK_ArgsParser.h` or `NANDRAD_Project.h`
+- Header guards: `#ifndef <filenameWithoutExtension>H`, example: `#ifndef NANDRAD_ArgsParserH`
+
+## Namespaces
+
+Each library has its own namespace, matching the file prefix. Example: `NANDRAD::Project` get `NANDRAD_Project.h`
+
+[IMPORTANT]
+====
+**Never ever** write `import namespace XXX`, not even for namespace `std` !!!
+
+This is mostly a precaution, as in larger projects with many team members it is very likely that function names are similar or even the same, if written by different authors. When typing in your favourite development environment with code completion you are forced to write the namespace and the auto-completion will now only offer those functions/variables that are defined in the respective namespace (making it much harder to mistakely call a function you didn't intend to call).
+====
+
+## Class and variable naming
+
+- camel case for variable/type names, example: `thisNiceVariable`
+- type/class names start with capital letter, example: `MyClassType` (together with namespace prefix nice for auto-completion of type names) 
+- member variables start with `m_`, example: `m_myMemberVariableObject`(useful for auto-completion to get only member variables)
+- getter/setter functions follow Qt-Pattern:
+
+
+Example:
+
+[source,c++]
+----
+std::string m_myStringMember;
+
+const std::string & myStringMember() const;
+void setMyStringMember(const std::string & str);
+----
+
+[IMPORTANT]
+====
+**Never ever** write `getXXX` !!!
+====
+
+The reason for having strict rules for these access functions is two-fold:
+
+1. you do not need to remember the actual names for the getter/setter functions or the variable itself - knowing one will give you the name of the others (less stuff to remember)
+2. efficiency: you can use the Qt-Creator feature -> Refactor->Add getter/setter function when right-clicking on the member variable declaration
+
+
+## Exception handling
+
+Basic rule:
+- during initialization, throw `IBK::Exception` objects (and **only** `IBK::Exception` objects in **all code that uses the IBK library**) : reason: cause of exception becomes reasonably clear from the exception message string and context and this makes catch-and-rethrow-code so much easier (see below).
+- **during calculation** (in parallel code sections), **avoid throwing Exceptions** (i.e. write code that cannot throw); in error cases (like div by zero), test explicitely for such failure conditions and leave function with error codes
+
+When throwing exceptions:
+- use function identifier created with `FUNCID()` macro:
+
+[source,c++]
+----
+void SomeClass::myFunction() {
+    FUNCID(SomeClass::myFunction);
+    
+    ...
+    throw IBK::Exception("Something went wrong", FUNC_ID);
+}
+----
+Do not include function arguments in `FUNCID()`, unless it is important to distinguish between overloaded functions.
+
+When raising exceptions, try to be verbose about the source of the exception, i.e. use `IBK::FormatString`:
+
+[source,c++]
+----
+void SomeClass::myFunction() {
+    FUNCID(SomeClass::myFunction);
+    
+    ...
+    throw IBK::Exception( IBK::FormatString("I got an invalid parameter '%1' in object #%2")
+        .arg(paraName).arg(objectIndex), FUNC_ID);
+}
+----
+
+See documentaition of class `IBK::FormatString` (and existing examples in the code).
+
+### Exception hierarchies
+
+To trace the source of an error, keeping an exception trace is imported. When during simulation init you get an exception "Invalid unit ''" thrown from `IBK::Unit` somewhere, you'll have a hard time tracing the source (also, when this is reported as error by users and debugging isn't easily possible).
+
+Hence, if you call a function that might throw, wrap it into a try-catch clause and throw on:
+
+[source,c++]
+----
+void SomeClass::myFunction() {
+    FUNCID(SomeClass::myFunction);
+    
+    try {
+        someOtherFunctionThatMightThrow(); // we might get an exception here
+    }
+    catch (IBK::Exception & ex) {          // we can rely on IBK::Exception here, since nothing else is allowed in our code
+    
+        // rethrow exception, but mind the prepended ex argument!
+        throw IBK::Exception(ex, IBK::FormatString("I got an invalid parameter '%1' in object #%2")
+            .arg(paraName).arg(objectIndex), FUNC_ID);
+    }
+}
+----
+The error message stack will then look like:
+
+[source]
+----
+SomeClass::someOtherFunctionThatMightThrow    [Error]           Something went terribly wrong.
+SomeClass::myFunction                         [Error]           I got an invalid parameter 'some parameter' in object #0815
+----
+
+That should narrow it down a bit.
+
+## Documentation
+
+Doxygen-style, prefer:
+
+[source,c++]
+----
+/*! Brief description of function.
+    Longer multi-line documentation of function.
+    \param arg1 The first argument.
+    \param temperature A temperature in [C]
+*/
+void setParams(int arg1, double temperature);
+
+/*! Mean temperature in [K]. */
+double m_meanTemperature;
+----
+
+Mind to specify **always** physical units for physical value parameters and member variables!
+Physical variables used for calculation should always be stored in base SI units.
+
+
+## Git Workflow
+
+Since we are a small team, and we want to have close communication of new features/code changes, and also short code-review cycles, we use a single development branch *master* with the following rules:
+
+- CI is set up and ensures that after each push to *origin/master* the entire code builds without errors - so before pushing your changes, make sure the stuff builds
+- commit/push early and often, this will avoid getting weird merge conflicts and possibly breaking other peoples code
+- when pulling, use *rebase* to get a nice clean commit history (just as with subversion) - makes it easier to track changes and resolve errors arising in a specific commit (see solver regression tests)
+- before pulling (potentially conflicting) changes from *origin/master*, commit all your local changes and ideally get rid of temporary files -> avoid stashing your files, since applying the stash may also give rise to conflicts and not everyone can handle this nicely
+- resolve any conflicts locally in your working directory, and take care not to overwrite other people's code
+- use different commits for different features so that later we can distingish based on commit logs when a certain change was made
+
+For now, try to avoid (lengthy) feature branches. However, if you plan to do a larger change and possibly work on the master at the same time, feature branches are a good choice.

@@ -1,0 +1,67 @@
+# Code Quality
+
+This section discusses a few techniques that help you write/maintain high quality code.
+
+
+## Frequently check for potential memory leaks
+
+Use valgrind to check for memory leaks in regular intervals:
+
+First run only initialization with `--test-init` flag.
+
+[source,bash]
+----
+> valgrind --track-origins=yes --leak-check=full ./NandradSolver /path/to/project --test-init
+----
+
+You should get an output like:
+[source,]
+----
+...
+Stopping after successful initialization of integrator.
+Total initialization time: 802 ms
+==15560== 
+==15560== HEAP SUMMARY:
+==15560==     in use at exit: 0 bytes in 0 blocks
+==15560==   total heap usage: 3,776 allocs, 3,776 frees, 1,101,523 bytes allocated
+==15560== 
+==15560== All heap blocks were freed -- no leaks are possible
+==15560== 
+==15560== For counts of detected and suppressed errors, rerun with: -v
+==15560== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+----
+
+Do this check with:
+
+- just the initialization part (i.e. with `--test-init`) parameter
+- run the initialization with some error in the input file to check if temporary variables during initialization are cleaned up correctly
+- also run a small part of the simulation, to check if something goes wrong during actual solver init and if tear-down is done correctly
+- run a small part of the simulation, then break (`Ctrl+C`) and check if code cleanup after error abort is done correctly
+
+[NOTE]
+====
+Of course, in very flexible code structures as in NANDRAD solver, where many code parts are only executed for certain parameter combinations, checking all code variables for consistent memory allocation/deallocation is nearly impossible. Hence, writing safe code in the first place should be highest priority.
+====
+
+### Example: Avoiding memory leaks
+
+NANDRAD creates model objects on the heap during initialization (never during solver runtime!). Since the model objects are first initialized before ownership is transferred, you should always ensure proper cleanup in case of init exceptions. Use code like:
+
+[source,c++]
+----
+ModelObject * modelObject = new ModelObject; // does not throw
+m_modelContainer.push_back(modelObject); // transfer ownership, does not throw
+
+modelObject->setup(...); // this may throw, but model object will be cleaned as part of m_modelContainer cleanup
+----
+
+If there is code between creation and ownership transfer, use code like:
+
+[source,c++]
+----
+std::unique_ptr<ModelObject> modelObject(new ModelObject);
+
+modelObject->setup(...); // this may throw
+
+m_modelContainer.push_back(modelObject.release()); // transfer ownership
+----
