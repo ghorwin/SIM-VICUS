@@ -186,6 +186,11 @@ inline bool near_equal(double a, double b) {
 }
 
 /*! Tests if a is equal to b including a certain range for potential rounding errors. */
+inline bool near_equal(double a, double b, const double eps) {
+	return (a + eps >= b  &&  a <= b + eps);
+}
+
+/*! Tests if a is equal to b including a certain range for potential rounding errors. */
 inline bool near_zero(double a) {
 	return (a  >= -NEAR_ZERO  &&  a <= NEAR_ZERO);
 }
