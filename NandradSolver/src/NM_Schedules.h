@@ -92,6 +92,8 @@ private:
 	int												m_year = 0;
 	/*! Time from the beginning of the year in [s]. */
 	double											m_startTime = 0;
+	/*! If true, we assume annual schedule data which is samples the same in regular 365d cycles. */
+	bool											m_haveCyclicYears;
 
 	/*! Pointer to all object lists defined in the project (initialized in setup). */
 	const std::vector<NANDRAD::ObjectList>			*m_objectLists = nullptr;

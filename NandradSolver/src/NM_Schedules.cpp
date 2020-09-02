@@ -56,29 +56,18 @@ int Schedules::setTime(double t) {
 	if (m_results.empty())
 		return 0;
 
-	/// \todo clarify cyclic vs. continuous handling, especially alignment of weekdays/weekends
-	///       Suppose we have a cyclic schedule, but change start year from 2008 to 2009, we will then have
-	///       different day types at the same date. This might be desirable, or annoying... discuss!
-
 	// now t is moved to absolute time offset within start year
 	t += m_startTime;
 
-	// compute cyclic time
-	double t_cyclic = t;
-	while (t_cyclic > IBK::SECONDS_PER_YEAR)
-		t_cyclic -= IBK::SECONDS_PER_YEAR;
-
-	/// \todo think about week cycle time, so that we have t_weekly running from t_weekly=0 -> start of monday
-	///       then we can work with weekly data
+	// compute cyclic time, if we have cyclic use defined
+	if (m_haveCyclicYears) {
+		while (t > IBK::SECONDS_PER_YEAR)
+			t -= IBK::SECONDS_PER_YEAR;
+	}
 
 	// calculate all parameter values
 	double * result = &m_results[0]; // points to first double in vector with calculated spline values
 	for (unsigned int i = 0; i<m_results.size(); ++i) {
-		/// \todo we need to handle the "constant value" case somehow
-		/// so, we first need to know which schedules are constant, and then
-		/// we need to ramp the value near the jump
-		/// for now, all splines are handled as linearly interpolated and the ramping
-		/// is added during spline generation
 		result[i] = m_valueSpline[i].value(t);
 	}
 	return 0;
@@ -90,6 +79,7 @@ void Schedules::setup(NANDRAD::Project &project) {
 	// store start time offset as year and start time
 	m_year = project.m_simulationParameter.m_intPara[NANDRAD::SimulationParameter::IP_StartYear].value;
 	m_startTime = project.m_simulationParameter.m_interval.m_para[NANDRAD::Interval::P_Start].value;
+	m_haveCyclicYears = project.m_schedules.m_flags[NANDRAD::Schedules::F_EnableCyclicYears].isEnabled();
 
 	m_objectLists = &project.m_objectLists;
 	m_schedules = &project.m_schedules;
