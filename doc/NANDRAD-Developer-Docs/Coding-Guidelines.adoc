@@ -194,3 +194,25 @@ Since we are a small team, and we want to have close communication of new featur
 - use different commits for different features so that later we can distingish based on commit logs when a certain change was made
 
 For now, try to avoid (lengthy) feature branches. However, if you plan to do a larger change and possibly work on the master at the same time, feature branches are a good choice.
+
+
+## Tips and tricks
+
+### Detecting uninitialized variable access during debugging
+
+Accessing not initialized member variables or *even worse*, accessing member variables initialized with default values (hereby skipping over mandatory initialization steps), can be hard to track during development/debuging.
+
+Hence initialize variables that **need to be initialized** with values you will recognized. Using C++11 features, you should write code like:
+
+[source,c++]
+----
+class SomeClass {
+    ...
+
+    // nullptr is good to recognize pointers as "not initialized"
+    SomeType    *m_ptrToSomeType = nullptr; 
+    
+    // use some unlikely "magic number" to see that a variable is not initialized (yet) 
+    double      m_cachedCalculationValue = 999; 
+};
+----
