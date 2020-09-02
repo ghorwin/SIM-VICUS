@@ -54,7 +54,7 @@ public:
 	};
 
 	enum flag_t {
-		F_EnableCyclicYears,	// Keyword: EnableCyclicYears			'If enabled, schedules are treated as annually repeating schedules.'
+		F_EnableCyclicSchedules,	// Keyword: EnableCyclicSchedules			'If enabled, schedules are treated as annually repeating schedules.'
 		NUM_F
 	};
 

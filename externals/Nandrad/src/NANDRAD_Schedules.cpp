@@ -37,8 +37,8 @@ namespace NANDRAD {
 
 
 void Schedules::initDefaults() {
-	m_flags[F_EnableCyclicYears].set(
-				NANDRAD::KeywordList::Keyword("Schedules::flag_t", F_EnableCyclicYears), true);
+	m_flags[F_EnableCyclicSchedules].set(
+				NANDRAD::KeywordList::Keyword("Schedules::flag_t", F_EnableCyclicSchedules), true);
 }
 
 
