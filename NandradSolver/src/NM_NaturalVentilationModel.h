@@ -103,7 +103,7 @@ private:
 	bool											m_moistureBalanceEnabled;
 
 	/*! Constant ventilation rate in 1/s (only for constant model). */
-	double											m_ventilationRate;
+	double											m_ventilationRate = 999;
 
 	/*! Quick access pointer to object list (for scheduled model). */
 	const NANDRAD::ObjectList						*m_objectList = nullptr;

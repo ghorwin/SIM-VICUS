@@ -60,7 +60,7 @@ int Schedules::setTime(double t) {
 	t += m_startTime;
 
 	// compute cyclic time, if we have cyclic use defined
-	if (m_haveCyclicYears) {
+	if (m_haveCyclicSchedules) {
 		while (t > IBK::SECONDS_PER_YEAR)
 			t -= IBK::SECONDS_PER_YEAR;
 	}
@@ -79,7 +79,7 @@ void Schedules::setup(NANDRAD::Project &project) {
 	// store start time offset as year and start time
 	m_year = project.m_simulationParameter.m_intPara[NANDRAD::SimulationParameter::IP_StartYear].value;
 	m_startTime = project.m_simulationParameter.m_interval.m_para[NANDRAD::Interval::P_Start].value;
-	m_haveCyclicYears = project.m_schedules.m_flags[NANDRAD::Schedules::F_EnableCyclicYears].isEnabled();
+	m_haveCyclicSchedules = project.m_schedules.m_flags[NANDRAD::Schedules::F_EnableCyclicSchedules].isEnabled();
 
 	m_objectLists = &project.m_objectLists;
 	m_schedules = &project.m_schedules;
@@ -130,6 +130,10 @@ void Schedules::setup(NANDRAD::Project &project) {
 			m_variableUnits.push_back(var.second);
 			// now generate the linear splines
 			m_valueSpline.push_back(IBK::LinearSpline());
+			// and initialize memory for corresponding result values
+			m_results.push_back(0);
+
+			// now populate spline
 			IBK::LinearSpline & spl = m_valueSpline.back();
 
 			NANDRAD::DailyCycle::interpolation_t interpolationType;
@@ -142,56 +146,6 @@ void Schedules::setup(NANDRAD::Project &project) {
 		}
 	}
 
-}
-
-
-double Schedules::startValue(const QuantityName &quantity) const {
-	/// \todo why and what for is this needed?
-	/// Normally, calling setTime(0) should initialize outputs with the start value, which can then be retrieved as
-	/// usual.
-
-#if 0
-	const char* const FUNC_ID = "[Schedules::startValue]";
-	// create quantityname
-	std::string quantityName = quantity.name();
-	// additional index
-	if (quantity.index() != -1)
-	{
-		quantityName += std::string("[id=") + IBK::val2string<unsigned int>(quantity.index())
-			+ std::string("]");
-	}
-	// find quantity name in scheudle parameter
-	std::vector<ScheduleParameter>::const_iterator paraIt
-		= std::find_if(m_scheduleParameters.begin(),
-			m_scheduleParameters.end(),
-			NANDRAD::FindByName<ScheduleParameter>(quantityName));
-
-	// found in schedule parameters
-	if (paraIt != m_scheduleParameters.end()) {
-		IBK_ASSERT(m_startTime != nullptr);
-		return paraIt->value(*m_startTime);
-	}
-	// find quantity name in annual schedules
-	std::vector<NANDRAD::LinearSplineParameter>::const_iterator splineParaIt
-		= std::find_if(m_annualScheduleParameters.begin(),
-			m_annualScheduleParameters.end(),
-			NANDRAD::FindByName<NANDRAD::LinearSplineParameter>(quantityName));
-	// found in annual schedule parameters
-	if (splineParaIt != m_annualScheduleParameters.end()) {
-		IBK_ASSERT(m_startTime != nullptr);
-		if (splineParaIt->m_interpolationMethod == NANDRAD::LinearSplineParameter::I_Constant) {
-			return splineParaIt->m_values.nonInterpolatedValue(*m_startTime);
-		}
-		else {
-			return splineParaIt->m_values.value(*m_startTime);
-		}
-	}
-
-	// not defined
-	throw IBK::Exception(IBK::FormatString("Error retrieving start value for quantity '%1' " "from schedules! Parameter is undefined!")
-		.arg(quantityName), FUNC_ID);
-#endif
-	return 0;
 }
 
 
@@ -239,6 +193,7 @@ const double * Schedules::resolveResultReference(const InputReference & valueRef
 		for (auto schedGrp : m_schedules->m_scheduleGroups) {
 			const NANDRAD::ObjectList * objList = objectListByName(schedGrp.first);
 			IBK_ASSERT(objList != nullptr);
+			objectListName = objList->m_name;
 			// correct reference type?
 			if (objList->m_referenceType != valueRef.m_referenceType)
 				continue; // not our input reference
@@ -258,6 +213,14 @@ const double * Schedules::resolveResultReference(const InputReference & valueRef
 
 					/// \todo performance enhancement: remember, which of the schedules have been requested,
 					/// afterwards clear all linear splines that are unused and skip over these during model evaluation
+
+					// populate quantity description, which is needed for output purposes and possible other models
+					quantityDesc.m_name = valueRef.m_name.m_name;
+					quantityDesc.m_size = 1;
+					quantityDesc.m_unit = m_variableUnits[i].name();
+					quantityDesc.m_constant = true;
+					quantityDesc.m_description = "Schedule parameter: '" + valueRef.m_name.m_name + "'";
+
 					return &m_results[i];
 				}
 			}

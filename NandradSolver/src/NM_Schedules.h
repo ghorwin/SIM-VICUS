@@ -78,11 +78,6 @@ public:
 	*/
 	virtual int setTime(double t) override;
 
-	// *** Other public member functions
-
-	/*! Returns start value of a quantity. Throws an exception, if quantity does not exist. */
-	double startValue(const QuantityName & quantityName) const;
-
 private:
 	/*! Utility function that retrieves an object list object for a given name (from schedule group). */
 	const NANDRAD::ObjectList * objectListByName(const std::string & objectListName) const;
@@ -93,7 +88,7 @@ private:
 	/*! Time from the beginning of the year in [s]. */
 	double											m_startTime = 0;
 	/*! If true, we assume annual schedule data which is samples the same in regular 365d cycles. */
-	bool											m_haveCyclicYears;
+	bool											m_haveCyclicSchedules;
 
 	/*! Pointer to all object lists defined in the project (initialized in setup). */
 	const std::vector<NANDRAD::ObjectList>			*m_objectLists = nullptr;
