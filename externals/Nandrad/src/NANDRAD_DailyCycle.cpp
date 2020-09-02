@@ -58,7 +58,6 @@ void DailyCycle::prepareCalculation() {
 	}
 
 
-
 	// first check correct number of values
 	unsigned int valueCount = m_values.m_values.begin()->second.size();
 	if (valueCount != m_timePoints.size())
@@ -84,12 +83,11 @@ void DailyCycle::prepareCalculation() {
 					try {
 						IBK::Unit u(unitName);
 						// register as variable, if it does not yet exist
-						if (std::find(m_valueNames.begin(), m_valueNames.end(), varName) != m_valueNames.end())
+						if (std::find(m_valueData.begin(), m_valueData.end(), varName) != m_valueData.end())
 							throw IBK::Exception(IBK::FormatString("Duplicate variable name '%1' "
 																   "in DataTable of daily cycle.").arg(varName), FUNC_ID);
 						// store variable
-						m_valueUnits.push_back(u);
-						m_valueNames.push_back(varName);
+						m_valueData.push_back( valueData_t(varName, u, &m_values.valueVector(varName)));
 					} catch (...) {
 						throw IBK::Exception(IBK::FormatString("Invalid/unrecognized unit '%1' "
 															   "in scheduled variable caption.").arg(unitName), FUNC_ID);
@@ -101,8 +99,7 @@ void DailyCycle::prepareCalculation() {
 												   "expected format 'varname [unit]'.").arg(v.first), FUNC_ID);
 		}
 		// no unit - assume unitless parameter
-		m_valueUnits.push_back(IBK::Unit("-"));
-		m_valueNames.push_back(v.first);
+		m_valueData.push_back( valueData_t(v.first, IBK::Unit("-"), &m_values.valueVector(v.first)));
 	}
 	// now store the collected data in the linear vectors
 }

@@ -44,12 +44,15 @@ namespace NANDRAD {
 class Schedule {
 public:
 
-	/*! Different day types a schedule can be defined for. */
+	/*! Different day types a schedule can be defined for.
+		Do not change order of schedule definitions, since they mark
+		also the lookup priority - for example, a holiday schedule takes precedence before
+		a specific day schedule.
+	*/
 	enum type_t {
 		ST_ALLDAYS,		// Keyword: AllDays		'All days (Weekend days and Weekdays).'
 		ST_WEEKDAY,		// Keyword: WeekDay		'Weekday schedule.'
 		ST_WEEKEND,		// Keyword: WeekEnd		'Weekend schedule.'
-		ST_HOLIDAY,		// Keyword: Holiday		'Holiday schedule.'
 		ST_MONDAY,		// Keyword: Monday		'Special Weekday schedule: Monday.'
 		ST_TUESDAY,		// Keyword: Tuesday		'Special Weekday schedule: Tuesday.'
 		ST_WEDNESDAY,	// Keyword: Wednesday	'Special Weekday schedule: Wednesday.'
@@ -57,6 +60,7 @@ public:
 		ST_FRIDAY,		// Keyword: Friday		'Special Weekday schedule: Friday.'
 		ST_SATURDAY,	// Keyword: Saturday	'Special Weekday schedule: Saturday.'
 		ST_SUNDAY,		// Keyword: Sunday		'Special Weekday schedule: Sunday.'
+		ST_HOLIDAY,		// Keyword: Holiday		'Holiday schedule.'
 		NUM_ST
 	};
 
@@ -65,7 +69,10 @@ public:
 	NANDRAD_READWRITE
 	NANDRAD_COMP(Schedule)
 
-	/*! Prepares calculation by initializing daily cycles and by collecting names of all scheduled parameters. */
+	/*! Prepares calculation by initializing daily cycles and by collecting names of all scheduled parameters.
+		\warning In this function persistent pointers to memory locations are stored. Hence, you must
+			not modify the memory location of this object or any of the vectors afterwards!
+	*/
 	void prepareCalculation();
 
 	/*! Returns true, if given day is inside the start and end date of the schedule. */
@@ -91,10 +98,13 @@ public:
 	// *** solver runtime variables only (not written to file) ***
 
 	/*! All value names provided by all of the daily cycles.
-		This set is composed during prepareCalculation() and primarily used to quickly check
-		if this schedule provides a required parameter at all.
+		This map is composed during prepareCalculation() and primarily used to quickly check
+		if this schedule provides a required parameter at all. Also, it identifies the actual
+		schedule that defines this parameter.
+		Note: with this map we also ensure, that the user does not specify multiple daily cycles for
+			  the same parameter.
 	*/
-	std::set<std::string>	m_valueNames;
+	std::map<std::string, DailyCycle *>	m_parameters;
 };
 
 } // namespace NANDRAD

@@ -64,6 +64,22 @@ public:
 		NUM_IT
 	};
 
+	/*! This structure holds the data for a single parameter stored in this DailyCycle.
+		It is used in vector m_valueData which is populated in prepareCalculatio().
+	*/
+	struct valueData_t {
+		valueData_t() {}
+		valueData_t(const std::string & name, const IBK::Unit & unit, const std::vector<double>	* valueVec) :
+			m_name(name), m_unit(unit), m_valueVec(valueVec) {}
+
+		/*! Comparison operator. */
+		bool operator==(const std::string & name) const { return m_name == name; }
+
+		std::string					m_name;
+		IBK::Unit					m_unit;
+		const std::vector<double>	*m_valueVec = nullptr;
+	};
+
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	NANDRAD_READWRITE
@@ -86,10 +102,8 @@ public:
 
 	// *** solver runtime variables only (not written to file) ***
 
-	/*! Names of all variables. */
-	std::vector<std::string>			m_valueNames;
-	/*! Corresponding units. */
-	std::vector<IBK::Unit>				m_valueUnits;
+	/*! Extracted data of all variables. */
+	std::vector<valueData_t>			m_valueData;
 };
 
 } // namespace NANDRAD

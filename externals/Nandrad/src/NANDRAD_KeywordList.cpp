@@ -253,14 +253,14 @@ namespace NANDRAD {
 				case 0 : return "AllDays";
 				case 1 : return "WeekDay";
 				case 2 : return "WeekEnd";
-				case 3 : return "Holiday";
-				case 4 : return "Monday";
-				case 5 : return "Tuesday";
-				case 6 : return "Wednesday";
-				case 7 : return "Thursday";
-				case 8 : return "Friday";
-				case 9 : return "Saturday";
-				case 10 : return "Sunday";
+				case 3 : return "Monday";
+				case 4 : return "Tuesday";
+				case 5 : return "Wednesday";
+				case 6 : return "Thursday";
+				case 7 : return "Friday";
+				case 8 : return "Saturday";
+				case 9 : return "Sunday";
+				case 10 : return "Holiday";
 			} break;
 			// Schedules::day_t
 			case 26 :
@@ -562,14 +562,14 @@ namespace NANDRAD {
 				case 0 : return "AllDays";
 				case 1 : return "WeekDay";
 				case 2 : return "WeekEnd";
-				case 3 : return "Holiday";
-				case 4 : return "Monday";
-				case 5 : return "Tuesday";
-				case 6 : return "Wednesday";
-				case 7 : return "Thursday";
-				case 8 : return "Friday";
-				case 9 : return "Saturday";
-				case 10 : return "Sunday";
+				case 3 : return "Monday";
+				case 4 : return "Tuesday";
+				case 5 : return "Wednesday";
+				case 6 : return "Thursday";
+				case 7 : return "Friday";
+				case 8 : return "Saturday";
+				case 9 : return "Sunday";
+				case 10 : return "Holiday";
 			} break;
 			// Schedules::day_t
 			case 26 :
@@ -872,14 +872,14 @@ namespace NANDRAD {
 				case 0 : return "All days (Weekend days and Weekdays).";
 				case 1 : return "Weekday schedule.";
 				case 2 : return "Weekend schedule.";
-				case 3 : return "Holiday schedule.";
-				case 4 : return "Special Weekday schedule: Monday.";
-				case 5 : return "Special Weekday schedule: Tuesday.";
-				case 6 : return "Special Weekday schedule: Wednesday.";
-				case 7 : return "Special Weekday schedule: Thursday.";
-				case 8 : return "Special Weekday schedule: Friday.";
-				case 9 : return "Special Weekday schedule: Saturday.";
-				case 10 : return "Special Weekday schedule: Sunday.";
+				case 3 : return "Special Weekday schedule: Monday.";
+				case 4 : return "Special Weekday schedule: Tuesday.";
+				case 5 : return "Special Weekday schedule: Wednesday.";
+				case 6 : return "Special Weekday schedule: Thursday.";
+				case 7 : return "Special Weekday schedule: Friday.";
+				case 8 : return "Special Weekday schedule: Saturday.";
+				case 9 : return "Special Weekday schedule: Sunday.";
+				case 10 : return "Holiday schedule.";
 			} break;
 			// Schedules::day_t
 			case 26 :

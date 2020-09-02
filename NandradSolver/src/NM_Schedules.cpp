@@ -116,21 +116,21 @@ void Schedules::setup(NANDRAD::Project &project) {
 			}
 			// now we have a list of variables in this daily cycle - merge them with the global list of variables
 			for (NANDRAD::DailyCycle & dc : sched.m_dailyCycles) {
-				for (unsigned int i=0; i<dc.m_valueNames.size(); ++i) {
+				for (unsigned int i=0; i<dc.m_valueData.size(); ++i) {
 					// Note: it is normal if several DailyCycles in various schedules define the same variables
 					//       However, they should all be defined with the same SI unit
 					for (auto p : varlist) {
-						if (p.first == dc.m_valueNames[i] &&
-							p.second != dc.m_valueUnits[i])
+						if (p.first == dc.m_valueData[i].m_name &&
+							p.second != dc.m_valueData[i].m_unit)
 						{
 							throw IBK::Exception(IBK::FormatString("A daily cycle defines parameter '%1' with unit '%2', and "
 																   "another daily cycle defines the same parameter with unit '%3'. "
 																   "This is likely an error and must be fixed.")
-								.arg(p.first).arg(p.second).arg(dc.m_valueUnits[i]), FUNC_ID);
+								.arg(p.first).arg(p.second).arg(dc.m_valueData[i].m_unit), FUNC_ID);
 						}
 					}
 					// remember this parameter-unit combination
-					varlist.insert( std::make_pair(dc.m_valueNames[i], dc.m_valueUnits[i]) );
+					varlist.insert( std::make_pair(dc.m_valueData[i].m_name, dc.m_valueData[i].m_unit) );
 				}
 			}
 		}

@@ -51,7 +51,12 @@ void Schedule::prepareCalculation() {
 		catch (IBK::Exception & ex) {
 			throw IBK::Exception(ex, IBK::FormatString("Error initializing DailyCycle #%1.").arg(i), FUNC_ID);
 		}
-		m_valueNames.insert(dc.m_valueNames.begin(), dc.m_valueNames.end());
+		for (const DailyCycle::valueData_t & paraData : dc.m_valueData) {
+			if (m_parameters.find(paraData.m_name) != m_parameters.end())
+				throw IBK::Exception(IBK::FormatString("Multiple DailyCycle blocks define the same parameter '%1'. This is not allowed!")
+									 .arg(paraData.m_name), FUNC_ID);
+			m_parameters[paraData.m_name] = &dc; // persistent pointer guaranteed - we do not modifiy the m_dailyCycles vector anylonger
+		}
 	}
 }
 

@@ -19,6 +19,8 @@
 	Lesser General Public License for more details.
 */
 
+#include <algorithm>
+
 #include "NANDRAD_Schedules.h"
 #include "NANDRAD_KeywordList.h"
 #include "NANDRAD_Utilities.h"
@@ -266,6 +268,18 @@ void Schedules::generateLinearSpline(const std::string & objectListName, const s
 			  - if parameter not found, skip and search through next schedule
 	*/
 
+	interpolationType = DailyCycle::NUM_IT; // initialize with invalid interpolation mode first, will be set and compared below
+
+	// TIME_SHIFT defines the minimum gap introduced between two values in the spline,
+	// to avoid extreme gradients and thus slowdown of simulation.
+	// Note: if someone started a new interval just shortly (< TIME_SHIFT) before
+	//       end of the day, this will generate a non-monotonic time vector which
+	//       will blow up in our face once we generate the linear spline below.
+	//       Thankfully, we catch that and can inform the user about this parameter
+	//       problem.
+	const double TIME_SHIFT = 120; // in [s]
+
+
 	std::vector<double> tp;
 	IBK::UnitVector vals;
 	// loop over all days
@@ -332,7 +346,7 @@ void Schedules::generateLinearSpline(const std::string & objectListName, const s
 
 			// check if schedule provides the requested parameter
 			// Note: this is a slow operation, so we do it last
-			if (sched.m_valueNames.find(parameterName) == sched.m_valueNames.end())
+			if (sched.m_parameters.find(parameterName) == sched.m_parameters.end())
 				continue; // parameter not provided
 
 			// remember based on date type
@@ -355,27 +369,108 @@ void Schedules::generateLinearSpline(const std::string & objectListName, const s
 			}
 		}
 
-		// now finally append the daily spline to the global spline
-		// also, throw an exception if a parameter definition is missing for a day
+		// search backwards so that we find the highest priority schedule
+		bool dataAdded = false;
+		for (int i=NANDRAD::Schedule::NUM_ST-1; i>=0; ++i) {
+			if (scheduleCandidates[i].empty())  continue; // skip day types without schedule
+			const NANDRAD::Schedule * sched = scheduleCandidates[i].front();
+			// find daily cycle that provides the parameter
+			std::map<std::string, NANDRAD::DailyCycle *>::const_iterator paraIT = sched->m_parameters.find(parameterName);
+			IBK_ASSERT(paraIT != sched->m_parameters.end());
 
+			const NANDRAD::DailyCycle * dc = paraIT->second;
+			// retrieve daily cycle parameter data
+			const std::vector<NANDRAD::DailyCycle::valueData_t>::const_iterator valueDataIT =
+					std::find(dc->m_valueData.begin(), dc->m_valueData.end(), parameterName);
+			IBK_ASSERT(valueDataIT != dc->m_valueData.end());
+			const NANDRAD::DailyCycle::valueData_t & valData = *valueDataIT;
+
+			// initialize interpolation type and check that interpolation type matches
+			// (must be the same in all daily cycles)
+			if (interpolationType == DailyCycle::NUM_IT)
+				interpolationType = dc->m_interpolation;
+			else if (interpolationType != dc->m_interpolation) {
+				throw IBK::Exception(IBK::FormatString("Mismatching interpolation types for parameter '%1' in "
+													   "different DailyCycles.").arg(parameterName), FUNC_ID);
+			}
+
+			// initialize unit and check that unit is always the same
+			if (vals.m_unit.id() == 0) {
+				vals.m_unit = valData.m_unit;
+			}
+			else {
+				if (vals.m_unit != valData.m_unit)
+					throw IBK::Exception(IBK::FormatString("Parameter '%1' was defined with unit '%2' and unit '%3' "
+														   "in different DailyCycles. Please use the same unit for "
+														   "the same parameter!")
+										 .arg(parameterName).arg(vals.m_unit.name()).arg(valData.m_unit.name()), FUNC_ID);
+			}
+
+
+			// now finally append the daily spline to the global spline
+			for (unsigned int h=0; h<dc->m_timePoints.size(); ++h) {
+				double tpsec = dc->m_timePoints[h]*60 + d*IBK::SECONDS_PER_DAY;
+				double val = (*valData.m_valueVec)[h];
+				if (tp.empty()) {
+					tp.push_back(tpsec);
+					vals.m_data.push_back(val);
+				}
+				else {
+					// different handling for constant and linearly interpolated values
+					if (interpolationType == NANDRAD::DailyCycle::IT_CONSTANT) {
+						// here we always add two points, one that ends the last interval and
+						// one that starts the new interval
+						tp.push_back(tpsec-TIME_SHIFT);
+						vals.m_data.push_back(vals.m_data.back());
+						tp.push_back(tpsec);
+						vals.m_data.push_back(val);
+					}
+					else {
+						// check if same tp is already in the data vector, and by same we mean
+						// dt = 0.1 s
+
+						const double TIME_DELTA = 0.1;
+						double tplast = tp.back();
+						if (IBK::near_equal(tplast, tpsec, TIME_DELTA)) {
+							// instead of adding the same time point, move the last time point backwards
+							// Note: since we checked validity of all daily cycles already,
+							//       we must have already at least 2 time points in the vector.
+							IBK_ASSERT(tp.size() >= 2);
+							// check if we can safely move the time point prior to
+							tp.back() -= TIME_SHIFT;
+						}
+					}
+				}
+			}
+		} // loop to process all cycles
+
+		// throw an exception if a parameter definition is missing for a day
+		if (!dataAdded) {
+			throw IBK::Exception(IBK::FormatString("Couldn't find valid DailyCycle parameter data at day %1 "
+												   "for parameter '%2'.").arg(d).arg(parameterName), FUNC_ID);
+		}
+
+	} // loop over all days of the year
+
+	// in case of constant extrapolation, re-add the last time point close to the end of the interval
+	// so that we can have cyclic use without error in the last interval
+	if (interpolationType == NANDRAD::DailyCycle::IT_CONSTANT) {
+		tp.push_back(365*24*3600-TIME_SHIFT);
+		vals.m_data.push_back(vals.m_data.back());
 	}
 
+	// convert the values to base SI unit and finally generate the spline
+	vals.convert(IBK::Unit(vals.m_unit.base_id())); // does not throw
+	// now generate spline
+	spline.setValues(tp, vals.m_data); // does not throw
+	std::string errmsg;
+	bool success = spline.makeSpline(errmsg); // does not throw
+	if (!success)
+		throw IBK::Exception(IBK::FormatString("%1\nError creating spline for parameter '%2'. Possibly "
+											   "a time interval ended too close to the end point of the interval. "
+											   "Do not add time points < 24 h and less then < 2 minutes before the end of the "
+											   "interval.").arg(errmsg).arg(parameterName), FUNC_ID);
 }
-
-
-//void Schedules::checkParameters() {
-	// we collect all parameter names and their associated object lists
-	// then we check, that the same parameter is not defined several times for the same object list
-
-	// Note: there is a problem with duplicate definitions that is not easy to detect:
-	//       you may define an annual schedule parameter for "HeatingSetPoint" for zone object list "heated offices"
-	//       and also define a daily-cycle based parameter "HeatingSetPoint" for zone object list "ground floor offices".
-	//       If now the same zone is referenced by both object lists, there is a redundant definition of
-	//       the "HeatingSetPoint" definition, which is not allowed.
-	//       We cannot detect this until all object lists are resolved, so we leave this check to the schedule
-	//       model when it resolves the value references
-
-//}
 
 
 } // namespace NANDRAD
