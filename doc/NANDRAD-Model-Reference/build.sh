@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ADOC=NANDRAD-Model-Documentation
+ADOC=NANDRAD-Model-Reference
 
 echo '*** Generating html ***' &&
 python ../adoc_utils/scripts/adoc-image-prep.py html . &&

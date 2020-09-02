@@ -204,4 +204,5 @@ For example. "All zones.HeatingSetPoint" would address the variable "HeatingSetP
 		R_ShadingFactor,						// Keyword: ShadingFactor							[---]		'Shading factor [0...1].'
 		NUM_R
 	};
-	```
+
+```
