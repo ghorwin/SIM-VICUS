@@ -68,15 +68,17 @@ void DailyCycle::prepareCalculation() {
 	//	This map holds the units matching the values in m_values.
 
 	// process column headers - extract units and variable names
-	for (auto v : m_values.m_values) {
+	for (std::map<std::string, std::vector<double> >::const_iterator valIT = m_values.m_values.begin();
+		 valIT != m_values.m_values.end(); ++valIT)
+	{
 		// extract unit from parenthesis
-		std::string::size_type p1 = v.first.rfind("[");
-		std::string::size_type p2 = v.first.rfind("]");
+		std::string::size_type p1 = valIT->first.rfind("[");
+		std::string::size_type p2 = valIT->first.rfind("]");
 		if (p1 != std::string::npos || p2 != std::string::npos) {
 			if (p1 != std::string::npos && p2 != std::string::npos && p2 > p1) {
-				std::string varName = v.first.substr(0, p1);
+				std::string varName = valIT->first.substr(0, p1);
 				IBK::trim(varName);
-				std::string unitName = v.first.substr(p1+1, p2-p1-1);
+				std::string unitName = valIT->first.substr(p1+1, p2-p1-1);
 				IBK::trim(unitName);
 				if (!varName.empty() && !unitName.empty()) {
 					// now convert unit
@@ -87,7 +89,7 @@ void DailyCycle::prepareCalculation() {
 							throw IBK::Exception(IBK::FormatString("Duplicate variable name '%1' "
 																   "in DataTable of daily cycle.").arg(varName), FUNC_ID);
 						// store variable
-						m_valueData.push_back( valueData_t(varName, u, &m_values.valueVector(varName)));
+						m_valueData.push_back( valueData_t(varName, u, &valIT->second) ); // persistent pointer is guaranteed here
 					} catch (...) {
 						throw IBK::Exception(IBK::FormatString("Invalid/unrecognized unit '%1' "
 															   "in scheduled variable caption.").arg(unitName), FUNC_ID);
@@ -96,12 +98,11 @@ void DailyCycle::prepareCalculation() {
 				}
 			}
 			throw IBK::Exception(IBK::FormatString("Invalid format of variable caption '%1', "
-												   "expected format 'varname [unit]'.").arg(v.first), FUNC_ID);
+												   "expected format 'varname [unit]'.").arg(valIT->first), FUNC_ID);
 		}
 		// no unit - assume unitless parameter
-		m_valueData.push_back( valueData_t(v.first, IBK::Unit("-"), &m_values.valueVector(v.first)));
+		m_valueData.push_back( valueData_t(valIT->first, IBK::Unit("-"), &valIT->second) ); // persistent pointer is guaranteed here
 	}
-	// now store the collected data in the linear vectors
 }
 
 
