@@ -2372,7 +2372,7 @@ void NandradModel::initSolverVariables() {
 	if (m_nWalls > 0) {
 		// calculate mean number of diecrtization elements for each wall
 		//m_weightsFactorZones =(double) (m_n - m_nZones)/ (double) m_nWalls;
-		m_weightsFactorZones = (double) (m_n - m_nZones)/ (double) m_nWalls;
+		m_weightsFactorZones = (double) (m_n - m_nZones)/ (double) m_nWalls * 100; // lets scale by 100 for now
 		// ensure that we are larger then 1
 		IBK_ASSERT(m_weightsFactorZones >= 1.0);
 	}

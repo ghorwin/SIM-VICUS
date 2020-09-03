@@ -48,7 +48,7 @@ void SolverParameter::initDefaults() {
 
 	m_para[P_DiscMinDx].set( KeywordList::Keyword("SolverParameter::para_t", P_DiscMinDx),											2, IBK::Unit("mm"));
 	m_para[P_DiscStretchFactor].set( KeywordList::Keyword("SolverParameter::para_t", P_DiscStretchFactor),							4, IBK::Unit("---"));
-	m_intPara[IP_DiscMaxElementsPerLayer].set( KeywordList::Keyword("SolverParameter::intPara_t", IP_DiscMaxElementsPerLayer),		10);
+	m_intPara[IP_DiscMaxElementsPerLayer].set( KeywordList::Keyword("SolverParameter::intPara_t", IP_DiscMaxElementsPerLayer),		20);
 
 	m_para[P_ViewfactorTileWidth].set( KeywordList::Keyword("SolverParameter::para_t", P_ViewfactorTileWidth),						50, IBK::Unit("cm"));
 	m_para[P_SurfaceDiscretizationDensity].set( KeywordList::Keyword("SolverParameter::para_t", P_SurfaceDiscretizationDensity),	1, IBK::Unit("---"));
