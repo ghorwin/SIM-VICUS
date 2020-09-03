@@ -8,6 +8,7 @@
 			<SubDir Color="#416fce" Checked="0">InfiltrationConstantSingleZone.doc</SubDir>
 			<SubDir Color="#ffaa00" Checked="0">InfiltrationConstantSingleZone.gcc_linux</SubDir>
 			<SubDir Color="#7141d1" Checked="1">InfiltrationScheduledSingleZone</SubDir>
+			<SubDir Color="#7141d1" Checked="0">InfiltrationScheduledSingleZone.gcc_linux</SubDir>
 			<SubDir Color="#ff007f" Checked="0">IntegralMeanOutputs</SubDir>
 			<SubDir Color="#7141d1" Checked="0">IntegralMeanOutputs.gcc_linux</SubDir>
 			<SubDir Color="#416fce" Checked="0">SingleZoneSingleOutdoorsConstruction</SubDir>
@@ -108,7 +109,7 @@
 						<Maximum>2</Maximum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
-						<DateTimeZero>978318000000</DateTimeZero>
+						<DateTimeZero>978321600000</DateTimeZero>
 					</Axis>
 					<Axis index="1">
 						<TitleText>$quantity [$unit]</TitleText>
@@ -176,8 +177,8 @@
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">d</IBK:Unit>
-						<Maximum>1168383600000</Maximum>
-						<Minimum>1167609600000</Minimum>
+						<Maximum>1168380000000</Maximum>
+						<Minimum>1167606000000</Minimum>
 						<MaxMinorScale>9</MaxMinorScale>
 						<MaxMajorScale>9</MaxMajorScale>
 						<GridPenStyle>1</GridPenStyle>
@@ -256,7 +257,7 @@
 						<MaxMajorScale>9</MaxMajorScale>
 						<GridPenStyle>1</GridPenStyle>
 						<DateTimeEnabled>1</DateTimeEnabled>
-						<DateTimeZero>1167609600000</DateTimeZero>
+						<DateTimeZero>1167613200000</DateTimeZero>
 						<DateTimeFormats>hh:mm:ss:zzz&#x0A;dd hh:mm:ss&#x0A;dd.MM. hh:mm&#x0A;hh:mm;;dd.MM.&#x0A;ddd dd.MM.yyyy&#x0A;dd.MM.yyyy&#x0A;MMM yyyy&#x0A;yyyy</DateTimeFormats>
 					</Axis>
 					<Axis index="1" autoscale="0">
