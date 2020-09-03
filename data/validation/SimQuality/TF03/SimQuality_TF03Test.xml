@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.99">
+	<Project>
+		<ProjectInfo>
+			<Comment>Yes we can! TF03</Comment>
+			<Created>Now!</Created>
+			<LastEdited>Yesterday</LastEdited>
+			<Version>NANDRAD 2.0</Version>
+		</ProjectInfo>
+		<Location>
+			<IBK:Parameter name="Latitude" unit="Deg">51</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<IBK:Parameter name="Altitude" unit="m">100</IBK:Parameter>
+			<ClimateFileName>${Project Directory}/../climate/TF03-Sprung.c6b</ClimateFileName>
+		</Location>
+		<SimulationParameter>
+			<IBK:IntPara name="StartYear">2015</IBK:IntPara>
+		</SimulationParameter>
+		<SolverParameter />
+		<Zones>
+			<Zone id="1" displayName="TF03.1" type="Active">
+				<IBK:Parameter name="Temperature" unit="C">5</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">0.0001</IBK:Parameter>
+			</Zone>
+			<Zone id="2" displayName="TF03.2" type="Active">
+				<IBK:Parameter name="Temperature" unit="C">5</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">0.0001</IBK:Parameter>
+			</Zone>
+			<Zone id="3" displayName="TF03.3" type="Active">
+				<IBK:Parameter name="Temperature" unit="C">5</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">0.0001</IBK:Parameter>
+			</Zone>
+			<Zone id="4" displayName="TF03.4" type="Active">
+				<IBK:Parameter name="Temperature" unit="C">5</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">0.0001</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<ConstructionInstances>
+			<ConstructionInstance id="2" displayName="North">
+				<ConstructionTypeId>10001</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
+				<InterfaceA id="3" zoneId="1">
+					<!--Interface to 'TF03.1'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+					<InterfaceSolarAbsorption modelType="Constant">
+						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+					</InterfaceSolarAbsorption>
+					<InterfaceLongWaveEmission modelType="Constant">
+						<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+					</InterfaceLongWaveEmission>
+				</InterfaceA>
+				<InterfaceB id="4" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+					<InterfaceSolarAbsorption modelType="Constant">
+						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+					</InterfaceSolarAbsorption>
+					<InterfaceLongWaveEmission modelType="Constant">
+						<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+					</InterfaceLongWaveEmission>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="20" displayName="North">
+				<ConstructionTypeId>10002</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
+				<InterfaceA id="21" zoneId="2">
+					<!--Interface to 'TF03.2'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+					<InterfaceSolarAbsorption modelType="Constant">
+						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+					</InterfaceSolarAbsorption>
+					<InterfaceLongWaveEmission modelType="Constant">
+						<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+					</InterfaceLongWaveEmission>
+				</InterfaceA>
+				<InterfaceB id="22" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+					<InterfaceSolarAbsorption modelType="Constant">
+						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+					</InterfaceSolarAbsorption>
+					<InterfaceLongWaveEmission modelType="Constant">
+						<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+					</InterfaceLongWaveEmission>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="38" displayName="North">
+				<ConstructionTypeId>10003</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
+				<InterfaceA id="39" zoneId="3">
+					<!--Interface to 'TF03.3'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+					<InterfaceSolarAbsorption modelType="Constant">
+						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+					</InterfaceSolarAbsorption>
+					<InterfaceLongWaveEmission modelType="Constant">
+						<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+					</InterfaceLongWaveEmission>
+				</InterfaceA>
+				<InterfaceB id="40" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+					<InterfaceSolarAbsorption modelType="Constant">
+						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+					</InterfaceSolarAbsorption>
+					<InterfaceLongWaveEmission modelType="Constant">
+						<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+					</InterfaceLongWaveEmission>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="56" displayName="North">
+				<ConstructionTypeId>10004</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
+				<InterfaceA id="57" zoneId="4">
+					<!--Interface to 'TF03.4'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+					<InterfaceSolarAbsorption modelType="Constant">
+						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+					</InterfaceSolarAbsorption>
+					<InterfaceLongWaveEmission modelType="Constant">
+						<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+					</InterfaceLongWaveEmission>
+				</InterfaceA>
+				<InterfaceB id="58" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+					<InterfaceSolarAbsorption modelType="Constant">
+						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+					</InterfaceSolarAbsorption>
+					<InterfaceLongWaveEmission modelType="Constant">
+						<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+					</InterfaceLongWaveEmission>
+				</InterfaceB>
+			</ConstructionInstance>
+		</ConstructionInstances>
+		<ConstructionTypes>
+			<ConstructionType id="10001" displayName="Construction 1">
+				<MaterialLayers>
+					<MaterialLayer thickness="0.2" matId="1001" />
+				</MaterialLayers>
+			</ConstructionType>
+			<ConstructionType id="10002" displayName="Construction 2">
+				<MaterialLayers>
+					<MaterialLayer thickness="0.1" matId="1002" />
+				</MaterialLayers>
+			</ConstructionType>
+			<ConstructionType id="10003" displayName="Construction 3">
+				<MaterialLayers>
+					<MaterialLayer thickness="0.005" matId="1003" />
+					<MaterialLayer thickness="0.1" matId="1002" />
+					<MaterialLayer thickness="0.2" matId="1001" />
+				</MaterialLayers>
+			</ConstructionType>
+			<ConstructionType id="10004" displayName="Construction 4">
+				<MaterialLayers>
+					<MaterialLayer thickness="0.2" matId="1001" />
+					<MaterialLayer thickness="0.1" matId="1002" />
+					<MaterialLayer thickness="0.005" matId="1003" />
+				</MaterialLayers>
+			</ConstructionType>
+		</ConstructionTypes>
+		<Materials>
+			<Material id="1001" displayName="Brick">
+				<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+			</Material>
+			<Material id="1002" displayName="Insulation">
+				<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
+			</Material>
+			<Material id="1003" displayName="Board">
+				<IBK:Parameter name="Density" unit="kg/m3">800</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.14</IBK:Parameter>
+			</Material>
+		</Materials>
+		<Schedules />
+		<Outputs>
+		<TimeUnit>h</TimeUnit>
+			<OutputDefinitions>
+				<OutputDefinition>
+					<Quantity>Temperature</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>AirTemperature</Quantity>
+<!-- 					<TimeType>None</TimeType> -->
+					<ObjectListName>Zone</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+			</OutputDefinitions>
+			<Grids>
+				<OutputGrid name="hourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="Zone">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Location">
+				<FilterID>*</FilterID>
+				<ReferenceType>Location</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Interface">
+				<FilterID>*</FilterID>
+				<ReferenceType>Interface</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+	</Project>
+</NandradProject>
