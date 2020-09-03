@@ -145,9 +145,9 @@ private:
 	bool											m_moistureBalanceEnabled;
 
 	/*! Zone air volume in [m3], cached in setup(). */
-	double											m_volume;
+	double											m_volume = 999;
 	/*! Additional heat capacity in zone in [J/K], cached in setup(). */
-	double											m_additionalHeatCapacity;
+	double											m_additionalHeatCapacity = 999;
 
 	/*! Data cache for calculated results (updated in call to update()).
 		Index matches enum values of Results.
