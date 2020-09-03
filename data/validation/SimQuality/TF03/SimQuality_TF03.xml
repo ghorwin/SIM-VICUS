@@ -2,40 +2,27 @@
 <NandradProject fileVersion="1.99">
 	<Project>
 		<ProjectInfo>
-			<Comment>Yes we can! TF03</Comment>
-			<Created>Now!</Created>
-			<LastEdited>Yesterday</LastEdited>
-			<Version>NANDRAD 2.0</Version>
+			<Comment>SimQuality TF03</Comment>
 		</ProjectInfo>
 		<Location>
-			<IBK:Parameter name="Latitude" unit="Deg">51</IBK:Parameter>
-			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<IBK:Parameter name="Altitude" unit="m">100</IBK:Parameter>
 			<ClimateFileName>${Project Directory}/../climate/TF03-Sprung.c6b</ClimateFileName>
 		</Location>
-		<SimulationParameter>
-			<IBK:IntPara name="StartYear">2015</IBK:IntPara>
-		</SimulationParameter>
-		<SolverParameter />
 		<Zones>
 			<Zone id="1" displayName="TF03.1" type="Active">
-				<IBK:Parameter name="Temperature" unit="C">5</IBK:Parameter>
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">0.0001</IBK:Parameter>
 			</Zone>
 			<Zone id="2" displayName="TF03.2" type="Active">
-				<IBK:Parameter name="Temperature" unit="C">5</IBK:Parameter>
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">0.0001</IBK:Parameter>
 			</Zone>
 			<Zone id="3" displayName="TF03.3" type="Active">
-				<IBK:Parameter name="Temperature" unit="C">5</IBK:Parameter>
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">0.0001</IBK:Parameter>
 			</Zone>
 			<Zone id="4" displayName="TF03.4" type="Active">
-				<IBK:Parameter name="Temperature" unit="C">5</IBK:Parameter>
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">0.0001</IBK:Parameter>
 			</Zone>
@@ -816,7 +803,6 @@
 				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>AirTemperature</Quantity>
-<!-- 					<TimeType>None</TimeType> -->
 					<ObjectListName>Zone</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
@@ -839,10 +825,6 @@
 			<ObjectList name="Location">
 				<FilterID>*</FilterID>
 				<ReferenceType>Location</ReferenceType>
-			</ObjectList>
-			<ObjectList name="Interface">
-				<FilterID>*</FilterID>
-				<ReferenceType>Interface</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
 	</Project>
