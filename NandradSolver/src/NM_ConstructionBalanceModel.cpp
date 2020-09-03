@@ -237,7 +237,8 @@ int ConstructionBalanceModel::update() {
 			// finally divide by element volume (volume = dx * 1m2)
 			ydot[i-1] /= E[i-1].dx;
 		}
-		ydot[nElements-1] -= m_fluxDensityHeatConductionB / E[nElements-1].dx;
+		ydot[nElements-1] -= m_fluxDensityHeatConductionB;
+		ydot[nElements-1] /= E[nElements-1].dx;
 	}
 	return 0; // signal success
 }
