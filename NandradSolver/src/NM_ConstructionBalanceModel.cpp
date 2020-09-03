@@ -145,7 +145,7 @@ void ConstructionBalanceModel::inputReferences(std::vector<InputReference> & inp
 				ref.m_id = m_con->m_interfaceB.m_zoneId;
 				ref.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
 				ref.m_name.m_name = "AirTemperature";
-				inputRefs[InputRef_RoomATemperature] = ref;
+				inputRefs[InputRef_RoomBTemperature] = ref;
 			}
 		}
 		}

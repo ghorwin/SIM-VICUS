@@ -43,7 +43,7 @@ void Interface::updateComment(const std::vector<Zone> & zones) {
 		else {
 			m_comment = IBK::FormatString("ERROR: Zone with id #%1 does not exist.").arg(m_zoneId).str();
 		}
-		}
+	}
 }
 
 
