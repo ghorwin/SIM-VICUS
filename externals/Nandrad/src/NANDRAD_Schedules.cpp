@@ -380,15 +380,30 @@ void Schedules::generateLinearSpline(const std::string & objectListName, const s
 		// each of the lists should have at max one parameter - otherwise we have an ambiguity
 
 		// check all lists types for duplicate schedules
-		for (unsigned int i=0; i<NANDRAD::Schedule::NUM_ST; ++i) {
+		for (unsigned int schedDayType=0; schedDayType<NANDRAD::Schedule::NUM_ST; ++schedDayType) {
 			IBK::Time dString(2003, (d + m_firstDayOfYear)*IBK::SECONDS_PER_DAY);
-			if (scheduleCandidates[i].size() > 1) {
-				/// \todo maybe add more info about the parameter lookup to help identifying the ambiguity
-				throw IBK::Exception(IBK::FormatString("Ambiguous schedule parameter definition for parameter '%1' at day '%2'. %3 "
-									 "schedules of day type %4 match this day.")
-									 .arg(parameterName).arg(dString.toDayMonthFormat())
-									 .arg(scheduleCandidates[i].size())
-									 .arg(NANDRAD::KeywordList::Keyword("Schedule::type_t", (int)i)), FUNC_ID);
+			if (scheduleCandidates[schedDayType].size() > 1) {
+				// we allow at max. 2 schedules, but only if exactly one of the
+				// two is a whole year schedule
+				// so, we basically count the number of whole year schedules
+				// and bail out if we have more than one, otherwise we subtract
+				// the number of all year schedules from the number of schedules
+				// and check, that 0 or 1 remain
+				unsigned int allYearCount = 0;
+				for (const NANDRAD::Schedule * schedPtr : scheduleCandidates[schedDayType]) {
+					if (schedPtr->isWholeYearSchedule())
+						++allYearCount;
+				}
+				if (allYearCount > 1)
+					throw IBK::Exception(IBK::FormatString("Ambiguous schedule parameter definition for "
+														   "parameter '%1'. Multiple whole year schedules match this day.")
+										 .arg(parameterName), FUNC_ID);
+				if (scheduleCandidates[schedDayType].size() - allYearCount > 1)
+					throw IBK::Exception(IBK::FormatString("Ambiguous schedule parameter definition for parameter '%1' at day '%2'. %3 "
+										 "schedules of day type '%4' match this day.")
+										 .arg(parameterName).arg(dString.toDayMonthFormat())
+										 .arg(scheduleCandidates[schedDayType].size())
+										 .arg(NANDRAD::KeywordList::Keyword("Schedule::type_t", (int)schedDayType)), FUNC_ID);
 			}
 		}
 
@@ -397,6 +412,11 @@ void Schedules::generateLinearSpline(const std::string & objectListName, const s
 		for (int i=NANDRAD::Schedule::NUM_ST-1; i>=0; --i) {
 			if (scheduleCandidates[i].empty())  continue; // skip day types without schedule
 			const NANDRAD::Schedule * sched = scheduleCandidates[i].front();
+			// priority handling for the case that we have both an whole year schedule and a limited schedule
+			if (scheduleCandidates[i].size() > 1) {
+				if (sched->isWholeYearSchedule())
+					sched = scheduleCandidates[i].back();
+			}
 			// find daily cycle that provides the parameter
 			std::map<std::string, NANDRAD::DailyCycle *>::const_iterator paraIT = sched->m_parameters.find(parameterName);
 			IBK_ASSERT(paraIT != sched->m_parameters.end());
