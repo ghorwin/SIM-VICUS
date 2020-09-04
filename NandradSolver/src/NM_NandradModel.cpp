@@ -182,8 +182,6 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 	initSchedules();
 	// *** Initialize RoomBalanceModels and ConstantZoneModels ***
 	initZones();
-	// *** Initialize EnergyPerformanceIndicatorModels ***
-//	initZoneLists();
 	// *** Initialize Wall and Construction BC Modules ***
 	initWallsAndInterfaces();
 	// *** Initialize Window Models ***
@@ -866,7 +864,7 @@ void NandradModel::initSolverParameter(const NANDRAD::ArgsParser & args) {
 void NandradModel::initSimulationParameter() {
 	FUNCID(NandradModel::initSimulationParameter);
 
-	IBK::IBK_Message( IBK::FormatString("Initializing Simulation Parameter\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+	IBK::IBK_Message( IBK::FormatString("Initializing Simulation Parameter\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
 	const NANDRAD::SimulationParameter &simPara = m_project->m_simulationParameter;
 
@@ -973,7 +971,7 @@ void NandradModel::initFMI() {
 
 void NandradModel::initZones() {
 	FUNCID(NandradModel::initZones);
-	IBK::IBK_Message( IBK::FormatString("Initializing Zones\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+	IBK::IBK_Message( IBK::FormatString("Initializing Zones\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK_MSG_INDENT;
 
 	// create model instances for all active zones
@@ -1624,6 +1622,8 @@ void NandradModel::initZones() {
 
 void NandradModel::initWallsAndInterfaces() {
 	FUNCID(NandradModel::initWallsAndInterfaces);
+	IBK::IBK_Message( IBK::FormatString("Initializing Constructions and Interfaces\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	IBK_MSG_INDENT;
 
 	// now process all construction types and:
 	// - check for valid parameters
@@ -1712,7 +1712,6 @@ void NandradModel::initEmbeddedObjects() {
 
 void NandradModel::initModels() {
 	FUNCID(NandradModel::initModels);
-
 	IBK::IBK_Message(IBK::FormatString("Initializing Models\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK_MSG_INDENT;
 
@@ -2241,8 +2240,9 @@ void NandradModel::initModelGraph() {
 
 void NandradModel::initOutputReferenceList() {
 	FUNCID(NandradModel::initOutputReferenceList);
-	IBK::IBK_Message( IBK::FormatString("Initializing Output Quantity List\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+	IBK::IBK_Message( IBK::FormatString("Initializing Output Quantity List\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK_MSG_INDENT;
+
 	// generate and dump calculation results of all models
 	std::map<std::string, QuantityDescription> refDescs;
 	for (unsigned int i=0; i<m_modelContainer.size(); ++i) {
@@ -2324,6 +2324,8 @@ void NandradModel::initOutputReferenceList() {
 
 void NandradModel::initSolverVariables() {
 	FUNCID(NandradModel::initSolverVariables);
+	IBK::IBK_Message( IBK::FormatString("Initializing Solver Variables\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	IBK_MSG_INDENT;
 
 	// In this function the number of conserved variables is calculated (summing up states in zones and constructions)
 	// and linear memory arrays for y, y0 and ydot are created.
@@ -2422,6 +2424,8 @@ void NandradModel::initSolverVariables() {
 	m_t = -1;
 
 	// *** Select serial code for small problem sizes ***
+
+	IBK::IBK_Message( IBK::FormatString("%1 unknowns\n").arg(m_n), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
 	if (m_numThreads > 1 && m_n > 1000) {
 		m_useSerialCode = false;
