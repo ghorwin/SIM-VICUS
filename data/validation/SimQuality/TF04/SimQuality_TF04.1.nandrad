@@ -8,10 +8,6 @@
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<ClimateFileName>${Project Directory}/../climate/TF04-Sprung.c6b</ClimateFileName>
 		</Location>
-		<SolverParameter>
-			<IBK:Parameter name="DiscStretchFactor" unit="---">4</IBK:Parameter>
-			<IBK:Parameter name="DiscMinDx" unit="mm">2</IBK:Parameter>
-		</SolverParameter>
 		<Zones>
 			<Zone id="1" displayName="Var01" type="Active">
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
@@ -52,10 +48,10 @@
 			<!-- Full outside construction -->
 			<ConstructionType id="10001" displayName="Outside wall">
 				<MaterialLayers>
-					<MaterialLayer thickness="0.2" matId="1001" />
+					<MaterialLayer thickness="0.1" matId="1002" />
 				</MaterialLayers>
 			</ConstructionType>
-			<!-- Half outside construction -->
+			<!-- Half outside construction (instead of 20cm we use 10cm) -->
 			<ConstructionType id="10002" displayName="Inside wall">
 				<MaterialLayers>
 					<MaterialLayer thickness="0.1" matId="1001" />
@@ -67,6 +63,11 @@
 				<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
 				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
 				<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+			</Material>
+			<Material id="1002" displayName="Insulation">
+				<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
 			</Material>
 		</Materials>
 		<Outputs>
