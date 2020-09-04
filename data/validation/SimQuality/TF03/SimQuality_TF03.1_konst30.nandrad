@@ -18,16 +18,16 @@
 			<IBK:IntPara name="DiscMaxElementsPerLayer">60</IBK:IntPara>
 		</SolverParameter>
 		<Zones>
-			<Zone id="1" displayName="TF03.1" type="Active">
+			<Zone id="100" displayName="TF03.1" type="Active">
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
-				<IBK:Parameter name="Volume" unit="m3">0.00001</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
 			</Zone>
 		</Zones>
 		<ConstructionInstances>
 			<ConstructionInstance id="2" displayName="North">
 				<ConstructionTypeId>10001</ConstructionTypeId>
-				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
-				<InterfaceA id="3" zoneId="1">
+				<IBK:Parameter name="Area" unit="m2">40</IBK:Parameter>
+				<InterfaceA id="3" zoneId="100">
 					<!--Interface to 'TF03.1'-->
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>

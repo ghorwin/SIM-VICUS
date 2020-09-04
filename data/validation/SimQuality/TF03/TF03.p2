@@ -4,8 +4,8 @@
 	<Directories>
 		<Directory>
 			<Path>.</Path>
-			<SubDir Color="#416fce" Checked="1">SimQuality_TF03</SubDir>
-			<SubDir Color="#8ae234" Checked="1">reference</SubDir>
+			<SubDir Color="#416fce" Checked="0">SimQuality_TF03</SubDir>
+			<SubDir Color="#8ae234" Checked="0">reference</SubDir>
 			<SubDir Color="#ff007f" Checked="0">results</SubDir>
 			<ExpandedSubDir>.</ExpandedSubDir>
 		</Directory>
@@ -15,7 +15,7 @@
 
 	<!--All mappers.-->
 	<Mappers>
-		<Mapper name="$project: $basename">
+		<Mapper name="TF03.1">
 			<Extractors>
 				<Extractor>
 					<DataIOFileName>SimQuality_TF03/results/states.tsv?1|2|3|4</DataIOFileName>
@@ -55,7 +55,7 @@
 						<Maximum>20</Maximum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
-						<DateTimeZero>978310800000</DateTimeZero>
+						<DateTimeZero>978325200000</DateTimeZero>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
@@ -73,19 +73,21 @@
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>$project: $basename</TitleText>
+					<TitleText>TF03.1</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
 						<Position>Inside</Position>
-						<Alignment>1</Alignment>
+						<Alignment>5</Alignment>
+						<OffsetX>27</OffsetX>
+						<OffsetY>52</OffsetY>
 						<MaxColumns>1</MaxColumns>
 						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
 					</Legend>
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
-		<Mapper name="$project: $basename">
+		<Mapper name="TF03.2">
 			<Extractors>
 				<Extractor>
 					<DataIOFileName>SimQuality_TF03/results/states.tsv?1|2|3|4</DataIOFileName>
@@ -122,19 +124,18 @@
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">d</IBK:Unit>
-						<Maximum>16.33507853403141</Maximum>
-						<Minimum>-12.984293193717276</Minimum>
+						<Maximum>20</Maximum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
-						<DateTimeZero>978314400000</DateTimeZero>
+						<DateTimeZero>978328800000</DateTimeZero>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
-						<Maximum>30.18181818181818</Maximum>
-						<Minimum>19.636363636363637</Minimum>
+						<Maximum>31</Maximum>
+						<Minimum>19</Minimum>
 						<MinorGridVisible>0</MinorGridVisible>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
@@ -144,19 +145,21 @@
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>$project: $basename</TitleText>
+					<TitleText>TF03.2</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
 						<Position>Inside</Position>
-						<Alignment>1</Alignment>
+						<Alignment>5</Alignment>
+						<OffsetX>43</OffsetX>
+						<OffsetY>67</OffsetY>
 						<MaxColumns>1</MaxColumns>
 						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
 					</Legend>
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
-		<Mapper name="$project: $basename">
+		<Mapper name="TF03.3">
 			<Extractors>
 				<Extractor>
 					<DataIOFileName>SimQuality_TF03/results/states.tsv?1|2|3|4</DataIOFileName>
@@ -196,7 +199,7 @@
 						<Maximum>20</Maximum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
-						<DateTimeZero>978314400000</DateTimeZero>
+						<DateTimeZero>978328800000</DateTimeZero>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
@@ -212,19 +215,21 @@
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>$project: $basename</TitleText>
+					<TitleText>TF03.3</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
 						<Position>Inside</Position>
-						<Alignment>1</Alignment>
+						<Alignment>5</Alignment>
+						<OffsetX>27</OffsetX>
+						<OffsetY>62</OffsetY>
 						<MaxColumns>1</MaxColumns>
 						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
 					</Legend>
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
-		<Mapper name="$project: $basename">
+		<Mapper name="TF03.4">
 			<Extractors>
 				<Extractor>
 					<DataIOFileName>SimQuality_TF03/results/states.tsv?1|2|3|4</DataIOFileName>
@@ -264,7 +269,7 @@
 						<Maximum>20</Maximum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
-						<DateTimeZero>978314400000</DateTimeZero>
+						<DateTimeZero>978328800000</DateTimeZero>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
@@ -280,7 +285,7 @@
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>$project: $basename</TitleText>
+					<TitleText>TF03.4</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
@@ -298,8 +303,11 @@
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="3" size1="1" size2="1" orientation="2" />
-		<FocusedWidget>0</FocusedWidget>
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="0" size1="485" size2="484" orientation="2" />
+		<Widget id="2" parent="1" viewTable="0" mapperIndex="2" size1="485" size2="484" orientation="2" />
+		<Widget id="3" parent="1" viewTable="0" mapperIndex="1" size1="480" size2="515" orientation="1" />
+		<Widget id="4" parent="2" viewTable="0" mapperIndex="3" size1="498" size2="497" orientation="1" />
+		<FocusedWidget>1</FocusedWidget>
 	</Splitting>
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
