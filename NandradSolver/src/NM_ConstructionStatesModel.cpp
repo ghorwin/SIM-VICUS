@@ -340,6 +340,9 @@ int ConstructionStatesModel::update(const double * y) {
 				- m_elements[m_nElements-1].wL * states_T[m_nElements-2];
 #endif
 	}
+	// store surface temperatures also in result values for outputs
+	m_results[R_SurfaceTemperatureA] = m_TsA;
+	m_results[R_SurfaceTemperatureB] = m_TsB;
 
 #if 0
 	// the code below is the slow "very easy to read" code and only kept for documentation purposes
