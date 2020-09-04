@@ -15,5 +15,5 @@ into the result files as required by the test suite.
 
 ### TestCase 01
 
-![TF01.5_Azimuth.png](results/TF01.5_Azimuth.png)
-![TF01.5_Elevation.png](results/TF01.5_Elevation.png)
+![TF01.5_Azimuth.png](TF01/results/TF01.5_Azimuth.png)
+![TF01.5_Elevation.png](TF01/results/TF01.5_Elevation.png)
