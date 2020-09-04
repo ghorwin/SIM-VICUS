@@ -6,11 +6,13 @@
 		</ProjectInfo>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
-			<ClimateFileName>${Project Directory}/../climate/TF04-Sprung.c6b</ClimateFileName>
+			<ClimateFileName>${Project Directory}/../climate/TF03-Konstant30.c6b</ClimateFileName>
 		</Location>
 		<SolverParameter>
-			<IBK:Parameter name="DiscStretchFactor" unit="---">4</IBK:Parameter>
+			<IBK:Parameter name="InitialTimeStep" unit="s">1</IBK:Parameter>
 			<IBK:Parameter name="DiscMinDx" unit="mm">2</IBK:Parameter>
+			<IBK:Parameter name="DiscStretchFactor" unit="---">2</IBK:Parameter>
+			<IBK:IntPara name="DiscMaxElementsPerLayer">60</IBK:IntPara>
 		</SolverParameter>
 		<Zones>
 			<Zone id="1" displayName="Var01" type="Active">
@@ -26,7 +28,7 @@
 				<InterfaceA id="100" zoneId="1">
 						<!--Interface to 'Room'-->
 						<InterfaceHeatConduction modelType="Constant">
-							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">0.00001</IBK:Parameter>
 						</InterfaceHeatConduction>
 				</InterfaceA>
 				<InterfaceB id="101" zoneId="0">
@@ -36,17 +38,7 @@
 						</InterfaceHeatConduction>
 				</InterfaceB>
 			</ConstructionInstance>
-			<!-- Inside walls -->
-			<ConstructionInstance id="2" displayName="Inside wall">
-				<ConstructionTypeId>10002</ConstructionTypeId> <!-- this is the half construction -->
-				<IBK:Parameter name="Area" unit="m2">22</IBK:Parameter>
-				<InterfaceA id="102" zoneId="1">
-					<!--Interface to 'Room'-->
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
-					</InterfaceHeatConduction>
-				</InterfaceA>
-			</ConstructionInstance>
+		</ConstructionInstances>
 		<ConstructionTypes>
 			<!-- Full outside construction -->
 			<ConstructionType id="10001" displayName="Outside wall">
@@ -76,6 +68,30 @@
 					<ObjectListName>All zones</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>SurfaceTemperatureA</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>Constructions</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>SurfaceTemperatureB</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>Constructions</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FluxHeatConductionA</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>Constructions</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FluxHeatConductionB</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>Constructions</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
 			</OutputDefinitions>
 			<Grids>
 				<OutputGrid name="hourly">
@@ -91,6 +107,12 @@
 			<ObjectList name="All zones">
 				<FilterID>*</FilterID>
 				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+		<ObjectLists>
+			<ObjectList name="Constructions">
+				<FilterID>*</FilterID>
+				<ReferenceType>ConstructionInstance</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
 	</Project>
