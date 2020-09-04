@@ -41,7 +41,8 @@ void DataTable::setEncodedString(const std::string & str) {
 		if (parts.size() != 2)
 			throw IBK::Exception(IBK::FormatString("Invalid data in table, expected ':' as separator in column data '%1'").arg(colStr), FUNC_ID);
 		std::vector<double> val;
-		std::string line_with_spaces = parts[1]; //IBK::replace_string(parts[1], ",", " ");
+		std::string line_with_spaces = parts[1];
+		IBK::replace_string(parts[1], ",", " ");
 		try {
 			IBK::string2valueVector(line_with_spaces, val);
 		} catch (IBK::Exception & ex) {
@@ -68,8 +69,9 @@ std::string DataTable::encodedString() const {
 		for (unsigned int i=0; i<column.second.size(); ++i) {
 			strm << column.second[i];
 			if (i < column.second.size()-1)
-				strm << "\t";
+				strm << ",";
 		}
+
 		strm << ";";
 	}
 	return strm.str();
