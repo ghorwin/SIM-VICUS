@@ -7,7 +7,7 @@ We have a continuous integration scripts running (build-test of all C/C++ code w
 | Continuous Integration (CI) (successfully building code) | ![CI](https://github.com/ghorwin/SIM-VICUS/workflows/CI/badge.svg)  |
 | Solver regression test (correctly simulating test suite) | ![RegressionTest](https://github.com/ghorwin/SIM-VICUS/workflows/RegressionTest/badge.svg)  |
 
-
+Tests are located in `data/tests`, the validation suite(s) are in `data/validation` with summary given on the [Validation-Wiki-readme](https://github.com/ghorwin/SIM-VICUS/tree/master/data/validation/SimQuality) page.
 
 ## Directory Structure
 
