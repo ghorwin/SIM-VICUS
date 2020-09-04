@@ -39,14 +39,18 @@
 
 const char * const STATE_QUANTITIES[] = {
 	"AirTemperature",
-	"InfiltrationRate"
+	"InfiltrationRate",
+	"SurfaceTemperatureA",
+	"SurfaceTemperatureB"
 };
 
 const char * const FLUX_QUANTITIES[] = {
 	"ConvectiveHeatFluxDensity",
 	"InfiltrationHeatLoad",
 	"CompleteThermalLoad",
-	"InfiltrationHeatFlux"
+	"InfiltrationHeatFlux",
+	"FluxHeatConductionA",
+	"FluxHeatConductionB"
 };
 
 namespace NANDRAD_MODEL {
