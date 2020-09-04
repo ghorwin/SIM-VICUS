@@ -148,7 +148,7 @@ void ConstructionBalanceModel::inputReferences(std::vector<InputReference> & inp
 				inputRefs[InputRef_RoomBTemperature] = ref;
 			}
 		}
-		}
+	}
 }
 
 
