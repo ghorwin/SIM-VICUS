@@ -10,3 +10,10 @@ described in the test suite).
 The directory `scripts` contains python scripts that assist in converting simulation results
 into the result files as required by the test suite.
 
+
+## Validation Results
+
+### TestCase 01
+
+![TF01.5_Azimuth.png](results/TF01.5_Azimuth.png)
+![TF01.5_Elevation.png](results/TF01.5_Elevation.png)
