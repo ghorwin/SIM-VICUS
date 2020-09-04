@@ -6,7 +6,7 @@
 		</ProjectInfo>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
-			<ClimateFileName>${Project Directory}/climate/TF04-periodisch.c6b</ClimateFileName>
+			<ClimateFileName>${Project Directory}/../climate/TF04-periodisch.c6b</ClimateFileName>
 		</Location>
 		<Zones>
 			<Zone id="3" displayName="Var03 A" type="Active">
@@ -203,17 +203,30 @@
 					</InterfaceHeatConduction>
 				</InterfaceB>
 			</ConstructionInstance>
+			<ConstructionInstance id="406" displayName="West Var04">
+				<ConstructionTypeId>10004</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+				<InterfaceA id="4060" zoneId="4">
+					<!--Interface to 'Room'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="4061" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
 			
 		</ConstructionInstances>
 		<ConstructionTypes>
 			<ConstructionType id="10001" displayName="Construction 1">
 				<MaterialLayers>
 					<MaterialLayer thickness="0.2" matId="1001" />
-				</MaterialLayers>
-			</ConstructionType>
-			<ConstructionType id="10002" displayName="Construction 2">
-				<MaterialLayers>
-					<MaterialLayer thickness="0.1" matId="1002" />
 				</MaterialLayers>
 			</ConstructionType>
 			<ConstructionType id="10003" displayName="Construction 3">
