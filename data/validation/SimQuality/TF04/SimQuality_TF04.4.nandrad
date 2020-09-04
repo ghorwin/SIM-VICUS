@@ -2,11 +2,11 @@
 <NandradProject fileVersion="1.99">
 	<Project>
 		<ProjectInfo>
-			<Comment>SimQuality Testfall 04.3</Comment>
+			<Comment>SimQuality Testfall 04.4</Comment>
 		</ProjectInfo>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
-			<ClimateFileName>${Project Directory}/../climate/TF04-periodisch.c6b</ClimateFileName>
+			<ClimateFileName>${Project Directory}/../climate/DEU_Potsdam_60.c6b</ClimateFileName>
 		</Location>
 		<Zones>
 			<Zone id="3" displayName="Var03 A" type="Active">
