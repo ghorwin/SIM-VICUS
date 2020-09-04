@@ -7,10 +7,6 @@ with usually several simulation projects.
 The subdirectory `climate` contains climate data files in `c6b` format (created as 
 described in the test suite).
 
-The directory `scripts` contains python scripts that assist in converting simulation results
-into the result files as required by the test suite.
-
-
 ## Validation Results
 
 ### TestCase 01
@@ -21,7 +17,14 @@ into the result files as required by the test suite.
 
 ### TestCase 03
 
+<img src="TF03/results/TF03.1.png" width="400px"/><img src="TF03/results/TF03.1.png" width="400px"/><br>
+<img src="TF03/results/TF03.3.png" width="400px"/><img src="TF03/results/TF03.4.png" width="400px"/>
+
 ### TestCase 04
+
+<img src="TF04/results/TF04.1.png" width="400px"/><img src="TF04/results/TF04.2.png" width="400px"/><br>
+<img src="TF04/results/TF04.3A.png" width="400px"/><img src="TF04/results/TF04.3B.png" width="400px"/><br>
+<img src="TF04/results/TF04.4A.png" width="400px"/><img src="TF04/results/TF04.4B.png" width="400px"/>
 
 ### TestCase 05
 
