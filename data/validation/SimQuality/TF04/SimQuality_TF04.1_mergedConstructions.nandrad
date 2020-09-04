@@ -20,16 +20,16 @@
 				<ConstructionTypeId>10001</ConstructionTypeId>
 				<IBK:Parameter name="Area" unit="m2">40</IBK:Parameter>
 				<InterfaceA id="100" zoneId="1">
-						<!--Interface to 'Room'-->
-						<InterfaceHeatConduction modelType="Constant">
-							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
-						</InterfaceHeatConduction>
+					<!--Interface to 'Room'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
 				</InterfaceA>
 				<InterfaceB id="101" zoneId="0">
-						<!--Interface to outside-->
-						<InterfaceHeatConduction modelType="Constant">
-							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
-						</InterfaceHeatConduction>
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
 				</InterfaceB>
 			</ConstructionInstance>
 			<!-- Inside walls -->
