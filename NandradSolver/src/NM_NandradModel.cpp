@@ -2070,8 +2070,10 @@ void NandradModel::initModelDependencies() {
 					if (inputRef.m_required) {
 						// error: reference was not resolved
 						if (lookupErrorMessage.empty())
-							throw IBK::Exception(IBK::FormatString("Could not resolve reference to quantity '%1' of %2 with id #%3!")
+							throw IBK::Exception(IBK::FormatString("Could not resolve reference to quantity '%1' (reftype '%2', object id #%3) needed by %4 with id #%5!")
 								.arg(inputRef.m_name.m_name)
+								.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", inputRef.m_referenceType))
+								.arg(inputRef.m_id)
 								.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_modelContainer[(size_t)i]->referenceType()))
 								.arg(m_modelContainer[(size_t)i]->id()), FUNC_ID);
 						else {
