@@ -2,17 +2,12 @@
 <NandradProject fileVersion="1.99">
 	<Project>
 		<ProjectInfo>
-			<Comment>air change tests</Comment>
+			<Comment>SimQuality Testfall 04.4</Comment>
 		</ProjectInfo>
 		<Location>
-			<IBK:Parameter name="Latitude" unit="Deg">51</IBK:Parameter>
-			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<ClimateFileName>${Project Directory}/../climate/DEU_Potsdam_60.c6b</ClimateFileName>
 		</Location>
-		<SimulationParameter>
-			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
-		</SimulationParameter>
 		<Zones>
 			<Zone id="1" displayName="Var01" type="Active">
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
@@ -81,14 +76,13 @@
 					</InterfaceHeatConduction>
 				</InterfaceB>
 			</ConstructionInstance>
-			
-			
 		</ConstructionInstances>
+		
 		<ConstructionTypes>
 			<ConstructionType id="10005" displayName="Air Change Test Construction">
 				<MaterialLayers>
+					<MaterialLayer thickness="0.3" matId="1004" /> <!-- room side -->
 					<MaterialLayer thickness="0.2" matId="1001" />
-					<MaterialLayer thickness="0.3" matId="1004" />					
 				</MaterialLayers>
 			</ConstructionType>
 		</ConstructionTypes>
@@ -110,7 +104,6 @@
 			</NaturalVentilationModel>
 		</Models>
 		<Schedules>
-			<WeekEndDays>Sat,Sun</WeekEndDays>
 			<ScheduleGroups>
 				<ScheduleGroup objectList="Zone Var01">
 					<!-- AllDays constant  -->
@@ -123,6 +116,7 @@
 						</DailyCycles>
 					</Schedule>
 				</ScheduleGroup>
+
 				<ScheduleGroup objectList="Zone Var02">
 					<!-- AllDays constant  -->
 					<Schedule type="AllDays">
@@ -134,6 +128,7 @@
 						</DailyCycles>
 					</Schedule>
 				</ScheduleGroup>
+
 				<ScheduleGroup objectList="Zone Var03">
 					<!-- AllDays constant  -->
 					<Schedule type="AllDays">
@@ -154,8 +149,6 @@
 							</DailyCycle>
 						</DailyCycles>
 					</Schedule>
-					
-					
 				</ScheduleGroup>
 			</ScheduleGroups>
 		</Schedules>
