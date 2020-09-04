@@ -76,7 +76,10 @@ public:
 	void prepareCalculation();
 
 	/*! Returns true, if given day is inside the start and end date of the schedule. */
-	bool containsDay(unsigned int dayOfYear) const;
+	bool containsDay(unsigned int dayOfYear) const {return dayOfYear >= m_startDayOfTheYear && dayOfYear <= m_endDayOfTheYear; }
+
+	/*! Returns true, if schedule is a whole year schedule. */
+	bool isWholeYearSchedule() const {return m_startDayOfTheYear == 0 && m_endDayOfTheYear == 364; }
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

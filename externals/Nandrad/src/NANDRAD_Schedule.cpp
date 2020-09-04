@@ -61,9 +61,6 @@ void Schedule::prepareCalculation() {
 }
 
 
-bool Schedule::containsDay(unsigned int dayOfYear) const {
-	return dayOfYear >= m_startDayOfTheYear && dayOfYear <= m_endDayOfTheYear;
-}
 
 
 } // namespace NANDRAD
