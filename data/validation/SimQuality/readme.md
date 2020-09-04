@@ -15,6 +15,8 @@ described in the test suite).
 
 ### TestCase 02
 
+<img src="TF02/results/TF02.W90Diff.png" width="400px"/><img src="TF02/results/TF02.W90Dir.png" width="400px"/>
+
 ### TestCase 03
 
 <img src="TF03/results/TF03.1.png" width="400px"/><img src="TF03/results/TF03.1.png" width="400px"/><br>
@@ -28,4 +30,4 @@ described in the test suite).
 
 ### TestCase 05
 
-
+... not done yet...
