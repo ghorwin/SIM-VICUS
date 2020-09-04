@@ -17,7 +17,7 @@
 
 	<!--All mappers.-->
 	<Mappers>
-		<Mapper name="$project: $basename">
+		<Mapper name="TF04.1">
 			<Extractors>
 				<Extractor>
 					<DataIOFileName>SimQuality_TF04.1/results/states.tsv?1</DataIOFileName>
@@ -37,12 +37,12 @@
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
-						<TitleText>$quantity</TitleText>
+						<TitleText>NANDRAD 2</TitleText>
 						<PenColor>#cc0000</PenColor>
 						<MarkerColor>#cc0000</MarkerColor>
 					</Series>
 					<Series>
-						<TitleText>$quantity</TitleText>
+						<TitleText>Referenz</TitleText>
 						<MarkerStyle>0</MarkerStyle>
 						<PenStyle>0</PenStyle>
 						<MarkerColor>#000000</MarkerColor>
@@ -57,10 +57,10 @@
 						<Maximum>50</Maximum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
-						<DateTimeZero>978314400000</DateTimeZero>
+						<DateTimeZero>978318000000</DateTimeZero>
 					</Axis>
 					<Axis index="1" autoscale="0">
-						<TitleText>$quantity [$unit]</TitleText>
+						<TitleText>Raumlufttemperatur [$unit]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
@@ -75,7 +75,7 @@
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>$project: $basename</TitleText>
+					<TitleText>TF04.1</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
@@ -87,7 +87,7 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
-		<Mapper name="$project: $basename">
+		<Mapper name="TF04.2">
 			<Extractors>
 				<Extractor>
 					<DataIOFileName>SimQuality_TF04.2/results/states.tsv?1</DataIOFileName>
@@ -107,12 +107,12 @@
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
+						<TitleText>NANDRAD 2</TitleText>
 						<PenColor>#cc0000</PenColor>
 						<MarkerColor>#cc0000</MarkerColor>
 					</Series>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
+						<TitleText>Referenz</TitleText>
 						<MarkerStyle>0</MarkerStyle>
 						<PenStyle>0</PenStyle>
 						<MarkerColor>#000000</MarkerColor>
@@ -127,10 +127,10 @@
 						<Maximum>10</Maximum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
-						<DateTimeZero>978314400000</DateTimeZero>
+						<DateTimeZero>978318000000</DateTimeZero>
 					</Axis>
 					<Axis index="1" autoscale="0">
-						<TitleText>$quantity [$unit]</TitleText>
+						<TitleText>Raumlufttemperatur [$unit]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
@@ -143,7 +143,7 @@
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>$project: $basename</TitleText>
+					<TitleText>TF04.2</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
@@ -155,7 +155,7 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
-		<Mapper name="$project: $basename">
+		<Mapper name="TF04.3 Raum A">
 			<Extractors>
 				<Extractor>
 					<DataIOFileName>SimQuality_TF04.3/results/states.tsv?1|2</DataIOFileName>
@@ -175,12 +175,12 @@
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
+						<TitleText>NANDRAD 2</TitleText>
 						<PenColor>#cc0000</PenColor>
 						<MarkerColor>#cc0000</MarkerColor>
 					</Series>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
+						<TitleText>Referenz</TitleText>
 						<MarkerStyle>0</MarkerStyle>
 						<PenStyle>0</PenStyle>
 						<MarkerColor>#000000</MarkerColor>
@@ -196,10 +196,10 @@
 						<Maximum>50</Maximum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
-						<DateTimeZero>978314400000</DateTimeZero>
+						<DateTimeZero>978318000000</DateTimeZero>
 					</Axis>
 					<Axis index="1">
-						<TitleText>$quantity [$unit]</TitleText>
+						<TitleText>Raumlufttemperatur [$unit]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
@@ -214,7 +214,7 @@
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>$project: $basename</TitleText>
+					<TitleText>TF04.3 Raum A</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
@@ -226,7 +226,7 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
-		<Mapper name="$project: $basename">
+		<Mapper name="TF04.3 Raum B">
 			<Extractors>
 				<Extractor>
 					<DataIOFileName>SimQuality_TF04.3/results/states.tsv?1|2</DataIOFileName>
@@ -246,12 +246,12 @@
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
+						<TitleText>NANDRAD 2</TitleText>
 						<PenColor>#cc0000</PenColor>
 						<MarkerColor>#cc0000</MarkerColor>
 					</Series>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
+						<TitleText>Referenz</TitleText>
 						<MarkerStyle>0</MarkerStyle>
 						<PenStyle>0</PenStyle>
 						<MarkerColor>#000000</MarkerColor>
@@ -267,10 +267,10 @@
 						<Maximum>50</Maximum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
-						<DateTimeZero>978314400000</DateTimeZero>
+						<DateTimeZero>978318000000</DateTimeZero>
 					</Axis>
 					<Axis index="1" autoscale="0">
-						<TitleText>$quantity [$unit]</TitleText>
+						<TitleText>Raumlufttemperatur [$unit]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
@@ -283,7 +283,7 @@
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>$project: $basename</TitleText>
+					<TitleText>TF04.3 Raum B</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
@@ -295,7 +295,7 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
-		<Mapper name="$project: $basename">
+		<Mapper name="TF04.4 Raum A">
 			<Extractors>
 				<Extractor>
 					<DataIOFileName>SimQuality_TF04.4/results/states.tsv?1|2</DataIOFileName>
@@ -315,12 +315,12 @@
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
+						<TitleText>NANDRAD 2</TitleText>
 						<PenColor>#cc0000</PenColor>
 						<MarkerColor>#cc0000</MarkerColor>
 					</Series>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
+						<TitleText>Referenz</TitleText>
 						<MarkerStyle>0</MarkerStyle>
 						<PenStyle>0</PenStyle>
 						<MarkerColor>#000000</MarkerColor>
@@ -336,10 +336,10 @@
 						<Minimum>194.59758085537655</Minimum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
-						<DateTimeZero>978314400000</DateTimeZero>
+						<DateTimeZero>978318000000</DateTimeZero>
 					</Axis>
 					<Axis index="1" autoscale="0">
-						<TitleText>$quantity [$unit]</TitleText>
+						<TitleText>Raumlufttemperatur [$unit]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
@@ -354,7 +354,7 @@
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>$project: $basename</TitleText>
+					<TitleText>TF04.4 Raum A</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
@@ -366,7 +366,7 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
-		<Mapper name="$project: $basename">
+		<Mapper name="TF04.4 Raum B">
 			<Extractors>
 				<Extractor>
 					<DataIOFileName>SimQuality_TF04.4/results/states.tsv?1|2</DataIOFileName>
@@ -386,12 +386,12 @@
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
+						<TitleText>NANDRAD 2</TitleText>
 						<PenColor>#cc0000</PenColor>
 						<MarkerColor>#cc0000</MarkerColor>
 					</Series>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
+						<TitleText>Referenz</TitleText>
 						<MarkerStyle>0</MarkerStyle>
 						<PenStyle>0</PenStyle>
 						<MarkerColor>#000000</MarkerColor>
@@ -407,10 +407,10 @@
 						<Minimum>201.06928152202323</Minimum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
-						<DateTimeZero>978314400000</DateTimeZero>
+						<DateTimeZero>978318000000</DateTimeZero>
 					</Axis>
 					<Axis index="1" autoscale="0">
-						<TitleText>$quantity [$unit]</TitleText>
+						<TitleText>Raumlufttemperatur [$unit]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
@@ -425,7 +425,7 @@
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>$project: $basename</TitleText>
+					<TitleText>TF04.4 Raum B</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
@@ -443,7 +443,7 @@
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="0" size1="448" size2="547" orientation="2" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="1" size1="448" size2="547" orientation="2" />
 		<Widget id="2" parent="1" viewTable="0" mapperIndex="5" size1="448" size2="547" orientation="1" />
 		<FocusedWidget>2</FocusedWidget>
 	</Splitting>

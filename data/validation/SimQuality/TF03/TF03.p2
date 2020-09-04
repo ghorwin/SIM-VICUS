@@ -35,7 +35,7 @@
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
+						<TitleText>NANDRAD 2</TitleText>
 						<PenColor>#cc0000</PenColor>
 						<MarkerColor>#cc0000</MarkerColor>
 					</Series>
@@ -55,10 +55,10 @@
 						<Maximum>20</Maximum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
-						<DateTimeZero>978325200000</DateTimeZero>
+						<DateTimeZero>978328800000</DateTimeZero>
 					</Axis>
 					<Axis index="1" autoscale="0">
-						<TitleText>$quantity [$unit]</TitleText>
+						<TitleText>Raumlufttemperatur [$unit]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
@@ -107,7 +107,7 @@
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
+						<TitleText>NANDRAD 2</TitleText>
 						<PenColor>#cc0000</PenColor>
 						<MarkerColor>#cc0000</MarkerColor>
 					</Series>
@@ -127,10 +127,10 @@
 						<Maximum>20</Maximum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
-						<DateTimeZero>978328800000</DateTimeZero>
+						<DateTimeZero>978332400000</DateTimeZero>
 					</Axis>
 					<Axis index="1" autoscale="0">
-						<TitleText>$quantity [$unit]</TitleText>
+						<TitleText>Raumlufttemperatur [$unit]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
@@ -179,7 +179,7 @@
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
+						<TitleText>NANDRAD 2</TitleText>
 						<PenColor>#cc0000</PenColor>
 						<MarkerColor>#cc0000</MarkerColor>
 					</Series>
@@ -199,10 +199,10 @@
 						<Maximum>20</Maximum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
-						<DateTimeZero>978328800000</DateTimeZero>
+						<DateTimeZero>978332400000</DateTimeZero>
 					</Axis>
 					<Axis index="1" autoscale="0">
-						<TitleText>$quantity [$unit]</TitleText>
+						<TitleText>Raumlufttemperatur [$unit]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
@@ -249,7 +249,7 @@
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
+						<TitleText>NANDRAD 2</TitleText>
 						<PenColor>#cc0000</PenColor>
 						<MarkerColor>#cc0000</MarkerColor>
 					</Series>
@@ -269,10 +269,10 @@
 						<Maximum>20</Maximum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
-						<DateTimeZero>978328800000</DateTimeZero>
+						<DateTimeZero>978332400000</DateTimeZero>
 					</Axis>
 					<Axis index="1" autoscale="0">
-						<TitleText>$quantity [$unit]</TitleText>
+						<TitleText>Raumlufttemperatur [$unit]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
@@ -303,11 +303,11 @@
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="0" size1="485" size2="484" orientation="2" />
-		<Widget id="2" parent="1" viewTable="0" mapperIndex="2" size1="485" size2="484" orientation="2" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="0" size1="484" size2="484" orientation="2" />
+		<Widget id="2" parent="1" viewTable="0" mapperIndex="2" size1="484" size2="484" orientation="2" />
 		<Widget id="3" parent="1" viewTable="0" mapperIndex="1" size1="480" size2="515" orientation="1" />
 		<Widget id="4" parent="2" viewTable="0" mapperIndex="3" size1="498" size2="497" orientation="1" />
-		<FocusedWidget>1</FocusedWidget>
+		<FocusedWidget>4</FocusedWidget>
 	</Splitting>
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
