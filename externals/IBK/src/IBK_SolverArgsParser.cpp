@@ -83,9 +83,11 @@ void SolverArgsParser::parse(int argc, const char * const argv[]) {
 	if (args().size() > 0) {
 		m_executablePath = args()[0];
 	}
-
 	if (args().size() > 1) {
 		m_projectFile = args()[1];
+		// remove leading "file://" prefix if existing
+		if (IBK::string_nocase_find(m_projectFile.str(), "file://") == 0)
+			m_projectFile = IBK::Path( m_projectFile.str().substr(7));
 	}
 
 	// check restart option
