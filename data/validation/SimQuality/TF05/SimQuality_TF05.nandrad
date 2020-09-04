@@ -6,8 +6,14 @@
 		</ProjectInfo>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
-			<ClimateFileName>${Project Directory}/../climate/DEU_Potsdam_60.c6b</ClimateFileName>
+			<ClimateFileName>${Project Directory}/../climate/TF05_PotsdamWithStartPhase.c6b</ClimateFileName>
 		</Location>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">5</IBK:Parameter>
+		</SimulationParameter>
+		<SolverParameter>
+			<IBK:IntPara name="DiscMaxElementsPerLayer">30</IBK:IntPara>
+		</SolverParameter>
 		<Zones>
 			<Zone id="1" displayName="Var01" type="Active">
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
@@ -81,8 +87,8 @@
 		<ConstructionTypes>
 			<ConstructionType id="10005" displayName="Air Change Test Construction">
 				<MaterialLayers>
-					<MaterialLayer thickness="0.3" matId="1004" /> <!-- room side -->
-					<MaterialLayer thickness="0.2" matId="1001" />
+					<MaterialLayer thickness="0.2" matId="1001" /> <!-- room side -->
+					<MaterialLayer thickness="0.3" matId="1004" /> 
 				</MaterialLayers>
 			</ConstructionType>
 		</ConstructionTypes>
