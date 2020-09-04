@@ -330,7 +330,6 @@ int ConstructionStatesModel::update(const double * y) {
 		m_TsB = states_T[1];
 	}
 	else {
-#define CONSTANT_EXTRAPOLATION
 #ifdef CONSTANT_EXTRAPOLATION
 		m_TsA = states_T[0];
 		m_TsB = states_T[m_nElements-1];
