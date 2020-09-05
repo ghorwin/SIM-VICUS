@@ -42,10 +42,11 @@
 						<MarkerColor>#cc0000</MarkerColor>
 					</Series>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
+						<TitleText>Referenz</TitleText>
 						<MarkerStyle>0</MarkerStyle>
 						<PenStyle>0</PenStyle>
 						<MarkerColor>#000000</MarkerColor>
+						<MarkerSize>2</MarkerSize>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
@@ -54,19 +55,20 @@
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">d</IBK:Unit>
-						<Maximum>297.0131899276916</Maximum>
-						<Minimum>295.99116046919545</Minimum>
+						<Maximum>996278400609</Maximum>
+						<Minimum>996192000264</Minimum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
-						<DateTimeZero>978314400000</DateTimeZero>
+						<DateTimeEnabled>1</DateTimeEnabled>
+						<DateTimeZero>978307200000</DateTimeZero>
 					</Axis>
 					<Axis index="1" autoscale="0">
-						<TitleText>$quantity [$unit]</TitleText>
+						<TitleText>Diffuse Strahlungsintensität [W/m2]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">-</IBK:Unit>
-						<Maximum>158.11272543601629</Maximum>
-						<Minimum>-4.5463999114057003</Minimum>
+						<Maximum>500</Maximum>
+						<Minimum>-5</Minimum>
 						<MinorGridVisible>0</MinorGridVisible>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
@@ -108,15 +110,16 @@
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
+						<TitleText>NANDRAD 2</TitleText>
 						<PenColor>#cc0000</PenColor>
 						<MarkerColor>#cc0000</MarkerColor>
 					</Series>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
+						<TitleText>Referenz</TitleText>
 						<MarkerStyle>0</MarkerStyle>
 						<PenStyle>0</PenStyle>
 						<MarkerColor>#000000</MarkerColor>
+						<MarkerSize>2</MarkerSize>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
@@ -125,20 +128,20 @@
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">d</IBK:Unit>
-						<Maximum>996551854931.07104</Maximum>
-						<Minimum>995974633297.98511</Minimum>
+						<Maximum>996278400931</Maximum>
+						<Minimum>996192000297</Minimum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
 						<DateTimeEnabled>1</DateTimeEnabled>
-						<DateTimeZero>978314400000</DateTimeZero>
+						<DateTimeZero>978307200000</DateTimeZero>
 					</Axis>
 					<Axis index="1" autoscale="0">
-						<TitleText>$quantity [$unit]</TitleText>
+						<TitleText>Direkte Strahlungsintensität [W/m2]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">-</IBK:Unit>
-						<Maximum>939.39393939393938</Maximum>
-						<Minimum>-13.986013986013972</Minimum>
+						<Maximum>1000</Maximum>
+						<Minimum>-5</Minimum>
 						<MinorGridVisible>0</MinorGridVisible>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
