@@ -4,9 +4,9 @@
 	<Directories>
 		<Directory>
 			<Path>.</Path>
-			<SubDir Color="#55aaff" Checked="0">.</SubDir>
-			<SubDir Color="#45ad45" Checked="1">SimQuality_TF05</SubDir>
-			<SubDir Color="#aa0000" Checked="1">reference</SubDir>
+			<SubDir Color="#45ad45" Checked="0">SimQuality_TF05</SubDir>
+			<SubDir Color="#7141d1" Checked="1">SimQuality_TF05.2</SubDir>
+			<SubDir Color="#aa0000" Checked="0">reference</SubDir>
 			<ExpandedSubDir>.</ExpandedSubDir>
 		</Directory>
 	</Directories>
@@ -229,13 +229,81 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
+		<Mapper name="$project: $basename">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>reference/Referenzwerte_2.tsv?1</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>reference/THERAKLES_n2.ccd</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF05.2/results/states.tsv?1</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<MarkerStyle>0</MarkerStyle>
+						<PenStyle>0</PenStyle>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<PenColor>#ff420e</PenColor>
+						<MarkerColor>#ff420e</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#aecf00</PenColor>
+						<MarkerColor>#aecf00</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<TitleText>Zeit [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+						<Maximum>5300.4427577482611</Maximum>
+						<Minimum>4813.4092346616071</Minimum>
+					</Axis>
+					<Axis index="1" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+						<Maximum>21.089385474860336</Maximum>
+						<Minimum>17.290502793296092</Minimum>
+					</Axis>
+					<Axis index="2" enabled="0" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>-26.835899851758025</Maximum>
+						<Minimum>-26.83590157795809</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>$project: $basename</TitleText>
+					<Legend />
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
 	</Mappers>
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="2" size1="1" size2="1" orientation="2" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="3" size1="1" size2="1" orientation="2" />
 		<FocusedWidget>0</FocusedWidget>
 	</Splitting>
 

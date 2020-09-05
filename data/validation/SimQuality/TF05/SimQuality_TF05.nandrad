@@ -2,7 +2,7 @@
 <NandradProject fileVersion="1.99">
 	<Project>
 		<ProjectInfo>
-			<Comment>SimQuality Testfall 04.4</Comment>
+			<Comment>SimQuality Testfall 05 (1,2 and 3)</Comment>
 		</ProjectInfo>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
@@ -12,7 +12,10 @@
 			<IBK:Parameter name="InitialTemperature" unit="C">5</IBK:Parameter>
 		</SimulationParameter>
 		<SolverParameter>
-			<IBK:IntPara name="DiscMaxElementsPerLayer">30</IBK:IntPara>
+			<IBK:Parameter name="RelTol" unit="---">1e-6</IBK:Parameter>
+			<IBK:Parameter name="DiscMinDx" unit="mm">2</IBK:Parameter>
+			<IBK:Parameter name="DiscStretchFactor" unit="---">2</IBK:Parameter>
+			<IBK:IntPara name="DiscMaxElementsPerLayer">50</IBK:IntPara>
 		</SolverParameter>
 		<Zones>
 			<Zone id="1" displayName="Var01" type="Active">
@@ -69,7 +72,7 @@
 			<ConstructionInstance id="3" displayName="All Surfaces Var02">
 				<ConstructionTypeId>10005</ConstructionTypeId>
 				<IBK:Parameter name="Area" unit="m2">62</IBK:Parameter>
-				<InterfaceA id="30" zoneId="2">
+				<InterfaceA id="30" zoneId="3">
 					<!--Interface to 'Room'-->
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
@@ -163,8 +166,22 @@
 			<OutputDefinitions>
 				<OutputDefinition>
 					<Quantity>AirTemperature</Quantity>
-					<TimeType>None</TimeType>
 					<ObjectListName>Zone</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>InfiltrationRate[1]</Quantity>
+					<ObjectListName>InfiltrationModel</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>InfiltrationRate[2]</Quantity>
+					<ObjectListName>InfiltrationModel</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>InfiltrationRate[3]</Quantity>
+					<ObjectListName>InfiltrationModel</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 			</OutputDefinitions>
@@ -198,6 +215,10 @@
 			<ObjectList name="Zone Var03">
 				<FilterID>3</FilterID>
 				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="InfiltrationModel">
+				<FilterID>501</FilterID>
+				<ReferenceType>Model</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
 	</Project>
