@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<meta name="author" content="Andreas Nicolai">
+<title>NANDRAD Developers Manual</title>
+<style>
+/* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
+
+@import url(https://fonts.googleapis.com/css?family=Roboto+Condensed);
+@import url(../css/asciidoctor.css); /* Default asciidoc style framework - important */
+
+/* CUSTOMISATIONS */
+/* Change the values in root for quick customisation. If you want even more fine grain... venture further. */
+
+:root{
+--maincolor:#FFFFFF;
+--primarycolor:#a90e22;
+--secondarycolor:#9f1d0b;
+--tertiarycolor: #772953;
+--sidebarbackground:#CCC;
+--linkcolor:#b71c1c;
+--linkcoloralternate:#f44336;
+--white:#FFFFFF;
+--black:#000000;
+}
+
+/* Text styles */
+body{font-family: "Roboto Condensed",sans-serif;}
+
+h1,h2{color:var(--primarycolor) !important;font-family:"Roboto Condensed",sans-serif;}
+h3,h4,h5,h6{color:var(--secondarycolor);font-family: "Roboto Condensed",sans-serif; }
+.title{color:(--primarycolor) !important;font-family:"Roboto Condensed",sans-serif;font-style: normal; font-weight: normal;}
+p{font-family: "Roboto Condensed",sans-serif ! important}
+#toc.toc2 a{font-family:"Roboto Condensed",sans-serif;}
+/*#toc.toc2 a:link{color:(--linkcolor) !important}
+a:visited {color: #ffdbad;}
+a.bare:visited {color: #204f83;}
+a:hover {color: #317ed4;}
+#toc.toc2 a:hover {color: #f1b464;}*/
+/* code{background-color: var(--secondarycolor) !important;color:var(--white)} */
+code,kbd,pre,samp{font-family:monospace;font-size:0.8em}
+
+/* Table styles */
+th{background-color: var(--tertiarycolor);color:var(--white) !important;}
+
+#toctitle{color:var(--primarycolor);font-family: "Roboto Condensed",sans-serif;font-size: 1.6875em;}
+#toc.toc2{background-color:#f4f8fd;}
+/*#toc.toc2{background-color:#2C001E;color:white;}
+#toc.toc2.a{color:white;}
+*/
+
+/* Responsiveness fixes */
+video {
+  max-width: 100%;
+}
+
+@media all and (max-width: 600px) {
+table {
+  width: 55vw!important;
+  font-size: 3vw;
+}
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>NANDRAD Developers Manual</h1>
+<div class="details">
+<span id="author" class="author">Andreas Nicolai</span><br>
+<span id="email" class="email"><a href="mailto:andreas.nicolai@tu-dresden.de">andreas.nicolai@tu-dresden.de</a></span><br>
+<span id="revnumber">version 1.0.0,</span>
+<span id="revdate">July 2020</span>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_introduction">1. Introduction</a></li>
+<li><a href="#_general_information">2. General Information</a>
+<ul class="sectlevel2">
+<li><a href="#_coding_guidelines_and_rules">2.1. Coding Guidelines and Rules</a>
+<ul class="sectlevel3">
+<li><a href="#_programming_efficiency">2.1.1. Programming efficiency</a></li>
+<li><a href="#_indentation_and_line_length_limit">2.1.2. Indentation and line length limit</a></li>
+<li><a href="#_character_encoding_and_line_endings">2.1.3. Character encoding and line endings</a></li>
+<li><a href="#_file_naming_and_header_guards">2.1.4. File naming and header guards</a></li>
+<li><a href="#_namespaces">2.1.5. Namespaces</a></li>
+<li><a href="#_class_and_variable_naming">2.1.6. Class and variable naming</a></li>
+<li><a href="#_exception_handling">2.1.7. Exception handling</a></li>
+<li><a href="#_documentation">2.1.8. Documentation</a></li>
+<li><a href="#_git_workflow">2.1.9. Git Workflow</a></li>
+<li><a href="#_tips_and_tricks">2.1.10. Tips and tricks</a></li>
+</ul>
+</li>
+<li><a href="#_code_quality">2.2. Code Quality</a>
+<ul class="sectlevel3">
+<li><a href="#_frequently_check_for_potential_memory_leaks">2.2.1. Frequently check for potential memory leaks</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_nandrad_solver">3. NANDRAD Solver</a>
+<ul class="sectlevel2">
+<li><a href="#_model_initialization_procedure">3.1. Model Initialization Procedure</a>
+<ul class="sectlevel3">
+<li><a href="#_pre_solver_setup_steps">3.1.1. Pre-Solver-Setup steps</a></li>
+<li><a href="#_model_setup">3.1.2. Model Setup</a></li>
+</ul>
+</li>
+<li><a href="#_model_objects_published_variables_and_variable_look_up">3.2. Model objects, published variables and variable look-up</a>
+<ul class="sectlevel3">
+<li><a href="#_model_instances">3.2.1. Model instances</a></li>
+<li><a href="#_model_results">3.2.2. Model results</a></li>
+<li><a href="#model_input_refs">3.2.3. Model inputs</a></li>
+<li><a href="#variable_lookup">3.2.4. Variable lookup</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_introduction">1. Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This document is for NANDRAD and SIM-VICUS developers and covers the underlying concepts of the solver and user interface implementation.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_general_information">2. General Information</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_coding_guidelines_and_rules">2.1. Coding Guidelines and Rules</h3>
+<div class="paragraph">
+<p>Why coding guidelines and rules?</p>
+</div>
+<div class="paragraph">
+<p>Well, even if you write software just for yourself, once the code base reaches a certain limit, you will appriciate well written code, so that you:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>avoid wasting time looking for variables, types, functions etc.</p>
+</li>
+<li>
+<p>avoid re-writing similar functionality, simply because you don&#8217;t rememeber/find the already existing code pieces</p>
+</li>
+<li>
+<p>avoid accidentilly breaking code because existing code is hard to read</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Bottom line:</p>
+</div>
+<div class="paragraph">
+<p><strong>Write clean and easy to read and maintain code, both for yourself and others in the team.</strong></p>
+</div>
+<div class="paragraph">
+<p>The big question is: What is clean and easy to read/maintain?</p>
+</div>
+<div class="paragraph">
+<p>Well, in my humble opinion this is mostly achieved by</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>doing stuff (mostly) the same way as everywhere in the code</p>
+</li>
+<li>
+<p>using conventions that makes it easy to exchange code with others</p>
+</li>
+<li>
+<p>using conventions that save you the trouble of remembering each and every variable/function etc.</p>
+</li>
+<li>
+<p>write code that makes it easy for your development environment to assist <strong>you</strong> (see also section <a href="#qt_creator">Qt Creator</a> below)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Below I&#8217;ve collected a bunch of rules/guidelines that help us achieve this goal of getting nice code, without restricting the individual codeing style of each developer too much.</p>
+</div>
+<div class="sect3">
+<h4 id="_programming_efficiency">2.1.1. Programming efficiency</h4>
+<div class="paragraph">
+<p>We are a small team and need to get the most out of our programming time.</p>
+</div>
+<div class="paragraph">
+<p>Basic rule: <strong>Know your tools and choose the right tool for the job!</strong></p>
+</div>
+<div class="paragraph">
+<p>For programmers, you need a good text edtor (for everything that&#8217;s not actual code, or for quick hacks) and a decent development environment (IDE).  I&#8217;d say Qt Creator wins big time against Visial Studio, XCode and any other stuff out there, but let&#8217;s not start an <strong>emacs vs. the world</strong> flame war here :-).</p>
+</div>
+<div class="paragraph">
+<p>Of course, you also need to handle svn/git, diff and merge tools etc. but text editor and IDE are the most important.</p>
+</div>
+<div class="paragraph">
+<p>Knowing the capabilities of your particular IDE, you can write code such, that already while typing you can use auto-completion to its maximum. This will speed up your coding a lot and save you much unnecessary compilation time.
+With code-checking-while-typing (see clang checks in Qt Creator), you&#8217;ll catch already 80% of typical compiler bugs, so we should use this.</p>
+</div>
+<div class="paragraph">
+<p>Also, some of the naming conventions below help in an IDE to be fast, for example the <code>m_</code> prefix in member variable names, really speed up coding. You need to access a member variable: type <code>m_</code> and you&#8217;ll get only the member variables in the auto-completion, no mistake with local variables is possible.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_indentation_and_line_length_limit">2.1.2. Indentation and line length limit</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>only tabs for indentation, shown in display as 4 spaces - especially on larger monitors with higher resolutions this will allow you to see indentation levels easiy; and since we are using tabs, you may still switch your development environment to use 2 or 8 spaces, without interrupting other author&#8217;s code look</p>
+</li>
+<li>
+<p>line length is not strictly limited, but keep it below 120 (good for most screens nowadays)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_character_encoding_and_line_endings">2.1.3. Character encoding and line endings</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Line endings LR (Unix/Linux) - see also git configuration below</p>
+</li>
+<li>
+<p>UTF-8 encoding</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_file_naming_and_header_guards">2.1.4. File naming and header guards</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>File name pattern:   <code>&lt;lib&gt;_&lt;NameInCamelCase&gt;.*</code>, for example: <code>IBK_ArgsParser.h</code> or <code>NANDRAD_Project.h</code></p>
+</li>
+<li>
+<p>Header guards: <code>#ifndef &lt;filenameWithoutExtension&gt;H</code>, example: <code>#ifndef NANDRAD_ArgsParserH</code></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_namespaces">2.1.5. Namespaces</h4>
+<div class="paragraph">
+<p>Each library has its own namespace, matching the file prefix. Example: <code>NANDRAD::Project</code> get <code>NANDRAD_Project.h</code></p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Never ever</strong> write <code>import namespace XXX</code>, not even for namespace <code>std</code> !!!</p>
+</div>
+<div class="paragraph">
+<p>This is mostly a precaution, as in larger projects with many team members it is very likely that function names are similar or even the same, if written by different authors. When typing in your favourite development environment with code completion you are forced to write the namespace and the auto-completion will now only offer those functions/variables that are defined in the respective namespace (making it much harder to mistakely call a function you didn&#8217;t intend to call).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_class_and_variable_naming">2.1.6. Class and variable naming</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>camel case for variable/type names, example: <code>thisNiceVariable</code></p>
+</li>
+<li>
+<p>type/class names start with capital letter, example: <code>MyClassType</code> (together with namespace prefix nice for auto-completion of type names)</p>
+</li>
+<li>
+<p>member variables start with <code>m_</code>, example: <code>m_myMemberVariableObject</code>(useful for auto-completion to get only member variables)</p>
+</li>
+<li>
+<p>getter/setter functions follow Qt-Pattern:</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">m_myStringMember</span><span class="p">;</span>
+
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span> <span class="n">myStringMember</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+<span class="kt">void</span> <span class="nf">setMyStringMember</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span> <span class="n">str</span><span class="p">);</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Never ever</strong> write <code>getXXX</code> !!!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The reason for having strict rules for these access functions is two-fold:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>you do not need to remember the actual names for the getter/setter functions or the variable itself - knowing one will give you the name of the others (less stuff to remember)</p>
+</li>
+<li>
+<p>efficiency: you can use the Qt-Creator feature &#8594; Refactor&#8594;Add getter/setter function when right-clicking on the member variable declaration</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_exception_handling">2.1.7. Exception handling</h4>
+<div class="paragraph">
+<p>Basic rule:
+- during initialization, throw <code>IBK::Exception</code> objects (and <strong>only</strong> <code>IBK::Exception</code> objects in <strong>all code that uses the IBK library</strong>) : reason: cause of exception becomes reasonably clear from the exception message string and context and this makes catch-and-rethrow-code so much easier (see below).
+- <strong>during calculation</strong> (in parallel code sections), <strong>avoid throwing Exceptions</strong> (i.e. write code that cannot throw); in error cases (like div by zero), test explicitely for such failure conditions and leave function with error codes</p>
+</div>
+<div class="paragraph">
+<p>When throwing exceptions:
+- use function identifier created with <code>FUNCID()</code> macro:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="kt">void</span> <span class="n">SomeClass</span><span class="o">::</span><span class="n">myFunction</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">FUNCID</span><span class="p">(</span><span class="n">SomeClass</span><span class="o">::</span><span class="n">myFunction</span><span class="p">);</span>
+
+    <span class="p">...</span>
+    <span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span><span class="s">"Something went wrong"</span><span class="p">,</span> <span class="n">FUNC_ID</span><span class="p">);</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Do not include function arguments in <code>FUNCID()</code>, unless it is important to distinguish between overloaded functions.</p>
+</div>
+<div class="paragraph">
+<p>When raising exceptions, try to be verbose about the source of the exception, i.e. use <code>IBK::FormatString</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="kt">void</span> <span class="n">SomeClass</span><span class="o">::</span><span class="n">myFunction</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">FUNCID</span><span class="p">(</span><span class="n">SomeClass</span><span class="o">::</span><span class="n">myFunction</span><span class="p">);</span>
+
+    <span class="p">...</span>
+    <span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span> <span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="s">"I got an invalid parameter '%1' in object #%2"</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">arg</span><span class="p">(</span><span class="n">paraName</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">objectIndex</span><span class="p">),</span> <span class="n">FUNC_ID</span><span class="p">);</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>See documentaition of class <code>IBK::FormatString</code> (and existing examples in the code).</p>
+</div>
+<div class="sect4">
+<h5 id="_exception_hierarchies">Exception hierarchies</h5>
+<div class="paragraph">
+<p>To trace the source of an error, keeping an exception trace is imported. When during simulation init you get an exception "Invalid unit ''" thrown from <code>IBK::Unit</code> somewhere, you&#8217;ll have a hard time tracing the source (also, when this is reported as error by users and debugging isn&#8217;t easily possible).</p>
+</div>
+<div class="paragraph">
+<p>Hence, if you call a function that might throw, wrap it into a try-catch clause and throw on:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="kt">void</span> <span class="n">SomeClass</span><span class="o">::</span><span class="n">myFunction</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">FUNCID</span><span class="p">(</span><span class="n">SomeClass</span><span class="o">::</span><span class="n">myFunction</span><span class="p">);</span>
+
+    <span class="k">try</span> <span class="p">{</span>
+        <span class="n">someOtherFunctionThatMightThrow</span><span class="p">();</span> <span class="c1">// we might get an exception here</span>
+    <span class="p">}</span>
+    <span class="k">catch</span> <span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span> <span class="o">&amp;</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span>          <span class="c1">// we can rely on IBK::Exception here, since nothing else is allowed in our code</span>
+
+        <span class="c1">// rethrow exception, but mind the prepended ex argument!</span>
+        <span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span> <span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="s">"I got an invalid parameter '%1' in object #%2"</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">arg</span><span class="p">(</span><span class="n">paraName</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">objectIndex</span><span class="p">),</span> <span class="n">FUNC_ID</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The error message stack will then look like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>SomeClass::someOtherFunctionThatMightThrow    [Error]           Something went terribly wrong.
+SomeClass::myFunction                         [Error]           I got an invalid parameter 'some parameter' in object #0815</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>That should narrow it down a bit.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_documentation">2.1.8. Documentation</h4>
+<div class="paragraph">
+<p>Doxygen-style, prefer:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="cm">/*! Brief description of function.
+    Longer multi-line documentation of function.
+    \param arg1 The first argument.
+    \param temperature A temperature in [C]
+*/</span>
+<span class="kt">void</span> <span class="nf">setParams</span><span class="p">(</span><span class="kt">int</span> <span class="n">arg1</span><span class="p">,</span> <span class="kt">double</span> <span class="n">temperature</span><span class="p">);</span>
+
+<span class="cm">/*! Mean temperature in [K]. */</span>
+<span class="kt">double</span> <span class="n">m_meanTemperature</span><span class="p">;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Mind to specify <strong>always</strong> physical units for physical value parameters and member variables!
+Physical variables used for calculation should always be stored in base SI units.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_git_workflow">2.1.9. Git Workflow</h4>
+<div class="paragraph">
+<p>Since we are a small team, and we want to have close communication of new features/code changes, and also short code-review cycles, we use a single development branch <strong>master</strong> with the following rules:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>CI is set up and ensures that after each push to <strong>origin/master</strong> the entire code builds without errors - so before pushing your changes, make sure the stuff builds</p>
+</li>
+<li>
+<p>commit/push early and often, this will avoid getting weird merge conflicts and possibly breaking other peoples code</p>
+</li>
+<li>
+<p>when pulling, use <strong>rebase</strong> to get a nice clean commit history (just as with subversion) - makes it easier to track changes and resolve errors arising in a specific commit (see solver regression tests)</p>
+</li>
+<li>
+<p>before pulling (potentially conflicting) changes from <strong>origin/master</strong>, commit all your local changes and ideally get rid of temporary files &#8594; avoid stashing your files, since applying the stash may also give rise to conflicts and not everyone can handle this nicely</p>
+</li>
+<li>
+<p>resolve any conflicts locally in your working directory, and take care not to overwrite other people&#8217;s code</p>
+</li>
+<li>
+<p>use different commits for different features so that later we can distingish based on commit logs when a certain change was made</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For now, try to avoid (lengthy) feature branches. However, if you plan to do a larger change and possibly work on the master at the same time, feature branches are a good choice.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_tips_and_tricks">2.1.10. Tips and tricks</h4>
+<div class="sect4">
+<h5 id="_detecting_uninitialized_variable_access_during_debugging">Detecting uninitialized variable access during debugging</h5>
+<div class="paragraph">
+<p>Accessing not initialized member variables or <strong>even worse</strong>, accessing member variables initialized with default values (hereby skipping over mandatory initialization steps), can be hard to track during development/debuging.</p>
+</div>
+<div class="paragraph">
+<p>Hence initialize variables that <strong>need to be initialized</strong> with values you will recognized. Using C++11 features, you should write code like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">SomeClass</span> <span class="p">{</span>
+    <span class="p">...</span>
+
+    <span class="c1">// nullptr is good to recognize pointers as "not initialized"</span>
+    <span class="n">SomeType</span>    <span class="o">*</span><span class="n">m_ptrToSomeType</span> <span class="o">=</span> <span class="nb">nullptr</span><span class="p">;</span>
+
+    <span class="c1">// use some unlikely "magic number" to see that a variable is not initialized (yet)</span>
+    <span class="kt">double</span>      <span class="n">m_cachedCalculationValue</span> <span class="o">=</span> <span class="mi">999</span><span class="p">;</span>
+<span class="p">};</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_code_quality">2.2. Code Quality</h3>
+<div class="paragraph">
+<p>This section discusses a few techniques that help you write/maintain high quality code.</p>
+</div>
+<div class="sect3">
+<h4 id="_frequently_check_for_potential_memory_leaks">2.2.1. Frequently check for potential memory leaks</h4>
+<div class="paragraph">
+<p>Use valgrind to check for memory leaks in regular intervals:</p>
+</div>
+<div class="paragraph">
+<p>First run only initialization with <code>--test-init</code> flag.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="o">&gt;</span> valgrind <span class="nt">--track-origins</span><span class="o">=</span><span class="nb">yes</span> <span class="nt">--leak-check</span><span class="o">=</span>full ./NandradSolver /path/to/project <span class="nt">--test-init</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You should get an output like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>...
+Stopping after successful initialization of integrator.
+Total initialization time: 802 ms
+==15560==
+==15560== HEAP SUMMARY:
+==15560==     in use at exit: 0 bytes in 0 blocks
+==15560==   total heap usage: 3,776 allocs, 3,776 frees, 1,101,523 bytes allocated
+==15560==
+==15560== All heap blocks were freed -- no leaks are possible
+==15560==
+==15560== For counts of detected and suppressed errors, rerun with: -v
+==15560== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Do this check with:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>just the initialization part (i.e. with <code>--test-init</code>) parameter</p>
+</li>
+<li>
+<p>run the initialization with some error in the input file to check if temporary variables during initialization are cleaned up correctly</p>
+</li>
+<li>
+<p>also run a small part of the simulation, to check if something goes wrong during actual solver init and if tear-down is done correctly</p>
+</li>
+<li>
+<p>run a small part of the simulation, then break (<code>Ctrl+C</code>) and check if code cleanup after error abort is done correctly</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Of course, in very flexible code structures as in NANDRAD solver, where many code parts are only executed for certain parameter combinations, checking all code variables for consistent memory allocation/deallocation is nearly impossible. Hence, writing safe code in the first place should be highest priority.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_example_avoiding_memory_leaks">Example: Avoiding memory leaks</h5>
+<div class="paragraph">
+<p>NANDRAD creates model objects on the heap during initialization (never during solver runtime!). Since the model objects are first initialized before ownership is transferred, you should always ensure proper cleanup in case of init exceptions. Use code like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="n">ModelObject</span> <span class="o">*</span> <span class="n">modelObject</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ModelObject</span><span class="p">;</span> <span class="c1">// does not throw</span>
+<span class="n">m_modelContainer</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">modelObject</span><span class="p">);</span> <span class="c1">// transfer ownership, does not throw</span>
+
+<span class="n">modelObject</span><span class="o">-&gt;</span><span class="n">setup</span><span class="p">(...);</span> <span class="c1">// this may throw, but model object will be cleaned as part of m_modelContainer cleanup</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If there is code between creation and ownership transfer, use code like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">ModelObject</span><span class="o">&gt;</span> <span class="n">modelObject</span><span class="p">(</span><span class="k">new</span> <span class="n">ModelObject</span><span class="p">);</span>
+
+<span class="n">modelObject</span><span class="o">-&gt;</span><span class="n">setup</span><span class="p">(...);</span> <span class="c1">// this may throw</span>
+
+<span class="n">m_modelContainer</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">modelObject</span><span class="p">.</span><span class="n">release</span><span class="p">());</span> <span class="c1">// transfer ownership</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_nandrad_solver">3. NANDRAD Solver</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_model_initialization_procedure">3.1. Model Initialization Procedure</h3>
+<div class="sect3">
+<h4 id="_pre_solver_setup_steps">3.1.1. Pre-Solver-Setup steps</h4>
+<div class="paragraph">
+<p>The following steps are done when initializing the model:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>parsing command-line and handling early command line options</p>
+</li>
+<li>
+<p>setting up directory structure and message handler/log file</p>
+</li>
+<li>
+<p>creating <code>NANDRAD::Project</code> instance</p>
+</li>
+<li>
+<p>setting default values via call to <code>NANDRAD::Project::initDefaults()</code></p>
+</li>
+<li>
+<p>reading the project file (only syntactical checks are done, and for IBK::Parameter static arrays with default units in keyword list, a check for compatible units is made), may overwrite defaults; correct units should be expected in the data model after reading the project file (maybe add suitable annotation to code generator?)</p>
+</li>
+<li>
+<p>merge similarly behaving construction instances (reduce data structure size)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>From now on the project data structure remains unmodified in memory until end of solver runtime and persistent pointers can be used to address parameter sets. This means no vector resizing is allowed, no more data members may be added/removed. </strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>setup fast-access connections between parameter data sets (zones to interfaces and vice versa) in Project data structure</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Now the actual model initialization starts.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_model_setup">3.1.2. Model Setup</h4>
+
+</div>
+</div>
+<div class="sect2">
+<h3 id="_model_objects_published_variables_and_variable_look_up">3.2. Model objects, published variables and variable look-up</h3>
+<div class="paragraph">
+<p>Physical models are implemented in model objects. That means the code lines/equations compute results based on input values.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 1. Model object</div>
+<div class="content">
+<div class="paragraph">
+<p>A heating model takes room air temperature (state dependency) and a scheduled setpoint (time dependency) and computes a heating load as result.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The result is stored in a <strong>persistent memory location</strong> where dependent models can directly access this value.</p>
+</div>
+<div class="sect3">
+<h4 id="_model_instances">3.2.1. Model instances</h4>
+<div class="paragraph">
+<p>There can be several model instances - the actual object code resides only once in solver memory, but the functions are executed several times for each individual object (=model instance).</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 2. Model instance</div>
+<div class="content">
+<div class="paragraph">
+<p>You may have a model that computes heat flux between walls and zones. For each wall-zone interface, an object is instantiated.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Each model instance stores its result values in own memory.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_model_results">3.2.2. Model results</h4>
+<div class="sect4">
+<h5 id="_publishing_model_results">Publishing model results</h5>
+<div class="paragraph">
+<p>The model instances/objects must tell the solver framework what kind of outputs they generate. Objects generating results must derive from class <code>AbstractModel</code> (or derived helper classes) and implement the abstract interface functions.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>Schedules</code> and <code>FMIInputOutput</code> models are handled differently, when it comes to retrieving generated results.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The framework first requests a reference type (prefix) via  <code>AbstractModel::referenceType()</code> of the model object. This reference type is used to group model objects into meaningful object groups.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 3. Reference types</div>
+<div class="content">
+<div class="paragraph">
+<p>Typical examples are <code>MRT_ZONE</code> for zonal quantities, or <code>MRT_INTERFACE</code> for quantities (fluxes) across wall-surfaces.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Each invididual result variable is published by the model in an object of type <code>QuantityDescription</code>. The framework requests these via call to <code>AbstractModel::resultDescriptions()</code>. Within the <code>QuantityDescription</code> structure,  the model stores for each computed quantity the following information:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>id-name (e.g. "Temperature")</p>
+</li>
+<li>
+<p>physical display unit (e.g. "C") - interpreted as "display unit", calculations are always done in base SI units</p>
+</li>
+<li>
+<p>a descriptive text (e.g. "Room air temperature") (optional, for error/information messages)</p>
+</li>
+<li>
+<p>physical limits (min/max values) (optional, may be used in iterative algorithms)</p>
+</li>
+<li>
+<p>flag indicating whether this value will be constant over the lifetime of the solver/integration interval</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">A note on units</div>
+<div class="paragraph">
+<p>The results are stored <em>always</em> in base SI units according to the IBK-UnitList. A well-behaving model will always store the result value in the basic SI unit, that is "K" for temperatures, "W" for thermal loads and so on (see <code>IBK::UnitList</code>).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The unit is really only provided for error message outputs and for checking of the base SI unit matches the base SI unit of the requested unit (as an additional sanity check).</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_vector_valued_results">Vector-valued results</h5>
+<div class="paragraph">
+<p>Sometimes, a model may compute a vector of values.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 4. Vector results</div>
+<div class="content">
+<div class="paragraph">
+<p>A ventilation model may compute ventilation heat loads for a number of zones (zones that are identified via object lists).</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>When a so-called vector-valued quantity is generated, the following additional information is provided:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>whether index-based or id-based access is anticipated</p>
+</li>
+<li>
+<p>a list of ids/indexes matching the individual positions in the vector (the size of the vector is also the size of the vector-valued quantities)</p>
+</li>
+</ul>
+</div>
+<div class="exampleblock">
+<div class="title">Example 5. ID-access example</div>
+<div class="content">
+<div class="paragraph">
+<p>The aforementioned ventilation model may be assigned to zones with IDs 1,4,5,10 and 11. Then the resulting ventilation heat losses will be defined for those zones only. Hence, the published quantity will look like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>- name = "NaturalVentilationHeadLoad"
+- unit = "W"
+- description = "Natural ventilation heat load"
+- index-key-type = "ID"
+- ID-list = {1,4,5,10,11}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="title">Strong uniqueness requirement</div>
+<div class="paragraph">
+<p>The id-names of quantities are unique within a model object, and vector-valued quantities may not have the same ID name as scalar quantities. More precisely, variables need to be globally unique (see <a href="#variable_lookup">lookup rules</a> below). This means that when there are two models with the same model-reference-type, the variable names must be unique among all models with the same reference-type.</p>
+</div>
+<div class="paragraph">
+<p>For example: from a zone parametrization several models are instantiated with the same reference-type <code>MRT_ZONE</code>, for example <code>RoomBalanceModel</code> and <code>RoomStatesModel</code>. The resulting variables in both models <em>must not</em> have the same ID name, in order to be uniquely identified on global scope.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_initializing_memory_for_result_values">Initializing memory for result values</h5>
+<div class="paragraph">
+<p>Each model object is requested by the framework in a call to <code>AbstractModel::initResults()</code> to reserve memory for its result variables. For scalar variables this is usually just resizing of a vector of doubles to the required number of result values. For vector-valued quantities the actual size may only be known later, so frequently here just the vectors are created and their actual size is determined later.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Since the information collected in <code>initResults()</code> is also needed when publishing the results to the framework, the function <code>AbstractModel::initResults()</code> is called before <code>AbstractModel::resultDescriptions()</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect5">
+<h6 id="_convenience_implementation">Convenience implementation</h6>
+<div class="paragraph">
+<p>Scalar variables are stored in double variables of the model. When using the convenience implementation in <code>DefaultModel</code> these are stored in vector <code>m_results</code>.</p>
+</div>
+<div class="paragraph">
+<p>Vector-valued variables are stored in consecutive memory arrays with size matching the size of the vector. When using the <code>DefaultModel</code> implementation, these are stored in <code>m_vectorValuedResults</code>, which is a vector of <code>VectorValuedResults</code>.</p>
+</div>
+<div class="paragraph">
+<p>The <code>DefaultModel</code> implementation makes use of enumerations <code>Results</code> and <code>VectorValuedResults</code>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="model_input_refs">3.2.3. Model inputs</h4>
+<div class="paragraph">
+<p>Similarly as output variables, model objects need input variables. Models requiring input must implement the interface of class <code>AbstractStateDependency</code>.</p>
+</div>
+<div class="paragraph">
+<p>Input variable requirements are published similarly to results when the framework requests them in a call to <code>AbstractStateDependency::inputReferences()</code>. The information on requested results is stored in objects of type <code>InputReference</code>. The data in class <code>InputReference</code> is somewhat similar to that of <code>QuantityDescription</code> but contains additional data regarding the expectations of the model in the input variable.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>A model may request scalar variable inputs only, even if the providing model generates these as a vector-valued quantity. That means, a model has the choice to request access to the entire vector-valued variable (and will usually get the address to the start of the vector-memory space), or a single component of the vector. In the latter case, the index/model-ID must be defined in the <code>InputReference</code> data structure.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="exampleblock">
+<div class="title">Example 6. Input reference to a zone air temperature inside a ventilation model</div>
+<div class="content">
+<div class="paragraph">
+<p>An input required by the ventilation model can be formulated with the follwing data:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>- reference type = MRT_ZONE
+- object_id = 15 (id of the zone)
+- name = "AirTemperature"</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Given that information, the framework can effectively look-up the required variables.</p>
+</div>
+<div class="paragraph">
+<p>Once the variable has been found, the framework will tell the object the memory location by calling <code>AbstractStateDependency::setInputValueRef()</code>.</p>
+</div>
+<div class="sect4">
+<h5 id="_fmi_export_output_variables">FMI Export (output) variables</h5>
+<div class="paragraph">
+<p>When FMI export is defined, i.e. output variables are declarted in the FMI interface, a list of global variable IDs to be exported is defined. For each of these variables an input reference is generated (inside the <code>FMIInputOutput</code> model), just as for any other model as well.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 7. FMI Output Variable example</div>
+<div class="content">
+<div class="paragraph">
+<p>Suppose an FMI exports the air temperature from zone id=15 and for that purpose needs to retrieve the currently computed temperature from the zone state model. The FMI output variable would be named <em>Zone[15].AirTemperature</em> and the input reference would be created as in the example above. This way, the framework can simply provide a pointer to this memory slot to the <code>FMIInputOutput</code> model just as for any other model.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_outputs">Outputs</h5>
+<div class="paragraph">
+<p>When initializing outputs, any published variable can be collected. Outputs declare their input variables just as any other model object.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="variable_lookup">3.2.4. Variable lookup</h4>
+<div class="paragraph">
+<p>The frameworks job is to collect all</p>
+</div>
+<div class="sect4">
+<h5 id="_resolving_persistant_pointers_to_result_locations">Resolving persistant pointers to result locations</h5>
+<div class="paragraph">
+<p>Later, when the framework connects <a href="#model_input_refs">model inputs</a> with results, the framework requests models to provide persistant memory locations for previously published results. This is done by calling <code>AbstractModel::resultValueRef()</code>, which get&#8217;s a copy of the previously exported <code>InputReference</code>.</p>
+</div>
+<div class="paragraph">
+<p>In order to uniquely identify a result variable <strong>within</strong> a model, normally only two things are needed:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the ID name of the variable,</p>
+</li>
+<li>
+<p>and, <em>only in the case of vector-valued quantities</em>, the index/id.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>However, in some cases, a model may request a variable with the <em>same quantity</em> name, yet from two different objects (for example, the air temperature of neighbouring zones). In this case, the quantity name alone is not sufficient. Hence, the full input reference including object ID is passed as identifier (<strong>A change from NANDRAD 1!</strong>).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>To identify an element within a vector-valued result it is not necessary to specify whether it should be index or id based - the model publishing the result defines whether it will be index or id based access.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Naturally, for scalar result variables the index/id property is ignored.</p>
+</div>
+<div class="paragraph">
+<p>The <code>QuantityName</code> struct contains this information (a string and an integer value).</p>
+</div>
+<div class="paragraph">
+<p>Now the model searches through its own results and tries to find a matching variable. In case of vector-valued quantities it also checks if the requested id is actually present in the model, and in case of index-based access, a check is done if the index is in the allowed range (0&#8230;&#8203;size-1).</p>
+</div>
+<div class="paragraph">
+<p>If a quantity could be found, the corresponding memory address is returned, otherwise a nullptr. The framework now can take the address and pass it to any object that requires this input.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_global_lookup_rulesglobal_variable_referencing">Global lookup rules/global variable referencing</h5>
+<div class="paragraph">
+<p>To uniquely reference a resulting variable (and its persistent memory location), first the actual model object/instance need to be selected with the following properties:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the type of object to search for (= reference-type property), for example <code>MRT_ZONE</code> or <code>MRT_CONSTRUCTIONINSTANCE</code></p>
+</li>
+<li>
+<p>ID of the referenced object, i.e. zone id oder construction id.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Some model objects exist only once, for example schedules or climatic loads. Here, the reference-type is already enough to uniquely select the object.</p>
+</div>
+<div class="paragraph">
+<p>Usually, the information above does select several objects that have been created from the parametrization related to that ID. For example, the zone parameter block for some zone ID generates several zone-related model instances, all of which have the same ID. Since their result variables are all different, the framework simply searches through all those objects until the correct variable is found. These model implementations can be thought of as one model whose equations are split up into several implementation units.</p>
+</div>
+<div class="paragraph">
+<p>The actual variable <em>within</em> the selected object is found by ID name and optionally vector-element id/index, as described above.</p>
+</div>
+<div class="paragraph">
+<p>The data is collected in the class <code>InputReference</code>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ObjectReference</code> ( holds reference-type and referenced-object ID )</p>
+</li>
+<li>
+<p><code>QuantityName</code> (holds variable name and in case of vector-valued quantities also ID/index)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Also, it is possible to specify a <code>constant</code> flag to indicate, that during iterations over cycles the variable is to be treated constant.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If several model objects are addressed by the same reference-type and ID (see example with models from zone parameter block), the variable names must be unique among all of these models.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_fmi_input_variable_overrides">FMI Input variable overrides</h5>
+<div class="paragraph">
+<p>Any input variable requested by any other model can be overridden by FMU import variables. When the framework looks up global model references, and an FMU import model is present/parametrized, then first the FMI generated quantity descriptions are checked. The FMU import variables are exported as global variable references (with ObjectReference). Since these are then the same global variable identifiers as published by the models, they are found first in the search and dependent models will simply store points to the FMU variable memory.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_examples_for_referenced_input_quantities">Examples for referenced input quantities</h5>
+<div class="sect5">
+<h6 id="_setpoint_from_schedules">Setpoint from schedules</h6>
+<div class="paragraph">
+<p>Schedules are defined for object lists. Suppose you have an object list name "Living rooms" and corresponding heating/cooling setpoints.</p>
+</div>
+<div class="paragraph">
+<p>Now a heating model may be defined that computes heating loads for a given zone. The heating model is implemented with a simple P-controller, that requires zone air temperature and zone heating setpoint.</p>
+</div>
+<div class="paragraph">
+<p>Definition of the input reference for the zone air temperature is done as in the example above. The setpoint will be similarly referenced:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>- reference type = MRT_ZONE
+- object_id = 15 (id of the zone)
+- name = "HeatingSetPoint"</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Version 1.0.0<br>
+Last updated 2020-09-07 11:15:44 +0200
+</div>
+</div>
+<style>
+pre.rouge table td { padding: 5px; }
+pre.rouge table pre { margin: 0; }
+pre.rouge .cm {
+  color: #999988;
+  font-style: italic;
+}
+pre.rouge .cp {
+  color: #999999;
+  font-weight: bold;
+}
+pre.rouge .c1 {
+  color: #999988;
+  font-style: italic;
+}
+pre.rouge .cs {
+  color: #999999;
+  font-weight: bold;
+  font-style: italic;
+}
+pre.rouge .c, pre.rouge .ch, pre.rouge .cd, pre.rouge .cpf {
+  color: #999988;
+  font-style: italic;
+}
+pre.rouge .err {
+  color: #a61717;
+  background-color: #e3d2d2;
+}
+pre.rouge .gd {
+  color: #000000;
+  background-color: #ffdddd;
+}
+pre.rouge .ge {
+  color: #000000;
+  font-style: italic;
+}
+pre.rouge .gr {
+  color: #aa0000;
+}
+pre.rouge .gh {
+  color: #999999;
+}
+pre.rouge .gi {
+  color: #000000;
+  background-color: #ddffdd;
+}
+pre.rouge .go {
+  color: #888888;
+}
+pre.rouge .gp {
+  color: #555555;
+}
+pre.rouge .gs {
+  font-weight: bold;
+}
+pre.rouge .gu {
+  color: #aaaaaa;
+}
+pre.rouge .gt {
+  color: #aa0000;
+}
+pre.rouge .kc {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kd {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kn {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kp {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kr {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kt {
+  color: #445588;
+  font-weight: bold;
+}
+pre.rouge .k, pre.rouge .kv {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .mf {
+  color: #009999;
+}
+pre.rouge .mh {
+  color: #009999;
+}
+pre.rouge .il {
+  color: #009999;
+}
+pre.rouge .mi {
+  color: #009999;
+}
+pre.rouge .mo {
+  color: #009999;
+}
+pre.rouge .m, pre.rouge .mb, pre.rouge .mx {
+  color: #009999;
+}
+pre.rouge .sb {
+  color: #d14;
+}
+pre.rouge .sc {
+  color: #d14;
+}
+pre.rouge .sd {
+  color: #d14;
+}
+pre.rouge .s2 {
+  color: #d14;
+}
+pre.rouge .se {
+  color: #d14;
+}
+pre.rouge .sh {
+  color: #d14;
+}
+pre.rouge .si {
+  color: #d14;
+}
+pre.rouge .sx {
+  color: #d14;
+}
+pre.rouge .sr {
+  color: #009926;
+}
+pre.rouge .s1 {
+  color: #d14;
+}
+pre.rouge .ss {
+  color: #990073;
+}
+pre.rouge .s, pre.rouge .sa, pre.rouge .dl {
+  color: #d14;
+}
+pre.rouge .na {
+  color: #008080;
+}
+pre.rouge .bp {
+  color: #999999;
+}
+pre.rouge .nb {
+  color: #0086B3;
+}
+pre.rouge .nc {
+  color: #445588;
+  font-weight: bold;
+}
+pre.rouge .no {
+  color: #008080;
+}
+pre.rouge .nd {
+  color: #3c5d5d;
+  font-weight: bold;
+}
+pre.rouge .ni {
+  color: #800080;
+}
+pre.rouge .ne {
+  color: #990000;
+  font-weight: bold;
+}
+pre.rouge .nf, pre.rouge .fm {
+  color: #990000;
+  font-weight: bold;
+}
+pre.rouge .nl {
+  color: #990000;
+  font-weight: bold;
+}
+pre.rouge .nn {
+  color: #555555;
+}
+pre.rouge .nt {
+  color: #000080;
+}
+pre.rouge .vc {
+  color: #008080;
+}
+pre.rouge .vg {
+  color: #008080;
+}
+pre.rouge .vi {
+  color: #008080;
+}
+pre.rouge .nv, pre.rouge .vm {
+  color: #008080;
+}
+pre.rouge .ow {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .o {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .w {
+  color: #bbbbbb;
+}
+pre.rouge {
+  background-color: #f8f8f8;
+}
+</style>
+</body>
+</html>

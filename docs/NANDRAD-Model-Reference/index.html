@@ -86,56 +86,55 @@ table {
 </li>
 <li><a href="#_models_and_input_reference">2. Models and Input Reference</a>
 <ul class="sectlevel2">
-<li><a href="#_climatic_loads">2.1. Climatic loads</a>
+<li><a href="#_zones">2.1. Zones</a></li>
+<li><a href="#_constructions">2.2. Constructions</a></li>
+<li><a href="#_interfaces_construction_boundary_conditions">2.3. Interfaces (construction boundary conditions)</a>
 <ul class="sectlevel3">
-<li><a href="#_overview_2">2.1.1. Overview</a></li>
-<li><a href="#_specification">2.1.2. Specification</a></li>
-<li><a href="#_implementation">2.1.3. Implementation</a></li>
+<li><a href="#_ambient_climate_boundary_conditions">2.3.1. Ambient climate boundary conditions</a></li>
+<li><a href="#_interface_between_constructions_and_zones_internal_boundary_conditions">2.3.2. Interface between constructions and zones (internal boundary conditions)</a></li>
 </ul>
 </li>
-<li><a href="#_schedules">2.2. Schedules</a>
+<li><a href="#_construction_types">2.4. Construction Types</a></li>
+<li><a href="#_materials">2.5. Materials</a></li>
+<li><a href="#_climatic_loads">2.6. Climatic loads</a>
 <ul class="sectlevel3">
-<li><a href="#_overview_3">2.2.1. Overview</a></li>
-<li><a href="#_defining_schedules">2.2.2. Defining schedules</a></li>
-<li><a href="#_implementation_2">2.2.3. Implementation</a></li>
+<li><a href="#_overview_2">2.6.1. Overview</a></li>
+<li><a href="#_specification">2.6.2. Specification</a></li>
+<li><a href="#_implementation">2.6.3. Implementation</a></li>
+</ul>
+</li>
+<li><a href="#_schedules">2.7. Schedules</a>
+<ul class="sectlevel3">
+<li><a href="#_overview_3">2.7.1. Overview</a></li>
+<li><a href="#_defining_schedules">2.7.2. Defining schedules</a></li>
+<li><a href="#_implementation_2">2.7.3. Implementation</a></li>
+<li><a href="#_variable_list">2.7.4. Variable list</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#_outputs_definitions_rules_and_implementation">3. Outputs: definitions, rules and implementation</a>
+<li><a href="#_global_parameters">3. Global parameters</a>
 <ul class="sectlevel2">
-<li><a href="#_output_definitions">3.1. Output definitions</a>
-<ul class="sectlevel3">
-<li><a href="#_output_grids">3.1.1. Output Grids</a></li>
-<li><a href="#_examples">3.1.2. Examples</a></li>
+<li><a href="#_simulation_parameters">3.1. Simulation Parameters</a></li>
+<li><a href="#_solver_parameters">3.2. Solver Parameters</a></li>
 </ul>
 </li>
-<li><a href="#_variable_lookup_rules">3.2. Variable lookup rules</a></li>
-<li><a href="#_output_file_generation_rules">3.3. Output file generation rules</a>
-<ul class="sectlevel3">
-<li><a href="#_when_no_filename_is_given">3.3.1. When no filename is given</a></li>
-<li><a href="#_when_a_filename_is_given">3.3.2. When a filename is given</a></li>
-</ul>
-</li>
-<li><a href="#_binary_format">3.4. Binary Format</a></li>
-</ul>
-</li>
-<li><a href="#_implementation_concepts">4. Implementation Concepts</a>
+<li><a href="#_outputs_definitions_rules_and_implementation">4. Outputs: definitions, rules and implementation</a>
 <ul class="sectlevel2">
-<li><a href="#_model_objects_published_variables_and_variable_look_up">4.1. Model objects, published variables and variable look-up</a>
+<li><a href="#_output_definitions">4.1. Output definitions</a>
 <ul class="sectlevel3">
-<li><a href="#_model_instances">4.1.1. Model instances</a></li>
-<li><a href="#_model_results">4.1.2. Model results</a></li>
-<li><a href="#model_input_refs">4.1.3. Model inputs</a></li>
-<li><a href="#variable_lookup">4.1.4. Variable lookup</a></li>
+<li><a href="#_output_grids">4.1.1. Output Grids</a></li>
+<li><a href="#_examples">4.1.2. Examples</a></li>
 </ul>
 </li>
-<li><a href="#_model_initialization_procedure">4.2. Model Initialization Procedure</a>
+<li><a href="#_variable_lookup_rules">4.2. Variable lookup rules</a></li>
+<li><a href="#_output_file_generation_rules">4.3. Output file generation rules</a>
 <ul class="sectlevel3">
-<li><a href="#_pre_solver_setup_steps">4.2.1. Pre-Solver-Setup steps</a></li>
-<li><a href="#_model_setup">4.2.2. Model Setup</a></li>
+<li><a href="#_when_no_filename_is_given">4.3.1. When no filename is given</a></li>
+<li><a href="#_when_a_filename_is_given">4.3.2. When a filename is given</a></li>
 </ul>
 </li>
+<li><a href="#_binary_format">4.4. Binary Format</a></li>
 </ul>
 </li>
 </ul>
@@ -174,15 +173,42 @@ table {
 <h2 id="_models_and_input_reference">2. Models and Input Reference</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_climatic_loads">2.1. Climatic loads</h3>
+<h3 id="_zones">2.1. Zones</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_constructions">2.2. Constructions</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_interfaces_construction_boundary_conditions">2.3. Interfaces (construction boundary conditions)</h3>
 <div class="sect3">
-<h4 id="_overview_2">2.1.1. Overview</h4>
+<h4 id="_ambient_climate_boundary_conditions">2.3.1. Ambient climate boundary conditions</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_interface_between_constructions_and_zones_internal_boundary_conditions">2.3.2. Interface between constructions and zones (internal boundary conditions)</h4>
+
+</div>
+</div>
+<div class="sect2">
+<h3 id="_construction_types">2.4. Construction Types</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_materials">2.5. Materials</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_climatic_loads">2.6. Climatic loads</h3>
+<div class="sect3">
+<h4 id="_overview_2">2.6.1. Overview</h4>
 <div class="paragraph">
 <p>The climatic loads model is a purely time-dependent model without other input dependencies. For solar radiation calculation, it needs information on the building location. Also, for most simulations, a climate data file is needed.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_specification">2.1.2. Specification</h4>
+<h4 id="_specification">2.6.2. Specification</h4>
 <div class="paragraph">
 <p>Information about location and climate data is stored in the <code>Location</code> section of the project file:</p>
 </div>
@@ -240,7 +266,7 @@ table {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_implementation">2.1.3. Implementation</h4>
+<h4 id="_implementation">2.6.3. Implementation</h4>
 <div class="paragraph">
 <p>The <code>Loads</code> model is a pre-defined model that is always evaluated first whenever the time point has changed. It does not have any other dependencies.</p>
 </div>
@@ -262,9 +288,9 @@ table {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_schedules">2.2. Schedules</h3>
+<h3 id="_schedules">2.7. Schedules</h3>
 <div class="sect3">
-<h4 id="_overview_3">2.2.1. Overview</h4>
+<h4 id="_overview_3">2.7.1. Overview</h4>
 <div class="paragraph">
 <p>Schedules provide purely time-dependent quantities, similar to climatic loads.</p>
 </div>
@@ -276,14 +302,34 @@ table {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_defining_schedules">2.2.2. Defining schedules</h4>
+<h4 id="_defining_schedules">2.7.2. Defining schedules</h4>
 <div class="sect4">
 <h5 id="_simulation_time_to_day_typelocal_time_mapping">Simulation time to day type/local time mapping</h5>
 <div class="paragraph">
 <p>Simulation time runs from t=0 over the duration of the simulation. For the lookup of schedules, this time needs to be mapped to the local (building) time.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>For cyclic schedule data (i.e. flag "Cyclic" is set -&#8594; TODO : check this with the climate loads object, when cyclic is set, climatic loads <strong>must not</strong> be defined for continues data):</p>
+<p><strong>TODO</strong>:
+Clarify (ticket: <a href="https://github.com/ghorwin/SIM-VICUS/issues/31" class="bare">https://github.com/ghorwin/SIM-VICUS/issues/31</a>) check this with the climate loads object, when cyclic is set, climatic loads <strong>must not</strong> be defined for continues data):</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect5">
+<h6 id="_timeday_mapping_in_cyclic_annual_schedules">Time/day mapping in cyclic annual schedules</h6>
+<div class="paragraph">
+<p>For cyclic schedule data, the flag "Cyclic" must be set in Schedules xml-block.</p>
+</div>
+<div class="paragraph">
+<p>The following conventions apply:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -294,7 +340,10 @@ table {
 <p>start time is given as parameter (as offset to Midnight January 1st 2003, or <code>"01.01.2003 00:00"</code>); for example, start time of <code>10.5 d</code> means simulation time 0 maps to <code>"10.01.2003 12:00"</code></p>
 </li>
 <li>
-<p>simulation time is wrapped at 365 d and yields directly the local time</p>
+<p>if simulation duration exceeds 1 year, simulation time is wrapped at 365 d</p>
+</li>
+<li>
+<p>"schedule lookup time" is the same as simulation time</p>
 </li>
 <li>
 <p>leap days are never used, even if start year is set to 2000 and similar leap years</p>
@@ -304,6 +353,53 @@ table {
 </li>
 </ul>
 </div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="paragraph">
+<p>Simulation takes 2 years, and starts in March 2nd, 12:00  (year 2003, but that is not important)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>02.03. 12:00  -&gt; t_start = (31+28+1)*24+12 = 1452 h = 60.5 d
+
+t =   0 d -&gt; t_sched = t_start + t = 60.5 d
+t = 365 d -&gt; t_sched = t_start + t = 425.5 d
+
+t_sched &gt; 365 ? -&gt; t_sched = t_sched - 365 = 60.5 h
+
+Evaluation at runtime:
+scheduleData = scheduleTabulatedSplineData [t_sched=0...365 d]  -&gt; interpolate at t_sched</code></pre>
+</div>
+</div>
+<div class="sect6">
+<h7 id="_constructing_spline_data_from_input_data">Constructing spline data from input data</h7>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>- loop over all days (d=0,1,...,364)
+- determine day type:
+  d_dayOfWeek = (startDayOffset + d) % 7 (modulo 7)
+
+  startDayOffset = 0 for Monday, 1 for Tuesday, ... , 6 for Sunday
+
+Example:
+
+  d = 16  -&gt; date = 16. January 2003
+  startDayOffset = "Wed" -&gt; 2  (1.1.2003 was a wednesday)
+
+  d_dayOfWeek -&gt; 16 + 2 = 18   18 % 7 = 3  -&gt; DayType = "Thursay" (Check: 16. January 2003 was a Thursday)
+
+- look up daily cycle:
+  - find schedule (back to frond) where d in range:
+    - process daytypes in order Thursday, Weekdays, AllDays
+      - if parameter is found in any of these days, take daily course and add to spline for this day,
+      - if parameter not found, skip and search through next schedule</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_continuous_data">Continuous data</h6>
 <div class="paragraph">
 <p>For continuous schedule data (i.e. flag "Cyclic" is off; meaningful when re-calculating monitored building data with real calander reference), the following procedure is used:</p>
 </div>
@@ -327,6 +423,7 @@ table {
 <p>Without leap days, the following calculation is used:
 - simulation time is converted to date using regular 365 d years
 - parameter "DayOfTheWeekAtStart" indicates which day of the week corresponds to the first day of simulation</p>
+</div>
 </div>
 </div>
 <div class="sect4">
@@ -367,7 +464,7 @@ table {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_implementation_2">2.2.3. Implementation</h4>
+<h4 id="_implementation_2">2.7.3. Implementation</h4>
 <div class="paragraph">
 <p>Schedules do not have any dependencies, and are not part of the model graph. They are updated just as climatic loads whenever time changes.</p>
 </div>
@@ -463,14 +560,82 @@ table {
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_variable_list">2.7.4. Variable list</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>	/*! Available quantities from schedules.
+		While this enum could be moved to NANDRAD::Schedule, we keep it here to reuse DefaultModel implementation
+		for generating QuantityDescriptions.
+	*/
+	enum Results {
+		R_HeatingSetPointTemperature,			// Keyword: HeatingSetPointTemperature				[C]			'Setpoint temperature for heating.'
+		R_CoolingSetPointTemperature,			// Keyword: CoolingSetPointTemperature				[C]			'Setpoint temperature for cooling.'
+		R_AirConditionSetPointTemperature,		// Keyword: AirConditionSetPointTemperature			[C]			'Setpoint temperature for air conditioning.'
+		R_AirConditionSetPointRelativeHumidity,	// Keyword: AirConditionSetPointRelativeHumidity	[%]			'Setpoint relative humidity for air conditioning.'
+		R_AirConditionSetPointMassFlux,			// Keyword: AirConditionSetPointMassFlux			[kg/s]		'Setpoint mass flux for air conditioning.'
+		R_HeatingLoad,							// Keyword: HeatingLoad								[W]			'Heating load.'
+		R_ThermalLoad,							// Keyword: ThermalLoad								[W]			'Thermal load (positive or negative).'
+		R_MoistureLoad,							// Keyword: MoistureLoad							[g/h]		'Moisture load.'
+		R_CoolingPower,							// Keyword: CoolingPower							[W]			'Cooling power.'
+		R_LightingPower,						// Keyword: LightingPower							[W]			'Lighting power.'
+		R_DomesticWaterSetpointTemperature,		// Keyword: DomesticWaterSetpointTemperature		[C]			'Setpoint temperature for domestic water.'
+		R_DomesticWaterMassFlow,				// Keyword: DomesticWaterMassFlow					[kg/s]		'Domestic water demand mass flow for the complete zone (hot water and equipment).'
+		R_ThermalEnergyLossPerPerson,			// Keyword: ThermalEnergyLossPerPerson				[W/Person]	'Energy of a single persons activities that is not available as thermal heat.'
+		R_TotalEnergyProductionPerPerson,		// Keyword: TotalEnergyProductionPerPerson			[W/Person]	'Total energy production of a single persons body at a certain activity.'
+		R_MoistureReleasePerPerson,				// Keyword: MoistureReleasePerPerson				[kg/s]		'Moisture release of a single persons body at a certain activity.'
+		R_CO2EmissionPerPerson,					// Keyword: CO2EmissionPerPerson					[kg/s]		'CO2 emission mass flux of a single person at a certain activity.'
+		R_MassFluxRate,							// Keyword: MassFluxRate							[---]		'Fraction of real mass flux to maximum  mass flux for different day times.'
+		R_PressureHead,							// Keyword: PressureHead							[Pa]		'Supply pressure head of a pump.'
+		R_OccupancyRate,						// Keyword: OccupancyRate							[---]		'Fraction of real occupancy to maximum  occupancy for different day times.'
+		R_EquipmentUtilizationRatio,			// Keyword: EquipmentUtilizationRatio				[---]		'Ratio of usage for existing electric equipment.'
+		R_LightingUtilizationRatio,				// Keyword: LightingUtilizationRatio				[---]		'Ratio of usage for lighting.'
+		R_MaximumSolarRadiationIntensity,		// Keyword: MaximumSolarRadiationIntensity			[W/m2]		'Maximum solar radiation intensity before shading is activated.'
+		R_UserVentilationAirChangeRate,			// Keyword: UserVentilationAirChangeRate			[1/h]		'Exchange rate for natural ventilation.'
+		R_UserVentilationComfortAirChangeRate,	// Keyword: UserVentilationComfortAirChangeRate		[1/h]		'Maximum air change rate = offset for user comfort.'
+		R_UserVentilationMinimumRoomTemperature,// Keyword: UserVentilationMinimumRoomTemperature	[C]			'Temperature limit over which comfort ventilation is activated.'
+		R_UserVentilationMaximumRoomTemperature,// Keyword: UserVentilationMaximumRoomTemperature	[C]			'Temperature limit below which comfort ventilation is activated.'
+		R_InfiltrationAirChangeRate,			// Keyword: InfiltrationAirChangeRate				[1/h]		'Exchange rate for infiltration.'
+		R_ShadingFactor,						// Keyword: ShadingFactor							[---]		'Shading factor [0...1].'
+		NUM_R
+	};</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_outputs_definitions_rules_and_implementation">3. Outputs: definitions, rules and implementation</h2>
+<h2 id="_global_parameters">3. Global parameters</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>parameters controlling how the model operates</p>
+</li>
+<li>
+<p>parameters controlling model accuracy</p>
+</li>
+<li>
+<p>parameters controlling performance</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_simulation_parameters">3.1. Simulation Parameters</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_solver_parameters">3.2. Solver Parameters</h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_outputs_definitions_rules_and_implementation">4. Outputs: definitions, rules and implementation</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_output_definitions">3.1. Output definitions</h3>
+<h3 id="_output_definitions">4.1. Output definitions</h3>
 <div class="paragraph">
 <p>Outputs are defined via:</p>
 </div>
@@ -538,7 +703,7 @@ table {
 <code>FileName</code> is optional (see below).</p>
 </div>
 <div class="sect3">
-<h4 id="_output_grids">3.1.1. Output Grids</h4>
+<h4 id="_output_grids">4.1.1. Output Grids</h4>
 <div class="paragraph">
 <p>Output grids define <em>when</em> outputs are written. An output grid contains a list of intervals, with an output step size defined for each interval.</p>
 </div>
@@ -609,7 +774,7 @@ Die Angabe des Parameters StepSize ist zwingend.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_examples">3.1.2. Examples</h4>
+<h4 id="_examples">4.1.2. Examples</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -623,7 +788,7 @@ Die Angabe des Parameters StepSize ist zwingend.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_variable_lookup_rules">3.2. Variable lookup rules</h3>
+<h3 id="_variable_lookup_rules">4.2. Variable lookup rules</h3>
 <div class="paragraph">
 <p>Quantities in output definitions define the ID names of the output quantities, optionally including an index notation when a single element of a vectorial quantity is requested. Hereby the following notations are allowed:</p>
 </div>
@@ -642,9 +807,9 @@ Die Angabe des Parameters StepSize ist zwingend.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_output_file_generation_rules">3.3. Output file generation rules</h3>
+<h3 id="_output_file_generation_rules">4.3. Output file generation rules</h3>
 <div class="sect3">
-<h4 id="_when_no_filename_is_given">3.3.1. When no filename is given</h4>
+<h4 id="_when_no_filename_is_given">4.3.1. When no filename is given</h4>
 <div class="paragraph">
 <p>Target file name(s) are automatically defined.</p>
 </div>
@@ -678,7 +843,7 @@ Die Angabe des Parameters StepSize ist zwingend.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_when_a_filename_is_given">3.3.2. When a filename is given</h4>
+<h4 id="_when_a_filename_is_given">4.3.2. When a filename is given</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -692,7 +857,7 @@ Die Angabe des Parameters StepSize ist zwingend.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_binary_format">3.4. Binary Format</h3>
+<h3 id="_binary_format">4.4. Binary Format</h3>
 <div class="paragraph">
 <p>First record: unsigned int - n (number of columns)
 Next n records: binary strings, leading size (unsigned int) and termination character (sanity checking)</p>
@@ -703,467 +868,11 @@ Next n records: binary strings, leading size (unsigned int) and termination char
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="_implementation_concepts">4. Implementation Concepts</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_model_objects_published_variables_and_variable_look_up">4.1. Model objects, published variables and variable look-up</h3>
-<div class="paragraph">
-<p>Physical models are implemented in model objects. That means the code lines/equations compute results based on input values.</p>
-</div>
-<div class="exampleblock">
-<div class="title">Example 1. Model object</div>
-<div class="content">
-<div class="paragraph">
-<p>A heating model takes room air temperature (state dependency) and a scheduled setpoint (time dependency) and computes a heating load as result.</p>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>The result is stored in a <strong>persistent memory location</strong> where dependent models can directly access this value.</p>
-</div>
-<div class="sect3">
-<h4 id="_model_instances">4.1.1. Model instances</h4>
-<div class="paragraph">
-<p>There can be several model instances - the actual object code resides only once in solver memory, but the functions are executed several times for each individual object (=model instance).</p>
-</div>
-<div class="exampleblock">
-<div class="title">Example 2. Model instance</div>
-<div class="content">
-<div class="paragraph">
-<p>You may have a model that computes heat flux between walls and zones. For each wall-zone interface, an object is instantiated.</p>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>Each model instance stores its result values in own memory.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_model_results">4.1.2. Model results</h4>
-<div class="sect4">
-<h5 id="_publishing_model_results">Publishing model results</h5>
-<div class="paragraph">
-<p>The model instances/objects must tell the solver framework what kind of outputs they generate. Objects generating results must derive from class <code>AbstractModel</code> (or derived helper classes) and implement the abstract interface functions.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p><code>Schedules</code> and <code>FMIInputOutput</code> models are handled differently, when it comes to retrieving generated results.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>The framework first requests a reference type (prefix) via  <code>AbstractModel::referenceType()</code> of the model object. This reference type is used to group model objects into meaningful object groups.</p>
-</div>
-<div class="exampleblock">
-<div class="title">Example 3. Reference types</div>
-<div class="content">
-<div class="paragraph">
-<p>Typical examples are <code>MRT_ZONE</code> for zonal quantities, or <code>MRT_INTERFACE</code> for quantities (fluxes) across wall-surfaces.</p>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>Each invididual result variable is published by the model in an object of type <code>QuantityDescription</code>. The framework requests these via call to <code>AbstractModel::resultDescriptions()</code>. Within the <code>QuantityDescription</code> structure,  the model stores for each computed quantity the following information:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>id-name (e.g. "Temperature")</p>
-</li>
-<li>
-<p>physical display unit (e.g. "C") - interpreted as "display unit", calculations are always done in base SI units</p>
-</li>
-<li>
-<p>a descriptive text (e.g. "Room air temperature") (optional, for error/information messages)</p>
-</li>
-<li>
-<p>physical limits (min/max values) (optional, may be used in iterative algorithms)</p>
-</li>
-<li>
-<p>flag indicating whether this value will be constant over the lifetime of the solver/integration interval</p>
-</li>
-</ul>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="title">A note on units</div>
-<div class="paragraph">
-<p>The results are stored <em>always</em> in base SI units according to the IBK-UnitList. A well-behaving model will always store the result value in the basic SI unit, that is "K" for temperatures, "W" for thermal loads and so on (see <code>IBK::UnitList</code>).</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>The unit is really only provided for error message outputs and for checking of the base SI unit matches the base SI unit of the requested unit (as an additional sanity check).</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_vector_valued_results">Vector-valued results</h5>
-<div class="paragraph">
-<p>Sometimes, a model may compute a vector of values.</p>
-</div>
-<div class="exampleblock">
-<div class="title">Example 4. Vector results</div>
-<div class="content">
-<div class="paragraph">
-<p>A ventilation model may compute ventilation heat loads for a number of zones (zones that are identified via object lists).</p>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>When a so-called vector-valued quantity is generated, the following additional information is provided:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>whether index-based or id-based access is anticipated</p>
-</li>
-<li>
-<p>a list of ids/indexes matching the individual positions in the vector (the size of the vector is also the size of the vector-valued quantities)</p>
-</li>
-</ul>
-</div>
-<div class="exampleblock">
-<div class="title">Example 5. ID-access example</div>
-<div class="content">
-<div class="paragraph">
-<p>The aforementioned ventilation model may be assigned to zones with IDs 1,4,5,10 and 11. Then the resulting ventilation heat losses will be defined for those zones only. Hence, the published quantity will look like:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code>- name = "NaturalVentilationHeadLoad"
-- unit = "W"
-- description = "Natural ventilation heat load"
-- index-key-type = "ID"
-- ID-list = {1,4,5,10,11}</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-<div class="title">Strong uniqueness requirement</div>
-<div class="paragraph">
-<p>The id-names of quantities are unique within a model object, and vector-valued quantities may not have the same ID name as scalar quantities. More precisely, variables need to be globally unique (see <a href="#variable_lookup">lookup rules</a> below). This means that when there are two models with the same model-reference-type, the variable names must be unique among all models with the same reference-type.</p>
-</div>
-<div class="paragraph">
-<p>For example: from a zone parametrization several models are instantiated with the same reference-type <code>MRT_ZONE</code>, for example <code>RoomBalanceModel</code> and <code>RoomStatesModel</code>. The resulting variables in both models <em>must not</em> have the same ID name, in order to be uniquely identified on global scope.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_initializing_memory_for_result_values">Initializing memory for result values</h5>
-<div class="paragraph">
-<p>Each model object is requested by the framework in a call to <code>AbstractModel::initResults()</code> to reserve memory for its result variables. For scalar variables this is usually just resizing of a vector of doubles to the required number of result values. For vector-valued quantities the actual size may only be known later, so frequently here just the vectors are created and their actual size is determined later.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Since the information collected in <code>initResults()</code> is also needed when publishing the results to the framework, the function <code>AbstractModel::initResults()</code> is called before <code>AbstractModel::resultDescriptions()</code>.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div class="sect5">
-<h6 id="_convenience_implementation">Convenience implementation</h6>
-<div class="paragraph">
-<p>Scalar variables are stored in double variables of the model. When using the convenience implementation in <code>DefaultModel</code> these are stored in vector <code>m_results</code>.</p>
-</div>
-<div class="paragraph">
-<p>Vector-valued variables are stored in consecutive memory arrays with size matching the size of the vector. When using the <code>DefaultModel</code> implementation, these are stored in <code>m_vectorValuedResults</code>, which is a vector of <code>VectorValuedResults</code>.</p>
-</div>
-<div class="paragraph">
-<p>The <code>DefaultModel</code> implementation makes use of enumerations <code>Results</code> and <code>VectorValuedResults</code>.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="model_input_refs">4.1.3. Model inputs</h4>
-<div class="paragraph">
-<p>Similarly as output variables, model objects need input variables. Models requiring input must implement the interface of class <code>AbstractStateDependency</code>.</p>
-</div>
-<div class="paragraph">
-<p>Input variable requirements are published similarly to results when the framework requests them in a call to <code>AbstractStateDependency::inputReferences()</code>. The information on requested results is stored in objects of type <code>InputReference</code>. The data in class <code>InputReference</code> is somewhat similar to that of <code>QuantityDescription</code> but contains additional data regarding the expectations of the model in the input variable.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>A model may request scalar variable inputs only, even if the providing model generates these as a vector-valued quantity. That means, a model has the choice to request access to the entire vector-valued variable (and will usually get the address to the start of the vector-memory space), or a single component of the vector. In the latter case, the index/model-ID must be defined in the <code>InputReference</code> data structure.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div class="exampleblock">
-<div class="title">Example 6. Input reference to a zone air temperature inside a ventilation model</div>
-<div class="content">
-<div class="paragraph">
-<p>An input required by the ventilation model can be formulated with the follwing data:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code>- reference type = MRT_ZONE
-- object_id = 15 (id of the zone)
-- name = "AirTemperature"</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>Given that information, the framework can effectively look-up the required variables.</p>
-</div>
-<div class="paragraph">
-<p>Once the variable has been found, the framework will tell the object the memory location by calling <code>AbstractStateDependency::setInputValueRef()</code>.</p>
-</div>
-<div class="sect4">
-<h5 id="_fmi_export_output_variables">FMI Export (output) variables</h5>
-<div class="paragraph">
-<p>When FMI export is defined, i.e. output variables are declarted in the FMI interface, a list of global variable IDs to be exported is defined. For each of these variables an input reference is generated (inside the <code>FMIInputOutput</code> model), just as for any other model as well.</p>
-</div>
-<div class="exampleblock">
-<div class="title">Example 7. FMI Output Variable example</div>
-<div class="content">
-<div class="paragraph">
-<p>Suppose an FMI exports the air temperature from zone id=15 and for that purpose needs to retrieve the currently computed temperature from the zone state model. The FMI output variable would be named <em>Zone[15].AirTemperature</em> and the input reference would be created as in the example above. This way, the framework can simply provide a pointer to this memory slot to the <code>FMIInputOutput</code> model just as for any other model.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_outputs">Outputs</h5>
-<div class="paragraph">
-<p>When initializing outputs, any published variable can be collected. Outputs declare their input variables just as any other model object.</p>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="variable_lookup">4.1.4. Variable lookup</h4>
-<div class="paragraph">
-<p>The frameworks job is to collect all</p>
-</div>
-<div class="sect4">
-<h5 id="_resolving_persistant_pointers_to_result_locations">Resolving persistant pointers to result locations</h5>
-<div class="paragraph">
-<p>Later, when the framework connects <a href="#model_input_refs">model inputs</a> with results, the framework requests models to provide persistant memory locations for previously published results. This is done by calling <code>AbstractModel::resultValueRef()</code>, which get&#8217;s a copy of the previously exported <code>InputReference</code>.</p>
-</div>
-<div class="paragraph">
-<p>In order to uniquely identify a result variable <strong>within</strong> a model, normally only two things are needed:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>the ID name of the variable,</p>
-</li>
-<li>
-<p>and, <em>only in the case of vector-valued quantities</em>, the index/id.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>However, in some cases, a model may request a variable with the <em>same quantity</em> name, yet from two different objects (for example, the air temperature of neighbouring zones). In this case, the quantity name alone is not sufficient. Hence, the full input reference including object ID is passed as identifier (<strong>A change from NANDRAD 1!</strong>).</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>To identify an element within a vector-valued result it is not necessary to specify whether it should be index or id based - the model publishing the result defines whether it will be index or id based access.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Naturally, for scalar result variables the index/id property is ignored.</p>
-</div>
-<div class="paragraph">
-<p>The <code>QuantityName</code> struct contains this information (a string and an integer value).</p>
-</div>
-<div class="paragraph">
-<p>Now the model searches through its own results and tries to find a matching variable. In case of vector-valued quantities it also checks if the requested id is actually present in the model, and in case of index-based access, a check is done if the index is in the allowed range (0&#8230;&#8203;size-1).</p>
-</div>
-<div class="paragraph">
-<p>If a quantity could be found, the corresponding memory address is returned, otherwise a nullptr. The framework now can take the address and pass it to any object that requires this input.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_global_lookup_rulesglobal_variable_referencing">Global lookup rules/global variable referencing</h5>
-<div class="paragraph">
-<p>To uniquely reference a resulting variable (and its persistent memory location), first the actual model object/instance need to be selected with the following properties:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>the type of object to search for (= reference-type property), for example <code>MRT_ZONE</code> or <code>MRT_CONSTRUCTIONINSTANCE</code></p>
-</li>
-<li>
-<p>ID of the referenced object, i.e. zone id oder construction id.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Some model objects exist only once, for example schedules or climatic loads. Here, the reference-type is already enough to uniquely select the object.</p>
-</div>
-<div class="paragraph">
-<p>Usually, the information above does select several objects that have been created from the parametrization related to that ID. For example, the zone parameter block for some zone ID generates several zone-related model instances, all of which have the same ID. Since their result variables are all different, the framework simply searches through all those objects until the correct variable is found. These model implementations can be thought of as one model whose equations are split up into several implementation units.</p>
-</div>
-<div class="paragraph">
-<p>The actual variable <em>within</em> the selected object is found by ID name and optionally vector-element id/index, as described above.</p>
-</div>
-<div class="paragraph">
-<p>The data is collected in the class <code>InputReference</code>:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>ObjectReference</code> ( holds reference-type and referenced-object ID )</p>
-</li>
-<li>
-<p><code>QuantityName</code> (holds variable name and in case of vector-valued quantities also ID/index)</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Also, it is possible to specify a <code>constant</code> flag to indicate, that during iterations over cycles the variable is to be treated constant.</p>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>If several model objects are addressed by the same reference-type and ID (see example with models from zone parameter block), the variable names must be unique among all of these models.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_fmi_input_variable_overrides">FMI Input variable overrides</h5>
-<div class="paragraph">
-<p>Any input variable requested by any other model can be overridden by FMU import variables. When the framework looks up global model references, and an FMU import model is present/parametrized, then first the FMI generated quantity descriptions are checked. The FMU import variables are exported as global variable references (with ObjectReference). Since these are then the same global variable identifiers as published by the models, they are found first in the search and dependent models will simply store points to the FMU variable memory.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_examples_for_referenced_input_quantities">Examples for referenced input quantities</h5>
-<div class="sect5">
-<h6 id="_setpoint_from_schedules">Setpoint from schedules</h6>
-<div class="paragraph">
-<p>Schedules are defined for object lists. Suppose you have an object list name "Living rooms" and corresponding heating/cooling setpoints.</p>
-</div>
-<div class="paragraph">
-<p>Now a heating model may be defined that computes heating loads for a given zone. The heating model is implemented with a simple P-controller, that requires zone air temperature and zone heating setpoint.</p>
-</div>
-<div class="paragraph">
-<p>Definition of the input reference for the zone air temperature is done as in the example above. The setpoint will be similarly referenced:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code>- reference type = MRT_ZONE
-- object_id = 15 (id of the zone)
-- name = "HeatingSetPoint"</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_model_initialization_procedure">4.2. Model Initialization Procedure</h3>
-<div class="sect3">
-<h4 id="_pre_solver_setup_steps">4.2.1. Pre-Solver-Setup steps</h4>
-<div class="paragraph">
-<p>The following steps are done when initializing the model:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>parsing command-line and handling early command line options</p>
-</li>
-<li>
-<p>setting up directory structure and message handler/log file</p>
-</li>
-<li>
-<p>creating <code>NANDRAD::Project</code> instance</p>
-</li>
-<li>
-<p>setting default values via call to <code>NANDRAD::Project::initDefaults()</code></p>
-</li>
-<li>
-<p>reading the project file (only syntactical checks are done, and for IBK::Parameter static arrays with default units in keyword list, a check for compatible units is made), may overwrite defaults; correct units should be expected in the data model after reading the project file (maybe add suitable annotation to code generator?)</p>
-</li>
-<li>
-<p>merge similarly behaving construction instances (reduce data structure size)</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p><strong>From now on the project data structure remains unmodified in memory until end of solver runtime and persistent pointers can be used to address parameter sets. This means no vector resizing is allowed, no more data members may be added/removed. </strong></p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>setup fast-access connections between parameter data sets (zones to interfaces and vice versa) in Project data structure</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Now the actual model initialization starts.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_model_setup">4.2.2. Model Setup</h4>
-
-</div>
-</div>
-</div>
-</div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated 2020-08-25 11:14:09 +0200
+Last updated 2020-09-07 11:05:49 +0200
 </div>
 </div>
 <style>
