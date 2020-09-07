@@ -30,4 +30,6 @@ described in the test suite).
 
 ### TestCase 05
 
-... not done yet...
+<img src="TF05/results/TF05.1.png" width="400px"/><img src="TF05/results/TF05.1.png" width="400px"/><br>
+<img src="TF05/results/TF05.2.png" width="400px"/><img src="TF05/results/TF05.2.png" width="400px"/>
+<img src="TF05/results/TF05.3.png" width="400px"/><img src="TF05/results/TF05.3.png" width="400px"/>
