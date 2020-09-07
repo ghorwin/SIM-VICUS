@@ -15,55 +15,12 @@
 			<IBK:IntPara name="DiscMaxElementsPerLayer">30</IBK:IntPara>
 		</SolverParameter>
 		<Zones>
-			<Zone id="1" displayName="Var01" type="Active">
-				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
-				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
-			</Zone>
-			<Zone id="2" displayName="Var02" type="Active">
-				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
-				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
-			</Zone>
 			<Zone id="3" displayName="Var03" type="Active">
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
 			</Zone>			
 		</Zones>
 		<ConstructionInstances>
-			<!-- Surface Var 01 -->
-			<ConstructionInstance id="1" displayName="All Surfaces Var01">
-				<ConstructionTypeId>10005</ConstructionTypeId>
-				<IBK:Parameter name="Area" unit="m2">62</IBK:Parameter>
-				<InterfaceA id="10" zoneId="1">
-					<!--Interface to 'Room'-->
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
-					</InterfaceHeatConduction>
-				</InterfaceA>
-				<InterfaceB id="11" zoneId="0">
-					<!--Interface to outside-->
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
-					</InterfaceHeatConduction>
-				</InterfaceB>
-			</ConstructionInstance>
-			
-			<!-- Surface Var 02 -->	
-			<ConstructionInstance id="2" displayName="All Surfaces Var02">
-				<ConstructionTypeId>10005</ConstructionTypeId>
-				<IBK:Parameter name="Area" unit="m2">62</IBK:Parameter>
-				<InterfaceA id="20" zoneId="2">
-					<!--Interface to 'Room'-->
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
-					</InterfaceHeatConduction>
-				</InterfaceA>
-				<InterfaceB id="21" zoneId="0">
-					<!--Interface to outside-->
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
-					</InterfaceHeatConduction>
-				</InterfaceB>
-			</ConstructionInstance>
 			
 			<!-- Surface Var 03 -->	
 			<ConstructionInstance id="3" displayName="All Surfaces Var02">

@@ -2,7 +2,7 @@
 <NandradProject fileVersion="1.99">
 	<Project>
 		<ProjectInfo>
-			<Comment>SimQuality Testfall 05 (1,2 and 3)</Comment>
+			<Comment>SimQuality Testfall 05.2</Comment>
 		</ProjectInfo>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
@@ -15,38 +15,12 @@
 			<IBK:IntPara name="DiscMaxElementsPerLayer">30</IBK:IntPara>
 		</SolverParameter>
 		<Zones>
-			<Zone id="1" displayName="Var01" type="Active">
-				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
-				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
-			</Zone>
 			<Zone id="2" displayName="Var02" type="Active">
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
 			</Zone>
-			<Zone id="3" displayName="Var03" type="Active">
-				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
-				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
-			</Zone>			
 		</Zones>
 		<ConstructionInstances>
-			<!-- Surface Var 01 -->
-			<ConstructionInstance id="1" displayName="All Surfaces Var01">
-				<ConstructionTypeId>10005</ConstructionTypeId>
-				<IBK:Parameter name="Area" unit="m2">62</IBK:Parameter>
-				<InterfaceA id="10" zoneId="1">
-					<!--Interface to 'Room'-->
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
-					</InterfaceHeatConduction>
-				</InterfaceA>
-				<InterfaceB id="11" zoneId="0">
-					<!--Interface to outside-->
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
-					</InterfaceHeatConduction>
-				</InterfaceB>
-			</ConstructionInstance>
-			
 			<!-- Surface Var 02 -->	
 			<ConstructionInstance id="2" displayName="All Surfaces Var02">
 				<ConstructionTypeId>10005</ConstructionTypeId>
@@ -65,23 +39,6 @@
 				</InterfaceB>
 			</ConstructionInstance>
 			
-			<!-- Surface Var 03 -->	
-			<ConstructionInstance id="3" displayName="All Surfaces Var02">
-				<ConstructionTypeId>10005</ConstructionTypeId>
-				<IBK:Parameter name="Area" unit="m2">62</IBK:Parameter>
-				<InterfaceA id="30" zoneId="3">
-					<!--Interface to 'Room'-->
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
-					</InterfaceHeatConduction>
-				</InterfaceA>
-				<InterfaceB id="31" zoneId="0">
-					<!--Interface to outside-->
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
-					</InterfaceHeatConduction>
-				</InterfaceB>
-			</ConstructionInstance>
 		</ConstructionInstances>
 		
 		<ConstructionTypes>
@@ -111,17 +68,6 @@
 		</Models>
 		<Schedules>
 			<ScheduleGroups>
-				<ScheduleGroup objectList="Zone Var01">
-					<!-- AllDays constant  -->
-					<Schedule type="AllDays">
-						<DailyCycles>
-							<DailyCycle interpolation="Constant">
-								<TimePoints>0</TimePoints>
-								<Values>InfiltrationRateSchedule [1/h]:0</Values>
-							</DailyCycle>
-						</DailyCycles>
-					</Schedule>
-				</ScheduleGroup>
 
 				<ScheduleGroup objectList="Zone Var02">
 					<!-- AllDays constant  -->
@@ -135,27 +81,6 @@
 					</Schedule>
 				</ScheduleGroup>
 
-				<ScheduleGroup objectList="Zone Var03">
-					<!-- AllDays constant  -->
-					<Schedule type="AllDays">
-						<DailyCycles>
-							<DailyCycle interpolation="Constant">
-								<TimePoints>0</TimePoints>
-								<Values>InfiltrationRateSchedule [1/h]:0.5</Values>
-							</DailyCycle>
-						</DailyCycles>
-					</Schedule>
-					<Schedule type="AllDays">
-						<StartDayOfTheYear>151</StartDayOfTheYear>		<!-- 1.Juni 31+28+31+30+31=151 -->
-						<EndDayOfTheYear>273</EndDayOfTheYear>			<!-- 30.September  31+28+31+30+31+30+31+31+30=273 -->
-						<DailyCycles>
-							<DailyCycle interpolation="Constant">
-								<TimePoints>0 6 20</TimePoints>
-								<Values>InfiltrationRateSchedule [1/h]:2 0.5 2</Values>
-							</DailyCycle>
-						</DailyCycles>
-					</Schedule>
-				</ScheduleGroup>
 			</ScheduleGroups>
 		</Schedules>
 		
@@ -167,18 +92,8 @@
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
-					<Quantity>InfiltrationRate[1]</Quantity>
-					<ObjectListName>InfiltrationModel</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>InfiltrationRate[2]</Quantity>
-					<ObjectListName>InfiltrationModel</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>InfiltrationRate[3]</Quantity>
-					<ObjectListName>InfiltrationModel</ObjectListName>
+					<Quantity>InfiltrationRate</Quantity>
+					<ObjectListName>Zone</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 			</OutputDefinitions>
@@ -212,10 +127,6 @@
 			<ObjectList name="Zone Var03">
 				<FilterID>3</FilterID>
 				<ReferenceType>Zone</ReferenceType>
-			</ObjectList>
-			<ObjectList name="InfiltrationModel">
-				<FilterID>501</FilterID>
-				<ReferenceType>Model</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
 	</Project>
