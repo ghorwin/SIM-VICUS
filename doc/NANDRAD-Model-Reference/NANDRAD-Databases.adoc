@@ -1,4 +1,72 @@
-# Construction Types
+# Building Components 
 
-# Materials
+## Overview
+
+In order to model building components such as Walls, Ceilings and Floors, etc. it is necessary to define some parameters for the Materials and then the Construction with the reference to an existing material. 
+
+image::images/Mat_ConstInst.png[]
+
+## Materials
+
+In the NANDRAD-Model the Materials-Section starts with an XML-Tag named `Materials`. In this each Material starts with an XML-Tag named `Material` with two XML-Attributes `id` and `displayName`.  
+Concerning the Material Parameters such as Density, Heat Capacity and Conductivity they need to be defined within the XML-Tag `IBK:Parameter` with the XML-Attributes `name` and `unit`.
+In the following it is described in detail.
+
+Example:
+[source,xml]
+----
+		<Materials>
+			<Material id="1001" displayName="Brick">
+				<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+			</Material>
+			<Material id="1004" displayName="Good Insulation">
+				<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.02</IBK:Parameter>
+			</Material>
+		</Materials
+----
+Inside the XML-Tag named `Materials` each Material starts with the XML-Tag `Material`. The following XML-Attributes need to be defined:
+
+* _id:_ `1001` - defines the Identifier of the Material, needs to be a unique positive Integer ( > 0 )
+* _displayName:_ `Brick` - defines the Display Name of the Material. Is needed to find the Material in the Data Model and in Outputs more easily.
+
+The following XML-Tags named `IBK:Parameters` with the XML-Attributes `name` and `unit` with the following entries need to be defined:
+
+* _name:_ `Density` - defines the Density, _unit:_ per Default in `kg/m³` 
+* _name:_ `HeatCapacity` - defines the Heat Capacity, _unit:_ per Default in `J/kgK` 
+* _name:_ `Conductivity` - defines the Conductivity, _unit:_ per Default in `W/mK` 
+
+
+## Construction Types
+
+The Construction is defined inside the Sections starting with an XML-Tag `Construction Types`. Inside the Section each Construction start with the XML-Tag named `Construction Type` with the XML-Attributes `id` and `displayName`. Inside that it is necessary to specify the Material Layers with the XML-Tag named `MaterialLayers` and finally the Material Layer with the XML-Tag `MaterialLayer` with the XML-Attributes `thickness` and `matId`. The `MaterialLayer` is always an empty Object since all needed Attributes are defined as XML-Attributes as mentioned before. 
+In the following it is described in detail.
+
+Example:
+[source,xml]
+----
+		<ConstructionTypes>
+			<ConstructionType id="10005" displayName="Test Construction">
+				<MaterialLayers>
+					<MaterialLayer thickness="0.2" matId="1001" /> <!-- room side -->
+					<MaterialLayer thickness="0.3" matId="1004" /> 
+				</MaterialLayers>
+			</ConstructionType>
+		</ConstructionTypes>
+
+----
+Inside the XML-Tag named `ConstructionTypes` each Construction starts with the XML-Tag `ConstructionType`. The following XML-Attributes need to be defined inside of this:
+
+* _id:_ `10005` - defines the Identifier of the Material, needs to be a unique positive Integer ( > 0 )
+* _displayName:_ `Test Construction` - defines the Display Name of the Material. Is needed to find the Material in the Data Model and in Outputs more easily.
+
+Furthermore each defined Construction has Material Layers encapsulated within the XML-Tag `MaterialLayers`. Each Material Layer needs the be defined with the XML-Tag named `MaterialLayer`. This Tag needs the XML-Attributes `thickness` and `matId`:
+
+* _thickness:_ `0.2` - defines the Thickness, per Default in `m`, needs to be a positive Double 
+* _matId:_ `1001` - refers to the a Material with the ID `1001` defined in the `Materials` Section
+
+
 
