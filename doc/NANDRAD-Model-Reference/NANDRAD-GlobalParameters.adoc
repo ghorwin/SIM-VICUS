@@ -1,0 +1,10 @@
+# Global parameters
+
+- parameters controlling how the model operates
+- parameters controlling model accuracy
+- parameters controlling performance
+
+## Simulation Parameters
+
+## Solver Parameters
+

@@ -59,6 +59,7 @@
 						<MinorGridVisible>0</MinorGridVisible>
 						<DateTimeEnabled>1</DateTimeEnabled>
 						<DateTimeZero>1041379200000</DateTimeZero>
+						<DateTimeFormats>hh:mm:ss:zzz&#x0A;dd hh:mm:ss&#x0A;dd.MM. hh:mm&#x0A;hh:mm;;dd.MM.&#x0A;dd.MM.yyyy&#x0A;dd.MM.yyyy&#x0A;MMM&#x0A;yyyy</DateTimeFormats>
 					</Axis>
 					<Axis index="1">
 						<TitleText>$quantity [$unit]</TitleText>
@@ -88,7 +89,7 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
-		<Mapper name="$project: $basename">
+		<Mapper name="TF05.2">
 			<Extractors>
 				<Extractor>
 					<DataIOFileName>SimQuality_TF05/results/states.tsv?1|2|3</DataIOFileName>
@@ -108,13 +109,14 @@
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
+						<TitleText>NANDRAD 2</TitleText>
 						<PenColor>#cc0000</PenColor>
 						<MarkerColor>#cc0000</MarkerColor>
 					</Series>
 					<Series>
-						<TitleText>$quantity</TitleText>
+						<TitleText>Referenz</TitleText>
 						<MarkerStyle>0</MarkerStyle>
+						<PenStyle>0</PenStyle>
 						<MarkerColor>#000000</MarkerColor>
 					</Series>
 				</SeriesProperties>
@@ -124,11 +126,13 @@
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">d</IBK:Unit>
-						<Maximum>223.72363849880117</Maximum>
-						<Minimum>199.23472133874833</Minimum>
+						<Maximum>997039322366</Maximum>
+						<Minimum>995873879923</Minimum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
+						<DateTimeEnabled>1</DateTimeEnabled>
 						<DateTimeZero>978314400000</DateTimeZero>
+						<DateTimeFormats>hh:mm:ss:zzz&#x0A;dd hh:mm:ss&#x0A;dd.MM. hh:mm&#x0A;hh:mm;;dd.MM.&#x0A;dd.MM.&#x0A;dd.MM.yyyy&#x0A;MMM yyyy&#x0A;yyyy</DateTimeFormats>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
@@ -147,7 +151,7 @@
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>$project: $basename</TitleText>
+					<TitleText>TF05.2</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
@@ -159,7 +163,7 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
-		<Mapper name="$project: $basename">
+		<Mapper name="TF05.3">
 			<Extractors>
 				<Extractor>
 					<DataIOFileName>SimQuality_TF05/results/states.tsv?1|2|3</DataIOFileName>
@@ -179,12 +183,12 @@
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
+						<TitleText>NANDRAD 2</TitleText>
 						<PenColor>#cc0000</PenColor>
 						<MarkerColor>#cc0000</MarkerColor>
 					</Series>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
+						<TitleText>Referenz</TitleText>
 						<MarkerStyle>0</MarkerStyle>
 						<PenStyle>0</PenStyle>
 						<MarkerColor>#000000</MarkerColor>
@@ -196,29 +200,31 @@
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">d</IBK:Unit>
-						<Maximum>242.43697478991598</Maximum>
-						<Minimum>188.65546218487395</Minimum>
+						<Maximum>996966432080.89062</Maximum>
+						<Minimum>996191144025.93591</Minimum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
+						<DateTimeEnabled>1</DateTimeEnabled>
 						<DateTimeZero>978314400000</DateTimeZero>
+						<DateTimeFormats>hh:mm:ss:zzz&#x0A;dd hh:mm:ss&#x0A;dd.MM. hh:mm&#x0A;hh:mm;;dd.MM.&#x0A;dd.MM.&#x0A;dd.MM.yyyy&#x0A;MMM yyyy&#x0A;yyyy</DateTimeFormats>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
-						<Maximum>29.044289044289044</Maximum>
-						<Minimum>8.7062937062937067</Minimum>
+						<Maximum>19.001052513301744</Maximum>
+						<Minimum>16.00338212920196</Minimum>
 						<MinorGridVisible>0</MinorGridVisible>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>-27.136327416009021</Maximum>
-						<Minimum>-27.151481526119664</Minimum>
+						<Maximum>-27.143803721574479</Maximum>
+						<Minimum>-27.146052025979866</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>$project: $basename</TitleText>
+					<TitleText>TF05.3</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
@@ -236,7 +242,7 @@
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="0" size1="1" size2="1" orientation="2" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="2" size1="1" size2="1" orientation="2" />
 		<FocusedWidget>0</FocusedWidget>
 	</Splitting>
 

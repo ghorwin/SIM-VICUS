@@ -1,0 +1,10 @@
+# Zones
+
+# Constructions
+
+# Interfaces (construction boundary conditions)
+
+## Ambient climate boundary conditions
+
+## Interface between constructions and zones (internal boundary conditions)
+

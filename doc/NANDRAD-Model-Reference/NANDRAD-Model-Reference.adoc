@@ -28,6 +28,12 @@ This document contains a description of the various implemented models and the p
 
 ## Models and Input Reference
 
+include::NANDRAD-Geometry.adoc[leveloffset=+2]
+include::NANDRAD-Databases.adoc[leveloffset=+2]
 include::NANDRAD-Loads.adoc[leveloffset=+2]
 include::NANDRAD-Schedules.adoc[leveloffset=+2]
+
+include::NANDRAD-GlobalParameters.adoc[leveloffset=+1]
+
 include::NANDRAD-Outputs.adoc[leveloffset=+1]
+
