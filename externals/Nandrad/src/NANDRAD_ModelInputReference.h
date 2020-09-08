@@ -27,32 +27,8 @@
 
 namespace NANDRAD {
 
-class ObjectList;
-
-/*!	\brief Declaration for class ModelInputReference
-
-	References an input quantity for some model. Such a quantity is uniquely identified through:
-	* type of input source (for example a zone, construction instance, ...)
-	* source name, which is the keyword of the quantity defined as computed output quantity in the source model
-	* target name, which is the keyword of the input variable in the target model.
-	* dependent on type, the unique ID of the source model instance
-
-	When zone quantites (for example air temperatures) are referenced, the ID must be the zone id, except for
-	outside zones (MRT_OUTSIDE), where the ID is implicitely 0.
-
-	When referencing surface properties, there is a distinction between inside and outside surfaces. The
-	outside surface will have additional quantities, for example net solar radiation flux (e.g. usable by
-	a shading model).
-
-	The construction instance can be referenced to retrieve information about active components
-	(wall layer heating ...) or to retrieve temperature profiles etc.
-
-	Interfaces (MRT_INTERFACE) can be queried for wall surface temperatures.
-
-	\note Do not use as storage member, this is purely an internal class with keyword list support.
-
-	\todo Review this class and check whether this class is needed as such or whether the reference type
-		enum should rather be moved to NandradSolver.
+/*!	Defines a reference type enumeration, used to identify groups of objects with same global access type.
+	\todo is the class scope still needed?
 */
 class ModelInputReference {
 public:
@@ -60,7 +36,7 @@ public:
 	/*! Types used to identify either models generated implicitly from parametrization blocks,
 		or other generic models (MRT_MODEL).
 		For each parametrization type that results in implicit models, for example Zone,
-		ConstructionInstance, Interface etc exactly one type identifier is defined.
+		ConstructionInstance, Interface etc. exactly one type identifier is defined.
 	*/
 	enum referenceType_t {
 		MRT_LOCATION,				// Keyword: Location				'Model references of climate/location models.'
@@ -76,29 +52,6 @@ public:
 		NUM_MRT
 	};
 
-	// *** PUBLIC MEMBER VARIABLES ***
-
-	/*! Name of the property inside the dependent (this) model. */
-	std::string							m_targetName;
-	/*! Name of the object list.*/
-	std::string							m_objectList;
-	/*! Name of the input reference */
-	std::string							m_quantity;
-
-	/*! True, if referenced quantity is to be treated constant during
-		update cycles (essentially prevents adding a evaluation dependency).
-	*/
-	bool								m_constant = false;
-
-
-	// *** Variables used only during simulation ***
-
-	/*! Pointer to the referenced object list.
-		Is set to zero after reading. Connect to the
-		corresponding object list inside the model section!
-		\todo deprecated?
-	*/
-	const NANDRAD::ObjectList			*m_objectListRef = nullptr;
 };
 
 } // namespace NANDRAD

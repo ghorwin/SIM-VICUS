@@ -38,8 +38,9 @@ namespace NANDRAD {
 class Zone;
 
 /*!	An Interface identifies a surface of a wall and stores all data that are needed for boundary
-	condition calculation. Its position at the wall is identified by the location_t-attribute, either
-	A or B side of the construction (A - layer index 0, B - other side).
+	condition calculation. Each ConstructionInstance contains two member variables of type
+	Interface, which uniquely define the boundary condition parameters at side
+	A or B of the construction (A - layer index 0, B - other side).
 
 	The zone at the other side of the wall surface is identified by its zone ID.
 	The zone ID = 0 indicates ambient climate. If the construction is adiabatic,
@@ -81,13 +82,13 @@ public:
 	unsigned int								m_zoneId = 0;			// XML:A
 
 	// Boundary condition parameters
-	/*! Model for heat transfer coefficient. */
+	/*! Model for convective heat transfer. */
 	InterfaceHeatConduction						m_heatConduction;		// XML:E
-	/*! Model for solar absorption coefficient. */
+	/*! Model for solar absorption. */
 	InterfaceSolarAbsorption					m_solarAbsorption;		// XML:E
 	/*! Model for long wave emissivity. */
 	InterfaceLongWaveEmission					m_longWaveEmission;		// XML:E
-	/*! Model for vapor diffusion. */
+	/*! Model for vapor diffusion (requires enabled moisture balance). */
 	InterfaceVaporDiffusion						m_vaporDiffusion;		// XML:E
 	/*! Model for air flow calculation. */
 	InterfaceAirFlow							m_airFlow;				// XML:E

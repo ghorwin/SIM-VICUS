@@ -31,23 +31,21 @@
 
 namespace NANDRAD {
 
-/*!	\brief Declaration for class Location
-
-	The Location stores all references needed to specify climate and climate loads of the
-	whole building. Note that an orientation can be given both for construction instances
-	and as a global location parameter inducing a rotation twice.
-
-	The climate is specified by a reference string ( climate not only depends
-	on latitude and longitute but also detailed location information).
+/*!	Class Location specifies climate and climatic loads of the
+	whole building.
 */
-
 class Location {
 public:
 
+	/*! Location parameters. */
 	enum para_t {
+		/*! Latitude. */
 		P_Latitude,					// Keyword: Latitude		[Deg]	'Latitude.'
+		/*! Longitude. */
 		P_Longitude,				// Keyword: Longitude		[Deg]	'Longitude.'
-		P_Albedo,					// Keyword: Albedo			[%]		'Albedo value [0..100].'
+		/*! Albedo value [0..100 %]. */
+		P_Albedo,					// Keyword: Albedo			[%]		'Albedo value [0..100 %].'
+		/*! Altitude of building as height above NN [m]. */
 		P_Altitude,					// Keyword: Altitude		[m]		'Altitude of building as height above NN [m].'
 		NUM_P
 	};
@@ -70,7 +68,7 @@ public:
 	/*! If enabled, Perez model for diffuse radiation is used. */
 	IBK::Flag					m_perezDiffuseRadiationModel;			// XML:E
 
-	/*! We may place one or more sensors outside. */
+	/*! We may place one or more radiation sensors outside. */
 	std::vector<Sensor>			m_sensors;								// XML:E
 
 };

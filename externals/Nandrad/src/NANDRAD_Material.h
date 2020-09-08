@@ -32,9 +32,13 @@ namespace NANDRAD {
 class Material {
 public:
 
+	/*! Basic parameters. */
 	enum para_t {
+		/*! Dry density of the material. */
 		P_Density,					// Keyword: Density				[kg/m3]	'Dry density of the material.'
+		/*! Specific heat capacity of the material. */
 		P_HeatCapacity,				// Keyword: HeatCapacity		[J/kgK]	'Specific heat capacity of the material.'
+		/*! Thermal conductivity of the dry material. */
 		P_Conductivity,				// Keyword: Conductivity		[W/mK]	'Thermal conductivity of the dry material.'
 		NUM_P
 	};

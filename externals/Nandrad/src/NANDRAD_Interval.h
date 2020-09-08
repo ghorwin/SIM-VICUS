@@ -38,9 +38,12 @@ class Interval {
 public:
 	/*! Parameters. */
 	enum para_t {
+		/*! Start time point. */
 		P_Start,		// Keyword: Start		[d] 'Start time point.'
+		/*! End time point. */
 		P_End,			// Keyword: End			[d] 'End time point.'
-		P_StepSize,	// Keyword: StepSize	[h] 'StepSize.'
+		/*! StepSize. */
+		P_StepSize,		// Keyword: StepSize	[h] 'StepSize.'
 		NUM_P
 	};
 

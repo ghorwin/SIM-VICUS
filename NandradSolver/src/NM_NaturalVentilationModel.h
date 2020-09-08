@@ -5,6 +5,8 @@
 #include "NM_AbstractStateDependency.h"
 #include "NM_VectorValuedQuantity.h"
 
+#include <NANDRAD_ObjectList.h>
+
 namespace NANDRAD {
 	class SimulationParameter;
 	class NaturalVentilationModel;

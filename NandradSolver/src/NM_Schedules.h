@@ -33,6 +33,7 @@
 namespace NANDRAD {
 	class Project;
 	class Schedules;
+	class ObjectList;
 }
 
 namespace NANDRAD_MODEL {

@@ -47,7 +47,7 @@ public:
 	/*! Equality operator. */
 	bool operator==(const MaterialLayer & other) const { return !operator!=(other); }
 
-	/*! Thickness in m. */
+	/*! Thickness in [m]. */
 	double					m_thickness;				// XML:A
 
 	/*! Material id. */

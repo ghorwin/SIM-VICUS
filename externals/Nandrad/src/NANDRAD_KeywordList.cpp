@@ -835,7 +835,7 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "Latitude.";
 				case 1 : return "Longitude.";
-				case 2 : return "Albedo value [0..100].";
+				case 2 : return "Albedo value [0..100 %].";
 				case 3 : return "Altitude of building as height above NN [m].";
 			} break;
 			// Material::para_t
