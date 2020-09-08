@@ -15,18 +15,18 @@ In the following it is described in detail.
 Example:
 [source,xml]
 ----
-		<Materials>
-			<Material id="1001" displayName="Brick">
-				<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
-				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
-				<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
-			</Material>
-			<Material id="1004" displayName="Good Insulation">
-				<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>
-				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
-				<IBK:Parameter name="Conductivity" unit="W/mK">0.02</IBK:Parameter>
-			</Material>
-		</Materials
+<Materials>
+	<Material id="1001" displayName="Brick">
+		<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+		<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+	</Material>
+	<Material id="1004" displayName="Good Insulation">
+		<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>
+		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+		<IBK:Parameter name="Conductivity" unit="W/mK">0.02</IBK:Parameter>
+	</Material>
+</Materials
 ----
 Inside the XML-Tag named `Materials` each Material starts with the XML-Tag `Material`. The following XML-Attributes need to be defined:
 
@@ -48,15 +48,14 @@ In the following it is described in detail.
 Example:
 [source,xml]
 ----
-		<ConstructionTypes>
-			<ConstructionType id="10005" displayName="Test Construction">
-				<MaterialLayers>
-					<MaterialLayer thickness="0.2" matId="1001" /> <!-- room side -->
-					<MaterialLayer thickness="0.3" matId="1004" /> 
-				</MaterialLayers>
-			</ConstructionType>
-		</ConstructionTypes>
-
+<ConstructionTypes>
+	<ConstructionType id="10005" displayName="Test Construction">
+		<MaterialLayers>
+			<MaterialLayer thickness="0.2" matId="1001" /> <!-- room side -->
+			<MaterialLayer thickness="0.3" matId="1004" /> 
+		</MaterialLayers>
+	</ConstructionType>
+</ConstructionTypes>
 ----
 Inside the XML-Tag named `ConstructionTypes` each Construction starts with the XML-Tag `ConstructionType`. The following XML-Attributes need to be defined inside of this:
 
