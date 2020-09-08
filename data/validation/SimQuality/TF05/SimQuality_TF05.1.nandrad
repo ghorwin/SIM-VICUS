@@ -2,7 +2,7 @@
 <NandradProject fileVersion="1.99">
 	<Project>
 		<ProjectInfo>
-			<Comment>SimQuality Testfall 04.4</Comment>
+			<Comment>SimQuality Testfall 05.1</Comment>
 		</ProjectInfo>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
@@ -44,7 +44,7 @@
 		<ConstructionTypes>
 			<ConstructionType id="10005" displayName="Air Change Test Construction">
 				<MaterialLayers>
-					<MaterialLayer thickness="0.2" matId="1001" /> <!-- room side -->
+					<MaterialLayer thickness="0.2" matId="1001" />
 					<MaterialLayer thickness="0.3" matId="1004" /> 
 				</MaterialLayers>
 			</ConstructionType>

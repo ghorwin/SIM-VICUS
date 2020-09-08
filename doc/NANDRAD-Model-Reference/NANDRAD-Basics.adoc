@@ -28,6 +28,27 @@ Within the various specificiation sections of the project file some basic data t
 
 ## IBK:Parameter
 
+Ein XML-Tag mit dem Namen `IBK:Parameter` wird durch die XML-Attribute  `name` und `unit` definiert. Der "Zahlenwert" ist im XML-Element beschrieben.
+
+[IMPORTANT]
+====
+
+Der Name und die Einheit sind immer im Zusammenhang zu definieren. Dafür gibt es sogenannte Keyword-Lists. Als Einheitenbasis wird die SI Definition verwendet.
+
+====
+
+Beispielhaft sind nachfolgend verschiedene `IBK:Parameter` mit unterschiedlichen Einheiten dargestellt.
+
+Example:
+[source,xml]
+----
+
+<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+
+<IBK:Parameter name="Temperature" unit="C">20</IBK:Parameter>
+<IBK:Parameter name="Temperature" unit="K">293.15</IBK:Parameter>
+----
+
 ## IBK:IntPara
 
 ## IBK:Flag
