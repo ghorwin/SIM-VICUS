@@ -1,5 +1,6 @@
 # Outputs: definitions, rules and implementation
 
+[[output_definitions]]
 ## Output definitions
 
 Outputs are defined via:
@@ -66,7 +67,6 @@ Intervals can have up to 3 parameters:
 #### Time definitions
 
 Time points in `Start` and `End` parameters are defined with respect to Midnight January 1st of the year in which the simulation starts.
-
 
 
 #### Rules

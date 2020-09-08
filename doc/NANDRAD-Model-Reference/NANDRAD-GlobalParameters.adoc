@@ -1,10 +1,18 @@
 # Global parameters
 
+
 - parameters controlling how the model operates
 - parameters controlling model accuracy
 - parameters controlling performance
 
 ## Simulation Parameters
+
+### Simulation time and absolute time reference
+
+- how is the simulation time defined
+- how is the absolute time obtained (start year and start time)
+- how are cyclic annual simulations handled, how are continuous multi-year simulations handled
+
 
 ## Solver Parameters
 

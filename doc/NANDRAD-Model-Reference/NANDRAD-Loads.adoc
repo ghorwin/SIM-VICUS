@@ -15,17 +15,18 @@ Information about location and climate data is stored in the `Location` section 
 	<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
 	<IBK:Parameter name="Albedo" unit="-">0.2</IBK:Parameter>
 	<IBK:Parameter name="Altitude" unit="m">100</IBK:Parameter>
+	<IBK:Flag name="PerezDiffuseRadiationModel">false</IBK:Flag>
 	<ClimateFileName>${Project Directory}/climate/GER_Potsdam_2017.c6b</ClimateFileName>
 </Location>
 ----
 
-The parameter `Albedo` is used for diffuse solar radiation calculation (see <<loads_solar_radiation>>).
+Parameters (see section <<basic_types>> for into on types):
 
-Parameters `Latitude` and `Longitude` are optional if a climate data file is given, otherwise they override the location parameters stored therein (see <<location_settings>>).
-
-`Altitude` is (later) needed for specific altitude-related parameters (**TODO**).
-
-The `<ClimateFileName>` tag defines the path to the climate data file.
+* The parameter `Albedo` is required and used for diffuse solar radiation calculation (see <<loads_solar_radiation>>). Valid value range in [0,1].
+* Parameters `Latitude` and `Longitude` are optional. If present, they override the location parameters stored therein (see <<location_settings>>).
+* `Altitude` is optional and later needed for specific altitude-related parameters (**TODO**).
+* The optional flag `PerezDiffuseRadiationModel` defines whether to use the Perez-Model for diffuse solar radiation calculation (when `true`), or the isotropic radiation model (`false`). Default setting is `false`.
+* The `<ClimateFileName>` tag defines the path to the climate data file.
 
 [[loads_climate_files]]
 ### Climate Data Files
@@ -53,28 +54,79 @@ To avoid this problem, you may specify directory placeholders to locate the clim
 It is possible to define custom placeholders in the project for all externally referenced files, see <<path_placeholders>>.
 
 
-
-
 [[location_settings]]
 ### Building/Station location
 
-Typically, climate data files contain information on latitude and longitude of the weather station. 
+Climate data files contain information on latitude and longitude of the weather station, which is also taken to be the location of the building. This ensures that simulated time and position of the sun matches.
 
-- If these parameters are not specified explicitely in the project file, the latitude/longitude from the climate data file are used.
-- If parameters are specified in the project file, always **both** parameters must be given (and be valid) and then the these parameters from the project file are used instead of the climate data file location parameters.
+It is also possible to define latitude/longitude in the project file. If these parameters are specified in the project file, always **both** parameters must be given (and be valid) and then the these parameters from the project file are used instead of the climate data file location parameters.
+[CAUTION]
+====
+By specifying latitude different from the climatic station, the computed sun position may no longer correspond to the sun position at the weather station, thus yielding probably wrong solar radiation loads.
+====
 
 Valid value range for `Latitude` is [-90,90] degrees (positive values are northern hemisphere), for `Longitude` it is [-180,180] degrees (positive values are east of Greenwich).
 
 
 ### Additional radiation sensors
 
-It is possible to specify additional planes (sensors) to generate solar radiation load outputs.
+It is possible to specify additional planes (sensors) to generate solar radiation load outputs. This is done by specifying a `Sensor` definition.
 
-This is done by specifying a `Sensor` definition.
+[source,xml]
+----
+<Location>
+    ....
+    <Sensors>
+		<!-- Flat roof -->
+		<Sensor id="1">
+			<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+			<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
+		</Sensor>
+		<!-- North Wall 90 -->
+		<Sensor id="2">
+			<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+			<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+		</Sensor>
+        ...
+    </Sensors>
+</Location>
+----
 
+A sensor must be given a unique ID number and the mandatory parameters `Orientation` and `Inclination` (see section << construction_interfaces>> for details on their definition).
+
+For each sensor 4 output quantities are generated:
+* `DirectSWRadOnPlane[<sensor id>]`  - direct solar radiation intensity on plane in [W/m2]
+* `DiffuseSWRadOnPlane[<sensor id>]` - diffuse solar radiation intensity on plane in [W/m2]
+* `GlobalSWRadOnPlane[<sensor id>]` - global radiation intensity on plane in [W/m2] (the sum of the former two)
+* `IncidenceAngleOnPlane[<sensor id>]` - the incidence angle onto the plane in [Deg] (0° when sun ray is perpendicular to the plane, 90° when ray is parallel to the plane or when sun is below horizon)
+
+Example for a sensor output (see also output description in section <<output_definitions>>).
+
+[source,xml]
+----
+<OutputDefinitions>
+    ...
+    <!-- direct radiation intensive from sensor with id=2 -->
+	<OutputDefinition>
+		<Quantity>DirectSWRadOnPlane[2]</Quantity> 
+		<ObjectListName>Location</ObjectListName>
+		<GridName>minutely</GridName>
+	</OutputDefinition>
+	<!-- incidence angle from sensor with id=42 -->
+	<OutputDefinition>
+		<Quantity>IncidenceAngleOnPlane[42]</Quantity>
+		<ObjectListName>Location</ObjectListName>
+		<GridName>minutely</GridName>
+	</OutputDefinition>
+    ...
+</OutputDefinitions>
+----
 
 [[loads_solar_radiation]]
-### Solar Radiation Calculation
+## Solar Radiation Calculation
+
+Solar radiation calculation follows the equations lists in section ... of the __Physical Model Reference__. The `Albedo` parameter is used in the diffuse radiation load calculation.
+
 
 ## Implementation
 

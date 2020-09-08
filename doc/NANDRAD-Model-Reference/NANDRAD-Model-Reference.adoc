@@ -20,11 +20,6 @@ This document contains a description of the various implemented models and the p
 
 ## Overview
 
-### Simulation time and absolute time reference
-
-- how is the simulation time defined
-- how is the absolute time obtained (start year and start time)
-- how are cyclic annual simulations handled, how are continuous multi-year simulations handled
 
 ## Models and Input Reference
 
