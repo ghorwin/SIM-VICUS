@@ -24,7 +24,7 @@
 namespace NANDRAD {
 
 bool Outputs::operator!=(const Outputs & other) const {
-	if (m_outputDefinitions != other.m_outputDefinitions) return true;
+	if (m_definitions != other.m_definitions) return true;
 	if (m_grids != other.m_grids) return true;
 	if (m_binaryFormat != other.m_binaryFormat) return true;
 	if (m_timeUnit != other.m_timeUnit) return true;

@@ -47,7 +47,7 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! List with output (file) definitions. */
-	std::vector<OutputDefinition>				m_outputDefinitions;		// XML:E
+	std::vector<OutputDefinition>				m_definitions;				// XML:E
 
 	/*! List with output grids. */
 	std::vector<OutputGrid>						m_grids;					// XML:E

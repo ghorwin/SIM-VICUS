@@ -148,7 +148,7 @@ Example:
 		<ConstructionTypeId>101</ConstructionTypeId>
 		<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
 		<InterfaceA id="10" zoneId="1">
-			<!--Interface to 'Room'-->
+			<!--Interface to zone 'Single room model' -->
 			<InterfaceHeatConduction modelType="Constant">
 				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter>
 			</InterfaceHeatConduction>
@@ -159,14 +159,69 @@ Example:
 				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">15</IBK:Parameter>
 			</InterfaceHeatConduction>
 			<InterfaceSolarAbsorption modelType="Constant">
-				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">0.6</IBK:Parameter>
+				<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
 			</InterfaceHeatConduction>
 			<InterfaceLongWaveEmission modelType="Constant">
-				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">0.9</IBK:Parameter>
+				<IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
 			</InterfaceHeatConduction>
 		</InterfaceB>
 	</ConstructionInstance>
 </ConstructionInstances>
 ---- 
 
+#### Ausgaben
+
+Die gewünschten Ausgaben müssen definiert werden, anderenfalls wird eine Simulation gestartet ohne ausgegebene Ergebnisgrößen zu erhalten. Die Ausgaben `Outputs` gliedern sich in `Definitions` und `Grids`. In den `Grids` werden die Intervalgrößen und optional die Zeitpunkte für die Ausgabe festgelegt. Die `Definitions` bestehen aus einzelnen Ausgaben `OutputDefinition` mit einem Name einer Objektliste `ObjectListName`, einem Ausgaberasternamen `GridName` und einer Ergebnisgröße `Quantity`. Zusätzlich kann die Intervalbehandlung `timeType` und der Ausgabedateiname `Filename` angegeben werden. In der Intervalbehandlung werden entweder Momentanwerte zum Intervalende, Mittel- oder Integralwerte des Intervals ausgegeben. In einer separaten Diskussion werden die <<Intervalbehandlungen>> genauer beschrieben.
+
+Die Objektliste gruppiert alle Objekt-Ids, über welche auf die Objekte wie Zonen, Modelle, etc. selbst zugegriffen werden kann. Die Objektliste `ÒbjectList` besteht aus einer `FilterId`, einem `ReferenceType` und einem Namen `name`. Über einen `*` können alle vorhanden Ids einer Referenztyps adressiert werden.
+Im vorliegende Beispiel wird gezeigt, wie die Ausgaben der Modelle über die Objektliste referenziert werden.
+
+Example:
+[source,xml]
+----
+<ObjectLists>
+	<ObjectList name="Zone">
+		<FilterID>*</FilterID>
+		<ReferenceType>Zone</ReferenceType>
+	</ObjectList>
+</ObjectLists>
+----
+
+Im nachfolgenden Beispiel wird die Lufttemperatur abgefragt und in die <<Standardausgabedatei>> geschrieben. Als Interval wurde ein Stundenzeitraster gewählt. Die Ausgabe erfolgt über die gesamte <<SimulationPeriod, Simulationsdauer>>.
+
+Example:
+[source,xml]
+----
+<Outputs>
+	<OutputDefinitions>
+		<OutputDefinition>
+			<Quantity>AirTemperature</Quantity>
+			<ObjectListName>Zone</ObjectListName>
+			<GridName>hourly</GridName>
+		</OutputDefinition>
+	</OutputDefinitions>
+	<Grids>
+		<OutputGrid name="hourly">
+			<Intervals>
+				<Interval>
+					<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+				</Interval>
+			</Intervals>
+		</OutputGrid>
+	</Grids>
+</Outputs>
+----
+
+#### Location
+
+Der Standort und das Klima werden im Tag `Location` beschrieben. Pflichtparameter sind der Albedo als `IBK:Parameter` und entweder eine Klimadatei `ClimateFileName` oder eine Standortbeschreibung mit den `IBK:Parametern` nördliche Breite `Latitude`, östlicher Länge `Longitude` sowie der Höhe über Normalnull `Elevation`.
+
+[NOTE]
+====
+*TODO* beschreiben was bei fehlender Klimadatei angesetzt wird.
+====
+
+
+[[SimulationPeriod]]
+#### Simulationsparameter
 

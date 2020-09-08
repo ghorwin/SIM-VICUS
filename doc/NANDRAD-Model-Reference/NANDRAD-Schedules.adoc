@@ -18,7 +18,7 @@ Simulation time runs from t=0 over the duration of the simulation. For the looku
 
 [NOTE]
 ====
-**TODO**:
+*TODO*:
 Clarify (ticket: https://github.com/ghorwin/SIM-VICUS/issues/31) check this with the climate loads object, when cyclic is set, climatic loads *must not* be defined for continues data):
 ====
 
@@ -28,8 +28,8 @@ For cyclic schedule data, the flag "Cyclic" must be set in Schedules xml-block.
 
 The following conventions apply:
 
-- start year is always 2003
-- start time is given as parameter (as offset to Midnight January 1st 2003, or `"01.01.2003 00:00"`); for example, start time of `10.5 d` means simulation time 0 maps to `"10.01.2003 12:00"`
+- start year by default is 2001
+- start time is given as parameter (as offset to Midnight January 1st 2001, or `"01.01.2001 00:00"`); for example, start time of `10.5 d` means simulation time 0 maps to `"10.01.2001 12:00"`
 - if simulation duration exceeds 1 year, simulation time is wrapped at 365 d
 - "schedule lookup time" is the same as simulation time
 - leap days are never used, even if start year is set to 2000 and similar leap years
@@ -63,13 +63,13 @@ scheduleData = scheduleTabulatedSplineData [t_sched=0...365 d]  -> interpolate a
   
 Example:
   
-  d = 16  -> date = 16. January 2003
+  d = 15  -> date = 16. January 2003
   startDayOffset = "Wed" -> 2  (1.1.2003 was a wednesday)
   
-  d_dayOfWeek -> 16 + 2 = 18   18 % 7 = 3  -> DayType = "Thursay" (Check: 16. January 2003 was a Thursday)
+  d_dayOfWeek -> 15 + 2 = 17   17 % 7 = 3  -> DayType = "Thursday" (Check: 16. January 2003 was a Thursday)
   
 - look up daily cycle:
-  - find schedule (back to frond) where d in range:
+  - find schedule (back to front) where d in range:
     - process daytypes in order Thursday, Weekdays, AllDays
       - if parameter is found in any of these days, take daily course and add to spline for this day,
       - if parameter not found, skip and search through next schedule

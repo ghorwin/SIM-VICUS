@@ -84,7 +84,7 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 		std::vector<NANDRAD::OutputGrid> usedGrids;
 		for (NANDRAD::OutputGrid & og : prj.m_outputs.m_grids) {
 			// search output definitions until we find one that uses this grid
-			for (const NANDRAD::OutputDefinition & od : prj.m_outputs.m_outputDefinitions) {
+			for (const NANDRAD::OutputDefinition & od : prj.m_outputs.m_definitions) {
 				if (od.m_gridName == og.m_name) {
 					usedGrids.push_back(og);
 					break;
@@ -114,9 +114,9 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 	// in the initial loop, we also create and store pointer references to output grids and object lists referenced
 	// from output definitions - in case of invalid definitions, we bail out with an error message
 	std::map<std::string, std::vector<NANDRAD::OutputDefinition> > targetFileMap;
-	for (unsigned int i=0; i<prj.m_outputs.m_outputDefinitions.size(); ++i) {
+	for (unsigned int i=0; i<prj.m_outputs.m_definitions.size(); ++i) {
 
-		NANDRAD::OutputDefinition & od = prj.m_outputs.m_outputDefinitions[i];
+		NANDRAD::OutputDefinition & od = prj.m_outputs.m_definitions[i];
 
 		// sanity checks are done on the fly
 

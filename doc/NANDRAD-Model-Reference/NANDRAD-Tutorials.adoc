@@ -24,15 +24,15 @@ The building consists of a floor, a wall and a roof construction. The constructi
 | name | id | thickness [m] | &lambda; [W/mK] | &rho; [kg/m³] | ce [J/kgK] 
 | *floor* |103 4+|
 | concrete | 1001 | 0.20 | 2.3 | 2000 | 1000 
-| Insulation | 1004 | 0.05 | 0.04 | 50 | 1500
+| insulation | 1004 | 0.05 | 0.04 | 50 | 1500
 6+|
 | *roof* | 102 4+|
-| Insulation | 1004 | 0.20 | 0.04 | 50 | 1500
+| insulation | 1004 | 0.20 | 0.04 | 50 | 1500
 | Wood | 1002 | 0.05 | 0.17 | 500 | 2100 
 | | | | | |
 | *wall* | 101 4+|
 | concrete | 1001 | 0.20 | 2.3 | 2000 | 1000 
-| Insulation | 1004 | 0.10 | 0.04 | 50 | 1500
+| insulation | 1004 | 0.10 | 0.04 | 50 | 1500
 |====================
 
 [[MaterialsTutorial1]]
@@ -126,7 +126,7 @@ Example:
 		<ConstructionTypeId>101</ConstructionTypeId>
 		<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
 		<InterfaceA id="10" zoneId="1">
-			<!--Interface to `Room`-->
+			<!--Interface to zone 'Single room model' -->
 			<InterfaceHeatConduction modelType="Constant">
 				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter>
 			</InterfaceHeatConduction>
@@ -137,12 +137,14 @@ Example:
 				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">15</IBK:Parameter>
 			</InterfaceHeatConduction>
 			<InterfaceSolarAbsorption modelType="Constant">
-				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">0.6</IBK:Parameter>
+				<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
 			</InterfaceHeatConduction>
 			<InterfaceLongWaveEmission modelType="Constant">
-				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">0.9</IBK:Parameter>
+				<IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
 			</InterfaceHeatConduction>
 		</InterfaceB>
 	</ConstructionInstance>
 </ConstructionInstances>
 ---- 
+
+
