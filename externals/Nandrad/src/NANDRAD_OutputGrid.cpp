@@ -38,7 +38,6 @@ bool OutputGrid::operator!=(const OutputGrid & other) const {
 	if (m_intervals != other.m_intervals) return true;
 	return false;
 }
-//---------------------------------------------------------------------------
 
 
 IBK::Parameter OutputGrid::intervalParameter(unsigned int intervalIndex, Interval::para_t p) const {
@@ -83,13 +82,11 @@ IBK::Parameter OutputGrid::intervalParameter(unsigned int intervalIndex, Interva
 	}
 	return par;
 }
-//---------------------------------------------------------------------------
 
 
 IBK::Parameter OutputGrid::lastIntervalParameter(Interval::para_t p) const {
 	return intervalParameter( ((unsigned int) m_intervals.size() - 1), p );
 }
-//---------------------------------------------------------------------------
 
 
 void OutputGrid::setupIntervals() {
@@ -143,7 +140,6 @@ void OutputGrid::setupIntervals() {
 		}
 	}
 }
-//---------------------------------------------------------------------------
 
 
 void OutputGrid::checkIntervalDefinition() const {
@@ -226,7 +222,6 @@ void OutputGrid::checkIntervalDefinition() const {
 
 	}
 }
-//---------------------------------------------------------------------------
 
 
 bool OutputGrid::isActive(double t) const {
@@ -244,7 +239,6 @@ bool OutputGrid::isActive(double t) const {
 	}
 	return false; // none found
 }
-//---------------------------------------------------------------------------
 
 
 double OutputGrid::computeNextOutputTime(double tOutCurrent) const {
@@ -282,7 +276,6 @@ double OutputGrid::computeNextOutputTime(double tOutCurrent) const {
 	}
 	return std::numeric_limits<double>::max();
 }
-//---------------------------------------------------------------------------
 
 
 } // namespace NANDRAD

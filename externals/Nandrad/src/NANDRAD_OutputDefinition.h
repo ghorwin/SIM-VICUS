@@ -34,18 +34,11 @@ class OutputGrid;
 /*!	The output definition class selects quantities to be logged. They are specified
 	by a unique variable name and an object list with models containing
 	the requested quantity.
-	In the case of a vector-valued quantity two definitions are valid:
-
-	1.) The complete vector-valued quantity, use the name of the quantity
-		quantity = name
-	For the variable of each model a single output file will be
-	constructed.
-
-	2.) A single vector value:
-		quantity = name[<idstring>]
-	The quantity will be treated like a scalar quantity.
-
-	The encoding of the ID string is documented for the class IDGroup.
+	In the case of a vector-valued quantity the id or index must be given in brackets.
+	\code
+	quantity = name[<id or index>]
+	\end
+	The extracted quantity will be treated like a scalar quantity.
 */
 class OutputDefinition {
 public:
@@ -53,11 +46,11 @@ public:
 	/*! Different options to handle time averaging/integration. */
 	enum timeType_t {
 		/*! Write outputs as calculated at output time points. */
-		OTT_NONE,		// Keyword: None			'Write values as calculated at output times'
+		OTT_NONE,		// Keyword: None			'Write values as calculated at output times.'
 		/*! Average value in last output interval. */
-		OTT_MEAN,		// Keyword: Mean			'Average values in time (mean value in output step)'
+		OTT_MEAN,		// Keyword: Mean			'Average values in time (mean value in output step).'
 		/*! Time integral of output value. */
-		OTT_INTEGRAL,	// Keyword: Integral		'Integrate values in time'
+		OTT_INTEGRAL,	// Keyword: Integral		'Integrate values in time.'
 		NUM_OTT
 	};
 

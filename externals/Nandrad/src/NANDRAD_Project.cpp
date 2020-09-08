@@ -69,17 +69,11 @@ void Project::readXML(const IBK::Path & filename) {
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Error reading project '%1'.").arg(filename), FUNC_ID);
 	}
-#if 0
-	// check uniqueness of all geometry ids
-	checkGeometryIDs();
-	// check uniqueness of all construction type ids
-	// material id check needs a dependency to DELPHIN_LIGHT library
-	checkDatabaseIDs();
-	// check uniqueness of all model ids
-	checkModelIDs();
-#endif
+
+	/// \todo check uniqueness of all IDs in all separate id spaces
+	///       implement this via template algorithm, since all id-holding data types have a "find by ID"
+	///       comparison operator and are stored in vectors
 }
-// ----------------------------------------------------------------------------
 
 
 void Project::writeXML(const IBK::Path & filename) const {
@@ -103,7 +97,6 @@ void Project::writeXML(const IBK::Path & filename) const {
 
 	doc.SaveFile( filename.c_str() );
 }
-// ----------------------------------------------------------------------------
 
 
 void Project::initDefaults() {
@@ -111,7 +104,6 @@ void Project::initDefaults() {
 	m_simulationParameter.initDefaults();
 	m_schedules.initDefaults();
 }
-// ----------------------------------------------------------------------------
 
 
 void Project::readDirectoryPlaceholdersXML(const TiXmlElement * element) {
@@ -140,7 +132,6 @@ void Project::readDirectoryPlaceholdersXML(const TiXmlElement * element) {
 
 	}
 }
-// ----------------------------------------------------------------------------
 
 
 void Project::writeDirectoryPlaceholdersXML(TiXmlElement * parent) const {
@@ -165,9 +156,7 @@ void Project::writeDirectoryPlaceholdersXML(TiXmlElement * parent) const {
 	}
 
 	TiXmlComment::addSeparatorComment(parent);
-
 }
-// ----------------------------------------------------------------------------
 
 
 void Project::mergeSameConstructions() {

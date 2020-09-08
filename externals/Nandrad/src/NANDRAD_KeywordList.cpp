@@ -873,9 +873,9 @@ namespace NANDRAD {
 			// OutputDefinition::timeType_t
 			case 24 :
 			switch (t) {
-				case 0 : return "Write values as calculated at output times";
-				case 1 : return "Average values in time (mean value in output step)";
-				case 2 : return "Integrate values in time";
+				case 0 : return "Write values as calculated at output times.";
+				case 1 : return "Average values in time (mean value in output step).";
+				case 2 : return "Integrate values in time.";
 			} break;
 			// Schedule::type_t
 			case 25 :

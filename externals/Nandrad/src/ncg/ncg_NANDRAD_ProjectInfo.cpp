@@ -46,8 +46,6 @@ void ProjectInfo::readXML(const TiXmlElement * element) {
 				m_created = c->GetText();
 			else if (cName == "LastEdited")
 				m_lastEdited = c->GetText();
-			else if (cName == "Version")
-				m_version = c->GetText();
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -72,8 +70,6 @@ TiXmlElement * ProjectInfo::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "Created", nullptr, std::string(), m_created);
 	if (!m_lastEdited.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "LastEdited", nullptr, std::string(), m_lastEdited);
-	if (!m_version.empty())
-		TiXmlElement::appendSingleAttributeElement(e, "Version", nullptr, std::string(), m_version);
 	return e;
 }
 

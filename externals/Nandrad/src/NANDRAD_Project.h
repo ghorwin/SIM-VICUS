@@ -61,7 +61,8 @@ public:
 	void writeXML(const IBK::Path & filename) const;
 
 	/*! Initializes project defaults.
-		Default values can be overwritten during project file reading.
+		This function is called during solver run before readXML(). Hence, default values can be overwritten during
+		project file reading.
 	*/
 	void initDefaults();
 
@@ -88,8 +89,6 @@ public:
 	*/
 	void mergeSameConstructions();
 
-	/*! Returns the point ids for active areas which are connected to the given wall point id. */
-	std::vector< unsigned int > activeAreaPointIds( const unsigned int pointId ) const;
 
 	/*! Comments about the project. */
 	ProjectInfo										m_projectInfo;						// XML:E
@@ -133,7 +132,13 @@ public:
 
 private:
 
+	/*! Reads the section with directory placeholders.
+		\param element The directory placeholders element tag.
+	*/
 	void readDirectoryPlaceholdersXML(const TiXmlElement * element);
+	/*! Writes the section with directory placeholders, but only, if the map isn't empty.
+		\param parent The parent tag.
+	*/
 	void writeDirectoryPlaceholdersXML(TiXmlElement * parent) const;
 
 };

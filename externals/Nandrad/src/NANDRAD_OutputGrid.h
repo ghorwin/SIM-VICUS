@@ -29,12 +29,7 @@
 
 namespace NANDRAD {
 
-/*!	\brief Declaration for class OutputGrid
-
-	A selection of time intervals with a given time step size
-	and a reference name.
-	Use the reference name to specify the output of simulation results.
-*/
+/*!	An OutputGrid defines time intervals with a given output step size per interval. */
 class OutputGrid {
 public:
 
@@ -45,8 +40,8 @@ public:
 	NANDRAD_COMPARE_WITH_NAME
 
 	/*! Checks input parameters and throws an IBK::Exception if some input values are wrong.
-		\note This function should be called after readXML() during solver initialization, and before setupIntervals() is
-		called.
+		\note This function should be called after readXML() during solver initialization, and before
+			  setupIntervals() is called.
 	*/
 	void checkIntervalDefinition() const;
 

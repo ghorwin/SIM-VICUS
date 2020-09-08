@@ -22,8 +22,7 @@
 #ifndef NANDRAD_ProjectInfoH
 #define NANDRAD_ProjectInfoH
 
-#include <IBK_Parameter.h>
-#include <IBK_Flag.h>
+#include <string>
 
 #include "NANDRAD_CodeGenMacros.h"
 
@@ -37,9 +36,10 @@ public:
 
 	/*! Comments about the project. */
 	std::string							m_comment;				// XML:E
+	/*! Time stamp when the project file was created. */
 	std::string							m_created;				// XML:E
+	/*! Time stamp, when the project was last modified. */
 	std::string							m_lastEdited;			// XML:E
-	std::string							m_version;				// XML:E
 };
 
 } // namespace NANDRAD
