@@ -34,7 +34,7 @@ namespace NANDRAD_MODEL {
 	const char * const INVALID_KEYWORD_INDEX_STRING = "KEYWORD_ERROR_STRING: Invalid type index";
 
 	/*! Holds a list of all enum types/categories. */
-	const char * const ENUM_TYPES[12] = {
+	const char * const ENUM_TYPES[10] = {
 		"ConstructionBalanceModel::Results",
 		"ConstructionBalanceModel::VectorValuedResults",
 		"ConstructionStatesModel::VectorValuedResults",
@@ -44,14 +44,12 @@ namespace NANDRAD_MODEL {
 		"NaturalVentilationModel::VectorValuedResults",
 		"OutputHandler::OutputFileNames",
 		"RoomBalanceModel::Results",
-		"RoomStatesModel::Results",
-		"ThermalComfortModel::Results",
-		"ThermalComfortModel::InputReferences"
+		"RoomStatesModel::Results"
 	};
 
 	/*! Converts a category string to respective enumeration value. */
 	int enum2index(const std::string & enumtype) {
-		for (int i=0; i<12; ++i) {
+		for (int i=0; i<10; ++i) {
 			if (enumtype == ENUM_TYPES[i]) return i;
 		}
 		//std::cerr << "Unknown enumeration type '" << enumtype<< "'." << std::endl;
@@ -145,19 +143,6 @@ namespace NANDRAD_MODEL {
 				case 1 : return "RelativeHumidity";
 				case 2 : return "VaporPressure";
 			} break;
-			// ThermalComfortModel::Results
-			case 10 :
-			switch (t) {
-				case 0 : return "RadiantTemperature";
-				case 1 : return "OperativeTemperature";
-			} break;
-			// ThermalComfortModel::InputReferences
-			case 11 :
-			switch (t) {
-				case 0 : return "AirTemperature";
-				case 1 : return "RadiantTemperature";
-				case 2 : return "Area";
-			} break;
 		} // switch
 		return INVALID_KEYWORD_INDEX_STRING;
 	}
@@ -247,19 +232,6 @@ namespace NANDRAD_MODEL {
 				case 0 : return "AirTemperature";
 				case 1 : return "RelativeHumidity";
 				case 2 : return "VaporPressure";
-			} break;
-			// ThermalComfortModel::Results
-			case 10 :
-			switch (t) {
-				case 0 : return "RadiantTemperature";
-				case 1 : return "OperativeTemperature";
-			} break;
-			// ThermalComfortModel::InputReferences
-			case 11 :
-			switch (t) {
-				case 0 : return "AirTemperature";
-				case 1 : return "RadiantTemperature";
-				case 2 : return "Area";
 			} break;
 		} // switch
 		return INVALID_KEYWORD_INDEX_STRING;
@@ -352,19 +324,6 @@ namespace NANDRAD_MODEL {
 				case 1 : return "Room air relative humidity.";
 				case 2 : return "Room air vapor pressure.";
 			} break;
-			// ThermalComfortModel::Results
-			case 10 :
-			switch (t) {
-				case 0 : return "Mean surface temperature of all surfaces facing the room.";
-				case 1 : return "Operative temperature of the room.";
-			} break;
-			// ThermalComfortModel::InputReferences
-			case 11 :
-			switch (t) {
-				case 0 : return "Air temperature of the room.";
-				case 1 : return "Wall radiant temperature.";
-				case 2 : return "Wall surface area";
-			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine description for enumeration type '%1' and index '%2'.")
 			.arg(enumtype).arg(t), "[KeywordList::Description]");
@@ -455,19 +414,6 @@ namespace NANDRAD_MODEL {
 				case 1 : return "%";
 				case 2 : return "Pa";
 			} break;
-			// ThermalComfortModel::Results
-			case 10 :
-			switch (t) {
-				case 0 : return "C";
-				case 1 : return "C";
-			} break;
-			// ThermalComfortModel::InputReferences
-			case 11 :
-			switch (t) {
-				case 0 : return "C";
-				case 1 : return "C";
-				case 2 : return "m2";
-			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine default unit for enumeration type '%1' and index '%2'.")
 			.arg(enumtype).arg(t), "[KeywordList::Unit]");
@@ -553,19 +499,6 @@ namespace NANDRAD_MODEL {
 			} break;
 			// RoomStatesModel::Results
 			case 9 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-				case 2 : return "#FFFFFF";
-			} break;
-			// ThermalComfortModel::Results
-			case 10 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-			} break;
-			// ThermalComfortModel::InputReferences
-			case 11 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -661,19 +594,6 @@ namespace NANDRAD_MODEL {
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// ThermalComfortModel::Results
-			case 10 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// ThermalComfortModel::InputReferences
-			case 11 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-				case 2 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine default value for enumeration type '%1' and index '%2'.")
 			.arg(enumtype).arg(t), "[KeywordList::DefaultValue]");
@@ -702,10 +622,6 @@ namespace NANDRAD_MODEL {
 			case 8 : return 4;
 			// RoomStatesModel::Results
 			case 9 : return 3;
-			// ThermalComfortModel::Results
-			case 10 : return 2;
-			// ThermalComfortModel::InputReferences
-			case 11 : return 3;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::Count]");
@@ -733,11 +649,7 @@ namespace NANDRAD_MODEL {
 			// RoomBalanceModel::Results
 			case 8 : return 3;
 			// RoomStatesModel::Results
-			case 9 : return 2;
-			// ThermalComfortModel::Results
-			case 10 : return 1;
-			// ThermalComfortModel::InputReferences
-			case 11 : return 3;
+			case 9 : return 3;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::MaxIndex]");
