@@ -1,0 +1,172 @@
+# Tutorials
+
+ToDo Andreas Name NANDRAD oder SIM-VICUS ??? 
+
+## Simple Single Room Model
+
+### Introduction
+
+In diesem Beispiel wird nur eine thermische Zone modelliert. Das Hauptaugenmerk wird auf die Geometrie-, Material- und Konstruktionserstellung gelegt. Als Ergebnisgröße wird die Temperatur des frei schwingenden Raumes ausgegeben. Die Abmessungen des Raumes betragen `l = 2.0 m` Länge, `b = 5.0 m` Breite und `h = 3.0 m` Höhe. Daraus ergibt sich ein Luftvolumen von `V = 30.0 m³`. Alle weiteren Kennwerte werden im Tutorial spezifiziert.
+
+BILD
+
+### Ablauf
+
+Als erstes werden die Materialien `Materials` und die verwendeten Konstruktionen `ConstructionTypes` definiert, die für die zu modellierende Zone in `Zones` spezifiziert werden. Anschließend werden die Hüllflächen sogenannte `ConstructionInstances` parametrisiert und die Ausgabeparameter `Outputs` gesetzt. Als letztes wird das Klima mit `Location` und weitere Einstellungen `SimulationParameter` ausgeführt.
+
+### Materialien und Konstruktionen
+
+Das Gebäude besteht aus einer Bodenplatten-, einer Wand- und einer Dachkonstruktion. Die Aufbauten sind in folgender Abbildung dargestellt.
+
+
+[width="100%", cols="<.^,^,^,^,^,^",options="header"]
+|====================
+| Name | Id | Dicke [m] | &lambda; [W/mK]  | &rho; [kg/m³] | ce [J/kgK] 
+| *Bodenplatte* |103 4+|
+| Beton | 1001 | 0.20 | 2.3 | 2000 | 1000 
+| Dämmung | 1004 | 0.05 | 0.04 | 50 | 1500
+6+|
+| *Dach* | 102 4+|
+| Dämmung | 1004 | 0.20 | 0.04 | 50 | 1500
+| Holz | 1002 | 0.05 | 0.17 | 500 | 2100 
+|  |  |  |  |  |
+| *Wand* | 101 4+|
+| Beton | 1001 | 0.20 | 2.3 | 2000 | 1000 
+| Dämmung | 1004 | 0.10 | 0.04 | 50 | 1500
+|====================
+
+[NOTE]
+====
+Alle von innen nach außen
+
+Bodenplatte 
+
+Beton   0.20
+Dämmung 0.05
+
+Dach
+
+Dämmung 0.20
+Holz    0.05
+
+Wand
+
+Beton   0.20
+Dämmung 0.10
+
+====
+
+#### Materialien
+
+Für die Materialien sind die thermischen Parameter `Wärmeleitfähigkeit` `&lambda;`, `Dichte` `&rho;` und  `Wärmekapazität` `ce` wichtig. Weiterhin wird eine unique-Id und Name benötigt. Beispielhaft wird die Beschreibung für Beton und Dämmung vorgenommen. Die detaillierte Dokumentation ist <<NANDRAD-Databases.adoc#MaterialsDocumentation,Materials>> beschrieben
+
+
+Example:
+[source,xml]
+----
+<Materials>
+	<Material id="1001" displayName="Concrete">
+		<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+		<IBK:Parameter name="Conductivity" unit="W/mK">2.3</IBK:Parameter>
+	</Material>
+	<Material id="1004" displayName="Insulation">
+		<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>
+		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
+		<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
+	</Material>
+</Materials>
+----
+
+[TIP]
+====
+ToDo hygrische Parameter ausführen
+====
+
+
+#### Konstruktionen
+
+Anschließend werden die <<NANDRAD-Databases.adoc#ConstructionTypesDocumentation,Konstruktionen>> in `ConstructionTypes` aus den Materialien über die Ids und der Schichtdicken `d` zusammengesetzt. Wie auch bei den Materialien wird einer Konstruktion immer eine eindeutige Id und optional ein Name zugewiesen. Übergangseigenschaften und weitere Parameter sind nicht Bestandteil der Konstruktion und werden in den `ConstructionInstances` definiert. Für die spätere Verwendung in der `ConstructionInstance` wird die erste Materialschicht mit dem `InterfaceA` und die letzte Materialschicht mit dem `InterfaceB` verknüpft. Dadurch kann die Innen- bzw. Außenseite der Konstruktion individuell festgelegt werden.
+
+Beispielhaft wird die Wandkonstruktion dargestellt. 
+
+Example:
+[source,xml]
+----
+<ConstructionTypes>
+	<ConstructionType id="101" displayName="Wall Construction">
+		<MaterialLayers>
+			<MaterialLayer thickness="0.2" matId="1001" /> <!-- Linked to InterfaceA -->
+			<MaterialLayer thickness="0.1" matId="1004" /> <!-- Linked to InterfaceB -->
+		</MaterialLayers>
+	</ConstructionType>
+</ConstructionTypes>
+
+----
+
+#### Zone
+
+In diesem Bereich werden die Zone und deren Eigenschaften definiert. Geometrisch bildet die Zone das Raumluftvolumen ab. Alle weiteren geometrischen Eigenschaften werden in den `ConstructionInstances` definiert. Neben dem Volumen `Volume` wird eine Fläche `Area` angegeben, die zur Umrechnung der Flächenlasten auf spezifische Raumlasten benötigt wird. Diese Raumlasten werden in diesem Tutorial nicht beschrieben. 
+Die Eindeutigkeit der Zone wird über eine Id `id` gewährleistet. Optional kann wieder ein Name `displayName` vergeben werden. Der Typ `type` der Zone stellt den Berechnungsmodus für die Zone ein. Dabei werden drei Typen unterschieden:
+
+* `Active` Die Zone wird vom Solver über die Energiebilanzgleichungen gelöst und es stellt sich eine Raumlufttemperatur aus den Gewinnen und Verlusten aller Energieströme ein.
+* `Constant` Die Zone wird durch eine vorgegebene Temperatur definiert. Dabei kann die Definition über einen Zeitplan erfolgen, welcher nicht konstant sein muss.
+* `Ground` Die Bodentemperaturen aus der Vorgabeklimadatei werden für die Raumlufttemperatur angesetzt. Die Zone repräsentiert damit das anliegende Erdreich.
+
+Das Volumen und die Fläche werden über sogenannte <<NANDRAD-Misc.adoc#IBK_ParameterDocumentation,`IBK:Parameter`>> definiert. 
+Das Zonenvolumen ist im Beispielraum mit `V = 30 m³` vorgeben. Die Grundfläche wird mit `A = 10 m²` beschrieben. 
+
+Example:
+[source,xml]
+----
+<Zones>
+	<Zone id="1" displayName="Single room model" type="Active">
+		<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+		<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+	</Zone>
+</Zones>
+----
+
+Weitere Einstellungsmöglichkeiten finden sich in der <<NANDRAD-Geometry.adoc#ZoneDocumentation,detaillierte Zonendokumentation>>.
+
+#### Hüllflächen
+
+Die Hüllflächen werden in die `ConstructionInstances` beschrieben. Jede Hüllfläche `ConstructionInstance` wird über eine Id `id`, optional einen Namen `displayName`, eine Fläche, eine Konstruktion sowie die Übergangsbedingungen, die durch verschiedene Modelle repräsentiert werden, abgebildet.
+Die Fläche wird über einen `IBK:Parameter` mit dem Attribut `Area` beschrieben. Die Konstruktion wird über die `ConstructionTypeId` mit der Konstruktion aus `ConstructionTypes` verlinkt. 
+Die Randbedingungen werden über die Interfaces `InterfaceA` und `InterfaceB` definiert. Als Randbedingungen werden Übergangskoeffizienten und solare oder thermische Absorptionskennwerte definiert. Diese sind jeweils durch ein eigenes Modell beschrieben.
+
+Im Beispiel wird die Wandhüllfläche dargestellt. Die ausgewählte Wand wird durch eine Fläche `A = 15 m²`, einer Wandkonstruktion mit der `id = 101` und einer Innen- und Außenrandbedingung definiert. Die Außenrandbedingung wird mit einem konstanten Übergangskoeffizienten von `h = 15 W/(m²K)`, einer solaren Absorptanz von `a = 0.6` sowie einer langwelligen Absorption/Emission von `&epsilon; = 0.9` beschrieben. Auf der Innenseite wird nur ein Übergangskoeffizient `h = 10 W/(m²K)` beschrieben.
+
+
+Weitere Einstellungsmöglichkeiten finden sich in der detaillierten<<NANDRAD-Geometry.adoc#ZoneDocumentation, ConstructionInstance documentation>>.
+
+Example:
+[source,xml]
+----
+<ConstructionInstances>
+	<ConstructionInstance id="1" displayName="West Wall">
+		<ConstructionTypeId>101</ConstructionTypeId>
+		<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+		<InterfaceA id="10" zoneId="1">
+			<!--Interface to 'Room'-->
+			<InterfaceHeatConduction modelType="Constant">
+				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter>
+			</InterfaceHeatConduction>
+		</InterfaceA>
+		<InterfaceB id="11" zoneId="0">
+			<!--Interface to outside-->
+			<InterfaceHeatConduction modelType="Constant">
+				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">15</IBK:Parameter>
+			</InterfaceHeatConduction>
+			<InterfaceSolarAbsorption modelType="Constant">
+				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">0.6</IBK:Parameter>
+			</InterfaceHeatConduction>
+			<InterfaceLongWaveEmission modelType="Constant">
+				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">0.9</IBK:Parameter>
+			</InterfaceHeatConduction>
+		</InterfaceB>
+	</ConstructionInstance>
+</ConstructionInstances>
+---- 
+
+
