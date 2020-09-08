@@ -30,9 +30,20 @@ ArgsParser::ArgsParser() {
 		"FMU file name",
 		"");
 	addFlag(0, "fmu-modelica-wrapper",
-		"(optional) If set to 'true' a Modelica wrapper for fmu exported file is created. Only in combination with 'fmu-export'");
+		"(optional) If given, a Modelica wrapper for the exported FMU is created. Only works in combination with 'fmu-export'.");
 
-	/// \todo adjust options for les-solver, integrator and precond to show only the options available for NANDRAD
+	// adjust options for les-solver, integrator and precond to show only the options available for NANDRAD
+	for (OptionType & ot : m_knownOptions) {
+		if (ot.m_longVersion == "integrator") {
+			ot.m_description = "auto|CVode|ImplicitEuler|ExplicitEuler";
+		}
+		else if (ot.m_longVersion == "les-solver") {
+			ot.m_description = "auto|Dense|KLU|GMRES|BiCGStab";
+		}
+		else if (ot.m_longVersion == "precond") {
+			ot.m_description = "auto|ILU";
+		}
+	}
 }
 
 
@@ -47,10 +58,12 @@ void ArgsParser::printHelp(std::ostream & out) const {
 	out << "\nExamples:\n\n"
 		"Starting solver\n"
 		"> "<< m_appname << " <project file>\n\n"
+		"Running with 8 threads\n"
+		"> "<< m_appname << " -p=8 <project file>\n\n"
 		"Starting solver with different LES solver\n"
 		"> "<< m_appname << " --les-solver=GMRES <project file>\n\n"
-		"Starting solver with GMRES(30) and ILUT preconditioner\n"
-		"> "<< m_appname << " --les-solver=BiCGStab(50) --precond=ILUT <project file>\n\n";
+		"Starting solver with BiCGStab iterative solver, Krylov subspace limit of 50 and ILU preconditioner\n"
+		"> "<< m_appname << " --les-solver=BiCGStab(50) --precond=ILU <project file>\n\n";
 }
 
 } // namespace NANDRAD
