@@ -1,4 +1,4 @@
-## NANDRAD Project File
+# NANDRAD Project File
 
 The NANDRAD project specification is stored in an XML-file with the extension `nandrad`. The principle structure of the file looks like:
 
@@ -22,21 +22,21 @@ The optional `DirectoryPlaceholders` can be used to define relative path placeho
 All project data is enclosed in the `<Project>` tag.
 
 [[basic_types]]
-## Basic Data Types in NANDRAD Project File Specification
+# Basic Data Types in NANDRAD Project File Specification
 
 Within the various specificiation sections of the project file some basic data types / xml-tags are frequently used. The rules for specifying these parameters are defined below.
 
-### IBK:Parameter
+## IBK:Parameter
 
-### IBK:IntPara
+## IBK:IntPara
 
-### IBK:Flag
+## IBK:Flag
 
-### IBK:LinearSpline
+## IBK:LinearSpline
 
 
 [[path_placeholders]]
-## Path Placeholders
+# Path Placeholders
 
 In some parts of the NANDRAD project file, external files are referenced (for example climate data files, see <<loads_climate_files>>).
 To simplify exchange of projects or reference data files in common database directories, it is possible to use path placeholders in file paths.
