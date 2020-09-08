@@ -85,7 +85,7 @@ public:
 		VVR_DirectSWRadOnPlane,				// Keyword: DirectSWRadOnPlane				[W/m2]	'Direct short wave radiation on a given plane.'
 		VVR_DiffuseSWRadOnPlane,			// Keyword: DiffuseSWRadOnPlane				[W/m2]	'Diffuse short wave radiation on a given plane.'
 		VVR_GlobalSWRadOnPlane,				// Keyword: GlobalSWRadOnPlane				[W/m2]	'Global short wave radiation on a given plane.'
-		VVR_IncidenceAngleOnPlane,			// Keyword: IncidenceAngleOnPlane			[%]		'The incidence angle of the suns ray onto the surface (0 deg = directly perpendicular).'
+		VVR_IncidenceAngleOnPlane,			// Keyword: IncidenceAngleOnPlane			[Deg]	'The incidence angle of the suns ray onto the surface (0 deg = directly perpendicular).'
 		NUM_VVR
 	};
 

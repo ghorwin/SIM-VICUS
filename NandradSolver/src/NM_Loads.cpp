@@ -349,7 +349,7 @@ int Loads::setTime(double t) {
 
 		// loop over all sensors
 		for (std::map<unsigned int, unsigned int>::const_iterator sensorIt = m_sensorID2surfaceID.begin();
-			sensorIt != m_sensorID2surfaceID.end(); ++sensorIt, ++dirRadIt, ++difRadIt, ++globRadIt)
+			sensorIt != m_sensorID2surfaceID.end(); ++sensorIt, ++dirRadIt, ++difRadIt, ++globRadIt, ++incRadIt)
 		{
 			// map: key (first) = ID of the sensor
 			//      value (second) = ID of the CCM-surface
