@@ -68,3 +68,14 @@ via `${MyDatabase}/ClimateData.epw`.
 These mapping of the placeholders is done early in the project file, so when exchanging project files between computers, you may
 easily modify the placeholder paths to the directories on the local machine without any further changes in the project file.
 
+The individual path placeholders are defined in the `DirectoryPlaceholders`, for example:
+
+[source,xml]
+----
+<DirectoryPlaceholders>
+	<Placeholder name="Climate DB">/home/sim/climate_DB</Placeholder>
+	<Placeholder name="DataFiles">/home/sim/data</Placeholder>
+</DirectoryPlaceholders>
+----
+
+There is one builtin-placeholder `${Project Directory}` that will be automatically defined with the path to the directory of the project file.
