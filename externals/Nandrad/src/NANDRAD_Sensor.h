@@ -29,7 +29,7 @@
 
 namespace NANDRAD {
 
-/*!	A sensor places a measured component for later referencing.
+/*!	A sensor yields a measured component for use by other models/for output purposes.
 
 	The quantity can be used for further classify the type of sensor. In some cases, like
 	in case of radiation sensors, the quantity can be omitted since placing the sensor
@@ -51,9 +51,9 @@ public:
 	/*! Name of the measured quantity */
 	std::string							m_quantity;						// XML:E
 
-	/*! Orientation of the radiation load sensor. */
+	/*! Orientation of the radiation load sensor [Deg] (see also ConstructionInstance). */
 	IBK::Parameter						m_orientation;					// XML:E
-	/*! Inclination of the radiation load sensor. */
+	/*! Inclination of the radiation load sensor [Deg] (see also ConstructionInstance). */
 	IBK::Parameter						m_inclination;					// XML:E
 };
 

@@ -31,9 +31,7 @@
 
 namespace NANDRAD {
 
-/*!	\brief Declaration for class SolverParameters
-
-	Solver parameters define options/flags related to the numerical engine, and are
+/*!	Solver parameters define options/flags related to the numerical engine, and are
 	typically independent of the physical model evaluation.
 
 	\sa SimulationParameter

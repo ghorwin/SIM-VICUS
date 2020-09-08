@@ -36,12 +36,11 @@ namespace NANDRAD {
 
 	Scheduled quantities are associated with models via object lists. The object list
 	names are the keys to the maps m_scheduleGroups and m_annualSchedules.
-
 */
 class Schedules {
 public:
 
-	/*! Day ids used to define "a weekend". */
+	/*! Day ids, also used to define "a weekend". */
 	enum day_t {
 		SD_MONDAY,		// Keyword: Mon		'Monday.'
 		SD_TUESDAY,		// Keyword: Tue		'Tuesday.'
@@ -54,6 +53,7 @@ public:
 	};
 
 	enum flag_t {
+		/*! If enabled, schedules are treated as annually repeating schedules. */
 		F_EnableCyclicSchedules,	// Keyword: EnableCyclicSchedules			'If enabled, schedules are treated as annually repeating schedules.'
 		NUM_F
 	};
@@ -91,7 +91,9 @@ public:
 	/*! Weekend days. */
 	std::set< day_t >														m_weekEndDays;
 
-	/*! The daytype of January 1st (offset of day of the week (0-Mon, ...6-Sun)) of the start year. */
+	/*! The daytype of January 1st (offset of day of the week (0-Mon, ...6-Sun)) of the start year,
+		defaults to Monday.
+	*/
 	day_t																	m_firstDayOfYear = SD_MONDAY;
 
 	/*! List of flags. */

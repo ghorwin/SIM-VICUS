@@ -37,20 +37,12 @@ namespace NANDRAD {
 
 	The class Zone stores all properties needed to compute zone temperature from energy density (the conserved quantity).
 
-	Needed for the calculation is either floor area and height, or zone volume. If all parameters
-	are given, the volume property is computed from floor area and height.
-
 	Zones can be either Constant or Active. For constant zones, the temperature is assumed to
-	be fixed/predefined whereas in Active zones the temperature is computed (i.e. included in
-	the model's unknowns).
-
-	A constant zone only needs the temperature parameter. If an Active zone has a temperature parameter,
-	this is used as initial condition.
+	be fixed/predefined (given via parameter P_Temperature) whereas in Active zones the temperature
+	is computed (i.e. included in the model's unknowns).
 */
 class Zone {
 public:
-
-	typedef std::pair<unsigned int, unsigned int>  viewFactorPair;
 
 	/*! Type of zone. Defines whether zone is balanced and included in equation system. */
 	enum type_t {
@@ -96,7 +88,9 @@ public:
 	/*! Optional schedule reference name for constant zones. */
 	std::string					m_scheduleName;						// XML:E
 
-	/*! Optional: view factors for all inisde interfaces of the current zone. */
+
+	typedef std::pair<unsigned int, unsigned int>  viewFactorPair;
+	/*! Optional: view factors for all inside interfaces of the current zone. */
 	/// \todo viewfactor class read, write, etc... ToDo Katja
 	std::vector<std::pair<viewFactorPair, double> >	m_viewFactors;
 

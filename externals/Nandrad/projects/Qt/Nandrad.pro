@@ -84,7 +84,6 @@ SOURCES += \
 	../../src/NANDRAD_Interval.cpp \
 	../../src/NANDRAD_KeywordList.cpp \
 	../../src/NANDRAD_LinearSplineParameter.cpp \
-	../../src/NANDRAD_Location.cpp \
 	../../src/NANDRAD_Material.cpp \
 	../../src/NANDRAD_Models.cpp \
 	../../src/NANDRAD_ObjectList.cpp \
@@ -92,14 +91,12 @@ SOURCES += \
 	../../src/NANDRAD_OutputGrid.cpp \
 	../../src/NANDRAD_Outputs.cpp \
 	../../src/NANDRAD_Project.cpp \
-	../../src/NANDRAD_ProjectInfo.cpp \
 	../../src/NANDRAD_Schedule.cpp \
 	../../src/NANDRAD_Schedules.cpp \
 	../../src/NANDRAD_Sensor.cpp \
 	../../src/NANDRAD_SimulationParameter.cpp \
 	../../src/NANDRAD_SolverParameter.cpp \
 	../../src/NANDRAD_Utilities.cpp \
-	../../src/NANDRAD_Zone.cpp \
 	../../src/ncg/ncg_NANDRAD_ConstructionInstance.cpp \
 	../../src/ncg/ncg_NANDRAD_ConstructionType.cpp \
 	../../src/ncg/ncg_NANDRAD_DailyCycle.cpp \

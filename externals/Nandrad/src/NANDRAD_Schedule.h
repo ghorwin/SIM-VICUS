@@ -33,7 +33,7 @@
 
 namespace NANDRAD {
 
-/*!	\brief Declaration for class Schedule
+/*!	Class Schedule defines scheduled parameters in sets of daily cycles.
 
 	Schedules are defined for a specific day type: week day,
 	week end, holiday or all days. They contain one or more daily cycles
@@ -45,9 +45,9 @@ class Schedule {
 public:
 
 	/*! Different day types a schedule can be defined for.
-		Do not change order of schedule definitions, since they mark
-		also the lookup priority - for example, a holiday schedule takes precedence before
-		a specific day schedule.
+		\warning Do not change order of schedule definitions, since they mark
+				 also the lookup priority - for example, a holiday schedule takes precedence before
+				 a specific day schedule.
 	*/
 	enum type_t {
 		ST_ALLDAYS,		// Keyword: AllDays		'All days (Weekend days and Weekdays).'
@@ -78,7 +78,7 @@ public:
 	/*! Returns true, if given day is inside the start and end date of the schedule. */
 	bool containsDay(unsigned int dayOfYear) const {return dayOfYear >= m_startDayOfTheYear && dayOfYear <= m_endDayOfTheYear; }
 
-	/*! Returns true, if schedule is a whole year schedule. */
+	/*! Returns true if schedule is a whole year schedule. */
 	bool isWholeYearSchedule() const {return m_startDayOfTheYear == 0 && m_endDayOfTheYear == 364; }
 
 	// *** PUBLIC MEMBER VARIABLES ***
@@ -104,7 +104,7 @@ public:
 		This map is composed during prepareCalculation() and primarily used to quickly check
 		if this schedule provides a required parameter at all. Also, it identifies the actual
 		schedule that defines this parameter.
-		Note: with this map we also ensure, that the user does not specify multiple daily cycles for
+		\note with this map we also ensure, that the user does not specify multiple daily cycles for
 			  the same parameter.
 	*/
 	std::map<std::string, DailyCycle *>	m_parameters;
