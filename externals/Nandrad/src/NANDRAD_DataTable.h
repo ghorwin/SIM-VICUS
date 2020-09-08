@@ -45,6 +45,8 @@ public:
 		m_values["Col2"] = std::vector<double>{7,2,2};
 		\endcode
 		Throws an IBK::Exception, if number of rows in columns mismatches.
+
+		\note It is possible to use , and a whitespace (space or tab) character as number separator.
 	*/
 	void setEncodedString(const std::string & str);
 

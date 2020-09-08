@@ -36,37 +36,35 @@ namespace NANDRAD {
 
 class ConstructionType;
 
-/*!	\brief Defines a wall/floor/ceiling construction instance.
+/*!	Defines a wall/floor/ceiling construction instance.
 
-	A ConstructionInstance selects all information about a wall that are needed for wall
-	temperature simulation and loads from windows.
+	A ConstructionInstance contains all information about a wall and possibly embedded objects
+	like windows.
 
-	Geometry of the wall is stored inside the parameter list. For calculation needed are
-	wall orientation and inclination, the complete wall area including windows dores and
-	openings and the window are (area of all windows of the wall including frame). The
-	window area always should be smaller than the wall area! A window area that equals
-	the wall area is interpreted as a wall consisting of only windows without an
-	construction behind.
+	Note that the area parameter stores the gross area of the wall, including all embedded objects.
+	Naturally, their area must not exceed the wall area.
+	A window area that is equal to the wall area is interpreted as a wall consisting of only windows
+	without a construction behind.
 
 	Each construction instance stores its surface information inside interface data structures
-	for side A and side B. Side A is besides construction layer index 0.
+	for side A and side B. Side A is besides construction layer with index 0.
 	By default, an interface has no boundary condition information (model types are set to undefined)
 	and hence no fluxes are calculated.
 	There must be at least one interface with valid boundary condition parametrization for a construction
-	instance to be valid.
-
-	Construction and window information is referenced due to a single construction type and
-	window type id number. Only one window type and only one shading type are allowed. The
-	shading type is automatically linked to all windows of the wall.
+	instance to be valid. Not referenced wall constructions will still be calculated, as they may
+	serve as storage medium or provide sensor data. However, if not needed, they should be removed
+	to improve performance.
 */
-
 class ConstructionInstance  {
 public:
 
 	/*! Construction-specific parameters required by several models. */
 	enum para_t {
+		/*! Orientation of the wall [deg]. */
 		P_ORIENTATION,					// Keyword: Orientation				[Deg]	'Orientation of the wall [deg].'
+		/*! Inclination of the wall [deg]. */
 		P_INCLINATION,					// Keyword: Inclination				[Deg]	'Inclination of the wall [deg].'
+		/*! Gross area of the wall [m2]. */
 		P_AREA,							// Keyword: Area					[m2]	'Gross area of the wall [m2].'
 		NUM_P
 	};
@@ -76,15 +74,10 @@ public:
 	NANDRAD_READWRITE
 
 	/*! Checks for valid parameters and stores quick-access pointer to associated construction type.
-		\note This function throws an exception, if invalid parameters are defined, parameters are missing, or
+		\note This function throws an exception if invalid parameters are defined, parameters are missing, or
 			the construction type ID is invalid/unknown.
 	*/
 	void checkParameters(const std::vector<ConstructionType> & conTypes);
-
-	/*! Returns an embedded object selected by its Id.
-		Throws an exception if embedded object ID is not used in this construction instance.
-	*/
-//	const EmbeddedObject & embeddedObjectById( const unsigned int id) const;
 
 	/*! A special form of comparison operator: tests if the construction would yield
 		the same results as the other construction when being simulated.

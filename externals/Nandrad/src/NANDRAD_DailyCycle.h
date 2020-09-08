@@ -38,7 +38,7 @@ namespace NANDRAD {
 
 	If m_interpolation == IT_CONSTANT, then the following rules apply:
 	- the time points in m_timePoints are interpreted as *start* of the next interval
-	- the first time point must be 0, all time points must be < 24 h
+	- the first time point must be always 0, the last one must be < 24 h,
 	- the corresponding value is taken as constant during this interval
 
 	For example, a time point vector "0 6 18" defines three intervals: 0-6, 6-18, 18-24 and
@@ -59,24 +59,31 @@ public:
 		If not set, IT_LINEAR is used.
 	*/
 	enum interpolation_t {
+		/*! Constant values in defined intervals. */
 		IT_CONSTANT,	// Keyword: Constant	'Constant values in defined intervals.'
+		/*! Linear interpolation between values. */
 		IT_LINEAR,		// Keyword: Linear		'Linear interpolation between values.'
 		NUM_IT
 	};
 
 	/*! This structure holds the data for a single parameter stored in this DailyCycle.
-		It is used in vector m_valueData which is populated in prepareCalculatio().
+		It is used in vector m_valueData which is populated in prepareCalculation().
 	*/
 	struct valueData_t {
+		/*! Default C'tor. */
 		valueData_t() {}
+		/*! Initializing C'tor. */
 		valueData_t(const std::string & name, const IBK::Unit & unit, const std::vector<double>	* valueVec) :
 			m_name(name), m_unit(unit), m_valueVec(valueVec) {}
 
 		/*! Comparison operator. */
 		bool operator==(const std::string & name) const { return m_name == name; }
 
+		/*! Parameter name. */
 		std::string					m_name;
+		/*! Value input/output unit. */
 		IBK::Unit					m_unit;
+		/*! Pointer to vector containing the actual data. */
 		const std::vector<double>	*m_valueVec = nullptr;
 	};
 
@@ -90,13 +97,14 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
+	/*! Value interpolation method. */
 	interpolation_t						m_interpolation = NUM_IT;			// XML:A
 
-	/*! Time points in [h], first must be 0, last must be end of day (=24) when IT_LINEAR is used. */
+	/*! Time points in [h], must be strictly monotonically increasing, first must be 0, last must be less than 24. */
 	std::vector<double>					m_timePoints;						// XML:E
 
-	/*! Actual values, key of m_values.m_values is physical quantity/setpoint/... scheduled quantity, value is vector with values, same
-		number of values as in m_timePoints.
+	/*! Actual values, key of m_values.m_values is physical quantity/setpoint/... scheduled quantity,
+		value is vector with values, same number of values as in m_timePoints.
 	*/
 	DataTable							m_values;							// XML:E
 

@@ -76,27 +76,6 @@ void ConstructionInstance::checkParameters(const std::vector<ConstructionType> &
 	}
 }
 
-
-#if 0
-const EmbeddedObject & ConstructionInstance::embeddedObjectById( const unsigned int id) const {
-	const char * const FUNC_ID = "[ConstructionInstance::embeddedObjectById]";
-
-	// preparation for std::map
-	std::vector<NANDRAD::EmbeddedObject>::const_iterator embeddedObjectIt =
-		m_embeddedObjects.begin();
-
-	for ( ; embeddedObjectIt != m_embeddedObjects.end(); ++embeddedObjectIt)
-	{
-		if (embeddedObjectIt->m_id == id)
-			return *embeddedObjectIt;
-	}
-	throw IBK::Exception( IBK::FormatString("Requested invalid Embedded object id '%1' inside ConstructionInstance with id %2.")
-											.arg(id).arg(m_id),
-											FUNC_ID);
-}
-#endif
-
-
 bool ConstructionInstance::behavesLike(const ConstructionInstance & other) const {
 	if (m_constructionTypeId != other.m_constructionTypeId)
 		return false;
