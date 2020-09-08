@@ -29,8 +29,10 @@ namespace NANDRAD {
 /*! Re-implementation of IBK::SolverArgsParser to add NANDRAD-specific options. */
 class ArgsParser : public IBK::SolverArgsParser {
 public:
+	/*! Adds NANDRAD-specific options. */
 	ArgsParser();
 
+	/*! Displays NANDRAD-specific help and examples. */
 	virtual void printHelp(std::ostream & out) const override;
 };
 

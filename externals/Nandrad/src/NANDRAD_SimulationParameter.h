@@ -36,6 +36,7 @@ namespace NANDRAD {
 class SimulationParameter {
 public:
 
+	/*! Parameter values. */
 	enum para_t {
 		P_InitialTemperature,						// Keyword: InitialTemperature					[C]		'Global initial temperature [C].'
 		P_InitialRelativeHumidity,					// Keyword: InitialRelativeHumidity				[%]		'Global initial relative humidity [%].'
@@ -52,11 +53,13 @@ public:
 		NUM_P
 	};
 
+	/*! Integer parameters. */
 	enum intPara_t {
 		IP_StartYear,								// Keyword: StartYear									'Start year of the simulation.'
 		NUM_IP
 	};
 
+	/*! Global model flags. */
 	enum flag_t {
 		F_EnableMoistureBalance,					// Keyword: EnableMoistureBalance						'Flag activating moisture balance calculation if enabled.'
 		F_EnableCO2Balance,							// Keyword: EnableCO2Balance							'Flag activating CO2 balance calculation if enabled.'

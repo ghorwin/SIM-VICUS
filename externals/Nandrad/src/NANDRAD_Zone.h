@@ -89,9 +89,9 @@ public:
 	std::string					m_scheduleName;						// XML:E
 
 
+	/*! Data type used in view factor definition. */
 	typedef std::pair<unsigned int, unsigned int>  viewFactorPair;
 	/*! Optional: view factors for all inside interfaces of the current zone. */
-	/// \todo viewfactor class read, write, etc... ToDo Katja
 	std::vector<std::pair<viewFactorPair, double> >	m_viewFactors;
 
 }; // Zone

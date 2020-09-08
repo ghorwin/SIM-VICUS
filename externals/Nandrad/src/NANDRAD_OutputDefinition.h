@@ -37,7 +37,7 @@ class OutputGrid;
 	In the case of a vector-valued quantity the id or index must be given in brackets.
 	\code
 	quantity = name[<id or index>]
-	\end
+	\endcode
 	The extracted quantity will be treated like a scalar quantity.
 */
 class OutputDefinition {

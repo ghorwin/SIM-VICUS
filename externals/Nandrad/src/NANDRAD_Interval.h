@@ -53,8 +53,9 @@ public:
 	/*! Convenience function to specify a parameter through start time point and end time point.
 		This sets parameters IP_START and IP_END to given values using the unit u for both parameters.
 		\param start The start time point, expected to be already in the unit u.
-		\param end The end time point, expected to be already in the unit u. If endtime should not
+		\param endtime The end time point, expected to be already in the unit u. If endtime should not
 			be specified, given std::numeric_limits<double>::max() as value.
+		\param u Time unit of start and endtime.
 	*/
 	void setStartEnd( double start, double endtime, IBK::Unit u );
 
@@ -67,6 +68,7 @@ public:
 
 	/*! Returns true, if t lies inside the internal.
 		This check requires a valid START parameter to be set.
+		\param t Simulation time, in [s], simtime definition.
 		\warning This function expects checkParameters() to be called beforehand.
 	*/
 	bool isInInterval(double t) const;

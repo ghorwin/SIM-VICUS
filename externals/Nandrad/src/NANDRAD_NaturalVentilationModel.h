@@ -41,6 +41,7 @@ public:
 		NUM_MT
 	};
 
+	/*! Model parameters. */
 	enum para_t {
 		P_VentilationRate,	// Keyword: VentilationRate		[1/h]		'Ventilation rate'
 		NUM_P

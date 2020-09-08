@@ -38,7 +38,7 @@ namespace NANDRAD {
 TiXmlElement * openXMLFile(const std::map<std::string,IBK::Path> & pathPlaceHolders, const IBK::Path & filename,
 	const std::string & parentXmlTag, TiXmlDocument & doc)
 {
-	const char * const FUNC_ID = "[NANDRAD::openXMLFile]";
+	FUNCID(NANDRAD::openXMLFile);
 	// replace path placeholders
 	IBK::Path fname = filename.withReplacedPlaceholders( pathPlaceHolders );
 

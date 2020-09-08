@@ -66,9 +66,8 @@ public:
 		NUM_P
 	};
 
+	/*! Integer parameters. */
 	enum intPara_t {
-		/// \todo remove pre bandwidth and BAND preconditioner altogether?
-		IP_PreBandWidth,					// Keyword: PreBandWidth							'Maximum band width to be used for banded preconditioner.'
 		IP_PreILUWidth,						// Keyword: PreILUWidth								'Maximum level of fill-in to be used for ILU preconditioner.'
 		IP_MaxKrylovDim,					// Keyword: MaxKrylovDim							'Maximum dimension of Krylov subspace.'
 		IP_MaxNonlinIter,					// Keyword: MaxNonlinIter							'Maximum number of nonlinear iterations.'
@@ -109,7 +108,6 @@ public:
 
 	/*! Enumeration of available preconditioners, to be used with iterative LES solvers. */
 	enum precond_t {
-		PRE_Band,						// Keyword: Band						'Band preconditioner'
 		PRE_ILU,						// Keyword: ILU							'Incomplete LU preconditioner'
 		NUM_PRE							// Keyword: auto						'System selects preconditioner automatically.'
 	};
