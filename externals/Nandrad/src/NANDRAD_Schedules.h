@@ -52,6 +52,7 @@ public:
 		NUM_SD
 	};
 
+	/*! Flags controlling schedule evaluation. */
 	enum flag_t {
 		/*! If enabled, schedules are treated as annually repeating schedules. */
 		F_EnableCyclicSchedules,	// Keyword: EnableCyclicSchedules			'If enabled, schedules are treated as annually repeating schedules.'

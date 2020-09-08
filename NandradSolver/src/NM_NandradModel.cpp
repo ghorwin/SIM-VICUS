@@ -772,15 +772,7 @@ void NandradModel::initSolverParameter(const NANDRAD::ArgsParser & args) {
 		}
 
 		// check if this is a valid/known preconditioner
-		if (IBK::toupper_string(args.m_preconditionerName) == "BAND") {
-			solverParameter.m_preconditioner = NANDRAD::SolverParameter::PRE_Band;
-			if (args.m_preconditionerOption != (unsigned int)-1)
-				// also store bandwidth
-				solverParameter.m_intPara[NANDRAD::SolverParameter::IP_PreBandWidth].set(
-					NANDRAD::KeywordList::Keyword("SolverParameter::intPara_t", NANDRAD::SolverParameter::IP_PreBandWidth),
-					(int)args.m_preconditionerOption);
-		}
-		else if (IBK::toupper_string(args.m_preconditionerName) == "ILU") {
+		if (IBK::toupper_string(args.m_preconditionerName) == "ILU") {
 			solverParameter.m_preconditioner = NANDRAD::SolverParameter::PRE_ILU;
 			if (args.m_preconditionerOption != (unsigned int)-1)
 				// also store bandwidth
