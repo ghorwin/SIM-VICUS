@@ -328,7 +328,7 @@ double SolarRadiationModel::apparentSolarTimeFromLocalMeanTime( double secondsOf
 }
 
 
-void SolarRadiationModel::radiationLoad(unsigned int surfaceID, double & qRadDir, double & qRadDif, double & incidenceAngle) const {
+void SolarRadiationModel::radiationLoad(unsigned int surfaceID, double & qRadDir, double & qRadDif, double & incidenceAngleInRad) const {
 	const char * const FUNC_ID = "[SolarRadiationModel::radiationLoad]";
 
 	if (surfaceID >= m_surface.size())
@@ -336,7 +336,7 @@ void SolarRadiationModel::radiationLoad(unsigned int surfaceID, double & qRadDir
 
 	qRadDir = m_qRadDir[surfaceID];
 	qRadDif = m_qRadDif[surfaceID];
-	incidenceAngle = m_incidenceAngle[surfaceID];
+	incidenceAngleInRad = m_incidenceAngle[surfaceID];
 }
 
 
