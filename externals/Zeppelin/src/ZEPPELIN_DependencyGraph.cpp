@@ -33,7 +33,6 @@ DependencyObject::~DependencyObject() {
 void DependencyGraph::setObjects(DependencyObject::DependencySequence & objects,
 								 std::list<DependencyGroup> &objectGroups)
 {
-	//const char * const FUNC_ID = "[DependencyGraph::setObjects]";
 	clear();
 
 	// copy object list

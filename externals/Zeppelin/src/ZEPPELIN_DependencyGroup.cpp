@@ -37,9 +37,7 @@ const DependencyObject::DependencySequence & DependencyGroup::parents() const {
 }
 
 
-void DependencyGroup::createEulerPathesInDirectedSubGraph(std::vector<std::list<const DependencyObject*> > &eulerPathes)
-{
-	//const char * const FUNC_ID = "[DependencyGroup::createEulerPathesInUndirectedSubGraph]";
+void DependencyGroup::createEulerPathesInDirectedSubGraph(std::vector<std::list<const DependencyObject*> > &eulerPathes) {
 
 	// create connections
 	const DependencyObject::DependencySequence &objects = m_depObjects;
@@ -49,247 +47,244 @@ void DependencyGroup::createEulerPathesInDirectedSubGraph(std::vector<std::list<
 		return;
 
 	switch (m_type) {
-	case ZEPPELIN::DependencyGroup::SEQUENTIAL: {
+		case ZEPPELIN::DependencyGroup::SEQUENTIAL: {
 
-		std::list<const ZEPPELIN::DependencyObject*> eulerPath;
-		// for a sequential group register all nodes in their appearance
-		for (unsigned int o = 0; o < objects.size(); ++o) {
-			// register all backward connections
-			const DependencyObject* node = objects[o];
-			eulerPath.push_back(node);
+			std::list<const ZEPPELIN::DependencyObject*> eulerPath;
+			// for a sequential group register all nodes in their appearance
+			for (unsigned int o = 0; o < objects.size(); ++o) {
+				// register all backward connections
+				const DependencyObject* node = objects[o];
+				eulerPath.push_back(node);
+			}
+			eulerPathes.push_back(eulerPath);
 		}
-		eulerPathes.push_back(eulerPath);
-	}
-	break;
-	case ZEPPELIN::DependencyGroup::CYCLIC: {
-		// store a list of dummy nodes in order to create an euler cycle
-		//std::list<ZEPPELIN::DependencyObject> dummyObjects;
+		break;
+		case ZEPPELIN::DependencyGroup::CYCLIC: {
+			// store a list of dummy nodes in order to create an euler cycle
+			//std::list<ZEPPELIN::DependencyObject> dummyObjects;
 
-		struct ObjectWithIndex : public ZEPPELIN::DependencyObject {
-			ObjectWithIndex(const ZEPPELIN::DependencyObject &object) :
-				ZEPPELIN::DependencyObject(object) {
-				m_index = 0;
+			struct ObjectWithIndex : public ZEPPELIN::DependencyObject {
+				ObjectWithIndex(const ZEPPELIN::DependencyObject &object) :
+					ZEPPELIN::DependencyObject(object) {
+					m_index = 0;
+				}
+
+				unsigned int m_index;
+			};
+
+			// copy of objects careting an euler graph
+			std::list<ObjectWithIndex> eulerGraph;
+
+			// create an euler path including additional elements and excudig siources and sinks
+			for (unsigned int i = 0; i < m_depObjects.size(); ++i) {
+				// create a copy
+				ObjectWithIndex eulerGraphObject = *m_depObjects[i];
+				eulerGraphObject.m_index = i;
+				// clear connections of current oject
+				eulerGraphObject.clear();
+				// add to euler graph
+				eulerGraph.push_back(eulerGraphObject);
 			}
 
-			unsigned int m_index;
-		};
+			// list of objects with missing forward or backward connections
+			// if more than one connection is missing, we register object several times
+			std::vector<ObjectWithIndex*> objectsWithMissingBackwardConnections;
+			std::vector<ObjectWithIndex*> objectsWithMissingForwardConnections;
 
-		// copy of objects careting an euler graph
-		std::list<ObjectWithIndex> eulerGraph;
+			// create connection of graph
+			std::list<ObjectWithIndex>::iterator it = eulerGraph.begin();
+			for (unsigned int i = 0; i < m_depObjects.size(); ++i, ++it) {
+				const ZEPPELIN::DependencyObject *object = m_depObjects[i];
+				// get all connections
+				std::set<const ZEPPELIN::DependencyObject*> backwardConnections;
+				std::set<const ZEPPELIN::DependencyObject*> forwardConnections;
+				for (unsigned int j = 0; j < object->dependencies().size(); ++j) {
+					const ZEPPELIN::DependencyObject* depObject = object->dependencies()[j];
+					// we only consider objects of the current group
+					std::vector<ZEPPELIN::DependencyObject*>::iterator fIt =
+						std::find(m_depObjects.begin(), m_depObjects.end(),
+							depObject);
 
-		// create an euler path including additional elements and excudig siources and sinks
-		for (unsigned int i = 0; i < m_depObjects.size(); ++i) {
-			// create a copy
-			ObjectWithIndex eulerGraphObject = *m_depObjects[i];
-			eulerGraphObject.m_index = i;
-			// clear connections of current oject
-			eulerGraphObject.clear();
-			// add to euler graph
-			eulerGraph.push_back(eulerGraphObject);
-		}
+					if (fIt != m_depObjects.end()) {
+						backwardConnections.insert(depObject);
+						// register dependency
+						int pos = std::distance(m_depObjects.begin(), fIt);
+						// find object in list
+						std::list<ObjectWithIndex>::iterator eulerDepObject =
+							eulerGraph.begin();
+						// and register a dependency to an indexed object
+						std::advance(eulerDepObject, pos);
+						it->dependsOn(*eulerDepObject);
+					}
+				}
+				for (unsigned int j = 0; j < object->parents().size(); ++j) {
+					const ZEPPELIN::DependencyObject* parObject = object->parents()[j];
+					// we only consider objects of the current group
+					if (std::find(m_depObjects.begin(), m_depObjects.end(), parObject)
+						!= m_depObjects.end()) {
+						forwardConnections.insert(parObject);
+					}
+				}
+				// update parents
+				it->updateParents();
 
-		// list of objects with missing forward or backward connections
-		// if more than one connection is missing, we register object several times
-		std::vector<ObjectWithIndex*> objectsWithMissingBackwardConnections;
-		std::vector<ObjectWithIndex*> objectsWithMissingForwardConnections;
-
-		// create connection of graph
-		std::list<ObjectWithIndex>::iterator it = eulerGraph.begin();
-		for (unsigned int i = 0; i < m_depObjects.size(); ++i, ++it) {
-			const ZEPPELIN::DependencyObject *object = m_depObjects[i];
-			// get all connections
-			std::set<const ZEPPELIN::DependencyObject*> backwardConnections;
-			std::set<const ZEPPELIN::DependencyObject*> forwardConnections;
-			for (unsigned int j = 0; j < object->dependencies().size(); ++j) {
-				const ZEPPELIN::DependencyObject* depObject = object->dependencies()[j];
-				// we only consider objects of the current group
-				std::vector<ZEPPELIN::DependencyObject*>::iterator fIt =
-					std::find(m_depObjects.begin(), m_depObjects.end(),
-						depObject);
-
-				if (fIt != m_depObjects.end()) {
-					backwardConnections.insert(depObject);
-					// register dependency
-					int pos = std::distance(m_depObjects.begin(), fIt);
-					// find object in list
-					std::list<ObjectWithIndex>::iterator eulerDepObject =
-						eulerGraph.begin();
-					// and register a dependency to an indexed object
-					std::advance(eulerDepObject, pos);
-					it->dependsOn(*eulerDepObject);
+				// in a euler graph the number of forward connections must equal the
+				// number of backward connections
+				// otherwise we create invalid connections
+				if (forwardConnections.size() > backwardConnections.size()) {
+					for (unsigned int j = (unsigned int)backwardConnections.size();
+						j < (unsigned int)forwardConnections.size(); ++j)
+						objectsWithMissingBackwardConnections.push_back(&(*it));
+				}
+				if (backwardConnections.size() > forwardConnections.size()) {
+					for(unsigned int j = (unsigned int) forwardConnections.size();
+						j < (unsigned int)backwardConnections.size(); ++j)
+						objectsWithMissingForwardConnections.push_back(&(*it));
 				}
 			}
-			for (unsigned int j = 0; j < object->parents().size(); ++j) {
-				const ZEPPELIN::DependencyObject* parObject = object->parents()[j];
-				// we only consider objects of the current group
-				if (std::find(m_depObjects.begin(), m_depObjects.end(), parObject)
-					!= m_depObjects.end()) {
-					forwardConnections.insert(parObject);
+
+			// subgraph must include the same number of missing forward and backward connections
+			assert(objectsWithMissingBackwardConnections.size() ==
+				objectsWithMissingForwardConnections.size());
+
+			// connect pairs of nodes
+			for (unsigned int i = 0; i < objectsWithMissingBackwardConnections.size(); ++i) {
+				// create a copy
+				ObjectWithIndex *object = objectsWithMissingBackwardConnections[i];
+				ObjectWithIndex *nextObject = objectsWithMissingForwardConnections[i];
+
+				// add to euler cycle
+				ObjectWithIndex dummyGraphObject = ZEPPELIN::DependencyObject();
+				dummyGraphObject.m_index = (unsigned int)m_depObjects.size();
+				eulerGraph.push_back(dummyGraphObject);
+
+				// create a dummy connector
+				//dummyObjects.push_back(ZEPPELIN::DependencyObject());
+				ZEPPELIN::DependencyObject &dummyNode = eulerGraph.back();
+				// connect in all directions
+				object->dependsOn(dummyNode);
+				dummyNode.dependsOn(*object);
+				nextObject->dependsOn(dummyNode);
+				dummyNode.dependsOn(*nextObject);
+
+				// update parents
+				object->updateParents();
+				nextObject->updateParents();
+				dummyNode.updateParents();
+			}
+
+			// register all pairs of connections
+			std::set < std::pair<const ZEPPELIN::DependencyObject*,
+				const ZEPPELIN::DependencyObject*> > registeredConnections;
+
+			// create a local euler graph
+			std::list<const ObjectWithIndex*> eulerCycle;
+
+			// store all checked nodes
+			std::set<const ObjectWithIndex*> startNodes;
+			// set first node to source
+			eulerCycle.push_back(&(*eulerGraph.begin()));
+			std::list<const ObjectWithIndex*>::iterator startNode =
+				eulerCycle.begin();
+
+			// if all connections of all nodes are registered we continue in global loop
+			while (startNode != eulerCycle.end()) {
+
+				// startNode was visited already
+				if (startNodes.find(*startNode) != startNodes.end()) {
+					++startNode;
+					continue;
 				}
-			}
-			// update parents
-			it->updateParents();
 
-			// in a euler graph the number of forward connections must equal the
-			// number of backward connections
-			// otherwise we create invalid connections
-			if (forwardConnections.size() > backwardConnections.size()) {
-				for (unsigned int j = (unsigned int)backwardConnections.size();
-					j < (unsigned int)forwardConnections.size(); ++j)
-					objectsWithMissingBackwardConnections.push_back(&(*it));
-			}
-			if (backwardConnections.size() > forwardConnections.size()) {
-				for(unsigned int j = (unsigned int) forwardConnections.size();
-					j < (unsigned int)backwardConnections.size(); ++j)
-					objectsWithMissingForwardConnections.push_back(&(*it));
-			}
-		}
-
-		// subgraph must include the same number of missing forward and backward connections
-		assert(objectsWithMissingBackwardConnections.size() ==
-			objectsWithMissingForwardConnections.size());
-
-		// connect pairs of nodes
-		for (unsigned int i = 0; i < objectsWithMissingBackwardConnections.size(); ++i) {
-			// create a copy
-			ObjectWithIndex *object = objectsWithMissingBackwardConnections[i];
-			ObjectWithIndex *nextObject = objectsWithMissingForwardConnections[i];
-
-			// add to euler cycle
-			ObjectWithIndex dummyGraphObject = ZEPPELIN::DependencyObject();
-			dummyGraphObject.m_index = (unsigned int)m_depObjects.size();
-			eulerGraph.push_back(dummyGraphObject);
-
-			// create a dummy connector
-			//dummyObjects.push_back(ZEPPELIN::DependencyObject());
-			ZEPPELIN::DependencyObject &dummyNode = eulerGraph.back();
-			// connect in all directions
-			object->dependsOn(dummyNode);
-			dummyNode.dependsOn(*object);
-			nextObject->dependsOn(dummyNode);
-			dummyNode.dependsOn(*nextObject);
-
-			// update parents
-			object->updateParents();
-			nextObject->updateParents();
-			dummyNode.updateParents();
-		}
-
-		// register all pairs of connections
-		std::set < std::pair<const ZEPPELIN::DependencyObject*,
-			const ZEPPELIN::DependencyObject*> > registeredConnections;
-
-		// create a local euler graph
-		std::list<const ObjectWithIndex*> eulerCycle;
-
-		// store all checked nodes
-		std::set<const ObjectWithIndex*> startNodes;
-		// set first node to source
-		eulerCycle.push_back(&(*eulerGraph.begin()));
-		std::list<const ObjectWithIndex*>::iterator startNode =
-			eulerCycle.begin();
-
-		// if all connections of all nodes are registered we continue in global loop
-		while (startNode != eulerCycle.end()) {
-
-			// startNode was visited already
-			if (startNodes.find(*startNode) != startNodes.end()) {
-				++startNode;
-				continue;
-			}
-
-			const ObjectWithIndex *node = *startNode;
-			// find all forward connection
-			const DependencyObject::DependencySequence &parObjects = node->parents();
-			// isolated node
-			if (parObjects.empty()) {
-				++startNode;
-				continue;
-			}
-
-			// set iterator for inserting position inside list
-			std::list<const ObjectWithIndex*>::iterator insertPos =
-				startNode;
-			++insertPos;
-
-			const ObjectWithIndex* nextNode = nullptr;
-
-			std::list<const ObjectWithIndex*> newPath;
-
-			while (nextNode != *startNode) {
+				const ObjectWithIndex *node = *startNode;
 				// find all forward connection
 				const DependencyObject::DependencySequence &parObjects = node->parents();
-				// register object node
-				unsigned int p = 0;
-
-				for (; p < parObjects.size(); ++p) {
-					nextNode = dynamic_cast<const ObjectWithIndex*>(parObjects[p]);
-
-					// check if node fulfills conditions
-					std::pair<const ZEPPELIN::DependencyObject*,
-						const ZEPPELIN::DependencyObject*>  nextConnection =
-						std::make_pair(node, nextNode);
-					// connection was already visited
-					if (registeredConnections.find(nextConnection) != registeredConnections.end())
-						continue;
-					// register connection in local container
-					registeredConnections.insert(nextConnection);
-					// add node
-					newPath.push_back(nextNode);
-					// set a new node
-					node = nextNode;
-					break;
-				}
-
-				// no path found from current node
-				if (newPath.empty()) {
-					// register start nodes
-					startNodes.insert(*startNode);
+				// isolated node
+				if (parObjects.empty()) {
 					++startNode;
-					break;
+					continue;
 				}
 
-				// no valid node found at the end of a new path
-				assert(p != (unsigned int)parObjects.size());
+				// set iterator for inserting position inside list
+				std::list<const ObjectWithIndex*>::iterator insertPos =
+					startNode;
+				++insertPos;
+
+				const ObjectWithIndex* nextNode = nullptr;
+
+				std::list<const ObjectWithIndex*> newPath;
+
+				while (nextNode != *startNode) {
+					// find all forward connection
+					const DependencyObject::DependencySequence &parObjects = node->parents();
+					// register object node
+					unsigned int p = 0;
+
+					for (; p < parObjects.size(); ++p) {
+						nextNode = dynamic_cast<const ObjectWithIndex*>(parObjects[p]);
+
+						// check if node fulfills conditions
+						std::pair<const ZEPPELIN::DependencyObject*,
+							const ZEPPELIN::DependencyObject*>  nextConnection =
+							std::make_pair(node, nextNode);
+						// connection was already visited
+						if (registeredConnections.find(nextConnection) != registeredConnections.end())
+							continue;
+						// register connection in local container
+						registeredConnections.insert(nextConnection);
+						// add node
+						newPath.push_back(nextNode);
+						// set a new node
+						node = nextNode;
+						break;
+					}
+
+					// no path found from current node
+					if (newPath.empty()) {
+						// register start nodes
+						startNodes.insert(*startNode);
+						++startNode;
+						break;
+					}
+
+					// no valid node found at the end of a new path
+					assert(p != (unsigned int)parObjects.size());
+				}
+
+				// add new list of nodes
+				if (!newPath.empty())
+					eulerCycle.insert(insertPos, newPath.begin(), newPath.end());
 			}
 
-			// add new list of nodes
-			if (!newPath.empty())
-				eulerCycle.insert(insertPos, newPath.begin(), newPath.end());
-		}
+			std::list<const ZEPPELIN::DependencyObject *> eulerPath;
 
-		std::list<const ZEPPELIN::DependencyObject *> eulerPath;
+			// copy into new pathes ignoring dummy nodes
+			for (std::list<const ObjectWithIndex*>::const_iterator
+				it = eulerCycle.begin(); it != eulerCycle.end(); ++it) {
 
-		// copy into new pathes ignoring dummy nodes
-		for (std::list<const ObjectWithIndex*>::const_iterator
-			it = eulerCycle.begin(); it != eulerCycle.end(); ++it) {
-
-			unsigned int index = (*it)->m_index;
-			// cut cycle at invalid nodes
-			if (index >= (unsigned int)m_depObjects.size()) {
-				if (!eulerPath.empty())
-					eulerPathes.push_back(eulerPath);
-				// prepare for next section
-				eulerPath.clear();
-				continue;
+				unsigned int index = (*it)->m_index;
+				// cut cycle at invalid nodes
+				if (index >= (unsigned int)m_depObjects.size()) {
+					if (!eulerPath.empty())
+						eulerPathes.push_back(eulerPath);
+					// prepare for next section
+					eulerPath.clear();
+					continue;
+				}
+				// add suitable object to graph
+				eulerPath.push_back(m_depObjects[index]);
 			}
-			// add suitable object to graph
-			eulerPath.push_back(m_depObjects[index]);
-		}
 
-		// add last element
-		if (!eulerPath.empty())
-			eulerPathes.push_back(eulerPath);
-	}
-	break;
-	default: break;
+			// add last element
+			if (!eulerPath.empty())
+				eulerPathes.push_back(eulerPath);
+		}
+		break;
 	}
 }
 
 
-void DependencyGroup::createEulerPathesInUndirectedSubGraph(std::vector<std::list<const DependencyObject*> > &eulerPathes)
-{
-	//const char * const FUNC_ID = "[DependencyGroup::createEulerPathesInUndirectedSubGraph]";
+void DependencyGroup::createEulerPathesInUndirectedSubGraph(std::vector<std::list<const DependencyObject*> > &eulerPathes) {
 
 	// create connections
 	const DependencyObject::DependencySequence &objects = m_depObjects;
