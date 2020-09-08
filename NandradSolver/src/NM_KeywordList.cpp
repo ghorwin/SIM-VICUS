@@ -422,7 +422,7 @@ namespace NANDRAD_MODEL {
 				case 0 : return "W/m2";
 				case 1 : return "W/m2";
 				case 2 : return "W/m2";
-				case 3 : return "%";
+				case 3 : return "Deg";
 			} break;
 			// NaturalVentilationModel::VectorValuedResults
 			case 6 :

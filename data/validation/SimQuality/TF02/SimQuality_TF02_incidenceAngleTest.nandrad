@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.99">
+	<Project>
+		<ProjectInfo>
+			<Comment>SimQuality TestCase 02</Comment>
+			<Created>2020-08-14</Created>
+			<LastEdited>2020-08-14</LastEdited>
+		</ProjectInfo>
+		<Zones>
+			<Zone id="1" displayName="Room" type="Active">
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<Location>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<IBK:Flag name="PerezDiffuseRadiationModel">false</IBK:Flag>
+			<ClimateFileName>${Project Directory}/../climate/DEU_Potsdam_60.c6b</ClimateFileName>
+			<Sensors>
+				<!-- Radiation sensors automatically provide sensor quantities like DirectSWRadOnPlane, DiffuseSWRadOnPlane, GlobalSWRadOnPlane and IncidenceAngle, which
+					can be queried as vector-valued results of the LOCATION object using the sensor ID as modelID-index. -->
+
+				<!-- Flat roof -->
+				<Sensor id="1">
+					<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+					<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
+				</Sensor>
+				<!-- North Wall 90 -->
+				<Sensor id="2">
+					<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+					<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				</Sensor>
+				<!-- East Wall 90 -->
+				<Sensor id="4">
+					<IBK:Parameter name="Orientation" unit="Deg">90</IBK:Parameter>
+					<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				</Sensor>
+
+			</Sensors>
+		</Location>
+		<Outputs>
+			<TimeUnit>min</TimeUnit>
+			<OutputDefinitions>
+				<!-- minutely values -->
+				<OutputDefinition>
+					<Quantity>AzimuthAngle</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>minutely</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>ElevationAngle</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>minutely</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>IncidenceAngleOnPlane[1]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>minutely</GridName>
+					<Filename>incidence_angles.tsv</Filename>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>IncidenceAngleOnPlane[2]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>minutely</GridName>
+					<Filename>incidence_angles.tsv</Filename>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>IncidenceAngleOnPlane[4]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>minutely</GridName>
+					<Filename>incidence_angles.tsv</Filename>
+				</OutputDefinition>
+
+			</OutputDefinitions>
+			<Grids>
+				<OutputGrid name="hourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+				<OutputGrid name="minutely">
+					<Intervals>
+						<!-- 5. Mär -->
+						<Interval>
+							<IBK:Parameter name="Start" unit="min">90720</IBK:Parameter>
+							<IBK:Parameter name="End" unit="min">92160</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
+						</Interval>
+						<!-- 27. Jul -->
+						<Interval>
+							<IBK:Parameter name="Start" unit="min">298080</IBK:Parameter>
+							<IBK:Parameter name="End" unit="min">299520</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
+						</Interval>
+						<!-- 22. Sep -->
+						<Interval>
+							<IBK:Parameter name="Start" unit="min">380160</IBK:Parameter>
+							<IBK:Parameter name="End" unit="min">381600</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
+						</Interval>
+						<!-- 24. Okt -->
+						<Interval>
+							<IBK:Parameter name="Start" unit="min">426240</IBK:Parameter>
+							<IBK:Parameter name="End" unit="min">427680</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
+						</Interval>
+						<!-- 17. Dez -->
+						<Interval>
+							<IBK:Parameter name="Start" unit="min">504000</IBK:Parameter>
+							<IBK:Parameter name="End" unit="min">505440</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="All zones">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Location">
+				<FilterID>*</FilterID>
+				<ReferenceType>Location</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+	</Project>
+</NandradProject>
