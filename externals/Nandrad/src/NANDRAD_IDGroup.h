@@ -67,7 +67,7 @@ public:
 	*/
 	bool contains(unsigned int id) const;
 
-	/*! Merge two id groups. */
+	/*! Merges two id groups. */
 	const IDGroup operator+(const IDGroup &);
 
 	/*! Comparison operator by value. */

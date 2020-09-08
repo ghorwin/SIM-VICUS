@@ -31,8 +31,14 @@
 namespace NANDRAD {
 
 void IDGroup::setEncodedString(const std::string & encodedString) {
-	const char * const FUNC_ID = "[IDGroup::setEncodedString]";
-	// TODO: check for empty string
+	FUNCID(IDGroup::setEncodedString);
+	// clear all entries
+	m_allIDs = false;
+	m_ids.clear();
+	m_idIntervals.clear();
+	// No data? return
+	if (encodedString.empty())
+		return;
 
 	try {
 		// a model interval is asked for output
@@ -84,11 +90,11 @@ void IDGroup::setEncodedString(const std::string & encodedString) {
 	}
 }
 
+
 std::string IDGroup::encodedString() const {
-	//const char * const FUNC_ID = "[IDGroup::encodedString()]";
 	std::string str;
 	// first check if all desitnation are chosen
-	if(m_allIDs) {
+	if (m_allIDs) {
 		return std::string("*");
 	}
 	// select all intervals
@@ -104,10 +110,10 @@ std::string IDGroup::encodedString() const {
 	// second all single ids
 	if (!m_ids.empty()) {
 		// set a delimiter between id-intervals and ids
-		if(!m_idIntervals.empty() )
+		if (!m_idIntervals.empty() )
 			str += ",";
 
-		for(std::set<unsigned int>::const_iterator it = m_ids.begin(); it != m_ids.end(); ++it) {
+		for (std::set<unsigned int>::const_iterator it = m_ids.begin(); it != m_ids.end(); ++it) {
 			if (it != m_ids.begin())
 				str += ",";
 			str += IBK::val2string<unsigned int> (*it);
@@ -117,21 +123,21 @@ std::string IDGroup::encodedString() const {
 	return str;
 }
 
+
 bool IDGroup::empty() const {
 	return (!m_allIDs && m_idIntervals.empty() && m_ids.empty());
 }
 
 
 bool IDGroup::contains(unsigned int id) const {
-	if(m_allIDs)
+	if (m_allIDs)
 		return true;
-	if(m_ids.find(id) != m_ids.end() )
+	if (m_ids.find(id) != m_ids.end() )
 		return true;
-	for(unsigned int i = 0; i < m_idIntervals.size(); ++i)
-	{
+	for (unsigned int i = 0; i < m_idIntervals.size(); ++i) {
 		const std::pair<unsigned int, unsigned int> &interval = m_idIntervals[i];
 		// id is inside interval
-		if(id >= interval.first && id <= interval.second)
+		if (id >= interval.first && id <= interval.second)
 			return true;
 	}
 	// all checks failed
@@ -142,74 +148,69 @@ bool IDGroup::contains(unsigned int id) const {
 const IDGroup IDGroup::operator+(const IDGroup &group) {
 	IDGroup mergedIDGroup;
 	// merge id groups
-	if(group.m_allIDs || m_allIDs) {
+	if (group.m_allIDs || m_allIDs) {
 		mergedIDGroup.m_allIDs = true;
 	}
 	else {
 		// merge all single id numbers
 		std::set<unsigned int>::const_iterator idItA = m_ids.begin();
-		for(; idItA != m_ids.end(); ++idItA)
-		{
+		for (; idItA != m_ids.end(); ++idItA) {
 			unsigned int idA = *idItA;
 			// check if model id is part of an interval
 			std::vector<std::pair<unsigned int, unsigned int> >::const_iterator intervalItB = group.m_idIntervals.begin();
-			while(intervalItB != group.m_idIntervals.end() &&
+			while (intervalItB != group.m_idIntervals.end() &&
 				(idA < intervalItB->first || idA > intervalItB->second))
 				++ intervalItB;
 			// id number not part of an interval
-			if(intervalItB == group.m_idIntervals.end())
+			if (intervalItB == group.m_idIntervals.end())
 				mergedIDGroup.m_ids.insert(idA);
 		}
 
-		for(std::set<unsigned int>::const_iterator idItB = group.m_ids.begin(); idItB != group.m_ids.end(); ++idItB)
-		{
+		for (std::set<unsigned int>::const_iterator idItB = group.m_ids.begin(); idItB != group.m_ids.end(); ++idItB) {
 			unsigned int idB = *idItB;
 			// check if model id is part of an interval
 			std::vector<std::pair<unsigned int, unsigned int> >::const_iterator intervalItA = m_idIntervals.begin();
-			while(intervalItA != m_idIntervals.end() &&
+			while (intervalItA != m_idIntervals.end() &&
 				(idB < intervalItA->first || idB > intervalItA->second))
 				++ intervalItA;
 			// id number not part of an interval
-			if(intervalItA == m_idIntervals.end())
+			if (intervalItA == m_idIntervals.end())
 				mergedIDGroup.m_ids.insert(idB);
 		}
 
 		// cut all id interval from group B out of intervals from group A numbers
 		std::vector<std::pair<unsigned int, unsigned int> > complementIntervals;
 		std::vector<std::pair<unsigned int, unsigned int> >::const_iterator intervalItA = m_idIntervals.begin();
-		for(; intervalItA != m_idIntervals.end(); ++intervalItA)
-		{
+		for(; intervalItA != m_idIntervals.end(); ++intervalItA) {
 			std::pair<unsigned int, unsigned int> intervalA = *intervalItA;
 			std::vector<std::pair<unsigned int, unsigned int> >::const_iterator intervalItB = group.m_idIntervals.begin();
 			unsigned int k = 0;
 			bool complementIsEmpty = false;
 			// check if model id crosses an id interval, enlarge if necessary and store interval index
-			for(; intervalItB != group.m_idIntervals.end(); ++ intervalItB, ++k)
-			{
+			for (; intervalItB != group.m_idIntervals.end(); ++ intervalItB, ++k) {
 				const unsigned int lowerId = intervalItB->first;
 				const unsigned int upperId = intervalItB->second;
 				// interval A crosses interval B -> reduce interval A
-				if(intervalA.first  >= lowerId && intervalA.first <= upperId) {
+				if (intervalA.first  >= lowerId && intervalA.first <= upperId) {
 					intervalA.first = std::max(intervalA.second + 1,upperId + 1);
 				}
-				if(intervalA.second  >= lowerId && intervalA.second <= upperId) {
+				if (intervalA.second  >= lowerId && intervalA.second <= upperId) {
 					IBK_ASSERT(lowerId != 0 && intervalA.first != 0);
 					intervalA.second = std::min(intervalA.first - 1,lowerId - 1);
 				}
 				// intervalA is empty after complement operation
-				if(intervalA.second == 0 || intervalA.second < intervalA.first) {
+				if (intervalA.second == 0 || intervalA.second < intervalA.first) {
 					complementIsEmpty = true;
 					break;
 				}
 			}
 			// only add filled intervals
-			if(!complementIsEmpty)
+			if (!complementIsEmpty)
 				complementIntervals.push_back(intervalA);
 		}
 		mergedIDGroup.m_idIntervals = complementIntervals;
 		// now add all remaining intervals of id group B
-		for(unsigned int i = 0; i < group.m_idIntervals.size(); ++i)
-		{
+		for (unsigned int i = 0; i < group.m_idIntervals.size(); ++i) {
 			std::pair<unsigned int, unsigned int> intervalB = group.m_idIntervals[i];
 			mergedIDGroup.m_idIntervals.push_back(intervalB);
 		}
