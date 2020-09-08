@@ -1,0 +1,49 @@
+## NANDRAD Project File
+
+The NANDRAD project specification is stored in an XML-file with the extension `nandrad`. The principle structure of the file looks like:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="2.0">
+	<!-- optional DirectoryPlaceholders section-->
+	<DirectoryPlaceholders>
+		<Placeholder name="MyDatabase">/home/sim/climate_DB</Placeholder>
+	</DirectoryPlaceholders>
+
+	<Project>
+	    <!-- the actual project specification -->
+   </Project>
+</NandradProject>
+----
+
+The optional `DirectoryPlaceholders` can be used to define relative path placeholders to be used for externally referenced files (see section <<path_placeholders>>).
+
+All project data is enclosed in the `<Project>` tag.
+
+[[basic_types]]
+## Basic Data Types in NANDRAD Project File Specification
+
+Within the various specificiation sections of the project file some basic data types / xml-tags are frequently used. The rules for specifying these parameters are defined below.
+
+### IBK:Parameter
+
+### IBK:IntPara
+
+### IBK:Flag
+
+### IBK:LinearSpline
+
+
+[[path_placeholders]]
+## Path Placeholders
+
+In some parts of the NANDRAD project file, external files are referenced (for example climate data files, see <<loads_climate_files>>).
+To simplify exchange of projects or reference data files in common database directories, it is possible to use path placeholders in file paths.
+
+For example, you can define `${MyDatabase}` to be `/home/sim/climate_DB` and then in your project reference a climate data file
+via `${MyDatabase}/ClimateData.epw`.
+
+These mapping of the placeholders is done early in the project file, so when exchanging project files between computers, you may
+easily modify the placeholder paths to the directories on the local machine without any further changes in the project file.
+
