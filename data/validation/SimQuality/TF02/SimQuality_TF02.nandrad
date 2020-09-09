@@ -112,7 +112,7 @@
 		</Location>
 		<Outputs>
 			<TimeUnit>min</TimeUnit>
-			<OutputDefinitions>
+			<Definitions>
 				<!-- minutely values -->
 				<OutputDefinition>
 					<Quantity>AzimuthAngle</Quantity>
@@ -699,7 +699,7 @@
 					<TimeType>Mean</TimeType>
 					<Filename>load_integrals</Filename>
 				</OutputDefinition>
-			</OutputDefinitions>
+			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">
 					<Intervals>

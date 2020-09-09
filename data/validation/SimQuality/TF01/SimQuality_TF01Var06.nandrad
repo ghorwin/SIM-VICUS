@@ -18,7 +18,7 @@
 		</Location>
 		<Outputs>
 			<TimeUnit>min</TimeUnit>
-			<OutputDefinitions>
+			<Definitions>
 				<OutputDefinition>
 					<Quantity>ElevationAngle</Quantity>
 					<ObjectListName>Location</ObjectListName>
@@ -29,7 +29,7 @@
 					<ObjectListName>Location</ObjectListName>
 					<GridName>minutely</GridName>
 				</OutputDefinition>
-			</OutputDefinitions>
+			</Definitions>
 			<Grids>
 				<OutputGrid name="minutely">
 					<Intervals>

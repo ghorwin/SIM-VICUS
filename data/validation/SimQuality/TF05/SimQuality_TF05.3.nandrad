@@ -117,7 +117,7 @@
 		</Schedules>
 		
 		<Outputs>
-			<OutputDefinitions>
+			<Definitions>
 				<OutputDefinition>
 					<Quantity>AirTemperature</Quantity>
 					<ObjectListName>Zone</ObjectListName>
@@ -138,7 +138,7 @@
 					<ObjectListName>InfiltrationModel</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
-			</OutputDefinitions>
+			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">
 					<Intervals>

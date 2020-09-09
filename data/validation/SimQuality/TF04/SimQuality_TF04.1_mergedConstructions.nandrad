@@ -71,14 +71,14 @@
 			</Material>
 		</Materials>
 		<Outputs>
-			<OutputDefinitions>
+			<Definitions>
 				<OutputDefinition>
 					<Quantity>AirTemperature</Quantity>
 					<TimeType>None</TimeType>
 					<ObjectListName>All zones</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
-			</OutputDefinitions>
+			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">
 					<Intervals>

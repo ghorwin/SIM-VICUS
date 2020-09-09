@@ -795,7 +795,7 @@
 		<Schedules />
 		<Outputs>
 		<TimeUnit>h</TimeUnit>
-			<OutputDefinitions>
+			<Definitions>
 				<OutputDefinition>
 					<Quantity>Temperature</Quantity>
 					<ObjectListName>Location</ObjectListName>
@@ -806,7 +806,7 @@
 					<ObjectListName>Zone</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
-			</OutputDefinitions>
+			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">
 					<Intervals>
