@@ -1,11 +1,13 @@
+:imagesdir: ./images
 # Building Components 
 
 ## Overview
 
 In order to model building components such as Walls, Ceilings and Floors, etc. it is necessary to define some parameters for the Materials and then the Construction with the reference to an existing material. 
 
-image::images/Mat_ConstInst.png[]
+image::Mat_ConstInst.png[]
 
+[[MaterialsDocumentation]]
 ## Materials
 
 In the NANDRAD-Model the Materials-Section starts with an XML-Tag named `Materials`. In this each Material starts with an XML-Tag named `Material` with two XML-Attributes `id` and `displayName`.  

@@ -1,3 +1,4 @@
+:imagesdir: ./images
 # Tutorials
 
 This section contains several tutorials for different use cases in NANDRAD2. It will start with a simple tutorial for a single room. 
@@ -21,7 +22,7 @@ The building consists of a floor, a wall and a roof construction. The constructi
 
 [width="100%", cols="<.^,^,^,^,^,^",options="header"]
 |====================
-| name | id | thickness [m] | &lambda; [W/mK] | &rho; [kg/m³] | ce [J/kgK] 
+| name | id | thickness [m] | λ [W/mK] | ρ [kg/m³] | ce [J/kgK] 
 | *floor* |103 4+|
 | concrete | 1001 | 0.20 | 2.3 | 2000 | 1000 
 | insulation | 1004 | 0.05 | 0.04 | 50 | 1500
@@ -38,7 +39,7 @@ The building consists of a floor, a wall and a roof construction. The constructi
 [[MaterialsTutorial1]]
 #### Materials
 
-For the materials the thermal parameters such as `thermal conductivity` `&lambda;`, `density` `&rho;` and `heat capacity` `ce` are required. Furthermore a unique Id `id` and name `displayName` is needed. Exemplary the description for concrete and insulation is given below. The detailed documentation is described in <<MaterialsDocumentation,Materials>>.
+For the materials the thermal parameters such as `thermal conductivity` `λ`, `density` `ρ` and `heat capacity` `ce` are required. Furthermore a unique Id `id` and name `displayName` is needed. Exemplary the description for concrete and insulation is given below. The detailed documentation is described in <<MaterialsDocumentation,Materials>>.
 
 Example:
 [source,xml]
@@ -63,7 +64,7 @@ Execute ToDo hygric parameters
 ====
 
 [[ConstructionsTutorial1]]
-#### constructions
+#### Constructions
 
 Afterwards the <<ConstructionTypesDocumentation,Constructions>> in `ConstructionTypes` are assembled from the <<MaterialsDocumentation,Materials>> via the `Id` matching the `Id` in the `materials` and also the layer thickness `d`. As with the materials, a construction is always assigned a unique identifier `id` and optionally a name `displayName`. Transfer and other parameters are not part of the construction and are defined inside the <<ConstructionInstancesDocumentation,Constructions>> that represent an enveloping surface. For the later usage inside the `ConstructionInstance` the first material layer `MaterialLayer` inside the `MaterialLayers` List is linked to the `InterfaceA` and the last material layer to the `InterfaceB`. Thus, the inside or outside of the construction can be defined individually inside the <<ConstructionInstancesDocumentation,Constructions>>.
 
@@ -114,7 +115,7 @@ The envelopes are described in the `ConstructionInstances`. Each envelope surfac
 The surface is described by an `IBC:Parameter` with the attribute `Area`. The construction is linked to the construction from `ConstructionTypes` via the `ConstructionTypeId`. 
 The boundary conditions are defined via the interfaces `InterfaceA` and `InterfaceB`. As boundary conditions transfer coefficients and solar as well as thermal absorption coefficients are defined. These are each described by a separate model.
 
-In the example the wall envelope surface is shown. The selected wall is defined by an area `A = 15 m²`, a wall construction with the `id = 101` and an inside and outside boundary condition. The outside boundary condition is described with a constant transition coefficient of `h = 15 W/(m²K)`, a solar absorptance of `a = 0.6` and a long-wave absorption/emission of `&epsilon; = 0.9`. On the inside, only a transition coefficient `h = 10 W/(m²K)` is described.
+In the example the wall envelope surface is shown. The selected wall is defined by an area `A = 15 m²`, a wall construction with the `id = 101` and an inside and outside boundary condition. The outside boundary condition is described with a constant transition coefficient of `h = 15 W/(m²K)`, a solar absorptance of `a = 0.6` and a long-wave absorption/emission of `ε = 0.9`. On the inside, only a transition coefficient `h = 10 W/(m²K)` is described.
 
 Further setting options can be found in the detailed <<NANDRAD-Geometry.adoc#ZoneDocumentation, ConstructionInstance>> documentation.
 

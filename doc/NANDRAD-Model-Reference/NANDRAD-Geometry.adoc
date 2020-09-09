@@ -1,5 +1,6 @@
+:imagesdir: ./images
 [[ZoneDocumentation]]
-## Zones
+# Zones
 
 In order to model buildings, it is necessary to define the individual rooms with the relevant parameters. 
 A zone defines a thermal zone/room with a single air temperature.
@@ -44,7 +45,7 @@ Example:
 		</Zones>
 ----
 [[ConstructionInstancesDocumentation]]
-## Constructioninstances
+# Constructioninstances
 
 The construction instances define construction-specific parameters required by several models.
 
@@ -96,7 +97,7 @@ Example:
 		</ConstructionInstances>
 ----
 [[InterfacesDocumentation]]
-### Interfaces (construction boundary conditions)
+## Interfaces (construction boundary conditions)
 
 Interfaces are defining boundary conditions and parameters for the two surfaces of a constructions instance.
 
@@ -132,9 +133,9 @@ The Interfaces can have the following `subtags`:
 *** _name:_ `PressureCoefficient` - Pressure Coefficient, _unit:_ per Default in `[-]`
 
 
-## Interfaces (construction boundary conditions)
+# Interfaces (construction boundary conditions)
 
-## Ambient climate boundary conditions
+# Ambient climate boundary conditions
 
-## Interface between constructions and zones (internal boundary conditions)
+# Interface between constructions and zones (internal boundary conditions)
 

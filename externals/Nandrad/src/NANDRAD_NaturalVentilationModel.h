@@ -37,7 +37,7 @@ public:
 		/*! Ventilation rate is given as constant parameter. */
 		MT_Constant,			// Keyword: Constant	'Constant ventilation rate'
 		/*! Ventilation rate is provided as 'NaturalVentilationRate' schedule parameter. */
-		MT_Scheduled,		// Keyword: Scheduled	'Scheduled ventilation rate'
+		MT_Scheduled,			// Keyword: Scheduled	'Scheduled ventilation rate'
 		NUM_MT
 	};
 
