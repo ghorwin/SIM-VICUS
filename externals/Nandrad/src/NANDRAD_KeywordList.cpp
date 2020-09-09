@@ -342,13 +342,12 @@ namespace NANDRAD {
 			// SolverParameter::intPara_t
 			case 34 :
 			switch (t) {
-				case 0 : return "PreBandWidth";
-				case 1 : return "PreILUWidth";
-				case 2 : return "MaxKrylovDim";
-				case 3 : return "MaxNonlinIter";
-				case 4 : return "MaxOrder";
-				case 5 : return "KinsolMaxNonlinIter";
-				case 6 : return "DiscMaxElementsPerLayer";
+				case 0 : return "PreILUWidth";
+				case 1 : return "MaxKrylovDim";
+				case 2 : return "MaxNonlinIter";
+				case 3 : return "MaxOrder";
+				case 4 : return "KinsolMaxNonlinIter";
+				case 5 : return "DiscMaxElementsPerLayer";
 			} break;
 			// SolverParameter::flag_t
 			case 35 :
@@ -377,9 +376,8 @@ namespace NANDRAD {
 			// SolverParameter::precond_t
 			case 38 :
 			switch (t) {
-				case 0 : return "Band";
-				case 1 : return "ILU";
-				case 2 : return "auto";
+				case 0 : return "ILU";
+				case 1 : return "auto";
 			} break;
 			// Zone::type_t
 			case 39 :
@@ -656,13 +654,12 @@ namespace NANDRAD {
 			// SolverParameter::intPara_t
 			case 34 :
 			switch (t) {
-				case 0 : return "PreBandWidth";
-				case 1 : return "PreILUWidth";
-				case 2 : return "MaxKrylovDim";
-				case 3 : return "MaxNonlinIter";
-				case 4 : return "MaxOrder";
-				case 5 : return "KinsolMaxNonlinIter";
-				case 6 : return "DiscMaxElementsPerLayer";
+				case 0 : return "PreILUWidth";
+				case 1 : return "MaxKrylovDim";
+				case 2 : return "MaxNonlinIter";
+				case 3 : return "MaxOrder";
+				case 4 : return "KinsolMaxNonlinIter";
+				case 5 : return "DiscMaxElementsPerLayer";
 			} break;
 			// SolverParameter::flag_t
 			case 35 :
@@ -691,9 +688,8 @@ namespace NANDRAD {
 			// SolverParameter::precond_t
 			case 38 :
 			switch (t) {
-				case 0 : return "Band";
-				case 1 : return "ILU";
-				case 2 : return "auto";
+				case 0 : return "ILU";
+				case 1 : return "auto";
 			} break;
 			// Zone::type_t
 			case 39 :
@@ -971,13 +967,12 @@ namespace NANDRAD {
 			// SolverParameter::intPara_t
 			case 34 :
 			switch (t) {
-				case 0 : return "Maximum band width to be used for banded preconditioner.";
-				case 1 : return "Maximum level of fill-in to be used for ILU preconditioner.";
-				case 2 : return "Maximum dimension of Krylov subspace.";
-				case 3 : return "Maximum number of nonlinear iterations.";
-				case 4 : return "Maximum order allowed for multi-step solver.";
-				case 5 : return "Maximum nonlinear iterations for Kinsol solver.";
-				case 6 : return "Maximum number of elements per layer.";
+				case 0 : return "Maximum level of fill-in to be used for ILU preconditioner.";
+				case 1 : return "Maximum dimension of Krylov subspace.";
+				case 2 : return "Maximum number of nonlinear iterations.";
+				case 3 : return "Maximum order allowed for multi-step solver.";
+				case 4 : return "Maximum nonlinear iterations for Kinsol solver.";
+				case 5 : return "Maximum number of elements per layer.";
 			} break;
 			// SolverParameter::flag_t
 			case 35 :
@@ -1006,9 +1001,8 @@ namespace NANDRAD {
 			// SolverParameter::precond_t
 			case 38 :
 			switch (t) {
-				case 0 : return "Band preconditioner";
-				case 1 : return "Incomplete LU preconditioner";
-				case 2 : return "System selects preconditioner automatically.";
+				case 0 : return "Incomplete LU preconditioner";
+				case 1 : return "System selects preconditioner automatically.";
 			} break;
 			// Zone::type_t
 			case 39 :
@@ -1291,7 +1285,6 @@ namespace NANDRAD {
 				case 3 : return "";
 				case 4 : return "";
 				case 5 : return "";
-				case 6 : return "";
 			} break;
 			// SolverParameter::flag_t
 			case 35 :
@@ -1322,7 +1315,6 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
-				case 2 : return "";
 			} break;
 			// Zone::type_t
 			case 39 :
@@ -1605,7 +1597,6 @@ namespace NANDRAD {
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
 				case 5 : return "#FFFFFF";
-				case 6 : return "#FFFFFF";
 			} break;
 			// SolverParameter::flag_t
 			case 35 :
@@ -1636,7 +1627,6 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
-				case 2 : return "#FFFFFF";
 			} break;
 			// Zone::type_t
 			case 39 :
@@ -1919,7 +1909,6 @@ namespace NANDRAD {
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
-				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SolverParameter::flag_t
 			case 35 :
@@ -1950,7 +1939,6 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
-				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// Zone::type_t
 			case 39 :
@@ -2046,7 +2034,7 @@ namespace NANDRAD {
 			// SolverParameter::para_t
 			case 33 : return 15;
 			// SolverParameter::intPara_t
-			case 34 : return 7;
+			case 34 : return 6;
 			// SolverParameter::flag_t
 			case 35 : return 3;
 			// SolverParameter::integrator_t
@@ -2054,7 +2042,7 @@ namespace NANDRAD {
 			// SolverParameter::lesSolver_t
 			case 37 : return 5;
 			// SolverParameter::precond_t
-			case 38 : return 3;
+			case 38 : return 2;
 			// Zone::type_t
 			case 39 : return 3;
 			// Zone::para_t
@@ -2136,7 +2124,7 @@ namespace NANDRAD {
 			// SolverParameter::para_t
 			case 33 : return 14;
 			// SolverParameter::intPara_t
-			case 34 : return 6;
+			case 34 : return 5;
 			// SolverParameter::flag_t
 			case 35 : return 2;
 			// SolverParameter::integrator_t
@@ -2144,7 +2132,7 @@ namespace NANDRAD {
 			// SolverParameter::lesSolver_t
 			case 37 : return 4;
 			// SolverParameter::precond_t
-			case 38 : return 2;
+			case 38 : return 1;
 			// Zone::type_t
 			case 39 : return 2;
 			// Zone::para_t
