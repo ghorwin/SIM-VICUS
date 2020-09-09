@@ -2,9 +2,9 @@
 
 ToDo Andreas Name NANDRAD oder SIM-VICUS ??? 
 
-## Simple Single Room Model
+## Einfaches Ein-Raum-Modell
 
-### Introduction
+### Einleitung
 
 In diesem Beispiel wird nur eine thermische Zone modelliert. Das Hauptaugenmerk wird auf die Geometrie-, Material- und Konstruktionserstellung gelegt. Als Ergebnisgröße wird die Temperatur des frei schwingenden Raumes ausgegeben. Die Abmessungen des Raumes betragen `l = 2.0 m` Länge, `b = 5.0 m` Breite und `h = 3.0 m` Höhe. Daraus ergibt sich ein Luftvolumen von `V = 30.0 m³`. Alle weiteren Kennwerte werden im Tutorial spezifiziert.
 
@@ -131,11 +131,11 @@ Weitere Einstellungsmöglichkeiten finden sich in der <<NANDRAD-Geometry.adoc#Zo
 
 #### Hüllflächen
 
-Die Hüllflächen werden in die `ConstructionInstances` beschrieben. Jede Hüllfläche `ConstructionInstance` wird über eine Id `id`, optional einen Namen `displayName`, eine Fläche, eine Konstruktion sowie die Übergangsbedingungen, die durch verschiedene Modelle repräsentiert werden, abgebildet.
-Die Fläche wird über einen `IBK:Parameter` mit dem Attribut `Area` beschrieben. Die Konstruktion wird über die `ConstructionTypeId` mit der Konstruktion aus `ConstructionTypes` verlinkt. 
+Die Hüllflächen werden in die `ConstructionInstances` beschrieben. Jede Hüllfläche `ConstructionInstance` wird über eine Id `id`, optional einen Namen `displayName`, eine Fläche, eine Konstruktion, eine Ausrichtung sowie Übergangsbedingungen, die durch verschiedene Modelle repräsentiert werden, abgebildet.
+Die Fläche und Ausrichtung, die nur bei Außenhüllflächen benötigt wird, werden über `IBK:Parameter` mit den Attributen `Area`, `Inclination` und `Orientation` beschrieben. Die Konstruktion wird über die `ConstructionTypeId` mit der Konstruktion aus `ConstructionTypes` verlinkt. 
 Die Randbedingungen werden über die Interfaces `InterfaceA` und `InterfaceB` definiert. Als Randbedingungen werden Übergangskoeffizienten und solare oder thermische Absorptionskennwerte definiert. Diese sind jeweils durch ein eigenes Modell beschrieben.
 
-Im Beispiel wird die Wandhüllfläche dargestellt. Die ausgewählte Wand wird durch eine Fläche `A = 15 m²`, einer Wandkonstruktion mit der `id = 101` und einer Innen- und Außenrandbedingung definiert. Die Außenrandbedingung wird mit einem konstanten Übergangskoeffizienten von `h = 15 W/(m²K)`, einer solaren Absorptanz von `a = 0.6` sowie einer langwelligen Absorption/Emission von `&epsilon; = 0.9` beschrieben. Auf der Innenseite wird nur ein Übergangskoeffizient `h = 10 W/(m²K)` beschrieben.
+Im Beispiel wird die Wandhüllfläche dargestellt. Die ausgewählte Wand wird durch eine Fläche `A = 15 m²`, einer Wandkonstruktion mit der `id = 101` und einer Innen- und Außenrandbedingung definiert. Die Außenrandbedingung wird mit einem konstanten Übergangskoeffizienten von `h = 15 W/(m²K)`, einer solaren Absorptanz von `a = 0.6` sowie einer langwelligen Absorption/Emission von `&epsilon; = 0.9` beschrieben. Auf der Innenseite wird nur ein Übergangskoeffizient `h = 10 W/(m²K)` beschrieben. Die Ausrichtung beträgt `90°` (senkrechte Wand) Neigung und `270°` (orientiert nach Westen) Orientierung. 
 
 
 Weitere Einstellungsmöglichkeiten finden sich in der detaillierten<<NANDRAD-Geometry.adoc#ZoneDocumentation, ConstructionInstance documentation>>.
@@ -147,6 +147,8 @@ Example:
 	<ConstructionInstance id="1" displayName="West Wall">
 		<ConstructionTypeId>101</ConstructionTypeId>
 		<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+		<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
+		<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
 		<InterfaceA id="10" zoneId="1">
 			<!--Interface to zone 'Single room model' -->
 			<InterfaceHeatConduction modelType="Constant">
@@ -225,3 +227,251 @@ Der Standort und das Klima werden im Tag `Location` beschrieben. Pflichtparamete
 [[SimulationPeriod]]
 #### Simulationsparameter
 
+In den Simulationsparameter werden allgemeine Einstellungen für die Projektdatei gesetzt. Darunter das Startjahr `StartYear` für die Simulation als auch die Initialtemperature `InitialTemperature` aller Modelle. Ein Liste der vollständigen Elemente von Simulationsparameter und deren Datentypen wird unter <<SimulationParameter>> beschrieben. Im Beispiel wird nur die Initialtemperatur und das Startjahr dargestellt.
+
+Example:
+[source,xml]
+----
+<SimulationParameter>
+	<IBK:Parameter name="InitialTemperature" unit="C">5</IBK:Parameter>
+</SimulationParameter>
+----
+
+#### Vollständiges Beispiel
+
+Nachfolgende wird die komplette Projektdatei für das einfache Ein-Raum-Modell dargestellt:
+
+Example:
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="2">
+	<Project>
+		<ProjectInfo>
+			<Comment>Simple Single Zone Model</Comment>
+		</ProjectInfo>
+		<Location>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<ClimateFileName>${Project Directory}/../climate/TF05_PotsdamWithStartPhase.c6b</ClimateFileName>
+		</Location>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">5</IBK:Parameter>
+		</SimulationParameter>
+		<SolverParameter/>
+		<Zones>
+			<Zone id="1" displayName="Single Room" type="Active">
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<ConstructionInstances>
+        	<ConstructionInstance id="1" displayName="West Wall">
+        		<ConstructionTypeId>101</ConstructionTypeId>
+        		<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+        		<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
+        		<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+        		<InterfaceA id="10" zoneId="1">
+        			<!--Interface to zone 'Single room model' -->
+        			<InterfaceHeatConduction modelType="Constant">
+        				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter>
+        			</InterfaceHeatConduction>
+        		</InterfaceA>
+        		<InterfaceB id="11" zoneId="0">
+        			<!--Interface to outside-->
+        			<InterfaceHeatConduction modelType="Constant">
+        				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">15</IBK:Parameter>
+        			</InterfaceHeatConduction>
+        			<InterfaceSolarAbsorption modelType="Constant">
+        				<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
+        			</InterfaceHeatConduction>
+        			<InterfaceLongWaveEmission modelType="Constant">
+        				<IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
+        			</InterfaceHeatConduction>
+        		</InterfaceB>
+        	</ConstructionInstance>
+        	<ConstructionInstance id="2" displayName="North Wall">
+        		<ConstructionTypeId>101</ConstructionTypeId>
+        		<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
+        		<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+        		<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+        		<InterfaceA id="20" zoneId="1">
+        			<!--Interface to zone 'Single room model' -->
+        			<InterfaceHeatConduction modelType="Constant">
+        				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter>
+        			</InterfaceHeatConduction>
+        		</InterfaceA>
+        		<InterfaceB id="21" zoneId="0">
+        			<!--Interface to outside-->
+        			<InterfaceHeatConduction modelType="Constant">
+        				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">15</IBK:Parameter>
+        			</InterfaceHeatConduction>
+        			<InterfaceSolarAbsorption modelType="Constant">
+        				<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
+        			</InterfaceHeatConduction>
+        			<InterfaceLongWaveEmission modelType="Constant">
+        				<IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
+        			</InterfaceHeatConduction>
+        		</InterfaceB>
+        	</ConstructionInstance>
+        	<ConstructionInstance id="3" displayName="East Wall">
+        		<ConstructionTypeId>101</ConstructionTypeId>
+        		<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+        		<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
+        		<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+        		<InterfaceA id="30" zoneId="1">
+        			<!--Interface to zone 'Single room model' -->
+        			<InterfaceHeatConduction modelType="Constant">
+        				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter>
+        			</InterfaceHeatConduction>
+        		</InterfaceA>
+        		<InterfaceB id="31" zoneId="0">
+        			<!--Interface to outside-->
+        			<InterfaceHeatConduction modelType="Constant">
+        				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">15</IBK:Parameter>
+        			</InterfaceHeatConduction>
+        			<InterfaceSolarAbsorption modelType="Constant">
+        				<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
+        			</InterfaceHeatConduction>
+        			<InterfaceLongWaveEmission modelType="Constant">
+        				<IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
+        			</InterfaceHeatConduction>
+        		</InterfaceB>
+        	</ConstructionInstance>
+        	<ConstructionInstance id="4" displayName="South Wall">
+        		<ConstructionTypeId>101</ConstructionTypeId>
+        		<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
+        		<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+        		<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+        		<InterfaceA id="40" zoneId="1">
+        			<!--Interface to zone 'Single room model' -->
+        			<InterfaceHeatConduction modelType="Constant">
+        				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter>
+        			</InterfaceHeatConduction>
+        		</InterfaceA>
+        		<InterfaceB id="41" zoneId="0">
+        			<!--Interface to outside-->
+        			<InterfaceHeatConduction modelType="Constant">
+        				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">15</IBK:Parameter>
+        			</InterfaceHeatConduction>
+        			<InterfaceSolarAbsorption modelType="Constant">
+        				<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
+        			</InterfaceHeatConduction>
+        			<InterfaceLongWaveEmission modelType="Constant">
+        				<IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
+        			</InterfaceHeatConduction>
+        		</InterfaceB>
+        	</ConstructionInstance>
+        	<ConstructionInstance id="5" displayName="Roof">
+        		<ConstructionTypeId>102</ConstructionTypeId>
+        		<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+        		<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+        		<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
+        		<InterfaceA id="50" zoneId="1">
+        			<!--Interface to zone 'Single room model' -->
+        			<InterfaceHeatConduction modelType="Constant">
+        				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter>
+        			</InterfaceHeatConduction>
+        		</InterfaceA>
+        		<InterfaceB id="51" zoneId="0">
+        			<!--Interface to outside-->
+        			<InterfaceHeatConduction modelType="Constant">
+        				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">15</IBK:Parameter>
+        			</InterfaceHeatConduction>
+        			<InterfaceSolarAbsorption modelType="Constant">
+        				<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
+        			</InterfaceHeatConduction>
+        			<InterfaceLongWaveEmission modelType="Constant">
+        				<IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
+        			</InterfaceHeatConduction>
+        		</InterfaceB>
+        	</ConstructionInstance>
+        	<ConstructionInstance id="6" displayName="Ground Floor">
+        		<ConstructionTypeId>103</ConstructionTypeId>
+        		<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+        		<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+        		<IBK:Parameter name="Inclination" unit="Deg">180</IBK:Parameter>
+        		<InterfaceA id="60" zoneId="1">
+        			<!--Interface to zone 'Single room model' -->
+        			<InterfaceHeatConduction modelType="Constant">
+        				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter>
+        			</InterfaceHeatConduction>
+        		</InterfaceA>
+        		<InterfaceB id="61" zoneId="0">
+        			<!--Interface to outside-->
+        			<InterfaceHeatConduction modelType="Constant">
+        				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">15</IBK:Parameter>
+        			</InterfaceHeatConduction>
+        			<InterfaceSolarAbsorption modelType="Constant">
+        				<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
+        			</InterfaceHeatConduction>
+        			<InterfaceLongWaveEmission modelType="Constant">
+        				<IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
+        			</InterfaceHeatConduction>
+        		</InterfaceB>
+        	</ConstructionInstance>
+			
+		</ConstructionInstances>
+		<ConstructionTypes>
+        	<ConstructionType id="101" displayName="Wall Construction">
+        		<MaterialLayers>
+        			<MaterialLayer thickness="0.2" matId="1001" /> <!-- Linked to InterfaceA -->
+        			<MaterialLayer thickness="0.1" matId="1004" /> <!-- Linked to InterfaceB -->
+        		</MaterialLayers>
+        	</ConstructionType>
+        	<ConstructionType id="102" displayName="Roof Construction">
+        		<MaterialLayers>
+        			<MaterialLayer thickness="0.2" matId="1004" /> <!-- Linked to InterfaceA -->
+        			<MaterialLayer thickness="0.05" matId="1002" /> <!-- Linked to InterfaceB -->
+        		</MaterialLayers>
+        	</ConstructionType>
+        	<ConstructionType id="103" displayName="Ground Floor Construction">
+        		<MaterialLayers>
+        			<MaterialLayer thickness="0.2" matId="1001" /> <!-- Linked to InterfaceA -->
+        			<MaterialLayer thickness="0.05" matId="1004" /> <!-- Linked to InterfaceB -->
+        		</MaterialLayers>
+        	</ConstructionType>
+		</ConstructionTypes>
+		<Materials>
+			<Material id="1001" displayName="Concrete">
+				<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+			</Material>
+			<Material id="1002" displayName="Spruce">
+				<IBK:Parameter name="Density" unit="kg/m3">500</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">2100</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">500</IBK:Parameter>
+			</Material>
+			<Material id="1004" displayName="Insulation">
+				<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.02</IBK:Parameter>
+			</Material>
+		</Materials>
+		<Outputs>
+			<OutputDefinitions>
+				<OutputDefinition>
+					<Quantity>AirTemperature</Quantity>
+					<ObjectListName>Zone</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+			</OutputDefinitions>
+			<Grids>
+				<OutputGrid name="hourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="Zone">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+	</Project>
+</NandradProject>
+----
