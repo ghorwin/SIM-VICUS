@@ -94,3 +94,8 @@ Units are case-sensitive! For example, `Deg` is correct whereas `deg` will not b
 | W/Person | kW/Person
 | _undefined_ | 
 |====================
+
+[IMPORTANT]
+====
+The unit `undefined` means _not initialized_ (internally) and must not be used in input files.
+====

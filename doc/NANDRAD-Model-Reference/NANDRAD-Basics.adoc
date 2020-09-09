@@ -1,6 +1,6 @@
 :imagesdir: ./images
 [[project_file]]
-# NANDRAD Project File Structure
+# Project File Structure
 
 The NANDRAD project specification is stored in an XML-file with the extension `nandrad`. The principle structure of the file looks like:
 
@@ -9,13 +9,23 @@ The NANDRAD project specification is stored in an XML-file with the extension `n
 <?xml version="1.0" encoding="UTF-8" ?>
 <NandradProject fileVersion="2.0">
 	<!-- optional DirectoryPlaceholders section-->
-	<DirectoryPlaceholders>
-		<Placeholder name="MyDatabase">/home/sim/climate_DB</Placeholder>
-	</DirectoryPlaceholders>
+	<DirectoryPlaceholders>...</DirectoryPlaceholders>
 
+    <!-- the actual project specification -->
 	<Project>
-	    <!-- the actual project specification -->
-   </Project>
+	    <ProjectInfo>...</ProjectInfo>
+	    <Location>...</Location>
+	    <SimulationParameter>...</SimulationParameter>
+	    <SolverParameter>...</SolverParameter>
+	    <Zones>...</Zones>
+	    <ConstructionInstances>...</ConstructionInstances>
+	    <ConstructionTypes>...</ConstructionTypes>
+	    <Materials>...</Materials>
+	    <Models>...</Models>
+	    <Schedules>...</Schedules>
+	    <Outputs>...</Outputs>
+	    <ObjectLists>...</ObjectLists>
+	</Project>
 </NandradProject>
 ----
 
@@ -23,9 +33,24 @@ The optional `DirectoryPlaceholders` can be used to define relative path placeho
 
 All project data is enclosed in the `<Project>` tag.
 
-A project file may contain the following child tags:
+A project file may contain the following child tags (order is arbitrary):
 
-* `Location` - Climatic data and location settings -> <<climatic_loads>>
+[width="100%",options="header", cols="15%,85%"]
+|====================
+| Child tag | Description
+| `ProjectInfo` | General project meta information -> <<project_info>>
+| `Location` | Climatic data and location settings -> <<climatic_loads>>
+| `SimulationParameter` | Simulation model parameters -> <<simulation_parameters>>
+| `SolverParameter` | Numerical solver settings and performance options -> <<solver_parameters>>
+| `Zones` | Zone specifications -> <<zones>>
+| `ConstructionInstances` | Building components and boundary conditions -> <<construction_instances>>
+| `ConstructionTypes` | Definition of multi-layered constructions -> <<construction_types>>
+| `Materials` | Material properties -> <<materials>>
+| `Models` | Model parameter blocks -> <<models>>
+| `Schedules` | Definition of scheduled parameters -> <<schedules>>
+| `Outputs` | Output definitions -> <<outputs>>
+| `ObjectLists` | Definition of object lists/object reference groups -> <<object_lists>>
+|====================
 
 
 [[basic_types]]
@@ -33,10 +58,10 @@ A project file may contain the following child tags:
 
 Within the various specificiation sections of the project file some basic data types / xml-tags are frequently used. The rules for specifying these parameters are defined below.
 
-[[IBK_parameter]]
+[[IBK_Parameter]]
 ## IBK:Parameter
 
-An xml tag with name `IBK:Parameter` defines a floating point value parameter, identified by a name and physical unit (XML-attributes `name` and `unit`). The value of the xml tag is the actual parameter value.
+An XML tag with name `IBK:Parameter` defines a floating point value parameter, identified by a name and physical unit (mandatory XML-attributes `name` and `unit`). The value of the xml tag is the actual parameter value.
 
 .Parameters with different units
 ====
@@ -50,14 +75,49 @@ An xml tag with name `IBK:Parameter` defines a floating point value parameter, i
 ----
 ====
 
-The units must be selected from the global unit list, see section <<units>>.
+The units must be selected from the global unit list, see section <<units>>. Not defining a parameter will mark it as _missing_, which means that either a default value is used or - in case of mandatory user parameters - an error is raised.
 
+[[IBK_IntPara]]
 ## IBK:IntPara
 
+Used for whole number parameters. Mandatory attribute `name` identifies the parameter. XML tag value is the parameter value. Not defining a parameter will mark it as _missing_, which means that either a default value is used or - in case of mandatory user parameters - an error is raised.
+
+.Whole number parameter definition
+====
+[source,xml]
+----
+<IBK:IntPara name="DiscMaxElementsPerLayer">30</IBK:IntPara>
+----
+====
+
+[[IBK_Flag]]
 ## IBK:Flag
 
+Used for flags. Mandatory attribute `name` identifies the flag. Not defining a flag will mark it as _missing_, which means that either a default value is used or - in case of mandatory user parameters - an error is raised.
+
+.Flag definition
+====
+[source,xml]
+----
+<IBK:Flag name="EnableCyclicSchedules">true</IBK:Flag>
+----
+====
+
+[[IBK_LinearSpline]]
 ## IBK:LinearSpline
 
+A linear spline is effectively a data table of x and y values, where x values are strictly monotonically increasing values. Mandatory attribute `name` identifies the linear spline parameter. The child tags `X` and `Y` hold the actual values, with mandatory attribute `unit` defining the respective value unit. Number of x and y values must match.
+
+.Linear spline parameter definition
+====
+[source,xml]
+----
+<IBK:LinearSpline name="ThermalLoad">
+  <X unit="h">0    6    8   10   17   18  19  20</X>
+  <Y unit="W">0  0.5  0.8  1.0  0.7  0.6 0.5   0</Y>
+</IBK:LinearSpline>
+----
+====
 
 [[path_placeholders]]
 # Path Placeholders
@@ -71,8 +131,10 @@ via `${MyDatabase}/ClimateData.epw`.
 These mapping of the placeholders is done early in the project file, so when exchanging project files between computers, you may
 easily modify the placeholder paths to the directories on the local machine without any further changes in the project file.
 
-The individual path placeholders are defined in the `DirectoryPlaceholders`, for example:
+The individual path placeholders are defined in the `DirectoryPlaceholders`:
 
+.Custom directory placeholders
+====
 [source,xml]
 ----
 <DirectoryPlaceholders>
@@ -80,5 +142,12 @@ The individual path placeholders are defined in the `DirectoryPlaceholders`, for
 	<Placeholder name="DataFiles">/home/sim/data</Placeholder>
 </DirectoryPlaceholders>
 ----
+====
 
 There is one builtin-placeholder `${Project Directory}` that will be automatically defined with the path to the directory of the project file.
+
+[[project_info]]
+# Project Information
+
+This section contains change times/dates and a brief description of the project.
+
