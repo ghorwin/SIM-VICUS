@@ -65,7 +65,7 @@ def processAdoc(fpath, mode, scriptPath):
 						pos2 = pos_space
 				# pos2 now either holds the position of the first space, first '[' or -1 (end of line)
 				imagefname = line[pos:pos2].strip()
-				print("    Image ref = {}".format(imagefname))
+				print("    Image ref   = {}".format(imagefname))
 				
 				# check for existing file
 				if len(imagesdir) != 0:
@@ -80,10 +80,10 @@ def processAdoc(fpath, mode, scriptPath):
 				posPrint = basename.rfind(PRINT_FILE_SUFFIX)
 				# do we have a filename without 
 				if posPrint == -1:
-					htmlName = basename + ext
+					htmlName = basename + ".png"
 					pdfName = basename + PRINT_FILE_SUFFIX + ext
 				else:
-					htmlName = basename[:-len(PRINT_FILE_SUFFIX)] + ext
+					htmlName = basename[:-len(PRINT_FILE_SUFFIX)] + ".png"
 					pdfName = basename + ext
 				
 				# based on mode, determine target filename
@@ -97,8 +97,19 @@ def processAdoc(fpath, mode, scriptPath):
 				else:
 					fullTargetPath = os.path.join(adocDirPath, targetFile)
 				if not os.path.exists(fullTargetPath):
+					# in case of print mode, we might have a xxx-print.pdf, xxx-print.svg or xxx-print.pdf file
+					# look for all of those
+					if mode != "html":
+						targetFile2 = targetFile[0:-4] + ".svg"
+						fullTargetPath2 = os.path.join(imagesdir, targetFile2)
+						if os.path.exists(fullTargetPath2):
+							targetFile = targetFile2
+							fullTargetPath = fullTargetPath2
+				if not os.path.exists(fullTargetPath):
 					printWarning("    WARNING: Target file {} not found, keeping original file name".format(targetFile))
 					targetFile = imagefname
+				else:
+					print("    --> new ref = {}".format(targetFile))
 				# now replace filenames
 				line = line[0:pos] + targetFile + line[pos2:]
 					
