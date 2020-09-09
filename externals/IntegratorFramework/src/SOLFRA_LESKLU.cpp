@@ -93,7 +93,7 @@ LESKLU::~LESKLU() {
 void LESKLU::init(ModelInterface * model, IntegratorInterface * integrator,
 				   PrecondInterface * precond, JacobianInterface *jacobian)
 {
-	const char * const FUNC_ID = "[LESKLU::init]";
+    FUNCID(LESKLU::init);
 
 	m_integrator = integrator;
 	m_model = model;

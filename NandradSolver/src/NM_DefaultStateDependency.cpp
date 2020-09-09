@@ -41,7 +41,7 @@ DefaultStateDependency::DefaultStateDependency(unsigned int modelTypeID) {
 #if 0
 void DefaultStateDependency::inputReferenceDescriptions(std::vector<QuantityDescription> & refDesc) const {
 
-	const char * const FUNC_ID = "[DefaultStateDependency::inputReferenceDescriptions]";
+    FUNCID(DefaultStateDependency::inputReferenceDescriptions);
 	// No state dependend model object without the model properties!!!
 	const AbstractModel* model = dynamic_cast<const AbstractModel*>(this);
 	IBK_ASSERT(model != nullptr);
@@ -155,7 +155,7 @@ void DefaultStateDependency::inputReferences(std::vector<InputReference>  & inpu
 
 void DefaultStateDependency::setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs) {
 #if 0
-	const char * const FUNC_ID = "[DefaultStateDependency::setInputValueRef]";
+    FUNCID(DefaultStateDependency::setInputValueRef);
 	// for the first call we need to resize all input value references
 	if(m_inputValueRefs.empty() && !m_inputReferences.empty())
 		m_inputValueRefs.resize(m_inputReferences.size(), nullptr);
@@ -420,7 +420,7 @@ InputReference & DefaultStateDependency::inputReference(int quantityType, int in
 
 
 const InputReference & DefaultStateDependency::inputReference(int quantityType, int index) const {
-	const char * const FUNC_ID = "[DefaultStateDependency::inputReference]";
+    FUNCID(DefaultStateDependency::inputReference);
 	// find the input reference matching quantity type and index
 	std::vector<InputReferenceToVectorValuedTarget>::const_iterator it =
 		std::find_if(m_inputReferences.begin(), m_inputReferences.end(),
@@ -477,7 +477,7 @@ std::vector<const double *>::const_iterator DefaultStateDependency::inputValueRe
 
 const double *DefaultStateDependency::inputValueRef(int quantityType) const {
 #if 0
-//	const char * const FUNC_ID = "[DefaultStateDependency::inputValueRef]";
+
 	IBK_ASSERT(dynamic_cast<const AbstractModel*>(this) != nullptr);
 	// error: wrong quantity type is requested
 	IBK_ASSERT_X( quantityType >= 0 &&

@@ -26,7 +26,7 @@ namespace SOLFRA {
 void LESGMRES::init(ModelInterface * model, IntegratorInterface * integrator, PrecondInterface * precond,
 					JacobianInterface * jacobian)
 {
-	const char * const FUNC_ID = "[LESGMRES::init]";
+    FUNCID(LESGMRES::init);
 
 	m_integrator = integrator;
 	m_model      = model;

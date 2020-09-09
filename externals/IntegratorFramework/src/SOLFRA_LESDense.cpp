@@ -30,7 +30,7 @@ LESDense::~LESDense() {
 void LESDense::init(ModelInterface * model, IntegratorInterface * integrator,
 					PrecondInterface * precond, JacobianInterface * /*jacobian*/)
 {
-	const char * const FUNC_ID = "[LESDense::init]";
+    FUNCID(LESDense::init);
 
 	// retreive pointer to the current model
 	m_model		 = model;

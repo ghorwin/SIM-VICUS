@@ -176,7 +176,7 @@ void SolverControlFramework::setRestartInfoInterval(double simTimeDt, double rea
 
 
 void SolverControlFramework::restartFrom(double t_restart) {
-	const char * const FUNC_ID = "[SolverControlFramework::restartFrom]";
+    FUNCID(SolverControlFramework::restartFrom=);
 	if (m_model == nullptr || m_integrator == nullptr || m_outputScheduler == nullptr)
 		throw IBK::Exception("Invalid pointers to model, integrator or outputScheduler.", FUNC_ID);
 	std::vector<double> tmp(m_model->n());
@@ -201,7 +201,7 @@ void SolverControlFramework::restartFrom(double t_restart) {
 
 
 void SolverControlFramework::restart(int step) {
-	const char * const FUNC_ID = "[SolverControlFramework::restart]";
+    FUNCID(SolverControlFramework::restart);
 	if (m_model == nullptr || m_integrator == nullptr || m_outputScheduler == nullptr)
 		throw IBK::Exception("Missing model, integrator or outputScheduler.", FUNC_ID);
 
@@ -278,7 +278,7 @@ void SolverControlFramework::restart(int step) {
 
 
 void SolverControlFramework::printRestartFileInfo(const IBK::Path & restartFilePath) {
-	const char * const FUNC_ID = "[SolverControlFramework::printRestartFileInfo]";
+    FUNCID(SolverControlFramework::printRestartFileInfo);
 
 #if defined(_MSC_VER)
 	std::ifstream in(restartFilePath.wstr().c_str(), std::ios_base::binary);
@@ -322,7 +322,7 @@ void SolverControlFramework::printRestartFileInfo(const IBK::Path & restartFileP
 // *** STATIC FUNCTIONS ***
 
 void SolverControlFramework::printVersionInfo() {
-	const char * const FUNC_ID = "[SolverControlFramework::printVersionInfo]";
+    FUNCID(SolverControlFramework::printVersionInfo);
 	IBK::IBK_Message( IBK::FormatString("Integrator Framework Version                     %1\n").arg(LONG_VERSION), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD );
 	IBK::IBK_Message( IBK::FormatString("SUNDIALS Release Version                         %1\n").arg(SUNDIALS_PACKAGE_VERSION), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD );
 }
@@ -331,7 +331,7 @@ void SolverControlFramework::printVersionInfo() {
 
 void SolverControlFramework::run(double t) {
 
-	const char * const FUNC_ID = "[SolverControlFramework::run]";
+    FUNCID(SolverControlFramework::run);
 	if (m_model == nullptr || m_integrator == nullptr || m_outputScheduler == nullptr)
 		throw IBK::Exception("Missing model, integrator or outputScheduler.", FUNC_ID);
 
@@ -505,7 +505,7 @@ void SolverControlFramework::run(double t) {
 
 void SolverControlFramework::appendRestartInfo(double t, const double * y) const {
 
-	const char * const FUNC_ID = "[SolverControlFramework::appendRestartInfo]";
+    FUNCID(SolverControlFramework::appendRestartInfo);
 
 	// do nothing if no filename is set
 	if (m_restartFilename.str().empty()) return;
@@ -629,7 +629,7 @@ bool SolverControlFramework::readRestartFile(int step,
 
 
 void SolverControlFramework::writeMetrics() {
-	const char * const FUNC_ID = "[SolverControlFramework::writeStatistics]";
+    FUNCID(SolverControlFramework::writeStatistics);
 	// First write overall simulation time, then timings obtained by integrator, les-solver, jacobian interface and pre-conditioner.
 	IBK::IBK_Message( IBK::FormatString("\nSolver statistics\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK::IBK_Message( IBK::FormatString("------------------------------------------------------------------------------\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);

@@ -112,7 +112,7 @@ void DenseMatrix::serialize(void* & dataPtr) const {
 
 
 void DenseMatrix::deserialize(void* & dataPtr) {
-	const char * const FUNC_ID = "[DenseMatrix::deserialize]";
+    FUNCID(DenseMatrix::deserialize);
 	char matType = *(char*)dataPtr;
 	dataPtr = (char*)dataPtr + sizeof(char);
 	// check for valid matrix type
@@ -135,7 +135,7 @@ void DenseMatrix::deserialize(void* & dataPtr) {
 
 
 void DenseMatrix::recreate(void* & dataPtr) {
-	const char * const FUNC_ID = "[DenseMatrix::recreate]";
+    FUNCID(DenseMatrix::recreate);
 	char matType = *(char*)dataPtr;
 	dataPtr = (char*)dataPtr + sizeof(char);
 	// check for valid matrix type

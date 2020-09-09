@@ -32,7 +32,7 @@ PrecondILU::~PrecondILU() {
 void PrecondILU::init(ModelInterface * model, IntegratorInterface * integrator,
 					  const JacobianInterface *jacobianInterface)
 {
-	//const char * const FUNC_ID = "[PrecondILU::init]";
+
 
 	// initialize all variables needed for Jacobian
 	m_integrator = integrator;

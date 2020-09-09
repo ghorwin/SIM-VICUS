@@ -50,7 +50,7 @@ void IntegratorExplicitEuler::init(	ModelInterface * model,
 									PrecondInterface * /*precond*/,
 									JacobianInterface * /*jacobian*/)
 {
-	const char * const FUNC_ID = "[IntegratorExplicitEuler::init]";
+    FUNCID(IntegratorExplicitEuler::init);
 
 	IBK_Message( "Initializing Explicit Euler integrator\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
@@ -189,7 +189,7 @@ void IntegratorExplicitEuler::writeStatistics() {
 
 
 void IntegratorExplicitEuler::writeMetrics(double simtime, std::ostream * metricsFile) {
-	const char * const FUNC_ID = "[IntegratorExplicitEuler::writeMetrics]";
+    FUNCID(IntegratorExplicitEuler::writeMetrics);
 	std::string ustr = IBK::Time::suitableTimeUnit(simtime);
 	IBK::IBK_Message( IBK::FormatString("Integrator: Steps                          =                          %1\n")
 		.arg(m_statNumSteps,8),

@@ -159,7 +159,7 @@ void ClimateDataLoader::readClimateDataCCDDirectory(const IBK::Path & directory,
 													SolarRadiationModel & radModel,
 													std::string & skippedClimateDataFiles)
 {
-	const char * const FUNC_ID = "[ClimateDataLoader::readClimateDataCCDDirectory]";
+    FUNCID(ClimateDataLoader::readClimateDataCCDDirectory);
 
 	// create a list with requested input files
 	std::vector<IBK::Path> dataFileNames(NumClimateComponents);
@@ -264,7 +264,7 @@ ClimateDataLoader::ReadFunctionReturnValues ClimateDataLoader::readCCDFile(const
 																		   IBK::Unit & dataUnit,
 																		   std::string &errorLine)
 {
-	const char * const FUNC_ID = "[ClimateDataLoader::readCCDFile]";
+    FUNCID(ClimateDataLoader::readCCDFile);
 
 #ifdef _MSC_VER
 	std::ifstream in(fname.wstr().c_str());
@@ -382,7 +382,7 @@ ClimateDataLoader::ReadFunctionReturnValues ClimateDataLoader::readCSVFile(const
 																		   IBK::Unit & dataUnit,
 																		   std::string &errorLine)
 {
-	//	const char * const FUNC_ID = "[ClimateDataLoader::readCSVFile]";
+
 
 	IBK::CSVReader reader;
 	try {
@@ -441,7 +441,7 @@ ClimateDataLoader::ReadFunctionReturnValues ClimateDataLoader::readCSVFile(const
 
 bool ClimateDataLoader::fillWMOCodeFromMLID(const IBK::Path & MLIDDatabaseFile) {
 
-	const char * const FUNC_ID = "[ClimateDataLoader::fillWMOCodeFromMLID]";
+    FUNCID(ClimateDataLoader::fillWMOCodeFromMLID);
 	// code already exists
 	if (!m_wmoCode.empty()) {
 		IBK::IBK_Message( IBK::FormatString("Ignore request for finding WMO code inside data base %1: "
@@ -591,7 +591,7 @@ bool ClimateDataLoader::fillWMOCodeFromMLID(const IBK::Path & MLIDDatabaseFile) 
 
 
 void ClimateDataLoader::readClimateData(const IBK::Path & fname, bool headerOnly) {
-	const char * const FUNC_ID = "[ClimateDataLoader::readClimateData]";
+    FUNCID(ClimateDataLoader::readClimateData);
 	std::string ext = fname.extension();
 	if (IBK::string_nocase_compare(ext,"epw"))
 		readClimateDataEPW(fname, headerOnly);
@@ -606,7 +606,7 @@ void ClimateDataLoader::readClimateData(const IBK::Path & fname, bool headerOnly
 
 
 void ClimateDataLoader::readClimateDataEPW(const IBK::Path & fname, bool headerOnly) {
-	const char * const FUNC_ID = "[ClimateDataLoader::readClimateDataEPW]";
+    FUNCID(ClimateDataLoader::readClimateDataEPW);
 	// open file
 #ifdef _MSC_VER
 	std::ifstream in(fname.wstr().c_str());
@@ -735,7 +735,7 @@ void ClimateDataLoader::readClimateDataEPW(const IBK::Path & fname, bool headerO
 
 
 void ClimateDataLoader::readClimateDataIBK(const IBK::Path & fname, bool headerOnly) {
-	const char * const FUNC_ID = "[ClimateDataLoader::readClimateDataIBK]";
+    FUNCID(ClimateDataLoader::readClimateDataIBK);
 	// open file in binary mode
 #ifdef _MSC_VER
 	std::ifstream in(fname.wstr().c_str(), std::ios_base::binary);
@@ -862,7 +862,7 @@ void ClimateDataLoader::readClimateDataIBK(const IBK::Path & fname, bool headerO
 
 
 void ClimateDataLoader::readClimateDataWAC(const IBK::Path & fname, bool headerOnly) {
-	const char * const FUNC_ID = "[ClimateDataLoader::readClimateDataWAC]";
+    FUNCID(ClimateDataLoader::readClimateDataWAC);
 	// open file
 #ifdef _MSC_VER
 	std::ifstream in(fname.wstr().c_str());
@@ -1118,7 +1118,7 @@ void ClimateDataLoader::readClimateDataWAC(const IBK::Path & fname, bool headerO
 
 
 void ClimateDataLoader::writeClimateDataIBK(const IBK::Path & fname) {
-	//const char * const FUNC_ID = "[ClimateDataLoader::writeClimateDataIBK]";
+
 	// open file in binary mode
 #ifdef _MSC_VER
 	std::ofstream out(fname.wstr().c_str(), std::ios_base::binary);
@@ -1355,7 +1355,7 @@ void ClimateDataLoader::writeClimateDataEPW(const IBK::Path & fname) {
 
 void ClimateDataLoader::readDescriptionCCD(const IBK::Path &fname) {
 
-	const char * const FUNC_ID = "[ClimateDataLoader::readDescriptionCCD]";
+    FUNCID(ClimateDataLoader::readDescriptionCCD);
 	// create document
 	TiXmlDocument doc;
 
@@ -1635,7 +1635,7 @@ void ClimateDataLoader::updateCheckBits() {
 
 
 void ClimateDataLoader::setTime(int year, double secondsOfYear) {
-	const char * const FUNC_ID = "[ClimateDataLoader::setTime]";
+    FUNCID(ClimateDataLoader::setTime);
 
 	double t = secondsOfYear;
 	IBK_ASSERT(t >= 0);
@@ -1798,7 +1798,7 @@ std::string ClimateDataLoader::composeErrorText(ReadFunctionReturnValues res, co
 
 
 void ClimateDataLoader::checkForValidCyclicData(const std::vector<double> & timeVec) {
-	const char * const FUNC_ID = "[ClimateDataLoader::checkForValidCyclicData]";
+    FUNCID(ClimateDataLoader::checkForValidCyclicData);
 	if (timeVec.size() < 2)
 		throw IBK::Exception("Missing data, at least two time points are required.", FUNC_ID);
 	if (timeVec.back() > 365*24*3600)
@@ -1809,7 +1809,7 @@ void ClimateDataLoader::checkForValidCyclicData(const std::vector<double> & time
 
 
 void ClimateDataLoader::expandToAnnualHourlyData(std::vector<double> & timeVec, std::vector<double> & dataVec) {
-	const char * const FUNC_ID = "[ClimateDataLoader::expandToAnnualHourlyData]";
+    FUNCID(ClimateDataLoader::expandToAnnualHourlyData);
 	// ensure consistent input data
 	checkForValidCyclicData(timeVec);
 	// populate temporary input vectors

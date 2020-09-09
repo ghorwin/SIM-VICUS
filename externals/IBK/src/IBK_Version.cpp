@@ -104,7 +104,7 @@ void Version::read(std::istream & in, unsigned int magicNumberFirstBinary, unsig
 				 unsigned int magicNumberFirstASCII, unsigned int magicNumberSecondASCII,
 				 bool & isBinary, unsigned int & majorVersion, unsigned int & minorVersion)
 {
-	const char * const FUNC_ID = "[Version::read]";
+    FUNCID(Version::read);
 
 	// read first unsigned int from stream
 	unsigned int test;
@@ -341,7 +341,7 @@ unsigned int Version::fromASCIIEncoding( unsigned int first, unsigned int second
 }
 
 void Version::printCompilerVersion() {
-	const char * const FUNC_ID = "[Version::printCompilerVersion]";
+    FUNCID(Version::printCompilerVersion);
 	// print compiler and version information
 #if defined(__GNUC__)
 

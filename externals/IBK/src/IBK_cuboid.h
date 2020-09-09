@@ -77,7 +77,7 @@ public:
 	cuboid(T newLeft, T newTop, T newRight, T newBottom, T newBack, T newFront ) :
 		rectangle< T >( newLeft, newTop, newRight, newBottom )
 	{
-		const char * const FUNC_ID = "[cuboid::cuboid]";
+        FUNCID(cuboid::cuboid);
 
 		if(newBack > newFront) {
 			throw IBK::Exception(IBK::FormatString(
@@ -127,7 +127,7 @@ public:
 	*/
 	void set(T newLeft, T newTop, T newBottom, T newRight, T newBack = T(), T newFront = T() ) {
 
-		const char * const FUNC_ID = "[cuboid::set]";
+        FUNCID(cuboid::set);
 
 		if(newLeft > newRight || newTop > newBottom || newBack > newFront) {
 			// decide which error message to use:

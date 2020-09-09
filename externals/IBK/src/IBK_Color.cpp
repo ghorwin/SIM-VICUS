@@ -67,7 +67,7 @@ Color Color::fromQRgb(unsigned int qrgb) {
 }
 
 Color Color::fromHtml(const std::string& html) {
-	const char * const FUNC_ID = "[Color::fromHtml]";
+    FUNCID(Color::fromHtml);
 	if( html[0] != '#') {
 		std::stringstream tstr(html);
 		unsigned int icolor;
@@ -89,7 +89,7 @@ Color Color::fromHtml(const std::string& html) {
 }
 
 void Color::read(const std::string& data) {
-	const char * const FUNC_ID = "[Color::read]";
+    FUNCID(Color::read);
 	std::stringstream in(data);
 	std::string line, keyword, value;
 	try {

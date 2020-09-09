@@ -71,7 +71,7 @@ PrecondILUT::~PrecondILUT() {
 void PrecondILUT::init(SOLFRA::ModelInterface * model, SOLFRA::IntegratorInterface * integrator,
 					  const SOLFRA::JacobianInterface *jacobianInterface)
 {
-	//const char * const FUNC_ID = "[PrecondILUT::init]";
+
 
 	// initialize all variables needed for Jacobian
 	m_integrator = integrator;

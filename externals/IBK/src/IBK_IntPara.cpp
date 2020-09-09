@@ -127,7 +127,7 @@ void IntPara::clear() {
 
 
 void IntPara::checkIfValueIsBelowLimit( const IBK::IntPara& limit, bool isLessEqual ) const {
-	const char * const FUNC_ID = "[IntPara::checkIfValueIsBelowLimit]";
+    FUNCID(IntPara::checkIfValueIsBelowLimit);
 
 	// check IntPara
 	if ( name.empty() || name != limit.name ) {
@@ -145,7 +145,7 @@ void IntPara::checkIfValueIsBelowLimit( const IBK::IntPara& limit, bool isLessEq
 
 
 void IntPara::checkIfValueIsAboveLimit( const IBK::IntPara& limit, bool isGreaterEqual ) const {
-	const char * const FUNC_ID = "[IntPara::checkIfValueIsUpperBound]";
+    FUNCID(IntPara::checkIfValueIsUpperBound);
 
 	// check IntPara
 	if (name.empty() || name != limit.name ) {
@@ -163,7 +163,7 @@ void IntPara::checkIfValueIsAboveLimit( const IBK::IntPara& limit, bool isGreate
 
 void IntPara::test( const IBK::IntPara& val, oper_t op ) const {
 
-	static const char * const FUNC_ID = "[IntPara::test]";
+    static FUNCID(IntPara::test);
 
 	// convert and compare value
 	switch (op) {

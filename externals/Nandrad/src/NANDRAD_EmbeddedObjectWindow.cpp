@@ -58,7 +58,7 @@ EmbeddedObjectWindow::EmbeddedObjectWindow() :
 
 #if 0
 void EmbeddedObjectWindow::readXML(const TiXmlElement * element) {
-	const char * const FUNC_ID = "[EmbeddedObjectWindow::readXML]";
+    FUNCID(EmbeddedObjectWindow::readXML);
 
 	try {
 		// read attributes

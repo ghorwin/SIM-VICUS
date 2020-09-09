@@ -62,7 +62,7 @@ GeoFile::GeoFile() {
 void GeoFile::read(const IBK::Path &fname, IBK::NotificationHandler * notify){
 	clear();
 
-	const char * const FUNC_ID = "[GeoFile::read]";
+    FUNCID(GeoFile::read);
 	// make sure the sizes are correct
 	IBK_STATIC_ASSERT(sizeof(unsigned int) == 4);
 	IBK_STATIC_ASSERT(sizeof(int) == 4);
@@ -163,7 +163,7 @@ void GeoFile::read(const IBK::Path &fname, IBK::NotificationHandler * notify){
 
 
 void GeoFile::adjustFileName() {
-	const char * const FUNC_ID = "[GeoFile::adjustFileName]";
+    FUNCID(GeoFile::adjustFileName);
 
 	if (!m_filename.isValid())
 		throw IBK::Exception("Missing or invalid filename.", FUNC_ID);
@@ -183,7 +183,7 @@ void GeoFile::adjustFileName() {
 
 
 void GeoFile::write(IBK::NotificationHandler * notify) const {
-	const char * const FUNC_ID = "[GeoFile::write]";
+    FUNCID(GeoFile::write);
 
 	// check that our filename is set correctly
 	// substitute extension if not specified
@@ -253,7 +253,7 @@ void GeoFile::write(IBK::NotificationHandler * notify) const {
 
 void GeoFile::parseGeometryData(const std::vector<std::string> & geoLines) {
 
-	const char * const FUNC_ID = "[GeoFile::parseGeometryData]";
+    FUNCID(GeoFile::parseGeometryData);
 	try {
 		unsigned int current_line = 0;
 
@@ -427,7 +427,7 @@ void GeoFile::parseGeometryData(const std::vector<std::string> & geoLines) {
 
 
 void GeoFile::writeGeometryData(std::ostream& out, IBK::NotificationHandler * notify) const {
-	const char * const FUNC_ID = "[GeoFile::writeGeometryData]";
+    FUNCID(GeoFile::writeGeometryData);
 
 	// write material tabe
 	if (m_matDefs.empty())
@@ -564,7 +564,7 @@ void GeoFile::writeGeometryData(std::ostream& out, IBK::NotificationHandler * no
 
 
 void GeoFile::readBinaryGeometryData(std::istream& in) {
-	const char * const FUNC_ID = "[GeoFile::readBinaryGeometryData]";
+    FUNCID(GeoFile::readBinaryGeometryData);
 
 	IBK_ASSERT(m_majorFileVersion != 0);
 
@@ -696,7 +696,7 @@ void GeoFile::readBinaryGeometryData(std::istream& in) {
 
 
 void GeoFile::writeBinaryGeometryData(std::ostream& out) const {
-	const char * const FUNC_ID = "[GeoFile::writeBinaryGeometryData]";
+    FUNCID(GeoFile::writeBinaryGeometryData);
 
 	// write material tabe
 	if (m_matDefs.empty())
@@ -743,7 +743,7 @@ void GeoFile::writeBinaryGeometryData(std::ostream& out) const {
 
 
 unsigned int GeoFile::hashCode() {
-	const char * const FUNC_ID = "[GeoFile::hashCode]";
+    FUNCID(GeoFile::hashCode);
 
 	// write everything into a string stream
 	try {

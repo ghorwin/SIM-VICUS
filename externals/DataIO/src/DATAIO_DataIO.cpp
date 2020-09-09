@@ -99,7 +99,7 @@ FileReaderDataProcessorAddData::FileReaderDataProcessorAddData(DataIO* dataio) :
 
 
 void FileReaderDataProcessorAddData::processLine(const std::string& line) {
-	const char * const FUNC_ID = "[FileReaderDataProcessorAddData::processLine]";
+    FUNCID(FileReaderDataProcessorAddData::processLine);
 	try {
 		m_dataio->addValueLine(line);
 	}
@@ -182,7 +182,7 @@ void DataIO::clear() {
 void DataIO::read(const IBK::Path &fname, bool headerOnly,
 	IBK::NotificationHandler * notify)
 {
-	const char * const FUNC_ID = "[DataIO::read]";
+    FUNCID(DataIO::read);
 
 	try {
 		std::ifstream in;
@@ -291,7 +291,7 @@ void DataIO::read(const IBK::Path &fname, bool headerOnly,
 
 
 const double * DataIO::data(unsigned int time_idx) const {
-	const char * const FUNC_ID = "[DataIO::data]";
+    FUNCID(DataIO::data);
 	// check that index is within range
 	IBK_ASSERT(time_idx < m_timepoints.size());
 	IBK_ASSERT(m_timepoints.size() == m_values.size());
@@ -341,7 +341,7 @@ const double * DataIO::data(unsigned int time_idx) const {
 
 
 void DataIO::deleteData(unsigned int idxFrom, unsigned int idxTo) {
-	const char * const FUNC_ID = "[DataIO::deleteData]";
+    FUNCID(DataIO::deleteData);
 
 	if (idxFrom >= m_timepoints.size())
 		throw IBK::Exception("First time index 'idxFrom' out of range.", FUNC_ID);
@@ -403,7 +403,7 @@ void DataIO::deleteData(unsigned int idxFrom, unsigned int idxTo) {
 void DataIO::setData(const std::vector<double> & timePoints,
 	const std::vector<std::vector<double> > & values)
 {
-	const char * const FUNC_ID = "[DataIO::setData]";
+    FUNCID(DataIO::setData);
 	if (values.size() != timePoints.size())
 		throw IBK::Exception("Size mismatch between values and timePoints vectors.", FUNC_ID);
 
@@ -427,7 +427,7 @@ void DataIO::setData(const std::vector<double> & timePoints,
 void DataIO::swapData(std::vector<double> & timePoints,
 	std::vector<std::vector<double> > & values)
 {
-	const char * const FUNC_ID = "[DataIO::swapData]";
+    FUNCID(DataIO::swapData);
 	checkDataConsistency();
 	if (values.size() != timePoints.size())
 		throw IBK::Exception("Size mismatch between values and timePoints vectors.", FUNC_ID);
@@ -450,7 +450,7 @@ void DataIO::swapData(std::vector<double> & timePoints,
 
 
 const double * DataIO::dataVector() const {
-	const char * const FUNC_ID = "[DataIO::dataVector]";
+    FUNCID(DataIO::dataVector);
 
 	if (m_timepoints.empty())
 		throw IBK::Exception("No data in output file.", FUNC_ID);
@@ -480,7 +480,7 @@ const double * DataIO::dataVector() const {
 
 
 void DataIO::adjustFileName() {
-	const char * const FUNC_ID = "[DataIO::adjustFileName]";
+    FUNCID(DataIO::adjustFileName);
 
 	if (!m_filename.isValid())
 		throw IBK::Exception("Missing or invalid filename.", FUNC_ID);
@@ -501,7 +501,7 @@ void DataIO::adjustFileName() {
 
 
 void DataIO::write(IBK::NotificationHandler * notify) const {
-	const char * const FUNC_ID = "[DataIO::write]";
+    FUNCID(DataIO::write);
 
 	IBK::StopWatch timer;
 	timer.setIntervalLength(1);
@@ -531,7 +531,7 @@ void DataIO::write(IBK::NotificationHandler * notify) const {
 
 
 void DataIO::writeHeader() const {
-	const char * const FUNC_ID = "[DataIO::writeHeader]";
+    FUNCID(DataIO::writeHeader);
 
 	delete m_ofstream; // delete old file stream (does nothing, if no file was open)
 	m_ofstream = nullptr;
@@ -675,7 +675,7 @@ void DataIO::writeHeader() const {
 
 
 void DataIO::appendData(double t, const double * values) const {
-	const char * const FUNC_ID = "[DataIO::appendData]";
+    FUNCID(DataIO::appendData);
 
 	if (m_ofstream == nullptr)
 		throw IBK::Exception("File not opened for writing.", FUNC_ID);
@@ -706,7 +706,7 @@ void DataIO::appendData(double t, const double * values) const {
 
 
 void DataIO::reopenForWriting(const IBK::Path &fname) {
-	const char * const FUNC_ID = "[DataIO::reopenForWriting]";
+    FUNCID(DataIO::reopenForWriting);
 
 	try {
 		std::ifstream in;
@@ -778,7 +778,7 @@ void DataIO::close() const {
 
 
 DataIO::dataFormat_t DataIO::determineDataFormat(const GeoFile & geoFile) {
-	const char * const FUNC_ID = "[DataIO::determineDataFormat]";
+    FUNCID(DataIO::determineDataFormat);
 
 	if (nValues() == 1 || m_type == T_REFERENCE) {
 
@@ -984,7 +984,7 @@ std::string DataIO::timeType2string(timeType_t t) {
 
 
 void DataIO::openAndReadHeader(const IBK::Path & fname, std::ifstream & in, IBK::NotificationHandler *notify) {
-	const char * const FUNC_ID = "[DataIO::openAndReadHeader]";
+    FUNCID(DataIO::openAndReadHeader);
 
 	// make sure the sizes are correct
 	IBK_STATIC_ASSERT(sizeof(unsigned int) == 4);
@@ -1121,7 +1121,7 @@ void DataIO::openAndReadHeader(const IBK::Path & fname, std::ifstream & in, IBK:
 
 
 void DataIO::readBinaryHeader(std::istream& in) {
-	const char * const FUNC_ID = "[DataIO::readBinaryHeader]";
+    FUNCID(DataIO::readBinaryHeader);
 	// reads only Delphin 6 format and higher, in which case in is positioned right after the magic header
 
 	try {
@@ -1223,7 +1223,7 @@ void DataIO::readBinaryHeader(std::istream& in) {
 
 
 void DataIO::readBinaryHeaderPreV6(std::istream& in) {
-	const char * const FUNC_ID = "[DataIO::readBinaryHeaderPreV6]";
+    FUNCID(DataIO::readBinaryHeaderPreV6);
 	// reads old DELPHIN 5 format where the input stream is positioned right after the first ID line
 
 	try {
@@ -1333,7 +1333,7 @@ void DataIO::readBinaryHeaderPreV6(std::istream& in) {
 
 
 void DataIO::readBinaryData(std::istream& in, IBK::NotificationHandler * notify) {
-	const char * const FUNC_ID = "[DataIO::readBinaryData]";
+    FUNCID(DataIO::readBinaryData);
 	// we expect m_dataSectionOffset to hold the position of the data section
 	// in must be an opened binary file stream
 
@@ -1382,7 +1382,7 @@ void DataIO::readBinaryData(std::istream& in, IBK::NotificationHandler * notify)
 
 
 void DataIO::readASCIIHeader(const IBK::Path & fname, IBK::NotificationHandler * notify) {
-	const char * const FUNC_ID = "[DataIO::readASCIIHeader]";
+    FUNCID(DataIO::readASCIIHeader);
 
 	// Note: do not call clear() in this function! See note in openAndReadHeader().
 
@@ -1580,7 +1580,7 @@ void DataIO::readASCIIHeader(const IBK::Path & fname, IBK::NotificationHandler *
 
 
 void DataIO::readASCIIData(const IBK::Path & fname, IBK::NotificationHandler * notify) {
-	const char * const FUNC_ID = "[DataIO::readASCIIData]";
+    FUNCID(DataIO::readASCIIData);
 
 	try {
 		// cache time unit
@@ -1609,7 +1609,7 @@ void DataIO::readASCIIData(const IBK::Path & fname, IBK::NotificationHandler * n
 
 
 void DataIO::addValueLine(const std::string & line) {
-	const char * const FUNC_ID = "[DataIO::addValueLine]";
+    FUNCID(DataIO::addValueLine);
 	// skip empty lines
 
 	if (line.find_first_not_of(" \t") == std::string::npos)
@@ -1645,7 +1645,7 @@ void DataIO::addValueLine(const std::string & line) {
 
 
 void DataIO::checkDataConsistency() const {
-	const char * const FUNC_ID = "[DataIO::checkDataConsistency]";
+    FUNCID(DataIO::checkDataConsistency);
 	// check data
 	if (m_timepoints.size() != m_values.size())
 		throw IBK::Exception( IBK::FormatString("Time points and value vector have different sizes: %1 <-> %2 elements.")
@@ -1661,7 +1661,7 @@ void DataIO::checkDataConsistency() const {
 // ----------------------------------------------------------------------------
 
 std::vector<double> DataIO::columnValues(size_t colIDx) const {
-	const char * const FUNC_ID = "[DataIO::columnValues]";
+    FUNCID(DataIO::columnValues);
 
 	// index check, first ensure that we have at least one value vector
 	if (m_values.empty())

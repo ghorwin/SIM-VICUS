@@ -27,7 +27,7 @@
 namespace NANDRAD_MODEL {
 
 void VectorValuedQuantityIndex::set(const std::string &keyString) {
-	const char * const FUNC_ID = "[VectorValuedQuantityIndex::set]";
+    FUNCID(VectorValuedQuantityIndex::set);
 
 	std::vector<std::string> tokens;
 	std::string value;
@@ -63,7 +63,7 @@ void VectorValuedQuantityIndex::set(const std::string &keyString) {
 
 
 void VectorValuedQuantityIndex::set(const IndexKeyType keyType, const unsigned int keyValue) {
-	const char * const FUNC_ID = "[VectorValuedQuantityIndex::set]";
+    FUNCID(VectorValuedQuantityIndex::set);
 	// check if keyType is correct
 	if (keyType == NUM_IndexKeyType)
 		throw IBK::Exception(IBK::FormatString("Invalid index type '%1' (expected 'IK_Index' or 'IK_ModelID').").arg(NUM_IndexKeyType), FUNC_ID);

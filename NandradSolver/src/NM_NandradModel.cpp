@@ -398,7 +398,7 @@ void NandradModel::stepCompleted(double t, const double * /*y*/ ) {
 
 
 SOLFRA::LESInterface * NandradModel::lesInterface() {
-	const char * const FUNC_ID = "[NandradModel::lesInterface]";
+    FUNCID(NandradModel::lesInterface);
 
 	if (m_lesSolver != nullptr)
 		return m_lesSolver;
@@ -510,7 +510,7 @@ SOLFRA::JacobianInterface *  NandradModel::jacobianInterface() {
 
 
 SOLFRA::IntegratorInterface * NandradModel::integratorInterface() {
-	const char * const FUNC_ID = "[NandradModel::integratorInterface]";
+    FUNCID(NandradModel::integratorInterface);
 
 	if (m_integrator != nullptr)
 		return m_integrator;
@@ -616,7 +616,7 @@ void NandradModel::writeMetrics(double simtime, std::ostream * metricsFile) {
 	(void)metricsFile;
 
 #ifdef IBK_STATISTICS
-	const char * const FUNC_ID = "[NandradModel::writeMetrics]";
+    FUNCID(NandradModel::writeMetrics);
 	std::string ustr = IBK::Time::suitableTimeUnit(simtime);
 	double tTimeEval = TimerSum(NANDRAD_TIMER_TIMEDEPENDENT);
 	IBK::IBK_Message(IBK::FormatString("Nandrad model: Time Function evaluation    = %1 (%2 %%)  %3\n")

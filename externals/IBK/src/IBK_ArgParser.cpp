@@ -177,7 +177,7 @@ void ArgParser::parse(int argc, const char* const argv[]) {
 void ArgParser::addOption(const char shortVersion, const std::string & longVersion, const std::string & description,
 						  const std::string & descValue, const std::string & defaultValue)
 {
-	const char * const FUNC_ID = "[ArgParser::addOption]";
+    FUNCID(ArgParser::addOption);
 	ArgParser::OptionType ft(shortVersion, longVersion, description, descValue, defaultValue);
 	// is this a flag?
 	if (defaultValue == "true" || defaultValue == "false")

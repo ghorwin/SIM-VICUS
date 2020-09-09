@@ -29,7 +29,7 @@ JacobianSparseCSR::JacobianSparseCSR(unsigned int n, unsigned int nnz, const uns
 
 void JacobianSparseCSR::init(ModelInterface * model) {
 	// initialize all variables needed for Jacobian
-	const char * const FUNC_ID = "[JacobianSparseCSR::init]";
+    FUNCID(JacobianSparseCSR::init);
 
 	m_model = model;
 
@@ -237,7 +237,7 @@ void JacobianSparseCSR::serialize(void* & dataPtr) const {
 
 
 void JacobianSparseCSR::deserialize(void* & dataPtr) {
-	const char * const FUNC_ID = "[JacobianSparseCSR::deserialize]";
+    FUNCID(JacobianSparseCSR::deserialize);
 	try {
 		IBKMK::SparseMatrixCSR::deserialize(dataPtr);
 	}
@@ -250,7 +250,7 @@ void JacobianSparseCSR::deserialize(void* & dataPtr) {
 
 
 void JacobianSparseCSR::recreate(void* & dataPtr) {
-	const char * const FUNC_ID = "[JacobianSparseCSR::recreate]";
+    FUNCID(JacobianSparseCSR::recreate);
 	try {
 		IBKMK::SparseMatrixCSR::recreate(dataPtr);
 	}

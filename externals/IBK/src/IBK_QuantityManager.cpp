@@ -97,7 +97,7 @@ void QuantityManager::write(std::ostream & out) {
 
 
 void QuantityManager::readFromFile(const IBK::Path & fname) {
-	const char * const FUNC_ID = "[QuantityManager::readFromFile]";
+    FUNCID(QuantityManager::readFromFile);
 
 #if defined(_WIN32)
 	#if defined(_MSC_VER)
@@ -125,7 +125,7 @@ void QuantityManager::readFromFile(const IBK::Path & fname) {
 
 
 void QuantityManager::writeToFile(const IBK::Path & fname) {
-	const char * const FUNC_ID = "[QuantityManager::writeToFile]";
+    FUNCID(QuantityManager::writeToFile);
 #if defined(_WIN32)
 	#if defined(_MSC_VER)
 		std::ofstream out(fname.wstr().c_str());
@@ -215,7 +215,6 @@ void QuantityManager::addQuantity(const IBK::Quantity & quantity) {
 
 
 //void QuantityManager::setUsedQuantities(const std::vector<unsigned int> & quantityList) {
-//	const char * const FUNC_ID = "[QuantityManager::setUsedQuantities]";
 //	// update the index maps
 //	m_selectedIndexMap.clear();
 //	IBK::clear(m_globalIndexForSelectedIndexMap.begin(), m_globalIndexForSelectedIndexMap.end());
@@ -278,7 +277,6 @@ void QuantityManager::addQuantity(const IBK::Quantity & quantity) {
 
 
 //const Quantity &QuantityManager::selectedQuantity(Quantity::type_t t, unsigned int selIndex) const {
-//	const char * const FUNC_ID = "[QuantityManager::selectedQuantity]";
 //	if ((unsigned int)t >= Quantity::NUM_TYPES) {
 //		throw IBK::Exception( IBK::FormatString("Invalid quantity type enumeration value %1.").arg((int)t), FUNC_ID);
 //	}

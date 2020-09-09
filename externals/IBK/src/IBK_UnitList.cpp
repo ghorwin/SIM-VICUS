@@ -97,7 +97,7 @@ bool UnitList::read_file(const std::string& filename, bool overwrite) {
 
 // Reads the unitlist from default string
 bool UnitList::read_default() {
-	const char * const FUNC_ID = "[UnitList::read_default]";
+    FUNCID(UnitList::read_default);
 
 #define NO_ATOF
 	std::vector<char> defaultVector;
@@ -176,7 +176,7 @@ bool UnitList::read_default() {
 
 // Reads the unitlist from an input filestream
 bool UnitList::read(std::istream& stream, bool overwrite) {
-	const char * const FUNC_ID = "[UnitList::read]";
+    FUNCID(UnitList::read);
 	if (!overwrite && !empty())  return true; // do not read the list again
 	if (!stream)  return false;
 
@@ -596,7 +596,7 @@ void UnitList::convert_special(const UnitData* src, const UnitData* target, doub
 // ---------------------------------------------------------------------------
 
 IBK::Unit UnitList::integralQuantity(const IBK::Unit & srcUnit, bool spaceIntegral, bool timeIntegral) {
-	const char * const FUNC_ID = "[UnitList::integralQuantity]";
+    FUNCID(UnitList::integralQuantity);
 	// first retrieve name of base unit
 	std::string base_name = srcUnit.base_unit().name();
 	// convert all cases
@@ -667,7 +667,7 @@ IBK::Unit UnitList::integralQuantity(const IBK::Unit & srcUnit, bool spaceIntegr
 // ---------------------------------------------------------------------------
 
 std::string UnitList::replaceUnitWithIntegralUnit(const std::string & original) {
-	const char * const FUNC_ID = "[UnitList::replaceUnitWithIntegralUnit]";
+    FUNCID(UnitList::replaceUnitWithIntegralUnit);
 	// extract unit string
 	std::string::size_type pos1 = original.find('[');
 	std::string::size_type pos2 = original.find(']');

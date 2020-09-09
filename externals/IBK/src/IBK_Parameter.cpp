@@ -203,7 +203,7 @@ void Parameter::checkIfValueIsLowerBound (	const IBK::Parameter& limit,
 											bool isLessEqual ) const
 {
 
-	const char * const FUNC_ID = "[Parameter::checkIfValueIsLowerBound]";
+    FUNCID(Parameter::checkIfValueIsLowerBound);
 
 	// check parameter
 	if ( name.empty() || name != limit.name ) {
@@ -230,7 +230,7 @@ void Parameter::checkIfValueIsUpperBound (	const IBK::Parameter& limit,
 											bool isGreaterEqual ) const
 {
 
-	const char * const FUNC_ID = "[Parameter::checkIfValueIsUpperBound]";
+    FUNCID(Parameter::checkIfValueIsUpperBound);
 
 	// check parameter
 	if (name.empty() || name != limit.name ) {

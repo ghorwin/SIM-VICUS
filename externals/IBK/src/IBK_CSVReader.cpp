@@ -56,7 +56,7 @@ using namespace std;
 namespace IBK {
 
 bool CSVReader::haveTabSeparationChar(const IBK::Path & filename) {
-	const char * const FUNC_ID = "[CSVReader::haveTabSeparationChar]";
+    FUNCID(CSVReader::haveTabSeparationChar);
 	// first detect file format
 	bool tabFormat = true;
 #if defined(_WIN32)
@@ -96,7 +96,7 @@ bool CSVReader::haveTabSeparationChar(const IBK::Path & filename) {
 
 
 void CSVReader::read(const IBK::Path & filename, bool headerOnly, bool extractUnits) {
-	const char * const FUNC_ID = "[CSVReader::read]";
+    FUNCID(CSVReader::read);
 	try {
 #if defined(_WIN32)
 	#if defined(_MSC_VER)
@@ -180,7 +180,7 @@ void CSVReader::read(const IBK::Path & filename, bool headerOnly, bool extractUn
 
 
 std::vector<double> CSVReader::colData(unsigned int colIndex) const {
-	const char * const FUNC_ID = "[CSVReader::colData]";
+    FUNCID(CSVReader::colData);
 	if (m_values.empty())
 		return std::vector<double>();
 	if (colIndex >= m_values[0].size())
