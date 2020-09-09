@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<meta name="author" content="Andreas Nicolai">
+<meta name="author" content="Andreas Nicolai &lt;andreas.nicolai@tu-dresden.de&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski">
 <title>NANDRAD Model Reference</title>
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -71,144 +71,673 @@ table {
 <div id="header">
 <h1>NANDRAD Model Reference</h1>
 <div class="details">
-<span id="author" class="author">Andreas Nicolai</span><br>
-<span id="email" class="email"><a href="mailto:andreas.nicolai@tu-dresden.de">andreas.nicolai@tu-dresden.de</a></span><br>
+<span id="author" class="author">Andreas Nicolai &lt;andreas.nicolai@tu-dresden.de&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski</span><br>
 <span id="revnumber">version 1.0.0,</span>
 <span id="revdate">July 2020</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_overview">1. Overview</a>
+<li><a href="#_overview">1. Overview</a></li>
+<li><a href="#_nandrad_input_and_project_file_reference">2. NANDRAD Input and Project File Reference</a>
 <ul class="sectlevel2">
-<li><a href="#_simulation_time_and_absolute_time_reference">1.1. Simulation time and absolute time reference</a></li>
+<li><a href="#project_file">2.1. NANDRAD Project File Structure</a></li>
+<li><a href="#basic_types">2.2. Basic Data Types in NANDRAD Project File Specification</a>
+<ul class="sectlevel3">
+<li><a href="#IBK_parameter">2.2.1. IBK:Parameter</a></li>
+<li><a href="#_ibkintpara">2.2.2. IBK:IntPara</a></li>
+<li><a href="#_ibkflag">2.2.3. IBK:Flag</a></li>
+<li><a href="#_ibklinearspline">2.2.4. IBK:LinearSpline</a></li>
 </ul>
 </li>
-<li><a href="#_models_and_input_reference">2. Models and Input Reference</a>
+<li><a href="#path_placeholders">2.3. Path Placeholders</a></li>
+<li><a href="#ZoneDocumentation">2.4. Zones</a></li>
+<li><a href="#ConstructionInstancesDocumentation">2.5. Constructioninstances</a>
+<ul class="sectlevel3">
+<li><a href="#InterfacesDocumentation">2.5.1. Interfaces (construction boundary conditions)</a></li>
+</ul>
+</li>
+<li><a href="#_interfaces_construction_boundary_conditions">2.6. Interfaces (construction boundary conditions)</a></li>
+<li><a href="#_ambient_climate_boundary_conditions">2.7. Ambient climate boundary conditions</a></li>
+<li><a href="#_interface_between_constructions_and_zones_internal_boundary_conditions">2.8. Interface between constructions and zones (internal boundary conditions)</a></li>
+<li><a href="#_building_components">2.9. Building Components</a>
+<ul class="sectlevel3">
+<li><a href="#_overview_2">2.9.1. Overview</a></li>
+<li><a href="#MaterialsDocumentation">2.9.2. Materials</a></li>
+<li><a href="#_construction_types">2.9.3. Construction Types</a></li>
+</ul>
+</li>
+<li><a href="#climatic_loads">2.10. Climatic loads</a>
+<ul class="sectlevel3">
+<li><a href="#_overview_3">2.10.1. Overview</a></li>
+<li><a href="#_specification">2.10.2. Specification</a></li>
+<li><a href="#loads_solar_radiation">2.10.3. Solar Radiation Calculation</a></li>
+<li><a href="#_implementation">2.10.4. Implementation</a></li>
+</ul>
+</li>
+<li><a href="#_schedules">2.11. Schedules</a>
+<ul class="sectlevel3">
+<li><a href="#_overview_4">2.11.1. Overview</a></li>
+<li><a href="#_defining_schedules">2.11.2. Defining schedules</a></li>
+<li><a href="#_implementation_2">2.11.3. Implementation</a></li>
+<li><a href="#_variable_list">2.11.4. Variable list</a></li>
+</ul>
+</li>
+<li><a href="#_global_parameters">2.12. Global parameters</a>
+<ul class="sectlevel3">
+<li><a href="#_simulation_parameters">2.12.1. Simulation Parameters</a></li>
+<li><a href="#_solver_parameters">2.12.2. Solver Parameters</a></li>
+</ul>
+</li>
+<li><a href="#_outputs_definitions_rules_and_implementation">2.13. Outputs: definitions, rules and implementation</a>
+<ul class="sectlevel3">
+<li><a href="#output_definitions">2.13.1. Output definitions</a></li>
+<li><a href="#_variable_lookup_rules">2.13.2. Variable lookup rules</a></li>
+<li><a href="#_output_file_generation_rules">2.13.3. Output file generation rules</a></li>
+<li><a href="#_binary_format">2.13.4. Binary Format</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#tutorials">3. Tutorials</a>
 <ul class="sectlevel2">
-<li><a href="#_zones">2.1. Zones</a></li>
-<li><a href="#_constructions">2.2. Constructions</a></li>
-<li><a href="#_interfaces_construction_boundary_conditions">2.3. Interfaces (construction boundary conditions)</a>
+<li><a href="#Tutorial1">3.1. Tutorial 1 - Simple Single Room</a>
 <ul class="sectlevel3">
-<li><a href="#_ambient_climate_boundary_conditions">2.3.1. Ambient climate boundary conditions</a></li>
-<li><a href="#_interface_between_constructions_and_zones_internal_boundary_conditions">2.3.2. Interface between constructions and zones (internal boundary conditions)</a></li>
-</ul>
-</li>
-<li><a href="#_construction_types">2.4. Construction Types</a></li>
-<li><a href="#_materials">2.5. Materials</a></li>
-<li><a href="#_climatic_loads">2.6. Climatic loads</a>
-<ul class="sectlevel3">
-<li><a href="#_overview_2">2.6.1. Overview</a></li>
-<li><a href="#_specification">2.6.2. Specification</a></li>
-<li><a href="#_implementation">2.6.3. Implementation</a></li>
-</ul>
-</li>
-<li><a href="#_schedules">2.7. Schedules</a>
-<ul class="sectlevel3">
-<li><a href="#_overview_3">2.7.1. Overview</a></li>
-<li><a href="#_defining_schedules">2.7.2. Defining schedules</a></li>
-<li><a href="#_implementation_2">2.7.3. Implementation</a></li>
-<li><a href="#_variable_list">2.7.4. Variable list</a></li>
+<li><a href="#_introduction">3.1.1. Introduction</a></li>
+<li><a href="#_workflow">3.1.2. Workflow</a></li>
+<li><a href="#_materials_and_constructions">3.1.3. Materials and constructions</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#_global_parameters">3. Global parameters</a>
+<li><a href="#_reference">4. Reference</a>
 <ul class="sectlevel2">
-<li><a href="#_simulation_parameters">3.1. Simulation Parameters</a></li>
-<li><a href="#_solver_parameters">3.2. Solver Parameters</a></li>
-</ul>
-</li>
-<li><a href="#_outputs_definitions_rules_and_implementation">4. Outputs: definitions, rules and implementation</a>
-<ul class="sectlevel2">
-<li><a href="#_output_definitions">4.1. Output definitions</a>
-<ul class="sectlevel3">
-<li><a href="#_output_grids">4.1.1. Output Grids</a></li>
-<li><a href="#_examples">4.1.2. Examples</a></li>
-</ul>
-</li>
-<li><a href="#_variable_lookup_rules">4.2. Variable lookup rules</a></li>
-<li><a href="#_output_file_generation_rules">4.3. Output file generation rules</a>
-<ul class="sectlevel3">
-<li><a href="#_when_no_filename_is_given">4.3.1. When no filename is given</a></li>
-<li><a href="#_when_a_filename_is_given">4.3.2. When a filename is given</a></li>
-</ul>
-</li>
-<li><a href="#_binary_format">4.4. Binary Format</a></li>
+<li><a href="#units">4.1. Unit Definitions</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 <div id="content">
-<div id="preamble">
+<div class="sect1">
+<h2 id="_overview">1. Overview</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This document contains a description of the various implemented models and the parametrization in the NANDRAD project file. It is therefore both input reference and model description.</p>
+<p>This document contains a description of the various implemented models and the parametrization in the NANDRAD project file. It is primarily an input reference.</p>
+</div>
+<div class="paragraph">
+<p>The section <a href="#project_file">NANDRAD Project File Structure</a> contains an overview of the project file structure, with references to the individual documentation sections. This is a good start to get an overview of the NANDRAD project specification.</p>
+</div>
+<div class="paragraph">
+<p>The <a href="#tutorials">Tutorials</a> chapter contains various tutorials that illustrate manual creation of project files with simple examples.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_overview">1. Overview</h2>
+<h2 id="_nandrad_input_and_project_file_reference">2. NANDRAD Input and Project File Reference</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_simulation_time_and_absolute_time_reference">1.1. Simulation time and absolute time reference</h3>
+<h3 id="project_file">2.1. NANDRAD Project File Structure</h3>
+<div class="paragraph">
+<p>The NANDRAD project specification is stored in an XML-file with the extension <code>nandrad</code>. The principle structure of the file looks like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="cp">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;</span>
+<span class="nt">&lt;NandradProject</span> <span class="na">fileVersion=</span><span class="s">"2.0"</span><span class="nt">&gt;</span>
+	<span class="c">&lt;!-- optional DirectoryPlaceholders section--&gt;</span>
+	<span class="nt">&lt;DirectoryPlaceholders&gt;</span>
+		<span class="nt">&lt;Placeholder</span> <span class="na">name=</span><span class="s">"MyDatabase"</span><span class="nt">&gt;</span>/home/sim/climate_DB<span class="nt">&lt;/Placeholder&gt;</span>
+	<span class="nt">&lt;/DirectoryPlaceholders&gt;</span>
+
+	<span class="nt">&lt;Project&gt;</span>
+	    <span class="c">&lt;!-- the actual project specification --&gt;</span>
+   <span class="nt">&lt;/Project&gt;</span>
+<span class="nt">&lt;/NandradProject&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The optional <code>DirectoryPlaceholders</code> can be used to define relative path placeholders to be used for externally referenced files (see section <a href="#path_placeholders">Path Placeholders</a>).</p>
+</div>
+<div class="paragraph">
+<p>All project data is enclosed in the <code>&lt;Project&gt;</code> tag.</p>
+</div>
+<div class="paragraph">
+<p>A project file may contain the following child tags:</p>
+</div>
 <div class="ulist">
 <ul>
 <li>
-<p>how is the simulation time defined</p>
+<p><code>Location</code> - Climatic data and location settings &#8594; <a href="#climatic_loads">Climatic loads</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="basic_types">2.2. Basic Data Types in NANDRAD Project File Specification</h3>
+<div class="paragraph">
+<p>Within the various specificiation sections of the project file some basic data types / xml-tags are frequently used. The rules for specifying these parameters are defined below.</p>
+</div>
+<div class="sect3">
+<h4 id="IBK_parameter">2.2.1. IBK:Parameter</h4>
+<div class="paragraph">
+<p>An xml tag with name <code>IBK:Parameter</code> defines a floating point value parameter, identified by a name and physical unit (XML-attributes <code>name</code> and <code>unit</code>). The value of the xml tag is the actual parameter value.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 1. Parameters with different units</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Volume"</span> <span class="na">unit=</span><span class="s">"m3"</span><span class="nt">&gt;</span>30<span class="nt">&lt;/IBK:Parameter&gt;</span>
+<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Temperature"</span> <span class="na">unit=</span><span class="s">"C"</span><span class="nt">&gt;</span>20<span class="nt">&lt;/IBK:Parameter&gt;</span>
+<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Temperature"</span> <span class="na">unit=</span><span class="s">"K"</span><span class="nt">&gt;</span>293.15<span class="nt">&lt;/IBK:Parameter&gt;</span>
+<span class="c">&lt;!-- unitless parameters take the --- unit --&gt;</span>
+<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"RelTol"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0.7<span class="nt">&lt;/IBK:Parameter&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The units must be selected from the global unit list, see section <a href="#units">Unit Definitions</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_ibkintpara">2.2.2. IBK:IntPara</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_ibkflag">2.2.3. IBK:Flag</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_ibklinearspline">2.2.4. IBK:LinearSpline</h4>
+
+</div>
+</div>
+<div class="sect2">
+<h3 id="path_placeholders">2.3. Path Placeholders</h3>
+<div class="paragraph">
+<p>In some parts of the NANDRAD project file, external files are referenced (for example climate data files, see <a href="#loads_climate_files">Climate Data Files</a>).
+To simplify exchange of projects or reference data files in common database directories, it is possible to use path placeholders in file paths.</p>
+</div>
+<div class="paragraph">
+<p>For example, you can define <code>${MyDatabase}</code> to be <code>/home/sim/climate_DB</code> and then in your project reference a climate data file
+via <code>${MyDatabase}/ClimateData.epw</code>.</p>
+</div>
+<div class="paragraph">
+<p>These mapping of the placeholders is done early in the project file, so when exchanging project files between computers, you may
+easily modify the placeholder paths to the directories on the local machine without any further changes in the project file.</p>
+</div>
+<div class="paragraph">
+<p>The individual path placeholders are defined in the <code>DirectoryPlaceholders</code>, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;DirectoryPlaceholders&gt;</span>
+	<span class="nt">&lt;Placeholder</span> <span class="na">name=</span><span class="s">"Climate DB"</span><span class="nt">&gt;</span>/home/sim/climate_DB<span class="nt">&lt;/Placeholder&gt;</span>
+	<span class="nt">&lt;Placeholder</span> <span class="na">name=</span><span class="s">"DataFiles"</span><span class="nt">&gt;</span>/home/sim/data<span class="nt">&lt;/Placeholder&gt;</span>
+<span class="nt">&lt;/DirectoryPlaceholders&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>There is one builtin-placeholder <code>${Project Directory}</code> that will be automatically defined with the path to the directory of the project file.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="ZoneDocumentation">2.4. Zones</h3>
+<div class="paragraph">
+<p>In order to model buildings, it is necessary to define the individual rooms with the relevant parameters.
+A zone defines a thermal zone/room with a single air temperature.</p>
+</div>
+<div class="paragraph">
+<p>The class Zone stores all properties needed to compute zone temperature from energy density (the conserved quantity).</p>
+</div>
+<div class="paragraph">
+<p>Needed for the calculation is either the floor area and the height, or the zone volume. If all parameters are given, the volume property is computed from floor area and height.
+Zones can be either Constant or Active.
+For constant zones, the temperature is assumed to
+be fixed/predefined whereas in Active zones the temperature is computed (i.e. included in
+the model&#8217;s unknowns). A constant zone only needs the temperature parameter. If an Active zone has a temperature parameter,
+this is used as initial condition.</p>
+</div>
+<div class="paragraph">
+<p>Inside the XML-Tag named <code>Zones</code> each zone starts with the XML-Tag <code>Zone</code>. The following XML-Attributes need to be defined:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>id:</em> <code>1</code> - defines the Identifier of the Zone, needs to be a unique positive Integer ( &gt; 0 )</p>
 </li>
 <li>
-<p>how is the absolute time obtained (start year and start time)</p>
+<p><em>displayName:</em> <code>Var01</code> - defines the Display Name of the Zone. Is needed to find the Zone in the Data Model and in Outputs more easily.</p>
 </li>
 <li>
-<p>how are cyclic annual simulations handled, how are continuous multi-year simulations handled</p>
+<p><em>type:</em> <code>Active</code> - defines whether zone is balanced and included in equation system.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Constant</code> <em>as zone with constant/predefined temperatures. (schedule)</em></p>
+</li>
+<li>
+<p><code>Active</code> <em>as zone described by a temperature node in space</em></p>
+</li>
+<li>
+<p><code>Ground</code> <em>as ground zone (calculates temperature based on standard)</em></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The following XML-Tags named <code>IBK:Parameters</code> with the XML-Attributes <code>name</code> and <code>unit</code> with the following entries can be defined:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>name:</em> <code>Area</code> - defines the net usage area of the ground floor (for area-related outputs and loads), <em>unit:</em> per Default in <code>m²</code></p>
+</li>
+<li>
+<p><em>name:</em> <code>Volume</code> - defines the Zone air volume, <em>unit:</em> per Default in <code>m³</code></p>
+</li>
+<li>
+<p><em>name:</em> <code>HeatCapacity</code> - defines the Extra heat capacity, <em>unit:</em> per Default in <code>J/kg</code></p>
+</li>
+<li>
+<p><em>name:</em> <code>Temperature</code> - defines the Temperature of the zone if set constant, <em>unit:</em> per Default in <code>°C</code></p>
+</li>
+<li>
+<p><em>name:</em> <code>RelativeHumidity</code> - defines the Relative humidity of the zone if set constant, <em>unit:</em> per Default in <code>%</code></p>
+</li>
+<li>
+<p><em>name:</em> <code>CO2Concentration</code> - defines the CO2 concentration of the zone if set constant, <em>unit:</em> per Default in <code>g/m³</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml">        <span class="nt">&lt;Zones&gt;</span>
+			<span class="nt">&lt;Zone</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">displayName=</span><span class="s">"Var01"</span> <span class="na">type=</span><span class="s">"Active"</span><span class="nt">&gt;</span>
+				<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Area"</span> <span class="na">unit=</span><span class="s">"m2"</span><span class="nt">&gt;</span>10<span class="nt">&lt;/IBK:Parameter&gt;</span>
+				<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Volume"</span> <span class="na">unit=</span><span class="s">"m3"</span><span class="nt">&gt;</span>30<span class="nt">&lt;/IBK:Parameter&gt;</span>
+			<span class="nt">&lt;/Zone&gt;</span>
+		<span class="nt">&lt;/Zones&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="ConstructionInstancesDocumentation">2.5. Constructioninstances</h3>
+<div class="paragraph">
+<p>The construction instances define construction-specific parameters required by several models.</p>
+</div>
+<div class="paragraph">
+<p>The construction instances are defined inside the Sections starting with an XML-Tag <code>ConstructionInstances</code>. Inside the Section each Construction instance starts with the XML-Tag named <code>ConstructionInstance</code> with the XML-Attributes <code>id</code> and <code>displayName</code>.
+Inside that it is necessary to specify the interfaces with the XML-Tag named <code>InterfaceA</code> and <code>InterfaceB</code>. Finally the Interfaces with the XML-Tag <code>InterfaceA</code> and <code>InterfaceB</code> need to be defined with the XML-Attributes <code>id</code> and <code>zoneId</code>.
+In the following it is described in detail.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>id:</em> <code>1</code> - defines the Identifier of the Construction Instance, needs to be a unique positive Integer ( &gt; 0 )</p>
+</li>
+<li>
+<p><em>displayName:</em> <code>All Surfaces Var01</code> - defines the Display Name of the Construction Instance. Is needed to find the Construction Instance in the Data Model and in Outputs more easily.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The construction instance has the following <code>required subtag</code>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>constructionTypeId</code> - unique Id that defines the construction type of the construction instance</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;ConstructionTypeId&gt;</span>10005<span class="nt">&lt;/ConstructionTypeId&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following XML-Tags named <code>IBK:Parameters</code> with the XML-Attributes <code>name</code> and <code>unit</code> with the following entries can be defined:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>name:</em> <code>Orientation</code> - defines the Orientation of the wall, <em>unit:</em> per Default in <code>deg</code></p>
+</li>
+<li>
+<p><em>name:</em> <code>Inclination</code> - defines the Inclination of the wall, <em>unit:</em> per Default in <code>deg</code></p>
+</li>
+<li>
+<p><em>name:</em> <code>Area</code> - defines the Gross area of the wall, <em>unit:</em> per Default in <code>m²</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml">        <span class="nt">&lt;ConstructionInstances&gt;</span>
+			<span class="c">&lt;!-- Surface Var 01 --&gt;</span>
+			<span class="nt">&lt;ConstructionInstance</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">displayName=</span><span class="s">"All Surfaces Var01"</span><span class="nt">&gt;</span>
+				<span class="nt">&lt;ConstructionTypeId&gt;</span>10005<span class="nt">&lt;/ConstructionTypeId&gt;</span>
+				<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Area"</span> <span class="na">unit=</span><span class="s">"m2"</span><span class="nt">&gt;</span>62<span class="nt">&lt;/IBK:Parameter&gt;</span>
+				<span class="nt">&lt;InterfaceA</span> <span class="na">id=</span><span class="s">"10"</span> <span class="na">zoneId=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+					<span class="c">&lt;!--Interface to 'Room'--&gt;</span>
+					<span class="nt">&lt;InterfaceHeatConduction</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+						<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"HeatTransferCoefficient"</span> <span class="na">unit=</span><span class="s">"W/m2K"</span><span class="nt">&gt;</span>2.5<span class="nt">&lt;/IBK:Parameter&gt;</span>
+					<span class="nt">&lt;/InterfaceHeatConduction&gt;</span>
+				<span class="nt">&lt;/InterfaceA&gt;</span>
+				<span class="nt">&lt;InterfaceB</span> <span class="na">id=</span><span class="s">"11"</span> <span class="na">zoneId=</span><span class="s">"0"</span><span class="nt">&gt;</span>
+					<span class="c">&lt;!--Interface to outside--&gt;</span>
+					<span class="nt">&lt;InterfaceHeatConduction</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+						<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"HeatTransferCoefficient"</span> <span class="na">unit=</span><span class="s">"W/m2K"</span><span class="nt">&gt;</span>8<span class="nt">&lt;/IBK:Parameter&gt;</span>
+					<span class="nt">&lt;/InterfaceHeatConduction&gt;</span>
+				<span class="nt">&lt;/InterfaceB&gt;</span>
+			<span class="nt">&lt;/ConstructionInstance&gt;</span>
+
+		<span class="nt">&lt;/ConstructionInstances&gt;</span></code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="InterfacesDocumentation">2.5.1. Interfaces (construction boundary conditions)</h4>
+<div class="paragraph">
+<p>Interfaces are defining boundary conditions and parameters for the two surfaces of a constructions instance.</p>
+</div>
+<div class="paragraph">
+<p>The Interfaces can have the following <code>subtags</code>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>heatConduction</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The InterfaceHeatConduction needs to be defined with the XML-Attribute <code>modelType</code>.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Constant</code> <em>as constant model.</em></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>The XML-Tags named <code>IBK:Parameters</code> with the XML-Attributes <code>name</code> and <code>unit</code> with the following entries can be defined:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><em>name:</em> <code>HeatTransferCoefficient</code> - defines the constant heat transfer coefficient, <em>unit:</em> per Default in <code>W/m²K</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>solarAbsorption</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The InterfaceSolarAbsorption needs to be defined with the XML-Attribute <code>modelType</code>.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Constant</code> <em>as constant model.</em></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>The XML-Tags named <code>IBK:Parameters</code> with the XML-Attributes <code>name</code> and <code>unit</code> with the following entries can be defined:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><em>name:</em> <code>AbsorptionCoefficient</code> - Constant Absorption coefficient [0,&#8230;&#8203;,1], <em>unit:</em> per Default in <code>[-]</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>longWaveEmission</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The InterfaceLongWaveEmission needs to be defined with the XML-Attribute <code>modelType</code>.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Constant</code> <em>as constant model.</em></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>The XML-Tags named <code>IBK:Parameters</code> with the XML-Attributes <code>name</code> and <code>unit</code> with the following entries can be defined:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><em>name:</em> <code>Emissivity</code> - Constant Long wave emissivity, <em>unit:</em> per Default in <code>[-]</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>vaporDiffusion</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The InterfaceVaporDiffusion needs to be defined with the XML-Attribute <code>modelType</code>.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Constant</code> <em>as constant model.</em></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>The XML-Tags named <code>IBK:Parameters</code> with the XML-Attributes <code>name</code> and <code>unit</code> with the following entries can be defined:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><em>name:</em> <code>VaporTransferCoefficient</code> - Vapor Transfer Coefficient, <em>unit:</em> per Default in <code>s/m</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>airFlow</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The InterfaceAirFlow needs to be defined with the XML-Attribute <code>modelType</code>.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>WindFlow</code> <em>for use of results from external wind flow calculation.</em></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>The XML-Tags named <code>IBK:Parameters</code> with the XML-Attributes <code>name</code> and <code>unit</code> with the following entries can be defined:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><em>name:</em> <code>PressureCoefficient</code> - Pressure Coefficient, <em>unit:</em> per Default in <code>[-]</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
 </li>
 </ul>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_models_and_input_reference">2. Models and Input Reference</h2>
-<div class="sectionbody">
 <div class="sect2">
-<h3 id="_zones">2.1. Zones</h3>
+<h3 id="_interfaces_construction_boundary_conditions">2.6. Interfaces (construction boundary conditions)</h3>
 
 </div>
 <div class="sect2">
-<h3 id="_constructions">2.2. Constructions</h3>
+<h3 id="_ambient_climate_boundary_conditions">2.7. Ambient climate boundary conditions</h3>
 
 </div>
 <div class="sect2">
-<h3 id="_interfaces_construction_boundary_conditions">2.3. Interfaces (construction boundary conditions)</h3>
+<h3 id="_interface_between_constructions_and_zones_internal_boundary_conditions">2.8. Interface between constructions and zones (internal boundary conditions)</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_building_components">2.9. Building Components</h3>
 <div class="sect3">
-<h4 id="_ambient_climate_boundary_conditions">2.3.1. Ambient climate boundary conditions</h4>
-
-</div>
-<div class="sect3">
-<h4 id="_interface_between_constructions_and_zones_internal_boundary_conditions">2.3.2. Interface between constructions and zones (internal boundary conditions)</h4>
-
-</div>
-</div>
-<div class="sect2">
-<h3 id="_construction_types">2.4. Construction Types</h3>
-
-</div>
-<div class="sect2">
-<h3 id="_materials">2.5. Materials</h3>
-
-</div>
-<div class="sect2">
-<h3 id="_climatic_loads">2.6. Climatic loads</h3>
-<div class="sect3">
-<h4 id="_overview_2">2.6.1. Overview</h4>
+<h4 id="_overview_2">2.9.1. Overview</h4>
 <div class="paragraph">
-<p>The climatic loads model is a purely time-dependent model without other input dependencies. For solar radiation calculation, it needs information on the building location. Also, for most simulations, a climate data file is needed.</p>
+<p>In order to model building components such as Walls, Ceilings and Floors, etc. it is necessary to define some parameters for the Materials and then the Construction with the reference to an existing material.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/Mat_ConstInst.png" alt="Mat ConstInst">
+</div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_specification">2.6.2. Specification</h4>
+<h4 id="MaterialsDocumentation">2.9.2. Materials</h4>
+<div class="paragraph">
+<p>In the NANDRAD-Model the Materials-Section starts with an XML-Tag named <code>Materials</code>. In this each Material starts with an XML-Tag named <code>Material</code> with two XML-Attributes <code>id</code> and <code>displayName</code>.
+Concerning the Material Parameters such as Density, Heat Capacity and Conductivity they need to be defined within the XML-Tag <code>IBK:Parameter</code> with the XML-Attributes <code>name</code> and <code>unit</code>.
+In the following it is described in detail.</p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Materials&gt;</span>
+	<span class="nt">&lt;Material</span> <span class="na">id=</span><span class="s">"1001"</span> <span class="na">displayName=</span><span class="s">"Brick"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Density"</span> <span class="na">unit=</span><span class="s">"kg/m3"</span><span class="nt">&gt;</span>2000<span class="nt">&lt;/IBK:Parameter&gt;</span>
+		<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"HeatCapacity"</span> <span class="na">unit=</span><span class="s">"J/kgK"</span><span class="nt">&gt;</span>1000<span class="nt">&lt;/IBK:Parameter&gt;</span>
+		<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Conductivity"</span> <span class="na">unit=</span><span class="s">"W/mK"</span><span class="nt">&gt;</span>1.2<span class="nt">&lt;/IBK:Parameter&gt;</span>
+	<span class="nt">&lt;/Material&gt;</span>
+	<span class="nt">&lt;Material</span> <span class="na">id=</span><span class="s">"1004"</span> <span class="na">displayName=</span><span class="s">"Good Insulation"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Density"</span> <span class="na">unit=</span><span class="s">"kg/m3"</span><span class="nt">&gt;</span>50<span class="nt">&lt;/IBK:Parameter&gt;</span>
+		<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"HeatCapacity"</span> <span class="na">unit=</span><span class="s">"J/kgK"</span><span class="nt">&gt;</span>1000<span class="nt">&lt;/IBK:Parameter&gt;</span>
+		<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Conductivity"</span> <span class="na">unit=</span><span class="s">"W/mK"</span><span class="nt">&gt;</span>0.02<span class="nt">&lt;/IBK:Parameter&gt;</span>
+	<span class="nt">&lt;/Material&gt;</span>
+<span class="err">&lt;</span>/Materials</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Inside the XML-Tag named <code>Materials</code> each Material starts with the XML-Tag <code>Material</code>. The following XML-Attributes need to be defined:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>id:</em> <code>1001</code> - defines the Identifier of the Material, needs to be a unique positive Integer ( &gt; 0 )</p>
+</li>
+<li>
+<p><em>displayName:</em> <code>Brick</code> - defines the Display Name of the Material. Is needed to find the Material in the Data Model and in Outputs more easily.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The following XML-Tags named <code>IBK:Parameters</code> with the XML-Attributes <code>name</code> and <code>unit</code> with the following entries need to be defined:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>name:</em> <code>Density</code> - defines the Density, <em>unit:</em> per Default in <code>kg/m³</code></p>
+</li>
+<li>
+<p><em>name:</em> <code>HeatCapacity</code> - defines the Heat Capacity, <em>unit:</em> per Default in <code>J/kgK</code></p>
+</li>
+<li>
+<p><em>name:</em> <code>Conductivity</code> - defines the Conductivity, <em>unit:</em> per Default in <code>W/mK</code></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_construction_types">2.9.3. Construction Types</h4>
+<div class="paragraph">
+<p>The Construction is defined inside the Sections starting with an XML-Tag <code>Construction Types</code>. Inside the Section each Construction start with the XML-Tag named <code>Construction Type</code> with the XML-Attributes <code>id</code> and <code>displayName</code>. Inside that it is necessary to specify the Material Layers with the XML-Tag named <code>MaterialLayers</code> and finally the Material Layer with the XML-Tag <code>MaterialLayer</code> with the XML-Attributes <code>thickness</code> and <code>matId</code>. The <code>MaterialLayer</code> is always an empty Object since all needed Attributes are defined as XML-Attributes as mentioned before.
+In the following it is described in detail.</p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;ConstructionTypes&gt;</span>
+	<span class="nt">&lt;ConstructionType</span> <span class="na">id=</span><span class="s">"10005"</span> <span class="na">displayName=</span><span class="s">"Test Construction"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;MaterialLayers&gt;</span>
+			<span class="nt">&lt;MaterialLayer</span> <span class="na">thickness=</span><span class="s">"0.2"</span> <span class="na">matId=</span><span class="s">"1001"</span> <span class="nt">/&gt;</span> <span class="c">&lt;!-- room side --&gt;</span>
+			<span class="nt">&lt;MaterialLayer</span> <span class="na">thickness=</span><span class="s">"0.3"</span> <span class="na">matId=</span><span class="s">"1004"</span> <span class="nt">/&gt;</span>
+		<span class="nt">&lt;/MaterialLayers&gt;</span>
+	<span class="nt">&lt;/ConstructionType&gt;</span>
+<span class="nt">&lt;/ConstructionTypes&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Inside the XML-Tag named <code>ConstructionTypes</code> each Construction starts with the XML-Tag <code>ConstructionType</code>. The following XML-Attributes need to be defined inside of this:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>id:</em> <code>10005</code> - defines the Identifier of the Material, needs to be a unique positive Integer ( &gt; 0 )</p>
+</li>
+<li>
+<p><em>displayName:</em> <code>Test Construction</code> - defines the Display Name of the Material. Is needed to find the Material in the Data Model and in Outputs more easily.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Furthermore each defined Construction has Material Layers encapsulated within the XML-Tag <code>MaterialLayers</code>. Each Material Layer needs the be defined with the XML-Tag named <code>MaterialLayer</code>. This Tag needs the XML-Attributes <code>thickness</code> and <code>matId</code>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>thickness:</em> <code>0.2</code> - defines the Thickness, per Default in <code>m</code>, needs to be a positive Double</p>
+</li>
+<li>
+<p><em>matId:</em> <code>1001</code> - refers to the a Material with the ID <code>1001</code> defined in the <code>Materials</code> Section</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="climatic_loads">2.10. Climatic loads</h3>
+<div class="sect3">
+<h4 id="_overview_3">2.10.1. Overview</h4>
+<div class="paragraph">
+<p>Climatic loads in NANDRAD are provided by means of climate data files. The climatic loads model is a purely time-dependent model without other input dependencies. For solar radiation calculation, it needs information on the building location, and also the orientation and inclination of the various surfaces.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_specification">2.10.2. Specification</h4>
 <div class="paragraph">
 <p>Information about location and climate data is stored in the <code>Location</code> section of the project file:</p>
 </div>
@@ -219,54 +748,158 @@ table {
 	<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Longitude"</span> <span class="na">unit=</span><span class="s">"Deg"</span><span class="nt">&gt;</span>13<span class="nt">&lt;/IBK:Parameter&gt;</span>
 	<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Albedo"</span> <span class="na">unit=</span><span class="s">"-"</span><span class="nt">&gt;</span>0.2<span class="nt">&lt;/IBK:Parameter&gt;</span>
 	<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Altitude"</span> <span class="na">unit=</span><span class="s">"m"</span><span class="nt">&gt;</span>100<span class="nt">&lt;/IBK:Parameter&gt;</span>
-	<span class="nt">&lt;ClimateFileName&gt;</span>${Project Directory}/climate/testClimate.epw<span class="nt">&lt;/ClimateFileName&gt;</span>
+	<span class="nt">&lt;IBK:Flag</span> <span class="na">name=</span><span class="s">"PerezDiffuseRadiationModel"</span><span class="nt">&gt;</span>false<span class="nt">&lt;/IBK:Flag&gt;</span>
+	<span class="nt">&lt;ClimateFileName&gt;</span>${Project Directory}/climate/GER_Potsdam_2017.c6b<span class="nt">&lt;/ClimateFileName&gt;</span>
 <span class="nt">&lt;/Location&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The parameter <code>Albedo</code> is used for diffuse solar radiation calculation.
-<code>Altitude</code> is needed for specific altitude-related parameters (<strong>TODO</strong>).</p>
+<p>Parameters (see section <a href="#basic_types">Basic Data Types in NANDRAD Project File Specification</a> for into on types):</p>
 </div>
-<div class="paragraph">
-<p>Parameters <code>Latitude</code> and <code>Longitude</code> are optional if a climate data file is given, otherwise they override the location parameters stored therein (see <a href="#location_settings">Building/Station location</a>).</p>
-</div>
-<div class="paragraph">
-<p>Valid value range for <code>Latitude</code> is [-90,90] degrees (positive values are northern hemisphere), for <code>Longitude</code> it is [-180,180] degrees (positive values are east of Greenwich).</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The parameter <code>Albedo</code> is required and used for diffuse solar radiation calculation (see <a href="#loads_solar_radiation">Solar Radiation Calculation</a>). Valid value range in [0,1].</p>
+</li>
+<li>
+<p>Parameters <code>Latitude</code> and <code>Longitude</code> are optional. If present, they override the location parameters stored therein (see <a href="#location_settings">Building/Station location</a>).</p>
+</li>
+<li>
+<p><code>Altitude</code> is optional and later needed for specific altitude-related parameters (<strong>TODO</strong>).</p>
+</li>
+<li>
+<p>The optional flag <code>PerezDiffuseRadiationModel</code> defines whether to use the Perez-Model for diffuse solar radiation calculation (when <code>true</code>), or the isotropic radiation model (<code>false</code>). Default setting is <code>false</code>.</p>
+</li>
+<li>
+<p>The <code>&lt;ClimateFileName&gt;</code> tag defines the path to the climate data file.</p>
+</li>
+</ul>
 </div>
 <div class="sect4">
-<h5 id="_climate_file_support">Climate File Support</h5>
+<h5 id="loads_climate_files">Climate Data Files</h5>
 <div class="paragraph">
-<p>Currently, <code>c6b</code>, <code>wac</code> and <code>epw</code> files are supported (see CCM-Editor help).</p>
+<p>Currently, <code>c6b</code>, <code>wac</code> and <code>epw</code> files are supported (see also help for the <a href="https://bauklimatik-dresden.de/ccmeditor/help">CCM-Editor</a> tool).</p>
+</div>
+<div class="paragraph">
+<p>You need to specify the path to the climate data file in the <code>&lt;ClimateFileName&gt;</code> tag. Hereby, you can specify an absolute or relative path.</p>
+</div>
+<div class="paragraph">
+<p>If a relative path is privided, it will be resolved using the current working directory as reference. For example, if you have specified</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;ClimateFileName&gt;</span>GER_Potsdam_2017.c6b<span class="nt">&lt;/ClimateFileName&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and the solver is run from the directory <code>/home/user/sim/Project1</code>, the climate data file will be searched in <code>/home/user/sim/Project1/GER_Potsdam_2017.c6b</code>. If the solver is run from a different directory, the referenced climate data file won&#8217;t be found and an error message is raised.</p>
+</div>
+<div class="paragraph">
+<p>To avoid this problem, you may specify directory placeholders to locate the climate data file <em>relative</em> to the project file&#8217;s location. The builtin path placeholder <code>${Project Directory}</code> will be replaced by the directory the project file is located in. Use the placeholder just as a regular directory part, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;ClimateFileName&gt;</span>${Project Directory}/climate/GER_Potsdam_2017.c6b<span class="nt">&lt;/ClimateFileName&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It is possible to define custom placeholders in the project for all externally referenced files, see <a href="#path_placeholders">Path Placeholders</a>.</p>
 </div>
 </div>
 <div class="sect4">
 <h5 id="location_settings">Building/Station location</h5>
 <div class="paragraph">
-<p>Typically, climate data files contain information on latitude and longitude of the weather station.</p>
+<p>Climate data files contain information on latitude and longitude of the weather station, which is also taken to be the location of the building. This ensures that simulated time and position of the sun matches.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>If these parameters are not specified explicitely in the project file, the latitude/longitude from the climate data file are used.</p>
-</li>
-<li>
-<p>If parameters are specified in the project file, always <strong>both</strong> parameters must be given (and be valid) and then the these parameters from the project file are used instead of the climate data file location parameters.</p>
-</li>
-</ul>
+<div class="paragraph">
+<p>It is also possible to define latitude/longitude in the project file. If these parameters are specified in the project file, always <strong>both</strong> parameters must be given (and be valid) and then the these parameters from the project file are used instead of the climate data file location parameters.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>By specifying latitude different from the climatic station, the computed sun position may no longer correspond to the sun position at the weather station, thus yielding probably wrong solar radiation loads.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Valid value range for <code>Latitude</code> is [-90,90] degrees (positive values are northern hemisphere), for <code>Longitude</code> it is [-180,180] degrees (positive values are east of Greenwich).</p>
 </div>
 </div>
 <div class="sect4">
 <h5 id="_additional_radiation_sensors">Additional radiation sensors</h5>
 <div class="paragraph">
-<p>It is possible to specify additional planes (sensors) to generate solar radiation load outputs.</p>
+<p>It is possible to specify additional planes (sensors) to generate solar radiation load outputs. This is done by specifying a <code>Sensor</code> definition.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Location&gt;</span>
+    ....
+    <span class="nt">&lt;Sensors&gt;</span>
+		<span class="c">&lt;!-- Flat roof --&gt;</span>
+		<span class="nt">&lt;Sensor</span> <span class="na">id=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+			<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Orientation"</span> <span class="na">unit=</span><span class="s">"Deg"</span><span class="nt">&gt;</span>0<span class="nt">&lt;/IBK:Parameter&gt;</span>
+			<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Inclination"</span> <span class="na">unit=</span><span class="s">"Deg"</span><span class="nt">&gt;</span>0<span class="nt">&lt;/IBK:Parameter&gt;</span>
+		<span class="nt">&lt;/Sensor&gt;</span>
+		<span class="c">&lt;!-- North Wall 90 --&gt;</span>
+		<span class="nt">&lt;Sensor</span> <span class="na">id=</span><span class="s">"2"</span><span class="nt">&gt;</span>
+			<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Orientation"</span> <span class="na">unit=</span><span class="s">"Deg"</span><span class="nt">&gt;</span>0<span class="nt">&lt;/IBK:Parameter&gt;</span>
+			<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Inclination"</span> <span class="na">unit=</span><span class="s">"Deg"</span><span class="nt">&gt;</span>90<span class="nt">&lt;/IBK:Parameter&gt;</span>
+		<span class="nt">&lt;/Sensor&gt;</span>
+        ...
+    <span class="nt">&lt;/Sensors&gt;</span>
+<span class="nt">&lt;/Location&gt;</span></code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>This is done by specifying a <code>Sensor</code> definition.</p>
+<p>A sensor must be given a unique ID number and the mandatory parameters <code>Orientation</code> and <code>Inclination</code> (see section &lt;&lt; construction_interfaces&gt;&gt; for details on their definition).</p>
+</div>
+<div class="paragraph">
+<p>For each sensor 4 output quantities are generated:
+* <code>DirectSWRadOnPlane[&lt;sensor id&gt;]</code>  - direct solar radiation intensity on plane in [W/m2]
+* <code>DiffuseSWRadOnPlane[&lt;sensor id&gt;]</code> - diffuse solar radiation intensity on plane in [W/m2]
+* <code>GlobalSWRadOnPlane[&lt;sensor id&gt;]</code> - global radiation intensity on plane in [W/m2] (the sum of the former two)
+* <code>IncidenceAngleOnPlane[&lt;sensor id&gt;]</code> - the incidence angle onto the plane in [Deg] (0° when sun ray is perpendicular to the plane, 90° when ray is parallel to the plane or when sun is below horizon)</p>
+</div>
+<div class="paragraph">
+<p>Example for a sensor output (see also output description in section <a href="#output_definitions">Output definitions</a>).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;OutputDefinitions&gt;</span>
+    ...
+    <span class="c">&lt;!-- direct radiation intensive from sensor with id=2 --&gt;</span>
+	<span class="nt">&lt;OutputDefinition&gt;</span>
+		<span class="nt">&lt;Quantity&gt;</span>DirectSWRadOnPlane[2]<span class="nt">&lt;/Quantity&gt;</span>
+		<span class="nt">&lt;ObjectListName&gt;</span>Location<span class="nt">&lt;/ObjectListName&gt;</span>
+		<span class="nt">&lt;GridName&gt;</span>minutely<span class="nt">&lt;/GridName&gt;</span>
+	<span class="nt">&lt;/OutputDefinition&gt;</span>
+	<span class="c">&lt;!-- incidence angle from sensor with id=42 --&gt;</span>
+	<span class="nt">&lt;OutputDefinition&gt;</span>
+		<span class="nt">&lt;Quantity&gt;</span>IncidenceAngleOnPlane[42]<span class="nt">&lt;/Quantity&gt;</span>
+		<span class="nt">&lt;ObjectListName&gt;</span>Location<span class="nt">&lt;/ObjectListName&gt;</span>
+		<span class="nt">&lt;GridName&gt;</span>minutely<span class="nt">&lt;/GridName&gt;</span>
+	<span class="nt">&lt;/OutputDefinition&gt;</span>
+    ...
+<span class="nt">&lt;/OutputDefinitions&gt;</span></code></pre>
+</div>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_implementation">2.6.3. Implementation</h4>
+<h4 id="loads_solar_radiation">2.10.3. Solar Radiation Calculation</h4>
+<div class="paragraph">
+<p>Solar radiation calculation follows the equations lists in section &#8230;&#8203; of the <em>Physical Model Reference</em>. The <code>Albedo</code> parameter is used in the diffuse radiation load calculation.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_implementation">2.10.4. Implementation</h4>
 <div class="paragraph">
 <p>The <code>Loads</code> model is a pre-defined model that is always evaluated first whenever the time point has changed. It does not have any other dependencies.</p>
 </div>
@@ -288,9 +921,9 @@ table {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_schedules">2.7. Schedules</h3>
+<h3 id="_schedules">2.11. Schedules</h3>
 <div class="sect3">
-<h4 id="_overview_3">2.7.1. Overview</h4>
+<h4 id="_overview_4">2.11.1. Overview</h4>
 <div class="paragraph">
 <p>Schedules provide purely time-dependent quantities, similar to climatic loads.</p>
 </div>
@@ -302,7 +935,7 @@ table {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_defining_schedules">2.7.2. Defining schedules</h4>
+<h4 id="_defining_schedules">2.11.2. Defining schedules</h4>
 <div class="sect4">
 <h5 id="_simulation_time_to_day_typelocal_time_mapping">Simulation time to day type/local time mapping</h5>
 <div class="paragraph">
@@ -334,10 +967,10 @@ Clarify (ticket: <a href="https://github.com/ghorwin/SIM-VICUS/issues/31" class=
 <div class="ulist">
 <ul>
 <li>
-<p>start year is always 2003</p>
+<p>start year by default is 2001</p>
 </li>
 <li>
-<p>start time is given as parameter (as offset to Midnight January 1st 2003, or <code>"01.01.2003 00:00"</code>); for example, start time of <code>10.5 d</code> means simulation time 0 maps to <code>"10.01.2003 12:00"</code></p>
+<p>start time is given as parameter (as offset to Midnight January 1st 2001, or <code>"01.01.2001 00:00"</code>); for example, start time of <code>10.5 d</code> means simulation time 0 maps to <code>"10.01.2001 12:00"</code></p>
 </li>
 <li>
 <p>if simulation duration exceeds 1 year, simulation time is wrapped at 365 d</p>
@@ -384,13 +1017,13 @@ scheduleData = scheduleTabulatedSplineData [t_sched=0...365 d]  -&gt; interpolat
 
 Example:
 
-  d = 16  -&gt; date = 16. January 2003
+  d = 15  -&gt; date = 16. January 2003
   startDayOffset = "Wed" -&gt; 2  (1.1.2003 was a wednesday)
 
-  d_dayOfWeek -&gt; 16 + 2 = 18   18 % 7 = 3  -&gt; DayType = "Thursay" (Check: 16. January 2003 was a Thursday)
+  d_dayOfWeek -&gt; 15 + 2 = 17   17 % 7 = 3  -&gt; DayType = "Thursday" (Check: 16. January 2003 was a Thursday)
 
 - look up daily cycle:
-  - find schedule (back to frond) where d in range:
+  - find schedule (back to front) where d in range:
     - process daytypes in order Thursday, Weekdays, AllDays
       - if parameter is found in any of these days, take daily course and add to spline for this day,
       - if parameter not found, skip and search through next schedule</code></pre>
@@ -464,7 +1097,7 @@ Example:
 </div>
 </div>
 <div class="sect3">
-<h4 id="_implementation_2">2.7.3. Implementation</h4>
+<h4 id="_implementation_2">2.11.3. Implementation</h4>
 <div class="paragraph">
 <p>Schedules do not have any dependencies, and are not part of the model graph. They are updated just as climatic loads whenever time changes.</p>
 </div>
@@ -561,7 +1194,7 @@ Example:
 </div>
 </div>
 <div class="sect3">
-<h4 id="_variable_list">2.7.4. Variable list</h4>
+<h4 id="_variable_list">2.11.4. Variable list</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code>	/*! Available quantities from schedules.
@@ -603,11 +1236,8 @@ Example:
 </div>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_global_parameters">3. Global parameters</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_global_parameters">2.12. Global parameters</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -621,21 +1251,34 @@ Example:
 </li>
 </ul>
 </div>
-<div class="sect2">
-<h3 id="_simulation_parameters">3.1. Simulation Parameters</h3>
+<div class="sect3">
+<h4 id="_simulation_parameters">2.12.1. Simulation Parameters</h4>
+<div class="sect4">
+<h5 id="_simulation_time_and_absolute_time_reference">Simulation time and absolute time reference</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>how is the simulation time defined</p>
+</li>
+<li>
+<p>how is the absolute time obtained (start year and start time)</p>
+</li>
+<li>
+<p>how are cyclic annual simulations handled, how are continuous multi-year simulations handled</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_solver_parameters">2.12.2. Solver Parameters</h4>
 
 </div>
+</div>
 <div class="sect2">
-<h3 id="_solver_parameters">3.2. Solver Parameters</h3>
-
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_outputs_definitions_rules_and_implementation">4. Outputs: definitions, rules and implementation</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_output_definitions">4.1. Output definitions</h3>
+<h3 id="_outputs_definitions_rules_and_implementation">2.13. Outputs: definitions, rules and implementation</h3>
+<div class="sect3">
+<h4 id="output_definitions">2.13.1. Output definitions</h4>
 <div class="paragraph">
 <p>Outputs are defined via:</p>
 </div>
@@ -702,8 +1345,8 @@ Example:
 <p><code>TimeType</code> is optional, same as <code>None</code> by default.
 <code>FileName</code> is optional (see below).</p>
 </div>
-<div class="sect3">
-<h4 id="_output_grids">4.1.1. Output Grids</h4>
+<div class="sect4">
+<h5 id="_output_grids">Output Grids</h5>
 <div class="paragraph">
 <p>Output grids define <em>when</em> outputs are written. An output grid contains a list of intervals, with an output step size defined for each interval.</p>
 </div>
@@ -726,14 +1369,14 @@ Example:
 </li>
 </ul>
 </div>
-<div class="sect4">
-<h5 id="_time_definitions">Time definitions</h5>
+<div class="sect5">
+<h6 id="_time_definitions">Time definitions</h6>
 <div class="paragraph">
 <p>Time points in <code>Start</code> and <code>End</code> parameters are defined with respect to Midnight January 1st of the year in which the simulation starts.</p>
 </div>
 </div>
-<div class="sect4">
-<h5 id="_rules">Rules</h5>
+<div class="sect5">
+<h6 id="_rules">Rules</h6>
 <div class="ulist">
 <ul>
 <li>
@@ -773,8 +1416,8 @@ Die Angabe des Parameters StepSize ist zwingend.</p>
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_examples">4.1.2. Examples</h4>
+<div class="sect4">
+<h5 id="_examples">Examples</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -787,8 +1430,8 @@ Die Angabe des Parameters StepSize ist zwingend.</p>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_variable_lookup_rules">4.2. Variable lookup rules</h3>
+<div class="sect3">
+<h4 id="_variable_lookup_rules">2.13.2. Variable lookup rules</h4>
 <div class="paragraph">
 <p>Quantities in output definitions define the ID names of the output quantities, optionally including an index notation when a single element of a vectorial quantity is requested. Hereby the following notations are allowed:</p>
 </div>
@@ -806,10 +1449,10 @@ Die Angabe des Parameters StepSize ist zwingend.</p>
 </ul>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_output_file_generation_rules">4.3. Output file generation rules</h3>
 <div class="sect3">
-<h4 id="_when_no_filename_is_given">4.3.1. When no filename is given</h4>
+<h4 id="_output_file_generation_rules">2.13.3. Output file generation rules</h4>
+<div class="sect4">
+<h5 id="_when_no_filename_is_given">When no filename is given</h5>
 <div class="paragraph">
 <p>Target file name(s) are automatically defined.</p>
 </div>
@@ -842,8 +1485,8 @@ Die Angabe des Parameters StepSize ist zwingend.</p>
 <p>Special rule: when only one grid is used, and grid has hourly steps all year round, the suffix <code>_&lt;gridname&gt;</code> is omitted.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_when_a_filename_is_given">4.3.2. When a filename is given</h4>
+<div class="sect4">
+<h5 id="_when_a_filename_is_given">When a filename is given</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -856,8 +1499,8 @@ Die Angabe des Parameters StepSize ist zwingend.</p>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_binary_format">4.4. Binary Format</h3>
+<div class="sect3">
+<h4 id="_binary_format">2.13.4. Binary Format</h4>
 <div class="paragraph">
 <p>First record: unsigned int - n (number of columns)
 Next n records: binary strings, leading size (unsigned int) and termination character (sanity checking)</p>
@@ -869,10 +1512,641 @@ Next n records: binary strings, leading size (unsigned int) and termination char
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="tutorials">3. Tutorials</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section contains several tutorials for different use cases in NANDRAD2. It will start with a simple tutorial for a single room.</p>
+</div>
+<div class="sect2">
+<h3 id="Tutorial1">3.1. Tutorial 1 - Simple Single Room</h3>
+<div class="sect3">
+<h4 id="_introduction">3.1.1. Introduction</h4>
+<div class="paragraph">
+<p>In this example a single thermal zone modelling is described. The main focus is put on the geometry, material and construction parametrization. The temperature of the freely oscillating room is given as the result output. The dimensions of the room are <code>l = 2.0 m</code> length, <code>b = 5.0 m</code> width and <code>h = 3.0 m</code> height. This leads to an air volume of <code>V = 30.0 m³</code>. All further characteristic values are specified in the following.</p>
+</div>
+<div class="paragraph">
+<p>PICTURE</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_workflow">3.1.2. Workflow</h4>
+<div class="paragraph">
+<p>First all materials inside <code>Materials</code> and the used constructions inside <code>ConstructionTypes</code> are defined, which are needed for the test zone. Afterwards all enveloping surfaces inside <code>ConstructionInstances</code> are parametrized and the output parameters inside <code>Outputs</code> are set. Finally, the climate is specified inside <code>Location</code> and further simulation settings inside <code>SimulationParameter</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_materials_and_constructions">3.1.3. Materials and constructions</h4>
+<div class="paragraph">
+<p>The building consists of a floor, a wall and a roof construction. The constructions are shown in the following table.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-middle">name</th>
+<th class="tableblock halign-center valign-top">id</th>
+<th class="tableblock halign-center valign-top">thickness [m]</th>
+<th class="tableblock halign-center valign-top">λ [W/mK]</th>
+<th class="tableblock halign-center valign-top">ρ [kg/m³]</th>
+<th class="tableblock halign-center valign-top">ce [J/kgK]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><strong>floor</strong></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">103</p></td>
+<td class="tableblock halign-center valign-top" colspan="4"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">concrete</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1001</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0.20</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">2.3</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">2000</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1000</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">insulation</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1004</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0.05</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0.04</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">50</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1500</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle" colspan="6"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><strong>roof</strong></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">102</p></td>
+<td class="tableblock halign-center valign-top" colspan="4"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">insulation</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1004</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0.20</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0.04</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">50</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1500</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Wood</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1002</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0.05</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0.17</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">500</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">2100</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><strong>wall</strong></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">101</p></td>
+<td class="tableblock halign-center valign-top" colspan="4"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">concrete</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1001</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0.20</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">2.3</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">2000</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1000</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">insulation</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1004</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0.10</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0.04</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">50</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1500</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect4">
+<h5 id="MaterialsTutorial1">Materials</h5>
+<div class="paragraph">
+<p>For the materials the thermal parameters such as <code>thermal conductivity</code> <code>λ</code>, <code>density</code> <code>ρ</code> and <code>heat capacity</code> <code>ce</code> are required. Furthermore a unique Id <code>id</code> and name <code>displayName</code> is needed. Exemplary the description for concrete and insulation is given below. The detailed documentation is described in <a href="#MaterialsDocumentation">Materials</a>.</p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Materials&gt;</span>
+	<span class="nt">&lt;Material</span> <span class="na">id=</span><span class="s">"1001"</span> <span class="na">displayName=</span><span class="s">"Concrete"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Density"</span> <span class="na">unit=</span><span class="s">"kg/m3"</span><span class="nt">&gt;</span>2000<span class="nt">&lt;/IBK:Parameter&gt;</span>
+		<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"HeatCapacity"</span> <span class="na">unit=</span><span class="s">"J/kgK"</span><span class="nt">&gt;</span>1000<span class="nt">&lt;/IBK:Parameter&gt;</span>
+		<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Conductivity"</span> <span class="na">unit=</span><span class="s">"W/mK"</span><span class="nt">&gt;</span>2.3<span class="nt">&lt;/IBK:Parameter&gt;</span>
+	<span class="nt">&lt;/Material&gt;</span>
+	<span class="nt">&lt;Material</span> <span class="na">id=</span><span class="s">"1004"</span> <span class="na">displayName=</span><span class="s">"Insulation"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Density"</span> <span class="na">unit=</span><span class="s">"kg/m3"</span><span class="nt">&gt;</span>50<span class="nt">&lt;/IBK:Parameter&gt;</span>
+		<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"HeatCapacity"</span> <span class="na">unit=</span><span class="s">"J/kgK"</span><span class="nt">&gt;</span>1500<span class="nt">&lt;/IBK:Parameter&gt;</span>
+		<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Conductivity"</span> <span class="na">unit=</span><span class="s">"W/mK"</span><span class="nt">&gt;</span>0.04<span class="nt">&lt;/IBK:Parameter&gt;</span>
+	<span class="nt">&lt;/Material&gt;</span>
+<span class="nt">&lt;/Materials&gt;</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Execute ToDo hygric parameters</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="ConstructionsTutorial1">Constructions</h5>
+<div class="paragraph">
+<p>Afterwards the <a href="#ConstructionTypesDocumentation">Constructions</a> in <code>ConstructionTypes</code> are assembled from the <a href="#MaterialsDocumentation">Materials</a> via the <code>Id</code> matching the <code>Id</code> in the <code>materials</code> and also the layer thickness <code>d</code>. As with the materials, a construction is always assigned a unique identifier <code>id</code> and optionally a name <code>displayName</code>. Transfer and other parameters are not part of the construction and are defined inside the <a href="#ConstructionInstancesDocumentation">Constructions</a> that represent an enveloping surface. For the later usage inside the <code>ConstructionInstance</code> the first material layer <code>MaterialLayer</code> inside the <code>MaterialLayers</code> List is linked to the <code>InterfaceA</code> and the last material layer to the <code>InterfaceB</code>. Thus, the inside or outside of the construction can be defined individually inside the <a href="#ConstructionInstancesDocumentation">Constructions</a>.</p>
+</div>
+<div class="paragraph">
+<p>The wall construction is examplarily shown below.</p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;ConstructionTypes&gt;</span>
+	<span class="nt">&lt;ConstructionType</span> <span class="na">id=</span><span class="s">"101"</span> <span class="na">displayName=</span><span class="s">"Wall Construction"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;MaterialLayers&gt;</span>
+			<span class="nt">&lt;MaterialLayer</span> <span class="na">thickness=</span><span class="s">"0.2"</span> <span class="na">matId=</span><span class="s">"1001"</span> <span class="nt">/&gt;</span> <span class="c">&lt;!-- Linked to InterfaceA --&gt;</span>
+			<span class="nt">&lt;MaterialLayer</span> <span class="na">thickness=</span><span class="s">"0.1"</span> <span class="na">matId=</span><span class="s">"1004"</span> <span class="nt">/&gt;</span> <span class="c">&lt;!-- Linked to InterfaceB --&gt;</span>
+		<span class="nt">&lt;/MaterialLayers&gt;</span>
+	<span class="nt">&lt;/ConstructionType&gt;</span>
+<span class="nt">&lt;/ConstructionTypes&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_zone">Zone</h5>
+<div class="paragraph">
+<p>In this section the Zone and its parameters are defined. Geometrically, the zone represents the volume of air inside the room. All further geometrical properties are defined inside the tag named <code>ConstructionInstances</code>. Besides the <code>Volume</code> an <code>Area</code> is specified, which is needed for the conversion of area specific loads to room loads. These space loads are not described in this tutorial.
+The uniqueness of the zone is guaranteed by an identifier <code>id</code>. Optionally a name <code>displayName</code> can be assigned again. The <code>type</code> of the zone sets the calculation mode for the zone. Three types are distinguished:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Active</code> The zone is calculated by the solver via the energy balance equations and the room air temperature results from the gains and losses of all energy flows.</p>
+</li>
+<li>
+<p><code>Constant</code> The zone is defined by a given temperature. It can be defined by a schedule, which does not have to be constant.</p>
+</li>
+<li>
+<p><code>Ground</code> The floor temperatures from the default climate file are used for the room air temperature. The zone thus represents the adjacent soil.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The volume and the area are defined via so-called <a href="#IBK_ParameterDocumentation"><code>IBK:Parameter</code></a>.
+The zone volume is defined in the example room with <code>V = 30 m³</code>. The base area is described with <code>A = 10 m²</code>.</p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Zones&gt;</span>
+	<span class="nt">&lt;Zone</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">displayName=</span><span class="s">"Single room model"</span> <span class="na">type=</span><span class="s">"Active"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Area"</span> <span class="na">unit=</span><span class="s">"m2"</span><span class="nt">&gt;</span>10<span class="nt">&lt;/IBK:Parameter&gt;</span>
+		<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Volume"</span> <span class="na">unit=</span><span class="s">"m3"</span><span class="nt">&gt;</span>30<span class="nt">&lt;/IBK:Parameter&gt;</span>
+	<span class="nt">&lt;/Zone&gt;</span>
+<span class="nt">&lt;/Zones&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Further setting options can be found in the detailed <a href="#NANDRAD-Geometry.adoc#ZoneDocumentation">zone</a> documentation.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_envelope_areas">Envelope areas</h5>
+<div class="paragraph">
+<p>The envelopes are described in the <code>ConstructionInstances</code>. Each envelope surface named <code>ConstructionInstance</code> is represented by an Id <code>id</code>, optionally a name <code>displayName</code>, a surface, a construction and the transition conditions represented by different models.
+The surface is described by an <code>IBC:Parameter</code> with the attribute <code>Area</code>. The construction is linked to the construction from <code>ConstructionTypes</code> via the <code>ConstructionTypeId</code>.
+The boundary conditions are defined via the interfaces <code>InterfaceA</code> and <code>InterfaceB</code>. As boundary conditions transfer coefficients and solar as well as thermal absorption coefficients are defined. These are each described by a separate model.</p>
+</div>
+<div class="paragraph">
+<p>In the example the wall envelope surface is shown. The selected wall is defined by an area <code>A = 15 m²</code>, a wall construction with the <code>id = 101</code> and an inside and outside boundary condition. The outside boundary condition is described with a constant transition coefficient of <code>h = 15 W/(m²K)</code>, a solar absorptance of <code>a = 0.6</code> and a long-wave absorption/emission of <code>ε = 0.9</code>. On the inside, only a transition coefficient <code>h = 10 W/(m²K)</code> is described.</p>
+</div>
+<div class="paragraph">
+<p>Further setting options can be found in the detailed <a href="#NANDRAD-Geometry.adoc#ZoneDocumentation">ConstructionInstance</a> documentation.</p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;ConstructionInstances&gt;</span>
+	<span class="nt">&lt;ConstructionInstance</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">displayName=</span><span class="s">"West Wall"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;ConstructionTypeId&gt;</span>101<span class="nt">&lt;/ConstructionTypeId&gt;</span>
+		<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Area"</span> <span class="na">unit=</span><span class="s">"m2"</span><span class="nt">&gt;</span>15<span class="nt">&lt;/IBK:Parameter&gt;</span>
+		<span class="nt">&lt;InterfaceA</span> <span class="na">id=</span><span class="s">"10"</span> <span class="na">zoneId=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+			<span class="c">&lt;!--Interface to zone 'Single room model' --&gt;</span>
+			<span class="nt">&lt;InterfaceHeatConduction</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+				<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"HeatTransferCoefficient"</span> <span class="na">unit=</span><span class="s">"W/m2K"</span><span class="nt">&gt;</span>10<span class="nt">&lt;/IBK:Parameter&gt;</span>
+			<span class="nt">&lt;/InterfaceHeatConduction&gt;</span>
+		<span class="nt">&lt;/InterfaceA&gt;</span>
+		<span class="nt">&lt;InterfaceB</span> <span class="na">id=</span><span class="s">"11"</span> <span class="na">zoneId=</span><span class="s">"0"</span><span class="nt">&gt;</span>
+			<span class="c">&lt;!--Interface to outside--&gt;</span>
+			<span class="nt">&lt;InterfaceHeatConduction</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+				<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"HeatTransferCoefficient"</span> <span class="na">unit=</span><span class="s">"W/m2K"</span><span class="nt">&gt;</span>15<span class="nt">&lt;/IBK:Parameter&gt;</span>
+			<span class="nt">&lt;/InterfaceHeatConduction&gt;</span>
+			<span class="nt">&lt;InterfaceSolarAbsorption</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+				<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"AbsorptionCoefficient"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0.6<span class="nt">&lt;/IBK:Parameter&gt;</span>
+			<span class="nt">&lt;/InterfaceHeatConduction&gt;</span>
+			<span class="nt">&lt;InterfaceLongWaveEmission</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+				<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Emissivity"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0.9<span class="nt">&lt;/IBK:Parameter&gt;</span>
+			<span class="nt">&lt;/InterfaceHeatConduction&gt;</span>
+		<span class="nt">&lt;/InterfaceB&gt;</span>
+	<span class="nt">&lt;/ConstructionInstance&gt;</span>
+<span class="nt">&lt;/ConstructionInstances&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_reference">4. Reference</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="units">4.1. Unit Definitions</h3>
+<div class="paragraph">
+<p>Throughout the NANDRAD solver, units are <em>only</em> used for input/output purposes. Within the calculation functions, <em>always</em> the base SI units are used, hereby avoiding problems from unit conversions.</p>
+</div>
+<div class="paragraph">
+<p>The unit system in NANDRAD uses the convention, that at maximum one / may be part of the unit definition. All units following the slash are in the denominator of the unit. Exponents are just following the unit, for example <code>m2</code>. Multiple units are just concatenated without . or * character, for example <code>kWh</code> or <code>kg/m2s</code>.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Units are case-sensitive! For example, <code>Deg</code> is correct whereas <code>deg</code> will not be recognized as correct unit.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 15%;">
+<col style="width: 85%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Base SI unit</th>
+<th class="tableblock halign-left valign-top">Convertible units</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%, 1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">---/d</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%/d</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1/K</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1/logcm</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1/m</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1/cm</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1/Pa</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1/s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1/min, 1/h</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">J</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kJ, MJ, MWh, kWh, Wh</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">J/K</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kJ/K</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">J/kg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kJ/kg</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">J/kgK</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kJ/kgK, Ws/kgK, J/gK, Ws/gK</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">J/m2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kJ/m2, MJ/m2, GJ/m2, J/dm2, J/cm2, kWh/m2</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">J/m2s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">W/m2, kW/m2, MW/m2, W/dm2, W/cm2</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">J/m3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ws/m3, kJ/m3, MJ/m3, GJ/m3, J/dm3, J/cm3, kWh/m3</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">J/m3K</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kJ/m3K</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">J/m3s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kJ/m3s, MJ/m3s, J/dm3s, J/cm3s, J/m3h, W/m3, kW/m3, MW/m3, W/dm3, W/cm3, W/mm3</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">J/mol</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kJ/mol</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">J/s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">J/h, J/d, kJ/d, W, kW, MW, Nm/s</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">K</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">C</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">K/m</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">K/Pa</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">g, mg</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kg/kg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">g/kg, mg/kg</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kg/m</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">g/m, g/mm, kg/mm</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kg/m2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kg/dm2, g/dm2, g/cm2, mg/m2</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kg/m2s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">g/m2s, g/m2h, g/m2d, kg/m2h, mg/m2s, µg/m2s, mg/m2h, µg/m2h</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kg/m2s05</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kg/m2h05</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kg/m3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kg/dm3, g/dm3, g/cm3, g/m3, mg/m3, µg/m3, log(kg/m3), log(g/m3), log(mg/m3), log(µg/m3)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kg/m3s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">g/m3s, g/m3h, kg/m3h, mg/m3s, µg/m3s, mg/m3h, µg/m3h</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kg/m3sK</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">g/m3sK, g/m3hK, kg/m3hK, mg/m3sK, µg/m3sK, mg/m3hK, µg/m3hK</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kg/mol</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">g/mol</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kg/ms</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kg/s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kg/h, kg/d, g/d, g/a, mg/s, µg/s</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kWh/a</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kWh/m2a</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">l/m2s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">l/m2h, l/m2d, mm/d, mm/h</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">l/m3s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">l/m3h</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">logcm</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">logm</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">logPa</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Lux</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kLux</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">m</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mm, cm, dm</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">m/s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cm/s, cm/h, cm/d</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">m/s2</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">m2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mm2, cm2, dm2</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">m2/kg</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">m2/m3</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">m2/s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cm2/s, m2/h, cm2/h</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">m2K/W</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">m2s/kg</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">m3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mm3, cm3, dm3</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">m3/m2s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">m3/m2h, dm3/m2s, dm3/m2h</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">m3/m2sPa</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">m3/m2hPa</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">m3/m3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Vol%</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">m3/m3d</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Vol%/d</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">m3/s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">m3/h, dm3/s, dm3/h</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">m3m/m3m</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">m3mm/m3m</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mm/m</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mol</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mmol</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mol/kg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mol/g</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mol/m3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mol/ltr, mol/dm3, mol/cm3</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pa</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">hPa, kPa, Bar, PSI, Torr</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pa/m</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kPa/m</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Person/m2</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rad</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deg</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">min, h, d, a, sqrt(s), sqrt(h), ms</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">s/m</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kg/m2sPa</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">s/s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">min/s, h/s, d/s, a/s</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">s2/m2</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">W/K</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">W/m2K</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">W/m2K2</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">W/m2s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">W/m2h, kW/m2s, MW/m2s, W/dm2s, W/cm2s</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">W/mK</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kW/mK</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">W/mK2</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">W/Person</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kW/Person</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>undefined</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated 2020-09-07 11:05:49 +0200
+Last updated 2020-09-09 12:03:03 +0200
 </div>
 </div>
 <style>

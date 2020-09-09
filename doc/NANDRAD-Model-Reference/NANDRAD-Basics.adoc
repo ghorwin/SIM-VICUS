@@ -1,4 +1,6 @@
-# NANDRAD Project File
+:imagesdir: ./images
+[[project_file]]
+# NANDRAD Project File Structure
 
 The NANDRAD project specification is stored in an XML-file with the extension `nandrad`. The principle structure of the file looks like:
 
@@ -21,33 +23,34 @@ The optional `DirectoryPlaceholders` can be used to define relative path placeho
 
 All project data is enclosed in the `<Project>` tag.
 
+A project file may contain the following child tags:
+
+* `Location` - Climatic data and location settings -> <<climatic_loads>>
+
+
 [[basic_types]]
 # Basic Data Types in NANDRAD Project File Specification
 
 Within the various specificiation sections of the project file some basic data types / xml-tags are frequently used. The rules for specifying these parameters are defined below.
 
+[[IBK_parameter]]
 ## IBK:Parameter
 
-Ein XML-Tag mit dem Namen `IBK:Parameter` wird durch die XML-Attribute  `name` und `unit` definiert. Der "Zahlenwert" ist im XML-Element beschrieben.
+An xml tag with name `IBK:Parameter` defines a floating point value parameter, identified by a name and physical unit (XML-attributes `name` and `unit`). The value of the xml tag is the actual parameter value.
 
-[IMPORTANT]
+.Parameters with different units
 ====
-
-Der Name und die Einheit sind immer im Zusammenhang zu definieren. Dafür gibt es sogenannte Keyword-Lists. Als Einheitenbasis wird die SI Definition verwendet.
-
-====
-
-Beispielhaft sind nachfolgend verschiedene `IBK:Parameter` mit unterschiedlichen Einheiten dargestellt.
-
-Example:
 [source,xml]
 ----
-
 <IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
-
 <IBK:Parameter name="Temperature" unit="C">20</IBK:Parameter>
 <IBK:Parameter name="Temperature" unit="K">293.15</IBK:Parameter>
+<!-- unitless parameters take the --- unit -->
+<IBK:Parameter name="RelTol" unit="---">0.7</IBK:Parameter>
 ----
+====
+
+The units must be selected from the global unit list, see section <<units>>.
 
 ## IBK:IntPara
 

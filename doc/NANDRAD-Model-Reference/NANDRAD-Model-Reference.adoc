@@ -1,6 +1,6 @@
 NANDRAD Model Reference
 =======================
-Andreas Nicolai <andreas.nicolai@tu-dresden.de>
+Andreas Nicolai <andreas.nicolai@tu-dresden.de>, Dirk Weiß, Stephan Hirth, Katja Tribulowski
 v1.0.0, July 2020
 :Author Initials: AN
 :toc: left
@@ -16,12 +16,16 @@ v1.0.0, July 2020
 :stylesdir: ../adoc_utils/css
 :stylesheet: roboto_ubuntu.css
 
-This document contains a description of the various implemented models and the parametrization in the NANDRAD project file. It is therefore both input reference and model description.
-
 ## Overview
 
+This document contains a description of the various implemented models and the parametrization in the NANDRAD project file. It is primarily an input reference.
 
-## Models and Input Reference
+The section <<project_file>> contains an overview of the project file structure, with references to the individual documentation sections. This is a good start to get an overview of the NANDRAD project specification.
+
+The <<tutorials>> chapter contains various tutorials that illustrate manual creation of project files with simple examples.
+
+
+## NANDRAD Input and Project File Reference
 
 
 include::NANDRAD-Basics.adoc[leveloffset=+2]
@@ -31,8 +35,11 @@ include::NANDRAD-Databases.adoc[leveloffset=+2]
 include::NANDRAD-Loads.adoc[leveloffset=+2]
 include::NANDRAD-Schedules.adoc[leveloffset=+2]
 
-include::NANDRAD-GlobalParameters.adoc[leveloffset=+1]
+include::NANDRAD-GlobalParameters.adoc[leveloffset=+2]
 
-include::NANDRAD-Outputs.adoc[leveloffset=+1]
+include::NANDRAD-Outputs.adoc[leveloffset=+2]
+
 
 include::NANDRAD-Tutorials.adoc[leveloffset=+1]
+
+include::NANDRAD-Reference.adoc[leveloffset=+1]
