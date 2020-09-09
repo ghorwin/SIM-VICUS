@@ -103,6 +103,8 @@ Used for flags. Mandatory attribute `name` identifies the flag. Not defining a f
 ----
 ====
 
+Recognized values for flag parameters are `true` and `1`  or `false` and `0`.
+
 [[IBK_LinearSpline]]
 ## IBK:LinearSpline
 

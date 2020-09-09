@@ -1,23 +1,63 @@
-# Outputs: definitions, rules and implementation
-
 [[outputs]]
-## Output definitions
+# Outputs/Results
 
-In NANDRAD it is possible to retrieve output data for any computed and published quantity, see <<quantities>>.
+In NANDRAD it is possible to retrieve output data for any computed and published quantity, see <<quantities>> for a complete list. Of course, not all quantities are available in all projects - much depends on what kind of models and geometry has been defined.
 
+In order to define an output, the following information is needed:
 
-Outputs are defined via:
-
-- Grid (defines when outputs are to be written)
-- Variable/Quantity ID name
-- Object List (selects object to retrieve data from)
-- Time handling (how to handle time averaging/integration)
+- an output grid, that defines _when_ outputs are to be written
+- the variable/quantity name
+- an object list, that selects the object or objects to retrieve data from
+- (optional) time handling information, i.e. whether to average values in time or perform time integration
 - (optional) target filename
 
-Example:
+In addition to manually defined outputs, NANDRAD also generate a number log and data files, automatically (see section <<solver_log_files>>).
+
+Outputs are stored in the XML-tag `Outputs`, with the following general structure:
+
 [source,xml]
 ----
-<!-- Definition of output grids -->
+<Outputs>
+   ... <!-- global output parameters -->
+    
+    <Grids>
+        ... <!-- Definition of output grids -->
+    </Grids>
+    
+    <Definitions>
+        ... <!-- Actual output definitions -->
+    </Definitions>
+</Outputs>
+----
+
+## Global output parameters
+
+The following parameters influence the output file generation:
+
+* `TimeUnit` - the value of this XML-tag holds the time unit to be used in the output files
+* `IBK:Flag`:
+  - name `BinaryFormat`: if true, files will be written in binary format (see <<binary_outputs>>).
+
+.Global output parameters
+====
+[source,xml]
+----
+<Outputs>
+    <TimeUnit>d</TimeUnit>
+    <IBK:Flag name="BinaryFormat">false</IBK:Flag>
+    ....
+</Outputs>
+----
+====
+
+## Output grids
+
+Output grids define _when_ outputs are written. An output grid contains a list of intervals, with an output step size defined for each interval. For example, if you want to have hourly output steps from start to end, you need to define a grid with one interval and a step size parameter of one hour:
+
+.Output grid for entire simulation with hourly steps
+====
+[source,xml]
+----
 <Grids>
 	<OutputGrid name="hourly">
 		<Intervals>
@@ -27,6 +67,74 @@ Example:
 		</Intervals>
 	</OutputGrid>
 </Grids>
+----
+====
+
+An output grid is uniquely identified by its name (mandatory XML-attribute `name`). It contains a single child tag `Intervals` which holds one or more intervals. The intervals (XML-tag `Interval`) are expected to follow temporally in consecutive order, optionally with a gap in-between.
+
+Intervals can have up to 3 parameters:
+
+* `Start` - the start time of the interval (see explanation below)
+* `End`- the end time of the interval (see explanation below)
+* `StepSize` - the distance between outputs within the interval
+
+The parameters are stored in XML-tags of type `IBK:Parameter`, see <<IBK_Parameter>>.
+
+Time points in `Start` and `End` parameters are defined with respect to Midnight January 1st of the year in which the simulation starts.
+
+### Rules
+
+- the `Start` parameter is optional under the following conditions:
+    * in the first interval, a missing `Start` parameter is automatically set to 0 (start of the year)
+    * in all other intervals, the `End` time of the preceeding interval is taken (see next rule below)
+- the end time of an interval is defined, either:
+    * by defining the `End` parameter,
+    * through definition of the `Start` parameter in next interval
+    * through simulation end time (only in last interval)
+- the parameter `StepSize` is mandatory in each interval
+
+Basically, it must be clear for the solver when an interval starts and ends, and how long the step size is.
+
+During simulation, an output is written exactly under the following condition:
+
+- t must be in an interval defined by the grid
+- the offset t from the start of the interval must be an exact multiple of the step size
+
+.Output grid evaluation
+====
+Suppose an output interval is defined to start at 12.5 h, with a step size of 2 h. The simulation time shall be t=16.5 h. 
+Then 16.5 - 12.5 = 4 h, which is an exact multiple of 2 h. Hence, the output grid is "active" at this simulation time and all
+outputs associated with this output grid will be written.
+====
+
+There may be gaps between intervals, in which no outputs are written:
+
+.Output grid for daily values in first year and hourly values in third year (beginning at time "2 a")
+====
+[source,xml]
+----
+<Grids>
+	<OutputGrid name="first_and_last">
+		<Intervals>
+			<Interval>
+				<IBK:Parameter name="StepSize" unit="d">1</IBK:Parameter>
+				<IBK:Parameter name="End" unit="a">1</IBK:Parameter>
+			</Interval>
+			<Interval>
+				<IBK:Parameter name="Start" unit="a">2</IBK:Parameter>
+				<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+			</Interval>
+		</Intervals>
+	</OutputGrid>
+</Grids>
+----
+====
+
+## Output definitions
+
+
+[source,xml]
+----
 <!-- Definition of outputs -->
 <Definitions>
     <OutputDefinition>
@@ -55,36 +163,6 @@ Example:
 `TimeType` is optional, same as `None` by default.
 `FileName` is optional (see below).
 
-### Output Grids
-
-Output grids define _when_ outputs are written. An output grid contains a list of intervals, with an output step size defined for each interval.
-
-The intervals are expected to follow in consecutive order, optionally with a gap in-between.
-
-Intervals can have up to 3 parameters:
-
-* `Start` - the start time of the interval (see explanation below)
-* `End`- the end time of the interval (see explanation below)
-* `StepSize` - the distance between outputs within the interval
-
-#### Time definitions
-
-Time points in `Start` and `End` parameters are defined with respect to Midnight January 1st of the year in which the simulation starts.
-
-
-#### Rules
-
-- the `Start` parameter is optional, under the following conditions:
-    * in the first interval, a missing `Start` parameter is automatically set to 0 (start of the year)
-    * in all other intervals, the `End` time of the preceeding interval is taken (see next rule below)
-- the end time of an interval is defined, either:
-    * by defining the `End` parameter,
-    * through definition of the `Start` parameter in next interval
-    * through simulation end time in last 
-das Intervall das letzte Intervall ist (in diesem Fall läuft das Interval bis zum Simulationsende)
-das darauffolgende Interval hat ein Start-Wert hat.
-Bei Angabe eines Start-Parameters muß der Zeitpunkt mindestens dem End-Zeitpunkt des vorangegangenen Intervalls entsprechen -> die Intervalle sind sequentiell geordnet und überschneiden nicht.
-Die Angabe des Parameters StepSize ist zwingend.
 
 
 ### Examples
@@ -127,10 +205,14 @@ Special rule: when only one grid is used, and grid has hourly steps all year rou
 - all quantities (regardless of type) are written to this file
 
 
+[[binary_outputs]]
 ## Binary Format
 
 First record: unsigned int - n (number of columns)
 Next n records: binary strings, leading size (unsigned int) and termination character (sanity checking)
 
 Next ?? records: unsigned int - n (for checking) and afterwards n doubles
+
+[[solver_log_files]]
+## Solver log files
 
