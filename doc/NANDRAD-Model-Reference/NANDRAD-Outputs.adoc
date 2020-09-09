@@ -25,7 +25,7 @@ Example:
 	</OutputGrid>
 </Grids>
 <!-- Definition of outputs -->
-<OutputDefinitions>
+<Definitions>
     <OutputDefinition>
     	<Quantity>Temperature</Quantity>
     	<ObjectListName>All zones</ObjectListName>
@@ -37,7 +37,7 @@ Example:
     	<GridName>hourly</GridName>
     	<TimeType>Integral</TimeType>
     </OutputDefinition>
-</OutputDefinitions>
+</Definitions>
 
 
 <!-- Referenced object list -->
