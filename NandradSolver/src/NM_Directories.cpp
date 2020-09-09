@@ -35,7 +35,7 @@
 namespace NANDRAD_MODEL {
 
 void Directories::create(const IBK::Path & projectRootPath) {
-	const char * const FUNC_ID = "[Directories::create]";
+	FUNCID(Directories::create);
 
 	m_rootDir.clear();
 	m_logDir.clear();

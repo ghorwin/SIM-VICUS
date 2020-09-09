@@ -451,7 +451,6 @@ const InputReference & DefaultStateDependency::inputReference(int quantityType, 
 
 std::vector<const double *>::const_iterator DefaultStateDependency::inputValueRefs(int quantityType) const {
 #if 0
-//	const char * const FUNC_ID = "[DefaultStateDependency::inputValueRef]";
 	IBK_ASSERT(dynamic_cast<const AbstractModel*>(this) != nullptr);
 	// error: wrong quantity type is requested
 	IBK_ASSERT_X( quantityType >= 0 &&
