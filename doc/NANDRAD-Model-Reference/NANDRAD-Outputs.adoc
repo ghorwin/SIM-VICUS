@@ -1,7 +1,10 @@
 # Outputs: definitions, rules and implementation
 
-[[output_definitions]]
+[[outputs]]
 ## Output definitions
+
+In NANDRAD it is possible to retrieve output data for any computed and published quantity, see <<quantities>>.
+
 
 Outputs are defined via:
 

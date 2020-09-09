@@ -102,7 +102,7 @@ For each sensor 4 output quantities are generated:
 * `GlobalSWRadOnPlane[<sensor id>]` - global radiation intensity on plane in [W/m2] (the sum of the former two)
 * `IncidenceAngleOnPlane[<sensor id>]` - the incidence angle onto the plane in [Deg] (0° when sun ray is perpendicular to the plane, 90° when ray is parallel to the plane or when sun is below horizon)
 
-Example for a sensor output (see also output description in section <<output_definitions>>).
+Example for a sensor output (see also output description in section <<outputs>>).
 
 [source,xml]
 ----

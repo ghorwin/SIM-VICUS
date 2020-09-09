@@ -99,3 +99,44 @@ Units are case-sensitive! For example, `Deg` is correct whereas `deg` will not b
 ====
 The unit `undefined` means _not initialized_ (internally) and must not be used in input files.
 ====
+
+[[quantities]]
+## Quantity References
+
+The following list of quantities is an overview of all available results that can be requested as outputs. Which outputs are actually available  depends on the project and will be printed into the file `var/output_reference_list.txt` (see discussion in section <<outputs>>).
+
+Some of the quantities are vector-valued quantities, marked with a suffix `(id,xxx)` or `(index,xxx)`. To access these values, you need to specify the id/index in your output definition (see explanation and examples in section <<outputs>>).
+
+[width="100%",options="header", cols="15%,15%,5%,55%"]
+|====================
+|Reference/object type|Quantity|Unit|Description
+|ConstructionInstance|FluxHeatConductionA|W|Heat conduction flux across interface A (into construction).
+|ConstructionInstance|FluxHeatConductionB|W|Heat conduction flux across interface B (into construction).
+|ConstructionInstance|LayerTemperature(index,xxx)|C|Mean layer temperature for requested quanties.
+|ConstructionInstance|SurfaceTemperatureA|C|Surface temperature at interface A.
+|ConstructionInstance|SurfaceTemperatureB|C|Surface temperature at interface B.
+|Location|AirPressure          |Pa|Air pressure.
+|Location|Albedo               |---|Albedo value of the surrounding [0..1].
+|Location|AzimuthAngle         |Deg|Solar azimuth (0 - north).
+|Location|CO2Concentration     |---|Ambient CO2 concentration.
+|Location|CO2Density           |kg/m3|Ambient CO2 density.
+|Location|DeclinationAngle     |Deg|Solar declination (0 - north).
+|Location|ElevationAngle       |Deg|Solar elevation (0 - at horizont, 90 - directly above).
+|Location|LWSkyRadiation       |W/m2|Long wave sky radiation.
+|Location|Latitude             |Deg|Latitude.
+|Location|Longitude            |Deg|Longitude.
+|Location|MoistureDensity      |kg/m3|Ambient moisture density.
+|Location|RelativeHumidity     |%|Relative humidity.
+|Location|SWRadDiffuseHorizontal|W/m2|Diffuse short-wave radiation flux density on horizontal surface.
+|Location|SWRadDirectNormal    |W/m2|Direct short-wave radiation flux density in normal direction.
+|Location|Temperature          |C|Outside temperature.
+|Location|VaporPressure        |Pa|Ambient vapor pressure.
+|Location|WindDirection        |Deg|Wind direction (0 - north).
+|Location|WindVelocity         |m/s|Wind velocity.
+|Model|InfiltrationHeatFlux(id,xxx)|W|Infiltration/natural ventilation heat flux
+|Model|InfiltrationRate(id,xxx)  |1/h|Natural ventilation/infiltration air change rate
+|Zone|AirTemperature           |C|Room air temperature.
+|Zone|CompleteThermalLoad      |W|Sum of all thermal fluxes into the room and energy sources.
+|Zone|ConstructionHeatConductionLoad|W|Sum of heat conduction fluxes from construction surfaces into the room.
+|Zone|InfiltrationHeatLoad     |W|Infiltration/natural ventilation heat flux into the room.
+|====================
