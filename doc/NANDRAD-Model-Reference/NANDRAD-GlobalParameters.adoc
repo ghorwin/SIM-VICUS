@@ -13,8 +13,8 @@
 - how is the absolute time obtained (start year and start time)
 - how are cyclic annual simulations handled, how are continuous multi-year simulations handled
 
-Example:
-
+.Simulation Parameters
+====
 [source,xml]
 ----
 <SimulationParameter>
@@ -22,8 +22,9 @@ Example:
 	<IBK:IntPara name="DiscMaxElementsPerLayer">30</IBK:IntPara>
 </SimulationParameter>
 ----
+====
 
-The XML-Tags named `IBK:Parameters` with the XML-Attributes `name` and `unit` with the following entries can be defined:
+The XML-Tags named <<IBK_Parameter>> with the XML-Attributes `name` and `unit` with the following entries can be defined:
 
 [options="header"]
 [cols="10%,^ 10%,45%,13%,^ 10%"]

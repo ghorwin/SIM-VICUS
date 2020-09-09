@@ -13,7 +13,8 @@ In the NANDRAD-Model the Materials-Section starts with an XML-Tag named `Materia
 Concerning the Material Parameters such as Density, Heat Capacity and Conductivity they need to be defined within the XML-Tag `IBK:Parameter` with the XML-Attributes `name` and `unit`.
 In the following it is described in detail.
 
-Example:
+.Materials with Material Layers and Parameters
+====
 [source,xml]
 ----
 <Materials>
@@ -29,6 +30,8 @@ Example:
 	</Material>
 </Materials
 ----
+====
+
 Inside the XML-Tag named `Materials` each Material starts with the XML-Tag `Material`. The following XML-Attributes need to be defined:
 
 [options="header",cols="15%,55%,20%,10%",width="100%"]
@@ -53,7 +56,8 @@ The following XML-Tags named `IBK:Parameters` with the XML-Attributes `name` and
 The Construction is defined inside the Sections starting with an XML-Tag `Construction Types`. Inside the Section each Construction start with the XML-Tag named `Construction Type` with the XML-Attributes `id` and `displayName`. Inside that it is necessary to specify the Material Layers with the XML-Tag named `MaterialLayers` and finally the Material Layer with the XML-Tag `MaterialLayer` with the XML-Attributes `thickness` and `matId`. The `MaterialLayer` is always an empty Object since all needed Attributes are defined as XML-Attributes as mentioned before. 
 In the following it is described in detail.
 
-Example:
+.Construction Types with References to Material Objects
+====
 [source,xml]
 ----
 <ConstructionTypes>
@@ -65,6 +69,8 @@ Example:
 	</ConstructionType>
 </ConstructionTypes>
 ----
+====
+
 Inside the XML-Tag named `ConstructionTypes` each Construction starts with the XML-Tag `ConstructionType`. The following XML-Attributes need to be defined inside of this:
 
 [options="header",cols="15%,55%,20%,10%",width="100%"]
