@@ -49,7 +49,7 @@ public:
 		P_DomesticWaterSensitiveHeatGainFraction,	// Keyword: DomesticWaterSensitiveHeatGainFraction	[---]	'Percentage of sensitive heat from domestic water istributed towrads the room.'
 		P_AirExchangeRateN50,						// Keyword: AirExchangeRateN50					[1/h]	'Air exchange rate resulting from a pressure difference of 50 Pa between inside and outside.'
 		P_ShieldingCoefficient,						// Keyword: ShieldingCoefficient				[---]	'Shielding coefficient for a given location and envelope type.'
-		P_HeatingDesignAmbientTemperature,			// Keyword: HeatingDesignAmbientTemperature		[C]		'Ambient temparture for a design day. Parameter that is needed for FMU export.'
+		P_HeatingDesignAmbientTemperature,			// Keyword: HeatingDesignAmbientTemperature		[C]		'Ambient temperature for a design day. Parameter that is needed for FMU export.'
 		NUM_P
 	};
 

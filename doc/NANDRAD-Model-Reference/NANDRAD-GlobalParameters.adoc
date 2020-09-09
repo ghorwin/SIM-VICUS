@@ -13,6 +13,62 @@
 - how is the absolute time obtained (start year and start time)
 - how are cyclic annual simulations handled, how are continuous multi-year simulations handled
 
+Example:
+
+[source,xml]
+----
+<SimulationParameter>
+	<IBK:Parameter name="InitialTemperature" unit="C">5</IBK:Parameter>
+	<IBK:IntPara name="DiscMaxElementsPerLayer">30</IBK:IntPara>
+</SimulationParameter>
+----
+
+The following XML-Tags named `IBK:Parameters` with the XML-Attributes `name` and `unit` with the following entries can be defined:
+
+[options="header"]
+[cols="15%,^ 11%,64%,^ 10%"]
+[width="100%"]
+|====================
+| name | unit per default | Description | usage 
+| `InitialTemperature` | C | Global initial temperature | _optional_
+| `InitialRelativeHumidity` | % | +++<font size=".1em">small</font>+++ Global initial relative humidity | _optional_
+| `RadiationLoadFraction` | --- | Percentage of solar radiation gains attributed direcly to room 0..1. | _optional_
+| `UserThermalRadiationFraction` | --- | Percentage of heat that is emitted by long wave radiation from persons. | _optional_
+| `EquipmentThermalLossFraction` | --- | Percentage of energy from equipment load that is not available as thermal heat. | _optional_
+| `EquipmentThermalRadiationFraction` | --- | Percentage of heat that is emitted by long wave radiation from equipment. | _optional_
+| `LightingVisibleRadiationFraction` | --- | Percentage of energy from lighting that is transformed into visible short wave radiation. | _optional_
+| `LightingThermalRadiationFraction` |--- | Percentage of heat that is emitted by long wave radiation from lighting. | _optional_
+| `DomesticWaterSensitiveHeatGainFraction` |--- | Percentage of sensitive heat from domestic water istributed towrads the room. | _optional_
+| `AirExchangeRateN50` | 1/h | Air exchange rate resulting from a pressure difference of 50 Pa between inside and outside. | _optional_
+| `ShieldingCoefficient` | --- | Shielding coefficient for a given location and envelope type. | _optional_
+| `HeatingDesignAmbientTemperature` | C | Ambient temparture for a design day. Parameter that is needed for FMU export. | _optional_
+|====================
+
+
+The following XML-Tags named `IBK:IntPara` with the XML-Attributes `name` with the following entries can be defined:
+
+[options="header"]
+[cols="15%, 75%,^ 10%"]
+[width="100%"]
+|====================
+| name | Description | usage 
+| `StartYear` |  Start year of the simulation, per default set to `2001` | _optional_
+|====================
+
+
+The following XML-Tags named `IBK:Flags` with the XML-Attributes `name` with the following entries can be defined. The:
+
+[options="header"]
+[cols="15%, 75%,^ 10%"]
+[width="100%"]
+|====================
+| name | Description | usage 
+| `EnableMoistureBalance` |  Flag activating moisture balance calculation if enabled | _optional_
+| `EnableCO2Balance` |  Flag activating CO2 balance calculation if enabled | _optional_
+| `EnableJointVentilation` |  Flag activating ventilation through joints and openings. | _optional_
+| `ExportClimateDataFMU` |  Flag activating FMU export of climate data. | _optional_
+|====================
+
 
 ## Solver Parameters
 

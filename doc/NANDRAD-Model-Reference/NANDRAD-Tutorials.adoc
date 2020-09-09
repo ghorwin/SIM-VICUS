@@ -128,7 +128,7 @@ Example:
 		<ConstructionTypeId>101</ConstructionTypeId>
 		<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
 		<InterfaceA id="10" zoneId="1">
-			<!--Interface to zone 'Single room model' -->
+			<!--Interface to zone `Single room model` -->
 			<InterfaceHeatConduction modelType="Constant">
 				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter>
 			</InterfaceHeatConduction>
@@ -148,5 +148,61 @@ Example:
 	</ConstructionInstance>
 </ConstructionInstances>
 ---- 
+
+#### Output
+
+The requested outputs must be defined, otherwise a simulation will be started without obtaining output result variables. The `Outputs` are divided into `Definitions` and `Grids`. Inside `Grids` the interval step sizes and optionally the time points for the outputs are defined. The `Definitions` consist of individual outputs named `OutputDefinition` each with an object list name `ObjectListName`, an output grid name `GridName` and a result quantity `Quantity`. Additionally, the interval handling `timeType` and the output file name `FileName` can be specified. In the interval handling either momentary values at the end of the interval, average or integral values of the interval are output. In a separate discussion the <<interval treatments>> are described in detail.
+
+The object list groups all IDs of objects, which are used to access the objects like zones, models, etc. themselves. The object list `objectlist` consists of a `FilterId`, a `ReferenceType` and a name `name`. With a `*` all existing Ids of a reference type can be addressed.
+The example below shows how the output of the models is referenced via the object list.
+
+Example:
+[source,xml]
+----
+<ObjectLists>
+	<ObjectList name="Zone">
+		<FilterID>*</FilterID>
+		<ReferenceType>Zone>/ReferenceType>
+	</ObjectList>
+</ObjectLists>
+----
+
+In the following example the air temperature is queried and written to the <<standard output file>>. An hourly time grid was selected as interval. The output takes place over the entire << simulation period, simulation duration>>.
+
+Example:
+[source,xml]
+----
+<Outputs>
+	<OutputDefinitions>
+		<OutputDefinition>
+			<Quantity>AirTemperatures>/Quantity>
+			<ObjectListName>Zone</ObjectListName>
+			<GridName>hourly</GridName>
+		</OutputDefinition>
+	</OutputDefinitions>
+	<Grids>
+		<OutputGrid name="hourly">
+			<Intervals>
+				<Interval>
+					<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+				</Interval>
+			</Intervals>
+		</OutputGrid>
+	</Grids>
+</Outputs>
+----
+
+#### Location
+
+The location and climate are described in the tag `Location`. Mandatory parameters are the albedo as <<IBK:Parameter>> and either a climate file `ClimateFileName` or a location description with the <<IBK:Parameter,IBK:Parameters>> northern latitude `Latitude`, eastern longitude `Longitude` and the height above sea level `Elevation`.
+
+[NOTE]
+====
+*TODO* describe what to do if the climate file is missing.
+====
+
+
+[[SimulationPeriod]]
+#### Simulation parameters
 
 
