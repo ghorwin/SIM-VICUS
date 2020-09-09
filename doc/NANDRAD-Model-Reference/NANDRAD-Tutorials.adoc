@@ -9,7 +9,7 @@ This section contains several tutorials for different use cases in NANDRAD2. It 
 
 ### Introduction
 
-In this example a single thermal zone modelling is described. The main focus is put on the geometry, material and construction parametrization. The temperature of the freely oscillating room is given as the result output. The dimensions of the room are `l = 2.0 m` length, `b = 5.0 m` width and `h = 3.0 m` height. This leads to an air volume of `V = 30.0 m³`. All further characteristic values are specified in the following.
+In this example a single thermal zone modelling is described. The main focus is put on the geometry, material and construction parametrization. The temperature of the freely oscillating room is given as the result output. The dimensions of the room are `l = 2.0 m` length, `w = 5.0 m` width and `h = 3.0 m` height. This leads to an air volume of `V = 30.0 m³`. All further characteristic values are specified in the following.
 
 PICTURE
 
@@ -17,7 +17,7 @@ PICTURE
 
 First all materials inside `Materials` and the used constructions inside `ConstructionTypes` are defined, which are needed for the test zone. Afterwards all enveloping surfaces inside `ConstructionInstances` are parametrized and the output parameters inside `Outputs` are set. Finally, the climate is specified inside `Location` and further simulation settings inside `SimulationParameter`.
 
-### Materials and constructions
+### Materials and Constructions
 
 The building consists of a floor, a wall and a roof construction. The constructions are shown in the following table.
 
@@ -110,13 +110,13 @@ Example:
 
 Further setting options can be found in the detailed <<NANDRAD-Geometry.adoc#ZoneDocumentation,zone>> documentation.
 
-#### Envelope areas
+#### Enclosing Surfaces
 
-The envelopes are described in the `ConstructionInstances`. Each envelope surface named `ConstructionInstance` is represented by an Id `id`, optionally a name `displayName`, a surface, a construction and the transition conditions represented by different models.
+The Enclosing Surfaces are described in the `ConstructionInstances`. Each Enclosing Surfaces named `ConstructionInstance` is represented by an Id `id`, optionally a name `displayName`, a surface, a construction and the transition conditions represented by different models.
 The surface is described by an `IBC:Parameter` with the attribute `Area`. The construction is linked to the construction from `ConstructionTypes` via the `ConstructionTypeId`. 
 The boundary conditions are defined via the interfaces `InterfaceA` and `InterfaceB`. As boundary conditions transfer coefficients and solar as well as thermal absorption coefficients are defined. These are each described by a separate model.
 
-In the example the wall envelope surface is shown. The selected wall is defined by an area `A = 15 m²`, a wall construction with the `id = 101` and an inside and outside boundary condition. The outside boundary condition is described with a constant transition coefficient of `h = 15 W/(m²K)`, a solar absorptance of `a = 0.6` and a long-wave absorption/emission of `ε = 0.9`. On the inside, only a transition coefficient `h = 10 W/(m²K)` is described.
+In the example the wall Enclosing Surfaces is shown. The selected wall is defined by an area `A = 15 m²`, a wall construction with the `id = 101` and an inside and outside boundary condition. The outside boundary condition is described with a constant transition coefficient of `h = 15 W/(m²K)`, a solar absorptance of `a = 0.6` and a long-wave absorption/emission of `ε = 0.9`. On the inside, only a transition coefficient `h = 10 W/(m²K)` is described.
 
 Further setting options can be found in the detailed <<NANDRAD-Geometry.adoc#ZoneDocumentation, ConstructionInstance>> documentation.
 

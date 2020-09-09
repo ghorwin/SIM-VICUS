@@ -23,29 +23,29 @@ Example:
 </SimulationParameter>
 ----
 
-The following XML-Tags named `IBK:Parameters` with the XML-Attributes `name` and `unit` with the following entries can be defined:
+The XML-Tags named `IBK:Parameters` with the XML-Attributes `name` and `unit` with the following entries can be defined:
 
 [options="header"]
-[cols="15%,^ 11%,64%,^ 10%"]
+[cols="10%,^ 10%,45%,13%,^ 10%"]
 [width="100%"]
 |====================
-| name | unit per default | Description | usage 
-| `InitialTemperature` | C | Global initial temperature | _optional_
-| `InitialRelativeHumidity` | % | +++<font size=".1em">small</font>+++ Global initial relative humidity | _optional_
-| `RadiationLoadFraction` | --- | Percentage of solar radiation gains attributed direcly to room 0..1. | _optional_
-| `UserThermalRadiationFraction` | --- | Percentage of heat that is emitted by long wave radiation from persons. | _optional_
-| `EquipmentThermalLossFraction` | --- | Percentage of energy from equipment load that is not available as thermal heat. | _optional_
-| `EquipmentThermalRadiationFraction` | --- | Percentage of heat that is emitted by long wave radiation from equipment. | _optional_
-| `LightingVisibleRadiationFraction` | --- | Percentage of energy from lighting that is transformed into visible short wave radiation. | _optional_
-| `LightingThermalRadiationFraction` |--- | Percentage of heat that is emitted by long wave radiation from lighting. | _optional_
-| `DomesticWaterSensitiveHeatGainFraction` |--- | Percentage of sensitive heat from domestic water istributed towrads the room. | _optional_
-| `AirExchangeRateN50` | 1/h | Air exchange rate resulting from a pressure difference of 50 Pa between inside and outside. | _optional_
-| `ShieldingCoefficient` | --- | Shielding coefficient for a given location and envelope type. | _optional_
-| `HeatingDesignAmbientTemperature` | C | Ambient temparture for a design day. Parameter that is needed for FMU export. | _optional_
+| name | unit | Description | Format | usage 
+| `InitialTemperature` | C | Global initial temperature | positive double ( > 0.0 ) | _optional_
+| `InitialRelativeHumidity` | % | Global initial relative humidity | 0...100% | _optional_
+| `RadiationLoadFraction` | --- | Percentage of solar radiation gains attributed direcly to room 0..1. | 0...1 | _optional_
+| `UserThermalRadiationFraction` | --- | Percentage of heat that is emitted by long wave radiation from persons.  | 0...1 | _optional_
+| `EquipmentThermalLossFraction`   | --- | Percentage of energy from equipment load that is not available as thermal heat.  | 0...1 | _optional_
+| `EquipmentThermalRadiationFraction` | --- | Percentage of heat that is emitted by long wave radiation from equipment.  | 0...1 | _optional_
+| `LightingVisibleRadiationFraction` | --- | Percentage of energy from lighting that is transformed into visible short wave radiation.  | 0...1 | _optional_
+| `LightingThermalRadiationFraction` |--- | Percentage of heat that is emitted by long wave radiation from lighting.  | 0...1 | _optional_
+| `DomesticWaterSensitiveHeatGainFraction` |--- | Percentage of sensitive heat from domestic water istributed towrads the room.  | 0...1 | _optional_
+| `AirExchangeRateN50` | 1/h | Air exchange rate resulting from a pressure difference of 50 Pa between inside and outside.  | positive double ( > 0.0 ) | _optional_
+| `ShieldingCoefficient` | --- | Shielding coefficient for a given location and envelope type. | 0...1  | _optional_
+| `HeatingDesignAmbientTemperature` | C | Ambient temparture for a design day. Parameter that is needed for FMU export.  | positive double ( > 0.0 ) | _optional_
 |====================
 
 
-The following XML-Tags named `IBK:IntPara` with the XML-Attributes `name` with the following entries can be defined:
+The XML-Tags named `IBK:IntPara` holding integer values with the XML-Attributes `name` can be defined:
 
 [options="header"]
 [cols="15%, 75%,^ 10%"]
@@ -56,7 +56,7 @@ The following XML-Tags named `IBK:IntPara` with the XML-Attributes `name` with t
 |====================
 
 
-The following XML-Tags named `IBK:Flags` with the XML-Attributes `name` with the following entries can be defined. The:
+The XML-Tags named `IBK:Flags` with the following XML-Attributes `name` can be defined. The:
 
 [options="header"]
 [cols="15%, 75%,^ 10%"]
@@ -69,6 +69,29 @@ The following XML-Tags named `IBK:Flags` with the XML-Attributes `name` with the
 | `ExportClimateDataFMU` |  Flag activating FMU export of climate data. | _optional_
 |====================
 
-
+    
 ## Solver Parameters
+
+[options="header"]
+[cols="10%,^ 7%,45%,13%,^ 10%,10%"]
+[width="100%"]
+|====================
+|name|unit|Description|Format|initial value|usage
+|`RelTol`|---|Relative tolerance for solver error check.|0 … 1|1E-04|_optional_
+|`AbsTol`|---|Absolute tolerance for solver error check.|0 … 1|1E-10|_optional_
+|`MaxTimeStep`|min|Maximum permitted time step for integration.|positive double (>0.0)|1|_optional_
+|`MinTimeStep`|s|Minimum accepted time step, before solver aborts with error.|positive double (>0.0)|1E-12|_optional_
+|`InitialTimeStep`|s|Initial time step size (or constant step size for ExplicitEuler integrator).|positive double (>0.0)|0.1|_optional_
+|`NonlinSolverConvCoeff`|---|Coefficient reducing nonlinear equation solver convergence limit.|0 … 1|0.1|_optional_
+|`IterativeSolverConvCoeff`|---|Coefficient reducing iterative equation solver convergence limit.|0 … 1|0.05|_optional_
+|`DiscMinDx`|m|Minimum element width for wall discretization.|positive double (>0.0)|2|_optional_
+|`DiscStretchFactor`|---|Stretch factor for variable wall discretizations (0-no disc, 1-equidistance, larger than 1 - variable).|0 … 1|50|_optional_
+|`ViewfactorTileWidth`|m|Maximum dimension of a tile for calculation of view factors.|positive double (>0.0)|50|_optional_
+|`SurfaceDiscretizationDensity`|---|Number of surface discretization elements of a wall in each direction.|0 … 1|2|_optional_
+|`ControlTemperatureTolerance`|K|Temperature tolerance for ideal heating or cooling.|positive double (>0.0)|1E-05|_optional_
+|`KinsolRelTol`|---|Relative tolerance for Kinsol solver.|0 … 1|-|_optional_
+|`KinsolAbsTol`|---|Absolute tolerance for Kinsol solver.|0 … 1|-|_optional_
+|`IntegralWeightsFactor`|---|Optional weighting factor for integral outputs.|0 … 1|1E-05|_optional_
+|====================
+
 
