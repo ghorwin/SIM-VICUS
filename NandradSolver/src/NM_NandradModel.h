@@ -66,14 +66,6 @@ class ConstructionBalanceModel;
 /*! Main NANDRAD model implementation class.
 	This class implements the interface of SOLFRA::ModelInterface and SOLFRA::OutputScheduler and contains
 	the entire logic of the model evaluation.
-
-	\section init Initialization
-
-	fdfs
-
-	\section eval Model evaluation
-
-
 */
 class NandradModel : public SOLFRA::ModelInterface, public SOLFRA::OutputScheduler {
 public:

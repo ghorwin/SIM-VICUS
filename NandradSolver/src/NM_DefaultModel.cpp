@@ -201,7 +201,6 @@ const double * DefaultModel::resultValueRef(const QuantityName & quantityName) c
 
 
 int DefaultModel::decodeResultType(const std::string &quantity) const {
-	//const char * const FUNC_ID = "[DefaultStateDependency::decodeResultType]";
 
 	// first check results
 	std::string category = ModelIDName() + std::string("::Results");
@@ -234,7 +233,6 @@ int DefaultModel::decodeResultType(const std::string &quantity) const {
 
 
 int DefaultModel::decodeVectorValuedResultType(const std::string &quantity) const {
-	//const char * const FUNC_ID = "[DefaultStateDependency::decodeResultType]";
 
 	// first check results
 	std::string category = ModelIDName() + std::string("::VectorValuedResults");

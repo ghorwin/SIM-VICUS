@@ -487,8 +487,7 @@ SOLFRA::LESInterface * NandradModel::lesInterface() {
 		} break;
 
 		// no preconditioner
-		case NANDRAD::SolverParameter::NUM_PRE :
-		default : ;
+		case NANDRAD::SolverParameter::NUM_PRE : ;
 	}
 
 	SOLFRA::LESInterfaceIterative * lesIter = dynamic_cast<SOLFRA::LESInterfaceIterative *>(m_lesSolver);
@@ -511,8 +510,8 @@ SOLFRA::JacobianInterface *  NandradModel::jacobianInterface() {
 
 
 SOLFRA::IntegratorInterface * NandradModel::integratorInterface() {
-
 	const char * const FUNC_ID = "[NandradModel::integratorInterface]";
+
 	if (m_integrator != nullptr)
 		return m_integrator;
 
