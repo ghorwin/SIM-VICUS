@@ -35,27 +35,6 @@ Das Gebäude besteht aus einer Bodenplatten-, einer Wand- und einer Dachkonstruk
 | Dämmung | 1004 | 0.10 | 0.04 | 50 | 1500
 |====================
 
-[NOTE]
-====
-Alle von innen nach außen
-
-Bodenplatte 
-
-Beton   0.20
-Dämmung 0.05
-
-Dach
-
-Dämmung 0.20
-Holz    0.05
-
-Wand
-
-Beton   0.20
-Dämmung 0.10
-
-====
-
 #### Materialien
 
 Für die Materialien sind die thermischen Parameter `Wärmeleitfähigkeit` `&lambda;`, `Dichte` `&rho;` und  `Wärmekapazität` `ce` wichtig. Weiterhin wird eine unique-Id und Name benötigt. Beispielhaft wird die Beschreibung für Beton und Dämmung vorgenommen. Die detaillierte Dokumentation ist <<NANDRAD-Databases.adoc#MaterialsDocumentation,Materials>> beschrieben
@@ -216,7 +195,7 @@ Example:
 
 #### Location
 
-Der Standort und das Klima werden im Tag `Location` beschrieben. Pflichtparameter sind der Albedo als `IBK:Parameter` und entweder eine Klimadatei `ClimateFileName` oder eine Standortbeschreibung mit den `IBK:Parametern` nördliche Breite `Latitude`, östlicher Länge `Longitude` sowie der Höhe über Normalnull `Elevation`.
+Der Standort und das Klima werden im Tag `Location` beschrieben. Pflichtparameter sind der Albedo als `IBK:Parameter` und entweder eine Klimadatei `ClimateFileName` oder eine Standortbeschreibung mit den `IBK:Parameter` nördliche Breite `Latitude`, östlicher Länge `Longitude` sowie der Höhe über Normalnull `Elevation`.
 
 [NOTE]
 ====
@@ -234,6 +213,7 @@ Example:
 ----
 <SimulationParameter>
 	<IBK:Parameter name="InitialTemperature" unit="C">5</IBK:Parameter>
+	<IBK:IntPara name="StartYear">2021</IBK:IntPara>
 </SimulationParameter>
 ----
 
@@ -409,7 +389,6 @@ Example:
         			</InterfaceHeatConduction>
         		</InterfaceB>
         	</ConstructionInstance>
-			
 		</ConstructionInstances>
 		<ConstructionTypes>
         	<ConstructionType id="101" displayName="Wall Construction">
