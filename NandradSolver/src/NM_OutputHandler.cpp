@@ -156,12 +156,12 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 
 		// ** look for specified filename
 
-		std::string outputFname = IBK::trim_copy(od.m_filename);
+		std::string outputFname = IBK::trim_copy(od.m_fileName);
 		if (!outputFname.empty()) {
 			// no relative or absolute paths allowed (for now)
 			if (IBK::Path(outputFname).filename() != outputFname) {
 				throw IBK::Exception(IBK::FormatString("Only output filenames allowed in output definitions, definition #%1 requests output file '%2' which includes path components.")
-									 .arg(i).arg(od.m_filename), FUNC_ID);
+									 .arg(i).arg(od.m_fileName), FUNC_ID);
 			}
 
 			// if output filename is not empty, make sure that all output definitions in same file use the
@@ -170,7 +170,7 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 				if (targetFileMap[outputFname].back().m_gridName != od.m_gridName) {
 					throw IBK::Exception(IBK::FormatString("Output definition #%1 requests output file '%2' and references output grid '%3'. However, previous "
 														   "output definitions for same output file use a different output grid '%4', which is not allowed.")
-										 .arg(i).arg(od.m_filename).arg(od.m_gridName).arg(targetFileMap[outputFname].back().m_gridName), FUNC_ID);
+										 .arg(i).arg(od.m_fileName).arg(od.m_gridName).arg(targetFileMap[outputFname].back().m_gridName), FUNC_ID);
 				}
 			}
 		}

@@ -53,8 +53,8 @@ void OutputDefinition::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "Filename")
-				m_filename = c->GetText();
+			if (cName == "FileName")
+				m_fileName = c->GetText();
 			else if (cName == "Quantity")
 				m_quantity = c->GetText();
 			else if (cName == "ObjectListName")
@@ -88,8 +88,8 @@ TiXmlElement * OutputDefinition::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("OutputDefinition");
 	parent->LinkEndChild(e);
 
-	if (!m_filename.empty())
-		TiXmlElement::appendSingleAttributeElement(e, "Filename", nullptr, std::string(), m_filename);
+	if (!m_fileName.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "FileName", nullptr, std::string(), m_fileName);
 	if (!m_quantity.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "Quantity", nullptr, std::string(), m_quantity);
 

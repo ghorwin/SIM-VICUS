@@ -62,7 +62,7 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Filename (if empty then filename is generated automatically). */
-	std::string								m_filename;					// XML:E
+	std::string								m_fileName;					// XML:E
 
 	/*! Quantity id (for example,  "AirTemperature"). */
 	std::string								m_quantity;					// XML:E:required

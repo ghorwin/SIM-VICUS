@@ -79,10 +79,9 @@ public:
 
 	/*! Main initialization function.
 
-		\note
-		During init, the OutputDefinitions in the project are modified such that the quick-access pointers
-		to grids and object lists are created. The vectors themselves remain unchanged (no invalidation of
-		previously obtained pointers).
+		\note During init, the OutputDefinitions in the project are modified such that the quick-access pointers
+			  to grids and object lists are created. The vectors themselves remain unchanged (no invalidation of
+			  previously obtained pointers).
 
 		\param restart If true, simulation was restarted and output files shall be continued, rather than re-created.
 		\param prj The project data structure with all input data.

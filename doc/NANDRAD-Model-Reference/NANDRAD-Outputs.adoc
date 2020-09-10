@@ -132,37 +132,36 @@ There may be gaps between intervals, in which no outputs are written:
 
 ## Output definitions
 
+Below is an example of an output definition:
 
+.Output of air temperature from all zones in object list 'All zones' and using output grid 'hourly'
 [source,xml]
 ----
-<!-- Definition of outputs -->
 <Definitions>
     <OutputDefinition>
-    	<Quantity>Temperature</Quantity>
+    	<Quantity>AirTemperature</Quantity>
     	<ObjectListName>All zones</ObjectListName>
     	<GridName>hourly</GridName>
     </OutputDefinition>
-    <OutputDefinition>
-    	<Quantity>NaturalVentilationFlux</Quantity>
-    	<ObjectListName>All zones</ObjectListName>
-    	<GridName>hourly</GridName>
-    	<TimeType>Integral</TimeType>
-    </OutputDefinition>
+    ... <!-- other definitions -->
 </Definitions>
-
-
-<!-- Referenced object list -->
-<ObjectLists>
-	<ObjectList name="All zones">
-		<FilterID>*</FilterID>
-		<ReferenceType>Zone</ReferenceType>
-	</ObjectList>
-</ObjectLists>
 ----
 
-`TimeType` is optional, same as `None` by default.
-`FileName` is optional (see below).
+The example shows the mandatory child tags of XML-tag `OutputDefinition`. Below is a list of all supported child tags:
 
+[options="header"]
+[cols="15%, 85%"]
+[width="100%"]
+|====================
+| XML-tag | Description 
+| `Quantity` |  Unique ID name of the results quantity, see also <<quantities>>
+| `ObjectListName` |  Reference to an object list that identifies the objects to take results from
+| `GridName` |  Reference to an output grid (output time definitions)
+| `FileName` |  (optional) Target file name
+| `TimeType` |  (optional) Time averaging/integration method
+|====================
+
+**TODO** below
 
 
 ### Examples

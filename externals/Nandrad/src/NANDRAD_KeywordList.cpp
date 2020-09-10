@@ -930,7 +930,7 @@ namespace NANDRAD {
 				case 8 : return "Percentage of sensitive heat from domestic water istributed towrads the room.";
 				case 9 : return "Air exchange rate resulting from a pressure difference of 50 Pa between inside and outside.";
 				case 10 : return "Shielding coefficient for a given location and envelope type.";
-				case 11 : return "Ambient temparture for a design day. Parameter that is needed for FMU export.";
+				case 11 : return "Ambient temperature for a design day. Parameter that is needed for FMU export.";
 			} break;
 			// SimulationParameter::intPara_t
 			case 31 :
