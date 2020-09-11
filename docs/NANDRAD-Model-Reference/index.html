@@ -93,12 +93,16 @@ table {
 <li><a href="#path_placeholders">2.3. Path Placeholders</a></li>
 <li><a href="#project_info">2.4. Project Information</a></li>
 <li><a href="#ZoneDocumentation">2.5. Zones</a></li>
-<li><a href="#ConstructionInstancesDocumentation">2.6. Constructioninstances</a>
+<li><a href="#ConstructionInstancesDocumentation">2.6. Constructioninstances</a></li>
+<li><a href="#InterfacesDocumentation">2.7. Interfaces (construction boundary conditions)</a>
 <ul class="sectlevel3">
-<li><a href="#InterfacesDocumentation">2.6.1. Interfaces (construction boundary conditions)</a></li>
+<li><a href="#_heat_conduction">2.7.1. Heat Conduction</a></li>
+<li><a href="#_solar_absorption">2.7.2. Solar Absorption</a></li>
+<li><a href="#_long_wave_radiation">2.7.3. Long Wave Radiation</a></li>
+<li><a href="#_hygrothermic">2.7.4. Hygrothermic</a></li>
+<li><a href="#_air_flow">2.7.5. Air Flow</a></li>
 </ul>
 </li>
-<li><a href="#_interfaces_construction_boundary_conditions">2.7. Interfaces (construction boundary conditions)</a></li>
 <li><a href="#_ambient_climate_boundary_conditions">2.8. Ambient climate boundary conditions</a></li>
 <li><a href="#_interface_between_constructions_and_zones_internal_boundary_conditions">2.9. Interface between constructions and zones (internal boundary conditions)</a></li>
 <li><a href="#_material_and_construction_lists">2.10. Material and Construction Lists</a>
@@ -691,14 +695,17 @@ In the following it is described in detail.</p>
 <span class="nt">&lt;/ConstructionInstances&gt;</span></code></pre>
 </div>
 </div>
-<div class="sect3">
-<h4 id="InterfacesDocumentation">2.6.1. Interfaces (construction boundary conditions)</h4>
+</div>
+<div class="sect2">
+<h3 id="InterfacesDocumentation">2.7. Interfaces (construction boundary conditions)</h3>
 <div class="paragraph">
 <p>Interfaces are defining boundary conditions and parameters for the two surfaces of a constructions instance.</p>
 </div>
 <div class="paragraph">
 <p>The Interfaces can have the following <code>subtags</code>:</p>
 </div>
+<div class="sect3">
+<h4 id="_heat_conduction">2.7.1. Heat Conduction</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -781,6 +788,9 @@ In the following it is described in detail.</p>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect3">
+<h4 id="_solar_absorption">2.7.2. Solar Absorption</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -863,18 +873,17 @@ In the following it is described in detail.</p>
 </tr>
 </tbody>
 </table>
-<div class="ulist">
-<ul>
-<li>
-<p><code>InterfaceLongWaveEmission</code></p>
-</li>
-</ul>
+</div>
+<div class="sect3">
+<h4 id="_long_wave_radiation">2.7.3. Long Wave Radiation</h4>
+<div class="paragraph">
+<p>Defined inside the XML-tag <code>InterfaceLongWaveEmission</code></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;InterfaceSolarAbsorption</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"AbsorptionCoefficient"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0.6<span class="nt">&lt;/IBK:Parameter&gt;</span>
-<span class="nt">&lt;/InterfaceHeatConduction&gt;</span></code></pre>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;InterfaceLongWaveEmission</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Emissivity"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0.9<span class="nt">&lt;/IBK:Parameter&gt;</span>
+<span class="nt">&lt;/InterfaceLongWaveEmission&gt;</span></code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -942,18 +951,17 @@ In the following it is described in detail.</p>
 </tr>
 </tbody>
 </table>
-<div class="ulist">
-<ul>
-<li>
-<p>InterfaceVaporDiffusion</p>
-</li>
-</ul>
+</div>
+<div class="sect3">
+<h4 id="_hygrothermic">2.7.4. Hygrothermic</h4>
+<div class="paragraph">
+<p>Defined inside the XML-tag <code>InterfaceVaporDiffusion</code></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;InterfaceSolarAbsorption</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"AbsorptionCoefficient"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0.6<span class="nt">&lt;/IBK:Parameter&gt;</span>
-<span class="nt">&lt;/InterfaceHeatConduction&gt;</span></code></pre>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;InterfaceVaporDiffusion</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"VaporTransferCoefficient"</span> <span class="na">unit=</span><span class="s">"s/m"</span><span class="nt">&gt;</span>1<span class="nt">&lt;/IBK:Parameter&gt;</span>
+<span class="nt">&lt;/InterfaceVaporDiffusion&gt;</span></code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -1013,7 +1021,7 @@ In the following it is described in detail.</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Emissivity</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>VaporTransferCoefficient</strong></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">s/m</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Vapor Transfer Coefficient</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">positive Double (&#160;&gt;&#160;0.0&#160;)</p></td>
@@ -1021,18 +1029,17 @@ In the following it is described in detail.</p>
 </tr>
 </tbody>
 </table>
-<div class="ulist">
-<ul>
-<li>
-<p>InterfaceAirFlow</p>
-</li>
-</ul>
+</div>
+<div class="sect3">
+<h4 id="_air_flow">2.7.5. Air Flow</h4>
+<div class="paragraph">
+<p>Defined inside the XML-tag <code>InterfaceAirFlow</code></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;InterfaceSolarAbsorption</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"AbsorptionCoefficient"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0.6<span class="nt">&lt;/IBK:Parameter&gt;</span>
-<span class="nt">&lt;/InterfaceHeatConduction&gt;</span></code></pre>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;InterfaceAirFlow</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"PressureCoefficient"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0.6<span class="nt">&lt;/IBK:Parameter&gt;</span>
+<span class="nt">&lt;/InterfaceAirFlow&gt;</span></code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -1101,10 +1108,6 @@ In the following it is described in detail.</p>
 </tbody>
 </table>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_interfaces_construction_boundary_conditions">2.7. Interfaces (construction boundary conditions)</h3>
-
 </div>
 <div class="sect2">
 <h3 id="_ambient_climate_boundary_conditions">2.8. Ambient climate boundary conditions</h3>
@@ -3745,7 +3748,7 @@ The example below shows how the output of the models is referenced via the objec
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated 2020-09-11 14:47:23 +0200
+Last updated 2020-09-11 14:59:37 +0200
 </div>
 </div>
 <style>

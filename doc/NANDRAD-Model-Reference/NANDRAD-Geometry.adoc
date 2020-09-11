@@ -134,13 +134,13 @@ Example:
 </ConstructionInstances>
 ----
 [[InterfacesDocumentation]]
-## Interfaces (construction boundary conditions)
+# Interfaces (construction boundary conditions)
 
 Interfaces are defining boundary conditions and parameters for the two surfaces of a constructions instance.
 
 The Interfaces can have the following `subtags`:
 
-### Heat Conduction
+## Heat Conduction
 
 * `InterfaceHeatConduction`
 
@@ -179,7 +179,7 @@ The XML-Tags named `IBK:Parameters` with the XML-Attributes `name` and `unit` wi
 | *HeatTransferCoefficient* | W/m2 | Constant heat transfer coefficient | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _required_
 |====================
 
-### Solar Absorption
+## Solar Absorption
 
 * `InterfaceSolarAbsorption`
 
@@ -216,7 +216,7 @@ The XML-Tags named `IBK:Parameters` with the XML-Attributes `name` and `unit` wi
 | *AbsorptionCoefficient* | m2 | Constant Absorption coefficient | 0...1 | _required_
 |====================
 
-### Long Wave Radiation
+## Long Wave Radiation
 
 Defined inside the XML-tag `InterfaceLongWaveEmission`
 
@@ -251,7 +251,7 @@ The XML-Tags named `IBK:Parameters` with the XML-Attributes `name` and `unit` wi
 | *Emissivity* | m2 | Constant Absorption coefficient | 0...1 | _required_
 |====================
 
-### Hygrothermic
+## Hygrothermic
 
 Defined inside the XML-tag `InterfaceVaporDiffusion`
 
@@ -286,7 +286,7 @@ The XML-Tags named `IBK:Parameters` with the XML-Attributes `name` and `unit` wi
 | *VaporTransferCoefficient* | s/m | Vapor Transfer Coefficient | positive Double ({nbsp}>{nbsp}0.0{nbsp}) | _required_
 |====================
 
-### Air Flow
+## Air Flow
 
 Defined inside the XML-tag `InterfaceAirFlow`
 
@@ -321,7 +321,6 @@ The XML-Tags named `IBK:Parameters` with the XML-Attributes `name` and `unit` wi
 | *PressureCoefficient* | --- | Pressure Coefficient | 0...1 | _required_
 |====================
 
-# Interfaces (construction boundary conditions)
 
 # Ambient climate boundary conditions
 
