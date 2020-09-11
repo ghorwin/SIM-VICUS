@@ -34,16 +34,19 @@ The following XML-Tags named `IBK:Parameters` with the XML-Attributes `name` and
 * _name:_ `RelativeHumidity` - defines the Relative humidity of the zone if set constant, _unit:_ per Default in `%` 
 * _name:_ `CO2Concentration` - defines the CO2 concentration of the zone if set constant, _unit:_ per Default in `g/m³`
 
-Example:
+.Definition of zone
+====
 [source,xml]
 ----
-        <Zones>
-			<Zone id="1" displayName="Var01" type="Active">
-				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
-				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
-			</Zone>
-		</Zones>
+<Zones>
+	<Zone id="1" displayName="Var01" type="Active">
+		<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+		<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+	</Zone>
+</Zones>
 ----
+====
+
 [[ConstructionInstancesDocumentation]]
 # Constructioninstances
 

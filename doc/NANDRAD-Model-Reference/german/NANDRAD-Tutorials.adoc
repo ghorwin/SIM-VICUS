@@ -2,6 +2,13 @@
 
 ToDo Andreas Name NANDRAD oder SIM-VICUS ??? 
 
+[NOTE]
+====
+
+ghfxxghxhgff
+
+====
+
 [[SingleRoomModel]]
 ## Einfaches Ein-Raum-Modell
 
@@ -19,7 +26,7 @@ Als erstes werden die Materialien `Materials` und die verwendeten Konstruktionen
 
 Das Gebäude besteht aus einer Bodenplatten-, einer Wand- und einer Dachkonstruktion. Die Aufbauten sind in folgender Abbildung dargestellt.
 
-
+.Material und Konstruktionsdaten
 [width="100%", cols="<.^,^,^,^,^,^",options="header"]
 |====================
 | Name | Id | Dicke [m] | &lambda; [W/mK]  | &rho; [kg/m³] | ce [J/kgK] 
@@ -40,8 +47,8 @@ Das Gebäude besteht aus einer Bodenplatten-, einer Wand- und einer Dachkonstruk
 
 Für die Materialien sind die thermischen Parameter `Wärmeleitfähigkeit` `&lambda;`, `Dichte` `&rho;` und  `Wärmekapazität` `ce` wichtig. Weiterhin wird eine unique-Id und Name benötigt. Beispielhaft wird die Beschreibung für Beton und Dämmung vorgenommen. Die detaillierte Dokumentation ist <<NANDRAD-Databases.adoc#MaterialsDocumentation,Materials>> beschrieben
 
-
-Example:
+.Materialbeschreibung
+====
 [source,xml]
 ----
 <Materials>
@@ -57,6 +64,7 @@ Example:
 	</Material>
 </Materials>
 ----
+====
 
 [TIP]
 ====
@@ -70,7 +78,8 @@ Anschließend werden die <<NANDRAD-Databases.adoc#ConstructionTypesDocumentation
 
 Beispielhaft wird die Wandkonstruktion dargestellt. 
 
-Example:
+.Konstruktionsbeschreibung
+====
 [source,xml]
 ----
 <ConstructionTypes>
@@ -82,6 +91,7 @@ Example:
 	</ConstructionType>
 </ConstructionTypes>
 ----
+====
 
 ### Zone
 
@@ -679,7 +689,11 @@ Example:
 
 #### ScheduleGroups
 
-Für zyklische Simulationen werden in aller Regel wiederholende Zeitabschnitte verwendet. Beispielsweise wird ein Büroarbeitstag von Mo-Fr innerhalb einer Öffnungszeit von 7:00 bis 18:00 definiert. Am Wochenende ist das Büro geschlossen. Dieser Zyklus wiederholt sich wöchtenlich und wird übers Jahr gesehen nur durch Feiertage bzw. Schließtage unterbrochen. Eine genauere Beschreibung der Funktionsweise wird am Beispiel der Heizsolltemperatur für das Büro mit den oben beschriebenen Öffnungszeiten definiert. Dabei wird innerhalb der Öffnungszeit eine Heizsolltemperatur von 21 °C gefordert und außerhalb wird eine Absenktemperatur von 17 °C eingestellt.
+Für zyklische Simulationen werden in aller Regel wiederholende Zeitabschnitte verwendet. Beispielsweise wird ein Büroarbeitstag von Mo-Fr innerhalb einer Öffnungszeit von 7:00 bis 18:00 definiert. Außerhalb dieser Zeiten ist das Büro geschlossen. Dieser Zyklus wiederholt sich wöchtenlich und wird übers Jahr gesehen nur durch Feiertage bzw. besondere Schließtage unterbrochen. 
+
+Ein Zeitplangruppe wird immer einer `objectList` zugeordnet. Über diese ist später eine Verlinkung bzw. Referenzierung möglich und die Zeitpläne können gemeinsam von mehrere Modellen genutzt werden.
+
+Eine genauere Beschreibung der Funktionsweise wird am Beispiel der Heizsolltemperatur für das Büro mit den oben beschriebenen Öffnungszeiten definiert. Dabei wird innerhalb der Öffnungszeit eine Heizsolltemperatur von 21 °C gefordert und außerhalb wird eine Absenktemperatur von 17 °C eingestellt.
 
 Example:
 [source,xml]
@@ -705,6 +719,83 @@ Example:
 	</ScheduleGroup>
 </ScheduleGroups>
 ----
+
+Da immer alle Tage des Jahres definiert sein müssen wird zuerst ein Zeitplan für alle Tage erstellt. Dieser `Schedule` wird durch den `type="AllDays"` (<<ScheduleTypes, siehe Referenz>>) gekennzeichnet. Innerhalb eines Zeitplan kann es einen oder mehrere `DailyCycle` geben. Diese Tageszyklen definieren die 24 Stunden eines Tages. Dabei werden zwei verschiedene Methode zu Interpolation angeboten `Constant` oder `Linear`. Der Unterschied zwischen konstanter oder linearer Interpolation ist in folgender <<InterpolationMethode, Abbildung>> dargestellt. Weiterhin werden Daten- und Zeitpunkte paarweise zugeordnet. Dazu werden die beiden Objekte `TimePoints` und  `Values` genutzt. Die Daten- als auch Zeitpunkte werden mit einem Leerzeichen getrennt. Die Einleitung bei den `Values` erfolgt durch ein Keyword mit zugehöriger Einheit. Für die Einheiten sind SI-Einheiten zugelassen. Bei verschiedenen Tageszyklen müssen die Einheiten eines Keywords konsistent bleiben. Die Einheit wird immer in eckige Klammer `[Unit]` eingebunden. Anschließend folgt ein Doppelpunkt `:` gefolgt von den Datenpunkten.
+
+[[ScheduleTypes]]
+.Beschreibung von Schedule `type`
+[options="header"]
+[cols=" ^, ^ "]
+[width="40%"]
+|====================
+| Name of type | Priority
+| AllDays | 0
+| WeekEnd | 1
+| WeekDay | 1
+| Monday | 2
+| Tuesday | 2
+| Wednesday | 2
+| Thursday | 2
+| Friday | 2
+| Saturday | 2
+| Sunday | 2
+| Holiday | 3
+|====================
+
+[NOTE]
+====
+Null bezeicht die niedrigste Priorität und drei die höchste.
+====
+
+Der zweite Zeitplan, oben im Beispiel, überschreibt aufgrund seines `type` mit `WeekDay` den oberen durchgehenden Zeitplan von constant 17 °C. Dadurch wird ein neuer Tageszyklus mit der Heizsolltemperatur 21 °C während der Zeit von 7:00 bis 18:00 Uhr dargestellt.
+
+Bei verschiedenen Perioden im Jahr kann eine weiterer  `Schedule` hinzugefügt werden. Dabei ist müssen entweder `StartDayOfTheYear` oder/und `EndDayOfTheYear` angegeben werden. Tag `0` beschreibt dabei den 1.1. eines Jahres und Tag `364` den 31.12. des Jahres. `Schedule` mit Start- oder Endtagen überschreiben immer die eine `Schedule` ohne Start- und Endtag. 
+
+[NOTE]
+====
+Ein `Schedule` darf nur den einen Zeitplan ohne Start- und Endtage überschreiben. Weiter Interaktionen von Zeitplänen-Objekten sind nicht erlaubt.
+====
+
+Als Beispiel wird nun eine Luftwechselrate für ein Jahr mit folgenden Eigenschaften definiert.
+
+* Vom 1.10. bis zum 31.3. wird eine konstante Luftwechselrate von `ach = 0.5 1/h` definiert
+* Vom 1.4. bis zum 30.9. wird tagesüber (6:00 bis 20:00) eine konstante Luftwechselrate von `ach = 0.5 1/h` und nachts eine konstante Luftwechselrate von `ach = 0.5 1/h` definiert.
+
+Der Zeitplan referenziert die `objectList` "AirChangeRate".
+
+.Luftwechselrate zeitlich dynamisch mit unterschiedlichen Perioden
+====
+[source,xml]
+----
+<ScheduleGroups>
+	<ScheduleGroup objectList="AirChangeRate">
+		<Schedule type="AllDays">
+			<DailyCycles>
+				<DailyCycle interpolation="Constant">
+					<TimePoints>0</TimePoints>
+					<Values>InfiltrationRateSchedule [1/h]:0.5</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</Schedule>
+		<Schedule type="AllDays">
+		    <StartDayOfTheYear>89</StartDayOfTheYear>
+		    <EndDayOfTheYear>272</EndDayOfTheYear>
+			<DailyCycles>
+				<DailyCycle interpolation="Constant">
+					<TimePoints>0 6 20</TimePoints>
+					<Values>InfiltrationRateSchedule [1/h]:2 0.5 2</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</Schedule>
+	</ScheduleGroup>
+</ScheduleGroups>
+----
+====
+
+[CAUTION]
+====
+ToDo ist das richtig Trennung Leerzeichen?
+====
 
 #### AnnualSchedules
 
