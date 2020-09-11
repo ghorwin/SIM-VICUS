@@ -15,6 +15,7 @@ v1.0.0, July 2020
 :title-page:
 :stylesdir: ../adoc_utils/css
 :stylesheet: roboto_ubuntu.css
+:tabsize: 2
 
 ## Overview
 

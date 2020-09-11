@@ -36,19 +36,19 @@ Inside the XML-Tag named `Materials` each Material starts with the XML-Tag `Mate
 
 [options="header",cols="15%,55%,20%,10%",width="100%"]
 |====================
-| XML-Attribute  | Description | Format | usage 
-| `id` | Dry density of the material. | positive Integer ( > 0 )  | _required_
-| `displayName`  | Specific heat capacity of the material. | string | _optional_
+| Attribute  | Description | Format | usage 
+| *id* | Dry density of the material. | positive Integer ( > 0 )  | _required_
+| *displayName*  | Specific heat capacity of the material. | string | _optional_
 |====================
 
 The following XML-Tags named `IBK:Parameters` with the XML-Attributes `name` and `unit` with the following entries need to be defined holding double values:
 
 [options="header",cols="15%,15%,50%,10%,10%",width="100%"]
 |====================
-| name | unit per default | Description | Format | usage 
-| `Density` | kg/m3 | Dry density of the material. | double | _required_
-| `HeatCapacity` | J/kgK | Specific heat capacity of the material. | double | _required_
-| `Conductivity` | W/mK | Thermal conductivity of the dry material. | double | _required_
+| `name` | unit per default | Description | Format | usage 
+| *Density* | kg/m3 | Dry density of the material. | double | _required_
+| *HeatCapacity* | J/kgK | Specific heat capacity of the material. | double | _required_
+| *Conductivity* | W/mK | Thermal conductivity of the dry material. | double | _required_
 |====================
 
 ## Construction Types
@@ -75,9 +75,9 @@ Inside the XML-Tag named `ConstructionTypes` each Construction starts with the X
 
 [options="header",cols="15%,55%,20%,10%",width="100%"]
 |====================
-| XML-Attribute  | Description | Format | usage 
-| `id` |  Unique id number. | positive Integer ( > 0 )  | _required_
-| `displayName`  |  name of construction. | string | _optional_
+| Attribute  | Description | Format | usage 
+| *id* |  Unique id number. | positive Integer ( > 0 )  | _required_
+| *displayName*  |  name of construction. | string | _optional_
 |====================
 
 Furthermore each defined Construction has Material Layers encapsulated within the XML-Tag `MaterialLayers`. Each Material Layer needs the be defined with the XML-Tag named `MaterialLayer`. This Tag needs the XML-Attributes `thickness` and `matId`:
@@ -86,7 +86,7 @@ Furthermore each defined Construction has Material Layers encapsulated within th
 |====================
 | XML-Attribute  | Description | Format | usage 
 | `thickness` |  defines the Thickness of the Layer, per Default in `m` | positive Double ( > 0.0 )  | _required_
-| `matId`  |  refers to the a Material with the `id` defined in the `Materials` Section, | string | _required_
+| *matId*  |  refers to the a Material with the `id` defined in the `Materials` Section, | string | _required_
 |====================
 
 

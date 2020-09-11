@@ -30,61 +30,61 @@ The XML-Tags named <<IBK_Parameter>> with the XML-Attributes `name` and `unit` w
 <IBK:Parameter name="InitialTemperature" unit="C">5</IBK:Parameter>
 ----
 
-.Simulation Parameters that can be set as `IBK:Parameter` with the Attributes `name` and `unit`
+.Simulation Parameters that can be set as *IBK:Parameter* with the Attributes `name` and `unit`
 [options="header"]
-[cols="10%,^ 10%,45%,13%,^ 10%"]
+[cols="30%,^ 8%,42%,^ 10%,^ 10%"]
 [width="100%"]
 |====================
-| `*name*` | `*unit*`| Description | Format | usage 
-| *InitialTemperature* | C | Global initial temperature | positive double ( > 0.0 ) | _optional_
+| `name` | `unit`| Description | Format | usage 
+| *InitialTemperature* | C | Global initial temperature | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _optional_
 | *InitialRelativeHumidity* | % | Global initial relative humidity | 0 ... 100% | _optional_
-| *RadiationLoadFraction* | --- | Percentage of solar radiation gains attributed direcly to room 0..1. | 0 ... 1 | _optional_
-| *UserThermalRadiationFraction* | --- | Percentage of heat that is emitted by long wave radiation from persons.  | 0 ... 1 | _optional_
+| *RadiationLoadFraction* | --- | Percentage of solar radiation gains attributed direcly to room 0..1. | 0...1 | _optional_
+| *UserThermalRadiationFraction* | --- | Percentage of heat that is emitted by long wave radiation from persons.  | 0...1 | _optional_
 | *EquipmentThermalLossFraction*   | --- | Percentage of energy from equipment load that is not available as thermal heat.  | 0 ... 1 | _optional_
-| *EquipmentThermalRadiationFraction* | --- | Percentage of heat that is emitted by long wave radiation from equipment.  | 0 ... 1 | _optional_
-| *LightingVisibleRadiationFraction* | --- | Percentage of energy from lighting that is transformed into visible short wave radiation.  | 0 ... 1 | _optional_
-| *LightingThermalRadiationFraction* |--- | Percentage of heat that is emitted by long wave radiation from lighting.  | 0 ... 1 | _optional_
-| *DomesticWaterSensitiveHeatGainFraction* |--- | Percentage of sensitive heat from domestic water istributed towrads the room.  | 0 ... 1 | _optional_
-| *AirExchangeRateN50* | 1/h | Air exchange rate resulting from a pressure difference of 50 Pa between inside and outside.  | positive double ( > 0.0 ) | _optional_
+| *EquipmentThermalRadiationFraction* | --- | Percentage of heat that is emitted by long wave radiation from equipment.  | 0...1 | _optional_
+| *LightingVisibleRadiationFraction* | --- | Percentage of energy from lighting that is transformed into visible short wave radiation.  | 0...1 | _optional_
+| *LightingThermalRadiationFraction* |--- | Percentage of heat that is emitted by long wave radiation from lighting.  | 0...1 | _optional_
+| *DomesticWaterSensitiveHeatGainFraction* |--- | Percentage of sensitive heat from domestic water istributed towrads the room.  | 0...1 | _optional_
+| *AirExchangeRateN50* | 1/h | Air exchange rate resulting from a pressure difference of 50 Pa between inside and outside.  | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _optional_
 | *ShieldingCoefficient* | --- | Shielding coefficient for a given location and envelope type. | 0 ... 1  | _optional_
-| *HeatingDesignAmbientTemperature* | C | Ambient temparture for a design day. Parameter that is needed for FMU export.  | positive double ( > 0.0 ) | _optional_
+| *HeatingDesignAmbientTemperature* | C | Ambient temparture for a design day. Parameter that is needed for FMU export.  | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _optional_
 |====================
 
 
-The XML-Tags named `IBK:IntPara` holding integer values with the XML-Attributes `name` can be defined:
+The XML-Tags named *IBK:IntPara* holding integer values with the XML-Attributes `name` can be defined:
 
 [source,xml]
 ----
 <IBK:IntPara name="DiscMaxElementsPerLayer">30</IBK:IntPara>
 ----
 
-.Simulation Parameter that can be set as an `IBK:IntPara` with an Attribute `name`
+.Simulation Parameter that can be set as an *IBK:IntPara* with an Attribute `name`
 [options="header"]
-[cols="15%, 75%,^ 10%"]
+[cols="20%, 70%,^ 10%"]
 [width="100%"]
 |====================
-| `*name*`  | Description | usage 
-| `StartYear` |  Start year of the simulation, per default set to `2001` | _optional_
+| `name`  | Description | usage 
+| *StartYear* |  Start year of the simulation, per default set to *2001* | _optional_
 |====================
 
 
-The XML-Tags named `IBK:Flags` with the following XML-Attributes `name` can be defined. 
+The XML-Tags named *IBK:Flags* with the following XML-Attributes `name` can be defined. 
 
 [source,xml]
 ----
 <IBK:Flag name="DetectMaxTimeStep">true</IBK:Flag>
 ----
 
-.Simulation Parameter that can be set as an `IBK:Flag` with an Attribute `name`
+.Simulation Parameter that can be set as an *IBK:Flag* with an Attribute `name`
 [options="header"]
-[cols="15%, 75%,^ 10%"]
+[cols="30%, 60%,^ 10%"]
 [width="100%"]
 |====================
-| `*name*` | Description | usage 
-| `EnableMoistureBalance` |  Flag activating moisture balance calculation if enabled | _optional_
-| `EnableCO2Balance` |  Flag activating CO2 balance calculation if enabled | _optional_
-| `EnableJointVentilation` |  Flag activating ventilation through joints and openings. | _optional_
-| `ExportClimateDataFMU` |  Flag activating FMU export of climate data. | _optional_
+| `name` | Description | usage 
+| *EnableMoistureBalance* |  Flag activating moisture balance calculation if enabled | _optional_
+| *EnableCO2Balance* |  Flag activating CO2 balance calculation if enabled | _optional_
+| *EnableJointVentilation* |  Flag activating ventilation through joints and openings. | _optional_
+| *ExportClimateDataFMU* |  Flag activating FMU export of climate data. | _optional_
 |====================
 
     
@@ -122,27 +122,34 @@ Hereafter all parameters that are required for the solver are described.
 <IBK:Parameter name="MaxTimeStep" unit="min">30</IBK:Parameter>
 ----
 
-.Parameters that can be set as an `IBK:Parameter` with the Attributes `name` and `unit`. 
+.Parameters that can be set as an *IBK:Parameter* with the Attributes `name` and `unit`. 
 [options="header"]
-[cols="10%,^ 7%,45%,13%,^ 10%,^ 10%"]
+[cols="30%,^ 8%,32%,^ 10%,^ 10%,^ 10%"]
 [width="100%"]
 |====================
-|`*name*`|`*unit*`|Description|Format|initial|usage
-|`RelTol`|---|Relative tolerance for solver error check.|0 … 1|1E-04|_optional_
-|`AbsTol`|---|Absolute tolerance for solver error check.|0 … 1|1E-10|_optional_
-|`MaxTimeStep`|h|Maximum permitted time step for integration.|positive double ( >0.0 )|1|_optional_
-|`MinTimeStep`|s|Minimum accepted time step, before solver aborts with error.|positive double ( >0.0 )|1E-12|_optional_
-|`InitialTimeStep`|s|Initial time step size (or constant step size for ExplicitEuler integrator).|positive double ( >0.0 )|0.1|_optional_
-|`NonlinSolverConvCoeff`|---|Coefficient reducing nonlinear equation solver convergence limit. Not supported by Implicit Euler. |0 … 1|0.1|_optional_
-|`IterativeSolverConvCoeff`|---|Coefficient reducing iterative equation solver convergence limit.|0 … 1|0.05|_optional_
-|`DiscMinDx`|mm|Minimum element width for wall discretization.|positive double ( >0.0 )|2|_optional_
-|`DiscStretchFactor`|---|Stretch factor for variable wall discretizations (0-no disc, 1-equidistance, larger than 1 - variable).|0 … 1|50|_optional_
-|`ViewfactorTileWidth`|m|Maximum dimension of a tile for calculation of view factors.|positive double ( >0.0 )|50|_optional_
-|`SurfaceDiscretizationDensity`|---|Number of surface discretization elements of a wall in each direction.|0 … 1|2|_optional_
-|`ControlTemperatureTolerance`|K|Temperature tolerance for ideal heating or cooling.|positive double ( >0.0 )|1E-05|_optional_
-|`KinsolRelTol`|---|Relative tolerance for Kinsol solver.|0 … 1|-|_optional_
-|`KinsolAbsTol`|---|Absolute tolerance for Kinsol solver.|0 … 1|-|_optional_
-|`IntegralWeightsFactor`|---|Optional weighting factor for integral outputs.|0 … 1|1E-05|_optional_
+|`name`|`unit`|Description|Format|initial|usage
+|*RelTol*|---|Relative tolerance for solver error check.|0…1|1E-04|_optional_
+|*AbsTol*|---|Absolute tolerance for solver error check.|0…1|1E-10|_optional_
+|*MaxTimeStep*|h|Maximum permitted time step for integration.|positive double ({nbsp}>{nbsp}0.0{nbsp})|1|_optional_
+|*MinTimeStep*|s|Minimum accepted time step, before solver aborts with error.|positive double ({nbsp}>{nbsp}0.0{nbsp})|1E-12|_optional_
+|*InitialTimeStep*|s|Initial time step size (or constant step size for ExplicitEuler integrator).|positive double ({nbsp}>{nbsp}0.0{nbsp})|0.1|_optional_
+|*NonlinSolverConvCoeff*|---|Coefficient reducing nonlinear equation solver convergence limit. Not supported by Implicit Euler. |0…1|0.1|_optional_
+|*IterativeSolverConvCoeff*|---|Coefficient reducing iterative equation solver convergence limit.|0…1|0.05|_optional_
+|*DiscMinDx*|mm|Minimum element width for wall discretization.|positive double ({nbsp}>{nbsp}0.0{nbsp})|2|_optional_
+|*DiscStretchFactor*|---
+a|Stretch factor for variable wall discretizations:
+
+- *0* - no disc
+- *1* - equidistance 
+- *> 1* - variable
+
+|positive integer ({nbsp}>{nbsp}0{nbsp})|50|_optional_
+|*ViewfactorTileWidth*|m|Maximum dimension of a tile for calculation of view factors.|positive double ({nbsp}>{nbsp}0.0{nbsp})|50|_optional_
+|*SurfaceDiscretizationDensity*|---|Number of surface discretization elements of a wall in each direction.|0…1|2|_optional_
+|*ControlTemperatureTolerance*|K|Temperature tolerance for ideal heating or cooling.|positive double ({nbsp}>{nbsp}0.0{nbsp})|1E-05|_optional_
+|*KinsolRelTol*|---|Relative tolerance for Kinsol solver.|0…1|-|_optional_
+|*KinsolAbsTol*|---|Absolute tolerance for Kinsol solver.|0…1|-|_optional_
+|*IntegralWeightsFactor*|---|Optional weighting factor for integral outputs.|0…1|1E-05|_optional_
 |====================
 
 [source,xml]
@@ -152,31 +159,31 @@ Hereafter all parameters that are required for the solver are described.
 
 .Parameters set as IBK:Flag with an Attribute `name` that enbables functionalities
 [options="header"]
-[cols="15%, 65%,^ 10%,^ 10%"]
+[cols="25%, 55%,^ 10%,^ 10%"]
 [width="100%"]
 |====================
-|`*name*`|Description|initial|usage
-|`DetectMaxTimeStep`|Check schedules to determine minimum distances between steps and adjust MaxTimeStep.|false|_optional_
-|`KinsolDisableLineSearch`|Disable line search for steady state cycles.|false|_optional_
-|`KinsolStrictNewton`|Enable strict Newton for steady state cycles.|false|_optional_
+|`name`|Description|initial|usage
+|*DetectMaxTimeStep*|Check schedules to determine minimum distances between steps and adjust MaxTimeStep.|false|_optional_
+|*KinsolDisableLineSearch*|Disable line search for steady state cycles.|false|_optional_
+|*KinsolStrictNewton*|Enable strict Newton for steady state cycles.|false|_optional_
 |====================
 
-All options for the integrator are described in the table below. The xml-tag `Integrator` contains a string to select the time integration method.
+All options for the integrator are described in the table below. The xml-tag *Integrator* contains a string to select the time integration method.
 
 [source,xml]
 ----
 <Integrator>CVODE</Integrator>
 ----
 
-.Integrator Parameters that are set as `Integrator`
+.Integrator Parameters that are set as *Integrator*
 [options="header"]
-[cols="15%, 75%,^ 10%"]
+[cols="20%, 70%,^ 10%"]
 [width="100%"]
 |====================
-|`*Integrator*`|Description|usage
-|`CVODE`| Selects the Sundials library `CVODE`, Implicit multi-step method with adaptive time step width control and Modified Newton-Raphson for the resolution of non-linear couplings|_optional_
-|`ExplicitEuler`|Explicit Euler solver|_optional_
-|`ImplicitEuler`|Implicit Euler solver with adaptive time step width control and Modified Newton-Raphson for the resolution of non-linear couplings|_optional_
+|`Integrator`|Description|usage
+|*CVODE*| Selects the Sundials library *CVODE*, Implicit multi-step method with adaptive time step width control and Modified Newton-Raphson for the resolution of non-linear couplings|_optional_
+|*ExplicitEuler*|Explicit Euler solver|_optional_
+|*ImplicitEuler*|Implicit Euler solver with adaptive time step width control and Modified Newton-Raphson for the resolution of non-linear couplings|_optional_
 |====================
 
 [source,xml]
@@ -184,14 +191,14 @@ All options for the integrator are described in the table below. The xml-tag `In
 <LESSolver>Dense</LESSolver>
 ----
 
-.LESolver Parameters that are set as `LESolver`
+.LESolver Parameters that are set as *LESolver*
 [options="header"]
 [cols="15%, 75%,^ 10%"]
 [width="100%"]
 |====================
-|`*LESolver*`|Description|usage
-|`ILU`|Incomplete LU preconditioner|_optional_
-|`auto`|System selects preconditioner automatically.|_optional_
+|`LESolver`|Description|usage
+|*ILU*|Incomplete LU preconditioner|_optional_
+|*auto*|System selects preconditioner automatically.|_optional_
 |====================
 
 [source,xml]
@@ -199,18 +206,18 @@ All options for the integrator are described in the table below. The xml-tag `In
 <Preconditioner>Band</Preconditioner>
 ----
 
-.Preconditioner Parameters that can be set as `Preconditioner`
+.Preconditioner Parameters that can be set as *Preconditioner*
 [options="header"]
 [cols="15%, 65%,^ 10%,^ 10%"]
 [width="100%"]
 |====================
-|`*Preconditioner*`|Description|initial|usage
-|`PreILUWidth`|Maximum level of fill-in to be used only for `ILU` preconditioner.|-|_optional_
-|`MaxKrylovDim`|Maximum dimension of Krylov subspace.|50|_optional_
-|`MaxNonlinIter`|Maximum number of nonlinear iterations.|3|_optional_
-|`MaxOrder`|Maximum order allowed for multi-step solver. Only used with `CVODE` |5|_optional_
-|`KinsolMaxNonlinIter`|Maximum nonlinear iterations for Kinsol solver.|-|_optional_
-|`DiscMaxElementsPerLayer`|Maximum number of elements per layer.|20|_optional_
+|`Preconditioner`|Description|initial|usage
+|*PreILUWidth*|Maximum level of fill-in to be used only for *ILU* preconditioner.|-|_optional_
+|*MaxKrylovDim*|Maximum dimension of Krylov subspace.|50|_optional_
+|*MaxNonlinIter*|Maximum number of nonlinear iterations.|3|_optional_
+|*MaxOrder*|Maximum order allowed for multi-step solver. Only used with *CVODE* |5|_optional_
+|*KinsolMaxNonlinIter*|Maximum nonlinear iterations for Kinsol solver.|-|_optional_
+|*DiscMaxElementsPerLayer*|Maximum number of elements per layer.|20|_optional_
 |====================
 
 
