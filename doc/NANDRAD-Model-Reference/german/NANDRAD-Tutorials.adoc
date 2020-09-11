@@ -2,6 +2,7 @@
 
 ToDo Andreas Name NANDRAD oder SIM-VICUS ??? 
 
+[[SingleRoomModel]]
 ## Einfaches Ein-Raum-Modell
 
 ### Einleitung
@@ -80,10 +81,9 @@ Example:
 		</MaterialLayers>
 	</ConstructionType>
 </ConstructionTypes>
-
 ----
 
-#### Zone
+### Zone
 
 In diesem Bereich werden die Zone und deren Eigenschaften definiert. Geometrisch bildet die Zone das Raumluftvolumen ab. Alle weiteren geometrischen Eigenschaften werden in den `ConstructionInstances` definiert. Neben dem Volumen `Volume` wird eine Fläche `Area` angegeben, die zur Umrechnung der Flächenlasten auf spezifische Raumlasten benötigt wird. Diese Raumlasten werden in diesem Tutorial nicht beschrieben. 
 Die Eindeutigkeit der Zone wird über eine Id `id` gewährleistet. Optional kann wieder ein Name `displayName` vergeben werden. Der Typ `type` der Zone stellt den Berechnungsmodus für die Zone ein. Dabei werden drei Typen unterschieden:
@@ -108,7 +108,7 @@ Example:
 
 Weitere Einstellungsmöglichkeiten finden sich in der <<NANDRAD-Geometry.adoc#ZoneDocumentation,detaillierte Zonendokumentation>>.
 
-#### Hüllflächen
+### Hüllflächen
 
 Die Hüllflächen werden in die `ConstructionInstances` beschrieben. Jede Hüllfläche `ConstructionInstance` wird über eine Id `id`, optional einen Namen `displayName`, eine Fläche, eine Konstruktion, eine Ausrichtung sowie Übergangsbedingungen, die durch verschiedene Modelle repräsentiert werden, abgebildet.
 Die Fläche und Ausrichtung, die nur bei Außenhüllflächen benötigt wird, werden über `IBK:Parameter` mit den Attributen `Area`, `Inclination` und `Orientation` beschrieben. Die Konstruktion wird über die `ConstructionTypeId` mit der Konstruktion aus `ConstructionTypes` verlinkt. 
@@ -150,7 +150,7 @@ Example:
 </ConstructionInstances>
 ---- 
 
-#### Ausgaben
+### Ausgaben
 
 Die gewünschten Ausgaben müssen definiert werden, anderenfalls wird eine Simulation gestartet ohne ausgegebene Ergebnisgrößen zu erhalten. Die Ausgaben `Outputs` gliedern sich in `Definitions` und `Grids`. In den `Grids` werden die Intervalgrößen und optional die Zeitpunkte für die Ausgabe festgelegt. Die `Definitions` bestehen aus einzelnen Ausgaben `OutputDefinition` mit einem Name einer Objektliste `ObjectListName`, einem Ausgaberasternamen `GridName` und einer Ergebnisgröße `Quantity`. Zusätzlich kann die Intervalbehandlung `timeType` und der Ausgabedateiname `Filename` angegeben werden. In der Intervalbehandlung werden entweder Momentanwerte zum Intervalende, Mittel- oder Integralwerte des Intervals ausgegeben. In einer separaten Diskussion werden die <<Intervalbehandlungen>> genauer beschrieben.
 
@@ -193,7 +193,7 @@ Example:
 </Outputs>
 ----
 
-#### Location
+### Location
 
 Der Standort und das Klima werden im Tag `Location` beschrieben. Pflichtparameter sind der Albedo als `IBK:Parameter` und entweder eine Klimadatei `ClimateFileName` oder eine Standortbeschreibung mit den `IBK:Parameter` nördliche Breite `Latitude`, östlicher Länge `Longitude` sowie der Höhe über Normalnull `Elevation`.
 
@@ -204,7 +204,7 @@ Der Standort und das Klima werden im Tag `Location` beschrieben. Pflichtparamete
 
 
 [[SimulationPeriod]]
-#### Simulationsparameter
+### Simulationsparameter
 
 In den Simulationsparameter werden allgemeine Einstellungen für die Projektdatei gesetzt. Darunter das Startjahr `StartYear` für die Simulation als auch die Initialtemperature `InitialTemperature` aller Modelle. Ein Liste der vollständigen Elemente von Simulationsparameter und deren Datentypen wird unter <<SimulationParameter>> beschrieben. Im Beispiel wird nur die Initialtemperatur und das Startjahr dargestellt.
 
@@ -217,7 +217,7 @@ Example:
 </SimulationParameter>
 ----
 
-#### Vollständiges Beispiel
+### Vollständiges Beispiel
 
 Nachfolgende wird die komplette Projektdatei für das einfache Ein-Raum-Modell dargestellt:
 
@@ -454,3 +454,262 @@ Example:
 	</Project>
 </NandradProject>
 ----
+
+## Zwei-Raum-Modell
+
+### Einleitung
+
+Nachdem den Grundlagen vom <<SingleRoomModel,Ein-Raum-Modell>> werden jetzt folgende Schwerpunkte angesetzt:
+
+* Multizonen-Modell bestehend aus zwei Räumen
+* Integration eines einfachen Fenster in opake Oberfläche
+* Erstellung und Funktionsweise von Zeitplänen anhand eines Lüftungsmodells
+
+### Ablauf
+
+Als erstes wird der im <<SingleRoomModel,Ein-Raum-Modell>> beschriebene Raum um einen gleichengroßen Raum erweitert. Dabei wird die Westwand in eine Innenwand umgewandelt. Anschließend wird dem ersten Raum in der Südwand ein Fenster integriert. Zuletzt werden Lüftungsmodelle mit verschiedenen Zeitstrategien den beiden Räumen zugewiesen.
+
+### Erweiterung zweiter Raum
+
+Der neu zu erstellende Raum hat die gleichen Abmessungen wie im <<SingleRoomModel,Ein-Raum-Modell>>. Dabei wird die Westwand des bestehenden Raumes als Innenwand verbaut. Dadurch ändern sich die Randbedingungen (Übergangskoeffizienten). Die Material und Konstruktionsaufbauen bleiben gleich zum bestehenden Raum. Es werden als fünf weitere Hüllflächen (Wand: Süd, Ost, Nord; sowie Dach und Boden) hinzukommen. Hinzugefügt wird in der Projektdatei eine weitere Zone `zone` sowie die fünf `ConstructionInstance`. 
+
+PICTURE
+
+Im folgenden Beispiel sieht man die zweite Zone mit der Id `id="2"`. Der Name `displayName` des bestehenden wurde in "Room A" abgeändert
+
+Example:
+[source,xml]
+----
+<Zones>
+	<Zone id="1" displayName="Room A" type="Active">
+		<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+		<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+	</Zone>
+	<Zone id="2" displayName="Room B" type="Active">
+		<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+		<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+	</Zone>
+</Zones>
+----
+
+Folgende `ConstructionInstance` kommen hinzu:
+
+Example:
+[source,xml]
+----
+<ConstructionInstance id="7" displayName="North Wall">
+	<ConstructionTypeId>101</ConstructionTypeId>
+	<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
+	<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+	<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+	<InterfaceA id="70" zoneId="2">
+		<!--Interface to zone 'Single room model' -->
+		<InterfaceHeatConduction modelType="Constant">
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter>
+		</InterfaceHeatConduction>
+	</InterfaceA>
+	<InterfaceB id="71" zoneId="0">
+		<!--Interface to outside-->
+		<InterfaceHeatConduction modelType="Constant">
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">15</IBK:Parameter>
+		</InterfaceHeatConduction>
+		<InterfaceSolarAbsorption modelType="Constant">
+			<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
+		</InterfaceHeatConduction>
+		<InterfaceLongWaveEmission modelType="Constant">
+			<IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
+		</InterfaceHeatConduction>
+	</InterfaceB>
+</ConstructionInstance>
+<ConstructionInstance id="8" displayName="East Wall">
+	<ConstructionTypeId>101</ConstructionTypeId>
+	<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+	<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
+	<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+	<InterfaceA id="80" zoneId="2">
+		<!--Interface to zone 'Single room model' -->
+		<InterfaceHeatConduction modelType="Constant">
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter>
+		</InterfaceHeatConduction>
+	</InterfaceA>
+	<InterfaceB id="81" zoneId="0">
+		<!--Interface to outside-->
+		<InterfaceHeatConduction modelType="Constant">
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">15</IBK:Parameter>
+		</InterfaceHeatConduction>
+		<InterfaceSolarAbsorption modelType="Constant">
+			<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
+		</InterfaceHeatConduction>
+		<InterfaceLongWaveEmission modelType="Constant">
+			<IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
+		</InterfaceHeatConduction>
+	</InterfaceB>
+</ConstructionInstance>
+<ConstructionInstance id="9" displayName="South Wall">
+	<ConstructionTypeId>101</ConstructionTypeId>
+	<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
+	<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+	<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+	<InterfaceA id="90" zoneId="2">
+		<!--Interface to zone 'Single room model' -->
+		<InterfaceHeatConduction modelType="Constant">
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter>
+		</InterfaceHeatConduction>
+	</InterfaceA>
+	<InterfaceB id="91" zoneId="0">
+		<!--Interface to outside-->
+		<InterfaceHeatConduction modelType="Constant">
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">15</IBK:Parameter>
+		</InterfaceHeatConduction>
+		<InterfaceSolarAbsorption modelType="Constant">
+			<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
+		</InterfaceHeatConduction>
+		<InterfaceLongWaveEmission modelType="Constant">
+			<IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
+		</InterfaceHeatConduction>
+	</InterfaceB>
+</ConstructionInstance>
+<ConstructionInstance id="10" displayName="Roof">
+	<ConstructionTypeId>102</ConstructionTypeId>
+	<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+	<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+	<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
+	<InterfaceA id="100" zoneId="2">
+		<!--Interface to zone 'Single room model' -->
+		<InterfaceHeatConduction modelType="Constant">
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter>
+		</InterfaceHeatConduction>
+	</InterfaceA>
+	<InterfaceB id="101" zoneId="0">
+		<!--Interface to outside-->
+		<InterfaceHeatConduction modelType="Constant">
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">15</IBK:Parameter>
+		</InterfaceHeatConduction>
+		<InterfaceSolarAbsorption modelType="Constant">
+			<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
+		</InterfaceHeatConduction>
+		<InterfaceLongWaveEmission modelType="Constant">
+			<IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
+		</InterfaceHeatConduction>
+	</InterfaceB>
+</ConstructionInstance>
+<ConstructionInstance id="11" displayName="Ground Floor">
+	<ConstructionTypeId>103</ConstructionTypeId>
+	<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+	<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+	<IBK:Parameter name="Inclination" unit="Deg">180</IBK:Parameter>
+	<InterfaceA id="110" zoneId="2">
+		<!--Interface to zone 'Single room model' -->
+		<InterfaceHeatConduction modelType="Constant">
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter>
+		</InterfaceHeatConduction>
+	</InterfaceA>
+	<InterfaceB id="111" zoneId="0">
+		<!--Interface to outside-->
+		<InterfaceHeatConduction modelType="Constant">
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">15</IBK:Parameter>
+		</InterfaceHeatConduction>
+		<InterfaceSolarAbsorption modelType="Constant">
+			<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
+		</InterfaceHeatConduction>
+		<InterfaceLongWaveEmission modelType="Constant">
+			<IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
+		</InterfaceHeatConduction>
+	</InterfaceB>
+</ConstructionInstance>
+----
+
+Die Westwand von "Room A" wird von einer Außenwand in eine Innenwand umgewandelt. Die so erhaltene Innenwand soll nicht mit einer  Außenwandkonstruktion modelliert werden sondern mit einer neue eingeführten Innenwandkonstruktion. Diese besteht aus dem Material `Beton` und hat eine Dicke von `d = 20 cm`. Zudem wird die `ConstructionTypeId` 104 vergeben. Zu Beachten ist die Zuordnung bei den Interfaces über das Attribut `zoneId`. Dabei werden die Ids `zoneId="1"` für "Room A" und `zoneId="2"` für "Room B" vergeben. Der Übergangswiderstand wird auf beiden Seiten der Konstruktion zu `h = 10 W(m²K)` gewählt. Alle weitere Randbedingungsmodelle werden nicht benötigt und daher entfernt.
+
+Example:
+[source,xml]
+----
+<ConstructionInstance id="1" displayName="West Wall">
+	<ConstructionTypeId>104</ConstructionTypeId>
+	<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+	<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
+	<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+	<InterfaceA id="10" zoneId="1">
+		<!--Interface to zone 'Single room model' -->
+		<InterfaceHeatConduction modelType="Constant">
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter>
+		</InterfaceHeatConduction>
+	</InterfaceA>
+	<InterfaceB id="11" zoneId="2">
+		<!--Interface to outside-->
+		<InterfaceHeatConduction modelType="Constant">
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter>
+		</InterfaceHeatConduction>
+	</InterfaceB>
+</ConstructionInstance>
+----
+
+### Fenster Integration
+
+In die bestehende Südwand von "Raum A" wird ein Fenster integriert. Einfache Fenstermodelle besitzen neben der Fläche `Area` zwei wichtige physikalische Parameter. Zum einen der U-Wert der Fensterverbundkonstruktion, bestehend aus Rahmen- und Glasanteil sowie den g-Wert `SHGC` (Solar Heat Gain Coefficient). Der g-Wert kann konstant über einen skalaren Wert beschrieben werden oder in Abhängigkeit des Winkels zwischen Sonnenstrahl und Fensternormale. Wenn möglich sollte der winkelabhängige g-Wert verwendet werden. Zum Einbetten in die Projektdatei wird die `ConstructionInstance` um das Objekt `EmbeddedWindow` erweitert.
+
+[NOTE]
+====
+Prüfen ob die NAMEN stimmen!
+====
+
+### Zeitpläne
+
+Für verschiedenste Modelle werden Zeitpläne verwendet. Diese haben die Aufgabe Sollwerte vorzugeben. Die Verwendung findet beispielsweise in folgenden Modellen statt:
+
+* Belegungsraten, Wärmeabgaben, Bekleidungsfaktoren beim Personenlastmodell.
+* Heiz-/Kühlsolltemperaturen für Thermostatsteuerungen
+* Massestrom oder Temperaturbedingungen für Anlagenkomponenten
+* elektrische Leistungsraten bei Licht- und elektrischen Gerätemodellen
+
+Innerhalb der Projektdatei gibt es zwei mögliche Varianten einen Zeitplan zu beschreiben, entweder über die `ScheduleGroups` oder `AnnualSchedules`. Die beiden Möglichkeiten werden nachfolgend im Detail erörtert. Wichtig dabei ist das beide Methoden immer ein Jahr mit allen Tagen definieren müssen.
+
+Example:
+[source,xml]
+----
+<Schedules>
+	<ScheduleGroups>
+	    ...
+	</ScheduleGroups>
+	<AnnualSchedules>
+	    ...
+	</AnnualSchedules>
+</Schedules>
+----
+
+#### ScheduleGroups
+
+Für zyklische Simulationen werden in aller Regel wiederholende Zeitabschnitte verwendet. Beispielsweise wird ein Büroarbeitstag von Mo-Fr innerhalb einer Öffnungszeit von 7:00 bis 18:00 definiert. Am Wochenende ist das Büro geschlossen. Dieser Zyklus wiederholt sich wöchtenlich und wird übers Jahr gesehen nur durch Feiertage bzw. Schließtage unterbrochen. Eine genauere Beschreibung der Funktionsweise wird am Beispiel der Heizsolltemperatur für das Büro mit den oben beschriebenen Öffnungszeiten definiert. Dabei wird innerhalb der Öffnungszeit eine Heizsolltemperatur von 21 °C gefordert und außerhalb wird eine Absenktemperatur von 17 °C eingestellt.
+
+Example:
+[source,xml]
+----
+<ScheduleGroups>
+	<ScheduleGroup objectList="Office">
+		<Schedule type="AllDays">
+			<DailyCycles>
+				<DailyCycle interpolation="Constant">
+					<TimePoints>0</TimePoints>
+					<Values>HeatSetpointTemperature [C]:17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</Schedule>
+		<Schedule type="WeekDay">
+			<DailyCycles>
+				<DailyCycle interpolation="Constant">
+					<TimePoints>0 7 18</TimePoints>
+					<Values>HeatSetpointTemperature [C]:17 21 17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</Schedule>
+	</ScheduleGroup>
+</ScheduleGroups>
+----
+
+#### AnnualSchedules
+
+Falls keine periodischen Beschreibung möglich sind können individuelle Zeitpunkte festgelegt werden. Dabei wird beschrieben wann sich welcher Wert einstellt.
+
+
+
+Aufgrund der unterschiedlichen Aufgaben werden zu jeden Zeitplan individuelle Einheiten benötigt. Diese Werten beim Zeitplan nach dem Keyword angegeben.
