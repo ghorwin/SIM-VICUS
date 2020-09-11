@@ -759,7 +759,7 @@ Ein `Schedule` darf nur den einen Zeitplan ohne Start- und Endtage überschreibe
 Als Beispiel wird nun eine Luftwechselrate für ein Jahr mit folgenden Eigenschaften definiert.
 
 * Vom 1.10. bis zum 31.3. wird eine konstante Luftwechselrate von `ach = 0.5 1/h` definiert
-* Vom 1.4. bis zum 30.9. wird tagesüber (6:00 bis 20:00) eine konstante Luftwechselrate von `ach = 0.5 1/h` und nachts eine konstante Luftwechselrate von `ach = 0.5 1/h` definiert.
+* Vom 1.4. bis zum 30.9. wird tagesüber (6:00 bis 20:00) eine konstante Luftwechselrate von `ach = 0.5 1/h` und nachts eine konstante Luftwechselrate von `ach = 2 1/h` definiert.
 
 Der Zeitplan referenziert die `objectList` "AirChangeRate".
 
