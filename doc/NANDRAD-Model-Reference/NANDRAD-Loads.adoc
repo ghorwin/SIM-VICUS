@@ -104,7 +104,7 @@ It is possible to specify additional planes (sensors) to generate solar radiatio
 </Location>
 ----
 
-A sensor must be given a unique ID number and the mandatory parameters `Orientation` and `Inclination` (see section << construction_interfaces>> for details on their definition).
+A sensor must be given a unique ID number and the mandatory parameters `Orientation` and `Inclination` (see section <<construction_interfaces>> for details on their definition).
 
 For each sensor 4 output quantities are generated:
 * `DirectSWRadOnPlane[<sensor id>]`  - direct solar radiation intensity on plane in [W/m2]

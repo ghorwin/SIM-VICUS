@@ -167,7 +167,7 @@ The ID name of the quantity is the name of the result of a model object, or a sc
 
 The `FileName` tag is optioned. It can be used to specifically select the name of an output file. Normally, output file names are generated automatically, depending on the type of output requested.
 
-Lastly, the tag `TimeType` can be used to specifiy time averaging or time integration of variables, see section <<time_type>>.
+Lastly, the tag `TimeType` can be used to specifiy time averaging or time integration of variables, see section <<output_time_type>>.
 
 
 ### Variable names and variable lookup rules
@@ -179,31 +179,50 @@ Quantities in output definitions define the ID names of the output quantities, o
 - `HeatSource[id=1]` - index argument is explicitely interpreted as object ID (will raise an error when model provides quantity with positional indexing)
 
 
-### Output file generation rules
+[[output_filenames]]
+### Output file names
+
+The following sections describe the rules which determine the output file names.
 
 #### When no filename is given
 
 Target file name(s) are automatically defined.
 
-All outputs a grouped by:
+All outputs a grouped depending on the quantity into:
 
-- grid and quantity type (Load, Schedule, State, Flux, Misc), quantity type is predefined for most quantity IDs (unknowns -> Misc)
+- states
+- fluxes
+- loads
+- misc
 
-- for each used grid:
+If `Integral` is selected as `TimeType`:
+
+- for quantity of type __fluxes__ the group _flux_integrals_ is used instead,
+- for quantity of type __loads__ the group _load_integrals_ is used instead
+
+
+The outputs are further grouped by output grid name. The final output file name is obtained for each grid and group name:
   - states -> `states_<gridname>.tsv`
   - loads -> `loads_<gridname>.tsv`
   - fluxes -> `fluxes_<gridname>.tsv`
   - fluxes (integrated) -> `flux_integrals_<gridname>.tsv`
 
-Special rule: when only one grid is used, and grid has hourly steps all year round, the suffix `_<gridname>` is omitted.
+[NOTE]
+====
+There is one special rule: when only one grid is used, the suffix `_<gridname>` is omitted.
+====
 
 #### When a filename is given
 
-- check: all output definitions using this filename must use the *same* grid (same time points for all columns required!)
+The quantity is written to the specified file. If there are several output definitions with the same file name, then all quantities are written into the same file, regardless of type.
 
-- all quantities (regardless of type) are written to this file
+[IMPORTANT]
+====
+All output definitions using the same file name must use the *same* grid (same time points for all columns are required!)
+====
 
-[[time_type]]
+
+[[output_time_type]]
 ### Time types
 
 The tag `TimeType` takes the following values:
@@ -217,9 +236,6 @@ By default (when the tag `TimeType` is not explicitely specified) the values are
 [[fig_timetype]]
 .Illustration of the various `TimeType` options
 image::TimeType_illustration.png[]
-
-
-
 
 ### Examples
 
