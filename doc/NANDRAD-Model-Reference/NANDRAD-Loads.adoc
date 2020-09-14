@@ -15,7 +15,7 @@ Information about location and climate data is stored in the `Location` section 
 <Location>
 	<IBK:Parameter name="Latitude" unit="Deg">51</IBK:Parameter>
 	<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
-	<IBK:Parameter name="Albedo" unit="-">0.2</IBK:Parameter>
+	<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 	<IBK:Parameter name="Altitude" unit="m">100</IBK:Parameter>
 	<IBK:Flag name="PerezDiffuseRadiationModel">false</IBK:Flag>
 	<ClimateFileName>${Project Directory}/climate/GER_Potsdam_2017.c6b</ClimateFileName>
@@ -24,9 +24,19 @@ Information about location and climate data is stored in the `Location` section 
 
 Parameters (see section <<basic_types>> for into on types):
 
-* The parameter `Albedo` is required and used for diffuse solar radiation calculation (see <<loads_solar_radiation>>). Valid value range in [0,1].
-* Parameters `Latitude` and `Longitude` are optional. If present, they override the location parameters stored therein (see <<location_settings>>).
-* `Altitude` is optional and later needed for specific altitude-related parameters (**TODO**).
+.Parameters that can be set as an *IBK:Parameter* with the Attributes `name` and `unit`. 
+[options="header"]
+[cols="10%,^ 8%,52%,^ 10%,^ 10%"]
+[width="100%"]
+|====================
+|`name`|`unit`|Description|Format|usage
+|*Albedo*|---|Used for diffuse solar radiation calculation (see <<loads_solar_radiation>>)|[0,1]|_required_
+|*Altitude*|m|later needed for specific altitude-related parameters (**TODO**)|positive double ({nbsp}>{nbsp}0.0{nbsp})|_optional_
+|*Longitude*|Deg|If specified, overrides the location parameter `Longitude` stored therein (see <<location_settings>>).|[-180,180]|_optional_
+|*Latitude*|Deg|If specified, they override the location parameter `Latitude` stored therein (see <<location_settings>>).|[-90,90]|_optional_
+|====================
+
+
 * The optional flag `PerezDiffuseRadiationModel` defines whether to use the Perez-Model for diffuse solar radiation calculation (when `true`), or the isotropic radiation model (`false`). Default setting is `false`.
 * The `<ClimateFileName>` tag defines the path to the climate data file.
 

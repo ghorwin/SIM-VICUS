@@ -9,8 +9,8 @@ image::Mat_ConstInst.png[]
 
 ## Materials
 
-In the NANDRAD-Model the Materials-Section starts with an XML-Tag named `Materials`. In this each Material starts with an XML-Tag named `Material` with two XML-Attributes `id` and `displayName`.  
-Concerning the Material Parameters such as Density, Heat Capacity and Conductivity they need to be defined within the XML-Tag `IBK:Parameter` with the XML-Attributes `name` and `unit`.
+In the NANDRAD-Model the Materials-Section starts with an XML tag named `Materials`. In this each Material starts with an XML tag named `Material` with two XML attributes `id` and `displayName`.  
+Concerning the Material Parameters such as Density, Heat Capacity and Conductivity they need to be defined within the XML tag `IBK:Parameter` with the XML attributes `name` and `unit`.
 In the following it is described in detail.
 
 .Materials with Material Layers and Parameters
@@ -32,7 +32,7 @@ In the following it is described in detail.
 ----
 ====
 
-Inside the XML-Tag named `Materials` each Material starts with the XML-Tag `Material`. The following XML-Attributes need to be defined:
+Inside the XML tag named `Materials` each Material starts with the XML tag `Material`. The following XML attributes need to be defined:
 
 [options="header",cols="15%,55%,20%,10%",width="100%"]
 |====================
@@ -41,7 +41,7 @@ Inside the XML-Tag named `Materials` each Material starts with the XML-Tag `Mate
 | *displayName*  | Specific heat capacity of the material. | string | _optional_
 |====================
 
-The following XML-Tags named `IBK:Parameters` with the XML-Attributes `name` and `unit` with the following entries need to be defined holding double values:
+The following XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` with the following entries need to be defined holding double values:
 
 [options="header",cols="15%,15%,50%,10%,10%",width="100%"]
 |====================
@@ -53,7 +53,7 @@ The following XML-Tags named `IBK:Parameters` with the XML-Attributes `name` and
 
 ## Construction Types
 
-The Construction is defined inside the Sections starting with an XML-Tag `Construction Types`. Inside the Section each Construction start with the XML-Tag named `Construction Type` with the XML-Attributes `id` and `displayName`. Inside that it is necessary to specify the Material Layers with the XML-Tag named `MaterialLayers` and finally the Material Layer with the XML-Tag `MaterialLayer` with the XML-Attributes `thickness` and `matId`. The `MaterialLayer` is always an empty Object since all needed Attributes are defined as XML-Attributes as mentioned before. 
+The Construction is defined inside the Sections starting with an XML tag `Construction Types`. Inside the Section each Construction start with the XML tag named `Construction Type` with the XML attributes `id` and `displayName`. Inside that it is necessary to specify the Material Layers with the XML tag named `MaterialLayers` and finally the Material Layer with the XML tag `MaterialLayer` with the XML attributes `thickness` and `matId`. The `MaterialLayer` is always an empty Object since all needed Attributes are defined as XML attributes as mentioned before. 
 In the following it is described in detail.
 
 .Construction Types with References to Material Objects
@@ -71,7 +71,7 @@ In the following it is described in detail.
 ----
 ====
 
-Inside the XML-Tag named `ConstructionTypes` each Construction starts with the XML-Tag `ConstructionType`. The following XML-Attributes need to be defined inside of this:
+Inside the XML tag named `ConstructionTypes` each Construction starts with the XML tag `ConstructionType`. The following XML attributes need to be defined inside of this:
 
 [options="header",cols="15%,55%,20%,10%",width="100%"]
 |====================
@@ -80,7 +80,7 @@ Inside the XML-Tag named `ConstructionTypes` each Construction starts with the X
 | *displayName*  |  name of construction. | string | _optional_
 |====================
 
-Furthermore each defined Construction has Material Layers encapsulated within the XML-Tag `MaterialLayers`. Each Material Layer needs the be defined with the XML-Tag named `MaterialLayer`. This Tag needs the XML-Attributes `thickness` and `matId`:
+Furthermore each defined Construction has Material Layers encapsulated within the XML tag `MaterialLayers`. Each Material Layer needs the be defined with the XML tag named `MaterialLayer`. This Tag needs the XML attributes `thickness` and `matId`:
 
 [options="header",cols="15%,55%,20%,10%",width="100%"]
 |====================

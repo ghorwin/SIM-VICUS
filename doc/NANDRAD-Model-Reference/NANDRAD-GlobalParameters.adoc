@@ -117,6 +117,10 @@ Hereafter all parameters that are required for the solver are described.
 ----
 ====
 
+### IBK:Parameter
+
+The following parameters can be set as an `IBK:Parameter`. 
+
 [source,xml]
 ----
 <IBK:Parameter name="MaxTimeStep" unit="min">30</IBK:Parameter>
@@ -152,6 +156,10 @@ a|Stretch factor for variable wall discretizations:
 |*IntegralWeightsFactor*|---|Optional weighting factor for integral outputs.|0…1|1E-05|_optional_
 |====================
 
+### IBK:Flag
+
+The following parameters can be set as an `IBK:Flag`
+
 [source,xml]
 ----
 <IBK:Flag name="DetectMaxTimeStep">true</IBK:Flag>
@@ -170,6 +178,10 @@ a|Stretch factor for variable wall discretizations:
 
 All options for the integrator are described in the table below. The xml-tag *Integrator* contains a string to select the time integration method.
 
+### Integrator
+
+The following parameters can be set for `Integrator`
+
 [source,xml]
 ----
 <Integrator>CVODE</Integrator>
@@ -186,6 +198,10 @@ All options for the integrator are described in the table below. The xml-tag *In
 |*ImplicitEuler*|Implicit Euler solver with adaptive time step width control and Modified Newton-Raphson for the resolution of non-linear couplings|_optional_
 |====================
 
+### LESolver
+
+The following parameters can be set for `LESolver`
+
 [source,xml]
 ----
 <LESSolver>Dense</LESSolver>
@@ -200,6 +216,10 @@ All options for the integrator are described in the table below. The xml-tag *In
 |*ILU*|Incomplete LU preconditioner|_optional_
 |*auto*|System selects preconditioner automatically.|_optional_
 |====================
+
+### Preconditioner
+
+The following parameters can be set for `Preconditioner`
 
 [source,xml]
 ----
