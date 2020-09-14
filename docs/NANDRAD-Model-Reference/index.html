@@ -8,61 +8,61 @@
 <meta name="author" content="Andreas Nicolai &lt;andreas.nicolai@tu-dresden.de&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski">
 <title>NANDRAD Model Reference</title>
 <style>
-/* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
-
-@import url(https://fonts.googleapis.com/css?family=Roboto+Condensed);
-@import url(../css/asciidoctor.css); /* Default asciidoc style framework - important */
-
-/* CUSTOMISATIONS */
-/* Change the values in root for quick customisation. If you want even more fine grain... venture further. */
-
-:root{
---maincolor:#FFFFFF;
---primarycolor:#a90e22;
---secondarycolor:#9f1d0b;
---tertiarycolor: #ededed;
---sidebarbackground:#CCC;
---linkcolor:#b71c1c;
---linkcoloralternate:#f44336;
---white:#FFFFFF;
---black:#000000;
-}
-
-/* Text styles */
-body{font-family: "Roboto Condensed",sans-serif;}
-
-h1,h2{color:var(--primarycolor) !important;font-family:"Roboto Condensed",sans-serif;}
-h3,h4,h5,h6{color:var(--secondarycolor);font-family: "Roboto Condensed",sans-serif; }
-.title{color:(--primarycolor) !important;font-family:"Roboto Condensed",sans-serif;font-style: normal; font-weight: normal;}
-p{font-family: "Roboto Condensed",sans-serif ! important}
-#toc.toc2 a{font-family:"Roboto Condensed",sans-serif;}
-/*#toc.toc2 a:link{color:(--linkcolor) !important}
-a:visited {color: #ffdbad;}
-a.bare:visited {color: #204f83;}
-a:hover {color: #317ed4;}
-#toc.toc2 a:hover {color: #f1b464;}*/
-/* code{background-color: var(--secondarycolor) !important;color:var(--white)} */
-code,kbd,pre,samp{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;monospace;font-size:1em}
-
-/* Table styles */
-th{background-color: var(--tertiarycolor);color:var(--black) !important;}
-
-#toctitle{color:var(--primarycolor);font-family: "Roboto Condensed",sans-serif;font-size: 1.6875em;}
-#toc.toc2{background-color:#f4f8fd;}
-/*#toc.toc2{background-color:#2C001E;color:white;}
-#toc.toc2.a{color:white;}
-*/
-
-/* Responsiveness fixes */
-video {
-  max-width: 100%;
-}
-
-@media all and (max-width: 600px) {
-table {
-  width: 55vw!important;
-  font-size: 3vw;
-}
+/* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
+
+@import url(https://fonts.googleapis.com/css?family=Roboto+Condensed);
+@import url(../css/asciidoctor.css); /* Default asciidoc style framework - important */
+
+/* CUSTOMISATIONS */
+/* Change the values in root for quick customisation. If you want even more fine grain... venture further. */
+
+:root{
+--maincolor:#FFFFFF;
+--primarycolor:#a90e22;
+--secondarycolor:#9f1d0b;
+--tertiarycolor: #ededed;
+--sidebarbackground:#CCC;
+--linkcolor:#b71c1c;
+--linkcoloralternate:#f44336;
+--white:#FFFFFF;
+--black:#000000;
+}
+
+/* Text styles */
+body{font-family: "Roboto Condensed",sans-serif;}
+
+h1,h2{color:var(--primarycolor) !important;font-family:"Roboto Condensed",sans-serif;}
+h3,h4,h5,h6{color:var(--secondarycolor);font-family: "Roboto Condensed",sans-serif; }
+.title{color:(--primarycolor) !important;font-family:"Roboto Condensed",sans-serif;font-style: normal; font-weight: normal;}
+p{font-family: "Roboto Condensed",sans-serif ! important}
+#toc.toc2 a{font-family:"Roboto Condensed",sans-serif;}
+/*#toc.toc2 a:link{color:(--linkcolor) !important}
+a:visited {color: #ffdbad;}
+a.bare:visited {color: #204f83;}
+a:hover {color: #317ed4;}
+#toc.toc2 a:hover {color: #f1b464;}*/
+/* code{background-color: var(--secondarycolor) !important;color:var(--white)} */
+code,kbd,pre,samp{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;monospace;font-size:1em}
+
+/* Table styles */
+th{background-color: var(--tertiarycolor);color:var(--black) !important;}
+
+#toctitle{color:var(--primarycolor);font-family: "Roboto Condensed",sans-serif;font-size: 1.6875em;}
+#toc.toc2{background-color:#f4f8fd;}
+/*#toc.toc2{background-color:#2C001E;color:white;}
+#toc.toc2.a{color:white;}
+*/
+
+/* Responsiveness fixes */
+video {
+  max-width: 100%;
+}
+
+@media all and (max-width: 600px) {
+table {
+  width: 55vw!important;
+  font-size: 3vw;
+}
 
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -130,19 +130,17 @@ table {
 </li>
 <li><a href="#_global_parameters">2.13. Global parameters</a>
 <ul class="sectlevel3">
-<li><a href="#_simulation_parameters">2.13.1. Simulation Parameters</a></li>
-<li><a href="#_solver_parameters">2.13.2. Solver Parameters</a></li>
+<li><a href="#simulation_parameters">2.13.1. Simulation Parameters</a></li>
+<li><a href="#solver_parameters">2.13.2. Solver Parameters</a></li>
 </ul>
 </li>
 <li><a href="#outputs">2.14. Outputs/Results</a>
 <ul class="sectlevel3">
 <li><a href="#_global_output_parameters">2.14.1. Global output parameters</a></li>
-<li><a href="#_output_grids">2.14.2. Output grids</a></li>
+<li><a href="#output_grids">2.14.2. Output grids</a></li>
 <li><a href="#_output_definitions">2.14.3. Output definitions</a></li>
-<li><a href="#_variable_lookup_rules">2.14.4. Variable lookup rules</a></li>
-<li><a href="#_output_file_generation_rules">2.14.5. Output file generation rules</a></li>
-<li><a href="#binary_outputs">2.14.6. Binary Format</a></li>
-<li><a href="#solver_log_files">2.14.7. Solver log files</a></li>
+<li><a href="#binary_outputs">2.14.4. Binary Format</a></li>
+<li><a href="#solver_log_files">2.14.5. Solver log files</a></li>
 </ul>
 </li>
 </ul>
@@ -246,11 +244,11 @@ table {
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>SimulationParameter</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Simulation model parameters &#8594; <a href="#simulation_parameters">[simulation_parameters]</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Simulation model parameters &#8594; <a href="#simulation_parameters">Simulation Parameters</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>SolverParameter</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Numerical solver settings and performance options &#8594; <a href="#solver_parameters">[solver_parameters]</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Numerical solver settings and performance options &#8594; <a href="#solver_parameters">Solver Parameters</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Zones</code></p></td>
@@ -1386,12 +1384,11 @@ In the following it is described in detail.</p>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 12. Parameters that can be set as an <strong>IBK:Parameter</strong> with the Attributes <code>name</code> and <code>unit</code>.</caption>
 <colgroup>
-<col style="width: 30%;">
-<col style="width: 8%;">
-<col style="width: 32%;">
-<col style="width: 10%;">
-<col style="width: 10%;">
-<col style="width: 10%;">
+<col style="width: 11.1111%;">
+<col style="width: 8.8888%;">
+<col style="width: 57.7777%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1113%;">
 </colgroup>
 <thead>
 <tr>
@@ -1399,7 +1396,6 @@ In the following it is described in detail.</p>
 <th class="tableblock halign-center valign-top"><code>unit</code></th>
 <th class="tableblock halign-left valign-top">Description</th>
 <th class="tableblock halign-center valign-top">Format</th>
-<th class="tableblock halign-center valign-top">initial</th>
 <th class="tableblock halign-center valign-top">usage</th>
 </tr>
 </thead>
@@ -1409,39 +1405,27 @@ In the following it is described in detail.</p>
 <td class="tableblock halign-center valign-top"><p class="tableblock">---</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Used for diffuse solar radiation calculation (see <a href="#loads_solar_radiation">Solar Radiation Calculation</a>)</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">[0,1]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">1E-04</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Altitude</strong></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">Deg</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">m</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">later needed for specific altitude-related parameters (<strong>TODO</strong>)</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">[0,1]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">1E-10</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Latitude</strong></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">Deg</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Absolute tolerance for solver error check.</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">[0,1]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">1E-10</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">positive double (&#160;&gt;&#160;0.0&#160;)</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Longitude</strong></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">h</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">Deg</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If specified, overrides the location parameter <code>Longitude</code> stored therein (see <a href="#location_settings">Building/Station location</a>).</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">positive double (&#160;&gt;&#160;0.0&#160;)</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">[-180,180]</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Latitude</strong></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">h</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">Deg</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If specified, they override the location parameter <code>Latitude</code> stored therein (see <a href="#location_settings">Building/Station location</a>).</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">positive double (&#160;&gt;&#160;0.0&#160;)</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">[-90,90]</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 </tbody>
@@ -1876,45 +1860,162 @@ Example:
 </div>
 <div class="sect3">
 <h4 id="_variable_list">2.12.4. Variable list</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code>  /*! Available quantities from schedules.
-    While this enum could be moved to NANDRAD::Schedule, we keep it here to reuse DefaultModel implementation
-    for generating QuantityDescriptions.
-  */
-  enum Results {
-    R_HeatingSetPointTemperature,     // Keyword: HeatingSetPointTemperature        [C]     'Setpoint temperature for heating.'
-    R_CoolingSetPointTemperature,     // Keyword: CoolingSetPointTemperature        [C]     'Setpoint temperature for cooling.'
-    R_AirConditionSetPointTemperature,    // Keyword: AirConditionSetPointTemperature     [C]     'Setpoint temperature for air conditioning.'
-    R_AirConditionSetPointRelativeHumidity, // Keyword: AirConditionSetPointRelativeHumidity  [%]     'Setpoint relative humidity for air conditioning.'
-    R_AirConditionSetPointMassFlux,     // Keyword: AirConditionSetPointMassFlux      [kg/s]    'Setpoint mass flux for air conditioning.'
-    R_HeatingLoad,              // Keyword: HeatingLoad               [W]     'Heating load.'
-    R_ThermalLoad,              // Keyword: ThermalLoad               [W]     'Thermal load (positive or negative).'
-    R_MoistureLoad,             // Keyword: MoistureLoad              [g/h]   'Moisture load.'
-    R_CoolingPower,             // Keyword: CoolingPower              [W]     'Cooling power.'
-    R_LightingPower,            // Keyword: LightingPower             [W]     'Lighting power.'
-    R_DomesticWaterSetpointTemperature,   // Keyword: DomesticWaterSetpointTemperature    [C]     'Setpoint temperature for domestic water.'
-    R_DomesticWaterMassFlow,        // Keyword: DomesticWaterMassFlow         [kg/s]    'Domestic water demand mass flow for the complete zone (hot water and equipment).'
-    R_ThermalEnergyLossPerPerson,     // Keyword: ThermalEnergyLossPerPerson        [W/Person]  'Energy of a single persons activities that is not available as thermal heat.'
-    R_TotalEnergyProductionPerPerson,   // Keyword: TotalEnergyProductionPerPerson      [W/Person]  'Total energy production of a single persons body at a certain activity.'
-    R_MoistureReleasePerPerson,       // Keyword: MoistureReleasePerPerson        [kg/s]    'Moisture release of a single persons body at a certain activity.'
-    R_CO2EmissionPerPerson,         // Keyword: CO2EmissionPerPerson          [kg/s]    'CO2 emission mass flux of a single person at a certain activity.'
-    R_MassFluxRate,             // Keyword: MassFluxRate              [---]   'Fraction of real mass flux to maximum  mass flux for different day times.'
-    R_PressureHead,             // Keyword: PressureHead              [Pa]    'Supply pressure head of a pump.'
-    R_OccupancyRate,            // Keyword: OccupancyRate             [---]   'Fraction of real occupancy to maximum  occupancy for different day times.'
-    R_EquipmentUtilizationRatio,      // Keyword: EquipmentUtilizationRatio       [---]   'Ratio of usage for existing electric equipment.'
-    R_LightingUtilizationRatio,       // Keyword: LightingUtilizationRatio        [---]   'Ratio of usage for lighting.'
-    R_MaximumSolarRadiationIntensity,   // Keyword: MaximumSolarRadiationIntensity      [W/m2]    'Maximum solar radiation intensity before shading is activated.'
-    R_UserVentilationAirChangeRate,     // Keyword: UserVentilationAirChangeRate      [1/h]   'Exchange rate for natural ventilation.'
-    R_UserVentilationComfortAirChangeRate,  // Keyword: UserVentilationComfortAirChangeRate   [1/h]   'Maximum air change rate = offset for user comfort.'
-    R_UserVentilationMinimumRoomTemperature,// Keyword: UserVentilationMinimumRoomTemperature [C]     'Temperature limit over which comfort ventilation is activated.'
-    R_UserVentilationMaximumRoomTemperature,// Keyword: UserVentilationMaximumRoomTemperature [C]     'Temperature limit below which comfort ventilation is activated.'
-    R_InfiltrationAirChangeRate,      // Keyword: InfiltrationAirChangeRate       [1/h]   'Exchange rate for infiltration.'
-    R_ShadingFactor,            // Keyword: ShadingFactor             [---]   'Shading factor [0...1].'
-    NUM_R
-  };</code></pre>
-</div>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 35%;">
+<col style="width: 10%;">
+<col style="width: 55%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-center valign-top">Unit</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HeatingSetPointTemperature</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">C</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Setpoint temperature for heating.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CoolingSetPointTemperature</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">C</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Setpoint temperature for cooling.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AirConditionSetPointTemperature</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">C</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Setpoint temperature for air conditioning.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AirConditionSetPointRelativeHumidity</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">%</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Setpoint relative humidity for air conditioning.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AirConditionSetPointMassFlux</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">kg/s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Setpoint mass flux for air conditioning.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HeatingLoad</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">W</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Heating load.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ThermalLoad</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">W</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Thermal load (positive or negative).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MoistureLoad</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">g/h</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Moisture load.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CoolingPower</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">W</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cooling power.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LightingPower</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">W</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Lighting power.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DomesticWaterSetpointTemperature</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">C</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Setpoint temperature for domestic water.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DomesticWaterMassFlow</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">kg/s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Domestic water demand mass flow for the complete zone (hot water and equipment).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ThermalEnergyLossPerPerson</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">W/Person</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Energy of a single persons activities that is not available as thermal heat.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TotalEnergyProductionPerPerson</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">W/Person</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Total energy production of a single persons body at a certain activity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MoistureReleasePerPerson</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">kg/s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Moisture release of a single persons body at a certain activity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CO2EmissionPerPerson</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">kg/s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CO2 emission mass flux of a single person at a certain activity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MassFluxRate</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fraction of real mass flux to maximum  mass flux for different day times.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PressureHead</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">Pa</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Supply pressure head of a pump.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OccupancyRate</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fraction of real occupancy to maximum  occupancy for different day times.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EquipmentUtilizationRatio</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ratio of usage for existing electric equipment.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LightingUtilizationRatio</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ratio of usage for lighting.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MaximumSolarRadiationIntensity</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">W/m2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum solar radiation intensity before shading is activated.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UserVentilationAirChangeRate</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1/h</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Exchange rate for natural ventilation.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UserVentilationComfortAirChangeRate</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1/h</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum air change rate = offset for user comfort.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UserVentilationMinimumRoomTemperature</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">C</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Temperature limit over which comfort ventilation is activated.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UserVentilationMaximumRoomTemperature</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">C</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Temperature limit below which comfort ventilation is activated.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">InfiltrationAirChangeRate</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1/h</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Exchange rate for infiltration.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ShadingFactor</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Shading factor [0&#8230;&#8203;1].</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -1933,7 +2034,7 @@ Example:
 </ul>
 </div>
 <div class="sect3">
-<h4 id="_simulation_parameters">2.13.1. Simulation Parameters</h4>
+<h4 id="simulation_parameters">2.13.1. Simulation Parameters</h4>
 <div class="sect4">
 <h5 id="_simulation_time_and_absolute_time_reference">Simulation time and absolute time reference</h5>
 <div class="ulist">
@@ -2153,7 +2254,7 @@ Example:
 </div>
 </div>
 <div class="sect3">
-<h4 id="_solver_parameters">2.13.2. Solver Parameters</h4>
+<h4 id="solver_parameters">2.13.2. Solver Parameters</h4>
 <div class="paragraph">
 <p>Hereafter all parameters that are required for the solver are described.</p>
 </div>
@@ -2639,7 +2740,7 @@ Example:
 </div>
 </div>
 <div class="sect3">
-<h4 id="_output_grids">2.14.2. Output grids</h4>
+<h4 id="output_grids">2.14.2. Output grids</h4>
 <div class="paragraph">
 <p>Output grids define <em>when</em> outputs are written. An output grid contains a list of intervals, with an output step size defined for each interval. For example, if you want to have hourly output steps from start to end, you need to define a grid with one interval and a step size parameter of one hour:</p>
 </div>
@@ -2834,24 +2935,16 @@ outputs associated with this output grid will be written.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p><strong>TODO</strong> below</p>
+<p>The ID name of the quantity is the name of the result of a model object, or a schedule or anything else generated by the solver. The corresponding object or objects are selected by an <a href="#object_lists">object list</a>. The grid name is the ID name of an <a href="#output_grids">output grid</a>.</p>
+</div>
+<div class="paragraph">
+<p>The <code>FileName</code> tag is optioned. It can be used to specifically select the name of an output file. Normally, output file names are generated automatically, depending on the type of output requested.</p>
+</div>
+<div class="paragraph">
+<p>Lastly, the tag <code>TimeType</code> can be used to specifiy time averaging or time integration of variables, see section <a href="#time_type">Time types</a>.</p>
 </div>
 <div class="sect4">
-<h5 id="_examples">Examples</h5>
-<div class="ulist">
-<ul>
-<li>
-<p>Requesting fluxes across construction interfaces: object list must reference interfaces</p>
-</li>
-<li>
-<p>Requesting energy supplied to layer in construction instance (floor heating): object list must reference construction instance, variable name must reference heat source + index of heat source (if several in construction): <code>&lt;Quantity&gt;HeatSource[1]&lt;/Quantity&gt;</code> (first heat source in layer, counting from side A in construction, see <a href="#construction_heat_sources">Heat sources in constructions/layers</a>).</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_variable_lookup_rules">2.14.4. Variable lookup rules</h4>
+<h5 id="_variable_names_and_variable_lookup_rules">Variable names and variable lookup rules</h5>
 <div class="paragraph">
 <p>Quantities in output definitions define the ID names of the output quantities, optionally including an index notation when a single element of a vectorial quantity is requested. Hereby the following notations are allowed:</p>
 </div>
@@ -2869,10 +2962,10 @@ outputs associated with this output grid will be written.</p>
 </ul>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_output_file_generation_rules">2.14.5. Output file generation rules</h4>
 <div class="sect4">
-<h5 id="_when_no_filename_is_given">When no filename is given</h5>
+<h5 id="_output_file_generation_rules">Output file generation rules</h5>
+<div class="sect5">
+<h6 id="_when_no_filename_is_given">When no filename is given</h6>
 <div class="paragraph">
 <p>Target file name(s) are automatically defined.</p>
 </div>
@@ -2905,8 +2998,8 @@ outputs associated with this output grid will be written.</p>
 <p>Special rule: when only one grid is used, and grid has hourly steps all year round, the suffix <code>_&lt;gridname&gt;</code> is omitted.</p>
 </div>
 </div>
-<div class="sect4">
-<h5 id="_when_a_filename_is_given">When a filename is given</h5>
+<div class="sect5">
+<h6 id="_when_a_filename_is_given">When a filename is given</h6>
 <div class="ulist">
 <ul>
 <li>
@@ -2919,8 +3012,50 @@ outputs associated with this output grid will be written.</p>
 </div>
 </div>
 </div>
+<div class="sect4">
+<h5 id="time_type">Time types</h5>
+<div class="paragraph">
+<p>The tag <code>TimeType</code> takes the following values:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>None</code> - write outputs as computed at output time</p>
+</li>
+<li>
+<p><code>Mean</code>- write value averaged over last output interval</p>
+</li>
+<li>
+<p><code>Integral</code> - write integral value</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>By default (when the tag <code>TimeType</code> is not explicitely specified) the values are written as they are computed at the output time (corresponds to <code>None</code>). Figure <a href="#fig_timetype">Illustration of the various <code>TimeType</code> options</a> illustrates the various options.</p>
+</div>
+<div id="fig_timetype" class="imageblock">
+<div class="content">
+<img src="./images/TimeType_illustration.png" alt="TimeType illustration">
+</div>
+<div class="title">Figure 1. Illustration of the various <code>TimeType</code> options</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_examples">Examples</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>Requesting fluxes across construction interfaces: object list must reference interfaces</p>
+</li>
+<li>
+<p>Requesting energy supplied to layer in construction instance (floor heating): object list must reference construction instance, variable name must reference heat source + index of heat source (if several in construction): <code>&lt;Quantity&gt;HeatSource[1]&lt;/Quantity&gt;</code> (first heat source in layer, counting from side A in construction, see <a href="#construction_heat_sources">Heat sources in constructions/layers</a>).</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 <div class="sect3">
-<h4 id="binary_outputs">2.14.6. Binary Format</h4>
+<h4 id="binary_outputs">2.14.4. Binary Format</h4>
 <div class="paragraph">
 <p>First record: unsigned int - n (number of columns)
 Next n records: binary strings, leading size (unsigned int) and termination character (sanity checking)</p>
@@ -2930,7 +3065,7 @@ Next n records: binary strings, leading size (unsigned int) and termination char
 </div>
 </div>
 <div class="sect3">
-<h4 id="solver_log_files">2.14.7. Solver log files</h4>
+<h4 id="solver_log_files">2.14.5. Solver log files</h4>
 
 </div>
 </div>
@@ -3860,7 +3995,7 @@ The example below shows how the output of the models is referenced via the objec
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated 2020-09-14 16:41:24 +0200
+Last updated 2020-09-14 21:23:20 +0200
 </div>
 </div>
 <style>

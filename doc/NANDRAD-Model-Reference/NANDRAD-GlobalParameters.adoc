@@ -5,6 +5,7 @@
 - parameters controlling model accuracy
 - parameters controlling performance
 
+[[simulation_parameters]]
 ## Simulation Parameters
 
 ### Simulation time and absolute time reference
@@ -87,7 +88,8 @@ The XML-Tags named *IBK:Flags* with the following XML-Attributes `name` can be d
 | *ExportClimateDataFMU* |  Flag activating FMU export of climate data. | _optional_
 |====================
 
-    
+
+[[solver_parameters]]
 ## Solver Parameters
 
 Hereafter all parameters that are required for the solver are described.
