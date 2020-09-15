@@ -1386,12 +1386,11 @@ In the following it is described in detail.</p>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 12. Parameters that can be set as an <strong>IBK:Parameter</strong> with the Attributes <code>name</code> and <code>unit</code>.</caption>
 <colgroup>
-<col style="width: 30%;">
-<col style="width: 8%;">
-<col style="width: 32%;">
-<col style="width: 10%;">
-<col style="width: 10%;">
-<col style="width: 10%;">
+<col style="width: 11.1111%;">
+<col style="width: 8.8888%;">
+<col style="width: 57.7777%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1113%;">
 </colgroup>
 <thead>
 <tr>
@@ -1399,7 +1398,6 @@ In the following it is described in detail.</p>
 <th class="tableblock halign-center valign-top"><code>unit</code></th>
 <th class="tableblock halign-left valign-top">Description</th>
 <th class="tableblock halign-center valign-top">Format</th>
-<th class="tableblock halign-center valign-top">initial</th>
 <th class="tableblock halign-center valign-top">usage</th>
 </tr>
 </thead>
@@ -1409,39 +1407,27 @@ In the following it is described in detail.</p>
 <td class="tableblock halign-center valign-top"><p class="tableblock">---</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Used for diffuse solar radiation calculation (see <a href="#loads_solar_radiation">Solar Radiation Calculation</a>)</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">[0,1]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">1E-04</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Altitude</strong></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">Deg</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">m</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">later needed for specific altitude-related parameters (<strong>TODO</strong>)</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">[0,1]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">1E-10</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Latitude</strong></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">Deg</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Absolute tolerance for solver error check.</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">[0,1]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">1E-10</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">positive double (&#160;&gt;&#160;0.0&#160;)</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Longitude</strong></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">h</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">Deg</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If specified, overrides the location parameter <code>Longitude</code> stored therein (see <a href="#location_settings">Building/Station location</a>).</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">positive double (&#160;&gt;&#160;0.0&#160;)</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">[-180,180]</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Latitude</strong></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">h</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">Deg</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If specified, they override the location parameter <code>Latitude</code> stored therein (see <a href="#location_settings">Building/Station location</a>).</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">positive double (&#160;&gt;&#160;0.0&#160;)</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">[-90,90]</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 </tbody>
@@ -1876,45 +1862,162 @@ Example:
 </div>
 <div class="sect3">
 <h4 id="_variable_list">2.12.4. Variable list</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code>  /*! Available quantities from schedules.
-    While this enum could be moved to NANDRAD::Schedule, we keep it here to reuse DefaultModel implementation
-    for generating QuantityDescriptions.
-  */
-  enum Results {
-    R_HeatingSetPointTemperature,     // Keyword: HeatingSetPointTemperature        [C]     'Setpoint temperature for heating.'
-    R_CoolingSetPointTemperature,     // Keyword: CoolingSetPointTemperature        [C]     'Setpoint temperature for cooling.'
-    R_AirConditionSetPointTemperature,    // Keyword: AirConditionSetPointTemperature     [C]     'Setpoint temperature for air conditioning.'
-    R_AirConditionSetPointRelativeHumidity, // Keyword: AirConditionSetPointRelativeHumidity  [%]     'Setpoint relative humidity for air conditioning.'
-    R_AirConditionSetPointMassFlux,     // Keyword: AirConditionSetPointMassFlux      [kg/s]    'Setpoint mass flux for air conditioning.'
-    R_HeatingLoad,              // Keyword: HeatingLoad               [W]     'Heating load.'
-    R_ThermalLoad,              // Keyword: ThermalLoad               [W]     'Thermal load (positive or negative).'
-    R_MoistureLoad,             // Keyword: MoistureLoad              [g/h]   'Moisture load.'
-    R_CoolingPower,             // Keyword: CoolingPower              [W]     'Cooling power.'
-    R_LightingPower,            // Keyword: LightingPower             [W]     'Lighting power.'
-    R_DomesticWaterSetpointTemperature,   // Keyword: DomesticWaterSetpointTemperature    [C]     'Setpoint temperature for domestic water.'
-    R_DomesticWaterMassFlow,        // Keyword: DomesticWaterMassFlow         [kg/s]    'Domestic water demand mass flow for the complete zone (hot water and equipment).'
-    R_ThermalEnergyLossPerPerson,     // Keyword: ThermalEnergyLossPerPerson        [W/Person]  'Energy of a single persons activities that is not available as thermal heat.'
-    R_TotalEnergyProductionPerPerson,   // Keyword: TotalEnergyProductionPerPerson      [W/Person]  'Total energy production of a single persons body at a certain activity.'
-    R_MoistureReleasePerPerson,       // Keyword: MoistureReleasePerPerson        [kg/s]    'Moisture release of a single persons body at a certain activity.'
-    R_CO2EmissionPerPerson,         // Keyword: CO2EmissionPerPerson          [kg/s]    'CO2 emission mass flux of a single person at a certain activity.'
-    R_MassFluxRate,             // Keyword: MassFluxRate              [---]   'Fraction of real mass flux to maximum  mass flux for different day times.'
-    R_PressureHead,             // Keyword: PressureHead              [Pa]    'Supply pressure head of a pump.'
-    R_OccupancyRate,            // Keyword: OccupancyRate             [---]   'Fraction of real occupancy to maximum  occupancy for different day times.'
-    R_EquipmentUtilizationRatio,      // Keyword: EquipmentUtilizationRatio       [---]   'Ratio of usage for existing electric equipment.'
-    R_LightingUtilizationRatio,       // Keyword: LightingUtilizationRatio        [---]   'Ratio of usage for lighting.'
-    R_MaximumSolarRadiationIntensity,   // Keyword: MaximumSolarRadiationIntensity      [W/m2]    'Maximum solar radiation intensity before shading is activated.'
-    R_UserVentilationAirChangeRate,     // Keyword: UserVentilationAirChangeRate      [1/h]   'Exchange rate for natural ventilation.'
-    R_UserVentilationComfortAirChangeRate,  // Keyword: UserVentilationComfortAirChangeRate   [1/h]   'Maximum air change rate = offset for user comfort.'
-    R_UserVentilationMinimumRoomTemperature,// Keyword: UserVentilationMinimumRoomTemperature [C]     'Temperature limit over which comfort ventilation is activated.'
-    R_UserVentilationMaximumRoomTemperature,// Keyword: UserVentilationMaximumRoomTemperature [C]     'Temperature limit below which comfort ventilation is activated.'
-    R_InfiltrationAirChangeRate,      // Keyword: InfiltrationAirChangeRate       [1/h]   'Exchange rate for infiltration.'
-    R_ShadingFactor,            // Keyword: ShadingFactor             [---]   'Shading factor [0...1].'
-    NUM_R
-  };</code></pre>
-</div>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 35%;">
+<col style="width: 10%;">
+<col style="width: 55%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-center valign-top">Unit</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HeatingSetPointTemperature</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">C</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Setpoint temperature for heating.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CoolingSetPointTemperature</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">C</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Setpoint temperature for cooling.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AirConditionSetPointTemperature</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">C</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Setpoint temperature for air conditioning.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AirConditionSetPointRelativeHumidity</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">%</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Setpoint relative humidity for air conditioning.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AirConditionSetPointMassFlux</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">kg/s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Setpoint mass flux for air conditioning.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HeatingLoad</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">W</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Heating load.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ThermalLoad</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">W</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Thermal load (positive or negative).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MoistureLoad</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">g/h</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Moisture load.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CoolingPower</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">W</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cooling power.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LightingPower</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">W</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Lighting power.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DomesticWaterSetpointTemperature</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">C</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Setpoint temperature for domestic water.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DomesticWaterMassFlow</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">kg/s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Domestic water demand mass flow for the complete zone (hot water and equipment).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ThermalEnergyLossPerPerson</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">W/Person</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Energy of a single persons activities that is not available as thermal heat.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TotalEnergyProductionPerPerson</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">W/Person</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Total energy production of a single persons body at a certain activity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MoistureReleasePerPerson</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">kg/s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Moisture release of a single persons body at a certain activity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CO2EmissionPerPerson</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">kg/s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CO2 emission mass flux of a single person at a certain activity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MassFluxRate</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fraction of real mass flux to maximum  mass flux for different day times.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PressureHead</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">Pa</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Supply pressure head of a pump.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OccupancyRate</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fraction of real occupancy to maximum  occupancy for different day times.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EquipmentUtilizationRatio</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ratio of usage for existing electric equipment.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LightingUtilizationRatio</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ratio of usage for lighting.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MaximumSolarRadiationIntensity</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">W/m2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum solar radiation intensity before shading is activated.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UserVentilationAirChangeRate</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1/h</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Exchange rate for natural ventilation.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UserVentilationComfortAirChangeRate</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1/h</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum air change rate = offset for user comfort.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UserVentilationMinimumRoomTemperature</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">C</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Temperature limit over which comfort ventilation is activated.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UserVentilationMaximumRoomTemperature</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">C</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Temperature limit below which comfort ventilation is activated.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">InfiltrationAirChangeRate</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1/h</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Exchange rate for infiltration.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ShadingFactor</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Shading factor [0&#8230;&#8203;1].</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -3860,7 +3963,7 @@ The example below shows how the output of the models is referenced via the objec
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated 2020-09-14 16:41:24 +0200
+Last updated 2020-09-14 17:13:06 +0200
 </div>
 </div>
 <style>

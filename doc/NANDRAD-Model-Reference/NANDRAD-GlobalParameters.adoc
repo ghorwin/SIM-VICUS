@@ -14,6 +14,13 @@
 - how are cyclic annual simulations handled, how are continuous multi-year simulations handled
 
 .Simulation Parameters
+
+Hereafter all simulation parameters are described. All parameters are set as `IBK:Parameters`, `IBK:Flags` or `IBK:intPara` and apply globally for all objects like `zones`, `constructionInstances` etc, where the specific value can be set. This means that if you set `InitialRelativeHumidity` the value will only applied to objects such as `zones`. In <<simpara>> you can find an example for the parameters. 
+
+:xrefstyle: short
+
+[[simpara]]
+.Simulation Parameters
 ====
 [source,xml]
 ----
@@ -24,7 +31,7 @@
 ----
 ====
 
-The XML-Tags named <<IBK_Parameter>> with the XML-Attributes `name` and `unit` with the following entries can be defined:
+The XML tags named <<IBK_Parameter>> with the XML attributes `name` and `unit` with the following entries can be defined:
 [source,xml]
 ----
 <IBK:Parameter name="InitialTemperature" unit="C">5</IBK:Parameter>
@@ -36,9 +43,9 @@ The XML-Tags named <<IBK_Parameter>> with the XML-Attributes `name` and `unit` w
 [width="100%"]
 |====================
 | `name` | `unit`| Description | Format | usage 
-| *InitialTemperature* | C | Global initial temperature | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _optional_
-| *InitialRelativeHumidity* | % | Global initial relative humidity | 0 ... 100% | _optional_
-| *RadiationLoadFraction* | --- | Percentage of solar radiation gains attributed direcly to room 0..1. | 0...1 | _optional_
+| *InitialTemperature* | C | Global initial temperature for all objetcs (`zones`, `constructionInstances`, etc) | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _optional_
+| *InitialRelativeHumidity* | % | Global initial relative humidity for all objects, that can have a humidity value set (`zones`, air flows in `models`, etc) | 0 ... 100% | _optional_
+| *RadiationLoadFraction* | --- | Percentage of solar radiation gains attributed directly to the room 0..1. | 0...1 | _optional_
 | *UserThermalRadiationFraction* | --- | Percentage of heat that is emitted by long wave radiation from persons.  | 0...1 | _optional_
 | *EquipmentThermalLossFraction*   | --- | Percentage of energy from equipment load that is not available as thermal heat.  | 0 ... 1 | _optional_
 | *EquipmentThermalRadiationFraction* | --- | Percentage of heat that is emitted by long wave radiation from equipment.  | 0...1 | _optional_
@@ -51,7 +58,7 @@ The XML-Tags named <<IBK_Parameter>> with the XML-Attributes `name` and `unit` w
 |====================
 
 
-The XML-Tags named *IBK:IntPara* holding integer values with the XML-Attributes `name` can be defined:
+The XML tags named *IBK:IntPara* holding integer values with the XML attributes `name` can be defined:
 
 [source,xml]
 ----
@@ -68,7 +75,7 @@ The XML-Tags named *IBK:IntPara* holding integer values with the XML-Attributes 
 |====================
 
 
-The XML-Tags named *IBK:Flags* with the following XML-Attributes `name` can be defined. 
+The XML tags named `IBK:Flag` with the following XML attributes `name` can be defined. 
 
 [source,xml]
 ----

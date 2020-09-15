@@ -64,7 +64,8 @@ The following XML tags named `IBK:Parameters` with the XML attributes `name` and
 | `name` | `unit`| Description | Format | Usage 
 | *Volume* | m3 | Zone air volume | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _required_
 | *Area* | m2 | net Usage area of the ground floor (for area-related outputs and loads) | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _optional_
-| *Temperature* | C | Additional heat capacity | 0...1 | _optional_
+| *HeatCapacity* | J/K | Additional heat capacity | 0...1 | _optional_
+| *Temperature* | C | Temperature of the zone, if set `constant` | 0...1 | _optional_
 | *CO2Concentration* | g/m3 | CO2 concentration of the zone, if set `constant` | 0...1 | _optional_
 | *RelativeHumidity* | % | Temperature of the zone, if set `constant` | 0...1 | _optional_
 |====================
