@@ -3,17 +3,16 @@
 
 ## Overview
 
-In order to model building components such as Walls, Ceilings and Floors, etc. it is necessary to define some parameters for the Materials and then the Construction with the reference to an existing material. 
+In order to model building components such as Walls, Ceilings and Floors, etc. it is necessary to define some parameters for the materials and then define сonstructions composed of such materials.
 
 image::Mat_ConstInst.png[]
 
+[[materials]]
 ## Materials
 
-In the NANDRAD-Model the Materials-Section starts with an XML tag named `Materials`. In this each Material starts with an XML tag named `Material` with two XML attributes `id` and `displayName`.  
-Concerning the Material Parameters such as Density, Heat Capacity and Conductivity they need to be defined within the XML tag `IBK:Parameter` with the XML attributes `name` and `unit`.
-In the following it is described in detail.
+In the NANDRAD-Model the Materials section starts with an XML tag named `Materials`. 
 
-.Materials with Material Layers and Parameters
+.Materials with Parameters
 ====
 [source,xml]
 ----
@@ -28,33 +27,35 @@ In the following it is described in detail.
 		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
 		<IBK:Parameter name="Conductivity" unit="W/mK">0.02</IBK:Parameter>
 	</Material>
-</Materials
+</Materials>
 ----
 ====
 
-Inside the XML tag named `Materials` each Material starts with the XML tag `Material`. The following XML attributes need to be defined:
+In this tag each material property set starts with an XML tag named `Material` with two XML attributes `id` and `displayName`.  
 
 [options="header",cols="15%,55%,20%,10%",width="100%"]
 |====================
 | Attribute  | Description | Format | usage 
-| *id* | Dry density of the material. | positive Integer ( > 0 )  | _required_
-| *displayName*  | Specific heat capacity of the material. | string | _optional_
+| *id* | Unique id of the material. | positive Integer ( > 0 )  | _required_
+| *displayName*  |  Name of material (used for informative/error messages). | string | _optional_
 |====================
 
-The following XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` with the following entries need to be defined holding double values:
+Concerning the material parameters such as density, heat capacity and thermal conductivity they need to be defined within the XML tag `IBK:Parameter` (see <<IBK_Parameter>>):
 
-[options="header",cols="15%,15%,50%,10%,10%",width="100%"]
+[options="header",cols="15%,10%,45%,20%,10%",width="100%"]
 |====================
-| `name` | unit per default | Description | Format | usage 
-| *Density* | kg/m3 | Dry density of the material. | double | _required_
-| *HeatCapacity* | J/kgK | Specific heat capacity of the material. | double | _required_
-| *Conductivity* | W/mK | Thermal conductivity of the dry material. | double | _required_
+| `name` | Default Unit | Description | Value Range | Usage 
+| *Density* | kg/m3 | Dry density of the material. | > 1 kg/m3 | _required_
+| *HeatCapacity* | J/kgK | Specific heat capacity of the material. | > 100 J/kgK | _required_
+| *Conductivity* | W/mK | Thermal conductivity of the dry material.  | > 1e-5 W/mK | _required_
 |====================
 
+
+
+[[construction_types]]
 ## Construction Types
 
-The Construction is defined inside the Sections starting with an XML tag `Construction Types`. Inside the Section each Construction start with the XML tag named `Construction Type` with the XML attributes `id` and `displayName`. Inside that it is necessary to specify the Material Layers with the XML tag named `MaterialLayers` and finally the Material Layer with the XML tag `MaterialLayer` with the XML attributes `thickness` and `matId`. The `MaterialLayer` is always an empty Object since all needed Attributes are defined as XML attributes as mentioned before. 
-In the following it is described in detail.
+Constructions are defined inside the section starting with an XML tag `ConstructionTypes`.  
 
 .Construction Types with References to Material Objects
 ====
@@ -71,23 +72,23 @@ In the following it is described in detail.
 ----
 ====
 
-Inside the XML tag named `ConstructionTypes` each Construction starts with the XML tag `ConstructionType`. The following XML attributes need to be defined inside of this:
+Inside this section each construction definition starts with the XML tag named `ConstructionType` with the XML attributes `id` and optional `displayName`:
 
 [options="header",cols="15%,55%,20%,10%",width="100%"]
 |====================
 | Attribute  | Description | Format | usage 
-| *id* |  Unique id number. | positive Integer ( > 0 )  | _required_
-| *displayName*  |  name of construction. | string | _optional_
+| *id* |  Unique id number. | positive integer ( > 0 )  | _required_
+| *displayName*  |  Name of construction (used for informative/error messages). | string | _optional_
 |====================
 
-Furthermore each defined Construction has Material Layers encapsulated within the XML tag `MaterialLayers`. Each Material Layer needs the be defined with the XML tag named `MaterialLayer`. This Tag needs the XML attributes `thickness` and `matId`:
+A construction consists of one or more material layers. These are defined within the child XML tag named `MaterialLayers`. Each material layer is defined with the XML tag `MaterialLayer` with the following XML attributes:
 
 [options="header",cols="15%,55%,20%,10%",width="100%"]
 |====================
 | XML-Attribute  | Description | Format | usage 
-| `thickness` |  defines the Thickness of the Layer, per Default in `m` | positive Double ( > 0.0 )  | _required_
-| *matId*  |  refers to the a Material with the `id` defined in the `Materials` Section, | string | _required_
+| *thickness* |  defines the thickness of the layer in `m` | positive double ( > 0.0 )  | _required_
+| *matId*  |  refers to a material by unique material id number (`id` as defined in a `Material` tag), | string | _required_
 |====================
 
-
+The `MaterialLayer` does not have child tags since all needed Attributes are defined as XML attributes as mentioned before. 
 

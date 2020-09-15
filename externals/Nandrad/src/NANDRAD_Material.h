@@ -52,6 +52,9 @@ public:
 	/*! Returns true, if all parameters are the same (id and displayname are ignored). */
 	bool behavesLike(const Material & other) const;
 
+	/*! Checks for valid parameters (value ranges). */
+	void checkParameters();
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique id number. */

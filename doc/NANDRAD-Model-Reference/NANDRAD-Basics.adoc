@@ -63,7 +63,7 @@ Within the various specificiation sections of the project file some basic data t
 
 An XML tag with name `IBK:Parameter` defines a floating point value parameter, identified by a name and physical unit (mandatory XML-attributes `name` and `unit`). The value of the xml tag is the actual parameter value.
 
-.Parameters with different units
+.Parameters with Different Units
 ====
 [source,xml]
 ----
@@ -82,7 +82,7 @@ The units must be selected from the global unit list, see section <<units>>. Not
 
 Used for whole number parameters. Mandatory attribute `name` identifies the parameter. XML tag value is the parameter value. Not defining a parameter will mark it as _missing_, which means that either a default value is used or - in case of mandatory user parameters - an error is raised.
 
-.Whole number parameter definition
+.Whole Number (Integer) Parameter Definition
 ====
 [source,xml]
 ----
@@ -95,7 +95,7 @@ Used for whole number parameters. Mandatory attribute `name` identifies the para
 
 Used for flags. Mandatory attribute `name` identifies the flag. Not defining a flag will mark it as _missing_, which means that either a default value is used or - in case of mandatory user parameters - an error is raised.
 
-.Flag definition
+.Flag Definition
 ====
 [source,xml]
 ----
@@ -110,7 +110,7 @@ Recognized values for flag parameters are `true` and `1`  or `false` and `0`.
 
 A linear spline is effectively a data table of x and y values, where x values are strictly monotonically increasing values. Mandatory attribute `name` identifies the linear spline parameter. The child tags `X` and `Y` hold the actual values, with mandatory attribute `unit` defining the respective value unit. Number of x and y values must match.
 
-.Linear spline parameter definition
+.Linear Spline Parameter Definition
 ====
 [source,xml]
 ----
@@ -135,7 +135,7 @@ easily modify the placeholder paths to the directories on the local machine with
 
 The individual path placeholders are defined in the `DirectoryPlaceholders`:
 
-.Custom directory placeholders
+.Custom Directory Placeholders
 ====
 [source,xml]
 ----

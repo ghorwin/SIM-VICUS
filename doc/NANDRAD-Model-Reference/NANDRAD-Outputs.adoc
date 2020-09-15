@@ -237,6 +237,11 @@ By default (when the tag `TimeType` is not explicitely specified) the values are
 .Illustration of the various `TimeType` options
 image::TimeType_illustration.png[]
 
+[IMPORTANT]
+====
+It is important to note that average values are always averages of the values in the last output interval. So, even if the output unit is `kW/h`, for example  but  
+====
+
 ### Examples
 
 - Requesting fluxes across construction interfaces: object list must reference interfaces
@@ -250,6 +255,7 @@ First record: unsigned int - n (number of columns)
 Next n records: binary strings, leading size (unsigned int) and termination character (sanity checking)
 
 Next ?? records: unsigned int - n (for checking) and afterwards n doubles
+
 
 [[solver_log_files]]
 ## Solver log files

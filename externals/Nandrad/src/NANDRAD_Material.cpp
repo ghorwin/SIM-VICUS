@@ -20,6 +20,7 @@
 */
 
 #include "NANDRAD_Material.h"
+#include "NANDRAD_KeywordList.h"
 
 namespace NANDRAD {
 
@@ -42,6 +43,26 @@ bool Material::behavesLike(const Material & other) const {
 			return false;
 	}
 	return true;
+}
+
+
+void Material::checkParameters() {
+	FUNCID(Material::checkParameters);
+
+	// check for mandatory and required parameters
+
+	for (unsigned int i=0; i<=P_Conductivity; ++i) {
+		if (m_para[i].name.empty())
+			throw IBK::Exception( IBK::FormatString("Parameter '%1' missing!")
+								  .arg(NANDRAD::KeywordList::Keyword("Material::para_t", (int)i)), FUNC_ID);
+	}
+	// check for meaningful value ranges
+	m_para[P_Density].checkedValue("kg/m3", "kg/m3", 0.01, false, std::numeric_limits<double>::max(), true,
+								   "Density must be > 0.01 kg/m3.");
+	m_para[P_HeatCapacity].checkedValue("J/kgK", "J/kgK", 100, true, std::numeric_limits<double>::max(), true,
+								   "Heat capacity must be > 100 J/kgK.");
+	m_para[P_Conductivity].checkedValue("W/mK", "W/mK", 1e-5, true, std::numeric_limits<double>::max(), true,
+								   "Thermal conductivity must be > 1e-5 W/mK.");
 }
 
 } // namespace NANDRAD

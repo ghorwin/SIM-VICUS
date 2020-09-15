@@ -398,7 +398,7 @@ void NandradModel::stepCompleted(double t, const double * /*y*/ ) {
 
 
 SOLFRA::LESInterface * NandradModel::lesInterface() {
-    FUNCID(NandradModel::lesInterface);
+	FUNCID(NandradModel::lesInterface);
 
 	if (m_lesSolver != nullptr)
 		return m_lesSolver;
@@ -510,7 +510,7 @@ SOLFRA::JacobianInterface *  NandradModel::jacobianInterface() {
 
 
 SOLFRA::IntegratorInterface * NandradModel::integratorInterface() {
-    FUNCID(NandradModel::integratorInterface);
+	FUNCID(NandradModel::integratorInterface);
 
 	if (m_integrator != nullptr)
 		return m_integrator;
@@ -616,7 +616,7 @@ void NandradModel::writeMetrics(double simtime, std::ostream * metricsFile) {
 	(void)metricsFile;
 
 #ifdef IBK_STATISTICS
-    FUNCID(NandradModel::writeMetrics);
+	FUNCID(NandradModel::writeMetrics);
 	std::string ustr = IBK::Time::suitableTimeUnit(simtime);
 	double tTimeEval = TimerSum(NANDRAD_TIMER_TIMEDEPENDENT);
 	IBK::IBK_Message(IBK::FormatString("Nandrad model: Time Function evaluation    = %1 (%2 %%)  %3\n")
@@ -1619,6 +1619,16 @@ void NandradModel::initWallsAndInterfaces() {
 	// now process all construction types and:
 	// - check for valid parameters
 	// - check for valid material references (and update these material refs)
+
+	for (unsigned int i=0; i<m_project->m_materials.size(); ++i) {
+		NANDRAD::Material & mat = m_project->m_materials[i];
+		try {
+			mat.checkParameters();
+		}
+		catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error initializing material #%1 '%2'.").arg(i).arg(mat.m_displayName), FUNC_ID);
+		}
+	}
 
 	for (unsigned int i=0; i<m_project->m_constructionTypes.size(); ++i) {
 		NANDRAD::ConstructionType & ct = m_project->m_constructionTypes[i];
