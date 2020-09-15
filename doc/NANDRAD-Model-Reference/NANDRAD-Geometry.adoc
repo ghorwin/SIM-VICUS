@@ -1,5 +1,5 @@
 :imagesdir: ./images
-[[ZoneDocumentation]]
+[[zones]]
 # Zones
 
 In order to model buildings, it is necessary to define the individual rooms with the relevant parameters. 
@@ -71,7 +71,7 @@ The following XML tags named `IBK:Parameters` with the XML attributes `name` and
 |====================
 
 
-[[ConstructionInstancesDocumentation]]
+[[construction_instances]]
 # Constructioninstances
 
 .Construction Instances

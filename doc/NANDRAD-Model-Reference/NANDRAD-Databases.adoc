@@ -90,5 +90,5 @@ A construction consists of one or more material layers. These are defined within
 | *matId*  |  refers to a material by unique material id number (`id` as defined in a `Material` tag), | string | _required_
 |====================
 
-The `MaterialLayer` does not have child tags since all needed Attributes are defined as XML attributes as mentioned before. 
+The `MaterialLayer` does not have child tags since all needed data are defined as XML attributes as described above. 
 

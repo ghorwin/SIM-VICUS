@@ -4,7 +4,7 @@
 
 ## Overview
 
-Climatic loads in NANDRAD are provided by means of climate data files. The climatic loads model is a purely time-dependent model without other input dependencies. For solar radiation calculation, it needs information on the building location, and also the orientation and inclination of the various surfaces.
+Climatic loads in NANDRAD are provided by means of climate data files. For solar radiation calculation it needs information on the building location (usually provided in the climate file), and also the orientation and inclination of the various construction surfaces (defined for outside surfaces, see <<construction_instances>>).
 
 ## Specification
 
@@ -22,22 +22,18 @@ Information about location and climate data is stored in the `Location` section 
 </Location>
 ----
 
-Parameters (see section <<basic_types>> for into on types):
+Parameters (see section <<IBK_Parameter>>):
 
-.Parameters that can be set as an *IBK:Parameter* with the Attributes `name` and `unit`. 
-[options="header"]
-[cols="10%,^ 8%,52%,^ 10%,^ 10%"]
-[width="100%"]
+[options="header",cols="15%,10%,45%,20%,10%",width="100%"]
 |====================
-|`name`|`unit`|Description|Format|usage
+|`name`|Default Unit|Description|Value Range |Usage
 |*Albedo*|---|Used for diffuse solar radiation calculation (see <<loads_solar_radiation>>)|[0,1]|_required_
-|*Altitude*|m|later needed for specific altitude-related parameters (**TODO**)|positive double ({nbsp}>{nbsp}0.0{nbsp})|_optional_
-|*Longitude*|Deg|If specified, overrides the location parameter `Longitude` stored therein (see <<location_settings>>).|[-180,180]|_optional_
-|*Latitude*|Deg|If specified, they override the location parameter `Latitude` stored therein (see <<location_settings>>).|[-90,90]|_optional_
+|*Altitude*|m|later needed for specific altitude-related parameters (**TODO**)| > 0 m)|_optional_
+|*Longitude*|Deg|If specified, overrides the location parameter `Longitude` of the climate data file (see <<location_settings>>).|[-180,180] Deg|_optional_
+|*Latitude*|Deg|If specified, they override the location parameter `Latitude` of the climate data file (see <<location_settings>>).|[-90,90] Deg|_optional_
 |====================
 
-
-* The optional flag `PerezDiffuseRadiationModel` defines whether to use the Perez-Model for diffuse solar radiation calculation (when `true`), or the isotropic radiation model (`false`). Default setting is `false`.
+* The optional flag `PerezDiffuseRadiationModel` defines whether to use the Perez-Model for diffuse solar radiation calculation (when `true`), or the isotropic radiation model (`false`). Default setting is `false` (see <<IBK_Flag>>).
 * The `<ClimateFileName>` tag defines the path to the climate data file.
 
 [[loads_climate_files]]

@@ -92,8 +92,8 @@ table {
 </li>
 <li><a href="#path_placeholders">2.3. Path Placeholders</a></li>
 <li><a href="#project_info">2.4. Project Information</a></li>
-<li><a href="#ZoneDocumentation">2.5. Zones</a></li>
-<li><a href="#ConstructionInstancesDocumentation">2.6. Constructioninstances</a></li>
+<li><a href="#zones">2.5. Zones</a></li>
+<li><a href="#construction_instances">2.6. Constructioninstances</a></li>
 <li><a href="#InterfacesDocumentation">2.7. Interfaces (construction boundary conditions)</a>
 <ul class="sectlevel3">
 <li><a href="#_heat_conduction">2.7.1. Heat Conduction</a></li>
@@ -120,7 +120,7 @@ table {
 <li><a href="#_implementation">2.11.4. Implementation</a></li>
 </ul>
 </li>
-<li><a href="#_schedules">2.12. Schedules</a>
+<li><a href="#schedules">2.12. Schedules</a>
 <ul class="sectlevel3">
 <li><a href="#_overview_4">2.12.1. Overview</a></li>
 <li><a href="#_defining_schedules">2.12.2. Defining schedules</a></li>
@@ -252,11 +252,11 @@ table {
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Zones</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Zone specifications &#8594; <a href="#zones">[zones]</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Zone specifications &#8594; <a href="#zones">Zones</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ConstructionInstances</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Building components and boundary conditions &#8594; <a href="#construction_instances">[construction_instances]</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Building components and boundary conditions &#8594; <a href="#construction_instances">Constructioninstances</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ConstructionTypes</code></p></td>
@@ -272,7 +272,7 @@ table {
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Schedules</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Definition of scheduled parameters &#8594; <a href="#schedules">[schedules]</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Definition of scheduled parameters &#8594; <a href="#schedules">Schedules</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Outputs</code></p></td>
@@ -409,7 +409,7 @@ easily modify the placeholder paths to the directories on the local machine with
 </div>
 </div>
 <div class="sect2">
-<h3 id="ZoneDocumentation">2.5. Zones</h3>
+<h3 id="zones">2.5. Zones</h3>
 <div class="paragraph">
 <p>In order to model buildings, it is necessary to define the individual rooms with the relevant parameters.
 A zone defines a thermal zone/room with a single air temperature.</p>
@@ -572,7 +572,7 @@ this is used as initial condition.</p>
 </table>
 </div>
 <div class="sect2">
-<h3 id="ConstructionInstancesDocumentation">2.6. Constructioninstances</h3>
+<h3 id="construction_instances">2.6. Constructioninstances</h3>
 <div class="exampleblock">
 <div class="title">Example 7. Construction Instances</div>
 <div class="content">
@@ -1356,7 +1356,7 @@ In the following it is described in detail.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>The <code>MaterialLayer</code> does not have child tags since all needed Attributes are defined as XML attributes as mentioned before.</p>
+<p>The <code>MaterialLayer</code> does not have child tags since all needed data are defined as XML attributes as described above.</p>
 </div>
 </div>
 </div>
@@ -1365,7 +1365,7 @@ In the following it is described in detail.</p>
 <div class="sect3">
 <h4 id="_overview_3">2.11.1. Overview</h4>
 <div class="paragraph">
-<p>Climatic loads in NANDRAD are provided by means of climate data files. The climatic loads model is a purely time-dependent model without other input dependencies. For solar radiation calculation, it needs information on the building location, and also the orientation and inclination of the various surfaces.</p>
+<p>Climatic loads in NANDRAD are provided by means of climate data files. For solar radiation calculation it needs information on the building location (usually provided in the climate file), and also the orientation and inclination of the various construction surfaces (defined for outside surfaces, see <a href="#construction_instances">Constructioninstances</a>).</p>
 </div>
 </div>
 <div class="sect3">
@@ -1386,61 +1386,60 @@ In the following it is described in detail.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Parameters (see section <a href="#basic_types">Basic Data Types in NANDRAD Project File Specification</a> for into on types):</p>
+<p>Parameters (see section <a href="#IBK_Parameter">IBK:Parameter</a>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. Parameters that can be set as an <strong>IBK:Parameter</strong> with the Attributes <code>name</code> and <code>unit</code>.</caption>
 <colgroup>
-<col style="width: 11.1111%;">
-<col style="width: 8.8888%;">
-<col style="width: 57.7777%;">
-<col style="width: 11.1111%;">
-<col style="width: 11.1113%;">
+<col style="width: 15%;">
+<col style="width: 10%;">
+<col style="width: 45%;">
+<col style="width: 20%;">
+<col style="width: 10%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top"><code>name</code></th>
-<th class="tableblock halign-center valign-top"><code>unit</code></th>
+<th class="tableblock halign-left valign-top">Default Unit</th>
 <th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-center valign-top">Format</th>
-<th class="tableblock halign-center valign-top">usage</th>
+<th class="tableblock halign-left valign-top">Value Range</th>
+<th class="tableblock halign-left valign-top">Usage</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Albedo</strong></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">---</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Used for diffuse solar radiation calculation (see <a href="#loads_solar_radiation">Solar Radiation Calculation</a>)</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">[0,1]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[0,1]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>required</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Altitude</strong></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">m</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">m</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">later needed for specific altitude-related parameters (<strong>TODO</strong>)</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">positive double (&#160;&gt;&#160;0.0&#160;)</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&gt; 0 m)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Longitude</strong></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">Deg</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If specified, overrides the location parameter <code>Longitude</code> stored therein (see <a href="#location_settings">Building/Station location</a>).</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">[-180,180]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If specified, overrides the location parameter <code>Longitude</code> of the climate data file (see <a href="#location_settings">Building/Station location</a>).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[-180,180] Deg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Latitude</strong></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">Deg</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If specified, they override the location parameter <code>Latitude</code> stored therein (see <a href="#location_settings">Building/Station location</a>).</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">[-90,90]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If specified, they override the location parameter <code>Latitude</code> of the climate data file (see <a href="#location_settings">Building/Station location</a>).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[-90,90] Deg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 </tbody>
 </table>
 <div class="ulist">
 <ul>
 <li>
-<p>The optional flag <code>PerezDiffuseRadiationModel</code> defines whether to use the Perez-Model for diffuse solar radiation calculation (when <code>true</code>), or the isotropic radiation model (<code>false</code>). Default setting is <code>false</code>.</p>
+<p>The optional flag <code>PerezDiffuseRadiationModel</code> defines whether to use the Perez-Model for diffuse solar radiation calculation (when <code>true</code>), or the isotropic radiation model (<code>false</code>). Default setting is <code>false</code> (see <a href="#IBK_Flag">IBK:Flag</a>).</p>
 </li>
 <li>
 <p>The <code>&lt;ClimateFileName&gt;</code> tag defines the path to the climate data file.</p>
@@ -1593,7 +1592,7 @@ In the following it is described in detail.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_schedules">2.12. Schedules</h3>
+<h3 id="schedules">2.12. Schedules</h3>
 <div class="sect3">
 <h4 id="_overview_4">2.12.1. Overview</h4>
 <div class="paragraph">
@@ -2068,7 +2067,7 @@ Example:
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Simulation Parameters that can be set as <strong>IBK:Parameter</strong> with the Attributes <code>name</code> and <code>unit</code></caption>
+<caption class="title">Table 12. Simulation Parameters that can be set as <strong>IBK:Parameter</strong> with the Attributes <code>name</code> and <code>unit</code></caption>
 <colgroup>
 <col style="width: 30%;">
 <col style="width: 8%;">
@@ -2181,7 +2180,7 @@ Example:
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. Simulation Parameter that can be set as an <strong>IBK:IntPara</strong> with an Attribute <code>name</code></caption>
+<caption class="title">Table 13. Simulation Parameter that can be set as an <strong>IBK:IntPara</strong> with an Attribute <code>name</code></caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 70%;">
@@ -2211,7 +2210,7 @@ Example:
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. Simulation Parameter that can be set as an <strong>IBK:Flag</strong> with an Attribute <code>name</code></caption>
+<caption class="title">Table 14. Simulation Parameter that can be set as an <strong>IBK:Flag</strong> with an Attribute <code>name</code></caption>
 <colgroup>
 <col style="width: 30%;">
 <col style="width: 60%;">
@@ -2332,7 +2331,7 @@ Example:
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. Parameters that can be set as an <strong>IBK:Parameter</strong> with the Attributes <code>name</code> and <code>unit</code>.</caption>
+<caption class="title">Table 15. Parameters that can be set as an <strong>IBK:Parameter</strong> with the Attributes <code>name</code> and <code>unit</code>.</caption>
 <colgroup>
 <col style="width: 30%;">
 <col style="width: 8%;">
@@ -2501,7 +2500,7 @@ Example:
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. Parameters set as IBK:Flag with an Attribute <code>name</code> that enbables functionalities</caption>
+<caption class="title">Table 16. Parameters set as IBK:Flag with an Attribute <code>name</code> that enbables functionalities</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 55%;">
@@ -2552,7 +2551,7 @@ Example:
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. Integrator Parameters that are set as <strong>Integrator</strong></caption>
+<caption class="title">Table 17. Integrator Parameters that are set as <strong>Integrator</strong></caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 70%;">
@@ -2595,7 +2594,7 @@ Example:
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. LESolver Parameters that are set as <strong>LESolver</strong></caption>
+<caption class="title">Table 18. LESolver Parameters that are set as <strong>LESolver</strong></caption>
 <colgroup>
 <col style="width: 15%;">
 <col style="width: 75%;">
@@ -2633,7 +2632,7 @@ Example:
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. Preconditioner Parameters that can be set as <strong>Preconditioner</strong></caption>
+<caption class="title">Table 19. Preconditioner Parameters that can be set as <strong>Preconditioner</strong></caption>
 <colgroup>
 <col style="width: 15%;">
 <col style="width: 65%;">
@@ -3394,7 +3393,7 @@ The boundary conditions are defined via the interfaces <code>InterfaceA</code> a
 <p>In the example the wall Enclosing Surfaces is shown. The selected wall is defined by an area <code>A = 15 m²</code>, a wall construction with the <code>id = 101</code> and an inside and outside boundary condition. The outside boundary condition is described with a constant transition coefficient of <code>h = 15 W/(m²K)</code>, a solar absorptance of <code>a = 0.6</code> and a long-wave absorption/emission of <code>ε = 0.9</code>. On the inside, only a transition coefficient <code>h = 10 W/(m²K)</code> is described.</p>
 </div>
 <div class="paragraph">
-<p>Further setting options can be found in the detailed <a href="#construction_instances">[construction_instances]</a> documentation.</p>
+<p>Further setting options can be found in the detailed <a href="#construction_instances">Section 2.6</a> documentation.</p>
 </div>
 <div class="paragraph">
 <p>Example:</p>
@@ -4080,7 +4079,7 @@ The example below shows how the output of the models is referenced via the objec
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated 2020-09-15 22:03:19 +0200
+Last updated 2020-09-15 22:15:43 +0200
 </div>
 </div>
 <style>
