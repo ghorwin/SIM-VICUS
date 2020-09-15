@@ -102,6 +102,7 @@ Basic rule:
 - **during calculation** (in parallel code sections), **avoid throwing Exceptions** (i.e. write code that cannot throw); in error cases (like div by zero), test explicitely for such failure conditions and leave function with error codes
 
 When throwing exceptions:
+
 - use function identifier created with `FUNCID()` macro:
 
 [source,c++]
