@@ -20,7 +20,7 @@
 --maincolor:#FFFFFF;
 --primarycolor:#a90e22;
 --secondarycolor:#9f1d0b;
---tertiarycolor: #772953;
+--tertiarycolor: #ededed;
 --sidebarbackground:#CCC;
 --linkcolor:#b71c1c;
 --linkcoloralternate:#f44336;
@@ -42,10 +42,10 @@ a.bare:visited {color: #204f83;}
 a:hover {color: #317ed4;}
 #toc.toc2 a:hover {color: #f1b464;}*/
 /* code{background-color: var(--secondarycolor) !important;color:var(--white)} */
-code,kbd,pre,samp{font-family:monospace;font-size:0.8em}
+code,kbd,pre,samp{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;monospace;font-size:1em}
 
 /* Table styles */
-th{background-color: var(--tertiarycolor);color:var(--white) !important;}
+th{background-color: var(--tertiarycolor);color:var(--black) !important;}
 
 #toctitle{color:var(--primarycolor);font-family: "Roboto Condensed",sans-serif;font-size: 1.6875em;}
 #toc.toc2{background-color:#f4f8fd;}
@@ -94,6 +94,7 @@ table {
 <li><a href="#_documentation">2.1.8. Documentation</a></li>
 <li><a href="#_git_workflow">2.1.9. Git Workflow</a></li>
 <li><a href="#_tips_and_tricks">2.1.10. Tips and tricks</a></li>
+<li><a href="#qt_creator">2.1.11. Qt Creator</a></li>
 </ul>
 </li>
 <li><a href="#_code_quality">2.2. Code Quality</a>
@@ -186,7 +187,7 @@ table {
 </ul>
 </div>
 <div class="paragraph">
-<p>Below I&#8217;ve collected a bunch of rules/guidelines that help us achieve this goal of getting nice code, without restricting the individual codeing style of each developer too much.</p>
+<p>Below I&#8217;ve collected a bunch of rules/guidelines that help us achieve this goal of getting nice code, without restricting the individual coding style of each developer too much.</p>
 </div>
 <div class="sect3">
 <h4 id="_programming_efficiency">2.1.1. Programming efficiency</h4>
@@ -197,13 +198,13 @@ table {
 <p>Basic rule: <strong>Know your tools and choose the right tool for the job!</strong></p>
 </div>
 <div class="paragraph">
-<p>For programmers, you need a good text edtor (for everything that&#8217;s not actual code, or for quick hacks) and a decent development environment (IDE).  I&#8217;d say Qt Creator wins big time against Visial Studio, XCode and any other stuff out there, but let&#8217;s not start an <strong>emacs vs. the world</strong> flame war here :-).</p>
+<p>For programmers, you need a good text edtor (for everything that&#8217;s not actual code, or for quick hacks) and a decent development environment (IDE).  I&#8217;d say <em>Qt Creator</em> wins big time against Visial Studio, XCode and any other stuff out there, but let&#8217;s not start an <strong>emacs vs. the world</strong> flame war here :-).</p>
 </div>
 <div class="paragraph">
-<p>Of course, you also need to handle svn/git, diff and merge tools etc. but text editor and IDE are the most important.</p>
+<p>Of course, you also need to handle svn/git, diff and merge tools etc. but text editor and IDE are the most important. I&#8217;d suggest <em>SmartGit</em> as git client - not because it is the best out there, but because most of the team members use it and can help you better with a problem.</p>
 </div>
 <div class="paragraph">
-<p>Knowing the capabilities of your particular IDE, you can write code such, that already while typing you can use auto-completion to its maximum. This will speed up your coding a lot and save you much unnecessary compilation time.
+<p>Knowing the capabilities of your particular IDE you can write code such, that already while typing you can use auto-completion to its maximum. This will speed up your coding a lot and save you much unnecessary compilation time.
 With code-checking-while-typing (see clang checks in Qt Creator), you&#8217;ll catch already 80% of typical compiler bugs, so we should use this.</p>
 </div>
 <div class="paragraph">
@@ -332,9 +333,17 @@ With code-checking-while-typing (see clang checks in Qt Creator), you&#8217;ll c
 <div class="sect3">
 <h4 id="_exception_handling">2.1.7. Exception handling</h4>
 <div class="paragraph">
-<p>Basic rule:
-- during initialization, throw <code>IBK::Exception</code> objects (and <strong>only</strong> <code>IBK::Exception</code> objects in <strong>all code that uses the IBK library</strong>) : reason: cause of exception becomes reasonably clear from the exception message string and context and this makes catch-and-rethrow-code so much easier (see below).
-- <strong>during calculation</strong> (in parallel code sections), <strong>avoid throwing Exceptions</strong> (i.e. write code that cannot throw); in error cases (like div by zero), test explicitely for such failure conditions and leave function with error codes</p>
+<p>Basic rule:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>during initialization, throw <code>IBK::Exception</code> objects (and <strong>only</strong> <code>IBK::Exception</code> objects in <strong>all code that uses the IBK library</strong>) : reason: cause of exception becomes reasonably clear from the exception message string and context and this makes catch-and-rethrow-code so much easier (see below).</p>
+</li>
+<li>
+<p><strong>during calculation</strong> (in parallel code sections), <strong>avoid throwing Exceptions</strong> (i.e. write code that cannot throw); in error cases (like div by zero), test explicitely for such failure conditions and leave function with error codes</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>When throwing exceptions:
@@ -457,10 +466,13 @@ Physical variables used for calculation should always be stored in base SI units
 <li>
 <p>use different commits for different features so that later we can distingish based on commit logs when a certain change was made</p>
 </li>
+<li>
+<p><strong>never ever commit generated binary files</strong> (object code files, executables, binary files in general), as always, there are exceptions to this rule, for example PDFs for documentation etc, but keep in mind that all this stuff stays in the repository (eventually blowing it up to unreasonable sizes&#8230;&#8203; no one wants to download gigabytes of reposity data)</p>
+</li>
 </ul>
 </div>
 <div class="paragraph">
-<p>For now, try to avoid (lengthy) feature branches. However, if you plan to do a larger change and possibly work on the master at the same time, feature branches are a good choice.</p>
+<p>For now, try to avoid (lengthy) feature branches. However, if you plan to do a larger change (which might break compilation for some time to come) and, possibly, work on the master at the same time, feature branches are a good choice.</p>
 </div>
 </div>
 <div class="sect3">
@@ -468,7 +480,7 @@ Physical variables used for calculation should always be stored in base SI units
 <div class="sect4">
 <h5 id="_detecting_uninitialized_variable_access_during_debugging">Detecting uninitialized variable access during debugging</h5>
 <div class="paragraph">
-<p>Accessing not initialized member variables or <strong>even worse</strong>, accessing member variables initialized with default values (hereby skipping over mandatory initialization steps), can be hard to track during development/debuging.</p>
+<p>Accessing not initialized member variables or <strong>even worse</strong>, accessing member variables initialized with default values (hereby skipping over mandatory initialization steps), can be hard to track during development/debugging.</p>
 </div>
 <div class="paragraph">
 <p>Hence initialize variables that <strong>need to be initialized</strong> with values you will recognized. Using C++11 features, you should write code like:</p>
@@ -486,6 +498,16 @@ Physical variables used for calculation should always be stored in base SI units
 <span class="p">};</span></code></pre>
 </div>
 </div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="qt_creator">2.1.11. Qt Creator</h4>
+<div class="olist upperalpha">
+<ol class="upperalpha" type="A">
+<li>
+<p>I&#8217;ll add a screenshot based tutorial on Qt Creator settings soon &#8230;&#8203;</p>
+</li>
+</ol>
 </div>
 </div>
 </div>
@@ -1049,7 +1071,7 @@ Total initialization time: 802 ms
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated 2020-09-07 11:15:44 +0200
+Last updated 2020-09-15 10:40:57 +0200
 </div>
 </div>
 <style>

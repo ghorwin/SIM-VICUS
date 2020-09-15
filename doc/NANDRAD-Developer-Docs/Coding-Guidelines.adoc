@@ -21,7 +21,7 @@ Well, in my humble opinion this is mostly achieved by
 - using conventions that save you the trouble of remembering each and every variable/function etc.
 - write code that makes it easy for your development environment to assist *you* (see also section <<qt_creator,Qt Creator>> below)
 
-Below I've collected a bunch of rules/guidelines that help us achieve this goal of getting nice code, without restricting the individual codeing style of each developer too much.
+Below I've collected a bunch of rules/guidelines that help us achieve this goal of getting nice code, without restricting the individual coding style of each developer too much.
 
 ## Programming efficiency
 
@@ -29,11 +29,11 @@ We are a small team and need to get the most out of our programming time.
 
 Basic rule: **Know your tools and choose the right tool for the job!**
 
-For programmers, you need a good text edtor (for everything that's not actual code, or for quick hacks) and a decent development environment (IDE).  I'd say Qt Creator wins big time against Visial Studio, XCode and any other stuff out there, but let's not start an *emacs vs. the world* flame war here :-). 
+For programmers, you need a good text edtor (for everything that's not actual code, or for quick hacks) and a decent development environment (IDE).  I'd say _Qt Creator_ wins big time against Visial Studio, XCode and any other stuff out there, but let's not start an *emacs vs. the world* flame war here :-). 
 
-Of course, you also need to handle svn/git, diff and merge tools etc. but text editor and IDE are the most important.
+Of course, you also need to handle svn/git, diff and merge tools etc. but text editor and IDE are the most important. I'd suggest _SmartGit_ as git client - not because it is the best out there, but because most of the team members use it and can help you better with a problem.
 
-Knowing the capabilities of your particular IDE, you can write code such, that already while typing you can use auto-completion to its maximum. This will speed up your coding a lot and save you much unnecessary compilation time.
+Knowing the capabilities of your particular IDE you can write code such, that already while typing you can use auto-completion to its maximum. This will speed up your coding a lot and save you much unnecessary compilation time.
 With code-checking-while-typing (see clang checks in Qt Creator), you'll catch already 80% of typical compiler bugs, so we should use this.
 
 Also, some of the naming conventions below help in an IDE to be fast, for example the `m_` prefix in member variable names, really speed up coding. You need to access a member variable: type `m_` and you'll get only the member variables in the auto-completion, no mistake with local variables is possible. 
@@ -97,10 +97,12 @@ The reason for having strict rules for these access functions is two-fold:
 ## Exception handling
 
 Basic rule:
+
 - during initialization, throw `IBK::Exception` objects (and **only** `IBK::Exception` objects in **all code that uses the IBK library**) : reason: cause of exception becomes reasonably clear from the exception message string and context and this makes catch-and-rethrow-code so much easier (see below).
 - **during calculation** (in parallel code sections), **avoid throwing Exceptions** (i.e. write code that cannot throw); in error cases (like div by zero), test explicitely for such failure conditions and leave function with error codes
 
 When throwing exceptions:
+
 - use function identifier created with `FUNCID()` macro:
 
 [source,c++]
@@ -192,15 +194,16 @@ Since we are a small team, and we want to have close communication of new featur
 - before pulling (potentially conflicting) changes from *origin/master*, commit all your local changes and ideally get rid of temporary files -> avoid stashing your files, since applying the stash may also give rise to conflicts and not everyone can handle this nicely
 - resolve any conflicts locally in your working directory, and take care not to overwrite other people's code
 - use different commits for different features so that later we can distingish based on commit logs when a certain change was made
+- **never ever commit generated binary files** (object code files, executables, binary files in general), as always, there are exceptions to this rule, for example PDFs for documentation etc, but keep in mind that all this stuff stays in the repository (eventually blowing it up to unreasonable sizes... no one wants to download gigabytes of reposity data)
 
-For now, try to avoid (lengthy) feature branches. However, if you plan to do a larger change and possibly work on the master at the same time, feature branches are a good choice.
+For now, try to avoid (lengthy) feature branches. However, if you plan to do a larger change (which might break compilation for some time to come) and, possibly, work on the master at the same time, feature branches are a good choice.
 
 
 ## Tips and tricks
 
 ### Detecting uninitialized variable access during debugging
 
-Accessing not initialized member variables or *even worse*, accessing member variables initialized with default values (hereby skipping over mandatory initialization steps), can be hard to track during development/debuging.
+Accessing not initialized member variables or *even worse*, accessing member variables initialized with default values (hereby skipping over mandatory initialization steps), can be hard to track during development/debugging.
 
 Hence initialize variables that **need to be initialized** with values you will recognized. Using C++11 features, you should write code like:
 
@@ -216,3 +219,8 @@ class SomeClass {
     double      m_cachedCalculationValue = 999; 
 };
 ----
+
+[[qt_creator]]
+## Qt Creator
+
+.... I'll add a screenshot based tutorial on Qt Creator settings soon ...

@@ -5,13 +5,8 @@
 - parameters controlling model accuracy
 - parameters controlling performance
 
+[[simulation_parameters]]
 ## Simulation Parameters
-
-### Simulation time and absolute time reference
-
-- how is the simulation time defined
-- how is the absolute time obtained (start year and start time)
-- how are cyclic annual simulations handled, how are continuous multi-year simulations handled
 
 .Simulation Parameters
 
@@ -94,7 +89,34 @@ The XML tags named `IBK:Flag` with the following XML attributes `name` can be de
 | *ExportClimateDataFMU* |  Flag activating FMU export of climate data. | _optional_
 |====================
 
-    
+[[simulation_interval]]
+### Simulation time interval
+
+The tag `SimulationParameters` also contains the start and end of the simulation. By default, the simulation time interval is set to span a full year, starting at midnight January 1st. It is, however, possible to define a different time interval, thus also defining a simulation that runs longer than a year.
+
+This is done in the child tag `Interval`:
+
+.Simulation interval starting on February 1st (just after the first 31 days of January are through), and running for 60 days
+====
+[source,xml]
+----
+<Interval>
+	<IBK:Parameter name="Start" unit="d">31</IBK:Parameter>
+	<IBK:Parameter name="End" unit="d">91</IBK:Parameter>
+</Interval>
+----
+====
+
+The start and end of a simulation are always defined in __simulation time__, explained in the next section.
+
+#### Simulation time and absolute time reference
+
+- how is the simulation time defined
+- how is the absolute time obtained (start year and start time)
+- how are cyclic annual simulations handled, how are continuous multi-year simulations handled
+
+
+[[solver_parameters]]
 ## Solver Parameters
 
 Hereafter all parameters that are required for the solver are described.
