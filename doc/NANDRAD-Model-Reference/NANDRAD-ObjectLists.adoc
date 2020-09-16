@@ -1,0 +1,32 @@
+:imagesdir: ./images
+[[object_lists]]
+# Object Lists and Result References
+
+## Model Objects
+
+Whenever it is necessary to reference a calculation result (of a model object), this is done via __ObjectLists__. 
+
+In NANDRAD, physical equations are organized in terms of model objects, for example zones or constructions. 
+
+TODO
+
+.Definition of Several Object Lists
+[source,xml]
+----
+<ObjectLists>
+	<ObjectList name="All zones">
+		<FilterID>*</FilterID>
+		<ReferenceType>Zone</ReferenceType>
+	</ObjectList>
+	<ObjectList name="Zone Var01">
+		<FilterID>1</FilterID>
+		<ReferenceType>Zone</ReferenceType>
+	</ObjectList>
+	<ObjectList name="InfiltrationModel">
+		<FilterID>501</FilterID>
+		<ReferenceType>Model</ReferenceType>
+	</ObjectList>
+	...
+</ObjectLists>
+----
+

@@ -1,12 +1,12 @@
 :imagesdir: ./images
 # Embedded Databases (Materials and Constructions)
 
-In order to model building components such as walls, ceilings and floors, etc. it is necessary to define some parameters for the materials and then define сonstructions composed of such materials. These parameters are stored in 
+In order to model building components such as walls, ceilings and floors, etc. it is necessary to define some parameters for the materials and then define сonstructions composed of such materials. These parameters are stored in databases, which are actually lists of XML objects.
 
 [[materials]]
 ## Materials
 
-In the NANDRAD-Model the materials database section starts with an XML tag named `Materials`. 
+In the NANDRAD project file the materials database section starts with an XML tag named `Materials`. 
 
 .Materials with Parameters
 ====

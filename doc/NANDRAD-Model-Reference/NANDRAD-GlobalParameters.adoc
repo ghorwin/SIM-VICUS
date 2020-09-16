@@ -31,7 +31,7 @@ Hereafter all simulation parameters are described. All parameters are set as `IB
 ----
 ====
 
-Floating point parameters (see also section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
+Floating point parameters (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
 
 [options="header",cols="20%,15%,35%,20%,10%",width="100%"]
 |====================
@@ -51,24 +51,26 @@ Floating point parameters (see also section <<IBK_Parameter>> for a description 
 |====================
 
 
-Whole number parameters (see also section <<IBK_IntPara>> for a description of the `IBK:IntPara` tag):
+Whole number parameters (see section <<IBK_IntPara>> for a description of the `IBK:IntPara` tag):
 
-[options="header",cols="15%,75%,10%",width="100%"]
+[options="header",cols="20%,60%,10%,10%",width="100%"]
 |====================
-| `name`  | Description | Usage 
-| *StartYear* |  Start year of the simulation, per default set to *2001* | _optional_
+| Name  | Description | Default | Usage 
+| `StartYear` |  Start year of the simulation | _2001_ | _optional_
 |====================
 
-Flags and options (see also section <<IBK_Flag>> for a description of the `IBK:Flag` tag):
+Flags and options (see section <<IBK_Flag>> for a description of the `IBK:Flag` tag):
 
-[options="header",cols="15%,65%,10%,10%",width="100%"]
+[options="header",cols="20%,60%,10%,10%",width="100%"]
 |====================
-| `name` | Description | Default | Usage 
-| *EnableMoistureBalance* |  Flag activating moisture balance calculation if enabled | _false_ | _optional_
-| *EnableCO2Balance* |  Flag activating CO2 balance calculation if enabled | _false_ | _optional_
-| *EnableJointVentilation* |  Flag activating ventilation through joints and openings. | _false_ | _optional_
-| *ExportClimateDataFMU* |  Flag activating FMU export of climate data. | _false_ | _optional_
+| Name | Description | Default | Usage 
+| `EnableMoistureBalance` |  Flag activating moisture balance calculation if enabled | _false_ | _optional_
+| `EnableCO2Balance` |  Flag activating CO2 balance calculation if enabled | _false_ | _optional_
+| `EnableJointVentilation` |  Flag activating ventilation through joints and openings. | _false_ | _optional_
+| `ExportClimateDataFMU` |  Flag activating FMU export of climate data. | _false_ | _optional_
 |====================
+
+
 
 [[simulation_interval]]
 ### Simulation time interval
@@ -127,30 +129,20 @@ Hereafter all parameters that are required for the solver are described.
 ----
 ====
 
-### IBK:Parameter
+Floating point parameters (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
 
-The following parameters can be set as an `IBK:Parameter`. 
-
-[source,xml]
-----
-<IBK:Parameter name="MaxTimeStep" unit="min">30</IBK:Parameter>
-----
-
-.Parameters that can be set as an *IBK:Parameter* with the Attributes `name` and `unit`. 
-[options="header"]
-[cols="30%,^ 8%,32%,^ 10%,^ 10%,^ 10%"]
-[width="100%"]
+[options="header",cols="20%,15%,30%,20%,5%,10%",width="100%"]
 |====================
-|`name`|`unit`|Description|Format|initial|usage
-|*RelTol*|---|Relative tolerance for solver error check.|0…1|1E-04|_optional_
-|*AbsTol*|---|Absolute tolerance for solver error check.|0…1|1E-10|_optional_
-|*MaxTimeStep*|h|Maximum permitted time step for integration.|positive double ({nbsp}>{nbsp}0.0{nbsp})|1|_optional_
-|*MinTimeStep*|s|Minimum accepted time step, before solver aborts with error.|positive double ({nbsp}>{nbsp}0.0{nbsp})|1E-12|_optional_
-|*InitialTimeStep*|s|Initial time step size (or constant step size for ExplicitEuler integrator).|positive double ({nbsp}>{nbsp}0.0{nbsp})|0.1|_optional_
-|*NonlinSolverConvCoeff*|---|Coefficient reducing nonlinear equation solver convergence limit. Not supported by Implicit Euler. |0…1|0.1|_optional_
-|*IterativeSolverConvCoeff*|---|Coefficient reducing iterative equation solver convergence limit.|0…1|0.05|_optional_
-|*DiscMinDx*|mm|Minimum element width for wall discretization.|positive double ({nbsp}>{nbsp}0.0{nbsp})|2|_optional_
-|*DiscStretchFactor*|---
+|Name|Default Unit|Description|Value Range|Default|Usage
+|`RelTol`|---|Relative tolerance for solver error check.|0…0.1|1E-04|_optional_
+|`AbsTol`|---|Absolute tolerance for solver error check.|0…1|1E-10|_optional_
+|`MaxTimeStep`|h|Maximum permitted time step for integration.|positive double ({nbsp}>{nbsp}0.0{nbsp})|1|_optional_
+|`MinTimeStep`|s|Minimum accepted time step, before solver aborts with error.|positive double ({nbsp}>{nbsp}0.0{nbsp})|1E-12|_optional_
+|`InitialTimeStep`|s|Initial time step size (or constant step size for ExplicitEuler integrator).|positive double ({nbsp}>{nbsp}0.0{nbsp})|0.1|_optional_
+|`NonlinSolverConvCoeff`|---|Coefficient reducing nonlinear equation solver convergence limit. Not supported by Implicit Euler. |0…1|0.1|_optional_
+|`IterativeSolverConvCoeff`|---|Coefficient reducing iterative equation solver convergence limit.|0…1|0.05|_optional_
+|`DiscMinDx`|mm|Minimum element width for wall discretization.|positive double ({nbsp}>{nbsp}0.0{nbsp})|2|_optional_
+|`DiscStretchFactor`|---
 a|Stretch factor for variable wall discretizations:
 
 - *0* - no disc
@@ -158,35 +150,24 @@ a|Stretch factor for variable wall discretizations:
 - *> 1* - variable
 
 |positive integer ({nbsp}>{nbsp}0{nbsp})|50|_optional_
-|*ViewfactorTileWidth*|m|Maximum dimension of a tile for calculation of view factors.|positive double ({nbsp}>{nbsp}0.0{nbsp})|50|_optional_
-|*SurfaceDiscretizationDensity*|---|Number of surface discretization elements of a wall in each direction.|0…1|2|_optional_
-|*ControlTemperatureTolerance*|K|Temperature tolerance for ideal heating or cooling.|positive double ({nbsp}>{nbsp}0.0{nbsp})|1E-05|_optional_
-|*KinsolRelTol*|---|Relative tolerance for Kinsol solver.|0…1|-|_optional_
-|*KinsolAbsTol*|---|Absolute tolerance for Kinsol solver.|0…1|-|_optional_
-|*IntegralWeightsFactor*|---|Optional weighting factor for integral outputs.|0…1|1E-05|_optional_
+|`ViewfactorTileWidth`|m|Maximum dimension of a tile for calculation of view factors.|positive double ({nbsp}>{nbsp}0.0{nbsp})|50|_optional_
+|`SurfaceDiscretizationDensity`|---|Number of surface discretization elements of a wall in each direction.|0…1|2|_optional_
+|`ControlTemperatureTolerance`|K|Temperature tolerance for ideal heating or cooling.|positive double ({nbsp}>{nbsp}0.0{nbsp})|1E-05|_optional_
+|`KinsolRelTol`|---|Relative tolerance for Kinsol solver.|0…1|-|_optional_
+|`KinsolAbsTol`|---|Absolute tolerance for Kinsol solver.|0…1|-|_optional_
 |====================
 
-### IBK:Flag
+Flags and options (see section <<IBK_Flag>> for a description of the `IBK:Flag` tag):
 
-The following parameters can be set as an `IBK:Flag`
-
-[source,xml]
-----
-<IBK:Flag name="DetectMaxTimeStep">true</IBK:Flag>
-----
-
-.Parameters set as IBK:Flag with an Attribute `name` that enbables functionalities
-[options="header"]
-[cols="25%, 55%,^ 10%,^ 10%"]
-[width="100%"]
+[options="header",cols="20%,60%,10%,10%",width="100%"]
 |====================
-|`name`|Description|initial|usage
-|*DetectMaxTimeStep*|Check schedules to determine minimum distances between steps and adjust MaxTimeStep.|false|_optional_
-|*KinsolDisableLineSearch*|Disable line search for steady state cycles.|false|_optional_
-|*KinsolStrictNewton*|Enable strict Newton for steady state cycles.|false|_optional_
+| Name | Description | Default | Usage 
+|`DetectMaxTimeStep`|Check schedules to determine minimum distances between steps and adjust MaxTimeStep.|_false_|_optional_
+|`KinsolDisableLineSearch`|Disable line search for steady state cycles.|_false_|_optional_
+|`KinsolStrictNewton`|Enable strict Newton for steady state cycles.|_false_|_optional_
 |====================
 
-All options for the integrator are described in the table below. The xml-tag *Integrator* contains a string to select the time integration method.
+All options for the integrator are described in the table below. The XML-tag `Integrator` contains a string to select the time integration method.
 
 ### Integrator
 

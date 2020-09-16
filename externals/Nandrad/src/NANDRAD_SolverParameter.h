@@ -62,7 +62,6 @@ public:
 		P_ControlTemperatureTolerance,		// Keyword: ControlTemperatureTolerance		[K]		'Temperature tolerance for ideal heating or cooling.'
 		P_KinsolRelTol,						// Keyword: KinsolRelTol					[---]	'Relative tolerance for Kinsol solver.'
 		P_KinsolAbsTol,						// Keyword: KinsolAbsTol					[---]	'Absolute tolerance for Kinsol solver.'
-		P_IntegralWeightsFactor,			// Keyword: IntegralWeightsFactor			[---]	'Optional weighting factor for integral outputs.'
 		NUM_P
 	};
 

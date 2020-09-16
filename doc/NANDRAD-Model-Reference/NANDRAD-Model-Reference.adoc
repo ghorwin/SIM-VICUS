@@ -34,6 +34,7 @@ include::NANDRAD-Basics.adoc[leveloffset=+2]
 include::NANDRAD-Databases.adoc[leveloffset=+2]
 include::NANDRAD-Geometry.adoc[leveloffset=+2]
 include::NANDRAD-Loads.adoc[leveloffset=+2]
+include::NANDRAD-ObjectLists.adoc[leveloffset=+2]
 include::NANDRAD-Schedules.adoc[leveloffset=+2]
 
 include::NANDRAD-GlobalParameters.adoc[leveloffset=+2]
