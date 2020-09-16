@@ -329,7 +329,7 @@ double SolarRadiationModel::apparentSolarTimeFromLocalMeanTime( double secondsOf
 
 
 void SolarRadiationModel::radiationLoad(unsigned int surfaceID, double & qRadDir, double & qRadDif, double & incidenceAngleInRad) const {
-    FUNCID(SolarRadiationModel::radiationLoad);
+	FUNCID(SolarRadiationModel::radiationLoad);
 
 	if (surfaceID >= m_surface.size())
 		throw IBK::Exception( IBK::FormatString("Invalid surface ID %1.").arg(surfaceID), FUNC_ID);
@@ -346,7 +346,7 @@ void SolarRadiationModel::convertHorizontalToNormalRadiation(
 	double &qRadDirNormal)
 {
 
-    FUNCID(SolarRadiationModel::convertHorizontalToNormalRadiation);
+	FUNCID(SolarRadiationModel::convertHorizontalToNormalRadiation);
 	// if not done already compose all splines
 	if(m_climateConversionModel == ASHRAE_ClearSky
 		&& m_opticalDepthPerMonthASHRAE.empty())

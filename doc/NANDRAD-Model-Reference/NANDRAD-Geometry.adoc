@@ -2,19 +2,17 @@
 [[zones]]
 # Zones
 
-In order to model buildings, it is necessary to define the individual rooms with the relevant parameters. 
-A zone defines a thermal zone/room with a single air temperature.
+In order to model buildings, it is necessary to define the individual rooms with the relevant parameters. A zone defines a well-mixed thermal zone/room with a single/uniform air temperature.
 
-The class Zone stores all properties needed to compute zone temperature from energy density (the conserved quantity).
+Objects of type `Zone` store all properties needed to compute zone temperature from energy density (the conserved quantity).
 
-Needed for the calculation is either the floor area and the height, or the zone volume. If all parameters are given, the volume property is computed from floor area and height.
-Zones can be either Constant or Active. 
-For constant zones, the temperature is assumed to
-be fixed/predefined whereas in Active zones the temperature is computed (i.e. included in
-the model's unknowns). A constant zone only needs the temperature parameter. If an Active zone has a temperature parameter,
-this is used as initial condition.
+Zones can be either _Constant_ or __Active__.
 
-.Zonedefinition
+For _Constant_ zones, the temperature is assumed to
+be fixed/predefined whereas in _Active_ zones the temperature is computed (i.e. included in
+the model's unknowns). A _Constant_ zone only needs the temperature parameter.
+
+.Zone Definition
 ====
 [source,xml,indent=0]
 ----
@@ -26,7 +24,6 @@ this is used as initial condition.
 </Zones>
 ----
 ====
-
 
 Inside the XML tag named `Zones` each zone starts with the XML tag `Zone`. The following XML attributes need to be defined:
 
@@ -49,22 +46,14 @@ a|  Defines whether zone is balanced and included in equation system.
 
 |====================
 
-The following XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` with the following entries can be defined:
+Parameters (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
 
-[source,xml]
-----
-<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
-----
-
-.Zone Parameters that can be set as *IBK:Parameter* with the Attributes `name` and `unit`
-[options="header"]
-[cols="25%,^ 8%,42%,^ 10%,^ 10%"]
-[width="100%"]
+[options="header",cols="15%,10%,45%,20%,10%",width="100%"]
 |====================
-| `name` | `unit`| Description | Format | Usage 
+|`name`|Default Unit|Description|Value Range |Usage
 | *Volume* | m3 | Zone air volume | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _required_
-| *Area* | m2 | net Usage area of the ground floor (for area-related outputs and loads) | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _optional_
-| *HeatCapacity* | J/K | Additional heat capacity | 0...1 | _optional_
+| *Area* | m2 | Net usage area of the ground floor (for area-related outputs and loads) | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _optional_
+| *HeatCapacity* | J/K | Additional heat capacity (furniture, etc.) | 0...1 | _optional_
 | *Temperature* | C | Temperature of the zone, if set `constant` | 0...1 | _optional_
 | *CO2Concentration* | g/m3 | CO2 concentration of the zone, if set `constant` | 0...1 | _optional_
 | *RelativeHumidity* | % | Temperature of the zone, if set `constant` | 0...1 | _optional_
@@ -72,7 +61,9 @@ The following XML tags named `IBK:Parameters` with the XML attributes `name` and
 
 
 [[construction_instances]]
-# Constructioninstances
+# Construction Instances
+
+The construction instances define construction-specific parameters required by several models.
 
 .Construction Instances
 ====
@@ -100,7 +91,6 @@ The following XML tags named `IBK:Parameters` with the XML attributes `name` and
 ----
 ====
 
-The construction instances define construction-specific parameters required by several models.
 
 The construction instances are defined inside the Sections starting with an XML tag `ConstructionInstances`. Inside the Section each Construction instance starts with the XML tag named `ConstructionInstance` with the XML attributes `id` and `displayName`. 
 Inside that it is necessary to specify the interfaces with the XML tag named `InterfaceA` and `InterfaceB`. Finally the Interfaces with the XML tag `InterfaceA` and `InterfaceB` need to be defined with the XML attributes `id` and `zoneId`.

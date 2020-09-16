@@ -1,16 +1,12 @@
 :imagesdir: ./images
-# Material and Construction Lists
+# Embedded Databases (Materials and Constructions)
 
-## Overview
-
-In order to model building components such as Walls, Ceilings and Floors, etc. it is necessary to define some parameters for the materials and then define сonstructions composed of such materials.
-
-image::Mat_ConstInst.png[]
+In order to model building components such as walls, ceilings and floors, etc. it is necessary to define some parameters for the materials and then define сonstructions composed of such materials. These parameters are stored in 
 
 [[materials]]
 ## Materials
 
-In the NANDRAD-Model the Materials section starts with an XML tag named `Materials`. 
+In the NANDRAD-Model the materials database section starts with an XML tag named `Materials`. 
 
 .Materials with Parameters
 ====
@@ -51,7 +47,6 @@ Concerning the material parameters such as density, heat capacity and thermal co
 |====================
 
 
-
 [[construction_types]]
 ## Construction Types
 
@@ -76,7 +71,7 @@ Inside this section each construction definition starts with the XML tag named `
 
 [options="header",cols="15%,55%,20%,10%",width="100%"]
 |====================
-| Attribute  | Description | Format | usage 
+| Attribute  | Description | Format | Usage 
 | *id* |  Unique id number. | positive integer ( > 0 )  | _required_
 | *displayName*  |  Name of construction (used for informative/error messages). | string | _optional_
 |====================
@@ -85,10 +80,16 @@ A construction consists of one or more material layers. These are defined within
 
 [options="header",cols="15%,55%,20%,10%",width="100%"]
 |====================
-| XML-Attribute  | Description | Format | usage 
-| *thickness* |  defines the thickness of the layer in `m` | positive double ( > 0.0 )  | _required_
+| XML-Attribute  | Description | Format | Usage 
+| *thickness* |  defines the thickness of the layer in `m` | positive double ( > 0.0 m)  | _required_
 | *matId*  |  refers to a material by unique material id number (`id` as defined in a `Material` tag), | string | _required_
 |====================
+
+With the use of the _matId_ attribute, layers of constructions reference the used materials:
+
+.Collaboration Diagram for ConstructionType and Material Objects
+image::Mat_ConstInst.png[]
+
 
 The `MaterialLayer` does not have child tags since all needed data are defined as XML attributes as described above. 
 

@@ -22,7 +22,7 @@ Information about location and climate data is stored in the `Location` section 
 </Location>
 ----
 
-Parameters (see also section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
+Parameters (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
 
 [options="header",cols="15%,10%,45%,20%,10%",width="100%"]
 |====================
@@ -33,7 +33,7 @@ Parameters (see also section <<IBK_Parameter>> for a description of the `IBK:Par
 |*Latitude*|Deg|If specified, they override the location parameter `Latitude` of the climate data file (see <<location_settings>>).|[-90,90] Deg|_optional_
 |====================
 
-Flags and options (see also section <<IBK_Flag>> for a description of the `IBK:Flag` tag):
+Flags and options (see section <<IBK_Flag>> for a description of the `IBK:Flag` tag):
 
 [options="header",cols="15%,65%,10%,10%",width="100%"]
 |====================
