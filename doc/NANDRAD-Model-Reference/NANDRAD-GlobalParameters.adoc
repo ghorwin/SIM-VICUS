@@ -13,9 +13,11 @@ The individual settings are split into _simulation parameters_ and _solver param
 [[simulation_parameters]]
 ## Simulation Parameters
 
-Hereafter all simulation parameters are described. All parameters are set as `IBK:Parameters`, `IBK:Flags` or `IBK:intPara`, see <<ex_simpara>>.
-
 :xrefstyle: short
+
+Hereafter all simulation parameters are described. All parameters are set as `IBK:Parameters`, `IBK:Flags` or `IBK:IntPara`, see <<ex_simpara>>.
+
+:xrefstyle: basic
 
 [[ex_simpara]]
 .Simulation Parameters
@@ -31,21 +33,21 @@ Hereafter all simulation parameters are described. All parameters are set as `IB
 
 Floating point parameters (see also section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
 
-[options="header",cols="15%,10%,45%,20%,10%",width="100%"]
+[options="header",cols="20%,15%,35%,20%,10%",width="100%"]
 |====================
-|`name`|Default Unit|Description|Value Range |Usage
-| *InitialTemperature* | C | Global initial temperature for all objetcs (`zones`, `constructionInstances`, etc) | positive double ({nbsp}>{nbsp}0.0{nbsp}K) | _optional_
-| *InitialRelativeHumidity* | % | Global initial relative humidity for all objects, that can have a humidity value set (`zones`, air flows in `models`, etc) | 0 ... 100% | _optional_
-| *RadiationLoadFraction* | --- | Percentage of solar radiation gains attributed directly to the room 0..1. | 0...1 | _optional_
-| *UserThermalRadiationFraction* | --- | Percentage of heat that is emitted by long wave radiation from persons.  | 0...1 | _optional_
-| *EquipmentThermalLossFraction*   | --- | Percentage of energy from equipment load that is not available as thermal heat.  | 0 ... 1 | _optional_
-| *EquipmentThermalRadiationFraction* | --- | Percentage of heat that is emitted by long wave radiation from equipment.  | 0...1 | _optional_
-| *LightingVisibleRadiationFraction* | --- | Percentage of energy from lighting that is transformed into visible short wave radiation.  | 0...1 | _optional_
-| *LightingThermalRadiationFraction* |--- | Percentage of heat that is emitted by long wave radiation from lighting.  | 0...1 | _optional_
-| *DomesticWaterSensitiveHeatGainFraction* |--- | Percentage of sensitive heat from domestic water istributed towrads the room.  | 0...1 | _optional_
-| *AirExchangeRateN50* | 1/h | Air exchange rate resulting from a pressure difference of 50 Pa between inside and outside.  | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _optional_
-| *ShieldingCoefficient* | --- | Shielding coefficient for a given location and envelope type. | 0 ... 1  | _optional_
-| *HeatingDesignAmbientTemperature* | C | Ambient temparture for a design day. Parameter that is needed for FMU export.  | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _optional_
+|Name|Default Unit|Description|Value Range |Usage
+| `InitialTemperature` | C | Global initial temperature for all objetcs (`zones`, `constructionInstances`, etc) | positive double ({nbsp}>{nbsp}0.0{nbsp}K) | _optional_
+| `InitialRelativeHumidity` | % | Global initial relative humidity for all objects, that can have a humidity value set (`zones`, air flows in `models`, etc) | 0 ... 100% | _optional_
+| `RadiationLoadFraction` | --- | Percentage of solar radiation gains attributed directly to the room 0..1. | 0...1 | _optional_
+| `UserThermalRadiationFraction` | --- | Percentage of heat that is emitted by long wave radiation from persons.  | 0...1 | _optional_
+| `EquipmentThermalLossFraction`   | --- | Percentage of energy from equipment load that is not available as thermal heat.  | 0 ... 1 | _optional_
+| `EquipmentThermalRadiationFraction` | --- | Percentage of heat that is emitted by long wave radiation from equipment.  | 0...1 | _optional_
+| `LightingVisibleRadiationFraction` | --- | Percentage of energy from lighting that is transformed into visible short wave radiation.  | 0...1 | _optional_
+| `LightingThermalRadiationFraction` |--- | Percentage of heat that is emitted by long wave radiation from lighting.  | 0...1 | _optional_
+| `DomesticWaterSensitiveHeatGainFraction` |--- | Percentage of sensitive heat from domestic water istributed towrads the room.  | 0...1 | _optional_
+| `AirExchangeRateN50` | 1/h | Air exchange rate resulting from a pressure difference of 50 Pa between inside and outside.  | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _optional_
+| `ShieldingCoefficient` | --- | Shielding coefficient for a given location and envelope type. | 0 ... 1  | _optional_
+| `HeatingDesignAmbientTemperature` | C | Ambient temparture for a design day. Parameter that is needed for FMU export.  | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _optional_
 |====================
 
 

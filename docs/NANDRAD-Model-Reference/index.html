@@ -92,39 +92,37 @@ table {
 </li>
 <li><a href="#path_placeholders">2.3. Path Placeholders</a></li>
 <li><a href="#project_info">2.4. Project Information</a></li>
-<li><a href="#zones">2.5. Zones</a></li>
-<li><a href="#construction_instances">2.6. Constructioninstances</a></li>
-<li><a href="#InterfacesDocumentation">2.7. Interfaces (construction boundary conditions)</a>
+<li><a href="#_embedded_databases_materials_and_constructions">2.5. Embedded Databases (Materials and Constructions)</a>
 <ul class="sectlevel3">
-<li><a href="#_heat_conduction">2.7.1. Heat Conduction</a></li>
-<li><a href="#_solar_absorption">2.7.2. Solar Absorption</a></li>
-<li><a href="#_long_wave_emission">2.7.3. Long Wave Emission</a></li>
-<li><a href="#_vapour_diffusion">2.7.4. Vapour Diffusion</a></li>
-<li><a href="#_air_flow">2.7.5. Air Flow</a></li>
+<li><a href="#materials">2.5.1. Materials</a></li>
+<li><a href="#construction_types">2.5.2. Construction Types</a></li>
 </ul>
 </li>
-<li><a href="#_ambient_climate_boundary_conditions">2.8. Ambient climate boundary conditions</a></li>
-<li><a href="#_interface_between_constructions_and_zones_internal_boundary_conditions">2.9. Interface between constructions and zones (internal boundary conditions)</a></li>
-<li><a href="#_material_and_construction_lists">2.10. Material and Construction Lists</a>
+<li><a href="#zones">2.6. Zones</a></li>
+<li><a href="#construction_instances">2.7. Construction Instances</a></li>
+<li><a href="#InterfacesDocumentation">2.8. Interfaces (construction boundary conditions)</a>
 <ul class="sectlevel3">
-<li><a href="#_overview_2">2.10.1. Overview</a></li>
-<li><a href="#materials">2.10.2. Materials</a></li>
-<li><a href="#construction_types">2.10.3. Construction Types</a></li>
+<li><a href="#_heat_conduction">2.8.1. Heat Conduction</a></li>
+<li><a href="#_solar_absorption">2.8.2. Solar Absorption</a></li>
+<li><a href="#_long_wave_emission">2.8.3. Long Wave Emission</a></li>
+<li><a href="#_vapour_diffusion">2.8.4. Vapour Diffusion</a></li>
+<li><a href="#_air_flow">2.8.5. Air Flow</a></li>
 </ul>
 </li>
+<li><a href="#_ambient_climate_boundary_conditions">2.9. Ambient climate boundary conditions</a></li>
+<li><a href="#_interface_between_constructions_and_zones_internal_boundary_conditions">2.10. Interface between constructions and zones (internal boundary conditions)</a></li>
 <li><a href="#climatic_loads">2.11. Climatic loads</a>
 <ul class="sectlevel3">
-<li><a href="#_overview_3">2.11.1. Overview</a></li>
+<li><a href="#_overview_2">2.11.1. Overview</a></li>
 <li><a href="#_specification">2.11.2. Specification</a></li>
 <li><a href="#loads_solar_radiation">2.11.3. Solar Radiation Calculation</a></li>
-<li><a href="#_implementation">2.11.4. Implementation</a></li>
 </ul>
 </li>
 <li><a href="#schedules">2.12. Schedules</a>
 <ul class="sectlevel3">
-<li><a href="#_overview_4">2.12.1. Overview</a></li>
+<li><a href="#_overview_3">2.12.1. Overview</a></li>
 <li><a href="#_defining_schedules">2.12.2. Defining schedules</a></li>
-<li><a href="#_implementation_2">2.12.3. Implementation</a></li>
+<li><a href="#_implementation">2.12.3. Implementation</a></li>
 <li><a href="#_variable_list">2.12.4. Variable list</a></li>
 </ul>
 </li>
@@ -256,7 +254,7 @@ table {
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ConstructionInstances</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Building components and boundary conditions &#8594; <a href="#construction_instances">Constructioninstances</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Building components and boundary conditions &#8594; <a href="#construction_instances">Construction Instances</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ConstructionTypes</code></p></td>
@@ -409,24 +407,234 @@ easily modify the placeholder paths to the directories on the local machine with
 </div>
 </div>
 <div class="sect2">
-<h3 id="zones">2.5. Zones</h3>
+<h3 id="_embedded_databases_materials_and_constructions">2.5. Embedded Databases (Materials and Constructions)</h3>
 <div class="paragraph">
-<p>In order to model buildings, it is necessary to define the individual rooms with the relevant parameters.
-A zone defines a thermal zone/room with a single air temperature.</p>
+<p>In order to model building components such as walls, ceilings and floors, etc. it is necessary to define some parameters for the materials and then define сonstructions composed of such materials. These parameters are stored in</p>
 </div>
+<div class="sect3">
+<h4 id="materials">2.5.1. Materials</h4>
 <div class="paragraph">
-<p>The class Zone stores all properties needed to compute zone temperature from energy density (the conserved quantity).</p>
-</div>
-<div class="paragraph">
-<p>Needed for the calculation is either the floor area and the height, or the zone volume. If all parameters are given, the volume property is computed from floor area and height.
-Zones can be either Constant or Active.
-For constant zones, the temperature is assumed to
-be fixed/predefined whereas in Active zones the temperature is computed (i.e. included in
-the model&#8217;s unknowns). A constant zone only needs the temperature parameter. If an Active zone has a temperature parameter,
-this is used as initial condition.</p>
+<p>In the NANDRAD-Model the materials database section starts with an XML tag named <code>Materials</code>.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 6. Zonedefinition</div>
+<div class="title">Example 6. Materials with Parameters</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Materials&gt;</span>
+  <span class="nt">&lt;Material</span> <span class="na">id=</span><span class="s">"1001"</span> <span class="na">displayName=</span><span class="s">"Brick"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Density"</span> <span class="na">unit=</span><span class="s">"kg/m3"</span><span class="nt">&gt;</span>2000<span class="nt">&lt;/IBK:Parameter&gt;</span>
+    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"HeatCapacity"</span> <span class="na">unit=</span><span class="s">"J/kgK"</span><span class="nt">&gt;</span>1000<span class="nt">&lt;/IBK:Parameter&gt;</span>
+    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Conductivity"</span> <span class="na">unit=</span><span class="s">"W/mK"</span><span class="nt">&gt;</span>1.2<span class="nt">&lt;/IBK:Parameter&gt;</span>
+  <span class="nt">&lt;/Material&gt;</span>
+  <span class="nt">&lt;Material</span> <span class="na">id=</span><span class="s">"1004"</span> <span class="na">displayName=</span><span class="s">"Good Insulation"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Density"</span> <span class="na">unit=</span><span class="s">"kg/m3"</span><span class="nt">&gt;</span>50<span class="nt">&lt;/IBK:Parameter&gt;</span>
+    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"HeatCapacity"</span> <span class="na">unit=</span><span class="s">"J/kgK"</span><span class="nt">&gt;</span>1000<span class="nt">&lt;/IBK:Parameter&gt;</span>
+    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Conductivity"</span> <span class="na">unit=</span><span class="s">"W/mK"</span><span class="nt">&gt;</span>0.02<span class="nt">&lt;/IBK:Parameter&gt;</span>
+  <span class="nt">&lt;/Material&gt;</span>
+<span class="nt">&lt;/Materials&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>In this tag each material property set starts with an XML tag named <code>Material</code> with two XML attributes <code>id</code> and <code>displayName</code>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 15%;">
+<col style="width: 55%;">
+<col style="width: 20%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Format</th>
+<th class="tableblock halign-left valign-top">usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique id of the material.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">positive Integer ( &gt; 0 )</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>displayName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of material (used for informative/error messages).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Concerning the material parameters such as density, heat capacity and thermal conductivity they need to be defined within the XML tag <code>IBK:Parameter</code> (see <a href="#IBK_Parameter">IBK:Parameter</a>):</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 17.8217%;">
+<col style="width: 14.8514%;">
+<col style="width: 37.6237%;">
+<col style="width: 19.8019%;">
+<col style="width: 9.9013%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default Unit</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Value Range</th>
+<th class="tableblock halign-left valign-top">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Density</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kg/m3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dry density of the material.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&gt; 1 kg/m3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>HeatCapacity</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">J/kgK</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specific heat capacity of the material.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&gt; 100 J/kgK</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Conductivity</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">W/mK</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Thermal conductivity of the dry material.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&gt; 1e-5 W/mK</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="construction_types">2.5.2. Construction Types</h4>
+<div class="paragraph">
+<p>Constructions are defined inside the section starting with an XML tag <code>ConstructionTypes</code>.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 7. Construction Types with References to Material Objects</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;ConstructionTypes&gt;</span>
+  <span class="nt">&lt;ConstructionType</span> <span class="na">id=</span><span class="s">"10005"</span> <span class="na">displayName=</span><span class="s">"Test Construction"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;MaterialLayers&gt;</span>
+      <span class="nt">&lt;MaterialLayer</span> <span class="na">thickness=</span><span class="s">"0.2"</span> <span class="na">matId=</span><span class="s">"1001"</span> <span class="nt">/&gt;</span> <span class="c">&lt;!-- room side --&gt;</span>
+      <span class="nt">&lt;MaterialLayer</span> <span class="na">thickness=</span><span class="s">"0.3"</span> <span class="na">matId=</span><span class="s">"1004"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/MaterialLayers&gt;</span>
+  <span class="nt">&lt;/ConstructionType&gt;</span>
+<span class="nt">&lt;/ConstructionTypes&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Inside this section each construction definition starts with the XML tag named <code>ConstructionType</code> with the XML attributes <code>id</code> and optional <code>displayName</code>:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 15%;">
+<col style="width: 55%;">
+<col style="width: 20%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Format</th>
+<th class="tableblock halign-left valign-top">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique id number.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">positive integer ( &gt; 0 )</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>displayName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of construction (used for informative/error messages).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>A construction consists of one or more material layers. These are defined within the child XML tag named <code>MaterialLayers</code>. Each material layer is defined with the XML tag <code>MaterialLayer</code> with the following XML attributes:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 15%;">
+<col style="width: 55%;">
+<col style="width: 20%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">XML-Attribute</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Format</th>
+<th class="tableblock halign-left valign-top">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>thickness</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">defines the thickness of the layer in <code>m</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">positive double ( &gt; 0.0 m)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>matId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">refers to a material by unique material id number (<code>id</code> as defined in a <code>Material</code> tag),</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>With the use of the <em>matId</em> attribute, layers of constructions reference the used materials:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/Mat_ConstInst.png" alt="Mat ConstInst">
+</div>
+<div class="title">Figure 1. Collaboration Diagram for ConstructionType and Material Objects</div>
+</div>
+<div class="paragraph">
+<p>The <code>MaterialLayer</code> does not have child tags since all needed data are defined as XML attributes as described above.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="zones">2.6. Zones</h3>
+<div class="paragraph">
+<p>In order to model buildings, it is necessary to define the individual rooms with the relevant parameters. A zone defines a well-mixed thermal zone/room with a single/uniform air temperature.</p>
+</div>
+<div class="paragraph">
+<p>Objects of type <code>Zone</code> store all properties needed to compute zone temperature from energy density (the conserved quantity).</p>
+</div>
+<div class="paragraph">
+<p>Zones can be either <em>Constant</em> or <em>Active</em>.</p>
+</div>
+<div class="paragraph">
+<p>For <em>Constant</em> zones, the temperature is assumed to
+be fixed/predefined whereas in <em>Active</em> zones the temperature is computed (i.e. included in
+the model&#8217;s unknowns). A <em>Constant</em> zone only needs the temperature parameter.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 8. Zone Definition</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -465,32 +673,32 @@ this is used as initial condition.</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>id</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Identifier of the Zone</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">positive Integer (&#160;&gt;&#160;0&#160;)</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>displayName</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>displayName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Display Name of the Zone. Is needed to find the Zone in the Data Model and in Outputs more easily.</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">string</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>type</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>Defines whether zone is balanced and included in equation system.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><code>Constant</code> <em>as zone with constant/predefined temperatures. (schedule)</em></p>
+<p><code>Constant</code> as zone with constant/predefined temperatures. (schedule)</p>
 </li>
 <li>
-<p><code>Active</code> <em>as zone described by a temperature node in space</em></p>
+<p><code>Active</code> as zone described by a temperature node in space</p>
 </li>
 <li>
-<p><code>Ground</code> <em>as ground zone (calculates temperature based on standard)</em></p>
+<p><code>Ground</code> as ground zone (calculates temperature based on standard)</p>
 </li>
 </ul>
 </div></div></td>
@@ -500,81 +708,78 @@ this is used as initial condition.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>The following XML tags named <code>IBK:Parameters</code> with the XML attributes <code>name</code> and <code>unit</code> with the following entries can be defined:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Area"</span> <span class="na">unit=</span><span class="s">"m2"</span><span class="nt">&gt;</span>10<span class="nt">&lt;/IBK:Parameter&gt;</span></code></pre>
-</div>
+<p>Parameters (see section <a href="#IBK_Parameter">IBK:Parameter</a> for a description of the <code>IBK:Parameter</code> tag):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. Zone Parameters that can be set as <strong>IBK:Parameter</strong> with the Attributes <code>name</code> and <code>unit</code></caption>
 <colgroup>
-<col style="width: 26.3157%;">
-<col style="width: 8.421%;">
-<col style="width: 44.2105%;">
-<col style="width: 10.5263%;">
-<col style="width: 10.5265%;">
+<col style="width: 17.8217%;">
+<col style="width: 14.8514%;">
+<col style="width: 37.6237%;">
+<col style="width: 19.8019%;">
+<col style="width: 9.9013%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top"><code>name</code></th>
-<th class="tableblock halign-center valign-top"><code>unit</code></th>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default Unit</th>
 <th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-center valign-top">Format</th>
-<th class="tableblock halign-center valign-top">Usage</th>
+<th class="tableblock halign-left valign-top">Value Range</th>
+<th class="tableblock halign-left valign-top">Usage</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Volume</strong></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">m3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Volume</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">m3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Zone air volume</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">positive double (&#160;&gt;&#160;0.0&#160;)</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">positive double (&#160;&gt;&#160;0.0&#160;)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>required</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Area</strong></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">m2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">net Usage area of the ground floor (for area-related outputs and loads)</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">positive double (&#160;&gt;&#160;0.0&#160;)</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Area</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">m2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Net usage area of the ground floor (for area-related outputs and loads)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">positive double (&#160;&gt;&#160;0.0&#160;)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>HeatCapacity</strong></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">J/K</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Additional heat capacity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">0&#8230;&#8203;1</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>HeatCapacity</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">J/K</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Additional heat capacity (furniture, etc.)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0&#8230;&#8203;1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Temperature</strong></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">C</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Temperature</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">C</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Temperature of the zone, if set <code>constant</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">0&#8230;&#8203;1</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0&#8230;&#8203;1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>CO2Concentration</strong></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">g/m3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>RelativeHumidity</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Temperature of the zone, if set <code>constant</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0&#8230;&#8203;1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CO2Concentration</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">g/m3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">CO2 concentration of the zone, if set <code>constant</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">0&#8230;&#8203;1</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>RelativeHumidity</strong></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">%</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Temperature of the zone, if set <code>constant</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">0&#8230;&#8203;1</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0&#8230;&#8203;1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="sect2">
-<h3 id="construction_instances">2.6. Constructioninstances</h3>
+<h3 id="construction_instances">2.7. Construction Instances</h3>
+<div class="paragraph">
+<p>The construction instances define construction-specific parameters required by several models.</p>
+</div>
 <div class="exampleblock">
-<div class="title">Example 7. Construction Instances</div>
+<div class="title">Example 9. Construction Instances</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -602,9 +807,6 @@ this is used as initial condition.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The construction instances define construction-specific parameters required by several models.</p>
-</div>
-<div class="paragraph">
 <p>The construction instances are defined inside the Sections starting with an XML tag <code>ConstructionInstances</code>. Inside the Section each Construction instance starts with the XML tag named <code>ConstructionInstance</code> with the XML attributes <code>id</code> and <code>displayName</code>.
 Inside that it is necessary to specify the interfaces with the XML tag named <code>InterfaceA</code> and <code>InterfaceB</code>. Finally the Interfaces with the XML tag <code>InterfaceA</code> and <code>InterfaceB</code> need to be defined with the XML attributes <code>id</code> and <code>zoneId</code>.
 In the following it is described in detail.</p>
@@ -626,13 +828,13 @@ In the following it is described in detail.</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>id</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Identifier of the Construction Instance</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">positive Integer (&#160;&gt;&#160;0&#160;)</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>displayName</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>displayName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Display Name of the Construction Instance. Is needed to find the Construction Instance in the Data Model and in Outputs more easily.</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">string</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
@@ -640,7 +842,7 @@ In the following it is described in detail.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>The construction instance has the following <code>required subtag</code>:</p>
+<p>The construction instance has the following <em>required</em> child tag:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -661,83 +863,85 @@ In the following it is described in detail.</p>
 <p>The following XML tags named <code>IBK:Parameters</code> with the XML attributes <code>name</code> and <code>unit</code> with the following entries can be defined:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. Zone Parameters that can be set as <strong>IBK:Parameter</strong> with the Attributes <code>name</code> and <code>unit</code></caption>
 <colgroup>
-<col style="width: 26.3157%;">
-<col style="width: 8.421%;">
-<col style="width: 44.2105%;">
-<col style="width: 10.5263%;">
-<col style="width: 10.5265%;">
+<col style="width: 15%;">
+<col style="width: 10%;">
+<col style="width: 45%;">
+<col style="width: 20%;">
+<col style="width: 10%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top"><code>name</code></th>
-<th class="tableblock halign-center valign-top"><code>unit</code></th>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default Unit</th>
 <th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-center valign-top">Format</th>
-<th class="tableblock halign-center valign-top">Usage</th>
+<th class="tableblock halign-left valign-top">Value Range</th>
+<th class="tableblock halign-left valign-top">Usage</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Orientation</strong></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">m2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Orientation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deg</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Orientation of the wall</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">positive double (&#160;&gt;&#160;0.0&#160;)</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[0, 360] Deg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>required</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Inclination</strong></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">m3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Inclination of the wall</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">positive double (&#160;&gt;&#160;0.0&#160;)</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Inclination</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inclination of the wall (0 Deg - roof, 90 Deg - vertical wall, 180 Deg - facing downwards)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[0, 180] Deg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>required</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Area</strong></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">C</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Gross area of the wall</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">0&#8230;&#8203;1</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Area</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">m2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Gross area of the wall (including potentially existing windows, holes etc.)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&gt; 0 m2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>required</em></p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="sect2">
-<h3 id="InterfacesDocumentation">2.7. Interfaces (construction boundary conditions)</h3>
+<h3 id="InterfacesDocumentation">2.8. Interfaces (construction boundary conditions)</h3>
+<div class="paragraph">
+<p>Interfaces are defining boundary conditions and parameters for the two surfaces <code>InterfaceA</code> and <code>InterfaceB</code> of a constructions instance.</p>
+</div>
 <div class="exampleblock">
-<div class="title">Example 8. Interfaces</div>
+<div class="title">Example 10. Interfaces</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;InterfaceA</span> <span class="na">id=</span><span class="s">"10"</span> <span class="na">zoneId=</span><span class="s">"1"</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;InterfaceHeatConduction</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"HeatTransferCoefficient"</span> <span class="na">unit=</span><span class="s">"W/m2K"</span><span class="nt">&gt;</span>2.5<span class="nt">&lt;/IBK:Parameter&gt;</span>
-  <span class="nt">&lt;/InterfaceHeatConduction&gt;</span>
-<span class="nt">&lt;/InterfaceA&gt;</span>
-<span class="nt">&lt;InterfaceB</span> <span class="na">id=</span><span class="s">"11"</span> <span class="na">zoneId=</span><span class="s">"0"</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;InterfaceHeatConduction</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"HeatTransferCoefficient"</span> <span class="na">unit=</span><span class="s">"W/m2K"</span><span class="nt">&gt;</span>8<span class="nt">&lt;/IBK:Parameter&gt;</span>
-  <span class="nt">&lt;/InterfaceHeatConduction&gt;</span>
-    <span class="nt">&lt;InterfaceSolarAbsorption</span> <span class="na">model=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"AbsorptionCoefficient"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0.6<span class="nt">&lt;/IBK:Parameter&gt;</span>
-    <span class="nt">&lt;/InterfaceSolarAbsorption&gt;</span>
-    <span class="nt">&lt;InterfaceLongWaveEmission</span> <span class="na">model=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Emissivity"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0.9<span class="nt">&lt;/IBK:Parameter&gt;</span>
-    <span class="nt">&lt;/InterfaceLongWaveEmission&gt;</span>
-<span class="nt">&lt;/InterfaceB&gt;</span></code></pre>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;ConstructionInstance</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">displayName=</span><span class="s">"All Surfaces Var01"</span><span class="nt">&gt;</span>
+    ...
+    <span class="nt">&lt;InterfaceA</span> <span class="na">id=</span><span class="s">"10"</span> <span class="na">zoneId=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;InterfaceHeatConduction</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"HeatTransferCoefficient"</span> <span class="na">unit=</span><span class="s">"W/m2K"</span><span class="nt">&gt;</span>2.5<span class="nt">&lt;/IBK:Parameter&gt;</span>
+      <span class="nt">&lt;/InterfaceHeatConduction&gt;</span>
+    <span class="nt">&lt;/InterfaceA&gt;</span>
+    <span class="nt">&lt;InterfaceB</span> <span class="na">id=</span><span class="s">"11"</span> <span class="na">zoneId=</span><span class="s">"0"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;InterfaceHeatConduction</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"HeatTransferCoefficient"</span> <span class="na">unit=</span><span class="s">"W/m2K"</span><span class="nt">&gt;</span>8<span class="nt">&lt;/IBK:Parameter&gt;</span>
+      <span class="nt">&lt;/InterfaceHeatConduction&gt;</span>
+        <span class="nt">&lt;InterfaceSolarAbsorption</span> <span class="na">model=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"AbsorptionCoefficient"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0.6<span class="nt">&lt;/IBK:Parameter&gt;</span>
+        <span class="nt">&lt;/InterfaceSolarAbsorption&gt;</span>
+        <span class="nt">&lt;InterfaceLongWaveEmission</span> <span class="na">model=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Emissivity"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0.9<span class="nt">&lt;/IBK:Parameter&gt;</span>
+        <span class="nt">&lt;/InterfaceLongWaveEmission&gt;</span>
+    <span class="nt">&lt;/InterfaceB&gt;</span>
+<span class="nt">&lt;/ConstructionInstance&gt;</span></code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="paragraph">
-<p>Interfaces are defining boundary conditions and parameters for the two surfaces <code>InterfaceA</code> and <code>InterfaceB</code> of a constructions instance. There can be only constructions with two interfaces or less.</p>
-</div>
-<div class="paragraph">
-<p><code>InterfaceA</code> and <code>InterfaceB</code> can have the following <code>subtags</code>:</p>
+<p><code>InterfaceA</code> and <code>InterfaceB</code> may have one or more child tags.</p>
 </div>
 <div class="sect3">
-<h4 id="_heat_conduction">2.7.1. Heat Conduction</h4>
+<h4 id="_heat_conduction">2.8.1. Heat Conduction</h4>
 <div class="paragraph">
 <p>The Heat Conduction over the Interface is described by the XML tag <code>InterfaceHeatConduction</code>.</p>
 </div>
@@ -789,7 +993,7 @@ In the following it is described in detail.</p>
 <p>The XML tags named <code>IBK:Parameters</code> with the XML attributes <code>name</code> and <code>unit</code> with the following entries can be defined:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. Zone Parameters that can be set as <strong>IBK:Parameter</strong> with the Attributes <code>name</code> and <code>unit</code></caption>
+<caption class="title">Table 1. Zone Parameters that can be set as <strong>IBK:Parameter</strong> with the Attributes <code>name</code> and <code>unit</code></caption>
 <colgroup>
 <col style="width: 26.3157%;">
 <col style="width: 8.421%;">
@@ -818,7 +1022,7 @@ In the following it is described in detail.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_solar_absorption">2.7.2. Solar Absorption</h4>
+<h4 id="_solar_absorption">2.8.2. Solar Absorption</h4>
 <div class="paragraph">
 <p>The Solar Absorption over the Interface is described by the XML tag <code>InterfaceSolarAbsorption</code>.</p>
 </div>
@@ -833,7 +1037,88 @@ In the following it is described in detail.</p>
 <p>The <code>InterfaceSolarAbsorption</code> needs to be defined with the following XML attribute <code>modelType</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. Parameters for the InterfaceSolarAbsorption-Tag</caption>
+<caption class="title">Table 2. Parameters for the InterfaceSolarAbsorption-Tag</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 60%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-center valign-top">Format</th>
+<th class="tableblock halign-center valign-top">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>modelType</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Sets the type of the heat conduction model</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Constant</code> - constant model used (currently the only option)</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">positive Integer (&#160;&gt;&#160;0&#160;)</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The XML tags named <code>IBK:Parameters</code> with the XML attributes <code>name</code> and <code>unit</code> with the following entries can be defined:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Zone Parameters that can be set as <strong>IBK:Parameter</strong> with the Attributes <code>name</code> and <code>unit</code></caption>
+<colgroup>
+<col style="width: 26.3157%;">
+<col style="width: 8.421%;">
+<col style="width: 44.2105%;">
+<col style="width: 10.5263%;">
+<col style="width: 10.5265%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><code>name</code></th>
+<th class="tableblock halign-center valign-top"><code>unit</code></th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-center valign-top">Format</th>
+<th class="tableblock halign-center valign-top">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>AbsorptionCoefficient</strong></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">m2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Constant Absorption coefficient</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0&#8230;&#8203;1</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_long_wave_emission">2.8.3. Long Wave Emission</h4>
+<div class="paragraph">
+<p>The long wave emission over the interface is described by the XML tag <code>InterfaceLongWaveEmission</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;InterfaceLongWaveEmission</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Emissivity"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0.9<span class="nt">&lt;/IBK:Parameter&gt;</span>
+<span class="nt">&lt;/InterfaceLongWaveEmission&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>InterfaceLongWaveEmission</code> needs to be defined with the following XML attribute <code>modelType</code>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. Parameters for the InterfaceLongWaveEmission-Tag</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -889,7 +1174,7 @@ In the following it is described in detail.</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>AbsorptionCoefficient</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Emissivity</strong></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">m2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Constant Absorption coefficient</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">0&#8230;&#8203;1</p></td>
@@ -899,22 +1184,22 @@ In the following it is described in detail.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_long_wave_emission">2.7.3. Long Wave Emission</h4>
+<h4 id="_vapour_diffusion">2.8.4. Vapour Diffusion</h4>
 <div class="paragraph">
-<p>The long wave emission over the interface is described by the XML tag <code>InterfaceLongWaveEmission</code>.</p>
+<p>The vapour diffusion over the interface is described by the XML tag <code>InterfaceVaporDiffusion</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;InterfaceLongWaveEmission</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Emissivity"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0.9<span class="nt">&lt;/IBK:Parameter&gt;</span>
-<span class="nt">&lt;/InterfaceLongWaveEmission&gt;</span></code></pre>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;InterfaceVaporDiffusion</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"VaporTransferCoefficient"</span> <span class="na">unit=</span><span class="s">"s/m"</span><span class="nt">&gt;</span>1<span class="nt">&lt;/IBK:Parameter&gt;</span>
+<span class="nt">&lt;/InterfaceVaporDiffusion&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>InterfaceLongWaveEmission</code> needs to be defined with the following XML attribute <code>modelType</code>.</p>
+<p>The <code>InterfaceVaporDiffusion</code> needs to be defined with the following XML attribute <code>modelType</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. Parameters for the InterfaceLongWaveEmission-Tag</caption>
+<caption class="title">Table 6. Parameters for the InterfaceVaporDiffusion-Tag</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -970,87 +1255,6 @@ In the following it is described in detail.</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Emissivity</strong></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">m2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Constant Absorption coefficient</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">0&#8230;&#8203;1</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_vapour_diffusion">2.7.4. Vapour Diffusion</h4>
-<div class="paragraph">
-<p>The vapour diffusion over the interface is described by the XML tag <code>InterfaceVaporDiffusion</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;InterfaceVaporDiffusion</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"VaporTransferCoefficient"</span> <span class="na">unit=</span><span class="s">"s/m"</span><span class="nt">&gt;</span>1<span class="nt">&lt;/IBK:Parameter&gt;</span>
-<span class="nt">&lt;/InterfaceVaporDiffusion&gt;</span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The <code>InterfaceVaporDiffusion</code> needs to be defined with the following XML attribute <code>modelType</code>.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. Parameters for the InterfaceVaporDiffusion-Tag</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 60%;">
-<col style="width: 10%;">
-<col style="width: 10%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Attribute</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-center valign-top">Format</th>
-<th class="tableblock halign-center valign-top">Usage</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>modelType</strong></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Sets the type of the heat conduction model</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>Constant</code> - constant model used (currently the only option)</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">positive Integer (&#160;&gt;&#160;0&#160;)</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>The XML tags named <code>IBK:Parameters</code> with the XML attributes <code>name</code> and <code>unit</code> with the following entries can be defined:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. Zone Parameters that can be set as <strong>IBK:Parameter</strong> with the Attributes <code>name</code> and <code>unit</code></caption>
-<colgroup>
-<col style="width: 26.3157%;">
-<col style="width: 8.421%;">
-<col style="width: 44.2105%;">
-<col style="width: 10.5263%;">
-<col style="width: 10.5265%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top"><code>name</code></th>
-<th class="tableblock halign-center valign-top"><code>unit</code></th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-center valign-top">Format</th>
-<th class="tableblock halign-center valign-top">Usage</th>
-</tr>
-</thead>
-<tbody>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>VaporTransferCoefficient</strong></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">s/m</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Vapor Transfer Coefficient</p></td>
@@ -1061,7 +1265,7 @@ In the following it is described in detail.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_air_flow">2.7.5. Air Flow</h4>
+<h4 id="_air_flow">2.8.5. Air Flow</h4>
 <div class="paragraph">
 <p>The air flow over the interface is described by the XML tag <code>InterfaceAirFlow</code>.</p>
 </div>
@@ -1076,7 +1280,7 @@ In the following it is described in detail.</p>
 <p>The <code>InterfaceAirFlow</code> needs to be defined with the following XML attribute <code>modelType</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. Parameters for the InterfaceAirFlow-Tag</caption>
+<caption class="title">Table 8. Parameters for the InterfaceAirFlow-Tag</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -1113,7 +1317,7 @@ In the following it is described in detail.</p>
 <p>The XML tags named <code>IBK:Parameters</code> with the XML attributes <code>name</code> and <code>unit</code> with the following entries can be defined:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. Pressure Coefficient Parameters that can be set as <strong>IBK:Parameter</strong> with the Attributes <code>name</code> and <code>unit</code></caption>
+<caption class="title">Table 9. Pressure Coefficient Parameters that can be set as <strong>IBK:Parameter</strong> with the Attributes <code>name</code> and <code>unit</code></caption>
 <colgroup>
 <col style="width: 26.3157%;">
 <col style="width: 8.421%;">
@@ -1143,227 +1347,17 @@ In the following it is described in detail.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_ambient_climate_boundary_conditions">2.8. Ambient climate boundary conditions</h3>
+<h3 id="_ambient_climate_boundary_conditions">2.9. Ambient climate boundary conditions</h3>
 
 </div>
 <div class="sect2">
-<h3 id="_interface_between_constructions_and_zones_internal_boundary_conditions">2.9. Interface between constructions and zones (internal boundary conditions)</h3>
+<h3 id="_interface_between_constructions_and_zones_internal_boundary_conditions">2.10. Interface between constructions and zones (internal boundary conditions)</h3>
 
-</div>
-<div class="sect2">
-<h3 id="_material_and_construction_lists">2.10. Material and Construction Lists</h3>
-<div class="sect3">
-<h4 id="_overview_2">2.10.1. Overview</h4>
-<div class="paragraph">
-<p>In order to model building components such as Walls, Ceilings and Floors, etc. it is necessary to define some parameters for the materials and then define сonstructions composed of such materials.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="./images/Mat_ConstInst.png" alt="Mat ConstInst">
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="materials">2.10.2. Materials</h4>
-<div class="paragraph">
-<p>In the NANDRAD-Model the Materials section starts with an XML tag named <code>Materials</code>.</p>
-</div>
-<div class="exampleblock">
-<div class="title">Example 9. Materials with Parameters</div>
-<div class="content">
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Materials&gt;</span>
-  <span class="nt">&lt;Material</span> <span class="na">id=</span><span class="s">"1001"</span> <span class="na">displayName=</span><span class="s">"Brick"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Density"</span> <span class="na">unit=</span><span class="s">"kg/m3"</span><span class="nt">&gt;</span>2000<span class="nt">&lt;/IBK:Parameter&gt;</span>
-    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"HeatCapacity"</span> <span class="na">unit=</span><span class="s">"J/kgK"</span><span class="nt">&gt;</span>1000<span class="nt">&lt;/IBK:Parameter&gt;</span>
-    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Conductivity"</span> <span class="na">unit=</span><span class="s">"W/mK"</span><span class="nt">&gt;</span>1.2<span class="nt">&lt;/IBK:Parameter&gt;</span>
-  <span class="nt">&lt;/Material&gt;</span>
-  <span class="nt">&lt;Material</span> <span class="na">id=</span><span class="s">"1004"</span> <span class="na">displayName=</span><span class="s">"Good Insulation"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Density"</span> <span class="na">unit=</span><span class="s">"kg/m3"</span><span class="nt">&gt;</span>50<span class="nt">&lt;/IBK:Parameter&gt;</span>
-    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"HeatCapacity"</span> <span class="na">unit=</span><span class="s">"J/kgK"</span><span class="nt">&gt;</span>1000<span class="nt">&lt;/IBK:Parameter&gt;</span>
-    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Conductivity"</span> <span class="na">unit=</span><span class="s">"W/mK"</span><span class="nt">&gt;</span>0.02<span class="nt">&lt;/IBK:Parameter&gt;</span>
-  <span class="nt">&lt;/Material&gt;</span>
-<span class="nt">&lt;/Materials&gt;</span></code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>In this tag each material property set starts with an XML tag named <code>Material</code> with two XML attributes <code>id</code> and <code>displayName</code>.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 15%;">
-<col style="width: 55%;">
-<col style="width: 20%;">
-<col style="width: 10%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Attribute</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Format</th>
-<th class="tableblock halign-left valign-top">usage</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>id</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Unique id of the material.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">positive Integer ( &gt; 0 )</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>required</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>displayName</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of material (used for informative/error messages).</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Concerning the material parameters such as density, heat capacity and thermal conductivity they need to be defined within the XML tag <code>IBK:Parameter</code> (see <a href="#IBK_Parameter">IBK:Parameter</a>):</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 15%;">
-<col style="width: 10%;">
-<col style="width: 45%;">
-<col style="width: 20%;">
-<col style="width: 10%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top"><code>name</code></th>
-<th class="tableblock halign-left valign-top">Default Unit</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Value Range</th>
-<th class="tableblock halign-left valign-top">Usage</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Density</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">kg/m3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Dry density of the material.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&gt; 1 kg/m3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>required</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>HeatCapacity</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">J/kgK</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specific heat capacity of the material.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&gt; 100 J/kgK</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>required</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Conductivity</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">W/mK</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Thermal conductivity of the dry material.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&gt; 1e-5 W/mK</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>required</em></p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="construction_types">2.10.3. Construction Types</h4>
-<div class="paragraph">
-<p>Constructions are defined inside the section starting with an XML tag <code>ConstructionTypes</code>.</p>
-</div>
-<div class="exampleblock">
-<div class="title">Example 10. Construction Types with References to Material Objects</div>
-<div class="content">
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;ConstructionTypes&gt;</span>
-  <span class="nt">&lt;ConstructionType</span> <span class="na">id=</span><span class="s">"10005"</span> <span class="na">displayName=</span><span class="s">"Test Construction"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;MaterialLayers&gt;</span>
-      <span class="nt">&lt;MaterialLayer</span> <span class="na">thickness=</span><span class="s">"0.2"</span> <span class="na">matId=</span><span class="s">"1001"</span> <span class="nt">/&gt;</span> <span class="c">&lt;!-- room side --&gt;</span>
-      <span class="nt">&lt;MaterialLayer</span> <span class="na">thickness=</span><span class="s">"0.3"</span> <span class="na">matId=</span><span class="s">"1004"</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;/MaterialLayers&gt;</span>
-  <span class="nt">&lt;/ConstructionType&gt;</span>
-<span class="nt">&lt;/ConstructionTypes&gt;</span></code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>Inside this section each construction definition starts with the XML tag named <code>ConstructionType</code> with the XML attributes <code>id</code> and optional <code>displayName</code>:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 15%;">
-<col style="width: 55%;">
-<col style="width: 20%;">
-<col style="width: 10%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Attribute</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Format</th>
-<th class="tableblock halign-left valign-top">usage</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>id</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Unique id number.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">positive integer ( &gt; 0 )</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>required</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>displayName</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of construction (used for informative/error messages).</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>A construction consists of one or more material layers. These are defined within the child XML tag named <code>MaterialLayers</code>. Each material layer is defined with the XML tag <code>MaterialLayer</code> with the following XML attributes:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 15%;">
-<col style="width: 55%;">
-<col style="width: 20%;">
-<col style="width: 10%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">XML-Attribute</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Format</th>
-<th class="tableblock halign-left valign-top">usage</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>thickness</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">defines the thickness of the layer in <code>m</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">positive double ( &gt; 0.0 )</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>required</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>matId</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">refers to a material by unique material id number (<code>id</code> as defined in a <code>Material</code> tag),</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>required</em></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>The <code>MaterialLayer</code> does not have child tags since all needed data are defined as XML attributes as described above.</p>
-</div>
-</div>
 </div>
 <div class="sect2">
 <h3 id="climatic_loads">2.11. Climatic loads</h3>
 <div class="sect3">
-<h4 id="_overview_3">2.11.1. Overview</h4>
+<h4 id="_overview_2">2.11.1. Overview</h4>
 <div class="paragraph">
 <p>Climatic loads in NANDRAD are provided by means of climate data files. For solar radiation calculation it needs information on the building location (usually provided in the climate file), and also the orientation and inclination of the various construction surfaces (defined for outside surfaces, see <a href="#construction_instances">Geometry/Constructions</a>).</p>
 </div>
@@ -1386,19 +1380,19 @@ In the following it is described in detail.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Parameters (see also section <a href="#IBK_Parameter">IBK:Parameter</a> for a description of the <code>IBK:Parameter</code> tag):</p>
+<p>Parameters (see section <a href="#IBK_Parameter">IBK:Parameter</a> for a description of the <code>IBK:Parameter</code> tag):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 15%;">
-<col style="width: 10%;">
-<col style="width: 45%;">
-<col style="width: 20%;">
-<col style="width: 10%;">
+<col style="width: 17.8217%;">
+<col style="width: 14.8514%;">
+<col style="width: 37.6237%;">
+<col style="width: 19.8019%;">
+<col style="width: 9.9013%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top"><code>name</code></th>
+<th class="tableblock halign-left valign-top">Name</th>
 <th class="tableblock halign-left valign-top">Default Unit</th>
 <th class="tableblock halign-left valign-top">Description</th>
 <th class="tableblock halign-left valign-top">Value Range</th>
@@ -1407,28 +1401,28 @@ In the following it is described in detail.</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Albedo</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Albedo</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">---</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Used for diffuse solar radiation calculation (see <a href="#loads_solar_radiation">Solar Radiation Calculation</a>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">[0,1]</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>required</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Altitude</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Altitude</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">m</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">later needed for specific altitude-related parameters (<strong>TODO</strong>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">&gt; 0 m)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Longitude</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Longitude</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Deg</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If specified, overrides the location parameter <code>Longitude</code> of the climate data file (see <a href="#location_settings">Building/Station location</a>).</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">[-180,180] Deg</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Latitude</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Latitude</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Deg</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If specified, they override the location parameter <code>Latitude</code> of the climate data file (see <a href="#location_settings">Building/Station location</a>).</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">[-90,90] Deg</p></td>
@@ -1437,7 +1431,7 @@ In the following it is described in detail.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Flags and options (see also section <a href="#IBK_Flag">IBK:Flag</a> for a description of the <code>IBK:Flag</code> tag):</p>
+<p>Flags and options (see section <a href="#IBK_Flag">IBK:Flag</a> for a description of the <code>IBK:Flag</code> tag):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1448,7 +1442,7 @@ In the following it is described in detail.</p>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top"><code>name</code></th>
+<th class="tableblock halign-left valign-top">Name</th>
 <th class="tableblock halign-left valign-top">Description</th>
 <th class="tableblock halign-left valign-top">Default</th>
 <th class="tableblock halign-left valign-top">Usage</th>
@@ -1456,7 +1450,7 @@ In the following it is described in detail.</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>PerezDiffuseRadiationModel</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PerezDiffuseRadiationModel</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines whether to use the Perez-Model for diffuse solar radiation calculation</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>false</em></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
@@ -1526,8 +1520,106 @@ In the following it is described in detail.</p>
 <div class="sect4">
 <h5 id="_cyclic_annual_and_continuous_multi_year_climate_data">Cyclic (annual) and continuous (multi-year) climate data</h5>
 <div class="paragraph">
-<p>The climate data file can either contain 8760 hourly values for an entire year. Anything else is considered as  arbitrary range of time values indicating a specific time interval, possibly also with varying time intervals between data points. The latter climate data files cannot be used for annual/cyclic calculation, but require a specific (matching) simulation time interval (see also section &lt;&lt;
-Below following conventions are used.</p>
+<p>The climate data file can either contain 8760 hourly values for an entire year. Anything else is considered as  arbitrary range of time values indicating a specific time interval, possibly also with varying time intervals between data points. The latter climate data files cannot be used for annual/cyclic calculation, but require a specific (matching) simulation time interval (see also section <a href="#simulation_interval">Simulation time interval</a>).</p>
+</div>
+<div class="sect5">
+<h6 id="_cyclic_annual_climate">Cyclic annual climate</h6>
+<div class="paragraph">
+<p>Climate data is provided in hourly values. The interpretation of these values depends on the type of quantity. NANDRAD distinguishes between state quantities and flux/load quantities.</p>
+</div>
+<div class="paragraph">
+<p>State quantities are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>temperatures</p>
+</li>
+<li>
+<p>relative humidities</p>
+</li>
+<li>
+<p>air pressures</p>
+</li>
+<li>
+<p>wind direction</p>
+</li>
+<li>
+<p>wind velocity</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Flux/load quantities are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>direct solar radiation intensity (in sun&#8217;s normal direction)</p>
+</li>
+<li>
+<p>diffuse solar radiation intensity (on horizontal plane)</p>
+</li>
+<li>
+<p>rain load</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>State quantities are expected to be monitored as <em>instantaneous values</em> at the <em>end of each hour</em>. Sub-hourly values are obtained through linear interpolation, as shown in <a href="#fig_hourly_values">Figure 2</a>.</p>
+</div>
+<div id="fig_hourly_values" class="imageblock">
+<div class="content">
+<img src="./images/CCM_Interpolation1.png" alt="CCM Interpolation1">
+</div>
+<div class="title">Figure 2. Using Linear Interpolation to reconstruct sub-hourly Values from Hourly Data Points</div>
+</div>
+<div class="paragraph">
+<p>Flux/load quantities are expected as <em>mean/average values</em> over the <em>last hour</em>. Sub-hourly values are obtained through linear interpolation between the average values placed in the middle of each hour, as shown in <a href="#fig_hourly_load_values">Figure 3</a>.</p>
+</div>
+<div id="fig_hourly_load_values" class="imageblock">
+<div class="content">
+<img src="./images/CCM_Interpolation2.png" alt="CCM Interpolation2">
+</div>
+<div class="title">Figure 3. Using Linear Interpolation to reconstruct sub-hourly Values from Hourly Mean Values</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_continuous_data">Continuous data</h6>
+<div class="paragraph">
+<p>The climate data file contains data points (at least 2), which also mark the earliest start and latest end point of the simulation.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you continue the simulation past the available climate data, the last values in the climate data set will be kept constant, thus eventually leading to meaningless results (unless this is intendet in artificial test cases).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Since the user can choose arbitrary time steps in the climate data files, even down to minutely values, the accuracy of the input data depends on the user input. Between time points, the solver will linearly interpolate <strong>all quantities</strong> in the climate data file, and not distinguish between states and loads, as with hourly data.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>To achive the same result as with annual hourly data, simply provide climatic data in 30 min intervals and compute interpolated values at end and middle of each hour, yourself.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 <div class="sect4">
@@ -1566,7 +1658,7 @@ Below following conventions are used.</p>
 * <code>IncidenceAngleOnPlane[&lt;sensor id&gt;]</code> - the incidence angle onto the plane in [Deg] (0° when sun ray is perpendicular to the plane, 90° when ray is parallel to the plane or when sun is below horizon)</p>
 </div>
 <div class="paragraph">
-<p>Example for a sensor output (see also output description in section <a href="#outputs">Outputs/Results</a>).</p>
+<p>Example for a sensor output (see also output description in section <a href="#outputs">Section 2.14</a>).</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1596,32 +1688,11 @@ Below following conventions are used.</p>
 <p>Solar radiation calculation follows the equations lists in section &#8230;&#8203; of the <em>Physical Model Reference</em>. The <code>Albedo</code> parameter is used in the diffuse radiation load calculation.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_implementation">2.11.4. Implementation</h4>
-<div class="paragraph">
-<p>The <code>Loads</code> model is a pre-defined model that is always evaluated first whenever the time point has changed. It does not have any other dependencies.</p>
-</div>
-<div class="paragraph">
-<p>It provides all resulting variables as <code>constant</code> (during iteration) result variables, which can be retrieved and utilized by any other model.</p>
-</div>
-<div class="paragraph">
-<p>With respect to solar radiation calculation, during initialization it registers all surfaces (with different orientation/inclination) and provides an ID for each surface. Then, models can request direct and diffuse radiation data, as well as incidence angle for each of the registered surfaces.</p>
-</div>
-<div class="sect4">
-<h5 id="_registering_surfaces">Registering surfaces</h5>
-<div class="paragraph">
-<p>Each construction surface (interface) with outside radiation loads registers itself with the Loads object, hereby passing the interface object ID as argument and orientation/inclination of the surface. The loads object itself registers this surface with the climate calculation module (CCM) and retrieves a surface ID. This surface ID may be the same for many interface IDs.</p>
-</div>
-<div class="paragraph">
-<p>The Loads object stores a mapping of all interface IDs to the respective surface IDs in the CCM. When requesting the result variable&#8217;s memory location, this mapping is used to deliver the correct input variable reference/memory location to the interface-specific solar radiation calculation object.</p>
-</div>
-</div>
-</div>
 </div>
 <div class="sect2">
 <h3 id="schedules">2.12. Schedules</h3>
 <div class="sect3">
-<h4 id="_overview_4">2.12.1. Overview</h4>
+<h4 id="_overview_3">2.12.1. Overview</h4>
 <div class="paragraph">
 <p>Schedules provide purely time-dependent quantities, similar to climatic loads.</p>
 </div>
@@ -1730,7 +1801,7 @@ Example:
 </div>
 </div>
 <div class="sect5">
-<h6 id="_continuous_data">Continuous data</h6>
+<h6 id="_continuous_data_2">Continuous data</h6>
 <div class="paragraph">
 <p>For continuous schedule data (i.e. flag "Cyclic" is off; meaningful when re-calculating monitored building data with real calander reference), the following procedure is used:</p>
 </div>
@@ -1795,7 +1866,7 @@ Example:
 </div>
 </div>
 <div class="sect3">
-<h4 id="_implementation_2">2.12.3. Implementation</h4>
+<h4 id="_implementation">2.12.3. Implementation</h4>
 <div class="paragraph">
 <p>Schedules do not have any dependencies, and are not part of the model graph. They are updated just as climatic loads whenever time changes.</p>
 </div>
@@ -2053,23 +2124,29 @@ Example:
 </div>
 <div class="sect2">
 <h3 id="_global_parameters">2.13. Global parameters</h3>
+<div class="paragraph">
+<p>The global simulation options control:</p>
+</div>
 <div class="ulist">
 <ul>
 <li>
-<p>parameters controlling how the model operates</p>
+<p>how the model operates</p>
 </li>
 <li>
-<p>parameters controlling model accuracy</p>
+<p>the calculation accuracy (impacts performance)</p>
 </li>
 <li>
-<p>parameters controlling performance</p>
+<p>the calculation performance</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>The individual settings are split into <em>simulation parameters</em> and <em>solver parameters</em>, the latter being centered on the numerical solution method.</p>
 </div>
 <div class="sect3">
 <h4 id="simulation_parameters">2.13.1. Simulation Parameters</h4>
 <div class="paragraph">
-<p>Hereafter all simulation parameters are described. All parameters are set as <code>IBK:Parameters</code>, <code>IBK:Flags</code> or <code>IBK:intPara</code> and apply globally for all objects like <code>zones</code>, <code>constructionInstances</code> etc, where the specific value can be set. This means that if you set <code>InitialRelativeHumidity</code> the value will only applied to objects such as <code>zones</code>. In <a href="#ex_simpara">Simulation Parameters</a> you can find an example for the parameters.</p>
+<p>Hereafter all simulation parameters are described. All parameters are set as <code>IBK:Parameters</code>, <code>IBK:Flags</code> or <code>IBK:IntPara</code>, see <a href="#ex_simpara">Example 11</a>.</p>
 </div>
 <div id="ex_simpara" class="exampleblock">
 <div class="title">Example 11. Simulation Parameters</div>
@@ -2085,19 +2162,19 @@ Example:
 </div>
 </div>
 <div class="paragraph">
-<p>Floating point parameters (see also section <a href="#IBK_Parameter">Section 2.2.1</a> for a description of the <code>IBK:Parameter</code> tag):</p>
+<p>Floating point parameters (see also section <a href="#IBK_Parameter">IBK:Parameter</a> for a description of the <code>IBK:Parameter</code> tag):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
+<col style="width: 20%;">
 <col style="width: 15%;">
-<col style="width: 10%;">
-<col style="width: 45%;">
+<col style="width: 35%;">
 <col style="width: 20%;">
 <col style="width: 10%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top"><code>name</code></th>
+<th class="tableblock halign-left valign-top">Name</th>
 <th class="tableblock halign-left valign-top">Default Unit</th>
 <th class="tableblock halign-left valign-top">Description</th>
 <th class="tableblock halign-left valign-top">Value Range</th>
@@ -2106,84 +2183,84 @@ Example:
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>InitialTemperature</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>InitialTemperature</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">C</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Global initial temperature for all objetcs (<code>zones</code>, <code>constructionInstances</code>, etc)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">positive double (&#160;&gt;&#160;0.0&#160;K)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>InitialRelativeHumidity</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>InitialRelativeHumidity</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">%</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Global initial relative humidity for all objects, that can have a humidity value set (<code>zones</code>, air flows in <code>models</code>, etc)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0 &#8230;&#8203; 100%</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>RadiationLoadFraction</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>RadiationLoadFraction</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">---</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Percentage of solar radiation gains attributed directly to the room 0..1.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0&#8230;&#8203;1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>UserThermalRadiationFraction</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UserThermalRadiationFraction</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">---</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Percentage of heat that is emitted by long wave radiation from persons.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0&#8230;&#8203;1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>EquipmentThermalLossFraction</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>EquipmentThermalLossFraction</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">---</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Percentage of energy from equipment load that is not available as thermal heat.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0 &#8230;&#8203; 1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>EquipmentThermalRadiationFraction</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>EquipmentThermalRadiationFraction</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">---</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Percentage of heat that is emitted by long wave radiation from equipment.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0&#8230;&#8203;1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>LightingVisibleRadiationFraction</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LightingVisibleRadiationFraction</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">---</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Percentage of energy from lighting that is transformed into visible short wave radiation.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0&#8230;&#8203;1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>LightingThermalRadiationFraction</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LightingThermalRadiationFraction</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">---</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Percentage of heat that is emitted by long wave radiation from lighting.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0&#8230;&#8203;1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DomesticWaterSensitiveHeatGainFraction</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DomesticWaterSensitiveHeatGainFraction</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">---</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Percentage of sensitive heat from domestic water istributed towrads the room.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0&#8230;&#8203;1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>AirExchangeRateN50</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>AirExchangeRateN50</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1/h</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Air exchange rate resulting from a pressure difference of 50 Pa between inside and outside.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">positive double (&#160;&gt;&#160;0.0&#160;)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>ShieldingCoefficient</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ShieldingCoefficient</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">---</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Shielding coefficient for a given location and envelope type.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0 &#8230;&#8203; 1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>HeatingDesignAmbientTemperature</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>HeatingDesignAmbientTemperature</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">C</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Ambient temparture for a design day. Parameter that is needed for FMU export.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">positive double (&#160;&gt;&#160;0.0&#160;)</p></td>
@@ -2192,7 +2269,7 @@ Example:
 </tbody>
 </table>
 <div class="paragraph">
-<p>Whole number parameters (see also section <a href="#IBK_IntPara">Section 2.2.2</a> for a description of the <code>IBK:IntPara</code> tag):</p>
+<p>Whole number parameters (see also section <a href="#IBK_IntPara">IBK:IntPara</a> for a description of the <code>IBK:IntPara</code> tag):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2216,7 +2293,7 @@ Example:
 </tbody>
 </table>
 <div class="paragraph">
-<p>Flags and options (see also section <a href="#IBK_Flag">Section 2.2.3</a> for a description of the <code>IBK:Flag</code> tag):</p>
+<p>Flags and options (see also section <a href="#IBK_Flag">IBK:Flag</a> for a description of the <code>IBK:Flag</code> tag):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2345,7 +2422,7 @@ Example:
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. Parameters that can be set as an <strong>IBK:Parameter</strong> with the Attributes <code>name</code> and <code>unit</code>.</caption>
+<caption class="title">Table 10. Parameters that can be set as an <strong>IBK:Parameter</strong> with the Attributes <code>name</code> and <code>unit</code>.</caption>
 <colgroup>
 <col style="width: 30%;">
 <col style="width: 8%;">
@@ -2514,7 +2591,7 @@ Example:
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Parameters set as IBK:Flag with an Attribute <code>name</code> that enbables functionalities</caption>
+<caption class="title">Table 11. Parameters set as IBK:Flag with an Attribute <code>name</code> that enbables functionalities</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 55%;">
@@ -2565,7 +2642,7 @@ Example:
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. Integrator Parameters that are set as <strong>Integrator</strong></caption>
+<caption class="title">Table 12. Integrator Parameters that are set as <strong>Integrator</strong></caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 70%;">
@@ -2608,7 +2685,7 @@ Example:
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. LESolver Parameters that are set as <strong>LESolver</strong></caption>
+<caption class="title">Table 13. LESolver Parameters that are set as <strong>LESolver</strong></caption>
 <colgroup>
 <col style="width: 15%;">
 <col style="width: 75%;">
@@ -2646,7 +2723,7 @@ Example:
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. Preconditioner Parameters that can be set as <strong>Preconditioner</strong></caption>
+<caption class="title">Table 14. Preconditioner Parameters that can be set as <strong>Preconditioner</strong></caption>
 <colgroup>
 <col style="width: 15%;">
 <col style="width: 65%;">
@@ -2706,7 +2783,7 @@ Example:
 <div class="sect2">
 <h3 id="outputs">2.14. Outputs/Results</h3>
 <div class="paragraph">
-<p>In NANDRAD it is possible to retrieve output data for any computed and published quantity, see <a href="#quantities">Section 4.2</a> for a complete list. Of course, not all quantities are available in all projects - much depends on what kind of models and geometry has been defined.</p>
+<p>In NANDRAD it is possible to retrieve output data for any computed and published quantity, see <a href="#quantities">Quantity References</a> for a complete list. Of course, not all quantities are available in all projects - much depends on what kind of models and geometry has been defined.</p>
 </div>
 <div class="paragraph">
 <p>In order to define an output, the following information is needed:</p>
@@ -2731,7 +2808,7 @@ Example:
 </ul>
 </div>
 <div class="paragraph">
-<p>In addition to manually defined outputs, NANDRAD also generate a number log and data files, automatically (see section <a href="#solver_log_files">Section 2.14.5</a>).</p>
+<p>In addition to manually defined outputs, NANDRAD also generate a number log and data files, automatically (see section <a href="#solver_log_files">Solver log files</a>).</p>
 </div>
 <div class="paragraph">
 <p>Outputs are stored in the XML-tag <code>Outputs</code>, with the following general structure:</p>
@@ -2766,7 +2843,7 @@ Example:
 <div class="ulist">
 <ul>
 <li>
-<p>name <code>BinaryFormat</code>: if true, files will be written in binary format (see <a href="#binary_outputs">Section 2.14.4</a>).</p>
+<p>name <code>BinaryFormat</code>: if true, files will be written in binary format (see <a href="#binary_outputs">Binary Format</a>).</p>
 </li>
 </ul>
 </div>
@@ -2831,7 +2908,7 @@ Example:
 </ul>
 </div>
 <div class="paragraph">
-<p>The parameters are stored in XML-tags of type <code>IBK:Parameter</code>, see <a href="#IBK_Parameter">Section 2.2.1</a>.</p>
+<p>The parameters are stored in XML-tags of type <code>IBK:Parameter</code>, see <a href="#IBK_Parameter">IBK:Parameter</a>.</p>
 </div>
 <div class="paragraph">
 <p>Time points in <code>Start</code> and <code>End</code> parameters are defined with respect to Midnight January 1st of the year in which the simulation starts.</p>
@@ -2963,7 +3040,7 @@ outputs associated with this output grid will be written.</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Quantity</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Unique ID name of the results quantity, see also <a href="#quantities">Section 4.2</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique ID name of the results quantity, see also <a href="#quantities">Quantity References</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ObjectListName</code></p></td>
@@ -2990,7 +3067,7 @@ outputs associated with this output grid will be written.</p>
 <p>The <code>FileName</code> tag is optioned. It can be used to specifically select the name of an output file. Normally, output file names are generated automatically, depending on the type of output requested.</p>
 </div>
 <div class="paragraph">
-<p>Lastly, the tag <code>TimeType</code> can be used to specifiy time averaging or time integration of variables, see section <a href="#output_time_type">Section 2.14.3.3</a>.</p>
+<p>Lastly, the tag <code>TimeType</code> can be used to specifiy time averaging or time integration of variables, see section <a href="#output_time_type">Time types</a>.</p>
 </div>
 <div class="sect4">
 <h5 id="_variable_names_and_variable_lookup_rules">Variable names and variable lookup rules</h5>
@@ -3054,11 +3131,23 @@ outputs associated with this output grid will be written.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>The outputs are further grouped by output grid name. The final output file name is obtained for each grid and group name:
-  - states &#8594; <code>states_&lt;gridname&gt;.tsv</code>
-  - loads &#8594; <code>loads_&lt;gridname&gt;.tsv</code>
-  - fluxes &#8594; <code>fluxes_&lt;gridname&gt;.tsv</code>
-  - fluxes (integrated) &#8594; <code>flux_integrals_&lt;gridname&gt;.tsv</code></p>
+<p>The outputs are further grouped by output grid name. The final output file name is obtained for each grid and group name:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>states &#8594; <code>states_&lt;gridname&gt;.tsv</code></p>
+</li>
+<li>
+<p>loads &#8594; <code>loads_&lt;gridname&gt;.tsv</code></p>
+</li>
+<li>
+<p>fluxes &#8594; <code>fluxes_&lt;gridname&gt;.tsv</code></p>
+</li>
+<li>
+<p>fluxes (integrated) &#8594; <code>flux_integrals_&lt;gridname&gt;.tsv</code></p>
+</li>
+</ul>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -3115,13 +3204,13 @@ outputs associated with this output grid will be written.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>By default (when the tag <code>TimeType</code> is not explicitely specified) the values are written as they are computed at the output time (corresponds to <code>None</code>). Figure <a href="#fig_timetype">Figure 1</a> illustrates the various options.</p>
+<p>By default (when the tag <code>TimeType</code> is not explicitely specified) the values are written as they are computed at the output time (corresponds to <code>None</code>). Figure <a href="#fig_timetype">Illustration of the various <code>TimeType</code> options</a> illustrates the various options.</p>
 </div>
 <div id="fig_timetype" class="imageblock">
 <div class="content">
 <img src="./images/TimeType_illustration.png" alt="TimeType illustration">
 </div>
-<div class="title">Figure 1. Illustration of the various <code>TimeType</code> options</div>
+<div class="title">Figure 4. Illustration of the various <code>TimeType</code> options</div>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -3376,7 +3465,7 @@ The uniqueness of the zone is guaranteed by an identifier <code>id</code>. Optio
 </ul>
 </div>
 <div class="paragraph">
-<p>The volume and the area are defined via so-called <a href="#IBK_Parameter">Section 2.2.1</a>.
+<p>The volume and the area are defined via so-called <a href="#IBK_Parameter">IBK:Parameter</a>.
 The zone volume is defined in the example room with <code>V = 30 m³</code>. The base area is described with <code>A = 10 m²</code>.</p>
 </div>
 <div class="paragraph">
@@ -3407,7 +3496,7 @@ The boundary conditions are defined via the interfaces <code>InterfaceA</code> a
 <p>In the example the wall Enclosing Surfaces is shown. The selected wall is defined by an area <code>A = 15 m²</code>, a wall construction with the <code>id = 101</code> and an inside and outside boundary condition. The outside boundary condition is described with a constant transition coefficient of <code>h = 15 W/(m²K)</code>, a solar absorptance of <code>a = 0.6</code> and a long-wave absorption/emission of <code>ε = 0.9</code>. On the inside, only a transition coefficient <code>h = 10 W/(m²K)</code> is described.</p>
 </div>
 <div class="paragraph">
-<p>Further setting options can be found in the detailed <a href="#construction_instances">Section 2.6</a> documentation.</p>
+<p>Further setting options can be found in the detailed <a href="#construction_instances">Construction Instances</a> documentation.</p>
 </div>
 <div class="paragraph">
 <p>Example:</p>
@@ -3444,7 +3533,7 @@ The boundary conditions are defined via the interfaces <code>InterfaceA</code> a
 <div class="sect4">
 <h5 id="_output">Output</h5>
 <div class="paragraph">
-<p>The requested outputs must be defined, otherwise a simulation will be started without obtaining output result variables. The <code>Outputs</code> are divided into <code>Definitions</code> and <code>Grids</code>. Inside <code>Grids</code> the interval step sizes and optionally the time points for the outputs are defined. The <code>Definitions</code> consist of individual outputs named <code>OutputDefinition</code> each with an object list name <code>ObjectListName</code>, an output grid name <code>GridName</code> and a result quantity <code>Quantity</code>. Additionally, the interval handling <code>TimeType</code> and the output file name <code>FileName</code> can be specified. In the interval handling either momentary values at the end of the interval, average or integral values of the interval are output (see section <a href="#output_time_type">Section 2.14.3.3</a> for a discussion).</p>
+<p>The requested outputs must be defined, otherwise a simulation will be started without obtaining output result variables. The <code>Outputs</code> are divided into <code>Definitions</code> and <code>Grids</code>. Inside <code>Grids</code> the interval step sizes and optionally the time points for the outputs are defined. The <code>Definitions</code> consist of individual outputs named <code>OutputDefinition</code> each with an object list name <code>ObjectListName</code>, an output grid name <code>GridName</code> and a result quantity <code>Quantity</code>. Additionally, the interval handling <code>TimeType</code> and the output file name <code>FileName</code> can be specified. In the interval handling either momentary values at the end of the interval, average or integral values of the interval are output (see section <a href="#output_time_type">Time types</a> for a discussion).</p>
 </div>
 <div class="paragraph">
 <p>The object list groups all IDs of objects, which are used to access the objects like zones, models, etc. themselves. The object list <code>objectlist</code> consists of a <code>FilterId</code>, a <code>ReferenceType</code> and a name <code>name</code>. With a <code>*</code> all existing Ids of a reference type can be addressed.
@@ -3464,7 +3553,7 @@ The example below shows how the output of the models is referenced via the objec
 </div>
 </div>
 <div class="paragraph">
-<p>In the following example the air temperature is queried and written to the standard output file (see section <a href="#output_filenames">Section 2.14.3.2</a>). An hourly time grid was selected as interval. The output takes place over the entire <a href="#simulation_interval">simulation duration</a>.</p>
+<p>In the following example the air temperature is queried and written to the standard output file (see section <a href="#output_filenames">Output file names</a>). An hourly time grid was selected as interval. The output takes place over the entire <a href="#simulation_interval">simulation duration</a>.</p>
 </div>
 <div class="paragraph">
 <p>Example:</p>
@@ -3495,7 +3584,7 @@ The example below shows how the output of the models is referenced via the objec
 <div class="sect4">
 <h5 id="_location">Location</h5>
 <div class="paragraph">
-<p>The location and climate are described in the tag <code>Location</code>. Mandatory parameters are the albedo as <a href="#IBK_Parameter">Section 2.2.1</a> and either a climate file <code>ClimateFileName</code> or a location description with the <a href="#IBK_Parameter">Section 2.2.1</a> northern latitude <code>Latitude</code>, eastern longitude <code>Longitude</code> and the height above sea level <code>Elevation</code>.</p>
+<p>The location and climate are described in the tag <code>Location</code>. Mandatory parameters are the albedo as <a href="#IBK_Parameter">IBK:Parameter</a> and either a climate file <code>ClimateFileName</code> or a location description with the <a href="#IBK_Parameter">IBK:Parameter</a> northern latitude <code>Latitude</code>, eastern longitude <code>Longitude</code> and the height above sea level <code>Elevation</code>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -3889,10 +3978,10 @@ The example below shows how the output of the models is referenced via the objec
 <div class="sect2">
 <h3 id="quantities">4.2. Quantity References</h3>
 <div class="paragraph">
-<p>The following list of quantities is an overview of all available results that can be requested as outputs. Which outputs are actually available  depends on the project and will be printed into the file <code>var/output_reference_list.txt</code> (see discussion in section <a href="#outputs">Section 2.14</a>).</p>
+<p>The following list of quantities is an overview of all available results that can be requested as outputs. Which outputs are actually available  depends on the project and will be printed into the file <code>var/output_reference_list.txt</code> (see discussion in section <a href="#outputs">Outputs/Results</a>).</p>
 </div>
 <div class="paragraph">
-<p>Some of the quantities are vector-valued quantities, marked with a suffix <code>(id,xxx)</code> or <code>(index,xxx)</code>. To access these values, you need to specify the id/index in your output definition (see explanation and examples in section <a href="#outputs">Section 2.14</a>).</p>
+<p>Some of the quantities are vector-valued quantities, marked with a suffix <code>(id,xxx)</code> or <code>(index,xxx)</code>. To access these values, you need to specify the id/index in your output definition (see explanation and examples in section <a href="#outputs">Outputs/Results</a>).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -4093,7 +4182,7 @@ The example below shows how the output of the models is referenced via the objec
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated 2020-09-16 08:37:57 +0200
+Last updated 2020-09-16 16:54:42 +0200
 </div>
 </div>
 <style>

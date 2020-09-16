@@ -35,28 +35,28 @@ Inside the XML tag named `Zones` each zone starts with the XML tag `Zone`. The f
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Attribute  | Description | Format | Usage 
-| *id* |  Identifier of the Zone | positive Integer ({nbsp}>{nbsp}0{nbsp})  | _required_
-| *displayName*  |  Display Name of the Zone. Is needed to find the Zone in the Data Model and in Outputs more easily. | string | _optional_
-| *type*  
+| `id` |  Identifier of the Zone | positive Integer ({nbsp}>{nbsp}0{nbsp})  | _required_
+| `displayName`  |  Display Name of the Zone. Is needed to find the Zone in the Data Model and in Outputs more easily. | string | _optional_
+| `type`  
 a|  Defines whether zone is balanced and included in equation system.
 
-* `Constant` _as zone with constant/predefined temperatures. (schedule)_
-* `Active` _as zone described by a temperature node in space_
-* `Ground` _as ground zone (calculates temperature based on standard)_ | string | _optional_
+* `Constant` as zone with constant/predefined temperatures. (schedule)
+* `Active` as zone described by a temperature node in space
+* `Ground` as ground zone (calculates temperature based on standard) | string | _optional_
 
 |====================
 
 Parameters (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
 
-[options="header",cols="15%,10%,45%,20%,10%",width="100%"]
+[options="header",cols="18%,15%,38%,20%,10%",width="100%"]
 |====================
-|`name`|Default Unit|Description|Value Range |Usage
-| *Volume* | m3 | Zone air volume | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _required_
-| *Area* | m2 | Net usage area of the ground floor (for area-related outputs and loads) | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _optional_
-| *HeatCapacity* | J/K | Additional heat capacity (furniture, etc.) | 0...1 | _optional_
-| *Temperature* | C | Temperature of the zone, if set `constant` | 0...1 | _optional_
-| *CO2Concentration* | g/m3 | CO2 concentration of the zone, if set `constant` | 0...1 | _optional_
-| *RelativeHumidity* | % | Temperature of the zone, if set `constant` | 0...1 | _optional_
+|Name|Default Unit|Description|Value Range |Usage
+| `Volume` | m3 | Zone air volume | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _required_
+| `Area` | m2 | Net usage area of the ground floor (for area-related outputs and loads) | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _optional_
+| `HeatCapacity` | J/K | Additional heat capacity (furniture, etc.) | 0...1 | _optional_
+| `Temperature` | C | Temperature of the zone, if set `constant` | 0...1 | _optional_
+| `RelativeHumidity` | % | Temperature of the zone, if set `constant` | 0...1 | _optional_
+| `CO2Concentration` | g/m3 | CO2 concentration of the zone, if set `constant` | 0...1 | _optional_
 |====================
 
 
@@ -99,11 +99,11 @@ In the following it is described in detail.
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Attribute  | Description | Format | Usage 
-| *id* |  Identifier of the Construction Instance | positive Integer ({nbsp}>{nbsp}0{nbsp})  | _required_
-| *displayName*  |  Display Name of the Construction Instance. Is needed to find the Construction Instance in the Data Model and in Outputs more easily. | string | _optional_
+| `id` |  Identifier of the Construction Instance | positive Integer ({nbsp}>{nbsp}0{nbsp})  | _required_
+| `displayName`  |  Display Name of the Construction Instance. Is needed to find the Construction Instance in the Data Model and in Outputs more easily. | string | _optional_
 |====================
 
-The construction instance has the following `required subtag`:
+The construction instance has the following _required_ child tag:
 
 * `constructionTypeId` - unique Id that defines the construction type of the construction instance
 
@@ -115,50 +115,47 @@ Example:
 
 The following XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` with the following entries can be defined:
 
-.Zone Parameters that can be set as *IBK:Parameter* with the Attributes `name` and `unit`
-[options="header"]
-[cols="25%,^ 8%,42%,^ 10%,^ 10%"]
-[width="100%"]
+[options="header",cols="15%,10%,45%,20%,10%",width="100%"]
 |====================
-| `name` | `unit`| Description | Format | Usage 
-| *Orientation* | m2 | Orientation of the wall | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _required_
-| *Inclination* | m3 | Inclination of the wall | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _required_
-| *Area* | C | Gross area of the wall | 0...1 | _required_
+| Name | Default Unit | Description | Value Range | Usage 
+| `Orientation` | Deg | Orientation of the wall | [0, 360] Deg | _required_
+| `Inclination` | Deg | Inclination of the wall (0 Deg - roof, 90 Deg - vertical wall, 180 Deg - facing downwards) | [0, 180] Deg| _required_
+| `Area` | m2 | Gross area of the wall (including potentially existing windows, holes etc.) | > 0 m2 | _required_
 |====================
-
-
 
 
 [[InterfacesDocumentation]]
 # Interfaces (construction boundary conditions)
 
+Interfaces are defining boundary conditions and parameters for the two surfaces `InterfaceA` and `InterfaceB` of a constructions instance.
+
 .Interfaces
 ====
 [source,xml,indent=0]
 ----
-<InterfaceA id="10" zoneId="1">
-	<InterfaceHeatConduction modelType="Constant">
-		<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
-	</InterfaceHeatConduction>
-</InterfaceA>
-<InterfaceB id="11" zoneId="0">
-	<InterfaceHeatConduction modelType="Constant">
-		<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
-	</InterfaceHeatConduction>
-    <InterfaceSolarAbsorption model="Constant">
-        <IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
-    </InterfaceSolarAbsorption>
-    <InterfaceLongWaveEmission model="Constant">
-        <IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
-    </InterfaceLongWaveEmission>
-</InterfaceB>
+<ConstructionInstance id="1" displayName="All Surfaces Var01">
+    ...
+    <InterfaceA id="10" zoneId="1">
+    	<InterfaceHeatConduction modelType="Constant">
+    		<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+    	</InterfaceHeatConduction>
+    </InterfaceA>
+    <InterfaceB id="11" zoneId="0">
+    	<InterfaceHeatConduction modelType="Constant">
+    		<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+    	</InterfaceHeatConduction>
+        <InterfaceSolarAbsorption model="Constant">
+            <IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
+        </InterfaceSolarAbsorption>
+        <InterfaceLongWaveEmission model="Constant">
+            <IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
+        </InterfaceLongWaveEmission>
+    </InterfaceB>
+</ConstructionInstance>
 ----
 ====
 
-
-Interfaces are defining boundary conditions and parameters for the two surfaces `InterfaceA` and `InterfaceB` of a constructions instance. There can be only constructions with two interfaces or less. 
-
-`InterfaceA` and `InterfaceB` can have the following `subtags`:
+`InterfaceA` and `InterfaceB` may have one or more child tags.
 
 ## Heat Conduction
 

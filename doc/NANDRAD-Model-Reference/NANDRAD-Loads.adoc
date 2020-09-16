@@ -24,21 +24,21 @@ Information about location and climate data is stored in the `Location` section 
 
 Parameters (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
 
-[options="header",cols="15%,10%,45%,20%,10%",width="100%"]
+[options="header",cols="18%,15%,38%,20%,10%",width="100%"]
 |====================
-|`name`|Default Unit|Description|Value Range |Usage
-|*Albedo*|---|Used for diffuse solar radiation calculation (see <<loads_solar_radiation>>)|[0,1]|_required_
-|*Altitude*|m|later needed for specific altitude-related parameters (**TODO**)| > 0 m)|_optional_
-|*Longitude*|Deg|If specified, overrides the location parameter `Longitude` of the climate data file (see <<location_settings>>).|[-180,180] Deg|_optional_
-|*Latitude*|Deg|If specified, they override the location parameter `Latitude` of the climate data file (see <<location_settings>>).|[-90,90] Deg|_optional_
+|Name|Default Unit|Description|Value Range |Usage
+|`Albedo`|---|Used for diffuse solar radiation calculation (see <<loads_solar_radiation>>)|[0,1]|_required_
+|`Altitude`|m|later needed for specific altitude-related parameters (**TODO**)| > 0 m)|_optional_
+|`Longitude`|Deg|If specified, overrides the location parameter `Longitude` of the climate data file (see <<location_settings>>).|[-180,180] Deg|_optional_
+|`Latitude`|Deg|If specified, they override the location parameter `Latitude` of the climate data file (see <<location_settings>>).|[-90,90] Deg|_optional_
 |====================
 
 Flags and options (see section <<IBK_Flag>> for a description of the `IBK:Flag` tag):
 
 [options="header",cols="15%,65%,10%,10%",width="100%"]
 |====================
-| `name` | Description | Default | Usage 
-| *PerezDiffuseRadiationModel* |  Defines whether to use the Perez-Model for diffuse solar radiation calculation | _false_ | _optional_
+| Name | Description | Default | Usage 
+| `PerezDiffuseRadiationModel` |  Defines whether to use the Perez-Model for diffuse solar radiation calculation | _false_ | _optional_
 |====================
 
 Lastly, the `<ClimateFileName>` tag defines the path to the climate data file.
@@ -90,12 +90,53 @@ The climate data file can either contain 8760 hourly values for an entire year. 
 
 #### Cyclic annual climate
 
+Climate data is provided in hourly values. The interpretation of these values depends on the type of quantity. NANDRAD distinguishes between state quantities and flux/load quantities.
+
+State quantities are:
+
+- temperatures
+- relative humidities
+- air pressures
+- wind direction
+- wind velocity
+
+Flux/load quantities are:
+
+- direct solar radiation intensity (in sun's normal direction)
+- diffuse solar radiation intensity (on horizontal plane)
+- rain load
+
+:xrefstyle: short
+
+State quantities are expected to be monitored as _instantaneous values_ at the __end of each hour__. Sub-hourly values are obtained through linear interpolation, as shown in <<fig_hourly_values>>.
+
+[[fig_hourly_values]]
+.Using Linear Interpolation to reconstruct sub-hourly Values from Hourly Data Points
+image::CCM_Interpolation1.png[]
+
+Flux/load quantities are expected as _mean/average values_ over the __last hour__. Sub-hourly values are obtained through linear interpolation between the average values placed in the middle of each hour, as shown in <<fig_hourly_load_values>>.
+
+[[fig_hourly_load_values]]
+.Using Linear Interpolation to reconstruct sub-hourly Values from Hourly Mean Values
+image::CCM_Interpolation2.png[]
+
+
 
 #### Continuous data
 
-The climate data file contains data points (at least 2) 
+The climate data file contains data points (at least 2), which also mark the earliest start and latest end point of the simulation.
 
+[NOTE]
+====
+If you continue the simulation past the available climate data, the last values in the climate data set will be kept constant, thus eventually leading to meaningless results (unless this is intendet in artificial test cases).
+====
 
+Since the user can choose arbitrary time steps in the climate data files, even down to minutely values, the accuracy of the input data depends on the user input. Between time points, the solver will linearly interpolate *all quantities* in the climate data file, and not distinguish between states and loads, as with hourly data.
+
+[TIP]
+====
+To achive the same result as with annual hourly data, simply provide climatic data in 30 min intervals and compute interpolated values at end and middle of each hour, yourself.
+====
 
 
 ### Additional radiation sensors

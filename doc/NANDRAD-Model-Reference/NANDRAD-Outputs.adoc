@@ -202,6 +202,7 @@ If `Integral` is selected as `TimeType`:
 
 
 The outputs are further grouped by output grid name. The final output file name is obtained for each grid and group name:
+
   - states -> `states_<gridname>.tsv`
   - loads -> `loads_<gridname>.tsv`
   - fluxes -> `fluxes_<gridname>.tsv`
