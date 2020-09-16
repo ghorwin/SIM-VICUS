@@ -42,6 +42,11 @@ bool Schedule::operator!=(const Schedule & other) const {
 
 void Schedule::prepareCalculation() {
 	FUNCID(Schedule::prepareCalculation);
+
+	// For holiday it is not allowed to have a periode definition
+	if(m_type == ST_HOLIDAY && (m_startDayOfTheYear != 0 || m_endDayOfTheYear != 364))
+		throw IBK::Exception(IBK::FormatString("For a schedule  with type 'Holiday' it is not allowed to define a period."), FUNC_ID);
+
 	// loop over all daily cycles and initialize them
 	for (unsigned int i=0; i<m_dailyCycles.size(); ++i) {
 		NANDRAD::DailyCycle & dc = m_dailyCycles[i];

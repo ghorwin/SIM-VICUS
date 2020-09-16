@@ -654,7 +654,7 @@ Example:
 </ConstructionInstance>
 ----
 
-### Fenster Integration
+### Fenster
 
 In die bestehende Südwand von "Raum A" wird ein Fenster integriert. Einfache Fenstermodelle besitzen neben der Fläche `Area` zwei wichtige physikalische Parameter. Zum einen der U-Wert der Fensterverbundkonstruktion, bestehend aus Rahmen- und Glasanteil sowie den g-Wert `SHGC` (Solar Heat Gain Coefficient). Der g-Wert kann konstant über einen skalaren Wert beschrieben werden oder in Abhängigkeit des Winkels zwischen Sonnenstrahl und Fensternormale. Wenn möglich sollte der winkelabhängige g-Wert verwendet werden. Zum Einbetten in die Projektdatei wird die `ConstructionInstance` um das Objekt `EmbeddedWindow` erweitert.
 
@@ -669,7 +669,7 @@ Für verschiedenste Modelle werden Zeitpläne verwendet. Diese haben die Aufgabe
 
 * Belegungsraten, Wärmeabgaben, Bekleidungsfaktoren beim Personenlastmodell.
 * Heiz-/Kühlsolltemperaturen für Thermostatsteuerungen
-* Massestrom oder Temperaturbedingungen für Anlagenkomponenten
+* Massestrom- oder Temperaturbedingungen für Anlagenkomponenten
 * elektrische Leistungsraten bei Licht- und elektrischen Gerätemodellen
 
 Innerhalb der Projektdatei gibt es zwei mögliche Varianten einen Zeitplan zu beschreiben, entweder über die `ScheduleGroups` oder `AnnualSchedules`. Die beiden Möglichkeiten werden nachfolgend im Detail erörtert. Wichtig dabei ist das beide Methoden immer ein Jahr mit allen Tagen definieren müssen.
