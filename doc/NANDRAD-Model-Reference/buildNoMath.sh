@@ -25,8 +25,9 @@ fi &&
 mv $ADOC.html ../../docs/$ADOC/index.html &&
 mv $ADOC.pdf ../../docs &&
 
-imgFiles=(./images/*)
-if [ ${#files[@]} -gt 0 ]; then
-	cp -r ./images/* ../../docs/$ADOC/images
+imgFiles=(./images/*.png) &&
+if [ ${#imgFiles[@]} -gt 0 ]; then
+	echo 'Copying '${#imgFiles[@]}' images to ../../docs/'$ADOC'/images' &&
+	cp -r ./images/*.png ../../docs/$ADOC/images
 fi
 

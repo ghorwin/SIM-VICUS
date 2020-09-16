@@ -4,171 +4,111 @@
 
 ## Overview
 
-Schedules provide purely time-dependent quantities, similar to climatic loads. 
+Schedules provide purely time-dependent quantities, similar to climatic loads. Different to other results-producing models, schedules generate variables for sets of dependent models. As such, a schedule is formulated for an object list, which selects a set of objects taking the values provided by the schedule.
+For example they are used in the following objects or list of objects:
 
-Different to other results-producing models, schedules generate variables for sets of dependent models. As such, a schedule is formulated for an object list, which selects a set of objects taking the provided values.
+* **Occupancy rates**, **heat loads**, *clothing factors* in the person load model.
+* *Heating/cooling set point temperatures* for thermostat controls
+* *Mass flow rates* or temperature set points for plant components
+* *electrical power rates* for lighting and electrical devices
 
-For example, a schedule defines heating set points (HeatingSetPoint) for living room zones. These are selected by an object list "Living room", which selects _Zone_-type objects with a certain ID range.
+For example, a schedule defines heating set points `HeatingSetPoint` for specific zones like living rooms. These are selected by an object list named "Living room", which selects objects with the type `Zone` and a certain ID range. Later you will find more about this in more detail.
 
+Within the project file there are two possible ways to describe a schedule: 
 
-## Defining schedules
+* `ScheduleGroups` 
+* `AnnualSchedules`. 
 
-### Simulation time to day type/local time mapping
+The two options are discussed in <<regularSchedules>> and <<annualSchedules>>. 
 
-Simulation time runs from t=0 over the duration of the simulation. For the lookup of schedules, this time needs to be mapped to the local (building) time.
+Furthermore `Schedules` consist of two different types of data handling:
 
+* *Cyclic* data
+* *Non-cyclic* data
 
-[NOTE]
+Cyclic data means that schedule values will be repeated after the schedule period. That means for example that an annual schedule will be run twice if the simulation time will be set to two years.
+Whereas non-cyclic data will always be used only once. This is useful if monitored data will be used to set up schedules and we the simulation time will be only valid fo the time the monitored data is existing.
+
+Furthermore individual schedule can also hold a
+
+[[regularSchedules]]
+## Regular schedules (based on daily cycles)
+
+Regular schedules are defined upon a daily cycle based scheme. As in <<ScheduleTypes>> showed, a priority list exists that defines on how to define a yearly schedule. At first priority the type `Alldays` will set a specified daily values to the whole year. After this the `type` named `WeekEnd` and `WeekDay` will overwrite the already defined values for only all weekdays or weekends. Furthermore the weekdays named `Monday`, `Tuesday`, etc define for which days the values will be overwritten again. This continues with the `type` `Holiday`. So that in the end a final schedule for the whole year will be defined. 
+
+Regular schedules are defined within the XML tag `scheduleGroup` with an XML attribute named `objectList` that references an `ObjectList` with the specified name. Inside the object an XML tag named `Schedule` needs to be defined with an XML attribute `type`. This `type` can have several names.
+
+.ScheduleGroup Definition
 ====
-*TODO*:
-Clarify (ticket: https://github.com/ghorwin/SIM-VICUS/issues/31) check this with the climate loads object, when cyclic is set, climatic loads *must not* be defined for continues data):
+[source,xml,indent=0]
+----
+				<ScheduleGroup objectList="Zone">
+					<!-- AllDays constant  -->
+					<Schedule type="AllDays">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>InfiltrationRateSchedule [1/h]:0</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+----
+
 ====
 
-#### Time/day mapping in cyclic annual schedules
+.ObjectList with an Zone linked
+====
+[source,xml,indent=0]
+----
+		<ObjectLists>
+			<ObjectList name="Zone">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+----
 
-For cyclic schedule data, the flag "Cyclic" must be set in Schedules xml-block.
+====
 
-The following conventions apply:
+[[ScheduleTypes]]
+.Description of schedule group type
+[options="header"]
+[cols=" ^, ^ "]
+[width="40%"]
+|====================
+| `type` | Priority
+| AllDays {set:cellbgcolor:   #fef9e7  } 
+| 0 
+| WeekEnd {set:cellbgcolor: #fcf3cf  } 
+| 1
+| WeekDay | 1
+| Monday {set:cellbgcolor: #f9e79f }  
+| 2
+| Tuesday | 2
+| Wednesday | 2
+| Thursday | 2
+| Friday | 2
+| Saturday | 2
+| Sunday | 2
+| Holiday {set:cellbgcolor: #f7dc6f } 
+| 3
+|====================
 
-- start year by default is 2001
-- start time is given as parameter (as offset to Midnight January 1st 2001, or `"01.01.2001 00:00"`); for example, start time of `10.5 d` means simulation time 0 maps to `"10.01.2001 12:00"`
-- if simulation duration exceeds 1 year, simulation time is wrapped at 365 d
-- "schedule lookup time" is the same as simulation time
-- leap days are never used, even if start year is set to 2000 and similar leap years
-- parameter "DayOfTheWeekAtStart" indicates which day of the week corresponds to the first day of simulation (i.e. the day of start time, for example, one could specify "Wed" as day type and in the example above the 10.01. would become a wednesday)
-
-Example:
-
-Simulation takes 2 years, and starts in March 2nd, 12:00  (year 2003, but that is not important)
-
-
-```
-02.03. 12:00  -> t_start = (31+28+1)*24+12 = 1452 h = 60.5 d
-
-t =   0 d -> t_sched = t_start + t = 60.5 d
-t = 365 d -> t_sched = t_start + t = 425.5 d
-
-t_sched > 365 ? -> t_sched = t_sched - 365 = 60.5 h
-
-Evaluation at runtime:
-scheduleData = scheduleTabulatedSplineData [t_sched=0...365 d]  -> interpolate at t_sched
-```
-
-##### Constructing spline data from input data
-
-```
-- loop over all days (d=0,1,...,364)
-- determine day type:
-  d_dayOfWeek = (startDayOffset + d) % 7 (modulo 7)
-
-  startDayOffset = 0 for Monday, 1 for Tuesday, ... , 6 for Sunday
-  
-Example:
-  
-  d = 15  -> date = 16. January 2003
-  startDayOffset = "Wed" -> 2  (1.1.2003 was a wednesday)
-  
-  d_dayOfWeek -> 15 + 2 = 17   17 % 7 = 3  -> DayType = "Thursday" (Check: 16. January 2003 was a Thursday)
-  
-- look up daily cycle:
-  - find schedule (back to front) where d in range:
-    - process daytypes in order Thursday, Weekdays, AllDays
-      - if parameter is found in any of these days, take daily course and add to spline for this day,
-      - if parameter not found, skip and search through next schedule
-```
-
-
-
-
-#### Continuous data
-
-For continuous schedule data (i.e. flag "Cyclic" is off; meaningful when re-calculating monitored building data with real calander reference), the following procedure is used:
-
-- start year is given as parameter
-- start time is given as parameter
-- flag indicates whether leap days are to be considered or not
-
-If leap days are considered, a calender model is used to compute the actual local date and time based on given start year and start time, and also computes day of the week.
-
-Without leap days, the following calculation is used:
-- simulation time is converted to date using regular 365 d years
-- parameter "DayOfTheWeekAtStart" indicates which day of the week corresponds to the first day of simulation
-
-
-### Data definition rules
-
-#### A certain variable must be only defined once per object list
-
-For example, if you have a regular daily-cycle-based schedule for "HeatingSetPoint" and zone object list "office spaces", there must not be an annual schedule for "HeatingSetPoint" and the same object list name "office spaces". 
-
-#### A variable must be defined unambiguously with respect to addressed object
-
-For example, you may have a "HeatingSetPoint" for zone object list "office spaces" and this object list addresses zones with IDs 1 and 4. Now there is a second object list "all spaces", with wildcard `ID=*` (hereby addressing all zones). You *must not* define the variable "HeatingSetPoint" again for this object list, since otherwise you would get ambiguous defintions of this variable for zones 1 and 4.
-
-#### Cyclic annual schedules must begin at simulation start (past the end, values are constant extrapolated)
-
-For annual cyclic schedules, the schedule must start with time 0. For non-cyclic schedules, the schedule must start at latest at actual simulation start, so that start year <= simulation start year and if same year, start time < simulation start time. Basically, the solver must be able to query a value at simulation start.
-
-If simulation continues past the end of an annual schedule, the last value will be simply kept (constant extrapolation).
-
-
-### Regular schedules (based on daily cycles)
-...
-
-### Annual schedules (as linearly interpolated splines)
+[[annualSchedules]]
+## Annual schedules (as linearly interpolated splines)
 
 Annual schedules are basically data tables with 
 
 
-## Implementation
-
-Schedules do not have any dependencies, and are not part of the model graph. They are updated just as climatic loads whenever time changes.
-
-Instead of generated a (potentially large) set of variables for each object adressed by the object list, schedules provide result variable slots for each object list and scheduled quantity. The individual model instances requesting their scheduled parameters share the same variable slot.
-
-For example, two zones of the same object list request a variable reference (pointer to variable slot) from the schedule object, and will get the same pointer for the same variable.
-
-Schedules do not implement the regular model interfaces and are not included in the model graph. Instead, they are handled in a special way by the framework.
-
-### Variable lookup
-
-1. Schedules define variables for object lists.
-2. Object lists address a range of objects based on filter criteria, such as object reference type (e.g. Zone, ConstructionInstance, Interface), and id group/range (a set of IDs)
-
-When a certain object (e.g. a zone with a given ID) wants to get access to a parameter defined for it, a `ValueReference` can be created with:
-
-- reference type = `ZONE`
-- id = zone-id
-- variable_name = required scheduled parameter name
-
-and the schedule object may then lookup the variable as follows:
-
-- cycle through all known object lists (i.e. object lists used in schedule definitions)
-- check if reference type matches, and if id-name is in ID group of object list
-- if object list was found, resolve variable name (from enumeration `Results`)
-- search map for this parameter name for a key that matches the object list's name
-- if match was found, return offset/pointer to the respective result variable
-- in all other cases, return nullptr
-
-### Variable lookup for outputs/lookup by schedule name
-
-It may be possible to directly reference a scheduled parameter without going through the zone first. In this case, there is the problem, that an input reference cannot hold both quantity name *and* object list name.
-
-With the current data structure it is not possible, to identify a quantity and objectlist by separate data members. Hence, we need to combine the information into the quantity name.
-
-Such a reference could look like:
-
-- reference type = `SCHEDULE` (or `OBJECT_LIST`???)
-- id = 0 (unused)
-- variable_name = <object list name>.<required scheduled parameter name>
-
-For example. "All zones.HeatingSetPoint" would address the variable "HeatingSetPoint" defined for object list "All zones". Naturally, this implies that . characters are forbidden as object list or variable names.
-
 ## Variable list
+
+The variable list describes all names and the  units that can be used in the schedules. 
 
 [options="header",cols="35%,^ 10%,55%"]
 |====================
-|Name|Unit|Description
+|Name {set:cellbgcolor:transparent}
+|Unit|Description
 |HeatingSetPointTemperature|C|Setpoint temperature for heating.
 |CoolingSetPointTemperature|C|Setpoint temperature for cooling.
 |AirConditionSetPointTemperature|C|Setpoint temperature for air conditioning.
@@ -193,8 +133,8 @@ For example. "All zones.HeatingSetPoint" would address the variable "HeatingSetP
 |MaximumSolarRadiationIntensity|W/m2|Maximum solar radiation intensity before shading is activated.
 |UserVentilationAirChangeRate|1/h|Exchange rate for natural ventilation.
 |UserVentilationComfortAirChangeRate|1/h|Maximum air change rate = offset for user comfort.
-|UserVentilationMinimumRoomTemperature|C|'Temperature limit over which comfort ventilation is activated.'
-|UserVentilationMaximumRoomTemperature|C|'Temperature limit below which comfort ventilation is activated.'
+|UserVentilationMinimumRoomTemperature|C|`Temperature limit over which comfort ventilation is activated.`
+|UserVentilationMaximumRoomTemperature|C|`Temperature limit below which comfort ventilation is activated.`
 |InfiltrationAirChangeRate|1/h|Exchange rate for infiltration.
 |ShadingFactor|---|Shading factor [0...1].
 
