@@ -1,3 +1,4 @@
+:imagesdir: ./images
 # Coding Guidelines and Rules
 
 Why coding guidelines and rules?
@@ -221,6 +222,41 @@ class SomeClass {
 ----
 
 [[qt_creator]]
-## Qt Creator
+# Qt Creator Configuration
 
-.... I'll add a screenshot based tutorial on Qt Creator settings soon ...
+Please use the following Qt Creator text editor and coding style configuration. Some tipps on efficient Qt Creator use are given below.
+
+## TextEditor settings
+image::QtCreator_TextEditorConfig.png[]
+
+## Coding style
+
+Create a custom coding style (copy from Qt-style), name it "IBK" and change it as follows (not shown configuration pages need not be changed):
+
+image::QtCreator_CodingStyle1.png[]
+image::QtCreator_CodingStyle2.png[]
+image::QtCreator_CodingStyle3.png[]
+image::QtCreator_CodingStyle4.png[]
+image::QtCreator_CodingStyle5.png[]
+
+
+## Other coding style settings:
+
+* C++ -> Namenskonventionen für Dateien -> Kleinbuchstaben für Dateinamen verwenden = off
+
+## Codemodel
+
+The code model is responsible for checking the code while typing and can detect quite a few problems from mismatching types, misspelled variables, missing ; and basically everything a regular compiler can spot. In fact, the code model just runs the code through the first stages of the compiler - saving you quite a bit of compilation time.
+
+The code model integration into Qt Creator is pretty nice, so you should activate it.
+
+You can use one of the provided code model configurations, but that might lead to excessive number of errors/warnings. Rather configure the code model with the following parameters:
+
+.Codemodel Options for CLang on Linux
+----
+-Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-unused-macros -Wno-newline-eof -Wno-exit-time-destructors -Wno-global-constructors -Wno-gnu-zero-variadic-macro-arguments -Wno-documentation -Wno-shadow -Wno-switch-enum -Wno-missing-prototypes -Wno-used-but-marked-unused -Wno-shorten-64-to-32 -Wno-old-style-cast
+----
+
+## Efficient use of the Qt Creator IDE
+
+... TODO ... (maybe a video will be better?)

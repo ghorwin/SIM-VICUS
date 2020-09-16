@@ -4,7 +4,7 @@
 
 ## Overview
 
-Climatic loads in NANDRAD are provided by means of climate data files. For solar radiation calculation it needs information on the building location (usually provided in the climate file), and also the orientation and inclination of the various construction surfaces (defined for outside surfaces, see <<construction_instances>>).
+Climatic loads in NANDRAD are provided by means of climate data files. For solar radiation calculation it needs information on the building location (usually provided in the climate file), and also the orientation and inclination of the various construction surfaces (defined for outside surfaces, see <<construction_instances,Geometry/Constructions>>).
 
 ## Specification
 
@@ -22,7 +22,7 @@ Information about location and climate data is stored in the `Location` section 
 </Location>
 ----
 
-Parameters (see section <<IBK_Parameter>>):
+Parameters (see also section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
 
 [options="header",cols="15%,10%,45%,20%,10%",width="100%"]
 |====================
@@ -33,8 +33,15 @@ Parameters (see section <<IBK_Parameter>>):
 |*Latitude*|Deg|If specified, they override the location parameter `Latitude` of the climate data file (see <<location_settings>>).|[-90,90] Deg|_optional_
 |====================
 
-* The optional flag `PerezDiffuseRadiationModel` defines whether to use the Perez-Model for diffuse solar radiation calculation (when `true`), or the isotropic radiation model (`false`). Default setting is `false` (see <<IBK_Flag>>).
-* The `<ClimateFileName>` tag defines the path to the climate data file.
+Flags and options (see also section <<IBK_Flag>> for a description of the `IBK:Flag` tag):
+
+[options="header",cols="15%,65%,10%,10%",width="100%"]
+|====================
+| `name` | Description | Default | Usage 
+| *PerezDiffuseRadiationModel* |  Defines whether to use the Perez-Model for diffuse solar radiation calculation | _false_ | _optional_
+|====================
+
+Lastly, the `<ClimateFileName>` tag defines the path to the climate data file.
 
 [[loads_climate_files]]
 ### Climate Data Files
@@ -74,6 +81,21 @@ By specifying latitude different from the climatic station, the computed sun pos
 ====
 
 Valid value range for `Latitude` is [-90,90] degrees (positive values are northern hemisphere), for `Longitude` it is [-180,180] degrees (positive values are east of Greenwich).
+
+
+### Cyclic (annual) and continuous (multi-year) climate data
+
+The climate data file can either contain 8760 hourly values for an entire year. Anything else is considered as  arbitrary range of time values indicating a specific time interval, possibly also with varying time intervals between data points. The latter climate data files cannot be used for annual/cyclic calculation, but require a specific (matching) simulation time interval (see also section <<simulation_interval>>).
+
+
+#### Cyclic annual climate
+
+
+#### Continuous data
+
+The climate data file contains data points (at least 2) 
+
+
 
 
 ### Additional radiation sensors
@@ -134,23 +156,5 @@ Example for a sensor output (see also output description in section <<outputs>>)
 ## Solar Radiation Calculation
 
 Solar radiation calculation follows the equations lists in section ... of the __Physical Model Reference__. The `Albedo` parameter is used in the diffuse radiation load calculation.
-
-
-## Implementation
-
-The `Loads` model is a pre-defined model that is always evaluated first whenever the time point has changed. It does not have any other dependencies.
-
-It provides all resulting variables as `constant` (during iteration) result variables, which can be retrieved and utilized by any other model.
-
-With respect to solar radiation calculation, during initialization it registers all surfaces (with different orientation/inclination) and provides an ID for each surface. Then, models can request direct and diffuse radiation data, as well as incidence angle for each of the registered surfaces.
-
-### Registering surfaces
-
-Each construction surface (interface) with outside radiation loads registers itself with the Loads object, hereby passing the interface object ID as argument and orientation/inclination of the surface. The loads object itself registers this surface with the climate calculation module (CCM) and retrieves a surface ID. This surface ID may be the same for many interface IDs.
-
-The Loads object stores a mapping of all interface IDs to the respective surface IDs in the CCM. When requesting the result variable's memory location, this mapping is used to deliver the correct input variable reference/memory location to the interface-specific solar radiation calculation object.
-
-
-
 
 

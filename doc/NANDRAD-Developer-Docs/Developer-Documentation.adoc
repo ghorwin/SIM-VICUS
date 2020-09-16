@@ -18,7 +18,7 @@ v1.0.0, July 2020
 
 ## Introduction
 
-This document is for NANDRAD and SIM-VICUS developers and covers the underlying concepts of the solver and user interface implementation.
+This document is for NANDRAD and SIM-VICUS developers. It discusses coding guidelines/rules and covers the underlying concepts of the solver and user interface implementation.
 
 ## General Information
 
@@ -26,6 +26,8 @@ include::Coding-Guidelines.adoc[leveloffset=+2]
 include::Code-Quality-Checking.adoc[leveloffset=+2]
 
 ## NANDRAD Solver
+
+This chapter discusses the underlying fundamentals and algorithms, as well as initialization and calculation procedures. 
 
 include::Solver-Initialization.adoc[leveloffset=+2]
 include::Variable-Referencing.adoc[leveloffset=+2]

@@ -94,12 +94,20 @@ table {
 <li><a href="#_documentation">2.1.8. Documentation</a></li>
 <li><a href="#_git_workflow">2.1.9. Git Workflow</a></li>
 <li><a href="#_tips_and_tricks">2.1.10. Tips and tricks</a></li>
-<li><a href="#qt_creator">2.1.11. Qt Creator</a></li>
 </ul>
 </li>
-<li><a href="#_code_quality">2.2. Code Quality</a>
+<li><a href="#qt_creator">2.2. Qt Creator Configuration</a>
 <ul class="sectlevel3">
-<li><a href="#_frequently_check_for_potential_memory_leaks">2.2.1. Frequently check for potential memory leaks</a></li>
+<li><a href="#_texteditor_settings">2.2.1. TextEditor settings</a></li>
+<li><a href="#_coding_style">2.2.2. Coding style</a></li>
+<li><a href="#_other_coding_style_settings">2.2.3. Other coding style settings:</a></li>
+<li><a href="#_codemodel">2.2.4. Codemodel</a></li>
+<li><a href="#_efficient_use_of_the_qt_creator_ide">2.2.5. Efficient use of the Qt Creator IDE</a></li>
+</ul>
+</li>
+<li><a href="#_code_quality">2.3. Code Quality</a>
+<ul class="sectlevel3">
+<li><a href="#_frequently_check_for_potential_memory_leaks">2.3.1. Frequently check for potential memory leaks</a></li>
 </ul>
 </li>
 </ul>
@@ -110,6 +118,7 @@ table {
 <ul class="sectlevel3">
 <li><a href="#_pre_solver_setup_steps">3.1.1. Pre-Solver-Setup steps</a></li>
 <li><a href="#_model_setup">3.1.2. Model Setup</a></li>
+<li><a href="#_climatic_loads">3.1.3. Climatic loads</a></li>
 </ul>
 </li>
 <li><a href="#_model_objects_published_variables_and_variable_look_up">3.2. Model objects, published variables and variable look-up</a>
@@ -130,7 +139,7 @@ table {
 <h2 id="_introduction">1. Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This document is for NANDRAD and SIM-VICUS developers and covers the underlying concepts of the solver and user interface implementation.</p>
+<p>This document is for NANDRAD and SIM-VICUS developers. It discusses coding guidelines/rules and covers the underlying concepts of the solver and user interface implementation.</p>
 </div>
 </div>
 </div>
@@ -346,8 +355,14 @@ With code-checking-while-typing (see clang checks in Qt Creator), you&#8217;ll c
 </ul>
 </div>
 <div class="paragraph">
-<p>When throwing exceptions:
-- use function identifier created with <code>FUNCID()</code> macro:</p>
+<p>When throwing exceptions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>use function identifier created with <code>FUNCID()</code> macro:</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -500,24 +515,97 @@ Physical variables used for calculation should always be stored in base SI units
 </div>
 </div>
 </div>
+</div>
+<div class="sect2">
+<h3 id="qt_creator">2.2. Qt Creator Configuration</h3>
+<div class="paragraph">
+<p>Please use the following Qt Creator text editor and coding style configuration. Some tipps on efficient Qt Creator use are given below.</p>
+</div>
 <div class="sect3">
-<h4 id="qt_creator">2.1.11. Qt Creator</h4>
-<div class="olist upperalpha">
-<ol class="upperalpha" type="A">
+<h4 id="_texteditor_settings">2.2.1. TextEditor settings</h4>
+<div class="imageblock">
+<div class="content">
+<img src="./images/QtCreator_TextEditorConfig.png" alt="QtCreator TextEditorConfig">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_coding_style">2.2.2. Coding style</h4>
+<div class="paragraph">
+<p>Create a custom coding style (copy from Qt-style), name it "IBK" and change it as follows (not shown configuration pages need not be changed):</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/QtCreator_CodingStyle1.png" alt="QtCreator CodingStyle1">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/QtCreator_CodingStyle2.png" alt="QtCreator CodingStyle2">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/QtCreator_CodingStyle3.png" alt="QtCreator CodingStyle3">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/QtCreator_CodingStyle4.png" alt="QtCreator CodingStyle4">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/QtCreator_CodingStyle5.png" alt="QtCreator CodingStyle5">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_other_coding_style_settings">2.2.3. Other coding style settings:</h4>
+<div class="ulist">
+<ul>
 <li>
-<p>I&#8217;ll add a screenshot based tutorial on Qt Creator settings soon &#8230;&#8203;</p>
+<p>C++ &#8594; Namenskonventionen für Dateien &#8594; Kleinbuchstaben für Dateinamen verwenden = off</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_codemodel">2.2.4. Codemodel</h4>
+<div class="paragraph">
+<p>The code model is responsible for checking the code while typing and can detect quite a few problems from mismatching types, misspelled variables, missing ; and basically everything a regular compiler can spot. In fact, the code model just runs the code through the first stages of the compiler - saving you quite a bit of compilation time.</p>
+</div>
+<div class="paragraph">
+<p>The code model integration into Qt Creator is pretty nice, so you should activate it.</p>
+</div>
+<div class="paragraph">
+<p>You can use one of the provided code model configurations, but that might lead to excessive number of errors/warnings. Rather configure the code model with the following parameters:</p>
+</div>
+<div class="listingblock">
+<div class="title">Codemodel Options for CLang on Linux</div>
+<div class="content">
+<pre>-Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-unused-macros -Wno-newline-eof -Wno-exit-time-destructors -Wno-global-constructors -Wno-gnu-zero-variadic-macro-arguments -Wno-documentation -Wno-shadow -Wno-switch-enum -Wno-missing-prototypes -Wno-used-but-marked-unused -Wno-shorten-64-to-32 -Wno-old-style-cast</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_efficient_use_of_the_qt_creator_ide">2.2.5. Efficient use of the Qt Creator IDE</h4>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p>TODO &#8230;&#8203; (maybe a video will be better?)</p>
 </li>
 </ol>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_code_quality">2.2. Code Quality</h3>
+<h3 id="_code_quality">2.3. Code Quality</h3>
 <div class="paragraph">
 <p>This section discusses a few techniques that help you write/maintain high quality code.</p>
 </div>
 <div class="sect3">
-<h4 id="_frequently_check_for_potential_memory_leaks">2.2.1. Frequently check for potential memory leaks</h4>
+<h4 id="_frequently_check_for_potential_memory_leaks">2.3.1. Frequently check for potential memory leaks</h4>
 <div class="paragraph">
 <p>Use valgrind to check for memory leaks in regular intervals:</p>
 </div>
@@ -614,6 +702,9 @@ Total initialization time: 802 ms
 <div class="sect1">
 <h2 id="_nandrad_solver">3. NANDRAD Solver</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>This chapter discusses the underlying fundamentals and algorithms, as well as initialization and calculation procedures.</p>
+</div>
 <div class="sect2">
 <h3 id="_model_initialization_procedure">3.1. Model Initialization Procedure</h3>
 <div class="sect3">
@@ -659,7 +750,33 @@ Total initialization time: 802 ms
 </div>
 <div class="sect3">
 <h4 id="_model_setup">3.1.2. Model Setup</h4>
-
+<div class="paragraph">
+<p><strong>TODO</strong> : model specific documentation</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_climatic_loads">3.1.3. Climatic loads</h4>
+<div class="sect4">
+<h5 id="_implementation">Implementation</h5>
+<div class="paragraph">
+<p>The <code>Loads</code> model is a pre-defined model that is always evaluated first whenever the time point has changed. It does not have any other dependencies.</p>
+</div>
+<div class="paragraph">
+<p>It provides all resulting variables as <code>constant</code> (during iteration) result variables, which can be retrieved and utilized by any other model.</p>
+</div>
+<div class="paragraph">
+<p>With respect to solar radiation calculation, during initialization it registers all surfaces (with different orientation/inclination) and provides an ID for each surface. Then, models can request direct and diffuse radiation data, as well as incidence angle for each of the registered surfaces.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_registering_surfaces">Registering surfaces</h5>
+<div class="paragraph">
+<p>Each construction surface (interface) with outside radiation loads registers itself with the Loads object, hereby passing the interface object ID as argument and orientation/inclination of the surface. The loads object itself registers this surface with the climate calculation module (CCM) and retrieves a surface ID. This surface ID may be the same for many interface IDs.</p>
+</div>
+<div class="paragraph">
+<p>The Loads object stores a mapping of all interface IDs to the respective surface IDs in the CCM. When requesting the result variable&#8217;s memory location, this mapping is used to deliver the correct input variable reference/memory location to the interface-specific solar radiation calculation object.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -1071,7 +1188,7 @@ Total initialization time: 802 ms
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated 2020-09-15 10:40:57 +0200
+Last updated 2020-09-16 09:30:15 +0200
 </div>
 </div>
 <style>

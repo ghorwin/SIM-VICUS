@@ -1,20 +1,23 @@
+:imagesdir: ./images
+
 # Global parameters
 
+The global simulation options control:
 
-- parameters controlling how the model operates
-- parameters controlling model accuracy
-- parameters controlling performance
+- how the model operates
+- the calculation accuracy (impacts performance)
+- the calculation performance
+
+The individual settings are split into _simulation parameters_ and _solver parameters_, the latter being centered on the numerical solution method.
 
 [[simulation_parameters]]
 ## Simulation Parameters
 
-.Simulation Parameters
-
-Hereafter all simulation parameters are described. All parameters are set as `IBK:Parameters`, `IBK:Flags` or `IBK:intPara` and apply globally for all objects like `zones`, `constructionInstances` etc, where the specific value can be set. This means that if you set `InitialRelativeHumidity` the value will only applied to objects such as `zones`. In <<simpara>> you can find an example for the parameters. 
+Hereafter all simulation parameters are described. All parameters are set as `IBK:Parameters`, `IBK:Flags` or `IBK:intPara`, see <<ex_simpara>>.
 
 :xrefstyle: short
 
-[[simpara]]
+[[ex_simpara]]
 .Simulation Parameters
 ====
 [source,xml]
@@ -26,19 +29,12 @@ Hereafter all simulation parameters are described. All parameters are set as `IB
 ----
 ====
 
-The XML tags named <<IBK_Parameter>> with the XML attributes `name` and `unit` with the following entries can be defined:
-[source,xml]
-----
-<IBK:Parameter name="InitialTemperature" unit="C">5</IBK:Parameter>
-----
+Floating point parameters (see also section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
 
-.Simulation Parameters that can be set as *IBK:Parameter* with the Attributes `name` and `unit`
-[options="header"]
-[cols="30%,^ 8%,42%,^ 10%,^ 10%"]
-[width="100%"]
+[options="header",cols="15%,10%,45%,20%,10%",width="100%"]
 |====================
-| `name` | `unit`| Description | Format | usage 
-| *InitialTemperature* | C | Global initial temperature for all objetcs (`zones`, `constructionInstances`, etc) | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _optional_
+|`name`|Default Unit|Description|Value Range |Usage
+| *InitialTemperature* | C | Global initial temperature for all objetcs (`zones`, `constructionInstances`, etc) | positive double ({nbsp}>{nbsp}0.0{nbsp}K) | _optional_
 | *InitialRelativeHumidity* | % | Global initial relative humidity for all objects, that can have a humidity value set (`zones`, air flows in `models`, etc) | 0 ... 100% | _optional_
 | *RadiationLoadFraction* | --- | Percentage of solar radiation gains attributed directly to the room 0..1. | 0...1 | _optional_
 | *UserThermalRadiationFraction* | --- | Percentage of heat that is emitted by long wave radiation from persons.  | 0...1 | _optional_
@@ -53,40 +49,23 @@ The XML tags named <<IBK_Parameter>> with the XML attributes `name` and `unit` w
 |====================
 
 
-The XML tags named *IBK:IntPara* holding integer values with the XML attributes `name` can be defined:
+Whole number parameters (see also section <<IBK_IntPara>> for a description of the `IBK:IntPara` tag):
 
-[source,xml]
-----
-<IBK:IntPara name="DiscMaxElementsPerLayer">30</IBK:IntPara>
-----
-
-.Simulation Parameter that can be set as an *IBK:IntPara* with an Attribute `name`
-[options="header"]
-[cols="20%, 70%,^ 10%"]
-[width="100%"]
+[options="header",cols="15%,75%,10%",width="100%"]
 |====================
-| `name`  | Description | usage 
+| `name`  | Description | Usage 
 | *StartYear* |  Start year of the simulation, per default set to *2001* | _optional_
 |====================
 
+Flags and options (see also section <<IBK_Flag>> for a description of the `IBK:Flag` tag):
 
-The XML tags named `IBK:Flag` with the following XML attributes `name` can be defined. 
-
-[source,xml]
-----
-<IBK:Flag name="DetectMaxTimeStep">true</IBK:Flag>
-----
-
-.Simulation Parameter that can be set as an *IBK:Flag* with an Attribute `name`
-[options="header"]
-[cols="30%, 60%,^ 10%"]
-[width="100%"]
+[options="header",cols="15%,65%,10%,10%",width="100%"]
 |====================
-| `name` | Description | usage 
-| *EnableMoistureBalance* |  Flag activating moisture balance calculation if enabled | _optional_
-| *EnableCO2Balance* |  Flag activating CO2 balance calculation if enabled | _optional_
-| *EnableJointVentilation* |  Flag activating ventilation through joints and openings. | _optional_
-| *ExportClimateDataFMU* |  Flag activating FMU export of climate data. | _optional_
+| `name` | Description | Default | Usage 
+| *EnableMoistureBalance* |  Flag activating moisture balance calculation if enabled | _false_ | _optional_
+| *EnableCO2Balance* |  Flag activating CO2 balance calculation if enabled | _false_ | _optional_
+| *EnableJointVentilation* |  Flag activating ventilation through joints and openings. | _false_ | _optional_
+| *ExportClimateDataFMU* |  Flag activating FMU export of climate data. | _false_ | _optional_
 |====================
 
 [[simulation_interval]]

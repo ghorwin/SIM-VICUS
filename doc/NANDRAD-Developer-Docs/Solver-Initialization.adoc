@@ -21,3 +21,28 @@ Now the actual model initialization starts.
 ## Model Setup
 
 
+
+
+
+*TODO* : model specific documentation
+
+
+## Climatic loads 
+### Implementation
+
+The `Loads` model is a pre-defined model that is always evaluated first whenever the time point has changed. It does not have any other dependencies.
+
+It provides all resulting variables as `constant` (during iteration) result variables, which can be retrieved and utilized by any other model.
+
+With respect to solar radiation calculation, during initialization it registers all surfaces (with different orientation/inclination) and provides an ID for each surface. Then, models can request direct and diffuse radiation data, as well as incidence angle for each of the registered surfaces.
+
+### Registering surfaces
+
+Each construction surface (interface) with outside radiation loads registers itself with the Loads object, hereby passing the interface object ID as argument and orientation/inclination of the surface. The loads object itself registers this surface with the climate calculation module (CCM) and retrieves a surface ID. This surface ID may be the same for many interface IDs.
+
+The Loads object stores a mapping of all interface IDs to the respective surface IDs in the CCM. When requesting the result variable's memory location, this mapping is used to deliver the correct input variable reference/memory location to the interface-specific solar radiation calculation object.
+
+
+
+
+

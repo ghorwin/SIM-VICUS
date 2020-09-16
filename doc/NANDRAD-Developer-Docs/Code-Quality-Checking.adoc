@@ -1,3 +1,4 @@
+:imagesdir: ./images
 # Code Quality
 
 This section discusses a few techniques that help you write/maintain high quality code.
