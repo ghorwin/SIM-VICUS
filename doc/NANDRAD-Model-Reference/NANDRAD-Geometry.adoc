@@ -6,7 +6,7 @@ In order to model buildings, it is necessary to define the individual rooms with
 
 Objects of type `Zone` store all properties needed to compute zone temperature from energy density (the conserved quantity).
 
-Zones can be either _Constant_ or __Active__.
+Zones can be either _Constant_ or _Active_.
 
 For _Constant_ zones, the temperature is assumed to
 be fixed/predefined whereas in _Active_ zones the temperature is computed (i.e. included in
@@ -35,28 +35,36 @@ Inside the XML tag named `Zones` each zone starts with the XML tag `Zone`. The f
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Attribute  | Description | Format | Usage 
-| `id` |  Identifier of the Zone | positive Integer ({nbsp}>{nbsp}0{nbsp})  | _required_
-| `displayName`  |  Display Name of the Zone. Is needed to find the Zone in the Data Model and in Outputs more easily. | string | _optional_
+| `id` |  Identifier of the Zone | ({nbsp}>{nbsp}0{nbsp})  | _required_
+| `displayName`  |  Display name of the zone. Is needed to find the zone in the data model and in outputs more easily. | string | _optional_
 | `type`  
 a|  Defines whether zone is balanced and included in equation system.
 
 * `Constant` as zone with constant/predefined temperatures. (schedule)
 * `Active` as zone described by a temperature node in space
-* `Ground` as ground zone (calculates temperature based on standard) | string | _optional_
+* `Ground` as ground zone (calculates temperature based on standard) | key | _required_
 
 |====================
 
 Parameters (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
 
-[options="header",cols="18%,15%,38%,20%,10%",width="100%"]
+[options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
 |====================
-|Name|Default Unit|Description|Value Range |Usage
-| `Volume` | m3 | Zone air volume | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _required_
-| `Area` | m2 | Net usage area of the ground floor (for area-related outputs and loads) | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _optional_
-| `HeatCapacity` | J/K | Additional heat capacity (furniture, etc.) | 0...1 | _optional_
-| `Temperature` | C | Temperature of the zone, if set `constant` | 0...1 | _optional_
-| `RelativeHumidity` | % | Temperature of the zone, if set `constant` | 0...1 | _optional_
-| `CO2Concentration` | g/m3 | CO2 concentration of the zone, if set `constant` | 0...1 | _optional_
+|Name|Unit|Description|Value Range |Usage
+| `Volume` | m3 | Zone air volume | {nbsp}>{nbsp}0.0{nbsp} | _required_
+| `Area` | m2 | Net usage area of the ground floor (for area-related outputs and loads) | {nbsp}>{nbsp}0.0{nbsp} | _optional_
+| `HeatCapacity` | J/K | Additional heat capacity (furniture, etc.) | {nbsp}>={nbsp}0.0{nbsp} | _optional_
+| `Temperature` | C | Temperature of the zone
+
+only used if `constant` | -70...120 | (_required_)
+
+| `RelativeHumidity` | % | Relative humidity of the zone
+
+only used if `constant` | 0...1 | (_required_)
+
+| `CO2Concentration` | g/m3 | CO2 concentration of the zone
+
+only used if `constant` | {nbsp}>{nbsp}0.0{nbsp} | (_required_)
 |====================
 
 
@@ -99,8 +107,8 @@ In the following it is described in detail.
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Attribute  | Description | Format | Usage 
-| `id` |  Identifier of the Construction Instance | positive Integer ({nbsp}>{nbsp}0{nbsp})  | _required_
-| `displayName`  |  Display Name of the Construction Instance. Is needed to find the Construction Instance in the Data Model and in Outputs more easily. | string | _optional_
+| `id` |  Identifier of the construction instance | {nbsp}>{nbsp}0{nbsp} | _required_
+| `displayName`  |  Display name of the construction instance. Is needed to find the construction instance in the data model and in outputs more easily. | string | _optional_
 |====================
 
 The construction instance has the following _required_ child tag:
@@ -115,11 +123,20 @@ Example:
 
 The following XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` with the following entries can be defined:
 
-[options="header",cols="15%,10%,45%,20%,10%",width="100%"]
+[options="header",cols="15%,^ 10%,45%,^ 20%,^ 10%",width="100%"]
 |====================
-| Name | Default Unit | Description | Value Range | Usage 
-| `Orientation` | Deg | Orientation of the wall | [0, 360] Deg | _required_
-| `Inclination` | Deg | Inclination of the wall (0 Deg - roof, 90 Deg - vertical wall, 180 Deg - facing downwards) | [0, 180] Deg| _required_
+| Name | Unit | Description | Value Range | Usage 
+| `Orientation` | Deg | Orientation of the wall
+
+if one interface has outside boundary condition it is _required_  | 0...360 | _required_ / _optional_
+| `Inclination` | Deg 
+a| Inclination of the wall
+
+* 0 Deg - roof
+* 90 Deg - vertical wall
+* 180 Deg - facing downwards) 
+
+if one interface has outside boundary condition it is _required_ | 0...180 | _required_ / _optional_
 | `Area` | m2 | Gross area of the wall (including potentially existing windows, holes etc.) | > 0 m2 | _required_
 |====================
 
@@ -127,7 +144,7 @@ The following XML tags named `IBK:Parameters` with the XML attributes `name` and
 [[InterfacesDocumentation]]
 # Interfaces (construction boundary conditions)
 
-Interfaces are defining boundary conditions and parameters for the two surfaces `InterfaceA` and `InterfaceB` of a constructions instance.
+Interfaces are defining boundary conditions and parameters for the one or two surfaces `InterfaceA` and `InterfaceB` of a constructions instance. If the construction instance defines an adiabatic wall only one interface is needed. All other cases require two interfaces. The `InterfaceA` links the first material layer from the construction type with the assigned zone via the `zoneId`. The `InterfaceB` links the last material layer from the construction type with the `zoneId` of `InterfaceB`. 
 
 .Interfaces
 ====
@@ -159,7 +176,7 @@ Interfaces are defining boundary conditions and parameters for the two surfaces 
 
 ## Heat Conduction
 
-The Heat Conduction over the Interface is described by the XML tag `InterfaceHeatConduction`.
+The convective heat conduction over the interface is described by the XML tag `InterfaceHeatConduction`.
 
 [.indent-me]
 [source,xml, indent=0]
@@ -170,17 +187,18 @@ The Heat Conduction over the Interface is described by the XML tag `InterfaceHea
 ----
 
 The `InterfaceHeatConduction` needs to be defined with the following XML attribute `modelType`.
+
 .Parameters for the InterfaceHeatConduction-Tag
 [.indent-me]
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Attribute  | Description | Format | Usage 
-| *modelType* 
+| `modelType` 
 a|  Sets the type of the heat conduction model 
 
 * `Constant` - Constant model used (currently the only option)
 
-| positive Integer ({nbsp}>{nbsp}0{nbsp})  | _required_
+| key | _required_
 |====================
 
 
@@ -191,13 +209,13 @@ The XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` wi
 [cols="25%,^ 8%,42%,^ 10%,^ 10%"]
 [width="100%"]
 |====================
-| `name` | `unit`| Description | Format | Usage 
-| *HeatTransferCoefficient* | W/m2 | Constant heat transfer coefficient | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _required_
+| Name | Unit| Description | Value Range | Usage 
+| `HeatTransferCoefficient` | W/m2K | Constant convective heat transfer coefficient | {nbsp}>{nbsp}0.0{nbsp} | _required_
 |====================
 
 ## Solar Absorption
 
-The Solar Absorption over the Interface is described by the XML tag `InterfaceSolarAbsorption`.
+The solar absorption over the interface is described by the XML tag `InterfaceSolarAbsorption`. This coefficient describes the solar short wave radiation that is absorpt by the interface.
 
 [source,xml, indent=0]
 ----
@@ -212,12 +230,12 @@ The `InterfaceSolarAbsorption` needs to be defined with the following XML attrib
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Attribute  | Description | Format | Usage 
-| *modelType* 
+| `modelType` 
 a|  Sets the type of the heat conduction model 
 
 * `Constant` - constant model used (currently the only option)
 
-| positive Integer ({nbsp}>{nbsp}0{nbsp})  | _required_
+| key | _required_
 |====================
 
 
@@ -228,13 +246,13 @@ The XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` wi
 [cols="25%,^ 8%,42%,^ 10%,^ 10%"]
 [width="100%"]
 |====================
-| `name` | `unit`| Description | Format | Usage 
-| *AbsorptionCoefficient* | m2 | Constant Absorption coefficient | 0...1 | _required_
+| Name | Unit | Description | Value Range | Usage 
+| `AbsorptionCoefficient` | --- | Constant absorption coefficient | 0...1 | _required_
 |====================
 
 ## Long Wave Emission
 
-The long wave emission over the interface is described by the XML tag `InterfaceLongWaveEmission`.
+The long wave emission over the interface is described by the XML tag `InterfaceLongWaveEmission`. This coefficient describes the long wave absorption and emission by the interface.
 
 [source,xml, indent=0]
 ----
@@ -249,12 +267,12 @@ The `InterfaceLongWaveEmission` needs to be defined with the following XML attri
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Attribute  | Description | Format | Usage 
-| *modelType* 
+| `modelType` 
 a|  Sets the type of the heat conduction model 
 
 * `Constant` - constant model used (currently the only option)
 
-| positive Integer ({nbsp}>{nbsp}0{nbsp})  | _required_
+| key | _required_
 |====================
 
 
@@ -265,8 +283,8 @@ The XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` wi
 [cols="25%,^ 8%,42%,^ 10%,^ 10%"]
 [width="100%"]
 |====================
-| `name` | `unit`| Description | Format | Usage 
-| *Emissivity* | m2 | Constant Absorption coefficient | 0...1 | _required_
+| Name | Unit | Description | Value Range | Usage 
+| `Emissivity` | --- | Constant absorption coefficient | 0...1 | _required_
 |====================
 
 ## Vapour Diffusion
@@ -286,12 +304,12 @@ The `InterfaceVaporDiffusion` needs to be defined with the following XML attribu
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Attribute  | Description | Format | Usage 
-| *modelType* 
+| `modelType` 
 a|  Sets the type of the heat conduction model 
 
 * `Constant` - constant model used (currently the only option)
 
-| positive Integer ({nbsp}>{nbsp}0{nbsp})  | _required_
+| key  | _required_
 |====================
 
 
@@ -302,13 +320,13 @@ The XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` wi
 [cols="25%,^ 8%,42%,^ 10%,^ 10%"]
 [width="100%"]
 |====================
-| `name` | `unit`| Description | Format | Usage 
-| *VaporTransferCoefficient* | s/m | Vapor Transfer Coefficient | positive Double ({nbsp}>{nbsp}0.0{nbsp}) | _required_
+| Name | Unit | Description | Value Range | Usage 
+| `VaporTransferCoefficient` | s/m | Vapor Transfer Coefficient | {nbsp}>{nbsp}0.0{nbsp} | _required_
 |====================
 
 ## Air Flow
 
-The air flow over the interface is described by the XML tag `InterfaceAirFlow`.
+The air flow over the interface is calculate with a pressure coefficient. It is described inside the XML tag `InterfaceAirFlow`.
 
 [source,xml, indent=0]
 ----
@@ -323,12 +341,12 @@ The `InterfaceAirFlow` needs to be defined with the following XML attribute `mod
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Attribute  | Description | Format | Usage 
-| *modelType* 
+| `modelType` 
 a|  Sets the type of the air flow
 
 * `Constant` - constant model used (currently the only option)
 
-| positive Integer ({nbsp}>{nbsp}0{nbsp})  | _required_
+| key | _required_
 |====================
 
 
@@ -339,8 +357,8 @@ The XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` wi
 [cols="25%,^ 8%,42%,^ 10%,^ 10%"]
 [width="100%"]
 |====================
-| `name` | `unit`| Description | Format | Usage 
-| *PressureCoefficient* | --- | Pressure Coefficient | 0...1 | _required_
+| Name | Unit | Description | Value Range | Usage 
+| `PressureCoefficient` | --- | Pressure Coefficient | 0...1 | _required_
 |====================
 
 
