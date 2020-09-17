@@ -1,0 +1,24 @@
+2020-09-16 14:14:28	[Progress]	[main]                                          	NANDRAD Solver
+2020-09-16 14:14:28	[Progress]	[main]                                          	All rights reserved.
+2020-09-16 14:14:28	[Progress]	[main]                                          	
+2020-09-16 14:14:28	[Progress]	[main]                                          	The NANDRAD Development Team:
+2020-09-16 14:14:28	[Progress]	[main]                                          	Anne Paepcke, Andreas Nicolai
+2020-09-16 14:14:28	[Progress]	[main]                                          	Contact: 
+2020-09-16 14:14:28	[Progress]	[main]                                          	  anne.paepcke [at] tu-dresden.de
+2020-09-16 14:14:28	[Progress]	[main]                                          	  andreas.nicolai [at] tu-dresden.de
+2020-09-16 14:14:28	[Progress]	[main]                                          	
+2020-09-16 14:14:28	[Progress]	[Version::printCompilerVersion]                 	Compiled with Visual Studio 2015
+2020-09-16 14:14:28	[Progress]	[ModelImpl::printVersionStrings]                	
+2020-09-16 14:14:28	[Progress]	[ModelImpl::printVersionStrings]                	NANDRAD version                                  1.9.999
+2020-09-16 14:14:28	[Progress]	[ModelImpl::printVersionStrings]                	IBK library version                              4.2.4
+2020-09-16 14:14:28	[Progress]	[ModelImpl::printVersionStrings]                	CCM library version                              1.1.0
+2020-09-16 14:14:28	[Progress]	[SolverControlFramework::printVersionInfo]      	Integrator Framework Version                     0.9.6
+2020-09-16 14:14:28	[Progress]	[SolverControlFramework::printVersionInfo]      	SUNDIALS Release Version                         2.6.2
+2020-09-16 14:14:28	[Progress]	[main]                                          	
+2020-09-16 14:14:28	[Progress]	[NandradModel::init]                            	Project file:         'D:/Ablage/Programmierung/kleineProgramme/SIM-VICUS/data/tests/ScheduleTest.nandrad'
+2020-09-16 14:14:28	[Progress]	[NandradModel::init]                            	Output root dir:      'D:/Ablage/Programmierung/kleineProgramme/SIM-VICUS/data/tests/ScheduleTest'
+2020-09-16 14:14:28	[Progress]	[NandradModel::init]                            	Reading project file
+2020-09-16 14:14:28	[Error   ]	[Schedules::readXML]                            	Unknown/unsupported tag 'Holidays' in line 67.
+2020-09-16 14:14:28	[Error   ]	[Project::readXMLPrivate]                       	Error reading 'Project' element.
+2020-09-16 14:14:28	[Error   ]	[Project::readXML]                              	Error reading project 'D:/Ablage/Programmierung/kleineProgramme/SIM-VICUS/data/tests/ScheduleTest.nandrad'.
+2020-09-16 14:14:28	[Error   ]	[main]                                          	Critical error, simulation aborted.

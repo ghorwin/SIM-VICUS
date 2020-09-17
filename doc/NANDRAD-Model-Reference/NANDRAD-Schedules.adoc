@@ -26,33 +26,34 @@ Furthermore `Schedules` consist of two different types of data handling:
 * *Cyclic* data
 * *Non-cyclic* data
 
-Cyclic data means that schedule values will be repeated after the schedule period. That means for example that an annual schedule will be run twice if the simulation time will be set to two years.
-Whereas non-cyclic data will always be used only once. This is useful if monitored data will be used to set up schedules and we the simulation time will be only valid fo the time the monitored data is existing.
+*Cyclic data* means that schedule values will be repeated after the end of the schedule period. This means for example that an annual schedule will be run twice if the simulation time will be set to two years. *Cyclic-data* can be defined by * `ScheduleGroups` and `AnnualSchedules`.
 
-Furthermore individual schedule can also hold a
+Whereas *non-cyclic* data will always be used only once. This is useful if monitored data will be used to set up schedules. Then the simulation needs to be set only for the time span the monitored data is existing. *Non-cyclic* data can only be defined by `AnnualSchedules`
 
 [[regularSchedules]]
-## Regular schedules (based on daily cycles)
+## Regular schedules
 
-Regular schedules are defined upon a daily cycle based scheme. As in <<ScheduleTypes>> showed, a priority list exists that defines on how to define a yearly schedule. At first priority the type `Alldays` will set a specified daily values to the whole year. After this the `type` named `WeekEnd` and `WeekDay` will overwrite the already defined values for only all weekdays or weekends. Furthermore the weekdays named `Monday`, `Tuesday`, etc define for which days the values will be overwritten again. This continues with the `type` `Holiday`. So that in the end a final schedule for the whole year will be defined. 
+:xrefstyle: short 
 
-Regular schedules are defined within the XML tag `scheduleGroup` with an XML attribute named `objectList` that references an `ObjectList` with the specified name. Inside the object an XML tag named `Schedule` needs to be defined with an XML attribute `type`. This `type` can have several names.
+Regular schedules are defined upon a daily cycle based scheme. 
 
+[[ex_ScheduleGroup]]
 .ScheduleGroup Definition
 ====
 [source,xml,indent=0]
 ----
-				<ScheduleGroup objectList="Zone">
-					<!-- AllDays constant  -->
-					<Schedule type="AllDays">
-						<DailyCycles>
-							<DailyCycle interpolation="Constant">
-								<TimePoints>0</TimePoints>
-								<Values>InfiltrationRateSchedule [1/h]:0</Values>
-							</DailyCycle>
-						</DailyCycles>
-					</Schedule>
-				</ScheduleGroup>
+<ScheduleGroup objectList="Zone">
+    <Holidays>100,101,102</Holidays>
+	<!-- AllDays constant  -->
+	<Schedule type="AllDays">
+		<DailyCycles>
+			<DailyCycle interpolation="Constant">
+				<TimePoints>0</TimePoints>
+				<Values>InfiltrationRateSchedule [1/h]:0</Values>
+			</DailyCycle>
+		</DailyCycles>
+	</Schedule>
+</ScheduleGroup>
 ----
 
 ====
@@ -61,82 +62,151 @@ Regular schedules are defined within the XML tag `scheduleGroup` with an XML att
 ====
 [source,xml,indent=0]
 ----
-		<ObjectLists>
-			<ObjectList name="Zone">
-				<FilterID>*</FilterID>
-				<ReferenceType>Zone</ReferenceType>
-			</ObjectList>
-		</ObjectLists>
+<ObjectLists>
+	<ObjectList name="Zone">
+		<FilterID>*</FilterID>
+		<ReferenceType>Zone</ReferenceType>
+	</ObjectList>
+</ObjectLists>
 ----
 
 ====
 
-[[ScheduleTypes]]
-.Description of schedule group type
-[options="header"]
-[cols=" ^, ^ "]
-[width="40%"]
+Regular schedules are defined within the XML tag `ScheduleGroup` with an XML attribute named `objectList` that references an `ObjectList` with the specified name (see <<tab_ScheduleGroup>>). Inside the object an XML tag named `Schedule` needs to be defined with an XML attribute `type`. This `type` can have several names for different days (see <<tab_ScheduleTypes>>). As shown, a priority list exists that defines on how to define a yearly schedule based on a daily cycle.
+
+At first priority the type `Alldays` will set a specified daily values to all days of the whole year (Priority 0). After this the `type` named `WeekEnd` and `WeekDay` will overwrite the already defined values for only all week days or weekend days (Priority 1). Furthermore the weekdays named `Monday`, `Tuesday`, etc define for which days the values will be overwritten again (Priority 2). This continues with the `type` `Holiday` (Priority 3). So that in the end a final schedule for the whole year can be defined. 
+
+:xrefstyle: basic 
+
+[[tab_ScheduleGroup]]
+.Attribute for the ScheduleGroup
+[options="header",cols="15%,65%,^ 10%,^ 10%",width="100%"]
 |====================
-| `type` | Priority
-| AllDays {set:cellbgcolor:   #fef9e7  } 
-| 0 
-| WeekEnd {set:cellbgcolor: #fcf3cf  } 
-| 1
-| WeekDay | 1
-| Monday {set:cellbgcolor: #f9e79f }  
-| 2
-| Tuesday | 2
-| Wednesday | 2
-| Thursday | 2
-| Friday | 2
-| Saturday | 2
-| Sunday | 2
-| Holiday {set:cellbgcolor: #f7dc6f } 
-| 3
+|Name|Description| Format |Usage
+| `objectList` |  References to an object list with the specifed name | string | _required_
+|====================
+
+[[tab_ScheduleTypes]]
+.Description of schedule type attribute
+[options="header"]
+[cols="< 15, ^ 10, < 70"]
+[width="100%"]
+|====================
+| `type` | Priority | Description
+| `AllDays`
+| 0 | Values will be set to all days of the period
+| `WeekEnd` {set:cellbgcolor: #F4F4F4  } 
+| 1 | Values will be set to all weekend days of the period
+| `WeekDay` | 1 | Values will be set to all week days of the period
+| `Monday` {set:cellbgcolor: transparent }  
+| 2 | Values will be set to all Mondays of the period
+| `Tuesday` | 2 | Values will be set to all Tuesdays of the period
+| `Wednesday` | 2 | Values will be set to all Wednesdays of the period
+| `Thursday` | 2 | Values will be set to all Thursdays of the period
+| `Friday` | 2 | Values will be set to all Fridays of the period
+| `Saturday` | 2 | Values will be set to all Saturdays of the period
+| `Sunday` | 2 | Values will be set to all Sundays of the period
+| `Holiday` {set:cellbgcolor: #F4F4F4 } 
+| 3 | Values will be set to all holidays of the period that are specified inside the `holidays` tag
 |====================
 
 [[annualSchedules]]
-## Annual schedules (as linearly interpolated splines)
+## Annual schedules 
 
-Annual schedules are basically data tables with 
+Annual schedules are basically data tables with monotonically increasing X an Y-Values. Annual schedules can be defined as any linear/constant interpolated data tables. For example, hourly values of temperatures or control variables measured during the year can be specified. 
+
+Inside the XML tag `AnnualSchedules` the sub tag `SpaceTypeGroup` with an XML attribute `spaceTypeName` needs to be defined. This defined attribute needs to match to an defined `SpaceType` with the same name. 
+
+[[ex_AnnualSchedule]]
+.Definition of an Annual Schedule
+====
+[source,xml,indent=0]
+----
+
+<AnnualSchedules>
+    ...
+	<SpaceTypeGroup spaceTypeName="Zone">
+    	<IBK:LinearSpline name="HeatingSetPointTemperature" interpolation="linear">
+    		<X unit="h">0	2183	2184	6576	6577	8760</X>
+    		<Y unit="C">20	30		20		30		20		30</Y>
+    	</IBK:LinearSpline>	
+    	<IBK:LinearSpline name="TotalEnergyProductionPerPerson" interpolation="linear">
+    		<X unit="h">		0	2183	2184	6576	6577	8760</X>
+    		<Y unit="W/Person">	70	110		70		110		70		110</Y>
+    	</IBK:LinearSpline>
+    	<IBK:LinearSpline name="EquipmentUtilizationRatio" interpolation="linear">
+    		<X unit="h">		0	2183	2184	6576	6577	8760</X>
+    		<Y unit="W/Person">	10	20		10		20		10		20</Y>
+    	</IBK:LinearSpline>
+    </SpaceTypeGroup>
+    ...
+</AnnualSchedules>
+
+----
+====
+
+.Paramaters that can be set for the IBK:LinearSpline
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+|Attribute {set:cellbgcolor:transparent} |Description|Format|Usage
+| `name` | Specific name that references to the space type the annual schedule will be set for | string | _required_
+| `InterpolationMethod` 
+a| Specifies the interpolation method between the defined y values.
+
+* `constant` - constant interpolation (values constant during time step) 
+* `linear` - linear interpolation (values linear interpolated between time steps)  
+
+| key | _required_
+| `WrapMethod` 
+
+a| Specifies how to treat the values in multi-year simulations 
+
+* `cyclic` - Annual cyclic data
+* `continuous` - Continuous data without repetition
+
+| key | _required_
+
+|====================
 
 
 ## Variable list
 
-The variable list describes all names and the  units that can be used in the schedules. 
+The variable list describes all names and the  units that can be used inside the schedules.  
 
+[[tab_VariableList]]
+.Variable List
 [options="header",cols="35%,^ 10%,55%"]
 |====================
-|Name {set:cellbgcolor:transparent}
+|Name 
 |Unit|Description
-|HeatingSetPointTemperature|C|Setpoint temperature for heating.
-|CoolingSetPointTemperature|C|Setpoint temperature for cooling.
-|AirConditionSetPointTemperature|C|Setpoint temperature for air conditioning.
-|AirConditionSetPointRelativeHumidity|%|Setpoint relative humidity for air conditioning.
-|AirConditionSetPointMassFlux|kg/s|Setpoint mass flux for air conditioning.
-|HeatingLoad|W|Heating load.
-|ThermalLoad|W|Thermal load (positive or negative).
-|MoistureLoad|g/h|Moisture load.
-|CoolingPower|W|Cooling power.
-|LightingPower|W|Lighting power.
-|DomesticWaterSetpointTemperature|C|Setpoint temperature for domestic water.
-|DomesticWaterMassFlow|kg/s|Domestic water demand mass flow for the complete zone (hot water and equipment).
-|ThermalEnergyLossPerPerson|W/Person|Energy of a single persons activities that is not available as thermal heat.
-|TotalEnergyProductionPerPerson|W/Person|Total energy production of a single persons body at a certain activity.
-|MoistureReleasePerPerson|kg/s|Moisture release of a single persons body at a certain activity.
-|CO2EmissionPerPerson|kg/s|CO2 emission mass flux of a single person at a certain activity.
-|MassFluxRate|---|Fraction of real mass flux to maximum  mass flux for different day times.
-|PressureHead|Pa|Supply pressure head of a pump.
-|OccupancyRate|---|Fraction of real occupancy to maximum  occupancy for different day times.
-|EquipmentUtilizationRatio|---|Ratio of usage for existing electric equipment.
-|LightingUtilizationRatio|---|Ratio of usage for lighting.
-|MaximumSolarRadiationIntensity|W/m2|Maximum solar radiation intensity before shading is activated.
-|UserVentilationAirChangeRate|1/h|Exchange rate for natural ventilation.
-|UserVentilationComfortAirChangeRate|1/h|Maximum air change rate = offset for user comfort.
-|UserVentilationMinimumRoomTemperature|C|`Temperature limit over which comfort ventilation is activated.`
-|UserVentilationMaximumRoomTemperature|C|`Temperature limit below which comfort ventilation is activated.`
-|InfiltrationAirChangeRate|1/h|Exchange rate for infiltration.
-|ShadingFactor|---|Shading factor [0...1].
+|`HeatingSetPointTemperature`|C| Setpoint temperature for heating.
+|`CoolingSetPointTemperature`|C| Setpoint temperature for cooling.
+|`AirConditionSetPointTemperature`|C|Setpoint temperature for air conditioning.
+|`AirConditionSetPointRelativeHumidity`|%|Setpoint relative humidity for air conditioning.
+|`AirConditionSetPointMassFlux`|kg/s|Setpoint mass flux for air conditioning.
+|`HeatingLoad`|W|Heating load.
+|`ThermalLoad`|W|Thermal load (positive or negative).
+|`MoistureLoad`|g/h|Moisture load.
+|`CoolingPower`|W|Cooling power.
+|`LightingPower`|W|Lighting power.
+|`DomesticWaterSetpointTemperature`|C|Setpoint temperature for domestic water.
+|`DomesticWaterMassFlow`|kg/s|Domestic water demand mass flow for the complete zone (hot water and equipment).
+|`ThermalEnergyLossPerPerson`|W/Person|Energy of a single persons activities that is not available as thermal heat.
+|`TotalEnergyProductionPerPerson`|W/Person|Total energy production of a single persons body at a certain activity.
+|`MoistureReleasePerPerson`|kg/s|Moisture release of a single persons body at a certain activity.
+|`CO2EmissionPerPerson`|kg/s|CO2 emission mass flux of a single person at a certain activity.
+|`MassFluxRate`|---|Fraction of real mass flux to maximum  mass flux for different day times.
+|`PressureHead`|Pa|Supply pressure head of a pump.
+|`OccupancyRate`|---|Fraction of real occupancy to maximum  occupancy for different day times.
+|`EquipmentUtilizationRatio`|---|Ratio of usage for existing electric equipment.
+|`LightingUtilizationRatio`|---|Ratio of usage for lighting.
+|`MaximumSolarRadiationIntensity`|W/m2|Maximum solar radiation intensity before shading is activated.
+|`UserVentilationAirChangeRate`|1/h|Exchange rate for natural ventilation.
+|`UserVentilationComfortAirChangeRate`|1/h|Maximum air change rate = offset for user comfort.
+|`UserVentilationMinimumRoomTemperature`|C|Temperature limit over which comfort ventilation is activated.
+|`UserVentilationMaximumRoomTemperature`|C|Temperature limit below which comfort ventilation is activated.
+|`InfiltrationAirChangeRate`|1/h|Exchange rate for infiltration.
+|`ShadingFactor`|---|Shading factor [0...1].
 
 |====================
 

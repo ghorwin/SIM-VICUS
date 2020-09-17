@@ -1704,6 +1704,32 @@ void createSim05(NANDRAD::Project &prj){
 int main(int argc, char * argv[]) {
 	FUNCID(main);
 
+	NANDRAD::LinearSplineParameter linSp;
+
+	linSp.m_xUnit = IBK::Unit("h");
+	linSp.m_yUnit = IBK::Unit("C");
+	linSp.m_values.setValues(std::vector<double>({0, 2, 4 }), std::vector<double>({0, 2, 4 }) );
+	linSp.m_name = "wurstsuppe";
+
+	std::vector< NANDRAD::LinearSplineParameter > linSpline;
+
+	linSpline.emplace_back(linSp);
+
+	std::map<std::string, std::vector< NANDRAD::LinearSplineParameter > > splineMap;
+
+	splineMap["wurst"] = linSpline;
+
+//		splineMap.insert(splineMap.end(),std::pair< std::string, std::vector< NANDRAD::LinearSplineParameter > > ("wurst",linSpline));
+
+	NANDRAD::Project prj;
+	NANDRAD::Schedules sched;
+
+	prj.m_schedules.m_annualSchedules = splineMap;
+
+	IBK::Path path ("C:/Temp/test.nandrad");
+
+	prj.writeXML(path);
+
 #ifdef TEST_PROJECT_WRITING
 
 	NANDRAD::Project prj;

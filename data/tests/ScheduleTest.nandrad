@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.99">
+	<Project>
+		<ProjectInfo>
+			<Comment>Constant ventilation rate model test for single zone, no constructions, additional heat capacity in zone</Comment>
+			<Created>2020-08-24</Created>
+			<LastEdited>2020-08-24</LastEdited>
+		</ProjectInfo>
+		<Zones>
+			<Zone id="1" displayName="Office" type="Active">
+				<IBK:Parameter name="Area" unit="m2">30</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">90</IBK:Parameter>
+				<!-- 150 kg * 1000 J/kgK = 150 kJ/K -->
+				<IBK:Parameter name="HeatCapacity" unit="kJ/K">150</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">5</IBK:Parameter>
+			<Interval>
+				<IBK:Parameter name="End" unit="d">4</IBK:Parameter>
+			</Interval>
+		</SimulationParameter>
+		<Location>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<ClimateFileName>${Project Directory}/climate/Konstantopol_20C.c6b</ClimateFileName>
+		</Location>
+		<Models>
+			<NaturalVentilationModel id="501" displayName="Zone vent" modelType="Constant">
+				<ZoneObjectList>All zones</ZoneObjectList>
+				<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
+			</NaturalVentilationModel>
+		</Models>
+		<Outputs>
+			<TimeUnit>h</TimeUnit>
+			<Definitions>
+				<!-- hourly values - None -->
+				<OutputDefinition>
+					<Quantity>InfiltrationRate[1]</Quantity>
+					<ObjectListName>Ventilation models</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>AirTemperature</Quantity>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>InfiltrationHeatLoad</Quantity>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+			</Definitions>
+			<Grids>
+				<OutputGrid name="hourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<Schedules>
+			<ScheduleGroups>
+				<Holidays>1/1,3/1,5/1</Holidays>
+				<ScheduleGroup objectList="AirChangeRate">
+					<Schedule type="AllDays">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>InfiltrationRateSchedule [1/h]:0.5</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+					<Schedule type="Holiday">
+						<StartDayOfTheYear>89</StartDayOfTheYear>
+						<EndDayOfTheYear>272</EndDayOfTheYear>
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0 </TimePoints>
+								<Values>InfiltrationRateSchedule [1/h]:2</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+			</ScheduleGroups>
+		</Schedules>
+		<ObjectLists>
+			<ObjectList name="All zones">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Ventilation models">
+				<FilterID>501</FilterID>
+				<ReferenceType>Model</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+	</Project>
+</NandradProject>

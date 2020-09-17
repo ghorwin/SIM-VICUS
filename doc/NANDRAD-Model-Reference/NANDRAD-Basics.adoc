@@ -121,6 +121,40 @@ A linear spline is effectively a data table of x and y values, where x values ar
 ----
 ====
 
+.Paramaters that can be set for the IBK:LinearSpline
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+|Attribute {set:cellbgcolor:transparent} |Description|Format|Usage
+| `name` | Specific name that references to the space type the annual schedule will be set for | string | _required_
+| `InterpolationMethod` 
+a| Specifies the interpolation method between the defined y values.
+
+* `constant` - constant interpolation (values constant during time step) 
+* `linear` - linear interpolation (values linear interpolated between time steps)  
+
+| key | _required_
+| `WrapMethod` 
+
+a| Specifies how to treat the values in multi-year simulations 
+
+* `cyclic` - Annual cyclic data
+* `continuous` - Continuous data without repetition
+
+| key | _required_
+| `xUnit` 
+
+a| Unit of the x-values.
+| key | _required_
+| `yUnit` 
+
+a| Unit of the y-values.
+
+| key | _required_
+
+
+
+|====================
+
 [[path_placeholders]]
 # Path Placeholders
 
