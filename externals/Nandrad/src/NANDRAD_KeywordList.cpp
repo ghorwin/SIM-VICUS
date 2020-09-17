@@ -337,7 +337,6 @@ namespace NANDRAD {
 				case 11 : return "ControlTemperatureTolerance";
 				case 12 : return "KinsolRelTol";
 				case 13 : return "KinsolAbsTol";
-				case 14 : return "IntegralWeightsFactor";
 			} break;
 			// SolverParameter::intPara_t
 			case 34 :
@@ -649,7 +648,6 @@ namespace NANDRAD {
 				case 11 : return "ControlTemperatureTolerance";
 				case 12 : return "KinsolRelTol";
 				case 13 : return "KinsolAbsTol";
-				case 14 : return "IntegralWeightsFactor";
 			} break;
 			// SolverParameter::intPara_t
 			case 34 :
@@ -962,7 +960,6 @@ namespace NANDRAD {
 				case 11 : return "Temperature tolerance for ideal heating or cooling.";
 				case 12 : return "Relative tolerance for Kinsol solver.";
 				case 13 : return "Absolute tolerance for Kinsol solver.";
-				case 14 : return "Optional weighting factor for integral outputs.";
 			} break;
 			// SolverParameter::intPara_t
 			case 34 :
@@ -1274,7 +1271,6 @@ namespace NANDRAD {
 				case 11 : return "K";
 				case 12 : return "---";
 				case 13 : return "---";
-				case 14 : return "---";
 			} break;
 			// SolverParameter::intPara_t
 			case 34 :
@@ -1586,7 +1582,6 @@ namespace NANDRAD {
 				case 11 : return "#FFFFFF";
 				case 12 : return "#FFFFFF";
 				case 13 : return "#FFFFFF";
-				case 14 : return "#FFFFFF";
 			} break;
 			// SolverParameter::intPara_t
 			case 34 :
@@ -1898,7 +1893,6 @@ namespace NANDRAD {
 				case 11 : return std::numeric_limits<double>::quiet_NaN();
 				case 12 : return std::numeric_limits<double>::quiet_NaN();
 				case 13 : return std::numeric_limits<double>::quiet_NaN();
-				case 14 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SolverParameter::intPara_t
 			case 34 :
@@ -2032,7 +2026,7 @@ namespace NANDRAD {
 			// SimulationParameter::flag_t
 			case 32 : return 4;
 			// SolverParameter::para_t
-			case 33 : return 15;
+			case 33 : return 14;
 			// SolverParameter::intPara_t
 			case 34 : return 6;
 			// SolverParameter::flag_t
@@ -2122,7 +2116,7 @@ namespace NANDRAD {
 			// SimulationParameter::flag_t
 			case 32 : return 3;
 			// SolverParameter::para_t
-			case 33 : return 14;
+			case 33 : return 13;
 			// SolverParameter::intPara_t
 			case 34 : return 5;
 			// SolverParameter::flag_t
