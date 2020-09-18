@@ -120,6 +120,8 @@ Flux/load quantities are expected as _mean/average values_ over the __last hour_
 .Using Linear Interpolation to reconstruct sub-hourly Values from Hourly Mean Values
 image::CCM_Interpolation2.png[]
 
+:xrefstyle: basic
+
 
 
 #### Continuous data
@@ -170,10 +172,9 @@ It is possible to specify additional planes (sensors) to generate solar radiatio
 |====================
 
 
-.Sensor Parameters that can be set as *IBK:Parameter* with the Attributes `name` and `unit`
-[options="header"]
-[cols="25%,^ 8%,42%,^ 10%,^ 10%"]
-[width="100%"]
+Parameters (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
+
+[options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
 |====================
 | Name | Unit | Description | Value Range | Usage 
 | `Orientation` | Deg | Orientation of the sensor | 0...360 | _required_ 
@@ -186,7 +187,7 @@ It is possible to specify additional planes (sensors) to generate solar radiatio
  | 0...180 | _required_
 |====================
 
-A sensor must be given a unique ID number and the mandatory parameters `Orientation` and `Inclination` (see section <<construction_interfaces>> for details on their definition).
+A sensor must be given a unique ID number and the mandatory parameters `Orientation` and `Inclination` (see section <<construction_instances,Construction Instances>> for details on their definition).
 
 For each sensor 4 output quantities are generated:
 

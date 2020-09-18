@@ -15,7 +15,7 @@ The individual settings are split into _simulation parameters_ and _solver param
 
 :xrefstyle: short
 
-Hereafter all simulation parameters are described. All parameters are set as `IBK:Parameters`, `IBK:Flags` or `IBK:IntPara`, see <<ex_simpara>>.
+Hereafter all simulation parameters are described, see <<ex_simpara>>. All parameters are set as `IBK:Parameters`, `IBK:Flags` or `IBK:IntPara`.
 
 :xrefstyle: basic
 

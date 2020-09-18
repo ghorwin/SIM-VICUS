@@ -141,7 +141,7 @@ if one interface has outside boundary condition it is _required_ | 0...180 | _re
 |====================
 
 
-[[InterfacesDocumentation]]
+[[construction_interfaces]]
 # Interfaces (construction boundary conditions)
 
 Interfaces are defining boundary conditions and parameters for the one or two surfaces `InterfaceA` and `InterfaceB` of a constructions instance. If the construction instance defines an adiabatic wall only one interface is needed. All other cases require two interfaces. The `InterfaceA` links the first material layer from the construction type with the assigned zone via the `zoneId`. The `InterfaceB` links the last material layer from the construction type with the `zoneId` of `InterfaceB`. 

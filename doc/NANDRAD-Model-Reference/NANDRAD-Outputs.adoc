@@ -100,10 +100,10 @@ Basically, it must be clear for the solver when an interval starts and ends, and
 
 During simulation, an output is written exactly under the following condition:
 
-- t must be in an interval defined by the grid
+- t must be within an interval defined by the grid
 - the offset t from the start of the interval must be an exact multiple of the step size
 
-.Output grid evaluation
+.Output Grid Evaluation
 ====
 Suppose an output interval is defined to start at 12.5 h, with a step size of 2 h. The simulation time shall be t=16.5 h. 
 Then 16.5 - 12.5 = 4 h, which is an exact multiple of 2 h. Hence, the output grid is "active" at this simulation time and all
@@ -152,9 +152,7 @@ Below is an example of an output definition:
 
 The example shows the mandatory child tags of XML-tag `OutputDefinition`. Below is a list of all supported child tags:
 
-[options="header"]
-[cols="15%, 70%,^ 15%"]
-[width="100%"]
+[options="header",cols="15%, 70%,^ 15%",width="100%"]
 |====================
 | XML-tag | Description | Usage
 | `Quantity` |  Unique ID name of the results quantity, see also <<quantities>> | _required_
@@ -206,6 +204,7 @@ The outputs are further grouped by output grid name. The final output file name 
 
   - states -> `states_<gridname>.tsv`
   - loads -> `loads_<gridname>.tsv`
+  - loads (integrated) -> `load_integrals_<gridname>.tsv`
   - fluxes -> `fluxes_<gridname>.tsv`
   - fluxes (integrated) -> `flux_integrals_<gridname>.tsv`
 
@@ -241,19 +240,83 @@ image::TimeType_illustration.png[]
 
 [IMPORTANT]
 ====
-It is important to note that average values are always averages of the values in the last output interval. So, even if the output unit is `kW/h`, for example  but  
-
-**TODO ANDREAS HIER FEHLT WAS**
+It is important to note that average values are always averages of the values in the __last output interval__. So, if you have hourly outputs defined yet the unit is `kW/d`, you will not get average values over a day, but over the last hour. The unit is only needed to convert the final value, but does not influence the way it is calculated.
 ====
 
 ### Examples
 
-- Requesting fluxes across construction interfaces: object list must reference interfaces
-- Requesting energy supplied to layer in construction instance (floor heating): object list must reference construction instance, variable name must reference heat source + index of heat source (if several in construction): `<Quantity>HeatSource[1]</Quantity>` (first heat source in layer, counting from side A in construction, see <<construction_heat_sources, Heat sources in constructions/layers>>).
+.Requesting construction surface temperatures
+====
+[source,xml]
+----
+<Outputs>
+    ...
+    <Definitions>
+        <OutputDefinition>
+        	<Quantity>SurfaceTemperatureA</Quantity>
+        	<ObjectListName>Walls</ObjectListName>
+        	<GridName>hourly</GridName>
+        </OutputDefinition>
+        <OutputDefinition>
+        	<Quantity>SurfaceTemperatureB</Quantity>
+        	<ObjectListName>Walls</ObjectListName>
+        	<GridName>hourly</GridName>
+        </OutputDefinition>
+        ... <!-- other definitions -->
+    </Definitions>
+</Outputs>
+<ObjectLists>
+	<ObjectList name="Walls">
+		<FilterID>*</FilterID>
+		<!-- object list must reference construction instances -->
+		<ReferenceType>ConstructionInstance</ReferenceType>
+	</ObjectList>
+    ... <!-- other object lists -->
+</ObjectLists>
+----
+====
+
+.Requesting energy supplied to layer in a construction (floor heating)
+====
+[source,xml]
+----
+<Outputs>
+    ...
+    <Definitions>
+        <OutputDefinition>
+            <!-- index 1 = heat source in layer #1, counting from side A -->
+        	<Quantity>HeatSource[1]</Quantity>
+        	<ObjectListName>FloorHeating1</ObjectListName>
+        	<GridName>hourly</GridName>
+        </OutputDefinition>
+        ... <!-- other definitions -->
+    </Definitions>
+</Outputs>
+<ObjectLists>
+	<ObjectList name="FloorHeating1">
+		<FilterID>15</FilterID>
+		<!-- object list must reference construction instances -->
+		<ReferenceType>ConstructionInstance</ReferenceType>
+	</ObjectList>
+    ... <!-- other object lists -->
+</ObjectLists>
+----
+====
 
 
 [[binary_outputs]]
 ## Binary Format
+
+The bindary variant of TSV files is very similar.
+
+----
+Header record: 
+- 64bit integer = n (number of columns)
+- n times binary strings
+
+Data section, each record:
+
+
 
 First record: unsigned int - n (number of columns)
 Next n records: binary strings, leading size (unsigned int) and termination character (sanity checking)
@@ -263,4 +326,38 @@ Next ?? records: unsigned int - n (for checking) and afterwards n doubles
 
 [[solver_log_files]]
 ## Solver log files
+
+Within the project's result directory, the following files are automatically generated:
+
+----
+├── log
+│   ├── integrator_cvode_stats.tsv
+│   ├── LES_direct_stats.tsv
+│   ├── progress.tsv
+│   ├── screenlog.txt
+│   └── summary.txt
+├── results
+│   └── ... (output files)
+└── var
+    ├── output_reference_list.txt
+    └── restart.bin
+----
+
+
+[options="header",cols="25%, 75%",width="100%"]
+|====================
+| File | Description
+| `integrator_cvode_stats.tsv` |  Statistics of the time integrator, written at end of simulation
+| `LES_direct_stats.tsv` |  Statistics of the linear equation system (LES) solver, written at end of simulation
+| `progress.tsv` |  Minimalistic runtime progress data, continuously written, can be used to follow simulation progress from GUI tools
+| `screenlog.txt` |  Log file for solver output messages (same as console window outputs), continuously written
+| `summary.txt` |  Statistics and timings of the simulation run, written at end of simulation
+| `output_reference_list.txt` |  List of quantities generated in this project (see <<quantities>>)
+| `restart.bin` |  Binary restart data (to continue integration) 
+|====================
+
+[NOTE]
+====
+If you chose a different integrator or linear equation system solver (see section <<solver_parameters>>), the files `integrator_cvode_stats.tsv` and `LES_direct_stats.tsv` are named accordingly.
+====
 
