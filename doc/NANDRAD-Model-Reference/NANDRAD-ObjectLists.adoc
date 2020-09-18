@@ -73,9 +73,13 @@ Objects (with same reference type) are uniquely identified by their ID number.
 ID numbers must only be unique for objects with the same reference type. Hence, it is possible to define Zone #1 and ConstructionInstance #1 at the same time.
 ====
 
-A filter pattern can be composed of several parts, separated by , (comma), for example: `1,4,13-20`. Each
+A filter pattern can be composed of several parts, separated by , (comma), for example: `1,4,13-20`. Each part can be of the following format:
 
-TODO 
+- a single ID number, e.g. _12_
+- a range of ID numbers, e.g. _1-100_
+- _*_ (selects all IDs)
+
+If you specify IDs several times, for example in `3, 1-10`, the resultant ID set will contain each ID only once.
 
 
 :xrefstyle: basic
