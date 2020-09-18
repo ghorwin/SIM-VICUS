@@ -82,6 +82,8 @@ Regular schedules are defined upon a daily cycle based scheme.
 
 Regular schedules are defined within the XML tag `ScheduleGroup` with an XML attribute named `objectList` that references an `ObjectList` with the specified name (see <<tab_ScheduleGroup>>). Inside the object an XML tag named `Schedule` needs to be defined with an XML attribute `type`. This `type` can have several names for different days (see <<tab_ScheduleTypes>>). As shown, a priority list exists that defines on how to define a yearly schedule based on a daily cycle.
 
+### Daily cycles
+
 At first priority the type `Alldays` will set a specified daily values to all days of the whole year (Priority 0). After this the `type` named `WeekEnd` and `WeekDay` will overwrite the already defined values for only all week days or weekend days (Priority 1). Furthermore the weekdays named `Monday`, `Tuesday`, etc define for which days the values will be overwritten again (Priority 2). This continues with the `type` `Holiday` (Priority 3). So that in the end a final schedule for the whole year can be defined. 
 
 :xrefstyle: basic 
@@ -117,6 +119,22 @@ At first priority the type `Alldays` will set a specified daily values to all da
 | `Holiday` {set:cellbgcolor: #F4F4F4 } 
 | 3 | Values will be set to all holidays of the period that are specified inside the `holidays` tag
 |====================
+
+.Defined schedule for `Mondays`
+image::alldays.png[width=80%, scalewidth=12cm]
+
+.Defined schedule for `Mondays`
+image::mondays.png[width=80%, scalewidth=12cm]
+
+.Defined schedule for `Weekdays` for the period of January
+image::weekdays.png[width=80%, scalewidth=12cm]
+
+.Resulting Schedule shown for a week in January 
+image::week.png[width=80%, scalewidth=12cm]
+
+.Resulting Schedule shown for January and February
+image::year.png[width=80%, scalewidth=12cm]
+
 
 [[annualSchedules]]
 ## Annual schedules 
