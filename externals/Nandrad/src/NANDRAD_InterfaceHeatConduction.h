@@ -52,7 +52,8 @@ public:
 	NANDRAD_READWRITE_IFNOTEMPTY(InterfaceHeatConduction)
 	NANDRAD_COMP(InterfaceHeatConduction)
 
-	void checkParameters();
+	/*! Checks for valid parameters (value ranges). */
+	void checkParameters() const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

@@ -48,6 +48,9 @@ public:
 	NANDRAD_READWRITE_IFNOTEMPTY(InterfaceLongWaveEmission)
 	NANDRAD_COMP(InterfaceLongWaveEmission)
 
+	/*! Checks for valid parameters (value ranges). */
+	void checkParameters() const;
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Model type. */

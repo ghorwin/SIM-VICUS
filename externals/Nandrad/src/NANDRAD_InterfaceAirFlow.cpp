@@ -31,5 +31,11 @@ bool InterfaceAirFlow::operator!=(const InterfaceAirFlow & other) const {
 	return false; // not different
 }
 
+void InterfaceAirFlow::checkParameters() const
+{
+	//ToDo check parameters
+
+}
+
 } // namespace NANDRAD
 

@@ -54,6 +54,9 @@ public:
 	NANDRAD_READWRITE_IFNOTEMPTY(InterfaceSolarAbsorption)
 	NANDRAD_COMP(InterfaceSolarAbsorption)
 
+	/*! Checks for valid parameters (value ranges). */
+	void checkParameters() const;
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Model type. */

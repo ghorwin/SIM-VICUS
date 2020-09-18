@@ -205,22 +205,12 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 		for (unsigned int i = 0; i < location.m_sensors.size(); ++i) {
 			const NANDRAD::Sensor &sensor = location.m_sensors[i];
 
-			/// TODO check value ranges - replace name check code below with .checkValue()
+			//check sensor parameters
+			sensor.checkParameters();
 
 			// retrieve orientation and incliniation
-			if (sensor.m_orientation.name.empty())
-				throw IBK::Exception(IBK::FormatString("Missing Parameter 'Orientation' of sensor with id #%1!")
-					.arg(sensor.m_id), FUNC_ID);
-			// find inclination
-			if (sensor.m_inclination.name.empty())
-				throw IBK::Exception(IBK::FormatString("Missing Parameter 'Inclination' of sensor with id #%1!")
-					.arg(sensor.m_id), FUNC_ID);
-
-			// stuff above to Sensor::checkParameters()
-
 			double orientation = sensor.m_orientation.value; // in rad
 			double inclination = sensor.m_inclination.value; // in rad
-
 
 			// register sensor surface with solar radiation model
 			unsigned int surfaceID = m_solarRadiationModel.addSurface(orientation, inclination);

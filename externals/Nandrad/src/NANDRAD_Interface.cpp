@@ -27,8 +27,14 @@
 
 namespace NANDRAD {
 
-void Interface::checkParameters() {
-	// TODO call
+void Interface::checkParameters() const {
+
+	m_heatConduction.checkParameters();
+	m_solarAbsorption.checkParameters();
+	m_longWaveEmission.checkParameters();
+	m_vaporDiffusion.checkParameters();
+	//not implemented
+	//m_airFlow.checkParameters();
 }
 
 

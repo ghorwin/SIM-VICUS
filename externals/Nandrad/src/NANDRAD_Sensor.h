@@ -44,6 +44,9 @@ public:
 	NANDRAD_READWRITE_IFNOTEMPTY(Sensor)
 	NANDRAD_COMP(Sensor)
 
+	/*! Checks for valid parameters (value ranges). */
+	void checkParameters() const;
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID-number of the sensor.*/

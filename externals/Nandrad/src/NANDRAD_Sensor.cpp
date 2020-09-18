@@ -29,5 +29,18 @@ bool Sensor::operator!=(const Sensor & other) const {
 	return false;
 }
 
+void Sensor::checkParameters() const
+{
+	m_inclination.checkedValue("Deg", "Deg",
+							   0, true,
+							   180, true,
+							   "Inclination must be between 0 and 180 Deg.");
+
+	m_orientation.checkedValue("Deg", "Deg",
+							   0, true,
+							   360, true,
+							   "Inclination must be between 0 and 360 Deg.");
+}
+
 } // namespace NANDRAD
 

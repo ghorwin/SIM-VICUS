@@ -32,7 +32,7 @@ bool InterfaceHeatConduction::operator!=(const InterfaceHeatConduction & other) 
 }
 
 
-void InterfaceHeatConduction::checkParameters() {
+void InterfaceHeatConduction::checkParameters() const {
 	// only check parameters if model is enable
 	if (m_modelType == NUM_MT)
 		return;

@@ -31,5 +31,17 @@ bool InterfaceLongWaveEmission::operator!=(const InterfaceLongWaveEmission & oth
 	return false; // not different
 }
 
+void InterfaceLongWaveEmission::checkParameters() const{
+	// only check parameters if model is enable
+	if (m_modelType == NUM_MT)
+		return;
+
+	m_para[P_Emissivity].checkedValue("---", "---",
+									   0, true,
+									   1, true,
+									   "Long wave emissivity must between 0 and 1.");
+
+}
+
 } // namespace NANDRAD
 

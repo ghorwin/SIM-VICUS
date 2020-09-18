@@ -48,6 +48,9 @@ public:
 	NANDRAD_READWRITE_IFNOTEMPTY(InterfaceVaporDiffusion)
 	NANDRAD_COMP(InterfaceVaporDiffusion)
 
+	/*! Checks for valid parameters (value ranges). */
+	void checkParameters() const;
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Model type. */
