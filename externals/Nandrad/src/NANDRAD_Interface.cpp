@@ -27,6 +27,11 @@
 
 namespace NANDRAD {
 
+void Interface::checkParameters() {
+	// TODO call
+}
+
+
 void Interface::updateComment(const std::vector<Zone> & zones) {
 
 	if (m_zoneId == 0)

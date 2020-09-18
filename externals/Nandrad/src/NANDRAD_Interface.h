@@ -54,6 +54,11 @@ public:
 	NANDRAD_READWRITE
 	NANDRAD_COMPARE_WITH_ID
 
+	/*! Checks for valid parameters.
+		\note This function throws an exception if invalid parameters are defined or parameters are missing.
+	*/
+	void checkParameters();
+
 	/*! Special form of comparison operator, tests if parameters that have an
 		impact on result calculation are the same (zone, location, physical parameters).
 	*/

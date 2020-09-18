@@ -74,6 +74,18 @@ void ConstructionInstance::checkParameters(const std::vector<ConstructionType> &
 		if (inclinationInDeg < 0 || inclinationInDeg > 180)
 			throw IBK::Exception( "Parameter 'Inclination' outside allowed value range [0,180] Deg.", FUNC_ID);
 	}
+
+	// check boundary condition models
+	try {
+		m_interfaceA.checkParameters();
+	} catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, "Error checking model parameters for InterfaceA.", FUNC_ID);
+	}
+	try {
+		m_interfaceB.checkParameters();
+	} catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, "Error checking model parameters for InterfaceB.", FUNC_ID);
+	}
 }
 
 bool ConstructionInstance::behavesLike(const ConstructionInstance & other) const {
