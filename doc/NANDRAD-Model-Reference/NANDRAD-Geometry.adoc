@@ -6,12 +6,6 @@ In order to model buildings, it is necessary to define the individual rooms with
 
 Objects of type `Zone` store all properties needed to compute zone temperature from energy density (the conserved quantity).
 
-Zones can be either _Constant_ or _Active_.
-
-For _Constant_ zones, the temperature is assumed to
-be fixed/predefined whereas in _Active_ zones the temperature is computed (i.e. included in
-the model's unknowns). A _Constant_ zone only needs the temperature parameter.
-
 .Zone Definition
 ====
 [source,xml,indent=0]
@@ -46,6 +40,10 @@ a|  Defines whether zone is balanced and included in equation system.
 
 |====================
 
+For _Constant_ zones, the temperature is assumed to
+be fixed/predefined whereas in _Active_ zones the temperature is computed (i.e. included in
+the model's unknowns). A _Constant_ zone only needs the temperature parameter.
+
 Parameters (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
 
 [options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
@@ -56,24 +54,29 @@ Parameters (see section <<IBK_Parameter>> for a description of the `IBK:Paramete
 | `HeatCapacity` | J/K | Additional heat capacity (furniture, etc.) | {nbsp}>={nbsp}0.0{nbsp} | _optional_
 | `Temperature` | C | Temperature of the zone
 
-only used if `constant` | -70...120 | (_required_)
+only used if `Constant` | -70...120 | (_required_)
 
 | `RelativeHumidity` | % | Relative humidity of the zone
 
-only used if `constant` | 0...1 | (_required_)
+only used if `Constant` | 0...100 | (_required_)
 
 | `CO2Concentration` | g/m3 | CO2 concentration of the zone
 
-only used if `constant` | {nbsp}>{nbsp}0.0{nbsp} | (_required_)
+only used if `Constant` | {nbsp}>{nbsp}0.0{nbsp} | (_required_)
 |====================
+
+[NOTE]
+====
+The parameters `RelativeHumidity` and `CO2Concentration` only need to be defined for _constant_ zones, when the respective balance equation is enabled.
+====
 
 
 [[construction_instances]]
 # Construction Instances
 
-The construction instances define construction-specific parameters required by several models.
+Construction instances represent actually built one-dimensional parts of the building envelope, e.g. walls, floors, ceilings, roofs. The construction instance definition contains construction-specific parameters required by several models.
 
-.Construction Instances
+.Definition of an Outside Wall with only Heat Conduction Boundary Condition
 ====
 [source,xml,indent=0]
 ----
@@ -100,9 +103,7 @@ The construction instances define construction-specific parameters required by s
 ====
 
 
-The construction instances are defined inside the Sections starting with an XML tag `ConstructionInstances`. Inside the Section each Construction instance starts with the XML tag named `ConstructionInstance` with the XML attributes `id` and `displayName`. 
-Inside that it is necessary to specify the interfaces with the XML tag named `InterfaceA` and `InterfaceB`. Finally the Interfaces with the XML tag `InterfaceA` and `InterfaceB` need to be defined with the XML attributes `id` and `zoneId`.
-In the following it is described in detail.
+The construction instances are defined inside the XML tag `ConstructionInstances`. Inside the section each construction definition starts with the XML tag named `ConstructionInstance` with attributes `id` and `displayName`. 
 
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
@@ -128,7 +129,7 @@ The following XML tags named `IBK:Parameters` with the XML attributes `name` and
 | Name | Unit | Description | Value Range | Usage 
 | `Orientation` | Deg | Orientation of the wall
 
-if one interface has outside boundary condition it is _required_  | 0...360 | _required_ / _optional_
+if one interface has solar (short wave) radiation boundary condition it is _required_  | 0...360 | _required_ / _optional_
 | `Inclination` | Deg 
 a| Inclination of the wall
 
@@ -136,9 +137,12 @@ a| Inclination of the wall
 * 90 Deg - vertical wall
 * 180 Deg - facing downwards) 
 
-if one interface has outside boundary condition it is _required_ | 0...180 | _required_ / _optional_
+if one interface has short and/or long wave radiation boundary condition it is _required_ | 0...180 | _required_ / _optional_
 | `Area` | m2 | Gross area of the wall (including potentially existing windows, holes etc.) | > 0 m2 | _required_
 |====================
+
+Inside that it is necessary to specify the interfaces with the XML tag named `InterfaceA` and `InterfaceB`. Finally the Interfaces with the XML tag `InterfaceA` and `InterfaceB` need to be defined with the XML attributes `id` and `zoneId`.
+In the following it is described in detail.
 
 
 [[construction_interfaces]]
@@ -146,9 +150,9 @@ if one interface has outside boundary condition it is _required_ | 0...180 | _re
 
 Interfaces are defining boundary conditions and parameters for the one or two surfaces `InterfaceA` and `InterfaceB` of a constructions instance. If the construction instance defines an adiabatic wall only one interface is needed. All other cases require two interfaces. The `InterfaceA` links the first material layer from the construction type with the assigned zone via the `zoneId`. The `InterfaceB` links the last material layer from the construction type with the `zoneId` of `InterfaceB`. 
 
-.Interfaces
+.Interface Definitions for a Construction with Interfaces for either Side
 ====
-[source,xml,indent=0]
+[source,xml]
 ----
 <ConstructionInstance id="1" displayName="All Surfaces Var01">
     ...
@@ -178,17 +182,19 @@ Interfaces are defining boundary conditions and parameters for the one or two su
 
 The convective heat conduction over the interface is described by the XML tag `InterfaceHeatConduction`.
 
-[.indent-me]
-[source,xml, indent=0]
+.Parameter Definition for Heat Conduction Boundary Condition
+====
+[source,xml]
 ----
 <InterfaceHeatConduction modelType="Constant">
-	<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+  <IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 </InterfaceHeatConduction>
 ----
+====
 
 The `InterfaceHeatConduction` needs to be defined with the following XML attribute `modelType`.
 
-.Parameters for the InterfaceHeatConduction-Tag
+.Attributes
 [.indent-me]
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
@@ -202,14 +208,11 @@ a|  Sets the type of the heat conduction model
 |====================
 
 
-The XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` with the following entries can be defined:
+Floating point parameters (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
 
-.Zone Parameters that can be set as *IBK:Parameter* with the Attributes `name` and `unit`
-[options="header"]
-[cols="25%,^ 8%,42%,^ 10%,^ 10%"]
-[width="100%"]
+[options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
 |====================
-| Name | Unit| Description | Value Range | Usage 
+|Name|Default Unit|Description|Value Range |Usage
 | `HeatTransferCoefficient` | W/m2K | Constant convective heat transfer coefficient | {nbsp}>{nbsp}0.0{nbsp} | _required_
 |====================
 
@@ -217,16 +220,19 @@ The XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` wi
 
 The solar absorption over the interface is described by the XML tag `InterfaceSolarAbsorption`. This coefficient describes the solar short wave radiation that is absorpt by the interface.
 
-[source,xml, indent=0]
+.Parameter Definition for Solar Absorption Boundary Condition
+====
+[source,xml]
 ----
 <InterfaceSolarAbsorption modelType="Constant">
-	<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
+  <IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
 </InterfaceHeatConduction>
 ----
+====
 
 The `InterfaceSolarAbsorption` needs to be defined with the following XML attribute `modelType`.
 
-.Parameters for the InterfaceSolarAbsorption-Tag
+.Attributes
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Attribute  | Description | Format | Usage 
@@ -289,6 +295,11 @@ The XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` wi
 
 ## Vapour Diffusion
 
+[WARNING]
+====
+TO BE DEFINED LATER.
+====
+
 The vapour diffusion over the interface is described by the XML tag `InterfaceVaporDiffusion`.
 
 [source,xml, indent=0]
@@ -326,6 +337,11 @@ The XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` wi
 
 ## Air Flow
 
+[WARNING]
+====
+TO BE DEFINED LATER.
+====
+
 The air flow over the interface is calculate with a pressure coefficient. It is described inside the XML tag `InterfaceAirFlow`.
 
 [source,xml, indent=0]
@@ -361,8 +377,4 @@ The XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` wi
 | `PressureCoefficient` | --- | Pressure Coefficient | 0...1 | _required_
 |====================
 
-
-# Ambient climate boundary conditions
-
-# Interface between constructions and zones (internal boundary conditions)
 

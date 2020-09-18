@@ -33,23 +33,24 @@ Hereafter all simulation parameters are described, see <<ex_simpara>>. All param
 
 Floating point parameters (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
 
-[options="header",cols="20%,15%,35%,20%,10%",width="100%"]
+[options="header",cols="20%,15%,35%,^ 20%,^ 10%",width="100%"]
 |====================
 |Name|Default Unit|Description|Value Range |Usage
 | `InitialTemperature` | C | Global initial temperature for all objetcs (`zones`, `constructionInstances`, etc) | positive double ({nbsp}>{nbsp}0.0{nbsp}K) | _optional_
-| `InitialRelativeHumidity` | % | Global initial relative humidity for all objects, that can have a humidity value set (`zones`, air flows in `models`, etc) | 0 ... 100% | _optional_
-| `RadiationLoadFraction` | --- | Percentage of solar radiation gains attributed directly to the room 0..1. | 0...1 | _optional_
-| `UserThermalRadiationFraction` | --- | Percentage of heat that is emitted by long wave radiation from persons.  | 0...1 | _optional_
-| `EquipmentThermalLossFraction`   | --- | Percentage of energy from equipment load that is not available as thermal heat.  | 0 ... 1 | _optional_
-| `EquipmentThermalRadiationFraction` | --- | Percentage of heat that is emitted by long wave radiation from equipment.  | 0...1 | _optional_
-| `LightingVisibleRadiationFraction` | --- | Percentage of energy from lighting that is transformed into visible short wave radiation.  | 0...1 | _optional_
-| `LightingThermalRadiationFraction` |--- | Percentage of heat that is emitted by long wave radiation from lighting.  | 0...1 | _optional_
-| `DomesticWaterSensitiveHeatGainFraction` |--- | Percentage of sensitive heat from domestic water istributed towrads the room.  | 0...1 | _optional_
-| `AirExchangeRateN50` | 1/h | Air exchange rate resulting from a pressure difference of 50 Pa between inside and outside.  | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _optional_
-| `ShieldingCoefficient` | --- | Shielding coefficient for a given location and envelope type. | 0 ... 1  | _optional_
-| `HeatingDesignAmbientTemperature` | C | Ambient temparture for a design day. Parameter that is needed for FMU export.  | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _optional_
+| (*)`InitialRelativeHumidity` | % | Global initial relative humidity for all objects, that can have a humidity value set (`zones`, air flows in `models`, etc) | 0 ... 100% | _optional_
+| (*)`RadiationLoadFraction` | --- | Percentage of solar radiation gains attributed directly to the room 0..1. | 0...1 | _optional_
+| (*)`UserThermalRadiationFraction` | --- | Percentage of heat that is emitted by long wave radiation from persons.  | 0...1 | _optional_
+| (*)`EquipmentThermalLossFraction`   | --- | Percentage of energy from equipment load that is not available as thermal heat.  | 0 ... 1 | _optional_
+| (*)`EquipmentThermalRadiationFraction` | --- | Percentage of heat that is emitted by long wave radiation from equipment.  | 0...1 | _optional_
+| (*)`LightingVisibleRadiationFraction` | --- | Percentage of energy from lighting that is transformed into visible short wave radiation.  | 0...1 | _optional_
+| (*)`LightingThermalRadiationFraction` |--- | Percentage of heat that is emitted by long wave radiation from lighting.  | 0...1 | _optional_
+| (*)`DomesticWaterSensitiveHeatGainFraction` |--- | Percentage of sensitive heat from domestic water istributed towrads the room.  | 0...1 | _optional_
+| (*)`AirExchangeRateN50` | 1/h | Air exchange rate resulting from a pressure difference of 50 Pa between inside and outside.  | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _optional_
+| (*)`ShieldingCoefficient` | --- | Shielding coefficient for a given location and envelope type. | 0 ... 1  | _optional_
+| (*)`HeatingDesignAmbientTemperature` | C | Ambient temparture for a design day. Parameter that is needed for FMU export.  | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _optional_
 |====================
 
+_(*) - not yet used_
 
 Whole number parameters (see section <<IBK_IntPara>> for a description of the `IBK:IntPara` tag):
 
@@ -70,6 +71,7 @@ Flags and options (see section <<IBK_Flag>> for a description of the `IBK:Flag` 
 | `ExportClimateDataFMU` |  Flag activating FMU export of climate data. | _false_ | _optional_
 |====================
 
+_(*) - not yet used_
 
 
 [[simulation_interval]]
@@ -94,6 +96,8 @@ The start and end of a simulation are always defined in __simulation time__, exp
 
 #### Simulation time and absolute time reference
 
+TODO Andreas
+
 - how is the simulation time defined
 - how is the absolute time obtained (start year and start time)
 - how are cyclic annual simulations handled, how are continuous multi-year simulations handled
@@ -116,15 +120,12 @@ Hereafter all parameters that are required for the solver are described.
     <IBK:Parameter name="NonlinSolverConvCoeff" unit="---">1e-05</IBK:Parameter>
     <IBK:Parameter name="MaxOrder" unit="---">5</IBK:Parameter>
     <IBK:Parameter name="MaxKrylovDim" unit="---">500</IBK:Parameter>
-    <IBK:Parameter name="LESBandWidth" unit="---">15</IBK:Parameter>
-    <IBK:Parameter name="PreBandWidth" unit="---">1</IBK:Parameter>
     <IBK:Parameter name="PreILUWidth" unit="---">1</IBK:Parameter>
     <IBK:Parameter name="DiscMinDx" unit="mm">2</IBK:Parameter>
     <IBK:Parameter name="DiscDetailLevel" unit="---">4</IBK:Parameter>
     <IBK:Flag name="DetectMaxTimeStep">true</IBK:Flag>
     <Integrator>CVODE</Integrator>
     <LESSolver>Dense</LESSolver>
-    <Preconditioner>Band</Preconditioner>
 </SolverParameter>
 ----
 ====
@@ -157,6 +158,8 @@ a|Stretch factor for variable wall discretizations:
 |`KinsolAbsTol`|---|Absolute tolerance for Kinsol solver.|0…1|-|_optional_
 |====================
 
+_(*) - not yet used_
+
 Flags and options (see section <<IBK_Flag>> for a description of the `IBK:Flag` tag):
 
 [options="header",cols="20%,60%,10%,10%",width="100%"]
@@ -167,7 +170,10 @@ Flags and options (see section <<IBK_Flag>> for a description of the `IBK:Flag` 
 |`KinsolStrictNewton`|Enable strict Newton for steady state cycles.|_false_|_optional_
 |====================
 
+_(*) - not yet used_
+
 All options for the integrator are described in the table below. The XML-tag `Integrator` contains a string to select the time integration method.
+
 
 ### Integrator
 

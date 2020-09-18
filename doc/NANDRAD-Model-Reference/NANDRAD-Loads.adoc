@@ -105,6 +105,7 @@ Flux/load quantities are:
 - direct solar radiation intensity (in sun's normal direction)
 - diffuse solar radiation intensity (on horizontal plane)
 - rain load
+- long wave sky emission
 
 :xrefstyle: short
 

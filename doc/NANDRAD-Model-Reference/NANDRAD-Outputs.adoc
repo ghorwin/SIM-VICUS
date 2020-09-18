@@ -322,7 +322,7 @@ First record: unsigned int - n (number of columns)
 Next n records: binary strings, leading size (unsigned int) and termination character (sanity checking)
 
 Next ?? records: unsigned int - n (for checking) and afterwards n doubles
-
+----
 
 [[solver_log_files]]
 ## Solver log files

@@ -17,7 +17,6 @@ In NANDRAD, physical equations are organized in terms of model objects, for exam
 | Keyword  | Description
 | `Zone` |  Variables related to room (thermal zones)
 | `ConstructionInstance` |  Variables related to constructions
-| `Interface` |  Variables related to construction surfaces (for fluxes across these interfaces)
 | `Schedule` |  Scheduled parameters
 | `Location` |  Variables from climate calculation model, including radiation sensor values
 | `Model` |  Model-specific variables/results

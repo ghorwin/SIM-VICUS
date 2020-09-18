@@ -137,8 +137,14 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 							 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 			m_solarRadiationModel.m_climateDataLoader.m_longitudeInDegree = longInDeg;
 		}
+		// ensure that either both latitude and longitude are given, or none
+		if (!((latitude.name.empty() && longitude.name.empty()) || (!latitude.name.empty() && !longitude.name.empty())))
+			throw IBK::Exception("If specifying 'Latitude' or 'Longitude', you need to specify always both.", FUNC_ID);
 
 		// albedo
+
+		// TODO : replace code below with .checkValue()
+
 		const IBK::Parameter &albedo = location.m_para[NANDRAD::Location::P_Albedo];
 		if (albedo.name.empty())
 			throw IBK::Exception(IBK::FormatString("Error initializing climate data: Missing parameter 'Albedo'."), FUNC_ID);
@@ -198,18 +204,23 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 		// 3. store the association between sensor ID and CCM-surface ID
 		for (unsigned int i = 0; i < location.m_sensors.size(); ++i) {
 			const NANDRAD::Sensor &sensor = location.m_sensors[i];
+
+			/// TODO check value ranges - replace name check code below with .checkValue()
+
 			// retrieve orientation and incliniation
 			if (sensor.m_orientation.name.empty())
 				throw IBK::Exception(IBK::FormatString("Missing Parameter 'Orientation' of sensor with id #%1!")
 					.arg(sensor.m_id), FUNC_ID);
-			double orientation = sensor.m_orientation.value;
 			// find inclination
 			if (sensor.m_inclination.name.empty())
 				throw IBK::Exception(IBK::FormatString("Missing Parameter 'Inclination' of sensor with id #%1!")
 					.arg(sensor.m_id), FUNC_ID);
-			double inclination = sensor.m_inclination.value;
 
-			/// \todo check value ranges
+			// stuff above to Sensor::checkParameters()
+
+			double orientation = sensor.m_orientation.value; // in rad
+			double inclination = sensor.m_inclination.value; // in rad
+
 
 			// register sensor surface with solar radiation model
 			unsigned int surfaceID = m_solarRadiationModel.addSurface(orientation, inclination);
