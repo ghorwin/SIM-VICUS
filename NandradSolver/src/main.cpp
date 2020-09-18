@@ -1701,6 +1701,7 @@ void createSim05(NANDRAD::Project &prj){
 int main(int argc, char * argv[]) {
 	FUNCID(main);
 
+#ifdef TEST_PROJECT_WRITING
 	NANDRAD::LinearSplineParameter linSp;
 
 	linSp.m_xUnit = IBK::Unit("h");
@@ -1728,7 +1729,6 @@ int main(int argc, char * argv[]) {
 	prj.m_solverParameter.m_lesSolver = NANDRAD::SolverParameter::LES_Dense;
 	prj.writeXML(path);
 
-#ifdef TEST_PROJECT_WRITING
 
 	NANDRAD::Project prj;
 	createSim01(prj);
