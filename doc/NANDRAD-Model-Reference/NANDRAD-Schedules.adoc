@@ -53,6 +53,14 @@ Regular schedules are defined upon a daily cycle based scheme.
 			</DailyCycle>
 		</DailyCycles>
 	</Schedule>
+	<Schedule type="WeekDays">
+		<DailyCycles>
+			<DailyCycle interpolation="Constant">
+				<TimePoints>0 7 18 24</TimePoints>
+				<Values>InfiltrationRateSchedule [1/h]:0 1 1 0</Values>
+			</DailyCycle>
+		</DailyCycles>
+	</Schedule>
 </ScheduleGroup>
 ----
 
