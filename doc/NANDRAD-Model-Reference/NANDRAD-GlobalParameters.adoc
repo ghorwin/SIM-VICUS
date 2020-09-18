@@ -25,11 +25,26 @@ Hereafter all simulation parameters are described, see <<ex_simpara>>. All param
 [source,xml]
 ----
 <SimulationParameter>
-	<IBK:Parameter name="InitialTemperature" unit="C">5</IBK:Parameter>
-	<IBK:IntPara name="DiscMaxElementsPerLayer">30</IBK:IntPara>
+  <IBK:Parameter name="InitialTemperature" unit="C">5</IBK:Parameter>
+  <IBK:IntPara name="DiscMaxElementsPerLayer">30</IBK:IntPara>
+  <Interval>
+    <IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+    <IBK:Parameter name="End" unit="d">730</IBK:Parameter>
+  </Interval>
 </SimulationParameter>
 ----
 ====
+
+The `SimulationParameter` tag holds the following child tags:
+
+[options="header",cols="20%,70%,^ 10%",width="100%"]
+|====================
+|XML-tag|Description|Usage
+|`IBK:Parameter`|Floating point value parameters|multiple
+|`IBK:IntPara`|Whole number parameters|multiple
+|`IBK:Flag`|Flags|multiple
+|`Interval`|Defines simulation interval|none/once
+|====================
 
 Floating point parameters (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
 
@@ -65,10 +80,10 @@ Flags and options (see section <<IBK_Flag>> for a description of the `IBK:Flag` 
 [options="header",cols="20%,60%,10%,10%",width="100%"]
 |====================
 | Name | Description | Default | Usage 
-| `EnableMoistureBalance` |  Flag activating moisture balance calculation if enabled | _false_ | _optional_
-| `EnableCO2Balance` |  Flag activating CO2 balance calculation if enabled | _false_ | _optional_
-| `EnableJointVentilation` |  Flag activating ventilation through joints and openings. | _false_ | _optional_
-| `ExportClimateDataFMU` |  Flag activating FMU export of climate data. | _false_ | _optional_
+| (*)`EnableMoistureBalance` |  Flag activating moisture balance calculation if enabled | _false_ | _optional_
+| (*)`EnableCO2Balance` |  Flag activating CO2 balance calculation if enabled | _false_ | _optional_
+| (*)`EnableJointVentilation` |  Flag activating ventilation through joints and openings. | _false_ | _optional_
+| (*)`ExportClimateDataFMU` |  Flag activating FMU export of climate data. | _false_ | _optional_
 |====================
 
 _(*) - not yet used_
@@ -86,8 +101,8 @@ This is done in the child tag `Interval`:
 [source,xml]
 ----
 <Interval>
-	<IBK:Parameter name="Start" unit="d">31</IBK:Parameter>
-	<IBK:Parameter name="End" unit="d">91</IBK:Parameter>
+  <IBK:Parameter name="Start" unit="d">31</IBK:Parameter>
+  <IBK:Parameter name="End" unit="d">91</IBK:Parameter>
 </Interval>
 ----
 ====
@@ -113,22 +128,33 @@ Hereafter all parameters that are required for the solver are described.
 [source,xml]
 ----
 <SolverParameter>
-    <IBK:Parameter name="MaxTimeStep" unit="min">30</IBK:Parameter>
-    <IBK:Parameter name="MinTimeStep" unit="s">1e-4</IBK:Parameter>
-    <IBK:Parameter name="RelTol" unit="---">1e-005</IBK:Parameter>
-    <IBK:Parameter name="AbsTol" unit="---">1e-006</IBK:Parameter>
-    <IBK:Parameter name="NonlinSolverConvCoeff" unit="---">1e-05</IBK:Parameter>
-    <IBK:Parameter name="MaxOrder" unit="---">5</IBK:Parameter>
-    <IBK:Parameter name="MaxKrylovDim" unit="---">500</IBK:Parameter>
-    <IBK:Parameter name="PreILUWidth" unit="---">1</IBK:Parameter>
-    <IBK:Parameter name="DiscMinDx" unit="mm">2</IBK:Parameter>
-    <IBK:Parameter name="DiscDetailLevel" unit="---">4</IBK:Parameter>
-    <IBK:Flag name="DetectMaxTimeStep">true</IBK:Flag>
-    <Integrator>CVODE</Integrator>
-    <LESSolver>Dense</LESSolver>
+  <IBK:Parameter name="MaxTimeStep" unit="min">30</IBK:Parameter>
+  <IBK:Parameter name="MinTimeStep" unit="s">1e-4</IBK:Parameter>
+  <IBK:Parameter name="RelTol" unit="---">1e-005</IBK:Parameter>
+  <IBK:Parameter name="AbsTol" unit="---">1e-006</IBK:Parameter>
+  <IBK:Parameter name="NonlinSolverConvCoeff" unit="---">1e-05</IBK:Parameter>
+  <IBK:IntPara name="MaxKrylovDim">30</IBK:IntPara>
+  <IBK:Parameter name="DiscMinDx" unit="mm">2</IBK:Parameter>
+  <IBK:Parameter name="DiscStretchFactor" unit="---">4</IBK:Parameter>
+  <IBK:Flag name="DetectMaxTimeStep">true</IBK:Flag>
+  <Integrator>CVODE</Integrator>
+  <LesSolver>Dense</LesSolver>
 </SolverParameter>
 ----
 ====
+
+The `SolverParameter` tag holds the following child tags:
+
+[options="header",cols="20%,70%,^ 10%",width="100%"]
+|====================
+|XML-tag|Description|Usage
+|`IBK:Parameter`|Floating point value parameters|multiple
+|`IBK:IntPara`|Whole number parameters|multiple
+|`IBK:Flag`|Flags|multiple
+|`Integrator`|Defines time integrator|none/once
+|`LesSolver`|Defines linear equation system (LES) solver|none/once
+|`Preconditioner`|Defines preconditioner (iterative LES solver only)|none/once
+|====================
 
 Floating point parameters (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
 
@@ -146,16 +172,32 @@ Floating point parameters (see section <<IBK_Parameter>> for a description of th
 |`DiscStretchFactor`|---
 a|Stretch factor for variable wall discretizations:
 
-- *0* - no disc
-- *1* - equidistance 
+- *0* - no discretization
+- *1* - equidistant
 - *> 1* - variable
 
-|positive integer ({nbsp}>{nbsp}0{nbsp})|50|_optional_
-|`ViewfactorTileWidth`|m|Maximum dimension of a tile for calculation of view factors.|positive double ({nbsp}>{nbsp}0.0{nbsp})|50|_optional_
-|`SurfaceDiscretizationDensity`|---|Number of surface discretization elements of a wall in each direction.|0…1|2|_optional_
-|`ControlTemperatureTolerance`|K|Temperature tolerance for ideal heating or cooling.|positive double ({nbsp}>{nbsp}0.0{nbsp})|1E-05|_optional_
-|`KinsolRelTol`|---|Relative tolerance for Kinsol solver.|0…1|-|_optional_
-|`KinsolAbsTol`|---|Absolute tolerance for Kinsol solver.|0…1|-|_optional_
+see <<construction_discretization,spatial discretization algorithm>> for details.
+|positive integer ({nbsp}>={nbsp}0{nbsp})|50|_optional_
+|(*)`ViewfactorTileWidth`|m|Maximum dimension of a tile for calculation of view factors.|positive double ({nbsp}>{nbsp}0.0{nbsp})|50|_optional_
+|(*)`SurfaceDiscretizationDensity`|---|Number of surface discretization elements of a wall in each direction.|0…1|2|_optional_
+|(*)`ControlTemperatureTolerance`|K|Temperature tolerance for ideal heating or cooling.|positive double ({nbsp}>{nbsp}0.0{nbsp})|1E-05|_optional_
+|(*)`KinsolRelTol`|---|Relative tolerance for Kinsol solver.|0…1|-|_optional_
+|(*)`KinsolAbsTol`|---|Absolute tolerance for Kinsol solver.|0…1|-|_optional_
+|====================
+
+_(*) - not yet used_
+
+Whole number parameters (see section <<IBK_IntPara>> for a description of the `IBK:IntPara` tag):
+
+[options="header",cols="20%,60%,10%,10%",width="100%"]
+|====================
+| Name  | Description | Default | Usage 
+| `PreILUWidth` |  Number of non-zeros in ILU | --- | _optional_
+| `MaxKrylovDim` | Max. size of Krylow-Dimension/max. number of linear iterations (iterative LES only) | 50 | _optional_
+| `MaxNonlinIter` |  Max. number of non-linear/Newton iterations | 3 | _optional_
+| `MaxOrder` |  Max. method order | 5 | _optional_
+| `DiscMaxElementsPerLayer` |  Max. number of discretization elements per material layer | 20 | _optional_
+| (*)`KinsolMaxNonlinIter` |  Max. iterations of Kinsol solver | _auto_ | _optional_
 |====================
 
 _(*) - not yet used_
@@ -165,77 +207,71 @@ Flags and options (see section <<IBK_Flag>> for a description of the `IBK:Flag` 
 [options="header",cols="20%,60%,10%,10%",width="100%"]
 |====================
 | Name | Description | Default | Usage 
-|`DetectMaxTimeStep`|Check schedules to determine minimum distances between steps and adjust MaxTimeStep.|_false_|_optional_
-|`KinsolDisableLineSearch`|Disable line search for steady state cycles.|_false_|_optional_
-|`KinsolStrictNewton`|Enable strict Newton for steady state cycles.|_false_|_optional_
+|(*)`DetectMaxTimeStep`|Check schedules to determine minimum distances between steps and adjust MaxTimeStep.|_false_|_optional_
+|(*)`KinsolDisableLineSearch`|Disable line search for steady state cycles.|_false_|_optional_
+|(*)`KinsolStrictNewton`|Enable strict Newton for steady state cycles.|_false_|_optional_
 |====================
 
 _(*) - not yet used_
 
-All options for the integrator are described in the table below. The XML-tag `Integrator` contains a string to select the time integration method.
+[NOTE]
+====
+The options and parameters listed above partially depend on selected time integration algorithms, LES solvers and pre-conditioners, see table in section <<solver_capabilities>> below.
+====
 
-
+[[integrators]]
 ### Integrator
 
-The following parameters can be set for `Integrator`
+The XML-tag `Integrator` contains a string to select a specific integrator (`CVODE` is used by default, when tag is missing).
 
-[source,xml]
-----
-<Integrator>CVODE</Integrator>
-----
-
-.Integrator Parameters that are set as *Integrator*
-[options="header"]
-[cols="20%, 70%,^ 10%"]
-[width="100%"]
+.Available Integrators
+[options="header", cols="20%, 80%", width="100%"]
 |====================
-|`Integrator`|Description|usage
-|*CVODE*| Selects the Sundials library *CVODE*, Implicit multi-step method with adaptive time step width control and Modified Newton-Raphson for the resolution of non-linear couplings|_optional_
-|*ExplicitEuler*|Explicit Euler solver|_optional_
-|*ImplicitEuler*|Implicit Euler solver with adaptive time step width control and Modified Newton-Raphson for the resolution of non-linear couplings|_optional_
+|Name|Description
+|`CVODE`| Selects the *CVODE* integrator from the Sundials library: implicit multi-step method with adaptive time step control and modified Newton-Raphson for non-linear equation systems
+|`ExplicitEuler`|Explicit Euler solver (only for debugging!)|_optional_
+|`ImplicitEuler`|Implicit Euler solver, single-step solver with adaptive time step control and modified Newton-Raphson for non-linear equations (mostly for debugging and specific optimizations)|_optional_
 |====================
 
-### LESolver
+See <<solver_capabilities>> for valid combinations.
 
-The following parameters can be set for `LESolver`
+### Linear equation system (LES) solver
 
-[source,xml]
-----
-<LESSolver>Dense</LESSolver>
-----
+The XML-tag `LesSolver` contains a string to select a specific solver for the linear equation systems (`KLU` is used by default, when tag is missing).
 
-.LESolver Parameters that are set as *LESolver*
-[options="header"]
-[cols="15%, 75%,^ 10%"]
-[width="100%"]
+.Available LES solvers
+[options="header", cols="20%, 80%", width="100%"]
 |====================
-|`LESolver`|Description|usage
-|*ILU*|Incomplete LU preconditioner|_optional_
-|*auto*|System selects preconditioner automatically.|_optional_
+|Name|Description
+|`Dense`|Direct dense solver (for debugging only)|_optional_
+|`KLU`|Direct sparse solver|_optional_
+|`GMRES`|Generalized Minimal Residual Method (iterative solver) |_optional_
+|`BiCGStab`|Biconjugate Stabilized Gradient Method (iterative solver) |_optional_
 |====================
+
+See <<solver_capabilities>> for valid combinations.
 
 ### Preconditioner
 
-The following parameters can be set for `Preconditioner`
+The XML-tag `Preconditioner` contains a string to select a specific preconditioner, to be used for iterative LES solvers (`ILU` is used by default, when tag is missing).
 
-[source,xml]
-----
-<Preconditioner>Band</Preconditioner>
-----
 
-.Preconditioner Parameters that can be set as *Preconditioner*
-[options="header"]
-[cols="15%, 65%,^ 10%,^ 10%"]
-[width="100%"]
+.Available Preconditioners
+[options="header", cols="20%, 80%", width="100%"]
 |====================
-|`Preconditioner`|Description|initial|usage
-|*PreILUWidth*|Maximum level of fill-in to be used only for *ILU* preconditioner.|-|_optional_
-|*MaxKrylovDim*|Maximum dimension of Krylov subspace.|50|_optional_
-|*MaxNonlinIter*|Maximum number of nonlinear iterations.|3|_optional_
-|*MaxOrder*|Maximum order allowed for multi-step solver. Only used with *CVODE* |5|_optional_
-|*KinsolMaxNonlinIter*|Maximum nonlinear iterations for Kinsol solver.|-|_optional_
-|*DiscMaxElementsPerLayer*|Maximum number of elements per layer.|20|_optional_
+|Name|Description
+|`ILU`|Incomplete LU factorization (when `PreILUWidth` is given, ILU-T is used)
 |====================
 
+Currently, two variants of the ILU preconditioner are implemented. Once without threshold, where the factorization is done using only the original Jacobi matrix pattern. If the user specified `PreILUWidth`, the routine will compute the factorization and keep in each row the highest n-values (where n is defined by `PreILUWidth`). This method is known as threashold-ILU. 
 
+[IMPORTANT]
+====
+An ILU-T method will only be effective for `PreILUWidth` > 3. The minimum number of non-zeroes in each matrix row is 3, since the Finite Volume discretization of the wall constructions will generate already a 3-diagonal pattern.
+====
+
+[[solver_capabilities]]
+### Solver Capabilities
+
+TODO - Andreas
 

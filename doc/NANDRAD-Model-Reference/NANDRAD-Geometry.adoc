@@ -144,6 +144,17 @@ if one interface has short and/or long wave radiation boundary condition it is _
 Inside that it is necessary to specify the interfaces with the XML tag named `InterfaceA` and `InterfaceB`. Finally the Interfaces with the XML tag `InterfaceA` and `InterfaceB` need to be defined with the XML attributes `id` and `zoneId`.
 In the following it is described in detail.
 
+[[construction_discretization]]
+## Spatial Discretization (Finite Volume Method)
+
+During calculation, each of the constructions is spatially discretized using a grid generation algorithm. This algorithm uses three influential parameters, defined in the <<solver_parameters>> section:
+
+- `DiscMinDx`
+- `DiscDetailLevel`
+- `DiscMaxElementsPerLayer`
+
+TODO - Andreas - add sketch about different discretization results depending on parameters
+
 
 [[construction_interfaces]]
 # Interfaces (construction boundary conditions)

@@ -76,9 +76,7 @@ public:
 		NUM_IP
 	};
 
-	/*! Flags.
-		\note A flag that is not set is defined as off.
-	*/
+	/*! Flags. */
 	enum flag_t {
 		F_DetectMaxTimeStep,				// Keyword: DetectMaxTimeStep			'Check schedules to determine minimum distances between steps and adjust MaxTimeStep.'
 		F_KinsolDisableLineSearch,			// Keyword: KinsolDisableLineSearch		'Disable line search for steady state cycles.'

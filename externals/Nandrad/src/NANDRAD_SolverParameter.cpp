@@ -53,14 +53,9 @@ void SolverParameter::initDefaults() {
 	m_para[P_ViewfactorTileWidth].set( KeywordList::Keyword("SolverParameter::para_t", P_ViewfactorTileWidth),						50, IBK::Unit("cm"));
 	m_para[P_SurfaceDiscretizationDensity].set( KeywordList::Keyword("SolverParameter::para_t", P_SurfaceDiscretizationDensity),	1, IBK::Unit("---"));
 	m_para[P_ControlTemperatureTolerance].set(KeywordList::Keyword("SolverParameter::para_t", P_ControlTemperatureTolerance),		0.00001, IBK::Unit("K"));
-	//	m_para[P_IntegralWeightsFactor].set(KeywordList::Keyword("SolverParameter::para_t", P_IntegralWeightsFactor),					1e-05, IBK::Unit("---"));
 
 	m_flag[F_DetectMaxTimeStep].set( KeywordList::Keyword("SolverParameter::flag_t", F_DetectMaxTimeStep), true );
 	m_flag[F_KinsolDisableLineSearch].set(KeywordList::Keyword("SolverParameter::flag_t", F_KinsolDisableLineSearch), false);
-
-	// no defaults: SP_PRE_BANDWIDTH, SP_PRE_ILUWIDTH, because default values for these parameters are determined
-	//              with an algorithm inside the NandradModel/Solver
-
 }
 
 

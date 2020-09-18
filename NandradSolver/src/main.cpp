@@ -1725,6 +1725,7 @@ int main(int argc, char * argv[]) {
 
 	IBK::Path path ("test.nandrad");
 
+	prj.m_solverParameter.m_lesSolver = NANDRAD::SolverParameter::LES_Dense;
 	prj.writeXML(path);
 
 #ifdef TEST_PROJECT_WRITING
