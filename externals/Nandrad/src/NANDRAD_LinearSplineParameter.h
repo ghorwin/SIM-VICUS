@@ -68,21 +68,21 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Parameter name (in context of schedules used as scheduled quantity). */
-	std::string				m_name;													// XML:A
+	std::string				m_name;
 	/*! Interpolation method to be used when computing values of this spline. */
-	interpolationMethod_t	m_interpolationMethod = I_LINEAR;						// XML:A
+	interpolationMethod_t	m_interpolationMethod = I_LINEAR;
 	/*! Whether to wrap time around in multi-year simulations (cyclic use) or to assume continuous data. */
-	wrapMethod_t			m_wrapMethod = C_CYCLIC;								// XML:A
+	wrapMethod_t			m_wrapMethod = C_CYCLIC;
 	/*! Data vectors including linear spline functionality (i.e. interpolation at any given value).
 		Values are stored in the respective Base-SI units of the input/output units m_xUnit and
 		m_yUnit. For example, if m_yUnit is 'C' (degree C), then the spline holds values in
 		'K' (degree Kelvin). The functions readXML() and writeXML() perform the necessary conversions.
 	*/
-	IBK::LinearSpline		m_values;												// XML:E
+	IBK::LinearSpline		m_values;
 	/*! Unit of the x-values. */
-	IBK::Unit				m_xUnit;												// XML:A
+	IBK::Unit				m_xUnit;
 	/*! Unit of the y-values. */
-	IBK::Unit				m_yUnit;												// XML:A
+	IBK::Unit				m_yUnit;
 };
 
 } // namespace NANDRAD
