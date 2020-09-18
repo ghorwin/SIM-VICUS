@@ -10,6 +10,8 @@ Climatic loads in NANDRAD are provided by means of climate data files. For solar
 
 Information about location and climate data is stored in the `Location` section of the project file:
 
+.Definition of Location
+====
 [source,xml]
 ----
 <Location>
@@ -21,12 +23,13 @@ Information about location and climate data is stored in the `Location` section 
 	<ClimateFileName>${Project Directory}/climate/GER_Potsdam_2017.c6b</ClimateFileName>
 </Location>
 ----
+====
 
 Parameters (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
 
 [options="header",cols="18%,^ 15%,38%,^ 20%,10%",width="100%"]
 |====================
-|Name|Default Unit|Description|Value Range |Usage
+|Name|Unit|Description|Value Range |Usage
 |`Albedo`|---|Used for diffuse solar radiation calculation (see <<loads_solar_radiation>>)| 0...1 |_required_
 |`Altitude`|m|later needed for specific altitude-related parameters (**TODO**)| >0 | _optional_
 |`Longitude`|Deg|If specified, overrides the location parameter `Longitude` of the climate data file (see <<location_settings>>).|-180...180|_optional_
@@ -146,6 +149,8 @@ To achive the same result as with annual hourly data, simply provide climatic da
 
 It is possible to specify additional planes (sensors) to generate solar radiation load outputs. This is done by specifying a `Sensor` definition.
 
+.Definition of a Sensor in the Location
+====
 [source,xml]
 ----
 <Location>
@@ -165,7 +170,8 @@ It is possible to specify additional planes (sensors) to generate solar radiatio
     </Sensors>
 </Location>
 ----
-
+====
+.Attributes
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Attribute  | Description | Format | Usage 

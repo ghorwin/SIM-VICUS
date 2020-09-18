@@ -29,21 +29,22 @@ In the NANDRAD project file the materials database section starts with an XML ta
 
 In this tag each material property set starts with an XML tag named `Material` with two XML attributes `id` and `displayName`.  
 
-[options="header",cols="15%,55%,20%,10%",width="100%"]
+.Attributes
+[options="header",cols="15%,55%,^ 20%,^ 10%",width="100%"]
 |====================
-| Attribute  | Description | Format | usage 
-| `id`  | Unique id of the material. | positive Integer ( > 0 )  | _required_
+| Attribute  | Description | Format | Usage 
+| `id`  | Unique id of the material. | > 0  | _required_
 | `displayName`  |  Name of material (used for informative/error messages). | string | _optional_
 |====================
 
 Concerning the material parameters such as density, heat capacity and thermal conductivity they need to be defined within the XML tag `IBK:Parameter` (see <<IBK_Parameter>>):
 
-[options="header",cols="18%,15%,38%,20%,10%",width="100%"]
+[options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
 |====================
 | Name | Default Unit | Description | Value Range | Usage 
-| `Density` | kg/m3 | Dry density of the material. | > 1 kg/m3 | _required_
-| `HeatCapacity` | J/kgK | Specific heat capacity of the material. | > 100 J/kgK | _required_
-| `Conductivity` | W/mK | Thermal conductivity of the dry material.  | > 1e-5 W/mK | _required_
+| `Density` | kg/m3 | Dry density of the material. | > 0.01 | _required_
+| `HeatCapacity` | J/kgK | Specific heat capacity of the material. | >= 100 | _required_
+| `Conductivity` | W/mK | Thermal conductivity of the dry material.  | >= 1e-5 | _required_
 |====================
 
 
@@ -69,7 +70,8 @@ Constructions are defined inside the section starting with an XML tag `Construct
 
 Inside this section each construction definition starts with the XML tag named `ConstructionType` with the XML attributes `id` and optional `displayName`:
 
-[options="header",cols="15%,55%,20%,10%",width="100%"]
+.Attributes
+[options="header",cols="15%,55%,20%,^ 10%",width="100%"]
 |====================
 | Attribute  | Description | Format | Usage 
 | `id` |  Unique id number. | positive integer ( > 0 )  | _required_
@@ -78,10 +80,10 @@ Inside this section each construction definition starts with the XML tag named `
 
 A construction consists of one or more material layers. These are defined within the child XML tag named `MaterialLayers`. Each material layer is defined with the XML tag `MaterialLayer` with the following XML attributes:
 
-[options="header",cols="15%,55%,20%,10%",width="100%"]
+[options="header",cols="15%,55%,^ 20%,^ 10%",width="100%"]
 |====================
 | XML-Attribute  | Description | Format | Usage 
-| `thickness` |  defines the thickness of the layer in `m` | positive double ( > 0.0 m)  | _required_
+| `thickness` |  defines the thickness of the layer in `m` | > 0.0   | _required_
 | `matId`  |  refers to a material by unique material id number (`id` as defined in a `Material` tag), | string | _required_
 |====================
 

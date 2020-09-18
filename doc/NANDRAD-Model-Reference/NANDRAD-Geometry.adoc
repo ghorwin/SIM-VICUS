@@ -26,6 +26,7 @@ Inside the XML tag named `Zones` each zone starts with the XML tag `Zone`. The f
 <Zone id="1" displayName="Var01" type="Active">
 ----
 
+.Attributes
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Attribute  | Description | Format | Usage 
@@ -40,7 +41,7 @@ a|  Defines whether zone is balanced and included in equation system.
 
 |====================
 
-For _Constant_ zones, the temperature is assumed to
+For _constant_ zones, the temperature is assumed to
 be fixed/predefined whereas in _Active_ zones the temperature is computed (i.e. included in
 the model's unknowns). A _Constant_ zone only needs the temperature parameter.
 
@@ -105,6 +106,7 @@ Construction instances represent actually built one-dimensional parts of the bui
 
 The construction instances are defined inside the XML tag `ConstructionInstances`. Inside the section each construction definition starts with the XML tag named `ConstructionInstance` with attributes `id` and `displayName`. 
 
+.Attributes
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Attribute  | Description | Format | Usage 
@@ -114,15 +116,20 @@ The construction instances are defined inside the XML tag `ConstructionInstances
 
 The construction instance has the following _required_ child tag:
 
+.Construction Instance Child Tags
+[options="header",cols="20%,60%",width="100%"]
+|====================
+| Tag  | Description 
+| `ConstructionTypeId` |  Reference to `ConstructionTypeId`
+| `IBK:Parameter`  |  Different `IBK:Parameter` for constructions instance
+| `InterfaceA`  |Interface for constructions instance side A
+| `InterfaceB`  |Interface for constructions instance side B
+|====================
+
+
 * `constructionTypeId` - unique Id that defines the construction type of the construction instance
 
-Example:
-[source,xml]
-----
-<ConstructionTypeId>10005</ConstructionTypeId>
-----
-
-The following XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` with the following entries can be defined:
+For the construction instance parameters the following XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` with the following entries can be defined:
 
 [options="header",cols="15%,^ 10%,45%,^ 20%,^ 10%",width="100%"]
 |====================
@@ -138,7 +145,7 @@ a| Inclination of the wall
 * 180 Deg - facing downwards) 
 
 if one interface has short and/or long wave radiation boundary condition it is _required_ | 0...180 | _required_ / _optional_
-| `Area` | m2 | Gross area of the wall (including potentially existing windows, holes etc.) | > 0 m2 | _required_
+| `Area` | m2 | Gross area of the wall (including potentially existing windows, holes etc.) | > 0 | _required_
 |====================
 
 Inside that it is necessary to specify the interfaces with the XML tag named `InterfaceA` and `InterfaceB`. Finally the Interfaces with the XML tag `InterfaceA` and `InterfaceB` need to be defined with the XML attributes `id` and `zoneId`.
@@ -262,7 +269,6 @@ a|  Sets the type of the heat conduction model
 
 The XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` with the following entries can be defined:
 
-.Zone Parameters that can be set as *IBK:Parameter* with the Attributes `name` and `unit`
 [options="header"]
 [cols="25%,^ 8%,42%,^ 10%,^ 10%"]
 [width="100%"]
@@ -275,6 +281,8 @@ The XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` wi
 
 The long wave emission over the interface is described by the XML tag `InterfaceLongWaveEmission`. This coefficient describes the long wave absorption and emission by the interface.
 
+.Parameter Definition for Long Wave Emission
+====
 image::longwave.svg[width=40%]
 
 [source,xml, indent=0]
@@ -283,10 +291,11 @@ image::longwave.svg[width=40%]
 	<IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
 </InterfaceLongWaveEmission>
 ----
+====
 
 The `InterfaceLongWaveEmission` needs to be defined with the following XML attribute `modelType`.
 
-.Parameters for the InterfaceLongWaveEmission-Tag
+.Attributes
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Attribute  | Description | Format | Usage 
@@ -301,7 +310,6 @@ a|  Sets the type of the heat conduction model
 
 The XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` with the following entries can be defined:
 
-.Zone Parameters that can be set as *IBK:Parameter* with the Attributes `name` and `unit`
 [options="header"]
 [cols="25%,^ 8%,42%,^ 10%,^ 10%"]
 [width="100%"]
@@ -319,12 +327,15 @@ TO BE DEFINED LATER.
 
 The vapour diffusion over the interface is described by the XML tag `InterfaceVaporDiffusion`.
 
+.Parameter Definition for Vapor Diffusion
+====
 [source,xml, indent=0]
 ----
 <InterfaceVaporDiffusion modelType="Constant">
 	<IBK:Parameter name="VaporTransferCoefficient" unit="s/m">1</IBK:Parameter>
 </InterfaceVaporDiffusion>
 ----
+====
 
 The `InterfaceVaporDiffusion` needs to be defined with the following XML attribute `modelType`.
 
@@ -343,7 +354,6 @@ a|  Sets the type of the heat conduction model
 
 The XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` with the following entries can be defined:
 
-.Zone Parameters that can be set as *IBK:Parameter* with the Attributes `name` and `unit`
 [options="header"]
 [cols="25%,^ 8%,42%,^ 10%,^ 10%"]
 [width="100%"]
@@ -361,16 +371,19 @@ TO BE DEFINED LATER.
 
 The air flow over the interface is calculate with a pressure coefficient. It is described inside the XML tag `InterfaceAirFlow`.
 
+.Parameter Definition for Air Flow
+====
 [source,xml, indent=0]
 ----
 <InterfaceAirFlow modelType="Constant">
 	<IBK:Parameter name="PressureCoefficient" unit="---">0.6</IBK:Parameter>
 </InterfaceAirFlow>
 ----
+====
 
 The `InterfaceAirFlow` needs to be defined with the following XML attribute `modelType`.
 
-.Parameters for the InterfaceAirFlow-Tag
+.Attriubutes
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Attribute  | Description | Format | Usage 
@@ -385,7 +398,6 @@ a|  Sets the type of the air flow
 
 The XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` with the following entries can be defined:
 
-.Pressure Coefficient Parameters that can be set as *IBK:Parameter* with the Attributes `name` and `unit`
 [options="header"]
 [cols="25%,^ 8%,42%,^ 10%,^ 10%"]
 [width="100%"]

@@ -4,6 +4,8 @@
 
 The NANDRAD project specification is stored in an XML-file with the extension `nandrad`. The principle structure of the file looks like:
 
+.Definition of a NANDRAD Project File
+====
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -28,6 +30,7 @@ The NANDRAD project specification is stored in an XML-file with the extension `n
 	</Project>
 </NandradProject>
 ----
+====
 
 The optional `DirectoryPlaceholders` can be used to define relative path placeholders to be used for externally referenced files (see section <<path_placeholders>>).
 

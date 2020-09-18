@@ -17,6 +17,8 @@ In addition to manually defined outputs, NANDRAD also generate a number log and 
 
 Outputs are stored in the XML-tag `Outputs`, with the following general structure:
 
+.Parameter Definition for Outputs
+====
 [source,xml]
 ----
 <Outputs>
@@ -31,6 +33,7 @@ Outputs are stored in the XML-tag `Outputs`, with the following general structur
     </Definitions>
 </Outputs>
 ----
+====
 
 ## Global output parameters
 
@@ -138,6 +141,7 @@ There may be gaps between intervals, in which no outputs are written:
 Below is an example of an output definition:
 
 .Output of air temperature from all zones in object list 'All zones' and using output grid 'hourly'
+====
 [source,xml]
 ----
 <Definitions>
@@ -149,6 +153,7 @@ Below is an example of an output definition:
     ... <!-- other definitions -->
 </Definitions>
 ----
+====
 
 The example shows the mandatory child tags of XML-tag `OutputDefinition`. Below is a list of all supported child tags:
 
