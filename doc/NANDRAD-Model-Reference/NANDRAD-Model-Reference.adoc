@@ -37,11 +37,11 @@ include::NANDRAD-Loads.adoc[leveloffset=+2]
 include::NANDRAD-ObjectLists.adoc[leveloffset=+2]
 include::NANDRAD-Schedules.adoc[leveloffset=+2]
 
-include::NANDRAD-GlobalParameters.adoc[leveloffset=+2]
-
 include::NANDRAD-Outputs.adoc[leveloffset=+2]
+
+include::NANDRAD-GlobalParameters.adoc[leveloffset=+2]
+include::NANDRAD-Reference.adoc[leveloffset=+2]
 
 
 include::NANDRAD-Tutorials.adoc[leveloffset=+1]
 
-include::NANDRAD-Reference.adoc[leveloffset=+1]

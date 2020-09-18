@@ -228,9 +228,9 @@ The XML-tag `Integrator` contains a string to select a specific integrator (`CVO
 [options="header", cols="20%, 80%", width="100%"]
 |====================
 |Name|Description
-|`CVODE`| Selects the *CVODE* integrator from the Sundials library: implicit multi-step method with adaptive time step control and modified Newton-Raphson for non-linear equation systems
-|`ExplicitEuler`|Explicit Euler solver (only for debugging!)|_optional_
-|`ImplicitEuler`|Implicit Euler solver, single-step solver with adaptive time step control and modified Newton-Raphson for non-linear equations (mostly for debugging and specific optimizations)|_optional_
+|`CVODE`| Selects the *CVODE* integrator from the Sundials library: implicit multi-step method with error test based time step adjustment and modified Newton-Raphson for non-linear equation systems
+|`ExplicitEuler`|Explicit Euler integrator (only for debugging, `InitialTimeStep` parameter determines the fixed step-size)
+|`ImplicitEuler`|Implicit Euler integrator, single-step solver with error test based time step adjustment and modified Newton-Raphson for non-linear equations (only for debugging and specific tests)
 |====================
 
 See <<solver_capabilities>> for valid combinations.
@@ -243,10 +243,10 @@ The XML-tag `LesSolver` contains a string to select a specific solver for the li
 [options="header", cols="20%, 80%", width="100%"]
 |====================
 |Name|Description
-|`Dense`|Direct dense solver (for debugging only)|_optional_
-|`KLU`|Direct sparse solver|_optional_
-|`GMRES`|Generalized Minimal Residual Method (iterative solver) |_optional_
-|`BiCGStab`|Biconjugate Stabilized Gradient Method (iterative solver) |_optional_
+|`Dense`|Direct dense solver (for debugging only)
+|`KLU`|Direct sparse solver
+|`GMRES`|Generalized Minimal Residual Method (iterative solver)
+|`BiCGStab`|Biconjugate Stabilized Gradient Method (iterative solver)
 |====================
 
 See <<solver_capabilities>> for valid combinations.
@@ -263,7 +263,7 @@ The XML-tag `Preconditioner` contains a string to select a specific precondition
 |`ILU`|Incomplete LU factorization (when `PreILUWidth` is given, ILU-T is used)
 |====================
 
-Currently, two variants of the ILU preconditioner are implemented. Once without threshold, where the factorization is done using only the original Jacobi matrix pattern. If the user specified `PreILUWidth`, the routine will compute the factorization and keep in each row the highest n-values (where n is defined by `PreILUWidth`). This method is known as threashold-ILU. 
+Currently, two variants of the ILU preconditioner are implemented. One without threshold, where the factorization is stored only in the original Jacobi matrix pattern. If the user specified `PreILUWidth`, the routine will compute the factorization and keep in each row the highest n-values (where n is defined by `PreILUWidth`). This method is known as __ILU with threashold__ (ILU-T).
 
 [IMPORTANT]
 ====
@@ -273,5 +273,24 @@ An ILU-T method will only be effective for `PreILUWidth` > 3. The minimum number
 [[solver_capabilities]]
 ### Solver Capabilities
 
-TODO - Andreas
+Not all integrators and LES solvers support all options mentioned above. Also, not all LES solvers can be combined with all integrators. The table below gives an overview of the supported combinations and options.
 
+.Capabilities and Supported Flags/Parameters for the provided Integrators
+[options="header", cols="10%, 20%, 80%", width="100%"]
+|====================
+| Integrator | LES solvers | Supported integrator parameters/flags
+| CVODE | Dense, KLU, GMRES, BiCGStab | RelTol, AbsTol, MaxTimeStep, MinTimeStep, InitialTimeStep, MaxOrder, NonlinSolverConvCoeff, MaxNonlinIter 
+| ImplicitEuler | Dense | RelTol, AbsTol, MaxTimeStep, InitialTimeStep, NonlinSolverConvCoeff, MaxNonlinIter 
+| ExplicitEuler | --- | InitialTimeStep
+|====================
+
+
+.Capabilities and Supported Flags/Parameters for the provided LES solvers
+[options="header", cols="10%, 20%, 80%", width="100%"]
+|====================
+| LES solver | Preconditioners | Supported integrator parameters/flags
+| DENSE | --- | ---
+| KLU | --- | ---
+| GMRES | ILU | PreILUWidth, MaxKrylovDim, IterativeSolverConvCoeff
+| BiCGStab | ILU | PreILUWidth, MaxKrylovDim, IterativeSolverConvCoeff
+|====================

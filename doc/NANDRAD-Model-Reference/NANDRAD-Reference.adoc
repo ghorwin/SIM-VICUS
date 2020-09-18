@@ -5,7 +5,7 @@
 
 Throughout the NANDRAD solver, units are _only_ used for input/output purposes. Within the calculation functions, _always_ the base SI units are used, hereby avoiding problems from unit conversions.
 
-The unit system in NANDRAD uses the convention, that at maximum one / may be part of the unit definition. All units following the slash are in the denominator of the unit. Exponents are just following the unit, for example `m2`. Multiple units are just concatenated without . or * character, for example `kWh` or `kg/m2s`.
+The unit system in NANDRAD uses the convention, that at maximum one / (slash) may be part of the unit name. All units following the slash are in the denominator of the unit. Exponents are just following the unit, for example `m2`. Dots in exponents are omitted, for example `h05` for square root of the hour. Multiple units are just concatenated without . or * character, for example `kWh` or `kg/m2s`.
 
 [CAUTION]
 ====
