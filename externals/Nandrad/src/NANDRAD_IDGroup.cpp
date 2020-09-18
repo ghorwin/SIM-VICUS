@@ -70,9 +70,13 @@ void IDGroup::setEncodedString(const std::string & encodedString) {
 					if (intervalTokens.size() != 2)
 						throw IBK::Exception(IBK::FormatString("Wrong interval format."),FUNC_ID);
 
-					std::pair<unsigned int, unsigned int> idInterval = std::make_pair<unsigned int, unsigned int>
-															(IBK::string2val<unsigned int>(intervalTokens.front()),
-															IBK::string2val<unsigned int>(intervalTokens.back()) );
+					// fix 10-1 to become 1-10 etc.
+					unsigned int lowerID = IBK::string2val<unsigned int>(intervalTokens.front());
+					unsigned int upperID = IBK::string2val<unsigned int>(intervalTokens.back());
+					if (lowerID > upperID)
+						std::swap(lowerID, upperID);
+
+					std::pair<unsigned int, unsigned int> idInterval(lowerID, upperID);
 					m_idIntervals.push_back(idInterval);
 				}
 				else {
