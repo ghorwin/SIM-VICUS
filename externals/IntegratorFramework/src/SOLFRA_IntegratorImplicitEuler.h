@@ -138,7 +138,7 @@ public:
 	ModifiedNewtonStrategies	m_modifiedNewtonStrategy;
 
 	/*! Maximum allowed time step size. */
-	double		m_dtMax;
+	double						m_dtMax;
 
 	/*! Stores total number of steps. */
 	unsigned int m_statNumSteps;
