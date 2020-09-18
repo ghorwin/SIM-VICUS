@@ -60,7 +60,9 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	NANDRAD_READWRITE
+	void readXML(const TiXmlElement * element);
+	TiXmlElement * writeXML(TiXmlElement * parent) const;
+
 	NANDRAD_COMP(LinearSplineParameter)
 
 	// *** PUBLIC MEMBER VARIABLES ***

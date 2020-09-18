@@ -59,7 +59,6 @@ void createSim01(NANDRAD::Project &prj){
 	//project info
 	prj.m_projectInfo.m_comment = "Yes we can! TF01";
 	prj.m_projectInfo.m_created = "Now!";
-	prj.m_projectInfo.m_version = "NANDRAD 2.0";
 	prj.m_projectInfo.m_lastEdited = "Yesterday";
 
 	//create a zone
@@ -114,27 +113,27 @@ void createSim01(NANDRAD::Project &prj){
 	outDef.m_quantity = "Temperature";
 	outDef.m_gridName = "hourly";
 	outDef.m_objectListName = "All zones";
-	prj.m_outputs.m_outputDefinitions.push_back(outDef);
+	prj.m_outputs.m_definitions.push_back(outDef);
 
 	outDef.m_quantity = "ElevationAngle";
 	outDef.m_gridName = "hourly";
 	outDef.m_objectListName = "Location";
-	prj.m_outputs.m_outputDefinitions.push_back(outDef);
+	prj.m_outputs.m_definitions.push_back(outDef);
 
 	outDef.m_quantity = "AzimuthAngle";
 	outDef.m_gridName = "hourly";
 	outDef.m_objectListName = "Location";
-	prj.m_outputs.m_outputDefinitions.push_back(outDef);
+	prj.m_outputs.m_definitions.push_back(outDef);
 
 	outDef.m_quantity = "ElevationAngle";
 	outDef.m_gridName = "minutely";
 	outDef.m_objectListName = "Location";
-	prj.m_outputs.m_outputDefinitions.push_back(outDef);
+	prj.m_outputs.m_definitions.push_back(outDef);
 
 	outDef.m_quantity = "AzimuthAngle";
 	outDef.m_gridName = "minutely";
 	outDef.m_objectListName = "Location";
-	prj.m_outputs.m_outputDefinitions.push_back(outDef);
+	prj.m_outputs.m_definitions.push_back(outDef);
 
 	// Object lists (needed by outputs)
 	NANDRAD::ObjectList ol;
@@ -154,7 +153,6 @@ void createSim02(NANDRAD::Project &prj){
 	//project info
 	prj.m_projectInfo.m_comment = "Yes we can! TF02";
 	prj.m_projectInfo.m_created = "Now!";
-	prj.m_projectInfo.m_version = "NANDRAD 2.0";
 	prj.m_projectInfo.m_lastEdited = "Yesterday";
 
 	//create a zone
@@ -263,31 +261,31 @@ void createSim02(NANDRAD::Project &prj){
 	outDef.m_gridName = "hourly";
 	outDef.m_objectListName = "All zones";
 	outDef.m_timeType = NANDRAD::OutputDefinition::OTT_NONE;
-	prj.m_outputs.m_outputDefinitions.push_back(outDef);
+	prj.m_outputs.m_definitions.push_back(outDef);
 
 	outDef.m_quantity = "ElevationAngle";
 	outDef.m_gridName = "hourly";
 	outDef.m_objectListName = "Location";
 	outDef.m_timeType = NANDRAD::OutputDefinition::OTT_NONE;
-	prj.m_outputs.m_outputDefinitions.push_back(outDef);
+	prj.m_outputs.m_definitions.push_back(outDef);
 
 	outDef.m_quantity = "AzimuthAngle";
 	outDef.m_gridName = "hourly";
 	outDef.m_objectListName = "Location";
 	outDef.m_timeType = NANDRAD::OutputDefinition::OTT_NONE;
-	prj.m_outputs.m_outputDefinitions.push_back(outDef);
+	prj.m_outputs.m_definitions.push_back(outDef);
 
 	outDef.m_quantity = "SWRadDiffuse";
 	outDef.m_gridName = "hourly";
 	outDef.m_objectListName = "Interface";
 	outDef.m_timeType = NANDRAD::OutputDefinition::OTT_INTEGRAL;
-	prj.m_outputs.m_outputDefinitions.push_back(outDef);
+	prj.m_outputs.m_definitions.push_back(outDef);
 
 	outDef.m_quantity = "SWRadDirect";
 	outDef.m_gridName = "hourly";
 	outDef.m_objectListName = "Interface";
 	outDef.m_timeType = NANDRAD::OutputDefinition::OTT_INTEGRAL;
-	prj.m_outputs.m_outputDefinitions.push_back(outDef);
+	prj.m_outputs.m_definitions.push_back(outDef);
 
 
 	// Object lists (needed by outputs)
@@ -315,7 +313,6 @@ void createSim03(NANDRAD::Project &prj){
 	//project info
 	prj.m_projectInfo.m_comment = "Yes we can! TF03";
 	prj.m_projectInfo.m_created = "Now!";
-	prj.m_projectInfo.m_version = "NANDRAD 2.0";
 	prj.m_projectInfo.m_lastEdited = "Yesterday";
 
 	//create a zone
@@ -761,7 +758,7 @@ void createSim03(NANDRAD::Project &prj){
 	outDef.m_gridName = "hourly";
 	outDef.m_objectListName = "All zones";
 	outDef.m_timeType = NANDRAD::OutputDefinition::OTT_NONE;
-	prj.m_outputs.m_outputDefinitions.push_back(outDef);
+	prj.m_outputs.m_definitions.push_back(outDef);
 
 	// Object lists (needed by outputs)
 	NANDRAD::ObjectList ol;
@@ -1212,14 +1209,14 @@ void createSim04(NANDRAD::Project &prj){
 	outDef.m_gridName = "hourly";
 	outDef.m_objectListName = "All zones";
 	outDef.m_timeType = NANDRAD::OutputDefinition::OTT_NONE;
-	prj.m_outputs.m_outputDefinitions.push_back(outDef);
+	prj.m_outputs.m_definitions.push_back(outDef);
 
 	NANDRAD::OutputDefinition outDef2;
 	outDef2.m_quantity = "Location.ElevationAngle";
 	outDef2.m_gridName = "hourly";
 	outDef2.m_objectListName = "climate";
 
-	prj.m_outputs.m_outputDefinitions.push_back(outDef2);
+	prj.m_outputs.m_definitions.push_back(outDef2);
 
 	// Object lists (needed by outputs)
 	NANDRAD::ObjectList ol;
@@ -1679,7 +1676,7 @@ void createSim05(NANDRAD::Project &prj){
 	outDef.m_gridName = "hourly";
 	outDef.m_objectListName = "All zones";
 	outDef.m_timeType = NANDRAD::OutputDefinition::OTT_NONE;
-	prj.m_outputs.m_outputDefinitions.push_back(outDef);
+	prj.m_outputs.m_definitions.push_back(outDef);
 
 	// Object lists (needed by outputs)
 	NANDRAD::ObjectList ol;
@@ -1726,7 +1723,7 @@ int main(int argc, char * argv[]) {
 
 	prj.m_schedules.m_annualSchedules = splineMap;
 
-	IBK::Path path ("C:/Temp/test.nandrad");
+	IBK::Path path ("test.nandrad");
 
 	prj.writeXML(path);
 

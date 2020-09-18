@@ -108,25 +108,41 @@ Recognized values for flag parameters are `true` and `1`  or `false` and `0`.
 [[IBK_LinearSpline]]
 ## IBK:LinearSpline
 
-A linear spline is effectively a data table of x and y values, where x values are strictly monotonically increasing values. Mandatory attribute `name` identifies the linear spline parameter. The child tags `X` and `Y` hold the actual values, with mandatory attribute `unit` defining the respective value unit. Number of x and y values must match.
+A linear spline is effectively a data table of x and y values, where x values are strictly monotonically increasing values. Mandatory attribute `name` identifies the linear spline. The child tags `X` and `Y` hold the actual values, always unitless. Number of x and y values must match.
+
+.Linear Spline Definition
+====
+[source,xml]
+----
+<IBK:LinearSpline name="ThermalLoad">
+  <X unit="-">0    6    8   10   17   18  19  20</X>
+  <Y unit="-">0  0.5  0.8  1.0  0.7  0.6 0.5   0</Y>
+</IBK:LinearSpline>
+----
+====
+
+[[LinearSplineParameter]]
+## LinearSplineParameter
+
+A linear spline parameter is effectively an extended `IBK:LinearSpline` parameter with additional attributes.
 
 .Linear Spline Parameter Definition
 ====
 [source,xml]
 ----
-<IBK:LinearSpline name="ThermalLoad">
+<LinearSplineParameter name="ThermalLoad" interpolationMethod="linear">
   <X unit="h">0    6    8   10   17   18  19  20</X>
   <Y unit="W">0  0.5  0.8  1.0  0.7  0.6 0.5   0</Y>
-</IBK:LinearSpline>
+</LinearSplineParameter>
 ----
 ====
 
-.Paramaters that can be set for the IBK:LinearSpline
+.Attributes
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 |Attribute {set:cellbgcolor:transparent} |Description|Format|Usage
 | `name` | Specific name that references to the space type the annual schedule will be set for | string | _required_
-| `InterpolationMethod` 
+| `interpolationMethod` 
 a| Specifies the interpolation method between the defined y values.
 
 * `constant` - constant interpolation (values constant during time step) 
@@ -134,26 +150,10 @@ a| Specifies the interpolation method between the defined y values.
 
 | key | _required_
 | `WrapMethod` 
-
-a| Specifies how to treat the values in multi-year simulations 
-
-* `cyclic` - Annual cyclic data
-* `continuous` - Continuous data without repetition
-
-| key | _required_
-| `xUnit` 
-
-a| Unit of the x-values.
-| key | _required_
-| `yUnit` 
-
-a| Unit of the y-values.
-
-| key | _required_
-
-
-
 |====================
+
+The child tags `X` and `Y` each hold a mandatory attribute `unit` with the respective value unit (see <<units>>).
+
 
 [[path_placeholders]]
 # Path Placeholders

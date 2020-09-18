@@ -6,11 +6,28 @@
 
 Whenever it is necessary to reference a calculation result (of a model object), this is done via __ObjectLists__. 
 
-In NANDRAD, physical equations are organized in terms of model objects, for example zones or constructions. 
+:xrefstyle: short
 
-TODO
+In NANDRAD, physical equations are organized in terms of model objects, for example zones or constructions. These model objects can be uniquely identified by a model type and ID number. For example, all quantities computed for a room/zone are identified by model type _Zone_ and id number of the respective zone. <<tab_modelRefTypes>> lists the available reference type keywords.
 
+[[tab_modelRefTypes]]
+.Model Reference Types
+[options="header",cols="20%,80%",width="100%"]
+|====================
+| Keyword  | Description
+| `Zone` |  Variables related to room (thermal zones)
+| `ConstructionInstance` |  Variables related to constructions
+| `Interface` |  Variables related to construction surfaces (for fluxes across these interfaces)
+| `Schedule` |  Scheduled parameters
+| `Location` |  Variables from climate calculation model, including radiation sensor values
+| `Model` |  Model-specific variables/results
+|====================
+
+<<ex_objectLists>> shows several examples of object list definitions.
+
+[[ex_objectLists]]
 .Definition of Several Object Lists
+====
 [source,xml]
 ----
 <ObjectLists>
@@ -22,6 +39,10 @@ TODO
 		<FilterID>1</FilterID>
 		<ReferenceType>Zone</ReferenceType>
 	</ObjectList>
+	<ObjectList name="Wall_1_and_2">
+		<FilterID>1,2</FilterID>
+		<ReferenceType>ConstructionInstance</ReferenceType>
+	</ObjectList>
 	<ObjectList name="InfiltrationModel">
 		<FilterID>501</FilterID>
 		<ReferenceType>Model</ReferenceType>
@@ -29,4 +50,33 @@ TODO
 	...
 </ObjectLists>
 ----
+====
 
+All object lists are defined within the parent tag `ObjectLists`. Each object list definition begins with the XML-tag `ObjectList` with the mandatory attribute `name`, which uniquely identifies the object list.
+
+XML-tag `ObjectList` has the following child tags.
+
+
+.Model Reference Types
+[options="header",cols="20%,80%",width="100%"]
+|====================
+| Keyword  | Description
+| `FilterID` |  ID filter pattern (see description below)
+| `ReferenceType` |  Model object reference type (see <<tab_modelRefTypes>>)
+|====================
+
+### Filter Patterns
+
+Objects (with same reference type) are uniquely identified by their ID number.
+
+[NOTE]
+====
+ID numbers must only be unique for objects with the same reference type. Hence, it is possible to define Zone #1 and ConstructionInstance #1 at the same time.
+====
+
+A filter pattern can be composed of several parts, separated by , (comma), for example: `1,4,13-20`. Each
+
+TODO 
+
+
+:xrefstyle: basic

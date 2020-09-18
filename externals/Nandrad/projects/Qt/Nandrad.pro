@@ -109,7 +109,6 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_InterfaceSolarAbsorption.cpp \
 	../../src/ncg/ncg_NANDRAD_InterfaceVaporDiffusion.cpp \
 	../../src/ncg/ncg_NANDRAD_Interval.cpp \
-	../../src/ncg/ncg_NANDRAD_LinearSplineParameter.cpp \
 	../../src/ncg/ncg_NANDRAD_Location.cpp \
 	../../src/ncg/ncg_NANDRAD_Material.cpp \
 	../../src/ncg/ncg_NANDRAD_MaterialLayer.cpp \
