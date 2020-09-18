@@ -180,7 +180,7 @@ Quantities in output definitions define the ID names of the output quantities, o
 
 Schedule outputs require special formatting:
 
-TODO 
+TODO - Andreas
 
 [[output_filenames]]
 ### Output file names

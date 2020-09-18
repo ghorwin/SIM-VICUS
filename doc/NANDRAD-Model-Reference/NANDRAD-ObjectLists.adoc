@@ -2,8 +2,6 @@
 [[object_lists]]
 # Object Lists and Result References
 
-## Model Objects
-
 Whenever it is necessary to reference a calculation result (of a model object), this is done via __ObjectLists__. 
 
 :xrefstyle: short
@@ -51,6 +49,8 @@ In NANDRAD, physical equations are organized in terms of model objects, for exam
 ----
 ====
 
+## Object List Definitions
+
 All object lists are defined within the parent tag `ObjectLists`. Each object list definition begins with the XML-tag `ObjectList` with the mandatory attribute `name`, which uniquely identifies the object list.
 
 XML-tag `ObjectList` has the following child tags.
@@ -64,7 +64,7 @@ XML-tag `ObjectList` has the following child tags.
 | `ReferenceType` |  Model object reference type (see <<tab_modelRefTypes>>)
 |====================
 
-### Filter Patterns
+## ID-Filter Patterns
 
 Objects (with same reference type) are uniquely identified by their ID number.
 
@@ -79,7 +79,7 @@ A filter pattern can be composed of several parts, separated by , (comma), for e
 - a range of ID numbers, e.g. _1-100_
 - _*_ (selects all IDs)
 
-If you specify IDs several times, for example in `3, 1-10`, the resultant ID set will contain each ID only once.
+If you specify IDs several times, for example in `3, 1-10`, the resulting ID set will contain each ID only once.
 
 
 :xrefstyle: basic

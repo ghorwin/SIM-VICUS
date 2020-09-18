@@ -100,7 +100,11 @@ table {
 </ul>
 </li>
 <li><a href="#zones">2.6. Zones</a></li>
-<li><a href="#construction_instances">2.7. Construction Instances</a></li>
+<li><a href="#construction_instances">2.7. Construction Instances</a>
+<ul class="sectlevel3">
+<li><a href="#construction_discretization">2.7.1. Spatial Discretization (Finite Volume Method)</a></li>
+</ul>
+</li>
 <li><a href="#construction_interfaces">2.8. Interfaces (construction boundary conditions)</a>
 <ul class="sectlevel3">
 <li><a href="#_heat_conduction">2.8.1. Heat Conduction</a></li>
@@ -119,7 +123,8 @@ table {
 </li>
 <li><a href="#object_lists">2.10. Object Lists and Result References</a>
 <ul class="sectlevel3">
-<li><a href="#_model_objects">2.10.1. Model Objects</a></li>
+<li><a href="#_object_list_definitions">2.10.1. Object List Definitions</a></li>
+<li><a href="#_id_filter_patterns">2.10.2. ID-Filter Patterns</a></li>
 </ul>
 </li>
 <li><a href="#schedules">2.11. Schedules</a>
@@ -1009,6 +1014,28 @@ the model&#8217;s unknowns). A <em>Constant</em> zone only needs the temperature
 <div class="paragraph">
 <p>Inside that it is necessary to specify the interfaces with the XML tag named <code>InterfaceA</code> and <code>InterfaceB</code>. Finally the Interfaces with the XML tag <code>InterfaceA</code> and <code>InterfaceB</code> need to be defined with the XML attributes <code>id</code> and <code>zoneId</code>.
 In the following it is described in detail.</p>
+</div>
+<div class="sect3">
+<h4 id="construction_discretization">2.7.1. Spatial Discretization (Finite Volume Method)</h4>
+<div class="paragraph">
+<p>During calculation, each of the constructions is spatially discretized using a grid generation algorithm. This algorithm uses three influential parameters, defined in the <a href="#solver_parameters">Solver Parameters</a> section:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>DiscMinDx</code></p>
+</li>
+<li>
+<p><code>DiscDetailLevel</code></p>
+</li>
+<li>
+<p><code>DiscMaxElementsPerLayer</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>TODO - Andreas - add sketch about different discretization results depending on parameters</p>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -1918,8 +1945,6 @@ In the following it is described in detail.</p>
 </div>
 <div class="sect2">
 <h3 id="object_lists">2.10. Object Lists and Result References</h3>
-<div class="sect3">
-<h4 id="_model_objects">2.10.1. Model Objects</h4>
 <div class="paragraph">
 <p>Whenever it is necessary to reference a calculation result (of a model object), this is done via <em>ObjectLists</em>.</p>
 </div>
@@ -1992,6 +2017,8 @@ In the following it is described in detail.</p>
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_object_list_definitions">2.10.1. Object List Definitions</h4>
 <div class="paragraph">
 <p>All object lists are defined within the parent tag <code>ObjectLists</code>. Each object list definition begins with the XML-tag <code>ObjectList</code> with the mandatory attribute <code>name</code>, which uniquely identifies the object list.</p>
 </div>
@@ -2021,8 +2048,9 @@ In the following it is described in detail.</p>
 </tr>
 </tbody>
 </table>
-<div class="sect4">
-<h5 id="_filter_patterns">Filter Patterns</h5>
+</div>
+<div class="sect3">
+<h4 id="_id_filter_patterns">2.10.2. ID-Filter Patterns</h4>
 <div class="paragraph">
 <p>Objects (with same reference type) are uniquely identified by their ID number.</p>
 </div>
@@ -2041,11 +2069,23 @@ In the following it is described in detail.</p>
 </table>
 </div>
 <div class="paragraph">
-<p>A filter pattern can be composed of several parts, separated by , (comma), for example: <code>1,4,13-20</code>. Each</p>
+<p>A filter pattern can be composed of several parts, separated by , (comma), for example: <code>1,4,13-20</code>. Each part can be of the following format:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a single ID number, e.g. <em>12</em></p>
+</li>
+<li>
+<p>a range of ID numbers, e.g. <em>1-100</em></p>
+</li>
+<li>
+<p><em>*</em> (selects all IDs)</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>TODO</p>
-</div>
+<p>If you specify IDs several times, for example in <code>3, 1-10</code>, the resultant ID set will contain each ID only once.</p>
 </div>
 </div>
 </div>
@@ -2552,11 +2592,54 @@ For example they are used in the following objects or list of objects:</p>
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;SimulationParameter&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"InitialTemperature"</span> <span class="na">unit=</span><span class="s">"C"</span><span class="nt">&gt;</span>5<span class="nt">&lt;/IBK:Parameter&gt;</span>
   <span class="nt">&lt;IBK:IntPara</span> <span class="na">name=</span><span class="s">"DiscMaxElementsPerLayer"</span><span class="nt">&gt;</span>30<span class="nt">&lt;/IBK:IntPara&gt;</span>
+  <span class="nt">&lt;Interval&gt;</span>
+    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Start"</span> <span class="na">unit=</span><span class="s">"d"</span><span class="nt">&gt;</span>0<span class="nt">&lt;/IBK:Parameter&gt;</span>
+    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"End"</span> <span class="na">unit=</span><span class="s">"d"</span><span class="nt">&gt;</span>730<span class="nt">&lt;/IBK:Parameter&gt;</span>
+  <span class="nt">&lt;/Interval&gt;</span>
 <span class="nt">&lt;/SimulationParameter&gt;</span></code></pre>
 </div>
 </div>
 </div>
 </div>
+<div class="paragraph">
+<p>The <code>SimulationParameter</code> tag holds the following child tags:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 70%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">XML-tag</th>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Description</th>
+<th class="tableblock halign-center valign-top" style="background-color: transparent;">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>IBK:Parameter</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Floating point value parameters</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">multiple</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>IBK:IntPara</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Whole number parameters</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">multiple</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>IBK:Flag</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Flags</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">multiple</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>Interval</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Defines simulation interval</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">none/once</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>Floating point parameters (see section <a href="#IBK_Parameter">IBK:Parameter</a> for a description of the <code>IBK:Parameter</code> tag):</p>
 </div>
@@ -2714,25 +2797,25 @@ For example they are used in the following objects or list of objects:</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>EnableMoistureBalance</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">(*)<code>EnableMoistureBalance</code></p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Flag activating moisture balance calculation if enabled</p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>false</em></p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>EnableCO2Balance</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">(*)<code>EnableCO2Balance</code></p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Flag activating CO2 balance calculation if enabled</p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>false</em></p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>EnableJointVentilation</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">(*)<code>EnableJointVentilation</code></p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Flag activating ventilation through joints and openings.</p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>false</em></p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>ExportClimateDataFMU</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">(*)<code>ExportClimateDataFMU</code></p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Flag activating FMU export of climate data.</p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>false</em></p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
@@ -2798,24 +2881,71 @@ For example they are used in the following objects or list of objects:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;SolverParameter&gt;</span>
-    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"MaxTimeStep"</span> <span class="na">unit=</span><span class="s">"min"</span><span class="nt">&gt;</span>30<span class="nt">&lt;/IBK:Parameter&gt;</span>
-    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"MinTimeStep"</span> <span class="na">unit=</span><span class="s">"s"</span><span class="nt">&gt;</span>1e-4<span class="nt">&lt;/IBK:Parameter&gt;</span>
-    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"RelTol"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>1e-005<span class="nt">&lt;/IBK:Parameter&gt;</span>
-    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"AbsTol"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>1e-006<span class="nt">&lt;/IBK:Parameter&gt;</span>
-    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"NonlinSolverConvCoeff"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>1e-05<span class="nt">&lt;/IBK:Parameter&gt;</span>
-    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"MaxOrder"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>5<span class="nt">&lt;/IBK:Parameter&gt;</span>
-    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"MaxKrylovDim"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>500<span class="nt">&lt;/IBK:Parameter&gt;</span>
-    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"PreILUWidth"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>1<span class="nt">&lt;/IBK:Parameter&gt;</span>
-    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"DiscMinDx"</span> <span class="na">unit=</span><span class="s">"mm"</span><span class="nt">&gt;</span>2<span class="nt">&lt;/IBK:Parameter&gt;</span>
-    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"DiscDetailLevel"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>4<span class="nt">&lt;/IBK:Parameter&gt;</span>
-    <span class="nt">&lt;IBK:Flag</span> <span class="na">name=</span><span class="s">"DetectMaxTimeStep"</span><span class="nt">&gt;</span>true<span class="nt">&lt;/IBK:Flag&gt;</span>
-    <span class="nt">&lt;Integrator&gt;</span>CVODE<span class="nt">&lt;/Integrator&gt;</span>
-    <span class="nt">&lt;LESSolver&gt;</span>Dense<span class="nt">&lt;/LESSolver&gt;</span>
+  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"MaxTimeStep"</span> <span class="na">unit=</span><span class="s">"min"</span><span class="nt">&gt;</span>30<span class="nt">&lt;/IBK:Parameter&gt;</span>
+  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"MinTimeStep"</span> <span class="na">unit=</span><span class="s">"s"</span><span class="nt">&gt;</span>1e-4<span class="nt">&lt;/IBK:Parameter&gt;</span>
+  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"RelTol"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>1e-005<span class="nt">&lt;/IBK:Parameter&gt;</span>
+  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"AbsTol"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>1e-006<span class="nt">&lt;/IBK:Parameter&gt;</span>
+  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"NonlinSolverConvCoeff"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>1e-05<span class="nt">&lt;/IBK:Parameter&gt;</span>
+  <span class="nt">&lt;IBK:IntPara</span> <span class="na">name=</span><span class="s">"MaxKrylovDim"</span><span class="nt">&gt;</span>30<span class="nt">&lt;/IBK:IntPara&gt;</span>
+  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"DiscMinDx"</span> <span class="na">unit=</span><span class="s">"mm"</span><span class="nt">&gt;</span>2<span class="nt">&lt;/IBK:Parameter&gt;</span>
+  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"DiscStretchFactor"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>4<span class="nt">&lt;/IBK:Parameter&gt;</span>
+  <span class="nt">&lt;IBK:Flag</span> <span class="na">name=</span><span class="s">"DetectMaxTimeStep"</span><span class="nt">&gt;</span>true<span class="nt">&lt;/IBK:Flag&gt;</span>
+  <span class="nt">&lt;Integrator&gt;</span>CVODE<span class="nt">&lt;/Integrator&gt;</span>
+  <span class="nt">&lt;LesSolver&gt;</span>Dense<span class="nt">&lt;/LesSolver&gt;</span>
 <span class="nt">&lt;/SolverParameter&gt;</span></code></pre>
 </div>
 </div>
 </div>
 </div>
+<div class="paragraph">
+<p>The <code>SolverParameter</code> tag holds the following child tags:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 70%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">XML-tag</th>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Description</th>
+<th class="tableblock halign-center valign-top" style="background-color: transparent;">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>IBK:Parameter</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Floating point value parameters</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">multiple</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>IBK:IntPara</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Whole number parameters</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">multiple</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>IBK:Flag</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Flags</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">multiple</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>Integrator</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Defines time integrator</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">none/once</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>LesSolver</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Defines linear equation system (LES) solver</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">none/once</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>Preconditioner</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Defines preconditioner (iterative LES solver only)</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">none/once</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>Floating point parameters (see section <a href="#IBK_Parameter">IBK:Parameter</a> for a description of the <code>IBK:Parameter</code> tag):</p>
 </div>
@@ -2912,22 +3042,25 @@ For example they are used in the following objects or list of objects:</p>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>0</strong> - no disc</p>
+<p><strong>0</strong> - no discretization</p>
 </li>
 <li>
-<p><strong>1</strong> - equidistance</p>
+<p><strong>1</strong> - equidistant</p>
 </li>
 <li>
 <p><strong>&gt; 1</strong> - variable</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>see <a href="#construction_discretization">spatial discretization algorithm</a> for details.</p>
 </div></div></td>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">positive integer (&#160;&gt;&#160;0&#160;)</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">positive integer (&#160;&gt;=&#160;0&#160;)</p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">50</p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>ViewfactorTileWidth</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">(*)<code>ViewfactorTileWidth</code></p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">m</p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Maximum dimension of a tile for calculation of view factors.</p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">positive double (&#160;&gt;&#160;0.0&#160;)</p></td>
@@ -2935,7 +3068,7 @@ For example they are used in the following objects or list of objects:</p>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>SurfaceDiscretizationDensity</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">(*)<code>SurfaceDiscretizationDensity</code></p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">---</p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Number of surface discretization elements of a wall in each direction.</p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">0…1</p></td>
@@ -2943,7 +3076,7 @@ For example they are used in the following objects or list of objects:</p>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>ControlTemperatureTolerance</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">(*)<code>ControlTemperatureTolerance</code></p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">K</p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Temperature tolerance for ideal heating or cooling.</p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">positive double (&#160;&gt;&#160;0.0&#160;)</p></td>
@@ -2951,7 +3084,7 @@ For example they are used in the following objects or list of objects:</p>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>KinsolRelTol</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">(*)<code>KinsolRelTol</code></p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">---</p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Relative tolerance for Kinsol solver.</p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">0…1</p></td>
@@ -2959,11 +3092,71 @@ For example they are used in the following objects or list of objects:</p>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>KinsolAbsTol</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">(*)<code>KinsolAbsTol</code></p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">---</p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Absolute tolerance for Kinsol solver.</p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">0…1</p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><em>(*) - not yet used</em></p>
+</div>
+<div class="paragraph">
+<p>Whole number parameters (see section <a href="#IBK_IntPara">IBK:IntPara</a> for a description of the <code>IBK:IntPara</code> tag):</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 60%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Name</th>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Description</th>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Default</th>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>PreILUWidth</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Number of non-zeros in ILU</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>MaxKrylovDim</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Max. size of Krylow-Dimension/max. number of linear iterations (iterative LES only)</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">50</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>MaxNonlinIter</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Max. number of non-linear/Newton iterations</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>MaxOrder</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Max. method order</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>DiscMaxElementsPerLayer</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Max. number of discretization elements per material layer</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">20</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">(*)<code>KinsolMaxNonlinIter</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Max. iterations of Kinsol solver</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>auto</em></p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 </tbody>
@@ -2991,19 +3184,19 @@ For example they are used in the following objects or list of objects:</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>DetectMaxTimeStep</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">(*)<code>DetectMaxTimeStep</code></p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Check schedules to determine minimum distances between steps and adjust MaxTimeStep.</p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>false</em></p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>KinsolDisableLineSearch</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">(*)<code>KinsolDisableLineSearch</code></p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Disable line search for steady state cycles.</p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>false</em></p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>KinsolStrictNewton</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">(*)<code>KinsolStrictNewton</code></p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Enable strict Newton for steady state cycles.</p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>false</em></p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
@@ -3013,155 +3206,155 @@ For example they are used in the following objects or list of objects:</p>
 <div class="paragraph">
 <p><em>(*) - not yet used</em></p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>All options for the integrator are described in the table below. The XML-tag <code>Integrator</code> contains a string to select the time integration method.</p>
+<p>The options and parameters listed above partially depend on selected time integration algorithms, LES solvers and pre-conditioners, see table in section <a href="#solver_capabilities">Solver Capabilities</a> below.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="sect4">
-<h5 id="_integrator">Integrator</h5>
+<h5 id="integrators">Integrator</h5>
 <div class="paragraph">
-<p>The following parameters can be set for <code>Integrator</code></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Integrator&gt;</span>CVODE<span class="nt">&lt;/Integrator&gt;</span></code></pre>
-</div>
+<p>The XML-tag <code>Integrator</code> contains a string to select a specific integrator (<code>CVODE</code> is used by default, when tag is missing).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. Integrator Parameters that are set as <strong>Integrator</strong></caption>
+<caption class="title">Table 17. Available Integrators</caption>
 <colgroup>
 <col style="width: 20%;">
-<col style="width: 70%;">
-<col style="width: 10%;">
+<col style="width: 80%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top" style="background-color: transparent;"><code>Integrator</code></th>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Name</th>
 <th class="tableblock halign-left valign-top" style="background-color: transparent;">Description</th>
-<th class="tableblock halign-center valign-top" style="background-color: transparent;">usage</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><strong>CVODE</strong></p></td>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Selects the Sundials library <strong>CVODE</strong>, Implicit multi-step method with adaptive time step width control and Modified Newton-Raphson for the resolution of non-linear couplings</p></td>
-<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>CVODE</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Selects the <strong>CVODE</strong> integrator from the Sundials library: implicit multi-step method with adaptive time step control and modified Newton-Raphson for non-linear equation systems</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><strong>ExplicitEuler</strong></p></td>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Explicit Euler solver</p></td>
-<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>ExplicitEuler</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Explicit Euler solver (only for debugging!)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><strong>ImplicitEuler</strong></p></td>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Implicit Euler solver with adaptive time step width control and Modified Newton-Raphson for the resolution of non-linear couplings</p></td>
-<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>ImplicitEuler</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Implicit Euler solver, single-step solver with adaptive time step control and modified Newton-Raphson for non-linear equations (mostly for debugging and specific optimizations)</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>See <a href="#solver_capabilities">Solver Capabilities</a> for valid combinations.</p>
+</div>
 </div>
 <div class="sect4">
-<h5 id="_lesolver">LESolver</h5>
+<h5 id="_linear_equation_system_les_solver">Linear equation system (LES) solver</h5>
 <div class="paragraph">
-<p>The following parameters can be set for <code>LESolver</code></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;LESSolver&gt;</span>Dense<span class="nt">&lt;/LESSolver&gt;</span></code></pre>
-</div>
+<p>The XML-tag <code>LesSolver</code> contains a string to select a specific solver for the linear equation systems (<code>KLU</code> is used by default, when tag is missing).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. LESolver Parameters that are set as <strong>LESolver</strong></caption>
+<caption class="title">Table 18. Available LES solvers</caption>
 <colgroup>
-<col style="width: 15%;">
-<col style="width: 75%;">
-<col style="width: 10%;">
+<col style="width: 20%;">
+<col style="width: 80%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top" style="background-color: transparent;"><code>LESolver</code></th>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Name</th>
 <th class="tableblock halign-left valign-top" style="background-color: transparent;">Description</th>
-<th class="tableblock halign-center valign-top" style="background-color: transparent;">usage</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><strong>ILU</strong></p></td>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Incomplete LU preconditioner</p></td>
-<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>Dense</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Direct dense solver (for debugging only)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><strong>auto</strong></p></td>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">System selects preconditioner automatically.</p></td>
-<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>KLU</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Direct sparse solver</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>GMRES</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Generalized Minimal Residual Method (iterative solver)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>BiCGStab</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Biconjugate Stabilized Gradient Method (iterative solver)</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>See <a href="#solver_capabilities">Solver Capabilities</a> for valid combinations.</p>
+</div>
 </div>
 <div class="sect4">
 <h5 id="_preconditioner">Preconditioner</h5>
 <div class="paragraph">
-<p>The following parameters can be set for <code>Preconditioner</code></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Preconditioner&gt;</span>Band<span class="nt">&lt;/Preconditioner&gt;</span></code></pre>
-</div>
+<p>The XML-tag <code>Preconditioner</code> contains a string to select a specific preconditioner, to be used for iterative LES solvers (<code>ILU</code> is used by default, when tag is missing).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. Preconditioner Parameters that can be set as <strong>Preconditioner</strong></caption>
+<caption class="title">Table 19. Available Preconditioners</caption>
 <colgroup>
-<col style="width: 15%;">
-<col style="width: 65%;">
-<col style="width: 10%;">
-<col style="width: 10%;">
+<col style="width: 20%;">
+<col style="width: 80%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top" style="background-color: transparent;"><code>Preconditioner</code></th>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Name</th>
 <th class="tableblock halign-left valign-top" style="background-color: transparent;">Description</th>
-<th class="tableblock halign-center valign-top" style="background-color: transparent;">initial</th>
-<th class="tableblock halign-center valign-top" style="background-color: transparent;">usage</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><strong>PreILUWidth</strong></p></td>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Maximum level of fill-in to be used only for <strong>ILU</strong> preconditioner.</p></td>
-<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">-</p></td>
-<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><strong>MaxKrylovDim</strong></p></td>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Maximum dimension of Krylov subspace.</p></td>
-<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">50</p></td>
-<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><strong>MaxNonlinIter</strong></p></td>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Maximum number of nonlinear iterations.</p></td>
-<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">3</p></td>
-<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><strong>MaxOrder</strong></p></td>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Maximum order allowed for multi-step solver. Only used with <strong>CVODE</strong></p></td>
-<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">5</p></td>
-<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><strong>KinsolMaxNonlinIter</strong></p></td>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Maximum nonlinear iterations for Kinsol solver.</p></td>
-<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">-</p></td>
-<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><strong>DiscMaxElementsPerLayer</strong></p></td>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Maximum number of elements per layer.</p></td>
-<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">20</p></td>
-<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>ILU</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Incomplete LU factorization (when <code>PreILUWidth</code> is given, ILU-T is used)</p></td>
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>Currently, two variants of the ILU preconditioner are implemented. Once without threshold, where the factorization is done using only the original Jacobi matrix pattern. If the user specified <code>PreILUWidth</code>, the routine will compute the factorization and keep in each row the highest n-values (where n is defined by <code>PreILUWidth</code>). This method is known as threashold-ILU.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>An ILU-T method will only be effective for <code>PreILUWidth</code> &gt; 3. The minimum number of non-zeroes in each matrix row is 3, since the Finite Volume discretization of the wall constructions will generate already a 3-diagonal pattern.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="solver_capabilities">Solver Capabilities</h5>
+<div class="paragraph">
+<p>TODO - Andreas</p>
+</div>
 </div>
 </div>
 </div>
@@ -3493,6 +3686,12 @@ outputs associated with this output grid will be written.</p>
 <p><code>HeatSource[id=1]</code> - index argument is explicitely interpreted as object ID (will raise an error when model provides quantity with positional indexing)</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>Schedule outputs require special formatting:</p>
+</div>
+<div class="paragraph">
+<p>TODO - Andreas</p>
 </div>
 </div>
 <div class="sect4">
@@ -4729,7 +4928,7 @@ The example below shows how the output of the models is referenced via the objec
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated 2020-09-18 09:53:53 +0200
+Last updated 2020-09-18 11:13:40 +0200
 </div>
 </div>
 <style>
