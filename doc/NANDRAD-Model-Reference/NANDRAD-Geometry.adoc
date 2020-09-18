@@ -281,10 +281,10 @@ The XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` wi
 
 The long wave emission over the interface is described by the XML tag `InterfaceLongWaveEmission`. This coefficient describes the long wave absorption and emission by the interface.
 
-.Parameter Definition for Long Wave Emission
-====
 image::longwave.svg[width=40%]
 
+.Parameter Definition for Long Wave Emission
+====
 [source,xml, indent=0]
 ----
 <InterfaceLongWaveEmission modelType="Constant">

@@ -245,7 +245,7 @@ By default (when the tag `TimeType` is not explicitely specified) the values are
 
 [[fig_timetype]]
 .Illustration of the various `TimeType` options
-image::TimeType_illustration.png[]
+image::TimeType_illustration-print.svg[]
 
 [IMPORTANT]
 ====

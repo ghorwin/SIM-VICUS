@@ -116,13 +116,13 @@ State quantities are expected to be monitored as _instantaneous values_ at the _
 
 [[fig_hourly_values]]
 .Using Linear Interpolation to reconstruct sub-hourly Values from Hourly Data Points
-image::CCM_Interpolation1.png[]
+image::CCM_Interpolation1-print.svg[]
 
 Flux/load quantities are expected as _mean/average values_ over the __last hour__. Sub-hourly values are obtained through linear interpolation between the average values placed in the middle of each hour, as shown in <<fig_hourly_load_values>>.
 
 [[fig_hourly_load_values]]
 .Using Linear Interpolation to reconstruct sub-hourly Values from Hourly Mean Values
-image::CCM_Interpolation2.png[]
+image::CCM_Interpolation2-print.svg[]
 
 :xrefstyle: basic
 
