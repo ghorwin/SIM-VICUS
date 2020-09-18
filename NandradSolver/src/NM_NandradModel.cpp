@@ -531,6 +531,7 @@ SOLFRA::IntegratorInterface * NandradModel::integratorInterface() {
 		// set parameters given by Solverparameter section
 		integrator->m_absTol = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::P_AbsTol].value;
 		integrator->m_relTol = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::P_RelTol].value;
+		integrator->m_dtMax = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::P_MaxTimeStep].value;
 		integrator->m_nonLinConvCoeff = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::P_NonlinSolverConvCoeff].value;
 		integrator->m_maxNonLinIters = m_project->m_solverParameter.m_intPara[NANDRAD::SolverParameter::IP_MaxNonlinIter].toUInt(true);
 		/// \todo Specify ImplicitEuler parameters
@@ -774,7 +775,7 @@ void NandradModel::initSolverParameter(const NANDRAD::ArgsParser & args) {
 		if (IBK::toupper_string(args.m_preconditionerName) == "ILU") {
 			solverParameter.m_preconditioner = NANDRAD::SolverParameter::PRE_ILU;
 			if (args.m_preconditionerOption != (unsigned int)-1)
-				// also store bandwidth
+				// also store fill-in
 				solverParameter.m_intPara[NANDRAD::SolverParameter::IP_PreILUWidth].set(
 					NANDRAD::KeywordList::Keyword("SolverParameter::intPara_t", NANDRAD::SolverParameter::IP_PreILUWidth),
 					(int)args.m_preconditionerOption);
