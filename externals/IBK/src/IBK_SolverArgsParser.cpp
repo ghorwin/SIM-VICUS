@@ -74,7 +74,7 @@ SolverArgsParser::SolverArgsParser() :
 }
 
 void SolverArgsParser::parse(int argc, const char * const argv[]) {
-    FUNCID(SolverArgsParser::parse);
+	FUNCID(SolverArgsParser::parse);
 
 	// parse parent
 	IBK::ArgParser::parse(argc, argv);
@@ -279,7 +279,7 @@ const std::string & SolverArgsParser::option(int index) const {
 
 
 bool SolverArgsParser::handleErrors(std::ostream & errstrm) {
-    FUNCID(SolverArgsParser::handleErrors);
+	FUNCID(SolverArgsParser::handleErrors);
 	// check for valid project file
 	try {
 		if (!m_projectFile.isValid())

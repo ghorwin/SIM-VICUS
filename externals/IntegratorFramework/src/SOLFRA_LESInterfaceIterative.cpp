@@ -84,7 +84,7 @@ void LESInterfaceIterative::updateSUNDIALSStatistics() {
 
 
 void LESInterfaceIterative::writeMetrics(double simtime, std::ostream * metricsFile) {
-    FUNCID(LESInterfaceIterative::writeMetrics);
+	FUNCID(LESInterfaceIterative::writeMetrics);
 	updateSUNDIALSStatistics();
 
 	std::string ustr = IBK::Time::suitableTimeUnit(simtime);

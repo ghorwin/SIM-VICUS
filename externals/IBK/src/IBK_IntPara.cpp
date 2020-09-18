@@ -127,7 +127,7 @@ void IntPara::clear() {
 
 
 void IntPara::checkIfValueIsBelowLimit( const IBK::IntPara& limit, bool isLessEqual ) const {
-    FUNCID(IntPara::checkIfValueIsBelowLimit);
+	FUNCID(IntPara::checkIfValueIsBelowLimit);
 
 	// check IntPara
 	if ( name.empty() || name != limit.name ) {
@@ -145,7 +145,7 @@ void IntPara::checkIfValueIsBelowLimit( const IBK::IntPara& limit, bool isLessEq
 
 
 void IntPara::checkIfValueIsAboveLimit( const IBK::IntPara& limit, bool isGreaterEqual ) const {
-    FUNCID(IntPara::checkIfValueIsUpperBound);
+	FUNCID(IntPara::checkIfValueIsUpperBound);
 
 	// check IntPara
 	if (name.empty() || name != limit.name ) {

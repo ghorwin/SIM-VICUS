@@ -77,7 +77,7 @@ void Quantity::clear() {
 
 
 void Quantity::read(const std::string & line) {
-    FUNCID(QuantityData::read);
+	FUNCID(QuantityData::read);
 
 	// parsing line in format: STATE Temperature [C]   'Temperature'  {#ffffff}
 

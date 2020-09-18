@@ -41,7 +41,7 @@ void SolverFeedback::setup(std::ostream * progressLog, double t0, double tEnd, c
 
 
 void SolverFeedback::writeFeedback(double t, bool betweenOutputs) {
-    FUNCID(SolverFeedback::writeFeedback);
+	FUNCID(SolverFeedback::writeFeedback);
 	//if (m_abort)  throw IBK_exception("Aborting solver...", "[ModelImpl::writeFeedback]");
 	// calculate statistics
 

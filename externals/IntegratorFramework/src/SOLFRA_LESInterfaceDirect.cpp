@@ -61,7 +61,7 @@ void LESInterfaceDirect::updateSUNDIALSStatistics() {
 }
 
 void LESInterfaceDirect::writeMetrics(double simtime, std::ostream * metricsFile) {
-    FUNCID(LESInterfaceDirect::writeMetrics);
+	FUNCID(LESInterfaceDirect::writeMetrics);
 	updateSUNDIALSStatistics();
 
 	std::string ustr = IBK::Time::suitableTimeUnit(simtime);

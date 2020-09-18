@@ -114,7 +114,7 @@ void SparseMatrixCSR::generateTransposedIndex(const std::vector<unsigned int> &i
 
 void SparseMatrixCSR::resize(unsigned int n, unsigned int nnz, const unsigned int * ia, const unsigned int * ja,
 		const unsigned int * iaT, const unsigned int * jaT) {
-    FUNCID(SparseMatrixCSR::resize);
+	FUNCID(SparseMatrixCSR::resize);
 	if (n <= 0 || nnz <= 0)
 		throw IBK::Exception("Invalid input in n or nnz.", FUNC_ID);
 	m_n = n;
@@ -143,7 +143,7 @@ void SparseMatrixCSR::resize(unsigned int n, unsigned int nnz, const unsigned in
 
 
 void SparseMatrixCSR::resizeFromEID(unsigned int n, unsigned int elementsPerRow, const unsigned int * indices) {
-    FUNCID(SparseMatrixCSR::resizeFromEID);
+	FUNCID(SparseMatrixCSR::resizeFromEID);
 	if (n == 0)
 		throw IBK::Exception("Invalid input in n.", FUNC_ID);
 	if (elementsPerRow == 0)
@@ -179,7 +179,7 @@ void SparseMatrixCSR::resizeFromEID(unsigned int n, unsigned int elementsPerRow,
 }
 
 void SparseMatrixCSR::parseFromEID(unsigned int n, unsigned int elementsPerRow, const unsigned int * indices, const double *data) {
-    FUNCID(SparseMatrixCSR::parseFromEID);
+	FUNCID(SparseMatrixCSR::parseFromEID);
 	if (n != m_n || n * elementsPerRow < m_nnz)
 		throw IBK::Exception("Wrong matrix size! Call 'resizeFromEID' before parsing!", FUNC_ID);
 	if (elementsPerRow == 0)
@@ -213,7 +213,7 @@ void SparseMatrixCSR::parseFromEID(unsigned int n, unsigned int elementsPerRow, 
 
 
 double & SparseMatrixCSR::operator()(unsigned int i, unsigned int j) {
-    FUNCID(SparseMatrixCSR::operator());
+	FUNCID(SparseMatrixCSR::operator());
 	// search all index values in row i until we find the column j
 	IBK_ASSERT(i < m_n);
 	IBK_ASSERT(j < m_n);
@@ -337,7 +337,7 @@ void SparseMatrixCSR::serialize(void* & dataPtr) const {
 
 
 void SparseMatrixCSR::deserialize(void* & dataPtr) {
-    FUNCID(SparseMatrixCSR::deserialize);
+	FUNCID(SparseMatrixCSR::deserialize);
 	char matType = *(char*)dataPtr;
 	dataPtr = (char*)dataPtr + sizeof(char);
 	// check for valid matrix type
@@ -381,7 +381,7 @@ void SparseMatrixCSR::deserialize(void* & dataPtr) {
 
 
 void SparseMatrixCSR::recreate(void* & dataPtr) {
-    FUNCID(SparseMatrixCSR::recreate);
+	FUNCID(SparseMatrixCSR::recreate);
 	char matType = *(char*)dataPtr;
 	dataPtr = (char*)dataPtr + sizeof(char);
 	// check for valid matrix type

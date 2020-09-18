@@ -99,7 +99,7 @@ long long readFunct(	std::istream& inputStream,
 						IBK::NotificationHandler * notify = 0,
 						long long fsize = 0)
 {
-    FUNCID(FileReader::readFunct);
+	FUNCID(FileReader::readFunct);
 
 	IBK_ASSERT(chunksize>0);
 
@@ -318,7 +318,7 @@ long long FileReader::readAll(	const Path &filename,
 								unsigned int skipBytes,
 								IBK::NotificationHandler * notify)
 {
-    FUNCID(FileReader::readAll);
+	FUNCID(FileReader::readAll);
 
 	// set internal buffer
 	const int CHUNKSIZE = 4096;
@@ -394,7 +394,7 @@ bool FileReader::valid() {
 
 
 std::vector<unsigned char> FileReader::firstBytes(unsigned int size) {
-    FUNCID(FileReader::firstBytes);
+	FUNCID(FileReader::firstBytes);
 	if (!valid()) {
 		throw IBK::Exception("Invalid file path or error opening file for reading.", FUNC_ID);
 	}
@@ -413,7 +413,7 @@ std::vector<unsigned char> FileReader::firstBytes(unsigned int size) {
 
 
 FileReader::ReadState FileReader::readFirst( unsigned int maxlines, unsigned int skipBytes, IBK::NotificationHandler * notify ) {
-    FUNCID(FileReader::readFirst);
+	FUNCID(FileReader::readFirst);
 
 	if (!valid()) {
 		throw IBK::Exception(FormatString("Cannot open input file: %1").arg(m_filename), FUNC_ID );
@@ -476,7 +476,7 @@ FileReader::ReadState FileReader::readFirst( unsigned int maxlines, unsigned int
 
 
 FileReader::ReadState FileReader::readNext(unsigned int maxlines, IBK::NotificationHandler * notify) {
-    FUNCID(FileReader::readNext);
+	FUNCID(FileReader::readNext);
 
 	if (!m_inputStream.is_open()) {
 		throw IBK::Exception(FormatString("Cannot open input file: %1").arg(m_filename), FUNC_ID );

@@ -86,7 +86,7 @@ void LinearSpline::eliminateConsecutive(	const std::vector<double>& tmp_x,
 											std::vector<double>& tmp2_x,
 											std::vector<double>& tmp2_y)
 {
-    FUNCID(LinearSpline::eliminateConsecutive);
+	FUNCID(LinearSpline::eliminateConsecutive);
 	// eliminate consecutive x values (stem from missing accuracy when reading the file)
 	tmp2_x.clear();
 	tmp2_y.clear();
@@ -120,7 +120,7 @@ void LinearSpline::eliminateConsecutive(	const std::vector<double>& tmp_x,
 
 
 void LinearSpline::setValues(const std::vector<double> & xvals, const std::vector<double> & yvals) {
-    FUNCID(LinearSpline::setValues);
+	FUNCID(LinearSpline::setValues);
 	if (xvals.size() != yvals.size())
 		throw IBK::Exception("X and Y vector size mismatch.", FUNC_ID);
 	if (xvals.empty())
@@ -369,7 +369,7 @@ LinearSpline::SplineGenerationResults LinearSpline::generate(
 		unsigned int maxPoints,
 		bool continueIter)
 {
-    FUNCID(LinearSplineGenerator::generate);
+	FUNCID(LinearSplineGenerator::generate);
 
 	// *** PART 1 - Initialization ***
 

@@ -68,7 +68,7 @@ EmbeddedObject::objectType_t EmbeddedObject::objectType() const {
 
 #if 0
 void EmbeddedObject::readXML(const TiXmlElement * element) {
-    FUNCID(EmbeddedObject::readXML);
+	FUNCID(EmbeddedObject::readXML);
 
 	try {
 

@@ -101,7 +101,7 @@ void StateModelGroup::init(const ZEPPELIN::DependencyGroup &group,
 	// set solver parameter
 	m_solverParameter = &solverPara;
 
-    FUNCID(StateModelGroup::init);
+	FUNCID(StateModelGroup::init);
 	// fill the model vector
 	for( unsigned int i = 0; i < group.dependencyObjects().size(); ++i)
 	{
@@ -291,7 +291,7 @@ void StateModelGroup::initSparseSolver(IBKMK::SparseMatrixPattern &pattern,
 	IBKMK::SparseMatrixPattern &patternTranspose)
 {
 #if 0
-    FUNCID(StateModelGroup::initSparseSolver);
+	FUNCID(StateModelGroup::initSparseSolver);
 	if (m_resultValueRefs.empty()) {
 		// generate all dependency information
 		initResultValueRefs();
@@ -514,7 +514,7 @@ void StateModelGroup::initDenseSolver( )
 
 int StateModelGroup::update() {
 
-    FUNCID(StateModelGroup::update);
+	FUNCID(StateModelGroup::update);
 
 	switch(m_groupType) {
 		case ZEPPELIN::DependencyGroup::SEQUENTIAL : {

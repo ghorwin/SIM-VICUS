@@ -81,7 +81,7 @@ void IntegratorImplicitEuler::init(	ModelInterface * model,
 									PrecondInterface *precond,
 									JacobianInterface *jacobian)
 {
-    FUNCID(IntegratorImplicitEuler::init);
+	FUNCID(IntegratorImplicitEuler::init);
 
 	IBK::IBK_Message( "Initializing Implicit Euler integrator\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
@@ -160,7 +160,7 @@ void IntegratorImplicitEuler::init(	ModelInterface * model,
 
 
 IntegratorInterface::StepResultType IntegratorImplicitEuler::step() {
-    FUNCID(IntegratorImplicitEuler::step);
+	FUNCID(IntegratorImplicitEuler::step);
 	// input state:		m_t contains tn
 	//					m_dtNext contains proposed time step for next integration step
 	//					m_y contains yn
@@ -391,7 +391,7 @@ void IntegratorImplicitEuler::evaluateModel() {
 
 
 bool IntegratorImplicitEuler::errorTest() {
-    FUNCID(IntegratorImplicitEuler::errorTest());
+	FUNCID(IntegratorImplicitEuler::errorTest());
 	// error test is based on a direct evaluation of the first truncated Taylor series term
 	// of the implicit euler formulation: err = \frac{\delta_t^2}{2}\ddot{y}^{n+1}
 	// where the second derivative is obtained using a Taylor-series expansion on
@@ -575,7 +575,7 @@ IntegratorImplicitEuler::StepResult IntegratorImplicitEuler::tryStep() {
 
 
 IntegratorImplicitEuler::StepResult IntegratorImplicitEuler::newtonIteration() {
-    FUNCID(IntegratorImplicitEuler::newtonIteration);
+	FUNCID(IntegratorImplicitEuler::newtonIteration);
 
 	// we monitor the change of vector norms over the whole newton step, and the
 	// change between the last update of the Jacobian matrix.
@@ -811,7 +811,7 @@ double IntegratorImplicitEuler::WRMSNorm(std::vector<double> & vec) const {
 
 
 void IntegratorImplicitEuler::writeIterationStats(double convRateResiduals, double deltaNorm, double convRateDeltaNorm) const {
-    FUNCID(IntegratorImplicitEuler::writeIterationStats);
+	FUNCID(IntegratorImplicitEuler::writeIterationStats);
 	// on first iteration print headers
 #ifdef SOLVER_STEP_STATS
 	std::ofstream dump( (m_logFilePath + "/iter_stats.txt").c_str(), std::ios_base::app);
@@ -864,7 +864,7 @@ void IntegratorImplicitEuler::writeIterationStats(double convRateResiduals, doub
 
 
 void IntegratorImplicitEuler::writeMetrics(double simtime, std::ostream * metricsFile) {
-    FUNCID(IntegratorImplicitEuler::writeMetrics);
+	FUNCID(IntegratorImplicitEuler::writeMetrics);
 	std::string ustr = IBK::Time::suitableTimeUnit(simtime);
 	IBK::IBK_Message( IBK::FormatString("Integrator: Steps                          =                          %1\n")
 		.arg(m_statNumSteps,8),

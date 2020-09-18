@@ -204,7 +204,7 @@ void SteadyStateSolver::initSparseSolver(const std::vector<unsigned int> &ia,
 										std::vector<unsigned int> &iaT,
 										std::vector<unsigned int> &jaT)
 {
-    FUNCID(SteadyStateSolver::initSparseSolver);
+	FUNCID(SteadyStateSolver::initSparseSolver);
 
 	// resize all vectors
 	m_y.resize(ia.size() - 1, 0.0);
@@ -270,7 +270,7 @@ void SteadyStateSolver::initSparseSolver(const std::vector<unsigned int> &ia,
 
 void SteadyStateSolver::initDenseSolver(unsigned int n) {
 #if 0
-    FUNCID(SteadyStateSolver::initDenseSolver);
+	FUNCID(SteadyStateSolver::initDenseSolver);
 	// resize all vectors
 	m_y.resize(n, 0.0);
 	m_ydot.resize(n, 0.0);
@@ -324,7 +324,7 @@ void SteadyStateSolver::initDenseSolver(unsigned int n) {
 
 void SteadyStateSolver::setOptions(unsigned int options) {
 
-    FUNCID(SteadyStateSolver::setOptions);
+	FUNCID(SteadyStateSolver::setOptions);
 	if (m_kinsolMem == NULL)
 	{
 		throw IBK::Exception("setOptions only may be called after initSparseSolver or initDenseSolver!",
@@ -344,7 +344,7 @@ void SteadyStateSolver::setOptions(unsigned int options) {
 
 void SteadyStateSolver::setConstraints(const int *constraints) {
 
-    FUNCID(SteadyStateSolver::setConstraints);
+	FUNCID(SteadyStateSolver::setConstraints);
 	if (m_kinsolMem == NULL)
 	{
 		throw IBK::Exception("setConstraints only may be called after initSparseSolver or initDenseSolver!",
@@ -368,7 +368,7 @@ void SteadyStateSolver::setConstraints(const int *constraints) {
 
 void SteadyStateSolver::setTolerance(double tolerance) {
 
-    FUNCID(SteadyStateSolver::setTolerance);
+	FUNCID(SteadyStateSolver::setTolerance);
 	if (m_kinsolMem == NULL)
 	{
 		throw IBK::Exception("setTolerance only may be called after initSparseSolver or initDenseSolver!",
@@ -389,7 +389,7 @@ void SteadyStateSolver::setMaxNonlinearIterations(unsigned int maxNonlinIter) {
 SOLFRA::ModelInterface::CalculationResult SteadyStateSolver::newtonIteration(const double *yscale,
 																			 const double *fscale) {
 
-    FUNCID(SteadyStateSolver::newtonIteration);
+	FUNCID(SteadyStateSolver::newtonIteration);
 	// if no jacobian is defined set jacobian and solver to dense
 	if (m_jacobian == NULL) {
 		throw IBK::Exception(IBK::FormatString("Missing linear equation solver "

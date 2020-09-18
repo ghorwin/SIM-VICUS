@@ -97,7 +97,7 @@ void QuantityManager::write(std::ostream & out) {
 
 
 void QuantityManager::readFromFile(const IBK::Path & fname) {
-    FUNCID(QuantityManager::readFromFile);
+	FUNCID(QuantityManager::readFromFile);
 
 #if defined(_WIN32)
 	#if defined(_MSC_VER)
@@ -125,7 +125,7 @@ void QuantityManager::readFromFile(const IBK::Path & fname) {
 
 
 void QuantityManager::writeToFile(const IBK::Path & fname) {
-    FUNCID(QuantityManager::writeToFile);
+	FUNCID(QuantityManager::writeToFile);
 #if defined(_WIN32)
 	#if defined(_MSC_VER)
 		std::ofstream out(fname.wstr().c_str());

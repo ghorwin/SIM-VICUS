@@ -138,7 +138,7 @@ void Time::set(unsigned int hour, unsigned int minute, unsigned int sec) {
 
 
 void Time::set(int year, unsigned int month, unsigned int day, double sec) {
-    FUNCID(Time::set);
+	FUNCID(Time::set);
 	m_year = year;
 	if (month > 11) {
 		throw IBK::Exception("Invalid month", FUNC_ID);
@@ -866,7 +866,7 @@ const char * Time::suitableSpeedUnit(double sec) {
 
 
 std::string Time::dateRFC2822(const std::string& timeFormat ) {
-    FUNCID(Time::dateRFC2822);
+	FUNCID(Time::dateRFC2822);
 
 	// A format suitable for Internet RFC 2822 as standard or other formats.
 	const char * const rfc_2822_format = "%a, %d %b %Y %H:%M:%S %z";

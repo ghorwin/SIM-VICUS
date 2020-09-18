@@ -281,7 +281,7 @@ bool Path::canCreateRelativePath(const Path& toPath, std::string& errstr) const 
 
 
 Path Path::relativePath(const Path& toPath) const {
-    FUNCID(Path::relativePath);
+	FUNCID(Path::relativePath);
 
 	std::string errstr;
 	if( !canCreateRelativePath(toPath, errstr))
@@ -427,7 +427,7 @@ bool Path::isAbsolute() const {
 
 Path Path::filename() const {
 
-    FUNCID(Path::filename);
+	FUNCID(Path::filename);
 
 	// IBK::Path("").filename() --> exception
 	if (m_path.empty())
@@ -630,7 +630,7 @@ Path Path::withReplacedPlaceholders(const std::map<std::string, Path> & placeHol
 	*/
 
 
-    FUNCID(Path::withReplacedPlaceholders);
+	FUNCID(Path::withReplacedPlaceholders);
 
 	Path newPath(m_path); // newPath holds current path, including placeholders
 
@@ -839,7 +839,7 @@ void Path::removeRelativeParts() {
 
 Path Path::subBranch(unsigned int begin, unsigned int count) const {
 
-    FUNCID(Path::subBranch);
+	FUNCID(Path::subBranch);
 	bool isLinuxAbsolute = false;
 
 	if( begin == 0 && count == 0)
@@ -1033,7 +1033,7 @@ bool Path::setFileTime(	const IBK::Path& filename,
 						int month,
 						int year)
 {
-    FUNCID(Path::setFileTime);
+	FUNCID(Path::setFileTime);
 
 #if defined(_WIN32)
 
@@ -1551,7 +1551,7 @@ bool Path::copy(const IBK::Path & source, const IBK::Path & target){
 
 bool Path::move(const IBK::Path & source, const IBK::Path & target){
 
-    FUNCID(Path::move);
+	FUNCID(Path::move);
 
 	// prevent recursive path move
 	if ( target.isRootPath(source) ) {

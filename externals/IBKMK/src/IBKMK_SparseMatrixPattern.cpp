@@ -52,7 +52,7 @@ void SparseMatrixPattern::calculateTransitiveClosure(
 	unsigned int startIndex,
 	unsigned int endIndex) {
 
-    FUNCID(SparseMatrixPattern::calculateTransitiveClosure);
+	FUNCID(SparseMatrixPattern::calculateTransitiveClosure);
 	// error: index exceeds matrix dimension
 	if (startIndex > n || endIndex > n) {
 		throw IBK::Exception(IBK::FormatString("Error "
@@ -110,7 +110,7 @@ void SparseMatrixPattern::calculateTransitiveClosure(
 
 
 SparseMatrixPattern::SparseMatrixPattern(unsigned int n) {
-    FUNCID(SparseMatrixPattern::SparseMatrixPattern);
+	FUNCID(SparseMatrixPattern::SparseMatrixPattern);
 	// do not allow dimensions == 0
 	if (n == 0)
 		throw IBK::Exception("Error creating sparse matrix pattern: matrix dimenion '0' is not allowed!", FUNC_ID);
@@ -119,7 +119,7 @@ SparseMatrixPattern::SparseMatrixPattern(unsigned int n) {
 
 
 void SparseMatrixPattern::set(unsigned int i, unsigned int j) {
-    FUNCID(SparseMatrixPattern::set);
+	FUNCID(SparseMatrixPattern::set);
 
 	// error: index exceeds matrix dimension
 	if(i >= m_n || j >= m_n) {
@@ -146,7 +146,7 @@ void SparseMatrixPattern::set(unsigned int i, unsigned int j) {
 
 
 bool SparseMatrixPattern::test(unsigned int i, unsigned int j) const {
-    FUNCID(SparseMatrixPattern::test);
+	FUNCID(SparseMatrixPattern::test);
 
 	// error: index exceeds matrix dimension
 	if(i >= m_n || j >= m_n) {
@@ -178,7 +178,7 @@ bool SparseMatrixPattern::test(unsigned int i, unsigned int j) const {
 
 
 void SparseMatrixPattern::indexesPerRow(unsigned int i, std::vector<unsigned int> & columnIndexes) const {
-    FUNCID(SparseMatrixPattern::indexesPerRow);
+	FUNCID(SparseMatrixPattern::indexesPerRow);
 
 	// error: index exceeds matrix dimension
 	if(i >= m_n) {

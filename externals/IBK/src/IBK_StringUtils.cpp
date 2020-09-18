@@ -1073,7 +1073,7 @@ unsigned short Hex2DToShort(char upper, char lower) {
 void decode_version_number(const std::string & versionString, unsigned int & major, unsigned int & minor,
 						   unsigned int & patch)
 {
-    FUNCID(decode_version_number);
+	FUNCID(decode_version_number);
 	try {
 		std::vector<std::string> versionTokens;
 		IBK::explode(versionString, versionTokens, '.', true);
@@ -1303,7 +1303,7 @@ void decode_version_number(const std::string & versionString, unsigned int & maj
 #ifdef _WIN32
 
 std::wstring UTF8ToWstring(const std::string& utf8str) {
-    FUNCID(IBK::UTF8ToWstring);
+	FUNCID(IBK::UTF8ToWstring);
 	if (utf8str.empty())
 		return std::wstring();
 
@@ -1321,7 +1321,7 @@ std::wstring UTF8ToWstring(const std::string& utf8str) {
 
 
 std::string WstringToUTF8(const std::wstring& wide) {
-    FUNCID(IBK::WstringToUTF8);
+	FUNCID(IBK::WstringToUTF8);
 	if (wide.empty())
 		return std::string();
 
@@ -1338,7 +1338,7 @@ std::string WstringToUTF8(const std::wstring& wide) {
 
 
 std::wstring ANSIToWstring(const std::string& ansiString, bool OEMPage) {
-    FUNCID(IBK::ANSIToWstring);
+	FUNCID(IBK::ANSIToWstring);
 	if (ansiString.empty())
 		return std::wstring();
 
