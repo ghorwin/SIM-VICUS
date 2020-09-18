@@ -200,7 +200,7 @@ Interfaces are defining boundary conditions and parameters for the one or two su
 
 The convective heat conduction over the interface is described by the XML tag `InterfaceHeatConduction`.
 
-image::convection.svg[width=40%]
+image::convection.png[width=50%, scalewidth=17cm]
 
 .Parameter Definition for Heat Conduction Boundary Condition
 ====
@@ -240,7 +240,7 @@ Floating point parameters (see section <<IBK_Parameter>> for a description of th
 
 The solar absorption over the interface is described by the XML tag `InterfaceSolarAbsorption`. This coefficient describes the solar short wave radiation that is absorpt by the interface.
 
-image::shortwave.svg[width=40%]
+image::shortwaverad.png[width=50%, scalewidth=17cm]
 
 .Parameter Definition for Solar Absorption Boundary Condition
 ====
@@ -281,7 +281,7 @@ The XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` wi
 
 The long wave emission over the interface is described by the XML tag `InterfaceLongWaveEmission`. This coefficient describes the long wave absorption and emission by the interface.
 
-image::longwave.svg[width=40%]
+image::longwaverad.png[width=50%, scalewidth=17cm]
 
 .Parameter Definition for Long Wave Emission
 ====

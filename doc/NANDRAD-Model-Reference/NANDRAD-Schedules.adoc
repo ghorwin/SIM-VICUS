@@ -165,7 +165,14 @@ a| Specifies the interpolation method between the defined y values.
 * `linear` - linear interpolation (values linear interpolated between time steps)  
 
 | key | _required_
-| `WrapMethod` 
+a|
+
+[WARNING]
+====
+`WrapMethod`
+
+not yet implemented
+====
 
 a| Specifies how to treat the values in multi-year simulations 
 
@@ -175,6 +182,59 @@ a| Specifies how to treat the values in multi-year simulations
 | key | _required_
 
 |====================
+
+#### Time/day mapping in cyclic annual schedules
+
+For cyclic schedule data, the flag "Cyclic" must be set in Schedules xml-block.
+
+The following conventions apply:
+
+- start year by default is 2001
+- start time is given as parameter (as offset to Midnight January 1st 2001, or `"01.01.2001 00:00"`); for example, start time of `10.5 d` means simulation time 0 maps to `"10.01.2001 12:00"`
+- if simulation duration exceeds 1 year, simulation time is wrapped at 365 d
+- "schedule lookup time" is the same as simulation time
+- leap days are never used, even if start year is set to 2000 and similar leap years
+- parameter "DayOfTheWeekAtStart" indicates which day of the week corresponds to the first day of simulation (i.e. the day of start time, for example, one could specify "Wed" as day type and in the example above the 10.01. would become a wednesday)
+
+Example:
+
+Simulation takes 2 years, and starts in March 2nd, 12:00  (year 2003, but that is not important)
+
+
+```
+02.03. 12:00  -> t_start = (31+28+1)*24+12 = 1452 h = 60.5 d
+
+t =   0 d -> t_sched = t_start + t = 60.5 d
+t = 365 d -> t_sched = t_start + t = 425.5 d
+
+t_sched > 365 ? -> t_sched = t_sched - 365 = 60.5 h
+
+Evaluation at runtime:
+scheduleData = scheduleTabulatedSplineData [t_sched=0...365 d]  -> interpolate at t_sched
+```
+
+##### Constructing spline data from input data
+
+```
+- loop over all days (d=0,1,...,364)
+- determine day type:
+  d_dayOfWeek = (startDayOffset + d) % 7 (modulo 7)
+
+  startDayOffset = 0 for Monday, 1 for Tuesday, ... , 6 for Sunday
+  
+Example:
+  
+  d = 15  -> date = 16. January 2003
+  startDayOffset = "Wed" -> 2  (1.1.2003 was a wednesday)
+  
+  d_dayOfWeek -> 15 + 2 = 17   17 % 7 = 3  -> DayType = "Thursday" (Check: 16. January 2003 was a Thursday)
+  
+- look up daily cycle:
+  - find schedule (back to front) where d in range:
+    - process daytypes in order Thursday, Weekdays, AllDays
+      - if parameter is found in any of these days, take daily course and add to spline for this day,
+      - if parameter not found, skip and search through next schedule
+```
 
 
 ## Variable list
