@@ -177,8 +177,8 @@ The individual path placeholders are defined in the `DirectoryPlaceholders`:
 [source,xml]
 ----
 <DirectoryPlaceholders>
-	<Placeholder name="Climate DB">/home/sim/climate_DB</Placeholder>
-	<Placeholder name="DataFiles">/home/sim/data</Placeholder>
+  <Placeholder name="Climate DB">/home/sim/climate_DB</Placeholder>
+  <Placeholder name="DataFiles">/home/sim/data</Placeholder>
 </DirectoryPlaceholders>
 ----
 ====
@@ -188,6 +188,16 @@ There is one builtin-placeholder `${Project Directory}` that will be automatical
 [[project_info]]
 # Project Information
 
-This section contains change times/dates and a brief description of the project.
+This section contains change times/dates and a brief description of the project. The following child tags are supported.
 
-TODO
+[width="100%",options="header", cols="15%,70%,^15%"]
+|====================
+| Child tag | Description | Format
+| `Comment` | General comment on the project. | _string_
+| `Created` | Date/time this project was created. | _string_
+| `LastEdited` | Date/time this project was last modified. | _string_
+|====================
+
+The date/time strings for `Created` and `LastEdited` should stored the date and time in user-readible format, as they may be used to show lists of projects with change/creation date.
+
+

@@ -482,10 +482,41 @@ easily modify the placeholder paths to the directories on the local machine with
 <div class="sect2">
 <h3 id="project_info">2.4. Project Information</h3>
 <div class="paragraph">
-<p>This section contains change times/dates and a brief description of the project.</p>
+<p>This section contains change times/dates and a brief description of the project. The following child tags are supported.</p>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 15%;">
+<col style="width: 70%;">
+<col style="width: 15%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Child tag</th>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Description</th>
+<th class="tableblock halign-center valign-top" style="background-color: transparent;">Format</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>Comment</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">General comment on the project.</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock"><em>string</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>Created</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Date/time this project was created.</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock"><em>string</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>LastEdited</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Date/time this project was last modified.</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock"><em>string</em></p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
-<p>TODO</p>
+<p>The date/time strings for <code>Created</code> and <code>LastEdited</code> should stored the date and time in user-readible format, as they may be used to show lists of projects with change/creation date.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1058,7 +1089,7 @@ In the following it is described in detail.</p>
 <p><code>DiscMinDx</code></p>
 </li>
 <li>
-<p><code>DiscDetailLevel</code></p>
+<p><code>DiscStretchFactor</code></p>
 </li>
 <li>
 <p><code>DiscMaxElementsPerLayer</code></p>
@@ -1066,7 +1097,55 @@ In the following it is described in detail.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>TODO - Andreas - add sketch about different discretization results depending on parameters</p>
+<p><a href="#fig_discretization">Figure 2</a> illustrates the effect of different stretch factors.</p>
+</div>
+<div id="fig_discretization" class="imageblock">
+<div class="content">
+<img src="./images/Discretization.png" alt="Discretization">
+</div>
+<div class="title">Figure 2. Different Discretization Variants depending on DiscStretchFactor Parameter</div>
+</div>
+<div class="paragraph">
+<p>Basically three different grid generation operations are supported:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>minimal grid:</strong> when <code>DiscStretchFactor = 0</code> the algorithm creates one Finite Volume per material layer, except for the boundary elements, which are always split into two (needed for surface value extrapolation). So, for example, a 4-layered construction will result in 6 Finite Volumes.</p>
+</li>
+<li>
+<p><strong>equidistant:</strong> when <code>DiscStretchFactor = 1</code> the algorithm generates equally spaced grid elements in each layer, whose thickness is close to, but always less than the <code>DiscMinDx</code> parameter. Since material layers may have different widths, a uniform grid element thickness may not be possible throughout the construction. Choose a <code>DiscMinDx</code> parameter where all material layer widths are whole-number multiples of this grid element thickness (e.g. <em>1 mm</em>)</p>
+</li>
+<li>
+<p><strong>regular grid:</strong> for any <code>DiscStretchFactor &gt; 1</code> a regular, variably-spaced grid is generated.</p>
+</li>
+</ul>
+</div>
+<div class="sect4">
+<h5 id="_regular_grid_generation_algorithm">Regular Grid Generation Algorithm</h5>
+<div class="paragraph">
+<p>A regular stretching grid is generated using a double-sided <em>tanh</em>-stretching function. The factor <code>DiscStretchFactor</code> hereby determines roughly the ratio of first two grid element widths. Naturally, this growth factor varies and goes down to zero in the center of a material layer, but it nicely determines the overall grid detail. A factor of 4 is a good default value.</p>
+</div>
+<div class="paragraph">
+<p>The parameter <code>DiscMinDx</code> defines the maximum width of the outermost grid elements in each layer. Hence, it is indirectly also used to determine the number of grid elements per material layer. With increasing number of grid elements per layer, the outermost grid elements will become smaller. This way, the algorithm determines the number of grid cells (for a given <code>DiscStretchFactor</code>), until the generated width if the outermost grid elements is equal or less than the <code>DiscMinDx</code> parameter. A minimum element thickness of <em>2 mm</em> is a good default value for very accurate calculations, but a value of <em>5 mm</em> may suffice in many situations (this reducing the number of unknowns and eventually simulation time significantly).</p>
+</div>
+<div class="paragraph">
+<p>Finally, there is the parameter <code>DiscMaxElementsPerLayer</code> that can be used to limit the number of grid elements to be generated in a material layer. This is particularly useful when very thick material layers are present and a large number of grid cells are generated. Often, this accuracy is not needed (for very thick material layers anyways), so limiting the number may be meaningful to speed up calculation. As long as the number of generated grid cells per material layer exceeds <code>DiscMaxElementsPerLayer</code> the algorithm will gradually increase the <code>DiscStretchFactor</code> until the criterion is fulfilled. The solver will emit a warning message for each construction layer that this adjustment is applied to.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>As with all numerical solvers employing calculation grids, there is always a compromise between speed and accuracy. A grid sensitiviy study may be helpful, for example by starting with <code>DiscMinDx = 5 mm</code> and <code>DiscStretchFactor = 8</code> and then gradually reducing the values until the solution does no longer change. For small buildings/models, where performance is not an issue, you may want to use the default values <code>DiscMinDx = 2 mm</code> and <code>DiscStretchFactor = 4</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -1795,22 +1874,22 @@ In the following it is described in detail.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>State quantities are expected to be monitored as <em>instantaneous values</em> at the <em>end of each hour</em>. Sub-hourly values are obtained through linear interpolation, as shown in <a href="#fig_hourly_values">Figure 2</a>.</p>
+<p>State quantities are expected to be monitored as <em>instantaneous values</em> at the <em>end of each hour</em>. Sub-hourly values are obtained through linear interpolation, as shown in <a href="#fig_hourly_values">Figure 3</a>.</p>
 </div>
 <div id="fig_hourly_values" class="imageblock">
 <div class="content">
 <img src="./images/CCM_Interpolation1.png" alt="CCM Interpolation1">
 </div>
-<div class="title">Figure 2. Using Linear Interpolation to reconstruct sub-hourly Values from Hourly Data Points</div>
+<div class="title">Figure 3. Using Linear Interpolation to reconstruct sub-hourly Values from Hourly Data Points</div>
 </div>
 <div class="paragraph">
-<p>Flux/load quantities are expected as <em>mean/average values</em> over the <em>last hour</em>. Sub-hourly values are obtained through linear interpolation between the average values placed in the middle of each hour, as shown in <a href="#fig_hourly_load_values">Figure 3</a>.</p>
+<p>Flux/load quantities are expected as <em>mean/average values</em> over the <em>last hour</em>. Sub-hourly values are obtained through linear interpolation between the average values placed in the middle of each hour, as shown in <a href="#fig_hourly_load_values">Figure 4</a>.</p>
 </div>
 <div id="fig_hourly_load_values" class="imageblock">
 <div class="content">
 <img src="./images/CCM_Interpolation2.png" alt="CCM Interpolation2">
 </div>
-<div class="title">Figure 3. Using Linear Interpolation to reconstruct sub-hourly Values from Hourly Mean Values</div>
+<div class="title">Figure 4. Using Linear Interpolation to reconstruct sub-hourly Values from Hourly Mean Values</div>
 </div>
 </div>
 <div class="sect5">
@@ -2379,31 +2458,31 @@ For example they are used in the following objects or list of objects:</p>
 <div class="content">
 <img src="./images/alldays.png" alt="alldays" width="80%">
 </div>
-<div class="title">Figure 4. Defined schedule for <code>Mondays</code></div>
+<div class="title">Figure 5. Defined schedule for <code>Mondays</code></div>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="./images/mondays.png" alt="mondays" width="80%">
 </div>
-<div class="title">Figure 5. Defined schedule for <code>Mondays</code></div>
+<div class="title">Figure 6. Defined schedule for <code>Mondays</code></div>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="./images/weekdays.png" alt="weekdays" width="80%">
 </div>
-<div class="title">Figure 6. Defined schedule for <code>Weekdays</code> for the period of January</div>
+<div class="title">Figure 7. Defined schedule for <code>Weekdays</code> for the period of January</div>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="./images/week.png" alt="week" width="80%">
 </div>
-<div class="title">Figure 7. Resulting Schedule shown for a week in January</div>
+<div class="title">Figure 8. Resulting Schedule shown for a week in January</div>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="./images/year.png" alt="year" width="80%">
 </div>
-<div class="title">Figure 8. Resulting Schedule shown for January and February</div>
+<div class="title">Figure 9. Resulting Schedule shown for January and February</div>
 </div>
 </div>
 </div>
@@ -3229,7 +3308,7 @@ outputs associated with this output grid will be written.</p>
 <div class="content">
 <img src="./images/TimeType_illustration.png" alt="TimeType illustration">
 </div>
-<div class="title">Figure 9. Illustration of the various <code>TimeType</code> options</div>
+<div class="title">Figure 10. Illustration of the various <code>TimeType</code> options</div>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -4098,7 +4177,7 @@ Next ?? records: unsigned int - n (for checking) and afterwards n doubles</pre>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>ExplicitEuler</code></p></td>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Explicit Euler integrator (only for debugging!)</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Explicit Euler integrator (only for debugging, <code>InitialTimeStep</code> parameter determines the fixed step-size)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>ImplicitEuler</code></p></td>
@@ -4175,7 +4254,7 @@ Next ?? records: unsigned int - n (for checking) and afterwards n doubles</pre>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Currently, two variants of the ILU preconditioner are implemented. Once without threshold, where the factorization is done using only the original Jacobi matrix pattern. If the user specified <code>PreILUWidth</code>, the routine will compute the factorization and keep in each row the highest n-values (where n is defined by <code>PreILUWidth</code>). This method is known as threashold-ILU.</p>
+<p>Currently, two variants of the ILU preconditioner are implemented. One without threshold, where the factorization is stored only in the original Jacobi matrix pattern. If the user specified <code>PreILUWidth</code>, the routine will compute the factorization and keep in each row the highest n-values (where n is defined by <code>PreILUWidth</code>). This method is known as <em>ILU with threashold</em> (ILU-T).</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -4277,7 +4356,7 @@ Next ?? records: unsigned int - n (for checking) and afterwards n doubles</pre>
 <p>Throughout the NANDRAD solver, units are <em>only</em> used for input/output purposes. Within the calculation functions, <em>always</em> the base SI units are used, hereby avoiding problems from unit conversions.</p>
 </div>
 <div class="paragraph">
-<p>The unit system in NANDRAD uses the convention, that at maximum one / may be part of the unit definition. All units following the slash are in the denominator of the unit. Exponents are just following the unit, for example <code>m2</code>. Multiple units are just concatenated without . or * character, for example <code>kWh</code> or <code>kg/m2s</code>.</p>
+<p>The unit system in NANDRAD uses the convention, that at maximum one / (slash) may be part of the unit name. All units following the slash are in the denominator of the unit. Exponents are just following the unit, for example <code>m2</code>. Dots in exponents are omitted, for example <code>h05</code> for square root of the hour. Multiple units are just concatenated without . or * character, for example <code>kWh</code> or <code>kg/m2s</code>.</p>
 </div>
 <div class="admonitionblock caution">
 <table>
@@ -5193,7 +5272,7 @@ The example below shows how the output of the models is referenced via the objec
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated 2020-09-18 18:54:17 +0200
+Last updated 2020-09-19 17:44:03 +0200
 </div>
 </div>
 <style>

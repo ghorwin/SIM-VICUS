@@ -157,10 +157,39 @@ In the following it is described in detail.
 During calculation, each of the constructions is spatially discretized using a grid generation algorithm. This algorithm uses three influential parameters, defined in the <<solver_parameters>> section:
 
 - `DiscMinDx`
-- `DiscDetailLevel`
+- `DiscStretchFactor`
 - `DiscMaxElementsPerLayer`
 
-TODO - Andreas - add sketch about different discretization results depending on parameters
+:xrefstyle: short
+
+<<fig_discretization>> illustrates the effect of different stretch factors.
+
+:xrefstyle: basic
+
+[[fig_discretization]]
+.Different Discretization Variants depending on DiscStretchFactor Parameter
+image::Discretization.png[]
+
+Basically three different grid generation operations are supported:
+
+* **minimal grid:** when `DiscStretchFactor = 0` the algorithm creates one Finite Volume per material layer, except for the boundary elements, which are always split into two (needed for surface value extrapolation). So, for example, a 4-layered construction will result in 6 Finite Volumes.
+
+* *equidistant:* when `DiscStretchFactor = 1` the algorithm generates equally spaced grid elements in each layer, whose thickness is close to, but always less than the `DiscMinDx` parameter. Since material layers may have different widths, a uniform grid element thickness may not be possible throughout the construction. Choose a `DiscMinDx` parameter where all material layer widths are whole-number multiples of this grid element thickness (e.g. __1 mm__)
+
+* *regular grid:* for any `DiscStretchFactor > 1` a regular, variably-spaced grid is generated.
+
+### Regular Grid Generation Algorithm
+
+A regular stretching grid is generated using a double-sided __tanh__-stretching function. The factor `DiscStretchFactor` hereby determines roughly the ratio of first two grid element widths. Naturally, this growth factor varies and goes down to zero in the center of a material layer, but it nicely determines the overall grid detail. A factor of 4 is a good default value.
+
+The parameter `DiscMinDx` defines the maximum width of the outermost grid elements in each layer. Hence, it is indirectly also used to determine the number of grid elements per material layer. With increasing number of grid elements per layer, the outermost grid elements will become smaller. This way, the algorithm determines the number of grid cells (for a given `DiscStretchFactor`), until the generated width if the outermost grid elements is equal or less than the `DiscMinDx` parameter. A minimum element thickness of _2 mm_ is a good default value for very accurate calculations, but a value of _5 mm_ may suffice in many situations (this reducing the number of unknowns and eventually simulation time significantly).
+
+Finally, there is the parameter `DiscMaxElementsPerLayer` that can be used to limit the number of grid elements to be generated in a material layer. This is particularly useful when very thick material layers are present and a large number of grid cells are generated. Often, this accuracy is not needed (for very thick material layers anyways), so limiting the number may be meaningful to speed up calculation. As long as the number of generated grid cells per material layer exceeds `DiscMaxElementsPerLayer` the algorithm will gradually increase the `DiscStretchFactor` until the criterion is fulfilled. The solver will emit a warning message for each construction layer that this adjustment is applied to.
+
+[TIP]
+====
+As with all numerical solvers employing calculation grids, there is always a compromise between speed and accuracy. A grid sensitiviy study may be helpful, for example by starting with `DiscMinDx = 5 mm` and `DiscStretchFactor = 8` and then gradually reducing the values until the solution does no longer change. For small buildings/models, where performance is not an issue, you may want to use the default values `DiscMinDx = 2 mm` and `DiscStretchFactor = 4`.
+====
 
 
 [[construction_interfaces]]
