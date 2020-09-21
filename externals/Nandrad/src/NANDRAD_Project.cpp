@@ -23,6 +23,7 @@
 #include "NANDRAD_KeywordList.h"
 
 #include <algorithm>
+#include <set>
 
 #include <IBK_messages.h>
 #include <IBK_assert.h>
@@ -32,6 +33,38 @@
 #include "NANDRAD_Utilities.h"
 
 namespace NANDRAD {
+
+
+/*! Test function that checks that all objects in the given vector have different m_id parameters. */
+template <typename T>
+void checkForUniqueIDs(const std::vector<T> & vec, const char * const typeIDString) {
+	FUNCID(NANDRAD::checkForUniqueIDs);
+
+	std::set<unsigned int> usedIDs;
+
+	for (const T & t : vec) {
+		if (usedIDs.find(t.m_id) != usedIDs.end())
+			throw IBK::Exception(IBK::FormatString("Duplicate ID #%1 in list of type '%2'.")
+								 .arg(t.m_id).arg(typeIDString), FUNC_ID);
+		usedIDs.insert(t.m_id);
+	}
+}
+
+
+/*! Test function that checks that all objects in the given vector have different m_id parameters. */
+template <typename T>
+void checkForUniqueNames(const std::vector<T> & vec, const char * const typeIDString) {
+	FUNCID(NANDRAD::checkForUniqueNames);
+
+	std::set<std::string> usedNames;
+
+	for (const T & t : vec) {
+		if (usedNames.find(t.m_name) != usedNames.end())
+			throw IBK::Exception(IBK::FormatString("Duplicate name '%1' in list of type '%2'.")
+								 .arg(t.m_name).arg(typeIDString), FUNC_ID);
+		usedNames.insert(t.m_name);
+	}
+}
 
 
 void Project::readXML(const IBK::Path & filename) {
@@ -70,9 +103,24 @@ void Project::readXML(const IBK::Path & filename) {
 		throw IBK::Exception(ex, IBK::FormatString("Error reading project '%1'.").arg(filename), FUNC_ID);
 	}
 
-	/// \todo check uniqueness of all IDs in all separate id spaces
-	///       implement this via template algorithm, since all id-holding data types have a "find by ID"
-	///       comparison operator and are stored in vectors
+	// check uniqueness of all IDs in all separate id spaces
+	// Note: all objects in the ID-based object lists have an m_id data member. Hence, we can implement
+	//       the check in a template function.
+
+	checkForUniqueIDs(m_materials, "Material");
+	checkForUniqueIDs(m_constructionTypes, "ConstructionType");
+	checkForUniqueIDs(m_zones, "Zone");
+	checkForUniqueIDs(m_constructionInstances, "ConstructionInstance");
+
+	// we check for duplicate object lists here, because these are referenced by name, rather than ID
+	checkForUniqueNames(m_outputs.m_grids, "OutputGrid");
+	checkForUniqueNames(m_objectLists, "ObjectList");
+
+	// Note:
+	// - the check for duplicate output definitions is done during output initialization
+
+	// uniqueness check for models
+	m_models.checkForUniqueIDs();
 }
 
 

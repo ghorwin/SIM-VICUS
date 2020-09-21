@@ -52,7 +52,6 @@ void Models::readXML(const TiXmlElement * element) {
 
 	}
 }
-// ----------------------------------------------------------------------------
 
 
 TiXmlElement * Models::writeXML(TiXmlElement * parent) const {
@@ -72,6 +71,32 @@ TiXmlElement * Models::writeXML(TiXmlElement * parent) const {
 	TiXmlComment::addSeparatorComment(parent);
 	return e1;
 }
-// ----------------------------------------------------------------------------
+
+
+/*! Test function that checks that all objects in the given vector have different m_id parameters. */
+template <typename T>
+void checkForUniqueModelIDs(const std::vector<T> & vec, std::set<unsigned int> & usedIDs) {
+	FUNCID(NANDRAD::checkForUniqueIDs);
+
+	for (const T & t : vec) {
+		if (usedIDs.find(t.m_id) != usedIDs.end())
+			throw IBK::Exception(IBK::FormatString("Duplicate model ID #%1.")
+								 .arg(t.m_id), FUNC_ID);
+		usedIDs.insert(t.m_id);
+	}
+}
+
+
+void Models::checkForUniqueIDs() const {
+	FUNCID(Models::checkForUniqueIDs);
+
+	std::set<unsigned int> usedIDs;
+
+	try {
+		checkForUniqueModelIDs(m_naturalVentilationModels, usedIDs);
+	} catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, "Duplicate ID found in model parameter blocks.", FUNC_ID);
+	}
+}
 
 } // namespace NANDRAD

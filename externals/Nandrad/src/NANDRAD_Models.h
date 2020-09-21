@@ -33,6 +33,9 @@ class Models {
 public:
 	NANDRAD_READWRITE
 
+	/*! Verifies that all models have different IDs. */
+	void checkForUniqueIDs() const;
+
 	/*! Container for all natural ventilation models. */
 	std::vector<NaturalVentilationModel>	m_naturalVentilationModels;
 };

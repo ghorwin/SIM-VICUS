@@ -29,8 +29,8 @@ bool Sensor::operator!=(const Sensor & other) const {
 	return false;
 }
 
-void Sensor::checkParameters() const
-{
+
+void Sensor::checkParameters() const {
 	m_inclination.checkedValue("Deg", "Deg",
 							   0, true,
 							   180, true,

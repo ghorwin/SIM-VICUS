@@ -205,7 +205,7 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 		for (unsigned int i = 0; i < location.m_sensors.size(); ++i) {
 			const NANDRAD::Sensor &sensor = location.m_sensors[i];
 
-			//check sensor parameters
+			// check sensor parameters
 			sensor.checkParameters();
 
 			// retrieve orientation and incliniation
