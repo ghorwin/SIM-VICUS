@@ -859,7 +859,8 @@ void NandradModel::initSimulationParameter() {
 
 	const NANDRAD::SimulationParameter &simPara = m_project->m_simulationParameter;
 
-	/// \todo check validity of the parameter data, since data may be overrided in project file
+	// check validity of the parameter data, since data may be overrided in project file
+	simPara.checkParameters();
 
 	// Set simulation interval
 
@@ -873,25 +874,6 @@ void NandradModel::initSimulationParameter() {
 
 	m_tEnd = simPara.m_interval.m_para[NANDRAD::Interval::P_End].value -
 		simPara.m_interval.m_para[NANDRAD::Interval::P_Start].value;
-
-	int startYear = 2001;
-	if (!simPara.m_intPara[NANDRAD::SimulationParameter::IP_StartYear].name.empty())
-		startYear = simPara.m_intPara[NANDRAD::SimulationParameter::IP_StartYear].value;
-
-	if (m_tEnd <= 0)
-		throw IBK::Exception(IBK::FormatString("End time point %1 preceedes start time point %2 (must be later than start time!)")
-							 .arg(IBK::Time(startYear, simPara.m_interval.m_para[NANDRAD::Interval::P_End].value).toDateTimeFormat())
-							 .arg(IBK::Time(startYear, simPara.m_interval.m_para[NANDRAD::Interval::P_Start].value).toDateTimeFormat()), FUNC_ID);
-
-	// check simulation parameters for meaningful values, since they are user-defined and can be "unsuitable"
-
-	if (simPara.m_para[NANDRAD::SimulationParameter::P_InitialTemperature].value < 123.15)
-		throw IBK::Exception(IBK::FormatString("Invalid initial temperature %1 in SimulationParameters.")
-							 .arg(simPara.m_para[NANDRAD::SimulationParameter::P_InitialTemperature].get_value("C")), FUNC_ID);
-
-	/// \todo other checks
-	///
-	/// \todo check relative humidity when moisture balance is enabled
 }
 
 
