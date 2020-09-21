@@ -183,10 +183,6 @@ Quantities in output definitions define the ID names of the output quantities, o
 - `HeatSource[id=1]` - index argument is explicitely interpreted as object ID (will raise an error when model provides quantity with positional indexing)
 
 
-Schedule outputs require special formatting:
-
-TODO - Andreas
-
 [[output_filenames]]
 ### Output file names
 
