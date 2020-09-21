@@ -40,7 +40,7 @@
 		</Location>
 		<Outputs>
 			<TimeUnit>h</TimeUnit>
-			<OutputDefinitions>
+			<Definitions>
 				<!-- minutely values - None -->
 				<OutputDefinition>
 					<Quantity>DirectSWRadOnPlane[1]</Quantity>
@@ -92,7 +92,7 @@
 					<GridName>hourly</GridName>
 					<TimeType>Integral</TimeType>
 				</OutputDefinition>
-			</OutputDefinitions>
+			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">
 					<Intervals>

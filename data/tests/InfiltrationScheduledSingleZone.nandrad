@@ -65,7 +65,7 @@
 		</Schedules>
 		<Outputs>
 			<TimeUnit>h</TimeUnit>
-			<OutputDefinitions>
+			<Definitions>
 				<!-- hourly values - None -->
 				<OutputDefinition>
 					<Quantity>InfiltrationRate[1]</Quantity>
@@ -84,7 +84,7 @@
 					<ObjectListName>All zones</ObjectListName>
 					<GridName>10 mins</GridName>
 				</OutputDefinition>
-			</OutputDefinitions>
+			</Definitions>
 			<Grids>
 				<OutputGrid name="10 mins">
 					<Intervals>

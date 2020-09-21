@@ -32,7 +32,7 @@
 		</Models>
 		<Outputs>
 			<TimeUnit>h</TimeUnit>
-			<OutputDefinitions>
+			<Definitions>
 				<!-- hourly values - None -->
 				<OutputDefinition>
 					<Quantity>InfiltrationRate[1]</Quantity>
@@ -51,7 +51,7 @@
 					<ObjectListName>All zones</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
-			</OutputDefinitions>
+			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">
 					<Intervals>

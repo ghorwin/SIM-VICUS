@@ -45,7 +45,7 @@
 		</Location>
 		<Outputs>
 			<TimeUnit>h</TimeUnit>
-			<OutputDefinitions>
+			<Definitions>
 				<!-- hourly values -->
 				<OutputDefinition>
 					<Quantity>DirectSWRadOnPlane[1]</Quantity>
@@ -77,7 +77,7 @@
 					<ObjectListName>Location</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
-			</OutputDefinitions>
+			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">
 					<Intervals>

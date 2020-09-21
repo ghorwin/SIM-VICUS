@@ -40,7 +40,7 @@
 		</Location>
 		<Outputs>
 			<TimeUnit>min</TimeUnit>
-			<OutputDefinitions>
+			<Definitions>
 				<!-- minutely values -->
 				<OutputDefinition>
 					<Quantity>AzimuthAngle</Quantity>
@@ -57,22 +57,22 @@
 					<Quantity>IncidenceAngleOnPlane[1]</Quantity>
 					<ObjectListName>Location</ObjectListName>
 					<GridName>minutely</GridName>
-					<Filename>incidence_angles.tsv</Filename>
+					<FileName>incidence_angles.tsv</FileName>
 				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>IncidenceAngleOnPlane[2]</Quantity>
 					<ObjectListName>Location</ObjectListName>
 					<GridName>minutely</GridName>
-					<Filename>incidence_angles.tsv</Filename>
+					<FileName>incidence_angles.tsv</FileName>
 				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>IncidenceAngleOnPlane[4]</Quantity>
 					<ObjectListName>Location</ObjectListName>
 					<GridName>minutely</GridName>
-					<Filename>incidence_angles.tsv</Filename>
+					<FileName>incidence_angles.tsv</FileName>
 				</OutputDefinition>
 
-			</OutputDefinitions>
+			</Definitions>
 			<Grids>
 				<OutputGrid name="minutely">
 					<Intervals>
