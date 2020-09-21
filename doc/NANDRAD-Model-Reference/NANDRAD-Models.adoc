@@ -1,0 +1,10 @@
+:imagesdir: ./images
+
+[[models]]
+# Model Parametrization
+
+This section describes the various model parametrization blocks.
+
+## Natural Ventilation Model (Infiltration)
+
+

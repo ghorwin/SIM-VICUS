@@ -80,6 +80,9 @@ public:
 	NANDRAD_READWRITE
 	NANDRAD_COMP(SimulationParameter)
 
+	/*! To be called after readXML() and mainly used to check whether user-provided parameters are in the valid ranges. */
+	void checkParameters() const;
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! List of parameters. */

@@ -25,8 +25,7 @@
 
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
-
-#include <tinyxml.h>
+#include <IBK_Time.h>
 
 namespace NANDRAD {
 
@@ -49,6 +48,25 @@ void SimulationParameter::initDefaults() {
 
 	m_interval.m_para[NANDRAD::Interval::P_Start]		= IBK::Parameter("Start", 0, "d");
 	m_interval.m_para[NANDRAD::Interval::P_End]		= IBK::Parameter("End", 365, "d");
+}
+
+
+void SimulationParameter::checkParameters() const {
+	FUNCID(SimulationParameter::checkParameters);
+
+	int startYear = m_intPara[NANDRAD::SimulationParameter::IP_StartYear].value;
+
+	double duration = m_interval.m_para[NANDRAD::Interval::P_End].value - m_interval.m_para[NANDRAD::Interval::P_Start].value;
+	if (duration <= 0)
+		throw IBK::Exception(IBK::FormatString("End time point %1 preceedes start time point %2 (must be later than start time!)")
+							 .arg(IBK::Time(startYear, m_interval.m_para[NANDRAD::Interval::P_End].value).toDateTimeFormat())
+							 .arg(IBK::Time(startYear, m_interval.m_para[NANDRAD::Interval::P_Start].value).toDateTimeFormat()), FUNC_ID);
+
+	if (m_para[NANDRAD::SimulationParameter::P_InitialTemperature].value < 123.15)
+		throw IBK::Exception(IBK::FormatString("Invalid initial temperature %1 in SimulationParameters.")
+							 .arg(m_para[NANDRAD::SimulationParameter::P_InitialTemperature].get_value("C")), FUNC_ID);
+
+	/// \todo Implementation of other value range checks
 }
 
 

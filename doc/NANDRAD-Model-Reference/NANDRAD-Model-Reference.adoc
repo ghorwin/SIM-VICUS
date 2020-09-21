@@ -40,6 +40,9 @@ include::NANDRAD-Schedules.adoc[leveloffset=+2]
 include::NANDRAD-Outputs.adoc[leveloffset=+2]
 
 include::NANDRAD-GlobalParameters.adoc[leveloffset=+2]
+include::NANDRAD-Models.adoc[leveloffset=+2]
+
+
 include::NANDRAD-Reference.adoc[leveloffset=+2]
 
 

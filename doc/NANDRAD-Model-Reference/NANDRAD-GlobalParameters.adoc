@@ -109,14 +109,36 @@ This is done in the child tag `Interval`:
 
 The start and end of a simulation are always defined in __simulation time__, explained in the next section.
 
-#### Simulation time and absolute time reference
+[[simulation_time]]
+### Simulation time and absolute time reference
 
-TODO Andreas
+NANDRAD uses two time measures:
 
-- how is the simulation time defined
-- how is the absolute time obtained (start year and start time)
-- how are cyclic annual simulations handled, how are continuous multi-year simulations handled
+- *simulation time*, which always begins at 0 when the simulation starts, and
+- *absolute time*, which is the time converted to a real date/time and is based on the actual simulation start time point.
 
+_Simulation time_ basically describes a time offset relative to the starting point of the simulation, and is typically expressed just as time delta, e.g. "20 d" or "15.5 h".
+
+_Absolute time_ is a specific time/date, like '20.09.2020 14:30', which is obtained by adding the _simulation time_ offset to a starting time point.
+
+In NANDRAD this simulation start time points is given in two parameters:
+
+- the `StartYear` and 
+- the offset of time since begin (midnight January 1st) of this year as `Start` interval parameter.
+
+A `Start` offset of `1 d` lets the simulation start on _January 2nd, 0:00_. If, for example, the simulation shall start on _January 15th 2003, 6:00_, you need to specify
+
+----
+StartYear = 2003
+Start = 14*24 + 6 = 342 h
+----
+
+And for the last day of the year, start the simulation at `Start = 364 d`.
+
+[IMPORTANT]
+====
+There are not leap years in NANDRAD. Even if you specify 2004 as start year, there won't be a February 29th! If you run a multi-year simulation every year has 365 days.
+====
 
 [[solver_parameters]]
 ## Solver Parameters
