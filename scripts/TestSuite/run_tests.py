@@ -293,6 +293,12 @@ for project in projects:
     path, fname = os.path.split(project)
     #print "Path    : " + path
     #print "Project : " + fname
+    
+    # compose path of result folder
+    resultsFolder = project[:-(1+len(args.extension))]
+    
+    # remove entire directory with previous results
+    shutil.rmtree(resultsFolder)
 
     cmdline = [args.solver, project]
     # if in test-init mode, append --test-init to command line
@@ -303,8 +309,6 @@ for project in projects:
     else:
         skipResultCheck = False
     
-    # compose path of result folder
-    resultsFolder = project[:-(1+len(args.extension))]
     referenceFolder = resultsFolder + "." + compilerID
     if not os.path.exists(referenceFolder):
         if not args.run_all:

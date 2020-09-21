@@ -122,7 +122,14 @@ class SolverStats:
 			if fileParts[1] == ".d6o" or fileParts[1] == ".tsv":
 				if fileParts[1] == ".tsv":
 					# for tsv files we do binary comparison
-					if not filecmp.cmp(os.path.join(dir1,f), os.path.join(dir2,f), shallow=False):
+					# check if both files exist
+					if not(os.path.exists(os.path.join(dir1,f))):
+						printError("Missing file '{}'".format(os.path.join(dir1,f)))
+						fail = True
+					elif not(os.path.exists(os.path.join(dir2,f))):
+						printError("Missing file '{}'".format(os.path.join(dir2,f)))
+						fail = True
+					elif not filecmp.cmp(os.path.join(dir1,f), os.path.join(dir2,f), shallow=False):
 						printError("Mismatching content of file (byte difference) '{}'".format(f))
 						fail = True
 					else:
