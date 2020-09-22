@@ -298,7 +298,8 @@ for project in projects:
     resultsFolder = project[:-(1+len(args.extension))]
     
     # remove entire directory with previous results
-    shutil.rmtree(resultsFolder)
+    if os.path.exists(resultsFolder):
+        shutil.rmtree(resultsFolder)
 
     cmdline = [args.solver, project]
     # if in test-init mode, append --test-init to command line
