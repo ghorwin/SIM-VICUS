@@ -1,4 +1,8 @@
 # Project file for NandradSolver
+#
+# remember to set DYLD_FALLBACK_LIBRARY_PATH on MacOSX
+# set LD_LIBRARY_PATH on Linux
+
 
 TARGET = NandradSolver
 TEMPLATE = app
