@@ -1,4 +1,35 @@
 <RCC>
     <qresource prefix="/">
+        <file>gfx/actions/24x24/down.png</file>
+        <file>gfx/actions/24x24/edit.png</file>
+        <file>gfx/actions/24x24/editcopy.png</file>
+        <file>gfx/actions/24x24/filenew.png</file>
+        <file>gfx/actions/24x24/fileopen.png</file>
+        <file>gfx/actions/24x24/filesave.png</file>
+        <file>gfx/actions/24x24/info.png</file>
+        <file>gfx/actions/24x24/minus.png</file>
+        <file>gfx/actions/24x24/plus.png</file>
+        <file>gfx/actions/24x24/print.png</file>
+        <file>gfx/actions/24x24/redo.png</file>
+        <file>gfx/actions/24x24/reload.png</file>
+        <file>gfx/actions/24x24/undo.png</file>
+        <file>gfx/actions/24x24/up.png</file>
+        <file>gfx/actions/24x24/zoom-in-24.png</file>
+        <file>gfx/actions/24x24/zoom-out-24.png</file>
+        <file>gfx/actions/32x32/exit_32x32.png</file>
+        <file>gfx/actions/32x32/filenew_32x32.png</file>
+        <file>gfx/actions/32x32/fileopen_32x32.png</file>
+        <file>gfx/actions/32x32/filesave_32x32.png</file>
+        <file>gfx/actions/32x32/FMI_32x32.png</file>
+        <file>gfx/actions/32x32/FMU_32x32.png</file>
+        <file>gfx/actions/32x32/info_32x32.png</file>
+        <file>gfx/actions/32x32/PostProcApp_32x32.png</file>
+        <file>gfx/actions/32x32/switch_language_32x32.png</file>
+        <file>gfx/actions/64x64/new.png</file>
+        <file>gfx/actions/64x64/open.png</file>
+        <file>gfx/actions/64x64/simStart.png</file>
+        <file>gfx/actions/64x64/Wavy_checkered_flag.svg</file>
+        <file>gfx/icons/de.png</file>
+        <file>gfx/icons/en.png</file>
     </qresource>
 </RCC>
