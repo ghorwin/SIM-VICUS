@@ -1,0 +1,74 @@
+            <math style="font-size: 9pt" display="block">
+              <mrow>
+                <mfenced open="&lang;" close="&rang;">
+                  <mrow>
+                    <mi>&psi;</mi>
+                    <mspace width="thinmathspace" />
+                    <mfenced open="|" close="|">
+                      <mrow>
+                        <mspace width="thinmathspace" />
+                        <mi>&Tscr;</mi>
+                        <mfenced open="{" close="}">
+                          <mrow>
+                            <mfrac>
+                              <mi>&delta;</mi>
+                              <mrow>
+                                <mi>&delta;</mi>
+                                <mi>&straightphi;</mi>
+                              </mrow>
+                            </mfrac>
+                            <mi>F</mi>
+                            <mo>&ApplyFunction;</mo>
+                            <mfenced open="[" close="]">
+                              <mi>&straightphi;</mi>
+                            </mfenced>
+                          </mrow>
+                        </mfenced>
+                      </mrow>
+                    </mfenced>
+                    <mspace width="thinmathspace" />
+                    <mi>&psi;</mi>
+                  </mrow>
+                </mfenced>
+                <mo>=</mo>
+                <mo form="prefix">&minus;</mo>
+                <mi>&ImaginaryI;</mi>
+                <mo>&InvisibleTimes;</mo>
+                <mfenced open="&lang;" close="&rang;">
+                  <mrow>
+                    <mi>&psi;</mi>
+                    <mspace width="thinmathspace" />
+                    <mfenced open="|" close="|">
+                      <mrow>
+                        <mspace width="thinmathspace" />
+                        <mi>&Tscr;</mi>
+                        <mfenced open="{" close="}">
+                          <mrow>
+                            <mi>F</mi>
+                            <mo>&ApplyFunction;</mo>
+                            <mfenced open="[" close="]">
+                              <mi>&straightphi;</mi>
+                            </mfenced>
+                            <mo>&InvisibleTimes;</mo>
+                            <mfrac>
+                              <mi>&delta;</mi>
+                              <mrow>
+                                <mi>&delta;</mi>
+                                <mi>&straightphi;</mi>
+                              </mrow>
+                            </mfrac>
+                            <mi>S</mi>
+                            <mo>&ApplyFunction;</mo>
+                            <mfenced open="[" close="]">
+                              <mi>&straightphi;</mi>
+                            </mfenced>
+                          </mrow>
+                        </mfenced>
+                      </mrow>
+                    </mfenced>
+                    <mspace width="thinmathspace" />
+                    <mi>&psi;</mi>
+                  </mrow>
+                </mfenced>
+              </mrow>
+            </math>

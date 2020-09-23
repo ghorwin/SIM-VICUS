@@ -1,0 +1,25 @@
+            <math display="block">
+              <mrow>
+                <mtext>scriptlevel : </mtext>
+                <mfenced open="" close="">
+                  <mstyle scriptlevel="-3">
+                    <mo form="prefix">&minus;</mo>
+                    <mn>3</mn>
+                  </mstyle>
+                  <mstyle scriptlevel="-2">
+                    <mo form="prefix">&minus;</mo>
+                    <mn>2</mn>
+                  </mstyle>
+                  <mstyle scriptlevel="-1">
+                    <mo form="prefix">&minus;</mo>
+                    <mn>1</mn>
+                  </mstyle>
+                  <mstyle scriptlevel="0">
+                    <mn>0</mn>
+                  </mstyle>
+                  <mstyle scriptlevel="1">
+                    <mn>1</mn>
+                  </mstyle>
+                </mfenced>
+              </mrow>
+            </math>

@@ -1,0 +1,52 @@
+            <math display="block">
+              <mrow>
+                <mi>C</mi>
+                <mfenced>
+                  <mi>n</mi>
+                  <mi>k</mi>
+                </mfenced>
+                <mo>=</mo>
+                <msubsup>
+                  <mi>C</mi>
+                  <mi>k</mi>
+                  <mi>n</mi>
+                </msubsup>
+                <mo>=</mo>
+                <mmultiscripts>
+                  <mi>C</mi>
+                  <mi>k</mi>
+                  <none />
+                  <mprescripts />
+                  <mi>n</mi>
+                  <none />
+                </mmultiscripts>
+                <mo>=</mo>
+                <mfenced>
+                  <mfrac linethickness="0">
+                    <mi>n</mi>
+                    <mi>k</mi>
+                  </mfrac>
+                </mfenced>
+                <mo>=</mo>
+                <mfrac>
+                  <mrow>
+                    <mi>n</mi>
+                    <mo lspace="0" rspace="0">!</mo>
+                  </mrow>
+                  <mrow>
+                    <mi>k</mi>
+                    <mo lspace="0" rspace="0">!</mo>
+                    <mo rspace="mediummathspace">&InvisibleTimes;</mo>
+                    <mfenced>
+                      <mrow>
+                        <mi>n</mi>
+                        <mo>&minus;</mo>
+                        <mi>k</mi>
+                      </mrow>
+                    </mfenced>
+                    <mo lspace="0" rspace="0">!</mo>
+                  </mrow>
+                </mfrac>
+              </mrow>
+            </math>
+

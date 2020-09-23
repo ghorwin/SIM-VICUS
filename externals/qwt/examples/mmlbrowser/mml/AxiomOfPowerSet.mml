@@ -1,0 +1,33 @@
+            <math display="block">
+              <mrow>
+                <mo rspace="0">&forall;</mo>
+                <mi>A</mi>
+                <mo lspace="mediummathspace" rspace="0">&exist;</mo>
+                <mi>P</mi>
+                <mo lspace="mediummathspace" rspace="0">&forall;</mo>
+                <mi>B</mi>
+                <mspace width="thinmathspace" />
+                <mfenced open="[" close="]">
+                  <mrow>
+                    <mi>B</mi>
+                    <mo>&isin;</mo>
+                    <mi>P</mi>
+                    <mo lspace="veryverythickmathspace" rspace="veryverythickmathspace">&Longleftrightarrow;</mo>
+                    <mo rspace="0">&forall;</mo>
+                    <mi>C</mi>
+                    <mspace width="thinmathspace" />
+                    <mfenced>
+                      <mrow>
+                        <mi>C</mi>
+                        <mo>&isin;</mo>
+                        <mi>B</mi>
+                        <mo>&Implies;</mo>
+                        <mi>C</mi>
+                        <mo>&isin;</mo>
+                        <mi>A</mi>
+                      </mrow>
+                    </mfenced>
+                  </mrow>
+                </mfenced>
+              </mrow>
+            </math>

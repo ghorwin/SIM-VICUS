@@ -1,0 +1,28 @@
+site_name: Das QWT (Hand-)Buch
+#repo_url: https://sourceforge.net/projects/qwt
+#repo_name: SourceForge
+site_author: Andreas Nicolai (andreas.nicolai@gmx.net)
+copyright: Copyright 2018 - Andreas Nicolai (andreas.nicolai@gmx.net)
+
+#themes: readthedocs windmill
+#theme_dir: 'mkdocs-windmill-master/mkdocs_windmill'
+theme: readthedocs
+#theme: yeti
+
+extra:
+  version: 6.1.x
+  # windmill specific options
+  history_buttons: false
+#  article_nav_bottom: false
+
+extra_css: [extra.css]
+
+pages:
+- Start: index.md
+- Erstellen und Verwenden: building.md
+- Grundlagen: basics.md
+- Diagramm-Interaktion: interaction.md
+- Fortgeschrittenes: advanced.md
+- Anpassungen: customization.md
+- Drucken/Exportieren: export.md
+- von Qwt 5.x zu 6.x: porting.md

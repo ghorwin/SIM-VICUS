@@ -1,0 +1,48 @@
+            <math display="block">
+              <mrow>
+                <msubsup>
+                  <mo>&Integral;</mo>
+                  <mn>0</mn>
+                  <mn>1</mn>
+                </msubsup>
+                <msup>
+                  <mi>x</mi>
+                  <mi>x</mi>
+                </msup>
+                <mo rspace="mediummathspace">&InvisibleTimes;</mo>
+                <mo rspace="0">&DifferentialD;</mo>
+                <mi>x</mi>
+                <mo>=</mo>
+                <munderover>
+                  <mo>&Sum;</mo>
+                  <mrow>
+                    <mi>n</mi>
+                    <mo>=</mo>
+                    <mn>1</mn>
+                  </mrow>
+                  <mn>&infin;</mn>
+                </munderover>
+                <msup>
+                  <mfenced>
+                    <mrow>
+                      <mo form="prefix">&minus;</mo>
+                      <mn>1</mn>
+                    </mrow>
+                  </mfenced>
+                  <mrow>
+                    <mi>n</mi>
+                    <mo>+</mo>
+                    <mn>1</mn>
+                  </mrow>
+                </msup>
+                <mo>&InvisibleTimes;</mo>
+                <msup>
+                  <mi>n</mi>
+                  <mrow>
+                    <mo form="prefix">&minus;</mo>
+                    <mi>n</mi>
+                  </mrow>
+                </msup>
+              </mrow>
+            </math>
+

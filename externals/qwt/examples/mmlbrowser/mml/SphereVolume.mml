@@ -1,0 +1,257 @@
+            <span style="font-size: 8pt;">
+              <span style="display: table; margin-left: auto; margin-right: auto; white-space: nowrap;
+                           text-align: left; line-height: 0.75">
+                &nbsp; &nbsp; Spherical coordinates derivation of the volume of a sphere
+                <math style="font-size: xx-small">
+                  <mfenced>
+                    <mrow>
+                      <mfrac>
+                        <mn>4</mn>
+                        <mn>3</mn>
+                      </mfrac>
+                      <mo>&InvisibleTimes;</mo>
+                      <mi>&pi;</mi>
+                      <msup>
+                        <mi>R</mi>
+                        <mn>3</mn>
+                      </msup>
+                    </mrow>
+                  </mfenced>
+                </math>
+                .
+                <br />
+                The formula
+                <math>
+                  <mi>S</mi>
+                </math>
+                for a sphere of radius
+                <math>
+                  <mi>R</mi>
+                </math>
+                in spherical coordinates is:
+                <br />
+                <math>
+                  <mrow>
+                    <mi>S</mi>
+                    <mo>=</mo>
+                    <mfenced open="{" close="}">
+                      <mrow>
+                        <mn>0</mn>
+                        <mo>&leq;</mo>
+                        <mi>&straightphi;</mi>
+                        <mo>&leq;</mo>
+                        <mn>2</mn>
+                        <mo>&InvisibleTimes;</mo>
+                        <mi>&pi;</mi>
+                      </mrow>
+                      <mrow>
+                        <mn>0</mn>
+                        <mo>&leq;</mo>
+                        <mi>&theta;</mi>
+                        <mo>&leq;</mo>
+                        <mi>&pi;</mi>
+                      </mrow>
+                      <mrow>
+                        <mn>0</mn>
+                        <mo>&leq;</mo>
+                        <mi>&rho;</mi>
+                        <mo>&leq;</mo>
+                        <mi>R</mi>
+                      </mrow>
+                    </mfenced>
+                  </mrow>
+                </math>
+              </span>
+              <math display="block">
+                <mtable class="thin_column_padding" columnalign="right left">
+                  <mtr>
+                    <mtd style="text-align: right;"> <!-- style HACK for Firefox bug 491384 -->
+		      <mrow>
+		        <mtext>Volume</mtext>
+	              </mrow>
+                    </mtd>
+                    <mtd style="text-align: left"> <!-- style HACK for Firefox bug 491384 -->
+                      <mrow>
+                        <mo>=</mo>
+                        <munder>
+                          <mo>&iiint;</mo>
+                          <mi>S</mi>
+                        </munder>
+                        <msup>
+                          <mi>&rho;</mi>
+                          <mn>2</mn>
+                        </msup>
+                        <mo>&InvisibleTimes;</mo>
+                        <mo>sin</mo>
+                        <mo rspace="thinmathspace">&ApplyFunction;</mo>
+                        <mi>&theta;</mi>
+                        <mo rspace="mediummathspace">&InvisibleTimes;</mo>
+                        <mo rspace="0">&DifferentialD;</mo>
+                        <mi>&rho;</mi>
+                        <mo rspace="mediummathspace">&InvisibleTimes;</mo>
+                        <mo rspace="0">&DifferentialD;</mo>
+                        <mi>&theta;</mi>
+                        <mo rspace="mediummathspace">&InvisibleTimes;</mo>
+                        <mo rspace="0">&DifferentialD;</mo>
+                        <mi>&straightphi;</mi>
+                      </mrow>
+                    </mtd>
+                  </mtr>
+                  <mtr>
+                    <mtd />
+                    <mtd style="text-align: left"> <!-- style HACK for Firefox bug 491384 -->
+                      <mrow>
+                        <mo>=</mo>
+                        <msubsup>
+                          <mo>&Integral;</mo>
+                          <mn>0</mn>
+                          <mrow>
+                            <mn>2</mn>
+                            <mo>&InvisibleTimes;</mo>
+                            <mi>&pi;</mi>
+                          </mrow>
+                        </msubsup>
+                        <mo rspace="0">&DifferentialD;</mo>
+                        <mi>&straightphi;</mi>
+                        <mo lspace="thickmathspace">&InvisibleTimes;</mo>
+                        <msubsup>
+                          <mo>&Integral;</mo>
+                          <mn>0</mn>
+                          <mi>&pi;</mi>
+                        </msubsup>
+                        <mo>sin</mo>
+                        <mo rspace="thinmathspace">&ApplyFunction;</mo>
+                        <mi>&theta;</mi>
+                        <mo rspace="mediummathspace">&InvisibleTimes;</mo>
+                        <mo rspace="0">&DifferentialD;</mo>
+                        <mi>&theta;</mi>
+                        <mo lspace="thickmathspace">&InvisibleTimes;</mo>
+                        <msubsup>
+                          <mo>&Integral;</mo>
+                          <mn>0</mn>
+                          <mi>R</mi>
+                        </msubsup>
+                        <msup>
+                          <mi>&rho;</mi>
+                          <mn>2</mn>
+                        </msup>
+                        <mo rspace="mediummathspace">&InvisibleTimes;</mo>
+                        <mo rspace="0">&DifferentialD;</mo>
+                        <mi>&rho;</mi>
+                      </mrow>
+                    </mtd>
+                  </mtr>
+                  <mtr>
+                    <mtd />
+                    <mtd style="text-align: left"> <!-- style HACK for Firefox bug 491384 -->
+                      <mrow>
+                        <mo>=</mo>
+                        <mspace width="mediummathspace" />
+                        <mi>&straightphi;</mi>
+                        <mspace width="verythinmathspace" />
+                        <msubsup>
+                          <mo maxsize="2.5" minsize="2.5">&vert;</mo>
+                          <mrow>
+                            <mspace width="verythinmathspace" />
+                            <mn>0</mn>
+                          </mrow>
+                          <mrow>
+                            <mspace width="verythinmathspace" />
+                            <mn>2</mn>
+                            <mo>&InvisibleTimes;</mo>
+                            <mi>&pi;</mi>
+                          </mrow>
+                        </msubsup>
+                        <mo rspace="mediummathspace">&InvisibleTimes;</mo>
+                        <mfenced>
+                          <mrow>
+                            <mo form="prefix">&minus;</mo>
+                            <mi>cos</mi>
+                            <mo rspace="thinmathspace">&ApplyFunction;</mo>
+                            <mi>&theta;</mi>
+                          </mrow>
+                        </mfenced>
+                        <mspace width="verythinmathspace" />
+                        <msubsup>
+                          <mo maxsize="2.5" minsize="2.5">&vert;</mo>
+                          <mrow>
+                            <mspace width="verythinmathspace" />
+                            <mn>0</mn>
+                          </mrow>
+                          <mrow>
+                            <mspace width="verythinmathspace" />
+                            <mi>&pi;</mi>
+                          </mrow>
+                        </msubsup>
+                        <mspace width="veryverythickmathspace" />
+                        <mo>&InvisibleTimes;</mo>
+                        <mfrac>
+                          <mn>1</mn>
+                          <mn>3</mn>
+                        </mfrac>
+                        <mo>&InvisibleTimes;</mo>
+                        <msup>
+                          <mi>&rho;</mi>
+                          <mn>3</mn>
+                        </msup>
+                        <mspace width="verythinmathspace" />
+                        <msubsup>
+                          <mo maxsize="2.5" minsize="2.5">&vert;</mo>
+                          <mrow>
+                            <mspace width="verythinmathspace" />
+                            <mn>0</mn>
+                          </mrow>
+                          <mrow>
+                            <mspace width="verythinmathspace" />
+                            <mi>R</mi>
+                          </mrow>
+                        </msubsup>
+                      </mrow>
+                    </mtd>
+                  </mtr>
+                  <mtr>
+                    <mtd />
+                    <mtd style="text-align: left"> <!-- style HACK for Firefox bug 491384 -->
+                      <mrow>
+                        <mo>=</mo>
+                        <mspace width="mediummathspace" />
+                        <mn>2</mn>
+                        <mo>&InvisibleTimes;</mo>
+                        <mi>&pi;</mi>
+                        <mo lspace="thickmathspace" rspace="thickmathspace">&times;</mo>
+                        <mn>2</mn>
+                        <mo lspace="thickmathspace" rspace="thickmathspace">&times;</mo>
+                        <mfrac>
+                          <mn>1</mn>
+                          <mn>3</mn>
+                        </mfrac>
+                        <mo>&InvisibleTimes;</mo>
+                        <msup>
+                          <mi>R</mi>
+                          <mn>3</mn>
+                        </msup>
+                      </mrow>
+                    </mtd>
+                  </mtr>
+                  <mtr>
+                    <mtd />
+                    <mtd style="text-align: left"> <!-- style HACK for Firefox bug 491384 -->
+                      <mrow>
+                        <mo>=</mo>
+                        <mspace width="mediummathspace" />
+                        <mfrac>
+                          <mn>4</mn>
+                          <mn>3</mn>
+                        </mfrac>
+                        <mo>&InvisibleTimes;</mo>
+                        <mi>&pi;</mi>
+                        <msup>
+                          <mi>R</mi>
+                          <mn>3</mn>
+                        </msup>
+                      </mrow>
+                    </mtd>
+                  </mtr>
+                </mtable>
+              </math>
+            </span>

@@ -1,0 +1,47 @@
+/* style for readthedocs theme */
+
+blockquote {
+  color: #702030;
+  font-size:14px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+p {
+  text-align: justify;
+  margin-bottom: 5px;
+}
+
+pre {
+  margin-top: 0px;
+  margin-bottom: 5px;
+}
+
+code {
+  color: #000000;
+  background-color: #f8f8f8;
+  border: none;
+  padding: 0px 0px;
+  font-size: 85%;
+}
+
+/* .wy-menu-vertical li.current a {
+  padding: 0px 20px;
+  font-weight: normal;
+  color: #505050;
+}
+*/
+
+a.toctree-l3 {
+  font-size: 85%;
+  margin-left: 6px;
+}
+
+
+li.toctree-l2 > a:link,
+li.toctree-l2 > a:visited {
+  font-weight: bold;
+  color: #404040;
+  margin-left: -6px;
+}
+

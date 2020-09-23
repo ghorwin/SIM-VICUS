@@ -1,0 +1,142 @@
+            <math style="font-size: 7pt;" display="block">
+              <mrow>
+                <mtable class="thin_column_padding center_column_content">
+                  <mtr>
+                    <mtd columnspan="2" />
+                    <mtd>
+                      <mo>cov</mo>
+                      <mfenced>
+                        <mi>&Lscr;</mi>
+                      </mfenced>
+                    </mtd>
+                    <mtd>
+                      <mo>&longrightarrow;</mo>
+                    </mtd>
+                    <mtd>
+                      <mo>non</mo>
+                      <mfenced>
+                        <mi>&Kscr;</mi>
+                      </mfenced>
+                    </mtd>
+                    <mtd>
+                      <mo>&longrightarrow;</mo>
+                    </mtd>
+                    <mtd>
+                      <mo>cof</mo>
+                      <mfenced>
+                        <mi>&Kscr;</mi>
+                      </mfenced>
+                    </mtd>
+                    <mtd>
+                      <mo>&longrightarrow;</mo>
+                    </mtd>
+                    <mtd>
+                      <mo>cof</mo>
+                      <mfenced>
+                        <mi>&Lscr;</mi>
+                      </mfenced>
+                    </mtd>
+                    <mtd>
+                      <mo>&longrightarrow;</mo>
+                    </mtd>
+                    <mtd>
+                      <msup>
+                        <mn>2</mn>
+                        <msub>
+                          <mi>&aleph;</mi>
+                          <mn>0</mn>
+                        </msub>
+                      </msup>
+                    </mtd>
+                  </mtr>
+                  <mtr>
+                    <mtd columnspan="2" />
+                    <mtd rowspan="3">
+                      <mo maxsize="4.7" minsize="4.7">&uparrow;</mo> <!-- maxsize and minsize HACK for Firefox bug 236963 -->
+                    </mtd>
+                    <mtd />
+                    <mtd>
+                      <mo>&uparrow;</mo>
+                    </mtd>
+                    <mtd />
+                    <mtd>
+                      <mo>&uparrow;</mo>
+                    </mtd>
+                    <mtd />
+                    <mtd rowspan="3">
+                      <mo maxsize="4.7" minsize="4.7">&uparrow;</mo> <!-- maxsize and minsize HACK for Firefox bug 236963 -->
+                    </mtd>
+                    <mtd columnspan="2" />
+                  </mtr>
+                  <mtr>
+                    <mtd columnspan="4" />
+                    <mtd>
+                      <mi>&bfr;</mi>
+                    </mtd>
+                    <mtd>
+                      <mo>&longrightarrow;</mo>
+                    </mtd>
+                    <mtd>
+                      <mi>&dfr;</mi>
+                    </mtd>
+                    <mtd columnspan="5" />
+                  </mtr>
+                  <mtr>
+                    <mtd columnspan="4" />
+                    <mtd>
+                      <mo>&uparrow;</mo>
+                    </mtd>
+                    <mtd />
+                    <mtd>
+                      <mo>&uparrow;</mo>
+                    </mtd>
+                    <mtd columnspan="5" />
+                  </mtr>
+                  <mtr>
+                    <mtd>
+                      <msub>
+                        <mi>&aleph;</mi>
+                        <mn>1</mn>
+                      </msub>
+                    </mtd>
+                    <mtd>
+                      <mo>&longrightarrow;</mo>
+                    </mtd>
+                    <mtd>
+                      <mo>add</mo>
+                      <mfenced>
+                        <mi>&Lscr;</mi>
+                      </mfenced>
+                    </mtd>
+                    <mtd >
+                      <mo>&longrightarrow;</mo>
+                    </mtd>
+                    <mtd>
+                      <mo>add</mo>
+                      <mfenced>
+                        <mi>&Kscr;</mi>
+                      </mfenced>
+                    </mtd>
+                    <mtd>
+                      <mo>&longrightarrow;</mo>
+                    </mtd>
+                    <mtd>
+                      <mo>cov</mo>
+                      <mfenced>
+                        <mi>&Kscr;</mi>
+                      </mfenced>
+                    </mtd>
+                    <mtd>
+                      <mo>&longrightarrow;</mo>
+                    </mtd>
+                    <mtd>
+                      <mo>non</mo>
+                      <mfenced>
+                        <mi>&Lscr;</mi>
+                      </mfenced>
+                    </mtd>
+                    <mtd columnspan="2" />
+                  </mtr>
+                </mtable>
+              </mrow>
+            </math>

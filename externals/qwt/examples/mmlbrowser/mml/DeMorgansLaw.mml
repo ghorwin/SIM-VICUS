@@ -1,0 +1,72 @@
+            <math display="block">
+              <mrow>
+		<mtext>
+		  Logic:&nbsp;
+		</mtext>
+		<mo>&not;</mo>
+		<mfenced>
+                  <mrow>
+  		    <mi>p</mi>
+		    <mo>&and;</mo>
+		    <mi>q</mi>
+                  </mrow>
+		</mfenced>
+		<mo lspace="veryverythickmathspace" rspace="veryverythickmathspace">&Longleftrightarrow;</mo>
+		<mfenced>
+                  <mrow>
+  		    <mo>&not;</mo>
+		    <mi>p</mi>
+                  </mrow>
+		</mfenced>
+		<mo>&or;</mo>
+		<mfenced>
+                  <mrow>
+  		    <mo>&not;</mo>
+		    <mi>q</mi>
+                  </mrow>
+		</mfenced>
+              </mrow>
+	    </math>
+            <math display="block">
+              <mrow>
+		<mtext>
+		  Boolean algebra:&nbsp;
+		</mtext>
+		<mover>
+		  <mrow>
+		    <munderover>
+                      <mo>&bigcup;</mo>
+                      <mrow>
+			<mi>i</mi>
+			<mo>=</mo>
+			<mn>1</mn>
+                      </mrow>
+                      <mi>n</mi>
+		    </munderover>
+		    <msub>
+                      <mi>A</mi>
+                      <mi>i</mi>
+		    </msub>
+		  </mrow>
+		  <mo>&OverBar;</mo>
+		</mover>
+		<mo>=</mo>
+		<munderover>
+		  <mo>&bigcap;</mo>
+		  <mrow>
+		    <mi>i</mi>
+		    <mo>=</mo>
+		    <mn>1</mn>
+		  </mrow>
+		  <mi>n</mi>
+		</munderover>
+		<mover accent="true">
+		  <msub>
+		    <mi>A</mi>
+		    <mi>i</mi>
+		  </msub>
+		  <mo>&OverBar;</mo>
+		</mover>
+              </mrow>
+	    </math>
+

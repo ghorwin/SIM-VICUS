@@ -1,0 +1,53 @@
+            <math display="block">
+              <mrow>
+                <mo>&nabla;</mo>
+                <mo>&middot;</mo>
+                <mover accent="true">
+                  <mi>v</mi>
+                  <mo class="smaller_font">&RightArrow;</mo>
+                </mover>
+                <mo>=</mo>
+                <mfrac>
+                  <mrow>
+                    <mo rspace="0">&PartialD;</mo>
+                    <msub>
+                      <mi>v</mi>
+                      <mi>x</mi>
+                    </msub>
+                  </mrow>
+                  <mrow>
+                    <mo rspace="0">&PartialD;</mo>
+                    <mi>x</mi>
+                  </mrow>
+                </mfrac>
+                <mo>+</mo>
+                <mfrac>
+                  <mrow>
+                    <mo rspace="0">&PartialD;</mo>
+                    <msub>
+                      <mi>v</mi>
+                      <mi>y</mi>
+                    </msub>
+                  </mrow>
+                  <mrow>
+                    <mo rspace="0">&PartialD;</mo>
+                    <mi>y</mi>
+                  </mrow>
+                </mfrac>
+                <mo>+</mo>
+                <mfrac>
+                  <mrow>
+                    <mo rspace="0">&PartialD;</mo>
+                    <msub>
+                      <mi>v</mi>
+                      <mi>z</mi>
+                    </msub>
+                  </mrow>
+                  <mrow>
+                    <mo rspace="0">&PartialD;</mo>
+                    <mi>z</mi>
+                  </mrow>
+                </mfrac>
+              </mrow>
+            </math>
+
