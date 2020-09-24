@@ -36,24 +36,55 @@ INCLUDEPATH = \
 	../../src \
 	../../../externals/IBK/src \
 	../../../externals/Nandrad/src \
-	../../../externals/TiCPP/src
+	../../../externals/Vicus/src \
+	../../../externals/TiCPP/src \
+	../../../externals/QtExt/src
 
 win32 {
 	PRE_TARGETDEPS +=   $$PWD/../../../externals/lib$${DIR_PREFIX}/IBK.lib \
 						$$PWD/../../../externals/lib$${DIR_PREFIX}/CCM.lib \
+						$$PWD/../../../externals/lib$${DIR_PREFIX}/QtExt.lib \
 						$$PWD/../../../externals/lib$${DIR_PREFIX}/qwt6.lib \
 						$$PWD/../../../externals/lib$${DIR_PREFIX}/QuaZIP.lib \
+						$$PWD/../../../externals/lib$${DIR_PREFIX}/Vicus.lib \
 						$$PWD/../../../externals/lib$${DIR_PREFIX}/Nandrad.lib \
 						$$PWD/../../../externals/lib$${DIR_PREFIX}/TiCPP.lib
 }
 
 
 SOURCES += \
+	../../src/SVButtonBar.cpp \
+	../../src/SVConstants.cpp \
+	../../src/SVDebugApplication.cpp \
+	../../src/SVMainWindow.cpp \
+	../../src/SVMessageHandler.cpp \
+	../../src/SVPostProcBindings.cpp \
+	../../src/SVPostProcHandler.cpp \
+	../../src/SVPreferencesDialog.cpp \
+	../../src/SVPreferencesPageTools.cpp \
+	../../src/SVProjectHandler.cpp \
+	../../src/SVSettings.cpp \
+	../../src/SVThreadBase.cpp \
 	../../src/main.cpp
 
-HEADERS  +=
+HEADERS  += \
+	../../src/SVButtonBar.h \
+	../../src/SVConstants.h \
+	../../src/SVDebugApplication.h \
+	../../src/SVMainWindow.h \
+	../../src/SVMessageHandler.h \
+	../../src/SVPostProcBindings.h \
+	../../src/SVPostProcHandler.h \
+	../../src/SVPreferencesDialog.h \
+	../../src/SVPreferencesPageTools.h \
+	../../src/SVProjectHandler.h \
+	../../src/SVSettings.h \
+	../../src/SVThreadBase.h
 
-FORMS    +=
+FORMS    += \
+	../../src/SVMainWindow.ui \
+	../../src/SVPreferencesDialog.ui \
+	../../src/SVPreferencesPageTools.ui
 
 TRANSLATIONS += ../../resources/translations/SIM-VICUS_de.ts
 CODECFORSRC = UTF-8
