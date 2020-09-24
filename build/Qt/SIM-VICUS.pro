@@ -5,6 +5,7 @@ SUBDIRS = \
 	SIM-VICUS \
 	QuaZIP \
 	qwt \
+	QtExt \
 	Vicus \
 	CCM \
 	DataIO \
@@ -37,6 +38,7 @@ Zeppelin.file = ../../externals/Zeppelin/projects/Qt/Zeppelin.pro
 QuaZIP.file = ../../externals/QuaZIP/projects/Qt/QuaZIP.pro
 qwt.file = ../../externals/qwt/projects/Qt/qwt.pro
 Vicus.file = ../../externals/Vicus/projects/Qt/Vicus.pro
+QtExt.file = ../../externals/QtExt/projects/Qt/QtExt.pro
 
 # dependencies
 NandradSolver.depends = DataIO CCM TiCPP IBK IntegratorFramework
