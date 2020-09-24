@@ -26,10 +26,8 @@ public:
 	QToolButton  * toolButtonUndo;
 	QToolButton  * toolButtonRedo;
 
-	QToolButton  * toolButtonSwitchLanguage;
+	QToolButton  * toolButtonViewPostProc;
 	QToolButton  * toolButtonQuit;
-
-	QMenu		 * m_languageMenu;
 
 	/*! Different views. */
 	enum Views {

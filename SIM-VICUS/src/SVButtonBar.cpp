@@ -14,6 +14,7 @@
 #include <VICUS_Constants.h>
 
 void setupToolButton(QToolButton * btn, const QString & iconFile, const QString & hint) {
+	/// \todo move styling to special style class
 	btn->setIcon(QIcon(iconFile));
 	btn->setIconSize(QSize(32,32));
 	btn->setAutoRaise(true);
@@ -21,6 +22,7 @@ void setupToolButton(QToolButton * btn, const QString & iconFile, const QString 
 }
 
 void setupToolButton(QToolButton * btn) {
+	/// \todo move styling to special style class
 	btn->setIconSize(QSize(32,32));
 	btn->setAutoRaise(true);
 }
@@ -41,9 +43,8 @@ SVButtonBar::SVButtonBar(QWidget * parent) :
 	toolButtonUndo = new QToolButton(this); lay->addWidget(toolButtonUndo);
 	toolButtonRedo = new QToolButton(this); lay->addWidget(toolButtonRedo);
 	lay->addSpacerItem( new QSpacerItem(20,20, QSizePolicy::Preferred, QSizePolicy::Fixed) );
-
+	toolButtonViewPostProc = new QToolButton(this); lay->addWidget(toolButtonViewPostProc);
 	lay->addStretch(1);
-	toolButtonSwitchLanguage = new QToolButton(this); lay->addWidget(toolButtonSwitchLanguage);
 	toolButtonQuit = new QToolButton(this); lay->addWidget(toolButtonQuit);
 
 	setupToolButton(toolButtonAbout);
@@ -54,18 +55,10 @@ SVButtonBar::SVButtonBar(QWidget * parent) :
 	setupToolButton(toolButtonUndo);
 	setupToolButton(toolButtonRedo);
 
-	setupToolButton(toolButtonSwitchLanguage, ":/gfx/actions/32x32/switch_language_32x32.png", tr("Change currently used language."));
 	setupToolButton(toolButtonQuit);
-
-	// open context menu with languages
-	m_languageMenu = new QMenu(this);
-	// language menu will be populated in SVMainWindow::addLanguageAction()
 
 	// geometry view is the default
 	m_currentView = GeometryView;
-
-	connect(toolButtonSwitchLanguage, SIGNAL(clicked()),
-			this, SLOT(onToolButtonSwitchLanguageClicked()));
 
 	lay->setMargin(4);
 	setLayout(lay);
@@ -101,8 +94,4 @@ void SVButtonBar::setCurrentView(Views view) {
 	emit currentViewChanged(view);
 }
 
-
-void SVButtonBar::onToolButtonSwitchLanguageClicked() {
-	m_languageMenu->popup(mapToGlobal(toolButtonSwitchLanguage->pos()));
-}
 
