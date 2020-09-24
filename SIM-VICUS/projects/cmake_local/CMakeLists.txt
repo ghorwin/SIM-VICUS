@@ -5,11 +5,14 @@ project( SIM-VICUS )
 # add include directories
 include_directories(
 	${PROJECT_SOURCE_DIR}/../../src			# needed so that ui-generated header files find our own headers
+	${PROJECT_SOURCE_DIR}/../../src/actions
 	${PROJECT_SOURCE_DIR}/../../../externals/IBK/src
 	${PROJECT_SOURCE_DIR}/../../../externals/Nandrad/src
-	${PROJECT_SOURCE_DIR}/../../../externals/zlib/src
-	${PROJECT_SOURCE_DIR}/../../../externals/minizip/src
 	${PROJECT_SOURCE_DIR}/../../../externals/TiCPP/src
+	${PROJECT_SOURCE_DIR}/../../../externals/Vicus/src
+	${PROJECT_SOURCE_DIR}/../../../externals/QtExt/src
+	${PROJECT_SOURCE_DIR}/../../../externals/QuaZIP/src
+	${PROJECT_SOURCE_DIR}/../../../externals/CCM/src
 	${Qt5Widgets_INCLUDE_DIRS}
 	${Qt5Network_INCLUDE_DIRS}
 	${Qt5Svg_INCLUDE_DIRS}
@@ -18,6 +21,9 @@ include_directories(
 
 # collect a list of all source files
 file( GLOB APP_SRCS ${PROJECT_SOURCE_DIR}/../../src/*.cpp )
+file( GLOB APP_ACTION_SRCS ${PROJECT_SOURCE_DIR}/../../src/actions/*.cpp )
+
+set( APP_SRCS ${APP_SRCS} ${APP_ACTION_SRCS} )
 
 # collect a list of all header files (to be used in MOC compiler)
 file( GLOB APP_HDRS ${PROJECT_SOURCE_DIR}/../../src/*.h )
@@ -34,40 +40,20 @@ set ( APP_WIN_RC
 )
 
 # run uic and moc compilers, add resources
-if (Qt5Widgets_INCLUDE_DIRS)
 
-	qt5_add_resources( APP_RC_SRCS ${APP_QRCS} )
-	qt5_wrap_ui( APP_UI_SRCS ${APP_UIS} )
-	qt5_wrap_cpp( APP_MOC_SRCS ${APP_HDRS} )
+qt5_add_resources( APP_RC_SRCS ${APP_QRCS} )
+qt5_wrap_ui( APP_UI_SRCS ${APP_UIS} )
+qt5_wrap_cpp( APP_MOC_SRCS ${APP_HDRS} )
 
-	# generate list of all required QT_LIBRARIES
-	set ( QT_LIBRARIES 
-		Qt5::Widgets
-		Qt5::Svg
-		Qt5::Network
-		Qt5::PrintSupport
-	)
-
-else (Qt5Widgets_INCLUDE_DIRS)
-
-	qt4_add_resources( APP_RC_SRCS ${APP_QRCS} )
-	qt4_wrap_ui( APP_UI_SRCS ${APP_UIS} )
-	qt4_wrap_cpp( APP_MOC_SRCS ${APP_HDRS} )
-
-	# add missing QTMAIN library
-	set( QT_LIBRARIES 
-		${QT_LIBRARIES}
-		${QT_QTMAIN_LIBRARY} # to avoid "error LNK2019: unresolved external symbol _WinMain@16 referenced in function ___tmainCRTStartup"
-	)
-
-endif (Qt5Widgets_INCLUDE_DIRS)
-
-
-if( WIN32 )
-	set (LINK_Z_LIBS zlibstatic)
-else( WIN32 )
-	set (LINK_Z_LIBS z dl)
-endif( WIN32 )
+# generate list of all required QT_LIBRARIES
+set ( QT_LIBRARIES 
+	Qt5::Widgets
+	Qt5::PrintSupport
+	Qt5::Svg
+	Qt5::Xml
+	Qt5::Network
+	Qt5::Concurrent
+)
 
 # build application executable for the different platforms
 if( WIN32 )
@@ -75,7 +61,7 @@ if( WIN32 )
 					 ${APP_SRCS} ${APP_MOC_SRCS} ${APP_RC_SRCS} ${APP_UI_SRCS} ${APP_WIN_RC}
 	)
 
-	set(WIN_FRAMEWORKS iphlpapi)
+	set(WIN_FRAMEWORKS iphlpapi gdiplus gdi32 user32 ole32)
 
 endif( WIN32 ) 
 
@@ -96,12 +82,18 @@ endif( UNIX )
 
 # link against the dependent libraries
 target_link_libraries( ${PROJECT_NAME} 
+	Vicus
+	QtExt
+	QuaZIP
 	Nandrad
+	CCM
+	QtExt
 	IBK
 	TiCPP
-	minizip
-	${LINK_Z_LIBS}
+	QuaZIP
+	qwt6
 	${QT_LIBRARIES}
+	${OPENGL_LIBRARIES}
 	${APPLE_FRAMEWORKS}
 	${WIN_FRAMEWORKS}
 )
