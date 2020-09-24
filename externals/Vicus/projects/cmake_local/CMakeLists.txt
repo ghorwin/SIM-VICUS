@@ -10,18 +10,19 @@ include_directories(
 	${PROJECT_SOURCE_DIR}/../../src
 	${PROJECT_SOURCE_DIR}/../../../IBK/src
 	${PROJECT_SOURCE_DIR}/../../../TiCPP/src
+	${PROJECT_SOURCE_DIR}/../../../Nandrad/src
 )
 
 # collect a list of all source files of the Vicus library
 file( GLOB Vicus_LIB_SRCS ${PROJECT_SOURCE_DIR}/../../src/*.cpp )
 file( GLOB Vicus_NCG_LIB_SRCS ${PROJECT_SOURCE_DIR}/../../src/ncg/*.cpp )
 
-# add NANDRAD_KeywordList.cpp
-set( Vicus_LIB_SRCS
-	${Vicus_LIB_SRCS}
-	${Vicus_NCG_LIB_SRCS}
-	${PROJECT_SOURCE_DIR}/../../src/VICUS_KeywordList.cpp
-)
+# add VICUS_KeywordList.cpp
+#set( Vicus_LIB_SRCS
+#	${Vicus_LIB_SRCS}
+#	${Vicus_NCG_LIB_SRCS}
+#	${PROJECT_SOURCE_DIR}/../../src/VICUS_KeywordList.cpp
+#)
 
 # collect a list of all header files of the Vicus library
 file( GLOB Vicus_HDRS ${PROJECT_SOURCE_DIR}/../../src/*.h )
@@ -30,7 +31,7 @@ file( GLOB Vicus_HDRS ${PROJECT_SOURCE_DIR}/../../src/*.h )
 # to update the VICUS_KeywordList.h and VICUS_KeywordList.cpp file
 add_custom_command (
 	OUTPUT   ${PROJECT_SOURCE_DIR}/../../src/VICUS_KeywordList.cpp
-	DEPENDS  ${Vicus_HDRS} VicusCodeGenerator
+	DEPENDS  ${Vicus_HDRS} NandradCodeGenerator
 	COMMAND  NandradCodeGenerator
 	ARGS     VICUS ${PROJECT_SOURCE_DIR}/../../src 0 VICUS ncg
 )
