@@ -16,7 +16,9 @@ unix {
 }
 
 LIBS += -L../../../lib$${DIR_PREFIX} \
+	-lVicus \
 	-lNandrad \
+	-lQtExt \
 	-lIBK \
 	-lTiCPP \
 	-lQuaZIP

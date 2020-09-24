@@ -21,7 +21,9 @@
 /*! qDebug() message handler function, redirects debug messages to IBK::IBK_Message(). */
 void qDebugMsgHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg) {
 	(void) type;
-	std::string contextstr = "[" + std::string(context.file) + "::" + std::string(context.function) + "]";
+	std::string contextstr;
+	if (context.file != nullptr && context.function != nullptr)
+		contextstr = "[" + std::string(context.file) + "::" + std::string(context.function) + "]";
 	IBK::IBK_Message(msg.toStdString(), IBK::MSG_DEBUG, contextstr.c_str(), IBK::VL_ALL);
 }
 
@@ -54,8 +56,6 @@ int main(int argc, char *argv[]) {
 
 	// initialize resources in dependent libraries
 	Q_INIT_RESOURCE(QtExt);
-	Q_INIT_RESOURCE(SciChart);
-
 
 	// *** Create and initialize setting object of DSix Application ***
 	SVSettings settings(ORG_NAME, PROGRAM_NAME);

@@ -50,10 +50,6 @@ signals:
 	*/
 	void currentViewChanged(int view);
 
-private slots:
-
-	void onToolButtonSwitchLanguageClicked();
-
 private:
 	Views	m_currentView;
 };
