@@ -24,6 +24,8 @@
 
 #include <IBK_Path.h>
 
+#include <NANDRAD_Project.h>
+
 namespace VICUS {
 
 class Project {
@@ -41,6 +43,10 @@ public:
 	*/
 	void writeXML(const IBK::Path & filename) const;
 
+	/*! Removes un-referenced/un-needed data structures. */
+	void clean();
+
+	NANDRAD::Project	m_nandradData;
 };
 
 

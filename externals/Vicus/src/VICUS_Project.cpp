@@ -40,4 +40,8 @@ void Project::writeXML(const IBK::Path & filename) const {
 
 }
 
+void Project::clean() {
+
+}
+
 } // namespace NANDRAD
