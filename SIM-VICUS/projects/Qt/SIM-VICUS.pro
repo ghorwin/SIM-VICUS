@@ -34,10 +34,12 @@ mac {
 
 INCLUDEPATH = \
 	../../src \
+	../../src/actions \
 	../../../externals/IBK/src \
 	../../../externals/Nandrad/src \
 	../../../externals/Vicus/src \
 	../../../externals/TiCPP/src \
+	../../../externals/QuaZIP/src \
 	../../../externals/QtExt/src
 
 win32 {
@@ -53,9 +55,12 @@ win32 {
 
 
 SOURCES += \
+	../../src/SVAboutDialog.cpp \
 	../../src/SVButtonBar.cpp \
 	../../src/SVConstants.cpp \
 	../../src/SVDebugApplication.cpp \
+	../../src/SVLogFileDialog.cpp \
+	../../src/SVLogWidget.cpp \
 	../../src/SVMainWindow.cpp \
 	../../src/SVMessageHandler.cpp \
 	../../src/SVPostProcBindings.cpp \
@@ -65,12 +70,18 @@ SOURCES += \
 	../../src/SVProjectHandler.cpp \
 	../../src/SVSettings.cpp \
 	../../src/SVThreadBase.cpp \
+	../../src/SVWelcomeScreen.cpp \
+	../../src/actions/SVUndoCommandBase.cpp \
+	../../src/actions/SVUndoProject.cpp \
 	../../src/main.cpp
 
 HEADERS  += \
+	../../src/SVAboutDialog.h \
 	../../src/SVButtonBar.h \
 	../../src/SVConstants.h \
 	../../src/SVDebugApplication.h \
+	../../src/SVLogFileDialog.h \
+	../../src/SVLogWidget.h \
 	../../src/SVMainWindow.h \
 	../../src/SVMessageHandler.h \
 	../../src/SVPostProcBindings.h \
@@ -79,12 +90,18 @@ HEADERS  += \
 	../../src/SVPreferencesPageTools.h \
 	../../src/SVProjectHandler.h \
 	../../src/SVSettings.h \
-	../../src/SVThreadBase.h
+	../../src/SVThreadBase.h \
+	../../src/SVWelcomeScreen.h \
+	../../src/actions/SVUndoCommandBase.h \
+	../../src/actions/SVUndoProject.h
 
 FORMS    += \
+	../../src/SVAboutDialog.ui \
+	../../src/SVLogFileDialog.ui \
 	../../src/SVMainWindow.ui \
 	../../src/SVPreferencesDialog.ui \
-	../../src/SVPreferencesPageTools.ui
+	../../src/SVPreferencesPageTools.ui \
+	../../src/SVWelcomeScreen.ui
 
 TRANSLATIONS += ../../resources/translations/SIM-VICUS_de.ts
 CODECFORSRC = UTF-8

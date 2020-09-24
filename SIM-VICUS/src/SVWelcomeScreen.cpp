@@ -228,7 +228,7 @@ void SVWelcomeScreen::updateWelcomePage() {
 			// check if file exists
 			if (thumbFileInfo.exists() && p.load(thumbPath)) {
 				/// \todo fix warning about bad resource loading
-				thumbPath = "<a href=\"d6project:${PROJECT_FULL_PATH}\"><img src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
+				thumbPath = "<a href=\"projectFile:${PROJECT_FULL_PATH}\"><img src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
 				thumbPath = thumbPath.replace("${PROJECT_FULL_PATH}", finfo.filePath());
 				projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(p.width()+10));
 			}
@@ -426,7 +426,7 @@ const char * const HTML_TEMPLATE =
 const char * const RECENT_PROJECT_TABLE_TEMPLATE =
 		"<table border=\"0\" cellspacing=\"2\" cellpadding=\"0\">\n"
 		"<tr valign=center><th width=\"${THUMBNAILSIZE}\" rowspan=\"3\">${IMG_FILENAME}</th><th align=left>${PROJECT_FILENAME}</th></tr>\n"
-		"<tr valign=center><td align=left><a href=\"d6project:${PROJECT_FULL_PATH}\">${PROJECT_FULL_PATH}</a></td></tr>\n"
+		"<tr valign=center><td align=left><a href=\"projectFile:${PROJECT_FULL_PATH}\">${PROJECT_FULL_PATH}</a></td></tr>\n"
 		"<tr valign=top><td align=justify>${PROJECT_DESCRIPTION}</td></tr>\n"
 		"</table>\n"
 		"<br>\n"

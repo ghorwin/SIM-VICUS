@@ -82,14 +82,14 @@ void SVPreferencesPageTools::updateUi() {
 	// no D5 PostProc on linux/mac
 #if defined(Q_OS_MAC)
 	// search for version in Applications dir
-	const QString D6_POST_PROC_INSTALL_LOC = "/Applications/PostProcApp.app";
-	if (QFileInfo(D6_POST_PROC_INSTALL_LOC).exists())
-		postProc2Path = D6_POST_PROC_INSTALL_LOC;
+	const QString POST_PROC_INSTALL_LOC = "/Applications/PostProcApp.app";
+	if (QFileInfo(POST_PROC_INSTALL_LOC).exists())
+		postProc2Path = POST_PROC_INSTALL_LOC;
 #else
-	// search for version in D6 binary directory
-	const QString D6_POST_PROC_INSTALL_LOC = s.m_installDir + "/PostProcApp";
-	if (QFileInfo(D6_POST_PROC_INSTALL_LOC).exists())
-		postProc2Path = D6_POST_PROC_INSTALL_LOC;
+	// search for version in bin directory
+	const QString POST_PROC_INSTALL_LOC = s.m_installDir + "/PostProcApp";
+	if (QFileInfo(POST_PROC_INSTALL_LOC).exists())
+		postProc2Path = POST_PROC_INSTALL_LOC;
 #endif
 
 #endif // Q_OS_WIN

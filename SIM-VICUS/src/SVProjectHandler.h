@@ -122,7 +122,7 @@ public:
 	/*! Saves the project with the given filename (non-interactive).
 		Emits updateActions() signal on success.
 		\param parent Pointe to parent widget. Used in MessageBox.
-		\param fileName Filepath for the project file. Should not contain placeholder. A missing extension d6p will be added.
+		\param fileName Filepath for the project file. Should not contain placeholder. A missing project file extension will be added.
 		\param addToRecentFilesList If true file will be added to recent file list if save was successful.
 	*/
 	SaveResult saveProject(QWidget * parent, const QString & fileName, bool addToRecentFilesList = true);
