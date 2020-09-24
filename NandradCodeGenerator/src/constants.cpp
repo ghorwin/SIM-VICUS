@@ -171,7 +171,7 @@ const char * const HEADER_TEMPLATE =
 		"namespace ${NAMESPACE} {\n\n"
 		"/*! The class KeywordList provides conversion functionality between keyword strings\n"
 		"	and their respective enumeration values.\n"
-		"	Keyword strings are used in the Delphin project files as identifyer. In the code\n"
+		"	Keyword strings are used in the NANDRAD project files as identifier. In the code\n"
 		"	we use the enumeration values. You can obtain a keyword for a given enumeration value\n"
 		"	with the static function Keyword(). The corresponding enumeration value can be\n"
 		"	obtained with Enumeration(), as shown in the example below.\n"
