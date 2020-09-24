@@ -159,22 +159,18 @@ add_subdirectory( ../../externals/Nandrad/projects/cmake_local Nandrad )
 add_subdirectory( ../../externals/IntegratorFramework/projects/cmake_local IntegratorFramework )
 add_subdirectory( ../../externals/Zeppelin/projects/cmake_local Zeppelin )
 add_subdirectory( ../../externals/TiCPP/projects/cmake_local TiCPP )
+add_subdirectory( ../../externals/Vicus/projects/cmake_local Vicus )
 
 if (NOT DISABLE_QT)
 	message("*** Building Qt-based libs ***")
 	
-#	add_subdirectory( ../../externals/qwt/projects/cmake_local qwt )
-#	add_subdirectory( ../../externals/QtExt/projects/cmake_local QtExt )
-#	set(SCICHART_HAS_EMFENGINE ON CACHE BOOL "Build SciChart with EMFEngine" FORCE)
-#	add_subdirectory( ../../externals/SciChart/projects/cmake_local SciChart )
-if( WIN32 )
-#	add_subdirectory( ../../externals/EmfEngine/projects/cmake_local EmfEngine )
-endif( WIN32 )
+	add_subdirectory( ../../externals/qwt/projects/cmake_local qwt )
+	add_subdirectory( ../../externals/QtExt/projects/cmake_local QtExt )
+	add_subdirectory( ../../externals/QuaZIP/projects/cmake_local QuaZIP )
 
 endif (NOT DISABLE_QT)
 
-#add_subdirectory( ../../externals/zlib/projects/cmake_local zlib )
-
+add_subdirectory( ../../externals/zlib/src zlib )
 
 
 # -------------------------------------------------------------
@@ -182,6 +178,6 @@ endif (NOT DISABLE_QT)
 # -------------------------------------------------------------
 
 add_subdirectory( ../../NandradSolver/projects/cmake_local NandradSolver)
-#add_subdirectory( ../../CCD2C6BConverter/projects/cmake_local CCD2C6BConverter)
+add_subdirectory( ../../SIM-VICUS/projects/cmake_local SIM-VICUS)
 
 
