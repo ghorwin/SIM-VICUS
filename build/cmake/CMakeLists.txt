@@ -160,6 +160,7 @@ add_subdirectory( ../../externals/IntegratorFramework/projects/cmake_local Integ
 add_subdirectory( ../../externals/Zeppelin/projects/cmake_local Zeppelin )
 add_subdirectory( ../../externals/TiCPP/projects/cmake_local TiCPP )
 add_subdirectory( ../../externals/Vicus/projects/cmake_local Vicus )
+add_subdirectory( ../../externals/zlib/src zlib )
 
 if (NOT DISABLE_QT)
 	message("*** Building Qt-based libs ***")
@@ -170,7 +171,6 @@ if (NOT DISABLE_QT)
 
 endif (NOT DISABLE_QT)
 
-add_subdirectory( ../../externals/zlib/src zlib )
 
 
 # -------------------------------------------------------------
@@ -178,6 +178,8 @@ add_subdirectory( ../../externals/zlib/src zlib )
 # -------------------------------------------------------------
 
 add_subdirectory( ../../NandradSolver/projects/cmake_local NandradSolver)
-add_subdirectory( ../../SIM-VICUS/projects/cmake_local SIM-VICUS)
 
+if (NOT DISABLE_QT)
+	add_subdirectory( ../../SIM-VICUS/projects/cmake_local SIM-VICUS)
+endif (NOT DISABLE_QT)
 
