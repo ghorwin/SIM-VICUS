@@ -54,6 +54,7 @@ SVButtonBar::SVButtonBar(QWidget * parent) :
 
 	setupToolButton(toolButtonUndo);
 	setupToolButton(toolButtonRedo);
+	setupToolButton(toolButtonViewPostProc);
 
 	setupToolButton(toolButtonQuit);
 

@@ -160,6 +160,8 @@ private slots:
 
 	void on_actionFileExportFMU_triggered();
 
+	void on_actionHelpCheckForUpdates_triggered();
+
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();

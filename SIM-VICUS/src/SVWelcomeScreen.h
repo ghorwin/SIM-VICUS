@@ -45,7 +45,6 @@ signals:
 
 	void newProjectClicked();
 	void openProjectClicked();
-	void importD5ProjectClicked();
 
 	/*! Emitted, when user has removed a project from the recent files list. */
 	void updateRecentList();
@@ -56,8 +55,6 @@ private slots:
 	void on_toolButtonNewProject_clicked();
 	void on_toolButtonOpenProject_clicked();
 	void downloadFinished(QNetworkReply *reply);
-
-	void on_toolButtonImportProject_clicked();
 
 	/*! Triggered by update manager. */
 	void onUpdateInfoRetrieved(int, QString);

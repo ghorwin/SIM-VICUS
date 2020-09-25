@@ -13,7 +13,7 @@ SVAboutDialog::SVAboutDialog(QWidget *parent) :
 
 	setWindowTitle(QString("SIM-VICUS %1").arg(VICUS::LONG_VERSION));
 
-	m_ui->label->setPixmap( QPixmap(":/gfx/splashscreen/splashScreen.png"));
+	m_ui->label->setPixmap( QPixmap(":/gfx/splashscreen/SIM-VICUS.jpg"));
 
 	layout()->setMargin(0);
 	layout()->setSizeConstraint( QLayout::SetFixedSize );

@@ -54,8 +54,8 @@ int main(int argc, char *argv[]) {
 #endif
 	QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
-	// initialize resources in dependent libraries
-	Q_INIT_RESOURCE(QtExt);
+	// TODO : initialize resources in dependent libraries
+//	Q_INIT_RESOURCE(QtExt);
 
 	// *** Create and initialize setting object of DSix Application ***
 	SVSettings settings(ORG_NAME, PROGRAM_NAME);

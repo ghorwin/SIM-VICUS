@@ -321,10 +321,6 @@ void SVWelcomeScreen::on_toolButtonOpenProject_clicked() {
 	emit openProjectClicked();
 }
 
-void SVWelcomeScreen::on_toolButtonImportProject_clicked() {
-	emit importD5ProjectClicked();
-}
-
 void SVWelcomeScreen::downloadFinished(QNetworkReply *reply) {
 	if (reply->error()) {
 		m_welcomePageNews = QString("<i>%1</i>")

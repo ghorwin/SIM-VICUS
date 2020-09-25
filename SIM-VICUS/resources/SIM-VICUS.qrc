@@ -33,5 +33,6 @@
         <file>gfx/icons/en.png</file>
         <file>gfx/actions/32x32/CCMEditor_32.png</file>
         <file>gfx/actions/64x64/projectProperties.png</file>
+        <file>gfx/splashscreen/SIM-VICUS.jpg</file>
     </qresource>
 </RCC>

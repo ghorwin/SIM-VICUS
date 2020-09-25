@@ -36,6 +36,7 @@
     <addaction name="actionFileClose"/>
     <addaction name="separator"/>
     <addaction name="actionFileExport"/>
+    <addaction name="actionFileExportFMU"/>
     <addaction name="separator"/>
     <addaction name="actionFileQuit"/>
    </widget>
@@ -143,6 +144,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+E</string>
+   </property>
+  </action>
+  <action name="actionFileExportFMU">
+   <property name="text">
+    <string>Export Functional Mock-up Unit...</string>
    </property>
   </action>
   <action name="actionFileClose">
