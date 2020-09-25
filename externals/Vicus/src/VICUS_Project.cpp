@@ -27,16 +27,52 @@
 #include <IBK_messages.h>
 #include <IBK_assert.h>
 
+#include <NANDRAD_Utilities.h>
+
 #include <tinyxml.h>
+
+#include "VICUS_Constants.h"
 
 namespace VICUS {
 
 void Project::readXML(const IBK::Path & filename) {
+	FUNCID(Project::readXML);
 
+	TiXmlDocument doc;
+	IBK::Path filenamePath(filename);
+	std::map<std::string,IBK::Path> pathPlaceHolders; // only dummy for now, filenamePath does not contain placeholders
+	TiXmlElement * xmlElem = NANDRAD::openXMLFile(pathPlaceHolders, filenamePath, "VicusProject", doc);
+	if (!xmlElem)
+		return; // empty project, this means we are using only defaults
+
+	// we read our subsections from this handle
+	TiXmlHandle xmlRoot = TiXmlHandle(xmlElem);
+
+	try {
+		xmlElem = xmlRoot.FirstChild("Project").Element();
+//		if (xmlElem) {
+//			readXMLPrivate(xmlElem);
+//		}
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, IBK::FormatString("Error reading project '%1'.").arg(filename), FUNC_ID);
+	}
 }
 
 
 void Project::writeXML(const IBK::Path & filename) const {
+	TiXmlDocument doc;
+	TiXmlDeclaration * decl = new TiXmlDeclaration( "1.0", "UTF-8", "" );
+	doc.LinkEndChild( decl );
+
+	TiXmlElement * root = new TiXmlElement( "VicusProject" );
+	doc.LinkEndChild(root);
+
+	root->SetAttribute("fileVersion", VERSION);
+
+	// other files
+
+	doc.SaveFile( filename.c_str() );
 
 }
 
