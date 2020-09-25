@@ -106,7 +106,7 @@ void SVWelcomeScreen::updateWelcomePage() {
 									  .arg(QString::fromStdString(pro.m_nandradData.m_projectInfo.m_comment));
 			}
 			else {
-				description = tr("<i><font color=\"#800000\">Project not accessible</font></i> <a href=\"projectRemove:%1\">Remove %2</a>").arg( i ).arg( finfo.fileName() );
+				description = tr("<i><font color=\"#800000\">Project not accessible</font></i> <a href=\"premove:%1\">Remove %2 from list</a>").arg( i ).arg( finfo.fileName() );
 			}
 
 			QString thumbPath = QtExt::Directories::userDataDir()  + "/thumbs/" + finfo.fileName() + ".png";
@@ -114,7 +114,7 @@ void SVWelcomeScreen::updateWelcomePage() {
 			QFileInfo thumbFileInfo(thumbPath);
 			// check if file exists
 			if (thumbFileInfo.exists())
-				thumbPath = "<a href=\"projectFile:${PROJECT_FULL_PATH}\"><img src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
+				thumbPath = "<a href=\"pfile:${PROJECT_FULL_PATH}\"><img src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
 			else
 				thumbPath = "&nbsp;";
 			thumbPath = thumbPath.replace("${PROJECT_FULL_PATH}", finfo.filePath());
@@ -141,7 +141,7 @@ void SVWelcomeScreen::updateWelcomePage() {
 		foreach (QString fname, templateFiles) {
 			QString projectInfoBlock = RECENT_PROJECT_TABLE_TEMPLATE;
 			// for templates we use a special link handler
-			projectInfoBlock.replace("projectFile:$", "projectTemplate:$");
+			projectInfoBlock.replace("pfile:$", "ptemplate:$");
 			VICUS::Project pro;
 			QFileInfo finfo(fname);
 			try {
@@ -170,7 +170,7 @@ void SVWelcomeScreen::updateWelcomePage() {
 			// check if file exists
 			if (thumbFileInfo.exists() && p.load(thumbPath)) {
 				/// \todo fix warning about bad resource loading
-				thumbPath = "<a href=\"projectFile:${PROJECT_FULL_PATH}\"><img src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
+				thumbPath = "<a href=\"pfile:${PROJECT_FULL_PATH}\"><img src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
 				thumbPath = thumbPath.replace("${PROJECT_FULL_PATH}", finfo.filePath());
 				projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(p.width()+10));
 			}
@@ -198,7 +198,7 @@ void SVWelcomeScreen::updateWelcomePage() {
 		foreach (QString fname, exampleFiles) {
 			QString projectInfoBlock = RECENT_PROJECT_TABLE_TEMPLATE;
 			// for examples we use a special link handler
-			projectInfoBlock.replace("projectFile:$", "projectExample:$");
+			projectInfoBlock.replace("pfile:$", "pexample:$");
 			VICUS::Project pro;
 			QFileInfo finfo(fname);
 			try {
@@ -228,7 +228,7 @@ void SVWelcomeScreen::updateWelcomePage() {
 			// check if file exists
 			if (thumbFileInfo.exists() && p.load(thumbPath)) {
 				/// \todo fix warning about bad resource loading
-				thumbPath = "<a href=\"projectFile:${PROJECT_FULL_PATH}\"><img src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
+				thumbPath = "<a href=\"pfile:${PROJECT_FULL_PATH}\"><img src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
 				thumbPath = thumbPath.replace("${PROJECT_FULL_PATH}", finfo.filePath());
 				projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(p.width()+10));
 			}
@@ -250,32 +250,32 @@ void SVWelcomeScreen::updateWelcomePage() {
 
 
 void SVWelcomeScreen::onAnchorClicked( const QUrl & link ) {
-	// if anchor starts with "projectFile:" we emit the "open project" signal
-	if (link.toString().startsWith("projectFile:")) {
+	// if anchor starts with "pfile:" we emit the "open project" signal
+	if (link.toString().startsWith("pfile:")) {
 		QString fname = link.toString();
-		fname = fname.right(fname.length()-10);
+		fname = fname.right(fname.length()-QString("pfile:").size());
 		emit openProject(fname);
 		return;
 	}
-	// if anchor starts with "projectExample:" we emit the "open example" signal
-	else if (link.toString().startsWith("projectExample:")) {
+	// if anchor starts with "pexample:" we emit the "open example" signal
+	else if (link.toString().startsWith("pexample:")) {
 		QString fname = link.toString();
-		fname = fname.right(fname.length()-10);
+		fname = fname.right(fname.length()-QString("pexample:").size());
 		emit openExample(fname);
 		return;
 	}
-	// if anchor starts with "projectTemplate:" we emit the "open template" signal
-	else if (link.toString().startsWith("projectTemplate:")) {
+	// if anchor starts with "ptemplate:" we emit the "open template" signal
+	else if (link.toString().startsWith("ptemplate:")) {
 		QString fname = link.toString();
-		fname = fname.right(fname.length()-11);
+		fname = fname.right(fname.length()-QString("ptemplate:").size());
 		emit openTemplate(fname);
 		return;
 	}
-	else if (link.toString().startsWith("projectRemove:")) {
+	else if (link.toString().startsWith("premove:")) {
 
 		// extract project index to delete and remove it from list
 		QString index = link.toString();
-		index = index.right(index.length()-9);
+		index = index.right(index.length()-QString("premove:").size());
 		bool ok;
 		int ind = index.toInt(&ok);
 		if (ok && ind < SVSettings::instance().m_recentProjects.size()){
@@ -422,7 +422,7 @@ const char * const HTML_TEMPLATE =
 const char * const RECENT_PROJECT_TABLE_TEMPLATE =
 		"<table border=\"0\" cellspacing=\"2\" cellpadding=\"0\">\n"
 		"<tr valign=center><th width=\"${THUMBNAILSIZE}\" rowspan=\"3\">${IMG_FILENAME}</th><th align=left>${PROJECT_FILENAME}</th></tr>\n"
-		"<tr valign=center><td align=left><a href=\"projectFile:${PROJECT_FULL_PATH}\">${PROJECT_FULL_PATH}</a></td></tr>\n"
+		"<tr valign=center><td align=left><a href=\"pfile:${PROJECT_FULL_PATH}\">${PROJECT_FULL_PATH}</a></td></tr>\n"
 		"<tr valign=top><td align=justify>${PROJECT_DESCRIPTION}</td></tr>\n"
 		"</table>\n"
 		"<br>\n"
