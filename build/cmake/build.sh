@@ -142,9 +142,13 @@ echo "*** Copying NandradSolver and SIM-VICUS to bin/release ***" &&
 if [ -d $BUILDDIR/SIM-VICUS/SIM-VICUS.app ]
 then
     rm -rf ../../bin/release/SIM-VICUS.app
-#    cp -r $BUILDDIR/SIM-VICUS/SIM-VICUS.app ../../bin/release/SIM-VICUS.app
+    cp -r $BUILDDIR/SIM-VICUS/SIM-VICUS.app ../../bin/release/SIM-VICUS.app
+#    cp $BUILDDIR/NandradSolver/NandradSolver ../../bin/release/NandradSolver
 else
     cp $BUILDDIR/NandradSolver/NandradSolver ../../bin/release/NandradSolver
-#    cp $BUILDDIR/SIM-VICUS/SIM-VICUS ../../bin/release/SIM-VICUS
+	if [ -e $BUILDDIR/SIM-VICUS/SIM-VICUS ]
+	then
+		cp $BUILDDIR/SIM-VICUS/SIM-VICUS ../../bin/release/SIM-VICUS
+	fi
 fi
 
