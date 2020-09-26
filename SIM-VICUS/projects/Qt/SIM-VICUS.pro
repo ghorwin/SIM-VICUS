@@ -11,6 +11,8 @@ include( ../../../externals/IBK/projects/Qt/IBK.pri )
 
 QT += xml opengl network printsupport widgets
 
+CONFIG += c++11
+
 unix {
 	QMAKE_CXXFLAGS += -std=c++11
 }
@@ -37,6 +39,7 @@ mac {
 INCLUDEPATH = \
 	../../src \
 	../../src/actions \
+	../../src/core3D \
 	../../../externals/IBK/src \
 	../../../externals/Nandrad/src \
 	../../../externals/Vicus/src \
@@ -61,6 +64,7 @@ SOURCES += \
 	../../src/SVButtonBar.cpp \
 	../../src/SVConstants.cpp \
 	../../src/SVDebugApplication.cpp \
+	../../src/SVGeometryView.cpp \
 	../../src/SVLogFileDialog.cpp \
 	../../src/SVLogWidget.cpp \
 	../../src/SVMainWindow.cpp \
@@ -75,6 +79,16 @@ SOURCES += \
 	../../src/SVWelcomeScreen.cpp \
 	../../src/actions/SVUndoCommandBase.cpp \
 	../../src/actions/SVUndoProject.cpp \
+	../../src/core3D/BoxMesh.cpp \
+	../../src/core3D/BoxObject.cpp \
+	../../src/core3D/GridObject.cpp \
+	../../src/core3D/KeyboardMouseHandler.cpp \
+	../../src/core3D/OpenGLWindow.cpp \
+	../../src/core3D/PickLineObject.cpp \
+	../../src/core3D/PickObject.cpp \
+	../../src/core3D/SceneView.cpp \
+	../../src/core3D/ShaderProgram.cpp \
+	../../src/core3D/Transform3D.cpp \
 	../../src/main.cpp
 
 HEADERS  += \
@@ -82,6 +96,7 @@ HEADERS  += \
 	../../src/SVButtonBar.h \
 	../../src/SVConstants.h \
 	../../src/SVDebugApplication.h \
+	../../src/SVGeometryView.h \
 	../../src/SVLogFileDialog.h \
 	../../src/SVLogWidget.h \
 	../../src/SVMainWindow.h \
@@ -95,7 +110,19 @@ HEADERS  += \
 	../../src/SVThreadBase.h \
 	../../src/SVWelcomeScreen.h \
 	../../src/actions/SVUndoCommandBase.h \
-	../../src/actions/SVUndoProject.h
+	../../src/actions/SVUndoProject.h \
+	../../src/core3D/BoxMesh.h \
+	../../src/core3D/BoxObject.h \
+	../../src/core3D/Camera.h \
+	../../src/core3D/GridObject.h \
+	../../src/core3D/KeyboardMouseHandler.h \
+	../../src/core3D/OpenGLWindow.h \
+	../../src/core3D/PickLineObject.h \
+	../../src/core3D/PickObject.h \
+	../../src/core3D/SceneView.h \
+	../../src/core3D/ShaderProgram.h \
+	../../src/core3D/Transform3D.h \
+	../../src/core3D/Vertex.h
 
 FORMS    += \
 	../../src/SVAboutDialog.ui \
@@ -108,6 +135,7 @@ FORMS    += \
 TRANSLATIONS += ../../resources/translations/SIM-VICUS_de.ts
 CODECFORSRC = UTF-8
 
-RESOURCES += ../../resources/SIM-VICUS.qrc
+RESOURCES += ../../resources/SIM-VICUS.qrc \
+	../../src/shaders/shaders.qrc
 
 

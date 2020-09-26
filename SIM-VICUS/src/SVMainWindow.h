@@ -20,6 +20,7 @@ class SVButtonBar;
 class SVPreferencesDialog;
 class SVPostProcHandler;
 class SVLogWidget;
+class SVGeometryView;
 
 /*! Main window class. */
 class SVMainWindow : public QMainWindow {
@@ -258,8 +259,11 @@ private:
 	/*! FMI Export dialog. */
 //	SVFMIExportDialog			*m_fmiExportDialog										= nullptr;
 
-	QDockWidget					*m_logDockWidget;
-	SVLogWidget					*m_logWidget;
+	/*! Contains the 3D scene view (and tool buttons and stuff). */
+	SVGeometryView				*m_geometryView											= nullptr;
+
+	QDockWidget					*m_logDockWidget										= nullptr;
+	SVLogWidget					*m_logWidget											= nullptr;
 
 	/*! Handles spawning/activating of PostProc executable. */
 	SVPostProcHandler			*m_postProcHandler										= nullptr;

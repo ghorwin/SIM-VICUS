@@ -18,6 +18,8 @@ public:
 	/*! We just reimplement QApplication::notify() to catch all exceptions and allow setting a breakpoint here. */
 	bool notify( QObject *recv, QEvent *e );
 
+	/*! Set to true in case of a critical exception */
+	bool m_aboutToTerminate = false;
 };
 
 #endif // SV_DebugApplicationH

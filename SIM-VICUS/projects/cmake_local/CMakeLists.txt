@@ -6,6 +6,7 @@ project( SIM-VICUS )
 include_directories(
 	${PROJECT_SOURCE_DIR}/../../src			# needed so that ui-generated header files find our own headers
 	${PROJECT_SOURCE_DIR}/../../src/actions
+	${PROJECT_SOURCE_DIR}/../../src/core3D
 	${PROJECT_SOURCE_DIR}/../../../externals/IBK/src
 	${PROJECT_SOURCE_DIR}/../../../externals/Nandrad/src
 	${PROJECT_SOURCE_DIR}/../../../externals/TiCPP/src
@@ -20,13 +21,25 @@ include_directories(
 )
 
 # collect a list of all source files
-file( GLOB APP_SRCS ${PROJECT_SOURCE_DIR}/../../src/*.cpp )
-file( GLOB APP_ACTION_SRCS ${PROJECT_SOURCE_DIR}/../../src/actions/*.cpp )
-
-set( APP_SRCS ${APP_SRCS} ${APP_ACTION_SRCS} )
+file( GLOB APP_SRCS 		${PROJECT_SOURCE_DIR}/../../src/*.cpp )
+file( GLOB APP_ACTION_SRCS 	${PROJECT_SOURCE_DIR}/../../src/actions/*.cpp )
+file( GLOB APP_3D_SRCS 		${PROJECT_SOURCE_DIR}/../../src/core3D/*.cpp )
 
 # collect a list of all header files (to be used in MOC compiler)
-file( GLOB APP_HDRS ${PROJECT_SOURCE_DIR}/../../src/*.h )
+file( GLOB APP_HDRS 		${PROJECT_SOURCE_DIR}/../../src/*.h )
+file( GLOB APP_ACTION_HDRS 	${PROJECT_SOURCE_DIR}/../../src/action/*.h )
+file( GLOB APP_3D_HDRS 		${PROJECT_SOURCE_DIR}/../../src/core3D/*.h )
+
+set( APP_SRCS 
+	${APP_SRCS} 
+	${APP_ACTION_SRCS} 
+	${APP_3D_SRCS} 
+)
+set( APP_HDRS 
+	${APP_HDRS} 
+	${APP_ACTION_HDRS} 
+	${APP_3D_HDRS} 
+)
 
 # collect a list of all form files
 file( GLOB APP_UIS ${PROJECT_SOURCE_DIR}/../../src/*.ui )
@@ -62,7 +75,10 @@ if( WIN32 )
 	)
 
 	set(WIN_FRAMEWORKS iphlpapi gdiplus gdi32 user32 ole32)
-
+	
+	# enable console window (to see debug/profiler messages)
+	set_target_properties( ${PROJECT_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE" )
+	
 endif( WIN32 ) 
 
 if( UNIX )

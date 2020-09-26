@@ -47,6 +47,8 @@
 #include "SVPostProcHandler.h"
 //#include "SVFMIExportDialog.h"
 
+#include "SVGeometryView.h"
+
 static bool copyRecursively(const QString &srcFilePath, const QString &tgtFilePath);
 
 SVMainWindow * SVMainWindow::m_self = nullptr;
@@ -129,8 +131,10 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/, Qt::WindowFlags /*flags*/) :
 	connect(m_buttonBar, SIGNAL(currentViewChanged(int)), this, SLOT(onNavigationBarViewChanged(int)));
 
 	// *** Create geometry view ***
-	lay->addWidget(new QWidget(this));
+	m_geometryView = new SVGeometryView(this);
+	lay->addWidget(m_geometryView);
 
+//	lay->setStretch(2,1);
 	// TODO : add other views
 
 	// *** add actions for undo and redo ***
@@ -286,7 +290,7 @@ bool SVMainWindow::exportProjectCopy(QString targetDirPath, const VICUS::Project
 	// create subdirectory for climate data (if any climate data reference is used)
 	targetBaseDir.mkpath(targetDirPath + "/climate");
 
-	// TODO : implement
+	// TODO : implement project export
 	(void)project;
 
 	return true;
@@ -360,8 +364,7 @@ void SVMainWindow::closeEvent(QCloseEvent * event) {
 		m_threadPool[0]->wait(1000);
 	}
 
-	// store view settings
-	// TODO
+	// TODO : store view settings
 
 	// store list of visible dock widgets
 	QStringList dockWidgetVisibility;
@@ -517,11 +520,11 @@ void SVMainWindow::on_actionFileExportFMU_triggered() {
 	if (!saveProject())
 		return;
 
-//	if (m_fmiExportDialog == nullptr)
+	// TODO : Implement FMU export dialog
+
+	//	if (m_fmiExportDialog == nullptr)
 //		m_fmiExportDialog = new SVFMIExportDialog(this);
 
-
-	// TODO : Implement
 }
 
 
@@ -761,7 +764,7 @@ void SVMainWindow::onUpdateActions() {
 	// views are only visible when we have a project
 //	m_ui->actionViewShowConstruction->setEnabled(have_project);
 	if (!have_project) {
-//		m_constructionWidget->setVisible(false);
+		m_geometryView->setVisible(false);
 	}
 	// Note: in case of a project, the current view widget is set visible onNavigationBarViewChanged() below
 
@@ -907,7 +910,7 @@ void SVMainWindow::onNavigationBarViewChanged(int view) {
 	}
 	switch ((SVButtonBar::Views)view) {
 		case SVButtonBar::GeometryView :
-//			m_geometryWidget->setVisible(true);
+			m_geometryView->setVisible(true);
 
 			break;
 	}

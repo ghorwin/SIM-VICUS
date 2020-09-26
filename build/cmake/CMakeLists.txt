@@ -90,6 +90,10 @@ else (DISABLE_QT)
 	find_package(Qt5Concurrent REQUIRED)
 
 	message("*** Building with Qt5, Version ${Qt5Widgets_VERSION} ***")
+	
+	# we need OpenGL
+	find_package( OpenGL REQUIRED )
+	
 endif (DISABLE_QT)
 
 if( APPLE )
