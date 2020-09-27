@@ -35,6 +35,7 @@ popd
 
 :: copy executable to bin/release dir
 xcopy /Y .\bb_VC_x64\NandradSolver\NandradSolver.exe ..\..\bin\release_x64
+xcopy /Y .\bb_VC_x64\SIM-VICUS\SIM-VICUS.exe ..\..\bin\release_x64
 
 exit /b 0
 
