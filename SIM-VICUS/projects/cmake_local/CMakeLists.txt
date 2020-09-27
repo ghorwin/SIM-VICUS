@@ -13,6 +13,7 @@ include_directories(
 	${PROJECT_SOURCE_DIR}/../../../externals/Vicus/src
 	${PROJECT_SOURCE_DIR}/../../../externals/QtExt/src
 	${PROJECT_SOURCE_DIR}/../../../externals/QuaZIP/src
+	${PROJECT_SOURCE_DIR}/../../../externals/QuaZIP/src/zlib
 	${PROJECT_SOURCE_DIR}/../../../externals/CCM/src
 	${Qt5Widgets_INCLUDE_DIRS}
 	${Qt5Network_INCLUDE_DIRS}
@@ -92,7 +93,7 @@ if( UNIX )
 	else( APPLE )
 		add_executable( ${PROJECT_NAME} 
 						${APP_SRCS} ${APP_MOC_SRCS} ${APP_RC_SRCS} ${APP_UI_SRCS} 
-						${PROJECT_SOURCE_DIR}/../../resources/SIM-VICUS.icns
+						${PROJECT_SOURCE_DIR}/../../resources/gfx/SIM-VICUS.icns
 		)
 	endif( APPLE ) 
 

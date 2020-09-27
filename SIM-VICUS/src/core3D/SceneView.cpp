@@ -243,21 +243,21 @@ void SceneView::pick(const QPoint & globalMousePos) {
 	}
 
 	// mouse position in NDC space, one point on near plane and one point on far plane
-	QVector4D near(
+	QVector4D nearPos(
 				(mx - halfVpw) / halfVpw,
 				-1*(my - halfVph) / halfVph,
 				-1,
 				1.0);
 
-	QVector4D far(
-				near.x(),
-				near.y(),
+	QVector4D farPos(
+				nearPos.x(),
+				nearPos.y(),
 				1,
 				1.0);
 
 	// transform from NDC to model coordinates
-	QVector4D nearResult = projectionMatrixInverted*near;
-	QVector4D farResult = projectionMatrixInverted*far;
+	QVector4D nearResult = projectionMatrixInverted*nearPos;
+	QVector4D farResult = projectionMatrixInverted*farPos;
 	// don't forget normalization!
 	nearResult /= nearResult.w();
 	farResult /= farResult.w();

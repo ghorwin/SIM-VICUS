@@ -45,6 +45,7 @@ INCLUDEPATH = \
 	../../../externals/Vicus/src \
 	../../../externals/TiCPP/src \
 	../../../externals/QuaZIP/src \
+	../../../externals/QuaZIP/src/zlib \
 	../../../externals/QtExt/src
 
 win32 {

@@ -9,9 +9,11 @@
 #include <IBK_BuildFlags.h>
 
 #include <iostream>
+#include <memory>
 
 #include <QtExt_LanguageHandler.h>
 #include <QtExt_Directories.h>
+#include <QtExt_AutoUpdater.h>
 
 #include "SVMessageHandler.h"
 #include "SVSettings.h"
@@ -63,6 +65,7 @@ int main(int argc, char *argv[]) {
 	settings.read();
 
 	// customize application font
+	/// \todo move to style class
 	unsigned int ps = SVSettings::instance().m_fontPointSize;
 	if (ps != 0) {
 		QFont f(qApp->font());
