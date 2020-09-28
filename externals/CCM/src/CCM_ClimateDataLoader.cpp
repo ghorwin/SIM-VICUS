@@ -683,7 +683,7 @@ void ClimateDataLoader::readClimateDataEPW(const IBK::Path & fname, bool headerO
 			std::vector<std::string> tokens;
 			IBK::explode_csv(line, tokens);
 			if (m_startYear == DATA_NOT_VALID)
-				m_startYear = IBK::string2val<double>(tokens[0]);
+				m_startYear = IBK::string2val<int>(tokens[0]);
 			double temperature = IBK::string2val<double>(tokens[6]);
 			if(IBK::near_equal(temperature, 99.9))
 				temperature = DATA_NOT_VALID;
@@ -1459,7 +1459,10 @@ void ClimateDataLoader::writeClimateDataEPW(const IBK::Path & fname) {
 		out << ",9999";		// Extraterrestrial horizontal radiation (solar constant)
 		out << ",9999";		// Extraterrestrial direct normal radiation
 
-		out << "," << m_data[LongWaveCounterRadiation][i];
+		if(m_data[LongWaveCounterRadiation][i] < 0)
+			out << ",9999";
+		else
+			out << "," << m_data[LongWaveCounterRadiation][i];
 
 		// EPW uses hourly mean values, we take the middle of the (hour) interval to compute
 		// the sun position and convert from normal to horizontal direct radiation, then we add diffuse radiation
