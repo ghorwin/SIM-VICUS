@@ -15,7 +15,7 @@ License    : BSD License,
 #include <QVector3D>
 #include <QColor>
 
-/*! A container class to store data (coordinates, normals, textures, colors) of a vertex, used for interleaved
+/*! A container class to store data (coordinates, colors) of a vertex, used for interleaved
 	storage. Expand this class as needed.
 
 	Memory layout (each char is a byte): xxxxyyyyzzzzrrrrggggbbbb = 6*4 = 24 Bytes

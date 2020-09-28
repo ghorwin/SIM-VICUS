@@ -12,7 +12,7 @@ License    : BSD License,
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "Transform3D.h"
+#include "Vic3DTransform3D.h"
 
 /*! A transformation class with additional functions related to perspective transformation (camera lens). */
 class Camera : public Transform3D {

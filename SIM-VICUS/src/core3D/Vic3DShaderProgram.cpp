@@ -9,7 +9,7 @@ License    : BSD License,
 
 ************************************************************************************/
 
-#include "ShaderProgram.h"
+#include "Vic3DShaderProgram.h"
 
 #include <QOpenGLShaderProgram>
 #include <QDebug>

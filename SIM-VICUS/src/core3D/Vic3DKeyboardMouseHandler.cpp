@@ -9,7 +9,7 @@ License    : BSD License,
 
 ************************************************************************************/
 
-#include "KeyboardMouseHandler.h"
+#include "Vic3DKeyboardMouseHandler.h"
 
 #include <QKeyEvent>
 #include <QMouseEvent>

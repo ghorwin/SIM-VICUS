@@ -11,7 +11,7 @@ Code is taken from https://www.trentreed.net/blog/qt5-opengl-part-3b-camera-cont
 
 ************************************************************************************/
 
-#include "Transform3D.h"
+#include "Vic3DTransform3D.h"
 #include <QDebug>
 
 // Transform By (Add/Scale)

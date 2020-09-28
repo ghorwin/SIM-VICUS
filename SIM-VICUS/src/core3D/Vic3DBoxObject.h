@@ -19,7 +19,7 @@ QT_BEGIN_NAMESPACE
 class QOpenGLShaderProgram;
 QT_END_NAMESPACE
 
-#include "BoxMesh.h"
+#include "Vic3DBoxMesh.h"
 
 struct PickObject;
 

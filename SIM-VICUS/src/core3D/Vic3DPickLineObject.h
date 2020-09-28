@@ -20,7 +20,7 @@ class QOpenGLShaderProgram;
 QT_END_NAMESPACE
 
 
-#include "Vertex.h"
+#include "Vic3DVertex.h"
 
 /*! For drawing a simple line. */
 class PickLineObject {

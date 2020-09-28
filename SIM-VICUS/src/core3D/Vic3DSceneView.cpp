@@ -9,7 +9,7 @@ License    : BSD License,
 
 ************************************************************************************/
 
-#include "SceneView.h"
+#include "Vic3DSceneView.h"
 
 #include <QExposeEvent>
 #include <QOpenGLShaderProgram>
@@ -17,7 +17,7 @@ License    : BSD License,
 
 #include "SVDebugApplication.h"
 
-#include "PickObject.h"
+#include "Vic3DPickObject.h"
 #include "OpenGLException.h"
 
 #define SHADER(x) m_shaderPrograms[x].shaderProgram()

@@ -11,7 +11,7 @@ Source code is based on Qt Example OpenGLWindow, but has been simplified a lot.
 
 ************************************************************************************/
 
-#include "OpenGLWindow.h"
+#include "Vic3DOpenGLWindow.h"
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>

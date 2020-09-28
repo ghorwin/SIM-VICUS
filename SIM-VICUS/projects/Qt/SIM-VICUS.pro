@@ -80,16 +80,16 @@ SOURCES += \
 	../../src/SVWelcomeScreen.cpp \
 	../../src/actions/SVUndoCommandBase.cpp \
 	../../src/actions/SVUndoProject.cpp \
-	../../src/core3D/BoxMesh.cpp \
-	../../src/core3D/BoxObject.cpp \
-	../../src/core3D/GridObject.cpp \
-	../../src/core3D/KeyboardMouseHandler.cpp \
-	../../src/core3D/OpenGLWindow.cpp \
-	../../src/core3D/PickLineObject.cpp \
-	../../src/core3D/PickObject.cpp \
-	../../src/core3D/SceneView.cpp \
-	../../src/core3D/ShaderProgram.cpp \
-	../../src/core3D/Transform3D.cpp \
+	../../src/core3D/Vic3DBoxMesh.cpp \
+	../../src/core3D/Vic3DBoxObject.cpp \
+	../../src/core3D/Vic3DGridObject.cpp \
+	../../src/core3D/Vic3DKeyboardMouseHandler.cpp \
+	../../src/core3D/Vic3DOpenGLWindow.cpp \
+	../../src/core3D/Vic3DPickLineObject.cpp \
+	../../src/core3D/Vic3DPickObject.cpp \
+	../../src/core3D/Vic3DSceneView.cpp \
+	../../src/core3D/Vic3DShaderProgram.cpp \
+	../../src/core3D/Vic3DTransform3D.cpp \
 	../../src/main.cpp
 
 HEADERS  += \
@@ -112,18 +112,18 @@ HEADERS  += \
 	../../src/SVWelcomeScreen.h \
 	../../src/actions/SVUndoCommandBase.h \
 	../../src/actions/SVUndoProject.h \
-	../../src/core3D/BoxMesh.h \
-	../../src/core3D/BoxObject.h \
-	../../src/core3D/Camera.h \
-	../../src/core3D/GridObject.h \
-	../../src/core3D/KeyboardMouseHandler.h \
-	../../src/core3D/OpenGLWindow.h \
-	../../src/core3D/PickLineObject.h \
-	../../src/core3D/PickObject.h \
-	../../src/core3D/SceneView.h \
-	../../src/core3D/ShaderProgram.h \
-	../../src/core3D/Transform3D.h \
-	../../src/core3D/Vertex.h
+	../../src/core3D/Vic3DBoxMesh.h \
+	../../src/core3D/Vic3DBoxObject.h \
+	../../src/core3D/Vic3DCamera.h \
+	../../src/core3D/Vic3DGridObject.h \
+	../../src/core3D/Vic3DKeyboardMouseHandler.h \
+	../../src/core3D/Vic3DOpenGLWindow.h \
+	../../src/core3D/Vic3DPickLineObject.h \
+	../../src/core3D/Vic3DPickObject.h \
+	../../src/core3D/Vic3DSceneView.h \
+	../../src/core3D/Vic3DShaderProgram.h \
+	../../src/core3D/Vic3DTransform3D.h \
+	../../src/core3D/Vic3DVertex.h
 
 FORMS    += \
 	../../src/SVAboutDialog.ui \

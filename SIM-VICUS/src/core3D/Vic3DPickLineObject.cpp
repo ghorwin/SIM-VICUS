@@ -9,7 +9,7 @@ License    : BSD License,
 
 ************************************************************************************/
 
-#include "PickLineObject.h"
+#include "Vic3DPickLineObject.h"
 
 #include <QOpenGLShaderProgram>
 #include <vector>

@@ -9,8 +9,8 @@ License    : BSD License,
 
 ************************************************************************************/
 
-#include "BoxMesh.h"
-#include "PickObject.h"
+#include "Vic3DBoxMesh.h"
+#include "Vic3DPickObject.h"
 
 void copyPlane2Buffer(Vertex * & vertexBuffer, GLuint * & elementBuffer, unsigned int & elementStartIndex,
 					  const Vertex & a, const Vertex & b, const Vertex & c, const Vertex & d);

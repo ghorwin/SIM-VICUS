@@ -9,7 +9,7 @@ License    : BSD License,
 
 ************************************************************************************/
 
-#include "GridObject.h"
+#include "Vic3DGridObject.h"
 
 #include <QOpenGLShaderProgram>
 #include <vector>

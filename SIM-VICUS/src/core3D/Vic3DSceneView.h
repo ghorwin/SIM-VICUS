@@ -16,13 +16,13 @@ License    : BSD License,
 #include <QOpenGLTimeMonitor>
 #include <QElapsedTimer>
 
-#include "OpenGLWindow.h"
-#include "ShaderProgram.h"
-#include "KeyboardMouseHandler.h"
-#include "GridObject.h"
-#include "BoxObject.h"
-#include "PickLineObject.h"
-#include "Camera.h"
+#include "Vic3DOpenGLWindow.h"
+#include "Vic3DShaderProgram.h"
+#include "Vic3DKeyboardMouseHandler.h"
+#include "Vic3DGridObject.h"
+#include "Vic3DBoxObject.h"
+#include "Vic3DPickLineObject.h"
+#include "Vic3DCamera.h"
 
 /*! The class SceneView extends the primitive OpenGLWindow
 	by adding keyboard/mouse event handling, and rendering of different

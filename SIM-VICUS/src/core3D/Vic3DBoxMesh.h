@@ -18,8 +18,8 @@ License    : BSD License,
 #include <QMatrix4x4>
 #include <vector>
 
-#include "Transform3D.h"
-#include "Vertex.h"
+#include "Vic3DTransform3D.h"
+#include "Vic3DVertex.h"
 
 /*! A mesh for boxes (quader). A box is defined through dimensions in x, y and z (width, height, length/depth) and
 	is constructed centered around the origin.

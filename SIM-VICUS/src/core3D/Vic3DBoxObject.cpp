@@ -9,13 +9,13 @@ License    : BSD License,
 
 ************************************************************************************/
 
-#include "BoxObject.h"
+#include "Vic3DBoxObject.h"
 
 #include <QVector3D>
 #include <QOpenGLShaderProgram>
 #include <QElapsedTimer>
 
-#include "PickObject.h"
+#include "Vic3DPickObject.h"
 
 BoxObject::BoxObject() :
 	m_vbo(QOpenGLBuffer::VertexBuffer), // actually the default, so default constructor would have been enough

@@ -1,4 +1,4 @@
-#include "PickObject.h"
+#include "Vic3DPickObject.h"
 
 #include <QDebug>
 

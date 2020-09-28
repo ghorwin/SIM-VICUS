@@ -2,7 +2,7 @@
 
 #include <QVBoxLayout>
 
-#include "SceneView.h"
+#include "Vic3DSceneView.h"
 
 
 SVGeometryView::SVGeometryView(QWidget *parent) :
