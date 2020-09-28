@@ -594,15 +594,22 @@ bool ClimateDataLoader::fillWMOCodeFromMLID(const IBK::Path & MLIDDatabaseFile) 
 void ClimateDataLoader::readClimateData(const IBK::Path & fname, bool headerOnly) {
 	FUNCID(ClimateDataLoader::readClimateData);
 	std::string ext = fname.extension();
-	if (IBK::string_nocase_compare(ext,"epw"))
-		readClimateDataEPW(fname, headerOnly);
-	// only binary reading is enabled at the moment
-	else if (IBK::string_nocase_compare(ext,"c6b"))
-		readClimateDataIBK(fname, headerOnly);
-	else if (IBK::string_nocase_compare(ext,"wac"))
-		readClimateDataWAC(fname, headerOnly);
-	else
-		throw IBK::Exception("Unknown/unsupported climate data file format.", FUNC_ID);
+	try {
+		if (IBK::string_nocase_compare(ext,"epw"))
+				readClimateDataEPW(fname, headerOnly);
+		// only binary reading is enabled at the moment
+		else if (IBK::string_nocase_compare(ext,"c6b"))
+			readClimateDataIBK(fname, headerOnly);
+		else if (IBK::string_nocase_compare(ext,"wac"))
+			readClimateDataWAC(fname, headerOnly);
+		else if (IBK::string_nocase_compare(ext,"dat"))
+			readClimateDataBBSRDat(fname, headerOnly);
+		else
+			throw IBK::Exception("Unknown/unsupported climate data file format.", FUNC_ID);
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, "Error reading climate data file.", FUNC_ID);
+	}
 }
 
 
@@ -867,12 +874,13 @@ double valueFromParaString(const std::string & valLine) {
 	if (pos == std::string::npos)
 		throw IBK::Exception("Invalid header.\n", FUNC_ID);
 
-	std::string valStr = valLine.substr(pos);
+	std::string valStr = valLine.substr(pos+1);
 	// now read double value
 	std::stringstream strm(valStr);
 	double val;
 	if (!(strm >> val))
-		throw IBK::Exception("Invalid header line, expected format <keyword> : <value> <unit>.\n", FUNC_ID);
+		throw IBK::Exception( IBK::FormatString("Invalid header line '%1', expected "
+												"format <keyword> : <value> <unit>.\n").arg(valLine), FUNC_ID);
 	return val;
 }
 
@@ -930,7 +938,7 @@ void ClimateDataLoader::readClimateDataBBSRDat(const IBK::Path & fname, bool hea
 		// read until end of header is found
 		std::string line;
 		std::getline(in, line);
-		while (line.find(HEADER_END1) != std::string::npos)
+		while (line.find(HEADER_END1) == std::string::npos)
 			std::getline(in, line);
 
 		if (!in)
