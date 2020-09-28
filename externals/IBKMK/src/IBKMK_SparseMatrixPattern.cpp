@@ -13,7 +13,7 @@
 	   list of conditions and the following disclaimer.
 
 	2. Redistributions in binary form must reproduce the above copyright notice,
-	   this list of conditions and the following disclaimer in the documentation 
+	   this list of conditions and the following disclaimer in the documentation
 	   and/or other materials provided with the distribution.
 
 	3. Neither the name of the copyright holder nor the names of its contributors
@@ -204,7 +204,7 @@ void SparseMatrixPattern::indexesPerRow(unsigned int i, std::vector<unsigned int
 		}
 		unsigned int val = it->second;
 		// search for bits in chunk
-		register unsigned int mask = 1;
+		unsigned int mask = 1;
 		for (unsigned int h=0; h<32; ++h) {
 			if (val & mask)
 				columnIndexes.push_back(colIndex);

@@ -119,16 +119,16 @@ public:
 	/********* Functions inherited from ModelInterface. ********/
 
 	/*! Initial condition vector, size n.*/
-	virtual const double * y0() const;
+	virtual const double * y0() const override;
 	/*! We ignore setTime. */
-	virtual SOLFRA::ModelInterface::CalculationResult setTime(double /*t*/) { return SOLFRA::ModelInterface::CalculationSuccess; }
+	virtual SOLFRA::ModelInterface::CalculationResult setTime(double /*t*/) override { return SOLFRA::ModelInterface::CalculationSuccess; }
 	/*! Update state of model to new set of unknowns.
 	*/
-	virtual SOLFRA::ModelInterface::CalculationResult setY(const double * y);
+	virtual SOLFRA::ModelInterface::CalculationResult setY(const double * y) override;
 	/*! Stores the computed derivatives of the solution variables in the vector ydot.
 	\param ydot Pointer to linear memory array of size n() holding the time derivatives for each solution variable.
 	*/
-	virtual SOLFRA::ModelInterface::CalculationResult ydot(double * ydot);
+	virtual SOLFRA::ModelInterface::CalculationResult ydot(double * ydot) override;
 
 
 	/********* Individual functions. ********/

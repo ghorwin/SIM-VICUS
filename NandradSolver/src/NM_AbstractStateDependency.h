@@ -31,7 +31,7 @@
 namespace NANDRAD_MODEL {
 
 class AbstractModel;
-class QuantityDescription;
+struct QuantityDescription;
 
 
 /*!	This is the base class of all models that have input dependencies (from other models).

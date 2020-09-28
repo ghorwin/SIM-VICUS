@@ -71,8 +71,5 @@ const double MIN_PC_T = -23.02585093 * RHO_W * R_VAPOR;
 const double DV_AIR = 2.662e-5;
 const double SIGMA_W = 7.6E-2;
 
-/*! barrier constants */
-const double MAX_RESISTANCE = 1e20;
-
 
 } //namespace IBK

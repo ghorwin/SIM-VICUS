@@ -37,8 +37,12 @@ Makefile*
 *.pdb
 /build/build-*
 
+# Mac-specific stuff
+.DS_Store
+
 
 # misc
 *.tlog
 *.vcxproj.user
 *.~p2
+

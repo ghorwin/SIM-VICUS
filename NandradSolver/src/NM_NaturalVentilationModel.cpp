@@ -24,6 +24,7 @@ void NaturalVentilationModel::setup(const NANDRAD::NaturalVentilationModel & ven
 	m_ventilationModel = &ventilationModel;
 	m_moistureBalanceEnabled = simPara.m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].isEnabled();
 	m_zones = &zones;
+	m_simPara = &simPara;
 
 	// check for mandatory parameters
 	switch (m_ventilationModel->m_modelType) {

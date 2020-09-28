@@ -43,7 +43,7 @@ class PrecondInterface;
 */
 class IntegratorImplicitEuler : public IntegratorErrorControlled {
 public:
-	virtual const char * identifier() const { return "Implicit Euler (ODE)"; }
+	virtual const char * identifier() const override { return "Implicit Euler (ODE)"; }
 
 	/*! The various modified Newton strategies available for the Implicit Euler. */
 	enum ModifiedNewtonStrategies {
