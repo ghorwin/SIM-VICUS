@@ -380,21 +380,7 @@ void NandradModel::stepCompleted(double t, const double * /*y*/ ) {
 	{
 		(*it)->stepCompleted(t);
 	}
-
-#if 0
-	// update states in all exoplicit ODE models
-	for (unsigned int i = 0; i<m_ODEStatesAndBalanceModelContainer.size(); ++i) {
-		AbstractODEBalanceModel *balanceModel = m_ODEStatesAndBalanceModelContainer[i].second;
-		balanceModel->stepCompleted(t, y + m_ODEVariableOffset[i]);
-	}
-	// update states in all staedy state solver models
-	for (unsigned int i = 0; i< m_steadyStateModelContainer.size(); ++i) {
-		SteadyStateSolver *steadyStateModel = m_steadyStateModelContainer[i];
-		steadyStateModel->stepCompleted(t, nullptr);
-	}
-#endif
 }
-
 
 
 SOLFRA::LESInterface * NandradModel::lesInterface() {
@@ -469,19 +455,16 @@ SOLFRA::LESInterface * NandradModel::lesInterface() {
 			m_jacobian = jacSparse;
 
 			// ILUT preconditioner
-			if (!m_project->m_solverParameter.m_intPara[NANDRAD::SolverParameter::IP_PreILUWidth].name.empty()/*
-				&& m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::SP_PRE_ILUWIDTH].value > 0*/)
-			{
-				/// \todo clarify, is zero allowed here? If yes, change code to toUInt() and also provide default value
-				/// in SolverParameter constructor
+			if (!m_project->m_solverParameter.m_intPara[NANDRAD::SolverParameter::IP_PreILUWidth].name.empty()) {
+				// always > 0, already checked
 				unsigned int fillIn = m_project->m_solverParameter.m_intPara[NANDRAD::SolverParameter::IP_PreILUWidth].toUInt(true);
 
 				m_preconditioner = new SOLFRA::PrecondILUT(SOLFRA::PrecondInterface::Right, fillIn);
-				precondName = IBK::FormatString("ILUT preconditioner").str();
+				precondName = IBK::FormatString("ILUT preconditioner (with max. %1 non-zero elements per column of U and L)").arg(fillIn).str();
 			}
 			else {
 				m_preconditioner = new SOLFRA::PrecondILU(SOLFRA::PrecondInterface::Right);
-				precondName = IBK::FormatString("ILU preconditioner").str();
+				precondName = "ILU preconditioner";
 
 			}
 		} break;
@@ -534,7 +517,6 @@ SOLFRA::IntegratorInterface * NandradModel::integratorInterface() {
 		integrator->m_dtMax = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::P_MaxTimeStep].value;
 		integrator->m_nonLinConvCoeff = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::P_NonlinSolverConvCoeff].value;
 		integrator->m_maxNonLinIters = m_project->m_solverParameter.m_intPara[NANDRAD::SolverParameter::IP_MaxNonlinIter].toUInt(true);
-		/// \todo Specify ImplicitEuler parameters
 
 		m_integrator = integrator;
 	}
@@ -1011,67 +993,11 @@ void NandradModel::initZones() {
 			// initialise a constant zone model
 			case NANDRAD::Zone::ZT_Constant :
 			{
-#if 0
-				// create implicit room state model
-				ConstantZoneModel * constantZoneModel = NULL;
-
-				// coupled heat anmd moisture balance
-				if (m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled()) {
-					constantZoneModel = new ConstantZoneMoistureModel(zone.m_id, zone.m_displayName);
-				}
-				// isolated energy balance
-				else{
-					constantZoneModel  = new ConstantZoneModel(zone.m_id, zone.m_displayName);
-				}
-
-				// initialize room state model
-				try {
-					constantZoneModel->setup(zone);
-				}
-				catch (IBK::Exception & ex) {
-					throw IBK::Exception(ex, IBK::FormatString("Error in setup for #%1 for zone with id #%2")
-													.arg(constantZoneModel->ModelIDName())
-													.arg(zone.m_id), FUNC_ID);
-				}
-
-				// always put the model first into our central model storage
-				m_modelContainer.push_back(constantZoneModel); // this container now owns the model
-
-				// sort into the state model container
-				registerStateDependendModel(constantZoneModel);
-#endif
 			} break;
 
 
 			case NANDRAD::Zone::ZT_Ground:
 			{
-#if 0
-				// create implicit room state model
-				GroundZoneModel * groundZoneModel = NULL;
-
-				// coupled heat anmd moisture balance
-				if (m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled()) {
-					groundZoneModel = new GroundZoneMoistureModel(zone.m_id, zone.m_displayName);
-				}
-				// isolated energy balance
-				else {
-					groundZoneModel = new GroundZoneModel(zone.m_id, zone.m_displayName);
-				}
-
-				// initialize room state model
-				try {
-					groundZoneModel->setup(zone, m_project->m_simulationParameter, m_project->m_placeholders);
-				}
-				catch (IBK::Exception & ex) {
-					throw IBK::Exception(ex, IBK::FormatString("Error in setup for GroundZoneModel for zone with id #%1")
-						.arg(zone.m_id), FUNC_ID);
-				}
-
-				// always put the model first into our central model storage
-				m_modelContainer.push_back(groundZoneModel); // this container now owns the model
-				// register model as time dependend
-				m_timeModelContainer.push_back(groundZoneModel);
-#endif
 			} break;
 
 			case NANDRAD::Zone::NUM_ZT :
@@ -1079,514 +1005,6 @@ void NandradModel::initZones() {
 													.arg(zone.m_id), FUNC_ID);
 		} // switch
 	} // for (Zones)
-
-#if 0
-	// create model instances for all loads of the given _active_ zones
-	for (unsigned int i=0; i<activeZones.size(); ++i) {
-
-		const NANDRAD::Zone  *zone = activeZones[i];
-
-		// *** WallsThermalLoadModel ***
-
-		// for each room balance model create a heat conduction loads model
-		// this collects all convective heat transfer fluxes from all walls
-		WallsThermalLoadModel * wallsThermalLoadModel = new WallsThermalLoadModel(zone->m_id, zone->m_displayName);
-		// initialize heat conduction load model from given construction instance vector
-		try {
-			wallsThermalLoadModel->setup();
-		}
-		catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error in setup for WallsThermalLoadModel for zone with id #%1")
-											.arg(zone->m_id), FUNC_ID);
-		}
-		// always put the model first into our central model storage
-		m_modelContainer.push_back(wallsThermalLoadModel); // this container now owns the model
-		// sort into the state model container
-		registerStateDependendModel(wallsThermalLoadModel);
-
-		// *** WindowsLoadModel ***
-
-		// for each room balance model create a windows loads model
-		// this collects all solar radiation fluxes towards the room
-		WindowsLoadModel * windowsLoadModel = new WindowsLoadModel(zone->m_id,
-																	zone->m_displayName);
-		// initialize heat conduction load model from given construction instance vector
-		try {
-			windowsLoadModel->setup();
-		}
-		catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error in setup for WindowsLoadModel for zone with id #%1")
-											.arg(zone->m_id), FUNC_ID);
-		}
-
-		// always put the model first into our central model storage
-		m_modelContainer.push_back(windowsLoadModel); // this container now owns the model
-
-		// sort into the state model container
-		registerStateDependendModel(windowsLoadModel);
-
-		// *** Long wave radiation balance load model ***
-
-		// for each room balance model create a long wave radiation balance load
-		// this collects all long wave radiation fluxes at the windows inside surface and
-		// directs it towardsthe room
-		LWRadBalanceLoadModel * lWRadBalanceLoadModel = new LWRadBalanceLoadModel(zone->m_id,
-																	zone->m_displayName);
-		// initialize heat conduction load model from given construction instance vector
-		try {
-			lWRadBalanceLoadModel->setup(*zone);
-		}
-		catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error in setup for LWRadBalanceLoadModel for zone with id #%1")
-											.arg(zone->m_id), FUNC_ID);
-		}
-
-		// always put the model first into our central model storage
-		m_modelContainer.push_back(lWRadBalanceLoadModel); // this container now owns the model
-
-		// sort into the state model container
-		registerStateDependendModel(lWRadBalanceLoadModel);
-
-
-		// *** Short wave radiation balance load model ***
-
-		// for each room balance model create a short wave radiation balance load
-		// this collects all short wave radiation fluxes at the windows inside surface and
-		// directs it towards the room
-		SWRadBalanceLoadModel * sWRadBalanceLoadModel = new SWRadBalanceLoadModel(zone->m_id,
-			zone->m_displayName);
-		// initialize heat conduction load model from given construction instance vector
-		try {
-			sWRadBalanceLoadModel->setup(*zone);
-		}
-		catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error in setup for LWRadBalanceLoadModel for zone with id #%1")
-				.arg(zone->m_id), FUNC_ID);
-		}
-
-		// always put the model first into our central model storage
-		m_modelContainer.push_back(sWRadBalanceLoadModel); // this container now owns the model
-
-														   // sort into the state model container ...
-		registerStateDependendModel(sWRadBalanceLoadModel);
-
-
-		// *** CoolingsLoadModel ***
-
-		// for each room balance model create a windows loads model
-		CoolingsLoadModel * coolingsLoadModel = new CoolingsLoadModel(zone->m_id,
-																		zone->m_displayName);
-		// initialize heat conduction load model from object lists vector
-		try {
-			coolingsLoadModel->setup(*zone);
-		}
-		catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error in setup for CoolingsLoadModel for zone with id #%1")
-											.arg(zone->m_id), FUNC_ID);
-		}
-
-		// always put the model first into our central model storage
-		m_modelContainer.push_back(coolingsLoadModel); // this container now owns the model
-
-		// sort into the state model container
-		registerStateDependendModel(coolingsLoadModel);
-
-		// *** HeatingsLoadModel ***
-
-		// for each room balance model create a windows loads model
-		HeatingsLoadModel * heatingsLoadModel = new HeatingsLoadModel(zone->m_id,
-																		zone->m_displayName);
-		// initialize heat conduction load model from object lists vector
-		try {
-			heatingsLoadModel->setup(*zone);
-		}
-		catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error in setup for HeatingsLoadModel for zone with id #%1")
-											.arg(zone->m_id), FUNC_ID);
-		}
-
-		// always put the model first into our central model storage
-		m_modelContainer.push_back(heatingsLoadModel); // this container now owns the model
-
-		// sort into the state model container
-		registerStateDependendModel(heatingsLoadModel);
-
-		// *** User loads model ***
-
-		UsersThermalLoadModel * userLoadsModel =
-			new UsersThermalLoadModel(zone->m_id, zone->m_displayName);
-		// initialize heat conduction load model from object lists vector
-		try {
-			userLoadsModel->setup();
-		}
-		catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error in setup for UsersThermalLoadModel for zone with id #%1")
-											.arg(zone->m_id), FUNC_ID);
-		}
-		// add model to model storage
-		m_modelContainer.push_back(userLoadsModel);
-
-		// sort into the state model container structure
-		registerStateDependendModel(userLoadsModel);
-
-		// *** Equipment loads model ***
-
-		EquipmentLoadModel * equipmentLoadsModel =
-			new EquipmentLoadModel(zone->m_id, zone->m_displayName);
-		// initialize heat conduction load model from object lists vector
-		try {
-			equipmentLoadsModel->setup();
-		}
-		catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error in setup for EquipmentLoadModel for zone with id %1")
-											.arg(zone->m_id), FUNC_ID);
-		}
-		// add model to model storage
-		m_modelContainer.push_back(equipmentLoadsModel);
-
-		// sort into the state model container structure
-		registerStateDependendModel(equipmentLoadsModel);
-
-
-		// *** Lighting loads model ***
-
-		LightingLoadModel * lightingLoadModel =
-			new LightingLoadModel(zone->m_id, zone->m_displayName);
-		// initialize heat conduction load model from object lists vector
-		try {
-			lightingLoadModel->setup();
-		}
-		catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error in setup for LightingLoadModel for zone with id %1")
-											.arg(zone->m_id), FUNC_ID);
-		}
-		// add model to model storage
-		m_modelContainer.push_back(lightingLoadModel);
-
-		// sort into the state model container structure
-		registerStateDependendModel(lightingLoadModel);
-
-
-		// *** Natural ventilation loads model ***
-
-		NaturalVentilationLoadModel * naturalVentilationLoadModel =
-			new NaturalVentilationLoadModel(zone->m_id, zone->m_displayName);
-		// initialize heat conduction load model from object lists vector
-		try {
-			naturalVentilationLoadModel->setup(*zone, m_project);
-		}
-		catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error in setup for NaturalVentilationLoadModel for zone with id %1")
-											.arg(zone->m_id), FUNC_ID);
-		}
-		// add model to model storage
-		m_modelContainer.push_back(naturalVentilationLoadModel);
-
-		// sort into the state model container
-		registerStateDependendModel(naturalVentilationLoadModel);
-
-
-		// *** Air condition load model ***
-
-		AirConditionLoadModel * airConditionLoadModel =
-			new AirConditionLoadModel(zone->m_id, zone->m_displayName);
-		// initialize heat conduction load model from object lists vector
-		try {
-			airConditionLoadModel->setup(*zone, m_project);
-		}
-		catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error in setup for AirConditionLoadModel for zone with id %1")
-				.arg(zone->m_id), FUNC_ID);
-		}
-		// add model to model storage
-		m_modelContainer.push_back(airConditionLoadModel);
-
-		// sort into the state model container
-		registerStateDependendModel(airConditionLoadModel);
-
-
-		// *** Domestic water consumption model ***
-
-		DomesticWaterConsumptionModel * domesticWaterConsumptionModel =
-			new DomesticWaterConsumptionModel(zone->m_id, zone->m_displayName);
-		// initialize heat conduction load model from object lists vector
-		try {
-			domesticWaterConsumptionModel->setup(*zone, m_project->m_simulationParameter);
-		}
-		catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error in setup for NaturalVentilationThermalLoadModel for zone with id %1")
-				.arg(zone->m_id), FUNC_ID);
-		}
-		// add model to model storage
-		m_modelContainer.push_back(domesticWaterConsumptionModel);
-
-		// sort into the state model container
-		registerStateDependendModel(domesticWaterConsumptionModel);
-
-
-		// *** InsideBCWindowsLoadModel ***
-
-		// create a splitting model for radiation loads at all internal surfaces
-		InsideBCWindowsLoadModel * qWindowsLoad = new InsideBCWindowsLoadModel(zone->m_id,
-																			zone->m_displayName);
-		// initialize model
-		qWindowsLoad->setup();
-
-		// add model to model storage
-		m_modelContainer.push_back(qWindowsLoad);
-
-		// register model as state dependend
-		registerStateDependendModel(qWindowsLoad);
-
-		// *** InsideBCLWRadExchangeModel ***
-
-		// create a splitting model for radiation loads at all internal surfaces
-		InsideBCLWRadExchangeModel * qLWRadExchange = new InsideBCLWRadExchangeModel(zone->m_id,
-																zone->m_displayName);
-		// initialize model
-		qLWRadExchange->setup(*zone, m_project->m_parametrizationDefaults);
-
-		// add model to model storage
-		m_modelContainer.push_back(qLWRadExchange);
-
-		// register model as state dependend
-		registerStateDependendModel(qLWRadExchange);
-
-
-		// *** InsideBCSWRadExchangeModel ***
-
-		// create a splitting model for (diffuse) short wave radiation exchange of all internal surfaces
-		InsideBCSWRadExchangeModel * qSWRadExchange = new InsideBCSWRadExchangeModel(zone->m_id,
-			zone->m_displayName);
-		// initialize model
-		qSWRadExchange->setup(*zone, m_project->m_parametrizationDefaults);
-
-		// add model to model storage
-		m_modelContainer.push_back(qSWRadExchange);
-
-		// register model as state dependend
-		registerStateDependendModel(qSWRadExchange);
-
-
-		// *** InsideBCHeatingsLoadModel ***
-
-		// create a splitting model for radiation loads at all internal surfaces
-		InsideBCHeatingsLoadModel * qHeatingsLoad = new InsideBCHeatingsLoadModel(zone->m_id,
-																				zone->m_displayName);
-		// initialize model
-		qHeatingsLoad->setup();
-
-		// add model to model storage
-		m_modelContainer.push_back(qHeatingsLoad);
-
-		// register model as state dependend
-		registerStateDependendModel(qHeatingsLoad);
-
-
-		// *** InsideBCCoolingsLoadModel ***
-
-		// create a splitting model for radiation loads at all internal surfaces
-		InsideBCCoolingsLoadModel * qCoolingsLoad = new InsideBCCoolingsLoadModel(zone->m_id,
-																				zone->m_displayName);
-		// initialize model
-		qCoolingsLoad->setup();
-
-		// add model to model storage
-		m_modelContainer.push_back(qCoolingsLoad);
-
-		// register model as state dependend
-		registerStateDependendModel(qCoolingsLoad);
-
-
-		// *** InsideBCUsersThermalLoadModel ***
-
-		// create a splitting model for radiation loads at all internal surfaces
-		InsideBCUsersThermalLoadModel * qUsersLoad = new InsideBCUsersThermalLoadModel(zone->m_id,
-																				zone->m_displayName);
-		// initialize model
-		qUsersLoad->setup();
-
-		// add model to model storage
-		m_modelContainer.push_back(qUsersLoad);
-
-		// register model as state dependend
-		registerStateDependendModel(qUsersLoad);
-
-		// *** InsideBCEquipmentLoadModel ***
-
-		// create a splitting model for radiation loads at all internal surfaces
-		InsideBCEquipmentLoadModel * qEquipmentLoad = new InsideBCEquipmentLoadModel(zone->m_id,
-																				zone->m_displayName);
-		// initialize model
-		qEquipmentLoad->setup();
-
-		// add model to model storage
-		m_modelContainer.push_back(qEquipmentLoad);
-
-		// register model as state dependend
-		registerStateDependendModel(qEquipmentLoad);
-
-
-		// *** InsideBCLightingsLoadModel ***
-
-		// create a splitting model for radiation loads at all internal surfaces
-		InsideBCLightingsLoadModel * qLightingLoad = new InsideBCLightingsLoadModel(zone->m_id,
-																				zone->m_displayName);
-		// initialize model
-		qLightingLoad->setup();
-
-		// add model to model storage
-		m_modelContainer.push_back(qLightingLoad);
-
-		// register model as state dependend
-		registerStateDependendModel(qLightingLoad);
-
-
-		// *** Moisture sources ***
-
-		if (m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled()) {
-
-			// *** Walls moisture and enthalpy release model ***
-
-			// check for wall moisture calculation
-			ConstructionSolverModel::WallMoistureBalanceCalculationMode wallCalcMode
-				= ConstructionSolverModel::CM_None;
-
-			if (m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_MOISTURE_BALANCE].isEnabled())
-			{
-				const std::string wallModeStr = m_project->m_simulationParameter.m_stringPara[NANDRAD::SimulationParameter::
-					SSP_WALLMOISTUREBALANCECALCULATIONMODE];
-
-				try {
-					wallCalcMode = (ConstructionSolverModel::WallMoistureBalanceCalculationMode)
-						KeywordList::Enumeration("ConstructionSolverModel::WallMoistureBalanceCalculationMode",
-							wallModeStr);
-				}
-				catch (IBK::Exception) {
-					throw IBK::Exception(IBK::FormatString("Unknown value '%1' for string parameter "
-						"'%2' in SimulationParameter tag!")
-						.arg(wallModeStr)
-						.arg(NANDRAD::KeywordList::Keyword("SimulationParameter::stringPara_t",
-							NANDRAD::SimulationParameter::SSP_WALLMOISTUREBALANCECALCULATIONMODE)),
-						FUNC_ID);
-				}
-			}
-
-			WallsMoistureLoadModel * wallsMoistLoadModel =
-				new WallsMoistureLoadModel(zone->m_id, zone->m_displayName);
-			// initialize heat conduction load model from object lists vector
-			try {
-				wallsMoistLoadModel->setup(wallCalcMode);
-			}
-			catch (IBK::Exception & ex) {
-				throw IBK::Exception(ex, IBK::FormatString("Error in setup for NaturalVentilationMoistureLoadModel "
-					"for zone with id %1")
-					.arg(zone->m_id), FUNC_ID);
-			}
-			// add model to model storage
-			m_modelContainer.push_back(wallsMoistLoadModel);
-
-			// sort into the state model container
-			registerStateDependendModel(wallsMoistLoadModel);
-
-			// *** User mositure sources model ***
-
-
-			MoistureLoadModel * moistLoadModel =
-				new MoistureLoadModel(zone->m_id, zone->m_displayName);
-			// initialize heat conduction load model from object lists vector
-			try {
-				moistLoadModel->setup();
-			}
-			catch (IBK::Exception & ex) {
-				throw IBK::Exception(ex, IBK::FormatString("Error in setup for UsersMoistureLoadModel for zone with id %1")
-					.arg(zone->m_id), FUNC_ID);
-			}
-			// add model to model storage
-			m_modelContainer.push_back(moistLoadModel);
-
-			// sort into the state model container
-			registerStateDependendModel(moistLoadModel);
-
-			UsersMoistureLoadModel * userMoistLoadModel =
-				new UsersMoistureLoadModel(zone->m_id, zone->m_displayName);
-			// initialize heat conduction load model from object lists vector
-			try {
-				userMoistLoadModel->setup();
-			}
-			catch (IBK::Exception & ex) {
-				throw IBK::Exception(ex, IBK::FormatString("Error in setup for UsersMoistureLoadModel for zone with id %1")
-					.arg(zone->m_id), FUNC_ID);
-			}
-			// add model to model storage
-			m_modelContainer.push_back(userMoistLoadModel);
-
-			// sort into the state model container
-			registerStateDependendModel(userMoistLoadModel);
-		}
-
-		// *** CO2 sources ***
-
-		if (m_project->m_simulationParameter.m_flags[NANDRAD::SimulationParameter::SF_ENABLE_CO2_BALANCE].isEnabled()) {
-
-			// *** User CO2 emission model ***
-
-			UsersCO2LoadModel * userCO2LoadModel =
-				new UsersCO2LoadModel(zone->m_id, zone->m_displayName);
-			// initialize heat conduction load model from object lists vector
-			try {
-				userCO2LoadModel->setup();
-			}
-			catch (IBK::Exception & ex) {
-				throw IBK::Exception(ex, IBK::FormatString("Error in setup for UsersCO2LoadModel for zone with id %1")
-					.arg(zone->m_id), FUNC_ID);
-			}
-			// add model to model storage
-			m_modelContainer.push_back(userCO2LoadModel);
-
-			// sort into the state model container
-			registerStateDependendModel(userCO2LoadModel);
-		}
-
-		// *** ScheduledZoneParameterModel ***
-
-		ScheduledZoneParameterModel * scheduledZoneParameterModel =
-			new ScheduledZoneParameterModel;
-		// initialize model
-		scheduledZoneParameterModel->setup(*zone, *m_schedules);
-		// add model to model storage
-		m_modelContainer.push_back(scheduledZoneParameterModel);
-
-		// register model as state dependend
-		registerStateDependendModel(scheduledZoneParameterModel);
-
-		// validity check of parameter names is done inside "initInputReferences" after all models are setup
-
-		// *** ThermalComfortModel ***
-		ThermalComfortModel * thermalComfortModel =
-			new ThermalComfortModel(zone->m_id, zone->m_displayName);
-		// initialize model
-		thermalComfortModel->setup();
-		// add model to model storage
-		m_modelContainer.push_back(thermalComfortModel);
-		// classify model as time dependent
-
-		// register model as state dependend
-		registerStateDependendModel(thermalComfortModel);
-
-
-		// *** EnergyIndicatorModel ***
-		EnergyPerformanceModel * energyPerformanceModel =
-			new EnergyPerformanceModel(zone->m_id, zone->m_displayName);
-		// initialize model
-		energyPerformanceModel->setup(*zone);
-		// add model to model storage
-		m_modelContainer.push_back(energyPerformanceModel);
-		// register model as state dependend
-		registerStateDependendModel(energyPerformanceModel);
-	}
-
-#endif
 
 	m_nZones = (unsigned int) m_roomBalanceModelContainer.size();
 	IBK::IBK_Message( IBK::FormatString("%1 active zones.\n").arg(m_nZones), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
@@ -2364,21 +1782,6 @@ void NandradModel::initSolverVariables() {
 		IBK_ASSERT(m_weightsFactorZones >= 1.0);
 	}
 
-#if 0
-	// *** count number of unknowns in explicit models and initialize corresponding offsets ***
-
-	if (!m_ODEStatesAndBalanceModelContainer.empty()) {
-		m_ODEVariableOffset.resize(m_ODEStatesAndBalanceModelContainer.size());
-		for (unsigned int i = 0; i < m_ODEStatesAndBalanceModelContainer.size(); ++i) {
-			AbstractODEBalanceModel *balanceModel = m_ODEStatesAndBalanceModelContainer[i].second;
-			// calculate position inside y-vector
-			m_ODEVariableOffset[i] = m_n;
-			// update solver quantity size
-			m_n += balanceModel->n();
-		}
-	}
-#endif
-
 	// resize storage vectors
 	m_y.resize(m_n);
 	m_y0.resize(m_n);
@@ -2521,16 +1924,13 @@ void NandradModel::initSolverMatrix() {
 			std::vector<std::pair<const double *, const double *> >::const_iterator
 				dependencyIJ = dependenciesIJ.begin();
 			// loop over all result quantities of the next pattern (elements aij)
-			for (; dependencyIJ != dependenciesIJ.end(); ++dependencyIJ)
-			{
+			for (; dependencyIJ != dependenciesIJ.end(); ++dependencyIJ) {
 				// retrieve row and column storage adresses
 				const double * valueRef = dependencyIJ->first;
 
 				// already stored
-				if (registeredLocalValueRefs.find(valueRef) !=
-					registeredLocalValueRefs.end()) {
+				if (registeredLocalValueRefs.find(valueRef) != registeredLocalValueRefs.end())
 					continue;
-				}
 
 				// insert element into map with index valueRefs.size()
 				registeredLocalValueRefs.insert(valueRef);
@@ -2555,8 +1955,7 @@ void NandradModel::initSolverMatrix() {
 			// map storing local valueRefs according to their value pointers
 			std::set<const double*> registeredLocalValueRefs;
 			// sort values into glibal data container
-			for (unsigned int k = 0; k < m_roomStatesModelContainer[i]->nPrimaryStateResults();
-				++k) {
+			for (unsigned int k = 0; k < m_roomStatesModelContainer[i]->nPrimaryStateResults(); ++k) {
 				resultValueRefs[ydot + k] = nYStates + nYdotStates + k;
 				// register in local container
 				registeredLocalValueRefs.insert(ydot + k);
@@ -2571,16 +1970,13 @@ void NandradModel::initSolverMatrix() {
 			std::vector<std::pair<const double *, const double *> >::const_iterator
 				dependencyIJ = dependenciesIJ.begin();
 			// loop over all result quantities of the next pattern (elements aij)
-			for (; dependencyIJ != dependenciesIJ.end(); ++dependencyIJ)
-			{
+			for (; dependencyIJ != dependenciesIJ.end(); ++dependencyIJ) {
 				// retrieve row and column storage adresses
 				const double * valueRef = dependencyIJ->first;
 
 				// already stored
-				if (registeredLocalValueRefs.find(valueRef) !=
-					registeredLocalValueRefs.end()) {
+				if (registeredLocalValueRefs.find(valueRef) != registeredLocalValueRefs.end())
 					continue;
-				}
 
 				// insert element into map with index valueRefs.size()
 				registeredLocalValueRefs.insert(valueRef);
@@ -2594,8 +1990,7 @@ void NandradModel::initSolverMatrix() {
 		// ... and for all constructions
 		for (unsigned int i = 0; i < m_constructionBalanceModelContainer.size(); ++i) {
 
-			const ConstructionBalanceModel *constructionModel =
-				m_constructionBalanceModelContainer[i];
+			const ConstructionBalanceModel *constructionModel = m_constructionBalanceModelContainer[i];
 			// access internal y-vector
 			const double *ydot = constructionModel->resultValueRef(QuantityName("ydot"));
 
@@ -2617,16 +2012,13 @@ void NandradModel::initSolverMatrix() {
 			std::vector<std::pair<const double *, const double *> >::const_iterator
 				dependencyIJ = dependenciesIJ.begin();
 			// loop over all result quantities of the next pattern (elements aij)
-			for (; dependencyIJ != dependenciesIJ.end(); ++dependencyIJ)
-			{
+			for (; dependencyIJ != dependenciesIJ.end(); ++dependencyIJ) {
 				// retrieve row and column storage adresses
 				const double * valueRef = dependencyIJ->first;
 
 				// already stored
-				if (registeredLocalValueRefs.find(valueRef) !=
-					registeredLocalValueRefs.end()) {
+				if (registeredLocalValueRefs.find(valueRef) != registeredLocalValueRefs.end())
 					continue;
-				}
 
 				// insert element into map with index valueRefs.size()
 				registeredLocalValueRefs.insert(valueRef);
@@ -2642,7 +2034,6 @@ void NandradModel::initSolverMatrix() {
 
 		// loop through all models and select algebraic result quantities: row/column nY + nYdot -> nUnknowns
 		for (unsigned int i = 0; i < m_stateModelContainer.size(); ++i) {
-
 
 			AbstractStateDependency *stateDep = m_stateModelContainer[i];
 			// skip room balance models and construction balance models
@@ -2662,16 +2053,13 @@ void NandradModel::initSolverMatrix() {
 			std::vector<std::pair<const double *, const double *> >::const_iterator
 				dependencyIJ = dependenciesIJ.begin();
 			// loop over all result quantities of the next pattern (elements aij)
-			for (; dependencyIJ != dependenciesIJ.end(); ++dependencyIJ)
-			{
+			for (; dependencyIJ != dependenciesIJ.end(); ++dependencyIJ) {
 				// retrieve row and column storage adresses
 				const double * valueRef = dependencyIJ->first;
 
 				// already stored
-				if (registeredLocalValueRefs.find(valueRef) !=
-					registeredLocalValueRefs.end()) {
+				if (registeredLocalValueRefs.find(valueRef) != registeredLocalValueRefs.end())
 					continue;
-				}
 
 				// insert element into map with index valueRefs.size()
 				registeredLocalValueRefs.insert(valueRef);
@@ -2709,8 +2097,7 @@ void NandradModel::initSolverMatrix() {
 			std::vector<std::pair<const double *, const double *> >::const_iterator
 				dependencyIJ = dependenciesIJ.begin();
 			// loop over all result quantities of the next pattern (elements aij)
-			for (; dependencyIJ != dependenciesIJ.end(); ++dependencyIJ)
-			{
+			for (; dependencyIJ != dependenciesIJ.end(); ++dependencyIJ) {
 				// retrieve row and column storage adresses
 				const double * resultRef = dependencyIJ->first;
 				const double * inputRef = dependencyIJ->second;
@@ -2753,8 +2140,7 @@ void NandradModel::initSolverMatrix() {
 			std::vector<std::pair<const double *, const double *> >::const_iterator
 				dependencyIJ = dependenciesIJ.begin();
 			// loop over all result quantities of the next pattern (elements aij)
-			for (; dependencyIJ != dependenciesIJ.end(); ++dependencyIJ)
-			{
+			for (; dependencyIJ != dependenciesIJ.end(); ++dependencyIJ) {
 				// retrieve row and column storage adresses
 				const double * resultRef = dependencyIJ->first;
 				const double * inputRef = dependencyIJ->second;
@@ -2768,8 +2154,7 @@ void NandradModel::initSolverMatrix() {
 					continue;
 
 				// search result reference
-				std::map<const double*, unsigned int>::const_iterator resultRefIt =
-					resultValueRefs.find(resultRef);
+				std::map<const double*, unsigned int>::const_iterator resultRefIt = resultValueRefs.find(resultRef);
 				// result adress must! be given
 				IBK_ASSERT(resultRefIt != resultValueRefs.end());
 
@@ -2798,8 +2183,7 @@ void NandradModel::initSolverMatrix() {
 			std::vector<std::pair<const double *, const double *> >::const_iterator
 				dependencyIJ = dependenciesIJ.begin();
 			// loop over all result quantities of the next pattern (elements aij)
-			for (; dependencyIJ != dependenciesIJ.end(); ++dependencyIJ)
-			{
+			for (; dependencyIJ != dependenciesIJ.end(); ++dependencyIJ) {
 				// retrieve row and column storage adresses
 				const double * resultRef = dependencyIJ->first;
 				const double * inputRef = dependencyIJ->second;
@@ -3118,12 +2502,6 @@ int NandradModel::updateStateDependentModels() {
 		else
 			return 1;
 	}
-
-
-	// update output file objects (they never publish results and are always evaluated last)
-
-	/// \todo create container for output files and loop over container
-
 
 	// mark solution as updated
 	m_yChanged = false;

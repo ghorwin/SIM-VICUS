@@ -46,7 +46,8 @@ namespace NANDRAD_MODEL {
 	will provide a memory slot with the air temperature. So once we have the quantity description, we expand by adding
 	reference type ZONE and ids of the zone to actually 3 value references.
 */
-struct QuantityDescription {
+class QuantityDescription {
+public:
 
 	QuantityDescription() :
 		m_minMaxValue(std::make_pair<double, double>

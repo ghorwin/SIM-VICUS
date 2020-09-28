@@ -71,19 +71,10 @@ void Directories::create(const IBK::Path & projectRootPath) {
 		}
 	}
 
-
 	m_rootDir = projectRootPath;
 	m_logDir = logPath;
 	m_varDir = varPath;
 	m_resultsDir = outPath;
-	m_heatingDesignRootDir = IBK::Path(projectRootPath.str()
-		+ std::string("_heatingDesignDay") );
-	m_coolingDesignRootDir = IBK::Path(m_rootDir.str()
-		+ std::string("_coolingDesignDay") );
-	m_heatingDesignResultsDir = m_heatingDesignRootDir / "results";
-	m_coolingDesignResultsDir = m_coolingDesignRootDir / "results";
-
-	// create directory for temporary files
 }
 
 

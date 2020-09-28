@@ -46,7 +46,7 @@ namespace NANDRAD_MODEL {
 // *** Implementation of StateModelGroup ***
 
 StateModelGroup::StateModelGroup( ) :
-	m_solverParameter(NULL),
+	m_solverParameter(nullptr),
 	m_successOfLastKinsolCall(SOLFRA::ModelInterface::CalculationSuccess),
 	m_scalePerValue(true),
 	m_tolerance(1e-09),
@@ -89,7 +89,7 @@ void StateModelGroup::resultValueRefs(std::vector<const double *> &res) {
 		// cast mdoel to abstract model: this will cause
 		// some more calculation efford and will be removed later
 		const AbstractModel* model = dynamic_cast<const AbstractModel*> (m_models[i]);
-		IBK_ASSERT(model != NULL);
+		IBK_ASSERT(model != nullptr);
 		model->resultValueRefs(localRes);
 		res.insert(res.end(), localRes.begin(), localRes.end());
 	}
@@ -109,7 +109,7 @@ void StateModelGroup::init(const ZEPPELIN::DependencyGroup &group,
 		AbstractStateDependency* abstractStateObject = dynamic_cast<AbstractStateDependency*>
 			(group.dependencyObjects()[i]) ;
 		// error: implemented from wrong model type
-		if(abstractStateObject == NULL)
+		if(abstractStateObject == nullptr)
 		{
 			throw IBK::Exception(IBK::FormatString("Error initializing StateModelGroup: "
 										"DependencyObjects must derive from 'AbstractStateDependency' !"), FUNC_ID);
@@ -117,7 +117,7 @@ void StateModelGroup::init(const ZEPPELIN::DependencyGroup &group,
 		// store inside dependency container
 		m_models.push_back(abstractStateObject);
 
-		if (dynamic_cast<SOLFRA::ModelInterface*>(group.dependencyObjects()[i]) != NULL)
+		if (dynamic_cast<SOLFRA::ModelInterface*>(group.dependencyObjects()[i]) != nullptr)
 			m_modelTypeId |= DefaultStateDependency::ODE;
 	}
 	// retrieve type
@@ -180,7 +180,7 @@ void StateModelGroup::initResultValueRefs() {
 		it != m_models.end(); ++it)
 	{
 		// do not allow empty model references
-		IBK_ASSERT(*it != NULL);
+		IBK_ASSERT(*it != nullptr);
 		// vector of local dependencies
 		std::vector< std::pair<const double *, const double *> > dependencies;
 		(*it)->stateDependencies(dependencies);
@@ -192,7 +192,7 @@ void StateModelGroup::initResultValueRefs() {
 		std::vector<const double *> valueRefsY, valueRefsYdot;
 		// cast to ODE balance model
 		const AbstractODEBalanceModel *balanceModel = dynamic_cast<AbstractODEBalanceModel*>(*it);
-		if (balanceModel != NULL) {
+		if (balanceModel != nullptr) {
 
 			const double *valueRefYStart = balanceModel->ODEStatesValueRef();
 			const double *valueRefYdotStart = balanceModel->ODEDivergencesValueRef();
@@ -254,7 +254,7 @@ void StateModelGroup::initConstraints() {
 		it != m_models.end(); ++it)
 	{
 		// do not allow empty model references
-		IBK_ASSERT(*it != NULL);
+		IBK_ASSERT(*it != nullptr);
 		// vector of local dependencies
 		std::map< const double *, std::pair<double, double> > localConstraintsPerValueRef;
 		(*it)->constraints(localConstraintsPerValueRef);
@@ -272,7 +272,7 @@ void StateModelGroup::initConstraints() {
 	// enable or disable constraints
 	for (unsigned int i = 0; i < m_resultValueRefs.size(); ++i) {
 		const double *valuePtr = m_resultValueRefs[i];
-		IBK_ASSERT(valuePtr != NULL);
+		IBK_ASSERT(valuePtr != nullptr);
 		std::map<const double*, std::pair<double, double> >::const_iterator
 			it = constraintsPerValueRef.find(valuePtr);
 		// change value for defined constraints
@@ -339,8 +339,8 @@ void StateModelGroup::initSparseSolver(IBKMK::SparseMatrixPattern &pattern,
 	{
 		// an internal model group has its own solver and therefore is eliminated
 		// from current pattern
-		if (dynamic_cast<StateModelGroup *>(m_models[modelIdx]) != NULL
-			|| dynamic_cast<HydraulicCircuidModel *>(m_models[modelIdx]) != NULL) {
+		if (dynamic_cast<StateModelGroup *>(m_models[modelIdx]) != nullptr
+			|| dynamic_cast<HydraulicCircuidModel *>(m_models[modelIdx]) != nullptr) {
 			for (unsigned int i = m_modelResultsOffset[modelIdx];
 				i < m_modelResultsOffset[modelIdx + 1]; ++i) {
 				removedIndexes.insert(i);
@@ -375,7 +375,7 @@ void StateModelGroup::initSparseSolver(IBKMK::SparseMatrixPattern &pattern,
 			if (modelIdx > 0)
 				modelIdStr += std::string(", ");
 			const AbstractModel * model = dynamic_cast<const AbstractModel *>(m_models[modelIdx]);
-			IBK_ASSERT(model != NULL);
+			IBK_ASSERT(model != nullptr);
 
 			modelIdStr += model->ModelIDName() + std::string("[id=") +
 				IBK::val2string<unsigned int>(model->id()) + std::string("]");
@@ -437,7 +437,7 @@ void StateModelGroup::initSparseSolver(IBKMK::SparseMatrixPattern &pattern,
 		m_constraints[i] = constraints[idx];
 	}
 
-	IBK_ASSERT(m_solverParameter != NULL);
+	IBK_ASSERT(m_solverParameter != nullptr);
 	// initialize sparse solver
 	SteadyStateSolver::initSparseSolver(m_ia, m_ja, m_iaT, m_jaT);
 	SteadyStateSolver::setConstraints(&m_constraints[0]);
@@ -523,7 +523,7 @@ int StateModelGroup::update() {
 				it != m_models.end(); ++it)
 			{
 				// do not allow empty model references
-				IBK_ASSERT(*it != NULL);
+				IBK_ASSERT(*it != nullptr);
 				calculationResultFlag |= (*it)->update();
 			}
 			// enforce solver abort
@@ -539,7 +539,7 @@ int StateModelGroup::update() {
 		case ZEPPELIN::DependencyGroup::CYCLIC : {
 
 			// if no jacobian is defined set jacobian and solver to dense
-			if (jacobianInterface() == NULL) {
+			if (jacobianInterface() == nullptr) {
 				initDenseSolver();
 			}
 
@@ -660,7 +660,7 @@ SOLFRA::ModelInterface::CalculationResult StateModelGroup::ydot(double * ydot) {
 				continue;
 			// retrieve the current row
 			double *valuePtr = m_resultValueRefs[resIdx];
-			IBK_ASSERT(valuePtr != NULL);
+			IBK_ASSERT(valuePtr != nullptr);
 			// and set quantity
 			*valuePtr = m_y[rowIdx] + m_resultValueOffset[resIdx];
 			// correct row index
@@ -668,13 +668,13 @@ SOLFRA::ModelInterface::CalculationResult StateModelGroup::ydot(double * ydot) {
 		}
 	}
 #if 0
-	if (dynamic_cast<SOLFRA::JacobianDense*> (jacobianInterface()) != NULL) {
+	if (dynamic_cast<SOLFRA::JacobianDense*> (jacobianInterface()) != nullptr) {
 
 		// we frequently update all models and compare values afterward
 		for (unsigned int modelIdx = 0; modelIdx < m_models.size(); ++modelIdx) {
 			// do not allow empty model references
 			AbstractStateDependency *model = m_models[modelIdx];
-			IBK_ASSERT(model != NULL);
+			IBK_ASSERT(model != nullptr);
 			calculationResultFlag |= model->update();
 		}
 		// reset input values after each call and check which quantity has changed
@@ -682,7 +682,7 @@ SOLFRA::ModelInterface::CalculationResult StateModelGroup::ydot(double * ydot) {
 		{
 			// retrieve the current row
 			double *valuePtr = m_resultValueRefs[rowIdx];
-			IBK_ASSERT(valuePtr != NULL);
+			IBK_ASSERT(valuePtr != nullptr);
 			// retrieve error function for row rowIdx: F(y) = y - f(y)
 			m_ydot[rowIdx] = m_y[rowIdx] + m_resultValueOffset[rowIdx] - *valuePtr;
 
@@ -709,7 +709,7 @@ SOLFRA::ModelInterface::CalculationResult StateModelGroup::ydot(double * ydot) {
 		for (unsigned int modelIdx = 0; modelIdx < m_models.size(); ++modelIdx) {
 			// do not allow empty model references
 			AbstractStateDependency *model = m_models[modelIdx];
-			IBK_ASSERT(model != NULL);
+			IBK_ASSERT(model != nullptr);
 
 			calculationResultFlag |= model->update();
 
@@ -728,7 +728,7 @@ SOLFRA::ModelInterface::CalculationResult StateModelGroup::ydot(double * ydot) {
 
 				// retrieve the current row
 				double *valuePtr = m_resultValueRefs[resIdx];
-				IBK_ASSERT(valuePtr != NULL);
+				IBK_ASSERT(valuePtr != nullptr);
 				// retrieve error function for row rowIdx: F(y) = y - f(y)
 				m_ydot[rowIdx] = m_y[rowIdx] + m_resultValueOffset[resIdx] - *valuePtr;
 
@@ -767,7 +767,7 @@ int StateModelGroup::initStates() {
 	for (unsigned int modelIdx = 0; modelIdx < m_models.size(); ++modelIdx) {
 		// do not allow empty model references
 		AbstractStateDependency *model = m_models[modelIdx];
-		IBK_ASSERT(model != NULL);
+		IBK_ASSERT(model != nullptr);
 		calculationResultFlag |= model->update();
 
 		// reset input values after each call and check which quantity has changed
@@ -784,7 +784,7 @@ int StateModelGroup::initStates() {
 				continue;
 			// retrieve the current row
 			double *valuePtr = m_resultValueRefs[resIdx];
-			IBK_ASSERT(valuePtr != NULL);
+			IBK_ASSERT(valuePtr != nullptr);
 			// retrieve error function for row rowIdx: F(y) = y - f(y)
 			m_ydot[rowIdx] = m_y[rowIdx] + m_resultValueOffset[resIdx] - *valuePtr;
 			// and set quantity
@@ -820,7 +820,7 @@ void StateModelGroup::updateStates() {
 				continue;
 			// retrieve the current row
 			double *valuePtr = m_resultValueRefs[resIdx];
-			IBK_ASSERT(valuePtr != NULL);
+			IBK_ASSERT(valuePtr != nullptr);
 			// and set quantity
 			//*valuePtr = m_newtonStates[rowIdx] + m_resultValueOffset[resIdx];
 			*valuePtr = m_y[rowIdx] + m_resultValueOffset[resIdx];

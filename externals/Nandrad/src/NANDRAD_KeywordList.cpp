@@ -222,13 +222,12 @@ namespace NANDRAD {
 				case 0 : return "Location";
 				case 1 : return "Zone";
 				case 2 : return "ConstructionInstance";
-				case 3 : return "Interface";
-				case 4 : return "EmbeddedObject";
-				case 5 : return "ActiveObject";
-				case 6 : return "Schedule";
-				case 7 : return "ObjectList";
-				case 8 : return "Model";
-				case 9 : return "Global";
+				case 3 : return "EmbeddedObject";
+				case 4 : return "ActiveObject";
+				case 5 : return "Schedule";
+				case 6 : return "ObjectList";
+				case 7 : return "Model";
+				case 8 : return "Global";
 			} break;
 			// NaturalVentilationModel::modelType_t
 			case 22 :
@@ -533,13 +532,12 @@ namespace NANDRAD {
 				case 0 : return "Location";
 				case 1 : return "Zone";
 				case 2 : return "ConstructionInstance";
-				case 3 : return "Interface";
-				case 4 : return "EmbeddedObject";
-				case 5 : return "ActiveObject";
-				case 6 : return "Schedule";
-				case 7 : return "ObjectList";
-				case 8 : return "Model";
-				case 9 : return "Global";
+				case 3 : return "EmbeddedObject";
+				case 4 : return "ActiveObject";
+				case 5 : return "Schedule";
+				case 6 : return "ObjectList";
+				case 7 : return "Model";
+				case 8 : return "Global";
 			} break;
 			// NaturalVentilationModel::modelType_t
 			case 22 :
@@ -845,13 +843,12 @@ namespace NANDRAD {
 				case 0 : return "Model references of climate/location models.";
 				case 1 : return "Model references inside a room.";
 				case 2 : return "Model references a wall.";
-				case 3 : return "Model references a wall surface.";
-				case 4 : return "Model references an embedded object.";
-				case 5 : return "Model references an active object.";
-				case 6 : return "Model references scheduled data.";
-				case 7 : return "Model references an object list-specific value.";
-				case 8 : return "Model references another generic model.";
-				case 9 : return "Model references to global physical quantities.";
+				case 3 : return "Model references an embedded object.";
+				case 4 : return "Model references an active object.";
+				case 5 : return "Model references scheduled data.";
+				case 6 : return "Model references an object list-specific value.";
+				case 7 : return "Model references another generic model.";
+				case 8 : return "Model references to global physical quantities.";
 			} break;
 			// NaturalVentilationModel::modelType_t
 			case 22 :
@@ -1162,7 +1159,6 @@ namespace NANDRAD {
 				case 6 : return "";
 				case 7 : return "";
 				case 8 : return "";
-				case 9 : return "";
 			} break;
 			// NaturalVentilationModel::modelType_t
 			case 22 :
@@ -1473,7 +1469,6 @@ namespace NANDRAD {
 				case 6 : return "#FFFFFF";
 				case 7 : return "#FFFFFF";
 				case 8 : return "#FFFFFF";
-				case 9 : return "#FFFFFF";
 			} break;
 			// NaturalVentilationModel::modelType_t
 			case 22 :
@@ -1784,7 +1779,6 @@ namespace NANDRAD {
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
 				case 7 : return std::numeric_limits<double>::quiet_NaN();
 				case 8 : return std::numeric_limits<double>::quiet_NaN();
-				case 9 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NaturalVentilationModel::modelType_t
 			case 22 :
@@ -2002,7 +1996,7 @@ namespace NANDRAD {
 			// Material::para_t
 			case 20 : return 3;
 			// ModelInputReference::referenceType_t
-			case 21 : return 10;
+			case 21 : return 9;
 			// NaturalVentilationModel::modelType_t
 			case 22 : return 2;
 			// NaturalVentilationModel::para_t
@@ -2092,7 +2086,7 @@ namespace NANDRAD {
 			// Material::para_t
 			case 20 : return 2;
 			// ModelInputReference::referenceType_t
-			case 21 : return 9;
+			case 21 : return 8;
 			// NaturalVentilationModel::modelType_t
 			case 22 : return 1;
 			// NaturalVentilationModel::para_t

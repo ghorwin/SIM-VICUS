@@ -54,7 +54,7 @@ void SimulationParameter::initDefaults() {
 void SimulationParameter::checkParameters() const {
 	FUNCID(SimulationParameter::checkParameters);
 
-	int startYear = m_intPara[NANDRAD::SimulationParameter::IP_StartYear].value;
+	int startYear = m_intPara[IP_StartYear].value;
 
 	double duration = m_interval.m_para[NANDRAD::Interval::P_End].value - m_interval.m_para[NANDRAD::Interval::P_Start].value;
 	if (duration <= 0)
@@ -62,9 +62,9 @@ void SimulationParameter::checkParameters() const {
 							 .arg(IBK::Time(startYear, m_interval.m_para[NANDRAD::Interval::P_End].value).toDateTimeFormat())
 							 .arg(IBK::Time(startYear, m_interval.m_para[NANDRAD::Interval::P_Start].value).toDateTimeFormat()), FUNC_ID);
 
-	if (m_para[NANDRAD::SimulationParameter::P_InitialTemperature].value < 123.15)
+	if (m_para[P_InitialTemperature].value < 123.15)
 		throw IBK::Exception(IBK::FormatString("Invalid initial temperature %1 in SimulationParameters.")
-							 .arg(m_para[NANDRAD::SimulationParameter::P_InitialTemperature].get_value("C")), FUNC_ID);
+							 .arg(m_para[P_InitialTemperature].get_value("C")), FUNC_ID);
 
 	/// \todo Implementation of other value range checks
 }

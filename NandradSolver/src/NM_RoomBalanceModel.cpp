@@ -222,8 +222,6 @@ void RoomBalanceModel::stateDependencies(std::vector<std::pair<const double *, c
 }
 
 
-
-
 int RoomBalanceModel::update() {
 
 	double sumQHeatCondToWalls = 0.0; // sum of heat fluxes in [W] positive from wall surfaces to room

@@ -163,11 +163,9 @@ private:
 	std::vector<const double*>						m_valueRefs;
 
 	/*! Construction interface. */
-	const NANDRAD::ConstructionInstance				*m_con;
+	const NANDRAD::ConstructionInstance				*m_con			= nullptr;
 	/*! Cached pointer to the corresponding states model. */
-	const ConstructionStatesModel					*m_statesModel;
-//	/*! Cached pointer to simulation settings. */
-//	const NANDRAD::SimulationParameter				*m_simPara;
+	const ConstructionStatesModel					*m_statesModel	= nullptr;
 
 	/*! Heat conduction flux density at left side [W/m2] (positive from left to right). */
 	double											m_fluxDensityHeatConductionA = 0;

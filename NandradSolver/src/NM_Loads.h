@@ -157,13 +157,9 @@ public:
 				this function and the query function below. Otherwise small rounding errors will cause
 				the function to register multiply surfaces for nearly same orientations, and do unnecessary calculations.
 
-		\todo Compute scalar product between all normal vectors of already registered surfaces and the normal vector
-				of the new surfaces, and if angle between normals is less than a threshold (say 0.1 deg), treat
-				surfaces as the same.
-
 		\return Returns the ID of the new surface (can also be used to query results).
 	*/
-	void addSurface(unsigned int objectID, double orientation, double inclination);
+	void addSurface(unsigned int objectID, double orientationInDeg, double inclinationInDeg);
 
 	/*! Returns the direct and diffuse radiation on a given surface.
 		This function works essentially as the function above, but identifies the surface via a surfaceId.

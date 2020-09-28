@@ -159,7 +159,7 @@ int PrecondILUT::setup(double t, const double * y, const double * ydot, const do
 	IBKMK::ibkmk_free_ilut(m_factorizedItsolMatrix);
 
 	// perform incomplete incomplete LU-factorization
-	IBKMK::ibkmk_ilut(m_itsolMatrix, m_factorizedItsolMatrix, m_maxLevelOfFillIn, m_tolerance, stdout);
+	IBKMK::ibkmk_ilut(m_itsolMatrix, m_factorizedItsolMatrix, (int)m_maxLevelOfFillIn, m_tolerance, stdout);
 
 #ifdef DUMP_SPARSE_JACOBIANS
 		std::ofstream jacdump2("jacobian_sparse_CSR_from_ILUT_factorized.txt");

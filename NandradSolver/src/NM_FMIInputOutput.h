@@ -48,9 +48,7 @@ namespace NANDRAD_MODEL {
 class FMIInputOutput : public AbstractTimeDependency, public AbstractStateDependency, public AbstractModel {
 public:
 
-	/*! Data initialization.
-		\todo Add arguments as necessary and implement.
-	*/
+	/*! Data initialization. */
 	void setup(const NANDRAD::Project & prj);
 
 	// *** Re-implemented from AbstractTimeDependency

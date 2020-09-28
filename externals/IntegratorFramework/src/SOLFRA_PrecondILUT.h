@@ -89,9 +89,8 @@ private:
 	/*! ILU composition of preconditioner matrix.
 	*/
 	IBKMK::ILUfac							*m_factorizedItsolMatrix;
-	/*! Maximum fill-in level.
-	*/
-	int										m_maxLevelOfFillIn;
+	/*! Maximum fill-in level (>= 0, but only > 0 is meaningful). */
+	unsigned int							m_maxLevelOfFillIn;
 	/*! Tolerance for fill-in element.
 	*/
 	double									m_tolerance;

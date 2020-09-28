@@ -45,6 +45,7 @@ void SolverParameter::initDefaults() {
 	m_intPara[IP_MaxOrder].set( KeywordList::Keyword("SolverParameter::intPara_t", IP_MaxOrder),									5);
 	m_intPara[IP_MaxNonlinIter].set( KeywordList::Keyword("SolverParameter::intPara_t", IP_MaxNonlinIter),							3);
 	m_intPara[IP_MaxKrylovDim].set( KeywordList::Keyword("SolverParameter::intPara_t", IP_MaxKrylovDim),							50);
+	m_intPara[IP_PreILUWidth].set( KeywordList::Keyword("SolverParameter::intPara_t", IP_PreILUWidth),								3);
 
 	m_para[P_DiscMinDx].set( KeywordList::Keyword("SolverParameter::para_t", P_DiscMinDx),											2, IBK::Unit("mm"));
 	m_para[P_DiscStretchFactor].set( KeywordList::Keyword("SolverParameter::para_t", P_DiscStretchFactor),							4, IBK::Unit("---"));
@@ -56,6 +57,13 @@ void SolverParameter::initDefaults() {
 
 	m_flag[F_DetectMaxTimeStep].set( KeywordList::Keyword("SolverParameter::flag_t", F_DetectMaxTimeStep), true );
 	m_flag[F_KinsolDisableLineSearch].set(KeywordList::Keyword("SolverParameter::flag_t", F_KinsolDisableLineSearch), false);
+}
+
+
+void SolverParameter::checkParameters() const {
+	FUNCID(SolverParameter::checkParameters);
+	if (m_intPara[IP_PreILUWidth].value <= 0)
+		throw IBK::Exception("PreILUWidth must be > 0.", FUNC_ID);
 }
 
 

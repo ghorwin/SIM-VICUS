@@ -110,7 +110,6 @@ protected:
 	virtual void initResults(const std::vector<AbstractModel*> & models) override;
 
 
-
 	/*! Transforms a target name into a target identifier for a scalar quantity.
 		Returns -1 for missing quantity.
 	*/

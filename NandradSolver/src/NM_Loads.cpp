@@ -53,21 +53,7 @@ inline bool nearlyEqual(double a, double b, double eps = 1e-5) {
 	return std::fabs(a-b) < eps;
 }
 
-#if 0
-// Helper function for dewpoint calculation
-class DewPointRootFunction : public IBK::ScalarFunction {
-public:
-	DewPointRootFunction(double pv) : m_pv(pv) {}
-	virtual double operator() (double x) const {
-		return m_pv - IBK::f_psat(x);
-	}
-
-	double m_pv;
-};
-#endif
-
 // *** Loads ***
-
 
 void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationParameter &simPara,
 	const std::map<std::string, IBK::Path> & pathPlaceHolders)
@@ -418,10 +404,11 @@ const double * Loads::resultValueRef(const QuantityName & quantityName) const {
 }
 
 
-void Loads::addSurface(unsigned int objectID, double orientation, double inclination) {
+void Loads::addSurface(unsigned int objectID, double orientationInDeg, double inclinationInDeg) {
 //	FUNCID(Loads::addSurface);
 
-	unsigned int surfaceID = m_solarRadiationModel.addSurface(orientation, inclination);
+	double inclination = inclinationInDeg*DEG2RAD; // in rad
+	unsigned int surfaceID = m_solarRadiationModel.addSurface(orientationInDeg*DEG2RAD, inclination);
 	// store mapping of object 2 CCM-surface id
 	// Note: it is likely that several objects (i.e. outside surfaces of constructions) have the same orientation and
 	//       inclination, like on a multi-storey west facade. The CCM will only compute the radiation loads

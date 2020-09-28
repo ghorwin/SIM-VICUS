@@ -31,7 +31,7 @@
 namespace NANDRAD_MODEL {
 
 class AbstractModel;
-struct QuantityDescription;
+class QuantityDescription;
 
 
 /*!	This is the base class of all models that have input dependencies (from other models).
@@ -117,26 +117,6 @@ public:
 		Default implementation return an empty map
 	*/
 	virtual void constraints(std::map< const double *, std::pair<double, double> > &constraintsPerValueRef) const { constraintsPerValueRef.clear(); }
-
-#if 0
-	/*! Called from NandradModelImpl.
-		Creates a model input reference from an implicit model feedback.
-		Therefore it is requested:
-		\para sourceID id of the source model (reference type is always MRT_MODEL)
-		\para quantity the quantity name that is referenced from the source model.
-		\para targetName the quantity name that is adressed. This name usually
-		does not include vector indices.
-		\para operation enum indicating whether a new input reference has to be created
-		or if we overwrite an existing input reference (i.e. a standart parameter
-		model is substituted by a user defined model)
-		return true if input reference was registered, false otherwise
-	*/
-	virtual bool registerInputReference(unsigned int sourceID,
-		NANDRAD::ModelInputReference::referenceType_t referenceType,
-		const QuantityName &quantity,
-		const QuantityName &targetName,
-		NANDRAD::ImplicitModelFeedback::operation_t operation) = 0;
-#endif
 
 	/*! This function is called whenever result quantities of other models change.
 		Re-implement this function in derived classes and handle all your update-functionality here.
