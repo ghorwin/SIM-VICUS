@@ -88,6 +88,7 @@ void ConstructionInstance::checkParameters(const std::vector<ConstructionType> &
 	}
 }
 
+
 bool ConstructionInstance::behavesLike(const ConstructionInstance & other) const {
 	if (m_constructionTypeId != other.m_constructionTypeId)
 		return false;
@@ -109,6 +110,7 @@ bool ConstructionInstance::behavesLike(const ConstructionInstance & other) const
 
 	return true; // both construction instances would calculate effectively the same
 }
+
 
 } // namespace NANDRAD
 

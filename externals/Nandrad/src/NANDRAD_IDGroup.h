@@ -29,9 +29,7 @@
 
 namespace NANDRAD {
 
-/*!	\brief Declaration for class IDGroup
-
-	An IDGroup references one or more IDs and handles the encoding/decoding
+/*!	An IDGroup references one or more IDs and handles the encoding/decoding
 	of an IDGroup-string.
 	\code
 	// supported encodings

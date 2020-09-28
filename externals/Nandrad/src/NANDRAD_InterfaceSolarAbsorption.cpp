@@ -31,6 +31,7 @@ bool InterfaceSolarAbsorption::operator!=(const InterfaceSolarAbsorption & other
 	return false; // not different
 }
 
+
 void InterfaceSolarAbsorption::checkParameters() const {
 	// only check parameters if model is enable
 	if (m_modelType == NUM_MT)

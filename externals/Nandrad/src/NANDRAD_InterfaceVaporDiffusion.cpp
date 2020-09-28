@@ -31,8 +31,8 @@ bool InterfaceVaporDiffusion::operator!=(const InterfaceVaporDiffusion & other) 
 	return false; // not different
 }
 
-void InterfaceVaporDiffusion::checkParameters() const
-{
+
+void InterfaceVaporDiffusion::checkParameters() const {
 	// only check parameters if model is enable
 	if (m_modelType == NUM_MT)
 		return;
@@ -40,7 +40,7 @@ void InterfaceVaporDiffusion::checkParameters() const
 	m_para[P_VaporTransferCoefficient].checkedValue("s/m", "s/m",
 									   0, true,
 									   std::numeric_limits<double>::max(), true,
-									   "Vapor transfer coefficient must be > 0 s/m.");
+									   "Vapor transfer coefficient must be >= 0 s/m.");
 
 }
 

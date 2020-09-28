@@ -38,10 +38,9 @@ void InterfaceHeatConduction::checkParameters() const {
 		return;
 
 	m_para[P_HeatTransferCoefficient].checkedValue("W/m2K", "W/m2K",
-												   0, false,
+												   0, true,
 												   std::numeric_limits<double>::max(), true,
-								   "Heat transfer coefficient must be > 0 W/m2K.");
-
+								   "Heat transfer coefficient must be >= 0 W/m2K.");
 }
 
 } // namespace NANDRAD

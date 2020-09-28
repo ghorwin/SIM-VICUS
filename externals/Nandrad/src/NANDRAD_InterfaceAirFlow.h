@@ -49,9 +49,7 @@ public:
 	NANDRAD_READWRITE_IFNOTEMPTY(InterfaceAirFlow)
 	NANDRAD_COMP(InterfaceAirFlow)
 
-	/*! Checks for valid parameters (value ranges).
-		TODO implement code
-	*/
+	/*! Checks for valid parameters (value ranges).*/
 	void checkParameters() const;
 
 	// *** PUBLIC MEMBER VARIABLES ***

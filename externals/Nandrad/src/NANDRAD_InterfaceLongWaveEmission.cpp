@@ -31,6 +31,7 @@ bool InterfaceLongWaveEmission::operator!=(const InterfaceLongWaveEmission & oth
 	return false; // not different
 }
 
+
 void InterfaceLongWaveEmission::checkParameters() const{
 	// only check parameters if model is enable
 	if (m_modelType == NUM_MT)

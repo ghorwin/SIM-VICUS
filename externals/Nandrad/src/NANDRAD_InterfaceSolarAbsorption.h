@@ -27,13 +27,7 @@
 
 namespace NANDRAD {
 
-/*!	\brief Declaration for class InterfaceSolarAbsorption
-
-	An embedded object generally defines a wall opening (a window or a door).
-	That means, the calculation radiant heat fluxes and heat fluxes by heat transmission are performed
-	by a window model or door model. The embedded oject	stores an exchangable parameter model
-	that defines the name for the calculation model and constant model parameters.
-*/
+/*!	Parametrization for solar absorption (short wave radiation boundary condition). */
 class InterfaceSolarAbsorption {
 	NANDRAD_READWRITE_PRIVATE
 public:

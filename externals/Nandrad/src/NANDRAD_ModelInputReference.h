@@ -42,7 +42,6 @@ public:
 		MRT_LOCATION,				// Keyword: Location				'Model references of climate/location models.'
 		MRT_ZONE,					// Keyword: Zone					'Model references inside a room.'
 		MRT_CONSTRUCTIONINSTANCE,	// Keyword: ConstructionInstance	'Model references a wall.'
-		MRT_INTERFACE,				// Keyword: Interface				'Model references a wall surface.'
 		MRT_EMBEDDED_OBJECT,		// Keyword: EmbeddedObject			'Model references an embedded object.'
 		MRT_ACTIVE_OBJECT,			// Keyword: ActiveObject			'Model references an active object.'
 		MRT_SCHEDULE,				// Keyword: Schedule				'Model references scheduled data.'

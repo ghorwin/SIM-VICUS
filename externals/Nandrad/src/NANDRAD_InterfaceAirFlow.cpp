@@ -31,9 +31,9 @@ bool InterfaceAirFlow::operator!=(const InterfaceAirFlow & other) const {
 	return false; // not different
 }
 
-void InterfaceAirFlow::checkParameters() const
-{
-	//ToDo check parameters
+
+void InterfaceAirFlow::checkParameters() const {
+	// TODO check parameters
 
 }
 
