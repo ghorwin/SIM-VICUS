@@ -79,7 +79,7 @@ public:
 		DirectRadiationNormal,
 		/*! Diffuse short wave radiation on horizontal surface [W/m2] */
 		DiffuseRadiationHorizontal,
-		/*! Wind direction [deg], 0 - North, 90 - East, < 360. */
+		/*! Wind direction [Deg], 0 - North, 90 - East, < 360. */
 		WindDirection,
 		/*! Wind velocity [m/s] */
 		WindVelocity,
@@ -150,6 +150,14 @@ public:
 				 undefined.
 	*/
 	void readClimateDataIBK(const IBK::Path & fname, bool headerOnly=false);
+
+	/*! Read climate data set from BBSR (reference years from 2017, with Lambert transformation)
+		\param fname Full path to c6b file.
+		\param headerOnly If true, reader stops after reading header (object is in incomplete state afterwards)
+		\warning Call this function on an empty object, only. Otherwise the resulting state is
+				 undefined.
+	*/
+	void readClimateDataBBSRDat(const IBK::Path & fname, bool headerOnly=false);
 
 	/*! Reads CCD files from directory using default file names.
 		\param directory The path to the directory containing the files.

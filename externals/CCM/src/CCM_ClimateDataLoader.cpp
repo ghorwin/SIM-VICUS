@@ -55,6 +55,7 @@
 #include <IBK_UnitVector.h>
 #include <IBK_CSVReader.h>
 #include <IBK_FileUtils.h>
+#include <IBK_geographic.h>
 
 #include <fstream>
 #include <iostream>
@@ -860,6 +861,159 @@ void ClimateDataLoader::readClimateDataIBK(const IBK::Path & fname, bool headerO
 	updateCheckBits();
 }
 
+double valueFromParaString(const std::string & valLine) {
+	FUNCID(CCM::ClimateDataLoader::valueFromParaString);
+	std::size_t pos = valLine.find(":");
+	if (pos == std::string::npos)
+		throw IBK::Exception("Invalid header.\n", FUNC_ID);
+
+	std::string valStr = valLine.substr(pos);
+	// now read double value
+	std::stringstream strm(valStr);
+	double val;
+	if (!(strm >> val))
+		throw IBK::Exception("Invalid header line, expected format <keyword> : <value> <unit>.\n", FUNC_ID);
+	return val;
+}
+
+
+void ClimateDataLoader::readClimateDataBBSRDat(const IBK::Path & fname, bool headerOnly) {
+	FUNCID(ClimateDataLoader::readClimateDataBBSRDat);
+	// open file
+#ifdef _MSC_VER
+	std::ifstream in(fname.wstr().c_str());
+#else
+	std::ifstream in(fname.str().c_str());
+#endif
+	// check if file exists
+	if (!in)
+		throw IBK::Exception( IBK::FormatString("Climate data file '%1' does not exist or is not accessible.")
+							  .arg(fname), FUNC_ID);
+
+	// header runs until the following two lines are found
+	//      RW      HW MM DD HH     t    p  WR   WG N    x  RF    B    D   A    E IL
+	// ***
+
+
+	const char * const HEADER_END1 = "     RW      HW MM DD HH     t    p  WR   WG N    x  RF    B    D   A    E IL";
+	const char * const HEADER_END2 = "***";
+
+	try {
+		// header:
+		//Koordinatensystem : Lambert konform konisch
+		//Rechtswert        : 4062500 Meter
+		//Hochwert          : 2574500 Meter
+		//Hoehenlage        : 241 Meter ueber NN
+
+		// read first 4 lines
+		std::string headerLines[4];
+		for (unsigned int i=0; i<4; ++i)
+			std::getline(in, headerLines[i]);
+
+		if (!in)
+			throw IBK::Exception("Missing header lines.\n", FUNC_ID);
+
+		// extract values
+		double rightVal = valueFromParaString(headerLines[1]);
+		double highVal = valueFromParaString(headerLines[2]);
+		double heightOverNN = valueFromParaString(headerLines[3]);
+
+		m_city = "BBSR";
+		m_comment = "Import from BBSR-Data";
+
+		// convert to longitude and latitude
+		IBK::transformLambertProjectionToWSG84(rightVal, highVal, m_longitudeInDegree, m_latitudeInDegree);
+		m_elevation = heightOverNN;
+		m_timeZone = 1; // always MEZ
+
+
+		// read until end of header is found
+		std::string line;
+		std::getline(in, line);
+		while (line.find(HEADER_END1) != std::string::npos)
+			std::getline(in, line);
+
+		if (!in)
+			throw IBK::Exception( IBK::FormatString("Error reading last header line with table captions."), FUNC_ID);
+
+		// next line must contain ***
+		std::getline(in, line);
+		if (line.find(HEADER_END2) == std::string::npos)
+			throw IBK::Exception( IBK::FormatString("Missing '***' at end of header."), FUNC_ID);
+
+		if (headerOnly)
+			return;
+
+		// remove existing data
+		for (int i=0; i<NumClimateComponents; ++i) {
+			m_data[i].clear();
+			m_data[i].reserve(8760);
+		}
+		m_dataTimePoints.clear();
+
+		// hourly values, starting with 1:00
+
+		int hour = 0;
+		while (std::getline(in, line)) {
+			// stop at first empty line
+			if (line.find_first_not_of(" \t\r") == std::string::npos)
+				break;
+			++hour;
+			std::vector<double> vec;
+			IBK::string2valueVector(line, vec);
+			// sanity checks
+			if (vec.size() != 17)
+				throw IBK::Exception(IBK::FormatString("Invalid data line: %1, invalid number of columns (expected 17).")
+									 .arg(line), FUNC_ID);
+
+			// fixed column matching
+			m_data[Temperature].push_back( vec[5] ); // C
+			m_data[RelativeHumidity].push_back( vec[11] ); // %
+			m_data[DirectRadiationNormal].push_back( vec[12] ); // mind: still horizontal radiation, conversion follows
+			m_data[DiffuseRadiationHorizontal].push_back( vec[13] ); // W/m2
+
+			m_data[Rain].push_back(DATA_NOT_VALID);
+
+			m_data[WindDirection].push_back( vec[7] ); // Deg
+			m_data[WindVelocity].push_back( vec[8] ); // m/s
+
+			m_data[LongWaveCounterRadiation].push_back( vec[14] ); // W/m2
+
+			m_data[AirPressure].push_back( vec[6]*100 ); // hPa
+
+		}
+
+		// ensure that we have exactly 8760 valid values
+		if (hour != 8760)
+			throw IBK::Exception(IBK::FormatString("Missing data, only got %1 values, expected 8760 hourly values.")
+								 .arg(hour), FUNC_ID);
+
+		// now convert horizontal radiation to normal radiation
+		CCM::SolarRadiationModel radModel;
+		radModel.m_sunPositionModel.m_latitude = m_latitudeInDegree * DEG2RAD;
+		radModel.m_sunPositionModel.m_longitude = m_longitudeInDegree * DEG2RAD;
+		radModel.m_climateDataLoader.m_timeZone = m_timeZone;
+
+		std::vector<double> & dataVec = m_data[DirectRadiationNormal];
+		IBK_ASSERT(m_dataTimePoints.empty() || dataVec.size() == m_dataTimePoints.size());
+		for (unsigned int k=0; k<dataVec.size(); ++k) {
+			const double directRadiationHorizontal = dataVec[k];
+			double directRadiationNormal;
+			double secondsOfYear = (k+1)*3600 - 1800; // take sun position at middle of last hour
+
+			// calculate normal solar radiation
+			radModel.convertHorizontalToNormalRadiation(secondsOfYear, directRadiationHorizontal, directRadiationNormal);
+			// overwrite values
+			dataVec[k] = directRadiationNormal;
+		}
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, IBK::FormatString("Error reading file '%1'.").arg(fname), FUNC_ID);
+	}
+	updateCheckBits();
+}
+
+
 
 void ClimateDataLoader::readClimateDataWAC(const IBK::Path & fname, bool headerOnly) {
 	FUNCID(ClimateDataLoader::readClimateDataWAC);
@@ -1099,7 +1253,7 @@ void ClimateDataLoader::readClimateDataWAC(const IBK::Path & fname, bool headerO
 		for (unsigned int k=0; k<dataVec.size(); ++k) {
 			const double directRadiationHorizontal = dataVec[k];
 			double directRadiationNormal;
-			double secondsOfYear = (k+1)*3600; // assume cyclic data
+			double secondsOfYear = (k+1)*3600 - 1800; // middle of the hour
 			if (!m_dataTimePoints.empty())
 				secondsOfYear = m_dataTimePoints[k];
 
