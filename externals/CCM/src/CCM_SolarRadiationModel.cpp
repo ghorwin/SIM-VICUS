@@ -161,15 +161,10 @@ void SolarRadiationModel::setTime(int year, double secondsOfYear) {
 	// retrieve horizontal diffuse radiation [W/m2]
 	double diffuseRadHorizontal = m_climateDataLoader.m_currentData[ClimateDataLoader::DiffuseRadiationHorizontal];
 
-//	double azimuthDeg = azimuthAngle/DEG2RAD;
-//	double elevationDeg = elevationAngle/DEG2RAD;
-
 	for (unsigned int i = 0; i < m_surface.size(); ++i) {
 		// retrieve orientation and inclination angle [rad]
 		double orientationAngle = m_surface[i].first;
 		double inclinationAngle = m_surface[i].second;
-//		double orientationAngleDeg = orientationAngle/DEG2RAD;
-//		double inclinationAngleDeg = inclinationAngle/DEG2RAD;
 
 		bool flatRoof			= nearly_equal(inclinationAngle, 0);
 
@@ -253,6 +248,9 @@ void SolarRadiationModel::setTime(int year, double secondsOfYear) {
 
 unsigned int SolarRadiationModel::addSurface(double orientation, double inclination) {
 	// search for existing surfaces with same orientation and inclination
+	//	\todo Compute scalar product between all normal vectors of already registered surfaces and the normal vector
+	//			of the new surfaces, and if angle between normals is less than a threshold (say 0.1 deg), treat
+	//			surfaces as the same.
 	for (unsigned int i=0; i<m_surface.size(); ++i) {
 		if (nearly_equal(m_surface[i].first, orientation, 1e-5) &&
 			nearly_equal(m_surface[i].second, inclination, 1e-5) )
