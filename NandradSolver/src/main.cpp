@@ -1701,6 +1701,21 @@ void createSim05(NANDRAD::Project &prj){
 int main(int argc, char * argv[]) {
 	FUNCID(main);
 
+//#ifdef SCHEDULE
+
+	NANDRAD::Project prj;
+	NANDRAD::Schedules scheds;
+
+	scheds.m_firstDayOfYear = NANDRAD::Schedules::SD_MONDAY;
+
+	prj.m_schedules = scheds;
+
+	IBK::Path path ("C:/temp/TEST.nandrad");
+
+	prj.writeXML(path);
+
+//#endif
+
 #ifdef TEST_PROJECT_WRITING
 	NANDRAD::LinearSplineParameter linSp;
 
