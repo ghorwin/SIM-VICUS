@@ -465,8 +465,6 @@ void Schedules::generateLinearSpline(const std::string & objectListName, const s
 						// one that starts the new interval
 						tp.push_back(tpsec-TIME_SHIFT);
 						vals.m_data.push_back(vals.m_data.back());
-						tp.push_back(tpsec);
-						vals.m_data.push_back(val);
 					}
 					else {
 						// check if same tp is already in the data vector, and by same we mean
@@ -483,6 +481,8 @@ void Schedules::generateLinearSpline(const std::string & objectListName, const s
 							tp.back() -= TIME_SHIFT;
 						}
 					}
+					tp.push_back(tpsec);
+					vals.m_data.push_back(val);
 				}
 			}
 			dataAdded = true; // we have added data for the day

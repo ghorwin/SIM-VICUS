@@ -42,6 +42,8 @@ void DailyCycle::prepareCalculation() {
 		m_interpolation = IT_LINEAR;
 	else if (m_interpolation != IT_CONSTANT)
 		throw IBK::Exception("Invalid/undefined interpolation type in DailyCycle.", FUNC_ID);
+	if (m_interpolation == IT_LINEAR && m_timePoints.size()<2 )
+		throw IBK::Exception("Daily Cycles with linear interpolation need at least 2 defined time points", FUNC_ID);
 
 	// check if time points follow the rules
 	if (m_timePoints[0] != 0.0)

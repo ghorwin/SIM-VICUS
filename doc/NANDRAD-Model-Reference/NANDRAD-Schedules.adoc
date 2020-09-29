@@ -120,19 +120,19 @@ At first priority the type `Alldays` will set a specified daily values to all da
 | 3 | Values will be set to all holidays of the period that are specified inside the `holidays` tag
 |====================
 
-.Defined schedule for `Mondays`
+.Defined schedule for *Alldays*
 image::alldays.png[width=80%, scalewidth=12cm]
 
-.Defined schedule for `Mondays`
+.Defined schedule for **Mondays**
 image::mondays.png[width=80%, scalewidth=12cm]
 
-.Defined schedule for `Weekdays` for the period of January
+.Defined schedule for *Weekdays* for the period of January
 image::weekdays.png[width=80%, scalewidth=12cm]
 
 .Resulting Schedule shown for a week in January 
 image::week.png[width=80%, scalewidth=12cm]
 
-.Resulting Schedule shown for January and February
+.Complete resulting Schedule shown
 image::year.png[width=80%, scalewidth=12cm]
 
 
