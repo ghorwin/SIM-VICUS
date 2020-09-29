@@ -397,7 +397,8 @@ void SVMainWindow::on_actionFileOpen_triggered() {
 							this,
 							tr("Select SIM-VICUS project"),
 							SVSettings::instance().m_propertyMap[SVSettings::PT_LastFileOpenDirectory].toString(),
-							tr("SIM-VICUS projects and project packages (*.vicus *.vicpac);;All files (*.*)")
+							tr("SIM-VICUS projects and project packages (%1 %2);;All files (*.*)")
+			.arg(SVSettings::instance().m_projectFileSuffix).arg(SVSettings::instance().m_projectPackageSuffix)
 						);
 
 	if (filename.isEmpty()) return;
@@ -969,7 +970,7 @@ void SVMainWindow::updateWindowTitle() {
 	// no project file given?
 	QString shortFileName, longFileName;
 	if (m_projectHandler.projectFile().isEmpty()) {
-		shortFileName = tr("unnamed.vicus");
+		shortFileName = tr("unnamed%1").arg(SVSettings::instance().m_projectFileSuffix);
 		longFileName = shortFileName;
 	}
 	else {
@@ -1096,11 +1097,11 @@ bool SVMainWindow::processProjectPackage(QString & filename, bool renameProjectF
 					this,
 					tr("Specify SIM-VICUS project"),
 					recentPath,
-					tr("SIM-VICUS project files (*.vicus);;All files (*.*)"));
+					tr("SIM-VICUS project files (%1);;All files (*.*)").arg(SVSettings::instance().m_projectFileSuffix));
 			if (targetFilePath.isEmpty())
 				return false;
-			if (!targetFilePath.endsWith(".vicus"))
-				targetFilePath += ".vicus";
+			if (!targetFilePath.endsWith(SVSettings::instance().m_projectFileSuffix))
+				targetFilePath += SVSettings::instance().m_projectFileSuffix;
 			targetDir = QFileInfo(targetFilePath).dir().absolutePath();
 		}
 		else {
@@ -1116,7 +1117,8 @@ bool SVMainWindow::processProjectPackage(QString & filename, bool renameProjectF
 		if (!importProjectPackage(filename, targetDir, projectFile, true))
 			return false;
 		if (projectFile.isEmpty()) {
-			QMessageBox::critical(this, tr("Import error"), tr("Project package does not contain a SIM-VICUS project file (.vicus-file)."));
+			QMessageBox::critical(this, tr("Import error"),
+								  tr("Project package does not contain a SIM-VICUS project file (%1-file).").arg(SVSettings::instance().m_projectFileSuffix));
 			return false;
 		}
 		// if renaming is selected, perform the renaming

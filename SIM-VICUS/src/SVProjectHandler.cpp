@@ -246,7 +246,7 @@ SVProjectHandler::SaveResult SVProjectHandler::saveWithNewFilename(QWidget * par
 			parent,
 			tr("Specify SIM-VICUS project file"),
 			currentPath,
-			tr("SIM-VICUS project files (*.vicus);;All files (*.*)")
+			tr("SIM-VICUS project files (%1);;All files (*.*)").arg(SVSettings::instance().m_projectFileSuffix)
 		);
 
 
@@ -272,8 +272,8 @@ SVProjectHandler::SaveResult SVProjectHandler::saveProject(QWidget * parent, con
 
 	// check project file ending, if there is none append it
 	QString fname = fileName;
-	if (!fname.endsWith(".vicus"))
-		fname.append( ".vicus" );
+	if (!fname.endsWith(SVSettings::instance().m_projectFileSuffix))
+		fname.append( SVSettings::instance().m_projectFileSuffix );
 
 #if 0
 	// updated created and lastEdited tags

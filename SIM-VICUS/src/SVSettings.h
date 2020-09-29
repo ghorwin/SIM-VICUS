@@ -119,6 +119,12 @@ public:
 	/*! Path to CCMEditor executable. */
 	QString						m_CCMEditorExecutable;
 
+
+	/*! The project file suffix including the . */
+	QString						m_projectFileSuffix			= ".vicus";
+	/*! The project package suffix including the . */
+	QString						m_projectPackageSuffix		= ".vicpac";
+
 	/*! Dimensions of the thumbnail to be generated for the welcome page. */
 	unsigned int				m_thumbNailSize;
 

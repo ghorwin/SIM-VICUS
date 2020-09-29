@@ -135,7 +135,8 @@ void SVWelcomeScreen::updateWelcomePage() {
 		QDir templatesDir(QtExt::Directories::userDataDir()+"/DB_templates");
 
 		QStringList templateFiles;
-		SVSettings::recursiveSearch(templatesDir, templateFiles, QStringList() << "vicpac");
+		SVSettings::recursiveSearch(templatesDir, templateFiles,
+									QStringList() << SVSettings::instance().m_projectPackageSuffix.mid(1));
 
 		// for each file, parse its header, extract comments, open thumbnail image and compose table with information
 		foreach (QString fname, templateFiles) {
@@ -192,7 +193,8 @@ void SVWelcomeScreen::updateWelcomePage() {
 		QDir examplesDir(QtExt::Directories::databasesDir() + "/examples");
 
 		QStringList exampleFiles;
-		SVSettings::recursiveSearch(examplesDir, exampleFiles, QStringList() << "vicus");
+		SVSettings::recursiveSearch(examplesDir, exampleFiles,
+									QStringList() << SVSettings::instance().m_projectFileSuffix.mid(1));
 
 		// for each file, parse its header, extract comments, open thumbnail image and compose table with information
 		foreach (QString fname, exampleFiles) {
