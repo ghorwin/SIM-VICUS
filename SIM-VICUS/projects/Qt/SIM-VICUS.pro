@@ -76,6 +76,7 @@ SOURCES += \
 	../../src/SVPreferencesPageTools.cpp \
 	../../src/SVProjectHandler.cpp \
 	../../src/SVSettings.cpp \
+	../../src/SVStyle.cpp \
 	../../src/SVThreadBase.cpp \
 	../../src/SVWelcomeScreen.cpp \
 	../../src/actions/SVUndoCommandBase.cpp \
@@ -108,6 +109,7 @@ HEADERS  += \
 	../../src/SVPreferencesPageTools.h \
 	../../src/SVProjectHandler.h \
 	../../src/SVSettings.h \
+	../../src/SVStyle.h \
 	../../src/SVThreadBase.h \
 	../../src/SVWelcomeScreen.h \
 	../../src/actions/SVUndoCommandBase.h \

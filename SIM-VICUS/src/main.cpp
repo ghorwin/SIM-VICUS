@@ -19,6 +19,7 @@
 #include "SVSettings.h"
 #include "SVConstants.h"
 #include "SVDebugApplication.h"
+#include "SVStyle.h"
 
 /*! qDebug() message handler function, redirects debug messages to IBK::IBK_Message(). */
 void qDebugMsgHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg) {
@@ -64,14 +65,9 @@ int main(int argc, char *argv[]) {
 	settings.setDefaults();
 	settings.read();
 
-	// customize application font
-	/// \todo move to style class
-	unsigned int ps = SVSettings::instance().m_fontPointSize;
-	if (ps != 0) {
-		QFont f(qApp->font());
-		f.setPointSize((int)ps);
-		qApp->setFont(f);
-	}
+	// *** Style Init ***
+
+	SVStyle style; // constructor sets up most of the initialization
 
 	// *** Initialize Command Line Argument Parser ***
 	IBK::ArgParser argParser;

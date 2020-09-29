@@ -11,6 +11,7 @@
 #include <IBK_messages.h>
 
 #include "SVConstants.h"
+#include "SVStyle.h"
 
 SVLogWidget::SVLogWidget(QWidget *parent) :
 	QWidget(parent)
@@ -20,30 +21,7 @@ SVLogWidget::SVLogWidget(QWidget *parent) :
 	// *** setup textedit ***
 	m_textEdit = new QPlainTextEdit(this);
 
-
-	/// \todo Move any font adjustment to some central "styling" class
-	// customize log window
-#ifdef Q_OS_MACX
-	QFont f;
-	f.setFamily("Monaco");
-	f.setPointSize(12);
-	m_textEdit->setFont(f);
-#elif defined(Q_OS_UNIX)
-	QFont f;
-	f.setFamily("monospace");
-	f.setPointSize(9);
-	m_textEdit->setFont(f);
-#endif // Q_OS_UNIX
-#ifdef Q_OS_WIN
-	QFont f;
-	f.setFamily("Courier New");
-	f.setPointSize(9);
-	m_textEdit->setFont(f);
-#endif // Q_OS_WIN
-	m_textEdit->setContextMenuPolicy(Qt::NoContextMenu);
-	m_textEdit->setReadOnly(true);
-	m_textEdit->setUndoRedoEnabled(false);
-	m_textEdit->setWordWrapMode(QTextOption::NoWrap);
+	SVStyle::instance().formatPlainTextEdit(m_textEdit);
 
 	lay->addWidget(m_textEdit);
 	lay->setMargin(0);
@@ -99,7 +77,7 @@ void SVLogWidget::onMsgReceived(int type, QString msgString) {
 			html = html.arg("#bb0000");
 			break;
 		case IBK::MSG_DEBUG :
-			html = html.arg("#808000");
+			html = html.arg("#a0a0a0");
 			break;
 	}
 

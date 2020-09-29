@@ -185,15 +185,6 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/, Qt::WindowFlags /*flags*/) :
 //	addLanguageAction("es", QString::fromUtf8("Español"));
 //	addLanguageAction("it", QString::fromUtf8("Italiano"));
 
-	// *** Style Customization ***
-	/// \todo move all styling stuff into special class
-	/// \todo anyone up to creating a "dark" style?
-#if 0
-	QFile file(":/style/VicusUIStyle.qss");
-	file.open(QFile::ReadOnly);
-	QString styleSheet = QLatin1String(file.readAll());
-	setStyleSheet(styleSheet);
-#endif
 	// *** read last loaded project/project specified on command line ***
 
 	if (!SVSettings::instance().m_initialProjectFile.isEmpty()) {
