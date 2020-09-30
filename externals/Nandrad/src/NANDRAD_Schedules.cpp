@@ -88,6 +88,17 @@ void Schedules::readXML(const TiXmlElement * element) {
 				}
 			}
 		}
+		else if (cName == "FirstDayOfYear") {
+			std::string firstDay = c->GetText();
+			// convert first day of year
+			try {
+				m_firstDayOfYear = (day_t)KeywordList::Enumeration("Schedules::day_t", firstDay);
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row())
+									 .arg("Invalid day name in 'FirstDayOfYear' tag."), FUNC_ID);
+			}
+		}
 		else if (cName == "IBK:Flag") {
 			IBK::Flag f;
 			readFlagElement(c, f);
@@ -220,6 +231,15 @@ TiXmlElement * Schedules::writeXML(TiXmlElement * parent) const {
 		for (day_t t : m_weekEndDays)
 			days += std::string(",") + KeywordList::Keyword("Schedules::day_t", t);
 		TiXmlText * text = new TiXmlText( days.substr(1) ); // Mind: remove leading , from string
+		c->LinkEndChild(text);
+	}
+
+	if (m_firstDayOfYear != Schedules::SD_MONDAY) {
+		TiXmlElement * c = new TiXmlElement("FirstDayOfYear");
+		e->LinkEndChild(c);
+		// encode days
+		std::string firstDay = KeywordList::Keyword("Schedules::day_t", m_firstDayOfYear);
+		TiXmlText * text = new TiXmlText( firstDay ); // Mind: remove leading , from string
 		c->LinkEndChild(text);
 	}
 
