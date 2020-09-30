@@ -45,6 +45,10 @@ BoxObject::BoxObject() :
 		// x and z translation in a grid that has dimension 'GridDim' with 5 space units as grid (line) spacing
 		int xGrid = qrand()*double(GridDim)/RAND_MAX;
 		int zGrid = qrand()*double(GridDim)/RAND_MAX;
+		while (boxPerCells[xGrid][zGrid] == 0 && qrand() > RAND_MAX/20.0) {
+			xGrid = qrand()*double(GridDim)/RAND_MAX;
+			zGrid = qrand()*double(GridDim)/RAND_MAX;
+		}
 		int boxCount = boxPerCells[xGrid][zGrid]++;
 		float boxHeight = 4.5;
 		BoxMesh b(4,boxHeight,4.4);
