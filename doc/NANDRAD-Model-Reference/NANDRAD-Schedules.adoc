@@ -19,12 +19,28 @@ Within the project file there are two possible ways to describe a schedule:
 * `ScheduleGroups` 
 * `AnnualSchedules`. 
 
+The two options are discussed in detail in <<regularSchedules>> and <<annualSchedules>>. 
+
+Furthermore `Schedules` consist of two different types of data handling:
+
+* *Cyclic* data
+* *Non-cyclic* data
+
+*Cyclic data* means that schedule values will be repeated after the end of the schedule period. This means for example that an annual schedule will be run twice if the simulation time will be set to two years. *Cyclic-data* can be defined by * `ScheduleGroups` and `AnnualSchedules`.
+
+Whereas *non-cyclic* data will always be used only once. This is useful if monitored data will be used to set up schedules. Then the simulation needs to be set only for the time span the monitored data is existing. *Non-cyclic* data can only be defined by `AnnualSchedules`
+
 [[ex_Schedules]]
-.ScheduleGroup Definition
+.Schedules Definition
 ====
 [source,xml,indent=0]
 ----
 		<Schedules>
+			<Holidays>5,10</Holidays>
+			<WeekEndDays>Fri,Sat</WeekEndDays>
+			<FirstDayOfYear>Fri</FirstDayOfYear>
+			<IBK:Flag name="EnableCyclicSchedules">true</IBK:Flag>
+
 			<ScheduleGroups>
                 ...
 			</ScheduleGroups>
@@ -35,16 +51,40 @@ Within the project file there are two possible ways to describe a schedule:
 ----
 ====
 
-The two options are discussed in <<regularSchedules>> and <<annualSchedules>>. 
+Inside the object `Schedules` the following XML tags can also be specified 
 
-Furthermore `Schedules` consist of two different types of data handling:
+* `FirstDayOfYear` 
+* `Holidays`
+* `WeekEndDays`
+* `Schedule` 
+* `IBK:Flag` with the name `EnableCyclicSchedules`
 
-* *Cyclic* data
-* *Non-cyclic* data
+.XML tags that can be definned
+[options="header", cols="10%, 60%, 20%, 10%", width="100%"]
+|====================
+| XML tags | Description| Format |Usage
+| `FirstDayOfYear` 
+a| The day type of January 1st (offset of day of the week of the start year.  
 
-*Cyclic data* means that schedule values will be repeated after the end of the schedule period. This means for example that an annual schedule will be run twice if the simulation time will be set to two years. *Cyclic-data* can be defined by * `ScheduleGroups` and `AnnualSchedules`.
+* `Mon` - Monday (_default_)
+* `Tue` - Tuesday
+* `Wed`	- Wednesday
+* `Thu`	- Thursday
+* `Fri` - Friday
+* `Sat`	- Saturday
+* `Sun` - Sunday
 
-Whereas *non-cyclic* data will always be used only once. This is useful if monitored data will be used to set up schedules. Then the simulation needs to be set only for the time span the monitored data is existing. *Non-cyclic* data can only be defined by `AnnualSchedules`
+| String | _optional_
+| `Holidays` 
+a|  List of holiday days, stored in "day of the year", not including leap days. | String | _optional_
+| `WeekEndDays` | Weekend days. | String | _optional_
+|IBK:Flag
+`EnableCyclicSchedules`|Check schedules to determine minimum distances between steps and adjust MaxTimeStep.
+
+(_true_ by default)
+|_true / false_|_optional_
+
+|====================
 
 
 [[regularSchedules]]
@@ -86,39 +126,9 @@ Regular schedules are defined upon a daily cycle based scheme. Some Parameters n
 ----
 ====
 
-Regular schedules are defined within the XML tag `ScheduleGroup` with an XML attribute named `objectList` that references an `ObjectList` with the specified name (see <<tab_ScheduleGroup>>). Inside the object the XML tags named `FirstDayOfYear`, `Holidays` and several XML Tags named `Schedule` can to be defined. The `Schedule` objects need an XML attribute called `type` with different names for specific day types (see <<tab_ScheduleTypes>>). There shall be no two objects with the same `type`. Upon those `Schedule` objects it is possible to define a schedule for a whole year. Therefore a certain role exists to build schedules. 
-
-.XML tags that can be definned
-[options="header", cols="10%, 60%, 20%, 10%", width="100%"]
-|====================
-| XML tags | Description| Format |Usage
-| Holidays 
-a|  List of holiday days, stored in "day of the year", not including leap days. | String | _optional_
-| WeekEndDays | Weekend days. | String | _optional_
-| FirstDayOfYear 
-a| The day type of January 1st (offset of day of the week of the start year.  
-
-* `Mon` - Monday (_default_)
-* `Tue` - Tuesday
-* `Wed`	- Wednesday
-* `Thu`	- Thursday
-* `Fri` - Friday
-* `Sat`	- Saturday
-* `Sun` - Sunday
-
-| String | _optional_
-
-|====================
+Regular schedules are defined within the XML tag `ScheduleGroup` with an XML attribute named `objectList` that references an `ObjectList` with the specified name (see <<tab_ScheduleGroup>>). 
 
 :xrefstyle: basic 
-
-[[tab_ScheduleFlags]]
-.Description of IBK:Flags that can be used inside the Schedule
-[options="header",cols="20%,60%,10%,10%",width="100%"]
-|====================
-| Name | Description | Default | Usage 
-|`EnableCyclicSchedules`|Check schedules to determine minimum distances between steps and adjust MaxTimeStep.|_false_|_optional_
-|====================
 
 [[tab_ScheduleGroup]]
 .Attribute for the ScheduleGroup
@@ -129,9 +139,12 @@ a| The day type of January 1st (offset of day of the week of the start year.
 |====================
 
 
+
 ### Daily Cycles
 
-At first priority the type `Alldays` will set specified daily schedule values (e.g. Heating Setpoint Temperatures) to all days of the whole year (Priority 0). After this the `type` named `WeekEnd` and `WeekDay` will overwrite the already defined schedule values for only all week days or weekend days (Priority 1). Furthermore the weekdays named `Monday`, `Tuesday`, etc define for which days the schedule values will be overwritten again (Priority 2). This continues with the `type` `Holiday` (Priority 3) for the specified holidays inside the `Holidays` object. So that in the end a final schedule for the whole year can be defined. This can be done for several periods.
+Inside the `ScheduleGroup` several Objects called `Schedule` can be defined. The `Schedule` objects need an XML attribute called `type` with different names for specific day types (see <<tab_ScheduleTypes>>). There shall be no two objects with the same `type` inside a `ScheduleGroup`. Upon those `Schedule` objects with different `types` it is possible to define a schedule for a whole year. Therefore a certain rule exists to build schedules as described bellow. 
+
+At first priority the type `Alldays` will set specified daily schedule values (e.g. Heating Setpoint Temperatures) to all days of the whole year (Priority 0). After this the `type` named `WeekEnd` and `WeekDay` will overwrite the already defined schedule values for only all week days or weekend days (Priority 1). Furthermore the weekdays named `Monday`, `Tuesday`, ... define for which days the schedule values will be overwritten again (Priority 2). This continues with the `type` `Holiday` (Priority 3) for the specified holidays inside the `Holidays` object. So that in the end a final schedule for the whole year can be defined. This can be done for several periods.
 
 .ObjectList with an Zone linked
 ====
