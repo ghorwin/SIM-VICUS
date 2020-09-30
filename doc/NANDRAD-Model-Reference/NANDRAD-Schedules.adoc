@@ -94,7 +94,7 @@ Regular schedules are defined within the XML tag `ScheduleGroup` with an XML att
 
 ### Daily Cycles
 
-At first priority the type `Alldays` will set specified daily schedule values (e.g. Heating Set point Temperatures) to all days of the whole year (Priority 0). After this the `type` named `WeekEnd` and `WeekDay` will overwrite the already defined schedule values for only all week days or weekend days (Priority 1). Furthermore the weekdays named `Monday`, `Tuesday`, etc define for which days the schedule values will be overwritten again (Priority 2). This continues with the `type` `Holiday` (Priority 3) for the specified holidays inside the `Holidays` object. So that in the end a final schedule for the whole year can be defined. This can be done for several periods.
+At first priority the type `Alldays` will set specified daily schedule values (e.g. Heating Setpoint Temperatures) to all days of the whole year (Priority 0). After this the `type` named `WeekEnd` and `WeekDay` will overwrite the already defined schedule values for only all week days or weekend days (Priority 1). Furthermore the weekdays named `Monday`, `Tuesday`, etc define for which days the schedule values will be overwritten again (Priority 2). This continues with the `type` `Holiday` (Priority 3) for the specified holidays inside the `Holidays` object. So that in the end a final schedule for the whole year can be defined. This can be done for several periods.
 
 As shown, a priority list exists that defines on how to define a yearly schedule based on a daily cycle.
 
@@ -119,23 +119,6 @@ a| The day type of January 1st (offset of day of the week of the start year.
 | String | _optional_
 
 |====================
-
-
-
-.ObjectList with an Zone linked
-====
-[source,xml,indent=0]
-----
-<Schedule type="AllDays">
-    <DailyCycles>
-    	<DailyCycle interpolation="Constant">
-    		<TimePoints>0</TimePoints>
-    		<Values>InfiltrationRateSchedule [1/h]:0</Values>
-    	</DailyCycle>
-    </DailyCycles>
-</Schedule>
-----
-====
 
 :xrefstyle: basic 
 
@@ -173,38 +156,32 @@ a| The day type of January 1st (offset of day of the week of the start year.
 
 Flags and options (see section <<IBK_Flag>> for a description of the `IBK:Flag` tag):
 
+[[tab_ScheduleFlags]]
+.Description of IBK:Flags that can be used inside the Schedule
 [options="header",cols="20%,60%,10%,10%",width="100%"]
 |====================
 | Name | Description | Default | Usage 
-|(*)`DetectMaxTimeStep`|Check schedules to determine minimum distances between steps and adjust MaxTimeStep.|_false_|_optional_
-|(*)`KinsolDisableLineSearch`|Disable line search for steady state cycles.|_false_|_optional_
-|(*)`KinsolStrictNewton`|Enable strict Newton for steady state cycles.|_false_|_optional_
+|`EnableCyclicSchedules`|Check schedules to determine minimum distances between steps and adjust MaxTimeStep.|_false_|_optional_
 |====================
+
+
 
 [options="",cols="50%,50%",width="100%"]
 |===
 a| image::alldays.png[width=100%]
 a| image::mondays.png[width=100%]
+
+a| image::weekdays.png[width=100%]
+a| image::week.png[width=100%]
+
+a| image::year.png[width=100%]
+|
 |===
 
 
-.Defined schedule for `Mondays`
-
-
-.Defined schedule for `Weekdays` for the period of January
-image::weekdays.png[width=50%, scalewidth=12cm]
-
-.Resulting Schedule shown for a week in January 
-image::week.png[width=50%, scalewidth=12cm]
-
-
-
-
-.Resulting Schedule shown for January and February with two defined periods
-image::year.png[width=50%, scalewidth=12cm]
-
-
 ### Time Shift
+
+Inside the 
 
 .Automatic Time Shift in Daily Cycles to improve simulation speed 
 image::ScheduleShift.png[width=80%, scalewidth=12cm]
