@@ -61,8 +61,6 @@ Regular schedules are defined upon a daily cycle based scheme. Some Parameters n
 ----
 <ScheduleGroups>
     <ScheduleGroup objectList="Zone">
-        <FirstDayOfYear>Mon</FirstDayOfYear>
-        <Holidays>100,101,102</Holidays>
         <!-- AllDays constant  -->
         <Schedule type="AllDays">
             ...
@@ -73,7 +71,6 @@ Regular schedules are defined upon a daily cycle based scheme. Some Parameters n
     </ScheduleGroup>
 <ScheduleGroups>
 ----
-
 ====
 
 .ObjectList with an Zone linked
@@ -87,16 +84,9 @@ Regular schedules are defined upon a daily cycle based scheme. Some Parameters n
 	</ObjectList>
 </ObjectLists>
 ----
-
 ====
 
 Regular schedules are defined within the XML tag `ScheduleGroup` with an XML attribute named `objectList` that references an `ObjectList` with the specified name (see <<tab_ScheduleGroup>>). Inside the object the XML tags named `FirstDayOfYear`, `Holidays` and several XML Tags named `Schedule` can to be defined. The `Schedule` objects need an XML attribute called `type` with different names for specific day types (see <<tab_ScheduleTypes>>). There shall be no two objects with the same `type`. Upon those `Schedule` objects it is possible to define a schedule for a whole year. Therefore a certain role exists to build schedules. 
-
-### Daily Cycles
-
-At first priority the type `Alldays` will set specified daily schedule values (e.g. Heating Setpoint Temperatures) to all days of the whole year (Priority 0). After this the `type` named `WeekEnd` and `WeekDay` will overwrite the already defined schedule values for only all week days or weekend days (Priority 1). Furthermore the weekdays named `Monday`, `Tuesday`, etc define for which days the schedule values will be overwritten again (Priority 2). This continues with the `type` `Holiday` (Priority 3) for the specified holidays inside the `Holidays` object. So that in the end a final schedule for the whole year can be defined. This can be done for several periods.
-
-As shown, a priority list exists that defines on how to define a yearly schedule based on a daily cycle.
 
 .XML tags that can be definned
 [options="header", cols="10%, 60%, 20%, 10%", width="100%"]
@@ -122,6 +112,14 @@ a| The day type of January 1st (offset of day of the week of the start year.
 
 :xrefstyle: basic 
 
+[[tab_ScheduleFlags]]
+.Description of IBK:Flags that can be used inside the Schedule
+[options="header",cols="20%,60%,10%,10%",width="100%"]
+|====================
+| Name | Description | Default | Usage 
+|`EnableCyclicSchedules`|Check schedules to determine minimum distances between steps and adjust MaxTimeStep.|_false_|_optional_
+|====================
+
 [[tab_ScheduleGroup]]
 .Attribute for the ScheduleGroup
 [options="header",cols="15%,65%,^ 10%,^ 10%",width="100%"]
@@ -129,6 +127,32 @@ a| The day type of January 1st (offset of day of the week of the start year.
 |Name|Description| Format |Usage
 | `objectList` |  References to an object list with the specifed name | string | _required_
 |====================
+
+
+### Daily Cycles
+
+At first priority the type `Alldays` will set specified daily schedule values (e.g. Heating Setpoint Temperatures) to all days of the whole year (Priority 0). After this the `type` named `WeekEnd` and `WeekDay` will overwrite the already defined schedule values for only all week days or weekend days (Priority 1). Furthermore the weekdays named `Monday`, `Tuesday`, etc define for which days the schedule values will be overwritten again (Priority 2). This continues with the `type` `Holiday` (Priority 3) for the specified holidays inside the `Holidays` object. So that in the end a final schedule for the whole year can be defined. This can be done for several periods.
+
+.ObjectList with an Zone linked
+====
+[source,xml,indent=0]
+----
+<ScheduleGroup objectList="Zone01">
+	<!-- AllDays constant  -->
+	<Schedule type="AllDays">
+		<DailyCycles>
+			<DailyCycle interpolation="Constant">
+				<TimePoints>0</TimePoints>
+				<Values>InfiltrationRateSchedule [1/h]:0</Values>
+			</DailyCycle>
+		</DailyCycles>
+	</Schedule>
+</ScheduleGroup>
+----
+====
+
+As shown, a priority list exists that defines on how to define a yearly schedule based on a daily cycle.
+
 
 [[tab_ScheduleTypes]]
 .Description of the schedule type attribute
@@ -156,13 +180,17 @@ a| The day type of January 1st (offset of day of the week of the start year.
 
 Flags and options (see section <<IBK_Flag>> for a description of the `IBK:Flag` tag):
 
-[[tab_ScheduleFlags]]
-.Description of IBK:Flags that can be used inside the Schedule
-[options="header",cols="20%,60%,10%,10%",width="100%"]
-|====================
-| Name | Description | Default | Usage 
-|`EnableCyclicSchedules`|Check schedules to determine minimum distances between steps and adjust MaxTimeStep.|_false_|_optional_
-|====================
+
+
+### Time Shift
+
+Inside the 
+
+.Automatic Time Shift in Daily Cycles to improve simulation speed 
+image::ScheduleShift.png[width=80%, scalewidth=12cm]
+
+
+### Example
 
 
 
@@ -178,15 +206,6 @@ a| image::year.png[width=100%]
 |
 |===
 
-
-### Time Shift
-
-Inside the 
-
-.Automatic Time Shift in Daily Cycles to improve simulation speed 
-image::ScheduleShift.png[width=80%, scalewidth=12cm]
-
-
 [[annualSchedules]]
 ## Annual schedules 
 
@@ -197,23 +216,23 @@ Inside the XML tag `AnnualSchedules` the sub tag `SpaceTypeGroup` with an XML at
 [[ex_AnnualSchedule]]
 .Definition of an Annual Schedule
 ====
-[source,xml,indent=0]
+[source,xml,indent=0,tabsize=2]
 ----
 
 <AnnualSchedules>
     ...
 	<SpaceTypeGroup spaceTypeName="Zone">
     	<IBK:LinearSpline name="HeatingSetPointTemperature" interpolation="linear">
-    		<X unit="h">0	2183	2184	6576	6577	8760</X>
-    		<Y unit="C">20	30		20		30		20		30</Y>
+    		<X unit="h">    0       2183    2184  6576	6577    8760   </X>
+    		<Y unit="C">    20      30      20    30    20      30     </Y>
     	</IBK:LinearSpline>	
     	<IBK:LinearSpline name="TotalEnergyProductionPerPerson" interpolation="linear">
-    		<X unit="h">		0	2183	2184	6576	6577	8760</X>
-    		<Y unit="W/Person">	70	110		70		110		70		110</Y>
+    		<X unit="h">        0   2183    2184	6576	6577	8760    </X>
+    		<Y unit="W/Person"> 70	110     70		110		70		110     </Y>
     	</IBK:LinearSpline>
     	<IBK:LinearSpline name="EquipmentUtilizationRatio" interpolation="linear">
-    		<X unit="h">		0	2183	2184	6576	6577	8760</X>
-    		<Y unit="W/Person">	10	20		10		20		10		20</Y>
+    		<X unit="h">        0   2183	2184	6576	6577	8760</X>
+    		<Y unit="W/Person"> 10	20		10		20		10		20  </Y>
     	</IBK:LinearSpline>
     </SpaceTypeGroup>
     ...

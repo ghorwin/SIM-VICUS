@@ -215,12 +215,11 @@ TiXmlElement * Schedules::writeXML(TiXmlElement * parent) const {
 		TiXmlElement * c = new TiXmlElement("Holidays");
 		e->LinkEndChild(c);
 		// encode days
-		for (unsigned int dayOfYear : m_holidays) {
-			// compose IBK::Time object
-			IBK::Time t;
-			t.set(2003, dayOfYear*3600*24);
-			TiXmlElement::appendSingleAttributeElement(c, "IBK:Time", nullptr, std::string(), t.toDayMonthFormat());
-		}
+		std::string holidays;
+		for (unsigned int t : m_holidays)
+			holidays += std::string(",") + IBK::val2string(t);
+		TiXmlText * text = new TiXmlText( holidays.substr(1) ); // Mind: remove leading , from string
+		c->LinkEndChild(text);
 	}
 
 	if (!m_weekEndDays.empty()) {

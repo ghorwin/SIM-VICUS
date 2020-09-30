@@ -1705,14 +1705,47 @@ int main(int argc, char * argv[]) {
 
 	NANDRAD::Project prj;
 	NANDRAD::Schedules scheds;
+	NANDRAD::Schedule sched;
+	NANDRAD::LinearSplineParameter linSpline;
+	std::vector<NANDRAD::Schedule> schedVec;
+	std::vector<NANDRAD::LinearSplineParameter> linSplineVec;
 
-	scheds.m_firstDayOfYear = NANDRAD::Schedules::SD_MONDAY;
+	schedVec.push_back(sched);
+	linSplineVec.push_back(linSpline);
+
+	schedVec[0].m_startDayOfTheYear = 0;
+	schedVec[0].m_endDayOfTheYear = 100;
+
+	std::vector<double> x {1,4,8,12,20};
+	std::vector<double> y {10,20,25,10,30};
+
+	IBK::LinearSpline spline;
+	spline.setValues(x,y);
+
+	linSplineVec[0].m_values = spline;
+
+	scheds.initDefaults();
+
+	scheds.m_holidays.insert(scheds.m_holidays.end(),5);
+	scheds.m_holidays.insert(scheds.m_holidays.end(),10);
+
+	scheds.m_annualSchedules.insert( scheds.m_annualSchedules.begin(),
+									 std::pair< std::string,std::vector<NANDRAD::LinearSplineParameter> > ("Test", linSplineVec) );
+
+	scheds.m_weekEndDays.insert(scheds.m_weekEndDays.end(),NANDRAD::Schedules::SD_FRIDAY);
+	scheds.m_weekEndDays.insert(scheds.m_weekEndDays.end(),NANDRAD::Schedules::SD_SATURDAY);
+
+	scheds.m_firstDayOfYear = NANDRAD::Schedules::SD_FRIDAY;
+	scheds.m_scheduleGroups.insert( scheds.m_scheduleGroups.begin(),
+									std::pair< std::string,std::vector<NANDRAD::Schedule> > ("Test", schedVec) );
 
 	prj.m_schedules = scheds;
 
 	IBK::Path path ("C:/temp/TEST.nandrad");
 
 	prj.writeXML(path);
+
+	return EXIT_SUCCESS;
 
 //#endif
 
