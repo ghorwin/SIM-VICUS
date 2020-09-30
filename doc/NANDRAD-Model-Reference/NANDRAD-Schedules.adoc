@@ -92,11 +92,13 @@ Regular schedules are defined upon a daily cycle based scheme. Some Parameters n
 
 Regular schedules are defined within the XML tag `ScheduleGroup` with an XML attribute named `objectList` that references an `ObjectList` with the specified name (see <<tab_ScheduleGroup>>). Inside the object the XML tags named `FirstDayOfYear`, `Holidays` and several XML Tags named `Schedule` can to be defined. The `Schedule` objects need an XML attribute called `type` with different names for specific day types (see <<tab_ScheduleTypes>>). There shall be no two objects with the same `type`. Upon those `Schedule` objects it is possible to define a schedule for a whole year. Therefore a certain role exists to build schedules. 
 
-At first priority the type `Alldays` will set specified daily (0 - 23 h) schedule values (e.g. Heating Set point Temperatures) to all days of the whole year (Priority 0). After this the `type` named `WeekEnd` and `WeekDay` will overwrite the already defined schedule values for only all week days or weekend days (Priority 1). Furthermore the weekdays named `Monday`, `Tuesday`, etc define for which days the schedule values will be overwritten again (Priority 2). This continues with the `type` `Holiday` (Priority 3) for the specified holidays inside the `Holidays` object. So that in the end a final schedule for the whole year can be defined. This can be done for several periods.
+### Daily Cycles
+
+At first priority the type `Alldays` will set specified daily schedule values (e.g. Heating Set point Temperatures) to all days of the whole year (Priority 0). After this the `type` named `WeekEnd` and `WeekDay` will overwrite the already defined schedule values for only all week days or weekend days (Priority 1). Furthermore the weekdays named `Monday`, `Tuesday`, etc define for which days the schedule values will be overwritten again (Priority 2). This continues with the `type` `Holiday` (Priority 3) for the specified holidays inside the `Holidays` object. So that in the end a final schedule for the whole year can be defined. This can be done for several periods.
 
 As shown, a priority list exists that defines on how to define a yearly schedule based on a daily cycle.
 
-.Capabilities and Supported Flags/Parameters for the provided Integrators
+.XML tags that can be definned
 [options="header", cols="10%, 60%, 20%, 10%", width="100%"]
 |====================
 | XML tags | Description| Format |Usage
@@ -104,9 +106,9 @@ As shown, a priority list exists that defines on how to define a yearly schedule
 a|  List of holiday days, stored in "day of the year", not including leap days. | String | _optional_
 | WeekEndDays | Weekend days. | String | _optional_
 | FirstDayOfYear 
-a| The day type of January 1st (offset of day of the week of the start year, default is set to Monday.  
+a| The day type of January 1st (offset of day of the week of the start year.  
 
-* `Mon` - Monday 
+* `Mon` - Monday (_default_)
 * `Tue` - Tuesday
 * `Wed`	- Wednesday
 * `Thu`	- Thursday
@@ -118,7 +120,7 @@ a| The day type of January 1st (offset of day of the week of the start year, def
 
 |====================
 
-### Schedules based on a daily cycle scheme
+
 
 .ObjectList with an Zone linked
 ====
@@ -134,8 +136,6 @@ a| The day type of January 1st (offset of day of the week of the start year, def
 </Schedule>
 ----
 ====
-
-
 
 :xrefstyle: basic 
 
