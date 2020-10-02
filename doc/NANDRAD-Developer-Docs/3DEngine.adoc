@@ -1,0 +1,44 @@
+:imagesdir: ./images
+# 3D Engine
+
+## Shaders
+
+Vertex-Layout notation:
+
+* V - single coordinate (e.g. x-coordinate)
+* N - component of normal vector
+* C - color component (e.g. CCC for RGB)
+* T - texture coordinate
+
+### Grid
+
+* Shader-Index: 0
+* Vertex-Structure: (VV) = (xz)
+* Files: `grid.vert` and `grid.frag` 
+* Uniforms (variables):
+    -  `worldToView`
+    -  `gridColor`
+    -  `backColor` (fade-to color)
+    - (optional) `farDistance` (fade-to normalization distance)
+
+### Background Objects
+
+Uniform color, no lighting effect, no transparency
+
+* Shader-Index: 1
+* Vertex-Structure: (VVVCCC) = (xyzrgb)
+* Files: `vertexColor.vert` and `flat.frag`
+* Uniforms (variables):
+    -  `worldToView`
+
+
+### Regular Opaque Objects
+
+* Shader-Index: 2
+* Vertex-Structure: (VVVNNNCCC) = (xyzNxNyNzrgb)
+* Files: `vertexNormalColor.vert` and `specularShading.vert`
+* Uniforms (variables):
+    -  `worldToView`
+    -  `lightPos`
+
+

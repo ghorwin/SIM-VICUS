@@ -31,3 +31,7 @@ This chapter discusses the underlying fundamentals and algorithms, as well as in
 
 include::Solver-Initialization.adoc[leveloffset=+2]
 include::Variable-Referencing.adoc[leveloffset=+2]
+
+## SIM-VICUS User-Interface
+
+include::3DEngine.adoc[leveloffset=+2]
