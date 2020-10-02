@@ -268,7 +268,6 @@ else:
 print "Test suite             : " + args.path
 print "Solver                 : " + args.solver
 print "Project file extension : " + args.extension
-print "\n"
 
 # walk all subdirectories (except .svn) within testsuite and collect project file names
 projects = []
@@ -279,6 +278,8 @@ for root, dirs, files in os.walk(args.path, topdown=False):
             projects.append(projectFilePath)
 
 projects.sort()
+print("Number of projects     : {}".format(len(projects)))
+print "\n"
 
 # performance tests?
 if args.performance:
