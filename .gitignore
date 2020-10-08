@@ -46,3 +46,4 @@ Makefile*
 *.vcxproj.user
 *.~p2
 
+*.lyx~
