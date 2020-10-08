@@ -83,6 +83,12 @@ protected:
 	void closeEvent(QCloseEvent * event);
 
 private slots:
+	/*! Does the entire UI initialization.
+		Triggered with slight delay from the event loop. Make sure no other events kick in before setup has
+		completed!
+	*/
+	void setup();
+
 	void on_actionFileNew_triggered();
 	void on_actionFileOpen_triggered();
 	void on_actionFileSave_triggered();

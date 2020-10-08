@@ -148,15 +148,6 @@ int main(int argc, char *argv[]) {
 
 		SVMainWindow w;
 
-		// add user settings related window resize at program start
-#if defined(Q_OS_WIN)
-		QTimer::singleShot(10, &w, SLOT(showMaximized()));
-#elif defined(Q_OS_LINUX)
-		QTimer::singleShot(10, &w, SLOT(show()));
-#else
-		QTimer::singleShot(10, &w, SLOT(show()));
-#endif
-
 		// start event loop
 		res = a.exec();
 	} // here our mainwindow dies, main window goes out of scope and UI goes down -> destructor does ui and thread cleanup

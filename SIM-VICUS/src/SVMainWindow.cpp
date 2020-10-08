@@ -73,129 +73,14 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/, Qt::WindowFlags /*flags*/) :
 	m_undoStack(new QUndoStack(this)),
 	m_postProcHandler(new SVPostProcHandler)
 {
-	FUNCID(SVMainWindow::SVMainWindow);
-
 	// store pointer to this object for global access
 	m_self = this;
 
 	m_ui->setupUi(this);
 
-	// setup log widget already, so that error messages resulting from initialization errors are already
-	// send to the log widget even before the actual dock widget for the log has been created
-	m_logWidget = new SVLogWidget(this);
-	SVMessageHandler * msgHandler = dynamic_cast<SVMessageHandler *>(IBK::MessageHandlerRegistry::instance().messageHandler());
-	connect(msgHandler, SIGNAL(msgReceived(int,QString)), m_logWidget, SLOT(onMsgReceived(int, QString)));
-
-	// *** setup welcome widget ***
-
-	QHBoxLayout * lay = new QHBoxLayout;
-	m_welcomeScreen = new SVWelcomeScreen(this);
-	lay->addWidget(m_welcomeScreen);
-	lay->setMargin(0);
-	lay->setSpacing(0);
-	m_ui->centralWidget->setLayout(lay);
-	m_welcomeScreen->updateWelcomePage();
-
-	connect(m_welcomeScreen, SIGNAL(newProjectClicked()), this, SLOT(on_actionFileNew_triggered()));
-	connect(m_welcomeScreen, SIGNAL(openProjectClicked()), this, SLOT(on_actionFileOpen_triggered()));
-	connect(m_welcomeScreen, SIGNAL(openProject(QString)), this, SLOT(onOpenProjectByFilename(QString)));
-	connect(m_welcomeScreen, SIGNAL(openExample(QString)), this, SLOT(onOpenExampleByFilename(QString)));
-	connect(m_welcomeScreen, SIGNAL(openTemplate(QString)), this, SLOT(onOpenTemplateByFilename(QString)));
-	connect(m_welcomeScreen, SIGNAL(updateRecentList()), this, SLOT(onUpdateRecentProjects()));
-	connect(m_welcomeScreen, SIGNAL(softwareUpdateRequested()), this, SLOT(on_actionHelpCheckForUpdates_triggered()));
-
-	// *** connect to ProjectHandler signals ***
-
-	connect(&m_projectHandler, SIGNAL(updateActions()), this, SLOT(onUpdateActions()));
-	connect(&m_projectHandler, SIGNAL(updateRecentProjects()), this, SLOT(onUpdateRecentProjects()));
-	connect(&m_projectHandler, SIGNAL(fixProjectAfterRead()), this, SLOT(onFixProjectAfterRead()));
-
-
-	// *** create menu for recent files ***
-
-	m_recentProjectsMenu = new QMenu(this);
-	m_ui->actionFileRecentProjects->setMenu(m_recentProjectsMenu);
-	onUpdateRecentProjects();
-
-	// *** Create navigation/button bar ***
-	m_buttonBar = new SVButtonBar(this);
-	lay->addWidget(m_buttonBar);
-
-	m_buttonBar->toolButtonAbout->setDefaultAction(m_ui->actionHelpAbout);
-	m_buttonBar->toolButtonNew->setDefaultAction(m_ui->actionFileNew);
-	m_buttonBar->toolButtonLoad->setDefaultAction(m_ui->actionFileOpen);
-	m_buttonBar->toolButtonSave->setDefaultAction(m_ui->actionFileSave);
-	m_buttonBar->toolButtonViewPostProc->setDefaultAction(m_ui->actionViewExternalPostProcessing);
-	m_buttonBar->toolButtonQuit->setDefaultAction(m_ui->actionFileQuit);
-
-	connect(m_buttonBar, SIGNAL(currentViewChanged(int)), this, SLOT(onNavigationBarViewChanged(int)));
-
-	// *** Create geometry view ***
-	m_geometryView = new SVGeometryView(this);
-	lay->addWidget(m_geometryView);
-
-//	lay->setStretch(2,1);
-	// TODO : add other views
-
-	// *** add actions for undo and redo ***
-
-	QAction * undoAction = m_undoStack->createUndoAction(this, tr("Undo"));
-	undoAction->setIcon(QIcon(":/gfx/actions/24x24/undo.png"));
-	undoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Z));
-	QAction * redoAction = m_undoStack->createRedoAction(this, tr("Redo"));
-	redoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
-	redoAction->setIcon(QIcon(":/gfx/actions/24x24/redo.png"));
-
-	// this is a bit messy, but there seems to be no other way, unless we create the whole menu ourselves
-	QList<QAction*> acts = m_ui->menu_Edit->actions();
-	m_ui->menu_Edit->addAction(undoAction);
-	m_ui->menu_Edit->addAction(redoAction);
-	for (int i=0; i<acts.count(); ++i)
-		m_ui->menu_Edit->addAction(acts[i]);
-
-	m_buttonBar->toolButtonUndo->setDefaultAction(undoAction);
-	m_buttonBar->toolButtonRedo->setDefaultAction(redoAction);
-
-	// *** Create definition lists dock widgets
-	setupDockWidgets();
-
-	// *** restore state of UI ***
-	QByteArray geometry, state;
-	SVSettings::instance().readMainWindowSettings(geometry,state);
-	if (!state.isEmpty())
-		restoreState(state);
-	if (!geometry.isEmpty())
-		restoreGeometry(geometry);
-
-	// *** update actions/UI State depending on project ***
-	onUpdateActions();
-	// Note: this will initialize the m_dockWidgetVisibility map with all false values, because
-	// we do not have a project yet and all dock widgets are invisible
-
-	// *** retrieve visibility of dock widgets from settings ***
-	// TODO : other dock widgets
-	m_dockWidgetVisibility[m_logDockWidget] = SVSettings::instance().m_visibleDockWidgets.contains("Log");
-
-
-	// *** Populate language menu ***
-	addLanguageAction("en", "English");
-	addLanguageAction("de", "Deutsch");
-//	addLanguageAction("fr", QString::fromUtf8("Français"));
-//	addLanguageAction("cz", QString::fromUtf8("Czech"));
-//	addLanguageAction("es", QString::fromUtf8("Español"));
-//	addLanguageAction("it", QString::fromUtf8("Italiano"));
-
-	// *** read last loaded project/project specified on command line ***
-
-	if (!SVSettings::instance().m_initialProjectFile.isEmpty()) {
-		QString filename = SVSettings::instance().m_initialProjectFile;
-		if (processProjectPackage(filename, false)) {
-			// try to load the project - silently
-			m_projectHandler.loadProject(this, filename, false);
-			if (m_projectHandler.isValid())
-				saveThumbNail();
-		}
-	}
+	// give the splashscreen a few miliseconds to show on X11 before we start our
+	// potentially lengthy initialization
+	QTimer::singleShot(25, this, SLOT(setup()));
 }
 
 
@@ -369,6 +254,138 @@ void SVMainWindow::closeEvent(QCloseEvent * event) {
 	SVSettings::instance().write(saveGeometry(), saveState());
 
 	event->accept();
+}
+
+
+void SVMainWindow::setup() {
+
+	// setup log widget already, so that error messages resulting from initialization errors are already
+	// send to the log widget even before the actual dock widget for the log has been created
+	m_logWidget = new SVLogWidget(this);
+	SVMessageHandler * msgHandler = dynamic_cast<SVMessageHandler *>(IBK::MessageHandlerRegistry::instance().messageHandler());
+	connect(msgHandler, SIGNAL(msgReceived(int,QString)), m_logWidget, SLOT(onMsgReceived(int, QString)));
+
+	// *** setup welcome widget ***
+
+	QHBoxLayout * lay = new QHBoxLayout;
+	m_welcomeScreen = new SVWelcomeScreen(this);
+	lay->addWidget(m_welcomeScreen);
+	lay->setMargin(0);
+	lay->setSpacing(0);
+	m_ui->centralWidget->setLayout(lay);
+	m_welcomeScreen->updateWelcomePage();
+
+	connect(m_welcomeScreen, SIGNAL(newProjectClicked()), this, SLOT(on_actionFileNew_triggered()));
+	connect(m_welcomeScreen, SIGNAL(openProjectClicked()), this, SLOT(on_actionFileOpen_triggered()));
+	connect(m_welcomeScreen, SIGNAL(openProject(QString)), this, SLOT(onOpenProjectByFilename(QString)));
+	connect(m_welcomeScreen, SIGNAL(openExample(QString)), this, SLOT(onOpenExampleByFilename(QString)));
+	connect(m_welcomeScreen, SIGNAL(openTemplate(QString)), this, SLOT(onOpenTemplateByFilename(QString)));
+	connect(m_welcomeScreen, SIGNAL(updateRecentList()), this, SLOT(onUpdateRecentProjects()));
+	connect(m_welcomeScreen, SIGNAL(softwareUpdateRequested()), this, SLOT(on_actionHelpCheckForUpdates_triggered()));
+
+	// *** connect to ProjectHandler signals ***
+
+	connect(&m_projectHandler, SIGNAL(updateActions()), this, SLOT(onUpdateActions()));
+	connect(&m_projectHandler, SIGNAL(updateRecentProjects()), this, SLOT(onUpdateRecentProjects()));
+	connect(&m_projectHandler, SIGNAL(fixProjectAfterRead()), this, SLOT(onFixProjectAfterRead()));
+
+
+	// *** create menu for recent files ***
+
+	m_recentProjectsMenu = new QMenu(this);
+	m_ui->actionFileRecentProjects->setMenu(m_recentProjectsMenu);
+	onUpdateRecentProjects();
+
+	// *** Create navigation/button bar ***
+	m_buttonBar = new SVButtonBar(this);
+	lay->addWidget(m_buttonBar);
+
+	m_buttonBar->toolButtonAbout->setDefaultAction(m_ui->actionHelpAbout);
+	m_buttonBar->toolButtonNew->setDefaultAction(m_ui->actionFileNew);
+	m_buttonBar->toolButtonLoad->setDefaultAction(m_ui->actionFileOpen);
+	m_buttonBar->toolButtonSave->setDefaultAction(m_ui->actionFileSave);
+	m_buttonBar->toolButtonViewPostProc->setDefaultAction(m_ui->actionViewExternalPostProcessing);
+	m_buttonBar->toolButtonQuit->setDefaultAction(m_ui->actionFileQuit);
+
+	connect(m_buttonBar, SIGNAL(currentViewChanged(int)), this, SLOT(onNavigationBarViewChanged(int)));
+
+	// *** Create geometry view ***
+	m_geometryView = new SVGeometryView(this);
+	lay->addWidget(m_geometryView);
+
+//	lay->setStretch(2,1);
+	// TODO : add other views
+
+	// *** add actions for undo and redo ***
+
+	QAction * undoAction = m_undoStack->createUndoAction(this, tr("Undo"));
+	undoAction->setIcon(QIcon(":/gfx/actions/24x24/undo.png"));
+	undoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Z));
+	QAction * redoAction = m_undoStack->createRedoAction(this, tr("Redo"));
+	redoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
+	redoAction->setIcon(QIcon(":/gfx/actions/24x24/redo.png"));
+
+	// this is a bit messy, but there seems to be no other way, unless we create the whole menu ourselves
+	QList<QAction*> acts = m_ui->menu_Edit->actions();
+	m_ui->menu_Edit->addAction(undoAction);
+	m_ui->menu_Edit->addAction(redoAction);
+	for (int i=0; i<acts.count(); ++i)
+		m_ui->menu_Edit->addAction(acts[i]);
+
+	m_buttonBar->toolButtonUndo->setDefaultAction(undoAction);
+	m_buttonBar->toolButtonRedo->setDefaultAction(redoAction);
+
+	// *** Create definition lists dock widgets
+	setupDockWidgets();
+
+	// *** restore state of UI ***
+	QByteArray geometry, state;
+	SVSettings::instance().readMainWindowSettings(geometry,state);
+	if (!state.isEmpty())
+		restoreState(state);
+	if (!geometry.isEmpty())
+		restoreGeometry(geometry);
+
+	// *** update actions/UI State depending on project ***
+	onUpdateActions();
+	// Note: this will initialize the m_dockWidgetVisibility map with all false values, because
+	// we do not have a project yet and all dock widgets are invisible
+
+	// *** retrieve visibility of dock widgets from settings ***
+	// TODO : other dock widgets
+	m_dockWidgetVisibility[m_logDockWidget] = SVSettings::instance().m_visibleDockWidgets.contains("Log");
+
+
+	// *** Populate language menu ***
+	addLanguageAction("en", "English");
+	addLanguageAction("de", "Deutsch");
+//	addLanguageAction("fr", QString::fromUtf8("Français"));
+//	addLanguageAction("cz", QString::fromUtf8("Czech"));
+//	addLanguageAction("es", QString::fromUtf8("Español"));
+//	addLanguageAction("it", QString::fromUtf8("Italiano"));
+
+	// *** read last loaded project/project specified on command line ***
+
+	if (!SVSettings::instance().m_initialProjectFile.isEmpty()) {
+		QString filename = SVSettings::instance().m_initialProjectFile;
+		if (processProjectPackage(filename, false)) {
+			// try to load the project - silently
+			m_projectHandler.loadProject(this, filename, false);
+			if (m_projectHandler.isValid())
+				saveThumbNail();
+		}
+	}
+
+
+	// add user settings related window resize at program start
+#if defined(Q_OS_WIN)
+	showMaximized();
+#elif defined(Q_OS_LINUX)
+	show();
+#else
+	show();
+#endif
+
 }
 
 
