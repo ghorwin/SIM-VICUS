@@ -131,6 +131,15 @@ table {
 </li>
 </ul>
 </li>
+<li><a href="#_sim_vicus_user_interface">4. SIM-VICUS User-Interface</a>
+<ul class="sectlevel2">
+<li><a href="#_3d_engine">4.1. 3D Engine</a>
+<ul class="sectlevel3">
+<li><a href="#_shaders">4.1.1. Shaders</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -146,6 +155,9 @@ table {
 <div class="sect1">
 <h2 id="_general_information">2. General Information</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Unresolved directive in Developer-Documentation.adoc - include::Building.adoc[leveloffset=+2]</p>
+</div>
 <div class="sect2">
 <h3 id="_coding_guidelines_and_rules">2.1. Coding Guidelines and Rules</h3>
 <div class="paragraph">
@@ -1184,11 +1196,134 @@ Total initialization time: 802 ms
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_sim_vicus_user_interface">4. SIM-VICUS User-Interface</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_3d_engine">4.1. 3D Engine</h3>
+<div class="sect3">
+<h4 id="_shaders">4.1.1. Shaders</h4>
+<div class="paragraph">
+<p>Vertex-Layout notation:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>V - single coordinate (e.g. x-coordinate)</p>
+</li>
+<li>
+<p>N - component of normal vector</p>
+</li>
+<li>
+<p>C - color component (e.g. CCC for RGB)</p>
+</li>
+<li>
+<p>T - texture coordinate</p>
+</li>
+</ul>
+</div>
+<div class="sect4">
+<h5 id="_grid">Grid</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>Shader-Index: 0</p>
+</li>
+<li>
+<p>Vertex-Structure: (VV) = (xz)</p>
+</li>
+<li>
+<p>Files: <code>grid.vert</code> and <code>grid.frag</code></p>
+</li>
+<li>
+<p>Uniforms (variables):</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>worldToView</code></p>
+</li>
+<li>
+<p><code>gridColor</code></p>
+</li>
+<li>
+<p><code>backColor</code> (fade-to color)</p>
+</li>
+<li>
+<p>(optional) <code>farDistance</code> (fade-to normalization distance)</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_background_objects">Background Objects</h5>
+<div class="paragraph">
+<p>Uniform color, no lighting effect, no transparency</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Shader-Index: 1</p>
+</li>
+<li>
+<p>Vertex-Structure: (VVVCCC) = (xyzrgb)</p>
+</li>
+<li>
+<p>Files: <code>vertexColor.vert</code> and <code>flat.frag</code></p>
+</li>
+<li>
+<p>Uniforms (variables):</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>worldToView</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_regular_opaque_objects">Regular Opaque Objects</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>Shader-Index: 2</p>
+</li>
+<li>
+<p>Vertex-Structure: (VVVNNNCCC) = (xyzNxNyNzrgb)</p>
+</li>
+<li>
+<p>Files: <code>vertexNormalColor.vert</code> and <code>specularShading.vert</code></p>
+</li>
+<li>
+<p>Uniforms (variables):</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>worldToView</code></p>
+</li>
+<li>
+<p><code>lightPos</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated 2020-09-16 09:30:15 +0200
+Last updated 2020-10-08 15:57:14 +0200
 </div>
 </div>
 <style>

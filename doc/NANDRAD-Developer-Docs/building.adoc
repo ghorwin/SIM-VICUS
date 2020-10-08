@@ -1,0 +1,93 @@
+:imagesdir: ./images
+# Building the code
+
+Building the code is fairly easy and only requires two steps:
+
+1. setup the development environment
+2. run the build scripts
+
+For actual development we recommend use of Qt Creator with the prepared <<qmake,qmake build system>>.
+
+## Setting up the build environment
+
+Generally, you need a fairly up-to-date C/C++ compiler (that means: c++11 features should be supported). Also, you need the Qt libraries. And you need cmake. That's it, nothing else!
+
+### Windows
+
+Note: the build scripts are set up to work for Visual Studio 2015 x64 with Qt Version 5.11.3. You can, however, use any other combination of Visual Studio or even Intel compiler or MinGW and any other (newer) Qt version. It may be, though, that you have to tweak the build scripts or defined environment variables.
+
+[CAUTION]
+====
+Team development works best if all use the same compilers and library versions. If you change build scripts and commit them to the repository, always make sure that you do not distrupt other peoples work by requiring alternative installation directories/tool versions.
+====
+
+Here are the recommended steps:
+
+1. Download and install Visual Studio 2015 x64 Express for Desktop. You can get it on https://visualstudio.microsoft.com/de/vs/older-downloads/
+
+2. Download and install cmake. Either download from https://cmake.org or use _chocolatey_ (https://chocolatey.org) and run
+
+    choco install cmake
+    
+
+3. Download and install Qt Version 5.11.3. Download the Qt Online Installer (https://www.qt.io/download-qt-installer) and in the installation program select the 5.11.3 variant instead of the default (newest).
+
+
+### Linux
+
+On Linux it's a walk in the park. Just install the build-essential package (g++/clang and cmake and qt5default packages). On Ubuntu simply run:
+
+    > sudo apt install build-essential cmake qt5-default libqt5svg5-dev
+
+### MacOS
+
+MacOS comples with Clang installed. I suggest installing _Homebrew_ (see https://brew.sh). Then
+
+
+    > brew install cmake
+
+    
+Parallel gcc OpenMP code require a bit of extra work (to be documented later :-)
+
+Then, download the Qt online installer (https://www.qt.io/download-qt-installer) and also select version 5.11.3.
+
+
+## Building
+
+This works pretty much the same on all platforms. If you've successfully installed the development environment and can build basic Qt examples (open Qt Creator, pick an example, build it), you should be ok.
+
+Go to the `build/cmake` subdirectory and run:
+
+
+    > ./build.sh
+
+    
+for Linux/MacOS or
+
+
+    > build_VC_x64.bat
+
+
+for Windows.
+
+
+On Linux/MacOS you can pass a few command line options to adjust the build, for example:
+
+
+    > ./build.sh 8 release omp
+
+
+to compile in parallel with 8 CPUs and create a release build (optimized, no debug symbols) with OpenMP enabled. See the documentation in the `build.sh` script for more information.
+
+
+Once the build has completed, the executables are copied into the `bin/release` (or `bin/release_x64` on Windows) directory.
+
+On Windows, you may want to run `bin/release_x64/CreateDeploy_VC14.bat` batch file to fetch all required DLLs (so that you can start the application by double-clicking the executables).
+
+[[qmake]]
+## Development with Qt Creator
+
+Development is best done with Qt Creator (it is way more efficient to work with than Visual Studio or Emacs/VI). The source code is split into many different libraries and executables, so you best open the prepared session project file `build/Qt/SIM-VICUS.pro`.
+
+If you start working with Qt Creator, please mind the configuration rules described in <<qt_creator>>.
+
