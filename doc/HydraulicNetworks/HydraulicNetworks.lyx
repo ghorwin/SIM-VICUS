@@ -585,7 +585,7 @@ noprefix "false"
 \begin_inset Formula 
 \begin{align}
 0 & =f\left(\dot{m},p_{in},p_{out}\right)\label{eq:pressureDropFunction}\\
-0 & =\dot{Q}_{in}-\dot{Q}_{out}-\sum\dot{Q}\label{eq:energyBalance}
+0 & =\dot{Q}_{in}-\dot{Q}_{out}-\dot{Q}_{loss}\label{eq:energyBalance}
 \end{align}
 
 \end_inset
@@ -614,7 +614,7 @@ noprefix "false"
  Optionally, there may be other energy fluxes between the flow element and
  its environment, for example through heat conduction over its surface,
  denoted by the 
-\begin_inset Formula $\sum\dot{Q}$
+\begin_inset Formula $\dot{Q}_{loss}$
 \end_inset
 
  term in the equation.
@@ -1221,30 +1221,1135 @@ The sections below detail the flow equations for the various elements in
 \end_layout
 
 \begin_layout Subsection
-Pipes
+Fluid Properties
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $\dot{m}=f\left(\Delta p\right)=f\left(p_{in}-p_{out}\right)$
+We use the following constant fluid properties
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+thermal conductivity
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\lambda$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $W/mK$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+density
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\rho$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $kg/m^{3}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+spec.
+ heat capacity
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $c_{p}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $J/kg\,K$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and the temperature dependent properties
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="1" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+kinematic viscosity
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\nu=\nu(T)$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $m^{2}/s$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+as well as the Prandtl number 
+\begin_inset Formula 
+\[
+Pr(T)=\frac{\nu(T)\rho c_{p}}{\lambda}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Pipes
+\end_layout
+
+\begin_layout Subsubsection
+General Hydraulic Pipe Flow Equations
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:General-Hydraulic-Pipe"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The pressure drop along a pipe depends on the physical fluid properties
+ and the parameters
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+length
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $l$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+inner diameter
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $d$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+roughness
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $k$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The velocity is 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+v=\frac{\dot{m}}{\rho\frac{\pi}{4}d^{2}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For laminar flows (
+\begin_inset Formula $Re<2300$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\lambda=\frac{64}{Re}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For turbulent flows (
+\begin_inset Formula $Re>1e4)$
+\end_inset
+
+ we use the equation from Colebrook
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\lambda=\left[-2log_{10}\left(\frac{2.51}{Re\sqrt{\lambda}}+\frac{k}{3,71d}\right)\right]^{-2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+for 
+\begin_inset Formula $2300\leq Re\leq1e4$
+\end_inset
+
+ we use linear interpolation between the two equations.
+ (QUELLE VDI Wärmeatlas)
+\end_layout
+
+\begin_layout Standard
+Note that the Reynolds number is temperature dependent
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+Re(T)=\frac{vd}{\nu(T)}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The pressure loss coefficient 
+\begin_inset Formula $\zeta$
+\end_inset
+
+ can be expressed by the pipe friction factor 
+\begin_inset Formula $\lambda$
+\end_inset
+
+, where
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\text{\ensuremath{\zeta(T)}}=\lambda(T)\frac{l}{d}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The pressure drop is 
+\begin_inset Formula 
+\[
+\Delta p(T)=\zeta(T)\frac{\rho}{2}v^{2}
+\]
+
 \end_inset
 
 
 \end_layout
 
 \begin_layout Subsubsection
-General Hydraulic Pipe Flow Equations
+Convection coefficient inside pipe
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Convection-coefficient-inside"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The convection coefficient from fluid to pipe wall depends on 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="2" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+length
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $l$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+diameter
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $d$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For laminar flows (
+\begin_inset Formula $Re<2300$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+Nu_{lam}=\left(49.37+\left(1.615*\left(Re\,Pr\frac{d}{l}\right)^{\frac{1}{3}}-0.7\right)^{3}\right)^{\frac{1}{3}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+for turbulent flows (
+\begin_inset Formula $Re>1e4$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+Nu_{turb}=\frac{\left(\zeta/8\right)Re\,Pr}{1+12.7\sqrt{\zeta/8}\,\left(Pr^{^{2/3}}-1\right)}\left(1+\left(\frac{d}{l}\right)^{2/3}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+for 
+\begin_inset Formula $2300\leq Re\leq1e4$
+\end_inset
+
+ we use linear interpolation
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+Nu_{int}=\left(1-a\right)Nu_{lam,Re=2300}+a\,Nu_{turb,Re=1e4}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+a=\frac{Re-2300}{1e4-2300}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+(QUELLE VDI Wärmeatlas)
+\end_layout
+
+\begin_layout Standard
+Note that 
+\begin_inset Formula $Re(T)$
+\end_inset
+
+ and 
+\begin_inset Formula $Pr(T)$
+\end_inset
+
+ are temperature dependent.
+ 
+\end_layout
+
+\begin_layout Standard
+The convection coefficient inside a pipe is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+h_{i}(T)=Nu(T)\frac{\lambda}{d}
+\]
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
-Adiabatic pipes
+Static adiabatic pipe
+\end_layout
+
+\begin_layout Standard
+This model considers pressure loss according to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:General-Hydraulic-Pipe"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+p_{in}-p_{out}=\Delta p(\dot{m},T_{in})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+but has no heat exchange to the sourrunding, thus
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\dot{Q}_{loss}=0
+\]
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
-Pipes with heat exchange with the surroundings
+Static pipe with heat exchange with the surroundings
+\end_layout
+
+\begin_layout Standard
+This model considers pressure loss according to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:General-Hydraulic-Pipe"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+p_{in}-p_{out}=\Delta p(\dot{m},T_{in})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The heat loss depends on the fluid properties and the parameters
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="5" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+length
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $l$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+inner diameter
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $d$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+outer diameter
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $d_{o}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+outer heat exchange coefficient
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $h_{o}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+thermal conductivity pipe wall 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\lambda_{pipe}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $W/mK$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+as well as the external inputs
+\end_layout
+
+\begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Tabular
+<lyxtabular version="3" rows="1" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ambient temperature
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $T_{amb}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $C$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\dot{Q}_{loss}=\dot{m}c_{fl}\left(T_{in}-T_{amb}\right)\left(1-e^{\left(-\frac{U_{p}}{\dot{m}c_{p}}l\right)}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $U_{R}$
+\end_inset
+
+is the length-related heat transfer coefficient 
+\begin_inset Formula 
+\[
+U_{p}=\frac{\pi}{\frac{1}{h_{i}d}+\frac{1}{h_{o}d_{o}}+\frac{1}{2\lambda_{pipe}}ln\left(\frac{d_{o}}{d}\right)}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $h_{i}(T_{in})$
+\end_inset
+
+ is the convection coefficient inside the pipe, which can be calculated
+ according to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Convection-coefficient-inside"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsubsection
-Spatially discretized pipes
+Dynamic adiabatic pipe
+\end_layout
+
+\begin_layout Standard
+This model considers pressure loss according to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:General-Hydraulic-Pipe"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+p_{in}-p_{out}=\Delta p(T_{in})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+but has no heat exchange to the sourrunding, thus
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\dot{Q}_{loss}=0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The parameter is 
+\end_layout
+
+\begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Tabular
+<lyxtabular version="3" rows="1" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+spatial discretization along the pipe
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $dx$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+m
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
