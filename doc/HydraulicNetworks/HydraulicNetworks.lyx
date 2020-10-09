@@ -27,7 +27,6 @@ position=bottom]{caption}
 
 % for PDA/A complience, insert fonts correctly
 \usepackage[T1]{fontenc}
-\usepackage{ae}
 
 \usepackage[utf8]{inputenc}
 
@@ -36,15 +35,6 @@ position=bottom]{caption}
 \usepackage[ruled,vlined]{algorithm2e}
 
 \usepackage{lastpage}
-
-\usepackage[a-2b]{pdfx}
-
-\begin{filecontents*}{\jobname.xmpdata}
-  \Title{Co-Simulations-Masteralgorithmen - Analyse und Details der Implementierung am Beispiel des Masterprogramms MASTERSIM}
-  \Author{A. Nicolai}
-  \Keywords{Co-Simulation\sep FMI\sep MASTERSIM\sep Masteralgorithmus\sep Gauss-Seidel\sep Richardson}
-  \Publisher{Qucosa}
-\end{filecontents*}
 \end_preamble
 \use_default_options false
 \begin_modules
