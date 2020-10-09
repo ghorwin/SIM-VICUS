@@ -889,9 +889,11 @@ For each of the flow elements we have the system equation.
 \begin_layout Standard
 In addition, we have the nodal equations:
 \begin_inset Formula 
-\[
-0=n_{1}\left(m\right)
-\]
+\begin{align*}
+0 & =n_{1}\left(\dot{m}_{1},\dot{m}_{3}\right)=\dot{m}_{3}-\dot{m}_{1}\\
+0 & =n_{2}\left(\dot{m}_{1},\dot{m}_{2}\right)=\dot{m}_{1}-\dot{m}_{2}\\
+0 & =n_{3}\left(\dot{m}_{2},\dot{m}_{3}\right)=\dot{m}_{2}-\dot{m}_{3}
+\end{align*}
 
 \end_inset
 
