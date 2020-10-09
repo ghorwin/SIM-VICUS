@@ -806,6 +806,8 @@ noprefix "false"
 
 ).
  This is an adiabatic model without energy balances.
+ Already with this simple model we can identify several problems associated
+ with hydraulic networks.
 \end_layout
 
 \begin_layout Standard
@@ -844,10 +846,6 @@ Example 1: Simple flow network with a pump and two pipes
 
 \end_layout
 
-\begin_layout Plain Layout
-
-\end_layout
-
 \end_inset
 
 
@@ -873,10 +871,6 @@ For each of the flow elements we have the system equation.
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
 In addition, we have the nodal equations:
 \begin_inset Formula 
 \begin{align*}
@@ -888,6 +882,325 @@ In addition, we have the nodal equations:
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+We could now formulate the equation system in a generic way as 
+\begin_inset Formula $\boldsymbol{F}\left(\boldsymbol{p},\boldsymbol{\dot{m}}\right)$
+\end_inset
+
+ where 
+\begin_inset Formula $\boldsymbol{p}$
+\end_inset
+
+ and 
+\begin_inset Formula $\boldsymbol{\dot{m}}$
+\end_inset
+
+ are vectors of the nodal pressures and flows across flow elements.
+ Thus, we have 6 unknowns and the 6 equations above and might assume that
+ this is an easily solvable problem (though non-linear).
+\end_layout
+
+\begin_layout Standard
+However, in this small example we have formulated a linear combination of
+ the same related.
+ You can consider this by substituting the flow equations: 
+\begin_inset Formula $\dot{m}_{3}=\dot{m}_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $\dot{m}_{2}=\dot{m}_{1}$
+\end_inset
+
+ from the first two equations, inserted into the last equation we get 
+\begin_inset Formula $\dot{m}_{1}=\dot{m}_{1}$
+\end_inset
+
+ which obviously doesn't give any new information.
+ 
+\end_layout
+
+\begin_layout Standard
+After eliminating the mass fluxes 
+\begin_inset Formula $\dot{m}_{3}$
+\end_inset
+
+ and 
+\begin_inset Formula $\dot{m}_{2}$
+\end_inset
+
+ this leaves us with 4 unknowns: 
+\begin_inset Formula $p_{1},p_{2},p_{3},\dot{m}$
+\end_inset
+
+ (we use 
+\begin_inset Formula $\dot{m}=\dot{m}_{1}$
+\end_inset
+
+ for simplicity here), but only 3 flow element system equations.
+\end_layout
+
+\begin_layout Standard
+Now the same process of variable elimination can be done with pressures
+ as well.
+ Suppose all flow elements have a rather trivial system equation, that relates
+ the inlet and outlet pressures in a convenient way.
+ Say, we have 
+\begin_inset Formula $p_{1}=p_{2}+g_{1}$
+\end_inset
+
+, 
+\begin_inset Formula $p_{2}=p_{3}+g_{2}$
+\end_inset
+
+ and 
+\begin_inset Formula $p_{3}=p_{1}+g_{3}$
+\end_inset
+
+.
+ We might then eliminate pressures by inserting equations into each other
+ and obtain: 
+\begin_inset Formula $p_{1}=p_{1}+g_{1}+g_{2}+g_{3}$
+\end_inset
+
+ and consequently 
+\begin_inset Formula $0=g_{1}+g_{2}+g_{3}$
+\end_inset
+
+.
+ The parameters 
+\begin_inset Formula $g$
+\end_inset
+
+ are likely functions of the mass flux 
+\begin_inset Formula $\dot{m}$
+\end_inset
+
+, so solving the equation will give us a solution for 
+\begin_inset Formula $\dot{m}$
+\end_inset
+
+.
+ However, the corresponding pressures will be arbitrary.
+ 
+\end_layout
+
+\begin_layout Standard
+Interestingly, if one were to solve the equation system above using some
+ generic solution method, one 
+\emph on
+might
+\emph default
+ even get a result, but that would be ambigous (and depend on some initial
+ guess value of one of the pressures).
+ For example, the result could be 
+\begin_inset Formula $p_{1}=0\,\text{Pa}$
+\end_inset
+
+, 
+\begin_inset Formula $p_{2}=100\,\text{Pa}$
+\end_inset
+
+, 
+\begin_inset Formula $p_{3}=70\,\text{Pa}$
+\end_inset
+
+ or 
+\begin_inset Formula $p_{1}=1000\,\text{Pa}$
+\end_inset
+
+, 
+\begin_inset Formula $p_{2}=1100\,\text{Pa}$
+\end_inset
+
+, 
+\begin_inset Formula $p_{3}=1070\,\text{Pa}$
+\end_inset
+
+ or any other pressure level.
+\end_layout
+
+\begin_layout Standard
+If we go back to the incomplete equation system problem, we just need to
+ provide the network with additional information to add another constraint,
+ i.e.
+ by specifying a nodal pressure somewhere.
+ As we've seen above in the elimination of pressures example, 
+\emph on
+we must not specify a mass flux
+\emph default
+ as additional constraint, since the mass flux itself is already sufficiently
+ determined.
+\end_layout
+
+\begin_layout Standard
+Specification of a pressure can be done easiest by adding another equation,
+ for example:
+\begin_inset Formula 
+\[
+p_{1}=0\,\text{Pa}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+With that additional constraint the equation system can be solved together.
+\end_layout
+
+\begin_layout Subsection
+Example 2: Splitter and Mixer
+\end_layout
+
+\begin_layout Standard
+Consider the adjusted example in Figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Example-2"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ Here, the nodes 2 and 3 are connected by two parallel pipes with potentially
+ different diameters, length and friction coefficients and thus effictively
+ different 
+\begin_inset Formula $\Delta p\left(\dot{m}\right)$
+\end_inset
+
+ relations.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename imgs/example_2.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Example-2"
+
+\end_inset
+
+Example 2: Flow network with a mixer and splitter
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Following the procedure from example 1, we can formulate again our 4 flow
+ element equations.
+ Also, we have the nodal equations, where node 2 is now a 
+\emph on
+splitter node
+\emph default
+ and node 3 becomes a 
+\emph on
+mixer node
+\emph default
+.
+\begin_inset Formula 
+\begin{align*}
+0 & =n_{1}\left(\dot{m}_{1},\dot{m}_{3}\right)=\dot{m}_{3}-\dot{m}_{1}\\
+0 & =n_{2}\left(\dot{m}_{1},\dot{m}_{2},\dot{m}_{4}\right)=\dot{m}_{1}-\dot{m}_{2}-\dot{m}_{4}\\
+0 & =n_{3}\left(\dot{m}_{2},\dot{m}_{3},\dot{m}_{4}\right)=\dot{m}_{2}+\dot{m}_{4}-\dot{m}_{3}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If we proceed to elimate mass fluxes as in example 1, we end up with two
+ unknown fluxes: 
+\begin_inset Formula $\dot{m}_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $\dot{m}_{2}$
+\end_inset
+
+.
+ The splitter node effectively introduces a new unknown for each parallel
+ connection added to the original connection.
+ In order to solve the problem we need to add an additional constraint that
+ defines the relationship between mass fluxes 
+\begin_inset Formula $\dot{m}_{2}$
+\end_inset
+
+ and 
+\begin_inset Formula $\dot{m}_{4}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+@Hauke: wie?
+\end_layout
+
+\begin_layout Subsection
+Trivial and Non-Existing Solutions 
+\end_layout
+
+\begin_layout Standard
+Consider the problem of having a pipe instead of the pump as flow element
+ 1.
+ Then, there is exactly one trivial solution to the problem: zero mass flux.
+ The pressures in the system are all the same, fixed to the given pressure
+ at node 1.
+ This problem is solvable.
+\end_layout
+
+\begin_layout Standard
+For systems with pumps there can only be a solution if there is at least
+ one flow element in the network that has a positive and 
+\emph on
+monotonically increasing
+\emph default
+ 
+\begin_inset Formula $\Delta p\left(\dot{m}\right)$
+\end_inset
+
+ system equation (i.e.
+ a pipe or other element with flow resistance that increases with flow rate).
+ Otherwise the problem cannot be solved.
+ @Anne: proof?
 \end_layout
 
 \begin_layout Subsection
