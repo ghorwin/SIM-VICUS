@@ -47,3 +47,5 @@ Makefile*
 *.~p2
 
 *.lyx~
+*.lyx\#
+*.odg\#
