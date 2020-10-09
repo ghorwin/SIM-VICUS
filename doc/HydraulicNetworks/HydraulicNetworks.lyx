@@ -1,0 +1,879 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\usepackage{parskip}
+
+\usepackage[hang,scriptsize]{subfigure}
+\usepackage[format=hang,
+font={footnotesize},
+labelfont={bf},
+margin=1cm,
+aboveskip=5pt,
+position=bottom]{caption}
+
+\usepackage{float}
+\usepackage{color}
+\usepackage{calc}
+
+\definecolor{linkblue}{rgb}{0,0,0.4}
+\definecolor{navy}{rgb}{0,0,0.3}
+\definecolor{light-gray}{gray}{0.98}
+\definecolor{dark-gray}{gray}{0.45}
+
+% for PDA/A complience, insert fonts correctly
+\usepackage[T1]{fontenc}
+\usepackage{ae}
+
+\usepackage[utf8]{inputenc}
+
+\newcommand{\wframe}[1]{\frame{#1}}
+
+\usepackage[ruled,vlined]{algorithm2e}
+
+\usepackage{lastpage}
+
+\usepackage[a-2b]{pdfx}
+
+\begin{filecontents*}{\jobname.xmpdata}
+  \Title{Co-Simulations-Masteralgorithmen - Analyse und Details der Implementierung am Beispiel des Masterprogramms MASTERSIM}
+  \Author{A. Nicolai}
+  \Keywords{Co-Simulation\sep FMI\sep MASTERSIM\sep Masteralgorithmus\sep Gauss-Seidel\sep Richardson}
+  \Publisher{Qucosa}
+\end{filecontents*}
+\end_preamble
+\use_default_options false
+\begin_modules
+customHeadersFooters
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding utf8
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement H
+\paperfontsize 10
+\spacing single
+\use_hyperref true
+\pdf_title "Co-Simulations-Masteralgorithmen - Analyse und Details der Implementierung am Beispiel des Masterprogramms MASTERSIM"
+\pdf_author "Andreas Nicolai"
+\pdf_keywords "Co-Simulation, FMI, MASTERSIM, Masteralgorithmus, Gauss-Seidel, Richardson"
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder true
+\pdf_colorlinks true
+\pdf_backref false
+\pdf_pdfusetitle true
+\pdf_quoted_options "linkcolor=linkblue, citecolor=linkblue, urlcolor=linkblue, bookmarksnumbered=true"
+\papersize a4paper
+\use_geometry true
+\use_package amsmath 2
+\use_package amssymb 2
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine biblatex-natbib
+\cite_engine_type authoryear
+\biblio_style plain
+\biblatex_bibstyle authoryear
+\biblatex_citestyle authoryear
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\use_minted 0
+\index Stichwortverzeichnis
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.5cm
+\topmargin 2.5cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip smallskip
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\listings_params "basicstyle={\scriptsize\ttfamily\color{black}},commentstyle={\ttfamily\itshape\color{dark-gray}},numberstyle={{\tiny}},stepnumber=1,showspaces=false,showstringspaces=false,showtabs=false,frame=single,tabsize=4,captionpos=b,breaklines=true,breakatwhitespace=false,texcl=true"
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Modeling and Numerical Solution of Thermo-Hydraulic Networks
+\end_layout
+
+\begin_layout Author
+SIM-VICUS Developers
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+
+\size small
+Institut für Bauklimatik, Technische Universität Dresden
+\size default
+, 
+\family typewriter
+\size footnotesize
+andreas.nicolai@tu-dresden.de
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+thispagestyle{fancy}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+fancyhf{} %alle Kopf- und Fußzeilenfelder bereinigen
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+fancyhead[L]{
+\backslash
+includegraphics[width=3cm]{logolinks}} %Kopfzeile links
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+fancyhead[C]{
+\backslash
+includegraphics[width=9.4cm]{logomitte}} %zentrierte Kopfzeile
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+fancyhead[R]{
+\backslash
+includegraphics[width=2.5cm]{logorechts}} %Kopfzeile rechts
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+renewcommand{
+\backslash
+headrulewidth}{0pt} %obere Trennlinie
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+fancyfoot[C]{
+\backslash
+small Seite 
+\backslash
+thepage
+\backslash
+ von
+\backslash
+ 
+\backslash
+pageref{LastPage} } %Seitennummer
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+renewcommand{
+\backslash
+footrulewidth}{0.4pt} %untere Trennlinie
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+fancyhf{} %alle Kopf- und Fußzeilenfelder bereinigen
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+fancyhead[L]{} %Kopfzeile links
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+fancyhead[C]{} %zentrierte Kopfzeile
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+fancyhead[R]{Hydraulic Networks}
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+fancyhead[R]{
+\backslash
+includegraphics[width=4cm]{gwt_logo}} %Kopfzeile rechts
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+renewcommand{
+\backslash
+headrulewidth}{0.4pt} %obere Trennlinie
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+fancyfoot[L]{
+\backslash
+small 
+\backslash
+today} %Seitennummer
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+fancyfoot[C]{
+\backslash
+small SIM-VICUS Developers } %Seitennummer
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+fancyfoot[R]{
+\backslash
+small Page 
+\backslash
+thepage
+\backslash
+ of
+\backslash
+ 
+\backslash
+pageref{LastPage} } %Seitennummer
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+renewcommand{
+\backslash
+footrulewidth}{0.4pt} %untere Trennlinie
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Configuration of Thermo-Hydraulic Networks
+\end_layout
+
+\begin_layout Itemize
+Network is composed of nodes and elements
+\end_layout
+
+\begin_layout Itemize
+Pressure drop is formulated only along elements
+\end_layout
+
+\begin_layout Itemize
+elements can be pipes, pumps, heat exchanges, valves etc.
+\end_layout
+
+\begin_layout Itemize
+Each 
+\emph on
+element
+\emph default
+ has exactly one inlet (left) and one outlet (right) in the schematics
+\end_layout
+
+\begin_layout Itemize
+Nodes connect elements and hold a pressure and temperature state (no flow,
+ no pressure drop)
+\end_layout
+
+\begin_layout Itemize
+Mass flux through an element is conserved, i.e.
+ the same at either side.
+\end_layout
+
+\begin_layout Subsection
+Model Generation Process / Transformation of GIS based Topologies
+\end_layout
+
+\begin_layout Standard
+The transformation process of GIS-based network data to model data is a
+ three-step process:
+\end_layout
+
+\begin_layout Enumerate
+Determine geometry of all active components (
+\begin_inset Quotes eld
+\end_inset
+
+nodes
+\begin_inset Quotes erd
+\end_inset
+
+ in GIS terminology), e.g.
+ houses, pumps, storage systems
+\end_layout
+
+\begin_layout Enumerate
+Semi-automatic routing of pipes (
+\begin_inset Quotes eld
+\end_inset
+
+edges
+\begin_inset Quotes erd
+\end_inset
+
+ in GIS terminology); Based on some predefined pipe layout the remaining
+ pipe connections are determined using a 
+\begin_inset Quotes eld
+\end_inset
+
+shortest path
+\begin_inset Quotes erd
+\end_inset
+
+ algorithm.
+ In the result all active component nodes are connected with the network.
+ Afterwards all redundant edges are merged, when they have the same property,
+ yet keeping their total length.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Idealization and creation of the Thermo-Hydraulic network.
+ Each of the 
+\begin_inset Quotes eld
+\end_inset
+
+nodes
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+edges
+\begin_inset Quotes erd
+\end_inset
+
+ from the GIS import process are transformed into 
+\begin_inset Quotes eld
+\end_inset
+
+nodes
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+elements
+\begin_inset Quotes erd
+\end_inset
+
+ in terms of the thermo-hydraulic network model.
+ Hereby all elements of the network are expressed in terms of elements with
+ exactly two flow connections and a finite (though maybe extremely small)
+ pressure drop across the element.
+ All elements are connected in nodes.
+\end_layout
+
+\begin_layout Standard
+TODO : Hauke, add figs from presentation and add specific example of step
+ 3
+\end_layout
+
+\begin_layout Subsection
+Abstract Governing Equations
+\end_layout
+
+\begin_layout Subsubsection
+Elements
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename imgs/schematics_element.svg
+	width 4cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Schematics-flow-element"
+
+\end_inset
+
+Schematics of an abstract flow element and sign definition of fluxes across
+ model boundary
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For each network element the following equations are defined.
+ The system equation for each element
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:pressureDropFunction"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ defines the relationship between mass flow across the element and the pressures
+ at inlet (in) and outlet (out).
+ The mass flux direction and sign definition is shown in Figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Schematics-flow-element"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ For a typical pipe, the pressure drop would be formulated as 
+\begin_inset Formula $\Delta p=p_{in}-p_{out}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+0 & =f\left(\dot{m},p_{in},p_{out}\right)\label{eq:pressureDropFunction}\\
+0 & =\dot{Q}_{in}-\dot{Q}_{out}-\sum\dot{Q}\label{eq:energyBalance}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Equation
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:energyBalance"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ is the energy balance across the flow element, which typically involves
+ the energy quantities/enthalpies transported with the mass flow across
+ the inlet and outlet.
+ Optionally, there may be other energy fluxes between the flow element and
+ its environment, for example through heat conduction over its surface,
+ denoted by the 
+\begin_inset Formula $\sum\dot{Q}$
+\end_inset
+
+ term in the equation.
+\end_layout
+
+\begin_layout Standard
+Note that the actual pressure drop equation may be a function of temperature
+ as well.
+ Since a flow element is connected to two nodes, it is hence also in contact
+ with two node temperatures.
+ With respect to numerical stability of the solution procedure, the temperature
+ at the inflow node should be used when evaluating the media properties
+ in the element's system equation, a method called 
+\emph on
+upwinding
+\emph default
+.
+\end_layout
+
+\begin_layout Subsubsection
+Nodes
+\end_layout
+
+\begin_layout Standard
+For each node the following conservation equations are defined:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+\sum\dot{m_{i}} & =0\\
+\sum\dot{Q_{i}} & =0
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Also, the pressure 
+\begin_inset Formula $p_{i}$
+\end_inset
+
+ at some node 
+\begin_inset Formula $i$
+\end_inset
+
+ is equal to all inlet/outlet pressures of the connected flow elements (no
+ pressure drop/change across a node).
+ This equation is not explicitely formulation but will be used to eliminate
+ variables in the solution process.
+\end_layout
+
+\begin_layout Subsubsection
+Closing/complementory equations
+\end_layout
+
+\begin_layout Standard
+The system itself needs additional constraints to be solved, usually a reference
+ pressure defined at 
+\emph on
+exactly one node
+\emph default
+, for example the node connected to an inlet of a pump.
+ In the solution process it might then possible to eliminate this pressure
+ from the connected flow element's equations.
+ However, a more pragmatic approach from point of view of implementing such
+ a network solver is to define a pressure 
+\begin_inset Quotes eld
+\end_inset
+
+boundary condition
+\begin_inset Quotes erd
+\end_inset
+
+ as discussed below.
+\end_layout
+
+\begin_layout Subsection
+Temperature/Pressure Controlled Flow Network Elements
+\end_layout
+
+\begin_layout Standard
+Some flow network elements may be controlled, for example pumps and valves.
+ The control equation may use pressures or temperatures of the flow network
+ itself, thus creating a tightly coupled problem.
+ With respect to engineering requirements, often these direct feedback formulati
+ons can be softened by introducing typical time scales of reaction.
+ For example, if a signal for pump activation is received (e.g.
+ temperature trigger point passed), it may be possible to introduce a delay
+ of some minutes until the pump has reached the required speed.
+ The time delay must be selected such that the network itself is solved
+ sufficiently correctly.
+\end_layout
+
+\begin_layout Standard
+Suppose we name a control variable 
+\begin_inset Formula $r\left(p,T\right)$
+\end_inset
+
+ and denote by the parameters 
+\begin_inset Formula $p$
+\end_inset
+
+ and 
+\begin_inset Formula $T$
+\end_inset
+
+ some dependence of flow network pressures/temperatures.
+ Then the system equation for a pump might read:
+\begin_inset Formula 
+\[
+0=f\left(\dot{m},p_{in},p_{out},r\left(p,T\right)\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and the resulting network will be fully coupled.
+ If, however, we introduce a time variation on the control variable, we
+ obtain a differential equation:
+\begin_inset Formula 
+\[
+\frac{dr}{dt}=\tau\left(r_{set}\left(p,T\right)-r\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+with 
+\begin_inset Formula $\tau$
+\end_inset
+
+ being some time constant parameter.
+ 
+\begin_inset Formula $r_{set}\left(p,T\right)$
+\end_inset
+
+ will be the target control signal obtained from the control algorithm equations
+ that use the current network's state.
+ 
+\begin_inset Formula $r\left(t\right)$
+\end_inset
+
+ will be a transient quantity that more or less slowly approaches this set
+ point value.
+ With respect to the steady-state solution of the flow network, the control
+ variable 
+\begin_inset Formula $r$
+\end_inset
+
+ is now again a constant, which simplifies solution of the network significantly.
+\end_layout
+
+\begin_layout Section
+Solution procedure
+\end_layout
+
+\begin_layout Standard
+We will derive the general solution procedure for all kinds of thermo-hydraulic
+ networks by starting with a simple example.
+\end_layout
+
+\begin_layout Subsection
+Example 1: Pump with Pipes
+\end_layout
+
+\begin_layout Standard
+TODO : Andreas
+\end_layout
+
+\begin_layout Subsection
+Generic Solution and Equation System Setup
+\end_layout
+
+\begin_layout Standard
+TODO : Andreas
+\end_layout
+
+\begin_layout Section
+Flow Element Equations
+\end_layout
+
+\begin_layout Standard
+The sections below detail the flow equations for the various elements in
+ the network.
+\end_layout
+
+\begin_layout Subsection
+Pipes
+\end_layout
+
+\begin_layout Subsubsection
+General Hydraulic Pipe Flow Equations
+\end_layout
+
+\begin_layout Subsubsection
+Adiabatic pipes
+\end_layout
+
+\begin_layout Subsubsection
+Pipes with heat exchange with the surroundings
+\end_layout
+
+\begin_layout Subsubsection
+Spatially discretized pipes
+\end_layout
+
+\begin_layout Standard
+...
+ still a general flow element, but now exporting/formulating time state
+ variables to be integrated outside the actual network solution algorithm,
+ pretty much like the control variables.
+\end_layout
+
+\begin_layout Subsection
+Pumps
+\end_layout
+
+\begin_layout Subsection
+Heat Exchangers
+\end_layout
+
+\begin_layout Subsection
+Soil Heat Collectors
+\end_layout
+
+\begin_layout Subsection
+Valves
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+btprint "btPrintCited"
+bibfiles "Literatur"
+options "plain"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
