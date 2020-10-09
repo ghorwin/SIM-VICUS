@@ -958,17 +958,5 @@ Soil Heat Collectors
 Valves
 \end_layout
 
-\begin_layout Standard
-\begin_inset CommandInset bibtex
-LatexCommand bibtex
-btprint "btPrintCited"
-bibfiles "Literatur"
-options "plain"
-
-\end_inset
-
-
-\end_layout
-
 \end_body
 \end_document
