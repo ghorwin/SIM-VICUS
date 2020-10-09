@@ -3274,6 +3274,55 @@ W
 \end_inset
 
 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename imgs/dynamicPipeLoss.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Energy-balance-dynamic-loss"
+
+\end_inset
+
+Energy balance dynamic pipe with losses
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -3560,7 +3609,7 @@ parameter
 \noun off
 \color none
 \begin_inset Tabular
-<lyxtabular version="3" rows="3" columns="3">
+<lyxtabular version="3" rows="2" columns="3">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">
@@ -3601,43 +3650,11 @@ pressure loss
 </cell>
 </row>
 <row>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-polynom coefficients for condenser heat flux
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $c_{q,1},c_{q,2},c_{q,3},c_{q,4},c_{q,5},c_{q,6}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
--
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
 <cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-polynom coefficients for electrical power
+polynom coefficients for COP
 \end_layout
 
 \end_inset
@@ -3646,7 +3663,7 @@ polynom coefficients for electrical power
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $c_{p,1},c_{p,2},c_{p,3},c_{p,4},c_{p,5},c_{p,6}$
+\begin_inset Formula $c_{1},c_{2},c_{3},c_{4},c_{5},c_{6}$
 \end_inset
 
 
@@ -3694,13 +3711,13 @@ inputs
 \noun off
 \color none
 \begin_inset Tabular
-<lyxtabular version="3" rows="1" columns="3">
+<lyxtabular version="3" rows="2" columns="3">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">
 <row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -3709,11 +3726,46 @@ condenser outlet temperature
 
 \end_inset
 </cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $T_{cond,out}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $C$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
 <cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $T_{c,out}$
+condenser heat flux 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\dot{Q}_{cond}$
 \end_inset
 
 
@@ -3725,7 +3777,7 @@ condenser outlet temperature
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $C$
+\begin_inset Formula $W$
 \end_inset
 
 
@@ -3764,17 +3816,62 @@ outputs
 \noun off
 \color none
 \begin_inset Tabular
-<lyxtabular version="3" rows="1" columns="3">
+<lyxtabular version="3" rows="2" columns="3">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">
 <row>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+COP
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $COP$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
 <cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-condenser heat flux 
+electrical power
 \end_layout
 
 \end_inset
@@ -3783,7 +3880,7 @@ condenser heat flux
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $\dot{Q}_{c}$
+\begin_inset Formula $P_{el}$
 \end_inset
 
 
@@ -3844,7 +3941,7 @@ p_{in}-p_{out}=\Delta p_{fix}
 The energy balance is 
 \begin_inset Formula 
 \[
-\dot{Q}_{loss}=-\dot{Q}_{c}
+\dot{Q}_{loss}=-\left(\dot{Q}_{cond}-P_{el}\right)
 \]
 
 \end_inset
@@ -3853,18 +3950,23 @@ The energy balance is
 \end_layout
 
 \begin_layout Standard
-The supplied heat flux is modelled using a 2d-biquadratic polynom 
+The electrical power demand is
 \begin_inset Formula 
 \[
-\dot{Q}_{c}=c_{q,1}+c_{q,2}T_{in}+c_{q,3}T_{c,out}+c_{q,4}T_{in}T_{c,out}+c_{q,5}T_{in}^{2}+c_{q,6}T_{c,out}^{2}
+P_{el}=\frac{Q_{cond}}{COP}
 \]
 
 \end_inset
 
-The electrical power demand is modelled using a 2d-biquadratic polynom 
+
+\end_layout
+
+\begin_layout Standard
+The coefficient of performance (COP) is modelled using a 2d-biquadratic
+ polynom 
 \begin_inset Formula 
 \[
-P_{el}=c_{p,1}+c_{p,2}T_{in}+c_{p,3}T_{c,out}+c_{p,4}T_{in}T_{c,out}+c_{p,5}T_{in}^{2}+c_{p,6}T_{c,out}^{2}
+COP=c_{1}+c_{2}T_{in}+c_{3}T_{cond,out}+c_{4}T_{in}T_{cond,out}+c_{5}T_{in}^{2}+c_{6}T_{cond,out}^{2}
 \]
 
 \end_inset
