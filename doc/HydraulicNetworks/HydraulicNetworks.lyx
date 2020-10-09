@@ -865,7 +865,7 @@ Example 1: Simple flow network with a pump and two pipes
 
 \begin_layout Standard
 For each of the flow elements we have the system equation.
- When formulating the equations, we already substitude 
+ When formulating the equations, we already substitute 
 \begin_inset Formula $p_{in}$
 \end_inset
 
@@ -919,6 +919,13 @@ The sections below detail the flow equations for the various elements in
 
 \begin_layout Subsection
 Pipes
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\dot{m}=f\left(\Delta p\right)=f\left(p_{in}-p_{out}\right)$
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
