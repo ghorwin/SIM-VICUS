@@ -929,9 +929,8 @@ We could now formulate the equation system in a generic way as
 \end_layout
 
 \begin_layout Standard
-However, in this small example we have formulated a linear combination of
- the same related.
- You can consider this by substituting the flow equations: 
+However, in this small example we have formulated a linear combination.
+ Try substituting the flow equations: 
 \begin_inset Formula $\dot{m}_{3}=\dot{m}_{1}$
 \end_inset
 
@@ -939,7 +938,8 @@ However, in this small example we have formulated a linear combination of
 \begin_inset Formula $\dot{m}_{2}=\dot{m}_{1}$
 \end_inset
 
- from the first two equations, inserted into the last equation we get 
+ from the first two equations, an insert these into the last equation.
+ Then we get 
 \begin_inset Formula $\dot{m}_{1}=\dot{m}_{1}$
 \end_inset
 
@@ -1049,7 +1049,7 @@ might
 
 \begin_layout Standard
 If we go back to the incomplete equation system problem, we just need to
- provide the network with additional information to add another constraint,
+ provide the network with additional information by adding another constraint,
  i.e.
  by specifying a nodal pressure somewhere.
  As we've seen above in the elimination of pressures example, 
@@ -1065,7 +1065,7 @@ Specification of a pressure can be done easiest by adding another equation,
  for example:
 \begin_inset Formula 
 \[
-p_{1}=0\,\text{Pa}
+p_{1}=p_{ref}
 \]
 
 \end_inset
@@ -1168,21 +1168,7 @@ mixer node
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
-If we proceed to elimate mass fluxes as in example 1, we can simply sum
- up 
-\begin_inset Formula $\dot{m}_{2}$
-\end_inset
-
- and 
-\begin_inset Formula $\dot{m}_{3}$
-\end_inset
-
- and end up with a formulation just as in example 1.
- In terms of solving the problem there is nothing different to example 1.
+In terms of solving the problem there is nothing different to example 1.
 \end_layout
 
 \begin_layout Subsection
@@ -1226,9 +1212,6 @@ Manual elimination of variables to obtain a reduced set of solution variables
  insert expressions for the mass fluxes and hereby replace mass fluxes with
  functions of nodal pressures and simply solve for the pressures.
  In the example 1 this would lead to the following equations:
-\end_layout
-
-\begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
 \boldsymbol{G}\left(\boldsymbol{p}\right)=0=\Bigg\{\begin{array}{ccc}
@@ -1240,10 +1223,6 @@ Manual elimination of variables to obtain a reduced set of solution variables
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
 Note that we simply added the additional constraint with the pressure at
  node 1 to the first equation.
 \end_layout
@@ -1291,10 +1270,6 @@ We could now solve the equation system for the unknowns
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
 However, we face a minor problem because of our implicit formulation of
  the flow element equations, that we cannot easily re-arranged to be expressions
  for mass fluxes 
@@ -1339,10 +1314,6 @@ However, we face a minor problem because of our implicit formulation of
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
 until we have found the matching mass flux 
 \begin_inset Formula $\dot{m}$
 \end_inset
@@ -1425,7 +1396,7 @@ However, there is the issue of computing the Jacobian matrix
 \end_layout
 
 \begin_layout Standard
-The most simply and straight-forward approach is to generate a lookup table
+The most simple and straight-forward approach is to generate a lookup table
  of the relation 
 \begin_inset Formula $\dot{m}\left(p\right)$
 \end_inset
@@ -1480,10 +1451,6 @@ Suppose we had the partial derivatives
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
 Since both variables 
 \begin_inset Formula $p$
 \end_inset
@@ -1500,10 +1467,6 @@ Since both variables
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
 @Anne: is there somewhere a mathematical proof why this works? For scalar
  functions it is 
 \begin_inset Formula $\frac{dy}{dx}=\frac{1}{\frac{dx}{dy}}$
@@ -1517,9 +1480,6 @@ Since both variables
 \begin_layout Standard
 Lets illustrate this with an example.
  Suppose our flow element system function looks like
-\end_layout
-
-\begin_layout Standard
 \begin_inset Formula 
 \[
 f\left(p_{1},p_{2},\dot{m}\right)=0=p_{1}-p_{2}-a\dot{m}^{2}
@@ -1527,10 +1487,6 @@ f\left(p_{1},p_{2},\dot{m}\right)=0=p_{1}-p_{2}-a\dot{m}^{2}
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
 where 
 \begin_inset Formula $a$
 \end_inset
@@ -1549,10 +1505,6 @@ where
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
 and the derivative we look for is
 \begin_inset Formula 
 \[
@@ -1561,10 +1513,6 @@ and the derivative we look for is
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
 Now let try to construct this without rearranging the equation.
  We first get the partial derivatives
 \begin_inset Formula 
@@ -1575,10 +1523,6 @@ Now let try to construct this without rearranging the equation.
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
 invert the second partial derivative
 \end_layout
 
@@ -1590,15 +1534,51 @@ invert the second partial derivative
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
 and apply the chain rule to get:
 \begin_inset Formula 
 \[
 \frac{\partial\dot{m}}{\partial f}\frac{\partial f}{\partial p_{1}}=\frac{\partial\dot{m}}{\partial p_{1}}=\frac{1}{2a\dot{m}}
 \]
+
+\end_inset
+
+This even works for more complex system functions.
+ Let's try constructing 
+\begin_inset Formula $dy/dx$
+\end_inset
+
+ for a function: 
+\begin_inset Formula 
+\[
+f\left(x,y\right)=y/\sin x+2=0
+\]
+
+\end_inset
+
+First the direct approach:
+\begin_inset Formula 
+\begin{align*}
+y & =-2\sin x\\
+-2 & =\frac{y}{\sin x}\\
+\frac{dy}{dx} & =-2\cos x\\
+ & =\frac{y\cos x}{\sin x}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and now the indirect approach using partial derivatives:
+\begin_inset Formula 
+\begin{align*}
+\frac{\partial f}{\partial x} & =-\frac{y\cos x}{\sin^{2}x}\\
+\frac{\partial f}{\partial y} & =\frac{1}{\sin x}\\
+\frac{\partial y}{\partial f} & =-\sin x\\
+\frac{\partial y}{\partial f}\frac{\partial f}{\partial x} & =-\sin x\cdot-\frac{y\cos x}{\sin^{2}x}\\
+ & =\frac{y\cos x}{\sin x}
+\end{align*}
 
 \end_inset
 
@@ -1682,9 +1662,6 @@ were available.
 \end_inset
 
  and the following 6 equations:
-\end_layout
-
-\begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
 \boldsymbol{G}\left(\boldsymbol{y}\right)=0=\left\{ \begin{array}{cclc}
@@ -1699,10 +1676,6 @@ were available.
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
 The system size (and most remarkable Jacobian matrix size) is doubled, yet
  now we have all variables available to evaluate the system function and
  its derivatives easily in a very generic way.
@@ -3297,6 +3270,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename imgs/dynamicPipe.png
 	scale 50
@@ -3764,6 +3739,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename imgs/dynamicPipeLoss.png
 	scale 50
