@@ -81,7 +81,7 @@ void ConstructionInstance::checkParameters(const std::vector<ConstructionType> &
 							 IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 	}
 
-	// check that we do not have outside solar radiation on both sides of the construction and both are outside constructions
+	// check that we do not have solar radiation on both sides of the construction and both are outside constructions
 	if (haveRadiationBCA && haveRadiationBCB)
 		throw IBK::Exception( "Defining a construction with ambient solar radiation boundary "
 							  "conditions on both sides is not supported.", FUNC_ID);
