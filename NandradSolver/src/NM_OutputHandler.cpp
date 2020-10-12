@@ -50,7 +50,11 @@ const char * const FLUX_QUANTITIES[] = {
 	"CompleteThermalLoad",
 	"InfiltrationHeatFlux",
 	"FluxHeatConductionA",
-	"FluxHeatConductionB"
+	"FluxHeatConductionB",
+	"SolarRadiationFluxA",
+	"SolarRadiationFluxB",
+	"FluxShortWaveRadiationA",
+	"FluxShortWaveRadiationB"
 };
 
 namespace NANDRAD_MODEL {

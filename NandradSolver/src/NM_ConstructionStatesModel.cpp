@@ -152,7 +152,7 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 
 	// *** now resize the memory cache for results
 
-	unsigned int skalarResultCount = NUM_R;
+	unsigned int skalarResultCount = R_SolarRadiationFluxB+1;
 	if (m_moistureBalanceEnabled) {
 		/// \todo hygrothermal code
 	}
@@ -163,7 +163,7 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 
 
 void ConstructionStatesModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
-	int skalarResultCount = 2;
+	int skalarResultCount = R_SolarRadiationFluxB+1;
 	if (m_moistureBalanceEnabled) {
 		/// \todo hygrothermal implementation
 //		varCount = 2; // more variables for hygrothermal calculation

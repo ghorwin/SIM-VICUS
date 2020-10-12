@@ -47,8 +47,10 @@ class ConstructionBalanceModel : public AbstractModel, public AbstractStateDepen
 public:
 
 	enum Results {
-		R_FluxHeatConductionA,				// Keyword: FluxHeatConductionA		[W]			'Heat conduction flux across interface A (into construction).'
-		R_FluxHeatConductionB,				// Keyword: FluxHeatConductionB		[W]			'Heat conduction flux across interface B (into construction).'
+		R_FluxHeatConductionA,				// Keyword: FluxHeatConductionA			[W]			'Heat conduction flux across interface A (into construction).'
+		R_FluxHeatConductionB,				// Keyword: FluxHeatConductionB			[W]			'Heat conduction flux across interface B (into construction).'
+		R_FluxShortWaveRadiationA,			// Keyword: FluxShortWaveRadiationA		[W]			'Short wave radiation flux across interface A (into construction).'
+		R_FluxShortWaveRadiationB,			// Keyword: FluxShortWaveRadiationB		[W]			'Short wave radiation flux across interface B (into construction).'
 		NUM_R
 	};
 
@@ -171,6 +173,10 @@ private:
 	double											m_fluxDensityHeatConductionA = 0;
 	/*! Heat conduction flux density at right side [W/m2] (positive from left to right). */
 	double											m_fluxDensityHeatConductionB = 0;
+	/*! Absorbed global radiation flux density at left side [W/m2] (positive from left to right). */
+	double											m_fluxDensityShortWaveRadiationA = 0;
+	/*! Absorbed global radiation flux density at left side [W/m2] (positive from left to right). */
+	double											m_fluxDensityShortWaveRadiationB = 0;
 };
 
 } // namespace NANDRAD_MODEL

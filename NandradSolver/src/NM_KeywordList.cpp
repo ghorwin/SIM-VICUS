@@ -65,6 +65,8 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "FluxHeatConductionA";
 				case 1 : return "FluxHeatConductionB";
+				case 2 : return "FluxShortWaveRadiationA";
+				case 3 : return "FluxShortWaveRadiationB";
 			} break;
 			// ConstructionBalanceModel::VectorValuedResults
 			case 1 :
@@ -157,6 +159,8 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "FluxHeatConductionA";
 				case 1 : return "FluxHeatConductionB";
+				case 2 : return "FluxShortWaveRadiationA";
+				case 3 : return "FluxShortWaveRadiationB";
 			} break;
 			// ConstructionBalanceModel::VectorValuedResults
 			case 1 :
@@ -250,6 +254,8 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "Heat conduction flux across interface A (into construction).";
 				case 1 : return "Heat conduction flux across interface B (into construction).";
+				case 2 : return "Short wave radiation flux across interface A (into construction).";
+				case 3 : return "Short wave radiation flux across interface B (into construction).";
 			} break;
 			// ConstructionBalanceModel::VectorValuedResults
 			case 1 :
@@ -342,6 +348,8 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "W";
 				case 1 : return "W";
+				case 2 : return "W";
+				case 3 : return "W";
 			} break;
 			// ConstructionBalanceModel::VectorValuedResults
 			case 1 :
@@ -434,6 +442,8 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
 			} break;
 			// ConstructionBalanceModel::VectorValuedResults
 			case 1 :
@@ -526,6 +536,8 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// ConstructionBalanceModel::VectorValuedResults
 			case 1 :
@@ -615,7 +627,7 @@ namespace NANDRAD_MODEL {
 	unsigned int KeywordList::Count(const char * const enumtype) {
 		switch (enum2index(enumtype)) {
 			// ConstructionBalanceModel::Results
-			case 0 : return 2;
+			case 0 : return 4;
 			// ConstructionBalanceModel::VectorValuedResults
 			case 1 : return 1;
 			// ConstructionStatesModel::VectorValuedResults
@@ -643,7 +655,7 @@ namespace NANDRAD_MODEL {
 	int KeywordList::MaxIndex(const char * const enumtype) {
 		switch (enum2index(enumtype)) {
 			// ConstructionBalanceModel::Results
-			case 0 : return 1;
+			case 0 : return 3;
 			// ConstructionBalanceModel::VectorValuedResults
 			case 1 : return 0;
 			// ConstructionStatesModel::VectorValuedResults

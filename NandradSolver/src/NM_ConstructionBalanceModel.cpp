@@ -230,14 +230,14 @@ int ConstructionBalanceModel::update() {
 		double * ydot = &m_ydot[0];
 		const double * qHeatCond = &m_statesModel->m_fluxes_q[0];
 		const ConstructionStatesModel::Element * E = &m_statesModel->m_elements[0];
-		ydot[0] = m_fluxDensityHeatConductionA;
+		ydot[0] = m_fluxDensityHeatConductionA + m_fluxDensityShortWaveRadiationA; // left BC fluxes
 		for (unsigned int i=1; i<nElements; ++i) {
 			ydot[i-1] -= qHeatCond[i];	// Mind: we _subtract_ flux
 			ydot[i] = qHeatCond[i];		// Mind: we _set_ the positive flux
 			// finally divide by element volume (volume = dx * 1m2)
 			ydot[i-1] /= E[i-1].dx;
 		}
-		ydot[nElements-1] -= m_fluxDensityHeatConductionB;
+		ydot[nElements-1] -= m_fluxDensityHeatConductionB + m_fluxDensityShortWaveRadiationB; // right BC fluxes
 		ydot[nElements-1] /= E[nElements-1].dx;
 	}
 	return 0; // signal success
@@ -310,7 +310,21 @@ void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NAN
 	}
 
 
-	// *** solar radiation boundary condition
+	// *** outside solar radiation boundary condition
+
+	if (iface.m_zoneId == 0 && iface.m_solarAbsorption.m_modelType != NANDRAD::InterfaceSolarAbsorption::NUM_MT) {
+		// different calculation from left or right side
+		if (sideA) {
+			double fluxDensity = m_statesModel->m_results[NANDRAD_MODEL::ConstructionStatesModel::R_SolarRadiationFluxA];
+			m_fluxDensityShortWaveRadiationA = fluxDensity;
+			m_results[R_FluxShortWaveRadiationA] = fluxDensity*m_area;
+		}
+		else {
+			double fluxDensity = m_statesModel->m_results[NANDRAD_MODEL::ConstructionStatesModel::R_SolarRadiationFluxB];
+			m_fluxDensityShortWaveRadiationB = -fluxDensity;
+			m_results[R_FluxShortWaveRadiationB] = -fluxDensity*m_area;
+		}
+	}
 }
 
 
