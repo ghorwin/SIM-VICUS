@@ -44,5 +44,14 @@ void InterfaceSolarAbsorption::checkParameters() const {
 
 }
 
+
+double InterfaceSolarAbsorption::radFlux(double globalRad) const {
+	switch (m_modelType) {
+		case MT_Constant : return globalRad*m_para[P_AbsorptionCoefficient].value;
+		default:;
+	}
+	return 0;
+}
+
 } // namespace NANDRAD
 

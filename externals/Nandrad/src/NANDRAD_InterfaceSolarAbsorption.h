@@ -37,7 +37,7 @@ public:
 		P_AbsorptionCoefficient,	// Keyword: AbsorptionCoefficient [---]			'Constant Absorption coefficient [0,...,1].'
 		NUM_P
 	};
-	/*! Model types supported by the window model. */
+	/*! Model types supported by the solar absorption model. */
 	enum modelType_t {
 		MT_Constant,				// Keyword: Constant		'Constant model.'
 		NUM_MT
@@ -50,6 +50,11 @@ public:
 
 	/*! Checks for valid parameters (value ranges). */
 	void checkParameters() const;
+
+	/*! Computes model-dependent solar radiation flux in [W/m2] on surface.
+		\param globalRad Global radiation intensity in [W/m2] onto surface.
+	*/
+	double radFlux(double globalRad) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

@@ -25,6 +25,7 @@
 
 #include <IBK_Parameter.h>
 #include <IBK_Exception.h>
+#include <IBK_messages.h>
 
 #include "NANDRAD_KeywordList.h"
 #include "NANDRAD_Constants.h"
@@ -52,16 +53,41 @@ void ConstructionInstance::checkParameters(const std::vector<ConstructionType> &
 
 	// Note: parameters orientation and inclination are only needed when an outdoor interface with solar radiation
 	//       model is defined, so first look for such an interface.
+	//
+	// Also, we currently rely on the following convention: if an interface has parameters, i.e. m_modelType != NUM_MT
+	// in any submodel, then the interface exists (m_id != INVALID_ID), which we do not test for explicitely.
 
-	bool haveRadiationBC = false;
-	if (m_interfaceA.m_zoneId == 0 && m_interfaceA.m_solarAbsorption.m_modelType != InterfaceSolarAbsorption::NUM_MT)
-		haveRadiationBC = true;
-	if (m_interfaceB.m_zoneId == 0 && m_interfaceB.m_solarAbsorption.m_modelType != InterfaceSolarAbsorption::NUM_MT)
-		haveRadiationBC = true;
+	bool haveRadiationBCA = false;
+	bool haveRadiationBCB = false;
+	if (m_interfaceA.m_solarAbsorption.m_modelType != InterfaceSolarAbsorption::NUM_MT)	{
+		// We only test for radiation boundary conditions, when we have an outside interface, i.e. zoneID == 0
+		if (m_interfaceA.m_zoneId == 0)
+			haveRadiationBCA = true;
+		else
+			IBK::IBK_Message(IBK::FormatString("Interface A of construction instance '%1' (#%2) is an "
+											   "inside surface (connected to a zone), yet has solar radiation "
+											   "BC parameters defined. This is likely an error.")
+							 .arg(m_displayName).arg(m_id),
+							 IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+	}
+	if (m_interfaceB.m_solarAbsorption.m_modelType != InterfaceSolarAbsorption::NUM_MT) {
+		if (m_interfaceB.m_zoneId == 0)
+			haveRadiationBCB = true;
+		else
+			IBK::IBK_Message(IBK::FormatString("Interface B of construction instance '%1' (#%2) is an "
+											   "inside surface (connected to a zone), yet has solar radiation "
+											   "BC parameters defined. This is likely an error.")
+							 .arg(m_displayName).arg(m_id),
+							 IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+	}
 
-	if (haveRadiationBC) {
+	// check that we do not have outside solar radiation on both sides of the construction and both are outside constructions
+	if (haveRadiationBCA && haveRadiationBCB)
+		throw IBK::Exception( "Defining a construction with ambient solar radiation boundary "
+							  "conditions on both sides is not supported.", FUNC_ID);
+
+	if (haveRadiationBCA || haveRadiationBCB) {
 		// we have solar radiation to outside - and we need orientation and inclination for that
-		// check parameters
 		if (m_para[P_ORIENTATION].name.empty())
 			throw IBK::Exception( "Missing parameter 'Orientation'.", FUNC_ID);
 		double orientationInDeg = m_para[P_ORIENTATION].get_value("Deg");
@@ -86,6 +112,7 @@ void ConstructionInstance::checkParameters(const std::vector<ConstructionType> &
 	} catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, "Error checking model parameters for InterfaceB.", FUNC_ID);
 	}
+
 }
 
 
