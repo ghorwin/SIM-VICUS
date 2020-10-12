@@ -105,27 +105,24 @@
 					<ObjectListName>Zones</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
+				<!-- Surface temperature on zone side of construction -->
 				<OutputDefinition>
-					<Quantity>FluxShortWaveRadiationA</Quantity>
+					<Quantity>SurfaceTemperatureA</Quantity>
 					<TimeType>None</TimeType>
 					<ObjectListName>Constructions</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>FluxShortWaveRadiationB</Quantity>
-					<TimeType>None</TimeType>
-					<ObjectListName>Constructions</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>SolarRadiationFluxA</Quantity>
-					<TimeType>None</TimeType>
-					<ObjectListName>Constructions</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
+				<!-- Solar short wave radiation flux onto outside of construction. -->
 				<OutputDefinition>
 					<Quantity>SolarRadiationFluxB</Quantity>
-					<TimeType>None</TimeType>
+					<TimeType>Mean</TimeType>
+					<ObjectListName>Constructions</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<!-- Heat conduction flux towards zone as hourly mean value -->
+				<OutputDefinition>
+					<Quantity>FluxHeatConductionA</Quantity>
+					<TimeType>Mean</TimeType>
 					<ObjectListName>Constructions</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
