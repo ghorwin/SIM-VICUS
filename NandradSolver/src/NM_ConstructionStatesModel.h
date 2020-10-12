@@ -36,6 +36,7 @@ namespace NANDRAD {
 namespace NANDRAD_MODEL {
 
 class Material;
+class Loads;
 
 /*!	This model computes temperatures (and if moisture balance is enabled in constructions, also
 	intensive moisture variables like relative humidity/vapor pressure) from the conserved quantities.
@@ -54,6 +55,8 @@ public:
 	enum Results {
 		R_SurfaceTemperatureA,			// Keyword: SurfaceTemperatureA		[C]		'Surface temperature at interface A.'
 		R_SurfaceTemperatureB,			// Keyword: SurfaceTemperatureB		[C]		'Surface temperature at interface B.'
+		R_SolarRadiationFluxA,			// Keyword: SolarRadiationFluxA		[W/m2]	'Solar radiation flux density into surface A.'
+		R_SolarRadiationFluxB,			// Keyword: SolarRadiationFluxB		[W/m2]	'Solar radiation flux density into surface B.'
 		NUM_R
 	};
 
@@ -66,7 +69,8 @@ public:
 	/*! Initializes model. */
 	void setup(const NANDRAD::ConstructionInstance & con,
 			   const NANDRAD::SimulationParameter & simPara,
-			   const NANDRAD::SolverParameter & solverPara);
+			   const NANDRAD::SolverParameter & solverPara,
+			   Loads & loads);
 
 
 	// *** Re-implemented from AbstractModel
@@ -110,14 +114,16 @@ public:
 		This function is called after setup(), so that parameters needed for
 		computing the initial condition are already present.
 
-		\param Pointer to the memory array holding all initial states for this model (to be written into).
+		\param y Pointer to the memory array holding all initial states for this model (to be written into).
 	*/
 	void yInitial(double * y) const;
 
 	/*! Computes intensive variables in Finite Volumes of construction.
 		This function is called directly from NandradModel as first step in the model evaluation.
 
-		\param Pointer to the memory array holding all states for this room model.
+		\param y Pointer to the memory array holding all states for this room model.
+
+		This function also evaluates the outside boundary conditions.
 	*/
 	int update(const double * y);
 
@@ -144,6 +150,8 @@ private:
 	const NANDRAD::SimulationParameter *			m_simPara = nullptr;
 	/*! Cached pointer to source solver parameter data structure. */
 	const NANDRAD::SolverParameter *				m_solverPara = nullptr;
+	/*! Cached pointer to climate loads model, to retrieve climatic loads. */
+	const Loads *									m_loads = nullptr;
 
 	// the variables below are accessed/used also by the ConstructionBalanceModel
 

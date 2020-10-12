@@ -81,6 +81,8 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "SurfaceTemperatureA";
 				case 1 : return "SurfaceTemperatureB";
+				case 2 : return "SolarRadiationFluxA";
+				case 3 : return "SolarRadiationFluxB";
 			} break;
 			// Loads::Results
 			case 4 :
@@ -171,6 +173,8 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "SurfaceTemperatureA";
 				case 1 : return "SurfaceTemperatureB";
+				case 2 : return "SolarRadiationFluxA";
+				case 3 : return "SolarRadiationFluxB";
 			} break;
 			// Loads::Results
 			case 4 :
@@ -262,6 +266,8 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "Surface temperature at interface A.";
 				case 1 : return "Surface temperature at interface B.";
+				case 2 : return "Solar radiation flux density into surface A.";
+				case 3 : return "Solar radiation flux density into surface B.";
 			} break;
 			// Loads::Results
 			case 4 :
@@ -352,6 +358,8 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "C";
 				case 1 : return "C";
+				case 2 : return "W/m2";
+				case 3 : return "W/m2";
 			} break;
 			// Loads::Results
 			case 4 :
@@ -442,6 +450,8 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
 			} break;
 			// Loads::Results
 			case 4 :
@@ -532,6 +542,8 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// Loads::Results
 			case 4 :
@@ -609,7 +621,7 @@ namespace NANDRAD_MODEL {
 			// ConstructionStatesModel::VectorValuedResults
 			case 2 : return 1;
 			// ConstructionStatesModel::Results
-			case 3 : return 2;
+			case 3 : return 4;
 			// Loads::Results
 			case 4 : return 18;
 			// Loads::VectorValuedResults
@@ -637,7 +649,7 @@ namespace NANDRAD_MODEL {
 			// ConstructionStatesModel::VectorValuedResults
 			case 2 : return 0;
 			// ConstructionStatesModel::Results
-			case 3 : return 1;
+			case 3 : return 3;
 			// Loads::Results
 			case 4 : return 17;
 			// Loads::VectorValuedResults

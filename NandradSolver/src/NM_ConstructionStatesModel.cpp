@@ -31,7 +31,11 @@
 #include <NANDRAD_SimulationParameter.h>
 #include <NANDRAD_Material.h>
 
+#include "NM_Loads.h"
+
 #include "NM_KeywordList.h"
+
+#include "CCM_Defines.h"
 
 #define CONSTANT_EXTRAPOLATION
 
@@ -77,7 +81,8 @@ public:
 
 void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 									const NANDRAD::SimulationParameter & simPara,
-									const NANDRAD::SolverParameter & solverPara)
+									const NANDRAD::SolverParameter & solverPara,
+									Loads & loads)
 {
 	FUNCID(ConstructionStatesModel::setup);
 
@@ -85,6 +90,7 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 	m_con = &con;
 	m_simPara = &simPara;
 	m_solverPara = &solverPara;
+	m_loads = &loads;
 
 	m_moistureBalanceEnabled = m_simPara->m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].isEnabled();
 
@@ -99,6 +105,17 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 	IBK::IBK_Message(IBK::FormatString("Construction is discretized with %1 elements.\n")
 					 .arg(m_elements.size()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 
+
+	// BC sanity checking has already been done during construction setup, so we can rely on valid/existing
+	// parameters here
+
+	bool haveRadiationBCA = m_con->m_interfaceA.m_zoneId == 0 && m_con->m_interfaceA.m_solarAbsorption.m_modelType != NANDRAD::InterfaceSolarAbsorption::NUM_MT;
+	bool haveRadiationBCB = m_con->m_interfaceB.m_zoneId == 0 && m_con->m_interfaceB.m_solarAbsorption.m_modelType != NANDRAD::InterfaceSolarAbsorption::NUM_MT;
+	// if we have radiation data, register surface here
+	if (haveRadiationBCA || haveRadiationBCB)
+		loads.addSurface(m_con->m_id,
+				m_con->m_para[NANDRAD::ConstructionInstance::P_ORIENTATION].value/DEG2RAD,
+				m_con->m_para[NANDRAD::ConstructionInstance::P_INCLINATION].value/DEG2RAD);
 
 	// *** storage member initialization
 
@@ -135,7 +152,7 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 
 	// *** now resize the memory cache for results
 
-	unsigned int skalarResultCount = 2;
+	unsigned int skalarResultCount = NUM_R;
 	if (m_moistureBalanceEnabled) {
 		/// \todo hygrothermal code
 	}
@@ -371,6 +388,44 @@ int ConstructionStatesModel::update(const double * y) {
 		}
 	}
 #endif
+
+
+	// *** Ambient Boundary Conditions ***
+
+	// left side (A)
+	if (m_con->m_interfaceA.m_id != NANDRAD::INVALID_ID) {
+
+		// now also compute solar radiation boundary conditions, if outside interface has any
+		if (m_con->m_interfaceA.m_zoneId == 0 && m_con->m_interfaceA.m_solarAbsorption.m_modelType != NANDRAD::InterfaceSolarAbsorption::NUM_MT) {
+			// get nominal radiation fluxes across surface of this construction
+			double qRadDir, qRadDiff, incidenceAngle;
+			double qRadGlobal = m_loads->qSWRad(m_con->m_id, qRadDir, qRadDiff, incidenceAngle);
+			// store adsorbed flux
+			m_results[R_SolarRadiationFluxA] = m_con->m_interfaceA.m_solarAbsorption.radFlux(qRadGlobal);
+		}
+
+		// TODO : heat conduction BC
+		// TODO : long wave emission BC
+
+	}
+
+	// right side (B)
+	if (m_con->m_interfaceB.m_id != NANDRAD::INVALID_ID) {
+
+		// now also compute solar radiation boundary conditions, if outside interface has any
+		if (m_con->m_interfaceB.m_zoneId == 0 && m_con->m_interfaceB.m_solarAbsorption.m_modelType != NANDRAD::InterfaceSolarAbsorption::NUM_MT) {
+			// get nominal radiation fluxes across surface of this construction
+			double qRadDir, qRadDiff, incidenceAngle;
+			double qRadGlobal = m_loads->qSWRad(m_con->m_id, qRadDir, qRadDiff, incidenceAngle);
+			// store adsorbed flux
+			m_results[R_SolarRadiationFluxA] = m_con->m_interfaceA.m_solarAbsorption.radFlux(qRadGlobal);
+		}
+
+		// TODO : heat conduction BC
+		// TODO : long wave emission BC
+
+	}
+
 	return 0; // signal success
 }
 
