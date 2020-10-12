@@ -418,7 +418,7 @@ int ConstructionStatesModel::update(const double * y) {
 			double qRadDir, qRadDiff, incidenceAngle;
 			double qRadGlobal = m_loads->qSWRad(m_con->m_id, qRadDir, qRadDiff, incidenceAngle);
 			// store adsorbed flux
-			m_results[R_SolarRadiationFluxA] = m_con->m_interfaceA.m_solarAbsorption.radFlux(qRadGlobal);
+			m_results[R_SolarRadiationFluxB] = m_con->m_interfaceB.m_solarAbsorption.radFlux(qRadGlobal);
 		}
 
 		// TODO : heat conduction BC
