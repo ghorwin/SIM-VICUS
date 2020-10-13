@@ -76,8 +76,8 @@ a| The day type of January 1st (offset of day of the week of the start year.
 
 | String | _optional_
 | `Holidays` 
-a|  List of holiday days, stored in "day of the year", not including leap days. | String | _optional_
-| `WeekEndDays` | Weekend days. | String | _optional_
+a|  List of holiday days, stored in "day of the year", not including leap days. | string | _optional_
+| `WeekEndDays` | Weekend days. | string | _optional_
 |IBK:Flag
 `EnableCyclicSchedules`|Check schedules to determine minimum distances between steps and adjust MaxTimeStep.
 
