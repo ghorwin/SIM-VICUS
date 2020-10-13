@@ -142,7 +142,7 @@ a| Inclination of the wall
 
 * 0 Deg - roof
 * 90 Deg - vertical wall
-* 180 Deg - facing downwards) 
+* 180 Deg - facing downwards
 
 if one interface has short and/or long wave radiation boundary condition it is _required_ | 0...180 | _required_ / _optional_
 | `Area` | m2 | Gross area of the wall (including potentially existing windows, holes etc.) | > 0 | _required_
