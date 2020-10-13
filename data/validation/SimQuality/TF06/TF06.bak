@@ -1722,7 +1722,7 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
-		<Mapper name="TF06.2_AirTemperature">
+			<Mapper name="TF06.2_AirTemperature">
 			<Extractors>
 				<Extractor>
 					<DataIOFileName>SimQuality_TF06.2/results/states.tsv?1|2|3|4|5|6|7</DataIOFileName>
@@ -1755,19 +1755,19 @@
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4093.1615460852327</Maximum>
-						<Minimum>3880.0792864221999</Minimum>
+						<Maximum>4179.4239643768306</Maximum>
+						<Minimum>3705.7256712102208</Minimum>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
-						<Maximum>41.863691194209892</Maximum>
-						<Minimum>19.475271411338962</Minimum>
+						<Maximum>35.087318923265848</Maximum>
+						<Minimum>28.501070431106619</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>-26.688278229702934</Maximum>
-						<Minimum>-26.688278231702018</Minimum>
+						<Maximum>-26.688278204330356</Maximum>
+						<Minimum>-26.688278288988663</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -3143,22 +3143,16 @@
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
-					<Axis index="0" autoscale="0">
+					<Axis index="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4148.4669317960106</Maximum>
-						<Minimum>4105.1836119391683</Minimum>
 					</Axis>
-					<Axis index="1" autoscale="0">
+					<Axis index="1">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
-						<Maximum>41.173181625533857</Maximum>
-						<Minimum>19.353050275848826</Minimum>
 					</Axis>
-					<Axis index="2" enabled="0" autoscale="0">
+					<Axis index="2" enabled="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>1.7997238045278436</Maximum>
-						<Minimum>-132.39285605133199</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -3188,35 +3182,32 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenWidth>2</PenWidth>
-						<PenStyle>2</PenStyle>
-						<PenColor>#00aa00</PenColor>
-						<MarkerColor>#00aa00</MarkerColor>
+						<PenColor>#aecf00</PenColor>
+						<MarkerColor>#aecf00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenWidth>2</PenWidth>
-						<PenColor>#ff5500</PenColor>
-						<MarkerColor>#ff5500</MarkerColor>
+						<PenColor>#c5000b</PenColor>
+						<MarkerColor>#c5000b</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4093.1809599986018</Maximum>
-						<Minimum>4059.6482781314885</Minimum>
+						<Maximum>3959.3657086223984</Maximum>
+						<Minimum>3909.8116947472745</Minimum>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
-						<Maximum>42.591598836472173</Maximum>
-						<Minimum>18.592613119754258</Minimum>
+						<Maximum>34.583835946924005</Maximum>
+						<Minimum>25.2291917973462</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>-26.688278210871832</Maximum>
-						<Minimum>-26.688278211251507</Minimum>
+						<Maximum>-26.688278206896342</Maximum>
+						<Minimum>-26.68827821794083</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -3444,7 +3435,7 @@
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="8" size1="1" size2="1" orientation="2" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="18" size1="1" size2="1" orientation="2" />
 		<FocusedWidget>0</FocusedWidget>
 	</Splitting>
 
