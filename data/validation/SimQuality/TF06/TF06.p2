@@ -36,31 +36,35 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$quantity</TitleText>
-						<MarkerColor>#000000</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>$quantity</TitleText>
-						<PenColor>#ff420e</PenColor>
-						<MarkerColor>#ff420e</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4179.4239643768306</Maximum>
-						<Minimum>3705.7256712102208</Minimum>
+						<Maximum>4093.1809599986018</Maximum>
+						<Minimum>4059.6482781314885</Minimum>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
-						<Maximum>35.087318923265848</Maximum>
-						<Minimum>28.501070431106619</Minimum>
+						<Maximum>35</Maximum>
+						<Minimum>28</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>-26.688278204330356</Maximum>
-						<Minimum>-26.688278288988663</Minimum>
+						<Maximum>-26.688278210871832</Maximum>
+						<Minimum>-26.688278211251507</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -90,32 +94,36 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#004586</PenColor>
-						<MarkerColor>#004586</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>Nord</TitleText>
-						<PenColor>#c5000b</PenColor>
-						<MarkerColor>#c5000b</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4034.6147430156129</Maximum>
-						<Minimum>4008.2565396730497</Minimum>
+						<Maximum>961286400602</Maximum>
+						<Minimum>961200000947</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">W/m2</IBK:Unit>
-						<Maximum>472.51677852265925</Maximum>
-						<Minimum>-26.719772612851898</Minimum>
+						<Maximum>700</Maximum>
+						<Minimum>-10</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>-26.688252604658892</Maximum>
-						<Minimum>-26.688294242752931</Minimum>
+						<Maximum>-26.688278210871832</Maximum>
+						<Minimum>-26.688278211251507</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -145,32 +153,36 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#aecf00</PenColor>
-						<MarkerColor>#aecf00</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>Ost</TitleText>
-						<PenColor>#ff950e</PenColor>
-						<MarkerColor>#ff950e</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4034.6147430156129</Maximum>
-						<Minimum>4008.2565396730497</Minimum>
+						<Maximum>961286400602</Maximum>
+						<Minimum>961200000947</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">W/m2</IBK:Unit>
-						<Maximum>472.51677852265925</Maximum>
-						<Minimum>-26.719772612851898</Minimum>
+						<Maximum>700</Maximum>
+						<Minimum>-10</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>-26.688252604658892</Maximum>
-						<Minimum>-26.688294242752931</Minimum>
+						<Maximum>-26.688278210871832</Maximum>
+						<Minimum>-26.688278211251507</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -200,32 +212,36 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#ffd320</PenColor>
-						<MarkerColor>#ffd320</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>Süd</TitleText>
-						<PenColor>#4b1f6f</PenColor>
-						<MarkerColor>#4b1f6f</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4034.6147430156129</Maximum>
-						<Minimum>4008.2565396730497</Minimum>
+						<Maximum>961286400602</Maximum>
+						<Minimum>961200000947</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">W/m2</IBK:Unit>
-						<Maximum>472.51677852265925</Maximum>
-						<Minimum>-26.719772612851898</Minimum>
+						<Maximum>700</Maximum>
+						<Minimum>-10</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>-26.688252604658892</Maximum>
-						<Minimum>-26.688294242752931</Minimum>
+						<Maximum>-26.688278210871832</Maximum>
+						<Minimum>-26.688278211251507</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -255,32 +271,36 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#579d1c</PenColor>
-						<MarkerColor>#579d1c</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>West</TitleText>
-						<PenColor>#314004</PenColor>
-						<MarkerColor>#314004</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4034.6147430156129</Maximum>
-						<Minimum>4008.2565396730497</Minimum>
+						<Maximum>961286400602</Maximum>
+						<Minimum>961200000947</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">W/m2</IBK:Unit>
-						<Maximum>472.51677852265925</Maximum>
-						<Minimum>-26.719772612851898</Minimum>
+						<Maximum>700</Maximum>
+						<Minimum>-10</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>-26.688252604658892</Maximum>
-						<Minimum>-26.688294242752931</Minimum>
+						<Maximum>-26.688278210871832</Maximum>
+						<Minimum>-26.688278211251507</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -310,28 +330,31 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$quantity</TitleText>
-						<PenColor>#ff420e</PenColor>
-						<MarkerColor>#ff420e</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>Dach</TitleText>
-						<PenWidth>4</PenWidth>
-						<PenColor>#83caff</PenColor>
-						<MarkerColor>#83caff</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>3945.5488331892825</Maximum>
-						<Minimum>3820.2247191011238</Minimum>
+						<Maximum>961286400602</Maximum>
+						<Minimum>961200000947</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">W/m2</IBK:Unit>
-						<Maximum>429.73462002412549</Maximum>
-						<Minimum>-25.331724969843208</Minimum>
+						<Maximum>700</Maximum>
+						<Minimum>-10</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
@@ -367,33 +390,36 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$quantity</TitleText>
-						<PenColor>#ff420e</PenColor>
-						<MarkerColor>#ff420e</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>Boden</TitleText>
-						<PenWidth>4</PenWidth>
-						<PenColor>#7e0021</PenColor>
-						<MarkerColor>#7e0021</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4034.6147430156129</Maximum>
-						<Minimum>4008.2565396730497</Minimum>
+						<Maximum>961286400602</Maximum>
+						<Minimum>961200000947</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">W/m2</IBK:Unit>
-						<Maximum>472.51677852265925</Maximum>
-						<Minimum>-26.719772612851898</Minimum>
+						<Maximum>700</Maximum>
+						<Minimum>-10</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>-26.688252604658892</Maximum>
-						<Minimum>-26.688294242752931</Minimum>
+						<Maximum>-26.688278210871832</Maximum>
+						<Minimum>-26.688278211251507</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -438,20 +464,20 @@
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4091.4630596363213</Maximum>
-						<Minimum>3523.6507597663449</Minimum>
+						<Maximum>4704.6843177189412</Maximum>
+						<Minimum>3650.7128309572304</Minimum>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">W/m2</IBK:Unit>
-						<Maximum>2.5022543685793934</Maximum>
-						<Minimum>-22.029223881304137</Minimum>
+						<Maximum>1.4788902291917978</Maximum>
+						<Minimum>-16.510253317249699</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">W</IBK:Unit>
-						<Maximum>24.952440661304507</Maximum>
-						<Minimum>-220.27430323868782</Minimum>
+						<Maximum>16.525934861278657</Maximum>
+						<Minimum>-103.40168878166466</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -467,79 +493,7 @@
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>7</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>reference/Referenzwerte_1.tsv?2|3|4|5|6|7|14|15|16|17|18|19</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>6</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>reference/Referenzwerte_1.tsv?2|3|4|5|6|7|14|15|16|17|18|19</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>8</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>reference/Referenzwerte_1.tsv?2|3|4|5|6|7|14|15|16|17|18|19</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>9</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>reference/Referenzwerte_1.tsv?2|3|4|5|6|7|14|15|16|17|18|19</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>10</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>reference/Referenzwerte_1.tsv?2|3|4|5|6|7|14|15|16|17|18|19</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>11</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>SimQuality_TF06.1/results/fluxes.tsv?7|8|9|10|11|12</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>5</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>SimQuality_TF06.1/results/fluxes.tsv?7|8|9|10|11|12</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>4</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>SimQuality_TF06.1/results/fluxes.tsv?7|8|9|10|11|12</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>3</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>SimQuality_TF06.1/results/fluxes.tsv?7|8|9|10|11|12</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>2</ColumnIndex>
 					<Manipulator type="2DScaling">-1</Manipulator>
 				</Extractor>
 				<Extractor>
@@ -550,97 +504,42 @@
 					<ColumnIndex>1</ColumnIndex>
 					<Manipulator type="2DScaling">-1</Manipulator>
 				</Extractor>
-				<Extractor>
-					<DataIOFileName>SimQuality_TF06.1/results/fluxes.tsv?7|8|9|10|11|12</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
 			</Extractors>
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenWidth>4</PenWidth>
-						<MarkerColor>#000000</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#ff420e</PenColor>
-						<MarkerColor>#ff420e</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#004586</PenColor>
-						<MarkerColor>#004586</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#aecf00</PenColor>
-						<MarkerColor>#aecf00</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#ffd320</PenColor>
-						<MarkerColor>#ffd320</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#579d1c</PenColor>
-						<MarkerColor>#579d1c</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series leftAxis="0">
 						<TitleText>$basename:$quantity</TitleText>
-						<PenWidth>4</PenWidth>
-						<PenColor>#7e0021</PenColor>
-						<MarkerColor>#7e0021</MarkerColor>
-					</Series>
-					<Series leftAxis="0">
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#83caff</PenColor>
-						<MarkerColor>#83caff</MarkerColor>
-					</Series>
-					<Series leftAxis="0">
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#314004</PenColor>
-						<MarkerColor>#314004</MarkerColor>
-					</Series>
-					<Series leftAxis="0">
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#4b1f6f</PenColor>
-						<MarkerColor>#4b1f6f</MarkerColor>
-					</Series>
-					<Series leftAxis="0">
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#ff950e</PenColor>
-						<MarkerColor>#ff950e</MarkerColor>
-					</Series>
-					<Series leftAxis="0">
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#c5000b</PenColor>
-						<MarkerColor>#c5000b</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4091.4630596363213</Maximum>
-						<Minimum>3523.6507597663449</Minimum>
+						<Maximum>961691592842.5061</Maximum>
+						<Minimum>961548184804.04028</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">W/m2</IBK:Unit>
-						<Maximum>2.5022543685793934</Maximum>
-						<Minimum>-22.029223881304137</Minimum>
+						<Maximum>8.0582457349646734</Maximum>
+						<Minimum>-6.9513552103591731</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">W</IBK:Unit>
-						<Maximum>24.952440661304507</Maximum>
-						<Minimum>-220.27430323868782</Minimum>
+						<Maximum>123.17437228208537</Maximum>
+						<Minimum>-85.436575112554067</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -845,63 +744,7 @@
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>7</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>reference/Referenzwerte_1.tsv?2|3|4|5|6|7|14|15|16|17|18|19</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>6</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>reference/Referenzwerte_1.tsv?2|3|4|5|6|7|14|15|16|17|18|19</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>8</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>reference/Referenzwerte_1.tsv?2|3|4|5|6|7|14|15|16|17|18|19</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>9</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>reference/Referenzwerte_1.tsv?2|3|4|5|6|7|14|15|16|17|18|19</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>10</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>reference/Referenzwerte_1.tsv?2|3|4|5|6|7|14|15|16|17|18|19</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>11</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>SimQuality_TF06.1/results/fluxes.tsv?7|8|9|10|11|12</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>5</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>SimQuality_TF06.1/results/fluxes.tsv?7|8|9|10|11|12</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>4</ColumnIndex>
 					<Manipulator type="2DScaling">-1</Manipulator>
 				</Extractor>
 				<Extractor>
@@ -912,58 +755,9 @@
 					<ColumnIndex>3</ColumnIndex>
 					<Manipulator type="2DScaling">-1</Manipulator>
 				</Extractor>
-				<Extractor>
-					<DataIOFileName>SimQuality_TF06.1/results/fluxes.tsv?7|8|9|10|11|12</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>2</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>SimQuality_TF06.1/results/fluxes.tsv?7|8|9|10|11|12</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>SimQuality_TF06.1/results/fluxes.tsv?7|8|9|10|11|12</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
 			</Extractors>
 			<ChartModel chartType="2D">
 				<SeriesProperties>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<PenWidth>4</PenWidth>
-						<MarkerColor>#000000</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#ff420e</PenColor>
-						<MarkerColor>#ff420e</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#004586</PenColor>
-						<MarkerColor>#004586</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#aecf00</PenColor>
-						<MarkerColor>#aecf00</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#ffd320</PenColor>
-						<MarkerColor>#ffd320</MarkerColor>
-					</Series>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
 						<PenColor>#579d1c</PenColor>
@@ -971,34 +765,8 @@
 					</Series>
 					<Series leftAxis="0">
 						<TitleText>$basename:$quantity</TitleText>
-						<PenWidth>4</PenWidth>
-						<PenColor>#7e0021</PenColor>
-						<MarkerColor>#7e0021</MarkerColor>
-					</Series>
-					<Series leftAxis="0">
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#83caff</PenColor>
-						<MarkerColor>#83caff</MarkerColor>
-					</Series>
-					<Series leftAxis="0">
-						<TitleText>$basename:$quantity</TitleText>
 						<PenColor>#314004</PenColor>
 						<MarkerColor>#314004</MarkerColor>
-					</Series>
-					<Series leftAxis="0">
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#4b1f6f</PenColor>
-						<MarkerColor>#4b1f6f</MarkerColor>
-					</Series>
-					<Series leftAxis="0">
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#ff950e</PenColor>
-						<MarkerColor>#ff950e</MarkerColor>
-					</Series>
-					<Series leftAxis="0">
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#c5000b</PenColor>
-						<MarkerColor>#c5000b</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
@@ -1034,55 +802,7 @@
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>7</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>reference/Referenzwerte_1.tsv?2|3|4|5|6|7|14|15|16|17|18|19</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>6</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>reference/Referenzwerte_1.tsv?2|3|4|5|6|7|14|15|16|17|18|19</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>8</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>reference/Referenzwerte_1.tsv?2|3|4|5|6|7|14|15|16|17|18|19</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>9</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>reference/Referenzwerte_1.tsv?2|3|4|5|6|7|14|15|16|17|18|19</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>10</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>reference/Referenzwerte_1.tsv?2|3|4|5|6|7|14|15|16|17|18|19</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>11</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>SimQuality_TF06.1/results/fluxes.tsv?7|8|9|10|11|12</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>5</ColumnIndex>
 					<Manipulator type="2DScaling">-1</Manipulator>
 				</Extractor>
 				<Extractor>
@@ -1093,101 +813,18 @@
 					<ColumnIndex>4</ColumnIndex>
 					<Manipulator type="2DScaling">-1</Manipulator>
 				</Extractor>
-				<Extractor>
-					<DataIOFileName>SimQuality_TF06.1/results/fluxes.tsv?7|8|9|10|11|12</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>3</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>SimQuality_TF06.1/results/fluxes.tsv?7|8|9|10|11|12</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>2</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>SimQuality_TF06.1/results/fluxes.tsv?7|8|9|10|11|12</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>SimQuality_TF06.1/results/fluxes.tsv?7|8|9|10|11|12</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
 			</Extractors>
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenWidth>4</PenWidth>
-						<MarkerColor>#000000</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
 						<PenColor>#ff420e</PenColor>
 						<MarkerColor>#ff420e</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#004586</PenColor>
-						<MarkerColor>#004586</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#aecf00</PenColor>
-						<MarkerColor>#aecf00</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#ffd320</PenColor>
-						<MarkerColor>#ffd320</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#579d1c</PenColor>
-						<MarkerColor>#579d1c</MarkerColor>
-					</Series>
-					<Series leftAxis="0">
-						<TitleText>$basename:$quantity</TitleText>
-						<PenWidth>4</PenWidth>
-						<PenColor>#7e0021</PenColor>
-						<MarkerColor>#7e0021</MarkerColor>
 					</Series>
 					<Series leftAxis="0">
 						<TitleText>$basename:$quantity</TitleText>
 						<PenColor>#83caff</PenColor>
 						<MarkerColor>#83caff</MarkerColor>
-					</Series>
-					<Series leftAxis="0">
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#314004</PenColor>
-						<MarkerColor>#314004</MarkerColor>
-					</Series>
-					<Series leftAxis="0">
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#4b1f6f</PenColor>
-						<MarkerColor>#4b1f6f</MarkerColor>
-					</Series>
-					<Series leftAxis="0">
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#ff950e</PenColor>
-						<MarkerColor>#ff950e</MarkerColor>
-					</Series>
-					<Series leftAxis="0">
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#c5000b</PenColor>
-						<MarkerColor>#c5000b</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
@@ -1227,46 +864,6 @@
 					<Manipulator type="2DScaling">-1</Manipulator>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>reference/Referenzwerte_1.tsv?2|3|4|5|6|7|14|15|16|17|18|19</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>6</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>reference/Referenzwerte_1.tsv?2|3|4|5|6|7|14|15|16|17|18|19</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>8</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>reference/Referenzwerte_1.tsv?2|3|4|5|6|7|14|15|16|17|18|19</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>9</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>reference/Referenzwerte_1.tsv?2|3|4|5|6|7|14|15|16|17|18|19</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>10</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>reference/Referenzwerte_1.tsv?2|3|4|5|6|7|14|15|16|17|18|19</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>11</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
 					<DataIOFileName>SimQuality_TF06.1/results/fluxes.tsv?7|8|9|10|11|12</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
@@ -1274,129 +871,41 @@
 					<ColumnIndex>5</ColumnIndex>
 					<Manipulator type="2DScaling">-1</Manipulator>
 				</Extractor>
-				<Extractor>
-					<DataIOFileName>SimQuality_TF06.1/results/fluxes.tsv?7|8|9|10|11|12</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>4</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>SimQuality_TF06.1/results/fluxes.tsv?7|8|9|10|11|12</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>3</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>SimQuality_TF06.1/results/fluxes.tsv?7|8|9|10|11|12</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>2</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>SimQuality_TF06.1/results/fluxes.tsv?7|8|9|10|11|12</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>SimQuality_TF06.1/results/fluxes.tsv?7|8|9|10|11|12</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
 			</Extractors>
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenWidth>4</PenWidth>
-						<MarkerColor>#000000</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#ff420e</PenColor>
-						<MarkerColor>#ff420e</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#004586</PenColor>
-						<MarkerColor>#004586</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#aecf00</PenColor>
-						<MarkerColor>#aecf00</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#ffd320</PenColor>
-						<MarkerColor>#ffd320</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#579d1c</PenColor>
-						<MarkerColor>#579d1c</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series leftAxis="0">
 						<TitleText>$basename:$quantity</TitleText>
-						<PenWidth>4</PenWidth>
-						<PenColor>#7e0021</PenColor>
-						<MarkerColor>#7e0021</MarkerColor>
-					</Series>
-					<Series leftAxis="0">
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#83caff</PenColor>
-						<MarkerColor>#83caff</MarkerColor>
-					</Series>
-					<Series leftAxis="0">
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#314004</PenColor>
-						<MarkerColor>#314004</MarkerColor>
-					</Series>
-					<Series leftAxis="0">
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#4b1f6f</PenColor>
-						<MarkerColor>#4b1f6f</MarkerColor>
-					</Series>
-					<Series leftAxis="0">
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#ff950e</PenColor>
-						<MarkerColor>#ff950e</MarkerColor>
-					</Series>
-					<Series leftAxis="0">
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#c5000b</PenColor>
-						<MarkerColor>#c5000b</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4091.4630596363213</Maximum>
-						<Minimum>3523.6507597663449</Minimum>
+						<Maximum>4124.2362525458248</Maximum>
+						<Minimum>3854.3788187372711</Minimum>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">W/m2</IBK:Unit>
-						<Maximum>2.5022543685793934</Maximum>
-						<Minimum>-22.029223881304137</Minimum>
+						<Maximum>-5.545235223160434</Maximum>
+						<Minimum>-16.195416164053075</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">W</IBK:Unit>
-						<Maximum>24.952440661304507</Maximum>
-						<Minimum>-220.27430323868782</Minimum>
+						<Maximum>-47.068757539203872</Maximum>
+						<Minimum>-141.73703256936068</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -1426,26 +935,36 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#004586</PenColor>
-						<MarkerColor>#004586</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#0084d1</PenColor>
-						<MarkerColor>#0084d1</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
-					<Axis index="0">
+					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+						<Maximum>961286400455</Maximum>
+						<Minimum>961200000801</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
-					<Axis index="1">
+					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+						<Maximum>30</Maximum>
+						<Minimum>25</Minimum>
 					</Axis>
-					<Axis index="2" enabled="0">
+					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>-26.688278210871832</Maximum>
+						<Minimum>-26.688278211251507</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -1475,32 +994,36 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#aecf00</PenColor>
-						<MarkerColor>#aecf00</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#c5000b</PenColor>
-						<MarkerColor>#c5000b</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>3959.3657086223984</Maximum>
-						<Minimum>3909.8116947472745</Minimum>
+						<Maximum>961286400455</Maximum>
+						<Minimum>961200000801</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
-						<Maximum>34.583835946924005</Maximum>
-						<Minimum>25.2291917973462</Minimum>
+						<Maximum>38</Maximum>
+						<Minimum>25</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>-26.688278206896342</Maximum>
-						<Minimum>-26.68827821794083</Minimum>
+						<Maximum>-26.688278210871832</Maximum>
+						<Minimum>-26.688278211251507</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -1530,32 +1053,36 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#ffd320</PenColor>
-						<MarkerColor>#ffd320</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#ff950e</PenColor>
-						<MarkerColor>#ff950e</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4108.0277502477702</Maximum>
-						<Minimum>3835.4806739345886</Minimum>
+						<Maximum>961286400455</Maximum>
+						<Minimum>961200000801</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
-						<Maximum>34.185765983112184</Maximum>
-						<Minimum>24.758745476477685</Minimum>
+						<Maximum>35</Maximum>
+						<Minimum>25</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>-26.688278207189796</Maximum>
-						<Minimum>-26.688278210664539</Minimum>
+						<Maximum>-26.688278210871832</Maximum>
+						<Minimum>-26.688278211251507</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -1585,26 +1112,36 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#579d1c</PenColor>
-						<MarkerColor>#579d1c</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#4b1f6f</PenColor>
-						<MarkerColor>#4b1f6f</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
-					<Axis index="0">
+					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+						<Maximum>961286400455</Maximum>
+						<Minimum>961200000801</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
-					<Axis index="1">
+					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+						<Maximum>50</Maximum>
+						<Minimum>25</Minimum>
 					</Axis>
-					<Axis index="2" enabled="0">
+					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>-26.688278210871832</Maximum>
+						<Minimum>-26.688278211251507</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -1634,32 +1171,36 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#ff420e</PenColor>
-						<MarkerColor>#ff420e</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#314004</PenColor>
-						<MarkerColor>#314004</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4246.7789890981167</Maximum>
-						<Minimum>3840.4360753221008</Minimum>
+						<Maximum>961286400455</Maximum>
+						<Minimum>961200000801</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
-						<Maximum>42.273823884197824</Maximum>
-						<Minimum>27.702050663449938</Minimum>
+						<Maximum>50</Maximum>
+						<Minimum>25</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>-26.688278207424805</Maximum>
-						<Minimum>-26.688278208692161</Minimum>
+						<Maximum>-26.688278210871832</Maximum>
+						<Minimum>-26.688278211251507</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -1689,31 +1230,36 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<MarkerColor>#000000</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#83caff</PenColor>
-						<MarkerColor>#83caff</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4360.7532210109021</Maximum>
-						<Minimum>3622.3984142715558</Minimum>
+						<Maximum>961286400455</Maximum>
+						<Minimum>961200000801</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
-						<Maximum>29.366706875753923</Maximum>
-						<Minimum>18.932448733413754</Minimum>
+						<Maximum>30</Maximum>
+						<Minimum>25</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>-26.688278206426364</Maximum>
-						<Minimum>-26.688278241802905</Minimum>
+						<Maximum>-26.688278210871832</Maximum>
+						<Minimum>-26.688278211251507</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -1743,31 +1289,36 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$quantity</TitleText>
-						<MarkerColor>#000000</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>$quantity</TitleText>
-						<PenColor>#ff420e</PenColor>
-						<MarkerColor>#ff420e</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4093.1615460852327</Maximum>
-						<Minimum>3880.0792864221999</Minimum>
+						<Maximum>961286400455</Maximum>
+						<Minimum>961200000801</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
-						<Maximum>41.863691194209892</Maximum>
-						<Minimum>19.475271411338962</Minimum>
+						<Maximum>45</Maximum>
+						<Minimum>20</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>-26.688278229702934</Maximum>
-						<Minimum>-26.688278231702018</Minimum>
+						<Maximum>-26.688278210871832</Maximum>
+						<Minimum>-26.688278211251507</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -1797,32 +1348,36 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#004586</PenColor>
-						<MarkerColor>#004586</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>Nord</TitleText>
-						<PenColor>#c5000b</PenColor>
-						<MarkerColor>#c5000b</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4034.6147430156129</Maximum>
-						<Minimum>4008.2565396730497</Minimum>
+						<Maximum>961286400602</Maximum>
+						<Minimum>961200000947</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">W/m2</IBK:Unit>
-						<Maximum>472.51677852265925</Maximum>
-						<Minimum>-26.719772612851898</Minimum>
+						<Maximum>700</Maximum>
+						<Minimum>-10</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>-26.688252604658892</Maximum>
-						<Minimum>-26.688294242752931</Minimum>
+						<Maximum>-26.688278210871832</Maximum>
+						<Minimum>-26.688278211251507</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -1852,32 +1407,36 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#aecf00</PenColor>
-						<MarkerColor>#aecf00</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>Ost</TitleText>
-						<PenColor>#ff950e</PenColor>
-						<MarkerColor>#ff950e</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4034.6147430156129</Maximum>
-						<Minimum>4008.2565396730497</Minimum>
+						<Maximum>961286400602</Maximum>
+						<Minimum>961200000947</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">W/m2</IBK:Unit>
-						<Maximum>472.51677852265925</Maximum>
-						<Minimum>-26.719772612851898</Minimum>
+						<Maximum>700</Maximum>
+						<Minimum>-10</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>-26.688252604658892</Maximum>
-						<Minimum>-26.688294242752931</Minimum>
+						<Maximum>-26.688278210871832</Maximum>
+						<Minimum>-26.688278211251507</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -1907,32 +1466,36 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#ffd320</PenColor>
-						<MarkerColor>#ffd320</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>Süd</TitleText>
-						<PenColor>#4b1f6f</PenColor>
-						<MarkerColor>#4b1f6f</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4034.6147430156129</Maximum>
-						<Minimum>4008.2565396730497</Minimum>
+						<Maximum>961286400602</Maximum>
+						<Minimum>961200000947</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">W/m2</IBK:Unit>
-						<Maximum>472.51677852265925</Maximum>
-						<Minimum>-26.719772612851898</Minimum>
+						<Maximum>700</Maximum>
+						<Minimum>-10</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>-26.688252604658892</Maximum>
-						<Minimum>-26.688294242752931</Minimum>
+						<Maximum>-26.688278210871832</Maximum>
+						<Minimum>-26.688278211251507</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -1962,32 +1525,36 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#579d1c</PenColor>
-						<MarkerColor>#579d1c</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>West</TitleText>
-						<PenColor>#314004</PenColor>
-						<MarkerColor>#314004</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4034.6147430156129</Maximum>
-						<Minimum>4008.2565396730497</Minimum>
+						<Maximum>961286400602</Maximum>
+						<Minimum>961200000947</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">W/m2</IBK:Unit>
-						<Maximum>472.51677852265925</Maximum>
-						<Minimum>-26.719772612851898</Minimum>
+						<Maximum>700</Maximum>
+						<Minimum>-10</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>-26.688252604658892</Maximum>
-						<Minimum>-26.688294242752931</Minimum>
+						<Maximum>-26.688278210871832</Maximum>
+						<Minimum>-26.688278211251507</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -2017,28 +1584,31 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$quantity</TitleText>
-						<PenColor>#ff420e</PenColor>
-						<MarkerColor>#ff420e</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>Dach</TitleText>
-						<PenWidth>4</PenWidth>
-						<PenColor>#83caff</PenColor>
-						<MarkerColor>#83caff</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>3945.5488331892825</Maximum>
-						<Minimum>3820.2247191011238</Minimum>
+						<Maximum>961286400602</Maximum>
+						<Minimum>961200000947</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">W/m2</IBK:Unit>
-						<Maximum>429.73462002412549</Maximum>
-						<Minimum>-25.331724969843208</Minimum>
+						<Maximum>700</Maximum>
+						<Minimum>-10</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
@@ -2074,33 +1644,36 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$quantity</TitleText>
-						<PenColor>#ff420e</PenColor>
-						<MarkerColor>#ff420e</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>Boden</TitleText>
-						<PenWidth>4</PenWidth>
-						<PenColor>#7e0021</PenColor>
-						<MarkerColor>#7e0021</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4034.6147430156129</Maximum>
-						<Minimum>4008.2565396730497</Minimum>
+						<Maximum>961286400602</Maximum>
+						<Minimum>961200000947</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">W/m2</IBK:Unit>
-						<Maximum>472.51677852265925</Maximum>
-						<Minimum>-26.719772612851898</Minimum>
+						<Maximum>700</Maximum>
+						<Minimum>-10</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>-26.688252604658892</Maximum>
-						<Minimum>-26.688294242752931</Minimum>
+						<Maximum>-26.688278210871832</Maximum>
+						<Minimum>-26.688278211251507</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -3133,32 +2706,36 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#004586</PenColor>
-						<MarkerColor>#004586</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#0084d1</PenColor>
-						<MarkerColor>#0084d1</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4148.4669317960106</Maximum>
-						<Minimum>4105.1836119391683</Minimum>
+						<Maximum>961286400455</Maximum>
+						<Minimum>961200000801</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
-						<Maximum>41.173181625533857</Maximum>
-						<Minimum>19.353050275848826</Minimum>
+						<Maximum>45</Maximum>
+						<Minimum>20</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>1.7997238045278436</Maximum>
-						<Minimum>-132.39285605133199</Minimum>
+						<Maximum>-26.688278210871832</Maximum>
+						<Minimum>-26.688278211251507</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -3204,14 +2781,15 @@
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4093.1809599986018</Maximum>
-						<Minimum>4059.6482781314885</Minimum>
+						<Maximum>961286400455</Maximum>
+						<Minimum>961200000801</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
-						<Maximum>42.591598836472173</Maximum>
-						<Minimum>18.592613119754258</Minimum>
+						<Maximum>45</Maximum>
+						<Minimum>20</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
@@ -3246,32 +2824,36 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#ffd320</PenColor>
-						<MarkerColor>#ffd320</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#ff950e</PenColor>
-						<MarkerColor>#ff950e</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4108.0277502477702</Maximum>
-						<Minimum>3835.4806739345886</Minimum>
+						<Maximum>961286400455</Maximum>
+						<Minimum>961200000801</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
-						<Maximum>34.185765983112184</Maximum>
-						<Minimum>24.758745476477685</Minimum>
+						<Maximum>45</Maximum>
+						<Minimum>20</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>-26.688278207189796</Maximum>
-						<Minimum>-26.688278210664539</Minimum>
+						<Maximum>-26.688278210871832</Maximum>
+						<Minimum>-26.688278211251507</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -3301,26 +2883,35 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#579d1c</PenColor>
-						<MarkerColor>#579d1c</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#4b1f6f</PenColor>
-						<MarkerColor>#4b1f6f</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
-					<Axis index="0">
+					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+						<Maximum>4093.1809599986018</Maximum>
+						<Minimum>4059.6482781314885</Minimum>
 					</Axis>
-					<Axis index="1">
+					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+						<Maximum>50</Maximum>
+						<Minimum>20</Minimum>
 					</Axis>
-					<Axis index="2" enabled="0">
+					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>-26.688278210871832</Maximum>
+						<Minimum>-26.688278211251507</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -3350,32 +2941,36 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#ff420e</PenColor>
-						<MarkerColor>#ff420e</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#314004</PenColor>
-						<MarkerColor>#314004</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4246.7789890981167</Maximum>
-						<Minimum>3840.4360753221008</Minimum>
+						<Maximum>961286400455</Maximum>
+						<Minimum>961200000801</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
-						<Maximum>42.273823884197824</Maximum>
-						<Minimum>27.702050663449938</Minimum>
+						<Maximum>50</Maximum>
+						<Minimum>20</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>-26.688278207424805</Maximum>
-						<Minimum>-26.688278208692161</Minimum>
+						<Maximum>-26.688278210871832</Maximum>
+						<Minimum>-26.688278211251507</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -3405,31 +3000,36 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<MarkerColor>#000000</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenStyle>2</PenStyle>
+						<PenColor>#00aa00</PenColor>
+						<MarkerColor>#00aa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#83caff</PenColor>
-						<MarkerColor>#83caff</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff5500</PenColor>
+						<MarkerColor>#ff5500</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>4360.7532210109021</Maximum>
-						<Minimum>3622.3984142715558</Minimum>
+						<Maximum>961286400455</Maximum>
+						<Minimum>961200000801</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
-						<Maximum>29.366706875753923</Maximum>
-						<Minimum>18.932448733413754</Minimum>
+						<Maximum>45</Maximum>
+						<Minimum>20</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>-26.688278206426364</Maximum>
-						<Minimum>-26.688278241802905</Minimum>
+						<Maximum>-26.688278210871832</Maximum>
+						<Minimum>-26.688278211251507</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -3444,7 +3044,7 @@
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="8" size1="1" size2="1" orientation="2" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="34" size1="1" size2="1" orientation="2" />
 		<FocusedWidget>0</FocusedWidget>
 	</Splitting>
 

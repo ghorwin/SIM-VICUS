@@ -1,185 +1,163 @@
-2020-10-13 10:22:50	[Progress]	[main]                                          	NANDRAD Solver
-2020-10-13 10:22:50	[Progress]	[main]                                          	All rights reserved.
-2020-10-13 10:22:50	[Progress]	[main]                                          	
-2020-10-13 10:22:50	[Progress]	[main]                                          	The NANDRAD Development Team:
-2020-10-13 10:22:50	[Progress]	[main]                                          	Anne Paepcke, Andreas Nicolai
-2020-10-13 10:22:50	[Progress]	[main]                                          	Contact: 
-2020-10-13 10:22:50	[Progress]	[main]                                          	  anne.paepcke [at] tu-dresden.de
-2020-10-13 10:22:50	[Progress]	[main]                                          	  andreas.nicolai [at] tu-dresden.de
-2020-10-13 10:22:50	[Progress]	[main]                                          	
-2020-10-13 10:22:50	[Progress]	[Version::printCompilerVersion]                 	Compiled with Visual Studio 2015
-2020-10-13 10:22:50	[Progress]	[ModelImpl::printVersionStrings]                	
-2020-10-13 10:22:50	[Progress]	[ModelImpl::printVersionStrings]                	NANDRAD version                                  1.9.999
-2020-10-13 10:22:50	[Progress]	[ModelImpl::printVersionStrings]                	IBK library version                              4.2.4
-2020-10-13 10:22:50	[Progress]	[ModelImpl::printVersionStrings]                	CCM library version                              1.1.0
-2020-10-13 10:22:50	[Progress]	[SolverControlFramework::printVersionInfo]      	Integrator Framework Version                     0.9.6
-2020-10-13 10:22:50	[Progress]	[SolverControlFramework::printVersionInfo]      	SUNDIALS Release Version                         2.6.2
-2020-10-13 10:22:50	[Progress]	[main]                                          	
-2020-10-13 10:22:50	[Progress]	[NandradModel::init]                            	Project file:         'D:/git/SIM-VICUS/data/validation/SimQuality/TF06/SimQuality_TF06.1.nandrad'
-2020-10-13 10:22:50	[Progress]	[NandradModel::init]                            	Output root dir:      'D:/git/SIM-VICUS/data/validation/SimQuality/TF06/SimQuality_TF06.1'
-2020-10-13 10:22:50	[Progress]	[NandradModel::init]                            	Reading project file
-2020-10-13 10:22:50	[Progress]	[Project::mergeSameConstructions]               	Merging redundant construction instances
-2020-10-13 10:22:50	[Progress]	[NandradModel::init]                            	Initializing model
-2020-10-13 10:22:50	[Progress]	[NandradModel::initSolverParameter]             	  Initializing Solver Parameter
-2020-10-13 10:22:50	[Progress]	[NandradModel::initSolverParameter]             	    Auto-selecting KLU as linear equation system solver.
-2020-10-13 10:22:50	[Progress]	[NandradModel::initSimulationParameter]         	  Initializing Simulation Parameter
-2020-10-13 10:22:50	[Progress]	[NandradModel::initClimateData]                 	  Initializing Climatic Data
-2020-10-13 10:22:50	[Progress]	[Loads::setup]                                  	    Reading climate data file 'D:/git/SIM-VICUS/data/validation/SimQuality/TF06/../climate/SimQuality_Testfall06_Klima.c6b'
-2020-10-13 10:22:50	[Progress]	[NandradModel::initSchedules]                   	  Initializing Schedules
-2020-10-13 10:22:50	[Progress]	[NandradModel::initZones]                       	  Initializing Zones
-2020-10-13 10:22:50	[Progress]	[NandradModel::initWallsAndInterfaces]          	  Initializing Constructions and Interfaces
-2020-10-13 10:22:50	[Progress]	[NandradModel::initModels]                      	  Initializing Models
-2020-10-13 10:22:50	[Progress]	[NandradModel::initModels]                      	    Initializing natural ventilation models
-2020-10-13 10:22:50	[Progress]	[NandradModel::initObjectLists]                 	  Initializing Object Lists
-2020-10-13 10:22:50	[Progress]	[NandradModel::initOutputs]                     	  Initializing Outputs
-2020-10-13 10:22:50	[Progress]	[OutputHandler::setup]                          	    Initializing output grids
-2020-10-13 10:22:50	[Progress]	[OutputHandler::setup]                          	      Checking output grid 'hourly'
-2020-10-13 10:22:50	[Progress]	[NandradModel::initModelDependencies]           	  Initializing all model results
-2020-10-13 10:22:50	[Progress]	[NandradModel::initModelDependencies]           	  Initializing all model input references
-2020-10-13 10:22:50	[Progress]	[NandradModel::initModelGraph]                  	  Creating Dependency Graph for 1 State-Dependent Models
-2020-10-13 10:22:50	[Progress]	[NandradModel::initOutputReferenceList]         	  Initializing Output Quantity List
-2020-10-13 10:22:51	[Progress]	[NandradModel::initSolverVariables]             	  Initializing Solver Variables
-2020-10-13 10:22:51	[Progress]	[NandradModel::initSolverVariables]             	    103 unknowns
-2020-10-13 10:22:51	[Progress]	[NandradModel::initSolverMatrix]                	  Creating Jacobian matrix pattern
-2020-10-13 10:22:51	[Progress]	[NandradModel::initSolverMatrix]                	    Composing dependency pattern
-2020-10-13 10:22:51	[Progress]	[main]                                          	Model initialization complete, duration: 131 ms
-2020-10-13 10:22:51	[Progress]	[main]                                          	
-2020-10-13 10:22:51	[Progress]	[main]                                          	Creating solver framework
-2020-10-13 10:22:51	[Progress]	[NandradModel::integratorInterface]             	
-2020-10-13 10:22:51	[Progress]	[NandradModel::integratorInterface]             	Creating Integrator
-2020-10-13 10:22:51	[Progress]	[NandradModel::integratorInterface]             	  Using CVODE integrator.
-2020-10-13 10:22:51	[Progress]	[NandradModel::lesInterface]                    	
-2020-10-13 10:22:51	[Progress]	[NandradModel::lesInterface]                    	Creating Linear Equation Solver Modules
-2020-10-13 10:22:51	[Progress]	[NandradModel::lesInterface]                    	  Number of unknowns: 103
-2020-10-13 10:22:51	[Progress]	[NandradModel::lesInterface]                    	  Using generic KLU solver!
-2020-10-13 10:22:51	[Progress]	[IntegratorSundialsCVODE::init]                 	Initializing CVODE integrator
-2020-10-13 10:22:51	[Progress]	[IntegratorSundialsCVODE::init]                 	  Setting NonlinConvCoef to 0.1.
-2020-10-13 10:22:51	[Progress]	[IntegratorSundialsCVODE::init]                 	  Setting MaxNonLinIters (maxcor) to 3.
-2020-10-13 10:22:51	[Progress]	[IntegratorSundialsCVODE::init]                 	  Initializing Jacobian implementation
-2020-10-13 10:22:51	[Progress]	[JacobianSparseCSR::init]                       	  SparseMatrix: generating color arrays
-2020-10-13 10:22:51	[Progress]	[JacobianSparseCSR::init]                       	    7 colors
-2020-10-13 10:22:51	[Progress]	[IntegratorSundialsCVODE::init]                 	  Initializing LES solver implementation
-2020-10-13 10:22:51	[Progress]	[SolverControlFramework::run]                   	
-2020-10-13 10:22:51	[Progress]	[SolverControlFramework::run]                   	Running solver from time t=0
-2020-10-13 10:22:51	[Progress]	[OutputHandler::writeOutputs]                   	Creating output files:
-2020-10-13 10:22:51	[Progress]	[OutputFile::createFile]                        	  states.tsv           : 7 values
-2020-10-13 10:22:51	[Progress]	[OutputFile::createFile]                        	  fluxes.tsv           : 12 values
-2020-10-13 10:22:51	[Progress]	[SolverFeedback::writeFeedback]                 	Simtime     Simdate           Realtime    MeanSpeed    CurrentSpeed ETC
-2020-10-13 10:22:51	[Progress]	[SolverFeedback::writeFeedback]                 	 4.292 d    05.01.01  7:00:00  0.501 s     8.567 d/s    9.008 d/s   40.042 s
-2020-10-13 10:22:52	[Progress]	[SolverFeedback::writeFeedback]                 	 8.833 d    09.01.01 20:00:00  1.004 s     8.797 d/s    9.018 d/s   39.496 s
-2020-10-13 10:22:52	[Progress]	[SolverFeedback::writeFeedback]                 	12.875 d    13.01.01 21:00:00  1.508 s     8.541 d/s    8.682 d/s   40.559 s
-2020-10-13 10:22:53	[Progress]	[SolverFeedback::writeFeedback]                 	16.792 d    17.01.01 19:00:00  2.010 s     8.354 d/s    8.458 d/s   41.171 s
-2020-10-13 10:22:53	[Progress]	[SolverFeedback::writeFeedback]                 	20.708 d    21.01.01 17:00:00  2.513 s     8.240 d/s    8.321 d/s   41.376 s
-2020-10-13 10:22:54	[Progress]	[SolverFeedback::writeFeedback]                 	24.875 d    25.01.01 21:00:00  3.017 s     8.246 d/s    8.313 d/s   40.914 s
-2020-10-13 10:22:54	[Progress]	[SolverFeedback::writeFeedback]                 	29.083 d    30.01.01  2:00:00  3.519 s     8.265 d/s    8.323 d/s   40.359 s
-2020-10-13 10:22:55	[Progress]	[SolverFeedback::writeFeedback]                 	33.375 d    03.02.01  9:00:00  4.023 s     8.296 d/s    8.347 d/s   39.729 s
-2020-10-13 10:22:55	[Progress]	[SolverFeedback::writeFeedback]                 	37.542 d    07.02.01 13:00:00  4.523 s     8.300 d/s    8.345 d/s   39.240 s
-2020-10-13 10:22:56	[Progress]	[SolverFeedback::writeFeedback]                 	41.542 d    11.02.01 13:00:00  5.027 s     8.264 d/s    8.305 d/s   38.949 s
-2020-10-13 10:22:56	[Progress]	[SolverFeedback::writeFeedback]                 	45.667 d    15.02.01 16:00:00  5.528 s     8.260 d/s    8.228 d/s   38.810 s
-2020-10-13 10:22:57	[Progress]	[SolverFeedback::writeFeedback]                 	49.958 d    19.02.01 23:00:00  6.033 s     8.281 d/s    8.177 d/s   38.530 s
-2020-10-13 10:22:57	[Progress]	[SolverFeedback::writeFeedback]                 	54.167 d    24.02.01  4:00:00  6.535 s     8.288 d/s    8.211 d/s   37.854 s
-2020-10-13 10:22:58	[Progress]	[SolverFeedback::writeFeedback]                 	58.417 d    28.02.01 10:00:00  7.038 s     8.301 d/s    8.298 d/s   36.948 s
-2020-10-13 10:22:58	[Progress]	[SolverFeedback::writeFeedback]                 	62.792 d    04.03.01 19:00:00  7.541 s     8.327 d/s    8.373 d/s   36.095 s
-2020-10-13 10:22:59	[Progress]	[SolverFeedback::writeFeedback]                 	67.167 d    09.03.01  4:00:00  8.042 s     8.352 d/s    8.416 d/s   35.389 s
-2020-10-13 10:22:59	[Progress]	[SolverFeedback::writeFeedback]                 	71.500 d    13.03.01 12:00:00  8.547 s     8.366 d/s    8.438 d/s   34.783 s
-2020-10-13 10:23:00	[Progress]	[SolverFeedback::writeFeedback]                 	75.792 d    17.03.01 19:00:00  9.050 s     8.375 d/s    8.444 d/s   34.252 s
-2020-10-13 10:23:00	[Progress]	[SolverFeedback::writeFeedback]                 	80.125 d    22.03.01  3:00:00  9.553 s     8.388 d/s    8.468 d/s   33.639 s
-2020-10-13 10:23:01	[Progress]	[SolverFeedback::writeFeedback]                 	84.042 d    26.03.01  1:00:00 10.322 s     8.142 d/s    8.017 d/s   35.043 s
-2020-10-13 10:23:01	[Progress]	[SolverFeedback::writeFeedback]                 	D:/git/SIM-VICUS/data/validation/SimQuality/TF06/SimQuality_TF06.1.nandrad
-2020-10-13 10:23:01	[Progress]	[SolverFeedback::writeFeedback]                 	87.958 d    29.03.01 23:00:00 10.823 s     8.127 d/s    7.958 d/s   34.811 s
-2020-10-13 10:23:02	[Progress]	[SolverFeedback::writeFeedback]                 	92.292 d    03.04.01  7:00:00 11.323 s     8.151 d/s    7.993 d/s   34.118 s
-2020-10-13 10:23:02	[Progress]	[SolverFeedback::writeFeedback]                 	96.542 d    07.04.01 13:00:00 11.829 s     8.161 d/s    7.989 d/s   33.605 s
-2020-10-13 10:23:03	[Progress]	[SolverFeedback::writeFeedback]                 	100.625 d   11.04.01 15:00:00 12.333 s     8.159 d/s    7.931 d/s   33.336 s
-2020-10-13 10:23:03	[Progress]	[SolverFeedback::writeFeedback]                 	104.625 d   15.04.01 15:00:00 12.835 s     8.152 d/s    7.853 d/s   33.156 s
-2020-10-13 10:23:04	[Progress]	[SolverFeedback::writeFeedback]                 	108.792 d   19.04.01 19:00:00 13.337 s     8.157 d/s    7.815 d/s   32.785 s
-2020-10-13 10:23:04	[Progress]	[SolverFeedback::writeFeedback]                 	113.208 d   24.04.01  5:00:00 13.841 s     8.179 d/s    7.840 d/s   32.115 s
-2020-10-13 10:23:05	[Progress]	[SolverFeedback::writeFeedback]                 	117.375 d   28.04.01  9:00:00 14.344 s     8.183 d/s    7.810 d/s   31.708 s
-2020-10-13 10:23:05	[Progress]	[SolverFeedback::writeFeedback]                 	121.417 d   02.05.01 10:00:00 14.844 s     8.180 d/s    7.775 d/s   31.330 s
-2020-10-13 10:23:06	[Progress]	[SolverFeedback::writeFeedback]                 	125.625 d   06.05.01 15:00:00 15.347 s     8.186 d/s    8.281 d/s   28.906 s
-2020-10-13 10:23:06	[Progress]	[SolverFeedback::writeFeedback]                 	129.417 d   10.05.01 10:00:00 15.850 s     8.165 d/s    8.248 d/s   28.563 s
-2020-10-13 10:23:07	[Progress]	[SolverFeedback::writeFeedback]                 	133.417 d   14.05.01 10:00:00 16.351 s     8.159 d/s    8.179 d/s   28.314 s
-2020-10-13 10:23:07	[Progress]	[SolverFeedback::writeFeedback]                 	137.583 d   18.05.01 14:00:00 16.853 s     8.164 d/s    8.173 d/s   27.825 s
-2020-10-13 10:23:08	[Progress]	[SolverFeedback::writeFeedback]                 	141.792 d   22.05.01 19:00:00 17.355 s     8.170 d/s    8.199 d/s   27.224 s
-2020-10-13 10:23:08	[Progress]	[SolverFeedback::writeFeedback]                 	146.000 d   27.05.01  0:00:00 17.860 s     8.175 d/s    8.235 d/s   26.592 s
-2020-10-13 10:23:09	[Progress]	[SolverFeedback::writeFeedback]                 	150.250 d   31.05.01  6:00:00 18.364 s     8.182 d/s    8.246 d/s   26.042 s
-2020-10-13 10:23:09	[Progress]	[SolverFeedback::writeFeedback]                 	154.125 d   04.06.01  3:00:00 18.868 s     8.169 d/s    8.143 d/s   25.897 s
-2020-10-13 10:23:10	[Progress]	[SolverFeedback::writeFeedback]                 	157.167 d   07.06.01  4:00:00 19.368 s     8.115 d/s    7.920 d/s   26.242 s
-2020-10-13 10:23:10	[Progress]	[SolverFeedback::writeFeedback]                 	161.000 d   11.06.01  0:00:00 19.873 s     8.101 d/s    7.870 d/s   25.922 s
-2020-10-13 10:23:11	[Progress]	[SolverFeedback::writeFeedback]                 	164.583 d   14.06.01 14:00:00 20.607 s     7.987 d/s    7.373 d/s   27.184 s
-2020-10-13 10:23:12	[Progress]	[SolverFeedback::writeFeedback]                 	Simtime     Simdate           Realtime    MeanSpeed    CurrentSpeed ETC
-2020-10-13 10:23:12	[Progress]	[SolverFeedback::writeFeedback]                 	168.250 d   18.06.01  6:00:00 21.111 s     7.970 d/s    7.377 d/s   26.670 s
-2020-10-13 10:23:12	[Progress]	[SolverFeedback::writeFeedback]                 	171.833 d   21.06.01 20:00:00 21.611 s     7.951 d/s    7.262 d/s   26.598 s
-2020-10-13 10:23:13	[Progress]	[SolverFeedback::writeFeedback]                 	175.583 d   25.06.01 14:00:00 22.116 s     7.939 d/s    7.164 d/s   26.439 s
-2020-10-13 10:23:13	[Progress]	[SolverFeedback::writeFeedback]                 	179.125 d   29.06.01  3:00:00 22.618 s     7.920 d/s    7.030 d/s   26.442 s
-2020-10-13 10:23:14	[Progress]	[SolverFeedback::writeFeedback]                 	182.417 d   02.07.01 10:00:00 23.122 s     7.889 d/s    6.846 d/s   26.671 s
-2020-10-13 10:23:14	[Progress]	[SolverFeedback::writeFeedback]                 	186.625 d   06.07.01 15:00:00 23.622 s     7.900 d/s    6.872 d/s   25.956 s
-2020-10-13 10:23:15	[Progress]	[SolverFeedback::writeFeedback]                 	190.708 d   10.07.01 17:00:00 24.124 s     7.905 d/s    6.999 d/s   24.903 s
-2020-10-13 10:23:15	[Progress]	[SolverFeedback::writeFeedback]                 	194.875 d   14.07.01 21:00:00 24.624 s     7.914 d/s    7.156 d/s   23.772 s
-2020-10-13 10:23:16	[Progress]	[SolverFeedback::writeFeedback]                 	198.083 d   18.07.01  2:00:00 25.125 s     7.884 d/s    7.021 d/s   23.774 s
-2020-10-13 10:23:16	[Progress]	[SolverFeedback::writeFeedback]                 	201.500 d   21.07.01 12:00:00 25.625 s     7.863 d/s    7.358 d/s   22.221 s
-2020-10-13 10:23:17	[Progress]	[SolverFeedback::writeFeedback]                 	205.625 d   25.07.01 15:00:00 26.126 s     7.871 d/s    7.455 d/s   21.378 s
-2020-10-13 10:23:17	[Progress]	[SolverFeedback::writeFeedback]                 	209.833 d   29.07.01 20:00:00 26.630 s     7.880 d/s    7.574 d/s   20.485 s
-2020-10-13 10:23:18	[Progress]	[SolverFeedback::writeFeedback]                 	212.042 d   01.08.01  1:00:00 27.132 s     7.815 d/s    7.268 d/s   21.044 s
-2020-10-13 10:23:18	[Progress]	[SolverFeedback::writeFeedback]                 	215.333 d   04.08.01  8:00:00 27.636 s     7.792 d/s    7.216 d/s   20.741 s
-2020-10-13 10:23:19	[Progress]	[SolverFeedback::writeFeedback]                 	219.375 d   08.08.01  9:00:00 28.156 s     7.791 d/s    7.337 d/s   19.849 s
-2020-10-13 10:23:19	[Progress]	[SolverFeedback::writeFeedback]                 	223.250 d   12.08.01  6:00:00 28.656 s     7.791 d/s    7.271 d/s   19.494 s
-2020-10-13 10:23:20	[Progress]	[SolverFeedback::writeFeedback]                 	226.500 d   15.08.01 12:00:00 29.160 s     7.768 d/s    7.099 d/s   19.509 s
-2020-10-13 10:23:20	[Progress]	[SolverFeedback::writeFeedback]                 	229.625 d   18.08.01 15:00:00 29.663 s     7.741 d/s    6.892 d/s   19.642 s
-2020-10-13 10:23:21	[Progress]	[SolverFeedback::writeFeedback]                 	233.208 d   22.08.01  5:00:00 30.166 s     7.731 d/s    6.960 d/s   18.936 s
-2020-10-13 10:23:21	[Progress]	[SolverFeedback::writeFeedback]                 	236.458 d   25.08.01 11:00:00 30.867 s     7.660 d/s    6.621 d/s   19.413 s
-2020-10-13 10:23:22	[Progress]	[SolverFeedback::writeFeedback]                 	D:/git/SIM-VICUS/data/validation/SimQuality/TF06/SimQuality_TF06.1.nandrad
-2020-10-13 10:23:22	[Progress]	[SolverFeedback::writeFeedback]                 	240.542 d   29.08.01 13:00:00 31.407 s     7.659 d/s    6.505 d/s   19.134 s
-2020-10-13 10:23:22	[Progress]	[SolverFeedback::writeFeedback]                 	243.917 d   01.09.01 22:00:00 31.910 s     7.644 d/s    6.614 d/s   18.307 s
-2020-10-13 10:23:23	[Progress]	[SolverFeedback::writeFeedback]                 	247.542 d   05.09.01 13:00:00 32.411 s     7.637 d/s    6.671 d/s   17.608 s
-2020-10-13 10:23:23	[Progress]	[SolverFeedback::writeFeedback]                 	251.167 d   09.09.01  4:00:00 32.918 s     7.630 d/s    6.698 d/s   16.996 s
-2020-10-13 10:23:24	[Progress]	[SolverFeedback::writeFeedback]                 	255.542 d   13.09.01 13:00:00 33.419 s     7.647 d/s    6.816 d/s   16.059 s
-2020-10-13 10:23:24	[Progress]	[SolverFeedback::writeFeedback]                 	258.250 d   16.09.01  6:00:00 33.920 s     7.613 d/s    6.596 d/s   16.184 s
-2020-10-13 10:23:25	[Progress]	[SolverFeedback::writeFeedback]                 	262.083 d   20.09.01  2:00:00 34.425 s     7.613 d/s    6.766 d/s   15.210 s
-2020-10-13 10:23:25	[Progress]	[SolverFeedback::writeFeedback]                 	264.833 d   22.09.01 20:00:00 34.965 s     7.574 d/s    6.636 d/s   15.095 s
-2020-10-13 10:23:26	[Progress]	[SolverFeedback::writeFeedback]                 	268.417 d   26.09.01 10:00:00 35.559 s     7.549 d/s    6.478 d/s   14.910 s
-2020-10-13 10:23:27	[Progress]	[SolverFeedback::writeFeedback]                 	272.250 d   30.09.01  6:00:00 36.076 s     7.547 d/s    6.820 d/s   13.599 s
-2020-10-13 10:23:27	[Progress]	[SolverFeedback::writeFeedback]                 	276.125 d   04.10.01  3:00:00 36.580 s     7.549 d/s    6.849 d/s   12.976 s
-2020-10-13 10:23:28	[Progress]	[SolverFeedback::writeFeedback]                 	279.333 d   07.10.01  8:00:00 37.082 s     7.533 d/s    6.885 d/s   12.443 s
-2020-10-13 10:23:28	[Progress]	[SolverFeedback::writeFeedback]                 	282.958 d   10.10.01 23:00:00 37.587 s     7.528 d/s    6.824 d/s   12.023 s
-2020-10-13 10:23:29	[Progress]	[SolverFeedback::writeFeedback]                 	286.750 d   14.10.01 18:00:00 38.088 s     7.529 d/s    6.827 d/s   11.461 s
-2020-10-13 10:23:29	[Progress]	[SolverFeedback::writeFeedback]                 	290.333 d   18.10.01  8:00:00 38.591 s     7.523 d/s    6.744 d/s   11.072 s
-2020-10-13 10:23:30	[Progress]	[SolverFeedback::writeFeedback]                 	293.625 d   21.10.01 15:00:00 39.093 s     7.511 d/s    6.817 d/s   10.470 s
-2020-10-13 10:23:30	[Progress]	[SolverFeedback::writeFeedback]                 	297.500 d   25.10.01 12:00:00 39.594 s     7.514 d/s    6.936 d/s    9.732 s
-2020-10-13 10:23:31	[Progress]	[SolverFeedback::writeFeedback]                 	300.125 d   28.10.01  3:00:00 40.099 s     7.485 d/s    6.883 d/s    9.426 s
-2020-10-13 10:23:31	[Progress]	[SolverFeedback::writeFeedback]                 	304.292 d   01.11.01  7:00:00 40.600 s     7.495 d/s    7.114 d/s    8.534 s
-2020-10-13 10:23:32	[Progress]	[SolverFeedback::writeFeedback]                 	306.208 d   03.11.01  5:00:00 41.116 s     7.447 d/s    6.732 d/s    8.733 s
-2020-10-13 10:23:32	[Progress]	[SolverFeedback::writeFeedback]                 	Simtime     Simdate           Realtime    MeanSpeed    CurrentSpeed ETC
-2020-10-13 10:23:32	[Progress]	[SolverFeedback::writeFeedback]                 	309.792 d   06.11.01 19:00:00 41.619 s     7.444 d/s    6.682 d/s    8.262 s
-2020-10-13 10:23:33	[Progress]	[SolverFeedback::writeFeedback]                 	313.458 d   10.11.01 11:00:00 42.120 s     7.442 d/s    6.776 d/s    7.606 s
-2020-10-13 10:23:33	[Progress]	[SolverFeedback::writeFeedback]                 	315.500 d   12.11.01 12:00:00 42.622 s     7.402 d/s    6.457 d/s    7.666 s
-2020-10-13 10:23:34	[Progress]	[SolverFeedback::writeFeedback]                 	319.292 d   16.11.01  7:00:00 43.123 s     7.404 d/s    6.455 d/s    7.081 s
-2020-10-13 10:23:34	[Progress]	[SolverFeedback::writeFeedback]                 	322.875 d   19.11.01 21:00:00 43.623 s     7.401 d/s    6.461 d/s    6.520 s
-2020-10-13 10:23:35	[Progress]	[SolverFeedback::writeFeedback]                 	326.750 d   23.11.01 18:00:00 44.126 s     7.405 d/s    6.575 d/s    5.818 s
-2020-10-13 10:23:35	[Progress]	[SolverFeedback::writeFeedback]                 	330.500 d   27.11.01 12:00:00 44.631 s     7.405 d/s    6.546 d/s    5.270 s
-2020-10-13 10:23:36	[Progress]	[SolverFeedback::writeFeedback]                 	333.750 d   30.11.01 18:00:00 45.153 s     7.392 d/s    6.637 d/s    4.708 s
-2020-10-13 10:23:36	[Progress]	[SolverFeedback::writeFeedback]                 	337.292 d   04.12.01  7:00:00 45.657 s     7.388 d/s    6.513 d/s    4.254 s
-2020-10-13 10:23:37	[Progress]	[SolverFeedback::writeFeedback]                 	341.208 d   08.12.01  5:00:00 46.159 s     7.392 d/s    6.933 d/s    3.432 s
-2020-10-13 10:23:37	[Progress]	[SolverFeedback::writeFeedback]                 	344.167 d   11.12.01  4:00:00 46.661 s     7.376 d/s    6.808 d/s    3.060 s
-2020-10-13 10:23:38	[Progress]	[SolverFeedback::writeFeedback]                 	347.833 d   14.12.01 20:00:00 47.764 s     7.282 d/s    6.248 d/s    2.748 s
-2020-10-13 10:23:39	[Progress]	[SolverFeedback::writeFeedback]                 	351.875 d   18.12.01 21:00:00 48.266 s     7.290 d/s    6.296 d/s    2.085 s
-2020-10-13 10:23:39	[Progress]	[SolverFeedback::writeFeedback]                 	355.667 d   22.12.01 16:00:00 48.769 s     7.293 d/s    6.322 d/s    1.476 s
-2020-10-13 10:23:40	[Progress]	[SolverFeedback::writeFeedback]                 	359.375 d   26.12.01  9:00:00 49.271 s     7.294 d/s    6.288 d/s    0.895 s
-2020-10-13 10:23:40	[Progress]	[SolverFeedback::writeFeedback]                 	363.250 d   30.12.01  6:00:00 49.773 s     7.298 d/s    6.334 d/s    0.276 s
-2020-10-13 10:23:41	[Progress]	[SolverControlFramework::writeStatistics]       	
-2020-10-13 10:23:41	[Progress]	[SolverControlFramework::writeStatistics]       	Solver statistics
-2020-10-13 10:23:41	[Progress]	[SolverControlFramework::writeStatistics]       	------------------------------------------------------------------------------
-2020-10-13 10:23:41	[Progress]	[SolverControlFramework::writeStatistics]       	Wall clock time                            =   50.257 s   
-2020-10-13 10:23:41	[Progress]	[SolverControlFramework::writeStatistics]       	------------------------------------------------------------------------------
-2020-10-13 10:23:41	[Progress]	[SolverControlFramework::writeStatistics]       	Framework: Output writing                  =    7.687 s    (15.29 %)    
-2020-10-13 10:23:41	[Progress]	[SolverControlFramework::writeStatistics]       	Framework: Step-completed calculations     =    0.015 s    ( 0.03 %)    
-2020-10-13 10:23:41	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: Steps                          =                             15524
-2020-10-13 10:23:41	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: Newton iterations              =                             19013
-2020-10-13 10:23:41	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: Newton convergence failures    =                                 0
-2020-10-13 10:23:41	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: Error test failures            =                               844
-2020-10-13 10:23:41	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: Function evaluation (Newton)   =    0.678 s    ( 1.35 %)     19014
-2020-10-13 10:23:41	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: LES setup                      =    0.110 s    ( 0.22 %)      2274
-2020-10-13 10:23:41	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: LES solve                      =    0.098 s    ( 0.19 %)     19013
-2020-10-13 10:23:41	[Progress]	[LESInterfaceDirect::writeMetrics]              	LES: Jacobian matrix evaluations           =                               274
-2020-10-13 10:23:41	[Progress]	[LESInterfaceDirect::writeMetrics]              	LES: Matrix factorization                  =    0.024 s    ( 0.05 %)      2274
-2020-10-13 10:23:41	[Progress]	[LESInterfaceDirect::writeMetrics]              	LES: Function evaluation (Jacobian gen.)   =    0.028 s    ( 0.06 %)      1918
-2020-10-13 10:23:41	[Progress]	[SolverControlFramework::writeStatistics]       	------------------------------------------------------------------------------
+2020-10-13 15:33:35	[Progress]	[main]                                          	NANDRAD Solver
+2020-10-13 15:33:35	[Progress]	[main]                                          	All rights reserved.
+2020-10-13 15:33:35	[Progress]	[main]                                          	
+2020-10-13 15:33:35	[Progress]	[main]                                          	The NANDRAD Development Team:
+2020-10-13 15:33:35	[Progress]	[main]                                          	Anne Paepcke, Andreas Nicolai
+2020-10-13 15:33:35	[Progress]	[main]                                          	Contact: 
+2020-10-13 15:33:35	[Progress]	[main]                                          	  anne.paepcke [at] tu-dresden.de
+2020-10-13 15:33:35	[Progress]	[main]                                          	  andreas.nicolai [at] tu-dresden.de
+2020-10-13 15:33:35	[Progress]	[main]                                          	
+2020-10-13 15:33:35	[Progress]	[Version::printCompilerVersion]                 	Compiled with Visual Studio 2015
+2020-10-13 15:33:35	[Progress]	[ModelImpl::printVersionStrings]                	
+2020-10-13 15:33:35	[Progress]	[ModelImpl::printVersionStrings]                	NANDRAD version                                  1.9.999
+2020-10-13 15:33:35	[Progress]	[ModelImpl::printVersionStrings]                	IBK library version                              4.2.4
+2020-10-13 15:33:35	[Progress]	[ModelImpl::printVersionStrings]                	CCM library version                              1.1.0
+2020-10-13 15:33:35	[Progress]	[SolverControlFramework::printVersionInfo]      	Integrator Framework Version                     0.9.6
+2020-10-13 15:33:35	[Progress]	[SolverControlFramework::printVersionInfo]      	SUNDIALS Release Version                         2.7.0
+2020-10-13 15:33:35	[Progress]	[main]                                          	
+2020-10-13 15:33:35	[Progress]	[NandradModel::init]                            	Project file:         'SimQuality_TF06.1.nandrad'
+2020-10-13 15:33:35	[Progress]	[NandradModel::init]                            	Output root dir:      'SimQuality_TF06.1'
+2020-10-13 15:33:35	[Progress]	[NandradModel::init]                            	Reading project file
+2020-10-13 15:33:35	[Progress]	[Project::mergeSameConstructions]               	Merging redundant construction instances
+2020-10-13 15:33:35	[Progress]	[NandradModel::init]                            	Initializing model
+2020-10-13 15:33:35	[Progress]	[NandradModel::initSolverParameter]             	  Initializing Solver Parameter
+2020-10-13 15:33:35	[Progress]	[NandradModel::initSolverParameter]             	    Auto-selecting KLU as linear equation system solver.
+2020-10-13 15:33:35	[Progress]	[NandradModel::initSimulationParameter]         	  Initializing Simulation Parameter
+2020-10-13 15:33:35	[Progress]	[NandradModel::initClimateData]                 	  Initializing Climatic Data
+2020-10-13 15:33:35	[Progress]	[Loads::setup]                                  	    Reading climate data file '../climate/SimQuality_Testfall06_Klima.c6b'
+2020-10-13 15:33:35	[Progress]	[NandradModel::initSchedules]                   	  Initializing Schedules
+2020-10-13 15:33:35	[Progress]	[NandradModel::initZones]                       	  Initializing Zones
+2020-10-13 15:33:35	[Progress]	[NandradModel::initWallsAndInterfaces]          	  Initializing Constructions and Interfaces
+2020-10-13 15:33:35	[Progress]	[NandradModel::initModels]                      	  Initializing Models
+2020-10-13 15:33:35	[Progress]	[NandradModel::initModels]                      	    Initializing natural ventilation models
+2020-10-13 15:33:35	[Progress]	[NandradModel::initObjectLists]                 	  Initializing Object Lists
+2020-10-13 15:33:35	[Progress]	[NandradModel::initOutputs]                     	  Initializing Outputs
+2020-10-13 15:33:35	[Progress]	[OutputHandler::setup]                          	    Initializing output grids
+2020-10-13 15:33:35	[Progress]	[OutputHandler::setup]                          	      Checking output grid 'hourly'
+2020-10-13 15:33:35	[Progress]	[NandradModel::initModelDependencies]           	  Initializing all model results
+2020-10-13 15:33:35	[Progress]	[NandradModel::initModelDependencies]           	  Initializing all model input references
+2020-10-13 15:33:35	[Progress]	[NandradModel::initModelGraph]                  	  Creating Dependency Graph for 1 State-Dependent Models
+2020-10-13 15:33:35	[Progress]	[NandradModel::initOutputReferenceList]         	  Initializing Output Quantity List
+2020-10-13 15:33:35	[Progress]	[NandradModel::initSolverVariables]             	  Initializing Solver Variables
+2020-10-13 15:33:35	[Progress]	[NandradModel::initSolverVariables]             	    103 unknowns
+2020-10-13 15:33:35	[Progress]	[NandradModel::initSolverMatrix]                	  Creating Jacobian matrix pattern
+2020-10-13 15:33:35	[Progress]	[NandradModel::initSolverMatrix]                	    Composing dependency pattern
+2020-10-13 15:33:35	[Progress]	[main]                                          	Model initialization complete, duration: 84 ms
+2020-10-13 15:33:35	[Progress]	[main]                                          	
+2020-10-13 15:33:35	[Progress]	[main]                                          	Creating solver framework
+2020-10-13 15:33:35	[Progress]	[NandradModel::integratorInterface]             	
+2020-10-13 15:33:35	[Progress]	[NandradModel::integratorInterface]             	Creating Integrator
+2020-10-13 15:33:35	[Progress]	[NandradModel::integratorInterface]             	  Using CVODE integrator.
+2020-10-13 15:33:35	[Progress]	[NandradModel::lesInterface]                    	
+2020-10-13 15:33:35	[Progress]	[NandradModel::lesInterface]                    	Creating Linear Equation Solver Modules
+2020-10-13 15:33:35	[Progress]	[NandradModel::lesInterface]                    	  Number of unknowns: 103
+2020-10-13 15:33:35	[Progress]	[NandradModel::lesInterface]                    	  Using generic KLU solver!
+2020-10-13 15:33:35	[Progress]	[IntegratorSundialsCVODE::init]                 	Initializing CVODE integrator
+2020-10-13 15:33:35	[Progress]	[IntegratorSundialsCVODE::init]                 	  Setting NonlinConvCoef to 0.1.
+2020-10-13 15:33:35	[Progress]	[IntegratorSundialsCVODE::init]                 	  Setting MaxNonLinIters (maxcor) to 3.
+2020-10-13 15:33:35	[Progress]	[IntegratorSundialsCVODE::init]                 	  Initializing Jacobian implementation
+2020-10-13 15:33:35	[Progress]	[JacobianSparseCSR::init]                       	  SparseMatrix: generating color arrays
+2020-10-13 15:33:35	[Progress]	[JacobianSparseCSR::init]                       	    7 colors
+2020-10-13 15:33:35	[Progress]	[IntegratorSundialsCVODE::init]                 	  Initializing LES solver implementation
+2020-10-13 15:33:35	[Progress]	[SolverControlFramework::run]                   	
+2020-10-13 15:33:35	[Progress]	[SolverControlFramework::run]                   	Running solver from time t=0
+2020-10-13 15:33:35	[Progress]	[OutputHandler::writeOutputs]                   	Creating output files:
+2020-10-13 15:33:35	[Progress]	[OutputFile::createFile]                        	  states.tsv           : 7 values
+2020-10-13 15:33:35	[Progress]	[OutputFile::createFile]                        	  fluxes.tsv           : 12 values
+2020-10-13 15:33:36	[Progress]	[SolverFeedback::writeFeedback]                 	Simtime     Simdate           Realtime    MeanSpeed    CurrentSpeed ETC
+2020-10-13 15:33:36	[Progress]	[SolverFeedback::writeFeedback]                 	 4.583 d    05.01.01 14:00:00  0.502 s     9.129 d/s    9.798 d/s   36.784 s
+2020-10-13 15:33:36	[Progress]	[SolverFeedback::writeFeedback]                 	 9.625 d    10.01.01 15:00:00  1.004 s     9.583 d/s    9.922 d/s   35.816 s
+2020-10-13 15:33:37	[Progress]	[SolverFeedback::writeFeedback]                 	14.875 d    15.01.01 21:00:00  1.505 s     9.881 d/s   10.112 d/s   34.625 s
+2020-10-13 15:33:37	[Progress]	[SolverFeedback::writeFeedback]                 	20.167 d    21.01.01  4:00:00  2.008 s    10.044 d/s   10.219 d/s   33.746 s
+2020-10-13 15:33:38	[Progress]	[SolverFeedback::writeFeedback]                 	25.458 d    26.01.01 11:00:00  2.512 s    10.136 d/s   10.277 d/s   33.039 s
+2020-10-13 15:33:38	[Progress]	[SolverFeedback::writeFeedback]                 	30.750 d    31.01.01 18:00:00  3.015 s    10.199 d/s   10.316 d/s   32.401 s
+2020-10-13 15:33:39	[Progress]	[SolverFeedback::writeFeedback]                 	35.792 d    05.02.01 19:00:00  3.516 s    10.180 d/s   10.280 d/s   32.023 s
+2020-10-13 15:33:39	[Progress]	[SolverFeedback::writeFeedback]                 	41.042 d    11.02.01  1:00:00  4.017 s    10.216 d/s   10.304 d/s   31.440 s
+2020-10-13 15:33:40	[Progress]	[SolverFeedback::writeFeedback]                 	45.125 d    15.02.01  3:00:00  4.519 s     9.985 d/s   10.062 d/s   31.791 s
+2020-10-13 15:33:40	[Progress]	[SolverFeedback::writeFeedback]                 	50.292 d    20.02.01  7:00:00  5.021 s    10.016 d/s   10.085 d/s   31.205 s
+2020-10-13 15:33:41	[Progress]	[SolverFeedback::writeFeedback]                 	55.500 d    25.02.01 12:00:00  5.522 s    10.050 d/s   10.153 d/s   30.484 s
+2020-10-13 15:33:41	[Progress]	[SolverFeedback::writeFeedback]                 	60.833 d    02.03.01 20:00:00  6.024 s    10.098 d/s   10.206 d/s   29.803 s
+2020-10-13 15:33:42	[Progress]	[SolverFeedback::writeFeedback]                 	66.125 d    08.03.01  3:00:00  6.524 s    10.135 d/s   10.216 d/s   29.255 s
+2020-10-13 15:33:42	[Progress]	[SolverFeedback::writeFeedback]                 	71.458 d    13.03.01 11:00:00  7.028 s    10.168 d/s   10.222 d/s   28.716 s
+2020-10-13 15:33:43	[Progress]	[SolverFeedback::writeFeedback]                 	76.500 d    18.03.01 12:00:00  7.528 s    10.162 d/s   10.180 d/s   28.341 s
+2020-10-13 15:33:43	[Progress]	[SolverFeedback::writeFeedback]                 	81.750 d    23.03.01 18:00:00  8.028 s    10.183 d/s   10.177 d/s   27.831 s
+2020-10-13 15:33:44	[Progress]	[SolverFeedback::writeFeedback]                 	86.917 d    28.03.01 22:00:00  8.529 s    10.191 d/s   10.203 d/s   27.254 s
+2020-10-13 15:33:44	[Progress]	[SolverFeedback::writeFeedback]                 	92.167 d    03.04.01  4:00:00  9.029 s    10.208 d/s   10.206 d/s   26.732 s
+2020-10-13 15:33:45	[Progress]	[SolverFeedback::writeFeedback]                 	97.458 d    08.04.01 11:00:00  9.529 s    10.228 d/s   10.451 d/s   25.600 s
+2020-10-13 15:33:45	[Progress]	[SolverFeedback::writeFeedback]                 	102.667 d   13.04.01 16:00:00 10.029 s    10.237 d/s   10.462 d/s   25.075 s
+2020-10-13 15:33:46	[Progress]	[SolverFeedback::writeFeedback]                 	SimQuality_TF06.1.nandrad
+2020-10-13 15:33:46	[Progress]	[SolverFeedback::writeFeedback]                 	107.250 d   18.04.01  6:00:00 10.531 s    10.184 d/s   10.336 d/s   24.938 s
+2020-10-13 15:33:46	[Progress]	[SolverFeedback::writeFeedback]                 	112.333 d   23.04.01  8:00:00 11.035 s    10.180 d/s   10.283 d/s   24.571 s
+2020-10-13 15:33:47	[Progress]	[SolverFeedback::writeFeedback]                 	117.542 d   28.04.01 13:00:00 11.535 s    10.190 d/s   10.265 d/s   24.107 s
+2020-10-13 15:33:48	[Progress]	[SolverFeedback::writeFeedback]                 	122.708 d   03.05.01 17:00:00 12.099 s    10.142 d/s   10.113 d/s   23.958 s
+2020-10-13 15:33:48	[Progress]	[SolverFeedback::writeFeedback]                 	127.917 d   08.05.01 22:00:00 12.599 s    10.153 d/s   10.142 d/s   23.376 s
+2020-10-13 15:33:49	[Progress]	[SolverFeedback::writeFeedback]                 	133.250 d   14.05.01  6:00:00 13.099 s    10.172 d/s   10.166 d/s   22.796 s
+2020-10-13 15:33:49	[Progress]	[SolverFeedback::writeFeedback]                 	138.500 d   19.05.01 12:00:00 13.601 s    10.183 d/s   10.171 d/s   22.269 s
+2020-10-13 15:33:50	[Progress]	[SolverFeedback::writeFeedback]                 	143.625 d   24.05.01 15:00:00 14.104 s    10.183 d/s   10.141 d/s   21.830 s
+2020-10-13 15:33:50	[Progress]	[SolverFeedback::writeFeedback]                 	148.792 d   29.05.01 19:00:00 14.604 s    10.188 d/s   10.119 d/s   21.366 s
+2020-10-13 15:33:51	[Progress]	[SolverFeedback::writeFeedback]                 	153.833 d   03.06.01 20:00:00 15.106 s    10.184 d/s   10.176 d/s   20.752 s
+2020-10-13 15:33:51	[Progress]	[SolverFeedback::writeFeedback]                 	158.833 d   08.06.01 20:00:00 15.610 s    10.175 d/s   10.170 d/s   20.273 s
+2020-10-13 15:33:52	[Progress]	[SolverFeedback::writeFeedback]                 	163.750 d   13.06.01 18:00:00 16.111 s    10.164 d/s   10.138 d/s   19.852 s
+2020-10-13 15:33:52	[Progress]	[SolverFeedback::writeFeedback]                 	168.625 d   18.06.01 15:00:00 16.614 s    10.149 d/s   10.057 d/s   19.525 s
+2020-10-13 15:33:53	[Progress]	[SolverFeedback::writeFeedback]                 	173.417 d   23.06.01 10:00:00 17.115 s    10.132 d/s   10.114 d/s   18.943 s
+2020-10-13 15:33:53	[Progress]	[SolverFeedback::writeFeedback]                 	178.375 d   28.06.01  9:00:00 17.617 s    10.125 d/s   10.060 d/s   18.550 s
+2020-10-13 15:33:54	[Progress]	[SolverFeedback::writeFeedback]                 	183.292 d   03.07.01  7:00:00 18.118 s    10.116 d/s    9.974 d/s   18.217 s
+2020-10-13 15:33:54	[Progress]	[SolverFeedback::writeFeedback]                 	188.333 d   08.07.01  8:00:00 18.621 s    10.114 d/s    9.942 d/s   17.769 s
+2020-10-13 15:33:55	[Progress]	[SolverFeedback::writeFeedback]                 	193.083 d   13.07.01  2:00:00 19.122 s    10.097 d/s    9.861 d/s   17.435 s
+2020-10-13 15:33:55	[Progress]	[SolverFeedback::writeFeedback]                 	197.250 d   17.07.01  6:00:00 19.667 s    10.029 d/s    9.571 d/s   17.527 s
+2020-10-13 15:33:56	[Progress]	[SolverFeedback::writeFeedback]                 	201.750 d   21.07.01 18:00:00 20.169 s    10.003 d/s    9.463 d/s   17.251 s
+2020-10-13 15:33:56	[Progress]	[SolverFeedback::writeFeedback]                 	Simtime     Simdate           Realtime    MeanSpeed    CurrentSpeed ETC
+2020-10-13 15:33:56	[Progress]	[SolverFeedback::writeFeedback]                 	207.000 d   27.07.01  0:00:00 20.671 s    10.014 d/s    9.520 d/s   16.597 s
+2020-10-13 15:33:57	[Progress]	[SolverFeedback::writeFeedback]                 	211.000 d   31.07.01  0:00:00 21.175 s     9.965 d/s    9.331 d/s   16.505 s
+2020-10-13 15:33:57	[Progress]	[SolverFeedback::writeFeedback]                 	216.167 d   05.08.01  4:00:00 21.675 s     9.973 d/s    9.412 d/s   15.814 s
+2020-10-13 15:33:58	[Progress]	[SolverFeedback::writeFeedback]                 	221.000 d   10.08.01  0:00:00 22.176 s     9.966 d/s    9.402 d/s   15.317 s
+2020-10-13 15:33:58	[Progress]	[SolverFeedback::writeFeedback]                 	225.542 d   14.08.01 13:00:00 22.677 s     9.946 d/s    9.343 d/s   14.926 s
+2020-10-13 15:33:59	[Progress]	[SolverFeedback::writeFeedback]                 	230.625 d   19.08.01 15:00:00 23.179 s     9.950 d/s    9.371 d/s   14.340 s
+2020-10-13 15:33:59	[Progress]	[SolverFeedback::writeFeedback]                 	234.833 d   23.08.01 20:00:00 23.680 s     9.917 d/s    9.214 d/s   14.126 s
+2020-10-13 15:34:00	[Progress]	[SolverFeedback::writeFeedback]                 	238.292 d   27.08.01  7:00:00 24.182 s     9.854 d/s    8.924 d/s   14.198 s
+2020-10-13 15:34:00	[Progress]	[SolverFeedback::writeFeedback]                 	243.042 d   01.09.01  1:00:00 24.683 s     9.846 d/s    9.132 d/s   13.356 s
+2020-10-13 15:34:01	[Progress]	[SolverFeedback::writeFeedback]                 	247.750 d   05.09.01 18:00:00 25.185 s     9.837 d/s    9.172 d/s   12.783 s
+2020-10-13 15:34:01	[Progress]	[SolverFeedback::writeFeedback]                 	250.083 d   08.09.01  2:00:00 25.688 s     9.736 d/s    8.589 d/s   13.380 s
+2020-10-13 15:34:02	[Progress]	[SolverFeedback::writeFeedback]                 	254.375 d   12.09.01  9:00:00 26.189 s     9.713 d/s    8.650 d/s   12.788 s
+2020-10-13 15:34:02	[Progress]	[SolverFeedback::writeFeedback]                 	259.167 d   17.09.01  4:00:00 26.691 s     9.710 d/s    8.573 d/s   12.345 s
+2020-10-13 15:34:03	[Progress]	[SolverFeedback::writeFeedback]                 	263.542 d   21.09.01 13:00:00 27.193 s     9.691 d/s    8.479 d/s   11.966 s
+2020-10-13 15:34:03	[Progress]	[SolverFeedback::writeFeedback]                 	268.583 d   26.09.01 14:00:00 27.695 s     9.698 d/s    8.577 d/s   11.242 s
+2020-10-13 15:34:04	[Progress]	[SolverFeedback::writeFeedback]                 	273.500 d   01.10.01 12:00:00 28.198 s     9.699 d/s    8.541 d/s   10.713 s
+2020-10-13 15:34:04	[Progress]	[SolverFeedback::writeFeedback]                 	278.000 d   06.10.01  0:00:00 28.702 s     9.686 d/s    8.595 d/s   10.122 s
+2020-10-13 15:34:05	[Progress]	[SolverFeedback::writeFeedback]                 	282.333 d   10.10.01  8:00:00 29.315 s     9.631 d/s    8.594 d/s    9.619 s
+2020-10-13 15:34:05	[Progress]	[SolverFeedback::writeFeedback]                 	287.000 d   15.10.01  0:00:00 29.816 s     9.626 d/s    8.529 d/s    9.145 s
+2020-10-13 15:34:06	[Progress]	[SolverFeedback::writeFeedback]                 	291.708 d   19.10.01 17:00:00 30.317 s     9.622 d/s    8.567 d/s    8.555 s
+2020-10-13 15:34:06	[Progress]	[SolverFeedback::writeFeedback]                 	SimQuality_TF06.1.nandrad
+2020-10-13 15:34:06	[Progress]	[SolverFeedback::writeFeedback]                 	296.458 d   24.10.01 11:00:00 30.821 s     9.619 d/s    9.049 d/s    7.575 s
+2020-10-13 15:34:07	[Progress]	[SolverFeedback::writeFeedback]                 	300.917 d   28.10.01 22:00:00 31.322 s     9.607 d/s    9.036 d/s    7.092 s
+2020-10-13 15:34:07	[Progress]	[SolverFeedback::writeFeedback]                 	305.958 d   02.11.01 23:00:00 31.824 s     9.614 d/s    9.092 d/s    6.493 s
+2020-10-13 15:34:08	[Progress]	[SolverFeedback::writeFeedback]                 	309.417 d   06.11.01 10:00:00 32.325 s     9.572 d/s    8.940 d/s    6.217 s
+2020-10-13 15:34:08	[Progress]	[SolverFeedback::writeFeedback]                 	314.417 d   11.11.01 10:00:00 32.828 s     9.578 d/s    8.956 d/s    5.648 s
+2020-10-13 15:34:09	[Progress]	[SolverFeedback::writeFeedback]                 	319.083 d   16.11.01  2:00:00 33.334 s     9.572 d/s    8.838 d/s    5.195 s
+2020-10-13 15:34:09	[Progress]	[SolverFeedback::writeFeedback]                 	322.792 d   19.11.01 19:00:00 33.836 s     9.540 d/s    8.696 d/s    4.854 s
+2020-10-13 15:34:10	[Progress]	[SolverFeedback::writeFeedback]                 	327.250 d   24.11.01  6:00:00 34.338 s     9.530 d/s    8.943 d/s    4.221 s
+2020-10-13 15:34:10	[Progress]	[SolverFeedback::writeFeedback]                 	332.167 d   29.11.01  4:00:00 34.841 s     9.534 d/s    8.989 d/s    3.653 s
+2020-10-13 15:34:11	[Progress]	[SolverFeedback::writeFeedback]                 	336.500 d   03.12.01 12:00:00 35.345 s     9.520 d/s    8.907 d/s    3.200 s
+2020-10-13 15:34:11	[Progress]	[SolverFeedback::writeFeedback]                 	341.542 d   08.12.01 13:00:00 35.845 s     9.528 d/s    8.978 d/s    2.613 s
+2020-10-13 15:34:12	[Progress]	[SolverFeedback::writeFeedback]                 	346.542 d   13.12.01 13:00:00 36.347 s     9.534 d/s    9.083 d/s    2.032 s
+2020-10-13 15:34:12	[Progress]	[SolverFeedback::writeFeedback]                 	351.667 d   18.12.01 16:00:00 36.851 s     9.543 d/s    9.094 d/s    1.466 s
+2020-10-13 15:34:13	[Progress]	[SolverFeedback::writeFeedback]                 	356.500 d   23.12.01 12:00:00 37.351 s     9.545 d/s    9.369 d/s    0.907 s
+2020-10-13 15:34:13	[Progress]	[SolverFeedback::writeFeedback]                 	361.542 d   28.12.01 13:00:00 37.855 s     9.551 d/s    9.376 d/s    0.369 s
+2020-10-13 15:34:14	[Progress]	[SolverControlFramework::writeStatistics]       	
+2020-10-13 15:34:14	[Progress]	[SolverControlFramework::writeStatistics]       	Solver statistics
+2020-10-13 15:34:14	[Progress]	[SolverControlFramework::writeStatistics]       	------------------------------------------------------------------------------
+2020-10-13 15:34:14	[Progress]	[SolverControlFramework::writeStatistics]       	Wall clock time                            =   38.229 s   
+2020-10-13 15:34:14	[Progress]	[SolverControlFramework::writeStatistics]       	------------------------------------------------------------------------------
+2020-10-13 15:34:14	[Progress]	[SolverControlFramework::writeStatistics]       	Framework: Output writing                  =    0.463 s    ( 1.21 %)    
+2020-10-13 15:34:14	[Progress]	[SolverControlFramework::writeStatistics]       	Framework: Step-completed calculations     =    0.001 s    ( 0.00 %)    
+2020-10-13 15:34:14	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: Steps                          =                             15599
+2020-10-13 15:34:14	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: Newton iterations              =                             19079
+2020-10-13 15:34:14	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: Newton convergence failures    =                                 0
+2020-10-13 15:34:14	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: Error test failures            =                               837
+2020-10-13 15:34:14	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: Function evaluation (Newton)   =    0.102 s    ( 0.27 %)     19080
+2020-10-13 15:34:14	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: LES setup                      =    0.022 s    ( 0.06 %)      2273
+2020-10-13 15:34:14	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: LES solve                      =    0.045 s    ( 0.12 %)     19079
+2020-10-13 15:34:14	[Progress]	[LESInterfaceDirect::writeMetrics]              	LES: Jacobian matrix evaluations           =                               276
+2020-10-13 15:34:14	[Progress]	[LESInterfaceDirect::writeMetrics]              	LES: Matrix factorization                  =    0.010 s    ( 0.03 %)      2273
+2020-10-13 15:34:14	[Progress]	[LESInterfaceDirect::writeMetrics]              	LES: Function evaluation (Jacobian gen.)   =    0.003 s    ( 0.01 %)      1932
+2020-10-13 15:34:14	[Progress]	[SolverControlFramework::writeStatistics]       	------------------------------------------------------------------------------

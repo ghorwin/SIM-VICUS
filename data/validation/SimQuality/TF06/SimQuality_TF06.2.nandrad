@@ -9,7 +9,7 @@
 			<ClimateFileName>${Project Directory}/../climate/SimQuality_Testfall06_Klima.c6b</ClimateFileName>
 		</Location>
 		<SimulationParameter>
-			<IBK:Parameter name="InitialTemperature" unit="C">5</IBK:Parameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 		</SimulationParameter>
 		<SolverParameter>
 			<IBK:IntPara name="DiscMaxElementsPerLayer">30</IBK:IntPara>
@@ -90,7 +90,7 @@
 			<!-- Surface West Var 01 -->
 			<ConstructionInstance id="4" displayName="Surface West Var01">
 				<ConstructionTypeId>10005</ConstructionTypeId>
-				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
 				<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
 				<InterfaceA id="10" zoneId="1">
