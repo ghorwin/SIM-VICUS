@@ -3,7 +3,7 @@
 
 # Build script for building application and all dependend libraries
 
-# Command line options:  
+# Command line options:
 #   [reldeb|release|debug]		build type
 #   [2 [1..n]]					cpu count
 #   [gcc|icc]					compiler
@@ -38,38 +38,38 @@ do
 		MAKE_CPUCOUNT=$var
 		echo "Using $MAKE_CPUCOUNT CPUs for compilation"
     fi
-    
-    if [[ $var = "omp"  ]]; 
+
+    if [[ $var = "omp"  ]];
     then
 		CMAKE_OPTIONS="$CMAKE_OPTIONS -DUSE_OPENMP:BOOL=ON"
 		echo "Using Open MP compile flags"
     fi
 
-    if [[ $var = "no-gui"  ]]; 
+    if [[ $var = "no-gui"  ]];
     then
 		CMAKE_OPTIONS="$CMAKE_OPTIONS -DDISABLE_QT:BOOL=ON"
 		echo "Disabling Qt libs"
     fi
 
-    if [[ $var = "debug"  ]]; 
+    if [[ $var = "debug"  ]];
     then
 		CMAKE_BUILD_TYPE=" -DCMAKE_BUILD_TYPE:STRING=Debug"
 		echo "Debug build..."
     fi
 
-    if [[ $var = "release"  ]]; 
+    if [[ $var = "release"  ]];
     then
 		CMAKE_BUILD_TYPE=" -DCMAKE_BUILD_TYPE:STRING=Release"
 		echo "Release build..."
     fi
 
-    if [[ $var = "reldeb"  ]]; 
+    if [[ $var = "reldeb"  ]];
     then
 		CMAKE_BUILD_TYPE=" -DCMAKE_BUILD_TYPE:STRING=RelWithDebInfo"
 		echo "RelWithDebInfo build..."
     fi
 
-    if [[ $var = "icc"  && $COMPILER = "" ]]; 
+    if [[ $var = "icc"  && $COMPILER = "" ]];
     then
 		COMPILER="icc"
 		BUILD_DIR_SUFFIX="icc"
@@ -78,7 +78,7 @@ do
 	    CMAKE_COMPILER_OPTIONS="-DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icc"
 	  fi
 
-    if [[ $var = "gcc"  && $COMPILER = "" ]]; 
+    if [[ $var = "gcc"  && $COMPILER = "" ]];
     then
 		COMPILER="gcc"
 		BUILD_DIR_SUFFIX="gcc"
@@ -86,22 +86,22 @@ do
 		CMAKE_COMPILER_OPTIONS=""
 	  fi
 
-    if [[ $var = "verbose"  ]]; 
+    if [[ $var = "verbose"  ]];
   	then
 		CMAKE_OPTIONS="-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON"
 	  fi
-	  
-    if [[ $var = "skip-test"  ]]; 
+
+    if [[ $var = "skip-test"  ]];
   	then
 		SKIP_TESTS="true"
 	  fi
 
-    if [[ $var = "lapack"  ]]; 
+    if [[ $var = "lapack"  ]];
     then
 		CMAKE_OPTIONS="$CMAKE_OPTIONS -DLAPACK_ENABLE:BOOL=ON"
 		echo "Building with lapack support for CVODE"
     fi
-	  
+
 done
 
 
@@ -117,7 +117,7 @@ do
 		echo "Gprof build, forcing GCC build..."
     fi
 
-    if [[ $var = "threadChecker"  ]]; 
+    if [[ $var = "threadChecker"  ]];
     then
 		COMPILER="icc"
 		BUILD_DIR_SUFFIX="icc"
@@ -135,20 +135,19 @@ if [ ! -d $BUILDDIR ]; then
     mkdir -p $BUILDDIR
 fi
 
-cd $BUILDDIR && cmake $CMAKE_OPTIONS $CMAKE_BUILD_TYPE $CMAKE_COMPILER_OPTIONS $CMAKELISTSDIR && make -j$MAKE_CPUCOUNT && 
+cd $BUILDDIR && cmake $CMAKE_OPTIONS $CMAKE_BUILD_TYPE $CMAKE_COMPILER_OPTIONS $CMAKELISTSDIR && make -j$MAKE_CPUCOUNT &&
 cd $CMAKELISTSDIR &&
 mkdir -p ../../bin/release &&
 echo "*** Copying NandradSolver and SIM-VICUS to bin/release ***" &&
 if [ -d $BUILDDIR/SIM-VICUS/SIM-VICUS.app ]
 then
     rm -rf ../../bin/release/SIM-VICUS.app
-    cp -r $BUILDDIR/SIM-VICUS/SIM-VICUS.app ../../bin/release/SIM-VICUS.app
-#    cp $BUILDDIR/NandradSolver/NandradSolver ../../bin/release/NandradSolver
-else
+    cp -r $BUILDDIR/SIM-VICUS/SIM-VICUS.app ../../bin/release/SIM-VICUS.app &&
     cp $BUILDDIR/NandradSolver/NandradSolver ../../bin/release/NandradSolver
+else
+    cp $BUILDDIR/NandradSolver/NandradSolver ../../bin/release/NandradSolver &&
 	if [ -e $BUILDDIR/SIM-VICUS/SIM-VICUS ]
 	then
 		cp $BUILDDIR/SIM-VICUS/SIM-VICUS ../../bin/release/SIM-VICUS
 	fi
 fi
-
