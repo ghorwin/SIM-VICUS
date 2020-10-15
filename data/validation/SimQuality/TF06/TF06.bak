@@ -2840,9 +2840,8 @@
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>961286400455</Maximum>
-						<Minimum>961200000801</Minimum>
-						<DateTimeEnabled>1</DateTimeEnabled>
+						<Maximum>4093.1809599986018</Maximum>
+						<Minimum>4059.6482781314885</Minimum>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
@@ -3044,7 +3043,7 @@
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="34" size1="1" size2="1" orientation="2" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="0" size1="1" size2="1" orientation="2" />
 		<FocusedWidget>0</FocusedWidget>
 	</Splitting>
 
