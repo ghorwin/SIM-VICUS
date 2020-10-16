@@ -52,7 +52,7 @@ public:
 
 	NANDRAD::Project		m_nandradData;
 
-	std::vector<Network>	m_networks;					// XML:E
+	std::vector<Network>	m_networks;
 };
 
 
