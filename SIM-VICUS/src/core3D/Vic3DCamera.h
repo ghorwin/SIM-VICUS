@@ -20,13 +20,13 @@ public:
 
 	/*! Returns a forward vector (with respect to the camera's local coordinate/view system) */
 	QVector3D forward() const {
-		const QVector3D LocalForward(0.0f, 0.0f, -1.0f);
+		const QVector3D LocalForward(0.0f, -1.0f, 0.0f);
 		return m_rotation.rotatedVector(LocalForward);
 	}
 
 	/*! Returns vector pointing up (with respect to the camera's local coordinate/view system) */
 	QVector3D up() const {
-		const QVector3D LocalUp(0.0f, 1.0f, 0.0f);
+		const QVector3D LocalUp(0.0f, 0.0f, 1.0f);
 		return m_rotation.rotatedVector(LocalUp);
 	}
 

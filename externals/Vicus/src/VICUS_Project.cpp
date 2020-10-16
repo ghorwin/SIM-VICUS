@@ -70,6 +70,9 @@ void Project::writeXML(const IBK::Path & filename) const {
 
 	root->SetAttribute("fileVersion", VERSION);
 
+
+
+
 	// other files
 
 	doc.SaveFile( filename.c_str() );

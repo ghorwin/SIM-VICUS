@@ -1492,7 +1492,7 @@ where
 \end_inset
 
  is some friction coefficient and 
-\begin_inset Formula $a\dot{m}$
+\begin_inset Formula $a\dot{m}^{2}$
 \end_inset
 
  corresponds to the pressure loss that increases quadratically with the

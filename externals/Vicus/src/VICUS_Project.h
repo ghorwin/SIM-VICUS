@@ -22,9 +22,13 @@
 #ifndef VICUS_ProjectH
 #define VICUS_ProjectH
 
+#include <vector>
+
 #include <IBK_Path.h>
 
 #include <NANDRAD_Project.h>
+
+#include "VICUS_Network.h"
 
 namespace VICUS {
 
@@ -46,7 +50,9 @@ public:
 	/*! Removes un-referenced/un-needed data structures. */
 	void clean();
 
-	NANDRAD::Project	m_nandradData;
+	NANDRAD::Project		m_nandradData;
+
+	std::vector<Network>	m_networks;					// XML:E
 };
 
 
