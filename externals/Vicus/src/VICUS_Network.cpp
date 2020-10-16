@@ -3,6 +3,8 @@
 #include <IBK_assert.h>
 #include <IBK_Path.h>
 
+#include <fstream>
+#include <algorithm>
 
 namespace VICUS {
 
@@ -10,15 +12,85 @@ Network::Network() {
 
 }
 
-void Network::readFromCSV(const IBK::Path & csv)
+
+unsigned Network::addNode(const double &x, const double &y, const Network::Node::NodeType type, const bool consistentCoordinates)
 {
+	// if there is an existing node with identical coordinates, return its id and dont add a new one
+	if (consistentCoordinates){
+		for (Node n: m_nodes){
+			if (n.m_x==x && n.m_y==y)
+				return n.m_id;
+		}
+	}
+	unsigned id = m_nodes.size();
+	m_nodes.push_back(Node(id, x, y, type));
+	updateNodeEdgeConnectionPointers();
+
+	return id;
+}
+
+
+bool Network::addEdge(const unsigned nodeId1, const unsigned nodeId2, const bool supply)
+{
+	if (nodeId1>m_nodes.size()-1 || nodeId2>m_nodes.size()-1)
+		return false;
+	m_edges.push_back(Edge(nodeId1, nodeId2, supply));
+	updateNodeEdgeConnectionPointers();
+
+	return true;
+}
+
+
+void Network::readGridFromCSV(const IBK::Path &csv){
+FUNCID(Network::readGridFromCSV);
+
+	// read file
+	if (!csv.exists())
+		throw IBK::Exception(IBK::FormatString("File '%1' doesn't exist.").arg(csv), FUNC_ID);
+	std::ifstream file(csv.wstr());
+	std::string line;
+	std::vector<std::string> cont;
+	while (std::getline(file, line))
+		cont.push_back(line);
+	file.close();
+
+	// extract vector of string-xy-pairs from ' "MULTILINESTRING ((3 4,1 6,10 2))", '
+	// probably there is a more convient way?
+	std::vector<std::string> tokens;
+	for (std::string line: cont){
+		if (line.find("MULTILINESTRING") == std::string::npos)
+			continue;
+//		IBK::explode(line, tokens, ",", IBK::EF_NoFlags);
+		IBK::trim(line, ",");
+		IBK::trim(line, "\"");
+		IBK::trim(line, "MULTILINESTRING ((");
+		IBK::trim(line, "))");
+		IBK::explode(line, tokens, ",", IBK::EF_NoFlags);
+
+		// convert this vector to double and add it as a graph
+		std::vector<std::vector<double> > polyLine;
+		for (std::string str: tokens){
+			std::vector<std::string> xyStr;
+			IBK::explode(str, xyStr, " ", IBK::EF_NoFlags);
+			polyLine.push_back(std::vector<double> {IBK::string2val<double>(xyStr[0]), IBK::string2val<double>(xyStr[1])});
+		}
+		for (unsigned n=0; n<polyLine.size()-1; ++n){
+			unsigned n1 = addNode(polyLine[n][0], polyLine[n][1], Node::NT_Mixer, true);
+			unsigned n2 = addNode(polyLine[n+1][0], polyLine[n+1][1], Node::NT_Mixer, true);
+			addEdge(n1, n2, true);
+		}
+	}
+
+
 
 }
+
 
 void Network::generateIntersections()
 {
 
 }
+
 
 void Network::updateNodeEdgeConnectionPointers() {
 	// resolve all node and edge pointers
@@ -31,10 +103,10 @@ void Network::updateNodeEdgeConnectionPointers() {
 	// loop over all edges
 	for (Edge & e : m_edges) {
 		// store pointers to connected nodes
-		IBK_ASSERT(e.m_n1 < nodeCount);
-		e.m_node1 = &m_nodes[e.m_n1];
-		IBK_ASSERT(e.m_n2 < nodeCount);
-		e.m_node2 = &m_nodes[e.m_n2];
+		IBK_ASSERT(e.m_nodeId1 < nodeCount);
+		e.m_node1 = &m_nodes[e.m_nodeId1];
+		IBK_ASSERT(e.m_nodeId2 < nodeCount);
+		e.m_node2 = &m_nodes[e.m_nodeId2];
 
 		// now also store pointer to this edge into connected nodes
 		e.m_node1->m_edges.push_back(&e);
@@ -83,8 +155,7 @@ void Network::connectBuildings() {
 
 
 void Network::Edge::collectConnectedNodes(std::set<const Network::Node *> & connectedNodes,
-										  std::set<const Network::Edge *> & connectedEdge) const
-{
+										  std::set<const Network::Edge *> & connectedEdge) const {
 	// first store ourselves as connected
 	connectedEdge.insert(this);
 	// now ask our nodes to collect their connected elements
@@ -93,7 +164,8 @@ void Network::Edge::collectConnectedNodes(std::set<const Network::Node *> & conn
 }
 
 
-void Network::Node::collectConnectedEdges(std::set<const Network::Node *> & connectedNodes, std::set<const Network::Edge *> & connectedEdge) const {
+void Network::Node::collectConnectedEdges(std::set<const Network::Node *> & connectedNodes,
+										  std::set<const Network::Edge *> & connectedEdge) const {
 	// store ourselves as connected
 	connectedNodes.insert(this);
 	// now ask connected elements to collect their nodes

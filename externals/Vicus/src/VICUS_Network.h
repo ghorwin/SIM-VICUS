@@ -17,12 +17,20 @@ public:
 
 	class Node {
 	public:
-		enum UsageType {
+
+		enum NodeType {
 			NT_Building,
 			NT_Mixer,
 			NT_Source,
 			NUM_NT
 		};
+
+		Node(const unsigned id, const double &x, const double &y, const NodeType type):
+			m_id(id),
+			m_x(x),
+			m_y(y),
+			m_type(type)
+		{}
 
 		void collectConnectedEdges(std::set<const Node*> & connectedNodes,
 			std::set<const Edge*> & connectedEdge) const;
@@ -30,7 +38,7 @@ public:
 		unsigned int m_id;
 		double m_x, m_y;
 
-		UsageType m_type = NUM_NT;
+		NodeType m_type = NUM_NT;
 
 		std::vector<Edge*>	m_edges;
 	};
@@ -38,18 +46,23 @@ public:
 	class Edge {
 	public:
 
+		Edge(const unsigned nodeId1, const unsigned nodeId2, const bool supply):
+			m_nodeId1(nodeId1),
+			m_nodeId2(nodeId2),
+			m_supply(supply)
+		{}
+
 		void collectConnectedNodes(std::set<const Node*> & connectedNodes,
 			std::set<const Edge*> & connectedEdge) const;
 
-		unsigned int m_id;
-		unsigned int m_n1 = 0;
-		unsigned int m_n2 = 0;
+		unsigned int m_nodeId1 = 0;
+		unsigned int m_nodeId2 = 0;
 
 		Node *	m_node1 = nullptr;
 		Node *	m_node2 = nullptr;
 
-		/*! Diameter in [mm] */
-		double		m_d;
+		/*! Diameter in [m] */
+		double		m_diameter;
 
 		/*! If false, this is a branch. */
 		bool		m_supply;
@@ -60,7 +73,11 @@ public:
 
 	Network();
 
-	void readFromCSV(const IBK::Path & csv);
+	unsigned addNode(const double &x, const double &y, const Node::NodeType type, const bool considerCoordinates=false);
+
+	bool addEdge(const unsigned nodeId1, const unsigned nodeId2, const bool supply);
+
+	void readGridFromCSV(const IBK::Path & csv);
 
 	/*! Process all edges vs. all other edges and insert intersection nodes when
 		edges intersect between end points.
