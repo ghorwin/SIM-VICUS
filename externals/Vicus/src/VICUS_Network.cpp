@@ -60,7 +60,6 @@ FUNCID(Network::readGridFromCSV);
 	for (std::string line: cont){
 		if (line.find("MULTILINESTRING") == std::string::npos)
 			continue;
-//		IBK::explode(line, tokens, ",", IBK::EF_NoFlags);
 		IBK::trim(line, ",");
 		IBK::trim(line, "\"");
 		IBK::trim(line, "MULTILINESTRING ((");
@@ -74,9 +73,9 @@ FUNCID(Network::readGridFromCSV);
 			IBK::explode(str, xyStr, " ", IBK::EF_NoFlags);
 			polyLine.push_back(std::vector<double> {IBK::string2val<double>(xyStr[0]), IBK::string2val<double>(xyStr[1])});
 		}
-		for (unsigned n=0; n<polyLine.size()-1; ++n){
-			unsigned n1 = addNode(polyLine[n][0], polyLine[n][1], Node::NT_Mixer, true);
-			unsigned n2 = addNode(polyLine[n+1][0], polyLine[n+1][1], Node::NT_Mixer, true);
+		for (unsigned i=0; i<polyLine.size()-1; ++i){
+			unsigned n1 = addNode(polyLine[i][0], polyLine[i][1], Node::NT_Mixer, true);
+			unsigned n2 = addNode(polyLine[i+1][0], polyLine[i+1][1], Node::NT_Mixer, true);
 			addEdge(n1, n2, true);
 		}
 	}
