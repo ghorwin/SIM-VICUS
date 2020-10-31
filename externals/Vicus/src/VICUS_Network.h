@@ -56,10 +56,17 @@ public:
 
 		bool findPathToSource(std::set<Edge*> &path, std::set<Edge*> &visitedEdges, std::set<unsigned> &visitedNodes);
 
+		/*! used for dijkstra algorithm */
+		void updateNeighbourDistances();
+
+		void getPathToNull(std::vector<Edge * > & path);
+
 		unsigned int m_id;
 		double m_x, m_y;
 		NodeType m_type = NUM_NT;
 		double m_heatDemand = 0;
+		double m_distanceToStart = std::numeric_limits<double>::max();
+		Node * m_predecessor = nullptr;
 		std::vector<Edge*>	m_edges;
 	};
 
@@ -88,7 +95,7 @@ public:
 			return (m_nodeId1 == e2.m_nodeId1) && (m_nodeId2 == e2.m_nodeId2);
 		}
 
-		Node * secondNode(const Network::Node *node) const;
+		Node * neighbourNode(const Network::Node *node) const;
 
 		unsigned int m_nodeId1 = 0;
 		unsigned int m_nodeId2 = 0;
@@ -210,10 +217,15 @@ public:
 
 	void writeNetworkCSV(const IBK::Path &file) const;
 
-	void writePathCSV(const IBK::Path &file, const VICUS::Network::Node & node, const std::set<VICUS::Network::Edge*> &path) const;
+	void writePathCSV(const IBK::Path &file, const VICUS::Network::Node & node, const std::vector<VICUS::Network::Edge*> &path) const;
 
 	void writeBuildingsCSV(const IBK::Path &file) const;
 
+	/*! find shortest Path from given startNode (e.g. a building) to Node with type source
+	 * using dijkstra-algorithm, implemented according to Wikipedia
+	 * and returns path as vector of edges
+	 */
+	void dijkstraShortestPath(Node &startNode, std::vector<Edge*> &pathToSource);
 
 	/*! Nodes ID matches always node index.
 		\code

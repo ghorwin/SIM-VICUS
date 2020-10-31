@@ -97,14 +97,12 @@ void Network::Edge::collectConnectedNodes(std::set<const Network::Node *> & conn
 }
 
 
-Network::Node * Network::Edge::secondNode(const Network::Node *node) const{
-	FUNCID(Network::Edge::secondNode);
+Network::Node * Network::Edge::neighbourNode(const Network::Node *node) const{
+	IBK_ASSERT(node->m_id == m_nodeId1 || node->m_id == m_nodeId2);
 	if (node->m_id == m_nodeId1)
 		return m_node2;
-	else if (node->m_id == m_nodeId2)
-		return m_node1;
 	else
-		throw IBK::Exception("invalid nodeId", FUNC_ID);
+		return m_node1;
 }
 
 
@@ -385,7 +383,7 @@ void Network::networkWithReducedEdges(Network & reducedNetwork){
 			proccessedNodes.insert(redundantNode->m_id);
 
 			// get previous node and next non-redundant node
-			Node * previousNode = edge.secondNode(redundantNode);
+			Node * previousNode = edge.neighbourNode(redundantNode);
 			Edge * nextEdge = redundantNode->neighborEdge(&edge);
 			std::set<unsigned> redundantNodes;
 			double totalLength = edge.m_length;
@@ -410,7 +408,7 @@ void Network::networkWithReducedEdges(Network & reducedNetwork){
 const Network::Node * Network::Node::findNextNonRedundantNode(std::set<unsigned> & redundantNodes, double & totalLength, const Network::Edge *edgeToVisit) const
 {
 	totalLength += edgeToVisit->m_length;
-	Node * nextNode = edgeToVisit->secondNode(this);
+	Node * nextNode = edgeToVisit->neighbourNode(this);
 	if (!nextNode->isRedundant())
 		return nextNode;
 	redundantNodes.insert(nextNode->m_id);
@@ -435,13 +433,39 @@ bool Network::Node::findPathToSource(std::set<Edge*> &path, std::set<Network::Ed
 	for (Edge *e: m_edges){
 		if (visitedEdges.find(e) == visitedEdges.end()){
 			visitedEdges.insert(e);
-			if (e->secondNode(this)->findPathToSource(path, visitedEdges, visitedNodes)){
+			if (e->neighbourNode(this)->findPathToSource(path, visitedEdges, visitedNodes)){
 				path.insert(e);
 				return true;
 			}
 		}
 	}
 	return false;
+}
+
+
+void Network::Node::updateNeighbourDistances() {
+
+	for (Edge *e :m_edges){
+		// calculate alternative distance to neighbour. If it is shorter than current one:  set it as its current distance
+		Node * neighbour = e->neighbourNode(this);
+		double alternativeDistance = m_distanceToStart + e->m_length;
+		if (alternativeDistance < neighbour->m_distanceToStart){
+			neighbour->m_distanceToStart = alternativeDistance;
+			neighbour->m_predecessor = this;
+		}
+	}
+}
+
+
+void Network::Node::getPathToNull(std::vector<Network::Edge *> &path){
+	if (m_predecessor == nullptr)
+		return;
+	for (Edge * e: m_edges){
+		if (e->neighbourNode(this) == m_predecessor){
+			path.push_back(e);
+			e->neighbourNode(this)->getPathToNull(path);
+		}
+	}
 }
 
 
@@ -456,7 +480,7 @@ void Network::writeNetworkCSV(const IBK::Path &file) const{
 }
 
 
-void Network::writePathCSV(const IBK::Path &file, const VICUS::Network::Node & node, const std::set<VICUS::Network::Edge*> &path) const {
+void Network::writePathCSV(const IBK::Path &file, const VICUS::Network::Node & node, const std::vector<VICUS::Network::Edge*> &path) const {
 	std::ofstream f;
 	f.open(file.str());
 	f.precision(10);
@@ -477,6 +501,39 @@ void Network::writeBuildingsCSV(const IBK::Path &file) const {
 			f << std::fixed << n.m_x << "\t" << n.m_y << "\t" << n.m_heatDemand << std::endl;
 	}
 	f.close();
+}
+
+
+void Network::dijkstraShortestPath(Node &startNode, std::vector<Edge*> &pathSourceToStart){
+
+	// init: all nodes have infinte distance to start node and no predecessor
+	for (Node &n: m_nodes){
+		n.m_distanceToStart = std::numeric_limits<double>::max();
+		n.m_predecessor = nullptr;
+	}
+	startNode.m_distanceToStart = 0;
+	std::set<unsigned> visitedNodes;
+
+	// go through all not-visited nodes
+	while (visitedNodes.size() <= m_nodes.size()){
+		// find node with currently smallest distance to start, which has not yet been visited:
+		double minDistance = std::numeric_limits<double>::max();
+		Node *nMin = nullptr;
+		for (unsigned id = 0; id < m_nodes.size(); ++id){
+			if (visitedNodes.find(id) == visitedNodes.end() && m_nodes[id].m_distanceToStart < minDistance){
+				minDistance = m_nodes[id].m_distanceToStart;
+				nMin = &m_nodes[id];
+			}
+		}
+		// if source reached: return path
+		if (nMin->m_type == Node::NT_Source){
+			nMin->getPathToNull(pathSourceToStart);
+			return;
+		}
+		// update distance from start to neighbours of nMin
+		visitedNodes.insert(nMin->m_id);
+		nMin->updateNeighbourDistances();
+	}
 }
 
 
