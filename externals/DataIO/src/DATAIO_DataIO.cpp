@@ -742,7 +742,7 @@ void DataIO::reopenForWriting(const IBK::Path &fname) {
 			m_ofstream = new std::ofstream(filenameAnsi.c_str(), std::ios_base::app);
 	#endif
 #else
-		m_ofstream = new std::ofstream(fname.str().c_str(), std::ios_base::app);
+		m_ofstream = new std::ofstream(fname.c_str(), std::ios_base::app);
 #endif
 	}
 

@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <set>
+#include <string>
+#include <limits>
 
 namespace IBK {
 	class Path;

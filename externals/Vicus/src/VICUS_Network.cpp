@@ -134,7 +134,18 @@ void Network::readCSV(const IBK::Path &filePath, std::vector<std::string> &conte
 
 	if (!filePath.exists())
 		throw IBK::Exception(IBK::FormatString("File '%1' doesn't exist.").arg(filePath), FUNC_ID);
-	std::ifstream file(filePath.wstr());
+
+#if defined(_WIN32)
+	#if defined(_MSC_VER)
+			std::ifstream file(filePath.wstr().c_str(), std::ios_base::app);
+	#else
+			std::string filenameAnsi = IBK::WstringToANSI(filePath.wstr(), false);
+			std::ifstream file(filenameAnsi.c_str(), std::ios_base::app);
+	#endif
+#else
+		std::ifstream file(filePath.c_str(), std::ios_base::app);
+#endif
+
 	std::string line;
 	content.clear();
 	while (std::getline(file, line))
