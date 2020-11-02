@@ -37,10 +37,12 @@ popd
 xcopy /Y .\bb_VC_x64\NandradSolver\NandradSolver.exe ..\..\bin\release_x64
 xcopy /Y .\bb_VC_x64\SIM-VICUS\SIM-VICUS.exe ..\..\bin\release_x64
 
+pause
 exit /b 0
 
 
 :fail
 echo ** Build Failed **
+pause
 exit /b 1
 
