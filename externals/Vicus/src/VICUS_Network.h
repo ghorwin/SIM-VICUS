@@ -34,7 +34,7 @@ public:
 			m_x(x),
 			m_y(y),
 			m_type(type),
-			m_heatDemand(heatDemand)
+			m_heatingDemand(heatDemand)
 		{}
 
 		void collectConnectedEdges(std::set<const Node*> & connectedNodes,
@@ -63,10 +63,12 @@ public:
 
 		void getPathToNull(std::vector<Edge * > & path);
 
+		double adjacentHeatingDemand(std::set<Edge*> visitedEdges);
+
 		unsigned int m_id;
 		double m_x, m_y;
 		NodeType m_type = NUM_NT;
-		double m_heatDemand = 0;
+		double m_heatingDemand = 0;
 		double m_distanceToStart = std::numeric_limits<double>::max();
 		Node * m_predecessor = nullptr;
 		std::vector<Edge*>	m_edges;
@@ -113,6 +115,9 @@ public:
 
 		/*! If false, this is a branch. */
 		bool		m_supply;
+
+		/*! heating demand of all connected buildings */
+		double		m_heatingDemand = 0;
 	};
 
 
@@ -194,7 +199,7 @@ public:
 	/*! Process all edges vs. all other edges. If an intersection was found, set the according
 	 * edges and the intersection point are set and return true. If there are no intersection points, return false.
 	*/
-	bool findIntersection();
+	bool findAndAddIntersection();
 
 	/*! Should be called whenever m_nodes or m_edges has been modified. */
 	void updateNodeEdgeConnectionPointers();
@@ -213,7 +218,7 @@ public:
 
 	void calculateLengths();
 
-	void sizePipeDimensions(const double dpMax);
+	void sizePipeDimensions(const double &dpMax, const double &dT, const double &fluidDensity, const double &fluidKinViscosity, const double &roughness);
 
 	void networkWithReducedEdges(Network & reducedNetwork);
 
@@ -227,7 +232,11 @@ public:
 	 * using dijkstra-algorithm, implemented according to Wikipedia
 	 * and returns path as vector of edges
 	 */
-	void dijkstraShortestPath(Node &startNode, std::vector<Edge*> &pathToSource);
+	void dijkstraShortestPathToSource(Node &startNode, std::vector<Edge*> &pathToSource);
+
+	/*! pressure loss of a rough pipe according to colebrook equation */
+	static double pressureLossColebrook(const double &diameter, const double &length, const double &roughness, const double &massFlow,
+										const double &fluidDensity, const double &fluidKinViscosity);
 
 	/*! Nodes ID matches always node index.
 		\code

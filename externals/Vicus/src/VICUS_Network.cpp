@@ -6,6 +6,7 @@
 #include <fstream>
 #include <algorithm>
 
+
 namespace VICUS {
 
 Network::Network() {
@@ -221,19 +222,23 @@ void Network::setSource(const double &x, const double &y){
 
 
 void Network::generateIntersections(){
-	while (findIntersection()){
+	while (findAndAddIntersection()){
 	}
 }
 
 
-bool Network::findIntersection() {
+bool Network::findAndAddIntersection() {
+
 	for (unsigned i1=0; i1<m_edges.size(); ++i1) {
 		for (unsigned i2=i1+1; i2<m_edges.size(); ++i2) {
-			// calculate intersection and check if it is within both lines
+
+			// calculate intersection and
 			Line l1 = Line(m_edges[i1]);
 			Line l2 = Line(m_edges[i2]);
 			double xs, ys;
 			l1.intersection(l2, xs, ys);
+
+			// if it is within both lines: add node and edges, adapt exisiting nodes
 			if (l1.containsPoint(xs, ys) && l2.containsPoint(xs, ys)){
 				unsigned nInter = addNode(xs, ys, Node::NT_Mixer);
 				addEdge(nInter, m_edges[i1].m_nodeId1, true);
@@ -247,56 +252,6 @@ bool Network::findIntersection() {
 	}
 	return false;
 }
-
-// THIS ONE HAS STORAGE PROBLEMS ???
-//void Network::connectBuildings(const bool extendSupplyPipes) {
-
-//	int idNext = nextUnconnectedBuilding();
-//	Edge *eMin = nullptr;
-//	while (idNext>=0) {
-
-//		unsigned idBuilding = static_cast<unsigned>(idNext);
-
-//		// find closest supply edge
-//		double distMin = std::numeric_limits<double>::max();
-//		for (Edge & e: m_edges){
-//			if (!e.m_supply)
-//				continue;
-//			double dist = Line(e).distanceToPoint(m_nodes[idBuilding].m_x, m_nodes[idBuilding].m_y);
-//			if (dist<distMin){
-//				distMin = dist;
-//				eMin = &e;
-//			}
-//		}
-//		// branch node
-//		Line lMin = Line(*eMin);
-//		double xBranch, yBranch;
-//		unsigned idBranch;
-//		lMin.projectionFromPoint(m_nodes[idBuilding].m_x, m_nodes[idBuilding].m_y, xBranch, yBranch);
-//		// branch node is inside edge: split edge
-//		if (lMin.containsPoint(xBranch,yBranch)){
-//			idBranch = addNode(xBranch, yBranch, Node::NT_Mixer);
-//			addEdge(eMin->m_nodeId1, idBranch, true);
-//			eMin->m_nodeId1 = idBranch;
-//			updateNodeEdgeConnectionPointers();
-//		} // branch node is outside edge
-//		else{
-//			double dist1 = Line::distanceBetweenPoints(xBranch, yBranch, eMin->m_node1->m_x, eMin->m_node1->m_y);
-//			double dist2 = Line::distanceBetweenPoints(xBranch, yBranch, eMin->m_node2->m_x, eMin->m_node2->m_y);
-//			idBranch = (dist1 < dist2) ? eMin->m_nodeId1 : eMin->m_nodeId2 ;
-//			// if pipe should be extended, change coordinates of branch node
-//			if (extendSupplyPipes){
-//				m_nodes[idBranch].m_x = xBranch;
-//				m_nodes[idBranch].m_y = yBranch;
-//				updateNodeEdgeConnectionPointers();
-//			}
-//		}
-//		// connect building to branch node
-//		addEdge(idBranch, idBuilding, false);
-
-//		idNext = nextUnconnectedBuilding();
-//	}
-//}
 
 
 void Network::connectBuildings(const bool extendSupplyPipes) {
@@ -323,13 +278,15 @@ void Network::connectBuildings(const bool extendSupplyPipes) {
 		double xBranch, yBranch;
 		unsigned idBranch;
 		lMin.projectionFromPoint(m_nodes[idBuilding].m_x, m_nodes[idBuilding].m_y, xBranch, yBranch);
+
 		// branch node is inside edge: split edge
 		if (lMin.containsPoint(xBranch,yBranch)){
 			idBranch = addNode(xBranch, yBranch, Node::NT_Mixer);
 			addEdge(m_edges[idEdgeMin].m_nodeId1, idBranch, true);
 			m_edges[idEdgeMin].m_nodeId1 = idBranch;
 			updateNodeEdgeConnectionPointers();
-		} // branch node is outside edge
+		}
+		// branch node is outside edge
 		else{
 			double dist1 = Line::distanceBetweenPoints(xBranch, yBranch, m_edges[idEdgeMin].m_node1->m_x, m_edges[idEdgeMin].m_node1->m_y);
 			double dist2 = Line::distanceBetweenPoints(xBranch, yBranch, m_edges[idEdgeMin].m_node2->m_x, m_edges[idEdgeMin].m_node2->m_y);
@@ -369,12 +326,41 @@ void Network::networkWithoutDeadEnds(Network &cleanNetwork) const{
 }
 
 
-void Network::calculateLengths()
-{
+void Network::calculateLengths(){
 	for (Edge &e: m_edges){
-		double l = Line(e).length();
 		e.m_length = Line(e).length();
 	}
+}
+
+
+void Network::sizePipeDimensions(const double &dpMax, const double &dT, const double &fluidDensity, const double &fluidKinViscosity, const double &roughness){
+
+	// for all buildings: add their heating demand to the pipes along their path
+	for (Node &node: m_nodes) {
+		std::vector<Edge * > path;
+		if (node.m_type == Node::NT_Building){
+			dijkstraShortestPathToSource(node, path);
+			for (Edge * edge: path)
+				edge->m_heatingDemand += node.m_heatingDemand;
+		}
+	}
+
+	// in case there is a pipe which is not part of any path (e.g. in circular grid): assign the adjacent heating demand
+	for (Edge &e: m_edges){
+		if (e.m_heatingDemand <= 0){
+			std::set<Edge *> edges1, edges2;
+			e.m_heatingDemand = 0.5 * ( e.m_node1->adjacentHeatingDemand(edges1) +  e.m_node2->adjacentHeatingDemand(edges2) );
+		}
+	}
+
+	// we need a table with pipe dimensions here
+	// and an interface to the fluid properties...
+	for (Edge &e: m_edges){
+		double cp =  3800;
+		double massFlow = e.m_heatingDemand / dT / cp;
+		double dp = pressureLossColebrook(0.01, e.m_length, roughness, massFlow,fluidDensity, fluidKinViscosity);
+	}
+
 }
 
 
@@ -468,13 +454,24 @@ void Network::Node::updateNeighbourDistances() {
 }
 
 
-void Network::Node::getPathToNull(std::vector<Network::Edge *> &path){
+void Network::Node::getPathToNull(std::vector<Network::Edge*> &path){
 	if (m_predecessor == nullptr)
 		return;
 	for (Edge * e: m_edges){
 		if (e->neighbourNode(this) == m_predecessor){
 			path.push_back(e);
 			e->neighbourNode(this)->getPathToNull(path);
+		}
+	}
+}
+
+double Network::Node::adjacentHeatingDemand(std::set<Network::Edge *> visitedEdges){
+	for (Edge *e: m_edges){
+		if (visitedEdges.find(e)==visitedEdges.end()){
+			visitedEdges.insert(e);
+			if (e->m_heatingDemand>0)
+				return e->m_heatingDemand;
+			e->neighbourNode(this)->adjacentHeatingDemand(visitedEdges);
 		}
 	}
 }
@@ -509,13 +506,13 @@ void Network::writeBuildingsCSV(const IBK::Path &file) const {
 	f.precision(10);
 	for (const Node &n: m_nodes){
 		if (n.m_type==Network::Node::NT_Building)
-			f << std::fixed << n.m_x << "\t" << n.m_y << "\t" << n.m_heatDemand << std::endl;
+			f << std::fixed << n.m_x << "\t" << n.m_y << "\t" << n.m_heatingDemand << std::endl;
 	}
 	f.close();
 }
 
 
-void Network::dijkstraShortestPath(Node &startNode, std::vector<Edge*> &pathSourceToStart){
+void Network::dijkstraShortestPathToSource(Node &startNode, std::vector<Edge*> &pathSourceToStart){
 
 	// init: all nodes have infinte distance to start node and no predecessor
 	for (Node &n: m_nodes){
@@ -545,6 +542,23 @@ void Network::dijkstraShortestPath(Node &startNode, std::vector<Edge*> &pathSour
 		visitedNodes.insert(nMin->m_id);
 		nMin->updateNeighbourDistances();
 	}
+}
+
+
+double Network::pressureLossColebrook(const double &diameter, const double &length, const double &roughness, const double &massFlow,
+									  const double &fluidDensity, const double &fluidKinViscosity){
+
+	double velocity = massFlow / (fluidDensity * diameter * diameter * 3.14159 / 4);
+	double Re = velocity * diameter / fluidKinViscosity;
+	double lambda_new;
+	double lambda = 0.05;
+	for (unsigned n=0; n<100; ++n){
+		lambda_new = std::pow(-2 * std::log10(2.51 / (Re * std::sqrt(lambda)) + roughness / (3.71 * diameter)), -2);
+		if (abs(lambda_new - lambda) / lambda < 1e-3)
+			break;
+		lambda = lambda_new;
+	}
+	return lambda_new * length / diameter * fluidDensity / 2 * velocity * velocity;
 }
 
 
