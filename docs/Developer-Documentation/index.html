@@ -82,32 +82,39 @@ table {
 <li><a href="#_introduction">1. Introduction</a></li>
 <li><a href="#_general_information">2. General Information</a>
 <ul class="sectlevel2">
-<li><a href="#_coding_guidelines_and_rules">2.1. Coding Guidelines and Rules</a>
+<li><a href="#_building_the_code">2.1. Building the code</a>
 <ul class="sectlevel3">
-<li><a href="#_programming_efficiency">2.1.1. Programming efficiency</a></li>
-<li><a href="#_indentation_and_line_length_limit">2.1.2. Indentation and line length limit</a></li>
-<li><a href="#_character_encoding_and_line_endings">2.1.3. Character encoding and line endings</a></li>
-<li><a href="#_file_naming_and_header_guards">2.1.4. File naming and header guards</a></li>
-<li><a href="#_namespaces">2.1.5. Namespaces</a></li>
-<li><a href="#_class_and_variable_naming">2.1.6. Class and variable naming</a></li>
-<li><a href="#_exception_handling">2.1.7. Exception handling</a></li>
-<li><a href="#_documentation">2.1.8. Documentation</a></li>
-<li><a href="#_git_workflow">2.1.9. Git Workflow</a></li>
-<li><a href="#_tips_and_tricks">2.1.10. Tips and tricks</a></li>
+<li><a href="#_setting_up_the_build_environment">2.1.1. Setting up the build environment</a></li>
+<li><a href="#_building">2.1.2. Building</a></li>
+<li><a href="#qmake">2.1.3. Development with Qt Creator</a></li>
 </ul>
 </li>
-<li><a href="#qt_creator">2.2. Qt Creator Configuration</a>
+<li><a href="#_coding_guidelines_and_rules">2.2. Coding Guidelines and Rules</a>
 <ul class="sectlevel3">
-<li><a href="#_texteditor_settings">2.2.1. TextEditor settings</a></li>
-<li><a href="#_coding_style">2.2.2. Coding style</a></li>
-<li><a href="#_other_coding_style_settings">2.2.3. Other coding style settings:</a></li>
-<li><a href="#_codemodel">2.2.4. Codemodel</a></li>
-<li><a href="#_efficient_use_of_the_qt_creator_ide">2.2.5. Efficient use of the Qt Creator IDE</a></li>
+<li><a href="#_programming_efficiency">2.2.1. Programming efficiency</a></li>
+<li><a href="#_indentation_and_line_length_limit">2.2.2. Indentation and line length limit</a></li>
+<li><a href="#_character_encoding_and_line_endings">2.2.3. Character encoding and line endings</a></li>
+<li><a href="#_file_naming_and_header_guards">2.2.4. File naming and header guards</a></li>
+<li><a href="#_namespaces">2.2.5. Namespaces</a></li>
+<li><a href="#_class_and_variable_naming">2.2.6. Class and variable naming</a></li>
+<li><a href="#_exception_handling">2.2.7. Exception handling</a></li>
+<li><a href="#_documentation">2.2.8. Documentation</a></li>
+<li><a href="#_git_workflow">2.2.9. Git Workflow</a></li>
+<li><a href="#_tips_and_tricks">2.2.10. Tips and tricks</a></li>
 </ul>
 </li>
-<li><a href="#_code_quality">2.3. Code Quality</a>
+<li><a href="#qt_creator">2.3. Qt Creator Configuration</a>
 <ul class="sectlevel3">
-<li><a href="#_frequently_check_for_potential_memory_leaks">2.3.1. Frequently check for potential memory leaks</a></li>
+<li><a href="#_texteditor_settings">2.3.1. TextEditor settings</a></li>
+<li><a href="#_coding_style">2.3.2. Coding style</a></li>
+<li><a href="#_other_coding_style_settings">2.3.3. Other coding style settings:</a></li>
+<li><a href="#_codemodel">2.3.4. Codemodel</a></li>
+<li><a href="#_efficient_use_of_the_qt_creator_ide">2.3.5. Efficient use of the Qt Creator IDE</a></li>
+</ul>
+</li>
+<li><a href="#_code_quality">2.4. Code Quality</a>
+<ul class="sectlevel3">
+<li><a href="#_frequently_check_for_potential_memory_leaks">2.4.1. Frequently check for potential memory leaks</a></li>
 </ul>
 </li>
 </ul>
@@ -155,11 +162,153 @@ table {
 <div class="sect1">
 <h2 id="_general_information">2. General Information</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_building_the_code">2.1. Building the code</h3>
 <div class="paragraph">
-<p>Unresolved directive in Developer-Documentation.adoc - include::Building.adoc[leveloffset=+2]</p>
+<p>Building the code is fairly easy and only requires two steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>setup the development environment</p>
+</li>
+<li>
+<p>run the build scripts</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>For actual development we recommend use of Qt Creator with the prepared <a href="#qmake">qmake build system</a>.</p>
+</div>
+<div class="sect3">
+<h4 id="_setting_up_the_build_environment">2.1.1. Setting up the build environment</h4>
+<div class="paragraph">
+<p>Generally, you need a fairly up-to-date C/C<code> compiler (that means: c</code>11 features should be supported). Also, you need the Qt libraries. And you need cmake. That&#8217;s it, nothing else!</p>
+</div>
+<div class="sect4">
+<h5 id="_windows">Windows</h5>
+<div class="paragraph">
+<p>Note: the build scripts are set up to work for Visual Studio 2015 x64 with Qt Version 5.11.3. You can, however, use any other combination of Visual Studio or even Intel compiler or MinGW and any other (newer) Qt version. It may be, though, that you have to tweak the build scripts or defined environment variables.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Team development works best if all use the same compilers and library versions. If you change build scripts and commit them to the repository, always make sure that you do not distrupt other peoples work by requiring alternative installation directories/tool versions.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Here are the recommended steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Download and install Visual Studio 2015 x64 Express for Desktop. You can get it on <a href="https://visualstudio.microsoft.com/de/vs/older-downloads/" class="bare">https://visualstudio.microsoft.com/de/vs/older-downloads/</a></p>
+</li>
+<li>
+<p>Download and install cmake. Either download from <a href="https://cmake.org" class="bare">https://cmake.org</a> or use <em>chocolatey</em> (<a href="https://chocolatey.org" class="bare">https://chocolatey.org</a>) and run</p>
+<div class="literalblock">
+<div class="content">
+<pre>choco install cmake</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Download and install Qt Version 5.11.3. Download the Qt Online Installer (<a href="https://www.qt.io/download-qt-installer" class="bare">https://www.qt.io/download-qt-installer</a>) and in the installation program select the 5.11.3 variant instead of the default (newest).</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_linux">Linux</h5>
+<div class="paragraph">
+<p>On Linux it&#8217;s a walk in the park. Just install the build-essential package (g++/clang and cmake and qt5default packages). On Ubuntu simply run:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&gt; sudo apt install build-essential cmake qt5-default libqt5svg5-dev</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_macos">MacOS</h5>
+<div class="paragraph">
+<p>MacOS comples with Clang installed. I suggest installing <em>Homebrew</em> (see <a href="https://brew.sh" class="bare">https://brew.sh</a>). Then</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&gt; brew install cmake</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Parallel gcc OpenMP code require a bit of extra work (to be documented later :-)</p>
+</div>
+<div class="paragraph">
+<p>Then, download the Qt online installer (<a href="https://www.qt.io/download-qt-installer" class="bare">https://www.qt.io/download-qt-installer</a>) and also select version 5.11.3.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_building">2.1.2. Building</h4>
+<div class="paragraph">
+<p>This works pretty much the same on all platforms. If you&#8217;ve successfully installed the development environment and can build basic Qt examples (open Qt Creator, pick an example, build it), you should be ok.</p>
+</div>
+<div class="paragraph">
+<p>Go to the <code>build/cmake</code> subdirectory and run:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&gt; ./build.sh</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>for Linux/MacOS or</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&gt; build_VC_x64.bat</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>for Windows.</p>
+</div>
+<div class="paragraph">
+<p>On Linux/MacOS you can pass a few command line options to adjust the build, for example:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&gt; ./build.sh 8 release omp</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>to compile in parallel with 8 CPUs and create a release build (optimized, no debug symbols) with OpenMP enabled. See the documentation in the <code>build.sh</code> script for more information.</p>
+</div>
+<div class="paragraph">
+<p>Once the build has completed, the executables are copied into the <code>bin/release</code> (or <code>bin/release_x64</code> on Windows) directory.</p>
+</div>
+<div class="paragraph">
+<p>On Windows, you may want to run <code>bin/release_x64/CreateDeploy_VC14.bat</code> batch file to fetch all required DLLs (so that you can start the application by double-clicking the executables).</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="qmake">2.1.3. Development with Qt Creator</h4>
+<div class="paragraph">
+<p>Development is best done with Qt Creator (it is way more efficient to work with than Visual Studio or Emacs/VI). The source code is split into many different libraries and executables, so you best open the prepared session project file <code>build/Qt/SIM-VICUS.pro</code>.</p>
+</div>
+<div class="paragraph">
+<p>If you start working with Qt Creator, please mind the configuration rules described in <a href="#qt_creator">Qt Creator Configuration</a>.</p>
+</div>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_coding_guidelines_and_rules">2.1. Coding Guidelines and Rules</h3>
+<h3 id="_coding_guidelines_and_rules">2.2. Coding Guidelines and Rules</h3>
 <div class="paragraph">
 <p>Why coding guidelines and rules?</p>
 </div>
@@ -211,7 +360,7 @@ table {
 <p>Below I&#8217;ve collected a bunch of rules/guidelines that help us achieve this goal of getting nice code, without restricting the individual coding style of each developer too much.</p>
 </div>
 <div class="sect3">
-<h4 id="_programming_efficiency">2.1.1. Programming efficiency</h4>
+<h4 id="_programming_efficiency">2.2.1. Programming efficiency</h4>
 <div class="paragraph">
 <p>We are a small team and need to get the most out of our programming time.</p>
 </div>
@@ -233,7 +382,7 @@ With code-checking-while-typing (see clang checks in Qt Creator), you&#8217;ll c
 </div>
 </div>
 <div class="sect3">
-<h4 id="_indentation_and_line_length_limit">2.1.2. Indentation and line length limit</h4>
+<h4 id="_indentation_and_line_length_limit">2.2.2. Indentation and line length limit</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -246,7 +395,7 @@ With code-checking-while-typing (see clang checks in Qt Creator), you&#8217;ll c
 </div>
 </div>
 <div class="sect3">
-<h4 id="_character_encoding_and_line_endings">2.1.3. Character encoding and line endings</h4>
+<h4 id="_character_encoding_and_line_endings">2.2.3. Character encoding and line endings</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -259,7 +408,7 @@ With code-checking-while-typing (see clang checks in Qt Creator), you&#8217;ll c
 </div>
 </div>
 <div class="sect3">
-<h4 id="_file_naming_and_header_guards">2.1.4. File naming and header guards</h4>
+<h4 id="_file_naming_and_header_guards">2.2.4. File naming and header guards</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -272,7 +421,7 @@ With code-checking-while-typing (see clang checks in Qt Creator), you&#8217;ll c
 </div>
 </div>
 <div class="sect3">
-<h4 id="_namespaces">2.1.5. Namespaces</h4>
+<h4 id="_namespaces">2.2.5. Namespaces</h4>
 <div class="paragraph">
 <p>Each library has its own namespace, matching the file prefix. Example: <code>NANDRAD::Project</code> get <code>NANDRAD_Project.h</code></p>
 </div>
@@ -295,7 +444,7 @@ With code-checking-while-typing (see clang checks in Qt Creator), you&#8217;ll c
 </div>
 </div>
 <div class="sect3">
-<h4 id="_class_and_variable_naming">2.1.6. Class and variable naming</h4>
+<h4 id="_class_and_variable_naming">2.2.6. Class and variable naming</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -352,7 +501,7 @@ With code-checking-while-typing (see clang checks in Qt Creator), you&#8217;ll c
 </div>
 </div>
 <div class="sect3">
-<h4 id="_exception_handling">2.1.7. Exception handling</h4>
+<h4 id="_exception_handling">2.2.7. Exception handling</h4>
 <div class="paragraph">
 <p>Basic rule:</p>
 </div>
@@ -446,7 +595,7 @@ SomeClass::myFunction                         [Error]           I got an invalid
 </div>
 </div>
 <div class="sect3">
-<h4 id="_documentation">2.1.8. Documentation</h4>
+<h4 id="_documentation">2.2.8. Documentation</h4>
 <div class="paragraph">
 <p>Doxygen-style, prefer:</p>
 </div>
@@ -469,7 +618,7 @@ Physical variables used for calculation should always be stored in base SI units
 </div>
 </div>
 <div class="sect3">
-<h4 id="_git_workflow">2.1.9. Git Workflow</h4>
+<h4 id="_git_workflow">2.2.9. Git Workflow</h4>
 <div class="paragraph">
 <p>Since we are a small team, and we want to have close communication of new features/code changes, and also short code-review cycles, we use a single development branch <strong>master</strong> with the following rules:</p>
 </div>
@@ -503,7 +652,7 @@ Physical variables used for calculation should always be stored in base SI units
 </div>
 </div>
 <div class="sect3">
-<h4 id="_tips_and_tricks">2.1.10. Tips and tricks</h4>
+<h4 id="_tips_and_tricks">2.2.10. Tips and tricks</h4>
 <div class="sect4">
 <h5 id="_detecting_uninitialized_variable_access_during_debugging">Detecting uninitialized variable access during debugging</h5>
 <div class="paragraph">
@@ -529,12 +678,12 @@ Physical variables used for calculation should always be stored in base SI units
 </div>
 </div>
 <div class="sect2">
-<h3 id="qt_creator">2.2. Qt Creator Configuration</h3>
+<h3 id="qt_creator">2.3. Qt Creator Configuration</h3>
 <div class="paragraph">
 <p>Please use the following Qt Creator text editor and coding style configuration. Some tipps on efficient Qt Creator use are given below.</p>
 </div>
 <div class="sect3">
-<h4 id="_texteditor_settings">2.2.1. TextEditor settings</h4>
+<h4 id="_texteditor_settings">2.3.1. TextEditor settings</h4>
 <div class="imageblock">
 <div class="content">
 <img src="./images/QtCreator_TextEditorConfig.png" alt="QtCreator TextEditorConfig">
@@ -542,7 +691,7 @@ Physical variables used for calculation should always be stored in base SI units
 </div>
 </div>
 <div class="sect3">
-<h4 id="_coding_style">2.2.2. Coding style</h4>
+<h4 id="_coding_style">2.3.2. Coding style</h4>
 <div class="paragraph">
 <p>Create a custom coding style (copy from Qt-style), name it "IBK" and change it as follows (not shown configuration pages need not be changed):</p>
 </div>
@@ -573,7 +722,7 @@ Physical variables used for calculation should always be stored in base SI units
 </div>
 </div>
 <div class="sect3">
-<h4 id="_other_coding_style_settings">2.2.3. Other coding style settings:</h4>
+<h4 id="_other_coding_style_settings">2.3.3. Other coding style settings:</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -583,7 +732,7 @@ Physical variables used for calculation should always be stored in base SI units
 </div>
 </div>
 <div class="sect3">
-<h4 id="_codemodel">2.2.4. Codemodel</h4>
+<h4 id="_codemodel">2.3.4. Codemodel</h4>
 <div class="paragraph">
 <p>The code model is responsible for checking the code while typing and can detect quite a few problems from mismatching types, misspelled variables, missing ; and basically everything a regular compiler can spot. In fact, the code model just runs the code through the first stages of the compiler - saving you quite a bit of compilation time.</p>
 </div>
@@ -601,7 +750,7 @@ Physical variables used for calculation should always be stored in base SI units
 </div>
 </div>
 <div class="sect3">
-<h4 id="_efficient_use_of_the_qt_creator_ide">2.2.5. Efficient use of the Qt Creator IDE</h4>
+<h4 id="_efficient_use_of_the_qt_creator_ide">2.3.5. Efficient use of the Qt Creator IDE</h4>
 <div class="olist lowerroman">
 <ol class="lowerroman" type="i">
 <li>
@@ -612,12 +761,12 @@ Physical variables used for calculation should always be stored in base SI units
 </div>
 </div>
 <div class="sect2">
-<h3 id="_code_quality">2.3. Code Quality</h3>
+<h3 id="_code_quality">2.4. Code Quality</h3>
 <div class="paragraph">
 <p>This section discusses a few techniques that help you write/maintain high quality code.</p>
 </div>
 <div class="sect3">
-<h4 id="_frequently_check_for_potential_memory_leaks">2.3.1. Frequently check for potential memory leaks</h4>
+<h4 id="_frequently_check_for_potential_memory_leaks">2.4.1. Frequently check for potential memory leaks</h4>
 <div class="paragraph">
 <p>Use valgrind to check for memory leaks in regular intervals:</p>
 </div>
@@ -1323,7 +1472,7 @@ Total initialization time: 802 ms
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated 2020-10-08 15:57:14 +0200
+Last updated 2020-11-03 12:58:30 +0100
 </div>
 </div>
 <style>

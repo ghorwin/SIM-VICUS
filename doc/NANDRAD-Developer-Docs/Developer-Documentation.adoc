@@ -23,7 +23,7 @@ This document is for NANDRAD and SIM-VICUS developers. It discusses coding guide
 ## General Information
 
 
-include::Building.adoc[leveloffset=+2]
+include::building.adoc[leveloffset=+2]
 
 include::Coding-Guidelines.adoc[leveloffset=+2]
 include::Code-Quality-Checking.adoc[leveloffset=+2]
