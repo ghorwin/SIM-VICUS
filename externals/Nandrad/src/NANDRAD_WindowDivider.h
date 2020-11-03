@@ -48,7 +48,7 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Material used for divider (INVALID_ID for no divider). */
-	unsigned int	m_materialID = INVALID_ID;						// XML:E:required
+	unsigned int	m_materialID = INVALID_ID;						// XML:A:required
 	/*! Cross section occupied by all divider elements in this window (required when m_materialID is given). */
 	IBK::Parameter	m_area;											// XML:E:required
 

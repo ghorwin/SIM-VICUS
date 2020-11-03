@@ -36,11 +36,23 @@ void WindowDivider::readXMLPrivate(const TiXmlElement * element) {
 	FUNCID(WindowDivider::readXMLPrivate);
 
 	try {
-		// search for mandatory elements
-		if (!element->FirstChildElement("MaterialID"))
+		// search for mandatory attributes
+		if (!TiXmlAttribute::attributeByName(element, "materialID"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'MaterialID' element.") ), FUNC_ID);
+				IBK::FormatString("Missing required 'materialID' attribute.") ), FUNC_ID);
 
+		// reading attributes
+		const TiXmlAttribute * attrib = element->FirstAttribute();
+		while (attrib) {
+			const std::string & attribName = attrib->NameStr();
+			if (attribName == "materialID")
+				m_materialID = readPODAttributeValue<unsigned int>(element, attrib);
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			attrib = attrib->Next();
+		}
+		// search for mandatory elements
 		if (!element->FirstChildElement("Area"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'Area' element.") ), FUNC_ID);
@@ -49,9 +61,7 @@ void WindowDivider::readXMLPrivate(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "MaterialID")
-				m_materialID = readPODElement<unsigned int>(c, cName);
-			else if (cName == "IBK:Parameter") {
+			if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				readParameterElement(c, p);
 				bool success = false;
@@ -79,7 +89,7 @@ TiXmlElement * WindowDivider::writeXMLPrivate(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("WindowDivider");
 	parent->LinkEndChild(e);
 
-	TiXmlElement::appendSingleAttributeElement(e, "MaterialID", nullptr, std::string(), IBK::val2string<unsigned int>(m_materialID));
+	e->SetAttribute("materialID", IBK::val2string<unsigned int>(m_materialID));
 	TiXmlElement::appendIBKParameterElement(e, m_area.name, m_area.IO_unit.name(), m_area.get_value());
 	return e;
 }

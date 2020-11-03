@@ -42,7 +42,7 @@ public:
 
 	/*! Model parameters. */
 	enum para_t {
-		P_UValue,						// Keyword: ThermalTransmittance		[W/m2K]		'Thermal transmittance'
+		P_ThermalTransmittance,			// Keyword: ThermalTransmittance		[W/m2K]		'Thermal transmittance'
 		NUM_P
 	};
 
@@ -64,7 +64,7 @@ public:
 	IBK::Parameter						m_para[NUM_P];								// XML:E
 
 	/*! Parameter for angle-dependent SHGC value. */
-	LinearSplineParameter				m_shgc;										// XML:E:tag=SHGC
+	LinearSplineParameter				m_shgc;										// XML:E
 
 
 }; // WindowGlazingSystem

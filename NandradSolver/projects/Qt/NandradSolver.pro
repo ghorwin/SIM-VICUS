@@ -55,6 +55,7 @@ INCLUDEPATH = \
 DEPENDPATH = $${INCLUDEPATH}
 
 SOURCES += \
+	../../../NandradDevTests/src/main.cpp \
 	../../src/NM_AbstractModel.cpp \
 	../../src/NM_ConstructionBalanceModel.cpp \
 	../../src/NM_ConstructionStatesModel.cpp \
@@ -75,8 +76,7 @@ SOURCES += \
 	../../src/NM_StateModelGroup.cpp \
 	../../src/NM_SteadyStateSolver.cpp \
 	../../src/NM_VectorValuedQuantity.cpp \
-	../../src/NM_VectorValuedQuantityIndex.cpp \
-	../../src/main.cpp
+	../../src/NM_VectorValuedQuantityIndex.cpp
 
 HEADERS += \
 	../../doc/NandradSolverMainPage.h \
