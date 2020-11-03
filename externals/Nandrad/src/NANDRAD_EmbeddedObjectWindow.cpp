@@ -41,9 +41,9 @@ bool EmbeddedObjectWindow::operator!=(const EmbeddedObjectWindow & other) const 
 }
 
 
-void EmbeddedObjectWindow::checkParameters(double maxArea,
+void EmbeddedObjectWindow::checkParameters(double grossArea,
 										   const std::vector<Material> & materials,
-										   const std::vector<WindowGlazingSystem> & glazingSystems) const
+										   const std::vector<WindowGlazingSystem> & glazingSystems)
 {
 	FUNCID(EmbeddedObjectWindow::checkParameters);
 
@@ -51,24 +51,38 @@ void EmbeddedObjectWindow::checkParameters(double maxArea,
 	if (!hasParameters())
 		return;
 
-	double frameDividerArea = 0;
-	if (m_frame.m_materialID != INVALID_ID) {
-		frameDividerArea +=
-			m_frame.m_area.checkedValue("m2", "m2", 0, true, std::numeric_limits<double>::max(), true,
-									   "Cross section area of frame must be >= 0 m2.");
+	try {
+		m_frame.checkParameters(materials);
+	} catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, "Error in window frame parameters.", FUNC_ID);
 	}
-	if (m_divider.m_materialID != INVALID_ID) {
-		frameDividerArea +=
-			m_divider.m_area.checkedValue("m2", "m2", 0, true, std::numeric_limits<double>::max(), true,
-									   "Cross section area of dividers must be >= 0 m2.");
+	try {
+		m_divider.checkParameters(materials);
+	} catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, "Error in window dividers parameters.", FUNC_ID);
 	}
 
+	double frameDividerArea = 0;
+	if (m_frame.m_materialID != INVALID_ID)
+		frameDividerArea += m_frame.m_area.value;
+	if (m_divider.m_materialID != INVALID_ID)
+		frameDividerArea += m_divider.m_area.value;
+
 	// check that sum doesn't exceed limit
-	if (frameDividerArea >= maxArea) {
+	if (frameDividerArea >= grossArea) {
 		throw IBK::Exception( IBK::FormatString("Cross section of frame and divider "
 												"(= %1 m2) exceeds cross section %2 m2 of embedded object.")
-							  .arg(frameDividerArea).arg(maxArea), FUNC_ID);
+							  .arg(frameDividerArea).arg(grossArea), FUNC_ID);
 	}
+
+	m_glasArea = grossArea - frameDividerArea;
+
+	// now lookup glazing system
+	std::vector<WindowGlazingSystem>::const_iterator it = std::find(glazingSystems.begin(), glazingSystems.end(), m_glazingSystemID);
+	if (it == glazingSystems.end())
+		throw IBK::Exception(IBK::FormatString("Glazing system with ID %1 not defined.").arg(m_glazingSystemID), FUNC_ID);
+	// cache pointer
+	m_glazingSystem = &(*it);
 }
 
 

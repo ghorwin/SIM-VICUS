@@ -41,11 +41,11 @@ EmbeddedObject::objectType_t EmbeddedObject::objectType() const {
 }
 
 
-void EmbeddedObject::checkParameters(const Project & prj) const {
+void EmbeddedObject::checkParameters(const Project & prj) {
 	double area = m_para[P_Area].checkedValue("m2", "m2", 0, true, std::numeric_limits<double>::max(), true,
 											  "Cross section area of embedded object must be >= 0 m2.");
 
-//	m_window.checkParameters(area, prj.m_materials);
+	m_window.checkParameters(area, prj.m_materials, prj.m_glazingSystems);
 }
 
 

@@ -38,6 +38,7 @@
 #include "NANDRAD_Material.h"
 #include "NANDRAD_ObjectList.h"
 #include "NANDRAD_Models.h"
+#include "NANDRAD_WindowGlazingSystem.h"
 
 namespace NANDRAD {
 
@@ -116,6 +117,9 @@ public:
 
 	/*! All material types. */
 	std::vector<Material>							m_materials;						// XML:E
+
+	/*! All glazing types. */
+	std::vector<WindowGlazingSystem>				m_glazingSystems;					// XML:E
 
 	/*! References to all schedules.*/
 	Schedules										m_schedules;						// XML:E

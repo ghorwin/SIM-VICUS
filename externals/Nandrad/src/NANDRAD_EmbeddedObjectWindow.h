@@ -52,11 +52,11 @@ public:
 	/*! Checks for valid parameters (value ranges). Also, this function creates
 		quick-access pointers to the referenced data structures, hereby testing for existence
 		of referenced data types.
-		\param maxArea Cross section in [m2] of embedded object. Frame and divider must
+		\param grossArea Cross section in [m2] of embedded object. Frame and divider must
 					not exceed this cross section.
 	*/
-	void checkParameters(double maxArea, const std::vector<Material> & materials,
-						 const std::vector<WindowGlazingSystem> & glazingSystems) const;
+	void checkParameters(double grossArea, const std::vector<Material> & materials,
+						 const std::vector<WindowGlazingSystem> & glazingSystems);
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -71,10 +71,14 @@ public:
 
 	// *** Variables used only during simulation ***
 
+	/*! Cached cross-section area of glas surface in [m2] (embedded object gross area minus frame and divider cross section areas). */
+	double									m_glasArea = 999;
+
 	/*! Quick-access pointer to the glazing system data. */
 	const NANDRAD::WindowGlazingSystem		*m_glazingSystem = nullptr;
 
 }; // EmbeddedObjectWindow
+
 
 } // namespace NANDRAD
 

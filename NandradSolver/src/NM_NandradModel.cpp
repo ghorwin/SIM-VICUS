@@ -1026,7 +1026,8 @@ void NandradModel::initWallsAndInterfaces() {
 			mat.checkParameters();
 		}
 		catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error initializing material #%1 '%2'.").arg(i).arg(mat.m_displayName), FUNC_ID);
+			throw IBK::Exception(ex, IBK::FormatString("Error initializing material #%1 '%2' (id=%3).")
+								 .arg(i).arg(mat.m_displayName).arg(mat.m_id), FUNC_ID);
 		}
 	}
 
@@ -1036,7 +1037,8 @@ void NandradModel::initWallsAndInterfaces() {
 			ct.checkParameters(m_project->m_materials);
 		}
 		catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error initializing construction type #%1 '%2'.").arg(i).arg(ct.m_displayName), FUNC_ID);
+			throw IBK::Exception(ex, IBK::FormatString("Error initializing construction type #%1 '%2' (id=%3).")
+								 .arg(i).arg(ct.m_displayName).arg(ct.m_id), FUNC_ID);
 		}
 	}
 

@@ -64,8 +64,10 @@ public:
 	/*! returns an object type if a model for an object was defined. */
 	objectType_t objectType() const;
 
-	/*! Checks for valid parameters (value ranges). */
-	void checkParameters(const Project & prj) const;
+	/*! Checks for valid parameters (value ranges).
+		Also creates quick-access pointer connections to referenced data objects.
+	*/
+	void checkParameters(const Project & prj);
 
 
 	// *** PUBLIC MEMBER VARIABLES ***

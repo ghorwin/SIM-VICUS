@@ -26,6 +26,7 @@
 
 #include "NANDRAD_CodeGenMacros.h"
 #include "NANDRAD_Constants.h"
+#include "NANDRAD_LinearSplineParameter.h"
 
 namespace NANDRAD {
 
@@ -39,14 +40,32 @@ public:
 		NUM_MT
 	};
 
+	/*! Model parameters. */
+	enum para_t {
+		P_UValue,						// Keyword: ThermalTransmittance		[W/m2K]		'Thermal transmittance'
+		NUM_P
+	};
+
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	NANDRAD_READWRITE
+	NANDRAD_COMPARE_WITH_ID
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
+	/*! Unique ID-number for this ventilation rate model. */
+	unsigned int						m_id = NANDRAD::INVALID_ID;					// XML:A:required
+	/*! Some display/comment name for this model (optional). */
+	std::string							m_displayName;								// XML:A
 	/*! Model type. */
 	modelType_t							m_modelType = NUM_MT;						// XML:A:required
+
+	/*! Model parameters. */
+	IBK::Parameter						m_para[NUM_P];								// XML:E
+
+	/*! Parameter for angle-dependent SHGC value. */
+	LinearSplineParameter				m_shgc;										// XML:E:tag=SHGC
+
 
 }; // WindowGlazingSystem
 

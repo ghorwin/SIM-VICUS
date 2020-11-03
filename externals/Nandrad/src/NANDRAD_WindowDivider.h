@@ -22,10 +22,14 @@
 #ifndef NANDRAD_WindowDividerH
 #define NANDRAD_WindowDividerH
 
+#include <algorithm>
+
 #include <IBK_Parameter.h>
+#include <IBK_Exception.h>
 
 #include "NANDRAD_CodeGenMacros.h"
 #include "NANDRAD_Constants.h"
+#include "NANDRAD_Material.h"
 
 namespace NANDRAD {
 
@@ -39,12 +43,19 @@ public:
 	NANDRAD_READWRITE_IFNOTEMPTY(WindowDivider)
 	NANDRAD_COMP(WindowDivider)
 
+	void checkParameters(const std::vector<Material> & materials);
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Material used for divider (INVALID_ID for no divider). */
 	unsigned int	m_materialID = INVALID_ID;						// XML:E:required
 	/*! Cross section occupied by all divider elements in this window (required when m_materialID is given). */
 	IBK::Parameter	m_area;											// XML:E:required
+
+	// *** Variables used only during simulation ***
+
+	/*! Cached thermal conductivity in [W/mK], retrieved from referenced material in checkParameters(). */
+	double			m_lambda = 999;
 
 }; // WindowDivider
 
@@ -53,6 +64,22 @@ inline bool WindowDivider::operator!=(const WindowDivider & other) const {
 	if (m_materialID != other.m_materialID) return true;
 	if (m_area != other.m_area) return true;
 	return false;
+}
+
+
+inline void WindowDivider::checkParameters(const std::vector<Material> & materials) {
+	FUNCID(WindowDivider::checkParameters);
+
+	if (m_materialID == INVALID_ID)
+		return;
+	// search material list for required material
+	std::vector<Material>::const_iterator it = std::find(materials.begin(), materials.end(), m_materialID);
+	if (it == materials.end())
+		throw IBK::Exception(IBK::FormatString("Material with ID %1 not defined.").arg(m_materialID), FUNC_ID);
+	m_lambda = it->m_para[Material::P_Conductivity].value;
+
+	m_area.checkedValue("m2", "m2", 0, true, std::numeric_limits<double>::max(), true,
+						"Cross section area of dividers must be >= 0 m2.");
 }
 
 } // namespace NANDRAD
