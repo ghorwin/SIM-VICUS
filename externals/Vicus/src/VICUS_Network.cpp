@@ -120,6 +120,16 @@ void Network::Node::collectConnectedEdges(std::set<const Network::Node *> & conn
 }
 
 
+void Network::Node::checkIsDeadEnd(){
+	unsigned c = 0;
+	for (Edge *e: m_edges){
+		if (!e->neighbourNode(this)->isDeadEnd)
+			++c;
+	}
+	isDeadEnd = c < 2 && m_type != NT_Building && m_type != NT_Source;
+}
+
+
 Network::Edge *Network::Node::neighborEdge(const Network::Edge *e) const
 {
 	IBK_ASSERT(m_edges.size()==2);
@@ -202,7 +212,8 @@ void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heat
 		IBK::trim(line, "))");
 		IBK::explode(line, xyStr, " ", IBK::EF_NoFlags);
 		// add node
-		unsigned id = addNode(IBK::string2val<double>(xyStr[0]), IBK::string2val<double>(xyStr[1]), Node::NT_Building, heatDemand);
+		unsigned id = addNode(IBK::string2val<double>(xyStr[0]), IBK::string2val<double>(xyStr[1]), Node::NT_Building);
+		m_nodes[id].m_heatingDemand = heatDemand;
 	}
 }
 
@@ -315,9 +326,15 @@ int Network::nextUnconnectedBuilding(){
 }
 
 
-void Network::networkWithoutDeadEnds(Network &cleanNetwork) const{
+void Network::networkWithoutDeadEnds(Network &cleanNetwork, const unsigned maxSteps){
+
+	for (unsigned step=0; step<maxSteps; ++step){
+		for (unsigned n=0; n<m_nodes.size(); ++n){
+			m_nodes[n].checkIsDeadEnd();
+		}
+	}
 	for (const Edge &e: m_edges){
-		if (e.m_node1->isDeadEnd() || e.m_node2->isDeadEnd())
+		if (e.m_node1->isDeadEnd || e.m_node2->isDeadEnd)
 			continue;
 		unsigned id1 = cleanNetwork.addNode(*e.m_node1);
 		unsigned id2 = cleanNetwork.addNode(*e.m_node2);
@@ -355,12 +372,12 @@ void Network::sizePipeDimensions(const double &dpMax, const double &dT, const do
 
 	// we need a table with pipe dimensions here
 	// and an interface to the fluid properties...
+
 	for (Edge &e: m_edges){
 		double cp =  3800;
 		double massFlow = e.m_heatingDemand / dT / cp;
-		double dp = pressureLossColebrook(0.01, e.m_length, roughness, massFlow,fluidDensity, fluidKinViscosity);
+		double dp = pressureLossColebrook(0.01, e.m_length, roughness, massFlow, fluidDensity, fluidKinViscosity);
 	}
-
 }
 
 
@@ -402,14 +419,33 @@ void Network::networkWithReducedEdges(Network & reducedNetwork){
 }
 
 
-const Network::Node * Network::Node::findNextNonRedundantNode(std::set<unsigned> & redundantNodes, double & totalLength, const Network::Edge *edgeToVisit) const
+const Network::Node * Network::Node::findNextNonRedundantNode(std::set<unsigned> & redundantNodes, double & distance, const Network::Edge *edgeToVisit) const
 {
-	totalLength += edgeToVisit->m_length;
+	distance += edgeToVisit->m_length;
 	Node * nextNode = edgeToVisit->neighbourNode(this);
 	if (!nextNode->isRedundant())
 		return nextNode;
 	redundantNodes.insert(nextNode->m_id);
-	return nextNode->findNextNonRedundantNode(redundantNodes, totalLength, nextNode->neighborEdge(edgeToVisit));
+	return nextNode->findNextNonRedundantNode(redundantNodes, distance, nextNode->neighborEdge(edgeToVisit));
+}
+
+
+void Network::Node::findRedundantNodes(std::set<unsigned> & redundantNodes, std::set<const Network::Edge *> & visitedEdges) const
+{
+	// redundant nodes have exactly 2 connected edges
+	if (this->isRedundant()){
+		redundantNodes.insert(this->m_id);
+	}
+	for (const Edge * e: m_edges){
+		// remember visited edges and dont visit them again
+		if (visitedEdges.find(e) == visitedEdges.end()){
+			visitedEdges.insert(e);
+			if (e->m_nodeId1 == this->m_id)
+				e->m_node2->findRedundantNodes(redundantNodes, visitedEdges);
+			else
+				e->m_node1->findRedundantNodes(redundantNodes, visitedEdges);
+		}
+	}
 }
 
 
@@ -479,7 +515,7 @@ double Network::Node::adjacentHeatingDemand(std::set<Network::Edge *> visitedEdg
 
 void Network::writeNetworkCSV(const IBK::Path &file) const{
 	std::ofstream f;
-	f.open(file.str());
+	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
 	for (const Edge &e: m_edges){
 		f.precision(10);
 		f << std::fixed << e.m_node1->m_x << "\t" << e.m_node1->m_y << "\t" << e.m_node2->m_x << "\t" << e.m_node2->m_y << "\t" << e.m_length << std::endl;
@@ -490,7 +526,7 @@ void Network::writeNetworkCSV(const IBK::Path &file) const{
 
 void Network::writePathCSV(const IBK::Path &file, const VICUS::Network::Node & node, const std::vector<VICUS::Network::Edge*> &path) const {
 	std::ofstream f;
-	f.open(file.str());
+	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
 	f.precision(10);
 	f << std::fixed << node.m_x << "\t" << node.m_y << std::endl;
 	for (const Edge *e: path){
@@ -502,7 +538,7 @@ void Network::writePathCSV(const IBK::Path &file, const VICUS::Network::Node & n
 
 void Network::writeBuildingsCSV(const IBK::Path &file) const {
 	std::ofstream f;
-	f.open(file.str());
+	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
 	f.precision(10);
 	for (const Node &n: m_nodes){
 		if (n.m_type==Network::Node::NT_Building)
@@ -560,26 +596,6 @@ double Network::pressureLossColebrook(const double &diameter, const double &leng
 	}
 	return lambda_new * length / diameter * fluidDensity / 2 * velocity * velocity;
 }
-
-
-//void Network::Node::findRedundantNodes(std::set<unsigned> & redundantNodes, std::set<const Network::Edge *> & visitedEdges) const
-//{
-//	// redundant nodes have exactly 2 connected edges
-//	if (this->isRedundant()){
-//		redundantNodes.insert(this->m_id);
-//	}
-//	for (const Edge * e: m_edges){
-//		// remember visited edges and dont visit them again
-//		if (visitedEdges.find(e) == visitedEdges.end()){
-//			visitedEdges.insert(e);
-//			if (e->m_nodeId1 == this->m_id)
-//				e->m_node2->findRedundantNodes(redundantNodes, visitedEdges);
-//			else
-//				e->m_node1->findRedundantNodes(redundantNodes, visitedEdges);
-//		}
-
-//	}
-//}
 
 
 
