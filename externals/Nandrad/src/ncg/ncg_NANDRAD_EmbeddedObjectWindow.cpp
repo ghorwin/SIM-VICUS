@@ -26,54 +26,41 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
-#include <NANDRAD_KeywordList.h>
 #include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
 
 namespace NANDRAD {
 
-void EmbeddedObjectWindow::readXML(const TiXmlElement * element) {
-	FUNCID(EmbeddedObjectWindow::readXML);
+void EmbeddedObjectWindow::readXMLPrivate(const TiXmlElement * element) {
+	FUNCID(EmbeddedObjectWindow::readXMLPrivate);
 
 	try {
+		// search for mandatory attributes
+		if (!TiXmlAttribute::attributeByName(element, "glazingSystemID"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'glazingSystemID' attribute.") ), FUNC_ID);
+
+		// reading attributes
+		const TiXmlAttribute * attrib = element->FirstAttribute();
+		while (attrib) {
+			const std::string & attribName = attrib->NameStr();
+			if (attribName == "glazingSystemID")
+				m_glazingSystemID = readPODAttributeValue<unsigned int>(element, attrib);
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			attrib = attrib->Next();
+		}
 		// search for mandatory elements
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "IBK:Parameter") {
-				IBK::Parameter p;
-				readParameterElement(c, p);
-				bool success = false;
-				para_t ptype;
-				try {
-					ptype = (para_t)KeywordList::Enumeration("EmbeddedObjectWindow::para_t", p.name);
-					m_para[ptype] = p;
-					success = true;
-				}
-				catch (IBK::Exception & ex) { ex.writeMsgStackToError(); }
-				if (success) {
-					std::string refUnit = KeywordList::Unit("EmbeddedObjectWindow::para_t", ptype);
-					if (!refUnit.empty() && (p.IO_unit.base_id() != IBK::Unit(refUnit).base_id())) {
-						throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(c->Row())
-											  .arg("Incompatible unit '"+p.IO_unit.name()+"', expected '"+refUnit +"'."), FUNC_ID);
-					}
-				}
-				if (!success)
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			else if (cName == "WindowTypeReference")
-				m_windowTypeReference = c->GetText();
-			else if (cName == "ModelType") {
-				try {
-					m_modelType = (modelType_t)KeywordList::Enumeration("EmbeddedObjectWindow::modelType_t", c->GetText());
-				}
-				catch (IBK::Exception & ex) {
-					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
-						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
-				}
-			}
+			if (cName == "WindowFrame")
+				m_frame.readXML(c);
+			else if (cName == "WindowDivider")
+				m_divider.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -88,20 +75,15 @@ void EmbeddedObjectWindow::readXML(const TiXmlElement * element) {
 	}
 }
 
-TiXmlElement * EmbeddedObjectWindow::writeXML(TiXmlElement * parent) const {
+TiXmlElement * EmbeddedObjectWindow::writeXMLPrivate(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("EmbeddedObjectWindow");
 	parent->LinkEndChild(e);
 
+	e->SetAttribute("glazingSystemID", IBK::val2string<unsigned int>(m_glazingSystemID));
 
-	if (m_modelType != NUM_MT)
-		TiXmlElement::appendSingleAttributeElement(e, "ModelType", nullptr, std::string(), KeywordList::Keyword("EmbeddedObjectWindow::modelType_t",  m_modelType));
+	m_frame.writeXML(e);
 
-	for (unsigned int i=0; i<NUM_P; ++i) {
-		if (!m_para[i].name.empty())
-			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
-	}
-	if (!m_windowTypeReference.empty())
-		TiXmlElement::appendSingleAttributeElement(e, "WindowTypeReference", nullptr, std::string(), m_windowTypeReference);
+	m_divider.writeXML(e);
 	return e;
 }
 

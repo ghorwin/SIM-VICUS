@@ -22,10 +22,9 @@
 #ifndef NANDRAD_ConstructionInstanceH
 #define NANDRAD_ConstructionInstanceH
 
-#include <string>
-
+#include "NANDRAD_Material.h"
 #include "NANDRAD_Interface.h"
-//#include "NANDRAD_EmbeddedObject.h"
+#include "NANDRAD_EmbeddedObject.h"
 #include "NANDRAD_CodeGenMacros.h"
 
 namespace IBK {
@@ -34,6 +33,7 @@ namespace IBK {
 
 namespace NANDRAD {
 
+class Project;
 class ConstructionType;
 
 /*!	Defines a wall/floor/ceiling construction instance.
@@ -74,10 +74,11 @@ public:
 	NANDRAD_READWRITE
 
 	/*! Checks for valid parameters and stores quick-access pointer to associated construction type.
+		Material and ConstructionType objects have already been checked for correctness.
 		\note This function throws an exception if invalid parameters are defined, parameters are missing, or
 			the construction type ID is invalid/unknown.
 	*/
-	void checkParameters(const std::vector<ConstructionType> & conTypes);
+	void checkParameters(const Project & prj);
 
 	/*! A special form of comparison operator: tests if the construction would yield
 		the same results as the other construction when being simulated.
@@ -107,7 +108,7 @@ public:
 	/*! All embedded objects. Embedded objects cut out an area of the current construction and substitute
 		wall simulation by an explicit simulation model.
 	*/
-//	std::vector<EmbeddedObject>	m_embeddedObjects;
+	std::vector<EmbeddedObject>	m_embeddedObjects;				// XML:E
 
 	// *** Variables used only during simulation ***
 

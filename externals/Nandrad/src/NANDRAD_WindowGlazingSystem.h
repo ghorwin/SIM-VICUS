@@ -19,35 +19,37 @@
 	Lesser General Public License for more details.
 */
 
-#include "NANDRAD_EmbeddedObject.h"
+#ifndef NANDRAD_WindowGlazingSystemH
+#define NANDRAD_WindowGlazingSystemH
 
-#include <IBK_Exception.h>
-#include <IBK_StringUtils.h>
-#include <IBK_messages.h>
+#include <IBK_Parameter.h>
 
-#include <tinyxml.h>
-
-#include "NANDRAD_KeywordList.h"
-#include "NANDRAD_Project.h"
+#include "NANDRAD_CodeGenMacros.h"
+#include "NANDRAD_Constants.h"
 
 namespace NANDRAD {
 
-EmbeddedObject::objectType_t EmbeddedObject::objectType() const {
+/*!	WindowGlazingSystem defines the glazing to be used in a window. */
+class WindowGlazingSystem  {
+public:
 
-	if (m_window.hasParameters())
-		return OT_WINDOW;
+	/*! Model types supported by the window model. */
+	enum modelType_t {
+		MT_Simple,						// Keyword: Simple			'Simple globbed-layers model.'
+		NUM_MT
+	};
 
-	return EmbeddedObject::NUM_OT;
-}
+	// *** PUBLIC MEMBER FUNCTIONS ***
 
+	NANDRAD_READWRITE
 
-void EmbeddedObject::checkParameters(const Project & prj) const {
-	double area = m_para[P_Area].checkedValue("m2", "m2", 0, true, std::numeric_limits<double>::max(), true,
-											  "Cross section area of embedded object must be >= 0 m2.");
+	// *** PUBLIC MEMBER VARIABLES ***
 
-//	m_window.checkParameters(area, prj.m_materials);
-}
+	/*! Model type. */
+	modelType_t							m_modelType = NUM_MT;						// XML:A:required
 
+}; // WindowGlazingSystem
 
 } // namespace NANDRAD
 
+#endif // NANDRAD_WindowGlazingSystemH

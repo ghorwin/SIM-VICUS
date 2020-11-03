@@ -86,6 +86,18 @@ void ConstructionInstance::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
+			else if (cName == "EmbeddedObjects") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "EmbeddedObject")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					EmbeddedObject obj;
+					obj.readXML(c2);
+					m_embeddedObjects.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else if (cName == "InterfaceA")
 				m_interfaceA.readXML(c);
 			else if (cName == "InterfaceB")
@@ -127,6 +139,18 @@ TiXmlElement * ConstructionInstance::writeXML(TiXmlElement * parent) const {
 		TiXmlElement * customElement = m_interfaceB.writeXML(e);
 		customElement->ToElement()->SetValue("InterfaceB");
 	}
+
+	if (!m_embeddedObjects.empty()) {
+		TiXmlElement * child = new TiXmlElement("EmbeddedObjects");
+		e->LinkEndChild(child);
+
+		for (std::vector<EmbeddedObject>::const_iterator it = m_embeddedObjects.begin();
+			it != m_embeddedObjects.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
 	return e;
 }
 

@@ -22,75 +22,57 @@
 #ifndef NANDRAD_EmbeddedObjectWindowH
 #define NANDRAD_EmbeddedObjectWindowH
 
-#include <string>
-
 #include <IBK_Parameter.h>
 
 #include "NANDRAD_CodeGenMacros.h"
+#include "NANDRAD_Constants.h"
 
-class TiXmlElement;
+#include "NANDRAD_Material.h"
+#include "NANDRAD_WindowFrame.h"
+#include "NANDRAD_WindowDivider.h"
+#include "NANDRAD_WindowGlazingSystem.h"
 
 namespace NANDRAD {
 
-/*!	\brief Declaration for class EmbeddedObjectWindow
-
-	An embedded object generally defines a wall opening (a window or a door).
-	That means, the calculation radiant heat fluxes and heat fluxes by heat transmission are performed
-	by a window model or door model. The embedded oject	stores an exchangable parameter model
-	that defines the name for the calculation model and constant model parameters.
+/*!	Class EmbeddedObjectWindow defines a window and holds parameters for solar radiation
+	flux calculation and heat exchange through the window.
 */
 class EmbeddedObjectWindow  {
+	NANDRAD_READWRITE_PRIVATE
 public:
-
-
-	/*! Parameters to be defined for the various window model types. */
-	enum para_t {
-		P_GlassFraction,			// Keyword: GlassFraction				[---]		{1}		'Fraction of glass area versus total area [1 - no frame, 0 - all frame].'
-		P_SolarHeatGainCoefficient,	// Keyword: SolarHeatGainCoefficient	[---]		{0.8}	'Constant transmissibility [0 - opaque, 1 - fully translucent].'
-		P_ThermalTransmittance,		// Keyword: ThermalTransmittance		[W/m2K]		{0.8}	'Effective heat transfer coefficient (area-weighted U-value of frame and glass).'
-		P_ShadingFactor,			// Keyword: ShadingFactor				[---]		{1}		'Shading factor (between 0...1).'
-		P_LeakageCoefficient,		// Keyword: LeakageCoefficient			[---]		{1}		'Leakage coefficient of joints [m3/sPa^n].'
-		NUM_P
-	};
-
-	/*! Model types supported by the window model. */
-	enum modelType_t {
-		MT_Constant,				// Keyword: Constant				'Constant model.'
-		MT_Detailed,				// Keyword: Detailed				'Model with detailed layers for calculation of long wave radiation, short wave radiation and gas convection transport.'
-		MT_DetailedWithStorage,		// Keyword: DetailedWithStorage		'Model with detailed layers and thermal storage of glass layers.'
-		NUM_MT
-	};
-
-
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	/*! Default constructor. */
-	EmbeddedObjectWindow();
+	NANDRAD_READWRITE_IFNOTEMPTY(EmbeddedObjectWindow)
+	NANDRAD_COMP(EmbeddedObjectWindow)
 
-	/*! Reads the data from the xml element.
-		Throws an IBK::Exception if a syntax error occurs.
+	/*! Returns true, if a glazing system is defined. */
+	bool hasParameters() const { return m_glazingSystemID != INVALID_ID; }
+
+	/*! Checks for valid parameters (value ranges). Also, this function creates
+		quick-access pointers to the referenced data structures, hereby testing for existence
+		of referenced data types.
+		\param maxArea Cross section in [m2] of embedded object. Frame and divider must
+					not exceed this cross section.
 	*/
-	//void readXML(const TiXmlElement * element);
-
-	/*! Appends the element to the parent xml element.
-		Throws an IBK::Exception in case of invalid data.
-	*/
-	//void writeXML(TiXmlElement * parent) const;
-
-	NANDRAD_READWRITE
+	void checkParameters(double maxArea, const std::vector<Material> & materials,
+						 const std::vector<WindowGlazingSystem> & glazingSystems) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Model type. */
-	modelType_t							m_modelType;								// XML:E
-	/*! Provided parameters for all model types, stored in a set of enums. */
-	std::map<int, std::set<int> >		m_modelTypeToParameterMapping;
+	/*! ID of the glazing system used in this window.
+		A glazing system with invalid ID means that this Window object is now parametrized. */
+	unsigned int	m_glazingSystemID		= INVALID_ID;				// XML:A:required
 
-	/*! List of constant parameters.*/
-	IBK::Parameter						m_para[NUM_P];								// XML:E
-	/*! Path to a window type file for detailed calculation. Empty for model type 'Constant'*/
-	std::string							m_windowTypeReference;						// XML:E
+	/*! Frame parameters (optional). */
+	WindowFrame		m_frame;											// XML:E
+	/*! Divider parameters (optional). */
+	WindowDivider	m_divider;											// XML:E
+
+	// *** Variables used only during simulation ***
+
+	/*! Quick-access pointer to the glazing system data. */
+	const NANDRAD::WindowGlazingSystem		*m_glazingSystem = nullptr;
 
 }; // EmbeddedObjectWindow
 

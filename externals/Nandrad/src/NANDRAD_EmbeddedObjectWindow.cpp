@@ -25,146 +25,51 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <IBK_messages.h>
-#include <IBK_algorithm.h>
 
-#include <tinyxml.h>
 
 #include "NANDRAD_Constants.h"
 
 namespace NANDRAD {
 
-EmbeddedObjectWindow::EmbeddedObjectWindow() :
-	m_modelType(NUM_MT)
+bool EmbeddedObjectWindow::operator!=(const EmbeddedObjectWindow & other) const {
+	// model comparison
+	if (m_glazingSystemID != other.m_glazingSystemID)		return true;
+	if (m_frame != other.m_frame)							return true;
+	if (m_divider != other.m_divider)						return true;
+
+	return false; // not different
+}
+
+
+void EmbeddedObjectWindow::checkParameters(double maxArea,
+										   const std::vector<Material> & materials,
+										   const std::vector<WindowGlazingSystem> & glazingSystems) const
 {
-	// model patrameters for constant model
-	std::set<int> parametersModelConstant;
-	parametersModelConstant.insert( (int) P_GlassFraction);
-	parametersModelConstant.insert( (int) P_SolarHeatGainCoefficient);
-	parametersModelConstant.insert( (int) P_ThermalTransmittance);
-	parametersModelConstant.insert( (int) P_ShadingFactor);
-	parametersModelConstant.insert((int)P_LeakageCoefficient);
-	m_modelTypeToParameterMapping[MT_Constant] = parametersModelConstant;
+	FUNCID(EmbeddedObjectWindow::checkParameters);
 
-	// model patrameters for detailed model
-	std::set<int> parametersModelDetailed;
-	parametersModelDetailed.insert((int)P_ShadingFactor);
-	parametersModelDetailed.insert((int)P_LeakageCoefficient);
-	m_modelTypeToParameterMapping[MT_Detailed] = parametersModelDetailed;
+	// only check parameters if model is enabled
+	if (!hasParameters())
+		return;
 
-	// model patrameters for detailed ODE model
-	m_modelTypeToParameterMapping[MT_DetailedWithStorage] = parametersModelDetailed;
-}
-
-
-#if 0
-void EmbeddedObjectWindow::readXML(const TiXmlElement * element) {
-	FUNCID(EmbeddedObjectWindow::readXML);
-
-	try {
-		// read attributes
-		const TiXmlAttribute * model = TiXmlAttribute::attributeByName(element, "model");
-		// error undefined model
-		if( !model)
-		{
-		   throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				"Missing 'model' attribute."
-				), FUNC_ID);
-		}
-
-		if(! KeywordList::KeywordExists("EmbeddedObjectWindow::modelType_t", model->Value()) )
-		{
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Invalid model id '%1'.").arg(model->Value()).arg(element->Row())
-				), FUNC_ID);
-		}
-
-		m_modelType = (modelType_t)KeywordList::Enumeration("EmbeddedObjectWindow::modelType_t", model->Value());
-
-		// read parameters
-		// read sub-elements
-		for (const TiXmlElement * c = element->FirstChildElement(); c; c = c->NextSiblingElement()) {
-			// determine data based on element name
-			std::string cname = c->Value();
-			if (cname == "IBK:Parameter") {
-				// use utility function to read parameter
-				std::string namestr, unitstr;
-				double value;
-				TiXmlElement::readIBKParameterElement(c, namestr, unitstr, value);
-				// determine type of parameter
-				if (KeywordList::KeywordExists("EmbeddedObjectWindow::para_t", namestr)) {
-					para_t t = (para_t)KeywordList::Enumeration("EmbeddedObjectWindow::para_t", namestr);
-
-					// check validity of parameter
-					IBK_ASSERT(IBK::map_contains(m_modelTypeToParameterMapping, m_modelType));
-
-					// check parameter contained in set
-					if (!IBK::map_contains(m_modelTypeToParameterMapping[m_modelType], t)) {
-						IBK::IBK_Message(IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
-							IBK::FormatString("Parameter %1 is not supportet by selected model type %2.")
-							.arg(namestr)
-							.arg(KeywordList::Keyword("InterfaceLongWaveEmission::modelType_t", m_modelType))),
-							IBK::MSG_WARNING,
-							FUNC_ID,
-							IBK::VL_STANDARD);
-					}
-
-					m_para[t].set(namestr, value, unitstr);
-				}
-				// we have a generic parameter
-				else
-				{
-					readGenericParameterElement(c);
-				}
-			}
-			// window type reference
-			else if (cname == "WindowTypeReference") {
-				// not supported for constant window models
-				if (m_modelType == MT_CONSTANT) {
-					IBK::IBK_Message(IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
-						IBK::FormatString("WindowTypeReference is not supportet by selected model type 'Constant'.")
-						), IBK::MSG_WARNING,
-						FUNC_ID,
-						IBK::VL_STANDARD);
-				}
-				// store file reference
-				m_windowTypeReference = c->GetText();
-			}
-			// try to read a generic parametrization
-			else {
-				readGenericParameterElement(c);
-			}
-		}
+	double frameDividerArea = 0;
+	if (m_frame.m_materialID != INVALID_ID) {
+		frameDividerArea +=
+			m_frame.m_area.checkedValue("m2", "m2", 0, true, std::numeric_limits<double>::max(), true,
+									   "Cross section area of frame must be >= 0 m2.");
 	}
-	catch (IBK::Exception & ex) {
-		throw IBK::Exception(ex, IBK::FormatString("Error reading constant 'Window' element."), FUNC_ID);
+	if (m_divider.m_materialID != INVALID_ID) {
+		frameDividerArea +=
+			m_divider.m_area.checkedValue("m2", "m2", 0, true, std::numeric_limits<double>::max(), true,
+									   "Cross section area of dividers must be >= 0 m2.");
 	}
-	catch (std::exception & ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading constant 'Window' element.").arg(ex2.what()), FUNC_ID);
+
+	// check that sum doesn't exceed limit
+	if (frameDividerArea >= maxArea) {
+		throw IBK::Exception( IBK::FormatString("Cross section of frame and divider "
+												"(= %1 m2) exceeds cross section %2 m2 of embedded object.")
+							  .arg(frameDividerArea).arg(maxArea), FUNC_ID);
 	}
 }
-
-
-void EmbeddedObjectWindow::writeXML(TiXmlElement * parent) const {
-	TiXmlElement * e = new TiXmlElement("Window");
-	parent->LinkEndChild(e);
-
-	e->SetAttribute( "model", KeywordList::Keyword("EmbeddedObjectWindow::modelType_t", m_modelType) );
-
-	// write EmbeddedObjectWindow parameters
-	for (unsigned int i=0; i<NUM_P; ++i) {
-		if(m_para[i].name.empty()) continue;
-		if(detailedOutput)
-			TiXmlComment::addComment(e,KeywordList::Description("EmbeddedObjectWindow::para_t",i));
-		TiXmlElement::appendIBKParameterElement(e,
-			m_para[i].name,
-			m_para[i].IO_unit.name(),
-			m_para[i].get_value());
-	}
-
-	// write all generic parameters
-	writeGenericParameters(e);
-}
-#endif
 
 
 } // namespace NANDRAD

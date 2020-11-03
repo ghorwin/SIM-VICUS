@@ -29,15 +29,17 @@
 
 #include "NANDRAD_KeywordList.h"
 #include "NANDRAD_Constants.h"
-#include "NANDRAD_ConstructionType.h"
+#include "NANDRAD_Project.h"
 
 #include <tinyxml.h>
 
 namespace NANDRAD {
 
 
-void ConstructionInstance::checkParameters(const std::vector<ConstructionType> & conTypes) {
+void ConstructionInstance::checkParameters(const Project & prj) {
 	FUNCID(ConstructionInstance::checkParameters);
+
+	const std::vector<ConstructionType> & conTypes = prj.m_constructionTypes;
 
 	// check and resolve construction type reference
 	std::vector<ConstructionType>::const_iterator it = std::find(conTypes.begin(), conTypes.end(), m_constructionTypeId);
@@ -113,6 +115,18 @@ void ConstructionInstance::checkParameters(const std::vector<ConstructionType> &
 		throw IBK::Exception(ex, "Error checking model parameters for InterfaceB.", FUNC_ID);
 	}
 
+
+	// check embedded objects
+	for (unsigned int i=0; i<m_embeddedObjects.size(); ++i) {
+		EmbeddedObject & eo = m_embeddedObjects[i];
+		try {
+			eo.checkParameters(prj);
+		}
+		catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error checking model parameters for EmbeddedObject #%1 '%2' (id=%3).")
+								 .arg(i).arg(eo.m_displayName).arg(eo.m_id), FUNC_ID);
+		}
+	}
 }
 
 

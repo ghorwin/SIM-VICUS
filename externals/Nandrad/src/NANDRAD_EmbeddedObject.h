@@ -22,24 +22,20 @@
 #ifndef NANDRAD_EmbeddedObjectH
 #define NANDRAD_EmbeddedObjectH
 
-#include <string>
-
 #include <IBK_Parameter.h>
-#include "NANDRAD_EmbeddedObjectWindow.h"
-//#include "NANDRAD_EmbeddedObjectDoor.h"
-//#include "NANDRAD_EmbeddedObjectHole.h"
-//#include "NANDRAD_FMUExportReference.h"
-//#include "NANDRAD_FMUImportReference.h"
+
 #include "NANDRAD_CodeGenMacros.h"
 #include "NANDRAD_Constants.h"
+#include "NANDRAD_EmbeddedObjectWindow.h"
 
-class TiXmlElement;
+//#include "NANDRAD_EmbeddedObjectDoor.h"
+//#include "NANDRAD_EmbeddedObjectHole.h"
 
 namespace NANDRAD {
 
-/*!	\brief Declaration for class EmbeddedObject
+class Project;
 
-	An embedded object generally defines a wall opening (a window or a door).
+/*!	An embedded object generally defines a wall opening (a window or a door).
 	That means, the calculation radiant heat fluxes and heat fluxes by heat transmission are performed
 	by a window model or door model. The embedded oject	stores an exchangable parameter model
 	that defines the name for the calculation model and constant model parameters.
@@ -67,6 +63,9 @@ public:
 
 	/*! returns an object type if a model for an object was defined. */
 	objectType_t objectType() const;
+
+	/*! Checks for valid parameters (value ranges). */
+	void checkParameters(const Project & prj) const;
 
 
 	// *** PUBLIC MEMBER VARIABLES ***

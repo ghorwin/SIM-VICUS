@@ -63,6 +63,9 @@ HEADERS += \
 	../../src/NANDRAD_SimulationParameter.h \
 	../../src/NANDRAD_SolverParameter.h \
 	../../src/NANDRAD_Utilities.h \
+	../../src/NANDRAD_WindowDivider.h \
+	../../src/NANDRAD_WindowFrame.h \
+	../../src/NANDRAD_WindowGlazingSystem.h \
 	../../src/NANDRAD_Zone.h
 
 SOURCES += \
@@ -124,6 +127,9 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_SerializationTest.cpp \
 	../../src/ncg/ncg_NANDRAD_SimulationParameter.cpp \
 	../../src/ncg/ncg_NANDRAD_SolverParameter.cpp \
+	../../src/ncg/ncg_NANDRAD_WindowDivider.cpp \
+	../../src/ncg/ncg_NANDRAD_WindowFrame.cpp \
+	../../src/ncg/ncg_NANDRAD_WindowGlazingSystem.cpp \
 	../../src/ncg/ncg_NANDRAD_Zone.cpp
 
 

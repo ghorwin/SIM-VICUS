@@ -1,0 +1,87 @@
+/*	The NANDRAD data model library.
+
+	Copyright (c) 2012-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Anne Paepcke     <anne.paepcke -[at]- tu-dresden.de>
+
+	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU Lesser General Public
+	License as published by the Free Software Foundation; either
+	version 3 of the License, or (at your option) any later version.
+
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	Lesser General Public License for more details.
+*/
+
+#include <NANDRAD_WindowDivider.h>
+#include <NANDRAD_KeywordList.h>
+
+#include <IBK_messages.h>
+#include <IBK_Exception.h>
+#include <IBK_StringUtils.h>
+#include <NANDRAD_Constants.h>
+#include <NANDRAD_Utilities.h>
+
+#include <tinyxml.h>
+
+namespace NANDRAD {
+
+void WindowDivider::readXMLPrivate(const TiXmlElement * element) {
+	FUNCID(WindowDivider::readXMLPrivate);
+
+	try {
+		// search for mandatory elements
+		if (!element->FirstChildElement("MaterialID"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'MaterialID' element.") ), FUNC_ID);
+
+		if (!element->FirstChildElement("Area"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'Area' element.") ), FUNC_ID);
+
+		// reading elements
+		const TiXmlElement * c = element->FirstChildElement();
+		while (c) {
+			const std::string & cName = c->ValueStr();
+			if (cName == "MaterialID")
+				m_materialID = readPODElement<unsigned int>(c, cName);
+			else if (cName == "IBK:Parameter") {
+				IBK::Parameter p;
+				readParameterElement(c, p);
+				bool success = false;
+				if (p.name == "Area") {
+					m_area = p; success = true;
+				}
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			c = c->NextSiblingElement();
+		}
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'WindowDivider' element."), FUNC_ID);
+	}
+	catch (std::exception & ex2) {
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'WindowDivider' element.").arg(ex2.what()), FUNC_ID);
+	}
+}
+
+TiXmlElement * WindowDivider::writeXMLPrivate(TiXmlElement * parent) const {
+	TiXmlElement * e = new TiXmlElement("WindowDivider");
+	parent->LinkEndChild(e);
+
+	TiXmlElement::appendSingleAttributeElement(e, "MaterialID", nullptr, std::string(), IBK::val2string<unsigned int>(m_materialID));
+	TiXmlElement::appendIBKParameterElement(e, m_area.name, m_area.IO_unit.name(), m_area.get_value());
+	return e;
+}
+
+} // namespace NANDRAD

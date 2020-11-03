@@ -1047,7 +1047,7 @@ void NandradModel::initWallsAndInterfaces() {
 	for (unsigned int i=0; i<m_project->m_constructionInstances.size(); ++i) {
 		NANDRAD::ConstructionInstance & ci = m_project->m_constructionInstances[i];
 		try {
-			ci.checkParameters(m_project->m_constructionTypes);
+			ci.checkParameters(*m_project);
 
 			// we now have all parameters needed to create the ConstructionStatesModel and ConstructionsBalanceModel and
 			// associated boundary condition models
@@ -1096,7 +1096,8 @@ void NandradModel::initWallsAndInterfaces() {
 
 		}
 		catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error initializing construction instance #%1 '%2'.").arg(i).arg(ci.m_displayName), FUNC_ID);
+			throw IBK::Exception(ex, IBK::FormatString("Error initializing construction instance #%1 '%2' (id=%3).")
+								 .arg(i).arg(ci.m_displayName).arg(ci.m_id), FUNC_ID);
 		}
 
 	}
