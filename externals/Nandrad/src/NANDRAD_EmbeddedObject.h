@@ -25,12 +25,13 @@
 #include <string>
 
 #include <IBK_Parameter.h>
-//#include "NANDRAD_EmbeddedObjectWindow.h"
+#include "NANDRAD_EmbeddedObjectWindow.h"
 //#include "NANDRAD_EmbeddedObjectDoor.h"
 //#include "NANDRAD_EmbeddedObjectHole.h"
 //#include "NANDRAD_FMUExportReference.h"
 //#include "NANDRAD_FMUImportReference.h"
 #include "NANDRAD_CodeGenMacros.h"
+#include "NANDRAD_Constants.h"
 
 class TiXmlElement;
 
@@ -48,7 +49,7 @@ public:
 
 	/*! Parameters to be defined for the various object types and models. */
 	enum para_t {
-		P_Area,						// Keyword: Area						[m2]				'Area of the embedded object [m2].'
+		P_Area,				// Keyword: Area						[m2]				'Area of the embedded object [m2].'
 		NUM_P
 	};
 	/*! Type of embedded object, determines set of physical effects described by this object. */
@@ -62,34 +63,25 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	/*! Default constructor. */
-	EmbeddedObject();
-
-	/*! Reads the data from the xml element.
-		Throws an IBK::Exception if a syntax error occurs.
-	*/
-	//void readXML(const TiXmlElement * element);
-
-	/*! Appends the element to the parent xml element.
-		Throws an IBK::Exception in case of invalid data.
-	*/
-	//void writeXML(TiXmlElement * parent) const;
-
 	NANDRAD_READWRITE
 
 	/*! returns an object type if a model for an object was defined. */
 	objectType_t objectType() const;
 
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of the EmbeddedObject. */
-	unsigned int						m_id;								// XML:A
+	unsigned int						m_id			= INVALID_ID;		// XML:A:required
 
 	/*! IBK-language encoded name of the embedded object. */
 	std::string							m_displayName;						// XML:A
 
-//	/*! Data container for window model. */
-//	EmbeddedObjectWindow				m_window;
+	/*! List of constant parameters.*/
+	IBK::Parameter						m_para[NUM_P];						// XML:E
+
+	/*! Data container for window model. */
+	EmbeddedObjectWindow				m_window;							// XML:E
 
 //	/*! Data container for door model. */
 //	EmbeddedObjectDoor					m_door;
@@ -97,18 +89,6 @@ public:
 //	/*! Data container for door model. */
 //	EmbeddedObjectHole					m_hole;
 
-//	/*! List with FMU export quantity definitions. */
-//	std::vector<FMUExportReference>
-//										m_FMUExportReferences;
-
-//	/*! List with FMU import quantity definitions. */
-//	std::vector<FMUImportReference>
-//										m_FMUImportReferences;
-//	/*! Names of the enclosing zones. */
-//	std::vector<std::string>			m_zoneNames;
-
-	/*! List of constant parameters.*/
-	IBK::Parameter						m_para[NUM_P];						// XML:E
 
 }; // EmbeddedObject
 
