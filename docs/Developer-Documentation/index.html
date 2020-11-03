@@ -97,7 +97,7 @@ table {
 <li><a href="#_file_naming_and_header_guards">2.2.4. File naming and header guards</a></li>
 <li><a href="#_namespaces">2.2.5. Namespaces</a></li>
 <li><a href="#_class_and_variable_naming">2.2.6. Class and variable naming</a></li>
-<li><a href="#_exception_handling">2.2.7. Exception handling</a></li>
+<li><a href="#exception_handling">2.2.7. Exception handling</a></li>
 <li><a href="#_documentation">2.2.8. Documentation</a></li>
 <li><a href="#_git_workflow">2.2.9. Git Workflow</a></li>
 <li><a href="#_tips_and_tricks">2.2.10. Tips and tricks</a></li>
@@ -501,7 +501,7 @@ With code-checking-while-typing (see clang checks in Qt Creator), you&#8217;ll c
 </div>
 </div>
 <div class="sect3">
-<h4 id="_exception_handling">2.2.7. Exception handling</h4>
+<h4 id="exception_handling">2.2.7. Exception handling</h4>
 <div class="paragraph">
 <p>Basic rule:</p>
 </div>
@@ -895,22 +895,105 @@ Total initialization time: 802 ms
 </li>
 </ul>
 </div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p><strong>From now on the project data structure remains unmodified in memory until end of solver runtime and persistent pointers can be used to address parameter sets. This means no vector resizing is allowed, no more data members may be added/removed. </strong></p>
+<p>From now on the project data structure remains unmodified in memory until end of solver runtime and persistent pointers can be used to address parameter sets. This means no vector resizing is allowed, no more data members may be added/removed, because this would invalidate pointers/references to these vector elements.</p>
 </div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_error_checking_in_nandrad_data_model">Error checking in NANDRAD data model</h5>
+<div class="paragraph">
+<p>Some basic error checking can be made in the NANDRAD Project data structure that is independent of the actual simulation-dependend model setup. These tests are done in functions called <code>checkParameters()</code>.</p>
+</div>
+<div class="paragraph">
+<p>Basically, the NANDRAD Model calls these <code>checkParameters()</code> functions for all data objects. The functions should check for sane values (i.e. positive cross-section areas, non-negative coefficients, and generally all parameters with known limits. Also, the existence of parameters when required should be tested (in sofar this is independent of specific modelling options).</p>
+</div>
+<div class="paragraph">
+<p>Error handling shall be done in such a way, that when parameter errors are found, the user can quickly identify the offending XML tag and fix the problem.</p>
+</div>
+<div class="listingblock">
+<div class="title">Parameter checking function of a vector element is wrapped in a try-catch clause with indication on where the error occurred.</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">m_project</span><span class="o">-&gt;</span><span class="n">m_materials</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+	<span class="n">NANDRAD</span><span class="o">::</span><span class="n">Material</span> <span class="o">&amp;</span> <span class="n">mat</span> <span class="o">=</span> <span class="n">m_project</span><span class="o">-&gt;</span><span class="n">m_materials</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+	<span class="k">try</span> <span class="p">{</span>
+		<span class="n">mat</span><span class="p">.</span><span class="n">checkParameters</span><span class="p">();</span>
+	<span class="p">}</span>
+	<span class="k">catch</span> <span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span> <span class="o">&amp;</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span> <span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="s">"Error initializing material #%1 '%2' (id=%3)."</span><span class="p">)</span>
+							 <span class="p">.</span><span class="n">arg</span><span class="p">(</span><span class="n">i</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">mat</span><span class="p">.</span><span class="n">m_displayName</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">mat</span><span class="p">.</span><span class="n">m_id</span><span class="p">),</span> <span class="n">FUNC_ID</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note, that in the exception the index, optional display name and ID is printed - one of these should be sufficient to find the problematic XML block.</p>
+</div>
+<div class="paragraph">
+<p>The location of error is reported by the calling function, inside the <code>checkParameters()</code> function it is sufficient to indicate the actual parametrization error:</p>
+</div>
+<div class="listingblock">
+<div class="title">Using consistent error checking functionality for IBK::Parameter data types.</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="kt">void</span> <span class="n">Material</span><span class="o">::</span><span class="n">checkParameters</span><span class="p">()</span> <span class="p">{</span>
+	<span class="c1">// check for mandatory and required parameters and</span>
+	<span class="c1">// check for meaningful value ranges</span>
+	<span class="n">m_para</span><span class="p">[</span><span class="n">P_Density</span><span class="p">].</span><span class="n">checkedValue</span><span class="p">(</span><span class="s">"kg/m3"</span><span class="p">,</span> <span class="s">"kg/m3"</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;::</span><span class="n">max</span><span class="p">(),</span> <span class="nb">true</span><span class="p">,</span>
+								   <span class="s">"Density must be &gt; 0.01 kg/m3."</span><span class="p">);</span>
+	<span class="n">m_para</span><span class="p">[</span><span class="n">P_HeatCapacity</span><span class="p">].</span><span class="n">checkedValue</span><span class="p">(</span><span class="s">"J/kgK"</span><span class="p">,</span> <span class="s">"J/kgK"</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;::</span><span class="n">max</span><span class="p">(),</span> <span class="nb">true</span><span class="p">,</span>
+								   <span class="s">"Heat capacity must be &gt; 100 J/kgK."</span><span class="p">);</span>
+	<span class="n">m_para</span><span class="p">[</span><span class="n">P_Conductivity</span><span class="p">].</span><span class="n">checkedValue</span><span class="p">(</span><span class="s">"W/mK"</span><span class="p">,</span> <span class="s">"W/mK"</span><span class="p">,</span> <span class="mf">1e-5</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;::</span><span class="n">max</span><span class="p">(),</span> <span class="nb">true</span><span class="p">,</span>
+								   <span class="s">"Thermal conductivity must be &gt; 1e-5 W/mK."</span><span class="p">);</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The exception hierarchy will be collected in the <code>IBK::Exception</code> objects and printed in the error stack (see also <a href="#exception_handling">Exception handling</a>).</p>
+</div>
+<div class="paragraph">
+<p>For (the very frequently occurring) <code>IBK::Parameter</code> data type, the <code>checkedValue()</code> is most convenient to both check for existence and validity of an <code>IBK::Parameter</code> (including matching units). The function also returns the value in the requested target unit (see documentation for <code>IBK::Parameter::checkedValue()</code>).</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_quick_access_connections_between_data_objects_during_runtime">Quick-access connections between data objects during runtime</h5>
+<div class="paragraph">
+<p>Access of model parameters is very fast during simulation, if looping and searching through the data structure can be avoided. Pointers between data structures are an efficient way of relating data objects. For example, a construction layer references the respective material data via ID number of the material. During the initialization (specifically in <code>checkParameters()</code> a pointer is obtained to the material and stored in the object. This requires, of course, that the pointer may never become invalidated during the life-time of the simulation. Hence the <strong>strict requirement</strong> of not-changing vector sizes (see above).</p>
+</div>
+<div class="paragraph">
+<p>If a references data element is missing, an error message is thrown (this is part of the reason, why this lookup of referenced data objects is done and checked in <code>checkParameters()</code>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_summary">Summary</h5>
 <div class="ulist">
 <ul>
 <li>
-<p>setup fast-access connections between parameter data sets (zones to interfaces and vice versa) in Project data structure</p>
+<p>implement <code>checkParameters()</code> functions in NANDRAD data model classes</p>
+</li>
+<li>
+<p>for cross references between data members (via ID numbers of ID names), create fast access pointer links in this function</p>
+</li>
+<li>
+<p>indicate the source of an error (i.e. the actual object) in the <strong>calling</strong> function</p>
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>Now the actual model initialization starts.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_model_setup">3.1.2. Model Setup</h4>
+<div class="paragraph">
+<p>Now the actual model initialization starts.</p>
+</div>
 <div class="paragraph">
 <p><strong>TODO</strong> : model specific documentation</p>
 </div>
@@ -1472,7 +1555,7 @@ Total initialization time: 802 ms
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated 2020-11-03 12:58:30 +0100
+Last updated 2020-11-03 16:45:09 +0100
 </div>
 </div>
 <style>

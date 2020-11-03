@@ -94,7 +94,7 @@ The reason for having strict rules for these access functions is two-fold:
 1. you do not need to remember the actual names for the getter/setter functions or the variable itself - knowing one will give you the name of the others (less stuff to remember)
 2. efficiency: you can use the Qt-Creator feature -> Refactor->Add getter/setter function when right-clicking on the member variable declaration
 
-
+[[exception_handling]]
 ## Exception handling
 
 Basic rule:

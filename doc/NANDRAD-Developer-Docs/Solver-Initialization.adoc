@@ -11,15 +11,75 @@ The following steps are done when initializing the model:
 - reading the project file (only syntactical checks are done, and for IBK::Parameter static arrays with default units in keyword list, a check for compatible units is made), may overwrite defaults; correct units should be expected in the data model after reading the project file (maybe add suitable annotation to code generator?)
 - merge similarly behaving construction instances (reduce data structure size)
 
-**From now on the project data structure remains unmodified in memory until end of solver runtime and persistent pointers can be used to address parameter sets. This means no vector resizing is allowed, no more data members may be added/removed. **
+[CAUTION]
+====
+From now on the project data structure remains unmodified in memory until end of solver runtime and persistent pointers can be used to address parameter sets. This means no vector resizing is allowed, no more data members may be added/removed, because this would invalidate pointers/references to these vector elements.
+====
 
-- setup fast-access connections between parameter data sets (zones to interfaces and vice versa) in Project data structure
+### Error checking in NANDRAD data model
+
+Some basic error checking can be made in the NANDRAD Project data structure that is independent of the actual simulation-dependend model setup. These tests are done in functions called `checkParameters()`.
+
+Basically, the NANDRAD Model calls these `checkParameters()` functions for all data objects. The functions should check for sane values (i.e. positive cross-section areas, non-negative coefficients, and generally all parameters with known limits. Also, the existence of parameters when required should be tested (in sofar this is independent of specific modelling options).
+
+Error handling shall be done in such a way, that when parameter errors are found, the user can quickly identify the offending XML tag and fix the problem.
+
+.Parameter checking function of a vector element is wrapped in a try-catch clause with indication on where the error occurred.
+[source,c++]
+----
+for (unsigned int i=0; i<m_project->m_materials.size(); ++i) {
+	NANDRAD::Material & mat = m_project->m_materials[i];
+	try {
+		mat.checkParameters();
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, IBK::FormatString("Error initializing material #%1 '%2' (id=%3).")
+							 .arg(i).arg(mat.m_displayName).arg(mat.m_id), FUNC_ID);
+	}
+}
+----
+
+Note, that in the exception the index, optional display name and ID is printed - one of these should be sufficient to find the problematic XML block.
+
+The location of error is reported by the calling function, inside the `checkParameters()` function it is sufficient to indicate the actual parametrization error:
+
+.Using consistent error checking functionality for IBK::Parameter data types.
+[source,c++]
+----
+void Material::checkParameters() {
+	// check for mandatory and required parameters and
+	// check for meaningful value ranges
+	m_para[P_Density].checkedValue("kg/m3", "kg/m3", 0.01, false, std::numeric_limits<double>::max(), true,
+								   "Density must be > 0.01 kg/m3.");
+	m_para[P_HeatCapacity].checkedValue("J/kgK", "J/kgK", 100, true, std::numeric_limits<double>::max(), true,
+								   "Heat capacity must be > 100 J/kgK.");
+	m_para[P_Conductivity].checkedValue("W/mK", "W/mK", 1e-5, true, std::numeric_limits<double>::max(), true,
+								   "Thermal conductivity must be > 1e-5 W/mK.");
+}
+----
+
+The exception hierarchy will be collected in the `IBK::Exception` objects and printed in the error stack (see also <<exception_handling>>).
+
+For (the very frequently occurring) `IBK::Parameter` data type, the `checkedValue()` is most convenient to both check for existence and validity of an `IBK::Parameter` (including matching units). The function also returns the value in the requested target unit (see documentation for `IBK::Parameter::checkedValue()`).
 
 
-Now the actual model initialization starts.
+### Quick-access connections between data objects during runtime
+
+Access of model parameters is very fast during simulation, if looping and searching through the data structure can be avoided. Pointers between data structures are an efficient way of relating data objects. For example, a construction layer references the respective material data via ID number of the material. During the initialization (specifically in `checkParameters()` a pointer is obtained to the material and stored in the object. This requires, of course, that the pointer may never become invalidated during the life-time of the simulation. Hence the *strict requirement* of not-changing vector sizes (see above).
+
+If a references data element is missing, an error message is thrown (this is part of the reason, why this lookup of referenced data objects is done and checked in `checkParameters()`.
+
+
+### Summary
+
+- implement `checkParameters()` functions in NANDRAD data model classes
+- for cross references between data members (via ID numbers of ID names), create fast access pointer links in this function
+- indicate the source of an error (i.e. the actual object) in the *calling* function
+
 
 ## Model Setup
 
+Now the actual model initialization starts.
 
 
 
