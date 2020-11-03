@@ -289,11 +289,6 @@ void createSim02(NANDRAD::Project &prj){
 	ol.m_filterID.setEncodedString("*"); // all
 	ol.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
 	prj.m_objectLists.push_back(ol);
-
-	ol.m_name = "Interface";
-	ol.m_filterID.setEncodedString("*"); // all
-	ol.m_referenceType = NANDRAD::ModelInputReference::MRT_INTERFACE;
-	prj.m_objectLists.push_back(ol);
 }
 
 /* ToDo Stephan ID-Space checken nicht das da welche ineinander laufen. */
@@ -762,10 +757,6 @@ void createSim03(NANDRAD::Project &prj){
 	ol.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
 	prj.m_objectLists.push_back(ol);
 
-	ol.m_name = "Interface";
-	ol.m_filterID.setEncodedString("*"); // all
-	ol.m_referenceType = NANDRAD::ModelInputReference::MRT_INTERFACE;
-	prj.m_objectLists.push_back(ol);
 }
 #if 0
 
@@ -1690,7 +1681,7 @@ void createSim05(NANDRAD::Project &prj){
 int main(int argc, char * argv[]) {
 	FUNCID(main);
 
-//#ifdef SCHEDULE
+#ifdef SCHEDULE
 
 	NANDRAD::Project prj;
 	NANDRAD::Schedules scheds;
@@ -1736,36 +1727,70 @@ int main(int argc, char * argv[]) {
 
 	return EXIT_SUCCESS;
 
-//#endif
-
-	NANDRAD::LinearSplineParameter linSp;
-
-	linSp.m_xUnit = IBK::Unit("h");
-	linSp.m_yUnit = IBK::Unit("C");
-	linSp.m_values.setValues(std::vector<double>({0, 2, 4 }), std::vector<double>({0, 2, 4 }) );
-	linSp.m_name = "wurstsuppe";
-
-	std::vector< NANDRAD::LinearSplineParameter > linSpline;
-
-	linSpline.emplace_back(linSp);
-
-	std::map<std::string, std::vector< NANDRAD::LinearSplineParameter > > splineMap;
-
-	splineMap["wurst"] = linSpline;
-
-//		splineMap.insert(splineMap.end(),std::pair< std::string, std::vector< NANDRAD::LinearSplineParameter > > ("wurst",linSpline));
+#endif
 
 	NANDRAD::Project prj;
-	NANDRAD::Schedules sched;
 
-	prj.m_schedules.m_annualSchedules = splineMap;
+	//material
+	NANDRAD::Material mat;
+	mat.m_id = 1001;
+	mat.m_displayName = "Brick";
+	mat.m_para[NANDRAD::Material::P_Density].set("Density", 2000, IBK::Unit("kg/m3"));
+	mat.m_para[NANDRAD::Material::P_HeatCapacity].set("HeatCapacity", 1000, IBK::Unit("J/kgK"));
+	mat.m_para[NANDRAD::Material::P_Conductivity].set("Conductivity", 1.2, IBK::Unit("W/mK"));
+	prj.m_materials.push_back(mat);
 
-	IBK::Path path ("test.nandrad");
+	// add construction type
+	NANDRAD::ConstructionType conType;
+	conType.m_id = 10001;
+	conType.m_displayName = "Construction 1";
+	conType.m_materialLayers.push_back(NANDRAD::MaterialLayer(0.2, prj.m_materials[0].m_id));
+	prj.m_constructionTypes.push_back(conType);
 
-	prj.m_solverParameter.m_lesSolver = NANDRAD::SolverParameter::LES_Dense;
+
+
+	// add construction instance
+	NANDRAD::ConstructionInstance conInsta;
+	conInsta.m_id = 1;
+	conInsta.m_para[NANDRAD::ConstructionInstance::P_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
+	conInsta.m_para[NANDRAD::ConstructionInstance::P_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
+	conInsta.m_para[NANDRAD::ConstructionInstance::P_AREA].set("Area", 1, IBK::Unit("m2"));
+
+	conInsta.m_constructionTypeId = 10001;
+
+	// add embedded object/window
+
+	NANDRAD::EmbeddedObject eo;
+	eo.m_id = 2000;
+	eo.m_para[NANDRAD::EmbeddedObject::P_Area].set("Area", 8, IBK::Unit("m2"));
+	eo.m_displayName = "A window";
+	eo.m_window.m_glazingSystemID  = 123;
+	eo.m_window.m_frame.m_materialID = 1001;
+	eo.m_window.m_frame.m_area.set("Area", 3, IBK::Unit("m2"));
+	eo.m_window.m_divider.m_materialID = 1001;
+	eo.m_window.m_divider.m_area.set("Area", 2, IBK::Unit("m2"));
+
+	conInsta.m_embeddedObjects.push_back(eo);
+
+	prj.m_constructionInstances.push_back(conInsta);
+
+	// add glazing system
+
+	NANDRAD::WindowGlazingSystem g;
+	g.m_id = 123;
+	g.m_modelType = NANDRAD::WindowGlazingSystem::MT_Simple;
+	g.m_para[NANDRAD::WindowGlazingSystem::P_ThermalTransmittance].set("ThermalTransmittance", 0.4, "W/m2K");
+	g.m_shgc.m_name = "SHGC";
+	g.m_shgc.m_xUnit.set("Deg");
+	g.m_shgc.m_yUnit.set("---");
+	g.m_shgc.m_values.setValues( std::vector<double>( {0, 90} ), std::vector<double>( {0.6, 0.6} ));
+
+	prj.m_glazingSystems.push_back(g);
+
+	IBK::Path path ("windowtest.nandrad");
 	prj.writeXML(path);
 
-
+#if 0
 	NANDRAD::Project prj;
 	createSim01(prj);
 	prj.writeXML(IBK::Path("SimQuality1.xml"));
