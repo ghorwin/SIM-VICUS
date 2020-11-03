@@ -132,12 +132,14 @@ TiXmlElement * ConstructionInstance::writeXML(TiXmlElement * parent) const {
 
 	{
 		TiXmlElement * customElement = m_interfaceA.writeXML(e);
-		customElement->ToElement()->SetValue("InterfaceA");
+		if (customElement != nullptr)
+			customElement->ToElement()->SetValue("InterfaceA");
 	}
 
 	{
 		TiXmlElement * customElement = m_interfaceB.writeXML(e);
-		customElement->ToElement()->SetValue("InterfaceB");
+		if (customElement != nullptr)
+			customElement->ToElement()->SetValue("InterfaceB");
 	}
 
 	if (!m_embeddedObjects.empty()) {

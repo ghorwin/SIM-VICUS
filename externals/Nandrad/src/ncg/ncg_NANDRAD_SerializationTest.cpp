@@ -268,7 +268,8 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 
 	{
 		TiXmlElement * customElement = m_interfaceA.writeXML(e);
-		customElement->ToElement()->SetValue("InterfaceA");
+		if (customElement != nullptr)
+			customElement->ToElement()->SetValue("InterfaceA");
 	}
 
 	for (unsigned int i=0; i<NUM_test; ++i) {

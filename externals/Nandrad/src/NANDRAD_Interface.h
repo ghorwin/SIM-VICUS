@@ -47,11 +47,12 @@ class Zone;
 	there must not be an interface defined for this side.
 */
 class Interface {
+	NANDRAD_READWRITE_PRIVATE
 public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	NANDRAD_READWRITE
+	NANDRAD_READWRITE_IFNOT_INVALID_ID
 	NANDRAD_COMPARE_WITH_ID
 
 	/*! Checks for valid parameters.

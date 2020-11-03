@@ -531,7 +531,8 @@ void CodeGenerator::generateReadWriteCode() {
 					}
 					else {
 						elements += "\n	{\n		TiXmlElement * customElement = m_" + varName + ".writeXML(e);\n"
-								"		customElement->ToElement()->SetValue(\""+xmlInfo.alternativeTagName+"\");\n	}\n";
+								"		if (customElement != nullptr)\n"
+								"			customElement->ToElement()->SetValue(\""+xmlInfo.alternativeTagName+"\");\n	}\n";
 					}
 
 					// Note: no error in case of unsupported element types, since here we always generate .writeXML() calls.

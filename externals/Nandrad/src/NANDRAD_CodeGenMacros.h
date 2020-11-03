@@ -32,6 +32,10 @@ class TiXmlElement;
 	void readXML(const TiXmlElement * element) { readXMLPrivate(element); } \
 	TiXmlElement * writeXML(TiXmlElement * parent) const { if (*this != X()) return writeXMLPrivate(parent); else return nullptr; }
 
+#define NANDRAD_READWRITE_IFNOT_INVALID_ID \
+	void readXML(const TiXmlElement * element) { readXMLPrivate(element); } \
+	TiXmlElement * writeXML(TiXmlElement * parent) const { if (m_id != INVALID_ID) return writeXMLPrivate(parent); else return nullptr; }
+
 #define NANDRAD_READWRITE_PRIVATE \
 	void readXMLPrivate(const TiXmlElement * element); \
 	TiXmlElement * writeXMLPrivate(TiXmlElement * parent) const;

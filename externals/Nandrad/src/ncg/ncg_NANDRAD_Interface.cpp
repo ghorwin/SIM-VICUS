@@ -32,8 +32,8 @@
 
 namespace NANDRAD {
 
-void Interface::readXML(const TiXmlElement * element) {
-	FUNCID(Interface::readXML);
+void Interface::readXMLPrivate(const TiXmlElement * element) {
+	FUNCID(Interface::readXMLPrivate);
 
 	try {
 		// search for mandatory attributes
@@ -83,7 +83,7 @@ void Interface::readXML(const TiXmlElement * element) {
 	}
 }
 
-TiXmlElement * Interface::writeXML(TiXmlElement * parent) const {
+TiXmlElement * Interface::writeXMLPrivate(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("Interface");
 	parent->LinkEndChild(e);
 
