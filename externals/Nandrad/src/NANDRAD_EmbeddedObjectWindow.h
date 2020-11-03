@@ -65,9 +65,9 @@ public:
 	unsigned int	m_glazingSystemID		= INVALID_ID;				// XML:A:required
 
 	/*! Frame parameters (optional). */
-	WindowFrame		m_frame;											// XML:E
+	WindowFrame		m_frame;											// XML:E:tag=Frame
 	/*! Divider parameters (optional). */
-	WindowDivider	m_divider;											// XML:E
+	WindowDivider	m_divider;											// XML:E:tag=Divider
 
 	// *** Variables used only during simulation ***
 

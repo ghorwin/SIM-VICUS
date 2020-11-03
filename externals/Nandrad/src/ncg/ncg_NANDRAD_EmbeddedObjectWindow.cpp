@@ -57,9 +57,9 @@ void EmbeddedObjectWindow::readXMLPrivate(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "WindowFrame")
+			if (cName == "Frame")
 				m_frame.readXML(c);
-			else if (cName == "WindowDivider")
+			else if (cName == "Divider")
 				m_divider.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
@@ -81,9 +81,17 @@ TiXmlElement * EmbeddedObjectWindow::writeXMLPrivate(TiXmlElement * parent) cons
 
 	e->SetAttribute("glazingSystemID", IBK::val2string<unsigned int>(m_glazingSystemID));
 
-	m_frame.writeXML(e);
+	{
+		TiXmlElement * customElement = m_frame.writeXML(e);
+		if (customElement != nullptr)
+			customElement->ToElement()->SetValue("Frame");
+	}
 
-	m_divider.writeXML(e);
+	{
+		TiXmlElement * customElement = m_divider.writeXML(e);
+		if (customElement != nullptr)
+			customElement->ToElement()->SetValue("Divider");
+	}
 	return e;
 }
 

@@ -436,3 +436,87 @@ The XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` wi
 |====================
 
 
+[[embedded_objects]]
+# Embedded objects (windows, doors, openings...)
+
+
+.Parameter Definition for Windows
+====
+[source,xml, indent=0]
+----
+<EmbeddedObjects>
+	<EmbeddedObject id="2000" displayName="A window">
+		<!-- Area parameter is required. -->
+		<IBK:Parameter name="Area" unit="m2">8</IBK:Parameter>
+		<EmbeddedObjectWindow glazingSystemID="123">
+			<!-- Frame and Divider tags are optional, materialID reference a material. -->
+			<Frame materialID="1001">
+				<!-- Area parameter is required. -->
+				<IBK:Parameter name="Area" unit="m2">3</IBK:Parameter>
+			</Frame>
+			<Divider materialID="1001">
+				<!-- Area parameter is required. -->
+				<IBK:Parameter name="Area" unit="m2">2</IBK:Parameter>
+			</Divider>
+
+			<!-- Precomputed shading: when shading file is defined in Location, than
+				shaded window percentage is retrieved from this file, 
+				column is identified by "embObj14" composed from object type and id.
+				ConstructionInstance would be "con443".
+				
+				Sanity check: all objects (windows/constructions) must have a
+				matching column in the file.
+			-->
+
+			<!-- Controlled Shading:  -->
+			<Shading type="simple" controlID="12">
+				<!-- Solar radiation load = g_rad = Fz(precomputed) * Fz(Controlled) * ( SHGC * g_dir + SHGC(90 Deg)* g_diff)
+
+					full shaded:     Fz = 1 - (1 - 80%) * 1      = 0.8
+					unshaded shaded: Fz = 1 - (1 - 80%) * 0      = 1
+					partially shaded: Fz = 1 - (1 - 80%) * 0.5   = 0.9
+
+				-->
+				
+				<!-- ReductionFactor = Fz  = Abminderungsfaktor für Verschattung -->
+				<IBK:Parameter name="ReductionFactor" unit="%">80</IBK:Parameter>
+			</Shading>
+
+		</EmbeddedObjectWindow>
+	</EmbeddedObject>
+</EmbeddedObjects>
+
+
+<Models>
+	<!-- ShadingControlModel returns a value between 0 and 1 
+		0 = no reduction (shading open)
+		1 = full reduction (shading closed)
+	-->
+	<ShadingControlModel id="12" type="SingleIntensityControlled">
+		<!-- Retrieves global radiation on given sensor. -->
+		<SensorID>21</SensorID>
+		<!-- Shading control model returns 1 for values below Min, and 0 for values above Max.
+			Switching is only allowed if Max/Min has been passed (hysteretic control).
+		-->
+		<IBK:Parameter name="Max" unit="W/m2">150</IBK:Parameter>
+		<IBK:Parameter name="Min" unit="W/m2">100</IBK:Parameter>
+	</ShadingControlModel>
+</Models>
+
+
+
+
+<WindowGlazingSystems>
+	<WindowGlazingSystem id="123" modelType="Simple">
+		<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">0.4</IBK:Parameter>
+		<LinearSplineParameter name="SHGC" interpolationMethod="linear" wrapMethod="cyclic">
+			<!-- X incidence angle - 90 deg = sun is perpendicular/normal to surface  -->
+			<X unit="Deg">0 90 </X>
+			<!-- Note: no constant parameter - if constant SHGC, define as below -->
+			<Y unit="---">0.6 0.6 </Y>
+		</LinearSplineParameter>
+	</WindowGlazingSystem>
+</WindowGlazingSystems>
+
+----
+====

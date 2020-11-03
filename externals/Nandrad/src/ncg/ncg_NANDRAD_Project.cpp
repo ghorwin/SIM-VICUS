@@ -88,7 +88,7 @@ void Project::readXMLPrivate(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
-			else if (cName == "GlazingSystems") {
+			else if (cName == "WindowGlazingSystems") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
@@ -96,7 +96,7 @@ void Project::readXMLPrivate(const TiXmlElement * element) {
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					WindowGlazingSystem obj;
 					obj.readXML(c2);
-					m_glazingSystems.push_back(obj);
+					m_windowGlazingSystems.push_back(obj);
 					c2 = c2->NextSiblingElement();
 				}
 			}
@@ -201,12 +201,12 @@ TiXmlElement * Project::writeXMLPrivate(TiXmlElement * parent) const {
 	}
 
 
-	if (!m_glazingSystems.empty()) {
-		TiXmlElement * child = new TiXmlElement("GlazingSystems");
+	if (!m_windowGlazingSystems.empty()) {
+		TiXmlElement * child = new TiXmlElement("WindowGlazingSystems");
 		e->LinkEndChild(child);
 
-		for (std::vector<WindowGlazingSystem>::const_iterator it = m_glazingSystems.begin();
-			it != m_glazingSystems.end(); ++it)
+		for (std::vector<WindowGlazingSystem>::const_iterator it = m_windowGlazingSystems.begin();
+			it != m_windowGlazingSystems.end(); ++it)
 		{
 			it->writeXML(child);
 		}

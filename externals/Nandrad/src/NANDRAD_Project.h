@@ -119,7 +119,7 @@ public:
 	std::vector<Material>							m_materials;						// XML:E
 
 	/*! All glazing types. */
-	std::vector<WindowGlazingSystem>				m_glazingSystems;					// XML:E
+	std::vector<WindowGlazingSystem>				m_windowGlazingSystems;				// XML:E
 
 	/*! References to all schedules.*/
 	Schedules										m_schedules;						// XML:E
