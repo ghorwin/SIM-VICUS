@@ -32,3 +32,8 @@ described in the test suite).
 
 <img src="TF05/results/TF05.1.png" width="400px"/><img src="TF05/results/TF05.2.png" width="400px"/><br>
 <img src="TF05/results/TF05.3.png" width="400px"/>
+
+### TestCase 06
+
+<img src="TF06/results/TF06.1.png" width="600px" height="550px"/><img src="TF06/results/TF06.1_radloads.png" width="600px" height="550px"/>
+<img src="TF06/results/TF06.2.png" width="600px" height="550px"/><img src="TF06/results/TF06.2_radloads.png" width="600px" height="550px"/>
