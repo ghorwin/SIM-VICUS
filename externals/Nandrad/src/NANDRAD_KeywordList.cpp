@@ -34,7 +34,7 @@ namespace NANDRAD {
 	const char * const INVALID_KEYWORD_INDEX_STRING = "KEYWORD_ERROR_STRING: Invalid type index";
 
 	/*! Holds a list of all enum types/categories. */
-	const char * const ENUM_TYPES[43] = {
+	const char * const ENUM_TYPES[45] = {
 		"ConstructionInstance::para_t",
 		"DailyCycle::interpolation_t",
 		"EmbeddedObject::para_t",
@@ -76,13 +76,15 @@ namespace NANDRAD {
 		"SolverParameter::precond_t",
 		"WindowGlazingSystem::modelType_t",
 		"WindowGlazingSystem::para_t",
+		"WindowShading::modelType_t",
+		"WindowShading::para_t",
 		"Zone::type_t",
 		"Zone::para_t"
 	};
 
 	/*! Converts a category string to respective enumeration value. */
 	int enum2index(const std::string & enumtype) {
-		for (int i=0; i<43; ++i) {
+		for (int i=0; i<45; ++i) {
 			if (enumtype == ENUM_TYPES[i]) return i;
 		}
 		//std::cerr << "Unknown enumeration type '" << enumtype<< "'." << std::endl;
@@ -377,22 +379,32 @@ namespace NANDRAD {
 			// WindowGlazingSystem::modelType_t
 			case 39 :
 			switch (t) {
-				case 0 : return "Simple";
+				case 0 : return "Standard";
 			} break;
 			// WindowGlazingSystem::para_t
 			case 40 :
 			switch (t) {
 				case 0 : return "ThermalTransmittance";
 			} break;
-			// Zone::type_t
+			// WindowShading::modelType_t
 			case 41 :
+			switch (t) {
+				case 0 : return "Standard";
+			} break;
+			// WindowShading::para_t
+			case 42 :
+			switch (t) {
+				case 0 : return "ReductionFactor";
+			} break;
+			// Zone::type_t
+			case 43 :
 			switch (t) {
 				case 0 : return "Constant";
 				case 1 : return "Active";
 				case 2 : return "Ground";
 			} break;
 			// Zone::para_t
-			case 42 :
+			case 44 :
 			switch (t) {
 				case 0 : return "Temperature";
 				case 1 : return "RelativeHumidity";
@@ -692,22 +704,32 @@ namespace NANDRAD {
 			// WindowGlazingSystem::modelType_t
 			case 39 :
 			switch (t) {
-				case 0 : return "Simple";
+				case 0 : return "Standard";
 			} break;
 			// WindowGlazingSystem::para_t
 			case 40 :
 			switch (t) {
 				case 0 : return "ThermalTransmittance";
 			} break;
-			// Zone::type_t
+			// WindowShading::modelType_t
 			case 41 :
+			switch (t) {
+				case 0 : return "Standard";
+			} break;
+			// WindowShading::para_t
+			case 42 :
+			switch (t) {
+				case 0 : return "ReductionFactor";
+			} break;
+			// Zone::type_t
+			case 43 :
 			switch (t) {
 				case 0 : return "Constant";
 				case 1 : return "Active";
 				case 2 : return "Ground";
 			} break;
 			// Zone::para_t
-			case 42 :
+			case 44 :
 			switch (t) {
 				case 0 : return "Temperature";
 				case 1 : return "RelativeHumidity";
@@ -1008,22 +1030,32 @@ namespace NANDRAD {
 			// WindowGlazingSystem::modelType_t
 			case 39 :
 			switch (t) {
-				case 0 : return "Simple globbed-layers model.";
+				case 0 : return "Standard globbed-layers model.";
 			} break;
 			// WindowGlazingSystem::para_t
 			case 40 :
 			switch (t) {
 				case 0 : return "Thermal transmittance";
 			} break;
-			// Zone::type_t
+			// WindowShading::modelType_t
 			case 41 :
+			switch (t) {
+				case 0 : return "Standard reduction factor.";
+			} break;
+			// WindowShading::para_t
+			case 42 :
+			switch (t) {
+				case 0 : return "Reduction factor (remaining percentage of solar gains if shading is closed).";
+			} break;
+			// Zone::type_t
+			case 43 :
 			switch (t) {
 				case 0 : return "Zone with constant/predefined temperatures. (schedule)";
 				case 1 : return "Zone described by a temperature node in space.";
 				case 2 : return "Ground zone (calculates temperature based on standard).";
 			} break;
 			// Zone::para_t
-			case 42 :
+			case 44 :
 			switch (t) {
 				case 0 : return "Temperature of the zone if set constant [C].";
 				case 1 : return "Relative humidity of the zone if set constant [%].";
@@ -1330,15 +1362,25 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "W/m2K";
 			} break;
-			// Zone::type_t
+			// WindowShading::modelType_t
 			case 41 :
+			switch (t) {
+				case 0 : return "";
+			} break;
+			// WindowShading::para_t
+			case 42 :
+			switch (t) {
+				case 0 : return "W/m2K";
+			} break;
+			// Zone::type_t
+			case 43 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
 			} break;
 			// Zone::para_t
-			case 42 :
+			case 44 :
 			switch (t) {
 				case 0 : return "C";
 				case 1 : return "%";
@@ -1645,15 +1687,25 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
-			// Zone::type_t
+			// WindowShading::modelType_t
 			case 41 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+			} break;
+			// WindowShading::para_t
+			case 42 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+			} break;
+			// Zone::type_t
+			case 43 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
 			// Zone::para_t
-			case 42 :
+			case 44 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -1960,15 +2012,25 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// Zone::type_t
+			// WindowShading::modelType_t
 			case 41 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// WindowShading::para_t
+			case 42 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// Zone::type_t
+			case 43 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// Zone::para_t
-			case 42 :
+			case 44 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2067,10 +2129,14 @@ namespace NANDRAD {
 			case 39 : return 1;
 			// WindowGlazingSystem::para_t
 			case 40 : return 1;
+			// WindowShading::modelType_t
+			case 41 : return 1;
+			// WindowShading::para_t
+			case 42 : return 1;
 			// Zone::type_t
-			case 41 : return 3;
+			case 43 : return 3;
 			// Zone::para_t
-			case 42 : return 6;
+			case 44 : return 6;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::Count]");
@@ -2161,10 +2227,14 @@ namespace NANDRAD {
 			case 39 : return 0;
 			// WindowGlazingSystem::para_t
 			case 40 : return 0;
+			// WindowShading::modelType_t
+			case 41 : return 0;
+			// WindowShading::para_t
+			case 42 : return 0;
 			// Zone::type_t
-			case 41 : return 2;
+			case 43 : return 2;
 			// Zone::para_t
-			case 42 : return 6;
+			case 44 : return 6;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::MaxIndex]");

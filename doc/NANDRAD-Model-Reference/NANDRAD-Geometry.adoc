@@ -522,7 +522,7 @@ When pre-computed shading is defined, for *each* opaque and translucent surface 
 
 [NOTE]
 ====
-As described in section <<precomputed_shading>>, the association between provided data columns and object ID is done via identification string, composed from object type and ID number. For example, and embedded object with ID 14 would get the column header/caption _embObj14_ and a construction instance (opaque surface) with ID 29 would get _conInst29_.
+As described in section <<precomputed_shading>>, the association between provided data columns and object ID is done via identification string, composed from object type and ID number. For example, an embedded object with ID 14 would get the column header/caption _embObj.14_ and a construction instance (opaque surface) with ID 29 would get _conInst.29_.
 ====
 
 Alternatively or additionally to pre-computed shading it is possible to define controlled shading for the window.
@@ -533,13 +533,44 @@ Alternatively or additionally to pre-computed shading it is possible to define c
 ----
 <Window glazingSystemID="123">
     ...
-	<Shading type="simple" controlID="12">
-		<!-- ReductionFactor = Fz  = Abminderungsfaktor für Verschattung -->
-		<IBK:Parameter name="ReductionFactor" unit="%">80</IBK:Parameter>
+	<Shading modelType="Standard">
+		<ControlModelID>555</ControlModelID>
+		<IBK:Parameter name="ReductionFactor" unit="---">0.7</IBK:Parameter>
 	</Shading>
 </Window>
 ----
 ====
+
+The `Shading` needs to be defined with the following XML attributes:
+
+.Attributes
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Attribute  | Description | Format | Usage 
+| `modelType` 
+a|  Sets the type of the shading model 
+
+* `Standard` - Standard model using only a single reduction factor and a separate control model.
+
+| key | _required_
+|====================
+
+.Child tags
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Element  | Description | Format | Usage 
+| `ControlModelID` | Reference to a `ShadingControlModel` definition. | {nbsp}>{nbsp}0{nbsp} | _required for Standard model_
+|====================
+
+The XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` with the following entries can be defined:
+
+[options="header"]
+[cols="25%,^ 8%,42%,^ 10%,^ 10%"]
+[width="100%"]
+|====================
+| Name | Unit | Description | Value Range | Usage 
+| `ReductionFactor` | --- | Percentage of remaining solar gains when shading is closed | 0...1 | _required for Standard model_
+|====================
 
 
 .Calculation of the shading factor based on control signal
@@ -556,30 +587,4 @@ Fz depending on control signal:
 ====
 
 
-[[glazing_systems]]
-## Glazing Systems
-
-Glazing systems are defined in a list besides the other database lists `Materials` and `ConstructionTypes` (see <<databases>>).
-
-Different complexities of glazing systems are supported. The most simply one is defined with model type _Simple_ and requires only a U-value (thermal transmittance) and incidence-angle dependent SHGC value:
-
-.Parameter definition for a glazing system
-[source,xml, indent=0]
-====
-----
-<WindowGlazingSystems>
-	<WindowGlazingSystem id="123" modelType="Simple">
-		<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">0.4</IBK:Parameter>
-		<LinearSplineParameter name="SHGC" interpolationMethod="linear" wrapMethod="cyclic">
-			<!-- X incidence angle - 90 deg = sun is perpendicular/normal to surface  -->
-			<X unit="Deg">0 90 </X>
-			<!-- Note: no constant parameter - if constant SHGC, define as below -->
-			<Y unit="---">0.6 0.6 </Y>
-		</LinearSplineParameter>
-	</WindowGlazingSystem>
-</WindowGlazingSystems>
-----
-====
-
-In this simple model, the SHGC value for normal incidence is used for diffuse solar radiation.
 

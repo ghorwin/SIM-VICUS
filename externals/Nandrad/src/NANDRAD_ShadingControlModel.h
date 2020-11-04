@@ -59,7 +59,7 @@ public:
 	modelType_t							m_modelType = NUM_MT;				// XML:A:required
 
 	/*! Sensor ID of global radiation sensor, needed for SingleIntensityControlled model. */
-	unsigned int						m_sensorID = NANDRAD::INVALID_ID;	// XML:A
+	unsigned int						m_sensorID = NANDRAD::INVALID_ID;	// XML:E
 
 	/*! Model parameters. */
 	IBK::Parameter						m_para[NUM_P];						// XML:E

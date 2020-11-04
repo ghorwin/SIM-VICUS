@@ -61,6 +61,11 @@ void EmbeddedObjectWindow::checkParameters(double grossArea,
 	} catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, "Error in window dividers parameters.", FUNC_ID);
 	}
+	try {
+		m_shading.checkParameters();
+	} catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, "Error in window shading parameters.", FUNC_ID);
+	}
 
 	double frameDividerArea = 0;
 	if (m_frame.m_materialID != INVALID_ID)

@@ -19,7 +19,7 @@
 	Lesser General Public License for more details.
 */
 
-#include <NANDRAD_ShadingControlModel.h>
+#include <NANDRAD_WindowShading.h>
 #include <NANDRAD_KeywordList.h>
 
 #include <IBK_messages.h>
@@ -34,15 +34,11 @@
 
 namespace NANDRAD {
 
-void ShadingControlModel::readXMLPrivate(const TiXmlElement * element) {
-	FUNCID(ShadingControlModel::readXMLPrivate);
+void WindowShading::readXMLPrivate(const TiXmlElement * element) {
+	FUNCID(WindowShading::readXMLPrivate);
 
 	try {
 		// search for mandatory attributes
-		if (!TiXmlAttribute::attributeByName(element, "id"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
-
 		if (!TiXmlAttribute::attributeByName(element, "modelType"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'modelType' attribute.") ), FUNC_ID);
@@ -51,20 +47,13 @@ void ShadingControlModel::readXMLPrivate(const TiXmlElement * element) {
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
-			if (attribName == "id")
-				m_id = readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "displayName")
-				m_displayName = attrib->ValueStr();
-			else if (attribName == "modelType")
+			if (attribName == "modelType")
 			try {
-				m_modelType = (modelType_t)KeywordList::Enumeration("ShadingControlModel::modelType_t", attrib->ValueStr());
+				m_modelType = (modelType_t)KeywordList::Enumeration("WindowShading::modelType_t", attrib->ValueStr());
 			}
 			catch (IBK::Exception & ex) {
 				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 					IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
-			}
-			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			attrib = attrib->Next();
 		}
@@ -73,21 +62,21 @@ void ShadingControlModel::readXMLPrivate(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "SensorID")
-				m_sensorID = readPODElement<unsigned int>(c, cName);
+			if (cName == "ControlModelID")
+				m_controlModelID = readPODElement<unsigned int>(c, cName);
 			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				readParameterElement(c, p);
 				bool success = false;
 				para_t ptype;
 				try {
-					ptype = (para_t)KeywordList::Enumeration("ShadingControlModel::para_t", p.name);
+					ptype = (para_t)KeywordList::Enumeration("WindowShading::para_t", p.name);
 					m_para[ptype] = p;
 					success = true;
 				}
 				catch (IBK::Exception & ex) { ex.writeMsgStackToError(); }
 				if (success) {
-					std::string refUnit = KeywordList::Unit("ShadingControlModel::para_t", ptype);
+					std::string refUnit = KeywordList::Unit("WindowShading::para_t", ptype);
 					if (!refUnit.empty() && (p.IO_unit.base_id() != IBK::Unit(refUnit).base_id())) {
 						throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(c->Row())
 											  .arg("Incompatible unit '"+p.IO_unit.name()+"', expected '"+refUnit +"'."), FUNC_ID);
@@ -103,25 +92,21 @@ void ShadingControlModel::readXMLPrivate(const TiXmlElement * element) {
 		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception( ex, IBK::FormatString("Error reading 'ShadingControlModel' element."), FUNC_ID);
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'WindowShading' element."), FUNC_ID);
 	}
 	catch (std::exception & ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading 'ShadingControlModel' element.").arg(ex2.what()), FUNC_ID);
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'WindowShading' element.").arg(ex2.what()), FUNC_ID);
 	}
 }
 
-TiXmlElement * ShadingControlModel::writeXMLPrivate(TiXmlElement * parent) const {
-	TiXmlElement * e = new TiXmlElement("ShadingControlModel");
+TiXmlElement * WindowShading::writeXMLPrivate(TiXmlElement * parent) const {
+	TiXmlElement * e = new TiXmlElement("WindowShading");
 	parent->LinkEndChild(e);
 
-	if (m_id != NANDRAD::INVALID_ID)
-		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (!m_displayName.empty())
-		e->SetAttribute("displayName", m_displayName);
 	if (m_modelType != NUM_MT)
-		e->SetAttribute("modelType", KeywordList::Keyword("ShadingControlModel::modelType_t",  m_modelType));
-	if (m_sensorID != NANDRAD::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "SensorID", nullptr, std::string(), IBK::val2string<unsigned int>(m_sensorID));
+		e->SetAttribute("modelType", KeywordList::Keyword("WindowShading::modelType_t",  m_modelType));
+	if (m_controlModelID != NANDRAD::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "ControlModelID", nullptr, std::string(), IBK::val2string<unsigned int>(m_controlModelID));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty())

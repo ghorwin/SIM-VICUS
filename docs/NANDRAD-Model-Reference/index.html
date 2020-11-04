@@ -97,6 +97,7 @@ table {
 <ul class="sectlevel3">
 <li><a href="#materials">2.5.1. Materials</a></li>
 <li><a href="#construction_types">2.5.2. Construction Types</a></li>
+<li><a href="#glazing_systems">2.5.3. Glazing Systems</a></li>
 </ul>
 </li>
 <li><a href="#zones">2.6. Zones</a></li>
@@ -117,7 +118,6 @@ table {
 <li><a href="#embedded_objects">2.9. Embedded objects (windows, doors, openings&#8230;&#8203;)</a>
 <ul class="sectlevel3">
 <li><a href="#_windows">2.9.1. Windows</a></li>
-<li><a href="#glazing_systems">2.9.2. Glazing Systems</a></li>
 </ul>
 </li>
 <li><a href="#climatic_loads">2.10. Climatic loads</a>
@@ -762,6 +762,141 @@ easily modify the placeholder paths to the directories on the local machine with
 <p>The <code>MaterialLayer</code> does not have child tags since all needed data are defined as XML attributes as described above.</p>
 </div>
 </div>
+<div class="sect3">
+<h4 id="glazing_systems">2.5.3. Glazing Systems</h4>
+<div class="paragraph">
+<p>Glazing systems are defined in a list inside the XML tag <code>WindowGlazingSystems</code>.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 10. Parameter definition for a glazing system</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre>&lt;WindowGlazingSystems&gt;
+  &lt;WindowGlazingSystem id="123" modelType="Standard"&gt;
+    &lt;IBK:Parameter name="ThermalTransmittance" unit="W/m2K"&gt;0.4&lt;/IBK:Parameter&gt;
+    &lt;LinearSplineParameter name="SHGC" interpolationMethod="linear" wrapMethod="cyclic"&gt;
+      &lt;!-- X incidence angle - 90 deg = sun is perpendicular/normal to surface  --&gt;
+      &lt;X unit="Deg"&gt;0 90 &lt;/X&gt;
+      &lt;!-- Note: no constant parameter - if constant SHGC, define as below --&gt;
+      &lt;Y unit="---"&gt;0.6 0.6 &lt;/Y&gt;
+    &lt;/LinearSplineParameter&gt;
+  &lt;/WindowGlazingSystem&gt;
+&lt;/WindowGlazingSystems&gt;</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Inside this section each galzing system definition starts with the XML tag named <code>WindowGlazingSystem</code> with the XML attributes <code>id</code>, <code>modelType</code> and optional <code>displayName</code>:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. Attributes</caption>
+<colgroup>
+<col style="width: 15%;">
+<col style="width: 55%;">
+<col style="width: 20%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Attribute</th>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Description</th>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Format</th>
+<th class="tableblock halign-center valign-top" style="background-color: transparent;">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Unique id number.</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">positive integer ( &gt; 0 )</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock"><em>required</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>displayName</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Name of glazing system (used for informative/error messages).</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">string</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>modelType</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><div class="content"><div class="paragraph">
+<p>Identifies the model complexity:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Standard</code> - Standard glazing model, with a U-value (thermal transmittance) and incidence-angle dependent SHGC value</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">string</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Scalar parameters are defined within an XML tag <code>IBK:Parameter</code> (see <a href="#IBK_Parameter">IBK:Parameter</a>):</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 17.8217%;">
+<col style="width: 14.8514%;">
+<col style="width: 37.6237%;">
+<col style="width: 19.8019%;">
+<col style="width: 9.9013%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Name</th>
+<th class="tableblock halign-center valign-top" style="background-color: transparent;">Default Unit</th>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Description</th>
+<th class="tableblock halign-center valign-top" style="background-color: transparent;">Value Range</th>
+<th class="tableblock halign-center valign-top" style="background-color: transparent;">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>ThermalTransmittance</code></p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">W/m2K</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Thermal transmittance of glazing</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">&gt; 0</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock"><em>required for model type Simple</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Parameters, that depend on the incidence angle, are defined within an XML tag <code>LinearSplineParameter</code> (see <a href="#LinearSplineParameter">LinearSplineParameter</a>):</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 17.8217%;">
+<col style="width: 14.8514%;">
+<col style="width: 37.6237%;">
+<col style="width: 19.8019%;">
+<col style="width: 9.9013%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Name</th>
+<th class="tableblock halign-center valign-top" style="background-color: transparent;">Default Unit</th>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Description</th>
+<th class="tableblock halign-center valign-top" style="background-color: transparent;">Value Range</th>
+<th class="tableblock halign-center valign-top" style="background-color: transparent;">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>SHGC</code></p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Solar heat gain coefficient</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">&gt; 0</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock"><em>required for model type Simple</em></p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="zones">2.6. Zones</h3>
@@ -772,7 +907,7 @@ easily modify the placeholder paths to the directories on the local machine with
 <p>Objects of type <code>Zone</code> store all properties needed to compute zone temperature from energy density (the conserved quantity).</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 10. Zone Definition</div>
+<div class="title">Example 11. Zone Definition</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -795,7 +930,7 @@ easily modify the placeholder paths to the directories on the local machine with
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. Attributes</caption>
+<caption class="title">Table 5. Attributes</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -940,7 +1075,7 @@ the model&#8217;s unknowns). A <em>Constant</em> zone only needs the temperature
 <p>Construction instances represent actually built one-dimensional parts of the building envelope, e.g. walls, floors, ceilings, roofs. The construction instance definition contains construction-specific parameters required by several models.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 11. Definition of an Outside Wall with only Heat Conduction Boundary Condition</div>
+<div class="title">Example 12. Definition of an Outside Wall with only Heat Conduction Boundary Condition</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -971,7 +1106,7 @@ the model&#8217;s unknowns). A <em>Constant</em> zone only needs the temperature
 <p>The construction instances are defined inside the XML tag <code>ConstructionInstances</code>. Inside the section each construction definition starts with the XML tag named <code>ConstructionInstance</code> with attributes <code>id</code> and <code>displayName</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. Attributes</caption>
+<caption class="title">Table 6. Attributes</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -1005,7 +1140,7 @@ the model&#8217;s unknowns). A <em>Constant</em> zone only needs the temperature
 <p>The construction instance has the following <em>required</em> child tag:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. Construction Instance Child Tags</caption>
+<caption class="title">Table 7. Construction Instance Child Tags</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 75%;">
@@ -1186,7 +1321,7 @@ In the following it is described in detail.</p>
 <p>Interfaces are defining boundary conditions and parameters for the one or two surfaces <code>InterfaceA</code> and <code>InterfaceB</code> of a constructions instance. If the construction instance defines an adiabatic wall only one interface is needed. All other cases require two interfaces. The <code>InterfaceA</code> links the first material layer from the construction type with the assigned zone via the <code>zoneId</code>. The <code>InterfaceB</code> links the last material layer from the construction type with the <code>zoneId</code> of <code>InterfaceB</code>.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 12. Interface Definitions for a Construction with Interfaces for either Side</div>
+<div class="title">Example 13. Interface Definitions for a Construction with Interfaces for either Side</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -1227,7 +1362,7 @@ In the following it is described in detail.</p>
 </div>
 </div>
 <div class="exampleblock">
-<div class="title">Example 13. Parameter Definition for Heat Conduction Boundary Condition</div>
+<div class="title">Example 14. Parameter Definition for Heat Conduction Boundary Condition</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -1242,7 +1377,7 @@ In the following it is described in detail.</p>
 <p>The <code>InterfaceHeatConduction</code> needs to be defined with the following XML attribute <code>modelType</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch indent-me">
-<caption class="title">Table 7. Attributes</caption>
+<caption class="title">Table 8. Attributes</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -1317,7 +1452,7 @@ In the following it is described in detail.</p>
 </div>
 </div>
 <div class="exampleblock">
-<div class="title">Example 14. Parameter Definition for Solar Absorption Boundary Condition</div>
+<div class="title">Example 15. Parameter Definition for Solar Absorption Boundary Condition</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -1332,7 +1467,7 @@ In the following it is described in detail.</p>
 <p>The <code>InterfaceSolarAbsorption</code> needs to be defined with the following XML attribute <code>modelType</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. Attributes</caption>
+<caption class="title">Table 9. Attributes</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -1407,7 +1542,7 @@ In the following it is described in detail.</p>
 </div>
 </div>
 <div class="exampleblock">
-<div class="title">Example 15. Parameter Definition for Long Wave Emission</div>
+<div class="title">Example 16. Parameter Definition for Long Wave Emission</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -1422,7 +1557,7 @@ In the following it is described in detail.</p>
 <p>The <code>InterfaceLongWaveEmission</code> needs to be defined with the following XML attribute <code>modelType</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. Attributes</caption>
+<caption class="title">Table 10. Attributes</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -1506,7 +1641,7 @@ In the following it is described in detail.</p>
 <p>The vapour diffusion over the interface is described by the XML tag <code>InterfaceVaporDiffusion</code>.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 16. Parameter Definition for Vapor Diffusion</div>
+<div class="title">Example 17. Parameter Definition for Vapor Diffusion</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -1521,7 +1656,7 @@ In the following it is described in detail.</p>
 <p>The <code>InterfaceVaporDiffusion</code> needs to be defined with the following XML attribute <code>modelType</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. Parameters for the InterfaceVaporDiffusion-Tag</caption>
+<caption class="title">Table 11. Parameters for the InterfaceVaporDiffusion-Tag</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -1605,7 +1740,7 @@ In the following it is described in detail.</p>
 <p>The air flow over the interface is calculate with a pressure coefficient. It is described inside the XML tag <code>InterfaceAirFlow</code>.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 17. Parameter Definition for Air Flow</div>
+<div class="title">Example 18. Parameter Definition for Air Flow</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -1620,7 +1755,7 @@ In the following it is described in detail.</p>
 <p>The <code>InterfaceAirFlow</code> needs to be defined with the following XML attribute <code>modelType</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. Attriubutes</caption>
+<caption class="title">Table 12. Attriubutes</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -1691,7 +1826,7 @@ In the following it is described in detail.</p>
 <p>There can be several embedded object definitions.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 18. Definition of a window inside a construction instance</div>
+<div class="title">Example 19. Definition of a window inside a construction instance</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -1722,7 +1857,7 @@ In the following it is described in detail.</p>
 <p>A window is composed of a glazing and optionally frame and dividers. Without frame and dividers, the definition for such a window looks like:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 19. Parameter definition for basic window without frame</div>
+<div class="title">Example 20. Parameter definition for basic window without frame</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -1741,7 +1876,7 @@ In the following it is described in detail.</p>
 <p>The window may have a frame and/or dividers. These are separate entities because frame and divider material (and hence thermal conductivity across these materials) may be different. These are defined in XML-tags <code>Frame</code> and <code>Divider</code>:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 20. Parameter definition for basic window with frame and divider</div>
+<div class="title">Example 21. Parameter definition for basic window with frame and divider</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -1810,7 +1945,7 @@ In the following it is described in detail.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>As described in section <a href="#precomputed_shading">Pre-computed shading</a>, the association between provided data columns and object ID is done via identification string, composed from object type and ID number. For example, and embedded object with ID 14 would get the column header/caption <em>embObj14</em> and a construction instance (opaque surface) with ID 29 would get <em>conInst29</em>.</p>
+<p>As described in section <a href="#precomputed_shading">Pre-computed shading</a>, the association between provided data columns and object ID is done via identification string, composed from object type and ID number. For example, an embedded object with ID 14 would get the column header/caption <em>embObj.14</em> and a construction instance (opaque surface) with ID 29 would get <em>conInst.29</em>.</p>
 </div>
 </td>
 </tr>
@@ -1820,23 +1955,115 @@ In the following it is described in detail.</p>
 <p>Alternatively or additionally to pre-computed shading it is possible to define controlled shading for the window.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 21. Parameter definition for controlled shading</div>
+<div class="title">Example 22. Parameter definition for controlled shading</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
 <pre>&lt;Window glazingSystemID="123"&gt;
     ...
-  &lt;Shading type="simple" controlID="12"&gt;
-    &lt;!-- ReductionFactor = Fz  = Abminderungsfaktor für Verschattung --&gt;
-    &lt;IBK:Parameter name="ReductionFactor" unit="%"&gt;80&lt;/IBK:Parameter&gt;
+  &lt;Shading modelType="Standard"&gt;
+    &lt;ControlModelID&gt;555&lt;/ControlModelID&gt;
+    &lt;IBK:Parameter name="ReductionFactor" unit="---"&gt;0.7&lt;/IBK:Parameter&gt;
   &lt;/Shading&gt;
 &lt;/Window&gt;</pre>
 </div>
 </div>
 </div>
 </div>
+<div class="paragraph">
+<p>The <code>Shading</code> needs to be defined with the following XML attributes:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 13. Attributes</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 60%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Attribute</th>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Description</th>
+<th class="tableblock halign-center valign-top" style="background-color: transparent;">Format</th>
+<th class="tableblock halign-center valign-top" style="background-color: transparent;">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>modelType</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><div class="content"><div class="paragraph">
+<p>Sets the type of the shading model</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Standard</code> - Standard model using only a single reduction factor and a separate control model.</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">key</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock"><em>required</em></p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 14. Child tags</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 60%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Element</th>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Description</th>
+<th class="tableblock halign-center valign-top" style="background-color: transparent;">Format</th>
+<th class="tableblock halign-center valign-top" style="background-color: transparent;">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>ControlModelID</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Reference to a <code>ShadingControlModel</code> definition.</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock"><em>required for Standard model</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The XML tags named <code>IBK:Parameters</code> with the XML attributes <code>name</code> and <code>unit</code> with the following entries can be defined:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 26.3157%;">
+<col style="width: 8.421%;">
+<col style="width: 44.2105%;">
+<col style="width: 10.5263%;">
+<col style="width: 10.5265%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Name</th>
+<th class="tableblock halign-center valign-top" style="background-color: transparent;">Unit</th>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Description</th>
+<th class="tableblock halign-center valign-top" style="background-color: transparent;">Value Range</th>
+<th class="tableblock halign-center valign-top" style="background-color: transparent;">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>ReductionFactor</code></p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Percentage of remaining solar gains when shading is closed</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">0&#8230;&#8203;1</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock"><em>required for Standard model</em></p></td>
+</tr>
+</tbody>
+</table>
 <div class="exampleblock">
-<div class="title">Example 22. Calculation of the shading factor based on control signal</div>
+<div class="title">Example 23. Calculation of the shading factor based on control signal</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -1851,38 +2078,6 @@ Fz depending on control signal:
 </div>
 </div>
 </div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="glazing_systems">2.9.2. Glazing Systems</h4>
-<div class="paragraph">
-<p>Glazing systems are defined in a list besides the other database lists <code>Materials</code> and <code>ConstructionTypes</code> (see <a href="#databases">Embedded Databases</a>).</p>
-</div>
-<div class="paragraph">
-<p>Different complexities of glazing systems are supported. The most simply one is defined with model type <em>Simple</em> and requires only a U-value (thermal transmittance) and incidence-angle dependent SHGC value:</p>
-</div>
-<div class="exampleblock">
-<div class="title">Example 23. Parameter definition for a glazing system</div>
-<div class="content">
-<div class="listingblock">
-<div class="content">
-<pre>&lt;WindowGlazingSystems&gt;
-  &lt;WindowGlazingSystem id="123" modelType="Simple"&gt;
-    &lt;IBK:Parameter name="ThermalTransmittance" unit="W/m2K"&gt;0.4&lt;/IBK:Parameter&gt;
-    &lt;LinearSplineParameter name="SHGC" interpolationMethod="linear" wrapMethod="cyclic"&gt;
-      &lt;!-- X incidence angle - 90 deg = sun is perpendicular/normal to surface  --&gt;
-      &lt;X unit="Deg"&gt;0 90 &lt;/X&gt;
-      &lt;!-- Note: no constant parameter - if constant SHGC, define as below --&gt;
-      &lt;Y unit="---"&gt;0.6 0.6 &lt;/Y&gt;
-    &lt;/LinearSplineParameter&gt;
-  &lt;/WindowGlazingSystem&gt;
-&lt;/WindowGlazingSystems&gt;</pre>
-</div>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>In this simple model, the SHGC value for normal incidence is used for diffuse solar radiation.</p>
 </div>
 </div>
 </div>
@@ -2193,7 +2388,7 @@ Fz depending on control signal:
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. Attributes</caption>
+<caption class="title">Table 15. Attributes</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -2319,22 +2514,77 @@ Fz depending on control signal:
 <div class="sect3">
 <h4 id="loads_solar_radiation">2.10.3. Solar Radiation Calculation</h4>
 <div class="paragraph">
-<p>Solar radiation calculation follows the equations lists in section &#8230;&#8203; of the <em>Physical Model Reference</em>. The <code>Albedo</code> parameter is used in the diffuse radiation load calculation.</p>
+<p>Solar radiation calculation follows the equations listed in the <em>Physical Model Reference</em>. The <code>Albedo</code> parameter is used in the diffuse radiation load calculation.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="precomputed_shading">2.10.4. Pre-computed shading</h4>
 <div class="paragraph">
-<p>A pre-processing software may calculate the percentage of surface area with sun exposure for each surface element of the building. For example, in <a href="#fig_hourly_values">Figure 3</a>, a facade is partially shaded. The software can now compute the percentage of shaded area for both the opaque facade element and for the embedded window object separately.</p>
-</div>
-<div class="paragraph">
-<p>TODO : Discuss definition of opaque facade element - with or without window?</p>
+<p>A pre-processing software may calculate the percentage of surface area with sun exposure for each surface element of the building. For example, in <a href="#fig_shading_factors">Figure 5</a>, a facade is partially shaded.</p>
 </div>
 <div id="fig_shading_factors" class="imageblock">
 <div class="content">
 <img src="./images/SolarShading.png" alt="SolarShading">
 </div>
-<div class="title">Figure 5. Illustration of a partically shaded facade with a window.</div>
+<div class="title">Figure 5. Illustration of a partially shaded facade with a window.</div>
+</div>
+<div class="paragraph">
+<p>The software can now compute the percentage of shaded area for both the opaque facade element and for the embedded window object separately. The window is approximately 80% shaded, and about 20% of the surface is still exposed to the sun. The factor stored for this time and the window surface will be 0.2.</p>
+</div>
+<div class="paragraph">
+<p>The factor stored for a construction always includes potentially embedded objects.  <a href="#fig_shading_factor_example">Figure 6</a> shows a similar picture, yet easier to calculate.</p>
+</div>
+<div id="fig_shading_factor_example" class="imageblock">
+<div class="content">
+<img src="./images/SolarShading_example.png" alt="SolarShading example">
+</div>
+<div class="title">Figure 6. Calculation example for a partially shaded facade with a window.</div>
+</div>
+<div class="paragraph">
+<p>The construction has a surface area of 18x8 = 144 m2. The window has a surface area of 10x4 = 40 m2.
+The shadow on the construction occupies 13x8 = 104 m2, thus the shaded fraction (factor) for the construction is: 104/144 = 72.2%.</p>
+</div>
+<div class="paragraph">
+<p>The shadow onto the window alone occupies (13-(18-10)/2)x4 = 9x4 = 36 m2. Thus, the shaded surface factor for the window alone will be 90%.</p>
+</div>
+<div class="paragraph">
+<p>The values <strong>72.2%</strong> and <strong>90%</strong> will be stored in the shaded fractions data file.</p>
+</div>
+<div class="paragraph">
+<p>The shaded area on the opaque surface alone is 104 - 36 = 68 m2.  The opaque construction alone has a surface area of 144 - 40 = 104 m2. Thus, the reduction factor to be used in the solar radiation load equation will be 68/104 = 65.4%. This calculation will be done internally by the solar radiation model.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Remember to compute the percentage of the shaded surface area for constructions <strong>always including any embedded objects</strong>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_pre_computed_shaded_fractions_file_format">Pre-computed shaded fractions file format</h5>
+<div class="paragraph">
+<p>The file containing pre-computed shading factors is referenced in the XML tag <code>Location</code>, as child tag
+<code>ShadingFactorFileName</code>. The path given here can be an absolute path, or a relative path following the <code>${Project Directory}</code> placeholder (see <a href="#path_placeholders">Path Placeholders</a>).</p>
+</div>
+<div class="paragraph">
+<p>The file follows the <code>tsv</code> file format rules (see <em>PostProc 2</em> documentation) and has a single header line. The first column is the time column, with either absolute time stamps or time offsets relative to midnight January 1st of the start year.</p>
+</div>
+<div class="paragraph">
+<p>All other columns contain the compute shaded fraction values, where each column header identifies the respective surface with an ID-string.</p>
+</div>
+<div class="paragraph">
+<p>The ID-string follows the pattern: <code>&lt;objID&gt;.&lt;ID-number&gt;</code>. Object-IDs are either <code>conInst</code> or <code>embObj</code>.</p>
+</div>
+<div class="paragraph">
+<p>During the calculation, the values in the data table are linearly interpolated.</p>
+</div>
 </div>
 </div>
 </div>
@@ -2344,10 +2594,10 @@ Fz depending on control signal:
 <p>Whenever it is necessary to reference a calculation result (of a model object), this is done via <em>ObjectLists</em>.</p>
 </div>
 <div class="paragraph">
-<p>In NANDRAD, physical equations are organized in terms of model objects, for example zones or constructions. These model objects can be uniquely identified by a model type and ID number. For example, all quantities computed for a room/zone are identified by model type <em>Zone</em> and id number of the respective zone. <a href="#tab_modelRefTypes">Table 13</a> lists the available reference type keywords.</p>
+<p>In NANDRAD, physical equations are organized in terms of model objects, for example zones or constructions. These model objects can be uniquely identified by a model type and ID number. For example, all quantities computed for a room/zone are identified by model type <em>Zone</em> and id number of the respective zone. <a href="#tab_modelRefTypes">Table 16</a> lists the available reference type keywords.</p>
 </div>
 <table id="tab_modelRefTypes" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Model Reference Types</caption>
+<caption class="title">Table 16. Model Reference Types</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 80%;">
@@ -2421,7 +2671,7 @@ Fz depending on control signal:
 <p>XML-tag <code>ObjectList</code> has the following child tags.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. Model Reference Types</caption>
+<caption class="title">Table 17. Model Reference Types</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 80%;">
@@ -2439,7 +2689,7 @@ Fz depending on control signal:
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>ReferenceType</code></p></td>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Model object reference type (see <a href="#tab_modelRefTypes">Table 13</a>)</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Model object reference type (see <a href="#tab_modelRefTypes">Table 16</a>)</p></td>
 </tr>
 </tbody>
 </table>
@@ -2591,7 +2841,7 @@ For example they are used in the following objects or list of objects:</p>
 </ul>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. XML tags that can be definned</caption>
+<caption class="title">Table 18. XML tags that can be definned</caption>
 <colgroup>
 <col style="width: 10%;">
 <col style="width: 60%;">
@@ -2706,10 +2956,10 @@ For example they are used in the following objects or list of objects:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Regular schedules are defined within the XML tag <code>ScheduleGroup</code> with an XML attribute named <code>objectList</code> that references an <code>ObjectList</code> with the specified name (see <a href="#tab_ScheduleGroup">Table 16</a>).</p>
+<p>Regular schedules are defined within the XML tag <code>ScheduleGroup</code> with an XML attribute named <code>objectList</code> that references an <code>ObjectList</code> with the specified name (see <a href="#tab_ScheduleGroup">Table 19</a>).</p>
 </div>
 <table id="tab_ScheduleGroup" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. Attribute for the ScheduleGroup</caption>
+<caption class="title">Table 19. Attribute for the ScheduleGroup</caption>
 <colgroup>
 <col style="width: 15%;">
 <col style="width: 65%;">
@@ -2765,7 +3015,7 @@ For example they are used in the following objects or list of objects:</p>
 <p>As shown, a priority list exists that defines on how to define a yearly schedule based on a daily cycle.</p>
 </div>
 <table id="tab_ScheduleTypes" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. Description of the schedule type attribute</caption>
+<caption class="title">Table 20. Description of the schedule type attribute</caption>
 <colgroup>
 <col style="width: 15.7894%;">
 <col style="width: 10.5263%;">
@@ -2845,11 +3095,9 @@ For example they are used in the following objects or list of objects:</p>
 <div class="paragraph">
 <p>Inside the</p>
 </div>
-<div class="imageblock">
-<div class="content">
-<img src="./images/ScheduleShift.png" alt="ScheduleShift" width="80%">
-</div>
-<div class="title">Figure 6. Automatic Time Shift in Daily Cycles to improve simulation speed</div>
+<div class="paragraph">
+<div class="title">Automatic Time Shift in Daily Cycles to improve simulation speed</div>
+<p>#image::ScheduleShift.png[width=80%, scalewidth=12cm]</p>
 </div>
 </div>
 <div class="sect4">
@@ -2861,34 +3109,24 @@ For example they are used in the following objects or list of objects:</p>
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color:  #F4F4F4 ;"><div class="content"><div class="imageblock">
-<div class="content">
-<img src="./images/alldays.png" alt="alldays" width="100%">
-</div>
+<td class="tableblock halign-left valign-top" style="background-color:  #F4F4F4 ;"><div class="content"><div class="paragraph">
+<p>#image::alldays.png[width=100%]</p>
 </div></div></td>
-<td class="tableblock halign-left valign-top" style="background-color:  #F4F4F4 ;"><div class="content"><div class="imageblock">
-<div class="content">
-<img src="./images/mondays.png" alt="mondays" width="100%">
-</div>
+<td class="tableblock halign-left valign-top" style="background-color:  #F4F4F4 ;"><div class="content"><div class="paragraph">
+<p>#image::mondays.png[width=100%]</p>
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color:  #F4F4F4 ;"><div class="content"><div class="imageblock">
-<div class="content">
-<img src="./images/weekdays.png" alt="weekdays" width="100%">
-</div>
+<td class="tableblock halign-left valign-top" style="background-color:  #F4F4F4 ;"><div class="content"><div class="paragraph">
+<p>#image::weekdays.png[width=100%]</p>
 </div></div></td>
-<td class="tableblock halign-left valign-top" style="background-color:  #F4F4F4 ;"><div class="content"><div class="imageblock">
-<div class="content">
-<img src="./images/week.png" alt="week" width="100%">
-</div>
+<td class="tableblock halign-left valign-top" style="background-color:  #F4F4F4 ;"><div class="content"><div class="paragraph">
+<p>#image::week.png[width=100%]</p>
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color:  #F4F4F4 ;"><div class="content"><div class="imageblock">
-<div class="content">
-<img src="./images/year.png" alt="year" width="100%">
-</div>
+<td class="tableblock halign-left valign-top" style="background-color:  #F4F4F4 ;"><div class="content"><div class="paragraph">
+<p>#image::year.png[width=100%]</p>
 </div></div></td>
 <td class="tableblock halign-left valign-top" style="background-color:  #F4F4F4 ;"></td>
 </tr>
@@ -2932,7 +3170,7 @@ For example they are used in the following objects or list of objects:</p>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. Paramaters that can be set for the IBK:LinearSpline</caption>
+<caption class="title">Table 21. Paramaters that can be set for the IBK:LinearSpline</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -3015,7 +3253,7 @@ For example they are used in the following objects or list of objects:</p>
 <p>The variable list describes all names and the  units that can be used inside the schedules.</p>
 </div>
 <table id="tab_VariableList" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. Variable List</caption>
+<caption class="title">Table 22. Variable List</caption>
 <colgroup>
 <col style="width: 35%;">
 <col style="width: 10%;">
@@ -4530,7 +4768,7 @@ Start = 14*24 + 6 = 342 h</pre>
 <p>The XML-tag <code>Integrator</code> contains a string to select a specific integrator (<code>CVODE</code> is used by default, when tag is missing).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. Available Integrators</caption>
+<caption class="title">Table 23. Available Integrators</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 80%;">
@@ -4566,7 +4804,7 @@ Start = 14*24 + 6 = 342 h</pre>
 <p>The XML-tag <code>LesSolver</code> contains a string to select a specific solver for the linear equation systems (<code>KLU</code> is used by default, when tag is missing).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. Available LES solvers</caption>
+<caption class="title">Table 24. Available LES solvers</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 80%;">
@@ -4606,7 +4844,7 @@ Start = 14*24 + 6 = 342 h</pre>
 <p>The XML-tag <code>Preconditioner</code> contains a string to select a specific preconditioner, to be used for iterative LES solvers (<code>ILU</code> is used by default, when tag is missing).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. Available Preconditioners</caption>
+<caption class="title">Table 25. Available Preconditioners</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 80%;">
@@ -4648,7 +4886,7 @@ Start = 14*24 + 6 = 342 h</pre>
 <p>Not all integrators and LES solvers support all options mentioned above. Also, not all LES solvers can be combined with all integrators. The table below gives an overview of the supported combinations and options.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. Capabilities and Supported Flags/Parameters for the provided Integrators</caption>
+<caption class="title">Table 26. Capabilities and Supported Flags/Parameters for the provided Integrators</caption>
 <colgroup>
 <col style="width: 9.0909%;">
 <col style="width: 18.1818%;">
@@ -4680,7 +4918,7 @@ Start = 14*24 + 6 = 342 h</pre>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 24. Capabilities and Supported Flags/Parameters for the provided LES solvers</caption>
+<caption class="title">Table 27. Capabilities and Supported Flags/Parameters for the provided LES solvers</caption>
 <colgroup>
 <col style="width: 9.0909%;">
 <col style="width: 18.1818%;">
@@ -4726,12 +4964,14 @@ Start = 14*24 + 6 = 342 h</pre>
 </div>
 <div class="sect3">
 <h4 id="_natural_ventilation_model_infiltration">2.15.1. Natural Ventilation Model (Infiltration)</h4>
-
+<div class="paragraph">
+<p>TODO :</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_shading_control_model">2.15.2. Shading Control Model</h4>
 <div class="paragraph">
-<p>A shading control model is a special type of control model, returning a signal value between 0 and 1.</p>
+<p>A shading control model is a special type of control model, returning a signal value between 0 (no shading) and 1 (fully shaded). The actual amount of shading, or reduction of solar gains, is determined by the shading parameter block. Thus, you can use the same control model for different types of shadings.</p>
 </div>
 <div class="exampleblock">
 <div class="title">Example 43. Parameter definition for shading control model</div>
@@ -4743,14 +4983,14 @@ Start = 14*24 + 6 = 342 h</pre>
     0 = no reduction (shading open)
     1 = full reduction (shading closed)
   --&gt;
-  &lt;ShadingControlModel id="12" type="SingleIntensityControlled"&gt;
+  &lt;ShadingControlModel id="555" displayName="Roof sensor" modelType="SingleIntensityControlled"&gt;
     &lt;!-- Retrieves global radiation on given sensor. --&gt;
     &lt;SensorID&gt;21&lt;/SensorID&gt;
+    &lt;IBK:Parameter name="MaxIntensity" unit="W/m2"&gt;200&lt;/IBK:Parameter&gt;
+    &lt;IBK:Parameter name="MinIntensity" unit="W/m2"&gt;100&lt;/IBK:Parameter&gt;
     &lt;!-- Shading control model returns 1 for values below Min, and 0 for values above Max.
       Switching is only allowed if Max/Min has been passed (hysteretic control).
     --&gt;
-    &lt;IBK:Parameter name="Max" unit="W/m2"&gt;150&lt;/IBK:Parameter&gt;
-    &lt;IBK:Parameter name="Min" unit="W/m2"&gt;100&lt;/IBK:Parameter&gt;
   &lt;/ShadingControlModel&gt;
 &lt;/Models&gt;</pre>
 </div>
@@ -5683,7 +5923,7 @@ The example below shows how the output of the models is referenced via the objec
 <div id="footer">
 <div id="footer-text">
 Version 1.1.0<br>
-Last updated 2020-11-04 08:55:46 +0100
+Last updated 2020-11-04 12:35:08 +0100
 </div>
 </div>
 <style>

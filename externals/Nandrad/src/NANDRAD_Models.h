@@ -25,19 +25,27 @@
 #include <vector>
 
 #include "NANDRAD_NaturalVentilationModel.h"
+#include "NANDRAD_ShadingControlModel.h"
 
 namespace NANDRAD {
 
 /*! A container class for all models. */
 class Models {
 public:
+
+	// *** PUBLIC MEMBER FUNCTIONS ***
+
 	NANDRAD_READWRITE
+
+	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Verifies that all models have different IDs. */
 	void checkForUniqueIDs() const;
 
 	/*! Container for all natural ventilation models. */
 	std::vector<NaturalVentilationModel>	m_naturalVentilationModels;
+	/*! Container for all shading control models. */
+	std::vector<ShadingControlModel>		m_shadingControlModels;
 };
 
 } // namespace NANDRAD

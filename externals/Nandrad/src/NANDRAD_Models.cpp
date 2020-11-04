@@ -26,6 +26,10 @@
 
 namespace NANDRAD {
 
+// NOTE: we implement readXML and writeXML ourselves, so that
+//       we have only one level of model hierarchy, instead of another
+//       sublevel for each group of models.
+
 void Models::readXML(const TiXmlElement * element) {
 	FUNCID(Models::readXML);
 
@@ -45,6 +49,15 @@ void Models::readXML(const TiXmlElement * element) {
 			}
 			m_naturalVentilationModels.push_back(model);
 		}
+		else if (name == "ShadingControlModel") {
+			ShadingControlModel model;
+			try {
+				model.readXML(e);
+			} catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, "Error reading ShadingControlModel in Models tag.", FUNC_ID);
+			}
+			m_shadingControlModels.push_back(model);
+		}
 		else {
 			IBK::IBK_Message(IBK::FormatString(
 					"Unknown element '%1' in Models section.").arg(name), IBK::MSG_WARNING);
@@ -57,7 +70,9 @@ void Models::readXML(const TiXmlElement * element) {
 TiXmlElement * Models::writeXML(TiXmlElement * parent) const {
 
 	// write nothing if all containers are empty
-	if (m_naturalVentilationModels.empty()) return nullptr;
+	if (m_naturalVentilationModels.empty() &&
+		m_shadingControlModels.empty())
+		return nullptr;
 
 	TiXmlComment::addComment(parent, "Model parameterization blocks");
 
@@ -66,6 +81,8 @@ TiXmlElement * Models::writeXML(TiXmlElement * parent) const {
 
 	// now write all models as they are defined
 	for (auto m : m_naturalVentilationModels)
+		m.writeXML(e1);
+	for (auto m : m_shadingControlModels)
 		m.writeXML(e1);
 
 	TiXmlComment::addSeparatorComment(parent);

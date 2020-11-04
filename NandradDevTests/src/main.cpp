@@ -1770,6 +1770,12 @@ int main(int argc, char * argv[]) {
 	eo.m_window.m_divider.m_materialID = 1001;
 	eo.m_window.m_divider.m_area.set("Area", 2, IBK::Unit("m2"));
 
+	// add shading
+
+	eo.m_window.m_shading.m_modelType = NANDRAD::WindowShading::MT_Standard;
+	eo.m_window.m_shading.m_controlModelID = 555;
+	eo.m_window.m_shading.m_para[NANDRAD::WindowShading::P_ReductionFactor].set("ReductionFactor",0.7, IBK::Unit("---"));
+
 	conInsta.m_embeddedObjects.push_back(eo);
 
 	prj.m_constructionInstances.push_back(conInsta);
@@ -1778,7 +1784,7 @@ int main(int argc, char * argv[]) {
 
 	NANDRAD::WindowGlazingSystem g;
 	g.m_id = 123;
-	g.m_modelType = NANDRAD::WindowGlazingSystem::MT_Simple;
+	g.m_modelType = NANDRAD::WindowGlazingSystem::MT_Standard;
 	g.m_para[NANDRAD::WindowGlazingSystem::P_ThermalTransmittance].set("ThermalTransmittance", 0.4, "W/m2K");
 	g.m_shgc.m_name = "SHGC";
 	g.m_shgc.m_xUnit.set("Deg");
@@ -1786,6 +1792,17 @@ int main(int argc, char * argv[]) {
 	g.m_shgc.m_values.setValues( std::vector<double>( {0, 90} ), std::vector<double>( {0.6, 0.6} ));
 
 	prj.m_windowGlazingSystems.push_back(g);
+
+	// add shading control model
+	NANDRAD::ShadingControlModel mod;
+	mod.m_id = 555;
+	mod.m_sensorID = 21;
+	mod.m_displayName = "Roof sensor";
+	mod.m_para[NANDRAD::ShadingControlModel::P_MaxIntensity].set("MaxIntensity", 200, IBK::Unit("W/m2"));
+	mod.m_para[NANDRAD::ShadingControlModel::P_MinIntensity].set("MinIntensity", 100, IBK::Unit("W/m2"));
+	mod.m_modelType = NANDRAD::ShadingControlModel::MT_SingleIntensityControlled;
+
+	prj.m_models.m_shadingControlModels.push_back(mod);
 
 	IBK::Path path ("windowtest.nandrad");
 	prj.writeXML(path);

@@ -8,13 +8,13 @@ This section describes the various model parametrization blocks.
 ## Natural Ventilation Model (Infiltration)
 
 
-
+TODO :
 
 
 
 ## Shading Control Model
 
-A shading control model is a special type of control model, returning a signal value between 0 and 1.
+A shading control model is a special type of control model, returning a signal value between 0 (no shading) and 1 (fully shaded). The actual amount of shading, or reduction of solar gains, is determined by the shading parameter block. Thus, you can use the same control model for different types of shadings.
 
 .Parameter definition for shading control model
 [source,xml, indent=0]
@@ -25,15 +25,16 @@ A shading control model is a special type of control model, returning a signal v
 		0 = no reduction (shading open)
 		1 = full reduction (shading closed)
 	-->
-	<ShadingControlModel id="12" type="SingleIntensityControlled">
+	<ShadingControlModel id="555" displayName="Roof sensor" modelType="SingleIntensityControlled">
 		<!-- Retrieves global radiation on given sensor. -->
 		<SensorID>21</SensorID>
+		<IBK:Parameter name="MaxIntensity" unit="W/m2">200</IBK:Parameter>
+		<IBK:Parameter name="MinIntensity" unit="W/m2">100</IBK:Parameter>
 		<!-- Shading control model returns 1 for values below Min, and 0 for values above Max.
 			Switching is only allowed if Max/Min has been passed (hysteretic control).
 		-->
-		<IBK:Parameter name="Max" unit="W/m2">150</IBK:Parameter>
-		<IBK:Parameter name="Min" unit="W/m2">100</IBK:Parameter>
 	</ShadingControlModel>
 </Models>
 ----
 ====
+

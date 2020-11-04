@@ -228,7 +228,7 @@ Example for a sensor output (see also output description in section <<outputs>>)
 [[loads_solar_radiation]]
 ## Solar Radiation Calculation
 
-Solar radiation calculation follows the equations lists in section ... of the __Physical Model Reference__. The `Albedo` parameter is used in the diffuse radiation load calculation.
+Solar radiation calculation follows the equations listed in the __Physical Model Reference__. The `Albedo` parameter is used in the diffuse radiation load calculation.
 
 
 [[precomputed_shading]]
@@ -236,12 +236,48 @@ Solar radiation calculation follows the equations lists in section ... of the __
 
 :xrefstyle: short
 
-A pre-processing software may calculate the percentage of surface area with sun exposure for each surface element of the building. For example, in <<fig_hourly_values>>, a facade is partially shaded. The software can now compute the percentage of shaded area for both the opaque facade element and for the embedded window object separately.
-
-TODO : Discuss definition of opaque facade element - with or without window?
+A pre-processing software may calculate the percentage of surface area with sun exposure for each surface element of the building. For example, in <<fig_shading_factors>>, a facade is partially shaded.
 
 [[fig_shading_factors]]
-.Illustration of a partically shaded facade with a window.
-image::SolarShading.png[]
+.Illustration of a partially shaded facade with a window.
+image::SolarShading.png[pdfwidth=12cm]
+
+The software can now compute the percentage of shaded area for both the opaque facade element and for the embedded window object separately. The window is approximately 80% shaded, and about 20% of the surface is still exposed to the sun. The factor stored for this time and the window surface will be 0.2.
+
+The factor stored for a construction always includes potentially embedded objects.  <<fig_shading_factor_example>> shows a similar picture, yet easier to calculate.
+
+[[fig_shading_factor_example]]
+.Calculation example for a partially shaded facade with a window.
+image::SolarShading_example.png[pdfwidth=12cm]
+
+The construction has a surface area of 18x8 = 144 m2. The window has a surface area of 10x4 = 40 m2.
+The shadow on the construction occupies 13x8 = 104 m2, thus the shaded fraction (factor) for the construction is: 104/144 = 72.2%.
+
+The shadow onto the window alone occupies (13-(18-10)/2)x4 = 9x4 = 36 m2. Thus, the shaded surface factor for the window alone will be 90%.
+
+The values *72.2%* and *90%* will be stored in the shaded fractions data file.
+
+
+The shaded area on the opaque surface alone is 104 - 36 = 68 m2.  The opaque construction alone has a surface area of 144 - 40 = 104 m2. Thus, the reduction factor to be used in the solar radiation load equation will be 68/104 = 65.4%. This calculation will be done internally by the solar radiation model.
+
+[IMPORTANT]
+====
+Remember to compute the percentage of the shaded surface area for constructions *always including any embedded objects*.
+====
 
 :xrefstyle: basic
+
+### Pre-computed shaded fractions file format
+
+The file containing pre-computed shading factors is referenced in the XML tag `Location`, as child tag 
+`ShadingFactorFileName`. The path given here can be an absolute path, or a relative path following the `${Project Directory}` placeholder (see <<path_placeholders>>).
+
+The file follows the `tsv` file format rules (see _PostProc 2_ documentation) and has a single header line. The first column is the time column, with either absolute time stamps or time offsets relative to midnight January 1st of the start year.
+
+All other columns contain the compute shaded fraction values, where each column header identifies the respective surface with an ID-string.
+
+The ID-string follows the pattern: `<objID>.<ID-number>`. Object-IDs are either `conInst` or `embObj`.
+
+During the calculation, the values in the data table are linearly interpolated.
+
+

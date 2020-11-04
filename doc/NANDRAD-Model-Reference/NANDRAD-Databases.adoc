@@ -96,3 +96,59 @@ image::Mat_ConstInst.png[]
 
 The `MaterialLayer` does not have child tags since all needed data are defined as XML attributes as described above. 
 
+
+[[glazing_systems]]
+## Glazing Systems
+
+Glazing systems are defined in a list inside the XML tag `WindowGlazingSystems`.
+
+.Parameter definition for a glazing system
+[source,xml, indent=0]
+====
+----
+<WindowGlazingSystems>
+	<WindowGlazingSystem id="123" modelType="Standard">
+		<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">0.4</IBK:Parameter>
+		<LinearSplineParameter name="SHGC" interpolationMethod="linear" wrapMethod="cyclic">
+			<!-- X incidence angle - 90 deg = sun is perpendicular/normal to surface  -->
+			<X unit="Deg">0 90 </X>
+			<!-- Note: no constant parameter - if constant SHGC, define as below -->
+			<Y unit="---">0.6 0.6 </Y>
+		</LinearSplineParameter>
+	</WindowGlazingSystem>
+</WindowGlazingSystems>
+----
+====
+
+Inside this section each galzing system definition starts with the XML tag named `WindowGlazingSystem` with the XML attributes `id`, `modelType` and optional `displayName`:
+
+.Attributes
+[options="header",cols="15%,55%,20%,^ 10%",width="100%"]
+|====================
+| Attribute  | Description | Format | Usage 
+| `id` |  Unique id number. | positive integer ( > 0 )  | _required_
+| `displayName`  |  Name of glazing system (used for informative/error messages). | string | _optional_
+| `modelType`  
+a|  Identifies the model complexity:
+
+* `Standard` - Standard glazing model, with a U-value (thermal transmittance) and incidence-angle dependent SHGC value
+| string | _optional_
+|====================
+
+
+Scalar parameters are defined within an XML tag `IBK:Parameter` (see <<IBK_Parameter>>):
+
+[options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
+|====================
+| Name | Default Unit | Description | Value Range | Usage 
+| `ThermalTransmittance` | W/m2K | Thermal transmittance of glazing | > 0 | _required for model type Simple_
+|====================
+
+Parameters, that depend on the incidence angle, are defined within an XML tag `LinearSplineParameter` (see <<LinearSplineParameter>>):
+
+[options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
+|====================
+| Name | Default Unit | Description | Value Range | Usage 
+| `SHGC` | --- | Solar heat gain coefficient | > 0 | _required for model type Simple_
+|====================
+

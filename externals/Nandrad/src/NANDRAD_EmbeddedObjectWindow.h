@@ -30,6 +30,7 @@
 #include "NANDRAD_Material.h"
 #include "NANDRAD_WindowFrame.h"
 #include "NANDRAD_WindowDivider.h"
+#include "NANDRAD_WindowShading.h"
 #include "NANDRAD_WindowGlazingSystem.h"
 
 namespace NANDRAD {
@@ -68,6 +69,9 @@ public:
 	WindowFrame		m_frame;											// XML:E:tag=Frame
 	/*! Divider parameters (optional). */
 	WindowDivider	m_divider;											// XML:E:tag=Divider
+
+	/*! Shading model parameters (otional). */
+	WindowShading	m_shading;											// XML:E:tag=Shading
 
 	// *** Variables used only during simulation ***
 

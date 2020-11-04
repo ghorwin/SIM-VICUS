@@ -62,6 +62,8 @@ void EmbeddedObjectWindow::readXMLPrivate(const TiXmlElement * element) {
 				m_frame.readXML(c);
 			else if (cName == "Divider")
 				m_divider.readXML(c);
+			else if (cName == "Shading")
+				m_shading.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -93,6 +95,12 @@ TiXmlElement * EmbeddedObjectWindow::writeXMLPrivate(TiXmlElement * parent) cons
 		TiXmlElement * customElement = m_divider.writeXML(e);
 		if (customElement != nullptr)
 			customElement->ToElement()->SetValue("Divider");
+	}
+
+	{
+		TiXmlElement * customElement = m_shading.writeXML(e);
+		if (customElement != nullptr)
+			customElement->ToElement()->SetValue("Shading");
 	}
 	return e;
 }
