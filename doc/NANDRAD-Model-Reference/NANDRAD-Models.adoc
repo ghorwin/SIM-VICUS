@@ -7,10 +7,90 @@ This section describes the various model parametrization blocks.
 
 ## Natural Ventilation Model (Infiltration)
 
+A natural ventilation/infiltration model defines air exchange with the outside air.
 
-TODO :
+.Parameter definition for a natural ventilation model (Constant and Scheduled model variants)
+====
+[source,xml]
+----
+<NaturalVentilationModel id="501" displayName="Zone vent" modelType="Constant">
+	<ZoneObjectList>All zones</ZoneObjectList>
+	<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
+</NaturalVentilationModel>
+<NaturalVentilationModel id="502" displayName="Zone vent" modelType="Scheduled">
+	<ZoneObjectList>All zones</ZoneObjectList>
+</NaturalVentilationModel>
+----
+====
+
+The `NaturalVentilationModel` needs to be defined with the following XML attributes:
+
+.Attributes
+[.indent-me]
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Attribute  | Description | Format | Usage 
+| `id` |  Identifier of the natural ventilation model | {nbsp}>{nbsp}0{nbsp} | _required_
+
+| `modelType` 
+a|  Sets the type of the heat conduction model 
+
+* `Constant` - Constant air change rate
+* `Scheduled` - Air change rate changes accoring to defined schedule
+
+| key | _required_
+|====================
 
 
+Floating point parameters (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
+
+[options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
+|====================
+|Name|Default Unit|Description|Value Range |Usage
+| `VentilationRate` | 1/h | Constant air change rate | {nbsp}>={nbsp}0.0{nbsp} | _required for Constant model_
+|====================
+
+If the model type `Scheduled` is being used, no further parameters are required, since the air change rate is taken from a scheduled parameter.
+
+For the model to work, the parameter `InfiltrationRateSchedule` must be defined in a schedule (see <<schedules>>).
+
+Below is an example of a schedule that provides the `InfiltrationRateSchedule` for such a scheduled natural ventilation model:
+
+.Example schedule that provides a InfiltrationRateSchedule parameter
+====
+[source,xml]
+----
+<ScheduleGroup objectList="All zones">
+	<!-- every day between 8-10 -->
+	<Schedule type="AllDays">
+		<DailyCycles>
+			<DailyCycle interpolation="Constant">
+				<TimePoints>0 6 10</TimePoints>
+				<Values>InfiltrationRateSchedule [1/h]:0 0.4 0</Values>
+			</DailyCycle>
+		</DailyCycles>
+	</Schedule>
+	<!-- Tuesday no ventilation -->
+	<Schedule type="Tuesday">
+		<DailyCycles>
+			<DailyCycle interpolation="Constant">
+				<TimePoints>0</TimePoints>
+				<Values>InfiltrationRateSchedule [1/h]:0</Values>
+			</DailyCycle>
+		</DailyCycles>
+	</Schedule>
+	<!-- Weekend only on afternoon -->
+	<Schedule type="WeekEnd">
+		<DailyCycles>
+			<DailyCycle interpolation="Constant">
+				<TimePoints>0 14 16</TimePoints>
+				<Values>InfiltrationRateSchedule [1/h]:0 0.1 0</Values>
+			</DailyCycle>
+		</DailyCycles>
+	</Schedule>
+</ScheduleGroup>
+----
+====
 
 ## Shading Control Model
 
