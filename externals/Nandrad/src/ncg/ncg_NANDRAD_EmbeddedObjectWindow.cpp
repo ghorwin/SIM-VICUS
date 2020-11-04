@@ -26,6 +26,7 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
+#include <NANDRAD_Constants.h>
 #include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
@@ -79,7 +80,8 @@ TiXmlElement * EmbeddedObjectWindow::writeXMLPrivate(TiXmlElement * parent) cons
 	TiXmlElement * e = new TiXmlElement("EmbeddedObjectWindow");
 	parent->LinkEndChild(e);
 
-	e->SetAttribute("glazingSystemID", IBK::val2string<unsigned int>(m_glazingSystemID));
+	if (m_glazingSystemID != NANDRAD::INVALID_ID)
+		e->SetAttribute("glazingSystemID", IBK::val2string<unsigned int>(m_glazingSystemID));
 
 	{
 		TiXmlElement * customElement = m_frame.writeXML(e);

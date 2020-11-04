@@ -60,6 +60,7 @@ HEADERS += \
 	../../src/NANDRAD_Schedules.h \
 	../../src/NANDRAD_Sensor.h \
 	../../src/NANDRAD_SerializationTest.h \
+	../../src/NANDRAD_ShadingControlModel.h \
 	../../src/NANDRAD_SimulationParameter.h \
 	../../src/NANDRAD_SolverParameter.h \
 	../../src/NANDRAD_Utilities.h \

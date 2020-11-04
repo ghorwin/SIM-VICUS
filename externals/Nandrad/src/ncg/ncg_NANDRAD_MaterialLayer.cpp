@@ -26,6 +26,7 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
+#include <NANDRAD_Constants.h>
 #include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
@@ -64,7 +65,8 @@ TiXmlElement * MaterialLayer::writeXML(TiXmlElement * parent) const {
 	parent->LinkEndChild(e);
 
 	e->SetAttribute("thickness", IBK::val2string<double>(m_thickness));
-	e->SetAttribute("matId", IBK::val2string<unsigned int>(m_matId));
+	if (m_matId != NANDRAD::INVALID_ID)
+		e->SetAttribute("matId", IBK::val2string<unsigned int>(m_matId));
 	return e;
 }
 

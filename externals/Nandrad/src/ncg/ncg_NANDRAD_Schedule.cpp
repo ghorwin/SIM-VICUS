@@ -26,6 +26,7 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
+#include <NANDRAD_Constants.h>
 #include <NANDRAD_KeywordList.h>
 #include <NANDRAD_Utilities.h>
 
@@ -97,8 +98,10 @@ TiXmlElement * Schedule::writeXML(TiXmlElement * parent) const {
 
 	if (m_type != NUM_ST)
 		e->SetAttribute("type", KeywordList::Keyword("Schedule::type_t",  m_type));
-	TiXmlElement::appendSingleAttributeElement(e, "StartDayOfTheYear", nullptr, std::string(), IBK::val2string<unsigned int>(m_startDayOfTheYear));
-	TiXmlElement::appendSingleAttributeElement(e, "EndDayOfTheYear", nullptr, std::string(), IBK::val2string<unsigned int>(m_endDayOfTheYear));
+	if (m_startDayOfTheYear != NANDRAD::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "StartDayOfTheYear", nullptr, std::string(), IBK::val2string<unsigned int>(m_startDayOfTheYear));
+	if (m_endDayOfTheYear != NANDRAD::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "EndDayOfTheYear", nullptr, std::string(), IBK::val2string<unsigned int>(m_endDayOfTheYear));
 
 	if (!m_dailyCycles.empty()) {
 		TiXmlElement * child = new TiXmlElement("DailyCycles");

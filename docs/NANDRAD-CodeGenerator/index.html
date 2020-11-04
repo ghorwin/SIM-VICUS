@@ -20,7 +20,7 @@
 --maincolor:#FFFFFF;
 --primarycolor:#a90e22;
 --secondarycolor:#9f1d0b;
---tertiarycolor: #772953;
+--tertiarycolor: #ededed;
 --sidebarbackground:#CCC;
 --linkcolor:#b71c1c;
 --linkcoloralternate:#f44336;
@@ -42,10 +42,10 @@ a.bare:visited {color: #204f83;}
 a:hover {color: #317ed4;}
 #toc.toc2 a:hover {color: #f1b464;}*/
 /* code{background-color: var(--secondarycolor) !important;color:var(--white)} */
-code,kbd,pre,samp{font-family:monospace;font-size:0.8em}
+code,kbd,pre,samp{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;monospace;font-size:1em}
 
 /* Table styles */
-th{background-color: var(--tertiarycolor);color:var(--white) !important;}
+th{background-color: var(--tertiarycolor);color:var(--black) !important;}
 
 #toctitle{color:var(--primarycolor);font-family: "Roboto Condensed",sans-serif;font-size: 1.6875em;}
 #toc.toc2{background-color:#f4f8fd;}
@@ -99,6 +99,7 @@ table {
 <li><a href="#_comparison_operator_macro">3.2.1. Comparison operator macro</a></li>
 <li><a href="#xml_custom_readwrite">3.2.2. Custom read/write functionality</a></li>
 <li><a href="#_only_writing_data_if_not_still_default_content">3.2.3. Only writing data if not still default content</a></li>
+<li><a href="#_utility_macro_overview">3.2.4. Utility Macro Overview</a></li>
 </ul>
 </li>
 </ul>
@@ -111,8 +112,10 @@ table {
 <li><a href="#xml_serialization_rules">4.4. XML Serialization</a>
 <ul class="sectlevel3">
 <li><a href="#xml_complexTypes">4.4.1. Reading/writing custom complex types</a></li>
-<li><a href="#_unsupported_data_member_types">4.4.2. Unsupported data member types</a></li>
-<li><a href="#_xml_comments">4.4.3. XML Comments</a></li>
+<li><a href="#_readingwriting_custom_complex_types_with_user_defined_tag_names">4.4.2. Reading/writing custom complex types with user-defined tag names</a></li>
+<li><a href="#_handling_of_uninitialized_ids_nandradinvalid_id">4.4.3. Handling of uninitialized IDs (<code>= NANDRAD::INVALID_ID</code>)</a></li>
+<li><a href="#_unsupported_data_member_types">4.4.4. Unsupported data member types</a></li>
+<li><a href="#_xml_comments">4.4.5. XML Comments</a></li>
 </ul>
 </li>
 </ul>
@@ -696,6 +699,76 @@ table {
 <span class="p">};</span></code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>For classes such as <code>Sensor</code>, that define a member variable <code>m_id</code> which is initialized with <code>NANDRAD::INVALID_ID</code> it is also possible (and better) to use the macro <code>NANDRAD_READWRITE_IFNOT_INVALID_ID</code>, which does not require implementation of a comparison operator.</p>
+</div>
+<div class="listingblock">
+<div class="title">Class Sensor, using code generator with private read/write functions and check to not write unused data objects</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">Sensor</span> <span class="p">{</span>
+	<span class="n">NANDRAD_READWRITE_PRIVATE</span>
+<span class="nl">public:</span>
+	<span class="c1">// *** PUBLIC MEMBER FUNCTIONS ***</span>
+
+	<span class="n">NANDRAD_READWRITE_IFNOT_INVALID_ID</span>
+
+	<span class="c1">// *** PUBLIC MEMBER VARIABLES ***</span>
+
+	<span class="cm">/*! Unique ID-number of the sensor.*/</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span>						<span class="n">m_id</span> <span class="o">=</span> <span class="n">NANDRAD</span><span class="o">::</span><span class="n">INVALID_ID</span><span class="p">;</span>		<span class="c1">// XML:A:required</span>
+	<span class="cm">/*! Name of the measured quantity */</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">string</span>							<span class="n">m_quantity</span><span class="p">;</span>						<span class="c1">// XML:E</span>
+<span class="p">};</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_utility_macro_overview">3.2.4. Utility Macro Overview</h4>
+<div class="listingblock">
+<div class="title">All utility macros</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="cp">#define NANDRAD_READWRITE \
+	void readXML(const TiXmlElement * element); \
+	TiXmlElement * writeXML(TiXmlElement * parent) const;
+</span>
+<span class="cp">#define NANDRAD_READWRITE_IFNOTEMPTY(X) \
+	void readXML(const TiXmlElement * element) { readXMLPrivate(element); } \
+	TiXmlElement * writeXML(TiXmlElement * parent) const { if (*this != X()) return writeXMLPrivate(parent); else return nullptr; }
+</span>
+<span class="cp">#define NANDRAD_READWRITE_IFNOT_INVALID_ID \
+	void readXML(const TiXmlElement * element) { readXMLPrivate(element); } \
+	TiXmlElement * writeXML(TiXmlElement * parent) const { if (m_id != INVALID_ID) return writeXMLPrivate(parent); else return nullptr; }
+</span>
+<span class="cp">#define NANDRAD_READWRITE_PRIVATE \
+	void readXMLPrivate(const TiXmlElement * element); \
+	TiXmlElement * writeXMLPrivate(TiXmlElement * parent) const;
+</span>
+<span class="cp">#define NANDRAD_COMP(X) \
+	bool operator!=(const X &amp; other) const; \
+	bool operator==(const X &amp; other) const { return !operator!=(other); }
+</span>
+<span class="cp">#define NANDRAD_COMPARE_WITH_ID \
+	bool operator==(unsigned int x) const { return m_id == x; }
+</span>
+<span class="cp">#define NANDRAD_COMPARE_WITH_NAME \
+	bool operator==(const std::string &amp; name) const { return m_name == name; }
+</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>NANDRAD_READWRITE_IFNOTEMPTY</code> and <code>NANDRAD_READWRITE_IFNOTEMPTY</code> must be used in conjunction with <code>NANDRAD_READWRITE_PRIVATE</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -1000,7 +1073,7 @@ table {
 		<span class="nt">&lt;Table&gt;</span>Col1:1,5,3;Col2:7,2,2;<span class="nt">&lt;/Table&gt;</span>
 		<span class="nt">&lt;DblVec&gt;</span>0,12,24<span class="nt">&lt;/DblVec&gt;</span>
 		<span class="nt">&lt;Interfaces&gt;</span>
-			<span class="nt">&lt;Interface</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">location=</span><span class="s">"A"</span> <span class="na">zoneId=</span><span class="s">"0"</span><span class="nt">&gt;</span>
+			<span class="nt">&lt;Interface</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">zoneId=</span><span class="s">"0"</span><span class="nt">&gt;</span>
 				<span class="c">&lt;!--Interface to outside--&gt;</span>
 			<span class="nt">&lt;/Interface&gt;</span>
 		<span class="nt">&lt;/Interfaces&gt;</span>
@@ -1076,7 +1149,88 @@ table {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_unsupported_data_member_types">4.4.2. Unsupported data member types</h4>
+<h4 id="_readingwriting_custom_complex_types_with_user_defined_tag_names">4.4.2. Reading/writing custom complex types with user-defined tag names</h4>
+<div class="paragraph">
+<p>Normally, the tag names for complex types are generated based on the complex type&#8217;s class name. For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">Example for complex data member with automatic tag name generation</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="n">Interface</span> <span class="n">m_iface</span><span class="p">;</span>  <span class="c1">// XML:E</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>will generate an XML-file with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Interface</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">zoneId=</span><span class="s">"0"</span><span class="nt">&gt;</span>
+	<span class="c">&lt;!--Interface to outside--&gt;</span>
+<span class="nt">&lt;/Interface&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you would like to use a different tag name, for example to distinguish between different variables of the same complex type, you can use the <code>XML:E:tag=&lt;custom tag name&gt;</code> syntax.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example for complex data member with custom tag name</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="n">Interface</span> <span class="n">m_iface</span><span class="p">;</span>  <span class="c1">// XML:E:tag=MyFancyInterface</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>will generate an XML-file with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;MyFancyInterface</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">zoneId=</span><span class="s">"0"</span><span class="nt">&gt;</span>
+	<span class="c">&lt;!--Interface to outside--&gt;</span>
+<span class="nt">&lt;/MyFancyInterface&gt;</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This feature works <strong>only</strong> with element tags and custom complex data types.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_handling_of_uninitialized_ids_nandradinvalid_id">4.4.3. Handling of uninitialized IDs (<code>= NANDRAD::INVALID_ID</code>)</h4>
+<div class="paragraph">
+<p>The code generator automatically inserts code that compares unsigned int parameters with the constant <code>NANDRAD::INVALID_ID</code>. If the variable holds this default value, the variable will not be written.</p>
+</div>
+<div class="paragraph">
+<p>This avoids writing invalid IDs for optional references.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Unsigned int variables with value <code>NANDRAD::INVALID_ID</code> are expected to identify that <em>an optional parameter is omitted</em> or not provided. Hence, the respective variable should always be initialized with <code>NANDRAD::INVALID_ID</code> in the class header/constructor. When accessing the variable before or after reading the project file, it is possible to check by comparing with the constant if the variable is given or not.</p>
+</div>
+<div class="paragraph">
+<p>Care has to be taken when an existing optional data member is deactivated by setting its id to <code>NANDRAD::INVALID_ID</code>. All other members should equally be cleared, so that a data member (with potentially mandatory ID) is not being written to file, whereby some regular data members appear in the XML tag, but not the ID. This will work during writing of the project, but <strong>fail</strong>, when the project is being read in again.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_unsupported_data_member_types">4.4.4. Unsupported data member types</h4>
 <div class="paragraph">
 <p>For any kind of special data types, like <code>std::map&lt;std::string, std::vector&lt;double&gt; &gt;</code> you cannot use the code generator to create read/write code for. When you add a read/write annotation to such variables, the code generator will complain about unsupported types and may generate not compiling code.</p>
 </div>
@@ -1095,7 +1249,7 @@ table {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_xml_comments">4.4.3. XML Comments</h4>
+<h4 id="_xml_comments">4.4.5. XML Comments</h4>
 <div class="paragraph">
 <p>Sometimes, it is nice to add comments about certain data members in the file. These are not xml tags, but merely xml comments and as such have no meaning for the project (only for humans reading the file in the text editor).</p>
 </div>
@@ -1128,7 +1282,7 @@ table {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Interface</span> <span class="na">id=</span><span class="s">"12"</span> <span class="na">location=</span><span class="s">"A"</span> <span class="na">zoneId=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Interface</span> <span class="na">id=</span><span class="s">"12"</span> <span class="na">zoneId=</span><span class="s">"1"</span><span class="nt">&gt;</span>
 	<span class="c">&lt;!--Interface to 'TF05.1'--&gt;</span>
 	<span class="nt">&lt;InterfaceHeatConduction</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
     ...
@@ -1149,6 +1303,20 @@ table {
 </tr>
 </table>
 </div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You cannot combine <code>XML:C</code> with any other xml element option.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -1157,7 +1325,7 @@ table {
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated 2020-07-21 18:23:47 +0200
+Last updated 2020-11-04 08:43:51 +0100
 </div>
 </div>
 <style>

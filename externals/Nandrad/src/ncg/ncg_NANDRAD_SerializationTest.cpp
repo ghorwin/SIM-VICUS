@@ -26,6 +26,7 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
+#include <NANDRAD_Constants.h>
 #include <NANDRAD_KeywordList.h>
 #include <NANDRAD_Utilities.h>
 
@@ -217,7 +218,8 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 	parent->LinkEndChild(e);
 
 	e->SetAttribute("id1", IBK::val2string<int>(m_id1));
-	e->SetAttribute("id2", IBK::val2string<unsigned int>(m_id2));
+	if (m_id2 != NANDRAD::INVALID_ID)
+		e->SetAttribute("id2", IBK::val2string<unsigned int>(m_id2));
 	e->SetAttribute("flag1", IBK::val2string<bool>(m_flag1));
 	e->SetAttribute("val1", IBK::val2string<double>(m_val1));
 	if (m_testBla != NUM_test)
@@ -229,7 +231,8 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 	if (m_u1.id() != 0)
 		e->SetAttribute("u1", m_u1.name());
 	TiXmlElement::appendSingleAttributeElement(e, "Id3", nullptr, std::string(), IBK::val2string<int>(m_id3));
-	TiXmlElement::appendSingleAttributeElement(e, "Id4", nullptr, std::string(), IBK::val2string<unsigned int>(m_id4));
+	if (m_id4 != NANDRAD::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "Id4", nullptr, std::string(), IBK::val2string<unsigned int>(m_id4));
 	TiXmlElement::appendSingleAttributeElement(e, "Flag2", nullptr, std::string(), IBK::val2string<bool>(m_flag2));
 	TiXmlElement::appendSingleAttributeElement(e, "Val2", nullptr, std::string(), IBK::val2string<double>(m_val2));
 

@@ -26,6 +26,7 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
+#include <NANDRAD_Constants.h>
 #include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
@@ -120,10 +121,12 @@ TiXmlElement * ConstructionInstance::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("ConstructionInstance");
 	parent->LinkEndChild(e);
 
-	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
+	if (m_id != NANDRAD::INVALID_ID)
+		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
-	TiXmlElement::appendSingleAttributeElement(e, "ConstructionTypeId", nullptr, std::string(), IBK::val2string<unsigned int>(m_constructionTypeId));
+	if (m_constructionTypeId != NANDRAD::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "ConstructionTypeId", nullptr, std::string(), IBK::val2string<unsigned int>(m_constructionTypeId));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty())

@@ -26,6 +26,7 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
+#include <NANDRAD_Constants.h>
 #include <NANDRAD_KeywordList.h>
 #include <NANDRAD_Utilities.h>
 
@@ -113,7 +114,8 @@ TiXmlElement * Zone::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("Zone");
 	parent->LinkEndChild(e);
 
-	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
+	if (m_id != NANDRAD::INVALID_ID)
+		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
 	if (m_type != NUM_ZT)

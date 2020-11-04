@@ -26,6 +26,7 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
+#include <NANDRAD_Constants.h>
 #include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
@@ -90,7 +91,8 @@ TiXmlElement * Sensor::writeXMLPrivate(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("Sensor");
 	parent->LinkEndChild(e);
 
-	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
+	if (m_id != NANDRAD::INVALID_ID)
+		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_quantity.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "Quantity", nullptr, std::string(), m_quantity);
 	TiXmlElement::appendIBKParameterElement(e, m_orientation.name, m_orientation.IO_unit.name(), m_orientation.get_value());

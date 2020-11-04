@@ -322,6 +322,11 @@ void CodeGenerator::generateReadWriteCode() {
 					xmlInfo.typeStr == "double" ||
 					xmlInfo.typeStr == "bool")
 				{
+					// for unsigned int, check for invalid ID first, before writing the attribute - we do not want invalid IDs in the project file!
+					if (xmlInfo.typeStr == "unsigned int") {
+						attribs += "	if (m_"+attribName+" != NANDRAD::INVALID_ID)\n	";
+						includes.insert("NANDRAD_Constants.h");
+					}
 					attribs += "	e->SetAttribute(\""+attribName+"\", IBK::val2string<"+xmlInfo.typeStr+">(m_"+attribName+"));\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Path") {
@@ -388,6 +393,10 @@ void CodeGenerator::generateReadWriteCode() {
 					xmlInfo.typeStr == "double" ||
 					xmlInfo.typeStr == "bool")
 				{
+					if (xmlInfo.typeStr == "unsigned int") {
+						elements += "	if (m_"+varName+" != NANDRAD::INVALID_ID)\n	";
+						includes.insert("NANDRAD_Constants.h");
+					}
 					elements += "	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), IBK::val2string<"+xmlInfo.typeStr+">(m_"+varName+"));\n";
 				}
 				else if (xmlInfo.typeStr == "std::string") {

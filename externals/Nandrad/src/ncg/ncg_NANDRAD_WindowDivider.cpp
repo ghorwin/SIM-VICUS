@@ -26,6 +26,7 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
+#include <NANDRAD_Constants.h>
 #include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
@@ -89,7 +90,8 @@ TiXmlElement * WindowDivider::writeXMLPrivate(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("WindowDivider");
 	parent->LinkEndChild(e);
 
-	e->SetAttribute("materialID", IBK::val2string<unsigned int>(m_materialID));
+	if (m_materialID != NANDRAD::INVALID_ID)
+		e->SetAttribute("materialID", IBK::val2string<unsigned int>(m_materialID));
 	TiXmlElement::appendIBKParameterElement(e, m_area.name, m_area.IO_unit.name(), m_area.get_value());
 	return e;
 }

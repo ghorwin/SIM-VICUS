@@ -26,6 +26,7 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
+#include <NANDRAD_Constants.h>
 #include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
@@ -89,7 +90,8 @@ TiXmlElement * ConstructionType::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("ConstructionType");
 	parent->LinkEndChild(e);
 
-	e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
+	if (m_id != NANDRAD::INVALID_ID)
+		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
 
