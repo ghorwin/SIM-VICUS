@@ -29,12 +29,18 @@ HEADERS += \
 	../../src/VICUS_ArgsParser.h \
 	../../src/VICUS_CodeGenMacros.h \
 	../../src/VICUS_Constants.h \ \
+	../../src/VICUS_Edge.h \
+	../../src/VICUS_Line.h \
 	../../src/VICUS_Network.h \
+	../../src/VICUS_Node.h \
 	../../src/VICUS_Project.h
 
 SOURCES += \
 	../../src/VICUS_ArgsParser.cpp \
 	../../src/VICUS_Constants.cpp \
+	../../src/VICUS_Edge.cpp \
+	../../src/VICUS_Line.cpp \
 	../../src/VICUS_Network.cpp \
+	../../src/VICUS_Node.cpp \
 	../../src/VICUS_Project.cpp
 
