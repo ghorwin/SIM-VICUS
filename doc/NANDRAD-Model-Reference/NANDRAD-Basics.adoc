@@ -152,7 +152,15 @@ a| Specifies the interpolation method between the defined y values.
 * `linear` - linear interpolation (values linear interpolated between time steps)  
 
 | key | _required_
+
 | `WrapMethod` 
+a| Specifies what should be done if values are requested with x values outside the x-value range.
+
+* `continuous` - constant extrapolation (take first or last value, respectively)
+* `cyclic` - apply cyclic adjustment with the model-specific period length (for example, a year)
+
+| key | _required_
+
 |====================
 
 The child tags `X` and `Y` each hold a mandatory attribute `unit` with the respective value unit (see <<units>>).
