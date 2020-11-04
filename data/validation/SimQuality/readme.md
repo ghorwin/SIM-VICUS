@@ -35,5 +35,5 @@ described in the test suite).
 
 ### TestCase 06
 
-<img src="TF06/results/TF06.1.png" width="600px" height="550px"/><img src="TF06/results/TF06.1_radloads.png" width="600px" height="550px"/>
-<img src="TF06/results/TF06.2.png" width="600px" height="550px"/><img src="TF06/results/TF06.2_radloads.png" width="600px" height="550px"/>
+<img src="TF06/results/TF06.1.png" width="800px" height="550px"/><img src="TF06/results/TF06.1_radloads.png" width="800px" height="550px"/>
+<img src="TF06/results/TF06.2.png" width="800px" height="550px"/><img src="TF06/results/TF06.2_radloads.png" width="800px" height="550px"/>
