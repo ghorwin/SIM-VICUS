@@ -1785,7 +1785,7 @@ int main(int argc, char * argv[]) {
 	g.m_shgc.m_yUnit.set("---");
 	g.m_shgc.m_values.setValues( std::vector<double>( {0, 90} ), std::vector<double>( {0.6, 0.6} ));
 
-	prj.m_glazingSystems.push_back(g);
+	prj.m_windowGlazingSystems.push_back(g);
 
 	IBK::Path path ("windowtest.nandrad");
 	prj.writeXML(path);

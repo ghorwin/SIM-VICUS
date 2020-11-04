@@ -10,7 +10,7 @@ For actual development we recommend use of Qt Creator with the prepared <<qmake,
 
 ## Setting up the build environment
 
-Generally, you need a fairly up-to-date C/C++ compiler (that means: c++11 features should be supported). Also, you need the Qt libraries. And you need cmake. That's it, nothing else!
+Generally, you need a fairly up-to-date C/C++ compiler (that means: `c++11` features should be supported). Also, you need the Qt libraries. And you need cmake. That's it, nothing else!
 
 ### Windows
 

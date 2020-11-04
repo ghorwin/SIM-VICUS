@@ -1,5 +1,6 @@
 :imagesdir: ./images
-# Embedded Databases (Materials and Constructions)
+[[databases]]
+# Embedded Databases
 
 In order to model building components such as walls, ceilings and floors, etc. it is necessary to define some parameters for the materials and then define сonstructions composed of such materials. These parameters are stored in databases, which are actually lists of XML objects.
 

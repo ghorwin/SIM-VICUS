@@ -70,9 +70,9 @@ public:
 	/*! Parameter name (in context of schedules used as scheduled quantity). */
 	std::string				m_name;
 	/*! Interpolation method to be used when computing values of this spline. */
-	interpolationMethod_t	m_interpolationMethod = I_LINEAR;
+	interpolationMethod_t	m_interpolationMethod = NUM_I;
 	/*! Whether to wrap time around in multi-year simulations (cyclic use) or to assume continuous data. */
-	wrapMethod_t			m_wrapMethod = C_CYCLIC;
+	wrapMethod_t			m_wrapMethod = NUM_C;
 	/*! Data vectors including linear spline functionality (i.e. interpolation at any given value).
 		Values are stored in the respective Base-SI units of the input/output units m_xUnit and
 		m_yUnit. For example, if m_yUnit is 'C' (degree C), then the spline holds values in

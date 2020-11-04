@@ -231,3 +231,17 @@ Example for a sensor output (see also output description in section <<outputs>>)
 Solar radiation calculation follows the equations lists in section ... of the __Physical Model Reference__. The `Albedo` parameter is used in the diffuse radiation load calculation.
 
 
+[[precomputed_shading]]
+## Pre-computed shading
+
+:xrefstyle: short
+
+A pre-processing software may calculate the percentage of surface area with sun exposure for each surface element of the building. For example, in <<fig_hourly_values>>, a facade is partially shaded. The software can now compute the percentage of shaded area for both the opaque facade element and for the embedded window object separately.
+
+TODO : Discuss definition of opaque facade element - with or without window?
+
+[[fig_shading_factors]]
+.Illustration of a partically shaded facade with a window.
+image::SolarShading.png[]
+
+:xrefstyle: basic

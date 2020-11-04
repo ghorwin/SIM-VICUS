@@ -439,73 +439,134 @@ The XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` wi
 [[embedded_objects]]
 # Embedded objects (windows, doors, openings...)
 
+There can be several embedded object definitions.
 
-.Parameter Definition for Windows
-====
+.Definition of a window inside a construction instance
 [source,xml, indent=0]
+====
 ----
-<EmbeddedObjects>
-	<EmbeddedObject id="2000" displayName="A window">
-		<!-- Area parameter is required. -->
-		<IBK:Parameter name="Area" unit="m2">8</IBK:Parameter>
-		<EmbeddedObjectWindow glazingSystemID="123">
-			<!-- Frame and Divider tags are optional, materialID reference a material. -->
-			<Frame materialID="1001">
-				<!-- Area parameter is required. -->
-				<IBK:Parameter name="Area" unit="m2">3</IBK:Parameter>
-			</Frame>
-			<Divider materialID="1001">
-				<!-- Area parameter is required. -->
-				<IBK:Parameter name="Area" unit="m2">2</IBK:Parameter>
-			</Divider>
+<ConstructionInstance id="1">
+	<IBK:Parameter name="Area" unit="m2">12</IBK:Parameter>
+    ...
+	<EmbeddedObjects>
+		<EmbeddedObject id="2000" displayName="A window">
+		    <!-- Area parameter is required. -->
+			<IBK:Parameter name="Area" unit="m2">8</IBK:Parameter>
+		    ...
+		</EmbeddedObject>
+	</EmbeddedObjects>
+</ConstructionInstance>
+----
+====
 
-			<!-- Precomputed shading: when shading file is defined in Location, than
-				shaded window percentage is retrieved from this file, 
-				column is identified by "embObj14" composed from object type and id.
-				ConstructionInstance would be "con443".
-				
-				Sanity check: all objects (windows/constructions) must have a
-				matching column in the file.
-			-->
+Embedded objects must have at least and `Area` parameter defined. This area must not exceed the gross surface area of the construction instance.
 
-			<!-- Controlled Shading:  -->
-			<Shading type="simple" controlID="12">
-				<!-- Solar radiation load = g_rad = Fz(precomputed) * Fz(Controlled) * ( SHGC * g_dir + SHGC(90 Deg)* g_diff)
+An embedded object is further qualified by embedded data objects.
 
-					full shaded:     Fz = 1 - (1 - 80%) * 1      = 0.8
-					unshaded shaded: Fz = 1 - (1 - 80%) * 0      = 1
-					partially shaded: Fz = 1 - (1 - 80%) * 0.5   = 0.9
+## Windows
 
-				-->
-				
-				<!-- ReductionFactor = Fz  = Abminderungsfaktor für Verschattung -->
-				<IBK:Parameter name="ReductionFactor" unit="%">80</IBK:Parameter>
-			</Shading>
+A window is composed of a glazing and optionally frame and dividers. Without frame and dividers, the definition for such a window looks like:
 
-		</EmbeddedObjectWindow>
-	</EmbeddedObject>
-</EmbeddedObjects>
+.Parameter definition for basic window without frame
+[source,xml, indent=0]
+====
+----
+<EmbeddedObject id="2000" displayName="A window">
+	<IBK:Parameter name="Area" unit="m2">8</IBK:Parameter>
+    <Window glazingSystemID="123"/>
+</EmbeddedObject>
+----
+====
+
+Only the glazing system is referenzed by ID. Glazing systems are defined in the glazing systems database list, see <<glazing_systems>>.
+
+The window may have a frame and/or dividers. These are separate entities because frame and divider material (and hence thermal conductivity across these materials) may be different. These are defined in XML-tags `Frame` and `Divider`:
+
+.Parameter definition for basic window with frame and divider
+[source,xml, indent=0]
+====
+----
+<EmbeddedObject id="2000" displayName="A window">
+	<IBK:Parameter name="Area" unit="m2">8</IBK:Parameter>
+	<Window glazingSystemID="123">
+		<Frame materialID="1001">
+			<IBK:Parameter name="Area" unit="m2">3</IBK:Parameter>
+		</Frame>
+		<Divider materialID="1002">
+			<IBK:Parameter name="Area" unit="m2">2</IBK:Parameter>
+		</Divider>
+	</Window>
+</EmbeddedObject>
+----
+====
+
+The material properties (currently only thermal conductivity) of frame and divider elements are taken from the material referenced via ID. 
+
+The actual geometry of frame and divider elements is not important, but their total cross section area must be given as  `Area` parameter.
+
+[IMPORTANT]
+====
+The cross section occupied by frame and divider must not exceed the gross area of the embedded window object. The actual translucent glazing area is computed as difference between embedded object area and frame and divider areas.
+====
+
+[NOTE]
+====
+When the window (or embedded object) is resized, the sizes of frame and divider must be adjusted accordingly. While it would have been possible to define frame and divider cross sections also as relative percentage, still this percentage needs to be updated when the window is resized.
+====
+
+### Window shading
+
+It is possible to apply pre-computed shading to both opaque and translucent facade elements. Pre-computed shading is generally defined as global property in the `Location` tag (see <<precomputed_shading>>).
+
+When pre-computed shading is defined, for *each* opaque and translucent surface a factor will be provided.
+
+[NOTE]
+====
+As described in section <<precomputed_shading>>, the association between provided data columns and object ID is done via identification string, composed from object type and ID number. For example, and embedded object with ID 14 would get the column header/caption _embObj14_ and a construction instance (opaque surface) with ID 29 would get _conInst29_.
+====
+
+Alternatively or additionally to pre-computed shading it is possible to define controlled shading for the window.
+
+.Parameter definition for controlled shading
+[source,xml, indent=0]
+====
+----
+<Window glazingSystemID="123">
+    ...
+	<Shading type="simple" controlID="12">
+		<!-- ReductionFactor = Fz  = Abminderungsfaktor für Verschattung -->
+		<IBK:Parameter name="ReductionFactor" unit="%">80</IBK:Parameter>
+	</Shading>
+</Window>
+----
+====
 
 
-<Models>
-	<!-- ShadingControlModel returns a value between 0 and 1 
-		0 = no reduction (shading open)
-		1 = full reduction (shading closed)
-	-->
-	<ShadingControlModel id="12" type="SingleIntensityControlled">
-		<!-- Retrieves global radiation on given sensor. -->
-		<SensorID>21</SensorID>
-		<!-- Shading control model returns 1 for values below Min, and 0 for values above Max.
-			Switching is only allowed if Max/Min has been passed (hysteretic control).
-		-->
-		<IBK:Parameter name="Max" unit="W/m2">150</IBK:Parameter>
-		<IBK:Parameter name="Min" unit="W/m2">100</IBK:Parameter>
-	</ShadingControlModel>
-</Models>
+.Calculation of the shading factor based on control signal
+====
+----
+ReductionFactor = 80%
+
+Fz depending on control signal: 
+
+1   = full shaded:      Fz = 1 - (1 - 80%) * 1      = 0.8
+0   = unshaded shaded:  Fz = 1 - (1 - 80%) * 0      = 1
+0.5 = partially shaded: Fz = 1 - (1 - 80%) * 0.5    = 0.9
+----
+====
 
 
+[[glazing_systems]]
+## Glazing Systems
 
+Glazing systems are defined in a list besides the other database lists `Materials` and `ConstructionTypes` (see <<databases>>).
 
+Different complexities of glazing systems are supported. The most simply one is defined with model type _Simple_ and requires only a U-value (thermal transmittance) and incidence-angle dependent SHGC value:
+
+.Parameter definition for a glazing system
+[source,xml, indent=0]
+====
+----
 <WindowGlazingSystems>
 	<WindowGlazingSystem id="123" modelType="Simple">
 		<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">0.4</IBK:Parameter>
@@ -517,6 +578,8 @@ The XML tags named `IBK:Parameters` with the XML attributes `name` and `unit` wi
 		</LinearSplineParameter>
 	</WindowGlazingSystem>
 </WindowGlazingSystems>
-
 ----
 ====
+
+In this simple model, the SHGC value for normal incidence is used for diffuse solar radiation.
+

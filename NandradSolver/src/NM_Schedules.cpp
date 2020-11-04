@@ -146,6 +146,9 @@ void Schedules::setup(NANDRAD::Project &project) {
 		}
 	}
 
+
+	/// \todo setup annual splines: remember to set default interpolation and wrap modes to LINEAR und CYCLIC when not specified
+	///		in the project file
 }
 
 

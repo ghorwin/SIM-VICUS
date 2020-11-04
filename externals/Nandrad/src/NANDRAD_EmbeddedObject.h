@@ -82,7 +82,7 @@ public:
 	IBK::Parameter						m_para[NUM_P];						// XML:E
 
 	/*! Data container for window model. */
-	EmbeddedObjectWindow				m_window;							// XML:E
+	EmbeddedObjectWindow				m_window;							// XML:E:tag=Window
 
 //	/*! Data container for door model. */
 //	EmbeddedObjectDoor					m_door;

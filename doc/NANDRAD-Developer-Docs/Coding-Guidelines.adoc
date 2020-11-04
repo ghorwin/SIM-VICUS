@@ -30,7 +30,7 @@ We are a small team and need to get the most out of our programming time.
 
 Basic rule: **Know your tools and choose the right tool for the job!**
 
-For programmers, you need a good text edtor (for everything that's not actual code, or for quick hacks) and a decent development environment (IDE).  I'd say _Qt Creator_ wins big time against Visial Studio, XCode and any other stuff out there, but let's not start an *emacs vs. the world* flame war here :-). 
+For programmers, you need a good text editor (for everything that's not actual code, or for quick hacks) and a decent development environment (IDE).  I'd say _Qt Creator_ wins big time against Visial Studio, XCode and any other stuff out there, but let's not start an *emacs vs. the world* flame war here :-). 
 
 Of course, you also need to handle svn/git, diff and merge tools etc. but text editor and IDE are the most important. I'd suggest _SmartGit_ as git client - not because it is the best out there, but because most of the team members use it and can help you better with a problem.
 

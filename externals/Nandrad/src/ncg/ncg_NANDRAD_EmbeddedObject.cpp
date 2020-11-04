@@ -80,7 +80,7 @@ void EmbeddedObject::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
-			else if (cName == "EmbeddedObjectWindow")
+			else if (cName == "Window")
 				m_window.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
@@ -109,7 +109,11 @@ TiXmlElement * EmbeddedObject::writeXML(TiXmlElement * parent) const {
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
 	}
 
-	m_window.writeXML(e);
+	{
+		TiXmlElement * customElement = m_window.writeXML(e);
+		if (customElement != nullptr)
+			customElement->ToElement()->SetValue("Window");
+	}
 	return e;
 }
 
