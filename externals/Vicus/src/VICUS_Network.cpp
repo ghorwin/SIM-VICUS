@@ -1,4 +1,5 @@
 #include "VICUS_Network.h"
+#include "VICUS_Line.h"
 
 #include <IBK_assert.h>
 #include <IBK_Path.h>
@@ -14,7 +15,7 @@ Network::Network() {
 }
 
 
-unsigned Network::addNode(const double &x, const double &y, const Network::Node::NodeType type, const bool consistentCoordinates)
+unsigned Network::addNode(const double &x, const double &y, const Node::NodeType type, const bool consistentCoordinates)
 {
 	// if there is an existing node with identical coordinates, return its id and dont add a new one
 	if (consistentCoordinates){
@@ -30,7 +31,7 @@ unsigned Network::addNode(const double &x, const double &y, const Network::Node:
 	return id;
 }
 
-unsigned Network::addNode(const Network::Node &node, const bool considerCoordinates)
+unsigned Network::addNode(const Node &node, const bool considerCoordinates)
 {
 	return addNode(node.m_x, node.m_y, node.m_type, considerCoordinates);
 }
@@ -43,7 +44,7 @@ void Network::addEdge(const unsigned nodeId1, const unsigned nodeId2, const bool
 	updateNodeEdgeConnectionPointers();
 }
 
-void Network::addEdge(const Network::Edge &edge)
+void Network::addEdge(const Edge &edge)
 {
 	IBK_ASSERT(edge.m_nodeId1<m_nodes.size() && edge.m_nodeId2<m_nodes.size());
 	m_edges.push_back(edge);
@@ -85,58 +86,6 @@ bool Network::checkConnectedGraph() const {
 	start->collectConnectedNodes(connectedNodes, connectedEdge);
 
 	return (connectedEdge.size() && m_edges.size() && connectedNodes.size() == m_nodes.size());
-}
-
-
-void Network::Edge::collectConnectedNodes(std::set<const Network::Node *> & connectedNodes,
-										  std::set<const Network::Edge *> & connectedEdge) const {
-	// first store ourselves as connected
-	connectedEdge.insert(this);
-	// now ask our nodes to collect their connected elements
-	m_node1->collectConnectedEdges(connectedNodes, connectedEdge);
-	m_node2->collectConnectedEdges(connectedNodes, connectedEdge);
-}
-
-
-Network::Node * Network::Edge::neighbourNode(const Network::Node *node) const{
-	IBK_ASSERT(node->m_id == m_nodeId1 || node->m_id == m_nodeId2);
-	if (node->m_id == m_nodeId1)
-		return m_node2;
-	else
-		return m_node1;
-}
-
-
-void Network::Node::collectConnectedEdges(std::set<const Network::Node *> & connectedNodes,
-										  std::set<const Network::Edge *> & connectedEdge) const {
-	// store ourselves as connected
-	connectedNodes.insert(this);
-	// now ask connected elements to collect their nodes
-	for (const Edge * e : m_edges) {
-		// only process edges that are not yet collected
-		if (connectedEdge.find(e) == connectedEdge.end())
-			e->collectConnectedNodes(connectedNodes, connectedEdge);
-	}
-}
-
-
-void Network::Node::checkIsDeadEnd(){
-	unsigned c = 0;
-	for (Edge *e: m_edges){
-		if (!e->neighbourNode(this)->isDeadEnd)
-			++c;
-	}
-	isDeadEnd = c < 2 && m_type != NT_Building && m_type != NT_Source;
-}
-
-
-Network::Edge *Network::Node::neighborEdge(const Network::Edge *e) const
-{
-	IBK_ASSERT(m_edges.size()==2);
-	if (m_edges[0] == e)
-		return m_edges[1];
-	else
-		return m_edges[0];
 }
 
 
@@ -222,13 +171,13 @@ void Network::setSource(const double &x, const double &y){
 	Node * nMin = nullptr;
 	double distMin = std::numeric_limits<double>::max();
 	for (Node &n: m_nodes){
-		double dist = Network::Line::distanceBetweenPoints(x, y, n.m_x, n.m_y);
+		double dist = Line::distanceBetweenPoints(x, y, n.m_x, n.m_y);
 		if (dist < distMin){
 			distMin = dist;
 			nMin = &n;
 		}
 	}
-	nMin->m_type = Network::Node::NT_Source;
+	nMin->m_type = Node::NT_Source;
 }
 
 
@@ -330,11 +279,11 @@ void Network::networkWithoutDeadEnds(Network &cleanNetwork, const unsigned maxSt
 
 	for (unsigned step=0; step<maxSteps; ++step){
 		for (unsigned n=0; n<m_nodes.size(); ++n){
-			m_nodes[n].checkIsDeadEnd();
+			m_nodes[n].updateIsDeadEnd();
 		}
 	}
 	for (const Edge &e: m_edges){
-		if (e.m_node1->isDeadEnd || e.m_node2->isDeadEnd)
+		if (e.m_node1->m_isDeadEnd || e.m_node2->m_isDeadEnd)
 			continue;
 		unsigned id1 = cleanNetwork.addNode(*e.m_node1);
 		unsigned id2 = cleanNetwork.addNode(*e.m_node2);
@@ -419,100 +368,6 @@ void Network::networkWithReducedEdges(Network & reducedNetwork){
 }
 
 
-const Network::Node * Network::Node::findNextNonRedundantNode(std::set<unsigned> & redundantNodes, double & distance, const Network::Edge *edgeToVisit) const
-{
-	distance += edgeToVisit->m_length;
-	Node * nextNode = edgeToVisit->neighbourNode(this);
-	if (!nextNode->isRedundant())
-		return nextNode;
-	redundantNodes.insert(nextNode->m_id);
-	return nextNode->findNextNonRedundantNode(redundantNodes, distance, nextNode->neighborEdge(edgeToVisit));
-}
-
-
-void Network::Node::findRedundantNodes(std::set<unsigned> & redundantNodes, std::set<const Network::Edge *> & visitedEdges) const
-{
-	// redundant nodes have exactly 2 connected edges
-	if (this->isRedundant()){
-		redundantNodes.insert(this->m_id);
-	}
-	for (const Edge * e: m_edges){
-		// remember visited edges and dont visit them again
-		if (visitedEdges.find(e) == visitedEdges.end()){
-			visitedEdges.insert(e);
-			if (e->m_nodeId1 == this->m_id)
-				e->m_node2->findRedundantNodes(redundantNodes, visitedEdges);
-			else
-				e->m_node1->findRedundantNodes(redundantNodes, visitedEdges);
-		}
-	}
-}
-
-
-bool Network::Node::findPathToSource(std::set<Edge*> &path, std::set<Network::Edge*> &visitedEdges, std::set<unsigned> &visitedNodes){
-
-	if (visitedNodes.find(m_id) != visitedNodes.end())
-		return false;
-	visitedNodes.insert(m_id);
-
-	// if reached end of graph
-	if (m_edges.size()==1 && visitedEdges.find(m_edges[0]) != visitedEdges.end()){
-		if (m_type==NodeType::NT_Source){
-			return true;
-		}
-		return false;
-	}
-
-	for (Edge *e: m_edges){
-		if (visitedEdges.find(e) == visitedEdges.end()){
-			visitedEdges.insert(e);
-			if (e->neighbourNode(this)->findPathToSource(path, visitedEdges, visitedNodes)){
-				path.insert(e);
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
-
-void Network::Node::updateNeighbourDistances() {
-
-	for (Edge *e :m_edges){
-		// calculate alternative distance to neighbour. If it is shorter than current one:  set it as its current distance
-		Node * neighbour = e->neighbourNode(this);
-		double alternativeDistance = m_distanceToStart + e->m_length;
-		if (alternativeDistance < neighbour->m_distanceToStart){
-			neighbour->m_distanceToStart = alternativeDistance;
-			neighbour->m_predecessor = this;
-		}
-	}
-}
-
-
-void Network::Node::getPathToNull(std::vector<Network::Edge*> &path){
-	if (m_predecessor == nullptr)
-		return;
-	for (Edge * e: m_edges){
-		if (e->neighbourNode(this) == m_predecessor){
-			path.push_back(e);
-			e->neighbourNode(this)->getPathToNull(path);
-		}
-	}
-}
-
-double Network::Node::adjacentHeatingDemand(std::set<Network::Edge *> visitedEdges){
-	for (Edge *e: m_edges){
-		if (visitedEdges.find(e)==visitedEdges.end()){
-			visitedEdges.insert(e);
-			if (e->m_heatingDemand>0)
-				return e->m_heatingDemand;
-			e->neighbourNode(this)->adjacentHeatingDemand(visitedEdges);
-		}
-	}
-}
-
-
 void Network::writeNetworkCSV(const IBK::Path &file) const{
 	std::ofstream f;
 	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
@@ -524,7 +379,7 @@ void Network::writeNetworkCSV(const IBK::Path &file) const{
 }
 
 
-void Network::writePathCSV(const IBK::Path &file, const VICUS::Network::Node & node, const std::vector<VICUS::Network::Edge*> &path) const {
+void Network::writePathCSV(const IBK::Path &file, const Node & node, const std::vector<Edge *> &path) const {
 	std::ofstream f;
 	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
 	f.precision(10);
@@ -541,7 +396,7 @@ void Network::writeBuildingsCSV(const IBK::Path &file) const {
 	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
 	f.precision(10);
 	for (const Node &n: m_nodes){
-		if (n.m_type==Network::Node::NT_Building)
+		if (n.m_type==Node::NT_Building)
 			f << std::fixed << n.m_x << "\t" << n.m_y << "\t" << n.m_heatingDemand << std::endl;
 	}
 	f.close();
@@ -571,7 +426,7 @@ void Network::dijkstraShortestPathToSource(Node &startNode, std::vector<Edge*> &
 		}
 		// if source reached: return path
 		if (nMin->m_type == Node::NT_Source){
-			nMin->getPathToNull(pathSourceToStart);
+			nMin->pathToNull(pathSourceToStart);
 			return;
 		}
 		// update distance from start to neighbours of nMin
@@ -586,8 +441,8 @@ double Network::pressureLossColebrook(const double &diameter, const double &leng
 
 	double velocity = massFlow / (fluidDensity * diameter * diameter * 3.14159 / 4);
 	double Re = velocity * diameter / fluidKinViscosity;
-	double lambda_new;
 	double lambda = 0.05;
+	double lambda_new = lambda;
 	for (unsigned n=0; n<100; ++n){
 		lambda_new = std::pow(-2 * std::log10(2.51 / (Re * std::sqrt(lambda)) + roughness / (3.71 * diameter)), -2);
 		if (abs(lambda_new - lambda) / lambda < 1e-3)
@@ -596,74 +451,6 @@ double Network::pressureLossColebrook(const double &diameter, const double &leng
 	}
 	return lambda_new * length / diameter * fluidDensity / 2 * velocity * velocity;
 }
-
-
-
-void Network::Line::intersection(const Network::Line &line, double &xs, double &ys) const
-{
-	double x1 = m_x1; double x2 = m_x2; double x3 = line.m_x1; double x4 = line.m_x2;
-	double y1 = m_y1; double y2 = m_y2; double y3 = line.m_y1; double y4 = line.m_y2;
-	xs = ( (x4 - x3) * (x2 * y1 - x1 * y2) - (x2 - x1) * (x4 * y3 - x3 * y4) ) / ( (y4 - y3) * (x2 - x1) - (y2 - y1) * (x4 - x3) );
-	ys = ( (y1 - y2) * (x4 * y3 - x3 * y4) - (y3 - y4) * (x2 * y1 - x1 * y2) ) / ( (y4 - y3) * (x2 - x1) - (y2 - y1) * (x4 - x3) );
-}
-
-
-void Network::Line::projectionFromPoint(const double &xp, const double &yp, double &xproj, double &yproj) const{
-	// vector form g = a + s*b;  with a = (m_x1, m_y1)
-	double b1 = m_x2 - m_x1;
-	double b2 = m_y2 - m_y1;
-	double s = (xp + b2/b1*yp - m_x1 - b2/b1*m_y1) / (b1 + b2*b2/b1);
-	xproj = m_x1 + s*b1;
-	yproj = m_y1 + s*b2;
-}
-
-
-double Network::Line::distanceToPoint(const double &xp, const double &yp) const{
-	double xproj, yproj;
-	projectionFromPoint(xp, yp, xproj, yproj);
-	if (containsPoint(xproj, yproj))
-		return distanceBetweenPoints(xp, yp, xproj, yproj);
-	else
-		return std::min(distanceBetweenPoints(m_x1, m_y1, xp, yp), distanceBetweenPoints(m_x2, m_y2, xp, yp));
-}
-
-
-std::pair<double, double> Network::Line::linearEquation() const
-{
-	double m = (m_y2 - m_y1) / (m_x2 - m_x1);
-	double n = (m_y1*m_x2 - m_y2*m_x1) / (m_x2 - m_x1);
-	return {m, n};
-}
-
-bool Network::Line::containsPoint(const double &xp, const double &yp) const
-{
-	bool inside = (xp >= std::min(m_x1, m_x2)) && (xp <= std::max(m_x1, m_x2)) && (yp >= std::min(m_y1, m_y2)) && (yp <= std::max(m_y1, m_y2));
-	bool identity = pointsMatch(xp, yp, m_x1, m_y1) || pointsMatch(xp, yp, m_x2, m_y2);
-	return inside && !identity;
-}
-
-bool Network::Line::sharesIntersection(const Network::Line &line) const
-{
-	double xp, yp;
-	intersection(line, xp, yp);
-	return containsPoint(xp, yp) && line.containsPoint(xp, yp);
-}
-
-double Network::Line::length() const
-{
-	return distanceBetweenPoints(m_x1, m_y1, m_x2, m_y2);
-}
-
-double Network::Line::distanceBetweenPoints(const double &x1, const double &y1, const double &x2, const double &y2)
-{
-	return std::sqrt( std::pow(x1-x2, 2) + std::pow(y1-y2, 2) );
-}
-
-bool Network::Line::pointsMatch(const double &x1, const double &y1, const double &x2, const double &y2, const double threshold)
-{
-	return distanceBetweenPoints(x1, y1, x2, y2) < threshold;
-}
-
 
 
 
