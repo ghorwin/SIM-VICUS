@@ -1,6 +1,7 @@
 #include "VICUS_Line.h"
 
 #include <algorithm>
+#include <cmath>
 
 namespace VICUS {
 
