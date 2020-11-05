@@ -80,7 +80,7 @@ void LinearSplineParameter::readXML(const TiXmlElement * element) {
 		try {
 			m_xUnit = IBK::Unit(xunitstr); // may throw in case of invalid unit
 			m_yUnit = IBK::Unit(yunitstr);
-			m_values.setValues(x,y);
+			m_values.setValues(x,y); // may throw in case of invalid data
 		}
 		catch (IBK::Exception & ex) {
 			throw IBK::Exception(ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(

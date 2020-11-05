@@ -183,12 +183,18 @@ void Schedules::readXML(const TiXmlElement * element) {
 
 					NANDRAD::LinearSplineParameter spl;
 					try {
-						spl.readXML(c2);
+						spl.readXML(c2); // also creates the spline and thus, does monotonic x-value checking
 					}
 					catch (IBK::Exception & ex) {
 						throw IBK::Exception(ex, IBK::FormatString(XML_READ_ERROR).arg(c2->Row())
-											 .arg("Invalid data in 'IBK:LinearSpline' tag."), FUNC_ID);
+											 .arg("Invalid data in 'AnnualSchedule' tag."), FUNC_ID);
 					}
+
+					// check that x value unit is indeed convertible to time
+					if (spl.m_xUnit.base_id() != IBK_UNIT_ID_SECONDS)
+						throw IBK::Exception(IBK::FormatString("Invalid data in 'AnnualSchedule' tag, expected time "
+															   "unit as unit for x-values, but got '%1'")
+											 .arg(spl.m_xUnit.name()), FUNC_ID);
 					schedules.push_back(spl);
 
 					c3 = c3->NextSiblingElement();
