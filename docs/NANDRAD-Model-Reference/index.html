@@ -139,7 +139,7 @@ table {
 <li><a href="#_overview_3">2.12.1. Overview</a></li>
 <li><a href="#regularSchedules">2.12.2. Daily scheme based schedules</a></li>
 <li><a href="#annualSchedules">2.12.3. Annual schedules</a></li>
-<li><a href="#_variable_list">2.12.4. Variable list</a></li>
+<li><a href="#schedule_variable_list">2.12.4. Variable list</a></li>
 </ul>
 </li>
 <li><a href="#outputs">2.13. Outputs/Results</a>
@@ -2999,7 +2999,7 @@ For example, they are used in the following objects or list of objects:</p>
 <p>At first priority the type <code>AllDays</code> will set specified daily schedule values (e.g. <code>HeatingSetPoint</code>) to all days of the whole year (Priority 0). <a href="#ex_schedule_alldays">Example 30</a> shows such a schedule definition.</p>
 </div>
 <div class="paragraph">
-<p>After this the <code>type</code> named <code>WeekEnd</code> and <code>WeekDay</code> will, if defined, overwrite the already defined schedule values for only all week days or weekend days (Priority 1). Furthermore the weekdays named <code>Monday</code>, <code>Tuesday</code>, &#8230;&#8203; define for which days the schedule values will be overwritten again (Priority 2). This continues with the <code>type</code> <code>Holiday</code> (Priority 3) for the specified holidays inside the <code>Holidays</code> object.</p>
+<p>After this the <code>type</code> named <code>WeekEnd</code> and <code>WeekDay</code> will, if defined, overwrite the already defined schedule values for only all week days or weekend days (Priority 1). Furthermore the weekdays named <code>Monday</code>, <code>Tuesday</code>, &#8230;&#8203; define for which days the schedule values will be overwritten again (Priority 2). This continues with the day type <code>Holiday</code> (Priority 3) for the specified holidays inside the <code>Holidays</code> object.</p>
 </div>
 <div class="paragraph">
 <p>It is possible to define different schedules for individual periods of the year, e.g. regular year and summer vacation period etc.. This way a schedule for the entire year can be defined.</p>
@@ -3153,6 +3153,135 @@ For example, they are used in the following objects or list of objects:</p>
 </div>
 </div>
 <div class="sect4">
+<h5 id="_daily_cycle_time_intervals">Daily Cycle Time Intervals</h5>
+<div class="paragraph">
+<p>A <code>DailyCycle</code> defines how one or more quantities change during the day. The child tag <code>TimePoints</code> defines space-separated time points in [h] (hours), and hereby the different time intervals of the day.</p>
+</div>
+<div class="paragraph">
+<p>If the attribute <code>interpolation</code> is <code>Constant</code>, then the following rules apply:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the time points  are interpreted as <strong>start</strong> time of the next interval</p>
+</li>
+<li>
+<p>the first time point must be always 0, the last one must be &lt; 24 h,</p>
+</li>
+<li>
+<p>the corresponding value is taken as constant during this interval</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For example, a time point vector "0 6 20" defines three intervals: 0-6, 6-20, 20-24 and
+the data table must contain exactly 3 values.</p>
+</div>
+<div class="paragraph">
+<p>If the attribute <code>interpolation</code> is <code>Linear</code>, then the following rules apply:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the time points are points in time where associated values are given</p>
+</li>
+<li>
+<p>the first time point must be always 0, the last one must be &lt; 24 h,
+because in cyclic usage, the time point at 24 h will be the same as for 0 h (and likewise
+the scheduled values)</p>
+</li>
+<li>
+<p>between time points the values are linearly interpolated</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="#fig_schedule_dailycycleconstant">Figure 8</a> and <a href="#fig_schedule_dailycycleconstant">Figure 8</a> illustrate the resulting value curve for time intervals given by <em>0, 6, 20</em> and corresponding parameter values <em>2, 7, 1</em>.</p>
+</div>
+<div id="fig_schedule_dailycycleconstant" class="imageblock">
+<div class="content">
+<img src="./images/ScheduleDailyCycleConstant.png" alt="ScheduleDailyCycleConstant">
+</div>
+<div class="title">Figure 8. Daily cycle with Constant interpolation mode</div>
+</div>
+<div id="fig_schedule_dailycyclelinear" class="imageblock">
+<div class="content">
+<img src="./images/ScheduleDailyCycleLinear.png" alt="ScheduleDailyCycleLinear">
+</div>
+<div class="title">Figure 9. Daily cycle with Linear interpolation mode</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>When linear interpolation mode is used, the value at 24 h is taken from the start of the next daily cycle, that is defined in the schedule. For example, in <a href="#fig_schedule_week">Figure 7</a> the value at Monday 24:00 would be taken from the Tuesday schedule, whereas the value at Wednesday 24:00 would be taken from the regular <em>AllDays</em> schedule.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>To define a single interval for the whole day, simply specify "0" as value in the <code>TimePoints</code> XML tag.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_daily_cycle_parameter_values">Daily Cycle Parameter Values</h5>
+<div class="paragraph">
+<p>For each interval given in the <code>TimePoints</code> tag, one or more quantities with associated units can be specified. This is done by defining the data table in the XML child tag <code>Values</code> of the <code>DailyCycle</code> tag. The data table data is formatted as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    quantity1 [unit]:val11 val12 val13; quantity2 [unit]:val21 val22 val23;...</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Basically, each physical quantity is encoded in a string, whereby the strings for different quantities are combined into one string with ; (semi-colon) as separation character.</p>
+</div>
+<div class="paragraph">
+<p>Each quantity string is composed of a header and the actual values. The values are simply values separated by spaces/tabs or comma (decimal numbers are written with . as decimal separator).</p>
+</div>
+<div class="paragraph">
+<p>The header is a quantity keyword (see also <a href="#schedule_variable_list">Variable list</a>) followed by its unit in brackets. So, for example, a heating set point temperature will have the header <code>HeatingSetPointTemperature [C]</code> and the values are then given in degree C.</p>
+</div>
+<div class="paragraph">
+<p>There must be <em>exactly</em> as many values given as there are time points in the  <code>TimePoints</code> XML tag. You can specify as many quantities as you need in this data table.</p>
+</div>
+<div class="paragraph">
+<p><a href="#ex_schedule_dailycycle_quantities">Example 32</a> shows a daily cycle with two scheduled quantities and three intervals.</p>
+</div>
+<div id="ex_schedule_dailycycle_quantities" class="exampleblock">
+<div class="title">Example 32. Daily cycle with two scheduled quantities</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;DailyCycle</span> <span class="na">interpolation=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;TimePoints&gt;</span>0 6 10<span class="nt">&lt;/TimePoints&gt;</span>
+    <span class="nt">&lt;Values&gt;</span>
+        InfiltrationRateSchedule [1/h]:0 0.4 0;
+        HeatingSetPointTemperature [C]:18 22 18
+    <span class="nt">&lt;/Values&gt;</span>
+<span class="nt">&lt;/DailyCycle&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
 <h5 id="_time_shift">Time Shift</h5>
 <div class="paragraph">
 <p>Inside the</p>
@@ -3161,39 +3290,6 @@ For example, they are used in the following objects or list of objects:</p>
 <div class="title">Automatic Time Shift in Daily Cycles to improve simulation speed</div>
 <p>#image::ScheduleShift.png[width=80%, scalewidth=12cm]</p>
 </div>
-</div>
-<div class="sect4">
-<h5 id="_example">Example</h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top" style="background-color:  #F4F4F4 ;"><div class="content"><div class="paragraph">
-<p>#image::alldays.png[width=100%]</p>
-</div></div></td>
-<td class="tableblock halign-left valign-top" style="background-color:  #F4F4F4 ;"><div class="content"><div class="paragraph">
-<p>#image::mondays.png[width=100%]</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top" style="background-color:  #F4F4F4 ;"><div class="content"><div class="paragraph">
-<p>#image::weekdays.png[width=100%]</p>
-</div></div></td>
-<td class="tableblock halign-left valign-top" style="background-color:  #F4F4F4 ;"><div class="content"><div class="paragraph">
-<p>#image::week.png[width=100%]</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top" style="background-color:  #F4F4F4 ;"><div class="content"><div class="paragraph">
-<p>#image::year.png[width=100%]</p>
-</div></div></td>
-<td class="tableblock halign-left valign-top" style="background-color:  #F4F4F4 ;"></td>
-</tr>
-</tbody>
-</table>
 </div>
 </div>
 <div class="sect3">
@@ -3205,7 +3301,7 @@ For example, they are used in the following objects or list of objects:</p>
 <p>Inside the XML tag <code>AnnualSchedules</code> the sub tag <code>SpaceTypeGroup</code> with an XML attribute <code>spaceTypeName</code> needs to be defined. This defined attribute needs to match to an defined <code>SpaceType</code> with the same name.</p>
 </div>
 <div id="ex_AnnualSchedule" class="exampleblock">
-<div class="title">Example 32. Definition of an Annual Schedule</div>
+<div class="title">Example 33. Definition of an Annual Schedule</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -3310,7 +3406,7 @@ For example, they are used in the following objects or list of objects:</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_variable_list">2.12.4. Variable list</h4>
+<h4 id="schedule_variable_list">2.12.4. Variable list</h4>
 <div class="paragraph">
 <p>The variable list describes all names and the  units that can be used inside the schedules.</p>
 </div>
@@ -3507,7 +3603,7 @@ For example, they are used in the following objects or list of objects:</p>
 <p>Outputs are stored in the XML-tag <code>Outputs</code>, with the following general structure:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 33. Parameter Definition for Outputs</div>
+<div class="title">Example 34. Parameter Definition for Outputs</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -3542,7 +3638,7 @@ For example, they are used in the following objects or list of objects:</p>
 </ul>
 </div>
 <div class="exampleblock">
-<div class="title">Example 34. Global output parameters</div>
+<div class="title">Example 35. Global output parameters</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -3562,7 +3658,7 @@ For example, they are used in the following objects or list of objects:</p>
 <p>Output grids define <em>when</em> outputs are written. An output grid contains a list of intervals, with an output step size defined for each interval. For example, if you want to have hourly output steps from start to end, you need to define a grid with one interval and a step size parameter of one hour:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 35. Output grid for entire simulation with hourly steps</div>
+<div class="title">Example 36. Output grid for entire simulation with hourly steps</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -3681,7 +3777,7 @@ For example, they are used in the following objects or list of objects:</p>
 </ul>
 </div>
 <div class="exampleblock">
-<div class="title">Example 36. Output Grid Evaluation</div>
+<div class="title">Example 37. Output Grid Evaluation</div>
 <div class="content">
 <div class="paragraph">
 <p>Suppose an output interval is defined to start at 12.5 h, with a step size of 2 h. The simulation time shall be t=16.5 h.
@@ -3694,7 +3790,7 @@ outputs associated with this output grid will be written.</p>
 <p>There may be gaps between intervals, in which no outputs are written:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 37. Output grid for daily values in first year and hourly values in third year (beginning at time "2 a")</div>
+<div class="title">Example 38. Output grid for daily values in first year and hourly values in third year (beginning at time "2 a")</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -3724,7 +3820,7 @@ outputs associated with this output grid will be written.</p>
 <p>Below is an example of an output definition:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 38. Output of air temperature from all zones in object list <em>All zones</em> and using output grid <em>hourly</em></div>
+<div class="title">Example 39. Output of air temperature from all zones in object list <em>All zones</em> and using output grid <em>hourly</em></div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -3937,7 +4033,7 @@ outputs associated with this output grid will be written.</p>
 <div class="content">
 <img src="./images/TimeType_illustration.png" alt="TimeType illustration">
 </div>
-<div class="title">Figure 8. Illustration of the various <code>TimeType</code> options</div>
+<div class="title">Figure 10. Illustration of the various <code>TimeType</code> options</div>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -3957,7 +4053,7 @@ outputs associated with this output grid will be written.</p>
 <div class="sect4">
 <h5 id="_examples">Examples</h5>
 <div class="exampleblock">
-<div class="title">Example 39. Requesting construction surface temperatures</div>
+<div class="title">Example 40. Requesting construction surface temperatures</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -3990,7 +4086,7 @@ outputs associated with this output grid will be written.</p>
 </div>
 </div>
 <div class="exampleblock">
-<div class="title">Example 40. Requesting energy supplied to layer in a construction (floor heating)</div>
+<div class="title">Example 41. Requesting energy supplied to layer in a construction (floor heating)</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -4144,10 +4240,10 @@ Next ?? records: unsigned int - n (for checking) and afterwards n doubles</pre>
 <div class="sect3">
 <h4 id="simulation_parameters">2.14.1. Simulation Parameters</h4>
 <div class="paragraph">
-<p>Hereafter all simulation parameters are described, see <a href="#ex_simpara">Example 41</a>. All parameters are set as <code>IBK:Parameters</code>, <code>IBK:Flags</code> or <code>IBK:IntPara</code>.</p>
+<p>Hereafter all simulation parameters are described, see <a href="#ex_simpara">Example 42</a>. All parameters are set as <code>IBK:Parameters</code>, <code>IBK:Flags</code> or <code>IBK:IntPara</code>.</p>
 </div>
 <div id="ex_simpara" class="exampleblock">
-<div class="title">Example 41. Simulation Parameters</div>
+<div class="title">Example 42. Simulation Parameters</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -4396,7 +4492,7 @@ Next ?? records: unsigned int - n (for checking) and afterwards n doubles</pre>
 <p>This is done in the child tag <code>Interval</code>:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 42. Simulation interval starting on February 1st (just after the first 31 days of January are through), and running for 60 days</div>
+<div class="title">Example 43. Simulation interval starting on February 1st (just after the first 31 days of January are through), and running for 60 days</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -4480,7 +4576,7 @@ Start = 14*24 + 6 = 342 h</pre>
 <p>Hereafter all parameters that are required for the solver are described.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 43. Solver Parameters</div>
+<div class="title">Example 44. Solver Parameters</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -5030,7 +5126,7 @@ Start = 14*24 + 6 = 342 h</pre>
 <p>A natural ventilation/infiltration model defines air exchange with the outside air.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 44. Parameter definition for a natural ventilation model (Constant and Scheduled model variants)</div>
+<div class="title">Example 45. Parameter definition for a natural ventilation model (Constant and Scheduled model variants)</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -5131,7 +5227,7 @@ Start = 14*24 + 6 = 342 h</pre>
 <p>Below is an example of a schedule that provides the <code>InfiltrationRateSchedule</code> for such a scheduled natural ventilation model:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 45. Example schedule that provides a InfiltrationRateSchedule parameter</div>
+<div class="title">Example 46. Example schedule that provides a InfiltrationRateSchedule parameter</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -5175,7 +5271,7 @@ Start = 14*24 + 6 = 342 h</pre>
 <p>A shading control model is a special type of control model, returning a signal value between 0 (no shading) and 1 (fully shaded). The actual amount of shading, or reduction of solar gains, is determined by the shading parameter block. Thus, you can use the same control model for different types of shadings.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 46. Parameter definition for shading control model</div>
+<div class="title">Example 47. Parameter definition for shading control model</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -6124,7 +6220,7 @@ The example below shows how the output of the models is referenced via the objec
 <div id="footer">
 <div id="footer-text">
 Version 1.1.0<br>
-Last updated 2020-11-05 13:27:15 +0100
+Last updated 2020-11-05 15:42:24 +0100
 </div>
 </div>
 <style>

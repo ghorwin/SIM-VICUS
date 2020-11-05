@@ -45,7 +45,7 @@ namespace NANDRAD {
 	the data table must contain exactly 3 values.
 
 	If m_interpolation == IT_LINEAR, then the following rules apply:
-	- the time points in m_timePoints are points in time where associated values given
+	- the time points in m_timePoints are points in time where associated values are given
 	- the first time point must be always 0, the last one must be < 24 h,
 	  because in cyclic usage, the time point at 24 h will be the same as for 0 h (and likewise
 	  the scheduled values)

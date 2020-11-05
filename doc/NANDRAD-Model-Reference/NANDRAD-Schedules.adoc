@@ -146,7 +146,7 @@ Inside the `ScheduleGroup` several Objects called `Schedule` can be defined. The
 
 At first priority the type `AllDays` will set specified daily schedule values (e.g. `HeatingSetPoint`) to all days of the whole year (Priority 0). <<ex_schedule_alldays>> shows such a schedule definition.
 
-After this the `type` named `WeekEnd` and `WeekDay` will, if defined, overwrite the already defined schedule values for only all week days or weekend days (Priority 1). Furthermore the weekdays named `Monday`, `Tuesday`, ... define for which days the schedule values will be overwritten again (Priority 2). This continues with the `type` `Holiday` (Priority 3) for the specified holidays inside the `Holidays` object. 
+After this the `type` named `WeekEnd` and `WeekDay` will, if defined, overwrite the already defined schedule values for only all week days or weekend days (Priority 1). Furthermore the weekdays named `Monday`, `Tuesday`, ... define for which days the schedule values will be overwritten again (Priority 2). This continues with the day type `Holiday` (Priority 3) for the specified holidays inside the `Holidays` object. 
 
 It is possible to define different schedules for individual periods of the year, e.g. regular year and summer vacation period etc.. This way a schedule for the entire year can be defined. 
 
@@ -243,8 +243,88 @@ It is possible to define different schedules for individual periods of the year,
 .Illustration of weekly schedule defined by example  <<ex_schedule_week>>
 image::ScheduleExample_weekly.png[pdfwidth=12cm]
 
+
+### Daily Cycle Time Intervals
+
+A `DailyCycle` defines how one or more quantities change during the day. The child tag `TimePoints` defines space-separated time points in [h] (hours), and hereby the different time intervals of the day.
+
+If the attribute `interpolation` is `Constant`, then the following rules apply:
+
+- the time points  are interpreted as *start* time of the next interval
+- the first time point must be always 0, the last one must be < 24 h,
+- the corresponding value is taken as constant during this interval
+
+For example, a time point vector "0 6 20" defines three intervals: 0-6, 6-20, 20-24 and
+the data table must contain exactly 3 values.
+
+If the attribute `interpolation` is `Linear`, then the following rules apply:
+
+- the time points are points in time where associated values are given
+- the first time point must be always 0, the last one must be < 24 h,
+  because in cyclic usage, the time point at 24 h will be the same as for 0 h (and likewise
+  the scheduled values)
+- between time points the values are linearly interpolated
+
+<<fig_schedule_dailycycleconstant>> and <<fig_schedule_dailycycleconstant>> illustrate the resulting value curve for time intervals given by _0, 6, 20_ and corresponding parameter values _2, 7, 1_.
+
+[[fig_schedule_dailycycleconstant]]
+.Daily cycle with Constant interpolation mode
+image::ScheduleDailyCycleConstant.png[pdfwidth=12cm]
+
+[[fig_schedule_dailycyclelinear]]
+.Daily cycle with Linear interpolation mode
+image::ScheduleDailyCycleLinear.png[pdfwidth=12cm]
+
+[NOTE]
+====
+When linear interpolation mode is used, the value at 24 h is taken from the start of the next daily cycle, that is defined in the schedule. For example, in <<fig_schedule_week>> the value at Monday 24:00 would be taken from the Tuesday schedule, whereas the value at Wednesday 24:00 would be taken from the regular _AllDays_ schedule.
+====
+
+[TIP]
+====
+To define a single interval for the whole day, simply specify "0" as value in the `TimePoints` XML tag.
+====
+
 :xrefstyle: basic 
 
+
+### Daily Cycle Parameter Values
+
+For each interval given in the `TimePoints` tag, one or more quantities with associated units can be specified. This is done by defining the data table in the XML child tag `Values` of the `DailyCycle` tag. The data table data is formatted as:
+
+----
+    quantity1 [unit]:val11 val12 val13; quantity2 [unit]:val21 val22 val23;...
+----
+
+Basically, each physical quantity is encoded in a string, whereby the strings for different quantities are combined into one string with ; (semi-colon) as separation character.
+
+Each quantity string is composed of a header and the actual values. The values are simply values separated by spaces/tabs or comma (decimal numbers are written with . as decimal separator).
+
+
+The header is a quantity keyword (see also <<schedule_variable_list>>) followed by its unit in brackets. So, for example, a heating set point temperature will have the header `HeatingSetPointTemperature [C]` and the values are then given in degree C.
+
+There must be _exactly_ as many values given as there are time points in the  `TimePoints` XML tag. You can specify as many quantities as you need in this data table.
+
+:xrefstyle: short
+
+<<ex_schedule_dailycycle_quantities>> shows a daily cycle with two scheduled quantities and three intervals.
+
+[[ex_schedule_dailycycle_quantities]]
+.Daily cycle with two scheduled quantities
+====
+[source,xml]
+----
+<DailyCycle interpolation="Constant">
+    <TimePoints>0 6 10</TimePoints>
+    <Values>
+        InfiltrationRateSchedule [1/h]:0 0.4 0;
+        HeatingSetPointTemperature [C]:18 22 18
+    </Values>
+</DailyCycle>
+----
+====
+
+:xrefstyle: basic 
 
 ### Time Shift
 
@@ -254,21 +334,7 @@ Inside the
 #image::ScheduleShift.png[width=80%, scalewidth=12cm]
 
 
-### Example
 
-
-
-[options="",cols="50%,50%",width="100%"]
-|===
-a| #image::alldays.png[width=100%]
-a| #image::mondays.png[width=100%]
-
-a| #image::weekdays.png[width=100%]
-a| #image::week.png[width=100%]
-
-a| #image::year.png[width=100%]
-|
-|===
 
 [[annualSchedules]]
 ## Annual schedules 
@@ -339,6 +405,7 @@ a| Specifies how to treat the values in multi-year simulations
 
 
 
+[[schedule_variable_list]]
 ## Variable list
 
 The variable list describes all names and the  units that can be used inside the schedules.  
