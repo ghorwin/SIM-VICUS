@@ -269,11 +269,11 @@ If the attribute `interpolation` is `Linear`, then the following rules apply:
 
 [[fig_schedule_dailycycleconstant]]
 .Daily cycle with Constant interpolation mode
-image::ScheduleDailyCycleConstant.png[pdfwidth=12cm]
+image::ScheduleDailyCycleConstant.png[pdfwidth=10cm]
 
 [[fig_schedule_dailycyclelinear]]
 .Daily cycle with Linear interpolation mode
-image::ScheduleDailyCycleLinear.png[pdfwidth=12cm]
+image::ScheduleDailyCycleLinear.png[pdfwidth=10cm]
 
 [NOTE]
 ====
@@ -324,14 +324,20 @@ There must be _exactly_ as many values given as there are time points in the  `T
 ----
 ====
 
+
+### Avoiding discontinuities / performance improvements
+
+When defining daily cycles with interpolation mode `Constant`, the values will actually jump between intervals. These discontinuities are very expensive to compute, since the solver needs to cluster time steps around these jumps to accurately follow the step functions.
+
+However, for practical applications these steps are often not desired - even though a set point may be switched momentarily to a new value, the resulting physical effect may indeed take a few minutes to be noticeable. This is taken into account when the solver interpretes scheduled values.
+
+Instead of exactly providing the step-wise scheduled values, the solver implements an automatic 2 minute ramping just before the interval end. <<fig_schedule_dailycycle_jumpsmoothing>> illustrates the 2 minute linear ramping applied directly before each new interval.
+
 :xrefstyle: basic 
 
-### Time Shift
-
-Inside the 
-
-.Automatic Time Shift in Daily Cycles to improve simulation speed 
-#image::ScheduleShift.png[width=80%, scalewidth=12cm]
+[[fig_schedule_dailycycle_jumpsmoothing]]
+.Ramping/step smoothing applied for dialy cycles with step-wise defined values
+image::ScheduleDailyCycleConstant_actual.png[pdfwidth=10cm]
 
 
 

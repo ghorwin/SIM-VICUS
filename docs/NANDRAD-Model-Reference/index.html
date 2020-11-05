@@ -3282,13 +3282,21 @@ the scheduled values)</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_time_shift">Time Shift</h5>
+<h5 id="_avoiding_discontinuities_performance_improvements">Avoiding discontinuities / performance improvements</h5>
 <div class="paragraph">
-<p>Inside the</p>
+<p>When defining daily cycles with interpolation mode <code>Constant</code>, the values will actually jump between intervals. These discontinuities are very expensive to compute, since the solver needs to cluster time steps around these jumps to accurately follow the step functions.</p>
 </div>
 <div class="paragraph">
-<div class="title">Automatic Time Shift in Daily Cycles to improve simulation speed</div>
-<p>#image::ScheduleShift.png[width=80%, scalewidth=12cm]</p>
+<p>However, for practical applications these steps are often not desired - even though a set point may be switched momentarily to a new value, the resulting physical effect may indeed take a few minutes to be noticeable. This is taken into account when the solver interpretes scheduled values.</p>
+</div>
+<div class="paragraph">
+<p>Instead of exactly providing the step-wise scheduled values, the solver implements an automatic 2 minute ramping just before the interval end. <a href="#fig_schedule_dailycycle_jumpsmoothing">Figure 10</a> illustrates the 2 minute linear ramping applied directly before each new interval.</p>
+</div>
+<div id="fig_schedule_dailycycle_jumpsmoothing" class="imageblock">
+<div class="content">
+<img src="./images/ScheduleDailyCycleConstant_actual.png" alt="ScheduleDailyCycleConstant actual">
+</div>
+<div class="title">Figure 10. Ramping/step smoothing applied for dialy cycles with step-wise defined values</div>
 </div>
 </div>
 </div>
@@ -4033,7 +4041,7 @@ outputs associated with this output grid will be written.</p>
 <div class="content">
 <img src="./images/TimeType_illustration.png" alt="TimeType illustration">
 </div>
-<div class="title">Figure 10. Illustration of the various <code>TimeType</code> options</div>
+<div class="title">Figure 11. Illustration of the various <code>TimeType</code> options</div>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -6220,7 +6228,7 @@ The example below shows how the output of the models is referenced via the objec
 <div id="footer">
 <div id="footer-text">
 Version 1.1.0<br>
-Last updated 2020-11-05 15:42:24 +0100
+Last updated 2020-11-05 16:21:19 +0100
 </div>
 </div>
 <style>
