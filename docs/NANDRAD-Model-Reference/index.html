@@ -2740,7 +2740,7 @@ The shadow on the construction occupies 13x8 = 104 m2, thus the shaded fraction 
 <h4 id="_overview_3">2.12.1. Overview</h4>
 <div class="paragraph">
 <p>Schedules provide purely time-dependent quantities, similar to climatic loads. Different to other results-producing models, schedules generate variables for sets of dependent models. As such, a schedule is formulated for an object list, which selects a set of objects taking the values provided by the schedule.
-For example they are used in the following objects or list of objects:</p>
+For example, they are used in the following objects or list of objects:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -2754,15 +2754,15 @@ For example they are used in the following objects or list of objects:</p>
 <p><strong>Mass flow rates</strong> or <strong>temperature set points</strong> for plant components</p>
 </li>
 <li>
-<p><strong>electrical power rates</strong> for lighting and electrical devices</p>
+<p><strong>Electrical power rates</strong> for lighting and electrical devices</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>For example, a schedule defines heating set points <code>HeatingSetPoint</code> for specific zones like living rooms. These are selected by an object list named "Living room", which selects objects with the type <code>Zone</code> and a certain ID range. Later you will find more about this in more detail.</p>
+<p>For example, a schedule defines a heating set point <code>HeatingSetPoint</code> for specific zones like living rooms. These are selected by an object list named "Living room", which selects objects with the type <code>Zone</code> and a certain ID range (will be described later in more detail).</p>
 </div>
 <div class="paragraph">
-<p>Within the project file there are two possible ways to describe a schedule:</p>
+<p>There are two possible ways to describe a schedule:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -2778,23 +2778,23 @@ For example they are used in the following objects or list of objects:</p>
 <p>The two options are discussed in detail in <a href="#regularSchedules">Daily scheme based schedules</a> and <a href="#annualSchedules">Annual schedules</a>.</p>
 </div>
 <div class="paragraph">
-<p>Furthermore <code>Schedules</code> consist of two different types of data handling:</p>
+<p>Furthermore scheduled data can be handled in two different ways, as</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Cyclic</strong> data</p>
+<p><strong>Cyclic</strong> data, and</p>
 </li>
 <li>
-<p><strong>Non-cyclic</strong> data</p>
+<p><strong>Non-cyclic</strong> data.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p><strong>Cyclic data</strong> means that schedule values will be repeated after the end of the schedule period. This means for example that an annual schedule will be run twice if the simulation time will be set to two years. <strong>Cyclic-data</strong> can be defined by * <code>ScheduleGroups</code> and <code>AnnualSchedules</code>.</p>
+<p><strong>Cyclic data</strong> means that schedule values will be repeated after the end of the schedule period. This means, for example, that an annual schedule will be run twice if the simulation time will be set to two years. <strong>Cyclic-data</strong> can be defined by <code>ScheduleGroups</code> and <code>AnnualSchedules</code>.</p>
 </div>
 <div class="paragraph">
-<p>Whereas <strong>non-cyclic</strong> data will always be used only once. This is useful if monitored data will be used to set up schedules. Then the simulation needs to be set only for the time span the monitored data is existing. <strong>Non-cyclic</strong> data can only be defined by <code>AnnualSchedules</code></p>
+<p><strong>Non-cyclic</strong> data will always be used only once. This is useful if monitored data will be used to set up schedules. Then the simulation needs to be set only for the time span the monitored data is existing. <strong>Non-cyclic</strong> data can only be defined by <code>AnnualSchedules</code>.</p>
 </div>
 <div id="ex_Schedules" class="exampleblock">
 <div class="title">Example 27. Schedules Definition</div>
@@ -2802,17 +2802,17 @@ For example they are used in the following objects or list of objects:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Schedules&gt;</span>
-  <span class="nt">&lt;Holidays&gt;</span>5,10<span class="nt">&lt;/Holidays&gt;</span>
-  <span class="nt">&lt;WeekEndDays&gt;</span>Fri,Sat<span class="nt">&lt;/WeekEndDays&gt;</span>
-  <span class="nt">&lt;FirstDayOfYear&gt;</span>Fri<span class="nt">&lt;/FirstDayOfYear&gt;</span>
-  <span class="nt">&lt;IBK:Flag</span> <span class="na">name=</span><span class="s">"EnableCyclicSchedules"</span><span class="nt">&gt;</span>true<span class="nt">&lt;/IBK:Flag&gt;</span>
+    <span class="nt">&lt;Holidays&gt;</span>5,10<span class="nt">&lt;/Holidays&gt;</span>
+    <span class="nt">&lt;WeekEndDays&gt;</span>Fri,Sat<span class="nt">&lt;/WeekEndDays&gt;</span>
+    <span class="nt">&lt;FirstDayOfYear&gt;</span>Fri<span class="nt">&lt;/FirstDayOfYear&gt;</span>
+    <span class="nt">&lt;IBK:Flag</span> <span class="na">name=</span><span class="s">"EnableCyclicSchedules"</span><span class="nt">&gt;</span>true<span class="nt">&lt;/IBK:Flag&gt;</span>
 
-  <span class="nt">&lt;ScheduleGroups&gt;</span>
-            ...
-  <span class="nt">&lt;/ScheduleGroups&gt;</span>
-  <span class="nt">&lt;AnnualSchedules&gt;</span>
-      ...
-  <span class="nt">&lt;/AnnualSchedules&gt;</span>
+    <span class="nt">&lt;ScheduleGroups&gt;</span>
+        ...
+    <span class="nt">&lt;/ScheduleGroups&gt;</span>
+    <span class="nt">&lt;AnnualSchedules&gt;</span>
+        ...
+    <span class="nt">&lt;/AnnualSchedules&gt;</span>
 <span class="nt">&lt;/Schedules&gt;</span></code></pre>
 </div>
 </div>
@@ -2843,8 +2843,8 @@ For example they are used in the following objects or list of objects:</p>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 18. XML tags that can be definned</caption>
 <colgroup>
-<col style="width: 10%;">
-<col style="width: 60%;">
+<col style="width: 15%;">
+<col style="width: 55%;">
 <col style="width: 20%;">
 <col style="width: 10%;">
 </colgroup>
@@ -2893,7 +2893,7 @@ For example they are used in the following objects or list of objects:</p>
 <tr>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>Holidays</code></p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><div class="content"><div class="paragraph">
-<p>List of holiday days, stored in "day of the year", not including leap days.</p>
+<p>List of holiday days, stored in a comma-separated list of numbers, where each number represents the "day of the year", not including leap days.</p>
 </div></div></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">string</p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
@@ -2905,11 +2905,15 @@ For example they are used in the following objects or list of objects:</p>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">IBK:Flag
-<code>EnableCyclicSchedules</code></p></td>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Check schedules to determine minimum distances between steps and adjust MaxTimeStep.</p>
-<p class="tableblock">(<em>true</em> by default)</p></td>
-<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>true / false</em></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>IBK:Flag</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>name <code>EnableCyclicSchedules</code> - If set to true, schedules will be repeated after one year. If set to false (only applicable to annual schedules), these annual schedules are sampled just once.</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>true (default) / false</em></p></td>
 <td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 </tbody>
@@ -2918,7 +2922,7 @@ For example they are used in the following objects or list of objects:</p>
 <div class="sect3">
 <h4 id="regularSchedules">2.12.2. Daily scheme based schedules</h4>
 <div class="paragraph">
-<p>Regular schedules are defined upon a daily cycle based scheme. Some Parameters need to be defined inside the hereafter specified XML tags.</p>
+<p>Regular schedules are defined upon a daily cycle based scheme. Some parameters need to be defined inside the hereafter specified XML tags.</p>
 </div>
 <div id="ex_ScheduleGroup" class="exampleblock">
 <div class="title">Example 28. ScheduleGroup Definition</div>
@@ -2926,37 +2930,37 @@ For example they are used in the following objects or list of objects:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;ScheduleGroups&gt;</span>
-    <span class="nt">&lt;ScheduleGroup</span> <span class="na">objectList=</span><span class="s">"Zone"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;ScheduleGroup</span> <span class="na">objectList=</span><span class="s">"All Zones"</span><span class="nt">&gt;</span>
         <span class="c">&lt;!-- AllDays constant  --&gt;</span>
         <span class="nt">&lt;Schedule</span> <span class="na">type=</span><span class="s">"AllDays"</span><span class="nt">&gt;</span>
             ...
-      <span class="nt">&lt;/Schedule&gt;</span>
-      <span class="nt">&lt;Schedule</span> <span class="na">type=</span><span class="s">"WeekDays"</span><span class="nt">&gt;</span>
-          ...
-      <span class="nt">&lt;/Schedule&gt;</span>
+        <span class="nt">&lt;/Schedule&gt;</span>
+        <span class="nt">&lt;Schedule</span> <span class="na">type=</span><span class="s">"WeekDays"</span><span class="nt">&gt;</span>
+            ...
+        <span class="nt">&lt;/Schedule&gt;</span>
     <span class="nt">&lt;/ScheduleGroup&gt;</span>
 <span class="nt">&lt;ScheduleGroups&gt;</span></code></pre>
 </div>
 </div>
 </div>
 </div>
-<div class="exampleblock">
-<div class="title">Example 29. ObjectList with an Zone linked</div>
+<div id="ex_ScheduleGroup_refObjList" class="exampleblock">
+<div class="title">Example 29. ObjectList definition that selects zone objects and is named "All Zones"</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;ObjectLists&gt;</span>
-  <span class="nt">&lt;ObjectList</span> <span class="na">name=</span><span class="s">"Zone"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;FilterID&gt;</span>*<span class="nt">&lt;/FilterID&gt;</span>
-    <span class="nt">&lt;ReferenceType&gt;</span>Zone<span class="nt">&lt;/ReferenceType&gt;</span>
-  <span class="nt">&lt;/ObjectList&gt;</span>
+    <span class="nt">&lt;ObjectList</span> <span class="na">name=</span><span class="s">"All Zones"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;FilterID&gt;</span>*<span class="nt">&lt;/FilterID&gt;</span>
+        <span class="nt">&lt;ReferenceType&gt;</span>Zone<span class="nt">&lt;/ReferenceType&gt;</span>
+    <span class="nt">&lt;/ObjectList&gt;</span>
 <span class="nt">&lt;/ObjectLists&gt;</span></code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="paragraph">
-<p>Regular schedules are defined within the XML tag <code>ScheduleGroup</code> with an XML attribute named <code>objectList</code> that references an <code>ObjectList</code> with the specified name (see <a href="#tab_ScheduleGroup">Table 19</a>).</p>
+<p>Regular schedules are defined within the XML tag <code>ScheduleGroup</code> with a mandatory XML attribute named <code>objectList</code> that references an <code>ObjectList</code> by name (see <a href="#tab_ScheduleGroup">Table 19</a>):</p>
 </div>
 <table id="tab_ScheduleGroup" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 19. Attribute for the ScheduleGroup</caption>
@@ -2983,36 +2987,45 @@ For example they are used in the following objects or list of objects:</p>
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p><a href="#ex_ScheduleGroup">Example 28</a> shows such a definition and <a href="#ex_ScheduleGroup_refObjList">Example 29</a> the corresponding object list.</p>
+</div>
 <div class="sect4">
 <h5 id="_daily_cycles">Daily Cycles</h5>
 <div class="paragraph">
-<p>Inside the <code>ScheduleGroup</code> several Objects called <code>Schedule</code> can be defined. The <code>Schedule</code> objects need an XML attribute called <code>type</code> with different names for specific day types (see <a href="#tab_ScheduleTypes">Description of the schedule type attribute</a>). There shall be no two objects with the same <code>type</code> inside a <code>ScheduleGroup</code>. Upon those <code>Schedule</code> objects with different <code>types</code> it is possible to define a schedule for a whole year. Therefore a certain rule exists to build schedules as described bellow.</p>
+<p>Inside the <code>ScheduleGroup</code> several Objects called <code>Schedule</code> can be defined. The <code>Schedule</code> objects need an XML attribute called <code>type</code> with different names for specific day types (see <a href="#tab_ScheduleTypes">Table 20</a>). There must not be two <code>Schedule</code> objects with the same <code>type</code> inside a <code>ScheduleGroup</code>. Within each <code>Schedule</code> object a schedule is defined that is applied for all days of the given <code>type</code> during the course of a whole year. The following rules apply when constructing schedules.</p>
 </div>
 <div class="paragraph">
-<p>At first priority the type <code>Alldays</code> will set specified daily schedule values (e.g. Heating Setpoint Temperatures) to all days of the whole year (Priority 0). After this the <code>type</code> named <code>WeekEnd</code> and <code>WeekDay</code> will overwrite the already defined schedule values for only all week days or weekend days (Priority 1). Furthermore the weekdays named <code>Monday</code>, <code>Tuesday</code>, &#8230;&#8203; define for which days the schedule values will be overwritten again (Priority 2). This continues with the <code>type</code> <code>Holiday</code> (Priority 3) for the specified holidays inside the <code>Holidays</code> object. So that in the end a final schedule for the whole year can be defined. This can be done for several periods.</p>
+<p>At first priority the type <code>AllDays</code> will set specified daily schedule values (e.g. <code>HeatingSetPoint</code>) to all days of the whole year (Priority 0). <a href="#ex_schedule_alldays">Example 30</a> shows such a schedule definition.</p>
 </div>
-<div class="exampleblock">
-<div class="title">Example 30. ObjectList with an Zone linked</div>
+<div class="paragraph">
+<p>After this the <code>type</code> named <code>WeekEnd</code> and <code>WeekDay</code> will, if defined, overwrite the already defined schedule values for only all week days or weekend days (Priority 1). Furthermore the weekdays named <code>Monday</code>, <code>Tuesday</code>, &#8230;&#8203; define for which days the schedule values will be overwritten again (Priority 2). This continues with the <code>type</code> <code>Holiday</code> (Priority 3) for the specified holidays inside the <code>Holidays</code> object.</p>
+</div>
+<div class="paragraph">
+<p>It is possible to define different schedules for individual periods of the year, e.g. regular year and summer vacation period etc.. This way a schedule for the entire year can be defined.</p>
+</div>
+<div id="ex_schedule_alldays" class="exampleblock">
+<div class="title">Example 30. Schedule definition with type "AllDays"</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;ScheduleGroup</span> <span class="na">objectList=</span><span class="s">"Zone01"</span><span class="nt">&gt;</span>
-  <span class="c">&lt;!-- AllDays constant  --&gt;</span>
-  <span class="nt">&lt;Schedule</span> <span class="na">type=</span><span class="s">"AllDays"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;DailyCycles&gt;</span>
-      <span class="nt">&lt;DailyCycle</span> <span class="na">interpolation=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;TimePoints&gt;</span>0<span class="nt">&lt;/TimePoints&gt;</span>
-        <span class="nt">&lt;Values&gt;</span>InfiltrationRateSchedule [1/h]:0<span class="nt">&lt;/Values&gt;</span>
-      <span class="nt">&lt;/DailyCycle&gt;</span>
-    <span class="nt">&lt;/DailyCycles&gt;</span>
-  <span class="nt">&lt;/Schedule&gt;</span>
+    <span class="c">&lt;!-- AllDays constant  --&gt;</span>
+    <span class="nt">&lt;Schedule</span> <span class="na">type=</span><span class="s">"AllDays"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;DailyCycles&gt;</span>
+            <span class="nt">&lt;DailyCycle</span> <span class="na">interpolation=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;TimePoints&gt;</span>0<span class="nt">&lt;/TimePoints&gt;</span>
+                <span class="nt">&lt;Values&gt;</span>InfiltrationRateSchedule [1/h]:0<span class="nt">&lt;/Values&gt;</span>
+            <span class="nt">&lt;/DailyCycle&gt;</span>
+        <span class="nt">&lt;/DailyCycles&gt;</span>
+    <span class="nt">&lt;/Schedule&gt;</span>
 <span class="nt">&lt;/ScheduleGroup&gt;</span></code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="paragraph">
-<p>As shown, a priority list exists that defines on how to define a yearly schedule based on a daily cycle.</p>
+<p><a href="#tab_ScheduleTypes">Table 20</a> shows the day types and their associated priorities.</p>
 </div>
 <table id="tab_ScheduleTypes" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 20. Description of the schedule type attribute</caption>
@@ -3087,7 +3100,56 @@ For example they are used in the following objects or list of objects:</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Flags and options (see section <a href="#IBK_Flag">IBK:Flag</a> for a description of the <code>IBK:Flag</code> tag):</p>
+<p><a href="#ex_schedule_week">Example 31</a> illustrates the use of different schedules to define a weekly schedule. First, the basic every-day schedule is defined. Then, special rules are defined for tuesdays and weekends. <a href="#fig_schedule_week">Figure 7</a> illustrates the resulting schedule.</p>
+</div>
+<div id="ex_schedule_week" class="exampleblock">
+<div class="title">Example 31. Schedule definition using different day types</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Schedules&gt;</span>
+    <span class="nt">&lt;WeekEndDays&gt;</span>Sat,Sun<span class="nt">&lt;/WeekEndDays&gt;</span>
+    <span class="nt">&lt;ScheduleGroups&gt;</span>
+        <span class="nt">&lt;ScheduleGroup</span> <span class="na">objectList=</span><span class="s">"All zones"</span><span class="nt">&gt;</span>
+            <span class="c">&lt;!-- every day between 8-10 --&gt;</span>
+            <span class="nt">&lt;Schedule</span> <span class="na">type=</span><span class="s">"AllDays"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;DailyCycles&gt;</span>
+                    <span class="nt">&lt;DailyCycle</span> <span class="na">interpolation=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+                        <span class="nt">&lt;TimePoints&gt;</span>0 6 10<span class="nt">&lt;/TimePoints&gt;</span>
+                        <span class="nt">&lt;Values&gt;</span>InfiltrationRateSchedule [1/h]:0 0.4 0<span class="nt">&lt;/Values&gt;</span>
+                    <span class="nt">&lt;/DailyCycle&gt;</span>
+                <span class="nt">&lt;/DailyCycles&gt;</span>
+            <span class="nt">&lt;/Schedule&gt;</span>
+            <span class="c">&lt;!-- Tuesday no ventilation --&gt;</span>
+            <span class="nt">&lt;Schedule</span> <span class="na">type=</span><span class="s">"Tuesday"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;DailyCycles&gt;</span>
+                    <span class="nt">&lt;DailyCycle</span> <span class="na">interpolation=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+                        <span class="nt">&lt;TimePoints&gt;</span>0<span class="nt">&lt;/TimePoints&gt;</span>
+                        <span class="nt">&lt;Values&gt;</span>InfiltrationRateSchedule [1/h]:0<span class="nt">&lt;/Values&gt;</span>
+                    <span class="nt">&lt;/DailyCycle&gt;</span>
+                <span class="nt">&lt;/DailyCycles&gt;</span>
+            <span class="nt">&lt;/Schedule&gt;</span>
+            <span class="c">&lt;!-- Weekend only on afternoon --&gt;</span>
+            <span class="nt">&lt;Schedule</span> <span class="na">type=</span><span class="s">"WeekEnd"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;DailyCycles&gt;</span>
+                    <span class="nt">&lt;DailyCycle</span> <span class="na">interpolation=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+                        <span class="nt">&lt;TimePoints&gt;</span>0 14 16<span class="nt">&lt;/TimePoints&gt;</span>
+                        <span class="nt">&lt;Values&gt;</span>InfiltrationRateSchedule [1/h]:0 0.1 0<span class="nt">&lt;/Values&gt;</span>
+                    <span class="nt">&lt;/DailyCycle&gt;</span>
+                <span class="nt">&lt;/DailyCycles&gt;</span>
+            <span class="nt">&lt;/Schedule&gt;</span>
+        <span class="nt">&lt;/ScheduleGroup&gt;</span>
+    <span class="nt">&lt;/ScheduleGroups&gt;</span>
+<span class="nt">&lt;/Schedules&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="fig_schedule_week" class="imageblock">
+<div class="content">
+<img src="./images/ScheduleExample_weekly.png" alt="ScheduleExample weekly">
+</div>
+<div class="title">Figure 7. Illustration of weekly schedule defined by example  <a href="#ex_schedule_week">Example 31</a></div>
 </div>
 </div>
 <div class="sect4">
@@ -3143,7 +3205,7 @@ For example they are used in the following objects or list of objects:</p>
 <p>Inside the XML tag <code>AnnualSchedules</code> the sub tag <code>SpaceTypeGroup</code> with an XML attribute <code>spaceTypeName</code> needs to be defined. This defined attribute needs to match to an defined <code>SpaceType</code> with the same name.</p>
 </div>
 <div id="ex_AnnualSchedule" class="exampleblock">
-<div class="title">Example 31. Definition of an Annual Schedule</div>
+<div class="title">Example 32. Definition of an Annual Schedule</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -3445,7 +3507,7 @@ For example they are used in the following objects or list of objects:</p>
 <p>Outputs are stored in the XML-tag <code>Outputs</code>, with the following general structure:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 32. Parameter Definition for Outputs</div>
+<div class="title">Example 33. Parameter Definition for Outputs</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -3480,7 +3542,7 @@ For example they are used in the following objects or list of objects:</p>
 </ul>
 </div>
 <div class="exampleblock">
-<div class="title">Example 33. Global output parameters</div>
+<div class="title">Example 34. Global output parameters</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -3500,7 +3562,7 @@ For example they are used in the following objects or list of objects:</p>
 <p>Output grids define <em>when</em> outputs are written. An output grid contains a list of intervals, with an output step size defined for each interval. For example, if you want to have hourly output steps from start to end, you need to define a grid with one interval and a step size parameter of one hour:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 34. Output grid for entire simulation with hourly steps</div>
+<div class="title">Example 35. Output grid for entire simulation with hourly steps</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -3619,7 +3681,7 @@ For example they are used in the following objects or list of objects:</p>
 </ul>
 </div>
 <div class="exampleblock">
-<div class="title">Example 35. Output Grid Evaluation</div>
+<div class="title">Example 36. Output Grid Evaluation</div>
 <div class="content">
 <div class="paragraph">
 <p>Suppose an output interval is defined to start at 12.5 h, with a step size of 2 h. The simulation time shall be t=16.5 h.
@@ -3632,7 +3694,7 @@ outputs associated with this output grid will be written.</p>
 <p>There may be gaps between intervals, in which no outputs are written:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 36. Output grid for daily values in first year and hourly values in third year (beginning at time "2 a")</div>
+<div class="title">Example 37. Output grid for daily values in first year and hourly values in third year (beginning at time "2 a")</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -3662,7 +3724,7 @@ outputs associated with this output grid will be written.</p>
 <p>Below is an example of an output definition:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 37. Output of air temperature from all zones in object list <em>All zones</em> and using output grid <em>hourly</em></div>
+<div class="title">Example 38. Output of air temperature from all zones in object list <em>All zones</em> and using output grid <em>hourly</em></div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -3875,7 +3937,7 @@ outputs associated with this output grid will be written.</p>
 <div class="content">
 <img src="./images/TimeType_illustration.png" alt="TimeType illustration">
 </div>
-<div class="title">Figure 7. Illustration of the various <code>TimeType</code> options</div>
+<div class="title">Figure 8. Illustration of the various <code>TimeType</code> options</div>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -3895,7 +3957,7 @@ outputs associated with this output grid will be written.</p>
 <div class="sect4">
 <h5 id="_examples">Examples</h5>
 <div class="exampleblock">
-<div class="title">Example 38. Requesting construction surface temperatures</div>
+<div class="title">Example 39. Requesting construction surface temperatures</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -3928,7 +3990,7 @@ outputs associated with this output grid will be written.</p>
 </div>
 </div>
 <div class="exampleblock">
-<div class="title">Example 39. Requesting energy supplied to layer in a construction (floor heating)</div>
+<div class="title">Example 40. Requesting energy supplied to layer in a construction (floor heating)</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -4082,10 +4144,10 @@ Next ?? records: unsigned int - n (for checking) and afterwards n doubles</pre>
 <div class="sect3">
 <h4 id="simulation_parameters">2.14.1. Simulation Parameters</h4>
 <div class="paragraph">
-<p>Hereafter all simulation parameters are described, see <a href="#ex_simpara">Example 40</a>. All parameters are set as <code>IBK:Parameters</code>, <code>IBK:Flags</code> or <code>IBK:IntPara</code>.</p>
+<p>Hereafter all simulation parameters are described, see <a href="#ex_simpara">Example 41</a>. All parameters are set as <code>IBK:Parameters</code>, <code>IBK:Flags</code> or <code>IBK:IntPara</code>.</p>
 </div>
 <div id="ex_simpara" class="exampleblock">
-<div class="title">Example 40. Simulation Parameters</div>
+<div class="title">Example 41. Simulation Parameters</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -4334,7 +4396,7 @@ Next ?? records: unsigned int - n (for checking) and afterwards n doubles</pre>
 <p>This is done in the child tag <code>Interval</code>:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 41. Simulation interval starting on February 1st (just after the first 31 days of January are through), and running for 60 days</div>
+<div class="title">Example 42. Simulation interval starting on February 1st (just after the first 31 days of January are through), and running for 60 days</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -4418,7 +4480,7 @@ Start = 14*24 + 6 = 342 h</pre>
 <p>Hereafter all parameters that are required for the solver are described.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 42. Solver Parameters</div>
+<div class="title">Example 43. Solver Parameters</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -4965,7 +5027,146 @@ Start = 14*24 + 6 = 342 h</pre>
 <div class="sect3">
 <h4 id="_natural_ventilation_model_infiltration">2.15.1. Natural Ventilation Model (Infiltration)</h4>
 <div class="paragraph">
-<p>TODO :</p>
+<p>A natural ventilation/infiltration model defines air exchange with the outside air.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 44. Parameter definition for a natural ventilation model (Constant and Scheduled model variants)</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;NaturalVentilationModel</span> <span class="na">id=</span><span class="s">"501"</span> <span class="na">displayName=</span><span class="s">"Zone vent"</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;ZoneObjectList&gt;</span>All zones<span class="nt">&lt;/ZoneObjectList&gt;</span>
+  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"VentilationRate"</span> <span class="na">unit=</span><span class="s">"1/h"</span><span class="nt">&gt;</span>0.5<span class="nt">&lt;/IBK:Parameter&gt;</span>
+<span class="nt">&lt;/NaturalVentilationModel&gt;</span>
+<span class="nt">&lt;NaturalVentilationModel</span> <span class="na">id=</span><span class="s">"502"</span> <span class="na">displayName=</span><span class="s">"Zone vent"</span> <span class="na">modelType=</span><span class="s">"Scheduled"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;ZoneObjectList&gt;</span>All zones<span class="nt">&lt;/ZoneObjectList&gt;</span>
+<span class="nt">&lt;/NaturalVentilationModel&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>NaturalVentilationModel</code> needs to be defined with the following XML attributes:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch indent-me">
+<caption class="title">Table 28. Attributes</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 60%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Attribute</th>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Description</th>
+<th class="tableblock halign-center valign-top" style="background-color: transparent;">Format</th>
+<th class="tableblock halign-center valign-top" style="background-color: transparent;">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Identifier of the natural ventilation model</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock"><em>required</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>modelType</code></p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><div class="content"><div class="paragraph">
+<p>Sets the type of the heat conduction model</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Constant</code> - Constant air change rate</p>
+</li>
+<li>
+<p><code>Scheduled</code> - Air change rate changes accoring to defined schedule</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">key</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock"><em>required</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Floating point parameters (see section <a href="#IBK_Parameter">IBK:Parameter</a> for a description of the <code>IBK:Parameter</code> tag):</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 15%;">
+<col style="width: 35%;">
+<col style="width: 20%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Name</th>
+<th class="tableblock halign-center valign-top" style="background-color: transparent;">Default Unit</th>
+<th class="tableblock halign-left valign-top" style="background-color: transparent;">Description</th>
+<th class="tableblock halign-center valign-top" style="background-color: transparent;">Value Range</th>
+<th class="tableblock halign-center valign-top" style="background-color: transparent;">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock"><code>VentilationRate</code></p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">1/h</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: transparent;"><p class="tableblock">Constant air change rate</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock">&#160;&gt;=&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top" style="background-color: transparent;"><p class="tableblock"><em>required for Constant model</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If the model type <code>Scheduled</code> is being used, no further parameters are required, since the air change rate is taken from a scheduled parameter.</p>
+</div>
+<div class="paragraph">
+<p>For the model to work, the parameter <code>InfiltrationRateSchedule</code> must be defined in a schedule (see <a href="#schedules">Schedules</a>).</p>
+</div>
+<div class="paragraph">
+<p>Below is an example of a schedule that provides the <code>InfiltrationRateSchedule</code> for such a scheduled natural ventilation model:</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 45. Example schedule that provides a InfiltrationRateSchedule parameter</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;ScheduleGroup</span> <span class="na">objectList=</span><span class="s">"All zones"</span><span class="nt">&gt;</span>
+  <span class="c">&lt;!-- every day between 8-10 --&gt;</span>
+  <span class="nt">&lt;Schedule</span> <span class="na">type=</span><span class="s">"AllDays"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;DailyCycles&gt;</span>
+      <span class="nt">&lt;DailyCycle</span> <span class="na">interpolation=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;TimePoints&gt;</span>0 6 10<span class="nt">&lt;/TimePoints&gt;</span>
+        <span class="nt">&lt;Values&gt;</span>InfiltrationRateSchedule [1/h]:0 0.4 0<span class="nt">&lt;/Values&gt;</span>
+      <span class="nt">&lt;/DailyCycle&gt;</span>
+    <span class="nt">&lt;/DailyCycles&gt;</span>
+  <span class="nt">&lt;/Schedule&gt;</span>
+  <span class="c">&lt;!-- Tuesday no ventilation --&gt;</span>
+  <span class="nt">&lt;Schedule</span> <span class="na">type=</span><span class="s">"Tuesday"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;DailyCycles&gt;</span>
+      <span class="nt">&lt;DailyCycle</span> <span class="na">interpolation=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;TimePoints&gt;</span>0<span class="nt">&lt;/TimePoints&gt;</span>
+        <span class="nt">&lt;Values&gt;</span>InfiltrationRateSchedule [1/h]:0<span class="nt">&lt;/Values&gt;</span>
+      <span class="nt">&lt;/DailyCycle&gt;</span>
+    <span class="nt">&lt;/DailyCycles&gt;</span>
+  <span class="nt">&lt;/Schedule&gt;</span>
+  <span class="c">&lt;!-- Weekend only on afternoon --&gt;</span>
+  <span class="nt">&lt;Schedule</span> <span class="na">type=</span><span class="s">"WeekEnd"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;DailyCycles&gt;</span>
+      <span class="nt">&lt;DailyCycle</span> <span class="na">interpolation=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;TimePoints&gt;</span>0 14 16<span class="nt">&lt;/TimePoints&gt;</span>
+        <span class="nt">&lt;Values&gt;</span>InfiltrationRateSchedule [1/h]:0 0.1 0<span class="nt">&lt;/Values&gt;</span>
+      <span class="nt">&lt;/DailyCycle&gt;</span>
+    <span class="nt">&lt;/DailyCycles&gt;</span>
+  <span class="nt">&lt;/Schedule&gt;</span>
+<span class="nt">&lt;/ScheduleGroup&gt;</span></code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -4974,7 +5175,7 @@ Start = 14*24 + 6 = 342 h</pre>
 <p>A shading control model is a special type of control model, returning a signal value between 0 (no shading) and 1 (fully shaded). The actual amount of shading, or reduction of solar gains, is determined by the shading parameter block. Thus, you can use the same control model for different types of shadings.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 43. Parameter definition for shading control model</div>
+<div class="title">Example 46. Parameter definition for shading control model</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -5923,7 +6124,7 @@ The example below shows how the output of the models is referenced via the objec
 <div id="footer">
 <div id="footer-text">
 Version 1.1.0<br>
-Last updated 2020-11-04 12:35:08 +0100
+Last updated 2020-11-05 13:27:15 +0100
 </div>
 </div>
 <style>

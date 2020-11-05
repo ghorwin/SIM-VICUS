@@ -5,49 +5,49 @@
 ## Overview
 
 Schedules provide purely time-dependent quantities, similar to climatic loads. Different to other results-producing models, schedules generate variables for sets of dependent models. As such, a schedule is formulated for an object list, which selects a set of objects taking the values provided by the schedule.
-For example they are used in the following objects or list of objects:
+For example, they are used in the following objects or list of objects:
 
 * **Occupancy rates**, **heat loads**, *clothing factors* in the person load model.
 * *Heating/cooling set point temperatures* for thermostat controls
 * *Mass flow rates* or *temperature set points* for plant components
-* *electrical power rates* for lighting and electrical devices
+* *Electrical power rates* for lighting and electrical devices
 
-For example, a schedule defines heating set points `HeatingSetPoint` for specific zones like living rooms. These are selected by an object list named "Living room", which selects objects with the type `Zone` and a certain ID range. Later you will find more about this in more detail.
+For example, a schedule defines a heating set point `HeatingSetPoint` for specific zones like living rooms. These are selected by an object list named "Living room", which selects objects with the type `Zone` and a certain ID range (will be described later in more detail).
 
-Within the project file there are two possible ways to describe a schedule: 
+There are two possible ways to describe a schedule:
 
 * `ScheduleGroups` 
 * `AnnualSchedules`. 
 
 The two options are discussed in detail in <<regularSchedules>> and <<annualSchedules>>. 
 
-Furthermore `Schedules` consist of two different types of data handling:
+Furthermore scheduled data can be handled in two different ways, as
 
-* *Cyclic* data
-* *Non-cyclic* data
+* *Cyclic* data, and
+* *Non-cyclic* data.
 
-*Cyclic data* means that schedule values will be repeated after the end of the schedule period. This means for example that an annual schedule will be run twice if the simulation time will be set to two years. *Cyclic-data* can be defined by * `ScheduleGroups` and `AnnualSchedules`.
+*Cyclic data* means that schedule values will be repeated after the end of the schedule period. This means, for example, that an annual schedule will be run twice if the simulation time will be set to two years. *Cyclic-data* can be defined by `ScheduleGroups` and `AnnualSchedules`.
 
-Whereas *non-cyclic* data will always be used only once. This is useful if monitored data will be used to set up schedules. Then the simulation needs to be set only for the time span the monitored data is existing. *Non-cyclic* data can only be defined by `AnnualSchedules`
+*Non-cyclic* data will always be used only once. This is useful if monitored data will be used to set up schedules. Then the simulation needs to be set only for the time span the monitored data is existing. *Non-cyclic* data can only be defined by `AnnualSchedules`.
 
 [[ex_Schedules]]
 .Schedules Definition
 ====
 [source,xml,indent=0]
 ----
-		<Schedules>
-			<Holidays>5,10</Holidays>
-			<WeekEndDays>Fri,Sat</WeekEndDays>
-			<FirstDayOfYear>Fri</FirstDayOfYear>
-			<IBK:Flag name="EnableCyclicSchedules">true</IBK:Flag>
+<Schedules>
+    <Holidays>5,10</Holidays>
+    <WeekEndDays>Fri,Sat</WeekEndDays>
+    <FirstDayOfYear>Fri</FirstDayOfYear>
+    <IBK:Flag name="EnableCyclicSchedules">true</IBK:Flag>
 
-			<ScheduleGroups>
-                ...
-			</ScheduleGroups>
-			<AnnualSchedules>
-			    ...
-			</AnnualSchedules>
-		</Schedules>
+    <ScheduleGroups>
+        ...
+    </ScheduleGroups>
+    <AnnualSchedules>
+        ...
+    </AnnualSchedules>
+</Schedules>
 ----
 ====
 
@@ -60,7 +60,7 @@ Inside the object `Schedules` the following XML tags can also be specified
 * `IBK:Flag` with the name `EnableCyclicSchedules`
 
 .XML tags that can be definned
-[options="header", cols="10%, 60%, 20%, 10%", width="100%"]
+[options="header", cols="15%, 55%, 20%, 10%", width="100%"]
 |====================
 | XML tags | Description| Format |Usage
 | `FirstDayOfYear` 
@@ -76,13 +76,13 @@ a| The day type of January 1st (offset of day of the week of the start year.
 
 | String | _optional_
 | `Holidays` 
-a|  List of holiday days, stored in "day of the year", not including leap days. | string | _optional_
+a|  List of holiday days, stored in a comma-separated list of numbers, where each number represents the "day of the year", not including leap days. | string | _optional_
 | `WeekEndDays` | Weekend days. | string | _optional_
-|IBK:Flag
-`EnableCyclicSchedules`|Check schedules to determine minimum distances between steps and adjust MaxTimeStep.
+|`IBK:Flag`
 
-(_true_ by default)
-|_true / false_|_optional_
+a| * name `EnableCyclicSchedules` - If set to true, schedules will be repeated after one year. If set to false (only applicable to annual schedules), these annual schedules are sampled just once. 
+
+|_true (default) / false_ | _optional_
 
 |====================
 
@@ -92,7 +92,7 @@ a|  List of holiday days, stored in "day of the year", not including leap days. 
 
 :xrefstyle: short 
 
-Regular schedules are defined upon a daily cycle based scheme. Some Parameters need to be defined inside the hereafter specified XML tags.
+Regular schedules are defined upon a daily cycle based scheme. Some parameters need to be defined inside the hereafter specified XML tags.
 
 [[ex_ScheduleGroup]]
 .ScheduleGroup Definition
@@ -100,35 +100,35 @@ Regular schedules are defined upon a daily cycle based scheme. Some Parameters n
 [source,xml,indent=0]
 ----
 <ScheduleGroups>
-    <ScheduleGroup objectList="Zone">
+    <ScheduleGroup objectList="All Zones">
         <!-- AllDays constant  -->
         <Schedule type="AllDays">
             ...
-    	</Schedule>
-    	<Schedule type="WeekDays">
-    	    ...
-    	</Schedule>
+        </Schedule>
+        <Schedule type="WeekDays">
+            ...
+        </Schedule>
     </ScheduleGroup>
 <ScheduleGroups>
 ----
 ====
 
-.ObjectList with an Zone linked
+[[ex_ScheduleGroup_refObjList]]
+.ObjectList definition that selects zone objects and is named "All Zones"
 ====
 [source,xml,indent=0]
 ----
 <ObjectLists>
-	<ObjectList name="Zone">
-		<FilterID>*</FilterID>
-		<ReferenceType>Zone</ReferenceType>
-	</ObjectList>
+    <ObjectList name="All Zones">
+        <FilterID>*</FilterID>
+        <ReferenceType>Zone</ReferenceType>
+    </ObjectList>
 </ObjectLists>
 ----
 ====
 
-Regular schedules are defined within the XML tag `ScheduleGroup` with an XML attribute named `objectList` that references an `ObjectList` with the specified name (see <<tab_ScheduleGroup>>). 
+Regular schedules are defined within the XML tag `ScheduleGroup` with a mandatory XML attribute named `objectList` that references an `ObjectList` by name (see <<tab_ScheduleGroup>>): 
 
-:xrefstyle: basic 
 
 [[tab_ScheduleGroup]]
 .Attribute for the ScheduleGroup
@@ -138,34 +138,38 @@ Regular schedules are defined within the XML tag `ScheduleGroup` with an XML att
 | `objectList` |  References to an object list with the specifed name | string | _required_
 |====================
 
-
+<<ex_ScheduleGroup>> shows such a definition and <<ex_ScheduleGroup_refObjList>> the corresponding object list.
 
 ### Daily Cycles
 
-Inside the `ScheduleGroup` several Objects called `Schedule` can be defined. The `Schedule` objects need an XML attribute called `type` with different names for specific day types (see <<tab_ScheduleTypes>>). There shall be no two objects with the same `type` inside a `ScheduleGroup`. Upon those `Schedule` objects with different `types` it is possible to define a schedule for a whole year. Therefore a certain rule exists to build schedules as described bellow. 
+Inside the `ScheduleGroup` several Objects called `Schedule` can be defined. The `Schedule` objects need an XML attribute called `type` with different names for specific day types (see <<tab_ScheduleTypes>>). There must not be two `Schedule` objects with the same `type` inside a `ScheduleGroup`. Within each `Schedule` object a schedule is defined that is applied for all days of the given `type` during the course of a whole year. The following rules apply when constructing schedules.
 
-At first priority the type `Alldays` will set specified daily schedule values (e.g. Heating Setpoint Temperatures) to all days of the whole year (Priority 0). After this the `type` named `WeekEnd` and `WeekDay` will overwrite the already defined schedule values for only all week days or weekend days (Priority 1). Furthermore the weekdays named `Monday`, `Tuesday`, ... define for which days the schedule values will be overwritten again (Priority 2). This continues with the `type` `Holiday` (Priority 3) for the specified holidays inside the `Holidays` object. So that in the end a final schedule for the whole year can be defined. This can be done for several periods.
+At first priority the type `AllDays` will set specified daily schedule values (e.g. `HeatingSetPoint`) to all days of the whole year (Priority 0). <<ex_schedule_alldays>> shows such a schedule definition.
 
-.ObjectList with an Zone linked
+After this the `type` named `WeekEnd` and `WeekDay` will, if defined, overwrite the already defined schedule values for only all week days or weekend days (Priority 1). Furthermore the weekdays named `Monday`, `Tuesday`, ... define for which days the schedule values will be overwritten again (Priority 2). This continues with the `type` `Holiday` (Priority 3) for the specified holidays inside the `Holidays` object. 
+
+It is possible to define different schedules for individual periods of the year, e.g. regular year and summer vacation period etc.. This way a schedule for the entire year can be defined. 
+
+[[ex_schedule_alldays]]
+.Schedule definition with type "AllDays"
 ====
-[source,xml,indent=0]
+[source,xml]
 ----
 <ScheduleGroup objectList="Zone01">
-	<!-- AllDays constant  -->
-	<Schedule type="AllDays">
-		<DailyCycles>
-			<DailyCycle interpolation="Constant">
-				<TimePoints>0</TimePoints>
-				<Values>InfiltrationRateSchedule [1/h]:0</Values>
-			</DailyCycle>
-		</DailyCycles>
-	</Schedule>
+    <!-- AllDays constant  -->
+    <Schedule type="AllDays">
+        <DailyCycles>
+            <DailyCycle interpolation="Constant">
+                <TimePoints>0</TimePoints>
+                <Values>InfiltrationRateSchedule [1/h]:0</Values>
+            </DailyCycle>
+        </DailyCycles>
+    </Schedule>
 </ScheduleGroup>
 ----
 ====
 
-As shown, a priority list exists that defines on how to define a yearly schedule based on a daily cycle.
-
+<<tab_ScheduleTypes>> shows the day types and their associated priorities.
 
 [[tab_ScheduleTypes]]
 .Description of the schedule type attribute
@@ -191,8 +195,55 @@ As shown, a priority list exists that defines on how to define a yearly schedule
 | 3 | Values will be set to all holidays of the period that are specified inside the `holidays` tag
 |====================
 
-Flags and options (see section <<IBK_Flag>> for a description of the `IBK:Flag` tag):
+<<ex_schedule_week>> illustrates the use of different schedules to define a weekly schedule. First, the basic every-day schedule is defined. Then, special rules are defined for tuesdays and weekends. <<fig_schedule_week>> illustrates the resulting schedule.
 
+[[ex_schedule_week]]
+.Schedule definition using different day types
+====
+[source,xml]
+----
+<Schedules>
+    <WeekEndDays>Sat,Sun</WeekEndDays>
+    <ScheduleGroups>
+        <ScheduleGroup objectList="All zones">
+            <!-- every day between 8-10 -->
+            <Schedule type="AllDays">
+                <DailyCycles>
+                    <DailyCycle interpolation="Constant">
+                        <TimePoints>0 6 10</TimePoints>
+                        <Values>InfiltrationRateSchedule [1/h]:0 0.4 0</Values>
+                    </DailyCycle>
+                </DailyCycles>
+            </Schedule>
+            <!-- Tuesday no ventilation -->
+            <Schedule type="Tuesday">
+                <DailyCycles>
+                    <DailyCycle interpolation="Constant">
+                        <TimePoints>0</TimePoints>
+                        <Values>InfiltrationRateSchedule [1/h]:0</Values>
+                    </DailyCycle>
+                </DailyCycles>
+            </Schedule>
+            <!-- Weekend only on afternoon -->
+            <Schedule type="WeekEnd">
+                <DailyCycles>
+                    <DailyCycle interpolation="Constant">
+                        <TimePoints>0 14 16</TimePoints>
+                        <Values>InfiltrationRateSchedule [1/h]:0 0.1 0</Values>
+                    </DailyCycle>
+                </DailyCycles>
+            </Schedule>
+        </ScheduleGroup>
+    </ScheduleGroups>
+</Schedules>
+----
+====
+
+[[fig_schedule_week]]
+.Illustration of weekly schedule defined by example  <<ex_schedule_week>>
+image::ScheduleExample_weekly.png[pdfwidth=12cm]
+
+:xrefstyle: basic 
 
 
 ### Time Shift
