@@ -33,20 +33,20 @@ Furthermore scheduled data can be handled in two different ways, as
 [[ex_Schedules]]
 .Schedules Definition
 ====
-[source,xml,indent=0]
+[source,xml,tabsize=4]
 ----
 <Schedules>
-    <Holidays>5,10</Holidays>
-    <WeekEndDays>Fri,Sat</WeekEndDays>
-    <FirstDayOfYear>Fri</FirstDayOfYear>
-    <IBK:Flag name="EnableCyclicSchedules">true</IBK:Flag>
+	<Holidays>5,10</Holidays>
+	<WeekEndDays>Fri,Sat</WeekEndDays>
+	<FirstDayOfYear>Fri</FirstDayOfYear>
+	<IBK:Flag name="EnableCyclicSchedules">true</IBK:Flag>
 
-    <ScheduleGroups>
-        ...
-    </ScheduleGroups>
-    <AnnualSchedules>
-        ...
-    </AnnualSchedules>
+	<ScheduleGroups>
+		...
+	</ScheduleGroups>
+	<AnnualSchedules>
+		...
+	</AnnualSchedules>
 </Schedules>
 ----
 ====
@@ -87,6 +87,15 @@ a| * name `EnableCyclicSchedules` - If set to true, schedules will be repeated a
 |====================
 
 
+## Schedule groups
+
+`ScheduleGroup` tags exist both in daily scheme based schedules and annual schedules. They identify the target objects for scheduled parameters. To avoid ambiguity, it is not allowed to define multiple schedule groups with the same object list.
+
+[IMPORTANT]
+====
+Do not define multiple `ScheduleGroup` elements with the same object list!
+====
+
 [[regularSchedules]]
 ## Daily scheme based schedules
 
@@ -97,18 +106,18 @@ Regular schedules are defined upon a daily cycle based scheme. Some parameters n
 [[ex_ScheduleGroup]]
 .ScheduleGroup Definition
 ====
-[source,xml,indent=0]
+[source,xml,tabsize=4]
 ----
 <ScheduleGroups>
-    <ScheduleGroup objectList="All Zones">
-        <!-- AllDays constant  -->
-        <Schedule type="AllDays">
-            ...
-        </Schedule>
-        <Schedule type="WeekDays">
-            ...
-        </Schedule>
-    </ScheduleGroup>
+	<ScheduleGroup objectList="All Zones">
+		<!-- AllDays constant  -->
+		<Schedule type="AllDays">
+			...
+		</Schedule>
+		<Schedule type="WeekDays">
+			...
+		</Schedule>
+	</ScheduleGroup>
 <ScheduleGroups>
 ----
 ====
@@ -116,7 +125,7 @@ Regular schedules are defined upon a daily cycle based scheme. Some parameters n
 [[ex_ScheduleGroup_refObjList]]
 .ObjectList definition that selects zone objects and is named "All Zones"
 ====
-[source,xml,indent=0]
+[source,xml,tabsize=4]
 ----
 <ObjectLists>
     <ObjectList name="All Zones">
@@ -153,7 +162,7 @@ It is possible to define different schedules for individual periods of the year,
 [[ex_schedule_alldays]]
 .Schedule definition with type "AllDays"
 ====
-[source,xml]
+[source,xml,tabsize=4]
 ----
 <ScheduleGroup objectList="Zone01">
     <!-- AllDays constant  -->
@@ -173,17 +182,15 @@ It is possible to define different schedules for individual periods of the year,
 
 [[tab_ScheduleTypes]]
 .Description of the schedule type attribute
-[options="header"]
-[cols="< 15, ^ 10, < 70"]
-[width="100%"]
+[options="header", cols="< 15, ^ 10, < 70", width="100%"]
 |====================
-| `type` | Priority | Description
+| Type | Priority | Description
 | `AllDays`
 | 0 | Values will be set to all days of the period
-| `WeekEnd` {set:cellbgcolor: #F4F4F4  } 
+| `WeekEnd`
 | 1 | Values will be set to all weekend days of the period
 | `WeekDay` | 1 | Values will be set to all week days of the period
-| `Monday` {set:cellbgcolor: transparent }  
+| `Monday`
 | 2 | Values will be set to all Mondays of the period
 | `Tuesday` | 2 | Values will be set to all Tuesdays of the period
 | `Wednesday` | 2 | Values will be set to all Wednesdays of the period
@@ -191,7 +198,7 @@ It is possible to define different schedules for individual periods of the year,
 | `Friday` | 2 | Values will be set to all Fridays of the period
 | `Saturday` | 2 | Values will be set to all Saturdays of the period
 | `Sunday` | 2 | Values will be set to all Sundays of the period
-| `Holiday` {set:cellbgcolor: #F4F4F4 } 
+| `Holiday`
 | 3 | Values will be set to all holidays of the period that are specified inside the `holidays` tag
 |====================
 
@@ -200,41 +207,41 @@ It is possible to define different schedules for individual periods of the year,
 [[ex_schedule_week]]
 .Schedule definition using different day types
 ====
-[source,xml]
+[source,xml,tabsize=4]
 ----
 <Schedules>
-    <WeekEndDays>Sat,Sun</WeekEndDays>
-    <ScheduleGroups>
-        <ScheduleGroup objectList="All zones">
-            <!-- every day between 8-10 -->
-            <Schedule type="AllDays">
-                <DailyCycles>
-                    <DailyCycle interpolation="Constant">
-                        <TimePoints>0 6 10</TimePoints>
-                        <Values>InfiltrationRateSchedule [1/h]:0 0.4 0</Values>
-                    </DailyCycle>
-                </DailyCycles>
-            </Schedule>
-            <!-- Tuesday no ventilation -->
-            <Schedule type="Tuesday">
-                <DailyCycles>
-                    <DailyCycle interpolation="Constant">
-                        <TimePoints>0</TimePoints>
-                        <Values>InfiltrationRateSchedule [1/h]:0</Values>
-                    </DailyCycle>
-                </DailyCycles>
-            </Schedule>
-            <!-- Weekend only on afternoon -->
-            <Schedule type="WeekEnd">
-                <DailyCycles>
-                    <DailyCycle interpolation="Constant">
-                        <TimePoints>0 14 16</TimePoints>
-                        <Values>InfiltrationRateSchedule [1/h]:0 0.1 0</Values>
-                    </DailyCycle>
-                </DailyCycles>
-            </Schedule>
-        </ScheduleGroup>
-    </ScheduleGroups>
+	<WeekEndDays>Sat,Sun</WeekEndDays>
+	<ScheduleGroups>
+		<ScheduleGroup objectList="All zones">
+			<!-- every day between 8-10 -->
+			<Schedule type="AllDays">
+				<DailyCycles>
+					<DailyCycle interpolation="Constant">
+						<TimePoints>0 6 10</TimePoints>
+						<Values>InfiltrationRateSchedule [1/h]:0 0.4 0</Values>
+					</DailyCycle>
+				</DailyCycles>
+			</Schedule>
+			<!-- Tuesday no ventilation -->
+			<Schedule type="Tuesday">
+				<DailyCycles>
+					<DailyCycle interpolation="Constant">
+						<TimePoints>0</TimePoints>
+						<Values>InfiltrationRateSchedule [1/h]:0</Values>
+					</DailyCycle>
+				</DailyCycles>
+			</Schedule>
+			<!-- Weekend only on afternoon -->
+			<Schedule type="WeekEnd">
+				<DailyCycles>
+					<DailyCycle interpolation="Constant">
+						<TimePoints>0 14 16</TimePoints>
+						<Values>InfiltrationRateSchedule [1/h]:0 0.1 0</Values>
+					</DailyCycle>
+				</DailyCycles>
+			</Schedule>
+		</ScheduleGroup>
+	</ScheduleGroups>
 </Schedules>
 ----
 ====
@@ -312,7 +319,7 @@ There must be _exactly_ as many values given as there are time points in the  `T
 [[ex_schedule_dailycycle_quantities]]
 .Daily cycle with two scheduled quantities
 ====
-[source,xml]
+[source,xml,tabsize=4]
 ----
 <DailyCycle interpolation="Constant">
     <TimePoints>0 6 10</TimePoints>
@@ -333,88 +340,77 @@ However, for practical applications these steps are often not desired - even tho
 
 Instead of exactly providing the step-wise scheduled values, the solver implements an automatic 2 minute ramping just before the interval end. <<fig_schedule_dailycycle_jumpsmoothing>> illustrates the 2 minute linear ramping applied directly before each new interval.
 
-:xrefstyle: basic 
-
 [[fig_schedule_dailycycle_jumpsmoothing]]
 .Ramping/step smoothing applied for dialy cycles with step-wise defined values
 image::ScheduleDailyCycleConstant_actual.png[pdfwidth=10cm]
 
+[NOTE]
+====
+The ramping time distance of 2 minutes is currently hard-coded in the schedules calculation routine and can be changed to a larger or smaller value if needed. Also, instead of a linear ramping function a polynomial 3rd order curve can be used (whatever brings best performance-accuracy compromise).
+====
 
-
+[CAUTION]
+====
+Internally, the step-smoothing is implemented by inserting a new data point 2 minutes before the interval end with the same value as in the current interval. Then, the daily cycle is treated as a linearly interpolated daily cycle. However, there is no check for interval lengths less than 2 minutes. Hence, you *must not* define intervals shorter or equal to 2 minutes when defining dialy cycles with interpolation mode `Linear`.
+====
 
 [[annualSchedules]]
 ## Annual schedules 
 
-Annual schedules are basically data tables with monotonically increasing X an Y-Values. Annual schedules can be defined as any linear/constant interpolated data tables. For example, hourly values of temperatures or control variables measured during the year can be specified. 
+Annual schedules are basically data tables with monotonically increasing X (time)-values. Each annual schedule defines a single quantity. For example, hourly values of temperatures or control variables measured during the year can be specified. 
 
-Inside the XML tag `AnnualSchedules` the sub tag `SpaceTypeGroup` with an XML attribute `spaceTypeName` needs to be defined. This defined attribute needs to match to an defined `SpaceType` with the same name. 
+[TIP]
+====
+The name _annual schedule_ is actually a bit misleading. In these data tables you can place data with arbitrary time ranges, spanning only a few weeks or even several years (using monitoring data, for example). The only requirement is, that the simulation time interval fits into the time span of the schedule.
+====
+
+The values provided by the linear spline can be defined as linear/constant interpolated values, however, due to performance reasons constant interpolation mode should be avoided.
+
+[NOTE]
+====
+For linear splines, step-smoothing is *not* applied by the solver. It is up to the user to provide suitable data or be punished by slow simulation times.
+====
+
+Inside the XML tag `AnnualSchedules` there are one or more `ScheduleGroup` XML child tags, each with a mandatory XML attribute `objectList`. Just as with daily cycle schedules, this references an object list and herewith objects, that the scheduled variables apply to. <<ex_AnnualSchedule>> shows an example for annual schedules defined within a single `ScheduleGroup`.
+
+:xrefstyle: basic 
 
 [[ex_AnnualSchedule]]
-.Definition of an Annual Schedule
+.Definition of annual schedules
 ====
-[source,xml,indent=0,tabsize=2]
+[source,xml,tabsize=4]
 ----
-
 <AnnualSchedules>
     ...
-	<SpaceTypeGroup spaceTypeName="Zone">
-    	<IBK:LinearSpline name="HeatingSetPointTemperature" interpolation="linear">
+	<ScheduleGroup objectList="All zones">
+    	<AnnualSchedule name="HeatingSetPointTemperature" interpolation="linear">
     		<X unit="h">    0       2183    2184  6576	6577    8760   </X>
     		<Y unit="C">    20      30      20    30    20      30     </Y>
-    	</IBK:LinearSpline>	
-    	<IBK:LinearSpline name="TotalEnergyProductionPerPerson" interpolation="linear">
+    	</AnnualSchedule>	
+    	<AnnualSchedule name="TotalEnergyProductionPerPerson" interpolation="linear">
     		<X unit="h">        0   2183    2184	6576	6577	8760    </X>
     		<Y unit="W/Person"> 70	110     70		110		70		110     </Y>
-    	</IBK:LinearSpline>
-    	<IBK:LinearSpline name="EquipmentUtilizationRatio" interpolation="linear">
+    	</AnnualSchedule>
+    	<AnnualSchedule name="EquipmentUtilizationRatio" interpolation="linear">
     		<X unit="h">        0   2183	2184	6576	6577	8760</X>
     		<Y unit="W/Person"> 10	20		10		20		10		20  </Y>
-    	</IBK:LinearSpline>
-    </SpaceTypeGroup>
+    	</AnnualSchedule>
+    </ScheduleGroup>
     ...
 </AnnualSchedules>
-
 ----
 ====
 
+The actual data is specified in the XML tags `AnnualSchedule` which actually is a <<LinearSplineParameter>> (see referenced documentation for details).
 
-
-.Paramaters that can be set for the IBK:LinearSpline
-[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
-|====================
-|Attribute {set:cellbgcolor:transparent} |Description|Format|Usage
-| `name` | Specific name that references to the space type the annual schedule will be set for | string | _required_
-| `InterpolationMethod` 
-a| Specifies the interpolation method between the defined y values.
-
-* `constant` - constant interpolation (values constant during time step) 
-* `linear` - linear interpolation (values linear interpolated between time steps)  
-
-| key | _required_
-a|
-
-[WARNING]
-====
-`WrapMethod`
-
-not yet implemented
-====
-
-a| Specifies how to treat the values in multi-year simulations 
-
-* `cyclic` - Annual cyclic data
-* `continuous` - Continuous data without repetition
-
-| key | _required_
-
-|====================
+The X-value unit must be a time unit. The Y-value unit is the unit of the scheduled quantity.
 
 
 
 [[schedule_variable_list]]
 ## Variable list
 
-The variable list describes all names and the  units that can be used inside the schedules.  
+The variable list describes all names and the  units that can be used inside the schedules. 
 
 [[tab_VariableList]]
 .Variable List

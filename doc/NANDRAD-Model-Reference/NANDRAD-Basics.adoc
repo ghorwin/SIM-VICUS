@@ -143,7 +143,7 @@ A linear spline parameter is effectively an extended `IBK:LinearSpline` paramete
 .Attributes
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
-|Attribute {set:cellbgcolor:transparent} |Description|Format|Usage
+|Attribute|Description|Format|Usage
 | `name` | Specific name that references to the space type the annual schedule will be set for | string | _required_
 | `interpolationMethod` 
 a| Specifies the interpolation method between the defined y values.

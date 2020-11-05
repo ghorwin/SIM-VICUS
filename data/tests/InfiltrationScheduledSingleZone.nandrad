@@ -62,6 +62,22 @@
 					</Schedule>
 				</ScheduleGroup>
 			</ScheduleGroups>
+			<AnnualSchedules>
+				<ScheduleGroup objectList="First zone">
+					<AnnualSchedule name="HeatingSetPointTemperature" interpolationMethod="linear">
+						<X unit="h">    0       2183    2184  6576	6577    8760   </X>
+						<Y unit="C">    20      30      20    30    20      30     </Y>
+					</AnnualSchedule>	
+					<AnnualSchedule name="TotalEnergyProductionPerPerson" interpolationMethod="linear">
+						<X unit="h">        0   2183    2184	6576	6577	8760    </X>
+						<Y unit="W/Person"> 70	110     70		110		70		110     </Y>
+					</AnnualSchedule>
+					<AnnualSchedule name="EquipmentUtilizationRatio" interpolationMethod="linear">
+						<X unit="h">        0   2183	2184	6576	6577	8760</X>
+						<Y unit="W/Person"> 10	20		10		20		10		20  </Y>
+					</AnnualSchedule>
+				</ScheduleGroup>
+			</AnnualSchedules>
 		</Schedules>
 		<Outputs>
 			<TimeUnit>h</TimeUnit>
@@ -97,6 +113,10 @@
 		</Outputs>
 		<ObjectLists>
 			<ObjectList name="All zones">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="First zone">
 				<FilterID>*</FilterID>
 				<ReferenceType>Zone</ReferenceType>
 			</ObjectList>
