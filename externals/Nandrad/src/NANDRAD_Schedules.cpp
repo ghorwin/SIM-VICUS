@@ -183,7 +183,7 @@ void Schedules::readXML(const TiXmlElement * element) {
 
 					NANDRAD::LinearSplineParameter spl;
 					try {
-						spl.readXML(c2); // also creates the spline and thus, does monotonic x-value checking
+						spl.readXML(c3); // also creates the spline and thus, does monotonic x-value checking
 					}
 					catch (IBK::Exception & ex) {
 						throw IBK::Exception(ex, IBK::FormatString(XML_READ_ERROR).arg(c2->Row())
