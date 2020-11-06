@@ -3,6 +3,8 @@
 
 #include <IBK_Flag.h>
 
+#include <QColor>
+
 #include "VICUS_CodeGenMacros.h"
 
 namespace VICUS {
@@ -24,11 +26,13 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Holds grid spacing in [m] */
-	double								m_gridSpacing	= 10;		// XML:E
+	double								m_gridSpacing	= 10;			// XML:E
 	/*! Holds width dimension of grid in [m] */
-	double								m_gridWidth		= 1000;		// XML:E
+	double								m_gridWidth		= 1000;			// XML:E
 
-	IBK::Flag							m_flags[NUM_F];				// XML:E
+	QString								m_gridColor		= "#7f7fb2";	// XML:E
+
+	IBK::Flag							m_flags[NUM_F];					// XML:E
 };
 
 
