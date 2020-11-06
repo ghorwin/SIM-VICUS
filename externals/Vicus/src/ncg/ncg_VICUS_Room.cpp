@@ -19,7 +19,7 @@
 	Lesser General Public License for more details.
 */
 
-#include <VICUS_Building.h>
+#include <VICUS_Room.h>
 #include <VICUS_KeywordList.h>
 
 #include <IBK_messages.h>
@@ -33,8 +33,8 @@
 
 namespace VICUS {
 
-void Building::readXML(const TiXmlElement * element) {
-	FUNCID(Building::readXML);
+void Room::readXML(const TiXmlElement * element) {
+	FUNCID(Room::readXML);
 
 	try {
 		// search for mandatory attributes
@@ -60,18 +60,6 @@ void Building::readXML(const TiXmlElement * element) {
 			const std::string & cName = c->ValueStr();
 			if (cName == "DisplayName")
 				m_displayName = QString::fromStdString(c->GetText());
-			else if (cName == "BuildingLevels") {
-				const TiXmlElement * c2 = c->FirstChildElement();
-				while (c2) {
-					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "BuildingLevel")
-						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-					BuildingLevel obj;
-					obj.readXML(c2);
-					m_buildingLevels.push_back(obj);
-					c2 = c2->NextSiblingElement();
-				}
-			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -79,33 +67,21 @@ void Building::readXML(const TiXmlElement * element) {
 		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Building' element."), FUNC_ID);
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Room' element."), FUNC_ID);
 	}
 	catch (std::exception & ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading 'Building' element.").arg(ex2.what()), FUNC_ID);
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'Room' element.").arg(ex2.what()), FUNC_ID);
 	}
 }
 
-TiXmlElement * Building::writeXML(TiXmlElement * parent) const {
-	TiXmlElement * e = new TiXmlElement("Building");
+TiXmlElement * Room::writeXML(TiXmlElement * parent) const {
+	TiXmlElement * e = new TiXmlElement("Room");
 	parent->LinkEndChild(e);
 
 	if (m_id != VICUS::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.isEmpty())
 		TiXmlElement::appendSingleAttributeElement(e, "DisplayName", nullptr, std::string(), m_displayName.toStdString());
-
-	if (!m_buildingLevels.empty()) {
-		TiXmlElement * child = new TiXmlElement("BuildingLevels");
-		e->LinkEndChild(child);
-
-		for (std::vector<BuildingLevel>::const_iterator it = m_buildingLevels.begin();
-			it != m_buildingLevels.end(); ++it)
-		{
-			it->writeXML(child);
-		}
-	}
-
 	return e;
 }
 

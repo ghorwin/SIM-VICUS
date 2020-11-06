@@ -9,6 +9,7 @@ project( Vicus )
 include_directories(
 	${PROJECT_SOURCE_DIR}/../../src
 	${PROJECT_SOURCE_DIR}/../../../IBK/src
+	${PROJECT_SOURCE_DIR}/../../../IBKMK/src
 	${PROJECT_SOURCE_DIR}/../../../TiCPP/src
 	${PROJECT_SOURCE_DIR}/../../../Nandrad/src
 	${Qt5Widgets_INCLUDE_DIRS}

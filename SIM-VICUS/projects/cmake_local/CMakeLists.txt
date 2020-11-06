@@ -8,6 +8,7 @@ include_directories(
 	${PROJECT_SOURCE_DIR}/../../src/actions
 	${PROJECT_SOURCE_DIR}/../../src/core3D
 	${PROJECT_SOURCE_DIR}/../../../externals/IBK/src
+	${PROJECT_SOURCE_DIR}/../../../externals/IBKMK/src
 	${PROJECT_SOURCE_DIR}/../../../externals/Nandrad/src
 	${PROJECT_SOURCE_DIR}/../../../externals/TiCPP/src
 	${PROJECT_SOURCE_DIR}/../../../externals/Vicus/src
