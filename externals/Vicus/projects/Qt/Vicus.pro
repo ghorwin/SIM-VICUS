@@ -19,11 +19,12 @@ unix|mac {
 	VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 }
 
-LIBS += -lNandrad -lIBK -lTiCPP
+LIBS += -lNandrad -lIBK -lIBKMK -lTiCPP
 
 INCLUDEPATH = \
 	../../src \
 	../../../IBK/src \
+	../../../IBKMK/src \
 	../../../Nandrad/src \
 	../../../TiCPP/src
 
@@ -32,6 +33,7 @@ DEPENDPATH = $${INCLUDEPATH}
 HEADERS += \
 	../../src/VICUS_ArgsParser.h \
 	../../src/VICUS_Building.h \
+	../../src/VICUS_BuildingLevel.h \
 	../../src/VICUS_CodeGenMacros.h \
 	../../src/VICUS_Constants.h \ \
 	../../src/VICUS_Edge.h \
@@ -39,7 +41,9 @@ HEADERS += \
 	../../src/VICUS_Line.h \
 	../../src/VICUS_Network.h \
 	../../src/VICUS_Node.h \
-	../../src/VICUS_Project.h
+	../../src/VICUS_Project.h \
+	../../src/VICUS_Room.h \
+	../../src/VICUS_Surface.h
 
 SOURCES += \
 	../../src/VICUS_ArgsParser.cpp \

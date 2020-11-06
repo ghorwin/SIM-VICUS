@@ -49,3 +49,4 @@ Makefile*
 *.lyx~
 *.lyx\#
 *.odg\#
+*.ilk
