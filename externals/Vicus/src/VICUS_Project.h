@@ -45,6 +45,9 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
+	/*! Constructor, creates dummy data. */
+	Project();
+
 	/*! Reads the project data from an XML file.
 		\param filename  The full path to the project file.
 	*/

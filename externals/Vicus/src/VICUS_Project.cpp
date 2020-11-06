@@ -35,6 +35,12 @@
 
 namespace VICUS {
 
+Project::Project() {
+	// build test buildin
+
+}
+
+
 void Project::readXML(const IBK::Path & filename) {
 	FUNCID(Project::readXML);
 
