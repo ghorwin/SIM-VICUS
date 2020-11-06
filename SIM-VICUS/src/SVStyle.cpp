@@ -4,6 +4,7 @@
 #include <QApplication>
 
 #include <QPlainTextEdit>
+#include <QLayout>
 
 #include "SVSettings.h"
 
@@ -68,5 +69,15 @@ void SVStyle::formatPlainTextEdit(QPlainTextEdit * textEdit) const {
 	textEdit->setReadOnly(true);
 	textEdit->setUndoRedoEnabled(false);
 	textEdit->setWordWrapMode(QTextOption::NoWrap);
+}
+
+
+void SVStyle::formatWidgetWithLayout(QWidget * w) {
+	// retrieve top-level layout
+	QLayout * l = w->layout();
+	// set margins to 0
+	l->setMargin(0);
+
+	// TODO : other customization or call formatWidget() function for basic styling
 }
 

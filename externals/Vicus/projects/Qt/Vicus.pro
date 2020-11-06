@@ -55,5 +55,8 @@ SOURCES += \
 	../../src/VICUS_Node.cpp \
 	../../src/VICUS_Project.cpp \
 	../../src/ncg/ncg_VICUS_Building.cpp \
-	../../src/ncg/ncg_VICUS_Project.cpp
+	../../src/ncg/ncg_VICUS_BuildingLevel.cpp \
+	../../src/ncg/ncg_VICUS_Project.cpp \
+	../../src/ncg/ncg_VICUS_Room.cpp \
+	../../src/ncg/ncg_VICUS_Surface.cpp
 

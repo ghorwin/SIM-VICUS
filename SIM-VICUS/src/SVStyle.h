@@ -3,6 +3,7 @@
 
 #include <QString>
 class QPlainTextEdit;
+class QWidget;
 
 /*! Central implementation and configuration of visual appearance of the software.
 	This class provides several member functions that can be used to tune the appearance of the software.
@@ -18,6 +19,8 @@ public:
 	static SVStyle & instance();
 
 	void formatPlainTextEdit(QPlainTextEdit * textEdit) const;
+
+	static void formatWidgetWithLayout(QWidget * w);
 
 private:
 	static SVStyle		*m_self;

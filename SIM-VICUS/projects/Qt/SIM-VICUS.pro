@@ -70,6 +70,7 @@ SOURCES += \
 	../../src/SVLogWidget.cpp \
 	../../src/SVMainWindow.cpp \
 	../../src/SVMessageHandler.cpp \
+	../../src/SVNavigationTreeWidget.cpp \
 	../../src/SVPostProcBindings.cpp \
 	../../src/SVPostProcHandler.cpp \
 	../../src/SVPreferencesDialog.cpp \
@@ -103,6 +104,7 @@ HEADERS  += \
 	../../src/SVLogWidget.h \
 	../../src/SVMainWindow.h \
 	../../src/SVMessageHandler.h \
+	../../src/SVNavigationTreeWidget.h \
 	../../src/SVPostProcBindings.h \
 	../../src/SVPostProcHandler.h \
 	../../src/SVPreferencesDialog.h \
@@ -131,6 +133,7 @@ FORMS    += \
 	../../src/SVAboutDialog.ui \
 	../../src/SVLogFileDialog.ui \
 	../../src/SVMainWindow.ui \
+	../../src/SVNavigationTreeWidget.ui \
 	../../src/SVPreferencesDialog.ui \
 	../../src/SVPreferencesPageTools.ui \
 	../../src/SVWelcomeScreen.ui
