@@ -2,6 +2,8 @@
 
 #include <QOpenGLShaderProgram>
 
+#include <VICUS_Project.h>
+
 #include "Vic3DShaderProgram.h"
 #include "SVProjectHandler.h"
 
@@ -31,9 +33,15 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 
 	// re-create grid with updated properties
 
-	/// \todo get grid dimensions from project
+	// get grid dimensions from project
+	const VICUS::Project & prj = project();
 
-	m_gridObject.create(m_gridShader->shaderProgram());
+	float gridWidth = prj.m_viewSettings.m_gridWidth;
+	float gridSpacing = prj.m_viewSettings.m_gridSpacing;
+	if (gridSpacing <= 0)
+		gridSpacing = 1;
+
+	m_gridObject.create(m_gridShader->shaderProgram(), gridWidth, gridSpacing);
 }
 
 
@@ -53,7 +61,6 @@ void Vic3DScene::render() {
 	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[1], m_gridColor);
 	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[2], m_background);
 
-	m_gridObject.create(m_gridShader->shaderProgram());
 	m_gridObject.render();
 
 	m_gridShader->shaderProgram()->release();
