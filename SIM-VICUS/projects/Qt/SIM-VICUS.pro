@@ -21,6 +21,7 @@ LIBS += -L../../../lib$${DIR_PREFIX} \
 	-lVicus \
 	-lNandrad \
 	-lQtExt \
+	-lIBKMK \
 	-lIBK \
 	-lTiCPP \
 	-lQuaZIP
@@ -41,6 +42,7 @@ INCLUDEPATH = \
 	../../src/actions \
 	../../src/core3D \
 	../../../externals/IBK/src \
+	../../../externals/IBKMK/src \
 	../../../externals/Nandrad/src \
 	../../../externals/Vicus/src \
 	../../../externals/TiCPP/src \

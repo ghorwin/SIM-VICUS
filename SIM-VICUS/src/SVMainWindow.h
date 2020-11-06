@@ -14,6 +14,8 @@ namespace Ui {
 }
 
 class QProgressDialog;
+class QSplitter;
+
 class SVThreadBase;
 class SVWelcomeScreen;
 class SVButtonBar;
@@ -21,6 +23,7 @@ class SVPreferencesDialog;
 class SVPostProcHandler;
 class SVLogWidget;
 class SVGeometryView;
+class SVNavigationTreeWidget;
 
 /*! Main window class. */
 class SVMainWindow : public QMainWindow {
@@ -258,6 +261,12 @@ private:
 
 	/*! The navigation bar. */
 	SVButtonBar					*m_buttonBar											= nullptr;
+
+	/*! Splitter that contains navigation tree widget and geometry view. */
+	QSplitter					*m_geometryViewSplitter									= nullptr;
+
+	/*! Navigation tree widget (left of 3D scene view). */
+	SVNavigationTreeWidget		*m_navigationTreeWidget									= nullptr;
 
 	/*! User preferences. */
 	SVPreferencesDialog			*m_preferencesDialog									= nullptr;

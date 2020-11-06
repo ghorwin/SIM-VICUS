@@ -19,6 +19,7 @@
 #include <QDesktopServices>
 #include <QFileInfo>
 #include <QInputDialog>
+#include <QSplitter>
 
 #include <numeric>
 
@@ -45,6 +46,7 @@
 #include "SVPostProcBindings.h"
 #include "SVAboutDialog.h"
 #include "SVPostProcHandler.h"
+#include "SVNavigationTreeWidget.h"
 //#include "SVFMIExportDialog.h"
 
 #include "SVGeometryView.h"
@@ -309,9 +311,22 @@ void SVMainWindow::setup() {
 
 	connect(m_buttonBar, SIGNAL(currentViewChanged(int)), this, SLOT(onNavigationBarViewChanged(int)));
 
+	// *** Create splitter that holds navigation tree view and geometry view
+
+	m_geometryViewSplitter = new QSplitter(this);
+	// TODO : Stephan SVStyle::formatSplitter(m_geometryViewSplitter);
+	lay->addWidget(m_geometryViewSplitter);
+
+	// *** Navigation tree
+
+	m_navigationTreeWidget = new SVNavigationTreeWidget(this);
+	m_geometryViewSplitter->addWidget(m_navigationTreeWidget);
+	m_geometryViewSplitter->setCollapsible(0, false);
+
 	// *** Create geometry view ***
 	m_geometryView = new SVGeometryView(this);
-	lay->addWidget(m_geometryView);
+	m_geometryViewSplitter->addWidget(m_geometryView);
+	m_geometryViewSplitter->setCollapsible(1, false);
 
 //	lay->setStretch(2,1);
 	// TODO : add other views
@@ -773,7 +788,7 @@ void SVMainWindow::onUpdateActions() {
 	// views are only visible when we have a project
 //	m_ui->actionViewShowConstruction->setEnabled(have_project);
 	if (!have_project) {
-		m_geometryView->setVisible(false);
+		m_geometryViewSplitter->setVisible(false);
 	}
 	// Note: in case of a project, the current view widget is set visible onNavigationBarViewChanged() below
 
@@ -919,8 +934,7 @@ void SVMainWindow::onNavigationBarViewChanged(int view) {
 	}
 	switch ((SVButtonBar::Views)view) {
 		case SVButtonBar::GeometryView :
-			m_geometryView->setVisible(true);
-
+			m_geometryViewSplitter->setVisible(true);
 			break;
 	}
 }
