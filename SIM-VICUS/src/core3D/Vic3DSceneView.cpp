@@ -56,6 +56,10 @@ SceneView::SceneView() :
 	m_camera.rotate(-5, m_camera.right());
 	// look slightly left
 	m_camera.rotate(-10, QVector3D(0.0f, 1.0f, 0.0f));
+
+	// init scenes
+
+	m_mainScene.m_worldToView = &m_worldToView;
 }
 
 
@@ -67,8 +71,9 @@ SceneView::~SceneView() {
 			p.destroy();
 
 		m_boxObject.destroy();
-		m_gridObject.destroy();
 		m_pickLineObject.destroy();
+
+		m_mainScene.destroy();
 
 		m_gpuTimers.destroy();
 	}
@@ -89,8 +94,9 @@ void SceneView::initializeGL() {
 
 		// initialize drawable objects
 		m_boxObject.create(SHADER(0));
-		m_gridObject.create(SHADER(1));
 		m_pickLineObject.create(SHADER(0));
+
+		m_mainScene.create(&m_shaderPrograms[1]);
 
 		// Timer
 		m_gpuTimers.setSampleCount(6);
@@ -128,20 +134,20 @@ void SceneView::paintGL() {
 	if (m_inputEventReceived)
 		processInput();
 
-	const qreal retinaScale = devicePixelRatio(); // needed for Macs with retina display
-	glViewport(0, 0, width() * retinaScale, height() * retinaScale);
-	qDebug() << "SceneView::paintGL(): Rendering to:" << width() << "x" << height();
-
-	// set the background color = clear color
+	// clear color and depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// set the background color = clear color
-	QVector3D backColor(0.1f, 0.15f, 0.3f);
-	glClearColor(0.1f, 0.15f, 0.3f, 1.0f);
+	// update viewport in main scene
+	const qreal retinaScale = devicePixelRatio(); // needed for Macs with retina display
+	m_mainScene.m_viewPort = QRect(0, 0, width() * retinaScale, height() * retinaScale);
 
-	QVector3D gridColor(0.5f, 0.5f, 0.7f);
+	// start rendering central scene
+	m_mainScene.render();
 
 	m_gpuTimers.reset();
+
+	// render main scene (grid, opaque plane, ...)
+	m_mainScene.render();
 
 	m_gpuTimers.recordSample(); // setup boxes
 
@@ -157,21 +163,6 @@ void SceneView::paintGL() {
 		m_pickLineObject.render();
 
 	SHADER(0)->release();
-
-	// *** render grid ***
-
-	m_gpuTimers.recordSample(); // setup grid
-	SHADER(1)->bind();
-	SHADER(1)->setUniformValue(m_shaderPrograms[1].m_uniformIDs[0], m_worldToView);
-	SHADER(1)->setUniformValue(m_shaderPrograms[1].m_uniformIDs[1], gridColor);
-	SHADER(1)->setUniformValue(m_shaderPrograms[1].m_uniformIDs[2], backColor);
-
-	m_gpuTimers.recordSample(); // render grid
-	m_gridObject.render();
-	SHADER(1)->release();
-
-	m_gpuTimers.recordSample(); // done painting
-
 
 #if 0
 	// do some animation stuff

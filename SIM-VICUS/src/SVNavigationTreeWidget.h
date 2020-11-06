@@ -7,6 +7,8 @@ namespace Ui {
 class SVNavigationTreeWidget;
 }
 
+class ModificationInfo;
+
 /*! The tree widget with all building/rooms/etc.. */
 class SVNavigationTreeWidget : public QWidget {
 	Q_OBJECT
@@ -18,7 +20,7 @@ public:
 public slots:
 
 	/*! Connected to SVProjectHandler::modified() */
-	void onModified( int modificationType, void * data );
+	void onModified( int modificationType, ModificationInfo * data );
 
 private:
 

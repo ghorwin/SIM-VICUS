@@ -23,6 +23,7 @@ License    : BSD License,
 #include "Vic3DBoxObject.h"
 #include "Vic3DPickLineObject.h"
 #include "Vic3DCamera.h"
+#include "Vic3DScene.h"
 
 /*! The class SceneView extends the primitive OpenGLWindow
 	by adding keyboard/mouse event handling, and rendering of different
@@ -80,8 +81,9 @@ private:
 	/*! All shader programs used in the scene. */
 	QList<ShaderProgram>		m_shaderPrograms;
 
+	Vic3DScene					m_mainScene;
+
 	BoxObject					m_boxObject;
-	GridObject					m_gridObject;
 	PickLineObject				m_pickLineObject;
 
 	QOpenGLTimeMonitor			m_gpuTimers;

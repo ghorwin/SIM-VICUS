@@ -53,3 +53,8 @@ void ShaderProgram::destroy() {
 	delete m_program;
 	m_program = nullptr;
 }
+
+
+void ShaderProgram::bind() {
+	m_program->bind();
+}

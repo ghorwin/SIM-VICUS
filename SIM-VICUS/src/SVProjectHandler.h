@@ -12,6 +12,10 @@ namespace VICUS {
 	class Project;
 }
 
+/*! Abstract base class for all modification data containers. */
+class ModificationInfo {
+};
+
 /*! Utility class that manages common project-related functions, in particular
 	modification state setting, project file reading/writing and other.
 	A project handler maintains a project instance with all project-related data.
@@ -37,16 +41,11 @@ public:
 		SolverParametersModified,
 		/*! Used when a climate location parameter (CCM file path, longitude, latitude, timezone) has changed. */
 		ClimateLocationModified,
+
+		GeometryChanged,
 		/*! Used whenever the project data changes completely (new project created, project loaded etc.)
 			and a complete reset of all views and models is needed. */
 		AllModified = 0x00FF0001
-	};
-
-	/*! Abstract base class for all modification data containers. */
-	class ModificationInfo {
-	public:
-
-		ModificationTypes	m_type = AllModified;
 	};
 
 	/*! Possible outcomes of the saveWithNewFilename() function. */

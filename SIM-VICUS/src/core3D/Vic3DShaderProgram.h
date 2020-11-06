@@ -41,6 +41,8 @@ public:
 	/*! Access to the native shader program. */
 	QOpenGLShaderProgram * shaderProgram() { return m_program; }
 
+	void bind();
+
 	/*! Path to vertex shader program, used in create(). */
 	QString		m_vertexShaderFilePath;
 	/*! Path to fragment shader program, used in create(). */
