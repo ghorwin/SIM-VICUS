@@ -80,6 +80,12 @@ SceneView::~SceneView() {
 }
 
 
+void SceneView::onModified(int modificationType, ModificationInfo * data) {
+
+
+}
+
+
 void SceneView::initializeGL() {
 	FUNCID(SceneView::initializeGL);
 	try {
@@ -140,9 +146,6 @@ void SceneView::paintGL() {
 	// update viewport in main scene
 	const qreal retinaScale = devicePixelRatio(); // needed for Macs with retina display
 	m_mainScene.m_viewPort = QRect(0, 0, width() * retinaScale, height() * retinaScale);
-
-	// start rendering central scene
-	m_mainScene.render();
 
 	m_gpuTimers.reset();
 

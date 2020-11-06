@@ -33,7 +33,7 @@ public:
 	QVector3D				m_background = QVector3D(0.1, 0.15, 0.3);
 	QVector3D				m_gridColor = QVector3D(0.5, 0.5, 0.7);
 
-	GridObject							m_gridObject;
+	GridObject				m_gridObject;
 
 
 };

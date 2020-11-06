@@ -25,6 +25,8 @@ License    : BSD License,
 #include "Vic3DCamera.h"
 #include "Vic3DScene.h"
 
+class ModificationInfo;
+
 /*! The class SceneView extends the primitive OpenGLWindow
 	by adding keyboard/mouse event handling, and rendering of different
 	objects (that encapsulate shader programs and buffer object).
@@ -33,6 +35,11 @@ class SceneView : public OpenGLWindow {
 public:
 	SceneView();
 	virtual ~SceneView() override;
+
+public slots:
+
+	/*! Connected to SVProjectHandler::modified() */
+	void onModified( int modificationType, ModificationInfo * data );
 
 protected:
 	void initializeGL() override;
