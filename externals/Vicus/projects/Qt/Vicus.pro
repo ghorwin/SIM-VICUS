@@ -43,7 +43,8 @@ HEADERS += \
 	../../src/VICUS_Node.h \
 	../../src/VICUS_Project.h \
 	../../src/VICUS_Room.h \
-	../../src/VICUS_Surface.h
+	../../src/VICUS_Surface.h \
+    ../../src/VICUS_ViewSettings.h
 
 SOURCES += \
 	../../src/VICUS_ArgsParser.cpp \
@@ -58,5 +59,6 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_BuildingLevel.cpp \
 	../../src/ncg/ncg_VICUS_Project.cpp \
 	../../src/ncg/ncg_VICUS_Room.cpp \
-	../../src/ncg/ncg_VICUS_Surface.cpp
+	../../src/ncg/ncg_VICUS_Surface.cpp \
+    ../../src/VICUS_ViewSettings.cpp
 
