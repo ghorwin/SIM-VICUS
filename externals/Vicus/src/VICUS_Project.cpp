@@ -44,6 +44,7 @@ Project::Project() {
 
 	Room room;
 	room.m_id = 1;
+	room.m_displayName = "Room";
 	room.m_surfaces.push_back(surf);
 	room.m_surfaces.push_back(surf);
 	room.m_surfaces.back().m_id = 2;

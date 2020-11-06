@@ -30,7 +30,7 @@ QT_END_NAMESPACE
 class GridObject {
 public:
 	/*! The function is called during OpenGL initialization, where the OpenGL context is current. */
-	void create(QOpenGLShaderProgram * shaderProgramm);
+	void create(QOpenGLShaderProgram * shaderProgramm, float width = 5000, float spacing = 10);
 	void destroy();
 
 	/*! Binds the buffer and paints. */

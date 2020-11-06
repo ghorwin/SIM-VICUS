@@ -53,6 +53,7 @@ void Vic3DScene::render() {
 	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[1], m_gridColor);
 	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[2], m_background);
 
+	m_gridObject.create(m_gridShader->shaderProgram());
 	m_gridObject.render();
 
 	m_gridShader->shaderProgram()->release();

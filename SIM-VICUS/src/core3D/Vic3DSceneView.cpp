@@ -155,7 +155,6 @@ void SceneView::paintGL() {
 	m_mainScene.m_viewPort = QRect(0, 0, width() * retinaScale, height() * retinaScale);
 
 	m_gpuTimers.reset();
-
 	// render main scene (grid, opaque plane, ...)
 	m_mainScene.render();
 
