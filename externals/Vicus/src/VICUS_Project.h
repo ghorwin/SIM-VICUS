@@ -31,6 +31,7 @@
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Network.h"
 #include "VICUS_Building.h"
+#include "VICUS_ViewSettings.h"
 
 namespace VICUS {
 
@@ -62,6 +63,8 @@ public:
 	void clean();
 
 	// *** PUBLIC MEMBER VARIABLES ***
+
+	ViewSettings			m_viewSettings;		// XML:E
 
 	NANDRAD::Project		m_nandradData;
 

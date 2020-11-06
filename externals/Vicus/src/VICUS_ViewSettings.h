@@ -1,31 +1,47 @@
-#ifndef VICUS_VIEWSETTINGS_H
-#define VICUS_VIEWSETTINGS_H
+#ifndef VICUS_ViewSettingsH
+#define VICUS_ViewSettingsH
+
+#include <IBK_Flag.h>
 
 #include "VICUS_CodeGenMacros.h"
-#include "VICUS_Constants.h"
 
 namespace VICUS {
 
 class ViewSettings {
+	VICUS_READWRITE_PRIVATE
 public:
 
-    // *** PUBLIC MEMBER FUNCTIONS ***
+	enum Flags {
+		F_GridVisible,		// Keyword: GridVisible			'Grid is visible'
+		NUM_F
+	};
 
-    VICUS_READWRITE
+	// *** PUBLIC MEMBER FUNCTIONS ***
 
-    // *** PUBLIC MEMBER VARIABLES ***
+	VICUS_READWRITE_IFNOTEMPTY(ViewSettings)
+	VICUS_COMP(ViewSettings)
 
+	// *** PUBLIC MEMBER VARIABLES ***
 
+	/*! Holds grid spacing in [m] */
+	double								m_gridSpacing	= 10;		// XML:E
+	/*! Holds width dimension of grid in [m] */
+	double								m_gridWidth		= 1000;		// XML:E
 
-    /*! holds grid spacing in [m] */
-    double                              m_gridSpacing;
-    /*! holds width dimension of grid in [m] */
-    double                              m_gridWidth;
-
-
+	IBK::Flag							m_flags[NUM_F];				// XML:E
 };
+
+
+inline bool ViewSettings::operator!=(const ViewSettings & other) const {
+	if (m_gridSpacing != other.m_gridSpacing) return true;
+	if (m_gridWidth != other.m_gridWidth) return true;
+	for (unsigned int i=0; i<NUM_F; ++i)
+		if (m_flags[i] != other.m_flags[i]) return true;
+
+	return false;
+}
 
 } // namespace VICUS
 
 
-#endif // VICUS_VIEWSETTINGS_H
+#endif // VICUS_ViewSettingsH

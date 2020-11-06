@@ -34,13 +34,14 @@ namespace VICUS {
 	const char * const INVALID_KEYWORD_INDEX_STRING = "KEYWORD_ERROR_STRING: Invalid type index";
 
 	/*! Holds a list of all enum types/categories. */
-	const char * const ENUM_TYPES[1] = {
-		"Project::ViewFlags"
+	const char * const ENUM_TYPES[2] = {
+		"Project::ViewFlags",
+		"ViewSettings::Flags"
 	};
 
 	/*! Converts a category string to respective enumeration value. */
 	int enum2index(const std::string & enumtype) {
-		for (int i=0; i<1; ++i) {
+		for (int i=0; i<2; ++i) {
 			if (enumtype == ENUM_TYPES[i]) return i;
 		}
 		//std::cerr << "Unknown enumeration type '" << enumtype<< "'." << std::endl;
@@ -56,6 +57,11 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "All";
 			} break;
+			// ViewSettings::Flags
+			case 1 :
+			switch (t) {
+				case 0 : return "GridVisible";
+			} break;
 		} // switch
 		return INVALID_KEYWORD_INDEX_STRING;
 	}
@@ -67,6 +73,11 @@ namespace VICUS {
 			case 0 :
 			switch (t) {
 				case 0 : return "All";
+			} break;
+			// ViewSettings::Flags
+			case 1 :
+			switch (t) {
+				case 0 : return "GridVisible";
 			} break;
 		} // switch
 		return INVALID_KEYWORD_INDEX_STRING;
@@ -81,6 +92,11 @@ namespace VICUS {
 			switch (t) {
 				case 0 : if (no_description != nullptr) *no_description = true; return "All";
 			} break;
+			// ViewSettings::Flags
+			case 1 :
+			switch (t) {
+				case 0 : return "Grid is visible";
+			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine description for enumeration type '%1' and index '%2'.")
 			.arg(enumtype).arg(t), "[KeywordList::Description]");
@@ -90,6 +106,11 @@ namespace VICUS {
 		switch (enum2index(enumtype)) {
 			// Project::ViewFlags
 			case 0 :
+			switch (t) {
+				case 0 : return "";
+			} break;
+			// ViewSettings::Flags
+			case 1 :
 			switch (t) {
 				case 0 : return "";
 			} break;
@@ -105,6 +126,11 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
+			// ViewSettings::Flags
+			case 1 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine color for enumeration type '%1' and index '%2'.")
 			.arg(enumtype).arg(t), "[KeywordList::Color]");
@@ -114,6 +140,11 @@ namespace VICUS {
 		switch (enum2index(enumtype)) {
 			// Project::ViewFlags
 			case 0 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// ViewSettings::Flags
+			case 1 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
@@ -127,6 +158,8 @@ namespace VICUS {
 		switch (enum2index(enumtype)) {
 			// Project::ViewFlags
 			case 0 : return 1;
+			// ViewSettings::Flags
+			case 1 : return 1;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::Count]");
@@ -136,7 +169,9 @@ namespace VICUS {
 	int KeywordList::MaxIndex(const char * const enumtype) {
 		switch (enum2index(enumtype)) {
 			// Project::ViewFlags
-			case 0 : return 1;
+			case 0 : return 0;
+			// ViewSettings::Flags
+			case 1 : return 1;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::MaxIndex]");

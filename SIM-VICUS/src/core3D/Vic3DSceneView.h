@@ -32,6 +32,7 @@ class ModificationInfo;
 	objects (that encapsulate shader programs and buffer object).
 */
 class SceneView : public OpenGLWindow {
+	Q_OBJECT
 public:
 	SceneView();
 	virtual ~SceneView() override;

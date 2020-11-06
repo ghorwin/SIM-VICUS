@@ -52,6 +52,8 @@ void Project::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
+			else if (cName == "ViewSettings")
+				m_viewSettings.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -70,6 +72,8 @@ TiXmlElement * Project::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("Project");
 	parent->LinkEndChild(e);
 
+
+	m_viewSettings.writeXML(e);
 
 	if (!m_buildings.empty()) {
 		TiXmlElement * child = new TiXmlElement("Buildings");

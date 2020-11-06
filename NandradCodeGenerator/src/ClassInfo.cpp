@@ -29,11 +29,15 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 	// read line by line until end of file is found
 	while (getline(in, line)) {
 		try {
-			if (line.find("NANDRAD_READWRITE_PRIVATE") != std::string::npos) {
+			if (line.find("NANDRAD_READWRITE_PRIVATE") != std::string::npos ||
+				line.find("VICUS_READWRITE_PRIVATE") != std::string::npos)
+			{
 				m_requirePrivateReadWrite = true;
 				continue;
 			}
-			if (line.find("NANDRAD_COMP") != std::string::npos) {
+			if (line.find("NANDRAD_COMP") != std::string::npos ||
+				line.find("VICUS_COMP") != std::string::npos)
+			{
 				m_requireComparisonFunction = false;
 				continue;
 			}

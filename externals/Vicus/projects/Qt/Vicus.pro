@@ -60,5 +60,5 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_Project.cpp \
 	../../src/ncg/ncg_VICUS_Room.cpp \
 	../../src/ncg/ncg_VICUS_Surface.cpp \
-    ../../src/VICUS_ViewSettings.cpp
+	../../src/ncg/ncg_VICUS_ViewSettings.cpp
 
