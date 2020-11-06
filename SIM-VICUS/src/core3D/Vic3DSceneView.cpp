@@ -49,19 +49,6 @@ SceneView::SceneView() :
 	grid.m_uniformNames.append("backColor"); // vec3
 	m_shaderPrograms.append( grid );
 
-	// *** initialize camera placement and model placement in the world
-
-	// move camera a little back (mind: positive z) and look straight ahead
-	m_camera.translate(0,17,50);
-	// look slightly down
-	m_camera.rotate(70, m_camera.right());
-	// look slightly left
-	//m_camera.rotate(-10, QVector3D(0.0f, 1.0f, 0.0f));
-
-	// init scenes
-
-	m_mainScene.m_worldToView = &m_worldToView;
-
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SceneView::onModified);
 
@@ -203,6 +190,7 @@ void SceneView::wheelEvent(QWheelEvent *event) {
 
 
 void SceneView::pick(const QPoint & globalMousePos) {
+#if 0
 	// local mouse coordinates
 	QPoint localMousePos = mapFromGlobal(globalMousePos);
 	int my = localMousePos.y();
@@ -247,15 +235,18 @@ void SceneView::pick(const QPoint & globalMousePos) {
 
 	// now do the actual picking - for now we implement a selection
 	selectNearestObject(nearResult.toVector3D(), farResult.toVector3D());
+#endif
 }
 
 
 void SceneView::checkInput() {
-	// this function is called whenever _any_ key/mouse event was issued
+	// this function is called from the Qt event look whenever _any_ key/mouse event was issued
 
-	// we test, if the current state of the key handler requires a scene update
+	// We need to loop over all registered input handlers and check if their conditions have been met.
+	// We basically test, if the current state of the key handler requires a scene update
 	// (camera movement) and if so, we just set a flag to do that upon next repaint
-	// and we schedule a repaint
+	// and we schedule a repaint. First thing in the paint event we process the input and update camera positions
+	// and the like.
 
 	// trigger key held?
 	if (m_keyboardMouseHandler.buttonDown(Qt::RightButton)) {
@@ -303,41 +294,26 @@ void SceneView::processInput() {
 	m_inputEventReceived = false;
 //	qDebug() << "SceneView::processInput()";
 
-	// check for trigger key
-	if (m_keyboardMouseHandler.buttonDown(Qt::RightButton)) {
+	// here, we check for registered key/mouse action combinations
+	// these are configured as follows:
+	// - mouse key down
+	// - mouse key up
+	// - mouse key held + mouse move
+	// - key press
+	//
+	// - each event may have a modifier key associated
 
-		// Handle translations
-		QVector3D translation;
-		if (m_keyboardMouseHandler.keyDown(Qt::Key_W)) 		translation += m_camera.forward();
-		if (m_keyboardMouseHandler.keyDown(Qt::Key_S)) 		translation -= m_camera.forward();
-		if (m_keyboardMouseHandler.keyDown(Qt::Key_A)) 		translation -= m_camera.right();
-		if (m_keyboardMouseHandler.keyDown(Qt::Key_D)) 		translation += m_camera.right();
-		if (m_keyboardMouseHandler.keyDown(Qt::Key_Q)) 		translation -= m_camera.up();
-		if (m_keyboardMouseHandler.keyDown(Qt::Key_E)) 		translation += m_camera.up();
+	// we now loop through all registered key events and call the associated actions
 
-		float transSpeed = 0.8f;
-		if (m_keyboardMouseHandler.keyDown(Qt::Key_Shift))
-			transSpeed = 0.1f;
-		m_camera.translate(transSpeed * translation);
 
-		// Handle rotations
-		// get and reset mouse delta (pass current mouse cursor position)
-		QPoint mouseDelta = m_keyboardMouseHandler.resetMouseDelta(QCursor::pos()); // resets the internal position
-		static const float rotatationSpeed  = 0.4f;
-		const QVector3D LocalUp(0.0f, 0.0f, 1.0f); // same as in Camera::up()
-		m_camera.rotate(-rotatationSpeed * mouseDelta.x(), LocalUp);
-		m_camera.rotate(-rotatationSpeed * mouseDelta.y(), m_camera.right());
+	// for now, delegate the call to the scene object, so that it can alter it's camera position
+	m_mainScene.inputEvent(m_keyboardMouseHandler);
 
-	}
-	int wheelDelta = m_keyboardMouseHandler.resetWheelDelta();
-	if (wheelDelta != 0) {
-		float transSpeed = 8.f;
-		if (m_keyboardMouseHandler.keyDown(Qt::Key_Shift))
-			transSpeed = 0.8f;
-		m_camera.translate(wheelDelta * transSpeed * m_camera.forward());
-	}
+	// resets the internal position for the next move and wheel scroll
+	m_keyboardMouseHandler.resetMouseDelta(QCursor::pos());
+	m_keyboardMouseHandler.resetWheelDelta();
 
-	// check for picking operation
+// check for picking operation
 	if (m_keyboardMouseHandler.buttonReleased(Qt::LeftButton)) {
 		pick(m_keyboardMouseHandler.mouseReleasePos());
 	}
@@ -345,17 +321,7 @@ void SceneView::processInput() {
 	// finally, reset "WasPressed" key states
 	m_keyboardMouseHandler.clearWasPressedKeyStates();
 
-	updateWorld2ViewMatrix();
 	// not need to request update here, since we are called from paint anyway
-}
-
-
-void SceneView::updateWorld2ViewMatrix() {
-	// transformation steps:
-	//   model space -> transform -> world space
-	//   world space -> camera/eye -> camera view
-	//   camera view -> projection -> normalized device coordinates (NDC)
-	m_worldToView = m_projection * m_camera.toMatrix() * m_transform.toMatrix();
 }
 
 

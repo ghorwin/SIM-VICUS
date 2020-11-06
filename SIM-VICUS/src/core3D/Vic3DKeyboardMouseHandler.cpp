@@ -147,6 +147,12 @@ bool KeyboardMouseHandler::releaseButton(Qt::MouseButton btn, QPoint currentPos)
 }
 
 
+QPoint KeyboardMouseHandler::mouseDelta(const QPoint currentPos) const {
+	QPoint dist = currentPos - m_mouseDownPos;
+	return dist;
+}
+
+
 QPoint KeyboardMouseHandler::resetMouseDelta(const QPoint currentPos) {
 	QPoint dist = currentPos - m_mouseDownPos;
 	m_mouseDownPos = currentPos;

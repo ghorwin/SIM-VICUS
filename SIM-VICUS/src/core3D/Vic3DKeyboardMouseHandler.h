@@ -107,6 +107,11 @@ public:
 	/*! Returns the position (global pos) that was recorded, when a mouse button was released. */
 	QPoint mouseReleasePos() const { return m_mouseReleasePos; }
 
+	/*! Returns the difference between last and current mouse position.
+		The retrieved point (x and y distances) should be used to modify state based transformations.
+	*/
+	QPoint mouseDelta(const QPoint currentPos) const;
+
 	/*! Returns the difference between last and current mouse position and *updates*
 		last mouse position to currentPos.
 		The retrieved point (x and y distances) should be used to modify state based transformations.

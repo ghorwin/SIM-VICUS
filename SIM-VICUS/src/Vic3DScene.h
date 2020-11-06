@@ -10,6 +10,7 @@
 #include "Vic3DGridObject.h"
 
 class ShaderProgram;
+class KeyboardMouseHandler;
 class ModificationInfo;
 
 /*! Encapsulates all data for drawing a part of the final picture, including the viewport where the
@@ -29,8 +30,12 @@ public:
 	/*! Compines camera matrix and project matrix to form the world2view matrix. */
 	void updateWorld2ViewMatrix();
 
+	void inputEvent(const KeyboardMouseHandler & keyboardHandler);
+
 	/*! Actually renders to the current OpenGL context. */
 	void render();
+
+private:
 
 	/*! Stores viewport geometry. */
 	QRect					m_viewPort;

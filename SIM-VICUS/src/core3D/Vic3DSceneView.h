@@ -66,7 +66,6 @@ private:
 	*/
 	void processInput();
 
-
 	/*! Determine which objects/planes are selected and color them accordingly.
 		nearPoint and farPoint define the current ray and are given in model coordinates.
 	*/
