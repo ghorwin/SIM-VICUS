@@ -26,7 +26,7 @@ BoxObject::BoxObject() :
 	BoxMesh b(4,2,3);
 	b.setFaceColors({Qt::blue, Qt::red, Qt::yellow, Qt::green, Qt::magenta, Qt::darkCyan});
 	Transform3D trans;
-	trans.setTranslation(0,1,0);
+	trans.setTranslation(0,0,1);
 	b.transform(trans.toMatrix());
 	m_boxes.push_back( b);
 
@@ -44,18 +44,18 @@ BoxObject::BoxObject() :
 		// create other boxes in randomize grid, x and z dimensions fixed, height varies discretely
 		// x and z translation in a grid that has dimension 'GridDim' with 5 space units as grid (line) spacing
 		int xGrid = qrand()*double(GridDim-1)/RAND_MAX;
-		int zGrid = qrand()*double(GridDim-1)/RAND_MAX;
-		while (boxPerCells[xGrid][zGrid] == 0 && qrand() > RAND_MAX/20.0) {
+		int yGrid = qrand()*double(GridDim-1)/RAND_MAX;
+		while (boxPerCells[xGrid][yGrid] == 0 && qrand() > RAND_MAX/20.0) {
 			xGrid = qrand()*double(GridDim-1)/RAND_MAX;
-			zGrid = qrand()*double(GridDim-1)/RAND_MAX;
+			yGrid = qrand()*double(GridDim-1)/RAND_MAX;
 		}
 		Q_ASSERT(xGrid < GridDim);
-		Q_ASSERT(zGrid < GridDim);
-		int boxCount = boxPerCells[xGrid][zGrid]++;
+		Q_ASSERT(yGrid < GridDim);
+		int boxCount = boxPerCells[xGrid][yGrid]++;
 		float boxHeight = 4.5;
 		BoxMesh b(4,boxHeight,4.4);
 		b.setFaceColors({Qt::blue, Qt::red, Qt::yellow, Qt::green, Qt::magenta, Qt::darkCyan});
-		trans.setTranslation((-GridDim/2+xGrid)*5, boxCount*5 + 0.5*boxHeight, (-GridDim/2 + zGrid)*5);
+		trans.setTranslation((-GridDim/2+xGrid)*5, (-GridDim/2 + yGrid)*5, boxCount*5 + 0.5*boxHeight);
 		b.transform(trans.toMatrix());
 		m_boxes.push_back(b);
 	}

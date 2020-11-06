@@ -54,9 +54,9 @@ SceneView::SceneView() :
 	// move camera a little back (mind: positive z) and look straight ahead
 	m_camera.translate(0,17,50);
 	// look slightly down
-	m_camera.rotate(-5, m_camera.right());
+	m_camera.rotate(70, m_camera.right());
 	// look slightly left
-	m_camera.rotate(-10, QVector3D(0.0f, 1.0f, 0.0f));
+	//m_camera.rotate(-10, QVector3D(0.0f, 1.0f, 0.0f));
 
 	// init scenes
 
@@ -345,7 +345,7 @@ void SceneView::processInput() {
 		// get and reset mouse delta (pass current mouse cursor position)
 		QPoint mouseDelta = m_keyboardMouseHandler.resetMouseDelta(QCursor::pos()); // resets the internal position
 		static const float rotatationSpeed  = 0.4f;
-		const QVector3D LocalUp(0.0f, 1.0f, 0.0f); // same as in Camera::up()
+		const QVector3D LocalUp(0.0f, 0.0f, 1.0f); // same as in Camera::up()
 		m_camera.rotate(-rotatationSpeed * mouseDelta.x(), LocalUp);
 		m_camera.rotate(-rotatationSpeed * mouseDelta.y(), m_camera.right());
 
