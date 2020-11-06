@@ -163,12 +163,12 @@ add_subdirectory( ../../externals/Nandrad/projects/cmake_local Nandrad )
 add_subdirectory( ../../externals/IntegratorFramework/projects/cmake_local IntegratorFramework )
 add_subdirectory( ../../externals/Zeppelin/projects/cmake_local Zeppelin )
 add_subdirectory( ../../externals/TiCPP/projects/cmake_local TiCPP )
-add_subdirectory( ../../externals/Vicus/projects/cmake_local Vicus )
 add_subdirectory( ../../externals/zlib/src zlib )
 
 if (NOT DISABLE_QT)
 	message("*** Building Qt-based libs ***")
 	
+	add_subdirectory( ../../externals/Vicus/projects/cmake_local Vicus )
 	add_subdirectory( ../../externals/qwt/projects/cmake_local qwt )
 	add_subdirectory( ../../externals/QtExt/projects/cmake_local QtExt )
 	add_subdirectory( ../../externals/QuaZIP/projects/cmake_local QuaZIP )

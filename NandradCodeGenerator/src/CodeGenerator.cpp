@@ -324,8 +324,8 @@ void CodeGenerator::generateReadWriteCode() {
 				{
 					// for unsigned int, check for invalid ID first, before writing the attribute - we do not want invalid IDs in the project file!
 					if (xmlInfo.typeStr == "unsigned int") {
-						attribs += "	if (m_"+attribName+" != NANDRAD::INVALID_ID)\n	";
-						includes.insert("NANDRAD_Constants.h");
+						attribs += "	if (m_"+attribName+" != "+m_prefix+"::INVALID_ID)\n	";
+						includes.insert(m_prefix+"_Constants.h");
 					}
 					attribs += "	e->SetAttribute(\""+attribName+"\", IBK::val2string<"+xmlInfo.typeStr+">(m_"+attribName+"));\n";
 				}
@@ -354,7 +354,7 @@ void CodeGenerator::generateReadWriteCode() {
 							attribs +=
 								"	if (m_" + attribName + " != "+einfo.enumNUM+")\n"
 								"		e->SetAttribute(\""+attribName+"\", KeywordList::Keyword(\""+ einfo.categoryName + "\",  m_" + attribName + "));\n";
-							includes.insert("NANDRAD_KeywordList.h");
+							includes.insert(m_prefix+"_KeywordList.h");
 						}
 					}
 					if (hadEnumType) continue;
@@ -394,8 +394,8 @@ void CodeGenerator::generateReadWriteCode() {
 					xmlInfo.typeStr == "bool")
 				{
 					if (xmlInfo.typeStr == "unsigned int") {
-						elements += "	if (m_"+varName+" != NANDRAD::INVALID_ID)\n	";
-						includes.insert("NANDRAD_Constants.h");
+						elements += "	if (m_"+varName+" != "+m_prefix+"::INVALID_ID)\n	";
+						includes.insert(m_prefix+"_Constants.h");
 					}
 					elements += "	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), IBK::val2string<"+xmlInfo.typeStr+">(m_"+varName+"));\n";
 				}
@@ -423,7 +423,7 @@ void CodeGenerator::generateReadWriteCode() {
 					includes.insert("NANDRAD_Utilities.h");
 					elements +=
 							"	if (!m_" + varName + ".empty())\n"
-							"		writeLinearSplineElement(e, \""+tagName+"\", m_"+varName+", \"-\", \"-\");\n";
+							"		NANDRAD::writeLinearSplineElement(e, \""+tagName+"\", m_"+varName+", \"-\", \"-\");\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Parameter") {
 					// check for array syntax
@@ -493,7 +493,7 @@ void CodeGenerator::generateReadWriteCode() {
 					if (childType == "double" || childType == "int" || childType == "unsigned int") {
 						includes.insert("NANDRAD_Utilities.h");
 						// we generate the parent element and afterwards the loop
-						elements += "	writeVector(e, \""+tagName+"\", m_"+varName+");\n";
+						elements += "	NANDRAD::writeVector(e, \""+tagName+"\", m_"+varName+");\n";
 					}
 					else {
 						// we generate the parent element and afterwards the loop
@@ -528,7 +528,7 @@ void CodeGenerator::generateReadWriteCode() {
 										"	if (m_" + varName + " != "+einfo.enumNUM+")\n"
 										"		TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), KeywordList::Keyword(\""+ einfo.categoryName + "\",  m_" + varName + "));\n";
 
-							includes.insert("NANDRAD_KeywordList.h");
+							includes.insert(m_prefix+"_KeywordList.h");
 						}
 					}
 					if (hadEnumType) continue;
@@ -609,7 +609,7 @@ void CodeGenerator::generateReadWriteCode() {
 						xmlInfo.typeStr == "bool")
 					{
 						attribs +=
-							"				m_"+attribName+" = readPODAttributeValue<"+xmlInfo.typeStr+">(element, attrib);\n";
+							"				m_"+attribName+" = NANDRAD::readPODAttributeValue<"+xmlInfo.typeStr+">(element, attrib);\n";
 						includes.insert("NANDRAD_Utilities.h");
 					}
 					else if (xmlInfo.typeStr == "IBK::Path") {
@@ -645,7 +645,7 @@ void CodeGenerator::generateReadWriteCode() {
 									"				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
 									"					IBK::FormatString(\"Invalid or unknown keyword '\"+attrib->ValueStr()+\"'.\") ), FUNC_ID);\n"
 									"			}\n";
-								includes.insert("NANDRAD_KeywordList.h");
+								includes.insert(m_prefix+"_KeywordList.h");
 							}
 						}
 						if (hadEnumType) continue;
@@ -726,7 +726,7 @@ void CodeGenerator::generateReadWriteCode() {
 						includes.insert("NANDRAD_Utilities.h");
 						elements +=
 							"			"+elseStr+"if (cName == \""+tagName+"\")\n"
-							"				m_"+varName+" = readPODElement<"+xmlInfo.typeStr+">(c, cName);\n";
+							"				m_"+varName+" = NANDRAD::readPODElement<"+xmlInfo.typeStr+">(c, cName);\n";
 						handledVariables.insert(varName);
 					}
 					else if (xmlInfo.typeStr == "std::string") {
@@ -739,14 +739,14 @@ void CodeGenerator::generateReadWriteCode() {
 						includes.insert("NANDRAD_Utilities.h");
 						elements +=
 							"			"+elseStr+"if (cName == \""+tagName+"\")\n"
-							"				m_"+varName+" = readUnitElement(c, cName);\n";
+							"				m_"+varName+" = NANDRAD::readUnitElement(c, cName);\n";
 						handledVariables.insert(varName);
 					}
 					else if (xmlInfo.typeStr == "IBK::Time") {
 						includes.insert("NANDRAD_Utilities.h");
 						elements +=
 							"			"+elseStr+"if (cName == \""+tagName+"\")\n"
-							"				m_"+varName+" = readTimeElement(c, cName);\n";
+							"				m_"+varName+" = NANDRAD::readTimeElement(c, cName);\n";
 						handledVariables.insert(varName);
 					}
 					else if (xmlInfo.typeStr == "IBK::Path") {
@@ -772,7 +772,7 @@ void CodeGenerator::generateReadWriteCode() {
 							"			"+elseStr+"if (cName == \"IBK:LinearSpline\") {\n"
 							"				IBK::LinearSpline p;\n"
 							"				std::string name;\n"
-							"				readLinearSplineElement(c, p, name, nullptr, nullptr);\n";
+							"				NANDRAD::readLinearSplineElement(c, p, name, nullptr, nullptr);\n";
 
 						// the read-code is structured as follows:
 						// - first generate read code for all scalar variables (varname without [])
@@ -829,7 +829,7 @@ void CodeGenerator::generateReadWriteCode() {
 						elements +=
 							"			"+elseStr+"if (cName == \"IBK:Parameter\") {\n"
 							"				IBK::Parameter p;\n"
-							"				readParameterElement(c, p);\n";
+							"				NANDRAD::readParameterElement(c, p);\n";
 
 						// the read-code is structured as follows:
 						// - first generate read code for all scalar variables (varname without [])
@@ -894,7 +894,7 @@ void CodeGenerator::generateReadWriteCode() {
 						elements +=
 							"			"+elseStr+"if (cName == \"IBK:IntPara\") {\n"
 							"				IBK::IntPara p;\n"
-							"				readIntParaElement(c, p);\n";
+							"				NANDRAD::readIntParaElement(c, p);\n";
 
 						// the read-code is structured as follows:
 						// - first generate read code for all scalar variables (varname without [])
@@ -951,7 +951,7 @@ void CodeGenerator::generateReadWriteCode() {
 						elements +=
 							"			"+elseStr+"if (cName == \"IBK:Flag\") {\n"
 							"				IBK::Flag f;\n"
-							"				readFlagElement(c, f);\n";
+							"				NANDRAD::readFlagElement(c, f);\n";
 
 						// the read-code is structured as follows:
 						// - first generate read code for all scalar variables (varname without [])
@@ -1107,6 +1107,7 @@ void CodeGenerator::generateReadWriteCode() {
 
 			std::string fileHeader = IBK::replace_string(CPP_READWRITE_HEADER, "${HEADER_FILE}", ci.m_sourceHeaderFile.filename().str(), IBK::ReplaceFirst);
 			fileHeader = IBK::replace_string(fileHeader, "${OTHER_INCLUDES}", extraIncludes, IBK::ReplaceFirst);
+			fileHeader = IBK::replace_string(fileHeader, "${PREFIX}", m_prefix);
 
 			IBK::IBK_Message(IBK::FormatString("Generating file '%1'.\n").arg(targetFile), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 			std::ofstream out(targetFile.c_str(), std::ios_base::trunc);
@@ -1114,7 +1115,7 @@ void CodeGenerator::generateReadWriteCode() {
 			out << readCode << std::endl;
 			out << writeCode << std::endl;
 
-			out << "} // namespace NANDRAD\n";
+			out << "} // namespace "+m_prefix+"\n";
 			out.close();
 		}
 		catch (IBK::Exception & ex) {

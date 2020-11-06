@@ -50,9 +50,9 @@ void Project::readXML(const IBK::Path & filename) {
 
 	try {
 		xmlElem = xmlRoot.FirstChild("Project").Element();
-//		if (xmlElem) {
-//			readXMLPrivate(xmlElem);
-//		}
+		if (xmlElem) {
+			readXML(xmlElem);
+		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Error reading project '%1'.").arg(filename), FUNC_ID);
@@ -70,7 +70,7 @@ void Project::writeXML(const IBK::Path & filename) const {
 
 	root->SetAttribute("fileVersion", VERSION);
 
-
+	writeXML(root);
 
 
 	// other files
@@ -83,4 +83,4 @@ void Project::clean() {
 
 }
 
-} // namespace NANDRAD
+} // namespace VICUS

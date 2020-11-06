@@ -28,12 +28,20 @@
 
 #include <NANDRAD_Project.h>
 
+#include "VICUS_CodeGenMacros.h"
 #include "VICUS_Network.h"
+#include "VICUS_Building.h"
 
 namespace VICUS {
 
 class Project {
+	VICUS_READWRITE
 public:
+
+	enum ViewFlags {
+		VF_All,			// Keyword: All
+		NUM_VF
+	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -50,9 +58,13 @@ public:
 	/*! Removes un-referenced/un-needed data structures. */
 	void clean();
 
+	// *** PUBLIC MEMBER VARIABLES ***
+
 	NANDRAD::Project		m_nandradData;
 
 	std::vector<Network>	m_networks;
+
+	std::vector<Building>	m_buildings;		// XML:E
 };
 
 

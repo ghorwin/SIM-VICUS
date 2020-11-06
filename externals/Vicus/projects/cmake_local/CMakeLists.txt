@@ -11,6 +11,7 @@ include_directories(
 	${PROJECT_SOURCE_DIR}/../../../IBK/src
 	${PROJECT_SOURCE_DIR}/../../../TiCPP/src
 	${PROJECT_SOURCE_DIR}/../../../Nandrad/src
+	${Qt5Widgets_INCLUDE_DIRS}
 )
 
 # collect a list of all source files of the Vicus library
@@ -18,11 +19,11 @@ file( GLOB Vicus_LIB_SRCS ${PROJECT_SOURCE_DIR}/../../src/*.cpp )
 file( GLOB Vicus_NCG_LIB_SRCS ${PROJECT_SOURCE_DIR}/../../src/ncg/*.cpp )
 
 # add VICUS_KeywordList.cpp
-#set( Vicus_LIB_SRCS
-#	${Vicus_LIB_SRCS}
-#	${Vicus_NCG_LIB_SRCS}
-#	${PROJECT_SOURCE_DIR}/../../src/VICUS_KeywordList.cpp
-#)
+set( Vicus_LIB_SRCS
+	${Vicus_LIB_SRCS}
+	${Vicus_NCG_LIB_SRCS}
+	${PROJECT_SOURCE_DIR}/../../src/VICUS_KeywordList.cpp
+)
 
 # collect a list of all header files of the Vicus library
 file( GLOB Vicus_HDRS ${PROJECT_SOURCE_DIR}/../../src/*.h )

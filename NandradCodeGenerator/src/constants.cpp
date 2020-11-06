@@ -374,17 +374,17 @@ const char * const CPP_READWRITE_HEADER =
 		"*/\n"
 		"\n"
 		"#include <${HEADER_FILE}>\n"
-		"#include <NANDRAD_KeywordList.h>\n"
+		"#include <${PREFIX}_KeywordList.h>\n"
 		"\n"
 		"#include <IBK_messages.h>\n"
 		"#include <IBK_Exception.h>\n"
 		"#include <IBK_StringUtils.h>\n"
-		"#include <NANDRAD_Constants.h>\n"
+		"#include <${PREFIX}_Constants.h>\n"
 		"${OTHER_INCLUDES}"
 		"\n"
 		"#include <tinyxml.h>\n"
 		"\n"
-		"namespace NANDRAD {\n"
+		"namespace ${PREFIX} {\n"
 		"\n";
 
 const char * const CPP_WRITEXML =
