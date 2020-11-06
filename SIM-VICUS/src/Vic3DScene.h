@@ -6,6 +6,7 @@
 #include <QRect>
 #include <QVector3D>
 
+#include "Vic3DCamera.h"
 #include "Vic3DGridObject.h"
 
 class ShaderProgram;
@@ -23,6 +24,12 @@ public:
 
 	void destroy();
 
+	void resize(int width, int height, qreal retinaScale);
+
+	/*! Compines camera matrix and project matrix to form the world2view matrix. */
+	void updateWorld2ViewMatrix();
+
+	/*! Actually renders to the current OpenGL context. */
 	void render();
 
 	/*! Stores viewport geometry. */
@@ -30,12 +37,18 @@ public:
 
 	/*! Stores address to shader program (managed by SceneView). */
 	ShaderProgram			*m_gridShader			= nullptr;
-	/*! Caches world 2 view matrix (updated in SceneView). */
-	QMatrix4x4				*m_worldToView			= nullptr;
+
+	/*! The projection matrix, updated whenever the viewport geometry changes (in resizeGL() ). */
+	QMatrix4x4				m_projection;
+	/*! World transformation matrix generator. */
+	Transform3D				m_transform;
+	/*! Camera position, orientation and lens data. */
+	Camera					m_camera;
+	/*! Cached world to view transformation matrix. */
+	QMatrix4x4				m_worldToView;
 
 	/*! Background color */
-	QVector3D				m_background = QVector3D(0.1, 0.15, 0.3);
-	QVector3D				m_gridColor = QVector3D(0.5, 0.5, 0.7);
+	QVector3D				m_background = QVector3D(0.1f, 0.15f, 0.3f);
 
 	GridObject				m_gridObject;
 

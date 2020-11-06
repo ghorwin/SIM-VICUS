@@ -12,11 +12,29 @@ License    : BSD License,
 #include "Vic3DGridObject.h"
 
 #include <QOpenGLShaderProgram>
+
 #include <vector>
 
+#include <VICUS_Project.h>
+#include "SVProjectHandler.h"
 
-void GridObject::create(QOpenGLShaderProgram * shaderProgramm, float width, float spacing) {
-	Q_ASSERT(spacing>0);
+void GridObject::create(QOpenGLShaderProgram * shaderProgram) {
+	// get grid dimensions from project
+	const VICUS::Project & prj = project();
+
+	// transfer color
+	QColor gridColor(prj.m_viewSettings.m_gridColor);
+	m_gridColor = QVector3D((float)gridColor.redF(), (float)gridColor.greenF(), (float)gridColor.blueF());
+
+	// transfer grid dimensions
+	float width = (float)prj.m_viewSettings.m_gridWidth;
+	float spacing = (float)prj.m_viewSettings.m_gridSpacing;
+	if (spacing <= 0)
+		spacing = 1;
+
+	if (width == m_width && spacing == m_spacing)
+		return; // nothing to do since grid hasn't changed
+
 	const unsigned int N = width/spacing; // number of lines to draw in x and y direction
 	// width is in "space units", whatever that means for you (meters, km, nanometers...)
 	//float width = 5000;
@@ -29,20 +47,20 @@ void GridObject::create(QOpenGLShaderProgram * shaderProgramm, float width, floa
 	gridVertexBufferData.resize(m_bufferSize);
 	float * gridVertexBufferPtr = gridVertexBufferData.data();
 	// compute grid lines with y = const
-	float x1 = -width*0.5;
-	float x2 = width*0.5;
+	float x1 = -width*0.5f;
+	float x2 = width*0.5f;
 	for (unsigned int i=0; i<N; ++i, gridVertexBufferPtr += 4) {
-		float y = width/(N-1)*i-width*0.5;
+		float y = width/(N-1)*i-width*0.5f;
 		gridVertexBufferPtr[0] = x1;
 		gridVertexBufferPtr[1] = y;
 		gridVertexBufferPtr[2] = x2;
 		gridVertexBufferPtr[3] = y;
 	}
 	// compute grid lines with x = const
-	float y1 = -width*0.5;
-	float y2 = width*0.5;
+	float y1 = -width*0.5f;
+	float y2 = width*0.5f;
 	for (unsigned int i=0; i<N; ++i, gridVertexBufferPtr += 4) {
-		float x = width/(N-1)*i-width*0.5;
+		float x = width/(N-1)*i-width*0.5f;
 		gridVertexBufferPtr[0] = x;
 		gridVertexBufferPtr[1] = y1;
 		gridVertexBufferPtr[2] = x;
@@ -50,20 +68,21 @@ void GridObject::create(QOpenGLShaderProgram * shaderProgramm, float width, floa
 	}
 
 	// Create Vertex Array Object
-	m_vao.create();		// create Vertex Array Object
+	if (!m_vao.isCreated())
+		m_vao.create();		// create Vertex Array Object
 	m_vao.bind();		// and bind it
 
-	// Create Vertex Buffer Object
-	m_vbo.create();
+	// Create Vertex Buffer Object (to store stuff in GPU memory)
+	if (!m_vbo.isCreated())
+		m_vbo.create();
 	m_vbo.bind();
 	m_vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
-	int vertexMemSize = m_bufferSize*sizeof(float);
-	qDebug() << "GridObject - VertexBuffer size =" << vertexMemSize/1024.0 << "kByte";
+	unsigned long vertexMemSize = m_bufferSize*sizeof(float);
 	m_vbo.allocate(gridVertexBufferData.data(), vertexMemSize);
 
 	// layout(location = 0) = vec2 position
-	shaderProgramm->enableAttributeArray(0); // array with index/id 0
-	shaderProgramm->setAttributeBuffer(0, GL_FLOAT,
+	shaderProgram->enableAttributeArray(0); // array with index/id 0
+	shaderProgram->setAttributeBuffer(0, GL_FLOAT,
 								  0 /* position/vertex offset */,
 								  2 /* two floats per position = vec2 */,
 								  0 /* vertex after vertex, no interleaving */);

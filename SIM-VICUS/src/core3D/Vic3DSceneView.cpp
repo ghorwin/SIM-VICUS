@@ -75,7 +75,6 @@ SceneView::~SceneView() {
 		for (ShaderProgram & p : m_shaderPrograms)
 			p.destroy();
 
-		m_boxObject.destroy();
 		m_pickLineObject.destroy();
 
 		m_mainScene.destroy();
@@ -98,13 +97,7 @@ void SceneView::initializeGL() {
 		for (ShaderProgram & p : m_shaderPrograms)
 			p.create();
 
-		// tell OpenGL to show only faces whose normal vector points towards us
-		glEnable(GL_CULL_FACE);
-		// enable depth testing, important for the grid and for the drawing order of several objects
-		glEnable(GL_DEPTH_TEST);
-
 		// initialize drawable objects
-		m_boxObject.create(SHADER(0));
 		m_pickLineObject.create(SHADER(0));
 
 		m_mainScene.create(&m_shaderPrograms[1]);
@@ -122,19 +115,7 @@ void SceneView::initializeGL() {
 
 
 void SceneView::resizeGL(int width, int height) {
-	// the projection matrix need to be updated only for window size changes
-	m_projection.setToIdentity();
-	// create projection matrix, i.e. camera lens
-	m_projection.perspective(
-				/* vertical angle */ 45.0f,
-				/* aspect ratio */   width / float(height),
-				/* near */           0.1f,
-				/* far */            1000.0f
-		);
-	// Mind: to not use 0.0 for near plane, otherwise depth buffering and depth testing won't work!
-
-	// update cached world2view matrix
-	updateWorld2ViewMatrix();
+	m_mainScene.resize(width, height, devicePixelRatio());
 }
 
 
@@ -150,28 +131,24 @@ void SceneView::paintGL() {
 	// clear color and depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// update viewport in main scene
-	const qreal retinaScale = devicePixelRatio(); // needed for Macs with retina display
-	m_mainScene.m_viewPort = QRect(0, 0, width() * retinaScale, height() * retinaScale);
-
-	m_gpuTimers.reset();
+//	m_gpuTimers.reset();
 	// render main scene (grid, opaque plane, ...)
 	m_mainScene.render();
 
-	m_gpuTimers.recordSample(); // setup boxes
+//	m_gpuTimers.recordSample(); // setup boxes
 
-	// *** render boxes
-	SHADER(0)->bind();
-	SHADER(0)->setUniformValue(m_shaderPrograms[0].m_uniformIDs[0], m_worldToView);
+//	// *** render boxes
+//	SHADER(0)->bind();
+//	SHADER(0)->setUniformValue(m_shaderPrograms[0].m_uniformIDs[0], m_worldToView);
 
-	m_gpuTimers.recordSample(); // render boxes
-	m_boxObject.render();
+//	m_gpuTimers.recordSample(); // render boxes
+//	m_boxObject.render();
 
-	m_gpuTimers.recordSample(); // render pickline
-	if (m_pickLineObject.m_visible)
-		m_pickLineObject.render();
+//	m_gpuTimers.recordSample(); // render pickline
+//	if (m_pickLineObject.m_visible)
+//		m_pickLineObject.render();
 
-	SHADER(0)->release();
+//	SHADER(0)->release();
 
 #if 0
 	// do some animation stuff
@@ -182,6 +159,7 @@ void SceneView::paintGL() {
 
 	checkInput();
 
+#if 0
 	QVector<GLuint64> intervals = m_gpuTimers.waitForIntervals();
 	for (GLuint64 it : intervals)
 		qDebug() << "  " << it*1e-6 << "ms/frame";
@@ -190,6 +168,7 @@ void SceneView::paintGL() {
 
 	qint64 elapsedMs = m_cpuTimer.elapsed();
 	qDebug() << "Total paintGL time: " << elapsedMs << "ms";
+#endif
 }
 
 
@@ -390,9 +369,9 @@ void SceneView::selectNearestObject(const QVector3D & nearPoint, const QVector3D
 	// create pick object, distance is a value between 0 and 1, so initialize with 2 (very far back) to be on the safe side.
 	PickObject p(2.f, std::numeric_limits<unsigned int>::max());
 
-	// now process all objects and update p to hold the closest hit
-	m_boxObject.pick(nearPoint, d, p);
-	// ... other objects
+//	// now process all objects and update p to hold the closest hit
+//	m_boxObject.pick(nearPoint, d, p);
+//	// ... other objects
 
 	// any object accepted a pick?
 	if (p.m_objectId == std::numeric_limits<unsigned int>::max())
@@ -403,5 +382,5 @@ void SceneView::selectNearestObject(const QVector3D & nearPoint, const QVector3D
 					   << pickTimer.elapsed() << " ms";
 
 	// Mind: OpenGL-context must be current when we call this function!
-	m_boxObject.highlight(p.m_objectId, p.m_faceId);
+//	m_boxObject.highlight(p.m_objectId, p.m_faceId);
 }

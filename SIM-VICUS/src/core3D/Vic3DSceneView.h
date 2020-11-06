@@ -66,8 +66,6 @@ private:
 	*/
 	void processInput();
 
-	/*! Compines camera matrix and project matrix to form the world2view matrix. */
-	void updateWorld2ViewMatrix();
 
 	/*! Determine which objects/planes are selected and color them accordingly.
 		nearPoint and farPoint define the current ray and are given in model coordinates.
@@ -80,18 +78,11 @@ private:
 	/*! The input handler, that encapsulates the event handling code. */
 	KeyboardMouseHandler		m_keyboardMouseHandler;
 
-	/*! The projection matrix, updated whenever the viewport geometry changes (in resizeGL() ). */
-	QMatrix4x4					m_projection;
-	Transform3D					m_transform;	// world transformation matrix generator
-	Camera						m_camera;		// Camera position, orientation and lens data
-	QMatrix4x4					m_worldToView;	// cached world to view transformation matrix
-
 	/*! All shader programs used in the scene. */
 	QList<ShaderProgram>		m_shaderPrograms;
 
 	Vic3DScene					m_mainScene;
 
-	BoxObject					m_boxObject;
 	PickLineObject				m_pickLineObject;
 
 	QOpenGLTimeMonitor			m_gpuTimers;

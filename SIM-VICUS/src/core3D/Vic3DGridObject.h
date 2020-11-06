@@ -15,6 +15,8 @@ License    : BSD License,
 #include <QOpenGLBuffer>
 #include <QOpenGLVertexArrayObject>
 
+#include <QVector3D>
+
 QT_BEGIN_NAMESPACE
 class QOpenGLShaderProgram;
 QT_END_NAMESPACE
@@ -30,19 +32,25 @@ QT_END_NAMESPACE
 class GridObject {
 public:
 	/*! The function is called during OpenGL initialization, where the OpenGL context is current. */
-	void create(QOpenGLShaderProgram * shaderProgramm, float width = 5000, float spacing = 10);
+	void create(QOpenGLShaderProgram * shaderProgram);
 	void destroy();
 
 	/*! Binds the buffer and paints. */
 	void render();
 
-	unsigned int				m_bufferSize;
+	QVector3D					m_gridColor;
+
+	GLsizei						m_bufferSize;
 
 	/*! Wraps an OpenGL VertexArrayObject, that references the vertex coordinates. */
 	QOpenGLVertexArrayObject	m_vao;
 	/*! Holds positions of grid lines. */
 	QOpenGLBuffer				m_vbo;
 
+	/*! Cached grid width. */
+	float						m_width		= 999;
+	/*! Cached grid spacing. */
+	float						m_spacing	= 999;
 };
 
 #endif // OPENGLGRIDOBJECT_H
