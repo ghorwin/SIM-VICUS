@@ -9,6 +9,7 @@
 #include "Vic3DGridObject.h"
 
 class ShaderProgram;
+class ModificationInfo;
 
 /*! Encapsulates all data for drawing a part of the final picture, including the viewport where the
 	scene is rendered in.
@@ -16,6 +17,9 @@ class ShaderProgram;
 class Vic3DScene {
 public:
 	void create(ShaderProgram *gridShader);
+
+	/*! Triggered when SVProjectHandler::modified() is emitted. */
+	void onModified( int modificationType, ModificationInfo * data );
 
 	void destroy();
 

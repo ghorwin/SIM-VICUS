@@ -14,9 +14,6 @@ SVNavigationTreeWidget::SVNavigationTreeWidget(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
-//	connect(&SVProjectHandler::instance(), SIGNAL(modified(int,void*)),
-//			this, SLOT(onModified(int,void*)));
-
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVNavigationTreeWidget::onModified);
 

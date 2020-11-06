@@ -19,6 +19,7 @@ License    : BSD License,
 
 #include "Vic3DPickObject.h"
 #include "OpenGLException.h"
+#include "SVProjectHandler.h"
 
 #define SHADER(x) m_shaderPrograms[x].shaderProgram()
 
@@ -60,6 +61,10 @@ SceneView::SceneView() :
 	// init scenes
 
 	m_mainScene.m_worldToView = &m_worldToView;
+
+	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
+			this, &SceneView::onModified);
+
 }
 
 
@@ -81,8 +86,8 @@ SceneView::~SceneView() {
 
 
 void SceneView::onModified(int modificationType, ModificationInfo * data) {
-
-
+	// relay change notification to scene objects
+	m_mainScene.onModified(modificationType, data);
 }
 
 
@@ -107,6 +112,8 @@ void SceneView::initializeGL() {
 		// Timer
 		m_gpuTimers.setSampleCount(6);
 		m_gpuTimers.create();
+
+		onModified(SVProjectHandler::AllModified, nullptr);
 	}
 	catch (OpenGLException & ex) {
 		throw OpenGLException(ex, "OpenGL initialization failed.", FUNC_ID);

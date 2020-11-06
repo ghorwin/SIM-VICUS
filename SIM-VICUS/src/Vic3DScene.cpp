@@ -3,11 +3,37 @@
 #include <QOpenGLShaderProgram>
 
 #include "Vic3DShaderProgram.h"
+#include "SVProjectHandler.h"
 
 
 void Vic3DScene::create(ShaderProgram * gridShader) {
 	m_gridShader = gridShader;
-//	m_gridObject.create(gridShader->shaderProgram());
+}
+
+
+void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
+
+	// no shader - not initialized yet, skip
+
+	if (m_gridShader == nullptr)
+		return;
+
+	// filter out all modification types that we handle
+	SVProjectHandler::ModificationTypes mod = (SVProjectHandler::ModificationTypes)modificationType;
+	switch (mod) {
+		case SVProjectHandler::AllModified :
+		case SVProjectHandler::GridModified :
+			break;
+
+		default:
+			return; // do nothing by default
+	}
+
+	// re-create grid with updated properties
+
+	/// \todo get grid dimensions from project
+
+	m_gridObject.create(m_gridShader->shaderProgram());
 }
 
 

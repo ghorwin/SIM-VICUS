@@ -41,7 +41,9 @@ public:
 		SolverParametersModified,
 		/*! Used when a climate location parameter (CCM file path, longitude, latitude, timezone) has changed. */
 		ClimateLocationModified,
-
+		/*! Grid properties changed. */
+		GridModified,
+		/*! Anything in the geometry has changed. */
 		GeometryChanged,
 		/*! Used whenever the project data changes completely (new project created, project loaded etc.)
 			and a complete reset of all views and models is needed. */
