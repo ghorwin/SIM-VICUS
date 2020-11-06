@@ -20,7 +20,7 @@ public:
 	/*! Unique ID of building. */
 	unsigned int	m_id = INVALID_ID;			// XML:A:required
 
-	QString			m_displayName;
+	QString			m_displayName;				// XML:E
 };
 
 } // namespace VICUS

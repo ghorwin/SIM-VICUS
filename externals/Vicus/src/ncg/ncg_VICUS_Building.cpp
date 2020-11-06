@@ -53,6 +53,18 @@ void Building::readXML(const TiXmlElement * element) {
 			}
 			attrib = attrib->Next();
 		}
+		// search for mandatory elements
+		// reading elements
+		const TiXmlElement * c = element->FirstChildElement();
+		while (c) {
+			const std::string & cName = c->ValueStr();
+			if (cName == "QString")
+				m_displayName.readXML(c);
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			c = c->NextSiblingElement();
+		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Building' element."), FUNC_ID);
@@ -68,6 +80,8 @@ TiXmlElement * Building::writeXML(TiXmlElement * parent) const {
 
 	if (m_id != VICUS::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
+	if (!m_displayName.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "DisplayName", nullptr, std::string(), m_displayName.toStdString());
 	return e;
 }
 

@@ -378,6 +378,7 @@ void CodeGenerator::generateReadWriteCode() {
 				// we have special handling for:
 				// - simple tags (no attributes) for PODs, int, unsigned int, double, bool
 				// - std::string
+				// - QString
 				// - IBK::Path
 				// - IBK::Parameter
 				// - IBK::Flag
@@ -403,6 +404,11 @@ void CodeGenerator::generateReadWriteCode() {
 					elements +=
 							"	if (!m_" + varName + ".empty())\n"
 							"		TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+");\n";
+				}
+				else if (xmlInfo.typeStr == "QString") {
+					elements +=
+							"	if (!m_" + varName + ".empty())\n"
+							"		TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".toStdString());\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Unit") {
 					elements +=
@@ -629,6 +635,10 @@ void CodeGenerator::generateReadWriteCode() {
 					else if (xmlInfo.typeStr == "std::string") {
 						attribs +=
 							"				m_"+attribName+" = attrib->ValueStr();\n";
+					}
+					else if (xmlInfo.typeStr == "QString") {
+						attribs +=
+							"				m_"+attribName+" = QString::fromStdString(attrib->ValueStr());\n";
 					}
 					else {
 						// check for enum types
