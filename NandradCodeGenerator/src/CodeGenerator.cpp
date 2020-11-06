@@ -339,6 +339,11 @@ void CodeGenerator::generateReadWriteCode() {
 							"	if (!m_" + attribName + ".empty())\n"
 							"		e->SetAttribute(\""+attribName+"\", m_" + attribName + ");\n";
 				}
+				else if (xmlInfo.typeStr == "QString") {
+					attribs +=
+							"	if (!m_" + attribName + ".isEmpty())\n"
+							"		e->SetAttribute(\""+attribName+"\", m_" + attribName + ".toStdString());\n";
+				}
 				else if (xmlInfo.typeStr == "IBK::Unit") {
 					attribs +=
 							"	if (m_" + attribName + ".id() != 0)\n"
@@ -407,7 +412,7 @@ void CodeGenerator::generateReadWriteCode() {
 				}
 				else if (xmlInfo.typeStr == "QString") {
 					elements +=
-							"	if (!m_" + varName + ".empty())\n"
+							"	if (!m_" + varName + ".isEmpty())\n"
 							"		TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".toStdString());\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Unit") {
@@ -743,6 +748,12 @@ void CodeGenerator::generateReadWriteCode() {
 						elements +=
 							"			"+elseStr+"if (cName == \""+tagName+"\")\n"
 							"				m_"+varName+" = c->GetText();\n";
+						handledVariables.insert(varName);
+					}
+					else if (xmlInfo.typeStr == "QString") {
+						elements +=
+							"			"+elseStr+"if (cName == \""+tagName+"\")\n"
+							"				m_"+varName+" = QString::fromStdString(c->GetText());\n";
 						handledVariables.insert(varName);
 					}
 					else if (xmlInfo.typeStr == "IBK::Unit") {
