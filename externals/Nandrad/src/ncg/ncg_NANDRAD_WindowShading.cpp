@@ -63,10 +63,10 @@ void WindowShading::readXMLPrivate(const TiXmlElement * element) {
 		while (c) {
 			const std::string & cName = c->ValueStr();
 			if (cName == "ControlModelID")
-				m_controlModelID = readPODElement<unsigned int>(c, cName);
+				m_controlModelID = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
-				readParameterElement(c, p);
+				NANDRAD::readParameterElement(c, p);
 				bool success = false;
 				para_t ptype;
 				try {

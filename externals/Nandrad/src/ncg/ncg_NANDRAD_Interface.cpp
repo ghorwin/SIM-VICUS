@@ -47,9 +47,9 @@ void Interface::readXMLPrivate(const TiXmlElement * element) {
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "id")
-				m_id = readPODAttributeValue<unsigned int>(element, attrib);
+				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "zoneId")
-				m_zoneId = readPODAttributeValue<unsigned int>(element, attrib);
+				m_zoneId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}

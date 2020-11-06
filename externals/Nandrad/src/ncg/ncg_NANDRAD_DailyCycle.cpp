@@ -81,7 +81,7 @@ TiXmlElement * DailyCycle::writeXML(TiXmlElement * parent) const {
 
 	if (m_interpolation != NUM_IT)
 		e->SetAttribute("interpolation", KeywordList::Keyword("DailyCycle::interpolation_t",  m_interpolation));
-	writeVector(e, "TimePoints", m_timePoints);
+	NANDRAD::writeVector(e, "TimePoints", m_timePoints);
 	if (!m_values.m_values.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "Values", nullptr, std::string(), m_values.encodedString());
 	return e;

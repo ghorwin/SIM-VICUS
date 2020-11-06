@@ -36,8 +36,30 @@
 namespace VICUS {
 
 Project::Project() {
-	// build test buildin
+	// build test building
 
+	Surface surf;
+	surf.m_id = 1;
+	surf.m_displayName = "Wall";
+
+	Room room;
+	room.m_id = 1;
+	room.m_surfaces.push_back(surf);
+	room.m_surfaces.push_back(surf);
+	room.m_surfaces.back().m_id = 2;
+	room.m_surfaces.back().m_displayName = "Floor";
+
+	BuildingLevel level;
+	level.m_id = 1;
+	level.m_rooms.push_back(room);
+	level.m_displayName = "E0";
+
+	Building build;
+	build.m_id = 1;
+	build.m_displayName = "Building";
+	build.m_buildingLevels.push_back(level);
+
+	m_buildings.push_back(build);
 }
 
 

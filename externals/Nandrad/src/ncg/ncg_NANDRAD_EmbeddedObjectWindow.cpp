@@ -47,7 +47,7 @@ void EmbeddedObjectWindow::readXMLPrivate(const TiXmlElement * element) {
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "glazingSystemID")
-				m_glazingSystemID = readPODAttributeValue<unsigned int>(element, attrib);
+				m_glazingSystemID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}

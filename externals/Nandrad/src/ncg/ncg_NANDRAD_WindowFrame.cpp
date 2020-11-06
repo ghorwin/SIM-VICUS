@@ -47,7 +47,7 @@ void WindowFrame::readXMLPrivate(const TiXmlElement * element) {
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "materialID")
-				m_materialID = readPODAttributeValue<unsigned int>(element, attrib);
+				m_materialID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -64,7 +64,7 @@ void WindowFrame::readXMLPrivate(const TiXmlElement * element) {
 			const std::string & cName = c->ValueStr();
 			if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
-				readParameterElement(c, p);
+				NANDRAD::readParameterElement(c, p);
 				bool success = false;
 				if (p.name == "Area") {
 					m_area = p; success = true;
