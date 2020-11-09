@@ -1,8 +1,8 @@
 #ifndef NETWORK_H
 #define NETWORK_H
 
-#include "VICUS_Edge.h"
-#include "VICUS_Node.h"
+#include "VICUS_NetworkEdge.h"
+#include "VICUS_NetworkNode.h"
 
 #include <vector>
 #include <set>
@@ -106,11 +106,6 @@ public:
 	std::vector<Edge>		m_edgesReduced;
 
 	unsigned int			m_fluidID;
-
-
-private:
-
-	static void readCSV(const IBK::Path & filePath, std::vector<std::string> & content);
 
 };
 
