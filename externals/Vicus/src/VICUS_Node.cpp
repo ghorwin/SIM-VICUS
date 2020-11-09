@@ -96,9 +96,9 @@ bool Node::findPathToSource(std::set<Edge*> &path, std::set<Edge*> &visitedEdges
 
 
 void Node::updateNeighbourDistances() {
-
+	// calculate alternative distance to neighbour.
+	// If it is shorter than current one: set it as its current distance
 	for (Edge *e :m_edges){
-		// calculate alternative distance to neighbour. If it is shorter than current one:  set it as its current distance
 		Node * neighbour = e->neighbourNode(this);
 		double alternativeDistance = m_distanceToStart + e->m_length;
 		if (alternativeDistance < neighbour->m_distanceToStart){

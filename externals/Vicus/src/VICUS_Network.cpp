@@ -20,7 +20,7 @@ unsigned Network::addNode(const double &x, const double &y, const Node::NodeType
 	// if there is an existing node with identical coordinates, return its id and dont add a new one
 	if (consistentCoordinates){
 		for (Node n: m_nodes){
-			if (Line::pointsMatch(n.m_x, n.m_y, x, y)) // threshold 1 cm
+			if (Line::pointsMatch(n.m_x, n.m_y, x, y))
 				return n.m_id;
 		}
 	}
@@ -30,6 +30,7 @@ unsigned Network::addNode(const double &x, const double &y, const Node::NodeType
 
 	return id;
 }
+
 
 unsigned Network::addNode(const Node &node, const bool considerCoordinates)
 {
@@ -43,6 +44,7 @@ void Network::addEdge(const unsigned nodeId1, const unsigned nodeId2, const bool
 	m_edges.push_back(Edge(nodeId1, nodeId2, supply));
 	updateNodeEdgeConnectionPointers();
 }
+
 
 void Network::addEdge(const Edge &edge)
 {
@@ -135,7 +137,8 @@ void Network::readGridFromCSV(const IBK::Path &filePath){
 		for (std::string str: tokens){
 			std::vector<std::string> xyStr;
 			IBK::explode(str, xyStr, " ", IBK::EF_NoFlags);
-			polyLine.push_back(std::vector<double> {IBK::string2val<double>(xyStr[0]), IBK::string2val<double>(xyStr[1])});
+			polyLine.push_back(std::vector<double> {IBK::string2val<double>(xyStr[0]),
+													IBK::string2val<double>(xyStr[1])});
 		}
 		for (unsigned i=0; i<polyLine.size()-1; ++i){
 			unsigned n1 = addNode(polyLine[i][0], polyLine[i][1], Node::NT_Mixer);
@@ -248,8 +251,10 @@ void Network::connectBuildings(const bool extendSupplyPipes) {
 		}
 		// branch node is outside edge
 		else{
-			double dist1 = Line::distanceBetweenPoints(xBranch, yBranch, m_edges[idEdgeMin].m_node1->m_x, m_edges[idEdgeMin].m_node1->m_y);
-			double dist2 = Line::distanceBetweenPoints(xBranch, yBranch, m_edges[idEdgeMin].m_node2->m_x, m_edges[idEdgeMin].m_node2->m_y);
+			double dist1 = Line::distanceBetweenPoints(xBranch, yBranch, m_edges[idEdgeMin].m_node1->m_x,
+													   m_edges[idEdgeMin].m_node1->m_y);
+			double dist2 = Line::distanceBetweenPoints(xBranch, yBranch, m_edges[idEdgeMin].m_node2->m_x,
+													   m_edges[idEdgeMin].m_node2->m_y);
 			idBranch = (dist1 < dist2) ? m_edges[idEdgeMin].m_nodeId1 : m_edges[idEdgeMin].m_nodeId2 ;
 			// if pipe should be extended, change coordinates of branch node
 			if (extendSupplyPipes){
@@ -299,7 +304,8 @@ void Network::calculateLengths(){
 }
 
 
-void Network::sizePipeDimensions(const double &dpMax, const double &dT, const double &fluidDensity, const double &fluidKinViscosity, const double &roughness){
+void Network::sizePipeDimensions(const double &dpMax, const double &dT, const double &fluidDensity,
+								 const double &fluidKinViscosity, const double &roughness){
 
 	// for all buildings: add their heating demand to the pipes along their path
 	for (Node &node: m_nodes) {
@@ -315,7 +321,8 @@ void Network::sizePipeDimensions(const double &dpMax, const double &dT, const do
 	for (Edge &e: m_edges){
 		if (e.m_heatingDemand <= 0){
 			std::set<Edge *> edges1, edges2;
-			e.m_heatingDemand = 0.5 * ( e.m_node1->adjacentHeatingDemand(edges1) +  e.m_node2->adjacentHeatingDemand(edges2) );
+			e.m_heatingDemand = 0.5 * ( e.m_node1->adjacentHeatingDemand(edges1)
+										+ e.m_node2->adjacentHeatingDemand(edges2) );
 		}
 	}
 
@@ -373,7 +380,8 @@ void Network::writeNetworkCSV(const IBK::Path &file) const{
 	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
 	for (const Edge &e: m_edges){
 		f.precision(10);
-		f << std::fixed << e.m_node1->m_x << "\t" << e.m_node1->m_y << "\t" << e.m_node2->m_x << "\t" << e.m_node2->m_y << "\t" << e.m_length << std::endl;
+		f << std::fixed << e.m_node1->m_x << "\t" << e.m_node1->m_y << "\t" << e.m_node2->m_x << "\t"
+		  << e.m_node2->m_y << "\t" << e.m_length << std::endl;
 	}
 	f.close();
 }
@@ -385,7 +393,8 @@ void Network::writePathCSV(const IBK::Path &file, const Node & node, const std::
 	f.precision(10);
 	f << std::fixed << node.m_x << "\t" << node.m_y << std::endl;
 	for (const Edge *e: path){
-		f << std::fixed << e->m_node1->m_x << "\t" << e->m_node1->m_y << "\t" << e->m_node2->m_x << "\t" << e->m_node2->m_y << "\t" << e->m_length << std::endl;
+		f << std::fixed << e->m_node1->m_x << "\t" << e->m_node1->m_y << "\t" << e->m_node2->m_x << "\t"
+		  << e->m_node2->m_y << "\t" << e->m_length << std::endl;
 	}
 	f.close();
 }
@@ -436,8 +445,8 @@ void Network::dijkstraShortestPathToSource(Node &startNode, std::vector<Edge*> &
 }
 
 
-double Network::pressureLossColebrook(const double &diameter, const double &length, const double &roughness, const double &massFlow,
-									  const double &fluidDensity, const double &fluidKinViscosity){
+double Network::pressureLossColebrook(const double &diameter, const double &length, const double &roughness,
+									  const double &massFlow, const double &fluidDensity, const double &fluidKinViscosity){
 
 	double velocity = massFlow / (fluidDensity * diameter * diameter * 3.14159 / 4);
 	double Re = velocity * diameter / fluidKinViscosity;
