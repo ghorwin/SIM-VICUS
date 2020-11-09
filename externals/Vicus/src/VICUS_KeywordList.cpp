@@ -34,15 +34,16 @@ namespace VICUS {
 	const char * const INVALID_KEYWORD_INDEX_STRING = "KEYWORD_ERROR_STRING: Invalid type index";
 
 	/*! Holds a list of all enum types/categories. */
-	const char * const ENUM_TYPES[3] = {
+	const char * const ENUM_TYPES[4] = {
 		"NetworkFluid::para_t",
+		"PlaneGeometry::type_t",
 		"Project::ViewFlags",
 		"ViewSettings::Flags"
 	};
 
 	/*! Converts a category string to respective enumeration value. */
 	int enum2index(const std::string & enumtype) {
-		for (int i=0; i<3; ++i) {
+		for (int i=0; i<4; ++i) {
 			if (enumtype == ENUM_TYPES[i]) return i;
 		}
 		//std::cerr << "Unknown enumeration type '" << enumtype<< "'." << std::endl;
@@ -60,13 +61,20 @@ namespace VICUS {
 				case 1 : return "HeatCapacity";
 				case 2 : return "Conductivity";
 			} break;
-			// Project::ViewFlags
+			// PlaneGeometry::type_t
 			case 1 :
+			switch (t) {
+				case 0 : return "Triangle";
+				case 1 : return "Rectangle";
+				case 2 : return "Polygon";
+			} break;
+			// Project::ViewFlags
+			case 2 :
 			switch (t) {
 				case 0 : return "All";
 			} break;
 			// ViewSettings::Flags
-			case 2 :
+			case 3 :
 			switch (t) {
 				case 0 : return "GridVisible";
 			} break;
@@ -84,13 +92,20 @@ namespace VICUS {
 				case 1 : return "HeatCapacity";
 				case 2 : return "Conductivity";
 			} break;
-			// Project::ViewFlags
+			// PlaneGeometry::type_t
 			case 1 :
+			switch (t) {
+				case 0 : return "Triangle";
+				case 1 : return "Rectangle";
+				case 2 : return "Polygon";
+			} break;
+			// Project::ViewFlags
+			case 2 :
 			switch (t) {
 				case 0 : return "All";
 			} break;
 			// ViewSettings::Flags
-			case 2 :
+			case 3 :
 			switch (t) {
 				case 0 : return "GridVisible";
 			} break;
@@ -109,13 +124,20 @@ namespace VICUS {
 				case 1 : return "Specific heat capacity of the material.";
 				case 2 : return "Thermal conductivity of the dry material.";
 			} break;
-			// Project::ViewFlags
+			// PlaneGeometry::type_t
 			case 1 :
+			switch (t) {
+				case 0 : if (no_description != nullptr) *no_description = true; return "Triangle";
+				case 1 : if (no_description != nullptr) *no_description = true; return "Rectangle";
+				case 2 : if (no_description != nullptr) *no_description = true; return "Polygon";
+			} break;
+			// Project::ViewFlags
+			case 2 :
 			switch (t) {
 				case 0 : if (no_description != nullptr) *no_description = true; return "All";
 			} break;
 			// ViewSettings::Flags
-			case 2 :
+			case 3 :
 			switch (t) {
 				case 0 : return "Grid is visible";
 			} break;
@@ -133,13 +155,20 @@ namespace VICUS {
 				case 1 : return "J/kgK";
 				case 2 : return "W/mK";
 			} break;
-			// Project::ViewFlags
+			// PlaneGeometry::type_t
 			case 1 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+				case 2 : return "";
+			} break;
+			// Project::ViewFlags
+			case 2 :
 			switch (t) {
 				case 0 : return "";
 			} break;
 			// ViewSettings::Flags
-			case 2 :
+			case 3 :
 			switch (t) {
 				case 0 : return "";
 			} break;
@@ -157,13 +186,20 @@ namespace VICUS {
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
-			// Project::ViewFlags
+			// PlaneGeometry::type_t
 			case 1 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+			} break;
+			// Project::ViewFlags
+			case 2 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
 			// ViewSettings::Flags
-			case 2 :
+			case 3 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
@@ -181,13 +217,20 @@ namespace VICUS {
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// Project::ViewFlags
+			// PlaneGeometry::type_t
 			case 1 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// Project::ViewFlags
+			case 2 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// ViewSettings::Flags
-			case 2 :
+			case 3 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
@@ -201,10 +244,12 @@ namespace VICUS {
 		switch (enum2index(enumtype)) {
 			// NetworkFluid::para_t
 			case 0 : return 3;
+			// PlaneGeometry::type_t
+			case 1 : return 3;
 			// Project::ViewFlags
-			case 1 : return 1;
-			// ViewSettings::Flags
 			case 2 : return 1;
+			// ViewSettings::Flags
+			case 3 : return 1;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::Count]");
@@ -215,10 +260,12 @@ namespace VICUS {
 		switch (enum2index(enumtype)) {
 			// NetworkFluid::para_t
 			case 0 : return 2;
+			// PlaneGeometry::type_t
+			case 1 : return 2;
 			// Project::ViewFlags
-			case 1 : return 0;
+			case 2 : return 0;
 			// ViewSettings::Flags
-			case 2 : return 1;
+			case 3 : return 1;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::MaxIndex]");

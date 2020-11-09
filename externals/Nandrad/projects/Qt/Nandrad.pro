@@ -20,6 +20,7 @@ LIBS += -lIBK -lTiCPP
 INCLUDEPATH = \
 	../../src \
 	../../../IBK/src \
+	../../../IBKMK/src \
 	../../../TiCPP/src
 
 DEPENDPATH = $${INCLUDEPATH}

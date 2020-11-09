@@ -179,5 +179,44 @@ IBK::Time readTimeElement(const TiXmlElement * element, const std::string & eNam
 	return t;
 }
 
+void writeVector3D(TiXmlElement * parent, const std::string & name, const std::vector<IBKMK::Vector3D> & vec) {
+	if (!vec.empty()) {
+		TiXmlElement * child = new TiXmlElement(name);
+		parent->LinkEndChild(child);
+
+		std::stringstream vals;
+		for (unsigned int i=0; i<vec.size(); ++i) {
+			vals << vec[i].m_x << " " << vec[i].m_y << vec[i].m_z;
+			if (i<vec.size()-1)  vals << ", ";
+		}
+		TiXmlText * text = new TiXmlText( vals.str() );
+		child->LinkEndChild( text );
+	}
+}
+
+
+void readVector3D(const TiXmlElement * element, const std::string & name, std::vector<IBKMK::Vector3D> & vec) {
+	FUNCID(NANDRAD::readVector3D);
+	std::string text = element->GetText();
+	IBK::replace_string(text, ",", " ");
+	std::vector<double> vals;
+	try {
+		IBK::string2valueVector(text, vals);
+		// must have n*3 elements
+		if (vals.size() % 3 != 0)
+			throw IBK::Exception("Mismatching number of values.", FUNC_ID);
+		if (vals.empty())
+			throw IBK::Exception("Missing values.", FUNC_ID);
+		vec.resize(vals.size() / 3);
+		for (unsigned int i=0; i<vec.size(); ++i)
+			vec[i].set(vals[i*3], vals[i*3+1], vals[i*3+2]);
+
+	} catch (IBK::Exception & ex) {
+		throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+			IBK::FormatString("Error reading vector element '%1'.").arg(name) ), FUNC_ID);
+	}
+}
+
+
 
 } // namespace NANDRAD

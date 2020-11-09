@@ -506,6 +506,11 @@ void CodeGenerator::generateReadWriteCode() {
 						// we generate the parent element and afterwards the loop
 						elements += "	NANDRAD::writeVector(e, \""+tagName+"\", m_"+varName+");\n";
 					}
+					else if (childType == "IBKMK::Vector3D") {
+						includes.insert("NANDRAD_Utilities.h");
+						// we generate the parent element and afterwards the loop
+						elements += "	NANDRAD::writeVector3D(e, \""+tagName+"\", m_"+varName+");\n";
+					}
 					else {
 						// we generate the parent element and afterwards the loop
 						elements += "\n"
@@ -1033,7 +1038,13 @@ void CodeGenerator::generateReadWriteCode() {
 							// we generate the parent element and afterwards the loop
 							elements +=
 									"			"+elseStr+"if (cName == \""+tagName+"\")\n"
-									"				readVector(c, \""+tagName+"\", m_"+varName+");\n";
+									"				NANDRAD::readVector(c, \""+tagName+"\", m_"+varName+");\n";
+						}
+						else if (childType == "IBKMK::Vector3D") {
+							// we generate the parent element and afterwards the loop
+							elements +=
+									"			"+elseStr+"if (cName == \""+tagName+"\")\n"
+									"				NANDRAD::readVector3D(c, \""+tagName+"\", m_"+varName+");\n";
 						}
 						else {
 							// generate code for reading vector of complex data types with own readXML() functions

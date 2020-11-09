@@ -32,6 +32,8 @@
 #include <IBK_LinearSpline.h>
 #include <IBK_StringUtils.h>
 
+#include <IBKMK_Vector3D.h>
+
 #include "NANDRAD_Constants.h"
 
 namespace IBK {
@@ -131,6 +133,11 @@ T readPODElement(const TiXmlElement * element, const std::string & eName) {
 IBK::Unit readUnitElement(const TiXmlElement * element, const std::string & eName);
 /*! Read an IBK:Time tag. */
 IBK::Time readTimeElement(const TiXmlElement * element, const std::string & eName);
+
+/*! Writes out a vector of Vector3D elements. */
+void writeVector3D(TiXmlElement * parent, const std::string & name, const std::vector<IBKMK::Vector3D> & vec);
+
+void readVector3D(const TiXmlElement * element, const std::string & name, std::vector<IBKMK::Vector3D> & vec);
 
 
 } // namespace NANDRAD

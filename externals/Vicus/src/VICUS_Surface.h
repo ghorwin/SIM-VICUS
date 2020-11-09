@@ -3,13 +3,13 @@
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
-
-#include <IBKMK_Vector3D.h>
+#include "VICUS_PlaneGeometry.h"
 
 #include <QString>
 
 namespace VICUS {
 
+/*! Represents a surface and its associated properties. */
 class Surface {
 public:
 
@@ -24,8 +24,8 @@ public:
 
 	QString								m_displayName;				// XML:A
 
-	/*! Points of polyline. */
-	std::vector<IBKMK::Vector3D>		m_polyline;
+	/*! The actual geometry. */
+	PlaneGeometry						m_geometry;					// XML:E
 };
 
 } // namespace VICUS
