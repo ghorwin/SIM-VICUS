@@ -38,17 +38,27 @@ namespace VICUS {
 Project::Project() {
 	// build test building
 
-	Surface surf;
-	surf.m_id = 1;
-	surf.m_displayName = "Wall";
-
 	Room room;
 	room.m_id = 1;
 	room.m_displayName = "Room";
+
+	Surface surf;
+	surf.m_id = 1;
+	surf.m_displayName = "Triangle";
+	surf.m_geometry = PlaneGeometry(PlaneGeometry::T_Triangle, IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(10,0,0), IBKMK::Vector3D(0,0,10));
 	room.m_surfaces.push_back(surf);
+
+	surf.m_geometry = PlaneGeometry(PlaneGeometry::T_Rectangle, IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,10,0), IBKMK::Vector3D(0,0,10));
+	surf.m_id = 2;
+	surf.m_displayName = "Rect";
 	room.m_surfaces.push_back(surf);
-	room.m_surfaces.back().m_id = 2;
-	room.m_surfaces.back().m_displayName = "Floor";
+
+	surf.m_geometry = PlaneGeometry(PlaneGeometry::T_Polygon, IBKMK::Vector3D(20,0,0), IBKMK::Vector3D(20,0,10), IBKMK::Vector3D(10,0,20));
+	surf.m_geometry.m_vertexes.push_back(IBKMK::Vector3D(5,0,10));
+	surf.m_geometry.m_vertexes.push_back(IBKMK::Vector3D(5,0,0));
+	surf.m_id = 3;
+	surf.m_displayName = "Poly";
+	room.m_surfaces.push_back(surf);
 
 	BuildingLevel level;
 	level.m_id = 1;
