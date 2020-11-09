@@ -432,7 +432,7 @@ void SVMainWindow::on_actionFileOpen_triggered() {
 							this,
 							tr("Select SIM-VICUS project"),
 							SVSettings::instance().m_propertyMap[SVSettings::PT_LastFileOpenDirectory].toString(),
-							tr("SIM-VICUS projects and project packages (%1 %2);;All files (*.*)")
+							tr("SIM-VICUS projects and project packages (*%1 *%2);;All files (*.*)")
 			.arg(SVSettings::instance().m_projectFileSuffix).arg(SVSettings::instance().m_projectPackageSuffix)
 						);
 

@@ -246,7 +246,7 @@ SVProjectHandler::SaveResult SVProjectHandler::saveWithNewFilename(QWidget * par
 			parent,
 			tr("Specify SIM-VICUS project file"),
 			currentPath,
-			tr("SIM-VICUS project files (%1);;All files (*.*)").arg(SVSettings::instance().m_projectFileSuffix)
+			tr("SIM-VICUS project files (*%1);;All files (*.*)").arg(SVSettings::instance().m_projectFileSuffix)
 		);
 
 
