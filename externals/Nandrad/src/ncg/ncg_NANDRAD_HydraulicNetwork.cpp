@@ -19,22 +19,22 @@
 	Lesser General Public License for more details.
 */
 
-#include <VICUS_Building.h>
-#include <VICUS_KeywordList.h>
+#include <NANDRAD_HydraulicNetwork.h>
+#include <NANDRAD_KeywordList.h>
 
 #include <IBK_messages.h>
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
-#include <VICUS_Constants.h>
+#include <NANDRAD_Constants.h>
+#include <NANDRAD_Constants.h>
 #include <NANDRAD_Utilities.h>
-#include <VICUS_Constants.h>
 
 #include <tinyxml.h>
 
-namespace VICUS {
+namespace NANDRAD {
 
-void Building::readXML(const TiXmlElement * element) {
-	FUNCID(Building::readXML);
+void HydraulicNetwork::readXMLPrivate(const TiXmlElement * element) {
+	FUNCID(HydraulicNetwork::readXMLPrivate);
 
 	try {
 		// search for mandatory attributes
@@ -49,7 +49,7 @@ void Building::readXML(const TiXmlElement * element) {
 			if (attribName == "id")
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
-				m_displayName = QString::fromStdString(attrib->ValueStr());
+				m_displayName = attrib->ValueStr();
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -60,15 +60,15 @@ void Building::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "BuildingLevels") {
+			if (cName == "Elements") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "BuildingLevel")
+					if (c2Name != "HydraulicNetworkElement")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-					BuildingLevel obj;
+					HydraulicNetworkElement obj;
 					obj.readXML(c2);
-					m_buildingLevels.push_back(obj);
+					m_elements.push_back(obj);
 					c2 = c2->NextSiblingElement();
 				}
 			}
@@ -79,28 +79,28 @@ void Building::readXML(const TiXmlElement * element) {
 		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Building' element."), FUNC_ID);
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'HydraulicNetwork' element."), FUNC_ID);
 	}
 	catch (std::exception & ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading 'Building' element.").arg(ex2.what()), FUNC_ID);
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'HydraulicNetwork' element.").arg(ex2.what()), FUNC_ID);
 	}
 }
 
-TiXmlElement * Building::writeXML(TiXmlElement * parent) const {
-	TiXmlElement * e = new TiXmlElement("Building");
+TiXmlElement * HydraulicNetwork::writeXMLPrivate(TiXmlElement * parent) const {
+	TiXmlElement * e = new TiXmlElement("HydraulicNetwork");
 	parent->LinkEndChild(e);
 
-	if (m_id != VICUS::INVALID_ID)
+	if (m_id != NANDRAD::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (!m_displayName.isEmpty())
-		e->SetAttribute("displayName", m_displayName.toStdString());
+	if (!m_displayName.empty())
+		e->SetAttribute("displayName", m_displayName);
 
-	if (!m_buildingLevels.empty()) {
-		TiXmlElement * child = new TiXmlElement("BuildingLevels");
+	if (!m_elements.empty()) {
+		TiXmlElement * child = new TiXmlElement("Elements");
 		e->LinkEndChild(child);
 
-		for (std::vector<BuildingLevel>::const_iterator it = m_buildingLevels.begin();
-			it != m_buildingLevels.end(); ++it)
+		for (std::vector<HydraulicNetworkElement>::const_iterator it = m_elements.begin();
+			it != m_elements.end(); ++it)
 		{
 			it->writeXML(child);
 		}
@@ -109,4 +109,4 @@ TiXmlElement * Building::writeXML(TiXmlElement * parent) const {
 	return e;
 }
 
-} // namespace VICUS
+} // namespace NANDRAD

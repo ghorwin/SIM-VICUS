@@ -48,6 +48,8 @@ void BuildingLevel::readXML(const TiXmlElement * element) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "id")
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "displayName")
+				m_displayName = QString::fromStdString(attrib->ValueStr());
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -58,9 +60,7 @@ void BuildingLevel::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "DisplayName")
-				m_displayName = QString::fromStdString(c->GetText());
-			else if (cName == "Rooms") {
+			if (cName == "Rooms") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
@@ -93,7 +93,7 @@ TiXmlElement * BuildingLevel::writeXML(TiXmlElement * parent) const {
 	if (m_id != VICUS::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.isEmpty())
-		TiXmlElement::appendSingleAttributeElement(e, "DisplayName", nullptr, std::string(), m_displayName.toStdString());
+		e->SetAttribute("displayName", m_displayName.toStdString());
 
 	if (!m_rooms.empty()) {
 		TiXmlElement * child = new TiXmlElement("Rooms");

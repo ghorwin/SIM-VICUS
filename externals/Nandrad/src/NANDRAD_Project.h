@@ -39,6 +39,7 @@
 #include "NANDRAD_ObjectList.h"
 #include "NANDRAD_Models.h"
 #include "NANDRAD_WindowGlazingSystem.h"
+#include "NANDRAD_HydraulicNetwork.h"
 
 namespace NANDRAD {
 
@@ -111,6 +112,9 @@ public:
 
 	/*! All construction instances refernce a construction and a thermal zone. */
 	std::vector<ConstructionInstance>				m_constructionInstances;			// XML:E
+
+	/*! All hydraulic networks defined for this project. */
+	std::vector<HydraulicNetwork>					m_hydraulicNetworks;				// XML:E
 
 	/*! All construction types reference construction parameters. */
 	std::vector<ConstructionType>					m_constructionTypes;				// XML:E

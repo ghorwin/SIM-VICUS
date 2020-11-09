@@ -24,7 +24,7 @@ public:
 	unsigned int					m_id = INVALID_ID;		// XML:A:required
 
 	/*! Display name of building. */
-	QString							m_displayName;			// XML:E
+	QString							m_displayName;			// XML:A
 
 	/*! Vector of building levels. */
 	std::vector<BuildingLevel>		m_buildingLevels;		// XML:E

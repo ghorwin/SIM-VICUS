@@ -34,6 +34,8 @@ HEADERS += \
 	../../src/NANDRAD_DataTable.h \
 	../../src/NANDRAD_EmbeddedObject.h \
 	../../src/NANDRAD_EmbeddedObjectWindow.h \
+	../../src/NANDRAD_HydraulicNetwork.h \
+	../../src/NANDRAD_HydraulicNetworkElement.h \
 	../../src/NANDRAD_IDGroup.h \
 	../../src/NANDRAD_Interface.h \
 	../../src/NANDRAD_InterfaceAirFlow.h \
@@ -79,6 +81,8 @@ SOURCES += \
 	../../src/NANDRAD_DataTable.cpp \
 	../../src/NANDRAD_EmbeddedObject.cpp \
 	../../src/NANDRAD_EmbeddedObjectWindow.cpp \
+	../../src/NANDRAD_HydraulicNetwork.cpp \
+	../../src/NANDRAD_HydraulicNetworkElement.cpp \
 	../../src/NANDRAD_IDGroup.cpp \
 	../../src/NANDRAD_Interface.cpp \
 	../../src/NANDRAD_InterfaceAirFlow.cpp \
@@ -107,6 +111,8 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_DailyCycle.cpp \
 	../../src/ncg/ncg_NANDRAD_EmbeddedObject.cpp \
 	../../src/ncg/ncg_NANDRAD_EmbeddedObjectWindow.cpp \
+	../../src/ncg/ncg_NANDRAD_HydraulicNetwork.cpp \
+	../../src/ncg/ncg_NANDRAD_HydraulicNetworkElement.cpp \
 	../../src/ncg/ncg_NANDRAD_Interface.cpp \
 	../../src/ncg/ncg_NANDRAD_InterfaceAirFlow.cpp \
 	../../src/ncg/ncg_NANDRAD_InterfaceHeatConduction.cpp \

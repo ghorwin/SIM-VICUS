@@ -22,7 +22,7 @@ public:
 	/*! Unique ID of building. */
 	unsigned int						m_id = INVALID_ID;			// XML:A:required
 
-	QString								m_displayName;				// XML:E
+	QString								m_displayName;				// XML:A
 
 	/*! Points of polyline. */
 	std::vector<IBKMK::Vector3D>		m_polyline;

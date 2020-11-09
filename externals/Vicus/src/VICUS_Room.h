@@ -21,7 +21,7 @@ public:
 	/*! Unique ID of building. */
 	unsigned int					m_id = INVALID_ID;			// XML:A:required
 
-	QString							m_displayName;				// XML:E
+	QString							m_displayName;				// XML:A
 
 	/*! Surfaces of the room. */
 	std::vector<Surface>			m_surfaces;					// XML:E
