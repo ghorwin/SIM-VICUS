@@ -55,8 +55,7 @@ double Line::length() const
 
 double Line::distanceBetweenPoints(const double &x1, const double &y1, const double &x2, const double &y2)
 {
-	// TODO : Instead of using the slow std::pow(x1-x2, 2), always use (x1-x2)*(x1-x2) which is way faster!
-	return std::sqrt( std::pow(x1-x2, 2) + std::pow(y1-y2, 2) );
+	return std::sqrt( (x1-x2) * (x1-x2) + (y1-y2) * (y1-y2) );
 }
 
 bool Line::pointsMatch(const double &x1, const double &y1, const double &x2, const double &y2, const double threshold)
