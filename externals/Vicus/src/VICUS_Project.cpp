@@ -61,6 +61,25 @@ Project::Project() {
 	build.m_buildingLevels.push_back(level);
 
 	m_buildings.push_back(build);
+
+	NetworkFluid f1;
+	f1.m_id = 12;
+	f1.m_displayName = "water";
+	f1.m_para[NetworkFluid::P_Density].set("Density", 1004, IBK::Unit("kg/m3"));
+	f1.m_para[NetworkFluid::P_HeatCapacity].set("HeatCapacity", 4180, IBK::Unit("J/kgK"));
+	f1.m_para[NetworkFluid::P_Conductivity].set("Conductivity", 0.56, IBK::Unit("W/mK"));
+	f1.m_kinematicViscosity.m_name = "KinematicViscosity";
+	f1.m_kinematicViscosity.m_xUnit.set("C");
+	f1.m_kinematicViscosity.m_yUnit.set("m2/s");
+	f1.m_kinematicViscosity.m_interpolationMethod = NANDRAD::LinearSplineParameter::I_LINEAR;
+
+	std::vector<double> x( {20, 40} );
+	std::vector<double> y( {1e-6, 0.8e-6} );
+	f1.m_kinematicViscosity.m_values.setValues(x,y);
+
+	m_networkFluidDB.push_back(f1);
+
+
 }
 
 

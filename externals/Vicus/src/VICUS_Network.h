@@ -72,7 +72,8 @@ public:
 	/*! calculate the lengths of all edges in the network */
 	void calculateLengths();
 
-	void sizePipeDimensions(const double &dpMax, const double &dT, const double &fluidDensity, const double &fluidKinViscosity, const double &roughness);
+	void sizePipeDimensions(const double &dpMax, const double &dT,
+							const double &fluidDensity, const double &fluidKinViscosity, const double &roughness);
 
 	/*! stores a copy of the network without any redundant edges */
 	void networkWithReducedEdges(Network & reducedNetwork);
@@ -103,6 +104,8 @@ public:
 	std::vector<Node>		m_nodes;
 	std::vector<Edge>		m_edges;
 	std::vector<Edge>		m_edgesReduced;
+
+	unsigned int			m_fluidID;
 
 
 private:

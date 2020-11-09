@@ -3,6 +3,7 @@
 
 #include <IBK_assert.h>
 #include <IBK_Path.h>
+#include <IBK_FileReader.h>
 
 #include <fstream>
 #include <algorithm>
@@ -26,7 +27,6 @@ unsigned Network::addNode(const double &x, const double &y, const Node::NodeType
 	unsigned id = m_nodes.size();
 	m_nodes.push_back(Node(id, x, y, type));
 
-	// TODO : does this needs to be done very time a node is added? or manually, when we are done?
 	updateNodeEdgeConnectionPointers();
 
 	return id;
@@ -123,7 +123,9 @@ void Network::readGridFromCSV(const IBK::Path &filePath){
 	// TODO : use FileReader from IBK lib
 
 	std::vector<std::string> cont;
-	readCSV(filePath, cont);
+//	readCSV(filePath, cont);
+
+	IBK::FileReader::readAll(filePath, cont, std::vector<std::string>());
 
 	// extract vector of string-xy-pairs
 	std::vector<std::string> tokens;
@@ -174,7 +176,8 @@ void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heat
 }
 
 
-void Network::setSource(const double &x, const double &y){
+void Network::setSource(const double &x, const double &y) {
+	IBK_ASSERT(!m_nodes.empty());
 	Node * nMin = nullptr;
 	double distMin = std::numeric_limits<double>::max();
 	for (Node &n: m_nodes){
@@ -185,7 +188,6 @@ void Network::setSource(const double &x, const double &y){
 		}
 	}
 
-	// TODO : check against nullptr access
 	nMin->m_type = Node::NT_Source;
 }
 
@@ -202,8 +204,6 @@ bool Network::findAndAddIntersection() {
 		for (unsigned i2=i1+1; i2<m_edges.size(); ++i2) {
 
 			// calculate intersection and
-
-			// TODO : in C++ avoid on-the-fly object creation; use wrapper objects without lazy evaluation of temporary data
 
 			Line l1 = Line(m_edges[i1]);
 			Line l2 = Line(m_edges[i2]);
@@ -307,8 +307,7 @@ void Network::networkWithoutDeadEnds(Network &cleanNetwork, const unsigned maxSt
 
 
 void Network::calculateLengths(){
-	for (Edge &e: m_edges){
-		// TODO : temorary object not necessary here...
+	for (Edge &e: m_edges) {
 		e.m_length = Line(e).length();
 	}
 }

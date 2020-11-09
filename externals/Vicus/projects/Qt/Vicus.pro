@@ -40,6 +40,8 @@ HEADERS += \
 	../../src/VICUS_KeywordList.h \
 	../../src/VICUS_Line.h \
 	../../src/VICUS_Network.h \
+	../../src/VICUS_NetworkFluid.h \
+	../../src/VICUS_NetworkPipe.h \
 	../../src/VICUS_Node.h \
 	../../src/VICUS_Project.h \
 	../../src/VICUS_Room.h \
@@ -53,10 +55,14 @@ SOURCES += \
 	../../src/VICUS_KeywordList.cpp \
 	../../src/VICUS_Line.cpp \
 	../../src/VICUS_Network.cpp \
+	../../src/VICUS_NetworkFluid.cpp \
+	../../src/VICUS_NetworkPipe.cpp \
 	../../src/VICUS_Node.cpp \
 	../../src/VICUS_Project.cpp \
 	../../src/ncg/ncg_VICUS_Building.cpp \
 	../../src/ncg/ncg_VICUS_BuildingLevel.cpp \
+	../../src/ncg/ncg_VICUS_NetworkFluid.cpp \
+	../../src/ncg/ncg_VICUS_NetworkPipe.cpp \
 	../../src/ncg/ncg_VICUS_Project.cpp \
 	../../src/ncg/ncg_VICUS_Room.cpp \
 	../../src/ncg/ncg_VICUS_Surface.cpp \

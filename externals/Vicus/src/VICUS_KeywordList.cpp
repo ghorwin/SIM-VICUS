@@ -34,14 +34,15 @@ namespace VICUS {
 	const char * const INVALID_KEYWORD_INDEX_STRING = "KEYWORD_ERROR_STRING: Invalid type index";
 
 	/*! Holds a list of all enum types/categories. */
-	const char * const ENUM_TYPES[2] = {
+	const char * const ENUM_TYPES[3] = {
+		"NetworkFluid::para_t",
 		"Project::ViewFlags",
 		"ViewSettings::Flags"
 	};
 
 	/*! Converts a category string to respective enumeration value. */
 	int enum2index(const std::string & enumtype) {
-		for (int i=0; i<2; ++i) {
+		for (int i=0; i<3; ++i) {
 			if (enumtype == ENUM_TYPES[i]) return i;
 		}
 		//std::cerr << "Unknown enumeration type '" << enumtype<< "'." << std::endl;
@@ -52,13 +53,20 @@ namespace VICUS {
 	/*! Returns a keyword string for a given category (typenum) and type number t. */
 	const char * theKeyword(int typenum, int t) {
 		switch (typenum) {
-			// Project::ViewFlags
+			// NetworkFluid::para_t
 			case 0 :
+			switch (t) {
+				case 0 : return "Density";
+				case 1 : return "HeatCapacity";
+				case 2 : return "Conductivity";
+			} break;
+			// Project::ViewFlags
+			case 1 :
 			switch (t) {
 				case 0 : return "All";
 			} break;
 			// ViewSettings::Flags
-			case 1 :
+			case 2 :
 			switch (t) {
 				case 0 : return "GridVisible";
 			} break;
@@ -69,13 +77,20 @@ namespace VICUS {
 	/*! Returns all keywords including deprecated for a given category (typenum) and type number (t). */
 	const char * allKeywords(int typenum, int t) {
 		switch (typenum) {
-			// Project::ViewFlags
+			// NetworkFluid::para_t
 			case 0 :
+			switch (t) {
+				case 0 : return "Density";
+				case 1 : return "HeatCapacity";
+				case 2 : return "Conductivity";
+			} break;
+			// Project::ViewFlags
+			case 1 :
 			switch (t) {
 				case 0 : return "All";
 			} break;
 			// ViewSettings::Flags
-			case 1 :
+			case 2 :
 			switch (t) {
 				case 0 : return "GridVisible";
 			} break;
@@ -87,13 +102,20 @@ namespace VICUS {
 		if (no_description != nullptr)
 			*no_description = false; // we are optimistic
 		switch (enum2index(enumtype)) {
-			// Project::ViewFlags
+			// NetworkFluid::para_t
 			case 0 :
+			switch (t) {
+				case 0 : return "Dry density of the material.";
+				case 1 : return "Specific heat capacity of the material.";
+				case 2 : return "Thermal conductivity of the dry material.";
+			} break;
+			// Project::ViewFlags
+			case 1 :
 			switch (t) {
 				case 0 : if (no_description != nullptr) *no_description = true; return "All";
 			} break;
 			// ViewSettings::Flags
-			case 1 :
+			case 2 :
 			switch (t) {
 				case 0 : return "Grid is visible";
 			} break;
@@ -104,13 +126,20 @@ namespace VICUS {
 
 	const char * KeywordList::Unit(const char * const enumtype, int t) {
 		switch (enum2index(enumtype)) {
-			// Project::ViewFlags
+			// NetworkFluid::para_t
 			case 0 :
+			switch (t) {
+				case 0 : return "kg/m3";
+				case 1 : return "J/kgK";
+				case 2 : return "W/mK";
+			} break;
+			// Project::ViewFlags
+			case 1 :
 			switch (t) {
 				case 0 : return "";
 			} break;
 			// ViewSettings::Flags
-			case 1 :
+			case 2 :
 			switch (t) {
 				case 0 : return "";
 			} break;
@@ -121,13 +150,20 @@ namespace VICUS {
 
 	const char * KeywordList::Color(const char * const enumtype, int t) {
 		switch (enum2index(enumtype)) {
-			// Project::ViewFlags
+			// NetworkFluid::para_t
 			case 0 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+			} break;
+			// Project::ViewFlags
+			case 1 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
 			// ViewSettings::Flags
-			case 1 :
+			case 2 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
@@ -138,13 +174,20 @@ namespace VICUS {
 
 	double KeywordList::DefaultValue(const char * const enumtype, int t) {
 		switch (enum2index(enumtype)) {
-			// Project::ViewFlags
+			// NetworkFluid::para_t
 			case 0 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// Project::ViewFlags
+			case 1 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// ViewSettings::Flags
-			case 1 :
+			case 2 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
@@ -156,10 +199,12 @@ namespace VICUS {
 	// number of entries in a keyword list
 	unsigned int KeywordList::Count(const char * const enumtype) {
 		switch (enum2index(enumtype)) {
+			// NetworkFluid::para_t
+			case 0 : return 3;
 			// Project::ViewFlags
-			case 0 : return 1;
-			// ViewSettings::Flags
 			case 1 : return 1;
+			// ViewSettings::Flags
+			case 2 : return 1;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::Count]");
@@ -168,10 +213,12 @@ namespace VICUS {
 	// max index for entries sharing a category in a keyword list
 	int KeywordList::MaxIndex(const char * const enumtype) {
 		switch (enum2index(enumtype)) {
+			// NetworkFluid::para_t
+			case 0 : return 2;
 			// Project::ViewFlags
-			case 0 : return 0;
+			case 1 : return 0;
 			// ViewSettings::Flags
-			case 1 : return 1;
+			case 2 : return 1;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::MaxIndex]");

@@ -32,6 +32,8 @@
 #include "VICUS_Network.h"
 #include "VICUS_Building.h"
 #include "VICUS_ViewSettings.h"
+#include "VICUS_NetworkFluid.h"
+#include "VICUS_NetworkPipe.h"
 
 namespace VICUS {
 
@@ -71,6 +73,9 @@ public:
 	std::vector<Network>	m_networks;
 
 	std::vector<Building>	m_buildings;		// XML:E
+
+	std::vector<NetworkFluid>	m_networkFluidDB;	// XML:E
+	std::vector<NetworkPipe>	m_networkPipeDB;	// XML:E
 };
 
 

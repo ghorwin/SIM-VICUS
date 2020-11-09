@@ -52,6 +52,30 @@ void Project::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
+			else if (cName == "NetworkFluidDB") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "NetworkFluid")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					NetworkFluid obj;
+					obj.readXML(c2);
+					m_networkFluidDB.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "NetworkPipeDB") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "NetworkPipe")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					NetworkPipe obj;
+					obj.readXML(c2);
+					m_networkPipeDB.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else if (cName == "ViewSettings")
 				m_viewSettings.readXML(c);
 			else {
@@ -81,6 +105,30 @@ TiXmlElement * Project::writeXML(TiXmlElement * parent) const {
 
 		for (std::vector<Building>::const_iterator it = m_buildings.begin();
 			it != m_buildings.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_networkFluidDB.empty()) {
+		TiXmlElement * child = new TiXmlElement("NetworkFluidDB");
+		e->LinkEndChild(child);
+
+		for (std::vector<NetworkFluid>::const_iterator it = m_networkFluidDB.begin();
+			it != m_networkFluidDB.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_networkPipeDB.empty()) {
+		TiXmlElement * child = new TiXmlElement("NetworkPipeDB");
+		e->LinkEndChild(child);
+
+		for (std::vector<NetworkPipe>::const_iterator it = m_networkPipeDB.begin();
+			it != m_networkPipeDB.end(); ++it)
 		{
 			it->writeXML(child);
 		}
