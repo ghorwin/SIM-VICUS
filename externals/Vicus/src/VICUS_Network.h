@@ -10,7 +10,7 @@
 #include <limits>
 
 namespace IBK {
-	class Path;
+class Path;
 }
 
 namespace VICUS {
@@ -92,6 +92,9 @@ public:
 	/*! pressure loss of a rough pipe according to colebrook equation */
 	static double pressureLossColebrook(const double &diameter, const double &length, const double &roughness, const double &massFlow,
 										const double &fluidDensity, const double &fluidKinViscosity);
+
+	/*! read csv function ... */
+	void readCSV(const IBK::Path &filePath, std::vector<std::string> &content);
 
 	/*! Nodes ID matches always node index.
 		\code
