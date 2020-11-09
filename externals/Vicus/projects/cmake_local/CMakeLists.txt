@@ -35,7 +35,7 @@ add_custom_command (
 	OUTPUT   ${PROJECT_SOURCE_DIR}/../../src/VICUS_KeywordList.cpp
 	DEPENDS  ${Vicus_HDRS} NandradCodeGenerator
 	COMMAND  NandradCodeGenerator
-	ARGS     VICUS ${PROJECT_SOURCE_DIR}/../../src 0 VICUS ncg
+	ARGS     VICUS ${PROJECT_SOURCE_DIR}/../../src 1 VICUS ncg
 )
 
 # build the library
