@@ -60,6 +60,18 @@ void Room::readXML(const TiXmlElement * element) {
 			const std::string & cName = c->ValueStr();
 			if (cName == "DisplayName")
 				m_displayName = QString::fromStdString(c->GetText());
+			else if (cName == "Surfaces") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "Surface")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					Surface obj;
+					obj.readXML(c2);
+					m_surfaces.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -82,6 +94,18 @@ TiXmlElement * Room::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.isEmpty())
 		TiXmlElement::appendSingleAttributeElement(e, "DisplayName", nullptr, std::string(), m_displayName.toStdString());
+
+	if (!m_surfaces.empty()) {
+		TiXmlElement * child = new TiXmlElement("Surfaces");
+		e->LinkEndChild(child);
+
+		for (std::vector<Surface>::const_iterator it = m_surfaces.begin();
+			it != m_surfaces.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
 	return e;
 }
 

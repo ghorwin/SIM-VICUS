@@ -37,7 +37,7 @@ public:
 	IBK::Parameter						m_para[NUM_P];					// XML:E
 
 	/*! Kinematic viscosity [m2/s]. */
-	NANDRAD::LinearSplineParameter		m_kinematicViscosity;			// XML:E:required
+	NANDRAD::LinearSplineParameter		m_kinematicViscosity;			// XML:E
 
 };
 

@@ -79,7 +79,18 @@ Project::Project() {
 
 	m_networkFluidDB.push_back(f1);
 
+	NetworkPipe p;
+	p.m_id = 32;
+	p.m_displayName = "PVC, 200 mm x 4 mm";
+	p.m_dOutside = 200;
+	p.m_dInside = 196;
+	m_networkPipeDB.push_back(p);
 
+	p.m_id = 33;
+	p.m_displayName = "PVC, 150 mm x 4 mm";
+	p.m_dOutside = 150;
+	p.m_dInside = 146;
+	m_networkPipeDB.push_back(p);
 }
 
 

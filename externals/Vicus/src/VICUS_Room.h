@@ -24,7 +24,7 @@ public:
 	QString							m_displayName;				// XML:E
 
 	/*! Surfaces of the room. */
-	std::vector<Surface>			m_surfaces;					//XML:E
+	std::vector<Surface>			m_surfaces;					// XML:E
 };
 
 } // namespace VICUS

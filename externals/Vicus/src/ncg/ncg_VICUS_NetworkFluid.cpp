@@ -56,10 +56,6 @@ void NetworkFluid::readXML(const TiXmlElement * element) {
 			attrib = attrib->Next();
 		}
 		// search for mandatory elements
-		if (!element->FirstChildElement("KinematicViscosity"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'KinematicViscosity' element.") ), FUNC_ID);
-
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
