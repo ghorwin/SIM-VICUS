@@ -43,8 +43,9 @@ public:
 		return (m_edges.size()==2);
 	}
 
-	/*! if node has exactly two edges: return the edge which is not the given edge
-	 * otherwise IBK_ASSERT */
+	/*! Only callable if node has exactly two edges: return the edge which is not the given edge
+		otherwise IBK_ASSERT
+	*/
 	Edge * neighborEdge(const Edge * e) const;
 
 	/*! get a set of all redundant nodes in the graph */

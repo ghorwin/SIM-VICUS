@@ -15,8 +15,7 @@ Network::Network() {
 }
 
 
-unsigned Network::addNode(const double &x, const double &y, const Node::NodeType type, const bool consistentCoordinates)
-{
+unsigned Network::addNode(const double &x, const double &y, const Node::NodeType type, const bool consistentCoordinates) {
 	// if there is an existing node with identical coordinates, return its id and dont add a new one
 	if (consistentCoordinates){
 		for (Node n: m_nodes){
@@ -26,30 +25,31 @@ unsigned Network::addNode(const double &x, const double &y, const Node::NodeType
 	}
 	unsigned id = m_nodes.size();
 	m_nodes.push_back(Node(id, x, y, type));
+
+	// TODO : does this needs to be done very time a node is added? or manually, when we are done?
 	updateNodeEdgeConnectionPointers();
 
 	return id;
 }
 
 
-unsigned Network::addNode(const Node &node, const bool considerCoordinates)
-{
+unsigned Network::addNode(const Node &node, const bool considerCoordinates) {
 	return addNode(node.m_x, node.m_y, node.m_type, considerCoordinates);
 }
 
 
-void Network::addEdge(const unsigned nodeId1, const unsigned nodeId2, const bool supply)
-{
+void Network::addEdge(const unsigned nodeId1, const unsigned nodeId2, const bool supply) {
 	IBK_ASSERT(nodeId1<m_nodes.size() && nodeId2<m_nodes.size());
 	m_edges.push_back(Edge(nodeId1, nodeId2, supply));
+	// TODO : does this needs to be done very time a node is added? or manually, when we are done?
 	updateNodeEdgeConnectionPointers();
 }
 
 
-void Network::addEdge(const Edge &edge)
-{
+void Network::addEdge(const Edge &edge) {
 	IBK_ASSERT(edge.m_nodeId1<m_nodes.size() && edge.m_nodeId2<m_nodes.size());
 	m_edges.push_back(edge);
+	// TODO : does this needs to be done very time a node is added? or manually, when we are done?
 	updateNodeEdgeConnectionPointers();
 }
 
@@ -94,6 +94,8 @@ bool Network::checkConnectedGraph() const {
 void Network::readCSV(const IBK::Path &filePath, std::vector<std::string> &content) {
 	FUNCID(Network::readCSV);
 
+	// TODO : see FileReader from IBK lib
+
 	if (!filePath.exists())
 		throw IBK::Exception(IBK::FormatString("File '%1' doesn't exist.").arg(filePath), FUNC_ID);
 
@@ -117,6 +119,8 @@ void Network::readCSV(const IBK::Path &filePath, std::vector<std::string> &conte
 
 
 void Network::readGridFromCSV(const IBK::Path &filePath){
+
+	// TODO : use FileReader from IBK lib
 
 	std::vector<std::string> cont;
 	readCSV(filePath, cont);
@@ -148,8 +152,8 @@ void Network::readGridFromCSV(const IBK::Path &filePath){
 	}
 }
 
-void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heatDemand)
-{
+
+void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heatDemand) {
 	std::vector<std::string> cont;
 	readCSV(filePath, cont);
 
@@ -180,13 +184,15 @@ void Network::setSource(const double &x, const double &y){
 			nMin = &n;
 		}
 	}
+
+	// TODO : check against nullptr access
 	nMin->m_type = Node::NT_Source;
 }
 
 
 void Network::generateIntersections(){
-	while (findAndAddIntersection()){
-	}
+	// TODO : clarify "deterministic result independent of initial node/edge storage order"
+	while (findAndAddIntersection()) {}
 }
 
 
@@ -196,6 +202,9 @@ bool Network::findAndAddIntersection() {
 		for (unsigned i2=i1+1; i2<m_edges.size(); ++i2) {
 
 			// calculate intersection and
+
+			// TODO : in C++ avoid on-the-fly object creation; use wrapper objects without lazy evaluation of temporary data
+
 			Line l1 = Line(m_edges[i1]);
 			Line l2 = Line(m_edges[i2]);
 			double xs, ys;
@@ -299,6 +308,7 @@ void Network::networkWithoutDeadEnds(Network &cleanNetwork, const unsigned maxSt
 
 void Network::calculateLengths(){
 	for (Edge &e: m_edges){
+		// TODO : temorary object not necessary here...
 		e.m_length = Line(e).length();
 	}
 }
