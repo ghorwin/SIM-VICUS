@@ -1,7 +1,7 @@
 #ifndef LINE_H
 #define LINE_H
 
-#include "VICUS_Edge.h"
+#include "VICUS_NetworkEdge.h"
 
 namespace VICUS {
 

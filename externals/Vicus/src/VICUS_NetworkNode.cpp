@@ -1,5 +1,5 @@
 #include "VICUS_Node.h"
-#include "VICUS_Edge.h"
+#include "VICUS_NetworkEdge.h"
 
 #include <IBK_assert.h>
 

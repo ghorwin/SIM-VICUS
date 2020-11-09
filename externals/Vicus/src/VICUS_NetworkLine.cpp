@@ -1,4 +1,4 @@
-#include "VICUS_Line.h"
+#include "VICUS_NetworkLine.h"
 
 #include <algorithm>
 #include <cmath>
