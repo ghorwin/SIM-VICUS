@@ -317,8 +317,7 @@ void SVMainWindow::setup() {
 	// TODO : Stephan SVStyle::formatSplitter(m_geometryViewSplitter);
 	lay->addWidget(m_geometryViewSplitter);
 
-	// TODO : adjust size of navigation view to be about 250 px wide
-	//m_geometryViewSplitter->setSizes(QList<int>() << 0 << 1800);
+
 
 	// *** Navigation tree
 
@@ -331,6 +330,11 @@ void SVMainWindow::setup() {
 	m_geometryViewSplitter->addWidget(m_geometryView);
 	m_geometryViewSplitter->setCollapsible(1, false);
 
+	// TODO : adjust size of navigation view to be about 250 px wide
+
+	m_geometryViewSplitter->setStretchFactor(0, 1);
+	m_geometryViewSplitter->setStretchFactor(1, 4);
+	m_geometryViewSplitter->setSizes(QList<int>() << 250 << 1800);
 //	lay->setStretch(2,1);
 	// TODO : add other views
 
