@@ -1,6 +1,77 @@
 :imagesdir: ./images
 # 3D Engine
 
+
+## Camera
+
+- world-2-view-translation = m_projection * m_camera * m_transform
+- transform only for "movable objects" (e.g. objects in selection)
+
+- Local coordinate system of camera = left handed coordinate system with y-axis pointing downwards and z-axis pointing towards user
+   
+  + right = towards right of screen
+  + up = pointing downwards
+  + forward = towards the viewer
+  
+- camera object without translation and rotation -> x and y coordinates map to i-j coordinates of screen (0,0 top left; 1,1 bottom right), so that point x,y,z = (-50,-200,0) becomes i,j = (-100, 400) (bottom left) in screen coordinates.
+
+## Data transfer
+
+- original geometry in object coordinates (world coordinate for now)
+- opaque geometry = planes
+
+### Primitive Assembly
+
+- planes:
+    * type triangle
+    * type rect
+    * type polygon
+- plane type affects selection algorithm: triangle/rect trivial; polygon = test individual triangles (more work)
+
+- data on VBO first stored on heap (vector of vertex struct); additional vector for rgba colors
+- plane transfer vectors, type-specific transfer:
+    * append vertices + colors
+    * store element indexes in triangle-strip order
+    * append primitive restart index, see https://www.khronos.org/opengl/wiki/Vertex_Rendering#Primitive_Restart
+
+    
+- triangles: copy 3 vertices counter-clock-wise; append element indexes +0, +1, +2
+- rectangle: copy 4 vertices counter-clock-wise; append element indexes +0, +1, +2; +1 +3 +2
+
+### Triangle Strips
+
+See also explanation in https://www.learnopengles.com/tag/triangle-strips.
+
+:xrefstyle: short
+
+See polygon in <<fig_trianglestrip_polygon>>. Index list to draw the polygon is: 
+
+    1, 2, 6, 5, 3, 4
+
+- First triangle is `1, 2, n` (anti-clock-wise - order of first triangle defines order of the rest). 
+- Second triangle is `2, n-1, n` 
+- Third triangle is `n, 3, n-1` 
+- Fourth triangle is `3, n-2, n-1`
+
+... in an algorithm keep adding indexes until you would duplicate an existing node index
+
+[[fig_trianglestrip_polygon]]
+.Generation of a triangle strip from a polygon
+image::TriangleStrip1.png[pdfwidth=10cm]
+
+When drawing several triangle strips one after another, we need primitive restart (to have gaps between triangles).
+
+Consider strips in <<fig_trianglestrip_restart>>. Top part of the figure shows two strips where the first strip ends with an _odd numbered_ triangle. Bottom part shows the first strip ending with an _even numbered_ triangle.
+
+[[fig_trianglestrip_restart]]
+.Primitive restart using degenerated triangles
+image::TriangleStrip2.png[pdfwidth=10cm]
+
+
+
+
+:xrefstyle: basic
+
 ## Shaders
 
 Vertex-Layout notation:
