@@ -63,9 +63,9 @@ void Schedule::readXML(const TiXmlElement * element) {
 		while (c) {
 			const std::string & cName = c->ValueStr();
 			if (cName == "StartDayOfTheYear")
-				m_startDayOfTheYear = readPODElement<unsigned int>(c, cName);
+				m_startDayOfTheYear = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "EndDayOfTheYear")
-				m_endDayOfTheYear = readPODElement<unsigned int>(c, cName);
+				m_endDayOfTheYear = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "DailyCycles") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {

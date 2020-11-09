@@ -44,7 +44,7 @@ void SolverParameter::readXML(const TiXmlElement * element) {
 			const std::string & cName = c->ValueStr();
 			if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
-				readParameterElement(c, p);
+				NANDRAD::readParameterElement(c, p);
 				bool success = false;
 				para_t ptype;
 				try {
@@ -65,7 +65,7 @@ void SolverParameter::readXML(const TiXmlElement * element) {
 			}
 			else if (cName == "IBK:IntPara") {
 				IBK::IntPara p;
-				readIntParaElement(c, p);
+				NANDRAD::readIntParaElement(c, p);
 				bool success = false;
 				try {
 					intPara_t ptype = (intPara_t)KeywordList::Enumeration("SolverParameter::intPara_t", p.name);
@@ -77,7 +77,7 @@ void SolverParameter::readXML(const TiXmlElement * element) {
 			}
 			else if (cName == "IBK:Flag") {
 				IBK::Flag f;
-				readFlagElement(c, f);
+				NANDRAD::readFlagElement(c, f);
 				bool success = false;
 				try {
 					flag_t ftype = (flag_t)KeywordList::Enumeration("SolverParameter::flag_t", f.name());

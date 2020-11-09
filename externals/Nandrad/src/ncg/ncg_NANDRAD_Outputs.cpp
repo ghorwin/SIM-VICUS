@@ -66,10 +66,10 @@ void Outputs::readXMLPrivate(const TiXmlElement * element) {
 				}
 			}
 			else if (cName == "TimeUnit")
-				m_timeUnit = readUnitElement(c, cName);
+				m_timeUnit = NANDRAD::readUnitElement(c, cName);
 			else if (cName == "IBK:Flag") {
 				IBK::Flag f;
-				readFlagElement(c, f);
+				NANDRAD::readFlagElement(c, f);
 				bool success = false;
 				if (f.name() == "BinaryFormat") {
 					m_binaryFormat = f; success=true;

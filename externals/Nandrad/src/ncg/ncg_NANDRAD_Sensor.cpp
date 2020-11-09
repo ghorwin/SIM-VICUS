@@ -47,7 +47,7 @@ void Sensor::readXMLPrivate(const TiXmlElement * element) {
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "id")
-				m_id = readPODAttributeValue<unsigned int>(element, attrib);
+				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -62,7 +62,7 @@ void Sensor::readXMLPrivate(const TiXmlElement * element) {
 				m_quantity = c->GetText();
 			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
-				readParameterElement(c, p);
+				NANDRAD::readParameterElement(c, p);
 				bool success = false;
 				if (p.name == "Orientation") {
 					m_orientation = p; success = true;

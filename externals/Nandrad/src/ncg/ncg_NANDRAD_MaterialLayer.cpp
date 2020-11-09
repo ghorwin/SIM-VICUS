@@ -43,9 +43,9 @@ void MaterialLayer::readXML(const TiXmlElement * element) {
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "thickness")
-				m_thickness = readPODAttributeValue<double>(element, attrib);
+				m_thickness = NANDRAD::readPODAttributeValue<double>(element, attrib);
 			else if (attribName == "matId")
-				m_matId = readPODAttributeValue<unsigned int>(element, attrib);
+				m_matId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}

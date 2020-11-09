@@ -63,7 +63,7 @@ void InterfaceLongWaveEmission::readXMLPrivate(const TiXmlElement * element) {
 			const std::string & cName = c->ValueStr();
 			if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
-				readParameterElement(c, p);
+				NANDRAD::readParameterElement(c, p);
 				bool success = false;
 				para_t ptype;
 				try {

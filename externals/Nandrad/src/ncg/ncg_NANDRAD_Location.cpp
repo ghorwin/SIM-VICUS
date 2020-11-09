@@ -43,7 +43,7 @@ void Location::readXML(const TiXmlElement * element) {
 			const std::string & cName = c->ValueStr();
 			if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
-				readParameterElement(c, p);
+				NANDRAD::readParameterElement(c, p);
 				bool success = false;
 				para_t ptype;
 				try {
@@ -68,7 +68,7 @@ void Location::readXML(const TiXmlElement * element) {
 				m_shadingFactorFileName = IBK::Path(c->GetText());
 			else if (cName == "IBK:Flag") {
 				IBK::Flag f;
-				readFlagElement(c, f);
+				NANDRAD::readFlagElement(c, f);
 				bool success = false;
 				if (f.name() == "PerezDiffuseRadiationModel") {
 					m_perezDiffuseRadiationModel = f; success=true;

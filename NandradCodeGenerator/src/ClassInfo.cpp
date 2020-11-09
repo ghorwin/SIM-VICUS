@@ -158,6 +158,10 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 				std::string typeStr = typeDeclaration.substr(0, pos2);
 				IBK::trim(typeStr);
 
+				// remove NANDRAD:: prefix
+				if (typeStr.find("NANDRAD::") == 0)
+					typeStr = typeStr.substr(9);
+
 				std::string varName = typeDeclaration.substr(pos2+2); // without m_
 				IBK::trim(varName, " \t;");
 				// varName may now be of format "m_path = IBK::Path("/tmp")" - we need to split the assignment operator

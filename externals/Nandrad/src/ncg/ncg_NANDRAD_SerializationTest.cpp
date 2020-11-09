@@ -48,13 +48,13 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "id1")
-				m_id1 = readPODAttributeValue<int>(element, attrib);
+				m_id1 = NANDRAD::readPODAttributeValue<int>(element, attrib);
 			else if (attribName == "id2")
-				m_id2 = readPODAttributeValue<unsigned int>(element, attrib);
+				m_id2 = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "flag1")
-				m_flag1 = readPODAttributeValue<bool>(element, attrib);
+				m_flag1 = NANDRAD::readPODAttributeValue<bool>(element, attrib);
 			else if (attribName == "val1")
-				m_val1 = readPODAttributeValue<double>(element, attrib);
+				m_val1 = NANDRAD::readPODAttributeValue<double>(element, attrib);
 			else if (attribName == "testBla")
 			try {
 				m_testBla = (test_t)KeywordList::Enumeration("SerializationTest::test_t", attrib->ValueStr());
@@ -90,24 +90,24 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 		while (c) {
 			const std::string & cName = c->ValueStr();
 			if (cName == "Id3")
-				m_id3 = readPODElement<int>(c, cName);
+				m_id3 = NANDRAD::readPODElement<int>(c, cName);
 			else if (cName == "Id4")
-				m_id4 = readPODElement<unsigned int>(c, cName);
+				m_id4 = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "Flag2")
-				m_flag2 = readPODElement<bool>(c, cName);
+				m_flag2 = NANDRAD::readPODElement<bool>(c, cName);
 			else if (cName == "Val2")
-				m_val2 = readPODElement<double>(c, cName);
+				m_val2 = NANDRAD::readPODElement<double>(c, cName);
 			else if (cName == "Str2")
 				m_str2 = c->GetText();
 			else if (cName == "Path2")
 				m_path2 = IBK::Path(c->GetText());
 			else if (cName == "U2")
-				m_u2 = readUnitElement(c, cName);
+				m_u2 = NANDRAD::readUnitElement(c, cName);
 			else if (cName == "X5")
-				m_x5 = readPODElement<double>(c, cName);
+				m_x5 = NANDRAD::readPODElement<double>(c, cName);
 			else if (cName == "IBK:Flag") {
 				IBK::Flag f;
-				readFlagElement(c, f);
+				NANDRAD::readFlagElement(c, f);
 				bool success = false;
 				if (f.name() == "F") {
 					m_f = f; success=true;
@@ -121,9 +121,9 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			else if (cName == "Time1")
-				m_time1 = readTimeElement(c, cName);
+				m_time1 = NANDRAD::readTimeElement(c, cName);
 			else if (cName == "Time2")
-				m_time2 = readTimeElement(c, cName);
+				m_time2 = NANDRAD::readTimeElement(c, cName);
 			else if (cName == "Table")
 				m_table.setEncodedString(c->GetText());
 			else if (cName == "Table2")
@@ -144,7 +144,7 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 			}
 			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
-				readParameterElement(c, p);
+				NANDRAD::readParameterElement(c, p);
 				bool success = false;
 				test_t ptype;
 				try {
@@ -165,7 +165,7 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 			}
 			else if (cName == "IBK:IntPara") {
 				IBK::IntPara p;
-				readIntParaElement(c, p);
+				NANDRAD::readIntParaElement(c, p);
 				bool success = false;
 				try {
 					intPara_t ptype = (intPara_t)KeywordList::Enumeration("SerializationTest::intPara_t", p.name);
@@ -178,7 +178,7 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 			else if (cName == "IBK:LinearSpline") {
 				IBK::LinearSpline p;
 				std::string name;
-				readLinearSplineElement(c, p, name, nullptr, nullptr);
+				NANDRAD::readLinearSplineElement(c, p, name, nullptr, nullptr);
 				bool success = false;
 				if (name == "Spline") {
 					m_spline = p; success = true;
@@ -255,7 +255,7 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "Table", nullptr, std::string(), m_table.encodedString());
 	if (!m_table2.m_values.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "Table2", nullptr, std::string(), m_table2.encodedString());
-	writeVector(e, "DblVec", m_dblVec);
+	NANDRAD::writeVector(e, "DblVec", m_dblVec);
 
 	if (!m_interfaces.empty()) {
 		TiXmlElement * child = new TiXmlElement("Interfaces");
@@ -290,7 +290,7 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 			TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_flags[i].name(), m_flags[i].isEnabled() ? "true" : "false");
 	}
 	if (!m_spline.empty())
-		writeLinearSplineElement(e, "Spline", m_spline, "-", "-");
+		NANDRAD::writeLinearSplineElement(e, "Spline", m_spline, "-", "-");
 
 	m_sched.writeXML(e);
 	return e;
