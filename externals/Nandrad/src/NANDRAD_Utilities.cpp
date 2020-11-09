@@ -186,7 +186,7 @@ void writeVector3D(TiXmlElement * parent, const std::string & name, const std::v
 
 		std::stringstream vals;
 		for (unsigned int i=0; i<vec.size(); ++i) {
-			vals << vec[i].m_x << " " << vec[i].m_y << vec[i].m_z;
+			vals << vec[i].m_x << " " << vec[i].m_y << " " << vec[i].m_z;
 			if (i<vec.size()-1)  vals << ", ";
 		}
 		TiXmlText * text = new TiXmlText( vals.str() );
