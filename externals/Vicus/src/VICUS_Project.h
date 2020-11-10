@@ -74,7 +74,10 @@ public:
 
 	std::vector<Building>	m_buildings;		// XML:E
 
+	/*! database of fluids */
 	std::vector<NetworkFluid>	m_networkFluidDB;	// XML:E
+
+	/*! database of pipes, sorted from smallest to highest diameter */
 	std::vector<NetworkPipe>	m_networkPipeDB;	// XML:E
 };
 

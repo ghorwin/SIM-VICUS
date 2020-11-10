@@ -1,5 +1,7 @@
 #include "VICUS_Network.h"
 #include "VICUS_NetworkLine.h"
+#include "VICUS_NetworkFluid.h"
+#include "VICUS_NetworkPipe.h"
 
 #include <IBK_assert.h>
 #include <IBK_Path.h>
@@ -268,7 +270,7 @@ void Network::networkWithoutDeadEnds(Network &cleanNetwork, const unsigned maxSt
 			continue;
 		unsigned id1 = cleanNetwork.addNode(*e.m_node1);
 		unsigned id2 = cleanNetwork.addNode(*e.m_node2);
-		cleanNetwork.addEdge(Edge(id1, id2, e.m_length, e.m_diameter, e.m_supply));
+		cleanNetwork.addEdge(Edge(id1, id2, e.m_length, e.m_diameterInside, e.m_supply));
 	}
 }
 
@@ -276,39 +278,6 @@ void Network::networkWithoutDeadEnds(Network &cleanNetwork, const unsigned maxSt
 void Network::calculateLengths(){
 	for (Edge &e: m_edges) {
 		e.m_length = Line(e).length();
-	}
-}
-
-
-void Network::sizePipeDimensions(const double &dpMax, const double &dT, const double &fluidDensity,
-								 const double &fluidKinViscosity, const double &roughness){
-
-	// for all buildings: add their heating demand to the pipes along their path
-	for (Node &node: m_nodes) {
-		std::vector<Edge * > path;
-		if (node.m_type == Node::NT_Building){
-			dijkstraShortestPathToSource(node, path);
-			for (Edge * edge: path)
-				edge->m_heatingDemand += node.m_heatingDemand;
-		}
-	}
-
-	// in case there is a pipe which is not part of any path (e.g. in circular grid): assign the adjacent heating demand
-	for (Edge &e: m_edges){
-		if (e.m_heatingDemand <= 0){
-			std::set<Edge *> edges1, edges2;
-			e.m_heatingDemand = 0.5 * ( e.m_node1->adjacentHeatingDemand(edges1)
-										+ e.m_node2->adjacentHeatingDemand(edges2) );
-		}
-	}
-
-	// we need a table with pipe dimensions here
-	// and an interface to the fluid properties...
-
-	for (Edge &e: m_edges){
-		double cp =  3800;
-		double massFlow = e.m_heatingDemand / dT / cp;
-		double dp = pressureLossColebrook(0.01, e.m_length, roughness, massFlow, fluidDensity, fluidKinViscosity);
 	}
 }
 
@@ -340,14 +309,99 @@ void Network::networkWithReducedEdges(Network & reducedNetwork){
 			// add nodes and reduced edge to new network
 			unsigned id1 = reducedNetwork.addNode(*previousNode);
 			unsigned id2 = reducedNetwork.addNode(*nextNode);
-			reducedNetwork.addEdge(Edge(id1, id2, totalLength, edge.m_diameter, edge.m_supply));
+			reducedNetwork.addEdge(Edge(id1, id2, totalLength, edge.m_diameterInside, edge.m_supply));
 		}
 		else{
 			unsigned id1 = reducedNetwork.addNode(*edge.m_node1);
 			unsigned id2 = reducedNetwork.addNode(*edge.m_node2);
-			reducedNetwork.addEdge(Edge(id1, id2, edge.m_length, edge.m_diameter, edge.m_supply));
+			reducedNetwork.addEdge(Edge(id1, id2, edge.m_length, edge.m_diameterInside, edge.m_supply));
 		}
 	}
+}
+
+
+void Network::sizePipeDimensions(const double &deltaPMax, const double &deltaTemp, const double &temp,
+								 const NetworkFluid &fluid, const std::vector<NetworkPipe> &pipeDB){
+
+	// for all buildings: add their heating demand to the pipes along their path
+	for (Node &node: m_nodes) {
+		std::vector<Edge * > path;
+		if (node.m_type == Node::NT_Building){
+			dijkstraShortestPathToSource(node, path);
+			for (Edge * edge: path)
+				edge->m_heatingDemand += node.m_heatingDemand;
+		}
+	}
+
+	// in case there is a pipe which is not part of any path (e.g. in circular grid): assign the adjacent heating demand
+	for (Edge &e: m_edges){
+		if (e.m_heatingDemand <= 0){
+			std::set<Edge *> edges1, edges2;
+			e.m_heatingDemand = 0.5 * ( e.m_node1->adjacentHeatingDemand(edges1)
+										+ e.m_node2->adjacentHeatingDemand(edges2) );
+		}
+	}
+
+	for (Edge &e: m_edges){
+		for (const NetworkPipe &pipe: pipeDB){
+			double massFlow = e.m_heatingDemand / deltaTemp / fluid.m_para[NetworkFluid::P_HeatCapacity].value;
+			if (pressureLossColebrook(e.m_length, massFlow, fluid, pipe, temp) < deltaPMax){
+				e.m_diameterOutside = pipe.m_diameterOutside;
+				e.m_diameterInside = pipe.m_diameterInside();
+				break;
+			}
+		}
+	}
+}
+
+
+void Network::dijkstraShortestPathToSource(Node &startNode, std::vector<Edge*> &pathSourceToStart){
+
+	// init: all nodes have infinte distance to start node and no predecessor
+	for (Node &n: m_nodes){
+		n.m_distanceToStart = std::numeric_limits<double>::max();
+		n.m_predecessor = nullptr;
+	}
+	startNode.m_distanceToStart = 0;
+	std::set<unsigned> visitedNodes;
+
+	// go through all not-visited nodes
+	while (visitedNodes.size() <= m_nodes.size()){
+		// find node with currently smallest distance to start, which has not yet been visited:
+		double minDistance = std::numeric_limits<double>::max();
+		Node *nMin = nullptr;
+		for (unsigned id = 0; id < m_nodes.size(); ++id){
+			if (visitedNodes.find(id) == visitedNodes.end() && m_nodes[id].m_distanceToStart < minDistance){
+				minDistance = m_nodes[id].m_distanceToStart;
+				nMin = &m_nodes[id];
+			}
+		}
+		// if source reached: return path
+		if (nMin->m_type == Node::NT_Source){
+			nMin->pathToNull(pathSourceToStart);
+			return;
+		}
+		// update distance from start to neighbours of nMin
+		visitedNodes.insert(nMin->m_id);
+		nMin->updateNeighbourDistances();
+	}
+}
+
+
+double Network::pressureLossColebrook(const double &length, const double &massFlow, const NetworkFluid &fluid,
+										const NetworkPipe &pipe, const double &temperature){
+
+	double velocity = massFlow / (fluid.m_para[NetworkFluid::P_Density].value * pipe.m_diameterInside() * pipe.m_diameterInside() * 3.14159 / 4);
+	double Re = velocity * pipe.m_diameterInside() / fluid.m_kinematicViscosity.m_values.value(temperature);
+	double lambda = 0.05;
+	double lambda_new = lambda;
+	for (unsigned n=0; n<100; ++n){
+		lambda_new = std::pow(-2 * std::log10(2.51 / (Re * std::sqrt(lambda)) + pipe.m_roughness / (3.71 * pipe.m_diameterInside())), -2);
+		if (abs(lambda_new - lambda) / lambda < 1e-3)
+			break;
+		lambda = lambda_new;
+	}
+	return lambda_new * length / pipe.m_diameterInside() * fluid.m_para[NetworkFluid::P_Density].value / 2 * velocity * velocity;
 }
 
 
@@ -385,56 +439,6 @@ void Network::writeBuildingsCSV(const IBK::Path &file) const {
 			f << std::fixed << n.m_x << "\t" << n.m_y << "\t" << n.m_heatingDemand << std::endl;
 	}
 	f.close();
-}
-
-
-void Network::dijkstraShortestPathToSource(Node &startNode, std::vector<Edge*> &pathSourceToStart){
-
-	// init: all nodes have infinte distance to start node and no predecessor
-	for (Node &n: m_nodes){
-		n.m_distanceToStart = std::numeric_limits<double>::max();
-		n.m_predecessor = nullptr;
-	}
-	startNode.m_distanceToStart = 0;
-	std::set<unsigned> visitedNodes;
-
-	// go through all not-visited nodes
-	while (visitedNodes.size() <= m_nodes.size()){
-		// find node with currently smallest distance to start, which has not yet been visited:
-		double minDistance = std::numeric_limits<double>::max();
-		Node *nMin = nullptr;
-		for (unsigned id = 0; id < m_nodes.size(); ++id){
-			if (visitedNodes.find(id) == visitedNodes.end() && m_nodes[id].m_distanceToStart < minDistance){
-				minDistance = m_nodes[id].m_distanceToStart;
-				nMin = &m_nodes[id];
-			}
-		}
-		// if source reached: return path
-		if (nMin->m_type == Node::NT_Source){
-			nMin->pathToNull(pathSourceToStart);
-			return;
-		}
-		// update distance from start to neighbours of nMin
-		visitedNodes.insert(nMin->m_id);
-		nMin->updateNeighbourDistances();
-	}
-}
-
-
-double Network::pressureLossColebrook(const double &diameter, const double &length, const double &roughness,
-									  const double &massFlow, const double &fluidDensity, const double &fluidKinViscosity){
-
-	double velocity = massFlow / (fluidDensity * diameter * diameter * 3.14159 / 4);
-	double Re = velocity * diameter / fluidKinViscosity;
-	double lambda = 0.05;
-	double lambda_new = lambda;
-	for (unsigned n=0; n<100; ++n){
-		lambda_new = std::pow(-2 * std::log10(2.51 / (Re * std::sqrt(lambda)) + roughness / (3.71 * diameter)), -2);
-		if (abs(lambda_new - lambda) / lambda < 1e-3)
-			break;
-		lambda = lambda_new;
-	}
-	return lambda_new * length / diameter * fluidDensity / 2 * velocity * velocity;
 }
 
 

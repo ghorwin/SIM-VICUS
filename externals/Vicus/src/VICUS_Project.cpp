@@ -92,13 +92,13 @@ Project::Project() {
 	NetworkPipe p;
 	p.m_id = 32;
 	p.m_displayName = "PVC, 200 mm x 4 mm";
-	p.m_dOutside = 200;
+	p.m_diameterOutside = 200;
 	p.m_sWall = 4;
 	m_networkPipeDB.push_back(p);
 
 	p.m_id = 33;
 	p.m_displayName = "PVC, 150 mm x 4 mm";
-	p.m_dOutside = 150;
+	p.m_diameterOutside = 150;
 	p.m_sWall = 4;
 	m_networkPipeDB.push_back(p);
 }

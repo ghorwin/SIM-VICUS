@@ -23,7 +23,7 @@ public:
 		m_nodeId1(nodeId1),
 		m_nodeId2(nodeId2),
 		m_length(length),
-		m_diameter(diameter),
+		m_diameterInside(diameter),
 		m_supply(supply)
 	{}
 
@@ -46,8 +46,11 @@ public:
 	/*! Effective length [m], might be different than geometric length between nodes. */
 	double			m_length;
 
-	/*! Diameter in [m] */
-	double			m_diameter;
+	/*! Inner Diameter in [m] */
+	double			m_diameterInside;
+
+	/*! Outer Diameter in [m] */
+	double			m_diameterOutside;
 
 	/*! If false, this is a branch. */
 	bool			m_supply;

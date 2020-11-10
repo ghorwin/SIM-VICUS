@@ -15,6 +15,9 @@ class Path;
 
 namespace VICUS {
 
+class NetworkPipe;
+class NetworkFluid;
+
 class Network {
 public:
 
@@ -72,8 +75,14 @@ public:
 	/*! calculate the lengths of all edges in the network */
 	void calculateLengths();
 
-	void sizePipeDimensions(const double &dpMax, const double &dT,
-							const double &fluidDensity, const double &fluidKinViscosity, const double &roughness);
+	/*! calculate pipe dimensions using a maximum pressure loss per length and fixed temperature difference
+	 * the mass flow rate of each pipe will be calculated based on the heatDemand of connected consumer loads (e.g. buildings)
+	 \param deltaPMax maximum pressure loss per length [Pa/m]
+	 \param deltaTemp temperature difference between supply and return [K]
+	 \param temp temperature used for determination of fluid properties [C]
+	 */
+	void sizePipeDimensions(const double &deltaPMax, const double &deltaTemp, const double &temp,
+							const NetworkFluid &fluid, const std::vector<NetworkPipe> &pipeDB);
 
 	/*! stores a copy of the network without any redundant edges */
 	void networkWithReducedEdges(Network & reducedNetwork);
@@ -85,13 +94,17 @@ public:
 	void writeBuildingsCSV(const IBK::Path &file) const;
 
 	/*! find shortest Path from given startNode (e.g. a building) to Node with type source
-	 * using dijkstra-algorithm, implemented according to Wikipedia and returns path as vector of edges
+	 * using dijkstra-algorithm, implemented according to Wikipedia and return path as vector of edges
 	 */
 	void dijkstraShortestPathToSource(Node &startNode, std::vector<Edge*> &pathToSource);
 
-	/*! pressure loss of a rough pipe according to colebrook equation */
-	static double pressureLossColebrook(const double &diameter, const double &length, const double &roughness, const double &massFlow,
-										const double &fluidDensity, const double &fluidKinViscosity);
+	/*! pressure loss of a rough pipe according to colebrook equation
+	 \param length in [m]
+	 \param massFlow in [kg/s]
+	 \param temperature in [C]
+	 */
+	static double pressureLossColebrook(const double &length, const double &massFlow, const NetworkFluid &fluid,
+										const NetworkPipe &pipe, const double &temperature);
 
 	/*! read csv function ... */
 	void readCSV(const IBK::Path &filePath, std::vector<std::string> &content);
@@ -106,7 +119,6 @@ public:
 	*/
 	std::vector<Node>		m_nodes;
 	std::vector<Edge>		m_edges;
-	std::vector<Edge>		m_edgesReduced;
 
 	unsigned int			m_fluidID;
 
