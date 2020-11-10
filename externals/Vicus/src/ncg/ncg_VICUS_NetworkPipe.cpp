@@ -46,9 +46,13 @@ void NetworkPipe::readXML(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'dOutside' attribute.") ), FUNC_ID);
 
-		if (!TiXmlAttribute::attributeByName(element, "dInside"))
+		if (!TiXmlAttribute::attributeByName(element, "sWall"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'dInside' attribute.") ), FUNC_ID);
+				IBK::FormatString("Missing required 'sWall' attribute.") ), FUNC_ID);
+
+		if (!TiXmlAttribute::attributeByName(element, "roughness"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'roughness' attribute.") ), FUNC_ID);
 
 		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
@@ -60,8 +64,10 @@ void NetworkPipe::readXML(const TiXmlElement * element) {
 				m_displayName = attrib->ValueStr();
 			else if (attribName == "dOutside")
 				m_dOutside = NANDRAD::readPODAttributeValue<double>(element, attrib);
-			else if (attribName == "dInside")
-				m_dInside = NANDRAD::readPODAttributeValue<double>(element, attrib);
+			else if (attribName == "sWall")
+				m_sWall = NANDRAD::readPODAttributeValue<double>(element, attrib);
+			else if (attribName == "roughness")
+				m_roughness = NANDRAD::readPODAttributeValue<double>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -85,7 +91,8 @@ TiXmlElement * NetworkPipe::writeXML(TiXmlElement * parent) const {
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
 	e->SetAttribute("dOutside", IBK::val2string<double>(m_dOutside));
-	e->SetAttribute("dInside", IBK::val2string<double>(m_dInside));
+	e->SetAttribute("sWall", IBK::val2string<double>(m_sWall));
+	e->SetAttribute("roughness", IBK::val2string<double>(m_roughness));
 	return e;
 }
 
