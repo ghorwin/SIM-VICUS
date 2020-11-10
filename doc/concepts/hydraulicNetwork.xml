@@ -1,0 +1,15 @@
+<!-- database of network components. -->
+<HydraulicNetworkComponents>
+	<HydraulicNetworkComponent id="121" type="ConstantPressurePump" displayName="...">
+		<IBK:Parameter name="PressureHead" unit="Pa">1e6</IBK:Parameter>
+	</HydraulicNetworkComponent>
+</HydraulicNetworkComponents>
+
+<HydraulicNetworkModel id="211" displayName="..">
+	<!-- additional properties, like fluid, ... -->
+	<HydraulicNetworkElements>
+		<HydraulicNetworkElement id="21213213" inletNodeID="211" outletNodeID="213" componentID="121"/>
+		<HydraulicNetworkElement id="21213215" inletNodeID="213" outletNodeID="211" componentID="122"/>
+	</HydraulicNetworkElements>
+</HydraulicNetworkModel>
+
