@@ -43,6 +43,7 @@ HEADERS += \
 	../../src/VICUS_NetworkLine.h \
 	../../src/VICUS_NetworkNode.h \
 	../../src/VICUS_NetworkPipe.h \
+	../../src/VICUS_PlaneGeometry.h \
 	../../src/VICUS_Project.h \
 	../../src/VICUS_Room.h \
 	../../src/VICUS_Surface.h \
@@ -58,6 +59,7 @@ SOURCES += \
 	../../src/VICUS_NetworkLine.cpp \
 	../../src/VICUS_NetworkNode.cpp \
 	../../src/VICUS_NetworkPipe.cpp \
+	../../src/VICUS_PlaneGeometry.cpp \
 	../../src/VICUS_Project.cpp \
 	../../src/ncg/ncg_VICUS_Building.cpp \
 	../../src/ncg/ncg_VICUS_BuildingLevel.cpp \
