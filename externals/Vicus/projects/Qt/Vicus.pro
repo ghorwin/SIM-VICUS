@@ -36,30 +36,28 @@ HEADERS += \
 	../../src/VICUS_BuildingLevel.h \
 	../../src/VICUS_CodeGenMacros.h \
 	../../src/VICUS_Constants.h \ \
-	../../src/VICUS_NetworkEdge.h \
 	../../src/VICUS_KeywordList.h \
-	../../src/VICUS_NetworkLine.h \
 	../../src/VICUS_Network.h \
+	../../src/VICUS_NetworkEdge.h \
 	../../src/VICUS_NetworkFluid.h \
-	../../src/VICUS_NetworkPipe.h \
+	../../src/VICUS_NetworkLine.h \
 	../../src/VICUS_NetworkNode.h \
-	../../src/VICUS_PlaneGeometry.h \
+	../../src/VICUS_NetworkPipe.h \
 	../../src/VICUS_Project.h \
 	../../src/VICUS_Room.h \
 	../../src/VICUS_Surface.h \
-	../../src/VICUS_ViewSettings.h
+    ../../src/VICUS_ViewSettings.h
 
 SOURCES += \
 	../../src/VICUS_ArgsParser.cpp \
 	../../src/VICUS_Constants.cpp \
-	../../src/VICUS_NetworkEdge.cpp \
 	../../src/VICUS_KeywordList.cpp \
-	../../src/VICUS_NetworkLine.cpp \
 	../../src/VICUS_Network.cpp \
+	../../src/VICUS_NetworkEdge.cpp \
 	../../src/VICUS_NetworkFluid.cpp \
-	../../src/VICUS_NetworkPipe.cpp \
+	../../src/VICUS_NetworkLine.cpp \
 	../../src/VICUS_NetworkNode.cpp \
-	../../src/VICUS_PlaneGeometry.cpp \
+	../../src/VICUS_NetworkPipe.cpp \
 	../../src/VICUS_Project.cpp \
 	../../src/ncg/ncg_VICUS_Building.cpp \
 	../../src/ncg/ncg_VICUS_BuildingLevel.cpp \

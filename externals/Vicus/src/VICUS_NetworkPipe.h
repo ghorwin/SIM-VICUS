@@ -29,8 +29,10 @@ public:
 	//rohrhersteller schreiben doch auch 20x2
 	//zudem könnte man dann gleich eine referenz auf das material setzen
 	double								m_dOutside;						// XML:A:required
-	/*! Inside diameter in [mm]. */
-	double								m_dInside;						// XML:A:required
+	/*! Wall thickness in [mm]. */
+	double								m_sWall;						// XML:A:required
+	/*! roughness in [mm]. */
+	double								m_roughness;					// XML:A:required
 };
 
 } // namespace VICUS

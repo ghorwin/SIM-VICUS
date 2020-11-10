@@ -91,40 +91,8 @@ bool Network::checkConnectedGraph() const {
 }
 
 
-void Network::readCSV(const IBK::Path &filePath, std::vector<std::string> &content) {
-	FUNCID(Network::readCSV);
-
-	// TODO : see FileReader from IBK lib
-
-	if (!filePath.exists())
-		throw IBK::Exception(IBK::FormatString("File '%1' doesn't exist.").arg(filePath), FUNC_ID);
-
-#if defined(_WIN32)
-#if defined(_MSC_VER)
-	std::ifstream file(filePath.wstr().c_str(), std::ios_base::app);
-#else
-	std::string filenameAnsi = IBK::WstringToANSI(filePath.wstr(), false);
-	std::ifstream file(filenameAnsi.c_str(), std::ios_base::app);
-#endif
-#else
-	std::ifstream file(filePath.c_str(), std::ios_base::app);
-#endif
-
-	std::string line;
-	content.clear();
-	while (std::getline(file, line))
-		content.push_back(line);
-	file.close();
-}
-
-
 void Network::readGridFromCSV(const IBK::Path &filePath){
-
-	// TODO : use FileReader from IBK lib
-
 	std::vector<std::string> cont;
-	//	readCSV(filePath, cont);
-
 	IBK::FileReader::readAll(filePath, cont, std::vector<std::string>());
 
 	// extract vector of string-xy-pairs
@@ -157,7 +125,7 @@ void Network::readGridFromCSV(const IBK::Path &filePath){
 
 void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heatDemand) {
 	std::vector<std::string> cont;
-	readCSV(filePath, cont);
+	IBK::FileReader::readAll(filePath, cont, std::vector<std::string>());
 
 	// extract vector of string-xy
 	std::vector<std::string> xyStr;
@@ -203,8 +171,7 @@ bool Network::findAndAddIntersection() {
 	for (unsigned i1=0; i1<m_edges.size(); ++i1) {
 		for (unsigned i2=i1+1; i2<m_edges.size(); ++i2) {
 
-			// calculate intersection and
-
+			// calculate intersection
 			Line l1 = Line(m_edges[i1]);
 			Line l2 = Line(m_edges[i2]);
 			double xs, ys;
