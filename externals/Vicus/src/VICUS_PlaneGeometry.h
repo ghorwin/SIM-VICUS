@@ -13,7 +13,6 @@ namespace VICUS {
 	Also, it implements intersection tests (for picking).
 */
 class PlaneGeometry {
-	VICUS_READWRITE_PRIVATE
 public:
 
 	/*! Different types of the plane. */
@@ -46,10 +45,14 @@ public:
 		T_POLYGON is the most generic, yet T_TRIANGLE and T_RECTANGLE offer some specialized handling for
 		intersection calcuation and data transfer to the graphics pipeline.
 	*/
-	type_t								m_type = NUM_T;				// XML:A
+	type_t								m_type = NUM_T;
 
 	/*! Points of polyline. */
-	std::vector<IBKMK::Vector3D>		m_vertexes;					// XML:E
+	std::vector<IBKMK::Vector3D>		m_vertexes;
+
+private:
+	void readXMLPrivate(const TiXmlElement * element);
+	TiXmlElement * writeXMLPrivate(TiXmlElement * parent) const;
 };
 
 } // namespace VICUS
