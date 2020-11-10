@@ -65,7 +65,6 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_BuildingLevel.cpp \
 	../../src/ncg/ncg_VICUS_NetworkFluid.cpp \
 	../../src/ncg/ncg_VICUS_NetworkPipe.cpp \
-	../../src/ncg/ncg_VICUS_PlaneGeometry.cpp \
 	../../src/ncg/ncg_VICUS_Project.cpp \
 	../../src/ncg/ncg_VICUS_Room.cpp \
 	../../src/ncg/ncg_VICUS_Surface.cpp \
