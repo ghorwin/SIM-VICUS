@@ -5,6 +5,8 @@
 #include <set>
 #include <limits>
 
+#include "VICUS_Constants.h"
+
 namespace VICUS {
 
 class Edge;
@@ -71,14 +73,14 @@ public:
 	/*! looks at all adjacent nodes to find a node which has a heating demand >0 and returns it. */
 	double adjacentHeatingDemand(std::set<Edge*> visitedEdges);
 
-	unsigned int m_id;
-	double m_x, m_y;
-	NodeType m_type = NUM_NT;
-	double m_heatingDemand = 0;
-	double m_distanceToStart = std::numeric_limits<double>::max();
-	Node * m_predecessor = nullptr;
-	bool m_isDeadEnd = false;
-	std::vector<Edge*>	m_edges;
+	unsigned int			m_id  = INVALID_ID;
+	double m_x, m_y;//dafür wieder vector oder point nehmen
+	NodeType				m_type = NUM_NT;
+	double					m_heatingDemand = 0;
+	double					m_distanceToStart = std::numeric_limits<double>::max();
+	Node *					m_predecessor = nullptr;
+	bool					m_isDeadEnd = false;
+	std::vector<Edge*>		m_edges;
 };
 
 } // namespace VICUS

@@ -2,6 +2,7 @@
 #define EDGE_H
 
 #include "VICUS_NetworkNode.h"
+#include "VICUS_Constants.h"
 
 #include <vector>
 #include <set>
@@ -43,16 +44,16 @@ public:
 	Node		*	m_node2 = nullptr;
 
 	/*! Effective length [m], might be different than geometric length between nodes. */
-	double		m_length;
+	double			m_length;
 
 	/*! Diameter in [m] */
-	double		m_diameter;
+	double			m_diameter;
 
 	/*! If false, this is a branch. */
-	bool		m_supply;
+	bool			m_supply;
 
 	/*! heating demand of all connected buildings */
-	double		m_heatingDemand = 0;
+	double			m_heatingDemand = 0;
 };
 
 

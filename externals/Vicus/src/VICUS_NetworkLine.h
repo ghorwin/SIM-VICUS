@@ -47,6 +47,10 @@ public:
 	/*! checks wether the distance between two points is below the threshold */
 	static bool pointsMatch(const double &x1, const double &y1, const double &x2, const double &y2, const double threshold=0.01);
 
+
+	//ToDo Hauke
+	//das würde ich auf einen IBK::Point oder einen IBKMK::Vector umstellen
+	//dann haste auch einen großteil der funktionen von oben schon drin
 	double m_x1;
 	double m_y1;
 	double m_x2;

@@ -5,6 +5,7 @@
 #include <NANDRAD_LinearSplineParameter.h>
 
 #include "VICUS_CodeGenMacros.h"
+#include "VICUS_Constants.h"
 
 namespace VICUS {
 
@@ -30,7 +31,7 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique id number. */
-	unsigned int						m_id;							// XML:A:required
+	unsigned int						m_id = INVALID_ID;				// XML:A:required
 	/*! Display name of fluid. */
 	std::string							m_displayName;					// XML:A
 	/*! List of parameters. */

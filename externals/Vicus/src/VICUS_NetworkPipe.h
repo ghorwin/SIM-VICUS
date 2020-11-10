@@ -4,6 +4,7 @@
 #include <string>
 
 #include "VICUS_CodeGenMacros.h"
+#include "VICUS_Constants.h"
 
 namespace VICUS {
 
@@ -18,11 +19,15 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique id number. */
-	unsigned int						m_id;							// XML:A:required
+	unsigned int						m_id = INVALID_ID;				// XML:A:required
 	/*! Display name of fluid. */
 	std::string							m_displayName;					// XML:A
 
 	/*! Outside diameter in [mm]. */
+	//ToDo Hauke
+	//ist hier nicht besser den innendurchmesser und dann die konstruktion mit deren dicke anzugeben?
+	//rohrhersteller schreiben doch auch 20x2
+	//zudem könnte man dann gleich eine referenz auf das material setzen
 	double								m_dOutside;						// XML:A:required
 	/*! Inside diameter in [mm]. */
 	double								m_dInside;						// XML:A:required
