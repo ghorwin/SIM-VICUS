@@ -67,6 +67,7 @@ namespace NANDRAD {
 		"Schedules::flag_t",
 		"SerializationTest::test_t",
 		"SerializationTest::intPara_t",
+		"SerializationTest::splinePara_t",
 		"ShadingControlModel::modelType_t",
 		"ShadingControlModel::para_t",
 		"SimulationParameter::para_t",
@@ -80,7 +81,6 @@ namespace NANDRAD {
 		"SolverParameter::precond_t",
 		"WindowGlazingLayer::type_t",
 		"WindowGlazingLayer::para_t",
-		"WindowGlazingLayer::splinePara_t",
 		"WindowGlazingSystem::modelType_t",
 		"WindowGlazingSystem::para_t",
 		"WindowShading::modelType_t",
@@ -335,19 +335,25 @@ namespace NANDRAD {
 				case 0 : return "I1";
 				case 1 : return "I2";
 			} break;
-			// ShadingControlModel::modelType_t
+			// SerializationTest::splinePara_t
 			case 32 :
+			switch (t) {
+				case 0 : return "ParameterSet1";
+				case 1 : return "ParameterSet2";
+			} break;
+			// ShadingControlModel::modelType_t
+			case 33 :
 			switch (t) {
 				case 0 : return "SingleIntensityControlled";
 			} break;
 			// ShadingControlModel::para_t
-			case 33 :
+			case 34 :
 			switch (t) {
 				case 0 : return "MaxIntensity";
 				case 1 : return "MinIntensity";
 			} break;
 			// SimulationParameter::para_t
-			case 34 :
+			case 35 :
 			switch (t) {
 				case 0 : return "InitialTemperature";
 				case 1 : return "InitialRelativeHumidity";
@@ -363,12 +369,12 @@ namespace NANDRAD {
 				case 11 : return "HeatingDesignAmbientTemperature";
 			} break;
 			// SimulationParameter::intPara_t
-			case 35 :
+			case 36 :
 			switch (t) {
 				case 0 : return "StartYear";
 			} break;
 			// SimulationParameter::flag_t
-			case 36 :
+			case 37 :
 			switch (t) {
 				case 0 : return "EnableMoistureBalance";
 				case 1 : return "EnableCO2Balance";
@@ -376,7 +382,7 @@ namespace NANDRAD {
 				case 3 : return "ExportClimateDataFMU";
 			} break;
 			// SolverParameter::para_t
-			case 37 :
+			case 38 :
 			switch (t) {
 				case 0 : return "RelTol";
 				case 1 : return "AbsTol";
@@ -394,7 +400,7 @@ namespace NANDRAD {
 				case 13 : return "KinsolAbsTol";
 			} break;
 			// SolverParameter::intPara_t
-			case 38 :
+			case 39 :
 			switch (t) {
 				case 0 : return "PreILUWidth";
 				case 1 : return "MaxKrylovDim";
@@ -404,14 +410,14 @@ namespace NANDRAD {
 				case 5 : return "DiscMaxElementsPerLayer";
 			} break;
 			// SolverParameter::flag_t
-			case 39 :
+			case 40 :
 			switch (t) {
 				case 0 : return "DetectMaxTimeStep";
 				case 1 : return "KinsolDisableLineSearch";
 				case 2 : return "KinsolStrictNewton";
 			} break;
 			// SolverParameter::integrator_t
-			case 40 :
+			case 41 :
 			switch (t) {
 				case 0 : return "CVODE";
 				case 1 : return "ExplicitEuler";
@@ -419,7 +425,7 @@ namespace NANDRAD {
 				case 3 : return "auto";
 			} break;
 			// SolverParameter::lesSolver_t
-			case 41 :
+			case 42 :
 			switch (t) {
 				case 0 : return "Dense";
 				case 1 : return "KLU";
@@ -428,19 +434,19 @@ namespace NANDRAD {
 				case 4 : return "auto";
 			} break;
 			// SolverParameter::precond_t
-			case 42 :
+			case 43 :
 			switch (t) {
 				case 0 : return "ILU";
 				case 1 : return "auto";
 			} break;
 			// WindowGlazingLayer::type_t
-			case 43 :
+			case 44 :
 			switch (t) {
 				case 0 : return "Gas";
 				case 1 : return "Glass";
 			} break;
 			// WindowGlazingLayer::para_t
-			case 44 :
+			case 45 :
 			switch (t) {
 				case 0 : return "Thickness";
 				case 1 : return "Conductivity";
@@ -449,13 +455,6 @@ namespace NANDRAD {
 				case 4 : return "MassDensity";
 				case 5 : return "LongWaveEmissivityInside";
 				case 6 : return "P_LongWaveEmissivityOutside";
-			} break;
-			// WindowGlazingLayer::splinePara_t
-			case 45 :
-			switch (t) {
-				case 0 : return "ShortWaveTransmittance";
-				case 1 : return "ShortWaveReflectanceOutside";
-				case 2 : return "ShortWaveReflectanceInside";
 			} break;
 			// WindowGlazingSystem::modelType_t
 			case 46 :
@@ -735,19 +734,25 @@ namespace NANDRAD {
 				case 0 : return "I1";
 				case 1 : return "I2";
 			} break;
-			// ShadingControlModel::modelType_t
+			// SerializationTest::splinePara_t
 			case 32 :
+			switch (t) {
+				case 0 : return "ParameterSet1";
+				case 1 : return "ParameterSet2";
+			} break;
+			// ShadingControlModel::modelType_t
+			case 33 :
 			switch (t) {
 				case 0 : return "SingleIntensityControlled";
 			} break;
 			// ShadingControlModel::para_t
-			case 33 :
+			case 34 :
 			switch (t) {
 				case 0 : return "MaxIntensity";
 				case 1 : return "MinIntensity";
 			} break;
 			// SimulationParameter::para_t
-			case 34 :
+			case 35 :
 			switch (t) {
 				case 0 : return "InitialTemperature";
 				case 1 : return "InitialRelativeHumidity";
@@ -763,12 +768,12 @@ namespace NANDRAD {
 				case 11 : return "HeatingDesignAmbientTemperature";
 			} break;
 			// SimulationParameter::intPara_t
-			case 35 :
+			case 36 :
 			switch (t) {
 				case 0 : return "StartYear";
 			} break;
 			// SimulationParameter::flag_t
-			case 36 :
+			case 37 :
 			switch (t) {
 				case 0 : return "EnableMoistureBalance";
 				case 1 : return "EnableCO2Balance";
@@ -776,7 +781,7 @@ namespace NANDRAD {
 				case 3 : return "ExportClimateDataFMU";
 			} break;
 			// SolverParameter::para_t
-			case 37 :
+			case 38 :
 			switch (t) {
 				case 0 : return "RelTol";
 				case 1 : return "AbsTol";
@@ -794,7 +799,7 @@ namespace NANDRAD {
 				case 13 : return "KinsolAbsTol";
 			} break;
 			// SolverParameter::intPara_t
-			case 38 :
+			case 39 :
 			switch (t) {
 				case 0 : return "PreILUWidth";
 				case 1 : return "MaxKrylovDim";
@@ -804,14 +809,14 @@ namespace NANDRAD {
 				case 5 : return "DiscMaxElementsPerLayer";
 			} break;
 			// SolverParameter::flag_t
-			case 39 :
+			case 40 :
 			switch (t) {
 				case 0 : return "DetectMaxTimeStep";
 				case 1 : return "KinsolDisableLineSearch";
 				case 2 : return "KinsolStrictNewton";
 			} break;
 			// SolverParameter::integrator_t
-			case 40 :
+			case 41 :
 			switch (t) {
 				case 0 : return "CVODE";
 				case 1 : return "ExplicitEuler";
@@ -819,7 +824,7 @@ namespace NANDRAD {
 				case 3 : return "auto";
 			} break;
 			// SolverParameter::lesSolver_t
-			case 41 :
+			case 42 :
 			switch (t) {
 				case 0 : return "Dense";
 				case 1 : return "KLU";
@@ -828,19 +833,19 @@ namespace NANDRAD {
 				case 4 : return "auto";
 			} break;
 			// SolverParameter::precond_t
-			case 42 :
+			case 43 :
 			switch (t) {
 				case 0 : return "ILU";
 				case 1 : return "auto";
 			} break;
 			// WindowGlazingLayer::type_t
-			case 43 :
+			case 44 :
 			switch (t) {
 				case 0 : return "Gas";
 				case 1 : return "Glass";
 			} break;
 			// WindowGlazingLayer::para_t
-			case 44 :
+			case 45 :
 			switch (t) {
 				case 0 : return "Thickness";
 				case 1 : return "Conductivity";
@@ -849,13 +854,6 @@ namespace NANDRAD {
 				case 4 : return "MassDensity";
 				case 5 : return "LongWaveEmissivityInside";
 				case 6 : return "P_LongWaveEmissivityOutside";
-			} break;
-			// WindowGlazingLayer::splinePara_t
-			case 45 :
-			switch (t) {
-				case 0 : return "ShortWaveTransmittance";
-				case 1 : return "ShortWaveReflectanceOutside";
-				case 2 : return "ShortWaveReflectanceInside";
 			} break;
 			// WindowGlazingSystem::modelType_t
 			case 46 :
@@ -1136,19 +1134,25 @@ namespace NANDRAD {
 				case 0 : if (no_description != nullptr) *no_description = true; return "I1";
 				case 1 : if (no_description != nullptr) *no_description = true; return "I2";
 			} break;
-			// ShadingControlModel::modelType_t
+			// SerializationTest::splinePara_t
 			case 32 :
+			switch (t) {
+				case 0 : if (no_description != nullptr) *no_description = true; return "ParameterSet1";
+				case 1 : if (no_description != nullptr) *no_description = true; return "ParameterSet2";
+			} break;
+			// ShadingControlModel::modelType_t
+			case 33 :
 			switch (t) {
 				case 0 : return "Simple hysteretic shading control based on global radiation sensor";
 			} break;
 			// ShadingControlModel::para_t
-			case 33 :
+			case 34 :
 			switch (t) {
 				case 0 : return "Maximum intensity allowed before shading is closed.";
 				case 1 : return "Intensity level below which shading is opened.";
 			} break;
 			// SimulationParameter::para_t
-			case 34 :
+			case 35 :
 			switch (t) {
 				case 0 : return "Global initial temperature [C].";
 				case 1 : return "Global initial relative humidity [%].";
@@ -1164,12 +1168,12 @@ namespace NANDRAD {
 				case 11 : return "Ambient temperature for a design day. Parameter that is needed for FMU export.";
 			} break;
 			// SimulationParameter::intPara_t
-			case 35 :
+			case 36 :
 			switch (t) {
 				case 0 : return "Start year of the simulation.";
 			} break;
 			// SimulationParameter::flag_t
-			case 36 :
+			case 37 :
 			switch (t) {
 				case 0 : return "Flag activating moisture balance calculation if enabled.";
 				case 1 : return "Flag activating CO2 balance calculation if enabled.";
@@ -1177,7 +1181,7 @@ namespace NANDRAD {
 				case 3 : return "Flag activating FMU export of climate data.";
 			} break;
 			// SolverParameter::para_t
-			case 37 :
+			case 38 :
 			switch (t) {
 				case 0 : return "Relative tolerance for solver error check.";
 				case 1 : return "Absolute tolerance for solver error check.";
@@ -1195,7 +1199,7 @@ namespace NANDRAD {
 				case 13 : return "Absolute tolerance for Kinsol solver.";
 			} break;
 			// SolverParameter::intPara_t
-			case 38 :
+			case 39 :
 			switch (t) {
 				case 0 : return "Maximum level of fill-in to be used for ILU preconditioner.";
 				case 1 : return "Maximum dimension of Krylov subspace.";
@@ -1205,14 +1209,14 @@ namespace NANDRAD {
 				case 5 : return "Maximum number of elements per layer.";
 			} break;
 			// SolverParameter::flag_t
-			case 39 :
+			case 40 :
 			switch (t) {
 				case 0 : return "Check schedules to determine minimum distances between steps and adjust MaxTimeStep.";
 				case 1 : return "Disable line search for steady state cycles.";
 				case 2 : return "Enable strict Newton for steady state cycles.";
 			} break;
 			// SolverParameter::integrator_t
-			case 40 :
+			case 41 :
 			switch (t) {
 				case 0 : return "CVODE based solver";
 				case 1 : return "Explicit Euler solver";
@@ -1220,7 +1224,7 @@ namespace NANDRAD {
 				case 3 : return "System selects integrator automatically.";
 			} break;
 			// SolverParameter::lesSolver_t
-			case 41 :
+			case 42 :
 			switch (t) {
 				case 0 : return "Dense solver";
 				case 1 : return "KLU sparse solver";
@@ -1229,19 +1233,19 @@ namespace NANDRAD {
 				case 4 : return "System selects les solver automatically.";
 			} break;
 			// SolverParameter::precond_t
-			case 42 :
+			case 43 :
 			switch (t) {
 				case 0 : return "Incomplete LU preconditioner";
 				case 1 : return "System selects preconditioner automatically.";
 			} break;
 			// WindowGlazingLayer::type_t
-			case 43 :
+			case 44 :
 			switch (t) {
 				case 0 : return "Gas layer";
 				case 1 : return "Glass layer";
 			} break;
 			// WindowGlazingLayer::para_t
-			case 44 :
+			case 45 :
 			switch (t) {
 				case 0 : return "Thickness of the window layer.";
 				case 1 : return "Thermal conductivity of the window layer.";
@@ -1250,13 +1254,6 @@ namespace NANDRAD {
 				case 4 : return "height of the detailed window.";
 				case 5 : return "Emissivity of surface facing outside.";
 				case 6 : return "Emissivity of surface facing inside.";
-			} break;
-			// WindowGlazingLayer::splinePara_t
-			case 45 :
-			switch (t) {
-				case 0 : return "Short wave transmittance.";
-				case 1 : return "Short wave reflectance at outside directed surface.";
-				case 2 : return "Short wave reflectance at room directed surface.";
 			} break;
 			// WindowGlazingSystem::modelType_t
 			case 46 :
@@ -1536,19 +1533,25 @@ namespace NANDRAD {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
-			// ShadingControlModel::modelType_t
+			// SerializationTest::splinePara_t
 			case 32 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+			} break;
+			// ShadingControlModel::modelType_t
+			case 33 :
 			switch (t) {
 				case 0 : return "";
 			} break;
 			// ShadingControlModel::para_t
-			case 33 :
+			case 34 :
 			switch (t) {
 				case 0 : return "W/m2";
 				case 1 : return "W/m2";
 			} break;
 			// SimulationParameter::para_t
-			case 34 :
+			case 35 :
 			switch (t) {
 				case 0 : return "C";
 				case 1 : return "%";
@@ -1564,12 +1567,12 @@ namespace NANDRAD {
 				case 11 : return "C";
 			} break;
 			// SimulationParameter::intPara_t
-			case 35 :
+			case 36 :
 			switch (t) {
 				case 0 : return "";
 			} break;
 			// SimulationParameter::flag_t
-			case 36 :
+			case 37 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
@@ -1577,7 +1580,7 @@ namespace NANDRAD {
 				case 3 : return "";
 			} break;
 			// SolverParameter::para_t
-			case 37 :
+			case 38 :
 			switch (t) {
 				case 0 : return "---";
 				case 1 : return "---";
@@ -1595,7 +1598,7 @@ namespace NANDRAD {
 				case 13 : return "---";
 			} break;
 			// SolverParameter::intPara_t
-			case 38 :
+			case 39 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
@@ -1605,14 +1608,14 @@ namespace NANDRAD {
 				case 5 : return "";
 			} break;
 			// SolverParameter::flag_t
-			case 39 :
+			case 40 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
 			} break;
 			// SolverParameter::integrator_t
-			case 40 :
+			case 41 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
@@ -1620,7 +1623,7 @@ namespace NANDRAD {
 				case 3 : return "";
 			} break;
 			// SolverParameter::lesSolver_t
-			case 41 :
+			case 42 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
@@ -1629,19 +1632,19 @@ namespace NANDRAD {
 				case 4 : return "";
 			} break;
 			// SolverParameter::precond_t
-			case 42 :
-			switch (t) {
-				case 0 : return "";
-				case 1 : return "";
-			} break;
-			// WindowGlazingLayer::type_t
 			case 43 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
-			// WindowGlazingLayer::para_t
+			// WindowGlazingLayer::type_t
 			case 44 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+			} break;
+			// WindowGlazingLayer::para_t
+			case 45 :
 			switch (t) {
 				case 0 : return "m";
 				case 1 : return "W/mK";
@@ -1650,13 +1653,6 @@ namespace NANDRAD {
 				case 4 : return "m";
 				case 5 : return "---";
 				case 6 : return "---";
-			} break;
-			// WindowGlazingLayer::splinePara_t
-			case 45 :
-			switch (t) {
-				case 0 : return "---";
-				case 1 : return "---";
-				case 2 : return "---";
 			} break;
 			// WindowGlazingSystem::modelType_t
 			case 46 :
@@ -1936,19 +1932,25 @@ namespace NANDRAD {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
-			// ShadingControlModel::modelType_t
+			// SerializationTest::splinePara_t
 			case 32 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// ShadingControlModel::modelType_t
+			case 33 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
 			// ShadingControlModel::para_t
-			case 33 :
+			case 34 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
 			// SimulationParameter::para_t
-			case 34 :
+			case 35 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -1964,12 +1966,12 @@ namespace NANDRAD {
 				case 11 : return "#FFFFFF";
 			} break;
 			// SimulationParameter::intPara_t
-			case 35 :
+			case 36 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
 			// SimulationParameter::flag_t
-			case 36 :
+			case 37 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -1977,7 +1979,7 @@ namespace NANDRAD {
 				case 3 : return "#FFFFFF";
 			} break;
 			// SolverParameter::para_t
-			case 37 :
+			case 38 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -1995,7 +1997,7 @@ namespace NANDRAD {
 				case 13 : return "#FFFFFF";
 			} break;
 			// SolverParameter::intPara_t
-			case 38 :
+			case 39 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2005,14 +2007,14 @@ namespace NANDRAD {
 				case 5 : return "#FFFFFF";
 			} break;
 			// SolverParameter::flag_t
-			case 39 :
+			case 40 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
 			// SolverParameter::integrator_t
-			case 40 :
+			case 41 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2020,7 +2022,7 @@ namespace NANDRAD {
 				case 3 : return "#FFFFFF";
 			} break;
 			// SolverParameter::lesSolver_t
-			case 41 :
+			case 42 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2029,19 +2031,19 @@ namespace NANDRAD {
 				case 4 : return "#FFFFFF";
 			} break;
 			// SolverParameter::precond_t
-			case 42 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-			} break;
-			// WindowGlazingLayer::type_t
 			case 43 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
-			// WindowGlazingLayer::para_t
+			// WindowGlazingLayer::type_t
 			case 44 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// WindowGlazingLayer::para_t
+			case 45 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2050,13 +2052,6 @@ namespace NANDRAD {
 				case 4 : return "#FFFFFF";
 				case 5 : return "#FFFFFF";
 				case 6 : return "#FFFFFF";
-			} break;
-			// WindowGlazingLayer::splinePara_t
-			case 45 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-				case 2 : return "#FFFFFF";
 			} break;
 			// WindowGlazingSystem::modelType_t
 			case 46 :
@@ -2336,19 +2331,25 @@ namespace NANDRAD {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// ShadingControlModel::modelType_t
+			// SerializationTest::splinePara_t
 			case 32 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// ShadingControlModel::modelType_t
+			case 33 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// ShadingControlModel::para_t
-			case 33 :
+			case 34 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SimulationParameter::para_t
-			case 34 :
+			case 35 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2364,12 +2365,12 @@ namespace NANDRAD {
 				case 11 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SimulationParameter::intPara_t
-			case 35 :
+			case 36 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SimulationParameter::flag_t
-			case 36 :
+			case 37 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2377,7 +2378,7 @@ namespace NANDRAD {
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SolverParameter::para_t
-			case 37 :
+			case 38 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2395,7 +2396,7 @@ namespace NANDRAD {
 				case 13 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SolverParameter::intPara_t
-			case 38 :
+			case 39 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2405,14 +2406,14 @@ namespace NANDRAD {
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SolverParameter::flag_t
-			case 39 :
+			case 40 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SolverParameter::integrator_t
-			case 40 :
+			case 41 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2420,7 +2421,7 @@ namespace NANDRAD {
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SolverParameter::lesSolver_t
-			case 41 :
+			case 42 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2429,19 +2430,19 @@ namespace NANDRAD {
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SolverParameter::precond_t
-			case 42 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// WindowGlazingLayer::type_t
 			case 43 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// WindowGlazingLayer::para_t
+			// WindowGlazingLayer::type_t
 			case 44 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// WindowGlazingLayer::para_t
+			case 45 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2450,13 +2451,6 @@ namespace NANDRAD {
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// WindowGlazingLayer::splinePara_t
-			case 45 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// WindowGlazingSystem::modelType_t
 			case 46 :
@@ -2568,34 +2562,34 @@ namespace NANDRAD {
 			case 30 : return 2;
 			// SerializationTest::intPara_t
 			case 31 : return 2;
+			// SerializationTest::splinePara_t
+			case 32 : return 2;
 			// ShadingControlModel::modelType_t
-			case 32 : return 1;
+			case 33 : return 1;
 			// ShadingControlModel::para_t
-			case 33 : return 2;
+			case 34 : return 2;
 			// SimulationParameter::para_t
-			case 34 : return 12;
+			case 35 : return 12;
 			// SimulationParameter::intPara_t
-			case 35 : return 1;
+			case 36 : return 1;
 			// SimulationParameter::flag_t
-			case 36 : return 4;
+			case 37 : return 4;
 			// SolverParameter::para_t
-			case 37 : return 14;
+			case 38 : return 14;
 			// SolverParameter::intPara_t
-			case 38 : return 6;
+			case 39 : return 6;
 			// SolverParameter::flag_t
-			case 39 : return 3;
+			case 40 : return 3;
 			// SolverParameter::integrator_t
-			case 40 : return 4;
+			case 41 : return 4;
 			// SolverParameter::lesSolver_t
-			case 41 : return 5;
+			case 42 : return 5;
 			// SolverParameter::precond_t
-			case 42 : return 2;
-			// WindowGlazingLayer::type_t
 			case 43 : return 2;
+			// WindowGlazingLayer::type_t
+			case 44 : return 2;
 			// WindowGlazingLayer::para_t
-			case 44 : return 7;
-			// WindowGlazingLayer::splinePara_t
-			case 45 : return 3;
+			case 45 : return 7;
 			// WindowGlazingSystem::modelType_t
 			case 46 : return 2;
 			// WindowGlazingSystem::para_t
@@ -2680,34 +2674,34 @@ namespace NANDRAD {
 			case 30 : return 1;
 			// SerializationTest::intPara_t
 			case 31 : return 1;
+			// SerializationTest::splinePara_t
+			case 32 : return 1;
 			// ShadingControlModel::modelType_t
-			case 32 : return 0;
+			case 33 : return 0;
 			// ShadingControlModel::para_t
-			case 33 : return 1;
+			case 34 : return 1;
 			// SimulationParameter::para_t
-			case 34 : return 11;
+			case 35 : return 11;
 			// SimulationParameter::intPara_t
-			case 35 : return 0;
+			case 36 : return 0;
 			// SimulationParameter::flag_t
-			case 36 : return 3;
+			case 37 : return 3;
 			// SolverParameter::para_t
-			case 37 : return 13;
+			case 38 : return 13;
 			// SolverParameter::intPara_t
-			case 38 : return 5;
+			case 39 : return 5;
 			// SolverParameter::flag_t
-			case 39 : return 2;
+			case 40 : return 2;
 			// SolverParameter::integrator_t
-			case 40 : return 3;
+			case 41 : return 3;
 			// SolverParameter::lesSolver_t
-			case 41 : return 4;
+			case 42 : return 4;
 			// SolverParameter::precond_t
-			case 42 : return 1;
-			// WindowGlazingLayer::type_t
 			case 43 : return 1;
+			// WindowGlazingLayer::type_t
+			case 44 : return 1;
 			// WindowGlazingLayer::para_t
-			case 44 : return 6;
-			// WindowGlazingLayer::splinePara_t
-			case 45 : return 2;
+			case 45 : return 6;
 			// WindowGlazingSystem::modelType_t
 			case 46 : return 1;
 			// WindowGlazingSystem::para_t

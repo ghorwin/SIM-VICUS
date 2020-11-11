@@ -41,7 +41,7 @@ Vicus.file = ../../externals/Vicus/projects/Qt/Vicus.pro
 QtExt.file = ../../externals/QtExt/projects/Qt/QtExt.pro
 
 # dependencies
-NandradSolver.depends = DataIO CCM TiCPP IBK IntegratorFramework
+NandradSolver.depends = DataIO CCM TiCPP IBK IntegratorFramework Nandrad IBKMK
 NandradCodeCreator.depends = IBK
 SIM-VICUS.depends = QuaZIP qwt Vicus Nandrad IBK TiCPP CCM
 
@@ -51,7 +51,7 @@ IBKMK.depends = IBK
 TiCPP.depends = IBK
 IntegratorFramework.depends = IBK IBKMK sundials SuiteSparse
 sundials.depends = SuiteSparse
-Nandrad.depends = IBK TiCPP
+Nandrad.depends = IBK TiCPP IBKMK
 Zeppelin.depends = IBK
-Vicus.depends = IBK TiCPP Nandrad
+Vicus.depends = IBK TiCPP Nandrad IBKMK
 

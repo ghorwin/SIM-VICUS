@@ -26,6 +26,8 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
+#include <NANDRAD_Constants.h>
+#include <NANDRAD_KeywordList.h>
 #include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
@@ -37,11 +39,29 @@ void WindowGlazingLayer::readXML(const TiXmlElement * element) {
 
 	try {
 		// search for mandatory attributes
+		if (!TiXmlAttribute::attributeByName(element, "type"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'type' attribute.") ), FUNC_ID);
+
+		if (!TiXmlAttribute::attributeByName(element, "id"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
+
 		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
-			if (attribName == "displayName")
+			if (attribName == "type")
+			try {
+				m_type = (type_t)KeywordList::Enumeration("WindowGlazingLayer::type_t", attrib->ValueStr());
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+					IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
+			}
+			if (attribName == "id")
+				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "displayName")
 				m_displayName = attrib->ValueStr();
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
@@ -74,18 +94,31 @@ void WindowGlazingLayer::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
-			else if (cName == "LinearSplineParameter")
-				m_conductivity.readXML(c);
-			else if (cName == "LinearSplineParameter")
-				m_dynamicViscosity.readXML(c);
-			else if (cName == "LinearSplineParameter")
-				m_heatCapacity.readXML(c);
-			else if (cName == "LinearSplineParameter")
-				m_shortWaveTransmittance.readXML(c);
-			else if (cName == "LinearSplineParameter")
-				m_shortWaveReflectanceInside.readXML(c);
-			else if (cName == "LinearSplineParameter")
-				m_shortWaveReflectanceOutside.readXML(c);
+			else if (cName == "LinearSplineParameter") {
+				NANDRAD::LinearSplineParameter p;
+				p.readXML(c);
+				bool success = false;
+				if (p.m_name == "Conductivity") {
+					m_conductivity = p; success = true;
+				}
+				else if (p.m_name == "DynamicViscosity") {
+					m_dynamicViscosity = p; success = true;
+				}
+				else if (p.m_name == "HeatCapacity") {
+					m_heatCapacity = p; success = true;
+				}
+				else if (p.m_name == "ShortWaveTransmittance") {
+					m_shortWaveTransmittance = p; success = true;
+				}
+				else if (p.m_name == "ShortWaveReflectanceInside") {
+					m_shortWaveReflectanceInside = p; success = true;
+				}
+				else if (p.m_name == "ShortWaveReflectanceOutside") {
+					m_shortWaveReflectanceOutside = p; success = true;
+				}
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.m_name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -104,6 +137,10 @@ TiXmlElement * WindowGlazingLayer::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("WindowGlazingLayer");
 	parent->LinkEndChild(e);
 
+	if (m_type != NUM_T)
+		e->SetAttribute("type", KeywordList::Keyword("WindowGlazingLayer::type_t",  m_type));
+	if (m_id != NANDRAD::INVALID_ID)
+		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
 
@@ -111,18 +148,18 @@ TiXmlElement * WindowGlazingLayer::writeXML(TiXmlElement * parent) const {
 		if (!m_para[i].name.empty())
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
 	}
-
-	m_conductivity.writeXML(e);
-
-	m_dynamicViscosity.writeXML(e);
-
-	m_heatCapacity.writeXML(e);
-
-	m_shortWaveTransmittance.writeXML(e);
-
-	m_shortWaveReflectanceInside.writeXML(e);
-
-	m_shortWaveReflectanceOutside.writeXML(e);
+	if (!m_conductivity.m_name.empty())
+		m_conductivity.writeXML(e);
+	if (!m_dynamicViscosity.m_name.empty())
+		m_dynamicViscosity.writeXML(e);
+	if (!m_heatCapacity.m_name.empty())
+		m_heatCapacity.writeXML(e);
+	if (!m_shortWaveTransmittance.m_name.empty())
+		m_shortWaveTransmittance.writeXML(e);
+	if (!m_shortWaveReflectanceInside.m_name.empty())
+		m_shortWaveReflectanceInside.writeXML(e);
+	if (!m_shortWaveReflectanceOutside.m_name.empty())
+		m_shortWaveReflectanceOutside.writeXML(e);
 	return e;
 }
 

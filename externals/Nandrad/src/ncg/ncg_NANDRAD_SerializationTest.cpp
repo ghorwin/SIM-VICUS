@@ -101,6 +101,8 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 				m_str2 = c->GetText();
 			else if (cName == "Path2")
 				m_path2 = IBK::Path(c->GetText());
+			else if (cName == "Path22")
+				m_path22 = IBK::Path(c->GetText());
 			else if (cName == "U2")
 				m_u2 = NANDRAD::readUnitElement(c, cName);
 			else if (cName == "X5")
@@ -111,6 +113,9 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 				bool success = false;
 				if (f.name() == "F") {
 					m_f = f; success=true;
+				}
+				else if (f.name() == "F2") {
+					m_f2 = f; success=true;
 				}
 				try {
 					test_t ftype = (test_t)KeywordList::Enumeration("SerializationTest::test_t", f.name());
@@ -152,17 +157,9 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 				test_t ptype;
 				try {
 					ptype = (test_t)KeywordList::Enumeration("SerializationTest::test_t", p.name);
-					m_para[ptype] = p;
-					success = true;
+					m_para[ptype] = p; success = true;
 				}
-				catch (IBK::Exception & ex) { ex.writeMsgStackToError(); }
-				if (success) {
-					std::string refUnit = KeywordList::Unit("SerializationTest::test_t", ptype);
-					if (!refUnit.empty() && (p.IO_unit.base_id() != IBK::Unit(refUnit).base_id())) {
-						throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(c->Row())
-											  .arg("Incompatible unit '"+p.IO_unit.name()+"', expected '"+refUnit +"'."), FUNC_ID);
-					}
-				}
+				catch (...) { /* intentional fail */  }
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -170,6 +167,9 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 				IBK::IntPara p;
 				NANDRAD::readIntParaElement(c, p);
 				bool success = false;
+				if (p.name == "SingleIntegerPara") {
+					m_singleIntegerPara = p; success = true;
+				}
 				try {
 					intPara_t ptype = (intPara_t)KeywordList::Enumeration("SerializationTest::intPara_t", p.name);
 					m_intPara[ptype] = p; success = true;
@@ -183,8 +183,8 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 				std::string name;
 				NANDRAD::readLinearSplineElement(c, p, name, nullptr, nullptr);
 				bool success = false;
-				if (name == "LinearSpline") {
-					m_linearSpline = p; success = true;
+				if (name == "LinSpl") {
+					m_linSpl = p; success = true;
 				}
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
@@ -202,10 +202,9 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 				try {
 					splinePara_t ptype;
 					ptype = (splinePara_t)KeywordList::Enumeration("SerializationTest::splinePara_t", p.m_name);
-					m_splinePara[ptype] = p;
-					success = true;
+					m_splinePara[ptype] = p; success = true;
 				}
-				catch (IBK::Exception & ex) { ex.writeMsgStackToError(); }
+				catch (...) { /* intentional fail */  }
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.m_name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -222,6 +221,8 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 				m_interfaceA.readXML(c);
 			else if (cName == "Schedule")
 				m_sched.readXML(c);
+			else if (cName == "OtherSchedule")
+				m_sched2.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -265,11 +266,15 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "Str2", nullptr, std::string(), m_str2);
 	if (m_path2.isValid())
 		TiXmlElement::appendSingleAttributeElement(e, "Path2", nullptr, std::string(), m_path2.str());
+	if (m_path22.isValid())
+		TiXmlElement::appendSingleAttributeElement(e, "Path22", nullptr, std::string(), m_path22.str());
 	if (m_u2.id() != 0)
 		TiXmlElement::appendSingleAttributeElement(e, "U2", nullptr, std::string(), m_u2.name());
 	TiXmlElement::appendSingleAttributeElement(e, "X5", nullptr, std::string(), IBK::val2string<double>(m_x5));
 	if (!m_f.name().empty())
-		TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_f.name(), m_f.isEnabled() ? "true" : "false");
+		TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", "F", m_f.isEnabled() ? "true" : "false");
+	if (!m_f2.name().empty())
+		TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", "F2", m_f2.isEnabled() ? "true" : "false");
 	if (m_time1 != IBK::Time())
 		TiXmlElement::appendSingleAttributeElement(e, "Time1", nullptr, std::string(), m_time1.toShortDateFormat());
 	if (m_time2 != IBK::Time())
@@ -298,7 +303,9 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 			customElement->ToElement()->SetValue("InterfaceA");
 	}
 	if (!m_singlePara.name.empty())
-		TiXmlElement::appendIBKParameterElement(e, m_singlePara.name, m_singlePara.IO_unit.name(), m_singlePara.get_value());
+		TiXmlElement::appendIBKParameterElement(e, "SinglePara", m_singlePara.IO_unit.name(), m_singlePara.get_value());
+	if (!m_singleIntegerPara.name.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "IBK:IntPara", "name", "SingleIntegerPara", IBK::val2string(m_singleIntegerPara.value));
 
 	for (unsigned int i=0; i<NUM_test; ++i) {
 		if (!m_para[i].name.empty())
@@ -314,8 +321,8 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 		if (!m_flags[i].name().empty())
 			TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_flags[i].name(), m_flags[i].isEnabled() ? "true" : "false");
 	}
-	if (!m_linearSpline.empty())
-		NANDRAD::writeLinearSplineElement(e, "LinearSpline", m_linearSpline, "-", "-");
+	if (!m_linSpl.empty())
+		NANDRAD::writeLinearSplineElement(e, "LinSpl", m_linSpl, "-", "-");
 	if (!m_splineParameter.m_name.empty())
 		m_splineParameter.writeXML(e);
 	if (!m_anotherSplineParameter.m_name.empty())
@@ -326,6 +333,12 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 	}
 
 	m_sched.writeXML(e);
+
+	{
+		TiXmlElement * customElement = m_sched2.writeXML(e);
+		if (customElement != nullptr)
+			customElement->ToElement()->SetValue("OtherSchedule");
+	}
 	return e;
 }
 

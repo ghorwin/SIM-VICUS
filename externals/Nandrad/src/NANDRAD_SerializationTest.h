@@ -55,7 +55,7 @@ public:
 		std::vector<double> y = {1, 2, 3.4, 5};
 		m_intPara[IP_i1].set("I1", 13);
 		m_intPara[IP_i2].set("I2", 15);
-		m_f.set("F43",true);
+		m_f.set("F",true);
 		m_dblVec = std::vector<double>{0, 12, 24};
 
 		m_sched.m_type = Schedule::ST_FRIDAY;
@@ -67,29 +67,32 @@ public:
 		d.m_values.m_values["Temperatures"] = std::vector<double>{0,6,18};
 		m_sched.m_dailyCycles.push_back( DailyCycle() );
 
+		m_sched2 = m_sched;
+
 		m_time1.set(2007,46032);
 
 		m_table.m_values["Col1"] = std::vector<double>{1,5,3};
 		m_table.m_values["Col2"] = std::vector<double>{7,2,2};
 
-		m_singlePara.set("SingleP", 20, IBK::Unit("C") );
+		m_singlePara.set("SinglePara", 20, IBK::Unit("C") );
 
 		// spline tests
 
 		// unitless spline
-		m_linearSpline.setValues(x,y);
+		m_linSpl.setValues(x,y);
 
 		// spline with name and units
-		m_splineParameter.m_name = "SingleParaSpl"; // the name is custom
+		m_splineParameter.m_name = "SplineParameter"; // the name is custom
 		m_splineParameter.m_values.setValues({0, 5,10}, {5,4,3});
 		m_splineParameter.m_xUnit.set("m");
 		m_splineParameter.m_yUnit.set("C");
 
-		m_anotherSplineParameter.m_name = "AnotherSplinePara"; // the name is custom
+		m_anotherSplineParameter.m_name = "AnotherSplineParameter"; // the name is custom
 		m_anotherSplineParameter.m_values.setValues({0, 5,10}, {5,4,3});
 		m_anotherSplineParameter.m_xUnit.set("m");
 		m_anotherSplineParameter.m_yUnit.set("C");
 
+		m_splinePara[SP_ParameterSet1] = m_splineParameter;
 		m_splinePara[SP_ParameterSet1].m_name = "ParameterSet1";
 
 	}
@@ -109,8 +112,8 @@ public:
 	};
 
 	enum splinePara_t {
-		SP_ParameterSet1,									// ParameterSet1
-		SP_ParameterSet2,									// ParameterSet2
+		SP_ParameterSet1,									// Keyword: ParameterSet1
+		SP_ParameterSet2,									// Keyword: ParameterSet2
 		NUM_SP
 	};
 
@@ -143,41 +146,74 @@ public:
 	test_t				m_testBlo	= t_x2;					// XML:E
 	// -> <Str2>blabb</Str2>
 	std::string			m_str2		= "blabb";				// XML:E
+
 	// -> <Path2>/var</Path2>
 	IBK::Path			m_path2		= IBK::Path("/var");	// XML:E
+	// -> undefined/empty - not written
+	IBK::Path			m_path22;							// XML:E
+
 	// -> <U2>C</U2>
 	IBK::Unit			m_u2		= IBK::Unit("C");		// XML:E
 	// -> <X5>43.43</X5>
 	double				m_x5		= 43.43;				// XML:E
+
 	// -> <IBK:Flag name="F">true</IBK:Flag>  -> value of m_f.name is ignored
 	IBK::Flag			m_f;								// XML:E
-	// ->
+	// -> undefined/empty - not written
+	IBK::Flag			m_f2;								// XML:E
+
+	// -> <Time1>01.01.07 12:47:12</Time1>
 	IBK::Time			m_time1;							// XML:E
-	// ->
+	// -> undefined/empty - not written
 	IBK::Time			m_time2;							// XML:E
 
+	// -> <Table>Col1:1,5,3;Col2:7,2,2;</Table>
 	DataTable			m_table;							// XML:E
-	DataTable			m_table2;							// XML:E:tag=Table2
+	// -> undefined/empty - not written
+	DataTable			m_table2;							// XML:E
 
+	// -> 		<DblVec>0,12,24</DblVec>
 	std::vector<double>		m_dblVec;						// XML:E
+
+	// -> <Interfaces>...</Interfaces>
 	std::vector<Interface>	m_interfaces;					// XML:E
 
+	// -> <InterfaceA>....</InterfaceA>  instead of <Interface>..</Interface>
 	Interface				m_interfaceA;					// XML:E:tag=InterfaceA
 
+	// -> <IBK:Parameter name="SinglePara" unit="C">20</IBK:Parameter>
 	IBK::Parameter		m_singlePara;						// XML:E
+
+	// -> <IBK:IntPara name="SingleIntegerPara">12</IBK:IntPara>
+	IBK::IntPara		m_singleIntegerPara = IBK::IntPara("blubb",12);	// XML:E
+
+	// -> <IBK:Parameter name="X1" unit="C">12</IBK:Parameter>
 	IBK::Parameter		m_para[NUM_test];					// XML:E
+
+	// -> <IBK:IntPara name="I1">13</IBK:IntPara>
 	IBK::IntPara		m_intPara[NUM_IP];					// XML:E
+
+	// -> <IBK:Flag name="X2">true</IBK:Flag>
 	IBK::Flag			m_flags[NUM_test];					// XML:E
 
-	IBK::LinearSpline	m_linearSpline;							// XML:E
+	// -> <IBK:LinearSpline name="LinSpl">...</IBK:LinearSpline>
+	IBK::LinearSpline	m_linSpl;							// XML:E
 
+	// -> <LinearSplineParameter name="SplineParameter">...</LinearSplineParameter>
 	NANDRAD::LinearSplineParameter	m_splineParameter;			// XML:E
+	// -> <LinearSplineParameter name="AnotherSplineParameter">...</LinearSplineParameter>
 	LinearSplineParameter			m_anotherSplineParameter;	// XML:E
 
+	// -> <LinearSplineParameter name="ParameterSet1">...</LinearSplineParameter>
 	NANDRAD::LinearSplineParameter m_splinePara[NUM_SP];	// XML:E
 
-	// example for a generic class with own readXML() and writeXML() function
+	// generic class with own readXML() and writeXML() function
+	// -> <Schedule...>...</Schedule>
 	Schedule			m_sched;							// XML:E
+
+	// generic class with custom tag name
+	// -> <OtherSchedule...>...</OtherSchedule>
+	Schedule			m_sched2;							// XML:E:tag=OtherSchedule
 };
 
 }

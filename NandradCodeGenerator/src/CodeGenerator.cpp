@@ -458,7 +458,7 @@ void CodeGenerator::generateReadWriteCode() {
 					}
 					else {
 						elements += "	if (!m_"+varName+".name.empty())\n"
-									"		TiXmlElement::appendIBKParameterElement(e, m_"+varName+".name, m_"+varName+".IO_unit.name(), m_"+varName+".get_value());\n";
+									"		TiXmlElement::appendIBKParameterElement(e, \""+tagName+"\", m_"+varName+".IO_unit.name(), m_"+varName+".get_value());\n";
 					}
 				}
 				else if (xmlInfo.typeStr == "IBK::IntPara") {
@@ -478,7 +478,7 @@ void CodeGenerator::generateReadWriteCode() {
 					}
 					else {
 						elements += "	if (!m_"+varName+".name.empty())\n"
-									"		TiXmlElement::appendSingleAttributeElement(e, \"IBK:IntPara\", \"name\", m_"+varName+".name, IBK::val2string(m_"+varName+".value));\n";
+									"		TiXmlElement::appendSingleAttributeElement(e, \"IBK:IntPara\", \"name\", \""+tagName+"\", IBK::val2string(m_"+varName+".value));\n";
 					}
 				}
 				else if (xmlInfo.typeStr == "IBK::Flag") {
@@ -497,7 +497,7 @@ void CodeGenerator::generateReadWriteCode() {
 					}
 					else {
 						elements += "	if (!m_"+varName+".name().empty())\n"
-									"		TiXmlElement::appendSingleAttributeElement(e, \"IBK:Flag\", \"name\", m_"+varName+".name(), m_"+varName+".isEnabled() ? \"true\" : \"false\");\n";
+									"		TiXmlElement::appendSingleAttributeElement(e, \"IBK:Flag\", \"name\", \""+tagName+"\", m_"+varName+".isEnabled() ? \"true\" : \"false\");\n";
 					}
 				}
 				else if (xmlInfo.typeStr == "LinearSplineParameter") {
@@ -912,10 +912,9 @@ void CodeGenerator::generateReadWriteCode() {
 										"				"+einfo.enumType()+" ptype;\n"
 										"				try {\n"
 										"					ptype = ("+einfo.enumType()+")KeywordList::Enumeration(\""+einfo.categoryName+"\", p.name);\n"
-										"					m_"+varName2+"[ptype] = p;\n"
-										"					success = true;\n"
+										"					m_"+varName2+"[ptype] = p; success = true;\n"
 										"				}\n"
-										"				catch (IBK::Exception & ex) { ex.writeMsgStackToError(); }\n"
+										"				catch (...) { /* intentional fail */  }\n";
 										"				if (success) {\n"
 										"					std::string refUnit = KeywordList::Unit(\""+einfo.categoryName+"\", ptype);\n"
 										"					if (!refUnit.empty() && (p.IO_unit.base_id() != IBK::Unit(refUnit).base_id())) {\n"
@@ -1091,10 +1090,9 @@ void CodeGenerator::generateReadWriteCode() {
 										"				try {\n"
 										"					"+einfo.enumType()+" ptype;\n"
 										"					ptype = ("+einfo.enumType()+")KeywordList::Enumeration(\""+einfo.categoryName+"\", p.m_name);\n"
-										"					m_"+varName2+"[ptype] = p;\n"
-										"					success = true;\n"
+										"					m_"+varName2+"[ptype] = p; success = true;\n"
 										"				}\n"
-										"				catch (IBK::Exception & ex) { ex.writeMsgStackToError(); }\n";
+										"				catch (...) { /* intentional fail */  }\n";
 							}
 							else {
 								std::string tagName2 = char(toupper(varName2[0])) + varName2.substr(1);
