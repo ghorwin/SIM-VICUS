@@ -14,46 +14,41 @@ Code is taken from https://www.trentreed.net/blog/qt5-opengl-part-3b-camera-cont
 #include "Vic3DTransform3D.h"
 #include <QDebug>
 
+namespace Vic3D {
+
 // Transform By (Add/Scale)
-void Transform3D::translate(const QVector3D &dt)
-{
+void Transform3D::translate(const QVector3D &dt) {
 	m_dirty = true;
 	m_translation += dt;
 }
 
-void Transform3D::scale(const QVector3D &ds)
-{
+void Transform3D::scale(const QVector3D &ds) {
 	m_dirty = true;
 	m_scale *= ds;
 }
 
-void Transform3D::rotate(const QQuaternion &dr)
-{
+void Transform3D::rotate(const QQuaternion &dr) {
 	m_dirty = true;
 	m_rotation = dr * m_rotation;
 }
 
-void Transform3D::grow(const QVector3D &ds)
-{
+void Transform3D::grow(const QVector3D &ds) {
 	m_dirty = true;
 	m_scale += ds;
 }
 
 // Transform To (Setters)
-void Transform3D::setTranslation(const QVector3D &t)
-{
+void Transform3D::setTranslation(const QVector3D &t) {
 	m_dirty = true;
 	m_translation = t;
 }
 
-void Transform3D::setScale(const QVector3D &s)
-{
+void Transform3D::setScale(const QVector3D &s) {
 	m_dirty = true;
 	m_scale = s;
 }
 
-void Transform3D::setRotation(const QQuaternion &r)
-{
+void Transform3D::setRotation(const QQuaternion &r) {
 	m_dirty = true;
 	m_rotation = r;
 }
@@ -71,8 +66,7 @@ const QMatrix4x4 &Transform3D::toMatrix() const {
 }
 
 // Qt Streams
-QDebug operator<<(QDebug dbg, const Transform3D &transform)
-{
+QDebug operator<<(QDebug dbg, const Transform3D &transform) {
 	dbg << "Transform3D\n{\n";
 	dbg << "Position: <" << transform.translation().x() << ", " << transform.translation().y() << ", " << transform.translation().z() << ">\n";
 	dbg << "Scale: <" << transform.scale().x() << ", " << transform.scale().y() << ", " << transform.scale().z() << ">\n";
@@ -80,19 +74,19 @@ QDebug operator<<(QDebug dbg, const Transform3D &transform)
 	return dbg;
 }
 
-QDataStream &operator<<(QDataStream &out, const Transform3D &transform)
-{
+QDataStream &operator<<(QDataStream &out, const Transform3D &transform) {
 	out << transform.m_translation;
 	out << transform.m_scale;
 	out << transform.m_rotation;
 	return out;
 }
 
-QDataStream &operator>>(QDataStream &in, Transform3D &transform)
-{
+QDataStream &operator>>(QDataStream &in, Transform3D &transform) {
 	in >> transform.m_translation;
 	in >> transform.m_scale;
 	in >> transform.m_rotation;
 	transform.m_dirty = true;
 	return in;
 }
+
+} // namespace Vic3D

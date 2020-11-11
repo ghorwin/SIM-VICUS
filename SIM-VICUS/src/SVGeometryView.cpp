@@ -20,7 +20,7 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	format.setOption(QSurfaceFormat::DebugContext);
 #endif // GL_DEBUG
 
-	m_sceneView = new SceneView;
+	m_sceneView = new Vic3D::SceneView;
 	m_sceneView->setFormat(format);
 
 	// *** create window container widget

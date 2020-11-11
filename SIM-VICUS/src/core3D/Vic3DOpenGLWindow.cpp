@@ -20,6 +20,8 @@ Source code is based on Qt Example OpenGLWindow, but has been simplified a lot.
 #include <QtGui/QOpenGLPaintDevice>
 #include <QtGui/QPainter>
 
+namespace Vic3D {
+
 OpenGLWindow::OpenGLWindow(QWindow *parent) :
 	QWindow(parent),
 	m_context(nullptr),
@@ -176,3 +178,5 @@ void OpenGLWindow::initOpenGL() {
 
 	initializeGL(); // call user code
 }
+
+} // namespace Vic3D

@@ -8,6 +8,7 @@
 #include "Vic3DKeyboardMouseHandler.h"
 #include "SVProjectHandler.h"
 
+namespace Vic3D {
 
 void Vic3DScene::create(ShaderProgram * gridShader) {
 	m_gridShader = gridShader;
@@ -162,3 +163,4 @@ void Vic3DScene::render() {
 
 }
 
+} // namespace Vic3D

@@ -19,6 +19,9 @@ Code is taken from https://www.trentreed.net/blog/qt5-opengl-part-3b-camera-cont
 #include <QQuaternion>
 #include <QMatrix4x4>
 
+namespace Vic3D {
+
+
 /*! A typical 3D transformation class.
 	Implements lazy evaluation - calling any of the modification functions
 	will only store info about the modification - only by retrieving the
@@ -72,8 +75,6 @@ protected:
 #endif
 };
 
-Q_DECLARE_TYPEINFO(Transform3D, Q_MOVABLE_TYPE);
-
 inline Transform3D::Transform3D() : m_scale(1.0f, 1.0f, 1.0f), m_dirty(true) {}
 
 // Transform By (Add/Scale)
@@ -106,5 +107,9 @@ QDebug operator<<(QDebug dbg, const Transform3D &transform);
 QDataStream &operator<<(QDataStream &out, const Transform3D &transform);
 QDataStream &operator>>(QDataStream &in, Transform3D &transform);
 #endif
+
+} // namespace Vic3D
+
+Q_DECLARE_TYPEINFO(Vic3D::Transform3D, Q_MOVABLE_TYPE);
 
 #endif // TRANSFORM3D_H

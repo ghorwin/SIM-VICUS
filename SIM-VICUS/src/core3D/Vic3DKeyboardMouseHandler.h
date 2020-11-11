@@ -19,6 +19,8 @@ class QKeyEvent;
 class QMouseEvent;
 class QWheelEvent;
 
+namespace Vic3D {
+
 /*! An example keyboard/mouse handler implementation.
 	When a keyboard key has been pressed, the corresponding's key state is updated, same
 	when it is release (in this case the state will be "was pressed" until cleared). This
@@ -150,5 +152,7 @@ private:
 
 	int						m_wheelDelta;
 };
+
+} // namespace Vic3D
 
 #endif // KeyboardMouseHandlerH

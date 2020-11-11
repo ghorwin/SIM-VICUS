@@ -16,6 +16,9 @@ License    : BSD License,
 
 #include "OpenGLException.h"
 
+namespace Vic3D {
+
+
 ShaderProgram::ShaderProgram(const QString & vertexShaderFilePath, const QString & fragmentShaderFilePath) :
 	m_vertexShaderFilePath(vertexShaderFilePath),
 	m_fragmentShaderFilePath(fragmentShaderFilePath),
@@ -58,3 +61,5 @@ void ShaderProgram::destroy() {
 void ShaderProgram::bind() {
 	m_program->bind();
 }
+
+} // namespace Vic3D

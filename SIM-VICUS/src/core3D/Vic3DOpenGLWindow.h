@@ -23,6 +23,8 @@ QT_BEGIN_NAMESPACE
 class QOpenGLContext;
 QT_END_NAMESPACE
 
+namespace Vic3D {
+
 /*! The OpenGLWindow is very similar to QOpenGLWindow, yet a little more light-weight.
 	Also, the functions initializeGL() and paintGL() are protected, as they are in
 	the QOpenGLWidget. Thus, you can easily switch to an QOpenGLWidget class later on,
@@ -79,5 +81,7 @@ private:
 
 	QOpenGLDebugLogger	*m_debugLogger;
 };
+
+} // namespace Vic3D
 
 #endif // OpenGLWindow_H

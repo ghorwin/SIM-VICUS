@@ -14,6 +14,8 @@ License    : BSD License,
 
 #include "Vic3DTransform3D.h"
 
+namespace Vic3D {
+
 /*! A transformation class with additional functions related to perspective transformation (camera lens). */
 class Camera : public Transform3D {
 public:
@@ -54,5 +56,7 @@ public:
 	}
 
 };
+
+} // namespace Vic3D
 
 #endif // CAMERA_H

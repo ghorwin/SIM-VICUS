@@ -15,6 +15,7 @@ License    : BSD License,
 #include <QMouseEvent>
 #include <QWheelEvent>
 
+namespace Vic3D {
 
 KeyboardMouseHandler::KeyboardMouseHandler() :
 	m_leftButtonDown(StateNotPressed),
@@ -200,3 +201,4 @@ bool KeyboardMouseHandler::buttonReleased(Qt::MouseButton btn) const {
 	}
 }
 
+} // namespace Vic3D

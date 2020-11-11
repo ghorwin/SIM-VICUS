@@ -23,6 +23,8 @@ License    : BSD License,
 
 #define SHADER(x) m_shaderPrograms[x].shaderProgram()
 
+namespace Vic3D {
+
 SceneView::SceneView() :
 	m_inputEventReceived(false)
 {
@@ -350,3 +352,5 @@ void SceneView::selectNearestObject(const QVector3D & nearPoint, const QVector3D
 	// Mind: OpenGL-context must be current when we call this function!
 //	m_boxObject.highlight(p.m_objectId, p.m_faceId);
 }
+
+} // namespace Vic3D

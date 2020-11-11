@@ -20,12 +20,13 @@ License    : BSD License,
 #include "Vic3DShaderProgram.h"
 #include "Vic3DKeyboardMouseHandler.h"
 #include "Vic3DGridObject.h"
-#include "Vic3DBoxObject.h"
 #include "Vic3DPickLineObject.h"
 #include "Vic3DCamera.h"
 #include "Vic3DScene.h"
 
 class ModificationInfo;
+
+namespace Vic3D {
 
 /*! The class SceneView extends the primitive OpenGLWindow
 	by adding keyboard/mouse event handling, and rendering of different
@@ -87,5 +88,7 @@ private:
 	QOpenGLTimeMonitor			m_gpuTimers;
 	QElapsedTimer				m_cpuTimer;
 };
+
+} // namespace Vic3D
 
 #endif // SCENEVIEW_H

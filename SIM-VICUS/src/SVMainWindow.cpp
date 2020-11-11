@@ -332,9 +332,9 @@ void SVMainWindow::setup() {
 
 	// TODO : adjust size of navigation view to be about 250 px wide
 
-	m_geometryViewSplitter->setStretchFactor(0, 1);
-	m_geometryViewSplitter->setStretchFactor(1, 4);
-	m_geometryViewSplitter->setSizes(QList<int>() << 250 << 1800);
+//	m_geometryViewSplitter->setStretchFactor(0, 1);
+//	m_geometryViewSplitter->setStretchFactor(1, 4);
+//	m_geometryViewSplitter->setSizes(QList<int>() << 250 << 1800);
 //	lay->setStretch(2,1);
 	// TODO : add other views
 

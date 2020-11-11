@@ -21,6 +21,7 @@ QT_BEGIN_NAMESPACE
 class QOpenGLShaderProgram;
 QT_END_NAMESPACE
 
+namespace Vic3D {
 
 /*! This class holds all data needed to draw a grid on the screen.
 	We have only a coordinate buffer, which holds tightly packed 2 * vec2 (start and end points of lines, xz coords)
@@ -52,5 +53,8 @@ public:
 	/*! Cached grid spacing. */
 	float						m_spacing	= 999;
 };
+
+} // namespace Vic3D
+
 
 #endif // OPENGLGRIDOBJECT_H

@@ -8,10 +8,14 @@
 
 #include "Vic3DCamera.h"
 #include "Vic3DGridObject.h"
+#include "Vic3DOpaqueGeometryObject.h"
+
+class ModificationInfo;
+
+namespace Vic3D {
 
 class ShaderProgram;
 class KeyboardMouseHandler;
-class ModificationInfo;
 
 /*! Encapsulates all data for drawing a part of the final picture, including the viewport where the
 	scene is rendered in.
@@ -59,5 +63,8 @@ private:
 
 
 };
+
+} // namespace Vic3D
+
 
 #endif // VIC3DSCENE_H

@@ -9,40 +9,61 @@ License    : BSD License,
 
 ************************************************************************************/
 
-#ifndef VERTEX_H
-#define VERTEX_H
+#ifndef Vic3DVertexH
+#define Vic3DVertexH
 
 #include <QVector3D>
 #include <QColor>
 
-/*! A container class to store data (coordinates, colors) of a vertex, used for interleaved
-	storage. Expand this class as needed.
+namespace Vic3D {
 
-	Memory layout (each char is a byte): xxxxyyyyzzzzrrrrggggbbbb = 6*4 = 24 Bytes
+/*! A container class to store data (coordinates, normals) of a vertex, used for interleaved
+	storage.
+
+	Memory layout (each char is a byte): xxxxyyyyzzzziiiijjjjkkkk = 6*4 = 24 Bytes
 
 	You can define a vector<Vertex> and use this directly as input to the vertex buffer.
 
 	Mind implicit padding by compiler! Hence, for allocation use:
 	- sizeof(Vertex) as stride
-	- offsetof(Vertex, r) as start offset for the color
+	- offsetof(Vertex, nx) as start offset for the normal vector
 
 	This will only become important, if mixed data types are used in the struct.
 	Read http://www.catb.org/esr/structure-packing/ for an in-depth explanation.
 */
 struct Vertex {
 	Vertex() {}
-	Vertex(const QVector3D & coords, const QColor & col) :
+	Vertex(const QVector3D & coords, const QVector3D & normal) :
 		x(float(coords.x())),
 		y(float(coords.y())),
 		z(float(coords.z())),
-		r(float(col.redF())),
-		g(float(col.greenF())),
-		b(float(col.blueF()))
+		nx(float(normal.x())),
+		ny(float(normal.y())),
+		nz(float(normal.z()))
 	{
 	}
 
+	/*! Coordinates of the vertex. */
 	float x,y,z;
-	float r,g,b;
+	/*! Normal vector associated with vertex (should be normalized). */
+	float nx,ny,nz;
 };
 
-#endif // VERTEX_H
+/*! RGBA data vertex. */
+struct ColorRGBA {
+	ColorRGBA() {}
+	ColorRGBA(const QColor & c) :
+		r(c.redF()),
+		g(c.greenF()),
+		b(c.blueF()),
+		a(c.alphaF())
+	{
+	}
+
+	/*! Color components. */
+	float r,g,b,a;
+};
+
+} // namespace Vic3D
+
+#endif // Vic3DVertexH

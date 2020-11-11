@@ -3,7 +3,9 @@
 
 #include <QWidget>
 
-class SceneView;
+namespace Vic3D {
+	class SceneView;
+}
 
 /*! The main geometry view.
 	The 3D scene view is embedded into this widget.
@@ -15,7 +17,7 @@ public:
 
 private:
 	// The scene view, that shows our world and allows navigation
-	SceneView * m_sceneView;
+	Vic3D::SceneView * m_sceneView;
 
 };
 

@@ -19,6 +19,8 @@ QT_BEGIN_NAMESPACE
 class QOpenGLShaderProgram;
 QT_END_NAMESPACE
 
+namespace Vic3D {
+
 /*! A small wrapper class around QOpenGLShaderProgram to encapsulate
 	shader code compilation and linking and error handling.
 
@@ -61,5 +63,7 @@ private:
 	/*! The wrapped native QOpenGLShaderProgram. */
 	QOpenGLShaderProgram	*m_program;
 };
+
+} // namespace Vic3D
 
 #endif // SHADERPROGRAM_H

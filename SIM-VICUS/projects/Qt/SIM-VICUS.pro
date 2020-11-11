@@ -85,10 +85,9 @@ SOURCES += \
 	../../src/Vic3DScene.cpp \
 	../../src/actions/SVUndoCommandBase.cpp \
 	../../src/actions/SVUndoProject.cpp \
-	../../src/core3D/Vic3DBoxMesh.cpp \
-	../../src/core3D/Vic3DBoxObject.cpp \
 	../../src/core3D/Vic3DGridObject.cpp \
 	../../src/core3D/Vic3DKeyboardMouseHandler.cpp \
+	../../src/core3D/Vic3DOpaqueGeometryObject.cpp \
 	../../src/core3D/Vic3DOpenGLWindow.cpp \
 	../../src/core3D/Vic3DPickLineObject.cpp \
 	../../src/core3D/Vic3DPickObject.cpp \
@@ -120,11 +119,10 @@ HEADERS  += \
 	../../src/Vic3DScene.h \
 	../../src/actions/SVUndoCommandBase.h \
 	../../src/actions/SVUndoProject.h \
-	../../src/core3D/Vic3DBoxMesh.h \
-	../../src/core3D/Vic3DBoxObject.h \
 	../../src/core3D/Vic3DCamera.h \
 	../../src/core3D/Vic3DGridObject.h \
 	../../src/core3D/Vic3DKeyboardMouseHandler.h \
+	../../src/core3D/Vic3DOpaqueGeometryObject.h \
 	../../src/core3D/Vic3DOpenGLWindow.h \
 	../../src/core3D/Vic3DPickLineObject.h \
 	../../src/core3D/Vic3DPickObject.h \

@@ -15,6 +15,7 @@ License    : BSD License,
 #include <vector>
 
 void PickLineObject::create(QOpenGLShaderProgram * shaderProgramm) {
+#if 0
 	// create a temporary buffer that will contain the x-z coordinates of all grid lines
 	// we have 1 line, with two vertexes, with 2xthree floats (position and color)
 	m_vertexBufferData.resize(2);
@@ -41,6 +42,7 @@ void PickLineObject::create(QOpenGLShaderProgram * shaderProgramm) {
 
 	m_vao.release();
 	m_vbo.release();
+#endif
 }
 
 
@@ -52,12 +54,13 @@ void PickLineObject::destroy() {
 
 void PickLineObject::render() {
 	m_vao.bind();
-	glDrawArrays(GL_LINES, 0, m_vertexBufferData.size());
+//	glDrawArrays(GL_LINES, 0, m_vertexBufferData.size());
 	m_vao.release();
 }
 
 
 void PickLineObject::setPoints(const QVector3D & a, const QVector3D & b) {
+#if 0
 	m_vertexBufferData[0] = Vertex(a, Qt::white);
 	m_vertexBufferData[1] = Vertex(b, QColor(64,0,0));
 	int vertexMemSize = m_vertexBufferData.size()*sizeof(Vertex);
@@ -65,5 +68,6 @@ void PickLineObject::setPoints(const QVector3D & a, const QVector3D & b) {
 	m_vbo.allocate(m_vertexBufferData.data(), vertexMemSize);
 	m_vbo.release();
 	m_visible = true;
+#endif
 }
 

@@ -32,7 +32,7 @@ public:
 	void setPoints(const QVector3D & a, const QVector3D & b);
 
 	bool						m_visible = false;
-	std::vector<Vertex>			m_vertexBufferData;
+//	std::vector<Vertex>			m_vertexBufferData;
 	QOpenGLVertexArrayObject	m_vao;
 	QOpenGLBuffer				m_vbo;
 };

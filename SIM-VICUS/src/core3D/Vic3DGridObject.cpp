@@ -18,6 +18,8 @@ License    : BSD License,
 #include <VICUS_Project.h>
 #include "SVProjectHandler.h"
 
+namespace Vic3D {
+
 void GridObject::create(QOpenGLShaderProgram * shaderProgram) {
 	// get grid dimensions from project
 	const VICUS::Project & prj = project();
@@ -104,3 +106,5 @@ void GridObject::render() {
 	glDrawArrays(GL_LINES, 0, m_bufferSize);
 	m_vao.release();
 }
+
+} // namespace Vic3D
