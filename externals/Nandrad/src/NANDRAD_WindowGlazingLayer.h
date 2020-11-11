@@ -44,11 +44,19 @@ public:
 	/*! Basic parameters. */
 	enum para_t {
 		/*! Dry density of the material. */
-		P_Thickness,				// Keyword: Thickness			[m]			'Thickness of the window layer.'
+		P_Thickness,				// Keyword: Thickness					[m]			'Thickness of the window layer.'
 		/*! Thermal conductivity of the dry material. */
-		P_Conductivity,				// Keyword: Conductivity		[W/mK]		'Thermal conductivity of the window layer.'
+		P_Conductivity,				// Keyword: Conductivity				[W/mK]		'Thermal conductivity of the window layer.'
 		/*! Mass Density of Gas Layer. */
-		P_MassDensity,				// Keyword: MassDensity			[kg/m3]		'Mass density of the fill-in gas.'
+		P_MassDensity,				// Keyword: MassDensity					[kg/m3]		'Mass density of the fill-in gas.'
+		/*! Height of  detailed Window (needed for Convection in Cavity.  */
+		P_Height,					// Keyword: MassDensity					[m]			'Height of the detailed window.'
+		/*! Mass Density of Gas Layer. */
+		P_Width,					// Keyword: MassDensity					[m]			'height of the detailed window.'
+		/*! Emissivity of surface facing outside. */
+		P_LongWaveEmissivityInside,	// Keyword: LongWaveEmissivityInside	[---]		'Emissivity of surface facing outside.'
+		/*! Emissivity of surface facing inside. */
+		P_LongWaveEmissivityOutside,// Keyword: P_LongWaveEmissivityOutside [---]		'Emissivity of surface facing inside.'
 
 		NUM_P
 	};
@@ -67,6 +75,9 @@ public:
 	/*! Unique ID-number for this window layer. */
 	unsigned int				m_id;								// XML:A:Required
 
+	/*! Display name of layer. */
+	std::string					m_displayName;						// XML:A
+
 	/*! Basic parameters of the window layer  */
 	IBK::Parameter				m_para[NUM_P];						// XML:E
 
@@ -81,15 +92,7 @@ public:
 	/*! Parameter for temperature-dependent conductivity of gas layers. */
 	LinearSplineParameter		m_heatCapacity;						// XML:E
 
-	// Long Wave
-
-	/*! Emissivity of surface facing outside. */
-	LinearSplineParameter		m_longWaveEmissivityInside;			// XML:E
-
-	/*! Emissivity of surface facing inside. */
-	LinearSplineParameter		m_LongWaveEmissivityOutside;		// XML:E
-
-	// Short Wave
+	// Short Wave for Glasing Layers
 
 	/*! Short wave transmittance. */
 	LinearSplineParameter		m_shortWaveTransmittance;			// XML:E
@@ -102,7 +105,7 @@ public:
 
 
 
-
+	LinearSplineParameter		m_splinePara[NUM_SP];				// XML:E
 
 
 };

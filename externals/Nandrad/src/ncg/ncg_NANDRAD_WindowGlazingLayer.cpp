@@ -36,6 +36,18 @@ void WindowGlazingLayer::readXML(const TiXmlElement * element) {
 	FUNCID(WindowGlazingLayer::readXML);
 
 	try {
+		// search for mandatory attributes
+		// reading attributes
+		const TiXmlAttribute * attrib = element->FirstAttribute();
+		while (attrib) {
+			const std::string & attribName = attrib->NameStr();
+			if (attribName == "displayName")
+				m_displayName = attrib->ValueStr();
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			attrib = attrib->Next();
+		}
 		// search for mandatory elements
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
@@ -69,10 +81,6 @@ void WindowGlazingLayer::readXML(const TiXmlElement * element) {
 			else if (cName == "LinearSplineParameter")
 				m_heatCapacity.readXML(c);
 			else if (cName == "LinearSplineParameter")
-				m_longWaveEmissivityInside.readXML(c);
-			else if (cName == "LinearSplineParameter")
-				m_LongWaveEmissivityOutside.readXML(c);
-			else if (cName == "LinearSplineParameter")
 				m_shortWaveTransmittance.readXML(c);
 			else if (cName == "LinearSplineParameter")
 				m_shortWaveReflectanceInside.readXML(c);
@@ -96,6 +104,8 @@ TiXmlElement * WindowGlazingLayer::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("WindowGlazingLayer");
 	parent->LinkEndChild(e);
 
+	if (!m_displayName.empty())
+		e->SetAttribute("displayName", m_displayName);
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty())
@@ -107,10 +117,6 @@ TiXmlElement * WindowGlazingLayer::writeXML(TiXmlElement * parent) const {
 	m_dynamicViscosity.writeXML(e);
 
 	m_heatCapacity.writeXML(e);
-
-	m_longWaveEmissivityInside.writeXML(e);
-
-	m_LongWaveEmissivityOutside.writeXML(e);
 
 	m_shortWaveTransmittance.writeXML(e);
 
