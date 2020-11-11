@@ -105,7 +105,7 @@ public:
 
 
 
-	LinearSplineParameter		m_splinePara[NUM_SP];				// XML:E
+//	LinearSplineParameter		m_splinePara[NUM_SP];				// XML:E
 
 
 };
