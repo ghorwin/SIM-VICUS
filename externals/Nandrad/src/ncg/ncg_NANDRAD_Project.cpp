@@ -76,6 +76,18 @@ void Project::readXMLPrivate(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
+			else if (cName == "HydraulicComponents") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "HydraulicNetworkComponent")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					HydraulicNetworkComponent obj;
+					obj.readXML(c2);
+					m_hydraulicComponents.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else if (cName == "ConstructionTypes") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
@@ -195,6 +207,18 @@ TiXmlElement * Project::writeXMLPrivate(TiXmlElement * parent) const {
 
 		for (std::vector<HydraulicNetwork>::const_iterator it = m_hydraulicNetworks.begin();
 			it != m_hydraulicNetworks.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_hydraulicComponents.empty()) {
+		TiXmlElement * child = new TiXmlElement("HydraulicComponents");
+		e->LinkEndChild(child);
+
+		for (std::vector<HydraulicNetworkComponent>::const_iterator it = m_hydraulicComponents.begin();
+			it != m_hydraulicComponents.end(); ++it)
 		{
 			it->writeXML(child);
 		}

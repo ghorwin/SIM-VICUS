@@ -58,7 +58,7 @@ void DailyCycle::readXML(const TiXmlElement * element) {
 		while (c) {
 			const std::string & cName = c->ValueStr();
 			if (cName == "TimePoints")
-				readVector(c, "TimePoints", m_timePoints);
+				NANDRAD::readVector(c, "TimePoints", m_timePoints);
 			else if (cName == "Values")
 				m_values.setEncodedString(c->GetText());
 			else {
