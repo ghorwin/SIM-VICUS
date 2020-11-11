@@ -104,6 +104,8 @@ void GridObject::render() {
 	m_vao.bind();
 	// draw the grid lines, m_NVertexes = number of floats in buffer
 	glDrawArrays(GL_LINES, 0, m_bufferSize);
+
+	// draw first major grid lines, then minor grid lines with different color
 	m_vao.release();
 }
 

@@ -21,7 +21,8 @@ License    : BSD License,
 #include "OpenGLException.h"
 #include "SVProjectHandler.h"
 
-#define SHADER(x) m_shaderPrograms[x].shaderProgram()
+#define SHADER_GRID 0
+#define SHADER_OPAQUE_GEOMETRY 1
 
 namespace Vic3D {
 
@@ -39,17 +40,20 @@ SceneView::SceneView() :
 
 	// *** create scene (no OpenGL calls are being issued below, just the data structures are created.
 
-	// Shaderprogram #0 : regular geometry (painting triangles via element index)
-	ShaderProgram blocks(":/shaders/linearRGB.vert",":/shaders/linear.frag");
-	blocks.m_uniformNames.append("worldToView");
-	m_shaderPrograms.append( blocks );
-
-	// Shaderprogram #1 : grid (painting grid lines)
+	// Shaderprogram #0 : grid (painting grid lines)
 	ShaderProgram grid(":/shaders/grid.vert",":/shaders/grid.frag");
 	grid.m_uniformNames.append("worldToView"); // mat4
 	grid.m_uniformNames.append("gridColor"); // vec3
 	grid.m_uniformNames.append("backColor"); // vec3
 	m_shaderPrograms.append( grid );
+
+	// Shaderprogram #1 : regular geometry (opaque geometry with lighting)
+	ShaderProgram blocks(":/shaders/VertexNormalColor.vert",":/shaders/diffuse.frag");
+	blocks.m_uniformNames.append("worldToView");
+	blocks.m_uniformNames.append("lightPos");
+	blocks.m_uniformNames.append("lightColor");
+
+	m_shaderPrograms.append( blocks );
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SceneView::onModified);
@@ -87,9 +91,9 @@ void SceneView::initializeGL() {
 			p.create();
 
 		// initialize drawable objects
-		m_pickLineObject.create(SHADER(0));
+//		m_pickLineObject.create(SHADER(0));
 
-		m_mainScene.create(&m_shaderPrograms[1]);
+		m_mainScene.create(&m_shaderPrograms[SHADER_GRID], &m_shaderPrograms[SHADER_OPAQUE_GEOMETRY]);
 
 		// Timer
 		m_gpuTimers.setSampleCount(6);

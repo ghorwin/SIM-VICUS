@@ -48,18 +48,21 @@ public:
 	/*! Binds the vertex array object and renders the geometry. */
 	void render();
 
+	/*! Vertex buffer in CPU memory, holds data of all vertices (coords and normals). */
 	std::vector<Vertex>			m_vertexBufferData;
+	/*! Color buffer in CPU memory, holds colors of all vertices (same size as m_vertexBufferData). */
+	std::vector<ColorRGBA>		m_colorBufferData;
 	/*! Index buffer on CPU memory. */
 	std::vector<GLshort>		m_elementBufferData;
 
-	/*! Wraps an OpenGL VertexArrayObject, that references the vertex, color and index buffers. */
+	/*! VertexArrayObject, references the vertex, color and index buffers. */
 	QOpenGLVertexArrayObject	m_vao;
 
-	/*! Vertex buffer on GPU memory. */
+	/*! Handle for vertex buffer on GPU memory. */
 	QOpenGLBuffer				m_vbo;
-	/*! Color buffer on GPU memory. */
+	/*! Handle for color buffer on GPU memory. */
 	QOpenGLBuffer				m_vboColors;
-	/*! Index buffer on GPU memory */
+	/*! Handle for index buffer on GPU memory */
 	QOpenGLBuffer				m_ebo;
 };
 

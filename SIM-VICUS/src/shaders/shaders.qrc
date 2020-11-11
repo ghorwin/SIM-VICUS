@@ -4,5 +4,7 @@
         <file>grid.vert</file>
         <file>linear.frag</file>
         <file>linearRGB.vert</file>
+        <file>diffuse.frag</file>
+        <file>VertexNormalColor.vert</file>
     </qresource>
 </RCC>

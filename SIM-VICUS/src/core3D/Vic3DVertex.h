@@ -53,15 +53,15 @@ struct Vertex {
 struct ColorRGBA {
 	ColorRGBA() {}
 	ColorRGBA(const QColor & c) :
-		r(c.redF()),
-		g(c.greenF()),
-		b(c.blueF()),
-		a(c.alphaF())
+		r(c.red()),
+		g(c.green()),
+		b(c.blue()),
+		a(c.alpha())
 	{
 	}
 
-	/*! Color components. */
-	float r,g,b,a;
+	/*! Color components (single byte). */
+	char r,g,b,a;
 };
 
 } // namespace Vic3D

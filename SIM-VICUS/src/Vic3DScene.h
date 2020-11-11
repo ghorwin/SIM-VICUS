@@ -22,7 +22,7 @@ class KeyboardMouseHandler;
 */
 class Vic3DScene {
 public:
-	void create(ShaderProgram *gridShader);
+	void create(ShaderProgram *gridShader, ShaderProgram * buildingShader);
 
 	/*! Triggered when SVProjectHandler::modified() is emitted. */
 	void onModified( int modificationType, ModificationInfo * data );
@@ -46,6 +46,8 @@ private:
 
 	/*! Stores address to shader program (managed by SceneView). */
 	ShaderProgram			*m_gridShader			= nullptr;
+	/*! Shader program (managed by SceneView). */
+	ShaderProgram			*m_buildingShader		= nullptr;
 
 	/*! The projection matrix, updated whenever the viewport geometry changes (in resizeGL() ). */
 	QMatrix4x4				m_projection;
@@ -56,11 +58,18 @@ private:
 	/*! Cached world to view transformation matrix. */
 	QMatrix4x4				m_worldToView;
 
+	/*! Position of light source, currently very far above. */
+	QVector3D				m_lightPos = QVector3D(0,20,2000);
+	/*! Light color. */
+	QColor					m_lightColor = Qt::white;
+
 	/*! Background color */
 	QVector3D				m_background = QVector3D(0.1f, 0.15f, 0.3f);
 
+	/*! The grid draw object. */
 	GridObject				m_gridObject;
-
+	/*! The geometry drawing object (no transparency). */
+	OpaqueGeometryObject	m_opaqueGeometryObject;
 
 };
 

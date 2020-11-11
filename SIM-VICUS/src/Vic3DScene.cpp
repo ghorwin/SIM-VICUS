@@ -10,18 +10,16 @@
 
 namespace Vic3D {
 
-void Vic3DScene::create(ShaderProgram * gridShader) {
+void Vic3DScene::create(ShaderProgram * gridShader, ShaderProgram * buildingShader) {
 	m_gridShader = gridShader;
+	m_buildingShader = buildingShader;
 
 	// *** initialize camera placement and model placement in the world
 
-	// move camera a little back (mind: positive y) and look straight ahead
-	m_camera.translate(0, 0, 20);
-	m_camera.translate( m_camera.forward()*0.1);
+	// move camera -50 back and 50 up
+	m_camera.translate(0, -50, 150);
 	// look slightly down
 //	m_camera.rotate(70, m_camera.right());
-	// look slightly left
-	//m_camera.rotate(-10, QVector3D(0.0f, 1.0f, 0.0f));
 }
 
 
@@ -47,6 +45,10 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 	// re-create grid with updated properties
 	m_gridObject.create(m_gridShader->shaderProgram());
 
+	// create geometry object if not existing, yet
+	m_opaqueGeometryObject.create(m_buildingShader->shaderProgram());
+
+//	m_opaqueGeometryObject.updateBuffers();
 	// transfer other properties
 }
 
@@ -149,7 +151,16 @@ void Vic3DScene::render() {
 
 	// tell OpenGL to show only faces whose normal vector points towards us
 	glEnable(GL_CULL_FACE);
+	glDisable(GL_CULL_FACE);
 
+	m_buildingShader->bind();
+	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[0], m_worldToView);
+	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[1], m_lightPos);
+	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[2], m_lightColor);
+
+	m_opaqueGeometryObject.render();
+
+	m_buildingShader->shaderProgram()->release();
 
 
 	// *** opaque building geometry ***
