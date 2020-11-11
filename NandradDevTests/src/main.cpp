@@ -37,13 +37,14 @@
 
 //#define TEST_PROJECT_WRITING
 
-//#define SERIALIZATION_TEST
+#define SERIALIZATION_TEST
 #ifdef SERIALIZATION_TEST
 #include <NANDRAD_SerializationTest.h>
 #include <NANDRAD_Utilities.h>
 #include <tinyxml.h>
 #endif // SERIALIZATION_TEST
 
+#ifdef TEST_PROJECT_WRITING
 void createSim01(NANDRAD::Project &prj){
 
 	//project info
@@ -1775,13 +1776,14 @@ void hydraulicNetworkTest01(NANDRAD::Project &prj){
 	prj.m_hydraulicNetworks.push_back(hydrNet);
 
 }
-
+#endif // TEST_PROJECT_WRITING
 
 int main(int argc, char * argv[]) {
 	FUNCID(main);
 
+#ifdef TEST_PROJECT_WRITING
 	bool isHydrNet=false;
-	bool isWindow = true;
+	bool isWindow = false;
 	if(isHydrNet) {
 		NANDRAD::Project prj;
 
@@ -2254,7 +2256,10 @@ int main(int argc, char * argv[]) {
 		}
 	}
 	return EXIT_SUCCESS;
+#endif // 0
 #endif // TEST_PROJECT_WRITING
+
+
 #ifdef SERIALIZATION_TEST
 	NANDRAD::SerializationTest st;
 	TiXmlDocument doc;
