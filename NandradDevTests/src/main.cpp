@@ -1889,3 +1889,67 @@ int main(int argc, char * argv[]) {
 	return EXIT_SUCCESS;
 }
 
+
+
+int main(int argc, char * argv[]) {
+	FUNCID(main);
+
+	NANDRAD::Project prj;
+
+	//project info
+	prj.m_projectInfo.m_comment = "Yes we can! TF01";
+	prj.m_projectInfo.m_created = "Now!";
+	prj.m_projectInfo.m_lastEdited = "Yesterday";
+
+	//create a zone
+	NANDRAD::Zone zone;
+	zone.m_id = 1;
+	zone.m_displayName = "TF01";
+	zone.m_type = NANDRAD::Zone::ZT_Active;
+	zone.m_para[NANDRAD::Zone::P_Area].set("Area", 10, IBK::Unit("m2"));
+	zone.m_para[NANDRAD::Zone::P_Volume].set("Volume", 30, IBK::Unit("m3"));
+	zone.m_para[NANDRAD::Zone::P_Temperature].set("Temperature", 5, IBK::Unit("C"));
+	//add zone to prj
+	prj.m_zones.push_back(zone);
+
+	prj.m_simulationParameter.m_intPara[NANDRAD::SimulationParameter::IP_StartYear].set("StartYear", 2015);
+
+	prj.m_location.m_climateFileName = IBK::Path("${Project Directory}/climate/testClimate.epw");
+
+	prj.m_location.m_para[NANDRAD::Location::P_Albedo].set("Albedo", 0.2, IBK::Unit("---"));
+
+
+	// outputs
+
+	NANDRAD::Outputs outputs;
+
+
+	// grids
+
+	NANDRAD::OutputGrid grid;
+	grid.m_name = "hourly";
+
+	NANDRAD::Interval intVal;
+	//intVal.m_para[NANDRAD::Interval::IP_END].set("End", 1, IBK::Unit("d"));
+	intVal.m_para[NANDRAD::Interval::P_StepSize].set("StepSize", 1, IBK::Unit("h"));
+	grid.m_intervals.push_back(intVal);
+
+	outputs.m_grids.push_back(grid);
+	prj.m_outputs.m_grids.push_back(grid);
+
+	grid.m_name = "minutely";
+	grid.m_intervals.clear();
+
+	intVal.m_para[NANDRAD::Interval::P_Start].set("Start", 90720, IBK::Unit("min"));
+	intVal.m_para[NANDRAD::Interval::P_End].set("End", 92160, IBK::Unit("min"));
+	intVal.m_para[NANDRAD::Interval::P_StepSize].set("StepSize", 1, IBK::Unit("min"));
+	grid.m_intervals.push_back(intVal);
+
+	outputs.m_grids.push_back(grid);
+	prj.m_outputs.m_grids.push_back(grid);
+
+	NANDRAD::WindowGlazingSystem window;
+	window.m_id = 10000;
+	window.m_para[]
+
+}

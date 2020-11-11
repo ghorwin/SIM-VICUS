@@ -1,5 +1,5 @@
-#ifndef EDGE_H
-#define EDGE_H
+#ifndef VICUS_NetworkEdgeH
+#define VICUS_NetworkEdgeH
 
 #include "VICUS_NetworkNode.h"
 #include "VICUS_Constants.h"

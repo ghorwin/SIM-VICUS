@@ -1,5 +1,5 @@
-#ifndef NETWORKFLUID_H
-#define NETWORKFLUID_H
+#ifndef VICUS_NetworkFluidH
+#define VICUS_NetworkFluidH
 
 #include <IBK_Parameter.h>
 #include <NANDRAD_LinearSplineParameter.h>
@@ -45,4 +45,4 @@ public:
 } // namespace VICUS
 
 
-#endif // NETWORKFLUID_H
+#endif // VICUS_NetworkFluidH

@@ -1,5 +1,5 @@
-#ifndef NODE_H
-#define NODE_H
+#ifndef VICUS_NetworkNodeH
+#define VICUS_NetworkNodeH
 
 #include <vector>
 #include <set>

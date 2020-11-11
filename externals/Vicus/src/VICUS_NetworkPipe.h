@@ -1,5 +1,5 @@
-#ifndef NETWORKPIPE_H
-#define NETWORKPIPE_H
+#ifndef VICUS_NetworkPipeH
+#define VICUS_NetworkPipeH
 
 #include <string>
 
@@ -38,4 +38,4 @@ public:
 
 } // namespace VICUS
 
-#endif // NETWORKPIPE_H
+#endif // VICUS_NetworkPipeH

@@ -1,5 +1,5 @@
-#ifndef LINE_H
-#define LINE_H
+#ifndef VICUS_NetworkLineH
+#define VICUS_NetworkLineH
 
 #include "VICUS_NetworkEdge.h"
 
@@ -60,4 +60,4 @@ public:
 
 } // namespace VICUS
 
-#endif // LINE_H
+#endif // VICUS_NetworkLineH

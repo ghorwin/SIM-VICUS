@@ -1,5 +1,5 @@
-#ifndef NETWORK_H
-#define NETWORK_H
+#ifndef VICUS_NetworkH
+#define VICUS_NetworkH
 
 #include "VICUS_NetworkEdge.h"
 #include "VICUS_NetworkNode.h"
@@ -127,4 +127,4 @@ public:
 } // namespace VICUS
 
 
-#endif // NETWORK_H
+#endif // VICUS_NetworkH

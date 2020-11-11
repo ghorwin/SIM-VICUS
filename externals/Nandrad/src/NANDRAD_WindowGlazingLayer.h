@@ -36,10 +36,23 @@ public:
 
 	/*! Model types supported by the window model. */
 	enum type_t {
-		T_Air,					// Keyword: Air						'Air layer'
+		T_Gas,					// Keyword: Gas						'Gas layer'
 		T_Glass,				// Keyword: Glass					'Glass layer'
 		NUM_T
 	};
+
+	/*! Basic parameters. */
+	enum para_t {
+		/*! Dry density of the material. */
+		P_Thickness,				// Keyword: Thickness			[m]			'Thickness of the window layer.'
+		/*! Thermal conductivity of the dry material. */
+		P_Conductivity,				// Keyword: Conductivity		[W/mK]		'Thermal conductivity of the window layer.'
+		/*! Mass Density of Gas Layer. */
+		P_MassDensity,				// Keyword: MassDensity			[kg/m3]		'Mass density of the fill-in gas.'
+
+		NUM_P
+	};
+
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -47,9 +60,50 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	type_t						m_type = NUM_T;						// XML:A
+	type_t						m_type = NUM_T;						// XML:A:Required
 
 	// TODO : Stephan, add other properties for layers here
+
+	/*! Unique ID-number for this window layer. */
+	unsigned int				m_id;								// XML:A:Required
+
+	/*! Basic parameters of the window layer  */
+	IBK::Parameter				m_para[NUM_P];						// XML:E
+
+	// Layer Data
+
+	/*! Parameter for temperature-dependent conductivity of gas layers. */
+	LinearSplineParameter		m_conductivity;						// XML:E
+
+	/*! Parameter for temperature-dependent dynamic viscosity of gas layers. */
+	LinearSplineParameter		m_dynamicViscosity;					// XML:E
+
+	/*! Parameter for temperature-dependent conductivity of gas layers. */
+	LinearSplineParameter		m_heatCapacity;						// XML:E
+
+	// Long Wave
+
+	/*! Emissivity of surface facing outside. */
+	LinearSplineParameter		m_longWaveEmissivityInside;			// XML:E
+
+	/*! Emissivity of surface facing inside. */
+	LinearSplineParameter		m_LongWaveEmissivityOutside;		// XML:E
+
+	// Short Wave
+
+	/*! Short wave transmittance. */
+	LinearSplineParameter		m_shortWaveTransmittance;			// XML:E
+
+	/*! Short Wave Reflectance of surface facing inside. */
+	LinearSplineParameter		m_shortWaveReflectanceInside;		// XML:E
+
+	/*! Short Wave Reflectance of surface facing outside. */
+	LinearSplineParameter		m_shortWaveReflectanceOutside;		// XML:E
+
+
+
+
+
 
 };
 
