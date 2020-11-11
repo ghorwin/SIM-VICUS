@@ -93,13 +93,14 @@ table {
 </li>
 <li><a href="#_readwrite_to_xml_support_and_utility_macros">3. Read/write to XML support, and utility macros</a>
 <ul class="sectlevel2">
-<li><a href="#_readwrite_code">3.1. Read/write code</a></li>
-<li><a href="#_utility_macros">3.2. Utility Macros</a>
+<li><a href="#_supported_data_types">3.1. Supported data types</a></li>
+<li><a href="#_readwrite_code">3.2. Read/write code</a></li>
+<li><a href="#_utility_macros">3.3. Utility Macros</a>
 <ul class="sectlevel3">
-<li><a href="#_comparison_operator_macro">3.2.1. Comparison operator macro</a></li>
-<li><a href="#xml_custom_readwrite">3.2.2. Custom read/write functionality</a></li>
-<li><a href="#_only_writing_data_if_not_still_default_content">3.2.3. Only writing data if not still default content</a></li>
-<li><a href="#_utility_macro_overview">3.2.4. Utility Macro Overview</a></li>
+<li><a href="#_comparison_operator_macro">3.3.1. Comparison operator macro</a></li>
+<li><a href="#xml_custom_readwrite">3.3.2. Custom read/write functionality</a></li>
+<li><a href="#_only_writing_data_if_not_still_default_content">3.3.3. Only writing data if not still default content</a></li>
+<li><a href="#_utility_macro_overview">3.3.4. Utility Macro Overview</a></li>
 </ul>
 </li>
 </ul>
@@ -322,7 +323,13 @@ table {
 <p>A second task for the code generator is to create functions for serialization of data structures to XML files. Hereby, the TinyXML-library is used.</p>
 </div>
 <div class="sect2">
-<h3 id="_readwrite_code">3.1. Read/write code</h3>
+<h3 id="_supported_data_types">3.1. Supported data types</h3>
+<div class="paragraph">
+<p>See section <a href="#xml_serialization_rules">XML Serialization</a> for a list and examples of supported data types.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_readwrite_code">3.2. Read/write code</h3>
 <div class="paragraph">
 <p>Since reading/writing XML code is pretty straight forward, much of this code writing can be generalized. Let&#8217;s take a look at a simple example.</p>
 </div>
@@ -469,7 +476,7 @@ table {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_utility_macros">3.2. Utility Macros</h3>
+<h3 id="_utility_macros">3.3. Utility Macros</h3>
 <div class="paragraph">
 <p>Since the declaration for the <code>readXML()</code> and <code>writeXML()</code> functions are always the same, we can avoid typing errors by using a define:</p>
 </div>
@@ -523,7 +530,7 @@ table {
 </table>
 </div>
 <div class="sect3">
-<h4 id="_comparison_operator_macro">3.2.1. Comparison operator macro</h4>
+<h4 id="_comparison_operator_macro">3.3.1. Comparison operator macro</h4>
 <div class="paragraph">
 <p>When checking if the content of an object is effectively the same as that of another (possibly freshly constructed) object, we need a comparison operator. Actually, we usually need both <code>operator==</code> and <code>operator!=</code> (depending on the alorithm used, either of the two is needed). The code for the class <code>Sensor</code> normally looks like that:</p>
 </div>
@@ -580,7 +587,7 @@ table {
 </div>
 </div>
 <div class="sect3">
-<h4 id="xml_custom_readwrite">3.2.2. Custom read/write functionality</h4>
+<h4 id="xml_custom_readwrite">3.3.2. Custom read/write functionality</h4>
 <div class="paragraph">
 <p>Sometimes, the default read/write code is not enough, because something special needs to be written/read as well. Here, you can simply use an alternative define <code>NANDRAD_READWRITE_PRIVATE</code>:</p>
 </div>
@@ -639,7 +646,7 @@ table {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_only_writing_data_if_not_still_default_content">3.2.3. Only writing data if not still default content</h4>
+<h4 id="_only_writing_data_if_not_still_default_content">3.3.3. Only writing data if not still default content</h4>
 <div class="paragraph">
 <p>To avoid writing empty tags or default values, you can write code like:</p>
 </div>
@@ -723,7 +730,7 @@ table {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_utility_macro_overview">3.2.4. Utility Macro Overview</h4>
+<h4 id="_utility_macro_overview">3.3.4. Utility Macro Overview</h4>
 <div class="listingblock">
 <div class="title">All utility macros</div>
 <div class="content">
@@ -983,6 +990,12 @@ table {
 		<span class="n">NUM_IP</span>
 	<span class="p">};</span>
 
+	<span class="k">enum</span> <span class="n">splinePara_t</span> <span class="p">{</span>
+		<span class="n">SP_ParameterSet1</span><span class="p">,</span>									<span class="c1">// Keyword: ParameterSet1</span>
+		<span class="n">SP_ParameterSet2</span><span class="p">,</span>									<span class="c1">// Keyword: ParameterSet2</span>
+		<span class="n">NUM_SP</span>
+	<span class="p">};</span>
+
 	<span class="kt">int</span>					<span class="n">m_id1</span>		<span class="o">=</span> <span class="mi">5</span><span class="p">;</span>					<span class="c1">// XML:A:required</span>
 	<span class="kt">unsigned</span> <span class="kt">int</span>		<span class="n">m_id2</span>		<span class="o">=</span> <span class="mi">10</span><span class="p">;</span>					<span class="c1">// XML:A</span>
 	<span class="kt">bool</span>				<span class="n">m_flag1</span>		<span class="o">=</span> <span class="nb">false</span><span class="p">;</span>				<span class="c1">// XML:A</span>
@@ -998,26 +1011,41 @@ table {
 	<span class="kt">double</span>				<span class="n">m_val2</span>		<span class="o">=</span> <span class="mf">41.41</span><span class="p">;</span>				<span class="c1">// XML:E</span>
 	<span class="n">test_t</span>				<span class="n">m_testBlo</span>	<span class="o">=</span> <span class="n">t_x2</span><span class="p">;</span>					<span class="c1">// XML:E</span>
 	<span class="n">std</span><span class="o">::</span><span class="n">string</span>			<span class="n">m_str2</span>		<span class="o">=</span> <span class="s">"blabb"</span><span class="p">;</span>				<span class="c1">// XML:E</span>
+
 	<span class="n">IBK</span><span class="o">::</span><span class="n">Path</span>			<span class="n">m_path2</span>		<span class="o">=</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Path</span><span class="p">(</span><span class="s">"/var"</span><span class="p">);</span>	<span class="c1">// XML:E</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Path</span>			<span class="n">m_path22</span><span class="p">;</span>							<span class="c1">// XML:E</span>
+
 	<span class="n">IBK</span><span class="o">::</span><span class="n">Unit</span>			<span class="n">m_u2</span>		<span class="o">=</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Unit</span><span class="p">(</span><span class="s">"C"</span><span class="p">);</span>		<span class="c1">// XML:E</span>
-	<span class="kt">double</span>				<span class="n">m_x5</span><span class="p">;</span>								<span class="c1">// XML:E</span>
+	<span class="kt">double</span>				<span class="n">m_x5</span>		<span class="o">=</span> <span class="mf">43.43</span><span class="p">;</span>				<span class="c1">// XML:E</span>
+
 	<span class="n">IBK</span><span class="o">::</span><span class="n">Flag</span>			<span class="n">m_f</span><span class="p">;</span>								<span class="c1">// XML:E</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Flag</span>			<span class="n">m_f2</span><span class="p">;</span>								<span class="c1">// XML:E</span>
+
 	<span class="n">IBK</span><span class="o">::</span><span class="n">Time</span>			<span class="n">m_time1</span><span class="p">;</span>							<span class="c1">// XML:E</span>
 	<span class="n">IBK</span><span class="o">::</span><span class="n">Time</span>			<span class="n">m_time2</span><span class="p">;</span>							<span class="c1">// XML:E</span>
 
 	<span class="n">DataTable</span>			<span class="n">m_table</span><span class="p">;</span>							<span class="c1">// XML:E</span>
+	<span class="n">DataTable</span>			<span class="n">m_table2</span><span class="p">;</span>							<span class="c1">// XML:E</span>
 
 	<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span>		<span class="n">m_dblVec</span><span class="p">;</span>						<span class="c1">// XML:E</span>
+
 	<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Interface</span><span class="o">&gt;</span>	<span class="n">m_interfaces</span><span class="p">;</span>					<span class="c1">// XML:E</span>
+
+	<span class="n">Interface</span>				<span class="n">m_interfaceA</span><span class="p">;</span>					<span class="c1">// XML:E:tag=InterfaceA</span>
+
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Parameter</span>		<span class="n">m_singlePara</span><span class="p">;</span>						            <span class="c1">// XML:E</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">IntPara</span>		<span class="n">m_singleIntegerPara</span> <span class="o">=</span> <span class="n">IBK</span><span class="o">::</span><span class="n">IntPara</span><span class="p">(</span><span class="s">"blubb"</span><span class="p">,</span><span class="mi">12</span><span class="p">);</span>	<span class="c1">// XML:E</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">LinearSpline</span>	<span class="n">m_linSpl</span><span class="p">;</span>							            <span class="c1">// XML:E</span>
+	<span class="n">NANDRAD</span><span class="o">::</span><span class="n">LinearSplineParameter</span>	<span class="n">m_splineParameter</span><span class="p">;</span>			        <span class="c1">// XML:E</span>
+	<span class="n">LinearSplineParameter</span>			<span class="n">m_anotherSplineParameter</span><span class="p">;</span>	        <span class="c1">// XML:E</span>
 
 	<span class="n">IBK</span><span class="o">::</span><span class="n">Parameter</span>		<span class="n">m_para</span><span class="p">[</span><span class="n">NUM_test</span><span class="p">];</span>					<span class="c1">// XML:E</span>
 	<span class="n">IBK</span><span class="o">::</span><span class="n">IntPara</span>		<span class="n">m_intPara</span><span class="p">[</span><span class="n">NUM_IP</span><span class="p">];</span>					<span class="c1">// XML:E</span>
 	<span class="n">IBK</span><span class="o">::</span><span class="n">Flag</span>			<span class="n">m_flags</span><span class="p">[</span><span class="n">NUM_test</span><span class="p">];</span>					<span class="c1">// XML:E</span>
+	<span class="n">NANDRAD</span><span class="o">::</span><span class="n">LinearSplineParameter</span> <span class="n">m_splinePara</span><span class="p">[</span><span class="n">NUM_SP</span><span class="p">];</span>	<span class="c1">// XML:E</span>
 
-	<span class="n">IBK</span><span class="o">::</span><span class="n">LinearSpline</span>	<span class="n">m_spline</span><span class="p">;</span>							<span class="c1">// XML:E</span>
-
-	<span class="c1">// example for a generic class with own readXML() and writeXML() function</span>
 	<span class="n">Schedule</span>			<span class="n">m_sched</span><span class="p">;</span>							<span class="c1">// XML:E</span>
+	<span class="n">Schedule</span>			<span class="n">m_sched2</span><span class="p">;</span>							<span class="c1">// XML:E:tag=OtherSchedule</span>
 
 <span class="p">};</span></code></pre>
 </div>
@@ -1042,10 +1070,13 @@ table {
 <li>
 <p>static arrays are supported, but only with enumeration index where the enum is parametrized with keyword list and <code>NUM_xxx</code> enumeration value as last enum value. The xml-tags are named as the keywords for the corresponding enum type).</p>
 </li>
+<li>
+<p>empty/undefined values are typically not written, for example when objects contain an empty <code>m_name</code> member variable</p>
+</li>
 </ol>
 </div>
 <div class="paragraph">
-<p>The following XML-output is generated from the class declaration above:</p>
+<p>The following XML-output is generated from the class declaration above (with some test data):</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1063,28 +1094,49 @@ table {
 		<span class="nt">&lt;X5&gt;</span>43.43<span class="nt">&lt;/X5&gt;</span>
 		<span class="nt">&lt;IBK:Flag</span> <span class="na">name=</span><span class="s">"F"</span><span class="nt">&gt;</span>true<span class="nt">&lt;/IBK:Flag&gt;</span>
 		<span class="nt">&lt;Time1&gt;</span>01.01.07 12:47:12<span class="nt">&lt;/Time1&gt;</span>
-		<span class="nt">&lt;Schedule</span> <span class="na">type=</span><span class="s">"Friday"</span><span class="nt">&gt;</span>
-			<span class="nt">&lt;StartDate&gt;</span>01.01.00  0:00:00<span class="nt">&lt;/StartDate&gt;</span>
-			<span class="nt">&lt;EndDate&gt;</span>01.01.00  0:00:00<span class="nt">&lt;/EndDate&gt;</span>
-			<span class="nt">&lt;DailyCycles&gt;</span>
-				<span class="nt">&lt;DailyCycle</span> <span class="nt">/&gt;</span>
-			<span class="nt">&lt;/DailyCycles&gt;</span>
-		<span class="nt">&lt;/Schedule&gt;</span>
 		<span class="nt">&lt;Table&gt;</span>Col1:1,5,3;Col2:7,2,2;<span class="nt">&lt;/Table&gt;</span>
 		<span class="nt">&lt;DblVec&gt;</span>0,12,24<span class="nt">&lt;/DblVec&gt;</span>
 		<span class="nt">&lt;Interfaces&gt;</span>
 			<span class="nt">&lt;Interface</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">zoneId=</span><span class="s">"0"</span><span class="nt">&gt;</span>
-				<span class="c">&lt;!--Interface to outside--&gt;</span>
+
 			<span class="nt">&lt;/Interface&gt;</span>
 		<span class="nt">&lt;/Interfaces&gt;</span>
+		<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"SinglePara"</span> <span class="na">unit=</span><span class="s">"C"</span><span class="nt">&gt;</span>20<span class="nt">&lt;/IBK:Parameter&gt;</span>
+		<span class="nt">&lt;IBK:IntPara</span> <span class="na">name=</span><span class="s">"SingleIntegerPara"</span><span class="nt">&gt;</span>12<span class="nt">&lt;/IBK:IntPara&gt;</span>
 		<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"X1"</span> <span class="na">unit=</span><span class="s">"C"</span><span class="nt">&gt;</span>12<span class="nt">&lt;/IBK:Parameter&gt;</span>
 		<span class="nt">&lt;IBK:IntPara</span> <span class="na">name=</span><span class="s">"I1"</span><span class="nt">&gt;</span>13<span class="nt">&lt;/IBK:IntPara&gt;</span>
 		<span class="nt">&lt;IBK:IntPara</span> <span class="na">name=</span><span class="s">"I2"</span><span class="nt">&gt;</span>15<span class="nt">&lt;/IBK:IntPara&gt;</span>
 		<span class="nt">&lt;IBK:Flag</span> <span class="na">name=</span><span class="s">"X2"</span><span class="nt">&gt;</span>true<span class="nt">&lt;/IBK:Flag&gt;</span>
-		<span class="nt">&lt;IBK:LinearSpline</span> <span class="na">name=</span><span class="s">"Spline"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;IBK:LinearSpline</span> <span class="na">name=</span><span class="s">"LinSpl"</span><span class="nt">&gt;</span>
 			<span class="nt">&lt;X</span> <span class="na">unit=</span><span class="s">"-"</span><span class="nt">&gt;</span>0 1 1.4 2 <span class="nt">&lt;/X&gt;</span>
 			<span class="nt">&lt;Y</span> <span class="na">unit=</span><span class="s">"-"</span><span class="nt">&gt;</span>1 2 3.4 5 <span class="nt">&lt;/Y&gt;</span>
 		<span class="nt">&lt;/IBK:LinearSpline&gt;</span>
+		<span class="nt">&lt;LinearSplineParameter</span> <span class="na">name=</span><span class="s">"SplineParameter"</span><span class="nt">&gt;</span>
+			<span class="nt">&lt;X</span> <span class="na">unit=</span><span class="s">"m"</span><span class="nt">&gt;</span>0 5 10 <span class="nt">&lt;/X&gt;</span>
+			<span class="nt">&lt;Y</span> <span class="na">unit=</span><span class="s">"C"</span><span class="nt">&gt;</span>5 4 3 <span class="nt">&lt;/Y&gt;</span>
+		<span class="nt">&lt;/LinearSplineParameter&gt;</span>
+		<span class="nt">&lt;LinearSplineParameter</span> <span class="na">name=</span><span class="s">"AnotherSplineParameter"</span><span class="nt">&gt;</span>
+			<span class="nt">&lt;X</span> <span class="na">unit=</span><span class="s">"m"</span><span class="nt">&gt;</span>0 5 10 <span class="nt">&lt;/X&gt;</span>
+			<span class="nt">&lt;Y</span> <span class="na">unit=</span><span class="s">"C"</span><span class="nt">&gt;</span>5 4 3 <span class="nt">&lt;/Y&gt;</span>
+		<span class="nt">&lt;/LinearSplineParameter&gt;</span>
+		<span class="nt">&lt;LinearSplineParameter</span> <span class="na">name=</span><span class="s">"ParameterSet1"</span><span class="nt">&gt;</span>
+			<span class="nt">&lt;X</span> <span class="na">unit=</span><span class="s">"m"</span><span class="nt">&gt;</span>0 5 10 <span class="nt">&lt;/X&gt;</span>
+			<span class="nt">&lt;Y</span> <span class="na">unit=</span><span class="s">"C"</span><span class="nt">&gt;</span>5 4 3 <span class="nt">&lt;/Y&gt;</span>
+		<span class="nt">&lt;/LinearSplineParameter&gt;</span>
+		<span class="nt">&lt;Schedule</span> <span class="na">type=</span><span class="s">"Friday"</span><span class="nt">&gt;</span>
+			<span class="nt">&lt;StartDayOfTheYear&gt;</span>0<span class="nt">&lt;/StartDayOfTheYear&gt;</span>
+			<span class="nt">&lt;EndDayOfTheYear&gt;</span>0<span class="nt">&lt;/EndDayOfTheYear&gt;</span>
+			<span class="nt">&lt;DailyCycles&gt;</span>
+				<span class="nt">&lt;DailyCycle</span> <span class="nt">/&gt;</span>
+			<span class="nt">&lt;/DailyCycles&gt;</span>
+		<span class="nt">&lt;/Schedule&gt;</span>
+		<span class="nt">&lt;OtherSchedule</span> <span class="na">type=</span><span class="s">"Friday"</span><span class="nt">&gt;</span>
+			<span class="nt">&lt;StartDayOfTheYear&gt;</span>0<span class="nt">&lt;/StartDayOfTheYear&gt;</span>
+			<span class="nt">&lt;EndDayOfTheYear&gt;</span>0<span class="nt">&lt;/EndDayOfTheYear&gt;</span>
+			<span class="nt">&lt;DailyCycles&gt;</span>
+				<span class="nt">&lt;DailyCycle</span> <span class="nt">/&gt;</span>
+			<span class="nt">&lt;/DailyCycles&gt;</span>
+		<span class="nt">&lt;/OtherSchedule&gt;</span>
 	<span class="nt">&lt;/SerializationTest&gt;</span>
 <span class="nt">&lt;/NandradProject&gt;</span></code></pre>
 </div>
@@ -1325,7 +1377,7 @@ table {
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated 2020-11-11 10:58:47 +0100
+Last updated 2020-11-11 19:46:44 +0100
 </div>
 </div>
 <style>

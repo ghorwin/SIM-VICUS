@@ -154,6 +154,10 @@ where `NandradCodeGenerator` is built as part of the tool chain as well. The rul
 
 A second task for the code generator is to create functions for serialization of data structures to XML files. Hereby, the TinyXML-library is used.
 
+### Supported data types
+
+See section <<xml_serialization_rules>> for a list and examples of supported data types.
+
 ### Read/write code
 
 Since reading/writing XML code is pretty straight forward, much of this code writing can be generalized. Let's take a look at a simple example. 
@@ -711,6 +715,12 @@ public:
 		NUM_IP
 	};
 
+	enum splinePara_t {
+		SP_ParameterSet1,									// Keyword: ParameterSet1
+		SP_ParameterSet2,									// Keyword: ParameterSet2
+		NUM_SP
+	};
+
 	int					m_id1		= 5;					// XML:A:required
 	unsigned int		m_id2		= 10;					// XML:A
 	bool				m_flag1		= false;				// XML:A
@@ -726,26 +736,41 @@ public:
 	double				m_val2		= 41.41;				// XML:E
 	test_t				m_testBlo	= t_x2;					// XML:E
 	std::string			m_str2		= "blabb";				// XML:E
+
 	IBK::Path			m_path2		= IBK::Path("/var");	// XML:E
+	IBK::Path			m_path22;							// XML:E
+
 	IBK::Unit			m_u2		= IBK::Unit("C");		// XML:E
-	double				m_x5;								// XML:E
+	double				m_x5		= 43.43;				// XML:E
+
 	IBK::Flag			m_f;								// XML:E
+	IBK::Flag			m_f2;								// XML:E
+
 	IBK::Time			m_time1;							// XML:E
 	IBK::Time			m_time2;							// XML:E
 
 	DataTable			m_table;							// XML:E
+	DataTable			m_table2;							// XML:E
 
 	std::vector<double>		m_dblVec;						// XML:E
+
 	std::vector<Interface>	m_interfaces;					// XML:E
+
+	Interface				m_interfaceA;					// XML:E:tag=InterfaceA
+
+	IBK::Parameter		m_singlePara;						            // XML:E
+	IBK::IntPara		m_singleIntegerPara = IBK::IntPara("blubb",12);	// XML:E
+	IBK::LinearSpline	m_linSpl;							            // XML:E
+	NANDRAD::LinearSplineParameter	m_splineParameter;			        // XML:E
+	LinearSplineParameter			m_anotherSplineParameter;	        // XML:E
 
 	IBK::Parameter		m_para[NUM_test];					// XML:E
 	IBK::IntPara		m_intPara[NUM_IP];					// XML:E
 	IBK::Flag			m_flags[NUM_test];					// XML:E
+	NANDRAD::LinearSplineParameter m_splinePara[NUM_SP];	// XML:E
 
-	IBK::LinearSpline	m_spline;							// XML:E
-
-	// example for a generic class with own readXML() and writeXML() function
 	Schedule			m_sched;							// XML:E
+	Schedule			m_sched2;							// XML:E:tag=OtherSchedule
 
 };
 
@@ -758,8 +783,9 @@ The following conventions are used when composing the XML content:
 3. attribute names are composed of the variable name without `m_` prefix, so `m_flagFive` becomes attribute `flagFive`
 4. for vector quantities (for example `std::vector<Interface> m_interfaces`, the variable name is used to generate the list-type XML tag, here `Interfaces` (again just by capitalizing the variable name string). Inside the list the actual members are written, hereby calling `writeXML()` in the child elements (`Interface::writeXML()` in the example above)
 5. static arrays are supported, but only with enumeration index where the enum is parametrized with keyword list and `NUM_xxx` enumeration value as last enum value. The xml-tags are named as the keywords for the corresponding enum type).
+6. empty/undefined values are typically not written, for example when objects contain an empty `m_name` member variable
 
-The following XML-output is generated from the class declaration above:
+The following XML-output is generated from the class declaration above (with some test data):
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -776,28 +802,49 @@ The following XML-output is generated from the class declaration above:
 		<X5>43.43</X5>
 		<IBK:Flag name="F">true</IBK:Flag>
 		<Time1>01.01.07 12:47:12</Time1>
-		<Schedule type="Friday">
-			<StartDate>01.01.00  0:00:00</StartDate>
-			<EndDate>01.01.00  0:00:00</EndDate>
-			<DailyCycles>
-				<DailyCycle />
-			</DailyCycles>
-		</Schedule>
 		<Table>Col1:1,5,3;Col2:7,2,2;</Table>
 		<DblVec>0,12,24</DblVec>
 		<Interfaces>
 			<Interface id="1" zoneId="0">
-				<!--Interface to outside-->
+
 			</Interface>
 		</Interfaces>
+		<IBK:Parameter name="SinglePara" unit="C">20</IBK:Parameter>
+		<IBK:IntPara name="SingleIntegerPara">12</IBK:IntPara>
 		<IBK:Parameter name="X1" unit="C">12</IBK:Parameter>
 		<IBK:IntPara name="I1">13</IBK:IntPara>
 		<IBK:IntPara name="I2">15</IBK:IntPara>
 		<IBK:Flag name="X2">true</IBK:Flag>
-		<IBK:LinearSpline name="Spline">
+		<IBK:LinearSpline name="LinSpl">
 			<X unit="-">0 1 1.4 2 </X>
 			<Y unit="-">1 2 3.4 5 </Y>
 		</IBK:LinearSpline>
+		<LinearSplineParameter name="SplineParameter">
+			<X unit="m">0 5 10 </X>
+			<Y unit="C">5 4 3 </Y>
+		</LinearSplineParameter>
+		<LinearSplineParameter name="AnotherSplineParameter">
+			<X unit="m">0 5 10 </X>
+			<Y unit="C">5 4 3 </Y>
+		</LinearSplineParameter>
+		<LinearSplineParameter name="ParameterSet1">
+			<X unit="m">0 5 10 </X>
+			<Y unit="C">5 4 3 </Y>
+		</LinearSplineParameter>
+		<Schedule type="Friday">
+			<StartDayOfTheYear>0</StartDayOfTheYear>
+			<EndDayOfTheYear>0</EndDayOfTheYear>
+			<DailyCycles>
+				<DailyCycle />
+			</DailyCycles>
+		</Schedule>
+		<OtherSchedule type="Friday">
+			<StartDayOfTheYear>0</StartDayOfTheYear>
+			<EndDayOfTheYear>0</EndDayOfTheYear>
+			<DailyCycles>
+				<DailyCycle />
+			</DailyCycles>
+		</OtherSchedule>
 	</SerializationTest>
 </NandradProject>
 ----
