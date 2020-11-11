@@ -19,6 +19,7 @@ import os
 import glob
 import sys
 import ntpath
+import datetime
 
 from print_funcs import *
 
@@ -35,10 +36,16 @@ def processAdoc(fpath, mode, scriptPath):
 		fobj.close
 		del fobj
 		
+		
 		imagesdir = ""
 		# now process line by line, search for :imagesdir: property
 		for i in range(len(lines)):
 			line = lines[i]
+
+			# specialized handling of date tag
+			if line.find("date_on_line_above") != -1:
+				lines[i-1] = datetime.datetime.today().strftime('%d.%m.%Y  %H:%M') + '\n'
+
 			pos = line.find(":imagesdir:")
 			if pos != -1:
 				imagesdir = line[11:].strip()
