@@ -103,9 +103,7 @@ public:
 	/*! Short Wave Reflectance of surface facing outside. */
 	LinearSplineParameter		m_shortWaveReflectanceOutside;		// XML:E
 
-
-
-//	LinearSplineParameter		m_splinePara[NUM_SP];				// XML:E
+	//LinearSplineParameter		m_test[10];
 
 
 };

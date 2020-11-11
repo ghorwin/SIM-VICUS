@@ -60,6 +60,22 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
+	/*! Default Constructor. */
+	LinearSplineParameter(){}
+
+	/*! Constructor with values. */
+	LinearSplineParameter(const std::string &name,
+						  const interpolationMethod_t intPol,
+						  const std::vector<double> &xVals,const std::vector<double> yVals,
+						  const IBK::Unit &xUnit, const IBK::Unit &yUnit):
+		m_name(name),
+		m_interpolationMethod(intPol),
+		m_xUnit(xUnit),
+		m_yUnit(yUnit)
+	{
+		m_values.setValues(xVals, yVals);
+	}
+
 	void readXML(const TiXmlElement * element);
 	TiXmlElement * writeXML(TiXmlElement * parent) const;
 
