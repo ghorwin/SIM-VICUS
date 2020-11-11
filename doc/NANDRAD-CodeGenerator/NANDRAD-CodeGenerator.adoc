@@ -577,14 +577,14 @@ Example:
 
 [source,bash]
 ----
-> NandradCodeGenerator NANDRAD ~/git/SIM-VICUS/externals/Nandrad/src NANDRAD 0 ncg
+> NandradCodeGenerator NANDRAD ~/git/SIM-VICUS/externals/Nandrad/src 0 NANDRAD ncg
 ----
 
 or 
 
 [source,bash]
 ----
-> NandradCodeGenerator NANDRAD_MODEL ~/git/SIM-VICUS/NandradSolver/src NM 0 ncg
+> NandradCodeGenerator NANDRAD_MODEL ~/git/SIM-VICUS/NandradSolver/src 0 NM ncg
 ----
 
 
