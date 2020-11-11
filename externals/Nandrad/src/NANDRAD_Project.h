@@ -40,6 +40,7 @@
 #include "NANDRAD_Models.h"
 #include "NANDRAD_WindowGlazingSystem.h"
 #include "NANDRAD_HydraulicNetwork.h"
+#include "NANDRAD_HydraulicNetworkComponent.h"
 
 namespace NANDRAD {
 
@@ -115,6 +116,9 @@ public:
 
 	/*! All hydraulic networks defined for this project. */
 	std::vector<HydraulicNetwork>					m_hydraulicNetworks;				// XML:E
+
+	/*! Hydraulic component database for this project. */
+	std::vector<HydraulicNetworkComponent>			m_hydraulicComponents;				// XML:E
 
 	/*! All construction types reference construction parameters. */
 	std::vector<ConstructionType>					m_constructionTypes;				// XML:E
