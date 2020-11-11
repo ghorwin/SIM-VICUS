@@ -3,6 +3,7 @@
 
 #include <IBK_Parameter.h>
 
+#include "NANDRAD_LinearSplineParameter.h"
 #include "NANDRAD_CodeGenMacros.h"
 #include "NANDRAD_Constants.h"
 
@@ -25,6 +26,9 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
+	void defaultFluidWater(unsigned int id);
+
+
 	NANDRAD_READWRITE
 	NANDRAD_COMPARE_WITH_ID
 
@@ -38,9 +42,8 @@ public:
 	IBK::Parameter						m_para[NUM_P];					// XML:E
 
 	/*! Kinematic viscosity [m2/s]. */
-	NANDRAD::LinearSplineParameter		m_kinematicViscosity;			// XML:E
+	LinearSplineParameter				m_kinematicViscosity;			// XML:E
 
-};
 };
 
 } // namespace NANDRAD

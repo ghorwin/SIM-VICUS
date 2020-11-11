@@ -17,16 +17,39 @@ public:
 	/*! The various types (equations) of the hydraulic component. */
 	enum modelType_t {
 		MT_AdiabaticPipe,					// Keyword: AdiabaticPipe				'Pipe without heat exchange'
+		MT_Pipe,							// Keyword: Pipe						'Pipe with heat exchange to a zone or other conditions.'
 		MT_UniformTemperaturePipe,			// Keyword: UniformTemperaturePipe		'Pipe with single temperature and heat exchange with surrounding'
 		MT_TemperatureDistributionPipe,		// Keyword: TemperatureDistributionPipe	'Pipe with temperature distribution (spatial discretization) and heat exchange with surrounding'
-		MT_Pump,							// Keyword: Pump						'A pump with some control regime'
+		MT_ConstantPressurePumpModel,		// Keyword: ConstantPressurePumpModel	'A pump with constant pressure.'
+		MT_HeatPump,						// Keyword: HeatPump					'A heat pump.'
+		MT_GasBoiler,						// Keyword: GasBoiler					'Gas boiler.'
+		MT_ControlValve,					// Keyword: ControlValve				'Control valve.'
+		MT_WaterStorage,					// Keyword: WaterStorage				'Water storage.'
+		MT_ComponentConditionSystem,		// Keyword: ComponentConditionSystem	'Component conditioning system is a system for heating or cooling of components.'
+		MT_Radiator,						// Keyword: Radiator					'Radiator.'
+		MT_Mixer,							// Keyword: Mixer						'Mixer component.'
 		MT_FMU,								// Keyword: FMU							'Flow characteristics provided by FMU'
 		NUM_MT
 	};
 
-	/*! Parameters for the pump model. */
+	/*! Parameters for the component. */
 	enum para_t {
-		P_PressureLossCoefficient,
+		P_PressureLossCoefficient,			// Keyword: PressureLossCoefficient				[-]		'Pressure loss coefficient for the component.'
+		P_MaximumPressureLossCoefficient,	// Keyword: MaximumPressureLossCoefficient		[-]		'Maximum pressure loss coefficient for the component.'
+		P_HydraulicDiameter,				// Keyword: HydraulicDiameter					[m]		'Inside hydraulic diameter for the component.'
+		P_PipeFrictionFactor,				// Keyword: PipeFrictionFactor					[-]		'Pipe friction factor for the component.'
+		P_ExternalHeatTransferCoefficient,	// Keyword: ExternalHeatTransferCoefficient		[W/m2K]	'External heat transfer coeffient for the outside boundary.'
+		P_TemperatureTolerance,				// Keyword: TemperatureTolerance				[K]		'Temperature tolerance for e.g. thermostats.'
+		P_PressureHead,						// Keyword: PressureHead						[Pa]	'Pressure head form a pump.'
+		P_PumpEfficiency,					// Keyword: PumpEfficiency						[---]	'Pump efficiency.'
+		P_MotorEfficiency,					// Keyword: MotorEfficiency						[---]	'Motor efficiency for a pump.'
+		P_RatedHeatingCapacity,				// Keyword: RatedHeatingCapacity				[W]		'Rated heating capacity of the component.'
+		P_RatedCoolingCapacity,				// Keyword: RatedCoolingCapacity				[W]		'Rated Cooling capacity of the component.'
+		P_AuxiliaryPower,					// Keyword: AuxiliaryPower						[W]		'Auxiliary power of the component.'
+		P_Volume,							// Keyword: Volume								[m3]	'Water or air volume of the component.'
+		P_ExternalSurfaceArea,				// Keyword: ExternalSurfaceArea					[m2]	'External surface area of the component.'
+		P_ConvectiveFraction,				// Keyword: ConvectiveFraction					[---]	'Convective fraction for heating or cooling.'
+		P_COP,								// Keyword: COP									[-]		'Coefficient of performance of the component.'
 		NUM_P
 	};
 
@@ -36,18 +59,10 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique ID for this flow component.
-		ID is used for outputs and to reference heat sources/sinks connected to this element. For active elements,
-		this ID is used to connect control models.
-	*/
+	/*! Unique ID for this component. */
 	unsigned int					m_id			= NANDRAD::INVALID_ID;				// XML:A:required
-	/*! Inlet node ID. */
-	unsigned int					m_inletNodeId	= NANDRAD::INVALID_ID;				// XML:A:required
-	/*! Outlet node ID. */
-	unsigned int					m_outletNodeId	= NANDRAD::INVALID_ID;				// XML:A:required
-	/*! Hydraulic component ID. */
-	unsigned int					m_componentId	= NANDRAD::INVALID_ID;				// XML:A:required
 
+	/*! Display name. */
 	std::string						m_displayName;										// XML:A
 
 	/*! Model type. */
@@ -55,6 +70,16 @@ public:
 
 	/*! Parameters of the flow component. */
 	IBK::Parameter					m_para[NUM_P];										// XML:E
+
+	/* irgendwie muss noch eine verlinkung der component mit anderen objekten hergestellt werden. Z.B. einer anderen Zone
+	   oder mit einem Zeitplan der eine Temperatur vorgibt wie sich die Außenrandbedingung darstellt.
+	   das sollte am besten ins network element geschoben werden
+	*/
+
+	/*	wirkungsgradkurven wie sollten diese abgelegt werden?
+		hierbei kann es recht schnell passieren dass diese von einlasstemperaturen und oder massströmen und
+		weiteren elemente abhängen.
+	*/
 };
 
 } // namespace NANDRAD

@@ -8,6 +8,7 @@
 #include "NANDRAD_CodeGenMacros.h"
 #include "NANDRAD_Constants.h"
 #include "NANDRAD_HydraulicNetworkElement.h"
+#include "NANDRAD_HydraulicFluid.h"
 
 namespace NANDRAD {
 
@@ -15,6 +16,7 @@ namespace NANDRAD {
 class HydraulicNetwork {
 	NANDRAD_READWRITE_PRIVATE
 public:
+
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -25,6 +27,8 @@ public:
 	unsigned int							m_id			= NANDRAD::INVALID_ID;				// XML:A:required
 	/*! Descriptive name. */
 	std::string								m_displayName;										// XML:A
+
+	HydraulicFluid							m_fluid;											// XML:E
 
 	/*! List of flow elements that make up this network. */
 	std::vector<HydraulicNetworkElement>	m_elements;											// XML:E
