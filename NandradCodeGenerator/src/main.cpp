@@ -24,7 +24,8 @@ const char * const SYNTAX =
 		"         Keywordlist-source files are written into the first (or only) source directory.\n"
 		"         <generateQtSrc> is 1 when Qt source should be generated, 0 otherwise.\n"
 		"         <prefix> is the file prefix <prefix>_KeywordList.cpp.\n"
-		"         <ncg-dir> is the path to the directory where ncg_xxx.cpp files are written to.\n";
+		"         <ncg-dir> is the path to the directory where ncg_xxx.cpp files are written to.\n"
+		"         Example: NandradCodeGenerator NANDRAD ~/git/SIM-VICUS/externals/Nandrad/src 0 NANDRAD ncg";
 
 
 // ******* MAIN ********

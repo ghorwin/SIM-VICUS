@@ -1678,8 +1678,120 @@ void createSim05(NANDRAD::Project &prj){
 }
 #endif
 
+void hydraulicNetworkTest01(NANDRAD::Project &prj){
+
+	NANDRAD::HydraulicNetwork hydrNet;
+
+	unsigned int id=1;
+
+	//create all components for network
+	NANDRAD::HydraulicNetworkComponent pump;
+
+	pump.m_id = id++;
+	pump.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel;
+	pump.m_displayName = "Constant Pressure Pump";
+	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead] = IBK::Parameter("PressureHead", 300 ,"kPa");
+	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_MotorEfficiency] = IBK::Parameter("MotorEfficiency", 0.9 ,"---");
+	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency] = IBK::Parameter("PumpEfficiency", 0.4 ,"---");
+	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter] = IBK::Parameter("HydraulicDiameter", 12 ,"mm");
+	//pump.m_para[HydraulicNetworkComponent::P_] = IBK::Parameter("HydraulicDiameter", 12 ,"mm");
+
+
+	NANDRAD::HydraulicNetworkComponent boiler;
+
+	boiler.m_id = id++;
+	boiler.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_GasBoiler;
+	boiler.m_displayName = "Boiler";
+	boiler.m_para[NANDRAD::HydraulicNetworkComponent::P_RatedHeatingCapacity] = IBK::Parameter("RatedHeatingCapacity", 10 ,"kW");
+	boiler.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter] = IBK::Parameter("HydraulicDiameter", 12 ,"mm");
+
+	NANDRAD::HydraulicNetworkComponent adiabaticPipe;
+
+	adiabaticPipe.m_id = id++;
+	adiabaticPipe.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_AdiabaticPipe;
+	adiabaticPipe.m_displayName = "Adiabatic Pipe";
+
+	NANDRAD::HydraulicNetworkComponent pipe;
+
+	pipe.m_id = id++;
+	pipe.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_Pipe;
+	pipe.m_displayName = "Heat Exchanged Pipe";
+	pipe.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter] = IBK::Parameter("HydraulicDiameter", 12 ,"mm");
+
+	NANDRAD::HydraulicNetworkComponent ccs;
+
+	ccs.m_id = id++;
+	ccs.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_ComponentConditionSystem;
+	ccs.m_displayName = "ccs";
+	ccs.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter] = IBK::Parameter("HydraulicDiameter", 12 ,"mm");
+	ccs.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient] = IBK::Parameter("PressureLossCoefficient", 1 ,"-");
+	ccs.m_para[NANDRAD::HydraulicNetworkComponent::P_PipeFrictionFactor] = IBK::Parameter("PipeFrictionFactor", 1 ,"-");
+
+	prj.m_hydraulicComponents.push_back(pump);
+	prj.m_hydraulicComponents.push_back(boiler);
+	prj.m_hydraulicComponents.push_back(adiabaticPipe);
+	prj.m_hydraulicComponents.push_back(ccs);
+	prj.m_hydraulicComponents.push_back(pipe);
+
+	/*
+	pump -> boiler	->	adiabatic pipe	->	ccs1	->
+					|								^
+					|								|
+					->	pipe			->	ccs2	-
+	*/
+
+	hydrNet.m_id = id++;
+	hydrNet.m_displayName = "Test Network";
+
+	//pump
+	hydrNet.m_elements.push_back(NANDRAD::HydraulicNetworkElement(id+1, id+2, id+3, pump.m_id));
+	id +=3;
+	hydrNet.m_elements.back().m_zoneId = ++id;
+	//boiler
+	hydrNet.m_elements.push_back(NANDRAD::HydraulicNetworkElement(id+1, hydrNet.m_elements.back().m_outletNodeId, id+2, boiler.m_id));
+	id +=2;
+	//adia pipe
+	hydrNet.m_elements.push_back(NANDRAD::HydraulicNetworkElement(id+1, hydrNet.m_elements.back().m_outletNodeId, id+2, adiabaticPipe.m_id));
+	hydrNet.m_elements.back().m_para[NANDRAD::HydraulicNetworkElement::P_Length] = IBK::Parameter("Length", 10, "m");
+	id +=2;
+	//pipe
+	hydrNet.m_elements.push_back(NANDRAD::HydraulicNetworkElement(id+1, hydrNet.m_elements[hydrNet.m_elements.size()-2].m_outletNodeId, id+2, pipe.m_id));
+	hydrNet.m_elements.back().m_para[NANDRAD::HydraulicNetworkElement::P_Length] = IBK::Parameter("Length", 10, "m");
+	id +=2;
+	//css1
+	hydrNet.m_elements.push_back(NANDRAD::HydraulicNetworkElement(id+1, hydrNet.m_elements[hydrNet.m_elements.size()-2].m_outletNodeId, id+2,
+								 prj.m_hydraulicComponents[prj.m_hydraulicComponents.size()-2].m_id));
+	hydrNet.m_elements.back().m_para[NANDRAD::HydraulicNetworkElement::P_Length] = IBK::Parameter("Length", 100, "m");
+	id +=2;
+	//ccs2
+	hydrNet.m_elements.push_back(NANDRAD::HydraulicNetworkElement(id+1, hydrNet.m_elements[hydrNet.m_elements.size()-2].m_outletNodeId, hydrNet.m_elements.back().m_outletNodeId,
+								 prj.m_hydraulicComponents[prj.m_hydraulicComponents.size()-2].m_id));
+	hydrNet.m_elements.back().m_para[NANDRAD::HydraulicNetworkElement::P_Length] = IBK::Parameter("Length", 100, "m");
+	id +=2;
+
+	++id;
+
+	hydrNet.m_fluid.defaultFluidWater(id);
+	prj.m_hydraulicNetworks.push_back(hydrNet);
+
+}
+
+
 int main(int argc, char * argv[]) {
 	FUNCID(main);
+
+	bool isHydrNet=true;
+
+	if(isHydrNet) {
+		NANDRAD::Project prj;
+
+		hydraulicNetworkTest01(prj);
+
+		prj.writeXML(IBK::Path("c:/temp/hydrNet.nandrad"));
+
+		return EXIT_SUCCESS;
+
+	}
 
 #ifdef SCHEDULE
 
