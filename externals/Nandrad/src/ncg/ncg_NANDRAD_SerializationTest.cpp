@@ -129,7 +129,7 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 			else if (cName == "Table2")
 				m_table2.setEncodedString(c->GetText());
 			else if (cName == "DblVec")
-				readVector(c, "DblVec", m_dblVec);
+				NANDRAD::readVector(c, "DblVec", m_dblVec);
 			else if (cName == "Interfaces") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
@@ -146,6 +146,9 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
 				bool success = false;
+				if (p.name == "SinglePara") {
+					m_singlePara = p; success = true;
+				}
 				test_t ptype;
 				try {
 					ptype = (test_t)KeywordList::Enumeration("SerializationTest::test_t", p.name);
@@ -180,11 +183,31 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 				std::string name;
 				NANDRAD::readLinearSplineElement(c, p, name, nullptr, nullptr);
 				bool success = false;
-				if (name == "Spline") {
-					m_spline = p; success = true;
+				if (name == "LinearSpline") {
+					m_linearSpline = p; success = true;
 				}
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			else if (cName == "LinearSplineParameter") {
+				NANDRAD::LinearSplineParameter p;
+				p.readXML(c);
+				bool success = false;
+				if (p.m_name == "SplineParameter") {
+					m_splineParameter = p; success = true;
+				}
+				else if (p.m_name == "AnotherSplineParameter") {
+					m_anotherSplineParameter = p; success = true;
+				}
+				try {
+					splinePara_t ptype;
+					ptype = (splinePara_t)KeywordList::Enumeration("SerializationTest::splinePara_t", p.m_name);
+					m_splinePara[ptype] = p;
+					success = true;
+				}
+				catch (IBK::Exception & ex) { ex.writeMsgStackToError(); }
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.m_name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			else if (cName == "TestBlo") {
 				try {
@@ -274,6 +297,8 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 		if (customElement != nullptr)
 			customElement->ToElement()->SetValue("InterfaceA");
 	}
+	if (!m_singlePara.name.empty())
+		TiXmlElement::appendIBKParameterElement(e, m_singlePara.name, m_singlePara.IO_unit.name(), m_singlePara.get_value());
 
 	for (unsigned int i=0; i<NUM_test; ++i) {
 		if (!m_para[i].name.empty())
@@ -289,8 +314,16 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 		if (!m_flags[i].name().empty())
 			TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_flags[i].name(), m_flags[i].isEnabled() ? "true" : "false");
 	}
-	if (!m_spline.empty())
-		NANDRAD::writeLinearSplineElement(e, "Spline", m_spline, "-", "-");
+	if (!m_linearSpline.empty())
+		NANDRAD::writeLinearSplineElement(e, "LinearSpline", m_linearSpline, "-", "-");
+	if (!m_splineParameter.m_name.empty())
+		m_splineParameter.writeXML(e);
+	if (!m_anotherSplineParameter.m_name.empty())
+		m_anotherSplineParameter.writeXML(e);
+	for (int i=0; i<NUM_SP; ++i) {
+		if (!m_splinePara[i].m_name.empty())
+			m_splinePara[i].writeXML(e);
+	}
 
 	m_sched.writeXML(e);
 	return e;

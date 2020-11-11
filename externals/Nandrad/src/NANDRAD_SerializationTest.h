@@ -55,7 +55,7 @@ public:
 		std::vector<double> y = {1, 2, 3.4, 5};
 		m_intPara[IP_i1].set("I1", 13);
 		m_intPara[IP_i2].set("I2", 15);
-		m_f.set("F",true);
+		m_f.set("F43",true);
 		m_dblVec = std::vector<double>{0, 12, 24};
 
 		m_sched.m_type = Schedule::ST_FRIDAY;
@@ -114,26 +114,46 @@ public:
 		NUM_SP
 	};
 
+	// -> id1="5"
 	int					m_id1		= 5;					// XML:A:required
+	// -> id2="10"
 	unsigned int		m_id2		= 10;					// XML:A
+	// -> flag1="0"
 	bool				m_flag1		= false;				// XML:A
+	// -> val1="42.42"
 	double				m_val1		= 42.42;				// XML:A
+	// -> testBla="X1"
 	test_t				m_testBla	= t_x1;					// XML:A
+	// -> str1="Blubb"
 	std::string			m_str1		= "Blubb";				// XML:A
+	// -> path1="/tmp"
 	IBK::Path			m_path1		= IBK::Path("/tmp");	// XML:A
+	// -> u1="K"
 	IBK::Unit			m_u1		= IBK::Unit("K");		// XML:A
 
+	// -> <Id3>10</Id3>
 	int					m_id3		= 10;					// XML:E:required
+	// -> <Id4>12</Id4>
 	unsigned int		m_id4		= 12;					// XML:E
+	// -> <Flag2>1</Flag2>
 	bool				m_flag2		= true;					// XML:E
+	// -> <Val2>41.41</Val2>
 	double				m_val2		= 41.41;				// XML:E
+	// -> <TestBlo>X2</TestBlo>
 	test_t				m_testBlo	= t_x2;					// XML:E
+	// -> <Str2>blabb</Str2>
 	std::string			m_str2		= "blabb";				// XML:E
+	// -> <Path2>/var</Path2>
 	IBK::Path			m_path2		= IBK::Path("/var");	// XML:E
+	// -> <U2>C</U2>
 	IBK::Unit			m_u2		= IBK::Unit("C");		// XML:E
+	// -> <X5>43.43</X5>
 	double				m_x5		= 43.43;				// XML:E
+	// -> <IBK:Flag name="F">true</IBK:Flag>  -> value of m_f.name is ignored
 	IBK::Flag			m_f;								// XML:E
+	// ->
 	IBK::Time			m_time1;							// XML:E
+	// ->
 	IBK::Time			m_time2;							// XML:E
 
 	DataTable			m_table;							// XML:E
