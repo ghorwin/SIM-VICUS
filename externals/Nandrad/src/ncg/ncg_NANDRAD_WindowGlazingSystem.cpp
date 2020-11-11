@@ -94,6 +94,18 @@ void WindowGlazingSystem::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
+			else if (cName == "Layers") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "WindowGlazingLayer")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					WindowGlazingLayer obj;
+					obj.readXML(c2);
+					m_layers.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else if (cName == "LinearSplineParameter")
 				m_shgc.readXML(c);
 			else {
@@ -127,6 +139,18 @@ TiXmlElement * WindowGlazingSystem::writeXML(TiXmlElement * parent) const {
 	}
 
 	m_shgc.writeXML(e);
+
+	if (!m_layers.empty()) {
+		TiXmlElement * child = new TiXmlElement("Layers");
+		e->LinkEndChild(child);
+
+		for (std::vector<WindowGlazingLayer>::const_iterator it = m_layers.begin();
+			it != m_layers.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
 	return e;
 }
 

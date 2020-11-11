@@ -69,6 +69,7 @@ HEADERS += \
 	../../src/NANDRAD_Utilities.h \
 	../../src/NANDRAD_WindowDivider.h \
 	../../src/NANDRAD_WindowFrame.h \
+	../../src/NANDRAD_WindowGlazingLayer.h \
 	../../src/NANDRAD_WindowGlazingSystem.h \
 	../../src/NANDRAD_WindowShading.h \
 	../../src/NANDRAD_Zone.h
@@ -139,6 +140,7 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_SolverParameter.cpp \
 	../../src/ncg/ncg_NANDRAD_WindowDivider.cpp \
 	../../src/ncg/ncg_NANDRAD_WindowFrame.cpp \
+	../../src/ncg/ncg_NANDRAD_WindowGlazingLayer.cpp \
 	../../src/ncg/ncg_NANDRAD_WindowGlazingSystem.cpp \
 	../../src/ncg/ncg_NANDRAD_WindowShading.cpp \
 	../../src/ncg/ncg_NANDRAD_Zone.cpp

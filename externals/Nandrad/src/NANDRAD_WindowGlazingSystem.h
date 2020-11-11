@@ -27,6 +27,7 @@
 #include "NANDRAD_CodeGenMacros.h"
 #include "NANDRAD_Constants.h"
 #include "NANDRAD_LinearSplineParameter.h"
+#include "NANDRAD_WindowGlazingLayer.h"
 
 namespace NANDRAD {
 
@@ -66,6 +67,8 @@ public:
 	/*! Parameter for angle-dependent SHGC value. */
 	LinearSplineParameter				m_shgc;										// XML:E
 
+	/*! Parameters for the detailed multi-layer model. */
+	std::vector<WindowGlazingLayer>		m_layers;									// XML:E
 
 }; // WindowGlazingSystem
 
