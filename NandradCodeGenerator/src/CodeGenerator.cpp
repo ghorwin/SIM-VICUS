@@ -382,17 +382,22 @@ void CodeGenerator::generateReadWriteCode() {
 				std::string tagName = char(toupper(varName[0])) + varName.substr(1);
 				// we have special handling for:
 				// - simple tags (no attributes) for PODs, int, unsigned int, double, bool
+				//   unsigned int with special code that INVALID_ID values are not written
 				// - std::string
 				// - QString
-				// - IBK::Path
-				// - IBK::Parameter
-				// - IBK::Flag
+				// - IBK::Unit
 				// - IBK::Time
-				// - IBK::Parameter[NUM_xxx]
-				// - IBK::IntPara[NUM_xxx]
-				// - std::vector<double>
-				// - std::vector<xxx>
-				// - enumTypes
+				// - IBK::Path
+				// - IBK::LinearSpline
+				// - IBK::Parameter and IBK::Parameter[NUM_xxx]
+				// - IBK::IntPara and IBK::IntPara[NUM_xxx]
+				// - IBK::Flag and IBK::Flag[NUM_xxx]
+				// - std::vector<xxx> and special handling for:
+				//   - std::vector<double|int|unsigned int>
+				//   - std::vector<IBKMK::Vector3D>
+				// - DataTable
+				// - LinearSplineParameter[NUM_xxx]
+				// - enumTypes (using keyword list)
 
 				if (xmlInfo.typeStr == "int" ||
 					xmlInfo.typeStr == "unsigned int" ||
@@ -452,7 +457,8 @@ void CodeGenerator::generateReadWriteCode() {
 							"	}\n";
 					}
 					else {
-						elements += "	TiXmlElement::appendIBKParameterElement(e, m_"+varName+".name, m_"+varName+".IO_unit.name(), m_"+varName+".get_value());\n";
+						elements += "	if (!m_"+varName+".name.empty())\n"
+									"		TiXmlElement::appendIBKParameterElement(e, m_"+varName+".name, m_"+varName+".IO_unit.name(), m_"+varName+".get_value());\n";
 					}
 				}
 				else if (xmlInfo.typeStr == "IBK::IntPara") {
@@ -471,7 +477,8 @@ void CodeGenerator::generateReadWriteCode() {
 							"	}\n";
 					}
 					else {
-						elements += "	TiXmlElement::appendSingleAttributeElement(e, \"IBK:IntPara\", \"name\", m_"+varName+".name, IBK::val2string(m_"+varName+".value));\n";
+						elements += "	if (!m_"+varName+".name.empty())\n"
+									"		TiXmlElement::appendSingleAttributeElement(e, \"IBK:IntPara\", \"name\", m_"+varName+".name, IBK::val2string(m_"+varName+".value));\n";
 					}
 				}
 				else if (xmlInfo.typeStr == "IBK::Flag") {
@@ -489,9 +496,27 @@ void CodeGenerator::generateReadWriteCode() {
 							"	}\n";
 					}
 					else {
+						elements += "	if (!m_"+varName+".name().empty())\n"
+									"		TiXmlElement::appendSingleAttributeElement(e, \"IBK:Flag\", \"name\", m_"+varName+".name(), m_"+varName+".isEnabled() ? \"true\" : \"false\");\n";
+					}
+				}
+				else if (xmlInfo.typeStr == "LinearSplineParameter") {
+					// check for array syntax
+					std::string::size_type pos1 = varName.find("[");
+					if (pos1 != std::string::npos) {
+						// extract NUM type
+						std::string::size_type pos2 = varName.find("]");
+						std::string numType = varName.substr(pos1+1, pos2-pos1-1);
+						varName = varName.substr(0, pos1);
 						elements +=
-							"	if (!m_"+varName+".name().empty())\n"
-							"		TiXmlElement::appendSingleAttributeElement(e, \"IBK:Flag\", \"name\", m_"+varName+".name(), m_"+varName+".isEnabled() ? \"true\" : \"false\");\n";
+							"	for (int i=0; i<"+numType+"; ++i) {\n"
+							"		if (!m_"+varName+"[i].m_name.empty())\n"
+							"			m_" + varName + "[i].writeXML(e);\n"
+							"	}\n";
+					}
+					else {
+						elements += "	if (!m_"+varName+".m_name.empty())\n"
+									"		m_" + varName + ".writeXML(e);\n";
 					}
 				}
 				else if (xmlInfo.typeStr.find("std::vector<") == 0) {
@@ -725,7 +750,8 @@ void CodeGenerator::generateReadWriteCode() {
 					if (xmlInfo.typeStr == "IBK::Parameter" ||
 						xmlInfo.typeStr == "IBK::LinearSpline" ||
 						xmlInfo.typeStr == "IBK::Flag" ||
-						xmlInfo.typeStr == "IBK::IntPara")
+						xmlInfo.typeStr == "IBK::IntPara" ||
+						xmlInfo.typeStr == "LinearSplineParameter")
 					{
 						groupTags.insert(xmlInfo.typeStr);
 					}
@@ -1027,6 +1053,68 @@ void CodeGenerator::generateReadWriteCode() {
 								"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
 								"			}\n";
 					}
+					else if (xmlInfo.typeStr == "LinearSplineParameter" && groupTags.find("LinearSplineParameter") != groupTags.end()) {
+						groupTags.erase(groupTags.find("LinearSplineParameter")); // only generate code once
+						includes.insert("NANDRAD_Utilities.h");
+
+						elements +=
+							"			"+elseStr+"if (cName == \"LinearSplineParameter\") {\n"
+							"				NANDRAD::LinearSplineParameter p;\n"
+							"				p.readXML(c);\n";
+
+						// the read-code is structured as follows:
+						// - first generate read code for all scalar variables (varname without [])
+						// - then process all keyword-variants
+
+						std::string elementCodeScalar, elementCodeKeyword;
+
+						std::string caseElse;
+						for (const ClassInfo::XMLInfo & xmlInfo2 : ci.m_xmlInfo) {
+							if (!xmlInfo2.element || xmlInfo2.typeStr != "LinearSplineParameter") continue;
+							std::string varName2 = xmlInfo2.varName;
+							handledVariables.insert(varName2);
+							// now determine if this is a scalar parameter or a spline[xxx] variant
+							std::string::size_type bpos1 = varName2.find("[");
+							if (bpos1 != std::string::npos) {
+								std::string::size_type bpos2 = varName2.find("]");
+								std::string numType = varName2.substr(bpos1+1, bpos2-bpos1-1);
+								varName2 = varName2.substr(0, bpos1);
+								std::string tagName2 = char(toupper(varName2[0])) + varName2.substr(1);
+								// find corresponding enum type
+								auto einfo_it = ci.m_enumInfo.begin();
+								for(; einfo_it != ci.m_enumInfo.end(); ++einfo_it)
+									if (einfo_it->enumNUM == numType) break;
+								if (einfo_it == ci.m_enumInfo.end())
+									throw IBK::Exception( IBK::FormatString("Unknown enum for array index '%1'").arg(numType), FUNC_ID);
+								const ClassInfo::EnumInfo & einfo = *einfo_it;
+								elementCodeKeyword +=
+										"				try {\n"
+										"					"+einfo.enumType()+" ptype;\n"
+										"					ptype = ("+einfo.enumType()+")KeywordList::Enumeration(\""+einfo.categoryName+"\", p.m_name);\n"
+										"					m_"+varName2+"[ptype] = p;\n"
+										"					success = true;\n"
+										"				}\n"
+										"				catch (IBK::Exception & ex) { ex.writeMsgStackToError(); }\n";
+							}
+							else {
+								std::string tagName2 = char(toupper(varName2[0])) + varName2.substr(1);
+								elementCodeScalar +=
+										"				"+caseElse+"if (p.m_name == \""+tagName2+"\") {\n"
+										"					m_"+varName2 + " = p; success = true;\n"
+										"				}\n";
+							}
+							caseElse = "else ";
+						}
+						elements +=
+								"				bool success = false;\n" +
+								elementCodeScalar + elementCodeKeyword +
+								"				if (!success)\n"
+								"					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.m_name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
+								"			}\n";
+					}
+
+					// *** end groups (static array) handling
+
 					else if (xmlInfo.typeStr.find("std::vector<") != std::string::npos) {
 
 						std::string::size_type pos1 = xmlInfo.typeStr.find("<");

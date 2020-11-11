@@ -53,7 +53,6 @@ public:
 		m_interfaces.push_back(iface);
 		std::vector<double> x = {0, 1, 1.4, 2};
 		std::vector<double> y = {1, 2, 3.4, 5};
-		m_spline.setValues(x,y);
 		m_intPara[IP_i1].set("I1", 13);
 		m_intPara[IP_i2].set("I2", 15);
 		m_f.set("F",true);
@@ -72,6 +71,27 @@ public:
 
 		m_table.m_values["Col1"] = std::vector<double>{1,5,3};
 		m_table.m_values["Col2"] = std::vector<double>{7,2,2};
+
+		m_singlePara.set("SingleP", 20, IBK::Unit("C") );
+
+		// spline tests
+
+		// unitless spline
+		m_linearSpline.setValues(x,y);
+
+		// spline with name and units
+		m_splineParameter.m_name = "SingleParaSpl"; // the name is custom
+		m_splineParameter.m_values.setValues({0, 5,10}, {5,4,3});
+		m_splineParameter.m_xUnit.set("m");
+		m_splineParameter.m_yUnit.set("C");
+
+		m_anotherSplineParameter.m_name = "AnotherSplinePara"; // the name is custom
+		m_anotherSplineParameter.m_values.setValues({0, 5,10}, {5,4,3});
+		m_anotherSplineParameter.m_xUnit.set("m");
+		m_anotherSplineParameter.m_yUnit.set("C");
+
+		m_splinePara[SP_ParameterSet1].m_name = "ParameterSet1";
+
 	}
 
 	NANDRAD_READWRITE
@@ -86,6 +106,12 @@ public:
 		IP_i1,												// Keyword: I1
 		IP_i2,												// Keyword: I2
 		NUM_IP
+	};
+
+	enum splinePara_t {
+		SP_ParameterSet1,									// ParameterSet1
+		SP_ParameterSet2,									// ParameterSet2
+		NUM_SP
 	};
 
 	int					m_id1		= 5;					// XML:A:required
@@ -118,11 +144,17 @@ public:
 
 	Interface				m_interfaceA;					// XML:E:tag=InterfaceA
 
+	IBK::Parameter		m_singlePara;						// XML:E
 	IBK::Parameter		m_para[NUM_test];					// XML:E
 	IBK::IntPara		m_intPara[NUM_IP];					// XML:E
 	IBK::Flag			m_flags[NUM_test];					// XML:E
 
-	IBK::LinearSpline	m_spline;							// XML:E
+	IBK::LinearSpline	m_linearSpline;							// XML:E
+
+	NANDRAD::LinearSplineParameter	m_splineParameter;			// XML:E
+	LinearSplineParameter			m_anotherSplineParameter;	// XML:E
+
+	NANDRAD::LinearSplineParameter m_splinePara[NUM_SP];	// XML:E
 
 	// example for a generic class with own readXML() and writeXML() function
 	Schedule			m_sched;							// XML:E
