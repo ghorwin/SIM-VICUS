@@ -72,8 +72,32 @@ void OpaqueGeometryObject::create(QOpenGLShaderProgram * shaderProgramm) {
 		colorBufferData[v*4 + 3] = vertexColors[v].alpha();
 	}
 
+	//#define USE_DEGENERATED_TRIANGLE_RESTART
+	#ifdef USE_DEGENERATED_TRIANGLE_RESTART
+		GLushort indices[] = {  // note that we start from 0!
+			0, 1, 2, 3,
+			3, // duplicate last of first strip
+			4, // duplicate first of second strip
+			4, 5, 6, 7
+		};
+
+		// Note: when inserting a gap from even to odd element, insert 2; otherweise 3
+		m_indexCount = 10;
+	#else
+		glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
+		GLushort indices[] = {  // note that we start from 0!
+			0, 1, 2, 3,
+			0xFFFF,
+			4, 5, 6, 7
+		};
+	//	m_indexCount = 9;
+	#endif
+
+	m_elementBufferData = std::vector<GLshort>(indices, indices + 9);
+
+
+
 	// create a new buffer for the vertices and colors, interleaved storage
-	m_vbo = QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
 	m_vbo.create();
 	m_vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
 	m_vbo.bind();
@@ -81,65 +105,52 @@ void OpaqueGeometryObject::create(QOpenGLShaderProgram * shaderProgramm) {
 	m_vbo.allocate(vertexBufferData.data(), vertexBufferData.size()*sizeof(float) );
 //	m_vbo.release();
 
-	m_vboColors = QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
 	m_vboColors.create();
 	m_vboColors.setUsagePattern(QOpenGLBuffer::StaticDraw);
 	m_vboColors.bind();
 	m_vboColors.allocate(colorBufferData.data(), colorBufferData.size()*sizeof(char) );
+
+	// create a new buffer for the indexes
+	m_ebo.create();
+	m_ebo.setUsagePattern(QOpenGLBuffer::StaticDraw);
 
 	// create and bind Vertex Array Object - must be bound *before* the element buffer is bound,
 	// because the VAO remembers and manages element buffers as well
 	m_vao.create();
 	m_vao.bind();
 
-//	glEnable(GL_CULL_FACE);
-//#define USE_DEGENERATED_TRIANGLE_RESTART
-#ifdef USE_DEGENERATED_TRIANGLE_RESTART
-	GLushort indices[] = {  // note that we start from 0!
-		0, 1, 2, 3,
-		3, // duplicate last of first strip
-		4, // duplicate first of second strip
-		4, 5, 6, 7
-	};
 
-	// Note: when inserting a gap from even to odd element, insert 2; otherweise 3
-	m_indexCount = 10;
-#else
-	glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
-	GLushort indices[] = {  // note that we start from 0!
-		0, 1, 2, 3,
-		0xFFFF,
-		4, 5, 6, 7
-	};
-//	m_indexCount = 9;
-#endif
-	// create a new buffer for the indexes
-	m_ebo = QOpenGLBuffer(QOpenGLBuffer::IndexBuffer); // Mind: use 'IndexBuffer' here
-	m_ebo.create();
-	m_ebo.setUsagePattern(QOpenGLBuffer::StaticDraw);
-	m_ebo.bind();
-	m_ebo.allocate(indices, sizeof(indices) );
+	m_ebo.bind(); // this registers this index buffer in the currently bound vao
 
-	m_elementBufferData = std::vector<GLshort>(indices, indices + 9);
-
-	// stride = number of bytes for one vertex (with all its attributes) = 3+3 floats = 6*4 = 24 Bytes
+	m_vbo.bind(); // this registers this buffer data object in the currently bound vao; in subsequent
+				  // calls to shaderProgramm->setAttributeBuffer() the buffer object is associated with the
+				  // respective attribute array that's fed into the shader. When the vao is later bound before
+				  // rendering, this association is remembered so that the vertex fetch stage pulls data from
+				  // this vbo
 
 	// layout location 0 - vec3 with coordinates
-	m_vbo.bind();
 	shaderProgramm->enableAttributeArray(0);
 	shaderProgramm->setAttributeBuffer(0, GL_FLOAT, 0, 3, 3*sizeof(float));
 
 	// layout location 1 - vec3 with colors
-	m_vboColors.bind();
+	m_vboColors.bind(); // now color buffer is active in vao
 	shaderProgramm->enableAttributeArray(1);
 	shaderProgramm->setAttributeBuffer(1, GL_UNSIGNED_BYTE, 0, 4, 4*sizeof(char));
 
+	// Release (unbind) all
+
+	// Mind: you can release the buffer data objects (vbo and vboColors) before or after releasing vao. It does not
+	//       matter, because the buffers are associated already with the attribute arrays.
+	//       However, YOU MUST NOT release the index buffer (ebo) before releasing the vao, since this would remove
+	//       the index buffer association with the vao and when binding the vao before rendering, the element buffer
+	//       would not be known and a call to glDrawElements() crashes!
 	m_vao.release();
+
 	m_vbo.release();
 	m_vboColors.release();
+	m_ebo.release();
 
-	// Release (unbind) all
-	m_vao.release();
+	updateBuffers();
 #else
 	// set shader attributes
 	// tell shader program we have two data arrays to be used as input to the shaders
@@ -213,15 +224,15 @@ void OpaqueGeometryObject::destroy() {
 
 void OpaqueGeometryObject::updateBuffers() {
 	// transfer data stored in m_vertexBufferData
-	m_vbo.bind();
-	m_vbo.allocate(m_vertexBufferData.data(), m_vertexBufferData.size()*sizeof(Vertex));
-	m_vbo.release();
+//	m_vbo.bind();
+//	m_vbo.allocate(m_vertexBufferData.data(), m_vertexBufferData.size()*sizeof(Vertex));
+//	m_vbo.release();
 
 	m_ebo.bind();
 	m_ebo.allocate(m_elementBufferData.data(), m_elementBufferData.size()*sizeof(GL_UNSIGNED_SHORT));
 	m_ebo.release();
 	// also update the color buffer
-	updateColorBuffer();
+//	updateColorBuffer();
 }
 
 
