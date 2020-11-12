@@ -59,6 +59,9 @@ public:
 	NANDRAD_READWRITE
 	NANDRAD_COMPARE_WITH_ID
 
+	/*! Checks for valid parameters. */
+	void checkParameters();
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID-number for this ventilation rate model. */

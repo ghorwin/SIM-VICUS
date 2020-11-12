@@ -129,7 +129,8 @@ void ConstructionInstance::checkParameters(const Project & prj) {
 		}
 	}
 	// now check that sum of embedded object area is less or equal to the construction instance's area
-	if (totalEmbeddedObjectsArea > area)
+	m_netHeatTransferArea = area - totalEmbeddedObjectsArea;
+	if (m_netHeatTransferArea < 0)
 		throw IBK::Exception(IBK::FormatString("Area used by all embedded objects (=%1 m2) exceeds gross area of construction instance (=%2 m2).")
 							 .arg(totalEmbeddedObjectsArea).arg(area), FUNC_ID);
 }

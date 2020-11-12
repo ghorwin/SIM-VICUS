@@ -112,6 +112,11 @@ public:
 
 	// *** Variables used only during simulation ***
 
+	/*! Cached net transfer area [m2] for heat conduction to room, calculated as difference between P_Area parameter
+		and sum of all embedded object areas (updated in checkParameters()).
+	*/
+	double								m_netHeatTransferArea = 999;
+
 	/*! Quick-access pointer to the underlying construction type. */
 	const NANDRAD::ConstructionType		*m_constructionType = nullptr;
 };

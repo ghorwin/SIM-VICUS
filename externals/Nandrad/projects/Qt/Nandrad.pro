@@ -111,6 +111,7 @@ SOURCES += \
 	../../src/NANDRAD_SimulationParameter.cpp \
 	../../src/NANDRAD_SolverParameter.cpp \
 	../../src/NANDRAD_Utilities.cpp \
+	../../src/NANDRAD_WindowGlazingSystem.cpp \
 	../../src/ncg/ncg_NANDRAD_ConstructionInstance.cpp \
 	../../src/ncg/ncg_NANDRAD_ConstructionType.cpp \
 	../../src/ncg/ncg_NANDRAD_DailyCycle.cpp \
