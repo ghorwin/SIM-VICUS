@@ -49,7 +49,7 @@ public:
 	void render();
 
 	/*! Vertex buffer in CPU memory, holds data of all vertices (coords and normals). */
-	std::vector<Vertex>			m_vertexBufferData;
+	std::vector<float>			m_vertexBufferData;
 	/*! Color buffer in CPU memory, holds colors of all vertices (same size as m_vertexBufferData). */
 	std::vector<ColorRGBA>		m_colorBufferData;
 	/*! Index buffer on CPU memory. */

@@ -53,12 +53,12 @@ void OpaqueGeometryObject::create(QOpenGLShaderProgram * shaderProgramm) {
 
 	// create buffer for 2 interleaved attributes: position and color, 4 vertices, 3 floats each
 	unsigned int N_Vertices = 8;
-	std::vector<float> vertexBufferData(N_Vertices*3);
+	m_vertexBufferData.resize(N_Vertices*3);
 	std::vector<char> colorBufferData(N_Vertices*4);
 	// create new data buffer - the following memory copy stuff should
 	// be placed in some convenience class in later tutorials
 	// copy data in interleaved mode with pattern p0c0|p1c1|p2c2|p3c3
-	float * buf = vertexBufferData.data();
+	float * buf = m_vertexBufferData.data();
 	for (int v=0; v<N_Vertices; ++v, buf += 3) {
 		// coordinates
 		buf[0] = 100*vertices[3*v]/2;
@@ -95,15 +95,9 @@ void OpaqueGeometryObject::create(QOpenGLShaderProgram * shaderProgramm) {
 
 	m_elementBufferData = std::vector<GLshort>(indices, indices + 9);
 
-
-
 	// create a new buffer for the vertices and colors, interleaved storage
 	m_vbo.create();
 	m_vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
-	m_vbo.bind();
-	// now copy buffer data over: first argument pointer to data, second argument: size in bytes
-	m_vbo.allocate(vertexBufferData.data(), vertexBufferData.size()*sizeof(float) );
-//	m_vbo.release();
 
 	m_vboColors.create();
 	m_vboColors.setUsagePattern(QOpenGLBuffer::StaticDraw);
@@ -224,9 +218,9 @@ void OpaqueGeometryObject::destroy() {
 
 void OpaqueGeometryObject::updateBuffers() {
 	// transfer data stored in m_vertexBufferData
-//	m_vbo.bind();
-//	m_vbo.allocate(m_vertexBufferData.data(), m_vertexBufferData.size()*sizeof(Vertex));
-//	m_vbo.release();
+	m_vbo.bind();
+	m_vbo.allocate(m_vertexBufferData.data(), m_vertexBufferData.size()*sizeof(float));
+	m_vbo.release();
 
 	m_ebo.bind();
 	m_ebo.allocate(m_elementBufferData.data(), m_elementBufferData.size()*sizeof(GL_UNSIGNED_SHORT));
