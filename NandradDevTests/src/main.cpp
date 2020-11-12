@@ -2173,11 +2173,11 @@ int main(int argc, char * argv[]) {
 	bool isHydrNet=false;
 	bool isWindow = true;
 	if(isHydrNet) {
-		NANDRAD::Project prj;
+//		NANDRAD::Project prj;
 
-		hydraulicNetworkTest01(prj);
+//		hydraulicNetworkTest01(prj);
 
-		prj.writeXML(IBK::Path("c:/temp/hydrNet.nandrad"));
+//		prj.writeXML(IBK::Path("c:/temp/hydrNet.nandrad"));
 
 		return EXIT_SUCCESS;
 
@@ -2357,7 +2357,6 @@ int main(int argc, char * argv[]) {
 		}
 	}
 	return EXIT_SUCCESS;
-#endif // 0
 #endif // TEST_PROJECT_WRITING
 
 
