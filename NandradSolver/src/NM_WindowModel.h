@@ -14,6 +14,8 @@ namespace NANDRAD {
 
 namespace NANDRAD_MODEL {
 
+class Loads;
+
 /*! A model for heat transfer (convective and radiation) through windows. */
 class WindowModel : public AbstractModel, public AbstractStateDependency {
 public:
@@ -41,7 +43,8 @@ public:
 			pointers to object list elements can be stored).
 	*/
 	void setup(const NANDRAD::EmbeddedObjectWindow & windowModelPara, const NANDRAD::SimulationParameter &simPara,
-			   const NANDRAD::ConstructionInstance & conInst);
+			   const NANDRAD::ConstructionInstance & conInst,
+			   Loads & loads);
 
 
 	// *** Re-implemented from AbstractModel
@@ -56,9 +59,6 @@ public:
 
 	/*! Returns unique ID of this model instance. */
 	virtual unsigned int id() const override { return m_id; }
-
-	/*! Resizes m_results vector. */
-	virtual void initResults(const std::vector<AbstractModel*> & /* models */) override;
 
 	/*! Populates the vector resDesc with descriptions of all results provided by this model. */
 	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const override;
@@ -89,17 +89,41 @@ public:
 
 
 private:
+	/*! Computes flux through glazing system in [W/m2], applies the frame and shading factors and stores
+		results in m_results.
+	*/
+	void computeSolarFlux(double qGlobal, double incidenceAngle, bool fromSideA);
+
+
+	/*! Enumeration types for ordered input references, some may be unused and remain nullptr. */
+	enum InputReferences {
+		InputRef_AmbientTemperature,
+		InputRef_RoomATemperature,
+		InputRef_RoomBTemperature,
+		NUM_InputRef
+	};
+
 	/*! Constant pointer to the referenced parameter block. */
 	const NANDRAD::EmbeddedObjectWindow				*m_windowModel = nullptr;
 	/*! Reference to simulation parameter block. */
 	const NANDRAD::SimulationParameter				*m_simPara = nullptr;
 	/*! Constant pointer to the referenced parameter block. */
-	const NANDRAD::ConstructionInstance				*m_conInst = nullptr;
+	const NANDRAD::ConstructionInstance				*m_con = nullptr;
+	/*! Cached pointer to climate loads model, to retrieve climatic loads. */
+	const Loads *									m_loads = nullptr;
+
+	/*! Flag is set true, left side (A) has a parametrized Interface and connection to zone=0 (ambient). */
+	bool											m_haveSolarLoadsOnA;
+	/*! Flag is set true, right side (B) has a parametrized Interface and connection to zone=0 (ambient). */
+	bool											m_haveSolarLoadsOnB;
 
 	/*! Model instance ID (unused since results are provided for zones). */
 	unsigned int									m_id;
 	/*! Display name (for error messages). */
 	std::string										m_displayName;
+
+	/*! Results, computed/updated during the calculation. */
+	std::vector<double>								m_results;
 
 	/*! Vector with input references. */
 	std::vector<const double*>						m_valueRefs;
