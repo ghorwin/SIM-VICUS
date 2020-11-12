@@ -160,6 +160,21 @@ int WindowModel::update() {
         // distinguish between standard/detailed model for glazing
         computeHeatConductionThroughGlazing(fluxHeatCondLeft, fluxHeatCondRight);
 
+        // compute thermal resistance of boundaries
+        double thermalResistanceBC = 0.0;
+
+        // add surface resistances
+        if(!m_con->m_interfaceA.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].name.empty()
+                && m_con->m_interfaceA.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value > 0) {
+            double alphaLeft = m_con->m_interfaceA.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
+            thermalResistanceBC += 1.0/alphaLeft;
+        }
+        if(!m_con->m_interfaceB.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].name.empty()
+                && m_con->m_interfaceB.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value > 0) {
+            double alphaRight = m_con->m_interfaceB.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
+            thermalResistanceBC += 1.0/alphaRight;
+        }
+
          // check if we have a frame
         if(m_windowModel->m_frame.m_materialID != NANDRAD::INVALID_ID) {
             // parameters were checked for validity already
@@ -167,7 +182,9 @@ int WindowModel::update() {
             IBK_ASSERT(m_windowModel->m_frame.m_thickness.value > 0);
             // calculate heat transfer coefficient
             double alphaFrame = m_windowModel->m_frame.m_lambda/m_windowModel->m_frame.m_thickness.value;
-            double fluxHeatCondFrameLeft = alphaFrame * m_windowModel->m_frame.m_area.value * deltaT;
+            // correct by boundary resistances
+            double alpha = 1.0/(1.0/alphaFrame + thermalResistanceBC);
+            double fluxHeatCondFrameLeft = alpha * m_windowModel->m_frame.m_area.value * deltaT;
             // add flux to heat conduction flux
             fluxHeatCondLeft += fluxHeatCondFrameLeft;
             fluxHeatCondRight -= fluxHeatCondFrameLeft;
@@ -179,7 +196,9 @@ int WindowModel::update() {
             IBK_ASSERT(m_windowModel->m_divider.m_thickness.value > 0);
             // calculate heat transfer coefficient
             double alphaDivider = m_windowModel->m_divider.m_lambda/m_windowModel->m_divider.m_thickness.value;
-            double fluxHeatCondDividerLeft = alphaDivider * m_windowModel->m_divider.m_area.value * deltaT;
+            // correct by boundary resistances
+            double alpha = 1.0/(1.0/alphaDivider + thermalResistanceBC);
+            double fluxHeatCondDividerLeft = alpha * m_windowModel->m_divider.m_area.value * deltaT;
             // add flux to heat conduction flux
             fluxHeatCondLeft += fluxHeatCondDividerLeft;
             fluxHeatCondRight -= fluxHeatCondDividerLeft;
