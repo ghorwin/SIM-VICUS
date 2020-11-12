@@ -54,10 +54,7 @@ void OpaqueGeometryObject::create(QOpenGLShaderProgram * shaderProgramm) {
 	// create buffer for 2 interleaved attributes: position and color, 4 vertices, 3 floats each
 	unsigned int N_Vertices = 8;
 	m_vertexBufferData.resize(N_Vertices);
-	std::vector<char> colorBufferData(N_Vertices*4);
-	// create new data buffer - the following memory copy stuff should
-	// be placed in some convenience class in later tutorials
-	// copy data in interleaved mode with pattern p0c0|p1c1|p2c2|p3c3
+	m_colorBufferData.resize(N_Vertices);
 	for (int v=0; v<N_Vertices; ++v) {
 		// coordinates
 		m_vertexBufferData[v].x = 100*vertices[3*v]/2;
@@ -65,10 +62,10 @@ void OpaqueGeometryObject::create(QOpenGLShaderProgram * shaderProgramm) {
 		m_vertexBufferData[v].z = 100*vertices[3*v+2]/2;
 
 		// colors
-		colorBufferData[v*4 + 0] = vertexColors[v].red();
-		colorBufferData[v*4 + 1] = vertexColors[v].green();
-		colorBufferData[v*4 + 2] = vertexColors[v].blue();
-		colorBufferData[v*4 + 3] = vertexColors[v].alpha();
+		m_colorBufferData[v].r = vertexColors[v].red();
+		m_colorBufferData[v].g = vertexColors[v].green();
+		m_colorBufferData[v].b = vertexColors[v].blue();
+		m_colorBufferData[v].a = vertexColors[v].alpha();
 	}
 
 	//#define USE_DEGENERATED_TRIANGLE_RESTART
@@ -101,7 +98,7 @@ void OpaqueGeometryObject::create(QOpenGLShaderProgram * shaderProgramm) {
 	m_vboColors.create();
 	m_vboColors.setUsagePattern(QOpenGLBuffer::StaticDraw);
 	m_vboColors.bind();
-	m_vboColors.allocate(colorBufferData.data(), colorBufferData.size()*sizeof(char) );
+	m_vboColors.allocate(m_colorBufferData.data(), m_colorBufferData.size()*sizeof(ColorRGBA) );
 
 	// create a new buffer for the indexes
 	m_ebo.create();
