@@ -80,17 +80,9 @@ void WindowGlazingLayer::readXML(const TiXmlElement * element) {
 				para_t ptype;
 				try {
 					ptype = (para_t)KeywordList::Enumeration("WindowGlazingLayer::para_t", p.name);
-					m_para[ptype] = p;
-					success = true;
+					m_para[ptype] = p; success = true;
 				}
-				catch (IBK::Exception & ex) { ex.writeMsgStackToError(); }
-				if (success) {
-					std::string refUnit = KeywordList::Unit("WindowGlazingLayer::para_t", ptype);
-					if (!refUnit.empty() && (p.IO_unit.base_id() != IBK::Unit(refUnit).base_id())) {
-						throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(c->Row())
-											  .arg("Incompatible unit '"+p.IO_unit.name()+"', expected '"+refUnit +"'."), FUNC_ID);
-					}
-				}
+				catch (...) { /* intentional fail */  }
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -98,24 +90,12 @@ void WindowGlazingLayer::readXML(const TiXmlElement * element) {
 				NANDRAD::LinearSplineParameter p;
 				p.readXML(c);
 				bool success = false;
-				if (p.m_name == "Conductivity") {
-					m_conductivity = p; success = true;
+				try {
+					splinePara_t ptype;
+					ptype = (splinePara_t)KeywordList::Enumeration("WindowGlazingLayer::splinePara_t", p.m_name);
+					m_splinePara[ptype] = p; success = true;
 				}
-				else if (p.m_name == "DynamicViscosity") {
-					m_dynamicViscosity = p; success = true;
-				}
-				else if (p.m_name == "HeatCapacity") {
-					m_heatCapacity = p; success = true;
-				}
-				else if (p.m_name == "ShortWaveTransmittance") {
-					m_shortWaveTransmittance = p; success = true;
-				}
-				else if (p.m_name == "ShortWaveReflectanceInside") {
-					m_shortWaveReflectanceInside = p; success = true;
-				}
-				else if (p.m_name == "ShortWaveReflectanceOutside") {
-					m_shortWaveReflectanceOutside = p; success = true;
-				}
+				catch (...) { /* intentional fail */  }
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.m_name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -148,18 +128,10 @@ TiXmlElement * WindowGlazingLayer::writeXML(TiXmlElement * parent) const {
 		if (!m_para[i].name.empty())
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
 	}
-	if (!m_conductivity.m_name.empty())
-		m_conductivity.writeXML(e);
-	if (!m_dynamicViscosity.m_name.empty())
-		m_dynamicViscosity.writeXML(e);
-	if (!m_heatCapacity.m_name.empty())
-		m_heatCapacity.writeXML(e);
-	if (!m_shortWaveTransmittance.m_name.empty())
-		m_shortWaveTransmittance.writeXML(e);
-	if (!m_shortWaveReflectanceInside.m_name.empty())
-		m_shortWaveReflectanceInside.writeXML(e);
-	if (!m_shortWaveReflectanceOutside.m_name.empty())
-		m_shortWaveReflectanceOutside.writeXML(e);
+	for (int i=0; i<NUM_SP; ++i) {
+		if (!m_splinePara[i].m_name.empty())
+			m_splinePara[i].writeXML(e);
+	}
 	return e;
 }
 

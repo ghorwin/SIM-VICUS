@@ -92,7 +92,8 @@ TiXmlElement * WindowFrame::writeXMLPrivate(TiXmlElement * parent) const {
 
 	if (m_materialID != NANDRAD::INVALID_ID)
 		e->SetAttribute("materialID", IBK::val2string<unsigned int>(m_materialID));
-	TiXmlElement::appendIBKParameterElement(e, m_area.name, m_area.IO_unit.name(), m_area.get_value());
+	if (!m_area.name.empty())
+		TiXmlElement::appendIBKParameterElement(e, "Area", m_area.IO_unit.name(), m_area.get_value());
 	return e;
 }
 

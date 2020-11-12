@@ -48,6 +48,12 @@ public:
 		NUM_P
 	};
 
+	/*! Enum type with all possible glazing system spline parameters.*/
+	enum splinePara_t {
+		SP_SHGC,		// Keyword: SHGC		[---]		'Short wave transmittance at outside directed surface.'
+		NUM_SP
+	};
+
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	NANDRAD_READWRITE
@@ -66,7 +72,7 @@ public:
 	IBK::Parameter						m_para[NUM_P];								// XML:E
 
 	/*! Parameter for angle-dependent SHGC value. */
-	LinearSplineParameter				m_shgc;										// XML:E
+	LinearSplineParameter				m_splinePara[NUM_SP];						// XML:E
 
 	/*! Parameters for the detailed multi-layer model. */
 	std::vector<WindowGlazingLayer>		m_layers;									// XML:E

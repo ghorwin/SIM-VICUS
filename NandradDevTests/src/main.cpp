@@ -1959,7 +1959,8 @@ void createSim07(bool window71, bool window72, bool window73, bool window74) {
 										{0.0,0.0} );
 
 		window.m_modelType = NANDRAD::WindowGlazingSystem::MT_Simple;
-		window.m_shgc = linSpline;
+		linSpline.m_name = "SHGC";
+		window.m_splinePara[NANDRAD::WindowGlazingSystem::SP_SHGC] = linSpline;
 		window.m_para[NANDRAD::WindowGlazingSystem::P_ThermalTransmittance].set("ThermalTransmittance", 1.1, IBK::Unit("W/m2K") );
 
 		prj.m_windowGlazingSystems.push_back(window);
@@ -1999,7 +2000,8 @@ void createSim07(bool window71, bool window72, bool window73, bool window74) {
 										{0.600,0.600} );
 
 		window.m_modelType = NANDRAD::WindowGlazingSystem::MT_Simple;
-		window.m_shgc = linSpline;
+		linSpline.m_name = "SHGC";
+		window.m_splinePara[NANDRAD::WindowGlazingSystem::SP_SHGC] = linSpline;
 		window.m_para[NANDRAD::WindowGlazingSystem::P_ThermalTransmittance].set("ThermalTransmittance", 1.1, IBK::Unit("W/m2K") );
 
 		prj.m_windowGlazingSystems.push_back(window);
@@ -2039,7 +2041,8 @@ void createSim07(bool window71, bool window72, bool window73, bool window74) {
 		{0.600,0.600,0.600,0.600,0.588,0.564,0.516,0.414,0.222,0.000} );
 
 		window.m_modelType = NANDRAD::WindowGlazingSystem::MT_Simple;
-		window.m_shgc = linSpline;
+		linSpline.m_name = "SHGC";
+		window.m_splinePara[NANDRAD::WindowGlazingSystem::SP_SHGC] = linSpline;
 		window.m_para[NANDRAD::WindowGlazingSystem::P_ThermalTransmittance].set("ThermalTransmittance", 1.1, IBK::Unit("W/m2K") );
 
 		prj.m_windowGlazingSystems.push_back(window);
@@ -2069,7 +2072,7 @@ void createSim07(bool window71, bool window72, bool window73, bool window74) {
 		NANDRAD::WindowGlazingSystem window;
 		// ID
 		window.m_id = 10000;
-		window.m_displayName = "Window 7.3";
+		window.m_displayName = "Window 7.4";
 		// SHGC
 		NANDRAD::LinearSplineParameter linSpline;
 		linSpline.m_xUnit = IBK::Unit("Deg");
@@ -2093,17 +2096,17 @@ void createSim07(bool window71, bool window72, bool window73, bool window74) {
 		linSpline.m_values.setValues(	{0,10,20,30,40,50,60,70,80,90},
 		{0.607,0.606,0.601,0.593,0.577,0.546,0.483,0.362,0.165,0} );
 		linSpline.m_name = "ShortWaveTransmittance";
-		layer.m_shortWaveTransmittance = linSpline;
+		layer.m_splinePara[NANDRAD::WindowGlazingLayer::SP_ShortWaveTransmittance] = linSpline;
 
 		linSpline.m_name = "ShortWaveReflectanceInside";
 		linSpline.m_values.setValues(	{0,10,20,30,40,50,60,70,80,90},
 		{0.114,0.114,0.114,0.115,0.123,0.145,0.201,0.328,0.566,1} );
-		layer.m_shortWaveReflectanceOutside = linSpline;
+		layer.m_splinePara[NANDRAD::WindowGlazingLayer::SP_ShortWaveReflectanceOutside] = linSpline;
 
 		linSpline.m_name = "ShortWaveReflectanceOutside";
 		linSpline.m_values.setValues(	{0,10,20,30,40,50,60,70,80,90},
 		{0.104,0.104,0.106,0.107,0.109,0.11,0.106,0.093,0.062,0} );
-		layer.m_shortWaveReflectanceInside = linSpline;
+		layer.m_splinePara[NANDRAD::WindowGlazingLayer::SP_ShortWaveReflectanceInside] = linSpline;
 
 		window.m_layers.push_back(layer);
 
@@ -2111,6 +2114,7 @@ void createSim07(bool window71, bool window72, bool window73, bool window74) {
 
 		NANDRAD::WindowGlazingLayer gasLayer;
 
+		gasLayer.m_id = id++;
 		gasLayer.m_type = NANDRAD::WindowGlazingLayer::T_Gas;
 		gasLayer.m_displayName = "Air";
 
@@ -2123,24 +2127,24 @@ void createSim07(bool window71, bool window72, bool window73, bool window74) {
 		linSpline.m_values.setValues(	{-50,-40,-30,-20,-10,0,10,20,30,40,50},
 		{0.02019,0.02097,0.02174,0.02252,0.02329,0.02407,0.02485,0.02562,0.02640,0.02717,0.02795} );
 		linSpline.m_name = "Conductivity";
-		gasLayer.m_conductivity = linSpline;
+		gasLayer.m_splinePara[NANDRAD::WindowGlazingLayer::SP_Conductivity] = linSpline;
 
 		linSpline.m_yUnit = IBK::Unit("kg/ms");
 		linSpline.m_values.setValues(	{-50,-40,-30,-20,-10,0,10,20,30,40,50},
 		{1.4747E-05,1.5241E-05,1.5735E-05,1.6229E-05,1.6723E-05,1.7217E-05,1.7711E-05,1.8205E-05,1.8699E-05,1.9193E-05,1.9687E-05} );
 		linSpline.m_name = "DynamicViscosity";
-		gasLayer.m_dynamicViscosity = linSpline;
+		gasLayer.m_splinePara[NANDRAD::WindowGlazingLayer::SP_DynamicViscosity] = linSpline;
 
 		linSpline.m_yUnit = IBK::Unit("J/kgK");
 		linSpline.m_values.setValues(	{-50,-40,-30,-20,-10,0,10,20,30,40,50},
 		{1005.4871,1005.6103,1005.7336,1005.8568,1005.9801,1006.1033,1006.2265,1006.3498,1006.4730,1006.5963,1006.7195} );
 		linSpline.m_name = "HeatCapacity";
-		gasLayer.m_heatCapacity = linSpline;
+		gasLayer.m_splinePara[NANDRAD::WindowGlazingLayer::SP_HeatCapacity] = linSpline;
 
 		window.m_layers.push_back(gasLayer);
 
 		// second glass layer
-
+		layer.m_id = id++;
 		window.m_layers.push_back(layer);
 
 		// set window
@@ -2160,7 +2164,7 @@ void createSim07(bool window71, bool window72, bool window73, bool window74) {
 
 		prj.m_constructionInstances[1].m_embeddedObjects.push_back(embObject);
 
-		prj.writeXML( IBK::Path("c:/temp/window74.nandrad") );
+		prj.writeXML( IBK::Path("c:/temp/SimQuality_TF07.4.nandrad") );
 
 	}
 }
@@ -2242,7 +2246,7 @@ int main(int argc, char * argv[]) {
 	return EXIT_SUCCESS;
 
 #endif
-
+#if 0
 	NANDRAD::Project prj;
 
 	//material
@@ -2320,7 +2324,7 @@ int main(int argc, char * argv[]) {
 
 	IBK::Path path ("windowtest.nandrad");
 	prj.writeXML(path);
-
+#endif
 #if 0
 	NANDRAD::Project prj;
 	createSim01(prj);

@@ -34,7 +34,7 @@ namespace NANDRAD {
 	const char * const INVALID_KEYWORD_INDEX_STRING = "KEYWORD_ERROR_STRING: Invalid type index";
 
 	/*! Holds a list of all enum types/categories. */
-	const char * const ENUM_TYPES[52] = {
+	const char * const ENUM_TYPES[54] = {
 		"ConstructionInstance::para_t",
 		"DailyCycle::interpolation_t",
 		"EmbeddedObject::para_t",
@@ -81,8 +81,10 @@ namespace NANDRAD {
 		"SolverParameter::precond_t",
 		"WindowGlazingLayer::type_t",
 		"WindowGlazingLayer::para_t",
+		"WindowGlazingLayer::splinePara_t",
 		"WindowGlazingSystem::modelType_t",
 		"WindowGlazingSystem::para_t",
+		"WindowGlazingSystem::splinePara_t",
 		"WindowShading::modelType_t",
 		"WindowShading::para_t",
 		"Zone::type_t",
@@ -91,7 +93,7 @@ namespace NANDRAD {
 
 	/*! Converts a category string to respective enumeration value. */
 	int enum2index(const std::string & enumtype) {
-		for (int i=0; i<52; ++i) {
+		for (int i=0; i<54; ++i) {
 			if (enumtype == ENUM_TYPES[i]) return i;
 		}
 		//std::cerr << "Unknown enumeration type '" << enumtype<< "'." << std::endl;
@@ -456,36 +458,51 @@ namespace NANDRAD {
 				case 5 : return "LongWaveEmissivityInside";
 				case 6 : return "P_LongWaveEmissivityOutside";
 			} break;
-			// WindowGlazingSystem::modelType_t
+			// WindowGlazingLayer::splinePara_t
 			case 46 :
+			switch (t) {
+				case 0 : return "ShortWaveTransmittance";
+				case 1 : return "ShortWaveReflectanceOutside";
+				case 2 : return "ShortWaveReflectanceInside";
+				case 3 : return "Conductivity";
+				case 4 : return "DynamicViscosity";
+				case 5 : return "HeatCapacity";
+			} break;
+			// WindowGlazingSystem::modelType_t
+			case 47 :
 			switch (t) {
 				case 0 : return "Simple";
 				case 1 : return "Detailed";
 			} break;
 			// WindowGlazingSystem::para_t
-			case 47 :
+			case 48 :
 			switch (t) {
 				case 0 : return "ThermalTransmittance";
 			} break;
+			// WindowGlazingSystem::splinePara_t
+			case 49 :
+			switch (t) {
+				case 0 : return "SHGC";
+			} break;
 			// WindowShading::modelType_t
-			case 48 :
+			case 50 :
 			switch (t) {
 				case 0 : return "Standard";
 			} break;
 			// WindowShading::para_t
-			case 49 :
+			case 51 :
 			switch (t) {
 				case 0 : return "ReductionFactor";
 			} break;
 			// Zone::type_t
-			case 50 :
+			case 52 :
 			switch (t) {
 				case 0 : return "Constant";
 				case 1 : return "Active";
 				case 2 : return "Ground";
 			} break;
 			// Zone::para_t
-			case 51 :
+			case 53 :
 			switch (t) {
 				case 0 : return "Temperature";
 				case 1 : return "RelativeHumidity";
@@ -855,36 +872,51 @@ namespace NANDRAD {
 				case 5 : return "LongWaveEmissivityInside";
 				case 6 : return "P_LongWaveEmissivityOutside";
 			} break;
-			// WindowGlazingSystem::modelType_t
+			// WindowGlazingLayer::splinePara_t
 			case 46 :
+			switch (t) {
+				case 0 : return "ShortWaveTransmittance";
+				case 1 : return "ShortWaveReflectanceOutside";
+				case 2 : return "ShortWaveReflectanceInside";
+				case 3 : return "Conductivity";
+				case 4 : return "DynamicViscosity";
+				case 5 : return "HeatCapacity";
+			} break;
+			// WindowGlazingSystem::modelType_t
+			case 47 :
 			switch (t) {
 				case 0 : return "Simple";
 				case 1 : return "Detailed";
 			} break;
 			// WindowGlazingSystem::para_t
-			case 47 :
+			case 48 :
 			switch (t) {
 				case 0 : return "ThermalTransmittance";
 			} break;
+			// WindowGlazingSystem::splinePara_t
+			case 49 :
+			switch (t) {
+				case 0 : return "SHGC";
+			} break;
 			// WindowShading::modelType_t
-			case 48 :
+			case 50 :
 			switch (t) {
 				case 0 : return "Standard";
 			} break;
 			// WindowShading::para_t
-			case 49 :
+			case 51 :
 			switch (t) {
 				case 0 : return "ReductionFactor";
 			} break;
 			// Zone::type_t
-			case 50 :
+			case 52 :
 			switch (t) {
 				case 0 : return "Constant";
 				case 1 : return "Active";
 				case 2 : return "Ground";
 			} break;
 			// Zone::para_t
-			case 51 :
+			case 53 :
 			switch (t) {
 				case 0 : return "Temperature";
 				case 1 : return "RelativeHumidity";
@@ -1255,36 +1287,51 @@ namespace NANDRAD {
 				case 5 : return "Emissivity of surface facing outside.";
 				case 6 : return "Emissivity of surface facing inside.";
 			} break;
-			// WindowGlazingSystem::modelType_t
+			// WindowGlazingLayer::splinePara_t
 			case 46 :
+			switch (t) {
+				case 0 : return "Short wave transmittance at outside directed surface.";
+				case 1 : return "Short wave reflectance of surface facing outside.";
+				case 2 : return "Short wave reflectance of surface facing inside.";
+				case 3 : return "Thermal conductivity of the gas layer.";
+				case 4 : return "Dynamic viscosity of the gas layer.";
+				case 5 : return "Specific heat capoacity of the gas layer.";
+			} break;
+			// WindowGlazingSystem::modelType_t
+			case 47 :
 			switch (t) {
 				case 0 : return "Standard globbed-layers model.";
 				case 1 : return "Detailed window model with layers.";
 			} break;
 			// WindowGlazingSystem::para_t
-			case 47 :
+			case 48 :
 			switch (t) {
 				case 0 : return "Thermal transmittance";
 			} break;
+			// WindowGlazingSystem::splinePara_t
+			case 49 :
+			switch (t) {
+				case 0 : return "Short wave transmittance at outside directed surface.";
+			} break;
 			// WindowShading::modelType_t
-			case 48 :
+			case 50 :
 			switch (t) {
 				case 0 : return "Standard reduction factor.";
 			} break;
 			// WindowShading::para_t
-			case 49 :
+			case 51 :
 			switch (t) {
 				case 0 : return "Reduction factor (remaining percentage of solar gains if shading is closed).";
 			} break;
 			// Zone::type_t
-			case 50 :
+			case 52 :
 			switch (t) {
 				case 0 : return "Zone with constant/predefined temperatures. (schedule)";
 				case 1 : return "Zone described by a temperature node in space.";
 				case 2 : return "Ground zone (calculates temperature based on standard).";
 			} break;
 			// Zone::para_t
-			case 51 :
+			case 53 :
 			switch (t) {
 				case 0 : return "Temperature of the zone if set constant [C].";
 				case 1 : return "Relative humidity of the zone if set constant [%].";
@@ -1654,36 +1701,51 @@ namespace NANDRAD {
 				case 5 : return "---";
 				case 6 : return "---";
 			} break;
-			// WindowGlazingSystem::modelType_t
+			// WindowGlazingLayer::splinePara_t
 			case 46 :
+			switch (t) {
+				case 0 : return "---";
+				case 1 : return "---";
+				case 2 : return "---";
+				case 3 : return "W/mK";
+				case 4 : return "kg/ms";
+				case 5 : return "J/kgK";
+			} break;
+			// WindowGlazingSystem::modelType_t
+			case 47 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
 			// WindowGlazingSystem::para_t
-			case 47 :
+			case 48 :
 			switch (t) {
 				case 0 : return "W/m2K";
 			} break;
+			// WindowGlazingSystem::splinePara_t
+			case 49 :
+			switch (t) {
+				case 0 : return "---";
+			} break;
 			// WindowShading::modelType_t
-			case 48 :
+			case 50 :
 			switch (t) {
 				case 0 : return "";
 			} break;
 			// WindowShading::para_t
-			case 49 :
+			case 51 :
 			switch (t) {
 				case 0 : return "W/m2K";
 			} break;
 			// Zone::type_t
-			case 50 :
+			case 52 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
 			} break;
 			// Zone::para_t
-			case 51 :
+			case 53 :
 			switch (t) {
 				case 0 : return "C";
 				case 1 : return "%";
@@ -2053,36 +2115,51 @@ namespace NANDRAD {
 				case 5 : return "#FFFFFF";
 				case 6 : return "#FFFFFF";
 			} break;
-			// WindowGlazingSystem::modelType_t
+			// WindowGlazingLayer::splinePara_t
 			case 46 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
+				case 4 : return "#FFFFFF";
+				case 5 : return "#FFFFFF";
+			} break;
+			// WindowGlazingSystem::modelType_t
+			case 47 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
 			// WindowGlazingSystem::para_t
-			case 47 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-			} break;
-			// WindowShading::modelType_t
 			case 48 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
-			// WindowShading::para_t
+			// WindowGlazingSystem::splinePara_t
 			case 49 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
-			// Zone::type_t
+			// WindowShading::modelType_t
 			case 50 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+			} break;
+			// WindowShading::para_t
+			case 51 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+			} break;
+			// Zone::type_t
+			case 52 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
 			// Zone::para_t
-			case 51 :
+			case 53 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2452,36 +2529,51 @@ namespace NANDRAD {
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// WindowGlazingSystem::modelType_t
+			// WindowGlazingLayer::splinePara_t
 			case 46 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
+				case 4 : return std::numeric_limits<double>::quiet_NaN();
+				case 5 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// WindowGlazingSystem::modelType_t
+			case 47 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// WindowGlazingSystem::para_t
-			case 47 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// WindowShading::modelType_t
 			case 48 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// WindowShading::para_t
+			// WindowGlazingSystem::splinePara_t
 			case 49 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// Zone::type_t
+			// WindowShading::modelType_t
 			case 50 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// WindowShading::para_t
+			case 51 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// Zone::type_t
+			case 52 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// Zone::para_t
-			case 51 :
+			case 53 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2590,18 +2682,22 @@ namespace NANDRAD {
 			case 44 : return 2;
 			// WindowGlazingLayer::para_t
 			case 45 : return 7;
+			// WindowGlazingLayer::splinePara_t
+			case 46 : return 6;
 			// WindowGlazingSystem::modelType_t
-			case 46 : return 2;
+			case 47 : return 2;
 			// WindowGlazingSystem::para_t
-			case 47 : return 1;
-			// WindowShading::modelType_t
 			case 48 : return 1;
-			// WindowShading::para_t
+			// WindowGlazingSystem::splinePara_t
 			case 49 : return 1;
+			// WindowShading::modelType_t
+			case 50 : return 1;
+			// WindowShading::para_t
+			case 51 : return 1;
 			// Zone::type_t
-			case 50 : return 3;
+			case 52 : return 3;
 			// Zone::para_t
-			case 51 : return 6;
+			case 53 : return 6;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::Count]");
@@ -2702,18 +2798,22 @@ namespace NANDRAD {
 			case 44 : return 1;
 			// WindowGlazingLayer::para_t
 			case 45 : return 6;
+			// WindowGlazingLayer::splinePara_t
+			case 46 : return 5;
 			// WindowGlazingSystem::modelType_t
-			case 46 : return 1;
+			case 47 : return 1;
 			// WindowGlazingSystem::para_t
-			case 47 : return 0;
-			// WindowShading::modelType_t
 			case 48 : return 0;
-			// WindowShading::para_t
+			// WindowGlazingSystem::splinePara_t
 			case 49 : return 0;
+			// WindowShading::modelType_t
+			case 50 : return 0;
+			// WindowShading::para_t
+			case 51 : return 0;
 			// Zone::type_t
-			case 50 : return 2;
+			case 52 : return 2;
 			// Zone::para_t
-			case 51 : return 6;
+			case 53 : return 6;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::MaxIndex]");

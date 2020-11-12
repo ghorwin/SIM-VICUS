@@ -61,18 +61,18 @@ public:
 		NUM_P
 	};
 
-#if 0
+
 	/*! Enum type with all possible layer spline parameters.*/
 	enum splinePara_t {
 		SP_ShortWaveTransmittance,		// Keyword: ShortWaveTransmittance		[---]		'Short wave transmittance at outside directed surface.'
-		SP_ShortWaveReflectanceOutside,	// Keyword: ShortWaveReflectanceOutside	[---]		'Short wave reflectance at surface towards outside.'
-		SP_ShortWaveReflectanceInside,	// Keyword: ShortWaveReflectanceInside	[---]		'Short wave reflectance at surface towards inside.'
-		SP_ThermalConductivity,			// Keyword: ThermalConductivity			[W/mK]		'Thermal conductivity of the gas layer.'
+		SP_ShortWaveReflectanceOutside,	// Keyword: ShortWaveReflectanceOutside	[---]		'Short wave reflectance of surface facing outside.'
+		SP_ShortWaveReflectanceInside,	// Keyword: ShortWaveReflectanceInside	[---]		'Short wave reflectance of surface facing inside.'
+		SP_Conductivity,				// Keyword: Conductivity				[W/mK]		'Thermal conductivity of the gas layer.'
 		SP_DynamicViscosity,			// Keyword: DynamicViscosity			[kg/ms]		'Dynamic viscosity of the gas layer.'
 		SP_HeatCapacity,				// Keyword: HeatCapacity				[J/kgK]		'Specific heat capoacity of the gas layer.'
 		NUM_SP
 	};
-#endif
+
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -93,31 +93,10 @@ public:
 	/*! Basic parameters of the window layer  */
 	IBK::Parameter				m_para[NUM_P];						// XML:E
 
-	// Layer Data
+	// Layer Data in LinearSpline
 
-	/*! Parameter for temperature-dependent conductivity of gas layers. */
-	LinearSplineParameter		m_conductivity;						// XML:E
-
-	/*! Parameter for temperature-dependent dynamic viscosity of gas layers. */
-	LinearSplineParameter		m_dynamicViscosity;					// XML:E
-
-	/*! Parameter for temperature-dependent conductivity of gas layers. */
-	LinearSplineParameter		m_heatCapacity;						// XML:E
-
-	// Short Wave for Glasing Layers
-
-	/*! Short wave transmittance. */
-	LinearSplineParameter		m_shortWaveTransmittance;			// XML:E
-
-	/*! Short Wave Reflectance of surface facing inside. */
-	LinearSplineParameter		m_shortWaveReflectanceInside;		// XML:E
-
-	/*! Short Wave Reflectance of surface facing outside. */
-	LinearSplineParameter		m_shortWaveReflectanceOutside;		// XML:E
-
-#if 0
 	LinearSplineParameter		m_splinePara[NUM_SP];				// XML:E
-#endif
+
 
 };
 

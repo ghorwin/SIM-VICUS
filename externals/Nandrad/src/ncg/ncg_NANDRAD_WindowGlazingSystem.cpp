@@ -90,9 +90,12 @@ void WindowGlazingSystem::readXML(const TiXmlElement * element) {
 				NANDRAD::LinearSplineParameter p;
 				p.readXML(c);
 				bool success = false;
-				if (p.m_name == "Shgc") {
-					m_shgc = p; success = true;
+				try {
+					splinePara_t ptype;
+					ptype = (splinePara_t)KeywordList::Enumeration("WindowGlazingSystem::splinePara_t", p.m_name);
+					m_splinePara[ptype] = p; success = true;
 				}
+				catch (...) { /* intentional fail */  }
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.m_name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -137,8 +140,10 @@ TiXmlElement * WindowGlazingSystem::writeXML(TiXmlElement * parent) const {
 		if (!m_para[i].name.empty())
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
 	}
-	if (!m_shgc.m_name.empty())
-		m_shgc.writeXML(e);
+	for (int i=0; i<NUM_SP; ++i) {
+		if (!m_splinePara[i].m_name.empty())
+			m_splinePara[i].writeXML(e);
+	}
 
 	if (!m_layers.empty()) {
 		TiXmlElement * child = new TiXmlElement("Layers");
