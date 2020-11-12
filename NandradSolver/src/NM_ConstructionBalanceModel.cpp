@@ -38,9 +38,9 @@ void ConstructionBalanceModel::setup(const NANDRAD::ConstructionInstance & con,
 	m_statesModel = statesModel;
 	m_moistureBalanceEnabled = statesModel->m_moistureBalanceEnabled;
 
-	// cross section area in [m2]
-	m_area = con.m_para[NANDRAD::ConstructionInstance::P_Area].value;
-	/// \todo subtract areas of embedded objects to get net area
+	// cross section area in [m2] - this is the net area not including embedded objects
+	// this area is needed to compute the heat flow [W] towards the zone
+	m_area = con.m_netHeatTransferArea;
 
 	// resize storage vectors for divergences, sources, and initialize boundary conditions
 	m_ydot.resize(m_statesModel->m_n);

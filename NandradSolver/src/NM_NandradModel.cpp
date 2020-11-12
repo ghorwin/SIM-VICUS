@@ -182,10 +182,8 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 	initSchedules();
 	// *** Initialize RoomBalanceModels and ConstantZoneModels ***
 	initZones();
-	// *** Initialize Wall and Construction BC Modules ***
+	// *** Initialize Wall/Construction Modules ***
 	initWallsAndInterfaces();
-	// *** Initialize Window Models ***
-//	initEmbeddedObjects();
 	// *** Initialize ModelGroups ***
 //	initModelGroups();
 	// *** Initialize all internal fmus ***
@@ -1016,9 +1014,7 @@ void NandradModel::initWallsAndInterfaces() {
 	IBK::IBK_Message( IBK::FormatString("Initializing Constructions and Interfaces\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK_MSG_INDENT;
 
-	// now process all construction types and:
-	// - check for valid parameters
-	// - check for valid material references (and update these material refs)
+	// *** check databases used by construction instances ***
 
 	for (unsigned int i=0; i<m_project->m_materials.size(); ++i) {
 		NANDRAD::Material & mat = m_project->m_materials[i];
@@ -1031,6 +1027,10 @@ void NandradModel::initWallsAndInterfaces() {
 		}
 	}
 
+	// now process all construction types and:
+	// - check for valid parameters
+	// - check for valid material references (and update these material refs)
+
 	for (unsigned int i=0; i<m_project->m_constructionTypes.size(); ++i) {
 		NANDRAD::ConstructionType & ct = m_project->m_constructionTypes[i];
 		try {
@@ -1041,6 +1041,18 @@ void NandradModel::initWallsAndInterfaces() {
 								 .arg(i).arg(ct.m_displayName).arg(ct.m_id), FUNC_ID);
 		}
 	}
+
+	for (unsigned int i=0; i<m_project->m_windowGlazingSystems.size(); ++i) {
+		NANDRAD::WindowGlazingSystem & gs = m_project->m_windowGlazingSystems[i];
+		try {
+			gs.checkParameters();
+		}
+		catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error initializing window glazing system #%1 '%2' (id=%3).")
+								 .arg(i).arg(gs.m_displayName).arg(gs.m_id), FUNC_ID);
+		}
+	}
+
 
 	// process all construction instances and:
 	// - check if they are connected to at least one room - otherwise

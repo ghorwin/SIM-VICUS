@@ -47,7 +47,7 @@ class ConstructionStatesModel : public AbstractModel {
 public:
 
 	enum VectorValuedResults {
-		VVR_LayerTemperature,			// Keyword: LayerTemperature		[C]		'Mean layer temperature for requested quanties.'
+		VVR_ElementTemperature,			// Keyword: ElementTemperature		[C]		'Finite-volume/element temperature.'
 		NUM_VVR
 	};
 

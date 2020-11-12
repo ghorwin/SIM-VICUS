@@ -158,7 +158,7 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 	}
 	m_results.resize(skalarResultCount);
 	m_vectorValuedResults.resize(1);
-	m_vectorValuedResults[VVR_LayerTemperature] = VectorValuedQuantity(nPrimaryStateResults(), 0);
+	m_vectorValuedResults[VVR_ElementTemperature] = VectorValuedQuantity(nPrimaryStateResults(), 0);
 }
 
 
@@ -182,9 +182,9 @@ void ConstructionStatesModel::resultDescriptions(std::vector<QuantityDescription
 	// add vector valued quantities
 	QuantityDescription res;
 	res.m_constant = true;
-	res.m_description = NANDRAD_MODEL::KeywordList::Description("ConstructionStatesModel::VectorValuedResults", VVR_LayerTemperature);
-	res.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::VectorValuedResults", VVR_LayerTemperature);
-	res.m_unit = NANDRAD_MODEL::KeywordList::Unit("ConstructionStatesModel::VectorValuedResults", VVR_LayerTemperature);
+	res.m_description = NANDRAD_MODEL::KeywordList::Description("ConstructionStatesModel::VectorValuedResults", VVR_ElementTemperature);
+	res.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::VectorValuedResults", VVR_ElementTemperature);
+	res.m_unit = NANDRAD_MODEL::KeywordList::Unit("ConstructionStatesModel::VectorValuedResults", VVR_ElementTemperature);
 	// this is a vector-valued quantity with as many elements as material layers
 	// and the temperatures returned are actually mean temperatures of the individual elements of the material layer
 	res.resize(m_con->m_constructionType->m_materialLayers.size());
@@ -270,7 +270,7 @@ void ConstructionStatesModel::stateDependencies(std::vector<std::pair<const doub
 		// now vector-valued quantities
 		// temperatures in all elements depend on their respective energy densities
 		for (unsigned int i=0; i<m_nElements; ++i)
-			resultInputValueReferences.push_back(std::make_pair(&m_vectorValuedResults[VVR_LayerTemperature].data()[i], &m_y[i]) );
+			resultInputValueReferences.push_back(std::make_pair(&m_vectorValuedResults[VVR_ElementTemperature].data()[i], &m_y[i]) );
 	}
 }
 
@@ -301,7 +301,7 @@ int ConstructionStatesModel::update(const double * y) {
 		// does decomposition and internal flux calculation in one
 
 		double * states_u = DOUBLE_PTR(m_y); // in thermal calculation, m_y holds all energy densities [J/m3]
-		double * states_T = m_vectorValuedResults[VVR_LayerTemperature].dataPtr();
+		double * states_T = m_vectorValuedResults[VVR_ElementTemperature].dataPtr();
 
 		double * vec_q = DOUBLE_PTR(m_fluxes_q);
 
@@ -339,7 +339,7 @@ int ConstructionStatesModel::update(const double * y) {
 
 	// compute surface temperatures
 
-	double * states_T = m_vectorValuedResults[VVR_LayerTemperature].dataPtr();
+	double * states_T = m_vectorValuedResults[VVR_ElementTemperature].dataPtr();
 	// Special treatment: constant interpolation for only two elements, i.e. single-layer constructions
 	// without discretization
 	if (m_elements.size() == 2) {
