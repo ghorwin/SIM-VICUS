@@ -61,6 +61,18 @@ public:
 		NUM_P
 	};
 
+#if 0
+	/*! Enum type with all possible layer spline parameters.*/
+	enum splinePara_t {
+		SP_ShortWaveTransmittance,		// Keyword: ShortWaveTransmittance		[---]		'Short wave transmittance at outside directed surface.'
+		SP_ShortWaveReflectanceOutside,	// Keyword: ShortWaveReflectanceOutside	[---]		'Short wave reflectance at surface towards outside.'
+		SP_ShortWaveReflectanceInside,	// Keyword: ShortWaveReflectanceInside	[---]		'Short wave reflectance at surface towards inside.'
+		SP_ThermalConductivity,			// Keyword: ThermalConductivity			[W/mK]		'Thermal conductivity of the gas layer.'
+		SP_DynamicViscosity,			// Keyword: DynamicViscosity			[kg/ms]		'Dynamic viscosity of the gas layer.'
+		SP_HeatCapacity,				// Keyword: HeatCapacity				[J/kgK]		'Specific heat capoacity of the gas layer.'
+		NUM_SP
+	};
+#endif
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -103,8 +115,9 @@ public:
 	/*! Short Wave Reflectance of surface facing outside. */
 	LinearSplineParameter		m_shortWaveReflectanceOutside;		// XML:E
 
-	//LinearSplineParameter		m_test[10];
-
+#if 0
+	LinearSplineParameter		m_splinePara[NUM_SP];				// XML:E
+#endif
 
 };
 
