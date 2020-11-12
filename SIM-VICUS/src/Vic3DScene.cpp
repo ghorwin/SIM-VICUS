@@ -31,7 +31,7 @@ void addSurface(const VICUS::Surface & s,
 
 			vertexBufferData[currentVertexIndex    ].m_coords = VEC2VEC(s.m_geometry.m_vertexes[0]);
 			vertexBufferData[currentVertexIndex + 1].m_coords = VEC2VEC(s.m_geometry.m_vertexes[1]);
-			vertexBufferData[currentVertexIndex + 2].m_coords = VEC2VEC(s.m_geometry.m_vertexes.back());
+			vertexBufferData[currentVertexIndex + 2].m_coords = VEC2VEC(s.m_geometry.m_vertexes[2]);
 			QVector3D n = VEC2VEC(s.m_geometry.m_normal);
 			vertexBufferData[currentVertexIndex    ].m_normal = n;
 			vertexBufferData[currentVertexIndex + 1].m_normal = n;
@@ -42,16 +42,56 @@ void addSurface(const VICUS::Surface & s,
 			colorBufferData[currentVertexIndex  + 2] = s.m_color;
 
 			// anti-clock-wise winding order for all triangles in strip
-			indexBufferData[currentVertexIndex    ] = currentVertexIndex + 0;
-			indexBufferData[currentVertexIndex + 1] = currentVertexIndex + 1;
-			indexBufferData[currentVertexIndex + 2] = currentVertexIndex + 2;
-			indexBufferData[currentVertexIndex + 3] = 0xFFFF; // set stop index
+			indexBufferData[currentElementIndex    ] = currentVertexIndex + 0;
+			indexBufferData[currentElementIndex + 1] = currentVertexIndex + 1;
+			indexBufferData[currentElementIndex + 2] = currentVertexIndex + 2;
+			indexBufferData[currentElementIndex + 3] = 0xFFFF; // set stop index
 
 
 			// finally advance buffer indexes
 			currentVertexIndex += 3;
 			currentElementIndex += 4;
-		}
+		} break;
+
+		case VICUS::PlaneGeometry::T_Rectangle : {
+			// insert 4 vertexes
+			vertexBufferData.resize(vertexBufferData.size()+4);
+			colorBufferData.resize(colorBufferData.size()+4);
+			// 5 elements (4 for the two triangles in a strip, 1 primitive restart index)
+			indexBufferData.resize(indexBufferData.size()+5);
+
+			// 4 indexes anti-clock wise in vertex memory
+			QVector3D a = VEC2VEC(s.m_geometry.m_vertexes[0]);
+			QVector3D b = VEC2VEC(s.m_geometry.m_vertexes[1]);
+			QVector3D d = VEC2VEC(s.m_geometry.m_vertexes[2]);
+			vertexBufferData[currentVertexIndex    ].m_coords = a;
+			vertexBufferData[currentVertexIndex + 1].m_coords = b;
+			QVector3D c = b + (d - a);
+			vertexBufferData[currentVertexIndex + 2].m_coords = c;
+			vertexBufferData[currentVertexIndex + 3].m_coords = d;
+
+			QVector3D n = VEC2VEC(s.m_geometry.m_normal);
+			vertexBufferData[currentVertexIndex    ].m_normal = n;
+			vertexBufferData[currentVertexIndex + 1].m_normal = n;
+			vertexBufferData[currentVertexIndex + 2].m_normal = n;
+			vertexBufferData[currentVertexIndex + 3].m_normal = n;
+
+			colorBufferData[currentVertexIndex     ] = s.m_color.dark();
+			colorBufferData[currentVertexIndex  + 1] = s.m_color;
+			colorBufferData[currentVertexIndex  + 2] = s.m_color.light();
+			colorBufferData[currentVertexIndex  + 3] = s.m_color;
+
+			// anti-clock-wise winding order for all triangles in strip
+			indexBufferData[currentElementIndex    ] = currentVertexIndex + 0;
+			indexBufferData[currentElementIndex + 1] = currentVertexIndex + 1;
+			indexBufferData[currentElementIndex + 2] = currentVertexIndex + 3;
+			indexBufferData[currentElementIndex + 3] = currentVertexIndex + 2;
+			indexBufferData[currentElementIndex + 4] = 0xFFFF; // set stop index
+
+			// finally advance buffer indexes
+			currentVertexIndex += 4;
+			currentElementIndex += 5;
+		} break;
 	}
 
 }
@@ -64,7 +104,7 @@ void Vic3DScene::create(ShaderProgram * gridShader, ShaderProgram * buildingShad
 	// *** initialize camera placement and model placement in the world
 
 	// move camera -100 back (negative y direction -> positive x is towards the right of the screen) and 50 up
-	m_camera.translate(0, -100, 50);
+	m_camera.translate(40, -100, 50);
 	// look slightly up
 	m_camera.rotate(60, m_camera.right());
 }
@@ -218,7 +258,7 @@ void Vic3DScene::render() {
 	// *** opaque building geometry ***
 
 	// culling off, so that we see front and back sides of surfaces
-	glDisable(GL_CULL_FACE);
+//	glDisable(GL_CULL_FACE);
 
 	m_buildingShader->bind();
 	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[0], m_worldToView);

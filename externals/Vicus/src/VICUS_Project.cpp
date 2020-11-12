@@ -46,7 +46,7 @@ Project::Project() {
 	surf.m_id = 1;
 	surf.m_displayName = "Triangle";
 	// flat on the ground, facing up
-	surf.m_geometry = PlaneGeometry(PlaneGeometry::T_Triangle, IBKMK::Vector3D(0,1,0), IBKMK::Vector3D(0,1,10), IBKMK::Vector3D(10,1,0));
+	surf.m_geometry = PlaneGeometry(PlaneGeometry::T_Triangle, IBKMK::Vector3D(0,0,1), IBKMK::Vector3D(10,0,1), IBKMK::Vector3D(0,10,1));
 	surf.m_color = QColor(32,32,192);
 	room.m_surfaces.push_back(surf);
 
