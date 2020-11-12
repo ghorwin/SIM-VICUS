@@ -54,7 +54,7 @@ void OpaqueGeometryObject::create(QOpenGLShaderProgram * shaderProgramm) {
 
 	// layout location 0 - vec3 with coordinates
 	shaderProgramm->enableAttributeArray(0);
-	shaderProgramm->setAttributeBuffer(0, GL_FLOAT, 0, 3, 3*sizeof(float));
+	shaderProgramm->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(Vertex));
 
 	// layout location 1 - vec3 with colors
 	m_vboColors.bind(); // now color buffer is active in vao
@@ -221,7 +221,7 @@ void OpaqueGeometryObject::updateBuffers() {
 
 	// transfer data stored in m_vertexBufferData
 	m_vbo.bind();
-	m_vbo.allocate(m_vertexBufferData.data(), m_vertexBufferData.size()*sizeof(Vertex2));
+	m_vbo.allocate(m_vertexBufferData.data(), m_vertexBufferData.size()*sizeof(Vertex));
 	m_vbo.release();
 
 	m_ebo.bind();
