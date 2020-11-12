@@ -49,6 +49,19 @@ struct Vertex {
 	float nx,ny,nz;
 };
 
+struct Vertex2 {
+	Vertex2() {}
+	Vertex2(const QVector3D & coords) :
+		x(float(coords.x())),
+		y(float(coords.y())),
+		z(float(coords.z()))
+	{
+	}
+
+	/*! Coordinates of the vertex. */
+	float x,y,z;
+};
+
 /*! RGBA data vertex. */
 struct ColorRGBA {
 	ColorRGBA() {}
