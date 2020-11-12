@@ -18,99 +18,33 @@ void OpaqueGeometryObject::create(QOpenGLShaderProgram * shaderProgramm) {
 	if (m_vao.isCreated())
 		return;
 
-
 #if 1
 
-	// set up vertex data (and buffer(s)) and configure vertex attributes
-	// ------------------------------------------------------------------
+	// *** create buffers on GPU memory ***
 
-	float vertices[] = {
-		 0.8f,  0.8f, 0.0f,  // top right		= 0
-		 0.8f, -0.8f, 0.0f,  // bottom right	= 1
-		-0.8f,  0.8f, 0.0f,   // top left		= 2
-		-0.8f, -0.8f, 0.0f,  // bottom left		= 3
-		1.8f,  0.8f, 0.0f,  // top right		= 0
-		1.8f, -0.8f, 0.0f,  // bottom right	= 1
-		1.0f,  0.8f, 0.0f,   // top left		= 2
-		1.0f, -0.8f, 0.0f  // bottom left		= 3
-	};
-
-	QColor vertexColors [] = {
-		// left rect
-
-		QColor("#ff0000"),  // red    // top right
-		QColor("#00ff00"), // green  // bottom right
-		QColor("#0000ff"), // blue   // top left
-		QColor("#ffffff"), // white  // bottom left
-
-		// right rect
-
-		QColor("#ff0000"),	// red - top right
-		QColor("#ff00ff"),	// magenta - bottom right
-		QColor("#ffffff"),	// white - top left
-		QColor("#00ff00")	// green - bottom left
-	};
-
-	// create buffer for 2 interleaved attributes: position and color, 4 vertices, 3 floats each
-	unsigned int N_Vertices = 8;
-	m_vertexBufferData.resize(N_Vertices);
-	m_colorBufferData.resize(N_Vertices);
-	for (int v=0; v<N_Vertices; ++v) {
-		// coordinates
-		m_vertexBufferData[v].x = 100*vertices[3*v]/2;
-		m_vertexBufferData[v].y = 100*vertices[3*v+1]/2;
-		m_vertexBufferData[v].z = 100*vertices[3*v+2]/2;
-
-		// colors
-		m_colorBufferData[v].r = vertexColors[v].red();
-		m_colorBufferData[v].g = vertexColors[v].green();
-		m_colorBufferData[v].b = vertexColors[v].blue();
-		m_colorBufferData[v].a = vertexColors[v].alpha();
-	}
-
-	//#define USE_DEGENERATED_TRIANGLE_RESTART
-	#ifdef USE_DEGENERATED_TRIANGLE_RESTART
-		GLushort indices[] = {  // note that we start from 0!
-			0, 1, 2, 3,
-			3, // duplicate last of first strip
-			4, // duplicate first of second strip
-			4, 5, 6, 7
-		};
-
-		// Note: when inserting a gap from even to odd element, insert 2; otherweise 3
-		m_indexCount = 10;
-	#else
-		glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
-		GLushort indices[] = {  // note that we start from 0!
-			0, 1, 2, 3,
-			0xFFFF,
-			4, 5, 6, 7
-		};
-	//	m_indexCount = 9;
-	#endif
-
-	m_elementBufferData = std::vector<GLshort>(indices, indices + 9);
-
-	// create a new buffer for the vertices and colors, interleaved storage
+	// create a new buffer for the vertices and colors, separate buffers because we will modify colors way more often than geometry
 	m_vbo.create();
-	m_vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
+	m_vbo.setUsagePattern(QOpenGLBuffer::StaticDraw); // usage pattern will be used when tranferring data to GPU
 
 	m_vboColors.create();
 	m_vboColors.setUsagePattern(QOpenGLBuffer::StaticDraw);
-	m_vboColors.bind();
-	m_vboColors.allocate(m_colorBufferData.data(), m_colorBufferData.size()*sizeof(ColorRGBA) );
 
 	// create a new buffer for the indexes
 	m_ebo.create();
 	m_ebo.setUsagePattern(QOpenGLBuffer::StaticDraw);
 
-	// create and bind Vertex Array Object - must be bound *before* the element buffer is bound,
-	// because the VAO remembers and manages element buffers as well
+
+	// *** create and bind Vertex Array Object ***
+
+	// Note: VAO must be bound *before* the element buffer is bound,
+	//       because the VAO remembers associated element buffers.
 	m_vao.create();
-	m_vao.bind();
+	m_vao.bind(); // now the VAO is active and remembers states modified in following calls
+
+	m_ebo.bind(); // this registers this index buffer in the currently bound VAO
 
 
-	m_ebo.bind(); // this registers this index buffer in the currently bound vao
+	// *** set attribute arrays for shader fetch stage ***
 
 	m_vbo.bind(); // this registers this buffer data object in the currently bound vao; in subsequent
 				  // calls to shaderProgramm->setAttributeBuffer() the buffer object is associated with the
@@ -125,7 +59,7 @@ void OpaqueGeometryObject::create(QOpenGLShaderProgram * shaderProgramm) {
 	// layout location 1 - vec3 with colors
 	m_vboColors.bind(); // now color buffer is active in vao
 	shaderProgramm->enableAttributeArray(1);
-	shaderProgramm->setAttributeBuffer(1, GL_UNSIGNED_BYTE, 0, 4, 4*sizeof(char));
+	shaderProgramm->setAttributeBuffer(1, GL_UNSIGNED_BYTE, 0, 4, 4 /* bytes = sizeof(char) */);
 
 	// Release (unbind) all
 
@@ -213,6 +147,78 @@ void OpaqueGeometryObject::destroy() {
 
 
 void OpaqueGeometryObject::updateBuffers() {
+
+
+	// set up vertex data (and buffer(s)) and configure vertex attributes
+	// ------------------------------------------------------------------
+
+	float vertices[] = {
+		 0.8f,  0.8f, 0.0f,  // top right		= 0
+		 0.8f, -0.8f, 0.0f,  // bottom right	= 1
+		-0.8f,  0.8f, 0.0f,   // top left		= 2
+		-0.8f, -0.8f, 0.0f,  // bottom left		= 3
+		1.8f,  0.8f, 0.0f,  // top right		= 0
+		1.8f, -0.8f, 0.0f,  // bottom right	= 1
+		1.0f,  0.8f, 0.0f,   // top left		= 2
+		1.0f, -0.8f, 0.0f  // bottom left		= 3
+	};
+
+	QColor vertexColors [] = {
+		// left rect
+
+		QColor("#ff0000"),  // red    // top right
+		QColor("#00ff00"), // green  // bottom right
+		QColor("#0000ff"), // blue   // top left
+		QColor("#ffffff"), // white  // bottom left
+
+		// right rect
+
+		QColor("#ff0000"),	// red - top right
+		QColor("#ff00ff"),	// magenta - bottom right
+		QColor("#ffffff"),	// white - top left
+		QColor("#00ff00")	// green - bottom left
+	};
+
+	// create buffer for 2 interleaved attributes: position and color, 4 vertices, 3 floats each
+	unsigned int N_Vertices = 8;
+	m_vertexBufferData.resize(N_Vertices);
+	m_colorBufferData.resize(N_Vertices);
+	for (int v=0; v<N_Vertices; ++v) {
+		// coordinates
+		m_vertexBufferData[v].x = 100*vertices[3*v]/2;
+		m_vertexBufferData[v].y = 100*vertices[3*v+1]/2;
+		m_vertexBufferData[v].z = 100*vertices[3*v+2]/2;
+
+		// colors
+		m_colorBufferData[v] = vertexColors[v];
+	}
+
+	//#define USE_DEGENERATED_TRIANGLE_RESTART
+	#ifdef USE_DEGENERATED_TRIANGLE_RESTART
+		GLushort indices[] = {  // note that we start from 0!
+			0, 1, 2, 3,
+			3, // duplicate last of first strip
+			4, // duplicate first of second strip
+			4, 5, 6, 7
+		};
+
+		// Note: when inserting a gap from even to odd element, insert 2; otherweise 3
+		m_indexCount = 10;
+	#else
+		glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
+		GLushort indices[] = {  // note that we start from 0!
+			0, 1, 2, 3,
+			0xFFFF,
+			4, 5, 6, 7
+		};
+	//	m_indexCount = 9;
+	#endif
+
+	m_elementBufferData = std::vector<GLshort>(indices, indices + 9);
+
+
+
+
 	// transfer data stored in m_vertexBufferData
 	m_vbo.bind();
 	m_vbo.allocate(m_vertexBufferData.data(), m_vertexBufferData.size()*sizeof(Vertex2));
@@ -222,13 +228,13 @@ void OpaqueGeometryObject::updateBuffers() {
 	m_ebo.allocate(m_elementBufferData.data(), m_elementBufferData.size()*sizeof(GL_UNSIGNED_SHORT));
 	m_ebo.release();
 	// also update the color buffer
-//	updateColorBuffer();
+	updateColorBuffer();
 }
 
 
 void OpaqueGeometryObject::updateColorBuffer() {
 	m_vboColors.bind();
-	m_vboColors.allocate(m_colorBufferData.data(), m_colorBufferData.size()*sizeof(ColorRGBA));
+	m_vboColors.allocate(m_colorBufferData.data(), m_colorBufferData.size()*sizeof(ColorRGBA) );
 	m_vboColors.release();
 }
 
