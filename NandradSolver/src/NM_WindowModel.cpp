@@ -217,27 +217,9 @@ int WindowModel::update() {
         // compute radiation flux in direction of sun light
         computeSolarFluxThroughGlazing(qRadDir, qRadDiff, incidenceAngle, fluxSolarLeft, fluxSolarRight);
 
-        // now reduce by frame and divider area and shading
-        double areaComplete = m_windowModel->m_glasArea;
-        // check if we have a frame
-       if(m_windowModel->m_frame.m_materialID != NANDRAD::INVALID_ID) {
-           areaComplete += m_windowModel->m_frame.m_area.value;
-       }
-       // check if we have a divider
-      if(m_windowModel->m_divider.m_materialID != NANDRAD::INVALID_ID) {
-          areaComplete += m_windowModel->m_divider.m_area.value;
-      }
-
-      // frame and divider correction
-      if(areaComplete > m_windowModel->m_glasArea)  {
-          double glassFraction = m_windowModel->m_glasArea/areaComplete;
-          fluxSolarLeft *= glassFraction;
-          fluxSolarRight *= glassFraction;
-      }
-
-       // store results
-      m_results[R_FluxShortWaveRadiationA] = fluxSolarLeft;
-      m_results[R_FluxShortWaveRadiationB] = fluxSolarRight;
+        // store results
+        m_results[R_FluxShortWaveRadiationA] = fluxSolarLeft;
+        m_results[R_FluxShortWaveRadiationB] = fluxSolarRight;
     }
 	else {
         m_results[R_FluxShortWaveRadiationA] = 0;
