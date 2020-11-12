@@ -166,6 +166,7 @@ public:
 		\param objectID		Model object id
 		\param qRadDir		Here the direct radiation component is stored in [W/m2].
 		\param qRadDiff		Here the diffuse radiation component is stored in [W/m2].
+		\param incidenceAngle Incidence angle onto surface in [rad].
 		\return				The function returns the total (global) solar radiation on the surface in [W/m2].
 	*/
 	double qSWRad(unsigned int objectID, double & qRadDir, double & qRadDiff, double & incidenceAngle) const;
