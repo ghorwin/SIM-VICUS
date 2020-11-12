@@ -7,9 +7,9 @@
 namespace Vic3D {
 
 OpaqueGeometryObject::OpaqueGeometryObject() :
-	m_vbo(QOpenGLBuffer::VertexBuffer), // VertexBuffer is the default, so default constructor would have been enough
-	m_vboColors(QOpenGLBuffer::VertexBuffer),
-	m_ebo(QOpenGLBuffer::IndexBuffer) // make this an Index Buffer
+	m_vertexBufferObject(QOpenGLBuffer::VertexBuffer), // VertexBuffer is the default, so default constructor would have been enough
+	m_colorBufferObject(QOpenGLBuffer::VertexBuffer),
+	m_indexBufferObject(QOpenGLBuffer::IndexBuffer) // make this an Index Buffer
 {
 }
 
@@ -21,15 +21,15 @@ void OpaqueGeometryObject::create(QOpenGLShaderProgram * shaderProgramm) {
 	// *** create buffers on GPU memory ***
 
 	// create a new buffer for the vertices and colors, separate buffers because we will modify colors way more often than geometry
-	m_vbo.create();
-	m_vbo.setUsagePattern(QOpenGLBuffer::StaticDraw); // usage pattern will be used when tranferring data to GPU
+	m_vertexBufferObject.create();
+	m_vertexBufferObject.setUsagePattern(QOpenGLBuffer::StaticDraw); // usage pattern will be used when tranferring data to GPU
 
-	m_vboColors.create();
-	m_vboColors.setUsagePattern(QOpenGLBuffer::StaticDraw);
+	m_colorBufferObject.create();
+	m_colorBufferObject.setUsagePattern(QOpenGLBuffer::StaticDraw);
 
 	// create a new buffer for the indexes
-	m_ebo.create();
-	m_ebo.setUsagePattern(QOpenGLBuffer::StaticDraw);
+	m_indexBufferObject.create();
+	m_indexBufferObject.setUsagePattern(QOpenGLBuffer::StaticDraw);
 
 
 	// *** create and bind Vertex Array Object ***
@@ -39,7 +39,7 @@ void OpaqueGeometryObject::create(QOpenGLShaderProgram * shaderProgramm) {
 	m_vao.create();
 	m_vao.bind(); // now the VAO is active and remembers states modified in following calls
 
-	m_ebo.bind(); // this registers this index buffer in the currently bound VAO
+	m_indexBufferObject.bind(); // this registers this index buffer in the currently bound VAO
 
 
 	// *** set attribute arrays for shader fetch stage ***
@@ -48,7 +48,7 @@ void OpaqueGeometryObject::create(QOpenGLShaderProgram * shaderProgramm) {
 #define NORMAL_ARRAY_INDEX 1
 #define COLOR_ARRAY_INDEX 2
 
-	m_vbo.bind(); // this registers this buffer data object in the currently bound vao; in subsequent
+	m_vertexBufferObject.bind(); // this registers this buffer data object in the currently bound vao; in subsequent
 				  // calls to shaderProgramm->setAttributeBuffer() the buffer object is associated with the
 				  // respective attribute array that's fed into the shader. When the vao is later bound before
 				  // rendering, this association is remembered so that the vertex fetch stage pulls data from
@@ -63,7 +63,7 @@ void OpaqueGeometryObject::create(QOpenGLShaderProgram * shaderProgramm) {
 	shaderProgramm->setAttributeBuffer(NORMAL_ARRAY_INDEX, GL_FLOAT, offsetof(Vertex, nx), 3 /* vec3 */, sizeof(Vertex));
 
 
-	m_vboColors.bind(); // now color buffer is active in vao
+	m_colorBufferObject.bind(); // now color buffer is active in vao
 
 	// colors
 	shaderProgramm->enableAttributeArray(COLOR_ARRAY_INDEX);
@@ -78,23 +78,24 @@ void OpaqueGeometryObject::create(QOpenGLShaderProgram * shaderProgramm) {
 	//       would not be known and a call to glDrawElements() crashes!
 	m_vao.release();
 
-	m_vbo.release();
-	m_vboColors.release();
-	m_ebo.release();
+	m_vertexBufferObject.release();
+	m_colorBufferObject.release();
+	m_indexBufferObject.release();
 }
 
 
 void OpaqueGeometryObject::destroy() {
 	m_vao.destroy();
-	m_vbo.destroy();
-	m_vboColors.destroy();
-	m_ebo.destroy();
+	m_vertexBufferObject.destroy();
+	m_colorBufferObject.destroy();
+	m_indexBufferObject.destroy();
 }
 
 
 void OpaqueGeometryObject::updateBuffers() {
 
-
+//#define SET_TESTDATA
+#ifdef SET_TESTDATA
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 	// ------------------------------------------------------------------
 
@@ -161,27 +162,31 @@ void OpaqueGeometryObject::updateBuffers() {
 	#endif
 
 	m_elementBufferData = std::vector<GLshort>(indices, indices + 9);
+#endif // SET_TESTDATA
 
-
-
+	if (m_elementBufferData.empty())
+		return;
 
 	// transfer data stored in m_vertexBufferData
-	m_vbo.bind();
-	m_vbo.allocate(m_vertexBufferData.data(), m_vertexBufferData.size()*sizeof(Vertex));
-	m_vbo.release();
+	m_vertexBufferObject.bind();
+	m_vertexBufferObject.allocate(m_vertexBufferData.data(), m_vertexBufferData.size()*sizeof(Vertex));
+	m_vertexBufferObject.release();
 
-	m_ebo.bind();
-	m_ebo.allocate(m_elementBufferData.data(), m_elementBufferData.size()*sizeof(GL_UNSIGNED_SHORT));
-	m_ebo.release();
+	m_indexBufferObject.bind();
+	m_indexBufferObject.allocate(m_elementBufferData.data(), m_elementBufferData.size()*sizeof(GL_UNSIGNED_SHORT));
+	m_indexBufferObject.release();
+
 	// also update the color buffer
 	updateColorBuffer();
 }
 
 
 void OpaqueGeometryObject::updateColorBuffer() {
-	m_vboColors.bind();
-	m_vboColors.allocate(m_colorBufferData.data(), m_colorBufferData.size()*sizeof(ColorRGBA) );
-	m_vboColors.release();
+	if (m_colorBufferData.empty())
+		return;
+	m_colorBufferObject.bind();
+	m_colorBufferObject.allocate(m_colorBufferData.data(), m_colorBufferData.size()*sizeof(ColorRGBA) );
+	m_colorBufferObject.release();
 }
 
 

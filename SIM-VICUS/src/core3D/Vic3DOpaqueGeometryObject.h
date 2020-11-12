@@ -39,10 +39,14 @@ public:
 
 	/*! Resizes vertex and element buffers on GPU memory and copies data from locally stored vertex/element arrays to GPU.
 		This might be a lengthy operation, so call this as infrequently as possible.
-		Use the function updateColorBuffer() to only update the color buffer.
+
+		Basically transfers data in m_vertexBufferData, m_colorBufferData and m_elementBufferData to GPU memory.
+		Calls the function updateColorBuffer() internally to update the color buffer.
 	*/
 	void updateBuffers();
-	/*! Resizes color buffer on GPU memory and copies data from locally stored color data array to GPU. 	*/
+	/*! Only copies the color buffer m_colorBufferData to GPU memory.
+		Call this function instead of updateBuffers(), if only colors of objects/visibility have changed.
+	*/
 	void updateColorBuffer();
 
 	/*! Binds the vertex array object and renders the geometry. */
@@ -59,11 +63,11 @@ public:
 	QOpenGLVertexArrayObject	m_vao;
 
 	/*! Handle for vertex buffer on GPU memory. */
-	QOpenGLBuffer				m_vbo;
+	QOpenGLBuffer				m_vertexBufferObject;
 	/*! Handle for color buffer on GPU memory. */
-	QOpenGLBuffer				m_vboColors;
+	QOpenGLBuffer				m_colorBufferObject;
 	/*! Handle for index buffer on GPU memory */
-	QOpenGLBuffer				m_ebo;
+	QOpenGLBuffer				m_indexBufferObject;
 };
 
 } // namespace Vic3D

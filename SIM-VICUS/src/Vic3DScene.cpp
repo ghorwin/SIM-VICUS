@@ -17,9 +17,9 @@ void Vic3DScene::create(ShaderProgram * gridShader, ShaderProgram * buildingShad
 	// *** initialize camera placement and model placement in the world
 
 	// move camera -50 back and 50 up
-	m_camera.translate(0, -50, 150);
-	// look slightly down
-//	m_camera.rotate(70, m_camera.right());
+	m_camera.translate(0, -500, 150);
+	// look slightly up
+	m_camera.rotate(70, m_camera.right());
 }
 
 
