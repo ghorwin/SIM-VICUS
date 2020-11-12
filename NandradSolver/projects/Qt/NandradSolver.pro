@@ -56,6 +56,7 @@ DEPENDPATH = $${INCLUDEPATH}
 
 SOURCES += \
 #	../../../NandradDevTests/src/main.cpp \
+	../../src/NM_WindowModel.cpp \
 	../../src/main.cpp \
 	../../src/NM_AbstractModel.cpp \
 	../../src/NM_ConstructionBalanceModel.cpp \
@@ -107,6 +108,7 @@ HEADERS += \
 	../../src/NM_SteadyStateSolver.h \
 	../../src/NM_ValueReference.h \
 	../../src/NM_VectorValuedQuantity.h \
-	../../src/NM_VectorValuedQuantityIndex.h
+	../../src/NM_VectorValuedQuantityIndex.h \
+	../../src/NM_WindowModel.h
 
 DISTFILES +=

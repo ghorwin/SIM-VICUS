@@ -34,7 +34,7 @@ namespace NANDRAD_MODEL {
 	const char * const INVALID_KEYWORD_INDEX_STRING = "KEYWORD_ERROR_STRING: Invalid type index";
 
 	/*! Holds a list of all enum types/categories. */
-	const char * const ENUM_TYPES[10] = {
+	const char * const ENUM_TYPES[11] = {
 		"ConstructionBalanceModel::Results",
 		"ConstructionBalanceModel::VectorValuedResults",
 		"ConstructionStatesModel::VectorValuedResults",
@@ -44,12 +44,13 @@ namespace NANDRAD_MODEL {
 		"NaturalVentilationModel::VectorValuedResults",
 		"OutputHandler::OutputFileNames",
 		"RoomBalanceModel::Results",
-		"RoomStatesModel::Results"
+		"RoomStatesModel::Results",
+		"WindowModel::Results"
 	};
 
 	/*! Converts a category string to respective enumeration value. */
 	int enum2index(const std::string & enumtype) {
-		for (int i=0; i<10; ++i) {
+		for (int i=0; i<11; ++i) {
 			if (enumtype == ENUM_TYPES[i]) return i;
 		}
 		//std::cerr << "Unknown enumeration type '" << enumtype<< "'." << std::endl;
@@ -147,6 +148,14 @@ namespace NANDRAD_MODEL {
 				case 1 : return "RelativeHumidity";
 				case 2 : return "VaporPressure";
 			} break;
+			// WindowModel::Results
+			case 10 :
+			switch (t) {
+				case 0 : return "HeatConductionFlux";
+				case 1 : return "HeatConductionFluxDensity";
+				case 2 : return "ShortWaveRadiationFlux";
+				case 3 : return "ShortWaveRadiationFluxDensity";
+			} break;
 		} // switch
 		return INVALID_KEYWORD_INDEX_STRING;
 	}
@@ -240,6 +249,14 @@ namespace NANDRAD_MODEL {
 				case 0 : return "AirTemperature";
 				case 1 : return "RelativeHumidity";
 				case 2 : return "VaporPressure";
+			} break;
+			// WindowModel::Results
+			case 10 :
+			switch (t) {
+				case 0 : return "HeatConductionFlux";
+				case 1 : return "HeatConductionFluxDensity";
+				case 2 : return "ShortWaveRadiationFlux";
+				case 3 : return "ShortWaveRadiationFluxDensity";
 			} break;
 		} // switch
 		return INVALID_KEYWORD_INDEX_STRING;
@@ -336,6 +353,14 @@ namespace NANDRAD_MODEL {
 				case 1 : return "Room air relative humidity.";
 				case 2 : return "Room air vapor pressure.";
 			} break;
+			// WindowModel::Results
+			case 10 :
+			switch (t) {
+				case 0 : return "Heat conduction flux";
+				case 1 : return "Heat conduction flux density";
+				case 2 : return "Solar radiation flux (global shortwave radiation)";
+				case 3 : return "Solar radiation flux density (global shortwave radiation)";
+			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine description for enumeration type '%1' and index '%2'.")
 			.arg(enumtype).arg(t), "[KeywordList::Description]");
@@ -429,6 +454,14 @@ namespace NANDRAD_MODEL {
 				case 0 : return "C";
 				case 1 : return "%";
 				case 2 : return "Pa";
+			} break;
+			// WindowModel::Results
+			case 10 :
+			switch (t) {
+				case 0 : return "W";
+				case 1 : return "W/m2";
+				case 2 : return "W";
+				case 3 : return "W/m2";
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine default unit for enumeration type '%1' and index '%2'.")
@@ -524,6 +557,14 @@ namespace NANDRAD_MODEL {
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
+			// WindowModel::Results
+			case 10 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
+			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine color for enumeration type '%1' and index '%2'.")
 			.arg(enumtype).arg(t), "[KeywordList::Color]");
@@ -618,6 +659,14 @@ namespace NANDRAD_MODEL {
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
+			// WindowModel::Results
+			case 10 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine default value for enumeration type '%1' and index '%2'.")
 			.arg(enumtype).arg(t), "[KeywordList::DefaultValue]");
@@ -646,6 +695,8 @@ namespace NANDRAD_MODEL {
 			case 8 : return 4;
 			// RoomStatesModel::Results
 			case 9 : return 3;
+			// WindowModel::Results
+			case 10 : return 4;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::Count]");
@@ -673,7 +724,9 @@ namespace NANDRAD_MODEL {
 			// RoomBalanceModel::Results
 			case 8 : return 3;
 			// RoomStatesModel::Results
-			case 9 : return 3;
+			case 9 : return 2;
+			// WindowModel::Results
+			case 10 : return 4;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::MaxIndex]");
