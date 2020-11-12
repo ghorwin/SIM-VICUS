@@ -4,6 +4,7 @@
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
 #include "VICUS_BuildingLevel.h"
+#include "VICUS_Object.h"
 
 #include <QString>
 
@@ -11,12 +12,19 @@
 
 namespace VICUS {
 
-class Building {
+class Building : public Object {
 public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	VICUS_READWRITE
+
+	void updateParents() {
+		for (BuildingLevel & s : m_buildingLevels) {
+			s.m_parent = this;
+			s.updateParents();
+		}
+	}
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

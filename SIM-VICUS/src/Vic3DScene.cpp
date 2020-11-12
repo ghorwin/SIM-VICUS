@@ -160,8 +160,8 @@ void Vic3DScene::render() {
 
 	m_buildingShader->bind();
 	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[0], m_worldToView);
-//	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[1], m_lightPos);
-//	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[2], m_lightColor);
+	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[1], m_lightPos);
+	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[2], m_lightColor);
 
 	m_opaqueGeometryObject.render();
 
@@ -188,7 +188,20 @@ void Vic3DScene::generateBuildingGeometry() {
 
 	// clear out existing cache
 
-//	TODO
+	m_opaqueGeometryObject.m_vertexBufferData.clear();
+	m_opaqueGeometryObject.m_colorBufferData.clear();
+	m_opaqueGeometryObject.m_indexBufferData.clear();
+
+	// we now process all surfaces and add their coordinates and
+	// normals
+
+	// we also store colors for each surface: hereby, we
+	// use the current highlighting-filter object, which relates
+	// object properties to colors
+
+
+
+
 }
 
 } // namespace Vic3D

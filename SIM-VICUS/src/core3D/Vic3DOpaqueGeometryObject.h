@@ -57,7 +57,7 @@ public:
 	/*! Color buffer in CPU memory, holds colors of all vertices (same size as m_vertexBufferData). */
 	std::vector<ColorRGBA>		m_colorBufferData;
 	/*! Index buffer on CPU memory. */
-	std::vector<GLshort>		m_elementBufferData;
+	std::vector<GLshort>		m_indexBufferData;
 
 	/*! VertexArrayObject, references the vertex, color and index buffers. */
 	QOpenGLVertexArrayObject	m_vao;

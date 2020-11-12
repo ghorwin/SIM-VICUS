@@ -4,17 +4,25 @@
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
 #include "VICUS_Room.h"
+#include "VICUS_Object.h"
 
 #include <QString>
 
 namespace VICUS {
 
-class BuildingLevel {
+class BuildingLevel : public Object {
 public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	VICUS_READWRITE
+
+	void updateParents() {
+		for (Room & s : m_rooms) {
+			s.m_parent = this;
+			s.updateParents();
+		}
+	}
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

@@ -53,9 +53,8 @@ SceneView::SceneView() :
 	// Shaderprogram : regular geometry (opaque geometry with lighting)
 	ShaderProgram blocks(":/shaders/pass_through.vert",":/shaders/simple.frag");
 	blocks.m_uniformNames.append("worldToView");
-//	blocks.m_uniformNames.append("lightPos");
-//	blocks.m_uniformNames.append("lightColor");
-
+	blocks.m_uniformNames.append("lightPos");
+	blocks.m_uniformNames.append("lightColor");
 	m_shaderPrograms[SHADER_OPAQUE_GEOMETRY] = blocks;
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
@@ -127,31 +126,8 @@ void SceneView::paintGL() {
 	// clear color and depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-//	m_gpuTimers.reset();
 	// render main scene (grid, opaque plane, ...)
 	m_mainScene.render();
-
-//	m_gpuTimers.recordSample(); // setup boxes
-
-//	// *** render boxes
-//	SHADER(0)->bind();
-//	SHADER(0)->setUniformValue(m_shaderPrograms[0].m_uniformIDs[0], m_worldToView);
-
-//	m_gpuTimers.recordSample(); // render boxes
-//	m_boxObject.render();
-
-//	m_gpuTimers.recordSample(); // render pickline
-//	if (m_pickLineObject.m_visible)
-//		m_pickLineObject.render();
-
-//	SHADER(0)->release();
-
-#if 0
-	// do some animation stuff
-	m_transform.rotate(1.0f, QVector3D(0.0f, 0.1f, 0.0f));
-	updateWorld2ViewMatrix();
-	renderLater();
-#endif
 
 	checkInput();
 

@@ -43,6 +43,7 @@ HEADERS += \
 	../../src/VICUS_NetworkLine.h \
 	../../src/VICUS_NetworkNode.h \
 	../../src/VICUS_NetworkPipe.h \
+	../../src/VICUS_Object.h \
 	../../src/VICUS_PlaneGeometry.h \
 	../../src/VICUS_Project.h \
 	../../src/VICUS_Room.h \

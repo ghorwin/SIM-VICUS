@@ -4,17 +4,24 @@
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
 #include "VICUS_Surface.h"
+#include "VICUS_Object.h"
 
 #include <QString>
 
 namespace VICUS {
 
-class Room {
+class Room : public Object {
 public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	VICUS_READWRITE
+
+	void updateParents() {
+		for (Surface & s : m_surfaces) {
+			s.m_parent = this;
+		}
+	}
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

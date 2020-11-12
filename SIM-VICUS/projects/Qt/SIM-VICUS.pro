@@ -50,6 +50,8 @@ INCLUDEPATH = \
 	../../../externals/QuaZIP/src/zlib \
 	../../../externals/QtExt/src
 
+DEPENDPATH = $${INCLUDEPATH}
+
 win32 {
 	PRE_TARGETDEPS +=   $$PWD/../../../externals/lib$${DIR_PREFIX}/IBK.lib \
 						$$PWD/../../../externals/lib$${DIR_PREFIX}/CCM.lib \
@@ -58,7 +60,8 @@ win32 {
 						$$PWD/../../../externals/lib$${DIR_PREFIX}/QuaZIP.lib \
 						$$PWD/../../../externals/lib$${DIR_PREFIX}/Vicus.lib \
 						$$PWD/../../../externals/lib$${DIR_PREFIX}/Nandrad.lib \
-						$$PWD/../../../externals/lib$${DIR_PREFIX}/TiCPP.lib
+						$$PWD/../../../externals/lib$${DIR_PREFIX}/TiCPP.lib \
+						$$PWD/../../../externals/lib$${DIR_PREFIX}/IBKMK.lib
 }
 
 

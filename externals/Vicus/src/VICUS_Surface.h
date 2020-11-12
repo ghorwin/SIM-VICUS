@@ -4,13 +4,15 @@
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
 #include "VICUS_PlaneGeometry.h"
+#include "VICUS_Object.h"
 
 #include <QString>
+#include <QColor>
 
 namespace VICUS {
 
 /*! Represents a surface and its associated properties. */
-class Surface {
+class Surface : public Object {
 public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***

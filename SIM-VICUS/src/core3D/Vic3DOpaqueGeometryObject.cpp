@@ -167,10 +167,10 @@ void OpaqueGeometryObject::updateBuffers() {
 		};
 #endif // USE_DEGENERATED_TRIANGLE_RESTART
 
-	m_elementBufferData = std::vector<GLshort>(indices, indices + 9);
+	m_indexBufferData = std::vector<GLshort>(indices, indices + 9);
 #endif // SET_TESTDATA
 
-	if (m_elementBufferData.empty())
+	if (m_indexBufferData.empty())
 		return;
 
 	// transfer data stored in m_vertexBufferData
@@ -179,7 +179,7 @@ void OpaqueGeometryObject::updateBuffers() {
 	m_vertexBufferObject.release();
 
 	m_indexBufferObject.bind();
-	m_indexBufferObject.allocate(m_elementBufferData.data(), m_elementBufferData.size()*sizeof(GL_UNSIGNED_SHORT));
+	m_indexBufferObject.allocate(m_indexBufferData.data(), m_indexBufferData.size()*sizeof(GL_UNSIGNED_SHORT));
 	m_indexBufferObject.release();
 
 	// also update the color buffer
@@ -200,7 +200,7 @@ void OpaqueGeometryObject::render() {
 	// bind all buffers ("position", "normal" and "color" arrays)
 	m_vao.bind();
 	// now draw the geometry
-	glDrawElements(GL_TRIANGLE_STRIP, m_elementBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
+	glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
 	// release buffers again
 	m_vao.release();
 }
