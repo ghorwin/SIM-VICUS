@@ -79,7 +79,7 @@ private:
 	KeyboardMouseHandler		m_keyboardMouseHandler;
 
 	/*! All shader programs used in the scene. */
-	QList<ShaderProgram>		m_shaderPrograms;
+	std::vector<ShaderProgram>	m_shaderPrograms;
 
 	Vic3DScene					m_mainScene;
 

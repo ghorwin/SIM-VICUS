@@ -62,4 +62,8 @@ void ShaderProgram::bind() {
 	m_program->bind();
 }
 
+void ShaderProgram::release() {
+	m_program->release();
+}
+
 } // namespace Vic3D

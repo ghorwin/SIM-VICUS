@@ -32,7 +32,7 @@ namespace Vic3D {
 */
 class ShaderProgram {
 public:
-	ShaderProgram();
+	ShaderProgram() {}
 	ShaderProgram(const QString & vertexShaderFilePath, const QString & fragmentShaderFilePath);
 
 	/*! Creates shader program, compiles and links the programs. */
@@ -43,7 +43,10 @@ public:
 	/*! Access to the native shader program. */
 	QOpenGLShaderProgram * shaderProgram() { return m_program; }
 
+	/*! Just forwards to embedded QShaderProgram. */
 	void bind();
+	/*! Just forwards to embedded QShaderProgram. */
+	void release();
 
 	/*! Path to vertex shader program, used in create(). */
 	QString		m_vertexShaderFilePath;

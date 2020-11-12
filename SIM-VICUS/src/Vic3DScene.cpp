@@ -144,7 +144,7 @@ void Vic3DScene::render() {
 
 	m_gridObject.render();
 
-	m_gridShader->shaderProgram()->release();
+	m_gridShader->release();
 
 
 	// *** opaque background geometry ***
@@ -155,12 +155,12 @@ void Vic3DScene::render() {
 
 	m_buildingShader->bind();
 	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[0], m_worldToView);
-	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[1], m_lightPos);
-	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[2], m_lightColor);
+//	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[1], m_lightPos);
+//	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[2], m_lightColor);
 
 	m_opaqueGeometryObject.render();
 
-	m_buildingShader->shaderProgram()->release();
+	m_buildingShader->release();
 
 
 	// *** opaque building geometry ***

@@ -6,5 +6,7 @@
         <file>linearRGB.vert</file>
         <file>diffuse.frag</file>
         <file>VertexNormalColor.vert</file>
+        <file>pass_through.vert</file>
+        <file>simple.frag</file>
     </qresource>
 </RCC>

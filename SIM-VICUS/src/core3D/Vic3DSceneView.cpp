@@ -23,6 +23,7 @@ License    : BSD License,
 
 #define SHADER_GRID 0
 #define SHADER_OPAQUE_GEOMETRY 1
+#define NUM_SHADER_PROGRAMS 2
 
 namespace Vic3D {
 
@@ -40,20 +41,22 @@ SceneView::SceneView() :
 
 	// *** create scene (no OpenGL calls are being issued below, just the data structures are created.
 
-	// Shaderprogram #0 : grid (painting grid lines)
+	m_shaderPrograms.resize(NUM_SHADER_PROGRAMS);
+
+	// Shaderprogram : grid (painting grid lines)
 	ShaderProgram grid(":/shaders/grid.vert",":/shaders/grid.frag");
 	grid.m_uniformNames.append("worldToView"); // mat4
 	grid.m_uniformNames.append("gridColor"); // vec3
 	grid.m_uniformNames.append("backColor"); // vec3
-	m_shaderPrograms.append( grid );
+	m_shaderPrograms[SHADER_GRID] = grid;
 
-	// Shaderprogram #1 : regular geometry (opaque geometry with lighting)
-	ShaderProgram blocks(":/shaders/VertexNormalColor.vert",":/shaders/diffuse.frag");
+	// Shaderprogram : regular geometry (opaque geometry with lighting)
+	ShaderProgram blocks(":/shaders/pass_through.vert",":/shaders/simple.frag");
 	blocks.m_uniformNames.append("worldToView");
-	blocks.m_uniformNames.append("lightPos");
-	blocks.m_uniformNames.append("lightColor");
+//	blocks.m_uniformNames.append("lightPos");
+//	blocks.m_uniformNames.append("lightColor");
 
-	m_shaderPrograms.append( blocks );
+	m_shaderPrograms[SHADER_OPAQUE_GEOMETRY] = blocks;
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SceneView::onModified);
