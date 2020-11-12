@@ -76,7 +76,7 @@ namespace NANDRAD_MODEL {
 			// ConstructionStatesModel::VectorValuedResults
 			case 2 :
 			switch (t) {
-				case 0 : return "LayerTemperature";
+				case 0 : return "ElementTemperature";
 			} break;
 			// ConstructionStatesModel::Results
 			case 3 :
@@ -170,7 +170,7 @@ namespace NANDRAD_MODEL {
 			// ConstructionStatesModel::VectorValuedResults
 			case 2 :
 			switch (t) {
-				case 0 : return "LayerTemperature";
+				case 0 : return "ElementTemperature";
 			} break;
 			// ConstructionStatesModel::Results
 			case 3 :
@@ -265,7 +265,7 @@ namespace NANDRAD_MODEL {
 			// ConstructionStatesModel::VectorValuedResults
 			case 2 :
 			switch (t) {
-				case 0 : return "Mean layer temperature for requested quanties.";
+				case 0 : return "Finite-volume/element temperature.";
 			} break;
 			// ConstructionStatesModel::Results
 			case 3 :

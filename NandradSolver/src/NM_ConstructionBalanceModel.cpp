@@ -196,13 +196,13 @@ void ConstructionBalanceModel::stateDependencies(std::vector<std::pair<const dou
 		// remaining dependency pattern
 		for (unsigned int i=0; i<m_statesModel->m_nElements; ++i) {
 			// each ydot depends on the temperature in the cell itself
-			resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_statesModel->m_vectorValuedResults[ConstructionStatesModel::VVR_LayerTemperature].dataPtr() + i ) );
+			resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_statesModel->m_vectorValuedResults[ConstructionStatesModel::VVR_ElementTemperature].dataPtr() + i ) );
 			// and on right-side element
 			if (i<m_statesModel->m_nElements-1)
-				resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_statesModel->m_vectorValuedResults[ConstructionStatesModel::VVR_LayerTemperature].dataPtr() + i+1 ) );
+				resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_statesModel->m_vectorValuedResults[ConstructionStatesModel::VVR_ElementTemperature].dataPtr() + i+1 ) );
 			// and on left-side element
 			if (i > 0)
-				resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_statesModel->m_vectorValuedResults[ConstructionStatesModel::VVR_LayerTemperature].dataPtr() + i-1 ) );
+				resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_statesModel->m_vectorValuedResults[ConstructionStatesModel::VVR_ElementTemperature].dataPtr() + i-1 ) );
 		}
 	}
 	else {
