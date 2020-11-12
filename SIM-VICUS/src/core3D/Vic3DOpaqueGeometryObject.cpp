@@ -94,7 +94,7 @@ void OpaqueGeometryObject::destroy() {
 
 void OpaqueGeometryObject::updateBuffers() {
 
-#define SET_TESTDATA
+//#define SET_TESTDATA
 #ifdef SET_TESTDATA
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 	// ------------------------------------------------------------------
@@ -152,13 +152,6 @@ void OpaqueGeometryObject::updateBuffers() {
 		// Note: when inserting a gap from even to odd element, insert 2; otherweise 3
 		m_indexCount = 10;
 	#else
-
-#ifdef Q_OS_MAC
-		glEnable(GL_PRIMITIVE_RESTART);
-		glPrimitiveRestartIndex(0xFFFF);
-#else
-		glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
-#endif // Q_OS_MAC
 
 		GLushort indices[] = {  // note that we start from 0!
 			0, 1, 2, 3,

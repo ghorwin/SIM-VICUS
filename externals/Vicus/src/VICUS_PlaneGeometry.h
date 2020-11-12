@@ -5,6 +5,9 @@
 
 #include "VICUS_CodeGenMacros.h"
 
+/*! IBKMK::Vector3D to QVector3D conversion macro. */
+#define VEC2VEC(v) QVector3D((v).m_x, (v).m_y, (v).m_z)
+
 namespace VICUS {
 
 /*! Class PlaneGeometry encapsulates the vertex data and plane type of a single plane
@@ -56,13 +59,14 @@ public:
 	*/
 	type_t								m_type = NUM_T;				// XML:A:required
 
-	/*! Points of polyline. */
+	/*! Points of polyline (in double-precision accuracy!). */
 	std::vector<IBKMK::Vector3D>		m_vertexes;					// XML:E
 
 
 	// *** Runtime Variables ***
 
 	IBKMK::Vector3D						m_normal = IBKMK::Vector3D(0,0,0);
+
 
 private:
 	void readXMLPrivate(const TiXmlElement * element);

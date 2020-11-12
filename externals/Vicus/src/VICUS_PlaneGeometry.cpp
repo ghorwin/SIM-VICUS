@@ -24,6 +24,7 @@ PlaneGeometry::PlaneGeometry(PlaneGeometry::type_t t,
 	m_type(t),
 	m_vertexes({a,b,c})
 {
+	updateNormal();
 }
 
 

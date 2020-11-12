@@ -45,10 +45,12 @@ Project::Project() {
 	Surface surf;
 	surf.m_id = 1;
 	surf.m_displayName = "Triangle";
-	surf.m_geometry = PlaneGeometry(PlaneGeometry::T_Triangle, IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(10,0,0), IBKMK::Vector3D(0,0,10));
-	surf.m_color = QColor(0,0,96);
+	// flat on the ground, facing up
+	surf.m_geometry = PlaneGeometry(PlaneGeometry::T_Triangle, IBKMK::Vector3D(0,1,0), IBKMK::Vector3D(0,1,10), IBKMK::Vector3D(10,1,0));
+	surf.m_color = QColor(32,32,192);
 	room.m_surfaces.push_back(surf);
 
+	// in the y-z plane, facing into positive x direction
 	surf.m_geometry = PlaneGeometry(PlaneGeometry::T_Rectangle, IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,10,0), IBKMK::Vector3D(0,0,10));
 	surf.m_id = 2;
 	surf.m_displayName = "Rect";
