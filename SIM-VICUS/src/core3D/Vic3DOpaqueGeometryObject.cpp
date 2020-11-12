@@ -18,8 +18,6 @@ void OpaqueGeometryObject::create(QOpenGLShaderProgram * shaderProgramm) {
 	if (m_vao.isCreated())
 		return;
 
-#if 1
-
 	// *** create buffers on GPU memory ***
 
 	// create a new buffer for the vertices and colors, separate buffers because we will modify colors way more often than geometry
@@ -46,20 +44,30 @@ void OpaqueGeometryObject::create(QOpenGLShaderProgram * shaderProgramm) {
 
 	// *** set attribute arrays for shader fetch stage ***
 
+#define VERTEX_ARRAY_INDEX 0
+#define NORMAL_ARRAY_INDEX 1
+#define COLOR_ARRAY_INDEX 2
+
 	m_vbo.bind(); // this registers this buffer data object in the currently bound vao; in subsequent
 				  // calls to shaderProgramm->setAttributeBuffer() the buffer object is associated with the
 				  // respective attribute array that's fed into the shader. When the vao is later bound before
 				  // rendering, this association is remembered so that the vertex fetch stage pulls data from
 				  // this vbo
 
-	// layout location 0 - vec3 with coordinates
-	shaderProgramm->enableAttributeArray(0);
-	shaderProgramm->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(Vertex));
+	// coordinates
+	shaderProgramm->enableAttributeArray(VERTEX_ARRAY_INDEX);
+	shaderProgramm->setAttributeBuffer(VERTEX_ARRAY_INDEX, GL_FLOAT, 0, 3 /* vec3 */, sizeof(Vertex));
 
-	// layout location 1 - vec3 with colors
+	// normals
+	shaderProgramm->enableAttributeArray(NORMAL_ARRAY_INDEX);
+	shaderProgramm->setAttributeBuffer(NORMAL_ARRAY_INDEX, GL_FLOAT, offsetof(Vertex, nx), 3 /* vec3 */, sizeof(Vertex));
+
+
 	m_vboColors.bind(); // now color buffer is active in vao
-	shaderProgramm->enableAttributeArray(1);
-	shaderProgramm->setAttributeBuffer(1, GL_UNSIGNED_BYTE, 0, 4, 4 /* bytes = sizeof(char) */);
+
+	// colors
+	shaderProgramm->enableAttributeArray(COLOR_ARRAY_INDEX);
+	shaderProgramm->setAttributeBuffer(COLOR_ARRAY_INDEX, GL_UNSIGNED_BYTE, 0, 4, 4 /* bytes = sizeof(char) */);
 
 	// Release (unbind) all
 
@@ -73,68 +81,6 @@ void OpaqueGeometryObject::create(QOpenGLShaderProgram * shaderProgramm) {
 	m_vbo.release();
 	m_vboColors.release();
 	m_ebo.release();
-
-	updateBuffers();
-#else
-	// set shader attributes
-	// tell shader program we have two data arrays to be used as input to the shaders
-	// create and bind vertex buffer
-	m_vbo.create();
-	m_vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
-
-	// create and bind color buffer
-	m_vboColors.create();
-	m_vboColors.setUsagePattern(QOpenGLBuffer::StaticDraw);
-
-
-	// create and bind Vertex Array Object
-	m_vao.create();
-	m_vao.bind();
-
-	m_vbo.bind(); // now m_vbo is "active"
-
-	// index 0 = position
-	shaderProgramm->enableAttributeArray(0); // array with index/id 0
-	shaderProgramm->setAttributeBuffer(0, GL_FLOAT, 0, 3 /* vec3 */, sizeof(Vertex));
-	// index 1 = normals
-//	shaderProgramm->enableAttributeArray(1); // array with index/id 1
-//	shaderProgramm->setAttributeBuffer(1, GL_FLOAT, offsetof(Vertex, nx), 3 /* vec3 */, sizeof(Vertex));
-	m_vbo.release();
-
-
-	m_vboColors.bind();  // now m_vboColors is "active"
-
-
-	// index 2 = color
-	shaderProgramm->enableAttributeArray(1);
-	shaderProgramm->setAttributeBuffer(0, GL_UNSIGNED_BYTE, 0, 4 /* vec4 */, 4 /* bytes = sizeof(ColorRGBA) */);
-
-	// create and bind element buffer
-	m_ebo.create();
-	m_ebo.bind();
-	m_ebo.setUsagePattern(QOpenGLBuffer::StaticDraw);
-
-	// Release (unbind) all
-	m_vao.release();
-
-	m_vboColors.release();
-	m_ebo.release();
-
-
-	// store some test geometry - plane in x-z-plane facing in positive y direction
-	Vertex p1(QVector3D(0,0,0), QVector3D(0,1,0));
-	Vertex p2(QVector3D(100,0,0), QVector3D(0,1,0));
-	Vertex p3(QVector3D(100,10,0), QVector3D(0,1,0));
-	Vertex p4(QVector3D(0,10,0), QVector3D(0,1,0));
-
-	m_vertexBufferData = {p1 ,p2 ,p4 ,p3};
-	m_colorBufferData = { QColor(Qt::red), QColor(Qt::green), QColor(Qt::blue), QColor(Qt::magenta) };
-
-	// setup element buffer for triangle strip
-	m_elementBufferData = { 0, 1, 2, 3 };
-
-	updateBuffers();
-#endif
 }
 
 

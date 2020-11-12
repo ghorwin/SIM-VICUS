@@ -48,7 +48,10 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 	// create geometry object if not existing, yet
 	m_opaqueGeometryObject.create(m_buildingShader->shaderProgram());
 
-//	m_opaqueGeometryObject.updateBuffers();
+	// update all buffers
+	m_opaqueGeometryObject.updateBuffers();
+
+
 	// transfer other properties
 }
 
