@@ -21,10 +21,10 @@ class WindowModel : public AbstractModel, public AbstractStateDependency {
 public:
 	/*! Computed results, provided with access via construction instance ID. */
 	enum Results {
-		R_HeatConductionFlux,				// Keyword: HeatConductionFlux					[W]		'Heat conduction flux'
-		R_HeatConductionFluxDensity,		// Keyword: HeatConductionFluxDensity			[W/m2]	'Heat conduction flux density'
-		R_ShortWaveRadiationFlux,			// Keyword: ShortWaveRadiationFlux				[W]		'Solar radiation flux (global shortwave radiation)'
-		R_ShortWaveRadiationFluxDensity,	// Keyword: ShortWaveRadiationFluxDensity		[W/m2]	'Solar radiation flux density (global shortwave radiation)'
+		R_FluxHeatConductionA,				// Keyword: FluxHeatConductionA			[W]			'Heat conduction flux across interface A (into window).'
+		R_FluxHeatConductionB,				// Keyword: FluxHeatConductionB			[W]			'Heat conduction flux across interface B (into window).'
+		R_FluxShortWaveRadiationA,			// Keyword: FluxShortWaveRadiationA		[W]			'Short wave radiation flux across interface A (into window).'
+		R_FluxShortWaveRadiationB,			// Keyword: FluxShortWaveRadiationB		[W]			'Short wave radiation flux across interface B (into window).'
 		NUM_R
 	};
 
@@ -97,9 +97,8 @@ private:
 
 	/*! Enumeration types for ordered input references, some may be unused and remain nullptr. */
 	enum InputReferences {
-		InputRef_AmbientTemperature,
-		InputRef_RoomATemperature,
-		InputRef_RoomBTemperature,
+		InputRef_SideATemperature,
+		InputRef_SideBTemperature,
 		NUM_InputRef
 	};
 

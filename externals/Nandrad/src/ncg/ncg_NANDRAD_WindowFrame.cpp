@@ -58,6 +58,10 @@ void WindowFrame::readXMLPrivate(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'Area' element.") ), FUNC_ID);
 
+		if (!element->FirstChildElement("Thickness"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'Thickness' element.") ), FUNC_ID);
+
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
@@ -68,6 +72,9 @@ void WindowFrame::readXMLPrivate(const TiXmlElement * element) {
 				bool success = false;
 				if (p.name == "Area") {
 					m_area = p; success = true;
+				}
+				else if (p.name == "Thickness") {
+					m_thickness = p; success = true;
 				}
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
@@ -94,6 +101,8 @@ TiXmlElement * WindowFrame::writeXMLPrivate(TiXmlElement * parent) const {
 		e->SetAttribute("materialID", IBK::val2string<unsigned int>(m_materialID));
 	if (!m_area.name.empty())
 		TiXmlElement::appendIBKParameterElement(e, "Area", m_area.IO_unit.name(), m_area.get_value());
+	if (!m_thickness.name.empty())
+		TiXmlElement::appendIBKParameterElement(e, "Thickness", m_thickness.IO_unit.name(), m_thickness.get_value());
 	return e;
 }
 

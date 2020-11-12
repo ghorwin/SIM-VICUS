@@ -151,10 +151,10 @@ namespace NANDRAD_MODEL {
 			// WindowModel::Results
 			case 10 :
 			switch (t) {
-				case 0 : return "HeatConductionFlux";
-				case 1 : return "HeatConductionFluxDensity";
-				case 2 : return "ShortWaveRadiationFlux";
-				case 3 : return "ShortWaveRadiationFluxDensity";
+				case 0 : return "FluxHeatConductionA";
+				case 1 : return "FluxHeatConductionB";
+				case 2 : return "FluxShortWaveRadiationA";
+				case 3 : return "FluxShortWaveRadiationB";
 			} break;
 		} // switch
 		return INVALID_KEYWORD_INDEX_STRING;
@@ -253,10 +253,10 @@ namespace NANDRAD_MODEL {
 			// WindowModel::Results
 			case 10 :
 			switch (t) {
-				case 0 : return "HeatConductionFlux";
-				case 1 : return "HeatConductionFluxDensity";
-				case 2 : return "ShortWaveRadiationFlux";
-				case 3 : return "ShortWaveRadiationFluxDensity";
+				case 0 : return "FluxHeatConductionA";
+				case 1 : return "FluxHeatConductionB";
+				case 2 : return "FluxShortWaveRadiationA";
+				case 3 : return "FluxShortWaveRadiationB";
 			} break;
 		} // switch
 		return INVALID_KEYWORD_INDEX_STRING;
@@ -356,10 +356,10 @@ namespace NANDRAD_MODEL {
 			// WindowModel::Results
 			case 10 :
 			switch (t) {
-				case 0 : return "Heat conduction flux";
-				case 1 : return "Heat conduction flux density";
-				case 2 : return "Solar radiation flux (global shortwave radiation)";
-				case 3 : return "Solar radiation flux density (global shortwave radiation)";
+				case 0 : return "Heat conduction flux across interface A (into window).";
+				case 1 : return "Heat conduction flux across interface B (into window).";
+				case 2 : return "Short wave radiation flux across interface A (into window).";
+				case 3 : return "Short wave radiation flux across interface B (into window).";
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine description for enumeration type '%1' and index '%2'.")
@@ -459,9 +459,9 @@ namespace NANDRAD_MODEL {
 			case 10 :
 			switch (t) {
 				case 0 : return "W";
-				case 1 : return "W/m2";
+				case 1 : return "W";
 				case 2 : return "W";
-				case 3 : return "W/m2";
+				case 3 : return "W";
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine default unit for enumeration type '%1' and index '%2'.")

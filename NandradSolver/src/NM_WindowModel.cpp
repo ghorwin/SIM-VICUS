@@ -79,14 +79,14 @@ void WindowModel::inputReferences(std::vector<InputReference> & inputRefs) const
 				ref.m_id = 0;
 				ref.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
 				ref.m_name.m_name = "Temperature";
-				inputRefs[InputRef_AmbientTemperature] = ref;
+				inputRefs[InputRef_SideATemperature] = ref;
 			}
 			else {
 				InputReference ref;
 				ref.m_id = m_con->m_interfaceA.m_zoneId;
 				ref.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
 				ref.m_name.m_name = "AirTemperature";
-				inputRefs[InputRef_RoomATemperature] = ref;
+				inputRefs[InputRef_SideATemperature] = ref;
 			}
 		}
 	}
@@ -102,14 +102,14 @@ void WindowModel::inputReferences(std::vector<InputReference> & inputRefs) const
 				ref.m_id = 0;
 				ref.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
 				ref.m_name.m_name = "Temperature";
-				inputRefs[InputRef_AmbientTemperature] = ref;
+				inputRefs[InputRef_SideBTemperature] = ref;
 			}
 			else {
 				InputReference ref;
 				ref.m_id = m_con->m_interfaceB.m_zoneId;
 				ref.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
 				ref.m_name.m_name = "AirTemperature";
-				inputRefs[InputRef_RoomBTemperature] = ref;
+				inputRefs[InputRef_SideBTemperature] = ref;
 			}
 		}
 	}
@@ -130,6 +130,49 @@ int WindowModel::update() {
 
 	// *** heat conduction flux ***
 
+	// if either interface is INVALID/unavailable than window is adiabatic surface and heat conduction flux is zero
+	if (m_valueRefs[InputRef_SideATemperature] == nullptr || m_valueRefs[InputRef_SideBTemperature] == nullptr) {
+		m_results[R_FluxHeatConductionA] = 0;
+		m_results[R_FluxHeatConductionB] = 0;
+	}
+	else {
+
+		// compute heat flux from side A to B
+
+		double deltaT = *m_valueRefs[InputRef_SideATemperature] - *m_valueRefs[InputRef_SideBTemperature];
+
+		// TODO : distinguish between standard/detailed model
+
+
+		// compute mean alpha value for glass, frame and divider
+
+		//    alpha_mean = (alpha_glass * area_glass + alpha_frame * area_frame + ...)/(area_glass + area_frame + ...)
+
+		// compute mean resistance
+
+		//   res_mean = 1/alpha_mean
+
+		// add surface resistances
+
+		//    res_total = res_left + res_mean + res_right
+
+		// compute flux
+
+		//    heatCondFlux = 1/res_total * deltaT
+
+
+
+		// heat flux = (sum_i  A_i * U_i / sum_i A_i) * deltaT
+//		double meanU = m_windowModel->m_glasArea * m_windowModel->m_glazingSystem->m_para[NANDRAD::WindowGlazingSystem::P_ThermalTransmittance].value;
+
+//		// add frame if existing
+//		if (m_windowModel->m_frame.m_materialID != NANDRAD::INVALID_ID)
+//			meanU += m_windowModel->m_frame.m_area.value * m_windowModel->m_frame.m_lambda
+
+	}
+
+
+
 
 	// *** solar radiation flux
 
@@ -147,12 +190,18 @@ int WindowModel::update() {
 		else
 			computeSolarFlux(qRadGlobal, incidenceAngle, false);
 	}
+	else {
+		m_results[R_FluxShortWaveRadiationA] = 0;
+		m_results[R_FluxShortWaveRadiationB] = 0;
+	}
 
 }
 
 
 void WindowModel::computeSolarFlux(double qGlobal, double incidenceAngle, bool fromSideA) {
-
+	// TODO :
+	m_results[R_FluxShortWaveRadiationA] = 0;
+	m_results[R_FluxShortWaveRadiationB] = 0;
 }
 
 
