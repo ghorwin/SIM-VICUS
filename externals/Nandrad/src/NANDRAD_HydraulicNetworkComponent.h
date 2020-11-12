@@ -16,11 +16,12 @@ public:
 
 	/*! The various types (equations) of the hydraulic component. */
 	enum modelType_t {
-		MT_AdiabaticPipe,					// Keyword: AdiabaticPipe				'Pipe without heat exchange'
-		MT_Pipe,							// Keyword: Pipe						'Pipe with heat exchange to a zone or other conditions.'
-		MT_UniformTemperaturePipe,			// Keyword: UniformTemperaturePipe		'Pipe with single temperature and heat exchange with surrounding'
-		MT_TemperatureDistributionPipe,		// Keyword: TemperatureDistributionPipe	'Pipe with temperature distribution (spatial discretization) and heat exchange with surrounding'
+		MT_StaticAdiabaticPipe,				// Keyword: StaticAdiabaticPipe			'Simple pipe at stationary flow conditions without heat exchange'
+		MT_StaticPipe,						// Keyword: StaticPipe					'Simple pipe at stationary flow conditions with heat exchange'
+		MT_DynamicAdiabaticPipe,			// Keyword: DynamicAdiabaticPipe		'Pipe with a discretized fluid volume, without heat exchange'
+		MT_DynamicPipe,						// Keyword: DynamicPipe					'Pipe with a discretized fluid volume and heat exchange'
 		MT_ConstantPressurePumpModel,		// Keyword: ConstantPressurePumpModel	'A pump with constant pressure.'
+		MT_HeatExchanger,					// Keyword: HeatExchanger				'Simple heat exchanger with given heat flux'
 		MT_HeatPump,						// Keyword: HeatPump					'A heat pump.'
 		MT_GasBoiler,						// Keyword: GasBoiler					'Gas boiler.'
 		MT_ControlValve,					// Keyword: ControlValve				'Control valve.'

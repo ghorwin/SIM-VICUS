@@ -29,6 +29,7 @@ public:
 	enum para_t {
 		P_Length,							// Keyword: Length								[-]		'Length for the element.'
 		P_PipeFrictionFactor,				// Keyword: PipeFrictionFactor					[-]		'Pipe friction factor for the element.'
+		P_HeatExchangeRate,					// Keyword: HeatExchangeRate					[W]		'Heat flux added or extracted by heat exchanger'
 		NUM_P
 	};
 
