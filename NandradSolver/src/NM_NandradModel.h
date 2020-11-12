@@ -231,8 +231,6 @@ private:
 	/*! Loads BIM data and creates ConstructionSolverModel, initialises WallSolver, creates
 		ConstructionBCModels (only for active walls and interfaces).*/
 	void initWallsAndInterfaces();
-	/*! Loads BIM data and creates WindowModel.*/
-	void initEmbeddedObjects();
 	/*! Initializes all models that are parametrized for several objects. */
 	void initModels();
 	/*! With the knowledge of all available zone, construction, interface etc. models, resolve

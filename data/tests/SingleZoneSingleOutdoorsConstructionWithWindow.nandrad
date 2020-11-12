@@ -83,7 +83,7 @@
 		<WindowGlazingSystems>
 			<WindowGlazingSystem id="100" modelType="Simple">
 				<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">1.6</IBK:Parameter>
-				<LinearSplineParameter name="Shgc">
+				<LinearSplineParameter name="SHGC">
 					<X unit="Deg">0 90</X>
 					<Y unit="---">0.8 0.8</Y>
 				</LinearSplineParameter>

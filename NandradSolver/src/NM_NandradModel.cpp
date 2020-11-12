@@ -1108,6 +1108,21 @@ void NandradModel::initWallsAndInterfaces() {
 			// remember model in balance container, so that we can call ydot(ydot)
 			m_constructionBalanceModelContainer.push_back(balanceModel);
 
+
+			// *** embedded objects (if any) ***
+
+			for (const NANDRAD::EmbeddedObject & e : ci.m_embeddedObjects) {
+				// Note: embedded object parameters have already been checked as part of construction instance's checkParameters()
+
+				// switch type of object
+				switch (e.objectType()) {
+					case NANDRAD::EmbeddedObject::OT_Window :
+						// create embedded window model object
+					break;
+					default: IBK_ASSERT(false);
+				}
+			}
+
 		}
 		catch (IBK::Exception & ex) {
 			throw IBK::Exception(ex, IBK::FormatString("Error initializing construction instance #%1 '%2' (id=%3).")
@@ -1117,11 +1132,6 @@ void NandradModel::initWallsAndInterfaces() {
 	}
 	m_nWalls = (unsigned int) m_constructionBalanceModelContainer.size();
 	IBK::IBK_Message( IBK::FormatString("%1 construction models.\n").arg(m_nZones), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-
-}
-
-
-void NandradModel::initEmbeddedObjects() {
 
 }
 
