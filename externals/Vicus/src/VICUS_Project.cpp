@@ -46,11 +46,13 @@ Project::Project() {
 	surf.m_id = 1;
 	surf.m_displayName = "Triangle";
 	surf.m_geometry = PlaneGeometry(PlaneGeometry::T_Triangle, IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(10,0,0), IBKMK::Vector3D(0,0,10));
+	surf.m_color = QColor(0,0,96);
 	room.m_surfaces.push_back(surf);
 
 	surf.m_geometry = PlaneGeometry(PlaneGeometry::T_Rectangle, IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,10,0), IBKMK::Vector3D(0,0,10));
 	surf.m_id = 2;
 	surf.m_displayName = "Rect";
+	surf.m_color = QColor(255,96,0);
 	room.m_surfaces.push_back(surf);
 
 	surf.m_geometry = PlaneGeometry(PlaneGeometry::T_Polygon, IBKMK::Vector3D(20,0,0), IBKMK::Vector3D(20,0,10), IBKMK::Vector3D(10,0,20));
@@ -58,6 +60,7 @@ Project::Project() {
 	surf.m_geometry.m_vertexes.push_back(IBKMK::Vector3D(5,0,0));
 	surf.m_id = 3;
 	surf.m_displayName = "Poly";
+	surf.m_color = QColor(255,255,64);
 	room.m_surfaces.push_back(surf);
 
 	BuildingLevel level;
@@ -101,6 +104,10 @@ Project::Project() {
 	p.m_diameterOutside = 150;
 	p.m_sWall = 4;
 	m_networkPipeDB.push_back(p);
+
+	for (Building & b: m_buildings)
+		b.updateParents();
+
 }
 
 

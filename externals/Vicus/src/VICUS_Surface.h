@@ -28,6 +28,17 @@ public:
 
 	/*! The actual geometry. */
 	PlaneGeometry						m_geometry;					// XML:E
+
+
+	// *** Runtime Variables ***
+
+	/*! Color to be used when next updating the geometry.
+		Color is set based on hightlighting/selection algorithm.
+
+		Color is not a regular property of a surface, but rather of the associated parameter elements.
+	*/
+	QColor								m_color;
+
 };
 
 } // namespace VICUS

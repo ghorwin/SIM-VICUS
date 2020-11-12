@@ -27,6 +27,18 @@ PlaneGeometry::PlaneGeometry(PlaneGeometry::type_t t,
 }
 
 
+void PlaneGeometry::updateNormal() {
+	m_normal = IBKMK::Vector3D(0,0,0);
+	if (m_vertexes.size() < 3)
+		return;
+
+	IBKMK::Vector3D ba = m_vertexes[1] - m_vertexes[0];
+	IBKMK::Vector3D ca = m_vertexes.back() - m_vertexes[0];
+
+	ba.crossProduct(ca, m_normal);
+}
+
+
 bool PlaneGeometry::operator!=(const PlaneGeometry & other) const {
 	if (m_type != other.m_type) return true;
 	if (m_vertexes != other.m_vertexes) return true;

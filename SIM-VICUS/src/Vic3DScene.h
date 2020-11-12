@@ -12,6 +12,10 @@
 
 class ModificationInfo;
 
+namespace VICUS {
+	class Surface;
+}
+
 namespace Vic3D {
 
 class ShaderProgram;
@@ -42,6 +46,9 @@ public:
 private:
 	/*! Takes geometry from VICUS::Project and generates meshes for the various drawable objects. */
 	void generateBuildingGeometry();
+
+	/*! Applies filter/highlighting rules and determines color for given surface. */
+	QColor color4Surface(const VICUS::Surface & s) const;
 
 	/*! Stores viewport geometry. */
 	QRect					m_viewPort;

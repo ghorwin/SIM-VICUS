@@ -39,16 +39,30 @@ public:
 	*/
 	PlaneGeometry(type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c);
 
+	/*! Minimalistic check function - need vertexes and normal vector. */
+	bool isValid() const { return m_vertexes.size() >= 3 && m_normal.magnitude() != 0.; }
+
+	/*! Computes the normal vector of the plane and caches it in m_normal.
+		If calculation is not possible (collinear vectors, vectors have zero lengths etc.), the
+		normal vector is set to 0,0,0).
+	*/
+	void updateNormal();
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Type of the plane.
 		T_POLYGON is the most generic, yet T_TRIANGLE and T_RECTANGLE offer some specialized handling for
 		intersection calcuation and data transfer to the graphics pipeline.
 	*/
-	type_t								m_type = NUM_T;
+	type_t								m_type = NUM_T;				// XML:A:required
 
 	/*! Points of polyline. */
-	std::vector<IBKMK::Vector3D>		m_vertexes;
+	std::vector<IBKMK::Vector3D>		m_vertexes;					// XML:E
+
+
+	// *** Runtime Variables ***
+
+	IBKMK::Vector3D						m_normal = IBKMK::Vector3D(0,0,0);
 
 private:
 	void readXMLPrivate(const TiXmlElement * element);

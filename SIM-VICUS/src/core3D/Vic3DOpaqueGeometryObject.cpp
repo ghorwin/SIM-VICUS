@@ -60,7 +60,7 @@ void OpaqueGeometryObject::create(QOpenGLShaderProgram * shaderProgramm) {
 
 	// normals
 	shaderProgramm->enableAttributeArray(NORMAL_ARRAY_INDEX);
-	shaderProgramm->setAttributeBuffer(NORMAL_ARRAY_INDEX, GL_FLOAT, offsetof(Vertex, nx), 3 /* vec3 */, sizeof(Vertex));
+	shaderProgramm->setAttributeBuffer(NORMAL_ARRAY_INDEX, GL_FLOAT, offsetof(Vertex, m_normal), 3 /* vec3 */, sizeof(Vertex));
 
 
 	m_colorBufferObject.bind(); // now color buffer is active in vao
@@ -132,9 +132,9 @@ void OpaqueGeometryObject::updateBuffers() {
 	m_colorBufferData.resize(N_Vertices);
 	for (int v=0; v<N_Vertices; ++v) {
 		// coordinates
-		m_vertexBufferData[v].x = 100*vertices[3*v]/2;
-		m_vertexBufferData[v].y = 100*vertices[3*v+1]/2;
-		m_vertexBufferData[v].z = 100*vertices[3*v+2]/2;
+		m_vertexBufferData[v].m_coords.setX( 100*vertices[3*v]/2 );
+		m_vertexBufferData[v].m_coords.setY( 100*vertices[3*v+1]/2 );
+		m_vertexBufferData[v].m_coords.setZ( 100*vertices[3*v+2]/2 );
 
 		// colors
 		m_colorBufferData[v] = vertexColors[v];

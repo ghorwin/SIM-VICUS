@@ -34,32 +34,25 @@ namespace Vic3D {
 struct Vertex {
 	Vertex() {}
 	Vertex(const QVector3D & coords, const QVector3D & normal) :
-		x(float(coords.x())),
-		y(float(coords.y())),
-		z(float(coords.z())),
-		nx(float(normal.x())),
-		ny(float(normal.y())),
-		nz(float(normal.z()))
+		m_coords(coords), m_normal(normal)
 	{
 	}
 
 	/*! Coordinates of the vertex. */
-	float x,y,z;
+	QVector3D m_coords;
 	/*! Normal vector associated with vertex (should be normalized). */
-	float nx,ny,nz;
+	QVector3D m_normal;
 };
 
 struct Vertex2 {
 	Vertex2() {}
 	Vertex2(const QVector3D & coords) :
-		x(float(coords.x())),
-		y(float(coords.y())),
-		z(float(coords.z()))
+		m_coords(coords)
 	{
 	}
 
 	/*! Coordinates of the vertex. */
-	float x,y,z;
+	QVector3D m_coords;
 };
 
 /*! RGBA data vertex. */

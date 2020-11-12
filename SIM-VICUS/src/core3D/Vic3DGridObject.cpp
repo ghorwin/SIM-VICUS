@@ -69,27 +69,30 @@ void GridObject::create(QOpenGLShaderProgram * shaderProgram) {
 		gridVertexBufferPtr[3] = y2;
 	}
 
-	// Create Vertex Array Object
-	if (!m_vao.isCreated())
+	// Create Vertex Array Object and buffers if not done, yet
+	if (!m_vao.isCreated()) {
 		m_vao.create();		// create Vertex Array Object
-	m_vao.bind();		// and bind it
+		m_vao.bind();		// and bind it
 
-	// Create Vertex Buffer Object (to store stuff in GPU memory)
-	if (!m_vbo.isCreated())
+		// Create Vertex Buffer Object (to store stuff in GPU memory)
 		m_vbo.create();
+		m_vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
+		m_vbo.bind();
+
+		// layout(location = 0) = vec2 position
+		shaderProgram->enableAttributeArray(0); // array with index/id 0
+		shaderProgram->setAttributeBuffer(0, GL_FLOAT,
+									  0 /* position/vertex offset */,
+									  2 /* two floats per position = vec2 */,
+									  0 /* vertex after vertex, no interleaving */);
+	}
+
 	m_vbo.bind();
-	m_vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
 	unsigned long vertexMemSize = m_bufferSize*sizeof(float);
 	m_vbo.allocate(gridVertexBufferData.data(), vertexMemSize);
 
-	// layout(location = 0) = vec2 position
-	shaderProgram->enableAttributeArray(0); // array with index/id 0
-	shaderProgram->setAttributeBuffer(0, GL_FLOAT,
-								  0 /* position/vertex offset */,
-								  2 /* two floats per position = vec2 */,
-								  0 /* vertex after vertex, no interleaving */);
 
-	m_vao.release();
+	m_vao.release(); // Mind: always release VAO before index buffer
 	m_vbo.release();
 }
 

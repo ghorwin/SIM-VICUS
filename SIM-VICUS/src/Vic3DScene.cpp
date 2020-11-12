@@ -8,7 +8,40 @@
 #include "Vic3DKeyboardMouseHandler.h"
 #include "SVProjectHandler.h"
 
+#include <VICUS_Project.h>
+
 namespace Vic3D {
+
+void addSurface(const VICUS::Surface & s,
+				unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+				std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLshort> & indexBufferData)
+{
+	// skip invalid geometry
+	if (!s.m_geometry.isValid())
+		return;
+
+	// different handling based on surface type
+	switch (s.m_geometry.m_type) {
+		case VICUS::PlaneGeometry::T_Triangle : {
+			// insert 3 vertexes
+			vertexBufferData.resize(vertexBufferData.size()+3);
+			colorBufferData.resize(colorBufferData.size()+3);
+			// 4 elements (3 for the triangle, 1 primitive restart index)
+			indexBufferData.resize(indexBufferData.size()+4);
+
+			// compute normal vector of plane geometry
+			IBKMK::Vector3D a = s.m_geometry.m_vertexes[0];
+
+			indexBufferData[currentVertexIndex + 3] = 0xFFFF; // set stop index
+
+			// finally advance buffer indexes
+			currentVertexIndex += 3;
+			currentElementIndex += 4;
+		}
+	}
+
+}
+
 
 void Vic3DScene::create(ShaderProgram * gridShader, ShaderProgram * buildingShader) {
 	m_gridShader = gridShader;
@@ -43,13 +76,15 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 
 
 	// re-create grid with updated properties
+	// since grid object is very small, this function also regenerates the grid line buffers and
+	// uploads the data to the GPU
 	m_gridObject.create(m_gridShader->shaderProgram());
 
 	// create geometry object (if already existing, nothing happens here)
 	m_opaqueGeometryObject.create(m_buildingShader->shaderProgram());
 
 	// transfer data from building geometry to vertex array caches
-	generateBuildingGeometry();
+//	generateBuildingGeometry();
 
 	// update all GPU buffers (transfer cached data to GPU)
 	m_opaqueGeometryObject.updateBuffers();
@@ -199,9 +234,35 @@ void Vic3DScene::generateBuildingGeometry() {
 	// use the current highlighting-filter object, which relates
 	// object properties to colors
 
+	// recursively process all buildings, building levels etc.
 
+	unsigned int currentVertexIndex = 0;
+	unsigned int currentElementIndex = 0;
 
+	for (const VICUS::Building & b : p.m_buildings) {
+		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+			for (const VICUS::Room & r : bl.m_rooms) {
+				for (const VICUS::Surface & s : r.m_surfaces) {
 
+					// now we store the surface data into the vertex/color and index buffers
+					// the indexes are advanced and the buffers enlarged as needed.
+					addSurface(s, currentVertexIndex, currentElementIndex,
+							   m_opaqueGeometryObject.m_vertexBufferData,
+							   m_opaqueGeometryObject.m_colorBufferData,
+							   m_opaqueGeometryObject.m_indexBufferData);
+				}
+			}
+		}
+	}
 }
+
+
+
+QColor Vic3DScene::color4Surface(const VICUS::Surface & s) const {
+	// for now return always white
+	return Qt::white;
+}
+
+
 
 } // namespace Vic3D
