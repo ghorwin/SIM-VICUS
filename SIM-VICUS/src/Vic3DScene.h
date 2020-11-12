@@ -40,6 +40,8 @@ public:
 	void render();
 
 private:
+	/*! Takes geometry from VICUS::Project and generates meshes for the various drawable objects. */
+	void generateBuildingGeometry();
 
 	/*! Stores viewport geometry. */
 	QRect					m_viewPort;

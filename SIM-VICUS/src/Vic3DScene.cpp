@@ -45,12 +45,14 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 	// re-create grid with updated properties
 	m_gridObject.create(m_gridShader->shaderProgram());
 
-	// create geometry object if not existing, yet
+	// create geometry object (if already existing, nothing happens here)
 	m_opaqueGeometryObject.create(m_buildingShader->shaderProgram());
 
-	// update all buffers
-	m_opaqueGeometryObject.updateBuffers();
+	// transfer data from building geometry to vertex array caches
+	generateBuildingGeometry();
 
+	// update all GPU buffers (transfer cached data to GPU)
+	m_opaqueGeometryObject.updateBuffers();
 
 	// transfer other properties
 }
@@ -175,6 +177,18 @@ void Vic3DScene::render() {
 
 	// *** transparent building geometry ***
 
+}
+
+
+void Vic3DScene::generateBuildingGeometry() {
+	// get VICUS project data
+	const VICUS::Project & p = project();
+
+	// we rebuild the entire geometry here, so this may be slow
+
+	// clear out existing cache
+
+//	TODO
 }
 
 } // namespace Vic3D
