@@ -38,7 +38,7 @@ public:
 	/*! Model types supported by the window model. */
 	enum modelType_t {
 		MT_Simple,						// Keyword: Simple								'Standard globbed-layers model.'
-		MT_Detailed,					// Keyword: Detailed								'Detailed window model with layers.'
+		MT_Detailed,					// Keyword: Detailed							'Detailed window model with layers.'
 		NUM_MT
 	};
 
