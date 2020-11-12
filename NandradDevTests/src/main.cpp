@@ -1778,6 +1778,85 @@ void hydraulicNetworkTest01(NANDRAD::Project &prj){
 }
 #endif // TEST_PROJECT_WRITING
 
+
+
+// district heating network example
+void hydraulicNetworkTest02(NANDRAD::Project &prj){
+
+	NANDRAD::HydraulicNetwork hydrNet;
+
+	unsigned int id=1;
+
+	//create all components for network
+	NANDRAD::HydraulicNetworkComponent pump;
+
+	pump.m_id = id++;
+	pump.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel;
+	pump.m_displayName = "Constant Pressure Pump";
+	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead] = IBK::Parameter("PressureHead", 300 ,"kPa");
+	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_MotorEfficiency] = IBK::Parameter("MotorEfficiency", 0.9 ,"---");
+	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency] = IBK::Parameter("PumpEfficiency", 0.4 ,"---");
+	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter] = IBK::Parameter("HydraulicDiameter", 222 ,"mm");
+
+
+	NANDRAD::HydraulicNetworkComponent pipe;
+	pipe.m_id = id++;
+	pipe.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticPipe;
+	pipe.m_displayName = "supply pipe d50";
+	pipe.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter] = IBK::Parameter("HydraulicDiameter", 100, "mm");
+
+
+	NANDRAD::HydraulicNetworkComponent heatExchanger;
+	heatExchanger.m_id = id++;
+	heatExchanger.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger;
+	heatExchanger.m_displayName = "heat exchanger";
+
+
+	prj.m_hydraulicComponents.push_back(pump);
+	prj.m_hydraulicComponents.push_back(pipe);
+	prj.m_hydraulicComponents.push_back(heatExchanger);
+
+	/*
+	pump -> 100 -> pipe1 ->	110	->	pipe2	-> 120 ->	heatExchanger2	-> 140 ->
+								|										^
+								|										|
+								->	pipe3	-> 130 ->	heatExchanger3	-
+	*/
+
+	hydrNet.m_id = id++;
+	hydrNet.m_displayName = "Test Network";
+
+	//pump
+	hydrNet.m_elements.push_back(NANDRAD::HydraulicNetworkElement(id++, 140, 100, pump.m_id));
+	hydrNet.m_elements.back().m_zoneId = 105;
+
+	// pipe 1
+	hydrNet.m_elements.push_back(NANDRAD::HydraulicNetworkElement(id++, 100, 110, pipe.m_id));
+	hydrNet.m_elements.back().m_para[NANDRAD::HydraulicNetworkElement::P_Length] = IBK::Parameter("Length", 50, "m");
+
+	// pipe 2
+	hydrNet.m_elements.push_back(NANDRAD::HydraulicNetworkElement(id++, 110, 120, pipe.m_id));
+	hydrNet.m_elements.back().m_para[NANDRAD::HydraulicNetworkElement::P_Length] = IBK::Parameter("Length", 50, "m");
+
+	// heat exchanger 2
+	hydrNet.m_elements.push_back(NANDRAD::HydraulicNetworkElement(id++, 120, 140, heatExchanger.m_id));
+	hydrNet.m_elements.back().m_para[NANDRAD::HydraulicNetworkElement::P_HeatExchangeRate] = IBK::Parameter("HeatExchangeRate", 100, "W");
+
+	// pipe 3
+	hydrNet.m_elements.push_back(NANDRAD::HydraulicNetworkElement(id++, 110, 130, pipe.m_id));
+	hydrNet.m_elements.back().m_para[NANDRAD::HydraulicNetworkElement::P_Length] = IBK::Parameter("Length", 100, "m");
+
+	// heat exchanger 3
+	hydrNet.m_elements.push_back(NANDRAD::HydraulicNetworkElement(id++, 130, 140, heatExchanger.m_id));
+	hydrNet.m_elements.back().m_para[NANDRAD::HydraulicNetworkElement::P_HeatExchangeRate] = IBK::Parameter("HeatExchangeRate", 100, "W");
+
+
+	hydrNet.m_fluid.defaultFluidWater(id++);
+	prj.m_hydraulicNetworks.push_back(hydrNet);
+
+}
+
+#if 0
 void createSim07(bool window71, bool window72, bool window73, bool window74) {
 
 	NANDRAD::Project prj;
@@ -2169,28 +2248,28 @@ void createSim07(bool window71, bool window72, bool window73, bool window74) {
 	}
 }
 
-
+#endif
 
 int main(int argc, char * argv[]) {
 	FUNCID(main);
 
-	bool isHydrNet=false;
-	bool isWindow = true;
+	bool isHydrNet = true;
+	bool isWindow = false;
 	if(isHydrNet) {
-//		NANDRAD::Project prj;
+		NANDRAD::Project prj;
 
-//		hydraulicNetworkTest01(prj);
+		hydraulicNetworkTest02(prj);
 
-//		prj.writeXML(IBK::Path("c:/temp/hydrNet.nandrad"));
+		prj.writeXML(IBK::Path("c:/temp/hydrNet.nandrad"));
 
 		return EXIT_SUCCESS;
 
 	}
 	else if(isWindow){
-		createSim07(true, false, false, false);
-		createSim07(false, true, false, false);
-		createSim07(false, false, true, false);
-		createSim07(false, false, false, true);
+//		createSim07(true, false, false, false);
+//		createSim07(false, true, false, false);
+//		createSim07(false, false, true, false);
+//		createSim07(false, false, false, true);
 
 		return EXIT_SUCCESS;
 	}
