@@ -89,10 +89,15 @@ public:
 
 
 private:
-	/*! Computes flux through glazing system in [W/m2], applies the frame and shading factors and stores
-		results in m_results.
+    /*! Computes flux through glazing system in [W/m2]for both window sides and stores
+        results in fluxSolarLeft and fluxSolarRight.
 	*/
-	void computeSolarFlux(double qGlobal, double incidenceAngle, bool fromSideA);
+    void computeSolarFluxThroughGlazing(double qDir, double qDiff, double incidenceAngle, double &fluxSolarLeft, double &fluxSolarRight);
+    /*! Computes flux through glazing system in [W/m2] for both window sides depending from model type
+        and stores in fluxHeatCondLeft and fluxHeatCondRight.
+    */
+    void computeHeatConductionThroughGlazing(double &fluxHeatCondLeft, double &fluxHeatCondRight);
+
 
 
 	/*! Enumeration types for ordered input references, some may be unused and remain nullptr. */
