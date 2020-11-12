@@ -114,8 +114,8 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 	// if we have radiation data, register surface here
 	if (haveRadiationBCA || haveRadiationBCB)
 		loads.addSurface(m_con->m_id,
-				m_con->m_para[NANDRAD::ConstructionInstance::P_ORIENTATION].value/DEG2RAD,
-				m_con->m_para[NANDRAD::ConstructionInstance::P_INCLINATION].value/DEG2RAD);
+				m_con->m_para[NANDRAD::ConstructionInstance::P_Orientation].value/DEG2RAD,
+				m_con->m_para[NANDRAD::ConstructionInstance::P_Inclination].value/DEG2RAD);
 
 	// *** storage member initialization
 

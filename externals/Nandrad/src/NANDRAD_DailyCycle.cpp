@@ -39,16 +39,16 @@ void DailyCycle::prepareCalculation() {
 		throw IBK::Exception("Missing time points values in DailyCycle.", FUNC_ID);
 
 	if (m_interpolation == NUM_IT)
-		m_interpolation = IT_LINEAR;
-	else if (m_interpolation != IT_CONSTANT)
+		m_interpolation = IT_Linear;
+	else if (m_interpolation != IT_Constant)
 		throw IBK::Exception("Invalid/undefined interpolation type in DailyCycle.", FUNC_ID);
-	if (m_interpolation == IT_LINEAR && m_timePoints.size()<2 )
+	if (m_interpolation == IT_Linear && m_timePoints.size()<2 )
 		throw IBK::Exception("Daily Cycles with linear interpolation need at least 2 defined time points", FUNC_ID);
 
 	// check if time points follow the rules
 	if (m_timePoints[0] != 0.0)
 		throw IBK::Exception("Invalid time points in DailyCycle (must start with 0).", FUNC_ID);
-	if (m_interpolation == IT_LINEAR && m_timePoints.back() != 24.0)
+	if (m_interpolation == IT_Linear && m_timePoints.back() != 24.0)
 		throw IBK::Exception("Invalid time points in DailyCycle with linear interpolation (must have at least two time points and last time point must be 24 h).", FUNC_ID);
 
 	// check for monitonically increasing time points

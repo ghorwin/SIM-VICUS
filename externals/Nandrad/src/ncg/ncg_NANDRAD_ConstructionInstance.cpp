@@ -73,17 +73,9 @@ void ConstructionInstance::readXML(const TiXmlElement * element) {
 				para_t ptype;
 				try {
 					ptype = (para_t)KeywordList::Enumeration("ConstructionInstance::para_t", p.name);
-					m_para[ptype] = p;
-					success = true;
+					m_para[ptype] = p; success = true;
 				}
-				catch (IBK::Exception & ex) { ex.writeMsgStackToError(); }
-				if (success) {
-					std::string refUnit = KeywordList::Unit("ConstructionInstance::para_t", ptype);
-					if (!refUnit.empty() && (p.IO_unit.base_id() != IBK::Unit(refUnit).base_id())) {
-						throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(c->Row())
-											  .arg("Incompatible unit '"+p.IO_unit.name()+"', expected '"+refUnit +"'."), FUNC_ID);
-					}
-				}
+				catch (...) { /* intentional fail */  }
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}

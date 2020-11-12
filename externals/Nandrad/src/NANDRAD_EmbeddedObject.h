@@ -50,9 +50,9 @@ public:
 	};
 	/*! Type of embedded object, determines set of physical effects described by this object. */
 	enum objectType_t {
-		OT_WINDOW,			// Keyword: Window			'Parametrization of a window model.'
-		OT_DOOR,			// Keyword: Door			'Parametrization of a door model.'
-		OT_HOLE,			// Keyword: Hole			'Parametrization of an opening model.'
+		OT_Window,			// Keyword: Window			'Parametrization of a window model.'
+		OT_Door,			// Keyword: Door			'Parametrization of a door model.'
+		OT_Hole,			// Keyword: Hole			'Parametrization of an opening model.'
 		NUM_OT
 	};
 

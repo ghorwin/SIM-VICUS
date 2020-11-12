@@ -35,7 +35,7 @@ namespace NANDRAD {
 EmbeddedObject::objectType_t EmbeddedObject::objectType() const {
 
 	if (m_window.hasParameters())
-		return OT_WINDOW;
+		return OT_Window;
 
 	return EmbeddedObject::NUM_OT;
 }

@@ -61,11 +61,11 @@ public:
 	/*! Construction-specific parameters required by several models. */
 	enum para_t {
 		/*! Orientation of the wall [deg]. */
-		P_ORIENTATION,					// Keyword: Orientation				[Deg]	'Orientation of the wall [deg].'
+		P_Orientation,					// Keyword: Orientation				[Deg]	'Orientation of the wall [deg].'
 		/*! Inclination of the wall [deg]. */
-		P_INCLINATION,					// Keyword: Inclination				[Deg]	'Inclination of the wall [deg].'
+		P_Inclination,					// Keyword: Inclination				[Deg]	'Inclination of the wall [deg].'
 		/*! Gross area of the wall [m2]. */
-		P_AREA,							// Keyword: Area					[m2]	'Gross area of the wall [m2].'
+		P_Area,							// Keyword: Area					[m2]	'Gross area of the wall [m2].'
 		NUM_P
 	};
 

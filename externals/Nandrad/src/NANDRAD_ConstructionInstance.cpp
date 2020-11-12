@@ -48,10 +48,8 @@ void ConstructionInstance::checkParameters(const Project & prj) {
 	m_constructionType = &(*it); // store pointer
 
 	// check parameters
-	if (m_para[P_AREA].name.empty())
-		throw IBK::Exception( "Missing parameter 'Area'.", FUNC_ID);
-	if (m_para[P_AREA].get_value("m2") <= 0) // get_value ensures unit conversion
-		throw IBK::Exception( "Invalid value for parameter 'Area'.", FUNC_ID);
+	double area = m_para[P_Area].checkedValue("m2", "m2", 0, true, std::numeric_limits<double>::max(), true,
+											  "Cross section area of construction instance must be >= 0 m2.");
 
 	// Note: parameters orientation and inclination are only needed when an outdoor interface with solar radiation
 	//       model is defined, so first look for such an interface.
@@ -90,15 +88,15 @@ void ConstructionInstance::checkParameters(const Project & prj) {
 
 	if (haveRadiationBCA || haveRadiationBCB) {
 		// we have solar radiation to outside - and we need orientation and inclination for that
-		if (m_para[P_ORIENTATION].name.empty())
+		if (m_para[P_Orientation].name.empty())
 			throw IBK::Exception( "Missing parameter 'Orientation'.", FUNC_ID);
-		double orientationInDeg = m_para[P_ORIENTATION].get_value("Deg");
+		double orientationInDeg = m_para[P_Orientation].get_value("Deg");
 		if (orientationInDeg < 0 || orientationInDeg > 360)
 			throw IBK::Exception( "Parameter 'Orientation' outside allowed value range [0,360] Deg.", FUNC_ID);
 
-		if (m_para[P_INCLINATION].name.empty())
+		if (m_para[P_Inclination].name.empty())
 			throw IBK::Exception( "Missing parameter 'Inclination'.", FUNC_ID);
-		double inclinationInDeg = m_para[P_INCLINATION].get_value("Deg");
+		double inclinationInDeg = m_para[P_Inclination].get_value("Deg");
 		if (inclinationInDeg < 0 || inclinationInDeg > 180)
 			throw IBK::Exception( "Parameter 'Inclination' outside allowed value range [0,180] Deg.", FUNC_ID);
 	}
@@ -117,16 +115,23 @@ void ConstructionInstance::checkParameters(const Project & prj) {
 
 
 	// check embedded objects
+	double totalEmbeddedObjectsArea = 0;
 	for (unsigned int i=0; i<m_embeddedObjects.size(); ++i) {
 		EmbeddedObject & eo = m_embeddedObjects[i];
 		try {
 			eo.checkParameters(prj);
+			// we have a valid area in the embedded object - add it up
+			totalEmbeddedObjectsArea += eo.m_para[EmbeddedObject::P_Area].value;
 		}
 		catch (IBK::Exception & ex) {
 			throw IBK::Exception(ex, IBK::FormatString("Error checking model parameters for EmbeddedObject #%1 '%2' (id=%3).")
 								 .arg(i).arg(eo.m_displayName).arg(eo.m_id), FUNC_ID);
 		}
 	}
+	// now check that sum of embedded object area is less or equal to the construction instance's area
+	if (totalEmbeddedObjectsArea > area)
+		throw IBK::Exception(IBK::FormatString("Area used by all embedded objects (=%1 m2) exceeds gross area of construction instance (=%2 m2).")
+							 .arg(totalEmbeddedObjectsArea).arg(area), FUNC_ID);
 }
 
 
@@ -142,11 +147,11 @@ bool ConstructionInstance::behavesLike(const ConstructionInstance & other) const
 		return false;
 
 	// compare parameters
-	if (m_para[P_AREA] != other.m_para[P_AREA])
+	if (m_para[P_Area] != other.m_para[P_Area])
 		return false;
-	if (m_para[P_ORIENTATION] != other.m_para[P_ORIENTATION])
+	if (m_para[P_Orientation] != other.m_para[P_Orientation])
 		return false;
-	if (m_para[P_INCLINATION] != other.m_para[P_INCLINATION])
+	if (m_para[P_Inclination] != other.m_para[P_Inclination])
 		return false;
 
 	return true; // both construction instances would calculate effectively the same

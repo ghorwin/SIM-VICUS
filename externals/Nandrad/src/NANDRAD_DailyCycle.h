@@ -60,9 +60,9 @@ public:
 	*/
 	enum interpolation_t {
 		/*! Constant values in defined intervals. */
-		IT_CONSTANT,	// Keyword: Constant	'Constant values in defined intervals.'
+		IT_Constant,	// Keyword: Constant	'Constant values in defined intervals.'
 		/*! Linear interpolation between values. */
-		IT_LINEAR,		// Keyword: Linear		'Linear interpolation between values.'
+		IT_Linear,		// Keyword: Linear		'Linear interpolation between values.'
 		NUM_IT
 	};
 

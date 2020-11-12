@@ -485,7 +485,7 @@ void Schedules::generateLinearSpline(const std::string & objectListName, const s
 				}
 				else {
 					// different handling for constant and linearly interpolated values
-					if (interpolationType == NANDRAD::DailyCycle::IT_CONSTANT) {
+					if (interpolationType == NANDRAD::DailyCycle::IT_Constant) {
 						// here we always add two points, one that ends the last interval and
 						// one that starts the new interval
 						tp.push_back(tpsec-TIME_SHIFT);
@@ -524,7 +524,7 @@ void Schedules::generateLinearSpline(const std::string & objectListName, const s
 
 	// in case of constant extrapolation, re-add the last time point close to the end of the interval
 	// so that we can have cyclic use without error in the last interval
-	if (interpolationType == NANDRAD::DailyCycle::IT_CONSTANT) {
+	if (interpolationType == NANDRAD::DailyCycle::IT_Constant) {
 		tp.push_back(365*24*3600-TIME_SHIFT);
 		vals.m_data.push_back(vals.m_data.back());
 	}

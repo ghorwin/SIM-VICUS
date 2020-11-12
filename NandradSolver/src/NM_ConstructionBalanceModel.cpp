@@ -39,7 +39,7 @@ void ConstructionBalanceModel::setup(const NANDRAD::ConstructionInstance & con,
 	m_moistureBalanceEnabled = statesModel->m_moistureBalanceEnabled;
 
 	// cross section area in [m2]
-	m_area = con.m_para[NANDRAD::ConstructionInstance::P_AREA].value;
+	m_area = con.m_para[NANDRAD::ConstructionInstance::P_Area].value;
 	/// \todo subtract areas of embedded objects to get net area
 
 	// resize storage vectors for divergences, sources, and initialize boundary conditions
