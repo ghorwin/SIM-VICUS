@@ -35,7 +35,7 @@
 
 #include "NM_KeywordList.h"
 
-#include "CCM_Defines.h"
+#include <CCM_Defines.h>
 
 #define CONSTANT_EXTRAPOLATION
 
