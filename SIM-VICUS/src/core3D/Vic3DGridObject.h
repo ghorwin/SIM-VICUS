@@ -51,12 +51,13 @@ public:
 	/*! Color for minor grid lines. */
 	QVector3D					m_minorGridColor;
 
-	/*! Holds the current size of the buffer, updated in create(), used in render().
+	/*! Holds the number of vertices (2 for each line), updated in create(), used in render().
 		If zero, grid is disabled.
 	*/
-	GLsizei						m_bufferSize;
-	/*! Index, where minor grid starts. If same as m_bufferSize, minor grid is disabled. */
-	GLsizei						m_minorGridBufferStart;
+	GLsizei						m_vertexCount;
+
+	/*! Index, where minor grid starts. If same as m_vertexCount, minor grid is disabled. */
+	GLsizei						m_minorGridStartVertex;
 
 	/*! Wraps an OpenGL VertexArrayObject, that references the vertex coordinates. */
 	QOpenGLVertexArrayObject	m_vao;
