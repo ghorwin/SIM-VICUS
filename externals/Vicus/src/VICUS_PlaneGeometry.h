@@ -55,10 +55,10 @@ public:
 		T_POLYGON is the most generic, yet T_TRIANGLE and T_RECTANGLE offer some specialized handling for
 		intersection calcuation and data transfer to the graphics pipeline.
 	*/
-	type_t								m_type = NUM_T;				// XML:A:required
+	type_t								m_type = NUM_T;
 
 	/*! Points of polyline (in double-precision accuracy!). */
-	std::vector<IBKMK::Vector3D>		m_vertexes;					// XML:E
+	std::vector<IBKMK::Vector3D>		m_vertexes;
 
 
 	// *** Runtime Variables ***
