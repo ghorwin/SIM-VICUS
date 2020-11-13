@@ -121,8 +121,10 @@ TiXmlElement * Outputs::writeXMLPrivate(TiXmlElement * parent) const {
 
 	if (m_timeUnit.id() != 0)
 		TiXmlElement::appendSingleAttributeElement(e, "TimeUnit", nullptr, std::string(), m_timeUnit.name());
-	if (!m_binaryFormat.name().empty())
-		TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_binaryFormat.name(), m_binaryFormat.isEnabled() ? "true" : "false");
+	if (!m_binaryFormat.name().empty()) {
+		IBK_ASSERT("BinaryFormat" == m_binaryFormat.name());
+		TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", "BinaryFormat", m_binaryFormat.isEnabled() ? "true" : "false");
+	}
 	return e;
 }
 

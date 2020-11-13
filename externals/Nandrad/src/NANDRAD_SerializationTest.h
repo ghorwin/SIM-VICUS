@@ -82,18 +82,18 @@ public:
 		m_linSpl.setValues(x,y);
 
 		// spline with name and units
-		m_splineParameter.m_name = "SplineParameter"; // the name is custom
+		m_splineParameter.m_name = "SplineParameter"; // name must match the tag name auto-generated from variable name
 		m_splineParameter.m_values.setValues({0, 5,10}, {5,4,3});
 		m_splineParameter.m_xUnit.set("m");
 		m_splineParameter.m_yUnit.set("C");
 
-		m_anotherSplineParameter.m_name = "AnotherSplineParameter"; // the name is custom
+		m_anotherSplineParameter.m_name = "AnotherSplineParameter"; // name must match the tag name auto-generated from variable name
 		m_anotherSplineParameter.m_values.setValues({0, 5,10}, {5,4,3});
 		m_anotherSplineParameter.m_xUnit.set("m");
 		m_anotherSplineParameter.m_yUnit.set("C");
 
 		m_splinePara[SP_ParameterSet1] = m_splineParameter;
-		m_splinePara[SP_ParameterSet1].m_name = "ParameterSet1";
+		m_splinePara[SP_ParameterSet1].m_name = "ParameterSet1"; // name must match the keyword list name
 
 	}
 

@@ -85,17 +85,9 @@ void HydraulicNetworkElement::readXML(const TiXmlElement * element) {
 				para_t ptype;
 				try {
 					ptype = (para_t)KeywordList::Enumeration("HydraulicNetworkElement::para_t", p.name);
-					m_para[ptype] = p;
-					success = true;
+					m_para[ptype] = p; success = true;
 				}
-				catch (IBK::Exception & ex) { ex.writeMsgStackToError(); }
-				if (success) {
-					std::string refUnit = KeywordList::Unit("HydraulicNetworkElement::para_t", ptype);
-					if (!refUnit.empty() && (p.IO_unit.base_id() != IBK::Unit(refUnit).base_id())) {
-						throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(c->Row())
-											  .arg("Incompatible unit '"+p.IO_unit.name()+"', expected '"+refUnit +"'."), FUNC_ID);
-					}
-				}
+				catch (...) { /* intentional fail */  }
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -131,8 +123,9 @@ TiXmlElement * HydraulicNetworkElement::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("displayName", m_displayName);
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
-		if (!m_para[i].name.empty())
+		if (!m_para[i].name.empty()) {
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
+		}
 	}
 	if (m_zoneId != NANDRAD::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "ZoneId", nullptr, std::string(), IBK::val2string<unsigned int>(m_zoneId));

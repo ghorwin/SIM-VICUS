@@ -137,12 +137,14 @@ TiXmlElement * WindowGlazingSystem::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("modelType", KeywordList::Keyword("WindowGlazingSystem::modelType_t",  m_modelType));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
-		if (!m_para[i].name.empty())
+		if (!m_para[i].name.empty()) {
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
+		}
 	}
 	for (int i=0; i<NUM_SP; ++i) {
-		if (!m_splinePara[i].m_name.empty())
+		if (!m_splinePara[i].m_name.empty()) {
 			m_splinePara[i].writeXML(e);
+		}
 	}
 
 	if (!m_layers.empty()) {

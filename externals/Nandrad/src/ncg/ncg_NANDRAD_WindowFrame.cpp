@@ -76,6 +76,8 @@ void WindowFrame::readXMLPrivate(const TiXmlElement * element) {
 				else if (p.name == "Thickness") {
 					m_thickness = p; success = true;
 				}
+				if (!success) {
+				}
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -99,10 +101,14 @@ TiXmlElement * WindowFrame::writeXMLPrivate(TiXmlElement * parent) const {
 
 	if (m_materialID != NANDRAD::INVALID_ID)
 		e->SetAttribute("materialID", IBK::val2string<unsigned int>(m_materialID));
-	if (!m_area.name.empty())
+	if (!m_area.name.empty()) {
+		IBK_ASSERT("Area" == m_area.name);
 		TiXmlElement::appendIBKParameterElement(e, "Area", m_area.IO_unit.name(), m_area.get_value());
-	if (!m_thickness.name.empty())
+	}
+	if (!m_thickness.name.empty()) {
+		IBK_ASSERT("Thickness" == m_thickness.name);
 		TiXmlElement::appendIBKParameterElement(e, "Thickness", m_thickness.IO_unit.name(), m_thickness.get_value());
+	}
 	return e;
 }
 

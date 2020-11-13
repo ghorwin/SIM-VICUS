@@ -952,6 +952,13 @@ void CodeGenerator::generateReadWriteCode() {
 							}
 							caseElse = "else ";
 						}
+						// add additional if-clause around elementCodeKeyword so that the keyword list is not used when
+						// a parameter had already be found
+						if (!elementCodeScalar.empty())
+							elementCodeKeyword =
+									"				if (!success) {\n" +
+									elementCodeKeyword +
+									"				}\n";
 						elements +=
 								"				bool success = false;\n" +
 								elementCodeScalar + elementCodeKeyword +

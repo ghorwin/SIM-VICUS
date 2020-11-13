@@ -154,12 +154,14 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 				if (p.name == "SinglePara") {
 					m_singlePara = p; success = true;
 				}
+				if (!success) {
 				test_t ptype;
 				try {
 					ptype = (test_t)KeywordList::Enumeration("SerializationTest::test_t", p.name);
 					m_para[ptype] = p; success = true;
 				}
 				catch (...) { /* intentional fail */  }
+				}
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -271,10 +273,14 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 	if (m_u2.id() != 0)
 		TiXmlElement::appendSingleAttributeElement(e, "U2", nullptr, std::string(), m_u2.name());
 	TiXmlElement::appendSingleAttributeElement(e, "X5", nullptr, std::string(), IBK::val2string<double>(m_x5));
-	if (!m_f.name().empty())
+	if (!m_f.name().empty()) {
+		IBK_ASSERT("F" == m_f.name());
 		TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", "F", m_f.isEnabled() ? "true" : "false");
-	if (!m_f2.name().empty())
+	}
+	if (!m_f2.name().empty()) {
+		IBK_ASSERT("F2" == m_f2.name());
 		TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", "F2", m_f2.isEnabled() ? "true" : "false");
+	}
 	if (m_time1 != IBK::Time())
 		TiXmlElement::appendSingleAttributeElement(e, "Time1", nullptr, std::string(), m_time1.toShortDateFormat());
 	if (m_time2 != IBK::Time())
@@ -302,34 +308,46 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 		if (customElement != nullptr)
 			customElement->ToElement()->SetValue("InterfaceA");
 	}
-	if (!m_singlePara.name.empty())
+	if (!m_singlePara.name.empty()) {
+		IBK_ASSERT("SinglePara" == m_singlePara.name);
 		TiXmlElement::appendIBKParameterElement(e, "SinglePara", m_singlePara.IO_unit.name(), m_singlePara.get_value());
-	if (!m_singleIntegerPara.name.empty())
+	}
+	if (!m_singleIntegerPara.name.empty()) {
+		IBK_ASSERT("SingleIntegerPara" == m_singleIntegerPara.name);
 		TiXmlElement::appendSingleAttributeElement(e, "IBK:IntPara", "name", "SingleIntegerPara", IBK::val2string(m_singleIntegerPara.value));
+	}
 
 	for (unsigned int i=0; i<NUM_test; ++i) {
-		if (!m_para[i].name.empty())
+		if (!m_para[i].name.empty()) {
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
+		}
 	}
 
 	for (unsigned int i=0; i<NUM_IP; ++i) {
-		if (!m_intPara[i].name.empty())
+		if (!m_intPara[i].name.empty()) {
 			TiXmlElement::appendSingleAttributeElement(e, "IBK:IntPara", "name", m_intPara[i].name, IBK::val2string(m_intPara[i].value));
+		}
 	}
 
 	for (int i=0; i<NUM_test; ++i) {
-		if (!m_flags[i].name().empty())
+		if (!m_flags[i].name().empty()) {
 			TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_flags[i].name(), m_flags[i].isEnabled() ? "true" : "false");
+		}
 	}
 	if (!m_linSpl.empty())
 		NANDRAD::writeLinearSplineElement(e, "LinSpl", m_linSpl, "-", "-");
-	if (!m_splineParameter.m_name.empty())
+	if (!m_splineParameter.m_name.empty()) {
+		IBK_ASSERT("SplineParameter" == m_splineParameter.m_name);
 		m_splineParameter.writeXML(e);
-	if (!m_anotherSplineParameter.m_name.empty())
+	}
+	if (!m_anotherSplineParameter.m_name.empty()) {
+		IBK_ASSERT("AnotherSplineParameter" == m_anotherSplineParameter.m_name);
 		m_anotherSplineParameter.writeXML(e);
+	}
 	for (int i=0; i<NUM_SP; ++i) {
-		if (!m_splinePara[i].m_name.empty())
+		if (!m_splinePara[i].m_name.empty()) {
 			m_splinePara[i].writeXML(e);
+		}
 	}
 
 	m_sched.writeXML(e);
