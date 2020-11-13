@@ -11,7 +11,7 @@
 #include <VICUS_Project.h>
 
 /*! IBKMK::Vector3D to QVector3D conversion macro. */
-#define VEC2VEC(v) QVector3D((v).m_x, (v).m_y, (v).m_z)
+#define VEC2VEC(v) QVector3D((float)(v).m_x, (float)(v).m_y, (float)(v).m_z)
 
 namespace Vic3D {
 
@@ -115,6 +115,7 @@ void addSurface(const VICUS::Surface & s,
 				// add vertex and
 				unsigned int vIdx = currentVertexIndex + i;
 				vertexBufferData[vIdx].m_coords = VEC2VEC(s.m_geometry.m_vertexes[i]);
+				vertexBufferData[vIdx].m_normal = n;
 				colorBufferData[vIdx] = s.m_color;
 				// build up triangle strip index buffer
 				bool odd = (i % 2 != 0);
