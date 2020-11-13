@@ -5,8 +5,6 @@
 
 #include "VICUS_CodeGenMacros.h"
 
-/*! IBKMK::Vector3D to QVector3D conversion macro. */
-#define VEC2VEC(v) QVector3D((v).m_x, (v).m_y, (v).m_z)
 
 namespace VICUS {
 
@@ -22,7 +20,7 @@ public:
 	enum type_t {
 		/*! Triangle defined through three vertices. */
 		T_Triangle,			// Keyword: Triangle
-		/*! Rectangle defined through three vertices (a, b and d). */
+		/*! Rectangle/Parallelogram defined through three vertices (a, b and d). */
 		T_Rectangle,		// Keyword: Rectangle
 		/*! Polygon, generic polygon with n points. */
 		T_Polygon,			// Keyword: Polygon

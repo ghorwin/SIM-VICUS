@@ -10,6 +10,9 @@
 
 #include <VICUS_Project.h>
 
+/*! IBKMK::Vector3D to QVector3D conversion macro. */
+#define VEC2VEC(v) QVector3D((v).m_x, (v).m_y, (v).m_z)
+
 namespace Vic3D {
 
 void addSurface(const VICUS::Surface & s,
@@ -82,6 +85,10 @@ void addSurface(const VICUS::Surface & s,
 			colorBufferData[currentVertexIndex  + 3] = s.m_color;
 
 			// anti-clock-wise winding order for all triangles in strip
+			//
+			// options are:
+			// a) 3, 0, 2, 1
+			// b) 0, 1, 3, 2
 			indexBufferData[currentElementIndex    ] = currentVertexIndex + 0;
 			indexBufferData[currentElementIndex + 1] = currentVertexIndex + 1;
 			indexBufferData[currentElementIndex + 2] = currentVertexIndex + 3;
@@ -94,65 +101,36 @@ void addSurface(const VICUS::Surface & s,
 		} break;
 
 		case VICUS::PlaneGeometry::T_Polygon : {
-#if 0
 			// insert as many vertexes as there are in the polygon
 			unsigned int nvert = s.m_geometry.m_vertexes.size();
 			vertexBufferData.resize(vertexBufferData.size()+nvert);
 			colorBufferData.resize(colorBufferData.size()+nvert);
-			// 5 elements (4 for the two triangles in a strip, 1 primitive restart index)
-			indexBufferData.resize(indexBufferData.size()+nvert/2+2);
+			// nvert indexes + primitive restart index
+			indexBufferData.resize(indexBufferData.size()+nvert+1);
 
 			QVector3D n = VEC2VEC(s.m_geometry.m_normal);
 
-			// always add first vertex first
-			vertexBufferData[currentVertexIndex    ].m_coords = VEC2VEC(s.m_geometry.m_vertexes[0]);
-			vertexBufferData[currentVertexIndex    ].m_normal = n;
-			indexBufferData[currentElementIndex    ] = currentVertexIndex;
-
-			// now loop until all vertices have been added
-			unsigned int indexesAdded = 1;
-			for (unsigned int i=1; i<nvert; ++i) {
+			// add all vertices to buffer
+			for (unsigned int i=0; i<nvert; ++i) {
+				// add vertex and
+				unsigned int vIdx = currentVertexIndex + i;
+				vertexBufferData[vIdx].m_coords = VEC2VEC(s.m_geometry.m_vertexes[i]);
+				colorBufferData[vIdx] = s.m_color;
+				// build up triangle strip index buffer
 				bool odd = (i % 2 != 0);
 				// odd vertices are added anti-clock-wise from start, even vertices are added clock-wise from end
-				unsigned int j = i/2;
-				if (odd) {
-					vertexBufferData[currentVertexIndex + j + 1].m_coords = VEC2VEC(s.m_geometry.m_vertexes[i]);
-					indexBufferData[currentElementIndex    ]
-				}
+				unsigned int j = i / 2;
+				if (odd)
+					indexBufferData[currentElementIndex + i] = currentVertexIndex + j;
+				else
+					indexBufferData[currentElementIndex + i] = currentVertexIndex + nvert - j - 1;
 			}
 
-
-			// 4 indexes anti-clock wise in vertex memory
-			QVector3D a = VEC2VEC(s.m_geometry.m_vertexes[0]);
-			QVector3D b = VEC2VEC(s.m_geometry.m_vertexes[1]);
-			QVector3D d = VEC2VEC(s.m_geometry.m_vertexes[2]);
-			vertexBufferData[currentVertexIndex    ].m_coords = a;
-			vertexBufferData[currentVertexIndex + 1].m_coords = b;
-			QVector3D c = b + (d - a);
-			vertexBufferData[currentVertexIndex + 2].m_coords = c;
-			vertexBufferData[currentVertexIndex + 3].m_coords = d;
-
-			vertexBufferData[currentVertexIndex    ].m_normal = n;
-			vertexBufferData[currentVertexIndex + 1].m_normal = n;
-			vertexBufferData[currentVertexIndex + 2].m_normal = n;
-			vertexBufferData[currentVertexIndex + 3].m_normal = n;
-
-			colorBufferData[currentVertexIndex     ] = s.m_color.dark();
-			colorBufferData[currentVertexIndex  + 1] = s.m_color;
-			colorBufferData[currentVertexIndex  + 2] = s.m_color.light();
-			colorBufferData[currentVertexIndex  + 3] = s.m_color;
-
-			// anti-clock-wise winding order for all triangles in strip
-			indexBufferData[currentElementIndex    ] = currentVertexIndex + 0;
-			indexBufferData[currentElementIndex + 1] = currentVertexIndex + 1;
-			indexBufferData[currentElementIndex + 2] = currentVertexIndex + 3;
-			indexBufferData[currentElementIndex + 3] = currentVertexIndex + 2;
-			indexBufferData[currentElementIndex + 4] = 0xFFFF; // set stop index
+			indexBufferData[currentElementIndex + nvert] = 0xFFFF; // set stop index
 
 			// finally advance buffer indexes
-			currentVertexIndex += 4;
-			currentElementIndex += 5;
-#endif
+			currentVertexIndex += nvert;
+			currentElementIndex += nvert + 1;
 		} break;
 	} // switch
 
@@ -179,11 +157,18 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 	if (m_gridShader == nullptr)
 		return;
 
+	bool updateGrid = false;
+	bool updateBuilding = false;
 	// filter out all modification types that we handle
 	SVProjectHandler::ModificationTypes mod = (SVProjectHandler::ModificationTypes)modificationType;
 	switch (mod) {
 		case SVProjectHandler::AllModified :
+			updateGrid = true;
+			updateBuilding = true;
+			break;
+
 		case SVProjectHandler::GridModified :
+			updateGrid = true;
 			break;
 
 		default:
@@ -194,13 +179,16 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 	// re-create grid with updated properties
 	// since grid object is very small, this function also regenerates the grid line buffers and
 	// uploads the data to the GPU
-	m_gridObject.create(m_gridShader->shaderProgram());
+	if (updateGrid)
+		m_gridObject.create(m_gridShader->shaderProgram());
 
 	// create geometry object (if already existing, nothing happens here)
-	m_opaqueGeometryObject.create(m_buildingShader->shaderProgram());
+	if (updateBuilding) {
+		m_opaqueGeometryObject.create(m_buildingShader->shaderProgram());
 
-	// transfer data from building geometry to vertex array caches
-	generateBuildingGeometry();
+		// transfer data from building geometry to vertex array caches
+		generateBuildingGeometry();
+	}
 
 	// update all GPU buffers (transfer cached data to GPU)
 	m_opaqueGeometryObject.updateBuffers();
@@ -349,6 +337,10 @@ void Vic3DScene::generateBuildingGeometry() {
 	m_opaqueGeometryObject.m_vertexBufferData.clear();
 	m_opaqueGeometryObject.m_colorBufferData.clear();
 	m_opaqueGeometryObject.m_indexBufferData.clear();
+
+	m_opaqueGeometryObject.m_vertexBufferData.reserve(100000);
+	m_opaqueGeometryObject.m_colorBufferData.reserve(100000);
+	m_opaqueGeometryObject.m_indexBufferData.reserve(100000);
 
 	// we now process all surfaces and add their coordinates and
 	// normals
