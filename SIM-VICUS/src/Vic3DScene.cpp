@@ -37,9 +37,9 @@ void addSurface(const VICUS::Surface & s,
 			vertexBufferData[currentVertexIndex + 1].m_normal = n;
 			vertexBufferData[currentVertexIndex + 2].m_normal = n;
 
-			colorBufferData[currentVertexIndex     ] = s.m_color;
+			colorBufferData[currentVertexIndex     ] = s.m_color.dark();
 			colorBufferData[currentVertexIndex  + 1] = s.m_color;
-			colorBufferData[currentVertexIndex  + 2] = s.m_color;
+			colorBufferData[currentVertexIndex  + 2] = s.m_color.light();
 
 			// anti-clock-wise winding order for all triangles in strip
 			indexBufferData[currentElementIndex    ] = currentVertexIndex + 0;
@@ -92,7 +92,69 @@ void addSurface(const VICUS::Surface & s,
 			currentVertexIndex += 4;
 			currentElementIndex += 5;
 		} break;
-	}
+
+		case VICUS::PlaneGeometry::T_Polygon : {
+#if 0
+			// insert as many vertexes as there are in the polygon
+			unsigned int nvert = s.m_geometry.m_vertexes.size();
+			vertexBufferData.resize(vertexBufferData.size()+nvert);
+			colorBufferData.resize(colorBufferData.size()+nvert);
+			// 5 elements (4 for the two triangles in a strip, 1 primitive restart index)
+			indexBufferData.resize(indexBufferData.size()+nvert/2+2);
+
+			QVector3D n = VEC2VEC(s.m_geometry.m_normal);
+
+			// always add first vertex first
+			vertexBufferData[currentVertexIndex    ].m_coords = VEC2VEC(s.m_geometry.m_vertexes[0]);
+			vertexBufferData[currentVertexIndex    ].m_normal = n;
+			indexBufferData[currentElementIndex    ] = currentVertexIndex;
+
+			// now loop until all vertices have been added
+			unsigned int indexesAdded = 1;
+			for (unsigned int i=1; i<nvert; ++i) {
+				bool odd = (i % 2 != 0);
+				// odd vertices are added anti-clock-wise from start, even vertices are added clock-wise from end
+				unsigned int j = i/2;
+				if (odd) {
+					vertexBufferData[currentVertexIndex + j + 1].m_coords = VEC2VEC(s.m_geometry.m_vertexes[i]);
+					indexBufferData[currentElementIndex    ]
+				}
+			}
+
+
+			// 4 indexes anti-clock wise in vertex memory
+			QVector3D a = VEC2VEC(s.m_geometry.m_vertexes[0]);
+			QVector3D b = VEC2VEC(s.m_geometry.m_vertexes[1]);
+			QVector3D d = VEC2VEC(s.m_geometry.m_vertexes[2]);
+			vertexBufferData[currentVertexIndex    ].m_coords = a;
+			vertexBufferData[currentVertexIndex + 1].m_coords = b;
+			QVector3D c = b + (d - a);
+			vertexBufferData[currentVertexIndex + 2].m_coords = c;
+			vertexBufferData[currentVertexIndex + 3].m_coords = d;
+
+			vertexBufferData[currentVertexIndex    ].m_normal = n;
+			vertexBufferData[currentVertexIndex + 1].m_normal = n;
+			vertexBufferData[currentVertexIndex + 2].m_normal = n;
+			vertexBufferData[currentVertexIndex + 3].m_normal = n;
+
+			colorBufferData[currentVertexIndex     ] = s.m_color.dark();
+			colorBufferData[currentVertexIndex  + 1] = s.m_color;
+			colorBufferData[currentVertexIndex  + 2] = s.m_color.light();
+			colorBufferData[currentVertexIndex  + 3] = s.m_color;
+
+			// anti-clock-wise winding order for all triangles in strip
+			indexBufferData[currentElementIndex    ] = currentVertexIndex + 0;
+			indexBufferData[currentElementIndex + 1] = currentVertexIndex + 1;
+			indexBufferData[currentElementIndex + 2] = currentVertexIndex + 3;
+			indexBufferData[currentElementIndex + 3] = currentVertexIndex + 2;
+			indexBufferData[currentElementIndex + 4] = 0xFFFF; // set stop index
+
+			// finally advance buffer indexes
+			currentVertexIndex += 4;
+			currentElementIndex += 5;
+#endif
+		} break;
+	} // switch
 
 }
 
