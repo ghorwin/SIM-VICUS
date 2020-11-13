@@ -452,13 +452,18 @@ void CodeGenerator::generateReadWriteCode() {
 
 						elements += "\n"
 							"	for (unsigned int i=0; i<"+numType+"; ++i) {\n"
-							"		if (!m_"+varName+"[i].name.empty())\n"
+							"		if (!m_"+varName+"[i].name.empty()) {\n"
+//							"			IBK_ASSERT(KeywordList::Keyword(\"ConstructionInstance::para_t\", (int)i) == m_"+varName+"[i].name);\n"
 							"			TiXmlElement::appendIBKParameterElement(e, m_"+varName+"[i].name, m_"+varName+"[i].IO_unit.name(), m_"+varName+"[i].get_value());\n"
+							"		}\n"
 							"	}\n";
 					}
 					else {
-						elements += "	if (!m_"+varName+".name.empty())\n"
-									"		TiXmlElement::appendIBKParameterElement(e, \""+tagName+"\", m_"+varName+".IO_unit.name(), m_"+varName+".get_value());\n";
+						elements +=
+							"	if (!m_"+varName+".name.empty()) {\n"
+							"		IBK_ASSERT(\""+tagName+"\" == m_"+varName+".name);\n"
+							"		TiXmlElement::appendIBKParameterElement(e, \""+tagName+"\", m_"+varName+".IO_unit.name(), m_"+varName+".get_value());\n"
+							"	}\n";
 					}
 				}
 				else if (xmlInfo.typeStr == "IBK::IntPara") {
@@ -472,13 +477,18 @@ void CodeGenerator::generateReadWriteCode() {
 
 						elements += "\n"
 							"	for (unsigned int i=0; i<"+numType+"; ++i) {\n"
-							"		if (!m_"+varName+"[i].name.empty())\n"
+							"		if (!m_"+varName+"[i].name.empty()) {\n"
+//							"			IBK_ASSERT(\""+tagName+"\" == m_"+varName+"[i].name);\n"
 							"			TiXmlElement::appendSingleAttributeElement(e, \"IBK:IntPara\", \"name\", m_"+varName+"[i].name, IBK::val2string(m_"+varName+"[i].value));\n"
+							"		}\n"
 							"	}\n";
 					}
 					else {
-						elements += "	if (!m_"+varName+".name.empty())\n"
-									"		TiXmlElement::appendSingleAttributeElement(e, \"IBK:IntPara\", \"name\", \""+tagName+"\", IBK::val2string(m_"+varName+".value));\n";
+						elements +=
+							"	if (!m_"+varName+".name.empty()) {\n"
+							"		IBK_ASSERT(\""+tagName+"\" == m_"+varName+".name);\n"
+							"		TiXmlElement::appendSingleAttributeElement(e, \"IBK:IntPara\", \"name\", \""+tagName+"\", IBK::val2string(m_"+varName+".value));\n"
+							"	}\n";
 					}
 				}
 				else if (xmlInfo.typeStr == "IBK::Flag") {
@@ -491,13 +501,18 @@ void CodeGenerator::generateReadWriteCode() {
 						varName = varName.substr(0, pos1);
 						elements += "\n"
 							"	for (int i=0; i<"+numType+"; ++i) {\n"
-							"		if (!m_"+varName+"[i].name().empty())\n"
+							"		if (!m_"+varName+"[i].name().empty()) {\n"
+//							"			IBK_ASSERT(\""+tagName+"\" == m_"+varName+"[i].name());\n"
 							"			TiXmlElement::appendSingleAttributeElement(e, \"IBK:Flag\", \"name\", m_"+varName+"[i].name(), m_"+varName+"[i].isEnabled() ? \"true\" : \"false\");\n"
+							"		}\n"
 							"	}\n";
 					}
 					else {
-						elements += "	if (!m_"+varName+".name().empty())\n"
-									"		TiXmlElement::appendSingleAttributeElement(e, \"IBK:Flag\", \"name\", \""+tagName+"\", m_"+varName+".isEnabled() ? \"true\" : \"false\");\n";
+						elements +=
+							"	if (!m_"+varName+".name().empty()) {\n"
+							"		IBK_ASSERT(\""+tagName+"\" == m_"+varName+".name());\n"
+							"		TiXmlElement::appendSingleAttributeElement(e, \"IBK:Flag\", \"name\", \""+tagName+"\", m_"+varName+".isEnabled() ? \"true\" : \"false\");\n"
+							"	}\n";
 					}
 				}
 				else if (xmlInfo.typeStr == "LinearSplineParameter") {
@@ -510,13 +525,18 @@ void CodeGenerator::generateReadWriteCode() {
 						varName = varName.substr(0, pos1);
 						elements +=
 							"	for (int i=0; i<"+numType+"; ++i) {\n"
-							"		if (!m_"+varName+"[i].m_name.empty())\n"
+							"		if (!m_"+varName+"[i].m_name.empty()) {\n"
+//							"			IBK_ASSERT(\""+tagName+"\" == m_"+varName+"[i].m_name);\n"
 							"			m_" + varName + "[i].writeXML(e);\n"
+							"		}\n"
 							"	}\n";
 					}
 					else {
-						elements += "	if (!m_"+varName+".m_name.empty())\n"
-									"		m_" + varName + ".writeXML(e);\n";
+						elements +=
+							"	if (!m_"+varName+".m_name.empty()) {\n"
+							"		IBK_ASSERT(\""+tagName+"\" == m_"+varName+".m_name);\n"
+							"		m_" + varName + ".writeXML(e);\n"
+							"	}\n";
 					}
 				}
 				else if (xmlInfo.typeStr.find("std::vector<") == 0) {
