@@ -17,16 +17,21 @@ License    : BSD License,
 
 #include <VICUS_Project.h>
 #include "SVProjectHandler.h"
+#include "Vic3DShaderProgram.h"
 
 namespace Vic3D {
 
-void GridObject::create(QOpenGLShaderProgram * shaderProgram) {
+void GridObject::create(ShaderProgram * shaderProgram) {
+	m_gridShader = shaderProgram;
+
 	// get grid dimensions from project
 	const VICUS::Project & prj = project();
 
 	// transfer color
 	QColor gridColor(prj.m_viewSettings.m_gridColor);
-	m_gridColor = QVector3D((float)gridColor.redF(), (float)gridColor.greenF(), (float)gridColor.blueF());
+	m_minorGridColor = QVector3D((float)gridColor.redF(), (float)gridColor.greenF(), (float)gridColor.blueF());
+	gridColor = Qt::white; // gridColor.light();
+	m_majorGridColor = QVector3D((float)gridColor.redF(), (float)gridColor.greenF(), (float)gridColor.blueF());
 
 	// transfer grid dimensions
 	float width = (float)prj.m_viewSettings.m_gridWidth;
@@ -80,8 +85,8 @@ void GridObject::create(QOpenGLShaderProgram * shaderProgram) {
 		m_vbo.bind();
 
 		// layout(location = 0) = vec2 position
-		shaderProgram->enableAttributeArray(0); // array with index/id 0
-		shaderProgram->setAttributeBuffer(0, GL_FLOAT,
+		m_gridShader->shaderProgram()->enableAttributeArray(0); // array with index/id 0
+		m_gridShader->shaderProgram()->setAttributeBuffer(0, GL_FLOAT,
 									  0 /* position/vertex offset */,
 									  2 /* two floats per position = vec2 */,
 									  0 /* vertex after vertex, no interleaving */);
@@ -91,6 +96,9 @@ void GridObject::create(QOpenGLShaderProgram * shaderProgram) {
 	unsigned long vertexMemSize = m_bufferSize*sizeof(float);
 	m_vbo.allocate(gridVertexBufferData.data(), vertexMemSize);
 
+
+	// adjust m_bufferSize and m_minorGridStart
+	m_minorGridBufferStart = m_bufferSize-500;
 
 	m_vao.release(); // Mind: always release VAO before index buffer
 	m_vbo.release();
@@ -104,9 +112,19 @@ void GridObject::destroy() {
 
 
 void GridObject::render() {
+	// grid disabled?
+	if (m_bufferSize == 0)
+		return;
+
 	m_vao.bind();
-	// draw the grid lines, m_NVertexes = number of floats in buffer
-	glDrawArrays(GL_LINES, 0, m_bufferSize);
+
+	// draw major grid lines
+	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[1], m_majorGridColor);
+	glDrawArrays(GL_LINES, 0, m_minorGridBufferStart);
+	if (m_minorGridBufferStart == m_bufferSize)
+		return; // minor grid disabled
+	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[1], m_minorGridColor);
+	glDrawArrays(GL_LINES, m_minorGridBufferStart, m_bufferSize-m_minorGridBufferStart);
 
 	// draw first major grid lines, then minor grid lines with different color
 	m_vao.release();

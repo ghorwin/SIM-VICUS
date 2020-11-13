@@ -181,7 +181,7 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 	// since grid object is very small, this function also regenerates the grid line buffers and
 	// uploads the data to the GPU
 	if (updateGrid)
-		m_gridObject.create(m_gridShader->shaderProgram());
+		m_gridObject.create(m_gridShader);
 
 	// create geometry object (if already existing, nothing happens here)
 	if (updateBuilding) {
@@ -285,7 +285,6 @@ void Vic3DScene::render() {
 
 	m_gridShader->bind();
 	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[0], m_worldToView);
-	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[1], m_gridObject.m_gridColor);
 	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[2], m_background);
 
 	m_gridObject.render();
