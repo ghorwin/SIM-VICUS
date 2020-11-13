@@ -8,13 +8,19 @@ TEMPLATE = lib
 # it contains all functions defined for casual libraries
 include( ../../../IBK/projects/Qt/IBK.pri )
 
-
 unix|mac {
 	VER_MAJ = 1
-	VER_MIN = 0
+	VER_MIN = 1
 	VER_PAT = 0
 	VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 }
+
+LIBS += -lIBK
+
+INCLUDEPATH += \
+	../../../IBK/src
+
+DEPENDPATH = $${INCLUDEPATH}
 
 SOURCES += \
 	../../src/tinyxmlparser.cpp \

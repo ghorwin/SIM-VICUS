@@ -1,8 +1,7 @@
 # CMakeLists.txt file for Nandrad library
 #
 # Note: This CMakeLists.txt file is not for stand-alone builds.
-#       Requires toplevel CMakeLists.txt file that defines the variable
-#       KEYWORDLISTCREATOR.
+#       Requires toplevel CMakeLists.txt file that also builds NandradCodeGenerator.
 
 project( Nandrad )
 

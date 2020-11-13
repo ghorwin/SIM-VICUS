@@ -35,6 +35,10 @@ distribution.
 #include <Windows.h>
 #endif // _WIN32
 
+#ifdef TIXML_USE_IBK_EXTENSIONS
+#include <IBK_StringUtils.h>
+#endif // TIXML_USE_IBK_EXTENSIONS
+
 
 FILE* TiXmlFOpen( const char* filename, const char* mode );
 
@@ -1156,23 +1160,19 @@ void TiXmlElement::readIBKUnitVectorElement( const TiXmlElement * element,
 
 	const char * const str = element->GetText();
 	std::string valstr;
-	if (str)		valstr = str;
-	else			valstr.clear();
-	std::stringstream sstrm(valstr);
-	data.clear();
-	std::string s;
-	while (sstrm >> s) {
-		std::stringstream valstr(s);
-		double v;
-		if (!(valstr >> v)) {
+	if (str) {
+		valstr = str;
+		try {
+			IBK::string2valueVector(valstr, data);
+		} catch (IBK::Exception & ex) {
 			std::stringstream strm;
 			strm << "Error in XML file, line " << element->Row() << ": ";
-			strm << "Invalid floating point value '" << s << "' in IBK:UnitVector.";
+			strm << ex.what();
 			throw std::runtime_error(strm.str());
 		}
-
-		data.push_back(v);
 	}
+	else
+		data.clear();
 }
 
 
