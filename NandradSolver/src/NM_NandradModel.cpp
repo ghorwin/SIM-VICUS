@@ -79,6 +79,7 @@
 #include "NM_ConstructionStatesModel.h"
 #include "NM_ConstructionBalanceModel.h"
 #include "NM_NaturalVentilationModel.h"
+#include "NM_WindowModel.h"
 
 namespace NANDRAD_MODEL {
 
@@ -1116,8 +1117,17 @@ void NandradModel::initWallsAndInterfaces() {
 
 				// switch type of object
 				switch (e.objectType()) {
-					case NANDRAD::EmbeddedObject::OT_Window :
+					case NANDRAD::EmbeddedObject::OT_Window : {
 						// create embedded window model object
+						WindowModel * windowModel = new WindowModel(e.m_id, e.m_displayName);
+						m_modelContainer.push_back(windowModel); // transfer ownership
+
+						// start entire initialization
+						windowModel->setup(e.m_window, m_project->m_simulationParameter, ci, *m_loads);
+
+						// register model for evaluation
+						registerStateDependendModel(windowModel);
+					}
 					break;
 					default: IBK_ASSERT(false);
 				}

@@ -61,6 +61,17 @@ public:
 
 	/*! Checks for valid parameters. */
 	void checkParameters();
+	/*! Computes flux density towards glazing system in [W/m2]for both window sides and stores
+		results in solarLeft and solarRight.
+	*/
+	void computeSolarFluxDensity(double qDir, double qDiff, double incidenceAngle, double &solarLeft, double &solarRight,
+								 bool solarLoadsLeft) const;
+	/*! Computes flux density towards glazing system in [W/m2] for both window sides depending from model type
+		and stores in heatCondLeft and heatCondRight.
+	*/
+	void computeHeatConductionFluxDensity(double deltaT, double alphaLeft, double alphaRight, double &heatCondLeft,
+										  double &heatCondRight) const;
+
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

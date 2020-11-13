@@ -1,6 +1,7 @@
 #include "NM_WindowModel.h"
 
 #include <NANDRAD_ConstructionInstance.h>
+#include <NANDRAD_WindowGlazingSystem.h>
 
 #include "NM_KeywordList.h"
 #include "NM_Loads.h"
@@ -15,6 +16,8 @@ void WindowModel::setup(const NANDRAD::EmbeddedObjectWindow & windowModelPara,
 						Loads & loads)
 {
 
+	m_windowModel = &windowModelPara;
+	m_simPara = &simPara;
 	m_con = &conInst;
 	m_loads = &loads;
 
@@ -124,19 +127,19 @@ void WindowModel::setInputValueRefs(const std::vector<QuantityDescription> &, co
 
 void WindowModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
 
-    // *** heat conduction flux ***
+	// *** heat conduction flux ***
 
-    // dependency on air temperature of both sides of the window
-    if (m_valueRefs[InputRef_SideATemperature] == nullptr || m_valueRefs[InputRef_SideBTemperature] == nullptr) {
-        resultInputValueReferences.push_back(
-                std::make_pair(&m_results[R_FluxHeatConductionA], m_valueRefs[InputRef_SideATemperature]) );
-        resultInputValueReferences.push_back(
-                std::make_pair(&m_results[R_FluxHeatConductionB], m_valueRefs[InputRef_SideATemperature]) );
-        resultInputValueReferences.push_back(
-                std::make_pair(&m_results[R_FluxHeatConductionA], m_valueRefs[InputRef_SideBTemperature]) );
-        resultInputValueReferences.push_back(
-                std::make_pair(&m_results[R_FluxHeatConductionB], m_valueRefs[InputRef_SideBTemperature]) );
-    }
+	// dependency on air temperature of both sides of the window
+	if (m_valueRefs[InputRef_SideATemperature] == nullptr || m_valueRefs[InputRef_SideBTemperature] == nullptr) {
+		resultInputValueReferences.push_back(
+				std::make_pair(&m_results[R_FluxHeatConductionA], m_valueRefs[InputRef_SideATemperature]) );
+		resultInputValueReferences.push_back(
+				std::make_pair(&m_results[R_FluxHeatConductionB], m_valueRefs[InputRef_SideATemperature]) );
+		resultInputValueReferences.push_back(
+				std::make_pair(&m_results[R_FluxHeatConductionA], m_valueRefs[InputRef_SideBTemperature]) );
+		resultInputValueReferences.push_back(
+				std::make_pair(&m_results[R_FluxHeatConductionB], m_valueRefs[InputRef_SideBTemperature]) );
+	}
 }
 
 
@@ -153,61 +156,69 @@ int WindowModel::update() {
 		// compute heat flux from side A to B
 		double deltaT = *m_valueRefs[InputRef_SideATemperature] - *m_valueRefs[InputRef_SideBTemperature];
 
-        // compute heat conduction flux through the glazing system
-        double fluxHeatCondLeft = 0;
-        double fluxHeatCondRight = 0;
+		// compute thermal resistance of boundaries
+		double thermalResistanceBC = 0.0;
+		double alphaLeft = 0.0;
+		double alphaRight = 0.0;
 
-        // distinguish between standard/detailed model for glazing
-        computeHeatConductionThroughGlazing(fluxHeatCondLeft, fluxHeatCondRight);
+		// add surface resistances
+		if(!m_con->m_interfaceA.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].name.empty()
+				&& m_con->m_interfaceA.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value > 0) {
+			alphaLeft = m_con->m_interfaceA.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
+			thermalResistanceBC += 1.0/alphaLeft;
+		}
+		if(!m_con->m_interfaceB.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].name.empty()
+				&& m_con->m_interfaceB.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value > 0) {
+			alphaRight = m_con->m_interfaceB.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
+			thermalResistanceBC += 1.0/alphaRight;
+		}
 
-        // compute thermal resistance of boundaries
-        double thermalResistanceBC = 0.0;
+		// compute heat conduction flux through the glazing system
+		double heatCondLeft = 0;
+		double heatCondRight = 0;
 
-        // add surface resistances
-        if(!m_con->m_interfaceA.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].name.empty()
-                && m_con->m_interfaceA.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value > 0) {
-            double alphaLeft = m_con->m_interfaceA.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
-            thermalResistanceBC += 1.0/alphaLeft;
-        }
-        if(!m_con->m_interfaceB.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].name.empty()
-                && m_con->m_interfaceB.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value > 0) {
-            double alphaRight = m_con->m_interfaceB.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
-            thermalResistanceBC += 1.0/alphaRight;
-        }
+		// distinguish between standard/detailed model for glazing
+		IBK_ASSERT(m_windowModel->m_glazingSystem != NULL);
+		m_windowModel->m_glazingSystem->computeHeatConductionFluxDensity
+				(deltaT, alphaLeft, alphaRight, heatCondLeft, heatCondRight);
 
-         // check if we have a frame
-        if(m_windowModel->m_frame.m_materialID != NANDRAD::INVALID_ID) {
-            // parameters were checked for validity already
-            IBK_ASSERT(m_windowModel->m_frame.m_lambda > 0);
-            IBK_ASSERT(m_windowModel->m_frame.m_thickness.value > 0);
-            // calculate heat transfer coefficient
-            double alphaFrame = m_windowModel->m_frame.m_lambda/m_windowModel->m_frame.m_thickness.value;
-            // correct by boundary resistances
-            double alpha = 1.0/(1.0/alphaFrame + thermalResistanceBC);
-            double fluxHeatCondFrameLeft = alpha * m_windowModel->m_frame.m_area.value * deltaT;
-            // add flux to heat conduction flux
-            fluxHeatCondLeft += fluxHeatCondFrameLeft;
-            fluxHeatCondRight -= fluxHeatCondFrameLeft;
-        }
-        // check if we have a divider
-        if(m_windowModel->m_divider.m_materialID != NANDRAD::INVALID_ID) {
-            // parameters were checked for validity already
-            IBK_ASSERT(m_windowModel->m_divider.m_lambda > 0);
-            IBK_ASSERT(m_windowModel->m_divider.m_thickness.value > 0);
-            // calculate heat transfer coefficient
-            double alphaDivider = m_windowModel->m_divider.m_lambda/m_windowModel->m_divider.m_thickness.value;
-            // correct by boundary resistances
-            double alpha = 1.0/(1.0/alphaDivider + thermalResistanceBC);
-            double fluxHeatCondDividerLeft = alpha * m_windowModel->m_divider.m_area.value * deltaT;
-            // add flux to heat conduction flux
-            fluxHeatCondLeft += fluxHeatCondDividerLeft;
-            fluxHeatCondRight -= fluxHeatCondDividerLeft;
-        }
+		// tranlate into heat flux
+		double fluxHeatCondLeft = heatCondLeft * m_windowModel->m_glasArea;
+		double fluxHeatCondRight = heatCondRight * m_windowModel->m_glasArea;
 
-        // store results
-        m_results[R_FluxHeatConductionA] = fluxHeatCondLeft;
-        m_results[R_FluxHeatConductionB] = fluxHeatCondRight;
-    }
+		 // check if we have a frame
+		if(m_windowModel->m_frame.m_materialID != NANDRAD::INVALID_ID) {
+			// parameters were checked for validity already
+			IBK_ASSERT(m_windowModel->m_frame.m_lambda > 0);
+			IBK_ASSERT(m_windowModel->m_frame.m_thickness.value > 0);
+			// calculate heat transfer coefficient
+			double alphaFrame = m_windowModel->m_frame.m_lambda/m_windowModel->m_frame.m_thickness.value;
+			// correct by boundary resistances
+			double alpha = 1.0/(1.0/alphaFrame + thermalResistanceBC);
+			double fluxHeatCondFrameLeft = alpha * m_windowModel->m_frame.m_area.value * deltaT;
+			// add flux to heat conduction flux
+			fluxHeatCondLeft += fluxHeatCondFrameLeft;
+			fluxHeatCondRight -= fluxHeatCondFrameLeft;
+		}
+		// check if we have a divider
+		if(m_windowModel->m_divider.m_materialID != NANDRAD::INVALID_ID) {
+			// parameters were checked for validity already
+			IBK_ASSERT(m_windowModel->m_divider.m_lambda > 0);
+			IBK_ASSERT(m_windowModel->m_divider.m_thickness.value > 0);
+			// calculate heat transfer coefficient
+			double alphaDivider = m_windowModel->m_divider.m_lambda/m_windowModel->m_divider.m_thickness.value;
+			// correct by boundary resistances
+			double alpha = 1.0/(1.0/alphaDivider + thermalResistanceBC);
+			double fluxHeatCondDividerLeft = alpha * m_windowModel->m_divider.m_area.value * deltaT;
+			// add flux to heat conduction flux
+			fluxHeatCondLeft += fluxHeatCondDividerLeft;
+			fluxHeatCondRight -= fluxHeatCondDividerLeft;
+		}
+
+		// store results
+		m_results[R_FluxHeatConductionA] = fluxHeatCondLeft;
+		m_results[R_FluxHeatConductionB] = fluxHeatCondRight;
+	}
 
 
 	// *** solar radiation flux
@@ -220,108 +231,36 @@ int WindowModel::update() {
 		// get nominal radiation fluxes across surface of this construction
 		qRadGlobal = m_loads->qSWRad(m_con->m_id, qRadDir, qRadDiff, incidenceAngle);
 
-        // reduce by shading factor
-        if(m_windowModel->m_shading.m_modelType != NANDRAD::WindowShading::NUM_MT) {
-            // parameters were checked already
-            IBK_ASSERT(! m_windowModel->m_shading.m_para[NANDRAD::WindowShading::P_ReductionFactor].name.empty());
-            double shadingFac = m_windowModel->m_shading.m_para[NANDRAD::WindowShading::P_ReductionFactor].value;
-            qRadGlobal *= shadingFac;
-            qRadDir *= shadingFac;
-            qRadDiff *= shadingFac;
-        }
+		// reduce by shading factor
+		if(m_windowModel->m_shading.m_modelType != NANDRAD::WindowShading::NUM_MT) {
+			// parameters were checked already
+			IBK_ASSERT(! m_windowModel->m_shading.m_para[NANDRAD::WindowShading::P_ReductionFactor].name.empty());
+			double shadingFac = m_windowModel->m_shading.m_para[NANDRAD::WindowShading::P_ReductionFactor].value;
+			qRadGlobal *= shadingFac;
+			qRadDir *= shadingFac;
+			qRadDiff *= shadingFac;
+		}
 
-        // compute solar flux through the glazing system
-        double fluxSolarLeft = 0;
-        double fluxSolarRight = 0;
-        // compute radiation flux in direction of sun light
-        computeSolarFluxThroughGlazing(qRadDir, qRadDiff, incidenceAngle, fluxSolarLeft, fluxSolarRight);
+		// compute solar flux density through the glazing system
+		double solarLeft = 0;
+		double solarRight = 0;
+		// compute radiation flux in direction of sun light
+		IBK_ASSERT(m_windowModel->m_glazingSystem != NULL);
+		m_windowModel->m_glazingSystem->computeSolarFluxDensity(qRadDir, qRadDiff, incidenceAngle, solarLeft,
+																solarRight, m_haveSolarLoadsOnA);
 
-        // store results
-        m_results[R_FluxShortWaveRadiationA] = fluxSolarLeft;
-        m_results[R_FluxShortWaveRadiationB] = fluxSolarRight;
-    }
+		// store results
+		m_results[R_FluxShortWaveRadiationA] = solarLeft * m_windowModel->m_glasArea;
+		m_results[R_FluxShortWaveRadiationB] = solarRight * m_windowModel->m_glasArea;
+	}
 	else {
-        m_results[R_FluxShortWaveRadiationA] = 0;
+		m_results[R_FluxShortWaveRadiationA] = 0;
 		m_results[R_FluxShortWaveRadiationB] = 0;
 	}
 
-    // signal success
-    return 0;
+	// signal success
+	return 0;
 }
 
-
-void WindowModel::computeSolarFluxThroughGlazing(double qDir, double qDiff, double incidenceAngle,
-                                                 double &fluxSolarLeft, double &fluxSolarRight) {
-    fluxSolarLeft = 0;
-    fluxSolarRight= 0;
-
-    // for simple model we calculate solar flux
-    if(m_windowModel->m_glazingSystem->m_modelType == NANDRAD::WindowGlazingSystem::MT_Simple) {
-        // we have an SHGC value
-        if(!m_windowModel->m_glazingSystem->m_splinePara[NANDRAD::WindowGlazingSystem::SP_SHGC].m_name.empty()) {
-           // values were checked already
-            double SHGC = m_windowModel->m_glazingSystem->m_splinePara[NANDRAD::WindowGlazingSystem::SP_SHGC].m_values.value(incidenceAngle);
-            double SHGCHemis = m_windowModel->m_glazingSystem->m_splinePara[NANDRAD::WindowGlazingSystem::SP_SHGC].m_values.value(0.0);
-            // calculate flux density from left to right
-            double solarDensity = 0.0;
-            if(m_haveSolarLoadsOnA) {
-                solarDensity = SHGC * qDir + SHGCHemis * qDiff;
-            }
-            else {
-                IBK_ASSERT(m_haveSolarLoadsOnB);
-                solarDensity = -(SHGC * qDir + SHGCHemis * qDiff);
-            }
-            // flux towards window surface
-            fluxSolarLeft = solarDensity * m_windowModel->m_glasArea;
-            // we assume thermal equilibrium
-            fluxSolarRight = -fluxSolarLeft;
-        }
-    }
-    // otherwise we ignore solar flux
-}
-
-void WindowModel::computeHeatConductionThroughGlazing(double &fluxHeatCondLeft, double &fluxHeatCondRight) {
-
-    fluxHeatCondLeft = 0;
-    fluxHeatCondRight = 0;
-
-    // simple model:
-    if(m_windowModel->m_glazingSystem->m_modelType == NANDRAD::WindowGlazingSystem::MT_Simple) {
-        // values were checked already
-        double alpha = m_windowModel->m_glazingSystem->m_para[NANDRAD::WindowGlazingSystem::P_ThermalTransmittance].value;
-        // non-implemented model or inactive heat conduction
-        if(alpha > 0.0) {
-             // use temperature diffenece through single glazing as potential for heat flux
-            double deltaT = *m_valueRefs[InputRef_SideATemperature] - *m_valueRefs[InputRef_SideBTemperature];
-
-            // compute mean resistance
-            double thermalResistance = 1/alpha;
-
-            // add surface resistances
-            if(!m_con->m_interfaceA.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].name.empty()
-                    && m_con->m_interfaceA.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value > 0) {
-                double alphaLeft = m_con->m_interfaceA.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
-                thermalResistance += 1.0/alphaLeft;
-            }
-            if(!m_con->m_interfaceB.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].name.empty()
-                    && m_con->m_interfaceB.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value > 0) {
-                double alphaRight = m_con->m_interfaceB.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
-                thermalResistance += 1.0/alphaRight;
-            }
-
-            // compute flux
-            IBK_ASSERT(thermalResistance > 0);
-
-            // heat conduction density from left to right (A to B)
-            double heatCondDensity = 1/thermalResistance * deltaT;
-
-            // flux towards window surface
-            fluxHeatCondLeft = heatCondDensity * m_windowModel->m_glasArea;
-            // we assume thermal equilibrium
-            fluxHeatCondRight = -fluxHeatCondLeft;
-        }
-    }
-    // otherwise ignore heat transfer
-}
 
 } // namespace NANDRAD_MODEL
