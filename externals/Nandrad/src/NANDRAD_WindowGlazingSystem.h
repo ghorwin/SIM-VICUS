@@ -75,7 +75,7 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique ID-number for this ventilation rate model. */
+	/*! Unique ID-number for this glazing system (INVALID_ID = disabled/undefined). */
 	unsigned int						m_id = NANDRAD::INVALID_ID;					// XML:A:required
 	/*! Some display/comment name for this model (optional). */
 	std::string							m_displayName;								// XML:A
