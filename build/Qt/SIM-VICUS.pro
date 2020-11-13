@@ -1,7 +1,6 @@
 TEMPLATE = subdirs
 
 SUBDIRS = \
-	../../externals/Vicus/projects/Qt/Vicus.pro \
 	SIM-VICUS \
 	QuaZIP \
 	qwt \
@@ -42,7 +41,7 @@ QtExt.file = ../../externals/QtExt/projects/Qt/QtExt.pro
 
 # dependencies
 NandradSolver.depends = DataIO CCM TiCPP IBK IntegratorFramework Nandrad IBKMK
-NandradCodeCreator.depends = IBK
+NandradCodeGenerator.depends = IBK
 SIM-VICUS.depends = QuaZIP qwt Vicus Nandrad IBK TiCPP CCM
 
 CCM.depends = IBK TiCPP
