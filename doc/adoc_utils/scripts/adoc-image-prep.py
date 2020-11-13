@@ -43,8 +43,10 @@ def processAdoc(fpath, mode, scriptPath):
 			line = lines[i]
 
 			# specialized handling of date tag
-			if line.find("date_on_line_above") != -1:
-				lines[i-1] = datetime.datetime.today().strftime('%d.%m.%Y  %H:%M') + '\n'
+			pos = line.find("date_on_line_above")
+			if pos != -1:
+				version = line[2:pos].strip() # ignore first two // characters and extract version from line "// 0.2.2 date_on_line_above"
+				lines[i-1] = version + " (" + datetime.datetime.today().strftime('%d.%m.%Y') + ')\n'
 
 			pos = line.find(":imagesdir:")
 			if pos != -1:
