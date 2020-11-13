@@ -173,7 +173,7 @@ int WindowModel::update() {
 			thermalResistanceBC += 1.0/alphaRight;
 		}
 
-		// compute heat conduction flux through the glazing system
+		// compute heat conduction flux density [W/m2] through the glazing system
 		double heatCondLeft = 0;
 		double heatCondRight = 0;
 
@@ -182,7 +182,7 @@ int WindowModel::update() {
 		m_windowModel->m_glazingSystem->computeHeatConductionFluxDensity
 				(deltaT, alphaLeft, alphaRight, heatCondLeft, heatCondRight);
 
-		// tranlate into heat flux
+		// translate into heat flux [W]
 		double fluxHeatCondLeft = heatCondLeft * m_windowModel->m_glasArea;
 		double fluxHeatCondRight = heatCondRight * m_windowModel->m_glasArea;
 
@@ -241,7 +241,7 @@ int WindowModel::update() {
 			qRadDiff *= shadingFac;
 		}
 
-		// compute solar flux density through the glazing system
+		// compute solar flux density [W/m2] through the glazing system
 		double solarLeft = 0;
 		double solarRight = 0;
 		// compute radiation flux in direction of sun light
