@@ -85,6 +85,7 @@ SOURCES += \
 	../../src/NANDRAD_DataTable.cpp \
 	../../src/NANDRAD_EmbeddedObject.cpp \
 	../../src/NANDRAD_EmbeddedObjectWindow.cpp \
+	../../src/NANDRAD_HydraulicFluid.cpp \
 	../../src/NANDRAD_HydraulicNetwork.cpp \
 	../../src/NANDRAD_HydraulicNetworkComponent.cpp \
 	../../src/NANDRAD_HydraulicNetworkElement.cpp \

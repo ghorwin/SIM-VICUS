@@ -26,10 +26,7 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	void defaultFluidWater(unsigned int id)
-	{
-
-	}
+	void defaultFluidWater(unsigned int id);
 
 
 	NANDRAD_READWRITE
