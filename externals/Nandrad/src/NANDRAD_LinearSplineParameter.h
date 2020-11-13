@@ -81,6 +81,14 @@ public:
 
 	NANDRAD_COMP(LinearSplineParameter)
 
+	/*! Converts x and y values from display/input/output units (m_xUnit and m_yUnit) to their respective
+		base SI units.
+
+		\warning The m_xUnit and m_yUnit will not be changed and thus be inconsistent afterwards with
+			the values in the m_values spline (similarly to IBK::Parameter).
+	*/
+	void convert2BaseUnits();
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Parameter name (in context of schedules used as scheduled quantity). */

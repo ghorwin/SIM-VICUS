@@ -24,6 +24,7 @@
 #include <IBK_messages.h>
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
+#include <IBK_UnitVector.h>
 #include <NANDRAD_Constants.h>
 #include <NANDRAD_KeywordList.h>
 #include <NANDRAD_Utilities.h>
@@ -109,6 +110,22 @@ TiXmlElement * LinearSplineParameter::writeXML(TiXmlElement * parent) const {
 	TiXmlElement::appendIBKUnitVectorElement(e, "Y", m_yUnit.name(), m_values.y(), true);
 
 	return e;
+}
+
+
+void LinearSplineParameter::convert2BaseUnits() {
+	FUNCID(LinearSplineParameter::convert2BaseUnits);
+	try {
+		// construct unitvector for x values
+		IBK::UnitVector xVec(m_values.x().begin(), m_values.y().begin(), m_xUnit);
+		xVec.convert(m_xUnit.base_unit());
+		// construct unitvector for y values
+		IBK::UnitVector yVec(m_values.y().begin(), m_values.y().begin(), m_yUnit);
+		yVec.convert(m_yUnit.base_unit());
+		m_values.setValues(xVec.m_data, yVec.m_data);
+	} catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, "Error converting spline data from input/output units to base SI units.", FUNC_ID);
+	}
 }
 
 
