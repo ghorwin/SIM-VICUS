@@ -37,3 +37,7 @@ described in the test suite).
 
 <img src="TF06/results/TF06.1.png" width="800px" height="550px"/><img src="TF06/results/TF06.1_radloads.png" width="800px" height="550px"/>
 <img src="TF06/results/TF06.2.png" width="800px" height="550px"/><img src="TF06/results/TF06.2_radloads.png" width="800px" height="550px"/>
+
+### TestCase 07
+
+<img src="TF07/results/TF07.1.png" width="400px"/><img src="TF07/results/TF07.1_heatFlux.png" width="400px"/><br>

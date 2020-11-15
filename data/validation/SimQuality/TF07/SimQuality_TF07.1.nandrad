@@ -200,10 +200,10 @@
 			<WindowGlazingSystem id="10000" displayName="Window 7.1" modelType="Simple">
 				<!-- U-value including transfer coefficients is 1.1, ThermalTransmittance without surface resistances is:
 				     R_glass+alpha = 1/1.1 = 0.90909
-				     R_glass = 0.90909 - 0.125 - 0.04 = 0.7441
-				     ThermalTransmittance = 1/0.7441 = 1.344
+				     R_glass = 0.90909 - 0.125 - 0.4 = 0.384091
+				     ThermalTransmittance = 1/0.384091 = 2.60355
 				 -->
-				<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">1.344</IBK:Parameter>
+				<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">2.60355</IBK:Parameter>
 				<LinearSplineParameter name="SHGC">
 					<X unit="Deg">0 90 </X>
 					<Y unit="---">0 0 </Y>
