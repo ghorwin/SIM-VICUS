@@ -37,7 +37,7 @@ namespace VICUS {
 
 Project::Project() {
 	// build test building
-
+#if 0
 	Room room;
 	room.m_id = 1;
 	room.m_displayName = "Room";
@@ -109,7 +109,7 @@ Project::Project() {
 
 	for (Building & b: m_buildings)
 		b.updateParents();
-
+#endif
 }
 
 
