@@ -51,7 +51,7 @@ SceneView::SceneView() :
 	m_shaderPrograms[SHADER_GRID] = grid;
 
 	// Shaderprogram : regular geometry (opaque geometry with lighting)
-	ShaderProgram blocks(":/shaders/pass_through.vert",":/shaders/simple.frag");
+	ShaderProgram blocks(":/shaders/VertexNormalColor.vert",":/shaders/diffuse.frag");
 	blocks.m_uniformNames.append("worldToView");
 	blocks.m_uniformNames.append("lightPos");
 	blocks.m_uniformNames.append("lightColor");

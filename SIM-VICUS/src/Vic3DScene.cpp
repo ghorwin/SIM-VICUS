@@ -313,7 +313,11 @@ void Vic3DScene::render() {
 	m_buildingShader->bind();
 	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[0], m_worldToView);
 	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[1], m_lightPos);
-	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[2], m_lightColor);
+
+	// Note: you can't use a QColor here directly and pass it as uniform to a shader expecting a vec3. Qt internally
+	//       passes QColor as vec4.
+	QVector3D lightCol(m_lightColor.redF(), m_lightColor.greenF(), m_lightColor.blueF());
+	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[2], lightCol);
 
 	m_opaqueGeometryObject.render();
 

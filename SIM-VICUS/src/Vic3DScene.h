@@ -68,7 +68,7 @@ private:
 	QMatrix4x4				m_worldToView;
 
 	/*! Position of light source, currently very far above. */
-	QVector3D				m_lightPos = QVector3D(0,20,2000);
+	QVector3D				m_lightPos = QVector3D(100,200,2000);
 	/*! Light color. */
 	QColor					m_lightColor = Qt::white;
 
