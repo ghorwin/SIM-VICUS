@@ -66,12 +66,6 @@
 						<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
 					</InterfaceLongWaveEmission>
 				</InterfaceB>
-				<EmbeddedObjects>
-					<EmbeddedObject id="1000" displayName="Window 7.1">
-						<IBK:Parameter name="Area" unit="m2">5.04</IBK:Parameter>
-						<Window glazingSystemID="10000" />
-					</EmbeddedObject>
-				</EmbeddedObjects>
 			</ConstructionInstance>
 			<ConstructionInstance id="7" displayName="East">
 				<ConstructionTypeId>10001</ConstructionTypeId>
