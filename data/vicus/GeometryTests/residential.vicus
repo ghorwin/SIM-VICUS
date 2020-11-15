@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<VicusProject fileVersion="0.1">
+	<Project>
+		<Buildings>
+			<Building id="0" displayName="BuildingName">
+				<BuildingLevels>
+					<BuildingLevel id="1" displayName="E0">
+						<Rooms>
+							<Room id="0" displayName="WE0.0_Bath">
+								<Surfaces>
+									<Surface id="6" displayName="WE0.0_Roof_1">
+										<PlaneGeometry type="Polygon"> 1.8 0 2.2, 1.8 3.1 2.2, 0 3.1 2.2, 0 0 2.2</PlaneGeometry>
+									</Surface>
+									<Surface id="2" displayName="WE0.0_Wall_1">
+										<PlaneGeometry type="Polygon"> 0 0 0, 0 0 2.2, 0 3.1 2.2, 0 3.1 0</PlaneGeometry>
+									</Surface>
+									<Surface id="3" displayName="WE0.0_Wall_2">
+										<PlaneGeometry type="Polygon"> 0 3.1 0, 0 3.1 2.2, 1.8 3.1 2.2, 1.8 3.1 0</PlaneGeometry>
+									</Surface>
+									<Surface id="4" displayName="WE0.0_Wall_3">
+										<PlaneGeometry type="Polygon"> 1.8 3.1 0, 1.8 3.1 2.2, 1.8 0 2.2, 1.8 0 0</PlaneGeometry>
+									</Surface>
+									<Surface id="5" displayName="WE0.0_Wall_4">
+										<PlaneGeometry type="Polygon"> 1.8 0 0, 1.8 0 2.2, 0 0 2.2, 0 0 0</PlaneGeometry>
+									</Surface>
+									<Surface id="1" displayName="WE0.0_Floor_1">
+										<PlaneGeometry type="Polygon"> 0 0 0, 0 3.1 0, 1.8 3.1 0, 1.8 0 0</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="1" displayName="WE0.0_Kitchen">
+								<Surfaces>
+									<Surface id="12" displayName="WE0.0_Roof_2">
+										<PlaneGeometry type="Polygon"> 1.8 3.25 2.2, 1.8 6.25 2.2, 0 6.25 2.2, 0 3.25 2.2</PlaneGeometry>
+									</Surface>
+									<Surface id="8" displayName="WE0.0_Wall_5">
+										<PlaneGeometry type="Polygon"> 0 3.25 0, 0 3.25 2.2, 0 6.25 2.2, 0 6.25 0</PlaneGeometry>
+									</Surface>
+									<Surface id="9" displayName="WE0.0_Wall_6">
+										<PlaneGeometry type="Polygon"> 0 6.25 0, 0 6.25 2.2, 1.8 6.25 2.2, 1.8 6.25 0</PlaneGeometry>
+									</Surface>
+									<Surface id="10" displayName="WE0.0_Wall_7">
+										<PlaneGeometry type="Polygon"> 1.8 6.25 0, 1.8 6.25 2.2, 1.8 3.25 2.2, 1.8 3.25 0</PlaneGeometry>
+									</Surface>
+									<Surface id="11" displayName="WE0.0_Wall_8">
+										<PlaneGeometry type="Polygon"> 1.8 3.25 0, 1.8 3.25 2.2, 0 3.25 2.2, 0 3.25 0</PlaneGeometry>
+									</Surface>
+									<Surface id="7" displayName="WE0.0_Floor_2">
+										<PlaneGeometry type="Polygon"> 0 3.25 0, 0 6.25 0, 1.8 6.25 0, 1.8 3.25 0</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="2" displayName="WE0.0_Living">
+								<Surfaces>
+									<Surface id="18" displayName="WE0.0_Roof_3">
+										<PlaneGeometry type="Polygon"> 6.1 3.25 2.2, 6.1 6.25 2.2, 1.95 6.25 2.2, 1.95 3.25 2.2</PlaneGeometry>
+									</Surface>
+									<Surface id="14" displayName="WE0.0_Wall_9">
+										<PlaneGeometry type="Polygon"> 1.95 3.25 0, 1.95 3.25 2.2, 1.95 6.25 2.2, 1.95 6.25 0</PlaneGeometry>
+									</Surface>
+									<Surface id="15" displayName="WE0.0_Wall_10">
+										<PlaneGeometry type="Polygon"> 1.95 6.25 0, 1.95 6.25 2.2, 6.1 6.25 2.2, 6.1 6.25 0</PlaneGeometry>
+									</Surface>
+									<Surface id="16" displayName="WE0.0_Wall_11">
+										<PlaneGeometry type="Polygon"> 6.1 6.25 0, 6.1 6.25 2.2, 6.1 3.25 2.2, 6.1 3.25 0</PlaneGeometry>
+									</Surface>
+									<Surface id="17" displayName="WE0.0_Wall_12">
+										<PlaneGeometry type="Polygon"> 6.1 3.25 0, 6.1 3.25 2.2, 1.95 3.25 2.2, 1.95 3.25 0</PlaneGeometry>
+									</Surface>
+									<Surface id="13" displayName="WE0.0_Floor_3">
+										<PlaneGeometry type="Polygon"> 1.95 3.25 0, 1.95 6.25 0, 6.1 6.25 0, 6.1 3.25 0</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="3" displayName="WE0.0_Corridor">
+								<Surfaces>
+									<Surface id="24" displayName="WE0.0_Roof_4">
+										<PlaneGeometry type="Polygon"> 3.15 0 2.2, 3.15 3.1 2.2, 1.95 3.1 2.2, 1.95 0 2.2</PlaneGeometry>
+									</Surface>
+									<Surface id="20" displayName="WE0.0_Wall_13">
+										<PlaneGeometry type="Polygon"> 1.95 0 0, 1.95 0 2.2, 1.95 3.1 2.2, 1.95 3.1 0</PlaneGeometry>
+									</Surface>
+									<Surface id="21" displayName="WE0.0_Wall_14">
+										<PlaneGeometry type="Polygon"> 1.95 3.1 0, 1.95 3.1 2.2, 3.15 3.1 2.2, 3.15 3.1 0</PlaneGeometry>
+									</Surface>
+									<Surface id="22" displayName="WE0.0_Wall_15">
+										<PlaneGeometry type="Polygon"> 3.15 3.1 0, 3.15 3.1 2.2, 3.15 0 2.2, 3.15 0 0</PlaneGeometry>
+									</Surface>
+									<Surface id="23" displayName="WE0.0_Wall_16">
+										<PlaneGeometry type="Polygon"> 3.15 0 0, 3.15 0 2.2, 1.95 0 2.2, 1.95 0 0</PlaneGeometry>
+									</Surface>
+									<Surface id="19" displayName="WE0.0_Floor_4">
+										<PlaneGeometry type="Polygon"> 1.95 0 0, 1.95 3.1 0, 3.15 3.1 0, 3.15 0 0</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="4" displayName="WE0.0_Sleeping">
+								<Surfaces>
+									<Surface id="30" displayName="WE0.0_Roof_5">
+										<PlaneGeometry type="Polygon"> 6.1 0 2.2, 6.1 3.1 2.2, 3.3 3.1 2.2, 3.3 0 2.2</PlaneGeometry>
+									</Surface>
+									<Surface id="26" displayName="WE0.0_Wall_17">
+										<PlaneGeometry type="Polygon"> 3.3 0 0, 3.3 0 2.2, 3.3 3.1 2.2, 3.3 3.1 0</PlaneGeometry>
+									</Surface>
+									<Surface id="27" displayName="WE0.0_Wall_18">
+										<PlaneGeometry type="Polygon"> 3.3 3.1 0, 3.3 3.1 2.2, 6.1 3.1 2.2, 6.1 3.1 0</PlaneGeometry>
+									</Surface>
+									<Surface id="28" displayName="WE0.0_Wall_19">
+										<PlaneGeometry type="Polygon"> 6.1 3.1 0, 6.1 3.1 2.2, 6.1 0 2.2, 6.1 0 0</PlaneGeometry>
+									</Surface>
+									<Surface id="29" displayName="WE0.0_Wall_20">
+										<PlaneGeometry type="Polygon"> 6.1 0 0, 6.1 0 2.2, 3.3 0 2.2, 3.3 0 0</PlaneGeometry>
+									</Surface>
+									<Surface id="25" displayName="WE0.0_Floor_5">
+										<PlaneGeometry type="Polygon"> 3.3 0 0, 3.3 3.1 0, 6.1 3.1 0, 6.1 0 0</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+						</Rooms>
+					</BuildingLevel>
+				</BuildingLevels>
+			</Building>
+		</Buildings>
+	</Project>
+</VicusProject>
