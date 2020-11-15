@@ -117,10 +117,10 @@ void LinearSplineParameter::convert2BaseUnits() {
 	FUNCID(LinearSplineParameter::convert2BaseUnits);
 	try {
 		// construct unitvector for x values
-		IBK::UnitVector xVec(m_values.x().begin(), m_values.y().begin(), m_xUnit);
+		IBK::UnitVector xVec(m_values.x().begin(), m_values.x().end(), m_xUnit);
 		xVec.convert(m_xUnit.base_unit());
 		// construct unitvector for y values
-		IBK::UnitVector yVec(m_values.y().begin(), m_values.y().begin(), m_yUnit);
+		IBK::UnitVector yVec(m_values.y().begin(), m_values.y().end(), m_yUnit);
 		yVec.convert(m_yUnit.base_unit());
 		m_values.setValues(xVec.m_data, yVec.m_data);
 	} catch (IBK::Exception & ex) {

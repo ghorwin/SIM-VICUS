@@ -39,7 +39,7 @@ void WindowGlazingSystem::checkParameters() {
 														"Thermal transmittance must be >= 0 W/m2K.");
 
 			// we need an SHGC value
-			if (!m_splinePara[SP_SHGC].m_name.empty())
+			if (m_splinePara[SP_SHGC].m_name.empty())
 				throw IBK::Exception("Missing parameter 'SHGC'.", FUNC_ID);
 			// check that spline units match
 			if (m_splinePara[SP_SHGC].m_xUnit.base_id() != IBK::Unit("Deg").base_id() ||
