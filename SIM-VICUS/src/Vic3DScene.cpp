@@ -322,6 +322,7 @@ void Vic3DScene::render() {
 	QVector3D viewPos = m_camera.translation();
 	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[1], viewPos);
 
+//#define FIXED_LIGHT_POSITION
 #ifdef FIXED_LIGHT_POSITION
 	// use a fixed light position
 	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[1], m_lightPos);
