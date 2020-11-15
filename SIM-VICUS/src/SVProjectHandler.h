@@ -253,6 +253,9 @@ private:
 	*/
 	void addToRecentFiles(const QString& fname);
 
+	/*! Set new colors for each invalid color in the surface data. */
+	void updateSurfaceColors();
+
 
 	// *** PRIVATE DATA MEMBERS ***
 

@@ -308,7 +308,7 @@ void Vic3DScene::render() {
 	// *** opaque building geometry ***
 
 	// culling off, so that we see front and back sides of surfaces
-//	glDisable(GL_CULL_FACE);
+	glDisable(GL_CULL_FACE);
 
 	m_buildingShader->bind();
 	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[0], m_worldToView);
