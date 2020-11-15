@@ -319,6 +319,11 @@ void Vic3DScene::render() {
 	QVector3D lightCol(m_lightColor.redF(), m_lightColor.greenF(), m_lightColor.blueF());
 	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[2], lightCol);
 
+	// set view position
+	QVector3D viewPos = m_camera.translation();
+	viewPos.normalize();
+	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[3], viewPos);
+
 	m_opaqueGeometryObject.render();
 
 	m_buildingShader->release();
