@@ -36,6 +36,20 @@ void WindowModel::setup(const NANDRAD::EmbeddedObjectWindow & windowModelPara,
 }
 
 
+unsigned int WindowModel::interfaceAZoneID() const {
+	if (m_con->m_interfaceA.m_id != NANDRAD::INVALID_ID)
+		return m_con->m_interfaceA.m_zoneId;
+	return 0;
+}
+
+
+unsigned int WindowModel::interfaceBZoneID() const {
+	if (m_con->m_interfaceB.m_id != NANDRAD::INVALID_ID)
+		return m_con->m_interfaceB.m_zoneId;
+	return 0;
+}
+
+
 void WindowModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 	for (int i=0; i<NUM_R; ++i) {
 		QuantityDescription result;

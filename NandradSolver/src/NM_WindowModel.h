@@ -88,6 +88,13 @@ public:
 	int update() override;
 
 
+	// *** Other public member functions
+
+	/*! Returns ID of associated zone at interface A (> 0 if a room zone is connected). */
+	unsigned int interfaceAZoneID() const;
+	/*! Returns ID of associated zone at interface B (> 0 if a room zone is connected). */
+	unsigned int interfaceBZoneID() const;
+
 private:
 
 	/*! Enumeration types for ordered input references, some may be unused and remain nullptr. */

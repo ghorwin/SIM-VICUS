@@ -28,7 +28,7 @@
 #include "NM_KeywordList.h"
 #include "NM_ConstructionBalanceModel.h"
 #include "NM_NaturalVentilationModel.h"
-
+#include "NM_WindowModel.h"
 
 namespace NANDRAD_MODEL {
 
@@ -118,14 +118,15 @@ void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & 
 
 		// *** heat conduction from walls ***
 		if (model->referenceType() == NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE) {
-			// this might now be any model generated from a zone block, so first
-			// convert to
+			// we need a construction balance model here
 			ConstructionBalanceModel* conMod = dynamic_cast<ConstructionBalanceModel*>(model);
 			if (conMod == nullptr) continue;
 
 			// check if either interface references us
+
+			// side A
 			if (conMod->interfaceAZoneID() == m_id) {
-				// create input reference to this zone
+				// create input reference for heat conduction fluxes into this zone
 				InputReference r;
 				r.m_id = conMod->id();
 				r.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
@@ -133,9 +134,10 @@ void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & 
 				m_heatCondValueRefs.push_back(nullptr);
 				m_inputRefs.push_back(r);
 			}
+
 			// check if either interface references us
 			if (conMod->interfaceBZoneID() == m_id) {
-				// create input reference to this zone
+				// create input reference for heat conduction fluxes into this zone
 				InputReference r;
 				r.m_id = conMod->id();
 				r.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
@@ -144,6 +146,40 @@ void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & 
 				m_inputRefs.push_back(r);
 			}
 		}
+
+		// *** heat conduction and solar radiation loads through windows ***
+		if (model->referenceType() == NANDRAD::ModelInputReference::MRT_EMBEDDED_OBJECT) {
+			// we need a window model here
+			WindowModel* mod = dynamic_cast<WindowModel*>(model);
+			if (mod == nullptr) continue;
+
+			// check if either interface references us
+
+			// side A
+			if (mod->interfaceAZoneID() == m_id) {
+				// create input reference for heat conduction fluxes into this zone
+				InputReference r;
+				r.m_id = mod->id();
+				r.m_referenceType = NANDRAD::ModelInputReference::MRT_EMBEDDED_OBJECT;
+				r.m_name.m_name = "FluxHeatConductionA";
+				m_windowHeatCondValueRefs.push_back(nullptr);
+				m_inputRefs.push_back(r);
+				// TODO : solar radiation loads
+			}
+
+			// check if either interface references us
+			if (mod->interfaceBZoneID() == m_id) {
+				// create input reference for heat conduction fluxes into this zone
+				InputReference r;
+				r.m_id = mod->id();
+				r.m_referenceType = NANDRAD::ModelInputReference::MRT_EMBEDDED_OBJECT;
+				r.m_name.m_name = "FluxHeatConductionB";
+				m_windowHeatCondValueRefs.push_back(nullptr);
+				m_inputRefs.push_back(r);
+				// TODO : solar radiation loads
+			}
+		}
+
 		// create input references for model that generate zone-specific inputs (optional)
 		else if (model->referenceType() == NANDRAD::ModelInputReference::MRT_MODEL) {
 			// *** natural ventilation model ***
@@ -176,10 +212,17 @@ void RoomBalanceModel::setInputValueRefs(const std::vector<QuantityDescription> 
 {
 	FUNCID(RoomBalanceModel::setInputValueRefs);
 	// copy value references as ordered by input references
+
+	// Important: the order in which pointers are copied from resultValueRefs must match the
+	//            order the InputReference objects were added to the vector in initInputReferences().
+
 	std::vector<const double *>::const_iterator it = resultValueRefs.begin();
 
 	for (unsigned int i=0; i<m_heatCondValueRefs.size(); ++i, ++it)
 		m_heatCondValueRefs[i] = *it;
+
+	for (unsigned int i=0; i<m_windowHeatCondValueRefs.size(); ++i, ++it)
+		m_windowHeatCondValueRefs[i] = *it;
 
 	// infiltration heat flux
 	for (unsigned int i=0; i<m_infiltrationModelCount; ++i, ++it) {
@@ -208,8 +251,11 @@ void RoomBalanceModel::stateDependencies(std::vector<std::pair<const double *, c
 		// add all heat conduction flux vars as input references for the summation heat flux
 		for (const double * heatCondVars : m_heatCondValueRefs)
 			resultInputValueReferences.push_back(std::make_pair(&m_results[R_ConstructionHeatConductionLoad], heatCondVars));
+		for (const double * heatCondVars : m_windowHeatCondValueRefs)
+			resultInputValueReferences.push_back(std::make_pair(&m_results[R_WindowHeatConductionLoad], heatCondVars));
 		// total flux depends on all computed fluxes
 		resultInputValueReferences.push_back(std::make_pair(&m_results[R_CompleteThermalLoad], &m_results[R_ConstructionHeatConductionLoad]));
+		resultInputValueReferences.push_back(std::make_pair(&m_results[R_CompleteThermalLoad], &m_results[R_WindowHeatConductionLoad]));
 		if (m_infiltrationValueRef != nullptr) {
 			resultInputValueReferences.push_back(std::make_pair(&m_results[R_CompleteThermalLoad], m_infiltrationValueRef));
 			resultInputValueReferences.push_back(std::make_pair(&m_results[R_InfiltrationHeatLoad], m_infiltrationValueRef));
@@ -228,10 +274,15 @@ int RoomBalanceModel::update() {
 	for (const double ** flux = m_heatCondValueRefs.data(), **fluxEnd = flux + m_heatCondValueRefs.size(); flux != fluxEnd; ++flux)
 		sumQHeatCondToWalls -= **flux;
 
+	double sumQHeatCondWindowsToWalls = 0.0; // sum of heat fluxes in [W] positive from windows to room
+	for (const double ** flux = m_windowHeatCondValueRefs.data(), **fluxEnd = flux + m_windowHeatCondValueRefs.size(); flux != fluxEnd; ++flux)
+		sumQHeatCondWindowsToWalls -= **flux;
+
 	// store results
 	m_results[R_ConstructionHeatConductionLoad] = sumQHeatCondToWalls;
+	m_results[R_WindowHeatConductionLoad] = sumQHeatCondWindowsToWalls;
 
-	double SumQdot = sumQHeatCondToWalls;
+	double SumQdot = sumQHeatCondToWalls + sumQHeatCondWindowsToWalls;
 
 	// add ventilation rate flux
 	if (m_infiltrationValueRef != nullptr) {

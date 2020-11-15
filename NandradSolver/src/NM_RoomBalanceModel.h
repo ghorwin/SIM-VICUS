@@ -54,6 +54,8 @@ public:
 		R_CompleteThermalLoad,								// Keyword: CompleteThermalLoad							[W]		'Sum of all thermal fluxes into the room and energy sources.'
 		R_InfiltrationHeatLoad,								// Keyword: InfiltrationHeatLoad						[W]		'Infiltration/natural ventilation heat flux into the room.'
 		R_ConstructionHeatConductionLoad,					// Keyword: ConstructionHeatConductionLoad				[W]		'Sum of heat conduction fluxes from construction surfaces into the room.'
+		R_WindowHeatConductionLoad,							// Keyword: WindowHeatConductionLoad					[W]		'Sum of heat conduction fluxes through windows into the room.'
+		R_WindowSolarRadiationLoad,							// Keyword: WindowSolarRadiationLoad					[W]		'Sum of solar radiation fluxes through windows into the room (only the fraction applied to room volume).'
 		R_CompleteMoistureLoad,								// Keyword: CompleteMoistureLoad						[kg/s]	'Sum of all moisture fluxes into the room and moisture sources.'
 		NUM_R
 	};
@@ -151,6 +153,10 @@ private:
 
 	/*! Value references for heat conduction fluxes in [W] (positive if out-of-room). */
 	std::vector<const double *>						m_heatCondValueRefs;
+	/*! Value references for window heat conduction fluxes in [W] (positive if out-of-room). */
+	std::vector<const double *>						m_windowHeatCondValueRefs;
+	/*! Value references for window solar radiation fluxes in [W] (positive if out-of-room). */
+	std::vector<const double *>						m_windowSolarRadiationLoadsRefs;
 	/*! Number of infiltration model input refs that we have generated and that we get value refs for. */
 	unsigned int									m_infiltrationModelCount = 0;
 	/*! Value reference for natural ventilation/infiltration flux in [W] (positive if into-room). */
