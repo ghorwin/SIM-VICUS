@@ -4,8 +4,9 @@
 	<Directories>
 		<Directory>
 			<Path>.</Path>
-			<SubDir Color="#ffaa00" Checked="1">SimQuality_TF07.1</SubDir>
+			<SubDir Color="#ffaa00" Checked="0">SimQuality_TF07.1</SubDir>
 			<SubDir Color="#ff007f" Checked="0">SimQuality_TF07.1_noWindow</SubDir>
+			<SubDir Color="#005500" Checked="1">SimQuality_TF07.2</SubDir>
 			<SubDir Color="#7141d1" Checked="1">reference</SubDir>
 			<ExpandedSubDir>.</ExpandedSubDir>
 		</Directory>
@@ -25,7 +26,7 @@
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>reference/THERAKLES.tsv?1|4|7|10|13</DataIOFileName>
+					<DataIOFileName>reference/Reference_THERAKLES.tsv?1|4|7|10|13</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
@@ -86,76 +87,6 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
-		<Mapper name="TF07.1 - Wärmestrom">
-			<Extractors>
-				<Extractor>
-					<DataIOFileName>SimQuality_TF07.1/results/fluxes.tsv?1</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-					<Manipulator type="2DScaling">-1</Manipulator>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>reference/THERAKLES.tsv?3</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-					<Manipulator type="2DScaling">5.04</Manipulator>
-				</Extractor>
-			</Extractors>
-			<ChartModel chartType="2D">
-				<SeriesProperties>
-					<Series leftAxis="0">
-						<TitleText>NANDRAD 2</TitleText>
-						<PenColor>#cc0000</PenColor>
-						<MarkerColor>#cc0000</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>Referenz (THERAKLES)</TitleText>
-						<MarkerStyle>0</MarkerStyle>
-						<PenStyle>0</PenStyle>
-						<MarkerColor>#000000</MarkerColor>
-					</Series>
-				</SeriesProperties>
-				<AxisProperties>
-					<Axis index="0" autoscale="0">
-						<TitleText>Time [$unit]</TitleText>
-						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
-						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
-						<IBK:Unit name="AxisUnit">d</IBK:Unit>
-						<Maximum>994377600749</Maximum>
-						<Minimum>994118340244</Minimum>
-						<GridPenStyle>1</GridPenStyle>
-						<MinorGridVisible>0</MinorGridVisible>
-						<DateTimeEnabled>1</DateTimeEnabled>
-						<DateTimeZero>978307200000</DateTimeZero>
-					</Axis>
-					<Axis index="1">
-						<TitleText>Wärmestrom durch das Fenster [$unit]</TitleText>
-						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
-						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
-						<IBK:Unit name="AxisUnit">W</IBK:Unit>
-						<Maximum>12</Maximum>
-						<Minimum>-6</Minimum>
-						<MinorGridVisible>0</MinorGridVisible>
-					</Axis>
-					<Axis index="2" enabled="0" />
-				</AxisProperties>
-				<ChartProperties>
-					<TitleText>TF07.1 - Wärmestrom</TitleText>
-					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
-					<AxisScalesInside>1</AxisScalesInside>
-					<Legend>
-						<Position>Inside</Position>
-						<Alignment>1</Alignment>
-						<MaxColumns>1</MaxColumns>
-						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
-					</Legend>
-				</ChartProperties>
-			</ChartModel>
-		</Mapper>
 		<Mapper name="TF 07.1 - Wärmestrom">
 			<Extractors>
 				<Extractor>
@@ -167,11 +98,11 @@
 					<Manipulator type="2DScaling">-1</Manipulator>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>reference/THERAKLES.tsv?3</DataIOFileName>
+					<DataIOFileName>reference/Reference_THERAKLES.tsv?2|3|5|6|8|9|11|12|14|15</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
+					<ColumnIndex>1</ColumnIndex>
 					<Manipulator type="2DScaling">5.04</Manipulator>
 				</Extractor>
 			</Extractors>
@@ -216,6 +147,78 @@
 				</AxisProperties>
 				<ChartProperties>
 					<TitleText>TF 07.1 - Wärmestrom</TitleText>
+					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend>
+						<Position>Inside</Position>
+						<Alignment>1</Alignment>
+						<MaxColumns>1</MaxColumns>
+						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="TF 07.2 - Raumlufttemperatur">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF07.2/results/states.tsv?1</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>reference/Reference_THERAKLES.tsv?1|4|7|10|13</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<PenColor>#cc0000</PenColor>
+						<MarkerColor>#cc0000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<MarkerStyle>0</MarkerStyle>
+						<PenStyle>0</PenStyle>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<TitleText>Time [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">d</IBK:Unit>
+						<Maximum>994113611693.05725</Maximum>
+						<Minimum>993537436297.19849</Minimum>
+						<GridPenStyle>1</GridPenStyle>
+						<MinorGridVisible>0</MinorGridVisible>
+						<DateTimeEnabled>1</DateTimeEnabled>
+						<DateTimeZero>978307200000</DateTimeZero>
+					</Axis>
+					<Axis index="1" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+						<Maximum>44</Maximum>
+						<Minimum>32</Minimum>
+						<MinorGridVisible>0</MinorGridVisible>
+					</Axis>
+					<Axis index="2" enabled="0" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>510.92678043811009</Maximum>
+						<Minimum>510.92678042232626</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>TF 07.2 - Raumlufttemperatur</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
