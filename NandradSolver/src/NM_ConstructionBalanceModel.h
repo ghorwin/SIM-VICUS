@@ -65,8 +65,15 @@ public:
 	{
 	}
 
-	/*! Initializes model. */
+	/*! Initializes model.
+		\param totalAdsorptionAreaA The sum of all opaque surface areas [m2] in the zone connected to interface A or zero,
+			if no zone is connected at this interface.
+		\param totalAdsorptionAreaB The sum of all opaque surface areas [m2] in the zone connected to interface B or zero,
+			if no zone is connected at this interface.
+	*/
 	void setup(const NANDRAD::ConstructionInstance & con,
+			   double totalAdsorptionAreaA,
+			   double totalAdsorptionAreaB,
 			   const ConstructionStatesModel * statesModel);
 
 
@@ -104,12 +111,7 @@ public:
 	/*! Return evaluation priority. */
 	int priorityOfModelEvaluation() const override;
 
-	/*! Returns vector with model input references.
-		Implicit models must generate their own model input references and populate the
-		vector argument.
-		\note This function is not the fastest, so never call this function from within the solver
-		(except maybe for output writing).
-	*/
+	/*! Returns vector with model input references. */
 	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const override;
 
 	/*! Provides the object with references to requested input variables (persistent memory location). */
@@ -179,6 +181,9 @@ private:
 	double											m_fluxDensityShortWaveRadiationA = 0;
 	/*! Absorbed global radiation flux density at left side [W/m2] (positive from left to right). */
 	double											m_fluxDensityShortWaveRadiationB = 0;
+
+	double											m_totalAdsorptionAreaA = 6666;
+	double											m_totalAdsorptionAreaB = 7777;
 };
 
 } // namespace NANDRAD_MODEL

@@ -5,7 +5,6 @@
 		<Directory>
 			<Path>.</Path>
 			<SubDir Color="#ffaa00" Checked="0">SimQuality_TF07.1</SubDir>
-			<SubDir Color="#ffaa00" Checked="0">SimQuality_TF07.1.orig</SubDir>
 			<SubDir Color="#ff007f" Checked="0">SimQuality_TF07.1_noWindow</SubDir>
 			<SubDir Color="#7141d1" Checked="0">SimQuality_TF07.1_oneWall</SubDir>
 			<SubDir Color="#73d216" Checked="1">SimQuality_TF07.2</SubDir>
@@ -195,24 +194,24 @@
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
-						<TitleText>Time [$unit]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">d</IBK:Unit>
-						<Maximum>994113611693.05725</Maximum>
-						<Minimum>993537436297.19849</Minimum>
+						<Maximum>994111200693</Maximum>
+						<Minimum>993520800297</Minimum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
 						<DateTimeEnabled>1</DateTimeEnabled>
 						<DateTimeZero>978307200000</DateTimeZero>
+						<DateTimeFormats>hh:mm:ss:zzz&#x0A;dd hh:mm:ss&#x0A;dd.MM. hh:mm&#x0A;hh:mm;;dd.MM.&#x0A;dd.MM.&#x0A;dd.MM.yyyy&#x0A;MMM yyyy&#x0A;yyyy</DateTimeFormats>
 					</Axis>
 					<Axis index="1" autoscale="0">
-						<TitleText>$quantity [$unit]</TitleText>
+						<TitleText>Lufttemperatur [$unit]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
 						<Maximum>40</Maximum>
-						<Minimum>20</Minimum>
+						<Minimum>30</Minimum>
 						<MinorGridVisible>0</MinorGridVisible>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
@@ -227,7 +226,6 @@
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
 						<Position>Inside</Position>
-						<Alignment>1</Alignment>
 						<MaxColumns>1</MaxColumns>
 						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
 					</Legend>
@@ -267,24 +265,24 @@
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
-						<TitleText>Time [$unit]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">d</IBK:Unit>
-						<Maximum>993445255316.53345</Maximum>
-						<Minimum>992514875476.33679</Minimum>
+						<Maximum>994111200693</Maximum>
+						<Minimum>993520800297</Minimum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
 						<DateTimeEnabled>1</DateTimeEnabled>
 						<DateTimeZero>978307200000</DateTimeZero>
+						<DateTimeFormats>hh:mm:ss:zzz&#x0A;dd hh:mm:ss&#x0A;dd.MM. hh:mm&#x0A;hh:mm;;dd.MM.&#x0A;dd.MM.&#x0A;dd.MM.yyyy&#x0A;MMM yyyy&#x0A;yyyy</DateTimeFormats>
 					</Axis>
 					<Axis index="1" autoscale="0">
-						<TitleText>$quantity [$unit]</TitleText>
+						<TitleText>Strahlungslast [$unit]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">W</IBK:Unit>
-						<Maximum>1472.6775956284155</Maximum>
-						<Minimum>-1418.032786885246</Minimum>
+						<Maximum>800</Maximum>
+						<Minimum>-50</Minimum>
 						<MinorGridVisible>0</MinorGridVisible>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
@@ -299,7 +297,6 @@
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
 						<Position>Inside</Position>
-						<Alignment>1</Alignment>
 						<MaxColumns>1</MaxColumns>
 						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
 					</Legend>
@@ -339,19 +336,19 @@
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
-						<TitleText>Time [$unit]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">d</IBK:Unit>
-						<Maximum>993254452908.75684</Maximum>
-						<Minimum>992868218983.46606</Minimum>
+						<Maximum>994111200693</Maximum>
+						<Minimum>993520800297</Minimum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
 						<DateTimeEnabled>1</DateTimeEnabled>
 						<DateTimeZero>978307200000</DateTimeZero>
+						<DateTimeFormats>hh:mm:ss:zzz&#x0A;dd hh:mm:ss&#x0A;dd.MM. hh:mm&#x0A;hh:mm;;dd.MM.&#x0A;dd.MM.&#x0A;dd.MM.yyyy&#x0A;MMM yyyy&#x0A;yyyy</DateTimeFormats>
 					</Axis>
 					<Axis index="1" autoscale="0">
-						<TitleText>$quantity [$unit]</TitleText>
+						<TitleText>Wärmeleitungsstrom [$unit]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">W</IBK:Unit>
@@ -371,7 +368,7 @@
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
 						<Position>Inside</Position>
-						<Alignment>1</Alignment>
+						<Alignment>5</Alignment>
 						<MaxColumns>1</MaxColumns>
 						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
 					</Legend>

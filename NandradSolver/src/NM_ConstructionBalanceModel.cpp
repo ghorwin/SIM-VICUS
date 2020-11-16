@@ -24,6 +24,7 @@
 
 #include <NANDRAD_ConstructionInstance.h>
 #include <NANDRAD_Constants.h>
+#include <NANDRAD_SimulationParameter.h>
 
 #include "NM_ConstructionStatesModel.h"
 #include "NM_KeywordList.h"
@@ -32,11 +33,17 @@ namespace NANDRAD_MODEL {
 
 
 void ConstructionBalanceModel::setup(const NANDRAD::ConstructionInstance & con,
+									 double totalAdsorptionAreaA,
+									 double totalAdsorptionAreaB,
 									 const ConstructionStatesModel * statesModel)
 {
 	m_con = &con;
 	m_statesModel = statesModel;
 	m_moistureBalanceEnabled = statesModel->m_moistureBalanceEnabled;
+
+	// cache total absorption surface areas
+	m_totalAdsorptionAreaA = totalAdsorptionAreaA;
+	m_totalAdsorptionAreaB = totalAdsorptionAreaB;
 
 	// cross section area in [m2] - this is the net area not including embedded objects
 	// this area is needed to compute the heat flow [W] towards the zone
@@ -147,7 +154,7 @@ void ConstructionBalanceModel::inputReferences(std::vector<InputReference> & inp
 
 	// We may have a zone connected on either side of the construction (or even on both).
 	// So, if we have a connected zone, we create an optional input reference, just in case there is no
-	// radiation loads model instantiated (when there is no window, there is not radiation summation model).
+	// radiation loads model instantiated (when there is no window, there is no radiation summation model).
 	// If there is no construction, we simply add an invalid InputReference which will get filtered out and yield a
 	// nullptr as value reference.
 
@@ -329,14 +336,54 @@ void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NAN
 		// different calculation from left or right side
 		if (sideA) {
 			double fluxDensity = m_statesModel->m_results[NANDRAD_MODEL::ConstructionStatesModel::R_SolarRadiationFluxA];
-			m_fluxDensityShortWaveRadiationA = fluxDensity;
-			m_results[R_FluxShortWaveRadiationA] = fluxDensity*m_area;
+			m_fluxDensityShortWaveRadiationA = fluxDensity; // positive from left to right (into construction)
+			m_results[R_FluxShortWaveRadiationA] = fluxDensity*m_area; // positive into construction
 		}
 		else {
 			double fluxDensity = m_statesModel->m_results[NANDRAD_MODEL::ConstructionStatesModel::R_SolarRadiationFluxB];
-			m_fluxDensityShortWaveRadiationB = -fluxDensity;
-			m_results[R_FluxShortWaveRadiationB] = -fluxDensity*m_area;
+			m_fluxDensityShortWaveRadiationB = -fluxDensity; // positive from left to right (out of construction)
+			m_results[R_FluxShortWaveRadiationB] = fluxDensity*m_area; // positive into construction
 		}
+	}
+
+	// *** inside solar radiation boundary condition
+
+	if (m_valueRefs[InputRef_SideASolarRadiationFromWindowLoads] != nullptr) {
+		// we got radiation load (positive into zone and hence positive into construction surface as well)
+
+		// retrieve total solar radiation load into the zone [W]
+		double radFraction2Zone = m_statesModel->m_simPara->m_para[NANDRAD::SimulationParameter::P_RadiationLoadFractionZone].value;
+		// compute fraction that is applied to surfaces directly (the rest goes to the room air balance) [W]
+		double radLoad2AllSurfaces = (1-radFraction2Zone)* (*m_valueRefs[InputRef_SideASolarRadiationFromWindowLoads]);
+
+		// \todo split the load up according to splitting rule
+
+		// for area-weighted distribution we need to know the total area of all opaque surfaces to the zone connected at
+		// side A
+
+		IBK_ASSERT(m_totalAdsorptionAreaA != 0);
+		double radLoadFraction = radLoad2AllSurfaces*m_area/m_totalAdsorptionAreaA; // in [W]
+		m_results[R_FluxShortWaveRadiationA] = radLoadFraction; // this is into the construction
+		m_fluxDensityShortWaveRadiationA = radLoadFraction/m_area;
+	}
+
+	if (m_valueRefs[InputRef_SideBSolarRadiationFromWindowLoads] != nullptr) {
+		// we got radiation load (positive into zone and hence positive into construction surface as well)
+
+		// retrieve total solar radiation load into the zone [W]
+		double radFraction2Zone = m_statesModel->m_simPara->m_para[NANDRAD::SimulationParameter::P_RadiationLoadFractionZone].value;
+		// compute fraction that is applied to surfaces directly (the rest goes to the room air balance) [W]
+		double radLoad2AllSurfaces = (1-radFraction2Zone)* (*m_valueRefs[InputRef_SideBSolarRadiationFromWindowLoads]);
+
+		// \todo split the load up according to splitting rule
+
+		// for area-weighted distribution we need to know the total area of all opaque surfaces to the zone connected at
+		// side B
+
+		IBK_ASSERT(m_totalAdsorptionAreaB != 0);
+		double radLoadFraction = radLoad2AllSurfaces*m_area/m_totalAdsorptionAreaB; // in [W]
+		m_results[R_FluxShortWaveRadiationB] = radLoadFraction; // this is into the construction
+		m_fluxDensityShortWaveRadiationB = -radLoadFraction/m_area; // mind sign convention, positive from left to right
 	}
 }
 

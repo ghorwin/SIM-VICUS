@@ -1084,6 +1084,36 @@ void NandradModel::initWallsAndInterfaces() {
 	}
 
 
+	// check all construction instances for correct parameters and initialize quick-access pointer links
+	for (unsigned int i=0; i<m_project->m_constructionInstances.size(); ++i) {
+		NANDRAD::ConstructionInstance & ci = m_project->m_constructionInstances[i];
+		try {
+			ci.checkParameters(*m_project);
+			// now the net surface area has been computed, which is needed in the next loop
+		}
+		catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error initializing construction instance #%1 '%2' (id=%3).")
+								 .arg(i).arg(ci.m_displayName).arg(ci.m_id), FUNC_ID);
+		}
+	}
+	// Prepare data for flux distribution:
+	// For area-weighted flux distribution, we need to know the total area of all opaque surfaces connected to a zone.
+	// So we create a dictionary for all active zones and add net surface areas for each construction interfacing
+	// a zone.
+
+	// key is zone ID, value is sum of surface areas
+	std::map<unsigned int, double> zoneSurfaceAreas; // TODO: if we need this in other places as well, make it a member variable
+
+	for (const NANDRAD::ConstructionInstance & ci : m_project->m_constructionInstances) {
+		unsigned int zoneId = ci.interfaceAZoneID();
+		if (zoneId != 0)
+			zoneSurfaceAreas[zoneId] += ci.m_netHeatTransferArea;
+
+		zoneId = ci.interfaceBZoneID();
+		if (zoneId != 0)
+			zoneSurfaceAreas[zoneId] += ci.m_netHeatTransferArea;
+	}
+
 	// process all construction instances and:
 	// - check if they are connected to at least one room - otherwise
 	// - check that the referenced construction type exists and create quick-access reference to construction instance
@@ -1091,7 +1121,6 @@ void NandradModel::initWallsAndInterfaces() {
 	for (unsigned int i=0; i<m_project->m_constructionInstances.size(); ++i) {
 		NANDRAD::ConstructionInstance & ci = m_project->m_constructionInstances[i];
 		try {
-			ci.checkParameters(*m_project);
 
 			// we now have all parameters needed to create the ConstructionStatesModel and ConstructionsBalanceModel and
 			// associated boundary condition models
@@ -1130,7 +1159,7 @@ void NandradModel::initWallsAndInterfaces() {
 			m_modelContainer.push_back(balanceModel); // transfer ownership
 
 			// does the entire initialization - balance model reuses data from statesModel
-			balanceModel->setup(ci, statesModel);
+			balanceModel->setup(ci, zoneSurfaceAreas[ci.interfaceAZoneID()], zoneSurfaceAreas[ci.interfaceBZoneID()], statesModel);
 
 			// register model for evaluation
 			registerStateDependendModel(balanceModel);
