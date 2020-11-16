@@ -35,9 +35,9 @@
 // include model implementation class
 #include "NM_NandradModel.h"
 
-//#define TEST_PROJECT_WRITING
+#define TEST_PROJECT_WRITING
 
-#define SERIALIZATION_TEST
+//#define SERIALIZATION_TEST
 #ifdef SERIALIZATION_TEST
 #include <NANDRAD_SerializationTest.h>
 #include <NANDRAD_Utilities.h>
@@ -176,9 +176,9 @@ void createSim02(NANDRAD::Project &prj){
 
 		NANDRAD::ConstructionInstance conInsta;
 		conInsta.m_id = conId++;
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_ORIENTATION].set("Orientation", orientation[i], IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_INCLINATION].set("Inclination", inclination[i], IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_AREA].set("Area", 1, IBK::Unit("m2"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Orientation].set("Orientation", orientation[i], IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Inclination].set("Inclination", inclination[i], IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Area].set("Area", 1, IBK::Unit("m2"));
 		conInsta.m_displayName = name[i%name.size()] + "_" + IBK::val2string(inclination[i]);
 
 		// create interfaces
@@ -337,9 +337,9 @@ void createSim03(NANDRAD::Project &prj){
 	{
 		NANDRAD::ConstructionInstance conInsta;
 		conInsta.m_id = conId++;
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_AREA].set("Area", 6, IBK::Unit("m2"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Orientation].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Inclination].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Area].set("Area", 6, IBK::Unit("m2"));
 		conInsta.m_displayName = "North";
 
 		// create interfaces
@@ -374,45 +374,45 @@ void createSim03(NANDRAD::Project &prj){
 		conInsta.m_id = conId++;
 		conInsta.m_interfaceA.m_id = conId++;
 		conInsta.m_interfaceB.m_id = conId++;
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_ORIENTATION].set("Orientation", 180, IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_AREA].set("Area", 6, IBK::Unit("m2"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Orientation].set("Orientation", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Inclination].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Area].set("Area", 6, IBK::Unit("m2"));
 		prj.m_constructionInstances.push_back(conInsta);
 
 		conInsta.m_displayName = "East";
 		conInsta.m_id = conId++;
 		conInsta.m_interfaceA.m_id = conId++;
 		conInsta.m_interfaceB.m_id = conId++;
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_ORIENTATION].set("Orientation", 90, IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_AREA].set("Area", 15, IBK::Unit("m2"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Orientation].set("Orientation", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Inclination].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Area].set("Area", 15, IBK::Unit("m2"));
 		prj.m_constructionInstances.push_back(conInsta);
 
 		conInsta.m_displayName = "West";
 		conInsta.m_id = conId++;
 		conInsta.m_interfaceA.m_id = conId++;
 		conInsta.m_interfaceB.m_id = conId++;
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_ORIENTATION].set("Orientation", 270, IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_AREA].set("Area", 15, IBK::Unit("m2"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Orientation].set("Orientation", 270, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Inclination].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Area].set("Area", 15, IBK::Unit("m2"));
 		prj.m_constructionInstances.push_back(conInsta);
 
 		conInsta.m_displayName = "Roof";
 		conInsta.m_id = conId++;
 		conInsta.m_interfaceA.m_id = conId++;
 		conInsta.m_interfaceB.m_id = conId++;
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_INCLINATION].set("Inclination", 0, IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_AREA].set("Area", 10, IBK::Unit("m2"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Orientation].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Inclination].set("Inclination", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Area].set("Area", 10, IBK::Unit("m2"));
 		prj.m_constructionInstances.push_back(conInsta);
 
 		conInsta.m_displayName = "Floor";
 		conInsta.m_id = conId++;
 		conInsta.m_interfaceA.m_id = conId++;
 		conInsta.m_interfaceB.m_id = conId++;
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_INCLINATION].set("Inclination", 180, IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_AREA].set("Area", 10, IBK::Unit("m2"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Orientation].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Inclination].set("Inclination", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Area].set("Area", 10, IBK::Unit("m2"));
 		prj.m_constructionInstances.push_back(conInsta);
 	}
 #if 0
@@ -1709,13 +1709,13 @@ void hydraulicNetworkTest01(NANDRAD::Project &prj){
 	NANDRAD::HydraulicNetworkComponent adiabaticPipe;
 
 	adiabaticPipe.m_id = id++;
-	adiabaticPipe.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_AdiabaticPipe;
+	adiabaticPipe.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe;
 	adiabaticPipe.m_displayName = "Adiabatic Pipe";
 
 	NANDRAD::HydraulicNetworkComponent pipe;
 
 	pipe.m_id = id++;
-	pipe.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_Pipe;
+	pipe.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticPipe;
 	pipe.m_displayName = "Heat Exchanged Pipe";
 	pipe.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter] = IBK::Parameter("HydraulicDiameter", 12 ,"mm");
 
@@ -1906,9 +1906,9 @@ void createSim07(bool window71, bool window72, bool window73, bool window74) {
 	{
 		NANDRAD::ConstructionInstance conInsta;
 		conInsta.m_id = conId++;
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_AREA].set("Area", 6, IBK::Unit("m2"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Orientation].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Inclination].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Area].set("Area", 6, IBK::Unit("m2"));
 		conInsta.m_displayName = "North";
 
 		// create interfaces
@@ -1943,45 +1943,45 @@ void createSim07(bool window71, bool window72, bool window73, bool window74) {
 		conInsta.m_id = conId++;
 		conInsta.m_interfaceA.m_id = conId++;
 		conInsta.m_interfaceB.m_id = conId++;
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_ORIENTATION].set("Orientation", 180, IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_AREA].set("Area", 6, IBK::Unit("m2"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Orientation].set("Orientation", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Inclination].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Area].set("Area", 6, IBK::Unit("m2"));
 		prj.m_constructionInstances.push_back(conInsta);
 
 		conInsta.m_displayName = "East";
 		conInsta.m_id = conId++;
 		conInsta.m_interfaceA.m_id = conId++;
 		conInsta.m_interfaceB.m_id = conId++;
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_ORIENTATION].set("Orientation", 90, IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_AREA].set("Area", 15, IBK::Unit("m2"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Orientation].set("Orientation", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Inclination].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Area].set("Area", 15, IBK::Unit("m2"));
 		prj.m_constructionInstances.push_back(conInsta);
 
 		conInsta.m_displayName = "West";
 		conInsta.m_id = conId++;
 		conInsta.m_interfaceA.m_id = conId++;
 		conInsta.m_interfaceB.m_id = conId++;
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_ORIENTATION].set("Orientation", 270, IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_AREA].set("Area", 15, IBK::Unit("m2"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Orientation].set("Orientation", 270, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Inclination].set("Inclination", 90, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Area].set("Area", 15, IBK::Unit("m2"));
 		prj.m_constructionInstances.push_back(conInsta);
 
 		conInsta.m_displayName = "Roof";
 		conInsta.m_id = conId++;
 		conInsta.m_interfaceA.m_id = conId++;
 		conInsta.m_interfaceB.m_id = conId++;
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_INCLINATION].set("Inclination", 0, IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_AREA].set("Area", 10, IBK::Unit("m2"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Orientation].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Inclination].set("Inclination", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Area].set("Area", 10, IBK::Unit("m2"));
 		prj.m_constructionInstances.push_back(conInsta);
 
 		conInsta.m_displayName = "Floor";
 		conInsta.m_id = conId++;
 		conInsta.m_interfaceA.m_id = conId++;
 		conInsta.m_interfaceB.m_id = conId++;
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_INCLINATION].set("Inclination", 180, IBK::Unit("Deg"));
-		conInsta.m_para[NANDRAD::ConstructionInstance::P_AREA].set("Area", 10, IBK::Unit("m2"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Orientation].set("Orientation", 0, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Inclination].set("Inclination", 180, IBK::Unit("Deg"));
+		conInsta.m_para[NANDRAD::ConstructionInstance::P_Area].set("Area", 10, IBK::Unit("m2"));
 		prj.m_constructionInstances.push_back(conInsta);
 	}
 
@@ -2260,7 +2260,7 @@ int main(int argc, char * argv[]) {
 
 		hydraulicNetworkTest02(prj);
 
-		prj.writeXML(IBK::Path("c:/temp/hydrNet.nandrad"));
+		prj.writeXML(IBK::Path("hydrNet.nandrad"));
 
 		return EXIT_SUCCESS;
 
@@ -2349,9 +2349,9 @@ int main(int argc, char * argv[]) {
 	// add construction instance
 	NANDRAD::ConstructionInstance conInsta;
 	conInsta.m_id = 1;
-	conInsta.m_para[NANDRAD::ConstructionInstance::P_ORIENTATION].set("Orientation", 0, IBK::Unit("Deg"));
-	conInsta.m_para[NANDRAD::ConstructionInstance::P_INCLINATION].set("Inclination", 90, IBK::Unit("Deg"));
-	conInsta.m_para[NANDRAD::ConstructionInstance::P_AREA].set("Area", 1, IBK::Unit("m2"));
+	conInsta.m_para[NANDRAD::ConstructionInstance::P_Orientation].set("Orientation", 0, IBK::Unit("Deg"));
+	conInsta.m_para[NANDRAD::ConstructionInstance::P_Inclination].set("Inclination", 90, IBK::Unit("Deg"));
+	conInsta.m_para[NANDRAD::ConstructionInstance::P_Area].set("Area", 1, IBK::Unit("m2"));
 
 	conInsta.m_constructionTypeId = 10001;
 
