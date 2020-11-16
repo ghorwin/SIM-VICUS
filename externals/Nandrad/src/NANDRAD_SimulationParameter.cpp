@@ -71,6 +71,19 @@ void SimulationParameter::checkParameters() const {
 		throw IBK::Exception(IBK::FormatString("Invalid initial temperature %1 in SimulationParameters.")
 							 .arg(m_para[P_InitialTemperature].get_value("C")), FUNC_ID);
 
+	// check radiation load fractions
+	for (unsigned int i=0; i<4; ++i)
+		m_para[P_RadiationLoadFractionZone+i].checkedValue("---", "---", 0, true, 1, true,
+													 "Radiation load fraction must be between 0 and 1.");
+
+	// check that the latter three add up to 1
+	double fractionSum = m_para[P_RadiationLoadFractionFloor].value +
+			m_para[P_RadiationLoadFractionWalls].value +
+			m_para[P_RadiationLoadFractionCeiling].value;
+
+	if (!IBK::near_equal(fractionSum, 1.0))
+		throw IBK::Exception("Radiation load fractions for walls, ceiling and floor must add up to 1.", FUNC_ID);
+
 	/// \todo Implementation of other value range checks
 }
 

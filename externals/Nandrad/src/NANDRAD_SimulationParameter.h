@@ -74,11 +74,11 @@ public:
 	/*! Short wave radiation model variant. */
 	enum swrad_distribution_t {
 		/*! Short wave radiation on surfaces is distributed area-weighted. */
-		SWR_AREA_WEIGHTED,
+		SWR_AreaWeighted,							// Keyword: AreaWeighted								'Distribution based on surface area.'
 		/*! Short wave radiation on surface is distributed based on surface type (see P_RadiationLoadFractionFloor, P_RadiationLoadFractionCeiling and P_RadiationLoadFractionWalls). */
-		SWR_SURFACE_TYPE_FACTOR,
+		SWR_SurfaceTypeFactor,						// Keyword: SurfaceTypeFactor							'Distribution based on surface type.'
 		/*! Short wave radiation on surface is distributed via view factor table (defined in each zone). */
-		SWR_VIEW_FACTOR,
+		SWR_ViewFactor,								// Keyword: ViewFactor									'Distribution based on zone-specific view factors.'
 		NUM_SWR
 	};
 
@@ -106,7 +106,7 @@ public:
 	IBK::Flag			m_flags[NUM_F];					// XML:E
 
 	/*! Defines the way short wave radiation loads are distributed. */
-	swrad_distribution_t	m_shwradDistributionType = SWR_AREA_WEIGHTED;	// XML:E
+	swrad_distribution_t	m_shwradDistributionType = SWR_AreaWeighted;	// XML:E
 
 	/*! The time interval of simulation beginning, offset
 		and duration from January 1, 0:00 of the start year. */
