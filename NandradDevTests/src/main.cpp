@@ -1711,6 +1711,7 @@ void hydraulicNetworkTest01(NANDRAD::Project &prj){
 	adiabaticPipe.m_id = id++;
 	adiabaticPipe.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe;
 	adiabaticPipe.m_displayName = "Adiabatic Pipe";
+	adiabaticPipe.m_para[NANDRAD::HydraulicNetworkComponent::P_PipeRoughness] = IBK::Parameter("PipeRoughness", 0.007, "mm");
 
 	NANDRAD::HydraulicNetworkComponent pipe;
 
@@ -1718,6 +1719,7 @@ void hydraulicNetworkTest01(NANDRAD::Project &prj){
 	pipe.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticPipe;
 	pipe.m_displayName = "Heat Exchanged Pipe";
 	pipe.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter] = IBK::Parameter("HydraulicDiameter", 12 ,"mm");
+	pipe.m_para[NANDRAD::HydraulicNetworkComponent::P_PipeRoughness] = IBK::Parameter("PipeRoughness", 0.007, "mm");
 
 	NANDRAD::HydraulicNetworkComponent ccs;
 
@@ -1726,7 +1728,7 @@ void hydraulicNetworkTest01(NANDRAD::Project &prj){
 	ccs.m_displayName = "ccs";
 	ccs.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter] = IBK::Parameter("HydraulicDiameter", 12 ,"mm");
 	ccs.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient] = IBK::Parameter("PressureLossCoefficient", 1 ,"-");
-//	ccs.m_para[NANDRAD::HydraulicNetworkComponent::P_PipeFrictionFactor] = IBK::Parameter("PipeFrictionFactor", 1 ,"-");
+	ccs.m_para[NANDRAD::HydraulicNetworkComponent::P_PipeRoughness] = IBK::Parameter("PipeRoughness", 0.007, "mm");
 
 	prj.m_hydraulicComponents.push_back(pump);
 	prj.m_hydraulicComponents.push_back(boiler);
@@ -1773,6 +1775,7 @@ void hydraulicNetworkTest01(NANDRAD::Project &prj){
 	++id;
 
 	hydrNet.m_fluid.defaultFluidWater(id);
+	prj.m_hydraulicNetworks.clear();
 	prj.m_hydraulicNetworks.push_back(hydrNet);
 
 }
@@ -1853,6 +1856,7 @@ void hydraulicNetworkTest02(NANDRAD::Project &prj){
 
 
 	hydrNet.m_fluid.defaultFluidWater(id++);
+	prj.m_hydraulicNetworks.clear();
 	prj.m_hydraulicNetworks.push_back(hydrNet);
 
 }
@@ -2259,9 +2263,12 @@ int main(int argc, char * argv[]) {
 	if(isHydrNet) {
 		NANDRAD::Project prj;
 
-		hydraulicNetworkTest02(prj);
+		hydraulicNetworkTest01(prj);
+		prj.writeXML(IBK::Path("../../data/hydraulicNetworks/hydrNetwork_building.nandrad"));
 
-		prj.writeXML(IBK::Path("../../data/hydraulicNetworks/hydrNet.nandrad"));
+
+		hydraulicNetworkTest02(prj);
+		prj.writeXML(IBK::Path("../../data/hydraulicNetworks/hydrNetwork_district.nandrad"));
 
 		return EXIT_SUCCESS;
 
