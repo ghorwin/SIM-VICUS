@@ -219,12 +219,27 @@
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
+					<Quantity>ConstructionHeatConductionLoad</Quantity>
+					<ObjectListName>Zone Var01</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>WindowHeatConductionLoad</Quantity>
+					<ObjectListName>Zone Var01</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>WindowSolarRadiationLoad</Quantity>
+					<ObjectListName>Zone Var01</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
 					<Quantity>FluxHeatConductionA</Quantity>
 					<ObjectListName>Windows</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
-					<Quantity>R_FluxShortWaveRadiationA</Quantity>
+					<Quantity>FluxShortWaveRadiationA</Quantity>
 					<ObjectListName>Windows</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
