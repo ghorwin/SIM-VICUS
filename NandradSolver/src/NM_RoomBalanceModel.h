@@ -156,11 +156,14 @@ private:
 	std::vector<const double *>						m_heatCondValueRefs;
 	/*! Value references for window heat conduction fluxes in [W] (positive if out-of-room). */
 	std::vector<const double *>						m_windowHeatCondValueRefs;
-	/*! Value references for window solar radiation fluxes in [W] (positive if out-of-room). */
-	std::vector<const double *>						m_windowSolarRadiationLoadsRefs;
+
+	/*! True, if we have a model providing solar radiation loads to zone. */
+	bool											m_haveSolarRadiationModel = false;
+	/*! Value reference for sum of all window solar radiation fluxes in [W] (positive if into room). */
+	const double *									m_windowSolarRadiationLoadsRef = nullptr;
 	/*! Number of infiltration model input refs that we have generated and that we get value refs for. */
 	unsigned int									m_infiltrationModelCount = 0;
-	/*! Value reference for natural ventilation/infiltration flux in [W] (positive if into-room). */
+	/*! Value reference for natural ventilation/infiltration flux in [W] (positive if into room). */
 	const double *									m_infiltrationValueRef = nullptr;
 
 	/*! Vector with cached derivatives, updated at last call to update(). */

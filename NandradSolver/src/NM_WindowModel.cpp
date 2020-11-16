@@ -33,6 +33,10 @@ void WindowModel::setup(const NANDRAD::EmbeddedObjectWindow & windowModelPara,
 	// TODO : warn if solar loads on either side --> should be signaled already on construction level
 
 	m_results.resize(NUM_R);
+	m_results[R_FluxHeatConductionA] = 110001;
+	m_results[R_FluxHeatConductionB] = 110002;
+	m_results[R_FluxShortWaveRadiationA] = 110003;
+	m_results[R_FluxShortWaveRadiationB] = 110004;
 }
 
 

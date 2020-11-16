@@ -30,16 +30,16 @@ namespace NANDRAD_MODEL {
 void RoomRadiationLoadsModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 	QuantityDescription result;
 	result.m_constant = false;
-	result.m_description = NANDRAD_MODEL::KeywordList::Description("RoomRadiationLoadsModel::Results", R_WindowSolarRadiationLoad);
-	result.m_name = NANDRAD_MODEL::KeywordList::Keyword("RoomRadiationLoadsModel::Results", R_WindowSolarRadiationLoad);
-	result.m_unit = NANDRAD_MODEL::KeywordList::Unit("RoomRadiationLoadsModel::Results", R_WindowSolarRadiationLoad);
+	result.m_description = NANDRAD_MODEL::KeywordList::Description("RoomRadiationLoadsModel::Results", R_WindowSolarRadiationFluxSum);
+	result.m_name = NANDRAD_MODEL::KeywordList::Keyword("RoomRadiationLoadsModel::Results", R_WindowSolarRadiationFluxSum);
+	result.m_unit = NANDRAD_MODEL::KeywordList::Unit("RoomRadiationLoadsModel::Results", R_WindowSolarRadiationFluxSum);
 
 	resDesc.push_back(result);
 }
 
 
 const double * RoomRadiationLoadsModel::resultValueRef(const QuantityName & quantityName) const {
-	if (quantityName.m_name == NANDRAD_MODEL::KeywordList::Keyword("RoomRadiationLoadsModel::Results", R_WindowSolarRadiationLoad))
+	if (quantityName.m_name == NANDRAD_MODEL::KeywordList::Keyword("RoomRadiationLoadsModel::Results", R_WindowSolarRadiationFluxSum))
 		return &m_result;
 	else
 		return nullptr;

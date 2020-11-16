@@ -29,6 +29,8 @@
 #include "NM_ConstructionBalanceModel.h"
 #include "NM_NaturalVentilationModel.h"
 #include "NM_WindowModel.h"
+#include "NM_RoomRadiationLoadsModel.h"
+
 
 namespace NANDRAD_MODEL {
 
@@ -110,8 +112,9 @@ int RoomBalanceModel::priorityOfModelEvaluation() const {
 void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & models) {
 	// we create batches of input references for all input quantities that we require in the room model
 
-	// WARNING: the order in which input refs are added to the vector is important. Function setInputValueRefs()
-	//          relies on that!
+	// WARNING: The order of objects in the models vector may vary from project to project. Hence,
+	//          the order of the input references in the m_inputReferences vector also varies after this loop.
+	//          In order to get a decent order, we sort the input refs manually afterwards.
 
 	// search all models for construction models that have an interface to this zone
 	for (AbstractModel * model : models) {
@@ -164,10 +167,6 @@ void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & 
 				r.m_name.m_name = "FluxHeatConductionA";
 				m_windowHeatCondValueRefs.push_back(nullptr);
 				m_inputRefs.push_back(r);
-				// solar radiation loads
-				r.m_name.m_name = "FluxShortWaveRadiationA";
-				m_windowSolarRadiationLoadsRefs.push_back(nullptr);
-				m_inputRefs.push_back(r);
 			}
 
 			// check if either interface references us
@@ -179,13 +178,24 @@ void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & 
 				r.m_name.m_name = "FluxHeatConductionB";
 				m_windowHeatCondValueRefs.push_back(nullptr);
 				m_inputRefs.push_back(r);
-				// solar radiation loads
-				r.m_name.m_name = "FluxShortWaveRadiationB";
-				m_windowSolarRadiationLoadsRefs.push_back(nullptr);
-				m_inputRefs.push_back(r);
 			}
 		}
 
+		else if (model->referenceType() == NANDRAD::ModelInputReference::MRT_ZONE) {
+			// *** solar radiation summation model ***
+
+			RoomRadiationLoadsModel * mod = dynamic_cast<RoomRadiationLoadsModel *>(model);
+			if (mod != nullptr && mod->id() == m_id) {
+				IBK_ASSERT(!m_haveSolarRadiationModel); // must have only one model providing this summation flux for us!
+				m_haveSolarRadiationModel = true;
+				InputReference r;
+				r.m_id = mod->id();
+				r.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+				r.m_name.m_name = "WindowSolarRadiationFluxSum";
+				m_inputRefs.push_back(r);
+			}
+
+		}
 		// create input references for model that generate zone-specific inputs (optional)
 		else if (model->referenceType() == NANDRAD::ModelInputReference::MRT_MODEL) {
 			// *** natural ventilation model ***
@@ -204,6 +214,7 @@ void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & 
 
 		}
 	} // model object loop
+
 
 }
 
@@ -229,9 +240,11 @@ void RoomBalanceModel::setInputValueRefs(const std::vector<QuantityDescription> 
 
 	for (unsigned int i=0; i<m_windowHeatCondValueRefs.size(); ++i, ++it) {
 		m_windowHeatCondValueRefs[i] = *it;
-		// Mind: interleaved storage: [window heat cond 1, solar rad 1, window heat cond 2, solar rad 2, ...]
-		m_windowSolarRadiationLoadsRefs[i] = *(++it);
 	}
+
+	// solar radiation load (summation flux)
+	if (m_haveSolarRadiationModel)
+		m_windowSolarRadiationLoadsRef = *(it++);
 
 	// infiltration heat flux
 	for (unsigned int i=0; i<m_infiltrationModelCount; ++i, ++it) {
@@ -262,8 +275,9 @@ void RoomBalanceModel::stateDependencies(std::vector<std::pair<const double *, c
 			resultInputValueReferences.push_back(std::make_pair(&m_results[R_ConstructionHeatConductionLoad], heatCondVars));
 		for (const double * heatCondVars : m_windowHeatCondValueRefs)
 			resultInputValueReferences.push_back(std::make_pair(&m_results[R_WindowHeatConductionLoad], heatCondVars));
-		for (const double * solarLoadVars : m_windowSolarRadiationLoadsRefs)
-			resultInputValueReferences.push_back(std::make_pair(&m_results[R_WindowSolarRadiationLoad], solarLoadVars));
+
+		if (m_haveSolarRadiationModel)
+			resultInputValueReferences.push_back(std::make_pair(&m_results[R_WindowSolarRadiationLoad], m_windowSolarRadiationLoadsRef));
 		// total flux depends on all computed fluxes
 		resultInputValueReferences.push_back(std::make_pair(&m_results[R_CompleteThermalLoad], &m_results[R_ConstructionHeatConductionLoad]));
 		resultInputValueReferences.push_back(std::make_pair(&m_results[R_CompleteThermalLoad], &m_results[R_WindowHeatConductionLoad]));
@@ -286,23 +300,24 @@ int RoomBalanceModel::update() {
 	for (const double ** flux = m_heatCondValueRefs.data(), **fluxEnd = flux + m_heatCondValueRefs.size(); flux != fluxEnd; ++flux)
 		sumQHeatCondToWalls -= **flux;
 
-	double sumQHeatCondWindowsToWalls = 0.0; // sum of heat fluxes in [W] positive from windows to room
+	double sumQHeatCondThroughWindows = 0.0; // sum of heat fluxes in [W] positive from windows to room
 	for (const double ** flux = m_windowHeatCondValueRefs.data(), **fluxEnd = flux + m_windowHeatCondValueRefs.size(); flux != fluxEnd; ++flux)
-		sumQHeatCondWindowsToWalls -= **flux;
+		sumQHeatCondThroughWindows -= **flux;
 
-	double sumQSolarRadWindowsToWalls = 0.0; // sum of heat fluxes in [W] positive from windows to room
-	const double fraction = 1.0;
-	for (const double ** flux = m_windowSolarRadiationLoadsRefs.data(), **fluxEnd = flux + m_windowSolarRadiationLoadsRefs.size(); flux != fluxEnd; ++flux)
-		sumQSolarRadWindowsToWalls -= **flux * fraction;
 
 	// store results
 	m_results[R_ConstructionHeatConductionLoad] = sumQHeatCondToWalls;
-	m_results[R_WindowHeatConductionLoad] = sumQHeatCondWindowsToWalls;
-	m_results[R_WindowSolarRadiationLoad] = sumQSolarRadWindowsToWalls;
+	m_results[R_WindowHeatConductionLoad] = sumQHeatCondThroughWindows;
 
 	double SumQdot =	sumQHeatCondToWalls +
-						sumQHeatCondWindowsToWalls +
-						sumQSolarRadWindowsToWalls;
+						sumQHeatCondThroughWindows;
+
+	// add solar radiation flux load
+	if (m_haveSolarRadiationModel) {
+		const double fraction = 1.0;
+		m_results[R_WindowSolarRadiationLoad] = *m_windowSolarRadiationLoadsRef * fraction;
+		SumQdot += m_results[R_WindowSolarRadiationLoad];
+	}
 
 	// add ventilation rate flux
 	if (m_infiltrationValueRef != nullptr) {

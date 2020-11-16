@@ -37,7 +37,7 @@ class RoomRadiationLoadsModel : public AbstractModel, public AbstractStateDepend
 public:
 	/*! Computed results, provided with access via construction instance ID. */
 	enum Results {
-		R_WindowSolarRadiationLoad,			// Keyword: FluxShortWaveRadiation		[W]			'Sum of all short wave radiation fluxes across all windows of a zone (positive into zone).'
+		R_WindowSolarRadiationFluxSum,			// Keyword: WindowSolarRadiationFluxSum		[W]			'Sum of all short wave radiation fluxes across all windows of a zone (positive into zone).'
 		NUM_R
 	};
 
@@ -48,9 +48,6 @@ public:
 		m_id(id), m_displayName(displayName)
 	{
 	}
-
-	/*! Init function. */
-	void setup();
 
 	// *** Re-implemented from AbstractModel
 
@@ -114,7 +111,7 @@ private:
 	std::vector<const double *>						m_windowSolarRadiationLoadsRefs;
 
 	/*! Results, computed/updated during the calculation. */
-	double											m_result;
+	double											m_result = 202020;
 
 	/*! Vector with input references. */
 	std::vector<const double*>						m_valueRefs;

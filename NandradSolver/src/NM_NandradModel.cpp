@@ -80,6 +80,7 @@
 #include "NM_ConstructionBalanceModel.h"
 #include "NM_NaturalVentilationModel.h"
 #include "NM_WindowModel.h"
+#include "NM_RoomRadiationLoadsModel.h"
 
 namespace NANDRAD_MODEL {
 
@@ -983,6 +984,34 @@ void NandradModel::initZones() {
 				m_roomBalanceModelContainer.push_back(roomBalanceModel);
 				// and register model for evaluation
 				registerStateDependendModel(roomBalanceModel);
+
+
+				// create summation models
+
+				// solar radiation model - only needed if we have at least one construction with embedded window object
+				// and an interface to us
+				bool needSolarRadiationSummationModel = false;
+				for (const NANDRAD::ConstructionInstance & ci : m_project->m_constructionInstances) {
+					// only constructions connected to us
+					if (!ci.connectedTo(zone.m_id)) continue;
+					for (const NANDRAD::EmbeddedObject & eo : ci.m_embeddedObjects) {
+						// only windows
+						if (eo.objectType() != NANDRAD::EmbeddedObject::OT_Window) continue;
+						needSolarRadiationSummationModel = true;
+						break;
+					}
+					if (needSolarRadiationSummationModel)
+						break;
+				}
+				if (needSolarRadiationSummationModel) {
+					RoomRadiationLoadsModel * sumModel = new RoomRadiationLoadsModel(zone.m_id, zone.m_displayName);
+					m_modelContainer.push_back(sumModel); // transfer ownership
+					// Note: setup call not needed for a simple summation model
+
+					// and register model for evaluation
+					registerStateDependendModel(sumModel);
+				}
+
 
 				// remember current zone
 				activeZones.push_back(&zone);
