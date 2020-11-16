@@ -88,6 +88,16 @@ public:
 	*/
 	bool behavesLike(const ConstructionInstance & other) const;
 
+	/*! If a valid interface parameter block exists at side A, this function returns the references zone ID, otherwise 0.
+		Use this function to check if there is an actual zone (not the outside) connected at this interface.
+	*/
+	unsigned int interfaceAZoneID() const;
+
+	/*! If a valid interface parameter block exists at side B, this function returns the references zone ID, otherwise 0.
+		Use this function to check if there is an actual zone (not the outside) connected at this interface.
+	*/
+	unsigned int interfaceBZoneID() const;
+
 	/*! Returns true if construction is connected on either side via existing Interface definition to
 		the zone with given zoneID.
 	*/

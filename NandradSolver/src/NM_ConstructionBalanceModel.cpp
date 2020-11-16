@@ -59,19 +59,12 @@ void ConstructionBalanceModel::resultDescriptions(std::vector<QuantityDescriptio
 
 		resDesc.push_back(result);
 	}
-
-	/// \todo add layer temperatures
 }
 
 
 void ConstructionBalanceModel::resultValueRefs(std::vector<const double *> & res) const {
 	for (const double & r : m_results)
 		res.push_back(&r);
-
-	/// \todo add layer temperatures
-//	for (const VectorValuedQuantity & r : m_vectorValuedResults) {
-//		res.push_back(&r.data()[0]);
-//	}
 }
 
 
@@ -150,7 +143,29 @@ void ConstructionBalanceModel::inputReferences(std::vector<InputReference> & inp
 		}
 	}
 
-	// solar radiation loads through windows, distributed to wall?
+	// we take solar radiation load from RoomRadiationLoadsModel and then split it up according to the distribution rules
+
+	// We may have a zone connected on either side of the construction (or even on both).
+	// So, if we have a connected zone, we create an optional input reference, just in case there is no
+	// radiation loads model instantiated (when there is no window, there is not radiation summation model).
+	// If there is no construction, we simply add an invalid InputReference which will get filtered out and yield a
+	// nullptr as value reference.
+
+	InputReference ref;
+	if (interfaceAZoneID() != 0) {
+		ref.m_id = m_con->m_interfaceA.m_zoneId;
+		ref.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+		ref.m_name.m_name = "WindowSolarRadiationFluxSum";
+	}
+	inputRefs[InputRef_SideASolarRadiationFromWindowLoads] = ref;
+
+	ref = InputReference();
+	if (interfaceBZoneID() != 0) {
+		ref.m_id = m_con->m_interfaceB.m_zoneId;
+		ref.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+		ref.m_name.m_name = "WindowSolarRadiationFluxSum";
+	}
+	inputRefs[InputRef_SideBSolarRadiationFromWindowLoads] = ref;
 }
 
 
@@ -247,16 +262,12 @@ int ConstructionBalanceModel::update() {
 
 
 unsigned int ConstructionBalanceModel::interfaceAZoneID() const {
-	if (m_con->m_interfaceA.m_id != NANDRAD::INVALID_ID)
-		return m_con->m_interfaceA.m_zoneId;
-	return 0;
+	return m_con->interfaceAZoneID();
 }
 
 
 unsigned int ConstructionBalanceModel::interfaceBZoneID() const {
-	if (m_con->m_interfaceB.m_id != NANDRAD::INVALID_ID)
-		return m_con->m_interfaceB.m_zoneId;
-	return 0;
+	return m_con->interfaceBZoneID();
 }
 
 

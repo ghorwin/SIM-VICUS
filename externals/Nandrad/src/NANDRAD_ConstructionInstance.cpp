@@ -159,5 +159,18 @@ bool ConstructionInstance::behavesLike(const ConstructionInstance & other) const
 }
 
 
+unsigned int ConstructionInstance::interfaceAZoneID() const {
+	if (m_interfaceA.m_id != NANDRAD::INVALID_ID)
+		return m_interfaceA.m_zoneId;
+	return 0;
+}
+
+
+unsigned int ConstructionInstance::interfaceBZoneID() const {
+	if (m_interfaceB.m_id != NANDRAD::INVALID_ID)
+		return m_interfaceB.m_zoneId;
+	return 0;
+}
+
 } // namespace NANDRAD
 

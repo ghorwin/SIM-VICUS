@@ -67,7 +67,7 @@ public:
 	}
 
 	/*! Initializes model by providing simulation parameters and resizing the y and ydot vectors. */
-	void setup( const NANDRAD::SimulationParameter &simPara);
+	void setup(const NANDRAD::SimulationParameter &simPara);
 
 
 	// *** Re-implemented from AbstractModel

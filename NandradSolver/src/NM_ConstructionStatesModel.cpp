@@ -189,6 +189,8 @@ void ConstructionStatesModel::resultDescriptions(std::vector<QuantityDescription
 	// and the temperatures returned are actually mean temperatures of the individual elements of the material layer
 	res.resize(m_con->m_constructionType->m_materialLayers.size());
 	resDesc.push_back(res);
+
+	/// \todo add layer temperatures (as alternative to element temperatures)
 }
 
 
