@@ -157,10 +157,10 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::para_t
 			case 6 :
 			switch (t) {
-				case 0 : return "PressureLossCoefficient";
-				case 1 : return "MaximumPressureLossCoefficient";
-				case 2 : return "HydraulicDiameter";
-				case 3 : return "PipeFrictionFactor";
+				case 0 : return "PipeRoughness";
+				case 1 : return "PressureLossCoefficient";
+				case 2 : return "MaximumPressureLossCoefficient";
+				case 3 : return "HydraulicDiameter";
 				case 4 : return "ExternalHeatTransferCoefficient";
 				case 5 : return "TemperatureTolerance";
 				case 6 : return "PressureHead";
@@ -178,8 +178,7 @@ namespace NANDRAD {
 			case 7 :
 			switch (t) {
 				case 0 : return "Length";
-				case 1 : return "PipeFrictionFactor";
-				case 2 : return "HeatExchangeRate";
+				case 1 : return "HeatExchangeRate";
 			} break;
 			// InterfaceAirFlow::splinePara_t
 			case 8 :
@@ -361,16 +360,19 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "InitialTemperature";
 				case 1 : return "InitialRelativeHumidity";
-				case 2 : return "RadiationLoadFraction";
-				case 3 : return "UserThermalRadiationFraction";
-				case 4 : return "EquipmentThermalLossFraction";
-				case 5 : return "EquipmentThermalRadiationFraction";
-				case 6 : return "LightingVisibleRadiationFraction";
-				case 7 : return "LightingThermalRadiationFraction";
-				case 8 : return "DomesticWaterSensitiveHeatGainFraction";
-				case 9 : return "AirExchangeRateN50";
-				case 10 : return "ShieldingCoefficient";
-				case 11 : return "HeatingDesignAmbientTemperature";
+				case 2 : return "RadiationLoadFractionZone";
+				case 3 : return "RadiationLoadFractionFloor";
+				case 4 : return "RadiationLoadFractionCeiling";
+				case 5 : return "RadiationLoadFractionWalls";
+				case 6 : return "UserThermalRadiationFraction";
+				case 7 : return "EquipmentThermalLossFraction";
+				case 8 : return "EquipmentThermalRadiationFraction";
+				case 9 : return "LightingVisibleRadiationFraction";
+				case 10 : return "LightingThermalRadiationFraction";
+				case 11 : return "DomesticWaterSensitiveHeatGainFraction";
+				case 12 : return "AirExchangeRateN50";
+				case 13 : return "ShieldingCoefficient";
+				case 14 : return "HeatingDesignAmbientTemperature";
 			} break;
 			// SimulationParameter::intPara_t
 			case 36 :
@@ -573,10 +575,10 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::para_t
 			case 6 :
 			switch (t) {
-				case 0 : return "PressureLossCoefficient";
-				case 1 : return "MaximumPressureLossCoefficient";
-				case 2 : return "HydraulicDiameter";
-				case 3 : return "PipeFrictionFactor";
+				case 0 : return "PipeRoughness";
+				case 1 : return "PressureLossCoefficient";
+				case 2 : return "MaximumPressureLossCoefficient";
+				case 3 : return "HydraulicDiameter";
 				case 4 : return "ExternalHeatTransferCoefficient";
 				case 5 : return "TemperatureTolerance";
 				case 6 : return "PressureHead";
@@ -594,8 +596,7 @@ namespace NANDRAD {
 			case 7 :
 			switch (t) {
 				case 0 : return "Length";
-				case 1 : return "PipeFrictionFactor";
-				case 2 : return "HeatExchangeRate";
+				case 1 : return "HeatExchangeRate";
 			} break;
 			// InterfaceAirFlow::splinePara_t
 			case 8 :
@@ -777,16 +778,19 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "InitialTemperature";
 				case 1 : return "InitialRelativeHumidity";
-				case 2 : return "RadiationLoadFraction";
-				case 3 : return "UserThermalRadiationFraction";
-				case 4 : return "EquipmentThermalLossFraction";
-				case 5 : return "EquipmentThermalRadiationFraction";
-				case 6 : return "LightingVisibleRadiationFraction";
-				case 7 : return "LightingThermalRadiationFraction";
-				case 8 : return "DomesticWaterSensitiveHeatGainFraction";
-				case 9 : return "AirExchangeRateN50";
-				case 10 : return "ShieldingCoefficient";
-				case 11 : return "HeatingDesignAmbientTemperature";
+				case 2 : return "RadiationLoadFractionZone";
+				case 3 : return "RadiationLoadFractionFloor";
+				case 4 : return "RadiationLoadFractionCeiling";
+				case 5 : return "RadiationLoadFractionWalls";
+				case 6 : return "UserThermalRadiationFraction";
+				case 7 : return "EquipmentThermalLossFraction";
+				case 8 : return "EquipmentThermalRadiationFraction";
+				case 9 : return "LightingVisibleRadiationFraction";
+				case 10 : return "LightingThermalRadiationFraction";
+				case 11 : return "DomesticWaterSensitiveHeatGainFraction";
+				case 12 : return "AirExchangeRateN50";
+				case 13 : return "ShieldingCoefficient";
+				case 14 : return "HeatingDesignAmbientTemperature";
 			} break;
 			// SimulationParameter::intPara_t
 			case 36 :
@@ -990,10 +994,10 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::para_t
 			case 6 :
 			switch (t) {
-				case 0 : return "Pressure loss coefficient for the component.";
-				case 1 : return "Maximum pressure loss coefficient for the component.";
-				case 2 : return "Inside hydraulic diameter for the component.";
-				case 3 : return "Pipe friction factor for the component.";
+				case 0 : return "Roughness of pipe material.";
+				case 1 : return "Pressure loss coefficient for the component.";
+				case 2 : return "Maximum pressure loss coefficient for the component.";
+				case 3 : return "Inside hydraulic diameter for the component.";
 				case 4 : return "External heat transfer coeffient for the outside boundary.";
 				case 5 : return "Temperature tolerance for e.g. thermostats.";
 				case 6 : return "Pressure head form a pump.";
@@ -1011,8 +1015,7 @@ namespace NANDRAD {
 			case 7 :
 			switch (t) {
 				case 0 : return "Length for the element.";
-				case 1 : return "Pipe friction factor for the element.";
-				case 2 : return "Heat flux added or extracted by heat exchanger";
+				case 1 : return "Heat flux added or extracted by heat exchanger";
 			} break;
 			// InterfaceAirFlow::splinePara_t
 			case 8 :
@@ -1194,16 +1197,19 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "Global initial temperature [C].";
 				case 1 : return "Global initial relative humidity [%].";
-				case 2 : return "Percentage of solar radiation gains attributed direcly to room 0..1.";
-				case 3 : return "Percentage of heat that is emitted by long wave radiation from persons.";
-				case 4 : return "Percentage of energy from equipment load that is not available as thermal heat.";
-				case 5 : return "Percentage of heat that is emitted by long wave radiation from equipment.";
-				case 6 : return "Percentage of energy from lighting that is transformed into visible short wave radiation.";
-				case 7 : return "Percentage of heat that is emitted by long wave radiation from lighting.";
-				case 8 : return "Percentage of sensitive heat from domestic water istributed towrads the room.";
-				case 9 : return "Air exchange rate resulting from a pressure difference of 50 Pa between inside and outside.";
-				case 10 : return "Shielding coefficient for a given location and envelope type.";
-				case 11 : return "Ambient temperature for a design day. Parameter that is needed for FMU export.";
+				case 2 : return "Percentage of solar radiation gains attributed direcly to room [%].";
+				case 3 : return "Percentage of surface solar radiation attributed to floor [%].";
+				case 4 : return "Percentage of surface solar radiation attributed to roof/ceiling[%].";
+				case 5 : return "Percentage of surface solar radiation attributed to walls [%].";
+				case 6 : return "Percentage of heat that is emitted by long wave radiation from persons.";
+				case 7 : return "Percentage of energy from equipment load that is not available as thermal heat.";
+				case 8 : return "Percentage of heat that is emitted by long wave radiation from equipment.";
+				case 9 : return "Percentage of energy from lighting that is transformed into visible short wave radiation.";
+				case 10 : return "Percentage of heat that is emitted by long wave radiation from lighting.";
+				case 11 : return "Percentage of sensitive heat from domestic water istributed towrads the room.";
+				case 12 : return "Air exchange rate resulting from a pressure difference of 50 Pa between inside and outside.";
+				case 13 : return "Shielding coefficient for a given location and envelope type.";
+				case 14 : return "Ambient temperature for a design day. Parameter that is needed for FMU export.";
 			} break;
 			// SimulationParameter::intPara_t
 			case 36 :
@@ -1408,8 +1414,8 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "-";
 				case 1 : return "-";
-				case 2 : return "m";
-				case 3 : return "-";
+				case 2 : return "-";
+				case 3 : return "m";
 				case 4 : return "W/m2K";
 				case 5 : return "K";
 				case 6 : return "Pa";
@@ -1427,8 +1433,7 @@ namespace NANDRAD {
 			case 7 :
 			switch (t) {
 				case 0 : return "-";
-				case 1 : return "-";
-				case 2 : return "W";
+				case 1 : return "W";
 			} break;
 			// InterfaceAirFlow::splinePara_t
 			case 8 :
@@ -1611,15 +1616,18 @@ namespace NANDRAD {
 				case 0 : return "C";
 				case 1 : return "%";
 				case 2 : return "%";
-				case 3 : return "---";
-				case 4 : return "---";
-				case 5 : return "---";
+				case 3 : return "%";
+				case 4 : return "%";
+				case 5 : return "%";
 				case 6 : return "---";
 				case 7 : return "---";
 				case 8 : return "---";
-				case 9 : return "1/h";
+				case 9 : return "---";
 				case 10 : return "---";
-				case 11 : return "C";
+				case 11 : return "---";
+				case 12 : return "1/h";
+				case 13 : return "---";
+				case 14 : return "C";
 			} break;
 			// SimulationParameter::intPara_t
 			case 36 :
@@ -1844,7 +1852,6 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
-				case 2 : return "#FFFFFF";
 			} break;
 			// InterfaceAirFlow::splinePara_t
 			case 8 :
@@ -2036,6 +2043,9 @@ namespace NANDRAD {
 				case 9 : return "#FFFFFF";
 				case 10 : return "#FFFFFF";
 				case 11 : return "#FFFFFF";
+				case 12 : return "#FFFFFF";
+				case 13 : return "#FFFFFF";
+				case 14 : return "#FFFFFF";
 			} break;
 			// SimulationParameter::intPara_t
 			case 36 :
@@ -2260,7 +2270,6 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
-				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// InterfaceAirFlow::splinePara_t
 			case 8 :
@@ -2452,6 +2461,9 @@ namespace NANDRAD {
 				case 9 : return std::numeric_limits<double>::quiet_NaN();
 				case 10 : return std::numeric_limits<double>::quiet_NaN();
 				case 11 : return std::numeric_limits<double>::quiet_NaN();
+				case 12 : return std::numeric_limits<double>::quiet_NaN();
+				case 13 : return std::numeric_limits<double>::quiet_NaN();
+				case 14 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SimulationParameter::intPara_t
 			case 36 :
@@ -2617,7 +2629,7 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::para_t
 			case 6 : return 16;
 			// HydraulicNetworkElement::para_t
-			case 7 : return 3;
+			case 7 : return 2;
 			// InterfaceAirFlow::splinePara_t
 			case 8 : return 1;
 			// InterfaceAirFlow::modelType_t
@@ -2673,7 +2685,7 @@ namespace NANDRAD {
 			// ShadingControlModel::para_t
 			case 34 : return 2;
 			// SimulationParameter::para_t
-			case 35 : return 12;
+			case 35 : return 15;
 			// SimulationParameter::intPara_t
 			case 36 : return 1;
 			// SimulationParameter::flag_t
@@ -2733,7 +2745,7 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::para_t
 			case 6 : return 15;
 			// HydraulicNetworkElement::para_t
-			case 7 : return 2;
+			case 7 : return 1;
 			// InterfaceAirFlow::splinePara_t
 			case 8 : return 0;
 			// InterfaceAirFlow::modelType_t
@@ -2789,7 +2801,7 @@ namespace NANDRAD {
 			// ShadingControlModel::para_t
 			case 34 : return 1;
 			// SimulationParameter::para_t
-			case 35 : return 11;
+			case 35 : return 14;
 			// SimulationParameter::intPara_t
 			case 36 : return 0;
 			// SimulationParameter::flag_t

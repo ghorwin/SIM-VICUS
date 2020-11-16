@@ -34,7 +34,12 @@ void SimulationParameter::initDefaults() {
 
 	m_para[P_InitialTemperature].set( KeywordList::Keyword("SimulationParameter::para_t", P_InitialTemperature),	 20, IBK::Unit("C"));
 	m_para[P_InitialRelativeHumidity].set( KeywordList::Keyword("SimulationParameter::para_t", P_InitialRelativeHumidity),	 50, IBK::Unit("%"));
-	m_para[P_RadiationLoadFraction].set( KeywordList::Keyword("SimulationParameter::para_t", P_RadiationLoadFraction),	 0.5, IBK::Unit("---"));
+	m_para[P_RadiationLoadFractionZone].set( KeywordList::Keyword("SimulationParameter::para_t", P_RadiationLoadFractionZone),	 0.5, IBK::Unit("---"));
+	// the next three must add up to 1
+	m_para[P_RadiationLoadFractionFloor].set( KeywordList::Keyword("SimulationParameter::para_t", P_RadiationLoadFractionFloor),	 0.5, IBK::Unit("---"));
+	m_para[P_RadiationLoadFractionWalls].set( KeywordList::Keyword("SimulationParameter::para_t", P_RadiationLoadFractionWalls),	 0.3, IBK::Unit("---"));
+	m_para[P_RadiationLoadFractionCeiling].set( KeywordList::Keyword("SimulationParameter::para_t", P_RadiationLoadFractionCeiling),	 0.2, IBK::Unit("---"));
+
 	m_para[P_UserThermalRadiationFraction].set( KeywordList::Keyword("SimulationParameter::para_t", P_UserThermalRadiationFraction),	 0.3, IBK::Unit("---"));
 	m_para[P_EquipmentThermalLossFraction].set( KeywordList::Keyword("SimulationParameter::para_t", P_EquipmentThermalLossFraction),	 0.1, IBK::Unit("---"));
 	m_para[P_EquipmentThermalRadiationFraction].set( KeywordList::Keyword("SimulationParameter::para_t", P_EquipmentThermalRadiationFraction),	 0.3, IBK::Unit("---"));
