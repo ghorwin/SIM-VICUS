@@ -215,7 +215,7 @@
 			<Definitions>
 				<OutputDefinition>
 					<Quantity>AirTemperature</Quantity>
-					<ObjectListName>Zone Var01</ObjectListName>
+					<ObjectListName>Zone</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
@@ -235,7 +235,7 @@
 			</Grids>
 		</Outputs>
 		<ObjectLists>
-			<ObjectList name="Zone Var01">
+			<ObjectList name="Zone">
 				<FilterID>1</FilterID>
 				<ReferenceType>Zone</ReferenceType>
 			</ObjectList>

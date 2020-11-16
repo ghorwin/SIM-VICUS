@@ -2,9 +2,7 @@
 <NandradProject fileVersion="1.999">
 	<Project>
 		<ProjectInfo>
-			<Comment>Yes we can! TF07</Comment>
-			<Created>Now!</Created>
-			<LastEdited>Yesterday</LastEdited>
+			<Comment>SimQuality TestCase 07.3</Comment>
 		</ProjectInfo>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
@@ -15,8 +13,7 @@
 		</SimulationParameter>
 		<SolverParameter />
 		<Zones>
-			<Zone id="1" displayName="TF07_1" type="Active">
-				<IBK:Parameter name="Temperature" unit="C">5</IBK:Parameter>
+			<Zone id="1" displayName="TF07_3" type="Active">
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
 			</Zone>
@@ -28,16 +25,10 @@
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
 				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
 				<InterfaceA id="2" zoneId="1">
-					<!--Interface to 'TF07_1'-->
+					<!--Interface to 'TF07_3'-->
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</InterfaceHeatConduction>
-					<InterfaceSolarAbsorption modelType="Constant">
-						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
-					</InterfaceSolarAbsorption>
-					<InterfaceLongWaveEmission modelType="Constant">
-						<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
-					</InterfaceLongWaveEmission>
 				</InterfaceA>
 				<InterfaceB id="3" zoneId="0">
 					<!--Interface to outside-->
@@ -58,16 +49,10 @@
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
 				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
 				<InterfaceA id="5" zoneId="1">
-					<!--Interface to 'TF07_1'-->
+					<!--Interface to 'TF07_3'-->
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</InterfaceHeatConduction>
-					<InterfaceSolarAbsorption modelType="Constant">
-						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
-					</InterfaceSolarAbsorption>
-					<InterfaceLongWaveEmission modelType="Constant">
-						<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
-					</InterfaceLongWaveEmission>
 				</InterfaceA>
 				<InterfaceB id="6" zoneId="0">
 					<!--Interface to outside-->
@@ -82,7 +67,7 @@
 					</InterfaceLongWaveEmission>
 				</InterfaceB>
 				<EmbeddedObjects>
-					<EmbeddedObject id="1000" displayName="Window 7.3">
+					<EmbeddedObject id="1000" displayName="Window 7.1">
 						<IBK:Parameter name="Area" unit="m2">5.04</IBK:Parameter>
 						<Window glazingSystemID="10000" />
 					</EmbeddedObject>
@@ -94,16 +79,10 @@
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
 				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
 				<InterfaceA id="8" zoneId="1">
-					<!--Interface to 'TF07_1'-->
+					<!--Interface to 'TF07_3'-->
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</InterfaceHeatConduction>
-					<InterfaceSolarAbsorption modelType="Constant">
-						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
-					</InterfaceSolarAbsorption>
-					<InterfaceLongWaveEmission modelType="Constant">
-						<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
-					</InterfaceLongWaveEmission>
 				</InterfaceA>
 				<InterfaceB id="9" zoneId="0">
 					<!--Interface to outside-->
@@ -124,16 +103,10 @@
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
 				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
 				<InterfaceA id="11" zoneId="1">
-					<!--Interface to 'TF07_1'-->
+					<!--Interface to 'TF07_3'-->
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</InterfaceHeatConduction>
-					<InterfaceSolarAbsorption modelType="Constant">
-						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
-					</InterfaceSolarAbsorption>
-					<InterfaceLongWaveEmission modelType="Constant">
-						<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
-					</InterfaceLongWaveEmission>
 				</InterfaceA>
 				<InterfaceB id="12" zoneId="0">
 					<!--Interface to outside-->
@@ -154,16 +127,10 @@
 				<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<InterfaceA id="14" zoneId="1">
-					<!--Interface to 'TF07_1'-->
+					<!--Interface to 'TF07_3'-->
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</InterfaceHeatConduction>
-					<InterfaceSolarAbsorption modelType="Constant">
-						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
-					</InterfaceSolarAbsorption>
-					<InterfaceLongWaveEmission modelType="Constant">
-						<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
-					</InterfaceLongWaveEmission>
 				</InterfaceA>
 				<InterfaceB id="15" zoneId="0">
 					<!--Interface to outside-->
@@ -184,16 +151,10 @@
 				<IBK:Parameter name="Inclination" unit="Deg">180</IBK:Parameter>
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<InterfaceA id="17" zoneId="1">
-					<!--Interface to 'TF07_1'-->
+					<!--Interface to 'TF07_3'-->
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</InterfaceHeatConduction>
-					<InterfaceSolarAbsorption modelType="Constant">
-						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
-					</InterfaceSolarAbsorption>
-					<InterfaceLongWaveEmission modelType="Constant">
-						<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
-					</InterfaceLongWaveEmission>
 				</InterfaceA>
 				<InterfaceB id="18" zoneId="0">
 					<!--Interface to outside-->
@@ -236,9 +197,14 @@
 			</Material>
 		</Materials>
 		<WindowGlazingSystems>
-			<WindowGlazingSystem id="10000" displayName="Window 7.3" modelType="Simple">
-				<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">1.1</IBK:Parameter>
-				<LinearSplineParameter>
+			<WindowGlazingSystem id="10000" displayName="Window TF07" modelType="Simple">
+				<!-- U-value including transfer coefficients is 1.1, ThermalTransmittance without surface resistances is:
+				     R_glass+alpha = 1/1.1 = 0.90909
+				     R_glass = 0.90909 - 0.125 - 0.4 = 0.384091
+				     ThermalTransmittance = 1/0.384091 = 2.60355
+				 -->
+				<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">2.60355</IBK:Parameter>
+				<LinearSplineParameter name="SHGC">
 					<X unit="Deg">0 10 20 30 40 50 60 70 80 90 </X>
 					<Y unit="---">0.6 0.6 0.6 0.6 0.588 0.564 0.516 0.414 0.222 0 </Y>
 				</LinearSplineParameter>
@@ -246,6 +212,38 @@
 		</WindowGlazingSystems>
 		<Schedules />
 		<Outputs>
+			<Definitions>
+				<OutputDefinition>
+					<Quantity>AirTemperature</Quantity>
+					<ObjectListName>Zone</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>ConstructionHeatConductionLoad</Quantity>
+					<ObjectListName>Zone</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>WindowHeatConductionLoad</Quantity>
+					<ObjectListName>Zone</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>WindowSolarRadiationLoad</Quantity>
+					<ObjectListName>Zone</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FluxHeatConductionA</Quantity>
+					<ObjectListName>Windows</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FluxShortWaveRadiationA</Quantity>
+					<ObjectListName>Windows</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">
 					<Intervals>
@@ -254,16 +252,17 @@
 						</Interval>
 					</Intervals>
 				</OutputGrid>
-				<OutputGrid name="minutely">
-					<Intervals>
-						<Interval>
-							<IBK:Parameter name="Start" unit="h">0</IBK:Parameter>
-							<IBK:Parameter name="End" unit="h">8760</IBK:Parameter>
-							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
-						</Interval>
-					</Intervals>
-				</OutputGrid>
 			</Grids>
 		</Outputs>
+		<ObjectLists>
+			<ObjectList name="Zone">
+				<FilterID>1</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Windows">
+				<FilterID>*</FilterID>
+				<ReferenceType>EmbeddedObject</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
 	</Project>
 </NandradProject>
