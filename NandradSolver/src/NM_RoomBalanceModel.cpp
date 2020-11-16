@@ -164,7 +164,10 @@ void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & 
 				r.m_name.m_name = "FluxHeatConductionA";
 				m_windowHeatCondValueRefs.push_back(nullptr);
 				m_inputRefs.push_back(r);
-				// TODO : solar radiation loads
+				// solar radiation loads
+				r.m_name.m_name = "FluxShortWaveRadiationA";
+				m_windowSolarRadiationLoadsRefs.push_back(nullptr);
+				m_inputRefs.push_back(r);
 			}
 
 			// check if either interface references us
@@ -176,7 +179,10 @@ void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & 
 				r.m_name.m_name = "FluxHeatConductionB";
 				m_windowHeatCondValueRefs.push_back(nullptr);
 				m_inputRefs.push_back(r);
-				// TODO : solar radiation loads
+				// solar radiation loads
+				r.m_name.m_name = "FluxShortWaveRadiationB";
+				m_windowSolarRadiationLoadsRefs.push_back(nullptr);
+				m_inputRefs.push_back(r);
 			}
 		}
 
@@ -221,8 +227,11 @@ void RoomBalanceModel::setInputValueRefs(const std::vector<QuantityDescription> 
 	for (unsigned int i=0; i<m_heatCondValueRefs.size(); ++i, ++it)
 		m_heatCondValueRefs[i] = *it;
 
-	for (unsigned int i=0; i<m_windowHeatCondValueRefs.size(); ++i, ++it)
+	for (unsigned int i=0; i<m_windowHeatCondValueRefs.size(); ++i, ++it) {
 		m_windowHeatCondValueRefs[i] = *it;
+		// Mind: interleaved storage: [window heat cond 1, solar rad 1, window heat cond 2, solar rad 2, ...]
+		m_windowSolarRadiationLoadsRefs[i] = *(++it);
+	}
 
 	// infiltration heat flux
 	for (unsigned int i=0; i<m_infiltrationModelCount; ++i, ++it) {
@@ -253,9 +262,12 @@ void RoomBalanceModel::stateDependencies(std::vector<std::pair<const double *, c
 			resultInputValueReferences.push_back(std::make_pair(&m_results[R_ConstructionHeatConductionLoad], heatCondVars));
 		for (const double * heatCondVars : m_windowHeatCondValueRefs)
 			resultInputValueReferences.push_back(std::make_pair(&m_results[R_WindowHeatConductionLoad], heatCondVars));
+		for (const double * solarLoadVars : m_windowSolarRadiationLoadsRefs)
+			resultInputValueReferences.push_back(std::make_pair(&m_results[R_WindowSolarRadiationLoad], solarLoadVars));
 		// total flux depends on all computed fluxes
 		resultInputValueReferences.push_back(std::make_pair(&m_results[R_CompleteThermalLoad], &m_results[R_ConstructionHeatConductionLoad]));
 		resultInputValueReferences.push_back(std::make_pair(&m_results[R_CompleteThermalLoad], &m_results[R_WindowHeatConductionLoad]));
+		resultInputValueReferences.push_back(std::make_pair(&m_results[R_CompleteThermalLoad], &m_results[R_WindowSolarRadiationLoad]));
 		if (m_infiltrationValueRef != nullptr) {
 			resultInputValueReferences.push_back(std::make_pair(&m_results[R_CompleteThermalLoad], m_infiltrationValueRef));
 			resultInputValueReferences.push_back(std::make_pair(&m_results[R_InfiltrationHeatLoad], m_infiltrationValueRef));
@@ -278,11 +290,19 @@ int RoomBalanceModel::update() {
 	for (const double ** flux = m_windowHeatCondValueRefs.data(), **fluxEnd = flux + m_windowHeatCondValueRefs.size(); flux != fluxEnd; ++flux)
 		sumQHeatCondWindowsToWalls -= **flux;
 
+	double sumQSolarRadWindowsToWalls = 0.0; // sum of heat fluxes in [W] positive from windows to room
+	const double fraction = 1.0;
+	for (const double ** flux = m_windowSolarRadiationLoadsRefs.data(), **fluxEnd = flux + m_windowSolarRadiationLoadsRefs.size(); flux != fluxEnd; ++flux)
+		sumQSolarRadWindowsToWalls -= **flux * fraction;
+
 	// store results
 	m_results[R_ConstructionHeatConductionLoad] = sumQHeatCondToWalls;
 	m_results[R_WindowHeatConductionLoad] = sumQHeatCondWindowsToWalls;
+	m_results[R_WindowSolarRadiationLoad] = sumQSolarRadWindowsToWalls;
 
-	double SumQdot = sumQHeatCondToWalls + sumQHeatCondWindowsToWalls;
+	double SumQdot =	sumQHeatCondToWalls +
+						sumQHeatCondWindowsToWalls +
+						sumQSolarRadWindowsToWalls;
 
 	// add ventilation rate flux
 	if (m_infiltrationValueRef != nullptr) {
