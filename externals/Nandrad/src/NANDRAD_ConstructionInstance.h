@@ -88,6 +88,14 @@ public:
 	*/
 	bool behavesLike(const ConstructionInstance & other) const;
 
+	/*! Returns true if construction is connected on either side via existing Interface definition to
+		the zone with given zoneID.
+	*/
+	bool connectedTo(unsigned int zoneID) const {
+		return ( (m_interfaceA.m_id != INVALID_ID && m_interfaceA.m_zoneId == zoneID) ||
+				 (m_interfaceB.m_id != INVALID_ID && m_interfaceB.m_zoneId == zoneID) );
+	}
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique id number. */
