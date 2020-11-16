@@ -47,8 +47,7 @@ const double * RoomRadiationLoadsModel::resultValueRef(const QuantityName & quan
 
 
 void NANDRAD_MODEL::RoomRadiationLoadsModel::initInputReferences(const std::vector<AbstractModel *> & models) {
-	// WARNING: the order in which input refs are added to the vector is important. Function setInputValueRefs()
-	//          relies on that!
+	// WARNING: We only add input references whose values are summed up - order does not matter.
 
 	// search all models for construction models that have an interface to this zone
 	for (AbstractModel * model : models) {
@@ -94,15 +93,8 @@ void RoomRadiationLoadsModel::inputReferences(std::vector<InputReference> & inpu
 void RoomRadiationLoadsModel::setInputValueRefs(const std::vector<QuantityDescription> &,
 												const std::vector<const double *> & resultValueRefs)
 {
-	// copy value references as ordered by input references
-
-	// Important: the order in which pointers are copied from resultValueRefs must match the
-	//            order the InputReference objects were added to the vector in initInputReferences().
-
-	std::vector<const double *>::const_iterator it = resultValueRefs.begin();
-
-	for (unsigned int i=0; i<m_windowSolarRadiationLoadsRefs.size(); ++i, ++it)
-		m_windowSolarRadiationLoadsRefs[i] = *it;
+	// copy value references
+	m_windowSolarRadiationLoadsRefs = resultValueRefs;
 }
 
 

@@ -76,12 +76,7 @@ public:
 	*/
 	virtual void initInputReferences(const std::vector<AbstractModel*> & models) override;
 
-	/*! Returns vector with model input references.
-		Implicit models must generate their own model input references and populate the
-		vector argument.
-		\note This function is not the fastest, so never call this function from within the solver
-		(except maybe for output writing).
-	*/
+	/*! Returns vector with model input references. */
 	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const override;
 
 	/*! Provides the object with references to requested input variables (persistent memory location). */

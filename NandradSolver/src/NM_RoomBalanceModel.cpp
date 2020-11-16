@@ -114,7 +114,13 @@ void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & 
 
 	// WARNING: The order of objects in the models vector may vary from project to project. Hence,
 	//          the order of the input references in the m_inputReferences vector also varies after this loop.
-	//          In order to get a decent order, we sort the input refs manually afterwards.
+	//          In order to get a decent order, we first create groups of input refs, which are joined into
+	//          a single vector afterwards.
+
+	std::vector<InputReference> heatCondIR;
+	std::vector<InputReference> windowHeatCondIR;
+	InputReference	windowSolarRadIR;
+	std::vector<InputReference> ventilationRH;
 
 	// search all models for construction models that have an interface to this zone
 	for (AbstractModel * model : models) {
@@ -135,7 +141,7 @@ void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & 
 				r.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
 				r.m_name.m_name = "FluxHeatConductionA";
 				m_heatCondValueRefs.push_back(nullptr);
-				m_inputRefs.push_back(r);
+				heatCondIR.push_back(r);
 			}
 
 			// check if either interface references us
@@ -146,7 +152,7 @@ void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & 
 				r.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
 				r.m_name.m_name = "FluxHeatConductionB";
 				m_heatCondValueRefs.push_back(nullptr);
-				m_inputRefs.push_back(r);
+				heatCondIR.push_back(r);
 			}
 		}
 
@@ -166,7 +172,7 @@ void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & 
 				r.m_referenceType = NANDRAD::ModelInputReference::MRT_EMBEDDED_OBJECT;
 				r.m_name.m_name = "FluxHeatConductionA";
 				m_windowHeatCondValueRefs.push_back(nullptr);
-				m_inputRefs.push_back(r);
+				windowHeatCondIR.push_back(r);
 			}
 
 			// check if either interface references us
@@ -177,7 +183,7 @@ void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & 
 				r.m_referenceType = NANDRAD::ModelInputReference::MRT_EMBEDDED_OBJECT;
 				r.m_name.m_name = "FluxHeatConductionB";
 				m_windowHeatCondValueRefs.push_back(nullptr);
-				m_inputRefs.push_back(r);
+				windowHeatCondIR.push_back(r);
 			}
 		}
 
@@ -192,7 +198,7 @@ void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & 
 				r.m_id = mod->id();
 				r.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
 				r.m_name.m_name = "WindowSolarRadiationFluxSum";
-				m_inputRefs.push_back(r);
+				windowSolarRadIR = r;
 			}
 
 		}
@@ -209,12 +215,19 @@ void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & 
 				r.m_name.m_name = "InfiltrationHeatFlux";
 				r.m_name.m_index = (int)m_id; // select result for us (our zone id)
 				r.m_required = false;
-				m_inputRefs.push_back(r);
+				ventilationRH.push_back(r);
 			}
 
 		}
 	} // model object loop
 
+
+	// now combine the input references into the global vector
+	m_inputRefs = heatCondIR;
+	m_inputRefs.insert(m_inputRefs.end(), windowHeatCondIR.begin(), windowHeatCondIR.end());
+	if (m_haveSolarRadiationModel)
+		m_inputRefs.push_back(windowSolarRadIR);
+	m_inputRefs.insert(m_inputRefs.end(), ventilationRH.begin(), ventilationRH.end());
 
 }
 
