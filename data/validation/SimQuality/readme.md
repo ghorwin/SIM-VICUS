@@ -40,4 +40,11 @@ described in the test suite).
 
 ### TestCase 07
 
+#### Variante 1
+
 <img src="TF07/results/TF07.1.png" width="400px"/><img src="TF07/results/TF07.1_heatFlux.png" width="400px"/><br>
+
+#### Variante 2
+
+<img src="TF07/results/TF07.2.png" width="400px"/><img src="TF07/results/TF07.2_radLoad.png" width="400px"/><br>
+<img src="TF07/results/TF07.2_heatCondWall.png" width="400px"/>
