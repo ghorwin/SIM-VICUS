@@ -56,6 +56,7 @@ DEPENDPATH = $${INCLUDEPATH}
 
 SOURCES += \
 #	../../../NandradDevTests/src/main.cpp \
+	../../src/NM_RoomRadiationLoadsModel.cpp \
 	../../src/NM_WindowModel.cpp \
 	../../src/main.cpp \
 	../../src/NM_AbstractModel.cpp \
@@ -102,6 +103,7 @@ HEADERS += \
 	../../src/NM_QuantityDescription.h \
 	../../src/NM_QuantityName.h \
 	../../src/NM_RoomBalanceModel.h \
+	../../src/NM_RoomRadiationLoadsModel.h \
 	../../src/NM_RoomStatesModel.h \
 	../../src/NM_Schedules.h \
 	../../src/NM_StateModelGroup.h \

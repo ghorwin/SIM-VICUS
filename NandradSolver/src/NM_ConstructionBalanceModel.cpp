@@ -149,6 +149,8 @@ void ConstructionBalanceModel::inputReferences(std::vector<InputReference> & inp
 			}
 		}
 	}
+
+	// solar radiation loads through windows, distributed to wall?
 }
 
 

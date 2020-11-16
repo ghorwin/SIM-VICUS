@@ -37,10 +37,10 @@ public:
 	}
 
 	/*! Initializes object.
-		\param ventilationModel Ventilation model data.
+		\param windowModelPara Model data.
 		\param simPara Required simulation parameter.
-		\param objLists The object list stored in the project file (persistent, remains unmodified so that persistent
-			pointers to object list elements can be stored).
+		\param conInst Reference to construction instance containing this window.
+		\param loads Climatic loads object to draw radiation loads from.
 	*/
 	void setup(const NANDRAD::EmbeddedObjectWindow & windowModelPara, const NANDRAD::SimulationParameter &simPara,
 			   const NANDRAD::ConstructionInstance & conInst,

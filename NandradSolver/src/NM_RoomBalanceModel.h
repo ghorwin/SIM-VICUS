@@ -146,8 +146,9 @@ private:
 	std::vector<double>								m_results;
 
 	/*! Input references used by this object.
-		Inputs are populated in the following order:
-			- heat conduction [W] towards all walls (size m_heatCondValueRefs)
+		\note Order of input refs added to this vector in initInputReferences() matches
+			  order of pointers provided in setInputValueRefs(). The pointers are then
+			  copied into the respective vectors.
 	*/
 	std::vector<InputReference>						m_inputRefs;
 

@@ -142,6 +142,8 @@ private:
 		InputRef_AmbientTemperature,
 		InputRef_RoomATemperature,
 		InputRef_RoomBTemperature,
+		InputRef_SideASolarRadiationFromWindowLoads,
+		InputRef_SideBSolarRadiationFromWindowLoads,
 		NUM_InputRef
 	};
 
