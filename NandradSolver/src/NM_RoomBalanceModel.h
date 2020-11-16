@@ -140,6 +140,10 @@ private:
 	std::string										m_displayName;
 	/*! True if moisture balance is enabled. */
 	bool											m_moistureBalanceEnabled;
+
+	/*! Fraction of solar radiation loads imposed on room air balance [0..1]. */
+	double											m_solarRadiationLoadFraction;
+
 	/*! Data cache for calculated results (updated in call to update()).
 		Index matches enum values of Results.
 	*/

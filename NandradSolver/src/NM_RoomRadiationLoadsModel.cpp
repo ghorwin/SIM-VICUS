@@ -108,13 +108,10 @@ void RoomRadiationLoadsModel::stateDependencies(std::vector<std::pair<const doub
 int RoomRadiationLoadsModel::update() {
 	double sumQSolarRadWindowsToWalls = 0.0; // sum of heat fluxes in [W] positive from windows to room
 
-	// \todo adjust factor
-	const double fraction = 1.0;
-
 	// Mind sign convention: flux is positive if "into window surface". Since we need to know the load as imposed onto the room,
 	// we change the sign.
 	for (const double ** flux = m_windowSolarRadiationLoadsRefs.data(), **fluxEnd = flux + m_windowSolarRadiationLoadsRefs.size(); flux != fluxEnd; ++flux)
-		sumQSolarRadWindowsToWalls -= **flux * fraction;
+		sumQSolarRadWindowsToWalls -= **flux;
 
 	m_result = sumQSolarRadWindowsToWalls;
 	return 0; // all ok

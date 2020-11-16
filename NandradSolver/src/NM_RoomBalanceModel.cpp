@@ -38,6 +38,9 @@ void RoomBalanceModel::setup( const NANDRAD::SimulationParameter &simPara) {
 	// copy all object pointers
 	m_simPara     = &simPara;
 
+	// parameter had already been checked
+	m_solarRadiationLoadFraction = m_simPara->m_para[NANDRAD::SimulationParameter::P_RadiationLoadFractionZone].value;
+
 	// results depend on calculation mode
 	m_moistureBalanceEnabled = simPara.m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].isEnabled();
 	if (m_moistureBalanceEnabled) {
@@ -327,8 +330,7 @@ int RoomBalanceModel::update() {
 
 	// add solar radiation flux load
 	if (m_haveSolarRadiationModel) {
-		const double fraction = 1.0;
-		m_results[R_WindowSolarRadiationLoad] = *m_windowSolarRadiationLoadsRef * fraction;
+		m_results[R_WindowSolarRadiationLoad] = *m_windowSolarRadiationLoadsRef * m_solarRadiationLoadFraction;
 		SumQdot += m_results[R_WindowSolarRadiationLoad];
 	}
 
