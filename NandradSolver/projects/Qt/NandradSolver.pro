@@ -55,10 +55,10 @@ INCLUDEPATH = \
 DEPENDPATH = $${INCLUDEPATH}
 
 SOURCES += \
-#	../../../NandradDevTests/src/main.cpp \
+	../../../NandradDevTests/src/main.cpp \
 	../../src/NM_RoomRadiationLoadsModel.cpp \
 	../../src/NM_WindowModel.cpp \
-	../../src/main.cpp \
+#	../../src/main.cpp \
 	../../src/NM_AbstractModel.cpp \
 	../../src/NM_ConstructionBalanceModel.cpp \
 	../../src/NM_ConstructionStatesModel.cpp \

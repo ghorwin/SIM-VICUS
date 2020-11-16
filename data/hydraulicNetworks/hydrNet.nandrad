@@ -40,12 +40,13 @@
 		</HydraulicNetworks>
 		<HydraulicComponents>
 			<HydraulicNetworkComponent id="1" displayName="Constant Pressure Pump" modelType="ConstantPressurePumpModel">
-				<IBK:Parameter name="HydraulicDiameter" unit="mm">222</IBK:Parameter>
+				<IBK:Parameter name="HydraulicDiameter" unit="mm">100</IBK:Parameter>
 				<IBK:Parameter name="PressureHead" unit="kPa">300</IBK:Parameter>
 				<IBK:Parameter name="PumpEfficiency" unit="---">0.4</IBK:Parameter>
 				<IBK:Parameter name="MotorEfficiency" unit="---">0.9</IBK:Parameter>
 			</HydraulicNetworkComponent>
 			<HydraulicNetworkComponent id="2" displayName="supply pipe d50" modelType="StaticPipe">
+				<IBK:Parameter name="PipeRoughness" unit="mm">0.007</IBK:Parameter>
 				<IBK:Parameter name="HydraulicDiameter" unit="mm">100</IBK:Parameter>
 			</HydraulicNetworkComponent>
 			<HydraulicNetworkComponent id="3" displayName="heat exchanger" modelType="HeatExchanger" />

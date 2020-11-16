@@ -1726,7 +1726,7 @@ void hydraulicNetworkTest01(NANDRAD::Project &prj){
 	ccs.m_displayName = "ccs";
 	ccs.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter] = IBK::Parameter("HydraulicDiameter", 12 ,"mm");
 	ccs.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient] = IBK::Parameter("PressureLossCoefficient", 1 ,"-");
-	ccs.m_para[NANDRAD::HydraulicNetworkComponent::P_PipeFrictionFactor] = IBK::Parameter("PipeFrictionFactor", 1 ,"-");
+//	ccs.m_para[NANDRAD::HydraulicNetworkComponent::P_PipeFrictionFactor] = IBK::Parameter("PipeFrictionFactor", 1 ,"-");
 
 	prj.m_hydraulicComponents.push_back(pump);
 	prj.m_hydraulicComponents.push_back(boiler);
@@ -1796,7 +1796,7 @@ void hydraulicNetworkTest02(NANDRAD::Project &prj){
 	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead] = IBK::Parameter("PressureHead", 300 ,"kPa");
 	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_MotorEfficiency] = IBK::Parameter("MotorEfficiency", 0.9 ,"---");
 	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency] = IBK::Parameter("PumpEfficiency", 0.4 ,"---");
-	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter] = IBK::Parameter("HydraulicDiameter", 222 ,"mm");
+	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter] = IBK::Parameter("HydraulicDiameter", 100 ,"mm");
 
 
 	NANDRAD::HydraulicNetworkComponent pipe;
@@ -1804,6 +1804,7 @@ void hydraulicNetworkTest02(NANDRAD::Project &prj){
 	pipe.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticPipe;
 	pipe.m_displayName = "supply pipe d50";
 	pipe.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter] = IBK::Parameter("HydraulicDiameter", 100, "mm");
+	pipe.m_para[NANDRAD::HydraulicNetworkComponent::P_PipeRoughness] = IBK::Parameter("PipeRoughness", 0.007, "mm");
 
 
 	NANDRAD::HydraulicNetworkComponent heatExchanger;
@@ -2260,7 +2261,7 @@ int main(int argc, char * argv[]) {
 
 		hydraulicNetworkTest02(prj);
 
-		prj.writeXML(IBK::Path("hydrNet.nandrad"));
+		prj.writeXML(IBK::Path("../../data/hydraulicNetworks/hydrNet.nandrad"));
 
 		return EXIT_SUCCESS;
 
