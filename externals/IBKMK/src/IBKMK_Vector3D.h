@@ -13,7 +13,7 @@
 	   list of conditions and the following disclaimer.
 
 	2. Redistributions in binary form must reproduce the above copyright notice,
-	   this list of conditions and the following disclaimer in the documentation 
+	   this list of conditions and the following disclaimer in the documentation
 	   and/or other materials provided with the distribution.
 
 	3. Neither the name of the copyright holder nor the names of its contributors
@@ -63,6 +63,10 @@ public:
 
 	/*! Returns the magnitude of the vector. */
 	double magnitude() const {
+		return std::sqrt(m_x*m_x + m_y*m_y + m_z*m_z);
+	}
+	/*! Returns the magnitude^2 of the vector (useful for angle > 0 checks). */
+	double magnitudeSquared() const {
 		return std::sqrt(m_x*m_x + m_y*m_y + m_z*m_z);
 	}
 
