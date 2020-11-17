@@ -12,6 +12,9 @@
 
 #include "Vic3DPickObject.h"
 
+const float TRANSLATION_SPEED = 1.2f;
+const float MOUSE_ROTATION_SPEED = 0.5f;
+
 /*! IBKMK::Vector3D to QVector3D conversion macro. */
 #define VEC2VEC(v) QVector3D((float)(v).m_x, (float)(v).m_y, (float)(v).m_z)
 
@@ -145,6 +148,9 @@ void Vic3DScene::create(ShaderProgram * gridShader, ShaderProgram * buildingShad
 	m_buildingShader = buildingShader;
 	m_orbitControllerShader = orbitControllerShader;
 
+	// the orbit controller object is static in geometry, so it can be created already here
+	m_orbitControllerObject.create(m_orbitControllerShader);
+
 	// *** initialize camera placement and model placement in the world
 
 	// move camera -100 back (negative y direction -> positive x is towards the right of the screen) and 50 up
@@ -193,8 +199,6 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 		// transfer data from building geometry to vertex array caches
 		generateBuildingGeometry();
 	}
-
-	m_orbitControllerObject.create(m_orbitControllerShader);
 
 	// update all GPU buffers (transfer cached data to GPU)
 	m_opaqueGeometryObject.updateBuffers();
@@ -258,7 +262,7 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 	if (keyboardHandler.keyDown(Qt::Key_Q))			rotationAxis = QVector3D(.0f,.0f,1.f);
 	if (keyboardHandler.keyDown(Qt::Key_E))			rotationAxis = -QVector3D(.0f,.0f,1.f);
 
-	float transSpeed = 0.8f;
+	float transSpeed = TRANSLATION_SPEED;
 	if (keyboardHandler.keyDown(Qt::Key_Shift))
 		transSpeed = 0.1f;
 	m_camera.translate(transSpeed * translation);
@@ -268,10 +272,9 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 	if (keyboardHandler.buttonDown(Qt::RightButton)) {
 		// get and reset mouse delta (pass current mouse cursor position)
 		QPoint mouseDelta = keyboardHandler.mouseDelta(QCursor::pos()); // resets the internal position
-		static const float rotatationSpeed  = 0.4f;
 		const QVector3D LocalUp(0.0f, 0.0f, 1.0f); // same as in Camera::up()
-		m_camera.rotate(-rotatationSpeed * mouseDelta.x(), LocalUp);
-		m_camera.rotate(-rotatationSpeed * mouseDelta.y(), m_camera.right());
+		m_camera.rotate(-MOUSE_ROTATION_SPEED * mouseDelta.x(), LocalUp);
+		m_camera.rotate(-MOUSE_ROTATION_SPEED * mouseDelta.y(), m_camera.right());
 	}
 
 	else { // not supporting right-and-left mouse button multiclick
@@ -304,8 +307,7 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 					const QVector3D LocalUp(0.0f, 0.0f, 1.0f); // same as in Camera::up()
 
 					// set rotation around z axis for x-mouse-delta
-					static const float rotatationSpeed  = 0.4f;
-					orbitTrans.rotate(rotatationSpeed * mouseDelta.x(), LocalUp);
+					orbitTrans.rotate(MOUSE_ROTATION_SPEED * mouseDelta.x(), LocalUp);
 
 					// rotation sight vector
 					lineOfSight = orbitTrans.toMatrix() * lineOfSight;
@@ -320,7 +322,7 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 					m_camera.setTranslation(newCamPos);
 
 					// also rotation the camera around the same angle
-					m_camera.rotate(rotatationSpeed * mouseDelta.x(), LocalUp);
+					m_camera.rotate(MOUSE_ROTATION_SPEED * mouseDelta.x(), LocalUp);
 
 
 	//				m_camera.rotate(-rotatationSpeed * mouseDelta.y(), m_camera.right());

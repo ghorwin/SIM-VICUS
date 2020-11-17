@@ -28,7 +28,7 @@ public:
 	/*! Holds grid spacing in [m] */
 	double								m_gridSpacing	= 10;			// XML:E
 	/*! Holds width dimension of grid in [m] */
-	double								m_gridWidth		= 50;			// XML:E
+	double								m_gridWidth		= 100;			// XML:E
 
 	QString								m_gridColor		= "#7f7fb2";	// XML:E
 

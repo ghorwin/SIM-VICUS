@@ -26,8 +26,8 @@ void OrbitControllerObject::create(ShaderProgram * shaderProgram) {
 
 	// rotation axis is z-axis
 	lineVertexBuffer.resize(2);
-	lineVertexBuffer[0] = QVector3D(0,0,-50.f);
-	lineVertexBuffer[1] = QVector3D(0,0,+50.f);
+	lineVertexBuffer[0] = QVector3D(0,0,-5.f);
+	lineVertexBuffer[1] = QVector3D(0,0,+5.f);
 	m_vertexCount = 2;
 
 	// Create Vertex Array Object and buffers if not done, yet
