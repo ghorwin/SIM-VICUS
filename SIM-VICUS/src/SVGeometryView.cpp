@@ -41,4 +41,6 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	container->setFocus();
 
 	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+	setFocusPolicy(Qt::StrongFocus); // we want to get all keyboard/mouse events
 }

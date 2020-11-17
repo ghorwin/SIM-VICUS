@@ -62,7 +62,6 @@ SceneView::SceneView() :
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SceneView::onModified);
-
 }
 
 
@@ -255,14 +254,17 @@ void SceneView::checkInput() {
 
 		// has the mouse been moved?
 	if ( m_keyboardMouseHandler.buttonDown(Qt::RightButton)) {
-		if (m_keyboardMouseHandler.mouseDownPos() != QCursor::pos()) {
-			m_inputEventReceived = true;
-			//			qDebug() << "SceneView::checkInput() inputEventReceived: " << QCursor::pos() << m_keyboardMouseHandler.mouseDownPos();
-			renderLater();
-			return;
-		}
+		m_inputEventReceived = true;
+		//			qDebug() << "SceneView::checkInput() inputEventReceived: " << QCursor::pos() << m_keyboardMouseHandler.mouseDownPos();
+		renderLater();
+		return;
 	}
 	// has the left mouse butten been release
+	if (m_keyboardMouseHandler.buttonDown(Qt::LeftButton)) {
+		m_inputEventReceived = true;
+		renderLater();
+		return;
+	}
 	if (m_keyboardMouseHandler.buttonReleased(Qt::LeftButton)) {
 		m_inputEventReceived = true;
 		renderLater();

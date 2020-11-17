@@ -233,36 +233,110 @@ void Vic3DScene::updateWorld2ViewMatrix() {
 
 
 void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler) {
-	// check for trigger key to enable fly-through-mode
+	/*! Mark the pick-object location as outdated. */
+	m_pickObjectIsOutdated = true;
 
-		// Handle translations
-		QVector3D translation;
-		QVector3D rotationAxis;
-		if (keyboardHandler.keyDown(Qt::Key_W)) 		translation += m_camera.forward();
-		if (keyboardHandler.keyDown(Qt::Key_S)) 		translation -= m_camera.forward();
-		if (keyboardHandler.keyDown(Qt::Key_A)) 		translation -= m_camera.right();
-		if (keyboardHandler.keyDown(Qt::Key_D)) 		translation += m_camera.right();
-		if (keyboardHandler.keyDown(Qt::Key_F)) 		translation -= m_camera.up();
-		if (keyboardHandler.keyDown(Qt::Key_R))			translation += m_camera.up();
-		if (keyboardHandler.keyDown(Qt::Key_Q))			rotationAxis = QVector3D(.0f,.0f,1.f);
-		if (keyboardHandler.keyDown(Qt::Key_E))			rotationAxis = -QVector3D(.0f,.0f,1.f);
+	// we implement the following controls
 
-		float transSpeed = 0.8f;
-		if (keyboardHandler.keyDown(Qt::Key_Shift))
-			transSpeed = 0.1f;
-		m_camera.translate(transSpeed * translation);
-		m_camera.rotate(transSpeed, rotationAxis);
+	// keyboard: translation and rotation works always
 
-		if (keyboardHandler.buttonDown(Qt::RightButton)) {
-		// Handle rotations
+	// Handle translations
+	QVector3D translation;
+	QVector3D rotationAxis;
+	if (keyboardHandler.keyDown(Qt::Key_W)) 		translation += m_camera.forward();
+	if (keyboardHandler.keyDown(Qt::Key_S)) 		translation -= m_camera.forward();
+	if (keyboardHandler.keyDown(Qt::Key_A)) 		translation -= m_camera.right();
+	if (keyboardHandler.keyDown(Qt::Key_D)) 		translation += m_camera.right();
+	if (keyboardHandler.keyDown(Qt::Key_F)) 		translation -= m_camera.up();
+	if (keyboardHandler.keyDown(Qt::Key_R))			translation += m_camera.up();
+	if (keyboardHandler.keyDown(Qt::Key_Q))			rotationAxis = QVector3D(.0f,.0f,1.f);
+	if (keyboardHandler.keyDown(Qt::Key_E))			rotationAxis = -QVector3D(.0f,.0f,1.f);
+
+	float transSpeed = 0.8f;
+	if (keyboardHandler.keyDown(Qt::Key_Shift))
+		transSpeed = 0.1f;
+	m_camera.translate(transSpeed * translation);
+	m_camera.rotate(transSpeed, rotationAxis);
+
+	// if right mouse button is pressed, mouse delta is translated into first camera perspective rotations
+	if (keyboardHandler.buttonDown(Qt::RightButton)) {
 		// get and reset mouse delta (pass current mouse cursor position)
 		QPoint mouseDelta = keyboardHandler.mouseDelta(QCursor::pos()); // resets the internal position
 		static const float rotatationSpeed  = 0.4f;
 		const QVector3D LocalUp(0.0f, 0.0f, 1.0f); // same as in Camera::up()
 		m_camera.rotate(-rotatationSpeed * mouseDelta.x(), LocalUp);
 		m_camera.rotate(-rotatationSpeed * mouseDelta.y(), m_camera.right());
-
 	}
+
+	else { // not supporting right-and-left mouse button multiclick
+
+		if (keyboardHandler.buttonDown(Qt::LeftButton)) {
+			// detect "enter orbital controller mode" switch
+			if (!m_orbitControllerActive) {
+				// we enter orbital controller mode
+
+				// pick the rotation object
+				pick();
+				// and store pick point
+				m_orbitControllerOrigin = m_pickPoint;
+				qDebug() << "Entering orbit controller mode, rotation around" << m_orbitControllerOrigin;
+
+				// Rotation matrix around origin point
+
+				m_orbitControllerActive = true;
+			}
+			else {
+
+				QPoint mouseDelta = keyboardHandler.mouseDelta(QCursor::pos()); // resets the internal position
+				if (mouseDelta != QPoint(0,0)) {
+					// line from camera position to pick point
+					QVector3D lineOfSight = m_camera.translation() - m_orbitControllerOrigin;
+
+					// create a transformation object
+					Transform3D orbitTrans;
+
+					const QVector3D LocalUp(0.0f, 0.0f, 1.0f); // same as in Camera::up()
+
+					// set rotation around z axis for x-mouse-delta
+					static const float rotatationSpeed  = 0.4f;
+					orbitTrans.rotate(rotatationSpeed * mouseDelta.x(), LocalUp);
+
+					// rotation sight vector
+					lineOfSight = orbitTrans.toMatrix() * lineOfSight;
+
+					// get new camera location
+					QVector3D newCamPos = m_orbitControllerOrigin + lineOfSight;
+					qDebug() << "Moving camera from " << m_camera.translation() << "to" << newCamPos;
+
+					// record the distance that the camera was moved
+					m_mouseMoveDistance += (newCamPos - m_camera.translation()).lengthSquared();
+					// move camera
+					m_camera.setTranslation(newCamPos);
+
+					// also rotation the camera around the same angle
+					m_camera.rotate(rotatationSpeed * mouseDelta.x(), LocalUp);
+
+
+	//				m_camera.rotate(-rotatationSpeed * mouseDelta.y(), m_camera.right());
+				}
+			}
+
+		} // left button down
+
+		if (keyboardHandler.buttonReleased(Qt::LeftButton)) {
+			// check if the mouse was moved not very far -> we have a mouse click
+			if (m_mouseMoveDistance < 20) {
+				// TODO : click code
+				qDebug() << "Mouse (selection) click received";
+			}
+
+			// clear orbit controller flag
+			m_orbitControllerActive = false;
+			qDebug() << "Leaving orbit controller mode";
+		} // left button released
+	}
+
+	// scroll wheel does fast zoom in/out
 	int wheelDelta = keyboardHandler.wheelDelta();
 	if (wheelDelta != 0) {
 		float transSpeed = 8.f;
@@ -270,6 +344,7 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler) {
 			transSpeed = 0.8f;
 		m_camera.translate(wheelDelta * transSpeed * m_camera.forward());
 	}
+
 
 	updateWorld2ViewMatrix();
 }
@@ -408,6 +483,18 @@ void Vic3DScene::generateBuildingGeometry() {
 QColor Vic3DScene::color4Surface(const VICUS::Surface & s) const {
 	// for now return always white
 	return Qt::white;
+}
+
+
+void Vic3DScene::pick() {
+	// only update if not already up-to-date
+	if (!m_pickObjectIsOutdated)
+		return;
+
+	// TODO : Picking algorithm
+
+	m_pickObjectIsOutdated = false;
+	m_pickPoint = QVector3D(40, 5, 0);
 }
 
 

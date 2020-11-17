@@ -50,6 +50,10 @@ private:
 	/*! Applies filter/highlighting rules and determines color for given surface. */
 	QColor color4Surface(const VICUS::Surface & s) const;
 
+	/*! Mouse pick handler: collects all surfaces along the pick line and stores first intersection point's
+		coordinates in m_pickPoint. */
+	void pick();
+
 	/*! Stores viewport geometry. */
 	QRect					m_viewPort;
 
@@ -80,6 +84,19 @@ private:
 	/*! The geometry drawing object (no transparency). */
 	OpaqueGeometryObject	m_opaqueGeometryObject;
 
+	/*! Stores the distance that the mouse has been moved in the last "Left-mouse button down ... release" interval. */
+	float					m_mouseMoveDistance = 0.f;
+	/*! If true, the orbit controller is active and the rotation axis is to be shown. */
+	bool					m_orbitControllerActive = false;
+	/*! Holds the origin of the orbit controller coordinates. */
+	QVector3D				m_orbitControllerOrigin;
+
+	/*! Indicates whether pick object detection is outdated and should be updated (this flag prevents needless pick
+		calculations).
+	*/
+	bool					m_pickObjectIsOutdated = true;
+	/*! Coordinates of last picked point (already including potential snapping). */
+	QVector3D				m_pickPoint;
 };
 
 } // namespace Vic3D

@@ -64,6 +64,7 @@ namespace Vic3D {
 
 	// finally, reset "WasPressed" key states
 	m_inputHandler.clearWasPressedKeyStates();
+	m_inputHandler.resetMouseDelta();
 	\endcode
 */
 class KeyboardMouseHandler {
