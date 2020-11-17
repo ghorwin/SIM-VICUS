@@ -61,50 +61,11 @@ void GridObject::create(ShaderProgram * shaderProgram) {
 	// create a temporary buffer that will contain the x-y coordinates of all grid lines
 	std::vector<float>			gridVertexBufferData;
 
-#define X_Y_GRID_COLORS_FOR_DIRK
-#ifdef X_Y_GRID_COLORS_FOR_DIRK
-	// we have 2*N lines, each line requires two vertexes
-	m_vertexCount = 2*N*2;
-	// each vertex requires two floats (x and y coordinates)
-	gridVertexBufferData.resize(m_vertexCount*2);
-	float * gridVertexBufferPtr = gridVertexBufferData.data();
-	// compute grid lines with y = const
-	float x1 = -width*0.5f;
-	float x2 = width*0.5f;
-	for (unsigned int i=0; i<N; ++i, gridVertexBufferPtr += 4) {
-		float y = width/(N-1)*i-width*0.5f;
-		gridVertexBufferPtr[0] = x1;
-		gridVertexBufferPtr[1] = y;
-		gridVertexBufferPtr[2] = x2;
-		gridVertexBufferPtr[3] = y;
-	}
-	// compute grid lines with x = const
-	float y1 = -width*0.5f;
-	float y2 = width*0.5f;
-	for (unsigned int i=0; i<N; ++i, gridVertexBufferPtr += 4) {
-		float x = width/(N-1)*i-width*0.5f;
-		gridVertexBufferPtr[0] = x;
-		gridVertexBufferPtr[1] = y1;
-		gridVertexBufferPtr[2] = x;
-		gridVertexBufferPtr[3] = y2;
-	}
-	// m_minorGridStart is now just half of the grid lines
-	m_minorGridStartVertex = 2*N; // minor grid / y-lines start at the middle
 
-	// special wish from Dirk: green lines in x, blue lines in y
-
-	// y lines
-	gridColor = QColor("#2d95ff");
-	m_minorGridColor = QVector3D((float)gridColor.redF(), (float)gridColor.greenF(), (float)gridColor.blueF());
-
-	// x lines
-	gridColor = QColor("#81f721");
-	m_majorGridColor = QVector3D((float)gridColor.redF(), (float)gridColor.greenF(), (float)gridColor.blueF());
-#else
 	// we have 2*N lines for the major grid, each line requires two vertexes
 	m_minorGridStartVertex = 2*N*2;
 	// we have ((N-1)*10 + 1) lines for the entire grid including the minor grid (10 per grid cell + 1 in either direction)
-	unsigned int minorGridFraction = 5;
+	unsigned int minorGridFraction = 10;
 	unsigned int N_minor = (N-1)*minorGridFraction + 1;
 	m_vertexCount = 2*N_minor*2;
 
@@ -115,22 +76,46 @@ void GridObject::create(ShaderProgram * shaderProgram) {
 	// compute major grid lines first y = const
 	float x1 = -width*0.5f;
 	float x2 = width*0.5f;
-	for (unsigned int i=0; i<N; ++i, gridVertexBufferPtr += 4) {
+	float y1 = -width*0.5f;
+	float y2 = width*0.5f;
+
+	// x-axis
+	gridVertexBufferPtr[0] = 0;
+	gridVertexBufferPtr[1] = y1;
+	gridVertexBufferPtr[2] = 0;
+	gridVertexBufferPtr[3] = y2;
+	gridVertexBufferPtr += 4;
+
+	// y-axis
+	gridVertexBufferPtr[0] = x1;
+	gridVertexBufferPtr[1] = 0;
+	gridVertexBufferPtr[2] = x2;
+	gridVertexBufferPtr[3] = 0;
+	gridVertexBufferPtr += 4;
+
+	// add x coordinate line
+	for (unsigned int i=0; i<N; ++i) {
+		// skip main coordinate line
+		if (i == N/2)
+			continue;
 		float y = width/(N-1)*i-width*0.5f;
 		gridVertexBufferPtr[0] = x1;
 		gridVertexBufferPtr[1] = y;
 		gridVertexBufferPtr[2] = x2;
 		gridVertexBufferPtr[3] = y;
+		gridVertexBufferPtr += 4;
 	}
 	// compute grid lines with x = const
-	float y1 = -width*0.5f;
-	float y2 = width*0.5f;
-	for (unsigned int i=0; i<N; ++i, gridVertexBufferPtr += 4) {
+	for (unsigned int i=0; i<N; ++i) {
+		// skip main coordinate line
+		if (i == N/2)
+			continue;
 		float x = width/(N-1)*i-width*0.5f;
 		gridVertexBufferPtr[0] = x;
 		gridVertexBufferPtr[1] = y1;
 		gridVertexBufferPtr[2] = x;
 		gridVertexBufferPtr[3] = y2;
+		gridVertexBufferPtr += 4;
 	}
 
 	// now add minor grid lines, hereby skip over major grid lines
@@ -160,7 +145,7 @@ void GridObject::create(ShaderProgram * shaderProgram) {
 		gridVertexBufferPtr += 4;
 	}
 
-#endif
+	// insert x and y axis line vertexes into buffer for special handling
 
 	// Create Vertex Array Object and buffers if not done, yet
 	if (!m_vao.isCreated()) {

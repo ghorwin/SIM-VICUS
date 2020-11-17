@@ -336,8 +336,20 @@ void Vic3DScene::render() {
 	m_buildingShader->release();
 
 
+	// *** input coordinate system ***
+
+	// x-axis: red
+	// y-axis: green
+	// z-axis: blue
+	// origin ball: purple + yellow
+
+
+
 
 	// *** transparent building geometry ***
+
+
+
 
 }
 
