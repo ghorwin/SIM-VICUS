@@ -9,6 +9,7 @@
 #include "Vic3DCamera.h"
 #include "Vic3DGridObject.h"
 #include "Vic3DOpaqueGeometryObject.h"
+#include "Vic3DOrbitControllerObject.h"
 
 class ModificationInfo;
 
@@ -26,7 +27,9 @@ class KeyboardMouseHandler;
 */
 class Vic3DScene {
 public:
-	void create(ShaderProgram *gridShader, ShaderProgram * buildingShader);
+	void create(ShaderProgram *gridShader,
+				ShaderProgram * buildingShader,
+				ShaderProgram * orbitControllerShader);
 
 	/*! Triggered when SVProjectHandler::modified() is emitted. */
 	void onModified( int modificationType, ModificationInfo * data );
@@ -70,6 +73,8 @@ private:
 	ShaderProgram			*m_gridShader			= nullptr;
 	/*! Shader program (managed by SceneView). */
 	ShaderProgram			*m_buildingShader		= nullptr;
+	/*! Stores address to shader program (managed by SceneView). */
+	ShaderProgram			*m_orbitControllerShader = nullptr;
 
 	/*! The projection matrix, updated whenever the viewport geometry changes (in resizeGL() ). */
 	QMatrix4x4				m_projection;
@@ -92,6 +97,11 @@ private:
 	GridObject				m_gridObject;
 	/*! The geometry drawing object (no transparency). */
 	OpaqueGeometryObject	m_opaqueGeometryObject;
+
+	/*! Indicator for the center of the orbit controller.
+		Only visible when m_orbitControllerActive is true.
+	*/
+	OrbitControllerObject  m_orbitControllerObject;
 
 	/*! Stores the distance that the mouse has been moved in the last "Left-mouse button down ... release" interval. */
 	float					m_mouseMoveDistance = 0.f;

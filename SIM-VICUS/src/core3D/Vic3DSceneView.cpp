@@ -23,7 +23,8 @@ License    : BSD License,
 
 #define SHADER_GRID 0
 #define SHADER_OPAQUE_GEOMETRY 1
-#define NUM_SHADER_PROGRAMS 2
+#define SHADER_LINES 2
+#define NUM_SHADER_PROGRAMS 3
 
 namespace Vic3D {
 
@@ -59,6 +60,12 @@ SceneView::SceneView() :
 	blocks.m_uniformNames.append("lightColor");
 	blocks.m_uniformNames.append("viewPos");
 	m_shaderPrograms[SHADER_OPAQUE_GEOMETRY] = blocks;
+
+	// Shaderprogram : simple lines with uniform/fixed color, but additional model2world transformation matrix
+	ShaderProgram lines(":/shaders/lines.vert",":/shaders/lines.frag");
+	lines.m_uniformNames.append("worldToView");
+	lines.m_uniformNames.append("modelToWorld");
+	m_shaderPrograms[SHADER_LINES] = lines;
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SceneView::onModified);
@@ -97,7 +104,9 @@ void SceneView::initializeGL() {
 		// initialize drawable objects
 //		m_pickLineObject.create(SHADER(0));
 
-		m_mainScene.create(&m_shaderPrograms[SHADER_GRID], &m_shaderPrograms[SHADER_OPAQUE_GEOMETRY]);
+		m_mainScene.create(&m_shaderPrograms[SHADER_GRID],
+						   &m_shaderPrograms[SHADER_OPAQUE_GEOMETRY],
+						   &m_shaderPrograms[SHADER_LINES]);
 
 		// Timer
 		m_gpuTimers.setSampleCount(6);
@@ -252,7 +261,7 @@ void SceneView::checkInput() {
 		return;
 	}
 
-		// has the mouse been moved?
+	// has the mouse been moved?
 	if ( m_keyboardMouseHandler.buttonDown(Qt::RightButton)) {
 		m_inputEventReceived = true;
 		//			qDebug() << "SceneView::checkInput() inputEventReceived: " << QCursor::pos() << m_keyboardMouseHandler.mouseDownPos();

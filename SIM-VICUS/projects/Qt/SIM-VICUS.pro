@@ -92,6 +92,7 @@ SOURCES += \
 	../../src/core3D/Vic3DKeyboardMouseHandler.cpp \
 	../../src/core3D/Vic3DOpaqueGeometryObject.cpp \
 	../../src/core3D/Vic3DOpenGLWindow.cpp \
+	../../src/core3D/Vic3DOrbitControllerObject.cpp \
 	../../src/core3D/Vic3DPickLineObject.cpp \
 	../../src/core3D/Vic3DPickObject.cpp \
 	../../src/core3D/Vic3DSceneView.cpp \
@@ -127,6 +128,7 @@ HEADERS  += \
 	../../src/core3D/Vic3DKeyboardMouseHandler.h \
 	../../src/core3D/Vic3DOpaqueGeometryObject.h \
 	../../src/core3D/Vic3DOpenGLWindow.h \
+	../../src/core3D/Vic3DOrbitControllerObject.h \
 	../../src/core3D/Vic3DPickLineObject.h \
 	../../src/core3D/Vic3DPickObject.h \
 	../../src/core3D/Vic3DSceneView.h \

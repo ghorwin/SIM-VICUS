@@ -44,9 +44,10 @@ struct Vertex {
 	QVector3D m_normal;
 };
 
-struct Vertex2 {
-	Vertex2() {}
-	Vertex2(const QVector3D & coords) :
+/*! Vertex struct holding only coordinates. */
+struct VertexC {
+	VertexC() {}
+	VertexC(const QVector3D & coords) :
 		m_coords(coords)
 	{
 	}
@@ -54,6 +55,7 @@ struct Vertex2 {
 	/*! Coordinates of the vertex. */
 	QVector3D m_coords;
 };
+
 
 /*! RGBA data vertex. */
 struct ColorRGBA {

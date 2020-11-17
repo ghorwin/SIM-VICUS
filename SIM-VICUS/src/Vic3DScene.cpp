@@ -140,9 +140,10 @@ void addSurface(const VICUS::Surface & s,
 }
 
 
-void Vic3DScene::create(ShaderProgram * gridShader, ShaderProgram * buildingShader) {
+void Vic3DScene::create(ShaderProgram * gridShader, ShaderProgram * buildingShader, ShaderProgram * orbitControllerShader) {
 	m_gridShader = gridShader;
 	m_buildingShader = buildingShader;
+	m_orbitControllerShader = orbitControllerShader;
 
 	// *** initialize camera placement and model placement in the world
 
@@ -193,6 +194,8 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 		generateBuildingGeometry();
 	}
 
+	m_orbitControllerObject.create(m_orbitControllerShader);
+
 	// update all GPU buffers (transfer cached data to GPU)
 	m_opaqueGeometryObject.updateBuffers();
 
@@ -202,6 +205,7 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 
 void Vic3DScene::destroy() {
 	m_gridObject.destroy();
+	m_orbitControllerObject.destroy();
 }
 
 
@@ -230,7 +234,7 @@ void Vic3DScene::updateWorld2ViewMatrix() {
 	//   model space -> transform -> world space
 	//   world space -> camera/eye -> camera view
 	//   camera view -> projection -> normalized device coordinates (NDC)
-	m_worldToView = m_projection * m_camera.toMatrix() * m_transform.toMatrix();
+	m_worldToView = m_projection * m_camera.toMatrix(); // * m_transform.toMatrix();
 }
 
 
@@ -371,6 +375,16 @@ void Vic3DScene::render() {
 	m_gridObject.render();
 
 	m_gridShader->release();
+
+
+	// *** orbit controller indicator ***
+
+	m_orbitControllerShader->bind();
+	m_orbitControllerShader->shaderProgram()->setUniformValue(m_orbitControllerShader->m_uniformIDs[0], m_worldToView);
+
+	m_orbitControllerObject.render();
+
+	m_orbitControllerShader->release();
 
 
 	// *** opaque background geometry ***

@@ -9,5 +9,7 @@
         <file>pass_through.vert</file>
         <file>simple.frag</file>
         <file>phong_lighting.frag</file>
+        <file>lines.frag</file>
+        <file>lines.vert</file>
     </qresource>
 </RCC>
