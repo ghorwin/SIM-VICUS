@@ -42,7 +42,7 @@ QtExt.file = ../../externals/QtExt/projects/Qt/QtExt.pro
 # dependencies
 NandradSolver.depends = DataIO CCM TiCPP IBK IntegratorFramework Nandrad IBKMK
 NandradCodeGenerator.depends = IBK
-SIM-VICUS.depends = QuaZIP qwt Vicus Nandrad IBK TiCPP CCM
+SIM-VICUS.depends = QuaZIP qwt Vicus Nandrad IBK TiCPP CCM QtExt
 
 CCM.depends = IBK TiCPP
 DataIO.depends = IBK
