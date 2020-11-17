@@ -494,7 +494,7 @@ void Vic3DScene::pick() {
 	// TODO : Picking algorithm
 
 	m_pickObjectIsOutdated = false;
-	m_pickPoint = QVector3D(40, 5, 0);
+	m_pickPoint = QVector3D(0, 0, 0);
 }
 
 
