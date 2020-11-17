@@ -8,12 +8,13 @@
 			<IBK:Parameter name="Latitude" unit="Deg">51</IBK:Parameter>
 			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
-			<ClimateFileName>${Project Directory}/climate/TF03-Sprung2.c6b</ClimateFileName>
+			<ClimateFileName>${Project Directory}/climate/DEU_Potsdam_60.c6b</ClimateFileName>
 		</Location>
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 			<Interval>
-				<IBK:Parameter name="End" unit="d">10</IBK:Parameter>
+				<IBK:Parameter name="Start" unit="d">170</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">180</IBK:Parameter>
 			</Interval>
 		</SimulationParameter>
 		<SolverParameter>
@@ -84,8 +85,8 @@
 			<WindowGlazingSystem id="100" modelType="Simple">
 				<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">1.6</IBK:Parameter>
 				<LinearSplineParameter name="SHGC">
-					<X unit="Deg">0 90</X>
-					<Y unit="---">0.8 0.8</Y>
+					<X unit="Deg">0 80 90</X>
+					<Y unit="---">0.8 0.7 0</Y>
 				</LinearSplineParameter>
 			</WindowGlazingSystem>
 		</WindowGlazingSystems>
@@ -93,8 +94,32 @@
 			<Definitions>
 				<OutputDefinition>
 					<Quantity>AirTemperature</Quantity>
-					<TimeType>None</TimeType>
-					<ObjectListName>All zones</ObjectListName>
+					<ObjectListName>Zone</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>ConstructionHeatConductionLoad</Quantity>
+					<ObjectListName>Zone</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>WindowHeatConductionLoad</Quantity>
+					<ObjectListName>Zone</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>WindowSolarRadiationLoad</Quantity>
+					<ObjectListName>Zone</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FluxHeatConductionA</Quantity>
+					<ObjectListName>Windows</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FluxShortWaveRadiationA</Quantity>
+					<ObjectListName>Windows</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 			</Definitions>
@@ -109,9 +134,13 @@
 			</Grids>
 		</Outputs>
 		<ObjectLists>
-			<ObjectList name="All zones">
+			<ObjectList name="Zone">
 				<FilterID>*</FilterID>
 				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Windows">
+				<FilterID>*</FilterID>
+				<ReferenceType>EmbeddedObject</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
 	</Project>

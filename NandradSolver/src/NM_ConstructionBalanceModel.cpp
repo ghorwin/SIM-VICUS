@@ -52,6 +52,12 @@ void ConstructionBalanceModel::setup(const NANDRAD::ConstructionInstance & con,
 	// resize storage vectors for divergences, sources, and initialize boundary conditions
 	m_ydot.resize(m_statesModel->m_n);
 	m_results.resize(NUM_R);
+
+	// Initialize results
+	for (unsigned int i=0; i<NUM_R; ++i)
+		m_results[i] = 0;
+	m_fluxDensityShortWaveRadiationA = 0;
+	m_fluxDensityShortWaveRadiationB = 0;
 }
 
 
@@ -163,6 +169,7 @@ void ConstructionBalanceModel::inputReferences(std::vector<InputReference> & inp
 		ref.m_id = m_con->m_interfaceA.m_zoneId;
 		ref.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
 		ref.m_name.m_name = "WindowSolarRadiationFluxSum";
+		ref.m_required = false; // we may not have any windows -> hence to model
 	}
 	inputRefs[InputRef_SideASolarRadiationFromWindowLoads] = ref;
 
@@ -171,6 +178,7 @@ void ConstructionBalanceModel::inputReferences(std::vector<InputReference> & inp
 		ref.m_id = m_con->m_interfaceB.m_zoneId;
 		ref.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
 		ref.m_name.m_name = "WindowSolarRadiationFluxSum";
+		ref.m_required = false; // we may not have any windows -> hence to model
 	}
 	inputRefs[InputRef_SideBSolarRadiationFromWindowLoads] = ref;
 }
@@ -311,17 +319,15 @@ void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NAN
 
 				// flux density [W/m2] into left side construction
 				double fluxDensity = alpha*(Tambient - Ts);
-				// total flux [W]
-				double flux = fluxDensity*m_area;
 
 				// store results
 				if (sideA) {
 					m_fluxDensityHeatConductionA = fluxDensity;
-					m_results[R_FluxHeatConductionA] = flux;
+					m_results[R_FluxHeatConductionA] = fluxDensity*m_area; // total flux [W]
 				}
 				else {
 					m_fluxDensityHeatConductionB = -fluxDensity;
-					m_results[R_FluxHeatConductionB] = flux; // Mind sign convention
+					m_results[R_FluxHeatConductionB] = fluxDensity*m_area; // total flux [W], mind sign convention
 				}
 			} break;
 
@@ -337,12 +343,12 @@ void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NAN
 		if (sideA) {
 			double fluxDensity = m_statesModel->m_results[NANDRAD_MODEL::ConstructionStatesModel::R_SolarRadiationFluxA];
 			m_fluxDensityShortWaveRadiationA = fluxDensity; // positive from left to right (into construction)
-			m_results[R_FluxShortWaveRadiationA] = fluxDensity*m_area; // positive into construction
+			m_results[R_FluxShortWaveRadiationA] = fluxDensity*m_area; // total flux [W], positive into construction
 		}
 		else {
 			double fluxDensity = m_statesModel->m_results[NANDRAD_MODEL::ConstructionStatesModel::R_SolarRadiationFluxB];
 			m_fluxDensityShortWaveRadiationB = -fluxDensity; // positive from left to right (out of construction)
-			m_results[R_FluxShortWaveRadiationB] = fluxDensity*m_area; // positive into construction
+			m_results[R_FluxShortWaveRadiationB] = fluxDensity*m_area; // total flux [W], positive into construction
 		}
 	}
 
