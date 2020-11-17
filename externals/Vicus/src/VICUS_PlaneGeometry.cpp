@@ -5,6 +5,7 @@
 #include <IBK_messages.h>
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
+#include <IBK_assert.h>
 
 #include <NANDRAD_Utilities.h>
 
@@ -14,6 +15,21 @@
 #include <tinyxml.h>
 
 namespace VICUS {
+
+/* Solves equation system with Cramer's rule:
+	 a x + c y = e
+	 b x + d y = f
+*/
+static bool solve(double a, double b, double c,  double d,  double e,  double f, double & x, double & y) {
+	double det = a*d - b*c;
+	if (det == 0.)
+		return false;
+
+	x = (e*d - c*f)/det;
+	y = (a*f - e*b)/det;
+	return true;
+}
+
 
 PlaneGeometry::PlaneGeometry() {
 }
@@ -37,6 +53,87 @@ void PlaneGeometry::updateNormal() {
 	IBKMK::Vector3D ca = m_vertexes.back() - m_vertexes[0];
 
 	ba.crossProduct(ca, m_normal);
+}
+
+
+bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & d, IBKMK::Vector3D & intersectionPoint,
+								   double & dist, bool hitBackfacingPlanes, bool endlessPlane) const
+{
+	IBK_ASSERT(m_vertexes.size() >= 3);
+	// first the normal test
+
+	double d_cross_normal = d.scalarProduct(m_normal);
+	double angle = d_cross_normal/d.magnitudeSquared();
+	// line parallel to plane? no intersection
+	if (angle < 1e-8 && angle > -1e-8)
+		return false;
+
+	// Condition 1: same direction of normal vectors?
+	if (!hitBackfacingPlanes && angle >= 0)
+		return false; // no intersection possible
+
+	const IBKMK::Vector3D & offset = m_vertexes[0];
+
+	double t = (offset - p1).scalarProduct(m_normal) / d_cross_normal;
+
+	// Condition 2: outside viewing range?
+	if (t < 0 || t > 1)
+		return false;
+
+	// now determine location on plane
+	IBKMK::Vector3D x0 = p1 + t*d;
+
+	// plane is endless - return intersection point and normalized distance t
+	if (endlessPlane) {
+		intersectionPoint = x0;
+		dist = t;
+		return true;
+	}
+
+	// test if intersection point is inside our plane
+	// we have a specialized variant for triangles and rectangles
+
+	switch (m_type) {
+		case T_Triangle :
+		case T_Rectangle : {
+
+			// we have three possible ways to get the intersection point, try them all until we succeed
+			const IBKMK::Vector3D & a = m_vertexes[1] - m_vertexes[0];
+			const IBKMK::Vector3D & b = m_vertexes.back() - m_vertexes[0];
+			IBKMK::Vector3D rhs = x0 - offset; // right hand side of equation system:  a * x  +  b * y = (x - offset)
+			double x,y;
+			// rows 1 and 2
+			bool success = solve(a.m_x, a.m_y, b.m_x, b.m_y, rhs.m_x, rhs.m_y, x, y);
+			if (!success)
+				// rows 1 and 3
+				success = solve(a.m_x, a.m_z, b.m_x, b.m_z, rhs.m_x, rhs.m_z, x, y);
+			if (!success)
+				// rows 2 and 3
+				success = solve(a.m_y, a.m_z, b.m_y, b.m_z, rhs.m_y, rhs.m_z, x, y);
+			if (!success)
+				return false;
+
+			if (m_type == T_Triangle && x >= 0 && x+y <= 1 && y >= 0) {
+				intersectionPoint = x0;
+				dist = t;
+				return true;
+			}
+			else if (m_type == T_Rectangle && x >= 0 && x <= 1 && y >= 0 && y <= 1) {
+				intersectionPoint = x0;
+				dist = t;
+				return true;
+			}
+
+		} break;
+
+		case T_Polygon :
+			// \todo implement
+			return false;
+	}
+
+
+	return false;
+
 }
 
 

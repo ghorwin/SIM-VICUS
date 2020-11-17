@@ -49,6 +49,21 @@ public:
 	*/
 	void updateNormal();
 
+	/*! Tests if a line (with equation p = p1 + t * d) hits this plane. Returns true if
+		intersection is found, and returns the normalized distance (t) between intersection point
+		'intersectionPoint' and point p1.
+
+		The optional argument hitBackfacingPlanes disables the front-facing check (if true).
+		The optional argument endlessPlane disables the check if the intersection point
+		lies within the plane (useful for getting intersections with, for example, the xy-plane).
+	*/
+	bool intersectsLine(const IBKMK::Vector3D & p1,
+						const IBKMK::Vector3D & d,
+						IBKMK::Vector3D & intersectionPoint,
+						double & dist,
+						bool hitBackfacingPlanes = false,
+						bool endlessPlane = false) const;
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Type of the plane.

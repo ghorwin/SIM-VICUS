@@ -22,18 +22,6 @@ struct PickObject {
 };
 
 
-/*! Tests if a line (with equation p = p1 + t * d) hits a plane, defined by
-	p = x * a  +  y * b. Returns true if intersection is found, and returns
-	the normalized distance (t) between intersection point and point p1.
-*/
-bool intersectsRect(const QVector3D & a,
-				const QVector3D & b,
-				const QVector3D & normal,
-				const QVector3D & offset,
-				const QVector3D & p1,
-				const QVector3D & d,
-				float & dist);
-
 } // namespace Vic3D
 
 #endif // PICKOBJECT_H
