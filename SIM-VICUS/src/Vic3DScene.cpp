@@ -298,34 +298,52 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 				QPoint mouseDelta = keyboardHandler.mouseDelta(QCursor::pos()); // resets the internal position
 				if (mouseDelta != QPoint(0,0)) {
-					// line from camera position to pick point
+					// vector from pick point (center of orbit) to camera position
 					QVector3D lineOfSight = m_camera.translation() - m_orbitControllerOrigin;
 
 					// create a transformation object
 					Transform3D orbitTrans;
 
-					const QVector3D LocalUp(0.0f, 0.0f, 1.0f); // same as in Camera::up()
+					// mouse x translation = rotation around rotation axis
 
+					const QVector3D LocalUp(0.0f, 0.0f, 1.0f); // same as in Camera::up()
 					// set rotation around z axis for x-mouse-delta
 					orbitTrans.rotate(MOUSE_ROTATION_SPEED * mouseDelta.x(), LocalUp);
 
-					// rotation sight vector
+					// mouse y translation = rotation around "right" axis
+
+					QVector3D LocalRight = QVector3D::crossProduct(LocalUp, lineOfSight);
+					// There is a situation where this fails:
+					// when the line of sight vector becomes co-linear with the LocalUp vector (i.e. one
+					// is tilting the view such that we look directly down), then the cross-product
+					// gives us a zero vector (or close to zero due to rounding errors).
+					// The rotation around a zero vector (or close to zero) will give somewhat arbitrary results,
+					// and specifically destroy our "z-axis is facing up" alignment - the camera appears to
+					// "roll".
+
+					// TODO : Dirk, implement a fix to "re-align" the camera such that its local up remains aligned
+					//        with the z-axis. Hint: tilt the camera down so that the forward-vector lies in the xy-plane.
+					//        An ideally aligned camera should have local up-vector = z-axis vector. If misaligned,
+					//        simply "roll" the camera back and reverse the "down tilt" to get the fixed camera rotation.
+
+					// set rotation around "right" axis for y-mouse-delta
+					orbitTrans.rotate(MOUSE_ROTATION_SPEED * mouseDelta.y(), LocalRight);
+
+					// rotate vector to camera
 					lineOfSight = orbitTrans.toMatrix() * lineOfSight;
 
 					// get new camera location
 					QVector3D newCamPos = m_orbitControllerOrigin + lineOfSight;
-					qDebug() << "Moving camera from " << m_camera.translation() << "to" << newCamPos;
+//					qDebug() << "Moving camera from " << m_camera.translation() << "to" << newCamPos;
 
 					// record the distance that the camera was moved
 					m_mouseMoveDistance += (newCamPos - m_camera.translation()).lengthSquared();
 					// move camera
 					m_camera.setTranslation(newCamPos);
 
-					// also rotation the camera around the same angle
+					// also rotate the camera around the same angles
 					m_camera.rotate(MOUSE_ROTATION_SPEED * mouseDelta.x(), LocalUp);
-
-
-	//				m_camera.rotate(-rotatationSpeed * mouseDelta.y(), m_camera.right());
+					m_camera.rotate(MOUSE_ROTATION_SPEED * mouseDelta.y(), LocalRight);
 				}
 			}
 
@@ -380,14 +398,15 @@ void Vic3DScene::render() {
 
 
 	// *** orbit controller indicator ***
+	if (m_orbitControllerActive) {
 
-	m_orbitControllerShader->bind();
-	m_orbitControllerShader->shaderProgram()->setUniformValue(m_orbitControllerShader->m_uniformIDs[0], m_worldToView);
+		m_orbitControllerShader->bind();
+		m_orbitControllerShader->shaderProgram()->setUniformValue(m_orbitControllerShader->m_uniformIDs[0], m_worldToView);
 
-	m_orbitControllerObject.render();
+		m_orbitControllerObject.render();
 
-	m_orbitControllerShader->release();
-
+		m_orbitControllerShader->release();
+	}
 
 	// *** opaque background geometry ***
 
