@@ -1,5 +1,16 @@
 = Maus- und Tastenbeschreibungen
 
+Aktionen:
+
+- Maustaste drücken   
+  - gedrückt halten + Bewegung          -> Aktion 1
+  - loslassen (ohne/kleine Bewegung)    -> Aktion 2
+ 
+jeweils mit Links und Rechts, Mittlere
+
+
+
+
 == Selektion in der Scene
 
 === Linksklick
