@@ -35,7 +35,12 @@ described in the test suite).
 
 ### TestCase 06
 
+#### Variante 1
+
 <img src="TF06/results/TF06.1.png" width="800px" height="550px"/><img src="TF06/results/TF06.1_radloads.png" width="800px" height="550px"/>
+
+#### Variante 2
+
 <img src="TF06/results/TF06.2.png" width="800px" height="550px"/><img src="TF06/results/TF06.2_radloads.png" width="800px" height="550px"/>
 
 ### TestCase 07
@@ -48,3 +53,8 @@ described in the test suite).
 
 <img src="TF07/results/TF07.2.png" width="400px"/><img src="TF07/results/TF07.2_radLoad.png" width="400px"/><br>
 <img src="TF07/results/TF07.2_heatCondWall.png" width="400px"/>
+
+#### Variante 3
+
+<img src="TF07/results/TF07.3.png" width="400px"/><img src="TF07/results/TF07.3_radLoad.png" width="400px"/><br>
+<img src="TF07/results/TF07.3_heatCondWall.png" width="400px"/>

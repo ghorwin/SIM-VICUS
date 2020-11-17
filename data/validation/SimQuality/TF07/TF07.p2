@@ -5,14 +5,14 @@
 		<Directory>
 			<Path>.</Path>
 			<SubDir Color="#ffaa00" Checked="0">SimQuality_TF07.1</SubDir>
-			<SubDir Color="#73d216" Checked="1">SimQuality_TF07.2</SubDir>
+			<SubDir Color="#73d216" Checked="0">SimQuality_TF07.2</SubDir>
 			<SubDir Color="#7141d1" Checked="1">SimQuality_TF07.3</SubDir>
 			<SubDir Color="#fce94f" Checked="1">reference</SubDir>
 			<SubDir Color="#aa0000" Checked="0">reference/SimQ_Testfall07_1</SubDir>
 			<SubDir Color="#aa0000" Checked="0">reference/SimQ_Testfall07_2</SubDir>
 			<SubDir Color="#55aaff" Checked="0">reference/SimQ_Testfall07_3</SubDir>
-			<ExpandedSubDir>.</ExpandedSubDir>
 			<ExpandedSubDir>reference</ExpandedSubDir>
+			<ExpandedSubDir>.</ExpandedSubDir>
 		</Directory>
 	</Directories>
 
@@ -375,6 +375,77 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
+		<Mapper name="TF 07.3 - Raumlufttemperatur">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF07.3/results/states.tsv?1</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>reference/Reference_THERAKLES_Var3.tsv?1</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>NANDRAD 2</TitleText>
+						<PenColor>#cc0000</PenColor>
+						<MarkerColor>#cc0000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>Referenz (THERAKLES)</TitleText>
+						<MarkerStyle>0</MarkerStyle>
+						<PenStyle>0</PenStyle>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">d</IBK:Unit>
+						<Maximum>994111200693</Maximum>
+						<Minimum>993520800297</Minimum>
+						<GridPenStyle>1</GridPenStyle>
+						<MinorGridVisible>0</MinorGridVisible>
+						<DateTimeEnabled>1</DateTimeEnabled>
+						<DateTimeZero>978307200000</DateTimeZero>
+						<DateTimeFormats>hh:mm:ss:zzz&#x0A;dd hh:mm:ss&#x0A;dd.MM. hh:mm&#x0A;hh:mm;;dd.MM.&#x0A;dd.MM.&#x0A;dd.MM.yyyy&#x0A;MMM yyyy&#x0A;yyyy</DateTimeFormats>
+					</Axis>
+					<Axis index="1" autoscale="0">
+						<TitleText>Lufttemperatur [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+						<Maximum>36</Maximum>
+						<Minimum>28</Minimum>
+						<MinorGridVisible>0</MinorGridVisible>
+					</Axis>
+					<Axis index="2" enabled="0" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>510.92678042781404</Maximum>
+						<Minimum>510.92678042764351</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>TF 07.3 - Raumlufttemperatur</TitleText>
+					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend>
+						<Position>Inside</Position>
+						<MaxColumns>1</MaxColumns>
+						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
 		<Mapper name="TF 07.3 - Strahlungslast auf Raumluftknoten">
 			<Extractors>
 				<Extractor>
@@ -411,20 +482,21 @@
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">d</IBK:Unit>
-						<Maximum>993207767237.16382</Maximum>
-						<Minimum>992436715892.42053</Minimum>
+						<Maximum>994111200693</Maximum>
+						<Minimum>993520800297</Minimum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
 						<DateTimeEnabled>1</DateTimeEnabled>
 						<DateTimeZero>978307200000</DateTimeZero>
+						<DateTimeFormats>hh:mm:ss:zzz&#x0A;dd hh:mm:ss&#x0A;dd.MM. hh:mm&#x0A;hh:mm;;dd.MM.&#x0A;dd.MM.&#x0A;dd.MM.yyyy&#x0A;MMM yyyy&#x0A;yyyy</DateTimeFormats>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>Strahlungslast [$unit]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">W</IBK:Unit>
-						<Maximum>700</Maximum>
-						<Minimum>-20</Minimum>
+						<Maximum>800</Maximum>
+						<Minimum>-50</Minimum>
 						<MinorGridVisible>0</MinorGridVisible>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
@@ -439,7 +511,78 @@
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
 						<Position>Inside</Position>
-						<Alignment>1</Alignment>
+						<MaxColumns>1</MaxColumns>
+						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="TF 07.3 - Wärmeleitung zu Konstruktionen">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF07.3/results/fluxes.tsv?1|2|3|4|5</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>reference/Reference_THERAKLES_Var3.tsv?2|3|4|5</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>NANDRAD 2</TitleText>
+						<PenColor>#cc0000</PenColor>
+						<MarkerColor>#cc0000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>Referenz (THERAKLES)</TitleText>
+						<MarkerStyle>0</MarkerStyle>
+						<PenStyle>0</PenStyle>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">d</IBK:Unit>
+						<Maximum>994111200693</Maximum>
+						<Minimum>993520800297</Minimum>
+						<GridPenStyle>1</GridPenStyle>
+						<MinorGridVisible>0</MinorGridVisible>
+						<DateTimeEnabled>1</DateTimeEnabled>
+						<DateTimeZero>978307200000</DateTimeZero>
+						<DateTimeFormats>hh:mm:ss:zzz&#x0A;dd hh:mm:ss&#x0A;dd.MM. hh:mm&#x0A;hh:mm;;dd.MM.&#x0A;dd.MM.&#x0A;dd.MM.yyyy&#x0A;MMM yyyy&#x0A;yyyy</DateTimeFormats>
+					</Axis>
+					<Axis index="1" autoscale="0">
+						<TitleText>Wärmeleitungsstrom [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">W</IBK:Unit>
+						<Maximum>91.272727272727252</Maximum>
+						<Minimum>-645.4545454545455</Minimum>
+						<MinorGridVisible>0</MinorGridVisible>
+					</Axis>
+					<Axis index="2" enabled="0" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>510.92678043795195</Maximum>
+						<Minimum>510.92678042339003</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>TF 07.3 - Wärmeleitung zu Konstruktionen</TitleText>
+					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend>
+						<Position>Inside</Position>
+						<Alignment>5</Alignment>
 						<MaxColumns>1</MaxColumns>
 						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
 					</Legend>
@@ -452,7 +595,7 @@
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="5" size1="1" size2="1" orientation="2" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="7" size1="1" size2="1" orientation="2" />
 		<FocusedWidget>0</FocusedWidget>
 	</Splitting>
 
