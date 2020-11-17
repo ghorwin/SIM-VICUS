@@ -234,22 +234,26 @@ void Vic3DScene::updateWorld2ViewMatrix() {
 
 void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler) {
 	// check for trigger key to enable fly-through-mode
-	if (keyboardHandler.buttonDown(Qt::RightButton)) {
 
 		// Handle translations
 		QVector3D translation;
+		QVector3D rotationAxis;
 		if (keyboardHandler.keyDown(Qt::Key_W)) 		translation += m_camera.forward();
 		if (keyboardHandler.keyDown(Qt::Key_S)) 		translation -= m_camera.forward();
 		if (keyboardHandler.keyDown(Qt::Key_A)) 		translation -= m_camera.right();
 		if (keyboardHandler.keyDown(Qt::Key_D)) 		translation += m_camera.right();
-		if (keyboardHandler.keyDown(Qt::Key_Q)) 		translation -= m_camera.up();
-		if (keyboardHandler.keyDown(Qt::Key_E)) 		translation += m_camera.up();
+		if (keyboardHandler.keyDown(Qt::Key_F)) 		translation -= m_camera.up();
+		if (keyboardHandler.keyDown(Qt::Key_R))			translation += m_camera.up();
+		if (keyboardHandler.keyDown(Qt::Key_Q))			rotationAxis = QVector3D(.0f,.0f,1.f);
+		if (keyboardHandler.keyDown(Qt::Key_E))			rotationAxis = -QVector3D(.0f,.0f,1.f);
 
 		float transSpeed = 0.8f;
 		if (keyboardHandler.keyDown(Qt::Key_Shift))
 			transSpeed = 0.1f;
 		m_camera.translate(transSpeed * translation);
+		m_camera.rotate(transSpeed, rotationAxis);
 
+		if (keyboardHandler.buttonDown(Qt::RightButton)) {
 		// Handle rotations
 		// get and reset mouse delta (pass current mouse cursor position)
 		QPoint mouseDelta = keyboardHandler.mouseDelta(QCursor::pos()); // resets the internal position

@@ -37,6 +37,8 @@ SceneView::SceneView() :
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_D);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Q);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_E);
+	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_R);
+	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_F);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Shift);
 
 	// *** create scene (no OpenGL calls are being issued below, just the data structures are created.
@@ -235,25 +237,27 @@ void SceneView::checkInput() {
 	// and the like.
 
 	// trigger key held?
-	if (m_keyboardMouseHandler.buttonDown(Qt::RightButton)) {
 		// any of the interesting keys held?
-		if (m_keyboardMouseHandler.keyDown(Qt::Key_W) ||
+	if (m_keyboardMouseHandler.keyDown(Qt::Key_W) ||
 			m_keyboardMouseHandler.keyDown(Qt::Key_A) ||
 			m_keyboardMouseHandler.keyDown(Qt::Key_S) ||
 			m_keyboardMouseHandler.keyDown(Qt::Key_D) ||
 			m_keyboardMouseHandler.keyDown(Qt::Key_Q) ||
+			m_keyboardMouseHandler.keyDown(Qt::Key_F) ||
+			m_keyboardMouseHandler.keyDown(Qt::Key_R) ||
 			m_keyboardMouseHandler.keyDown(Qt::Key_E))
-		{
-			m_inputEventReceived = true;
-//			qDebug() << "SceneView::checkInput() inputEventReceived";
-			renderLater();
-			return;
-		}
+	{
+		m_inputEventReceived = true;
+		//			qDebug() << "SceneView::checkInput() inputEventReceived";
+		renderLater();
+		return;
+	}
 
 		// has the mouse been moved?
+	if ( m_keyboardMouseHandler.buttonDown(Qt::RightButton)) {
 		if (m_keyboardMouseHandler.mouseDownPos() != QCursor::pos()) {
 			m_inputEventReceived = true;
-//			qDebug() << "SceneView::checkInput() inputEventReceived: " << QCursor::pos() << m_keyboardMouseHandler.mouseDownPos();
+			//			qDebug() << "SceneView::checkInput() inputEventReceived: " << QCursor::pos() << m_keyboardMouseHandler.mouseDownPos();
 			renderLater();
 			return;
 		}
