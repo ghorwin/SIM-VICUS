@@ -79,20 +79,6 @@ void GridObject::create(ShaderProgram * shaderProgram) {
 	float y1 = -width*0.5f;
 	float y2 = width*0.5f;
 
-	// x-axis
-	gridVertexBufferPtr[0] = 0;
-	gridVertexBufferPtr[1] = y1;
-	gridVertexBufferPtr[2] = 0;
-	gridVertexBufferPtr[3] = y2;
-	gridVertexBufferPtr += 4;
-
-	// y-axis
-	gridVertexBufferPtr[0] = x1;
-	gridVertexBufferPtr[1] = 0;
-	gridVertexBufferPtr[2] = x2;
-	gridVertexBufferPtr[3] = 0;
-	gridVertexBufferPtr += 4;
-
 	// add x coordinate line
 	for (unsigned int i=0; i<N; ++i) {
 		// skip main coordinate line
@@ -145,6 +131,22 @@ void GridObject::create(ShaderProgram * shaderProgram) {
 		gridVertexBufferPtr += 4;
 	}
 
+	// add main coordinates as last so that they overwrite all others
+
+	// x-axis
+	gridVertexBufferPtr[0] = x1;
+	gridVertexBufferPtr[1] = 0;
+	gridVertexBufferPtr[2] = x2;
+	gridVertexBufferPtr[3] = 0;
+	gridVertexBufferPtr += 4;
+
+	// y-axis
+	gridVertexBufferPtr[0] = 0;
+	gridVertexBufferPtr[1] = y1;
+	gridVertexBufferPtr[2] = 0;
+	gridVertexBufferPtr[3] = y2;
+	gridVertexBufferPtr += 4;
+
 	// insert x and y axis line vertexes into buffer for special handling
 
 	// Create Vertex Array Object and buffers if not done, yet
@@ -187,6 +189,16 @@ void GridObject::render() {
 
 	m_vao.bind();
 
+	// draw x axis
+	QVector3D xColor(1.0f, 0.2f, 0.2f);
+	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[1], xColor);
+	glDrawArrays(GL_LINES, m_vertexCount-4, 2);
+
+	// TODO : Stephan farbe schick machen
+	QVector3D yColor(0.2f, 1.0f, 0.2f);
+	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[1], yColor);
+	glDrawArrays(GL_LINES, m_vertexCount-2, 2);
+
 	// draw major grid lines
 	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[1], m_majorGridColor);
 
@@ -194,13 +206,13 @@ void GridObject::render() {
 	// The first parameter is the index to start from, the second parameter is the number of indexes
 	// to use for drawing. So, if you want to draw 10 lines, pass 20 as "count" argument.
 	//
-	glDrawArrays(GL_LINES, 0, m_minorGridStartVertex);
-	if (m_minorGridStartVertex == m_vertexCount)
-		return; // minor grid disabled
-	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[1], m_minorGridColor);
-	glDrawArrays(GL_LINES, m_minorGridStartVertex, m_vertexCount-m_minorGridStartVertex);
+	glDrawArrays(GL_LINES, 0, m_minorGridStartVertex-4);
 
-	// draw first major grid lines, then minor grid lines with different color
+	// draw minor grid lines, if enabled
+	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[1], m_minorGridColor);
+	glDrawArrays(GL_LINES, m_minorGridStartVertex-4, m_vertexCount-m_minorGridStartVertex);
+
+
 	m_vao.release();
 }
 
