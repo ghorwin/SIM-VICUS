@@ -3,6 +3,8 @@
 
 #include <QVector3D>
 
+namespace Vic3D {
+
 /*! An Object to hold information on the clicked-on object. */
 struct PickObject {
 	PickObject(float dist, unsigned int id) :
@@ -32,5 +34,6 @@ bool intersectsRect(const QVector3D & a,
 				const QVector3D & d,
 				float & dist);
 
+} // namespace Vic3D
 
 #endif // PICKOBJECT_H

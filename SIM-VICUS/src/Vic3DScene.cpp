@@ -4,11 +4,13 @@
 #include <QDebug>
 #include <QCursor>
 
+#include <VICUS_Project.h>
+
 #include "Vic3DShaderProgram.h"
 #include "Vic3DKeyboardMouseHandler.h"
 #include "SVProjectHandler.h"
 
-#include <VICUS_Project.h>
+#include "Vic3DPickObject.h"
 
 /*! IBKMK::Vector3D to QVector3D conversion macro. */
 #define VEC2VEC(v) QVector3D((float)(v).m_x, (float)(v).m_y, (float)(v).m_z)
@@ -232,7 +234,7 @@ void Vic3DScene::updateWorld2ViewMatrix() {
 }
 
 
-void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler) {
+void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoint & localMousePos) {
 	/*! Mark the pick-object location as outdated. */
 	m_pickObjectIsOutdated = true;
 
@@ -276,7 +278,7 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler) {
 				// we enter orbital controller mode
 
 				// pick the rotation object
-				pick();
+				pick(localMousePos);
 				// and store pick point
 				m_orbitControllerOrigin = m_pickPoint;
 				qDebug() << "Entering orbit controller mode, rotation around" << m_orbitControllerOrigin;
@@ -486,17 +488,84 @@ QColor Vic3DScene::color4Surface(const VICUS::Surface & s) const {
 }
 
 
-void Vic3DScene::pick() {
+void Vic3DScene::pick(const QPoint & localMousePos) {
 	// only update if not already up-to-date
 	if (!m_pickObjectIsOutdated)
 		return;
 
-	// TODO : Picking algorithm
+	// local mouse coordinates
+	int my = localMousePos.y();
+	int mx = localMousePos.x();
+
+	// viewport dimensions
+	qreal halfVpw = m_viewPort.width()/2;
+	qreal halfVph = m_viewPort.height()/2;
+
+	// invert world2view matrix, with m_worldToView = m_projection * m_camera.toMatrix() * m_transform.toMatrix();
+	bool invertible;
+	QMatrix4x4 projectionMatrixInverted = m_worldToView.inverted(&invertible);
+	if (!invertible) {
+		qWarning()<< "Cannot invert projection matrix.";
+		return;
+	}
+
+	// mouse position in NDC space, one point on near plane and one point on far plane
+	QVector4D nearPos(
+				(mx - halfVpw) / halfVpw,
+				-1*(my - halfVph) / halfVph,
+				-1,
+				1.0);
+
+	QVector4D farPos(
+				nearPos.x(),
+				nearPos.y(),
+				1,
+				1.0);
+
+	// transform from NDC to model coordinates
+	QVector4D nearResult = projectionMatrixInverted*nearPos;
+	QVector4D farResult = projectionMatrixInverted*farPos;
+	// don't forget normalization!
+	nearResult /= nearResult.w();
+	farResult /= farResult.w();
+
+	// now do the actual picking - for now we implement a selection
+	selectNearestObject(nearResult.toVector3D(), farResult.toVector3D());
 
 	m_pickObjectIsOutdated = false;
-	m_pickPoint = QVector3D(0, 0, 0);
 }
 
 
+void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3D & farPoint) {
+//	QElapsedTimer pickTimer;
+//	pickTimer.start();
+
+	// compute view direction
+	QVector3D d = farPoint - nearPoint;
+
+	// create pick object, distance is a value between 0 and 1, so initialize with 2 (very far back) to be on the safe side.
+	PickObject p(2.f, std::numeric_limits<unsigned int>::max());
+
+	// now process all objects and update p to hold the closest hit
+
+	// TODO : apply picking/selection filter, so that only specific objects can be clicked on
+
+
+//	XYPlaneObject.pick(nearPoint, d, p);
+
+//	m_boxObject.pick(nearPoint, d, p);
+//	// ... other objects
+
+	// any object accepted a pick?
+	if (p.m_objectId == std::numeric_limits<unsigned int>::max())
+		return; // nothing selected
+
+//	qDebug().nospace() << "Pick successful (Box #"
+//					   << p.m_objectId <<  ", Face #" << p.m_faceId << ", t = " << p.m_dist << ") after "
+//					   << pickTimer.elapsed() << " ms";
+
+	// Mind: OpenGL-context must be current when we call this function!
+//	m_boxObject.highlight(p.m_objectId, p.m_faceId);
+}
 
 } // namespace Vic3D

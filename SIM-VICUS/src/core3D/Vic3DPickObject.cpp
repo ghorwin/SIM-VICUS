@@ -2,6 +2,8 @@
 
 #include <QDebug>
 
+namespace Vic3D {
+
 /* Solves equation system with Cramer's rule:
 	 a x + c y = e
 	 b x + d y = f
@@ -82,3 +84,4 @@ bool intersectsRect(const QVector3D & a,
 	return false;
 }
 
+} // namespace Vic3D

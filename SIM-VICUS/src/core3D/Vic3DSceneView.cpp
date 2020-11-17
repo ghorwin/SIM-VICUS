@@ -299,16 +299,16 @@ void SceneView::processInput() {
 
 
 	// for now, delegate the call to the scene object, so that it can alter it's camera position
-	m_mainScene.inputEvent(m_keyboardMouseHandler);
+	QPoint localMousePos;
+	if (m_keyboardMouseHandler.buttonReleased(Qt::LeftButton))
+		localMousePos = mapFromGlobal(m_keyboardMouseHandler.mouseReleasePos());
+	else
+		localMousePos = mapFromGlobal(m_keyboardMouseHandler.mouseDownPos());
+	m_mainScene.inputEvent(m_keyboardMouseHandler, localMousePos);
 
 	// resets the internal position for the next move and wheel scroll
 	m_keyboardMouseHandler.resetMouseDelta(QCursor::pos());
 	m_keyboardMouseHandler.resetWheelDelta();
-
-// check for picking operation
-	if (m_keyboardMouseHandler.buttonReleased(Qt::LeftButton)) {
-		pick(m_keyboardMouseHandler.mouseReleasePos());
-	}
 
 	// finally, reset "WasPressed" key states
 	m_keyboardMouseHandler.clearWasPressedKeyStates();
@@ -317,30 +317,5 @@ void SceneView::processInput() {
 }
 
 
-void SceneView::selectNearestObject(const QVector3D & nearPoint, const QVector3D & farPoint) {
-	QElapsedTimer pickTimer;
-	pickTimer.start();
-
-	// compute view direction
-	QVector3D d = farPoint - nearPoint;
-
-	// create pick object, distance is a value between 0 and 1, so initialize with 2 (very far back) to be on the safe side.
-	PickObject p(2.f, std::numeric_limits<unsigned int>::max());
-
-//	// now process all objects and update p to hold the closest hit
-//	m_boxObject.pick(nearPoint, d, p);
-//	// ... other objects
-
-	// any object accepted a pick?
-	if (p.m_objectId == std::numeric_limits<unsigned int>::max())
-		return; // nothing selected
-
-	qDebug().nospace() << "Pick successful (Box #"
-					   << p.m_objectId <<  ", Face #" << p.m_faceId << ", t = " << p.m_dist << ") after "
-					   << pickTimer.elapsed() << " ms";
-
-	// Mind: OpenGL-context must be current when we call this function!
-//	m_boxObject.highlight(p.m_objectId, p.m_faceId);
-}
 
 } // namespace Vic3D

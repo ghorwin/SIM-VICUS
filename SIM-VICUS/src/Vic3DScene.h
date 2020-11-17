@@ -38,7 +38,11 @@ public:
 	/*! Compines camera matrix and project matrix to form the world2view matrix. */
 	void updateWorld2ViewMatrix();
 
-	void inputEvent(const KeyboardMouseHandler & keyboardHandler);
+	/*! Lets the scene handle keyboard/mouse input.
+		\param keyboardHandler Contains information on current state of keyboard and mouse (and mouse move/scroll deltas since last call).
+		\param localMousePos Contains mouse position of last left mouse button press or release.
+	*/
+	void inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoint & localMousePos);
 
 	/*! Actually renders to the current OpenGL context. */
 	void render();
@@ -52,7 +56,12 @@ private:
 
 	/*! Mouse pick handler: collects all surfaces along the pick line and stores first intersection point's
 		coordinates in m_pickPoint. */
-	void pick();
+	void pick(const QPoint & localMousePos);
+
+	/*! Determine which objects/planes are selected and color them accordingly.
+		nearPoint and farPoint define the current ray and are given in model coordinates.
+	*/
+	void selectNearestObject(const QVector3D & nearPoint, const QVector3D & farPoint);
 
 	/*! Stores viewport geometry. */
 	QRect					m_viewPort;
