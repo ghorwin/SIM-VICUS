@@ -17,6 +17,7 @@ const float MOUSE_ROTATION_SPEED = 0.5f;
 
 /*! IBKMK::Vector3D to QVector3D conversion macro. */
 #define VEC2VEC(v) QVector3D((float)(v).m_x, (float)(v).m_y, (float)(v).m_z)
+#define VECFromVEC(v) IBKMK::Vector3D((double)(v).x(), (double)(v).y(), (double)(v).z())
 
 namespace Vic3D {
 
@@ -289,6 +290,7 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 				// and store pick point
 				m_orbitControllerOrigin = m_pickPoint;
 				qDebug() << "Entering orbit controller mode, rotation around" << m_orbitControllerOrigin;
+				m_orbitControllerObject.m_transform.setTranslation(m_orbitControllerOrigin);
 
 				// Rotation matrix around origin point
 
@@ -575,13 +577,25 @@ void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3
 //	QElapsedTimer pickTimer;
 //	pickTimer.start();
 
-	// compute view direction
+	// compute view direction (vector for line equation)
 	QVector3D d = farPoint - nearPoint;
+	IBKMK::Vector3D d2 = VECFromVEC(d);
+	IBKMK::Vector3D nearPoint2 = VECFromVEC(nearPoint);
+
+	// get intersection with xy plane
+	VICUS::PlaneGeometry xyPlane(VICUS::PlaneGeometry::T_Rectangle, IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(1,0,0), IBKMK::Vector3D(0,1,0));
+	IBKMK::Vector3D intersectionPoint;
+	double t;
+	if (xyPlane.intersectsLine(nearPoint2, d2, intersectionPoint, t, true, true)) {
+		// got an intersection point, store it
+		m_pickPoint = VEC2VEC(intersectionPoint);
+	}
 
 	// create pick object, distance is a value between 0 and 1, so initialize with 2 (very far back) to be on the safe side.
-	PickObject p(2.f, std::numeric_limits<unsigned int>::max());
+//	PickObject p(2.f, std::numeric_limits<unsigned int>::max());
 
 	// now process all objects and update p to hold the closest hit
+
 
 	// TODO : apply picking/selection filter, so that only specific objects can be clicked on
 
@@ -592,8 +606,8 @@ void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3
 //	// ... other objects
 
 	// any object accepted a pick?
-	if (p.m_objectId == std::numeric_limits<unsigned int>::max())
-		return; // nothing selected
+//	if (p.m_objectId == std::numeric_limits<unsigned int>::max())
+//		return; // nothing selected
 
 //	qDebug().nospace() << "Pick successful (Box #"
 //					   << p.m_objectId <<  ", Face #" << p.m_faceId << ", t = " << p.m_dist << ") after "
