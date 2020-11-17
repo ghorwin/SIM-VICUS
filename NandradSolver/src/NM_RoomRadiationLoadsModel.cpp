@@ -21,6 +21,8 @@
 
 #include "NM_RoomRadiationLoadsModel.h"
 
+#include <IBK_assert.h>
+
 #include "NM_ConstructionBalanceModel.h"
 #include "NM_WindowModel.h"
 #include "NM_KeywordList.h"
@@ -94,6 +96,7 @@ void RoomRadiationLoadsModel::setInputValueRefs(const std::vector<QuantityDescri
 												const std::vector<const double *> & resultValueRefs)
 {
 	// copy value references
+	IBK_ASSERT(m_windowSolarRadiationLoadsRefs.size() == resultValueRefs.size());
 	m_windowSolarRadiationLoadsRefs = resultValueRefs;
 }
 
