@@ -36,6 +36,7 @@ HEADERS += \
 	../../src/VICUS_BuildingLevel.h \
 	../../src/VICUS_CodeGenMacros.h \
 	../../src/VICUS_Constants.h \ \
+	../../src/VICUS_Conversions.h \
 	../../src/VICUS_KeywordList.h \
 	../../src/VICUS_Network.h \
 	../../src/VICUS_NetworkEdge.h \

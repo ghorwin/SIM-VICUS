@@ -155,6 +155,9 @@
    <property name="text">
     <string>C&amp;lose</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
+   </property>
   </action>
   <action name="actionFileQuit">
    <property name="icon">

@@ -21,14 +21,12 @@ License    : BSD License,
 #include "Vic3DPickObject.h"
 #include "OpenGLException.h"
 #include "SVProjectHandler.h"
+#include "SVSettings.h"
 
 #define SHADER_GRID 0
 #define SHADER_OPAQUE_GEOMETRY 1
 #define SHADER_LINES 2
 #define NUM_SHADER_PROGRAMS 3
-
-#define SCREENSHOT_WIDTH  250
-#define SCREENSHOT_HEIGHT 150
 
 namespace Vic3D {
 
@@ -149,6 +147,9 @@ void SceneView::initializeGL() {
 						   &m_shaderPrograms[SHADER_OPAQUE_GEOMETRY],
 						   &m_shaderPrograms[SHADER_LINES]);
 
+		int thumbnailWidth = (int)SVSettings::instance().m_thumbNailSize;
+		int thumbnailHeight = (int)(thumbnailWidth*0.75);
+
 		// create a multisample-framebuffer, that's where we render into
 		QOpenGLFramebufferObjectFormat muliSampleFormat;
 		muliSampleFormat.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
@@ -156,7 +157,7 @@ void SceneView::initializeGL() {
 		muliSampleFormat.setSamples(4);
 		muliSampleFormat.setTextureTarget(GL_TEXTURE_2D);
 		muliSampleFormat.setInternalTextureFormat(GL_RGBA32F_ARB);
-		m_screenShotMultiSampleFrameBuffer = new QOpenGLFramebufferObject(SCREENSHOT_WIDTH, SCREENSHOT_HEIGHT, muliSampleFormat);
+		m_screenShotMultiSampleFrameBuffer = new QOpenGLFramebufferObject(thumbnailWidth, thumbnailHeight, muliSampleFormat);
 
 		// create framebuffer for downsampling - from this buffer we create the actual screenshot image file
 		// Mind: dimensions of both buffers must be exactly the same, for the blitbuffer-operation to work
@@ -165,7 +166,7 @@ void SceneView::initializeGL() {
 		downSampledFormat.setMipmap(true);
 		downSampledFormat.setTextureTarget(GL_TEXTURE_2D);
 		downSampledFormat.setInternalTextureFormat(GL_RGBA32F_ARB);
-		m_screenShotDownSampleFrameBuffer = new QOpenGLFramebufferObject(SCREENSHOT_WIDTH, SCREENSHOT_HEIGHT, downSampledFormat);
+		m_screenShotDownSampleFrameBuffer = new QOpenGLFramebufferObject(thumbnailWidth, thumbnailHeight, downSampledFormat);
 
 		m_screenShotMultiSampleFrameBuffer->bindDefault();
 

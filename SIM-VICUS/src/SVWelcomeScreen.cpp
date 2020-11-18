@@ -120,7 +120,8 @@ void SVWelcomeScreen::updateWelcomePage() {
 				thumbPath = "&nbsp;";
 			thumbPath = thumbPath.replace("${PROJECT_FULL_PATH}", finfo.filePath());
 
-			projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(SVSettings::instance().m_thumbNailSize+8));
+			// thumbnails generated from the software have all the same thumbnail size
+			projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(SVSettings::instance().m_thumbNailSize+200));
 			projectInfoBlock = projectInfoBlock.replace("${PROJECT_FILENAME}", finfo.fileName());
 			projectInfoBlock = projectInfoBlock.replace("${PROJECT_FULL_PATH}", finfo.filePath());
 			projectInfoBlock = projectInfoBlock.replace("${PROJECT_DESCRIPTION}", description);
@@ -174,11 +175,12 @@ void SVWelcomeScreen::updateWelcomePage() {
 				/// \todo fix warning about bad resource loading
 				thumbPath = "<a href=\"pfile:${PROJECT_FULL_PATH}\"><img src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
 				thumbPath = thumbPath.replace("${PROJECT_FULL_PATH}", finfo.filePath());
-				projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(p.width()+10));
+				// Example projects may have larger thumbnails - hence we set the thumbnailsize based on the image size
+				projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(p.width()+20));
 			}
 			else {
 				thumbPath = "&nbsp;";
-				projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(SVSettings::instance().m_thumbNailSize+8));
+				projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(SVSettings::instance().m_thumbNailSize+20));
 			}
 
 			projectInfoBlock = projectInfoBlock.replace("${IMG_FILENAME}", thumbPath);
@@ -233,11 +235,13 @@ void SVWelcomeScreen::updateWelcomePage() {
 				/// \todo fix warning about bad resource loading
 				thumbPath = "<a href=\"pfile:${PROJECT_FULL_PATH}\"><img src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
 				thumbPath = thumbPath.replace("${PROJECT_FULL_PATH}", finfo.filePath());
-				projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(p.width()+10));
+
+				// Example projects may have larger thumbnails - hence we set the thumbnailsize based on the image size
+				projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(p.width()+20));
 			}
 			else {
 				thumbPath = "&nbsp;";
-				projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(SVSettings::instance().m_thumbNailSize+8));
+				projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(SVSettings::instance().m_thumbNailSize+20));
 			}
 
 			projectInfoBlock = projectInfoBlock.replace("${IMG_FILENAME}", thumbPath);

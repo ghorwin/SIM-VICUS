@@ -4,6 +4,7 @@
 #include <IBK_Flag.h>
 
 #include <QColor>
+#include <IBKMK_Vector3D.h>
 
 #include "VICUS_CodeGenMacros.h"
 
@@ -33,6 +34,8 @@ public:
 	QString								m_gridColor		= "#7f7fb2";	// XML:E
 
 	IBK::Flag							m_flags[NUM_F];					// XML:E
+
+	IBKMK::Vector3D						m_cameraTranslation;			// XML:E
 };
 
 

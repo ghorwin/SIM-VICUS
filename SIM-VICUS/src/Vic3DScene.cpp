@@ -5,6 +5,7 @@
 #include <QCursor>
 
 #include <VICUS_Project.h>
+#include <VICUS_Conversions.h>
 
 #include "Vic3DShaderProgram.h"
 #include "Vic3DKeyboardMouseHandler.h"
@@ -15,9 +16,6 @@
 const float TRANSLATION_SPEED = 1.2f;
 const float MOUSE_ROTATION_SPEED = 0.5f;
 
-/*! IBKMK::Vector3D to QVector3D conversion macro. */
-#define VEC2VEC(v) QVector3D((float)(v).m_x, (float)(v).m_y, (float)(v).m_z)
-#define VECFromVEC(v) IBKMK::Vector3D((double)(v).x(), (double)(v).y(), (double)(v).z())
 
 namespace Vic3D {
 
@@ -38,10 +36,10 @@ void addSurface(const VICUS::Surface & s,
 			// 4 elements (3 for the triangle, 1 primitive restart index)
 			indexBufferData.resize(indexBufferData.size()+4);
 
-			vertexBufferData[currentVertexIndex    ].m_coords = VEC2VEC(s.m_geometry.m_vertexes[0]);
-			vertexBufferData[currentVertexIndex + 1].m_coords = VEC2VEC(s.m_geometry.m_vertexes[1]);
-			vertexBufferData[currentVertexIndex + 2].m_coords = VEC2VEC(s.m_geometry.m_vertexes[2]);
-			QVector3D n = VEC2VEC(s.m_geometry.m_normal);
+			vertexBufferData[currentVertexIndex    ].m_coords = VICUS::IBKVector2QVector(s.m_geometry.m_vertexes[0]);
+			vertexBufferData[currentVertexIndex + 1].m_coords = VICUS::IBKVector2QVector(s.m_geometry.m_vertexes[1]);
+			vertexBufferData[currentVertexIndex + 2].m_coords = VICUS::IBKVector2QVector(s.m_geometry.m_vertexes[2]);
+			QVector3D n = VICUS::IBKVector2QVector(s.m_geometry.m_normal);
 			vertexBufferData[currentVertexIndex    ].m_normal = n;
 			vertexBufferData[currentVertexIndex + 1].m_normal = n;
 			vertexBufferData[currentVertexIndex + 2].m_normal = n;
@@ -70,16 +68,16 @@ void addSurface(const VICUS::Surface & s,
 			indexBufferData.resize(indexBufferData.size()+5);
 
 			// 4 indexes anti-clock wise in vertex memory
-			QVector3D a = VEC2VEC(s.m_geometry.m_vertexes[0]);
-			QVector3D b = VEC2VEC(s.m_geometry.m_vertexes[1]);
-			QVector3D d = VEC2VEC(s.m_geometry.m_vertexes[2]);
+			QVector3D a = VICUS::IBKVector2QVector(s.m_geometry.m_vertexes[0]);
+			QVector3D b = VICUS::IBKVector2QVector(s.m_geometry.m_vertexes[1]);
+			QVector3D d = VICUS::IBKVector2QVector(s.m_geometry.m_vertexes[2]);
 			vertexBufferData[currentVertexIndex    ].m_coords = a;
 			vertexBufferData[currentVertexIndex + 1].m_coords = b;
 			QVector3D c = b + (d - a);
 			vertexBufferData[currentVertexIndex + 2].m_coords = c;
 			vertexBufferData[currentVertexIndex + 3].m_coords = d;
 
-			QVector3D n = VEC2VEC(s.m_geometry.m_normal);
+			QVector3D n = VICUS::IBKVector2QVector(s.m_geometry.m_normal);
 			vertexBufferData[currentVertexIndex    ].m_normal = n;
 			vertexBufferData[currentVertexIndex + 1].m_normal = n;
 			vertexBufferData[currentVertexIndex + 2].m_normal = n;
@@ -114,13 +112,13 @@ void addSurface(const VICUS::Surface & s,
 			// nvert indexes + primitive restart index
 			indexBufferData.resize(indexBufferData.size()+nvert+1);
 
-			QVector3D n = VEC2VEC(s.m_geometry.m_normal);
+			QVector3D n = VICUS::IBKVector2QVector(s.m_geometry.m_normal);
 
 			// add all vertices to buffer
 			for (unsigned int i=0; i<nvert; ++i) {
 				// add vertex and
 				unsigned int vIdx = currentVertexIndex + i;
-				vertexBufferData[vIdx].m_coords = VEC2VEC(s.m_geometry.m_vertexes[i]);
+				vertexBufferData[vIdx].m_coords = VICUS::IBKVector2QVector(s.m_geometry.m_vertexes[i]);
 				vertexBufferData[vIdx].m_normal = n;
 				colorBufferData[vIdx] = s.m_color;
 				// build up triangle strip index buffer
@@ -314,7 +312,7 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 					// mouse y translation = rotation around "right" axis
 
-					QVector3D LocalRight = QVector3D::crossProduct(LocalUp, lineOfSight);
+					QVector3D LocalRight = m_camera.right(); //QVector3D::crossProduct(LocalUp, lineOfSight);
 
 					// There is a situation where this fails:
 					// when the line of sight vector becomes co-linear with the LocalUp vector (i.e. one
@@ -580,8 +578,8 @@ void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3
 
 	// compute view direction (vector for line equation)
 	QVector3D d = farPoint - nearPoint;
-	IBKMK::Vector3D d2 = VECFromVEC(d);
-	IBKMK::Vector3D nearPoint2 = VECFromVEC(nearPoint);
+	IBKMK::Vector3D d2 = VICUS::QVector2IBKVector(d);
+	IBKMK::Vector3D nearPoint2 = VICUS::QVector2IBKVector(nearPoint);
 
 	// get intersection with xy plane
 	VICUS::PlaneGeometry xyPlane(VICUS::PlaneGeometry::T_Rectangle, IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(1,0,0), IBKMK::Vector3D(0,1,0));
@@ -589,7 +587,7 @@ void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3
 	double t;
 	if (xyPlane.intersectsLine(nearPoint2, d2, intersectionPoint, t, true, true)) {
 		// got an intersection point, store it
-		m_pickPoint = VEC2VEC(intersectionPoint);
+		m_pickPoint = VICUS::IBKVector2QVector(intersectionPoint);
 	}
 
 	// create pick object, distance is a value between 0 and 1, so initialize with 2 (very far back) to be on the safe side.
