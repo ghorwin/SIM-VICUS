@@ -44,6 +44,7 @@ SVWelcomeScreen::SVWelcomeScreen(QWidget *parent) :
 
 SVWelcomeScreen::~SVWelcomeScreen() {
 	delete m_ui;
+	delete m_networkManager;
 }
 
 

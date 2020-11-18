@@ -93,7 +93,10 @@ namespace QtExt {
 class AutoUpdater : public QObject {
 	Q_OBJECT
 public:
-	explicit AutoUpdater(QObject *parent = 0);
+	explicit AutoUpdater(QObject *parent = nullptr);
+
+	/*! D'tor, releases network manager. */
+	~AutoUpdater();
 
 	/*! Call this function from main.cpp to check if a downloaded update installer is available on the specified
 		location and run the installation if possible.

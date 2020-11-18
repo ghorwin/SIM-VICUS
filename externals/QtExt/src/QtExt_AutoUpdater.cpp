@@ -52,6 +52,11 @@ AutoUpdater::AutoUpdater(QObject *parent) :
 }
 
 
+AutoUpdater::~AutoUpdater() {
+	delete m_networkManager;
+}
+
+
 bool AutoUpdater::installUpdateWhenAvailable(const QString & localPath) {
 	if (!QFileInfo::exists(localPath) )
 		return false;
