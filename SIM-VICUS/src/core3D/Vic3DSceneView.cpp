@@ -27,6 +27,9 @@ License    : BSD License,
 #define SHADER_LINES 2
 #define NUM_SHADER_PROGRAMS 3
 
+#define SCREENSHOT_WIDTH  250
+#define SCREENSHOT_HEIGHT 150
+
 namespace Vic3D {
 
 SceneView::SceneView() :
@@ -87,36 +90,42 @@ SceneView::~SceneView() {
 
 		m_gpuTimers.destroy();
 
-		delete m_screenShotFrameBuffer;
+		delete m_screenShotMultiSampleFrameBuffer;
+		delete m_screenShotDownSampleFrameBuffer;
 	}
 }
 
 
 void SceneView::dumpScreenshot(const QString & imgFilePath) {
-	if (m_screenShotFrameBuffer == nullptr)
+	if (m_screenShotMultiSampleFrameBuffer == nullptr)
 		return; // not initialized yet
 	// store current scene size
 	QSize sceneSize = m_mainScene.currentSize();
 
 	// resize main scene
-	m_mainScene.resize(m_screenShotFrameBuffer->size().width(), m_screenShotFrameBuffer->size().height(), 1);
+	m_mainScene.resize(m_screenShotMultiSampleFrameBuffer->size().width(), m_screenShotMultiSampleFrameBuffer->size().height(), 1);
 
-	// make dump framebuffer active
-	m_screenShotFrameBuffer->bind();
+	// make framebuffer (for multi-sample rendering) active
+	m_screenShotMultiSampleFrameBuffer->bind();
 	// clear color and depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// render main scene (grid, opaque planes, ...)
+	// render *only* main scene (grid, opaque planes, ...)
 	m_mainScene.render();
 
 	// release framebuffer again
-	m_screenShotFrameBuffer->bindDefault();
+	m_screenShotMultiSampleFrameBuffer->bindDefault();
 
 	// restore main scene's viewport
 	m_mainScene.resize(sceneSize.width(), sceneSize.height(), devicePixelRatio());
 
+	// now downsample the framebuffers color buffer (all other buffers are not needed for the screenshot)
+	QOpenGLFramebufferObject::blitFramebuffer(
+		m_screenShotDownSampleFrameBuffer, m_screenShotMultiSampleFrameBuffer,
+		GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
 	// finally dump buffer to file
-	QImage screenShot = m_screenShotFrameBuffer->toImage();
+	QImage screenShot = m_screenShotDownSampleFrameBuffer->toImage();
 	screenShot.save(imgFilePath);
 }
 
@@ -140,8 +149,25 @@ void SceneView::initializeGL() {
 						   &m_shaderPrograms[SHADER_OPAQUE_GEOMETRY],
 						   &m_shaderPrograms[SHADER_LINES]);
 
-		m_screenShotFrameBuffer = new QOpenGLFramebufferObject(QSize(600, 400), QOpenGLFramebufferObject::CombinedDepthStencil);
-		m_screenShotFrameBuffer->bindDefault();
+		// create a multisample-framebuffer, that's where we render into
+		QOpenGLFramebufferObjectFormat muliSampleFormat;
+		muliSampleFormat.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
+		muliSampleFormat.setMipmap(true);
+		muliSampleFormat.setSamples(4);
+		muliSampleFormat.setTextureTarget(GL_TEXTURE_2D);
+		muliSampleFormat.setInternalTextureFormat(GL_RGBA32F_ARB);
+		m_screenShotMultiSampleFrameBuffer = new QOpenGLFramebufferObject(SCREENSHOT_WIDTH, SCREENSHOT_HEIGHT, muliSampleFormat);
+
+		// create framebuffer for downsampling - from this buffer we create the actual screenshot image file
+		// Mind: dimensions of both buffers must be exactly the same, for the blitbuffer-operation to work
+		QOpenGLFramebufferObjectFormat downSampledFormat;
+		downSampledFormat.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
+		downSampledFormat.setMipmap(true);
+		downSampledFormat.setTextureTarget(GL_TEXTURE_2D);
+		downSampledFormat.setInternalTextureFormat(GL_RGBA32F_ARB);
+		m_screenShotDownSampleFrameBuffer = new QOpenGLFramebufferObject(SCREENSHOT_WIDTH, SCREENSHOT_HEIGHT, downSampledFormat);
+
+		m_screenShotMultiSampleFrameBuffer->bindDefault();
 
 #ifdef SHOW_TIMINGS
 		// create timer

@@ -88,8 +88,10 @@ private:
 	QOpenGLTimeMonitor			m_gpuTimers;
 	QElapsedTimer				m_cpuTimer;
 
-	/*! Framebuffer object (including image storage) for screenshots. */
-	QOpenGLFramebufferObject	*m_screenShotFrameBuffer = nullptr;
+	/*! Framebuffer object (including image storage) for screenshots - multisample variant. */
+	QOpenGLFramebufferObject	*m_screenShotMultiSampleFrameBuffer = nullptr;
+	/*! Framebuffer object (including image storage) for screenshots - downsample variant (includes anti-aliasing). */
+	QOpenGLFramebufferObject	*m_screenShotDownSampleFrameBuffer = nullptr;
 };
 
 } // namespace Vic3D
