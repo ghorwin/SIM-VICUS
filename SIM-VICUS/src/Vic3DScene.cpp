@@ -315,33 +315,36 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 					// mouse y translation = rotation around "right" axis
 
 					QVector3D LocalRight = QVector3D::crossProduct(LocalUp, lineOfSight);
-					// There is a situation where this fails:
-					// when the line of sight vector becomes co-linear with the LocalUp vector (i.e. one
-					// is tilting the view such that we look directly down), then the cross-product
-					// gives us a zero vector (or close to zero due to rounding errors).
-					// The rotation around a zero vector (or close to zero) will give somewhat arbitrary results,
-					// and specifically destroy our "z-axis is facing up" alignment - the camera appears to
-					// "roll".
 
-					// TODO : Dirk, implement a fix to "re-align" the camera such that its local up remains aligned
-					//        with the z-axis. Hint: tilt the camera down so that the forward-vector lies in the xy-plane.
-					//        An ideally aligned camera should have local up-vector = z-axis vector. If misaligned,
-					//        simply "roll" the camera back and reverse the "down tilt" to get the fixed camera rotation.
+					if(!LocalRight.isNull()){
+						// There is a situation where this fails:
+						// when the line of sight vector becomes co-linear with the LocalUp vector (i.e. one
+						// is tilting the view such that we look directly down), then the cross-product
+						// gives us a zero vector (or close to zero due to rounding errors).
+						// The rotation around a zero vector (or close to zero) will give somewhat arbitrary results,
+						// and specifically destroy our "z-axis is facing up" alignment - the camera appears to
+						// "roll".
 
-					// set rotation around "right" axis for y-mouse-delta
-					orbitTrans.rotate(MOUSE_ROTATION_SPEED * mouseDelta.y(), LocalRight);
+						// TODO : Dirk, implement a fix to "re-align" the camera such that its local up remains aligned
+						//        with the z-axis. Hint: tilt the camera down so that the forward-vector lies in the xy-plane.
+						//        An ideally aligned camera should have local up-vector = z-axis vector. If misaligned,
+						//        simply "roll" the camera back and reverse the "down tilt" to get the fixed camera rotation.
 
-					// rotate vector to camera
-					lineOfSight = orbitTrans.toMatrix() * lineOfSight;
+						// set rotation around "right" axis for y-mouse-delta
+						orbitTrans.rotate(MOUSE_ROTATION_SPEED * mouseDelta.y(), LocalRight);
 
-					// get new camera location
-					QVector3D newCamPos = m_orbitControllerOrigin + lineOfSight;
-//					qDebug() << "Moving camera from " << m_camera.translation() << "to" << newCamPos;
+						// rotate vector to camera
+						lineOfSight = orbitTrans.toMatrix() * lineOfSight;
 
-					// record the distance that the camera was moved
-					m_mouseMoveDistance += (newCamPos - m_camera.translation()).lengthSquared();
-					// move camera
-					m_camera.setTranslation(newCamPos);
+						// get new camera location
+						QVector3D newCamPos = m_orbitControllerOrigin + lineOfSight;
+						//					qDebug() << "Moving camera from " << m_camera.translation() << "to" << newCamPos;
+
+						// record the distance that the camera was moved
+						m_mouseMoveDistance += (newCamPos - m_camera.translation()).lengthSquared();
+						// move camera
+						m_camera.setTranslation(newCamPos);
+					}
 
 					// also rotate the camera around the same angles
 					m_camera.rotate(MOUSE_ROTATION_SPEED * mouseDelta.x(), LocalUp);
