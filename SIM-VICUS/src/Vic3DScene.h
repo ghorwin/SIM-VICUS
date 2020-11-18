@@ -38,6 +38,9 @@ public:
 
 	void resize(int width, int height, qreal retinaScale);
 
+	/*! Returns current size. */
+	QSize currentSize() const { return m_viewPort.size(); }
+
 	/*! Compines camera matrix and project matrix to form the world2view matrix. */
 	void updateWorld2ViewMatrix();
 

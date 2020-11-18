@@ -1049,6 +1049,10 @@ bool SVMainWindow::importProjectPackage(const QString & packageFilePath, const Q
 
 
 QString SVMainWindow::saveThumbNail() {
+	// check if thumbnail dir exists and if not, create it
+	QString thumbNailPath = QtExt::Directories::userDataDir()  + "/thumbs";
+	if (!QDir(thumbNailPath).exists())
+		QDir().mkpath(thumbNailPath);
 	// compose temporary file path
 	QString thumbPath = QtExt::Directories::userDataDir()  + "/thumbs/" + QFileInfo(m_projectHandler.projectFile() + ".png").fileName();
 	QFileInfo finfo(thumbPath);
@@ -1058,7 +1062,7 @@ QString SVMainWindow::saveThumbNail() {
 		if (finfo.lastModified() >= prjFInfo.lastModified())
 			return thumbPath;
 	}
-//	m_geometryWidget->saveThumbNailImage(thumbPath);
+	m_geometryView->saveScreenShot(thumbPath);
 	return thumbPath;
 }
 

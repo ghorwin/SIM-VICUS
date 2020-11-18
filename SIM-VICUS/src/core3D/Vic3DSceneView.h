@@ -24,6 +24,8 @@ License    : BSD License,
 #include "Vic3DCamera.h"
 #include "Vic3DScene.h"
 
+class QOpenGLFramebufferObject;
+
 class ModificationInfo;
 
 namespace Vic3D {
@@ -37,6 +39,9 @@ class SceneView : public OpenGLWindow {
 public:
 	SceneView();
 	virtual ~SceneView() override;
+
+	/*! Renders current scene into a framebuffer and saves it to file. */
+	void dumpScreenshot(const QString & imgFilePath);
 
 public slots:
 
@@ -82,6 +87,9 @@ private:
 
 	QOpenGLTimeMonitor			m_gpuTimers;
 	QElapsedTimer				m_cpuTimer;
+
+	/*! Framebuffer object (including image storage) for screenshots. */
+	QOpenGLFramebufferObject	*m_screenShotFrameBuffer = nullptr;
 };
 
 } // namespace Vic3D

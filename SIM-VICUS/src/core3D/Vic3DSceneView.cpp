@@ -14,6 +14,7 @@ License    : BSD License,
 #include <QExposeEvent>
 #include <QOpenGLShaderProgram>
 #include <QDateTime>
+#include <QOpenGLFramebufferObject>
 
 #include "SVDebugApplication.h"
 
@@ -67,6 +68,7 @@ SceneView::SceneView() :
 	lines.m_uniformNames.append("modelToWorld");
 	m_shaderPrograms[SHADER_LINES] = lines;
 
+
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SceneView::onModified);
 }
@@ -84,7 +86,38 @@ SceneView::~SceneView() {
 		m_mainScene.destroy();
 
 		m_gpuTimers.destroy();
+
+		delete m_screenShotFrameBuffer;
 	}
+}
+
+
+void SceneView::dumpScreenshot(const QString & imgFilePath) {
+	if (m_screenShotFrameBuffer == nullptr)
+		return; // not initialized yet
+	// store current scene size
+	QSize sceneSize = m_mainScene.currentSize();
+
+	// resize main scene
+	m_mainScene.resize(m_screenShotFrameBuffer->size().width(), m_screenShotFrameBuffer->size().height(), 1);
+
+	// make dump framebuffer active
+	m_screenShotFrameBuffer->bind();
+	// clear color and depth buffer
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// render main scene (grid, opaque planes, ...)
+	m_mainScene.render();
+
+	// release framebuffer again
+	m_screenShotFrameBuffer->bindDefault();
+
+	// restore main scene's viewport
+	m_mainScene.resize(sceneSize.width(), sceneSize.height(), devicePixelRatio());
+
+	// finally dump buffer to file
+	QImage screenShot = m_screenShotFrameBuffer->toImage();
+	screenShot.save(imgFilePath);
 }
 
 
@@ -101,16 +134,20 @@ void SceneView::initializeGL() {
 		for (ShaderProgram & p : m_shaderPrograms)
 			p.create();
 
-		// initialize drawable objects
-//		m_pickLineObject.create(SHADER(0));
+		// initialize scenes to draw
 
 		m_mainScene.create(&m_shaderPrograms[SHADER_GRID],
 						   &m_shaderPrograms[SHADER_OPAQUE_GEOMETRY],
 						   &m_shaderPrograms[SHADER_LINES]);
 
-		// Timer
-		m_gpuTimers.setSampleCount(6);
+		m_screenShotFrameBuffer = new QOpenGLFramebufferObject(QSize(600, 400), QOpenGLFramebufferObject::CombinedDepthStencil);
+		m_screenShotFrameBuffer->bindDefault();
+
+#ifdef SHOW_TIMINGS
+		// create timer
+		m_gpuTimers.setSampleCount(2);
 		m_gpuTimers.create();
+#endif // SHOW_TIMINGS
 
 		onModified(SVProjectHandler::AllModified, nullptr);
 	}
@@ -133,20 +170,34 @@ void SceneView::paintGL() {
 	// process input, i.e. check if any keys have been pressed
 	if (m_inputEventReceived)
 		processInput();
+#ifdef SHOW_TIMINGS
+	m_gpuTimers.reset();
+	m_gpuTimers.recordSample();
+#endif // SHOW_TIMINGS
 
 	// clear color and depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// render main scene (grid, opaque plane, ...)
+	// render main scene (grid, opaque planes, ...)
 	m_mainScene.render();
 
+
+	// Done painting
+
+#ifdef SHOW_TIMINGS
+	m_gpuTimers.recordSample();
+#endif // SHOW_TIMINGS
+
+
+	// Check for some changes in the input handler, which in turn may restart the paint loop
 	checkInput();
 
-#if 0
+#ifdef SHOW_TIMINGS
 	QVector<GLuint64> intervals = m_gpuTimers.waitForIntervals();
 	for (GLuint64 it : intervals)
 		qDebug() << "  " << it*1e-6 << "ms/frame";
 	QVector<GLuint64> samples = m_gpuTimers.waitForSamples();
+	Q_ASSERT(!samples.isEmpty());
 	qDebug() << "Total render time: " << (samples.back() - samples.front())*1e-6 << "ms/frame";
 
 	qint64 elapsedMs = m_cpuTimer.elapsed();

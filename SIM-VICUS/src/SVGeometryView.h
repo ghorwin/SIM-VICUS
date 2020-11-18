@@ -15,6 +15,8 @@ class SVGeometryView : public QWidget {
 public:
 	explicit SVGeometryView(QWidget *parent = nullptr);
 
+	void saveScreenShot(const QString & imgFilePath);
+
 private:
 	// The scene view, that shows our world and allows navigation
 	Vic3D::SceneView * m_sceneView;

@@ -44,3 +44,8 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 
 	setFocusPolicy(Qt::StrongFocus); // we want to get all keyboard/mouse events
 }
+
+
+void SVGeometryView::saveScreenShot(const QString & imgFilePath) {
+	m_sceneView->dumpScreenshot(imgFilePath);
+}
