@@ -5,12 +5,12 @@
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
 			<GridColor>#7f7fb2</GridColor>
-			<CameraTranslation>18.7575 -13.8385 11.9971</CameraTranslation>
+			<CameraTranslation>12.7037 -12.9686 5.50303</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.784832</Wp>
-				<X>0.519469</X>
-				<Y>0.186507</Y>
-				<Z>0.281784</Z>
+				<Wp>0.77829</Wp>
+				<X>0.581176</X>
+				<Y>0.142209</Y>
+				<Z>0.190446</Z>
 			</RotationMatrix>
 		</ViewSettings>
 		<Buildings>

@@ -26,7 +26,7 @@ public:
 
 	/*! C'tor, initializes defaults. */
 	ViewSettings() :
-		m_cameraTranslation(40, -100, 50),
+		m_cameraTranslation(0, -100, 50),
 		m_cameraRotation(QQuaternion::fromAxisAndAngle(QVector3D(1.0f,0.f, 0.f), 60))
 	{
 	}

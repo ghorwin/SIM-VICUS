@@ -181,7 +181,7 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 	// *** initialize camera placement and model placement in the world ***
 
 	QVector3D cameraTrans = VICUS::IBKVector2QVector(SVProjectHandler::instance().viewSettings().m_cameraTranslation);
-	m_camera.translate(cameraTrans);
+	m_camera.setTranslation(cameraTrans);
 	m_camera.setRotation( SVProjectHandler::instance().viewSettings().m_cameraRotation.toQuaternion() );
 
 	// re-create grid with updated properties
