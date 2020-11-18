@@ -121,7 +121,7 @@ void SVWelcomeScreen::updateWelcomePage() {
 			thumbPath = thumbPath.replace("${PROJECT_FULL_PATH}", finfo.filePath());
 
 			// thumbnails generated from the software have all the same thumbnail size
-			projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(SVSettings::instance().m_thumbNailSize+200));
+			projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(SVSettings::instance().m_thumbNailSize+20));
 			projectInfoBlock = projectInfoBlock.replace("${PROJECT_FILENAME}", finfo.fileName());
 			projectInfoBlock = projectInfoBlock.replace("${PROJECT_FULL_PATH}", finfo.filePath());
 			projectInfoBlock = projectInfoBlock.replace("${PROJECT_DESCRIPTION}", description);

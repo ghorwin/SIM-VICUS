@@ -385,6 +385,7 @@ void CodeGenerator::generateReadWriteCode() {
 				//   unsigned int with special code that INVALID_ID values are not written
 				// - std::string
 				// - QString
+				// - IBKMK::Vector3D
 				// - IBK::Unit
 				// - IBK::Time
 				// - IBK::Path
@@ -402,6 +403,7 @@ void CodeGenerator::generateReadWriteCode() {
 				if (xmlInfo.typeStr == "int" ||
 					xmlInfo.typeStr == "unsigned int" ||
 					xmlInfo.typeStr == "double" ||
+					xmlInfo.typeStr == "float" ||
 					xmlInfo.typeStr == "bool")
 				{
 					if (xmlInfo.typeStr == "unsigned int") {
@@ -419,6 +421,16 @@ void CodeGenerator::generateReadWriteCode() {
 					elements +=
 							"	if (!m_" + varName + ".isEmpty())\n"
 							"		TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".toStdString());\n";
+				}
+				else if (xmlInfo.typeStr == "IBKMK::Vector3D") {
+					includes.insert("IBKMK_Vector3D.h");
+					includes.insert("IBK_StringUtils.h");
+					includes.insert("vector");
+					elements +=
+							"	{\n"
+							"		std::vector<double> v = { m_"+varName+".m_x, m_"+varName+".m_y, m_"+varName+".m_z};\n"
+							"		TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), IBK::vector2string<double>(v,\" \"));\n"
+							"	}\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Unit") {
 					elements +=
@@ -786,6 +798,7 @@ void CodeGenerator::generateReadWriteCode() {
 					// now type specific code
 					if (xmlInfo.typeStr == "int" ||
 						xmlInfo.typeStr == "unsigned int" ||
+						xmlInfo.typeStr == "float" ||
 						xmlInfo.typeStr == "double" ||
 						xmlInfo.typeStr == "bool")
 					{
@@ -805,6 +818,26 @@ void CodeGenerator::generateReadWriteCode() {
 						elements +=
 							"			"+elseStr+"if (cName == \""+tagName+"\")\n"
 							"				m_"+varName+" = QString::fromStdString(c->GetText());\n";
+						handledVariables.insert(varName);
+					}
+					else if (xmlInfo.typeStr == "IBKMK::Vector3D") {
+						includes.insert("IBKMK_Vector3D.h");
+						includes.insert("IBK_StringUtils.h");
+						includes.insert("vector");
+						elements +=
+							"			"+elseStr+"if (cName == \""+tagName+"\") {\n"
+							"				try {\n"
+							"					std::vector<double> vals;\n"
+							"					IBK::string2valueVector(c->GetText(), vals);\n"
+							"					// must have 3 elements\n"
+							"					if (vals.size() != 3)\n"
+							"						throw IBK::Exception(\"Missing values (expected 3).\", FUNC_ID);\n"
+							"					m_"+varName+".set(vals[0], vals[1], vals[2]);\n"
+							"				} catch (IBK::Exception & ex) {\n"
+							"					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row())\n"
+							"										  .arg(\"Invalid vector data.\"), FUNC_ID);\n"
+							"				}\n"
+							"			}\n";
 						handledVariables.insert(varName);
 					}
 					else if (xmlInfo.typeStr == "IBK::Unit") {

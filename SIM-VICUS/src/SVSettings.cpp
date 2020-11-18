@@ -24,8 +24,7 @@ SVSettings & SVSettings::instance() {
 
 
 SVSettings::SVSettings(const QString & organization, const QString & appName) :
-	QtExt::Settings(organization, appName),
-	m_thumbNailSize(200)
+	QtExt::Settings(organization, appName)
 {
 	// singleton check
 	Q_ASSERT_X(m_self == nullptr, "[SVSettings::SVSettings]", "You must not create multiple instances of "
@@ -51,7 +50,7 @@ void SVSettings::setDefaults() {
 #else
 	m_7zExecutable = "7z";
 #endif
-	m_thumbNailSize = 200;
+	m_thumbNailSize = 400;
 
 	m_fontPointSize = 0; // means: use auto-detected
 

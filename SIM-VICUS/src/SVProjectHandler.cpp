@@ -354,7 +354,16 @@ IBK::Path SVProjectHandler::replacePathPlaceholders(const IBK::Path & stringWith
 	}
 
 	return newPath;
+}
 
+
+VICUS::ViewSettings & SVProjectHandler::viewSettings() {
+	Q_ASSERT(m_project != nullptr);
+
+	// We bypass the undo/redo action settings because view settings (camera position, grid color, grid spacing)
+	// are properties of the project, yet outside the undo/redo system. It would feel unnatural to "redo" a camera
+	// position change.
+	return m_project->m_viewSettings;
 }
 
 

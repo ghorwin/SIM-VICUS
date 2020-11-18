@@ -48,9 +48,10 @@ HEADERS += \
 	../../src/VICUS_PlaneGeometry.h \
 	../../src/VICUS_Project.h \
 	../../src/VICUS_Room.h \
+	../../src/VICUS_RotationMatrix.h \
 	../../src/VICUS_Surface.h \
-    ../../src/VICUS_ViewSettings.h \
-    ../../src/VICUS_WindowGlazing.h
+	../../src/VICUS_ViewSettings.h \
+	../../src/VICUS_WindowGlazing.h
 
 SOURCES += \
 	../../src/VICUS_ArgsParser.cpp \
@@ -71,6 +72,6 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_NetworkPipe.cpp \
 	../../src/ncg/ncg_VICUS_Project.cpp \
 	../../src/ncg/ncg_VICUS_Room.cpp \
+	../../src/ncg/ncg_VICUS_RotationMatrix.cpp \
 	../../src/ncg/ncg_VICUS_Surface.cpp \
 	../../src/ncg/ncg_VICUS_ViewSettings.cpp
-

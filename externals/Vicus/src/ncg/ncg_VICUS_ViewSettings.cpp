@@ -26,7 +26,10 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <VICUS_Constants.h>
+#include <IBKMK_Vector3D.h>
+#include <IBK_StringUtils.h>
 #include <NANDRAD_Utilities.h>
+#include <vector>
 
 #include <tinyxml.h>
 
@@ -59,6 +62,21 @@ void ViewSettings::readXMLPrivate(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
+			else if (cName == "CameraTranslation") {
+				try {
+					std::vector<double> vals;
+					IBK::string2valueVector(c->GetText(), vals);
+					// must have 3 elements
+					if (vals.size() != 3)
+						throw IBK::Exception("Missing values (expected 3).", FUNC_ID);
+					m_cameraTranslation.set(vals[0], vals[1], vals[2]);
+				} catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row())
+										  .arg("Invalid vector data."), FUNC_ID);
+				}
+			}
+			else if (cName == "RotationMatrix")
+				m_cameraRotation.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -87,6 +105,12 @@ TiXmlElement * ViewSettings::writeXMLPrivate(TiXmlElement * parent) const {
 			TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_flags[i].name(), m_flags[i].isEnabled() ? "true" : "false");
 		}
 	}
+	{
+		std::vector<double> v = { m_cameraTranslation.m_x, m_cameraTranslation.m_y, m_cameraTranslation.m_z};
+		TiXmlElement::appendSingleAttributeElement(e, "CameraTranslation", nullptr, std::string(), IBK::vector2string<double>(v," "));
+	}
+
+	m_cameraRotation.writeXML(e);
 	return e;
 }
 

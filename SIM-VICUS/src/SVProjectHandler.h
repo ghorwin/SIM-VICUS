@@ -10,6 +10,7 @@
 
 namespace VICUS {
 	class Project;
+	class ViewSettings;
 }
 
 /*! Abstract base class for all modification data containers. */
@@ -176,6 +177,13 @@ public:
 
 	/*! Set the reload state to true.*/
 	void setReload() { m_reload = true; }
+
+	/*! Returns read/write access to view settings - these are not part of the
+		undo/redo action.
+		\warning DO NOT ACCESS this function unless a valid project is active (call isValid() to make sure
+			a project has been created).
+	*/
+	VICUS::ViewSettings & viewSettings();
 
 signals:
 	/*! Emitted when the project has been modified.

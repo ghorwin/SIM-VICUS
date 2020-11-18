@@ -6,6 +6,7 @@
 
 #include <VICUS_Project.h>
 #include <VICUS_Conversions.h>
+#include <VICUS_ViewSettings.h>
 
 #include "Vic3DShaderProgram.h"
 #include "Vic3DKeyboardMouseHandler.h"
@@ -149,13 +150,6 @@ void Vic3DScene::create(ShaderProgram * gridShader, ShaderProgram * buildingShad
 
 	// the orbit controller object is static in geometry, so it can be created already here
 	m_orbitControllerObject.create(m_orbitControllerShader);
-
-	// *** initialize camera placement and model placement in the world
-
-	// move camera -100 back (negative y direction -> positive x is towards the right of the screen) and 50 up
-	m_camera.translate(40, -100, 50);
-	// look slightly up
-	m_camera.rotate(60, m_camera.right());
 }
 
 
@@ -184,6 +178,11 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			return; // do nothing by default
 	}
 
+	// *** initialize camera placement and model placement in the world ***
+
+	QVector3D cameraTrans = VICUS::IBKVector2QVector(SVProjectHandler::instance().viewSettings().m_cameraTranslation);
+	m_camera.translate(cameraTrans);
+	m_camera.setRotation( SVProjectHandler::instance().viewSettings().m_cameraRotation.toQuaternion() );
 
 	// re-create grid with updated properties
 	// since grid object is very small, this function also regenerates the grid line buffers and
@@ -372,6 +371,9 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		m_camera.translate(wheelDelta * transSpeed * m_camera.forward());
 	}
 
+	// store camera position in view settings
+	SVProjectHandler::instance().viewSettings().m_cameraTranslation = VICUS::QVector2IBKVector(m_camera.translation());
+	SVProjectHandler::instance().viewSettings().m_cameraRotation = m_camera.rotation();
 
 	updateWorld2ViewMatrix();
 }
