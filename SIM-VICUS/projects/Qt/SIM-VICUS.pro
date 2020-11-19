@@ -85,6 +85,7 @@ SOURCES += \
 	../../src/SVStyle.cpp \
 	../../src/SVThreadBase.cpp \
 	../../src/SVWelcomeScreen.cpp \
+	../../src/Vic3DGeometryHelpers.cpp \
 	../../src/Vic3DScene.cpp \
 	../../src/actions/SVUndoCommandBase.cpp \
 	../../src/actions/SVUndoProject.cpp \
@@ -120,6 +121,7 @@ HEADERS  += \
 	../../src/SVStyle.h \
 	../../src/SVThreadBase.h \
 	../../src/SVWelcomeScreen.h \
+	../../src/Vic3DGeometryHelpers.h \
 	../../src/Vic3DScene.h \
 	../../src/actions/SVUndoCommandBase.h \
 	../../src/actions/SVUndoProject.h \

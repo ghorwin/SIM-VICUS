@@ -54,8 +54,6 @@ public:
 	void render();
 
 private:
-	/*! Takes geometry from VICUS::Project and generates meshes for the various drawable objects. */
-	void generateBuildingGeometry();
 
 	/*! Applies filter/highlighting rules and determines color for given surface. */
 	QColor color4Surface(const VICUS::Surface & s) const;

@@ -49,6 +49,8 @@ public:
 	*/
 	void updateColorBuffer();
 
+	void generateBuildingGeometry();
+
 	/*! Binds the vertex array object and renders the geometry. */
 	void render();
 
