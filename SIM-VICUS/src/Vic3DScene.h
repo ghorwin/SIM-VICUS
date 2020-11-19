@@ -54,6 +54,7 @@ public:
 	void render();
 
 private:
+	void generateBuildingGeometry();
 
 	/*! Applies filter/highlighting rules and determines color for given surface. */
 	QColor color4Surface(const VICUS::Surface & s) const;

@@ -192,51 +192,6 @@ void OpaqueGeometryObject::updateColorBuffer() {
 	m_colorBufferObject.release();
 }
 
-void OpaqueGeometryObject::generateBuildingGeometry() {
-	// get VICUS project data
-	const VICUS::Project & p = project();
-
-	// we rebuild the entire geometry here, so this may be slow
-
-	// clear out existing cache
-
-	m_vertexBufferData.clear();
-	m_colorBufferData.clear();
-	m_indexBufferData.clear();
-
-	m_vertexBufferData.reserve(100000);
-	m_colorBufferData.reserve(100000);
-	m_indexBufferData.reserve(100000);
-
-	// we now process all surfaces and add their coordinates and
-	// normals
-
-	// we also store colors for each surface: hereby, we
-	// use the current highlighting-filter object, which relates
-	// object properties to colors
-
-	// recursively process all buildings, building levels etc.
-
-	unsigned int currentVertexIndex = 0;
-	unsigned int currentElementIndex = 0;
-
-	for (const VICUS::Building & b : p.m_buildings) {
-		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
-			for (const VICUS::Room & r : bl.m_rooms) {
-				for (const VICUS::Surface & s : r.m_surfaces) {
-
-					// now we store the surface data into the vertex/color and index buffers
-					// the indexes are advanced and the buffers enlarged as needed.
-					addSurface(s, currentVertexIndex, currentElementIndex,
-							   m_vertexBufferData,
-							   m_colorBufferData,
-							   m_indexBufferData);
-				}
-			}
-		}
-	}
-}
-
 
 void OpaqueGeometryObject::render() {
 	// bind all buffers ("position", "normal" and "color" arrays)

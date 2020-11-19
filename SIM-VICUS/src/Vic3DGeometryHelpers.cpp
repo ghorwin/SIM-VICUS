@@ -3,6 +3,7 @@
 #include <VICUS_Conversions.h>
 #include <VICUS_NetworkLine.h>
 
+#include <QQuaternion>
 
 namespace Vic3D {
 
@@ -151,20 +152,57 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const Q
 
 	// after each generated vertex, it is scaled, rotated into position, and translated to p1
 
-	unsigned int numFaces = 4; // number of faces to generated
 #define PI_CONST 3.14159265
+#define RADIUS 0.7
 
 	// our vertices are numbered 0, 1, 2 with odd vertices at x=0, and even vertices at x=1
 
+	IBKMK::Vector3D cylinderAxis = p2-p1;
+	double L = cylinderAxis.magnitude();
+
+	// this is the rotation matrix to be applied to each generated vertex and normal vector
+	QQuaternion rot = QQuaternion::rotationTo(QVector3D(1,0,0), VICUS::IBKVector2QVector(cylinderAxis));
+	QVector3D trans = VICUS::IBKVector2QVector(p1);
+
 	// add the first two vertices (which are also the last)
 
+	unsigned int nSeg = 16; // number of segments to generate
+	// insert nSeg*2 vertexes
+	vertexBufferData.resize(vertexBufferData.size() + nSeg*2);
+	colorBufferData.resize(colorBufferData.size() + nSeg*2);
+	// (nSeg+1)*2 + 1 element indexes ((nSeg+1)*2 for the triangle strip, 1 primitive restart index)
+	indexBufferData.resize(indexBufferData.size() + (nSeg+1)*2 + 1);
 
-	for (unsigned int i=0; i<=numFaces) {
-		double angle = PI_CONST*i;
-		// for each face we add
+	unsigned int vertexIndexStart = currentVertexIndex;
+
+	// insert vertexes, 2 per segment
+	for (unsigned int i=0; i<nSeg; ++i, currentVertexIndex += 2) {
+		double angle = 2*PI_CONST*i/nSeg;
+		double ny = std::cos(angle);
+		double y = ny*RADIUS;
+		double nz = std::sin(angle);
+		double z = nz*RADIUS;
+
+		// coordinates are rotated and translated
+		vertexBufferData[currentVertexIndex    ].m_coords = rot.rotatedVector(QVector3D(0, y, z)) + trans;
+		vertexBufferData[currentVertexIndex + 1].m_coords = rot.rotatedVector(QVector3D(L, y, z)) + trans;
+		// normals are just rotated
+		vertexBufferData[currentVertexIndex    ].m_normal = rot.rotatedVector(QVector3D(0, ny, nz));
+		vertexBufferData[currentVertexIndex + 1].m_normal = rot.rotatedVector(QVector3D(0, ny, nz));
+
+		// add colors
+		colorBufferData[currentVertexIndex     ] = c;
+		colorBufferData[currentVertexIndex  + 1] = c;
 	}
 
+	// now add elements
+	for (unsigned int i=0; i<nSeg*2; ++i, ++currentElementIndex)
+		indexBufferData[currentElementIndex] = i + vertexIndexStart;
 
+	// finally add first two vertices again
+	indexBufferData[currentElementIndex++] = vertexIndexStart;
+	indexBufferData[currentElementIndex++] = vertexIndexStart+1;
+	indexBufferData[currentElementIndex++] = 0xFFFF; // set stop index
 }
 
 } // namespace Vic3D

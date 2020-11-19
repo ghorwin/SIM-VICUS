@@ -13,6 +13,7 @@
 #include "SVProjectHandler.h"
 
 #include "Vic3DPickObject.h"
+#include "Vic3DGeometryHelpers.h"
 
 const float TRANSLATION_SPEED = 1.2f;
 const float MOUSE_ROTATION_SPEED = 0.5f;
@@ -74,7 +75,7 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 		m_opaqueGeometryObject.create(m_buildingShader->shaderProgram());
 
 		// transfer data from building geometry to vertex array caches
-		m_opaqueGeometryObject.generateBuildingGeometry();
+		generateBuildingGeometry();
 	}
 
 	// update all GPU buffers (transfer cached data to GPU)
@@ -349,8 +350,60 @@ void Vic3DScene::render() {
 	// *** transparent building geometry ***
 
 
+}
 
 
+
+void Vic3DScene::generateBuildingGeometry() {
+	// get VICUS project data
+	const VICUS::Project & p = project();
+
+	// we rebuild the entire geometry here, so this may be slow
+
+	// clear out existing cache
+
+	m_opaqueGeometryObject.m_vertexBufferData.clear();
+	m_opaqueGeometryObject.m_colorBufferData.clear();
+	m_opaqueGeometryObject.m_indexBufferData.clear();
+
+	m_opaqueGeometryObject.m_vertexBufferData.reserve(100000);
+	m_opaqueGeometryObject.m_colorBufferData.reserve(100000);
+	m_opaqueGeometryObject.m_indexBufferData.reserve(100000);
+
+	// we now process all surfaces and add their coordinates and
+	// normals
+
+	// we also store colors for each surface: hereby, we
+	// use the current highlighting-filter object, which relates
+	// object properties to colors
+
+	// recursively process all buildings, building levels etc.
+
+	unsigned int currentVertexIndex = 0;
+	unsigned int currentElementIndex = 0;
+
+	// manually add a cylinder here
+	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(10,0,0), Qt::red,
+				currentVertexIndex, currentElementIndex,
+				m_opaqueGeometryObject.m_vertexBufferData,
+				m_opaqueGeometryObject.m_colorBufferData,
+				m_opaqueGeometryObject.m_indexBufferData);
+
+	for (const VICUS::Building & b : p.m_buildings) {
+		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+			for (const VICUS::Room & r : bl.m_rooms) {
+				for (const VICUS::Surface & s : r.m_surfaces) {
+
+					// now we store the surface data into the vertex/color and index buffers
+					// the indexes are advanced and the buffers enlarged as needed.
+					addSurface(s, currentVertexIndex, currentElementIndex,
+							   m_opaqueGeometryObject.m_vertexBufferData,
+							   m_opaqueGeometryObject.m_colorBufferData,
+							   m_opaqueGeometryObject.m_indexBufferData);
+				}
+			}
+		}
+	}
 }
 
 

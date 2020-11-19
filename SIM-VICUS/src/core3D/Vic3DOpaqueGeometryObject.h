@@ -23,8 +23,9 @@ QT_END_NAMESPACE
 
 namespace Vic3D {
 
-/*! A container for all the boxes.
-	Basically creates the geometry of the individual boxes and populates the buffers.
+/*! A container for geometry to be rendered with triangle strips.
+	This object is used multiple times and is not associated with any particular
+	part of the scene or building.
 */
 class OpaqueGeometryObject {
 public:
@@ -48,8 +49,6 @@ public:
 		Call this function instead of updateBuffers(), if only colors of objects/visibility have changed.
 	*/
 	void updateColorBuffer();
-
-	void generateBuildingGeometry();
 
 	/*! Binds the vertex array object and renders the geometry. */
 	void render();
