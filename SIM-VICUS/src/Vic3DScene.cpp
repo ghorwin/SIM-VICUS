@@ -7,13 +7,14 @@
 #include <VICUS_Project.h>
 #include <VICUS_Conversions.h>
 #include <VICUS_ViewSettings.h>
+#include <VICUS_NetworkLine.h>
 
 #include "Vic3DShaderProgram.h"
 #include "Vic3DKeyboardMouseHandler.h"
-#include "SVProjectHandler.h"
-
 #include "Vic3DPickObject.h"
 #include "Vic3DGeometryHelpers.h"
+
+#include "SVProjectHandler.h"
 
 const float TRANSLATION_SPEED = 1.2f;
 const float MOUSE_ROTATION_SPEED = 0.5f;
@@ -108,6 +109,7 @@ void Vic3DScene::destroy() {
 
 
 void Vic3DScene::resize(int width, int height, qreal retinaScale) {
+	float far = SVProjectHandler::instance().viewSettings().m_farDistance;
 	// the projection matrix need to be updated only for window size changes
 	m_projection.setToIdentity();
 	// create projection matrix, i.e. camera lens
@@ -115,7 +117,7 @@ void Vic3DScene::resize(int width, int height, qreal retinaScale) {
 				/* vertical angle */ 45.0f,
 				/* aspect ratio */   width / float(height),
 				/* near */           0.1f,
-				/* far */            1000.0f
+				/* far */            far
 		);
 	// Mind: to not use 0.0 for near plane, otherwise depth buffering and depth testing won't work!
 
@@ -432,6 +434,20 @@ void Vic3DScene::generateNetworkGeometry() {
 
 	unsigned int currentVertexIndex = 0;
 	unsigned int currentElementIndex = 0;
+
+	// add cylinders for all pipes
+	for (const VICUS::Network & n : p.m_networks) {
+		for (const VICUS::NetworkEdge & e : n.m_edges) {
+			VICUS::NetworkLine l(e);
+			double radius = 0.2; //e.m_diameterOutside*5; // enlarge diameter, so that we see something
+			addCylinder(IBKMK::Vector3D(l.m_x1,l.m_y1,-1), IBKMK::Vector3D(l.m_x2,l.m_y2,-1), Qt::red,
+						radius,
+						currentVertexIndex, currentElementIndex,
+						m_networkGeometryObject.m_vertexBufferData,
+						m_networkGeometryObject.m_colorBufferData,
+						m_networkGeometryObject.m_indexBufferData);
+		}
+	}
 
 #if 0
 	// manually add a cylinder here

@@ -50,6 +50,9 @@ public:
 
 	/*! Camera rotation. */
 	RotationMatrix						m_cameraRotation;				// XML:E
+
+	/*! Visibility of scene in [m]. */
+	double								m_farDistance = 10000;			// XML:E
 };
 
 

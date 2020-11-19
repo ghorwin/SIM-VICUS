@@ -106,9 +106,6 @@ public:
 	static double pressureLossColebrook(const double &length, const double &massFlow, const NetworkFluid &fluid,
 										const NetworkPipe &pipe, const double &temperature);
 
-	/*! read csv function ... */
-	void readCSV(const IBK::Path &filePath, std::vector<std::string> &content);
-
 	/*! Nodes ID matches always node index.
 		\code
 		Edge e;

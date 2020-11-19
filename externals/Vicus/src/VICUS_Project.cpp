@@ -112,21 +112,32 @@ Project::Project() {
 #endif
 
 	// read test network
-	Network net;
-	IBK::Path networkDataPath("../../data/vicus/GeometryTests/Network");
-	net.readGridFromCSV(networkDataPath / "Netz.csv");
+	try {
+		Network net;
+		IBK::Path networkDataPath("../../data/vicus/GeometryTests/Network");
+		net.readGridFromCSV(networkDataPath / "Netz.csv");
 
-	net.setSource(481692.800107041, 5577526.14340303);
+		// shift grid to be centered around these coordinates
+		net.setSource(481692.800107041, 5577526.14340303);
 
-	net.generateIntersections();
+		m_viewSettings.m_gridWidth = 10000; // 10 km
+		m_viewSettings.m_gridSpacing = 100; // major grid = 100 m
+		m_viewSettings.m_farDistance = 10000;
 
-	net.readBuildingsFromCSV(networkDataPath / "b_3.6kw.csv", 3600);
-	net.readBuildingsFromCSV(networkDataPath / "b_4.8kw.csv", 4800);
-	net.readBuildingsFromCSV(networkDataPath / "b_6kw.csv", 6000);
-	net.readBuildingsFromCSV(networkDataPath / "b_21.6kw.csv", 21600);
-	net.readBuildingsFromCSV(networkDataPath / "b_28.8kw.csv", 28800);
 
-	m_networks.push_back(net);
+
+//	net.generateIntersections();
+
+//		net.readBuildingsFromCSV(networkDataPath / "b_3.6kw.csv", 3600);
+//		net.readBuildingsFromCSV(networkDataPath / "b_4.8kw.csv", 4800);
+//		net.readBuildingsFromCSV(networkDataPath / "b_6kw.csv", 6000);
+//		net.readBuildingsFromCSV(networkDataPath / "b_21.6kw.csv", 21600);
+//		net.readBuildingsFromCSV(networkDataPath / "b_28.8kw.csv", 28800);
+		m_networks.push_back(net);
+	} catch (...) {
+
+	}
+
 
 }
 

@@ -113,8 +113,9 @@ void Network::readGridFromCSV(const IBK::Path &filePath){
 		for (std::string str: tokens){
 			std::vector<std::string> xyStr;
 			IBK::explode(str, xyStr, " ", IBK::EF_NoFlags);
-			polyLine.push_back(std::vector<double> {IBK::string2val<double>(xyStr[0]),
-													IBK::string2val<double>(xyStr[1])});
+			double x = IBK::string2val<double>(xyStr[0]);
+			double y = IBK::string2val<double>(xyStr[1]);
+			polyLine.push_back({x, y});
 		}
 		for (unsigned i=0; i<polyLine.size()-1; ++i){
 			unsigned n1 = addNode(polyLine[i][0], polyLine[i][1], NetworkNode::NT_Mixer);
@@ -148,10 +149,17 @@ void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heat
 
 void Network::setSource(const double &x, const double &y) {
 	IBK_ASSERT(!m_nodes.empty());
+
+	// process all nodes and shift them by x and y
+	for (NetworkNode &n: m_nodes) {
+		n.m_x -= x;
+		n.m_y -= y;
+	}
+
 	NetworkNode * nMin = nullptr;
 	double distMin = std::numeric_limits<double>::max();
 	for (NetworkNode &n: m_nodes){
-		double dist = NetworkLine::distanceBetweenPoints(x, y, n.m_x, n.m_y);
+		double dist = NetworkLine::distanceBetweenPoints(0, 0, n.m_x, n.m_y);
 		if (dist < distMin){
 			distMin = dist;
 			nMin = &n;
