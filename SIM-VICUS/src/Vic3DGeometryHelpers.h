@@ -26,6 +26,12 @@ void addNetworkEdge(const VICUS::NetworkEdge & p,
 					unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 					std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLshort> & indexBufferData);
 
+
+/*! Adds a cylinder mesh to a vertex, color and index buffer. */
+void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const QColor & c,
+			  unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+			  std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLshort> & indexBufferData);
+
 } // namespace Vic3D
 
 

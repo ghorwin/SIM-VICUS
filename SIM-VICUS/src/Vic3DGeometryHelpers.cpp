@@ -1,6 +1,8 @@
 #include "Vic3DGeometryHelpers.h"
 
 #include <VICUS_Conversions.h>
+#include <VICUS_NetworkLine.h>
+
 
 namespace Vic3D {
 
@@ -133,9 +135,34 @@ void addPlane(const VICUS::PlaneGeometry & g, const QColor & col,
 }
 
 
-
 void addNetworkEdge(const VICUS::NetworkEdge & p, unsigned int & currentVertexIndex, unsigned int & currentElementIndex, std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLshort> & indexBufferData) {
-	unsigned int numFaces = 4; // a box?
+	VICUS::NetworkLine l(p);
+	IBKMK::Vector3D p1(l.m_x1, l.m_y1, 0);
+	IBKMK::Vector3D p2(l.m_x2, l.m_y2, 0);
+	addCylinder(p1, p2, Qt::red, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData);
+}
+
+
+void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const QColor & c,
+			  unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+				 std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLshort> & indexBufferData)
+{
+	// we generate vertices for a cylinder starting at 0,0,0 and extending to 1,0,0 (x-axis is the rotation axis)
+
+	// after each generated vertex, it is scaled, rotated into position, and translated to p1
+
+	unsigned int numFaces = 4; // number of faces to generated
+#define PI_CONST 3.14159265
+
+	// our vertices are numbered 0, 1, 2 with odd vertices at x=0, and even vertices at x=1
+
+	// add the first two vertices (which are also the last)
+
+
+	for (unsigned int i=0; i<=numFaces) {
+		double angle = PI_CONST*i;
+		// for each face we add
+	}
 
 
 }
