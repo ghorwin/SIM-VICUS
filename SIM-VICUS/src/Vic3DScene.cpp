@@ -311,7 +311,9 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 					// mouse y translation = rotation around "right" axis
 
-					QVector3D LocalRight = m_camera.right(); //QVector3D::crossProduct(LocalUp, lineOfSight);
+					QVector3D LocalRight = m_camera.right().normalized();
+//					QVector3D LocalRight2 = QVector3D::crossProduct(LocalUp, lineOfSight).normalized();
+//					qDebug() << LocalRight << "\n" << LocalRight2 << "\n" << LocalRight2-LocalRight;
 
 					// There is a situation where this fails:
 					// when the line of sight vector becomes co-linear with the LocalUp vector (i.e. one
