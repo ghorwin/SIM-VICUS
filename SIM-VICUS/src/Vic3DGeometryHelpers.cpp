@@ -140,11 +140,11 @@ void addNetworkEdge(const VICUS::NetworkEdge & p, unsigned int & currentVertexIn
 	VICUS::NetworkLine l(p);
 	IBKMK::Vector3D p1(l.m_x1, l.m_y1, 0);
 	IBKMK::Vector3D p2(l.m_x2, l.m_y2, 0);
-	addCylinder(p1, p2, Qt::red, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData);
+	addCylinder(p1, p2, Qt::red, 0.1, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData);
 }
 
 
-void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const QColor & c,
+void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const QColor & c, double radius,
 			  unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 				 std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLshort> & indexBufferData)
 {
@@ -153,7 +153,6 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const Q
 	// after each generated vertex, it is scaled, rotated into position, and translated to p1
 
 #define PI_CONST 3.14159265
-#define RADIUS 0.7
 
 	// our vertices are numbered 0, 1, 2 with odd vertices at x=0, and even vertices at x=1
 
@@ -177,11 +176,11 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const Q
 
 	// insert vertexes, 2 per segment
 	for (unsigned int i=0; i<nSeg; ++i, currentVertexIndex += 2) {
-		double angle = 2*PI_CONST*i/nSeg;
+		double angle = -2*PI_CONST*i/nSeg;
 		double ny = std::cos(angle);
-		double y = ny*RADIUS;
+		double y = ny*radius;
 		double nz = std::sin(angle);
-		double z = nz*RADIUS;
+		double z = nz*radius;
 
 		// coordinates are rotated and translated
 		vertexBufferData[currentVertexIndex    ].m_coords = rot.rotatedVector(QVector3D(0, y, z)) + trans;

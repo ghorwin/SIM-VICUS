@@ -28,7 +28,7 @@ void addNetworkEdge(const VICUS::NetworkEdge & p,
 
 
 /*! Adds a cylinder mesh to a vertex, color and index buffer. */
-void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const QColor & c,
+void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const QColor & c, double radius,
 			  unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 			  std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLshort> & indexBufferData);
 

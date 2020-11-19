@@ -55,6 +55,7 @@ public:
 
 private:
 	void generateBuildingGeometry();
+	void generateNetworkGeometry();
 
 	/*! Applies filter/highlighting rules and determines color for given surface. */
 	QColor color4Surface(const VICUS::Surface & s) const;
@@ -97,8 +98,10 @@ private:
 
 	/*! The grid draw object. */
 	GridObject				m_gridObject;
-	/*! The geometry drawing object (no transparency). */
+	/*! A geometry drawing object (no transparency) for building (room) surfaces.*/
 	OpaqueGeometryObject	m_opaqueGeometryObject;
+	/*! A geometry drawing object (no transparency) for network elements.*/
+	OpaqueGeometryObject	m_networkGeometryObject;
 
 	/*! Indicator for the center of the orbit controller.
 		Only visible when m_orbitControllerActive is true.

@@ -170,6 +170,13 @@ void SceneView::initializeGL() {
 
 		m_screenShotMultiSampleFrameBuffer->bindDefault();
 
+#ifdef Q_OS_MAC
+		glEnable(GL_PRIMITIVE_RESTART);
+		glPrimitiveRestartIndex(0xFFFF);
+#else
+		glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
+#endif // Q_OS_MAC
+
 #ifdef SHOW_TIMINGS
 		// create timer
 		m_gpuTimers.setSampleCount(2);

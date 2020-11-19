@@ -41,6 +41,7 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 		return;
 
 	bool updateGrid = false;
+	bool updateNetwork = false;
 	bool updateBuilding = false;
 	// filter out all modification types that we handle
 	SVProjectHandler::ModificationTypes mod = (SVProjectHandler::ModificationTypes)modificationType;
@@ -48,10 +49,15 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 		case SVProjectHandler::AllModified :
 			updateGrid = true;
 			updateBuilding = true;
+			updateNetwork = true;
 			break;
 
 		case SVProjectHandler::GridModified :
 			updateGrid = true;
+			break;
+
+		case SVProjectHandler::NetworkModified :
+			updateNetwork = true;
 			break;
 
 		default:
@@ -78,8 +84,18 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 		generateBuildingGeometry();
 	}
 
+	// create network
+	if (updateNetwork) {
+		// we use the same shader as for building elements
+		m_networkGeometryObject.create(m_buildingShader->shaderProgram());
+
+		// transfer data from building geometry to vertex array caches
+		generateNetworkGeometry();
+	}
+
 	// update all GPU buffers (transfer cached data to GPU)
 	m_opaqueGeometryObject.updateBuffers();
+	m_networkGeometryObject.updateBuffers();
 
 	// transfer other properties
 }
@@ -276,31 +292,22 @@ void Vic3DScene::render() {
 	m_gridShader->bind();
 	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[0], m_worldToView);
 	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[2], m_background);
-
 	m_gridObject.render();
-
 	m_gridShader->release();
 
 
 	// *** orbit controller indicator ***
-	if (m_orbitControllerActive) {
 
+	if (m_orbitControllerActive) {
 		m_orbitControllerShader->bind();
 		m_orbitControllerShader->shaderProgram()->setUniformValue(m_orbitControllerShader->m_uniformIDs[0], m_worldToView);
-
 		m_orbitControllerObject.render();
-
 		m_orbitControllerShader->release();
 	}
 
+
 	// *** opaque background geometry ***
 
-#ifdef Q_OS_MAC
-	glEnable(GL_PRIMITIVE_RESTART);
-	glPrimitiveRestartIndex(0xFFFF);
-#else
-	glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
-#endif // Q_OS_MAC
 
 	// tell OpenGL to show only faces whose normal vector points towards us
 	glEnable(GL_CULL_FACE);
@@ -308,8 +315,6 @@ void Vic3DScene::render() {
 
 	// *** opaque building geometry ***
 
-	// culling off, so that we see front and back sides of surfaces
-	glDisable(GL_CULL_FACE);
 
 	m_buildingShader->bind();
 	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[0], m_worldToView);
@@ -332,7 +337,14 @@ void Vic3DScene::render() {
 	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[3], viewPos);
 #endif // FIXED_LIGHT_POSITION
 
+	// first draw network with culling enabled
+	glDisable(GL_CULL_FACE); // for now draw with culling disabled
+	m_networkGeometryObject.render();
+
+	// then turn culling off, so that we see front and back sides of surfaces
 	m_opaqueGeometryObject.render();
+
+
 
 	m_buildingShader->release();
 
@@ -382,13 +394,6 @@ void Vic3DScene::generateBuildingGeometry() {
 	unsigned int currentVertexIndex = 0;
 	unsigned int currentElementIndex = 0;
 
-	// manually add a cylinder here
-	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(10,0,0), Qt::red,
-				currentVertexIndex, currentElementIndex,
-				m_opaqueGeometryObject.m_vertexBufferData,
-				m_opaqueGeometryObject.m_colorBufferData,
-				m_opaqueGeometryObject.m_indexBufferData);
-
 	for (const VICUS::Building & b : p.m_buildings) {
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			for (const VICUS::Room & r : bl.m_rooms) {
@@ -406,6 +411,54 @@ void Vic3DScene::generateBuildingGeometry() {
 	}
 }
 
+
+void Vic3DScene::generateNetworkGeometry() {
+	// get VICUS project data
+	const VICUS::Project & p = project();
+
+	// we rebuild the entire geometry here, so this may be slow
+
+	// clear out existing cache
+
+	m_networkGeometryObject.m_vertexBufferData.clear();
+	m_networkGeometryObject.m_colorBufferData.clear();
+	m_networkGeometryObject.m_indexBufferData.clear();
+
+	m_networkGeometryObject.m_vertexBufferData.reserve(100000);
+	m_networkGeometryObject.m_colorBufferData.reserve(100000);
+	m_networkGeometryObject.m_indexBufferData.reserve(100000);
+
+	// process all network elements
+
+	unsigned int currentVertexIndex = 0;
+	unsigned int currentElementIndex = 0;
+
+#if 0
+	// manually add a cylinder here
+	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(10,0,0), Qt::red,
+				0.5,
+				currentVertexIndex, currentElementIndex,
+				m_networkGeometryObject.m_vertexBufferData,
+				m_networkGeometryObject.m_colorBufferData,
+				m_networkGeometryObject.m_indexBufferData);
+
+	// and another one moved
+	addCylinder(IBKMK::Vector3D(5,0,5), IBKMK::Vector3D(10,0,5), Qt::blue,
+				1,
+				currentVertexIndex, currentElementIndex,
+				m_networkGeometryObject.m_vertexBufferData,
+				m_networkGeometryObject.m_colorBufferData,
+				m_networkGeometryObject.m_indexBufferData);
+
+	// and another one rotated
+	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,10,15), Qt::green,
+				0.1,
+				currentVertexIndex, currentElementIndex,
+				m_networkGeometryObject.m_vertexBufferData,
+				m_networkGeometryObject.m_colorBufferData,
+				m_networkGeometryObject.m_indexBufferData);
+#endif
+}
 
 
 

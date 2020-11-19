@@ -44,6 +44,8 @@ public:
 		ClimateLocationModified,
 		/*! Grid properties changed. */
 		GridModified,
+		/*! Network data changed. */
+		NetworkModified,
 		/*! Anything in the geometry has changed. */
 		GeometryChanged,
 		/*! Used whenever the project data changes completely (new project created, project loaded etc.)
