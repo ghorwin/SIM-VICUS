@@ -9,17 +9,17 @@
 
 namespace VICUS {
 
-class Edge {
+class NetworkEdge {
 
 public:
 
-	Edge();
-	Edge(const unsigned nodeId1, const unsigned nodeId2, const bool supply):
+	NetworkEdge();
+	NetworkEdge(const unsigned nodeId1, const unsigned nodeId2, const bool supply):
 		m_nodeId1(nodeId1),
 		m_nodeId2(nodeId2),
 		m_supply(supply)
 	{}
-	Edge(const unsigned nodeId1, const unsigned nodeId2, const double &length, const double &diameter, const bool supply):
+	NetworkEdge(const unsigned nodeId1, const unsigned nodeId2, const double &length, const double &diameter, const bool supply):
 		m_nodeId1(nodeId1),
 		m_nodeId2(nodeId2),
 		m_length(length),
@@ -27,21 +27,21 @@ public:
 		m_supply(supply)
 	{}
 
-	void collectConnectedNodes(std::set<const Node*> & connectedNodes,
-							   std::set<const Edge*> & connectedEdge) const;
+	void collectConnectedNodes(std::set<const NetworkNode*> & connectedNodes,
+							   std::set<const NetworkEdge*> & connectedEdge) const;
 
-	bool operator==(const Edge &e2){
+	bool operator==(const NetworkEdge &e2){
 		return (m_nodeId1 == e2.m_nodeId1) && (m_nodeId2 == e2.m_nodeId2);
 	}
 
 	/*! returns opposite node of the given one */
-	Node * neighbourNode(const Node *node) const;
+	NetworkNode * neighbourNode(const NetworkNode *node) const;
 
 	unsigned int m_nodeId1 = 0;
 	unsigned int m_nodeId2 = 0;
 
-	Node		*	m_node1 = nullptr;
-	Node		*	m_node2 = nullptr;
+	NetworkNode		*	m_node1 = nullptr;
+	NetworkNode		*	m_node2 = nullptr;
 
 	/*! Effective length [m], might be different than geometric length between nodes. */
 	double			m_length;

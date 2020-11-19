@@ -5,12 +5,12 @@
 
 namespace VICUS {
 
-void Node::collectConnectedEdges(std::set<const Node *> & connectedNodes,
-                                          std::set<const Edge *> & connectedEdge) const {
+void NetworkNode::collectConnectedEdges(std::set<const NetworkNode *> & connectedNodes,
+                                          std::set<const NetworkEdge *> & connectedEdge) const {
     // store ourselves as connected
     connectedNodes.insert(this);
     // now ask connected elements to collect their nodes
-    for (const Edge * e : m_edges) {
+    for (const NetworkEdge * e : m_edges) {
         // only process edges that are not yet collected
         if (connectedEdge.find(e) == connectedEdge.end())
             e->collectConnectedNodes(connectedNodes, connectedEdge);
@@ -18,9 +18,9 @@ void Node::collectConnectedEdges(std::set<const Node *> & connectedNodes,
 }
 
 
-void Node::updateIsDeadEnd(){
+void NetworkNode::updateIsDeadEnd(){
     unsigned c = 0;
-    for (Edge *e: m_edges){
+    for (NetworkEdge *e: m_edges){
         if (!e->neighbourNode(this)->m_isDeadEnd)
             ++c;
     }
@@ -28,7 +28,7 @@ void Node::updateIsDeadEnd(){
 }
 
 
-Edge *Node::neighborEdge(const Edge *e) const
+NetworkEdge *NetworkNode::neighborEdge(const NetworkEdge *e) const
 {
     IBK_ASSERT(m_edges.size()==2);
     if (m_edges[0] == e)
@@ -38,10 +38,10 @@ Edge *Node::neighborEdge(const Edge *e) const
 }
 
 
-const Node * Node::findNextNonRedundantNode(std::set<unsigned> & redundantNodes, double & distance, const Edge *edgeToVisit) const
+const NetworkNode * NetworkNode::findNextNonRedundantNode(std::set<unsigned> & redundantNodes, double & distance, const NetworkEdge *edgeToVisit) const
 {
     distance += edgeToVisit->m_length;
-    Node * nextNode = edgeToVisit->neighbourNode(this);
+    NetworkNode * nextNode = edgeToVisit->neighbourNode(this);
     if (!nextNode->isRedundant())
         return nextNode;
     redundantNodes.insert(nextNode->m_id);
@@ -49,13 +49,13 @@ const Node * Node::findNextNonRedundantNode(std::set<unsigned> & redundantNodes,
 }
 
 
-void Node::findRedundantNodes(std::set<unsigned> & redundantNodes, std::set<const Edge *> & visitedEdges) const
+void NetworkNode::findRedundantNodes(std::set<unsigned> & redundantNodes, std::set<const NetworkEdge *> & visitedEdges) const
 {
     // redundant nodes have exactly 2 connected edges
     if (this->isRedundant()){
         redundantNodes.insert(this->m_id);
     }
-    for (const Edge * e: m_edges){
+    for (const NetworkEdge * e: m_edges){
         // remember visited edges and dont visit them again
         if (visitedEdges.find(e) == visitedEdges.end()){
             visitedEdges.insert(e);
@@ -68,7 +68,7 @@ void Node::findRedundantNodes(std::set<unsigned> & redundantNodes, std::set<cons
 }
 
 
-bool Node::findPathToSource(std::set<Edge*> &path, std::set<Edge*> &visitedEdges, std::set<unsigned> &visitedNodes){
+bool NetworkNode::findPathToSource(std::set<NetworkEdge*> &path, std::set<NetworkEdge*> &visitedEdges, std::set<unsigned> &visitedNodes){
 
     if (visitedNodes.find(m_id) != visitedNodes.end())
         return false;
@@ -82,7 +82,7 @@ bool Node::findPathToSource(std::set<Edge*> &path, std::set<Edge*> &visitedEdges
         return false;
     }
 
-    for (Edge *e: m_edges){
+    for (NetworkEdge *e: m_edges){
         if (visitedEdges.find(e) == visitedEdges.end()){
             visitedEdges.insert(e);
             if (e->neighbourNode(this)->findPathToSource(path, visitedEdges, visitedNodes)){
@@ -95,11 +95,11 @@ bool Node::findPathToSource(std::set<Edge*> &path, std::set<Edge*> &visitedEdges
 }
 
 
-void Node::updateNeighbourDistances() {
+void NetworkNode::updateNeighbourDistances() {
     // calculate alternative distance to neighbour.
     // If it is shorter than current one: set it as its current distance
-    for (Edge *e :m_edges){
-        Node * neighbour = e->neighbourNode(this);
+    for (NetworkEdge *e :m_edges){
+        NetworkNode * neighbour = e->neighbourNode(this);
         double alternativeDistance = m_distanceToStart + e->m_length;
         if (alternativeDistance < neighbour->m_distanceToStart){
             neighbour->m_distanceToStart = alternativeDistance;
@@ -109,10 +109,10 @@ void Node::updateNeighbourDistances() {
 }
 
 
-void Node::pathToNull(std::vector<Edge*> &path){
+void NetworkNode::pathToNull(std::vector<NetworkEdge*> &path){
     if (m_predecessor == nullptr)
         return;
-    for (Edge * e: m_edges){
+    for (NetworkEdge * e: m_edges){
         if (e->neighbourNode(this) == m_predecessor){
             path.push_back(e);
             e->neighbourNode(this)->pathToNull(path);
@@ -120,8 +120,8 @@ void Node::pathToNull(std::vector<Edge*> &path){
     }
 }
 
-double Node::adjacentHeatingDemand(std::set<Edge *> visitedEdges){
-    for (Edge *e: m_edges){
+double NetworkNode::adjacentHeatingDemand(std::set<NetworkEdge *> visitedEdges){
+    for (NetworkEdge *e: m_edges){
         if (visitedEdges.find(e)==visitedEdges.end()){
             visitedEdges.insert(e);
             if (e->m_heatingDemand>0)

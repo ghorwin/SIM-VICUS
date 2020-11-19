@@ -25,16 +25,16 @@ public:
 
 	/*! add node to network based on coordinates and type and return the node id.
 	 * When considerCoordinates==true and the given coordinates exist already in the network: return the id of this existing node */
-	unsigned addNode(const double &x, const double &y, const Node::NodeType type, const bool considerCoordinates=true);
+	unsigned addNode(const double &x, const double &y, const NetworkNode::NodeType type, const bool considerCoordinates=true);
 
 	/*! addNode using Node constructor */
-	unsigned addNode(const Node & node, const bool considerCoordinates=true);
+	unsigned addNode(const NetworkNode & node, const bool considerCoordinates=true);
 
 	/*! add Edge based on node ids */
 	void addEdge(const unsigned nodeId1, const unsigned nodeId2, const bool supply);
 
 	/*! add Edge using edge constructor */
-	void addEdge(const Edge &edge);
+	void addEdge(const NetworkEdge &edge);
 
 	/*! reads csv-files from QGIS with multiple rows, containing "MULTILINESTRING"s and adds according nodes/edges to the network.
 		Lines that share a common node (identical coordinates) are automatically connected.
@@ -89,14 +89,14 @@ public:
 
 	void writeNetworkCSV(const IBK::Path &file) const;
 
-	void writePathCSV(const IBK::Path &file, const Node & node, const std::vector<Edge *> &path) const;
+	void writePathCSV(const IBK::Path &file, const NetworkNode & node, const std::vector<NetworkEdge *> &path) const;
 
 	void writeBuildingsCSV(const IBK::Path &file) const;
 
 	/*! find shortest Path from given startNode (e.g. a building) to Node with type source
 	 * using dijkstra-algorithm, implemented according to Wikipedia and return path as vector of edges
 	 */
-	void dijkstraShortestPathToSource(Node &startNode, std::vector<Edge*> &pathToSource);
+	void dijkstraShortestPathToSource(NetworkNode &startNode, std::vector<NetworkEdge*> &pathToSource);
 
 	/*! pressure loss of a rough pipe according to colebrook equation
 	 \param length in [m]
@@ -117,8 +117,8 @@ public:
 		Node & n = m_nodes[e.m_n1];
 		\endcode
 	*/
-	std::vector<Node>		m_nodes;
-	std::vector<Edge>		m_edges;
+	std::vector<NetworkNode>		m_nodes;
+	std::vector<NetworkEdge>		m_edges;
 
 	unsigned int			m_fluidID;
 

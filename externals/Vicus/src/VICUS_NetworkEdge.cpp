@@ -5,8 +5,8 @@
 namespace VICUS {
 
 
-void Edge::collectConnectedNodes(std::set<const Node *> & connectedNodes,
-								 std::set<const Edge *> & connectedEdge) const {
+void NetworkEdge::collectConnectedNodes(std::set<const NetworkNode *> & connectedNodes,
+								 std::set<const NetworkEdge *> & connectedEdge) const {
 	// first store ourselves as connected
 	connectedEdge.insert(this);
 	// now ask our nodes to collect their connected elements
@@ -15,7 +15,7 @@ void Edge::collectConnectedNodes(std::set<const Node *> & connectedNodes,
 }
 
 
-Node * Edge::neighbourNode(const Node *node) const{
+NetworkNode * NetworkEdge::neighbourNode(const NetworkNode *node) const{
 	IBK_ASSERT(node->m_id == m_nodeId1 || node->m_id == m_nodeId2);
 	if (node->m_id == m_nodeId1)
 		return m_node2;

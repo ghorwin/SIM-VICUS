@@ -9,17 +9,17 @@ namespace VICUS {
 	It is meant to be constructed from an edge definition, and caches
 	the respective node coordinates, internally.
 */
-class Line{
+class NetworkLine{
 public:
 
-	Line(const double &x1, const double &y1, const double &x2, const double &y2):
+	NetworkLine(const double &x1, const double &y1, const double &x2, const double &y2):
 		m_x1(x1),
 		m_y1(y1),
 		m_x2(x2),
 		m_y2(y2)
 	{}
 
-	Line(const Edge &e):
+	NetworkLine(const NetworkEdge &e):
 		m_x1(e.m_node1->m_x),
 		m_y1(e.m_node1->m_y),
 		m_x2(e.m_node2->m_x),
@@ -27,7 +27,7 @@ public:
 	{}
 
 	/*! return intersection point between two lines */
-	void intersection(const Line &line, double &xs, double &ys) const;
+	void intersection(const NetworkLine &line, double &xs, double &ys) const;
 
 	/*! return othogonal projection of point on line */
 	void projectionFromPoint(const double &xp, const double &yp, double &xproj, double &yproj) const;
@@ -39,7 +39,7 @@ public:
 	bool containsPoint(const double & xp, const double &yp) const;
 
 	/*! determine wether line shares an intersection point wiht given line. The intersection point must be within both lines */
-	bool sharesIntersection(const Line &line) const;
+	bool sharesIntersection(const NetworkLine &line) const;
 
 	/*! returns length of the line */
 	double length() const;

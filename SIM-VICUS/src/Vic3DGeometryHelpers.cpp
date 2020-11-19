@@ -11,9 +11,16 @@ void addSurface(const VICUS::Surface & s,
 	// skip invalid geometry
 	if (!s.m_geometry.isValid())
 		return;
+	addPlane(s.m_geometry, s.m_color, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData);
+}
 
+
+void addPlane(const VICUS::PlaneGeometry & g, const QColor & col,
+			  unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+			  std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLshort> & indexBufferData)
+{
 	// different handling based on surface type
-	switch (s.m_geometry.m_type) {
+	switch (g.m_type) {
 		case VICUS::PlaneGeometry::T_Triangle : {
 			// insert 3 vertexes
 			vertexBufferData.resize(vertexBufferData.size()+3);
@@ -21,17 +28,17 @@ void addSurface(const VICUS::Surface & s,
 			// 4 elements (3 for the triangle, 1 primitive restart index)
 			indexBufferData.resize(indexBufferData.size()+4);
 
-			vertexBufferData[currentVertexIndex    ].m_coords = VICUS::IBKVector2QVector(s.m_geometry.m_vertexes[0]);
-			vertexBufferData[currentVertexIndex + 1].m_coords = VICUS::IBKVector2QVector(s.m_geometry.m_vertexes[1]);
-			vertexBufferData[currentVertexIndex + 2].m_coords = VICUS::IBKVector2QVector(s.m_geometry.m_vertexes[2]);
-			QVector3D n = VICUS::IBKVector2QVector(s.m_geometry.m_normal);
+			vertexBufferData[currentVertexIndex    ].m_coords = VICUS::IBKVector2QVector(g.m_vertexes[0]);
+			vertexBufferData[currentVertexIndex + 1].m_coords = VICUS::IBKVector2QVector(g.m_vertexes[1]);
+			vertexBufferData[currentVertexIndex + 2].m_coords = VICUS::IBKVector2QVector(g.m_vertexes[2]);
+			QVector3D n = VICUS::IBKVector2QVector(g.m_normal);
 			vertexBufferData[currentVertexIndex    ].m_normal = n;
 			vertexBufferData[currentVertexIndex + 1].m_normal = n;
 			vertexBufferData[currentVertexIndex + 2].m_normal = n;
 
-			colorBufferData[currentVertexIndex     ] = s.m_color.dark();
-			colorBufferData[currentVertexIndex  + 1] = s.m_color;
-			colorBufferData[currentVertexIndex  + 2] = s.m_color.light();
+			colorBufferData[currentVertexIndex     ] = col;
+			colorBufferData[currentVertexIndex  + 1] = col;
+			colorBufferData[currentVertexIndex  + 2] = col;
 
 			// anti-clock-wise winding order for all triangles in strip
 			indexBufferData[currentElementIndex    ] = currentVertexIndex + 0;
@@ -53,25 +60,25 @@ void addSurface(const VICUS::Surface & s,
 			indexBufferData.resize(indexBufferData.size()+5);
 
 			// 4 indexes anti-clock wise in vertex memory
-			QVector3D a = VICUS::IBKVector2QVector(s.m_geometry.m_vertexes[0]);
-			QVector3D b = VICUS::IBKVector2QVector(s.m_geometry.m_vertexes[1]);
-			QVector3D d = VICUS::IBKVector2QVector(s.m_geometry.m_vertexes[2]);
+			QVector3D a = VICUS::IBKVector2QVector(g.m_vertexes[0]);
+			QVector3D b = VICUS::IBKVector2QVector(g.m_vertexes[1]);
+			QVector3D d = VICUS::IBKVector2QVector(g.m_vertexes[2]);
 			vertexBufferData[currentVertexIndex    ].m_coords = a;
 			vertexBufferData[currentVertexIndex + 1].m_coords = b;
 			QVector3D c = b + (d - a);
 			vertexBufferData[currentVertexIndex + 2].m_coords = c;
 			vertexBufferData[currentVertexIndex + 3].m_coords = d;
 
-			QVector3D n = VICUS::IBKVector2QVector(s.m_geometry.m_normal);
+			QVector3D n = VICUS::IBKVector2QVector(g.m_normal);
 			vertexBufferData[currentVertexIndex    ].m_normal = n;
 			vertexBufferData[currentVertexIndex + 1].m_normal = n;
 			vertexBufferData[currentVertexIndex + 2].m_normal = n;
 			vertexBufferData[currentVertexIndex + 3].m_normal = n;
 
-			colorBufferData[currentVertexIndex     ] = s.m_color.dark();
-			colorBufferData[currentVertexIndex  + 1] = s.m_color;
-			colorBufferData[currentVertexIndex  + 2] = s.m_color.light();
-			colorBufferData[currentVertexIndex  + 3] = s.m_color;
+			colorBufferData[currentVertexIndex     ] = col;
+			colorBufferData[currentVertexIndex  + 1] = col;
+			colorBufferData[currentVertexIndex  + 2] = col;
+			colorBufferData[currentVertexIndex  + 3] = col;
 
 			// anti-clock-wise winding order for all triangles in strip
 			//
@@ -91,21 +98,21 @@ void addSurface(const VICUS::Surface & s,
 
 		case VICUS::PlaneGeometry::T_Polygon : {
 			// insert as many vertexes as there are in the polygon
-			unsigned int nvert = s.m_geometry.m_vertexes.size();
+			unsigned int nvert = g.m_vertexes.size();
 			vertexBufferData.resize(vertexBufferData.size()+nvert);
 			colorBufferData.resize(colorBufferData.size()+nvert);
 			// nvert indexes + primitive restart index
 			indexBufferData.resize(indexBufferData.size()+nvert+1);
 
-			QVector3D n = VICUS::IBKVector2QVector(s.m_geometry.m_normal);
+			QVector3D n = VICUS::IBKVector2QVector(g.m_normal);
 
 			// add all vertices to buffer
 			for (unsigned int i=0; i<nvert; ++i) {
 				// add vertex and
 				unsigned int vIdx = currentVertexIndex + i;
-				vertexBufferData[vIdx].m_coords = VICUS::IBKVector2QVector(s.m_geometry.m_vertexes[i]);
+				vertexBufferData[vIdx].m_coords = VICUS::IBKVector2QVector(g.m_vertexes[i]);
 				vertexBufferData[vIdx].m_normal = n;
-				colorBufferData[vIdx] = s.m_color;
+				colorBufferData[vIdx] = col;
 				// build up triangle strip index buffer
 				bool odd = (i % 2 != 0);
 				// odd vertices are added anti-clock-wise from start, even vertices are added clock-wise from end
@@ -123,6 +130,14 @@ void addSurface(const VICUS::Surface & s,
 			currentElementIndex += nvert + 1;
 		} break;
 	} // switch
+}
+
+
+
+void addNetworkEdge(const VICUS::NetworkEdge & p, unsigned int & currentVertexIndex, unsigned int & currentElementIndex, std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLshort> & indexBufferData) {
+	unsigned int numFaces = 4; // a box?
+
+
 }
 
 } // namespace Vic3D

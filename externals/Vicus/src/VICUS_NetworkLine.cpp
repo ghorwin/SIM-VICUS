@@ -5,7 +5,7 @@
 
 namespace VICUS {
 
-void Line::intersection(const Line &line, double &xs, double &ys) const
+void NetworkLine::intersection(const NetworkLine &line, double &xs, double &ys) const
 {
 	double x1 = m_x1; double x2 = m_x2; double x3 = line.m_x1; double x4 = line.m_x2;
 	double y1 = m_y1; double y2 = m_y2; double y3 = line.m_y1; double y4 = line.m_y2;
@@ -14,7 +14,7 @@ void Line::intersection(const Line &line, double &xs, double &ys) const
 }
 
 
-void Line::projectionFromPoint(const double &xp, const double &yp, double &xproj, double &yproj) const{
+void NetworkLine::projectionFromPoint(const double &xp, const double &yp, double &xproj, double &yproj) const{
 	// vector form g = a + s*b;  with a = (m_x1, m_y1)
 	double b1 = m_x2 - m_x1;
 	double b2 = m_y2 - m_y1;
@@ -24,7 +24,7 @@ void Line::projectionFromPoint(const double &xp, const double &yp, double &xproj
 }
 
 
-double Line::distanceToPoint(const double &xp, const double &yp) const{
+double NetworkLine::distanceToPoint(const double &xp, const double &yp) const{
 	double xproj, yproj;
 	projectionFromPoint(xp, yp, xproj, yproj);
 	if (containsPoint(xproj, yproj))
@@ -34,31 +34,31 @@ double Line::distanceToPoint(const double &xp, const double &yp) const{
 }
 
 
-bool Line::containsPoint(const double &xp, const double &yp) const
+bool NetworkLine::containsPoint(const double &xp, const double &yp) const
 {
 	bool inside = (xp >= std::min(m_x1, m_x2)) && (xp <= std::max(m_x1, m_x2)) && (yp >= std::min(m_y1, m_y2)) && (yp <= std::max(m_y1, m_y2));
 	bool identity = pointsMatch(xp, yp, m_x1, m_y1) || pointsMatch(xp, yp, m_x2, m_y2);
 	return inside && !identity;
 }
 
-bool Line::sharesIntersection(const Line &line) const
+bool NetworkLine::sharesIntersection(const NetworkLine &line) const
 {
 	double xp, yp;
 	intersection(line, xp, yp);
 	return containsPoint(xp, yp) && line.containsPoint(xp, yp);
 }
 
-double Line::length() const
+double NetworkLine::length() const
 {
 	return distanceBetweenPoints(m_x1, m_y1, m_x2, m_y2);
 }
 
-double Line::distanceBetweenPoints(const double &x1, const double &y1, const double &x2, const double &y2)
+double NetworkLine::distanceBetweenPoints(const double &x1, const double &y1, const double &x2, const double &y2)
 {
 	return std::sqrt( (x1-x2) * (x1-x2) + (y1-y2) * (y1-y2) );
 }
 
-bool Line::pointsMatch(const double &x1, const double &y1, const double &x2, const double &y2, const double threshold)
+bool NetworkLine::pointsMatch(const double &x1, const double &y1, const double &x2, const double &y2, const double threshold)
 {
 	return distanceBetweenPoints(x1, y1, x2, y2) < threshold;
 }

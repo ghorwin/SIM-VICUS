@@ -18,16 +18,16 @@ Network::Network() {
 }
 
 
-unsigned Network::addNode(const double &x, const double &y, const Node::NodeType type, const bool consistentCoordinates) {
+unsigned Network::addNode(const double &x, const double &y, const NetworkNode::NodeType type, const bool consistentCoordinates) {
 	// if there is an existing node with identical coordinates, return its id and dont add a new one
 	if (consistentCoordinates){
-		for (Node n: m_nodes){
-			if (Line::pointsMatch(n.m_x, n.m_y, x, y))
+		for (NetworkNode n: m_nodes){
+			if (NetworkLine::pointsMatch(n.m_x, n.m_y, x, y))
 				return n.m_id;
 		}
 	}
 	unsigned id = m_nodes.size();
-	m_nodes.push_back(Node(id, x, y, type));
+	m_nodes.push_back(NetworkNode(id, x, y, type));
 
 	updateNodeEdgeConnectionPointers();
 
@@ -35,20 +35,20 @@ unsigned Network::addNode(const double &x, const double &y, const Node::NodeType
 }
 
 
-unsigned Network::addNode(const Node &node, const bool considerCoordinates) {
+unsigned Network::addNode(const NetworkNode &node, const bool considerCoordinates) {
 	return addNode(node.m_x, node.m_y, node.m_type, considerCoordinates);
 }
 
 
 void Network::addEdge(const unsigned nodeId1, const unsigned nodeId2, const bool supply) {
 	IBK_ASSERT(nodeId1<m_nodes.size() && nodeId2<m_nodes.size());
-	m_edges.push_back(Edge(nodeId1, nodeId2, supply));
+	m_edges.push_back(NetworkEdge(nodeId1, nodeId2, supply));
 	// TODO : does this needs to be done very time a node is added? or manually, when we are done?
 	updateNodeEdgeConnectionPointers();
 }
 
 
-void Network::addEdge(const Edge &edge) {
+void Network::addEdge(const NetworkEdge &edge) {
 	IBK_ASSERT(edge.m_nodeId1<m_nodes.size() && edge.m_nodeId2<m_nodes.size());
 	m_edges.push_back(edge);
 	// TODO : does this needs to be done very time a node is added? or manually, when we are done?
@@ -60,12 +60,12 @@ void Network::updateNodeEdgeConnectionPointers() {
 	// resolve all node and edge pointers
 
 	// first clear edge pointers in all nodes
-	for (Node & n : m_nodes)
+	for (NetworkNode & n : m_nodes)
 		n.m_edges.clear();
 
 	const unsigned int nodeCount = m_nodes.size();
 	// loop over all edges
-	for (Edge & e : m_edges) {
+	for (NetworkEdge & e : m_edges) {
 		// store pointers to connected nodes
 		IBK_ASSERT(e.m_nodeId1 < nodeCount);
 		e.m_node1 = &m_nodes[e.m_nodeId1];
@@ -80,11 +80,11 @@ void Network::updateNodeEdgeConnectionPointers() {
 
 
 bool Network::checkConnectedGraph() const {
-	std::set<const Node*> connectedNodes;
-	std::set<const Edge*> connectedEdge;
+	std::set<const NetworkNode*> connectedNodes;
+	std::set<const NetworkEdge*> connectedEdge;
 
 	// start by any node
-	const Edge * start = &m_edges[0];
+	const NetworkEdge * start = &m_edges[0];
 
 	// ask edge to check its nodes
 	start->collectConnectedNodes(connectedNodes, connectedEdge);
@@ -117,8 +117,8 @@ void Network::readGridFromCSV(const IBK::Path &filePath){
 													IBK::string2val<double>(xyStr[1])});
 		}
 		for (unsigned i=0; i<polyLine.size()-1; ++i){
-			unsigned n1 = addNode(polyLine[i][0], polyLine[i][1], Node::NT_Mixer);
-			unsigned n2 = addNode(polyLine[i+1][0], polyLine[i+1][1], Node::NT_Mixer);
+			unsigned n1 = addNode(polyLine[i][0], polyLine[i][1], NetworkNode::NT_Mixer);
+			unsigned n2 = addNode(polyLine[i+1][0], polyLine[i+1][1], NetworkNode::NT_Mixer);
 			addEdge(n1, n2, true);
 		}
 	}
@@ -140,7 +140,7 @@ void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heat
 		IBK::trim(line, "))");
 		IBK::explode(line, xyStr, " ", IBK::EF_NoFlags);
 		// add node
-		unsigned id = addNode(IBK::string2val<double>(xyStr[0]), IBK::string2val<double>(xyStr[1]), Node::NT_Building);
+		unsigned id = addNode(IBK::string2val<double>(xyStr[0]), IBK::string2val<double>(xyStr[1]), NetworkNode::NT_Building);
 		m_nodes[id].m_heatingDemand = heatDemand;
 	}
 }
@@ -148,17 +148,17 @@ void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heat
 
 void Network::setSource(const double &x, const double &y) {
 	IBK_ASSERT(!m_nodes.empty());
-	Node * nMin = nullptr;
+	NetworkNode * nMin = nullptr;
 	double distMin = std::numeric_limits<double>::max();
-	for (Node &n: m_nodes){
-		double dist = Line::distanceBetweenPoints(x, y, n.m_x, n.m_y);
+	for (NetworkNode &n: m_nodes){
+		double dist = NetworkLine::distanceBetweenPoints(x, y, n.m_x, n.m_y);
 		if (dist < distMin){
 			distMin = dist;
 			nMin = &n;
 		}
 	}
 
-	nMin->m_type = Node::NT_Source;
+	nMin->m_type = NetworkNode::NT_Source;
 }
 
 
@@ -174,14 +174,14 @@ bool Network::findAndAddIntersection() {
 		for (unsigned i2=i1+1; i2<m_edges.size(); ++i2) {
 
 			// calculate intersection
-			Line l1 = Line(m_edges[i1]);
-			Line l2 = Line(m_edges[i2]);
+			NetworkLine l1 = NetworkLine(m_edges[i1]);
+			NetworkLine l2 = NetworkLine(m_edges[i2]);
 			double xs, ys;
 			l1.intersection(l2, xs, ys);
 
 			// if it is within both lines: add node and edges, adapt exisiting nodes
 			if (l1.containsPoint(xs, ys) && l2.containsPoint(xs, ys)){
-				unsigned nInter = addNode(xs, ys, Node::NT_Mixer);
+				unsigned nInter = addNode(xs, ys, NetworkNode::NT_Mixer);
 				addEdge(nInter, m_edges[i1].m_nodeId1, true);
 				addEdge(nInter, m_edges[i2].m_nodeId1, true);
 				m_edges[i1].m_nodeId1 = nInter;
@@ -208,30 +208,30 @@ void Network::connectBuildings(const bool extendSupplyPipes) {
 		for (unsigned id=0; id<m_edges.size(); ++id){
 			if (!m_edges[id].m_supply)
 				continue;
-			double dist = Line(m_edges[id]).distanceToPoint(m_nodes[idBuilding].m_x, m_nodes[idBuilding].m_y);
+			double dist = NetworkLine(m_edges[id]).distanceToPoint(m_nodes[idBuilding].m_x, m_nodes[idBuilding].m_y);
 			if (dist<distMin){
 				distMin = dist;
 				idEdgeMin = id;
 			}
 		}
 		// branch node
-		Line lMin = Line(m_edges[idEdgeMin]);
+		NetworkLine lMin = NetworkLine(m_edges[idEdgeMin]);
 		double xBranch, yBranch;
 		unsigned idBranch;
 		lMin.projectionFromPoint(m_nodes[idBuilding].m_x, m_nodes[idBuilding].m_y, xBranch, yBranch);
 
 		// branch node is inside edge: split edge
 		if (lMin.containsPoint(xBranch,yBranch)){
-			idBranch = addNode(xBranch, yBranch, Node::NT_Mixer);
+			idBranch = addNode(xBranch, yBranch, NetworkNode::NT_Mixer);
 			addEdge(m_edges[idEdgeMin].m_nodeId1, idBranch, true);
 			m_edges[idEdgeMin].m_nodeId1 = idBranch;
 			updateNodeEdgeConnectionPointers();
 		}
 		// branch node is outside edge
 		else{
-			double dist1 = Line::distanceBetweenPoints(xBranch, yBranch, m_edges[idEdgeMin].m_node1->m_x,
+			double dist1 = NetworkLine::distanceBetweenPoints(xBranch, yBranch, m_edges[idEdgeMin].m_node1->m_x,
 													   m_edges[idEdgeMin].m_node1->m_y);
-			double dist2 = Line::distanceBetweenPoints(xBranch, yBranch, m_edges[idEdgeMin].m_node2->m_x,
+			double dist2 = NetworkLine::distanceBetweenPoints(xBranch, yBranch, m_edges[idEdgeMin].m_node2->m_x,
 													   m_edges[idEdgeMin].m_node2->m_y);
 			idBranch = (dist1 < dist2) ? m_edges[idEdgeMin].m_nodeId1 : m_edges[idEdgeMin].m_nodeId2 ;
 			// if pipe should be extended, change coordinates of branch node
@@ -250,8 +250,8 @@ void Network::connectBuildings(const bool extendSupplyPipes) {
 
 
 int Network::nextUnconnectedBuilding(){
-	for (Node &nBuilding: m_nodes){
-		if (nBuilding.m_type == Node::NT_Building && nBuilding.m_edges.size()==0)
+	for (NetworkNode &nBuilding: m_nodes){
+		if (nBuilding.m_type == NetworkNode::NT_Building && nBuilding.m_edges.size()==0)
 			return nBuilding.m_id;
 	}
 	return -1;
@@ -265,19 +265,19 @@ void Network::networkWithoutDeadEnds(Network &cleanNetwork, const unsigned maxSt
 			m_nodes[n].updateIsDeadEnd();
 		}
 	}
-	for (const Edge &e: m_edges){
+	for (const NetworkEdge &e: m_edges){
 		if (e.m_node1->m_isDeadEnd || e.m_node2->m_isDeadEnd)
 			continue;
 		unsigned id1 = cleanNetwork.addNode(*e.m_node1);
 		unsigned id2 = cleanNetwork.addNode(*e.m_node2);
-		cleanNetwork.addEdge(Edge(id1, id2, e.m_length, e.m_diameterInside, e.m_supply));
+		cleanNetwork.addEdge(NetworkEdge(id1, id2, e.m_length, e.m_diameterInside, e.m_supply));
 	}
 }
 
 
 void Network::calculateLengths(){
-	for (Edge &e: m_edges) {
-		e.m_length = Line(e).length();
+	for (NetworkEdge &e: m_edges) {
+		e.m_length = NetworkLine(e).length();
 	}
 }
 
@@ -287,34 +287,34 @@ void Network::networkWithReducedEdges(Network & reducedNetwork){
 	IBK_ASSERT(m_edges.size()>0);
 	std::set<unsigned> proccessedNodes;
 
-	for (Edge &edge: m_edges){
+	for (NetworkEdge &edge: m_edges){
 
 		if (edge.m_node1->isRedundant() || edge.m_node2->isRedundant()){
 
 			// proccess redundant nodes only once
-			Node * redundantNode = (edge.m_node1->isRedundant()) ? edge.m_node1: edge.m_node2;
+			NetworkNode * redundantNode = (edge.m_node1->isRedundant()) ? edge.m_node1: edge.m_node2;
 			if (proccessedNodes.find(redundantNode->m_id) != proccessedNodes.end())
 				continue;
 			proccessedNodes.insert(redundantNode->m_id);
 
 			// get previous node and next non-redundant node
-			Node * previousNode = edge.neighbourNode(redundantNode);
-			Edge * nextEdge = redundantNode->neighborEdge(&edge);
+			NetworkNode * previousNode = edge.neighbourNode(redundantNode);
+			NetworkEdge * nextEdge = redundantNode->neighborEdge(&edge);
 			std::set<unsigned> redundantNodes;
 			double totalLength = edge.m_length;
-			const Node * nextNode = redundantNode->findNextNonRedundantNode(redundantNodes, totalLength, nextEdge);
+			const NetworkNode * nextNode = redundantNode->findNextNonRedundantNode(redundantNodes, totalLength, nextEdge);
 			for (const unsigned nId: redundantNodes)
 				proccessedNodes.insert(nId);
 
 			// add nodes and reduced edge to new network
 			unsigned id1 = reducedNetwork.addNode(*previousNode);
 			unsigned id2 = reducedNetwork.addNode(*nextNode);
-			reducedNetwork.addEdge(Edge(id1, id2, totalLength, edge.m_diameterInside, edge.m_supply));
+			reducedNetwork.addEdge(NetworkEdge(id1, id2, totalLength, edge.m_diameterInside, edge.m_supply));
 		}
 		else{
 			unsigned id1 = reducedNetwork.addNode(*edge.m_node1);
 			unsigned id2 = reducedNetwork.addNode(*edge.m_node2);
-			reducedNetwork.addEdge(Edge(id1, id2, edge.m_length, edge.m_diameterInside, edge.m_supply));
+			reducedNetwork.addEdge(NetworkEdge(id1, id2, edge.m_length, edge.m_diameterInside, edge.m_supply));
 		}
 	}
 }
@@ -324,25 +324,25 @@ void Network::sizePipeDimensions(const double &deltaPMax, const double &deltaTem
 								 const NetworkFluid &fluid, const std::vector<NetworkPipe> &pipeDB){
 
 	// for all buildings: add their heating demand to the pipes along their path
-	for (Node &node: m_nodes) {
-		std::vector<Edge * > path;
-		if (node.m_type == Node::NT_Building){
+	for (NetworkNode &node: m_nodes) {
+		std::vector<NetworkEdge * > path;
+		if (node.m_type == NetworkNode::NT_Building){
 			dijkstraShortestPathToSource(node, path);
-			for (Edge * edge: path)
+			for (NetworkEdge * edge: path)
 				edge->m_heatingDemand += node.m_heatingDemand;
 		}
 	}
 
 	// in case there is a pipe which is not part of any path (e.g. in circular grid): assign the adjacent heating demand
-	for (Edge &e: m_edges){
+	for (NetworkEdge &e: m_edges){
 		if (e.m_heatingDemand <= 0){
-			std::set<Edge *> edges1, edges2;
+			std::set<NetworkEdge *> edges1, edges2;
 			e.m_heatingDemand = 0.5 * ( e.m_node1->adjacentHeatingDemand(edges1)
 										+ e.m_node2->adjacentHeatingDemand(edges2) );
 		}
 	}
 
-	for (Edge &e: m_edges){
+	for (NetworkEdge &e: m_edges){
 		for (const NetworkPipe &pipe: pipeDB){
 			double massFlow = e.m_heatingDemand / deltaTemp / fluid.m_para[NetworkFluid::P_HeatCapacity].value;
 			if (pressureLossColebrook(e.m_length, massFlow, fluid, pipe, temp) < deltaPMax){
@@ -355,10 +355,10 @@ void Network::sizePipeDimensions(const double &deltaPMax, const double &deltaTem
 }
 
 
-void Network::dijkstraShortestPathToSource(Node &startNode, std::vector<Edge*> &pathSourceToStart){
+void Network::dijkstraShortestPathToSource(NetworkNode &startNode, std::vector<NetworkEdge*> &pathSourceToStart){
 
 	// init: all nodes have infinte distance to start node and no predecessor
-	for (Node &n: m_nodes){
+	for (NetworkNode &n: m_nodes){
 		n.m_distanceToStart = std::numeric_limits<double>::max();
 		n.m_predecessor = nullptr;
 	}
@@ -369,7 +369,7 @@ void Network::dijkstraShortestPathToSource(Node &startNode, std::vector<Edge*> &
 	while (visitedNodes.size() <= m_nodes.size()){
 		// find node with currently smallest distance to start, which has not yet been visited:
 		double minDistance = std::numeric_limits<double>::max();
-		Node *nMin = nullptr;
+		NetworkNode *nMin = nullptr;
 		for (unsigned id = 0; id < m_nodes.size(); ++id){
 			if (visitedNodes.find(id) == visitedNodes.end() && m_nodes[id].m_distanceToStart < minDistance){
 				minDistance = m_nodes[id].m_distanceToStart;
@@ -377,7 +377,7 @@ void Network::dijkstraShortestPathToSource(Node &startNode, std::vector<Edge*> &
 			}
 		}
 		// if source reached: return path
-		if (nMin->m_type == Node::NT_Source){
+		if (nMin->m_type == NetworkNode::NT_Source){
 			nMin->pathToNull(pathSourceToStart);
 			return;
 		}
@@ -408,7 +408,7 @@ double Network::pressureLossColebrook(const double &length, const double &massFl
 void Network::writeNetworkCSV(const IBK::Path &file) const{
 	std::ofstream f;
 	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
-	for (const Edge &e: m_edges){
+	for (const NetworkEdge &e: m_edges){
 		f.precision(10);
 		f << std::fixed << e.m_node1->m_x << "\t" << e.m_node1->m_y << "\t" << e.m_node2->m_x << "\t"
 		  << e.m_node2->m_y << "\t" << e.m_length << std::endl;
@@ -417,12 +417,12 @@ void Network::writeNetworkCSV(const IBK::Path &file) const{
 }
 
 
-void Network::writePathCSV(const IBK::Path &file, const Node & node, const std::vector<Edge *> &path) const {
+void Network::writePathCSV(const IBK::Path &file, const NetworkNode & node, const std::vector<NetworkEdge *> &path) const {
 	std::ofstream f;
 	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
 	f.precision(10);
 	f << std::fixed << node.m_x << "\t" << node.m_y << std::endl;
-	for (const Edge *e: path){
+	for (const NetworkEdge *e: path){
 		f << std::fixed << e->m_node1->m_x << "\t" << e->m_node1->m_y << "\t" << e->m_node2->m_x << "\t"
 		  << e->m_node2->m_y << "\t" << e->m_length << std::endl;
 	}
@@ -434,8 +434,8 @@ void Network::writeBuildingsCSV(const IBK::Path &file) const {
 	std::ofstream f;
 	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
 	f.precision(10);
-	for (const Node &n: m_nodes){
-		if (n.m_type==Node::NT_Building)
+	for (const NetworkNode &n: m_nodes){
+		if (n.m_type==NetworkNode::NT_Building)
 			f << std::fixed << n.m_x << "\t" << n.m_y << "\t" << n.m_heatingDemand << std::endl;
 	}
 	f.close();
