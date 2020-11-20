@@ -32,6 +32,11 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const Q
 			  unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 			  std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLshort> & indexBufferData);
 
+/*! Adds a sphere mesh to a vertex, color and index buffer. */
+void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
+				 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+				 std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLshort> & indexBufferData);
+
 } // namespace Vic3D
 
 

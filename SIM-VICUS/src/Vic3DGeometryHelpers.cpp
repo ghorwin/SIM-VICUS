@@ -204,4 +204,78 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const Q
 	indexBufferData[currentElementIndex++] = 0xFFFF; // set stop index
 }
 
+void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
+			   unsigned int & currentVertexIndex,
+			   unsigned int & currentElementIndex,
+			   std::vector<Vertex> & vertexBufferData,
+			   std::vector<ColorRGBA> & colorBufferData,
+			   std::vector<GLshort> & indexBufferData)
+{
+
+	QVector3D trans = VICUS::IBKVector2QVector(p);
+
+	unsigned int nVertices = 12;
+	vertexBufferData.resize(vertexBufferData.size() + nVertices);
+	colorBufferData.resize(colorBufferData.size() + nVertices);
+	std::vector<unsigned int> v0{0,5,1,9,8,3,6,2,10,11,0,5};
+	std::vector<unsigned int> v1{11,4,5,4,9,4,3,4,2,4,11};
+	std::vector<unsigned int>v2{6,7,8,7,1,7,0,7,10,7,6};
+	indexBufferData.resize(indexBufferData.size() + v0.size()+v1.size()+v2.size()+3);
+
+	//add vertices
+	const double phi = 0.5 * (1+std::sqrt(5));
+
+	std::vector<IBKMK::Vector3D>	vertices;
+	vertexBufferData[currentVertexIndex+0  ].m_coords = QVector3D(-1.0, phi, 0.0) + trans;	//0
+	vertexBufferData[currentVertexIndex+1  ].m_coords = QVector3D( 1.0, phi, 0.0) + trans;	//1
+	vertexBufferData[currentVertexIndex+2  ].m_coords = QVector3D(-1.0, -phi, 0.0) + trans;	//2
+	vertexBufferData[currentVertexIndex+3  ].m_coords = QVector3D( 1.0, -phi, 0.0) + trans;	//3
+	vertexBufferData[currentVertexIndex+4  ].m_coords = QVector3D(0.0, -1.0, phi) + trans;	//4
+	vertexBufferData[currentVertexIndex+5  ].m_coords = QVector3D(0.0,  1.0, phi) + trans;	//5
+	vertexBufferData[currentVertexIndex+6  ].m_coords = QVector3D(0.0, -1.0, -phi) + trans;	//6
+	vertexBufferData[currentVertexIndex+7  ].m_coords = QVector3D(0.0,  1.0, -phi) + trans;	//7
+	vertexBufferData[currentVertexIndex+8  ].m_coords = QVector3D(phi, 0.0, -1.0) + trans;	//8
+	vertexBufferData[currentVertexIndex+9  ].m_coords = QVector3D(phi, 0.0,  1.0) + trans;	//9
+	vertexBufferData[currentVertexIndex+10 ].m_coords = QVector3D(-phi, 0.0, -1.0) + trans;//10
+	vertexBufferData[currentVertexIndex+11 ].m_coords = QVector3D(-phi, 0.0,  1.0) + trans;//11
+
+	vertexBufferData[currentVertexIndex+0  ].m_normal = QVector3D(-1.0, phi, 0.0).normalized();	//0
+	vertexBufferData[currentVertexIndex+1  ].m_normal = QVector3D( 1.0, phi, 0.0).normalized();	//1
+	vertexBufferData[currentVertexIndex+2  ].m_normal = QVector3D(-1.0, -phi, 0.0).normalized();	//2
+	vertexBufferData[currentVertexIndex+3  ].m_normal = QVector3D( 1.0, -phi, 0.0).normalized();	//3
+	vertexBufferData[currentVertexIndex+4  ].m_normal = QVector3D(0.0, -1.0, phi).normalized();	//4
+	vertexBufferData[currentVertexIndex+5  ].m_normal = QVector3D(0.0,  1.0, phi).normalized();	//5
+	vertexBufferData[currentVertexIndex+6  ].m_normal = QVector3D(0.0, -1.0, -phi).normalized();	//6
+	vertexBufferData[currentVertexIndex+7  ].m_normal = QVector3D(0.0,  1.0, -phi).normalized();	//7
+	vertexBufferData[currentVertexIndex+8  ].m_normal = QVector3D(phi, 0.0, -1.0).normalized();	//8
+	vertexBufferData[currentVertexIndex+9  ].m_normal = QVector3D(phi, 0.0,  1.0).normalized();	//9
+	vertexBufferData[currentVertexIndex+10 ].m_normal = QVector3D(-phi, 0.0, -1.0).normalized();//10
+	vertexBufferData[currentVertexIndex+11 ].m_normal = QVector3D(-phi, 0.0,  1.0).normalized();//11
+
+
+	for (unsigned int i=0; i<nVertices;++i)
+		colorBufferData[currentVertexIndex + i ] = c;
+	colorBufferData[currentVertexIndex + 4 ] = QColor(Qt::green);
+	colorBufferData[currentVertexIndex + 7 ] = QColor(Qt::green);
+
+
+	for (unsigned int i=0; i<v0.size(); ++i)
+		indexBufferData[currentElementIndex+i] = currentVertexIndex+ v0[i];
+	indexBufferData[currentElementIndex+v0.size()] = 0xFFFF;
+	currentElementIndex += v0.size() + 1;
+
+	for (unsigned int i=0; i<v1.size(); ++i)
+		indexBufferData[currentElementIndex+i] = currentVertexIndex + v1[i];
+	indexBufferData[currentElementIndex+v1.size()] = 0xFFFF;
+	currentElementIndex += v1.size() + 1;
+
+	for (unsigned int i=0; i<v2.size(); ++i)
+		indexBufferData[currentElementIndex+i] = currentVertexIndex + v2[i];
+	indexBufferData[currentElementIndex+v2.size()] = 0xFFFF;
+	currentElementIndex += v2.size() + 1;
+
+	currentVertexIndex += nVertices;
+	currentElementIndex += v0.size()+v1.size()+v2.size()+3;
+}
+
 } // namespace Vic3D
