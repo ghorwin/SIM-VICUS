@@ -19,6 +19,10 @@ private:
 
 	/*! Cache for added network. */
 	VICUS::Network	m_addedNetwork;
+
+	double			m_gridWidth;
+	double			m_gridSpacing;
+	double			m_farDistance;
 };
 
 #endif // SVUndoAddNetworkH

@@ -10,8 +10,10 @@
 #include <limits>
 #include <string>
 
+#include "IBK_rectangle.h"
+
 namespace IBK {
-class Path;
+	class Path;
 }
 
 namespace VICUS {
@@ -99,6 +101,10 @@ public:
 	 */
 	void dijkstraShortestPathToSource(NetworkNode &startNode, std::vector<NetworkEdge*> &pathToSource);
 
+	/*! Recomputes the min/max coordinates of the network and updates m_extends. */
+	void updateExtends();
+
+
 	/*! pressure loss of a rough pipe according to colebrook equation
 	 \param length in [m]
 	 \param massFlow in [kg/s]
@@ -122,6 +128,14 @@ public:
 	std::vector<NetworkEdge>		m_edges;
 
 	unsigned int					m_fluidID;
+
+	/*! Stores the extends of the network.
+		Use the function updateExtends() to compute these.
+		\code
+		m_extends.set(minX, minY, maxX, maxY);
+		\endcode
+	*/
+	IBK::rectangle<double>			m_extends;
 
 };
 

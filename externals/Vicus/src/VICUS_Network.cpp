@@ -396,6 +396,23 @@ void Network::dijkstraShortestPathToSource(NetworkNode &startNode, std::vector<N
 }
 
 
+void Network::updateExtends() {
+	updateNodeEdgeConnectionPointers();
+	double minX = std::numeric_limits<double>::max();
+	double maxX = -std::numeric_limits<double>::max();
+	double minY = std::numeric_limits<double>::max();
+	double maxY = -std::numeric_limits<double>::max();
+	// now process all nodes
+	for (const VICUS::NetworkNode & node : m_nodes) {
+		minX = std::min(minX, node.m_x);
+		maxX = std::max(maxX, node.m_x);
+		minY = std::min(minY, node.m_y);
+		maxY = std::max(maxY, node.m_y);
+	}
+	m_extends.set(minX, minY, maxX, maxY);
+}
+
+
 double Network::pressureLossColebrook(const double &length, const double &massFlow, const NetworkFluid &fluid,
 										const NetworkPipe &pipe, const double &temperature){
 

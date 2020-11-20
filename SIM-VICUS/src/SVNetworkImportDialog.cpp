@@ -42,6 +42,7 @@ bool SVNetworkImportDialog::edit(VICUS::Network & n) {
 	}
 
 	n.m_name = m_ui->lineEditNetworkName->text().toStdString();
+	n.updateExtends();
 
 	return true;
 
@@ -63,20 +64,11 @@ void SVNetworkImportDialog::on_pushButtonGISNetwork_clicked() {
 		n.updateNodeEdgeConnectionPointers();
 
 		m_ui->labelEdgeCount->setText(QString("%1").arg(n.m_edges.size()));
-		double minX = std::numeric_limits<double>::max();
-		double maxX = -std::numeric_limits<double>::max();
-		double minY = std::numeric_limits<double>::max();
-		double maxY = -std::numeric_limits<double>::max();
-		// now process all nodes
-		for (const VICUS::NetworkNode & node : n.m_nodes) {
-			minX = qMin(minX, node.m_x);
-			maxX = qMax(maxX, node.m_x);
-			minY = qMin(minY, node.m_y);
-			maxY = qMax(maxY, node.m_y);
-		}
-		m_ui->labelCoordinateRange->setText( QString("[%L1,%L2]...[%L3,%L4]").arg(minX).arg(minY).arg(maxX).arg(maxY));
-		m_ui->lineEditXOrigin->setText( QString("%L1").arg(0.5*(minX + maxX)));
-		m_ui->lineEditYOrigin->setText( QString("%L1").arg(0.5*(minY + maxY)));
+		n.updateExtends();
+
+		m_ui->labelCoordinateRange->setText( QString("[%L1,%L2]...[%L3,%L4]").arg(n.m_extends.left).arg(n.m_extends.top).arg(n.m_extends.right).arg(n.m_extends.bottom));
+		m_ui->lineEditXOrigin->setText( QString("%L1").arg(0.5*(n.m_extends.left + n.m_extends.right)));
+		m_ui->lineEditYOrigin->setText( QString("%L1").arg(0.5*(n.m_extends.top + n.m_extends.bottom)));
 
 		// copy network over to data structure
 		*m_network = n;
