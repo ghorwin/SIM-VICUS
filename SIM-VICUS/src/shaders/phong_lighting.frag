@@ -26,7 +26,7 @@ void main() {
   // correctly when viewing internal geometry
   vec3 normFixed = norm;
   if (viewVecNormalVec < 0.)
-   normFixed = -norm;
+   normFixed = norm;
 
   // diffuse
   vec3 lightDir = normalize(lightPos - fragPos);
