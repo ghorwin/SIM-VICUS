@@ -48,6 +48,7 @@
 #include "SVPostProcHandler.h"
 #include "SVNavigationTreeWidget.h"
 //#include "SVFMIExportDialog.h"
+#include "SVNetworkImportDialog.h"
 
 #include "SVGeometryView.h"
 
@@ -607,6 +608,18 @@ void SVMainWindow::on_actionEditCleanProject_triggered() {
 }
 
 
+void SVMainWindow::on_actionNetworkImport_triggered() {
+	// opens import network dialog
+	if (m_networkImportDialog == nullptr)
+		m_networkImportDialog = new SVNetworkImportDialog(this);
+	VICUS::Network n;
+	if (m_networkImportDialog->edit(n)) {
+		// create undo action for adding a new network
+	}
+
+}
+
+
 void SVMainWindow::on_actionViewExternalPostProcessing_triggered() {
 	// configure PostProc session, save parallel to project and open session in post
 
@@ -766,6 +779,7 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionEditTextEditProject->setEnabled(have_project);
 	m_ui->actionRunSimulation->setEnabled(have_project);
 	m_ui->actionEditCleanProject->setEnabled(have_project);
+	m_ui->actionNetworkImport->setEnabled(have_project);
 
 	// no project, no undo actions -> clearing undostack also disables undo actions
 	if (!have_project)

@@ -87,8 +87,15 @@
     <addaction name="actionViewExternalPostProcessing"/>
     <addaction name="actionViewCCMeditor"/>
    </widget>
+   <widget class="QMenu" name="menuNetworks">
+    <property name="title">
+     <string>Networks</string>
+    </property>
+    <addaction name="actionNetworkImport"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
+   <addaction name="menuNetworks"/>
    <addaction name="menu_View"/>
    <addaction name="menu_Window"/>
    <addaction name="menu_Tools"/>
@@ -291,6 +298,11 @@
    </property>
    <property name="toolTip">
     <string>Launches external climate editor (CCMEditor).</string>
+   </property>
+  </action>
+  <action name="actionNetworkImport">
+   <property name="text">
+    <string>Import Network...</string>
    </property>
   </action>
  </widget>

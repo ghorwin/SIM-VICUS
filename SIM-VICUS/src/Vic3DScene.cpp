@@ -109,7 +109,10 @@ void Vic3DScene::destroy() {
 
 
 void Vic3DScene::resize(int width, int height, qreal retinaScale) {
-	float far = SVProjectHandler::instance().viewSettings().m_farDistance;
+	float far = 1000;
+	// retrieve far viewing distance from project, if one exists
+	if (SVProjectHandler::instance().isValid())
+		far = SVProjectHandler::instance().viewSettings().m_farDistance;
 	// the projection matrix need to be updated only for window size changes
 	m_projection.setToIdentity();
 	// create projection matrix, i.e. camera lens

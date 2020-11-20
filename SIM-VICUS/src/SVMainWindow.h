@@ -24,6 +24,7 @@ class SVPostProcHandler;
 class SVLogWidget;
 class SVGeometryView;
 class SVNavigationTreeWidget;
+class SVNetworkImportDialog;
 
 /*! Main window class. */
 class SVMainWindow : public QMainWindow {
@@ -172,6 +173,8 @@ private slots:
 
 	void on_actionHelpCheckForUpdates_triggered();
 
+	void on_actionNetworkImport_triggered();
+
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();
@@ -270,6 +273,9 @@ private:
 
 	/*! User preferences. */
 	SVPreferencesDialog			*m_preferencesDialog									= nullptr;
+
+	/*! Network import dialog */
+	SVNetworkImportDialog		*m_networkImportDialog									= nullptr;
 
 	/*! FMI Export dialog. */
 //	SVFMIExportDialog			*m_fmiExportDialog										= nullptr;
