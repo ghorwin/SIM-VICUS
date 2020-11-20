@@ -275,7 +275,7 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 	currentElementIndex += v2.size() + 1;
 
 	currentVertexIndex += nVertices;
-	currentElementIndex += v0.size()+v1.size()+v2.size()+3;
+	//currentElementIndex += v0.size()+v1.size()+v2.size()+3;
 }
 
 } // namespace Vic3D

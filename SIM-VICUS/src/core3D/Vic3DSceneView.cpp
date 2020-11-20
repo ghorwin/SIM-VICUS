@@ -368,6 +368,12 @@ void SceneView::checkInput() {
 		return;
 	}
 
+	if(m_keyboardMouseHandler.buttonDown(Qt::MidButton)){
+		m_inputEventReceived = true;
+		renderLater();
+		return;
+	}
+
 	// scroll-wheel turned?
 	if (m_keyboardMouseHandler.wheelDelta() != 0) {
 		m_inputEventReceived = true;

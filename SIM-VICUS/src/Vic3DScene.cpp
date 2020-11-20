@@ -177,6 +177,17 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		m_camera.rotate(-MOUSE_ROTATION_SPEED * mouseDelta.x(), LocalUp);
 		m_camera.rotate(-MOUSE_ROTATION_SPEED * mouseDelta.y(), m_camera.right());
 	}
+	if (keyboardHandler.buttonDown(Qt::MidButton)) {
+
+		QPoint mouseDelta = keyboardHandler.mouseDelta(QCursor::pos()); // resets the internal position
+
+		int x = mouseDelta.x();
+		int y = mouseDelta.y();
+		if(x != 0)
+			m_camera.translate(transSpeed * (mouseDelta.x() < 0 ? 1 : -1) * m_camera.right());
+		if(y != 0)
+			m_camera.translate(transSpeed * (mouseDelta.y() > 0 ? 1 : -1) * m_camera.up());
+	}
 
 	else { // not supporting right-and-left mouse button multiclick
 
