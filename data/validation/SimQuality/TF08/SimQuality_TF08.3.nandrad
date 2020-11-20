@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.99">
+	<Project>
+		<ProjectInfo>
+			<Comment>SimQuality Testfall 08</Comment>
+		</ProjectInfo>
+		<Location>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<ClimateFileName>${Project Directory}/../climate/TF05_PotsdamWithStartPhase.c6b</ClimateFileName>
+		</Location>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">5</IBK:Parameter>
+		</SimulationParameter>
+		<SolverParameter>
+			<IBK:IntPara name="DiscMaxElementsPerLayer">30</IBK:IntPara>
+		</SolverParameter>
+		<Zones>
+			<Zone id="3" displayName="Var03" type="Active">
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+			</Zone>			
+		</Zones>
+		<ConstructionInstances>
+			
+			<!-- Surface Var 03 -->	
+			<ConstructionInstance id="3" displayName="All Surfaces Var02">
+				<ConstructionTypeId>10005</ConstructionTypeId>
+				<IBK:Parameter name="Area" unit="m2">62</IBK:Parameter>
+				<InterfaceA id="30" zoneId="3">
+					<!--Interface to 'Room'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="31" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+		</ConstructionInstances>
+		
+		<ConstructionTypes>
+			<ConstructionType id="10005" displayName="Air Change Test Construction">
+				<MaterialLayers>
+					<MaterialLayer thickness="0.2" matId="1001" /> <!-- room side -->
+					<MaterialLayer thickness="0.3" matId="1004" /> 
+				</MaterialLayers>
+			</ConstructionType>
+		</ConstructionTypes>
+		<Materials>
+			<Material id="1001" displayName="Brick">
+				<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+			</Material>
+			<Material id="1004" displayName="Good Insulation">
+				<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.02</IBK:Parameter>
+			</Material>
+		</Materials>
+		<Models>
+			<NaturalVentilationModel id="501" displayName="Zone vent" modelType="Scheduled">
+				<ZoneObjectList>All zones</ZoneObjectList>
+			</NaturalVentilationModel>
+			<InternalLoadsModel id="200" modelType="Scheduled">
+				<IBK:Parameter name="RadiantFraction" unit="---">0.5</IBK:Parameter>
+				<!-- takes schedules with names: 
+					"EquipmentHeatLoadSchedule [W/m2]",
+					"PersonHeatLoadSchedule [W/m2]",
+					"LightingHeatLoadSchedule [W/m2]" 
+					-->
+			</InternalLoadsModel>
+			<InternalLoadsModel id="200" modelType="AirDepend">
+				<!-- takes schedules with names: 
+					"EquipmentHeatLoadSchedule [W/m2]",
+					"PersonMetabolicRateSchedule [W/m2]"
+					"LightingHeatLoadSchedule [W/m2]"
+				 -->
+			</InternalLoadsModel>
+		</Models>
+		<Schedules>
+			<ScheduleGroups>
+				<ScheduleGroup objectList="Zone Var01">
+					<!-- AllDays constant  -->
+					<Schedule type="AllDays">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>InfiltrationRateSchedule [1/h]:0</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+
+				<ScheduleGroup objectList="Zone Var02">
+					<!-- AllDays constant  -->
+					<Schedule type="AllDays">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>InfiltrationRateSchedule [1/h]:2</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+
+				<ScheduleGroup objectList="Zone Var03">
+					<!-- AllDays constant  -->
+					<Schedule type="AllDays">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>InfiltrationRateSchedule [1/h]:0.5</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+					<Schedule type="AllDays">
+						<StartDayOfTheYear>151</StartDayOfTheYear>		<!-- 1.Juni 31+28+31+30+31=151 -->
+						<EndDayOfTheYear>273</EndDayOfTheYear>			<!-- 30.September  31+28+31+30+31+30+31+31+30=273 -->
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0 6 20</TimePoints>
+								<Values>InfiltrationRateSchedule [1/h]:2 0.5 2</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+			</ScheduleGroups>
+		</Schedules>
+		
+		<Outputs>
+			<Definitions>
+				<OutputDefinition>
+					<Quantity>AirTemperature</Quantity>
+					<ObjectListName>Zone</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>InfiltrationRate[1]</Quantity>
+					<ObjectListName>InfiltrationModel</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>InfiltrationRate[2]</Quantity>
+					<ObjectListName>InfiltrationModel</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>InfiltrationRate[3]</Quantity>
+					<ObjectListName>InfiltrationModel</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+			</Definitions>
+			<Grids>
+				<OutputGrid name="hourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="Zone">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="All zones">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Zone Var01">
+				<FilterID>1</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Zone Var02">
+				<FilterID>2</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Zone Var03">
+				<FilterID>3</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="InfiltrationModel">
+				<FilterID>501</FilterID>
+				<ReferenceType>Model</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+	</Project>
+</NandradProject>
