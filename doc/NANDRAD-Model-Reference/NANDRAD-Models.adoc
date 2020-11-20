@@ -7,20 +7,24 @@ This section describes the various model parametrization blocks.
 
 ## Natural Ventilation Model (Infiltration)
 
-A natural ventilation/infiltration model defines air exchange with the outside air.
+A natural ventilation/infiltration model defines air exchange with the outside air. Natural ventilation can be enabled for specific zones by defining a `NaturalVentilationModel` model parameter block. Via the object list, the zones with natural ventilation are selected.
 
-.Parameter definition for a natural ventilation model (Constant and Scheduled model variants)
 ====
 [source,xml]
 ----
 <NaturalVentilationModel id="501" displayName="Zone vent" modelType="Constant">
-	<ZoneObjectList>All zones</ZoneObjectList>
+	<ZoneObjectList>Office zones</ZoneObjectList>
 	<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
 </NaturalVentilationModel>
 <NaturalVentilationModel id="502" displayName="Zone vent" modelType="Scheduled">
-	<ZoneObjectList>All zones</ZoneObjectList>
+	<ZoneObjectList>Other zones</ZoneObjectList>
 </NaturalVentilationModel>
 ----
+====
+
+[IMPORTANT]
+====
+There must be only one natural ventilation model block defined for a zone. Hence, you must not define two ventilation model blocks with object lists that both contain the same zone(s).
 ====
 
 The `NaturalVentilationModel` needs to be defined with the following XML attributes:
@@ -92,6 +96,7 @@ Below is an example of a schedule that provides the `InfiltrationRateSchedule` f
 ----
 ====
 
+
 ## Shading Control Model
 
 A shading control model is a special type of control model, returning a signal value between 0 (no shading) and 1 (fully shaded). The actual amount of shading, or reduction of solar gains, is determined by the shading parameter block. Thus, you can use the same control model for different types of shadings.
@@ -118,3 +123,36 @@ A shading control model is a special type of control model, returning a signal v
 ----
 ====
 
+
+## Internal Loads Model
+
+Internal loads are defined as natural ventilation models. The object list identifies the zones, where internal loads shall be considered.
+
+.Example for a internal loads model
+====
+[source,xml]
+----
+<InternalLoadsModel id="200" modelType="Scheduled">
+	<ZoneObjectList>Office zones</ZoneObjectList>
+	<IBK:Parameter name="RadiantFraction" unit="---">0.5</IBK:Parameter>
+</InternalLoadsModel>
+----
+====
+
+If the model type `Scheduled` is being used, the actual loads are taken from the schedule.
+
+The following schedule parameters are required:
+
+- `EquipmentHeatLoadSchedule [W/m2]`
+- `PersonHeatLoadSchedule [W/m2]`
+- `LightingHeatLoadSchedule [W/m2]`
+
+The scheduled quantities are relative to the usage area, defined as zone parameter `Area`, which is required once an `InternalLoadsModel` has been defined.
+
+Floating point parameters (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
+
+[options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
+|====================
+|Name|Default Unit|Description|Value Range |Usage
+| `RadiantFraction` | W/m2 | Fraction of internal energy flux to be applied (area weighted) to opaque surfaces. | {nbsp}>={nbsp}0.0{nbsp} | _optional (defaults to 0.5)_
+|====================
