@@ -204,6 +204,7 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const Q
 	indexBufferData[currentElementIndex++] = 0xFFFF; // set stop index
 }
 
+
 void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 			   unsigned int & currentVertexIndex,
 			   unsigned int & currentElementIndex,
@@ -214,6 +215,7 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 
 	QVector3D trans = VICUS::IBKVector2QVector(p);
 
+#if 0
 	unsigned int nVertices = 12;
 	vertexBufferData.resize(vertexBufferData.size() + nVertices);
 	colorBufferData.resize(colorBufferData.size() + nVertices);
@@ -275,7 +277,91 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 	currentElementIndex += v2.size() + 1;
 
 	currentVertexIndex += nVertices;
-	//currentElementIndex += v0.size()+v1.size()+v2.size()+3;
+	currentElementIndex += v0.size()+v1.size()+v2.size()+3;
+#else
+
+	unsigned int nSeg = 4; // number of segments to split 180° into
+	unsigned int nSeg2 = nSeg*2; // number of segments to split 360° into
+
+	vertexBufferData.resize(vertexBufferData.size() + (nSeg-1)*nSeg2 + 2);
+	colorBufferData.resize(colorBufferData.size() + (nSeg-1)*nSeg2 + 2);
+	// (nSeg+1)*2 + 1 element indexes ((nSeg+1)*2 for the triangle strip, 1 primitive restart index)
+	indexBufferData.resize(indexBufferData.size() + nSeg2*2 + 2 + 1 /* stop index */  +  2*(nSeg2*2 + 2 + 1 /* stop index */ )  + nSeg2*2 + 1 + 1 /* stop index */ );
+
+	unsigned int vertexStart = currentVertexIndex;
+
+	// the vertex 0 is (1, 0, 0)*radius
+	vertexBufferData[currentVertexIndex].m_coords = QVector3D(radius, 0.0, 0.0) + trans;
+	vertexBufferData[currentVertexIndex].m_normal = QVector3D(1, 0.0, 0.0);
+	colorBufferData[currentVertexIndex] = c;
+	++currentVertexIndex;
+
+	// now generate the vertexes
+	for (unsigned int i=1; i<nSeg; ++i) {
+		double beta = PI_CONST*i/nSeg;
+		double flat_radius = std::sin(beta)*radius;
+		double nx = std::cos(beta);
+		double x = nx*radius;
+
+		for (unsigned int j=0; j<nSeg2; ++j, ++currentVertexIndex) {
+			double angle = -2*PI_CONST*j/nSeg2;
+			double ny = std::cos(angle);
+			double y = ny*flat_radius;
+			double nz = std::sin(angle);
+			double z = nz*flat_radius;
+
+			vertexBufferData[currentVertexIndex].m_coords = QVector3D(x, y, z) + trans;
+			vertexBufferData[currentVertexIndex].m_normal = QVector3D(nx, ny, nz);
+			colorBufferData[currentVertexIndex] = c;
+		}
+	}
+
+	// now add last vertex
+	// the vertex 1 + nSeg*nSeg2 is (-1, 0, 0)*radius
+	vertexBufferData[currentVertexIndex].m_coords = QVector3D(-radius, 0.0, 0.0) + trans;
+	vertexBufferData[currentVertexIndex].m_normal = QVector3D(-1, 0.0, 0.0);
+	colorBufferData[currentVertexIndex] = c;
+	++currentVertexIndex;
+
+
+	// first circle
+	unsigned int lastVertex = vertexStart+1; // start with first vertex in for circle
+	for (unsigned int i=0; i<nSeg2*2; ++i, ++currentElementIndex) {
+		if (i % 2 == 0)
+			indexBufferData[currentElementIndex] = lastVertex++;
+		else {
+			indexBufferData[currentElementIndex] = 0;
+		}
+	}
+	indexBufferData[currentElementIndex++] = vertexStart+1; // finish circle with first vertex
+	indexBufferData[currentElementIndex++] = 0xFFFF; // set stop index
+
+	// middle circles
+	for (unsigned int j=1; j<nSeg-1; ++j) {
+		vertexStart = lastVertex;
+		for (unsigned int i=0; i<nSeg2; ++i, currentElementIndex += 2, ++lastVertex) {
+			indexBufferData[currentElementIndex  ] = lastVertex;
+			indexBufferData[currentElementIndex+1] = lastVertex - nSeg2;
+		}
+		indexBufferData[currentElementIndex++] = vertexStart;
+		indexBufferData[currentElementIndex++] = vertexStart - nSeg2;
+
+		indexBufferData[currentElementIndex++] = 0xFFFF; // set stop index
+	}
+
+	vertexStart = lastVertex;
+	for (unsigned int i=0; i<nSeg2*2; ++i, ++currentElementIndex) {
+		if (i % 2 == 0)
+			indexBufferData[currentElementIndex] = currentVertexIndex-1;
+		else {
+			indexBufferData[currentElementIndex] = lastVertex++ - nSeg2;
+		}
+	}
+	indexBufferData[currentElementIndex++] = currentVertexIndex-1;
+	indexBufferData[currentElementIndex++] = vertexStart - nSeg2;
+	indexBufferData[currentElementIndex++] = 0xFFFF; // set stop index
+
+#endif
 }
 
 } // namespace Vic3D
