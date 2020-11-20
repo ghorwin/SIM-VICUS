@@ -345,7 +345,7 @@ void Vic3DScene::render() {
 #endif // FIXED_LIGHT_POSITION
 
 	// first draw network with culling enabled
-	glDisable(GL_CULL_FACE); // for now draw with culling disabled
+	//glDisable(GL_CULL_FACE); // for now draw with culling disabled
 	m_networkGeometryObject.render();
 
 	// then turn culling off, so that we see front and back sides of surfaces
@@ -454,6 +454,12 @@ void Vic3DScene::generateNetworkGeometry() {
 		}
 	}
 
+	addSphere(IBKMK::Vector3D(10,0,0), Qt::red,
+				0.5,
+				currentVertexIndex, currentElementIndex,
+				m_networkGeometryObject.m_vertexBufferData,
+				m_networkGeometryObject.m_colorBufferData,
+				m_networkGeometryObject.m_indexBufferData);
 #if 0
 	// manually add a cylinder here
 	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(10,0,0), Qt::red,
