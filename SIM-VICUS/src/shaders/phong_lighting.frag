@@ -14,7 +14,7 @@ uniform vec3 viewPos;      // parameter: view position as vec3 (world coords)
 
 void main() {
   // ambient
-  float ambientStrength = 0.1;
+  float ambientStrength = 0.3;
   vec3 ambient = ambientStrength * lightColor;
 
   // compute vector from view pos to fragment
@@ -31,12 +31,12 @@ void main() {
   // diffuse
   vec3 lightDir = normalize(lightPos - fragPos);
   float diff = max(dot(normFixed, lightDir), 0.0);
-  vec3 diffuse = diff * lightColor;
+  vec3 diffuse = 0.5 * diff * lightColor;
 
   // specular
-  float specularStrength = 0.4;
+  float specularStrength = 0.7;
   vec3 reflectDir = reflect(-lightDir, normFixed);
-  float spec = pow(max(dot(viewDir, reflectDir), 0.0), 128);
+  float spec = pow(max(dot(viewDir, reflectDir), 0.0), 64);
   vec3 specular = specularStrength * spec * lightColor;
 
   vec3 result = (ambient + diffuse + specular) * fragColor.xyz;

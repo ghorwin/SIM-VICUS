@@ -787,6 +787,12 @@ void SVMainWindow::onUpdateActions() {
 	if (!have_project)
 		m_undoStack->clear();
 
+	// *** Geometry view ***
+
+	if (!have_project) {
+		m_geometryViewSplitter->setVisible(false);
+	}
+
 	// *** Dock widgets ***
 
 	// Dock-Widgets are only visible when project is there
@@ -810,9 +816,6 @@ void SVMainWindow::onUpdateActions() {
 	m_buttonBar->setEnabled(have_project);
 	// views are only visible when we have a project
 //	m_ui->actionViewShowConstruction->setEnabled(have_project);
-	if (!have_project) {
-		m_geometryViewSplitter->setVisible(false);
-	}
 	// Note: in case of a project, the current view widget is set visible onNavigationBarViewChanged() below
 
 	// when we have a project

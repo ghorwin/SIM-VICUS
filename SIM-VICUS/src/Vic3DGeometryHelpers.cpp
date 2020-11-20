@@ -227,6 +227,7 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 	//add vertices
 	const double phi = 0.5 * (1+std::sqrt(5));
 
+	radius *= 0.5;
 	vertexBufferData[currentVertexIndex+0  ].m_coords = QVector3D(-1.0, phi, 0.0)*radius + trans;	//0
 	vertexBufferData[currentVertexIndex+1  ].m_coords = QVector3D( 1.0, phi, 0.0)*radius + trans;	//1
 	vertexBufferData[currentVertexIndex+2  ].m_coords = QVector3D(-1.0, -phi, 0.0)*radius + trans;	//2
