@@ -18,13 +18,13 @@ unix {
 }
 
 LIBS += -L../../../lib$${DIR_PREFIX} \
-	-lVicus \
-	-lNandrad \
-	-lQtExt \
-	-lIBKMK \
-	-lIBK \
-	-lTiCPP \
-	-lQuaZIP
+        -lIBK \
+        -lIBKMK \
+        -lNandrad \
+        -lQtExt \
+        -lQuaZIP \
+        -lTiCPP \
+        -lVicus
 
 win32 {
 	LIBS += -luser32
