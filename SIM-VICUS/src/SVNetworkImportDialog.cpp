@@ -60,7 +60,8 @@ void SVNetworkImportDialog::on_pushButtonGISNetwork_clicked() {
 	try {
 		VICUS::Network n;
 		n.readGridFromCSV(networkFile);
-		*m_network = n;
+		n.updateNodeEdgeConnectionPointers();
+
 		m_ui->labelEdgeCount->setText(QString("%1").arg(n.m_edges.size()));
 		double minX = std::numeric_limits<double>::max();
 		double maxX = -std::numeric_limits<double>::max();
@@ -76,6 +77,9 @@ void SVNetworkImportDialog::on_pushButtonGISNetwork_clicked() {
 		m_ui->labelCoordinateRange->setText( QString("[%L1,%L2]...[%L3,%L4]").arg(minX).arg(minY).arg(maxX).arg(maxY));
 		m_ui->lineEditXOrigin->setText( QString("%L1").arg(0.5*(minX + maxX)));
 		m_ui->lineEditYOrigin->setText( QString("%L1").arg(0.5*(minY + maxY)));
+
+		// copy network over to data structure
+		*m_network = n;
 	}
 	catch (IBK::Exception & ex) {
 		QMessageBox::critical(this, QString(), tr("Error reading GIS data file:\n%1").arg(ex.what()));

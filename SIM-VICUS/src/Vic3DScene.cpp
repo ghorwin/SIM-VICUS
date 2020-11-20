@@ -99,6 +99,8 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 	m_networkGeometryObject.updateBuffers();
 
 	// transfer other properties
+
+
 }
 
 

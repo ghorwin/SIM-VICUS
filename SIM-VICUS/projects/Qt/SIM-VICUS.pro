@@ -88,6 +88,7 @@ SOURCES += \
 	../../src/SVWelcomeScreen.cpp \
 	../../src/Vic3DGeometryHelpers.cpp \
 	../../src/Vic3DScene.cpp \
+	../../src/actions/SVUndoAddNetwork.cpp \
 	../../src/actions/SVUndoCommandBase.cpp \
 	../../src/actions/SVUndoProject.cpp \
 	../../src/core3D/Vic3DGridObject.cpp \
@@ -125,6 +126,7 @@ HEADERS  += \
 	../../src/SVWelcomeScreen.h \
 	../../src/Vic3DGeometryHelpers.h \
 	../../src/Vic3DScene.h \
+	../../src/actions/SVUndoAddNetwork.h \
 	../../src/actions/SVUndoCommandBase.h \
 	../../src/actions/SVUndoProject.h \
 	../../src/core3D/Vic3DCamera.h \

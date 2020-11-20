@@ -32,6 +32,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 	SVProjectHandler::ModificationTypes mod = (SVProjectHandler::ModificationTypes)modificationType;
 	switch (mod) {
 		case SVProjectHandler::AllModified :
+		case SVProjectHandler::NetworkModified :
 			break;
 
 		default:
@@ -51,7 +52,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 
 	// add all childs
 	for (const VICUS::Building & b : prj.m_buildings) {
-		QTreeWidgetItem * building = new QTreeWidgetItem(QStringList() << b.m_displayName, QTreeWidgetItem::Type);
+		QTreeWidgetItem * building = new QTreeWidgetItem(QStringList() << tr("Building: %1").arg(b.m_displayName), QTreeWidgetItem::Type);
 		building->setData(0, Qt::UserRole, b.m_id);
 		root->addChild(building);
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
@@ -69,6 +70,18 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 			}
 		}
 	}
+
+	for (const VICUS::Network & n : prj.m_networks) {
+		QTreeWidgetItem * node = new QTreeWidgetItem(QStringList() << tr("Network: %1").arg(QString::fromStdString(n.m_name)), QTreeWidgetItem::Type);
+		root->addChild(node);
+		QTreeWidgetItem * enode = new QTreeWidgetItem(QStringList() << tr("Edges"), QTreeWidgetItem::Type);
+		node->addChild(enode);
+		// Add child nodes for each "clickable" entities
+		QTreeWidgetItem * nnode = new QTreeWidgetItem(QStringList() << tr("Nodes"), QTreeWidgetItem::Type);
+		node->addChild(nnode);
+		// Add child nodes for each "clickable" entities
+	}
+
 	m_ui->treeWidget->expandAll();
 
 }

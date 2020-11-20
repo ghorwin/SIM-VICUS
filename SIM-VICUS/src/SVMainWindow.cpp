@@ -49,6 +49,7 @@
 #include "SVNavigationTreeWidget.h"
 //#include "SVFMIExportDialog.h"
 #include "SVNetworkImportDialog.h"
+#include "SVUndoAddNetwork.h"
 
 #include "SVGeometryView.h"
 
@@ -615,8 +616,9 @@ void SVMainWindow::on_actionNetworkImport_triggered() {
 	VICUS::Network n;
 	if (m_networkImportDialog->edit(n)) {
 		// create undo action for adding a new network
+		SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("Added network"), n);
+		undo->push(); // modifies project and updates views
 	}
-
 }
 
 

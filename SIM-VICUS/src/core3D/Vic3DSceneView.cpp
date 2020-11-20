@@ -131,6 +131,9 @@ void SceneView::dumpScreenshot(const QString & imgFilePath) {
 void SceneView::onModified(int modificationType, ModificationInfo * data) {
 	// relay change notification to scene objects
 	m_mainScene.onModified(modificationType, data);
+
+	// finally render
+	renderLater();
 }
 
 
