@@ -31,6 +31,9 @@
         </item>
         <item>
          <widget class="QPushButton" name="pushButtonImportClipboard">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>From Clipboard</string>
           </property>

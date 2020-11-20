@@ -111,6 +111,8 @@ Project::Project() {
 		b.updateParents();
 #endif
 
+#if 0
+
 	// read test network
 	try {
 		Network net;
@@ -137,7 +139,7 @@ Project::Project() {
 	} catch (...) {
 
 	}
-
+#endif
 
 }
 

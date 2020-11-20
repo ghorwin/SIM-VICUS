@@ -8,6 +8,7 @@
 #include <set>
 #include <string>
 #include <limits>
+#include <string>
 
 namespace IBK {
 class Path;
@@ -106,6 +107,9 @@ public:
 	static double pressureLossColebrook(const double &length, const double &massFlow, const NetworkFluid &fluid,
 										const NetworkPipe &pipe, const double &temperature);
 
+
+	std::string						m_name;
+
 	/*! Nodes ID matches always node index.
 		\code
 		Edge e;
@@ -117,7 +121,7 @@ public:
 	std::vector<NetworkNode>		m_nodes;
 	std::vector<NetworkEdge>		m_edges;
 
-	unsigned int			m_fluidID;
+	unsigned int					m_fluidID;
 
 };
 
