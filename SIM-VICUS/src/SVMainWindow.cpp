@@ -789,6 +789,7 @@ void SVMainWindow::onUpdateActions() {
 
 	// *** Geometry view ***
 
+	// turn off geometry view first when project is gone
 	if (!have_project) {
 		m_geometryViewSplitter->setVisible(false);
 	}
@@ -814,8 +815,7 @@ void SVMainWindow::onUpdateActions() {
 	// navigation bar is only visible when we have a project
 	m_buttonBar->setVisible(have_project);
 	m_buttonBar->setEnabled(have_project);
-	// views are only visible when we have a project
-//	m_ui->actionViewShowConstruction->setEnabled(have_project);
+
 	// Note: in case of a project, the current view widget is set visible onNavigationBarViewChanged() below
 
 	// when we have a project

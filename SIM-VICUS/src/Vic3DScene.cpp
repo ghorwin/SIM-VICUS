@@ -463,7 +463,18 @@ void Vic3DScene::generateNetworkGeometry() {
 						m_networkGeometryObject.m_colorBufferData,
 						m_networkGeometryObject.m_indexBufferData);
 		}
+		for (const VICUS::NetworkNode & no : n.m_nodes) {
+			double radius = 0.8; //e.m_diameterOutside*5; // enlarge diameter, so that we see something
+			addSphere(IBKMK::Vector3D(no.m_x,no.m_y,1), Qt::cyan,
+						radius,
+						currentVertexIndex, currentElementIndex,
+						m_networkGeometryObject.m_vertexBufferData,
+						m_networkGeometryObject.m_colorBufferData,
+						m_networkGeometryObject.m_indexBufferData);
+		}
 	}
+
+
 
 	addSphere(IBKMK::Vector3D(10,0,0), Qt::red,
 				0.5,
