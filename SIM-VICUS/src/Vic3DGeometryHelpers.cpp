@@ -227,19 +227,18 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 	//add vertices
 	const double phi = 0.5 * (1+std::sqrt(5));
 
-	std::vector<IBKMK::Vector3D>	vertices;
-	vertexBufferData[currentVertexIndex+0  ].m_coords = QVector3D(-1.0, phi, 0.0) + trans;	//0
-	vertexBufferData[currentVertexIndex+1  ].m_coords = QVector3D( 1.0, phi, 0.0) + trans;	//1
-	vertexBufferData[currentVertexIndex+2  ].m_coords = QVector3D(-1.0, -phi, 0.0) + trans;	//2
-	vertexBufferData[currentVertexIndex+3  ].m_coords = QVector3D( 1.0, -phi, 0.0) + trans;	//3
-	vertexBufferData[currentVertexIndex+4  ].m_coords = QVector3D(0.0, -1.0, phi) + trans;	//4
-	vertexBufferData[currentVertexIndex+5  ].m_coords = QVector3D(0.0,  1.0, phi) + trans;	//5
-	vertexBufferData[currentVertexIndex+6  ].m_coords = QVector3D(0.0, -1.0, -phi) + trans;	//6
-	vertexBufferData[currentVertexIndex+7  ].m_coords = QVector3D(0.0,  1.0, -phi) + trans;	//7
-	vertexBufferData[currentVertexIndex+8  ].m_coords = QVector3D(phi, 0.0, -1.0) + trans;	//8
-	vertexBufferData[currentVertexIndex+9  ].m_coords = QVector3D(phi, 0.0,  1.0) + trans;	//9
-	vertexBufferData[currentVertexIndex+10 ].m_coords = QVector3D(-phi, 0.0, -1.0) + trans;//10
-	vertexBufferData[currentVertexIndex+11 ].m_coords = QVector3D(-phi, 0.0,  1.0) + trans;//11
+	vertexBufferData[currentVertexIndex+0  ].m_coords = QVector3D(-1.0, phi, 0.0)*radius + trans;	//0
+	vertexBufferData[currentVertexIndex+1  ].m_coords = QVector3D( 1.0, phi, 0.0)*radius + trans;	//1
+	vertexBufferData[currentVertexIndex+2  ].m_coords = QVector3D(-1.0, -phi, 0.0)*radius + trans;	//2
+	vertexBufferData[currentVertexIndex+3  ].m_coords = QVector3D( 1.0, -phi, 0.0)*radius + trans;	//3
+	vertexBufferData[currentVertexIndex+4  ].m_coords = QVector3D(0.0, -1.0, phi)*radius + trans;	//4
+	vertexBufferData[currentVertexIndex+5  ].m_coords = QVector3D(0.0,  1.0, phi)*radius + trans;	//5
+	vertexBufferData[currentVertexIndex+6  ].m_coords = QVector3D(0.0, -1.0, -phi)*radius + trans;	//6
+	vertexBufferData[currentVertexIndex+7  ].m_coords = QVector3D(0.0,  1.0, -phi)*radius + trans;	//7
+	vertexBufferData[currentVertexIndex+8  ].m_coords = QVector3D(phi, 0.0, -1.0)*radius + trans;	//8
+	vertexBufferData[currentVertexIndex+9  ].m_coords = QVector3D(phi, 0.0,  1.0)*radius + trans;	//9
+	vertexBufferData[currentVertexIndex+10 ].m_coords = QVector3D(-phi, 0.0, -1.0)*radius + trans;//10
+	vertexBufferData[currentVertexIndex+11 ].m_coords = QVector3D(-phi, 0.0,  1.0)*radius + trans;//11
 
 	vertexBufferData[currentVertexIndex+0  ].m_normal = QVector3D(-1.0, phi, 0.0).normalized();	//0
 	vertexBufferData[currentVertexIndex+1  ].m_normal = QVector3D( 1.0, phi, 0.0).normalized();	//1
@@ -256,9 +255,9 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 
 
 	for (unsigned int i=0; i<nVertices;++i)
-		colorBufferData[currentVertexIndex + i ] = c;
-	colorBufferData[currentVertexIndex + 4 ] = QColor(Qt::green);
-	colorBufferData[currentVertexIndex + 7 ] = QColor(Qt::green);
+		colorBufferData[currentVertexIndex + i] = c;
+	colorBufferData[currentVertexIndex + 4 ] = c.darker(); // QColor(Qt::green);
+	colorBufferData[currentVertexIndex + 7 ] = c.lighter(); // QColor(Qt::green);
 
 
 	for (unsigned int i=0; i<v0.size(); ++i)
@@ -277,16 +276,16 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 	currentElementIndex += v2.size() + 1;
 
 	currentVertexIndex += nVertices;
-	currentElementIndex += v0.size()+v1.size()+v2.size()+3;
+//	currentElementIndex += v0.size()+v1.size()+v2.size()+3;
 #else
 
-	unsigned int nSeg = 4; // number of segments to split 180° into
+	unsigned int nSeg = 8; // number of segments to split 180° into
 	unsigned int nSeg2 = nSeg*2; // number of segments to split 360° into
 
 	vertexBufferData.resize(vertexBufferData.size() + (nSeg-1)*nSeg2 + 2);
 	colorBufferData.resize(colorBufferData.size() + (nSeg-1)*nSeg2 + 2);
 	// (nSeg+1)*2 + 1 element indexes ((nSeg+1)*2 for the triangle strip, 1 primitive restart index)
-	indexBufferData.resize(indexBufferData.size() + nSeg2*2 + 2 + 1 /* stop index */  +  2*(nSeg2*2 + 2 + 1 /* stop index */ )  + nSeg2*2 + 1 + 1 /* stop index */ );
+	indexBufferData.resize(indexBufferData.size() + nSeg2*2 + 2 + 1 /* stop index */  +  (nSeg-2)*(nSeg2*2 + 2 + 1 /* stop index */ )  + nSeg2*2 + 1 + 1 /* stop index */ );
 
 	unsigned int vertexStart = currentVertexIndex;
 
@@ -330,7 +329,7 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 		if (i % 2 == 0)
 			indexBufferData[currentElementIndex] = lastVertex++;
 		else {
-			indexBufferData[currentElementIndex] = 0;
+			indexBufferData[currentElementIndex] = vertexStart;
 		}
 	}
 	indexBufferData[currentElementIndex++] = vertexStart+1; // finish circle with first vertex

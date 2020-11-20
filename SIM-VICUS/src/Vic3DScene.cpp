@@ -471,6 +471,37 @@ void Vic3DScene::generateNetworkGeometry() {
 				m_networkGeometryObject.m_vertexBufferData,
 				m_networkGeometryObject.m_colorBufferData,
 				m_networkGeometryObject.m_indexBufferData);
+
+	addSphere(IBKMK::Vector3D(8,2,0), Qt::green,
+				0.5,
+				currentVertexIndex, currentElementIndex,
+				m_networkGeometryObject.m_vertexBufferData,
+				m_networkGeometryObject.m_colorBufferData,
+				m_networkGeometryObject.m_indexBufferData);
+	addSphere(IBKMK::Vector3D(8,-2,0), Qt::blue,
+				0.5,
+				currentVertexIndex, currentElementIndex,
+				m_networkGeometryObject.m_vertexBufferData,
+				m_networkGeometryObject.m_colorBufferData,
+				m_networkGeometryObject.m_indexBufferData);
+	addSphere(IBKMK::Vector3D(6,-4,0), Qt::cyan,
+				0.5,
+				currentVertexIndex, currentElementIndex,
+				m_networkGeometryObject.m_vertexBufferData,
+				m_networkGeometryObject.m_colorBufferData,
+				m_networkGeometryObject.m_indexBufferData);
+	addSphere(IBKMK::Vector3D(6,0,0), Qt::yellow,
+				0.5,
+				currentVertexIndex, currentElementIndex,
+				m_networkGeometryObject.m_vertexBufferData,
+				m_networkGeometryObject.m_colorBufferData,
+				m_networkGeometryObject.m_indexBufferData);
+	addSphere(IBKMK::Vector3D(6,4,0), Qt::magenta,
+				0.5,
+				currentVertexIndex, currentElementIndex,
+				m_networkGeometryObject.m_vertexBufferData,
+				m_networkGeometryObject.m_colorBufferData,
+				m_networkGeometryObject.m_indexBufferData);
 #if 0
 	// manually add a cylinder here
 	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(10,0,0), Qt::red,
