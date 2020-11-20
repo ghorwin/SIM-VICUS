@@ -109,10 +109,10 @@ void Vic3DScene::destroy() {
 
 
 void Vic3DScene::resize(int width, int height, qreal retinaScale) {
-	float far = 1000;
+	float farDistance = 1000;
 	// retrieve far viewing distance from project, if one exists
 	if (SVProjectHandler::instance().isValid())
-		far = SVProjectHandler::instance().viewSettings().m_farDistance;
+		farDistance = SVProjectHandler::instance().viewSettings().m_farDistance;
 	// the projection matrix need to be updated only for window size changes
 	m_projection.setToIdentity();
 	// create projection matrix, i.e. camera lens
@@ -120,7 +120,7 @@ void Vic3DScene::resize(int width, int height, qreal retinaScale) {
 				/* vertical angle */ 45.0f,
 				/* aspect ratio */   width / float(height),
 				/* near */           0.1f,
-				/* far */            far
+				/* far */            farDistance
 		);
 	// Mind: to not use 0.0 for near plane, otherwise depth buffering and depth testing won't work!
 
