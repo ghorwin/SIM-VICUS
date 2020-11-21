@@ -91,6 +91,7 @@ SOURCES += \
 	../../src/actions/SVUndoAddNetwork.cpp \
 	../../src/actions/SVUndoCommandBase.cpp \
 	../../src/actions/SVUndoProject.cpp \
+	../../src/core3D/Vic3DCoordinateSystemObject.cpp \
 	../../src/core3D/Vic3DGridObject.cpp \
 	../../src/core3D/Vic3DKeyboardMouseHandler.cpp \
 	../../src/core3D/Vic3DOpaqueGeometryObject.cpp \
@@ -130,6 +131,7 @@ HEADERS  += \
 	../../src/actions/SVUndoCommandBase.h \
 	../../src/actions/SVUndoProject.h \
 	../../src/core3D/Vic3DCamera.h \
+	../../src/core3D/Vic3DCoordinateSystemObject.h \
 	../../src/core3D/Vic3DGridObject.h \
 	../../src/core3D/Vic3DKeyboardMouseHandler.h \
 	../../src/core3D/Vic3DOpaqueGeometryObject.h \
