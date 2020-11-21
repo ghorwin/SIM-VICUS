@@ -18,13 +18,13 @@ unix {
 }
 
 LIBS += -L../../../lib$${DIR_PREFIX} \
-        -lIBK \
-        -lIBKMK \
-        -lNandrad \
-        -lQtExt \
-        -lQuaZIP \
-        -lTiCPP \
-        -lVicus
+		-lIBK \
+		-lIBKMK \
+		-lNandrad \
+		-lQtExt \
+		-lQuaZIP \
+		-lTiCPP \
+		-lVicus
 
 win32 {
 	LIBS += -luser32
@@ -66,6 +66,23 @@ win32 {
 
 
 SOURCES += \
+	../../src/actions/SVUndoAddNetwork.cpp \
+	../../src/actions/SVUndoCommandBase.cpp \
+	../../src/actions/SVUndoProject.cpp \
+	../../src/core3D/Vic3DCoordinateSystemObject.cpp \
+	../../src/core3D/Vic3DGeometryHelpers.cpp \
+	../../src/core3D/Vic3DGridObject.cpp \
+	../../src/core3D/Vic3DKeyboardMouseHandler.cpp \
+	../../src/core3D/Vic3DOpaqueGeometryObject.cpp \
+	../../src/core3D/Vic3DOpenGLWindow.cpp \
+	../../src/core3D/Vic3DOrbitControllerObject.cpp \
+	../../src/core3D/Vic3DPickLineObject.cpp \
+	../../src/core3D/Vic3DPickObject.cpp \
+	../../src/core3D/Vic3DScene.cpp \
+	../../src/core3D/Vic3DSceneView.cpp \
+	../../src/core3D/Vic3DShaderProgram.cpp \
+	../../src/core3D/Vic3DTransform3D.cpp \
+	../../src/main.cpp \
 	../../src/SVAboutDialog.cpp \
 	../../src/SVButtonBar.cpp \
 	../../src/SVConstants.cpp \
@@ -85,26 +102,27 @@ SOURCES += \
 	../../src/SVSettings.cpp \
 	../../src/SVStyle.cpp \
 	../../src/SVThreadBase.cpp \
-	../../src/SVWelcomeScreen.cpp \
-	../../src/Vic3DGeometryHelpers.cpp \
-	../../src/Vic3DScene.cpp \
-	../../src/actions/SVUndoAddNetwork.cpp \
-	../../src/actions/SVUndoCommandBase.cpp \
-	../../src/actions/SVUndoProject.cpp \
-	../../src/core3D/Vic3DCoordinateSystemObject.cpp \
-	../../src/core3D/Vic3DGridObject.cpp \
-	../../src/core3D/Vic3DKeyboardMouseHandler.cpp \
-	../../src/core3D/Vic3DOpaqueGeometryObject.cpp \
-	../../src/core3D/Vic3DOpenGLWindow.cpp \
-	../../src/core3D/Vic3DOrbitControllerObject.cpp \
-	../../src/core3D/Vic3DPickLineObject.cpp \
-	../../src/core3D/Vic3DPickObject.cpp \
-	../../src/core3D/Vic3DSceneView.cpp \
-	../../src/core3D/Vic3DShaderProgram.cpp \
-	../../src/core3D/Vic3DTransform3D.cpp \
-	../../src/main.cpp
+	../../src/SVWelcomeScreen.cpp
 
 HEADERS  += \
+	../../src/actions/SVUndoAddNetwork.h \
+	../../src/actions/SVUndoCommandBase.h \
+	../../src/actions/SVUndoProject.h \
+	../../src/core3D/Vic3DCamera.h \
+	../../src/core3D/Vic3DCoordinateSystemObject.h \
+	../../src/core3D/Vic3DGeometryHelpers.h \
+	../../src/core3D/Vic3DGridObject.h \
+	../../src/core3D/Vic3DKeyboardMouseHandler.h \
+	../../src/core3D/Vic3DOpaqueGeometryObject.h \
+	../../src/core3D/Vic3DOpenGLWindow.h \
+	../../src/core3D/Vic3DOrbitControllerObject.h \
+	../../src/core3D/Vic3DPickLineObject.h \
+	../../src/core3D/Vic3DPickObject.h \
+	../../src/core3D/Vic3DScene.h \
+	../../src/core3D/Vic3DSceneView.h \
+	../../src/core3D/Vic3DShaderProgram.h \
+	../../src/core3D/Vic3DTransform3D.h \
+	../../src/core3D/Vic3DVertex.h \
 	../../src/SVAboutDialog.h \
 	../../src/SVButtonBar.h \
 	../../src/SVConstants.h \
@@ -124,25 +142,7 @@ HEADERS  += \
 	../../src/SVSettings.h \
 	../../src/SVStyle.h \
 	../../src/SVThreadBase.h \
-	../../src/SVWelcomeScreen.h \
-	../../src/Vic3DGeometryHelpers.h \
-	../../src/Vic3DScene.h \
-	../../src/actions/SVUndoAddNetwork.h \
-	../../src/actions/SVUndoCommandBase.h \
-	../../src/actions/SVUndoProject.h \
-	../../src/core3D/Vic3DCamera.h \
-	../../src/core3D/Vic3DCoordinateSystemObject.h \
-	../../src/core3D/Vic3DGridObject.h \
-	../../src/core3D/Vic3DKeyboardMouseHandler.h \
-	../../src/core3D/Vic3DOpaqueGeometryObject.h \
-	../../src/core3D/Vic3DOpenGLWindow.h \
-	../../src/core3D/Vic3DOrbitControllerObject.h \
-	../../src/core3D/Vic3DPickLineObject.h \
-	../../src/core3D/Vic3DPickObject.h \
-	../../src/core3D/Vic3DSceneView.h \
-	../../src/core3D/Vic3DShaderProgram.h \
-	../../src/core3D/Vic3DTransform3D.h \
-	../../src/core3D/Vic3DVertex.h
+	../../src/SVWelcomeScreen.h
 
 FORMS    += \
 	../../src/SVAboutDialog.ui \
