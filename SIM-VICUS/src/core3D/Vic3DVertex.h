@@ -56,6 +56,22 @@ struct VertexC {
 	QVector3D m_coords;
 };
 
+/*! Vertex struct holding coordinates and colors.
+	Use in shaders that take coordinate/color vertex data.
+*/
+struct VertexCR {
+	VertexCR() {}
+	VertexCR(const QVector3D & coords, const QVector3D & cols) :
+		m_coords(coords), m_colors(cols)
+	{
+	}
+
+	/*! Coordinates of the vertex. */
+	QVector3D m_coords;
+	/*! Colors. */
+	QVector3D m_colors;
+};
+
 
 /*! RGBA data vertex. */
 struct ColorRGBA {

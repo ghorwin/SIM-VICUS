@@ -109,6 +109,7 @@ HEADERS  += \
 	../../src/actions/SVUndoCommandBase.h \
 	../../src/actions/SVUndoProject.h \
 	../../src/core3D/Vic3DCamera.h \
+	../../src/core3D/Vic3DConstants.h \
 	../../src/core3D/Vic3DCoordinateSystemObject.h \
 	../../src/core3D/Vic3DGeometryHelpers.h \
 	../../src/core3D/Vic3DGridObject.h \

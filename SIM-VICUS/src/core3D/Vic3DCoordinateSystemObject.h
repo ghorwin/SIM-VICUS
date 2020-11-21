@@ -9,8 +9,8 @@ License    : BSD License,
 
 ************************************************************************************/
 
-#ifndef Vic3DOrbitControllerObjectH
-#define Vic3DOrbitControllerObjectH
+#ifndef Vic3DCoordinateSystemObjectH
+#define Vic3DCoordinateSystemObjectH
 
 #include <QOpenGLBuffer>
 #include <QOpenGLVertexArrayObject>
@@ -27,10 +27,8 @@ namespace Vic3D {
 
 class ShaderProgram;
 
-/*! Draws the rotation axis for the orbital controller.
-	The orbit indicator is a set of line segments, one for the rotation axis, and one for the ring.
-*/
-class OrbitControllerObject {
+/*! Draws the coordinate system with adjustable ball/icosaeder coordinate system indicator. */
+class CoordinateSystemObject {
 public:
 	/*! The function is called during OpenGL initialization, where the OpenGL context is current. */
 	void create(ShaderProgram * shaderProgram);
@@ -39,17 +37,13 @@ public:
 	/*! Binds the buffer and paints. */
 	void render();
 
-	/*! The transformation object, transforms the rotation object drawn
-		around the z-axis in the coordinate origin, moves it to the center of the orbit
-		and rotates it such, that the orbit is correctly drawn.
+	/*! The transformation object, transforms the coordinate system to its position and orientation in
+		the scene.
 	*/
 	Transform3D					m_transform;
 
 	/*! Shader program. */
 	ShaderProgram				*m_shader = nullptr;
-
-	/*! Holds the number of vertices (2 for each line), updated in create(), used in render(). */
-	GLsizei						m_vertexCount;
 
 	/*! Wraps an OpenGL VertexArrayObject, that references the vertex coordinates. */
 	QOpenGLVertexArrayObject	m_vao;
@@ -61,4 +55,4 @@ public:
 } // namespace Vic3D
 
 
-#endif // Vic3DOrbitControllerObjectH
+#endif // Vic3DCoordinateSystemObjectH

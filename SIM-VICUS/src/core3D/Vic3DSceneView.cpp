@@ -22,11 +22,7 @@ License    : BSD License,
 #include "OpenGLException.h"
 #include "SVProjectHandler.h"
 #include "SVSettings.h"
-
-#define SHADER_GRID 0
-#define SHADER_OPAQUE_GEOMETRY 1
-#define SHADER_LINES 2
-#define NUM_SHADER_PROGRAMS 3
+#include "Vic3DConstants.h"
 
 namespace Vic3D {
 
@@ -69,6 +65,11 @@ SceneView::SceneView() :
 	lines.m_uniformNames.append("modelToWorld");
 	m_shaderPrograms[SHADER_LINES] = lines;
 
+	// Shaderprogram : vertices with position and color, additional model2world transformation matrix
+	ShaderProgram coordSystem(":/shaders/VertexColorWithTransform.vert",":/shaders/SimpleRGB.frag");
+	coordSystem.m_uniformNames.append("worldToView");
+	coordSystem.m_uniformNames.append("modelToWorld");
+	m_shaderPrograms[SHADER_COORDINATE_SYSTEM] = coordSystem;
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SceneView::onModified);
@@ -141,14 +142,20 @@ void SceneView::initializeGL() {
 	FUNCID(SceneView::initializeGL);
 	try {
 		// initialize shader programs
-		for (ShaderProgram & p : m_shaderPrograms)
-			p.create();
+		for (ShaderProgram & p : m_shaderPrograms) {
+			try {
+				p.create();
+			} catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, IBK::FormatString("Error creating/compiling shaders %1 and %2")
+									 .arg(p.m_vertexShaderFilePath.toStdString())
+									 .arg(p.m_fragmentShaderFilePath.toStdString()), FUNC_ID);
+
+			}
+		}
 
 		// initialize scenes to draw
 
-		m_mainScene.create(&m_shaderPrograms[SHADER_GRID],
-						   &m_shaderPrograms[SHADER_OPAQUE_GEOMETRY],
-						   &m_shaderPrograms[SHADER_LINES]);
+		m_mainScene.create(m_shaderPrograms);
 
 		int thumbnailWidth = (int)SVSettings::instance().m_thumbNailSize;
 		int thumbnailHeight = (int)(thumbnailWidth*0.75);

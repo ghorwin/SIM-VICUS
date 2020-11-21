@@ -10,6 +10,7 @@
 #include "Vic3DGridObject.h"
 #include "Vic3DOpaqueGeometryObject.h"
 #include "Vic3DOrbitControllerObject.h"
+#include "Vic3DCoordinateSystemObject.h"
 
 class ModificationInfo;
 
@@ -27,9 +28,7 @@ class KeyboardMouseHandler;
 */
 class Vic3DScene {
 public:
-	void create(ShaderProgram *gridShader,
-				ShaderProgram * buildingShader,
-				ShaderProgram * orbitControllerShader);
+	void create(std::vector<ShaderProgram> & shaderPrograms);
 
 	/*! Triggered when SVProjectHandler::modified() is emitted. */
 	void onModified( int modificationType, ModificationInfo * data );
@@ -78,6 +77,8 @@ private:
 	ShaderProgram			*m_buildingShader		= nullptr;
 	/*! Stores address to shader program (managed by SceneView). */
 	ShaderProgram			*m_orbitControllerShader = nullptr;
+	/*! Stores address to shader program (managed by SceneView). */
+	ShaderProgram			*m_coordinateSystemShader = nullptr;
 
 	/*! The projection matrix, updated whenever the viewport geometry changes (in resizeGL() ). */
 	QMatrix4x4				m_projection;
@@ -96,17 +97,21 @@ private:
 	/*! Background color */
 	QVector3D				m_background = QVector3D(0.1f, 0.15f, 0.3f);
 
+
+	// *** Drawable objects ***
+
 	/*! The grid draw object. */
 	GridObject				m_gridObject;
 	/*! A geometry drawing object (no transparency) for building (room) surfaces.*/
 	OpaqueGeometryObject	m_opaqueGeometryObject;
 	/*! A geometry drawing object (no transparency) for network elements.*/
 	OpaqueGeometryObject	m_networkGeometryObject;
-
 	/*! Indicator for the center of the orbit controller.
 		Only visible when m_orbitControllerActive is true.
 	*/
-	OrbitControllerObject  m_orbitControllerObject;
+	OrbitControllerObject	m_orbitControllerObject;
+	/*! The movable coordinate system. */
+	CoordinateSystemObject	m_coordinateSystemObject;
 
 	/*! Stores the distance that the mouse has been moved in the last "Left-mouse button down ... release" interval. */
 	float					m_mouseMoveDistance = 0.f;

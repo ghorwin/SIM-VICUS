@@ -13,6 +13,7 @@
 #include "Vic3DKeyboardMouseHandler.h"
 #include "Vic3DPickObject.h"
 #include "Vic3DGeometryHelpers.h"
+#include "Vic3DConstants.h"
 
 #include "SVProjectHandler.h"
 
@@ -22,15 +23,17 @@ const float MOUSE_ROTATION_SPEED = 0.5f;
 
 namespace Vic3D {
 
-
-
-void Vic3DScene::create(ShaderProgram * gridShader, ShaderProgram * buildingShader, ShaderProgram * orbitControllerShader) {
-	m_gridShader = gridShader;
-	m_buildingShader = buildingShader;
-	m_orbitControllerShader = orbitControllerShader;
+void Vic3DScene::create(std::vector<ShaderProgram> & shaderPrograms) {
+	m_gridShader = &shaderPrograms[SHADER_GRID];
+	m_buildingShader = &shaderPrograms[SHADER_OPAQUE_GEOMETRY];
+	m_orbitControllerShader = &shaderPrograms[SHADER_LINES];
+	m_coordinateSystemShader = &shaderPrograms[SHADER_COORDINATE_SYSTEM];
 
 	// the orbit controller object is static in geometry, so it can be created already here
 	m_orbitControllerObject.create(m_orbitControllerShader);
+
+	// same for the coordinate system object
+	m_coordinateSystemObject.create(m_coordinateSystemShader);
 }
 
 
@@ -322,22 +325,32 @@ void Vic3DScene::render() {
 	}
 
 
-	// *** opaque background geometry ***
+	// *** movable coordinate system  ***
 
+	if (true /* m_coordinateSystemVisible */) {
+		m_coordinateSystemShader->bind();
+		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[0], m_worldToView);
+		m_coordinateSystemObject.render();
+		m_coordinateSystemShader->release();
+	}
+
+
+	// *** opaque background geometry ***
 
 	// tell OpenGL to show only faces whose normal vector points towards us
 	glEnable(GL_CULL_FACE);
 
+	/// \todo render dumb background geometry
+
 
 	// *** opaque building geometry ***
-
 
 	m_buildingShader->bind();
 	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[0], m_worldToView);
 
 	// Note: you can't use a QColor here directly and pass it as uniform to a shader expecting a vec3. Qt internally
 	//       passes QColor as vec4.
-	QVector3D lightCol(m_lightColor.redF(), m_lightColor.greenF(), m_lightColor.blueF());
+	QVector3D lightCol((float)m_lightColor.redF(), (float)m_lightColor.greenF(), (float)m_lightColor.blueF());
 	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[2], lightCol);
 
 	// set view position -
