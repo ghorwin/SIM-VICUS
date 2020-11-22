@@ -52,6 +52,9 @@ public:
 	/*! Actually renders to the current OpenGL context. */
 	void render();
 
+	/*! If true, the coordinate system is active and snaps to selected objects. */
+	bool					m_coordinateSystemActive = true;
+
 private:
 	void generateBuildingGeometry();
 	void generateNetworkGeometry();

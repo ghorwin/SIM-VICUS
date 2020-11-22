@@ -69,6 +69,8 @@ void GridObject::create(ShaderProgram * shaderProgram) {
 	unsigned int N_minor = (N-1)*minorGridFraction + 1;
 	m_vertexCount = 2*N_minor*2;
 
+	m_gridLineCount = N_minor;
+
 	// each vertex requires two floats (x and y coordinates)
 	gridVertexBufferData.resize(m_vertexCount*2);
 	float * gridVertexBufferPtr = gridVertexBufferData.data();
@@ -78,6 +80,11 @@ void GridObject::create(ShaderProgram * shaderProgram) {
 	float x2 = width*0.5f;
 	float y1 = -width*0.5f;
 	float y2 = width*0.5f;
+
+	// cache grid properties (used in snapping algorithm)
+	m_minGrid = x1;
+	m_maxGrid = x2;
+	m_step = width/(N_minor-1);
 
 	// add x coordinate line
 	for (unsigned int i=0; i<N; ++i) {
@@ -214,6 +221,38 @@ void GridObject::render() {
 
 
 	m_vao.release();
+}
+
+
+bool GridObject::closestSnapPoint(QVector3D worldCoords, QVector3D & snapCoords) const {
+	// z-coordinate should be close to zero for us to snap at the grid
+	if (std::fabs(worldCoords.z()) > 1e-4)
+		return false;
+
+	// Indexes of the grid lines
+	unsigned int i = 0;
+	unsigned int j = 0;
+
+	if (worldCoords.x() > m_maxGrid)
+		i = m_gridLineCount-1;
+	else if (worldCoords.x() > m_minGrid) {
+		double offset = worldCoords.x() - m_minGrid;
+		i = std::floor(offset/m_step);
+		if (offset - i*m_step > m_step/2.0)
+			++i;
+	}
+	if (worldCoords.y() > m_maxGrid)
+		j = m_gridLineCount-1;
+	else if (worldCoords.y() > m_minGrid) {
+		double offset = worldCoords.y() - m_minGrid;
+		j = std::floor(offset/m_step);
+		if (offset - j*m_step > m_step/2.0)
+			++j;
+	}
+
+	// recompute snap coordinates
+	snapCoords = QVector3D(i*m_step + m_minGrid, j*m_step + m_minGrid, 0);
+	return true;
 }
 
 } // namespace Vic3D

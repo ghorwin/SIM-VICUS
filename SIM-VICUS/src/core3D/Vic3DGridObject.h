@@ -43,6 +43,9 @@ public:
 	/*! Binds the buffer and paints. */
 	void render();
 
+	/*! Determines the closest grid snap point (depending on snap-to-grid properties). */
+	bool closestSnapPoint(QVector3D worldCoords, QVector3D & snapCoords) const;
+
 	/*! Shader program, that the grid is painted with. */
 	ShaderProgram				*m_gridShader = nullptr;
 
@@ -68,6 +71,15 @@ public:
 	float						m_width		= 999;
 	/*! Cached grid spacing. */
 	float						m_spacing	= 999;
+
+	/*! Cached grid line count (both directions). */
+	unsigned int				m_gridLineCount;
+	/*! Cached min grid coordinate (same for x and y). */
+	double						m_minGrid;
+	/*! Cached max grid coordinate (same for x and y). */
+	double						m_maxGrid;
+	/*! Cached grid step size for minor grid (same for x and y). */
+	double						m_step;
 };
 
 } // namespace Vic3D

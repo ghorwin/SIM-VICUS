@@ -359,6 +359,12 @@ void SceneView::checkInput() {
 		return;
 	}
 
+	// special handling for snapping coordinate system
+	if (m_mainScene.m_coordinateSystemActive) {
+		m_inputEventReceived = true;
+		renderLater();
+	}
+
 	// has the mouse been moved?
 	if ( m_keyboardMouseHandler.buttonDown(Qt::RightButton)) {
 		m_inputEventReceived = true;

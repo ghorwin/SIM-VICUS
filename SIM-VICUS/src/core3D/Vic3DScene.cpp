@@ -308,6 +308,20 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 	SVProjectHandler::instance().viewSettings().m_cameraRotation = m_camera.rotation();
 
 	updateWorld2ViewMatrix();
+
+	// if coordinate system is active, perform picking operation and snap coordinate system to grid
+	if (m_coordinateSystemActive) {
+		m_pickObjectIsOutdated = true;
+		// \todo adjust pick algorithm to only check for certain selections
+		pick(localMousePos);
+		// now determine which grid line is closest
+		QVector3D closestPoint;
+		if (m_gridObject.closestSnapPoint(m_pickPoint, closestPoint)) {
+			// this is in world coordinates, use this as transformation vector for the
+			// coordinate system
+			m_coordinateSystemObject.m_transform.setTranslation(closestPoint);
+		}
+	}
 }
 
 
@@ -344,7 +358,7 @@ void Vic3DScene::render() {
 
 	// *** movable coordinate system  ***
 
-	if (true /* m_coordinateSystemVisible */) {
+	if (m_coordinateSystemActive) {
 		m_coordinateSystemShader->bind();
 		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[0], m_worldToView);
 		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[2], VICUS::QVector3DFromQColor(m_lightColor));
@@ -383,27 +397,12 @@ void Vic3DScene::render() {
 	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[3], viewPos);
 #endif // FIXED_LIGHT_POSITION
 
-//	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	// first draw network with culling enabled
-	//glDisable(GL_CULL_FACE); // for now draw with culling disabled
+
 	m_networkGeometryObject.render();
 
-	// then turn culling off, so that we see front and back sides of surfaces
 	m_opaqueGeometryObject.render();
 
-
-
 	m_buildingShader->release();
-
-
-	// *** input coordinate system ***
-
-	// x-axis: red
-	// y-axis: green
-	// z-axis: blue
-	// origin ball: purple + yellow
-
-
 
 
 	// *** transparent building geometry ***
