@@ -23,89 +23,109 @@ namespace Vic3D {
 void CoordinateSystemObject::create(ShaderProgram * shaderProgram) {
 	m_shader = shaderProgram;
 
+	if (m_vao.isCreated())
+		return;
+
 	// Initialize transform
 	m_transform.translate(QVector3D(1,1,1));
 
-	// Create Vertex Array Object and buffers if not done, yet
-	if (!m_vao.isCreated()) {
-		// Create Vertex Buffer Object (to store stuff in GPU memory)
-		m_vbo = QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
-		m_vbo.create();
-		m_vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
+	// *** create buffers on GPU memory ***
 
-		// create a new buffer for the indexes
-		m_indexBufferObject = QOpenGLBuffer(QOpenGLBuffer::IndexBuffer); // Mind: use 'IndexBuffer' here
-		m_indexBufferObject.create();
-		m_indexBufferObject.setUsagePattern(QOpenGLBuffer::StaticDraw);
+	// create a new buffer for the vertices and colors, separate buffers because we will modify colors way more often than geometry
+	m_vertexBufferObject.create();
+	m_vertexBufferObject.setUsagePattern(QOpenGLBuffer::StaticDraw); // usage pattern will be used when tranferring data to GPU
 
-		m_vao.create();		// create Vertex Array Object
-		m_vao.bind();		// and bind it
+	m_colorBufferObject.create();
+	m_colorBufferObject.setUsagePattern(QOpenGLBuffer::StaticDraw);
 
-		// now bind vertex buffer and index buffer
-		m_indexBufferObject.bind();
-		m_vbo.bind();
+	// create a new buffer for the indexes
+	m_indexBufferObject = QOpenGLBuffer(QOpenGLBuffer::IndexBuffer); // Note: make sure this is an index buffer
+	m_indexBufferObject.create();
+	m_indexBufferObject.setUsagePattern(QOpenGLBuffer::StaticDraw);
+
+	// *** create and bind Vertex Array Object ***
+
+	// Note: VAO must be bound *before* the element buffer is bound,
+	//       because the VAO remembers associated element buffers.
+	m_vao.create();
+	m_vao.bind(); // now the VAO is active and remembers states modified in following calls
+
+	m_indexBufferObject.bind(); // this registers this index buffer in the currently bound VAO
+
+	// *** set attribute arrays for shader fetch stage ***
 
 #define VERTEX_ARRAY_INDEX 0
-#define COLOR_ARRAY_INDEX 1
+#define NORMAL_ARRAY_INDEX 1
+#define COLOR_ARRAY_INDEX 2
 
-		// layout(location = 0) = vec2 position
-		m_shader->shaderProgram()->enableAttributeArray(VERTEX_ARRAY_INDEX);
-		m_shader->shaderProgram()->setAttributeBuffer(VERTEX_ARRAY_INDEX, GL_FLOAT,
-									  0 /* position/vertex offset */,
-									  3 /* three coords per position = vec3 */,
-									  sizeof(VertexCR) /* vertex size */);
-		m_shader->shaderProgram()->enableAttributeArray(COLOR_ARRAY_INDEX);
-		m_shader->shaderProgram()->setAttributeBuffer(COLOR_ARRAY_INDEX, GL_FLOAT,
-									  offsetof(VertexCR, m_colors) /* position/vertex offset */,
-									  3 /* three coords per position = vec3 */,
-									  sizeof(VertexCR) /* vertex size */);
+	m_vertexBufferObject.bind(); // this registers this buffer data object in the currently bound vao; in subsequent
+				  // calls to shaderProgramm->setAttributeBuffer() the buffer object is associated with the
+				  // respective attribute array that's fed into the shader. When the vao is later bound before
+				  // rendering, this association is remembered so that the vertex fetch stage pulls data from
+				  // this vbo
 
-		m_vao.release(); // Mind: always release VAO before index buffer
-		m_vbo.release();
-		m_indexBufferObject.release();
-	}
+	// coordinates
+	QOpenGLShaderProgram * shaderProg = shaderProgram->shaderProgram();
+	shaderProg->enableAttributeArray(VERTEX_ARRAY_INDEX);
+	shaderProg->setAttributeBuffer(VERTEX_ARRAY_INDEX, GL_FLOAT, 0, 3 /* vec3 */, sizeof(Vertex));
+
+	// normals
+	shaderProg->enableAttributeArray(NORMAL_ARRAY_INDEX);
+	shaderProg->setAttributeBuffer(NORMAL_ARRAY_INDEX, GL_FLOAT, offsetof(Vertex, m_normal), 3 /* vec3 */, sizeof(Vertex));
+
+
+	m_colorBufferObject.bind(); // now color buffer is active in vao
+
+	// colors
+	shaderProg->enableAttributeArray(COLOR_ARRAY_INDEX);
+	shaderProg->setAttributeBuffer(COLOR_ARRAY_INDEX, GL_UNSIGNED_BYTE, 0, 4, 4 /* bytes = sizeof(char) */);
+
+	// Release (unbind) all
+
+	// Mind: you can release the buffer data objects (vbo and vboColors) before or after releasing vao. It does not
+	//       matter, because the buffers are associated already with the attribute arrays.
+	//       However, YOU MUST NOT release the index buffer (ebo) before releasing the vao, since this would remove
+	//       the index buffer association with the vao and when binding the vao before rendering, the element buffer
+	//       would not be known and a call to glDrawElements() crashes!
+	m_vao.release();
+
+	m_vertexBufferObject.release();
+	m_colorBufferObject.release();
+	m_indexBufferObject.release();
+
 
 	// *** generate geometry ***
 
-	// create a temporary buffer that will contain the coordinates of all lines segments
-	std::vector<VertexCR>		lineVertexBuffer;
-
-	// first the coordinate lines (may be cylinders later)
-
-	// we add three lines for the coordinate axes
-	float length = 2;
-	lineVertexBuffer.resize(6);
-	lineVertexBuffer[0].m_coords = QVector3D(0,0,0);
-	lineVertexBuffer[1].m_coords = QVector3D(length,0,0);
-	lineVertexBuffer[2].m_coords = QVector3D(0,0,0);
-	lineVertexBuffer[3].m_coords = QVector3D(0,length,0);
-	lineVertexBuffer[4].m_coords = QVector3D(0,0,0);
-	lineVertexBuffer[5].m_coords = QVector3D(0,0,length);
-
-	lineVertexBuffer[0].m_colors = QVector3D(1,0,0);
-	lineVertexBuffer[1].m_colors = QVector3D(1,0,0);
-	lineVertexBuffer[2].m_colors = QVector3D(0,1,0);
-	lineVertexBuffer[3].m_colors = QVector3D(0,1,0);
-	lineVertexBuffer[4].m_colors = QVector3D(0,0,1);
-	lineVertexBuffer[5].m_colors = QVector3D(0,0,1);
-
-	unsigned int currentVertexIndex = 6;
+	unsigned int currentVertexIndex = 0;
 	unsigned int currentElementIndex = 0;
 
-	std::vector<QColor> cols(12, QColor(Qt::red));
-	cols[0] = QColor(QColor("navy"));
-//	for (unsigned int i=0; i<12; ++i) {
-//		if (i % 3 == 0)			cols[i] = QColor(128,35,90);
-//		else if (i % 3 == 0)	cols[i] = QColor(28,15,190);
-//		else					cols[i] = QColor(80,255,120);
-//	}
-	addIkosaeder(IBKMK::Vector3D(0,0,0), cols, 0.8, currentVertexIndex, currentElementIndex, lineVertexBuffer, m_indexBufferData);
+	double sizeFactor = 1;
+
+	addSphere(IBKMK::Vector3D(0,0,0), QColor("burlywood"), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+
+	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(2,0,0), QColor(Qt::red), 0.02*sizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,2,0), QColor(0,196,0), 0.02*sizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,0,2), QColor(32,32,255), 0.02*sizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+	addSphere(IBKMK::Vector3D(2,0,0), QColor(165, 42, 42), 0.022*sizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+	addSphere(IBKMK::Vector3D(0,2,0), QColor(165, 42, 42), 0.022*sizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+	addSphere(IBKMK::Vector3D(0,0,2), QColor(165, 42, 42), 0.022*sizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 
 	// transfer geometry to GPU
 
-	m_vbo.bind();
-	m_vbo.allocate(lineVertexBuffer.data(), lineVertexBuffer.size()*sizeof(VertexCR));
-	m_vbo.release();
+	m_vertexBufferObject.bind();
+	m_vertexBufferObject.allocate(m_vertexBufferData.data(), m_vertexBufferData.size()*sizeof(Vertex));
+	m_vertexBufferObject.release();
+
+	m_colorBufferObject.bind();
+	m_colorBufferObject.allocate(m_colorBufferData.data(), m_colorBufferData.size()*sizeof(ColorRGBA) );
+	m_colorBufferObject.release();
 
 	m_indexBufferObject.bind();
 	m_indexBufferObject.allocate(m_indexBufferData.data(), m_indexBufferData.size()*sizeof(GL_UNSIGNED_SHORT));
@@ -115,20 +135,20 @@ void CoordinateSystemObject::create(ShaderProgram * shaderProgram) {
 
 void CoordinateSystemObject::destroy() {
 	m_vao.destroy();
-	m_vbo.destroy();
+	m_vertexBufferObject.destroy();
+	m_colorBufferObject.destroy();
 	m_indexBufferObject.destroy();
 }
 
 
 void CoordinateSystemObject::render() {
+	// bind all buffers ("position", "normal" and "color" arrays)
 	m_vao.bind();
-
 	// set transformation matrix
-	m_shader->shaderProgram()->setUniformValue(m_shader->m_uniformIDs[1], m_transform.toMatrix());
-	glDrawArrays(GL_LINES, 0, 6 /* Number of vertexes to process */);
-
+	m_shader->shaderProgram()->setUniformValue(m_shader->m_uniformIDs[4], m_transform.toMatrix());
+	// now draw the geometry
 	glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
-
+	// release buffers again
 	m_vao.release();
 }
 

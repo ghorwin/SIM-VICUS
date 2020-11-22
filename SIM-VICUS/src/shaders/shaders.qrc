@@ -6,12 +6,10 @@
         <file>linearRGB.vert</file>
         <file>diffuse.frag</file>
         <file>VertexNormalColor.vert</file>
-        <file>pass_through.vert</file>
         <file>simple.frag</file>
         <file>phong_lighting.frag</file>
         <file>lines.frag</file>
         <file>lines.vert</file>
-        <file>SimpleRGB.frag</file>
-        <file>VertexColorWithTransform.vert</file>
+        <file>VertexNormalColorWithTransform.vert</file>
     </qresource>
 </RCC>

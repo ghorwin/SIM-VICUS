@@ -22,6 +22,7 @@ class QOpenGLShaderProgram;
 QT_END_NAMESPACE
 
 #include "Vic3DTransform3D.h"
+#include "Vic3DVertex.h"
 
 namespace Vic3D {
 
@@ -47,13 +48,19 @@ public:
 
 	/*! Wraps an OpenGL VertexArrayObject, that references the vertex coordinates. */
 	QOpenGLVertexArrayObject	m_vao;
-	/*! Holds coordinates/colors for lines (first 6) and ikosaeder (all past the first 6). */
-	QOpenGLBuffer				m_vbo;
+	/*! Handle for vertex buffer on GPU memory. */
+	QOpenGLBuffer				m_vertexBufferObject;
+	/*! Handle for color buffer on GPU memory. */
+	QOpenGLBuffer				m_colorBufferObject;
 	/*! Handle for index buffer on GPU memory */
 	QOpenGLBuffer				m_indexBufferObject;
 
+	/*! Vertex buffer in CPU memory, holds data of all vertices (coords and normals). */
+	std::vector<Vertex>			m_vertexBufferData;
+	/*! Color buffer in CPU memory, holds colors of all vertices (same size as m_vertexBufferData). */
+	std::vector<ColorRGBA>		m_colorBufferData;
 	/*! Index buffer on CPU memory. */
-	std::vector<GLushort>		m_indexBufferData;
+	std::vector<GLshort>		m_indexBufferData;
 
 };
 

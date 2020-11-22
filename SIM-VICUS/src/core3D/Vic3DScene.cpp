@@ -243,7 +243,8 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 					// rotate the camera around the same angles
 					m_camera.rotate(MOUSE_ROTATION_SPEED * mouseDelta.x(), GlobalUpwardsVector);
 					m_camera.rotate(MOUSE_ROTATION_SPEED * mouseDelta.y(), LocalRight);
-#if 0
+
+#if 1
 					// fix "roll" error due to rounding
 					// only do this when we are not viewing the scene from vertically from above/below
 					double cosViewAngle = QVector3D::dotProduct(m_camera.forward(), GlobalUpwardsVector);
@@ -316,6 +317,7 @@ void Vic3DScene::render() {
 	// set the background color = clear color
 	glClearColor(m_background.x(), m_background.y(), m_background.z(), 1.0f);
 
+	QVector3D viewPos = m_camera.translation();
 
 	// *** grid ***
 
@@ -345,6 +347,9 @@ void Vic3DScene::render() {
 	if (true /* m_coordinateSystemVisible */) {
 		m_coordinateSystemShader->bind();
 		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[0], m_worldToView);
+		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[2], VICUS::QVector3DFromQColor(m_lightColor));
+		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[1], viewPos);
+		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[3], viewPos);
 		m_coordinateSystemObject.render();
 		m_coordinateSystemShader->release();
 	}
@@ -367,7 +372,6 @@ void Vic3DScene::render() {
 	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[2], VICUS::QVector3DFromQColor(m_lightColor));
 
 	// set view position -
-	QVector3D viewPos = m_camera.translation();
 	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[1], viewPos);
 
 //#define FIXED_LIGHT_POSITION

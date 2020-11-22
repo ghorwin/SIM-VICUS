@@ -65,9 +65,12 @@ SceneView::SceneView() :
 	lines.m_uniformNames.append("modelToWorld");
 	m_shaderPrograms[SHADER_LINES] = lines;
 
-	// Shaderprogram : vertices with position and color, additional model2world transformation matrix
-	ShaderProgram coordSystem(":/shaders/VertexColorWithTransform.vert",":/shaders/SimpleRGB.frag");
+	// Shaderprogram : vertices with position and color, additional modelToWorld transformation matrix
+	ShaderProgram coordSystem(":/shaders/VertexNormalColorWithTransform.vert",":/shaders/phong_lighting.frag");
 	coordSystem.m_uniformNames.append("worldToView");
+	coordSystem.m_uniformNames.append("lightPos");
+	coordSystem.m_uniformNames.append("lightColor");
+	coordSystem.m_uniformNames.append("viewPos");
 	coordSystem.m_uniformNames.append("modelToWorld");
 	m_shaderPrograms[SHADER_COORDINATE_SYSTEM] = coordSystem;
 
