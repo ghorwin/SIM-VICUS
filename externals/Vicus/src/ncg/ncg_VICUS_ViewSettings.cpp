@@ -75,6 +75,8 @@ void ViewSettings::readXMLPrivate(const TiXmlElement * element) {
 										  .arg("Invalid vector data."), FUNC_ID);
 				}
 			}
+			else if (cName == "FarDistance")
+				m_farDistance = NANDRAD::readPODElement<double>(c, cName);
 			else if (cName == "RotationMatrix")
 				m_cameraRotation.readXML(c);
 			else {
@@ -111,6 +113,7 @@ TiXmlElement * ViewSettings::writeXMLPrivate(TiXmlElement * parent) const {
 	}
 
 	m_cameraRotation.writeXML(e);
+	TiXmlElement::appendSingleAttributeElement(e, "FarDistance", nullptr, std::string(), IBK::val2string<double>(m_farDistance));
 	return e;
 }
 

@@ -150,7 +150,10 @@ void Vic3DScene::updateWorld2ViewMatrix() {
 }
 
 
-void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoint & localMousePos) {
+void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoint & localMousePos, QPoint & newLocalMousePos) {
+
+	newLocalMousePos = localMousePos;
+
 	/*! Mark the pick-object location as outdated. */
 	m_pickObjectIsOutdated = true;
 
@@ -176,123 +179,132 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 	m_camera.translate(transSpeed * translation);
 	m_camera.rotate(transSpeed, rotationAxis);
 
+	// retrieve mouse delta
+	QPoint mouseDelta = keyboardHandler.mouseDelta(QCursor::pos());
+	int mouse_dx = mouseDelta.x();
+	int mouse_dy = mouseDelta.y();
+
 	// if right mouse button is pressed, mouse delta is translated into first camera perspective rotations
 	if (keyboardHandler.buttonDown(Qt::RightButton)) {
 		// get and reset mouse delta (pass current mouse cursor position)
-		QPoint mouseDelta = keyboardHandler.mouseDelta(QCursor::pos()); // resets the internal position
 		const QVector3D LocalUp(0.0f, 0.0f, 1.0f); // same as in Camera::up()
-		m_camera.rotate(-MOUSE_ROTATION_SPEED * mouseDelta.x(), LocalUp);
-		m_camera.rotate(-MOUSE_ROTATION_SPEED * mouseDelta.y(), m_camera.right());
-	}
-	if (keyboardHandler.buttonDown(Qt::MidButton)) {
-
-		QPoint mouseDelta = keyboardHandler.mouseDelta(QCursor::pos()); // resets the internal position
-
-		int x = mouseDelta.x();
-		int y = mouseDelta.y();
-		if(x != 0)
-			m_camera.translate(transSpeed * (mouseDelta.x() < 0 ? 1 : -1) * m_camera.right());
-		if(y != 0)
-			m_camera.translate(transSpeed * (mouseDelta.y() > 0 ? 1 : -1) * m_camera.up());
+		m_camera.rotate(-MOUSE_ROTATION_SPEED * mouse_dx, LocalUp);
+		m_camera.rotate(-MOUSE_ROTATION_SPEED * mouse_dy, m_camera.right());
+		// cursor wrap adjustment
+		adjustCurserDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos);
 	}
 
-	else { // not supporting right-and-left mouse button multiclick
+	// middle mouse button moves the geometry
+	else if (keyboardHandler.buttonDown(Qt::MidButton)) {
+		if (mouse_dx != 0)
+			m_camera.translate(transSpeed * (mouse_dx < 0 ? 1 : -1) * m_camera.right());
+		if (mouse_dy != 0)
+			m_camera.translate(transSpeed * (mouse_dy > 0 ? 1 : -1) * m_camera.up());
+		// cursor wrap adjustment
+		adjustCurserDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos);
+	}
 
-		if (keyboardHandler.buttonDown(Qt::LeftButton)) {
-			// detect "enter orbital controller mode" switch
-			if (!m_orbitControllerActive) {
-				// we enter orbital controller mode
+	else if (keyboardHandler.buttonDown(Qt::LeftButton)) {
+		// detect "enter orbital controller mode" switch
+		if (!m_orbitControllerActive) {
+			// we enter orbital controller mode
 
-				// pick the rotation object
-				pick(localMousePos);
-				// and store pick point
-				m_orbitControllerOrigin = m_pickPoint;
-				qDebug() << "Entering orbit controller mode, rotation around" << m_orbitControllerOrigin;
-				m_orbitControllerObject.m_transform.setTranslation(m_orbitControllerOrigin);
+			// pick the rotation object
+			pick(localMousePos);
+			// and store pick point
+			m_orbitControllerOrigin = m_pickPoint;
+//			qDebug() << "Entering orbit controller mode, rotation around" << m_orbitControllerOrigin;
+			m_orbitControllerObject.m_transform.setTranslation(m_orbitControllerOrigin);
 
-				// Rotation matrix around origin point
+			// Rotation matrix around origin point
+			m_mouseMoveDistance = true;
 
-				m_orbitControllerActive = true;
-			}
-			else {
+			m_orbitControllerActive = true;
+		}
+		else {
 
-				QPoint mouseDelta = keyboardHandler.mouseDelta(QCursor::pos()); // resets the internal position
-				if (mouseDelta != QPoint(0,0)) {
-					// vector from pick point (center of orbit) to camera position
-					QVector3D lineOfSight = m_camera.translation() - m_orbitControllerOrigin;
+			if (mouseDelta != QPoint(0,0)) {
+				// vector from pick point (center of orbit) to camera position
+				QVector3D lineOfSight = m_camera.translation() - m_orbitControllerOrigin;
 
-					// create a transformation object
-					Transform3D orbitTrans;
+				// create a transformation object
+				Transform3D orbitTrans;
 
-					// mouse x translation = rotation around rotation axis
+				// mouse x translation = rotation around rotation axis
 
-					const QVector3D GlobalUpwardsVector(0.0f, 0.0f, 1.0f);
-					// set rotation around z axis for x-mouse-delta
-					orbitTrans.rotate(MOUSE_ROTATION_SPEED * mouseDelta.x(), GlobalUpwardsVector);
+				const QVector3D GlobalUpwardsVector(0.0f, 0.0f, 1.0f);
+				// set rotation around z axis for x-mouse-delta
+				orbitTrans.rotate(MOUSE_ROTATION_SPEED * mouse_dx, GlobalUpwardsVector);
 
 
-					// mouse y translation = rotation around "right" axis
+				// mouse y translation = rotation around "right" axis
 
-					QVector3D LocalRight = m_camera.right().normalized();
-					// set rotation around "right" axis for y-mouse-delta
-					orbitTrans.rotate(MOUSE_ROTATION_SPEED * mouseDelta.y(), LocalRight);
+				QVector3D LocalRight = m_camera.right().normalized();
+				// set rotation around "right" axis for y-mouse-delta
+				orbitTrans.rotate(MOUSE_ROTATION_SPEED * mouse_dy, LocalRight);
 
-					// rotate vector to camera
-					lineOfSight = orbitTrans.toMatrix() * lineOfSight;
+				// rotate vector to camera
+				lineOfSight = orbitTrans.toMatrix() * lineOfSight;
 
-					// rotate the camera around the same angles
-					m_camera.rotate(MOUSE_ROTATION_SPEED * mouseDelta.x(), GlobalUpwardsVector);
-					m_camera.rotate(MOUSE_ROTATION_SPEED * mouseDelta.y(), LocalRight);
+				// rotate the camera around the same angles
+				m_camera.rotate(MOUSE_ROTATION_SPEED * mouse_dx, GlobalUpwardsVector);
+				m_camera.rotate(MOUSE_ROTATION_SPEED * mouse_dy, LocalRight);
 
 #if 1
-					// fix "roll" error due to rounding
-					// only do this when we are not viewing the scene from vertically from above/below
-					double cosViewAngle = QVector3D::dotProduct(m_camera.forward(), GlobalUpwardsVector);
-					if (std::fabs(cosViewAngle) < 0.2) {
-						// up and forward vectors should be always in a vertical plane
-						// forward and z-axis form a vertical plane with normal
-						QVector3D verticalPlaneNormal = QVector3D::crossProduct(m_camera.forward(), GlobalUpwardsVector);
-						verticalPlaneNormal.normalize();
+				// fix "roll" error due to rounding
+				// only do this when we are not viewing the scene from vertically from above/below
+				double cosViewAngle = QVector3D::dotProduct(m_camera.forward(), GlobalUpwardsVector);
+				if (std::fabs(cosViewAngle) < 0.3) {
+					// up and forward vectors should be always in a vertical plane
+					// forward and z-axis form a vertical plane with normal
+					QVector3D verticalPlaneNormal = QVector3D::crossProduct(m_camera.forward(), GlobalUpwardsVector);
+					verticalPlaneNormal.normalize();
 
-						// the camera right angle should always match this normal vector
-						double cosBeta = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
-						if (cosBeta > -1 && cosBeta < 1) {
-							double beta = std::acos(cosBeta)/3.14159265*180;
-							// which direction to rotate?
-							m_camera.rotate(beta, m_camera.forward());
-							double cosBeta2 = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
-							if (std::fabs(std::fabs(cosBeta2) - 1) > 1e-5)
-								m_camera.rotate(-2*beta, m_camera.forward());
-	//						cosBeta2 = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
-						}
+					// the camera right angle should always match this normal vector
+					double cosBeta = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
+					if (cosBeta > -1 && cosBeta < 1) {
+						double beta = std::acos(cosBeta)/3.14159265*180;
+						// which direction to rotate?
+						m_camera.rotate(beta, m_camera.forward());
+						double cosBeta2 = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
+						if (std::fabs(std::fabs(cosBeta2) - 1) > 1e-5)
+							m_camera.rotate(-2*beta, m_camera.forward());
+//						cosBeta2 = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
 					}
-#endif
-					// get new camera location
-					QVector3D newCamPos = m_orbitControllerOrigin + lineOfSight;
-					//					qDebug() << "Moving camera from " << m_camera.translation() << "to" << newCamPos;
-
-					// record the distance that the camera was moved
-					m_mouseMoveDistance += (newCamPos - m_camera.translation()).lengthSquared();
-					// move camera
-					m_camera.setTranslation(newCamPos);
-
 				}
+#endif
+				// get new camera location
+				QVector3D newCamPos = m_orbitControllerOrigin + lineOfSight;
+				//					qDebug() << "Moving camera from " << m_camera.translation() << "to" << newCamPos;
+
+				// record the distance that the mouse was moved
+				m_mouseMoveDistance += mouse_dx*mouse_dx + mouse_dy*mouse_dy;
+				// move camera
+				m_camera.setTranslation(newCamPos);
+
+				// cursor wrap adjustment
+				adjustCurserDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos);
 			}
+		}
 
-		} // left button down
 
-		if (keyboardHandler.buttonReleased(Qt::LeftButton)) {
-			// check if the mouse was moved not very far -> we have a mouse click
-			if (m_mouseMoveDistance < 20) {
-				// TODO : click code
-				qDebug() << "Mouse (selection) click received";
-			}
+	} // left button down
 
-			// clear orbit controller flag
-			m_orbitControllerActive = false;
-			qDebug() << "Leaving orbit controller mode";
-		} // left button released
-	}
+	if (keyboardHandler.buttonReleased(Qt::LeftButton)) {
+
+		/// \todo adjust the THRESHOLD based on DPI/Screenresolution or have it as user option
+		// check if the mouse was moved not very far -> we have a mouse click
+		if (m_mouseMoveDistance < 5) {
+			// TODO : click code
+			qDebug() << "Mouse (selection) click received" << m_mouseMoveDistance;
+		}
+		else {
+			qDebug() << "Leaving orbit controller mode" << m_mouseMoveDistance;
+		}
+
+		// clear orbit controller flag
+		m_orbitControllerActive = false;
+	} // left button released
 
 	// scroll wheel does fast zoom in/out
 	int wheelDelta = keyboardHandler.wheelDelta();
@@ -666,7 +678,28 @@ void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3
 //					   << pickTimer.elapsed() << " ms";
 
 	// Mind: OpenGL-context must be current when we call this function!
-//	m_boxObject.highlight(p.m_objectId, p.m_faceId);
+	//	m_boxObject.highlight(p.m_objectId, p.m_faceId);
+}
+
+
+void Vic3DScene::adjustCurserDuringMouseDrag(const QPoint & mouseDelta, const QPoint & localMousePos, QPoint & newLocalMousePos) {
+	// cursor position moves out of window?
+	const unsigned int WINDOW_MOVE_MARGIN = 50;
+	if (localMousePos.x() < WINDOW_MOVE_MARGIN && mouseDelta.x() < 0) {
+//						qDebug() << "Resetting mousepos to right side of window.";
+		newLocalMousePos.setX(m_viewPort.width()-WINDOW_MOVE_MARGIN);
+	}
+	else if (localMousePos.x() > (m_viewPort.width()-WINDOW_MOVE_MARGIN) && mouseDelta.x() > 0) {
+		//						qDebug() << "Resetting mousepos to right side of window.";
+		newLocalMousePos.setX(WINDOW_MOVE_MARGIN);
+	}
+
+	if (localMousePos.y() < WINDOW_MOVE_MARGIN && mouseDelta.y() < 0) {
+		newLocalMousePos.setY(m_viewPort.height()-WINDOW_MOVE_MARGIN);
+	}
+	else if (localMousePos.y() > (m_viewPort.height()-WINDOW_MOVE_MARGIN) && mouseDelta.y() > 0) {
+		newLocalMousePos.setY(WINDOW_MOVE_MARGIN);
+	}
 }
 
 } // namespace Vic3D

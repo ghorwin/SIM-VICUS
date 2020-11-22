@@ -47,7 +47,7 @@ public:
 		\param keyboardHandler Contains information on current state of keyboard and mouse (and mouse move/scroll deltas since last call).
 		\param localMousePos Contains mouse position of last left mouse button press or release.
 	*/
-	void inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoint & localMousePos);
+	void inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoint & localMousePos, QPoint & newLocalMousePos);
 
 	/*! Actually renders to the current OpenGL context. */
 	void render();
@@ -70,6 +70,11 @@ private:
 		nearPoint and farPoint define the current ray and are given in model coordinates.
 	*/
 	void selectNearestObject(const QVector3D & nearPoint, const QVector3D & farPoint);
+
+	/*! Determines a new local mouse position (local to this viewport) such that a mouse passing over a border
+		while dragging/rotating the view is avoided through placement of the mouse to the other side of the window.
+	*/
+	void adjustCurserDuringMouseDrag(const QPoint & mouseDelta, const QPoint & localMousePos, QPoint & newLocalMousePos);
 
 	/*! Stores viewport geometry. */
 	QRect					m_viewPort;

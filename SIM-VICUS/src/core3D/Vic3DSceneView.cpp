@@ -423,7 +423,14 @@ void SceneView::processInput() {
 		localMousePos = mapFromGlobal(m_keyboardMouseHandler.mouseReleasePos());
 	else
 		localMousePos = mapFromGlobal(m_keyboardMouseHandler.mouseDownPos());
-	m_mainScene.inputEvent(m_keyboardMouseHandler, localMousePos);
+	QPoint newLocalMousePos;
+	m_mainScene.inputEvent(m_keyboardMouseHandler, localMousePos, newLocalMousePos);
+
+	if (localMousePos != newLocalMousePos) {
+		QCursor c = cursor();
+		c.setPos(mapToGlobal(newLocalMousePos));
+		setCursor(c);
+	}
 
 	// resets the internal position for the next move and wheel scroll
 	m_keyboardMouseHandler.resetMouseDelta(QCursor::pos());
