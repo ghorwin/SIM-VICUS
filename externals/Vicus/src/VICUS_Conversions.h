@@ -3,6 +3,7 @@
 
 #include <QVector3D>
 #include <IBKMK_Vector3D.h>
+#include <QColor>
 
 namespace VICUS {
 
@@ -14,6 +15,10 @@ inline QVector3D IBKVector2QVector(const IBKMK::Vector3D & v) {
 /*! QVector3D to IBKMK::Vector3D to conversion macro. */
 inline IBKMK::Vector3D QVector2IBKVector(const QVector3D & v) {
 	return IBKMK::Vector3D((double)v.x(), (double)v.y(), (double)v.z());
+}
+
+inline QVector3D QVector3DFromQColor(const QColor & c) {
+	return QVector3D((float)c.redF(), (float)c.greenF(), (float)c.blueF());
 }
 
 } // VICUS

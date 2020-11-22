@@ -37,6 +37,11 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 				 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 				 std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLshort> & indexBufferData);
 
+/*! Adds an ikosaeder with individual colors a vertex+color buffer (no normals). */
+void addIkosaeder(const IBKMK::Vector3D & p, const std::vector<QColor> & cols, double radius,
+				 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+				 std::vector<VertexCR> & vertexBufferData, std::vector<GLushort> & indexBufferData);
+
 } // namespace Vic3D
 
 

@@ -364,4 +364,56 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 #endif
 }
 
+
+void addIkosaeder(const IBKMK::Vector3D & p, const std::vector<QColor> & cols, double radius,
+				  unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+				  std::vector<VertexCR> & vertexBufferData, std::vector<GLushort> & indexBufferData)
+{
+	QVector3D trans = VICUS::IBKVector2QVector(p);
+
+	unsigned int nVertices = 12;
+	vertexBufferData.resize(vertexBufferData.size() + nVertices);
+	std::vector<unsigned int> v0{0,5,1,9,8,3,6,2,10,11,0,5};
+	std::vector<unsigned int> v1{11,4,5,4,9,4,3,4,2,4,11};
+	std::vector<unsigned int>v2{6,7,8,7,1,7,0,7,10,7,6};
+	indexBufferData.resize(indexBufferData.size() + v0.size()+v1.size()+v2.size()+3);
+
+	//add vertices
+	const double phi = 0.5 * (1+std::sqrt(5));
+
+	radius *= 0.5;
+	vertexBufferData[currentVertexIndex+0  ].m_coords = QVector3D(-1.0, phi, 0.0)*radius + trans;	//0
+	vertexBufferData[currentVertexIndex+1  ].m_coords = QVector3D( 1.0, phi, 0.0)*radius + trans;	//1
+	vertexBufferData[currentVertexIndex+2  ].m_coords = QVector3D(-1.0, -phi, 0.0)*radius + trans;	//2
+	vertexBufferData[currentVertexIndex+3  ].m_coords = QVector3D( 1.0, -phi, 0.0)*radius + trans;	//3
+	vertexBufferData[currentVertexIndex+4  ].m_coords = QVector3D(0.0, -1.0, phi)*radius + trans;	//4
+	vertexBufferData[currentVertexIndex+5  ].m_coords = QVector3D(0.0,  1.0, phi)*radius + trans;	//5
+	vertexBufferData[currentVertexIndex+6  ].m_coords = QVector3D(0.0, -1.0, -phi)*radius + trans;	//6
+	vertexBufferData[currentVertexIndex+7  ].m_coords = QVector3D(0.0,  1.0, -phi)*radius + trans;	//7
+	vertexBufferData[currentVertexIndex+8  ].m_coords = QVector3D(phi, 0.0, -1.0)*radius + trans;	//8
+	vertexBufferData[currentVertexIndex+9  ].m_coords = QVector3D(phi, 0.0,  1.0)*radius + trans;	//9
+	vertexBufferData[currentVertexIndex+10 ].m_coords = QVector3D(-phi, 0.0, -1.0)*radius + trans;//10
+	vertexBufferData[currentVertexIndex+11 ].m_coords = QVector3D(-phi, 0.0,  1.0)*radius + trans;//11
+
+	for (unsigned int i=0; i<12; ++i)
+	vertexBufferData[currentVertexIndex+i  ].m_colors = VICUS::QVector3DFromQColor(cols[i]);
+
+	for (unsigned int i=0; i<v0.size(); ++i)
+		indexBufferData[currentElementIndex+i] = currentVertexIndex+ v0[i];
+	indexBufferData[currentElementIndex+v0.size()] = 0xFFFF;
+	currentElementIndex += v0.size() + 1;
+
+	for (unsigned int i=0; i<v1.size(); ++i)
+		indexBufferData[currentElementIndex+i] = currentVertexIndex + v1[i];
+	indexBufferData[currentElementIndex+v1.size()] = 0xFFFF;
+	currentElementIndex += v1.size() + 1;
+
+	for (unsigned int i=0; i<v2.size(); ++i)
+		indexBufferData[currentElementIndex+i] = currentVertexIndex + v2[i];
+	indexBufferData[currentElementIndex+v2.size()] = 0xFFFF;
+	currentElementIndex += v2.size() + 1;
+
+	currentVertexIndex += nVertices;
+}
+
 } // namespace Vic3D

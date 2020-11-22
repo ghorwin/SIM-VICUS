@@ -8,6 +8,7 @@
 #include <VICUS_Conversions.h>
 #include <VICUS_ViewSettings.h>
 #include <VICUS_NetworkLine.h>
+#include <VICUS_Conversions.h>
 
 #include "Vic3DShaderProgram.h"
 #include "Vic3DKeyboardMouseHandler.h"
@@ -110,6 +111,9 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 void Vic3DScene::destroy() {
 	m_gridObject.destroy();
 	m_orbitControllerObject.destroy();
+	m_opaqueGeometryObject.destroy();
+	m_networkGeometryObject.destroy();
+	m_coordinateSystemObject.destroy();
 }
 
 
@@ -222,33 +226,46 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 					// mouse x translation = rotation around rotation axis
 
-					const QVector3D LocalUp(0.0f, 0.0f, 1.0f); // same as in Camera::up()
+					const QVector3D GlobalUpwardsVector(0.0f, 0.0f, 1.0f);
 					// set rotation around z axis for x-mouse-delta
-					orbitTrans.rotate(MOUSE_ROTATION_SPEED * mouseDelta.x(), LocalUp);
+					orbitTrans.rotate(MOUSE_ROTATION_SPEED * mouseDelta.x(), GlobalUpwardsVector);
+
 
 					// mouse y translation = rotation around "right" axis
 
 					QVector3D LocalRight = m_camera.right().normalized();
-
-					// There is a situation where this fails:
-					// when the line of sight vector becomes co-linear with the LocalUp vector (i.e. one
-					// is tilting the view such that we look directly down), then the cross-product
-					// gives us a zero vector (or close to zero due to rounding errors).
-					// The rotation around a zero vector (or close to zero) will give somewhat arbitrary results,
-					// and specifically destroy our "z-axis is facing up" alignment - the camera appears to
-					// "roll".
-
-					// TODO : Dirk, implement a fix to "re-align" the camera such that its local up remains aligned
-					//        with the z-axis. Hint: tilt the camera down so that the forward-vector lies in the xy-plane.
-					//        An ideally aligned camera should have local up-vector = z-axis vector. If misaligned,
-					//        simply "roll" the camera back and reverse the "down tilt" to get the fixed camera rotation.
-
 					// set rotation around "right" axis for y-mouse-delta
 					orbitTrans.rotate(MOUSE_ROTATION_SPEED * mouseDelta.y(), LocalRight);
 
 					// rotate vector to camera
 					lineOfSight = orbitTrans.toMatrix() * lineOfSight;
 
+					// rotate the camera around the same angles
+					m_camera.rotate(MOUSE_ROTATION_SPEED * mouseDelta.x(), GlobalUpwardsVector);
+					m_camera.rotate(MOUSE_ROTATION_SPEED * mouseDelta.y(), LocalRight);
+#if 0
+					// fix "roll" error due to rounding
+					// only do this when we are not viewing the scene from vertically from above/below
+					double cosViewAngle = QVector3D::dotProduct(m_camera.forward(), GlobalUpwardsVector);
+					if (std::fabs(cosViewAngle) < 0.2) {
+						// up and forward vectors should be always in a vertical plane
+						// forward and z-axis form a vertical plane with normal
+						QVector3D verticalPlaneNormal = QVector3D::crossProduct(m_camera.forward(), GlobalUpwardsVector);
+						verticalPlaneNormal.normalize();
+
+						// the camera right angle should always match this normal vector
+						double cosBeta = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
+						if (cosBeta > -1 && cosBeta < 1) {
+							double beta = std::acos(cosBeta)/3.14159265*180;
+							// which direction to rotate?
+							m_camera.rotate(beta, m_camera.forward());
+							double cosBeta2 = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
+							if (std::fabs(std::fabs(cosBeta2) - 1) > 1e-5)
+								m_camera.rotate(-2*beta, m_camera.forward());
+	//						cosBeta2 = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
+						}
+					}
+#endif
 					// get new camera location
 					QVector3D newCamPos = m_orbitControllerOrigin + lineOfSight;
 					//					qDebug() << "Moving camera from " << m_camera.translation() << "to" << newCamPos;
@@ -258,9 +275,6 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 					// move camera
 					m_camera.setTranslation(newCamPos);
 
-					// also rotate the camera around the same angles
-					m_camera.rotate(MOUSE_ROTATION_SPEED * mouseDelta.x(), LocalUp);
-					m_camera.rotate(MOUSE_ROTATION_SPEED * mouseDelta.y(), LocalRight);
 				}
 			}
 
@@ -307,6 +321,7 @@ void Vic3DScene::render() {
 
 	// enable depth testing, important for the grid and for the drawing order of several objects
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 
 	m_gridShader->bind();
 	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[0], m_worldToView);
@@ -338,7 +353,6 @@ void Vic3DScene::render() {
 	// *** opaque background geometry ***
 
 	// tell OpenGL to show only faces whose normal vector points towards us
-	glEnable(GL_CULL_FACE);
 
 	/// \todo render dumb background geometry
 
@@ -349,9 +363,8 @@ void Vic3DScene::render() {
 	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[0], m_worldToView);
 
 	// Note: you can't use a QColor here directly and pass it as uniform to a shader expecting a vec3. Qt internally
-	//       passes QColor as vec4.
-	QVector3D lightCol((float)m_lightColor.redF(), (float)m_lightColor.greenF(), (float)m_lightColor.blueF());
-	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[2], lightCol);
+	//       passes QColor as vec4. Use the converter VICUS::QVector3DFromQColor() for that.
+	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[2], VICUS::QVector3DFromQColor(m_lightColor));
 
 	// set view position -
 	QVector3D viewPos = m_camera.translation();
