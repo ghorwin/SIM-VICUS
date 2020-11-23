@@ -137,6 +137,11 @@ void SceneView::dumpScreenshot(const QString & imgFilePath) {
 }
 
 
+void SceneView::addPolygonVertex(const IBKMK::Vector3D & p) {
+	emit polygonPointAdded(p);
+}
+
+
 void SceneView::onModified(int modificationType, ModificationInfo * data) {
 	// relay change notification to scene objects
 	m_mainScene.onModified(modificationType, data);
@@ -163,7 +168,7 @@ void SceneView::initializeGL() {
 
 		// initialize scenes to draw
 
-		m_mainScene.create(m_shaderPrograms);
+		m_mainScene.create(this, m_shaderPrograms);
 
 		int thumbnailWidth = (int)SVSettings::instance().m_thumbNailSize;
 		int thumbnailHeight = (int)(thumbnailWidth*0.75);
@@ -365,7 +370,7 @@ void SceneView::checkInput() {
 	}
 
 	// special handling for snapping coordinate system
-	if (m_mainScene.m_coordinateSystemActive) {
+	if (m_mainScene.operationMode() == Vic3DScene::OM_Draw) {
 		m_inputEventReceived = true;
 		renderLater();
 	}

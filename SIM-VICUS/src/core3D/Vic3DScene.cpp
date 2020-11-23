@@ -15,6 +15,7 @@
 #include "Vic3DPickObject.h"
 #include "Vic3DGeometryHelpers.h"
 #include "Vic3DConstants.h"
+#include "Vic3DSceneView.h"
 
 #include "SVProjectHandler.h"
 
@@ -24,7 +25,8 @@ const float MOUSE_ROTATION_SPEED = 0.5f;
 
 namespace Vic3D {
 
-void Vic3DScene::create(std::vector<ShaderProgram> & shaderPrograms) {
+void Vic3DScene::create(SceneView * parent, std::vector<ShaderProgram> & shaderPrograms) {
+	m_parent = parent;
 	m_gridShader = &shaderPrograms[SHADER_GRID];
 	m_buildingShader = &shaderPrograms[SHADER_OPAQUE_GEOMETRY];
 	m_orbitControllerShader = &shaderPrograms[SHADER_LINES];
@@ -302,11 +304,6 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 			// TODO : click code
 			qDebug() << "Mouse (selection) click received" << m_mouseMoveDistance;
 			handleLeftMouseClick();
-
-			// if we are in "draw" mode, we either continue drawing points (i.e. add a point), or
-			// start a new polygon
-
-			// let's either start a new polygon object
 		}
 		else {
 			qDebug() << "Leaving orbit controller mode" << m_mouseMoveDistance;
@@ -694,8 +691,26 @@ void Vic3DScene::adjustCurserDuringMouseDrag(const QPoint & mouseDelta, const QP
 	}
 }
 
+
 void Vic3DScene::handleLeftMouseClick() {
+	// if we are in passive mode, we handle the click as "selection"
+
+	// if we are in "draw" mode, we either continue drawing points (i.e. add a point), or
+	// start a new polygon
+
+	switch (m_operationMode) {
+		case OM_Draw : {
+			// signal parent widget that we added a point
+			IBKMK::Vector3D p = VICUS::QVector2IBKVector(m_coordinateSystemObject.m_transform.translation());
+			m_parent->addPolygonVertex(p);
+			// append a vertex
+			m_newPolygonObject.m_planeGeometry.m_vertexes.push_back(p);
+
+		} break;
+		default :;
+	}
 
 }
+
 
 } // namespace Vic3D

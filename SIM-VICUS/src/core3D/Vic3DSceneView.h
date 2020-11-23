@@ -43,6 +43,15 @@ public:
 	/*! Renders current scene into a framebuffer and saves it to file. */
 	void dumpScreenshot(const QString & imgFilePath);
 
+	/*! This function is called from Vic3DScene when user has clicked to add a new polygon point.
+		The function simply emits the polygonPointAdded() signal.
+	*/
+	void addPolygonVertex(const IBKMK::Vector3D & p);
+
+signals:
+	/*! Emitted, when user has added a new polygon point. */
+	void polygonPointAdded(const IBKMK::Vector3D & p);
+
 public slots:
 
 	/*! Connected to SVProjectHandler::modified() */

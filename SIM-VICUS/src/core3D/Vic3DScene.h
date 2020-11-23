@@ -23,6 +23,7 @@ namespace Vic3D {
 
 class ShaderProgram;
 class KeyboardMouseHandler;
+class SceneView;
 
 /*! Encapsulates all data for drawing a part of the final picture, including the viewport where the
 	scene is rendered in.
@@ -41,7 +42,7 @@ public:
 		NUM_OM
 	};
 
-	void create(std::vector<ShaderProgram> & shaderPrograms);
+	void create(SceneView * parent, std::vector<ShaderProgram> & shaderPrograms);
 
 	/*! Triggered when SVProjectHandler::modified() is emitted. */
 	void onModified( int modificationType, ModificationInfo * data );
@@ -68,8 +69,7 @@ public:
 	/*! Toggles operation mode. */
 	void setOperationMode(OperationMode m);
 
-	/*! If true, the coordinate system is active and snaps to selected objects. */
-	bool					m_coordinateSystemActive = true;
+	OperationMode operationMode() const { return m_operationMode; }
 
 private:
 	void generateBuildingGeometry();
@@ -91,6 +91,11 @@ private:
 
 	/*! Due something with the mouse click, depending on current operation mode. */
 	void handleLeftMouseClick();
+
+	/*! Cached pointer to parent widget - needed so that we can tell a QObject-based class to send
+		out signals.
+	*/
+	SceneView				*m_parent = nullptr;
 
 	/*! Stores viewport geometry. */
 	QRect					m_viewPort;
@@ -152,6 +157,9 @@ private:
 	bool					m_orbitControllerActive = false;
 	/*! Holds the origin of the orbit controller coordinates. */
 	QVector3D				m_orbitControllerOrigin;
+
+	/*! If true, the coordinate system is active and snaps to selected objects. */
+	bool					m_coordinateSystemActive = true;
 
 	/*! Indicates whether pick object detection is outdated and should be updated (this flag prevents needless pick
 		calculations).
