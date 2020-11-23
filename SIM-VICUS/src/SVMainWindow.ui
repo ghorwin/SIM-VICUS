@@ -35,6 +35,7 @@
     <addaction name="actionFileSaveAs"/>
     <addaction name="actionFileClose"/>
     <addaction name="separator"/>
+    <addaction name="actionFileOpenProjectDir"/>
     <addaction name="actionFileExport"/>
     <addaction name="actionFileExportFMU"/>
     <addaction name="separator"/>
@@ -303,6 +304,17 @@
   <action name="actionNetworkImport">
    <property name="text">
     <string>Import Network...</string>
+   </property>
+  </action>
+  <action name="actionFileOpenProjectDir">
+   <property name="text">
+    <string>Go to project directory...</string>
+   </property>
+   <property name="toolTip">
+    <string>Opens file manager with path to project file.</string>
+   </property>
+   <property name="shortcut">
+    <string>F8</string>
    </property>
   </action>
  </widget>

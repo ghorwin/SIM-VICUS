@@ -175,6 +175,8 @@ private slots:
 
 	void on_actionNetworkImport_triggered();
 
+	void on_actionFileOpenProjectDir_triggered();
+
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();

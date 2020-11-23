@@ -513,6 +513,18 @@ void SVMainWindow::on_actionFileReload_triggered() {
 }
 
 
+void SVMainWindow::on_actionFileOpenProjectDir_triggered() {
+	if (m_projectHandler.projectFile().isEmpty()) {
+		QMessageBox::critical(this, QString(), tr("Please save the project file first!"));
+		return;
+	}
+
+
+	QString projectDir = QFileInfo(m_projectHandler.projectFile() ).dir().path();
+	QDesktopServices::openUrl( QUrl::fromLocalFile( projectDir ) );
+}
+
+
 void SVMainWindow::on_actionFileExport_triggered() {
 	// project must have been saved once already
 	if (!saveProject())
@@ -778,6 +790,7 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionFileExport->setEnabled(have_project);
 	m_ui->actionFileReload->setEnabled(have_project);
 	m_ui->actionFileClose->setEnabled(have_project);
+	m_ui->actionFileOpenProjectDir->setEnabled(have_project);
 	m_ui->actionEditTextEditProject->setEnabled(have_project);
 	m_ui->actionRunSimulation->setEnabled(have_project);
 	m_ui->actionEditCleanProject->setEnabled(have_project);
@@ -1244,5 +1257,6 @@ static bool copyRecursively(const QString &srcFilePath,
 	}
 	return true;
 }
+
 
 
