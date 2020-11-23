@@ -29,12 +29,15 @@ void Vic3DScene::create(std::vector<ShaderProgram> & shaderPrograms) {
 	m_buildingShader = &shaderPrograms[SHADER_OPAQUE_GEOMETRY];
 	m_orbitControllerShader = &shaderPrograms[SHADER_LINES];
 	m_coordinateSystemShader = &shaderPrograms[SHADER_COORDINATE_SYSTEM];
+	m_transparencyShader = &shaderPrograms[SHADER_TRANSPARENT_GEOMETRY];
 
 	// the orbit controller object is static in geometry, so it can be created already here
 	m_orbitControllerObject.create(m_orbitControllerShader);
 
 	// same for the coordinate system object
 	m_coordinateSystemObject.create(m_coordinateSystemShader);
+
+	m_newPolygonObject.create(m_transparencyShader->shaderProgram(), &m_coordinateSystemObject);
 }
 
 
@@ -114,6 +117,7 @@ void Vic3DScene::destroy() {
 	m_opaqueGeometryObject.destroy();
 	m_networkGeometryObject.destroy();
 	m_coordinateSystemObject.destroy();
+	m_newPolygonObject.destroy();
 }
 
 
@@ -297,6 +301,12 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		if (m_mouseMoveDistance < 5) {
 			// TODO : click code
 			qDebug() << "Mouse (selection) click received" << m_mouseMoveDistance;
+			handleLeftMouseClick();
+
+			// if we are in "draw" mode, we either continue drawing points (i.e. add a point), or
+			// start a new polygon
+
+			// let's either start a new polygon object
 		}
 		else {
 			qDebug() << "Leaving orbit controller mode" << m_mouseMoveDistance;
@@ -422,6 +432,14 @@ void Vic3DScene::render() {
 
 }
 
+
+void Vic3DScene::setOperationMode(Vic3DScene::OperationMode m)	{
+	// depending on whether we enter/leave an operation mode, we may have project modifications
+
+	// \todo implement
+
+	m_operationMode = m;
+}
 
 
 void Vic3DScene::generateBuildingGeometry() {
@@ -581,14 +599,6 @@ void Vic3DScene::generateNetworkGeometry() {
 }
 
 
-
-
-QColor Vic3DScene::color4Surface(const VICUS::Surface & s) const {
-	// for now return always white
-	return Qt::white;
-}
-
-
 void Vic3DScene::pick(const QPoint & localMousePos) {
 	// only update if not already up-to-date
 	if (!m_pickObjectIsOutdated)
@@ -660,25 +670,7 @@ void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3
 
 	// now process all objects and update p to hold the closest hit
 
-
 	// TODO : apply picking/selection filter, so that only specific objects can be clicked on
-
-
-//	XYPlaneObject.pick(nearPoint, d, p);
-
-//	m_boxObject.pick(nearPoint, d, p);
-//	// ... other objects
-
-	// any object accepted a pick?
-//	if (p.m_objectId == std::numeric_limits<unsigned int>::max())
-//		return; // nothing selected
-
-//	qDebug().nospace() << "Pick successful (Box #"
-//					   << p.m_objectId <<  ", Face #" << p.m_faceId << ", t = " << p.m_dist << ") after "
-//					   << pickTimer.elapsed() << " ms";
-
-	// Mind: OpenGL-context must be current when we call this function!
-	//	m_boxObject.highlight(p.m_objectId, p.m_faceId);
 }
 
 
@@ -700,6 +692,10 @@ void Vic3DScene::adjustCurserDuringMouseDrag(const QPoint & mouseDelta, const QP
 	else if (localMousePos.y() > (m_viewPort.height()-WINDOW_MOVE_MARGIN) && mouseDelta.y() > 0) {
 		newLocalMousePos.setY(WINDOW_MOVE_MARGIN);
 	}
+}
+
+void Vic3DScene::handleLeftMouseClick() {
+
 }
 
 } // namespace Vic3D

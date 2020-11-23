@@ -60,7 +60,7 @@ SceneView::SceneView() :
 	m_shaderPrograms[SHADER_OPAQUE_GEOMETRY] = blocks;
 
 	// Shaderprogram : simple lines with uniform/fixed color, but additional model2world transformation matrix
-	ShaderProgram lines(":/shaders/lines.vert",":/shaders/lines.frag");
+	ShaderProgram lines(":/shaders/lines.vert",":/shaders/simple.frag");
 	lines.m_uniformNames.append("worldToView");
 	lines.m_uniformNames.append("modelToWorld");
 	m_shaderPrograms[SHADER_LINES] = lines;
@@ -73,6 +73,11 @@ SceneView::SceneView() :
 	coordSystem.m_uniformNames.append("viewPos");
 	coordSystem.m_uniformNames.append("modelToWorld");
 	m_shaderPrograms[SHADER_COORDINATE_SYSTEM] = coordSystem;
+
+	// Shaderprogram : transparent planes / opaque geometry without lighting
+	ShaderProgram transparentGeo(":/shaders/VertexNormalColor.vert",":/shaders/simple.frag");
+	transparentGeo.m_uniformNames.append("worldToView");
+	m_shaderPrograms[SHADER_TRANSPARENT_GEOMETRY] = transparentGeo;
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SceneView::onModified);

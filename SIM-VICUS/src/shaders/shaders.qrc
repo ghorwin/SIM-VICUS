@@ -2,13 +2,10 @@
     <qresource prefix="/shaders">
         <file>grid.frag</file>
         <file>grid.vert</file>
-        <file>linear.frag</file>
-        <file>linearRGB.vert</file>
         <file>diffuse.frag</file>
         <file>VertexNormalColor.vert</file>
         <file>simple.frag</file>
         <file>phong_lighting.frag</file>
-        <file>lines.frag</file>
         <file>lines.vert</file>
         <file>VertexNormalColorWithTransform.vert</file>
     </qresource>

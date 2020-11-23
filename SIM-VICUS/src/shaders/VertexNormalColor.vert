@@ -3,9 +3,9 @@
 // GLSL version 3.3
 // vertex shader
 
-layout(location = 0) in vec3 position; // input:  attribute with index '0' with 3 elements per vertex
-layout(location = 1) in vec3 normal;   // input:  attribute with index '1' with 3 elements per vertex
-layout(location = 2) in vec4 color;    // input:  attribute with index '2' with 4 elements (=rgbb) per vertex
+layout(location = 0) in vec3 position; // input:  attribute with index '0' with 3 elements per vertex (coordinates)
+layout(location = 1) in vec3 normal;   // input:  attribute with index '1' with 3 elements per vertex (normal)
+layout(location = 2) in vec4 color;    // input:  attribute with index '2' with 4 elements (=rgba) per vertex
 
 out vec4 fragColor;                    // output: fragment color
 out vec3 fragNormal;                   // output: fragment normal vector

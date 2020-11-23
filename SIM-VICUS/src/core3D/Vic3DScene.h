@@ -11,6 +11,7 @@
 #include "Vic3DOpaqueGeometryObject.h"
 #include "Vic3DOrbitControllerObject.h"
 #include "Vic3DCoordinateSystemObject.h"
+#include "Vic3DNewPolygonObject.h"
 
 class ModificationInfo;
 
@@ -28,6 +29,18 @@ class KeyboardMouseHandler;
 */
 class Vic3DScene {
 public:
+	/*! The different operation modes the scene can be in. NUM_OM means "none" and indicates simple
+		navigation.
+	*/
+	enum OperationMode {
+		/*! New polygons/objects can be drawn - either starting a new polygon or continue drawing. */
+		OM_Draw,
+		/*! The mouse drags a selected object to a different location. */
+		OM_DragMove,
+		/*! The scene is in passive mode - user can navigate and click on object to change selection. */
+		NUM_OM
+	};
+
 	void create(std::vector<ShaderProgram> & shaderPrograms);
 
 	/*! Triggered when SVProjectHandler::modified() is emitted. */
@@ -52,15 +65,15 @@ public:
 	/*! Actually renders to the current OpenGL context. */
 	void render();
 
+	/*! Toggles operation mode. */
+	void setOperationMode(OperationMode m);
+
 	/*! If true, the coordinate system is active and snaps to selected objects. */
 	bool					m_coordinateSystemActive = true;
 
 private:
 	void generateBuildingGeometry();
 	void generateNetworkGeometry();
-
-	/*! Applies filter/highlighting rules and determines color for given surface. */
-	QColor color4Surface(const VICUS::Surface & s) const;
 
 	/*! Mouse pick handler: collects all surfaces along the pick line and stores first intersection point's
 		coordinates in m_pickPoint. */
@@ -76,8 +89,16 @@ private:
 	*/
 	void adjustCurserDuringMouseDrag(const QPoint & mouseDelta, const QPoint & localMousePos, QPoint & newLocalMousePos);
 
+	/*! Due something with the mouse click, depending on current operation mode. */
+	void handleLeftMouseClick();
+
 	/*! Stores viewport geometry. */
 	QRect					m_viewPort;
+
+	/*! This determines the mode of operation that the scene is in.
+		Mode of operation is toggled externally through setOperationMode().
+	*/
+	OperationMode			m_operationMode = NUM_OM;
 
 	/*! Stores address to shader program (managed by SceneView). */
 	ShaderProgram			*m_gridShader			= nullptr;
@@ -87,6 +108,8 @@ private:
 	ShaderProgram			*m_orbitControllerShader = nullptr;
 	/*! Stores address to shader program (managed by SceneView). */
 	ShaderProgram			*m_coordinateSystemShader = nullptr;
+	/*! Shader program (managed by SceneView). */
+	ShaderProgram			*m_transparencyShader = nullptr;
 
 	/*! The projection matrix, updated whenever the viewport geometry changes (in resizeGL() ). */
 	QMatrix4x4				m_projection;
@@ -120,6 +143,8 @@ private:
 	OrbitControllerObject	m_orbitControllerObject;
 	/*! The movable coordinate system. */
 	CoordinateSystemObject	m_coordinateSystemObject;
+	/*! Object to display newly drawn geometry. */
+	NewPolygonObject		m_newPolygonObject;
 
 	/*! Stores the distance that the mouse has been moved in the last "Left-mouse button down ... release" interval. */
 	float					m_mouseMoveDistance = 0.f;
