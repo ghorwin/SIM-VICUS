@@ -111,6 +111,12 @@ public:
 	/*! Return evaluation priority. */
 	int priorityOfModelEvaluation() const override;
 
+	/*! Composes all input references.
+		We generate obligatory references to nieghbor zones. Further,
+		we collect all loads/fluxes towards the walls from optional internal sources.
+	*/
+	virtual void initInputReferences(const std::vector<AbstractModel*> & models) override;
+
 	/*! Returns vector with model input references. */
 	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const override;
 
@@ -146,6 +152,12 @@ private:
 		InputRef_RoomBTemperature,
 		InputRef_SideASolarRadiationFromWindowLoads,
 		InputRef_SideBSolarRadiationFromWindowLoads,
+		InputRef_SideARadiationFromEquipmentLoads,
+		InputRef_SideBRadiationFromEquipmentLoads,
+		InputRef_SideARadiationFromPersonLoads,
+		InputRef_SideBRadiationFromPersonLoads,
+		InputRef_SideARadiationFromLightingLoads,
+		InputRef_SideBRadiationFromLightingLoads,
 		NUM_InputRef
 	};
 
@@ -167,6 +179,12 @@ private:
 
 	/*! Vector with input references, first the NUM_InputRef scalar input refs, then the vector-valued. */
 	std::vector<const double*>						m_valueRefs;
+
+	/*! Input references used by this object. These references store optional loads from
+		internal sources as well as obnligatory references for heat exchange with all neighboring
+		zones.
+	*/
+	std::vector<InputReference>						m_inputRefs;
 
 	/*! Construction interface. */
 	const NANDRAD::ConstructionInstance				*m_con			= nullptr;

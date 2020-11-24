@@ -53,6 +53,9 @@ public:
 	enum Results {
 		R_CompleteThermalLoad,								// Keyword: CompleteThermalLoad							[W]		'Sum of all thermal fluxes into the room and energy sources.'
 		R_InfiltrationHeatLoad,								// Keyword: InfiltrationHeatLoad						[W]		'Infiltration/natural ventilation heat flux into the room.'
+		R_ConvectiveEquipmentHeatLoad,						// Keyword: ConvectiveEquipmentHeatLoad					[W]		'Equipment heat load inside the room.'
+		R_ConvectivePersonHeatLoad,							// Keyword: ConvectivePersonHeatLoad					[W]		'Person heat load inside the room.'
+		R_ConvectiveLightingHeatLoad,						// Keyword: ConvectiveLightingHeatLoad					[W]		'Lighting heat load inside the room.'
 		R_ConstructionHeatConductionLoad,					// Keyword: ConstructionHeatConductionLoad				[W]		'Sum of heat conduction fluxes from construction surfaces into the room.'
 		R_WindowHeatConductionLoad,							// Keyword: WindowHeatConductionLoad					[W]		'Sum of heat conduction fluxes through windows into the room.'
 		R_WindowSolarRadiationLoad,							// Keyword: WindowSolarRadiationLoad					[W]		'Sum of solar radiation fluxes through windows into the room (only the fraction applied to room volume).'
@@ -169,6 +172,14 @@ private:
 	unsigned int									m_infiltrationModelCount = 0;
 	/*! Value reference for natural ventilation/infiltration flux in [W] (positive if into room). */
 	const double *									m_infiltrationValueRef = nullptr;
+	/*! Number of internal loads model input refs that we have generated and that we get value refs for. */
+	unsigned int									m_internalLoadsModelCount = 0;
+	/*! Value reference for natural equipment loads in [W] (positive if into room). */
+	const double *									m_equipmentLoadValueRef = nullptr;
+	/*! Value reference for natural person loads in [W] (positive if into room). */
+	const double *									m_personLoadValueRef = nullptr;
+	/*! Value reference for natural lighting loads in [W] (positive if into room). */
+	const double *									m_lightingLoadValueRef = nullptr;
 
 	/*! Vector with cached derivatives, updated at last call to update(). */
 	std::vector<double>								m_ydot;

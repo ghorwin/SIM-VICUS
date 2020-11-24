@@ -49,6 +49,15 @@ void Models::readXML(const TiXmlElement * element) {
 			}
 			m_naturalVentilationModels.push_back(model);
 		}
+		else if (name == "InternalLoadsModel") {
+			InternalLoadsModel model;
+			try {
+				model.readXML(e);
+			} catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, "Error reading InternalLoadsModel in Models tag.", FUNC_ID);
+			}
+			m_internalLoadsModels.push_back(model);
+		}
 		else if (name == "ShadingControlModel") {
 			ShadingControlModel model;
 			try {
@@ -82,6 +91,8 @@ TiXmlElement * Models::writeXML(TiXmlElement * parent) const {
 	// now write all models as they are defined
 	for (auto m : m_naturalVentilationModels)
 		m.writeXML(e1);
+	for (auto m : m_internalLoadsModels)
+		m.writeXML(e1);
 	for (auto m : m_shadingControlModels)
 		m.writeXML(e1);
 
@@ -110,7 +121,14 @@ void Models::checkForUniqueIDs() const {
 	std::set<unsigned int> usedIDs;
 
 	try {
+		// check all natural ventilation models for unique ids and store
+		// it in usedIDs container
 		checkForUniqueModelIDs(m_naturalVentilationModels, usedIDs);
+		// check all internal loads model ids against each other and against
+		// all entries in usedIDs container
+		checkForUniqueModelIDs(m_internalLoadsModels, usedIDs);
+		// the same for shading control models
+		checkForUniqueModelIDs(m_shadingControlModels, usedIDs);
 	} catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, "Duplicate ID found in model parameter blocks.", FUNC_ID);
 	}

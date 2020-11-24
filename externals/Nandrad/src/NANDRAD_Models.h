@@ -25,6 +25,7 @@
 #include <vector>
 
 #include "NANDRAD_NaturalVentilationModel.h"
+#include "NANDRAD_InternalLoadsModel.h"
 #include "NANDRAD_ShadingControlModel.h"
 
 namespace NANDRAD {
@@ -44,6 +45,8 @@ public:
 
 	/*! Container for all natural ventilation models. */
 	std::vector<NaturalVentilationModel>	m_naturalVentilationModels;
+	/*! Container for all internal loads models. */
+	std::vector<InternalLoadsModel>			m_internalLoadsModels;
 	/*! Container for all shading control models. */
 	std::vector<ShadingControlModel>		m_shadingControlModels;
 };

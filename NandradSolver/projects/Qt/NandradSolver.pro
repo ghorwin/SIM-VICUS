@@ -79,7 +79,8 @@ SOURCES += \
 	../../src/NM_StateModelGroup.cpp \
 	../../src/NM_SteadyStateSolver.cpp \
 	../../src/NM_VectorValuedQuantity.cpp \
-	../../src/NM_VectorValuedQuantityIndex.cpp
+	../../src/NM_VectorValuedQuantityIndex.cpp \
+    ../../src/NM_InternalLoadsModel.cpp
 
 HEADERS += \
 	../../doc/NandradSolverMainPage.h \
@@ -111,6 +112,7 @@ HEADERS += \
 	../../src/NM_ValueReference.h \
 	../../src/NM_VectorValuedQuantity.h \
 	../../src/NM_VectorValuedQuantityIndex.h \
-	../../src/NM_WindowModel.h
+	../../src/NM_WindowModel.h \
+    ../../src/NM_InternalLoadsModel.h
 
 DISTFILES +=

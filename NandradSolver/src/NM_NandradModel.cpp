@@ -79,6 +79,7 @@
 #include "NM_ConstructionStatesModel.h"
 #include "NM_ConstructionBalanceModel.h"
 #include "NM_NaturalVentilationModel.h"
+#include "NM_InternalLoadsModel.h"
 #include "NM_WindowModel.h"
 #include "NM_RoomRadiationLoadsModel.h"
 
@@ -1209,6 +1210,7 @@ void NandradModel::initModels() {
 	IBK::IBK_Message(IBK::FormatString("Initializing Models\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK_MSG_INDENT;
 
+	// natural ventilation
 	if (!m_project->m_models.m_naturalVentilationModels.empty()) {
 		IBK::IBK_Message(IBK::FormatString("Initializing natural ventilation models\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		IBK_MSG_INDENT;
@@ -1222,6 +1224,37 @@ void NandradModel::initModels() {
 			}
 			catch (IBK::Exception & ex) {
 				throw IBK::Exception(ex, IBK::FormatString("Error initializing natural ventilation model (id=%1).").arg(m.m_id), FUNC_ID);
+			}
+
+			registerStateDependendModel(mod);
+		}
+	}
+	// internal loads
+	if (!m_project->m_models.m_internalLoadsModels.empty()) {
+		// parameter checks
+		for (const NANDRAD::InternalLoadsModel & m : m_project->m_models.m_internalLoadsModels) {
+			try {
+				m.checkParameters();
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, IBK::FormatString("Error initializing internal loads model "
+														   "(id=%1).").arg(m.m_id), FUNC_ID);
+			}
+		}
+
+		IBK::IBK_Message(IBK::FormatString("Initializing internal loads models\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		IBK_MSG_INDENT;
+
+		for (const NANDRAD::InternalLoadsModel & m : m_project->m_models.m_internalLoadsModels) {
+			NANDRAD_MODEL::InternalLoadsModel * mod = new NANDRAD_MODEL::InternalLoadsModel(m.m_id, m.m_displayName);
+			m_modelContainer.push_back(mod); // transfer ownership
+
+			try {
+				mod->setup(m, m_project->m_objectLists, m_project->m_zones);
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, IBK::FormatString("Error initializing internal loads model "
+														   "(id=%1).").arg(m.m_id), FUNC_ID);
 			}
 
 			registerStateDependendModel(mod);
