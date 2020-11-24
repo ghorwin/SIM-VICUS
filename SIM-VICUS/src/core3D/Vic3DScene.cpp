@@ -60,6 +60,10 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			updateGrid = true;
 			updateBuilding = true;
 			updateNetwork = true;
+			// clear new polygon drawing object
+			/// \todo define what state the scene should go into, when project is reloaded/newly created
+			m_newPolygonObject.m_planeGeometry.m_vertexes.clear();
+			m_newPolygonObject.updateBuffers();
 			break;
 
 		case SVProjectHandler::GridModified :

@@ -151,14 +151,17 @@ void NewPolygonObject::updateBuffers() {
 	unsigned int currentElementIndex = 0;
 	m_firstLineVertex = 0;
 
+	// no vertexes, nothing to draw
+	if (m_planeGeometry.m_vertexes.empty())
+		return;
+
 	if (m_planeGeometry.isValid()) {
-		addPlane(m_planeGeometry, QColor(255,0,128,128), currentVertexIndex, currentElementIndex,
+		addPlane(m_planeGeometry, QColor(255,0,128,64), currentVertexIndex, currentElementIndex,
 				 m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 		// remember index of vertex where "current" line starts
 		m_firstLineVertex = currentVertexIndex-1;
 	}
 	else {
-		Q_ASSERT(!m_planeGeometry.m_vertexes.empty());
 		m_vertexBufferData.resize(1);
 		m_vertexBufferData.back().m_coords = VICUS::IBKVector2QVector(m_planeGeometry.m_vertexes.back());
 		m_vertexBufferData.back().m_normal = QVector3D(0,0,1); // not being used
@@ -196,9 +199,12 @@ void NewPolygonObject::render() {
 	// now draw the geometry - first the polygon (if any)
 	if (!m_indexBufferData.empty())
 		glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
-	if (m_vertexBufferData.size() > 1)
+	if (m_vertexBufferData.size() > 1) {
 		// then the line consisting of the last two vertexes
+		glLineWidth(2);
 		glDrawArrays(GL_LINES, m_firstLineVertex, 2);
+		glLineWidth(1);
+	}
 	// release buffers again
 	m_vao.release();
 }
