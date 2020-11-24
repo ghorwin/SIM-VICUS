@@ -9,7 +9,7 @@
 			<ClimateFileName>${Project Directory}/../climate/TF05_PotsdamWithStartPhase.c6b</ClimateFileName>
 		</Location>
 		<SimulationParameter>
-			<IBK:Parameter name="InitialTemperature" unit="C">5</IBK:Parameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 		</SimulationParameter>
 		<SolverParameter>
 			<IBK:IntPara name="DiscMaxElementsPerLayer">30</IBK:IntPara>
@@ -127,14 +127,6 @@
 			</ObjectList>
 			<ObjectList name="Zone Var01">
 				<FilterID>1</FilterID>
-				<ReferenceType>Zone</ReferenceType>
-			</ObjectList>
-			<ObjectList name="Zone Var02">
-				<FilterID>2</FilterID>
-				<ReferenceType>Zone</ReferenceType>
-			</ObjectList>
-			<ObjectList name="Zone Var03">
-				<FilterID>3</FilterID>
 				<ReferenceType>Zone</ReferenceType>
 			</ObjectList>
 			<ObjectList name="InternalLoadsModel">

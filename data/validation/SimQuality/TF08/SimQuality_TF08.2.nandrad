@@ -9,7 +9,7 @@
 			<ClimateFileName>${Project Directory}/../climate/TF05_PotsdamWithStartPhase.c6b</ClimateFileName>
 		</Location>
 		<SimulationParameter>
-			<IBK:Parameter name="InitialTemperature" unit="C">5</IBK:Parameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 		</SimulationParameter>
 		<SolverParameter>
 			<IBK:IntPara name="DiscMaxElementsPerLayer">30</IBK:IntPara>
@@ -31,6 +31,9 @@
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</InterfaceHeatConduction>
+					<InterfaceLongWaveEmission model="Constant">
+						<IBK:Parameter name="Emissivity" unit="---">1</IBK:Parameter>
+					</InterfaceLongWaveEmission>
 				</InterfaceA>
 				<InterfaceB id="31" zoneId="0">
 					<!--Interface to outside-->
@@ -69,7 +72,7 @@
 		</Materials>
 		<Models>
 			<InternalLoadsModel id="200" modelType="Scheduled">
-				<IBK:Parameter name="RadiantFraction" unit="---">0.0</IBK:Parameter>
+				<IBK:Parameter name="RadiantFraction" unit="---">1.0</IBK:Parameter>
 				<!-- takes schedules with names: 
 					"EquipmentHeatLoadSchedule [W/m2]",
 					"PersonHeatLoadSchedule [W/m2]",
@@ -127,14 +130,6 @@
 			</ObjectList>
 			<ObjectList name="Zone Var01">
 				<FilterID>1</FilterID>
-				<ReferenceType>Zone</ReferenceType>
-			</ObjectList>
-			<ObjectList name="Zone Var02">
-				<FilterID>2</FilterID>
-				<ReferenceType>Zone</ReferenceType>
-			</ObjectList>
-			<ObjectList name="Zone Var03">
-				<FilterID>3</FilterID>
 				<ReferenceType>Zone</ReferenceType>
 			</ObjectList>
 			<ObjectList name="InternalLoadsModel">
