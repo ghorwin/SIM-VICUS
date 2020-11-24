@@ -88,6 +88,15 @@ void NewPolygonObject::create(QOpenGLShaderProgram * shaderProgramm, const Coord
 	m_vertexBufferObject.release();
 	m_colorBufferObject.release();
 	m_indexBufferObject.release();
+
+	m_planeGeometry.m_type = VICUS::PlaneGeometry::T_Polygon;
+	// add test data
+#if 0
+	appendVertex(IBKMK::Vector3D(-5,0,0));
+	appendVertex(IBKMK::Vector3D(0,2,0));
+	appendVertex(IBKMK::Vector3D(-5,2,0));
+	updateBuffers();
+#endif
 }
 
 
@@ -96,6 +105,30 @@ void NewPolygonObject::destroy() {
 	m_vertexBufferObject.destroy();
 	m_colorBufferObject.destroy();
 	m_indexBufferObject.destroy();
+}
+
+
+void NewPolygonObject::appendVertex(const IBKMK::Vector3D & p) {
+	m_planeGeometry.m_vertexes.push_back(p);
+	m_planeGeometry.updateNormal();
+	updateBuffers();
+}
+
+
+void NewPolygonObject::updateLastVertex(const QVector3D & p) {
+	// no vertex added yet? should normally not happen, but during testing we just check it
+	if (m_vertexBufferData.empty())
+		return;
+	// any change to the previously stored point?
+	if (p == m_vertexBufferData.back().m_coords)
+		return;
+	// update last coordinate
+	m_vertexBufferData.back().m_coords = p;
+	// and update the last part of the buffer (later, for now we just upload the entire buffer again)
+	// transfer data stored in m_vertexBufferData
+	m_vertexBufferObject.bind();
+	m_vertexBufferObject.allocate(m_vertexBufferData.data(), m_vertexBufferData.size()*sizeof(Vertex));
+	m_vertexBufferObject.release();
 }
 
 
@@ -114,8 +147,8 @@ void NewPolygonObject::updateBuffers() {
 	m_vertexBufferData.clear();
 	m_colorBufferData.clear();
 	m_indexBufferData.clear();
-	unsigned int currentVertexIndex;
-	unsigned int currentElementIndex;
+	unsigned int currentVertexIndex = 0;
+	unsigned int currentElementIndex = 0;
 	m_firstLineVertex = 0;
 
 	if (m_planeGeometry.isValid()) {
@@ -163,8 +196,9 @@ void NewPolygonObject::render() {
 	// now draw the geometry - first the polygon (if any)
 	if (!m_indexBufferData.empty())
 		glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
-	// then the line consisting of the last two vertexes
-	glDrawArrays(GL_LINES, m_firstLineVertex, 2);
+	if (m_vertexBufferData.size() > 1)
+		// then the line consisting of the last two vertexes
+		glDrawArrays(GL_LINES, m_firstLineVertex, 2);
 	// release buffers again
 	m_vao.release();
 }

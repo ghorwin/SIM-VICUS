@@ -45,6 +45,16 @@ public:
 	void create(QOpenGLShaderProgram * shaderProgramm, const CoordinateSystemObject * coordSystemObject);
 	void destroy();
 
+	/*! Appends a vertex to the plane geometry and updates the draw buffer. */
+	void appendVertex(const IBKMK::Vector3D & p);
+
+	/*! This function is to be called whenever the movable coordinate system changes its (snapped) position.
+		The function first compares the point with the currently set point - if no change is recognized, nothing happens.
+		If the point was indeed moved, the buffer will be updated and only the last vertex will be updated in the
+		GPU memory.
+	*/
+	void updateLastVertex(const QVector3D & p);
+
 	/*! Populates the color and vertex buffer with data for the "last segment" line and the polygon.
 		Resizes vertex and element buffers on GPU memory and copies data from locally stored vertex/element arrays to GPU.
 
@@ -63,11 +73,14 @@ public:
 	VICUS::PlaneGeometry			m_planeGeometry;
 	unsigned int					m_firstLineVertex = 0;
 
-	/*! Vertex buffer in CPU memory, holds data of all vertices (coords and normals). */
+	/*! Vertex buffer in CPU memory, holds data of all vertices (coords and normals).
+		The last vertex is always the vertex of the current movable coordinate system's location.
+		The line will be drawn between the last and the one before last vertex, using array draw command.
+	*/
 	std::vector<Vertex>				m_vertexBufferData;
 	/*! Color buffer in CPU memory, holds colors of all vertices (same size as m_vertexBufferData). */
 	std::vector<ColorRGBA>			m_colorBufferData;
-	/*! Index buffer on CPU memory. */
+	/*! Index buffer on CPU memory (only for the triangle strip). */
 	std::vector<GLshort>			m_indexBufferData;
 
 	/*! VertexArrayObject, references the vertex, color and index buffers. */

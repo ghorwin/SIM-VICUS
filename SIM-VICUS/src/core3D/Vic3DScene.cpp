@@ -110,6 +110,9 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 	// transfer other properties
 
 
+
+	// for now put the scene automatically into draw mode
+	setOperationMode(OM_Draw);
 }
 
 
@@ -328,6 +331,10 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 	updateWorld2ViewMatrix();
 
+
+	/// \todo for performance reasons, we should add a flag that signals that the view was indeed changed
+	///			otherwise we do a potential lengthy picking and snap operation for nothing
+
 	// if coordinate system is active, perform picking operation and snap coordinate system to grid
 	if (m_coordinateSystemActive) {
 		m_pickObjectIsOutdated = true;
@@ -340,6 +347,11 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 			// coordinate system
 			m_coordinateSystemObject.m_transform.setTranslation(closestPoint);
 		}
+	}
+
+	// if we are in draw mode, update the movable coordinate system's location in the new polygon object
+	if (m_operationMode == OM_Draw) {
+		m_newPolygonObject.updateLastVertex(m_coordinateSystemObject.m_transform.translation());
 	}
 }
 
@@ -426,7 +438,20 @@ void Vic3DScene::render() {
 
 	// *** transparent building geometry ***
 
+	// tell OpenGL to show all planes
+	glDisable(GL_CULL_FACE);
+	// disable update of depth test but still use it
+	glDepthMask (GL_FALSE);
 
+	// *** new polygon draw object ***
+
+	m_transparencyShader->bind();
+	m_transparencyShader->shaderProgram()->setUniformValue(m_transparencyShader->m_uniformIDs[0], m_worldToView);
+
+	m_newPolygonObject.render();
+
+	// re-enable updating of z-buffer
+	glDepthMask(GL_TRUE);
 }
 
 
@@ -673,7 +698,7 @@ void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3
 
 void Vic3DScene::adjustCurserDuringMouseDrag(const QPoint & mouseDelta, const QPoint & localMousePos, QPoint & newLocalMousePos) {
 	// cursor position moves out of window?
-	const unsigned int WINDOW_MOVE_MARGIN = 50;
+	const int WINDOW_MOVE_MARGIN = 50;
 	if (localMousePos.x() < WINDOW_MOVE_MARGIN && mouseDelta.x() < 0) {
 //						qDebug() << "Resetting mousepos to right side of window.";
 		newLocalMousePos.setX(m_viewPort.width()-WINDOW_MOVE_MARGIN);
@@ -703,9 +728,8 @@ void Vic3DScene::handleLeftMouseClick() {
 			// signal parent widget that we added a point
 			IBKMK::Vector3D p = VICUS::QVector2IBKVector(m_coordinateSystemObject.m_transform.translation());
 			m_parent->addPolygonVertex(p);
-			// append a vertex
-			m_newPolygonObject.m_planeGeometry.m_vertexes.push_back(p);
-
+			// append a vertex (this will automatically update the draw buffer)
+			m_newPolygonObject.appendVertex(p);
 		} break;
 		default :;
 	}

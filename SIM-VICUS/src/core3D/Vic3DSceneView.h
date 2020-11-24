@@ -92,8 +92,6 @@ private:
 
 	Vic3DScene					m_mainScene;
 
-	PickLineObject				m_pickLineObject;
-
 	QOpenGLTimeMonitor			m_gpuTimers;
 	QElapsedTimer				m_cpuTimer;
 

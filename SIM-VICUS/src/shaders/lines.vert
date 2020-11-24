@@ -1,9 +1,10 @@
 #version 330
 
 // GLSL version 3.3
+
 // Vertex shader for simple lines without color vertex attribute and
 // a transformation matrix.
-// Color of fragments is controlled by fragment shader.
+// Color is (currently) fixed.
 
 layout(location = 0) in vec3 position; // input:  attribute with index '0' with 3 floats (x, y, z coords) per vertex
 

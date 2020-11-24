@@ -91,8 +91,6 @@ SceneView::~SceneView() {
 		for (ShaderProgram & p : m_shaderPrograms)
 			p.destroy();
 
-		m_pickLineObject.destroy();
-
 		m_mainScene.destroy();
 
 		m_gpuTimers.destroy();
