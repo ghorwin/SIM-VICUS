@@ -27,6 +27,8 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
+	VICUS_READWRITE
+
 	Network();
 
 	/*! add node to network based on coordinates and type and return the node id.
@@ -119,8 +121,14 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
+	/*! unique ID of network */
+	unsigned int					m_id = INVALID_ID;			// XML:A:required
+
+	/*! fluid id */
+	unsigned int					m_fluidID = INVALID_ID;		// XML:A:required
+
 	/*! network name */
-	std::string						m_name;
+	std::string						m_name;						// XML:A
 
 	/*! Nodes ID matches always node index.
 		\code
@@ -130,13 +138,10 @@ public:
 		Node & n = m_nodes[e.m_n1];
 		\endcode
 	*/
-	std::vector<NetworkNode>		m_nodes;
+	std::vector<NetworkNode>		m_nodes;					// XML:E
 
 	/*! vector with edges */
-	std::vector<NetworkEdge>		m_edges;
-
-	/*! fluid id */
-	unsigned int					m_fluidID;
+	std::vector<NetworkEdge>		m_edges;					// XML:E
 
 	/*! Stores the extends of the network.
 		Use the function updateExtends() to compute these.

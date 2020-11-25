@@ -2,6 +2,7 @@
 #define VICUS_NetworkNodeH
 
 #include "VICUS_Constants.h"
+#include "VICUS_CodeGenMacros.h"
 
 #include <vector>
 #include <set>
@@ -17,10 +18,14 @@ class NetworkNode {
 
 public:
 
+	// *** PUBLIC MEMBER FUNCTIONS ***
+
+	VICUS_READWRITE
+
 	enum NodeType {
-		NT_Building,
-		NT_Mixer,
-		NT_Source,
+		NT_Building,		// Keyword: Building
+		NT_Mixer,			// Keyword: Mixer
+		NT_Source,			// Keyword: Source
 		NUM_NT
 	};
 
@@ -46,9 +51,7 @@ public:
 		return (m_edges.size()==2);
 	}
 
-	/*! Only callable if node has exactly two edges: return the edge which is not the given edge
-		otherwise IBK_ASSERT
-	*/
+	/*! Only callable if node has exactly two edges: return the edge which is not the given edge */
 	NetworkEdge * neighborEdge(const NetworkEdge * e) const;
 
 	/*! get a set of all redundant nodes in the graph */
@@ -74,10 +77,13 @@ public:
 	/*! looks at all adjacent nodes to find a node which has a heating demand >0 and returns it. */
 	double adjacentHeatingDemand(std::set<NetworkEdge*> visitedEdges);
 
-	unsigned int					m_id  = INVALID_ID;
-	IBKMK::Vector3D					m_position = IBKMK::Vector3D(-9.99,-9.99,-9.99);
-	NodeType						m_type = NUM_NT;
-	double							m_maxHeatingDemand = 0;
+
+	// *** PUBLIC MEMBER VARIABLES ***
+
+	unsigned int					m_id  = INVALID_ID;										// XML:A:required
+	IBKMK::Vector3D					m_position = IBKMK::Vector3D(-9.99,-9.99,-9.99);		// XML:A:required
+	NodeType						m_type = NUM_NT;										// XML:A:required
+	double							m_maxHeatingDemand = 0;									// XML:A
 	double							m_distanceToStart = std::numeric_limits<double>::max();
 	NetworkNode *					m_predecessor = nullptr;
 	bool							m_isDeadEnd = false;

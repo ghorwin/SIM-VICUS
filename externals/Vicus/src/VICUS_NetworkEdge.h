@@ -3,6 +3,7 @@
 
 #include "VICUS_NetworkNode.h"
 #include "VICUS_Constants.h"
+#include "VICUS_CodeGenMacros.h"
 
 #include <vector>
 #include <set>
@@ -12,6 +13,10 @@ namespace VICUS {
 class NetworkEdge {
 
 public:
+
+	// *** PUBLIC MEMBER FUNCTIONS ***
+
+	VICUS_READWRITE
 
 	NetworkEdge();
 	NetworkEdge(const unsigned nodeId1, const unsigned nodeId2, const bool supply):
@@ -37,23 +42,26 @@ public:
 	/*! returns opposite node of the given one */
 	NetworkNode * neighbourNode(const NetworkNode *node) const;
 
-	unsigned int m_nodeId1 = 0;
-	unsigned int m_nodeId2 = 0;
+
+	// *** PUBLIC MEMBER VARIABLES ***
+
+	unsigned int m_nodeId1 = 0;						// XML:A:required
+	unsigned int m_nodeId2 = 0;						// XML:A:required
 
 	NetworkNode		*	m_node1 = nullptr;
 	NetworkNode		*	m_node2 = nullptr;
 
 	/*! Effective length [m], might be different than geometric length between nodes. */
-	double			m_length;
+	double			m_length;						// XML:E
 
 	/*! Inner Diameter in [m] */
-	double			m_diameterInside;
+	double			m_diameterInside;				// XML:E
 
 	/*! Outer Diameter in [m] */
-	double			m_diameterOutside;
+	double			m_diameterOutside;				// XML:E
 
 	/*! If false, this is a branch. */
-	bool			m_supply;
+	bool			m_supply;						// XML:E
 
 	/*! heating demand of all connected buildings */
 	double			m_heatingDemand = 0;
