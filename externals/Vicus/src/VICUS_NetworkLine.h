@@ -3,58 +3,51 @@
 
 #include "VICUS_NetworkEdge.h"
 
+#include "IBK_point.h"
+
 namespace VICUS {
 
 /*! Line is a helper class that implements a range of 2D line operations.
 	It is meant to be constructed from an edge definition, and caches
 	the respective node coordinates, internally.
 */
-class NetworkLine{
+class NetworkLine2D{
 public:
 
-	NetworkLine(const double &x1, const double &y1, const double &x2, const double &y2):
-		m_x1(x1),
-		m_y1(y1),
-		m_x2(x2),
-		m_y2(y2)
+	NetworkLine2D(const IBK::point2D<double> &p1, const IBK::point2D<double> &p2):
+		m_p1(p1),
+		m_p2(p2)
 	{}
 
-	NetworkLine(const NetworkEdge &e):
-		m_x1(e.m_node1->m_x),
-		m_y1(e.m_node1->m_y),
-		m_x2(e.m_node2->m_x),
-		m_y2(e.m_node2->m_y)
+	NetworkLine2D(const NetworkEdge &e):
+		m_p1(e.m_node1->m_position.m_x, e.m_node1->m_position.m_y),
+		m_p2(e.m_node2->m_position.m_x, e.m_node2->m_position.m_y)
 	{}
 
 	/*! return intersection point between two lines */
-	void intersection(const NetworkLine &line, double &xs, double &ys) const;
+	void intersection(const NetworkLine2D &line, IBK::point2D<double> &pInter) const;
 
 	/*! return othogonal projection of point on line */
-	void projectionFromPoint(const double &xp, const double &yp, double &xproj, double &yproj) const;
+	void projectionFromPoint(const IBK::point2D<double> &point, IBK::point2D<double> &pProj) const;
 
 	/*! return orthogonal distance between point and line */
-	double distanceToPoint(const double &xp, const double &yp) const;
+	double distanceToPoint(const IBK::point2D<double> &point) const;
 
 	/*! determines wether the given point is on the line, between the determining points but does not match any of the determining points */
-	bool containsPoint(const double & xp, const double &yp) const;
+	bool containsPoint(const IBK::point2D<double> &point) const;
 
-	/*! determine wether line shares an intersection point wiht given line. The intersection point must be within both lines */
-	bool sharesIntersection(const NetworkLine &line) const;
-
-	/*! returns length of the line */
+	/*! length of line */
 	double length() const;
 
 	/*! retruns distance between two given points */
-	static double distanceBetweenPoints(const double &x1, const double &y1, const double &x2, const double &y2);
+	static double distanceBetweenPoints(const IBK::point2D<double> &point1, const IBK::point2D<double> &point2);
 
 	/*! checks wether the distance between two points is below the threshold */
-	static bool pointsMatch(const double &x1, const double &y1, const double &x2, const double &y2, const double threshold=0.01);
+	static bool pointsMatch(const IBK::point2D<double> &point1, const IBK::point2D<double> &point2);
 
-	double m_x1;
-	double m_y1;
-	double m_x2;
-	double m_y2;
-
+	IBK::point2D<double>	m_p1;
+	IBK::point2D<double>	m_p2;
+	static constexpr double	m_resolution = 0.01;		/// geometric resolution in m, points closer than that are assumed equal
 };
 
 } // namespace VICUS

@@ -18,16 +18,16 @@ Network::Network() {
 }
 
 
-unsigned Network::addNode(const double &x, const double &y, const NetworkNode::NodeType type, const bool consistentCoordinates) {
+unsigned Network::addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool consistentCoordinates) {
 	// if there is an existing node with identical coordinates, return its id and dont add a new one
 	if (consistentCoordinates){
 		for (NetworkNode n: m_nodes){
-			if (NetworkLine::pointsMatch(n.m_x, n.m_y, x, y))
+			if (n.m_position.distanceTo(v) < NetworkLine2D::m_resolution)
 				return n.m_id;
 		}
 	}
 	unsigned id = m_nodes.size();
-	m_nodes.push_back(NetworkNode(id, x, y, type));
+	m_nodes.push_back(NetworkNode(id, type, v));
 
 	updateNodeEdgeConnectionPointers();
 
@@ -36,7 +36,7 @@ unsigned Network::addNode(const double &x, const double &y, const NetworkNode::N
 
 
 unsigned Network::addNode(const NetworkNode &node, const bool considerCoordinates) {
-	return addNode(node.m_x, node.m_y, node.m_type, considerCoordinates);
+	return addNode(node.m_position, node.m_type, considerCoordinates);
 }
 
 
@@ -118,8 +118,8 @@ void Network::readGridFromCSV(const IBK::Path &filePath){
 			polyLine.push_back({x, y});
 		}
 		for (unsigned i=0; i<polyLine.size()-1; ++i){
-			unsigned n1 = addNode(polyLine[i][0], polyLine[i][1], NetworkNode::NT_Mixer);
-			unsigned n2 = addNode(polyLine[i+1][0], polyLine[i+1][1], NetworkNode::NT_Mixer);
+			unsigned n1 = addNode(IBKMK::Vector3D(polyLine[i][0], polyLine[i][1], 0), NetworkNode::NT_Mixer);
+			unsigned n2 = addNode(IBKMK::Vector3D(polyLine[i+1][0], polyLine[i+1][1], 0), NetworkNode::NT_Mixer);
 			addEdge(n1, n2, true);
 		}
 	}
@@ -141,25 +141,24 @@ void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heat
 		IBK::trim(line, "))");
 		IBK::explode(line, xyStr, " ", IBK::EF_NoFlags);
 		// add node
-		unsigned id = addNode(IBK::string2val<double>(xyStr[0]), IBK::string2val<double>(xyStr[1]), NetworkNode::NT_Building);
-		m_nodes[id].m_heatingDemand = heatDemand;
+		unsigned id = addNode(IBKMK::Vector3D(IBK::string2val<double>(xyStr[0]), IBK::string2val<double>(xyStr[1]), 0), NetworkNode::NT_Building);
+		m_nodes[id].m_maxHeatingDemand = heatDemand;
 	}
 }
 
 
-void Network::setSource(const double &x, const double &y) {
+void Network::setSource(const IBKMK::Vector3D &v) {
 	IBK_ASSERT(!m_nodes.empty());
 
 	// process all nodes and shift them by x and y
 	for (NetworkNode &n: m_nodes) {
-		n.m_x -= x;
-		n.m_y -= y;
+		n.m_position -= v;
 	}
 
 	NetworkNode * nMin = nullptr;
 	double distMin = std::numeric_limits<double>::max();
 	for (NetworkNode &n: m_nodes){
-		double dist = NetworkLine::distanceBetweenPoints(0, 0, n.m_x, n.m_y);
+		double dist = n.m_position.distanceTo(IBKMK::Vector3D(0,0,0));
 		if (dist < distMin){
 			distMin = dist;
 			nMin = &n;
@@ -182,14 +181,14 @@ bool Network::findAndAddIntersection() {
 		for (unsigned i2=i1+1; i2<m_edges.size(); ++i2) {
 
 			// calculate intersection
-			NetworkLine l1 = NetworkLine(m_edges[i1]);
-			NetworkLine l2 = NetworkLine(m_edges[i2]);
-			double xs, ys;
-			l1.intersection(l2, xs, ys);
+			NetworkLine2D l1 = NetworkLine2D(m_edges[i1]);
+			NetworkLine2D l2 = NetworkLine2D(m_edges[i2]);
+			IBK::point2D<double> ps;
+			l1.intersection(l2, ps);
 
 			// if it is within both lines: add node and edges, adapt exisiting nodes
-			if (l1.containsPoint(xs, ys) && l2.containsPoint(xs, ys)){
-				unsigned nInter = addNode(xs, ys, NetworkNode::NT_Mixer);
+			if (l1.containsPoint(ps) && l2.containsPoint(ps)){
+				unsigned nInter = addNode(IBKMK::Vector3D(ps), NetworkNode::NT_Mixer);
 				addEdge(nInter, m_edges[i1].m_nodeId1, true);
 				addEdge(nInter, m_edges[i2].m_nodeId1, true);
 				m_edges[i1].m_nodeId1 = nInter;
@@ -216,36 +215,32 @@ void Network::connectBuildings(const bool extendSupplyPipes) {
 		for (unsigned id=0; id<m_edges.size(); ++id){
 			if (!m_edges[id].m_supply)
 				continue;
-			double dist = NetworkLine(m_edges[id]).distanceToPoint(m_nodes[idBuilding].m_x, m_nodes[idBuilding].m_y);
+			double dist = NetworkLine2D(m_edges[id]).distanceToPoint(m_nodes[idBuilding].m_position.point2D());
 			if (dist<distMin){
 				distMin = dist;
 				idEdgeMin = id;
 			}
 		}
 		// branch node
-		NetworkLine lMin = NetworkLine(m_edges[idEdgeMin]);
-		double xBranch, yBranch;
+		NetworkLine2D lMin = NetworkLine2D(m_edges[idEdgeMin]);
+		IBK::point2D<double> pBranch;
 		unsigned idBranch;
-		lMin.projectionFromPoint(m_nodes[idBuilding].m_x, m_nodes[idBuilding].m_y, xBranch, yBranch);
-
+		lMin.projectionFromPoint(m_nodes[idBuilding].m_position.point2D(), pBranch);
 		// branch node is inside edge: split edge
-		if (lMin.containsPoint(xBranch,yBranch)){
-			idBranch = addNode(xBranch, yBranch, NetworkNode::NT_Mixer);
+		if (lMin.containsPoint(pBranch)){
+			idBranch = addNode(IBKMK::Vector3D(pBranch), NetworkNode::NT_Mixer);
 			addEdge(m_edges[idEdgeMin].m_nodeId1, idBranch, true);
 			m_edges[idEdgeMin].m_nodeId1 = idBranch;
 			updateNodeEdgeConnectionPointers();
 		}
 		// branch node is outside edge
 		else{
-			double dist1 = NetworkLine::distanceBetweenPoints(xBranch, yBranch, m_edges[idEdgeMin].m_node1->m_x,
-													   m_edges[idEdgeMin].m_node1->m_y);
-			double dist2 = NetworkLine::distanceBetweenPoints(xBranch, yBranch, m_edges[idEdgeMin].m_node2->m_x,
-													   m_edges[idEdgeMin].m_node2->m_y);
+			double dist1 = NetworkLine2D::distanceBetweenPoints(pBranch, m_edges[idEdgeMin].m_node1->m_position.point2D());
+			double dist2 = NetworkLine2D::distanceBetweenPoints(pBranch, m_edges[idEdgeMin].m_node2->m_position.point2D());
 			idBranch = (dist1 < dist2) ? m_edges[idEdgeMin].m_nodeId1 : m_edges[idEdgeMin].m_nodeId2 ;
 			// if pipe should be extended, change coordinates of branch node
 			if (extendSupplyPipes){
-				m_nodes[idBranch].m_x = xBranch;
-				m_nodes[idBranch].m_y = yBranch;
+				m_nodes[idBranch].m_position = pBranch;
 				updateNodeEdgeConnectionPointers();
 			}
 		}
@@ -285,7 +280,7 @@ void Network::networkWithoutDeadEnds(Network &cleanNetwork, const unsigned maxSt
 
 void Network::calculateLengths(){
 	for (NetworkEdge &e: m_edges) {
-		e.m_length = NetworkLine(e).length();
+		e.m_length = NetworkLine2D(e).length();
 	}
 }
 
@@ -337,7 +332,7 @@ void Network::sizePipeDimensions(const double &deltaPMax, const double &deltaTem
 		if (node.m_type == NetworkNode::NT_Building){
 			dijkstraShortestPathToSource(node, path);
 			for (NetworkEdge * edge: path)
-				edge->m_heatingDemand += node.m_heatingDemand;
+				edge->m_heatingDemand += node.m_maxHeatingDemand;
 		}
 	}
 
@@ -404,10 +399,10 @@ void Network::updateExtends() {
 	double maxY = -std::numeric_limits<double>::max();
 	// now process all nodes
 	for (const VICUS::NetworkNode & node : m_nodes) {
-		minX = std::min(minX, node.m_x);
-		maxX = std::max(maxX, node.m_x);
-		minY = std::min(minY, node.m_y);
-		maxY = std::max(maxY, node.m_y);
+		minX = std::min(minX, node.m_position.m_x);
+		maxX = std::max(maxX, node.m_position.m_x);
+		minY = std::min(minY, node.m_position.m_y);
+		maxY = std::max(maxY, node.m_position.m_y);
 	}
 	m_extends.set(minX, minY, maxX, maxY);
 }
@@ -435,8 +430,8 @@ void Network::writeNetworkCSV(const IBK::Path &file) const{
 	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
 	for (const NetworkEdge &e: m_edges){
 		f.precision(10);
-		f << std::fixed << e.m_node1->m_x << "\t" << e.m_node1->m_y << "\t" << e.m_node2->m_x << "\t"
-		  << e.m_node2->m_y << "\t" << e.m_length << std::endl;
+		f << std::fixed << e.m_node1->m_position.m_x << "\t" << e.m_node1->m_position.m_y << "\t"
+		  << e.m_node2->m_position.m_x << "\t" << e.m_node2->m_position.m_y << "\t" << e.m_length << std::endl;
 	}
 	f.close();
 }
@@ -446,10 +441,10 @@ void Network::writePathCSV(const IBK::Path &file, const NetworkNode & node, cons
 	std::ofstream f;
 	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
 	f.precision(10);
-	f << std::fixed << node.m_x << "\t" << node.m_y << std::endl;
+	f << std::fixed << node.m_position.m_x << "\t" << node.m_position.m_y << std::endl;
 	for (const NetworkEdge *e: path){
-		f << std::fixed << e->m_node1->m_x << "\t" << e->m_node1->m_y << "\t" << e->m_node2->m_x << "\t"
-		  << e->m_node2->m_y << "\t" << e->m_length << std::endl;
+		f << std::fixed << e->m_node1->m_position.m_x << "\t" << e->m_node1->m_position.m_y << "\t"
+		  << e->m_node2->m_position.m_x << "\t" << e->m_node2->m_position.m_y << "\t" << e->m_length << std::endl;
 	}
 	f.close();
 }
@@ -461,7 +456,7 @@ void Network::writeBuildingsCSV(const IBK::Path &file) const {
 	f.precision(10);
 	for (const NetworkNode &n: m_nodes){
 		if (n.m_type==NetworkNode::NT_Building)
-			f << std::fixed << n.m_x << "\t" << n.m_y << "\t" << n.m_heatingDemand << std::endl;
+			f << std::fixed << n.m_position.m_x << "\t" << n.m_position.m_y << "\t" << n.m_maxHeatingDemand << std::endl;
 	}
 	f.close();
 }

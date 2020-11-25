@@ -5,63 +5,56 @@
 
 namespace VICUS {
 
-void NetworkLine::intersection(const NetworkLine &line, double &xs, double &ys) const
+void NetworkLine2D::intersection(const NetworkLine2D &line, IBK::point2D<double> &pInter) const
 {
-	double x1 = m_x1; double x2 = m_x2; double x3 = line.m_x1; double x4 = line.m_x2;
-	double y1 = m_y1; double y2 = m_y2; double y3 = line.m_y1; double y4 = line.m_y2;
-	xs = ( (x4 - x3) * (x2 * y1 - x1 * y2) - (x2 - x1) * (x4 * y3 - x3 * y4) ) / ( (y4 - y3) * (x2 - x1) - (y2 - y1) * (x4 - x3) );
-	ys = ( (y1 - y2) * (x4 * y3 - x3 * y4) - (y3 - y4) * (x2 * y1 - x1 * y2) ) / ( (y4 - y3) * (x2 - x1) - (y2 - y1) * (x4 - x3) );
+	const double &x1 = m_p1.m_x; const double &x2 = m_p2.m_x; const double &x3 = line.m_p1.m_x; const double &x4 = line.m_p2.m_x;
+	const double &y1 = m_p1.m_y; const double &y2 = m_p2.m_y; const double &y3 = line.m_p1.m_y; const double &y4 = line.m_p2.m_y;
+	pInter.m_x = ( (x4 - x3) * (x2 * y1 - x1 * y2) - (x2 - x1) * (x4 * y3 - x3 * y4) ) / ( (y4 - y3) * (x2 - x1) - (y2 - y1) * (x4 - x3) );
+	pInter.m_y = ( (y1 - y2) * (x4 * y3 - x3 * y4) - (y3 - y4) * (x2 * y1 - x1 * y2) ) / ( (y4 - y3) * (x2 - x1) - (y2 - y1) * (x4 - x3) );
 }
 
 
-void NetworkLine::projectionFromPoint(const double &xp, const double &yp, double &xproj, double &yproj) const{
-	// vector form g = a + s*b;  with a = (m_x1, m_y1)
-	double b1 = m_x2 - m_x1;
-	double b2 = m_y2 - m_y1;
-	double s = (xp + b2/b1*yp - m_x1 - b2/b1*m_y1) / (b1 + b2*b2/b1);
-	xproj = m_x1 + s*b1;
-	yproj = m_y1 + s*b2;
+void NetworkLine2D::projectionFromPoint(const IBK::point2D<double> &point, IBK::point2D<double> &proj) const{
+	// vector form g = a + s*b;  with a = (m_p1.m_x, m_p1.m_y)
+	double b1 = m_p2.m_x - m_p1.m_x;
+	double b2 = m_p2.m_y - m_p1.m_y;
+	double s = (point.m_x + b2/b1*point.m_y - m_p1.m_x - b2/b1*m_p1.m_y) / (b1 + b2*b2/b1);
+	proj.m_x = m_p1.m_x + s*b1;
+	proj.m_y = m_p1.m_y + s*b2;
 }
 
 
-double NetworkLine::distanceToPoint(const double &xp, const double &yp) const{
-	double xproj, yproj;
-	projectionFromPoint(xp, yp, xproj, yproj);
-	if (containsPoint(xproj, yproj))
-		return distanceBetweenPoints(xp, yp, xproj, yproj);
+double NetworkLine2D::distanceToPoint(const IBK::point2D<double> &point) const{
+	IBK::point2D<double> proj;
+	projectionFromPoint(point, proj);
+	if (containsPoint(proj))
+		return distanceBetweenPoints(point, proj);
 	else
-		return std::min(distanceBetweenPoints(m_x1, m_y1, xp, yp), distanceBetweenPoints(m_x2, m_y2, xp, yp));
+		return std::min(distanceBetweenPoints(m_p1, point), distanceBetweenPoints(m_p2, point));
 }
 
 
-bool NetworkLine::containsPoint(const double &xp, const double &yp) const
+bool NetworkLine2D::containsPoint(const IBK::point2D<double> &point) const
 {
-	bool inside = (xp >= std::min(m_x1, m_x2)) && (xp <= std::max(m_x1, m_x2)) && (yp >= std::min(m_y1, m_y2)) && (yp <= std::max(m_y1, m_y2));
-	bool identity = pointsMatch(xp, yp, m_x1, m_y1) || pointsMatch(xp, yp, m_x2, m_y2);
+	bool inside = (point.m_x >= std::min(m_p1.m_x, m_p2.m_x)) && (point.m_x <= std::max(m_p1.m_x, m_p2.m_x)) &&
+			(point.m_y >= std::min(m_p1.m_y, m_p2.m_y)) && (point.m_y <= std::max(m_p1.m_y, m_p2.m_y));
+//	bool identity =  pointsMatch(xp, yp, m_p1.m_x, m_p1.m_y) || pointsMatch(xp, yp, m_p2.m_x, m_p2.m_y);
+
+	bool identity = distanceBetweenPoints(point, m_p1) < m_resolution || distanceBetweenPoints(point, m_p2) < m_resolution ;
 	return inside && !identity;
 }
 
-bool NetworkLine::sharesIntersection(const NetworkLine &line) const
+
+double NetworkLine2D::length() const
 {
-	double xp, yp;
-	intersection(line, xp, yp);
-	return containsPoint(xp, yp) && line.containsPoint(xp, yp);
+	return distanceBetweenPoints(m_p1, m_p2);
 }
 
-double NetworkLine::length() const
+double NetworkLine2D::distanceBetweenPoints(const IBK::point2D<double> &point1, const IBK::point2D<double> &point2)
 {
-	return distanceBetweenPoints(m_x1, m_y1, m_x2, m_y2);
+	return std::sqrt( (point1.m_x-point2.m_x) * (point1.m_x-point2.m_x) + (point1.m_y-point2.m_y) * (point1.m_y-point2.m_y) );
 }
 
-double NetworkLine::distanceBetweenPoints(const double &x1, const double &y1, const double &x2, const double &y2)
-{
-	return std::sqrt( (x1-x2) * (x1-x2) + (y1-y2) * (y1-y2) );
-}
-
-bool NetworkLine::pointsMatch(const double &x1, const double &y1, const double &x2, const double &y2, const double threshold)
-{
-	return distanceBetweenPoints(x1, y1, x2, y2) < threshold;
-}
 
 
 } // namespace VICUS

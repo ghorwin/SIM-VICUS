@@ -3,6 +3,7 @@
 
 #include "VICUS_NetworkEdge.h"
 #include "VICUS_NetworkNode.h"
+#include "VICUS_CodeGenMacros.h"
 
 #include <vector>
 #include <set>
@@ -24,11 +25,13 @@ class NetworkFluid;
 class Network {
 public:
 
+	// *** PUBLIC MEMBER FUNCTIONS ***
+
 	Network();
 
 	/*! add node to network based on coordinates and type and return the node id.
 	 * When considerCoordinates==true and the given coordinates exist already in the network: return the id of this existing node */
-	unsigned addNode(const double &x, const double &y, const NetworkNode::NodeType type, const bool considerCoordinates=true);
+	unsigned addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool considerCoordinates=true);
 
 	/*! addNode using Node constructor */
 	unsigned addNode(const NetworkNode & node, const bool considerCoordinates=true);
@@ -49,7 +52,7 @@ public:
 	void readBuildingsFromCSV(const IBK::Path & filePath, const double & heatDemand);
 
 	/*! finds node that is closest to the given coordinates and change its type to NT_SOURCE */
-	void setSource(const double &x, const double &y);
+	void setSource(const IBKMK::Vector3D &v);
 
 	/*! generate all intersections in the network (runs in a loop as long as findAndAddIntersection() is true.) */
 	void generateIntersections();
@@ -114,6 +117,9 @@ public:
 										const NetworkPipe &pipe, const double &temperature);
 
 
+	// *** PUBLIC MEMBER VARIABLES ***
+
+	/*! network name */
 	std::string						m_name;
 
 	/*! Nodes ID matches always node index.
@@ -125,8 +131,11 @@ public:
 		\endcode
 	*/
 	std::vector<NetworkNode>		m_nodes;
+
+	/*! vector with edges */
 	std::vector<NetworkEdge>		m_edges;
 
+	/*! fluid id */
 	unsigned int					m_fluidID;
 
 	/*! Stores the extends of the network.

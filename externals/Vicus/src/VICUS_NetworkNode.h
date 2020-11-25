@@ -1,11 +1,13 @@
 #ifndef VICUS_NetworkNodeH
 #define VICUS_NetworkNodeH
 
+#include "VICUS_Constants.h"
+
 #include <vector>
 #include <set>
 #include <limits>
+#include <IBKMK_Vector3D.h>
 
-#include "VICUS_Constants.h"
 
 namespace VICUS {
 
@@ -24,12 +26,11 @@ public:
 
 	NetworkNode();
 
-	NetworkNode(const unsigned id, const double &x, const double &y, const NodeType type, const double heatDemand=0):
+	NetworkNode(const unsigned id, const NodeType type, const IBKMK::Vector3D &v, const double heatDemand=0):
 		m_id(id),
-		m_x(x),
-		m_y(y),
+		m_position(v),
 		m_type(type),
-		m_heatingDemand(heatDemand)
+		m_maxHeatingDemand(heatDemand)
 	{}
 
 	void collectConnectedEdges(std::set<const NetworkNode*> & connectedNodes,
@@ -73,14 +74,15 @@ public:
 	/*! looks at all adjacent nodes to find a node which has a heating demand >0 and returns it. */
 	double adjacentHeatingDemand(std::set<NetworkEdge*> visitedEdges);
 
-	unsigned int			m_id  = INVALID_ID;
-	double m_x, m_y;//dafür wieder vector oder point nehmen
-	NodeType				m_type = NUM_NT;
-	double					m_heatingDemand = 0;
-	double					m_distanceToStart = std::numeric_limits<double>::max();
+	unsigned int					m_id  = INVALID_ID;
+	IBKMK::Vector3D					m_position = IBKMK::Vector3D(-9.99,-9.99,-9.99);
+	NodeType						m_type = NUM_NT;
+	double							m_maxHeatingDemand = 0;
+	double							m_distanceToStart = std::numeric_limits<double>::max();
 	NetworkNode *					m_predecessor = nullptr;
-	bool					m_isDeadEnd = false;
+	bool							m_isDeadEnd = false;
 	std::vector<NetworkEdge*>		m_edges;
+
 };
 
 } // namespace VICUS
