@@ -37,8 +37,8 @@ bool SVNetworkImportDialog::edit(VICUS::Network & n) {
 	double y = QLocale().toDouble(m_ui->lineEditYOrigin->text());
 
 	for (VICUS::NetworkNode & node : n.m_nodes) {
-		node.m_x -= x;
-		node.m_y -= y;
+		node.m_position.m_x -= x;
+		node.m_position.m_y -= y;
 	}
 
 	n.m_name = m_ui->lineEditNetworkName->text().toStdString();

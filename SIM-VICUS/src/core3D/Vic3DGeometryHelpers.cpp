@@ -136,11 +136,9 @@ void addPlane(const VICUS::PlaneGeometry & g, const QColor & col,
 }
 
 
-void addNetworkEdge(const VICUS::NetworkEdge & p, unsigned int & currentVertexIndex, unsigned int & currentElementIndex, std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLshort> & indexBufferData) {
-	VICUS::NetworkLine l(p);
-	IBKMK::Vector3D p1(l.m_x1, l.m_y1, 0);
-	IBKMK::Vector3D p2(l.m_x2, l.m_y2, 0);
-	addCylinder(p1, p2, Qt::red, 0.1, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData);
+void addNetworkEdge(const VICUS::NetworkEdge & e, unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+					std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLshort> & indexBufferData){
+	addCylinder(e.m_node1->m_position, e.m_node2->m_position, Qt::red, 0.1, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData);
 }
 
 

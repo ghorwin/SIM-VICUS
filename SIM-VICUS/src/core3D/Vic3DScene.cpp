@@ -538,9 +538,8 @@ void Vic3DScene::generateNetworkGeometry() {
 	// add cylinders for all pipes
 	for (const VICUS::Network & n : p.m_networks) {
 		for (const VICUS::NetworkEdge & e : n.m_edges) {
-			VICUS::NetworkLine l(e);
 			double radius = 0.5; //e.m_diameterOutside*5; // enlarge diameter, so that we see something
-			addCylinder(IBKMK::Vector3D(l.m_x1,l.m_y1,1), IBKMK::Vector3D(l.m_x2,l.m_y2,1), Qt::red,
+			addCylinder(e.m_node1->m_position, e.m_node2->m_position, Qt::red,
 						radius,
 						currentVertexIndex, currentElementIndex,
 						m_networkGeometryObject.m_vertexBufferData,
@@ -549,7 +548,7 @@ void Vic3DScene::generateNetworkGeometry() {
 		}
 		for (const VICUS::NetworkNode & no : n.m_nodes) {
 			double radius = 0.8; //e.m_diameterOutside*5; // enlarge diameter, so that we see something
-			addSphere(IBKMK::Vector3D(no.m_x,no.m_y,1), Qt::cyan,
+			addSphere(no.m_position, Qt::cyan,
 						radius,
 						currentVertexIndex, currentElementIndex,
 						m_networkGeometryObject.m_vertexBufferData,
