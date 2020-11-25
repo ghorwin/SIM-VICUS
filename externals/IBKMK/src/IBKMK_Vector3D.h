@@ -52,13 +52,25 @@ public:
 
 	/*! Default constructor, initializes default point/vector. */
 	Vector3D() {}
+
+	/*! Convenience constructor. */
+	Vector3D(const IBK::point2D<double> &p) : IBK::point3D<double>(p.m_x, p.m_y, 0.0)
+	{
+	}
+
 	/*! Convenience constructor. */
 	Vector3D(double a, double b, double c) : IBK::point3D<double>(a,b,c)
 	{
 	}
+
 	/*! Initializing constructor for base class. */
 	Vector3D(const IBK::point3D<double> & pt) : IBK::point3D<double>(pt)
 	{
+	}
+
+	/*! returns distance to other vector */
+	double distanceTo(const Vector3D &v){
+		return Vector3D(*this - v).magnitude();
 	}
 
 	/*! Returns the magnitude of the vector. */
@@ -151,6 +163,11 @@ public:
 		Vector3D tmp = *this;
 		tmp -= other;
 		return tmp;
+	}
+
+	/*! returns point2D with z=0 */
+	IBK::point2D<double> point2D(){
+		return IBK::point2D<double>(m_x, m_y);
 	}
 
 };
