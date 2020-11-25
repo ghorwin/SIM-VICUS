@@ -332,13 +332,6 @@ void SVMainWindow::setup() {
 	m_geometryViewSplitter->addWidget(m_geometryView);
 	m_geometryViewSplitter->setCollapsible(1, false);
 
-	// TODO : adjust size of navigation view to be about 250 px wide
-
-//	m_geometryViewSplitter->setStretchFactor(0, 1);
-//	m_geometryViewSplitter->setStretchFactor(1, 4);
-//	m_geometryViewSplitter->setSizes(QList<int>() << 250 << 1800);
-//	lay->setStretch(2,1);
-	// TODO : add other views
 
 	// *** add actions for undo and redo ***
 
@@ -960,8 +953,6 @@ void SVMainWindow::onOpenTemplateByFilename(const QString & filename) {
 
 
 void SVMainWindow::onNavigationBarViewChanged(int view) {
-	// toggle visibility of individual view widgets
-//	m_geometryWidget->setVisible(false);
 	// hide dock widgets as well when not in construction view mode
 	if (view != SVButtonBar::GeometryView) {
 		m_logDockWidget->setVisible(false);
@@ -974,6 +965,14 @@ void SVMainWindow::onNavigationBarViewChanged(int view) {
 	switch ((SVButtonBar::Views)view) {
 		case SVButtonBar::GeometryView :
 			m_geometryViewSplitter->setVisible(true);
+
+			// adjust size of navigation view to be about 250 px wide or to a user-saved size
+			// TODO : whenever user resizes the splitter, the new width should be saved in the settings
+			//        and re-applied next time the geometry view is shown
+			QList<int> sizes;
+			sizes << 250 << width()-m_buttonBar->width() - 250;
+			m_geometryViewSplitter->setSizes(sizes);
+
 			break;
 	}
 }

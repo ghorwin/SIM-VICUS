@@ -441,6 +441,8 @@ void Vic3DScene::render() {
 
 
 	// *** transparent building geometry ***
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// tell OpenGL to show all planes
 	glDisable(GL_CULL_FACE);
@@ -456,6 +458,7 @@ void Vic3DScene::render() {
 
 	// re-enable updating of z-buffer
 	glDepthMask(GL_TRUE);
+	glDisable(GL_BLEND);
 }
 
 
