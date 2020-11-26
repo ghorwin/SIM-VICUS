@@ -198,7 +198,7 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 
 				// we have load on interface side A
 				if (interfaceAZoneID() != 0 &&
-					intLoadsModel->objectList()->m_filterID.contains(interfaceAZoneID())) {
+					intLoadsModel->objectList().m_filterID.contains(interfaceAZoneID())) {
 
 					// ensure that no more than one loads definition is defined
 					if (m_inputRefs[InputRef_SideARadiationFromEquipmentLoads].m_referenceType
@@ -225,8 +225,8 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 					r.m_name.m_name = "RadiantLightingHeatLoad";
 					m_inputRefs[InputRef_SideARadiationFromLightingLoads] = r;
 				}
-				if (interfaceBZoneID() != 0&&
-					intLoadsModel->objectList()->m_filterID.contains(interfaceBZoneID())) {
+				if (interfaceBZoneID() != 0 &&
+					intLoadsModel->objectList().m_filterID.contains(interfaceBZoneID())) {
 
 					// ensure that no more than one loads definition is defined
 					if (m_inputRefs[InputRef_SideBRadiationFromEquipmentLoads].m_referenceType

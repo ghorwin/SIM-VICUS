@@ -39,10 +39,10 @@ void InternalLoadsModel::setup(const NANDRAD::InternalLoadsModel & internalLoads
 		} break;
 
 		default:
-			throw IBK::Exception(IBK::FormatString("Unknown/undefined model ID."), FUNC_ID);
+			throw IBK::Exception(IBK::FormatString("Unknown/undefined model type."), FUNC_ID);
 	}
 
-	// all models require an object list with indication of ventilated zones
+	// all models require an object list with indication of zones that this model applies to
 	if (m_internalLoadsModel->m_zoneObjectList.empty())
 		throw IBK::Exception(IBK::FormatString("Missing 'ZoneObjectList' parameter."), FUNC_ID);
 	// check and resolve reference to object list
@@ -50,7 +50,7 @@ void InternalLoadsModel::setup(const NANDRAD::InternalLoadsModel & internalLoads
 																		  objLists.end(),
 																		  m_internalLoadsModel->m_zoneObjectList);
 	if (oblst_it == objLists.end())
-		throw IBK::Exception(IBK::FormatString("Invalid/undefined ZoneObjectList '%1'.")
+		throw IBK::Exception(IBK::FormatString("Invalid/undefined object list '%1'.")
 							 .arg(m_internalLoadsModel->m_zoneObjectList).arg(m_internalLoadsModel->m_id), FUNC_ID);
 	m_objectList = &(*oblst_it);
 	// ensure correct reference type of object list
@@ -64,8 +64,9 @@ void InternalLoadsModel::setup(const NANDRAD::InternalLoadsModel & internalLoads
 	// the rest of the initialization can only be done when the object lists have been initialized, i.e. this happens in resultDescriptions()
 }
 
-const NANDRAD::ObjectList *InternalLoadsModel::objectList() const{
-	return m_objectList;
+
+const NANDRAD::ObjectList & InternalLoadsModel::objectList() const{
+	return *m_objectList;
 }
 
 
@@ -75,7 +76,7 @@ void InternalLoadsModel::initResults(const std::vector<AbstractModel *> &) {
 	// no model IDs, nothing to do (see explanation in resultDescriptions())
 	if (m_objectList->m_filterID.m_ids.empty())
 		return; // nothing to compute, return
-	// get IDs of ventilated zones
+	// get IDs of referenced zones
 	std::vector<unsigned int> indexKeys(m_objectList->m_filterID.m_ids.begin(), m_objectList->m_filterID.m_ids.end());
 	// resize result vectors accordingly
 	for (unsigned int varIndex=0; varIndex<NUM_VVR; ++varIndex)

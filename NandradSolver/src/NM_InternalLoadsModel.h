@@ -21,7 +21,7 @@ namespace NANDRAD_MODEL {
 */
 class InternalLoadsModel : public AbstractModel, public AbstractStateDependency {
 public:
-	/*! Computed results, provided with access via zone ID. */
+	/*! Computed results, vector-valued results that provide access via zone ID. */
 	enum VectorValuedResults {
 		VVR_ConvectiveEquipmentHeatLoad,		// Keyword: ConvectiveEquipmentHeatLoad			[W]		'Convective heat load due to electric equipment usage per zone'
 		VVR_ConvectivePersonHeatLoad,			// Keyword: ConvectivePersonHeatLoad			[W]		'Convective heat load due to person occupance per zone'
@@ -50,7 +50,7 @@ public:
 			   const std::vector<NANDRAD::Zone> & zones);
 
 	/*! Returns object list of all referenced models. */
-	const NANDRAD::ObjectList *objectList() const;
+	const NANDRAD::ObjectList &objectList() const;
 
 	// *** Re-implemented from AbstractModel
 
