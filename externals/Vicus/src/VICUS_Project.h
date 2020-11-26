@@ -64,6 +64,29 @@ public:
 	/*! Removes un-referenced/un-needed data structures. */
 	void clean();
 
+
+	// *** FUNCTIONS ***
+
+	/*! Function to find an element by ID. */
+	template <typename T>
+	T * element(std::vector<T>& vec, unsigned int id) {
+		typename std::vector<T>::iterator it = std::find(vec.begin(), vec.end(), id);
+		if (it == vec.end())
+			return nullptr;
+		else
+			return &(*it);
+	}
+
+	/*! Function to find an element by ID (const-version). */
+	template <typename T>
+	const T * element(std::vector<T>& vec, unsigned int id) const {
+		typename std::vector<T>::const_iterator it = std::find(vec.begin(), vec.end(), id);
+		if (it == vec.end())
+			return nullptr;
+		else
+			return &(*it);
+	}
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	ViewSettings			m_viewSettings;		// XML:E
