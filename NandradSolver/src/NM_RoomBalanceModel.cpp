@@ -40,7 +40,7 @@ void RoomBalanceModel::setup( const NANDRAD::SimulationParameter &simPara) {
 	m_simPara     = &simPara;
 
 	// parameter had already been checked
-	m_solarRadiationLoadFraction = m_simPara->m_para[NANDRAD::SimulationParameter::P_RadiationLoadFractionZone].value;
+	m_solarRadiationLoadFraction = m_simPara->m_solarLoadsDistributionModel.m_para[NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionZone].value;
 
 	// results depend on calculation mode
 	m_moistureBalanceEnabled = simPara.m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].isEnabled();

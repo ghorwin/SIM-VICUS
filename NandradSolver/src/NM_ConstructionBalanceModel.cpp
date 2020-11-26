@@ -447,7 +447,7 @@ void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NAN
 		// we got radiation load (positive into zone and hence positive into construction surface as well)
 
 		// retrieve total solar radiation load into the zone [W]
-		double radFraction2Zone = m_statesModel->m_simPara->m_para[NANDRAD::SimulationParameter::P_RadiationLoadFractionZone].value;
+		double radFraction2Zone = m_statesModel->m_simPara->m_solarLoadsDistributionModel.m_para[NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionZone].value;
 		// compute fraction that is applied to surfaces directly (the rest goes to the room air balance) [W]
 		double radLoad2AllSurfaces = (1-radFraction2Zone)* (*m_valueRefs[InputRef_SideASolarRadiationFromWindowLoads]);
 
@@ -466,7 +466,7 @@ void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NAN
 		// we got radiation load (positive into zone and hence positive into construction surface as well)
 
 		// retrieve total solar radiation load into the zone [W]
-		double radFraction2Zone = m_statesModel->m_simPara->m_para[NANDRAD::SimulationParameter::P_RadiationLoadFractionZone].value;
+		double radFraction2Zone = m_statesModel->m_simPara->m_solarLoadsDistributionModel.m_para[NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionZone].value;
 		// compute fraction that is applied to surfaces directly (the rest goes to the room air balance) [W]
 		double radLoad2AllSurfaces = (1-radFraction2Zone)* (*m_valueRefs[InputRef_SideBSolarRadiationFromWindowLoads]);
 
