@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<PostProc version="2.2.3">
+	<!--List of all directories-->
+	<Directories>
+		<Directory>
+			<Path>.</Path>
+			<SubDir Color="#c66300" Checked="0">InfiltrationConstantSingleZone</SubDir>
+			<SubDir Color="#ff5500" Checked="0">InfiltrationConstantSingleZone.doc</SubDir>
+			<SubDir Color="#aa55ff" Checked="0">InfiltrationConstantSingleZone.gcc_linux</SubDir>
+			<SubDir Color="#aaaa00" Checked="0">InfiltrationScheduledSingleZone</SubDir>
+			<SubDir Color="#ffffff" Checked="0">InfiltrationScheduledSingleZone.gcc_linux</SubDir>
+			<SubDir Color="#416fce" Checked="0">IntegralMeanOutputs</SubDir>
+			<SubDir Color="#ffaa00" Checked="0">IntegralMeanOutputs.gcc_linux</SubDir>
+			<SubDir Color="#ff007f" Checked="0">InternalLoadsConstantSingleZone.gcc_linux</SubDir>
+			<SubDir Color="#7141d1" Checked="0">InternalLoadsScheduledSingleZone.gcc_linux</SubDir>
+			<SubDir Color="#ffee00" Checked="0">InternalLoadsSingleZoneConstantAllConvective</SubDir>
+			<SubDir Color="#45ad45" Checked="0">InternalLoadsSingleZoneWithInternalWall</SubDir>
+			<SubDir Color="#aa0000" Checked="0">InternalLoadsSingleZoneWithInternalWall.gcc_linux</SubDir>
+			<SubDir Color="#55aaff" Checked="0">LoadsIncidenceAngle</SubDir>
+			<SubDir Color="#005500" Checked="0">LoadsIncidenceAngle.gcc_linux</SubDir>
+			<SubDir Color="#550000" Checked="0">SingleZoneSingleOutdoorsConstruction</SubDir>
+			<SubDir Color="#ffaaff" Checked="0">SingleZoneSingleOutdoorsConstruction.gcc_linux</SubDir>
+			<SubDir Color="#c66300" Checked="0">SingleZoneSingleOutdoorsConstructionSideB</SubDir>
+			<SubDir Color="#ff5500" Checked="0">SingleZoneSingleOutdoorsConstructionSideB.gcc_linux</SubDir>
+			<SubDir Color="#aa55ff" Checked="0">SingleZoneSingleOutdoorsConstructionWithShwRad</SubDir>
+			<SubDir Color="#aaaa00" Checked="0">SingleZoneSingleOutdoorsConstructionWithShwRad.gcc_linux</SubDir>
+			<SubDir Color="#ffffff" Checked="0">SingleZoneSingleOutdoorsConstructionWithWindow</SubDir>
+			<SubDir Color="#416fce" Checked="0">SingleZoneSingleOutdoorsConstructionWithWindow.gcc_linux</SubDir>
+			<SubDir Color="#ffaa00" Checked="0">SolarRadiationModel_Normal</SubDir>
+			<SubDir Color="#ff007f" Checked="0">SolarRadiationModel_Normal.gcc_linux</SubDir>
+			<SubDir Color="#7141d1" Checked="0">SolarRadiationModel_Perez</SubDir>
+			<SubDir Color="#ffee00" Checked="0">SolarRadiationModel_Perez.gcc_linux</SubDir>
+			<SubDir Color="#45ad45" Checked="0">climate</SubDir>
+			<ExpandedSubDir>.</ExpandedSubDir>
+		</Directory>
+	</Directories>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<!--Split window state.-->
+	<Splitting>
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="-1" size1="1" size2="1" orientation="2" />
+		<FocusedWidget>0</FocusedWidget>
+	</Splitting>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+</PostProc>
