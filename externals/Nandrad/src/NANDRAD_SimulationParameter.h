@@ -41,11 +41,6 @@ public:
 	enum para_t {
 		P_InitialTemperature,						// Keyword: InitialTemperature					[C]		'Global initial temperature [C].'
 		P_InitialRelativeHumidity,					// Keyword: InitialRelativeHumidity				[%]		'Global initial relative humidity [%].'
-		P_UserThermalRadiationFraction,				// Keyword: UserThermalRadiationFraction		[---]	'Percentage of heat that is emitted by long wave radiation from persons.'
-		P_EquipmentThermalLossFraction,				// Keyword: EquipmentThermalLossFraction		[---]	'Percentage of energy from equipment load that is not available as thermal heat.'
-		P_EquipmentThermalRadiationFraction,		// Keyword: EquipmentThermalRadiationFraction	[---]	'Percentage of heat that is emitted by long wave radiation from equipment.'
-		P_LightingVisibleRadiationFraction,			// Keyword: LightingVisibleRadiationFraction	[---]	'Percentage of energy from lighting that is transformed into visible short wave radiation.'
-		P_LightingThermalRadiationFraction,			// Keyword: LightingThermalRadiationFraction	[---]	'Percentage of heat that is emitted by long wave radiation from lighting.'
 		P_DomesticWaterSensitiveHeatGainFraction,	// Keyword: DomesticWaterSensitiveHeatGainFraction	[---]	'Percentage of sensitive heat from domestic water istributed towrads the room.'
 		P_AirExchangeRateN50,						// Keyword: AirExchangeRateN50					[1/h]	'Air exchange rate resulting from a pressure difference of 50 Pa between inside and outside.'
 		P_ShieldingCoefficient,						// Keyword: ShieldingCoefficient				[---]	'Shielding coefficient for a given location and envelope type.'
