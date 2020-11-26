@@ -68,6 +68,7 @@ win32 {
 SOURCES += \
         ../../src/SVNetworkEditDialog.cpp \
         ../../src/SVPreferencesPageStyle.cpp \
+        ../../src/SVPropertyWidget.cpp \
         ../../src/actions/SVUndoAddNetwork.cpp \
         ../../src/actions/SVUndoCommandBase.cpp \
         ../../src/actions/SVUndoProject.cpp \
@@ -110,6 +111,7 @@ SOURCES += \
 HEADERS  += \
         ../../src/SVNetworkEditDialog.h \
         ../../src/SVPreferencesPageStyle.h \
+        ../../src/SVPropertyWidget.h \
         ../../src/actions/SVUndoAddNetwork.h \
         ../../src/actions/SVUndoCommandBase.h \
         ../../src/actions/SVUndoProject.h \
