@@ -40,6 +40,13 @@ public:
 		NUM_PT
 	};
 
+	/*! Enumeration values for different themes to be managed in settings. */
+	enum ThemeType {
+		TT_White,
+		TT_Dark,
+		NUM_TT
+	};
+
 	/*! Keywords used for serialization of the properties. */
 	static const char * const			PROPERTY_KEYWORDS[NUM_PT];
 
@@ -119,6 +126,8 @@ public:
 	/*! Path to CCMEditor executable. */
 	QString						m_CCMEditorExecutable;
 
+	/*! ThemeType of theme applied */
+	ThemeType					m_theme;
 
 	/*! The project file suffix including the . */
 	QString						m_projectFileSuffix			= ".vicus";

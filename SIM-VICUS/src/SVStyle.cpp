@@ -35,11 +35,14 @@ SVStyle::SVStyle() {
 
 	// *** Style Customization ***
 
-	QFile file(":/style/VicusUIStyle.qss");
-	if (file.exists()) {
+	SVSettings & s = SVSettings::instance();
+
+	QFile file(":/qdarkstyle/style.qss");
+	if ( file.exists()) {
 		file.open(QFile::ReadOnly);
 		m_styleSheet = QLatin1String(file.readAll());
-		qApp->setStyleSheet(m_styleSheet);
+		if ( s.m_theme == SVSettings::TT_Dark )
+			qApp->setStyleSheet(m_styleSheet);
 	}
 
 #ifdef Q_OS_MACX

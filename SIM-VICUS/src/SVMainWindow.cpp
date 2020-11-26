@@ -319,8 +319,6 @@ void SVMainWindow::setup() {
 	// TODO : Stephan SVStyle::formatSplitter(m_geometryViewSplitter);
 	lay->addWidget(m_geometryViewSplitter);
 
-
-
 	// *** Navigation tree
 
 	m_navigationTreeWidget = new SVNavigationTreeWidget(this);

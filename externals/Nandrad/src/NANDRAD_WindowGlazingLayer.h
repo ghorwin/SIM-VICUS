@@ -82,8 +82,6 @@ public:
 
 	type_t						m_type = NUM_T;						// XML:A:required
 
-	// TODO : Stephan, add other properties for layers here
-
 	/*! Unique ID-number for this window layer. */
 	unsigned int				m_id;								// XML:A:required
 

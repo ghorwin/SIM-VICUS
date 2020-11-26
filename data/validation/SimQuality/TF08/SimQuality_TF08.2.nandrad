@@ -21,8 +21,7 @@
 			</Zone>			
 		</Zones>
 		<ConstructionInstances>
-			
-			<!-- Surface Var 03 -->	
+			<!-- Surface Var 02 -->	
 			<ConstructionInstance id="3" displayName="All Surfaces Var02">
 				<ConstructionTypeId>10005</ConstructionTypeId>
 				<IBK:Parameter name="Area" unit="m2">62</IBK:Parameter>

@@ -22,9 +22,10 @@ public:
 
 	static void formatWidgetWithLayout(QWidget * w);
 
+	QString				m_styleSheet;
+
 private:
 	static SVStyle		*m_self;
-	QString				m_styleSheet;
 
 	unsigned int		m_fontMonoSpacePointSize;
 	QString				m_fontMonoSpace;

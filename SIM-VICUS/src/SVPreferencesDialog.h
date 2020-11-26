@@ -4,6 +4,7 @@
 #include <QDialog>
 
 class SVPreferencesPageTools;
+class SVPreferencesPageStyle;
 
 namespace Ui {
 	class SVPreferencesDialog;
@@ -45,6 +46,8 @@ private:
 
 	/*! The Tools page. */
 	SVPreferencesPageTools			*m_pageTools;
+	/*! The Style page. */
+	SVPreferencesPageStyle			*m_style;
 };
 
 #endif // SVPreferencesDialogH
