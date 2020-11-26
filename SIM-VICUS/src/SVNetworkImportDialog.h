@@ -2,14 +2,14 @@
 #define SVNETWORKIMPORTDIALOG_H
 
 #include <QDialog>
+#include <QMap>
+
+#include <VICUS_Network.h>
 
 namespace Ui {
 	class SVNetworkImportDialog;
 }
 
-namespace VICUS {
-	class Network;
-}
 
 /*! A dialog for importing pipe network data. */
 class SVNetworkImportDialog : public QDialog {
@@ -22,15 +22,32 @@ public:
 	/*! Always start the dialog with this function.
 		\return Returns true if dialog was confirmed and data can be added to project.
 	*/
-	bool edit(VICUS::Network & n);
+	bool edit();
 
 private slots:
 	void on_pushButtonGISNetwork_clicked();
 
+	void on_radioButtonNewNetwork_clicked(bool checked);
+
+	void on_radioButtonAddToExistingNetwork_clicked(bool checked);
+
+	void on_radioButtonEdges_clicked(bool checked);
+
+	void on_radioButtonNodes_clicked(bool checked);
+
 private:
+
+	void toggleReadEdges(bool readEdges);
+
+	void toggleReadExistingNetwork(bool readExisting);
+
 	Ui::SVNetworkImportDialog *m_ui;
 
-	VICUS::Network *	m_network;
+	VICUS::Network m_network;
+
+	QMap<QString, unsigned> m_existingNetworksMap;
+
+	void readNetworkData(const IBK::Path &fname, VICUS::Network &network) const;
 };
 
 #endif // SVNETWORKIMPORTDIALOG_H

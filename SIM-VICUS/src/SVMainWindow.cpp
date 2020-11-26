@@ -629,11 +629,11 @@ void SVMainWindow::on_actionNetworkImport_triggered() {
 	// opens import network dialog
 	if (m_networkImportDialog == nullptr)
 		m_networkImportDialog = new SVNetworkImportDialog(this);
-	VICUS::Network n;
-	if (m_networkImportDialog->edit(n)) {
+
+	if (m_networkImportDialog->edit()) {
 		// create undo action for adding a new network
-		SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("Added network"), n);
-		undo->push(); // modifies project and updates views
+//		SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("Added network"), n);
+//		undo->push(); // modifies project and updates views
 	}
 }
 

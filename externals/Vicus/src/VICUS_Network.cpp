@@ -19,15 +19,18 @@ Network::Network() {
 
 
 unsigned Network::addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool consistentCoordinates) {
+	// always normalize position to origin
+	IBKMK::Vector3D position = v - m_origin;
+
 	// if there is an existing node with identical coordinates, return its id and dont add a new one
 	if (consistentCoordinates){
 		for (NetworkNode n: m_nodes){
-			if (n.m_position.distanceTo(v) < NetworkLine2D::m_resolution)
+			if (n.m_position.distanceTo(position) < NetworkLine2D::m_resolution)
 				return n.m_id;
 		}
 	}
 	unsigned id = m_nodes.size();
-	m_nodes.push_back(NetworkNode(id, type, v));
+	m_nodes.push_back(NetworkNode(id, type, position));
 
 	updateNodeEdgeConnectionPointers();
 
@@ -147,18 +150,12 @@ void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heat
 }
 
 
-void Network::setSource(const IBKMK::Vector3D &v) {
+void Network::assignSourceNode(const IBKMK::Vector3D &v) {
 	IBK_ASSERT(!m_nodes.empty());
-
-	// process all nodes and shift them by x and y
-	for (NetworkNode &n: m_nodes) {
-		n.m_position -= v;
-	}
-
 	NetworkNode * nMin = nullptr;
 	double distMin = std::numeric_limits<double>::max();
 	for (NetworkNode &n: m_nodes){
-		double dist = n.m_position.distanceTo(IBKMK::Vector3D(0,0,0));
+		double dist = n.m_position.distanceTo(v - m_origin);
 		if (dist < distMin){
 			distMin = dist;
 			nMin = &n;
@@ -422,6 +419,18 @@ double Network::pressureLossColebrook(const double &length, const double &massFl
 		lambda = lambda_new;
 	}
 	return lambda_new * length / pipe.m_diameterInside() * fluid.m_para[NetworkFluid::P_Density].value / 2 * velocity * velocity;
+}
+
+IBKMK::Vector3D Network::origin() const
+{
+	return m_origin;
+}
+
+void Network::setOrigin(const IBKMK::Vector3D &origin)
+{
+	m_origin = origin;
+	for (NetworkNode &n: m_nodes)
+		n.m_position -= m_origin;
 }
 
 

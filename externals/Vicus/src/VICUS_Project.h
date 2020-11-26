@@ -85,7 +85,7 @@ public:
 
 	/*! Function to find an element by ID (const-version). */
 	template <typename T>
-	const T * element(std::vector<T>& vec, unsigned int id) const {
+	const T * element(const std::vector<T>& vec, unsigned int id) const {
 		typename std::vector<T>::const_iterator it = std::find(vec.begin(), vec.end(), id);
 		if (it == vec.end())
 			return nullptr;

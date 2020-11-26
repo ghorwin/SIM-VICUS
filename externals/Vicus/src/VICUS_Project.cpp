@@ -121,8 +121,6 @@ Project::Project() {
 		IBK::Path networkDataPath("../../data/vicus/GeometryTests/Network");
 		net.readGridFromCSV(networkDataPath / "Netz.csv");
 
-		// shift grid to be centered around these coordinates
-		net.setSource(481692.800107041, 5577526.14340303);
 
 		m_viewSettings.m_gridWidth = 10000; // 10 km
 		m_viewSettings.m_gridSpacing = 100; // major grid = 100 m

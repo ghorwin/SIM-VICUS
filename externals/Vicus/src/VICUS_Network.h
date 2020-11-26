@@ -55,7 +55,7 @@ public:
 	void readBuildingsFromCSV(const IBK::Path & filePath, const double & heatDemand);
 
 	/*! finds node that is closest to the given coordinates and change its type to NT_SOURCE */
-	void setSource(const IBKMK::Vector3D &v);
+	void assignSourceNode(const IBKMK::Vector3D &v);
 
 	/*! generate all intersections in the network (runs in a loop as long as findAndAddIntersection() is true.) */
 	void generateIntersections();
@@ -110,7 +110,6 @@ public:
 	/*! Recomputes the min/max coordinates of the network and updates m_extends. */
 	void updateExtends();
 
-
 	/*! pressure loss of a rough pipe according to colebrook equation
 	 \param length in [m]
 	 \param massFlow in [kg/s]
@@ -118,6 +117,10 @@ public:
 	 */
 	static double pressureLossColebrook(const double &length, const double &massFlow, const NetworkFluid &fluid,
 										const NetworkPipe &pipe, const double &temperature);
+
+	IBKMK::Vector3D origin() const;
+
+	void setOrigin(const IBKMK::Vector3D &origin);
 
 
 	// *** PUBLIC MEMBER VARIABLES ***
@@ -151,6 +154,9 @@ public:
 		\endcode
 	*/
 	IBK::rectangle<double>			m_extends;
+
+	/*! origin of the network, used only for drawing */
+	IBKMK::Vector3D					m_origin = IBKMK::Vector3D(0.0, 0.0, 0.0);
 
 };
 
