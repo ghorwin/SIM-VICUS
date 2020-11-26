@@ -329,10 +329,13 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		m_camera.translate(wheelDelta * transSpeed * m_camera.forward());
 	}
 
-	// store camera position in view settings
-	SVProjectHandler::instance().viewSettings().m_cameraTranslation = VICUS::QVector2IBKVector(m_camera.translation());
-	SVProjectHandler::instance().viewSettings().m_cameraRotation = m_camera.rotation();
-
+	// store camera position in view settings, but only if we have a project
+	// Note: the check is necessary, because the paint event may be called as part of closing the window
+	//       and updating the UI to the "no project" state
+	if (SVProjectHandler::instance().isValid()) {
+		SVProjectHandler::instance().viewSettings().m_cameraTranslation = VICUS::QVector2IBKVector(m_camera.translation());
+		SVProjectHandler::instance().viewSettings().m_cameraRotation = m_camera.rotation();
+	}
 	updateWorld2ViewMatrix();
 
 

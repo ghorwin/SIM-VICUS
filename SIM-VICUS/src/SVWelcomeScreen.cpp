@@ -19,6 +19,7 @@
 
 #include "SVConstants.h"
 #include "SVSettings.h"
+#include "SVStyle.h"
 
 extern const char * const HTML_TEMPLATE;
 extern const char * const RECENT_PROJECT_TABLE_TEMPLATE;
@@ -60,6 +61,7 @@ void SVWelcomeScreen::updateWelcomePage() {
 	}
 	// now create overall page
 	QString htmlPage = HTML_TEMPLATE;
+	SVStyle::formatWelcomePage(htmlPage);
 	// insert news
 	if (m_welcomePageNews.isEmpty()) {
 		welcomePageSideBar.append(QString("<i>%1</i>").arg(tr("Retrieving news content...")));
@@ -107,7 +109,8 @@ void SVWelcomeScreen::updateWelcomePage() {
 									  .arg(QString::fromStdString(pro.m_nandradData.m_projectInfo.m_comment));
 			}
 			else {
-				description = tr("<i><font color=\"#800000\">Project not accessible</font></i> <a href=\"premove:%1\">Remove %2 from list</a>").arg( i ).arg( finfo.fileName() );
+				description = tr("<i><font color=\"${STYLE_H3_COLOR}\">Project not accessible</font></i> <a href=\"premove:%1\">Remove %2 from list</a>").arg( i ).arg( finfo.fileName() );
+				SVStyle::formatWelcomePage(description);
 			}
 
 			QString thumbPath = QtExt::Directories::userDataDir()  + "/thumbs/" + finfo.fileName() + ".png";
@@ -370,10 +373,11 @@ void SVWelcomeScreen::onUpdateInfoRetrieved(int res, QString newVersion) {
 	if (res == 0) {
 		// if we have a newer version, add html text with update link
 		if (IBK::Version::lesserVersionNumber(VICUS::LONG_VERSION, newVersion.toStdString())) {
-			m_updateInfoNews = tr("<h1><font style=\"color:#a02020\">An update is available!</font></h1><p>");
+			m_updateInfoNews = tr("<h1><font style=\"color:${STYLE_H1_COLOR}\">An update is available!</font></h1><p>");
 			m_updateInfoNews += tr("Current version: <b>%1</b><br>").arg(VICUS::LONG_VERSION);
-			m_updateInfoNews += tr("New Version: <b><font style=\"color:#800000\">%1</font></b></p><p><a href=\"update:\">Download update</a>").arg(newVersion);
+			m_updateInfoNews += tr("New Version: <b><font style=\"color:${STYLE_LINKTEXT_COLOR}\">%1</font></b></p><p><a href=\"update:\">Download update</a>").arg(newVersion);
 			m_updateInfoNews += "</p><hr>";
+			SVStyle::formatWelcomePage(m_updateInfoNews);
 		}
 	}
 	updateWelcomePage();
@@ -384,16 +388,15 @@ void SVWelcomeScreen::onUpdateInfoRetrieved(int res, QString newVersion) {
 const char * const HTML_TEMPLATE =
 		"<html>\n"
 		"<head>\n"
-		"<!-- <link rel=stylesheet type=\"text/css\" href=\"welcome.css\"> -->\n"
 		"<style type=\"text/css\">\n"
-		"body     { font-size: medium; color: black; background-color: white }\n"
-		"a        { color: #0053A6; text-decoration:none }\n"
-		"a:hover  { color: #1C7DEF; background-color: white }\n"
+		"body     { font-size: medium; color: ${STYLE_TEXT_COLOR}; background-color: ${STYLE_BACKGROUND_COLOR} }\n"
+		"a        { color: ${STYLE_LINKTEXT_COLOR}; text-decoration:none }\n"
+		"a:hover  { color: ${STYLE_LINKTEXT_HOVER_COLOR}; background-color: ${STYLE_LINKTEXT_HOVER_BACKGROUND_COLOR}; }\n"
 		"p        { font-size: medium; text-align: justify; margin-top:0px; margin-bottom:8px;   }\n"
-		"h1       { font-size: large; color: #003264; font-weight:bold; \n"
+		"h1       { font-size: large; color: ${STYLE_H1_COLOR}; font-weight:bold; \n"
 		"           text-decoration: none; margin-top:15px; margin-bottom:15px }\n"
-		"h2       { font-size: medium; color: #0069A8; font-weight:bold; margin-top:15px; margin-bottom:6px }\n"
-		"h3       { font-size: medium; color: #00660F; font-weight:bold; margin-top:10px; margin-bottom:2px}\n"
+		"h2       { font-size: medium; color: ${STYLE_H2_COLOR}; font-weight:bold; margin-top:15px; margin-bottom:6px }\n"
+		"h3       { font-size: medium; color: ${STYLE_H3_COLOR}; font-weight:bold; margin-top:10px; margin-bottom:2px}\n"
 		"table    { font-size: medium }\n"
 		"b        { color: black }\n"
 		"pre      { font-size: small; font-family: monospace;courier }\n"
@@ -434,7 +437,6 @@ const char * const RECENT_PROJECT_TABLE_TEMPLATE =
 		"</table>\n"
 		"<br>\n"
 		"\n";
-
 
 
 

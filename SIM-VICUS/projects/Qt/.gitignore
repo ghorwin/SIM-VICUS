@@ -6,3 +6,4 @@
 /debug/
 /release/
 /release_x64/
+/qrc_style.cpp

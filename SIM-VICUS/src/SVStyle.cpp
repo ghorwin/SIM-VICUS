@@ -37,12 +37,13 @@ SVStyle::SVStyle() {
 
 	SVSettings & s = SVSettings::instance();
 
-	QFile file(":/qdarkstyle/style.qss");
-	if ( file.exists()) {
-		file.open(QFile::ReadOnly);
-		m_styleSheet = QLatin1String(file.readAll());
-		if ( s.m_theme == SVSettings::TT_Dark )
+	if ( s.m_theme == SVSettings::TT_Dark ) {
+		QFile file(":/qdarkstyle/style.qss");
+		if ( file.exists()) {
+			file.open(QFile::ReadOnly);
+			m_styleSheet = QLatin1String(file.readAll());
 			qApp->setStyleSheet(m_styleSheet);
+		}
 	}
 
 #ifdef Q_OS_MACX
@@ -82,5 +83,36 @@ void SVStyle::formatWidgetWithLayout(QWidget * w) {
 	l->setMargin(0);
 
 	// TODO : other customization or call formatWidget() function for basic styling
+}
+
+
+void SVStyle::formatWelcomePage(QString & htmlCode) {
+	switch (SVSettings::instance().m_theme) {
+		case SVSettings::TT_Dark :
+		{
+			htmlCode.replace("${STYLE_TEXT_COLOR}", "#F0F0F0");
+			htmlCode.replace("${STYLE_BACKGROUND_COLOR}", "#19232D");
+			htmlCode.replace("${STYLE_LINKTEXT_COLOR}", "#ffbf14");
+			htmlCode.replace("${STYLE_LINKTEXT_HOVER_COLOR}", "#ffffff");
+			htmlCode.replace("${STYLE_LINKTEXT_HOVER_BACKGROUND_COLOR}", "#19232D");
+			htmlCode.replace("${STYLE_H1_COLOR}", "#ff7e16");
+			htmlCode.replace("${STYLE_H2_COLOR}", "#ff5b1a");
+			htmlCode.replace("${STYLE_H3_COLOR}", "#ff5b1a");
+		} break;
+
+		case SVSettings::TT_White :
+		default:
+		{
+			htmlCode.replace("${STYLE_TEXT_COLOR}", qApp->palette().color(QPalette::Text).name());
+			htmlCode.replace("${STYLE_BACKGROUND_COLOR}", "#FFFFFF");
+			htmlCode.replace("${STYLE_LINKTEXT_COLOR}", "#0053A6");
+			htmlCode.replace("${STYLE_LINKTEXT_HOVER_COLOR}", "#1C7DEF");
+			htmlCode.replace("${STYLE_LINKTEXT_HOVER_BACKGROUND_COLOR}", qApp->palette().color(QPalette::Background).name());
+			htmlCode.replace("${STYLE_H1_COLOR}", "#003264");
+			htmlCode.replace("${STYLE_H2_COLOR}", "#0069A8");
+			htmlCode.replace("${STYLE_H3_COLOR}", "#00660F");
+		} break;
+	}
+
 }
 

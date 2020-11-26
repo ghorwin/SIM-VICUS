@@ -49,6 +49,7 @@ file( GLOB APP_UIS ${PROJECT_SOURCE_DIR}/../../src/*.ui )
 # The Qt resource file (*.qrc)
 set( APP_QRCS	
 	${PROJECT_SOURCE_DIR}/../../resources/SIM-VICUS.qrc 
+	${PROJECT_SOURCE_DIR}/../../resources/qdarkstyle/style.qrc
 	${PROJECT_SOURCE_DIR}/../../src/shaders/shaders.qrc 
 )
 

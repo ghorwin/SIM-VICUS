@@ -22,6 +22,9 @@ public:
 
 	static void formatWidgetWithLayout(QWidget * w);
 
+	/*! Replaces all color text placeholders with colors based on the current style sheet. */
+	static void formatWelcomePage(QString & htmlCode);
+
 	QString				m_styleSheet;
 
 private:
