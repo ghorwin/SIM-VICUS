@@ -26,7 +26,6 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
-#include <NANDRAD_KeywordList.h>
 #include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
@@ -79,17 +78,10 @@ void SimulationParameter::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
-			else if (cName == "ShwradDistributionType") {
-				try {
-					m_shwradDistributionType = (swrad_distribution_t)KeywordList::Enumeration("SimulationParameter::swrad_distribution_t", c->GetText());
-				}
-				catch (IBK::Exception & ex) {
-					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
-						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
-				}
-			}
 			else if (cName == "Interval")
 				m_interval.readXML(c);
+			else if (cName == "SolarLoadsDistributionModel")
+				m_solarLoadsDistributionModel.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -127,10 +119,9 @@ TiXmlElement * SimulationParameter::writeXML(TiXmlElement * parent) const {
 		}
 	}
 
-	if (m_shwradDistributionType != NUM_SWR)
-		TiXmlElement::appendSingleAttributeElement(e, "ShwradDistributionType", nullptr, std::string(), KeywordList::Keyword("SimulationParameter::swrad_distribution_t",  m_shwradDistributionType));
-
 	m_interval.writeXML(e);
+
+	m_solarLoadsDistributionModel.writeXML(e);
 	return e;
 }
 

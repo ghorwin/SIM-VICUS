@@ -29,6 +29,7 @@
 
 #include "NANDRAD_Interval.h"
 #include "NANDRAD_CodeGenMacros.h"
+#include "NANDRAD_SolarLoadsDistributionModel.h"
 
 namespace NANDRAD {
 
@@ -40,10 +41,6 @@ public:
 	enum para_t {
 		P_InitialTemperature,						// Keyword: InitialTemperature					[C]		'Global initial temperature [C].'
 		P_InitialRelativeHumidity,					// Keyword: InitialRelativeHumidity				[%]		'Global initial relative humidity [%].'
-		P_RadiationLoadFractionZone,				// Keyword: RadiationLoadFractionZone			[%]		'Percentage of solar radiation gains attributed direcly to room [%].'
-		P_RadiationLoadFractionFloor,				// Keyword: RadiationLoadFractionFloor			[%]		'Percentage of surface solar radiation attributed to floor [%].'
-		P_RadiationLoadFractionCeiling,				// Keyword: RadiationLoadFractionCeiling		[%]		'Percentage of surface solar radiation attributed to roof/ceiling[%].'
-		P_RadiationLoadFractionWalls,				// Keyword: RadiationLoadFractionWalls			[%]		'Percentage of surface solar radiation attributed to walls [%].'
 		P_UserThermalRadiationFraction,				// Keyword: UserThermalRadiationFraction		[---]	'Percentage of heat that is emitted by long wave radiation from persons.'
 		P_EquipmentThermalLossFraction,				// Keyword: EquipmentThermalLossFraction		[---]	'Percentage of energy from equipment load that is not available as thermal heat.'
 		P_EquipmentThermalRadiationFraction,		// Keyword: EquipmentThermalRadiationFraction	[---]	'Percentage of heat that is emitted by long wave radiation from equipment.'
@@ -71,17 +68,6 @@ public:
 		NUM_F
 	};
 
-	/*! Short wave radiation model variant. */
-	enum swrad_distribution_t {
-		/*! Short wave radiation on surfaces is distributed area-weighted. */
-		SWR_AreaWeighted,							// Keyword: AreaWeighted								'Distribution based on surface area.'
-		/*! Short wave radiation on surface is distributed based on surface type (see P_RadiationLoadFractionFloor, P_RadiationLoadFractionCeiling and P_RadiationLoadFractionWalls). */
-		SWR_SurfaceTypeFactor,						// Keyword: SurfaceTypeFactor							'Distribution based on surface type.'
-		/*! Short wave radiation on surface is distributed via view factor table (defined in each zone). */
-		SWR_ViewFactor,								// Keyword: ViewFactor									'Distribution based on zone-specific view factors.'
-		NUM_SWR
-	};
-
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	/*! Init default values (called before readXML()).
@@ -105,12 +91,11 @@ public:
 	/*! List of flags. */
 	IBK::Flag			m_flags[NUM_F];					// XML:E
 
-	/*! Defines the way short wave radiation loads are distributed. */
-	swrad_distribution_t	m_shwradDistributionType = SWR_AreaWeighted;	// XML:E
-
 	/*! The time interval of simulation beginning, offset
 		and duration from January 1, 0:00 of the start year. */
 	Interval			m_interval;						// XML:E
+
+	SolarLoadsDistributionModel	m_solarLoadsDistributionModel;	// XML:E
 };
 
 } // namespace NANDRAD

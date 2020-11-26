@@ -34,7 +34,7 @@ namespace NANDRAD {
 	const char * const INVALID_KEYWORD_INDEX_STRING = "KEYWORD_ERROR_STRING: Invalid type index";
 
 	/*! Holds a list of all enum types/categories. */
-	const char * const ENUM_TYPES[57] = {
+	const char * const ENUM_TYPES[58] = {
 		"ConstructionInstance::para_t",
 		"DailyCycle::interpolation_t",
 		"EmbeddedObject::para_t",
@@ -75,7 +75,8 @@ namespace NANDRAD {
 		"SimulationParameter::para_t",
 		"SimulationParameter::intPara_t",
 		"SimulationParameter::flag_t",
-		"SimulationParameter::swrad_distribution_t",
+		"SolarLoadsDistributionModel::distribution_t",
+		"SolarLoadsDistributionModel::para_t",
 		"SolverParameter::para_t",
 		"SolverParameter::intPara_t",
 		"SolverParameter::flag_t",
@@ -96,7 +97,7 @@ namespace NANDRAD {
 
 	/*! Converts a category string to respective enumeration value. */
 	int enum2index(const std::string & enumtype) {
-		for (int i=0; i<57; ++i) {
+		for (int i=0; i<58; ++i) {
 			if (enumtype == ENUM_TYPES[i]) return i;
 		}
 		//std::cerr << "Unknown enumeration type '" << enumtype<< "'." << std::endl;
@@ -379,19 +380,15 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "InitialTemperature";
 				case 1 : return "InitialRelativeHumidity";
-				case 2 : return "RadiationLoadFractionZone";
-				case 3 : return "RadiationLoadFractionFloor";
-				case 4 : return "RadiationLoadFractionCeiling";
-				case 5 : return "RadiationLoadFractionWalls";
-				case 6 : return "UserThermalRadiationFraction";
-				case 7 : return "EquipmentThermalLossFraction";
-				case 8 : return "EquipmentThermalRadiationFraction";
-				case 9 : return "LightingVisibleRadiationFraction";
-				case 10 : return "LightingThermalRadiationFraction";
-				case 11 : return "DomesticWaterSensitiveHeatGainFraction";
-				case 12 : return "AirExchangeRateN50";
-				case 13 : return "ShieldingCoefficient";
-				case 14 : return "HeatingDesignAmbientTemperature";
+				case 2 : return "UserThermalRadiationFraction";
+				case 3 : return "EquipmentThermalLossFraction";
+				case 4 : return "EquipmentThermalRadiationFraction";
+				case 5 : return "LightingVisibleRadiationFraction";
+				case 6 : return "LightingThermalRadiationFraction";
+				case 7 : return "DomesticWaterSensitiveHeatGainFraction";
+				case 8 : return "AirExchangeRateN50";
+				case 9 : return "ShieldingCoefficient";
+				case 10 : return "HeatingDesignAmbientTemperature";
 			} break;
 			// SimulationParameter::intPara_t
 			case 38 :
@@ -406,15 +403,23 @@ namespace NANDRAD {
 				case 2 : return "EnableJointVentilation";
 				case 3 : return "ExportClimateDataFMU";
 			} break;
-			// SimulationParameter::swrad_distribution_t
+			// SolarLoadsDistributionModel::distribution_t
 			case 40 :
 			switch (t) {
 				case 0 : return "AreaWeighted";
 				case 1 : return "SurfaceTypeFactor";
 				case 2 : return "ViewFactor";
 			} break;
-			// SolverParameter::para_t
+			// SolarLoadsDistributionModel::para_t
 			case 41 :
+			switch (t) {
+				case 0 : return "RadiationLoadFractionZone";
+				case 1 : return "RadiationLoadFractionFloor";
+				case 2 : return "RadiationLoadFractionCeiling";
+				case 3 : return "RadiationLoadFractionWalls";
+			} break;
+			// SolverParameter::para_t
+			case 42 :
 			switch (t) {
 				case 0 : return "RelTol";
 				case 1 : return "AbsTol";
@@ -432,7 +437,7 @@ namespace NANDRAD {
 				case 13 : return "KinsolAbsTol";
 			} break;
 			// SolverParameter::intPara_t
-			case 42 :
+			case 43 :
 			switch (t) {
 				case 0 : return "PreILUWidth";
 				case 1 : return "MaxKrylovDim";
@@ -442,14 +447,14 @@ namespace NANDRAD {
 				case 5 : return "DiscMaxElementsPerLayer";
 			} break;
 			// SolverParameter::flag_t
-			case 43 :
+			case 44 :
 			switch (t) {
 				case 0 : return "DetectMaxTimeStep";
 				case 1 : return "KinsolDisableLineSearch";
 				case 2 : return "KinsolStrictNewton";
 			} break;
 			// SolverParameter::integrator_t
-			case 44 :
+			case 45 :
 			switch (t) {
 				case 0 : return "CVODE";
 				case 1 : return "ExplicitEuler";
@@ -457,7 +462,7 @@ namespace NANDRAD {
 				case 3 : return "auto";
 			} break;
 			// SolverParameter::lesSolver_t
-			case 45 :
+			case 46 :
 			switch (t) {
 				case 0 : return "Dense";
 				case 1 : return "KLU";
@@ -466,19 +471,19 @@ namespace NANDRAD {
 				case 4 : return "auto";
 			} break;
 			// SolverParameter::precond_t
-			case 46 :
+			case 47 :
 			switch (t) {
 				case 0 : return "ILU";
 				case 1 : return "auto";
 			} break;
 			// WindowGlazingLayer::type_t
-			case 47 :
+			case 48 :
 			switch (t) {
 				case 0 : return "Gas";
 				case 1 : return "Glass";
 			} break;
 			// WindowGlazingLayer::para_t
-			case 48 :
+			case 49 :
 			switch (t) {
 				case 0 : return "Thickness";
 				case 1 : return "Conductivity";
@@ -489,7 +494,7 @@ namespace NANDRAD {
 				case 6 : return "P_LongWaveEmissivityOutside";
 			} break;
 			// WindowGlazingLayer::splinePara_t
-			case 49 :
+			case 50 :
 			switch (t) {
 				case 0 : return "ShortWaveTransmittance";
 				case 1 : return "ShortWaveReflectanceOutside";
@@ -499,40 +504,40 @@ namespace NANDRAD {
 				case 5 : return "HeatCapacity";
 			} break;
 			// WindowGlazingSystem::modelType_t
-			case 50 :
+			case 51 :
 			switch (t) {
 				case 0 : return "Simple";
 				case 1 : return "Detailed";
 			} break;
 			// WindowGlazingSystem::para_t
-			case 51 :
+			case 52 :
 			switch (t) {
 				case 0 : return "ThermalTransmittance";
 			} break;
 			// WindowGlazingSystem::splinePara_t
-			case 52 :
+			case 53 :
 			switch (t) {
 				case 0 : return "SHGC";
 			} break;
 			// WindowShading::modelType_t
-			case 53 :
+			case 54 :
 			switch (t) {
 				case 0 : return "Standard";
 			} break;
 			// WindowShading::para_t
-			case 54 :
+			case 55 :
 			switch (t) {
 				case 0 : return "ReductionFactor";
 			} break;
 			// Zone::type_t
-			case 55 :
+			case 56 :
 			switch (t) {
 				case 0 : return "Constant";
 				case 1 : return "Active";
 				case 2 : return "Ground";
 			} break;
 			// Zone::para_t
-			case 56 :
+			case 57 :
 			switch (t) {
 				case 0 : return "Temperature";
 				case 1 : return "RelativeHumidity";
@@ -820,19 +825,15 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "InitialTemperature";
 				case 1 : return "InitialRelativeHumidity";
-				case 2 : return "RadiationLoadFractionZone";
-				case 3 : return "RadiationLoadFractionFloor";
-				case 4 : return "RadiationLoadFractionCeiling";
-				case 5 : return "RadiationLoadFractionWalls";
-				case 6 : return "UserThermalRadiationFraction";
-				case 7 : return "EquipmentThermalLossFraction";
-				case 8 : return "EquipmentThermalRadiationFraction";
-				case 9 : return "LightingVisibleRadiationFraction";
-				case 10 : return "LightingThermalRadiationFraction";
-				case 11 : return "DomesticWaterSensitiveHeatGainFraction";
-				case 12 : return "AirExchangeRateN50";
-				case 13 : return "ShieldingCoefficient";
-				case 14 : return "HeatingDesignAmbientTemperature";
+				case 2 : return "UserThermalRadiationFraction";
+				case 3 : return "EquipmentThermalLossFraction";
+				case 4 : return "EquipmentThermalRadiationFraction";
+				case 5 : return "LightingVisibleRadiationFraction";
+				case 6 : return "LightingThermalRadiationFraction";
+				case 7 : return "DomesticWaterSensitiveHeatGainFraction";
+				case 8 : return "AirExchangeRateN50";
+				case 9 : return "ShieldingCoefficient";
+				case 10 : return "HeatingDesignAmbientTemperature";
 			} break;
 			// SimulationParameter::intPara_t
 			case 38 :
@@ -847,15 +848,23 @@ namespace NANDRAD {
 				case 2 : return "EnableJointVentilation";
 				case 3 : return "ExportClimateDataFMU";
 			} break;
-			// SimulationParameter::swrad_distribution_t
+			// SolarLoadsDistributionModel::distribution_t
 			case 40 :
 			switch (t) {
 				case 0 : return "AreaWeighted";
 				case 1 : return "SurfaceTypeFactor";
 				case 2 : return "ViewFactor";
 			} break;
-			// SolverParameter::para_t
+			// SolarLoadsDistributionModel::para_t
 			case 41 :
+			switch (t) {
+				case 0 : return "RadiationLoadFractionZone";
+				case 1 : return "RadiationLoadFractionFloor";
+				case 2 : return "RadiationLoadFractionCeiling";
+				case 3 : return "RadiationLoadFractionWalls";
+			} break;
+			// SolverParameter::para_t
+			case 42 :
 			switch (t) {
 				case 0 : return "RelTol";
 				case 1 : return "AbsTol";
@@ -873,7 +882,7 @@ namespace NANDRAD {
 				case 13 : return "KinsolAbsTol";
 			} break;
 			// SolverParameter::intPara_t
-			case 42 :
+			case 43 :
 			switch (t) {
 				case 0 : return "PreILUWidth";
 				case 1 : return "MaxKrylovDim";
@@ -883,14 +892,14 @@ namespace NANDRAD {
 				case 5 : return "DiscMaxElementsPerLayer";
 			} break;
 			// SolverParameter::flag_t
-			case 43 :
+			case 44 :
 			switch (t) {
 				case 0 : return "DetectMaxTimeStep";
 				case 1 : return "KinsolDisableLineSearch";
 				case 2 : return "KinsolStrictNewton";
 			} break;
 			// SolverParameter::integrator_t
-			case 44 :
+			case 45 :
 			switch (t) {
 				case 0 : return "CVODE";
 				case 1 : return "ExplicitEuler";
@@ -898,7 +907,7 @@ namespace NANDRAD {
 				case 3 : return "auto";
 			} break;
 			// SolverParameter::lesSolver_t
-			case 45 :
+			case 46 :
 			switch (t) {
 				case 0 : return "Dense";
 				case 1 : return "KLU";
@@ -907,19 +916,19 @@ namespace NANDRAD {
 				case 4 : return "auto";
 			} break;
 			// SolverParameter::precond_t
-			case 46 :
+			case 47 :
 			switch (t) {
 				case 0 : return "ILU";
 				case 1 : return "auto";
 			} break;
 			// WindowGlazingLayer::type_t
-			case 47 :
+			case 48 :
 			switch (t) {
 				case 0 : return "Gas";
 				case 1 : return "Glass";
 			} break;
 			// WindowGlazingLayer::para_t
-			case 48 :
+			case 49 :
 			switch (t) {
 				case 0 : return "Thickness";
 				case 1 : return "Conductivity";
@@ -930,7 +939,7 @@ namespace NANDRAD {
 				case 6 : return "P_LongWaveEmissivityOutside";
 			} break;
 			// WindowGlazingLayer::splinePara_t
-			case 49 :
+			case 50 :
 			switch (t) {
 				case 0 : return "ShortWaveTransmittance";
 				case 1 : return "ShortWaveReflectanceOutside";
@@ -940,40 +949,40 @@ namespace NANDRAD {
 				case 5 : return "HeatCapacity";
 			} break;
 			// WindowGlazingSystem::modelType_t
-			case 50 :
+			case 51 :
 			switch (t) {
 				case 0 : return "Simple";
 				case 1 : return "Detailed";
 			} break;
 			// WindowGlazingSystem::para_t
-			case 51 :
+			case 52 :
 			switch (t) {
 				case 0 : return "ThermalTransmittance";
 			} break;
 			// WindowGlazingSystem::splinePara_t
-			case 52 :
+			case 53 :
 			switch (t) {
 				case 0 : return "SHGC";
 			} break;
 			// WindowShading::modelType_t
-			case 53 :
+			case 54 :
 			switch (t) {
 				case 0 : return "Standard";
 			} break;
 			// WindowShading::para_t
-			case 54 :
+			case 55 :
 			switch (t) {
 				case 0 : return "ReductionFactor";
 			} break;
 			// Zone::type_t
-			case 55 :
+			case 56 :
 			switch (t) {
 				case 0 : return "Constant";
 				case 1 : return "Active";
 				case 2 : return "Ground";
 			} break;
 			// Zone::para_t
-			case 56 :
+			case 57 :
 			switch (t) {
 				case 0 : return "Temperature";
 				case 1 : return "RelativeHumidity";
@@ -1262,19 +1271,15 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "Global initial temperature [C].";
 				case 1 : return "Global initial relative humidity [%].";
-				case 2 : return "Percentage of solar radiation gains attributed direcly to room [%].";
-				case 3 : return "Percentage of surface solar radiation attributed to floor [%].";
-				case 4 : return "Percentage of surface solar radiation attributed to roof/ceiling[%].";
-				case 5 : return "Percentage of surface solar radiation attributed to walls [%].";
-				case 6 : return "Percentage of heat that is emitted by long wave radiation from persons.";
-				case 7 : return "Percentage of energy from equipment load that is not available as thermal heat.";
-				case 8 : return "Percentage of heat that is emitted by long wave radiation from equipment.";
-				case 9 : return "Percentage of energy from lighting that is transformed into visible short wave radiation.";
-				case 10 : return "Percentage of heat that is emitted by long wave radiation from lighting.";
-				case 11 : return "Percentage of sensitive heat from domestic water istributed towrads the room.";
-				case 12 : return "Air exchange rate resulting from a pressure difference of 50 Pa between inside and outside.";
-				case 13 : return "Shielding coefficient for a given location and envelope type.";
-				case 14 : return "Ambient temperature for a design day. Parameter that is needed for FMU export.";
+				case 2 : return "Percentage of heat that is emitted by long wave radiation from persons.";
+				case 3 : return "Percentage of energy from equipment load that is not available as thermal heat.";
+				case 4 : return "Percentage of heat that is emitted by long wave radiation from equipment.";
+				case 5 : return "Percentage of energy from lighting that is transformed into visible short wave radiation.";
+				case 6 : return "Percentage of heat that is emitted by long wave radiation from lighting.";
+				case 7 : return "Percentage of sensitive heat from domestic water istributed towrads the room.";
+				case 8 : return "Air exchange rate resulting from a pressure difference of 50 Pa between inside and outside.";
+				case 9 : return "Shielding coefficient for a given location and envelope type.";
+				case 10 : return "Ambient temperature for a design day. Parameter that is needed for FMU export.";
 			} break;
 			// SimulationParameter::intPara_t
 			case 38 :
@@ -1289,15 +1294,23 @@ namespace NANDRAD {
 				case 2 : return "Flag activating ventilation through joints and openings.";
 				case 3 : return "Flag activating FMU export of climate data.";
 			} break;
-			// SimulationParameter::swrad_distribution_t
+			// SolarLoadsDistributionModel::distribution_t
 			case 40 :
 			switch (t) {
 				case 0 : return "Distribution based on surface area.";
 				case 1 : return "Distribution based on surface type.";
 				case 2 : return "Distribution based on zone-specific view factors.";
 			} break;
-			// SolverParameter::para_t
+			// SolarLoadsDistributionModel::para_t
 			case 41 :
+			switch (t) {
+				case 0 : return "Percentage of solar radiation gains attributed direcly to room [%].";
+				case 1 : return "Percentage of surface solar radiation attributed to floor [%].";
+				case 2 : return "Percentage of surface solar radiation attributed to roof/ceiling[%].";
+				case 3 : return "Percentage of surface solar radiation attributed to walls [%].";
+			} break;
+			// SolverParameter::para_t
+			case 42 :
 			switch (t) {
 				case 0 : return "Relative tolerance for solver error check.";
 				case 1 : return "Absolute tolerance for solver error check.";
@@ -1315,7 +1328,7 @@ namespace NANDRAD {
 				case 13 : return "Absolute tolerance for Kinsol solver.";
 			} break;
 			// SolverParameter::intPara_t
-			case 42 :
+			case 43 :
 			switch (t) {
 				case 0 : return "Maximum level of fill-in to be used for ILU preconditioner.";
 				case 1 : return "Maximum dimension of Krylov subspace.";
@@ -1325,14 +1338,14 @@ namespace NANDRAD {
 				case 5 : return "Maximum number of elements per layer.";
 			} break;
 			// SolverParameter::flag_t
-			case 43 :
+			case 44 :
 			switch (t) {
 				case 0 : return "Check schedules to determine minimum distances between steps and adjust MaxTimeStep.";
 				case 1 : return "Disable line search for steady state cycles.";
 				case 2 : return "Enable strict Newton for steady state cycles.";
 			} break;
 			// SolverParameter::integrator_t
-			case 44 :
+			case 45 :
 			switch (t) {
 				case 0 : return "CVODE based solver";
 				case 1 : return "Explicit Euler solver";
@@ -1340,7 +1353,7 @@ namespace NANDRAD {
 				case 3 : return "System selects integrator automatically.";
 			} break;
 			// SolverParameter::lesSolver_t
-			case 45 :
+			case 46 :
 			switch (t) {
 				case 0 : return "Dense solver";
 				case 1 : return "KLU sparse solver";
@@ -1349,19 +1362,19 @@ namespace NANDRAD {
 				case 4 : return "System selects les solver automatically.";
 			} break;
 			// SolverParameter::precond_t
-			case 46 :
+			case 47 :
 			switch (t) {
 				case 0 : return "Incomplete LU preconditioner";
 				case 1 : return "System selects preconditioner automatically.";
 			} break;
 			// WindowGlazingLayer::type_t
-			case 47 :
+			case 48 :
 			switch (t) {
 				case 0 : return "Gas layer";
 				case 1 : return "Glass layer";
 			} break;
 			// WindowGlazingLayer::para_t
-			case 48 :
+			case 49 :
 			switch (t) {
 				case 0 : return "Thickness of the window layer.";
 				case 1 : return "Thermal conductivity of the window layer.";
@@ -1372,7 +1385,7 @@ namespace NANDRAD {
 				case 6 : return "Emissivity of surface facing inside.";
 			} break;
 			// WindowGlazingLayer::splinePara_t
-			case 49 :
+			case 50 :
 			switch (t) {
 				case 0 : return "Short wave transmittance at outside directed surface.";
 				case 1 : return "Short wave reflectance of surface facing outside.";
@@ -1382,40 +1395,40 @@ namespace NANDRAD {
 				case 5 : return "Specific heat capoacity of the gas layer.";
 			} break;
 			// WindowGlazingSystem::modelType_t
-			case 50 :
+			case 51 :
 			switch (t) {
 				case 0 : return "Standard globbed-layers model.";
 				case 1 : return "Detailed window model with layers.";
 			} break;
 			// WindowGlazingSystem::para_t
-			case 51 :
+			case 52 :
 			switch (t) {
 				case 0 : return "Thermal transmittance";
 			} break;
 			// WindowGlazingSystem::splinePara_t
-			case 52 :
+			case 53 :
 			switch (t) {
 				case 0 : return "Short wave transmittance at outside directed surface.";
 			} break;
 			// WindowShading::modelType_t
-			case 53 :
+			case 54 :
 			switch (t) {
 				case 0 : return "Standard reduction factor.";
 			} break;
 			// WindowShading::para_t
-			case 54 :
+			case 55 :
 			switch (t) {
 				case 0 : return "Reduction factor (remaining percentage of solar gains if shading is closed).";
 			} break;
 			// Zone::type_t
-			case 55 :
+			case 56 :
 			switch (t) {
 				case 0 : return "Zone with constant/predefined temperatures. (schedule)";
 				case 1 : return "Zone described by a temperature node in space.";
 				case 2 : return "Ground zone (calculates temperature based on standard).";
 			} break;
 			// Zone::para_t
-			case 56 :
+			case 57 :
 			switch (t) {
 				case 0 : return "Temperature of the zone if set constant [C].";
 				case 1 : return "Relative humidity of the zone if set constant [%].";
@@ -1703,19 +1716,15 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "C";
 				case 1 : return "%";
-				case 2 : return "%";
-				case 3 : return "%";
-				case 4 : return "%";
-				case 5 : return "%";
+				case 2 : return "---";
+				case 3 : return "---";
+				case 4 : return "---";
+				case 5 : return "---";
 				case 6 : return "---";
 				case 7 : return "---";
-				case 8 : return "---";
+				case 8 : return "1/h";
 				case 9 : return "---";
-				case 10 : return "---";
-				case 11 : return "---";
-				case 12 : return "1/h";
-				case 13 : return "---";
-				case 14 : return "C";
+				case 10 : return "C";
 			} break;
 			// SimulationParameter::intPara_t
 			case 38 :
@@ -1730,15 +1739,23 @@ namespace NANDRAD {
 				case 2 : return "";
 				case 3 : return "";
 			} break;
-			// SimulationParameter::swrad_distribution_t
+			// SolarLoadsDistributionModel::distribution_t
 			case 40 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
 			} break;
-			// SolverParameter::para_t
+			// SolarLoadsDistributionModel::para_t
 			case 41 :
+			switch (t) {
+				case 0 : return "%";
+				case 1 : return "%";
+				case 2 : return "%";
+				case 3 : return "%";
+			} break;
+			// SolverParameter::para_t
+			case 42 :
 			switch (t) {
 				case 0 : return "---";
 				case 1 : return "---";
@@ -1756,7 +1773,7 @@ namespace NANDRAD {
 				case 13 : return "---";
 			} break;
 			// SolverParameter::intPara_t
-			case 42 :
+			case 43 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
@@ -1766,14 +1783,14 @@ namespace NANDRAD {
 				case 5 : return "";
 			} break;
 			// SolverParameter::flag_t
-			case 43 :
+			case 44 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
 			} break;
 			// SolverParameter::integrator_t
-			case 44 :
+			case 45 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
@@ -1781,7 +1798,7 @@ namespace NANDRAD {
 				case 3 : return "";
 			} break;
 			// SolverParameter::lesSolver_t
-			case 45 :
+			case 46 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
@@ -1790,19 +1807,19 @@ namespace NANDRAD {
 				case 4 : return "";
 			} break;
 			// SolverParameter::precond_t
-			case 46 :
-			switch (t) {
-				case 0 : return "";
-				case 1 : return "";
-			} break;
-			// WindowGlazingLayer::type_t
 			case 47 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
-			// WindowGlazingLayer::para_t
+			// WindowGlazingLayer::type_t
 			case 48 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+			} break;
+			// WindowGlazingLayer::para_t
+			case 49 :
 			switch (t) {
 				case 0 : return "m";
 				case 1 : return "W/mK";
@@ -1813,7 +1830,7 @@ namespace NANDRAD {
 				case 6 : return "---";
 			} break;
 			// WindowGlazingLayer::splinePara_t
-			case 49 :
+			case 50 :
 			switch (t) {
 				case 0 : return "---";
 				case 1 : return "---";
@@ -1823,40 +1840,40 @@ namespace NANDRAD {
 				case 5 : return "J/kgK";
 			} break;
 			// WindowGlazingSystem::modelType_t
-			case 50 :
+			case 51 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
 			// WindowGlazingSystem::para_t
-			case 51 :
+			case 52 :
 			switch (t) {
 				case 0 : return "W/m2K";
 			} break;
 			// WindowGlazingSystem::splinePara_t
-			case 52 :
+			case 53 :
 			switch (t) {
 				case 0 : return "---";
 			} break;
 			// WindowShading::modelType_t
-			case 53 :
+			case 54 :
 			switch (t) {
 				case 0 : return "";
 			} break;
 			// WindowShading::para_t
-			case 54 :
+			case 55 :
 			switch (t) {
 				case 0 : return "W/m2K";
 			} break;
 			// Zone::type_t
-			case 55 :
+			case 56 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
 			} break;
 			// Zone::para_t
-			case 56 :
+			case 57 :
 			switch (t) {
 				case 0 : return "C";
 				case 1 : return "%";
@@ -2153,10 +2170,6 @@ namespace NANDRAD {
 				case 8 : return "#FFFFFF";
 				case 9 : return "#FFFFFF";
 				case 10 : return "#FFFFFF";
-				case 11 : return "#FFFFFF";
-				case 12 : return "#FFFFFF";
-				case 13 : return "#FFFFFF";
-				case 14 : return "#FFFFFF";
 			} break;
 			// SimulationParameter::intPara_t
 			case 38 :
@@ -2171,15 +2184,23 @@ namespace NANDRAD {
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
 			} break;
-			// SimulationParameter::swrad_distribution_t
+			// SolarLoadsDistributionModel::distribution_t
 			case 40 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
-			// SolverParameter::para_t
+			// SolarLoadsDistributionModel::para_t
 			case 41 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
+			} break;
+			// SolverParameter::para_t
+			case 42 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2197,7 +2218,7 @@ namespace NANDRAD {
 				case 13 : return "#FFFFFF";
 			} break;
 			// SolverParameter::intPara_t
-			case 42 :
+			case 43 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2207,14 +2228,14 @@ namespace NANDRAD {
 				case 5 : return "#FFFFFF";
 			} break;
 			// SolverParameter::flag_t
-			case 43 :
+			case 44 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
 			// SolverParameter::integrator_t
-			case 44 :
+			case 45 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2222,7 +2243,7 @@ namespace NANDRAD {
 				case 3 : return "#FFFFFF";
 			} break;
 			// SolverParameter::lesSolver_t
-			case 45 :
+			case 46 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2231,19 +2252,19 @@ namespace NANDRAD {
 				case 4 : return "#FFFFFF";
 			} break;
 			// SolverParameter::precond_t
-			case 46 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-			} break;
-			// WindowGlazingLayer::type_t
 			case 47 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
-			// WindowGlazingLayer::para_t
+			// WindowGlazingLayer::type_t
 			case 48 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// WindowGlazingLayer::para_t
+			case 49 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2254,7 +2275,7 @@ namespace NANDRAD {
 				case 6 : return "#FFFFFF";
 			} break;
 			// WindowGlazingLayer::splinePara_t
-			case 49 :
+			case 50 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2264,40 +2285,40 @@ namespace NANDRAD {
 				case 5 : return "#FFFFFF";
 			} break;
 			// WindowGlazingSystem::modelType_t
-			case 50 :
+			case 51 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
 			// WindowGlazingSystem::para_t
-			case 51 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-			} break;
-			// WindowGlazingSystem::splinePara_t
 			case 52 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
-			// WindowShading::modelType_t
+			// WindowGlazingSystem::splinePara_t
 			case 53 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
-			// WindowShading::para_t
+			// WindowShading::modelType_t
 			case 54 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
-			// Zone::type_t
+			// WindowShading::para_t
 			case 55 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+			} break;
+			// Zone::type_t
+			case 56 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
 			// Zone::para_t
-			case 56 :
+			case 57 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2594,10 +2615,6 @@ namespace NANDRAD {
 				case 8 : return std::numeric_limits<double>::quiet_NaN();
 				case 9 : return std::numeric_limits<double>::quiet_NaN();
 				case 10 : return std::numeric_limits<double>::quiet_NaN();
-				case 11 : return std::numeric_limits<double>::quiet_NaN();
-				case 12 : return std::numeric_limits<double>::quiet_NaN();
-				case 13 : return std::numeric_limits<double>::quiet_NaN();
-				case 14 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SimulationParameter::intPara_t
 			case 38 :
@@ -2612,15 +2629,23 @@ namespace NANDRAD {
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// SimulationParameter::swrad_distribution_t
+			// SolarLoadsDistributionModel::distribution_t
 			case 40 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// SolverParameter::para_t
+			// SolarLoadsDistributionModel::para_t
 			case 41 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// SolverParameter::para_t
+			case 42 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2638,7 +2663,7 @@ namespace NANDRAD {
 				case 13 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SolverParameter::intPara_t
-			case 42 :
+			case 43 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2648,14 +2673,14 @@ namespace NANDRAD {
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SolverParameter::flag_t
-			case 43 :
+			case 44 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SolverParameter::integrator_t
-			case 44 :
+			case 45 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2663,7 +2688,7 @@ namespace NANDRAD {
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SolverParameter::lesSolver_t
-			case 45 :
+			case 46 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2672,19 +2697,19 @@ namespace NANDRAD {
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SolverParameter::precond_t
-			case 46 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// WindowGlazingLayer::type_t
 			case 47 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// WindowGlazingLayer::para_t
+			// WindowGlazingLayer::type_t
 			case 48 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// WindowGlazingLayer::para_t
+			case 49 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2695,7 +2720,7 @@ namespace NANDRAD {
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// WindowGlazingLayer::splinePara_t
-			case 49 :
+			case 50 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2705,40 +2730,40 @@ namespace NANDRAD {
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// WindowGlazingSystem::modelType_t
-			case 50 :
+			case 51 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// WindowGlazingSystem::para_t
-			case 51 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// WindowGlazingSystem::splinePara_t
 			case 52 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// WindowShading::modelType_t
+			// WindowGlazingSystem::splinePara_t
 			case 53 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// WindowShading::para_t
+			// WindowShading::modelType_t
 			case 54 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// Zone::type_t
+			// WindowShading::para_t
 			case 55 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// Zone::type_t
+			case 56 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// Zone::para_t
-			case 56 :
+			case 57 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2830,45 +2855,47 @@ namespace NANDRAD {
 			// ShadingControlModel::para_t
 			case 36 : return 2;
 			// SimulationParameter::para_t
-			case 37 : return 15;
+			case 37 : return 11;
 			// SimulationParameter::intPara_t
 			case 38 : return 1;
 			// SimulationParameter::flag_t
 			case 39 : return 4;
-			// SimulationParameter::swrad_distribution_t
+			// SolarLoadsDistributionModel::distribution_t
 			case 40 : return 3;
+			// SolarLoadsDistributionModel::para_t
+			case 41 : return 4;
 			// SolverParameter::para_t
-			case 41 : return 14;
+			case 42 : return 14;
 			// SolverParameter::intPara_t
-			case 42 : return 6;
+			case 43 : return 6;
 			// SolverParameter::flag_t
-			case 43 : return 3;
+			case 44 : return 3;
 			// SolverParameter::integrator_t
-			case 44 : return 4;
+			case 45 : return 4;
 			// SolverParameter::lesSolver_t
-			case 45 : return 5;
+			case 46 : return 5;
 			// SolverParameter::precond_t
-			case 46 : return 2;
-			// WindowGlazingLayer::type_t
 			case 47 : return 2;
+			// WindowGlazingLayer::type_t
+			case 48 : return 2;
 			// WindowGlazingLayer::para_t
-			case 48 : return 7;
+			case 49 : return 7;
 			// WindowGlazingLayer::splinePara_t
-			case 49 : return 6;
+			case 50 : return 6;
 			// WindowGlazingSystem::modelType_t
-			case 50 : return 2;
+			case 51 : return 2;
 			// WindowGlazingSystem::para_t
-			case 51 : return 1;
-			// WindowGlazingSystem::splinePara_t
 			case 52 : return 1;
-			// WindowShading::modelType_t
+			// WindowGlazingSystem::splinePara_t
 			case 53 : return 1;
-			// WindowShading::para_t
+			// WindowShading::modelType_t
 			case 54 : return 1;
+			// WindowShading::para_t
+			case 55 : return 1;
 			// Zone::type_t
-			case 55 : return 3;
+			case 56 : return 3;
 			// Zone::para_t
-			case 56 : return 6;
+			case 57 : return 6;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::Count]");
@@ -2952,45 +2979,47 @@ namespace NANDRAD {
 			// ShadingControlModel::para_t
 			case 36 : return 1;
 			// SimulationParameter::para_t
-			case 37 : return 14;
+			case 37 : return 10;
 			// SimulationParameter::intPara_t
 			case 38 : return 0;
 			// SimulationParameter::flag_t
 			case 39 : return 3;
-			// SimulationParameter::swrad_distribution_t
+			// SolarLoadsDistributionModel::distribution_t
 			case 40 : return 2;
+			// SolarLoadsDistributionModel::para_t
+			case 41 : return 3;
 			// SolverParameter::para_t
-			case 41 : return 13;
+			case 42 : return 13;
 			// SolverParameter::intPara_t
-			case 42 : return 5;
+			case 43 : return 5;
 			// SolverParameter::flag_t
-			case 43 : return 2;
+			case 44 : return 2;
 			// SolverParameter::integrator_t
-			case 44 : return 3;
+			case 45 : return 3;
 			// SolverParameter::lesSolver_t
-			case 45 : return 4;
+			case 46 : return 4;
 			// SolverParameter::precond_t
-			case 46 : return 1;
-			// WindowGlazingLayer::type_t
 			case 47 : return 1;
+			// WindowGlazingLayer::type_t
+			case 48 : return 1;
 			// WindowGlazingLayer::para_t
-			case 48 : return 6;
+			case 49 : return 6;
 			// WindowGlazingLayer::splinePara_t
-			case 49 : return 5;
+			case 50 : return 5;
 			// WindowGlazingSystem::modelType_t
-			case 50 : return 1;
+			case 51 : return 1;
 			// WindowGlazingSystem::para_t
-			case 51 : return 0;
-			// WindowGlazingSystem::splinePara_t
 			case 52 : return 0;
-			// WindowShading::modelType_t
+			// WindowGlazingSystem::splinePara_t
 			case 53 : return 0;
-			// WindowShading::para_t
+			// WindowShading::modelType_t
 			case 54 : return 0;
+			// WindowShading::para_t
+			case 55 : return 0;
 			// Zone::type_t
-			case 55 : return 2;
+			case 56 : return 2;
 			// Zone::para_t
-			case 56 : return 6;
+			case 57 : return 6;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::MaxIndex]");

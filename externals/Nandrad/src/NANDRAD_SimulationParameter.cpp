@@ -34,11 +34,6 @@ void SimulationParameter::initDefaults() {
 
 	m_para[P_InitialTemperature].set( KeywordList::Keyword("SimulationParameter::para_t", P_InitialTemperature),	 20, IBK::Unit("C"));
 	m_para[P_InitialRelativeHumidity].set( KeywordList::Keyword("SimulationParameter::para_t", P_InitialRelativeHumidity),	 50, IBK::Unit("%"));
-	m_para[P_RadiationLoadFractionZone].set( KeywordList::Keyword("SimulationParameter::para_t", P_RadiationLoadFractionZone),	 0.5, IBK::Unit("---"));
-	// the next three must add up to 1
-	m_para[P_RadiationLoadFractionFloor].set( KeywordList::Keyword("SimulationParameter::para_t", P_RadiationLoadFractionFloor),	 0.5, IBK::Unit("---"));
-	m_para[P_RadiationLoadFractionWalls].set( KeywordList::Keyword("SimulationParameter::para_t", P_RadiationLoadFractionWalls),	 0.3, IBK::Unit("---"));
-	m_para[P_RadiationLoadFractionCeiling].set( KeywordList::Keyword("SimulationParameter::para_t", P_RadiationLoadFractionCeiling),	 0.2, IBK::Unit("---"));
 
 	m_para[P_UserThermalRadiationFraction].set( KeywordList::Keyword("SimulationParameter::para_t", P_UserThermalRadiationFraction),	 0.3, IBK::Unit("---"));
 	m_para[P_EquipmentThermalLossFraction].set( KeywordList::Keyword("SimulationParameter::para_t", P_EquipmentThermalLossFraction),	 0.1, IBK::Unit("---"));
@@ -53,6 +48,8 @@ void SimulationParameter::initDefaults() {
 
 	m_interval.m_para[NANDRAD::Interval::P_Start]		= IBK::Parameter("Start", 0, "d");
 	m_interval.m_para[NANDRAD::Interval::P_End]		= IBK::Parameter("End", 365, "d");
+
+	m_solarLoadsDistributionModel.initDefaults();
 }
 
 
@@ -71,28 +68,17 @@ void SimulationParameter::checkParameters() const {
 		throw IBK::Exception(IBK::FormatString("Invalid initial temperature %1 in SimulationParameters.")
 							 .arg(m_para[P_InitialTemperature].get_value("C")), FUNC_ID);
 
-	// check radiation load fractions
-	for (unsigned int i=0; i<4; ++i)
-		m_para[P_RadiationLoadFractionZone+i].checkedValue("---", "---", 0, true, 1, true,
-													 "Radiation load fraction must be between 0 and 1.");
 
-	// check that the latter three add up to 1
-	double fractionSum = m_para[P_RadiationLoadFractionFloor].value +
-			m_para[P_RadiationLoadFractionWalls].value +
-			m_para[P_RadiationLoadFractionCeiling].value;
-
-	if (!IBK::near_equal(fractionSum, 1.0))
-		throw IBK::Exception("Radiation load fractions for walls, ceiling and floor must add up to 1.", FUNC_ID);
-
+	try {
+		m_solarLoadsDistributionModel.checkParameters();
+	} catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, "Invalid/missing parameters in SolarDistributionLoadsModel.", FUNC_ID);
+	}
 	/// \todo Implementation of other value range checks
 }
 
 
 bool SimulationParameter::operator!=(const SimulationParameter & other) const {
-	for (unsigned int i=0; i<NUM_P; ++i) {
-		if (m_para[i] != other.m_para[i])
-			return true;
-	}
 	if (m_interval != other.m_interval) return true;
 
 	for (unsigned int i=0; i<NUM_F; ++i)

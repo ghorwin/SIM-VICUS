@@ -67,6 +67,7 @@ HEADERS += \
 	../../src/NANDRAD_SerializationTest.h \
 	../../src/NANDRAD_ShadingControlModel.h \
 	../../src/NANDRAD_SimulationParameter.h \
+	../../src/NANDRAD_SolarLoadsDistributionModel.h \
 	../../src/NANDRAD_SolverParameter.h \
 	../../src/NANDRAD_Utilities.h \
 	../../src/NANDRAD_WindowDivider.h \
@@ -111,6 +112,7 @@ SOURCES += \
 	../../src/NANDRAD_Schedules.cpp \
 	../../src/NANDRAD_Sensor.cpp \
 	../../src/NANDRAD_SimulationParameter.cpp \
+	../../src/NANDRAD_SolarLoadsDistributionModel.cpp \
 	../../src/NANDRAD_SolverParameter.cpp \
 	../../src/NANDRAD_Utilities.cpp \
 	../../src/NANDRAD_WindowGlazingSystem.cpp \
@@ -145,6 +147,7 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_SerializationTest.cpp \
 	../../src/ncg/ncg_NANDRAD_ShadingControlModel.cpp \
 	../../src/ncg/ncg_NANDRAD_SimulationParameter.cpp \
+	../../src/ncg/ncg_NANDRAD_SolarLoadsDistributionModel.cpp \
 	../../src/ncg/ncg_NANDRAD_SolverParameter.cpp \
 	../../src/ncg/ncg_NANDRAD_WindowDivider.cpp \
 	../../src/ncg/ncg_NANDRAD_WindowFrame.cpp \
