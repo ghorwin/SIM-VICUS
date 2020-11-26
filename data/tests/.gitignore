@@ -17,3 +17,7 @@
 /InternalLoadsConstantSingleZone/
 /InternalLoadsScheduledSingleZone/
 /InternalLoadsSingleZoneWithInternalWall/
+/InternalLoadsSingleZoneConstant75ppRadiant/
+/InternalLoadsSingleZoneConstantAllConvective/
+/InternalLoadsSingleZoneScheduledAllRadiant/
+/InternalLoadsTwoZonesConstant75ppRadiant/
