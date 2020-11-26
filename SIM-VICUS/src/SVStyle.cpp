@@ -84,7 +84,7 @@ void SVStyle::formatWelcomePage(QString & htmlCode) {
 		case SVSettings::TT_Dark :
 		{
 			htmlCode.replace("${STYLE_TEXT_COLOR}", "#F0F0F0");
-			htmlCode.replace("${STYLE_BACKGROUND_COLOR}", "#19232D");
+			htmlCode.replace("${STYLE_BACKGROUND_COLOR}", "#212124");
 			htmlCode.replace("${STYLE_LINKTEXT_COLOR}", "#ffbf14");
 			htmlCode.replace("${STYLE_LINKTEXT_HOVER_COLOR}", "#ffffff");
 			htmlCode.replace("${STYLE_LINKTEXT_HOVER_BACKGROUND_COLOR}", "#19232D");
