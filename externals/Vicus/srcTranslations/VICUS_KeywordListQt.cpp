@@ -27,6 +27,9 @@ KeywordListQt::KeywordListQt() {
 	tr("Dry density of the material.");
 	tr("Specific heat capacity of the material.");
 	tr("Thermal conductivity of the dry material.");
+	tr("Building");
+	tr("Mixer");
+	tr("Source");
 	tr("Triangle");
 	tr("Rectangle");
 	tr("Polygon");

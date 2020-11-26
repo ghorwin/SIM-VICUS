@@ -81,7 +81,7 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	unsigned int					m_id  = INVALID_ID;										// XML:A:required
-	IBKMK::Vector3D					m_position = IBKMK::Vector3D(-9.99,-9.99,-9.99);		// XML:A:required
+	IBKMK::Vector3D					m_position = IBKMK::Vector3D(-9.99,-9.99,-9.99);		// XML:E:required
 	NodeType						m_type = NUM_NT;										// XML:A:required
 	double							m_maxHeatingDemand = 0;									// XML:A
 	double							m_distanceToStart = std::numeric_limits<double>::max();

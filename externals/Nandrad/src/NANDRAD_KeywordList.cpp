@@ -1119,8 +1119,8 @@ namespace NANDRAD {
 			// InternalLoadsModel::modelType_t
 			case 18 :
 			switch (t) {
-				case 0 : return "Constant ventilation rate";
-				case 1 : return "Scheduled ventilation rate";
+				case 0 : return "Constant internal loads";
+				case 1 : return "Scheduled internal loads";
 			} break;
 			// InternalLoadsModel::para_t
 			case 19 :
@@ -1128,7 +1128,7 @@ namespace NANDRAD {
 				case 0 : return "Percentage of equipment load that is radiant emitted.";
 				case 1 : return "Percentage of person load that is radiant emitted.";
 				case 2 : return "Percentage of lighting load that is radiant emitted.";
-				case 3 : return "Complete eqipment load per zone floor area.";
+				case 3 : return "Complete equipment load per zone floor area.";
 				case 4 : return "Complete person load per zone floor area.";
 				case 5 : return "Complete lighting load per zone floor area.";
 			} break;
