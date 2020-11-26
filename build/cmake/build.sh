@@ -28,6 +28,7 @@ MAKE_CPUCOUNT="2"
 BUILD_DIR_SUFFIX="gcc"
 COMPILER=""
 SKIP_TESTS="false"
+DISABLE_GUI=0
 
 # parse parameters, except gprof and threadchecker
 for var in "$@"
@@ -47,8 +48,7 @@ do
 
     if [[ $var = "no-gui"  ]];
     then
-		CMAKE_OPTIONS="$CMAKE_OPTIONS -DDISABLE_QT:BOOL=ON"
-		echo "Disabling Qt libs"
+		DISABLE_GUI=1
     fi
 
     if [[ $var = "debug"  ]];
@@ -104,7 +104,6 @@ do
 
 done
 
-
 # override compiler options
 for var in "$@"
 do
@@ -128,6 +127,16 @@ do
 
 done
 
+echo $DISABLE_GUI
+
+if  [[ $DISABLE_GUI = 1 ]];
+then
+	CMAKE_OPTIONS="$CMAKE_OPTIONS -DDISABLE_QT:BOOL=ON"
+	echo "Disabling Qt libs"
+else
+	CMAKE_OPTIONS="$CMAKE_OPTIONS -DDISABLE_QT:BOOL=OFF"
+	echo "Building with Qt enabled"
+fi
 
 # create build dir if not exists
 BUILDDIR=$BUILDDIR-$BUILD_DIR_SUFFIX
