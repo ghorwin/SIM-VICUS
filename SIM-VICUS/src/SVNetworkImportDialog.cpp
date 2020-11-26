@@ -54,9 +54,14 @@ bool SVNetworkImportDialog::edit() {
 	if (m_ui->radioButtonNewNetwork->isChecked()){
 		double x = QLocale().toDouble(m_ui->lineEditXOrigin->text());
 		double y = QLocale().toDouble(m_ui->lineEditYOrigin->text());
+
 		// set origin and normalize existing positions
 		m_network.setOrigin(IBKMK::Vector3D(x, y, 0));
-		m_network.m_name = m_ui->lineEditNetworkName->text().toStdString();
+
+		m_network.m_name = uniqueName(m_ui->lineEditNetworkName->text().toStdString());
+
+		// generate id
+		m_network.m_id = generateId();
 
 		m_network.updateExtends();
 
@@ -64,7 +69,8 @@ bool SVNetworkImportDialog::edit() {
 		undo->push(); // modifies project and updates views
 	}
 	else{
-		SVUndoAddToExistingNetwork * undo = new SVUndoAddToExistingNetwork(tr("Added network"), m_network);
+		m_network.updateExtends();
+		SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Added network"), m_network);
 		undo->push(); // modifies project and updates views
 	}
 
@@ -138,6 +144,30 @@ void SVNetworkImportDialog::readNetworkData(const IBK::Path &fname, VICUS::Netwo
 	m_ui->labelNodeCount->setText(QString("%1").arg(m_network.m_nodes.size()));
 	m_ui->labelCoordinateRange->setText( QString("[%L1,%L2]...[%L3,%L4]").arg(m_network.m_extends.left)
 										 .arg(m_network.m_extends.top).arg(m_network.m_extends.right).arg(m_network.m_extends.bottom));
+}
+
+
+unsigned SVNetworkImportDialog::generateId()
+{
+	unsigned id=0;
+	for (auto it = project().m_networks.begin(); it!=project().m_networks.end(); ++it){
+		if (id == it->m_id)
+			++id;
+		else
+			return id;
+	}
+	return id;
+}
+
+
+std::string SVNetworkImportDialog::uniqueName(const std::string &name)
+{
+	std::string uniqueName = name;
+	for (auto it = project().m_networks.begin(); it!=project().m_networks.end(); ++it){
+		if (uniqueName == it->m_name)
+			uniqueName += "_2";
+	}
+	return uniqueName;
 }
 
 

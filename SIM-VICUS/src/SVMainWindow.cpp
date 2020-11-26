@@ -49,6 +49,7 @@
 #include "SVNavigationTreeWidget.h"
 //#include "SVFMIExportDialog.h"
 #include "SVNetworkImportDialog.h"
+#include "SVNetworkEditDialog.h"
 #include "SVUndoAddNetwork.h"
 #include "SVPreferencesPageStyle.h"
 
@@ -630,11 +631,7 @@ void SVMainWindow::on_actionNetworkImport_triggered() {
 	if (m_networkImportDialog == nullptr)
 		m_networkImportDialog = new SVNetworkImportDialog(this);
 
-	if (m_networkImportDialog->edit()) {
-		// create undo action for adding a new network
-//		SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("Added network"), n);
-//		undo->push(); // modifies project and updates views
-	}
+	m_networkImportDialog->edit();
 }
 
 
@@ -1270,3 +1267,12 @@ static bool copyRecursively(const QString &srcFilePath,
 
 
 
+
+void SVMainWindow::on_actionNetworkEdit_triggered()
+{
+	// opens edit network dialog
+	if (m_networkEditDialog == nullptr)
+		m_networkEditDialog = new SVNetworkEditDialog(this);
+
+	m_networkEditDialog->edit();
+}

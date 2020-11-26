@@ -93,6 +93,7 @@ public:
 			return &(*it);
 	}
 
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	NANDRAD::ProjectInfo	m_projectInfo;		// XML:E

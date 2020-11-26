@@ -25,6 +25,7 @@ class SVLogWidget;
 class SVGeometryView;
 class SVNavigationTreeWidget;
 class SVNetworkImportDialog;
+class SVNetworkEditDialog;
 
 /*! Main window class. */
 class SVMainWindow : public QMainWindow {
@@ -179,6 +180,8 @@ private slots:
 
 	void onStyleChanged();
 
+	void on_actionNetworkEdit_triggered();
+
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();
@@ -280,6 +283,9 @@ private:
 
 	/*! Network import dialog */
 	SVNetworkImportDialog		*m_networkImportDialog									= nullptr;
+
+	/*! Network edit dialog */
+	SVNetworkEditDialog			*m_networkEditDialog									= nullptr;
 
 	/*! FMI Export dialog. */
 //	SVFMIExportDialog			*m_fmiExportDialog										= nullptr;

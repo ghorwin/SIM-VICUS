@@ -66,6 +66,7 @@ win32 {
 
 
 SOURCES += \
+        ../../src/SVNetworkEditDialog.cpp \
         ../../src/SVPreferencesPageStyle.cpp \
         ../../src/actions/SVUndoAddNetwork.cpp \
         ../../src/actions/SVUndoCommandBase.cpp \
@@ -107,6 +108,7 @@ SOURCES += \
         ../../src/SVWelcomeScreen.cpp
 
 HEADERS  += \
+        ../../src/SVNetworkEditDialog.h \
         ../../src/SVPreferencesPageStyle.h \
         ../../src/actions/SVUndoAddNetwork.h \
         ../../src/actions/SVUndoCommandBase.h \
@@ -154,6 +156,7 @@ FORMS    += \
         ../../src/SVLogFileDialog.ui \
         ../../src/SVMainWindow.ui \
         ../../src/SVNavigationTreeWidget.ui \
+        ../../src/SVNetworkEditDialog.ui \
         ../../src/SVNetworkImportDialog.ui \
         ../../src/SVPreferencesDialog.ui \
         ../../src/SVPreferencesPageStyle.ui \

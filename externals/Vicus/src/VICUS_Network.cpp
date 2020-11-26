@@ -25,7 +25,7 @@ unsigned Network::addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeType 
 	// if there is an existing node with identical coordinates, return its id and dont add a new one
 	if (consistentCoordinates){
 		for (NetworkNode n: m_nodes){
-			if (n.m_position.distanceTo(position) < NetworkLine2D::m_resolution)
+			if (n.m_position.distanceTo(position) < geometricResolution)
 				return n.m_id;
 		}
 	}
@@ -167,7 +167,6 @@ void Network::assignSourceNode(const IBKMK::Vector3D &v) {
 
 
 void Network::generateIntersections(){
-	// TODO : clarify "deterministic result independent of initial node/edge storage order"
 	while (findAndAddIntersection()) {}
 }
 

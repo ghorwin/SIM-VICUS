@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>1087</width>
-     <height>17</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -99,6 +99,7 @@
      <string>Networks</string>
     </property>
     <addaction name="actionNetworkImport"/>
+    <addaction name="actionNetworkEdit"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
@@ -321,6 +322,11 @@
    </property>
    <property name="shortcut">
     <string>F8</string>
+   </property>
+  </action>
+  <action name="actionNetworkEdit">
+   <property name="text">
+    <string>Edit Network...</string>
    </property>
   </action>
  </widget>

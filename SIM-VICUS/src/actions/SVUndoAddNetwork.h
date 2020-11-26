@@ -24,10 +24,10 @@ private:
 };
 
 
-class SVUndoAddToExistingNetwork : public SVUndoCommandBase {
+class SVUndoModifyExistingNetwork : public SVUndoCommandBase {
 	Q_DECLARE_TR_FUNCTIONS(SVUndoAddToExistingNetwork)
 public:
-	SVUndoAddToExistingNetwork(const QString & label, const VICUS::Network & modNetwork);
+	SVUndoModifyExistingNetwork(const QString & label, const VICUS::Network & modNetwork);
 
 	virtual void undo();
 	virtual void redo();

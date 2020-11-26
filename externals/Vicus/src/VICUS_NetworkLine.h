@@ -11,6 +11,9 @@ namespace VICUS {
 	It is meant to be constructed from an edge definition, and caches
 	the respective node coordinates, internally.
 */
+
+extern const double	geometricResolution;		/// geometric resolution in m, points closer than that are assumed equal
+
 class NetworkLine2D{
 public:
 
@@ -47,7 +50,7 @@ public:
 
 	IBK::point2D<double>	m_p1;
 	IBK::point2D<double>	m_p2;
-	static constexpr double	m_resolution = 0.01;		/// geometric resolution in m, points closer than that are assumed equal
+
 };
 
 } // namespace VICUS

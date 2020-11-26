@@ -46,7 +46,7 @@ void SVUndoAddNetwork::redo() {
 
 
 
-SVUndoAddToExistingNetwork::SVUndoAddToExistingNetwork(const QString &label, const VICUS::Network &modNetwork):
+SVUndoModifyExistingNetwork::SVUndoModifyExistingNetwork(const QString &label, const VICUS::Network &modNetwork):
 	m_oldNetwork(*theProject().element(theProject().m_networks, modNetwork.m_id)),
 	m_newNetwork(modNetwork)
 {
@@ -57,7 +57,7 @@ SVUndoAddToExistingNetwork::SVUndoAddToExistingNetwork(const QString &label, con
 	m_farDistance = 2*m_gridWidth;
 }
 
-void SVUndoAddToExistingNetwork::undo()
+void SVUndoModifyExistingNetwork::undo()
 {
 	*theProject().element(theProject().m_networks, m_newNetwork.m_id) = m_oldNetwork;
 	theProject().element(theProject().m_networks, m_newNetwork.m_id)->updateNodeEdgeConnectionPointers();
@@ -71,7 +71,7 @@ void SVUndoAddToExistingNetwork::undo()
 	SVProjectHandler::instance().setModified( SVProjectHandler::GridModified);
 }
 
-void SVUndoAddToExistingNetwork::redo()
+void SVUndoModifyExistingNetwork::redo()
 {
 	*theProject().element(theProject().m_networks, m_newNetwork.m_id) = m_newNetwork;
 	theProject().element(theProject().m_networks, m_newNetwork.m_id)->updateNodeEdgeConnectionPointers();

@@ -48,6 +48,10 @@ private:
 	QMap<QString, unsigned> m_existingNetworksMap;
 
 	void readNetworkData(const IBK::Path &fname, VICUS::Network &network) const;
+
+	unsigned generateId();
+
+	std::string uniqueName(const std::string &name);
 };
 
 #endif // SVNETWORKIMPORTDIALOG_H

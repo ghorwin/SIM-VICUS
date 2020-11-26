@@ -5,6 +5,8 @@
 
 namespace VICUS {
 
+extern const double	geometricResolution = 0.01; // in m
+
 void NetworkLine2D::intersection(const NetworkLine2D &line, IBK::point2D<double> &pInter) const
 {
 	const double &x1 = m_p1.m_x; const double &x2 = m_p2.m_x; const double &x3 = line.m_p1.m_x; const double &x4 = line.m_p2.m_x;
@@ -38,9 +40,8 @@ bool NetworkLine2D::containsPoint(const IBK::point2D<double> &point) const
 {
 	bool inside = (point.m_x >= std::min(m_p1.m_x, m_p2.m_x)) && (point.m_x <= std::max(m_p1.m_x, m_p2.m_x)) &&
 			(point.m_y >= std::min(m_p1.m_y, m_p2.m_y)) && (point.m_y <= std::max(m_p1.m_y, m_p2.m_y));
-//	bool identity =  pointsMatch(xp, yp, m_p1.m_x, m_p1.m_y) || pointsMatch(xp, yp, m_p2.m_x, m_p2.m_y);
-
-	bool identity = distanceBetweenPoints(point, m_p1) < m_resolution || distanceBetweenPoints(point, m_p2) < m_resolution ;
+	bool identity = distanceBetweenPoints(point, m_p1) < geometricResolution ||
+			distanceBetweenPoints(point, m_p2) < geometricResolution ;
 	return inside && !identity;
 }
 
