@@ -380,15 +380,10 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "InitialTemperature";
 				case 1 : return "InitialRelativeHumidity";
-				case 2 : return "UserThermalRadiationFraction";
-				case 3 : return "EquipmentThermalLossFraction";
-				case 4 : return "EquipmentThermalRadiationFraction";
-				case 5 : return "LightingVisibleRadiationFraction";
-				case 6 : return "LightingThermalRadiationFraction";
-				case 7 : return "DomesticWaterSensitiveHeatGainFraction";
-				case 8 : return "AirExchangeRateN50";
-				case 9 : return "ShieldingCoefficient";
-				case 10 : return "HeatingDesignAmbientTemperature";
+				case 2 : return "DomesticWaterSensitiveHeatGainFraction";
+				case 3 : return "AirExchangeRateN50";
+				case 4 : return "ShieldingCoefficient";
+				case 5 : return "HeatingDesignAmbientTemperature";
 			} break;
 			// SimulationParameter::intPara_t
 			case 38 :
@@ -825,15 +820,10 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "InitialTemperature";
 				case 1 : return "InitialRelativeHumidity";
-				case 2 : return "UserThermalRadiationFraction";
-				case 3 : return "EquipmentThermalLossFraction";
-				case 4 : return "EquipmentThermalRadiationFraction";
-				case 5 : return "LightingVisibleRadiationFraction";
-				case 6 : return "LightingThermalRadiationFraction";
-				case 7 : return "DomesticWaterSensitiveHeatGainFraction";
-				case 8 : return "AirExchangeRateN50";
-				case 9 : return "ShieldingCoefficient";
-				case 10 : return "HeatingDesignAmbientTemperature";
+				case 2 : return "DomesticWaterSensitiveHeatGainFraction";
+				case 3 : return "AirExchangeRateN50";
+				case 4 : return "ShieldingCoefficient";
+				case 5 : return "HeatingDesignAmbientTemperature";
 			} break;
 			// SimulationParameter::intPara_t
 			case 38 :
@@ -1271,15 +1261,10 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "Global initial temperature [C].";
 				case 1 : return "Global initial relative humidity [%].";
-				case 2 : return "Percentage of heat that is emitted by long wave radiation from persons.";
-				case 3 : return "Percentage of energy from equipment load that is not available as thermal heat.";
-				case 4 : return "Percentage of heat that is emitted by long wave radiation from equipment.";
-				case 5 : return "Percentage of energy from lighting that is transformed into visible short wave radiation.";
-				case 6 : return "Percentage of heat that is emitted by long wave radiation from lighting.";
-				case 7 : return "Percentage of sensitive heat from domestic water istributed towrads the room.";
-				case 8 : return "Air exchange rate resulting from a pressure difference of 50 Pa between inside and outside.";
-				case 9 : return "Shielding coefficient for a given location and envelope type.";
-				case 10 : return "Ambient temperature for a design day. Parameter that is needed for FMU export.";
+				case 2 : return "Percentage of sensitive heat from domestic water istributed towrads the room.";
+				case 3 : return "Air exchange rate resulting from a pressure difference of 50 Pa between inside and outside.";
+				case 4 : return "Shielding coefficient for a given location and envelope type.";
+				case 5 : return "Ambient temperature for a design day. Parameter that is needed for FMU export.";
 			} break;
 			// SimulationParameter::intPara_t
 			case 38 :
@@ -1717,14 +1702,9 @@ namespace NANDRAD {
 				case 0 : return "C";
 				case 1 : return "%";
 				case 2 : return "---";
-				case 3 : return "---";
+				case 3 : return "1/h";
 				case 4 : return "---";
-				case 5 : return "---";
-				case 6 : return "---";
-				case 7 : return "---";
-				case 8 : return "1/h";
-				case 9 : return "---";
-				case 10 : return "C";
+				case 5 : return "C";
 			} break;
 			// SimulationParameter::intPara_t
 			case 38 :
@@ -2165,11 +2145,6 @@ namespace NANDRAD {
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
 				case 5 : return "#FFFFFF";
-				case 6 : return "#FFFFFF";
-				case 7 : return "#FFFFFF";
-				case 8 : return "#FFFFFF";
-				case 9 : return "#FFFFFF";
-				case 10 : return "#FFFFFF";
 			} break;
 			// SimulationParameter::intPara_t
 			case 38 :
@@ -2610,11 +2585,6 @@ namespace NANDRAD {
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
-				case 6 : return std::numeric_limits<double>::quiet_NaN();
-				case 7 : return std::numeric_limits<double>::quiet_NaN();
-				case 8 : return std::numeric_limits<double>::quiet_NaN();
-				case 9 : return std::numeric_limits<double>::quiet_NaN();
-				case 10 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SimulationParameter::intPara_t
 			case 38 :
@@ -2855,7 +2825,7 @@ namespace NANDRAD {
 			// ShadingControlModel::para_t
 			case 36 : return 2;
 			// SimulationParameter::para_t
-			case 37 : return 11;
+			case 37 : return 6;
 			// SimulationParameter::intPara_t
 			case 38 : return 1;
 			// SimulationParameter::flag_t
@@ -2979,7 +2949,7 @@ namespace NANDRAD {
 			// ShadingControlModel::para_t
 			case 36 : return 1;
 			// SimulationParameter::para_t
-			case 37 : return 10;
+			case 37 : return 5;
 			// SimulationParameter::intPara_t
 			case 38 : return 0;
 			// SimulationParameter::flag_t

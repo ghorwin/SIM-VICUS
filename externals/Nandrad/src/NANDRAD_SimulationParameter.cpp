@@ -35,11 +35,6 @@ void SimulationParameter::initDefaults() {
 	m_para[P_InitialTemperature].set( KeywordList::Keyword("SimulationParameter::para_t", P_InitialTemperature),	 20, IBK::Unit("C"));
 	m_para[P_InitialRelativeHumidity].set( KeywordList::Keyword("SimulationParameter::para_t", P_InitialRelativeHumidity),	 50, IBK::Unit("%"));
 
-	m_para[P_UserThermalRadiationFraction].set( KeywordList::Keyword("SimulationParameter::para_t", P_UserThermalRadiationFraction),	 0.3, IBK::Unit("---"));
-	m_para[P_EquipmentThermalLossFraction].set( KeywordList::Keyword("SimulationParameter::para_t", P_EquipmentThermalLossFraction),	 0.1, IBK::Unit("---"));
-	m_para[P_EquipmentThermalRadiationFraction].set( KeywordList::Keyword("SimulationParameter::para_t", P_EquipmentThermalRadiationFraction),	 0.3, IBK::Unit("---"));
-	m_para[P_LightingVisibleRadiationFraction].set( KeywordList::Keyword("SimulationParameter::para_t", P_LightingVisibleRadiationFraction),	 0.18, IBK::Unit("---"));
-	m_para[P_LightingThermalRadiationFraction].set( KeywordList::Keyword("SimulationParameter::para_t", P_LightingThermalRadiationFraction),	 0.72, IBK::Unit("---"));
 	m_para[P_DomesticWaterSensitiveHeatGainFraction].set(KeywordList::Keyword("SimulationParameter::para_t", P_DomesticWaterSensitiveHeatGainFraction), 0.0, IBK::Unit("---"));
 
 	m_intPara[IP_StartYear].set( KeywordList::Keyword("SimulationParameter::intPara_t", IP_StartYear), 2001);
