@@ -127,7 +127,7 @@ public:
 	QString						m_CCMEditorExecutable;
 
 	/*! ThemeType of theme applied */
-	ThemeType					m_theme;
+	ThemeType					m_theme = TT_Dark;
 
 	/*! The project file suffix including the . */
 	QString						m_projectFileSuffix			= ".vicus";
