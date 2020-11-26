@@ -36,15 +36,8 @@ SVStyle::SVStyle() {
 	// *** Style Customization ***
 
 	SVSettings & s = SVSettings::instance();
+	setStyle(s.m_theme == SVSettings::TT_Dark);
 
-	if ( s.m_theme == SVSettings::TT_Dark ) {
-		QFile file(":/qdarkstyle/style.qss");
-		if ( file.exists()) {
-			file.open(QFile::ReadOnly);
-			m_styleSheet = QLatin1String(file.readAll());
-			qApp->setStyleSheet(m_styleSheet);
-		}
-	}
 
 #ifdef Q_OS_MACX
 	m_fontMonoSpace = "Monaco";
@@ -114,5 +107,18 @@ void SVStyle::formatWelcomePage(QString & htmlCode) {
 		} break;
 	}
 
+}
+
+void SVStyle::setStyle(bool dark) {
+	QFile file(":/qdarkstyle/style.qss");
+	if ( dark && file.exists()) {
+		file.open(QFile::ReadOnly);
+		m_styleSheet = QLatin1String(file.readAll());
+		qApp->setStyleSheet(m_styleSheet);
+	}
+	else {
+		// clear style sheet for default style.
+		qApp->setStyleSheet("");
+	}
 }
 

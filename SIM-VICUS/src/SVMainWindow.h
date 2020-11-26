@@ -177,6 +177,8 @@ private slots:
 
 	void on_actionFileOpenProjectDir_triggered();
 
+	void onStyleChanged();
+
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();

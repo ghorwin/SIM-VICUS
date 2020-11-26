@@ -25,6 +25,9 @@ public:
 	/*! Replaces all color text placeholders with colors based on the current style sheet. */
 	static void formatWelcomePage(QString & htmlCode);
 
+	/*! Sets the application wide style sheet. */
+	void setStyle(bool dark);
+
 	QString				m_styleSheet;
 
 private:

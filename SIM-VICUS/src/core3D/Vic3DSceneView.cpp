@@ -149,6 +149,12 @@ void SceneView::onModified(int modificationType, ModificationInfo * data) {
 }
 
 
+void SceneView::onStyleChanged() {
+	m_mainScene.setSceneStyle(SVSettings::instance().m_theme == SVSettings::TT_Dark);
+	renderLater();
+}
+
+
 void SceneView::initializeGL() {
 	FUNCID(SceneView::initializeGL);
 	try {
@@ -203,6 +209,8 @@ void SceneView::initializeGL() {
 		m_gpuTimers.setSampleCount(2);
 		m_gpuTimers.create();
 #endif // SHOW_TIMINGS
+
+		onStyleChanged();
 
 		onModified(SVProjectHandler::AllModified, nullptr);
 	}

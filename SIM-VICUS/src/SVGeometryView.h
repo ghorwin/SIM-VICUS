@@ -17,6 +17,9 @@ public:
 
 	void saveScreenShot(const QString & imgFilePath);
 
+	/*! Provides read-only access to sceneView() so that signals can be connected. */
+	const Vic3D::SceneView * sceneView() const { return m_sceneView; }
+
 private:
 	// The scene view, that shows our world and allows navigation
 	Vic3D::SceneView * m_sceneView;

@@ -71,6 +71,9 @@ public:
 
 	OperationMode operationMode() const { return m_operationMode; }
 
+	/*! Updates built-in scene colors to dark mode (if dark = true). */
+	void setSceneStyle(bool dark);
+
 private:
 	void generateBuildingGeometry();
 	void generateNetworkGeometry();

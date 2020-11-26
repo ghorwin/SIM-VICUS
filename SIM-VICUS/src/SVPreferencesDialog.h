@@ -24,6 +24,9 @@ public:
 	*/
 	bool edit(int initialPage = 0);
 
+	/*! Provides read-only access to pageStyle() so that signals can be connected. */
+	const SVPreferencesPageStyle * pageStyle() const { return m_pageStyle; }
+
 protected:
 	/*! QDialog::accept() re-implemented for input data checking (called indirectly from buttonBox). */
 	void accept();
@@ -47,7 +50,7 @@ private:
 	/*! The Tools page. */
 	SVPreferencesPageTools			*m_pageTools;
 	/*! The Style page. */
-	SVPreferencesPageStyle			*m_style;
+	SVPreferencesPageStyle			*m_pageStyle;
 };
 
 #endif // SVPreferencesDialogH

@@ -50,8 +50,10 @@
 //#include "SVFMIExportDialog.h"
 #include "SVNetworkImportDialog.h"
 #include "SVUndoAddNetwork.h"
+#include "SVPreferencesPageStyle.h"
 
 #include "SVGeometryView.h"
+#include "Vic3DSceneView.h"
 
 static bool copyRecursively(const QString &srcFilePath, const QString &tgtFilePath);
 
@@ -516,6 +518,12 @@ void SVMainWindow::on_actionFileOpenProjectDir_triggered() {
 }
 
 
+void SVMainWindow::onStyleChanged() {
+	m_welcomeScreen->updateWelcomePage();
+	m_welcomeScreen->update();
+}
+
+
 void SVMainWindow::on_actionFileExport_triggered() {
 	// project must have been saved once already
 	if (!saveProject())
@@ -588,8 +596,13 @@ void SVMainWindow::on_actionRunSimulation_triggered() {
 
 void SVMainWindow::on_actionEditPreferences_triggered() {
 	// spawn preferences dialog
-	if (m_preferencesDialog == nullptr)
+	if (m_preferencesDialog == nullptr) {
 		m_preferencesDialog = new SVPreferencesDialog(this);
+		connect(m_preferencesDialog->pageStyle(), &SVPreferencesPageStyle::styleChanged,
+				this, &SVMainWindow::onStyleChanged);
+		connect(m_preferencesDialog->pageStyle(), &SVPreferencesPageStyle::styleChanged,
+				m_geometryView->sceneView(), &Vic3D::SceneView::onStyleChanged);
+	}
 
 	if (m_preferencesDialog->edit(0)) {
 		/// \todo update views based on prefs

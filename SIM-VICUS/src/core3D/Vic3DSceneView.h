@@ -57,6 +57,9 @@ public slots:
 	/*! Connected to SVProjectHandler::modified() */
 	void onModified( int modificationType, ModificationInfo * data );
 
+	/*! Connected to SVPreferencesPageStyle::styleChanged(). */
+	void onStyleChanged();
+
 protected:
 	void initializeGL() override;
 	void resizeGL(int width, int height) override;

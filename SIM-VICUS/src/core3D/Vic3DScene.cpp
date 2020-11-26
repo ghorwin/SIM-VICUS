@@ -3,6 +3,7 @@
 #include <QOpenGLShaderProgram>
 #include <QDebug>
 #include <QCursor>
+#include <QPalette>
 
 #include <VICUS_Project.h>
 #include <VICUS_Conversions.h>
@@ -471,6 +472,16 @@ void Vic3DScene::setOperationMode(Vic3DScene::OperationMode m)	{
 	// \todo implement
 
 	m_operationMode = m;
+}
+
+void Vic3DScene::setSceneStyle(bool dark) {
+	if (dark) {
+		m_background = QVector3D(0.1f, 0.15f, 0.3f);
+	}
+	else {
+		m_background = QVector3D(0.97f, 0.97f, 0.99f);
+//		m_background = VICUS::QVector3DFromQColor(QPalette().color(QPalette::Window));
+	}
 }
 
 

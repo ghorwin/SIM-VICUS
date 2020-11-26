@@ -20,9 +20,9 @@ SVPreferencesDialog::SVPreferencesDialog(QWidget * parent) :
 	// setup configuration pages
 
 	m_pageTools = new SVPreferencesPageTools(this);
-	m_style = new SVPreferencesPageStyle(this);
+	m_pageStyle = new SVPreferencesPageStyle(this);
 	m_ui->tabWidget->addTab(m_pageTools, tr("External tools"));
-	m_ui->tabWidget->addTab(m_style, tr("Style"));
+	m_ui->tabWidget->addTab(m_pageStyle, tr("Style"));
 
 	// ... other pages
 
@@ -61,7 +61,7 @@ void SVPreferencesDialog::accept() {
 
 void SVPreferencesDialog::updateUi() {
 	m_pageTools->updateUi();
-	m_style->updateUi();
+	m_pageStyle->updateUi();
 	// ... other pages
 }
 
@@ -71,8 +71,8 @@ bool SVPreferencesDialog::storeConfig() {
 		m_ui->tabWidget->setCurrentWidget(m_pageTools);
 		return false;
 	}
-	if (!m_style->storeConfig()) {
-		m_ui->tabWidget->setCurrentWidget(m_style);
+	if (!m_pageStyle->storeConfig()) {
+		m_ui->tabWidget->setCurrentWidget(m_pageStyle);
 		return false;
 	}
 	// ... other pages

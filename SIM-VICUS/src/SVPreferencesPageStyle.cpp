@@ -34,27 +34,29 @@ bool SVPreferencesPageStyle::storeConfig() {
 	// no checks necessary
 	SVSettings & s = SVSettings::instance();
 
-	if ( m_ui->comboBoxTheme->currentText() == "White" )
+	if ( m_ui->comboBoxTheme->currentText() == "White" ) {
 		s.m_theme = SVSettings::TT_White;
-	if ( m_ui->comboBoxTheme->currentText() == "Dark" )
+	}
+	if ( m_ui->comboBoxTheme->currentText() == "Dark" ) {
 		s.m_theme = SVSettings::TT_Dark;
+	}
 
 	return true;
 }
 
 
-void SVPreferencesPageStyle::on_comboBoxTheme_activated(const QString &theme)
-{
+void SVPreferencesPageStyle::on_comboBoxTheme_activated(const QString &theme) {
 	// no checks necessary
 	SVSettings & setting = SVSettings::instance();
 	SVStyle & style = SVStyle::instance();
 	if ( theme == "White" ) {
 		setting.m_theme = SVSettings::TT_White;
-		qApp->setStyleSheet(styleSheet());
+		style.setStyle(false);
 	}
 	else if (theme == "Dark" ) {
 		setting.m_theme = SVSettings::TT_Dark;
-		if ( style.m_styleSheet.length() > 0 )
-			qApp->setStyleSheet(style.m_styleSheet);
+		style.setStyle(true);
 	}
+	// now apply the style
+	emit styleChanged();
 }

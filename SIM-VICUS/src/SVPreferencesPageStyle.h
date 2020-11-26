@@ -29,6 +29,10 @@ public:
 	*/
 	bool storeConfig();
 
+signals:
+	/*! Emitted, when user has changed the style. */
+	void styleChanged();
+
 private slots:
 
 	void on_comboBoxTheme_activated(const QString &theme);
