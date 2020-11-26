@@ -79,7 +79,7 @@ void InternalLoadsModel::checkParameters() const {
 
 	}
 	else { // modelType == MT_Scheduled
-		// invalide constant definitions
+		// invalid constant definitions
 		if(!m_para[P_EquipmentHeatLoadPerArea].name.empty()) {
 			throw IBK::Exception(IBK::FormatString("Invalid parameter 'EqupimentLoadPerArea' for model type 'Scheduled'!"),
 								 FUNC_ID);

@@ -29,26 +29,26 @@
 
 namespace NANDRAD {
 
-/*! Contains schedules or constant parameters for internal loads (realted to zone area). */
+/*! Contains schedules or constant parameters for internal loads (related to zone area). */
 class InternalLoadsModel {
 public:
 	/*! Different model variants. */
 	enum modelType_t {
-		/*! Ventilation rate is given as constant parameter. */
-		MT_Constant,			// Keyword: Constant	'Constant ventilation rate'
-		/*! Ventilation rate is provided as 'NaturalVentilationRate' schedule parameter. */
-		MT_Scheduled,			// Keyword: Scheduled	'Scheduled ventilation rate'
+		/*! Internal loads are given with constant parameters. */
+		MT_Constant,			// Keyword: Constant	'Constant internal loads'
+		/*! Internal loads are provided via schedule parameters. */
+		MT_Scheduled,			// Keyword: Scheduled	'Scheduled internal loads'
 		NUM_MT
 	};
 
 	/*! Model parameters. */
 	enum para_t {
-		P_EquipmentRadiationFraction,	// Keyword: EquipmentRadiationFraction	[---]		'Percentage of equipment load that is radiant emitted. '
-		P_PersonRadiationFraction,		// Keyword: PersonRadiationFraction		[---]		'Percentage of person load that is radiant emitted. '
-		P_LightingRadiationFraction,	// Keyword: LightingRadiationFraction	[---]		'Percentage of lighting load that is radiant emitted. '
-		P_EquipmentHeatLoadPerArea,		// Keyword: EquipmentHeatLoadPerArea	[W/m2]		'Complete eqipment load per zone floor area. '
-		P_PersonHeatLoadPerArea,		// Keyword: PersonHeatLoadPerArea		[W/m2]		'Complete person load per zone floor area. '
-		P_LightingHeatLoadPerArea,		// Keyword: LightingHeatLoadPerArea		[W/m2]		'Complete lighting load per zone floor area. '
+		P_EquipmentRadiationFraction,	// Keyword: EquipmentRadiationFraction	[---]		'Percentage of equipment load that is radiant emitted.'
+		P_PersonRadiationFraction,		// Keyword: PersonRadiationFraction		[---]		'Percentage of person load that is radiant emitted.'
+		P_LightingRadiationFraction,	// Keyword: LightingRadiationFraction	[---]		'Percentage of lighting load that is radiant emitted.'
+		P_EquipmentHeatLoadPerArea,		// Keyword: EquipmentHeatLoadPerArea	[W/m2]		'Complete equipment load per zone floor area.'
+		P_PersonHeatLoadPerArea,		// Keyword: PersonHeatLoadPerArea		[W/m2]		'Complete person load per zone floor area.'
+		P_LightingHeatLoadPerArea,		// Keyword: LightingHeatLoadPerArea		[W/m2]		'Complete lighting load per zone floor area.'
 		NUM_P
 	};
 
