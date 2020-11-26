@@ -479,7 +479,8 @@ void Vic3DScene::setSceneStyle(bool dark) {
 		m_background = QVector3D(0.1f, 0.15f, 0.3f);
 	}
 	else {
-		m_background = QVector3D(0.97f, 0.97f, 0.99f);
+		m_background = QVector3D(0.1f, 0.15f, 0.3f);
+//		m_background = QVector3D(0.97f, 0.97f, 0.99f);
 //		m_background = VICUS::QVector3DFromQColor(QPalette().color(QPalette::Window));
 	}
 }
