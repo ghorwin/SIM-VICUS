@@ -96,8 +96,10 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	NANDRAD::ProjectInfo	m_projectInfo;		// XML:E
+	/*! Project info tag is manually written (not by code generator). */
+	NANDRAD::ProjectInfo	m_projectInfo;
 
+	/*! Project tag is manually written (not by code generator). */
 	NANDRAD::Project		m_nandradData;
 
 	ViewSettings			m_viewSettings;		// XML:E
