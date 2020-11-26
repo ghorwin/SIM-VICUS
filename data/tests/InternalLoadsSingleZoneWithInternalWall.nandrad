@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.99">
+	<Project>
+		<ProjectInfo>
+			<Comment>Tests single zone connected to single outside constructiuon</Comment>
+		</ProjectInfo>
+		<Location>
+			<IBK:Parameter name="Latitude" unit="Deg">51</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<ClimateFileName>${Project Directory}/climate/DEU_Potsdam_60.c6b</ClimateFileName>
+		</Location>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">5</IBK:Parameter>
+			<Interval>
+				<IBK:Parameter name="End" unit="d">10</IBK:Parameter>
+			</Interval>
+		</SimulationParameter>
+		<SolverParameter>
+			<IBK:Parameter name="DiscStretchFactor" unit="---">4</IBK:Parameter>
+			<IBK:Parameter name="DiscMinDx" unit="mm">2</IBK:Parameter>
+			<IBK:Parameter name="InitialTimeStep" unit="s">0.01</IBK:Parameter>
+		</SolverParameter>
+		<Zones>
+			<Zone id="1" displayName="Room" type="Active">
+				<IBK:Parameter name="Area" unit="m2">30</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">90</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<ConstructionInstances>
+			<ConstructionInstance id="1" displayName="South">
+				<ConstructionTypeId>10001</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">1.5</IBK:Parameter>
+				<InterfaceA id="1" zoneId="1">
+						<!--Interface to 'Room'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">25</IBK:Parameter>
+						</InterfaceHeatConduction>
+				</InterfaceA>
+			</ConstructionInstance>
+		</ConstructionInstances>
+		<ConstructionTypes>
+			<ConstructionType id="10001" displayName="Construction 1">
+				<MaterialLayers>
+					<MaterialLayer thickness="0.05" matId="1001" />
+				</MaterialLayers>
+			</ConstructionType>
+		</ConstructionTypes>
+		<Materials>
+			<Material id="1001" displayName="Brick">
+				<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+			</Material>
+		</Materials>
+		<Models>
+			<InternalLoadsModel id="401" displayName="Zone loads" modelType="Scheduled">
+				<ZoneObjectList>All zones</ZoneObjectList>
+				<IBK:Parameter name="EquipmentRadiationFraction" unit="---">0</IBK:Parameter>
+				<IBK:Parameter name="PersonRadiationFraction" unit="---">0</IBK:Parameter>
+				<IBK:Parameter name="LightingRadiationFraction" unit="---">0</IBK:Parameter>
+			</InternalLoadsModel>
+		</Models>
+		<Schedules>
+			<WeekEndDays>Sat,Sun</WeekEndDays>
+			<ScheduleGroups>
+				<ScheduleGroup objectList="All zones">
+					<!-- every day between 8-18 -->
+					<Schedule type="AllDays">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0 7 9 13 14 17 19</TimePoints>
+								<Values>EquipmentHeatLoadPerAreaSchedule [W/m2]:0 8 16 8 16 8 0</Values>
+							</DailyCycle>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0 7 9 13 14 17 19</TimePoints>
+								<Values>PersonHeatLoadPerAreaSchedule [W/m2]:0 5 10 5 10 5 0</Values>
+							</DailyCycle>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0 6 9 11 12 14 15 17 20</TimePoints>
+								<Values>LightingHeatLoadPerAreaSchedule [W/m2]:0 5 10 5 0 5 10 5 0</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+					<!-- Weekend only on afternoon -->
+					<Schedule type="WeekEnd">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>EquipmentHeatLoadPerAreaSchedule [W/m2]:8</Values>
+							</DailyCycle>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>PersonHeatLoadPerAreaSchedule [W/m2]:0</Values>
+							</DailyCycle>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>LightingHeatLoadPerAreaSchedule [W/m2]:0</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+			</ScheduleGroups>
+		</Schedules>
+		<Outputs>
+			<Definitions>
+				<OutputDefinition>
+					<Quantity>AirTemperature</Quantity>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>10 mins</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>RadiantEquipmentHeatLoad[1]</Quantity>
+					<ObjectListName>Internal load models</ObjectListName>
+					<GridName>10 mins</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>RadiantPersonHeatLoad[1]</Quantity>
+					<ObjectListName>Internal load models</ObjectListName>
+					<GridName>10 mins</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>RadiantLightingHeatLoad[1]</Quantity>
+					<ObjectListName>Internal load models</ObjectListName>
+					<GridName>10 mins</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FluxShortWaveRadiationA</Quantity>
+					<ObjectListName>Wall</ObjectListName>
+					<GridName>10 mins</GridName>
+				</OutputDefinition>
+			</Definitions>
+			<Grids>
+				<OutputGrid name="10 mins">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="min">10</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="All zones">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Internal load models">
+				<FilterID>401</FilterID>
+				<ReferenceType>Model</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Wall">
+				<FilterID>*</FilterID>
+				<ReferenceType>ConstructionInstance</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+	</Project>
+</NandradProject>
