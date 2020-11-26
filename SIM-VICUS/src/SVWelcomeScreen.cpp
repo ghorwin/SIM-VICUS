@@ -87,26 +87,26 @@ void SVWelcomeScreen::updateWelcomePage() {
 			if (finfo.exists()) {
 				VICUS::Project pro;
 				try {
-					pro.readXML(IBK::Path(finfo.filePath().toStdString()));
+					pro.parseHeader(IBK::Path(finfo.filePath().toStdString()));
 				}
 				catch (IBK::Exception &) {
 					// error reading project file, missing permissions?
 					pro = VICUS::Project(); // reset with empty instance
 				}
 				QString created;
-				if (pro.m_nandradData.m_projectInfo.m_created.empty())
+				if (pro.m_projectInfo.m_created.empty())
 					created = "---";
 				else
-					created = QString::fromStdString(pro.m_nandradData.m_projectInfo.m_created);
+					created = QString::fromStdString(pro.m_projectInfo.m_created);
 				QString lastModified;
-				if (pro.m_nandradData.m_projectInfo.m_lastEdited.empty())
+				if (pro.m_projectInfo.m_lastEdited.empty())
 					lastModified = "---";
 				else
-					lastModified = QString::fromStdString(pro.m_nandradData.m_projectInfo.m_lastEdited);
-				description = tr("<i>Created: %1, Last modified: %2</i><br>%3")
+					lastModified = QString::fromStdString(pro.m_projectInfo.m_lastEdited);
+				description = tr("<i>Created: %1</i><br><i>Last modified: %2</i><br>%3")
 									  .arg(created)
 									  .arg(lastModified)
-									  .arg(QString::fromStdString(pro.m_nandradData.m_projectInfo.m_comment));
+									  .arg(QString::fromStdString(pro.m_projectInfo.m_comment));
 			}
 			else {
 				description = tr("<i><font color=\"${STYLE_H3_COLOR}\">Project not accessible</font></i> <a href=\"premove:%1\">Remove %2 from list</a>").arg( i ).arg( finfo.fileName() );
@@ -151,18 +151,18 @@ void SVWelcomeScreen::updateWelcomePage() {
 			VICUS::Project pro;
 			QFileInfo finfo(fname);
 			try {
-				pro.readXML(IBK::Path(finfo.filePath().toStdString()));
+				pro.parseHeader(IBK::Path(finfo.filePath().toStdString()));
 			}
 			catch (IBK::Exception &) {
 				// error reading project file, missing permissions?
 				pro = VICUS::Project(); // reset with empty instance
 			}
 			QString created;
-			if (pro.m_nandradData.m_projectInfo.m_created.empty())
+			if (pro.m_projectInfo.m_created.empty())
 				created = "---";
 			else
-				created = QString::fromStdString(pro.m_nandradData.m_projectInfo.m_created);
-			QString description = QString::fromStdString(pro.m_nandradData.m_projectInfo.m_comment);
+				created = QString::fromStdString(pro.m_projectInfo.m_created);
+			QString description = QString::fromStdString(pro.m_projectInfo.m_comment);
 
 			projectInfoBlock = projectInfoBlock.replace("${PROJECT_FILENAME}", finfo.baseName());
 			projectInfoBlock = projectInfoBlock.replace("${PROJECT_FULL_PATH}", finfo.filePath());
@@ -210,18 +210,18 @@ void SVWelcomeScreen::updateWelcomePage() {
 			VICUS::Project pro;
 			QFileInfo finfo(fname);
 			try {
-				pro.readXML(IBK::Path(finfo.filePath().toStdString()));
+				pro.parseHeader(IBK::Path(finfo.filePath().toStdString()));
 			}
 			catch (IBK::Exception &) {
 				// error reading project file, missing permissions?
 				pro = VICUS::Project(); // reset with empty instance
 			}
 			QString created;
-			if (pro.m_nandradData.m_projectInfo.m_created.empty())
+			if (pro.m_projectInfo.m_created.empty())
 				created = "---";
 			else
-				created = QString::fromStdString(pro.m_nandradData.m_projectInfo.m_created);
-			QString description = QString::fromStdString(pro.m_nandradData.m_projectInfo.m_comment);
+				created = QString::fromStdString(pro.m_projectInfo.m_created);
+			QString description = QString::fromStdString(pro.m_projectInfo.m_comment);
 
 			QString parentDirName = QFileInfo(finfo.dir().absolutePath()).fileName();
 			projectInfoBlock = projectInfoBlock.replace("${PROJECT_FILENAME}", parentDirName + " - " + finfo.fileName());

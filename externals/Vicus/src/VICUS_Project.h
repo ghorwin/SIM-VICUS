@@ -51,6 +51,12 @@ public:
 	/*! Constructor, creates dummy data. */
 	Project();
 
+	/*! Parses only the header of the XML file.
+		This function is supposed to be fast, yet not a complete XML parser.
+		\param filename  The full path to the project file.
+	*/
+	void parseHeader(const IBK::Path & filename);
+
 	/*! Reads the project data from an XML file.
 		\param filename  The full path to the project file.
 	*/
@@ -89,9 +95,11 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	ViewSettings			m_viewSettings;		// XML:E
+	NANDRAD::ProjectInfo	m_projectInfo;		// XML:E
 
 	NANDRAD::Project		m_nandradData;
+
+	ViewSettings			m_viewSettings;		// XML:E
 
 	std::vector<Network>	m_networks;
 

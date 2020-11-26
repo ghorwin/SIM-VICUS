@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <VicusProject fileVersion="0.1">
+	<ProjectInfo>
+		<Created>Do. Nov. 26 15:22:50 2020</Created>
+		<LastEdited>Do. Nov. 26 15:22:50 2020</LastEdited>
+	</ProjectInfo>
 	<Project>
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
@@ -12,6 +16,7 @@
 				<Y>-0.158497</Y>
 				<Z>-0.230614</Z>
 			</RotationMatrix>
+			<FarDistance>10000</FarDistance>
 		</ViewSettings>
 		<Buildings>
 			<Building id="0" displayName="BuildingName">

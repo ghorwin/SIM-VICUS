@@ -275,12 +275,10 @@ SVProjectHandler::SaveResult SVProjectHandler::saveProject(QWidget * parent, con
 	if (!fname.endsWith(SVSettings::instance().m_projectFileSuffix))
 		fname.append( SVSettings::instance().m_projectFileSuffix );
 
-#if 0
 	// updated created and lastEdited tags
-	if (m_project->m_created.empty())
-		m_project->m_created = QDateTime::currentDateTime().toString(Qt::TextDate).toUtf8().data();
-	m_project->m_lastEdited = QDateTime::currentDateTime().toString(Qt::TextDate).toUtf8().data();
-#endif
+	if (m_project->m_projectInfo.m_created.empty())
+		m_project->m_projectInfo.m_created = QDateTime::currentDateTime().toString(Qt::TextDate).toUtf8().data();
+	m_project->m_projectInfo.m_lastEdited = QDateTime::currentDateTime().toString(Qt::TextDate).toUtf8().data();
 
 	// save project file
 	if (!write(fname)) {

@@ -23,9 +23,11 @@
 
 #include <algorithm>
 #include <set>
+#include <fstream>
 
 #include <IBK_messages.h>
 #include <IBK_assert.h>
+#include <IBK_Exception.h>
 
 #include <NANDRAD_Utilities.h>
 
@@ -144,6 +146,45 @@ Project::Project() {
 }
 
 
+void Project::parseHeader(const IBK::Path & filename) {
+	FUNCID(Project::parseHeader);
+
+	std::ifstream inputStream;
+#if defined(_WIN32)
+	#if defined(_MSC_VER)
+			inputStream.open(filename.wstr().c_str(), std::ios_base::binary);
+	#else
+			std::string filenameAnsi = IBK::WstringToANSI(filename.wstr(), false);
+			inputStream.open(filenameAnsi.c_str(), std::ios_base::binary);
+	#endif
+#else // _WIN32
+			inputStream.open(filename.c_str(), std::ios_base::binary);
+#endif
+	if (!inputStream.is_open()) {
+		throw IBK::Exception( IBK::FormatString("Cannot open input file '%1' for reading").arg(filename), FUNC_ID);
+	}
+	std::string line;
+	unsigned int i=12;
+	while (std::getline(inputStream, line) && --i > 0) {
+		// abort when <Project is in the line but not <ProjectInfo
+		if (line.find("<Project") != std::string::npos && line.find("<ProjectInfo") == std::string::npos)
+			break;
+		size_t pos = line.find("<Created>");
+		if (pos != std::string::npos) {
+			size_t pos2 = line.find("</Created>");
+			if (pos2 != std::string::npos)
+				m_projectInfo.m_created = line.substr(pos + 9, pos2 - pos - 9);
+		}
+		pos = line.find("<LastEdited>");
+		if (pos != std::string::npos) {
+			size_t pos2 = line.find("</LastEdited>");
+			if (pos2 != std::string::npos)
+				m_projectInfo.m_lastEdited = line.substr(pos + 12, pos2 - pos - 12);
+		}
+	}
+}
+
+
 void Project::readXML(const IBK::Path & filename) {
 	FUNCID(Project::readXML);
 
@@ -158,6 +199,10 @@ void Project::readXML(const IBK::Path & filename) {
 	TiXmlHandle xmlRoot = TiXmlHandle(xmlElem);
 
 	try {
+		xmlElem = xmlRoot.FirstChild("ProjectInfo").Element();
+		if (xmlElem) {
+			m_projectInfo.readXML(xmlElem);
+		}
 		xmlElem = xmlRoot.FirstChild("Project").Element();
 		if (xmlElem) {
 			readXML(xmlElem);
@@ -179,8 +224,9 @@ void Project::writeXML(const IBK::Path & filename) const {
 
 	root->SetAttribute("fileVersion", VERSION);
 
+	if (m_projectInfo != NANDRAD::ProjectInfo())
+		m_projectInfo.writeXML(root);
 	writeXML(root);
-
 
 	// other files
 

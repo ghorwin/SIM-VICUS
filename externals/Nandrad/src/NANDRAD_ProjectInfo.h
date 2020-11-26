@@ -33,6 +33,7 @@ class ProjectInfo  {
 public:
 
 	NANDRAD_READWRITE
+	NANDRAD_COMP(ProjectInfo)
 
 	/*! Comments about the project. */
 	std::string							m_comment;				// XML:E
@@ -41,6 +42,13 @@ public:
 	/*! Time stamp, when the project was last modified. */
 	std::string							m_lastEdited;			// XML:E
 };
+
+inline bool ProjectInfo::operator!=(const ProjectInfo & other) const {
+	if (m_comment != other.m_comment) return true;
+	if (m_created != other.m_created) return true;
+	if (m_lastEdited != other.m_lastEdited) return true;
+	return false;
+}
 
 } // namespace NANDRAD
 
