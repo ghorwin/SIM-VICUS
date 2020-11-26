@@ -212,7 +212,7 @@ void InternalLoadsModel::setInputValueRefs(const std::vector<QuantityDescription
 												const std::vector<const double *> & resultValueRefs)
 {
 	// simply store and check value references
-	if(m_internalLoadsModel->m_modelType == NANDRAD::InternalLoadsModel::MT_Constant)
+	if (m_internalLoadsModel->m_modelType == NANDRAD::InternalLoadsModel::MT_Constant)
 		return;
 	IBK_ASSERT(resultValueRefs.size() ==  3 * m_zoneAreas.size());
 	m_valueRefs = resultValueRefs; // Note: we set all our input refs as mandatory, so we can rely on getting valid pointers
