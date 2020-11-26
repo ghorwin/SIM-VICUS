@@ -58,9 +58,9 @@
 		<Models>
 			<InternalLoadsModel id="401" displayName="Zone loads" modelType="Scheduled">
 				<ZoneObjectList>All zones</ZoneObjectList>
-				<IBK:Parameter name="EquipmentRadiationFraction" unit="---">0</IBK:Parameter>
-				<IBK:Parameter name="PersonRadiationFraction" unit="---">0</IBK:Parameter>
-				<IBK:Parameter name="LightingRadiationFraction" unit="---">0</IBK:Parameter>
+				<IBK:Parameter name="EquipmentRadiationFraction" unit="---">1</IBK:Parameter>
+				<IBK:Parameter name="PersonRadiationFraction" unit="---">1</IBK:Parameter>
+				<IBK:Parameter name="LightingRadiationFraction" unit="---">1</IBK:Parameter>
 			</InternalLoadsModel>
 		</Models>
 		<Schedules>

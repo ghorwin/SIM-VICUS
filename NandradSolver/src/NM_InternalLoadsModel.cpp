@@ -118,12 +118,12 @@ void InternalLoadsModel::initResults(const std::vector<AbstractModel *> &) {
 			double lightingLoad = area * m_lightingLoadPerArea;
 
 			// distribute
-			convEquipLoadPtr[i]	= m_eqipmentRadiationFraction * equipmentLoad;
-			radEquipLoadPtr[i]	= (1 - m_eqipmentRadiationFraction) * equipmentLoad;
-			convPersonLoadPtr[i]= m_personRadiationFraction * personLoad;
-			radPersonLoadPtr[i]	= (1 - m_personRadiationFraction) * personLoad;
-			convLightLoadPtr[i]	= m_lightingRadiationFraction * lightingLoad;
-			radLightLoadPtr[i]	= (1 - m_lightingRadiationFraction) * lightingLoad;
+			convEquipLoadPtr[i]	= (1 - m_eqipmentRadiationFraction) * equipmentLoad;
+			radEquipLoadPtr[i]	= m_eqipmentRadiationFraction * equipmentLoad;
+			convPersonLoadPtr[i]= (1 - m_personRadiationFraction) * personLoad;
+			radPersonLoadPtr[i]	= m_personRadiationFraction * personLoad;
+			convLightLoadPtr[i]	= (1 - m_lightingRadiationFraction) * lightingLoad;
+			radLightLoadPtr[i]	= m_lightingRadiationFraction * lightingLoad;
 		}
 	}
 
@@ -249,12 +249,12 @@ int InternalLoadsModel::update() {
 		double lightingLoad = area * (*m_valueRefs[2 * nZones + i]);
 
 		// distribute
-		convEquipLoadPtr[i]	= m_eqipmentRadiationFraction * equipmentLoad;
-		radEquipLoadPtr[i]	= (1 - m_eqipmentRadiationFraction) * equipmentLoad;
-		convPersonLoadPtr[i]= m_personRadiationFraction * personLoad;
-		radPersonLoadPtr[i]	= (1 - m_personRadiationFraction) * personLoad;
-		convLightLoadPtr[i]	= m_lightingRadiationFraction * lightingLoad;
-		radLightLoadPtr[i]	= (1 - m_lightingRadiationFraction) * lightingLoad;
+		convEquipLoadPtr[i]	= (1 - m_eqipmentRadiationFraction) * equipmentLoad;
+		radEquipLoadPtr[i]	= m_eqipmentRadiationFraction * equipmentLoad;
+		convPersonLoadPtr[i]= (1 - m_personRadiationFraction) * personLoad;
+		radPersonLoadPtr[i]	= m_personRadiationFraction * personLoad;
+		convLightLoadPtr[i]	= (1 - m_lightingRadiationFraction) * lightingLoad;
+		radLightLoadPtr[i]	= m_lightingRadiationFraction * lightingLoad;
 	}
 
 	return 0; // signal success
