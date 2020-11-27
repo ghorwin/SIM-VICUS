@@ -2,7 +2,27 @@
 <NandradProject fileVersion="1.99">
 	<Project>
 		<ProjectInfo>
-			<Comment>Internal loads test: two zones, constant loads, 75% radiant</Comment>
+			<Comment>
+				Internal loads test: two zones, constant loads, 75% radiant
+				Zone 1 has 10 m2 floor area.
+				Zone 2 has 20 m2 floor area.
+				Heat loads onto room node should be doubled for zone 2.
+				Surface area onto constructions is the same.
+				
+				Relevant fluxes:
+				Heat flux onto surface A, construction 1 (connected to zone 1).
+				Heat flux onto surface B, construction 2 (connected to zone 2) (double of previous flux)
+				
+				Values (Equipment load, 150 W/m2): 
+				Zone 1: 150*10 = 1500 W
+					Convective to zone air node = 25%*1500 = 375 W
+					Radiative to wall air node = 75%*1500 = 1125 W
+					Flux density into wall = 1125 / 10 = 112.5 W/m2
+				Zone 2: 150*20 = 3000 W
+					Convective to zone air node = 25%*3000 = 750 W
+					Radiative to wall air node = 75%*3000 = 2250 W
+					Flux density into wall = 2250 / 10 = 225 W/m2
+			</Comment>
 		</ProjectInfo>
 
 		<Location>
