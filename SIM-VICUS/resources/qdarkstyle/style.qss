@@ -2175,3 +2175,14 @@ PlotWidget {
   /* Fix cut labels in plots #134 */
   padding: 0px;
 }
+
+SVButtonBar {
+  background-color: #3a3b3f;
+}
+
+SVButtonBar:disabled {
+  background-color: #3a3b3f;
+  color: #787878;
+  selection-background-color: #14506E;
+  selection-color: #787878;
+}
