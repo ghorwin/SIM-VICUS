@@ -47,12 +47,12 @@ public:
 		P_Thickness,				// Keyword: Thickness					[m]			'Thickness of the window layer.'
 		/*! Thermal conductivity of the dry material. */
 		P_Conductivity,				// Keyword: Conductivity				[W/mK]		'Thermal conductivity of the window layer.'
-		/*! Mass Density of Gas Layer. */
+		/*! Mass density of gas layer. */
 		P_MassDensity,				// Keyword: MassDensity					[kg/m3]		'Mass density of the fill-in gas.'
-		/*! Height of  detailed Window (needed for Convection in Cavity.  */
-		P_Height,					// Keyword: MassDensity					[m]			'Height of the detailed window.'
-		/*! Mass Density of Gas Layer. */
-		P_Width,					// Keyword: MassDensity					[m]			'height of the detailed window.'
+		/*! Height of detailed window (needed for Convection in Cavity).  */
+		P_Height,					// Keyword: Height						[m]			'Height of the detailed window.'
+		/*! Width of detailed window (needed for Convection in Cavity).  */
+		P_Width,					// Keyword: Width						[m]			'Width of the detailed window.'
 		/*! Emissivity of surface facing outside. */
 		P_LongWaveEmissivityInside,	// Keyword: LongWaveEmissivityInside	[---]		'Emissivity of surface facing outside.'
 		/*! Emissivity of surface facing inside. */
@@ -69,7 +69,7 @@ public:
 		SP_ShortWaveReflectanceInside,	// Keyword: ShortWaveReflectanceInside	[---]		'Short wave reflectance of surface facing inside.'
 		SP_Conductivity,				// Keyword: Conductivity				[W/mK]		'Thermal conductivity of the gas layer.'
 		SP_DynamicViscosity,			// Keyword: DynamicViscosity			[kg/ms]		'Dynamic viscosity of the gas layer.'
-		SP_HeatCapacity,				// Keyword: HeatCapacity				[J/kgK]		'Specific heat capoacity of the gas layer.'
+		SP_HeatCapacity,				// Keyword: HeatCapacity				[J/kgK]		'Specific heat capacity of the gas layer.'
 		NUM_SP
 	};
 
@@ -83,7 +83,7 @@ public:
 	type_t						m_type = NUM_T;						// XML:A:required
 
 	/*! Unique ID-number for this window layer. */
-	unsigned int				m_id;								// XML:A:required
+	unsigned int				m_id = INVALID_ID;					// XML:A:required
 
 	/*! Display name of layer. */
 	std::string					m_displayName;						// XML:A
