@@ -18,7 +18,7 @@ public:
 
 	VICUS_READWRITE
 
-	NetworkEdge();
+	NetworkEdge() {}
 	NetworkEdge(const unsigned nodeId1, const unsigned nodeId2, const bool supply):
 		m_nodeId1(nodeId1),
 		m_nodeId2(nodeId2),

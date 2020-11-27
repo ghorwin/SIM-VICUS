@@ -29,7 +29,7 @@ public:
 		NUM_NT
 	};
 
-	NetworkNode();
+	NetworkNode() {}
 
 	NetworkNode(const unsigned id, const NodeType type, const IBKMK::Vector3D &v, const double heatDemand=0):
 		m_id(id),

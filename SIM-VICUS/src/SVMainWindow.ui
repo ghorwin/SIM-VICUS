@@ -347,7 +347,7 @@
   <action name="actionViewToggleGeometryMode">
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/64x64/diagrams.png</normaloff>:/gfx/actions/64x64/diagrams.png</iconset>
+     <normaloff>:/gfx/actions/48x48/geometry.png</normaloff>:/gfx/actions/48x48/geometry.png</iconset>
    </property>
    <property name="text">
     <string>Edit Geometry</string>
