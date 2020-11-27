@@ -26,8 +26,11 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <VICUS_Constants.h>
+#include <IBKMK_Vector3D.h>
+#include <IBK_StringUtils.h>
 #include <NANDRAD_Utilities.h>
 #include <VICUS_Constants.h>
+#include <vector>
 
 #include <tinyxml.h>
 
@@ -62,6 +65,10 @@ void Network::readXML(const TiXmlElement * element) {
 			attrib = attrib->Next();
 		}
 		// search for mandatory elements
+		if (!element->FirstChildElement("Origin"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'Origin' element.") ), FUNC_ID);
+
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
@@ -88,6 +95,19 @@ void Network::readXML(const TiXmlElement * element) {
 					obj.readXML(c2);
 					m_edges.push_back(obj);
 					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "Origin") {
+				try {
+					std::vector<double> vals;
+					IBK::string2valueVector(c->GetText(), vals);
+					// must have 3 elements
+					if (vals.size() != 3)
+						throw IBK::Exception("Missing values (expected 3).", FUNC_ID);
+					m_origin.set(vals[0], vals[1], vals[2]);
+				} catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row())
+										  .arg("Invalid vector data."), FUNC_ID);
 				}
 			}
 			else {
@@ -138,6 +158,10 @@ TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
 		}
 	}
 
+	{
+		std::vector<double> v = { m_origin.m_x, m_origin.m_y, m_origin.m_z};
+		TiXmlElement::appendSingleAttributeElement(e, "Origin", nullptr, std::string(), IBK::vector2string<double>(v," "));
+	}
 	return e;
 }
 
