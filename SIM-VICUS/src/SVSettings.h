@@ -6,6 +6,11 @@
 #include <QDir>
 #include <QVariant>
 
+#include <VICUS_Material.h>
+#include <VICUS_Component.h>
+#include <VICUS_Construction.h>
+
+
 class QDockWidget;
 
 #include <IBK_QuantityManager.h>
@@ -156,7 +161,13 @@ public:
 	bool						m_versionExpired = false;
 
 	/*! Map of all database materials. */
-	//std::map<unsigned int, VICUS::Material>		m_dbMaterials;
+	std::map<unsigned int, VICUS::Material>		m_dbMaterials;
+
+	/*! Map of all database constructions. */
+	std::map<unsigned int, VICUS::Construction>	m_dbConstructions;
+
+	/*! Map of all database components. */
+	std::map<unsigned int, VICUS::Component>	m_dbComponents;
 
 private:
 
