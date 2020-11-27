@@ -120,6 +120,7 @@ public:
 
 	IBKMK::Vector3D origin() const;
 
+	/*! set m_origin and normalize all position to this origin */
 	void setOrigin(const IBKMK::Vector3D &origin);
 
 
@@ -142,10 +143,10 @@ public:
 		Node & n = m_nodes[e.m_n1];
 		\endcode
 	*/
-	std::vector<NetworkNode>		m_nodes;					// XML:E
+	std::vector<NetworkNode>		m_nodes;									// XML:E:required
 
 	/*! vector with edges */
-	std::vector<NetworkEdge>		m_edges;					// XML:E
+	std::vector<NetworkEdge>		m_edges;									// XML:E:required
 
 	/*! Stores the extends of the network.
 		Use the function updateExtends() to compute these.
@@ -155,8 +156,8 @@ public:
 	*/
 	IBK::rectangle<double>			m_extends;
 
-	/*! origin of the network, used only for drawing */
-	IBKMK::Vector3D					m_origin = IBKMK::Vector3D(0.0, 0.0, 0.0);
+	/*! origin of the network */
+	IBKMK::Vector3D					m_origin = IBKMK::Vector3D(0.0, 0.0, 0.0);	// XML:E:required
 
 };
 

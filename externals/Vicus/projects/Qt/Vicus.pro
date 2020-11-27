@@ -70,6 +70,9 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_BuildingLevel.cpp \
 	../../src/ncg/ncg_VICUS_NetworkFluid.cpp \
 	../../src/ncg/ncg_VICUS_NetworkPipe.cpp \
+	../../src/ncg/ncg_VICUS_NetworkNode.cpp \
+	../../src/ncg/ncg_VICUS_NetworkEdge.cpp \
+	../../src/ncg/ncg_VICUS_Network.cpp \
 	../../src/ncg/ncg_VICUS_Project.cpp \
 	../../src/ncg/ncg_VICUS_Room.cpp \
 	../../src/ncg/ncg_VICUS_RotationMatrix.cpp \
