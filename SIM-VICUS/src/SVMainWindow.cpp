@@ -34,7 +34,6 @@
 #include <QtExt_AutoUpdater.h>
 #include <QtExt_Directories.h>
 
-#include "SVButtonBar.h"
 #include "SVMessageHandler.h"
 #include "SVConstants.h"
 #include "SVSettings.h"
@@ -303,19 +302,6 @@ void SVMainWindow::setup() {
 	m_ui->actionFileRecentProjects->setMenu(m_recentProjectsMenu);
 	onUpdateRecentProjects();
 
-	// *** Create navigation/button bar ***
-	m_buttonBar = new SVButtonBar(this);
-	lay->addWidget(m_buttonBar);
-
-	m_buttonBar->toolButtonAbout->setDefaultAction(m_ui->actionHelpAbout);
-	m_buttonBar->toolButtonNew->setDefaultAction(m_ui->actionFileNew);
-	m_buttonBar->toolButtonLoad->setDefaultAction(m_ui->actionFileOpen);
-	m_buttonBar->toolButtonSave->setDefaultAction(m_ui->actionFileSave);
-	m_buttonBar->toolButtonViewPostProc->setDefaultAction(m_ui->actionViewExternalPostProcessing);
-	m_buttonBar->toolButtonQuit->setDefaultAction(m_ui->actionFileQuit);
-
-	connect(m_buttonBar, SIGNAL(currentViewChanged(int)), this, SLOT(onNavigationBarViewChanged(int)));
-
 	// *** Create splitter that holds navigation tree view and geometry view
 
 	m_geometryViewSplitter = new QSplitter(this);
@@ -334,7 +320,7 @@ void SVMainWindow::setup() {
 	m_geometryViewSplitter->setCollapsible(1, false);
 
 
-	// *** add actions for undo and redo ***
+	// *** setup tool bar (add actions for undo and redo) ***
 
 	QAction * undoAction = m_undoStack->createUndoAction(this, tr("Undo"));
 	undoAction->setIcon(QIcon(":/gfx/actions/24x24/undo.png"));
@@ -347,14 +333,17 @@ void SVMainWindow::setup() {
 	QList<QAction*> acts = m_ui->menu_Edit->actions();
 	m_ui->menu_Edit->addAction(undoAction);
 	m_ui->menu_Edit->addAction(redoAction);
+	// now move all the actions to bottom
 	for (int i=0; i<acts.count(); ++i)
 		m_ui->menu_Edit->addAction(acts[i]);
 
-	m_buttonBar->toolButtonUndo->setDefaultAction(undoAction);
-	m_buttonBar->toolButtonRedo->setDefaultAction(redoAction);
+	m_ui->toolBar->addAction(undoAction);
+	m_ui->toolBar->addAction(redoAction);
+	m_ui->menu_View->addAction(m_ui->toolBar->toggleViewAction());
 
 	// *** Create definition lists dock widgets
 	setupDockWidgets();
+
 
 	// *** restore state of UI ***
 	QByteArray geometry, state;
@@ -796,6 +785,7 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionRunSimulation->setEnabled(have_project);
 	m_ui->actionEditCleanProject->setEnabled(have_project);
 	m_ui->actionNetworkImport->setEnabled(have_project);
+	m_ui->actionViewToggleGeometryMode->setEnabled(have_project);
 
 	// no project, no undo actions -> clearing undostack also disables undo actions
 	if (!have_project)
@@ -813,8 +803,7 @@ void SVMainWindow::onUpdateActions() {
 	// Dock-Widgets are only visible when project is there
 	if (!have_project) {
 		// store dock widget visibility, but only if we are in construction view mode
-		if (m_buttonBar->currentView() == SVButtonBar::GeometryView)
-			storeDockWidgetVisibility();
+		storeDockWidgetVisibility();
 
 		m_logDockWidget->toggleViewAction()->setEnabled(false);
 
@@ -827,15 +816,36 @@ void SVMainWindow::onUpdateActions() {
 	// show welcome page only when we have no project
 	m_welcomeScreen->setVisible(!have_project);
 	// navigation bar is only visible when we have a project
-	m_buttonBar->setVisible(have_project);
-	m_buttonBar->setEnabled(have_project);
+	m_ui->toolBar->setVisible(have_project);
+	m_ui->toolBar->setEnabled(have_project);
 
 	// Note: in case of a project, the current view widget is set visible onNavigationBarViewChanged() below
 
 	// when we have a project
 	if (have_project) {
 		// select the current view, this also enables (in case of ConstructionView) the visibility of the dock widgets
-		onNavigationBarViewChanged(m_buttonBar->currentView());
+		m_logDockWidget->setVisible(m_dockWidgetVisibility[m_logDockWidget]);
+		m_logDockWidget->toggleViewAction()->setEnabled(true);
+
+		m_geometryViewSplitter->setVisible(true);
+		m_ui->toolBar->setVisible(true);
+		m_ui->toolBar->toggleViewAction()->setEnabled(true);
+
+		// adjust size of navigation view to be about 250 px wide or to a user-saved size
+		// TODO : whenever user resizes the splitter, the new width should be saved in the settings
+		//        and re-applied next time the geometry view is shown
+		QList<int> sizes;
+		int availableWidth = width();
+		if (m_ui->toolBar->isVisibleTo(this))
+			availableWidth -= m_ui->toolBar->width();
+		sizes << 250 << availableWidth - 250;
+		m_geometryViewSplitter->setSizes(sizes);
+	}
+	else {
+		m_ui->toolBar->setVisible(false);
+		m_ui->toolBar->toggleViewAction()->setEnabled(false);
+		m_logDockWidget->setVisible(false);
+		m_logDockWidget->toggleViewAction()->setEnabled(false);
 	}
 
 	// also update window caption and status bar
@@ -960,32 +970,6 @@ void SVMainWindow::onOpenTemplateByFilename(const QString & filename) {
 }
 
 
-void SVMainWindow::onNavigationBarViewChanged(int view) {
-	// hide dock widgets as well when not in construction view mode
-	if (view != SVButtonBar::GeometryView) {
-		m_logDockWidget->setVisible(false);
-		m_logDockWidget->toggleViewAction()->setEnabled(false);
-	}
-	else {
-		m_logDockWidget->setVisible(m_dockWidgetVisibility[m_logDockWidget]);
-		m_logDockWidget->toggleViewAction()->setEnabled(true);
-	}
-	switch ((SVButtonBar::Views)view) {
-		case SVButtonBar::GeometryView :
-			m_geometryViewSplitter->setVisible(true);
-
-			// adjust size of navigation view to be about 250 px wide or to a user-saved size
-			// TODO : whenever user resizes the splitter, the new width should be saved in the settings
-			//        and re-applied next time the geometry view is shown
-			QList<int> sizes;
-			sizes << 250 << width()-m_buttonBar->width() - 250;
-			m_geometryViewSplitter->setSizes(sizes);
-
-			break;
-	}
-}
-
-
 void SVMainWindow::onWorkerThreadFinished() {
 
 	/// \todo Figure out why thread sends finished signal twice when terminated
@@ -1035,7 +1019,7 @@ void SVMainWindow::setupDockWidgets() {
 	m_logDockWidget->setWindowTitle(tr("Application Log"));
 	m_logDockWidget->setFeatures(QDockWidget::AllDockWidgetFeatures | titleBarOption);
 	m_logDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
-	m_ui->menu_Window->addAction(m_logDockWidget->toggleViewAction());
+	m_ui->menu_View->addAction(m_logDockWidget->toggleViewAction());
 	m_logDockWidget->setWidget(m_logWidget);
 	addDockWidget(Qt::BottomDockWidgetArea,m_logDockWidget);
 
@@ -1266,13 +1250,16 @@ static bool copyRecursively(const QString &srcFilePath,
 }
 
 
-
-
-void SVMainWindow::on_actionNetworkEdit_triggered()
-{
+void SVMainWindow::on_actionNetworkEdit_triggered() {
 	// opens edit network dialog
 	if (m_networkEditDialog == nullptr)
 		m_networkEditDialog = new SVNetworkEditDialog(this);
 
 	m_networkEditDialog->edit();
+}
+
+
+void SVMainWindow::on_actionViewToggleGeometryMode_triggered() {
+	// put scene into "edit geometry" mode
+	m_geometryView->setViewMode(SVGeometryView::VM_EditGeometry);
 }

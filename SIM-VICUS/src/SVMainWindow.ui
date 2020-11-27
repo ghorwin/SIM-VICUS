@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>1087</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -75,18 +75,6 @@
     </property>
     <addaction name="separator"/>
    </widget>
-   <widget class="QMenu" name="menu_Window">
-    <property name="minimumSize">
-     <size>
-      <width>0</width>
-      <height>0</height>
-     </size>
-    </property>
-    <property name="title">
-     <string>W&amp;indow</string>
-    </property>
-    <addaction name="separator"/>
-   </widget>
    <widget class="QMenu" name="menu_Tools">
     <property name="title">
      <string>&amp;Tools</string>
@@ -105,9 +93,36 @@
    <addaction name="menu_Edit"/>
    <addaction name="menuNetworks"/>
    <addaction name="menu_View"/>
-   <addaction name="menu_Window"/>
    <addaction name="menu_Tools"/>
    <addaction name="menu_Help"/>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>Main tool bar.</string>
+   </property>
+   <property name="movable">
+    <bool>false</bool>
+   </property>
+   <property name="allowedAreas">
+    <set>Qt::LeftToolBarArea</set>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>32</width>
+     <height>32</height>
+    </size>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>LeftToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionFileNew"/>
+   <addaction name="actionFileOpen"/>
+   <addaction name="actionFileSave"/>
+   <addaction name="separator"/>
+   <addaction name="actionViewToggleGeometryMode"/>
   </widget>
   <action name="actionFileNew">
    <property name="icon">
@@ -327,6 +342,18 @@
   <action name="actionNetworkEdit">
    <property name="text">
     <string>Edit Network...</string>
+   </property>
+  </action>
+  <action name="actionViewToggleGeometryMode">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/64x64/diagrams.png</normaloff>:/gfx/actions/64x64/diagrams.png</iconset>
+   </property>
+   <property name="text">
+    <string>Edit Geometry</string>
+   </property>
+   <property name="toolTip">
+    <string>Turns on geometry edit mode</string>
    </property>
   </action>
  </widget>

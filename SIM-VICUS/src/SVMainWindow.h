@@ -153,9 +153,6 @@ private slots:
 	*/
 	void onOpenTemplateByFilename(const QString & filename);
 
-	/*! Connected to currentViewChanged() in navigation bar. */
-	void onNavigationBarViewChanged(int view);
-
 	/*! Triggered whenever a worker thread finishes. */
 	void onWorkerThreadFinished();
 
@@ -181,6 +178,8 @@ private slots:
 	void onStyleChanged();
 
 	void on_actionNetworkEdit_triggered();
+
+	void on_actionViewToggleGeometryMode_triggered();
 
 private:
 	/*! Sets up all dock widgets with definition lists. */

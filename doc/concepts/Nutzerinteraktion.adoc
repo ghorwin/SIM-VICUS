@@ -226,4 +226,24 @@ Im Datenmodell wird folgendes erstellt:
     
 
 
+= Oberflächen-Modi
+
+== Scenennavigation
+
+- kein bewegliches Koordinatensystem
+- kein Rendern, abgesehen von Viewport-Anpassungen
+- Viewport-Anpassung mit Maus/Tastaturnavigation
+- Selection durch anklicken von Flächen
+
+== Zeichnen neuer Primitivgeometrien
+
+- bewegliches Koordinatesystem gezeichnet/snapped entsprechend der snap-Regeln
+- aktuelle neue Geometrie gezeichnet (NewPolygonObject)
+- Viewport-Anpassung mit Maus/Tastaturnavigation
+- keine Selection
+- Property-Widget zeigt "Add polygon"-Property Widget
+
+== Verschiebemodus
+
+- ausgewählte Geometrie (Ändern der Selektion nicht möglich)
 

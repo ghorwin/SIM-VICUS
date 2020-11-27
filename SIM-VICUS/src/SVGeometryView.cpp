@@ -146,7 +146,7 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 
 	container->setFocusPolicy(Qt::StrongFocus); // we want to get all keyboard/mouse events
 
-	setMode(NUM_M);
+	setGeometryEditMode(NUM_M);
 }
 
 
@@ -155,27 +155,35 @@ void SVGeometryView::saveScreenShot(const QString & imgFilePath) {
 }
 
 
-void SVGeometryView::setMode(GeometryEditMode m) {
+void SVGeometryView::setViewMode(SVGeometryView::ViewMode m) {
+	// a switch of the view mode also shows the property widget
+	showPropertyWidget();
+	switch (m) {
+		case VM_Standard :
+			// switch property widget to "property adjustment" mode
+			m_propertyWidget->setMode(SVPropertyWidget::M_ThermalSimulationProperties);
+		break;
+		case VM_EditGeometry :
+			// switch property widget to "edit geometry" mode
+			m_propertyWidget->setMode(SVPropertyWidget::M_EditGeometry);
+		break;
+	}
+}
+
+
+void SVGeometryView::setGeometryEditMode(GeometryEditMode m) {
+}
+
+
+void SVGeometryView::showPropertyWidget() {
 	int propertyWidgetWidth = m_splitter->widget(1)->width();
-	if (m == NUM_M) {
-		m_splitter->setSizes(QList<int>() << width() << 0);
-		// disable splitter handle
-		for (int i = 0; i < m_splitter->count(); i++) {
-			QSplitterHandle *handle = m_splitter->handle(i);
-			handle->setEnabled(false);
-		}
+	if (propertyWidgetWidth == 0)
+		propertyWidgetWidth = 200;
+	QList<int> sizes = QList<int>() << width()-propertyWidgetWidth << propertyWidgetWidth;
+	// enable splitter handle
+	for (int i = 0; i < m_splitter->count(); i++) {
+		QSplitterHandle *handle = m_splitter->handle(i);
+		handle->setEnabled(true);
 	}
-	else {
-		/// \todo get old/default width from preferences
-		if (propertyWidgetWidth == 0)
-			propertyWidgetWidth = 200;
-		QList<int> sizes = QList<int>() << width()-propertyWidgetWidth << propertyWidgetWidth;
-		// enable splitter handle
-		for (int i = 0; i < m_splitter->count(); i++) {
-			QSplitterHandle *handle = m_splitter->handle(i);
-			handle->setEnabled(true);
-		}
-		m_splitter->setSizes(sizes);
-	}
-	m_propertyWidget->setMode(m);
+	m_splitter->setSizes(sizes);
 }

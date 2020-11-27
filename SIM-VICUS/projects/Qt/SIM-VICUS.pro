@@ -68,6 +68,7 @@ win32 {
 SOURCES += \
         ../../src/SVNetworkEditDialog.cpp \
         ../../src/SVPreferencesPageStyle.cpp \
+        ../../src/SVPropAddPolygonWidget.cpp \
         ../../src/SVPropertyWidget.cpp \
         ../../src/actions/SVUndoAddNetwork.cpp \
         ../../src/actions/SVUndoCommandBase.cpp \
@@ -88,7 +89,6 @@ SOURCES += \
         ../../src/core3D/Vic3DTransform3D.cpp \
         ../../src/main.cpp \
         ../../src/SVAboutDialog.cpp \
-        ../../src/SVButtonBar.cpp \
         ../../src/SVConstants.cpp \
         ../../src/SVDebugApplication.cpp \
         ../../src/SVGeometryView.cpp \
@@ -111,6 +111,7 @@ SOURCES += \
 HEADERS  += \
         ../../src/SVNetworkEditDialog.h \
         ../../src/SVPreferencesPageStyle.h \
+        ../../src/SVPropAddPolygonWidget.h \
         ../../src/SVPropertyWidget.h \
         ../../src/actions/SVUndoAddNetwork.h \
         ../../src/actions/SVUndoCommandBase.h \
@@ -133,7 +134,6 @@ HEADERS  += \
         ../../src/core3D/Vic3DTransform3D.h \
         ../../src/core3D/Vic3DVertex.h \
         ../../src/SVAboutDialog.h \
-        ../../src/SVButtonBar.h \
         ../../src/SVConstants.h \
         ../../src/SVDebugApplication.h \
         ../../src/SVGeometryView.h \
@@ -163,6 +163,7 @@ FORMS    += \
         ../../src/SVPreferencesDialog.ui \
         ../../src/SVPreferencesPageStyle.ui \
         ../../src/SVPreferencesPageTools.ui \
+        ../../src/SVPropAddPolygonWidget.ui \
         ../../src/SVWelcomeScreen.ui
 
 TRANSLATIONS += ../../resources/translations/SIM-VICUS_de.ts
