@@ -9,6 +9,11 @@
 #include <VICUS_Material.h>
 #include <VICUS_Component.h>
 #include <VICUS_Construction.h>
+#include <VICUS_WindowGlazingSystem.h>
+#include <VICUS_WindowFrame.h>
+#include <VICUS_WindowDivider.h>
+#include <VICUS_SurfaceProperties.h>
+#include <VICUS_BoundaryCondition.h>
 
 
 class QDockWidget;
@@ -160,14 +165,32 @@ public:
 	/*! Returns true, if end of service life has been reached. */
 	bool						m_versionExpired = false;
 
-	/*! Map of all database materials. */
-	std::map<unsigned int, VICUS::Material>		m_dbMaterials;
+	/*! Map of all opaque database materials. */
+	std::map<unsigned int, VICUS::Material>					m_dbOpaqueMaterials;
+
+	/*! Map of all window database materials. */
+	std::map<unsigned int, VICUS::WindowGlazingLayer>		m_dbWindowMaterials;
+
+	/*! Map of all database glazing systems. */
+	std::map<unsigned int, VICUS::WindowGlazingSystem>		m_dbWindowGlazingSystems;
+
+	/*! Map of all database window frames. */
+	std::map<unsigned int, VICUS::WindowFrame>				m_dbWindowFrame;
+
+	/*! Map of all database window dividers. */
+	std::map<unsigned int, VICUS::WindowDivider>			m_dbWindowDivider;
 
 	/*! Map of all database constructions. */
-	std::map<unsigned int, VICUS::Construction>	m_dbConstructions;
+	std::map<unsigned int, VICUS::Construction>				m_dbConstructions;
+
+	/*! Map of all database surface properties. */
+	std::map<unsigned int, VICUS::SurfaceProperties>		m_dbSurfaceProperties;
+
+	/*! Map of all database boundary conditions. */
+	std::map<unsigned int, VICUS::BoundaryCondition>		m_dbBoundaryConditions;
 
 	/*! Map of all database components. */
-	std::map<unsigned int, VICUS::Component>	m_dbComponents;
+	std::map<unsigned int, VICUS::Component>				m_dbComponents;
 
 private:
 
