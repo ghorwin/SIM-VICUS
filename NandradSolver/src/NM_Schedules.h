@@ -49,9 +49,30 @@ class InputReference;
 	be accessed by other models very efficiently. During the initialization, it is checked that:
 	- all schedules have definitions for a full time range (i.e. all days types are covered)
 	- each object list is referenced only once
+
+	Important:
+	- Schedules are implemented as linear splines; when these are composed, the values given in DailyCycles
+	  are converted to the base SI unit. Thus, values retrieved from schedules are *always* in base-SI unit
 */
 class Schedules : public AbstractTimeDependency {
 public:
+	/*! This enumeration contains all known quantities that are requested by NANDRAD models
+		with their associated units.
+		Their existence serves mainly the error checking of user-supplied quantities: both that
+		units match and that the spelling of scheduled quantities is correct.
+
+		Note: when you implement a model which takes scheduled quantities, you need to add these here.
+		This way, we also ensure that scheduled quantity names are unique across all models.
+	*/
+	enum KnownQuantities {
+		SQ_InfiltrationRateSchedule,			// Keyword: InfiltrationRateSchedule [1/h]
+		SQ_EquipmentHeatLoadPerAreaSchedule,	// Keyword: EquipmentHeatLoadPerAreaSchedule [W/m2]
+		SQ_PersonHeatLoadPerAreaSchedule,		// Keyword: PersonHeatLoadPerAreaSchedule [W/m2]
+		SQ_LightingHeatLoadPerAreaSchedule,		// Keyword: LightingHeatLoadPerAreaSchedule [W/m2]
+		NUM_SQ
+	};
+
+
 	// *** PUBLIC MEMBER FUNCTIONS
 
 	/*! Generate variable reference list from defined schedules. */

@@ -126,6 +126,26 @@ void Schedules::setup(NANDRAD::Project &project) {
 		}
 		// now we process all collect variables and store meta data about these variables
 		for (auto var : varlist) {
+			// check for correct spelling and unit of scheduled quantity
+			KnownQuantities k;
+			try {
+				k = (KnownQuantities)NANDRAD_MODEL::KeywordList::Enumeration("Schedules::KnownQuantities", var.first);
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, "Unknown/undefined (perhaps misspelled) scheduled quantity.", FUNC_ID);
+			}
+			// check unit
+			IBK::Unit requestedUnit;
+			try {
+				requestedUnit = IBK::Unit(NANDRAD_MODEL::KeywordList::Unit("Schedules::KnownQuantities", k));
+			} catch (...) {
+				throw IBK::Exception(IBK::FormatString("ERROR: missing/invalid unit in 'Schedules::KnownQuantities' keyword list!"), FUNC_ID);
+			}
+			if (requestedUnit.base_id() != var.second.base_id())
+				throw IBK::Exception(IBK::FormatString("Expected '%1' unit for scheduled quantity '%2', but "
+													   "got '%3' (not convertible).")
+									 .arg(requestedUnit).arg(var.first).arg(var.second), FUNC_ID);
+
 			m_variableNames.push_back(objectListName + "::" + var.first);
 			m_variableUnits.push_back(var.second);
 			// now generate the linear splines
