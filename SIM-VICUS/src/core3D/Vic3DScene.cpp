@@ -115,9 +115,8 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 	// transfer other properties
 
 
-
-	// for now put the scene automatically into draw mode
-	setOperationMode(OM_Draw);
+	// for now put the scene into standard selection mode
+	setOperationMode(NUM_OM);
 }
 
 
@@ -473,6 +472,7 @@ void Vic3DScene::setOperationMode(Vic3DScene::OperationMode m)	{
 
 	m_operationMode = m;
 }
+
 
 void Vic3DScene::setSceneStyle(bool dark) {
 	if (dark) {

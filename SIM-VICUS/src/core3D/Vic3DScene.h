@@ -162,7 +162,7 @@ private:
 	QVector3D				m_orbitControllerOrigin;
 
 	/*! If true, the coordinate system is active and snaps to selected objects. */
-	bool					m_coordinateSystemActive = true;
+	bool					m_coordinateSystemActive = false;
 
 	/*! Indicates whether pick object detection is outdated and should be updated (this flag prevents needless pick
 		calculations).

@@ -6,6 +6,7 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	m_ui(new Ui::SVPropEditGeometry)
 {
 	m_ui->setupUi(this);
+	layout()->setMargin(0);
 }
 
 

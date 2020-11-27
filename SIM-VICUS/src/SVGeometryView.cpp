@@ -145,8 +145,6 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 	container->setFocusPolicy(Qt::StrongFocus); // we want to get all keyboard/mouse events
-
-	setGeometryEditMode(NUM_M);
 }
 
 
@@ -162,6 +160,7 @@ void SVGeometryView::setViewMode(SVGeometryView::ViewMode m) {
 		case VM_Standard :
 			// switch property widget to "property adjustment" mode
 			m_propertyWidget->setMode(SVPropertyWidget::M_ThermalSimulationProperties);
+			// tell scene to go to standard mode
 		break;
 		case VM_EditGeometry :
 			// switch property widget to "edit geometry" mode

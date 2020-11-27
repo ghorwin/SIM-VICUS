@@ -228,20 +228,55 @@ Im Datenmodell wird folgendes erstellt:
 
 = Oberflächen-Modi
 
-== Scenennavigation
+
+== Modi der 3D Szene
+
+=== S1 : reguläre Navigation
 
 - kein bewegliches Koordinatensystem
 - kein Rendern, abgesehen von Viewport-Anpassungen
 - Viewport-Anpassung mit Maus/Tastaturnavigation
 - Selection durch anklicken von Flächen
 
-== Zeichnen neuer Primitivgeometrien
+=== S2-1 : Polygon-Zeichnen
 
-- bewegliches Koordinatesystem gezeichnet/snapped entsprechend der snap-Regeln
-- aktuelle neue Geometrie gezeichnet (NewPolygonObject)
+- keine markierten Objekte
+- bewegliches Koordinatesystem gezeichnet ohne Achsenkugeln
+- Koordinatensystem snapped entsprechend der snap-Regeln
+- NewPolygonObject sichtbar, nächste Vertex-Koordinaten werden mit Koordinatensystem synchronisiert 
 - Viewport-Anpassung mit Maus/Tastaturnavigation
-- keine Selection
-- Property-Widget zeigt "Add polygon"-Property Widget
+- keine Selection möglich
+
+
+=== S3 : Objekt verschieben (Translation)
+
+- Objekt ist markiert
+- lokales Koordinatensystem ist im Mittelpunkt (arithemtisches Mittel aller Vertexes aller ausgewählten Objekte)
+- lokales Koordinatensystem zeigt Achsenkugeln
+- Klicken und ziehen auf Achsenkugeln verschiebt Objekt(e) in jeweilige Achse; während Verschiebun wird Linie entlang Koordinatenachse angezeigt
+
+=== S4 : Objekt rotieren
+
+- Objekt ist markiert
+- lokales Koordinatensystem ist im Mittelpunkt (arithemtisches Mittel aller Vertexes aller ausgewählten Objekte)
+- lokales Koordinatensystem zeigt Achsenkugeln und Rotationskreise um das lokale Koordinatensystem
+- Klicken und ziehen auf Achsenkugeln rotiert Objekt(e) um die jeweilige Achse
+
+=== S5 : Objekt skalieren
+
+- Objekt ist markiert
+- lokales Koordinatensystem ist im Mittelpunkt (arithemtisches Mittel aller Vertexes aller ausgewählten Objekte)
+- lokales Koordinatensystem zeigt Achsenboxen in beide Richtungen
+- Klicken und ziehen auf Achsenkugeln skaliert Objekt(e) in jeweilige Achse und verschiebt den Mittelpunkt, sodass einseitige Skalierung möglich ist; während Verschiebun wird Linie entlang Koordinatenachse angezeigt
+
+
+=== S6 : Lokales Koordinatensystem ausrichten
+
+- das lokale Koordinatensystem wird angezeigt
+- senkrecht zur lokalen z-Achse wird eine quadratische Fläche in der xy-Ebene gezeigt (1,1 - -1,-1)
+- lokale Koordinatensystem snapped unter Cursor zur Flächen und wird dort ausgerichtet
+- Klick platziert/fixiert neues lokales Koordinatensystem 
+
 
 == Verschiebemodus
 

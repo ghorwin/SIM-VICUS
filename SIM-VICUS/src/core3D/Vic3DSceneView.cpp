@@ -263,9 +263,9 @@ void SceneView::paintGL() {
 	Q_ASSERT(!samples.isEmpty());
 	qDebug() << "Total render time: " << (samples.back() - samples.front())*1e-6 << "ms/frame";
 
+#endif
 	qint64 elapsedMs = m_cpuTimer.elapsed();
 	qDebug() << "Total paintGL time: " << elapsedMs << "ms";
-#endif
 }
 
 
