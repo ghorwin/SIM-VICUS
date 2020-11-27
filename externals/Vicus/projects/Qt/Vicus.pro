@@ -32,12 +32,17 @@ DEPENDPATH = $${INCLUDEPATH}
 
 HEADERS += \
 	../../src/VICUS_ArgsParser.h \
+	../../src/VICUS_BoundaryCondition.h \
 	../../src/VICUS_Building.h \
 	../../src/VICUS_BuildingLevel.h \
 	../../src/VICUS_CodeGenMacros.h \
+	../../src/VICUS_Component.h \
 	../../src/VICUS_Constants.h \ \
+	../../src/VICUS_Construction.h \
 	../../src/VICUS_Conversions.h \
 	../../src/VICUS_KeywordList.h \
+	../../src/VICUS_Material.h \
+	../../src/VICUS_MaterialLayer.h \
 	../../src/VICUS_Network.h \
 	../../src/VICUS_NetworkEdge.h \
 	../../src/VICUS_NetworkFluid.h \
