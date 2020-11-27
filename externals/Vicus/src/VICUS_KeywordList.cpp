@@ -34,17 +34,30 @@ namespace VICUS {
 	const char * const INVALID_KEYWORD_INDEX_STRING = "KEYWORD_ERROR_STRING: Invalid type index";
 
 	/*! Holds a list of all enum types/categories. */
-	const char * const ENUM_TYPES[5] = {
+	const char * const ENUM_TYPES[18] = {
+		"BoundaryCondition::para_t",
+		"BoundaryCondition::HeatConductionModel",
+		"Material::para_t",
+		"Material::Category",
 		"NetworkFluid::para_t",
 		"NetworkNode::NodeType",
 		"PlaneGeometry::type_t",
 		"Project::ViewFlags",
-		"ViewSettings::Flags"
+		"SurfaceProperties::para_t",
+		"SurfaceProperties::Type",
+		"ViewSettings::Flags",
+		"WindowDivider::para_t",
+		"WindowGlazingLayer::type_t",
+		"WindowGlazingLayer::para_t",
+		"WindowGlazingLayer::splinePara_t",
+		"WindowGlazingSystem::modelType_t",
+		"WindowGlazingSystem::para_t",
+		"WindowGlazingSystem::splinePara_t"
 	};
 
 	/*! Converts a category string to respective enumeration value. */
 	int enum2index(const std::string & enumtype) {
-		for (int i=0; i<5; ++i) {
+		for (int i=0; i<18; ++i) {
 			if (enumtype == ENUM_TYPES[i]) return i;
 		}
 		//std::cerr << "Unknown enumeration type '" << enumtype<< "'." << std::endl;
@@ -55,36 +68,138 @@ namespace VICUS {
 	/*! Returns a keyword string for a given category (typenum) and type number t. */
 	const char * theKeyword(int typenum, int t) {
 		switch (typenum) {
-			// NetworkFluid::para_t
+			// BoundaryCondition::para_t
 			case 0 :
+			switch (t) {
+				case 0 : return "SolarAbsorption";
+				case 1 : return "Emissivity";
+				case 2 : return "VisibleAbsorption";
+				case 3 : return "HeatTransferCoefficient";
+			} break;
+			// BoundaryCondition::HeatConductionModel
+			case 1 :
+			switch (t) {
+				case 0 : return "Constant";
+				case 1 : return "WindVelocity";
+			} break;
+			// Material::para_t
+			case 2 :
+			switch (t) {
+				case 0 : return "Density";
+				case 1 : return "HeatCapacity";
+				case 2 : return "Conductivity";
+				case 3 : return "Mu";
+				case 4 : return "W80";
+				case 5 : return "Wsat";
+			} break;
+			// Material::Category
+			case 3 :
+			switch (t) {
+				case 0 : return "Coating";
+				case 1 : return "Plaster";
+				case 2 : return "Bricks";
+				case 3 : return "NaturalStones";
+				case 4 : return "Cementitious";
+				case 5 : return "Insulations";
+				case 6 : return "BuildingBoards";
+				case 7 : return "Woodbased";
+				case 8 : return "NaturalMaterials";
+				case 9 : return "Soils";
+				case 10 : return "CladdingSystems";
+				case 11 : return "Foils";
+				case 12 : return "Miscellaneous";
+			} break;
+			// NetworkFluid::para_t
+			case 4 :
 			switch (t) {
 				case 0 : return "Density";
 				case 1 : return "HeatCapacity";
 				case 2 : return "Conductivity";
 			} break;
 			// NetworkNode::NodeType
-			case 1 :
+			case 5 :
 			switch (t) {
 				case 0 : return "Building";
 				case 1 : return "Mixer";
 				case 2 : return "Source";
 			} break;
 			// PlaneGeometry::type_t
-			case 2 :
+			case 6 :
 			switch (t) {
 				case 0 : return "Triangle";
 				case 1 : return "Rectangle";
 				case 2 : return "Polygon";
 			} break;
 			// Project::ViewFlags
-			case 3 :
+			case 7 :
 			switch (t) {
 				case 0 : return "All";
 			} break;
+			// SurfaceProperties::para_t
+			case 8 :
+			switch (t) {
+				case 0 : return "Specularity";
+				case 1 : return "Roughness";
+			} break;
+			// SurfaceProperties::Type
+			case 9 :
+			switch (t) {
+				case 0 : return "Plastic";
+				case 1 : return "Metal";
+				case 2 : return "Glass";
+			} break;
 			// ViewSettings::Flags
-			case 4 :
+			case 10 :
 			switch (t) {
 				case 0 : return "GridVisible";
+			} break;
+			// WindowDivider::para_t
+			case 11 :
+			switch (t) {
+				case 0 : return "Area";
+			} break;
+			// WindowGlazingLayer::type_t
+			case 12 :
+			switch (t) {
+				case 0 : return "Gas";
+				case 1 : return "Glass";
+			} break;
+			// WindowGlazingLayer::para_t
+			case 13 :
+			switch (t) {
+				case 0 : return "Thickness";
+				case 1 : return "Conductivity";
+				case 2 : return "MassDensity";
+				case 3 : return "Height";
+				case 4 : return "Width";
+				case 5 : return "LongWaveEmissivityInside";
+				case 6 : return "P_LongWaveEmissivityOutside";
+			} break;
+			// WindowGlazingLayer::splinePara_t
+			case 14 :
+			switch (t) {
+				case 0 : return "ShortWaveTransmittance";
+				case 1 : return "ShortWaveReflectanceOutside";
+				case 2 : return "ShortWaveReflectanceInside";
+				case 3 : return "Conductivity";
+				case 4 : return "DynamicViscosity";
+				case 5 : return "HeatCapacity";
+			} break;
+			// WindowGlazingSystem::modelType_t
+			case 15 :
+			switch (t) {
+				case 0 : return "Simple";
+				case 1 : return "Detailed";
+			} break;
+			// WindowGlazingSystem::para_t
+			case 16 :
+			switch (t) {
+				case 0 : return "ThermalTransmittance";
+			} break;
+			// WindowGlazingSystem::splinePara_t
+			case 17 :
+			switch (t) {
+				case 0 : return "SHGC";
 			} break;
 		} // switch
 		return INVALID_KEYWORD_INDEX_STRING;
@@ -93,36 +208,138 @@ namespace VICUS {
 	/*! Returns all keywords including deprecated for a given category (typenum) and type number (t). */
 	const char * allKeywords(int typenum, int t) {
 		switch (typenum) {
-			// NetworkFluid::para_t
+			// BoundaryCondition::para_t
 			case 0 :
+			switch (t) {
+				case 0 : return "SolarAbsorption";
+				case 1 : return "Emissivity";
+				case 2 : return "VisibleAbsorption";
+				case 3 : return "HeatTransferCoefficient";
+			} break;
+			// BoundaryCondition::HeatConductionModel
+			case 1 :
+			switch (t) {
+				case 0 : return "Constant";
+				case 1 : return "WindVelocity";
+			} break;
+			// Material::para_t
+			case 2 :
+			switch (t) {
+				case 0 : return "Density";
+				case 1 : return "HeatCapacity";
+				case 2 : return "Conductivity";
+				case 3 : return "Mu";
+				case 4 : return "W80";
+				case 5 : return "Wsat";
+			} break;
+			// Material::Category
+			case 3 :
+			switch (t) {
+				case 0 : return "Coating";
+				case 1 : return "Plaster";
+				case 2 : return "Bricks";
+				case 3 : return "NaturalStones";
+				case 4 : return "Cementitious";
+				case 5 : return "Insulations";
+				case 6 : return "BuildingBoards";
+				case 7 : return "Woodbased";
+				case 8 : return "NaturalMaterials";
+				case 9 : return "Soils";
+				case 10 : return "CladdingSystems";
+				case 11 : return "Foils";
+				case 12 : return "Miscellaneous";
+			} break;
+			// NetworkFluid::para_t
+			case 4 :
 			switch (t) {
 				case 0 : return "Density";
 				case 1 : return "HeatCapacity";
 				case 2 : return "Conductivity";
 			} break;
 			// NetworkNode::NodeType
-			case 1 :
+			case 5 :
 			switch (t) {
 				case 0 : return "Building";
 				case 1 : return "Mixer";
 				case 2 : return "Source";
 			} break;
 			// PlaneGeometry::type_t
-			case 2 :
+			case 6 :
 			switch (t) {
 				case 0 : return "Triangle";
 				case 1 : return "Rectangle";
 				case 2 : return "Polygon";
 			} break;
 			// Project::ViewFlags
-			case 3 :
+			case 7 :
 			switch (t) {
 				case 0 : return "All";
 			} break;
+			// SurfaceProperties::para_t
+			case 8 :
+			switch (t) {
+				case 0 : return "Specularity";
+				case 1 : return "Roughness";
+			} break;
+			// SurfaceProperties::Type
+			case 9 :
+			switch (t) {
+				case 0 : return "Plastic";
+				case 1 : return "Metal";
+				case 2 : return "Glass";
+			} break;
 			// ViewSettings::Flags
-			case 4 :
+			case 10 :
 			switch (t) {
 				case 0 : return "GridVisible";
+			} break;
+			// WindowDivider::para_t
+			case 11 :
+			switch (t) {
+				case 0 : return "Area";
+			} break;
+			// WindowGlazingLayer::type_t
+			case 12 :
+			switch (t) {
+				case 0 : return "Gas";
+				case 1 : return "Glass";
+			} break;
+			// WindowGlazingLayer::para_t
+			case 13 :
+			switch (t) {
+				case 0 : return "Thickness";
+				case 1 : return "Conductivity";
+				case 2 : return "MassDensity";
+				case 3 : return "Height";
+				case 4 : return "Width";
+				case 5 : return "LongWaveEmissivityInside";
+				case 6 : return "P_LongWaveEmissivityOutside";
+			} break;
+			// WindowGlazingLayer::splinePara_t
+			case 14 :
+			switch (t) {
+				case 0 : return "ShortWaveTransmittance";
+				case 1 : return "ShortWaveReflectanceOutside";
+				case 2 : return "ShortWaveReflectanceInside";
+				case 3 : return "Conductivity";
+				case 4 : return "DynamicViscosity";
+				case 5 : return "HeatCapacity";
+			} break;
+			// WindowGlazingSystem::modelType_t
+			case 15 :
+			switch (t) {
+				case 0 : return "Simple";
+				case 1 : return "Detailed";
+			} break;
+			// WindowGlazingSystem::para_t
+			case 16 :
+			switch (t) {
+				case 0 : return "ThermalTransmittance";
+			} break;
+			// WindowGlazingSystem::splinePara_t
+			case 17 :
+			switch (t) {
+				case 0 : return "SHGC";
 			} break;
 		} // switch
 		return INVALID_KEYWORD_INDEX_STRING;
@@ -132,36 +349,138 @@ namespace VICUS {
 		if (no_description != nullptr)
 			*no_description = false; // we are optimistic
 		switch (enum2index(enumtype)) {
-			// NetworkFluid::para_t
+			// BoundaryCondition::para_t
 			case 0 :
+			switch (t) {
+				case 0 : return "Solar absorption coefficient.";
+				case 1 : return "Constant Long wave emissivity.";
+				case 2 : return "Visible absorption coefficient.";
+				case 3 : return "Constant heat transfer coefficient.";
+			} break;
+			// BoundaryCondition::HeatConductionModel
+			case 1 :
+			switch (t) {
+				case 0 : return "Constant model.";
+				case 1 : return "Heat transfer coefficient depends on wind velocity.";
+			} break;
+			// Material::para_t
+			case 2 :
+			switch (t) {
+				case 0 : return "Dry density of the material.";
+				case 1 : return "Specific heat capacity of the material.";
+				case 2 : return "Thermal conductivity of the dry material.";
+				case 3 : return "Vapor diffusion resistance factor.";
+				case 4 : return "...";
+				case 5 : return "...";
+			} break;
+			// Material::Category
+			case 3 :
+			switch (t) {
+				case 0 : if (no_description != nullptr) *no_description = true; return "Coating";
+				case 1 : if (no_description != nullptr) *no_description = true; return "Plaster";
+				case 2 : if (no_description != nullptr) *no_description = true; return "Bricks";
+				case 3 : if (no_description != nullptr) *no_description = true; return "NaturalStones";
+				case 4 : if (no_description != nullptr) *no_description = true; return "Cementitious";
+				case 5 : if (no_description != nullptr) *no_description = true; return "Insulations";
+				case 6 : if (no_description != nullptr) *no_description = true; return "BuildingBoards";
+				case 7 : if (no_description != nullptr) *no_description = true; return "Woodbased";
+				case 8 : if (no_description != nullptr) *no_description = true; return "NaturalMaterials";
+				case 9 : if (no_description != nullptr) *no_description = true; return "Soils";
+				case 10 : if (no_description != nullptr) *no_description = true; return "CladdingSystems";
+				case 11 : if (no_description != nullptr) *no_description = true; return "Foils";
+				case 12 : if (no_description != nullptr) *no_description = true; return "Miscellaneous";
+			} break;
+			// NetworkFluid::para_t
+			case 4 :
 			switch (t) {
 				case 0 : return "Dry density of the material.";
 				case 1 : return "Specific heat capacity of the material.";
 				case 2 : return "Thermal conductivity of the dry material.";
 			} break;
 			// NetworkNode::NodeType
-			case 1 :
+			case 5 :
 			switch (t) {
 				case 0 : if (no_description != nullptr) *no_description = true; return "Building";
 				case 1 : if (no_description != nullptr) *no_description = true; return "Mixer";
 				case 2 : if (no_description != nullptr) *no_description = true; return "Source";
 			} break;
 			// PlaneGeometry::type_t
-			case 2 :
+			case 6 :
 			switch (t) {
 				case 0 : if (no_description != nullptr) *no_description = true; return "Triangle";
 				case 1 : if (no_description != nullptr) *no_description = true; return "Rectangle";
 				case 2 : if (no_description != nullptr) *no_description = true; return "Polygon";
 			} break;
 			// Project::ViewFlags
-			case 3 :
+			case 7 :
 			switch (t) {
 				case 0 : if (no_description != nullptr) *no_description = true; return "All";
 			} break;
+			// SurfaceProperties::para_t
+			case 8 :
+			switch (t) {
+				case 0 : return "Specularity of the material.";
+				case 1 : return "Roughness of the material.";
+			} break;
+			// SurfaceProperties::Type
+			case 9 :
+			switch (t) {
+				case 0 : if (no_description != nullptr) *no_description = true; return "Plastic";
+				case 1 : if (no_description != nullptr) *no_description = true; return "Metal";
+				case 2 : if (no_description != nullptr) *no_description = true; return "Glass";
+			} break;
 			// ViewSettings::Flags
-			case 4 :
+			case 10 :
 			switch (t) {
 				case 0 : return "Grid is visible";
+			} break;
+			// WindowDivider::para_t
+			case 11 :
+			switch (t) {
+				case 0 : return "Area of the divider.";
+			} break;
+			// WindowGlazingLayer::type_t
+			case 12 :
+			switch (t) {
+				case 0 : return "Gas layer";
+				case 1 : return "Glass layer";
+			} break;
+			// WindowGlazingLayer::para_t
+			case 13 :
+			switch (t) {
+				case 0 : return "Thickness of the window layer.";
+				case 1 : return "Thermal conductivity of the window layer.";
+				case 2 : return "Mass density of the fill-in gas.";
+				case 3 : return "Height of the detailed window.";
+				case 4 : return "Width of the detailed window.";
+				case 5 : return "Emissivity of surface facing outside.";
+				case 6 : return "Emissivity of surface facing inside.";
+			} break;
+			// WindowGlazingLayer::splinePara_t
+			case 14 :
+			switch (t) {
+				case 0 : return "Short wave transmittance at outside directed surface.";
+				case 1 : return "Short wave reflectance of surface facing outside.";
+				case 2 : return "Short wave reflectance of surface facing inside.";
+				case 3 : return "Thermal conductivity of the gas layer.";
+				case 4 : return "Dynamic viscosity of the gas layer.";
+				case 5 : return "Specific heat capacity of the gas layer.";
+			} break;
+			// WindowGlazingSystem::modelType_t
+			case 15 :
+			switch (t) {
+				case 0 : return "Standard globbed-layers model.";
+				case 1 : return "Detailed window model with layers.";
+			} break;
+			// WindowGlazingSystem::para_t
+			case 16 :
+			switch (t) {
+				case 0 : return "Thermal transmittance";
+			} break;
+			// WindowGlazingSystem::splinePara_t
+			case 17 :
+			switch (t) {
+				case 0 : return "Short wave transmittance at outside directed surface.";
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine description for enumeration type '%1' and index '%2'.")
@@ -170,36 +489,138 @@ namespace VICUS {
 
 	const char * KeywordList::Unit(const char * const enumtype, int t) {
 		switch (enum2index(enumtype)) {
-			// NetworkFluid::para_t
+			// BoundaryCondition::para_t
 			case 0 :
+			switch (t) {
+				case 0 : return "---";
+				case 1 : return "---";
+				case 2 : return "---";
+				case 3 : return "W/m2K";
+			} break;
+			// BoundaryCondition::HeatConductionModel
+			case 1 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+			} break;
+			// Material::para_t
+			case 2 :
+			switch (t) {
+				case 0 : return "kg/m3";
+				case 1 : return "J/kgK";
+				case 2 : return "W/mK";
+				case 3 : return "-";
+				case 4 : return "kg/m3";
+				case 5 : return "kg/m3";
+			} break;
+			// Material::Category
+			case 3 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+				case 2 : return "";
+				case 3 : return "";
+				case 4 : return "";
+				case 5 : return "";
+				case 6 : return "";
+				case 7 : return "";
+				case 8 : return "";
+				case 9 : return "";
+				case 10 : return "";
+				case 11 : return "";
+				case 12 : return "";
+			} break;
+			// NetworkFluid::para_t
+			case 4 :
 			switch (t) {
 				case 0 : return "kg/m3";
 				case 1 : return "J/kgK";
 				case 2 : return "W/mK";
 			} break;
 			// NetworkNode::NodeType
-			case 1 :
+			case 5 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
 			} break;
 			// PlaneGeometry::type_t
-			case 2 :
+			case 6 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
 			} break;
 			// Project::ViewFlags
-			case 3 :
+			case 7 :
 			switch (t) {
 				case 0 : return "";
 			} break;
-			// ViewSettings::Flags
-			case 4 :
+			// SurfaceProperties::para_t
+			case 8 :
+			switch (t) {
+				case 0 : return "---";
+				case 1 : return "---";
+			} break;
+			// SurfaceProperties::Type
+			case 9 :
 			switch (t) {
 				case 0 : return "";
+				case 1 : return "";
+				case 2 : return "";
+			} break;
+			// ViewSettings::Flags
+			case 10 :
+			switch (t) {
+				case 0 : return "";
+			} break;
+			// WindowDivider::para_t
+			case 11 :
+			switch (t) {
+				case 0 : return "m2";
+			} break;
+			// WindowGlazingLayer::type_t
+			case 12 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+			} break;
+			// WindowGlazingLayer::para_t
+			case 13 :
+			switch (t) {
+				case 0 : return "m";
+				case 1 : return "W/mK";
+				case 2 : return "kg/m3";
+				case 3 : return "m";
+				case 4 : return "m";
+				case 5 : return "---";
+				case 6 : return "---";
+			} break;
+			// WindowGlazingLayer::splinePara_t
+			case 14 :
+			switch (t) {
+				case 0 : return "---";
+				case 1 : return "---";
+				case 2 : return "---";
+				case 3 : return "W/mK";
+				case 4 : return "kg/ms";
+				case 5 : return "J/kgK";
+			} break;
+			// WindowGlazingSystem::modelType_t
+			case 15 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+			} break;
+			// WindowGlazingSystem::para_t
+			case 16 :
+			switch (t) {
+				case 0 : return "W/m2K";
+			} break;
+			// WindowGlazingSystem::splinePara_t
+			case 17 :
+			switch (t) {
+				case 0 : return "---";
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine default unit for enumeration type '%1' and index '%2'.")
@@ -208,34 +629,136 @@ namespace VICUS {
 
 	const char * KeywordList::Color(const char * const enumtype, int t) {
 		switch (enum2index(enumtype)) {
-			// NetworkFluid::para_t
+			// BoundaryCondition::para_t
 			case 0 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
+			} break;
+			// BoundaryCondition::HeatConductionModel
+			case 1 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// Material::para_t
+			case 2 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
+				case 4 : return "#FFFFFF";
+				case 5 : return "#FFFFFF";
+			} break;
+			// Material::Category
+			case 3 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
+				case 4 : return "#FFFFFF";
+				case 5 : return "#FFFFFF";
+				case 6 : return "#FFFFFF";
+				case 7 : return "#FFFFFF";
+				case 8 : return "#FFFFFF";
+				case 9 : return "#FFFFFF";
+				case 10 : return "#FFFFFF";
+				case 11 : return "#FFFFFF";
+				case 12 : return "#FFFFFF";
+			} break;
+			// NetworkFluid::para_t
+			case 4 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
 			// NetworkNode::NodeType
-			case 1 :
+			case 5 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
 			// PlaneGeometry::type_t
-			case 2 :
+			case 6 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
 			// Project::ViewFlags
-			case 3 :
+			case 7 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
+			// SurfaceProperties::para_t
+			case 8 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// SurfaceProperties::Type
+			case 9 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+			} break;
 			// ViewSettings::Flags
-			case 4 :
+			case 10 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+			} break;
+			// WindowDivider::para_t
+			case 11 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+			} break;
+			// WindowGlazingLayer::type_t
+			case 12 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// WindowGlazingLayer::para_t
+			case 13 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
+				case 4 : return "#FFFFFF";
+				case 5 : return "#FFFFFF";
+				case 6 : return "#FFFFFF";
+			} break;
+			// WindowGlazingLayer::splinePara_t
+			case 14 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
+				case 4 : return "#FFFFFF";
+				case 5 : return "#FFFFFF";
+			} break;
+			// WindowGlazingSystem::modelType_t
+			case 15 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// WindowGlazingSystem::para_t
+			case 16 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+			} break;
+			// WindowGlazingSystem::splinePara_t
+			case 17 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
@@ -246,34 +769,136 @@ namespace VICUS {
 
 	double KeywordList::DefaultValue(const char * const enumtype, int t) {
 		switch (enum2index(enumtype)) {
-			// NetworkFluid::para_t
+			// BoundaryCondition::para_t
 			case 0 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// BoundaryCondition::HeatConductionModel
+			case 1 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// Material::para_t
+			case 2 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
+				case 4 : return std::numeric_limits<double>::quiet_NaN();
+				case 5 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// Material::Category
+			case 3 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
+				case 4 : return std::numeric_limits<double>::quiet_NaN();
+				case 5 : return std::numeric_limits<double>::quiet_NaN();
+				case 6 : return std::numeric_limits<double>::quiet_NaN();
+				case 7 : return std::numeric_limits<double>::quiet_NaN();
+				case 8 : return std::numeric_limits<double>::quiet_NaN();
+				case 9 : return std::numeric_limits<double>::quiet_NaN();
+				case 10 : return std::numeric_limits<double>::quiet_NaN();
+				case 11 : return std::numeric_limits<double>::quiet_NaN();
+				case 12 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// NetworkFluid::para_t
+			case 4 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkNode::NodeType
-			case 1 :
+			case 5 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// PlaneGeometry::type_t
-			case 2 :
+			case 6 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// Project::ViewFlags
-			case 3 :
+			case 7 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
+			// SurfaceProperties::para_t
+			case 8 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// SurfaceProperties::Type
+			case 9 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
 			// ViewSettings::Flags
-			case 4 :
+			case 10 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// WindowDivider::para_t
+			case 11 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// WindowGlazingLayer::type_t
+			case 12 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// WindowGlazingLayer::para_t
+			case 13 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
+				case 4 : return std::numeric_limits<double>::quiet_NaN();
+				case 5 : return std::numeric_limits<double>::quiet_NaN();
+				case 6 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// WindowGlazingLayer::splinePara_t
+			case 14 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
+				case 4 : return std::numeric_limits<double>::quiet_NaN();
+				case 5 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// WindowGlazingSystem::modelType_t
+			case 15 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// WindowGlazingSystem::para_t
+			case 16 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// WindowGlazingSystem::splinePara_t
+			case 17 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
@@ -285,16 +910,42 @@ namespace VICUS {
 	// number of entries in a keyword list
 	unsigned int KeywordList::Count(const char * const enumtype) {
 		switch (enum2index(enumtype)) {
+			// BoundaryCondition::para_t
+			case 0 : return 4;
+			// BoundaryCondition::HeatConductionModel
+			case 1 : return 2;
+			// Material::para_t
+			case 2 : return 6;
+			// Material::Category
+			case 3 : return 13;
 			// NetworkFluid::para_t
-			case 0 : return 3;
+			case 4 : return 3;
 			// NetworkNode::NodeType
-			case 1 : return 3;
+			case 5 : return 3;
 			// PlaneGeometry::type_t
-			case 2 : return 3;
+			case 6 : return 3;
 			// Project::ViewFlags
-			case 3 : return 1;
+			case 7 : return 1;
+			// SurfaceProperties::para_t
+			case 8 : return 2;
+			// SurfaceProperties::Type
+			case 9 : return 3;
 			// ViewSettings::Flags
-			case 4 : return 1;
+			case 10 : return 1;
+			// WindowDivider::para_t
+			case 11 : return 1;
+			// WindowGlazingLayer::type_t
+			case 12 : return 2;
+			// WindowGlazingLayer::para_t
+			case 13 : return 7;
+			// WindowGlazingLayer::splinePara_t
+			case 14 : return 6;
+			// WindowGlazingSystem::modelType_t
+			case 15 : return 2;
+			// WindowGlazingSystem::para_t
+			case 16 : return 1;
+			// WindowGlazingSystem::splinePara_t
+			case 17 : return 1;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::Count]");
@@ -303,16 +954,42 @@ namespace VICUS {
 	// max index for entries sharing a category in a keyword list
 	int KeywordList::MaxIndex(const char * const enumtype) {
 		switch (enum2index(enumtype)) {
+			// BoundaryCondition::para_t
+			case 0 : return 3;
+			// BoundaryCondition::HeatConductionModel
+			case 1 : return 1;
+			// Material::para_t
+			case 2 : return 5;
+			// Material::Category
+			case 3 : return 12;
 			// NetworkFluid::para_t
-			case 0 : return 2;
+			case 4 : return 2;
 			// NetworkNode::NodeType
-			case 1 : return 2;
+			case 5 : return 2;
 			// PlaneGeometry::type_t
-			case 2 : return 2;
+			case 6 : return 2;
 			// Project::ViewFlags
-			case 3 : return 0;
+			case 7 : return 0;
+			// SurfaceProperties::para_t
+			case 8 : return 1;
+			// SurfaceProperties::Type
+			case 9 : return 2;
 			// ViewSettings::Flags
-			case 4 : return 1;
+			case 10 : return 0;
+			// WindowDivider::para_t
+			case 11 : return 0;
+			// WindowGlazingLayer::type_t
+			case 12 : return 1;
+			// WindowGlazingLayer::para_t
+			case 13 : return 6;
+			// WindowGlazingLayer::splinePara_t
+			case 14 : return 5;
+			// WindowGlazingSystem::modelType_t
+			case 15 : return 1;
+			// WindowGlazingSystem::para_t
+			case 16 : return 0;
+			// WindowGlazingSystem::splinePara_t
+			case 17 : return 1;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::MaxIndex]");

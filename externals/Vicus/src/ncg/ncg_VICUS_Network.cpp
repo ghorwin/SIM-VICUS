@@ -65,6 +65,14 @@ void Network::readXML(const TiXmlElement * element) {
 			attrib = attrib->Next();
 		}
 		// search for mandatory elements
+		if (!element->FirstChildElement("Nodes"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'Nodes' element.") ), FUNC_ID);
+
+		if (!element->FirstChildElement("Edges"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'Edges' element.") ), FUNC_ID);
+
 		if (!element->FirstChildElement("Origin"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'Origin' element.") ), FUNC_ID);

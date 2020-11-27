@@ -24,6 +24,31 @@
 namespace VICUS {
 KeywordListQt::KeywordListQt() {
 
+	tr("Solar absorption coefficient.");
+	tr("Constant Long wave emissivity.");
+	tr("Visible absorption coefficient.");
+	tr("Constant heat transfer coefficient.");
+	tr("Constant model.");
+	tr("Heat transfer coefficient depends on wind velocity.");
+	tr("Dry density of the material.");
+	tr("Specific heat capacity of the material.");
+	tr("Thermal conductivity of the dry material.");
+	tr("Vapor diffusion resistance factor.");
+	tr("...");
+	tr("...");
+	tr("Coating");
+	tr("Plaster");
+	tr("Bricks");
+	tr("NaturalStones");
+	tr("Cementitious");
+	tr("Insulations");
+	tr("BuildingBoards");
+	tr("Woodbased");
+	tr("NaturalMaterials");
+	tr("Soils");
+	tr("CladdingSystems");
+	tr("Foils");
+	tr("Miscellaneous");
 	tr("Dry density of the material.");
 	tr("Specific heat capacity of the material.");
 	tr("Thermal conductivity of the dry material.");
@@ -34,7 +59,32 @@ KeywordListQt::KeywordListQt() {
 	tr("Rectangle");
 	tr("Polygon");
 	tr("All");
+	tr("Specularity of the material.");
+	tr("Roughness of the material.");
+	tr("Plastic");
+	tr("Metal");
+	tr("Glass");
 	tr("Grid is visible");
+	tr("Area of the divider.");
+	tr("Gas layer");
+	tr("Glass layer");
+	tr("Thickness of the window layer.");
+	tr("Thermal conductivity of the window layer.");
+	tr("Mass density of the fill-in gas.");
+	tr("Height of the detailed window.");
+	tr("Width of the detailed window.");
+	tr("Emissivity of surface facing outside.");
+	tr("Emissivity of surface facing inside.");
+	tr("Short wave transmittance at outside directed surface.");
+	tr("Short wave reflectance of surface facing outside.");
+	tr("Short wave reflectance of surface facing inside.");
+	tr("Thermal conductivity of the gas layer.");
+	tr("Dynamic viscosity of the gas layer.");
+	tr("Specific heat capacity of the gas layer.");
+	tr("Standard globbed-layers model.");
+	tr("Detailed window model with layers.");
+	tr("Thermal transmittance");
+	tr("Short wave transmittance at outside directed surface.");
 }
 
 

@@ -42,7 +42,7 @@ public:
 	/*! Data source. */
 	QString							m_dataSource;			// XML:E
 
-	IBK::Flag						m_isOpaque;				// XML:A:required
+	IBK::Flag						m_isOpaque;				// XML:E:required
 
 	std::vector<MaterialLayer>		m_materialLayers;		// XML:E
 

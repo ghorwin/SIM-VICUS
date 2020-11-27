@@ -483,8 +483,8 @@ namespace NANDRAD {
 				case 0 : return "Thickness";
 				case 1 : return "Conductivity";
 				case 2 : return "MassDensity";
-				case 3 : return "MassDensity";
-				case 4 : return "MassDensity";
+				case 3 : return "Height";
+				case 4 : return "Width";
 				case 5 : return "LongWaveEmissivityInside";
 				case 6 : return "P_LongWaveEmissivityOutside";
 			} break;
@@ -923,8 +923,8 @@ namespace NANDRAD {
 				case 0 : return "Thickness";
 				case 1 : return "Conductivity";
 				case 2 : return "MassDensity";
-				case 3 : return "MassDensity";
-				case 4 : return "MassDensity";
+				case 3 : return "Height";
+				case 4 : return "Width";
 				case 5 : return "LongWaveEmissivityInside";
 				case 6 : return "P_LongWaveEmissivityOutside";
 			} break;
@@ -1365,7 +1365,7 @@ namespace NANDRAD {
 				case 1 : return "Thermal conductivity of the window layer.";
 				case 2 : return "Mass density of the fill-in gas.";
 				case 3 : return "Height of the detailed window.";
-				case 4 : return "height of the detailed window.";
+				case 4 : return "Width of the detailed window.";
 				case 5 : return "Emissivity of surface facing outside.";
 				case 6 : return "Emissivity of surface facing inside.";
 			} break;
@@ -1377,7 +1377,7 @@ namespace NANDRAD {
 				case 2 : return "Short wave reflectance of surface facing inside.";
 				case 3 : return "Thermal conductivity of the gas layer.";
 				case 4 : return "Dynamic viscosity of the gas layer.";
-				case 5 : return "Specific heat capoacity of the gas layer.";
+				case 5 : return "Specific heat capacity of the gas layer.";
 			} break;
 			// WindowGlazingSystem::modelType_t
 			case 51 :

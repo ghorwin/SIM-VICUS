@@ -19,7 +19,7 @@
 	Lesser General Public License for more details.
 */
 
-#include <vicus_windowglazing.h>
+#include <VICUS_WindowFrame.h>
 #include <VICUS_KeywordList.h>
 
 #include <IBK_messages.h>
@@ -33,8 +33,8 @@
 
 namespace VICUS {
 
-void WindowGlazing::readXML(const TiXmlElement * element) {
-	FUNCID(WindowGlazing::readXML);
+void WindowFrame::readXML(const TiXmlElement * element) {
+	FUNCID(WindowFrame::readXML);
 
 	try {
 		// search for mandatory attributes
@@ -49,29 +49,50 @@ void WindowGlazing::readXML(const TiXmlElement * element) {
 			if (attribName == "id")
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
-				m_displayName = attrib->ValueStr();
+				m_displayName = QString::fromStdString(attrib->ValueStr());
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			attrib = attrib->Next();
 		}
+		// search for mandatory elements
+		// reading elements
+		const TiXmlElement * c = element->FirstChildElement();
+		while (c) {
+			const std::string & cName = c->ValueStr();
+			if (cName == "DataSource")
+				m_dataSource = QString::fromStdString(c->GetText());
+			else if (cName == "IsPercentageCalcMethode")
+				m_isPercentageCalcMethode = NANDRAD::readPODElement<bool>(c, cName);
+			else if (cName == "MaterialLayer")
+				m_materialLayer.readXML(c);
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			c = c->NextSiblingElement();
+		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception( ex, IBK::FormatString("Error reading 'WindowGlazing' element."), FUNC_ID);
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'WindowFrame' element."), FUNC_ID);
 	}
 	catch (std::exception & ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading 'WindowGlazing' element.").arg(ex2.what()), FUNC_ID);
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'WindowFrame' element.").arg(ex2.what()), FUNC_ID);
 	}
 }
 
-TiXmlElement * WindowGlazing::writeXML(TiXmlElement * parent) const {
-	TiXmlElement * e = new TiXmlElement("WindowGlazing");
+TiXmlElement * WindowFrame::writeXML(TiXmlElement * parent) const {
+	TiXmlElement * e = new TiXmlElement("WindowFrame");
 	parent->LinkEndChild(e);
 
 	if (m_id != VICUS::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (!m_displayName.empty())
-		e->SetAttribute("displayName", m_displayName);
+	if (!m_displayName.isEmpty())
+		e->SetAttribute("displayName", m_displayName.toStdString());
+	if (!m_dataSource.isEmpty())
+		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.toStdString());
+
+	m_materialLayer.writeXML(e);
+	TiXmlElement::appendSingleAttributeElement(e, "IsPercentageCalcMethode", nullptr, std::string(), IBK::val2string<bool>(m_isPercentageCalcMethode));
 	return e;
 }
 
