@@ -18,28 +18,6 @@ namespace VICUS {
 class Construction {
 public:
 
-	/*! Component categories.*/
-	enum category_t{
-		//opaque categories
-		MC_Coating,					// Keyword: Coating
-		MC_Plaster,					// Keyword: Plaster
-		MC_Bricks,					// Keyword: Bricks
-		MC_NaturalStones,			// Keyword: NaturalStones
-		MC_Cementitious,			// Keyword: Cementitious
-		MC_Insulations,				// Keyword: Insulations
-		MC_BuildingBoards,			// Keyword: BuildingBoards
-		MC_Woodbased,				// Keyword: Woodbased
-		MC_NaturalMaterials,		// Keyword: NaturalMaterials
-		MC_Soils,					// Keyword: Soils
-		MC_CladdingSystems,			// Keyword: CladdingSystems
-		MC_Foils,					// Keyword: Foils
-		MC_Miscellaneous,			// Keyword: Miscellaneous
-		//Glass
-		MC_GlassPane,				// Keyword: GlasPane
-		//Gas
-		MC_Gas,						// Keyword: Gas
-		Num_MC
-	};
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	VICUS_READWRITE

@@ -49,6 +49,13 @@ public:
 	/*! Thickness of the material layer. */
 	IBK::Parameter					m_thickness;			// XML:E:required
 
+	/*! Active for calculation in thermal simulation. */
+	/// TODO Andreas :  wollen wir das integrieren? An NANDRAD wird dann eine Konstruktion übergeben in der alle
+	/// false layers nicht vorhanden sind. Hätte zur Folge das bei rein thermischen Berechnung die Simu
+	/// schneller geht und das im Bericht später die realistische Konstruktion abgebildet ist.
+	/// dort würde alle Layer nämlich gebraucht werden
+	bool							m_isActive = true;		// XML:A
+
 
 };
 
