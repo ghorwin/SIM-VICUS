@@ -7,7 +7,7 @@ namespace Ui {
 	class SVPreferencesPageStyle;
 }
 
-/*! The configuration page with external tool settings. */
+/*! The configuration page with style settings. */
 class SVPreferencesPageStyle : public QWidget {
 	Q_OBJECT
 	Q_DISABLE_COPY(SVPreferencesPageStyle)
@@ -20,7 +20,7 @@ public:
 	/*! Updates the user interface with values in Settings object.*/
 	void updateUi();
 
-	/*! Transfers the current settings from the configuration page into
+	/*! Transfers the current settings from the style page into
 		the settings object.
 		If one of the options was set wrong, the function will pop up a dialog
 		asking the user to fix it.
@@ -29,9 +29,13 @@ public:
 	*/
 	bool storeConfig();
 
+	/*! */
+	bool rejectConfig();
 signals:
 	/*! Emitted, when user has changed the style. */
 	void styleChanged();
+
+protected:
 
 private slots:
 

@@ -56,6 +56,14 @@ void SVPreferencesDialog::accept() {
 	QDialog::accept();
 }
 
+void SVPreferencesDialog::reject()
+{
+	m_pageStyle->rejectConfig();
+	// ... other pages
+
+	QDialog::reject();
+}
+
 
 // ** private functions **
 

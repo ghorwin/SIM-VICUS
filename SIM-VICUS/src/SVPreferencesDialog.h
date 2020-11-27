@@ -31,6 +31,9 @@ protected:
 	/*! QDialog::accept() re-implemented for input data checking (called indirectly from buttonBox). */
 	void accept();
 
+	/*! QDialog::reject() re-implemented for input data checking (called indirectly from buttonBox). */
+	void reject();
+
 private:
 	/*! Transfers values from Settings object to user interface (config pages).*/
 	void updateUi();

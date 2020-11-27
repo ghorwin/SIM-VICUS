@@ -36,7 +36,7 @@ SVStyle::SVStyle() {
 	// *** Style Customization ***
 
 	SVSettings & s = SVSettings::instance();
-	setStyle(s.m_theme == SVSettings::TT_Dark);
+	setStyle(s.m_theme);
 
 
 #ifdef Q_OS_MACX
@@ -109,11 +109,18 @@ void SVStyle::formatWelcomePage(QString & htmlCode) {
 
 }
 
-void SVStyle::setStyle(bool dark) {
+void SVStyle::setStyle(SVSettings::ThemeType theme) {
 	QFile file(":/qdarkstyle/style.qss");
-	if ( dark && file.exists()) {
+	QFile fileWhite(":/qdarkstyle/whitestyle.qss");
+
+	if ( theme == SVSettings::TT_Dark && file.exists()) {
 		file.open(QFile::ReadOnly);
 		m_styleSheet = QLatin1String(file.readAll());
+		qApp->setStyleSheet(m_styleSheet);
+	}
+	else if ( theme == SVSettings::TT_White && fileWhite.exists()) {
+		fileWhite.open(QFile::ReadOnly);
+		m_styleSheet = QLatin1String(fileWhite.readAll());
 		qApp->setStyleSheet(m_styleSheet);
 	}
 	else {

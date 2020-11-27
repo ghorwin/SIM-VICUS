@@ -3,6 +3,7 @@
 
 #include "SVSettings.h"
 #include "SVStyle.h"
+#include "SVMainWindow.h"
 
 SVPreferencesPageStyle::SVPreferencesPageStyle(QWidget *parent) :
 	QWidget(parent),
@@ -44,18 +45,26 @@ bool SVPreferencesPageStyle::storeConfig() {
 	return true;
 }
 
-
-void SVPreferencesPageStyle::on_comboBoxTheme_activated(const QString &theme) {
+bool SVPreferencesPageStyle::rejectConfig() {
 	// no checks necessary
 	SVSettings & setting = SVSettings::instance();
 	SVStyle & style = SVStyle::instance();
+
+	style.setStyle(setting.m_theme);
+
+	return true;
+}
+
+
+void SVPreferencesPageStyle::on_comboBoxTheme_activated(const QString &theme) {
+	// no checks necessary
+	SVStyle & style = SVStyle::instance();
+
 	if ( theme == "White" ) {
-		setting.m_theme = SVSettings::TT_White;
-		style.setStyle(false);
+		style.setStyle(SVSettings::TT_White);
 	}
 	else if (theme == "Dark" ) {
-		setting.m_theme = SVSettings::TT_Dark;
-		style.setStyle(true);
+		style.setStyle(SVSettings::TT_Dark);
 	}
 	// now apply the style
 	emit styleChanged();
