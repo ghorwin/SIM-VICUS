@@ -336,7 +336,9 @@ void SolverControlFramework::run(double t) {
 		throw IBK::Exception("Missing model, integrator or outputScheduler.", FUNC_ID);
 
 	IBK::IBK_Message( "\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD );
-	IBK::IBK_Message( IBK::FormatString("Running solver from time t=%1\n").arg(t), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD );
+	std::string dateTimeStr = m_model->simTime2DateTimeString(t);
+	IBK::IBK_Message( IBK::FormatString("Running solver from time t=%1 (%2)\n").arg(t).arg(dateTimeStr), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD );
+
 	double t_end = m_model->tEnd();
 	double t_out = m_outputScheduler->nextOutputTime(t);
 
