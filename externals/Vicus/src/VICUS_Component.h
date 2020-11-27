@@ -14,7 +14,7 @@ class Component {
 public:
 
 	/*! Component types. */
-	enum type {
+	enum CompontType {
 		CT_OuterWall,
 		CT_OuterWallGround,
 		CT_InnerWall,
@@ -28,7 +28,7 @@ public:
 		CT_Window,
 		CT_Door,
 		CT_Miscellaneous,
-		Num_CK
+		NUM_CK
 	};
 
 
@@ -40,31 +40,37 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of component. */
-	unsigned int					m_id = INVALID_ID;		// XML:A:required
+	unsigned int					m_id = INVALID_ID;							// XML:A:required
 
 	/*! Display name of component. */
-	QString							m_displayName;			// XML:A
+	QString							m_displayName;								// XML:A
 
 	/*! False color. */
-	QColor							m_color;				// XML:A
+	QColor							m_color;									// XML:A
 
 	/*! Manufacturer. */
-	QString							m_manufacturer;			// XML:E
+	QString							m_manufacturer;								// XML:E
 
 	/*! Data source. */
-	QString							m_dataSource;			// XML:E
+	QString							m_dataSource;								// XML:E
 
 	/*! Component type. */
-	type							m_type = Num_CK;		// XML:E:required
+	CompontType						m_type = NUM_CK;							// XML:E:required
 
-	/*! Construction ID. */
-	unsigned int					m_idConstruction;		// XML:E
+	/*! Opaque construction ID. */
+	unsigned int					m_idOpaqueConstruction = INVALID_ID;		// XML:E
 
-	/*! Boundary condition ID. */
-	unsigned int					m_idBoundaryCondition;	// XML:E
+	/*! Transparent construction ID. */
+	unsigned int					m_idGlazingSystem = INVALID_ID;				// XML:E
+
+	/*! Outside boundary condition ID. */
+	unsigned int					m_idOutsideBoundaryCondition = INVALID_ID;	// XML:E
+
+	/*! Inside boundary condition ID. */
+	unsigned int					m_idInsideBoundaryCondition = INVALID_ID;	// XML:E
 
 	/*! Surface property ID. */
-	unsigned int					m_idSurfaceProperty;	// XML:E
+	unsigned int					m_idSurfaceProperty = INVALID_ID;			// XML:E
 };
 
 } // namespace VICUS
