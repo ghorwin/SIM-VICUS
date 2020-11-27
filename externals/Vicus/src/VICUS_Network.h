@@ -32,12 +32,11 @@ public:
 
 	Network();
 
-	/*! add node to network based on coordinates and type and return the node id.
-	 * When considerCoordinates==true and the given coordinates exist already in the network: return the id of this existing node */
-	unsigned addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool considerCoordinates=true);
-
-	/*! addNode using Node constructor */
-	unsigned addNode(const NetworkNode & node, const bool considerCoordinates=true);
+	/*! call private addNode and set position relative to orign.
+	 * ALWAYS use this funtion If you add nodes in original coordinates to a network where m_origin may has been already set */
+	unsigned addNodeExt(const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool considerCoordinates=true){
+		return addNode(v - m_origin, type, considerCoordinates);
+	}
 
 	/*! add Edge based on node ids */
 	void addEdge(const unsigned nodeId1, const unsigned nodeId2, const bool supply);
@@ -123,6 +122,15 @@ public:
 	/*! set m_origin and normalize all position to this origin */
 	void setOrigin(const IBKMK::Vector3D &origin);
 
+	/*! return sum of length of all edges */
+	double totalLength();
+
+	/*! clear nodes, edges */
+	void clear(){
+		m_edges.clear();
+		m_nodes.clear();
+	}
+
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -158,6 +166,17 @@ public:
 
 	/*! origin of the network */
 	IBKMK::Vector3D					m_origin = IBKMK::Vector3D(0.0, 0.0, 0.0);	// XML:E:required
+
+
+private:
+
+	/*! add node to network based on coordinates and type and return the node id.
+	 * When considerCoordinates==true and the given coordinates exist already in the network: return the id of this existing node
+		ALWAYS use this function if you add nodes with coordinates that where calculated based on already existing coordinates */
+	unsigned addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool considerCoordinates=true);
+
+	/*! addNode using Node constructor */
+	unsigned addNode(const NetworkNode & node, const bool considerCoordinates=true);
 
 };
 

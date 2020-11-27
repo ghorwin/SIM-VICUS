@@ -133,21 +133,21 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_2">
+        <widget class="QPushButton" name="pushButtonConnectBuildings">
          <property name="text">
           <string>connect buildings</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_3">
+        <widget class="QPushButton" name="pushButtonCalculateLength">
          <property name="text">
           <string>calculate length</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_4">
+        <widget class="QPushButton" name="pushButtonReduceRedundants">
          <property name="text">
           <string>reduce redundant edges</string>
          </property>

@@ -52,7 +52,7 @@ public:
 	NetworkNode		*	m_node2 = nullptr;
 
 	/*! Effective length [m], might be different than geometric length between nodes. */
-	double			m_length;						// XML:E
+	double			m_length = 0;					// XML:E
 
 	/*! Inner Diameter in [m] */
 	double			m_diameterInside;				// XML:E

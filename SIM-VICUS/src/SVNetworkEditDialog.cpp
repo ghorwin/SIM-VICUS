@@ -5,6 +5,8 @@
 #include "SVProjectHandler.h"
 #include "SVUndoAddNetwork.h"
 
+#include <QMessageBox>
+
 
 SVNetworkEditDialog::SVNetworkEditDialog(QWidget *parent) :
 	QDialog(parent),
@@ -43,6 +45,7 @@ void SVNetworkEditDialog::updateStatus()
 	m_ui->labelEdgeCount->setText(QString("%1").arg(m_network.m_edges.size()));
 	m_ui->labelNodeCount->setText(QString("%1").arg(m_network.m_nodes.size()));
 	m_ui->labelNetworkConnected->setText(QString("%1").arg(m_network.checkConnectedGraph()));
+	m_ui->labelTotalLength->setText(QString("%1").arg(m_network.totalLength()));
 }
 
 void SVNetworkEditDialog::setNetwork()
@@ -64,4 +67,34 @@ void SVNetworkEditDialog::on_pushButtonGenerateIntersections_clicked()
 void SVNetworkEditDialog::on_comboBoxSelectNetwork_activated(const QString &arg1)
 {
 	setNetwork();
+}
+
+
+void SVNetworkEditDialog::on_pushButtonConnectBuildings_clicked()
+{
+	QMessageBox::StandardButton reply = QMessageBox::question(this, "Connect Buildings", "Extend supply pipes?",
+								   QMessageBox::Yes|QMessageBox::No);
+	m_network.connectBuildings(reply == QMessageBox::Yes);
+	updateStatus();
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Added network"), m_network);
+	undo->push(); // modifies project and updates views
+}
+
+void SVNetworkEditDialog::on_pushButtonCalculateLength_clicked()
+{
+	m_network.calculateLengths();
+	updateStatus();
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Added network"), m_network);
+	undo->push(); // modifies project and updates views
+}
+
+void SVNetworkEditDialog::on_pushButtonReduceRedundants_clicked()
+{
+	VICUS::Network tmp = m_network;
+	tmp.clear();
+	m_network.networkWithReducedEdges(tmp);
+	m_network = tmp;
+	updateStatus();
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Added network"), m_network);
+	undo->push(); // modifies project and updates views
 }

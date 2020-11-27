@@ -19,18 +19,16 @@ Network::Network() {
 
 
 unsigned Network::addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool consistentCoordinates) {
-	// always normalize position to origin
-	IBKMK::Vector3D position = v - m_origin;
 
 	// if there is an existing node with identical coordinates, return its id and dont add a new one
 	if (consistentCoordinates){
 		for (NetworkNode n: m_nodes){
-			if (n.m_position.distanceTo(position) < geometricResolution)
+			if (n.m_position.distanceTo(v) < geometricResolution)
 				return n.m_id;
 		}
 	}
 	unsigned id = m_nodes.size();
-	m_nodes.push_back(NetworkNode(id, type, position));
+	m_nodes.push_back(NetworkNode(id, type, v));
 
 	updateNodeEdgeConnectionPointers();
 
@@ -121,8 +119,8 @@ void Network::readGridFromCSV(const IBK::Path &filePath){
 			polyLine.push_back({x, y});
 		}
 		for (unsigned i=0; i<polyLine.size()-1; ++i){
-			unsigned n1 = addNode(IBKMK::Vector3D(polyLine[i][0], polyLine[i][1], 0), NetworkNode::NT_Mixer);
-			unsigned n2 = addNode(IBKMK::Vector3D(polyLine[i+1][0], polyLine[i+1][1], 0), NetworkNode::NT_Mixer);
+			unsigned n1 = addNodeExt(IBKMK::Vector3D(polyLine[i][0], polyLine[i][1], 0), NetworkNode::NT_Mixer);
+			unsigned n2 = addNodeExt(IBKMK::Vector3D(polyLine[i+1][0], polyLine[i+1][1], 0), NetworkNode::NT_Mixer);
 			addEdge(n1, n2, true);
 		}
 	}
@@ -144,7 +142,7 @@ void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heat
 		IBK::trim(line, "))");
 		IBK::explode(line, xyStr, " ", IBK::EF_NoFlags);
 		// add node
-		unsigned id = addNode(IBKMK::Vector3D(IBK::string2val<double>(xyStr[0]), IBK::string2val<double>(xyStr[1]), 0), NetworkNode::NT_Building);
+		unsigned id = addNodeExt(IBKMK::Vector3D(IBK::string2val<double>(xyStr[0]), IBK::string2val<double>(xyStr[1]), 0), NetworkNode::NT_Building);
 		m_nodes[id].m_maxHeatingDemand = heatDemand;
 	}
 }
@@ -430,6 +428,16 @@ void Network::setOrigin(const IBKMK::Vector3D &origin)
 	m_origin = origin;
 	for (NetworkNode &n: m_nodes)
 		n.m_position -= m_origin;
+}
+
+
+double Network::totalLength()
+{
+	double length = 0;
+	for(NetworkEdge &e: m_edges){
+		length += e.m_length;
+	}
+	return length;
 }
 
 

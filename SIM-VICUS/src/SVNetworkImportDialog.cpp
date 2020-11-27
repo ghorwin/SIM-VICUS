@@ -19,6 +19,7 @@ SVNetworkImportDialog::SVNetworkImportDialog(QWidget *parent) :
 	m_ui(new Ui::SVNetworkImportDialog)
 {
 	m_ui->setupUi(this);
+	m_ui->lineEditHeatingDemand->setText(QString("%L1").arg(0.5*(0)));
 }
 
 
@@ -36,6 +37,8 @@ bool SVNetworkImportDialog::edit() {
 	toggleReadEdges(m_ui->radioButtonEdges->isChecked());
 	toggleReadExistingNetwork(m_ui->radioButtonAddToExistingNetwork->isChecked());
 	m_ui->radioButtonAddToExistingNetwork->setEnabled(!p.m_networks.empty());
+	m_ui->radioButtonAddToExistingNetwork->setChecked(!p.m_networks.empty());
+
 
 	// update existing networks combobox
 	if (!p.m_networks.empty()){
