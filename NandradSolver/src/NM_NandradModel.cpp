@@ -1479,6 +1479,30 @@ void NandradModel::initModelDependencies() {
 	}
 #endif
 
+	// *** check for ambiguities in vector-valued model results
+
+	std::map<std::string, std::set<unsigned int> > vectorValuedModelResults;
+	for (auto refDesc : modelResultReferences) {
+		// we only check model results (because they can have vector valued results that
+		// may have ambiguous ids - since users may define model parameter blocks
+		// with overlapping object lists
+		if (refDesc.first.m_referenceType != NANDRAD::ModelInputReference::MRT_MODEL)
+			continue;
+		// only process vector-valued results with indexes of type ModelID
+		if (refDesc.first.m_indexKeyType != VectorValuedQuantityIndex::IK_ModelID)
+			continue;
+		std::set<unsigned int> & idSet = vectorValuedModelResults[refDesc.first.m_name];
+		for (unsigned int id : refDesc.first.m_indexKeys) {
+			// check for existance of ID, and add if not yet existing
+			if (idSet.find(id) != idSet.end())
+				throw IBK::Exception(IBK::FormatString("Ambiguous model parametrization block for model with id=%1 resulting "
+													   "from two (overlapping) objects lists which reference the same object "
+													   "(results for object with ID %2 are generated twice).")
+									 .arg(refDesc.first.m_id).arg(id), FUNC_ID);
+			idSet.insert(id);
+		}
+	}
+
 
 	// *** initializing model input references ***
 
