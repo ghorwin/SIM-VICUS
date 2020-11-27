@@ -514,6 +514,7 @@ The cross section occupied by frame and divider must not exceed the gross area o
 When the window (or embedded object) is resized, the sizes of frame and divider must be adjusted accordingly. While it would have been possible to define frame and divider cross sections also as relative percentage, still this percentage needs to be updated when the window is resized.
 ====
 
+
 ### Window shading
 
 It is possible to apply pre-computed shading to both opaque and translucent facade elements. Pre-computed shading is generally defined as global property in the `Location` tag (see <<precomputed_shading>>).

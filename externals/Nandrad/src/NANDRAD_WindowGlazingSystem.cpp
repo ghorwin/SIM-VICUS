@@ -118,9 +118,9 @@ void WindowGlazingSystem::computeHeatConductionFluxDensity(double deltaT, double
 				double thermalResistance = 1/alpha;
 
 				// add surface resistances
-				if(alphaLeft > 0)
+				if (alphaLeft > 0)
 					thermalResistance += 1.0/alphaLeft;
-				if(alphaRight > 0)
+				if (alphaRight > 0)
 					thermalResistance += 1.0/alphaRight;
 
 				// heat conduction density from left to right (A to B)

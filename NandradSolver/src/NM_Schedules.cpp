@@ -131,8 +131,9 @@ void Schedules::setup(NANDRAD::Project &project) {
 			try {
 				k = (KnownQuantities)NANDRAD_MODEL::KeywordList::Enumeration("Schedules::KnownQuantities", var.first);
 			}
-			catch (IBK::Exception & ex) {
-				throw IBK::Exception(ex, "Unknown/undefined (perhaps misspelled) scheduled quantity.", FUNC_ID);
+			catch (...) {
+				throw IBK::Exception(IBK::FormatString("Unknown/undefined (perhaps misspelled) scheduled quantity '%1'.")
+									 .arg(var.first), FUNC_ID);
 			}
 			// check unit
 			IBK::Unit requestedUnit;

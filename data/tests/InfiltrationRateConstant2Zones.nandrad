@@ -21,7 +21,7 @@
 		<Zones>
 			<Zone id="3" displayName="Bathroom" type="Active">
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
-				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">20</IBK:Parameter>
 			</Zone>
 		</Zones>
 		<SimulationParameter>
@@ -56,7 +56,7 @@
 				</OutputDefinition>
 
 				<OutputDefinition>
-					<Quantity>VentilationHeatFlux</Quantity>
+					<Quantity>InfiltrationHeatLoad</Quantity>
 					<ObjectListName>All zones</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
