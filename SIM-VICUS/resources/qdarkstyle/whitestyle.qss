@@ -1,0 +1,38 @@
+
+QTextEdit:hover,  QDockWidget:hover, QGroupBox:hover, QTextBrowser:hover, 
+ QRadioButton:hover, QSpinBox:hover, QToolButton:hover, 
+QTreeView:hover, QCheckBox:hover, QMenuBar:hover, QScrollBar:hover,  QTextEdit:hover, 
+QHeaderView:hover, QStatusBar:hover, QListView:hover, QPushButton:hover,  QComboBox:hover, 
+QTableView:hover, QSplitter:hover, QListView:hover, QPushButton:hover,  QComboBox:hover, 
+QToolBox:hover {
+  border: 1px solid #ffaa00;
+}
+
+QSplitter {
+  background-color: #3a3b3f;
+  spacing: 0px;
+  padding: 0px;
+  margin: 0px;
+}
+
+QSplitter::handle {
+  background-color: #ffaa00;
+  border: 0px solid #ffaa00;
+  spacing: 0px;
+  padding: 1px;
+  margin: 0px;
+}
+
+QSplitter::handle:hover {
+  background-color: #ffaa00;
+}
+
+QSplitter::handle:horizontal {
+  width: 5px;
+  image: url(":/qss_icons/rc/line_vertical.png");
+}
+
+QSplitter::handle:vertical {
+  height: 5px;
+  image: url(":/qss_icons/rc/line_horizontal.png");
+}
