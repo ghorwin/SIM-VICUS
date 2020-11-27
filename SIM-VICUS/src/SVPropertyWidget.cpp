@@ -3,6 +3,7 @@
 #include <QVBoxLayout>
 
 #include "SVPropAddPolygonWidget.h"
+#include "SVPropEditGeometry.h"
 
 SVPropertyWidget::SVPropertyWidget(QWidget * parent) :
 	QWidget(parent)
@@ -15,6 +16,7 @@ SVPropertyWidget::SVPropertyWidget(QWidget * parent) :
 		w = nullptr;
 }
 
+
 void SVPropertyWidget::setMode(PropertyWidgetMode m) {
 	for (QWidget * w : m_propWidgets)
 		if (w != nullptr)
@@ -23,6 +25,15 @@ void SVPropertyWidget::setMode(PropertyWidgetMode m) {
 	switch (m) {
 		case M_ThermalSimulationProperties : {
 			// TODO : show edit widgets for thermal simulation properties
+		} break;
+
+		case M_EditGeometry : {
+			// create widget and add to layout, if not existing
+			if (m_propWidgets[M_EditGeometry] == nullptr) {
+				m_propWidgets[M_EditGeometry] = new SVPropEditGeometry(this);
+				m_layout->addWidget(m_propWidgets[M_EditGeometry]);
+			}
+			m_propWidgets[M_EditGeometry]->setVisible(true);
 		} break;
 
 		case M_AddVertexesMode: {

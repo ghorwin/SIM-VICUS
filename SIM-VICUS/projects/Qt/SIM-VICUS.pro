@@ -69,6 +69,7 @@ SOURCES += \
         ../../src/SVNetworkEditDialog.cpp \
         ../../src/SVPreferencesPageStyle.cpp \
         ../../src/SVPropAddPolygonWidget.cpp \
+        ../../src/SVPropEditGeometry.cpp \
         ../../src/SVPropertyWidget.cpp \
         ../../src/actions/SVUndoAddNetwork.cpp \
         ../../src/actions/SVUndoCommandBase.cpp \
@@ -112,6 +113,7 @@ HEADERS  += \
         ../../src/SVNetworkEditDialog.h \
         ../../src/SVPreferencesPageStyle.h \
         ../../src/SVPropAddPolygonWidget.h \
+        ../../src/SVPropEditGeometry.h \
         ../../src/SVPropertyWidget.h \
         ../../src/actions/SVUndoAddNetwork.h \
         ../../src/actions/SVUndoCommandBase.h \
@@ -164,6 +166,7 @@ FORMS    += \
         ../../src/SVPreferencesPageStyle.ui \
         ../../src/SVPreferencesPageTools.ui \
         ../../src/SVPropAddPolygonWidget.ui \
+        ../../src/SVPropEditGeometry.ui \
         ../../src/SVWelcomeScreen.ui
 
 TRANSLATIONS += ../../resources/translations/SIM-VICUS_de.ts

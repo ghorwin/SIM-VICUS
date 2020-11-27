@@ -3,7 +3,6 @@
 
 #include <QWidget>
 
-class SVPropAddPolygonWidget;
 class QVBoxLayout;
 
 /*! The property widget is located at the right side of the screen.
