@@ -74,8 +74,13 @@ SOURCES += \
 	../../src/VICUS_NetworkPipe.cpp \
 	../../src/VICUS_PlaneGeometry.cpp \
 	../../src/VICUS_Project.cpp \
+	../../src/ncg/ncg_VICUS_BoundaryCondition.cpp \
 	../../src/ncg/ncg_VICUS_Building.cpp \
 	../../src/ncg/ncg_VICUS_BuildingLevel.cpp \
+	../../src/ncg/ncg_VICUS_Component.cpp \
+	../../src/ncg/ncg_VICUS_Construction.cpp \
+	../../src/ncg/ncg_VICUS_Material.cpp \
+	../../src/ncg/ncg_VICUS_MaterialLayer.cpp \
 	../../src/ncg/ncg_VICUS_NetworkFluid.cpp \
 	../../src/ncg/ncg_VICUS_NetworkPipe.cpp \
 	../../src/ncg/ncg_VICUS_NetworkNode.cpp \
@@ -85,4 +90,9 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_Room.cpp \
 	../../src/ncg/ncg_VICUS_RotationMatrix.cpp \
 	../../src/ncg/ncg_VICUS_Surface.cpp \
-	../../src/ncg/ncg_VICUS_ViewSettings.cpp
+	../../src/ncg/ncg_VICUS_SurfaceProperties.cpp \
+	../../src/ncg/ncg_VICUS_ViewSettings.cpp \
+	../../src/ncg/ncg_VICUS_WindowDivider.cpp \
+	../../src/ncg/ncg_VICUS_WindowFrame.cpp \
+	../../src/ncg/ncg_VICUS_WindowGlazingLayer.cpp \
+	../../src/ncg/ncg_VICUS_WindowGlazingSystem.cpp
