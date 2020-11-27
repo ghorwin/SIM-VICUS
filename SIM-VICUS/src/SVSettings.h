@@ -155,6 +155,9 @@ public:
 	/*! Returns true, if end of service life has been reached. */
 	bool						m_versionExpired = false;
 
+	/*! Map of all database materials. */
+	//std::map<unsigned int, VICUS::Material>		m_dbMaterials;
+
 private:
 
 	/*! The global pointer to the SVSettings object.
