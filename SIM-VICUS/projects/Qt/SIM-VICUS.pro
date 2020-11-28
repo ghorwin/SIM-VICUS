@@ -71,6 +71,8 @@ SOURCES += \
         ../../src/SVPropAddPolygonWidget.cpp \
         ../../src/SVPropEditGeometry.cpp \
         ../../src/SVPropertyWidget.cpp \
+        ../../src/SVViewState.cpp \
+        ../../src/SVViewStateHandler.cpp \
         ../../src/actions/SVUndoAddNetwork.cpp \
         ../../src/actions/SVUndoCommandBase.cpp \
         ../../src/actions/SVUndoProject.cpp \
@@ -115,6 +117,8 @@ HEADERS  += \
         ../../src/SVPropAddPolygonWidget.h \
         ../../src/SVPropEditGeometry.h \
         ../../src/SVPropertyWidget.h \
+        ../../src/SVViewState.h \
+        ../../src/SVViewStateHandler.h \
         ../../src/actions/SVUndoAddNetwork.h \
         ../../src/actions/SVUndoCommandBase.h \
         ../../src/actions/SVUndoProject.h \

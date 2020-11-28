@@ -26,6 +26,7 @@ class SVGeometryView;
 class SVNavigationTreeWidget;
 class SVNetworkImportDialog;
 class SVNetworkEditDialog;
+class SVViewStateHandler;
 
 /*! Main window class. */
 class SVMainWindow : public QMainWindow {
@@ -297,6 +298,9 @@ private:
 
 	/*! Handles spawning/activating of PostProc executable. */
 	SVPostProcHandler			*m_postProcHandler										= nullptr;
+
+	/*! Central handler for the user interface state. */
+	SVViewStateHandler			*m_viewStateHandler										= nullptr;
 
 	friend class SVThreadBase;
 

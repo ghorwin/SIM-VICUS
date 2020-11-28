@@ -1,9 +1,10 @@
-#ifndef SVSTYLE_H
-#define SVSTYLE_H
+#ifndef SVStyleH
+#define SVStyleH
 
 #include "SVSettings.h"
 
 #include <QString>
+
 class QPlainTextEdit;
 class QWidget;
 
@@ -28,7 +29,7 @@ public:
 	static void formatWelcomePage(QString & htmlCode);
 
 	/*! Sets the application wide style sheet. */
-    void setStyle(SVSettings::ThemeType dark);
+	void setStyle(SVSettings::ThemeType dark);
 
 	QString				m_styleSheet;
 
@@ -39,4 +40,4 @@ private:
 	QString				m_fontMonoSpace;
 };
 
-#endif // SVSTYLE_H
+#endif // SVStyleH

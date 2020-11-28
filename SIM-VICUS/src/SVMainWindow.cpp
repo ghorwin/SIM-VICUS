@@ -51,6 +51,7 @@
 #include "SVNetworkEditDialog.h"
 #include "SVUndoAddNetwork.h"
 #include "SVPreferencesPageStyle.h"
+#include "SVViewStateHandler.h"
 
 #include "SVGeometryView.h"
 #include "Vic3DSceneView.h"
@@ -77,7 +78,8 @@ void SVMainWindow::addUndoCommand(QUndoCommand * command) {
 SVMainWindow::SVMainWindow(QWidget * /*parent*/, Qt::WindowFlags /*flags*/) :
 	m_ui(new Ui::SVMainWindow),
 	m_undoStack(new QUndoStack(this)),
-	m_postProcHandler(new SVPostProcHandler)
+	m_postProcHandler(new SVPostProcHandler),
+	m_viewStateHandler(new SVViewStateHandler)
 {
 	// store pointer to this object for global access
 	m_self = this;
@@ -94,6 +96,7 @@ SVMainWindow::~SVMainWindow() {
 	delete m_ui;
 	delete m_undoStack;
 	delete m_postProcHandler;
+	delete m_viewStateHandler;
 
 	m_self = nullptr;
 }
