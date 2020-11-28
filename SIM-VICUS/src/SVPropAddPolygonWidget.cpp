@@ -32,23 +32,19 @@ void SVPropAddPolygonWidget::keyPressEvent(QKeyEvent * event) {
 
 void SVPropAddPolygonWidget::on_toolButtonPlane_clicked() {
 	// signal change into "add polygon" mode
-	emit switchToPlaneMode();
 }
 
 
 void SVPropAddPolygonWidget::on_toolButtonBox_clicked() {
 	// signal change into "add box" mode
-	emit switchToBoxMode();
 }
 
 
 void SVPropAddPolygonWidget::on_pushButtonAdd_clicked() {
 	// signal completion of "Add polygon" operation
-	emit polygonComplete();
 }
 
 
 void SVPropAddPolygonWidget::on_pushButtonCancel_clicked() {
 	// signal abort of "Add polygon" operation
-	emit userAbort();
 }

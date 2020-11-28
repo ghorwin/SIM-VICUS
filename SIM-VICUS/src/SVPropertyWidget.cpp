@@ -14,10 +14,13 @@ SVPropertyWidget::SVPropertyWidget(QWidget * parent) :
 	setLayout(m_layout);
 	for (QWidget * &w : m_propWidgets)
 		w = nullptr;
+
+	setMinimumWidth(200);
+	setMode(M_EditGeometry);
 }
 
 
-void SVPropertyWidget::setMode(PropertyWidgetMode m) {
+void SVPropertyWidget::setMode(PropertyWidgets m) {
 	for (QWidget * w : m_propWidgets)
 		if (w != nullptr)
 			w->setVisible(false);

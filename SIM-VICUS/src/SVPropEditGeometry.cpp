@@ -17,5 +17,4 @@ SVPropEditGeometry::~SVPropEditGeometry() {
 
 void SVPropEditGeometry::on_pushButtonAddPolygon_clicked() {
 	// signal, that we want to start adding a new polygon
-	emit addPolyonStarted();
 }

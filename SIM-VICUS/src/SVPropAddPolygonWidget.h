@@ -17,14 +17,7 @@ public:
 	explicit SVPropAddPolygonWidget(QWidget *parent = nullptr);
 	~SVPropAddPolygonWidget();
 
-signals:
-	void switchToPlaneMode();
-	void switchToBoxMode();
-	void polygonComplete();
-	void userAbort();
-
 protected:
-
 	void keyPressEvent(QKeyEvent *event) override;
 
 private slots:

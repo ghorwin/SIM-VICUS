@@ -12,7 +12,7 @@ class SVPropertyWidget : public QWidget {
 	Q_OBJECT
 public:
 	/*! This enum defines which property widgets are to be shown. */
-	enum PropertyWidgetMode {
+	enum PropertyWidgets {
 		M_ThermalSimulationProperties,
 		M_EditGeometry,
 		M_AddVertexesMode,
@@ -22,7 +22,7 @@ public:
 	explicit SVPropertyWidget(QWidget * parent = nullptr);
 
 	/*! Toggles visibility of different child widgets. */
-	void setMode(PropertyWidgetMode m);
+	void setMode(PropertyWidgets m);
 
 private:
 	/*! The layout, that holds all widgets. */

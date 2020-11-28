@@ -1263,6 +1263,6 @@ void SVMainWindow::on_actionNetworkEdit_triggered() {
 
 
 void SVMainWindow::on_actionViewToggleGeometryMode_triggered() {
-	// put scene into "edit geometry" mode
-	m_geometryView->setViewMode(SVGeometryView::VM_EditGeometry);
+	// switch view state to geometry edit mode
+
 }

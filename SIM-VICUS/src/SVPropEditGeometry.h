@@ -15,10 +15,6 @@ public:
 	explicit SVPropEditGeometry(QWidget *parent = nullptr);
 	~SVPropEditGeometry();
 
-signals:
-	/*! Emitted when user clicks on "add polygon". */
-	void addPolyonStarted();
-
 private slots:
 	void on_pushButtonAddPolygon_clicked();
 

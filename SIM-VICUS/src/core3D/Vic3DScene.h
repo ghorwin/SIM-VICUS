@@ -30,17 +30,6 @@ class SceneView;
 */
 class Vic3DScene {
 public:
-	/*! The different operation modes the scene can be in. NUM_OM means "none" and indicates simple
-		navigation.
-	*/
-	enum OperationMode {
-		/*! New polygons/objects can be drawn - either starting a new polygon or continue drawing. */
-		OM_Draw,
-		/*! The mouse drags a selected object to a different location. */
-		OM_DragMove,
-		/*! The scene is in passive mode - user can navigate and click on object to change selection. */
-		NUM_OM
-	};
 
 	void create(SceneView * parent, std::vector<ShaderProgram> & shaderPrograms);
 
@@ -65,11 +54,6 @@ public:
 
 	/*! Actually renders to the current OpenGL context. */
 	void render();
-
-	/*! Toggles operation mode. */
-	void setOperationMode(OperationMode m);
-
-	OperationMode operationMode() const { return m_operationMode; }
 
 	/*! Updates built-in scene colors to dark mode (if dark = true). */
 	void setSceneStyle(bool dark);
@@ -102,11 +86,6 @@ private:
 
 	/*! Stores viewport geometry. */
 	QRect					m_viewPort;
-
-	/*! This determines the mode of operation that the scene is in.
-		Mode of operation is toggled externally through setOperationMode().
-	*/
-	OperationMode			m_operationMode = NUM_OM;
 
 	/*! Stores address to shader program (managed by SceneView). */
 	ShaderProgram			*m_gridShader			= nullptr;

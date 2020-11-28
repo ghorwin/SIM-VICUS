@@ -136,9 +136,10 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	hlay->setMargin(0);
 	hlay->setSpacing(0);
 	hlay->addWidget(m_splitter);
-//	hlay->addWidget(m_toggleButton);
-//	hlay->setStretch(0,1);
-//	hlay->setStretch(1,0);
+	m_splitter->setCollapsible(0, false);
+	m_splitter->setCollapsible(1, false);
+	m_splitter->setStretchFactor(0,1);
+	m_splitter->setStretchFactor(1,0);
 
 	setLayout(hlay);
 
@@ -152,37 +153,3 @@ void SVGeometryView::saveScreenShot(const QString & imgFilePath) {
 	m_sceneView->dumpScreenshot(imgFilePath);
 }
 
-
-void SVGeometryView::setViewMode(SVGeometryView::ViewMode m) {
-	// a switch of the view mode also shows the property widget
-	showPropertyWidget();
-	switch (m) {
-		case VM_Standard :
-			// switch property widget to "property adjustment" mode
-			m_propertyWidget->setMode(SVPropertyWidget::M_ThermalSimulationProperties);
-			// tell scene to go to standard mode
-		break;
-		case VM_EditGeometry :
-			// switch property widget to "edit geometry" mode
-			m_propertyWidget->setMode(SVPropertyWidget::M_EditGeometry);
-		break;
-	}
-}
-
-
-void SVGeometryView::setGeometryEditMode(GeometryEditMode m) {
-}
-
-
-void SVGeometryView::showPropertyWidget() {
-	int propertyWidgetWidth = m_splitter->widget(1)->width();
-	if (propertyWidgetWidth == 0)
-		propertyWidgetWidth = 200;
-	QList<int> sizes = QList<int>() << width()-propertyWidgetWidth << propertyWidgetWidth;
-	// enable splitter handle
-	for (int i = 0; i < m_splitter->count(); i++) {
-		QSplitterHandle *handle = m_splitter->handle(i);
-		handle->setEnabled(true);
-	}
-	m_splitter->setSizes(sizes);
-}

@@ -23,6 +23,7 @@ License    : BSD License,
 #include "SVProjectHandler.h"
 #include "SVSettings.h"
 #include "Vic3DConstants.h"
+#include "SVViewStateHandler.h"
 
 namespace Vic3D {
 
@@ -376,7 +377,7 @@ void SceneView::checkInput() {
 	}
 
 	// special handling for snapping coordinate system
-	if (m_mainScene.operationMode() == Vic3DScene::OM_Draw) {
+	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_PlaceVertex) {
 		m_inputEventReceived = true;
 		renderLater();
 	}

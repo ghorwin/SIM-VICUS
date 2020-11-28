@@ -19,6 +19,7 @@
 #include "Vic3DSceneView.h"
 
 #include "SVProjectHandler.h"
+#include "SVViewStateHandler.h"
 
 const float TRANSLATION_SPEED = 1.2f;
 const float MOUSE_ROTATION_SPEED = 0.5f;
@@ -114,9 +115,6 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 
 	// transfer other properties
 
-
-	// for now put the scene into standard selection mode
-	setOperationMode(NUM_OM);
 }
 
 
@@ -357,7 +355,7 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 	}
 
 	// if we are in draw mode, update the movable coordinate system's location in the new polygon object
-	if (m_operationMode == OM_Draw) {
+	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_PlaceVertex) {
 		m_newPolygonObject.updateLastVertex(m_coordinateSystemObject.m_transform.translation());
 	}
 }
@@ -465,15 +463,6 @@ void Vic3DScene::render() {
 }
 
 
-void Vic3DScene::setOperationMode(Vic3DScene::OperationMode m)	{
-	// depending on whether we enter/leave an operation mode, we may have project modifications
-
-	// \todo implement
-
-	m_operationMode = m;
-}
-
-
 void Vic3DScene::setSceneStyle(bool dark) {
 	if (dark) {
 		m_background = QVector3D(0.1f, 0.15f, 0.3f);
@@ -576,13 +565,13 @@ void Vic3DScene::generateNetworkGeometry() {
 	}
 
 
+#if 0
 	addSphere(IBKMK::Vector3D(6,4,0), Qt::magenta,
 				0.5,
 				currentVertexIndex, currentElementIndex,
 				m_networkGeometryObject.m_vertexBufferData,
 				m_networkGeometryObject.m_colorBufferData,
 				m_networkGeometryObject.m_indexBufferData);
-#if 0
 	// manually add a cylinder here
 	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(10,0,0), Qt::red,
 				0.5,
@@ -712,8 +701,8 @@ void Vic3DScene::handleLeftMouseClick() {
 	// if we are in "draw" mode, we either continue drawing points (i.e. add a point), or
 	// start a new polygon
 
-	switch (m_operationMode) {
-		case OM_Draw : {
+	switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
+		case SVViewState::OM_PlaceVertex : {
 			// signal parent widget that we added a point
 			IBKMK::Vector3D p = VICUS::QVector2IBKVector(m_coordinateSystemObject.m_transform.translation());
 			m_parent->addPolygonVertex(p);
