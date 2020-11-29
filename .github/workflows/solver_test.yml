@@ -21,4 +21,4 @@ jobs:
 
     # builds and runs regression test suite
     - name: build-and-test
-      run: (cd build/cmake; ./run_tests.sh)
+      run: (cd build/cmake; ./testbuild.sh)
