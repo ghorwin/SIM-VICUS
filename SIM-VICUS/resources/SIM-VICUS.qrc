@@ -38,5 +38,7 @@
         <file>gfx/actions/32x32/editcopy_32x32.png</file>
         <file>gfx/actions/32x32/minus_32x32.png</file>
         <file>gfx/actions/32x32/plus_32x32.png</file>
+        <file>gfx/actions/16x16/help-hint.png</file>
+        <file>gfx/actions/16x16/help-hint_gray.png</file>
     </qresource>
 </RCC>

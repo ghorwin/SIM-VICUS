@@ -7,6 +7,7 @@
 
 #include "SVProjectHandler.h"
 #include "SVStyle.h"
+#include "SVNavigationTreeItemDelegate.h"
 
 SVNavigationTreeWidget::SVNavigationTreeWidget(QWidget *parent) :
 	QWidget(parent),
@@ -18,6 +19,9 @@ SVNavigationTreeWidget::SVNavigationTreeWidget(QWidget *parent) :
 			this, &SVNavigationTreeWidget::onModified);
 
 	SVStyle::formatWidgetWithLayout(this);
+
+	// register item delegate that paints the "visible" bulb
+	m_ui->treeWidget->setItemDelegate(new SVNavigationTreeItemDelegate(this));
 }
 
 
