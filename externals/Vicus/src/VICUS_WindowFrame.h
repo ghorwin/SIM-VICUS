@@ -27,18 +27,21 @@ public:
 	/*! Display name of frame. */
 	QString							m_displayName;			// XML:A
 
+	/*! Manufacturer. */
+	QString							m_notes;				// XML:E
+
 	/*! Data source. */
 	QString							m_dataSource;			// XML:E
 
 	/*! Material layer for frame material with thickness. */
 	MaterialLayer					m_materialLayer;		// XML:E
-	
-	/*! Frame area calculation. 
+
+	/*! Frame area calculation.
 		true: frame area is calculated by a percentage of the hole window
 		false: in this case the circumference is used to calculate the frame area
 	*/
 	bool							m_isPercentageCalcMethode = true;	// XML:E
-	
+
 
 };
 

@@ -32,9 +32,9 @@ public:
 		/*! Thermal conductivity of the dry material. */
 		P_Mu,						// Keyword: Mu						[-]		'Vapor diffusion resistance factor.'
 		/// TODO Beschreibung einfügen
-		P_W80,						// Keyword: W80						[kg/m3]	'...'
+		P_W80,						// Keyword: W80						[kg/m3]	'Water content in relation to 80% humidity.'
 		/// TODO Beschreibung einfügen
-		P_Wsat,						// Keyword: Wsat					[kg/m3]	'...'
+		P_Wsat,						// Keyword: Wsat					[kg/m3]	'Water content at saturation.'
 
 		NUM_P
 	};
@@ -73,6 +73,9 @@ public:
 
 	/*! False color. */
 	QColor							m_color;								// XML:A
+
+	/*! Manufacturer. */
+	QString							m_notes;								// XML:E
 
 	/*! Manufacturer. */
 	QString							m_manufacturer;							// XML:E

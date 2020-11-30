@@ -54,6 +54,9 @@ public:
 	QColor								m_color;									// XML:A
 
 	/*! Manufacturer. */
+	QString								m_notes;									// XML:E
+
+	/*! Manufacturer. */
 	QString								m_manufacturer;								// XML:E
 
 	/*! Data source. */

@@ -32,15 +32,18 @@ public:
 	/*! Display name of divider. */
 	QString							m_displayName;				// XML:A
 
+	/*! Manufacturer. */
+	QString							m_notes;					// XML:E
+
 	/*! Data source. */
 	QString							m_dataSource;				// XML:E
 
 	/*! Material id of divider. */
 	unsigned int					m_idMaterial = INVALID_ID;	// XML:A:required
-	
+
 	/*! List of parameters. */
 	IBK::Parameter					m_para[NUM_P];				// XML:E
-	
+
 
 };
 
