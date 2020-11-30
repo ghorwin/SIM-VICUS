@@ -30,6 +30,9 @@
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</InterfaceHeatConduction>
+					<InterfaceLongWaveEmission modelType="Constant">
+						<IBK:Parameter name="Emissivity" unit="---">1</IBK:Parameter>
+					</InterfaceLongWaveEmission>
 				</InterfaceA>
 				<InterfaceB id="31" zoneId="0">
 					<!--Interface to outside-->
