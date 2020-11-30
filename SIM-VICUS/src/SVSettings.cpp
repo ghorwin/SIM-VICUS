@@ -105,6 +105,8 @@ void SVSettings::read() {
 	SVSettings::ThemeType tmpTheme = (SVSettings::ThemeType)settings.value("Theme", m_theme ).toInt();
 	m_theme = tmpTheme;
 
+	m_invertYMouseAxis = settings.value("IntertYMouseAxis", m_invertYMouseAxis).toBool();
+
 	m_fontPointSize = settings.value("FontPointSize", 0).toUInt();
 }
 
@@ -118,6 +120,7 @@ void SVSettings::write(QByteArray geometry, QByteArray state) {
 	settings.setValue("CCMEditorExecutable", m_CCMEditorExecutable );
 	settings.setValue("FontPointSize", m_fontPointSize);
 	settings.setValue("Theme", m_theme);
+	settings.setValue("IntertYMouseAxis", m_invertYMouseAxis);
 
 	for (QMap<PropertyType, QVariant>::const_iterator it = m_propertyMap.constBegin();
 		 it != m_propertyMap.constEnd(); ++it)

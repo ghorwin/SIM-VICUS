@@ -182,6 +182,8 @@ private slots:
 
 	void on_actionViewToggleGeometryMode_triggered();
 
+	void on_actionDBMaterials_triggered();
+
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();

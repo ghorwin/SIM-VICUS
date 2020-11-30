@@ -1266,3 +1266,8 @@ void SVMainWindow::on_actionViewToggleGeometryMode_triggered() {
 	// switch view state to geometry edit mode
 
 }
+
+
+void SVMainWindow::on_actionDBMaterials_triggered() {
+
+}

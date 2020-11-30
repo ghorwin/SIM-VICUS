@@ -139,6 +139,9 @@ public:
 	/*! ThemeType of theme applied */
 	ThemeType					m_theme = TT_Dark;
 
+	/*! If true, orbit controller uses inverted mouse axis. */
+	bool						m_invertYMouseAxis = true;
+
 	/*! The project file suffix including the . */
 	QString						m_projectFileSuffix			= ".vicus";
 	/*! The project package suffix including the . */

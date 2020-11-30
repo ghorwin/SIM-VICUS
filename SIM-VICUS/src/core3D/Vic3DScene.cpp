@@ -20,6 +20,7 @@
 
 #include "SVProjectHandler.h"
 #include "SVViewStateHandler.h"
+#include "SVSettings.h"
 
 const float TRANSLATION_SPEED = 1.2f;
 const float MOUSE_ROTATION_SPEED = 0.5f;
@@ -249,17 +250,18 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 
 				// mouse y translation = rotation around "right" axis
+				int mouseInversionFactor = SVSettings::instance().m_invertYMouseAxis ? -1 : 1;
 
 				QVector3D LocalRight = m_camera.right().normalized();
 				// set rotation around "right" axis for y-mouse-delta
-				orbitTrans.rotate(MOUSE_ROTATION_SPEED * mouse_dy, LocalRight);
+				orbitTrans.rotate(MOUSE_ROTATION_SPEED * mouse_dy * mouseInversionFactor, LocalRight);
 
 				// rotate vector to camera
 				lineOfSight = orbitTrans.toMatrix() * lineOfSight;
 
 				// rotate the camera around the same angles
 				m_camera.rotate(MOUSE_ROTATION_SPEED * mouse_dx, GlobalUpwardsVector);
-				m_camera.rotate(MOUSE_ROTATION_SPEED * mouse_dy, LocalRight);
+				m_camera.rotate(MOUSE_ROTATION_SPEED * mouse_dy * mouseInversionFactor, LocalRight);
 
 #if 1
 				// fix "roll" error due to rounding
