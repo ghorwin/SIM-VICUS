@@ -205,6 +205,14 @@ void Project::readXML(const IBK::Path & filename) {
 		if (xmlElem) {
 			readXML(xmlElem);
 		}
+
+		// TODO: is it ok to do this here? if not, where else?
+		// update Network Pointers
+		if (!m_networks.empty()){
+			for (Network &n: m_networks)
+				n.updateNodeEdgeConnectionPointers();
+		}
+
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Error reading project '%1'.").arg(filename), FUNC_ID);

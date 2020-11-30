@@ -61,10 +61,11 @@ bool SVNetworkImportDialog::edit() {
 		// set origin and normalize existing positions
 		m_network.setOrigin(IBKMK::Vector3D(x, y, 0));
 
+		// generate id, set name
+		m_network.m_id = generateId();
 		m_network.m_name = uniqueName(m_ui->lineEditNetworkName->text().toStdString());
 
-		// generate id
-		m_network.m_id = generateId();
+		m_network.m_fluidID = 0;
 
 		m_network.updateExtends();
 

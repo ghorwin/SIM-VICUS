@@ -61,7 +61,7 @@ public:
 	double			m_diameterOutside;				// XML:E
 
 	/*! If false, this is a branch. */
-	bool			m_supply;						// XML:E
+	bool			m_supply;						// XML:A
 
 	/*! heating demand of all connected buildings */
 	double			m_heatingDemand = 0;

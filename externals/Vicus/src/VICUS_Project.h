@@ -104,7 +104,7 @@ public:
 
 	ViewSettings			m_viewSettings;		// XML:E
 
-	std::vector<Network>	m_networks;
+	std::vector<Network>	m_networks;			// XML:E
 
 	std::vector<Building>	m_buildings;		// XML:E
 

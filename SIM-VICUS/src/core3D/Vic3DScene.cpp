@@ -544,6 +544,7 @@ void Vic3DScene::generateNetworkGeometry() {
 	unsigned int currentVertexIndex = 0;
 	unsigned int currentElementIndex = 0;
 
+
 	// add cylinders for all pipes
 	for (const VICUS::Network & n : p.m_networks) {
 		for (const VICUS::NetworkEdge & e : n.m_edges) {
@@ -566,38 +567,6 @@ void Vic3DScene::generateNetworkGeometry() {
 		}
 	}
 
-
-#if 0
-	addSphere(IBKMK::Vector3D(6,4,0), Qt::magenta,
-				0.5,
-				currentVertexIndex, currentElementIndex,
-				m_networkGeometryObject.m_vertexBufferData,
-				m_networkGeometryObject.m_colorBufferData,
-				m_networkGeometryObject.m_indexBufferData);
-	// manually add a cylinder here
-	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(10,0,0), Qt::red,
-				0.5,
-				currentVertexIndex, currentElementIndex,
-				m_networkGeometryObject.m_vertexBufferData,
-				m_networkGeometryObject.m_colorBufferData,
-				m_networkGeometryObject.m_indexBufferData);
-
-	// and another one moved
-	addCylinder(IBKMK::Vector3D(5,0,5), IBKMK::Vector3D(10,0,5), Qt::blue,
-				1,
-				currentVertexIndex, currentElementIndex,
-				m_networkGeometryObject.m_vertexBufferData,
-				m_networkGeometryObject.m_colorBufferData,
-				m_networkGeometryObject.m_indexBufferData);
-
-	// and another one rotated
-	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,10,15), Qt::green,
-				0.1,
-				currentVertexIndex, currentElementIndex,
-				m_networkGeometryObject.m_vertexBufferData,
-				m_networkGeometryObject.m_colorBufferData,
-				m_networkGeometryObject.m_indexBufferData);
-#endif
 }
 
 

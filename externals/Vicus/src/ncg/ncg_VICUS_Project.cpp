@@ -40,7 +40,19 @@ void Project::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "Buildings") {
+			if (cName == "Networks") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "Network")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					Network obj;
+					obj.readXML(c2);
+					m_networks.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "Buildings") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
@@ -98,6 +110,18 @@ TiXmlElement * Project::writeXML(TiXmlElement * parent) const {
 
 
 	m_viewSettings.writeXML(e);
+
+	if (!m_networks.empty()) {
+		TiXmlElement * child = new TiXmlElement("Networks");
+		e->LinkEndChild(child);
+
+		for (std::vector<Network>::const_iterator it = m_networks.begin();
+			it != m_networks.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
 
 	if (!m_buildings.empty()) {
 		TiXmlElement * child = new TiXmlElement("Buildings");
