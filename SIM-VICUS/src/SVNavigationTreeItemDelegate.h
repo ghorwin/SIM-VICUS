@@ -7,6 +7,12 @@
 class SVNavigationTreeItemDelegate : public QItemDelegate {
 	Q_OBJECT
 public:
+	enum DataRoles {
+		NodeID = Qt::UserRole,
+		VisibleFlag = Qt::UserRole + 1,
+		SelectedFlag = Qt::UserRole + 2
+	};
+
 	SVNavigationTreeItemDelegate(QWidget * parent = nullptr);
 
 	// QAbstractItemDelegate interface
@@ -17,6 +23,8 @@ public:
 private:
 	QImage m_lightBulbOn;
 	QImage m_lightBulbOff;
+	QImage m_selectedOn;
+	QImage m_selectedOff;
 };
 
 #endif // SVNavigationTreeItemDelegateH

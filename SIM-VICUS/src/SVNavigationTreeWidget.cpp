@@ -49,6 +49,8 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 
 	// insert root node
 	QTreeWidgetItem * root = new QTreeWidgetItem(QStringList() << "Site", QTreeWidgetItem::Type);
+	root->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, true);
+	root->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, true);
 	m_ui->treeWidget->addTopLevelItem(root);
 
 	// get project data
@@ -57,19 +59,27 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 	// add all childs
 	for (const VICUS::Building & b : prj.m_buildings) {
 		QTreeWidgetItem * building = new QTreeWidgetItem(QStringList() << tr("Building: %1").arg(b.m_displayName), QTreeWidgetItem::Type);
+		building->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, true);
+		building->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, true);
 		building->setData(0, Qt::UserRole, b.m_id);
 		root->addChild(building);
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			QTreeWidgetItem * buildingLevel = new QTreeWidgetItem(QStringList() << bl.m_displayName, QTreeWidgetItem::Type);
+			buildingLevel->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, true);
+			buildingLevel->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, false);
 			building->addChild(buildingLevel);
 			for (const VICUS::Room & r : bl.m_rooms) {
 				QTreeWidgetItem * rooms = new QTreeWidgetItem(QStringList() << r.m_displayName, QTreeWidgetItem::Type);
+				rooms->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, true);
+				rooms->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, false);
 				if (rooms->text(0).isEmpty())
 					rooms->setText(0, tr("unnamed"));
 				buildingLevel->addChild(rooms);
 				for (const VICUS::Surface & s : r.m_surfaces) {
 					QTreeWidgetItem * surface = new QTreeWidgetItem(QStringList() << s.m_displayName, QTreeWidgetItem::Type);
 					rooms->addChild(surface);
+					surface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, true);
+					surface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, false);
 				}
 			}
 		}

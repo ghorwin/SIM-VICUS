@@ -40,5 +40,7 @@
         <file>gfx/actions/32x32/plus_32x32.png</file>
         <file>gfx/actions/16x16/help-hint.png</file>
         <file>gfx/actions/16x16/help-hint_gray.png</file>
+        <file>gfx/actions/16x16/checkbox-empty.png</file>
+        <file>gfx/actions/16x16/checkbox-full.png</file>
     </qresource>
 </RCC>
