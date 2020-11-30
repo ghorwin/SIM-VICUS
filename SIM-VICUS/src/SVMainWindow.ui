@@ -89,8 +89,16 @@
     <addaction name="actionNetworkImport"/>
     <addaction name="actionNetworkEdit"/>
    </widget>
+   <widget class="QMenu" name="menuDatabases">
+    <property name="title">
+     <string>Databases</string>
+    </property>
+    <addaction name="actionDBMaterials"/>
+    <addaction name="actionDBConstructions"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
+   <addaction name="menuDatabases"/>
    <addaction name="menuNetworks"/>
    <addaction name="menu_View"/>
    <addaction name="menu_Tools"/>
@@ -354,6 +362,16 @@
    </property>
    <property name="toolTip">
     <string>Turns on geometry edit mode</string>
+   </property>
+  </action>
+  <action name="actionDBMaterials">
+   <property name="text">
+    <string>Materials...</string>
+   </property>
+  </action>
+  <action name="actionDBConstructions">
+   <property name="text">
+    <string>Constructions...</string>
    </property>
   </action>
  </widget>
