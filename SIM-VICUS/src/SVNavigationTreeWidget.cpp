@@ -83,6 +83,21 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 	}
 
 	m_ui->treeWidget->expandAll();
-
 }
 
+
+void SVNavigationTreeWidget::collapseTreeWidgetItem(QTreeWidgetItem * parent) {
+	for (int i=0; i<parent->childCount(); ++i) {
+		QTreeWidgetItem * c = parent->child(i);
+		m_ui->treeWidget->blockSignals(true);
+		m_ui->treeWidget->collapseItem(c);
+		m_ui->treeWidget->blockSignals(false);
+		collapseTreeWidgetItem(c);
+	}
+}
+
+
+void SVNavigationTreeWidget::on_treeWidget_itemCollapsed(QTreeWidgetItem *item) {
+	// also collapse all children
+	collapseTreeWidgetItem(item);
+}
