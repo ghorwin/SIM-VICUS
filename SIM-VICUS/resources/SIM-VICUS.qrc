@@ -35,5 +35,8 @@
         <file>gfx/actions/64x64/projectProperties.png</file>
         <file>gfx/splashscreen/SIM-VICUS.jpg</file>
         <file>gfx/actions/48x48/geometry.png</file>
+        <file>gfx/actions/32x32/editcopy_32x32.png</file>
+        <file>gfx/actions/32x32/minus_32x32.png</file>
+        <file>gfx/actions/32x32/plus_32x32.png</file>
     </qresource>
 </RCC>

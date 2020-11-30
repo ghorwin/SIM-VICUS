@@ -28,6 +28,8 @@ class SVNetworkImportDialog;
 class SVNetworkEditDialog;
 class SVViewStateHandler;
 
+class SVDBMaterialsEditWidget;
+
 /*! Main window class. */
 class SVMainWindow : public QMainWindow {
 	Q_OBJECT
@@ -303,6 +305,9 @@ private:
 
 	/*! Central handler for the user interface state. */
 	SVViewStateHandler			*m_viewStateHandler										= nullptr;
+
+
+	SVDBMaterialsEditWidget		*m_dbMaterialsEditWidget								= nullptr;
 
 	friend class SVThreadBase;
 

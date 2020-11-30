@@ -52,6 +52,7 @@
 #include "SVUndoAddNetwork.h"
 #include "SVPreferencesPageStyle.h"
 #include "SVViewStateHandler.h"
+#include "SVDBMaterialsEditWidget.h"
 
 #include "SVGeometryView.h"
 #include "Vic3DSceneView.h"
@@ -97,6 +98,9 @@ SVMainWindow::~SVMainWindow() {
 	delete m_undoStack;
 	delete m_postProcHandler;
 	delete m_viewStateHandler;
+
+	// explicitely delete all top-level DB edit widgets
+	delete m_dbMaterialsEditWidget;
 
 	m_self = nullptr;
 }
@@ -1269,5 +1273,8 @@ void SVMainWindow::on_actionViewToggleGeometryMode_triggered() {
 
 
 void SVMainWindow::on_actionDBMaterials_triggered() {
-
+	if (m_dbMaterialsEditWidget == nullptr) {
+		m_dbMaterialsEditWidget = new SVDBMaterialsEditWidget(nullptr); // global widget, not inside main window
+	}
+	m_dbMaterialsEditWidget->edit();
 }

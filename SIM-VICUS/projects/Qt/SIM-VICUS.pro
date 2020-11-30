@@ -66,6 +66,7 @@ win32 {
 
 
 SOURCES += \
+        ../../src/SVDBMaterialsEditWidget.cpp \
         ../../src/SVNetworkEditDialog.cpp \
         ../../src/SVPreferencesPageStyle.cpp \
         ../../src/SVPropAddPolygonWidget.cpp \
@@ -112,6 +113,7 @@ SOURCES += \
         ../../src/SVWelcomeScreen.cpp
 
 HEADERS  += \
+        ../../src/SVDBMaterialsEditWidget.h \
         ../../src/SVNetworkEditDialog.h \
         ../../src/SVPreferencesPageStyle.h \
         ../../src/SVPropAddPolygonWidget.h \
@@ -161,6 +163,7 @@ HEADERS  += \
 
 FORMS    += \
         ../../src/SVAboutDialog.ui \
+        ../../src/SVDBMaterialsEditWidget.ui \
         ../../src/SVLogFileDialog.ui \
         ../../src/SVMainWindow.ui \
         ../../src/SVNavigationTreeWidget.ui \
