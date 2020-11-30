@@ -72,6 +72,7 @@ SOURCES += \
 	../../src/VICUS_NetworkLine.cpp \
 	../../src/VICUS_NetworkNode.cpp \
 	../../src/VICUS_NetworkPipe.cpp \
+	../../src/VICUS_Object.cpp \
 	../../src/VICUS_PlaneGeometry.cpp \
 	../../src/VICUS_Project.cpp \
 	../../src/ncg/ncg_VICUS_BoundaryCondition.cpp \

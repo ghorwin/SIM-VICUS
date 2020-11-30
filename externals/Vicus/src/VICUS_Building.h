@@ -35,6 +35,9 @@ public:
 	/*! Display name of building. */
 	QString							m_displayName;			// XML:A
 
+	/*! Building is selected. */
+	bool							m_selected = true;		// XML:A
+
 	/*! Vector of building levels. */
 	std::vector<BuildingLevel>		m_buildingLevels;		// XML:E
 };
