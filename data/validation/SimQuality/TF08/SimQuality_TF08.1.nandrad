@@ -5,8 +5,8 @@
 			<Comment>SimQuality Testfall 08</Comment>
 		</ProjectInfo>
 		<Location>
-			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
-			<ClimateFileName>${Project Directory}/../climate/TF05_PotsdamWithStartPhase.c6b</ClimateFileName>
+			<IBK:Parameter name="Albedo" unit="---">0.0</IBK:Parameter>
+			<ClimateFileName>${Project Directory}/../climate/SimQuality_Testfall08_Klima.c6b</ClimateFileName>
 		</Location>
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
@@ -15,7 +15,7 @@
 			<IBK:IntPara name="DiscMaxElementsPerLayer">30</IBK:IntPara>
 		</SolverParameter>
 		<Zones>
-			<Zone id="3" displayName="Var03" type="Active">
+			<Zone id="1" displayName="Var01" type="Active">
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
 			</Zone>			
@@ -25,7 +25,7 @@
 			<ConstructionInstance id="3" displayName="All Surfaces Var01">
 				<ConstructionTypeId>10005</ConstructionTypeId>
 				<IBK:Parameter name="Area" unit="m2">62</IBK:Parameter>
-				<InterfaceA id="30" zoneId="3">
+				<InterfaceA id="30" zoneId="1">
 					<!--Interface to 'Room'-->
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
@@ -68,12 +68,10 @@
 		</Materials>
 		<Models>
 			<InternalLoadsModel id="200" modelType="Scheduled">
-				<IBK:Parameter name="RadiantFraction" unit="---">0.0</IBK:Parameter>
-				<!-- takes schedules with names: 
-					"EquipmentHeatLoadSchedule [W/m2]",
-					"PersonHeatLoadSchedule [W/m2]",
-					"LightingHeatLoadSchedule [W/m2]" 
-					-->
+				<ZoneObjectList>Zone Var01</ZoneObjectList>
+				<IBK:Parameter name="EquipmentRadiationFraction" unit="---">0.0</IBK:Parameter>
+				<IBK:Parameter name="PersonRadiationFraction" unit="---">0.0</IBK:Parameter>
+				<IBK:Parameter name="LightingRadiationFraction" unit="---">0.0</IBK:Parameter>
 			</InternalLoadsModel>
 		</Models>
 		<Schedules>
@@ -84,7 +82,21 @@
 						<DailyCycles>
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0	23</TimePoints>
-								<Values>EquipmentHeatLoadSchedule [W/m2]:40	40</Values>
+								<Values>EquipmentHeatLoadPerAreaSchedule [W/m2]:0	0</Values>
+								<Values>LightingHeatLoadPerAreaSchedule [W/m2]:0	0</Values>
+								<Values>PersonHeatLoadPerAreaSchedule [W/m2]:0	0</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+					<Schedule type="AllDays">
+						<StartDayOfTheYear>31</StartDayOfTheYear>		<!-- 1.Februar 31=31 -->
+						<EndDayOfTheYear>364</EndDayOfTheYear>			<!-- 30.September  31+28+31+30+31+30+31+31+30=273 -->
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0	23</TimePoints>
+								<Values>EquipmentHeatLoadPerAreaSchedule [W/m2]:40	40</Values>
+								<Values>LightingHeatLoadPerAreaSchedule [W/m2]:0	0</Values>
+								<Values>PersonHeatLoadPerAreaSchedule [W/m2]:0	0</Values>
 							</DailyCycle>
 						</DailyCycles>
 					</Schedule>

@@ -15,14 +15,14 @@
 			<IBK:IntPara name="DiscMaxElementsPerLayer">30</IBK:IntPara>
 		</SolverParameter>
 		<Zones>
-			<Zone id="1" displayName="Var03" type="Active">
+			<Zone id="1" displayName="Var04" type="Active">
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
 			</Zone>			
 		</Zones>
 		<ConstructionInstances>
 			<!-- Surface Var 03 -->	
-			<ConstructionInstance id="3" displayName="All Surfaces Var03">
+			<ConstructionInstance id="3" displayName="All Surfaces Var04">
 				<ConstructionTypeId>10005</ConstructionTypeId>
 				<IBK:Parameter name="Area" unit="m2">62</IBK:Parameter>
 				<InterfaceA id="30" zoneId="1">
@@ -67,8 +67,8 @@
 		</Materials>
 		<Models>
 			<InternalLoadsModel id="200" modelType="Scheduled">
-				<ZoneObjectList>Zone Var03</ZoneObjectList>
-				<IBK:Parameter name="EquipmentRadiationFraction" unit="---">0.0</IBK:Parameter>
+				<ZoneObjectList>Zone Var04</ZoneObjectList>
+				<IBK:Parameter name="EquipmentRadiationFraction" unit="---">1.0</IBK:Parameter>
 				<IBK:Parameter name="PersonRadiationFraction" unit="---">0.0</IBK:Parameter>
 				<IBK:Parameter name="LightingRadiationFraction" unit="---">0.0</IBK:Parameter>
 				<!-- takes schedules with names: 
@@ -80,7 +80,7 @@
 		</Models>
 		<Schedules>
 			<ScheduleGroups>
-				<ScheduleGroup objectList="Zone Var03">
+				<ScheduleGroup objectList="Zone Var04">
 					<!-- AllDays constant  -->
 					<Schedule type="AllDays">
 						<DailyCycles>
@@ -139,7 +139,7 @@
 				<FilterID>*</FilterID>
 				<ReferenceType>Zone</ReferenceType>
 			</ObjectList>
-			<ObjectList name="Zone Var03">
+			<ObjectList name="Zone Var04">
 				<FilterID>1</FilterID>
 				<ReferenceType>Zone</ReferenceType>
 			</ObjectList>
