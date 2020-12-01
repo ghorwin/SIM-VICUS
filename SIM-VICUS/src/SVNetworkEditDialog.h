@@ -27,9 +27,9 @@ private slots:
 
 	void on_pushButtonConnectBuildings_clicked();
 
-	void on_pushButtonCalculateLength_clicked();
-
 	void on_pushButtonReduceRedundants_clicked();
+
+	void on_pushButtonReduceDeadEnds_clicked();
 
 private:
 	Ui::SVNetworkEditDialog *m_ui;

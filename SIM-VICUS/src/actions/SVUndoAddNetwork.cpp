@@ -19,6 +19,7 @@ void SVUndoAddNetwork::undo() {
 	Q_ASSERT(!theProject().m_networks.empty());
 
 	theProject().m_networks.pop_back();
+	theProject().m_networks.back().updateNodeEdgeConnectionPointers(); // ensure pointers are correctly set
 
 	std::swap(theProject().m_viewSettings.m_gridWidth, m_gridWidth);
 	std::swap(theProject().m_viewSettings.m_gridSpacing, m_gridSpacing);

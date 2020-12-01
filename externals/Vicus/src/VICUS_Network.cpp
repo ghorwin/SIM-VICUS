@@ -46,14 +46,17 @@ void Network::addEdge(const unsigned nodeId1, const unsigned nodeId2, const bool
 	m_edges.push_back(NetworkEdge(nodeId1, nodeId2, supply));
 	// TODO : does this needs to be done very time a node is added? or manually, when we are done?
 	updateNodeEdgeConnectionPointers();
+	m_edges.back().setLengthFromCoordinates();
+
 }
 
 
 void Network::addEdge(const NetworkEdge &edge) {
-	IBK_ASSERT(edge.m_nodeId1<m_nodes.size() && edge.m_nodeId2<m_nodes.size());
+	IBK_ASSERT(edge.nodeId1()<m_nodes.size() && edge.nodeId2()<m_nodes.size());
 	m_edges.push_back(edge);
 	// TODO : does this needs to be done very time a node is added? or manually, when we are done?
 	updateNodeEdgeConnectionPointers();
+	m_edges.back().setLengthFromCoordinates();
 }
 
 
@@ -68,10 +71,10 @@ void Network::updateNodeEdgeConnectionPointers() {
 	// loop over all edges
 	for (NetworkEdge & e : m_edges) {
 		// store pointers to connected nodes
-		IBK_ASSERT(e.m_nodeId1 < nodeCount);
-		e.m_node1 = &m_nodes[e.m_nodeId1];
-		IBK_ASSERT(e.m_nodeId2 < nodeCount);
-		e.m_node2 = &m_nodes[e.m_nodeId2];
+		IBK_ASSERT(e.nodeId1() < nodeCount);
+		e.m_node1 = &m_nodes[e.nodeId1()];
+		IBK_ASSERT(e.nodeId2() < nodeCount);
+		e.m_node2 = &m_nodes[e.nodeId2()];
 
 		// now also store pointer to this edge into connected nodes
 		e.m_node1->m_edges.push_back(&e);
@@ -183,10 +186,10 @@ bool Network::findAndAddIntersection() {
 			// if it is within both lines: add node and edges, adapt exisiting nodes
 			if (l1.containsPoint(ps) && l2.containsPoint(ps)){
 				unsigned nInter = addNode(IBKMK::Vector3D(ps), NetworkNode::NT_Mixer);
-				addEdge(nInter, m_edges[i1].m_nodeId1, true);
-				addEdge(nInter, m_edges[i2].m_nodeId1, true);
-				m_edges[i1].m_nodeId1 = nInter;
-				m_edges[i2].m_nodeId1 = nInter;
+				addEdge(nInter, m_edges[i1].nodeId1(), true);
+				addEdge(nInter, m_edges[i2].nodeId1(), true);
+				m_edges[i1].setNodeId1(nInter);
+				m_edges[i2].setNodeId1(nInter);
 				updateNodeEdgeConnectionPointers();
 				return true;
 			}
@@ -223,15 +226,15 @@ void Network::connectBuildings(const bool extendSupplyPipes) {
 		// branch node is inside edge: split edge
 		if (lMin.containsPoint(pBranch)){
 			idBranch = addNode(IBKMK::Vector3D(pBranch), NetworkNode::NT_Mixer);
-			addEdge(m_edges[idEdgeMin].m_nodeId1, idBranch, true);
-			m_edges[idEdgeMin].m_nodeId1 = idBranch;
+			addEdge(m_edges[idEdgeMin].nodeId1(), idBranch, true);
+			m_edges[idEdgeMin].setNodeId1(idBranch);
 			updateNodeEdgeConnectionPointers();
 		}
 		// branch node is outside edge
 		else{
 			double dist1 = NetworkLine2D::distanceBetweenPoints(pBranch, m_edges[idEdgeMin].m_node1->m_position.point2D());
 			double dist2 = NetworkLine2D::distanceBetweenPoints(pBranch, m_edges[idEdgeMin].m_node2->m_position.point2D());
-			idBranch = (dist1 < dist2) ? m_edges[idEdgeMin].m_nodeId1 : m_edges[idEdgeMin].m_nodeId2 ;
+			idBranch = (dist1 < dist2) ? m_edges[idEdgeMin].nodeId1() : m_edges[idEdgeMin].nodeId2();
 			// if pipe should be extended, change coordinates of branch node
 			if (extendSupplyPipes){
 				m_nodes[idBranch].m_position = pBranch;
@@ -258,23 +261,15 @@ int Network::nextUnconnectedBuilding() const{
 void Network::networkWithoutDeadEnds(Network &cleanNetwork, const unsigned maxSteps){
 
 	for (unsigned step=0; step<maxSteps; ++step){
-		for (unsigned n=0; n<m_nodes.size(); ++n){
+		for (unsigned n=0; n<m_nodes.size(); ++n)
 			m_nodes[n].updateIsDeadEnd();
-		}
 	}
 	for (const NetworkEdge &e: m_edges){
 		if (e.m_node1->m_isDeadEnd || e.m_node2->m_isDeadEnd)
 			continue;
 		unsigned id1 = cleanNetwork.addNode(*e.m_node1);
 		unsigned id2 = cleanNetwork.addNode(*e.m_node2);
-		cleanNetwork.addEdge(NetworkEdge(id1, id2, e.m_length, e.m_diameterInside, e.m_supply));
-	}
-}
-
-
-void Network::calculateLengths(){
-	for (NetworkEdge &e: m_edges) {
-		e.m_length = NetworkLine2D(e).length();
+		cleanNetwork.addEdge(NetworkEdge(id1, id2, e.length(), e.m_diameterInside, e.m_supply));
 	}
 }
 
@@ -284,7 +279,7 @@ void Network::networkWithReducedEdges(Network & reducedNetwork){
 	IBK_ASSERT(m_edges.size()>0);
 	std::set<unsigned> proccessedNodes;
 
-	for (NetworkEdge &edge: m_edges){
+	for (const NetworkEdge &edge: m_edges){
 
 		if (edge.m_node1->isRedundant() || edge.m_node2->isRedundant()){
 
@@ -298,7 +293,7 @@ void Network::networkWithReducedEdges(Network & reducedNetwork){
 			NetworkNode * previousNode = edge.neighbourNode(redundantNode);
 			NetworkEdge * nextEdge = redundantNode->neighborEdge(&edge);
 			std::set<unsigned> redundantNodes;
-			double totalLength = edge.m_length;
+			double totalLength = edge.length();
 			const NetworkNode * nextNode = redundantNode->findNextNonRedundantNode(redundantNodes, totalLength, nextEdge);
 			for (const unsigned nId: redundantNodes)
 				proccessedNodes.insert(nId);
@@ -311,7 +306,7 @@ void Network::networkWithReducedEdges(Network & reducedNetwork){
 		else{
 			unsigned id1 = reducedNetwork.addNode(*edge.m_node1);
 			unsigned id2 = reducedNetwork.addNode(*edge.m_node2);
-			reducedNetwork.addEdge(NetworkEdge(id1, id2, edge.m_length, edge.m_diameterInside, edge.m_supply));
+			reducedNetwork.addEdge(NetworkEdge(id1, id2, edge.length(), edge.m_diameterInside, edge.m_supply));
 		}
 	}
 }
@@ -342,7 +337,7 @@ void Network::sizePipeDimensions(const double &deltaPMax, const double &deltaTem
 	for (NetworkEdge &e: m_edges){
 		for (const NetworkPipe &pipe: pipeDB){
 			double massFlow = e.m_heatingDemand / deltaTemp / fluid.m_para[NetworkFluid::P_HeatCapacity].value;
-			if (pressureLossColebrook(e.m_length, massFlow, fluid, pipe, temp) < deltaPMax){
+			if (pressureLossColebrook(e.length(), massFlow, fluid, pipe, temp) < deltaPMax){
 				e.m_diameterOutside = pipe.m_diameterOutside;
 				e.m_diameterInside = pipe.m_diameterInside();
 				break;
@@ -431,13 +426,21 @@ void Network::setOrigin(const IBKMK::Vector3D &origin)
 }
 
 
-double Network::totalLength() const
-{
+double Network::totalLength() const{
 	double length = 0;
 	for(const NetworkEdge &e: m_edges){
-		length += e.m_length;
+		length += e.length();
 	}
 	return length;
+}
+
+double Network::numberOfBuildings() const{
+	double count = 0;
+	for (const NetworkNode &n: m_nodes){
+		if (n.m_type == NetworkNode::NT_Building)
+			++count;
+	}
+	return count;
 }
 
 
@@ -447,7 +450,7 @@ void Network::writeNetworkCSV(const IBK::Path &file) const{
 	for (const NetworkEdge &e: m_edges){
 		f.precision(10);
 		f << std::fixed << e.m_node1->m_position.m_x << "\t" << e.m_node1->m_position.m_y << "\t"
-		  << e.m_node2->m_position.m_x << "\t" << e.m_node2->m_position.m_y << "\t" << e.m_length << std::endl;
+		  << e.m_node2->m_position.m_x << "\t" << e.m_node2->m_position.m_y << "\t" << e.length() << std::endl;
 	}
 	f.close();
 }
@@ -460,7 +463,7 @@ void Network::writePathCSV(const IBK::Path &file, const NetworkNode & node, cons
 	f << std::fixed << node.m_position.m_x << "\t" << node.m_position.m_y << std::endl;
 	for (const NetworkEdge *e: path){
 		f << std::fixed << e->m_node1->m_position.m_x << "\t" << e->m_node1->m_position.m_y << "\t"
-		  << e->m_node2->m_position.m_x << "\t" << e->m_node2->m_position.m_y << "\t" << e->m_length << std::endl;
+		  << e->m_node2->m_position.m_x << "\t" << e->m_node2->m_position.m_y << "\t" << e->length() << std::endl;
 	}
 	f.close();
 }

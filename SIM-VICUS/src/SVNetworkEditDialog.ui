@@ -140,9 +140,9 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButtonCalculateLength">
+        <widget class="QPushButton" name="pushButtonReduceDeadEnds">
          <property name="text">
-          <string>calculate length</string>
+          <string>reduce dead ends</string>
          </property>
         </widget>
        </item>

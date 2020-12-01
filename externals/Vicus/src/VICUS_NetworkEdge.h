@@ -27,9 +27,9 @@ public:
 	NetworkEdge(const unsigned nodeId1, const unsigned nodeId2, const double &length, const double &diameter, const bool supply):
 		m_nodeId1(nodeId1),
 		m_nodeId2(nodeId2),
-		m_length(length),
 		m_diameterInside(diameter),
-		m_supply(supply)
+		m_supply(supply),
+		m_length(length)
 	{}
 
 	void collectConnectedNodes(std::set<const NetworkNode*> & connectedNodes,
@@ -40,20 +40,27 @@ public:
 		return (m_nodeId1 == e2.m_nodeId1) && (m_nodeId2 == e2.m_nodeId2);
 	}
 
+	bool operator!=(const NetworkEdge &e2){
+		return (m_nodeId1 != e2.m_nodeId1) || (m_nodeId2 == e2.m_nodeId2);
+	}
+
 	/*! returns opposite node of the given one */
 	NetworkNode * neighbourNode(const NetworkNode *node) const;
+
+	double length() const;
+	void setLengthFromCoordinates();
+
+	unsigned int nodeId1() const;
+	void setNodeId1(unsigned int nodeId1);
+
+	unsigned int nodeId2() const;
+	void setNodeId2(unsigned int nodeId2);
 
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	unsigned int m_nodeId1 = 0;						// XML:A:required
-	unsigned int m_nodeId2 = 0;						// XML:A:required
-
 	NetworkNode		*	m_node1 = nullptr;
 	NetworkNode		*	m_node2 = nullptr;
-
-	/*! Effective length [m], might be different than geometric length between nodes. */
-	double			m_length = 0;					// XML:E
 
 	/*! Inner Diameter in [m] */
 	double			m_diameterInside;				// XML:E
@@ -66,6 +73,16 @@ public:
 
 	/*! heating demand of all connected buildings */
 	double			m_heatingDemand = 0;
+
+private:
+
+	/*! Effective length [m], might be different than geometric length between nodes. */
+	double			m_length = 0;					// XML:E
+
+	unsigned int m_nodeId1 = 0;						// XML:A:required
+	unsigned int m_nodeId2 = 0;						// XML:A:required
+
+
 };
 
 

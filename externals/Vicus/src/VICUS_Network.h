@@ -78,10 +78,7 @@ public:
 
 	/*! stores a copy of the current network without "dead end" nodes (and their connecting edges)
 	 * "dead end" nodes have only one connecting edge and are not buildings nor sources  */
-	void networkWithoutDeadEnds(Network & cleanNetwork, const unsigned maxSteps);
-
-	/*! calculate the lengths of all edges in the network */
-	void calculateLengths();
+	void networkWithoutDeadEnds(Network & cleanNetwork, const unsigned maxSteps=50);
 
 	/*! calculate pipe dimensions using a maximum pressure loss per length and fixed temperature difference
 	 * the mass flow rate of each pipe will be calculated based on the heatDemand of connected consumer loads (e.g. buildings)
@@ -130,6 +127,8 @@ public:
 		m_edges.clear();
 		m_nodes.clear();
 	}
+
+	double numberOfBuildings() const;
 
 
 	// *** PUBLIC MEMBER VARIABLES ***

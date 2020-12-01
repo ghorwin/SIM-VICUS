@@ -40,13 +40,13 @@ void SVNetworkEditDialog::edit()
 
 }
 
-void SVNetworkEditDialog::updateStatus() const
-{
+void SVNetworkEditDialog::updateStatus() const{
 	m_ui->labelEdgeCount->setText(QString("%1").arg(m_network.m_edges.size()));
 	m_ui->labelNodeCount->setText(QString("%1").arg(m_network.m_nodes.size()));
 	m_ui->labelNetworkConnected->setText(QString("%1").arg(m_network.checkConnectedGraph()));
 	m_ui->labelTotalLength->setText(QString("%1").arg(m_network.totalLength()));
 	m_ui->pushButtonConnectBuildings->setEnabled(m_network.nextUnconnectedBuilding()>=0);
+	m_ui->pushButtonReduceDeadEnds->setEnabled(m_network.checkConnectedGraph() && m_network.numberOfBuildings() > 0);
 }
 
 void SVNetworkEditDialog::setNetwork()
@@ -81,20 +81,32 @@ void SVNetworkEditDialog::on_pushButtonConnectBuildings_clicked()
 	undo->push(); // modifies project and updates views
 }
 
-void SVNetworkEditDialog::on_pushButtonCalculateLength_clicked()
+
+void SVNetworkEditDialog::on_pushButtonReduceRedundants_clicked()
 {
-	m_network.calculateLengths();
+	VICUS::Network tmp;
+	tmp.m_id = m_network.m_id;
+	tmp.m_fluidID = m_network.m_fluidID;
+	tmp.m_name = m_network.m_name;
+	tmp.m_origin = m_network.m_origin;
+	m_network.networkWithReducedEdges(tmp);
+	m_network = tmp;
+	m_network.updateNodeEdgeConnectionPointers();
 	updateStatus();
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Added network"), m_network);
 	undo->push(); // modifies project and updates views
 }
 
-void SVNetworkEditDialog::on_pushButtonReduceRedundants_clicked()
+void SVNetworkEditDialog::on_pushButtonReduceDeadEnds_clicked()
 {
-	VICUS::Network tmp = m_network;
-	tmp.clear();
-	m_network.networkWithReducedEdges(tmp);
+	VICUS::Network tmp;
+	tmp.m_id = m_network.m_id;
+	tmp.m_fluidID = m_network.m_fluidID;
+	tmp.m_name = m_network.m_name;
+	tmp.m_origin = m_network.m_origin;
+	m_network.networkWithoutDeadEnds(tmp);
 	m_network = tmp;
+	m_network.updateNodeEdgeConnectionPointers();
 	updateStatus();
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Added network"), m_network);
 	undo->push(); // modifies project and updates views

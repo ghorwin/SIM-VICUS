@@ -19,12 +19,12 @@ void NetworkNode::collectConnectedEdges(std::set<const NetworkNode *> & connecte
 
 
 void NetworkNode::updateIsDeadEnd(){
-	unsigned c = 0;
+	unsigned numDeadEndNodes = 0;
 	for (NetworkEdge *e: m_edges){
 		if (!e->neighbourNode(this)->m_isDeadEnd)
-			++c;
+			++numDeadEndNodes;
 	}
-	m_isDeadEnd = c < 2 && m_type != NT_Building && m_type != NT_Source;
+	m_isDeadEnd = numDeadEndNodes < 2 && m_type != NT_Building && m_type != NT_Source;
 }
 
 
@@ -40,7 +40,7 @@ NetworkEdge * NetworkNode::neighborEdge(const NetworkEdge *e) const
 
 const NetworkNode * NetworkNode::findNextNonRedundantNode(std::set<unsigned> & redundantNodes, double & distance, const NetworkEdge *edgeToVisit) const
 {
-	distance += edgeToVisit->m_length;
+	distance += edgeToVisit->length();
 	NetworkNode * nextNode = edgeToVisit->neighbourNode(this);
 	if (!nextNode->isRedundant())
 		return nextNode;
@@ -59,7 +59,7 @@ void NetworkNode::findRedundantNodes(std::set<unsigned> & redundantNodes, std::s
 		// remember visited edges and dont visit them again
 		if (visitedEdges.find(e) == visitedEdges.end()){
 			visitedEdges.insert(e);
-			if (e->m_nodeId1 == this->m_id)
+			if (e->nodeId1() == this->m_id)
 				e->m_node2->findRedundantNodes(redundantNodes, visitedEdges);
 			else
 				e->m_node1->findRedundantNodes(redundantNodes, visitedEdges);
@@ -100,7 +100,7 @@ void NetworkNode::updateNeighbourDistances() {
 	// If it is shorter than current one: set it as its current distance
 	for (NetworkEdge *e :m_edges){
 		NetworkNode * neighbour = e->neighbourNode(this);
-		double alternativeDistance = m_distanceToStart + e->m_length;
+		double alternativeDistance = m_distanceToStart + e->length();
 		if (alternativeDistance < neighbour->m_distanceToStart){
 			neighbour->m_distanceToStart = alternativeDistance;
 			neighbour->m_predecessor = this;
