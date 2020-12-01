@@ -33,9 +33,11 @@ unsigned int NetworkEdge::nodeId1() const
 	return m_nodeId1;
 }
 
-void NetworkEdge::setNodeId1(unsigned int nodeId1)
+
+void NetworkEdge::setNodeId1(unsigned int nodeId1, NetworkNode *node1)
 {
 	m_nodeId1 = nodeId1;
+	m_node1 = node1;  // set pointer, so that setLengthFromCoordinates works
 	setLengthFromCoordinates();
 }
 

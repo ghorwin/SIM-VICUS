@@ -43,11 +43,11 @@ unsigned Network::addNode(const NetworkNode &node, const bool considerCoordinate
 
 void Network::addEdge(const unsigned nodeId1, const unsigned nodeId2, const bool supply) {
 	IBK_ASSERT(nodeId1<m_nodes.size() && nodeId2<m_nodes.size());
-	m_edges.push_back(NetworkEdge(nodeId1, nodeId2, supply));
+	NetworkEdge e(nodeId1, nodeId2, 0, 0, supply);
+	e.setLengthFromCoordinates();
+	m_edges.push_back(e);
 	// TODO : does this needs to be done very time a node is added? or manually, when we are done?
 	updateNodeEdgeConnectionPointers();
-	m_edges.back().setLengthFromCoordinates();
-
 }
 
 
@@ -56,7 +56,6 @@ void Network::addEdge(const NetworkEdge &edge) {
 	m_edges.push_back(edge);
 	// TODO : does this needs to be done very time a node is added? or manually, when we are done?
 	updateNodeEdgeConnectionPointers();
-	m_edges.back().setLengthFromCoordinates();
 }
 
 
@@ -188,8 +187,8 @@ bool Network::findAndAddIntersection() {
 				unsigned nInter = addNode(IBKMK::Vector3D(ps), NetworkNode::NT_Mixer);
 				addEdge(nInter, m_edges[i1].nodeId1(), true);
 				addEdge(nInter, m_edges[i2].nodeId1(), true);
-				m_edges[i1].setNodeId1(nInter);
-				m_edges[i2].setNodeId1(nInter);
+				m_edges[i1].setNodeId1(nInter, &m_nodes[nInter]);
+				m_edges[i2].setNodeId1(nInter, &m_nodes[nInter]);
 				updateNodeEdgeConnectionPointers();
 				return true;
 			}
@@ -227,7 +226,7 @@ void Network::connectBuildings(const bool extendSupplyPipes) {
 		if (lMin.containsPoint(pBranch)){
 			idBranch = addNode(IBKMK::Vector3D(pBranch), NetworkNode::NT_Mixer);
 			addEdge(m_edges[idEdgeMin].nodeId1(), idBranch, true);
-			m_edges[idEdgeMin].setNodeId1(idBranch);
+			m_edges[idEdgeMin].setNodeId1(idBranch, &m_nodes[idBranch]);
 			updateNodeEdgeConnectionPointers();
 		}
 		// branch node is outside edge
@@ -238,7 +237,8 @@ void Network::connectBuildings(const bool extendSupplyPipes) {
 			// if pipe should be extended, change coordinates of branch node
 			if (extendSupplyPipes){
 				m_nodes[idBranch].m_position = pBranch;
-				updateNodeEdgeConnectionPointers();
+				for (NetworkEdge *e: m_nodes[idBranch].m_edges)
+					e->setLengthFromCoordinates();
 			}
 		}
 		// connect building to branch node

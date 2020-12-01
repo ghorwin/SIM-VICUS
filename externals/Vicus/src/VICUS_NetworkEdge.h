@@ -18,11 +18,7 @@ public:
 
 	VICUS_READWRITE
 
-	NetworkEdge() {}
-	NetworkEdge(const unsigned nodeId1, const unsigned nodeId2, const bool supply):
-		m_nodeId1(nodeId1),
-		m_nodeId2(nodeId2),
-		m_supply(supply)
+	NetworkEdge()
 	{}
 	NetworkEdge(const unsigned nodeId1, const unsigned nodeId2, const double &length, const double &diameter, const bool supply):
 		m_nodeId1(nodeId1),
@@ -48,12 +44,17 @@ public:
 	NetworkNode * neighbourNode(const NetworkNode *node) const;
 
 	double length() const;
+
 	void setLengthFromCoordinates();
 
 	unsigned int nodeId1() const;
-	void setNodeId1(unsigned int nodeId1);
+
+	// sets nodeId and pointer to the node and calculates the new length of this edge
+	void setNodeId1(unsigned int nodeId1, NetworkNode *node1);
 
 	unsigned int nodeId2() const;
+
+	// sets nodeId and pointer to the node and calculates the new length of this edge
 	void setNodeId2(unsigned int nodeId2);
 
 
