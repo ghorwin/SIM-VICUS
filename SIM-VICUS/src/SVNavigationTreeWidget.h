@@ -30,6 +30,11 @@ private:
 	/*! Recursively collapses all children. */
 	void collapseTreeWidgetItem(QTreeWidgetItem * parent);
 
+	/*! Relates unique object ID to tree widget item.
+		This map is updated whenever the tree widget is modified in onModified().
+	*/
+	std::map<unsigned int, QTreeWidgetItem*>	m_treeItemMap;
+
 	/*! Ui pointer. */
 	Ui::SVNavigationTreeWidget			*m_ui;
 

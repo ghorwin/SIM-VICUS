@@ -48,9 +48,43 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 			const SVUndoTreeNodeState::ModifiedNodes * info = dynamic_cast<SVUndoTreeNodeState::ModifiedNodes *>(data);
 			Q_ASSERT(info != nullptr);
 
-			// info.nodeIDs contains the nodes whose data has changed
-			// we now process our hierarchy of objects and adjust
-
+			// process all modified nodes
+			for (unsigned int id : info->nodeIDs) {
+				Q_ASSERT(m_treeItemMap.find(id) != m_treeItemMap.end());
+				// find the object in question
+				const VICUS::Object * obj = nullptr;
+				for (const VICUS::Building & b : project().m_buildings) {
+					obj = b.findChild(id);
+					if (obj != nullptr)
+						break;
+				}
+				Q_ASSERT(obj != nullptr);
+				bool visible = true;
+				bool selected = true;
+				const VICUS::Building* b;
+				const VICUS::BuildingLevel* bl;
+				const VICUS::Room * r;
+				const VICUS::Surface * s;
+				if ((b = dynamic_cast<const VICUS::Building*>(obj)) != nullptr) {
+					visible = b->m_visible;
+					selected = b->m_selected;
+				}
+				if ((bl = dynamic_cast<const VICUS::BuildingLevel*>(obj)) != nullptr) {
+					visible = bl->m_visible;
+					selected = bl->m_selected;
+				}
+				if ((r = dynamic_cast<const VICUS::Room*>(obj)) != nullptr) {
+					visible = r->m_visible;
+					selected = r->m_selected;
+				}
+				if ((s = dynamic_cast<const VICUS::Surface*>(obj)) != nullptr) {
+					visible = s->m_visible;
+					selected = s->m_selected;
+				}
+				m_treeItemMap[id]->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, visible);
+				m_treeItemMap[id]->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, selected);
+			}
+			m_ui->treeWidget->update();
 			return; // nothing else to do here
 		}
 
@@ -62,10 +96,12 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 	m_ui->treeWidget->clear();
 	// populate tree widget
 
+	m_treeItemMap.clear();
+
 	// insert root node
 	QTreeWidgetItem * root = new QTreeWidgetItem(QStringList() << "Site", QTreeWidgetItem::Type);
-	root->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, true);
-	root->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, true);
+//	root->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, true);
+//	root->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, true);
 	m_ui->treeWidget->addTopLevelItem(root);
 
 	// get project data
@@ -74,31 +110,34 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 	// add all childs
 	for (const VICUS::Building & b : prj.m_buildings) {
 		QTreeWidgetItem * building = new QTreeWidgetItem(QStringList() << tr("Building: %1").arg(b.m_displayName), QTreeWidgetItem::Type);
+		m_treeItemMap[b.uniqueID()] = building;
 		building->setData(0, SVNavigationTreeItemDelegate::NodeID, b.uniqueID());
-		building->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, true);
-		building->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, true);
-		building->setData(0, Qt::UserRole, b.m_id);
+		building->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, b.m_visible);
+		building->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, b.m_selected);
 		root->addChild(building);
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			QTreeWidgetItem * buildingLevel = new QTreeWidgetItem(QStringList() << bl.m_displayName, QTreeWidgetItem::Type);
+			m_treeItemMap[bl.uniqueID()] = buildingLevel;
 			buildingLevel->setData(0, SVNavigationTreeItemDelegate::NodeID, bl.uniqueID());
-			buildingLevel->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, true);
-			buildingLevel->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, false);
+			buildingLevel->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, bl.m_visible);
+			buildingLevel->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, bl.m_selected);
 			building->addChild(buildingLevel);
 			for (const VICUS::Room & r : bl.m_rooms) {
 				QTreeWidgetItem * rooms = new QTreeWidgetItem(QStringList() << r.m_displayName, QTreeWidgetItem::Type);
+				m_treeItemMap[r.uniqueID()] = rooms;
 				rooms->setData(0, SVNavigationTreeItemDelegate::NodeID, r.uniqueID());
-				rooms->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, true);
-				rooms->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, false);
+				rooms->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, r.m_visible);
+				rooms->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, r.m_selected);
 				if (rooms->text(0).isEmpty())
 					rooms->setText(0, tr("unnamed"));
 				buildingLevel->addChild(rooms);
 				for (const VICUS::Surface & s : r.m_surfaces) {
 					QTreeWidgetItem * surface = new QTreeWidgetItem(QStringList() << s.m_displayName, QTreeWidgetItem::Type);
+					m_treeItemMap[s.uniqueID()] = surface;
 					rooms->addChild(surface);
 					surface->setData(0, SVNavigationTreeItemDelegate::NodeID, s.uniqueID());
-					surface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, true);
-					surface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, false);
+					surface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, s.m_visible);
+					surface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, s.m_selected);
 				}
 			}
 		}

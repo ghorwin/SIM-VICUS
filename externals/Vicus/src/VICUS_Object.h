@@ -19,6 +19,7 @@ namespace VICUS {
 class Object {
 public:
 	Object() : m_uniqueID(++LAST_ID) {}
+	virtual ~Object();
 
 	Object	*m_parent = nullptr;
 

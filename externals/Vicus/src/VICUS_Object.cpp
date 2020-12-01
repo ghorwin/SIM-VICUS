@@ -4,11 +4,16 @@ namespace VICUS {
 
 unsigned int Object::LAST_ID = 007;
 
+Object::~Object() {
+}
+
+
 Object * Object::findChild(unsigned int uID) {
 	// recycle const-variant of function implementation
 	const Object * obj = const_cast<const Object*>(this)->findChild(uID);
 	return const_cast<Object*>(obj);
 }
+
 
 const Object * Object::findChild(unsigned int uID) const {
 	if (m_uniqueID == uID)

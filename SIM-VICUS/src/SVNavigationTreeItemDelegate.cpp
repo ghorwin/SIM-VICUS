@@ -18,7 +18,13 @@ SVNavigationTreeItemDelegate::SVNavigationTreeItemDelegate(QWidget * parent) :
 
 
 void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const {
-	const QStyleOptionViewItem * opt = &option;
+	// get rectangle of area to paint into
+	QRect targetRect(option.rect);
+
+	if (index.parent() == QModelIndex()) {
+		painter->drawText(targetRect, Qt::AlignLeft | Qt::AlignVCenter, index.data(Qt::DisplayRole).toString());
+		return;
+	}
 
 	// TODO : find out if the element we are painting is visible or not
 	bool visible = index.data(VisibleFlag).toBool();
@@ -29,8 +35,6 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 	else
 		bulbImg = &m_lightBulbOff;
 
-	// get rectangle of area to paint into
-	QRect targetRect(option.rect);
 	QRect iconRect(targetRect.x(), targetRect.y(), 16, 16);
 	painter->drawImage(iconRect, *bulbImg, QRect(0,0,16,16));
 
@@ -50,6 +54,10 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 
 
 bool SVNavigationTreeItemDelegate::editorEvent(QEvent * event, QAbstractItemModel * model, const QStyleOptionViewItem & option, const QModelIndex & index) {
+	// top-level index does not have any attributes
+	if (index.parent() == QModelIndex()) {
+		return QItemDelegate::editorEvent(event, model, option, index);
+	}
 	if (event->type() == QEvent::MouseButtonRelease) {
 		QMouseEvent * mouseEvent = dynamic_cast<QMouseEvent*>(event);
 		if (mouseEvent != nullptr && (mouseEvent->button() & Qt::LeftButton)) {
@@ -68,7 +76,7 @@ bool SVNavigationTreeItemDelegate::editorEvent(QEvent * event, QAbstractItemMode
 																	   !visible);
 				action->push();
 			}
-			iconRect.setX(iconRect.x()+18);
+			iconRect = QRect(targetRect.x() + 18, targetRect.y(), 16, 16);
 			if (iconRect.contains(mouseEvent->x(), mouseEvent->y())) {
 				// turn visibility of item on/off
 				bool selected = index.data(SelectedFlag).toBool();
