@@ -204,9 +204,6 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 	newLocalMousePos = localMousePos;
 
-	/*! Mark the pick-object location as outdated. */
-	m_pickObjectIsOutdated = true;
-
 	// we implement the following controls
 
 	// keyboard: translation and rotation works always
@@ -259,10 +256,11 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		if (!m_orbitControllerActive) {
 			// we enter orbital controller mode
 
-			// pick the rotation object
-			pick(localMousePos);
+			// configure the pick object and pick a point on the XY plane
+			PickObject o(localMousePos, PickObject::P_XY_Plane);
+			pick(o);
 			// and store pick point
-			m_orbitControllerOrigin = m_pickPoint;
+			m_orbitControllerOrigin = VICUS::IBKVector2QVector(o.m_pickPoint);
 //			qDebug() << "Entering orbit controller mode, rotation around" << m_orbitControllerOrigin;
 			m_orbitControllerObject.m_transform.setTranslation(m_orbitControllerOrigin);
 
@@ -348,7 +346,7 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		if (m_mouseMoveDistance < 10) {
 			// TODO : click code
 			qDebug() << "Mouse (selection) click received" << m_mouseMoveDistance;
-			handleLeftMouseClick();
+			handleLeftMouseClick(keyboardHandler, localMousePos);
 		}
 		else {
 			qDebug() << "Leaving orbit controller mode" << m_mouseMoveDistance;
@@ -382,12 +380,12 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 	// if coordinate system is active, perform picking operation and snap coordinate system to grid
 	if (m_coordinateSystemActive) {
-		m_pickObjectIsOutdated = true;
 		// \todo adjust pick algorithm to only check for certain selections
-		pick(localMousePos);
+		PickObject o(localMousePos, PickObject::P_XY_Plane);
+		pick(o);
 		// now determine which grid line is closest
 		QVector3D closestPoint;
-		if (m_gridObject.closestSnapPoint(m_pickPoint, closestPoint)) {
+		if (m_gridObject.closestSnapPoint(VICUS::IBKVector2QVector(o.m_pickPoint), closestPoint)) {
 			// this is in world coordinates, use this as transformation vector for the
 			// coordinate system
 			m_coordinateSystemObject.m_transform.setTranslation(closestPoint);
@@ -617,14 +615,11 @@ void Vic3DScene::generateNetworkGeometry() {
 }
 
 
-void Vic3DScene::pick(const QPoint & localMousePos) {
-	// only update if not already up-to-date
-	if (!m_pickObjectIsOutdated)
-		return;
+void Vic3DScene::pick(PickObject & pickObject) {
 
 	// local mouse coordinates
-	int my = localMousePos.y();
-	int mx = localMousePos.x();
+	int my = pickObject.m_localMousePos.y();
+	int mx = pickObject.m_localMousePos.x();
 
 	// viewport dimensions
 	qreal halfVpw = m_viewPort.width()/2;
@@ -659,13 +654,11 @@ void Vic3DScene::pick(const QPoint & localMousePos) {
 	farResult /= farResult.w();
 
 	// now do the actual picking
-	selectNearestObject(nearResult.toVector3D(), farResult.toVector3D());
-
-	m_pickObjectIsOutdated = false;
+	selectNearestObject(nearResult.toVector3D(), farResult.toVector3D(), pickObject);
 }
 
 
-void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3D & farPoint) {
+void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3D & farPoint, PickObject & pickObject) {
 //	QElapsedTimer pickTimer;
 //	pickTimer.start();
 
@@ -674,29 +667,41 @@ void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3
 	IBKMK::Vector3D d2 = VICUS::QVector2IBKVector(d);
 	IBKMK::Vector3D nearPoint2 = VICUS::QVector2IBKVector(nearPoint);
 
-	switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
-		// in "place vertex" mode, we pick according to the currently set picking rules
-		case SVViewState::OM_PlaceVertex : {
-			// get intersection with xy plane
-			VICUS::PlaneGeometry xyPlane(VICUS::PlaneGeometry::T_Rectangle, IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(1,0,0), IBKMK::Vector3D(0,1,0));
-			IBKMK::Vector3D intersectionPoint;
-			double t;
-			if (xyPlane.intersectsLine(nearPoint2, d2, intersectionPoint, t, true, true)) {
-				// got an intersection point, store it
-				m_pickPoint = VICUS::IBKVector2QVector(intersectionPoint);
-			}
-			return;
+	// execute pick operation based on selection in pick object
+	if (pickObject.m_pickMask & PickObject::P_XY_Plane) {
+		// get intersection with xy plane
+		VICUS::PlaneGeometry xyPlane(VICUS::PlaneGeometry::T_Rectangle, IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(1,0,0), IBKMK::Vector3D(0,1,0));
+		IBKMK::Vector3D intersectionPoint;
+		double t;
+		if (xyPlane.intersectsLine(nearPoint2, d2, intersectionPoint, t, true, true)) {
+			// got an intersection point, store it
+			pickObject.m_dist = t;
+			pickObject.m_pickPoint = intersectionPoint;
 		}
-
-		default:;
 	}
 
-	// create pick object, distance is a value between 0 and 1, so initialize with 2 (very far back) to be on the safe side.
-	PickObject p(2.f, std::numeric_limits<unsigned int>::max());
-
-	// now process all surfaces and update p to hold the closest hit
-
-
+	// pick on surfaces?
+	if (pickObject.m_pickMask & PickObject::P_Surface) {
+		// now process all surfaces and update p to hold the closest hit
+		const VICUS::Project & prj = project();
+		for (const VICUS::Building & b : prj.m_buildings) {
+			for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+				for (const VICUS::Room & r : bl.m_rooms) {
+					for (const VICUS::Surface & s : r.m_surfaces) {
+						IBKMK::Vector3D intersectionPoint;
+						double dist;
+						if (s.m_geometry.intersectsLine(nearPoint2, d2, intersectionPoint, dist)) {
+							if (dist < pickObject.m_dist) {
+								pickObject.m_dist = dist;
+								pickObject.m_pickPoint = intersectionPoint;
+								pickObject.m_uniqueObjectID = s.uniqueID();
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 
@@ -721,7 +726,7 @@ void Vic3DScene::adjustCurserDuringMouseDrag(const QPoint & mouseDelta, const QP
 }
 
 
-void Vic3DScene::handleLeftMouseClick() {
+void Vic3DScene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandler, const QPoint & localMousePos) {
 	// if we are in passive mode, we handle the click as "selection"
 
 	// if we are in "draw" mode, we either continue drawing points (i.e. add a point), or
@@ -739,7 +744,32 @@ void Vic3DScene::handleLeftMouseClick() {
 	}
 
 	// this will be a selection click - execute pick() operation
-	m_pickObjectIsOutdated = true;
+	PickObject o(localMousePos, PickObject::P_Surface);
+	pick(o);
+	if (o.m_uniqueObjectID != 0) {
+		// find the selected object
+		const VICUS::Object * obj = nullptr;
+		for (const VICUS::Building & b : project().m_buildings) {
+			obj = b.findChild(o.m_uniqueObjectID);
+			if (obj != nullptr)
+				break;
+		}
+		Q_ASSERT(obj != nullptr);
+		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface*>(obj);
+		// for now, it must be a surface, since only surfaces are drawn
+		Q_ASSERT(s != nullptr);
+
+		// create undo-action that toggles the selection
+		bool selected = s->m_selected;
+		bool withoutChildren = keyboardHandler.keyDown(Qt::Key_Shift);
+		// compose an undo action that selects/de-selects objects
+		SVUndoTreeNodeState * action = SVUndoTreeNodeState::createUndoAction(tr("Selection changed"),
+															   SVUndoTreeNodeState::SelectedState,
+															   o.m_uniqueObjectID,
+															   !withoutChildren,
+															   !selected);
+		action->push();
+	}
 
 }
 

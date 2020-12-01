@@ -5,6 +5,7 @@
 
 #include <QRect>
 #include <QVector3D>
+#include <QCoreApplication>
 
 #include "Vic3DCamera.h"
 #include "Vic3DGridObject.h"
@@ -12,6 +13,7 @@
 #include "Vic3DOrbitControllerObject.h"
 #include "Vic3DCoordinateSystemObject.h"
 #include "Vic3DNewPolygonObject.h"
+#include "Vic3DPickObject.h"
 
 class ModificationInfo;
 
@@ -29,6 +31,7 @@ class SceneView;
 	scene is rendered in.
 */
 class Vic3DScene {
+	Q_DECLARE_TR_FUNCTIONS(Vic3DScene)
 public:
 
 	void create(SceneView * parent, std::vector<ShaderProgram> & shaderPrograms);
@@ -63,13 +66,15 @@ private:
 	void generateNetworkGeometry();
 
 	/*! Mouse pick handler: collects all surfaces along the pick line and stores first intersection point's
-		coordinates in m_pickPoint. */
-	void pick(const QPoint & localMousePos);
+		coordinates in m_pickPoint.
+	*/
+	void pick(PickObject & pickObject);
 
 	/*! Determine which objects/planes are selected and color them accordingly.
 		nearPoint and farPoint define the current ray and are given in model coordinates.
+		If an object is picked, selectedNodeID indicates the objects unique ID.
 	*/
-	void selectNearestObject(const QVector3D & nearPoint, const QVector3D & farPoint);
+	void selectNearestObject(const QVector3D & nearPoint, const QVector3D & farPoint, PickObject & pickObject);
 
 	/*! Determines a new local mouse position (local to this viewport) such that a mouse passing over a border
 		while dragging/rotating the view is avoided through placement of the mouse to the other side of the window.
@@ -77,7 +82,7 @@ private:
 	void adjustCurserDuringMouseDrag(const QPoint & mouseDelta, const QPoint & localMousePos, QPoint & newLocalMousePos);
 
 	/*! Due something with the mouse click, depending on current operation mode. */
-	void handleLeftMouseClick();
+	void handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandler, const QPoint & localMousePos);
 
 	/*! Cached pointer to parent widget - needed so that we can tell a QObject-based class to send
 		out signals.
@@ -142,13 +147,6 @@ private:
 
 	/*! If true, the coordinate system is active and snaps to selected objects. */
 	bool					m_coordinateSystemActive = false;
-
-	/*! Indicates whether pick object detection is outdated and should be updated (this flag prevents needless pick
-		calculations).
-	*/
-	bool					m_pickObjectIsOutdated = true;
-	/*! Coordinates of last picked point (already including potential snapping). */
-	QVector3D				m_pickPoint;
 };
 
 } // namespace Vic3D
