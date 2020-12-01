@@ -27,6 +27,9 @@
 
 SVProjectHandler * SVProjectHandler::m_self = nullptr;
 
+ModificationInfo::~ModificationInfo() {
+}
+
 SVProjectHandler & SVProjectHandler::instance() {
 	Q_ASSERT_X(m_self != nullptr, "[SVProjectHandler::instance]",
 		"You must not access SVProjectHandler::instance() when the is no SVProjectHandler "
@@ -549,5 +552,6 @@ void SVProjectHandler::updateSurfaceColors()
 	}
 
 }
+
 
 

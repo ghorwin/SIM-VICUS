@@ -8,6 +8,7 @@
 #include "SVProjectHandler.h"
 #include "SVStyle.h"
 #include "SVNavigationTreeItemDelegate.h"
+#include "SVUndoTreeNodeState.h"
 
 SVNavigationTreeWidget::SVNavigationTreeWidget(QWidget *parent) :
 	QWidget(parent),
@@ -38,6 +39,20 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		case SVProjectHandler::AllModified :
 		case SVProjectHandler::NetworkModified :
 			break;
+
+		case SVProjectHandler::NodeStateModified : {
+			// we only change data properties of existing nodes and emit itemChanged() signals, so
+			// that the view updates its content
+
+			// first decode the modification info object
+			const SVUndoTreeNodeState::ModifiedNodes * info = dynamic_cast<SVUndoTreeNodeState::ModifiedNodes *>(data);
+			Q_ASSERT(info != nullptr);
+
+			// info.nodeIDs contains the nodes whose data has changed
+			// we now process our hierarchy of objects and adjust
+
+			return; // nothing else to do here
+		}
 
 		default:
 			return; // do nothing by default

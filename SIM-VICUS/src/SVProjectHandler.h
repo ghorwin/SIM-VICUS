@@ -15,6 +15,8 @@ namespace VICUS {
 
 /*! Abstract base class for all modification data containers. */
 class ModificationInfo {
+public:
+	virtual ~ModificationInfo();
 };
 
 /*! Utility class that manages common project-related functions, in particular
