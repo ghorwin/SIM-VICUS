@@ -56,14 +56,14 @@ Diese Bauteile müssen im Vorfeld erstellt werden (meist projektspezifisch) oder
 
 === Zone Templates
 
-In allen Räumen müssen für die thermische Simulation gewisse Randbedingungen gesetzt werden. Diese beschreiben das Verhalten von Lasten und die Einstellungen von Sollwerte. Darunter Zählen folgende Modellgruppen:
+In allen Räumen müssen für die thermische Simulation gewisse Randbedingungen gesetzt werden. Diese beschreiben das Verhalten von Lasten und die Einstellungen von Sollwerten. Darunter zählen folgende Modellgruppen:
 
 * Interne Lasten
 ** Person
 ** Licht
 ** Elektrische Geräte
 ** Sonstige Einträge
-* Steuerung (von Sollwerte der Anlagentechnik)
+* Steuerung (Sollwerte der Anlagentechnik)
 ** Thermostat (Heizsollwert und/oder Kühlsollwert)
 ** Mechanische Luftwechselraten
 ** Verschattungssteuerung
@@ -72,7 +72,7 @@ In allen Räumen müssen für die thermische Simulation gewisse Randbedingungen 
 ** Infiltration
 ** natürliche Lüftung (Fensterlüftung)
 
-Meist sind in den Modellen und Sollwerte zeitliche Verläufe von Variablen enthalten. Dazu wird in aller Regel ein große Datenbank von Zeitplänen benötigt. Falls diese nicht vorhanden ist, muss diese aufgebaut werden.
+Meist sind in den Modellen und Sollwerten zeitliche Verläufe von Variablen enthalten. Dazu wird in aller Regel ein große Datenbank von Zeitplänen benötigt. Falls diese nicht vorhanden ist, muss diese aufgebaut werden.
 Nutzerfreundliche Datenbanken halten die aktuellen Normwerte (z.B. DIN V 18599-10) in fertigen Templates vor. In der deutschen Norm müssen diese Elemente dynamisiert werden, da keine zeitlichen Verläufe vorliegen. In der schweizerischen Norm "SIA" gibt es bereits integrierte Zeitverläufe.
 
 == Zuweisung von Parametern
