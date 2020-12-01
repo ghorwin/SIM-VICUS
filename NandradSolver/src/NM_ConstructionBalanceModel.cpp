@@ -213,7 +213,7 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 
 					r.m_id = model->id();
 					r.m_referenceType = NANDRAD::ModelInputReference::MRT_MODEL;
-					r.m_name.m_index = (int)m_id; // select result for us (our zone id)
+					r.m_name.m_index = (int)interfaceAZoneID(); // select result for us (our zone id)
 					r.m_required = true;
 					// equipment load
 					r.m_name.m_name = "RadiantEquipmentHeatLoad";
@@ -242,7 +242,7 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 					// fill references
 					r.m_id = model->id();
 					r.m_referenceType = NANDRAD::ModelInputReference::MRT_MODEL;
-					r.m_name.m_index = (int)m_id; // select result for us (our zone id)
+					r.m_name.m_index = (int)interfaceBZoneID(); // select result for us (our zone id)
 					r.m_required = true;
 					// equipment load
 					r.m_name.m_name = "RadiantEquipmentHeatLoad";
