@@ -345,7 +345,7 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 		/// \todo adjust the THRESHOLD based on DPI/Screenresolution or have it as user option
 		// check if the mouse was moved not very far -> we have a mouse click
-		if (m_mouseMoveDistance < 5) {
+		if (m_mouseMoveDistance < 10) {
 			// TODO : click code
 			qDebug() << "Mouse (selection) click received" << m_mouseMoveDistance;
 			handleLeftMouseClick();
@@ -658,7 +658,7 @@ void Vic3DScene::pick(const QPoint & localMousePos) {
 	nearResult /= nearResult.w();
 	farResult /= farResult.w();
 
-	// now do the actual picking - for now we implement a selection
+	// now do the actual picking
 	selectNearestObject(nearResult.toVector3D(), farResult.toVector3D());
 
 	m_pickObjectIsOutdated = false;
@@ -674,21 +674,29 @@ void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3
 	IBKMK::Vector3D d2 = VICUS::QVector2IBKVector(d);
 	IBKMK::Vector3D nearPoint2 = VICUS::QVector2IBKVector(nearPoint);
 
-	// get intersection with xy plane
-	VICUS::PlaneGeometry xyPlane(VICUS::PlaneGeometry::T_Rectangle, IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(1,0,0), IBKMK::Vector3D(0,1,0));
-	IBKMK::Vector3D intersectionPoint;
-	double t;
-	if (xyPlane.intersectsLine(nearPoint2, d2, intersectionPoint, t, true, true)) {
-		// got an intersection point, store it
-		m_pickPoint = VICUS::IBKVector2QVector(intersectionPoint);
+	switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
+		// in "place vertex" mode, we pick according to the currently set picking rules
+		case SVViewState::OM_PlaceVertex : {
+			// get intersection with xy plane
+			VICUS::PlaneGeometry xyPlane(VICUS::PlaneGeometry::T_Rectangle, IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(1,0,0), IBKMK::Vector3D(0,1,0));
+			IBKMK::Vector3D intersectionPoint;
+			double t;
+			if (xyPlane.intersectsLine(nearPoint2, d2, intersectionPoint, t, true, true)) {
+				// got an intersection point, store it
+				m_pickPoint = VICUS::IBKVector2QVector(intersectionPoint);
+			}
+			return;
+		}
+
+		default:;
 	}
 
 	// create pick object, distance is a value between 0 and 1, so initialize with 2 (very far back) to be on the safe side.
-//	PickObject p(2.f, std::numeric_limits<unsigned int>::max());
+	PickObject p(2.f, std::numeric_limits<unsigned int>::max());
 
-	// now process all objects and update p to hold the closest hit
+	// now process all surfaces and update p to hold the closest hit
 
-	// TODO : apply picking/selection filter, so that only specific objects can be clicked on
+
 }
 
 
@@ -729,6 +737,9 @@ void Vic3DScene::handleLeftMouseClick() {
 		} break;
 		default :;
 	}
+
+	// this will be a selection click - execute pick() operation
+	m_pickObjectIsOutdated = true;
 
 }
 

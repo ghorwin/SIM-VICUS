@@ -20,7 +20,6 @@ License    : BSD License,
 #include "Vic3DShaderProgram.h"
 #include "Vic3DKeyboardMouseHandler.h"
 #include "Vic3DGridObject.h"
-#include "Vic3DPickLineObject.h"
 #include "Vic3DCamera.h"
 #include "Vic3DScene.h"
 
