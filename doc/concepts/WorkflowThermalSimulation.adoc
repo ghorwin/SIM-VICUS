@@ -1,0 +1,108 @@
+= Workflow einer thermischen Gebäudesimulation
+
+== Eingangsdaten
+
+=== Klimadaten
+
+Die Klimadaten werden den Programm, meist über eine externe Datei, vorgegeben. Sichtung und Editieren der Klimadaten gehören ebenfalls zum Standardumfang eines Simulationsprogrammes.
+
+Das gebräuchlichste Format im Gebäudesimulationssektor ist das EPW-Format. Zusatzlich gibt es anderer Vertreter wie die DAT-Formate vom BBSR 2010 und 2017. 
+Weiterhin bietet der DWD eine Vielzahl von bereits gemessen Klimadaten an.
+
+=== Geometrie
+
+Für die Geometrie liegen entweder Pläne in gedruckter Form oder besser digitale Daten in 2D Plänen oder 3D Modellen vor.
+Typische Eingangsformate sind das DXF und DWG Format für 2D Strukturen. Zusätzlich unterstützen diese Formate 3D Elemente. Die meisten Eingabemasken laden zusätzlich IFC-Dateien in unterschiedlichen Versionen (2x3, 4+, 5+, ...) ein. Darin enthalten sind 2D und 3D Objektelemente.
+
+Übersicht der Formate:
+
+.Geometriedatenformate
+[width="100%",options="header"]
+|====================
+| Datenformat | Objekte | Programme die diese Formate unterstützen 
+| *IFC* | 2D + 3D | IDA ICE, TAS, Hottgenroth, BIM HVACTool 
+| DXF | 2D + (3D) | DesignBuilder, Hottgenroth, BIM HVACTool
+| OBJ (WAVEFRONT) | 2D | IDA ICE, BIM HVACTool
+| *DWG* | 2D + (3D) | IDA ICE, BIM HVACTool
+| SKP (Skechtup) | 2D + 3D | IDA ICE, BIM HVACTool
+| 3DS (3D Studio Max) | 2D + 3D | IDA ICE, BIM HVACTool
+| IDF (EnergyPlus) | 2D + 3D | TAS, BIM HVACTool
+| CityGML | 2D + 3D | BIM HVACTool
+| GBXML | 2D + 3D | DesignBuilder, BIM HVACTool
+| Opeenstreetmap-daten | 2D + 3D | BIM HVACTool
+|====================
+
+Falls die Geometrie importiert wurde, muss sie meistens nachbearbeitet werden. Funktion wie Verschieben und Editieren von Flächen/Objekten gehören zum Standardfunktionsumfang. Meist muss aus dem 3D Datensatz eine Raumluftzone erstellt werden. Automatisiert ist dies derzeit beim IFC-Format möglich, wenn die IFC-Spaces miterstellt wurden. Dies spart circa 30-70% Zeitaufwand in der Gebäudemodellierung.
+
+Vorliegen von 2D-Plangeometriedaten werden durch Abklicken der Grundrisspunkte zu einem 3D Zonenmodell erstellt.
+
+=== Geometrie verschneiden
+
+Nach Erstellung der einzelnen Raumobjekte, bestehend aus 2D-Flächen, werden die Hüllflächen miteinander verschnitten. Benötigt wird der Prozess für die nachfolgende Verlinkung von Oberflächen und die Ausbildung von Bauteilen. Raum A und Raum B teilen sich eine Innenwand. Beide Räume haben also ein Oberfläche die eine gleich große Fläche aufweisen sollte.
+
+Die Verlinkung erfolgt durch Suchalgorithmen wie Ray-Tracing. Flächen mit dem kleinsten Abstand zueinander und der richtigen Normalenrichtung werden miteinander verknüpft. Durch diese Verknüpfung werden thermischen Eigenschaften, wie z.B. Konstruktionstyp, von beiden Flächen gleich referenziert. Dadurch bewirkt eine Änderung des Konstruktionstyps oder der Eigenschaften einer Oberfläche (z.B. von Raum A) automatisch eine Änderung an der anderen, verknüpften Oberfläche (z.B. von Raum B).
+
+=== Bauteile
+
+Bauteile sind eine Zusammenfassung von verschiedene Eigenschaften. Dazu zählen:
+
+* Konstruktionen mit Materialschichten und Materialparametern
+* Bauteiltyp (Dach, Wand, ...)
+* Randbedingungen (kurzwellige/langwellige Absorption, ...)
+* Übergangsbedingungen (z.B.Wärmeübergangskoeff.)
+* Farbeigenschaften für die Tageslichtsimulation
+
+Diese Bauteile müssen im Vorfeld erstellt werden (meist projektspezifisch) oder sind im besten Fall in einer Datenbank abgelegt.
+
+=== Zone Templates
+
+In allen Räumen müssen für die thermische Simulation gewisse Randbedingungen gesetzt werden. Diese beschreiben das Verhalten von Lasten und die Einstellungen von Sollwerte. Darunter Zählen folgende Modellgruppen:
+
+* Interne Lasten
+** Person
+** Licht
+** Elektrische Geräte
+** Sonstige Einträge
+* Steuerung (von Sollwerte der Anlagentechnik)
+** Thermostat (Heizsollwert und/oder Kühlsollwert)
+** Mechanische Luftwechselraten
+** Verschattungssteuerung
+** Kunstlichvorgabe
+* Lüftungsmodelle
+** Infiltration
+** natürliche Lüftung (Fensterlüftung)
+
+Meist sind in den Modellen und Sollwerte zeitliche Verläufe von Variablen enthalten. Dazu wird in aller Regel ein große Datenbank von Zeitplänen benötigt. Falls diese nicht vorhanden ist, muss diese aufgebaut werden.
+Nutzerfreundliche Datenbanken halten die aktuellen Normwerte (z.B. DIN V 18599-10) in fertigen Templates vor. In der deutschen Norm müssen diese Elemente dynamisiert werden, da keine zeitlichen Verläufe vorliegen. In der schweizerischen Norm "SIA" gibt es bereits integrierte Zeitverläufe.
+
+== Zuweisung von Parametern
+
+Nachdem die Geometrie erstellt und Bauteile und Zonentemplate vorhanden sind, werden die Bauteile und Zonentemplates den Flächen bzw. Raumluftknoten (Räumen) zugewiesen. Dieser Prozess gestaltet sich in aller Regel sehr einfach und schnell, da nur die Objekte ausgewählt werden müssen und die Eigenschaften zugewiesen werden. Anschließend erhält man ein real parametriertes Gebäudemodell, welches in diesem Zustand dem Solver übergeben werden kann.
+
+== Parametrisierung von Ausgaben
+
+Nach Abschluss der Parametrierung werden die Ausgaben gesetzt. Dies erfolgt meist über eine einfache Tabellen oder Baumstruktur.
+
+== Simulation des Modells
+
+"Hoffentlich sind keine Fehler drin". Ansonsten warten.
+
+== Auswertung
+
+Nach der Simulation werden die Ergebnisse ausgewertet. Dazu sind Falschfarbendarstellungen im 3D Modell, Tabellen oder Zeitkurven sehr nützlichen. Dabei bietet Postproc schon sehr viel Funktionsumfang zur Auswertung. Ohne ein Tabellekalkulationswerkzeug wird man wahrscheinlich keine Sonderwünsche bei Simulationen auswerten können.
+
+== Nachweise
+
+Eine andere Art der Auswertung erfolgt bei definierten Nachweisen.
+
+* Sommerlicher Wärmeschutz 4108-2
+* Kühllastberechnung VDI 2078
+* Heizlastberechnung DIN EN ISO 12831
+
+Für diese Art werden bei der Parametrierung die Räume explizit für den Nachweis ausgewählt. Dabei kann je nach Nachweis die Bedingungen von Zonentemplates oder Bauteileigenschaft durch die Nachweisvorgaben ersetzt werden. Dies geschieht automatisiert ohne Nutzereinfluss.
+
+Die Auswertung erfolgt anschließend in einem einheitlichen Bericht auf den der Nutzer kaum bis gar keinen Einfluss hat.
+
+== Export
+
+Für die Bauherren sollte zunehmend auch ein Export zur Verfügung stehen. Wie diese Daten jedoch in eine Workflow eingebettet werden ist derzeit nicht bekannt. Das Modell kann natürlich über BIM Strukturen eingebettet werden. Wie jedoch die Ergebniszeitverläufe weitergegeben werden ist offen. 
