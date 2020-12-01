@@ -165,8 +165,7 @@ public:
 	/*! Sorted list of the top 10 frequently used quantities. */
 	QList<QString>				m_frequentlyUsedQuantities;
 
-	/*! Returns true, if end of service life has been reached. */
-	bool						m_versionExpired = false;
+	QColor						m_selectedSurfaceColor = QColor(Qt::magenta);
 
 	/*! Map of all opaque database materials. */
 	std::map<unsigned int, VICUS::Material>					m_dbOpaqueMaterials;

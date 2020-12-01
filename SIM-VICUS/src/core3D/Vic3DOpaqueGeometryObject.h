@@ -60,6 +60,9 @@ public:
 	/*! Index buffer on CPU memory. */
 	std::vector<GLshort>		m_indexBufferData;
 
+	/*! Maps unique surface/node ID to vertex start index in m_vertexBufferData. */
+	std::map<unsigned int, unsigned int>	m_vertexStartMap;
+
 	/*! VertexArrayObject, references the vertex, color and index buffers. */
 	QOpenGLVertexArrayObject	m_vao;
 

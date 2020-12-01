@@ -21,6 +21,7 @@
 #include "SVProjectHandler.h"
 #include "SVViewStateHandler.h"
 #include "SVSettings.h"
+#include "SVUndoTreeNodeState.h"
 
 const float TRANSLATION_SPEED = 1.2f;
 const float MOUSE_ROTATION_SPEED = 0.5f;
@@ -76,6 +77,43 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 		case SVProjectHandler::NetworkModified :
 			updateNetwork = true;
 			break;
+
+		case SVProjectHandler::NodeStateModified : {
+			// we need to update the colors of some building elements
+			unsigned int smallestVertexIndex = m_opaqueGeometryObject.m_vertexBufferData.size();
+			unsigned int largestVertexIndex = 0;
+			// first decode the modification info object
+			const SVUndoTreeNodeState::ModifiedNodes * info = dynamic_cast<SVUndoTreeNodeState::ModifiedNodes *>(data);
+			Q_ASSERT(info != nullptr);
+
+			// process all modified nodes
+			for (unsigned int id : info->nodeIDs) {
+				// find the object in question
+				const VICUS::Object * obj = nullptr;
+				for (const VICUS::Building & b : project().m_buildings) {
+					obj = b.findChild(id);
+					if (obj != nullptr)
+						break;
+				}
+				Q_ASSERT(obj != nullptr);
+				const VICUS::Surface * s = dynamic_cast<const VICUS::Surface*>(obj);
+				// skip all node except surfaces, since only surfaces are drawn
+				if (s == nullptr)
+					continue;
+
+				// get vertex start address of selected node
+				Q_ASSERT(m_opaqueGeometryObject.m_vertexStartMap.find(id) != m_opaqueGeometryObject.m_vertexStartMap.end());
+				unsigned int vertexStart = m_opaqueGeometryObject.m_vertexStartMap[id];
+				smallestVertexIndex = std::min(smallestVertexIndex, vertexStart);
+				// now update the color buffer for this surface depending
+				updateSurfaceColors(*s, vertexStart, m_opaqueGeometryObject.m_colorBufferData);
+				largestVertexIndex = std::min(smallestVertexIndex, vertexStart);
+			}
+
+			// finally, update only the modified portion of GPU memory
+			m_opaqueGeometryObject.updateColorBuffer();
+
+		} break;
 
 		default:
 			return; // do nothing by default
@@ -488,6 +526,7 @@ void Vic3DScene::generateBuildingGeometry() {
 	m_opaqueGeometryObject.m_vertexBufferData.clear();
 	m_opaqueGeometryObject.m_colorBufferData.clear();
 	m_opaqueGeometryObject.m_indexBufferData.clear();
+	m_opaqueGeometryObject.m_vertexStartMap.clear();
 
 	m_opaqueGeometryObject.m_vertexBufferData.reserve(100000);
 	m_opaqueGeometryObject.m_colorBufferData.reserve(100000);
@@ -509,6 +548,9 @@ void Vic3DScene::generateBuildingGeometry() {
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			for (const VICUS::Room & r : bl.m_rooms) {
 				for (const VICUS::Surface & s : r.m_surfaces) {
+
+					// remember where this vertex starts
+					m_opaqueGeometryObject.m_vertexStartMap[s.uniqueID()] = currentVertexIndex;
 
 					// now we store the surface data into the vertex/color and index buffers
 					// the indexes are advanced and the buffers enlarged as needed.

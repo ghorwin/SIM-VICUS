@@ -5,6 +5,8 @@
 
 #include <QQuaternion>
 
+#include "SVSettings.h"
+
 namespace Vic3D {
 
 void addSurface(const VICUS::Surface & s,
@@ -14,7 +16,30 @@ void addSurface(const VICUS::Surface & s,
 	// skip invalid geometry
 	if (!s.m_geometry.isValid())
 		return;
-	addPlane(s.m_geometry, s.m_color, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData);
+	// change color depending on visibility state and selection state
+	QColor col = s.m_color;
+	if (!s.m_visible)
+		col.setAlphaF(0);
+	else if (s.m_selected) {
+		col = SVSettings::instance().m_selectedSurfaceColor;
+	}
+	addPlane(s.m_geometry, col, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData);
+}
+
+
+/*! This updates the surface color. */
+void updateSurfaceColors(const VICUS::Surface & s, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData) {
+	// skip invalid geometry
+	if (!s.m_geometry.isValid())
+		return;
+	// change color depending on visibility state and selection state
+	QColor col = s.m_color;
+	if (!s.m_visible)
+		col.setAlphaF(0);
+	else if (s.m_selected) {
+		col = SVSettings::instance().m_selectedSurfaceColor;
+	}
+	updatePlaneColor(s.m_geometry, col, currentVertexIndex, colorBufferData);
 }
 
 
@@ -131,6 +156,38 @@ void addPlane(const VICUS::PlaneGeometry & g, const QColor & col,
 			// finally advance buffer indexes
 			currentVertexIndex += nvert;
 			currentElementIndex += nvert + 1;
+		} break;
+	} // switch
+}
+
+
+void updatePlaneColor(const VICUS::PlaneGeometry & g, const QColor & col, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData) {
+	// different handling based on surface type
+	switch (g.m_type) {
+		case VICUS::PlaneGeometry::T_Triangle : {
+			colorBufferData[currentVertexIndex     ] = col;
+			colorBufferData[currentVertexIndex  + 1] = col;
+			colorBufferData[currentVertexIndex  + 2] = col;
+
+			// finally advance buffer indexes
+			currentVertexIndex += 3;
+		} break;
+
+		case VICUS::PlaneGeometry::T_Rectangle : {
+			colorBufferData[currentVertexIndex     ] = col;
+			colorBufferData[currentVertexIndex  + 1] = col;
+			colorBufferData[currentVertexIndex  + 2] = col;
+			colorBufferData[currentVertexIndex  + 3] = col;
+			currentVertexIndex += 4;
+		} break;
+
+		case VICUS::PlaneGeometry::T_Polygon : {
+			unsigned int nvert = g.m_vertexes.size();
+			// add all vertices to buffer
+			for (unsigned int i=0; i<nvert; ++i)
+				colorBufferData[currentVertexIndex + i] = col;
+			// finally advance buffer indexes
+			currentVertexIndex += nvert;
 		} break;
 	} // switch
 }
@@ -413,5 +470,7 @@ void addIkosaeder(const IBKMK::Vector3D & p, const std::vector<QColor> & cols, d
 
 	currentVertexIndex += nVertices;
 }
+
+
 
 } // namespace Vic3D

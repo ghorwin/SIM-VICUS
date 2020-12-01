@@ -13,6 +13,8 @@ uniform vec3 lightColor;   // parameter: light color as rgb
 uniform vec3 viewPos;      // parameter: view position as vec3 (world coords)
 
 void main() {
+  if (fragColor.a == 0.)
+   discard;
   // ambient
   float ambientStrength = 0.3;
   vec3 ambient = ambientStrength * lightColor;

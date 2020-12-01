@@ -134,13 +134,6 @@ int main(int argc, char *argv[]) {
 		QTimer::singleShot(5000, splash.get(), SLOT(close()));
 	}
 
-	// "end of service life" code
-	if (SVSettings::instance().m_versionExpired) {
-		QMessageBox::information(nullptr, qApp->translate("main", "Update the software"),
-								 qApp->translate("main", "Please update the software, it seems rather old and may be buggy :-)"));
-		return EXIT_FAILURE;
-	}
-
 
 	// *** Setup and show MainWindow and start event loop ***
 	int res;
