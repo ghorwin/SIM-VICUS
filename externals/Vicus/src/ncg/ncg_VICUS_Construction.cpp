@@ -66,7 +66,9 @@ void Construction::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "Manufacturer")
+			if (cName == "Notes")
+				m_notes = QString::fromStdString(c->GetText());
+			else if (cName == "Manufacturer")
 				m_manufacturer = QString::fromStdString(c->GetText());
 			else if (cName == "DataSource")
 				m_dataSource = QString::fromStdString(c->GetText());
@@ -120,6 +122,8 @@ TiXmlElement * Construction::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("displayName", m_displayName.toStdString());
 	if (!m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
+	if (!m_notes.isEmpty())
+		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.toStdString());
 	if (!m_manufacturer.isEmpty())
 		TiXmlElement::appendSingleAttributeElement(e, "Manufacturer", nullptr, std::string(), m_manufacturer.toStdString());
 	if (!m_dataSource.isEmpty())

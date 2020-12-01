@@ -66,7 +66,9 @@ void WindowDivider::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "DataSource")
+			if (cName == "Notes")
+				m_notes = QString::fromStdString(c->GetText());
+			else if (cName == "DataSource")
 				m_dataSource = QString::fromStdString(c->GetText());
 			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
@@ -105,6 +107,8 @@ TiXmlElement * WindowDivider::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("displayName", m_displayName.toStdString());
 	if (m_idMaterial != VICUS::INVALID_ID)
 		e->SetAttribute("idMaterial", IBK::val2string<unsigned int>(m_idMaterial));
+	if (!m_notes.isEmpty())
+		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.toStdString());
 	if (!m_dataSource.isEmpty())
 		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.toStdString());
 

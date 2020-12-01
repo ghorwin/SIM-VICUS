@@ -60,7 +60,9 @@ void WindowFrame::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "DataSource")
+			if (cName == "Notes")
+				m_notes = QString::fromStdString(c->GetText());
+			else if (cName == "DataSource")
 				m_dataSource = QString::fromStdString(c->GetText());
 			else if (cName == "IsPercentageCalcMethode")
 				m_isPercentageCalcMethode = NANDRAD::readPODElement<bool>(c, cName);
@@ -88,6 +90,8 @@ TiXmlElement * WindowFrame::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
+	if (!m_notes.isEmpty())
+		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.toStdString());
 	if (!m_dataSource.isEmpty())
 		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.toStdString());
 

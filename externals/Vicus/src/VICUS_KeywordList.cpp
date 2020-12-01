@@ -370,8 +370,8 @@ namespace VICUS {
 				case 1 : return "Specific heat capacity of the material.";
 				case 2 : return "Thermal conductivity of the dry material.";
 				case 3 : return "Vapor diffusion resistance factor.";
-				case 4 : return "...";
-				case 5 : return "...";
+				case 4 : return "Water content in relation to 80% humidity.";
+				case 5 : return "Water content at saturation.";
 			} break;
 			// Material::Category
 			case 3 :

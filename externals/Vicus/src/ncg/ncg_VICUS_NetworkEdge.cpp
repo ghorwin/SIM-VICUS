@@ -50,12 +50,12 @@ void NetworkEdge::readXML(const TiXmlElement * element) {
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
-			if (attribName == "nodeId1")
+			if (attribName == "supply")
+				m_supply = NANDRAD::readPODAttributeValue<bool>(element, attrib);
+			else if (attribName == "nodeId1")
 				m_nodeId1 = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "nodeId2")
 				m_nodeId2 = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "supply")
-				m_supply = NANDRAD::readPODAttributeValue<bool>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -66,12 +66,12 @@ void NetworkEdge::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "Length")
-				m_length = NANDRAD::readPODElement<double>(c, cName);
-			else if (cName == "DiameterInside")
+			if (cName == "DiameterInside")
 				m_diameterInside = NANDRAD::readPODElement<double>(c, cName);
 			else if (cName == "DiameterOutside")
 				m_diameterOutside = NANDRAD::readPODElement<double>(c, cName);
+			else if (cName == "Length")
+				m_length = NANDRAD::readPODElement<double>(c, cName);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -90,14 +90,14 @@ TiXmlElement * NetworkEdge::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("NetworkEdge");
 	parent->LinkEndChild(e);
 
+	e->SetAttribute("supply", IBK::val2string<bool>(m_supply));
 	if (m_nodeId1 != VICUS::INVALID_ID)
 		e->SetAttribute("nodeId1", IBK::val2string<unsigned int>(m_nodeId1));
 	if (m_nodeId2 != VICUS::INVALID_ID)
 		e->SetAttribute("nodeId2", IBK::val2string<unsigned int>(m_nodeId2));
-	e->SetAttribute("supply", IBK::val2string<bool>(m_supply));
-	TiXmlElement::appendSingleAttributeElement(e, "Length", nullptr, std::string(), IBK::val2string<double>(m_length));
 	TiXmlElement::appendSingleAttributeElement(e, "DiameterInside", nullptr, std::string(), IBK::val2string<double>(m_diameterInside));
 	TiXmlElement::appendSingleAttributeElement(e, "DiameterOutside", nullptr, std::string(), IBK::val2string<double>(m_diameterOutside));
+	TiXmlElement::appendSingleAttributeElement(e, "Length", nullptr, std::string(), IBK::val2string<double>(m_length));
 	return e;
 }
 

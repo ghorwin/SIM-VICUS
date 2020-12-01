@@ -34,8 +34,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Specific heat capacity of the material.");
 	tr("Thermal conductivity of the dry material.");
 	tr("Vapor diffusion resistance factor.");
-	tr("...");
-	tr("...");
+	tr("Water content in relation to 80% humidity.");
+	tr("Water content at saturation.");
 	tr("Coating");
 	tr("Plaster");
 	tr("Bricks");
