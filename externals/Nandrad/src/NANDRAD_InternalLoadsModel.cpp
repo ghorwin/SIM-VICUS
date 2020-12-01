@@ -30,6 +30,17 @@ void InternalLoadsModel::checkParameters() const {
 	// Required attribute
 	IBK_ASSERT(m_modelType != NUM_MT);
 
+	// check parameter existence
+	if(m_para[P_EquipmentRadiationFraction].name.empty()) {
+		throw IBK::Exception("Missing parameter 'EquipmentRadiationFraction'", FUNC_ID);
+	}
+	if(m_para[P_PersonRadiationFraction].name.empty()) {
+		throw IBK::Exception("Missing parameter 'PersonRadiationFraction'", FUNC_ID);
+	}
+	if(m_para[P_LightingRadiationFraction].name.empty()) {
+		throw IBK::Exception("Missing parameter 'LightingFraction'", FUNC_ID);
+	}
+
 	// check fixed parameters
 	m_para[P_EquipmentRadiationFraction].checkedValue("---", "---",
 												   0, true,
@@ -81,15 +92,15 @@ void InternalLoadsModel::checkParameters() const {
 	else { // modelType == MT_Scheduled
 		// invalid constant definitions
 		if(!m_para[P_EquipmentHeatLoadPerArea].name.empty()) {
-			throw IBK::Exception(IBK::FormatString("Invalid parameter 'EqupimentLoadPerArea' for model type 'Scheduled'!"),
+			throw IBK::Exception(IBK::FormatString("Invalid parameter 'EqupimentHeatLoadPerArea' for model type 'Scheduled'!"),
 								 FUNC_ID);
 		}
 		if(!m_para[P_PersonHeatLoadPerArea].name.empty()) {
-			throw IBK::Exception(IBK::FormatString("Invalid parameter 'PersonLoadPerArea' for model type 'Scheduled'!"),
+			throw IBK::Exception(IBK::FormatString("Invalid parameter 'PersonHeatLoadPerArea' for model type 'Scheduled'!"),
 								 FUNC_ID);
 		}
 		if(!m_para[P_LightingHeatLoadPerArea].name.empty()) {
-			throw IBK::Exception(IBK::FormatString("Invalid parameter 'LightingLoadPerArea' for model type 'Scheduled'!"),
+			throw IBK::Exception(IBK::FormatString("Invalid parameter 'LightingHeatLoadPerArea' for model type 'Scheduled'!"),
 								 FUNC_ID);
 		}
 	}
