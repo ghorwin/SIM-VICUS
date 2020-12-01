@@ -183,7 +183,7 @@ void NewPolygonObject::updateBuffers() {
 
 	if (!m_indexBufferData.empty()) {
 		m_indexBufferObject.bind();
-		m_indexBufferObject.allocate(m_indexBufferData.data(), m_indexBufferData.size()*sizeof(GL_UNSIGNED_SHORT));
+		m_indexBufferObject.allocate(m_indexBufferData.data(), m_indexBufferData.size()*sizeof(GLshort));
 		m_indexBufferObject.release();
 	}
 

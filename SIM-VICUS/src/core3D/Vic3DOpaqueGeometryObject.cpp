@@ -107,7 +107,7 @@ void OpaqueGeometryObject::updateBuffers() {
 	m_vertexBufferObject.release();
 
 	m_indexBufferObject.bind();
-	m_indexBufferObject.allocate(m_indexBufferData.data(), m_indexBufferData.size()*sizeof(GL_UNSIGNED_SHORT));
+	m_indexBufferObject.allocate(m_indexBufferData.data(), m_indexBufferData.size()*sizeof(GLshort));
 	m_indexBufferObject.release();
 
 	// also update the color buffer
