@@ -558,7 +558,12 @@ void Vic3DScene::generateNetworkGeometry() {
 		}
 		for (const VICUS::NetworkNode & no : n.m_nodes) {
 			double radius = 0.8; //e.m_diameterOutside*5; // enlarge diameter, so that we see something
-			addSphere(no.m_position, Qt::green,
+			QColor color = Qt::black;
+			if (no.m_type == VICUS::NetworkNode::NT_Mixer)
+				color = Qt::green;
+			else if (no.m_type == VICUS::NetworkNode::NT_Building)
+				color = Qt::cyan;
+			addSphere(no.m_position, color,
 						radius,
 						currentVertexIndex, currentElementIndex,
 						m_networkGeometryObject.m_vertexBufferData,

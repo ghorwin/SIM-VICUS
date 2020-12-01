@@ -206,7 +206,7 @@ void Project::readXML(const IBK::Path & filename) {
 			readXML(xmlElem);
 		}
 
-		// TODO: is it ok to do this here? if not, where else?
+		// TODO: is it ok to do this here?
 		// update Network Pointers
 		if (!m_networks.empty()){
 			for (Network &n: m_networks)

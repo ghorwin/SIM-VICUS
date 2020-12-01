@@ -246,8 +246,8 @@ void Network::connectBuildings(const bool extendSupplyPipes) {
 }
 
 
-int Network::nextUnconnectedBuilding(){
-	for (NetworkNode &nBuilding: m_nodes){
+int Network::nextUnconnectedBuilding() const{
+	for (const NetworkNode &nBuilding: m_nodes){
 		if (nBuilding.m_type == NetworkNode::NT_Building && nBuilding.m_edges.size()==0)
 			return nBuilding.m_id;
 	}
@@ -431,10 +431,10 @@ void Network::setOrigin(const IBKMK::Vector3D &origin)
 }
 
 
-double Network::totalLength()
+double Network::totalLength() const
 {
 	double length = 0;
-	for(NetworkEdge &e: m_edges){
+	for(const NetworkEdge &e: m_edges){
 		length += e.m_length;
 	}
 	return length;

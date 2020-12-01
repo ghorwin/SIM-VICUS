@@ -34,7 +34,7 @@ private slots:
 private:
 	Ui::SVNetworkEditDialog *m_ui;
 
-	void updateStatus();
+	void updateStatus() const;
 
 	void setNetwork();
 

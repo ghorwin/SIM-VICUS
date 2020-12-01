@@ -28,7 +28,7 @@ void NetworkNode::updateIsDeadEnd(){
 }
 
 
-NetworkEdge *NetworkNode::neighborEdge(const NetworkEdge *e) const
+NetworkEdge * NetworkNode::neighborEdge(const NetworkEdge *e) const
 {
 	IBK_ASSERT(m_edges.size()==2);
 	if (m_edges[0] == e)

@@ -35,6 +35,7 @@ public:
 	void collectConnectedNodes(std::set<const NetworkNode*> & connectedNodes,
 							   std::set<const NetworkEdge*> & connectedEdge) const;
 
+	// TODO: find the problem here!
 	bool operator==(const NetworkEdge &e2){
 		return (m_nodeId1 == e2.m_nodeId1) && (m_nodeId2 == e2.m_nodeId2);
 	}

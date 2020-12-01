@@ -74,7 +74,7 @@ public:
 	void connectBuildings(const bool extendSupplyPipes);
 
 	/*! returns the first id in m_nodes, which is an unconnected building */
-	int nextUnconnectedBuilding();
+	int nextUnconnectedBuilding() const;
 
 	/*! stores a copy of the current network without "dead end" nodes (and their connecting edges)
 	 * "dead end" nodes have only one connecting edge and are not buildings nor sources  */
@@ -123,7 +123,7 @@ public:
 	void setOrigin(const IBKMK::Vector3D &origin);
 
 	/*! return sum of length of all edges */
-	double totalLength();
+	double totalLength() const;
 
 	/*! clear nodes, edges */
 	void clear(){

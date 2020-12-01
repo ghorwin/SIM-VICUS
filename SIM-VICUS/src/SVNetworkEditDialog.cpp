@@ -40,12 +40,13 @@ void SVNetworkEditDialog::edit()
 
 }
 
-void SVNetworkEditDialog::updateStatus()
+void SVNetworkEditDialog::updateStatus() const
 {
 	m_ui->labelEdgeCount->setText(QString("%1").arg(m_network.m_edges.size()));
 	m_ui->labelNodeCount->setText(QString("%1").arg(m_network.m_nodes.size()));
 	m_ui->labelNetworkConnected->setText(QString("%1").arg(m_network.checkConnectedGraph()));
 	m_ui->labelTotalLength->setText(QString("%1").arg(m_network.totalLength()));
+	m_ui->pushButtonConnectBuildings->setEnabled(m_network.nextUnconnectedBuilding()>=0);
 }
 
 void SVNetworkEditDialog::setNetwork()
