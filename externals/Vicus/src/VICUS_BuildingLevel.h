@@ -18,8 +18,10 @@ public:
 	VICUS_READWRITE
 
 	void updateParents() {
+		m_children.clear();
 		for (Room & s : m_rooms) {
 			s.m_parent = this;
+			m_children.push_back(&s);
 			s.updateParents();
 		}
 	}
@@ -27,12 +29,17 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of building level. */
-	unsigned int				m_id = INVALID_ID;			// XML:A:required
+	unsigned int						m_id = INVALID_ID;			// XML:A:required
 
-	QString						m_displayName;				// XML:A
+	QString								m_displayName;				// XML:A
 
-	/*! Vector of all rooms in a builing level. */
-	std::vector<Room>			m_rooms;					// XML:E
+	/*! Stores visibility information for this surface. */
+	bool								m_visible = true;			// XML:A
+	/*! Stores selected information for this surface (not serialized, for now). */
+	bool								m_selected = false;
+
+	/*! Vector of all rooms in a building level. */
+	std::vector<Room>					m_rooms;					// XML:E
 };
 
 } // namespace VICUS

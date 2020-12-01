@@ -12,6 +12,7 @@
 
 namespace VICUS {
 
+/*! Represents the building level node in the data hierarchy. */
 class Building : public Object {
 public:
 
@@ -21,8 +22,10 @@ public:
 	VICUS_COMPARE_WITH_ID
 
 	void updateParents() {
+		m_children.clear();
 		for (BuildingLevel & s : m_buildingLevels) {
 			s.m_parent = this;
+			m_children.push_back(&s);
 			s.updateParents();
 		}
 	}
@@ -30,16 +33,18 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of building. */
-	unsigned int					m_id = INVALID_ID;		// XML:A:required
+	unsigned int						m_id = INVALID_ID;			// XML:A:required
 
 	/*! Display name of building. */
-	QString							m_displayName;			// XML:A
+	QString								m_displayName;				// XML:A
 
-	/*! Building is selected. */
-	bool							m_selected = true;		// XML:A
+	/*! Stores visibility information for this surface. */
+	bool								m_visible = true;			// XML:A
+	/*! Stores selected information for this surface (not serialized, for now). */
+	bool								m_selected = false;
 
 	/*! Vector of building levels. */
-	std::vector<BuildingLevel>		m_buildingLevels;		// XML:E
+	std::vector<BuildingLevel>			m_buildingLevels;			// XML:E
 };
 
 } // namespace VICUS

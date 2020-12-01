@@ -37,7 +37,6 @@ public:
 		\see setModified()
 	*/
 	enum ModificationTypes {
-
 		/*! Used whenever a solver/model parameter (NANDRAD::SolverParameters) has changed. */
 		SolverParametersModified,
 		/*! Used when a climate location parameter (CCM file path, longitude, latitude, timezone) has changed. */
@@ -48,6 +47,10 @@ public:
 		NetworkModified,
 		/*! Anything in the geometry has changed. */
 		GeometryChanged,
+		/*! The state (visibility/selection) of a node in the tree view/surface in the scene has changed.
+			data pointer is a std::vector<unsigned int> that contains the unique IDs of modified elements.
+		*/
+		NodeStateModified,
 		/*! Used whenever the project data changes completely (new project created, project loaded etc.)
 			and a complete reset of all views and models is needed. */
 		AllModified = 0x00FF0001

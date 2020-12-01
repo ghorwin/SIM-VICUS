@@ -5,8 +5,7 @@
 #include <QEvent>
 #include <QMouseEvent>
 
-#include <set>
-
+#include "SVUndoTreeNodeState.h"
 
 SVNavigationTreeItemDelegate::SVNavigationTreeItemDelegate(QWidget * parent) :
 	QItemDelegate(parent)
@@ -62,7 +61,12 @@ bool SVNavigationTreeItemDelegate::editorEvent(QEvent * event, QAbstractItemMode
 				bool withoutChildren = mouseEvent->modifiers() & Qt::ShiftModifier;
 				unsigned int nodeID = index.data(NodeID).toUInt();
 				// compose an undo action that shows/hides objects
-				/// \todo
+				SVUndoTreeNodeState * action = SVUndoTreeNodeState::createUndoAction(tr("Visibility changed"),
+																	   SVUndoTreeNodeState::VisibilityState,
+																	   nodeID,
+																	   !withoutChildren,
+																	   !visible);
+				action->push();
 			}
 			iconRect.setX(iconRect.x()+18);
 			if (iconRect.contains(mouseEvent->x(), mouseEvent->y())) {
@@ -71,7 +75,12 @@ bool SVNavigationTreeItemDelegate::editorEvent(QEvent * event, QAbstractItemMode
 				bool withoutChildren = mouseEvent->modifiers() & Qt::ShiftModifier;
 				unsigned int nodeID = index.data(NodeID).toUInt();
 				// compose an undo action that selects/de-selects objects
-				/// \todo
+				SVUndoTreeNodeState * action = SVUndoTreeNodeState::createUndoAction(tr("Selection changed"),
+																	   SVUndoTreeNodeState::SelectedState,
+																	   nodeID,
+																	   !withoutChildren,
+																	   !selected);
+				action->push();
 			}
 		}
 

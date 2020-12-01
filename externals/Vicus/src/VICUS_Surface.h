@@ -29,6 +29,11 @@ public:
 	/*! The actual geometry. */
 	PlaneGeometry						m_geometry;					// XML:E
 
+	/*! Stores visibility information for this surface. */
+	bool								m_visible = true;			// XML:A
+	/*! Stores selected information for this surface (not serialized, for now). */
+	bool								m_selected = false;
+
 
 	// *** Runtime Variables ***
 

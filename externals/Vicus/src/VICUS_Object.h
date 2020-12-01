@@ -1,6 +1,8 @@
 #ifndef VICUS_ObjectH
 #define VICUS_ObjectH
 
+#include <vector>
+#include <set>
 
 namespace VICUS {
 
@@ -11,6 +13,8 @@ namespace VICUS {
 	identify it.
 
 	Basically, whenever such an object is newly created, it will get a new unique ID.
+
+	Note: whenever you add/remove an object in the item hierarchy, make sure to call updateParents() in top level node.
 */
 class Object {
 public:
@@ -20,8 +24,22 @@ public:
 
 	unsigned int uniqueID() const { return m_uniqueID; }
 
+	/*! Recursively searches through data hierarchy and returns pointer to object matching the given unique ID.
+		\return Returns pointer to wanted object or nullptr, if it couldn't be found.
+	*/
+	Object * findChild(unsigned int uID);
+	/*! Same as function above, const version. */
+	const Object * findChild(unsigned int uID) const;
+
+	/*! Recursively selected all unique IDs of children. */
+	void collectChildIDs(std::set<unsigned int> & nodeContainer) const;
+
+protected:
+	/*! List of all children. */
+	std::vector<Object *>	m_children;
+
 private:
-	unsigned int m_uniqueID;
+	unsigned int			m_uniqueID;
 
 	/*! Unique ID marker, incremented in each constructor call. */
 	static unsigned int LAST_ID;
