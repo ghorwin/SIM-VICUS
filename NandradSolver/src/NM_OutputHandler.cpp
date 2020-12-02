@@ -414,7 +414,7 @@ void OutputHandler::writeOutputs(double t_out, double t_secondsOfYear) {
 		storedBytes += of->cacheSize();
 	}
 
-	// flush cache to file once cached limit
+	// flush cache to file once cached limit has been exceeded, or realtime delay has passed
 	if (m_outputTimer->difference()/1000.0 > m_realTimeOutputDelay ||
 		storedBytes > m_outputCacheLimit)
 	{
