@@ -62,7 +62,7 @@ public:
 	enum SaveResult {
 		SaveOK,			///< All ok.
 		SaveFailed,		///< Couldn't write file.
-		SaveCanceled	///< User canceled file name request dialog.
+		SaveCancelled	///< User cancelled file name request dialog.
 	};
 
 	/*! Constructor, only to be used by SVMainWindow (but SVMainWindow must not be a friend of us). */

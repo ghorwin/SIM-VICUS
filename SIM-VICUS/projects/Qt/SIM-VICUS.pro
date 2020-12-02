@@ -49,7 +49,7 @@ INCLUDEPATH = \
 		../../../externals/TiCPP/src \
 		../../../externals/QuaZIP/src \
 		../../../externals/QuaZIP/src/zlib \
-		../../../externals/GenericBuildings \
+		../../../externals/GenericBuildings/src \
 		../../../externals/QtExt/src
 
 DEPENDPATH = $${INCLUDEPATH}

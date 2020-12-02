@@ -253,12 +253,12 @@ SVProjectHandler::SaveResult SVProjectHandler::saveWithNewFilename(QWidget * par
 		);
 
 
-	if (filename.isEmpty()) return SaveCanceled; // canceled
+	if (filename.isEmpty()) return SaveCancelled; // cancelled
 
 	QString fnamebase = QFileInfo(filename).baseName();
 	if (fnamebase.isEmpty()) {
 		QMessageBox::critical(parent, tr("Invalid file name"), tr("Please enter a valid file name!"));
-		return SaveCanceled;
+		return SaveCancelled;
 	}
 
 	// relay to saveProject() which updates modified flag and emits corresponding signals.

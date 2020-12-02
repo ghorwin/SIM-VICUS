@@ -234,7 +234,7 @@ void SVMainWindow::closeEvent(QCloseEvent * event) {
 		QString currentProjectFile = m_projectHandler.projectFile();
 		// make sure we have saved and closed our project
 		if (!m_projectHandler.closeProject(this)) {
-			// user must have canceled, so prevent closing of the application
+			// user must have cancelled, so prevent closing of the application
 			event->ignore();
 			return;
 		}
@@ -530,10 +530,16 @@ void SVMainWindow::on_actionFileImportEneryPlusIDF_triggered() {
 		m_importIDFDialog = new SVImportIDFDialog(this);
 	}
 	SVImportIDFDialog::ImportResults res = m_importIDFDialog->import(filename);
-	if (res == SVImportIDFDialog::ReplaceProject) {
-		//
+	switch (res) {
+		case SVImportIDFDialog::ReplaceProject : {
+			//
+		} break;
+		case SVImportIDFDialog::MergeProjects : {
+			//
+		} break;
+		case SVImportIDFDialog::ImportCancelled :
+			return;
 	}
-
 }
 
 

@@ -3,8 +3,14 @@
 
 #include <QDialog>
 
+#include <VICUS_Project.h>
+
 namespace Ui {
 	class SVImportIDFDialog;
+}
+
+namespace EP {
+	class Project;
 }
 
 /*! Import dialog for IDF files. */
@@ -16,13 +22,21 @@ public:
 
 	enum ImportResults {
 		ReplaceProject,
-		MergeProjects
+		MergeProjects,
+		ImportCancelled
 	};
 
 	ImportResults import(const QString & fname);
 
+	/*! Project data structure, populated when importing the IDF data. */
+	VICUS::Project			m_importedProject;
+
 private:
-	Ui::SVImportIDFDialog *m_ui;
+	/*! Transfers data from read project to VICUS::Project. */
+	void transferData(const EP::Project & prj);
+
+	Ui::SVImportIDFDialog	*m_ui;
+
 };
 
 #endif // SVImportIDFDialogH
