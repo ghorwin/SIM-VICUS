@@ -16,6 +16,7 @@ SVPropAddPolygonWidget::~SVPropAddPolygonWidget() {
 	delete m_ui;
 }
 
+
 void SVPropAddPolygonWidget::keyPressEvent(QKeyEvent * event) {
 
 	// listen to enter-presses when focus is on table widget

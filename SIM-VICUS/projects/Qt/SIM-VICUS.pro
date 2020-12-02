@@ -81,6 +81,7 @@ SOURCES += \
 		../../src/SVUndoTreeNodeState.cpp \
 		../../src/SVViewState.cpp \
 		../../src/SVViewStateHandler.cpp \
+		../../src/actions/SVUndoAddBuilding.cpp \
 		../../src/actions/SVUndoAddNetwork.cpp \
 		../../src/actions/SVUndoCommandBase.cpp \
 		../../src/actions/SVUndoProject.cpp \
@@ -131,6 +132,7 @@ HEADERS  += \
 		../../src/SVUndoTreeNodeState.h \
 		../../src/SVViewState.h \
 		../../src/SVViewStateHandler.h \
+		../../src/actions/SVUndoAddBuilding.h \
 		../../src/actions/SVUndoAddNetwork.h \
 		../../src/actions/SVUndoCommandBase.h \
 		../../src/actions/SVUndoProject.h \

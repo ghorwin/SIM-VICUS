@@ -48,7 +48,7 @@ void addPlane(const VICUS::PlaneGeometry & g, const QColor & col,
 			  std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLshort> & indexBufferData)
 {
 	// different handling based on surface type
-	switch (g.m_type) {
+	switch (g.type()) {
 		case VICUS::PlaneGeometry::T_Triangle : {
 			// insert 3 vertexes
 			vertexBufferData.resize(vertexBufferData.size()+3);
@@ -59,7 +59,7 @@ void addPlane(const VICUS::PlaneGeometry & g, const QColor & col,
 			vertexBufferData[currentVertexIndex    ].m_coords = VICUS::IBKVector2QVector(g.m_vertexes[0]);
 			vertexBufferData[currentVertexIndex + 1].m_coords = VICUS::IBKVector2QVector(g.m_vertexes[1]);
 			vertexBufferData[currentVertexIndex + 2].m_coords = VICUS::IBKVector2QVector(g.m_vertexes[2]);
-			QVector3D n = VICUS::IBKVector2QVector(g.m_normal);
+			QVector3D n = VICUS::IBKVector2QVector(g.normal());
 			vertexBufferData[currentVertexIndex    ].m_normal = n;
 			vertexBufferData[currentVertexIndex + 1].m_normal = n;
 			vertexBufferData[currentVertexIndex + 2].m_normal = n;
@@ -97,7 +97,7 @@ void addPlane(const VICUS::PlaneGeometry & g, const QColor & col,
 			vertexBufferData[currentVertexIndex + 2].m_coords = c;
 			vertexBufferData[currentVertexIndex + 3].m_coords = d;
 
-			QVector3D n = VICUS::IBKVector2QVector(g.m_normal);
+			QVector3D n = VICUS::IBKVector2QVector(g.normal());
 			vertexBufferData[currentVertexIndex    ].m_normal = n;
 			vertexBufferData[currentVertexIndex + 1].m_normal = n;
 			vertexBufferData[currentVertexIndex + 2].m_normal = n;
@@ -132,7 +132,7 @@ void addPlane(const VICUS::PlaneGeometry & g, const QColor & col,
 			// nvert indexes + primitive restart index
 			indexBufferData.resize(indexBufferData.size()+nvert+1);
 
-			QVector3D n = VICUS::IBKVector2QVector(g.m_normal);
+			QVector3D n = VICUS::IBKVector2QVector(g.normal());
 
 			// add all vertices to buffer
 			for (unsigned int i=0; i<nvert; ++i) {
@@ -163,7 +163,7 @@ void addPlane(const VICUS::PlaneGeometry & g, const QColor & col,
 
 void updatePlaneColor(const VICUS::PlaneGeometry & g, const QColor & col, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData) {
 	// different handling based on surface type
-	switch (g.m_type) {
+	switch (g.type()) {
 		case VICUS::PlaneGeometry::T_Triangle : {
 			colorBufferData[currentVertexIndex     ] = col;
 			colorBufferData[currentVertexIndex  + 1] = col;

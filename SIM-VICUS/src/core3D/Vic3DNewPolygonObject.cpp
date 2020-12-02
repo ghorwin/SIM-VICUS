@@ -89,7 +89,7 @@ void NewPolygonObject::create(QOpenGLShaderProgram * shaderProgramm, const Coord
 	m_colorBufferObject.release();
 	m_indexBufferObject.release();
 
-	m_planeGeometry.m_type = VICUS::PlaneGeometry::T_Polygon;
+	m_planeGeometry = VICUS::PlaneGeometry(VICUS::PlaneGeometry::T_Polygon);
 	// add test data
 #if 0
 	appendVertex(IBKMK::Vector3D(-5,0,0));
@@ -109,8 +109,7 @@ void NewPolygonObject::destroy() {
 
 
 void NewPolygonObject::appendVertex(const IBKMK::Vector3D & p) {
-	m_planeGeometry.m_vertexes.push_back(p);
-	m_planeGeometry.updateNormal();
+	m_planeGeometry.addVertex(p);
 	updateBuffers();
 }
 

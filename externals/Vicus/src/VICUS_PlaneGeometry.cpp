@@ -31,6 +31,19 @@ static bool solve(double a, double b, double c,  double d,  double e,  double f,
 }
 
 
+void PlaneGeometry::readXML(const TiXmlElement * element) {
+	readXMLPrivate(element);
+	computeGeometry();
+}
+
+TiXmlElement * PlaneGeometry::writeXML(TiXmlElement * parent) const {
+	if (*this != PlaneGeometry())
+		return writeXMLPrivate(parent);
+	else
+		return nullptr;
+}
+
+
 PlaneGeometry::PlaneGeometry() {
 }
 
@@ -40,7 +53,73 @@ PlaneGeometry::PlaneGeometry(PlaneGeometry::type_t t,
 	m_type(t),
 	m_vertexes({a,b,c})
 {
+	computeGeometry();
+}
+
+
+void PlaneGeometry::addVertex(const IBKMK::Vector3D & v) {
+	m_vertexes.push_back(v);
+	computeGeometry();
+}
+
+
+void PlaneGeometry::computeGeometry() {
+	m_triangles.clear();
+	// try to simplify polygon to internal rectangle/parallelogram definition
+	// this may change m_type to Rectangle or Triangle and reduce the number of vertexes to 3
+	simplify();
 	updateNormal();
+	if (!isValid())
+		return;
+	triangulate();
+}
+
+
+void PlaneGeometry::simplify() {
+	if (m_vertexes.size() == 3) {
+		m_type = T_Triangle;
+		return;
+	}
+	if (m_vertexes.size() != 4)
+		return;
+	const IBKMK::Vector3D & a = m_vertexes[0];
+	const IBKMK::Vector3D & b = m_vertexes[1];
+	const IBKMK::Vector3D & c = m_vertexes[2];
+	const IBKMK::Vector3D & d = m_vertexes[3];
+	IBKMK::Vector3D c2 = b + (d-a);
+	c2 -= c;
+	if (c2.magnitudeSquared() < 1e-4) {
+		m_type = T_Rectangle;
+	}
+}
+
+
+void PlaneGeometry::triangulate() {
+	m_triangles.clear();
+	switch (m_type) {
+		case T_Triangle :
+			m_triangles.push_back( TriangleVertexNumbers(0, 1, 2) );
+		break;
+		case T_Rectangle : {
+			// We might have a concave rectangle, i.e. where one diagonal is outside
+			// the rectangle (or aligned with one of the edges).
+			// Easiest way to find this is to check if any of the angles between two adjacent
+			// edges is > 180°. However, we cannot do this easily, so we take the Anne's idea.
+			// We process two neighboring vertices.
+			// For each vertex, we span a plane (vectors to left and right neighboring vertexes).
+			// Then, we compute the vector factors to the 4th vertex - if either of them is
+			// negative, the point lies outside the rectangle spanned by the vertexes and hence, we
+			// need to use the other diagonal to split the triangle.
+
+			// Try vertex 0 first
+			IBKMK::Vector3D a;
+
+
+			// none found, just split up at vertex 0..2
+			m_triangles.push_back( TriangleVertexNumbers(0, 1, 2) );
+			m_triangles.push_back( TriangleVertexNumbers(0, 2, 3) );
+		} break;
+	}
 }
 
 
@@ -49,12 +128,36 @@ void PlaneGeometry::updateNormal() {
 	if (m_vertexes.size() < 3)
 		return;
 
-	IBKMK::Vector3D ba = m_vertexes[1] - m_vertexes[0];
-	IBKMK::Vector3D ca = m_vertexes.back() - m_vertexes[0];
+	// loop around vertexes and try to find at least three vertexes with existing cross-product
+	for (unsigned int i=0; i<m_vertexes.size()-2; ++i) {
+		IBKMK::Vector3D ba = m_vertexes[2+i] - m_vertexes[1+i];
+		IBKMK::Vector3D ca = m_vertexes[0+i] - m_vertexes[1+i];
+		ba.crossProduct(ca, m_normal);
+		if (ba.magnitudeSquared() > 1e-4) {
+			m_normal = ba;
+			return; // found a normal vector
+		}
+	}
 
-	ba.crossProduct(ca, m_normal);
 }
 
+/*! Computes the coordinates x, y of a point p in a plane spanned by vectors a and b from an offset point, where rhs = p-offset.
+	The computed plane coordinates are stored in variables x and y (the factors for vectors a and b, respectively).
+	If no solution could be found (?), the function returns false.
+*/
+bool planeCoordinates(const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & rhs, double & x, double & y) {
+	// rows 1 and 2
+	bool success = solve(a.m_x, a.m_y, b.m_x, b.m_y, rhs.m_x, rhs.m_y, x, y);
+	if (!success)
+		// rows 1 and 3
+		success = solve(a.m_x, a.m_z, b.m_x, b.m_z, rhs.m_x, rhs.m_z, x, y);
+	if (!success)
+		// rows 2 and 3
+		success = solve(a.m_y, a.m_z, b.m_y, b.m_z, rhs.m_y, rhs.m_z, x, y);
+	if (!success)
+		return false;
+	return true;
+}
 
 bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & d, IBKMK::Vector3D & intersectionPoint,
 								   double & dist, bool hitBackfacingPlanes, bool endlessPlane) const
@@ -102,15 +205,7 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 			const IBKMK::Vector3D & b = m_vertexes.back() - m_vertexes[0];
 			IBKMK::Vector3D rhs = x0 - offset; // right hand side of equation system:  a * x  +  b * y = (x - offset)
 			double x,y;
-			// rows 1 and 2
-			bool success = solve(a.m_x, a.m_y, b.m_x, b.m_y, rhs.m_x, rhs.m_y, x, y);
-			if (!success)
-				// rows 1 and 3
-				success = solve(a.m_x, a.m_z, b.m_x, b.m_z, rhs.m_x, rhs.m_z, x, y);
-			if (!success)
-				// rows 2 and 3
-				success = solve(a.m_y, a.m_z, b.m_y, b.m_z, rhs.m_y, rhs.m_z, x, y);
-			if (!success)
+			if (!planeCoordinates(a, b, rhs, x, y))
 				return false;
 
 			if (m_type == T_Triangle && x >= 0 && x+y <= 1 && y >= 0) {
@@ -126,11 +221,23 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 
 		} break;
 
-		case T_Polygon :
-			// \todo implement
-			return false;
+		case T_Polygon : {
+			// process all triangles and perform the test for each triangle
+			for (const TriangleVertexNumbers & tr : m_triangles) {
+				double x,y;
+				const IBKMK::Vector3D & a = m_vertexes[tr.c] - m_vertexes[tr.b];
+				const IBKMK::Vector3D & b = m_vertexes[tr.a] - m_vertexes[tr.b];
+				IBKMK::Vector3D rhs = x0 - m_vertexes[tr.b]; // right hand side of equation system:  a * x  +  b * y = (x - offset)
+				if (planeCoordinates(a,b,rhs,x,y)) {
+					if (x >= 0 && x+y <= 1 && y >= 0) {
+						intersectionPoint = x0;
+						dist = t;
+						return true;
+					}
+				}
+			}
+		} break;
 	}
-
 
 	return false;
 

@@ -516,22 +516,22 @@ void SVProjectHandler::addToRecentFiles(const QString& fname) {
 	emit updateRecentProjects();
 }
 
-void SVProjectHandler::updateSurfaceColors()
-{
+
+void SVProjectHandler::updateSurfaceColors() {
 	for (VICUS::Building &b : m_project->m_buildings) {
 		for (VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			for (VICUS::Room &r : bl.m_rooms) {
 				for (VICUS::Surface &s : r.m_surfaces) {
-					if(s.m_geometry.m_normal == IBKMK::Vector3D())
-						s.m_geometry.updateNormal();
+					if(s.m_geometry.normal() == IBKMK::Vector3D())
+						s.m_geometry.computeGeometry();
 
-					if(s.m_color == QColor::Invalid){
+					if (s.m_color == QColor::Invalid) {
 						double angleForWalls = 0.707;
 						//Floor
-						if(s.m_geometry.m_normal.m_z < -angleForWalls)
+						if(s.m_geometry.normal().m_z < -angleForWalls)
 							s.updateColor(VICUS::Surface::SC_Floor);
 						//Roof
-						else if(s.m_geometry.m_normal.m_z > angleForWalls)
+						else if(s.m_geometry.normal().m_z > angleForWalls)
 							s.updateColor(VICUS::Surface::SC_Roof);
 						//Wall
 						else
