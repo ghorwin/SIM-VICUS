@@ -4,23 +4,19 @@
 		<ProjectInfo>
 			<Comment>SimQuality Testfall 08 - Variante 1</Comment>
 		</ProjectInfo>
-		
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.0</IBK:Parameter>
 			<ClimateFileName>${Project Directory}/../climate/SimQuality_Testfall08_Klima.c6b</ClimateFileName>
 		</Location>
-		
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 		</SimulationParameter>
-		
 		<Zones>
 			<Zone id="1" displayName="Var01" type="Active">
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
 			</Zone>			
 		</Zones>
-		
 		<ConstructionInstances>
 			<!-- Surface Var 01 -->	
 			<ConstructionInstance id="3" displayName="All Surfaces Var01">
@@ -135,7 +131,6 @@
 				</MaterialLayers>
 			</ConstructionType>
 		</ConstructionTypes>
-		
 		<Materials>
 			<Material id="1001" displayName="Stein">
 				<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
@@ -153,7 +148,6 @@
 				<IBK:Parameter name="Conductivity" unit="W/mK">0.14</IBK:Parameter>
 			</Material>
 		</Materials>
-		
 		<Models>
 			<InternalLoadsModel id="200" modelType="Scheduled">
 				<ZoneObjectList>Zone Var01</ZoneObjectList>
@@ -162,7 +156,6 @@
 				<IBK:Parameter name="LightingRadiationFraction" unit="---">0.0</IBK:Parameter>
 			</InternalLoadsModel>
 		</Models>
-		
 		<Schedules>
 			<ScheduleGroups>
 				<ScheduleGroup objectList="Zone Var01">
@@ -171,11 +164,15 @@
 						<DailyCycles>
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0	23</TimePoints>
-								<Values>
-									EquipmentHeatLoadPerAreaSchedule [W/m2]:0	0;
-									PersonHeatLoadPerAreaSchedule [W/m2]:0	0;
-									LightingHeatLoadPerAreaSchedule [W/m2]:0	0
-								</Values>
+								<Values>EquipmentHeatLoadPerAreaSchedule [W/m2]:0	0</Values>
+							</DailyCycle>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0	23</TimePoints>
+								<Values>PersonHeatLoadPerAreaSchedule [W/m2]:0	0</Values>
+							</DailyCycle>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0	23</TimePoints>
+								<Values>LightingHeatLoadPerAreaSchedule [W/m2]:0	0</Values>
 							</DailyCycle>
 						</DailyCycles>
 					</Schedule>
@@ -185,11 +182,15 @@
 						<DailyCycles>
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0	23</TimePoints>
-								<Values>
-									EquipmentHeatLoadPerAreaSchedule [W/m2]:40	40;
-									PersonHeatLoadPerAreaSchedule [W/m2]:0	0;
-									LightingHeatLoadPerAreaSchedule [W/m2]:0	0
-								</Values>
+								<Values>EquipmentHeatLoadPerAreaSchedule [W/m2]:40	40</Values>
+							</DailyCycle>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0	23</TimePoints>
+								<Values>PersonHeatLoadPerAreaSchedule [W/m2]:0	0</Values>
+							</DailyCycle>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0	23</TimePoints>
+								<Values>LightingHeatLoadPerAreaSchedule [W/m2]:0	0</Values>
 							</DailyCycle>
 						</DailyCycles>
 					</Schedule>
