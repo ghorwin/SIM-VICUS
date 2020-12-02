@@ -1,23 +1,49 @@
+
+# -------------------------------------------------
+# Project for GenericBuildings library
+# -------------------------------------------------
 TARGET = GenericBuildings
-TEMPLATE = app
+TEMPLATE = lib
 
-include( ../../../externals/IBK/projects/Qt/IBK.pri )
-
-CONFIG += console c++11
-CONFIG -= app_bundle
-CONFIG += qt
+# this pri must be sourced from all our libraries,
+# it contains all functions defined for casual libraries
+include( ../../../IBK/projects/Qt/IBK.pri )
 
 
 LIBS += \
-		-lQtExt \
 		-lTiCPP \
 		-lIBKMK \
 		-lIBK
 
-
 INCLUDEPATH = \
-				../../../externals/IBK/src \
-		../../../externals/IBKMK/src \
-		../../../externals/QtExt/src
+		../../../TiCPP/src \
+		../../../IBK/src \
+		../../../IBKMK/src
 
-SOURCES += 
+DEPENDPATH = $${INCLUDEPATH}
+
+SOURCES += \
+		../../src/EP_Zone.cpp \
+		../../src/EP_BuildingSurfaceDetailed.cpp \
+		../../src/EP_Construction.cpp \
+		../../src/EP_FenestrationSurfaceDetailed.cpp \
+		../../src/EP_Material.cpp \
+		../../src/EP_Project.cpp \
+		../../src/EP_Version.cpp \
+		../../src/EP_WindowMaterial.cpp \
+#		../../src/NSG_Polygon.cpp \
+#		../../src/NSG_PolygonWrapper.cpp \
+#		../../src/NSG_SurfaceClipping.cpp
+
+HEADERS += \
+		../../src/EP_Zone.h \
+		../../src/EP_BuildingSurfaceDetailed.h \
+		../../src/EP_Construction.h \
+		../../src/EP_FenestrationSurfaceDetailed.h \
+		../../src/EP_Material.h \
+		../../src/EP_Project.h \
+		../../src/EP_Version.h \
+		../../src/EP_WindowMaterial.h \
+#		../../src/NSG_Polygon.h \
+#		../../src/NSG_PolygonWrapper.h \
+#		../../src/NSG_SurfaceClipping.h

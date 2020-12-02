@@ -17,6 +17,7 @@ SUBDIRS = \
 	sundials \
 	TiCPP \
 	Zeppelin \
+	GenericBuildings\
 	NandradCodeGenerator
 
 # where to find the sub projects
@@ -38,6 +39,7 @@ QuaZIP.file = ../../externals/QuaZIP/projects/Qt/QuaZIP.pro
 qwt.file = ../../externals/qwt/projects/Qt/qwt.pro
 Vicus.file = ../../externals/Vicus/projects/Qt/Vicus.pro
 QtExt.file = ../../externals/QtExt/projects/Qt/QtExt.pro
+GenericBuildings.file = ../../externals/GenericBuildings/projects/Qt/GenericBuildings.pro
 
 # dependencies
 NandradSolver.depends = DataIO CCM TiCPP IBK IntegratorFramework Nandrad IBKMK
@@ -48,6 +50,7 @@ CCM.depends = IBK TiCPP
 DataIO.depends = IBK
 IBKMK.depends = IBK
 TiCPP.depends = IBK
+GenericBuildings.depends = IBK IBKMK TiCPP
 IntegratorFramework.depends = IBK IBKMK sundials SuiteSparse
 sundials.depends = SuiteSparse
 Nandrad.depends = IBK TiCPP IBKMK
