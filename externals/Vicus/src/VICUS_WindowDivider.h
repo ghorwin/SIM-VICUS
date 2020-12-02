@@ -32,7 +32,7 @@ public:
 	/*! Display name of divider. */
 	QString							m_displayName;				// XML:A
 
-	/*! Manufacturer. */
+	/*! Notes. */
 	QString							m_notes;					// XML:E
 
 	/*! Data source. */

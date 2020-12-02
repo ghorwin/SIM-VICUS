@@ -53,7 +53,7 @@ public:
 	/*! False color. */
 	QColor								m_color;									// XML:A
 
-	/*! Manufacturer. */
+	/*! Notes. */
 	QString								m_notes;									// XML:E
 
 	/*! Manufacturer. */
