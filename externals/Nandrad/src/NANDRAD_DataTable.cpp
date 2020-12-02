@@ -35,7 +35,9 @@ void DataTable::setEncodedString(const std::string & str) {
 	IBK::explode(str, tokens, ';', IBK::EF_TrimTokens);
 	m_values.clear();
 	int count = -1;
-	for (const std::string & colStr : tokens) {
+	for (std::string & colStr : tokens) {
+		// tokens might have leading/trailing \n, so we execute a trim again
+		IBK::trim(colStr, " \t\r\n");
 		std::vector<std::string> parts;
 		IBK::explode_in2(colStr, parts, ':');
 		if (parts.size() != 2)
