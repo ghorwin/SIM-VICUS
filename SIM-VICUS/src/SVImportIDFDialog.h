@@ -31,9 +31,16 @@ public:
 	/*! Project data structure, populated when importing the IDF data. */
 	VICUS::Project			m_importedProject;
 
+private slots:
+	void on_pushButtonReplace_clicked();
+
+	void on_pushButtonMerge_clicked();
+
 private:
 	/*! Transfers data from read project to VICUS::Project. */
 	void transferData(const EP::Project & prj);
+
+	ImportResults			m_returnCode;
 
 	Ui::SVImportIDFDialog	*m_ui;
 

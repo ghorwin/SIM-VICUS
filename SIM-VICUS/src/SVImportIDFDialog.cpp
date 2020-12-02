@@ -47,7 +47,7 @@ SVImportIDFDialog::ImportResults SVImportIDFDialog::import(const QString & fname
 	if (res == QDialog::Rejected)
 		return ImportCancelled;
 
-	return ReplaceProject;
+	return m_returnCode;
 }
 
 
@@ -79,4 +79,14 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		bl.m_rooms.push_back(r);
 	}
 
+}
+
+void SVImportIDFDialog::on_pushButtonReplace_clicked() {
+	m_returnCode = ReplaceProject;
+	accept();
+}
+
+void SVImportIDFDialog::on_pushButtonMerge_clicked() {
+	m_returnCode = MergeProjects;
+	accept();
 }

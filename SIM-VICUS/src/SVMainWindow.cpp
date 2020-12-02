@@ -412,7 +412,7 @@ void SVMainWindow::on_actionFileNew_triggered() {
 		return;
 
 	// create new project
-	m_projectHandler.newProject(this); // emits updateActions()
+	m_projectHandler.newProject(); // emits updateActions()
 	// TODO : switch to geometry view
 }
 
@@ -532,11 +532,20 @@ void SVMainWindow::on_actionFileImportEneryPlusIDF_triggered() {
 	SVImportIDFDialog::ImportResults res = m_importIDFDialog->import(filename);
 	switch (res) {
 		case SVImportIDFDialog::ReplaceProject : {
-			//
+			setFocus();
+			// close project if we have one
+			if (!m_projectHandler.closeProject(this)) // emits updateActions() if project was closed
+				return;
+
+			// create new project
+			m_projectHandler.newProject(&m_importIDFDialog->m_importedProject); // emits updateActions()
+
 		} break;
+
 		case SVImportIDFDialog::MergeProjects : {
-			//
+			// take building from project and add as new building to existing data structure via undo-action
 		} break;
+
 		case SVImportIDFDialog::ImportCancelled :
 			return;
 	}

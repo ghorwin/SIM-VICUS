@@ -88,7 +88,7 @@ public:
 		Emits updateActions() to signal that view state has changed.
 		\return Returns false if New Project Wizard was aborted by user.
 	*/
-	bool newProject(QWidget * parent);
+	bool newProject(VICUS::Project * project = nullptr);
 
 	/*! Checks for modifications and asks user to confirm saving, then closes project.
 		Also destroys project object.

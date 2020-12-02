@@ -54,18 +54,10 @@ SVProjectHandler::~SVProjectHandler( ){
 }
 
 
-bool SVProjectHandler::newProject(QWidget * parent) {
-
-	VICUS::Project prj;
-
-#if 0
-	SVNewProjectWizardDialog * wizard = new SVNewProjectWizardDialog(parent);
-
-	if (!wizard->runWizard(prj))
-		return false;
-#endif
+bool SVProjectHandler::newProject(VICUS::Project * project) {
 	createProject();
-	*m_project = prj; // copy over project data from wizard
+	if (project != nullptr)
+		*m_project = *project; // copy over project
 
 	setModified(AllModified);
 
