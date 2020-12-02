@@ -167,7 +167,7 @@ void Project::writeIDF(const IBK::Path & filename)
 #if defined(_WIN32)
 	std::ofstream out(IBK::UTF8ToANSIString(filename.str()));
 #else
-	std::ofstream out(filename.str().str());
+	std::ofstream out(filename.c_str());
 #endif
 
 	//out.open(filename.str());

@@ -3,7 +3,6 @@
 #include <IBK_StringUtils.h>
 #include <IBK_math.h>
 
-#include "NSG_Polygon.h"
 #include "EP_Version.h"
 
 namespace EP {

@@ -1,7 +1,6 @@
 #include "EP_FenestrationSurfaceDetailed.h"
 
 #include <IBK_StringUtils.h>
-#include "NSG_Polygon.h"
 
 #include "EP_Version.h"
 
@@ -94,9 +93,9 @@ void FenestrationSurfaceDetailed::write(std::string &outStr, unsigned int versio
 
 void FenestrationSurfaceDetailed::calcViewFactorToGround()
 {
-	NSG::Polygon poly(m_polyline);
-	IBKMK::Vector3D normal = poly.calcNormal();
-	m_viewFactorToGround = (1 - normal.m_z)*0.5;
+//	NSG::Polygon poly(m_polyline);
+//	IBKMK::Vector3D normal = poly.calcNormal();
+//	m_viewFactorToGround = (1 - normal.m_z)*0.5;
 }
 
 }
