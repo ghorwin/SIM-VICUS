@@ -205,7 +205,7 @@
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
-					<Quantity>EquipmentHeatLoad[1]</Quantity>
+					<Quantity>ConvectiveEquipmentHeatLoad[1]</Quantity>
 					<ObjectListName>InternalLoadsModel</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
