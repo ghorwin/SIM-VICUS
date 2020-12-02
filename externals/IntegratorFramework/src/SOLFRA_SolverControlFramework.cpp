@@ -469,7 +469,7 @@ void SolverControlFramework::run(double t) {
 			double realTimeDt = double(clock())/CLOCKS_PER_SEC - double(restartRealTime)/CLOCKS_PER_SEC;
 			// check if we have passed the output time, but guard against overwriting the
 			// restart data when it had been already written
-			if (!hadRestartAtFinalOutput && (had_output || simTimeDt > m_simTimeDt || realTimeDt > m_realTimeDt || t >= t_end)) {
+			if (!hadRestartAtFinalOutput && (realTimeDt > m_realTimeDt || t >= t_end)) {
 				if (t >= t_end) {
 					const double * y_out = m_integrator->yOut(t_end);
 					appendRestartInfo(t_end, y_out);
