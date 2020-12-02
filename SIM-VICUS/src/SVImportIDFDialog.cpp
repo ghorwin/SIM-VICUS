@@ -47,6 +47,9 @@ SVImportIDFDialog::ImportResults SVImportIDFDialog::import(const QString & fname
 	if (res == QDialog::Rejected)
 		return ImportCancelled;
 
+	// TODO : apply coordinate shift to imported building geometry
+
+
 	return m_returnCode;
 
 }

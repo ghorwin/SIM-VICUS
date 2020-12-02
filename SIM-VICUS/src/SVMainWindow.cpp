@@ -39,7 +39,6 @@
 #include "SVSettings.h"
 #include "SVWelcomeScreen.h"
 #include "SVLogWidget.h"
-#include "SVUndoProject.h"
 #include "SVThreadBase.h"
 #include "SVPreferencesDialog.h"
 #include "SVPostProcBindings.h"
@@ -49,7 +48,6 @@
 //#include "SVFMIExportDialog.h"
 #include "SVNetworkImportDialog.h"
 #include "SVNetworkEditDialog.h"
-#include "SVUndoAddNetwork.h"
 #include "SVPreferencesPageStyle.h"
 #include "SVViewStateHandler.h"
 #include "SVDBMaterialsEditWidget.h"
@@ -57,6 +55,12 @@
 
 #include "SVGeometryView.h"
 #include "Vic3DSceneView.h"
+
+
+#include "SVUndoProject.h"
+#include "SVUndoAddNetwork.h"
+#include "SVUndoAddBuilding.h"
+
 
 static bool copyRecursively(const QString &srcFilePath, const QString &tgtFilePath);
 
@@ -529,7 +533,9 @@ void SVMainWindow::on_actionFileImportEneryPlusIDF_triggered() {
 	if (m_importIDFDialog == nullptr) {
 		m_importIDFDialog = new SVImportIDFDialog(this);
 	}
+
 	SVImportIDFDialog::ImportResults res = m_importIDFDialog->import(filename);
+
 	switch (res) {
 		case SVImportIDFDialog::ReplaceProject : {
 			setFocus();
@@ -539,11 +545,16 @@ void SVMainWindow::on_actionFileImportEneryPlusIDF_triggered() {
 
 			// create new project
 			m_projectHandler.newProject(&m_importIDFDialog->m_importedProject); // emits updateActions()
-
 		} break;
 
 		case SVImportIDFDialog::MergeProjects : {
+			// import and merge databases
+
 			// take building from project and add as new building to existing data structure via undo-action
+			if (!m_importIDFDialog->m_importedProject.m_buildings.empty()) {
+				SVUndoAddBuilding * undo = new SVUndoAddBuilding(tr("Added imported building"), m_importIDFDialog->m_importedProject.m_buildings[0]);
+				undo->push();
+			}
 		} break;
 
 		case SVImportIDFDialog::ImportCancelled :
