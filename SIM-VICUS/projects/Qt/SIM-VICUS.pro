@@ -24,6 +24,7 @@ LIBS += -L../../../lib$${DIR_PREFIX} \
 				-lQtExt \
 				-lQuaZIP \
 				-lTiCPP \
+				-lGenericBuildings \
 				-lVicus
 
 win32 {
@@ -48,6 +49,7 @@ INCLUDEPATH = \
 		../../../externals/TiCPP/src \
 		../../../externals/QuaZIP/src \
 		../../../externals/QuaZIP/src/zlib \
+		../../../externals/GenericBuildings \
 		../../../externals/QtExt/src
 
 DEPENDPATH = $${INCLUDEPATH}
@@ -61,6 +63,7 @@ win32 {
 												$$PWD/../../../externals/lib$${DIR_PREFIX}/Vicus.lib \
 												$$PWD/../../../externals/lib$${DIR_PREFIX}/Nandrad.lib \
 												$$PWD/../../../externals/lib$${DIR_PREFIX}/TiCPP.lib \
+												$$PWD/../../../externals/lib$${DIR_PREFIX}/GenericBuildings.lib \
 												$$PWD/../../../externals/lib$${DIR_PREFIX}/IBKMK.lib
 }
 
