@@ -25,6 +25,7 @@ class SVLogWidget;
 class SVGeometryView;
 class SVNavigationTreeWidget;
 class SVNetworkImportDialog;
+class SVImportIDFDialog;
 class SVNetworkEditDialog;
 class SVViewStateHandler;
 
@@ -186,6 +187,8 @@ private slots:
 
 	void on_actionDBMaterials_triggered();
 
+	void on_actionFileImportEneryPlusIDF_triggered();
+
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();
@@ -284,6 +287,9 @@ private:
 
 	/*! User preferences. */
 	SVPreferencesDialog			*m_preferencesDialog									= nullptr;
+
+	/*! IDF import dialog */
+	SVImportIDFDialog			*m_importIDFDialog										= nullptr;
 
 	/*! Network import dialog */
 	SVNetworkImportDialog		*m_networkImportDialog									= nullptr;

@@ -27,10 +27,18 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
+    <widget class="QMenu" name="menuImport">
+     <property name="title">
+      <string>Import</string>
+     </property>
+     <addaction name="actionFileImportEneryPlusIDF"/>
+    </widget>
     <addaction name="actionFileNew"/>
     <addaction name="actionFileOpen"/>
+    <addaction name="menuImport"/>
     <addaction name="actionFileReload"/>
     <addaction name="actionFileRecentProjects"/>
+    <addaction name="separator"/>
     <addaction name="actionFileSave"/>
     <addaction name="actionFileSaveAs"/>
     <addaction name="actionFileClose"/>
@@ -372,6 +380,11 @@
   <action name="actionDBConstructions">
    <property name="text">
     <string>Constructions...</string>
+   </property>
+  </action>
+  <action name="actionFileImportEneryPlusIDF">
+   <property name="text">
+    <string>EneryPlus IDF...</string>
    </property>
   </action>
  </widget>

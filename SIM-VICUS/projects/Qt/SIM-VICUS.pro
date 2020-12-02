@@ -70,6 +70,7 @@ win32 {
 
 SOURCES += \
 		../../src/SVDBMaterialsEditWidget.cpp \
+		../../src/SVImportIDFDialog.cpp \
 		../../src/SVMaterialTransfer.cpp \
 		../../src/SVNavigationTreeItemDelegate.cpp \
 		../../src/SVNetworkEditDialog.cpp \
@@ -119,6 +120,7 @@ SOURCES += \
 
 HEADERS  += \
 		../../src/SVDBMaterialsEditWidget.h \
+		../../src/SVImportIDFDialog.h \
 		../../src/SVMaterialTransfer.h \
 		../../src/SVNavigationTreeItemDelegate.h \
 		../../src/SVNetworkEditDialog.h \
@@ -171,6 +173,7 @@ HEADERS  += \
 FORMS    += \
 		../../src/SVAboutDialog.ui \
 		../../src/SVDBMaterialsEditWidget.ui \
+		../../src/SVImportIDFDialog.ui \
 		../../src/SVLogFileDialog.ui \
 		../../src/SVMainWindow.ui \
 		../../src/SVNavigationTreeWidget.ui \

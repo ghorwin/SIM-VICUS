@@ -53,6 +53,7 @@
 #include "SVPreferencesPageStyle.h"
 #include "SVViewStateHandler.h"
 #include "SVDBMaterialsEditWidget.h"
+#include "SVImportIDFDialog.h"
 
 #include "SVGeometryView.h"
 #include "Vic3DSceneView.h"
@@ -500,6 +501,39 @@ void SVMainWindow::on_actionFileReload_triggered() {
 
 	if (m_projectHandler.isValid())
 		saveThumbNail();
+}
+
+
+void SVMainWindow::on_actionFileImportEneryPlusIDF_triggered() {
+	// request IDF file and afterwards open import dialog
+	QString filename = QFileDialog::getOpenFileName(
+							this,
+							tr("Select IDF file"),
+							SVSettings::instance().m_propertyMap[SVSettings::PT_LastFileOpenDirectory].toString(),
+							tr("EnergyPlus IDF files (*.idf);;All files (*.*)")
+						);
+
+	if (filename.isEmpty()) return;
+
+	QFile f1(filename);
+	if (!f1.exists()) {
+		QMessageBox::critical(
+					this,
+					tr("File not found"),
+					tr("The file '%1' does not exist or cannot be accessed.").arg(filename)
+			);
+		return;
+	}
+
+	// now spawn import dialog
+	if (m_importIDFDialog == nullptr) {
+		m_importIDFDialog = new SVImportIDFDialog(this);
+	}
+	SVImportIDFDialog::ImportResults res = m_importIDFDialog->import(filename);
+	if (res == SVImportIDFDialog::ReplaceProject) {
+		//
+	}
+
 }
 
 
@@ -1278,3 +1312,4 @@ void SVMainWindow::on_actionDBMaterials_triggered() {
 	}
 	m_dbMaterialsEditWidget->edit();
 }
+
