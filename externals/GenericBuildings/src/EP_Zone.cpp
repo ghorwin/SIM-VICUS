@@ -8,8 +8,8 @@ namespace EP {
 void Zone::read(const std::vector<std::string> & str, unsigned int version)
 {
 	//for version 8.3
-	if(version != EP::Version::VN_8_3)
-		return;
+//	if(version != EP::Version::VN_8_3)
+//		return;
 
 
 	m_name = str[1];

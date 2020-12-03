@@ -12,9 +12,9 @@ void WindowMaterial::read(const std::vector<std::string> & str, unsigned int ver
 	const char * const FUNC_ID = "[WindowMaterial::read]";
 	std::vector<std::string> str1;
 
-	//for version 8.3
-	if(version != EP::Version::VN_8_3)
-		return;
+//	//for version 8.3
+//	if(version != EP::Version::VN_8_3)
+//		return;
 
 	str1 = str;
 	if(str1.size()!= 5)

@@ -27,8 +27,8 @@ void BuildingSurfaceDetailed::read(const std::vector<std::string> & str, unsigne
 	FUNCID(BuildingSurfaceDetailed::read);
 
 	//for version 8.3
-	if (version != EP::Version::VN_8_3)
-		throw IBK::Exception("Only version 8.3 supported.", FUNC_ID);
+//	if (version != EP::Version::VN_8_3)
+//		throw IBK::Exception("Only version 8.3 supported.", FUNC_ID);
 
 
 	m_name = str[1];

@@ -13,8 +13,8 @@ void Material::read(const std::vector<std::string> & str, unsigned int version)
 	std::vector<std::string> str1;
 
 	//for version 8.3
-	if(version != EP::Version::VN_8_3)
-		return;
+//	if(version != EP::Version::VN_8_3)
+//		return;
 
 	str1 = str;
 	if(str1.size()!= 10)

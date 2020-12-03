@@ -6,6 +6,7 @@
 #include "SVProjectHandler.h"
 
 #include <EP_Project.h>
+#include <EP_IDFParser.h>
 
 SVImportIDFDialog::SVImportIDFDialog(QWidget *parent) :
 	QDialog(parent),
@@ -25,6 +26,9 @@ SVImportIDFDialog::ImportResults SVImportIDFDialog::import(const QString & fname
 	// read IDF file
 
 	try {
+		EP::IDFParser parser;
+		parser.read(IBK::Path(fname.toStdString()));
+
 		EP::Project prj;
 		prj.readIDF(IBK::Path(fname.toStdString()));
 

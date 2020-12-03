@@ -15,8 +15,8 @@ void Construction::read(const std::vector<std::string> & str, unsigned int versi
 
 
 	//for version 8.3
-	if(version != EP::Version::VN_8_3)
-		return;
+//	if(version != EP::Version::VN_8_3)
+//		return;
 
 	m_name = str[1];
 	m_layers.clear();
