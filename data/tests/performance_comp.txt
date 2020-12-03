@@ -1,0 +1,19 @@
+Lenovo X1 Extreme (Windows 10, x64, VC14)
+
+Project path                                                 Wall clock time [s]
+.\InfiltrationConstantSingleZone                                       0.004
+.\InfiltrationRateConstant2Zones                                       0.005
+.\InfiltrationScheduledSingleZone                                      0.016
+.\IntegralMeanOutputs                                                  0.049
+.\InternalLoadsSingleZoneConstant75ppRadiant                           0.002
+.\InternalLoadsSingleZoneConstantAllConvective                         0.001
+.\InternalLoadsSingleZoneScheduledAllRadiant                           0.039
+.\InternalLoadsTwoZonesConstant75ppRadiant                             0.001
+.\LoadsIncidenceAngle                                                  0.089
+.\SingleZoneSingleOutdoorsConstruction                                 0.007
+.\SingleZoneSingleOutdoorsConstructionSideB                            0.007
+.\SingleZoneSingleOutdoorsConstructionWithShwRad                       0.016
+.\SingleZoneSingleOutdoorsConstructionWithWindow                       0.058
+.\SolarRadiationModel_Normal                                           0.151
+.\SolarRadiationModel_Perez                                            0.157
+
