@@ -13,7 +13,9 @@ struct PickObject {
 	enum PickOption {
 		P_XY_Plane			= 0x0001,
 		P_XY_GridPoint		= 0x0002,
-		P_Surface			= 0x0004
+		P_Surface			= 0x0004,
+		/*! Also pick the back-side of a surface (when visible and active for picking). */
+		P_BackSide			= 0x0008
 	};
 
 	PickObject(const QPoint & localMousePos, unsigned int pickMask) :

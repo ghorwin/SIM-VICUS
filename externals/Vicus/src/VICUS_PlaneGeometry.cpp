@@ -210,8 +210,8 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 	IBK_ASSERT(m_vertexes.size() >= 3);
 	// first the normal test
 
-	double d_cross_normal = d.scalarProduct(m_normal);
-	double angle = d_cross_normal/d.magnitudeSquared();
+	double d_dot_normal = d.scalarProduct(m_normal);
+	double angle = d_dot_normal/d.magnitudeSquared();
 	// line parallel to plane? no intersection
 	if (angle < 1e-8 && angle > -1e-8)
 		return false;
@@ -222,7 +222,7 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 
 	const IBKMK::Vector3D & offset = m_vertexes[0];
 
-	double t = (offset - p1).scalarProduct(m_normal) / d_cross_normal;
+	double t = (offset - p1).scalarProduct(m_normal) / d_dot_normal;
 
 	// Condition 2: outside viewing range?
 	if (t < 0 || t > 1)

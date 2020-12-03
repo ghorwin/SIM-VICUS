@@ -42,6 +42,8 @@ void updateSurfaceColors(const VICUS::Surface & s, unsigned int & currentVertexI
 	else if (s.m_selected) {
 		col = SVSettings::instance().m_selectedSurfaceColor;
 	}
+	// call updatePlaneColor() twice, since we have front a backside planes to color
+	updatePlaneColor(s.m_geometry, col, currentVertexIndex, colorBufferData);
 	updatePlaneColor(s.m_geometry, col, currentVertexIndex, colorBufferData);
 }
 

@@ -553,11 +553,12 @@ void Vic3DScene::generateBuildingGeometry() {
 			for (const VICUS::Room & r : bl.m_rooms) {
 				for (const VICUS::Surface & s : r.m_surfaces) {
 
-					// remember where this vertex starts
+					// remember where the vertexes for this surface start in the buffer
 					m_opaqueGeometryObject.m_vertexStartMap[s.uniqueID()] = currentVertexIndex;
 
 					// now we store the surface data into the vertex/color and index buffers
 					// the indexes are advanced and the buffers enlarged as needed.
+					// actually, this adds always two surfaces (for culling).
 					addSurface(s, currentVertexIndex, currentElementIndex,
 							   m_opaqueGeometryObject.m_vertexBufferData,
 							   m_opaqueGeometryObject.m_colorBufferData,
@@ -695,11 +696,11 @@ void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3
 				for (const VICUS::Room & r : bl.m_rooms) {
 					for (const VICUS::Surface & s : r.m_surfaces) {
 						// skip invisible or inactive surfaces
-						if (!r.m_visible)
+						if (!s.m_visible)
 							continue;
 						IBKMK::Vector3D intersectionPoint;
 						double dist;
-						if (s.m_geometry.intersectsLine(nearPoint2, d2, intersectionPoint, dist)) {
+						if (s.m_geometry.intersectsLine(nearPoint2, d2, intersectionPoint, dist, pickObject.m_pickMask & PickObject::P_BackSide)) {
 							if (dist < pickObject.m_dist) {
 								pickObject.m_dist = dist;
 								pickObject.m_pickPoint = intersectionPoint;
@@ -753,7 +754,7 @@ void Vic3DScene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandl
 	}
 
 	// this will be a selection click - execute pick() operation
-	PickObject o(localMousePos, PickObject::P_Surface);
+	PickObject o(localMousePos, PickObject::P_Surface | PickObject::P_BackSide);
 	pick(o);
 	if (o.m_uniqueObjectID != 0) {
 		// find the selected object
