@@ -40,10 +40,11 @@ static bool solve(double a, double b, double c,  double d,  double e,  double f,
 
 	Note: when the point p is not in the plane, this function will still get a valid result.
 */
-static bool planeCoordinates(const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & rhs, double & x, double & y) {
+static bool planeCoordinates(const IBKMK::Vector3D & offset, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & v, double & x, double & y) {
 	// We have 3 equations, but only two unknowns - so we have 3 different options to compute them.
 	// Some of them may fail, so we try them all.
 
+	const IBKMK::Vector3D & rhs = v-offset;
 	// rows 1 and 2
 	bool success = solve(a.m_x, a.m_y, b.m_x, b.m_y, rhs.m_x, rhs.m_y, x, y);
 	if (!success)
@@ -53,6 +54,12 @@ static bool planeCoordinates(const IBKMK::Vector3D & a, const IBKMK::Vector3D & 
 		// rows 2 and 3
 		success = solve(a.m_y, a.m_z, b.m_y, b.m_z, rhs.m_y, rhs.m_z, x, y);
 	if (!success)
+		return false;
+
+	// check that the point was indeed in the plane
+	IBKMK::Vector3D v2 = offset + x*a + y*b;
+	v2 -= v;
+	if (v2.magnitudeSquared() > 1e-4)
 		return false;
 	return true;
 }
@@ -157,7 +164,7 @@ void PlaneGeometry::triangulate() {
 				///       redo the same stuff several times for the same plane.
 				///       We should use a function that passes vX, vY, offset and then
 				///       a vector with v,x,y to process.
-				if (planeCoordinates(vX, vY, v-offset, x, y)) {
+				if (planeCoordinates(offset, vX, vY, v, x, y)) {
 					plane.append(QPointF(x,y));
 				}
 				else {
@@ -241,9 +248,8 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 			// we have three possible ways to get the intersection point, try them all until we succeed
 			const IBKMK::Vector3D & a = m_vertexes[1] - m_vertexes[0];
 			const IBKMK::Vector3D & b = m_vertexes.back() - m_vertexes[0];
-			IBKMK::Vector3D rhs = x0 - offset; // right hand side of equation system:  a * x  +  b * y = (x - offset)
 			double x,y;
-			if (!planeCoordinates(a, b, rhs, x, y))
+			if (!planeCoordinates(offset, a, b, x0, x, y))
 				return false;
 
 			if (m_type == T_Triangle && x >= 0 && x+y <= 1 && y >= 0) {
@@ -265,8 +271,7 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 				double x,y;
 				const IBKMK::Vector3D & a = m_vertexes[tr.c] - m_vertexes[tr.b];
 				const IBKMK::Vector3D & b = m_vertexes[tr.a] - m_vertexes[tr.b];
-				IBKMK::Vector3D rhs = x0 - m_vertexes[tr.b]; // right hand side of equation system:  a * x  +  b * y = (x - offset)
-				if (planeCoordinates(a,b,rhs,x,y)) {
+				if (planeCoordinates(x0,a,b, m_vertexes[tr.b],x,y)) {
 					if (x >= 0 && x+y <= 1 && y >= 0) {
 						intersectionPoint = x0;
 						dist = t;

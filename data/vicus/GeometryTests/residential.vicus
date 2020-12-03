@@ -2,134 +2,134 @@
 <VicusProject fileVersion="0.1">
 	<ProjectInfo>
 		<Created>Do. Nov. 26 15:15:10 2020</Created>
-		<LastEdited>Do. Nov. 26 15:15:10 2020</LastEdited>
+		<LastEdited>Do Dez 3 15:55:16 2020</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
 			<GridColor>#7f7fb2</GridColor>
-			<CameraTranslation>12.7037 -12.9686 5.50303</CameraTranslation>
+			<CameraTranslation>12.57 -13.0464 5.50303</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.77829</Wp>
-				<X>0.581176</X>
-				<Y>0.142209</Y>
-				<Z>0.190446</Z>
+				<Wp>0.779114</Wp>
+				<X>0.581791</X>
+				<Y>0.139672</Y>
+				<Z>0.187048</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 		</ViewSettings>
 		<Buildings>
-			<Building id="0" displayName="BuildingName">
+			<Building id="0" displayName="BuildingName" visible="1">
 				<BuildingLevels>
-					<BuildingLevel id="1" displayName="E0">
+					<BuildingLevel id="1" displayName="E0" visible="1">
 						<Rooms>
-							<Room id="0" displayName="WE0.0_Bath">
+							<Room id="0" displayName="WE0.0_Bath" visible="1">
 								<Surfaces>
-									<Surface id="6" displayName="WE0.0_Roof_1">
-										<PlaneGeometry type="Polygon">1.8 0 2.2, 1.8 3.1 2.2, 0 3.1 2.2, 0 0 2.2</PlaneGeometry>
+									<Surface id="6" displayName="WE0.0_Roof_1" visible="1">
+										<PlaneGeometry type="Rectangle">1.8 0 2.2, 1.8 3.1 2.2, 0 3.1 2.2, 0 0 2.2</PlaneGeometry>
 									</Surface>
-									<Surface id="2" displayName="WE0.0_Wall_1">
-										<PlaneGeometry type="Polygon">0 0 0, 0 0 2.2, 0 3.1 2.2, 0 3.1 0</PlaneGeometry>
+									<Surface id="2" displayName="WE0.0_Wall_1" visible="1">
+										<PlaneGeometry type="Rectangle">0 0 0, 0 0 2.2, 0 3.1 2.2, 0 3.1 0</PlaneGeometry>
 									</Surface>
-									<Surface id="3" displayName="WE0.0_Wall_2">
-										<PlaneGeometry type="Polygon">0 3.1 0, 0 3.1 2.2, 1.8 3.1 2.2, 1.8 3.1 0</PlaneGeometry>
+									<Surface id="3" displayName="WE0.0_Wall_2" visible="1">
+										<PlaneGeometry type="Rectangle">0 3.1 0, 0 3.1 2.2, 1.8 3.1 2.2, 1.8 3.1 0</PlaneGeometry>
 									</Surface>
-									<Surface id="4" displayName="WE0.0_Wall_3">
-										<PlaneGeometry type="Polygon">1.8 3.1 0, 1.8 3.1 2.2, 1.8 0 2.2, 1.8 0 0</PlaneGeometry>
+									<Surface id="4" displayName="WE0.0_Wall_3" visible="1">
+										<PlaneGeometry type="Rectangle">1.8 3.1 0, 1.8 3.1 2.2, 1.8 0 2.2, 1.8 0 0</PlaneGeometry>
 									</Surface>
-									<Surface id="5" displayName="WE0.0_Wall_4">
-										<PlaneGeometry type="Polygon">1.8 0 0, 1.8 0 2.2, 0 0 2.2, 0 0 0</PlaneGeometry>
+									<Surface id="5" displayName="WE0.0_Wall_4" visible="1">
+										<PlaneGeometry type="Rectangle">1.8 0 0, 1.8 0 2.2, 0 0 2.2, 0 0 0</PlaneGeometry>
 									</Surface>
-									<Surface id="1" displayName="WE0.0_Floor_1">
-										<PlaneGeometry type="Polygon">0 0 0, 0 3.1 0, 1.8 3.1 0, 1.8 0 0</PlaneGeometry>
+									<Surface id="1" displayName="WE0.0_Floor_1" visible="1">
+										<PlaneGeometry type="Rectangle">0 0 0, 0 3.1 0, 1.8 3.1 0, 1.8 0 0</PlaneGeometry>
 									</Surface>
 								</Surfaces>
 							</Room>
-							<Room id="1" displayName="WE0.0_Kitchen">
+							<Room id="1" displayName="WE0.0_Kitchen" visible="1">
 								<Surfaces>
-									<Surface id="12" displayName="WE0.0_Roof_2">
-										<PlaneGeometry type="Polygon">1.8 3.25 2.2, 1.8 6.25 2.2, 0 6.25 2.2, 0 3.25 2.2</PlaneGeometry>
+									<Surface id="12" displayName="WE0.0_Roof_2" visible="1">
+										<PlaneGeometry type="Rectangle">1.8 3.25 2.2, 1.8 6.25 2.2, 0 6.25 2.2, 0 3.25 2.2</PlaneGeometry>
 									</Surface>
-									<Surface id="8" displayName="WE0.0_Wall_5">
-										<PlaneGeometry type="Polygon">0 3.25 0, 0 3.25 2.2, 0 6.25 2.2, 0 6.25 0</PlaneGeometry>
+									<Surface id="8" displayName="WE0.0_Wall_5" visible="1">
+										<PlaneGeometry type="Rectangle">0 3.25 0, 0 3.25 2.2, 0 6.25 2.2, 0 6.25 0</PlaneGeometry>
 									</Surface>
-									<Surface id="9" displayName="WE0.0_Wall_6">
-										<PlaneGeometry type="Polygon">0 6.25 0, 0 6.25 2.2, 1.8 6.25 2.2, 1.8 6.25 0</PlaneGeometry>
+									<Surface id="9" displayName="WE0.0_Wall_6" visible="1">
+										<PlaneGeometry type="Rectangle">0 6.25 0, 0 6.25 2.2, 1.8 6.25 2.2, 1.8 6.25 0</PlaneGeometry>
 									</Surface>
-									<Surface id="10" displayName="WE0.0_Wall_7">
-										<PlaneGeometry type="Polygon">1.8 6.25 0, 1.8 6.25 2.2, 1.8 3.25 2.2, 1.8 3.25 0</PlaneGeometry>
+									<Surface id="10" displayName="WE0.0_Wall_7" visible="1">
+										<PlaneGeometry type="Rectangle">1.8 6.25 0, 1.8 6.25 2.2, 1.8 3.25 2.2, 1.8 3.25 0</PlaneGeometry>
 									</Surface>
-									<Surface id="11" displayName="WE0.0_Wall_8">
-										<PlaneGeometry type="Polygon">1.8 3.25 0, 1.8 3.25 2.2, 0 3.25 2.2, 0 3.25 0</PlaneGeometry>
+									<Surface id="11" displayName="WE0.0_Wall_8" visible="1">
+										<PlaneGeometry type="Rectangle">1.8 3.25 0, 1.8 3.25 2.2, 0 3.25 2.2, 0 3.25 0</PlaneGeometry>
 									</Surface>
-									<Surface id="7" displayName="WE0.0_Floor_2">
-										<PlaneGeometry type="Polygon">0 3.25 0, 0 6.25 0, 1.8 6.25 0, 1.8 3.25 0</PlaneGeometry>
+									<Surface id="7" displayName="WE0.0_Floor_2" visible="1">
+										<PlaneGeometry type="Rectangle">0 3.25 0, 0 6.25 0, 1.8 6.25 0, 1.8 3.25 0</PlaneGeometry>
 									</Surface>
 								</Surfaces>
 							</Room>
-							<Room id="2" displayName="WE0.0_Living">
+							<Room id="2" displayName="WE0.0_Living" visible="1">
 								<Surfaces>
-									<Surface id="18" displayName="WE0.0_Roof_3">
-										<PlaneGeometry type="Polygon">6.1 3.25 2.2, 6.1 6.25 2.2, 1.95 6.25 2.2, 1.95 3.25 2.2</PlaneGeometry>
+									<Surface id="18" displayName="WE0.0_Roof_3" visible="1">
+										<PlaneGeometry type="Rectangle">6.1 3.25 2.2, 6.1 6.25 2.2, 1.95 6.25 2.2, 1.95 3.25 2.2</PlaneGeometry>
 									</Surface>
-									<Surface id="14" displayName="WE0.0_Wall_9">
-										<PlaneGeometry type="Polygon">1.95 3.25 0, 1.95 3.25 2.2, 1.95 6.25 2.2, 1.95 6.25 0</PlaneGeometry>
+									<Surface id="14" displayName="WE0.0_Wall_9" visible="1">
+										<PlaneGeometry type="Rectangle">1.95 3.25 0, 1.95 3.25 2.2, 1.95 6.25 2.2, 1.95 6.25 0</PlaneGeometry>
 									</Surface>
-									<Surface id="15" displayName="WE0.0_Wall_10">
-										<PlaneGeometry type="Polygon">1.95 6.25 0, 1.95 6.25 2.2, 6.1 6.25 2.2, 6.1 6.25 0</PlaneGeometry>
+									<Surface id="15" displayName="WE0.0_Wall_10" visible="1">
+										<PlaneGeometry type="Rectangle">1.95 6.25 0, 1.95 6.25 2.2, 6.1 6.25 2.2, 6.1 6.25 0</PlaneGeometry>
 									</Surface>
-									<Surface id="16" displayName="WE0.0_Wall_11">
-										<PlaneGeometry type="Polygon">6.1 6.25 0, 6.1 6.25 2.2, 6.1 3.25 2.2, 6.1 3.25 0</PlaneGeometry>
+									<Surface id="16" displayName="WE0.0_Wall_11" visible="1">
+										<PlaneGeometry type="Rectangle">6.1 6.25 0, 6.1 6.25 2.2, 6.1 3.25 2.2, 6.1 3.25 0</PlaneGeometry>
 									</Surface>
-									<Surface id="17" displayName="WE0.0_Wall_12">
-										<PlaneGeometry type="Polygon">6.1 3.25 0, 6.1 3.25 2.2, 1.95 3.25 2.2, 1.95 3.25 0</PlaneGeometry>
+									<Surface id="17" displayName="WE0.0_Wall_12" visible="1">
+										<PlaneGeometry type="Rectangle">6.1 3.25 0, 6.1 3.25 2.2, 1.95 3.25 2.2, 1.95 3.25 0</PlaneGeometry>
 									</Surface>
-									<Surface id="13" displayName="WE0.0_Floor_3">
-										<PlaneGeometry type="Polygon">1.95 3.25 0, 1.95 6.25 0, 6.1 6.25 0, 6.1 3.25 0</PlaneGeometry>
+									<Surface id="13" displayName="WE0.0_Floor_3" visible="1">
+										<PlaneGeometry type="Rectangle">1.95 3.25 0, 1.95 6.25 0, 6.1 6.25 0, 6.1 3.25 0</PlaneGeometry>
 									</Surface>
 								</Surfaces>
 							</Room>
-							<Room id="3" displayName="WE0.0_Corridor">
+							<Room id="3" displayName="WE0.0_Corridor" visible="1">
 								<Surfaces>
-									<Surface id="24" displayName="WE0.0_Roof_4">
-										<PlaneGeometry type="Polygon">3.15 0 2.2, 3.15 3.1 2.2, 1.95 3.1 2.2, 1.95 0 2.2</PlaneGeometry>
+									<Surface id="24" displayName="WE0.0_Roof_4" visible="1">
+										<PlaneGeometry type="Rectangle">3.15 0 2.2, 3.15 3.1 2.2, 1.95 3.1 2.2, 1.95 0 2.2</PlaneGeometry>
 									</Surface>
-									<Surface id="20" displayName="WE0.0_Wall_13">
-										<PlaneGeometry type="Polygon">1.95 0 0, 1.95 0 2.2, 1.95 3.1 2.2, 1.95 3.1 0</PlaneGeometry>
+									<Surface id="20" displayName="WE0.0_Wall_13" visible="1">
+										<PlaneGeometry type="Rectangle">1.95 0 0, 1.95 0 2.2, 1.95 3.1 2.2, 1.95 3.1 0</PlaneGeometry>
 									</Surface>
-									<Surface id="21" displayName="WE0.0_Wall_14">
-										<PlaneGeometry type="Polygon">1.95 3.1 0, 1.95 3.1 2.2, 3.15 3.1 2.2, 3.15 3.1 0</PlaneGeometry>
+									<Surface id="21" displayName="WE0.0_Wall_14" visible="1">
+										<PlaneGeometry type="Rectangle">1.95 3.1 0, 1.95 3.1 2.2, 3.15 3.1 2.2, 3.15 3.1 0</PlaneGeometry>
 									</Surface>
-									<Surface id="22" displayName="WE0.0_Wall_15">
-										<PlaneGeometry type="Polygon">3.15 3.1 0, 3.15 3.1 2.2, 3.15 0 2.2, 3.15 0 0</PlaneGeometry>
+									<Surface id="22" displayName="WE0.0_Wall_15" visible="1">
+										<PlaneGeometry type="Rectangle">3.15 3.1 0, 3.15 3.1 2.2, 3.15 0 2.2, 3.15 0 0</PlaneGeometry>
 									</Surface>
-									<Surface id="23" displayName="WE0.0_Wall_16">
-										<PlaneGeometry type="Polygon">3.15 0 0, 3.15 0 2.2, 1.95 0 2.2, 1.95 0 0</PlaneGeometry>
+									<Surface id="23" displayName="WE0.0_Wall_16" visible="1">
+										<PlaneGeometry type="Rectangle">3.15 0 0, 3.15 0 2.2, 1.95 0 2.2, 1.95 0 0</PlaneGeometry>
 									</Surface>
-									<Surface id="19" displayName="WE0.0_Floor_4">
-										<PlaneGeometry type="Polygon">1.95 0 0, 1.95 3.1 0, 3.15 3.1 0, 3.15 0 0</PlaneGeometry>
+									<Surface id="19" displayName="WE0.0_Floor_4" visible="1">
+										<PlaneGeometry type="Rectangle">1.95 0 0, 1.95 3.1 0, 3.15 3.1 0, 3.15 0 0</PlaneGeometry>
 									</Surface>
 								</Surfaces>
 							</Room>
-							<Room id="4" displayName="WE0.0_Sleeping">
+							<Room id="4" displayName="WE0.0_Sleeping" visible="1">
 								<Surfaces>
-									<Surface id="30" displayName="WE0.0_Roof_5">
-										<PlaneGeometry type="Polygon">6.1 0 2.2, 6.1 3.1 2.2, 3.3 3.1 2.2, 3.3 0 2.2</PlaneGeometry>
+									<Surface id="30" displayName="WE0.0_Roof_5" visible="1">
+										<PlaneGeometry type="Rectangle">6.1 0 2.2, 6.1 3.1 2.2, 3.3 3.1 2.2, 3.3 0 2.2</PlaneGeometry>
 									</Surface>
-									<Surface id="26" displayName="WE0.0_Wall_17">
-										<PlaneGeometry type="Polygon">3.3 0 0, 3.3 0 2.2, 3.3 3.1 2.2, 3.3 3.1 0</PlaneGeometry>
+									<Surface id="26" displayName="WE0.0_Wall_17" visible="1">
+										<PlaneGeometry type="Rectangle">3.3 0 0, 3.3 0 2.2, 3.3 3.1 2.2, 3.3 3.1 0</PlaneGeometry>
 									</Surface>
-									<Surface id="27" displayName="WE0.0_Wall_18">
-										<PlaneGeometry type="Polygon">3.3 3.1 0, 3.3 3.1 2.2, 6.1 3.1 2.2, 6.1 3.1 0</PlaneGeometry>
+									<Surface id="27" displayName="WE0.0_Wall_18" visible="1">
+										<PlaneGeometry type="Rectangle">3.3 3.1 0, 3.3 3.1 2.2, 6.1 3.1 2.2, 6.1 3.1 0</PlaneGeometry>
 									</Surface>
-									<Surface id="28" displayName="WE0.0_Wall_19">
-										<PlaneGeometry type="Polygon">6.1 3.1 0, 6.1 3.1 2.2, 6.1 0 2.2, 6.1 0 0</PlaneGeometry>
+									<Surface id="28" displayName="WE0.0_Wall_19" visible="1">
+										<PlaneGeometry type="Rectangle">6.1 3.1 0, 6.1 3.1 2.2, 6.1 0 2.2, 6.1 0 0</PlaneGeometry>
 									</Surface>
-									<Surface id="29" displayName="WE0.0_Wall_20">
-										<PlaneGeometry type="Polygon">6.1 0 0, 6.1 0 2.2, 3.3 0 2.2, 3.3 0 0</PlaneGeometry>
+									<Surface id="29" displayName="WE0.0_Wall_20" visible="1">
+										<PlaneGeometry type="Rectangle">6.1 0 0, 6.1 0 2.2, 3.3 0 2.2, 3.3 0 0</PlaneGeometry>
 									</Surface>
-									<Surface id="25" displayName="WE0.0_Floor_5">
-										<PlaneGeometry type="Polygon">3.3 0 0, 3.3 3.1 0, 6.1 3.1 0, 6.1 0 0</PlaneGeometry>
+									<Surface id="25" displayName="WE0.0_Floor_5" visible="1">
+										<PlaneGeometry type="Rectangle">3.3 0 0, 3.3 3.1 0, 6.1 3.1 0, 6.1 0 0</PlaneGeometry>
 									</Surface>
 								</Surfaces>
 							</Room>
