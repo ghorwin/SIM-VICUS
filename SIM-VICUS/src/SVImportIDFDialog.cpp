@@ -33,7 +33,7 @@ SVImportIDFDialog::ImportResults SVImportIDFDialog::import(const QString & fname
 		transferData(prj);
 	}
 	catch (IBK::Exception & ex) {
-		QMessageBox::critical(this, tr("Import error"), tr("Error parsing IDF file:\n%1").arg(ex.what()));
+		QMessageBox::critical((QWidget*)parent(), tr("Import error"), tr("Error parsing IDF file:\n%1").arg(ex.what()));
 		return ImportCancelled;
 	}
 
