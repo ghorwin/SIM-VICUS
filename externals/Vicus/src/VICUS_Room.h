@@ -8,10 +8,20 @@
 
 #include <QString>
 
+#include <IBK_Parameter.h>
+
 namespace VICUS {
 
 class Room : public Object {
 public:
+
+	enum para_t{
+		/*! Dry density of the material. */
+		P_Area,					// Keyword: Area					[m2]	'Floor area of the zone.'
+		/*! Dry density of the material. */
+		P_Volume,				// Keyword: Volume					[m3]	'Volume of the zone.'
+		NUM_P
+	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -36,6 +46,11 @@ public:
 	bool								m_visible = true;			// XML:A
 	/*! Stores selected information for this surface (not serialized, for now). */
 	bool								m_selected = false;
+
+	/*! Stores zone parameters.
+		if area or volume is zero --> autocalulation from geometry
+	*/
+	IBK::Parameter						m_para[NUM_P];				// XML:E
 
 	/*! Surfaces of the room. */
 	std::vector<Surface>				m_surfaces;					// XML:E
