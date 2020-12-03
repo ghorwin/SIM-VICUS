@@ -139,9 +139,6 @@ public:
 	/*! fluid id */
 	unsigned int					m_fluidID = INVALID_ID;						// XML:A:required
 
-	/*! pipe database id */
-	unsigned int					m_pipeDBID = INVALID_ID;					// XML:A:required
-
 	/*! network name */
 	std::string						m_name;										// XML:A
 

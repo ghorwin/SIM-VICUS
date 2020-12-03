@@ -49,10 +49,6 @@ void Network::readXML(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'fluidID' attribute.") ), FUNC_ID);
 
-		if (!TiXmlAttribute::attributeByName(element, "pipeDBID"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'pipeDBID' attribute.") ), FUNC_ID);
-
 		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
@@ -61,8 +57,6 @@ void Network::readXML(const TiXmlElement * element) {
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "fluidID")
 				m_fluidID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "pipeDBID")
-				m_pipeDBID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "name")
 				m_name = attrib->ValueStr();
 			else {
@@ -146,8 +140,6 @@ TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (m_fluidID != VICUS::INVALID_ID)
 		e->SetAttribute("fluidID", IBK::val2string<unsigned int>(m_fluidID));
-	if (m_pipeDBID != VICUS::INVALID_ID)
-		e->SetAttribute("pipeDBID", IBK::val2string<unsigned int>(m_pipeDBID));
 	if (!m_name.empty())
 		e->SetAttribute("name", m_name);
 
