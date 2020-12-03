@@ -50,6 +50,10 @@ void NetworkPipe::readXML(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'sWall' attribute.") ), FUNC_ID);
 
+		if (!TiXmlAttribute::attributeByName(element, "roughness"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'roughness' attribute.") ), FUNC_ID);
+
 		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
@@ -62,6 +66,8 @@ void NetworkPipe::readXML(const TiXmlElement * element) {
 				m_diameterOutside = NANDRAD::readPODAttributeValue<double>(element, attrib);
 			else if (attribName == "sWall")
 				m_sWall = NANDRAD::readPODAttributeValue<double>(element, attrib);
+			else if (attribName == "roughness")
+				m_roughness = NANDRAD::readPODAttributeValue<double>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -86,6 +92,7 @@ TiXmlElement * NetworkPipe::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("displayName", m_displayName);
 	e->SetAttribute("diameterOutside", IBK::val2string<double>(m_diameterOutside));
 	e->SetAttribute("sWall", IBK::val2string<double>(m_sWall));
+	e->SetAttribute("roughness", IBK::val2string<double>(m_roughness));
 	return e;
 }
 
