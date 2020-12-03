@@ -63,7 +63,7 @@ public:
 	NetworkNode		*	m_node2 = nullptr;
 
 	/*! id of pipe */
-	unsigned		m_pipeId = INVALID_ID;			// XML:E
+	unsigned int		m_pipeId = INVALID_ID;			// XML:E
 
 	/*! If false, this is a branch. */
 	bool			m_supply;						// XML:A
