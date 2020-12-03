@@ -158,6 +158,10 @@ public:
 	/*! vector with edges */
 	std::vector<NetworkEdge>		m_edges;									// XML:E:required
 
+	/*! Pipe database, pipe dimensioning algorithm may use any pipes defined in this
+		list. */
+	std::vector<NetworkPipe>		m_networkPipes;								// XM:E
+
 	/*! Stores the extends of the network.
 		Use the function updateExtends() to compute these.
 		\code

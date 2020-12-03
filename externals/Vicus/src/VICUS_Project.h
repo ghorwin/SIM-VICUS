@@ -108,11 +108,8 @@ public:
 
 	std::vector<Building>	m_buildings;		// XML:E
 
-	/*! database of fluids */
-	std::vector<NetworkFluid>	m_networkFluidDB;	// XML:E
-
-	/*! pipe databases */
-//	std::vector<NetworkPipeDB>	m_networkPipeDBs;	// XM:E
+	/*! Database of fluids */
+	std::vector<NetworkFluid>	m_networkFluids;	// XML:E
 };
 
 

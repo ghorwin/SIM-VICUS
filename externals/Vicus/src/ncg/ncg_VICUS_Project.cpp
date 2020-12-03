@@ -64,7 +64,7 @@ void Project::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
-			else if (cName == "NetworkFluidDB") {
+			else if (cName == "NetworkFluids") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
@@ -72,7 +72,7 @@ void Project::readXML(const TiXmlElement * element) {
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					NetworkFluid obj;
 					obj.readXML(c2);
-					m_networkFluidDB.push_back(obj);
+					m_networkFluids.push_back(obj);
 					c2 = c2->NextSiblingElement();
 				}
 			}
@@ -123,12 +123,12 @@ TiXmlElement * Project::writeXML(TiXmlElement * parent) const {
 	}
 
 
-	if (!m_networkFluidDB.empty()) {
-		TiXmlElement * child = new TiXmlElement("NetworkFluidDB");
+	if (!m_networkFluids.empty()) {
+		TiXmlElement * child = new TiXmlElement("NetworkFluids");
 		e->LinkEndChild(child);
 
-		for (std::vector<NetworkFluid>::const_iterator it = m_networkFluidDB.begin();
-			it != m_networkFluidDB.end(); ++it)
+		for (std::vector<NetworkFluid>::const_iterator it = m_networkFluids.begin();
+			it != m_networkFluids.end(); ++it)
 		{
 			it->writeXML(child);
 		}
