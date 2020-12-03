@@ -43,7 +43,7 @@ unsigned Network::addNode(const NetworkNode &node, const bool considerCoordinate
 
 void Network::addEdge(const unsigned nodeId1, const unsigned nodeId2, const bool supply) {
 	IBK_ASSERT(nodeId1<m_nodes.size() && nodeId2<m_nodes.size());
-	NetworkEdge e(nodeId1, nodeId2, 0, 0, supply);
+	NetworkEdge e(nodeId1, nodeId2, 0, supply, INVALID_ID);
 	m_edges.push_back(e);
 	// TODO : does this needs to be done very time a node is added? or manually, when we are done?
 	updateNodeEdgeConnectionPointers();
@@ -264,12 +264,12 @@ void Network::networkWithoutDeadEnds(Network &cleanNetwork, const unsigned maxSt
 		for (unsigned n=0; n<m_nodes.size(); ++n)
 			m_nodes[n].updateIsDeadEnd();
 	}
-	for (const NetworkEdge &e: m_edges){
-		if (e.m_node1->m_isDeadEnd || e.m_node2->m_isDeadEnd)
+	for (const NetworkEdge &edge: m_edges){
+		if (edge.m_node1->m_isDeadEnd || edge.m_node2->m_isDeadEnd)
 			continue;
-		unsigned id1 = cleanNetwork.addNode(*e.m_node1);
-		unsigned id2 = cleanNetwork.addNode(*e.m_node2);
-		cleanNetwork.addEdge(NetworkEdge(id1, id2, e.length(), e.m_diameterInside, e.m_supply));
+		unsigned id1 = cleanNetwork.addNode(*edge.m_node1);
+		unsigned id2 = cleanNetwork.addNode(*edge.m_node2);
+		cleanNetwork.addEdge(NetworkEdge(id1, id2, edge.length(), edge.m_supply, edge.m_pipeId));
 	}
 }
 
@@ -301,12 +301,12 @@ void Network::networkWithReducedEdges(Network & reducedNetwork){
 			// add nodes and reduced edge to new network
 			unsigned id1 = reducedNetwork.addNode(*previousNode);
 			unsigned id2 = reducedNetwork.addNode(*nextNode);
-			reducedNetwork.addEdge(NetworkEdge(id1, id2, totalLength, edge.m_diameterInside, edge.m_supply));
+			reducedNetwork.addEdge(NetworkEdge(id1, id2, totalLength, edge.m_supply, edge.m_pipeId));
 		}
 		else{
 			unsigned id1 = reducedNetwork.addNode(*edge.m_node1);
 			unsigned id2 = reducedNetwork.addNode(*edge.m_node2);
-			reducedNetwork.addEdge(NetworkEdge(id1, id2, edge.length(), edge.m_diameterInside, edge.m_supply));
+			reducedNetwork.addEdge(NetworkEdge(id1, id2, edge.length(), edge.m_supply, edge.m_pipeId));
 		}
 	}
 }
@@ -338,8 +338,10 @@ void Network::sizePipeDimensions(const double &deltaPMax, const double &deltaTem
 		for (const NetworkPipe &pipe: pipeDB){
 			double massFlow = e.m_heatingDemand / deltaTemp / fluid.m_para[NetworkFluid::P_HeatCapacity].value;
 			if (pressureLossColebrook(e.length(), massFlow, fluid, pipe, temp) < deltaPMax){
-				e.m_diameterOutside = pipe.m_diameterOutside;
-				e.m_diameterInside = pipe.m_diameterInside();
+
+				// TODO: add pipe from DB
+
+
 				break;
 			}
 		}
@@ -405,7 +407,11 @@ double Network::pressureLossColebrook(const double &length, const double &massFl
 	double lambda = 0.05;
 	double lambda_new = lambda;
 	for (unsigned n=0; n<100; ++n){
-		lambda_new = std::pow(-2 * std::log10(2.51 / (Re * std::sqrt(lambda)) + pipe.m_roughness / (3.71 * pipe.m_diameterInside())), -2);
+
+		// TODO: use roughness from pipeDB
+
+//		lambda_new = std::pow(-2 * std::log10(2.51 / (Re * std::sqrt(lambda)) + pipe.m_roughness / (3.71 * pipe.m_diameterInside())), -2);
+
 		if (abs(lambda_new - lambda) / lambda < 1e-3)
 			break;
 		lambda = lambda_new;

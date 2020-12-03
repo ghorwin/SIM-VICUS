@@ -134,13 +134,16 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! unique ID of network */
-	unsigned int					m_id = INVALID_ID;			// XML:A:required
+	unsigned int					m_id = INVALID_ID;							// XML:A:required
 
 	/*! fluid id */
-	unsigned int					m_fluidID = INVALID_ID;		// XML:A:required
+	unsigned int					m_fluidID = INVALID_ID;						// XML:A:required
+
+	/*! pipe database id */
+	unsigned int					m_pipeDBID = INVALID_ID;					// XML:A:required
 
 	/*! network name */
-	std::string						m_name;						// XML:A
+	std::string						m_name;										// XML:A
 
 	/*! Nodes ID matches always node index.
 		\code

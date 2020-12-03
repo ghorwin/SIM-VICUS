@@ -20,11 +20,11 @@ public:
 
 	NetworkEdge()
 	{}
-	NetworkEdge(const unsigned nodeId1, const unsigned nodeId2, const double &length, const double &diameter, const bool supply):
+	NetworkEdge(const unsigned nodeId1, const unsigned nodeId2, const bool supply, const double &length, const unsigned pipeId):
+		m_pipeId(pipeId),
+		m_supply(supply),
 		m_nodeId1(nodeId1),
 		m_nodeId2(nodeId2),
-		m_diameterInside(diameter),
-		m_supply(supply),
 		m_length(length)
 	{}
 
@@ -62,11 +62,8 @@ public:
 	NetworkNode		*	m_node1 = nullptr;
 	NetworkNode		*	m_node2 = nullptr;
 
-	/*! Inner Diameter in [m] */
-	double			m_diameterInside;				// XML:E
-
-	/*! Outer Diameter in [m] */
-	double			m_diameterOutside;				// XML:E
+	/*! id of pipe */
+	unsigned		m_pipeId = INVALID_ID;			// XML:E
 
 	/*! If false, this is a branch. */
 	bool			m_supply;						// XML:A
@@ -76,11 +73,11 @@ public:
 
 private:
 
-	/*! Effective length [m], might be different than geometric length between nodes. */
-	double			m_length = 0;					// XML:E
-
 	unsigned int m_nodeId1 = 0;						// XML:A:required
 	unsigned int m_nodeId2 = 0;						// XML:A:required
+
+	/*! Effective length [m], might be different than geometric length between nodes. */
+	double			m_length = 0;					// XML:E
 
 
 };
