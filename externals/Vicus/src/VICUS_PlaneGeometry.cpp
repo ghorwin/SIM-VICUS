@@ -31,6 +31,31 @@ static bool solve(double a, double b, double c,  double d,  double e,  double f,
 }
 
 
+/* Computes the coordinates x, y of a point 'p' in a plane spanned by vectors a and b from a point 'offset', where rhs = p-offset.
+	The computed plane coordinates are stored in variables x and y (the factors for vectors a and b, respectively).
+	If no solution could be found (only possible if a and b are collinear or one of the vectors has length 0?),
+	the function returns false.
+
+	Note: when the point p is not in the plane, this function will still get a valid result.
+*/
+static bool planeCoordinates(const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & rhs, double & x, double & y) {
+	// We have 3 equations, but only two unknowns - so we have 3 different options to compute them.
+	// Some of them may fail, so we try them all.
+
+	// rows 1 and 2
+	bool success = solve(a.m_x, a.m_y, b.m_x, b.m_y, rhs.m_x, rhs.m_y, x, y);
+	if (!success)
+		// rows 1 and 3
+		success = solve(a.m_x, a.m_z, b.m_x, b.m_z, rhs.m_x, rhs.m_z, x, y);
+	if (!success)
+		// rows 2 and 3
+		success = solve(a.m_y, a.m_z, b.m_y, b.m_z, rhs.m_y, rhs.m_z, x, y);
+	if (!success)
+		return false;
+	return true;
+}
+
+
 void PlaneGeometry::readXML(const TiXmlElement * element) {
 	readXMLPrivate(element);
 	computeGeometry();
@@ -66,7 +91,7 @@ void PlaneGeometry::addVertex(const IBKMK::Vector3D & v) {
 void PlaneGeometry::computeGeometry() {
 	m_triangles.clear();
 	// try to simplify polygon to internal rectangle/parallelogram definition
-	// this may change m_type to Rectangle or Triangle and reduce the number of vertexes to 3
+	// this may change m_type to Rectangle or Triangle and subsequently speed up operations
 	simplify();
 	updateNormal();
 	if (!isValid())
@@ -97,9 +122,11 @@ void PlaneGeometry::simplify() {
 void PlaneGeometry::triangulate() {
 	m_triangles.clear();
 	switch (m_type) {
+
 		case T_Triangle :
 			m_triangles.push_back( TriangleVertexNumbers(0, 1, 2) );
 		break;
+
 		case T_Rectangle : {
 			// We might have a concave rectangle, i.e. where one diagonal is outside
 			// the rectangle (or aligned with one of the edges).
@@ -119,7 +146,13 @@ void PlaneGeometry::triangulate() {
 			m_triangles.push_back( TriangleVertexNumbers(0, 1, 2) );
 			m_triangles.push_back( TriangleVertexNumbers(0, 2, 3) );
 		} break;
+
+		case T_Polygon : {
+			//
+		}
+
 	}
+
 }
 
 
@@ -141,23 +174,6 @@ void PlaneGeometry::updateNormal() {
 
 }
 
-/*! Computes the coordinates x, y of a point p in a plane spanned by vectors a and b from an offset point, where rhs = p-offset.
-	The computed plane coordinates are stored in variables x and y (the factors for vectors a and b, respectively).
-	If no solution could be found (?), the function returns false.
-*/
-bool planeCoordinates(const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & rhs, double & x, double & y) {
-	// rows 1 and 2
-	bool success = solve(a.m_x, a.m_y, b.m_x, b.m_y, rhs.m_x, rhs.m_y, x, y);
-	if (!success)
-		// rows 1 and 3
-		success = solve(a.m_x, a.m_z, b.m_x, b.m_z, rhs.m_x, rhs.m_z, x, y);
-	if (!success)
-		// rows 2 and 3
-		success = solve(a.m_y, a.m_z, b.m_y, b.m_z, rhs.m_y, rhs.m_z, x, y);
-	if (!success)
-		return false;
-	return true;
-}
 
 bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & d, IBKMK::Vector3D & intersectionPoint,
 								   double & dist, bool hitBackfacingPlanes, bool endlessPlane) const
