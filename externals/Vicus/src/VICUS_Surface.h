@@ -15,7 +15,16 @@ namespace VICUS {
 class Surface : public Object {
 public:
 
+	enum SurfaceType{
+		SC_Wall,
+		SC_Floor,
+		SC_Roof,
+		NUM_SC
+	};
+
 	// *** PUBLIC MEMBER FUNCTIONS ***
+
+	void updateColor(const SurfaceType& type);
 
 	VICUS_READWRITE
 
