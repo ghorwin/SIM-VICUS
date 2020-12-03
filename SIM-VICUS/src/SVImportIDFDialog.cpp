@@ -88,6 +88,38 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		// add zone
 		mapZoneNameToIdx[z.m_name] = bl.m_rooms.size();
 		bl.m_rooms.push_back(r);
+
+		//import all building surface detailed -> opaque surfaces
+		for(const EP::BuildingSurfaceDetailed &bsd : prj.m_bsd){
+			if(mapZoneNameToIdx.find(bsd.m_zoneName) == mapZoneNameToIdx.end())
+				throw IBK::Exception(IBK::FormatString("Zone name '%1' does not exist, which is "
+													   "referenced in Building Surface Detailed '%2'").arg(bsd.m_zoneName)
+														.arg(bsd.m_name), FUNC_ID);
+			unsigned idx = mapZoneNameToIdx[bsd.m_zoneName];
+
+			VICUS::Surface surf;
+			surf.m_id = surf.uniqueID();
+			surf.m_displayName = QString::fromStdString(bsd.m_name);
+			surf.m_geometry.m_vertexes = bsd.m_polyline;
+			surf.m_geometry.updateNormal();
+			if(bsd.m_polyline.size() == 3)
+				surf.m_geometry.m_type = VICUS::PlaneGeometry::T_Triangle;
+			else
+				surf.m_geometry.m_type = VICUS::PlaneGeometry::T_Polygon;
+
+			switch (bsd.m_surfaceType) {
+				case EP::BuildingSurfaceDetailed::ST_Ceiling :
+				case EP::BuildingSurfaceDetailed::ST_Roof :			surf.updateColor(VICUS::Surface::SC_Roof); break;
+				case EP::BuildingSurfaceDetailed::ST_Wall :			surf.updateColor(VICUS::Surface::SC_Wall); break;
+				case EP::BuildingSurfaceDetailed::ST_Floor :		surf.updateColor(VICUS::Surface::SC_Floor); break;
+				default:											surf.updateColor(VICUS::Surface::SC_Wall); break;
+			}
+			bl.m_rooms[idx].m_surfaces.push_back(surf);
+		}
+
+		//add surfaces windows, doors, ...
+		//add constructions, materials
+		//add internal loads ...
 	}
 }
 
