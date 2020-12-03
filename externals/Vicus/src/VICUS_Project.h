@@ -112,7 +112,7 @@ public:
 	std::vector<NetworkFluid>	m_networkFluidDB;	// XML:E
 
 	/*! pipe databases */
-	std::vector<NetworkPipeDB>	m_networkPipeDBs;	// XML:E
+//	std::vector<NetworkPipeDB>	m_networkPipeDBs;	// XM:E
 };
 
 

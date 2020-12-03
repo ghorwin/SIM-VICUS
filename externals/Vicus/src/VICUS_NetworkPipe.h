@@ -35,30 +35,6 @@ public:
 };
 
 
-class NetworkPipeDB {
-public:
-
-	// *** PUBLIC MEMBER FUNCTIONS ***
-
-	VICUS_READWRITE
-	VICUS_COMPARE_WITH_ID
-
-	// *** PUBLIC MEMBER VARIABLES ***
-
-	/*! Unique id number. */
-	unsigned int						m_id = INVALID_ID;				// XML:A:required
-
-	/*! Display name of pipeDB. */
-	std::string							m_displayName;					// XML:A
-
-	/*! roughness in [mm]. */
-	double								m_roughness;					// XML:A:required
-
-	/*! table of pipes sorted from smallest to largest diameter */
-	std::vector<NetworkPipe>			m_pipes;						// XML:E
-
-};
-
 } // namespace VICUS
 
 #endif // VICUS_NetworkPipeH
