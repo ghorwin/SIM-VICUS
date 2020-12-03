@@ -165,9 +165,10 @@ void PlaneGeometry::updateNormal() {
 	for (unsigned int i=0; i<m_vertexes.size()-2; ++i) {
 		IBKMK::Vector3D ba = m_vertexes[2+i] - m_vertexes[1+i];
 		IBKMK::Vector3D ca = m_vertexes[0+i] - m_vertexes[1+i];
-		ba.crossProduct(ca, m_normal);
-		if (ba.magnitudeSquared() > 1e-4) {
-			m_normal = ba;
+		IBKMK::Vector3D n;
+		ba.crossProduct(ca, n);
+		if (n.magnitudeSquared() > 1e-4) {
+			m_normal = n;
 			return; // found a normal vector
 		}
 	}

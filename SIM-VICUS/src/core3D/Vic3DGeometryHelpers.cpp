@@ -88,25 +88,13 @@ void addPlane(const VICUS::PlaneGeometry & g, const QColor & col,
 			indexBufferData.resize(indexBufferData.size()+5);
 
 			// 4 indexes anti-clock wise in vertex memory
-			QVector3D a = VICUS::IBKVector2QVector(g.m_vertexes[0]);
-			QVector3D b = VICUS::IBKVector2QVector(g.m_vertexes[1]);
-			QVector3D d = VICUS::IBKVector2QVector(g.m_vertexes[2]);
-			vertexBufferData[currentVertexIndex    ].m_coords = a;
-			vertexBufferData[currentVertexIndex + 1].m_coords = b;
-			QVector3D c = b + (d - a);
-			vertexBufferData[currentVertexIndex + 2].m_coords = c;
-			vertexBufferData[currentVertexIndex + 3].m_coords = d;
-
+			Q_ASSERT(g.m_vertexes.size() == 4);
 			QVector3D n = VICUS::IBKVector2QVector(g.normal());
-			vertexBufferData[currentVertexIndex    ].m_normal = n;
-			vertexBufferData[currentVertexIndex + 1].m_normal = n;
-			vertexBufferData[currentVertexIndex + 2].m_normal = n;
-			vertexBufferData[currentVertexIndex + 3].m_normal = n;
-
-			colorBufferData[currentVertexIndex     ] = col;
-			colorBufferData[currentVertexIndex  + 1] = col;
-			colorBufferData[currentVertexIndex  + 2] = col;
-			colorBufferData[currentVertexIndex  + 3] = col;
+			for (unsigned int i=0; i<4; ++i) {
+				vertexBufferData[currentVertexIndex + i].m_coords = VICUS::IBKVector2QVector(g.m_vertexes[i]);
+				vertexBufferData[currentVertexIndex + i].m_normal = n;
+				colorBufferData[currentVertexIndex + i] = col;
+			}
 
 			// anti-clock-wise winding order for all triangles in strip
 			//
