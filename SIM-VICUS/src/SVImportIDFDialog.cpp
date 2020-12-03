@@ -5,9 +5,7 @@
 
 #include "SVProjectHandler.h"
 
-#if 0
 #include <EP_Project.h>
-#endif
 
 SVImportIDFDialog::SVImportIDFDialog(QWidget *parent) :
 	QDialog(parent),
@@ -24,7 +22,6 @@ SVImportIDFDialog::~SVImportIDFDialog() {
 
 SVImportIDFDialog::ImportResults SVImportIDFDialog::import(const QString & fname) {
 
-#if 0
 	// read IDF file
 
 	try {
@@ -49,7 +46,7 @@ SVImportIDFDialog::ImportResults SVImportIDFDialog::import(const QString & fname
 	int res = exec();
 	if (res == QDialog::Rejected)
 		return ImportCancelled;
-#endif
+
 	return m_returnCode;
 
 }
@@ -57,8 +54,6 @@ SVImportIDFDialog::ImportResults SVImportIDFDialog::import(const QString & fname
 
 void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	FUNCID(SVImportIDFDialog::transferData);
-
-#if 0
 
 	VICUS::Project & vp = m_importedProject; // readability improvement
 	vp.m_buildings.resize(1);
@@ -84,8 +79,6 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		// add zone
 		bl.m_rooms.push_back(r);
 	}
-#endif
-
 }
 
 void SVImportIDFDialog::on_pushButtonReplace_clicked() {
