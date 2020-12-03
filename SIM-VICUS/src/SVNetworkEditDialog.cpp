@@ -53,6 +53,7 @@ void SVNetworkEditDialog::setNetwork()
 {
 	unsigned id = m_existingNetworksMap.value(m_ui->comboBoxSelectNetwork->currentText());
 	m_network = *project().element(project().m_networks, id);
+	m_network.updateNodeEdgeConnectionPointers();
 	updateStatus();
 }
 

@@ -44,10 +44,10 @@ unsigned Network::addNode(const NetworkNode &node, const bool considerCoordinate
 void Network::addEdge(const unsigned nodeId1, const unsigned nodeId2, const bool supply) {
 	IBK_ASSERT(nodeId1<m_nodes.size() && nodeId2<m_nodes.size());
 	NetworkEdge e(nodeId1, nodeId2, 0, 0, supply);
-	e.setLengthFromCoordinates();
 	m_edges.push_back(e);
 	// TODO : does this needs to be done very time a node is added? or manually, when we are done?
 	updateNodeEdgeConnectionPointers();
+	m_edges.back().setLengthFromCoordinates();
 }
 
 
