@@ -688,6 +688,9 @@ void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3
 			for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 				for (const VICUS::Room & r : bl.m_rooms) {
 					for (const VICUS::Surface & s : r.m_surfaces) {
+						// skip invisible or inactive surfaces
+						if (!r.m_visible)
+							continue;
 						IBKMK::Vector3D intersectionPoint;
 						double dist;
 						if (s.m_geometry.intersectsLine(nearPoint2, d2, intersectionPoint, dist)) {
