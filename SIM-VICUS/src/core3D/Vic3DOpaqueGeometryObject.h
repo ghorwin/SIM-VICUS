@@ -23,9 +23,9 @@ QT_END_NAMESPACE
 
 namespace Vic3D {
 
-/*! A container for geometry to be rendered with triangle strips.
+/*! A container for geometry to be rendered with either triangle strips or triangles.
 	This object is used multiple times and is not associated with any particular
-	part of the scene or building.
+	part of the scene or building. Hence, it is populated with data, externally.
 */
 class OpaqueGeometryObject {
 public:
@@ -52,6 +52,14 @@ public:
 
 	/*! Binds the vertex array object and renders the geometry. */
 	void render();
+
+	/*! If true, this object expects index buffer to hold indexes suitable for drawing GL_TRIANGLE_STRIP (including
+		primitive restart indexes) and uses this to draw the objects.
+		If false, index buffer is expected to hold indexes of triangles that are drawn with GL_TRIANGLES (no primitive
+		restart index). For 2 triangles (i.e. one rectangle) this means: 4 indexes + 1 = 5 for GL_TRIANGLE_STRIP and
+		2*3 = 6 for GL_TRIANGLES.
+	*/
+	bool						m_drawTriangleStrips = true;
 
 	/*! Vertex buffer in CPU memory, holds data of all vertices (coords and normals). */
 	std::vector<Vertex>			m_vertexBufferData;

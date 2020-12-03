@@ -156,7 +156,7 @@ void NewPolygonObject::updateBuffers() {
 
 	if (m_planeGeometry.isValid()) {
 		addPlane(m_planeGeometry, QColor(255,0,128,64), currentVertexIndex, currentElementIndex,
-				 m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+				 m_vertexBufferData, m_colorBufferData, m_indexBufferData, false);
 		// remember index of vertex where "current" line starts
 		m_firstLineVertex = currentVertexIndex-1;
 	}
@@ -197,7 +197,7 @@ void NewPolygonObject::render() {
 	m_vao.bind();
 	// now draw the geometry - first the polygon (if any)
 	if (!m_indexBufferData.empty())
-		glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
+		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
 	if (m_vertexBufferData.size() > 1) {
 		// then the line consisting of the last two vertexes
 		glLineWidth(2);

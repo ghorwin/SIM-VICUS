@@ -534,12 +534,14 @@ void Vic3DScene::generateBuildingGeometry() {
 	m_opaqueGeometryObject.m_colorBufferData.reserve(100000);
 	m_opaqueGeometryObject.m_indexBufferData.reserve(100000);
 
+	// we want to draw triangles
+	m_opaqueGeometryObject.m_drawTriangleStrips = false;
+
 	// we now process all surfaces and add their coordinates and
 	// normals
 
-	// we also store colors for each surface: hereby, we
-	// use the current highlighting-filter object, which relates
-	// object properties to colors
+	// TODO : set colors for each surface: hereby use the current
+	// highlighting-filter object, which relates object properties to colors
 
 	// recursively process all buildings, building levels etc.
 

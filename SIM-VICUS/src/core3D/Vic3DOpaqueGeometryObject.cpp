@@ -128,7 +128,10 @@ void OpaqueGeometryObject::render() {
 	// bind all buffers ("position", "normal" and "color" arrays)
 	m_vao.bind();
 	// now draw the geometry
-	glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
+	if (m_drawTriangleStrips)
+		glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
+	else
+		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
 	// release buffers again
 	m_vao.release();
 }

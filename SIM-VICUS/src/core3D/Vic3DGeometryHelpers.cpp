@@ -23,7 +23,10 @@ void addSurface(const VICUS::Surface & s,
 	else if (s.m_selected) {
 		col = SVSettings::instance().m_selectedSurfaceColor;
 	}
-	addPlane(s.m_geometry, col, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData);
+	// first add the plane regular
+	addPlane(s.m_geometry, col, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
+	// then add the plane again inverted
+	addPlane(s.m_geometry, col, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, true);
 }
 
 
@@ -45,107 +48,100 @@ void updateSurfaceColors(const VICUS::Surface & s, unsigned int & currentVertexI
 
 void addPlane(const VICUS::PlaneGeometry & g, const QColor & col,
 			  unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
-			  std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLshort> & indexBufferData)
+			  std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLshort> & indexBufferData,
+			  bool inverted)
 {
-	// different handling based on surface type
+	// add vertex data to buffers
+	unsigned int nVertexes = g.m_vertexes.size();
+	// insert count vertexes
+	vertexBufferData.resize(vertexBufferData.size()+nVertexes);
+	colorBufferData.resize(colorBufferData.size()+nVertexes);
+	// set data
+	QVector3D n = VICUS::IBKVector2QVector(g.normal());
+	if (inverted)
+		n *= -1;
+	for (unsigned int i=0; i<nVertexes; ++i) {
+		vertexBufferData[currentVertexIndex + i].m_coords = VICUS::IBKVector2QVector(g.m_vertexes[i]);
+		vertexBufferData[currentVertexIndex + i].m_normal = n;
+		colorBufferData[currentVertexIndex  + i] = col;
+	}
+
+	// index buffer is populated differently, depending on geometry type
 	switch (g.type()) {
 		case VICUS::PlaneGeometry::T_Triangle : {
-			// insert 3 vertexes
-			vertexBufferData.resize(vertexBufferData.size()+3);
-			colorBufferData.resize(colorBufferData.size()+3);
-			// 4 elements (3 for the triangle, 1 primitive restart index)
-			indexBufferData.resize(indexBufferData.size()+4);
-
-			vertexBufferData[currentVertexIndex    ].m_coords = VICUS::IBKVector2QVector(g.m_vertexes[0]);
-			vertexBufferData[currentVertexIndex + 1].m_coords = VICUS::IBKVector2QVector(g.m_vertexes[1]);
-			vertexBufferData[currentVertexIndex + 2].m_coords = VICUS::IBKVector2QVector(g.m_vertexes[2]);
-			QVector3D n = VICUS::IBKVector2QVector(g.normal());
-			vertexBufferData[currentVertexIndex    ].m_normal = n;
-			vertexBufferData[currentVertexIndex + 1].m_normal = n;
-			vertexBufferData[currentVertexIndex + 2].m_normal = n;
-
-			colorBufferData[currentVertexIndex     ] = col;
-			colorBufferData[currentVertexIndex  + 1] = col;
-			colorBufferData[currentVertexIndex  + 2] = col;
-
+			// 3 elements for the triangle
+			indexBufferData.resize(indexBufferData.size()+3);
 			// anti-clock-wise winding order for all triangles in strip
-			indexBufferData[currentElementIndex    ] = currentVertexIndex + 0;
-			indexBufferData[currentElementIndex + 1] = currentVertexIndex + 1;
-			indexBufferData[currentElementIndex + 2] = currentVertexIndex + 2;
-			indexBufferData[currentElementIndex + 3] = 0xFFFF; // set stop index
-
-
-			// finally advance buffer indexes
-			currentVertexIndex += 3;
+			if (inverted) {
+				indexBufferData[currentElementIndex    ] = currentVertexIndex + 0;
+				indexBufferData[currentElementIndex + 1] = currentVertexIndex + 2;
+				indexBufferData[currentElementIndex + 2] = currentVertexIndex + 1;
+			}
+			else {
+				indexBufferData[currentElementIndex    ] = currentVertexIndex + 0;
+				indexBufferData[currentElementIndex + 1] = currentVertexIndex + 1;
+				indexBufferData[currentElementIndex + 2] = currentVertexIndex + 2;
+			}
+			// advance index in element/index buffer
 			currentElementIndex += 4;
 		} break;
 
 		case VICUS::PlaneGeometry::T_Rectangle : {
-			// insert 4 vertexes
-			vertexBufferData.resize(vertexBufferData.size()+4);
-			colorBufferData.resize(colorBufferData.size()+4);
-			// 5 elements (4 for the two triangles in a strip, 1 primitive restart index)
-			indexBufferData.resize(indexBufferData.size()+5);
+			// 6 elements (2 triangles)
+			indexBufferData.resize(indexBufferData.size()+6);
 
-			// 4 indexes anti-clock wise in vertex memory
-			Q_ASSERT(g.m_vertexes.size() == 4);
-			QVector3D n = VICUS::IBKVector2QVector(g.normal());
-			for (unsigned int i=0; i<4; ++i) {
-				vertexBufferData[currentVertexIndex + i].m_coords = VICUS::IBKVector2QVector(g.m_vertexes[i]);
-				vertexBufferData[currentVertexIndex + i].m_normal = n;
-				colorBufferData[currentVertexIndex + i] = col;
+			if (inverted) {
+				indexBufferData[currentElementIndex    ] = currentVertexIndex + 0;
+				indexBufferData[currentElementIndex + 1] = currentVertexIndex + 2;
+				indexBufferData[currentElementIndex + 2] = currentVertexIndex + 1;
+				indexBufferData[currentElementIndex + 3] = currentVertexIndex + 2;
+				indexBufferData[currentElementIndex + 4] = currentVertexIndex + 0;
+				indexBufferData[currentElementIndex + 5] = currentVertexIndex + 3;
+			}
+			else {
+				// anti-clock-wise winding order for all triangles in strip
+				// 0, 1, 2
+				// 2, 3, 0
+				indexBufferData[currentElementIndex    ] = currentVertexIndex + 0;
+				indexBufferData[currentElementIndex + 1] = currentVertexIndex + 1;
+				indexBufferData[currentElementIndex + 2] = currentVertexIndex + 2;
+				indexBufferData[currentElementIndex + 3] = currentVertexIndex + 2;
+				indexBufferData[currentElementIndex + 4] = currentVertexIndex + 3;
+				indexBufferData[currentElementIndex + 5] = currentVertexIndex + 0;
 			}
 
-			// anti-clock-wise winding order for all triangles in strip
-			//
-			// options are:
-			// a) 3, 0, 2, 1
-			// b) 0, 1, 3, 2
-			indexBufferData[currentElementIndex    ] = currentVertexIndex + 0;
-			indexBufferData[currentElementIndex + 1] = currentVertexIndex + 1;
-			indexBufferData[currentElementIndex + 2] = currentVertexIndex + 3;
-			indexBufferData[currentElementIndex + 3] = currentVertexIndex + 2;
-			indexBufferData[currentElementIndex + 4] = 0xFFFF; // set stop index
-
-			// finally advance buffer indexes
-			currentVertexIndex += 4;
-			currentElementIndex += 5;
+			// advance index in element/index buffer
+			currentElementIndex += 6;
 		} break;
 
 		case VICUS::PlaneGeometry::T_Polygon : {
-			// insert as many vertexes as there are in the polygon
-			unsigned int nvert = g.m_vertexes.size();
-			vertexBufferData.resize(vertexBufferData.size()+nvert);
-			colorBufferData.resize(colorBufferData.size()+nvert);
-			// nvert indexes + primitive restart index
-			indexBufferData.resize(indexBufferData.size()+nvert+1);
+			unsigned int triangleIndexCount = g.triangles().size()*3;
+			indexBufferData.resize(indexBufferData.size()+triangleIndexCount);
+			// add all triangles
 
-			QVector3D n = VICUS::IBKVector2QVector(g.normal());
-
-			// add all vertices to buffer
-			for (unsigned int i=0; i<nvert; ++i) {
-				// add vertex and
-				unsigned int vIdx = currentVertexIndex + i;
-				vertexBufferData[vIdx].m_coords = VICUS::IBKVector2QVector(g.m_vertexes[i]);
-				vertexBufferData[vIdx].m_normal = n;
-				colorBufferData[vIdx] = col;
-				// build up triangle strip index buffer
-				bool odd = (i % 2 != 0);
-				// odd vertices are added anti-clock-wise from start, even vertices are added clock-wise from end
-				unsigned int j = i / 2;
-				if (odd)
-					indexBufferData[currentElementIndex + i] = currentVertexIndex + j;
-				else
-					indexBufferData[currentElementIndex + i] = currentVertexIndex + nvert - j - 1;
+			for (const VICUS::PlaneGeometry::triangle_t & t : g.triangles()) {
+				if (inverted) {
+					indexBufferData[currentElementIndex    ] = currentVertexIndex + t.a;
+					indexBufferData[currentElementIndex + 1] = currentVertexIndex + t.c;
+					indexBufferData[currentElementIndex + 2] = currentVertexIndex + t.b;
+				}
+				else {
+					indexBufferData[currentElementIndex    ] = currentVertexIndex + t.a;
+					indexBufferData[currentElementIndex + 1] = currentVertexIndex + t.b;
+					indexBufferData[currentElementIndex + 2] = currentVertexIndex + t.c;
+				}
+				// advance index in element/index buffer
+				currentElementIndex += 3;
 			}
 
-			indexBufferData[currentElementIndex + nvert] = 0xFFFF; // set stop index
-
-			// finally advance buffer indexes
-			currentVertexIndex += nvert;
-			currentElementIndex += nvert + 1;
+			// index in element/index buffer has already been advanced
 		} break;
+
+		case VICUS::PlaneGeometry::NUM_T:; // just to make compiler happy
 	} // switch
+
+	// finally advance vertex index
+	currentVertexIndex += nVertexes;
 }
 
 

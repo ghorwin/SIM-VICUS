@@ -29,6 +29,15 @@ public:
 		NUM_T
 	};
 
+	/*! Simple storage member to hold vertex indexes of a single triangle. */
+	struct triangle_t {
+		triangle_t() {}
+		triangle_t(unsigned short i1, unsigned short i2, unsigned short i3) :
+			a(i1), b(i2), c(i3)
+		{}
+		unsigned short a,b,c;
+	};
+
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	void readXML(const TiXmlElement * element);
@@ -76,6 +85,9 @@ public:
 						bool endlessPlane = false) const;
 
 
+	/*! Returns current vector of triangles. */
+	const std::vector<triangle_t> & triangles() const { return m_triangles; }
+
 	/*! Points of polyline (in double-precision accuracy!).
 		\warning Do not write to this variable, unless you know what you are doing. Rather use addVertex().
 	*/
@@ -113,16 +125,7 @@ private:
 	type_t								m_type = NUM_T;
 
 
-
 	// *** Runtime Variables ***
-
-	struct TriangleVertexNumbers {
-		TriangleVertexNumbers() {}
-		TriangleVertexNumbers(unsigned short i1, unsigned short i2, unsigned short i3) :
-			a(i1), b(i2), c(i3)
-		{}
-		unsigned short a,b,c;
-	};
 
 	IBKMK::Vector3D						m_normal = IBKMK::Vector3D(0,0,0);
 
@@ -130,7 +133,7 @@ private:
 		that (b-a) x (c-a) gives the normal vector of the plane.
 		This vector is updated in computeGeometry().
 	*/
-	std::vector<TriangleVertexNumbers>	m_triangles;
+	std::vector<triangle_t>	m_triangles;
 
 
 private:

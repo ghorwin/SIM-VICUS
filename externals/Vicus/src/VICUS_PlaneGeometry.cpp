@@ -134,7 +134,7 @@ void PlaneGeometry::triangulate() {
 	switch (m_type) {
 
 		case T_Triangle :
-			m_triangles.push_back( TriangleVertexNumbers(0, 1, 2) );
+			m_triangles.push_back( triangle_t(0, 1, 2) );
 		break;
 
 		case T_Rectangle :
@@ -267,7 +267,7 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 
 		case T_Polygon : {
 			// process all triangles and perform the test for each triangle
-			for (const TriangleVertexNumbers & tr : m_triangles) {
+			for (const triangle_t & tr : m_triangles) {
 				double x,y;
 				const IBKMK::Vector3D & a = m_vertexes[tr.c] - m_vertexes[tr.b];
 				const IBKMK::Vector3D & b = m_vertexes[tr.a] - m_vertexes[tr.b];
