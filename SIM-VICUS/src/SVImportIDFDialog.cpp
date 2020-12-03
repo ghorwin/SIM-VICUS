@@ -61,6 +61,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	VICUS::BuildingLevel & bl = vp.m_buildings[0].m_buildingLevels[0];
 
 	std::map<std::string, unsigned int> mapZoneID;
+	std::map<std::string, unsigned int>	mapZoneNameToIdx;
 	// import all zones
 	for (const EP::Zone & z : prj.m_zones) {
 		VICUS::Room r;
@@ -74,9 +75,18 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 		// transfer attributes
 
+
+		// ceiling height is not taken into account
+		if(z.m_floorArea > 0)
+			r.m_para[VICUS::Room::P_Area].set("Area", z.m_floorArea, "m2" );
+		if(z.m_volume > 0)
+			r.m_para[VICUS::Room::P_Volume].set("Volume", z.m_volume, "m3" );
+
+
 		// TODO : Dirk
 
 		// add zone
+		mapZoneNameToIdx[z.m_name] = bl.m_rooms.size();
 		bl.m_rooms.push_back(r);
 	}
 }
