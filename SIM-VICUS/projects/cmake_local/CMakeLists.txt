@@ -16,6 +16,7 @@ include_directories(
 	${PROJECT_SOURCE_DIR}/../../../externals/QuaZIP/src
 	${PROJECT_SOURCE_DIR}/../../../externals/QuaZIP/src/zlib
 	${PROJECT_SOURCE_DIR}/../../../externals/CCM/src
+	${PROJECT_SOURCE_DIR}/../../../externals/GenericBuildings/src
 	${Qt5Widgets_INCLUDE_DIRS}
 	${Qt5Network_INCLUDE_DIRS}
 	${Qt5Svg_INCLUDE_DIRS}
