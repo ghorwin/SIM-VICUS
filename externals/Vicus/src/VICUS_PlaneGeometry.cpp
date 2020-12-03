@@ -12,6 +12,8 @@
 #include <VICUS_Constants.h>
 #include <VICUS_KeywordList.h>
 
+#include <QPolygonF>
+
 #include <tinyxml.h>
 
 namespace VICUS {
@@ -120,6 +122,7 @@ void PlaneGeometry::simplify() {
 
 
 void PlaneGeometry::triangulate() {
+	Q_ASSERT(m_vertexes.size() >= 3);
 	m_triangles.clear();
 	switch (m_type) {
 
@@ -127,30 +130,47 @@ void PlaneGeometry::triangulate() {
 			m_triangles.push_back( TriangleVertexNumbers(0, 1, 2) );
 		break;
 
-		case T_Rectangle : {
-			// We might have a concave rectangle, i.e. where one diagonal is outside
-			// the rectangle (or aligned with one of the edges).
-			// Easiest way to find this is to check if any of the angles between two adjacent
-			// edges is > 180°. However, we cannot do this easily, so we take the Anne's idea.
-			// We process two neighboring vertices.
-			// For each vertex, we span a plane (vectors to left and right neighboring vertexes).
-			// Then, we compute the vector factors to the 4th vertex - if either of them is
-			// negative, the point lies outside the rectangle spanned by the vertexes and hence, we
-			// need to use the other diagonal to split the triangle.
-
-			// Try vertex 0 first
-			IBKMK::Vector3D a;
-
-
-			// none found, just split up at vertex 0..2
-			m_triangles.push_back( TriangleVertexNumbers(0, 1, 2) );
-			m_triangles.push_back( TriangleVertexNumbers(0, 2, 3) );
-		} break;
-
+		case T_Rectangle :
+			// TODO : there might be a faster way for rectangles, but for now
+			//        we use the same triangulation algorithm as for polygons
 		case T_Polygon : {
-			//
-		}
+			// compute x,y coordinates in plane for all vertexes
+			QPolygonF plane;
 
+			IBKMK::Vector3D offset = m_vertexes[0];
+			// x-axis vector in plane
+			IBKMK::Vector3D vX = (m_vertexes[1] - m_vertexes[0]);
+			// y-axis vector in plane
+			IBKMK::Vector3D vY;
+			m_normal.crossProduct(vX, vY);
+
+			// first point is v0 = origin
+			plane.append(QPointF(0,0));
+			// second point is v1 at (1,0), since v1-v0 is the vX vector
+			plane.append(QPointF(1,0));
+
+			// now process all other points
+			for (unsigned int i=2; i<m_vertexes.size(); ++i) {
+				const IBKMK::Vector3D & v = m_vertexes[i];
+				double x,y;
+				/// \todo improve this - by simply calling planeCoordinates we
+				///       redo the same stuff several times for the same plane.
+				///       We should use a function that passes vX, vY, offset and then
+				///       a vector with v,x,y to process.
+				if (planeCoordinates(vX, vY, v-offset, x, y)) {
+					plane.append(QPointF(x,y));
+				}
+				else {
+					// this shouldn't happen
+					Q_ASSERT(false);
+				}
+			}
+
+
+		}
+		break;
+
+		case NUM_T : ; // shouldn't happen
 	}
 
 }
@@ -169,6 +189,7 @@ void PlaneGeometry::updateNormal() {
 		ba.crossProduct(ca, n);
 		if (n.magnitudeSquared() > 1e-4) {
 			m_normal = n;
+			m_normal.normalize();
 			return; // found a normal vector
 		}
 	}
