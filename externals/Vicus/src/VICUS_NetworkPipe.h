@@ -31,6 +31,8 @@ public:
 	double								m_diameterOutside;				// XML:A:required
 	/*! Wall thickness in [mm]. */
 	double								m_sWall;						// XML:A:required
+	/*! pipe wall roughness in [mm] */
+	double								m_roughness;					// XML:A:required
 
 };
 

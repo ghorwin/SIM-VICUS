@@ -23,7 +23,7 @@ INCLUDEPATH = \
 DEPENDPATH = $${INCLUDEPATH}
 
 SOURCES += \
-	../../src/EP_IDFParser.cpp \
+#	../../src/EP_IDFParser.cpp \
 		../../src/EP_Zone.cpp \
 		../../src/EP_BuildingSurfaceDetailed.cpp \
 		../../src/EP_Construction.cpp \
@@ -37,7 +37,7 @@ SOURCES += \
 #		../../src/NSG_SurfaceClipping.cpp
 
 HEADERS += \
-	../../src/EP_IDFParser.h \
+#	../../src/EP_IDFParser.h \
 		../../src/EP_Zone.h \
 		../../src/EP_BuildingSurfaceDetailed.h \
 		../../src/EP_Construction.h \
