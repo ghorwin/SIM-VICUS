@@ -103,12 +103,9 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 			VICUS::Surface surf;
 			surf.m_id = surf.uniqueID();
 			surf.m_displayName = QString::fromStdString(bsd.m_name);
+			surf.m_geometry = VICUS::PlaneGeometry(VICUS::PlaneGeometry::T_Polygon);
 			surf.m_geometry.m_vertexes = bsd.m_polyline;
-			surf.m_geometry.updateNormal();
-			if(bsd.m_polyline.size() == 3)
-				surf.m_geometry.m_type = VICUS::PlaneGeometry::T_Triangle;
-			else
-				surf.m_geometry.m_type = VICUS::PlaneGeometry::T_Polygon;
+			surf.m_geometry.computeGeometry();
 
 			switch (bsd.m_surfaceType) {
 				case EP::BuildingSurfaceDetailed::ST_Ceiling :

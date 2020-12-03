@@ -112,6 +112,8 @@ target_link_libraries( ${PROJECT_NAME}
 	Nandrad
 	CCM
 	QtExt
+	GenericBuildings
+	IBKMK
 	IBK
 	TiCPP
 	QuaZIP
