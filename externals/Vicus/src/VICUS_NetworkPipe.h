@@ -2,6 +2,7 @@
 #define VICUS_NetworkPipeH
 
 #include <string>
+#include <vector>
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
@@ -26,13 +27,35 @@ public:
 	unsigned int						m_id = INVALID_ID;				// XML:A:required
 	/*! Display name of fluid. */
 	std::string							m_displayName;					// XML:A
-
 	/*! Outside diameter in [mm]. */
 	double								m_diameterOutside;				// XML:A:required
 	/*! Wall thickness in [mm]. */
 	double								m_sWall;						// XML:A:required
+
+};
+
+
+class NetworkPipeDB {
+public:
+
+	// *** PUBLIC MEMBER FUNCTIONS ***
+
+	VICUS_READWRITE
+	VICUS_COMPARE_WITH_ID
+
+	// *** PUBLIC MEMBER VARIABLES ***
+
+	/*! Unique id number. */
+	unsigned int						m_id = INVALID_ID;				// XML:A:required
+
+	/*! Display name of pipeDB. */
+	std::string							m_displayName;					// XML:A
+
 	/*! roughness in [mm]. */
 	double								m_roughness;					// XML:A:required
+
+	/*! table of pipes sorted from smallest to largest diameter */
+	std::vector<NetworkPipe>			m_pipes;						// XML:E
 
 };
 

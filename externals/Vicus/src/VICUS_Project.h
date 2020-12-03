@@ -111,8 +111,8 @@ public:
 	/*! database of fluids */
 	std::vector<NetworkFluid>	m_networkFluidDB;	// XML:E
 
-	/*! database of pipes, sorted from smallest to highest diameter */
-	std::vector<NetworkPipe>	m_networkPipeDB;	// XML:E
+	/*! pipe databases */
+	std::vector<NetworkPipeDB>	m_networkPipeDBs;	// XML:E
 };
 
 

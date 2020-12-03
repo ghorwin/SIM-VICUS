@@ -84,7 +84,7 @@ void Project::readXML(const TiXmlElement * element) {
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					NetworkPipe obj;
 					obj.readXML(c2);
-					m_networkPipeDB.push_back(obj);
+					m_networkPipeDBs.push_back(obj);
 					c2 = c2->NextSiblingElement();
 				}
 			}
@@ -147,12 +147,12 @@ TiXmlElement * Project::writeXML(TiXmlElement * parent) const {
 	}
 
 
-	if (!m_networkPipeDB.empty()) {
+	if (!m_networkPipeDBs.empty()) {
 		TiXmlElement * child = new TiXmlElement("NetworkPipeDB");
 		e->LinkEndChild(child);
 
-		for (std::vector<NetworkPipe>::const_iterator it = m_networkPipeDB.begin();
-			it != m_networkPipeDB.end(); ++it)
+		for (std::vector<NetworkPipe>::const_iterator it = m_networkPipeDBs.begin();
+			it != m_networkPipeDBs.end(); ++it)
 		{
 			it->writeXML(child);
 		}
