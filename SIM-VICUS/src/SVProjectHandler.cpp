@@ -529,13 +529,13 @@ void SVProjectHandler::updateSurfaceColors()
 						double angleForWalls = 0.707;
 						//Floor
 						if(s.m_geometry.m_normal.m_z < -angleForWalls)
-							s.m_color = QColor(20,50,150,1);
+							s.updateColor(VICUS::Surface::SC_Floor);
 						//Roof
 						else if(s.m_geometry.m_normal.m_z > angleForWalls)
-							s.m_color = QColor(150,50,20,1);
+							s.updateColor(VICUS::Surface::SC_Roof);
 						//Wall
 						else
-							s.m_color = QColor(200,200,140,1);
+							s.updateColor(VICUS::Surface::SC_Wall);
 					}
 
 				}
