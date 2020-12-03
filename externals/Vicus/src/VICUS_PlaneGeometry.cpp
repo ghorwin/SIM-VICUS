@@ -75,8 +75,8 @@ PlaneGeometry::PlaneGeometry() {
 
 PlaneGeometry::PlaneGeometry(PlaneGeometry::type_t t,
 							 const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c) :
-	m_type(t),
-	m_vertexes({a,b,c})
+	m_vertexes({a,b,c}),
+	m_type(t)
 {
 	computeGeometry();
 }
