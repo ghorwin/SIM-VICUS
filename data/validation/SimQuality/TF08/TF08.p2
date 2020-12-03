@@ -83,8 +83,8 @@
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">d</IBK:Unit>
-						<Maximum>981350916688.28552</Maximum>
-						<Minimum>980630610826.5957</Minimum>
+						<Maximum>994140000860</Maximum>
+						<Minimum>994032000939</Minimum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
 						<DateTimeEnabled>1</DateTimeEnabled>
@@ -95,14 +95,14 @@
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
-						<Maximum>25.351703129327056</Maximum>
-						<Minimum>19.19920612941937</Minimum>
+						<Maximum>42</Maximum>
+						<Minimum>34</Minimum>
 						<MinorGridVisible>0</MinorGridVisible>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>35.382993198940007</Maximum>
-						<Minimum>35.382990469696708</Minimum>
+						<Maximum>35.38299111021098</Maximum>
+						<Minimum>35.382991108909941</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -111,7 +111,7 @@
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
 						<Position>Inside</Position>
-						<Alignment>1</Alignment>
+						<Alignment>7</Alignment>
 						<MaxColumns>1</MaxColumns>
 						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
 					</Legend>
@@ -184,8 +184,8 @@
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">d</IBK:Unit>
-						<Maximum>981210043016.63416</Maximum>
-						<Minimum>980949383993.09167</Minimum>
+						<Maximum>994140000860</Maximum>
+						<Minimum>994032000939</Minimum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
 						<DateTimeEnabled>1</DateTimeEnabled>
@@ -196,8 +196,8 @@
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
-						<Maximum>24.037589154929346</Maximum>
-						<Minimum>19.812648729165531</Minimum>
+						<Maximum>42</Maximum>
+						<Minimum>34</Minimum>
 						<MinorGridVisible>0</MinorGridVisible>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
@@ -285,8 +285,8 @@
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">d</IBK:Unit>
-						<Maximum>981344563888.82739</Maximum>
-						<Minimum>980916413190.12292</Minimum>
+						<Maximum>994140000860</Maximum>
+						<Minimum>994032000939</Minimum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
 						<DateTimeEnabled>1</DateTimeEnabled>
@@ -297,14 +297,14 @@
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
-						<Maximum>30.327088566205433</Maximum>
-						<Minimum>19.33434151271495</Minimum>
+						<Maximum>42</Maximum>
+						<Minimum>34</Minimum>
 						<MinorGridVisible>0</MinorGridVisible>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>35.382991111452363</Maximum>
-						<Minimum>35.382991108932636</Minimum>
+						<Maximum>35.382991109458722</Maximum>
+						<Minimum>35.38299110933572</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -313,7 +313,6 @@
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
 						<Position>Inside</Position>
-						<Alignment>1</Alignment>
 						<MaxColumns>1</MaxColumns>
 						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
 					</Legend>
@@ -386,8 +385,8 @@
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">d</IBK:Unit>
-						<Maximum>988616106494.71912</Maximum>
-						<Minimum>988514178489.38171</Minimum>
+						<Maximum>994140000860</Maximum>
+						<Minimum>994032000939</Minimum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
 						<DateTimeEnabled>1</DateTimeEnabled>
@@ -398,14 +397,14 @@
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
-						<Maximum>35.896110892262527</Maximum>
-						<Minimum>34.464948873603156</Minimum>
+						<Maximum>42</Maximum>
+						<Minimum>34</Minimum>
 						<MinorGridVisible>0</MinorGridVisible>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>35.382991109565317</Maximum>
-						<Minimum>35.382991109544292</Minimum>
+						<Maximum>35.382991110206468</Maximum>
+						<Minimum>35.38299111008638</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -414,7 +413,6 @@
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
 						<Position>Inside</Position>
-						<Alignment>1</Alignment>
 						<MaxColumns>1</MaxColumns>
 						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
 					</Legend>
@@ -427,7 +425,7 @@
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="3" size1="1" size2="1" orientation="2" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="0" size1="1" size2="1" orientation="2" />
 		<FocusedWidget>0</FocusedWidget>
 	</Splitting>
 
