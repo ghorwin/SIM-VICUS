@@ -5,8 +5,10 @@
 		<Directory>
 			<Path>.</Path>
 			<SubDir Color="#7141d1" Checked="1">SimQuality_TF08.1</SubDir>
-			<SubDir Color="#ffee00" Checked="0">SimQuality_TF08.1_individual_daily_cycles</SubDir>
-			<SubDir Color="#005500" Checked="1">reference</SubDir>
+			<SubDir Color="#ff007f" Checked="0">SimQuality_TF08.2</SubDir>
+			<SubDir Color="#ffaaff" Checked="0">SimQuality_TF08.3</SubDir>
+			<SubDir Color="#ff007f" Checked="0">SimQuality_TF08.4</SubDir>
+			<SubDir Color="#005500" Checked="0">reference</SubDir>
 			<ExpandedSubDir>.</ExpandedSubDir>
 		</Directory>
 	</Directories>
@@ -15,7 +17,7 @@
 
 	<!--All mappers.-->
 	<Mappers>
-		<Mapper name="TF 08.1 - Raumlufttemperatur">
+		<Mapper name="TF 08.1 - Temperaturen">
 			<Extractors>
 				<Extractor>
 					<DataIOFileName>reference/NANDRAD.tsv?1|3|4|6|7|9|10|12</DataIOFileName>
@@ -31,15 +33,29 @@
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
+				<Extractor>
+					<DataIOFileName>reference/NANDRAD.tsv?1|3|4|6|7|9|10|12</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF08.1/results/states.tsv?1|2</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
 			</Extractors>
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
-						<TitleText>Referenz (NANDRAD 1)</TitleText>
+						<TitleText>Referenz - Raumlufttemperatur</TitleText>
 						<MarkerStyle>0</MarkerStyle>
 						<PenStyle>0</PenStyle>
 						<MarkerColor>#000000</MarkerColor>
-						<MarkerSize>9</MarkerSize>
+						<MarkerSize>10</MarkerSize>
 					</Series>
 					<Series>
 						<TitleText>Raumlufttemperatur</TitleText>
@@ -47,14 +63,28 @@
 						<PenColor>#cc0000</PenColor>
 						<MarkerColor>#cc0000</MarkerColor>
 					</Series>
+					<Series>
+						<TitleText>Referenz - Wandoberfläche</TitleText>
+						<MarkerStyle>0</MarkerStyle>
+						<PenStyle>0</PenStyle>
+						<PenColor>#75507b</PenColor>
+						<MarkerColor>#75507b</MarkerColor>
+						<MarkerSize>10</MarkerSize>
+					</Series>
+					<Series>
+						<TitleText>Raumlufttemperatur</TitleText>
+						<MarkerStyle>0</MarkerStyle>
+						<PenColor>#edd400</PenColor>
+						<MarkerColor>#edd400</MarkerColor>
+					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">d</IBK:Unit>
-						<Maximum>981476164677.2229</Maximum>
-						<Minimum>980707930816.078</Minimum>
+						<Maximum>981350916688.28552</Maximum>
+						<Minimum>980630610826.5957</Minimum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
 						<DateTimeEnabled>1</DateTimeEnabled>
@@ -65,18 +95,18 @@
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
-						<Maximum>23.529143897996356</Maximum>
-						<Minimum>19.385245901639344</Minimum>
+						<Maximum>25.351703129327056</Maximum>
+						<Minimum>19.19920612941937</Minimum>
 						<MinorGridVisible>0</MinorGridVisible>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>35.383158674674995</Maximum>
-						<Minimum>35.382939562044207</Minimum>
+						<Maximum>35.382993198940007</Maximum>
+						<Minimum>35.382990469696708</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>TF 08.1 - Raumlufttemperatur</TitleText>
+					<TitleText>TF 08.1 - Temperaturen</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
@@ -88,17 +118,31 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
-		<Mapper name="TF 08.1 - Oberflächentemperatur">
+		<Mapper name="TF 08.2 - Temperaturen">
 			<Extractors>
 				<Extractor>
 					<DataIOFileName>reference/NANDRAD.tsv?1|3|4|6|7|9|10|12</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
+					<ColumnIndex>2</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>SimQuality_TF08.1/results/states.tsv?1|2</DataIOFileName>
+					<DataIOFileName>SimQuality_TF08.2/results/states.tsv?1|2</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>reference/NANDRAD.tsv?1|3|4|6|7|9|10|12</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>3</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF08.2/results/states.tsv?1|2</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
@@ -108,47 +152,62 @@
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
-						<TitleText>Referenz (NANDRAD 1)</TitleText>
+						<TitleText>Referenz - Raumlufttemperatur</TitleText>
 						<MarkerStyle>0</MarkerStyle>
 						<PenStyle>0</PenStyle>
 						<MarkerColor>#000000</MarkerColor>
+						<MarkerSize>10</MarkerSize>
 					</Series>
 					<Series>
-						<TitleText>Oberflächentemperatur</TitleText>
+						<TitleText>Raumlufttemperatur</TitleText>
+						<MarkerStyle>1</MarkerStyle>
 						<PenColor>#cc0000</PenColor>
 						<MarkerColor>#cc0000</MarkerColor>
 					</Series>
+					<Series>
+						<TitleText>Referenz - Wandoberfläche</TitleText>
+						<MarkerStyle>0</MarkerStyle>
+						<PenStyle>0</PenStyle>
+						<PenColor>#75507b</PenColor>
+						<MarkerColor>#75507b</MarkerColor>
+						<MarkerSize>10</MarkerSize>
+					</Series>
+					<Series>
+						<TitleText>Raumlufttemperatur</TitleText>
+						<MarkerStyle>0</MarkerStyle>
+						<PenColor>#edd400</PenColor>
+						<MarkerColor>#edd400</MarkerColor>
+					</Series>
 				</SeriesProperties>
 				<AxisProperties>
-					<Axis index="0">
-						<TitleText>Time [$unit]</TitleText>
+					<Axis index="0" autoscale="0">
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">d</IBK:Unit>
-						<Maximum>983734028689.90894</Maximum>
-						<Minimum>983706284246.78357</Minimum>
+						<Maximum>981210043016.63416</Maximum>
+						<Minimum>980949383993.09167</Minimum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
 						<DateTimeEnabled>1</DateTimeEnabled>
 						<DateTimeZero>978307200000</DateTimeZero>
 					</Axis>
-					<Axis index="1">
+					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
-						<Maximum>36.748900173985255</Maximum>
-						<Minimum>36.721165017259985</Minimum>
+						<Maximum>24.037589154929346</Maximum>
+						<Minimum>19.812648729165531</Minimum>
 						<MinorGridVisible>0</MinorGridVisible>
 					</Axis>
-					<Axis index="2" enabled="0">
+					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>510.92678063554939</Maximum>
-						<Minimum>510.92678063549727</Minimum>
+						<Maximum>35.38299111479585</Maximum>
+						<Minimum>35.382991109092089</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>TF 08.1 - Oberflächentemperatur</TitleText>
+					<TitleText>TF 08.2 - Temperaturen</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
@@ -160,68 +219,197 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
-		<Mapper name="TF 08.1 - Wärmestrom">
+		<Mapper name="TF 08.3 - Temperaturen">
 			<Extractors>
 				<Extractor>
-					<DataIOFileName>reference/NANDRAD.tsv?2|5|8|11</DataIOFileName>
+					<DataIOFileName>reference/NANDRAD.tsv?1|3|4|6|7|9|10|12</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>4</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF08.3/results/states.tsv?1|2</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>SimQuality_TF08.1/results/fluxes.tsv?1</DataIOFileName>
+					<DataIOFileName>reference/NANDRAD.tsv?1|3|4|6|7|9|10|12</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
+					<ColumnIndex>5</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF08.3/results/states.tsv?1|2</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
 				</Extractor>
 			</Extractors>
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
-						<TitleText>Referenz (NANDRAD 1)</TitleText>
+						<TitleText>Referenz - Raumlufttemperatur</TitleText>
 						<MarkerStyle>0</MarkerStyle>
 						<PenStyle>0</PenStyle>
 						<MarkerColor>#000000</MarkerColor>
+						<MarkerSize>10</MarkerSize>
 					</Series>
-					<Series leftAxis="0">
-						<TitleText>Wärmestrom</TitleText>
+					<Series>
+						<TitleText>Raumlufttemperatur</TitleText>
+						<MarkerStyle>1</MarkerStyle>
 						<PenColor>#cc0000</PenColor>
 						<MarkerColor>#cc0000</MarkerColor>
 					</Series>
+					<Series>
+						<TitleText>Referenz - Wandoberfläche</TitleText>
+						<MarkerStyle>0</MarkerStyle>
+						<PenStyle>0</PenStyle>
+						<PenColor>#75507b</PenColor>
+						<MarkerColor>#75507b</MarkerColor>
+						<MarkerSize>10</MarkerSize>
+					</Series>
+					<Series>
+						<TitleText>Raumlufttemperatur</TitleText>
+						<MarkerStyle>0</MarkerStyle>
+						<PenColor>#edd400</PenColor>
+						<MarkerColor>#edd400</MarkerColor>
+					</Series>
 				</SeriesProperties>
 				<AxisProperties>
-					<Axis index="0">
-						<TitleText>Time [$unit]</TitleText>
+					<Axis index="0" autoscale="0">
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">d</IBK:Unit>
-						<Maximum>981376715457.14648</Maximum>
-						<Minimum>981162546185.5033</Minimum>
+						<Maximum>981344563888.82739</Maximum>
+						<Minimum>980916413190.12292</Minimum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
 						<DateTimeEnabled>1</DateTimeEnabled>
 						<DateTimeZero>978307200000</DateTimeZero>
 					</Axis>
-					<Axis index="1">
+					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
-						<IBK:Unit name="AxisUnit">W/m2</IBK:Unit>
-						<Maximum>6.3883442318031927</Maximum>
-						<Minimum>6.3281849651415385</Minimum>
+						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+						<Maximum>30.327088566205433</Maximum>
+						<Minimum>19.33434151271495</Minimum>
 						<MinorGridVisible>0</MinorGridVisible>
 					</Axis>
-					<Axis index="2" enabled="0">
+					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">W</IBK:Unit>
-						<Maximum>36.50646491231096</Maximum>
-						<Minimum>36.165192951999046</Minimum>
+						<Maximum>35.382991111452363</Maximum>
+						<Minimum>35.382991108932636</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>TF 08.1 - Wärmestrom</TitleText>
+					<TitleText>TF 08.3 - Temperaturen</TitleText>
+					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend>
+						<Position>Inside</Position>
+						<Alignment>1</Alignment>
+						<MaxColumns>1</MaxColumns>
+						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="TF 08.4 - Temperaturen">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>reference/NANDRAD.tsv?1|3|4|6|7|9|10|12</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>6</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF08.4/results/states.tsv?1|2</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>reference/NANDRAD.tsv?1|3|4|6|7|9|10|12</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>7</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF08.4/results/states.tsv?1|2</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>Referenz - Raumlufttemperatur</TitleText>
+						<MarkerStyle>0</MarkerStyle>
+						<PenStyle>0</PenStyle>
+						<MarkerColor>#000000</MarkerColor>
+						<MarkerSize>10</MarkerSize>
+					</Series>
+					<Series>
+						<TitleText>Raumlufttemperatur</TitleText>
+						<MarkerStyle>1</MarkerStyle>
+						<PenColor>#cc0000</PenColor>
+						<MarkerColor>#cc0000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>Referenz - Wandoberfläche</TitleText>
+						<MarkerStyle>0</MarkerStyle>
+						<PenStyle>0</PenStyle>
+						<PenColor>#75507b</PenColor>
+						<MarkerColor>#75507b</MarkerColor>
+						<MarkerSize>10</MarkerSize>
+					</Series>
+					<Series>
+						<TitleText>Raumlufttemperatur</TitleText>
+						<MarkerStyle>0</MarkerStyle>
+						<PenColor>#edd400</PenColor>
+						<MarkerColor>#edd400</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">d</IBK:Unit>
+						<Maximum>988616106494.71912</Maximum>
+						<Minimum>988514178489.38171</Minimum>
+						<GridPenStyle>1</GridPenStyle>
+						<MinorGridVisible>0</MinorGridVisible>
+						<DateTimeEnabled>1</DateTimeEnabled>
+						<DateTimeZero>978307200000</DateTimeZero>
+					</Axis>
+					<Axis index="1" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+						<Maximum>35.896110892262527</Maximum>
+						<Minimum>34.464948873603156</Minimum>
+						<MinorGridVisible>0</MinorGridVisible>
+					</Axis>
+					<Axis index="2" enabled="0" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>35.382991109565317</Maximum>
+						<Minimum>35.382991109544292</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>TF 08.4 - Temperaturen</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
@@ -239,7 +427,7 @@
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="2" size1="1" size2="1" orientation="2" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="3" size1="1" size2="1" orientation="2" />
 		<FocusedWidget>0</FocusedWidget>
 	</Splitting>
 

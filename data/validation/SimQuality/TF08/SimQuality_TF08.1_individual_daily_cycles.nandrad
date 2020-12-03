@@ -215,11 +215,6 @@
 					<ObjectListName>ConstructionInstances</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>FluxHeatConductionA</Quantity>
-					<ObjectListName>ConstructionInstances</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
 			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">

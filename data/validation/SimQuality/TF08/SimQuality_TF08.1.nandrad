@@ -22,8 +22,7 @@
 		</Zones>
 		
 		<ConstructionInstances>
-			<!-- Surface Var 01 -->	
-			<ConstructionInstance id="3" displayName="All Surfaces Var01">
+			<ConstructionInstance id="3">
 				<ConstructionTypeId>10005</ConstructionTypeId>
 				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
 				<InterfaceA id="30" zoneId="1">
@@ -39,8 +38,7 @@
 					</InterfaceHeatConduction>
 				</InterfaceB>
 			</ConstructionInstance>
-			<!-- Surface Var 01 -->	
-			<ConstructionInstance id="4" displayName="All Surfaces Var01">
+			<ConstructionInstance id="4">
 				<ConstructionTypeId>10005</ConstructionTypeId>
 				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
 				<InterfaceA id="40" zoneId="1">
@@ -56,8 +54,7 @@
 					</InterfaceHeatConduction>
 				</InterfaceB>
 			</ConstructionInstance>
-			<!-- Surface Var 01 -->	
-			<ConstructionInstance id="5" displayName="All Surfaces Var01">
+			<ConstructionInstance id="5">
 				<ConstructionTypeId>10005</ConstructionTypeId>
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<InterfaceA id="50" zoneId="1">
@@ -73,8 +70,7 @@
 					</InterfaceHeatConduction>
 				</InterfaceB>
 			</ConstructionInstance>
-			<!-- Surface Var 01 -->	
-			<ConstructionInstance id="6" displayName="All Surfaces Var01">
+			<ConstructionInstance id="6">
 				<ConstructionTypeId>10005</ConstructionTypeId>
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<InterfaceA id="60" zoneId="1">
@@ -90,8 +86,7 @@
 					</InterfaceHeatConduction>
 				</InterfaceB>
 			</ConstructionInstance>
-			<!-- Surface Var 01 -->	
-			<ConstructionInstance id="7" displayName="All Surfaces Var01">
+			<ConstructionInstance id="7">
 				<ConstructionTypeId>10005</ConstructionTypeId>
 				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
 				<InterfaceA id="70" zoneId="1">
@@ -107,8 +102,7 @@
 					</InterfaceHeatConduction>
 				</InterfaceB>
 			</ConstructionInstance>
-			<!-- Surface Var 01 -->	
-			<ConstructionInstance id="8" displayName="All Surfaces Var01">
+			<ConstructionInstance id="8">
 				<ConstructionTypeId>10005</ConstructionTypeId>
 				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
 				<InterfaceA id="80" zoneId="1">
@@ -156,7 +150,7 @@
 		
 		<Models>
 			<InternalLoadsModel id="200" modelType="Scheduled">
-				<ZoneObjectList>Zone Var01</ZoneObjectList>
+				<ZoneObjectList>All zones</ZoneObjectList>
 				<IBK:Parameter name="EquipmentRadiationFraction" unit="---">0.0</IBK:Parameter>
 				<IBK:Parameter name="PersonRadiationFraction" unit="---">0.0</IBK:Parameter>
 				<IBK:Parameter name="LightingRadiationFraction" unit="---">0.0</IBK:Parameter>
@@ -165,7 +159,7 @@
 		
 		<Schedules>
 			<ScheduleGroups>
-				<ScheduleGroup objectList="Zone Var01">
+				<ScheduleGroup objectList="All zones">
 					<!-- AllDays constant  -->
 					<Schedule type="AllDays">
 						<DailyCycles>
@@ -201,7 +195,7 @@
 			<Definitions>
 				<OutputDefinition>
 					<Quantity>AirTemperature</Quantity>
-					<ObjectListName>Zone</ObjectListName>
+					<ObjectListName>All zones</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
@@ -210,12 +204,12 @@
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
-					<Quantity>SurfaceTemperatureA</Quantity>
-					<ObjectListName>ConstructionInstances</ObjectListName>
+					<Quantity>RadiantEquipmentHeatLoad[1]</Quantity>
+					<ObjectListName>InternalLoadsModel</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
-					<Quantity>FluxHeatConductionA</Quantity>
+					<Quantity>SurfaceTemperatureA</Quantity>
 					<ObjectListName>ConstructionInstances</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
@@ -231,16 +225,8 @@
 			</Grids>
 		</Outputs>
 		<ObjectLists>
-			<ObjectList name="Zone">
-				<FilterID>*</FilterID>
-				<ReferenceType>Zone</ReferenceType>
-			</ObjectList>
 			<ObjectList name="All zones">
 				<FilterID>*</FilterID>
-				<ReferenceType>Zone</ReferenceType>
-			</ObjectList>
-			<ObjectList name="Zone Var01">
-				<FilterID>1</FilterID>
 				<ReferenceType>Zone</ReferenceType>
 			</ObjectList>
 			<ObjectList name="ConstructionInstances">

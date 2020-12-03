@@ -2,37 +2,34 @@
 <NandradProject fileVersion="1.99">
 	<Project>
 		<ProjectInfo>
-			<Comment>SimQuality Testfall 08</Comment>
+			<Comment>SimQuality Testfall 08 - Variante 4</Comment>
 		</ProjectInfo>
+		
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.0</IBK:Parameter>
 			<ClimateFileName>${Project Directory}/../climate/SimQuality_Testfall08_Klima.c6b</ClimateFileName>
 		</Location>
+		
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 		</SimulationParameter>
-		<SolverParameter>
-			<IBK:IntPara name="DiscMaxElementsPerLayer">30</IBK:IntPara>
-		</SolverParameter>
+		
 		<Zones>
-			<Zone id="1" displayName="Var04" type="Active">
+			<Zone id="1" displayName="Var01" type="Active">
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
 			</Zone>			
 		</Zones>
+		
 		<ConstructionInstances>
-			<!-- Surface Var 03 -->	
-			<ConstructionInstance id="3" displayName="All Surfaces Var04">
+			<ConstructionInstance id="3">
 				<ConstructionTypeId>10005</ConstructionTypeId>
-				<IBK:Parameter name="Area" unit="m2">62</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
 				<InterfaceA id="30" zoneId="1">
 					<!--Interface to 'Room'-->
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</InterfaceHeatConduction>
-					<InterfaceLongWaveEmission modelType="Constant">
-						<IBK:Parameter name="Emissivity" unit="---">1</IBK:Parameter>
-					</InterfaceLongWaveEmission>
 				</InterfaceA>
 				<InterfaceB id="31" zoneId="0">
 					<!--Interface to outside-->
@@ -41,7 +38,88 @@
 					</InterfaceHeatConduction>
 				</InterfaceB>
 			</ConstructionInstance>
+			<ConstructionInstance id="4">
+				<ConstructionTypeId>10005</ConstructionTypeId>
+				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+				<InterfaceA id="40" zoneId="1">
+					<!--Interface to 'Room'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="41" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="5">
+				<ConstructionTypeId>10005</ConstructionTypeId>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<InterfaceA id="50" zoneId="1">
+					<!--Interface to 'Room'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="51" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="6">
+				<ConstructionTypeId>10005</ConstructionTypeId>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<InterfaceA id="60" zoneId="1">
+					<!--Interface to 'Room'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="61" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="7">
+				<ConstructionTypeId>10005</ConstructionTypeId>
+				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
+				<InterfaceA id="70" zoneId="1">
+					<!--Interface to 'Room'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="71" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="8">
+				<ConstructionTypeId>10005</ConstructionTypeId>
+				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
+				<InterfaceA id="80" zoneId="1">
+					<!--Interface to 'Room'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="81" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
 		</ConstructionInstances>
+		
 		<ConstructionTypes>
 			<ConstructionType id="10005" displayName="Construction Case 08">
 				<MaterialLayers>
@@ -51,6 +129,7 @@
 				</MaterialLayers>
 			</ConstructionType>
 		</ConstructionTypes>
+		
 		<Materials>
 			<Material id="1001" displayName="Stein">
 				<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
@@ -68,70 +147,70 @@
 				<IBK:Parameter name="Conductivity" unit="W/mK">0.14</IBK:Parameter>
 			</Material>
 		</Materials>
+		
 		<Models>
 			<InternalLoadsModel id="200" modelType="Scheduled">
-				<ZoneObjectList>Zone Var04</ZoneObjectList>
+				<ZoneObjectList>All zones</ZoneObjectList>
 				<IBK:Parameter name="EquipmentRadiationFraction" unit="---">1.0</IBK:Parameter>
 				<IBK:Parameter name="PersonRadiationFraction" unit="---">0.0</IBK:Parameter>
 				<IBK:Parameter name="LightingRadiationFraction" unit="---">0.0</IBK:Parameter>
-				<!-- takes schedules with names: 
-					"EquipmentHeatLoadSchedule [W/m2]",
-					"PersonHeatLoadSchedule [W/m2]",
-					"LightingHeatLoadSchedule [W/m2]" 
-					-->
 			</InternalLoadsModel>
 		</Models>
+		
 		<Schedules>
 			<ScheduleGroups>
-				<ScheduleGroup objectList="Zone Var04">
+				<ScheduleGroup objectList="All zones">
 					<!-- AllDays constant  -->
 					<Schedule type="AllDays">
 						<DailyCycles>
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0	23</TimePoints>
-								<Values>EquipmentHeatLoadPerAreaSchedule [W/m2]:0	0</Values>
-							</DailyCycle>
-							<DailyCycle interpolation="Constant">
-								<TimePoints>0	23</TimePoints>
-								<Values>PersonHeatLoadPerAreaSchedule [W/m2]:0	0</Values>
-							</DailyCycle>
-							<DailyCycle interpolation="Constant">
-								<TimePoints>0	23</TimePoints>
-								<Values>LightingHeatLoadPerAreaSchedule [W/m2]:0	0</Values>
+								<Values>
+									EquipmentHeatLoadPerAreaSchedule [W/m2]:0	0;
+									PersonHeatLoadPerAreaSchedule [W/m2]:0	0;
+									LightingHeatLoadPerAreaSchedule [W/m2]:0	0
+								</Values>
 							</DailyCycle>
 						</DailyCycles>
 					</Schedule>
 					<Schedule type="AllDays">
-						<StartDayOfTheYear>31</StartDayOfTheYear>		<!-- 1.Februar 31=31 -->
+						<StartDayOfTheYear>31</StartDayOfTheYear>		<!-- 1.Februar 31 = 31 -->
 						<EndDayOfTheYear>364</EndDayOfTheYear>			<!-- 31.Dezember  31+28+31+30+31+30+31+31+30+31+30+31 - 1 = 364 -->
 						<DailyCycles>
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0	1	2	3	4	5	6	7	8	9	10	11	12	13	14	15	16	17	18	19	20	21	22	23</TimePoints>
-								<Values>EquipmentHeatLoadPerAreaSchedule [W/m2]:0	0	0	0	0	0	10	23.2	33.2	33.2	33.2	26.8	26.8	33.2	33.2	33.2	23.2	10	0	0	0	0	0	0</Values>
-							</DailyCycle>							
-							<DailyCycle interpolation="Constant">
-								<TimePoints>0	1	2	3	4	5	6	7	8	9	10	11	12	13	14	15	16	17	18	19	20	21	22	23</TimePoints>
-								<Values>LightingHeatLoadPerAreaSchedule [W/m2]:0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0</Values>
-							</DailyCycle>							
-							<DailyCycle interpolation="Constant">
-								<TimePoints>0	1	2	3	4	5	6	7	8	9	10	11	12	13	14	15	16	17	18	19	20	21	22	23</TimePoints>
-								<Values>PersonHeatLoadPerAreaSchedule [W/m2]:0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0</Values>
+								<Values>
+									EquipmentHeatLoadPerAreaSchedule [W/m2]:0	0	0	0	0	0	25	58	83	83	83	67	67	83	83	83	58	25	0	0	0	0	0	0;
+									LightingHeatLoadPerAreaSchedule [W/m2]:0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0;
+									PersonHeatLoadPerAreaSchedule [W/m2]:0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+								</Values>
 							</DailyCycle>
 						</DailyCycles>
 					</Schedule>
 				</ScheduleGroup>
 			</ScheduleGroups>
 		</Schedules>
+		
 		<Outputs>
 			<Definitions>
 				<OutputDefinition>
 					<Quantity>AirTemperature</Quantity>
-					<ObjectListName>Zone</ObjectListName>
+					<ObjectListName>All zones</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
-					<Quantity>EquipmentHeatLoad[1]</Quantity>
+					<Quantity>ConvectiveEquipmentHeatLoad[1]</Quantity>
 					<ObjectListName>InternalLoadsModel</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>RadiantEquipmentHeatLoad[1]</Quantity>
+					<ObjectListName>InternalLoadsModel</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>SurfaceTemperatureA</Quantity>
+					<ObjectListName>ConstructionInstances</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 			</Definitions>
@@ -146,17 +225,13 @@
 			</Grids>
 		</Outputs>
 		<ObjectLists>
-			<ObjectList name="Zone">
-				<FilterID>*</FilterID>
-				<ReferenceType>Zone</ReferenceType>
-			</ObjectList>
 			<ObjectList name="All zones">
 				<FilterID>*</FilterID>
 				<ReferenceType>Zone</ReferenceType>
 			</ObjectList>
-			<ObjectList name="Zone Var04">
-				<FilterID>1</FilterID>
-				<ReferenceType>Zone</ReferenceType>
+			<ObjectList name="ConstructionInstances">
+				<FilterID>7</FilterID>
+				<ReferenceType>ConstructionInstance</ReferenceType>
 			</ObjectList>
 			<ObjectList name="InternalLoadsModel">
 				<FilterID>200</FilterID>
