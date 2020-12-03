@@ -38,6 +38,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 	switch (mod) {
 		case SVProjectHandler::AllModified :
 		case SVProjectHandler::NetworkModified :
+		case SVProjectHandler::GeometryChanged :
 			break;
 
 		case SVProjectHandler::NodeStateModified : {

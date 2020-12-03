@@ -56,8 +56,11 @@ SVProjectHandler::~SVProjectHandler( ){
 
 bool SVProjectHandler::newProject(VICUS::Project * project) {
 	createProject();
-	if (project != nullptr)
+	if (project != nullptr) {
 		*m_project = *project; // copy over project
+		// update all internal pointers
+		m_project->updatePointers();
+	}
 
 	setModified(AllModified);
 

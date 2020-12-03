@@ -70,6 +70,10 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			m_newPolygonObject.updateBuffers();
 			break;
 
+		case SVProjectHandler::GeometryChanged :
+			updateBuilding = true;
+			break;
+
 		case SVProjectHandler::GridModified :
 			updateGrid = true;
 			break;

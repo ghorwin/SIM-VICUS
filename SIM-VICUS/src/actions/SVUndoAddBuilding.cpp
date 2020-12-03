@@ -23,6 +23,7 @@ void SVUndoAddBuilding::undo() {
 void SVUndoAddBuilding::redo() {
 	// append building
 	theProject().m_buildings.push_back(m_addedBuilding);
+	theProject().updatePointers();
 
 	// tell project that the network has changed
 	SVProjectHandler::instance().setModified( SVProjectHandler::GeometryChanged);

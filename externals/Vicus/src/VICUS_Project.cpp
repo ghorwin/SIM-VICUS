@@ -206,17 +206,8 @@ void Project::readXML(const IBK::Path & filename) {
 			readXML(xmlElem);
 		}
 
-		// update hierarchy pointers
-		for (auto & b : m_buildings)
-			b.updateParents();
-
-		// TODO: is it ok to do this here? if not, where else?
-		// update Network Pointers
-		if (!m_networks.empty()){
-			for (Network &n: m_networks)
-				n.updateNodeEdgeConnectionPointers();
-		}
-
+		// update internal pointer-based links
+		updatePointers();
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Error reading project '%1'.").arg(filename), FUNC_ID);
@@ -247,6 +238,14 @@ void Project::writeXML(const IBK::Path & filename) const {
 
 void Project::clean() {
 
+}
+
+void Project::updatePointers() {
+	for (VICUS::Building & b : m_buildings)
+		b.updateParents();
+
+	for (VICUS::Network & n : m_networks)
+		n.updateNodeEdgeConnectionPointers();
 }
 
 } // namespace VICUS

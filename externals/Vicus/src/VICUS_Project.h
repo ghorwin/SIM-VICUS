@@ -70,6 +70,10 @@ public:
 	/*! Removes un-referenced/un-needed data structures. */
 	void clean();
 
+	/*! Call this function whenever project data has changed that depends on
+		objects linked through pointers (building hierarchies, networks etc.).
+	*/
+	void updatePointers();
 
 	// *** FUNCTIONS ***
 
