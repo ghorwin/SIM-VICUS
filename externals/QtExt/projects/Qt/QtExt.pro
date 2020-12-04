@@ -28,6 +28,8 @@ DEPENDPATH = $${INCLUDEPATH}
 
 FORMS += \
 	../../src/QtExt_AutoUpdateDialog.ui \
+	../../src/QtExt_LanguageStringEditWidget1.ui \
+	../../src/QtExt_LanguageStringEditWidget3.ui \
 	../../src/QtExt_MaterialDatabaseSelectionWidget.ui
 
 HEADERS += \
@@ -40,6 +42,8 @@ HEADERS += \
 	../../src/QtExt_FeatureWidget.h \
 	../../src/QtExt_IconButton.h \
 	../../src/QtExt_LanguageHandler.h \
+	../../src/QtExt_LanguageStringEditWidget1.h \
+	../../src/QtExt_LanguageStringEditWidget3.h \
 	../../src/QtExt_MaterialBase.h \
 	../../src/QtExt_MaterialCategory.h \
 	../../src/QtExt_MaterialDBItemDelegate.h \
@@ -59,6 +63,8 @@ SOURCES += \
 	../../src/QtExt_FeatureWidget.cpp \
 	../../src/QtExt_IconButton.cpp \
 	../../src/QtExt_LanguageHandler.cpp \
+	../../src/QtExt_LanguageStringEditWidget1.cpp \
+	../../src/QtExt_LanguageStringEditWidget3.cpp \
 	../../src/QtExt_MaterialCategory.cpp \
 	../../src/QtExt_MaterialDBItemDelegate.cpp \
 	../../src/QtExt_MaterialDatabaseSelectionWidget.cpp \
