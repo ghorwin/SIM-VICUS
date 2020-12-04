@@ -13,6 +13,8 @@
 
 #include "IBK_rectangle.h"
 
+#include <NANDRAD_HydraulicNetwork.h>
+
 namespace IBK {
 	class Path;
 }
@@ -170,6 +172,8 @@ public:
 	/*! origin of the network */
 	IBKMK::Vector3D					m_origin = IBKMK::Vector3D(0.0, 0.0, 0.0);	// XML:E:required
 
+
+	NANDRAD::HydraulicNetwork		m_hydraulicNetwork;
 
 private:
 

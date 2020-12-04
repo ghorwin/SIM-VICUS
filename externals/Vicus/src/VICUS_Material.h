@@ -12,10 +12,11 @@
 #include <IBK_Parameter.h>
 
 #include <NANDRAD_LinearSplineParameter.h>
+#include "VICUS_AbstractDBElement.h"
 
 namespace VICUS {
 
-class Material {
+class Material : public AbstractDBElement {
 public:
 
 	/*! Basic parameters. */

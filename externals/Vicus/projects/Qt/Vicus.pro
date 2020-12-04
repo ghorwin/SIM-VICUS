@@ -31,6 +31,7 @@ INCLUDEPATH = \
 DEPENDPATH = $${INCLUDEPATH}
 
 HEADERS += \
+	../../src/VICUS_AbstractDBElement.h \
 	../../src/VICUS_ArgsParser.h \
 	../../src/VICUS_BoundaryCondition.h \
 	../../src/VICUS_Building.h \

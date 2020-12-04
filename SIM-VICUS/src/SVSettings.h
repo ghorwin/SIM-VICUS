@@ -104,6 +104,10 @@ public:
 	/*! Convenience check function, tests if a property is in the map. */
 	bool hasProperty(PropertyType t) const { return m_propertyMap.find(t) != m_propertyMap.end(); }
 
+	/*! Reads all built-in and user databases. */
+	void readDatabase();
+
+
 	// ****** static functions ************
 
 	/*! Computes the default application font size based on screen properties. */
@@ -166,6 +170,9 @@ public:
 	QList<QString>				m_frequentlyUsedQuantities;
 
 	QColor						m_selectedSurfaceColor = QColor(Qt::magenta);
+
+
+	// Databases
 
 	/*! Map of all opaque database materials. */
 	std::map<unsigned int, VICUS::Material>					m_dbOpaqueMaterials;

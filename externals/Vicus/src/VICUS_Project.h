@@ -103,14 +103,15 @@ public:
 	/*! Project info tag is manually written (not by code generator). */
 	NANDRAD::ProjectInfo	m_projectInfo;
 
-	/*! Project tag is manually written (not by code generator). */
-	NANDRAD::Project		m_nandradData;
-
 	ViewSettings			m_viewSettings;		// XML:E
 
 	std::vector<Network>	m_networks;			// XML:E
 
 	std::vector<Building>	m_buildings;		// XML:E
+
+
+	// *** Database elements used in the project (normally stored in built-in and user databases)
+	//     These database elements need to be merged with program databased when project is read.
 
 	/*! Database of fluids */
 	std::vector<NetworkFluid>	m_networkFluids;	// XML:E

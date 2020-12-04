@@ -5,6 +5,7 @@
 #include <QScreen>
 
 #include <QtExt_Directories.h>
+#include <tinyxml.h>
 
 SVSettings * SVSettings::m_self = nullptr;
 
@@ -20,6 +21,61 @@ SVSettings & SVSettings::instance() {
 	Q_ASSERT_X(m_self != nullptr, "[SVSettings::instance]", "You must create an instance of "
 		"SVSettings before accessing SVSettings::instance()!");
 	return *m_self;
+}
+
+template<typename T>
+void readXMLDB(const IBK::Path & fname, const std::string & topLevelTag,
+			   const std::string & childTagName,
+			   typename std::map<unsigned int, T> & db,
+			   bool builtIn = false)
+{
+	FUNCID(SVSettings-readXMLDB);
+
+	TiXmlDocument doc;
+	std::map<std::string,IBK::Path> pathPlaceHolders; // only dummy for now, filenamePath does not contain placeholders
+	if (!fname.isFile() )
+		return;
+
+	if (!doc.LoadFile(fname.str().c_str(), TIXML_ENCODING_UTF8)) {
+		throw IBK::Exception(IBK::FormatString("Error in line %1 of project file '%2':\n%3")
+				.arg(doc.ErrorRow())
+				.arg(fname)
+				.arg(doc.ErrorDesc()), FUNC_ID);
+	}
+
+	// we use a handle so that NULL pointer checks are done during the query functions
+	TiXmlHandle xmlHandleDoc(&doc);
+
+	// read root element
+	TiXmlElement * xmlElem = xmlHandleDoc.FirstChildElement().Element();
+	if (!xmlElem)
+		return; // empty file?
+	std::string rootnode = xmlElem->Value();
+	if (rootnode != topLevelTag)
+		throw IBK::Exception( IBK::FormatString("Expected '%1' as root node in XML file.")
+							  .arg(topLevelTag), FUNC_ID);
+
+	try {
+		const TiXmlElement * c2 = xmlElem->FirstChildElement();
+		while (c2) {
+			const std::string & c2Name = c2->ValueStr();
+			if (c2Name != childTagName)
+				IBK::IBK_Message(IBK::FormatString("Unknown/unsupported tag '%1' in line %2, expected '%3'.")
+								 .arg(c2Name).arg(c2->Row()).arg(childTagName), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			T obj;
+			obj.readXML(c2);
+			obj.m_builtIn = builtIn;
+
+			// \todo check for existing ID and issue warning/error
+
+			db[obj.m_id] = obj;
+			c2 = c2->NextSiblingElement();
+		}
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, IBK::FormatString("Error reading XML database '%1'.").arg(fname), FUNC_ID);
+	}
+
 }
 
 
@@ -136,6 +192,21 @@ void SVSettings::readMainWindowSettings(QByteArray &geometry, QByteArray &state)
 	QSettings settings( m_organization, m_appName );
 	QString defaultDockWidgets = "Materials,Log";
 	m_visibleDockWidgets = settings.value("VisibleDockWidgets", defaultDockWidgets).toString().split(",");
+}
+
+
+void SVSettings::readDatabase() {
+	// built-in databases
+
+	IBK::Path dbDir(QtExt::Directories::databasesDir().toStdString());
+
+	readXMLDB(dbDir / "DB_Materials.xml", "Materials", "Material", m_dbOpaqueMaterials, true);
+
+	// user databases
+
+	IBK::Path userDbDir(QtExt::Directories::userDataDir().toStdString());
+
+	readXMLDB(userDbDir / "DB_Materials.xml", "Materials", "Material", m_dbOpaqueMaterials);
 }
 
 
