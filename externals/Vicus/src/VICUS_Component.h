@@ -3,6 +3,7 @@
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
+#include "VICUS_AbstractDBElement.h"
 
 #include <QString>
 #include <QColor>
@@ -10,7 +11,7 @@
 
 namespace VICUS {
 
-class Component {
+class Component		: public AbstractDBElement {
 public:
 
 	/*! Component types. */

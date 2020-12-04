@@ -9,9 +9,11 @@
 
 #include <IBK_Parameter.h>
 
+#include "VICUS_AbstractDBElement.h"
+
 namespace VICUS {
 
-class BoundaryCondition {
+class BoundaryCondition : public AbstractDBElement {
 public:
 
 	/*! Basic parameters. */

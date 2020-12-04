@@ -3,6 +3,7 @@
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
+#include "VICUS_AbstractDBElement.h"
 
 #include <QString>
 #include <QColor>
@@ -12,7 +13,7 @@
 
 namespace VICUS {
 
-class SurfaceProperties {
+class SurfaceProperties : public AbstractDBElement{
 public:
 
 	/*! Basic parameters. */

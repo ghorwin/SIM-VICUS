@@ -4,6 +4,7 @@
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
 #include "VICUS_WindowGlazingLayer.h"
+#include "VICUS_AbstractDBElement.h"
 
 #include <QString>
 #include <QColor>
@@ -15,7 +16,7 @@
 
 namespace VICUS {
 
-class WindowGlazingSystem {
+class WindowGlazingSystem : public AbstractDBElement {
 public:
 
 	/*! Model types supported by the window model. */

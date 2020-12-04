@@ -13,9 +13,11 @@
 #include <IBK_Flag.h>
 #include <IBK_Parameter.h>
 
+#include "VICUS_AbstractDBElement.h"
+
 namespace VICUS {
 
-class Construction {
+class Construction : public AbstractDBElement {
 public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***

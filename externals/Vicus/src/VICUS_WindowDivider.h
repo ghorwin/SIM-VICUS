@@ -3,6 +3,7 @@
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
+#include "VICUS_AbstractDBElement.h"
 #include "VICUS_MaterialLayer.h"
 
 #include <QString>
@@ -10,7 +11,7 @@
 
 namespace VICUS {
 
-class WindowDivider {
+class WindowDivider : public AbstractDBElement {
 public:
 
 	/*! Basic parameters. */

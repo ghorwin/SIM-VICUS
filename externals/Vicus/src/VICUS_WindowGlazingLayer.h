@@ -3,6 +3,7 @@
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
+#include "VICUS_AbstractDBElement.h"
 
 #include <QString>
 #include <vector>
@@ -13,7 +14,7 @@
 
 namespace VICUS {
 
-class WindowGlazingLayer {
+class WindowGlazingLayer : public AbstractDBElement {
 public:
 
 	/*! Model types supported by the window model. */
