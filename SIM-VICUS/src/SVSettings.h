@@ -107,6 +107,9 @@ public:
 	/*! Reads all built-in and user databases. */
 	void readDatabase();
 
+	/*! Writes all built-in and user databases. */
+	void writeDatabase();
+
 
 	// ****** static functions ************
 
@@ -178,7 +181,7 @@ public:
 	std::map<unsigned int, VICUS::Material>					m_dbOpaqueMaterials;
 
 	/*! Map of all window database materials. */
-	std::map<unsigned int, VICUS::WindowGlazingLayer>		m_dbWindowMaterials;
+	std::map<unsigned int, VICUS::WindowGlazingLayer>		m_dbWindowLayers;
 
 	/*! Map of all database glazing systems. */
 	std::map<unsigned int, VICUS::WindowGlazingSystem>		m_dbWindowGlazingSystems;
@@ -193,10 +196,10 @@ public:
 	std::map<unsigned int, VICUS::Construction>				m_dbConstructions;
 
 	/*! Map of all database surface properties. */
-	std::map<unsigned int, VICUS::SurfaceProperties>		m_dbSurfaceProperties;
+	std::map<unsigned int, VICUS::SurfaceProperties>		m_dbSurfaceProperty;
 
 	/*! Map of all database boundary conditions. */
-	std::map<unsigned int, VICUS::BoundaryCondition>		m_dbBoundaryConditions;
+	std::map<unsigned int, VICUS::BoundaryCondition>		m_dbBoundaryCondition;
 
 	/*! Map of all database components. */
 	std::map<unsigned int, VICUS::Component>				m_dbComponents;
