@@ -296,7 +296,7 @@ void PlaneGeometry::triangulate() {
 					isValidTri = false;
 
 				if(isValidTri){
-					m_triangles.push_back(TriangleVertexNumbers(triIdxVec[0],triIdxVec[1],triIdxVec[2]));
+					m_triangles.push_back(triangle_t(triIdxVec[0],triIdxVec[1],triIdxVec[2]));
 					//trisIndices.push_back(triIdxVec);
 					//mark second point of triangle as used
 					usedIdx.insert(triIdxVec[1]);
