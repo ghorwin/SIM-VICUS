@@ -54,7 +54,7 @@ void addPlane(const VICUS::PlaneGeometry & g, const QColor & col,
 			  bool inverted)
 {
 	// add vertex data to buffers
-	unsigned int nVertexes = g.m_vertexes.size();
+	unsigned int nVertexes = g.vertexes().size();
 	// insert count vertexes
 	vertexBufferData.resize(vertexBufferData.size()+nVertexes);
 	colorBufferData.resize(colorBufferData.size()+nVertexes);
@@ -63,7 +63,7 @@ void addPlane(const VICUS::PlaneGeometry & g, const QColor & col,
 	if (inverted)
 		n *= -1;
 	for (unsigned int i=0; i<nVertexes; ++i) {
-		vertexBufferData[currentVertexIndex + i].m_coords = VICUS::IBKVector2QVector(g.m_vertexes[i]);
+		vertexBufferData[currentVertexIndex + i].m_coords = VICUS::IBKVector2QVector(g.vertexes()[i]);
 		vertexBufferData[currentVertexIndex + i].m_normal = n;
 		colorBufferData[currentVertexIndex  + i] = col;
 	}
@@ -168,7 +168,7 @@ void updatePlaneColor(const VICUS::PlaneGeometry & g, const QColor & col, unsign
 		} break;
 
 		case VICUS::PlaneGeometry::T_Polygon : {
-			unsigned int nvert = g.m_vertexes.size();
+			unsigned int nvert = g.vertexes().size();
 			// add all vertices to buffer
 			for (unsigned int i=0; i<nvert; ++i)
 				colorBufferData[currentVertexIndex + i] = col;

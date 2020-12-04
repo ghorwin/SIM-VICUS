@@ -151,7 +151,7 @@ void NewPolygonObject::updateBuffers() {
 	m_firstLineVertex = 0;
 
 	// no vertexes, nothing to draw
-	if (m_planeGeometry.m_vertexes.empty())
+	if (m_planeGeometry.vertexes().empty())
 		return;
 
 	if (m_planeGeometry.isValid()) {
@@ -162,7 +162,7 @@ void NewPolygonObject::updateBuffers() {
 	}
 	else {
 		m_vertexBufferData.resize(1);
-		m_vertexBufferData.back().m_coords = VICUS::IBKVector2QVector(m_planeGeometry.m_vertexes.back());
+		m_vertexBufferData.back().m_coords = VICUS::IBKVector2QVector(m_planeGeometry.vertexes().back());
 		m_vertexBufferData.back().m_normal = QVector3D(0,0,1); // not being used
 		m_colorBufferData.resize(1);
 		m_colorBufferData.back() = QColor(255,0,0); // line is drawn in red

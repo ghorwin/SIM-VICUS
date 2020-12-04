@@ -41,7 +41,9 @@ static bool solve(double a, double b, double c,  double d,  double e,  double f,
 
 	Note: when the point p is not in the plane, this function will still get a valid result.
 */
-static bool planeCoordinates(const IBKMK::Vector3D & offset, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & v, double & x, double & y) {
+static bool planeCoordinates(const IBKMK::Vector3D & offset, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b,
+							 const IBKMK::Vector3D & v, double & x, double & y)
+{
 	// We have 3 equations, but only two unknowns - so we have 3 different options to compute them.
 	// Some of them may fail, so we try them all.
 
@@ -65,68 +67,6 @@ static bool planeCoordinates(const IBKMK::Vector3D & offset, const IBKMK::Vector
 	return true;
 }
 
-
-void PlaneGeometry::readXML(const TiXmlElement * element) {
-	readXMLPrivate(element);
-	computeGeometry();
-}
-
-TiXmlElement * PlaneGeometry::writeXML(TiXmlElement * parent) const {
-	if (*this != PlaneGeometry())
-		return writeXMLPrivate(parent);
-	else
-		return nullptr;
-}
-
-
-PlaneGeometry::PlaneGeometry() {
-}
-
-
-PlaneGeometry::PlaneGeometry(PlaneGeometry::type_t t,
-							 const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c) :
-	m_vertexes({a,b,c}),
-	m_type(t)
-{
-	computeGeometry();
-}
-
-
-void PlaneGeometry::addVertex(const IBKMK::Vector3D & v) {
-	m_vertexes.push_back(v);
-	computeGeometry();
-}
-
-
-void PlaneGeometry::computeGeometry() {
-	m_triangles.clear();
-	// try to simplify polygon to internal rectangle/parallelogram definition
-	// this may change m_type to Rectangle or Triangle and subsequently speed up operations
-	simplify();
-	updateNormal();
-	if (!isValid())
-		return;
-	triangulate();
-}
-
-
-void PlaneGeometry::simplify() {
-	if (m_vertexes.size() == 3) {
-		m_type = T_Triangle;
-		return;
-	}
-	if (m_vertexes.size() != 4)
-		return;
-	const IBKMK::Vector3D & a = m_vertexes[0];
-	const IBKMK::Vector3D & b = m_vertexes[1];
-	const IBKMK::Vector3D & c = m_vertexes[2];
-	const IBKMK::Vector3D & d = m_vertexes[3];
-	IBKMK::Vector3D c2 = b + (d-a);
-	c2 -= c;
-	if (c2.magnitudeSquared() < 1e-4) {
-		m_type = T_Rectangle;
-	}
-}
 
 static int crossProdTest(QPointF a, QPointF b, QPointF c){
 
@@ -176,17 +116,100 @@ static int pointInPolygon(const QPointF &point, const QPolygonF& poly)
 	return  t;
 }
 
-void PlaneGeometry::createQPoly(){
+
+// *** PlaneGeometry ***
+
+
+PlaneGeometry::PlaneGeometry() {
+}
+
+
+PlaneGeometry::PlaneGeometry(PlaneGeometry::type_t t,
+							 const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c) :
+	m_type(t),
+	m_vertexes({a,b,c})
+{
+	if (m_type == T_Rectangle) {
+		// third vertex is actually point d of the rectangle
+		m_vertexes.push_back(m_vertexes.back());
+		// c = a + (b-a) + (d-a) = b + (d - a)
+		m_vertexes[2] = m_vertexes[1] + (m_vertexes[3]-m_vertexes[0]);
+	}
+	computeGeometry();
+}
+
+
+void PlaneGeometry::readXML(const TiXmlElement * element) {
+	readXMLPrivate(element);
+	computeGeometry();
+}
+
+
+TiXmlElement * PlaneGeometry::writeXML(TiXmlElement * parent) const {
+	if (*this != PlaneGeometry())
+		return writeXMLPrivate(parent);
+	else
+		return nullptr;
+}
+
+
+void PlaneGeometry::addVertex(const QPointF & v) {
+	m_polygon.append(v);
+	// compute 3D coordinates
+	computeGeometry();
+}
+
+
+void PlaneGeometry::addVertex(const IBKMK::Vector3D & v) {
+	m_vertexes.push_back(v);
+	computeGeometry();
+}
+
+
+void PlaneGeometry::computeGeometry() {
+	m_triangles.clear();
+	// try to simplify polygon to internal rectangle/parallelogram definition
+	// this may change m_type to Rectangle or Triangle and subsequently speed up operations
+	simplify();
+	updateNormal();
+	if (!isValid())
+		return;
+	updatePolygon();
+	triangulate();
+}
+
+
+void PlaneGeometry::simplify() {
+	if (m_vertexes.size() == 3) {
+		m_type = T_Triangle;
+		return;
+	}
+	if (m_vertexes.size() != 4)
+		return;
+	const IBKMK::Vector3D & a = m_vertexes[0];
+	const IBKMK::Vector3D & b = m_vertexes[1];
+	const IBKMK::Vector3D & c = m_vertexes[2];
+	const IBKMK::Vector3D & d = m_vertexes[3];
+	IBKMK::Vector3D c2 = b + (d-a);
+	c2 -= c;
+	if (c2.magnitudeSquared() < 1e-4) {
+		m_type = T_Rectangle;
+	}
+}
+
+
+void PlaneGeometry::updatePolygon() {
+	FUNCID(PlaneGeometry::updatePolygon);
 
 	//first clear the old polyline
 	m_polygon.clear();
 
-	m_origin = m_vertexes[0];
+	/// \todo Dirk: Add check that m_vertexes[1] != m_vertexes[0]
+
 	// x-axis vector in plane
-	IBKMK::Vector3D vX = (m_vertexes[1] - m_vertexes[0]);
+	m_localX = (m_vertexes[1] - m_vertexes[0]);
 	// y-axis vector in plane
-	IBKMK::Vector3D vY;
-	m_normal.crossProduct(vX, vY);
+	m_normal.crossProduct(m_localX, m_localY);
 
 	// first point is v0 = origin
 	m_polygon.append(QPointF(0,0));
@@ -201,18 +224,20 @@ void PlaneGeometry::createQPoly(){
 		///       redo the same stuff several times for the same plane.
 		///       We should use a function that passes vX, vY, offset and then
 		///       a vector with v,x,y to process.
-		if (planeCoordinates(m_origin, vX, vY, v, x, y)) {
+		if (planeCoordinates(m_vertexes[0], m_localX, m_localY, v, x, y)) {
 			m_polygon.append(QPointF(x,y));
 		}
 		else {
-			// this shouldn't happen
-			Q_ASSERT(false);
+			// Throw an exception if point is outside plane
+			throw IBK::Exception("Point is outside plane.", FUNC_ID);
 		}
 	}
 }
 
-void PlaneGeometry::triangulate(bool createNew2DPoly) {
+
+void PlaneGeometry::triangulate() {
 	Q_ASSERT(m_vertexes.size() >= 3);
+	Q_ASSERT(m_polygon.size() == m_vertexes.size());
 
 	const double eps = 1e-4;
 	m_triangles.clear();
@@ -226,43 +251,6 @@ void PlaneGeometry::triangulate(bool createNew2DPoly) {
 			// TODO : there might be a faster way for rectangles, but for now
 			//        we use the same triangulation algorithm as for polygons
 		case T_Polygon : {
-			// compute x,y coordinates in plane for all vertexes
-#if 0
-			QPolygonF polygon;
-
-			IBKMK::Vector3D offset = m_vertexes[0];
-			// x-axis vector in plane
-			IBKMK::Vector3D vX = (m_vertexes[1] - m_vertexes[0]);
-			// y-axis vector in plane
-			IBKMK::Vector3D vY;
-			m_normal.crossProduct(vX, vY);
-
-			// first point is v0 = origin
-			polygon.append(QPointF(0,0));
-			// second point is v1 at (1,0), since v1-v0 is the vX vector
-			polygon.append(QPointF(1,0));
-
-			// now process all other points
-			for (unsigned int i=2; i<m_vertexes.size(); ++i) {
-				const IBKMK::Vector3D & v = m_vertexes[i];
-				double x,y;
-				/// \todo improve this - by simply calling planeCoordinates we
-				///       redo the same stuff several times for the same plane.
-				///       We should use a function that passes vX, vY, offset and then
-				///       a vector with v,x,y to process.
-				if (planeCoordinates(offset, vX, vY, v, x, y)) {
-					polygon.append(QPointF(x,y));
-				}
-				else {
-					// this shouldn't happen
-					Q_ASSERT(false);
-				}
-			}
-#else
-			if(createNew2DPoly)
-				createQPoly();
-#endif
-
 			//here the index is stored which is already taken into account
 			std::set<unsigned int> usedIdx;
 			std::vector<std::vector<unsigned int>>	trisIndices;
@@ -374,6 +362,11 @@ void PlaneGeometry::updateNormal() {
 
 }
 
+void PlaneGeometry::setVertexes(const std::vector<IBKMK::Vector3D> & vertexes) {
+	m_vertexes = vertexes;
+	computeGeometry();
+}
+
 
 bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & d, IBKMK::Vector3D & intersectionPoint,
 								   double & dist, bool hitBackfacingPlanes, bool endlessPlane) const
@@ -437,19 +430,23 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 		} break;
 
 		case T_Polygon : {
+			double x,y;
+			if (!planeCoordinates(offset, m_localX, m_localY, x0, x, y))
+				return false;
 			// process all triangles and perform the test for each triangle
-			for (const triangle_t & tr : m_triangles) {
-				double x,y;
-				const IBKMK::Vector3D & a = m_vertexes[tr.c] - m_vertexes[tr.b];
-				const IBKMK::Vector3D & b = m_vertexes[tr.a] - m_vertexes[tr.b];
-				if (planeCoordinates(x0,a,b, m_vertexes[tr.b],x,y)) {
-					if (x >= 0 && x+y <= 1 && y >= 0) {
-						intersectionPoint = x0;
-						dist = t;
-						return true;
-					}
-				}
-			}
+			return (pointInPolygon(QPointF(x,y), m_polygon) != -1);
+//			for (const triangle_t & tr : m_triangles) {
+//				double x,y;
+//				const IBKMK::Vector3D & a = m_vertexes[tr.c] - m_vertexes[tr.b];
+//				const IBKMK::Vector3D & b = m_vertexes[tr.a] - m_vertexes[tr.b];
+//				if (planeCoordinates(x0,a,b, m_vertexes[tr.b],x,y)) {
+//					if (x >= 0 && x+y <= 1 && y >= 0) {
+//						intersectionPoint = x0;
+//						dist = t;
+//						return true;
+//					}
+//				}
+//			}
 		} break;
 	}
 

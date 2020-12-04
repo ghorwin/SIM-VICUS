@@ -108,7 +108,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 			surf.m_id = surf.uniqueID();
 			surf.m_displayName = QString::fromStdString(bsd.m_name);
 			surf.m_geometry = VICUS::PlaneGeometry(VICUS::PlaneGeometry::T_Polygon);
-			surf.m_geometry.m_vertexes = bsd.m_polyline;
+			surf.m_geometry.setVertexes(bsd.m_polyline);
 			surf.m_geometry.computeGeometry();
 
 			switch (bsd.m_surfaceType) {

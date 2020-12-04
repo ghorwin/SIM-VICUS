@@ -32,7 +32,9 @@ public:
 		NUM_T
 	};
 
-	/*! Simple storage member to hold vertex indexes of a single triangle. */
+	/*! Simple storage member to hold vertex indexes of a single triangle.
+		\sa triangles()
+	*/
 	struct triangle_t {
 		triangle_t() {}
 		triangle_t(unsigned short i1, unsigned short i2, unsigned short i3) :
@@ -43,14 +45,15 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	void readXML(const TiXmlElement * element);
-	TiXmlElement * writeXML(TiXmlElement * parent) const;
-	VICUS_COMP(PlaneGeometry)
-
 	/*! Default constructor. */
 	PlaneGeometry();
 	/*! Default constructor. */
 	explicit PlaneGeometry(type_t t) : m_type(t) {}
+
+	void readXML(const TiXmlElement * element);
+	TiXmlElement * writeXML(TiXmlElement * parent) const;
+	VICUS_COMP(PlaneGeometry)
+
 
 	/*! Initializing constructor.
 		Vertexes a, b and c must be given in counter-clockwise order, so that (b-a) x (c-a) yields the normal vector of the plane.
@@ -64,6 +67,14 @@ public:
 
 	const IBKMK::Vector3D & normal() const { return m_normal; }
 
+	/*! Adds a new 2D vertex in the plane of the polygon.
+		Calculates 3D vertex coordinates.
+	*/
+	void addVertex(const QPointF & v);
+
+	/*! Adds a new 3D vertex.
+		Calculates 2D plane coordinates and throws an exception, if vertex is out of plane.
+	*/
 	void addVertex(const IBKMK::Vector3D & v);
 
 	/*! This computes the normal vector, performs the triangulation and attempts to simplify a polygon to a rectangle/triangle
@@ -91,10 +102,10 @@ public:
 	/*! Returns current vector of triangles. */
 	const std::vector<triangle_t> & triangles() const { return m_triangles; }
 
-	/*! Points of polyline (in double-precision accuracy!).
-		\warning Do not write to this variable, unless you know what you are doing. Rather use addVertex().
-	*/
-	std::vector<IBKMK::Vector3D>		m_vertexes;
+	/*! Returns 3D vertex coordinates. */
+	std::vector<IBKMK::Vector3D> vertexes() const {	return m_vertexes; }
+
+	void setVertexes(const std::vector<IBKMK::Vector3D> & vertexes);
 
 private:
 	// *** PRIVATE MEMBER FUNCTIONS ***
@@ -106,17 +117,12 @@ private:
 	void simplify();
 
 	/*! Creates a 2D representation of the 3D polygon. */
-	void createQPoly();
-
+	void updatePolygon();
 
 	/*! This function triangulates the geometry and populate the m_triangles vector.
-		Note: you should call this function whenever the vertexes change. For performance reasons this
-			is not done automatically, but
-		TODO Andreas hier fehlt was in deinem Satz
-		\param createNew2DPoly true updates the 2D polygon from 3D vertices
-
+		This function is called from updateGeometry().
 	*/
-	void triangulate(bool createNew2DPoly = true);
+	void triangulate();
 
 	/*! Computes the normal vector of the plane and caches it in m_normal.
 		If calculation is not possible (collinear vectors, vectors have zero lengths etc.), the
@@ -133,24 +139,26 @@ private:
 	*/
 	type_t								m_type = NUM_T;
 
+	/*! Points of polyline (in double-precision accuracy!).
+		\warning Do not write to this variable, unless you know what you are doing. Rather use addVertex().
+	*/
+	std::vector<IBKMK::Vector3D>		m_vertexes;
+
+	// *** Runtime Variables ***
 	/*! Polyline in 2D-coordinates. */
 	QPolygonF							m_polygon;
 
-	/*! Origin of the polygon in world coordinates. */
-	IBKMK::Vector3D						m_origin = IBKMK::Vector3D(0,0,0);
-
-	// *** Runtime Variables ***
-
+	/*! Normal vector of plane, updated in updateNormal(). */
 	IBKMK::Vector3D						m_normal = IBKMK::Vector3D(0,0,0);
-
-
 
 	/*! Contains the vertex indexes for each triangle that the polygon is composed of (in anti-clock-wise order, so
 		that (b-a) x (c-a) gives the normal vector of the plane.
-		This vector is updated in computeGeometry().
+		This vector is updated in computeGeometry()/triangulate().
 	*/
-	std::vector<triangle_t>	m_triangles;
+	std::vector<triangle_t>				m_triangles;
 
+	IBKMK::Vector3D						m_localX;
+	IBKMK::Vector3D						m_localY;
 
 private:
 	void readXMLPrivate(const TiXmlElement * element);

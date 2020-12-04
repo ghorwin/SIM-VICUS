@@ -19,7 +19,6 @@ void SVUndoAddNetwork::undo() {
 	Q_ASSERT(!theProject().m_networks.empty());
 
 	theProject().m_networks.pop_back();
-	theProject().m_networks.back().updateNodeEdgeConnectionPointers(); // ensure pointers are correctly set
 
 	std::swap(theProject().m_viewSettings.m_gridWidth, m_gridWidth);
 	std::swap(theProject().m_viewSettings.m_gridSpacing, m_gridSpacing);
@@ -34,7 +33,7 @@ void SVUndoAddNetwork::undo() {
 void SVUndoAddNetwork::redo() {
 	// append network
 	theProject().m_networks.push_back(m_addedNetwork);
-	theProject().m_networks.back().updateNodeEdgeConnectionPointers(); // ensure pointers are correctly set
+	theProject().updatePointers(); // ensure pointers are correctly set
 
 	std::swap(theProject().m_viewSettings.m_gridWidth, m_gridWidth);
 	std::swap(theProject().m_viewSettings.m_gridSpacing, m_gridSpacing);
@@ -60,8 +59,10 @@ SVUndoModifyExistingNetwork::SVUndoModifyExistingNetwork(const QString &label, c
 
 void SVUndoModifyExistingNetwork::undo()
 {
-	*theProject().element(theProject().m_networks, m_newNetwork.m_id) = m_oldNetwork;
-	theProject().element(theProject().m_networks, m_newNetwork.m_id)->updateNodeEdgeConnectionPointers();
+	VICUS::Network * nw = theProject().element(theProject().m_networks, m_newNetwork.m_id);
+	IBK_ASSERT(nw != nullptr);
+	*nw = m_newNetwork;
+	nw->updateNodeEdgeConnectionPointers();
 
 	std::swap(theProject().m_viewSettings.m_gridWidth, m_gridWidth);
 	std::swap(theProject().m_viewSettings.m_gridSpacing, m_gridSpacing);
@@ -74,8 +75,10 @@ void SVUndoModifyExistingNetwork::undo()
 
 void SVUndoModifyExistingNetwork::redo()
 {
-	*theProject().element(theProject().m_networks, m_newNetwork.m_id) = m_newNetwork;
-	theProject().element(theProject().m_networks, m_newNetwork.m_id)->updateNodeEdgeConnectionPointers();
+	VICUS::Network * nw = theProject().element(theProject().m_networks, m_newNetwork.m_id);
+	IBK_ASSERT(nw != nullptr);
+	*nw = m_newNetwork;
+	nw->updateNodeEdgeConnectionPointers();
 
 	std::swap(theProject().m_viewSettings.m_gridWidth, m_gridWidth);
 	std::swap(theProject().m_viewSettings.m_gridSpacing, m_gridSpacing);

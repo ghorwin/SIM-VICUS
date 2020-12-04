@@ -39,7 +39,7 @@ namespace VICUS {
 
 Project::Project() {
 	// build test building
-#if 0
+
 	Room room;
 	room.m_id = 1;
 	room.m_displayName = "Room";
@@ -60,8 +60,14 @@ Project::Project() {
 	room.m_surfaces.push_back(surf);
 
 	surf.m_geometry = PlaneGeometry(PlaneGeometry::T_Polygon, IBKMK::Vector3D(20,0,0), IBKMK::Vector3D(20,0,10), IBKMK::Vector3D(10,0,20));
-	surf.m_geometry.m_vertexes.push_back(IBKMK::Vector3D(5,0,10));
-	surf.m_geometry.m_vertexes.push_back(IBKMK::Vector3D(5,0,0));
+	std::vector<IBKMK::Vector3D> vertexes;
+	vertexes.push_back(IBKMK::Vector3D(-10,-5,0));
+	vertexes.push_back(IBKMK::Vector3D(-2,-5,0));
+	vertexes.push_back(IBKMK::Vector3D(-2,-5,6));
+	vertexes.push_back(IBKMK::Vector3D(-4,-5,6));
+	vertexes.push_back(IBKMK::Vector3D(-4,-5,3));
+	vertexes.push_back(IBKMK::Vector3D(-10,-5,3));
+	surf.m_geometry.setVertexes(vertexes);
 	surf.m_id = 3;
 	surf.m_displayName = "Poly";
 	surf.m_color = QColor(255,255,64);
@@ -78,7 +84,7 @@ Project::Project() {
 	build.m_buildingLevels.push_back(level);
 
 	m_buildings.push_back(build);
-
+#if 0
 	NetworkFluid f1;
 	f1.m_id = 12;
 	f1.m_displayName = "water";
@@ -109,8 +115,6 @@ Project::Project() {
 	p.m_sWall = 4;
 	m_networkPipeDB.push_back(p);
 
-	for (Building & b: m_buildings)
-		b.updateParents();
 #endif
 
 #if 0
@@ -141,6 +145,8 @@ Project::Project() {
 	}
 #endif
 
+
+	updatePointers();
 }
 
 

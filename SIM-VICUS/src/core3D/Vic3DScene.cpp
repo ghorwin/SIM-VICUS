@@ -66,7 +66,7 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			updateNetwork = true;
 			// clear new polygon drawing object
 			/// \todo define what state the scene should go into, when project is reloaded/newly created
-			m_newPolygonObject.m_planeGeometry.m_vertexes.clear();
+			m_newPolygonObject.m_planeGeometry.setVertexes(std::vector<IBKMK::Vector3D>());
 			m_newPolygonObject.updateBuffers();
 			break;
 
