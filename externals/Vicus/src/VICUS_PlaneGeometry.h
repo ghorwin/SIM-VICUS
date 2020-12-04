@@ -46,19 +46,18 @@ public:
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	/*! Default constructor. */
-	PlaneGeometry();
+	PlaneGeometry() {}
 	/*! Default constructor. */
 	explicit PlaneGeometry(type_t t) : m_type(t) {}
-
-	void readXML(const TiXmlElement * element);
-	TiXmlElement * writeXML(TiXmlElement * parent) const;
-	VICUS_COMP(PlaneGeometry)
-
 
 	/*! Initializing constructor.
 		Vertexes a, b and c must be given in counter-clockwise order, so that (b-a) x (c-a) yields the normal vector of the plane.
 	*/
 	PlaneGeometry(type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c);
+
+	void readXML(const TiXmlElement * element);
+	TiXmlElement * writeXML(TiXmlElement * parent) const;
+	VICUS_COMP(PlaneGeometry)
 
 	type_t type() const { return m_type; }
 

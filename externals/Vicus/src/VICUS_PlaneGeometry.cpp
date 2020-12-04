@@ -120,9 +120,6 @@ static int pointInPolygon(const QPointF &point, const QPolygonF& poly)
 // *** PlaneGeometry ***
 
 
-PlaneGeometry::PlaneGeometry() {
-}
-
 
 PlaneGeometry::PlaneGeometry(PlaneGeometry::type_t t,
 							 const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c) :
