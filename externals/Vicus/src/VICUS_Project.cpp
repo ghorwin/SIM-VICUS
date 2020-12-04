@@ -40,6 +40,7 @@ namespace VICUS {
 Project::Project() {
 	// build test building
 
+#if 0
 	Room room;
 	room.m_id = 1;
 	room.m_displayName = "Room";
@@ -59,7 +60,7 @@ Project::Project() {
 	surf.m_color = QColor(255,96,0);
 	room.m_surfaces.push_back(surf);
 
-	surf.m_geometry = PlaneGeometry(PlaneGeometry::T_Polygon, IBKMK::Vector3D(20,0,0), IBKMK::Vector3D(20,0,10), IBKMK::Vector3D(10,0,20));
+	surf.m_geometry = PlaneGeometry(PlaneGeometry::T_Polygon);
 	std::vector<IBKMK::Vector3D> vertexes;
 	vertexes.push_back(IBKMK::Vector3D(-10,-5,0));
 	vertexes.push_back(IBKMK::Vector3D(-2,-5,0));
@@ -84,7 +85,6 @@ Project::Project() {
 	build.m_buildingLevels.push_back(level);
 
 	m_buildings.push_back(build);
-#if 0
 	NetworkFluid f1;
 	f1.m_id = 12;
 	f1.m_displayName = "water";

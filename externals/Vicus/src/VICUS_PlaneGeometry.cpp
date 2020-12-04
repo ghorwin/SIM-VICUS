@@ -62,7 +62,7 @@ static bool planeCoordinates(const IBKMK::Vector3D & offset, const IBKMK::Vector
 	// check that the point was indeed in the plane
 	IBKMK::Vector3D v2 = offset + x*a + y*b;
 	v2 -= v;
-	if (v2.magnitudeSquared() > 1e-4)
+	if (v2.magnitude() > 1e-4)
 		return false;
 	return true;
 }
@@ -189,7 +189,7 @@ void PlaneGeometry::simplify() {
 	const IBKMK::Vector3D & d = m_vertexes[3];
 	IBKMK::Vector3D c2 = b + (d-a);
 	c2 -= c;
-	if (c2.magnitudeSquared() < 1e-4) {
+	if (c2.magnitude() < 1e-4) {
 		m_type = T_Rectangle;
 	}
 }
@@ -350,7 +350,7 @@ void PlaneGeometry::updateNormal() {
 		IBKMK::Vector3D ca = m_vertexes[0+i] - m_vertexes[1+i];
 		IBKMK::Vector3D n;
 		ba.crossProduct(ca, n);
-		if (n.magnitudeSquared() > 1e-4) {
+		if (n.magnitude() > 1e-4) {
 			m_normal = n;
 			m_normal.normalize();
 			return; // found a normal vector
@@ -372,7 +372,7 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 	// first the normal test
 
 	double d_dot_normal = d.scalarProduct(m_normal);
-	double angle = d_dot_normal/d.magnitudeSquared();
+	double angle = d_dot_normal/d.magnitude();
 	// line parallel to plane? no intersection
 	if (angle < 1e-8 && angle > -1e-8)
 		return false;
