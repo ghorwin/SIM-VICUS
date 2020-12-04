@@ -14,6 +14,10 @@
 #include "qwt_plot_abstract_canvas.h"
 #include <qopenglwidget.h>
 
+#if (QT_VERSION >= 0x050F00)
+	#include <QPainterPath>
+#endif
+
 class QwtPlot;
 
 class QWT_EXPORT QwtPlotOpenGLCanvas: public QOpenGLWidget, public QwtPlotAbstractGLCanvas

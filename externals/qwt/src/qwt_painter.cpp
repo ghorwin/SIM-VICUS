@@ -32,7 +32,11 @@
 #include <qwindow.h>
 #endif
 
-#if QT_VERSION < 0x050000 
+#if (QT_VERSION >= 0x050F00)
+	#include <QPainterPath>
+#endif
+
+#if QT_VERSION < 0x050000
 
 #ifdef Q_WS_X11
 #include <qx11info_x11.h>

@@ -15,6 +15,10 @@
 #include <qstyle.h>
 #include <qstyleoption.h>
 
+#if (QT_VERSION >= 0x050F00)
+	#include <QPainterPath>
+#endif
+
 static QBitmap qwtBorderMask( const QWidget *canvas, const QSize &size )
 {
 #if QT_VERSION >= 0x050000

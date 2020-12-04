@@ -28,6 +28,10 @@
 #include <qstyleoption.h>
 #include <qimagewriter.h>
 
+#if (QT_VERSION >= 0x050F00)
+	#include <QPainterPath>
+#endif
+
 #ifndef QWT_NO_SVG
 #ifdef QT_SVG_LIB
 #if QT_VERSION >= 0x040500

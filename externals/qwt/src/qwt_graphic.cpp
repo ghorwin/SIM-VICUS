@@ -17,6 +17,10 @@
 #include <qpainterpath.h>
 #include <qmath.h>
 
+#if (QT_VERSION >= 0x050F00)
+	#include <QPainterPath>
+#endif
+
 static bool qwtHasScalablePen( const QPainter *painter )
 {
     const QPen pen = painter->pen();

@@ -14,6 +14,10 @@
 #include <qapplication.h>
 #include <qpainter.h>
 
+#if (QT_VERSION >= 0x050F00)
+	#include <QPainterPath>
+#endif
+
 #if QT_VERSION < 0x040601
 #define qFastSin(x) qSin(x)
 #define qFastCos(x) qCos(x)

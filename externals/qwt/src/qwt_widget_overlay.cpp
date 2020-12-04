@@ -14,6 +14,10 @@
 #include <qimage.h>
 #include <qevent.h>
 
+#if (QT_VERSION >= 0x050F00)
+	#include <QPainterPath>
+#endif
+
 static QImage::Format qwtMaskImageFormat()
 {
     if ( QwtPainter::isX11GraphicsSystem() )

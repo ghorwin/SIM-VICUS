@@ -11,6 +11,10 @@
 #include <qpaintengine.h>
 #include <qpixmap.h>
 
+#if (QT_VERSION >= 0x050F00)
+	#include <QPainterPath>
+#endif
+
 class QwtNullPaintDevice::PrivateData
 {
 public:
