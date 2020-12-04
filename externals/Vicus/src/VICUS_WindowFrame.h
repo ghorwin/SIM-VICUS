@@ -11,9 +11,11 @@
 
 namespace VICUS {
 
-class WindowFrame : public AbstractDBElement {
+/*! Window frame is a child of Window, but not a stand-alone
+	database element.
+*/
+class WindowFrame {
 public:
-
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -36,6 +38,8 @@ public:
 
 	/*! Material layer for frame material with thickness. */
 	MaterialLayer					m_materialLayer;		// XML:E
+
+	/// TODO : Dirk, add geometry to describe frame
 
 	/*! Frame area calculation.
 		true: frame area is calculated by a percentage of the hole window

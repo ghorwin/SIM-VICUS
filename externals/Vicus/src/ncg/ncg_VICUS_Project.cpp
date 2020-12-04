@@ -40,7 +40,7 @@ void Project::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "Networks") {
+			if (cName == "GeomNetworks") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
@@ -100,7 +100,7 @@ TiXmlElement * Project::writeXML(TiXmlElement * parent) const {
 	m_viewSettings.writeXML(e);
 
 	if (!m_geomNetworks.empty()) {
-		TiXmlElement * child = new TiXmlElement("Networks");
+		TiXmlElement * child = new TiXmlElement("GeomNetworks");
 		e->LinkEndChild(child);
 
 		for (std::vector<Network>::const_iterator it = m_geomNetworks.begin();

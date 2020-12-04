@@ -14,7 +14,10 @@
 
 namespace VICUS {
 
-class WindowGlazingLayer : public AbstractDBElement {
+/*! Window glazing layer is a child of WindowGlazingSystem, but not a stand-alone
+	database element.
+*/
+class WindowGlazingLayer {
 public:
 
 	/*! Model types supported by the window model. */

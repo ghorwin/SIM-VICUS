@@ -11,7 +11,10 @@
 
 namespace VICUS {
 
-class WindowDivider : public AbstractDBElement {
+/*! Window divider is a child of Window, but not a stand-alone
+	database element.
+*/
+class WindowDivider {
 public:
 
 	/*! Basic parameters. */
@@ -41,6 +44,8 @@ public:
 
 	/*! Material id of divider. */
 	unsigned int					m_idMaterial = INVALID_ID;	// XML:A:required
+
+	/// TODO : Dirk, add geometry to describe divider
 
 	/*! List of parameters. */
 	IBK::Parameter					m_para[NUM_P];				// XML:E

@@ -1062,7 +1062,7 @@ namespace NANDRAD {
 			// HydraulicNetworkElement::para_t
 			case 7 :
 			switch (t) {
-				case 0 : return "Length for the element.";
+				case 0 : return "Length for the element (pipe)";
 				case 1 : return "Heat flux added or extracted by heat exchanger";
 			} break;
 			// InterfaceAirFlow::splinePara_t

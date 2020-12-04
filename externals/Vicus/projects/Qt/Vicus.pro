@@ -58,6 +58,7 @@ HEADERS += \
 	../../src/VICUS_Surface.h \
 	../../src/VICUS_SurfaceProperties.h \
 	../../src/VICUS_ViewSettings.h \
+	../../src/VICUS_Window.h \
 	../../src/VICUS_WindowDivider.h \
 	../../src/VICUS_WindowFrame.h \
 	../../src/VICUS_WindowGlazingLayer.h \
@@ -95,6 +96,7 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_Surface.cpp \
 	../../src/ncg/ncg_VICUS_SurfaceProperties.cpp \
 	../../src/ncg/ncg_VICUS_ViewSettings.cpp \
+	../../src/ncg/ncg_VICUS_Window.cpp \
 	../../src/ncg/ncg_VICUS_WindowDivider.cpp \
 	../../src/ncg/ncg_VICUS_WindowFrame.cpp \
 	../../src/ncg/ncg_VICUS_WindowGlazingLayer.cpp \
