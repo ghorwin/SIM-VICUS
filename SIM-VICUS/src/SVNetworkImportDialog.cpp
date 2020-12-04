@@ -2,6 +2,7 @@
 #include "ui_SVNetworkImportDialog.h"
 
 #include "SVUndoAddNetwork.h"
+#include "SVUndoModifyExistingNetwork.h"
 
 #include <IBK_Path.h>
 

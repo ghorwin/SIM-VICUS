@@ -4,6 +4,7 @@
 #include "VICUS_Project.h"
 #include "SVProjectHandler.h"
 #include "SVUndoAddNetwork.h"
+#include "SVUndoModifyExistingNetwork.h"
 
 #include <QMessageBox>
 
