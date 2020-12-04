@@ -346,7 +346,6 @@ void SolverControlFramework::run(double t) {
 
 	try {
 
-		double restartSimTime = t;
 		clock_t restartRealTime = clock();
 
 		// write initial output, only if we start from begin
@@ -465,7 +464,6 @@ void SolverControlFramework::run(double t) {
 			writeProgress(t, false);
 
 			// store restart information whenever restart time difference has been exceeded
-			double simTimeDt = t - restartSimTime;
 			double realTimeDt = double(clock())/CLOCKS_PER_SEC - double(restartRealTime)/CLOCKS_PER_SEC;
 			// check if we have passed the output time, but guard against overwriting the
 			// restart data when it had been already written
@@ -473,13 +471,11 @@ void SolverControlFramework::run(double t) {
 				if (t >= t_end) {
 					const double * y_out = m_integrator->yOut(t_end);
 					appendRestartInfo(t_end, y_out);
-					restartSimTime = t_end;
 				}
 				else {
 					// within the first 5 minutes of the simulation, we do not want outputs to slow down fast simulations
 					if (m_restartMode != RestartInfoOnlyAtSimulationEnd)
 						appendRestartInfo(t, y_current);
-					restartSimTime = t;
 				}
 				restartRealTime = clock(); // restart real-time counter
 			}

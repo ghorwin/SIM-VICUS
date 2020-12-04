@@ -130,7 +130,7 @@ do
 
 done
 
-echo $DISABLE_GUI
+#echo $DISABLE_GUI
 
 if  [[ $DISABLE_GUI = 1 ]];
 then
