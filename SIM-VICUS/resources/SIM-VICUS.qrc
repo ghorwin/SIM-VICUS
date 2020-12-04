@@ -35,9 +35,6 @@
         <file>gfx/actions/64x64/projectProperties.png</file>
         <file>gfx/splashscreen/SIM-VICUS.jpg</file>
         <file>gfx/actions/48x48/geometry.png</file>
-        <file>gfx/actions/32x32/editcopy_32x32.png</file>
-        <file>gfx/actions/32x32/minus_32x32.png</file>
-        <file>gfx/actions/32x32/plus_32x32.png</file>
         <file>gfx/actions/16x16/help-hint.png</file>
         <file>gfx/actions/16x16/help-hint_gray.png</file>
         <file>gfx/actions/16x16/checkbox-empty.png</file>

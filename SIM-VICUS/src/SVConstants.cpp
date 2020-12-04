@@ -32,12 +32,4 @@ const char * const FIXED_FONT_FAMILY = "Courier New";
 
 #endif
 
-const char * const EditFieldBackground						= "#f9f6c8";
-const char * const AlternativeEditFieldBackground			= "#f9ffd8";
-const char * const ErrorEditFieldBackground					= "#ff7777";
-const char * const AlternativeErrorEditFieldBackground		= "#ff7087";
-const char * const ReadOnlyEditFieldBackground				= "#d6e9ff";
-
-const char * const AlternativeBackgroundBright				= "#fff4b8";
-const char * const AlternativeBackgroundDark				= "#ffe49d";
-const char * const AlternativeBackgroundText				= "#760000";
+unsigned int USER_ID_SPACE = 100000;

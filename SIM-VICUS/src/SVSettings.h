@@ -10,11 +10,12 @@
 #include <VICUS_Component.h>
 #include <VICUS_Construction.h>
 #include <VICUS_WindowGlazingSystem.h>
+#include <VICUS_Window.h>
 #include <VICUS_WindowFrame.h>
 #include <VICUS_WindowDivider.h>
 #include <VICUS_SurfaceProperties.h>
 #include <VICUS_BoundaryCondition.h>
-
+#include "SVConstants.h"
 
 class QDockWidget;
 
@@ -111,6 +112,21 @@ public:
 	void writeDatabase();
 
 
+	template <typename T>
+	T * addDatabaseElement(typename std::map<unsigned int, T> & db) {
+		// search for highest ID (in user ID space)
+		unsigned int highest = USER_ID_SPACE;
+		for (const auto & d : db) {
+			if (d.first > highest)
+				highest = d.first+1;
+		}
+		// now create a database element, set the highest ID and add it to the database
+		T e;
+		e.m_id = highest;
+		db[highest] = e;
+		return &db[highest];
+	}
+
 	// ****** static functions ************
 
 	/*! Computes the default application font size based on screen properties. */
@@ -180,17 +196,17 @@ public:
 	/*! Map of all opaque database materials. */
 	std::map<unsigned int, VICUS::Material>					m_dbOpaqueMaterials;
 
-	/*! Map of all window database materials. */
-	std::map<unsigned int, VICUS::WindowGlazingLayer>		m_dbWindowLayers;
+	/*! Map of all window definitions. */
+	std::map<unsigned int, VICUS::Window>					m_dbWindows;
 
 	/*! Map of all database glazing systems. */
 	std::map<unsigned int, VICUS::WindowGlazingSystem>		m_dbWindowGlazingSystems;
 
 	/*! Map of all database window frames. */
-	std::map<unsigned int, VICUS::WindowFrame>				m_dbWindowFrame;
+//	std::map<unsigned int, VICUS::WindowFrame>				m_dbWindowFrame;
 
 	/*! Map of all database window dividers. */
-	std::map<unsigned int, VICUS::WindowDivider>			m_dbWindowDivider;
+//	std::map<unsigned int, VICUS::WindowDivider>			m_dbWindowDivider;
 
 	/*! Map of all database constructions. */
 	std::map<unsigned int, VICUS::Construction>				m_dbConstructions;

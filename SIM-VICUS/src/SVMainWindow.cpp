@@ -50,8 +50,10 @@
 #include "SVNetworkEditDialog.h"
 #include "SVPreferencesPageStyle.h"
 #include "SVViewStateHandler.h"
-#include "SVDBMaterialsEditWidget.h"
 #include "SVImportIDFDialog.h"
+
+#include "SVDBMaterialsEditWidget.h"
+#include "SVDBWindowEditWidget.h"
 
 #include "SVGeometryView.h"
 #include "Vic3DSceneView.h"
@@ -1339,3 +1341,11 @@ void SVMainWindow::on_actionDBMaterials_triggered() {
 	m_dbMaterialsEditWidget->edit();
 }
 
+
+void SVMainWindow::on_actionDBWindows_triggered() {
+	if (m_dbWindowEditWidget == nullptr) {
+		m_dbWindowEditWidget = new SVDBWindowEditWidget(nullptr); // global widget, not inside main window
+	}
+	m_dbWindowEditWidget->edit();
+
+}

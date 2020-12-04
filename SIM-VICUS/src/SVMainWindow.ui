@@ -103,6 +103,7 @@
     </property>
     <addaction name="actionDBMaterials"/>
     <addaction name="actionDBConstructions"/>
+    <addaction name="actionDBWindows"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
@@ -385,6 +386,14 @@
   <action name="actionFileImportEneryPlusIDF">
    <property name="text">
     <string>EneryPlus IDF...</string>
+   </property>
+  </action>
+  <action name="actionDBWindows">
+   <property name="text">
+    <string>Windows...</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit window database</string>
    </property>
   </action>
  </widget>

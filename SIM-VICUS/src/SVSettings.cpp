@@ -231,10 +231,8 @@ void SVSettings::readDatabase() {
 	IBK::Path dbDir(QtExt::Directories::databasesDir().toStdString());
 
 	readXMLDB(dbDir / "DB_Materials.xml", "Materials", "Material", m_dbOpaqueMaterials, true);
-	readXMLDB(dbDir / "DB_WindowMaterials.xml", "WindowMaterials", "WindowMaterial", m_dbWindowLayers, true);
 	readXMLDB(dbDir / "DB_WindowGlazingSystems.xml", "WindowGlazingSystems", "WindowGlazingSystem", m_dbWindowGlazingSystems, true);
-	readXMLDB(dbDir / "DB_WindowFrames.xml", "WindowFrames", "WindowFrame", m_dbWindowFrame, true);
-	readXMLDB(dbDir / "DB_WindowDividers.xml", "WindowDividers", "WindowDivider", m_dbWindowDivider, true);
+	readXMLDB(dbDir / "DB_Windows.xml", "Windows", "Window", m_dbWindows, true);
 	readXMLDB(dbDir / "DB_Constructions.xml", "Constructions", "Construction", m_dbConstructions, true);
 	readXMLDB(dbDir / "DB_SurfaceProperties.xml", "SurfaceProperties", "SurfaceProperty", m_dbSurfaceProperty, true);
 	readXMLDB(dbDir / "DB_BoundaryConditions.xml", "BoundaryConditions", "BoundaryCondition", m_dbBoundaryCondition, true);
@@ -244,42 +242,26 @@ void SVSettings::readDatabase() {
 	IBK::Path userDbDir(QtExt::Directories::userDataDir().toStdString());
 
 	readXMLDB(userDbDir / "DB_Materials.xml", "Materials", "Material", m_dbOpaqueMaterials);
-	readXMLDB(dbDir / "DB_WindowLayers.xml", "WindowLayers", "WindowLayer", m_dbWindowLayers);
+	readXMLDB(dbDir / "DB_Windows.xml", "Windows", "Window", m_dbWindows);
 	readXMLDB(dbDir / "DB_WindowGlazingSystems.xml", "WindowGlazingSystems", "WindowGlazingSystem", m_dbWindowGlazingSystems);
-	readXMLDB(dbDir / "DB_WindowFrames.xml", "WindowFrames", "WindowFrame", m_dbWindowFrame);
-	readXMLDB(dbDir / "DB_WindowDividers.xml", "WindowDividers", "WindowDivider", m_dbWindowDivider);
 	readXMLDB(dbDir / "DB_Constructions.xml", "Constructions", "Construction", m_dbConstructions);
 	readXMLDB(dbDir / "DB_SurfaceProperties.xml", "SurfaceProperties", "SurfaceProperty", m_dbSurfaceProperty);
 	readXMLDB(dbDir / "DB_BoundaryConditions.xml", "BoundaryConditions", "BoundaryCondition", m_dbBoundaryCondition);
 }
 
-void SVSettings::writeDatabase()
-{
-	// built-in databases
 
-	IBK::Path dbDir(QtExt::Directories::databasesDir().toStdString());
+void SVSettings::writeDatabase() {
 
-	writeXMLDB(dbDir / "DB_Materials.xml", "Materials", m_dbOpaqueMaterials, true);
-	writeXMLDB(dbDir / "DB_WindowMaterials.xml", "WindowMaterials", m_dbWindowLayers, true);
-	writeXMLDB(dbDir / "DB_WindowGlazingSystems.xml", "WindowGlazingSystems", m_dbWindowGlazingSystems, true);
-	writeXMLDB(dbDir / "DB_WindowFrames.xml", "WindowFrames", m_dbWindowFrame, true);
-	writeXMLDB(dbDir / "DB_WindowDividers.xml", "WindowDividers", m_dbWindowDivider, true);
-	writeXMLDB(dbDir / "DB_Constructions.xml", "Constructions", m_dbConstructions, true);
-	writeXMLDB(dbDir / "DB_SurfaceProperties.xml", "SurfaceProperties", m_dbSurfaceProperty, true);
-	writeXMLDB(dbDir / "DB_BoundaryConditions.xml", "BoundaryConditions", m_dbBoundaryCondition, true);
-
-	// user databases
+	// we only write user databases
 
 	IBK::Path userDbDir(QtExt::Directories::userDataDir().toStdString());
 
 	writeXMLDB(userDbDir / "DB_Materials.xml", "Materials", m_dbOpaqueMaterials);
-	writeXMLDB(dbDir / "DB_WindowMaterials.xml", "WindowMaterials", m_dbWindowLayers);
-	writeXMLDB(dbDir / "DB_WindowGlazingSystems.xml", "WindowGlazingSystems", m_dbWindowGlazingSystems);
-	writeXMLDB(dbDir / "DB_WindowFrames.xml", "WindowFrames", m_dbWindowFrame);
-	writeXMLDB(dbDir / "DB_WindowDividers.xml", "WindowDividers", m_dbWindowDivider);
-	writeXMLDB(dbDir / "DB_Constructions.xml", "Constructions", m_dbConstructions);
-	writeXMLDB(dbDir / "DB_SurfaceProperties.xml", "SurfaceProperties", m_dbSurfaceProperty);
-	writeXMLDB(dbDir / "DB_BoundaryConditions.xml", "BoundaryConditions", m_dbBoundaryCondition);
+	writeXMLDB(userDbDir / "DB_Windows.xml", "Windows", m_dbWindowGlazingSystems);
+	writeXMLDB(userDbDir / "DB_WindowGlazingSystems.xml", "WindowGlazingSystems", m_dbWindowGlazingSystems);
+	writeXMLDB(userDbDir / "DB_Constructions.xml", "Constructions", m_dbConstructions);
+	writeXMLDB(userDbDir / "DB_SurfaceProperties.xml", "SurfaceProperties", m_dbSurfaceProperty);
+	writeXMLDB(userDbDir / "DB_BoundaryConditions.xml", "BoundaryConditions", m_dbBoundaryCondition);
 }
 
 

@@ -26,15 +26,8 @@ extern const char * const FORUM_URL;
 /*! Fixed-size font family to be used in tables. */
 extern const char * const FIXED_FONT_FAMILY;
 
-extern const char * const EditFieldBackground;
-extern const char * const AlternativeEditFieldBackground;
-extern const char * const ErrorEditFieldBackground;
-extern const char * const AlternativeErrorEditFieldBackground;
-extern const char * const ReadOnlyEditFieldBackground;
-
-extern const char * const AlternativeBackgroundBright;
-extern const char * const AlternativeBackgroundDark;
-extern const char * const AlternativeBackgroundText;
+/*! Defines the first index to be user for user IDs. */
+extern unsigned int USER_ID_SPACE;
 
 /*! \file SVConstants.h
 	Contains constants which are used in several ui files. This is to
