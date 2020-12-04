@@ -84,6 +84,15 @@ public:
 	IBKMK::Vector3D					m_position = IBKMK::Vector3D(-9.99,-9.99,-9.99);		// XML:E:required
 	NodeType						m_type = NUM_NT;										// XML:A:required
 	double							m_maxHeatingDemand = 0;									// XML:A
+
+	/*! reference id to a hydraulic component in the catalog */
+	unsigned						m_componentId = INVALID_ID;								// XML:A
+
+	/*! reference id to a plant (hydraulic network) */
+	unsigned						m_subNetworkId = INVALID_ID;									// XML:A
+
+	// *** RUNTIME VARIABLES ***
+
 	double							m_distanceToStart = std::numeric_limits<double>::max();
 	NetworkNode *					m_predecessor = nullptr;
 	bool							m_isDeadEnd = false;

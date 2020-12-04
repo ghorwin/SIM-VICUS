@@ -449,6 +449,27 @@ double Network::numberOfBuildings() const{
 	return count;
 }
 
+void Network::writeNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network) const{
+	FUNCID(Network::writeNandradHydraulicNetwork);
+
+	network.m_elements.clear();
+
+	for (const NetworkNode &n: m_nodes){
+		if (n.m_componentId != INVALID_ID && n.m_subNetworkId != INVALID_ID)
+			throw IBK::Exception(IBK::FormatString("Error in writing NANDRAD network: node with id '%1' "
+												   "has both subnetworkId and componentId.").arg(n.m_id), FUNC_ID);
+	}
+
+	if (m_type == NET_doublePipe){
+
+//		for ()
+
+
+
+
+	}
+}
+
 
 void Network::writeNetworkCSV(const IBK::Path &file) const{
 	std::ofstream f;

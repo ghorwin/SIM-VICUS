@@ -145,7 +145,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		}
 	}
 
-	for (const VICUS::Network & n : prj.m_networks) {
+	for (const VICUS::Network & n : prj.m_geomNetworks) {
 		QTreeWidgetItem * node = new QTreeWidgetItem(QStringList() << tr("Network: %1").arg(QString::fromStdString(n.m_name)), QTreeWidgetItem::Type);
 		root->addChild(node);
 		QTreeWidgetItem * enode = new QTreeWidgetItem(QStringList() << tr("Edges"), QTreeWidgetItem::Type);

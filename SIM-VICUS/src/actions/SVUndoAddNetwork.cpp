@@ -16,9 +16,10 @@ SVUndoAddNetwork::SVUndoAddNetwork(	const QString & label,
 void SVUndoAddNetwork::undo() {
 
 	// remove last network
-	Q_ASSERT(!theProject().m_networks.empty());
+	Q_ASSERT(!theProject().m_geomNetworks.empty());
 
-	theProject().m_networks.pop_back();
+	theProject().m_geomNetworks.pop_back();
+	theProject().m_geomNetworks.back().updateNodeEdgeConnectionPointers(); // ensure pointers are correctly set
 
 	std::swap(theProject().m_viewSettings.m_gridWidth, m_gridWidth);
 	std::swap(theProject().m_viewSettings.m_gridSpacing, m_gridSpacing);
@@ -32,9 +33,9 @@ void SVUndoAddNetwork::undo() {
 
 void SVUndoAddNetwork::redo() {
 	// append network
-	theProject().m_networks.push_back(m_addedNetwork);
-	theProject().updatePointers(); // ensure pointers are correctly set
 
+	theProject().m_geomNetworks.push_back(m_addedNetwork);
+	theProject().updatePointers();
 	std::swap(theProject().m_viewSettings.m_gridWidth, m_gridWidth);
 	std::swap(theProject().m_viewSettings.m_gridSpacing, m_gridSpacing);
 	std::swap(theProject().m_viewSettings.m_farDistance, m_farDistance);
@@ -47,7 +48,7 @@ void SVUndoAddNetwork::redo() {
 
 
 SVUndoModifyExistingNetwork::SVUndoModifyExistingNetwork(const QString &label, const VICUS::Network &modNetwork):
-	m_oldNetwork(*theProject().element(theProject().m_networks, modNetwork.m_id)),
+	m_oldNetwork(*theProject().element(theProject().m_geomNetworks, modNetwork.m_id)),
 	m_newNetwork(modNetwork)
 {
 	setText( label );
@@ -59,7 +60,7 @@ SVUndoModifyExistingNetwork::SVUndoModifyExistingNetwork(const QString &label, c
 
 void SVUndoModifyExistingNetwork::undo()
 {
-	VICUS::Network * nw = theProject().element(theProject().m_networks, m_newNetwork.m_id);
+	VICUS::Network * nw = theProject().element(theProject().m_geomNetworks, m_newNetwork.m_id);
 	IBK_ASSERT(nw != nullptr);
 	*nw = m_newNetwork;
 	nw->updateNodeEdgeConnectionPointers();
@@ -75,7 +76,7 @@ void SVUndoModifyExistingNetwork::undo()
 
 void SVUndoModifyExistingNetwork::redo()
 {
-	VICUS::Network * nw = theProject().element(theProject().m_networks, m_newNetwork.m_id);
+	VICUS::Network * nw = theProject().element(theProject().m_geomNetworks, m_newNetwork.m_id);
 	IBK_ASSERT(nw != nullptr);
 	*nw = m_newNetwork;
 	nw->updateNodeEdgeConnectionPointers();

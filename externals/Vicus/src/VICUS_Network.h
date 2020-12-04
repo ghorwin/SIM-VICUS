@@ -32,6 +32,12 @@ public:
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
+	enum NetworkType{
+		NET_singlePipe,
+		NET_doublePipe,
+		NET_NUM
+	};
+
 	Network();
 
 	/*! call private addNode and set position relative to orign.
@@ -132,6 +138,8 @@ public:
 
 	double numberOfBuildings() const;
 
+	void writeNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network) const;
+
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -152,14 +160,24 @@ public:
 		Node & n = m_nodes[e.m_n1];
 		\endcode
 	*/
-	std::vector<NetworkNode>		m_nodes;									// XML:E:required
+	std::vector<NetworkNode>				m_nodes;									// XML:E:required
 
 	/*! vector with edges */
-	std::vector<NetworkEdge>		m_edges;									// XML:E:required
+	std::vector<NetworkEdge>				m_edges;									// XML:E:required
 
 	/*! Pipe database, pipe dimensioning algorithm may use any pipes defined in this
 		list. */
-	std::vector<NetworkPipe>		m_networkPipes;								// XM:E
+	std::vector<NetworkPipe>				m_networkPipes;								// XM:E
+
+	/*! origin of the network */
+	IBKMK::Vector3D							m_origin = IBKMK::Vector3D(0.0, 0.0, 0.0);	// XML:E:required
+
+	/*! plants in the Network */
+	std::vector<NANDRAD::HydraulicNetwork>	m_hydraulicSubNetworks;
+
+	NetworkType								m_type = NET_NUM;
+
+	// *** RUNTIME VARIABLES ***
 
 	/*! Stores the extends of the network.
 		Use the function updateExtends() to compute these.
@@ -167,13 +185,7 @@ public:
 		m_extends.set(minX, minY, maxX, maxY);
 		\endcode
 	*/
-	IBK::rectangle<double>			m_extends;
-
-	/*! origin of the network */
-	IBKMK::Vector3D					m_origin = IBKMK::Vector3D(0.0, 0.0, 0.0);	// XML:E:required
-
-
-	NANDRAD::HydraulicNetwork		m_hydraulicNetwork;
+	IBK::rectangle<double>					m_extends;
 
 private:
 

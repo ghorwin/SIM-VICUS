@@ -250,7 +250,7 @@ void Project::updatePointers() {
 	for (VICUS::Building & b : m_buildings)
 		b.updateParents();
 
-	for (VICUS::Network & n : m_networks)
+	for (VICUS::Network & n : m_geomNetworks)
 		n.updateNodeEdgeConnectionPointers();
 }
 

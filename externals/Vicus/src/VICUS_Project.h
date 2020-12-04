@@ -105,7 +105,12 @@ public:
 
 	ViewSettings			m_viewSettings;		// XML:E
 
-	std::vector<Network>	m_networks;			// XML:E
+	std::vector<Network>	m_geomNetworks;			// XML:E
+
+	std::vector<NANDRAD::HydraulicNetwork>	m_hydraulicNetworks;
+
+	/*! the catalog of hydraulic components */
+	std::vector<NANDRAD::HydraulicNetworkComponent>	m_hyrdaulicComponents;
 
 	std::vector<Building>	m_buildings;		// XML:E
 

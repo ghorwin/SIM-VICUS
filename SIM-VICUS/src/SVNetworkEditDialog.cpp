@@ -25,9 +25,9 @@ void SVNetworkEditDialog::edit()
 	const VICUS::Project &p = project();
 
 	// setup combobox
-	if (!p.m_networks.empty()){
+	if (!p.m_geomNetworks.empty()){
 		m_existingNetworksMap.clear();
-		for (auto it = p.m_networks.begin(); it!=p.m_networks.end(); ++it)
+		for (auto it = p.m_geomNetworks.begin(); it!=p.m_geomNetworks.end(); ++it)
 			m_existingNetworksMap.insert(QString::fromStdString(it->m_name), it->m_id);
 		m_ui->comboBoxSelectNetwork->clear();
 		m_ui->comboBoxSelectNetwork->addItems(QStringList(m_existingNetworksMap.keys()));
@@ -52,7 +52,7 @@ void SVNetworkEditDialog::updateStatus() const{
 void SVNetworkEditDialog::setNetwork()
 {
 	unsigned id = m_existingNetworksMap.value(m_ui->comboBoxSelectNetwork->currentText());
-	m_network = *project().element(project().m_networks, id);
+	m_network = *project().element(project().m_geomNetworks, id);
 	m_network.updateNodeEdgeConnectionPointers();
 	updateStatus();
 }

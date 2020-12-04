@@ -48,7 +48,7 @@ void Project::readXML(const TiXmlElement * element) {
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					Network obj;
 					obj.readXML(c2);
-					m_networks.push_back(obj);
+					m_geomNetworks.push_back(obj);
 					c2 = c2->NextSiblingElement();
 				}
 			}
@@ -99,12 +99,12 @@ TiXmlElement * Project::writeXML(TiXmlElement * parent) const {
 
 	m_viewSettings.writeXML(e);
 
-	if (!m_networks.empty()) {
+	if (!m_geomNetworks.empty()) {
 		TiXmlElement * child = new TiXmlElement("Networks");
 		e->LinkEndChild(child);
 
-		for (std::vector<Network>::const_iterator it = m_networks.begin();
-			it != m_networks.end(); ++it)
+		for (std::vector<Network>::const_iterator it = m_geomNetworks.begin();
+			it != m_geomNetworks.end(); ++it)
 		{
 			it->writeXML(child);
 		}
