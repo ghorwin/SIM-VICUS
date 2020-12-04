@@ -176,8 +176,42 @@ static int pointInPolygon(const QPointF &point, const QPolygonF& poly)
 	return  t;
 }
 
+void PlaneGeometry::createQPoly(){
 
-void PlaneGeometry::triangulate() {
+	//first clear the old polyline
+	m_polygon.clear();
+
+	m_origin = m_vertexes[0];
+	// x-axis vector in plane
+	IBKMK::Vector3D vX = (m_vertexes[1] - m_vertexes[0]);
+	// y-axis vector in plane
+	IBKMK::Vector3D vY;
+	m_normal.crossProduct(vX, vY);
+
+	// first point is v0 = origin
+	m_polygon.append(QPointF(0,0));
+	// second point is v1 at (1,0), since v1-v0 is the vX vector
+	m_polygon.append(QPointF(1,0));
+
+	// now process all other points
+	for (unsigned int i=2; i<m_vertexes.size(); ++i) {
+		const IBKMK::Vector3D & v = m_vertexes[i];
+		double x,y;
+		/// \todo improve this - by simply calling planeCoordinates we
+		///       redo the same stuff several times for the same plane.
+		///       We should use a function that passes vX, vY, offset and then
+		///       a vector with v,x,y to process.
+		if (planeCoordinates(m_origin, vX, vY, v, x, y)) {
+			m_polygon.append(QPointF(x,y));
+		}
+		else {
+			// this shouldn't happen
+			Q_ASSERT(false);
+		}
+	}
+}
+
+void PlaneGeometry::triangulate(bool createNew2DPoly) {
 	Q_ASSERT(m_vertexes.size() >= 3);
 
 	const double eps = 1e-4;
@@ -193,6 +227,7 @@ void PlaneGeometry::triangulate() {
 			//        we use the same triangulation algorithm as for polygons
 		case T_Polygon : {
 			// compute x,y coordinates in plane for all vertexes
+#if 0
 			QPolygonF polygon;
 
 			IBKMK::Vector3D offset = m_vertexes[0];
@@ -223,6 +258,10 @@ void PlaneGeometry::triangulate() {
 					Q_ASSERT(false);
 				}
 			}
+#else
+			if(createNew2DPoly)
+				createQPoly();
+#endif
 
 			//here the index is stored which is already taken into account
 			std::set<unsigned int> usedIdx;
@@ -232,7 +271,7 @@ void PlaneGeometry::triangulate() {
 			while(true){
 				QPolygonF triangle;
 				//check if there are enough points left
-				if(usedIdx.size()>=polygon.size()-2)
+				if(usedIdx.size()>=m_polygon.size()-2)
 					break;
 
 				std::set<unsigned int> triIdx;			//index that used for triangle as set for quick access
@@ -243,14 +282,14 @@ void PlaneGeometry::triangulate() {
 				while(true){
 					//check if index is not already used
 					if(usedIdx.find(idx2) == usedIdx.end()){
-						triangle <<	polygon.value(idx2);
+						triangle <<	m_polygon.value(idx2);
 						triIdx.insert(idx2);
 						triIdxVec.push_back(idx2);
 					}
 					//now we have a triangle
 					if(triangle.size() == 3){
-						QVector2D a(polygon[triIdxVec[1]]-polygon[triIdxVec[0]]);
-						QVector2D b(polygon[triIdxVec[2]]-polygon[triIdxVec[0]]);
+						QVector2D a(m_polygon[triIdxVec[1]]-m_polygon[triIdxVec[0]]);
+						QVector2D b(m_polygon[triIdxVec[2]]-m_polygon[triIdxVec[0]]);
 						double cosAngle = QVector2D::dotProduct(a.normalized() , b.normalized());
 						//double angleDeg = std::acos(cosAngle)*180/PI;
 
@@ -264,7 +303,7 @@ void PlaneGeometry::triangulate() {
 						else
 							break;
 					}
-					if(idx2 == polygon.size()-1)
+					if(idx2 == m_polygon.size()-1)
 						idx2 = 0;
 					else
 						++idx2;
@@ -275,16 +314,16 @@ void PlaneGeometry::triangulate() {
 
 				bool isValidTri =true;
 				//check if the test point is in the plane polygon
-				if(pointInPolygon(testPoint, polygon) != -1){
+				if(pointInPolygon(testPoint, m_polygon) != -1){
 				//if(polygon.containsPoint(testPoint, Qt::FillRule::OddEvenFill)){
 					//check if no other point is in polyline
-					for (unsigned int i=0; i<polygon.size(); ++i) {
+					for (unsigned int i=0; i<m_polygon.size(); ++i) {
 						//skip points that are in the triangle
 						if(triIdx.find(i) != triIdx.end())
 							continue;
 
 						//check if point of the polygon is inside the triangle
-						if(pointInPolygon(polygon.value(i), triangle) != -1){
+						if(pointInPolygon(m_polygon.value(i), triangle) != -1){
 						//if(triangle.containsPoint(polygon.value(i), Qt::FillRule::OddEvenFill)){
 							//triangle invalid
 							isValidTri=false;
@@ -301,7 +340,7 @@ void PlaneGeometry::triangulate() {
 					//mark second point of triangle as used
 					usedIdx.insert(triIdxVec[1]);
 				}
-				if(idx == polygon.size()-1)
+				if(idx == m_polygon.size()-1)
 					idx = 0;
 				else
 					++idx;

@@ -3,6 +3,9 @@
 
 #include <IBKMK_Vector3D.h>
 
+#include <QVector3D>
+#include <QPolygonF>
+
 #include "VICUS_CodeGenMacros.h"
 
 
@@ -102,12 +105,18 @@ private:
 	*/
 	void simplify();
 
+	/*! Creates a 2D representation of the 3D polygon. */
+	void createQPoly();
+
+
 	/*! This function triangulates the geometry and populate the m_triangles vector.
 		Note: you should call this function whenever the vertexes change. For performance reasons this
 			is not done automatically, but
+		TODO Andreas hier fehlt was in deinem Satz
+		\param createNew2DPoly true updates the 2D polygon from 3D vertices
 
 	*/
-	void triangulate();
+	void triangulate(bool createNew2DPoly = true);
 
 	/*! Computes the normal vector of the plane and caches it in m_normal.
 		If calculation is not possible (collinear vectors, vectors have zero lengths etc.), the
@@ -124,10 +133,17 @@ private:
 	*/
 	type_t								m_type = NUM_T;
 
+	/*! Polyline in 2D-coordinates. */
+	QPolygonF							m_polygon;
+
+	/*! Origin of the polygon in world coordinates. */
+	IBKMK::Vector3D						m_origin = IBKMK::Vector3D(0,0,0);
 
 	// *** Runtime Variables ***
 
 	IBKMK::Vector3D						m_normal = IBKMK::Vector3D(0,0,0);
+
+
 
 	/*! Contains the vertex indexes for each triangle that the polygon is composed of (in anti-clock-wise order, so
 		that (b-a) x (c-a) gives the normal vector of the plane.
