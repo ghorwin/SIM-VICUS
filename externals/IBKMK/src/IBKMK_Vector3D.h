@@ -77,10 +77,6 @@ public:
 	double magnitude() const {
 		return std::sqrt(m_x*m_x + m_y*m_y + m_z*m_z);
 	}
-	/*! Returns the magnitude^2 of the vector (useful for angle > 0 checks). */
-	double magnitudeSquared() const {
-		return std::sqrt(m_x*m_x + m_y*m_y + m_z*m_z);
-	}
 
 	/*! Returns the cross product of this vector with another.
 		Computes result = this x other.
