@@ -85,7 +85,7 @@ void addPlane(const VICUS::PlaneGeometry & g, const QColor & col,
 				indexBufferData[currentElementIndex + 2] = currentVertexIndex + 2;
 			}
 			// advance index in element/index buffer
-			currentElementIndex += 4;
+			currentElementIndex += 3;
 		} break;
 
 		case VICUS::PlaneGeometry::T_Rectangle : {
