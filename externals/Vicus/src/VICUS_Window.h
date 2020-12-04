@@ -27,7 +27,7 @@ public:
 	unsigned int					m_id = INVALID_ID;					// XML:A:required
 
 	/*! Display name of frame. */
-	QString							m_displayName;						// XML:A
+	IBK::MultiLanguageString		m_displayName;						// XML:A
 
 	/*! ID of glazing system referenced from this window definition. */
 	unsigned int					m_glazingSystemID = INVALID_ID;		// XML:A

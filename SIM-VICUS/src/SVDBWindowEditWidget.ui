@@ -124,7 +124,7 @@
         </spacer>
        </item>
        <item row="1" column="1">
-        <widget class="QtExt::LanguageStringEditWidget1" name="widget" native="true">
+        <widget class="QtExt::LanguageStringEditWidget1" name="nameEditWidget" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
            <horstretch>0</horstretch>

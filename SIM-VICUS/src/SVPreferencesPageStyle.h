@@ -1,5 +1,5 @@
 #ifndef SVPreferencesPageStyleH
-#define SVPreferencesPageStylesH
+#define SVPreferencesPageStyleH
 
 #include <QWidget>
 
@@ -46,4 +46,4 @@ private:
 };
 
 
-#endif // SVPreferencesStyleH
+#endif // SVPreferencesPageStyleH

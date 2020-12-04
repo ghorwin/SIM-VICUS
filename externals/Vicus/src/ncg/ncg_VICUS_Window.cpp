@@ -49,7 +49,7 @@ void Window::readXML(const TiXmlElement * element) {
 			if (attribName == "id")
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
-				m_displayName = QString::fromStdString(attrib->ValueStr());
+				m_displayName.setEncodedString(attrib->ValueStr());
 			else if (attribName == "glazingSystemID")
 				m_glazingSystemID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
@@ -90,8 +90,8 @@ TiXmlElement * Window::writeXML(TiXmlElement * parent) const {
 
 	if (m_id != VICUS::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (!m_displayName.isEmpty())
-		e->SetAttribute("displayName", m_displayName.toStdString());
+	if (!m_displayName.empty())
+		e->SetAttribute("displayName", m_displayName.encodedString());
 	if (m_glazingSystemID != VICUS::INVALID_ID)
 		e->SetAttribute("glazingSystemID", IBK::val2string<unsigned int>(m_glazingSystemID));
 	if (!m_notes.isEmpty())

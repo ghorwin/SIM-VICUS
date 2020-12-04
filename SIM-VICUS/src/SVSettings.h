@@ -15,7 +15,6 @@
 #include <VICUS_WindowDivider.h>
 #include <VICUS_SurfaceProperties.h>
 #include <VICUS_BoundaryCondition.h>
-#include "SVConstants.h"
 
 class QDockWidget;
 
@@ -110,22 +109,6 @@ public:
 
 	/*! Writes all built-in and user databases. */
 	void writeDatabase();
-
-
-	template <typename T>
-	T * addDatabaseElement(typename std::map<unsigned int, T> & db) {
-		// search for highest ID (in user ID space)
-		unsigned int highest = USER_ID_SPACE;
-		for (const auto & d : db) {
-			if (d.first > highest)
-				highest = d.first+1;
-		}
-		// now create a database element, set the highest ID and add it to the database
-		T e;
-		e.m_id = highest;
-		db[highest] = e;
-		return &db[highest];
-	}
 
 	// ****** static functions ************
 

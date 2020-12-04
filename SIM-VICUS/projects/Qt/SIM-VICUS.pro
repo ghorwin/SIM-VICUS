@@ -81,6 +81,7 @@ SOURCES += \
 		../../src/SVPropertyWidget.cpp \
 		../../src/SVUndoModifyExistingNetwork.cpp \
 		../../src/SVUndoTreeNodeState.cpp \
+		../../src/SVUtils.cpp \
 		../../src/SVViewState.cpp \
 		../../src/SVViewStateHandler.cpp \
 		../../src/actions/SVUndoAddBuilding.cpp \
@@ -134,6 +135,7 @@ HEADERS  += \
 		../../src/SVPropertyWidget.h \
 		../../src/SVUndoModifyExistingNetwork.h \
 		../../src/SVUndoTreeNodeState.h \
+		../../src/SVUtils.h \
 		../../src/SVViewState.h \
 		../../src/SVViewStateHandler.h \
 		../../src/actions/SVUndoAddBuilding.h \

@@ -339,6 +339,11 @@ void CodeGenerator::generateReadWriteCode() {
 							"	if (!m_" + attribName + ".empty())\n"
 							"		e->SetAttribute(\""+attribName+"\", m_" + attribName + ");\n";
 				}
+				else if (xmlInfo.typeStr == "IBK::MultiLanguageString") {
+					attribs +=
+							"	if (!m_" + attribName + ".empty())\n"
+							"		e->SetAttribute(\""+attribName+"\", m_" + attribName + ".encodedString());\n";
+				}
 				else if (xmlInfo.typeStr == "QString") {
 					attribs +=
 							"	if (!m_" + attribName + ".isEmpty())\n"
@@ -712,6 +717,10 @@ void CodeGenerator::generateReadWriteCode() {
 					else if (xmlInfo.typeStr == "std::string") {
 						attribs +=
 							"				m_"+attribName+" = attrib->ValueStr();\n";
+					}
+					else if (xmlInfo.typeStr == "IBK::MultiLanguageString") {
+						attribs +=
+							"				m_"+attribName+".setEncodedString(attrib->ValueStr());\n";
 					}
 					else if (xmlInfo.typeStr == "QString") {
 						attribs +=
