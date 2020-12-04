@@ -13,6 +13,7 @@
 #include <VICUS_KeywordList.h>
 
 #include <QPolygonF>
+#include <QVector2D>
 
 #include <tinyxml.h>
 
@@ -127,9 +128,59 @@ void PlaneGeometry::simplify() {
 	}
 }
 
+static int crossProdTest(QPointF a, QPointF b, QPointF c){
+
+	if(a.y() == b.y() && a.y() == c.y()){
+		if(	(b.x()<= a.x() && a.x() <= c.x()) ||
+				(c.x()<= a.x() && a.x() <= b.x()))
+			return 0;
+		else
+			return 1;
+	}
+
+	if(b.y()> c.y()){
+		QPointF temp;
+		temp = c;
+		c=b;
+		b=temp;
+	}
+
+	if (a.y() <= b.y() || a.y() > c.y())
+		return 1;
+
+	double delta = (b.x() - a.x()) * (c.y() - a.y()) -(b.y() - a.y()) * (c.x() - a.x());
+	if(delta > 0)			return	1;
+	else if(delta < 0)		return	-1;
+	else					return	0;
+}
+
+/*! Point in Polygon function. Result:
+	-1 point not in polyline
+	0 point on polyline
+	1 point in polyline
+
+	\param	point test point
+	Source https://de.wikipedia.org/wiki/Punkt-in-Polygon-Test_nach_Jordan
+
+*/
+static int pointInPolygon(const QPointF &point, const QPolygonF& poly)
+{
+	int t=-1;
+	unsigned int polySize = poly.size();
+	for (size_t i=0; i<polySize; ++i) {
+		t *= crossProdTest(point, poly.value(i), poly.value((i+1)%polySize));//  m_polyline[(i+1)%m_polyline.size()]);
+		if(t==0)
+			break;
+	}
+
+	return  t;
+}
+
 
 void PlaneGeometry::triangulate() {
 	Q_ASSERT(m_vertexes.size() >= 3);
+
+	const double eps = 1e-4;
 	m_triangles.clear();
 	switch (m_type) {
 
@@ -142,7 +193,7 @@ void PlaneGeometry::triangulate() {
 			//        we use the same triangulation algorithm as for polygons
 		case T_Polygon : {
 			// compute x,y coordinates in plane for all vertexes
-			QPolygonF plane;
+			QPolygonF polygon;
 
 			IBKMK::Vector3D offset = m_vertexes[0];
 			// x-axis vector in plane
@@ -152,9 +203,9 @@ void PlaneGeometry::triangulate() {
 			m_normal.crossProduct(vX, vY);
 
 			// first point is v0 = origin
-			plane.append(QPointF(0,0));
+			polygon.append(QPointF(0,0));
 			// second point is v1 at (1,0), since v1-v0 is the vX vector
-			plane.append(QPointF(1,0));
+			polygon.append(QPointF(1,0));
 
 			// now process all other points
 			for (unsigned int i=2; i<m_vertexes.size(); ++i) {
@@ -165,7 +216,7 @@ void PlaneGeometry::triangulate() {
 				///       We should use a function that passes vX, vY, offset and then
 				///       a vector with v,x,y to process.
 				if (planeCoordinates(offset, vX, vY, v, x, y)) {
-					plane.append(QPointF(x,y));
+					polygon.append(QPointF(x,y));
 				}
 				else {
 					// this shouldn't happen
@@ -173,7 +224,88 @@ void PlaneGeometry::triangulate() {
 				}
 			}
 
+			//here the index is stored which is already taken into account
+			std::set<unsigned int> usedIdx;
+			std::vector<std::vector<unsigned int>>	trisIndices;
 
+			unsigned int idx = 0;
+			while(true){
+				QPolygonF triangle;
+				//check if there are enough points left
+				if(usedIdx.size()>=polygon.size()-2)
+					break;
+
+				std::set<unsigned int> triIdx;			//index that used for triangle as set for quick access
+				std::vector<unsigned int> triIdxVec;	//index in the right order for the triangle
+
+				//build a triangle with unused points
+				unsigned int idx2 = idx;
+				while(true){
+					//check if index is not already used
+					if(usedIdx.find(idx2) == usedIdx.end()){
+						triangle <<	polygon.value(idx2);
+						triIdx.insert(idx2);
+						triIdxVec.push_back(idx2);
+					}
+					//now we have a triangle
+					if(triangle.size() == 3){
+						QVector2D a(polygon[triIdxVec[1]]-polygon[triIdxVec[0]]);
+						QVector2D b(polygon[triIdxVec[2]]-polygon[triIdxVec[0]]);
+						double cosAngle = QVector2D::dotProduct(a.normalized() , b.normalized());
+						//double angleDeg = std::acos(cosAngle)*180/PI;
+
+						//check if points are colinear
+						if(cosAngle < -1+eps || cosAngle > 1-eps){
+							//erase first triangle point and check for another one
+							triIdx.erase(triIdxVec[0]);
+							triangle.takeAt(0);
+							triIdxVec.erase(triIdxVec.begin());
+						}
+						else
+							break;
+					}
+					if(idx2 == polygon.size()-1)
+						idx2 = 0;
+					else
+						++idx2;
+				}
+
+
+				QPointF testPoint(triangle.value(0) + (triangle.value(1)-triangle.value(0) + triangle.value(2)-triangle.value(1)) *0.5);
+
+				bool isValidTri =true;
+				//check if the test point is in the plane polygon
+				if(pointInPolygon(testPoint, polygon) != -1){
+				//if(polygon.containsPoint(testPoint, Qt::FillRule::OddEvenFill)){
+					//check if no other point is in polyline
+					for (unsigned int i=0; i<polygon.size(); ++i) {
+						//skip points that are in the triangle
+						if(triIdx.find(i) != triIdx.end())
+							continue;
+
+						//check if point of the polygon is inside the triangle
+						if(pointInPolygon(polygon.value(i), triangle) != -1){
+						//if(triangle.containsPoint(polygon.value(i), Qt::FillRule::OddEvenFill)){
+							//triangle invalid
+							isValidTri=false;
+							break;
+						}
+					}
+				}
+				else
+					isValidTri = false;
+
+				if(isValidTri){
+					m_triangles.push_back(TriangleVertexNumbers(triIdxVec[0],triIdxVec[1],triIdxVec[2]));
+					//trisIndices.push_back(triIdxVec);
+					//mark second point of triangle as used
+					usedIdx.insert(triIdxVec[1]);
+				}
+				if(idx == polygon.size()-1)
+					idx = 0;
+				else
+					++idx;
+			}
 		}
 		break;
 
