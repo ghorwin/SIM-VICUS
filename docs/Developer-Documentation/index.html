@@ -73,8 +73,7 @@ table {
 <div class="details">
 <span id="author" class="author">Andreas Nicolai</span><br>
 <span id="email" class="email"><a href="mailto:andreas.nicolai@tu-dresden.de">andreas.nicolai@tu-dresden.de</a></span><br>
-<span id="revnumber">version 1.0.0,</span>
-<span id="revdate">July 2020</span>
+<span id="revdate">0.2.0 (04.12.2020)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -142,7 +141,9 @@ table {
 <ul class="sectlevel2">
 <li><a href="#_3d_engine">4.1. 3D Engine</a>
 <ul class="sectlevel3">
-<li><a href="#_shaders">4.1.1. Shaders</a></li>
+<li><a href="#_camera">4.1.1. Camera</a></li>
+<li><a href="#_data_transfer">4.1.2. Data transfer</a></li>
+<li><a href="#_shaders">4.1.3. Shaders</a></li>
 </ul>
 </li>
 </ul>
@@ -248,10 +249,20 @@ table {
 </div>
 </div>
 <div class="paragraph">
-<p>Parallel gcc OpenMP code require a bit of extra work (to be documented later :-)</p>
+<p>Install the newest Qt 5 version:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&gt; brew install qt5</pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Then, download the Qt online installer (<a href="https://www.qt.io/download-qt-installer" class="bare">https://www.qt.io/download-qt-installer</a>) and also select version 5.11.3.</p>
+<p>If you plan on developing on the Mac, then download the Qt online installer (<a href="https://www.qt.io/download-qt-installer" class="bare">https://www.qt.io/download-qt-installer</a>)
+and select version 5.11.3. This ensures that all developers use the same Qt version and avoid Qt-specific
+compilation problems.</p>
+</div>
+<div class="paragraph">
+<p>Parallel gcc OpenMP code require a bit of extra work (to be documented later :-)</p>
 </div>
 </div>
 </div>
@@ -368,7 +379,7 @@ table {
 <p>Basic rule: <strong>Know your tools and choose the right tool for the job!</strong></p>
 </div>
 <div class="paragraph">
-<p>For programmers, you need a good text edtor (for everything that&#8217;s not actual code, or for quick hacks) and a decent development environment (IDE).  I&#8217;d say <em>Qt Creator</em> wins big time against Visial Studio, XCode and any other stuff out there, but let&#8217;s not start an <strong>emacs vs. the world</strong> flame war here :-).</p>
+<p>For programmers, you need a good text editor (for everything that&#8217;s not actual code, or for quick hacks) and a decent development environment (IDE).  I&#8217;d say <em>Qt Creator</em> wins big time against Visial Studio, XCode and any other stuff out there, but let&#8217;s not start an <strong>emacs vs. the world</strong> flame war here :-).</p>
 </div>
 <div class="paragraph">
 <p>Of course, you also need to handle svn/git, diff and merge tools etc. but text editor and IDE are the most important. I&#8217;d suggest <em>SmartGit</em> as git client - not because it is the best out there, but because most of the team members use it and can help you better with a problem.</p>
@@ -1434,7 +1445,152 @@ Total initialization time: 802 ms
 <div class="sect2">
 <h3 id="_3d_engine">4.1. 3D Engine</h3>
 <div class="sect3">
-<h4 id="_shaders">4.1.1. Shaders</h4>
+<h4 id="_camera">4.1.1. Camera</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>world-2-view-translation = m_projection * m_camera * m_transform</p>
+</li>
+<li>
+<p>transform only for "movable objects" (e.g. objects in selection)</p>
+</li>
+<li>
+<p>Local coordinate system of camera = left handed coordinate system with y-axis pointing downwards and z-axis pointing towards user</p>
+<div class="literalblock">
+<div class="content">
+<pre>+ right = towards right of screen
++ up = pointing downwards
++ forward = towards the viewer</pre>
+</div>
+</div>
+</li>
+<li>
+<p>camera object without translation and rotation &#8594; x and y coordinates map to i-j coordinates of screen (0,0 top left; 1,1 bottom right), so that point x,y,z = (-50,-200,0) becomes i,j = (-100, 400) (bottom left) in screen coordinates.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_data_transfer">4.1.2. Data transfer</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>original geometry in object coordinates (world coordinate for now)</p>
+</li>
+<li>
+<p>opaque geometry = planes</p>
+</li>
+</ul>
+</div>
+<div class="sect4">
+<h5 id="_primitive_assembly">Primitive Assembly</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>planes:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>type triangle</p>
+</li>
+<li>
+<p>type rect</p>
+</li>
+<li>
+<p>type polygon</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>plane type affects selection algorithm: triangle/rect trivial; polygon = test individual triangles (more work)</p>
+</li>
+<li>
+<p>data on VBO first stored on heap (vector of vertex struct); additional vector for rgba colors</p>
+</li>
+<li>
+<p>plane transfer vectors, type-specific transfer:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>append vertices + colors</p>
+</li>
+<li>
+<p>store element indexes in triangle-strip order</p>
+</li>
+<li>
+<p>append primitive restart index, see <a href="https://www.khronos.org/opengl/wiki/Vertex_Rendering#Primitive_Restart" class="bare">https://www.khronos.org/opengl/wiki/Vertex_Rendering#Primitive_Restart</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>triangles: copy 3 vertices counter-clock-wise; append element indexes +0, +1, +2</p>
+</li>
+<li>
+<p>rectangle: copy 4 vertices counter-clock-wise; append element indexes +0, +1, +2; +1 +3 +2</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_triangle_strips">Triangle Strips</h5>
+<div class="paragraph">
+<p>See also explanation in <a href="https://www.learnopengles.com/tag/triangle-strips" class="bare">https://www.learnopengles.com/tag/triangle-strips</a>.</p>
+</div>
+<div class="paragraph">
+<p>See polygon in <a href="#fig_trianglestrip_polygon">Figure 1</a>. Index list to draw the polygon is:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>1, 2, 6, 5, 3, 4</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>First triangle is <code>1, 2, n</code> (anti-clock-wise - order of first triangle defines order of the rest).</p>
+</li>
+<li>
+<p>Second triangle is <code>2, n-1, n</code></p>
+</li>
+<li>
+<p>Third triangle is <code>n, 3, n-1</code></p>
+</li>
+<li>
+<p>Fourth triangle is <code>3, n-2, n-1</code></p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p>in an algorithm keep adding indexes until you would duplicate an existing node index</p>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
+<div id="fig_trianglestrip_polygon" class="imageblock">
+<div class="content">
+<img src="./images/TriangleStrip1.png" alt="TriangleStrip1">
+</div>
+<div class="title">Figure 1. Generation of a triangle strip from a polygon</div>
+</div>
+<div class="paragraph">
+<p>When drawing several triangle strips one after another, we need primitive restart (to have gaps between triangles).</p>
+</div>
+<div class="paragraph">
+<p>Consider strips in <a href="#fig_trianglestrip_restart">Figure 2</a>. Top part of the figure shows two strips where the first strip ends with an <em>odd numbered</em> triangle. Bottom part shows the first strip ending with an <em>even numbered</em> triangle.</p>
+</div>
+<div id="fig_trianglestrip_restart" class="imageblock">
+<div class="content">
+<img src="./images/TriangleStrip2.png" alt="TriangleStrip2">
+</div>
+<div class="title">Figure 2. Primitive restart using degenerated triangles</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_shaders">4.1.3. Shaders</h4>
 <div class="paragraph">
 <p>Vertex-Layout notation:</p>
 </div>
@@ -1554,8 +1710,7 @@ Total initialization time: 802 ms
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.0.0<br>
-Last updated 2020-11-04 05:46:19 +0100
+Last updated 2020-12-04 17:56:52 +0100
 </div>
 </div>
 <style>

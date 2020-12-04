@@ -46,10 +46,16 @@ MacOS comples with Clang installed. I suggest installing _Homebrew_ (see https:/
 
     > brew install cmake
 
+Install the newest Qt 5 version:
+
+    > brew install qt5
+    
+If you plan on developing on the Mac, then download the Qt online installer (https://www.qt.io/download-qt-installer) 
+and select version 5.11.3. This ensures that all developers use the same Qt version and avoid Qt-specific
+compilation problems.
     
 Parallel gcc OpenMP code require a bit of extra work (to be documented later :-)
 
-Then, download the Qt online installer (https://www.qt.io/download-qt-installer) and also select version 5.11.3.
 
 
 ## Building
