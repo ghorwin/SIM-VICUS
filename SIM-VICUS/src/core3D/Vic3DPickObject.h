@@ -8,7 +8,12 @@
 
 namespace Vic3D {
 
-/*! An Object to hold information on what to pick and also stored the result. */
+/*! An object to hold information on what to pick and also store the result.
+	Basically, whenever you ask the scene to pick a point (after a mouse click, or if the mouse
+	cursor has moved), configure such a pick object and call Scene::pick(obj).
+	Afterwards you can access the data stored in the object, most importantly m_pickPoint
+	and depending on the object selection choice also the m_uniqueObjectID.
+*/
 struct PickObject {
 	enum PickOption {
 		P_XY_Plane			= 0x0001,

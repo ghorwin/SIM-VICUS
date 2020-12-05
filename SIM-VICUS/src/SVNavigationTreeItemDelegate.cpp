@@ -94,6 +94,5 @@ bool SVNavigationTreeItemDelegate::editorEvent(QEvent * event, QAbstractItemMode
 
 	}
 
-
-	QItemDelegate::editorEvent(event, model, option, index);
+	return QItemDelegate::editorEvent(event, model, option, index);
 }

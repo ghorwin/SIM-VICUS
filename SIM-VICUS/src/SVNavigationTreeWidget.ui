@@ -46,7 +46,7 @@
    <item>
     <widget class="QTreeWidget" name="treeWidget">
      <property name="editTriggers">
-      <set>QAbstractItemView::AnyKeyPressed</set>
+      <set>QAbstractItemView::NoEditTriggers</set>
      </property>
      <property name="selectionMode">
       <enum>QAbstractItemView::NoSelection</enum>

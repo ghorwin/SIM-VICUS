@@ -1,5 +1,5 @@
-#ifndef SVNETWORKEDITDIALOG_H
-#define SVNETWORKEDITDIALOG_H
+#ifndef SVNetworkEditDialogH
+#define SVNetworkEditDialogH
 
 #include <QDialog>
 #include <QMap>
@@ -10,8 +10,7 @@ namespace Ui {
 class SVNetworkEditDialog;
 }
 
-class SVNetworkEditDialog : public QDialog
-{
+class SVNetworkEditDialog : public QDialog {
 	Q_OBJECT
 
 public:
@@ -43,4 +42,4 @@ private:
 	VICUS::Network m_network;
 };
 
-#endif // SVNETWORKEDITDIALOG_H
+#endif // SVNetworkEditDialogH

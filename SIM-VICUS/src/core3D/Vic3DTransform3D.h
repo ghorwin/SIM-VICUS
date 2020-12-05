@@ -1,17 +1,8 @@
 /************************************************************************************
 
-OpenGL with Qt - Tutorial
--------------------------
-Autor      : Andreas Nicolai <andreas.nicolai@gmx.net>
-Repository : https://github.com/ghorwin/OpenGLWithQt-Tutorial
-License    : BSD License,
-			 see https://github.com/ghorwin/OpenGLWithQt-Tutorial/blob/master/LICENSE
-
-Code is taken from https://www.trentreed.net/blog/qt5-opengl-part-3b-camera-control
+Note: Code is based on https://www.trentreed.net/blog/qt5-opengl-part-3b-camera-control
 
 ************************************************************************************/
-
-
 #ifndef TRANSFORM3D_H
 #define TRANSFORM3D_H
 

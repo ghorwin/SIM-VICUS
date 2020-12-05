@@ -1,14 +1,3 @@
-/************************************************************************************
-
-OpenGL with Qt - Tutorial
--------------------------
-Autor      : Andreas Nicolai <andreas.nicolai@gmx.net>
-Repository : https://github.com/ghorwin/OpenGLWithQt-Tutorial
-License    : BSD License,
-			 see https://github.com/ghorwin/OpenGLWithQt-Tutorial/blob/master/LICENSE
-
-************************************************************************************/
-
 #ifndef SCENEVIEW_H
 #define SCENEVIEW_H
 

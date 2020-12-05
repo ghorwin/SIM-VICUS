@@ -1,5 +1,5 @@
-#ifndef VIC3DSCENE_H
-#define VIC3DSCENE_H
+#ifndef Vic3DSceneH
+#define Vic3DSceneH
 
 #include <vector>
 
@@ -146,4 +146,4 @@ private:
 } // namespace Vic3D
 
 
-#endif // VIC3DSCENE_H
+#endif // Vic3DSceneH

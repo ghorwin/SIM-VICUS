@@ -1,5 +1,5 @@
-#ifndef SVNETWORKIMPORTDIALOG_H
-#define SVNETWORKIMPORTDIALOG_H
+#ifndef SVNetworkImportDialogH
+#define SVNetworkImportDialogH
 
 #include <QDialog>
 #include <QMap>
@@ -54,4 +54,4 @@ private:
 	std::string uniqueName(const std::string &name);
 };
 
-#endif // SVNETWORKIMPORTDIALOG_H
+#endif // SVNetworkImportDialogH
