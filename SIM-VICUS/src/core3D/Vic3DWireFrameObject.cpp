@@ -5,8 +5,10 @@
 #include <QElapsedTimer>
 
 #include <VICUS_Project.h>
+
 #include "SVProjectHandler.h"
 #include "Vic3DGeometryHelpers.h"
+#include "Vic3DShaderProgram.h"
 
 namespace Vic3D {
 
@@ -18,9 +20,12 @@ WireFrameObject::WireFrameObject() :
 }
 
 
-void WireFrameObject::create(QOpenGLShaderProgram * shaderProgramm) {
+void WireFrameObject::create(ShaderProgram * wireFrameShaderProgram, ShaderProgram * phongShaderProgram) {
 	if (m_vao.isCreated())
 		return;
+
+	m_wireFrameShaderProgram = wireFrameShaderProgram;
+	m_phongShaderProgram = phongShaderProgram;
 
 	// *** create buffers on GPU memory ***
 
@@ -60,19 +65,28 @@ void WireFrameObject::create(QOpenGLShaderProgram * shaderProgramm) {
 				  // this vbo
 
 	// coordinates
-	shaderProgramm->enableAttributeArray(VERTEX_ARRAY_INDEX);
-	shaderProgramm->setAttributeBuffer(VERTEX_ARRAY_INDEX, GL_FLOAT, 0, 3 /* vec3 */, sizeof(Vertex));
+	m_wireFrameShaderProgram->shaderProgram()->enableAttributeArray(VERTEX_ARRAY_INDEX);
+	m_wireFrameShaderProgram->shaderProgram()->setAttributeBuffer(VERTEX_ARRAY_INDEX, GL_FLOAT, 0, 3 /* vec3 */, sizeof(Vertex));
 
 	// normals
-	shaderProgramm->enableAttributeArray(NORMAL_ARRAY_INDEX);
-	shaderProgramm->setAttributeBuffer(NORMAL_ARRAY_INDEX, GL_FLOAT, offsetof(Vertex, m_normal), 3 /* vec3 */, sizeof(Vertex));
+	m_wireFrameShaderProgram->shaderProgram()->enableAttributeArray(NORMAL_ARRAY_INDEX);
+	m_wireFrameShaderProgram->shaderProgram()->setAttributeBuffer(NORMAL_ARRAY_INDEX, GL_FLOAT, offsetof(Vertex, m_normal), 3 /* vec3 */, sizeof(Vertex));
 
+	// coordinates
+	m_phongShaderProgram->shaderProgram()->enableAttributeArray(VERTEX_ARRAY_INDEX);
+	m_phongShaderProgram->shaderProgram()->setAttributeBuffer(VERTEX_ARRAY_INDEX, GL_FLOAT, 0, 3 /* vec3 */, sizeof(Vertex));
+
+	// normals
+	m_phongShaderProgram->shaderProgram()->enableAttributeArray(NORMAL_ARRAY_INDEX);
+	m_phongShaderProgram->shaderProgram()->setAttributeBuffer(NORMAL_ARRAY_INDEX, GL_FLOAT, offsetof(Vertex, m_normal), 3 /* vec3 */, sizeof(Vertex));
 
 	m_colorBufferObject.bind(); // now color buffer is active in vao
 
 	// colors
-	shaderProgramm->enableAttributeArray(COLOR_ARRAY_INDEX);
-	shaderProgramm->setAttributeBuffer(COLOR_ARRAY_INDEX, GL_UNSIGNED_BYTE, 0, 4, 4 /* bytes = sizeof(char) */);
+	m_wireFrameShaderProgram->shaderProgram()->enableAttributeArray(COLOR_ARRAY_INDEX);
+	m_wireFrameShaderProgram->shaderProgram()->setAttributeBuffer(COLOR_ARRAY_INDEX, GL_UNSIGNED_BYTE, 0, 4, 4 /* bytes = sizeof(char) */);
+	m_phongShaderProgram->shaderProgram()->enableAttributeArray(COLOR_ARRAY_INDEX);
+	m_phongShaderProgram->shaderProgram()->setAttributeBuffer(COLOR_ARRAY_INDEX, GL_UNSIGNED_BYTE, 0, 4, 4 /* bytes = sizeof(char) */);
 
 	// Release (unbind) all
 
@@ -111,11 +125,6 @@ void WireFrameObject::updateBuffers() {
 	m_indexBufferObject.release();
 
 	// also update the color buffer
-	updateColorBuffer();
-}
-
-
-void WireFrameObject::updateColorBuffer() {
 	if (m_colorBufferData.empty())
 		return;
 	m_colorBufferObject.bind();
@@ -127,12 +136,18 @@ void WireFrameObject::updateColorBuffer() {
 void WireFrameObject::render() {
 	// bind all buffers ("position", "normal" and "color" arrays)
 	m_vao.bind();
+	// bind the wireframe shader program
+	m_wireFrameShaderProgram->shaderProgram()->bind();
+
 	// now draw the geometry
 	if (m_drawTriangleStrips)
 		glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
 	else
 		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
+
 	// release buffers again
+	m_wireFrameShaderProgram->shaderProgram()->release();
+
 	m_vao.release();
 }
 

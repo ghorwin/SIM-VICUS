@@ -5,12 +5,15 @@
 #include <QOpenGLVertexArrayObject>
 
 #include "Vic3DVertex.h"
+#include "Vic3DTransform3D.h"
 
 QT_BEGIN_NAMESPACE
 class QOpenGLShaderProgram;
 QT_END_NAMESPACE
 
 namespace Vic3D {
+
+class ShaderProgram;
 
 /*! A container for geometry to be rendered with either triangle strips or triangles.
 	This object is used multiple times and is not associated with any particular
@@ -35,23 +38,27 @@ public:
 		This only initializes the buffers and vertex array object, but does not allocate data.
 		This is done in a call to updateBuffers();
 	*/
-	void create(QOpenGLShaderProgram * shaderProgramm);
+	void create(ShaderProgram * wireFrameShaderProgram, ShaderProgram * phongShaderProgram);
 	void destroy();
 
-	/*! Resizes vertex and element buffers on GPU memory and copies data from locally stored vertex/element arrays to GPU.
+	/*! Resizes vertex and element buffers on GPU memory and copies data from locally
+		stored vertex/element arrays to GPU.
 		This might be a lengthy operation, so call this as infrequently as possible.
 
-		Basically transfers data in m_vertexBufferData, m_colorBufferData and m_elementBufferData to GPU memory.
+		Basically transfers data in m_vertexBufferData, m_colorBufferData and
+		m_elementBufferData to GPU memory.
 		Calls the function updateColorBuffer() internally to update the color buffer.
 	*/
 	void updateBuffers();
-	/*! Only copies the color buffer m_colorBufferData to GPU memory.
-		Call this function instead of updateBuffers(), if only colors of objects/visibility have changed.
-	*/
-	void updateColorBuffer();
 
 	/*! Binds the vertex array object and renders the geometry. */
 	void render();
+
+	/*! The transformation from model coordinates to (current) world coordinates. */
+	Transform3D					m_transform;
+
+	ShaderProgram				*m_wireFrameShaderProgram = nullptr;
+	ShaderProgram				*m_phongShaderProgram = nullptr;
 
 	/*! If true, this object expects index buffer to hold indexes suitable for drawing GL_TRIANGLE_STRIP (including
 		primitive restart indexes) and uses this to draw the objects.
