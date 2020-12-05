@@ -46,16 +46,16 @@ described in the test suite).
 
 ### TestCase 07 - Solare Gewinne durch Fenster
 
-#### Variante 1
+#### Variante 1 - Nur Wärmeleitung durch das Fenster
 
 <img src="TF07/results/TF07.1.png" width="400px"/><img src="TF07/results/TF07.1_heatFlux.png" width="400px"/><br>
 
-#### Variante 2
+#### Variante 2 - Konstanter g-Wert (SHGC)
 
 <img src="TF07/results/TF07.2.png" width="400px"/><img src="TF07/results/TF07.2_radLoad.png" width="400px"/><br>
 <img src="TF07/results/TF07.2_heatCondWall.png" width="400px"/>
 
-#### Variante 3
+#### Variante 3 - Winkelabhängiger g-Wert (SHGC)
 
 <img src="TF07/results/TF07.3.png" width="400px"/><img src="TF07/results/TF07.3_radLoad.png" width="400px"/><br>
 <img src="TF07/results/TF07.3_heatCondWall.png" width="400px"/>
