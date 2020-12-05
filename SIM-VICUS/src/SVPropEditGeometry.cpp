@@ -18,3 +18,10 @@ SVPropEditGeometry::~SVPropEditGeometry() {
 void SVPropEditGeometry::on_pushButtonAddPolygon_clicked() {
 	// signal, that we want to start adding a new polygon
 }
+
+void SVPropEditGeometry::on_toolButtonAddZoneBox_clicked() {
+	// configure the view to go into "place first vertex" mode,
+	// toggle property widget to show "placed vertexes" widget
+
+
+}

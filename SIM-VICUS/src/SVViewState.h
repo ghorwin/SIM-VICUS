@@ -13,22 +13,15 @@
 	the state of this object is changed and all parts of the user-interface
 	are signaled to adjust their state according to the content of this object.
 
+	Lokal coordinate system (for vertex placement/translation) may have fixed axes
+	(properties of the local coordinate system).
+
 	In a way this is similar to the project's onModified() function, yet independent
 	of the project itself.
 */
 class SVViewState {
 public:
 	SVViewState();
-
-	/*! The different operation modes the scene can be in. NUM_OM means "none" and indicates simple
-		navigation.
-	*/
-	enum SceneOperationMode {
-		/*! Place vertex mode. */
-		OM_PlaceVertex,
-		/*! The scene is in passive mode - user can navigate and click on object to change selection. */
-		NUM_OM
-	};
 
 	/*! Different basic view modes.
 		Depending on the view mode, different actions are available and
@@ -40,23 +33,40 @@ public:
 			when something is selected.
 		*/
 		VM_Standard,
-		VM_EditGeometry,
 		NUM_VM
 	};
 
-	/*! Different operation modes within geometry mode - switching the mode will
-		change the appearance of the property widget and functionality of the scene.
+
+	/*! The different operation modes the scene can be in. NUM_OM means "none" and indicates simple
+		navigation.
 	*/
-	enum GeometryEditMode {
-		/*! A new polygon is beeing added.
-			The movable local coordinate system is being shown and snaps to
-			the selected snap position.
+	enum SceneOperationMode {
+		/*! Place vertex mode.
+			In this mode, the local coordinate system is shown, and the user can click on any
+			snap point to place a vertex.
 		*/
-		M_AddPolygon,
-		NUM_M
+		OM_PlaceVertex,
+		/*! In this mode, the local coordinate system is shown, and the user can align the coordinate
+			system by clicking on any surface.
+			Typically, when this operation is complete, the view state switches back to the previous view state.
+		*/
+		OM_AlignLocalCoordinateSystem,
+		/*! The scene is in passive mode - user can navigate and click on object to change selection. */
+		NUM_OM
+	};
+
+
+	/*! Defines which view should be active in the property widget. */
+	enum PropertyWidgetMode {
+		/*! Shows the "Add geometry" widget and tool page. */
+		PM_ADD_GEOMETRY,
+		/*! Shows the "Add geometry" widget and transform tool page. */
+		PM_EDIT_GEOMETRY,
+		NUM_PM
 	};
 
 	SceneOperationMode	m_sceneOperationMode		= NUM_OM;
+	PropertyWidgetMode	m_propertyWidgetMode		= PM_EDIT_GEOMETRY;
 };
 
 #endif // SVViewStateH

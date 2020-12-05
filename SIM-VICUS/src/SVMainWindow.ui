@@ -33,6 +33,13 @@
      </property>
      <addaction name="actionFileImportEneryPlusIDF"/>
     </widget>
+    <widget class="QMenu" name="menuExport">
+     <property name="title">
+      <string>Export</string>
+     </property>
+     <addaction name="actionFileExportNANDRAD"/>
+     <addaction name="actionFileExportEnergyPlus"/>
+    </widget>
     <addaction name="actionFileNew"/>
     <addaction name="actionFileOpen"/>
     <addaction name="menuImport"/>
@@ -44,6 +51,7 @@
     <addaction name="actionFileClose"/>
     <addaction name="separator"/>
     <addaction name="actionFileOpenProjectDir"/>
+    <addaction name="menuExport"/>
     <addaction name="actionFileExport"/>
     <addaction name="actionFileExportFMU"/>
     <addaction name="separator"/>
@@ -51,7 +59,7 @@
    </widget>
    <widget class="QMenu" name="menu_Edit">
     <property name="title">
-     <string>Edi&amp;t</string>
+     <string>&amp;Edit</string>
     </property>
     <widget class="QMenu" name="menuLanguage">
      <property name="title">
@@ -60,7 +68,6 @@
     </widget>
     <addaction name="actionEditTextEditProject"/>
     <addaction name="actionEditCleanProject"/>
-    <addaction name="actionRunSimulation"/>
     <addaction name="separator"/>
     <addaction name="separator"/>
     <addaction name="actionEditPreferences"/>
@@ -92,24 +99,31 @@
    </widget>
    <widget class="QMenu" name="menuNetworks">
     <property name="title">
-     <string>Networks</string>
+     <string>&amp;Networks</string>
     </property>
     <addaction name="actionNetworkImport"/>
     <addaction name="actionNetworkEdit"/>
    </widget>
    <widget class="QMenu" name="menuDatabases">
     <property name="title">
-     <string>Databases</string>
+     <string>&amp;Databases</string>
     </property>
     <addaction name="actionDBMaterials"/>
     <addaction name="actionDBConstructions"/>
     <addaction name="actionDBWindows"/>
+   </widget>
+   <widget class="QMenu" name="menuSimulation">
+    <property name="title">
+     <string>&amp;Simulation</string>
+    </property>
+    <addaction name="actionSimulationNANDRAD"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
    <addaction name="menuDatabases"/>
    <addaction name="menuNetworks"/>
    <addaction name="menu_View"/>
+   <addaction name="menuSimulation"/>
    <addaction name="menu_Tools"/>
    <addaction name="menu_Help"/>
   </widget>
@@ -312,17 +326,6 @@
     <string>Post a feature request or submit a bug report.</string>
    </property>
   </action>
-  <action name="actionRunSimulation">
-   <property name="text">
-    <string>Run simulation...</string>
-   </property>
-   <property name="toolTip">
-    <string>Starts the simulation...</string>
-   </property>
-   <property name="shortcut">
-    <string>F9</string>
-   </property>
-  </action>
   <action name="actionHelpVisitDiscussionForum">
    <property name="text">
     <string>Visit discussion forum...</string>
@@ -394,6 +397,33 @@
    </property>
    <property name="toolTip">
     <string>Edit window database</string>
+   </property>
+  </action>
+  <action name="actionFileExportNANDRAD">
+   <property name="text">
+    <string>Export NANDRAD project...</string>
+   </property>
+   <property name="toolTip">
+    <string>Exports NANDRAD simulation project and input data.</string>
+   </property>
+  </action>
+  <action name="actionFileExportEnergyPlus">
+   <property name="text">
+    <string>Export EnergyPlus project...</string>
+   </property>
+   <property name="toolTip">
+    <string>Exports EnergyPlus project.</string>
+   </property>
+  </action>
+  <action name="actionSimulationNANDRAD">
+   <property name="text">
+    <string>Building Energy Simulation (NANDRAD)...</string>
+   </property>
+   <property name="toolTip">
+    <string>Opens the simulation start dialog.</string>
+   </property>
+   <property name="shortcut">
+    <string>F9</string>
    </property>
   </action>
  </widget>

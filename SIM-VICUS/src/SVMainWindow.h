@@ -192,6 +192,10 @@ private slots:
 
 	void on_actionDBWindows_triggered();
 
+	void on_actionFileExportNANDRAD_triggered();
+
+	void on_actionSimulationNANDRAD_triggered();
+
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();

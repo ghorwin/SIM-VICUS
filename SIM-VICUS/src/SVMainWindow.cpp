@@ -849,12 +849,22 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionFileExport->setEnabled(have_project);
 	m_ui->actionFileReload->setEnabled(have_project);
 	m_ui->actionFileClose->setEnabled(have_project);
+	m_ui->actionFileExportNANDRAD->setEnabled(have_project);
+	m_ui->actionFileExportEnergyPlus->setEnabled(have_project);
 	m_ui->actionFileOpenProjectDir->setEnabled(have_project);
+
 	m_ui->actionEditTextEditProject->setEnabled(have_project);
-	m_ui->actionRunSimulation->setEnabled(have_project);
 	m_ui->actionEditCleanProject->setEnabled(have_project);
+
 	m_ui->actionNetworkImport->setEnabled(have_project);
+	m_ui->actionNetworkEdit->setEnabled(have_project);
+
 	m_ui->actionViewToggleGeometryMode->setEnabled(have_project);
+
+	m_ui->actionSimulationNANDRAD->setEnabled(have_project);
+
+	// also disable menues that are not possible without project
+	m_ui->menuExport->setEnabled(have_project);
 
 	// no project, no undo actions -> clearing undostack also disables undo actions
 	if (!have_project)
@@ -1348,4 +1358,16 @@ void SVMainWindow::on_actionDBWindows_triggered() {
 	}
 	m_dbWindowEditWidget->edit();
 
+}
+
+
+void SVMainWindow::on_actionFileExportNANDRAD_triggered() {
+	// ask user for target file name
+	// open export dialog, call via edit(fname) (with ok and cancel)
+}
+
+
+void SVMainWindow::on_actionSimulationNANDRAD_triggered() {
+	// open simulation start dialog, with settings for climate location, simulation and
+	// solver settings and simulation start button
 }

@@ -18,6 +18,8 @@ public:
 private slots:
 	void on_pushButtonAddPolygon_clicked();
 
+	void on_toolButtonAddZoneBox_clicked();
+
 private:
 	Ui::SVPropEditGeometry *m_ui;
 };
