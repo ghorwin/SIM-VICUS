@@ -48,8 +48,6 @@ void ViewSettings::readXMLPrivate(const TiXmlElement * element) {
 				m_gridSpacing = NANDRAD::readPODElement<double>(c, cName);
 			else if (cName == "GridWidth")
 				m_gridWidth = NANDRAD::readPODElement<double>(c, cName);
-			else if (cName == "GridColor")
-				m_gridColor = QString::fromStdString(c->GetText());
 			else if (cName == "IBK:Flag") {
 				IBK::Flag f;
 				NANDRAD::readFlagElement(c, f);
@@ -99,8 +97,6 @@ TiXmlElement * ViewSettings::writeXMLPrivate(TiXmlElement * parent) const {
 
 	TiXmlElement::appendSingleAttributeElement(e, "GridSpacing", nullptr, std::string(), IBK::val2string<double>(m_gridSpacing));
 	TiXmlElement::appendSingleAttributeElement(e, "GridWidth", nullptr, std::string(), IBK::val2string<double>(m_gridWidth));
-	if (!m_gridColor.isEmpty())
-		TiXmlElement::appendSingleAttributeElement(e, "GridColor", nullptr, std::string(), m_gridColor.toStdString());
 
 	for (int i=0; i<NUM_F; ++i) {
 		if (!m_flags[i].name().empty()) {

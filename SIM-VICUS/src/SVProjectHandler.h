@@ -49,6 +49,8 @@ public:
 		NetworkModified,
 		/*! Anything in the geometry has changed. */
 		GeometryChanged,
+		/*! Selection has changed - update of entire selection object is requested. */
+		SelectionModified,
 		/*! The state (visibility/selection) of a node in the tree view/surface in the scene has changed.
 			data pointer is a std::vector<unsigned int> that contains the unique IDs of modified elements.
 		*/

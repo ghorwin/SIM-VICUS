@@ -151,7 +151,10 @@ void SceneView::onModified(int modificationType, ModificationInfo * data) {
 
 
 void SceneView::onStyleChanged() {
-	m_mainScene.setSceneStyle(SVSettings::instance().m_theme == SVSettings::TT_Dark);
+	// notify grid and selection objects to rebuild their appearance
+	m_mainScene.onModified(SVProjectHandler::GridModified, nullptr);
+	m_mainScene.onModified(SVProjectHandler::SelectionModified, nullptr);
+
 	renderLater();
 }
 

@@ -24,13 +24,17 @@ namespace QtExt {
 class ColorButton : public QPushButton {
 	Q_OBJECT
 public:
-	explicit ColorButton(QWidget *parent = 0);
+	explicit ColorButton(QWidget *parent = nullptr);
 
 	/*! Sets the color and triggers a repaint. */
 	void setColor(const QColor & c);
 
 	/*! Returns the currently selected color. */
 	const QColor color() const { return m_color; }
+
+signals:
+	/*! Emitted, when color has been changed by user. */
+	void colorChanged();
 
 protected:
 	virtual void paintEvent( QPaintEvent* );

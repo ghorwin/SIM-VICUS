@@ -21,7 +21,7 @@ void addSurface(const VICUS::Surface & s,
 	if (!s.m_visible)
 		col.setAlphaF(0);
 	else if (s.m_selected) {
-		col = SVSettings::instance().m_selectedSurfaceColor;
+		col = SVSettings::instance().m_themeSettings[SVSettings::instance().m_theme].m_selectedSurfaceColor;
 	}
 	// first add the plane regular
 	addPlane(s.m_geometry, col, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
@@ -40,7 +40,7 @@ void updateSurfaceColors(const VICUS::Surface & s, unsigned int & currentVertexI
 	if (!s.m_visible)
 		col.setAlphaF(0);
 	else if (s.m_selected) {
-		col = SVSettings::instance().m_selectedSurfaceColor;
+		col = SVSettings::instance().m_themeSettings[SVSettings::instance().m_theme].m_selectedSurfaceColor;
 	}
 	// call updatePlaneColor() twice, since we have front a backside planes to color
 	updatePlaneColor(s.m_geometry, col, currentVertexIndex, colorBufferData);

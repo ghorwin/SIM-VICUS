@@ -37,6 +37,7 @@ HEADERS += \
 	../../src/QtExt_AutoUpdateDialog.h \
 	../../src/QtExt_AutoUpdater.h \
 	../../src/QtExt_BrowseFilenameWidget.h \
+	../../src/QtExt_ColorButton.h \
 	../../src/QtExt_Constants.h \
 	../../src/QtExt_Directories.h \
 	../../src/QtExt_FeatureWidget.h \
@@ -58,6 +59,7 @@ SOURCES += \
 	../../src/QtExt_AutoUpdateDialog.cpp \
 	../../src/QtExt_AutoUpdater.cpp \
 	../../src/QtExt_BrowseFilenameWidget.cpp \
+	../../src/QtExt_ColorButton.cpp \
 	../../src/QtExt_Constants.cpp \
 	../../src/QtExt_Directories.cpp \
 	../../src/QtExt_FeatureWidget.cpp \

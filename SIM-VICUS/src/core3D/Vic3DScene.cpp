@@ -407,7 +407,10 @@ void Vic3DScene::render() {
 	glViewport(m_viewPort.x(), m_viewPort.y(), m_viewPort.width(), m_viewPort.height());
 
 	// set the background color = clear color
-	glClearColor(m_background.x(), m_background.y(), m_background.z(), 1.0f);
+	const SVSettings::ThemeSettings & s = SVSettings::instance().m_themeSettings[SVSettings::instance().m_theme];
+	QVector3D backgroundColor = VICUS::QVector3DFromQColor(s.m_sceneBackgroundColor);
+
+	glClearColor(backgroundColor.x(), backgroundColor.y(), backgroundColor.z(), 1.0f);
 
 	QVector3D viewPos = m_camera.translation();
 
@@ -419,7 +422,7 @@ void Vic3DScene::render() {
 
 	m_gridShader->bind();
 	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[0], m_worldToView);
-	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[2], m_background);
+	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[2], backgroundColor);
 	m_gridObject.render();
 	m_gridShader->release();
 
@@ -505,16 +508,6 @@ void Vic3DScene::render() {
 }
 
 
-void Vic3DScene::setSceneStyle(bool dark) {
-	if (dark) {
-		m_background = QVector3D(0.1f, 0.15f, 0.3f);
-	}
-	else {
-		m_background = QVector3D(0.1f, 0.15f, 0.3f);
-//		m_background = QVector3D(0.97f, 0.97f, 0.99f);
-//		m_background = VICUS::QVector3DFromQColor(QPalette().color(QPalette::Window));
-	}
-}
 
 
 void Vic3DScene::generateBuildingGeometry() {

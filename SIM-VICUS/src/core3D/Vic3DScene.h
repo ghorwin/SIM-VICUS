@@ -58,9 +58,6 @@ public:
 	/*! Actually renders to the current OpenGL context. */
 	void render();
 
-	/*! Updates built-in scene colors to dark mode (if dark = true). */
-	void setSceneStyle(bool dark);
-
 private:
 	void generateBuildingGeometry();
 	void generateNetworkGeometry();
@@ -116,9 +113,6 @@ private:
 	QVector3D				m_lightPos = QVector3D(100,200,2000);
 	/*! Light color. */
 	QColor					m_lightColor = Qt::white;
-
-	/*! Background color */
-	QVector3D				m_background = QVector3D(0.1f, 0.15f, 0.3f);
 
 
 	// *** Drawable objects ***

@@ -140,6 +140,17 @@ void SVSettings::setDefaults() {
 
 	m_fontPointSize = 0; // means: use auto-detected
 
+	// initialize theme settings
+	m_themeSettings[TT_White].m_majorGridColor = QColor(32,32,32);
+	m_themeSettings[TT_White].m_minorGridColor = QColor(128,128,128);
+	m_themeSettings[TT_White].m_sceneBackgroundColor = QColor("#e2e9ed");
+	m_themeSettings[TT_White].m_selectedSurfaceColor = Qt::magenta;
+
+	m_themeSettings[TT_Dark].m_majorGridColor = QColor("#d2e0ff");
+	m_themeSettings[TT_Dark].m_minorGridColor = QColor("#7f7fb2");
+	m_themeSettings[TT_Dark].m_sceneBackgroundColor = QColor(26, 38, 77);
+	m_themeSettings[TT_Dark].m_selectedSurfaceColor = Qt::magenta;
+
 	// initialize random number generator
 	qsrand(time(nullptr));
 }
@@ -188,10 +199,10 @@ void SVSettings::read() {
 			m_CCMEditorExecutable = tmpCCMExecutable;
 	}
 
+	m_invertYMouseAxis = settings.value("InvertYMouseAxis", m_invertYMouseAxis).toBool();
+
 	SVSettings::ThemeType tmpTheme = (SVSettings::ThemeType)settings.value("Theme", m_theme ).toInt();
 	m_theme = tmpTheme;
-
-	m_invertYMouseAxis = settings.value("IntertYMouseAxis", m_invertYMouseAxis).toBool();
 
 	m_fontPointSize = settings.value("FontPointSize", 0).toUInt();
 }
@@ -205,8 +216,10 @@ void SVSettings::write(QByteArray geometry, QByteArray state) {
 	settings.setValue("PostProcExecutable", m_postProcExecutable );
 	settings.setValue("CCMEditorExecutable", m_CCMEditorExecutable );
 	settings.setValue("FontPointSize", m_fontPointSize);
+	settings.setValue("InvertYMouseAxis", m_invertYMouseAxis);
 	settings.setValue("Theme", m_theme);
-	settings.setValue("IntertYMouseAxis", m_invertYMouseAxis);
+
+
 
 	for (QMap<PropertyType, QVariant>::const_iterator it = m_propertyMap.constBegin();
 		 it != m_propertyMap.constEnd(); ++it)

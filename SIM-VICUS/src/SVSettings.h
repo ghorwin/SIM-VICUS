@@ -145,6 +145,17 @@ public:
 	/*! ThemeType of theme applied */
 	ThemeType					m_theme = TT_Dark;
 
+	/*! This struct stores the theme-specific settings that can be customized by the user. */
+	struct ThemeSettings {
+		QColor						m_selectedSurfaceColor;
+		QColor						m_majorGridColor;
+		QColor						m_minorGridColor;
+		QColor						m_sceneBackgroundColor;
+	};
+
+	/*! Container to store theme-specific settings. */
+	ThemeSettings				m_themeSettings[NUM_TT];
+
 	/*! If true, orbit controller uses inverted mouse axis. */
 	bool						m_invertYMouseAxis = true;
 
@@ -171,7 +182,6 @@ public:
 	/*! Sorted list of the top 10 frequently used quantities. */
 	QList<QString>				m_frequentlyUsedQuantities;
 
-	QColor						m_selectedSurfaceColor = QColor(Qt::magenta);
 
 
 	// Databases

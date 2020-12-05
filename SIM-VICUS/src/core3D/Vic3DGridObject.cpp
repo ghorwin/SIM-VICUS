@@ -19,6 +19,8 @@ License    : BSD License,
 #include "SVProjectHandler.h"
 #include "Vic3DShaderProgram.h"
 
+#include "SVSettings.h"
+
 namespace Vic3D {
 
 void GridObject::create(ShaderProgram * shaderProgram) {
@@ -27,10 +29,11 @@ void GridObject::create(ShaderProgram * shaderProgram) {
 	// get grid dimensions from project
 	const VICUS::Project & prj = project();
 
+	const SVSettings::ThemeSettings & s = SVSettings::instance().m_themeSettings[SVSettings::instance().m_theme];
 	// transfer color
-	QColor gridColor(prj.m_viewSettings.m_gridColor);
+	QColor gridColor(s.m_minorGridColor);
 	m_minorGridColor = QVector3D((float)gridColor.redF(), (float)gridColor.greenF(), (float)gridColor.blueF());
-	gridColor = Qt::white; // gridColor.light();
+	gridColor = s.m_majorGridColor;
 	m_majorGridColor = QVector3D((float)gridColor.redF(), (float)gridColor.greenF(), (float)gridColor.blueF());
 
 	// transfer grid dimensions

@@ -87,8 +87,10 @@ void ColorButton::onClicked() {
 	dlg.setCurrentColor(m_color);
 	if (dlg.exec() == QDialog::Accepted) {
 		QColor newColor = dlg.currentColor();
-		if(newColor != m_color)
+		if (newColor != m_color) {
 			setColor(dlg.currentColor());
+			emit colorChanged();
+		}
 	}
 }
 

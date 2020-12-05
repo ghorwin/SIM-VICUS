@@ -41,8 +41,6 @@ public:
 	/*! Holds width dimension of grid in [m] */
 	double								m_gridWidth		= 100;			// XML:E
 
-	QString								m_gridColor		= "#7f7fb2";	// XML:E
-
 	IBK::Flag							m_flags[NUM_F];					// XML:E
 
 	/*! Camera position. */

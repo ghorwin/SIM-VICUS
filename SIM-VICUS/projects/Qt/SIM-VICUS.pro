@@ -101,6 +101,7 @@ SOURCES += \
 		../../src/core3D/Vic3DSceneView.cpp \
 		../../src/core3D/Vic3DShaderProgram.cpp \
 		../../src/core3D/Vic3DTransform3D.cpp \
+		../../src/core3D/Vic3DWireFrameObject.cpp \
 		../../src/main.cpp \
 		../../src/SVAboutDialog.cpp \
 		../../src/SVConstants.cpp \
@@ -176,7 +177,8 @@ HEADERS  += \
 		../../src/SVSettings.h \
 		../../src/SVStyle.h \
 		../../src/SVThreadBase.h \
-		../../src/SVWelcomeScreen.h
+		../../src/SVWelcomeScreen.h \
+		../../src/core3D/Vic3DWireFrameObject.h
 
 FORMS    += \
 		../../src/SVAboutDialog.ui \

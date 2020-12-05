@@ -28,6 +28,11 @@ void SVPreferencesPageStyle::updateUi() {
 	SVSettings & s = SVSettings::instance();
 	// transfer data to Ui
 	m_ui->comboBoxTheme->setCurrentIndex(s.m_theme);
+	const SVSettings::ThemeSettings & ts = s.m_themeSettings[s.m_theme];
+	m_ui->pushButtonMajorGridColor->setColor(ts.m_majorGridColor);
+	m_ui->pushButtonMinorGridColor->setColor(ts.m_minorGridColor);
+	m_ui->pushButtonSceneBackgroundColor->setColor(ts.m_sceneBackgroundColor);
+	m_ui->pushButtonSelectedSurfaceColor->setColor(ts.m_selectedSurfaceColor);
 }
 
 
