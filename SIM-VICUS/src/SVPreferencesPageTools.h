@@ -29,6 +29,12 @@ public:
 	*/
 	bool storeConfig();
 
+private slots:
+	void on_filepathPostProc_editingFinished();
+	void on_filepathPostProc_returnPressed();
+
+	void on_pushButtonAutoDetectPP2_clicked();
+
 private:
 	Ui::SVPreferencesPageTools *m_ui;
 };

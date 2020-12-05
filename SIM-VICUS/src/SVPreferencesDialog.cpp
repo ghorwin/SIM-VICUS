@@ -10,12 +10,14 @@
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
 #include <QShortcut>
+#include <QDebug>
 
 SVPreferencesDialog::SVPreferencesDialog(QWidget * parent) :
-	QDialog(parent, Qt::Window | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint),
+	QWidget(parent, Qt::Window | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint),
 	m_ui(new Ui::SVPreferencesDialog)
 {
 	m_ui->setupUi(this);
+
 
 	// setup configuration pages
 
@@ -25,8 +27,6 @@ SVPreferencesDialog::SVPreferencesDialog(QWidget * parent) :
 	m_ui->tabWidget->addTab(m_pageStyle, tr("Style"));
 
 	// ... other pages
-
-	setMinimumSize(750,670);
 }
 
 
@@ -41,27 +41,7 @@ bool SVPreferencesDialog::edit(int initialPage) {
 
 	m_ui->tabWidget->setCurrentIndex(initialPage);
 
-	// execute dialog and pass on result
-	return (exec() == QDialog::Accepted);
-}
-
-
-
-// ** protected functions **
-
-void SVPreferencesDialog::accept() {
-	if (!storeConfig())
-		return;
-
-	QDialog::accept();
-}
-
-void SVPreferencesDialog::reject()
-{
-	m_pageStyle->rejectConfig();
-	// ... other pages
-
-	QDialog::reject();
+	show(); // and show the dialog
 }
 
 
@@ -73,17 +53,4 @@ void SVPreferencesDialog::updateUi() {
 	// ... other pages
 }
 
-
-bool SVPreferencesDialog::storeConfig() {
-	if (!m_pageTools->storeConfig()) {
-		m_ui->tabWidget->setCurrentWidget(m_pageTools);
-		return false;
-	}
-	if (!m_pageStyle->storeConfig()) {
-		m_ui->tabWidget->setCurrentWidget(m_pageStyle);
-		return false;
-	}
-	// ... other pages
-	return true;
-}
 

@@ -64,13 +64,69 @@ bool SVPreferencesPageStyle::rejectConfig() {
 void SVPreferencesPageStyle::on_comboBoxTheme_activated(const QString &theme) {
 	// no checks necessary
 	SVStyle & style = SVStyle::instance();
+	SVSettings & s = SVSettings::instance();
 
+	/// \todo Improve this with item data
 	if ( theme == "White" ) {
-		style.setStyle(SVSettings::TT_White);
+		s.m_theme = SVSettings::TT_White;
 	}
 	else if (theme == "Dark" ) {
-		style.setStyle(SVSettings::TT_Dark);
+		s.m_theme = SVSettings::TT_Dark;
 	}
+
+	style.setStyle(s.m_theme);
+
+	// transfer theme-specific settings to UI
+	const SVSettings::ThemeSettings & ts = s.m_themeSettings[s.m_theme];
+	m_ui->pushButtonMajorGridColor->setColor(ts.m_majorGridColor);
+	m_ui->pushButtonMinorGridColor->setColor(ts.m_minorGridColor);
+	m_ui->pushButtonSceneBackgroundColor->setColor(ts.m_sceneBackgroundColor);
+	m_ui->pushButtonSelectedSurfaceColor->setColor(ts.m_selectedSurfaceColor);
+
 	// now apply the style
 	emit styleChanged();
+}
+
+
+void SVPreferencesPageStyle::on_pushButtonSceneBackgroundColor_colorChanged() {
+	SVSettings & s = SVSettings::instance();
+	SVSettings::ThemeSettings & ts = s.m_themeSettings[s.m_theme];
+	ts.m_sceneBackgroundColor = m_ui->pushButtonSceneBackgroundColor->color();
+	emit styleChanged();
+	qApp->processEvents();
+}
+
+
+void SVPreferencesPageStyle::on_pushButtonMajorGridColor_colorChanged() {
+	SVSettings & s = SVSettings::instance();
+	SVSettings::ThemeSettings & ts = s.m_themeSettings[s.m_theme];
+	ts.m_majorGridColor = m_ui->pushButtonMajorGridColor->color();
+	emit styleChanged();
+	qApp->processEvents();
+}
+
+
+void SVPreferencesPageStyle::on_pushButtonMinorGridColor_colorChanged() {
+	SVSettings & s = SVSettings::instance();
+	SVSettings::ThemeSettings & ts = s.m_themeSettings[s.m_theme];
+	ts.m_minorGridColor = m_ui->pushButtonMinorGridColor->color();
+	emit styleChanged();
+	qApp->processEvents();
+}
+
+
+void SVPreferencesPageStyle::on_pushButtonSelectedSurfaceColor_colorChanged() {
+	SVSettings & s = SVSettings::instance();
+	SVSettings::ThemeSettings & ts = s.m_themeSettings[s.m_theme];
+	ts.m_selectedSurfaceColor = m_ui->pushButtonSelectedSurfaceColor->color();
+	emit styleChanged();
+	qApp->processEvents();
+}
+
+void SVPreferencesPageStyle::on_pushButtonDefault_clicked() {
+	SVSettings & s = SVSettings::instance();
+	SVSettings::ThemeSettings & ts = s.m_themeSettings[s.m_theme];
+	ts.setDefaults(s.m_theme);
+	emit styleChanged();
+	qApp->processEvents();
 }

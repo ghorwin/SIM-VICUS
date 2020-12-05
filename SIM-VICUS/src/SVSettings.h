@@ -147,6 +147,7 @@ public:
 
 	/*! This struct stores the theme-specific settings that can be customized by the user. */
 	struct ThemeSettings {
+		void setDefaults(ThemeType theme);
 		QColor						m_selectedSurfaceColor;
 		QColor						m_majorGridColor;
 		QColor						m_minorGridColor;

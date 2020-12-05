@@ -10,18 +10,25 @@ SVPreferencesPageTools::SVPreferencesPageTools(QWidget *parent) :
 	m_ui->setupUi(this);
 
 #ifdef Q_OS_WIN
+	m_ui->filepathPostProc->setup("", true, true, tr("Executables (*.exe);;All files (*.*)"));
 	m_ui->filepathTextEditor->setup("", true, true, tr("Executables (*.exe);;All files (*.*)"));
 	m_ui->filePath7Zip->setup("", true, true, tr("Executables (*.exe);;All files (*.*)"));
 	m_ui->filePathCCMEditor->setup("", true, true, tr("Executables (*.exe);;All files (*.*)"));
 #else
-	m_ui->filepathTextEditor->setup("", true, true, tr("All files (*.*)"));
-	m_ui->filePath7Zip->setup("", true, true, tr("All files (*.*)"));
-	m_ui->filePathCCMEditor->setup("", true, true, tr("All files (*.*)"));
+	m_ui->filepathPostProc->setup("", true, true, tr("All files (*)"));
+	m_ui->filepathTextEditor->setup("", true, true, tr("All files (*)"));
+	m_ui->filePath7Zip->setup("", true, true, tr("All files (*)"));
+	m_ui->filePathCCMEditor->setup("", true, true, tr("All files (*)"));
 #endif
 
-	m_ui->lineEditTerminal->setVisible(false);
-	m_ui->checkBoxUseTerminal->setVisible(false);
-	m_ui->labelUseTerminal->setVisible(false);
+
+	// no auto-detect on Linux (programs should be in search path)
+#ifdef Q_OS_LINUX
+	m_ui->pushButtonAutoDetectPP2->setVisible(false);
+	m_ui->pushButtonAutoDetect7zip->setVisible(false);
+	m_ui->pushButtonAutoDetectCCM->setVisible(false);
+	m_ui->pushButtonAutoDetectTextEditor->setVisible(false);
+#endif
 }
 
 
@@ -97,21 +104,63 @@ void SVPreferencesPageTools::updateUi() {
 }
 
 
-bool SVPreferencesPageTools::storeConfig() {
-	// no checks necessary
-	SVSettings & s = SVSettings::instance();
-	s.m_textEditorExecutable = m_ui->filepathTextEditor->filename();
-#if defined(Q_OS_MAC)
-	s.m_postProcExecutable = m_ui->filepathPostProc->filename();
-	if (s.m_postProcExecutable.endsWith(".app"))
-		s.m_postProcExecutable += "/Contents/MacOS/PostProcApp";
-#else
-	s.m_postProcExecutable = m_ui->filepathPostProc->filename();
-#endif
-	s.m_7zExecutable = m_ui->filePath7Zip->filename();
-	s.m_CCMEditorExecutable = m_ui->filePathCCMEditor->filename();
 
-	return true;
+void SVPreferencesPageTools::on_filepathPostProc_editingFinished() {
+	SVSettings & s = SVSettings::instance();
+	s.m_postProcExecutable = m_ui->filepathPostProc->filename();
 }
 
 
+void SVPreferencesPageTools::on_filepathPostProc_returnPressed() {
+	on_filepathPostProc_editingFinished();
+}
+
+
+void SVPreferencesPageTools::on_pushButtonAutoDetectPP2_clicked() {
+	SVSettings & s = SVSettings::instance();
+	QString postProc2Path;
+#ifdef Q_OS_WIN
+	// search for installed x64 version of PostProc2
+	const char * const POST_PROC_INSTALL_LOC = "c:\\Program Files\\IBK\\PostProc 2.%1\\PostProcApp.exe";
+	for (int i=9; i>=0; --i) {
+		QString postProcLoc = QString(POST_PROC_INSTALL_LOC).arg(i);
+		if (QFileInfo(postProcLoc).exists()) {
+			postProc2Path = postProcLoc;
+			break;
+		}
+	}
+	if (postProc2Path.isEmpty()) {
+		// search for installed x86 version
+		const char * const POST_PROC_INSTALL_LOC2 = "c:\\Program Files (x86)\\IBK\\PostProc 2.%1\\PostProcApp.exe";
+		for (int i=9; i>=0; --i) {
+			QString postProcLoc = QString(POST_PROC_INSTALL_LOC2).arg(i);
+			if (QFileInfo(postProcLoc).exists()) {
+				postProc2Path = postProcLoc;
+				break;
+			}
+		}
+	}
+
+#elif defined(Q_OS_MAC)
+
+	// search for version in Applications dir
+	const QString POST_PROC_INSTALL_LOC = "/Applications/PostProcApp.app";
+	if (QFileInfo(POST_PROC_INSTALL_LOC).exists())
+		postProc2Path = POST_PROC_INSTALL_LOC;
+#endif
+
+	if (!postProc2Path.isEmpty()) {
+		m_ui->filepathPostProc->setFilename(postProc2Path);
+		s.m_postProcExecutable = postProc2Path;
+	}
+}
+
+
+
+// TODO : Stephan, store file paths for other tools and implement auto-detect functions
+//        similar to the PostProc code
+
+//SVSettings & s = SVSettings::instance();
+//s.m_textEditorExecutable = m_ui->filepathTextEditor->filename();
+//s.m_7zExecutable = m_ui->filePath7Zip->filename();
+//s.m_CCMEditorExecutable = m_ui->filePathCCMEditor->filename();

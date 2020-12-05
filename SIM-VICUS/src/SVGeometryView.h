@@ -1,5 +1,5 @@
-#ifndef SVGEOMETRYVIEW_H
-#define SVGEOMETRYVIEW_H
+#ifndef SVGeometryViewH
+#define SVGeometryViewH
 
 #include <QWidget>
 
@@ -39,4 +39,4 @@ private:
 
 };
 
-#endif // SVGEOMETRYVIEW_H
+#endif // SVGeometryViewH

@@ -167,9 +167,6 @@ private slots:
 	/*! Opens a web browser with a window for adding bug reports and feature wishes. */
 	void on_actionHelpBugReport_triggered();
 
-	/*! Triggered by the "Run simulation" shortcut (F9), launches simulation right away. */
-	void on_actionRunSimulation_triggered();
-
 	void on_actionHelpVisitDiscussionForum_triggered();
 
 	void on_actionFileExportFMU_triggered();
@@ -194,6 +191,7 @@ private slots:
 
 	void on_actionFileExportNANDRAD_triggered();
 
+	/*! Triggered by the "Run simulation" shortcut (F9), launches simulation right away. */
 	void on_actionSimulationNANDRAD_triggered();
 
 private:

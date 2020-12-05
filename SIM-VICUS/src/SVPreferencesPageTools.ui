@@ -6,25 +6,31 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>669</width>
-    <height>548</height>
+    <width>600</width>
+    <height>226</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>600</width>
+    <height>0</height>
+   </size>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
-      <string>External Post-Processing</string>
+      <string>External tools</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout" columnstretch="1,0">
+     <layout class="QGridLayout" name="gridLayout" columnstretch="0,1,0">
       <item row="0" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>PostProc 2 Executable:</string>
+         <string>PostProc 2:</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item row="0" column="1">
        <widget class="QtExt::BrowseFilenameWidget" name="filepathPostProc" native="true">
         <property name="minimumSize">
          <size>
@@ -34,126 +40,70 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item row="0" column="2">
        <widget class="QPushButton" name="pushButtonAutoDetectPP2">
         <property name="text">
          <string>Auto-detect</string>
         </property>
        </widget>
       </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Text editor</string>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
+      <item row="1" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Executable:</string>
+         <string>Text editor:</string>
         </property>
        </widget>
       </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
-        <item>
-         <widget class="QtExt::BrowseFilenameWidget" name="filepathTextEditor" native="true">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>20</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButtonAutoDetectPP2_2">
-          <property name="text">
-           <string>Auto-detect</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+      <item row="1" column="1">
+       <widget class="QtExt::BrowseFilenameWidget" name="filepathTextEditor" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>20</height>
+         </size>
+        </property>
+       </widget>
       </item>
-      <item>
-       <widget class="QCheckBox" name="checkBoxUseTerminal">
+      <item row="1" column="2">
+       <widget class="QPushButton" name="pushButtonAutoDetectTextEditor">
         <property name="text">
-         <string>Open in terminal</string>
+         <string>Auto-detect</string>
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QLabel" name="labelUseTerminal">
-        <property name="text">
-         <string>Command line for terminal:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="lineEditTerminal"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBox7Zip">
-     <property name="title">
-      <string>7-Zip</string>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_4">
-      <item>
+      <item row="2" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>Executable:</string>
+         <string>7-Zip:</string>
         </property>
        </widget>
       </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0">
-        <item>
-         <widget class="QtExt::BrowseFilenameWidget" name="filePath7Zip" native="true"/>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButtonAutoDetect7zip">
-          <property name="text">
-           <string>Auto-detect</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+      <item row="2" column="1">
+       <widget class="QtExt::BrowseFilenameWidget" name="filePath7Zip" native="true"/>
       </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBoxCCMEditor">
-     <property name="title">
-      <string>Climate data editor</string>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
-      <item>
+      <item row="2" column="2">
+       <widget class="QPushButton" name="pushButtonAutoDetect7zip">
+        <property name="text">
+         <string>Auto-detect</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>CCM Editor Executable:</string>
+         <string>CCM Editor:</string>
         </property>
        </widget>
       </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,0">
-        <item>
-         <widget class="QtExt::BrowseFilenameWidget" name="filePathCCMEditor" native="true"/>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButtonAutoDetectCCM">
-          <property name="text">
-           <string>Auto-detect</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+      <item row="3" column="1">
+       <widget class="QtExt::BrowseFilenameWidget" name="filePathCCMEditor" native="true"/>
+      </item>
+      <item row="3" column="2">
+       <widget class="QPushButton" name="pushButtonAutoDetectCCM">
+        <property name="text">
+         <string>Auto-detect</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -181,10 +131,6 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <tabstops>
-  <tabstop>checkBoxUseTerminal</tabstop>
-  <tabstop>lineEditTerminal</tabstop>
- </tabstops>
  <resources/>
  <connections/>
 </ui>

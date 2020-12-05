@@ -85,11 +85,8 @@ void readXMLDB(const IBK::Path & fname, const std::string & topLevelTag,
 
 template<typename T>
 void writeXMLDB(const IBK::Path & fname, const std::string & topLevelTag,
-			   typename std::map<unsigned int, T> & db,
-			   bool builtIn = false)
+			   typename std::map<unsigned int, T> & db)
 {
-	FUNCID(SVSettings-writeXMLDB);
-
 	TiXmlDocument doc;
 	TiXmlDeclaration * decl = new TiXmlDeclaration( "1.0", "UTF-8", "" );
 	doc.LinkEndChild( decl );
@@ -97,15 +94,10 @@ void writeXMLDB(const IBK::Path & fname, const std::string & topLevelTag,
 	TiXmlElement * root = new TiXmlElement( topLevelTag );
 	doc.LinkEndChild(root);
 
-
-	for (auto e : db) {
-		if(builtIn == e.second.m_builtIn)
-			e.second.writeXML(root);
-	}
+	for (auto e : db)
+		e.second.writeXML(root);
 
 	doc.SaveFile( fname.c_str() );
-
-
 }
 
 
@@ -141,15 +133,8 @@ void SVSettings::setDefaults() {
 	m_fontPointSize = 0; // means: use auto-detected
 
 	// initialize theme settings
-	m_themeSettings[TT_White].m_majorGridColor = QColor(32,32,32);
-	m_themeSettings[TT_White].m_minorGridColor = QColor(128,128,128);
-	m_themeSettings[TT_White].m_sceneBackgroundColor = QColor("#e2e9ed");
-	m_themeSettings[TT_White].m_selectedSurfaceColor = Qt::magenta;
-
-	m_themeSettings[TT_Dark].m_majorGridColor = QColor("#d2e0ff");
-	m_themeSettings[TT_Dark].m_minorGridColor = QColor("#7f7fb2");
-	m_themeSettings[TT_Dark].m_sceneBackgroundColor = QColor(26, 38, 77);
-	m_themeSettings[TT_Dark].m_selectedSurfaceColor = Qt::magenta;
+	m_themeSettings[TT_White].setDefaults(TT_White);
+	m_themeSettings[TT_Dark].setDefaults(TT_Dark);
 
 	// initialize random number generator
 	qsrand(time(nullptr));
@@ -203,6 +188,19 @@ void SVSettings::read() {
 
 	SVSettings::ThemeType tmpTheme = (SVSettings::ThemeType)settings.value("Theme", m_theme ).toInt();
 	m_theme = tmpTheme;
+	// read theme-specific settings
+	settings.beginGroup("DarkThemeSettings");
+	m_themeSettings[TT_Dark].m_majorGridColor = settings.value("MajorGridColor", m_themeSettings[TT_Dark].m_majorGridColor).value<QColor>();
+	m_themeSettings[TT_Dark].m_minorGridColor = settings.value("MinorGridColor", m_themeSettings[TT_Dark].m_minorGridColor).value<QColor>();
+	m_themeSettings[TT_Dark].m_sceneBackgroundColor = settings.value("SceneBackgroundColor", m_themeSettings[TT_Dark].m_sceneBackgroundColor).value<QColor>();
+	m_themeSettings[TT_Dark].m_selectedSurfaceColor = settings.value("SelectedSurfaceColor", m_themeSettings[TT_Dark].m_selectedSurfaceColor).value<QColor>();
+	settings.endGroup();
+	settings.beginGroup("BrightThemeSettings");
+	m_themeSettings[TT_White].m_majorGridColor = settings.value("MajorGridColor", m_themeSettings[TT_White].m_majorGridColor).value<QColor>();
+	m_themeSettings[TT_White].m_minorGridColor = settings.value("MinorGridColor", m_themeSettings[TT_White].m_minorGridColor).value<QColor>();
+	m_themeSettings[TT_White].m_sceneBackgroundColor = settings.value("SceneBackgroundColor", m_themeSettings[TT_White].m_sceneBackgroundColor).value<QColor>();
+	m_themeSettings[TT_White].m_selectedSurfaceColor = settings.value("SelectedSurfaceColor", m_themeSettings[TT_White].m_selectedSurfaceColor).value<QColor>();
+	settings.endGroup();
 
 	m_fontPointSize = settings.value("FontPointSize", 0).toUInt();
 }
@@ -219,6 +217,13 @@ void SVSettings::write(QByteArray geometry, QByteArray state) {
 	settings.setValue("InvertYMouseAxis", m_invertYMouseAxis);
 	settings.setValue("Theme", m_theme);
 
+	// write theme-specific settings
+	settings.beginGroup("DarkThemeSettings");
+	settings.setValue("MajorGridColor", m_themeSettings[TT_Dark].m_majorGridColor);
+	settings.setValue("MinorGridColor", m_themeSettings[TT_Dark].m_minorGridColor);
+	settings.setValue("SceneBackgroundColor", m_themeSettings[TT_Dark].m_sceneBackgroundColor);
+	settings.setValue("SelectedSurfaceColor", m_themeSettings[TT_Dark].m_selectedSurfaceColor);
+	settings.endGroup();
 
 
 	for (QMap<PropertyType, QVariant>::const_iterator it = m_propertyMap.constBegin();
@@ -330,4 +335,24 @@ unsigned int SVSettings::defaultApplicationFontSize() {
 #endif
 
 	return (unsigned int)ps;
+}
+
+
+void SVSettings::ThemeSettings::setDefaults(SVSettings::ThemeType theme) {
+	switch (theme) {
+		case TT_White :
+			m_majorGridColor = QColor(32,32,32);
+			m_minorGridColor = QColor(128,128,128);
+			m_sceneBackgroundColor = QColor("#e2e9ed");
+			m_selectedSurfaceColor = Qt::magenta;
+		break;
+
+		case TT_Dark :
+			m_majorGridColor = QColor("#d2e0ff");
+			m_minorGridColor = QColor("#7f7fb2");
+			m_sceneBackgroundColor = QColor(26, 38, 77);
+			m_selectedSurfaceColor = Qt::magenta;
+		break;
+		case NUM_TT: ; // just to make compiler happy
+	}
 }

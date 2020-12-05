@@ -648,11 +648,6 @@ void SVMainWindow::on_actionEditTextEditProject_triggered() {
 }
 
 
-void SVMainWindow::on_actionRunSimulation_triggered() {
-//	m_simulationView->startSimulation();
-}
-
-
 void SVMainWindow::on_actionEditPreferences_triggered() {
 	// spawn preferences dialog
 	if (m_preferencesDialog == nullptr) {
