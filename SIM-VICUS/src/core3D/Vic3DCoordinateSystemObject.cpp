@@ -101,7 +101,7 @@ void CoordinateSystemObject::create(ShaderProgram * shaderProgram) {
 
 	double sizeFactor = 1;
 
-	addSphere(IBKMK::Vector3D(0,0,0), QColor("burlywood"), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
+	addSphere(IBKMK::Vector3D(0,0,0), QColor("burlywood"), 0.2*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 
 	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(2,0,0), QColor(Qt::red), 0.02*sizeFactor, currentVertexIndex, currentElementIndex,
@@ -110,11 +110,11 @@ void CoordinateSystemObject::create(ShaderProgram * shaderProgram) {
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,0,2), QColor(32,32,255), 0.02*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-	addSphere(IBKMK::Vector3D(2,0,0), QColor(255, 245, 152), 0.022*sizeFactor, currentVertexIndex, currentElementIndex,
+	addSphere(IBKMK::Vector3D(2,0,0), QColor(255, 245, 152), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-	addSphere(IBKMK::Vector3D(0,2,0), QColor(255, 245, 152), 0.022*sizeFactor, currentVertexIndex, currentElementIndex,
+	addSphere(IBKMK::Vector3D(0,2,0), QColor(255, 245, 152), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-	addSphere(IBKMK::Vector3D(0,0,2), QColor(255, 245, 152), 0.022*sizeFactor, currentVertexIndex, currentElementIndex,
+	addSphere(IBKMK::Vector3D(0,0,2), QColor(255, 245, 152), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 
 	// transfer geometry to GPU

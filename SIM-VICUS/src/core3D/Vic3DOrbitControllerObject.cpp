@@ -68,7 +68,7 @@ void OrbitControllerObject::render() {
 
 	// set transformation matrix
 	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[1], m_transform.toMatrix());
-	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], QVector3D(1.f, 1.f, .8f));
+	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], QVector4D(1.f, 1.f, .8f, 1.f));
 	glDrawArrays(GL_LINES, 0, m_vertexCount);
 
 	m_vao.release();

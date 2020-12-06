@@ -475,7 +475,7 @@ void Vic3DScene::render() {
 	// *** orbit controller indicator ***
 
 	if (m_orbitControllerActive) {
-		// Note: uses also m_fixedColorTransformShader
+		// Note: uses also m_fixedColorTransformShader, which is already active with up-to-date worldToView matrix
 		m_orbitControllerObject.render();
 	}
 

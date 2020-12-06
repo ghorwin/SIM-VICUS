@@ -2,6 +2,7 @@
 #define VICUS_CONVERSIONS_H
 
 #include <QVector3D>
+#include <QVector4D>
 #include <IBKMK_Vector3D.h>
 #include <QColor>
 
@@ -20,6 +21,12 @@ inline IBKMK::Vector3D QVector2IBKVector(const QVector3D & v) {
 inline QVector3D QVector3DFromQColor(const QColor & c) {
 	return QVector3D((float)c.redF(), (float)c.greenF(), (float)c.blueF());
 }
+
+inline QVector4D QVector4DFromQColor(const QColor & c, float alpha) {
+	return QVector4D((float)c.redF(), (float)c.greenF(), (float)c.blueF(), alpha);
+}
+
+
 
 } // VICUS
 
