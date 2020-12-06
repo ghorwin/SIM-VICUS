@@ -48,7 +48,7 @@ public:
 	/*! Only copies the color buffer m_colorBufferData to GPU memory.
 		Call this function instead of updateBuffers(), if only colors of objects/visibility have changed.
 	*/
-	void updateColorBuffer();
+	void updateColorBuffer(unsigned int startIndex = 0, unsigned int count = 0);
 
 	/*! Binds the vertex array object and renders the geometry. */
 	void render();

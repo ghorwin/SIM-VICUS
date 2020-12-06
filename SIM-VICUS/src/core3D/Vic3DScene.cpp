@@ -116,7 +116,7 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			}
 
 			// finally, update only the modified portion of GPU memory
-			m_opaqueGeometryObject.updateColorBuffer();
+			m_opaqueGeometryObject.updateColorBuffer(smallestVertexIndex, largestVertexIndex-smallestVertexIndex);
 
 		} break;
 
