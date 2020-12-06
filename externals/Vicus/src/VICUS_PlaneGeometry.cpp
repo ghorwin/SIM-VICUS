@@ -152,14 +152,16 @@ TiXmlElement * PlaneGeometry::writeXML(TiXmlElement * parent) const {
 
 void PlaneGeometry::addVertex(const QPointF & v) {
 	m_polygon.append(v);
+	m_type = T_Polygon; // assume the worst
 	// compute 3D coordinates
-	computeGeometry();
+	computeGeometry(); // if we have a triangle/rectangle, this is detected here
 }
 
 
 void PlaneGeometry::addVertex(const IBKMK::Vector3D & v) {
 	m_vertexes.push_back(v);
-	computeGeometry();
+	m_type = T_Polygon; // assume the worst
+	computeGeometry(); // if we have a triangle/rectangle, this is detected here
 }
 
 

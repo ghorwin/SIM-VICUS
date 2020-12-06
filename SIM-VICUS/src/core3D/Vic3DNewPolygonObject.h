@@ -26,6 +26,7 @@ QT_END_NAMESPACE
 namespace Vic3D {
 
 class CoordinateSystemObject;
+class ShaderProgram;
 
 /*! This object is painted when a new polygon is being drawn.
 	It paints a red line from the last confirmed polygon vertex to the current
@@ -42,7 +43,7 @@ public:
 		This only initializes the buffers and vertex array object, but does not allocate data.
 		This is done in a call to updateBuffers();
 	*/
-	void create(QOpenGLShaderProgram * shaderProgramm, const CoordinateSystemObject * coordSystemObject);
+	void create(ShaderProgram * shaderProgram, const CoordinateSystemObject * coordSystemObject);
 	void destroy();
 
 	/*! Appends a vertex to the plane geometry and updates the draw buffer. */
@@ -65,6 +66,8 @@ public:
 	/*! Binds the vertex array object and renders the geometry. */
 	void render();
 
+	/*! Shader program. */
+	ShaderProgram					*m_shaderProgram = nullptr;
 
 	/*! Cached pointer to coordinate system object - used to retrieve current's 3D cursor position. */
 	const CoordinateSystemObject	*m_coordSystemObject = nullptr;
@@ -73,13 +76,11 @@ public:
 	VICUS::PlaneGeometry			m_planeGeometry;
 	unsigned int					m_firstLineVertex = 0;
 
-	/*! Vertex buffer in CPU memory, holds data of all vertices (coords and normals).
+	/*! Vertex buffer in CPU memory, holds data of all vertices (coords).
 		The last vertex is always the vertex of the current movable coordinate system's location.
 		The line will be drawn between the last and the one before last vertex, using array draw command.
 	*/
-	std::vector<Vertex>				m_vertexBufferData;
-	/*! Color buffer in CPU memory, holds colors of all vertices (same size as m_vertexBufferData). */
-	std::vector<ColorRGBA>			m_colorBufferData;
+	std::vector<VertexC>			m_vertexBufferData;
 	/*! Index buffer on CPU memory (only for the triangle strip). */
 	std::vector<GLshort>			m_indexBufferData;
 
@@ -88,8 +89,6 @@ public:
 
 	/*! Handle for vertex buffer on GPU memory. */
 	QOpenGLBuffer					m_vertexBufferObject;
-	/*! Handle for color buffer on GPU memory. */
-	QOpenGLBuffer					m_colorBufferObject;
 	/*! Handle for index buffer on GPU memory */
 	QOpenGLBuffer					m_indexBufferObject;
 };

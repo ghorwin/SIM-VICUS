@@ -44,7 +44,8 @@ void Vic3DScene::create(SceneView * parent, std::vector<ShaderProgram> & shaderP
 	// same for the coordinate system object
 	m_coordinateSystemObject.create(m_coordinateSystemShader);
 
-	m_newPolygonObject.create(m_transparencyShader->shaderProgram(), &m_coordinateSystemObject);
+	// we create the new polygon object here, but data is added once it is used
+	m_newPolygonObject.create(m_fixedColorTransformShader, &m_coordinateSystemObject);
 }
 
 
@@ -544,10 +545,12 @@ void Vic3DScene::render() {
 
 	// *** new polygon draw object ***
 
-	m_transparencyShader->bind();
-	m_transparencyShader->shaderProgram()->setUniformValue(m_transparencyShader->m_uniformIDs[0], m_worldToView);
-
-	m_newPolygonObject.render();
+	if (m_newPolygonObject.m_vertexBufferData.size() != 0) {
+		m_fixedColorTransformShader->bind();
+		// Note: worldToView uniform has already been set
+		m_newPolygonObject.render();
+		m_fixedColorTransformShader->release();
+	}
 
 	// re-enable updating of z-buffer
 	glDepthMask(GL_TRUE);
