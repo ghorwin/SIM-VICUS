@@ -8,5 +8,6 @@
         <file>phong_lighting.frag</file>
         <file>lines.vert</file>
         <file>VertexNormalColorWithTransform.vert</file>
+        <file>fixed_color.frag</file>
     </qresource>
 </RCC>

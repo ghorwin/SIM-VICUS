@@ -32,7 +32,7 @@ enum Shaders {
 		uniform mat4 worldToView;              // parameter: world to view transformation matrix
 		uniform mat4 modelToWorld;             // parameter: model to world transformation matrix
 
-		lines.frag:
+		simple.frag:
 	*/
 	SHADER_LINES,
 	/*! VertexNormalColorWithTransform.vert:
@@ -47,6 +47,10 @@ enum Shaders {
 		simple.frag
 	*/
 	SHADER_SELECTED_GEOMETRY,
+	/*!	VertexWithTransform.vert:
+		simple.frag
+	*/
+	SHADER_WIREFRAME,
 	NUM_SHADER_PROGRAMS
 };
 
