@@ -44,7 +44,7 @@ public:
 	Transform3D					m_transform;
 
 	/*! Shader program. */
-	ShaderProgram				*m_shader = nullptr;
+	ShaderProgram				*m_shaderProgram = nullptr;
 
 	/*! Wraps an OpenGL VertexArrayObject, that references the vertex coordinates. */
 	QOpenGLVertexArrayObject	m_vao;

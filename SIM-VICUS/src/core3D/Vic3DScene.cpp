@@ -36,6 +36,7 @@ void Vic3DScene::create(SceneView * parent, std::vector<ShaderProgram> & shaderP
 	m_orbitControllerShader = &shaderPrograms[SHADER_LINES];
 	m_coordinateSystemShader = &shaderPrograms[SHADER_COORDINATE_SYSTEM];
 	m_transparencyShader = &shaderPrograms[SHADER_TRANSPARENT_GEOMETRY];
+	m_selectedGeometryShader = &shaderPrograms[SHADER_SELECTED_GEOMETRY];
 
 	// the orbit controller object is static in geometry, so it can be created already here
 	m_orbitControllerObject.create(m_orbitControllerShader);
@@ -141,6 +142,9 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 
 		// transfer data from building geometry to vertex array caches
 		generateBuildingGeometry();
+
+		m_selectedGeometryObject.create(m_selectedGeometryShader);
+		m_selectedGeometryObject.updateBuffers();
 	}
 
 	// create network
@@ -166,6 +170,7 @@ void Vic3DScene::destroy() {
 	m_orbitControllerObject.destroy();
 	m_opaqueGeometryObject.destroy();
 	m_networkGeometryObject.destroy();
+	m_selectedGeometryObject.destroy();
 	m_coordinateSystemObject.destroy();
 	m_newPolygonObject.destroy();
 }
@@ -457,6 +462,13 @@ void Vic3DScene::render() {
 	/// \todo render dumb background geometry
 
 
+	// *** selection object ***
+
+	m_selectedGeometryShader->bind();
+	m_selectedGeometryShader->shaderProgram()->setUniformValue(m_selectedGeometryShader->m_uniformIDs[0], m_worldToView);
+	m_selectedGeometryShader->release();
+	m_selectedGeometryObject.render();
+
 	// *** opaque building geometry ***
 
 	m_buildingShader->bind();
@@ -477,6 +489,7 @@ void Vic3DScene::render() {
 	// use view position as light position
 	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[3], viewPos);
 #endif // FIXED_LIGHT_POSITION
+
 
 
 	m_networkGeometryObject.render();

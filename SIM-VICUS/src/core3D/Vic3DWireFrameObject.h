@@ -38,7 +38,7 @@ public:
 		This only initializes the buffers and vertex array object, but does not allocate data.
 		This is done in a call to updateBuffers();
 	*/
-	void create(ShaderProgram * wireFrameShaderProgram, ShaderProgram * phongShaderProgram);
+	void create(ShaderProgram * shaderProgram);
 	void destroy();
 
 	/*! Resizes vertex and element buffers on GPU memory and copies data from locally
@@ -57,8 +57,7 @@ public:
 	/*! The transformation from model coordinates to (current) world coordinates. */
 	Transform3D					m_transform;
 
-	ShaderProgram				*m_wireFrameShaderProgram = nullptr;
-	ShaderProgram				*m_phongShaderProgram = nullptr;
+	ShaderProgram				*m_shaderProgram = nullptr;
 
 	/*! If true, this object expects index buffer to hold indexes suitable for drawing GL_TRIANGLE_STRIP (including
 		primitive restart indexes) and uses this to draw the objects.

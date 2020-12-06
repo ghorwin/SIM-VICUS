@@ -21,7 +21,7 @@ License    : BSD License,
 namespace Vic3D {
 
 void CoordinateSystemObject::create(ShaderProgram * shaderProgram) {
-	m_shader = shaderProgram;
+	m_shaderProgram = shaderProgram;
 
 	if (m_vao.isCreated())
 		return;
@@ -145,7 +145,7 @@ void CoordinateSystemObject::render() {
 	// bind all buffers ("position", "normal" and "color" arrays)
 	m_vao.bind();
 	// set transformation matrix
-	m_shader->shaderProgram()->setUniformValue(m_shader->m_uniformIDs[4], m_transform.toMatrix());
+	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[4], m_transform.toMatrix());
 	// now draw the geometry
 	glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
 	// release buffers again

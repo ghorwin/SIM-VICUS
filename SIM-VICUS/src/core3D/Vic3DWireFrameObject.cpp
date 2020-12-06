@@ -20,12 +20,11 @@ WireFrameObject::WireFrameObject() :
 }
 
 
-void WireFrameObject::create(ShaderProgram * wireFrameShaderProgram, ShaderProgram * phongShaderProgram) {
+void WireFrameObject::create(ShaderProgram * shaderProgram) {
 	if (m_vao.isCreated())
 		return;
 
-	m_wireFrameShaderProgram = wireFrameShaderProgram;
-	m_phongShaderProgram = phongShaderProgram;
+	m_shaderProgram = shaderProgram;
 
 	// *** create buffers on GPU memory ***
 
@@ -65,28 +64,18 @@ void WireFrameObject::create(ShaderProgram * wireFrameShaderProgram, ShaderProgr
 				  // this vbo
 
 	// coordinates
-	m_wireFrameShaderProgram->shaderProgram()->enableAttributeArray(VERTEX_ARRAY_INDEX);
-	m_wireFrameShaderProgram->shaderProgram()->setAttributeBuffer(VERTEX_ARRAY_INDEX, GL_FLOAT, 0, 3 /* vec3 */, sizeof(Vertex));
+	m_shaderProgram->shaderProgram()->enableAttributeArray(VERTEX_ARRAY_INDEX);
+	m_shaderProgram->shaderProgram()->setAttributeBuffer(VERTEX_ARRAY_INDEX, GL_FLOAT, 0, 3 /* vec3 */, sizeof(Vertex));
 
 	// normals
-	m_wireFrameShaderProgram->shaderProgram()->enableAttributeArray(NORMAL_ARRAY_INDEX);
-	m_wireFrameShaderProgram->shaderProgram()->setAttributeBuffer(NORMAL_ARRAY_INDEX, GL_FLOAT, offsetof(Vertex, m_normal), 3 /* vec3 */, sizeof(Vertex));
-
-	// coordinates
-	m_phongShaderProgram->shaderProgram()->enableAttributeArray(VERTEX_ARRAY_INDEX);
-	m_phongShaderProgram->shaderProgram()->setAttributeBuffer(VERTEX_ARRAY_INDEX, GL_FLOAT, 0, 3 /* vec3 */, sizeof(Vertex));
-
-	// normals
-	m_phongShaderProgram->shaderProgram()->enableAttributeArray(NORMAL_ARRAY_INDEX);
-	m_phongShaderProgram->shaderProgram()->setAttributeBuffer(NORMAL_ARRAY_INDEX, GL_FLOAT, offsetof(Vertex, m_normal), 3 /* vec3 */, sizeof(Vertex));
+	m_shaderProgram->shaderProgram()->enableAttributeArray(NORMAL_ARRAY_INDEX);
+	m_shaderProgram->shaderProgram()->setAttributeBuffer(NORMAL_ARRAY_INDEX, GL_FLOAT, offsetof(Vertex, m_normal), 3 /* vec3 */, sizeof(Vertex));
 
 	m_colorBufferObject.bind(); // now color buffer is active in vao
 
 	// colors
-	m_wireFrameShaderProgram->shaderProgram()->enableAttributeArray(COLOR_ARRAY_INDEX);
-	m_wireFrameShaderProgram->shaderProgram()->setAttributeBuffer(COLOR_ARRAY_INDEX, GL_UNSIGNED_BYTE, 0, 4, 4 /* bytes = sizeof(char) */);
-	m_phongShaderProgram->shaderProgram()->enableAttributeArray(COLOR_ARRAY_INDEX);
-	m_phongShaderProgram->shaderProgram()->setAttributeBuffer(COLOR_ARRAY_INDEX, GL_UNSIGNED_BYTE, 0, 4, 4 /* bytes = sizeof(char) */);
+	m_shaderProgram->shaderProgram()->enableAttributeArray(COLOR_ARRAY_INDEX);
+	m_shaderProgram->shaderProgram()->setAttributeBuffer(COLOR_ARRAY_INDEX, GL_UNSIGNED_BYTE, 0, 4, 4 /* bytes = sizeof(char) */);
 
 	// Release (unbind) all
 
@@ -112,10 +101,47 @@ void WireFrameObject::destroy() {
 
 
 void WireFrameObject::updateBuffers() {
+	// set some dummy data for testing
+	// clear out existing cache
+
+	m_vertexBufferData.clear();
+	m_colorBufferData.clear();
+	m_indexBufferData.clear();
+	m_vertexStartMap.clear();
+
+	m_vertexBufferData.reserve(100000);
+	m_colorBufferData.reserve(100000);
+	m_indexBufferData.reserve(100000);
+
+	// we want to draw triangles
+	m_drawTriangleStrips = false;
+
+	unsigned int currentVertexIndex = 0;
+	unsigned int currentElementIndex = 0;
+
+	VICUS::Surface surf;
+	surf.m_geometry = VICUS::PlaneGeometry(VICUS::PlaneGeometry::T_Polygon);
+	std::vector<IBKMK::Vector3D> vertexes;
+	vertexes.push_back(IBKMK::Vector3D(-10,-5,0));
+	vertexes.push_back(IBKMK::Vector3D(-2,-5,0));
+	vertexes.push_back(IBKMK::Vector3D(-2,-5,6));
+	vertexes.push_back(IBKMK::Vector3D(-4,-5,6));
+	vertexes.push_back(IBKMK::Vector3D(-4,-5,3));
+	vertexes.push_back(IBKMK::Vector3D(-10,-5,3));
+	surf.m_geometry.setVertexes(vertexes);
+	surf.m_id = 3;
+	surf.m_displayName = "Poly";
+	surf.m_color = Qt::magenta;
+
+	addSurface(surf, currentVertexIndex, currentElementIndex,
+			   m_vertexBufferData,
+			   m_colorBufferData,
+			   m_indexBufferData);
+
 	if (m_indexBufferData.empty())
 		return;
 
-	// transfer data stored in m_vertexBufferData
+	// transfer data to GPU
 	m_vertexBufferObject.bind();
 	m_vertexBufferObject.allocate(m_vertexBufferData.data(), m_vertexBufferData.size()*sizeof(Vertex));
 	m_vertexBufferObject.release();
@@ -124,9 +150,6 @@ void WireFrameObject::updateBuffers() {
 	m_indexBufferObject.allocate(m_indexBufferData.data(), m_indexBufferData.size()*sizeof(GLshort));
 	m_indexBufferObject.release();
 
-	// also update the color buffer
-	if (m_colorBufferData.empty())
-		return;
 	m_colorBufferObject.bind();
 	m_colorBufferObject.allocate(m_colorBufferData.data(), m_colorBufferData.size()*sizeof(ColorRGBA) );
 	m_colorBufferObject.release();
@@ -137,7 +160,34 @@ void WireFrameObject::render() {
 	// bind all buffers ("position", "normal" and "color" arrays)
 	m_vao.bind();
 	// bind the wireframe shader program
-	m_wireFrameShaderProgram->shaderProgram()->bind();
+	m_shaderProgram->shaderProgram()->bind();
+	// set transformation matrix
+	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[1], m_transform.toMatrix());
+
+
+	// put OpenGL in offset mode
+	glEnable(GL_POLYGON_OFFSET_LINE);
+	// offset the wire frame geometry a bit
+	glPolygonOffset(0.0f, -2.0f);
+	// select wire frame drawing
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	// now draw the geometry
+	if (m_drawTriangleStrips)
+		glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
+	else
+		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
+	// switch back to fill mode
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	// turn off line offset mode
+	glDisable(GL_POLYGON_OFFSET_LINE);
+
+	// release wireframe shader
+	m_shaderProgram->shaderProgram()->release();
+
+	// bind the fill shader program
+	m_shaderProgram->shaderProgram()->bind();
+	// set transformation matrix
+	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[1], m_transform.toMatrix());
 
 	// now draw the geometry
 	if (m_drawTriangleStrips)
@@ -145,8 +195,8 @@ void WireFrameObject::render() {
 	else
 		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
 
-	// release buffers again
-	m_wireFrameShaderProgram->shaderProgram()->release();
+	m_shaderProgram->shaderProgram()->release();
+
 
 	m_vao.release();
 }

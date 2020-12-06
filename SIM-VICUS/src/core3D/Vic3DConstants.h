@@ -35,8 +35,18 @@ enum Shaders {
 		lines.frag:
 	*/
 	SHADER_LINES,
+	/*! VertexNormalColorWithTransform.vert:
+		phong_lighting.frag:
+	*/
 	SHADER_COORDINATE_SYSTEM,
+	/*!	VertexNormalColor.vert:
+		simple.frag
+	*/
 	SHADER_TRANSPARENT_GEOMETRY,
+	/*!	VertexNormalColorWithTransform.vert:
+		simple.frag
+	*/
+	SHADER_SELECTED_GEOMETRY,
 	NUM_SHADER_PROGRAMS
 };
 

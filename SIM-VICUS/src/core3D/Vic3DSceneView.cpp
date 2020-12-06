@@ -69,6 +69,12 @@ SceneView::SceneView() :
 	transparentGeo.m_uniformNames.append("worldToView");
 	m_shaderPrograms[SHADER_TRANSPARENT_GEOMETRY] = transparentGeo;
 
+	// Selected geometry : opaque geometry (single color for all faces) without lighting; also used for wire frame
+	ShaderProgram selectedGeo(":/shaders/VertexNormalColorWithTransform.vert",":/shaders/simple.frag");
+	selectedGeo.m_uniformNames.append("worldToView");
+	selectedGeo.m_uniformNames.append("modelToWorld");
+	m_shaderPrograms[SHADER_SELECTED_GEOMETRY] = selectedGeo;
+
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SceneView::onModified);
 }

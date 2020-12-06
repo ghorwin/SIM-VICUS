@@ -12,6 +12,7 @@
 #include "Vic3DOpaqueGeometryObject.h"
 #include "Vic3DOrbitControllerObject.h"
 #include "Vic3DCoordinateSystemObject.h"
+#include "Vic3DWireFrameObject.h"
 #include "Vic3DNewPolygonObject.h"
 #include "Vic3DPickObject.h"
 
@@ -89,16 +90,18 @@ private:
 	/*! Stores viewport geometry. */
 	QRect					m_viewPort;
 
-	/*! Stores address to shader program (managed by SceneView). */
-	ShaderProgram			*m_gridShader			= nullptr;
-	/*! Shader program (managed by SceneView). */
-	ShaderProgram			*m_buildingShader		= nullptr;
-	/*! Stores address to shader program (managed by SceneView). */
-	ShaderProgram			*m_orbitControllerShader = nullptr;
-	/*! Stores address to shader program (managed by SceneView). */
-	ShaderProgram			*m_coordinateSystemShader = nullptr;
-	/*! Shader program (managed by SceneView). */
-	ShaderProgram			*m_transparencyShader = nullptr;
+	/*! Shader program 'Grid' (managed by SceneView). */
+	ShaderProgram			*m_gridShader				= nullptr;
+	/*! Shader program 'Opaque Surfaces' (managed by SceneView). */
+	ShaderProgram			*m_buildingShader			= nullptr;
+	/*! Shader program 'Orbit controller' (managed by SceneView). */
+	ShaderProgram			*m_orbitControllerShader	= nullptr;
+	/*! Shader program 'Coordinate system' (managed by SceneView). */
+	ShaderProgram			*m_coordinateSystemShader	= nullptr;
+	/*! Shader program 'Transparent surfaces' (managed by SceneView). */
+	ShaderProgram			*m_transparencyShader		= nullptr;
+	/*! Shader program 'Selected geometry' (managed by SceneView). */
+	ShaderProgram			*m_selectedGeometryShader	= nullptr;
 
 	/*! The projection matrix, updated whenever the viewport geometry changes (in resizeGL() ). */
 	QMatrix4x4				m_projection;
@@ -123,6 +126,8 @@ private:
 	OpaqueGeometryObject	m_opaqueGeometryObject;
 	/*! A geometry drawing object (no transparency) for network elements.*/
 	OpaqueGeometryObject	m_networkGeometryObject;
+	/*! A geometry for drawing selected primitives with overlayed wireframe. */
+	WireFrameObject			m_selectedGeometryObject;
 	/*! Indicator for the center of the orbit controller.
 		Only visible when m_orbitControllerActive is true.
 	*/
