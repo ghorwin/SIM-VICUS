@@ -19,7 +19,8 @@ void setState(T & obj, const unsigned int & bitmask) {
 SVUndoTreeNodeState::SVUndoTreeNodeState(const QString & label,
 										 NodeState t,
 										 const std::set<unsigned int> & nodeIDs,
-										 bool on)
+										 bool on) :
+	m_changedStateType(t)
 {
 	setText( label );
 
@@ -95,7 +96,8 @@ void SVUndoTreeNodeState::redo() {
 	// get a copy of the project
 	VICUS::Project & p = theProject();
 	ModifiedNodes modInfo;
-	std::vector<unsigned int> & modifiedIDs = modInfo.nodeIDs;
+	modInfo.m_changedStateType = m_changedStateType;
+	std::vector<unsigned int> & modifiedIDs = modInfo.m_nodeIDs;
 	modifiedIDs.reserve(m_nodeStates.size());
 	// process all entities in the entire data structure
 

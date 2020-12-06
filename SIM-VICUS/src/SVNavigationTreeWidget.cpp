@@ -51,7 +51,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 			Q_ASSERT(info != nullptr);
 
 			// process all modified nodes
-			for (unsigned int id : info->nodeIDs) {
+			for (unsigned int id : info->m_nodeIDs) {
 				Q_ASSERT(m_treeItemMap.find(id) != m_treeItemMap.end());
 				// find the object in question
 				const VICUS::Object * obj = nullptr;

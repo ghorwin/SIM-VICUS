@@ -92,7 +92,7 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			Q_ASSERT(info != nullptr);
 
 			// process all modified nodes
-			for (unsigned int id : info->nodeIDs) {
+			for (unsigned int id : info->m_nodeIDs) {
 				// find the object in question
 				const VICUS::Object * obj = nullptr;
 				for (const VICUS::Building & b : project().m_buildings) {
