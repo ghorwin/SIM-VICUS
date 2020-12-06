@@ -76,8 +76,8 @@ SOURCES += \
 		../../src/SVNavigationTreeItemDelegate.cpp \
 		../../src/SVNetworkEditDialog.cpp \
 		../../src/SVPreferencesPageStyle.cpp \
-		../../src/SVPropAddPolygonWidget.cpp \
 		../../src/SVPropEditGeometry.cpp \
+		../../src/SVPropVertexListWidget.cpp \
 		../../src/SVPropertyWidget.cpp \
 		../../src/SVUndoModifyExistingNetwork.cpp \
 		../../src/SVUndoTreeNodeState.cpp \
@@ -131,8 +131,8 @@ HEADERS  += \
 		../../src/SVNavigationTreeItemDelegate.h \
 		../../src/SVNetworkEditDialog.h \
 		../../src/SVPreferencesPageStyle.h \
-		../../src/SVPropAddPolygonWidget.h \
 		../../src/SVPropEditGeometry.h \
+		../../src/SVPropVertexListWidget.h \
 		../../src/SVPropertyWidget.h \
 		../../src/SVUndoModifyExistingNetwork.h \
 		../../src/SVUndoTreeNodeState.h \
@@ -193,8 +193,8 @@ FORMS    += \
 		../../src/SVPreferencesDialog.ui \
 		../../src/SVPreferencesPageStyle.ui \
 		../../src/SVPreferencesPageTools.ui \
-		../../src/SVPropAddPolygonWidget.ui \
 		../../src/SVPropEditGeometry.ui \
+		../../src/SVPropVertexListWidget.ui \
 		../../src/SVWelcomeScreen.ui
 
 TRANSLATIONS += ../../resources/translations/SIM-VICUS_de.ts

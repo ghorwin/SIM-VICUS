@@ -20,6 +20,7 @@
 
 #include "SVProjectHandler.h"
 #include "SVViewStateHandler.h"
+#include "SVViewState.h"
 #include "SVSettings.h"
 #include "SVUndoTreeNodeState.h"
 
@@ -554,6 +555,17 @@ void Vic3DScene::render() {
 }
 
 
+void Vic3DScene::setViewState(const SVViewState & vs) {
+	// adjust scene based on view state
+	switch (vs.m_sceneOperationMode) {
+		case SVViewState::OM_PlaceVertex :
+			m_coordinateSystemActive = true;
+		break;
+
+		default:
+			m_coordinateSystemActive = false;
+	}
+}
 
 
 void Vic3DScene::generateBuildingGeometry() {

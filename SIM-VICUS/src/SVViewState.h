@@ -60,8 +60,10 @@ public:
 	enum PropertyWidgetMode {
 		/*! Shows the "Add geometry" widget and tool page. */
 		PM_ADD_GEOMETRY,
-		/*! Shows the "Add geometry" widget and transform tool page. */
+		/*! Shows the "Edit geometry" widget and transform tool page. */
 		PM_EDIT_GEOMETRY,
+		/*! Shows the "Widget with list of newly placed vertexes" */
+		PM_VERTEX_LIST,
 		NUM_PM
 	};
 

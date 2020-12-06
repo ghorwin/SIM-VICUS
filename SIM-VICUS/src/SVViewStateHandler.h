@@ -29,7 +29,7 @@ public:
 
 signals:
 	/*! Emitted, when the state has changed. */
-	void stateChanged();
+	void viewStateChanged();
 
 private:
 	/*! The global pointer to the SVViewStateHandler object.

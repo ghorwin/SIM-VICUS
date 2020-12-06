@@ -73,6 +73,9 @@ SceneView::SceneView() :
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SceneView::onModified);
+
+	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::viewStateChanged,
+			this, &SceneView::onViewStateChanged);
 }
 
 
@@ -149,6 +152,13 @@ void SceneView::onStyleChanged() {
 	// need double-painting on Linux/Mac (first in back-buffer than on screen)
 	renderNow();
 	renderLater();
+}
+
+
+void SceneView::onViewStateChanged() {
+	// tell scene view about the viewstate change
+	m_mainScene.setViewState(SVViewStateHandler::instance().viewState());
+
 }
 
 

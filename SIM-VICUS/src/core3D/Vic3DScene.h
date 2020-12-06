@@ -22,6 +22,8 @@ namespace VICUS {
 	class Surface;
 }
 
+class SVViewState;
+
 namespace Vic3D {
 
 class ShaderProgram;
@@ -58,6 +60,11 @@ public:
 
 	/*! Actually renders to the current OpenGL context. */
 	void render();
+
+	/*! Updates the view state based on the current operation.
+		\note This function should only be called from SVGeometryView!
+	*/
+	void setViewState(const SVViewState & vs);
 
 private:
 	void generateBuildingGeometry();

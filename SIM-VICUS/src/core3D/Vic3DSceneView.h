@@ -48,6 +48,9 @@ public slots:
 	/*! Connected to SVPreferencesPageStyle::styleChanged(). */
 	void onStyleChanged();
 
+	/*! Connected to view-state handler. */
+	void onViewStateChanged();
+
 protected:
 	void initializeGL() override;
 	void resizeGL(int width, int height) override;

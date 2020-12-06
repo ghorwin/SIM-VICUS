@@ -195,10 +195,10 @@ void SVSettings::read() {
 	m_themeSettings[TT_Dark].m_minorGridColor = settings.value("MinorGridColor", m_themeSettings[TT_Dark].m_minorGridColor).value<QColor>();
 	m_themeSettings[TT_Dark].m_sceneBackgroundColor = settings.value("SceneBackgroundColor", m_themeSettings[TT_Dark].m_sceneBackgroundColor).value<QColor>();
 	m_themeSettings[TT_Dark].m_selectedSurfaceColor = settings.value("SelectedSurfaceColor", m_themeSettings[TT_Dark].m_selectedSurfaceColor).value<QColor>();
-	qDebug() << m_themeSettings[TT_Dark].m_majorGridColor.name()
-			 << m_themeSettings[TT_Dark].m_minorGridColor.name()
-			 << m_themeSettings[TT_Dark].m_sceneBackgroundColor.name()
-			 << m_themeSettings[TT_Dark].m_selectedSurfaceColor.name();
+//	qDebug() << m_themeSettings[TT_Dark].m_majorGridColor.name()
+//			 << m_themeSettings[TT_Dark].m_minorGridColor.name()
+//			 << m_themeSettings[TT_Dark].m_sceneBackgroundColor.name()
+//			 << m_themeSettings[TT_Dark].m_selectedSurfaceColor.name();
 	settings.endGroup();
 	settings.beginGroup("BrightThemeSettings");
 	m_themeSettings[TT_White].m_majorGridColor = settings.value("MajorGridColor", m_themeSettings[TT_White].m_majorGridColor).value<QColor>();

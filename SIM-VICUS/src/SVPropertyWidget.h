@@ -11,7 +11,9 @@ class QVBoxLayout;
 class SVPropertyWidget : public QWidget {
 	Q_OBJECT
 public:
-	/*! This enum defines which property widgets are to be shown. */
+	/*! This enum defines the property widgets that can be shown.
+		These are usually mapped to view states.
+	*/
 	enum PropertyWidgets {
 		M_ThermalSimulationProperties,
 		M_EditGeometry,
@@ -21,8 +23,15 @@ public:
 
 	explicit SVPropertyWidget(QWidget * parent = nullptr);
 
-	/*! Toggles visibility of different child widgets. */
+	/*! Toggles visibility of different child widgets.
+		Also, constructs property widgets on the fly on first show.
+	*/
 	void setMode(PropertyWidgets m);
+
+public slots:
+
+	/*! Connected to view state manager. */
+	void onViewStateChanged();
 
 private:
 	/*! The layout, that holds all widgets. */

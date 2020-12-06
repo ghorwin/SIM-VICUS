@@ -2,8 +2,9 @@
 
 #include <QVBoxLayout>
 
-#include "SVPropAddPolygonWidget.h"
+#include "SVPropVertexListWidget.h"
 #include "SVPropEditGeometry.h"
+#include "SVViewStateHandler.h"
 
 SVPropertyWidget::SVPropertyWidget(QWidget * parent) :
 	QWidget(parent)
@@ -17,6 +18,9 @@ SVPropertyWidget::SVPropertyWidget(QWidget * parent) :
 
 	setMinimumWidth(200);
 	setMode(M_EditGeometry);
+
+	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::viewStateChanged,
+			this, &SVPropertyWidget::onViewStateChanged);
 }
 
 
@@ -42,13 +46,25 @@ void SVPropertyWidget::setMode(PropertyWidgets m) {
 		case M_AddVertexesMode: {
 			// create widget and add to layout, if not existing
 			if (m_propWidgets[M_AddVertexesMode] == nullptr) {
-				m_propWidgets[M_AddVertexesMode] = new SVPropAddPolygonWidget(this);
+				m_propWidgets[M_AddVertexesMode] = new SVPropVertexListWidget(this);
 				m_layout->addWidget(m_propWidgets[M_AddVertexesMode]);
 			}
 			m_propWidgets[M_AddVertexesMode]->setVisible(true);
 		} break;
+
 		default : {
 			// set maximum size to 0, to avoid widget being expandible
 		}
 	}
 }
+
+
+void SVPropertyWidget::onViewStateChanged() {
+	switch (SVViewStateHandler::instance().viewState().m_propertyWidgetMode) {
+		case SVViewState::PM_VERTEX_LIST : setMode(M_AddVertexesMode); break;
+		case SVViewState::PM_ADD_GEOMETRY : setMode(M_EditGeometry); break;
+		case SVViewState::PM_EDIT_GEOMETRY : setMode(M_EditGeometry); break;
+		default:;
+	}
+}
+
