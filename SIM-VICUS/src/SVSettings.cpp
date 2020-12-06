@@ -3,6 +3,7 @@
 #include <QApplication>
 #include <QSettings>
 #include <QScreen>
+#include <QDebug>
 
 #include <QtExt_Directories.h>
 #include <tinyxml.h>
@@ -194,6 +195,10 @@ void SVSettings::read() {
 	m_themeSettings[TT_Dark].m_minorGridColor = settings.value("MinorGridColor", m_themeSettings[TT_Dark].m_minorGridColor).value<QColor>();
 	m_themeSettings[TT_Dark].m_sceneBackgroundColor = settings.value("SceneBackgroundColor", m_themeSettings[TT_Dark].m_sceneBackgroundColor).value<QColor>();
 	m_themeSettings[TT_Dark].m_selectedSurfaceColor = settings.value("SelectedSurfaceColor", m_themeSettings[TT_Dark].m_selectedSurfaceColor).value<QColor>();
+	qDebug() << m_themeSettings[TT_Dark].m_majorGridColor.name()
+			 << m_themeSettings[TT_Dark].m_minorGridColor.name()
+			 << m_themeSettings[TT_Dark].m_sceneBackgroundColor.name()
+			 << m_themeSettings[TT_Dark].m_selectedSurfaceColor.name();
 	settings.endGroup();
 	settings.beginGroup("BrightThemeSettings");
 	m_themeSettings[TT_White].m_majorGridColor = settings.value("MajorGridColor", m_themeSettings[TT_White].m_majorGridColor).value<QColor>();
@@ -348,10 +353,10 @@ void SVSettings::ThemeSettings::setDefaults(SVSettings::ThemeType theme) {
 		break;
 
 		case TT_Dark :
-			m_majorGridColor = QColor("#d2e0ff");
-			m_minorGridColor = QColor("#7f7fb2");
-			m_sceneBackgroundColor = QColor(26, 38, 77);
-			m_selectedSurfaceColor = Qt::magenta;
+			m_majorGridColor = QColor("#7174a0");
+			m_minorGridColor = QColor("#46455d");
+			m_sceneBackgroundColor = QColor("#010c1f");
+			m_selectedSurfaceColor = QColor("#3465a4");
 		break;
 		case NUM_TT: ; // just to make compiler happy
 	}

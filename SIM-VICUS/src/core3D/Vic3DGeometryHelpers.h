@@ -28,6 +28,13 @@ void addPlane(const VICUS::PlaneGeometry & g, const QColor & c,
 			  std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLshort> & indexBufferData,
 			  bool inverted);
 
+/*! Same as addPlane, but only adds coordinates (no normals, no color buffer).
+	Index buffer contains data for triangles.
+*/
+void addPlane(const VICUS::PlaneGeometry & g,
+			  unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+			  std::vector<VertexC> & vertexBufferData, std::vector<GLshort> & indexBufferData);
+
 /*! This updates the plane color in the vertex buffer. */
 void updatePlaneColor(const VICUS::PlaneGeometry & g, const QColor & c, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData);
 

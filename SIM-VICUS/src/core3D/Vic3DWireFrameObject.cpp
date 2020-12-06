@@ -16,7 +16,6 @@ namespace Vic3D {
 
 WireFrameObject::WireFrameObject() :
 	m_vertexBufferObject(QOpenGLBuffer::VertexBuffer), // VertexBuffer is the default, so default constructor would have been enough
-	m_colorBufferObject(QOpenGLBuffer::VertexBuffer),
 	m_indexBufferObject(QOpenGLBuffer::IndexBuffer) // make this an Index Buffer
 {
 }
@@ -33,9 +32,6 @@ void WireFrameObject::create(ShaderProgram * shaderProgram) {
 	// create a new buffer for the vertices and colors, separate buffers because we will modify colors way more often than geometry
 	m_vertexBufferObject.create();
 	m_vertexBufferObject.setUsagePattern(QOpenGLBuffer::StaticDraw); // usage pattern will be used when tranferring data to GPU
-
-	m_colorBufferObject.create();
-	m_colorBufferObject.setUsagePattern(QOpenGLBuffer::StaticDraw);
 
 	// create a new buffer for the indexes
 	m_indexBufferObject = QOpenGLBuffer(QOpenGLBuffer::IndexBuffer); // Note: make sure this is an index buffer
@@ -56,8 +52,6 @@ void WireFrameObject::create(ShaderProgram * shaderProgram) {
 	// *** set attribute arrays for shader fetch stage ***
 
 #define VERTEX_ARRAY_INDEX 0
-#define NORMAL_ARRAY_INDEX 1
-#define COLOR_ARRAY_INDEX 2
 
 	m_vertexBufferObject.bind(); // this registers this buffer data object in the currently bound vao; in subsequent
 				  // calls to shaderProgramm->setAttributeBuffer() the buffer object is associated with the
@@ -67,17 +61,7 @@ void WireFrameObject::create(ShaderProgram * shaderProgram) {
 
 	// coordinates
 	m_shaderProgram->shaderProgram()->enableAttributeArray(VERTEX_ARRAY_INDEX);
-	m_shaderProgram->shaderProgram()->setAttributeBuffer(VERTEX_ARRAY_INDEX, GL_FLOAT, 0, 3 /* vec3 */, sizeof(Vertex));
-
-	// normals
-	m_shaderProgram->shaderProgram()->enableAttributeArray(NORMAL_ARRAY_INDEX);
-	m_shaderProgram->shaderProgram()->setAttributeBuffer(NORMAL_ARRAY_INDEX, GL_FLOAT, offsetof(Vertex, m_normal), 3 /* vec3 */, sizeof(Vertex));
-
-	m_colorBufferObject.bind(); // now color buffer is active in vao
-
-	// colors
-	m_shaderProgram->shaderProgram()->enableAttributeArray(COLOR_ARRAY_INDEX);
-	m_shaderProgram->shaderProgram()->setAttributeBuffer(COLOR_ARRAY_INDEX, GL_UNSIGNED_BYTE, 0, 4, 4 /* bytes = sizeof(char) */);
+	m_shaderProgram->shaderProgram()->setAttributeBuffer(VERTEX_ARRAY_INDEX, GL_FLOAT, 0, 3 /* vec3 */, sizeof(VertexC));
 
 	// Release (unbind) all
 
@@ -89,7 +73,6 @@ void WireFrameObject::create(ShaderProgram * shaderProgram) {
 	m_vao.release();
 
 	m_vertexBufferObject.release();
-	m_colorBufferObject.release();
 	m_indexBufferObject.release();
 }
 
@@ -97,7 +80,6 @@ void WireFrameObject::create(ShaderProgram * shaderProgram) {
 void WireFrameObject::destroy() {
 	m_vao.destroy();
 	m_vertexBufferObject.destroy();
-	m_colorBufferObject.destroy();
 	m_indexBufferObject.destroy();
 }
 
@@ -107,12 +89,10 @@ void WireFrameObject::updateBuffers() {
 	// clear out existing cache
 
 	m_vertexBufferData.clear();
-	m_colorBufferData.clear();
 	m_indexBufferData.clear();
 	m_vertexStartMap.clear();
 
 	m_vertexBufferData.reserve(100000);
-	m_colorBufferData.reserve(100000);
 	m_indexBufferData.reserve(100000);
 
 	// we want to draw triangles
@@ -135,26 +115,16 @@ void WireFrameObject::updateBuffers() {
 	surf.m_displayName = "Poly";
 	surf.m_color = Qt::magenta;
 
-	addSurface(surf, currentVertexIndex, currentElementIndex,
-			   m_vertexBufferData,
-			   m_colorBufferData,
-			   m_indexBufferData);
-
-	if (m_indexBufferData.empty())
-		return;
+	addPlane(surf.m_geometry, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
 
 	// transfer data to GPU
 	m_vertexBufferObject.bind();
-	m_vertexBufferObject.allocate(m_vertexBufferData.data(), m_vertexBufferData.size()*sizeof(Vertex));
+	m_vertexBufferObject.allocate(m_vertexBufferData.data(), m_vertexBufferData.size()*sizeof(VertexC));
 	m_vertexBufferObject.release();
 
 	m_indexBufferObject.bind();
 	m_indexBufferObject.allocate(m_indexBufferData.data(), m_indexBufferData.size()*sizeof(GLshort));
 	m_indexBufferObject.release();
-
-	m_colorBufferObject.bind();
-	m_colorBufferObject.allocate(m_colorBufferData.data(), m_colorBufferData.size()*sizeof(ColorRGBA) );
-	m_colorBufferObject.release();
 }
 
 
@@ -168,7 +138,7 @@ void WireFrameObject::render() {
 	// set transformation matrix
 	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[1], m_transform.toMatrix());
 
-
+	glDisable(GL_CULL_FACE);
 	// set wireframe color
 	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], QVector3D(1.f, 1.f, 1.0f));
 	// put OpenGL in offset mode
@@ -198,6 +168,7 @@ void WireFrameObject::render() {
 
 	m_shaderProgram->shaderProgram()->release();
 
+	glEnable(GL_CULL_FACE);
 
 	m_vao.release();
 }

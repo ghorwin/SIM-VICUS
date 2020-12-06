@@ -68,9 +68,7 @@ public:
 	bool						m_drawTriangleStrips = true;
 
 	/*! Vertex buffer in CPU memory, holds data of all vertices (coords and normals). */
-	std::vector<Vertex>			m_vertexBufferData;
-	/*! Color buffer in CPU memory, holds colors of all vertices (same size as m_vertexBufferData). */
-	std::vector<ColorRGBA>		m_colorBufferData;
+	std::vector<VertexC>		m_vertexBufferData;
 	/*! Index buffer on CPU memory. */
 	std::vector<GLshort>		m_indexBufferData;
 
@@ -82,8 +80,6 @@ public:
 
 	/*! Handle for vertex buffer on GPU memory. */
 	QOpenGLBuffer				m_vertexBufferObject;
-	/*! Handle for color buffer on GPU memory. */
-	QOpenGLBuffer				m_colorBufferObject;
 	/*! Handle for index buffer on GPU memory */
 	QOpenGLBuffer				m_indexBufferObject;
 };
