@@ -85,7 +85,6 @@ void WireFrameObject::destroy() {
 
 
 void WireFrameObject::updateBuffers() {
-	// set some dummy data for testing
 	// clear out existing cache
 
 	m_vertexBufferData.clear();
@@ -101,21 +100,11 @@ void WireFrameObject::updateBuffers() {
 	unsigned int currentVertexIndex = 0;
 	unsigned int currentElementIndex = 0;
 
-	VICUS::Surface surf;
-	surf.m_geometry = VICUS::PlaneGeometry(VICUS::PlaneGeometry::T_Polygon);
-	std::vector<IBKMK::Vector3D> vertexes;
-	vertexes.push_back(IBKMK::Vector3D(-10,-5,0));
-	vertexes.push_back(IBKMK::Vector3D(-2,-5,0));
-	vertexes.push_back(IBKMK::Vector3D(-2,-5,6));
-	vertexes.push_back(IBKMK::Vector3D(-4,-5,6));
-	vertexes.push_back(IBKMK::Vector3D(-4,-5,3));
-	vertexes.push_back(IBKMK::Vector3D(-10,-5,3));
-	surf.m_geometry.setVertexes(vertexes);
-	surf.m_id = 3;
-	surf.m_displayName = "Poly";
-	surf.m_color = Qt::magenta;
+	qDebug() << m_selectedSurfaces.size() << " selected surfaces";
 
-	addPlane(surf.m_geometry, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+	for (const VICUS::Surface * s : m_selectedSurfaces) {
+		addPlane(s->m_geometry, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+	}
 
 	// transfer data to GPU
 	m_vertexBufferObject.bind();
@@ -129,10 +118,10 @@ void WireFrameObject::updateBuffers() {
 
 
 void WireFrameObject::render() {
+	if (m_selectedSurfaces.empty())
+		return; // nothing to render
 	// bind all buffers ("position", "normal" and "color" arrays)
 	m_vao.bind();
-	// bind the wireframe shader program
-	m_shaderProgram->shaderProgram()->bind();
 	// set transformation matrix
 	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[1], m_transform.toMatrix());
 	// set transformation matrix
@@ -165,8 +154,6 @@ void WireFrameObject::render() {
 		glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
 	else
 		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
-
-	m_shaderProgram->shaderProgram()->release();
 
 	glEnable(GL_CULL_FACE);
 

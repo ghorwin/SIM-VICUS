@@ -29,6 +29,7 @@ SceneView::SceneView() :
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_R);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_F);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Shift);
+	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Escape);
 
 	// *** create scene (no OpenGL calls are being issued below, just the data structures are created.
 
@@ -404,6 +405,13 @@ void SceneView::checkInput() {
 
 	// scroll-wheel turned?
 	if (m_keyboardMouseHandler.wheelDelta() != 0) {
+		m_inputEventReceived = true;
+		renderLater();
+		return;
+	}
+
+	// Escape clears current selection
+	if (m_keyboardMouseHandler.keyDown(Qt::Key_Escape)) {
 		m_inputEventReceived = true;
 		renderLater();
 		return;

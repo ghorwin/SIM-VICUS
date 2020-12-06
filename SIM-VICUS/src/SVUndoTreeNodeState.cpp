@@ -53,8 +53,9 @@ SVUndoTreeNodeState::SVUndoTreeNodeState(const QString & label,
 					s.second &= ~VisibilityState;
 			break;
 			case SelectedState :
-				if (on)
+				if (on) {
 					s.second |= SelectedState;
+				}
 				else
 					s.second &= ~SelectedState;
 			break;

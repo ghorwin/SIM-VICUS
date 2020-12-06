@@ -7,9 +7,15 @@
 #include "Vic3DVertex.h"
 #include "Vic3DTransform3D.h"
 
+#include <set>
+
 QT_BEGIN_NAMESPACE
 class QOpenGLShaderProgram;
 QT_END_NAMESPACE
+
+namespace VICUS {
+	class Surface;
+}
 
 namespace Vic3D {
 
@@ -56,6 +62,11 @@ public:
 
 	/*! The transformation from model coordinates to (current) world coordinates. */
 	Transform3D					m_transform;
+
+	/*! This set caches the list of current selected surface objects.
+		This set is processed in updateBuffers() to fill the coordinate buffers.
+	*/
+	std::set<const VICUS::Surface*>	m_selectedSurfaces;
 
 	ShaderProgram				*m_shaderProgram = nullptr;
 

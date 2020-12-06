@@ -33,13 +33,12 @@ void Vic3DScene::create(SceneView * parent, std::vector<ShaderProgram> & shaderP
 	m_parent = parent;
 	m_gridShader = &shaderPrograms[SHADER_GRID];
 	m_buildingShader = &shaderPrograms[SHADER_OPAQUE_GEOMETRY];
-	m_orbitControllerShader = &shaderPrograms[SHADER_LINES];
+	m_fixedColorTransformShader = &shaderPrograms[SHADER_LINES];
 	m_coordinateSystemShader = &shaderPrograms[SHADER_COORDINATE_SYSTEM];
 	m_transparencyShader = &shaderPrograms[SHADER_TRANSPARENT_GEOMETRY];
-	m_selectedGeometryShader = &shaderPrograms[SHADER_LINES];
 
 	// the orbit controller object is static in geometry, so it can be created already here
-	m_orbitControllerObject.create(m_orbitControllerShader);
+	m_orbitControllerObject.create(m_fixedColorTransformShader);
 
 	// same for the coordinate system object
 	m_coordinateSystemObject.create(m_coordinateSystemShader);
@@ -91,6 +90,8 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			const SVUndoTreeNodeState::ModifiedNodes * info = dynamic_cast<SVUndoTreeNodeState::ModifiedNodes *>(data);
 			Q_ASSERT(info != nullptr);
 
+			bool selectionModified = false;
+
 			// process all modified nodes
 			for (unsigned int id : info->m_nodeIDs) {
 				// find the object in question
@@ -113,10 +114,32 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 				// now update the color buffer for this surface depending
 				updateSurfaceColors(*s, vertexStart, m_opaqueGeometryObject.m_colorBufferData);
 				largestVertexIndex = std::min(smallestVertexIndex, vertexStart);
+
+				// update selection set, but only keep visible and selected objects in the set
+				if (s->m_selected && s->m_visible) {
+					if (m_selectedGeometryObject.m_selectedSurfaces.insert(s).second)
+						selectionModified = true;
+				}
+				else {
+					std::set<const VICUS::Surface*>::const_iterator it = m_selectedGeometryObject.m_selectedSurfaces.find(s);
+					if (it != m_selectedGeometryObject.m_selectedSurfaces.end()) {
+						m_selectedGeometryObject.m_selectedSurfaces.erase(*it);
+						selectionModified = true;
+					}
+				}
 			}
 
-			// finally, update only the modified portion of GPU memory
+			// finally, transfer only the modified portion of the color buffer to GPU memory
 			m_opaqueGeometryObject.updateColorBuffer(smallestVertexIndex, largestVertexIndex-smallestVertexIndex);
+
+			// we only need to update the selection object, but only if:
+			// - the modification state was "SelectedState"
+			// - and indeed a selection was changed
+			//
+			// Note: actually, selected surfaces can be de-selected by hiding them - we do not want to move/alter
+			//       invisible geometry
+			if (selectionModified /* && info->m_changedStateType == SVUndoTreeNodeState::SelectedState */)
+				m_selectedGeometryObject.updateBuffers();
 
 		} break;
 
@@ -143,7 +166,7 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 		// transfer data from building geometry to vertex array caches
 		generateBuildingGeometry();
 
-		m_selectedGeometryObject.create(m_selectedGeometryShader);
+		m_selectedGeometryObject.create(m_fixedColorTransformShader);
 		m_selectedGeometryObject.updateBuffers();
 	}
 
@@ -211,11 +234,11 @@ void Vic3DScene::updateWorld2ViewMatrix() {
 
 void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoint & localMousePos, QPoint & newLocalMousePos) {
 
-	newLocalMousePos = localMousePos;
-
 	// we implement the following controls
 
-	// keyboard: translation and rotation works always
+	// *** Keyboard ***
+
+	// translation and rotation works always (no trigger key)
 
 	// Handle translations
 	QVector3D translation;
@@ -235,6 +258,15 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 	m_camera.translate(transSpeed * translation);
 	m_camera.rotate(transSpeed, rotationAxis);
 
+	if (keyboardHandler.keyDown(Qt::Key_Escape)) {
+		if (!m_selectedGeometryObject.m_selectedSurfaces.empty()) {
+			clearSelectionOfObjects();
+		}
+	}
+
+	// *** Mouse ***
+
+	newLocalMousePos = localMousePos;
 	// retrieve mouse delta
 	QPoint mouseDelta = keyboardHandler.mouseDelta(QCursor::pos());
 	int mouse_dx = mouseDelta.x();
@@ -432,14 +464,21 @@ void Vic3DScene::render() {
 	m_gridShader->release();
 
 
+	// *** selection object ***
+
+	m_fixedColorTransformShader->bind();
+	m_fixedColorTransformShader->shaderProgram()->setUniformValue(m_fixedColorTransformShader->m_uniformIDs[0], m_worldToView);
+
+	m_selectedGeometryObject.render();
+
 	// *** orbit controller indicator ***
 
 	if (m_orbitControllerActive) {
-		m_orbitControllerShader->bind();
-		m_orbitControllerShader->shaderProgram()->setUniformValue(m_orbitControllerShader->m_uniformIDs[0], m_worldToView);
+		// Note: uses also m_fixedColorTransformShader
 		m_orbitControllerObject.render();
-		m_orbitControllerShader->release();
 	}
+
+	m_fixedColorTransformShader->release();
 
 
 	// *** movable coordinate system  ***
@@ -462,12 +501,6 @@ void Vic3DScene::render() {
 	/// \todo render dumb background geometry
 
 
-	// *** selection object ***
-
-	m_selectedGeometryShader->bind();
-	m_selectedGeometryShader->shaderProgram()->setUniformValue(m_selectedGeometryShader->m_uniformIDs[0], m_worldToView);
-	m_selectedGeometryShader->release();
-	m_selectedGeometryObject.render();
 
 	// *** opaque building geometry ***
 
@@ -625,6 +658,19 @@ void Vic3DScene::generateNetworkGeometry() {
 		}
 	}
 
+}
+
+
+void Vic3DScene::clearSelectionOfObjects() {
+	// compose undo-action of objects currently selected
+	if (m_selectedGeometryObject.m_selectedSurfaces.empty())
+		return; // nothing selected, nothing to do
+
+	std::set<unsigned int> nodeIDs;
+	for (const VICUS::Surface * s : m_selectedGeometryObject.m_selectedSurfaces)
+		nodeIDs.insert(s->uniqueID());
+	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Selected cleared"), SVUndoTreeNodeState::SelectedState, nodeIDs, false);
+	undo->push();
 }
 
 

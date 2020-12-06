@@ -62,6 +62,8 @@ public:
 private:
 	void generateBuildingGeometry();
 	void generateNetworkGeometry();
+	/*! When Escape was pressed, all selected objects become un-selected again. */
+	void clearSelectionOfObjects();
 
 	/*! Mouse pick handler: collects all surfaces along the pick line and stores first intersection point's
 		coordinates in m_pickPoint.
@@ -95,13 +97,11 @@ private:
 	/*! Shader program 'Opaque Surfaces' (managed by SceneView). */
 	ShaderProgram			*m_buildingShader			= nullptr;
 	/*! Shader program 'Orbit controller' (managed by SceneView). */
-	ShaderProgram			*m_orbitControllerShader	= nullptr;
+	ShaderProgram			*m_fixedColorTransformShader	= nullptr;
 	/*! Shader program 'Coordinate system' (managed by SceneView). */
 	ShaderProgram			*m_coordinateSystemShader	= nullptr;
 	/*! Shader program 'Transparent surfaces' (managed by SceneView). */
 	ShaderProgram			*m_transparencyShader		= nullptr;
-	/*! Shader program 'Selected geometry' (managed by SceneView). */
-	ShaderProgram			*m_selectedGeometryShader	= nullptr;
 
 	/*! The projection matrix, updated whenever the viewport geometry changes (in resizeGL() ). */
 	QMatrix4x4				m_projection;
