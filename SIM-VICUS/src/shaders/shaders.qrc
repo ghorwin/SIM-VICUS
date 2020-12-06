@@ -6,7 +6,7 @@
         <file>VertexNormalColor.vert</file>
         <file>simple.frag</file>
         <file>phong_lighting.frag</file>
-        <file>lines.vert</file>
+        <file>VertexWithTransform.vert</file>
         <file>VertexNormalColorWithTransform.vert</file>
         <file>fixed_color.frag</file>
     </qresource>

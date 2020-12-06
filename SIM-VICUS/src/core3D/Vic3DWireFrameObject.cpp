@@ -5,8 +5,10 @@
 #include <QElapsedTimer>
 
 #include <VICUS_Project.h>
+#include <VICUS_Conversions.h>
 
 #include "SVProjectHandler.h"
+#include "SVSettings.h"
 #include "Vic3DGeometryHelpers.h"
 #include "Vic3DShaderProgram.h"
 
@@ -163,8 +165,12 @@ void WireFrameObject::render() {
 	m_shaderProgram->shaderProgram()->bind();
 	// set transformation matrix
 	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[1], m_transform.toMatrix());
+	// set transformation matrix
+	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[1], m_transform.toMatrix());
 
 
+	// set wireframe color
+	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], QVector3D(1.f, 1.f, 1.0f));
 	// put OpenGL in offset mode
 	glEnable(GL_POLYGON_OFFSET_LINE);
 	// offset the wire frame geometry a bit
@@ -181,14 +187,9 @@ void WireFrameObject::render() {
 	// turn off line offset mode
 	glDisable(GL_POLYGON_OFFSET_LINE);
 
-	// release wireframe shader
-	m_shaderProgram->shaderProgram()->release();
-
-	// bind the fill shader program
-	m_shaderProgram->shaderProgram()->bind();
-	// set transformation matrix
-	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[1], m_transform.toMatrix());
-
+	// set selected plane color
+	QVector3D selCol = VICUS::QVector3DFromQColor(SVSettings::instance().m_themeSettings[SVSettings::instance().m_theme].m_selectedSurfaceColor);
+	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], selCol);
 	// now draw the geometry
 	if (m_drawTriangleStrips)
 		glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);

@@ -50,9 +50,10 @@ SceneView::SceneView() :
 	m_shaderPrograms[SHADER_OPAQUE_GEOMETRY] = blocks;
 
 	// Shaderprogram : simple lines with uniform/fixed color, but additional model2world transformation matrix
-	ShaderProgram lines(":/shaders/lines.vert",":/shaders/simple.frag");
+	ShaderProgram lines(":/shaders/VertexWithTransform.vert",":/shaders/fixed_color.frag");
 	lines.m_uniformNames.append("worldToView");
 	lines.m_uniformNames.append("modelToWorld");
+	lines.m_uniformNames.append("fixedColor");
 	m_shaderPrograms[SHADER_LINES] = lines;
 
 	// Shaderprogram : vertices with position and color, additional modelToWorld transformation matrix
@@ -68,12 +69,6 @@ SceneView::SceneView() :
 	ShaderProgram transparentGeo(":/shaders/VertexNormalColor.vert",":/shaders/simple.frag");
 	transparentGeo.m_uniformNames.append("worldToView");
 	m_shaderPrograms[SHADER_TRANSPARENT_GEOMETRY] = transparentGeo;
-
-	// Selected geometry : opaque geometry (single color for all faces) without lighting; also used for wire frame
-	ShaderProgram selectedGeo(":/shaders/VertexNormalColorWithTransform.vert",":/shaders/simple.frag");
-	selectedGeo.m_uniformNames.append("worldToView");
-	selectedGeo.m_uniformNames.append("modelToWorld");
-	m_shaderPrograms[SHADER_SELECTED_GEOMETRY] = selectedGeo;
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SceneView::onModified);

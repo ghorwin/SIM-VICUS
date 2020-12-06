@@ -46,7 +46,7 @@ public:
 	Transform3D					m_transform;
 
 	/*! Shader program. */
-	ShaderProgram				*m_shader = nullptr;
+	ShaderProgram				*m_shaderProgram = nullptr;
 
 	/*! Holds the number of vertices (2 for each line), updated in create(), used in render(). */
 	GLsizei						m_vertexCount;

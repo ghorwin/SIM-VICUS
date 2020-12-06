@@ -1,7 +1,6 @@
 #version 330
 
 // GLSL version 3.3
-
 // Vertex shader with only position and a transformation matrix.
 
 layout(location = 0) in vec3 position; // input:  attribute with index '0' with 3 floats (x, y, z coords) per vertex

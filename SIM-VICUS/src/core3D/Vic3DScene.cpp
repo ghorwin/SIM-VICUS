@@ -36,7 +36,7 @@ void Vic3DScene::create(SceneView * parent, std::vector<ShaderProgram> & shaderP
 	m_orbitControllerShader = &shaderPrograms[SHADER_LINES];
 	m_coordinateSystemShader = &shaderPrograms[SHADER_COORDINATE_SYSTEM];
 	m_transparencyShader = &shaderPrograms[SHADER_TRANSPARENT_GEOMETRY];
-	m_selectedGeometryShader = &shaderPrograms[SHADER_SELECTED_GEOMETRY];
+	m_selectedGeometryShader = &shaderPrograms[SHADER_LINES];
 
 	// the orbit controller object is static in geometry, so it can be created already here
 	m_orbitControllerObject.create(m_orbitControllerShader);

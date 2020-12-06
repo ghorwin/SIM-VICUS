@@ -2,10 +2,10 @@
 
 // fragment shader
 
-uniform vec3 col;                // parameter: grid color as rgb triple
+uniform vec3 fixedColor;         // parameter: grid color as rgb triple
 
 out vec4 finalColor;             // output:    final color value as rgba-value
 
 void main() {
-  finalColor = vec4(col, 1.0);
+  finalColor = vec4(fixedColor, 1.0);
 }

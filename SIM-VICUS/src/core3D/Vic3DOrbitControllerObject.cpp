@@ -19,7 +19,7 @@ License    : BSD License,
 namespace Vic3D {
 
 void OrbitControllerObject::create(ShaderProgram * shaderProgram) {
-	m_shader = shaderProgram;
+	m_shaderProgram = shaderProgram;
 
 	// create a temporary buffer that will contain the coordinates of all lines segments
 	std::vector<VertexC>			lineVertexBuffer;
@@ -41,8 +41,8 @@ void OrbitControllerObject::create(ShaderProgram * shaderProgram) {
 		m_vbo.bind();
 
 		// layout(location = 0) = vec2 position
-		m_shader->shaderProgram()->enableAttributeArray(0); // array with index/id 0
-		m_shader->shaderProgram()->setAttributeBuffer(0, GL_FLOAT,
+		m_shaderProgram->shaderProgram()->enableAttributeArray(0); // array with index/id 0
+		m_shaderProgram->shaderProgram()->setAttributeBuffer(0, GL_FLOAT,
 									  0 /* position/vertex offset */,
 									  3 /* three coords per position = vec3 */,
 									  sizeof(VertexC) /* vertex after vertex, no interleaving */);
@@ -67,7 +67,8 @@ void OrbitControllerObject::render() {
 	m_vao.bind();
 
 	// set transformation matrix
-	m_shader->shaderProgram()->setUniformValue(m_shader->m_uniformIDs[1], m_transform.toMatrix());
+	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[1], m_transform.toMatrix());
+	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], QVector3D(1.f, 1.f, .8f));
 	glDrawArrays(GL_LINES, 0, m_vertexCount);
 
 	m_vao.release();
