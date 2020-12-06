@@ -35,14 +35,14 @@ void updateSurfaceColors(const VICUS::Surface & s, unsigned int & currentVertexI
 	// skip invalid geometry
 	if (!s.m_geometry.isValid())
 		return;
-	// change color depending on visibility state and selection state
+	// change color depending on visibility and selection state
+	// invisible objects are now drawn, and selected objects are drawn by a different object (and are hence invisible in this
+	// object as well).
 	QColor col = s.m_color;
-	if (!s.m_visible)
+	if (!s.m_visible || s.m_selected) {
 		col.setAlphaF(0);
-	else if (s.m_selected) {
-		col = SVSettings::instance().m_themeSettings[SVSettings::instance().m_theme].m_selectedSurfaceColor;
 	}
-	// call updatePlaneColor() twice, since we have front a backside planes to color
+	// call updatePlaneColor() twice, since we have front and backside planes to color
 	updatePlaneColor(s.m_geometry, col, currentVertexIndex, colorBufferData);
 	updatePlaneColor(s.m_geometry, col, currentVertexIndex, colorBufferData);
 }
