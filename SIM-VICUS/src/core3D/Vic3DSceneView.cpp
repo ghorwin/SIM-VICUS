@@ -131,7 +131,7 @@ void SceneView::dumpScreenshot(const QString & imgFilePath) {
 
 
 void SceneView::addPolygonVertex(const IBKMK::Vector3D & p) {
-	emit polygonPointAdded(p);
+	emit vertexPlaced(p);
 }
 
 

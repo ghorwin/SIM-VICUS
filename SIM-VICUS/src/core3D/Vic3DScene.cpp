@@ -816,7 +816,8 @@ void Vic3DScene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandl
 			m_parent->addPolygonVertex(p);
 			// append a vertex (this will automatically update the draw buffer)
 			m_newPolygonObject.appendVertex(p);
-		} break;
+			return;
+		}
 		default :;
 	}
 

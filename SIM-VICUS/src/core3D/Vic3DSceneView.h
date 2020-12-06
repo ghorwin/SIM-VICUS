@@ -38,7 +38,7 @@ public:
 
 signals:
 	/*! Emitted, when user has added a new polygon point. */
-	void polygonPointAdded(const IBKMK::Vector3D & p);
+	void vertexPlaced(const IBKMK::Vector3D & p);
 
 public slots:
 

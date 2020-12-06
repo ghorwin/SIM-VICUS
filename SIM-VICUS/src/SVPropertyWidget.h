@@ -3,6 +3,10 @@
 
 #include <QWidget>
 
+namespace IBKMK {
+	class Vector3D;
+}
+
 class QVBoxLayout;
 
 /*! The property widget is located at the right side of the screen.
@@ -32,6 +36,9 @@ public slots:
 
 	/*! Connected to view state manager. */
 	void onViewStateChanged();
+
+	/*! Called, when user placed a vertex in the scene during "place vertex" mode. */
+	void onVertexPlaced(const IBKMK::Vector3D & p);
 
 private:
 	/*! The layout, that holds all widgets. */

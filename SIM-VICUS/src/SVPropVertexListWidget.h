@@ -7,6 +7,10 @@ namespace Ui {
 	class SVPropVertexListWidget;
 }
 
+namespace IBKMK {
+	class Vector3D;
+}
+
 /*! The widget with newly placed vertexes while constructing a new primitive/object. */
 class SVPropVertexListWidget : public QWidget {
 	Q_OBJECT
@@ -14,6 +18,14 @@ class SVPropVertexListWidget : public QWidget {
 public:
 	explicit SVPropVertexListWidget(QWidget *parent = nullptr);
 	~SVPropVertexListWidget();
+
+	/*! Appends a new vertex to the list of vertexes in the table widget. */
+	void addVertex(const IBKMK::Vector3D & p);
+
+public slots:
+
+	/*! Called, when user starts with a new polygon/geometry. */
+	void onNewVertexListStart();
 
 private:
 	Ui::SVPropVertexListWidget *m_ui;

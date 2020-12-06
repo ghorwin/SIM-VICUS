@@ -2,6 +2,8 @@
 
 #include <QVBoxLayout>
 
+#include <IBKMK_Vector3D.h>
+
 #include "SVPropVertexListWidget.h"
 #include "SVPropEditGeometry.h"
 #include "SVViewStateHandler.h"
@@ -66,5 +68,13 @@ void SVPropertyWidget::onViewStateChanged() {
 		case SVViewState::PM_EDIT_GEOMETRY : setMode(M_EditGeometry); break;
 		default:;
 	}
+}
+
+
+void SVPropertyWidget::onVertexPlaced(const IBKMK::Vector3D & p) {
+	// propagate the signal to the vertex list widget
+	if (m_propWidgets[M_AddVertexesMode] != nullptr)
+		((SVPropVertexListWidget*)m_propWidgets[M_AddVertexesMode])->addVertex(p);
+
 }
 
