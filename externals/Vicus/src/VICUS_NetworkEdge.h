@@ -5,6 +5,8 @@
 #include "VICUS_Constants.h"
 #include "VICUS_CodeGenMacros.h"
 
+#include <NANDRAD_HydraulicNetworkComponent.h>
+
 #include <vector>
 #include <set>
 
@@ -59,25 +61,31 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	NetworkNode		*	m_node1 = nullptr;
-	NetworkNode		*	m_node2 = nullptr;
+	NetworkNode											*m_node1 = nullptr;
+	NetworkNode											*m_node2 = nullptr;
 
 	/*! id of pipe in database */
-	unsigned int	m_pipeId = INVALID_ID;			// XML:E
+	unsigned int										m_pipeId = INVALID_ID;			// XML:E
 
 	/*! If false, this is a branch. */
-	bool			m_supply;						// XML:A
+	bool												m_supply;						// XML:A
+
+	NANDRAD::HydraulicNetworkComponent::modelType_t		m_modelType;
+
+	// *** RUNTIME VARIABLES ***
 
 	/*! heating demand of all connected buildings */
-	double			m_heatingDemand = 0;
+	double												m_heatingDemand = 0;
 
 private:
 
-	unsigned int m_nodeId1 = 0;						// XML:A:required
-	unsigned int m_nodeId2 = 0;						// XML:A:required
+	// *** PRIVATE MEMBER VARIABLES ***
+
+	unsigned int										m_nodeId1 = 0;					// XML:A:required
+	unsigned int										m_nodeId2 = 0;					// XML:A:required
 
 	/*! Effective length [m], might be different than geometric length between nodes. */
-	double			m_length = 0;					// XML:E
+	double												m_length = 0;					// XML:E
 
 
 };
