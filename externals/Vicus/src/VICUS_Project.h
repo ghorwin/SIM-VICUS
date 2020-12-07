@@ -102,6 +102,24 @@ public:
 			return &(*it);
 	}
 
+	/*! Function to generate unique ID */
+	template <typename T>
+	static unsigned uniqueId(std::vector<T>& vec) {
+		for (unsigned id=0; id<std::numeric_limits<unsigned>::max(); ++id){
+			if (std::find(vec.begin(), vec.end(), id) == vec.end())
+				return id;
+		}
+	}
+
+	/*! Function to generate unique ID (const-version). */
+	template <typename T>
+	static unsigned uniqueId(const std::vector<T>& vec) {
+		for (unsigned id=0; id<std::numeric_limits<unsigned>::max(); ++id){
+			if (std::find(vec.begin(), vec.end(), id) == vec.end())
+				return id;
+		}
+	}
+
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
