@@ -192,6 +192,7 @@ namespace NANDRAD {
 			case 8 :
 			switch (t) {
 				case 0 : return "Length";
+				case 1 : return "HeatExchangeRate";
 			} break;
 			// HydraulicNetworkElement::interfacePara_t
 			case 9 :
@@ -647,6 +648,7 @@ namespace NANDRAD {
 			case 8 :
 			switch (t) {
 				case 0 : return "Length";
+				case 1 : return "HeatExchangeRate";
 			} break;
 			// HydraulicNetworkElement::interfacePara_t
 			case 9 :
@@ -1103,6 +1105,7 @@ namespace NANDRAD {
 			case 8 :
 			switch (t) {
 				case 0 : return "Length for the element (pipe)";
+				case 1 : return "heat exchange rate for heat exchanger model";
 			} break;
 			// HydraulicNetworkElement::interfacePara_t
 			case 9 :
@@ -1558,14 +1561,15 @@ namespace NANDRAD {
 			case 8 :
 			switch (t) {
 				case 0 : return "-";
+				case 1 : return "W";
 			} break;
 			// HydraulicNetworkElement::interfacePara_t
 			case 9 :
 			switch (t) {
-				case 0 : return "";
-				case 1 : return "";
-				case 2 : return "";
-				case 3 : return "";
+				case 0 : return "-";
+				case 1 : return "-";
+				case 2 : return "-";
+				case 3 : return "-";
 			} break;
 			// InterfaceAirFlow::splinePara_t
 			case 10 :
@@ -2013,6 +2017,7 @@ namespace NANDRAD {
 			case 8 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
 			} break;
 			// HydraulicNetworkElement::interfacePara_t
 			case 9 :
@@ -2468,6 +2473,7 @@ namespace NANDRAD {
 			case 8 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetworkElement::interfacePara_t
 			case 9 :
@@ -2859,7 +2865,7 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::interfaceType_t
 			case 7 : return 4;
 			// HydraulicNetworkElement::para_t
-			case 8 : return 1;
+			case 8 : return 2;
 			// HydraulicNetworkElement::interfacePara_t
 			case 9 : return 4;
 			// InterfaceAirFlow::splinePara_t
@@ -2987,7 +2993,7 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::interfaceType_t
 			case 7 : return 3;
 			// HydraulicNetworkElement::para_t
-			case 8 : return 0;
+			case 8 : return 1;
 			// HydraulicNetworkElement::interfacePara_t
 			case 9 : return 3;
 			// InterfaceAirFlow::splinePara_t
