@@ -4,6 +4,8 @@
 #include "VICUS_Constants.h"
 #include "VICUS_CodeGenMacros.h"
 
+#include "NANDRAD_HydraulicNetworkElement.h"
+
 #include <vector>
 #include <set>
 #include <limits>
@@ -90,6 +92,9 @@ public:
 
 	/*! reference id to a plant (hydraulic network) */
 	unsigned int					m_subNetworkId = INVALID_ID;							// XML:A
+
+	/*! Parameter for interface */
+	IBK::Parameter					m_interfacePara[NANDRAD::HydraulicNetworkElement::NUM_IP];
 
 	// *** RUNTIME VARIABLES ***
 

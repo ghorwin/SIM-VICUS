@@ -28,8 +28,16 @@ public:
 	/*! Parameters for the element . */
 	enum para_t {
 		P_Length,							// Keyword: Length								[-]		'Length for the element (pipe)'
-		P_HeatExchangeRate,					// Keyword: HeatExchangeRate					[W]		'Heat flux added or extracted by heat exchanger'
 		NUM_P
+	};
+
+	/*! Parameters for the model interface */
+	enum interfacePara_t {
+		IP_Constant,						// Keyword: Constant							'Constant Value'
+		IP_DataFilepath,					// Keyword: DataFilepath						'Data file in tsv-format'
+		IP_FMUFilepath,						// Keyword: FMUFilepath							'FMU file'
+		IP_ZoneId,							// Keyword: ZoneId								'id of coupled zone'
+		NUM_IP
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -55,6 +63,9 @@ public:
 
 	/*! Parameters of the flow component. */
 	IBK::Parameter					m_para[NUM_P];										// XML:E
+
+	/*! Parameter for interface */
+	IBK::Parameter					m_interfacePara[NUM_IP];
 
 	/*! Element belongs to this zone (zone id). */
 	unsigned int					m_zoneId		= NANDRAD::INVALID_ID;				// XML:E

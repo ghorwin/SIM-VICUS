@@ -37,14 +37,14 @@ bool SVNetworkImportDialog::edit() {
 	m_ui->groupBoxSelectNetwork->setEnabled(true);
 	toggleReadEdges(m_ui->radioButtonEdges->isChecked());
 	toggleReadExistingNetwork(m_ui->radioButtonAddToExistingNetwork->isChecked());
-	m_ui->radioButtonAddToExistingNetwork->setEnabled(!p.m_geomNetworks.empty());
-	m_ui->radioButtonAddToExistingNetwork->setChecked(!p.m_geomNetworks.empty());
+	m_ui->radioButtonAddToExistingNetwork->setEnabled(!p.m_geometricNetworks.empty());
+	m_ui->radioButtonAddToExistingNetwork->setChecked(!p.m_geometricNetworks.empty());
 
 
 	// update existing networks combobox
-	if (!p.m_geomNetworks.empty()){
+	if (!p.m_geometricNetworks.empty()){
 		m_existingNetworksMap.clear();
-		for (auto it = p.m_geomNetworks.begin(); it!=p.m_geomNetworks.end(); ++it)
+		for (auto it = p.m_geometricNetworks.begin(); it!=p.m_geometricNetworks.end(); ++it)
 			m_existingNetworksMap.insert(QString::fromStdString(it->m_name), it->m_id);
 		m_ui->comboBoxNetworkSelectionBox->clear();
 		m_ui->comboBoxNetworkSelectionBox->addItems(QStringList(m_existingNetworksMap.keys()));
@@ -104,7 +104,7 @@ void SVNetworkImportDialog::on_pushButtonGISNetwork_clicked() {
 		// add to existing network
 		else {
 			unsigned id = m_existingNetworksMap.value(m_ui->comboBoxNetworkSelectionBox->currentText());
-			m_network = *project().element(project().m_geomNetworks, id);
+			m_network = *project().element(project().m_geometricNetworks, id);
 			readNetworkData(networkFile, m_network);
 
 			m_ui->lineEditXOrigin->setText( QString("%L1").arg(m_network.m_origin.m_x));
@@ -155,7 +155,7 @@ void SVNetworkImportDialog::readNetworkData(const IBK::Path &fname, VICUS::Netwo
 unsigned SVNetworkImportDialog::generateId()
 {
 	unsigned id=0;
-	for (auto it = project().m_geomNetworks.begin(); it!=project().m_geomNetworks.end(); ++it){
+	for (auto it = project().m_geometricNetworks.begin(); it!=project().m_geometricNetworks.end(); ++it){
 		if (id == it->m_id)
 			++id;
 		else
@@ -168,7 +168,7 @@ unsigned SVNetworkImportDialog::generateId()
 std::string SVNetworkImportDialog::uniqueName(const std::string &name)
 {
 	std::string uniqueName = name;
-	for (auto it = project().m_geomNetworks.begin(); it!=project().m_geomNetworks.end(); ++it){
+	for (auto it = project().m_geometricNetworks.begin(); it!=project().m_geometricNetworks.end(); ++it){
 		if (uniqueName == it->m_name)
 			uniqueName += "_2";
 	}

@@ -1,7 +1,7 @@
 #include "SVUndoModifyExistingNetwork.h"
 
 SVUndoModifyExistingNetwork::SVUndoModifyExistingNetwork(const QString &label, const VICUS::Network &modNetwork):
-	m_oldNetwork(*theProject().element(theProject().m_geomNetworks, modNetwork.m_id)),
+	m_oldNetwork(*theProject().element(theProject().m_geometricNetworks, modNetwork.m_id)),
 	m_newNetwork(modNetwork)
 {
 	setText( label );
@@ -13,7 +13,7 @@ SVUndoModifyExistingNetwork::SVUndoModifyExistingNetwork(const QString &label, c
 
 void SVUndoModifyExistingNetwork::undo()
 {
-	VICUS::Network * nw = theProject().element(theProject().m_geomNetworks, m_newNetwork.m_id);
+	VICUS::Network * nw = theProject().element(theProject().m_geometricNetworks, m_newNetwork.m_id);
 	IBK_ASSERT(nw != nullptr);
 	*nw = m_newNetwork;
 	nw->updateNodeEdgeConnectionPointers();
@@ -29,7 +29,7 @@ void SVUndoModifyExistingNetwork::undo()
 
 void SVUndoModifyExistingNetwork::redo()
 {
-	VICUS::Network * nw = theProject().element(theProject().m_geomNetworks, m_newNetwork.m_id);
+	VICUS::Network * nw = theProject().element(theProject().m_geometricNetworks, m_newNetwork.m_id);
 	IBK_ASSERT(nw != nullptr);
 	*nw = m_newNetwork;
 	nw->updateNodeEdgeConnectionPointers();

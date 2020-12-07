@@ -16,10 +16,10 @@ SVUndoAddNetwork::SVUndoAddNetwork(	const QString & label,
 void SVUndoAddNetwork::undo() {
 
 	// remove last network
-	Q_ASSERT(!theProject().m_geomNetworks.empty());
+	Q_ASSERT(!theProject().m_geometricNetworks.empty());
 
-	theProject().m_geomNetworks.pop_back();
-	theProject().m_geomNetworks.back().updateNodeEdgeConnectionPointers(); // ensure pointers are correctly set
+	theProject().m_geometricNetworks.pop_back();
+	theProject().m_geometricNetworks.back().updateNodeEdgeConnectionPointers(); // ensure pointers are correctly set
 
 	std::swap(theProject().m_viewSettings.m_gridWidth, m_gridWidth);
 	std::swap(theProject().m_viewSettings.m_gridSpacing, m_gridSpacing);
@@ -34,7 +34,7 @@ void SVUndoAddNetwork::undo() {
 void SVUndoAddNetwork::redo() {
 	// append network
 
-	theProject().m_geomNetworks.push_back(m_addedNetwork);
+	theProject().m_geometricNetworks.push_back(m_addedNetwork);
 	theProject().updatePointers();
 	std::swap(theProject().m_viewSettings.m_gridWidth, m_gridWidth);
 	std::swap(theProject().m_viewSettings.m_gridSpacing, m_gridSpacing);

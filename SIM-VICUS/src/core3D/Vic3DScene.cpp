@@ -651,7 +651,7 @@ void Vic3DScene::generateNetworkGeometry() {
 
 
 	// add cylinders for all pipes
-	for (const VICUS::Network & n : p.m_geomNetworks) {
+	for (const VICUS::Network & n : p.m_geometricNetworks) {
 		for (const VICUS::NetworkEdge & e : n.m_edges) {
 			double radius = 0.5; //e.m_diameterOutside*5; // enlarge diameter, so that we see something
 			addCylinder(e.m_node1->m_position, e.m_node2->m_position, Qt::red,

@@ -35,7 +35,7 @@ public:
 
 	/*! Parameters for the component. */
 	enum para_t {
-		P_PipeRoughness,					// Keyword: PipeRoughness						[-]		'Roughness of pipe material.'
+		P_PipeRoughness,					// Keyword: PipeRoughness						[mm]	'Roughness of pipe material.'
 		P_PressureLossCoefficient,			// Keyword: PressureLossCoefficient				[-]		'Pressure loss coefficient for the component.'
 		P_MaximumPressureLossCoefficient,	// Keyword: MaximumPressureLossCoefficient		[-]		'Maximum pressure loss coefficient for the component.'
 		P_HydraulicDiameter,				// Keyword: HydraulicDiameter					[m]		'Inside hydraulic diameter for the component.'
@@ -54,6 +54,16 @@ public:
 		NUM_P
 	};
 
+	/*! type of interface to an external model or data file */
+	enum interfaceType_t {
+		IT_HeatFlux,						// Keyword: FixedHeatFlux						'Fixed heat flux'
+		IT_HeatExchangeGivenTemperature,	// Keyword: HeatExchangeGivenTemperature		'Coupled to external model which requires a heat flux and calculates a temperature in return'
+		IT_ThermoHydraulicGivenPinPout,		// Keyword: ThermoHydraulicGivenPinPout			'Coupled to external model which requires p_in, p_out, T_in and calculates T_out and m_dot'
+		IT_ThermoHydraulicGivenPinMdot,		// Keyword: ThermoHydraulicGivenPinMdot			'Coupled to external model which requires p_in, m_dot, T_in and calculates T_out and p_out'
+		NUM_IT
+	};
+
+
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	NANDRAD_READWRITE
@@ -69,13 +79,11 @@ public:
 	/*! Model type. */
 	modelType_t						m_modelType		= NUM_MT;							// XML:A:required
 
+	/*! Type of interface to external data or model */
+	interfaceType_t					m_interfaceType = NUM_IT;
+
 	/*! Parameters of the flow component. */
 	IBK::Parameter					m_para[NUM_P];										// XML:E
-
-	/* irgendwie muss noch eine verlinkung der component mit anderen objekten hergestellt werden. Z.B. einer anderen Zone
-	   oder mit einem Zeitplan der eine Temperatur vorgibt wie sich die Außenrandbedingung darstellt.
-	   das sollte am besten ins network element geschoben werden
-	*/
 
 	/*	wirkungsgradkurven wie sollten diese abgelegt werden?
 		hierbei kann es recht schnell passieren dass diese von einlasstemperaturen und oder massströmen und

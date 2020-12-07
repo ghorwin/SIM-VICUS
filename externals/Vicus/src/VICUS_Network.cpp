@@ -449,7 +449,9 @@ double Network::numberOfBuildings() const{
 	return count;
 }
 
-void Network::writeNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network) const{
+
+void Network::writeNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
+										   std::vector<NANDRAD::HydraulicNetworkComponent> &hydraulicComponents) const{
 	FUNCID(Network::writeNandradHydraulicNetwork);
 
 	network.m_elements.clear();
@@ -460,9 +462,30 @@ void Network::writeNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network) c
 												   "has both subnetworkId and componentId.").arg(n.m_id), FUNC_ID);
 	}
 
+	unsigned offsetOutlet = 1e3;
+	unsigned offsetInlet = 1e6;
+
 	if (m_type == NET_doublePipe){
 
-//		for ()
+		// subnetworks are not taken into account here
+		network.m_elements.reserve(m_nodes.size() + 2 * m_edges.size());
+
+		for (const NetworkNode &n: m_nodes){
+
+			if (n.m_type == NetworkNode::NT_Mixer)
+				continue;
+
+			if (n.m_componentId != INVALID_ID)
+//				hydraulicComponents.push_back(m_hydraulicComponents.at(n.m_componentId));
+
+			NANDRAD::HydraulicNetworkElement e = NANDRAD::HydraulicNetworkElement(n.m_id, n.m_id + offsetInlet,
+																				  n.m_id + offsetOutlet,
+																				  n.m_componentId);
+
+//			network.m_elements.push_back();
+
+		}
+
 
 
 

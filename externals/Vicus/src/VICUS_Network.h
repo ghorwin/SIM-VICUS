@@ -14,6 +14,7 @@
 #include "IBK_rectangle.h"
 
 #include <NANDRAD_HydraulicNetwork.h>
+#include <NANDRAD_HydraulicNetworkComponent.h>
 
 namespace IBK {
 	class Path;
@@ -138,7 +139,8 @@ public:
 
 	double numberOfBuildings() const;
 
-	void writeNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network) const;
+	void writeNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
+									  std::vector<NANDRAD::HydraulicNetworkComponent> &hydraulicComponents) const;
 
 
 	// *** PUBLIC MEMBER VARIABLES ***
@@ -172,8 +174,11 @@ public:
 	/*! origin of the network */
 	IBKMK::Vector3D							m_origin = IBKMK::Vector3D(0.0, 0.0, 0.0);	// XML:E:required
 
-	/*! plants in the Network */
+	/*! hydraulic sub networks in the Network */
 	std::vector<NANDRAD::HydraulicNetwork>	m_hydraulicSubNetworks;
+
+	/*! the catalog of hydraulic components */
+	std::vector<NANDRAD::HydraulicNetworkComponent>	m_hydraulicComponents;
 
 	NetworkType								m_type = NET_NUM;
 
