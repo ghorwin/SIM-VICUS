@@ -55,8 +55,6 @@ protected:
 	void mouseMoveEvent(QMouseEvent *event) override;
 	void wheelEvent(QWheelEvent *event) override;
 
-	void pick(const QPoint & globalMousePos);
-
 private:
 	/*! Tests, if any relevant input was received and registers a state change. */
 	void checkInput();

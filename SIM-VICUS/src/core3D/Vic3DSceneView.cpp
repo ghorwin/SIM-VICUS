@@ -301,56 +301,6 @@ void SceneView::wheelEvent(QWheelEvent *event) {
 }
 
 
-void SceneView::pick(const QPoint & globalMousePos) {
-#if 0
-	// local mouse coordinates
-	QPoint localMousePos = mapFromGlobal(globalMousePos);
-	int my = localMousePos.y();
-	int mx = localMousePos.x();
-
-	// viewport dimensions
-	const qreal retinaScale = devicePixelRatio(); // needed for Macs with retina display
-	qreal halfVpw = width()*retinaScale/2;
-	qreal halfVph = height()*retinaScale/2;
-
-	// invert world2view matrix, with m_worldToView = m_projection * m_camera.toMatrix() * m_transform.toMatrix();
-	bool invertible;
-	QMatrix4x4 projectionMatrixInverted = m_worldToView.inverted(&invertible);
-	if (!invertible) {
-		qWarning()<< "Cannot invert projection matrix.";
-		return;
-	}
-
-	// mouse position in NDC space, one point on near plane and one point on far plane
-	QVector4D nearPos(
-				(mx - halfVpw) / halfVpw,
-				-1*(my - halfVph) / halfVph,
-				-1,
-				1.0);
-
-	QVector4D farPos(
-				nearPos.x(),
-				nearPos.y(),
-				1,
-				1.0);
-
-	// transform from NDC to model coordinates
-	QVector4D nearResult = projectionMatrixInverted*nearPos;
-	QVector4D farResult = projectionMatrixInverted*farPos;
-	// don't forget normalization!
-	nearResult /= nearResult.w();
-	farResult /= farResult.w();
-
-	// update pick line vertices (visualize pick line)
-	m_context->makeCurrent(this);
-	m_pickLineObject.setPoints(nearResult.toVector3D(), farResult.toVector3D());
-
-	// now do the actual picking - for now we implement a selection
-	selectNearestObject(nearResult.toVector3D(), farResult.toVector3D());
-#endif
-}
-
-
 void SceneView::checkInput() {
 	// this function is called from the Qt event look whenever _any_ key/mouse event was issued
 
