@@ -36,6 +36,8 @@ private slots:
 
 	void on_pushButtonDeleteSelected_clicked();
 
+	void on_pushButtonFinish_clicked();
+
 private:
 	Ui::SVPropVertexListWidget	*m_ui;
 };

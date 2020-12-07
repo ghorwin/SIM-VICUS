@@ -64,7 +64,7 @@ void SVPostProcBindings::generateDefaultSessionFile(const QString & projectFile)
 	// configure mappers
 	std::string mappers;
 
-	const VICUS::Project & prj = project();
+//	const VICUS::Project & prj = project();
 
 	/// \todo populate "mappers" string with predefined mapper configurations
 

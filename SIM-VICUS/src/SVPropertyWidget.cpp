@@ -55,7 +55,11 @@ void SVPropertyWidget::setMode(PropertyWidgets m) {
 				m_layout->addWidget(m_propWidgets[M_AddVertexesMode]);
 				SVViewStateHandler::instance().m_newPolygonObject->m_vertexListWidget = vertexListWidget;
 			}
-			m_propWidgets[M_AddVertexesMode]->setVisible(true);
+			if (!m_propWidgets[M_AddVertexesMode]->isVisibleTo(this)) {
+				// when shown, we always reset the widget to "new surface" mode
+				((SVPropVertexListWidget *)m_propWidgets[M_AddVertexesMode])->onNewVertexListStart();
+				m_propWidgets[M_AddVertexesMode]->setVisible(true);
+			}
 		} break;
 
 		default : {

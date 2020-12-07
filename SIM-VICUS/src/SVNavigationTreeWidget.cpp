@@ -109,7 +109,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 	// get project data
 	const VICUS::Project & prj = project();
 
-	// add all childs
+	// Buildings
 	for (const VICUS::Building & b : prj.m_buildings) {
 		QTreeWidgetItem * building = new QTreeWidgetItem(QStringList() << tr("Building: %1").arg(b.m_displayName), QTreeWidgetItem::Type);
 		m_treeItemMap[b.uniqueID()] = building;
@@ -145,6 +145,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		}
 	}
 
+	// Networks
 	for (const VICUS::Network & n : prj.m_geometricNetworks) {
 		QTreeWidgetItem * node = new QTreeWidgetItem(QStringList() << tr("Network: %1").arg(QString::fromStdString(n.m_name)), QTreeWidgetItem::Type);
 		root->addChild(node);
@@ -155,6 +156,17 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		node->addChild(nnode);
 		// Add child nodes for each "clickable" entities
 	}
+
+	// Dumb plain geometry
+	for (const VICUS::Surface & s : prj.m_plainGeometry) {
+		QTreeWidgetItem * surface = new QTreeWidgetItem(QStringList() << s.m_displayName, QTreeWidgetItem::Type);
+		m_treeItemMap[s.uniqueID()] = surface;
+		root->addChild(surface);
+		surface->setData(0, SVNavigationTreeItemDelegate::NodeID, s.uniqueID());
+		surface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, s.m_visible);
+		surface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, s.m_selected);
+	}
+
 
 	m_ui->treeWidget->expandAll();
 }

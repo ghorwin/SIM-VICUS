@@ -1,9 +1,16 @@
 #include "SVPropVertexListWidget.h"
 #include "ui_SVPropVertexListWidget.h"
 
+#include <QMessageBox>
+
 #include <IBKMK_Vector3D.h>
 
+#include <VICUS_Project.h>
+
+#include "SVProjectHandler.h"
 #include "SVViewStateHandler.h"
+#include "SVUndoAddSurface.h"
+
 #include "Vic3DNewPolygonObject.h"
 
 SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
@@ -42,6 +49,22 @@ void SVPropVertexListWidget::onNewVertexListStart() {
 	m_ui->pushButtonFinish->setEnabled(false);
 	m_ui->pushButtonDeleteLast->setEnabled(false);
 	m_ui->pushButtonDeleteSelected->setEnabled(false);
+	// generate new unique surface name
+	unsigned int count = 1;
+	QString baseName(tr("New surface"));
+	// compose object names until we found a unique object name
+	std::set<QString> existingNames;
+	for (const VICUS::Surface & s : project().m_plainGeometry) {
+		existingNames.insert(s.m_displayName);
+	}
+	QString name = baseName;
+	for (;;) {
+		// process all surfaces and check if we have already a new surface with our current name
+		if (existingNames.find(name) == existingNames.end())
+			break;
+		name = QString("%1 [%2]").arg(baseName).arg(++count);
+	}
+	m_ui->lineEditName->setText(name);
 }
 
 
@@ -72,8 +95,6 @@ void SVPropVertexListWidget::on_pushButtonCancel_clicked() {
 	vs.m_propertyWidgetMode = SVViewState::PM_ADD_GEOMETRY;
 	// now tell all UI components to toggle their view state
 	SVViewStateHandler::instance().setViewState(vs);
-	// also prepare the table widget for next time use
-	onNewVertexListStart();
 }
 
 
@@ -91,3 +112,28 @@ void SVPropVertexListWidget::on_pushButtonDeleteSelected_clicked() {
 	m_ui->tableWidgetVertexes->removeRow(currentRow);
 	m_ui->pushButtonFinish->setEnabled(SVViewStateHandler::instance().m_newPolygonObject->canComplete());
 }
+
+
+void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
+	if (m_ui->lineEditName->text().trimmed().isEmpty()) {
+		QMessageBox::critical(this, QString(), tr("Please enter a descriptive name!"));
+		m_ui->lineEditName->selectAll();
+		m_ui->lineEditName->setFocus();
+		return;
+	}
+	// compose a surface object based on the current content of the new polygon object
+	VICUS::Surface s;
+	s.m_displayName = m_ui->lineEditName->text().trimmed();
+	Vic3D::NewPolygonObject * po = SVViewStateHandler::instance().m_newPolygonObject;
+	s.m_geometry = po->planeGeometry();
+	s.m_id = s.uniqueID();
+	s.m_color = QColor("silver");
+
+	// reset view
+	on_pushButtonCancel_clicked();
+
+	// modify project
+	SVUndoAddSurface * undo = new SVUndoAddSurface(tr("Added surface '%1'").arg(s.m_displayName), s, 0);
+	undo->push();
+}
+

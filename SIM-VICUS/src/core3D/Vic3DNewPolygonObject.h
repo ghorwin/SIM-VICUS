@@ -84,6 +84,9 @@ public:
 	/*! Can be used to check if object has data to paint. */
 	bool hasData() const { return !m_vertexBufferData.empty(); }
 
+	/*! Provides read-only access to the current plane geometry. */
+	const VICUS::PlaneGeometry planeGeometry() const { return m_planeGeometry; }
+
 	/*! Cached pointer to vertex list widget - for direct communication, when a node has been placed.
 		The function appendVertex() relays this call to vertex list widget.
 		Pointer is set (by SVPropertyWidget) once widget has been created.

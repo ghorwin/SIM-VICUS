@@ -86,6 +86,7 @@ SOURCES += \
 		../../src/SVViewStateHandler.cpp \
 		../../src/actions/SVUndoAddBuilding.cpp \
 		../../src/actions/SVUndoAddNetwork.cpp \
+		../../src/actions/SVUndoAddSurface.cpp \
 		../../src/actions/SVUndoCommandBase.cpp \
 		../../src/actions/SVUndoProject.cpp \
 		../../src/core3D/Vic3DCoordinateSystemObject.cpp \
@@ -141,6 +142,7 @@ HEADERS  += \
 		../../src/SVViewStateHandler.h \
 		../../src/actions/SVUndoAddBuilding.h \
 		../../src/actions/SVUndoAddNetwork.h \
+		../../src/actions/SVUndoAddSurface.h \
 		../../src/actions/SVUndoCommandBase.h \
 		../../src/actions/SVUndoProject.h \
 		../../src/core3D/Vic3DCamera.h \

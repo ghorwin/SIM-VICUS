@@ -64,6 +64,18 @@ void Project::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
+			else if (cName == "PlainGeometry") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "Surface")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					Surface obj;
+					obj.readXML(c2);
+					m_plainGeometry.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else if (cName == "NetworkFluids") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
@@ -76,6 +88,8 @@ void Project::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
+			else if (cName == "ProjectInfo")
+				m_projectInfo.readXML(c);
 			else if (cName == "ViewSettings")
 				m_viewSettings.readXML(c);
 			else {
@@ -97,6 +111,8 @@ TiXmlElement * Project::writeXML(TiXmlElement * parent) const {
 	parent->LinkEndChild(e);
 
 
+	m_projectInfo.writeXML(e);
+
 	m_viewSettings.writeXML(e);
 
 	if (!m_geometricNetworks.empty()) {
@@ -117,6 +133,18 @@ TiXmlElement * Project::writeXML(TiXmlElement * parent) const {
 
 		for (std::vector<Building>::const_iterator it = m_buildings.begin();
 			it != m_buildings.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_plainGeometry.empty()) {
+		TiXmlElement * child = new TiXmlElement("PlainGeometry");
+		e->LinkEndChild(child);
+
+		for (std::vector<Surface>::const_iterator it = m_plainGeometry.begin();
+			it != m_plainGeometry.end(); ++it)
 		{
 			it->writeXML(child);
 		}

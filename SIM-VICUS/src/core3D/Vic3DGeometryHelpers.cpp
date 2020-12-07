@@ -241,6 +241,8 @@ void updatePlaneColor(const VICUS::PlaneGeometry & g, const QColor & col, unsign
 			// finally advance buffer indexes
 			currentVertexIndex += nvert;
 		} break;
+
+		case VICUS::PlaneGeometry::NUM_T:; // just to make compiler happy
 	} // switch
 }
 
