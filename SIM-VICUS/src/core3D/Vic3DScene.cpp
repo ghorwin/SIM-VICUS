@@ -68,8 +68,7 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			updateNetwork = true;
 			// clear new polygon drawing object
 			/// \todo define what state the scene should go into, when project is reloaded/newly created
-			m_newPolygonObject.m_planeGeometry.setVertexes(std::vector<IBKMK::Vector3D>());
-			m_newPolygonObject.updateBuffers();
+			m_newPolygonObject.clear();
 			break;
 
 		case SVProjectHandler::GeometryChanged :
@@ -535,6 +534,7 @@ void Vic3DScene::render() {
 
 
 	// *** transparent building geometry ***
+
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -543,9 +543,13 @@ void Vic3DScene::render() {
 	// disable update of depth test but still use it
 	glDepthMask (GL_FALSE);
 
+
+	// ... windows, ...
+
+
 	// *** new polygon draw object ***
 
-	if (m_newPolygonObject.m_vertexBufferData.size() != 0) {
+	if (m_newPolygonObject.hasData() != 0) {
 		m_fixedColorTransformShader->bind();
 		// Note: worldToView uniform has already been set
 		m_newPolygonObject.render();
@@ -813,7 +817,6 @@ void Vic3DScene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandl
 		case SVViewState::OM_PlaceVertex : {
 			// signal parent widget that we added a point
 			IBKMK::Vector3D p = VICUS::QVector2IBKVector(m_coordinateSystemObject.m_transform.translation());
-			m_parent->addPolygonVertex(p);
 			// append a vertex (this will automatically update the draw buffer)
 			m_newPolygonObject.appendVertex(p);
 			return;

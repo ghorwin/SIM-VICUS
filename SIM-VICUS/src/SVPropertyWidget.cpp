@@ -8,6 +8,8 @@
 #include "SVPropEditGeometry.h"
 #include "SVViewStateHandler.h"
 
+#include "Vic3DNewPolygonObject.h"
+
 SVPropertyWidget::SVPropertyWidget(QWidget * parent) :
 	QWidget(parent)
 {
@@ -48,8 +50,10 @@ void SVPropertyWidget::setMode(PropertyWidgets m) {
 		case M_AddVertexesMode: {
 			// create widget and add to layout, if not existing
 			if (m_propWidgets[M_AddVertexesMode] == nullptr) {
-				m_propWidgets[M_AddVertexesMode] = new SVPropVertexListWidget(this);
+				SVPropVertexListWidget * vertexListWidget = new SVPropVertexListWidget(this);
+				m_propWidgets[M_AddVertexesMode] = vertexListWidget;
 				m_layout->addWidget(m_propWidgets[M_AddVertexesMode]);
+				SVViewStateHandler::instance().m_newPolygonObject->m_vertexListWidget = vertexListWidget;
 			}
 			m_propWidgets[M_AddVertexesMode]->setVisible(true);
 		} break;
@@ -71,10 +75,4 @@ void SVPropertyWidget::onViewStateChanged() {
 }
 
 
-void SVPropertyWidget::onVertexPlaced(const IBKMK::Vector3D & p) {
-	// propagate the signal to the vertex list widget
-	if (m_propWidgets[M_AddVertexesMode] != nullptr)
-		((SVPropVertexListWidget*)m_propWidgets[M_AddVertexesMode])->addVertex(p);
-
-}
 

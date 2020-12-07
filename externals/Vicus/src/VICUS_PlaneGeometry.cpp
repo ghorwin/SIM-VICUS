@@ -165,6 +165,14 @@ void PlaneGeometry::addVertex(const IBKMK::Vector3D & v) {
 }
 
 
+void PlaneGeometry::removeVertex(unsigned int idx) {
+	Q_ASSERT(idx < m_vertexes.size());
+	m_vertexes.erase(m_vertexes.begin()+idx);
+	m_type = T_Polygon; // assume the worst
+	computeGeometry(); // if we have a triangle/rectangle, this is detected here
+}
+
+
 void PlaneGeometry::computeGeometry() {
 	m_triangles.clear();
 	// try to simplify polygon to internal rectangle/parallelogram definition

@@ -143,11 +143,6 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 
 	setLayout(hlay);
 
-	// *** create interwidget-communication
-
-	connect(m_sceneView, &Vic3D::SceneView::vertexPlaced,
-			m_propertyWidget, &SVPropertyWidget::onVertexPlaced);
-
 
 	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 

@@ -23,6 +23,8 @@ QT_BEGIN_NAMESPACE
 class QOpenGLShaderProgram;
 QT_END_NAMESPACE
 
+class SVPropVertexListWidget;
+
 namespace Vic3D {
 
 class CoordinateSystemObject;
@@ -49,6 +51,14 @@ public:
 	/*! Appends a vertex to the plane geometry and updates the draw buffer. */
 	void appendVertex(const IBKMK::Vector3D & p);
 
+	/*! Removes the vertex at the given position.
+		idx must be less than number of vertexes!
+	*/
+	void removeVertex(unsigned int idx);
+
+	/*! Clear current geometry (clears also all buffers). */
+	void clear();
+
 	/*! This function is to be called whenever the movable coordinate system changes its (snapped) position.
 		The function first compares the point with the currently set point - if no change is recognized, nothing happens.
 		If the point was indeed moved, the buffer will be updated and only the last vertex will be updated in the
@@ -66,10 +76,26 @@ public:
 	/*! Binds the vertex array object and renders the geometry. */
 	void render();
 
-	/*! Shader program. */
+	/*! Returns true, if enough vertexes have been collected to complete the geometry.
+		This depends on the type of geometry being generated.
+	*/
+	bool canComplete() const { return m_planeGeometry.isValid(); }
+
+	/*! Can be used to check if object has data to paint. */
+	bool hasData() const { return !m_vertexBufferData.empty(); }
+
+	/*! Cached pointer to vertex list widget - for direct communication, when a node has been placed.
+		The function appendVertex() relays this call to vertex list widget.
+		Pointer is set (by SVPropertyWidget) once widget has been created.
+	*/
+	SVPropVertexListWidget			*m_vertexListWidget = nullptr;
+
+private:
+
+	/*! Shader program (not owned). */
 	ShaderProgram					*m_shaderProgram = nullptr;
 
-	/*! Cached pointer to coordinate system object - used to retrieve current's 3D cursor position. */
+	/*! Cached pointer to coordinate system object - used to retrieve current's 3D cursor position (not owned). */
 	const CoordinateSystemObject	*m_coordSystemObject = nullptr;
 
 	/*! Stores the current geometry of the painted polygon. */

@@ -8,6 +8,8 @@
 #include <VICUS_Conversions.h>
 
 #include "SVProjectHandler.h"
+#include "SVViewStateHandler.h"
+#include "SVPropVertexListWidget.h"
 #include "Vic3DGeometryHelpers.h"
 #include "Vic3DCoordinateSystemObject.h"
 #include "Vic3DShaderProgram.h"
@@ -18,6 +20,8 @@ NewPolygonObject::NewPolygonObject() :
 	m_vertexBufferObject(QOpenGLBuffer::VertexBuffer), // VertexBuffer is the default, so default constructor would have been enough
 	m_indexBufferObject(QOpenGLBuffer::IndexBuffer) // make this an Index Buffer
 {
+	// make us known to the world
+	SVViewStateHandler::instance().m_newPolygonObject = this;
 }
 
 
@@ -93,6 +97,20 @@ void NewPolygonObject::destroy() {
 void NewPolygonObject::appendVertex(const IBKMK::Vector3D & p) {
 	m_planeGeometry.addVertex(p);
 	updateBuffers();
+	// also tell the vertex list widget about our new point
+	m_vertexListWidget->addVertex(p);
+}
+
+
+void NewPolygonObject::removeVertex(unsigned int idx) {
+	m_planeGeometry.removeVertex(idx);
+	updateBuffers();
+}
+
+
+void NewPolygonObject::clear() {
+	m_planeGeometry.setVertexes(std::vector<IBKMK::Vector3D>());
+	updateBuffers();
 }
 
 
@@ -127,8 +145,6 @@ void NewPolygonObject::updateBuffers() {
 
 	m_vertexBufferData.clear();
 	m_indexBufferData.clear();
-	unsigned int currentVertexIndex = 0;
-	unsigned int currentElementIndex = 0;
 	m_firstLineVertex = 0;
 
 	// no vertexes, nothing to draw - we need at least one vertex in the geometry, so that we
@@ -136,6 +152,8 @@ void NewPolygonObject::updateBuffers() {
 	if (m_planeGeometry.vertexes().empty())
 		return;
 
+	unsigned int currentVertexIndex = 0;
+	unsigned int currentElementIndex = 0;
 	if (m_planeGeometry.isValid()) {
 		addPlane(m_planeGeometry, currentVertexIndex, currentElementIndex,
 				 m_vertexBufferData, m_indexBufferData);

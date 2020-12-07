@@ -5,6 +5,10 @@
 
 #include "SVViewState.h"
 
+namespace Vic3D {
+	class NewPolygonObject;
+}
+
 /*! This singleton makes the current UI view state available to all.
 	Widgets that need to be informed from view state changes, should
 	connect to stateChanged() signal.
@@ -26,6 +30,12 @@ public:
 		after an interleaving function.
 	*/
 	void setViewState(const SVViewState & newViewState);
+
+	/*! Caches pointer to new polygon object, to allow direct access to object when removing vertexes.
+		The pointer is set in constructor of Vic3D::NewPolygonObject, object is not owned.
+		DO NOT DELETE the object or do any other crazy stuff with this pointer!
+	*/
+	Vic3D::NewPolygonObject		*m_newPolygonObject = nullptr;
 
 signals:
 	/*! Emitted, when the state has changed. */

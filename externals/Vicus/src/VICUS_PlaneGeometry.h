@@ -76,6 +76,9 @@ public:
 	*/
 	void addVertex(const IBKMK::Vector3D & v);
 
+	/*! Removes the vertex at given location. */
+	void removeVertex(unsigned int idx);
+
 	/*! This computes the normal vector, performs the triangulation and attempts to simplify a polygon to a rectangle/triangle
 		primitive.
 		This function is called automatically from readXML().

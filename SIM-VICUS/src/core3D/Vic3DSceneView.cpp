@@ -130,11 +130,6 @@ void SceneView::dumpScreenshot(const QString & imgFilePath) {
 }
 
 
-void SceneView::addPolygonVertex(const IBKMK::Vector3D & p) {
-	emit vertexPlaced(p);
-}
-
-
 void SceneView::onModified(int modificationType, ModificationInfo * data) {
 	// relay change notification to scene objects
 	m_mainScene.onModified(modificationType, data);
