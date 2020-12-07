@@ -100,8 +100,10 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Project info tag is manually written (not by code generator). */
-	NANDRAD::ProjectInfo								m_projectInfo;				
+	/*! Project info tag is manually written (not by code generator), to be located directly under root-node
+		and not inside Project node.
+	*/
+	NANDRAD::ProjectInfo								m_projectInfo;
 
 	ViewSettings										m_viewSettings;				// XML:E
 
