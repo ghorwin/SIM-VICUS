@@ -67,6 +67,7 @@ public:
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	NANDRAD_READWRITE
+	NANDRAD_COMPARE_WITH_ID
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -89,6 +90,16 @@ public:
 		hierbei kann es recht schnell passieren dass diese von einlasstemperaturen und oder massströmen und
 		weiteren elemente abhängen.
 	*/
+
+
+	bool operator==(const HydraulicNetworkComponent &other) const{
+		for (unsigned n=0; n<NUM_P; ++n){
+			if (m_para[n] != other.m_para[n])
+				return false;
+		}
+		return (m_modelType == other.m_modelType && m_interfaceType == other.m_interfaceType);
+	}
+
 };
 
 } // namespace NANDRAD

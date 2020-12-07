@@ -33,10 +33,10 @@ public:
 
 	/*! Parameters for the model interface */
 	enum interfacePara_t {
-		IP_Constant,						// Keyword: Constant							'Constant Value'
-		IP_DataFilepath,					// Keyword: DataFilepath						'Data file in tsv-format'
-		IP_FMUFilepath,						// Keyword: FMUFilepath							'FMU file'
-		IP_ZoneId,							// Keyword: ZoneId								'id of coupled zone'
+		IP_Constant,						// Keyword: Constant							[-]		'Constant Value'
+		IP_DataFilepath,					// Keyword: DataFilepath						[-]		'Data file in tsv-format'
+		IP_FMUFilepath,						// Keyword: FMUFilepath							[-]		'FMU file'
+		IP_ZoneId,							// Keyword: ZoneId								[-]		'id of coupled zone'
 		NUM_IP
 	};
 

@@ -63,7 +63,7 @@ bool SVNetworkImportDialog::edit() {
 		m_network.setOrigin(IBKMK::Vector3D(x, y, 0));
 
 		// generate id, set name
-		m_network.m_id = generateId();
+		m_network.m_id = VICUS::Project::uniqueId(p.m_geometricNetworks);
 		m_network.m_name = uniqueName(m_ui->lineEditNetworkName->text().toStdString());
 
 		m_network.m_fluidID = 0;

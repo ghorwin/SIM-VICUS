@@ -1,2 +1,1 @@
-#include "NANDRAD_HydraulicNetworkElement.h"
-
+#include "NANDRAD_HydraulicNetworkComponent.h"

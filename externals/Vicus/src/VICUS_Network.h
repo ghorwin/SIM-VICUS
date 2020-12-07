@@ -139,7 +139,7 @@ public:
 
 	double numberOfBuildings() const;
 
-	void writeNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
+	void createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
 									  std::vector<NANDRAD::HydraulicNetworkComponent> &hydraulicComponents) const;
 
 
@@ -167,8 +167,7 @@ public:
 	/*! vector with edges */
 	std::vector<NetworkEdge>				m_edges;									// XML:E:required
 
-	/*! Pipe database, pipe dimensioning algorithm may use any pipes defined in this
-		list. */
+	/*! Pipe database, pipe dimensioning algorithm may use any pipes defined in this list. */
 	std::vector<NetworkPipe>				m_networkPipes;								// XM:E
 
 	/*! origin of the network */
