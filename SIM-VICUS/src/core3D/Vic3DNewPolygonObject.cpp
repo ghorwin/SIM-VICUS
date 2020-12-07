@@ -78,12 +78,6 @@ void NewPolygonObject::create(ShaderProgram * shaderProgram, const CoordinateSys
 	m_indexBufferObject.release();
 
 	m_planeGeometry = VICUS::PlaneGeometry(VICUS::PlaneGeometry::T_Polygon);
-	// add test data
-#if 0
-	appendVertex(IBKMK::Vector3D(-5,0,0));
-	appendVertex(IBKMK::Vector3D(0,2,0));
-	appendVertex(IBKMK::Vector3D(-5,2,0));
-#endif
 }
 
 

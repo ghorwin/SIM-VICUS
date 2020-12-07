@@ -20,7 +20,7 @@ SVPropEditGeometry::~SVPropEditGeometry() {
 
 void SVPropEditGeometry::on_pushButtonAddPolygon_clicked() {
 	// reset new polygon object
-	SVViewStateHandler::instance().m_newPolygonObject->m_planeGeometry = VICUS::PlaneGeometry();
+	SVViewStateHandler::instance().m_newPolygonObject->clear();
 	// signal, that we want to start adding a new polygon
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;

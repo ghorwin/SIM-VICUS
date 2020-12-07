@@ -38,7 +38,7 @@ void SVPropVertexListWidget::addVertex(const IBKMK::Vector3D & p) {
 
 void SVPropVertexListWidget::onNewVertexListStart() {
 	// clear table widget and disable "delete" and "finish" buttons
-	m_ui->tableWidgetVertexes->clearContents();
+	m_ui->tableWidgetVertexes->setRowCount(0);
 	m_ui->pushButtonFinish->setEnabled(false);
 	m_ui->pushButtonDeleteLast->setEnabled(false);
 	m_ui->pushButtonDeleteSelected->setEnabled(false);
@@ -60,4 +60,34 @@ void SVPropVertexListWidget::on_pushButtonDeleteLast_clicked() {
 
 void SVPropVertexListWidget::on_tableWidgetVertexes_itemSelectionChanged() {
 	m_ui->pushButtonDeleteSelected->setEnabled( m_ui->tableWidgetVertexes->currentRow() != -1);
+}
+
+
+void SVPropVertexListWidget::on_pushButtonCancel_clicked() {
+	// reset new polygon object, so that it won't be drawn anylonger
+	SVViewStateHandler::instance().m_newPolygonObject->clear();
+	// signal, that we are no longer in "add vertex" mode
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	vs.m_propertyWidgetMode = SVViewState::PM_ADD_GEOMETRY;
+	// now tell all UI components to toggle their view state
+	SVViewStateHandler::instance().setViewState(vs);
+	// also prepare the table widget for next time use
+	onNewVertexListStart();
+}
+
+
+void SVPropVertexListWidget::on_pushButtonDeleteSelected_clicked() {
+	int rows = m_ui->tableWidgetVertexes->rowCount();
+	Q_ASSERT(rows > 0);
+	int currentRow = m_ui->tableWidgetVertexes->currentRow();
+	Q_ASSERT(currentRow != -1);
+	// remove selected vertex from polygon
+	Vic3D::NewPolygonObject * po = SVViewStateHandler::instance().m_newPolygonObject;
+	po->removeVertex((unsigned int)currentRow);
+
+	m_ui->pushButtonDeleteLast->setEnabled(rows > 1);
+	// now remove selected row from table widget
+	m_ui->tableWidgetVertexes->removeRow(currentRow);
+	m_ui->pushButtonFinish->setEnabled(SVViewStateHandler::instance().m_newPolygonObject->canComplete());
 }

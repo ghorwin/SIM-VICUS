@@ -32,6 +32,10 @@ private slots:
 
 	void on_tableWidgetVertexes_itemSelectionChanged();
 
+	void on_pushButtonCancel_clicked();
+
+	void on_pushButtonDeleteSelected_clicked();
+
 private:
 	Ui::SVPropVertexListWidget	*m_ui;
 };
