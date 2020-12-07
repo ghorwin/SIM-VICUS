@@ -108,6 +108,11 @@ void OpenGLWindow::onMessageLogged(const QOpenGLDebugMessage &msg) {
 		case QOpenGLDebugMessage::LowSeverity:
 			prefix += "+";
 		break;
+		case QOpenGLDebugMessage::InvalidSeverity:
+			prefix += "+?+";
+		break;
+		case QOpenGLDebugMessage::AnySeverity: // no prefix
+		break;
 	}
 
 	prefix += " [";
@@ -123,6 +128,7 @@ void OpenGLWindow::onMessageLogged(const QOpenGLDebugMessage &msg) {
 	  CASE(ApplicationSource);
 	  CASE(OtherSource);
 	  CASE(InvalidSource);
+	  CASE(AnySource);
 	}
  #undef CASE
 
@@ -141,6 +147,8 @@ void OpenGLWindow::onMessageLogged(const QOpenGLDebugMessage &msg) {
 		CASE(MarkerType);
 		CASE(GroupPushType);
 		CASE(GroupPopType);
+		CASE(InvalidType);
+		CASE(AnyType);
 	}
 #undef CASE
 

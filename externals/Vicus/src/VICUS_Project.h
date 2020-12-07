@@ -101,22 +101,24 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Project info tag is manually written (not by code generator). */
-	NANDRAD::ProjectInfo								m_projectInfo;				// XML:E
+	NANDRAD::ProjectInfo								m_projectInfo;				
 
-	NANDRAD::ProjectInfo	m_projectInfo;
+	ViewSettings										m_viewSettings;				// XML:E
 
-	ViewSettings			m_viewSettings;					// XML:E
+	std::vector<Network>								m_geometricNetworks;		// XML:E
 
-	std::vector<Network>	m_geometricNetworks;			// XML:E
+	std::vector<Building>								m_buildings;				// XML:E
 
-	std::vector<Building>	m_buildings;					// XML:E
+	/*! Vector with plain (dumb) geometry. */
+	std::vector<Surface>								m_plainGeometry;			// XML:E
 
 
 	// *** Database elements used in the project (normally stored in built-in and user databases)
 	//     These database elements need to be merged with program databased when project is read.
 
 	/*! Database of fluids */
-	std::vector<NetworkFluid>	m_networkFluids;			// XML:E
+	std::vector<NetworkFluid>							m_networkFluids;			// XML:E
+
 };
 
 

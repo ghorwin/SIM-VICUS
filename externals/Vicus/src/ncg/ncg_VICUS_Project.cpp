@@ -40,7 +40,7 @@ void Project::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "GeomNetworks") {
+			if (cName == "GeometricNetworks") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
@@ -88,8 +88,6 @@ void Project::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
-			else if (cName == "ProjectInfo")
-				m_projectInfo.readXML(c);
 			else if (cName == "ViewSettings")
 				m_viewSettings.readXML(c);
 			else {
@@ -111,12 +109,10 @@ TiXmlElement * Project::writeXML(TiXmlElement * parent) const {
 	parent->LinkEndChild(e);
 
 
-	m_projectInfo.writeXML(e);
-
 	m_viewSettings.writeXML(e);
 
 	if (!m_geometricNetworks.empty()) {
-		TiXmlElement * child = new TiXmlElement("GeomNetworks");
+		TiXmlElement * child = new TiXmlElement("GeometricNetworks");
 		e->LinkEndChild(child);
 
 		for (std::vector<Network>::const_iterator it = m_geometricNetworks.begin();
