@@ -254,4 +254,28 @@ void Project::updatePointers() {
 		n.updateNodeEdgeConnectionPointers();
 }
 
+
+const VICUS::Object * Project::objectById(unsigned int uniqueID) const {
+	FUNCID(Project::objectById);
+	const VICUS::Object * obj = nullptr;
+	// search in buildings
+	for (const VICUS::Building & b : m_buildings) {
+		obj = b.findChild(uniqueID);
+		if (obj != nullptr)
+			break;
+	}
+	// now look in plain geometry
+	if (obj == nullptr) {
+		for (const VICUS::Surface & s : m_plainGeometry) {
+			if (s.uniqueID() == uniqueID) {
+				obj = &s;
+				break;
+			}
+		}
+	}
+	if (obj == nullptr)
+		throw IBK::Exception(IBK::FormatString("Missing object with unique ID %1.").arg(uniqueID), FUNC_ID);
+	return obj;
+}
+
 } // namespace VICUS

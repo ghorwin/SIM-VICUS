@@ -525,9 +525,6 @@ void SVProjectHandler::updateSurfaceColors() {
 		for (VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			for (VICUS::Room &r : bl.m_rooms) {
 				for (VICUS::Surface &s : r.m_surfaces) {
-					if(s.m_geometry.normal() == IBKMK::Vector3D())
-						s.m_geometry.computeGeometry();
-
 					if (s.m_color == QColor::Invalid) {
 						double angleForWalls = 0.707;
 						//Floor
@@ -543,6 +540,13 @@ void SVProjectHandler::updateSurfaceColors() {
 
 				}
 			}
+		}
+	}
+
+	// plain geometry surfaces will be silver
+	for (VICUS::Surface &s : m_project->m_plainGeometry) {
+		if (s.m_color == QColor::Invalid) {
+			s.m_color = QColor("#C0C0C0");
 		}
 	}
 

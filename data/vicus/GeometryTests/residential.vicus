@@ -2,19 +2,18 @@
 <VicusProject fileVersion="0.1">
 	<ProjectInfo>
 		<Created>Do. Nov. 26 15:15:10 2020</Created>
-		<LastEdited>Do Dez 3 15:55:16 2020</LastEdited>
+		<LastEdited>Mo. Dez. 7 14:40:06 2020</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
-			<GridColor>#7f7fb2</GridColor>
-			<CameraTranslation>12.57 -13.0464 5.50303</CameraTranslation>
+			<CameraTranslation>29.9823 -41.8797 22.1575</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.779114</Wp>
-				<X>0.581791</X>
-				<Y>0.139672</Y>
-				<Z>0.187048</Z>
+				<Wp>0.8158</Wp>
+				<X>0.51777</X>
+				<Y>0.143662</Y>
+				<Z>0.21389</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 		</ViewSettings>
@@ -138,5 +137,19 @@
 				</BuildingLevels>
 			</Building>
 		</Buildings>
+		<PlainGeometry>
+			<Surface id="45" displayName="New surface" visible="1">
+				<PlaneGeometry type="Triangle">8 -5 0, 10 -3 0, 8 -3 0</PlaneGeometry>
+			</Surface>
+			<Surface id="46" displayName="New surface [2]" visible="1">
+				<PlaneGeometry type="Polygon">12 2 0, 5 31 0, 2 25 0, 8 2 0</PlaneGeometry>
+			</Surface>
+			<Surface id="47" displayName="New surface [3]" visible="1">
+				<PlaneGeometry type="Polygon">-9 17 0, -21 16 0, -20 -1 0, -13 -4 0, -2 -6 0</PlaneGeometry>
+			</Surface>
+			<Surface id="48" displayName="New surface [4]" visible="1">
+				<PlaneGeometry type="Rectangle">16 -8 0, 16 -5 0, 14 -5 0, 14 -8 0</PlaneGeometry>
+			</Surface>
+		</PlainGeometry>
 	</Project>
 </VicusProject>

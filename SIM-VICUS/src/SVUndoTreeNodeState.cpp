@@ -1,7 +1,7 @@
 #include "SVUndoTreeNodeState.h"
 
 template<typename T>
-void storeState(const T & obj, unsigned int & bitmask) {
+void storeState(const T & obj, int & bitmask) {
 	bitmask = 0;
 	if (obj.m_visible)
 		bitmask |= SVUndoTreeNodeState::VisibilityState;
@@ -10,7 +10,7 @@ void storeState(const T & obj, unsigned int & bitmask) {
 }
 
 template<typename T>
-void setState(T & obj, const unsigned int & bitmask) {
+void setState(T & obj, const int & bitmask) {
 	obj.m_visible = bitmask & SVUndoTreeNodeState::VisibilityState;
 	obj.m_selected = bitmask & SVUndoTreeNodeState::SelectedState;
 }
@@ -26,6 +26,8 @@ SVUndoTreeNodeState::SVUndoTreeNodeState(const QString & label,
 
 	// store current node states
 	const VICUS::Project & p = theProject();
+
+	// search buildings
 	for (const VICUS::Building & b : p.m_buildings) {
 		if (nodeIDs.find(b.uniqueID()) != nodeIDs.end())
 			storeState(b, m_nodeStates[b.uniqueID()]);
@@ -42,6 +44,13 @@ SVUndoTreeNodeState::SVUndoTreeNodeState(const QString & label,
 			}
 		}
 	}
+
+	// search plain geometry
+	for (const VICUS::Surface & s : p.m_plainGeometry) {
+		if (nodeIDs.find(s.uniqueID()) != nodeIDs.end())
+			storeState(s, m_nodeStates[s.uniqueID()]);
+	}
+
 	m_otherNodeStates = m_nodeStates;
 	// now set the "new" node states
 	for (auto & s : m_nodeStates) {
@@ -68,18 +77,20 @@ SVUndoTreeNodeState * SVUndoTreeNodeState::createUndoAction(const QString & labe
 															unsigned int nodeID, bool withChildren, bool on)
 {
 	std::set<unsigned int> nodeIDs;
+	const VICUS::Project & p = project();
+
+	// compose set of nodeIDs - first store object that is referenced by nodeID
 	nodeIDs.insert(nodeID);
 
-	// compose set of nodeIDs - first look for object that is referenced
-	const VICUS::Project & p = project();
-	for (const VICUS::Building & b : p.m_buildings) {
-		const VICUS::Object * obj = b.findChild(nodeID);
-		if (obj != nullptr) {
-			if (withChildren) {
-				// also store IDs of all children
-				obj->collectChildIDs(nodeIDs);
+	// now look in buildings and collect child IDs
+	if (withChildren) {
+		for (const VICUS::Building & b : p.m_buildings) {
+			const VICUS::Object * obj = b.findChild(nodeID);
+			if (obj != nullptr) {
+					// also store IDs of all children
+					obj->collectChildIDs(nodeIDs);
+				break;
 			}
-			break;
 		}
 	}
 
@@ -103,7 +114,9 @@ void SVUndoTreeNodeState::redo() {
 	// process all entities in the entire data structure
 
 	// we set the values in m_nodeStates in the project
-	std::map<unsigned int, unsigned int >::const_iterator it;
+	std::map<unsigned int, int >::const_iterator it;
+
+	// search in buildings
 	for (VICUS::Building & b : p.m_buildings) {
 		if ((it = m_nodeStates.find(b.uniqueID())) != m_nodeStates.end()) {
 			setState(b, it->second);
@@ -128,6 +141,15 @@ void SVUndoTreeNodeState::redo() {
 			}
 		}
 	}
+
+	// search in plain geometry
+	for (VICUS::Surface & s : p.m_plainGeometry) {
+		if ((it = m_nodeStates.find(s.uniqueID())) != m_nodeStates.end()) {
+			setState(s, it->second);
+			modifiedIDs.push_back(it->first);
+		}
+	}
+
 	// now swap the states
 	m_nodeStates.swap(m_otherNodeStates);
 	// tell project that the grid has changed

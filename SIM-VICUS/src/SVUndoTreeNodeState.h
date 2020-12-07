@@ -41,8 +41,8 @@ private:
 	NodeState								m_changedStateType;
 
 	/*! key = unique object id, value = bitmask of NodeState values */
-	std::map<unsigned int, unsigned int >	m_nodeStates;
-	std::map<unsigned int, unsigned int >	m_otherNodeStates;
+	std::map<unsigned int, int >			m_nodeStates;
+	std::map<unsigned int, int >			m_otherNodeStates;
 };
 
 #endif // SVUndoTreeNodeStateH

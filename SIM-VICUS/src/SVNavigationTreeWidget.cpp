@@ -54,13 +54,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 			for (unsigned int id : info->m_nodeIDs) {
 				Q_ASSERT(m_treeItemMap.find(id) != m_treeItemMap.end());
 				// find the object in question
-				const VICUS::Object * obj = nullptr;
-				for (const VICUS::Building & b : project().m_buildings) {
-					obj = b.findChild(id);
-					if (obj != nullptr)
-						break;
-				}
-				Q_ASSERT(obj != nullptr);
+				const VICUS::Object * obj = project().objectById(id);
 				bool visible = true;
 				bool selected = true;
 				const VICUS::Building* b;

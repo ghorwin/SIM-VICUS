@@ -96,13 +96,7 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			// process all modified nodes
 			for (unsigned int id : info->m_nodeIDs) {
 				// find the object in question
-				const VICUS::Object * obj = nullptr;
-				for (const VICUS::Building & b : project().m_buildings) {
-					obj = b.findChild(id);
-					if (obj != nullptr)
-						break;
-				}
-				Q_ASSERT(obj != nullptr);
+				const VICUS::Object * obj = project().objectById(id);
 				const VICUS::Surface * s = dynamic_cast<const VICUS::Surface*>(obj);
 				// skip all node except surfaces, since only surfaces are drawn
 				if (s == nullptr)
@@ -625,6 +619,22 @@ void Vic3DScene::generateBuildingGeometry() {
 			}
 		}
 	}
+
+	// now the plain geometry
+	for (const VICUS::Surface & s : p.m_plainGeometry) {
+
+		// remember where the vertexes for this surface start in the buffer
+		m_opaqueGeometryObject.m_vertexStartMap[s.uniqueID()] = currentVertexIndex;
+
+		// now we store the surface data into the vertex/color and index buffers
+		// the indexes are advanced and the buffers enlarged as needed.
+		// actually, this adds always two surfaces (for culling).
+		addSurface(s, currentVertexIndex, currentElementIndex,
+				   m_opaqueGeometryObject.m_vertexBufferData,
+				   m_opaqueGeometryObject.m_colorBufferData,
+				   m_opaqueGeometryObject.m_indexBufferData);
+	}
+
 }
 
 
@@ -762,6 +772,7 @@ void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3
 	if (pickObject.m_pickMask & PickObject::P_Surface) {
 		// now process all surfaces and update p to hold the closest hit
 		const VICUS::Project & prj = project();
+		// first try surfaces in buildings
 		for (const VICUS::Building & b : prj.m_buildings) {
 			for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 				for (const VICUS::Room & r : bl.m_rooms) {
@@ -782,6 +793,22 @@ void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3
 				}
 			}
 		}
+		// now try plain geometry
+		for (const VICUS::Surface & s : prj.m_plainGeometry) {
+			// skip invisible or inactive surfaces
+			if (!s.m_visible)
+				continue;
+			IBKMK::Vector3D intersectionPoint;
+			double dist;
+			if (s.m_geometry.intersectsLine(nearPoint2, d2, intersectionPoint, dist, pickObject.m_pickMask & PickObject::P_BackSide)) {
+				if (dist < pickObject.m_dist) {
+					pickObject.m_dist = dist;
+					pickObject.m_pickPoint = intersectionPoint;
+					pickObject.m_uniqueObjectID = s.uniqueID();
+				}
+			}
+		}
+
 	}
 }
 
@@ -829,13 +856,7 @@ void Vic3DScene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandl
 	pick(o);
 	if (o.m_uniqueObjectID != 0) {
 		// find the selected object
-		const VICUS::Object * obj = nullptr;
-		for (const VICUS::Building & b : project().m_buildings) {
-			obj = b.findChild(o.m_uniqueObjectID);
-			if (obj != nullptr)
-				break;
-		}
-		Q_ASSERT(obj != nullptr);
+		const VICUS::Object * obj = project().objectById(o.m_uniqueObjectID);
 		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface*>(obj);
 		// for now, it must be a surface, since only surfaces are drawn
 		Q_ASSERT(s != nullptr);

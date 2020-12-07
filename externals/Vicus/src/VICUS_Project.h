@@ -75,6 +75,11 @@ public:
 	*/
 	void updatePointers();
 
+	/*! Searches through all unique id-objects in project structure for the uniqueID.
+		Throws an exception, if no object with this unique ID can be found.
+	*/
+	const VICUS::Object * objectById(unsigned int uniqueID) const;
+
 	// *** FUNCTIONS ***
 
 	/*! Function to find an element by ID. */
