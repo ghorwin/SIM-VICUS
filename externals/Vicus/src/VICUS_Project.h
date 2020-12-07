@@ -79,7 +79,7 @@ public:
 
 	/*! Function to find an element by ID. */
 	template <typename T>
-	T * element(std::vector<T>& vec, unsigned int id) {
+	static T * element(std::vector<T>& vec, unsigned int id) {
 		typename std::vector<T>::iterator it = std::find(vec.begin(), vec.end(), id);
 		if (it == vec.end())
 			return nullptr;
@@ -89,7 +89,7 @@ public:
 
 	/*! Function to find an element by ID (const-version). */
 	template <typename T>
-	const T * element(const std::vector<T>& vec, unsigned int id) const {
+	static const T * element(const std::vector<T>& vec, unsigned int id) {
 		typename std::vector<T>::const_iterator it = std::find(vec.begin(), vec.end(), id);
 		if (it == vec.end())
 			return nullptr;
@@ -103,18 +103,18 @@ public:
 	/*! Project info tag is manually written (not by code generator). */
 	NANDRAD::ProjectInfo	m_projectInfo;
 
-	ViewSettings			m_viewSettings;		// XML:E
+	ViewSettings			m_viewSettings;					// XML:E
 
 	std::vector<Network>	m_geometricNetworks;			// XML:E
 
-	std::vector<Building>	m_buildings;		// XML:E
+	std::vector<Building>	m_buildings;					// XML:E
 
 
 	// *** Database elements used in the project (normally stored in built-in and user databases)
 	//     These database elements need to be merged with program databased when project is read.
 
 	/*! Database of fluids */
-	std::vector<NetworkFluid>	m_networkFluids;	// XML:E
+	std::vector<NetworkFluid>	m_networkFluids;			// XML:E
 };
 
 
