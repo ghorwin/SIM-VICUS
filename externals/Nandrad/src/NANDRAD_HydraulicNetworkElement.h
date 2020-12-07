@@ -28,6 +28,7 @@ public:
 	/*! Parameters for the element . */
 	enum para_t {
 		P_Length,							// Keyword: Length								[-]		'Length for the element (pipe)'
+		P_HeatExchangeRate,					// Keyword: HeatExchangeRate					[W]		'heat exchange rate for heat exchanger model'
 		NUM_P
 	};
 
@@ -67,9 +68,6 @@ public:
 
 	/*! Parameter for interface */
 	IBK::Parameter					m_interfacePara[NUM_IP];
-
-	/*! Element belongs to this zone (zone id). */
-	unsigned int					m_zoneId		= NANDRAD::INVALID_ID;				// XML:E
 };
 
 } // namespace NANDRAD
