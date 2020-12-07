@@ -658,9 +658,7 @@ void SVMainWindow::on_actionEditPreferences_triggered() {
 				m_geometryView->sceneView(), &Vic3D::SceneView::onStyleChanged);
 	}
 
-	if (m_preferencesDialog->edit(0)) {
-		/// \todo update views based on prefs
-	}
+	m_preferencesDialog->edit(0); // changes are stored automatically.
 }
 
 
@@ -700,14 +698,8 @@ void SVMainWindow::on_actionViewExternalPostProcessing_triggered() {
 		if (m_preferencesDialog == nullptr)
 			m_preferencesDialog = new SVPreferencesDialog(this);
 
-		if (!m_preferencesDialog->edit(2))
-			return;
-		// still no post-proc executable set?
-		if (SVSettings::instance().m_postProcExecutable.isEmpty() ||
-				!QFileInfo::exists(SVSettings::instance().m_postProcExecutable))
-		{
-			return;
-		}
+		m_preferencesDialog->edit(0);
+		return;
 	}
 	// if we are using the new post-processing, generate a session file:
 	if (QFileInfo(SVSettings::instance().m_postProcExecutable).baseName() == "PostProcApp") {
@@ -769,13 +761,8 @@ void SVMainWindow::on_actionViewCCMeditor_triggered() {
 		if (m_preferencesDialog == nullptr)
 			m_preferencesDialog = new SVPreferencesDialog(this);
 
-		if (!m_preferencesDialog->edit(2))
-			return;
-		// still no post-proc executable set?
-		ccmPath = SVSettings::instance().m_CCMEditorExecutable;
-		if (ccmPath.isEmpty() || !QFileInfo::exists(ccmPath)) {
-			return;
-		}
+		m_preferencesDialog->edit(0);
+		return;
 	}
 	QProcess p;
 	bool res = p.startDetached("\"" + ccmPath + "\"");

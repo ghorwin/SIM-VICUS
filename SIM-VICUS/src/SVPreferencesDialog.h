@@ -20,9 +20,9 @@ public:
 	~SVPreferencesDialog();
 
 	/*! Spawns the dialog and returns when user has closed the dialog.
-		\return Returns true if user has changed preferences (some of which may require an update of views).
+		\param initialPage The index of the page to be shown initially.
 	*/
-	bool edit(int initialPage = 0);
+	void edit(int initialPage = 0);
 
 	/*! Provides read-only access to pageStyle() so that signals can be connected. */
 	const SVPreferencesPageStyle * pageStyle() const { return m_pageStyle; }

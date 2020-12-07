@@ -35,13 +35,18 @@ SVPreferencesDialog::~SVPreferencesDialog() {
 }
 
 
-bool SVPreferencesDialog::edit(int initialPage) {
+void SVPreferencesDialog::edit(int initialPage) {
 	// transfer settings data to User Interface
 	updateUi();
 
 	m_ui->tabWidget->setCurrentIndex(initialPage);
 
-	show(); // and show the dialog
+	if (isVisible()) {
+		activateWindow();
+		raise();
+	}
+	else
+		show();
 }
 
 
