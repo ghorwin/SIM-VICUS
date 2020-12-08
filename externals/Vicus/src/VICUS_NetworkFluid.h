@@ -25,6 +25,8 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
+	void defaultFluidWater(unsigned int id);
+
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 

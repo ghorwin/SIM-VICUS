@@ -15,7 +15,6 @@ void HydraulicFluid::defaultFluidWater(unsigned int id){
 	m_kinematicViscosity.m_values.setValues(std::vector<double>{0,10,20,30,40,50,60,70,80,90},
 											std::vector<double>{1.793e-6,1.307e-6,1.004e-6,0.801e-6,0.658e-6,0.554e-6,0.475e-6,0.413e-6,0.365e-6,0.326e-6});
 
-
 }
 
 } // namespace NANDRAD
