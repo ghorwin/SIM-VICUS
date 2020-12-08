@@ -51,6 +51,7 @@ public:
 		P_ExternalSurfaceArea,				// Keyword: ExternalSurfaceArea					[m2]	'External surface area of the component.'
 		P_ConvectiveFraction,				// Keyword: ConvectiveFraction					[---]	'Convective fraction for heating or cooling.'
 		P_COP,								// Keyword: COP									[-]		'Coefficient of performance of the component.'
+		P_HeatFlux,							// Keyword: HeatFlux							[W]		'heat flux added by heat exchanger '
 		NUM_P
 	};
 

@@ -28,7 +28,6 @@ public:
 	/*! Parameters for the element . */
 	enum para_t {
 		P_Length,							// Keyword: Length								[-]		'Length for the element (pipe)'
-		P_HeatExchangeRate,					// Keyword: HeatExchangeRate					[W]		'heat exchange rate for heat exchanger model'
 		NUM_P
 	};
 
