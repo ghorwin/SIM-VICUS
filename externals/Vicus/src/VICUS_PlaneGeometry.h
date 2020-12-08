@@ -123,7 +123,7 @@ private:
 	void simplify();
 
 	/*! Creates a 2D representation of the 3D polygon. */
-	void updatePolygon();
+	void update2DPolygon();
 
 	/*! This function triangulates the geometry and populate the m_triangles vector.
 		This function is called from updateGeometry().

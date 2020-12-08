@@ -24,7 +24,7 @@ void SVPropEditGeometry::on_pushButtonAddPolygon_clicked() {
 	// signal, that we want to start adding a new polygon
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
-	vs.m_propertyWidgetMode = SVViewState::PM_VERTEX_LIST;
+	vs.m_propertyWidgetMode = SVViewState::PM_VertexList;
 	// now tell all UI components to toggle their view state
 	SVViewStateHandler::instance().setViewState(vs);
 }

@@ -71,9 +71,9 @@ void SVPropertyWidget::setMode(PropertyWidgets m) {
 
 void SVPropertyWidget::onViewStateChanged() {
 	switch (SVViewStateHandler::instance().viewState().m_propertyWidgetMode) {
-		case SVViewState::PM_VERTEX_LIST : setMode(M_AddVertexesMode); break;
-		case SVViewState::PM_ADD_GEOMETRY : setMode(M_EditGeometry); break;
-		case SVViewState::PM_EDIT_GEOMETRY : setMode(M_EditGeometry); break;
+		case SVViewState::PM_VertexList		: setMode(M_AddVertexesMode); break;
+		case SVViewState::PM_AddGeometry	: setMode(M_EditGeometry); break;
+		case SVViewState::PM_EditGeometry	: setMode(M_EditGeometry); break;
 		default:;
 	}
 }

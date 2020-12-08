@@ -109,6 +109,7 @@ public:
 			if (std::find(vec.begin(), vec.end(), id) == vec.end())
 				return id;
 		}
+		/// \todo Hauke: discuss with Andreas
 	}
 
 	/*! Function to generate unique ID (const-version). */
@@ -118,6 +119,7 @@ public:
 			if (std::find(vec.begin(), vec.end(), id) == vec.end())
 				return id;
 		}
+		/// \todo Hauke: discuss with Andreas
 	}
 
 

@@ -175,14 +175,15 @@ void PlaneGeometry::removeVertex(unsigned int idx) {
 
 void PlaneGeometry::computeGeometry() {
 	m_triangles.clear();
+	eleminateColinearPts(true);
 	// try to simplify polygon to internal rectangle/parallelogram definition
 	// this may change m_type to Rectangle or Triangle and subsequently speed up operations
 	simplify();
-	eleminateColinearPts();
 	updateNormal();
 	if (!isValid())
 		return;
-	updatePolygon();
+	// determine 2D plane coordinates
+	update2DPolygon();
 	triangulate();
 }
 
@@ -206,8 +207,8 @@ void PlaneGeometry::simplify() {
 }
 
 
-void PlaneGeometry::updatePolygon() {
-	FUNCID(PlaneGeometry::updatePolygon);
+void PlaneGeometry::update2DPolygon() {
+	FUNCID(PlaneGeometry::update2DPolygon);
 
 	//first clear the old polyline
 	m_polygon.clear();
@@ -311,19 +312,6 @@ void PlaneGeometry::triangulate() {
 				m_polygon = polygon;
 			}
 
-			polygon = eleminateColinearPts(true);
-			//m_polygon = polygon;
-
-			//if only 3 points --> it is a triangle
-			//no calculation needed
-			/// TODO Dirk umarbeiten da es polygone geben könnte die am ende nur noch 3 punkte haben
-			/// aber nicht die ersten drei
-			if(m_vertexes.size() == 3){
-				m_triangles.push_back( triangle_t(0, 1, 2) );
-				return;
-			}
-
-			///TODO Dirk endlosschleife abfangen wenn kein erfolg war
 
 			std::set<unsigned int>			oldTriIdx;			//index in the right order for the triangle from the previours step
 
@@ -604,25 +592,19 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 			double x,y;
 			if (!planeCoordinates(offset, m_localX, m_localY, x0, x, y))
 				return false;
-			// process all triangles and perform the test for each triangle
-			return (pointInPolygon(QPointF(x,y), m_polygon) != -1);
-			//			for (const triangle_t & tr : m_triangles) {
-			//				double x,y;
-			//				const IBKMK::Vector3D & a = m_vertexes[tr.c] - m_vertexes[tr.b];
-			//				const IBKMK::Vector3D & b = m_vertexes[tr.a] - m_vertexes[tr.b];
-			//				if (planeCoordinates(x0,a,b, m_vertexes[tr.b],x,y)) {
-			//					if (x >= 0 && x+y <= 1 && y >= 0) {
-			//						intersectionPoint = x0;
-			//						dist = t;
-			//						return true;
-			//					}
-			//				}
-			//			}
-		} break;
+			// test if point is in polygon
+			if (pointInPolygon(QPointF(x,y), m_polygon) != -1) {
+				dist = t;
+				return true;
+			}
+			else
+				return false;
+		}
+
+		case NUM_T:; // just to make compiler happy
 	}
 
 	return false;
-
 }
 
 

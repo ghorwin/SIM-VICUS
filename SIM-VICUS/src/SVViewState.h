@@ -59,16 +59,16 @@ public:
 	/*! Defines which view should be active in the property widget. */
 	enum PropertyWidgetMode {
 		/*! Shows the "Add geometry" widget and tool page. */
-		PM_ADD_GEOMETRY,
+		PM_AddGeometry,
 		/*! Shows the "Edit geometry" widget and transform tool page. */
-		PM_EDIT_GEOMETRY,
+		PM_EditGeometry,
 		/*! Shows the "Widget with list of newly placed vertexes" */
-		PM_VERTEX_LIST,
+		PM_VertexList,
 		NUM_PM
 	};
 
 	SceneOperationMode	m_sceneOperationMode		= NUM_OM;
-	PropertyWidgetMode	m_propertyWidgetMode		= PM_EDIT_GEOMETRY;
+	PropertyWidgetMode	m_propertyWidgetMode		= PM_EditGeometry;
 };
 
 #endif // SVViewStateH
