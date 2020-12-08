@@ -41,6 +41,7 @@
 #include "NANDRAD_WindowGlazingSystem.h"
 #include "NANDRAD_HydraulicNetwork.h"
 #include "NANDRAD_HydraulicNetworkComponent.h"
+#include "NANDRAD_KeywordList.h"
 
 namespace NANDRAD {
 
@@ -91,6 +92,11 @@ public:
 		- new merged construction instance ID
 	*/
 	void mergeSameConstructions();
+
+	/*! convenience function to set an array of IBK::Parameter with correct name, value and unit */
+	static void setParameterWithKeyword(IBK::Parameter *para, const char * const enumtype, int n, const double &val){
+		*(para + n) = IBK::Parameter(NANDRAD::KeywordList::Keyword(enumtype, n), val, NANDRAD::KeywordList::Unit(enumtype, n));
+	}
 
 
 	/*! Comments about the project. */
