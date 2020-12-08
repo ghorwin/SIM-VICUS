@@ -483,6 +483,7 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
 		network.m_elements.reserve(m_nodes.size() + 2 * m_edges.size());
 
 		// writes nodes
+		unsigned count = 0;
 		for (const NetworkNode &node: m_nodes){
 
 			if (node.m_type == NetworkNode::NT_Mixer)
@@ -490,22 +491,24 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
 
 			if (node.m_componentId != INVALID_ID){
 
-				// TODO Hauke: This is done when adding components / editing nodes  already?
-//				// add component to catalog (if it does not yet exist)
-//				if (Project::element(hydraulicComponents, node.m_componentId) == nullptr)
-//					hydraulicComponents.push_back(*Project::element(m_hydraulicComponents, node.m_componentId));
-
-				// add element with parameters
-				NANDRAD::HydraulicNetworkElement elem (node.m_id, node.m_id, node.m_id + idOffsetOutlet, node.m_componentId);
+				// create element
+				NANDRAD::HydraulicNetworkElement elem;
+				if (count == 0)
+					elem = NANDRAD::HydraulicNetworkElement(node.m_id, node.m_id+ idOffsetOutlet, node.m_id, node.m_componentId);
+				else
+					elem = NANDRAD::HydraulicNetworkElement(node.m_id, node.m_id, node.m_id + idOffsetOutlet, node.m_componentId);
+				// add parameters
 				for (unsigned i=0; i<NANDRAD::HydraulicNetworkElement::NUM_IP; ++i)
 					elem.m_interfacePara[i] = node.m_interfacePara[i];
+				elem.m_displayName = "node " + IBK::val2string(node.m_id);
 
 				network.m_elements.push_back(elem);
 			}
 
 			if (node.m_subNetworkId != INVALID_ID){
-				// TODO Hauke
+				// TODO Hauke: continue algorithm for subnetworks
 			}
+			++count;
 		}
 
 		// write edges
@@ -527,14 +530,19 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
 			if (pipe == nullptr)
 				throw IBK::Exception(IBK::FormatString("Edge connected to nodes '%1' and '%2' has no defined pipe from database")
 									 .arg(edge.m_node1->m_id).arg(edge.m_node2->m_id), FUNC_ID);
-			comp.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].set(pipe->m_diameterInside(), IBK::Unit("mm"));
-			comp.m_para[NANDRAD::HydraulicNetworkComponent::P_PipeRoughness].set(pipe->m_roughness, IBK::Unit("mm"));
+
+			NANDRAD::Project::setParameterWithKeyword(&comp.m_para[0], "HydraulicNetworkComponent::para_t",
+												NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter,
+												pipe->m_diameterInside());
+			NANDRAD::Project::setParameterWithKeyword(&comp.m_para[0], "HydraulicNetworkComponent::para_t",
+												NANDRAD::HydraulicNetworkComponent::P_PipeRoughness,
+												pipe->m_roughness);
 
 			// if this component does not exists yet in catalog: add it with unique id
 			unsigned componentId = 0;
 			auto it = std::find(hydraulicComponents.begin(), hydraulicComponents.end(), comp); // compares component attributes, not id
 			if (it == hydraulicComponents.end()){
-				componentId = Project::uniqueId(m_hydraulicComponents);
+				componentId = Project::uniqueId(hydraulicComponents);
 				comp.m_id = componentId;
 				hydraulicComponents.push_back(comp);
 			}
@@ -544,13 +552,20 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
 			// add inlet pipe
 			NANDRAD::HydraulicNetworkElement inletPipe(Project::uniqueId(network.m_elements), edge.m_node1->m_id,
 														edge.m_node2->m_id, componentId);
-			inletPipe.m_para[NANDRAD::HydraulicNetworkElement::P_Length].set(edge.length(), IBK::Unit("m"));
+			NANDRAD::Project::setParameterWithKeyword(&inletPipe.m_para[0], "HydraulicNetworkElement::para_t",
+												NANDRAD::HydraulicNetworkElement::P_Length,
+												edge.length());
+			inletPipe.m_displayName = "inlet pipe from " + IBK::val2string(edge.m_node1->m_id) + " to " + IBK::val2string(edge.m_node2->m_id) ;
 			network.m_elements.push_back(inletPipe);
 
 			// add outlet pipe
-			NANDRAD::HydraulicNetworkElement outletPipe(Project::uniqueId(network.m_elements), edge.m_node1->m_id + idOffsetOutlet,
-														edge.m_node2->m_id + idOffsetOutlet, componentId);
-			outletPipe.m_para[NANDRAD::HydraulicNetworkElement::P_Length].set(edge.length(), IBK::Unit("m"));
+			NANDRAD::HydraulicNetworkElement outletPipe(Project::uniqueId(network.m_elements), edge.m_node2->m_id + idOffsetOutlet,
+														edge.m_node1->m_id + idOffsetOutlet, componentId);
+			NANDRAD::Project::setParameterWithKeyword(&outletPipe.m_para[0], "HydraulicNetworkElement::para_t",
+												NANDRAD::HydraulicNetworkElement::P_Length,
+												edge.length());
+			outletPipe.m_displayName = "outlet pipe from " + IBK::val2string(edge.m_node2->m_id + idOffsetOutlet) +
+					" to " + IBK::val2string(edge.m_node1->m_id + idOffsetOutlet ) ;
 			network.m_elements.push_back(outletPipe);
 		}
 	}

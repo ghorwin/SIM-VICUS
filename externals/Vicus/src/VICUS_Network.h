@@ -181,7 +181,7 @@ public:
 	/*! the catalog of hydraulic components */
 	std::vector<NANDRAD::HydraulicNetworkComponent>	m_hydraulicComponents;
 
-	NetworkType								m_type = NET_NUM;
+	NetworkType								m_type = NET_doublePipe;
 
 	// *** RUNTIME VARIABLES ***
 
