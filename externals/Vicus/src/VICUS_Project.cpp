@@ -85,6 +85,7 @@ Project::Project() {
 	build.m_buildingLevels.push_back(level);
 
 	m_buildings.push_back(build);
+
 	NetworkFluid f1;
 	f1.m_id = 12;
 	f1.m_displayName = "water";
@@ -102,51 +103,99 @@ Project::Project() {
 
 	m_networkFluidDB.push_back(f1);
 
-	NetworkPipe p;
-	p.m_id = 32;
-	p.m_displayName = "PVC, 200 mm x 4 mm";
-	p.m_diameterOutside = 200;
-	p.m_sWall = 4;
-	m_networkPipeDB.push_back(p);
 
-	p.m_id = 33;
-	p.m_displayName = "PVC, 150 mm x 4 mm";
-	p.m_diameterOutside = 150;
-	p.m_sWall = 4;
-	m_networkPipeDB.push_back(p);
+
 
 #endif
 
 #if 0
 
-	// read test network
-	try {
-		Network net;
-		IBK::Path networkDataPath("../../data/vicus/GeometryTests/Network");
-		net.readGridFromCSV(networkDataPath / "Netz.csv");
+	// *** Example of geometric VICUS::Network definition and transformation to NANDRAD ***
+
+	// geometric network
+	VICUS::Network net;
+	unsigned id1 = net.addNodeExt(IBKMK::Vector3D(0,0,0), VICUS::NetworkNode::NT_Source);
+	unsigned id2 = net.addNodeExt(IBKMK::Vector3D(0,70,0), VICUS::NetworkNode::NT_Mixer);
+	unsigned id3 = net.addNodeExt(IBKMK::Vector3D(100,70,0), VICUS::NetworkNode::NT_Building);
+	unsigned id4 = net.addNodeExt(IBKMK::Vector3D(0,200,0), VICUS::NetworkNode::NT_Mixer);
+	unsigned id5 = net.addNodeExt(IBKMK::Vector3D(100,200,0), VICUS::NetworkNode::NT_Building);
+	unsigned id6 = net.addNodeExt(IBKMK::Vector3D(-100,200,0), VICUS::NetworkNode::NT_Building);
+	net.addEdge(id1, id2, true);
+	net.addEdge(id2, id3, true);
+	net.addEdge(id2, id4, true);
+	net.addEdge(id4, id5, true);
+	net.addEdge(id4, id6, true);
 
 
-		m_viewSettings.m_gridWidth = 10000; // 10 km
-		m_viewSettings.m_gridSpacing = 100; // major grid = 100 m
-		m_viewSettings.m_farDistance = 10000;
+	//	 components
+
+	NANDRAD::HydraulicNetworkComponent pump;
+	pump.m_id = 0;
+	pump.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel;
+	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].set("PressureHead", 300, IBK::Unit("Pa"));
+	net.m_hydraulicComponents.push_back(pump);
+
+	NANDRAD::HydraulicNetworkComponent heatExchanger;
+	heatExchanger.m_id = 1;
+	heatExchanger.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger;
+	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_HeatFlux].set("HeatFlux", 100, IBK::Unit("W"));
+	net.m_hydraulicComponents.push_back(heatExchanger);
+
+	net.m_nodes[id1].m_componentId = pump.m_id;
+	net.m_nodes[id3].m_componentId = heatExchanger.m_id;
+	net.m_nodes[id5].m_componentId = heatExchanger.m_id;
+	net.m_nodes[id6].m_componentId = heatExchanger.m_id;
 
 
+	// pipes
+	NetworkPipe p;
+	p.m_id = 0;
+	p.m_displayName = "PE 32 x 3.2";
+	p.m_diameterOutside = 32;
+	p.m_sWall = 3.2;
+	p.m_roughness = 0.007;
+	net.m_networkPipeDB.push_back(p);
+	NetworkPipe p2;
+	p2.m_id = 1;
+	p2.m_displayName = "PE 50 x 4.6";
+	p2.m_diameterOutside = 60;
+	p2.m_sWall = 4.6;
+	p2.m_roughness = 0.007;
+	net.m_networkPipeDB.push_back(p2);
 
-//	net.generateIntersections();
-
-//		net.readBuildingsFromCSV(networkDataPath / "b_3.6kw.csv", 3600);
-//		net.readBuildingsFromCSV(networkDataPath / "b_4.8kw.csv", 4800);
-//		net.readBuildingsFromCSV(networkDataPath / "b_6kw.csv", 6000);
-//		net.readBuildingsFromCSV(networkDataPath / "b_21.6kw.csv", 21600);
-//		net.readBuildingsFromCSV(networkDataPath / "b_28.8kw.csv", 28800);
-		m_networks.push_back(net);
-	} catch (...) {
-
-	}
-#endif
-
+	net.edge(id1, id2)->m_pipeId = p.m_id;
+	net.edge(id1, id2)->m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe;
+	net.edge(id2, id3)->m_pipeId = p2.m_id;
+	net.edge(id2, id3)->m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe;
+	net.edge(id2, id4)->m_pipeId = p.m_id;
+	net.edge(id2, id4)->m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe;
+	net.edge(id4, id5)->m_pipeId = p2.m_id;
+	net.edge(id4, id5)->m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe;
+	net.edge(id4, id6)->m_pipeId = p2.m_id;
+	net.edge(id4, id6)->m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe;
 
 	updatePointers();
+
+
+	// create Nandrad Network
+	NANDRAD::HydraulicNetwork hydrNet;
+	std::vector<NANDRAD::HydraulicNetworkComponent> hydraulicComponents;
+	hydrNet.m_id = 1;
+	hydrNet.m_displayName = "auto generated from geometric network";
+	net.createNandradHydraulicNetwork(hydrNet, hydraulicComponents);
+	hydrNet.m_fluid.defaultFluidWater(1);
+
+
+	// write Nandrad project
+	NANDRAD::Project prj;
+	prj.m_hydraulicNetworks.clear();
+	prj.m_hydraulicNetworks.push_back(hydrNet);
+	prj.m_hydraulicComponents = hydraulicComponents;
+	prj.writeXML(IBK::Path("../../data/hydraulicNetworks/auto_generated.nandrad"));
+
+	updatePointers();
+
+#endif
 }
 
 
@@ -277,5 +326,6 @@ const VICUS::Object * Project::objectById(unsigned int uniqueID) const {
 		throw IBK::Exception(IBK::FormatString("Missing object with unique ID %1.").arg(uniqueID), FUNC_ID);
 	return obj;
 }
+
 
 } // namespace VICUS

@@ -80,6 +80,7 @@ public:
 	*/
 	const VICUS::Object * objectById(unsigned int uniqueID) const;
 
+
 	// *** FUNCTIONS ***
 
 	/*! Function to find an element by ID. */
