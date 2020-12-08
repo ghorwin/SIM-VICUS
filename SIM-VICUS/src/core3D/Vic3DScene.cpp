@@ -253,6 +253,7 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 	m_camera.translate(transSpeed * translation);
 	m_camera.rotate(transSpeed, rotationAxis);
 
+	// *** Escape ***
 	if (keyboardHandler.keyDown(Qt::Key_Escape)) {
 		// different operation depending on scene's operation mode
 		switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
@@ -278,6 +279,23 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 				if (!m_selectedGeometryObject.m_selectedSurfaces.empty()) {
 					clearSelectionOfObjects();
 				}
+		}
+	}
+
+
+	// *** Enter/Return ***
+	if (keyboardHandler.keyDown(Qt::Key_Return)) {
+		// different operation depending on scene's operation mode
+		switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
+
+			// *** place a vertex ***
+			case SVViewState::OM_PlaceVertex : {
+				// finish "place vertex" operation, this on
+				m_newPolygonObject.finish();
+			} break;
+
+			default:; // in all other modes, Enter has no effect (for now)
+
 		}
 	}
 

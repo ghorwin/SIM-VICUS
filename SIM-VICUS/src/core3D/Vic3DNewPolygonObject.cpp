@@ -108,6 +108,12 @@ void NewPolygonObject::clear() {
 }
 
 
+void NewPolygonObject::finish() {
+	if (m_planeGeometry.isValid())
+		m_vertexListWidget->on_pushButtonFinish_clicked();
+}
+
+
 void NewPolygonObject::updateLastVertex(const QVector3D & p) {
 	// no vertex added yet? should normally not happen, but during testing we just check it
 	if (m_vertexBufferData.empty())

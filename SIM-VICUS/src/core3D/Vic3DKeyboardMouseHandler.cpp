@@ -100,6 +100,11 @@ void KeyboardMouseHandler::clearWasPressedKeyStates() {
 		m_keyStates[i] = static_cast<KeyStates>(m_keyStates[i] & 1); // toggle "WasPressed" bit -> NotPressed
 }
 
+std::vector<Qt::Key> KeyboardMouseHandler::keys() const
+{
+	return m_keys;
+}
+
 
 
 bool KeyboardMouseHandler::pressKey(Qt::Key k) {
@@ -178,6 +183,14 @@ bool KeyboardMouseHandler::keyDown(Qt::Key k) const {
 		if (m_keys[i] == k)
 			return m_keyStates[i] == StateHeld;
 	}
+	return false;
+}
+
+
+bool KeyboardMouseHandler::anyKeyDown() const {
+	for (unsigned int i=0; i<m_keys.size(); ++i)
+		if (m_keyStates[i] != StateNotPressed)
+			return true;
 	return false;
 }
 

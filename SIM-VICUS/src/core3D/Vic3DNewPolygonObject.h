@@ -59,6 +59,9 @@ public:
 	/*! Clear current geometry (clears also all buffers). */
 	void clear();
 
+	/*! Calls on_pushButtonFinish_clicked() in VertexListWidget and adds the polygon to the data structure. */
+	void finish();
+
 	/*! This function is to be called whenever the movable coordinate system changes its (snapped) position.
 		The function first compares the point with the currently set point - if no change is recognized, nothing happens.
 		If the point was indeed moved, the buffer will be updated and only the last vertex will be updated in the

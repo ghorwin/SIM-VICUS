@@ -30,6 +30,7 @@ SceneView::SceneView() :
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_F);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Shift);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Escape);
+	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Return);
 
 	// *** create scene (no OpenGL calls are being issued below, just the data structures are created.
 
@@ -303,56 +304,43 @@ void SceneView::wheelEvent(QWheelEvent *event) {
 
 void SceneView::checkInput() {
 	// this function is called from the Qt event look whenever _any_ key/mouse event was issued
+	// we now check for any condition that might require a repaint
 
-	// We need to loop over all registered input handlers and check if their conditions have been met.
-	// We basically test, if the current state of the key handler requires a scene update
-	// (camera movement) and if so, we just set a flag to do that upon next repaint
-	// and we schedule a repaint. First thing in the paint event we process the input and update camera positions
-	// and the like.
+	// special handling for moving coordinate system (only during place vertex mode, since this will
+	// cause the scene to update at monitor refresh rate)
+	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_PlaceVertex) {
+		m_inputEventReceived = true;
+		renderLater();
+		return;
+	}
 
-	// trigger key held?
-		// any of the interesting keys held?
-	if (m_keyboardMouseHandler.keyDown(Qt::Key_W) ||
-			m_keyboardMouseHandler.keyDown(Qt::Key_A) ||
-			m_keyboardMouseHandler.keyDown(Qt::Key_S) ||
-			m_keyboardMouseHandler.keyDown(Qt::Key_D) ||
-			m_keyboardMouseHandler.keyDown(Qt::Key_Q) ||
-			m_keyboardMouseHandler.keyDown(Qt::Key_F) ||
-			m_keyboardMouseHandler.keyDown(Qt::Key_R) ||
-			m_keyboardMouseHandler.keyDown(Qt::Key_E))
-	{
+	// check if any of the know keys is held/was pressed
+	if (m_keyboardMouseHandler.anyKeyDown()) {
 		m_inputEventReceived = true;
 		//			qDebug() << "SceneView::checkInput() inputEventReceived";
 		renderLater();
 		return;
 	}
 
-	// special handling for snapping coordinate system
-	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_PlaceVertex) {
-		m_inputEventReceived = true;
-		renderLater();
-	}
-
-	// has the mouse been moved?
+	// has the mouse been moved while the right button was held (first-person controller)?
 	if ( m_keyboardMouseHandler.buttonDown(Qt::RightButton)) {
 		m_inputEventReceived = true;
 		//			qDebug() << "SceneView::checkInput() inputEventReceived: " << QCursor::pos() << m_keyboardMouseHandler.mouseDownPos();
 		renderLater();
 		return;
 	}
-	// has the left mouse butten been release
-	if (m_keyboardMouseHandler.buttonDown(Qt::LeftButton)) {
-		m_inputEventReceived = true;
-		renderLater();
-		return;
-	}
-	if (m_keyboardMouseHandler.buttonReleased(Qt::LeftButton)) {
+
+	// is the left mouse butten been held (orbit controller) or has it been released (left-mouse-button click)?
+	if (m_keyboardMouseHandler.buttonDown(Qt::LeftButton) ||
+		m_keyboardMouseHandler.buttonReleased(Qt::LeftButton))
+	{
 		m_inputEventReceived = true;
 		renderLater();
 		return;
 	}
 
-	if(m_keyboardMouseHandler.buttonDown(Qt::MidButton)){
+	// is the middle mouse butten been held (translate camera)?
+	if (m_keyboardMouseHandler.buttonDown(Qt::MidButton)){
 		m_inputEventReceived = true;
 		renderLater();
 		return;
@@ -360,13 +348,6 @@ void SceneView::checkInput() {
 
 	// scroll-wheel turned?
 	if (m_keyboardMouseHandler.wheelDelta() != 0) {
-		m_inputEventReceived = true;
-		renderLater();
-		return;
-	}
-
-	// Escape clears current selection
-	if (m_keyboardMouseHandler.keyDown(Qt::Key_Escape)) {
 		m_inputEventReceived = true;
 		renderLater();
 		return;

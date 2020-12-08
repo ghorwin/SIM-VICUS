@@ -97,6 +97,9 @@ public:
 
 	/*! Returns, whether the key is pressed or was pressed in last query interval. */
 	bool keyDown(Qt::Key k) const;
+	/*! Returns true, if any of the monitored keys was pressed. */
+	bool anyKeyDown() const;
+
 	/*! Returns, whether the mouse button is pressed or was pressed in last query interval. */
 	bool buttonDown(Qt::MouseButton btn) const;
 	/*! Returns, whether the mouse button was pressed and is now released. */
@@ -133,6 +136,9 @@ public:
 
 	/*! This resets all key states currently marked as "WasPressed". */
 	void clearWasPressedKeyStates();
+
+	/*! Returns list of monitored keys. */
+	std::vector<Qt::Key> keys() const;
 
 private:
 	enum KeyStates {

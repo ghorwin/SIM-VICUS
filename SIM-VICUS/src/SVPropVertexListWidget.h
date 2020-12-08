@@ -27,6 +27,8 @@ public slots:
 	/*! Called, when user starts with a new polygon/geometry. */
 	void onNewVertexListStart();
 
+	void on_pushButtonFinish_clicked();
+
 private slots:
 	void on_pushButtonDeleteLast_clicked();
 
@@ -36,7 +38,6 @@ private slots:
 
 	void on_pushButtonDeleteSelected_clicked();
 
-	void on_pushButtonFinish_clicked();
 
 private:
 	Ui::SVPropVertexListWidget	*m_ui;
