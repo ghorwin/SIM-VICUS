@@ -3,7 +3,11 @@
 	<Project>
 		<ProjectInfo />
 		<Location />
-		<SimulationParameter />
+		<SimulationParameter>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
 		<SolverParameter />
 		<HydraulicNetworks>
 			<HydraulicNetwork id="4" displayName="Test Network">
@@ -17,9 +21,7 @@
 					</LinearSplineParameter>
 				</HydraulicFluid>
 				<Elements>
-					<HydraulicNetworkElement id="5" inletNodeId="140" outletNodeId="100" componentId="1">
-						<ZoneId>105</ZoneId>
-					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="5" inletNodeId="140" outletNodeId="100" componentId="1" />
 					<HydraulicNetworkElement id="6" inletNodeId="100" outletNodeId="110" componentId="2">
 						<IBK:Parameter name="Length" unit="m">50</IBK:Parameter>
 					</HydraulicNetworkElement>
@@ -39,28 +41,6 @@
 			</HydraulicNetwork>
 		</HydraulicNetworks>
 		<HydraulicComponents>
-			<HydraulicNetworkComponent id="1" displayName="Constant Pressure Pump" modelType="ConstantPressurePumpModel">
-				<IBK:Parameter name="HydraulicDiameter" unit="mm">12</IBK:Parameter>
-				<IBK:Parameter name="PressureHead" unit="kPa">300</IBK:Parameter>
-				<IBK:Parameter name="PumpEfficiency" unit="---">0.4</IBK:Parameter>
-				<IBK:Parameter name="MotorEfficiency" unit="---">0.9</IBK:Parameter>
-			</HydraulicNetworkComponent>
-			<HydraulicNetworkComponent id="2" displayName="Boiler" modelType="GasBoiler">
-				<IBK:Parameter name="HydraulicDiameter" unit="mm">12</IBK:Parameter>
-				<IBK:Parameter name="RatedHeatingCapacity" unit="kW">10</IBK:Parameter>
-			</HydraulicNetworkComponent>
-			<HydraulicNetworkComponent id="3" displayName="Adiabatic Pipe" modelType="StaticAdiabaticPipe">
-				<IBK:Parameter name="PipeRoughness" unit="mm">0.007</IBK:Parameter>
-			</HydraulicNetworkComponent>
-			<HydraulicNetworkComponent id="5" displayName="ccs" modelType="ComponentConditionSystem">
-				<IBK:Parameter name="PipeRoughness" unit="mm">0.007</IBK:Parameter>
-				<IBK:Parameter name="PressureLossCoefficient" unit="-">1</IBK:Parameter>
-				<IBK:Parameter name="HydraulicDiameter" unit="mm">12</IBK:Parameter>
-			</HydraulicNetworkComponent>
-			<HydraulicNetworkComponent id="4" displayName="Heat Exchanged Pipe" modelType="StaticPipe">
-				<IBK:Parameter name="PipeRoughness" unit="mm">0.007</IBK:Parameter>
-				<IBK:Parameter name="HydraulicDiameter" unit="mm">12</IBK:Parameter>
-			</HydraulicNetworkComponent>
 			<HydraulicNetworkComponent id="1" displayName="Constant Pressure Pump" modelType="ConstantPressurePumpModel">
 				<IBK:Parameter name="HydraulicDiameter" unit="mm">100</IBK:Parameter>
 				<IBK:Parameter name="PressureHead" unit="kPa">300</IBK:Parameter>

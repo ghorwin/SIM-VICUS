@@ -3,7 +3,11 @@
 	<Project>
 		<ProjectInfo />
 		<Location />
-		<SimulationParameter />
+		<SimulationParameter>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
 		<SolverParameter />
 		<HydraulicNetworks>
 			<HydraulicNetwork id="6" displayName="Test Network">
@@ -17,20 +21,18 @@
 					</LinearSplineParameter>
 				</HydraulicFluid>
 				<Elements>
-					<HydraulicNetworkElement id="8" inletNodeId="9" outletNodeId="10" componentId="1">
-						<ZoneId>11</ZoneId>
-					</HydraulicNetworkElement>
-					<HydraulicNetworkElement id="12" inletNodeId="10" outletNodeId="13" componentId="2" />
-					<HydraulicNetworkElement id="14" inletNodeId="13" outletNodeId="15" componentId="3">
+					<HydraulicNetworkElement id="8" inletNodeId="9" outletNodeId="10" componentId="1" />
+					<HydraulicNetworkElement id="11" inletNodeId="10" outletNodeId="12" componentId="2" />
+					<HydraulicNetworkElement id="13" inletNodeId="12" outletNodeId="14" componentId="3">
 						<IBK:Parameter name="Length" unit="m">10</IBK:Parameter>
 					</HydraulicNetworkElement>
-					<HydraulicNetworkElement id="16" inletNodeId="13" outletNodeId="17" componentId="4">
+					<HydraulicNetworkElement id="15" inletNodeId="12" outletNodeId="16" componentId="4">
 						<IBK:Parameter name="Length" unit="m">10</IBK:Parameter>
 					</HydraulicNetworkElement>
-					<HydraulicNetworkElement id="18" inletNodeId="15" outletNodeId="19" componentId="5">
+					<HydraulicNetworkElement id="17" inletNodeId="14" outletNodeId="18" componentId="5">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 					</HydraulicNetworkElement>
-					<HydraulicNetworkElement id="20" inletNodeId="17" outletNodeId="19" componentId="5">
+					<HydraulicNetworkElement id="19" inletNodeId="16" outletNodeId="18" componentId="5">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 					</HydraulicNetworkElement>
 				</Elements>
