@@ -462,12 +462,9 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 	updateWorld2ViewMatrix();
 
 
-	/// \todo for performance reasons, we should add a flag that signals that the view was indeed changed
-	///			otherwise we do a potential lengthy picking and snap operation for nothing
-
-	// if coordinate system is active, perform picking operation and snap coordinate system to grid
-	if (m_coordinateSystemActive) {
-		// \todo adjust pick algorithm to only check for certain selections
+	// if in "place vertex" mode, perform picking operation and snap coordinate system to grid
+	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_PlaceVertex) {
+		/// \todo Stephan: customize picking object rules based on current snap selection
 		PickObject o(localMousePos, PickObject::P_XY_Plane);
 		pick(o);
 		// now determine which grid line is closest
@@ -477,12 +474,11 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 			// coordinate system
 			m_coordinateSystemObject.m_transform.setTranslation(closestPoint);
 		}
-	}
 
-	// if we are in draw mode, update the movable coordinate system's location in the new polygon object
-	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_PlaceVertex) {
+		// update the movable coordinate system's location in the new polygon object
 		m_newPolygonObject.updateLastVertex(m_coordinateSystemObject.m_transform.translation());
 	}
+
 }
 
 
