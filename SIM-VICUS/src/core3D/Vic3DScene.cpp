@@ -254,10 +254,33 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 	m_camera.rotate(transSpeed, rotationAxis);
 
 	if (keyboardHandler.keyDown(Qt::Key_Escape)) {
-		if (!m_selectedGeometryObject.m_selectedSurfaces.empty()) {
-			clearSelectionOfObjects();
+		// different operation depending on scene's operation mode
+		switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
+
+			// *** place a vertex ***
+			case SVViewState::OM_PlaceVertex : {
+				// abort "place vertex" operation
+				// reset new polygon object, so that it won't be drawn anylonger
+				m_newPolygonObject.clear();
+				// signal, that we are no longer in "add vertex" mode
+				SVViewState vs = SVViewStateHandler::instance().viewState();
+				vs.m_sceneOperationMode = SVViewState::NUM_OM;
+				vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+				// now tell all UI components to toggle their view state
+				SVViewStateHandler::instance().setViewState(vs);
+			} break;
+
+			case SVViewState::OM_AlignLocalCoordinateSystem:
+			break;
+
+			default:
+				// default mode - Escape clears selection
+				if (!m_selectedGeometryObject.m_selectedSurfaces.empty()) {
+					clearSelectionOfObjects();
+				}
 		}
 	}
+
 
 	// *** Mouse ***
 
@@ -835,20 +858,20 @@ void Vic3DScene::adjustCurserDuringMouseDrag(const QPoint & mouseDelta, const QP
 
 
 void Vic3DScene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandler, const QPoint & localMousePos) {
-	// if we are in passive mode, we handle the click as "selection"
-
-	// if we are in "draw" mode, we either continue drawing points (i.e. add a point), or
-	// start a new polygon
+	// do different things depending on current scene operation mode
 
 	switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
+
+		// *** place a vertex ***
 		case SVViewState::OM_PlaceVertex : {
-			// signal parent widget that we added a point
+			// get current coordinate system's position
 			IBKMK::Vector3D p = VICUS::QVector2IBKVector(m_coordinateSystemObject.m_transform.translation());
-			// append a vertex (this will automatically update the draw buffer)
+			// append a vertex (this will automatically update the draw buffer) and also
+			// modify the vertexListWidget.
 			m_newPolygonObject.appendVertex(p);
 			return;
 		}
-		default :;
+		default :; // in all other modes we do selection stuff
 	}
 
 	// this will be a selection click - execute pick() operation
@@ -872,7 +895,6 @@ void Vic3DScene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandl
 															   !selected);
 		action->push();
 	}
-
 }
 
 
