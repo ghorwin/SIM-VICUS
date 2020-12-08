@@ -1,0 +1,9 @@
+﻿% Basic plotting function, cos() version and polynomial version
+>plot2d("0.5-0.5*cos(x*pi)",0,1,color=blue);
+>plot2d("1 + (1-x)*(1-x)*(-3 + 2*(1-x))",0,1,color=red,>add); insimg;
+ %image% math_functions-001.png
+% Alternative-Version with argument normalized
+>plot2d("0.5-0.5*cos(x/5*pi)",0,5,color=blue);
+>plot2d("1 + (1-x/5)*(1-x/5)*(-3 + 2*(1-x/5))",0,5,color=red,>add); insimg;
+ %image% math_functions-002.png
+>
