@@ -179,6 +179,7 @@ namespace NANDRAD {
 				case 13 : return "ExternalSurfaceArea";
 				case 14 : return "ConvectiveFraction";
 				case 15 : return "COP";
+				case 16 : return "HeatFlux";
 			} break;
 			// HydraulicNetworkComponent::interfaceType_t
 			case 7 :
@@ -192,7 +193,6 @@ namespace NANDRAD {
 			case 8 :
 			switch (t) {
 				case 0 : return "Length";
-				case 1 : return "HeatExchangeRate";
 			} break;
 			// HydraulicNetworkElement::interfacePara_t
 			case 9 :
@@ -635,6 +635,7 @@ namespace NANDRAD {
 				case 13 : return "ExternalSurfaceArea";
 				case 14 : return "ConvectiveFraction";
 				case 15 : return "COP";
+				case 16 : return "HeatFlux";
 			} break;
 			// HydraulicNetworkComponent::interfaceType_t
 			case 7 :
@@ -648,7 +649,6 @@ namespace NANDRAD {
 			case 8 :
 			switch (t) {
 				case 0 : return "Length";
-				case 1 : return "HeatExchangeRate";
 			} break;
 			// HydraulicNetworkElement::interfacePara_t
 			case 9 :
@@ -1092,6 +1092,7 @@ namespace NANDRAD {
 				case 13 : return "External surface area of the component.";
 				case 14 : return "Convective fraction for heating or cooling.";
 				case 15 : return "Coefficient of performance of the component.";
+				case 16 : return "heat flux added by heat exchanger";
 			} break;
 			// HydraulicNetworkComponent::interfaceType_t
 			case 7 :
@@ -1105,7 +1106,6 @@ namespace NANDRAD {
 			case 8 :
 			switch (t) {
 				case 0 : return "Length for the element (pipe)";
-				case 1 : return "heat exchange rate for heat exchanger model";
 			} break;
 			// HydraulicNetworkElement::interfacePara_t
 			case 9 :
@@ -1548,6 +1548,7 @@ namespace NANDRAD {
 				case 13 : return "m2";
 				case 14 : return "---";
 				case 15 : return "-";
+				case 16 : return "W";
 			} break;
 			// HydraulicNetworkComponent::interfaceType_t
 			case 7 :
@@ -1560,8 +1561,7 @@ namespace NANDRAD {
 			// HydraulicNetworkElement::para_t
 			case 8 :
 			switch (t) {
-				case 0 : return "-";
-				case 1 : return "W";
+				case 0 : return "m";
 			} break;
 			// HydraulicNetworkElement::interfacePara_t
 			case 9 :
@@ -2004,6 +2004,7 @@ namespace NANDRAD {
 				case 13 : return "#FFFFFF";
 				case 14 : return "#FFFFFF";
 				case 15 : return "#FFFFFF";
+				case 16 : return "#FFFFFF";
 			} break;
 			// HydraulicNetworkComponent::interfaceType_t
 			case 7 :
@@ -2017,7 +2018,6 @@ namespace NANDRAD {
 			case 8 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
 			} break;
 			// HydraulicNetworkElement::interfacePara_t
 			case 9 :
@@ -2460,6 +2460,7 @@ namespace NANDRAD {
 				case 13 : return std::numeric_limits<double>::quiet_NaN();
 				case 14 : return std::numeric_limits<double>::quiet_NaN();
 				case 15 : return std::numeric_limits<double>::quiet_NaN();
+				case 16 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetworkComponent::interfaceType_t
 			case 7 :
@@ -2473,7 +2474,6 @@ namespace NANDRAD {
 			case 8 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetworkElement::interfacePara_t
 			case 9 :
@@ -2861,11 +2861,11 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::modelType_t
 			case 5 : return 14;
 			// HydraulicNetworkComponent::para_t
-			case 6 : return 16;
+			case 6 : return 17;
 			// HydraulicNetworkComponent::interfaceType_t
 			case 7 : return 4;
 			// HydraulicNetworkElement::para_t
-			case 8 : return 2;
+			case 8 : return 1;
 			// HydraulicNetworkElement::interfacePara_t
 			case 9 : return 4;
 			// InterfaceAirFlow::splinePara_t
@@ -2989,11 +2989,11 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::modelType_t
 			case 5 : return 13;
 			// HydraulicNetworkComponent::para_t
-			case 6 : return 15;
+			case 6 : return 16;
 			// HydraulicNetworkComponent::interfaceType_t
 			case 7 : return 3;
 			// HydraulicNetworkElement::para_t
-			case 8 : return 1;
+			case 8 : return 0;
 			// HydraulicNetworkElement::interfacePara_t
 			case 9 : return 3;
 			// InterfaceAirFlow::splinePara_t

@@ -27,7 +27,7 @@ public:
 
 	/*! Parameters for the element . */
 	enum para_t {
-		P_Length,							// Keyword: Length								[-]		'Length for the element (pipe)'
+		P_Length,							// Keyword: Length								[m]		'Length for the element (pipe)'
 		NUM_P
 	};
 
