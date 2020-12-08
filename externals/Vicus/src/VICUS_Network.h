@@ -4,6 +4,7 @@
 #include "VICUS_NetworkEdge.h"
 #include "VICUS_NetworkNode.h"
 #include "VICUS_CodeGenMacros.h"
+#include "VICUS_NetworkPipe.h"
 
 #include <vector>
 #include <set>
@@ -22,7 +23,6 @@ namespace IBK {
 
 namespace VICUS {
 
-class NetworkPipe;
 class NetworkFluid;
 
 class Network {
@@ -137,6 +137,8 @@ public:
 		m_nodes.clear();
 	}
 
+	NetworkEdge *edge(unsigned nodeId1, unsigned nodeId2);
+
 	double numberOfBuildings() const;
 
 	void createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
@@ -168,7 +170,7 @@ public:
 	std::vector<NetworkEdge>				m_edges;									// XML:E:required
 
 	/*! Pipe database, pipe dimensioning algorithm may use any pipes defined in this list. */
-	std::vector<NetworkPipe>				m_networkPipes;								// XM:E
+	std::vector<NetworkPipe>				m_networkPipeDB;							// XM:E
 
 	/*! origin of the network */
 	IBKMK::Vector3D							m_origin = IBKMK::Vector3D(0.0, 0.0, 0.0);	// XML:E:required

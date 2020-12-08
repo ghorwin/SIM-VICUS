@@ -441,6 +441,16 @@ double Network::totalLength() const{
 	return length;
 }
 
+
+NetworkEdge *Network::edge(unsigned nodeId1, unsigned nodeId2){
+	for (NetworkEdge &e: m_edges){
+		if (e.nodeId1() == nodeId1 && e.nodeId2() == nodeId2)
+			return &e;
+	}
+	IBK_ASSERT(false);
+}
+
+
 double Network::numberOfBuildings() const{
 	double count = 0;
 	for (const NetworkNode &n: m_nodes){
@@ -486,11 +496,11 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
 //					hydraulicComponents.push_back(*Project::element(m_hydraulicComponents, node.m_componentId));
 
 				// add element with parameters
-				NANDRAD::HydraulicNetworkElement element (node.m_id, node.m_id, node.m_id + idOffsetOutlet, node.m_componentId);
+				NANDRAD::HydraulicNetworkElement elem (node.m_id, node.m_id, node.m_id + idOffsetOutlet, node.m_componentId);
 				for (unsigned i=0; i<NANDRAD::HydraulicNetworkElement::NUM_IP; ++i)
-					element.m_interfacePara[i] = node.m_interfacePara[i];
+					elem.m_interfacePara[i] = node.m_interfacePara[i];
 
-				network.m_elements.push_back(element);
+				network.m_elements.push_back(elem);
 			}
 
 			if (node.m_subNetworkId != INVALID_ID){
@@ -501,7 +511,7 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
 		// write edges
 		for (const NetworkEdge &edge: m_edges){
 
-			// create hydraulic component from pipe and add it to catalog, if not existing yet
+			// create hydraulic component from pipe and set according model
 			NANDRAD::HydraulicNetworkComponent comp;
 			if (edge.m_modelType == NANDRAD::HydraulicNetworkComponent::MT_StaticPipe ||
 				edge.m_modelType == NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe||
@@ -512,11 +522,15 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
 				throw IBK::Exception(IBK::FormatString("Edge connected to nodes '%1' and '%2' has a model type which does "
 													   "not represent a pipe.").arg(edge.m_node1->m_id).arg(edge.m_node2->m_id), FUNC_ID);
 
-			NetworkPipe pipe = *Project::element(m_networkPipes, edge.m_pipeId);
-			comp.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].set(pipe.m_diameterInside(), IBK::Unit("mm"));
-			comp.m_para[NANDRAD::HydraulicNetworkComponent::P_PipeRoughness].set(pipe.m_roughness, IBK::Unit("mm"));
+			// check if there is a reference to a pipe from DB and parametrize hydraulic component
+			const NetworkPipe *pipe = Project::element(m_networkPipeDB, edge.m_pipeId);
+			if (pipe == nullptr)
+				throw IBK::Exception(IBK::FormatString("Edge connected to nodes '%1' and '%2' has no defined pipe from database")
+									 .arg(edge.m_node1->m_id).arg(edge.m_node2->m_id), FUNC_ID);
+			comp.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].set(pipe->m_diameterInside(), IBK::Unit("mm"));
+			comp.m_para[NANDRAD::HydraulicNetworkComponent::P_PipeRoughness].set(pipe->m_roughness, IBK::Unit("mm"));
 
-			// if this component does not exists yet: add it with unique id
+			// if this component does not exists yet in catalog: add it with unique id
 			unsigned componentId = 0;
 			auto it = std::find(hydraulicComponents.begin(), hydraulicComponents.end(), comp); // compares component attributes, not id
 			if (it == hydraulicComponents.end()){
