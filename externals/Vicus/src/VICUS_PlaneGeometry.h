@@ -109,6 +109,10 @@ public:
 
 	void setVertexes(const std::vector<IBKMK::Vector3D> & vertexes);
 
+	/*! Eleminate colinear points in a polygon and return a new polygon. */
+	QPolygonF eleminateColinearPts(bool overrideMemberVar = true);
+
+
 private:
 	// *** PRIVATE MEMBER FUNCTIONS ***
 

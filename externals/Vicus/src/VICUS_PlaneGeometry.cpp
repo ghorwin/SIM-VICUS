@@ -178,6 +178,7 @@ void PlaneGeometry::computeGeometry() {
 	// try to simplify polygon to internal rectangle/parallelogram definition
 	// this may change m_type to Rectangle or Triangle and subsequently speed up operations
 	simplify();
+	eleminateColinearPts();
 	updateNormal();
 	if (!isValid())
 		return;
@@ -241,10 +242,37 @@ void PlaneGeometry::updatePolygon() {
 	}
 }
 
+QPolygonF PlaneGeometry::eleminateColinearPts(bool overrideMemberVar){
+
+	const double eps = 1e-4;
+	unsigned int polySize = m_polygon.size();
+	QPolygonF newPoly;
+	for(unsigned int idx=0; idx<polySize; ++idx){
+		unsigned int idx0 = idx-1;
+		if(idx==0)
+			idx0 = polySize-1;
+
+		QVector2D a(m_polygon[idx0]-m_polygon[idx]);
+		QVector2D b(m_polygon[(idx+1)%polySize]-m_polygon[idx]);
+		double cosAngle = QVector2D::dotProduct(a.normalized() , b.normalized());
+
+		// points are not colinear add point to new polygon
+		if(cosAngle > -1+eps && cosAngle < 1-eps){
+			newPoly << m_polygon.value(idx);
+		}
+	}
+	if(overrideMemberVar)
+		m_polygon = newPoly;
+	return  newPoly;
+}
+
 
 void PlaneGeometry::triangulate() {
+	FUNCID(PlaneGeometry::triangulate);
 	Q_ASSERT(m_vertexes.size() >= 3);
 	Q_ASSERT(m_polygon.size() == m_vertexes.size());
+
+	bool isDrawMode = true;
 
 	const double eps = 1e-4;
 	m_triangles.clear();
@@ -252,7 +280,7 @@ void PlaneGeometry::triangulate() {
 
 		case T_Triangle :
 			m_triangles.push_back( triangle_t(0, 1, 2) );
-		break;
+			break;
 
 		case T_Rectangle :
 			// TODO : there might be a faster way for rectangles, but for now
@@ -262,86 +290,222 @@ void PlaneGeometry::triangulate() {
 			std::set<unsigned int> usedIdx;
 			std::vector<std::vector<unsigned int>>	trisIndices;
 
+
+			// create a polygon without colinear points
+			QPolygonF polygon = m_polygon;
+
+			if(false){
+				polygon.clear();
+				polygon << QPointF(0,0);
+				polygon << QPointF(1,0);
+				polygon << QPointF(1,1);
+				polygon << QPointF(0,1);
+				polygon << QPointF(0,2);
+				polygon << QPointF(-1,2);
+				polygon << QPointF(-1,1);
+				polygon << QPointF(-1,0);
+//				polygon << QPointF(-2,0);
+//				polygon << QPointF(-2,-1);
+//				polygon << QPointF(-1,-1);
+//				polygon << QPointF(0,-1);
+				m_polygon = polygon;
+			}
+
+			polygon = eleminateColinearPts(true);
+			//m_polygon = polygon;
+
+			//if only 3 points --> it is a triangle
+			//no calculation needed
+			/// TODO Dirk umarbeiten da es polygone geben könnte die am ende nur noch 3 punkte haben
+			/// aber nicht die ersten drei
+			if(m_vertexes.size() == 3){
+				m_triangles.push_back( triangle_t(0, 1, 2) );
+				return;
+			}
+
+			///TODO Dirk endlosschleife abfangen wenn kein erfolg war
+
+			std::set<unsigned int>			oldTriIdx;			//index in the right order for the triangle from the previours step
+
 			unsigned int idx = 0;
-			while(true){
+			for(;;){
+
+				if(idx >= polygon.size())
+					idx = 0;
+
 				QPolygonF triangle;
 				//check if there are enough points left
-				if(usedIdx.size()>=m_polygon.size()-2)
+				if(usedIdx.size()>=polygon.size()-2)
 					break;
 
-				std::set<unsigned int> triIdx;			//index that used for triangle as set for quick access
-				std::vector<unsigned int> triIdxVec;	//index in the right order for the triangle
+				std::set<unsigned int>			triIdx;			//index that used for triangle as set for quick access
+				std::vector<unsigned int>		triIdxVec;		//index in the right order for the triangle
 
 				//build a triangle with unused points
 				unsigned int idx2 = idx;
-				while(true){
+				for(;;++idx2){
+					if(idx2 >= polygon.size())
+						idx2 = 0;
+
 					//check if index is not already used
 					if(usedIdx.find(idx2) == usedIdx.end()){
-						triangle <<	m_polygon.value(idx2);
+						triangle <<	polygon.value(idx2);
 						triIdx.insert(idx2);
 						triIdxVec.push_back(idx2);
 					}
-					//now we have a triangle
-					if(triangle.size() == 3){
-						QVector2D a(m_polygon[triIdxVec[1]]-m_polygon[triIdxVec[0]]);
-						QVector2D b(m_polygon[triIdxVec[2]]-m_polygon[triIdxVec[0]]);
-						double cosAngle = QVector2D::dotProduct(a.normalized() , b.normalized());
-						//double angleDeg = std::acos(cosAngle)*180/PI;
 
-						//check if points are colinear
-						if(cosAngle < -1+eps || cosAngle > 1-eps){
-							//erase first triangle point and check for another one
+					//need three for fruther calculation
+					if(triangle.size() != 3)
+						continue;
+					//now we have a three points
+
+					QVector2D a(polygon[triIdxVec[1]]-polygon[triIdxVec[0]]);
+					QVector2D b(polygon[triIdxVec[2]]-polygon[triIdxVec[0]]);
+					double cosAngle = QVector2D::dotProduct(a.normalized() , b.normalized());
+					//double angleDeg = std::acos(cosAngle)*180/PI;
+
+					//check if last point cotains triangle (only in DrawMode)
+					//					if(isDrawMode &&
+					//							triIdx.find(m_polygon.size()-1) != triIdx.end() &&
+					//							triIdx.find(0) != triIdx.end() &&
+					//							false){
+					//						//triangle is not the same as last one
+					//						//check for a other triangle
+					//						if(triIdx != oldTriIdx){
+					//							oldTriIdx = triIdx;
+					//							triIdx.clear();
+					//							triangle.clear();
+					//							triIdxVec.clear();
+					//							idx2=0;
+					//							continue;
+					//						}
+					//						else {
+					//							//oldTriIdx = triIdx;
+					//						}
+
+					//					}
+
+
+					//					if(triIdxVec.size()!=3)
+					//						continue;
+
+
+					//check if points are colinear
+					if(cosAngle < -1+eps || cosAngle > 1-eps){
+
+						idx2 -= 2;
+						idx = triIdxVec[1];
+
+						if(oldTriIdx== triIdx){
+							//found again some triangle --> error
+							//IBK::Exception(IBK::FormatString("Polygon is not valid."), FUNC_ID);
+							///TODO Andreas falls er fertig is Exception werfen oder Weiterbehandlung
+							return;
+						}
+						oldTriIdx = triIdx;
+
+
+						//erase first triangle point and check for another one
+						if(false){
 							triIdx.erase(triIdxVec[0]);
 							triangle.takeAt(0);
 							triIdxVec.erase(triIdxVec.begin());
 						}
-						else
-							break;
-					}
-					if(idx2 == m_polygon.size()-1)
-						idx2 = 0;
-					else
-						++idx2;
-				}
-
-
-				QPointF testPoint(triangle.value(0) + (triangle.value(1)-triangle.value(0) + triangle.value(2)-triangle.value(1)) *0.5);
-
-				bool isValidTri =true;
-				//check if the test point is in the plane polygon
-				if(pointInPolygon(testPoint, m_polygon) != -1){
-				//if(polygon.containsPoint(testPoint, Qt::FillRule::OddEvenFill)){
-					//check if no other point is in polyline
-					for (unsigned int i=0; i<m_polygon.size(); ++i) {
-						//skip points that are in the triangle
-						if(triIdx.find(i) != triIdx.end())
-							continue;
-
-						//check if point of the polygon is inside the triangle
-						if(pointInPolygon(m_polygon.value(i), triangle) != -1){
-						//if(triangle.containsPoint(polygon.value(i), Qt::FillRule::OddEvenFill)){
-							//triangle invalid
-							isValidTri=false;
-							break;
+						else {
+							triIdx.clear();
+							triangle.clear();
+							triIdxVec.clear();
 						}
 					}
+					else {
+						//	found a triangle
+						break;
+					}
 				}
-				else
-					isValidTri = false;
 
-				if(isValidTri){
-					m_triangles.push_back(triangle_t(triIdxVec[0],triIdxVec[1],triIdxVec[2]));
-					//trisIndices.push_back(triIdxVec);
-					//mark second point of triangle as used
-					usedIdx.insert(triIdxVec[1]);
+				if(triIdx.size() == 3){
+					if(oldTriIdx== triIdx){
+						//found again some triangle --> error
+						//IBK::Exception(IBK::FormatString("Polygon is not valid."), FUNC_ID);
+						///TODO Andreas falls er fertig is Exception werfen oder Weiterbehandlung
+						return;
+					}
+					oldTriIdx = triIdx;
 				}
-				if(idx == m_polygon.size()-1)
-					idx = 0;
-				else
-					++idx;
+
+				// fast validity check: invalid triangles whose hypothenusis is completely outside polygon
+				// construct a random testpoint at hypothenusis
+				QPointF testPoint(triangle.value(0) + (triangle.value(1)-triangle.value(0) + triangle.value(2)-triangle.value(1)) *0.5);
+
+				//check if the test point is outside the plane polygon
+				if(pointInPolygon(testPoint, polygon) == -1){
+					idx = triIdxVec[1];
+					continue;
+				}
+
+				// fast check:
+				//check if no other point is situated inside the triangle
+				unsigned int i=0;
+				for (;i<polygon.size(); ++i) {
+					//skip points that are in the triangle
+					if(triIdx.find(i) != triIdx.end())
+						continue;
+
+					//check if point of the polygon is inside the triangle
+					if(pointInPolygon(polygon.value(i), triangle) != -1){
+						//if(triangle.containsPoint(polygon.value(i), Qt::FillRule::OddEvenFill)){
+						//triangle invalid
+						break;
+					}
+				}
+				// minimum one point of polygon is inside triangle, loop was broken before end
+				if(i < polygon.size()){
+					idx = triIdxVec[1];
+					continue;
+				}
+
+				// advanced check
+				// intersect polygon and triangle in order to find invalid overlaping regions
+				QPolygonF intersectionPolyAndTriangle = polygon.intersected(triangle);
+
+				// triangle is outside polygon
+				if(intersectionPolyAndTriangle.empty()){
+					idx = triIdxVec[1];
+					continue;
+				}
+
+				// QPolygonF is a closed polyline so skip last point
+				//lastpoint = firstpoint
+				intersectionPolyAndTriangle.erase(intersectionPolyAndTriangle.end()-1);
+
+				//intersection between polygon and triangle must be the triangle
+				if(intersectionPolyAndTriangle.size() != 3){
+					idx = triIdxVec[1];
+					continue;
+				}
+
+				// count common points between intersection and original triangle
+				unsigned int counter=0;
+				for (auto pTri1 : triangle) {
+					for (auto pTri2 : intersectionPolyAndTriangle) {
+						if(pTri1 == pTri2)
+							++counter;
+					}
+				}
+
+				//all points of intersected triangle must match the original triangle
+				if(counter != 3){
+					idx = triIdxVec[1];
+					continue;
+				}
+
+				//found valid triangle
+				m_triangles.push_back(triangle_t(triIdxVec[0],triIdxVec[1],triIdxVec[2]));
+				idx = triIdxVec[2];
+				usedIdx.insert(triIdxVec[1]);
 			}
 		}
-		break;
+			break;	//case
 
 		case NUM_T : ; // shouldn't happen
 	}
@@ -442,18 +606,18 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 				return false;
 			// process all triangles and perform the test for each triangle
 			return (pointInPolygon(QPointF(x,y), m_polygon) != -1);
-//			for (const triangle_t & tr : m_triangles) {
-//				double x,y;
-//				const IBKMK::Vector3D & a = m_vertexes[tr.c] - m_vertexes[tr.b];
-//				const IBKMK::Vector3D & b = m_vertexes[tr.a] - m_vertexes[tr.b];
-//				if (planeCoordinates(x0,a,b, m_vertexes[tr.b],x,y)) {
-//					if (x >= 0 && x+y <= 1 && y >= 0) {
-//						intersectionPoint = x0;
-//						dist = t;
-//						return true;
-//					}
-//				}
-//			}
+			//			for (const triangle_t & tr : m_triangles) {
+			//				double x,y;
+			//				const IBKMK::Vector3D & a = m_vertexes[tr.c] - m_vertexes[tr.b];
+			//				const IBKMK::Vector3D & b = m_vertexes[tr.a] - m_vertexes[tr.b];
+			//				if (planeCoordinates(x0,a,b, m_vertexes[tr.b],x,y)) {
+			//					if (x >= 0 && x+y <= 1 && y >= 0) {
+			//						intersectionPoint = x0;
+			//						dist = t;
+			//						return true;
+			//					}
+			//				}
+			//			}
 		} break;
 	}
 
@@ -479,12 +643,12 @@ void PlaneGeometry::readXMLPrivate(const TiXmlElement * element) {
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "type")
-			try {
+				try {
 				m_type = (type_t)KeywordList::Enumeration("PlaneGeometry::type_t", attrib->ValueStr());
 			}
 			catch (IBK::Exception & ex) {
 				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-					IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
+										  IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
 			}
 			attrib = attrib->Next();
 		}
