@@ -1749,7 +1749,6 @@ void hydraulicNetworkTest01(NANDRAD::Project &prj){
 	//pump
 	hydrNet.m_elements.push_back(NANDRAD::HydraulicNetworkElement(id+1, id+2, id+3, pump.m_id));
 	id +=3;
-	hydrNet.m_elements.back().m_zoneId = ++id;
 	//boiler
 	hydrNet.m_elements.push_back(NANDRAD::HydraulicNetworkElement(id+1, hydrNet.m_elements.back().m_outletNodeId, id+2, boiler.m_id));
 	id +=2;
@@ -1832,7 +1831,6 @@ void hydraulicNetworkTest02(NANDRAD::Project &prj){
 
 	//pump
 	hydrNet.m_elements.push_back(NANDRAD::HydraulicNetworkElement(id++, 140, 100, pump.m_id));
-	hydrNet.m_elements.back().m_zoneId = 105;
 
 	// pipe 1
 	hydrNet.m_elements.push_back(NANDRAD::HydraulicNetworkElement(id++, 100, 110, pipe.m_id));
@@ -2262,13 +2260,12 @@ int main(int argc, char * argv[]) {
 	bool isWindow = false;
 	if(isHydrNet) {
 		NANDRAD::Project prj;
-
 		hydraulicNetworkTest01(prj);
 		prj.writeXML(IBK::Path("../../data/hydraulicNetworks/hydrNetwork_building.nandrad"));
 
-
-		hydraulicNetworkTest02(prj);
-		prj.writeXML(IBK::Path("../../data/hydraulicNetworks/hydrNetwork_district.nandrad"));
+		NANDRAD::Project prj2;
+		hydraulicNetworkTest02(prj2);
+		prj2.writeXML(IBK::Path("../../data/hydraulicNetworks/hydrNetwork_district.nandrad"));
 
 		return EXIT_SUCCESS;
 
