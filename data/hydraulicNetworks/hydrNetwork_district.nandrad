@@ -28,15 +28,11 @@
 					<HydraulicNetworkElement id="7" inletNodeId="110" outletNodeId="120" componentId="2">
 						<IBK:Parameter name="Length" unit="m">50</IBK:Parameter>
 					</HydraulicNetworkElement>
-					<HydraulicNetworkElement id="8" inletNodeId="120" outletNodeId="140" componentId="3">
-						<IBK:Parameter name="HeatExchangeRate" unit="W">100</IBK:Parameter>
-					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="8" inletNodeId="120" outletNodeId="140" componentId="3" />
 					<HydraulicNetworkElement id="9" inletNodeId="110" outletNodeId="130" componentId="2">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 					</HydraulicNetworkElement>
-					<HydraulicNetworkElement id="10" inletNodeId="130" outletNodeId="140" componentId="3">
-						<IBK:Parameter name="HeatExchangeRate" unit="W">100</IBK:Parameter>
-					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="10" inletNodeId="130" outletNodeId="140" componentId="3" />
 				</Elements>
 			</HydraulicNetwork>
 		</HydraulicNetworks>
@@ -51,7 +47,9 @@
 				<IBK:Parameter name="PipeRoughness" unit="mm">0.007</IBK:Parameter>
 				<IBK:Parameter name="HydraulicDiameter" unit="mm">100</IBK:Parameter>
 			</HydraulicNetworkComponent>
-			<HydraulicNetworkComponent id="3" displayName="heat exchanger" modelType="HeatExchanger" />
+			<HydraulicNetworkComponent id="3" displayName="heat exchanger" modelType="HeatExchanger">
+				<IBK:Parameter name="HeatExchangeRate" unit="W">100</IBK:Parameter>
+			</HydraulicNetworkComponent>
 		</HydraulicComponents>
 		<Schedules />
 	</Project>
