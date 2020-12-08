@@ -320,6 +320,16 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 	// middle mouse button moves the geometry
 	else if (keyboardHandler.buttonDown(Qt::MidButton)) {
+		/// \todo Stephan/Dirk: implement something like the orbit controller:
+		///                - add a flag that indicates "we are in translate mode"
+		///                - when mid-mousebutton is pressed:
+		///                  + set the flag
+		///                  + pick the current location in screen (if picked point is invalid/on far plane, select middle
+		///                    between far and near plane), also remember distance from viewer (i.e. line intersection factor)
+		///                - when mouse is moved while mid-mousebutton is pressed
+		///                  + move the camera such, that the selected point remains under the mouse cursor at the
+		///                    same distance from viewer
+		///                - clear the flag, when button is released
 		if (mouse_dx != 0)
 			m_camera.translate(transSpeed * (mouse_dx < 0 ? 1 : -1) * m_camera.right());
 		if (mouse_dy != 0)
@@ -333,8 +343,8 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		if (!m_orbitControllerActive) {
 			// we enter orbital controller mode
 
-			// configure the pick object and pick a point on the XY plane
-			PickObject o(localMousePos, PickObject::P_XY_Plane);
+			// configure the pick object and pick a point on the XY plane/or any visible surface
+			PickObject o(localMousePos, PickObject::P_XY_Plane | PickObject::P_Surface | PickObject::P_BackSide);
 			pick(o);
 			// and store pick point
 			m_orbitControllerOrigin = VICUS::IBKVector2QVector(o.m_pickPoint);
