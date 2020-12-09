@@ -40,8 +40,8 @@ namespace VICUS {
 		"EPDDataset::para_t",
 		"Material::para_t",
 		"Material::Category",
-		"Network::networkType",
-		"Network::sizingParam",
+		"Network::NetworkType",
+		"Network::SizingParam",
 		"NetworkFluid::para_t",
 		"NetworkNode::NodeType",
 		"PlaneGeometry::type_t",
@@ -125,13 +125,13 @@ namespace VICUS {
 				case 11 : return "Foils";
 				case 12 : return "Miscellaneous";
 			} break;
-			// Network::networkType
+			// Network::NetworkType
 			case 5 :
 			switch (t) {
 				case 0 : return "SinglePipe";
 				case 1 : return "DoublePipe";
 			} break;
-			// Network::sizingParam
+			// Network::SizingParam
 			case 6 :
 			switch (t) {
 				case 0 : return "TemperatureSetpoint";
@@ -296,13 +296,13 @@ namespace VICUS {
 				case 11 : return "Foils";
 				case 12 : return "Miscellaneous";
 			} break;
-			// Network::networkType
+			// Network::NetworkType
 			case 5 :
 			switch (t) {
 				case 0 : return "SinglePipe";
 				case 1 : return "DoublePipe";
 			} break;
-			// Network::sizingParam
+			// Network::SizingParam
 			case 6 :
 			switch (t) {
 				case 0 : return "TemperatureSetpoint";
@@ -468,13 +468,13 @@ namespace VICUS {
 				case 11 : if (no_description != nullptr) *no_description = true; return "Foils";
 				case 12 : if (no_description != nullptr) *no_description = true; return "Miscellaneous";
 			} break;
-			// Network::networkType
+			// Network::NetworkType
 			case 5 :
 			switch (t) {
 				case 0 : if (no_description != nullptr) *no_description = true; return "SinglePipe";
 				case 1 : if (no_description != nullptr) *no_description = true; return "DoublePipe";
 			} break;
-			// Network::sizingParam
+			// Network::SizingParam
 			case 6 :
 			switch (t) {
 				case 0 : return "Temperature for pipe dimensioning algorithm";
@@ -639,13 +639,13 @@ namespace VICUS {
 				case 11 : return "";
 				case 12 : return "";
 			} break;
-			// Network::networkType
+			// Network::NetworkType
 			case 5 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
-			// Network::sizingParam
+			// Network::SizingParam
 			case 6 :
 			switch (t) {
 				case 0 : return "C";
@@ -810,13 +810,13 @@ namespace VICUS {
 				case 11 : return "#FFFFFF";
 				case 12 : return "#FFFFFF";
 			} break;
-			// Network::networkType
+			// Network::NetworkType
 			case 5 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
-			// Network::sizingParam
+			// Network::SizingParam
 			case 6 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
@@ -981,13 +981,13 @@ namespace VICUS {
 				case 11 : return std::numeric_limits<double>::quiet_NaN();
 				case 12 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// Network::networkType
+			// Network::NetworkType
 			case 5 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// Network::sizingParam
+			// Network::SizingParam
 			case 6 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
@@ -1110,9 +1110,9 @@ namespace VICUS {
 			case 3 : return 6;
 			// Material::Category
 			case 4 : return 13;
-			// Network::networkType
+			// Network::NetworkType
 			case 5 : return 2;
-			// Network::sizingParam
+			// Network::SizingParam
 			case 6 : return 3;
 			// NetworkFluid::para_t
 			case 7 : return 3;
@@ -1162,9 +1162,9 @@ namespace VICUS {
 			case 3 : return 5;
 			// Material::Category
 			case 4 : return 12;
-			// Network::networkType
+			// Network::NetworkType
 			case 5 : return 1;
-			// Network::sizingParam
+			// Network::SizingParam
 			case 6 : return 2;
 			// NetworkFluid::para_t
 			case 7 : return 2;
