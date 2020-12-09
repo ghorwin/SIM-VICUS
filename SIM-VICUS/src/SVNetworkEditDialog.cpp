@@ -56,7 +56,7 @@ void SVNetworkEditDialog::updateStatus() const{
 
 void SVNetworkEditDialog::updateSizingParams()
 {
-	if (!m_network.m_sizingPara[VICUS::Network::SP_TemperatureSetpoint].empty())
+	if (m_network.m_sizingPara[VICUS::Network::SP_TemperatureSetpoint].empty())
 		m_network.setDefaultSizingParams();
 	m_ui->doubleSpinBoxTemperatureSetpoint->setValue(m_network.m_sizingPara[VICUS::Network::SP_TemperatureSetpoint].value);
 	m_ui->doubleSpinBoxTemperatureDifference->setValue(m_network.m_sizingPara[VICUS::Network::SP_TemperatureDifference].value);
@@ -83,7 +83,7 @@ void SVNetworkEditDialog::on_pushButtonGenerateIntersections_clicked()
 	m_network.generateIntersections();
 	updateStatus();
 
-	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Added network"), m_network);
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
 	undo->push(); // modifies project and updates views
 }
 
@@ -99,7 +99,7 @@ void SVNetworkEditDialog::on_pushButtonConnectBuildings_clicked()
 								   QMessageBox::Yes|QMessageBox::No);
 	m_network.connectBuildings(reply == QMessageBox::Yes);
 	updateStatus();
-	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Added network"), m_network);
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
 	undo->push(); // modifies project and updates views
 }
 
@@ -128,7 +128,7 @@ void SVNetworkEditDialog::on_pushButtonReduceDeadEnds_clicked()
 	std::swap(m_network, tmp);
 	m_network.updateNodeEdgeConnectionPointers();
 	updateStatus();
-	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Added network"), m_network);
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
 	undo->push(); // modifies project and updates views
 }
 
@@ -138,6 +138,9 @@ void SVNetworkEditDialog::on_pushButtonSizePipeDimensions_clicked()
 	modifySizingParams();
 
 	m_network.sizePipeDimensions(project().m_networkFluids[m_network.m_fluidID]);
+
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
+	undo->push(); // modifies project and updates views
 }
 
 

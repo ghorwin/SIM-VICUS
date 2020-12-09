@@ -328,8 +328,13 @@ FUNCID(Network::sizePipeDimensions);
 
 	// for all buildings: add their heating demand to the pipes along their shortest path
 	for (NetworkNode &node: m_nodes) {
+
 		std::vector<NetworkEdge * > path;
 		if (node.m_type == NetworkNode::NT_Building){
+
+			if (node.m_maxHeatingDemand <= 0)
+				throw IBK::Exception(IBK::FormatString("Maximum heating demand of node '%1' must be >0").arg(node.m_id), FUNC_ID);
+
 			dijkstraShortestPathToSource(node, path);
 			for (NetworkEdge * edge: path)
 				edge->m_maxHeatingDemand += node.m_maxHeatingDemand;
@@ -586,11 +591,11 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
 
 void Network::setDefaultSizingParams()
 {
-	NANDRAD::Project::setParameterWithKeyword(&m_sizingPara[0], "Network::sizingParam",
+	NANDRAD::Project::setParameterWithKeyword(&m_sizingPara[0], "VICUS::Network::sizingParam_t",
 											Network::sizingParam::SP_TemperatureSetpoint, 5);
-	NANDRAD::Project::setParameterWithKeyword(&m_sizingPara[0], "Network::sizingParam",
+	NANDRAD::Project::setParameterWithKeyword(&m_sizingPara[0], "VICUS::Network::sizingParam_t",
 											Network::sizingParam::SP_TemperatureDifference, 5);
-	NANDRAD::Project::setParameterWithKeyword(&m_sizingPara[0], "Network::sizingParam",
+	NANDRAD::Project::setParameterWithKeyword(&m_sizingPara[0], "VICUS::Network::sizingParam_t",
 											Network::sizingParam::SP_MaxPressureLoss, 150);
 }
 
