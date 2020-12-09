@@ -120,7 +120,7 @@ T readPODAttributeValue(const TiXmlElement * element, const TiXmlAttribute * att
 		throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 			IBK::FormatString("Error reading '"+attrib->NameStr()+"' attribute.") ), FUNC_ID);
 	}
-};
+}
 
 template <typename T>
 T readPODElement(const TiXmlElement * element, const std::string & eName) {
@@ -131,7 +131,7 @@ T readPODElement(const TiXmlElement * element, const std::string & eName) {
 		throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 			IBK::FormatString("Error reading '"+eName+"' tag.") ), FUNC_ID);
 	}
-};
+}
 
 /*! Read an IBK:Unit tag. */
 IBK::Unit readUnitElement(const TiXmlElement * element, const std::string & eName);
@@ -141,8 +141,41 @@ IBK::Time readTimeElement(const TiXmlElement * element, const std::string & eNam
 /*! Writes out a vector of Vector3D elements. */
 void writeVector3D(TiXmlElement * parent, const std::string & name, const std::vector<IBKMK::Vector3D> & vec);
 
+/*! Reads a vector of Vector3D elements. */
 void readVector3D(const TiXmlElement * element, const std::string & name, std::vector<IBKMK::Vector3D> & vec);
 
+
+/*! Convenience function to set an IBK::Parameter inside an static c-array of IBK::Parameters with
+	correct name, value and unit.
+	\code
+	// example
+
+	// in declaration of class 'MyClass'
+
+	enum MyParameters {
+		MP_Temperature,			// Keyword: Temperature   [C]   'Some temperatures'
+		MP_Mass,				// Keyword: Mass [kg]           'Some mass'
+		NUM_MP
+	};
+
+	// static array with parameter values
+	IBK::Parameter m_para[NUM_MP];
+
+
+
+	// setting the parameter in code
+
+	NANDRAD::setParameter(m_para, "MyClass::MyParameters", MP_Temperature, 23.5);
+	NANDRAD::setParameter(m_para, "MyClass::MyParameters", MP_Mass, 1500);
+
+	\endcode
+
+	\param para Pointer to begin of array with IBK::Parameters
+	\param enumtype The enumeration type (class::enumtypename)
+	\param n Enumeration value (which parameter to set)
+	\param val The value (given in the unit specified for the parameter; requires a unit to be given)
+*/
+void setParameter(IBK::Parameter para[], const char * const enumtype, int n, const double &val);
 
 } // namespace NANDRAD
 

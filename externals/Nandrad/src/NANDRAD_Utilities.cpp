@@ -32,6 +32,7 @@
 #include <IBK_IntPara.h>
 
 #include "NANDRAD_Constants.h"
+#include "NANDRAD_KeywordList.h"
 
 namespace NANDRAD {
 
@@ -231,5 +232,8 @@ void readVector<double>(const TiXmlElement * element, const std::string & name, 
 }
 
 
+void setParameter(IBK::Parameter para[], const char * const enumtype, int n, const double &val) {
+	para[n] = IBK::Parameter(NANDRAD::KeywordList::Keyword(enumtype, n), val, NANDRAD::KeywordList::Unit(enumtype, n));
+}
 
 } // namespace NANDRAD
