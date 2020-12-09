@@ -18,7 +18,21 @@ License    : BSD License,
 #include "Vic3DGeometryHelpers.h"
 #include <VICUS_Conversions.h>
 
+#include "SVViewStateHandler.h"
+#include "SVPropEditGeometry.h"
+
 namespace Vic3D {
+
+CoordinateSystemObject::CoordinateSystemObject()
+{
+	// make us known to the world
+	SVViewStateHandler::instance().m_coordinateSystemObject = this;
+}
+
+void CoordinateSystemObject::writeCoordinates()
+{
+	m_propEditGeometry->setCoordinates(m_transform);
+}
 
 void CoordinateSystemObject::create(ShaderProgram * shaderProgram) {
 	m_shaderProgram = shaderProgram;

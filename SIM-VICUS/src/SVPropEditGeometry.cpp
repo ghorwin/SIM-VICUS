@@ -2,7 +2,10 @@
 #include "ui_SVPropEditGeometry.h"
 
 #include "SVViewStateHandler.h"
+
 #include "Vic3DNewPolygonObject.h"
+#include "Vic3DCoordinateSystemObject.h"
+#include "Vic3DTransform3D.h"
 
 SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	QWidget(parent),
@@ -10,6 +13,7 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 	layout()->setMargin(0);
+	SVViewStateHandler::instance().m_coordinateSystemObject->m_propEditGeometry = this;
 }
 
 
@@ -20,6 +24,14 @@ SVPropEditGeometry::~SVPropEditGeometry() {
 void SVPropEditGeometry::setCurrentTab(const SVPropEditGeometry::TabState &state)
 {
 	m_ui->toolBoxGeometry->setCurrentIndex(state);
+}
+
+void SVPropEditGeometry::setCoordinates(const Vic3D::Transform3D &t)
+{
+//	m_ui->lineEditXValue->setText( "1" );
+	m_ui->lineEditXValue->setText( QString("%1").arg( t.translation().x() ) );
+	m_ui->lineEditYValue->setText( QString("%1").arg( t.translation().y() ) );
+	m_ui->lineEditZValue->setText( QString("%1").arg( t.translation().z() ) );
 }
 
 void SVPropEditGeometry::on_pushButtonAddPolygon_clicked() {

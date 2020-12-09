@@ -3,6 +3,12 @@
 
 #include <QWidget>
 
+#include <IBKMK_Vector3D.h>
+
+namespace Vic3D {
+class Transform3D;
+}
+
 namespace Ui {
 class SVPropEditGeometry;
 }
@@ -25,6 +31,11 @@ public:
 	/*! Sets the current tab index to the TabState specified
 	*/
 	void setCurrentTab(const TabState &state);
+
+	/*! Sets the Coordinates of the Center Point of the local
+		Coordinate System
+	*/
+	void setCoordinates(const Vic3D::Transform3D &t);
 
 private slots:
 	void on_pushButtonAddPolygon_clicked();

@@ -24,6 +24,8 @@ QT_END_NAMESPACE
 #include "Vic3DTransform3D.h"
 #include "Vic3DVertex.h"
 
+class SVPropEditGeometry;
+
 namespace Vic3D {
 
 class ShaderProgram;
@@ -31,6 +33,12 @@ class ShaderProgram;
 /*! Draws the coordinate system with adjustable ball/icosaeder coordinate system indicator. */
 class CoordinateSystemObject {
 public:
+
+	CoordinateSystemObject();
+
+	/*! Write Coordinates of Coordinate System to Edit Widget */
+	void writeCoordinates();
+
 	/*! The function is called during OpenGL initialization, where the OpenGL context is current. */
 	void create(ShaderProgram * shaderProgram);
 	void destroy();
@@ -61,6 +69,8 @@ public:
 	std::vector<ColorRGBA>		m_colorBufferData;
 	/*! Index buffer on CPU memory. */
 	std::vector<GLshort>		m_indexBufferData;
+
+	SVPropEditGeometry			*m_propEditGeometry = nullptr;
 
 };
 

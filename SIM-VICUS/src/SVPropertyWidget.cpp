@@ -10,6 +10,7 @@
 #include "SVViewStateHandler.h"
 
 #include "Vic3DNewPolygonObject.h"
+#include "Vic3DCoordinateSystemObject.h"
 
 SVPropertyWidget::SVPropertyWidget(QWidget * parent) :
 	QWidget(parent)
@@ -44,8 +45,11 @@ void SVPropertyWidget::setWidgetVisible(PropertyWidgets m) {
 		case M_EditGeometry : {
 			// create widget and add to layout, if not existing
 			if (m_propWidgets[M_EditGeometry] == nullptr) {
-				m_propWidgets[M_EditGeometry] = new SVPropEditGeometry(this);
+				SVPropEditGeometry *propEditGeometry = new SVPropEditGeometry(this);
+				m_propWidgets[M_EditGeometry] = propEditGeometry;
 				m_layout->addWidget(m_propWidgets[M_EditGeometry]);
+				SVViewStateHandler::instance().m_coordinateSystemObject->m_propEditGeometry = propEditGeometry;
+//				SVViewStateHandler::instance().m_newPolygonObject->m_vertexListWidget = vertexListWidget;
 			}
 			m_propWidgets[M_EditGeometry]->setVisible(true);
 

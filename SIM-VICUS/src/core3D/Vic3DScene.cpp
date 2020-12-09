@@ -150,16 +150,22 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 				SVViewState vs = SVViewStateHandler::instance().viewState();
 				IBKMK::Vector3D centerPoint;
 				if ( project().haveSelectedSurfaces(centerPoint) ) {
-						vs.m_sceneOperationMode = SVViewState::OM_AlignLocalCoordinateSystem;
-						vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
-						m_coordinateSystemObject.m_transform.setTranslation( VICUS::IBKVector2QVector(centerPoint) );
+					vs.m_sceneOperationMode = SVViewState::OM_AlignLocalCoordinateSystem;
+					vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
+					m_coordinateSystemObject.m_transform.setTranslation( VICUS::IBKVector2QVector(centerPoint) );
+					SVViewStateHandler::instance().setViewState(vs);
+					m_coordinateSystemObject.writeCoordinates();
+
 				}
 				else {
 					vs.m_sceneOperationMode = SVViewState::NUM_OM;
 					vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+					SVViewStateHandler::instance().setViewState(vs);
+					m_coordinateSystemObject.writeCoordinates();
 				}
 				// now tell all UI components to toggle their view state
-				SVViewStateHandler::instance().setViewState(vs);
+
+
 
 			}
 
