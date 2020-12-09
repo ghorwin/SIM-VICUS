@@ -33,10 +33,10 @@ public:
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
-	enum NetworkType{
-		NET_singlePipe,
-		NET_doublePipe,
-		NET_NUM
+	enum NetworkType {
+		NET_singlePipe,						// Keyword: SinglePipe
+		NET_doublePipe,						// Keyword: DoublePipe
+		NUM_NET
 	};
 
 	enum sizingParam{

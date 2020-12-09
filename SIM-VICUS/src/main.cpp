@@ -54,8 +54,9 @@ int main(int argc, char *argv[]) {
 	// disable ? button in windows
 #if QT_VERSION >= 0x050A00
 	QApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton);
-#endif
+#elif QT_VERSION >= 0x050600
 	QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+#endif
 
 	// TODO : initialize resources in dependent libraries
 //	Q_INIT_RESOURCE(QtExt);

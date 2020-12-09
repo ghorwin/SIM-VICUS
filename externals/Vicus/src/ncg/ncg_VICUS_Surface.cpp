@@ -52,6 +52,8 @@ void Surface::readXML(const TiXmlElement * element) {
 				m_displayName = QString::fromStdString(attrib->ValueStr());
 			else if (attribName == "visible")
 				m_visible = NANDRAD::readPODAttributeValue<bool>(element, attrib);
+			else if (attribName == "componentId")
+				m_componentId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -87,6 +89,8 @@ TiXmlElement * Surface::writeXML(TiXmlElement * parent) const {
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
 	e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
+	if (m_componentId != VICUS::INVALID_ID)
+		e->SetAttribute("componentId", IBK::val2string<unsigned int>(m_componentId));
 
 	m_geometry.writeXML(e);
 	return e;

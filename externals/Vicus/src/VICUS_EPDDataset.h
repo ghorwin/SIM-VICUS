@@ -43,7 +43,7 @@ public:
 	};
 
 	/// TODO Mira erweitern
-	enum Category{
+	enum Category {
 		C_A1,
 		C_A2,
 		C_A3,
@@ -54,7 +54,7 @@ public:
 		NUM_C
 	};
 
-	enum Mode{
+	enum Mode {
 		M_Generic,
 		M_Specific,
 		M_Average,
@@ -62,6 +62,13 @@ public:
 		M_Template,
 		NUM_M
 	};
+
+
+	// *** PUBLIC MEMBER FUNCTIONS ***
+
+	VICUS_READWRITE
+
+	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of lca material. */
 	unsigned int					m_id = INVALID_ID;						// XML:A:required

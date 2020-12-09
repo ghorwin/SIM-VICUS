@@ -30,6 +30,7 @@
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Utilities.h>
 #include <VICUS_Constants.h>
+#include <VICUS_KeywordList.h>
 #include <vector>
 
 #include <tinyxml.h>
@@ -118,6 +119,52 @@ void Network::readXML(const TiXmlElement * element) {
 										  .arg("Invalid vector data."), FUNC_ID);
 				}
 			}
+			else if (cName == "HydraulicSubNetworks") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "NANDRAD::HydraulicNetwork")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					NANDRAD::HydraulicNetwork obj;
+					obj.readXML(c2);
+					m_hydraulicSubNetworks.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "HydraulicComponents") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "NANDRAD::HydraulicNetworkComponent")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					NANDRAD::HydraulicNetworkComponent obj;
+					obj.readXML(c2);
+					m_hydraulicComponents.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "IBK:Parameter") {
+				IBK::Parameter p;
+				NANDRAD::readParameterElement(c, p);
+				bool success = false;
+				sizingParam ptype;
+				try {
+					ptype = (sizingParam)KeywordList::Enumeration("Network::sizingParam", p.name);
+					m_sizingPara[ptype] = p; success = true;
+				}
+				catch (...) { /* intentional fail */  }
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			else if (cName == "Type") {
+				try {
+					m_type = (NetworkType)KeywordList::Enumeration("Network::NetworkType", c->GetText());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
+				}
+			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -169,6 +216,39 @@ TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
 	{
 		std::vector<double> v = { m_origin.m_x, m_origin.m_y, m_origin.m_z};
 		TiXmlElement::appendSingleAttributeElement(e, "Origin", nullptr, std::string(), IBK::vector2string<double>(v," "));
+	}
+
+	if (!m_hydraulicSubNetworks.empty()) {
+		TiXmlElement * child = new TiXmlElement("HydraulicSubNetworks");
+		e->LinkEndChild(child);
+
+		for (std::vector<NANDRAD::HydraulicNetwork>::const_iterator it = m_hydraulicSubNetworks.begin();
+			it != m_hydraulicSubNetworks.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_hydraulicComponents.empty()) {
+		TiXmlElement * child = new TiXmlElement("HydraulicComponents");
+		e->LinkEndChild(child);
+
+		for (std::vector<NANDRAD::HydraulicNetworkComponent>::const_iterator it = m_hydraulicComponents.begin();
+			it != m_hydraulicComponents.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (m_type != NUM_NET)
+		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("Network::NetworkType",  m_type));
+
+	for (unsigned int i=0; i<NUM_SP; ++i) {
+		if (!m_sizingPara[i].name.empty()) {
+			TiXmlElement::appendIBKParameterElement(e, m_sizingPara[i].name, m_sizingPara[i].IO_unit.name(), m_sizingPara[i].get_value());
+		}
 	}
 	return e;
 }

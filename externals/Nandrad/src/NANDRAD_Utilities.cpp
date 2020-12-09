@@ -217,6 +217,19 @@ void readVector3D(const TiXmlElement * element, const std::string & name, std::v
 	}
 }
 
+template<>
+void readVector<double>(const TiXmlElement * element, const std::__cxx11::string & name, std::vector<double> & vec) {
+	FUNCID(NANDRAD::readVector);
+	std::string text = element->GetText();
+	IBK::replace_string(text, ",", " ");
+	try {
+		IBK::string2valueVector(text, vec);
+	} catch (IBK::Exception & ex) {
+		throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+			IBK::FormatString("Error reading vector element '%1'.").arg(name) ), FUNC_ID);
+	}
+}
+
 
 
 } // namespace NANDRAD

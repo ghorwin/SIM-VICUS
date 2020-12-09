@@ -83,12 +83,16 @@ void readVector(const TiXmlElement * element, const std::string & name, std::vec
 	std::string text = element->GetText();
 	IBK::replace_string(text, ",", " ");
 	try {
-		IBK::string2valueVector(text, vec);
+		IBK::string2vector(text, vec);
 	} catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 			IBK::FormatString("Error reading vector element '%1'.").arg(name) ), FUNC_ID);
 	}
 }
+
+/*! Special implementation for double-type vectors. */
+template <>
+void readVector(const TiXmlElement * element, const std::string & name, std::vector<double> & vec);
 
 
 template <typename T>

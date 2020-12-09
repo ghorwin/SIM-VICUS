@@ -31,6 +31,14 @@ KeywordListQt::KeywordListQt() {
 	tr("Constant model.");
 	tr("Heat transfer coefficient depends on wind velocity.");
 	tr("Dry density of the material.");
+	tr("Global Warming Potential.");
+	tr("Depletion potential of the stratospheric ozone layer.");
+	tr("Photochemical Ozone Creation Potential.");
+	tr("Acidification potential.");
+	tr("Eutrophication potential.");
+	tr("Global Warming Potential.");
+	tr("Global Warming Potential.");
+	tr("Dry density of the material.");
 	tr("Specific heat capacity of the material.");
 	tr("Thermal conductivity of the dry material.");
 	tr("Vapor diffusion resistance factor.");
@@ -49,6 +57,11 @@ KeywordListQt::KeywordListQt() {
 	tr("CladdingSystems");
 	tr("Foils");
 	tr("Miscellaneous");
+	tr("SinglePipe");
+	tr("DoublePipe");
+	tr("Temperature for pipe dimensioning algorithm");
+	tr("Temperature difference for pipe dimensioning algorithm");
+	tr("Maximum pressure loss for pipe dimensioning algorithm");
 	tr("Dry density of the material.");
 	tr("Specific heat capacity of the material.");
 	tr("Thermal conductivity of the dry material.");

@@ -33,11 +33,18 @@ Here are the recommended steps:
 3. Download and install Qt Version 5.11.3. Download the Qt Online Installer (https://www.qt.io/download-qt-installer) and in the installation program select the 5.11.3 variant instead of the default (newest).
 
 
+Also, install a suitable git client (SmartGit is recommendet). Don't forget to specify your git user name and email (user settings).
+
 ### Linux
 
 On Linux it's a walk in the park. Just install the build-essential package (g++/clang and cmake and qt5default packages). On Ubuntu simply run:
 
     > sudo apt install build-essential cmake qt5-default libqt5svg5-dev
+
+Also, install git or a suitable git client (SmartGit is recommendet). Don't forget to specify your git user name and email:
+
+    > git config --global user.name "Your name here"
+    > git config --global user.email "your_email@example.com"
 
 ### MacOS
 
@@ -56,6 +63,10 @@ compilation problems.
     
 Parallel gcc OpenMP code require a bit of extra work (to be documented later :-)
 
+Also, install git or a suitable git client (SmartGit is recommendet). Don't forget to specify your git user name and email:
+
+    > git config --global user.name "Your name here"
+    > git config --global user.email "your_email@example.com"
 
 
 ## Building
