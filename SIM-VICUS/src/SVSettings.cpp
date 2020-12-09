@@ -289,7 +289,7 @@ void SVSettings::writeDatabase() {
 	writeXMLDB(userDbDir / "DB_Constructions.xml", "Constructions", m_dbConstructions);
 	writeXMLDB(userDbDir / "DB_SurfaceProperties.xml", "SurfaceProperties", m_dbSurfaceProperty);
 	writeXMLDB(userDbDir / "DB_BoundaryConditions.xml", "BoundaryConditions", m_dbBoundaryCondition);
-	writeXMLDB(userDbDir / "DB_Pipes.xml", "Pipes", m_dbPipes);
+//	writeXMLDB(userDbDir / "DB_Pipes.xml", "Pipes", m_dbPipes);
 	writeXMLDB(userDbDir / "DB_Fluids.xml", "Fluids", m_dbFluids);
 }
 

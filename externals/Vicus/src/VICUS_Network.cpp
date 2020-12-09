@@ -330,10 +330,19 @@ FUNCID(Network::sizePipeDimensions);
 												"Please add pipes to this network").arg(m_id), FUNC_ID);
 
 	// check parameters
-	for (unsigned n = 0; n < NUM_SP; ++n){
+	for (unsigned int n = 0; n < NUM_SP; ++n){
 		if (m_sizingPara[n].empty())
 			throw IBK::Exception(IBK::FormatString("'%1' not set").arg(VICUS::KeywordList::Keyword("Network::sizingParam", n)), FUNC_ID);
 	}
+
+	// check for source
+	bool sourceFound = false;
+	for (NetworkNode &n: m_nodes){
+		if (n.m_type==NetworkNode::NT_Source)
+			sourceFound = true;
+	}
+	if (sourceFound == false)
+		throw IBK::Exception("Network has no source node. Set one node to type source.", FUNC_ID);
 
 	// for all buildings: add their heating demand to the pipes along their shortest path
 	for (NetworkNode &node: m_nodes) {
@@ -432,17 +441,17 @@ void Network::updateExtends() {
 double Network::pressureLossColebrook(const double &length, const double &massFlow, const NetworkFluid &fluid,
 										const NetworkPipe &pipe, const double &temperature){
 
-	double velocity = massFlow / (fluid.m_para[NetworkFluid::P_Density].value * pipe.m_diameterInside() * pipe.m_diameterInside() * 3.14159 / 4);
-	double Re = velocity * pipe.m_diameterInside() / fluid.m_kinematicViscosity.m_values.value(temperature);
+	double velocity = massFlow / (fluid.m_para[NetworkFluid::P_Density].value * pipe.m_diameterInside()/1000  * pipe.m_diameterInside()/1000  * 3.14159 / 4);
+	double Re = velocity * pipe.m_diameterInside()/1000 / fluid.m_kinematicViscosity.m_values.value(temperature);
 	double lambda = 0.05;
 	double lambda_new = lambda;
 	for (unsigned n=0; n<100; ++n){
-		lambda_new = std::pow(-2 * std::log10(2.51 / (Re * std::sqrt(lambda)) + pipe.m_roughness / (3.71 * pipe.m_diameterInside())), -2);
+		lambda_new = std::pow(-2 * std::log10(2.51 / (Re * std::sqrt(lambda)) + pipe.m_roughness / (3.71 * pipe.m_diameterInside()/1000 )), -2);
 		if (abs(lambda_new - lambda) / lambda < 1e-3)
 			break;
 		lambda = lambda_new;
 	}
-	return lambda_new * length / pipe.m_diameterInside() * fluid.m_para[NetworkFluid::P_Density].value / 2 * velocity * velocity;
+	return lambda_new * length / pipe.m_diameterInside()/1000  * fluid.m_para[NetworkFluid::P_Density].value / 2 * velocity * velocity;
 }
 
 IBKMK::Vector3D Network::origin() const
@@ -598,12 +607,40 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
 
 
 void Network::setDefaultSizingParams() {
-	NANDRAD::KeywordList::setParameter(m_sizingPara, "VICUS::Network::sizingParam_t",
+	VICUS::KeywordList::setParameter(m_sizingPara, "Network::SizingParam",
 										Network::SizingParam::SP_TemperatureSetpoint, 5);
-	NANDRAD::KeywordList::setParameter(m_sizingPara, "VICUS::Network::sizingParam_t",
+	VICUS::KeywordList::setParameter(m_sizingPara, "Network::SizingParam",
 										Network::SizingParam::SP_TemperatureDifference, 5);
-	NANDRAD::KeywordList::setParameter(m_sizingPara, "VICUS::Network::sizingParam_t",
-										Network::SizingParam::SP_MaxPressureLoss, 150);
+	VICUS::KeywordList::setParameter(m_sizingPara, "Network::SizingParam",
+									 Network::SizingParam::SP_MaxPressureLoss, 150);
+}
+
+
+double Network::largestDiameter() const
+{
+	double dMax = 0;
+	for (const NetworkEdge &edge: m_edges){
+		const NetworkPipe * p = Project::element(m_networkPipeDB, edge.m_pipeId);
+		if (p == nullptr)
+			return -1;
+		if (p->m_diameterOutside > dMax)
+			dMax = p->m_diameterOutside;
+	}
+	return dMax;
+}
+
+
+double Network::smallestDiameter() const
+{
+	double dMin = std::numeric_limits<double>::max();
+	for (const NetworkEdge &edge: m_edges){
+		const NetworkPipe * p = Project::element(m_networkPipeDB, edge.m_pipeId);
+		if (p == nullptr)
+			return -1;
+		if (p->m_diameterOutside < dMin)
+			dMin = p->m_diameterOutside;
+	}
+	return dMin;
 }
 
 

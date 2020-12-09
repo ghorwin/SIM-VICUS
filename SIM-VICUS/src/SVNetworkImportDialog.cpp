@@ -74,35 +74,12 @@ bool SVNetworkImportDialog::edit() {
 
 		// TODO Hauke: remove this later
 
-		// pipes DB
-		VICUS::NetworkPipe p;
-		p.m_id = 0;
-		p.m_displayName = "PE 32 x 3.2";
-		p.m_diameterOutside = 32;
-		p.m_sWall = 3.2;
-		p.m_roughness = 0.007;
-		VICUS::NetworkPipe p2;
-		p2.m_id = 1;
-		p2.m_displayName = "PE 50 x 4.6";
-		p2.m_diameterOutside = 50;
-		p2.m_sWall = 4.6;
-		p2.m_roughness = 0.007;
-		VICUS::NetworkPipe p3;
-		p3.m_id = 2;
-		p3.m_displayName = "PE 60 x 5.3";
-		p3.m_diameterOutside = 60;
-		p3.m_sWall = 5.3;
-		p3.m_roughness = 0.007;
-
 		// fluids
 		VICUS::NetworkFluid fluid;
 		fluid.defaultFluidWater(0);
 
 		// write database
 		SVSettings &settings = SVSettings::instance();
-		settings.m_dbPipes[p.m_id] = p;
-		settings.m_dbPipes[p2.m_id] = p2;
-		settings.m_dbPipes[p3.m_id] = p3;
 		settings.m_dbFluids[fluid.m_id] = fluid;
 		settings.writeDatabase();
 
@@ -118,6 +95,10 @@ bool SVNetworkImportDialog::edit() {
 
 		// set network fluid id
 		m_network.m_fluidID = project().m_networkFluids[0].m_id;
+
+
+		// TODO Hauke: rmeove this later
+		m_network.assignSourceNode(IBKMK::Vector3D(481691, 5577509.9, 0));
 
 		m_network.updateExtends();
 

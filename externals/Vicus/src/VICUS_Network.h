@@ -151,6 +151,9 @@ public:
 	 * before calling sizePipeDimensions() */
 	void setDefaultSizingParams();
 
+	double largestDiameter() const;
+
+	double smallestDiameter() const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

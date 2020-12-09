@@ -55,6 +55,8 @@ void SVNetworkEditDialog::updateStatus() const{
 	m_ui->labelTotalLength->setText(QString("%1").arg(m_network.totalLength()));
 	m_ui->pushButtonConnectBuildings->setEnabled(m_network.nextUnconnectedBuilding()>=0);
 	m_ui->pushButtonReduceDeadEnds->setEnabled(m_network.checkConnectedGraph() && m_network.numberOfBuildings() > 0);
+	m_ui->labelLargestDiameter->setText(QString("%1").arg(m_network.largestDiameter()));
+	m_ui->labelSmallestDiameter->setText(QString("%1").arg(m_network.smallestDiameter()));
 }
 
 void SVNetworkEditDialog::updateSizingParams()
