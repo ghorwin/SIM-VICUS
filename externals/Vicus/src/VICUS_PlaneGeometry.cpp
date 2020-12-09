@@ -6,6 +6,8 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <IBK_assert.h>
+#include <IBK_Line.h>
+#include <IBK_physics.h>
 
 #include <NANDRAD_Utilities.h>
 
@@ -14,6 +16,7 @@
 
 #include <QPolygonF>
 #include <QVector2D>
+#include <QQuaternion>
 
 #include <tinyxml.h>
 
@@ -176,6 +179,7 @@ void PlaneGeometry::removeVertex(unsigned int idx) {
 void PlaneGeometry::computeGeometry() {
 	m_triangles.clear();
 	eleminateColinearPts(true);
+
 	// try to simplify polygon to internal rectangle/parallelogram definition
 	// this may change m_type to Rectangle or Triangle and subsequently speed up operations
 	simplify();
@@ -183,8 +187,8 @@ void PlaneGeometry::computeGeometry() {
 	if (!isValid())
 		return;
 	// determine 2D plane coordinates
-	update2DPolygon();
-	triangulate();
+	if(update2DPolygon())
+		triangulate();
 }
 
 
@@ -207,11 +211,35 @@ void PlaneGeometry::simplify() {
 }
 
 
-void PlaneGeometry::update2DPolygon() {
+
+void PlaneGeometry::update3DPolygon() {
+	QQuaternion qq;
+	double angle = std::acos(m_normal.scalarProduct(IBKMK::Vector3D(0,0,1)))/IBK::DEG2RAD;
+	IBKMK::Vector3D vec = m_normal.crossProduct(IBKMK::Vector3D(0,0,1));
+	QVector3D axis(vec.m_x, vec.m_y, vec.m_z);
+	qq.fromAxisAndAngle(axis, angle);
+
+	IBKMK::Vector3D translation = m_vertexes[0];
+	std::vector<QVector3D>	newVerties(m_polygon.size());
+
+	m_vertexes.clear();
+
+	for (unsigned int i=0; i< m_polygon.size(); ++i) {
+		QVector3D vecA(m_polygon.value(i).x(),m_polygon.value(i).y(),0);
+		vecA = qq * vecA;
+		IBKMK::Vector3D vecB(vecA.x(),vecA.y(),vecA.z());
+
+		m_vertexes.push_back(vecB+translation);
+	}
+
+}
+
+bool PlaneGeometry::update2DPolygon() {
 	FUNCID(PlaneGeometry::update2DPolygon);
 
 	//first clear the old polyline
-	m_polygon.clear();
+	//m_polygon.clear();
+	QPolygonF poly;
 
 	/// TODO: Dirk: Add check that m_vertexes[1] != m_vertexes[0]
 
@@ -221,9 +249,9 @@ void PlaneGeometry::update2DPolygon() {
 	m_normal.crossProduct(m_localX, m_localY);
 
 	// first point is v0 = origin
-	m_polygon.append(QPointF(0,0));
+	poly.append(QPointF(0,0));
 	// second point is v1 at (1,0), since v1-v0 is the vX vector
-	m_polygon.append(QPointF(1,0));
+	poly.append(QPointF(1,0));
 
 	// now process all other points
 	for (unsigned int i=2; i<m_vertexes.size(); ++i) {
@@ -234,13 +262,21 @@ void PlaneGeometry::update2DPolygon() {
 		///       We should use a function that passes vX, vY, offset and then
 		///       a vector with v,x,y to process.
 		if (planeCoordinates(m_vertexes[0], m_localX, m_localY, v, x, y)) {
-			m_polygon.append(QPointF(x,y));
+			poly << QPointF(x,y);
 		}
 		else {
 			// Throw an exception if point is outside plane
 			throw IBK::Exception("Point is outside plane.", FUNC_ID);
 		}
 	}
+	poly.swap(m_polygon);
+	if(!isSimplePolygon()){
+		isSimplePolygon();
+		poly.swap(m_polygon);
+		//update3DPolygon();
+		return false;
+	}
+	return true;
 }
 	/*!
 	Copyright 2000 softSurfer, 2012 Dan Sunday
@@ -596,6 +632,40 @@ void PlaneGeometry::updateNormal() {
 void PlaneGeometry::setVertexes(const std::vector<IBKMK::Vector3D> & vertexes) {
 	m_vertexes = vertexes;
 	computeGeometry();
+}
+
+bool PlaneGeometry::isSimplePolygon()
+{
+	std::vector<IBK::Line>	lines;
+	for (int i=0; i<m_polygon.size(); ++i) {
+		lines.emplace_back(
+					IBK::Line(
+					IBK::point2D<double>(
+								  m_polygon.value(i).x(),
+								  m_polygon.value(i).y()),
+					IBK::point2D<double>(
+								  m_polygon.value((i+1)%m_polygon.size()).x(),
+								  m_polygon.value((i+1)%m_polygon.size()).y())));
+	}
+	if(lines.size()<4)
+		return true;
+	for (unsigned int i=0; i<lines.size();++i) {
+		for (unsigned int j=0; j<lines.size()-2; ++j) {
+			unsigned int k1 = (i+1)%lines.size();
+			unsigned int k2 = (i-1);
+			if(i==0)
+				k2 = lines.size()-1;
+			if(i==j || k1 == j || k2 == j )
+				continue;
+			//int k = (i+j+2)%lines.size();
+			IBK::point2D<double> p;
+			if(lines[i].intersects(lines[j], p)){
+				return false;
+			}
+		}
+	}
+
+	return true;
 }
 
 

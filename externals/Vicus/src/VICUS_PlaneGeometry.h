@@ -111,6 +111,13 @@ public:
 
 	void setVertexes(const std::vector<IBKMK::Vector3D> & vertexes);
 
+	/*! A simple polygon is a polygon without intersects by itself.
+		return true if no intersections
+		return false if minimum one intersection
+	*/
+	bool isSimplePolygon();
+
+
 	/*! Eleminate colinear points in a polygon and return a new polygon. */
 	QPolygonF eleminateColinearPts(bool overrideMemberVar = true);
 
@@ -125,7 +132,10 @@ private:
 	void simplify();
 
 	/*! Creates a 2D representation of the 3D polygon. */
-	void update2DPolygon();
+	bool update2DPolygon();
+
+	/*! Creates a 3D representation of the 2D polygon. */
+	void update3DPolygon();
 
 	/*! This function triangulates the geometry and populate the m_triangles vector.
 		This function is called from updateGeometry().
