@@ -17,8 +17,7 @@
 namespace Vic3D {
 
 SceneView::SceneView() :
-	m_inputEventReceived(false),
-	m_gpuTimers(this)
+	m_inputEventReceived(false)
 {
 	// tell keyboard handler to monitor certain keys
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_W);

@@ -75,7 +75,6 @@ private:
 
 	Vic3DScene					m_mainScene;
 
-	QOpenGLTimeMonitor			m_gpuTimers;
 	QElapsedTimer				m_cpuTimer;
 
 	/*! Framebuffer object (including image storage) for screenshots - multisample variant. */
