@@ -591,11 +591,11 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
 
 void Network::setDefaultSizingParams()
 {
-	NANDRAD::Project::setParameterWithKeyword(&m_sizingPara[0], "VICUS::Network::sizingParam_t",
+	NANDRAD::Project::setParameterWithKeyword(&m_sizingPara[0], "VICUS::Network::sizingParam",
 											Network::sizingParam::SP_TemperatureSetpoint, 5);
-	NANDRAD::Project::setParameterWithKeyword(&m_sizingPara[0], "VICUS::Network::sizingParam_t",
+	NANDRAD::Project::setParameterWithKeyword(&m_sizingPara[0], "VICUS::Network::sizingParam",
 											Network::sizingParam::SP_TemperatureDifference, 5);
-	NANDRAD::Project::setParameterWithKeyword(&m_sizingPara[0], "VICUS::Network::sizingParam_t",
+	NANDRAD::Project::setParameterWithKeyword(&m_sizingPara[0], "VICUS::Network::sizingParam",
 											Network::sizingParam::SP_MaxPressureLoss, 150);
 }
 

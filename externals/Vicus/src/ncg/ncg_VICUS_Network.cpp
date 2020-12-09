@@ -158,7 +158,7 @@ void Network::readXML(const TiXmlElement * element) {
 			}
 			else if (cName == "Type") {
 				try {
-					m_type = (NetworkType)KeywordList::Enumeration("Network::NetworkType", c->GetText());
+					m_type = (networkType)KeywordList::Enumeration("Network::NetworkType", c->GetText());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
