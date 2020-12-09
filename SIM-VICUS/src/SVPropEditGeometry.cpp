@@ -17,6 +17,10 @@ SVPropEditGeometry::~SVPropEditGeometry() {
 	delete m_ui;
 }
 
+void SVPropEditGeometry::setCurrentTab(const SVPropEditGeometry::TabState &state)
+{
+	m_ui->toolBoxGeometry->setCurrentIndex(state);
+}
 
 void SVPropEditGeometry::on_pushButtonAddPolygon_clicked() {
 	// reset new polygon object

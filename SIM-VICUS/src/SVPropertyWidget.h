@@ -24,6 +24,7 @@ public:
 	enum PropertyWidgets {
 		M_ThermalSimulationProperties,
 		M_EditGeometry,
+		M_AddGeometry,
 		M_AddVertexesMode,
 		NUM_M
 	};

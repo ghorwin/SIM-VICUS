@@ -71,7 +71,7 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			// set scene operation mode to "normal"
 			SVViewState vs = SVViewStateHandler::instance().viewState();
 			vs.m_sceneOperationMode = SVViewState::NUM_OM;
-			vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
+			vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
 			SVViewStateHandler::instance().setViewState(vs);
 		} break;
 
@@ -146,16 +146,20 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 				///                to the center of all selected surface-vertexes (call project().haveSelectedSurfaces())
 				///
 				///
+
+				SVViewState vs = SVViewStateHandler::instance().viewState();
 				IBKMK::Vector3D centerPoint;
 				if ( project().haveSelectedSurfaces(centerPoint) ) {
-					m_coordinateSystemActive = true;
-					m_coordinateSystemObject.m_transform.setTranslation( VICUS::IBKVector2QVector(centerPoint) );
-
-					// TODO: Stephan, set viewstate to show the "Edit geometry" widget.
+						vs.m_sceneOperationMode = SVViewState::OM_AlignLocalCoordinateSystem;
+						vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
+						m_coordinateSystemObject.m_transform.setTranslation( VICUS::IBKVector2QVector(centerPoint) );
 				}
 				else {
-					m_coordinateSystemActive = false;
+					vs.m_sceneOperationMode = SVViewState::NUM_OM;
+					vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
 				}
+				// now tell all UI components to toggle their view state
+				SVViewStateHandler::instance().setViewState(vs);
 
 			}
 
@@ -630,6 +634,9 @@ void Vic3DScene::setViewState(const SVViewState & vs) {
 	// adjust scene based on view state
 	switch (vs.m_sceneOperationMode) {
 		case SVViewState::OM_PlaceVertex :
+			m_coordinateSystemActive = true;
+		break;
+		case SVViewState::OM_AlignLocalCoordinateSystem :
 			m_coordinateSystemActive = true;
 		break;
 

@@ -1,6 +1,7 @@
 #include "SVPropertyWidget.h"
 
 #include <QVBoxLayout>
+#include <QToolBox>
 
 #include <IBKMK_Vector3D.h>
 
@@ -21,7 +22,8 @@ SVPropertyWidget::SVPropertyWidget(QWidget * parent) :
 		w = nullptr;
 
 	setMinimumWidth(200);
-	setWidgetVisible(M_EditGeometry);
+	setWidgetVisible(M_AddGeometry);
+
 
 	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::viewStateChanged,
 			this, &SVPropertyWidget::onViewStateChanged);
@@ -38,6 +40,7 @@ void SVPropertyWidget::setWidgetVisible(PropertyWidgets m) {
 			// TODO : show edit widgets for thermal simulation properties
 		} break;
 
+
 		case M_EditGeometry : {
 			// create widget and add to layout, if not existing
 			if (m_propWidgets[M_EditGeometry] == nullptr) {
@@ -45,6 +48,21 @@ void SVPropertyWidget::setWidgetVisible(PropertyWidgets m) {
 				m_layout->addWidget(m_propWidgets[M_EditGeometry]);
 			}
 			m_propWidgets[M_EditGeometry]->setVisible(true);
+
+			((SVPropEditGeometry *) m_propWidgets[M_EditGeometry])->setCurrentTab(SVPropEditGeometry::TS_EditGeometry);
+
+		} break;
+
+		case M_AddGeometry : {
+			// create widget and add to layout, if not existing
+			if (m_propWidgets[M_EditGeometry] == nullptr) {
+				m_propWidgets[M_EditGeometry] = new SVPropEditGeometry(this);
+				m_layout->addWidget(m_propWidgets[M_EditGeometry]);
+			}
+			m_propWidgets[M_EditGeometry]->setVisible(true);
+
+			((SVPropEditGeometry *) m_propWidgets[M_EditGeometry])->setCurrentTab(SVPropEditGeometry::TS_AddGeometry);
+
 		} break;
 
 		case M_AddVertexesMode: {
@@ -73,7 +91,7 @@ void SVPropertyWidget::onViewStateChanged() {
 	switch (SVViewStateHandler::instance().viewState().m_propertyWidgetMode) {
 		case SVViewState::PM_VertexList		: setWidgetVisible(M_AddVertexesMode); break;
 		case SVViewState::PM_AddGeometry	:
-			setWidgetVisible(M_EditGeometry);
+			setWidgetVisible(M_AddGeometry);
 			// TODO : Stephan, show tab "Add Geometry" in m_propWidgets[M_EditGeometry]
 		break;
 		case SVViewState::PM_EditGeometry	:
