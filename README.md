@@ -43,6 +43,7 @@ externals            - libraries including third-party libs
 NandradCodeGenerator - the NANDRAD code generator (keyword list and serialization support)
 NandradSolver        - sources for the NANDRAD command line solver
 SIM-VICUS            - sources for the SIM-VICUS user interface
+scripts              - Python scripts (test suite etc.)
 ```
 
 ### Libraries
