@@ -218,7 +218,7 @@ void readVector3D(const TiXmlElement * element, const std::string & name, std::v
 }
 
 template<>
-void readVector<double>(const TiXmlElement * element, const std::__cxx11::string & name, std::vector<double> & vec) {
+void readVector<double>(const TiXmlElement * element, const std::string & name, std::vector<double> & vec) {
 	FUNCID(NANDRAD::readVector);
 	std::string text = element->GetText();
 	IBK::replace_string(text, ",", " ");
