@@ -42,7 +42,7 @@ public:
 		/*! Emissivity of surface facing outside. */
 		P_LongWaveEmissivityInside,	// Keyword: LongWaveEmissivityInside	[---]		'Emissivity of surface facing outside.'
 		/*! Emissivity of surface facing inside. */
-		P_LongWaveEmissivityOutside,// Keyword: P_LongWaveEmissivityOutside [---]		'Emissivity of surface facing inside.'
+		P_LongWaveEmissivityOutside,// Keyword: LongWaveEmissivityOutside [---]		'Emissivity of surface facing inside.'
 
 		NUM_P
 	};
