@@ -30,7 +30,7 @@ public:
 		/*! Acidification potential . */
 		P_AP,						// Keyword: AP						[W/mK]	'Acidification potential.'
 
-		/// TODO Mira Docu übernehmen
+        /// TODO Mira Docu übernehmen x
 
 		/*! Global Warming Potential. */
 		P_EP,						// Keyword: EP						[W/mK]	'Eutrophication potential.'
