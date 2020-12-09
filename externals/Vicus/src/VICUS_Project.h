@@ -80,6 +80,11 @@ public:
 	*/
 	const VICUS::Object * objectById(unsigned int uniqueID) const;
 
+	/*! This function checks all surfaces in the project if they are selected or not.
+		\returns Returns true, if any surface is selected, and if so, stores the arithmetic average of all
+				 surface vertexes in variable centerPoint.
+	*/
+	bool haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const;
 
 	// *** FUNCTIONS ***
 
@@ -110,7 +115,7 @@ public:
 			if (std::find(vec.begin(), vec.end(), id) == vec.end())
 				return id;
 		}
-		/// \todo Hauke: discuss with Andreas
+		// TODO: Hauke: discuss with Andreas
 	}
 
 	/*! Function to generate unique ID (const-version). */
@@ -120,7 +125,7 @@ public:
 			if (std::find(vec.begin(), vec.end(), id) == vec.end())
 				return id;
 		}
-		/// \todo Hauke: discuss with Andreas
+		// TODO: Hauke: discuss with Andreas
 	}
 
 

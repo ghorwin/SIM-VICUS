@@ -213,7 +213,7 @@ void PlaneGeometry::update2DPolygon() {
 	//first clear the old polyline
 	m_polygon.clear();
 
-	/// \todo Dirk: Add check that m_vertexes[1] != m_vertexes[0]
+	/// TODO: Dirk: Add check that m_vertexes[1] != m_vertexes[0]
 
 	// x-axis vector in plane
 	m_localX = (m_vertexes[1] - m_vertexes[0]);
@@ -229,7 +229,7 @@ void PlaneGeometry::update2DPolygon() {
 	for (unsigned int i=2; i<m_vertexes.size(); ++i) {
 		const IBKMK::Vector3D & v = m_vertexes[i];
 		double x,y;
-		/// \todo improve this - by simply calling planeCoordinates we
+		/// TODO: Dirk, improve this - by simply calling planeCoordinates we
 		///       redo the same stuff several times for the same plane.
 		///       We should use a function that passes vX, vY, offset and then
 		///       a vector with v,x,y to process.

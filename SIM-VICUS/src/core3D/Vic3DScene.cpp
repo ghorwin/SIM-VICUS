@@ -62,14 +62,18 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 	// filter out all modification types that we handle
 	SVProjectHandler::ModificationTypes mod = (SVProjectHandler::ModificationTypes)modificationType;
 	switch (mod) {
-		case SVProjectHandler::AllModified :
+		case SVProjectHandler::AllModified : {
 			updateGrid = true;
 			updateBuilding = true;
 			updateNetwork = true;
 			// clear new polygon drawing object
-			/// \todo define what state the scene should go into, when project is reloaded/newly created
 			m_newPolygonObject.clear();
-			break;
+			// set scene operation mode to "normal"
+			SVViewState vs = SVViewStateHandler::instance().viewState();
+			vs.m_sceneOperationMode = SVViewState::NUM_OM;
+			vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
+			SVViewStateHandler::instance().setViewState(vs);
+		} break;
 
 		case SVProjectHandler::GeometryChanged :
 			updateBuilding = true;
@@ -133,8 +137,14 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			//
 			// Note: actually, selected surfaces can be de-selected by hiding them - we do not want to move/alter
 			//       invisible geometry
-			if (selectionModified /* && info->m_changedStateType == SVUndoTreeNodeState::SelectedState */)
+			if (selectionModified) {
 				m_selectedGeometryObject.updateBuffers();
+
+				/// \todo Stephan: show/hide movable coordinate system depending on whether we have a selection or not
+				///                also update the coordinates of the movable coordinate system object with
+				///                m_coordinateSystemObject.m_transform.setTranslation(...)
+				///                to the center of all selected surface-vertexes (call project().haveSelectedSurfaces())
+			}
 
 		} break;
 

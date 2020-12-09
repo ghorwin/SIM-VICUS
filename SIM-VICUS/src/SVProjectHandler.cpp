@@ -260,8 +260,6 @@ SVProjectHandler::SaveResult SVProjectHandler::saveWithNewFilename(QWidget * par
 	if (saveProject(parent, filename) != SaveOK)
 		return SaveFailed; // saving failed
 
-	/// \todo signal a change of file name, for widgets that are displaying the current filename
-
 	return SaveOK;
 }
 

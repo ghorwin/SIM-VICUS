@@ -328,4 +328,11 @@ const VICUS::Object * Project::objectById(unsigned int uniqueID) const {
 }
 
 
+bool Project::haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const {
+	/// TODO: Stephan: implement
+
+	return false;
+}
+
+
 } // namespace VICUS
