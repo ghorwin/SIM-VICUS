@@ -149,10 +149,13 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 				IBKMK::Vector3D centerPoint;
 				if ( project().haveSelectedSurfaces(centerPoint) ) {
 					m_coordinateSystemActive = true;
-					m_coordinateSystemObject.create(m_coordinateSystemShader);
 					m_coordinateSystemObject.m_transform.setTranslation( VICUS::IBKVector2QVector(centerPoint) );
-				} else
-					m_coordinateSystemObject.destroy();
+
+					// TODO: Stephan, set viewstate to show the "Edit geometry" widget.
+				}
+				else {
+					m_coordinateSystemActive = false;
+				}
 
 			}
 
