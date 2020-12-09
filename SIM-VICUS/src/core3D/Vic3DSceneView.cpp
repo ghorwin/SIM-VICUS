@@ -17,7 +17,8 @@
 namespace Vic3D {
 
 SceneView::SceneView() :
-	m_inputEventReceived(false)
+	m_inputEventReceived(false),
+	m_gpuTimers(this)
 {
 	// tell keyboard handler to monitor certain keys
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_W);
@@ -88,8 +89,6 @@ SceneView::~SceneView() {
 			p.destroy();
 
 		m_mainScene.destroy();
-
-		m_gpuTimers.destroy();
 
 		delete m_screenShotMultiSampleFrameBuffer;
 		delete m_screenShotDownSampleFrameBuffer;
