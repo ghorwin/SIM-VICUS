@@ -177,7 +177,7 @@ public:
 	std::vector<NetworkEdge>				m_edges;									// XML:E:required
 
 	/*! Pipe database, pipe dimensioning algorithm may use any pipes defined in this list. */
-	std::vector<NetworkPipe>				m_networkPipeDB;							// XM:E
+	std::vector<NetworkPipe>				m_networkPipeDB;							// XML:E
 
 	/*! origin of the network */
 	IBKMK::Vector3D							m_origin = IBKMK::Vector3D(0.0, 0.0, 0.0);	// XML:E:required
