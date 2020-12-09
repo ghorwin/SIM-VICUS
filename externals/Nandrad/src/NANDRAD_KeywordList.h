@@ -25,11 +25,13 @@
 #include <string>
 #include <typeinfo>
 
+#include <IBK_Parameter.h>
+
 namespace NANDRAD {
 
 /*! The class KeywordList provides conversion functionality between keyword strings
 	and their respective enumeration values.
-	Keyword strings are used in the Delphin project files as identifyer. In the code
+	Keyword strings are used in the NANDRAD project files as identifier. In the code
 	we use the enumeration values. You can obtain a keyword for a given enumeration value
 	with the static function Keyword(). The corresponding enumeration value can be
 	obtained with Enumeration(), as shown in the example below.
@@ -116,6 +118,35 @@ public:
 		\return Returns true if the category/enum type exists, otherwise false.
 	*/
 	static bool CategoryExists(const char * const enumtype);
+	/*! Convenience function to set an IBK::Parameter inside a static C-array of IBK::Parameters with
+		correct name, value and unit.
+		\code
+		// Example: in declaration of class 'MyClass'
+
+		enum MyParameters {
+			MP_Temperature,			// Keyword: Temperature   [C]   'Some temperatures'
+			MP_Mass,				// Keyword: Mass [kg]           'Some mass'
+			NUM_MP
+		};
+
+		// static array with parameter values
+		IBK::Parameter m_para[NUM_MP];
+
+
+
+		// setting the parameter in code
+
+		NANDRAD::setParameter(m_para, "MyClass::MyParameters", MP_Temperature, 23.5);
+		NANDRAD::setParameter(m_para, "MyClass::MyParameters", MP_Mass, 1500);
+
+		\endcode
+
+		\param para Pointer to begin of array with IBK::Parameters
+		\param enumtype The enumeration type (class::enumtypename)
+		\param n Enumeration value (which parameter to set)
+		\param val The value (given in the unit specified for the parameter; requires a unit to be given)
+	*/
+	static void setParameter(IBK::Parameter para[], const char * const enumtype, int n, const double &val);
 };
 
 } // namespace NANDRAD

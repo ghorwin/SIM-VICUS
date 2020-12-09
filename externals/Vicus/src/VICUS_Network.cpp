@@ -12,7 +12,14 @@
 #include <fstream>
 #include <algorithm>
 
-#include <NANDRAD_Utilities.h>
+#include <NANDRAD_KeywordList.h>
+
+#include "VICUS_NetworkLine.h"
+#include "VICUS_NetworkFluid.h"
+#include "VICUS_NetworkPipe.h"
+#include "VICUS_Project.h"
+
+
 
 namespace VICUS {
 
@@ -549,10 +556,10 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
 				throw IBK::Exception(IBK::FormatString("Edge connected to nodes '%1' and '%2' has no defined pipe from database")
 									 .arg(edge.m_node1->m_id).arg(edge.m_node2->m_id), FUNC_ID);
 
-			NANDRAD::setParameter(comp.m_para, "HydraulicNetworkComponent::para_t",
+			NANDRAD::KeywordList::setParameter(comp.m_para, "HydraulicNetworkComponent::para_t",
 												NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter,
 												pipe->m_diameterInside());
-			NANDRAD::setParameter(comp.m_para, "HydraulicNetworkComponent::para_t",
+			NANDRAD::KeywordList::setParameter(comp.m_para, "HydraulicNetworkComponent::para_t",
 												NANDRAD::HydraulicNetworkComponent::P_PipeRoughness,
 												pipe->m_roughness);
 
@@ -570,7 +577,7 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
 			// add inlet pipe
 			NANDRAD::HydraulicNetworkElement inletPipe(Project::uniqueId(network.m_elements), edge.m_node1->m_id,
 														edge.m_node2->m_id, componentId);
-			NANDRAD::setParameter(inletPipe.m_para, "HydraulicNetworkElement::para_t",
+			NANDRAD::KeywordList::setParameter(inletPipe.m_para, "HydraulicNetworkElement::para_t",
 													 NANDRAD::HydraulicNetworkElement::P_Length,
 													 edge.length());
 			inletPipe.m_displayName = "inlet pipe from " + IBK::val2string(edge.m_node1->m_id) + " to " + IBK::val2string(edge.m_node2->m_id) ;
@@ -579,7 +586,7 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
 			// add outlet pipe
 			NANDRAD::HydraulicNetworkElement outletPipe(Project::uniqueId(network.m_elements), edge.m_node2->m_id + idOffsetOutlet,
 														edge.m_node1->m_id + idOffsetOutlet, componentId);
-			NANDRAD::setParameter(outletPipe.m_para, "HydraulicNetworkElement::para_t",
+			NANDRAD::KeywordList::setParameter(outletPipe.m_para, "HydraulicNetworkElement::para_t",
 													  NANDRAD::HydraulicNetworkElement::P_Length,
 													  edge.length());
 			outletPipe.m_displayName = "outlet pipe from " + IBK::val2string(edge.m_node2->m_id + idOffsetOutlet) +
@@ -590,9 +597,13 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
 }
 
 
-void Network::setDefaultSizingParams()
-{
-
+void Network::setDefaultSizingParams() {
+	NANDRAD::KeywordList::setParameter(m_sizingPara, "VICUS::Network::sizingParam_t",
+										Network::sizingParam::SP_TemperatureSetpoint, 5);
+	NANDRAD::KeywordList::setParameter(m_sizingPara, "VICUS::Network::sizingParam_t",
+										Network::sizingParam::SP_TemperatureDifference, 5);
+	NANDRAD::KeywordList::setParameter(m_sizingPara, "VICUS::Network::sizingParam_t",
+										Network::sizingParam::SP_MaxPressureLoss, 150);
 }
 
 

@@ -38,6 +38,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Eutrophication potential.");
 	tr("Global Warming Potential.");
 	tr("Global Warming Potential.");
+	tr("Some temperatures");
+	tr("Some mass");
 	tr("Dry density of the material.");
 	tr("Specific heat capacity of the material.");
 	tr("Thermal conductivity of the dry material.");
