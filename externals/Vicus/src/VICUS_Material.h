@@ -90,6 +90,9 @@ public:
 	/*! List of parameters. */
 	IBK::Parameter					m_para[NUM_P];							// XML:E
 
+	/*! Vector of different ids of epd sub elements. */
+	std::vector<unsigned int>		m_idEpds;								// XML:E
+
 };
 
 } // namespace VICUS

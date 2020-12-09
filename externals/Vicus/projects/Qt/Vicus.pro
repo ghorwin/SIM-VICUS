@@ -41,6 +41,8 @@ HEADERS += \
 	../../src/VICUS_Constants.h \ \
 	../../src/VICUS_Construction.h \
 	../../src/VICUS_Conversions.h \
+	../../src/VICUS_EPDCategroySet.h \
+	../../src/VICUS_EPDDataset.h \
 	../../src/VICUS_KeywordList.h \
 	../../src/VICUS_Material.h \
 	../../src/VICUS_MaterialLayer.h \
@@ -67,6 +69,8 @@ HEADERS += \
 SOURCES += \
 	../../src/VICUS_ArgsParser.cpp \
 	../../src/VICUS_Constants.cpp \
+	../../src/VICUS_EPDCategroySet.cpp \
+	../../src/VICUS_EPDDataset.cpp \
 	../../src/VICUS_KeywordList.cpp \
 	../../src/VICUS_Network.cpp \
 	../../src/VICUS_NetworkEdge.cpp \
