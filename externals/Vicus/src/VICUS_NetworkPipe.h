@@ -6,10 +6,11 @@
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
+#include "VICUS_AbstractDBElement.h"
 
 namespace VICUS {
 
-class NetworkPipe {
+class NetworkPipe: public AbstractDBElement {
 public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
