@@ -15,6 +15,11 @@
 #include <VICUS_Project.h>
 
 
+// TODO Hauke: remove this later
+#include "SVSettings.h"
+#include "SVUndoAddFluid.h"
+
+
 SVNetworkImportDialog::SVNetworkImportDialog(QWidget *parent) :
 	QDialog(parent),
 	m_ui(new Ui::SVNetworkImportDialog)
@@ -66,12 +71,61 @@ bool SVNetworkImportDialog::edit() {
 		m_network.m_id = VICUS::Project::uniqueId(p.m_geometricNetworks);
 		m_network.m_name = uniqueName(m_ui->lineEditNetworkName->text().toStdString());
 
-		m_network.m_fluidID = 0;
+
+		// TODO Hauke: remove this later
+
+		// pipes DB
+		VICUS::NetworkPipe p;
+		p.m_id = 0;
+		p.m_displayName = "PE 32 x 3.2";
+		p.m_diameterOutside = 32;
+		p.m_sWall = 3.2;
+		p.m_roughness = 0.007;
+		VICUS::NetworkPipe p2;
+		p2.m_id = 1;
+		p2.m_displayName = "PE 50 x 4.6";
+		p2.m_diameterOutside = 50;
+		p2.m_sWall = 4.6;
+		p2.m_roughness = 0.007;
+		VICUS::NetworkPipe p3;
+		p3.m_id = 2;
+		p3.m_displayName = "PE 60 x 5.3";
+		p3.m_diameterOutside = 60;
+		p3.m_sWall = 5.3;
+		p3.m_roughness = 0.007;
+
+		// fluids
+		VICUS::NetworkFluid fluid;
+		fluid.defaultFluidWater(0);
+
+		// write database
+		SVSettings &settings = SVSettings::instance();
+		settings.m_dbPipes[p.m_id] = p;
+		settings.m_dbPipes[p2.m_id] = p2;
+		settings.m_dbPipes[p3.m_id] = p3;
+		settings.m_dbFluids[fluid.m_id] = fluid;
+		settings.writeDatabase();
+
+		// read database, add pipes to network
+		settings.readDatabase();
+		for (auto it = settings.m_dbPipes.begin(); it != settings.m_dbPipes.end(); ++it)
+			m_network.m_networkPipeDB.push_back(it->second);
+
+		// add fluid to project
+		fluid = settings.m_dbFluids[0];
+		SVUndoAddFluid * undoF = new SVUndoAddFluid(tr("Added fluid"), fluid);
+		undoF->push();
+
+		// set network fluid id
+		m_network.m_fluidID = project().m_networkFluids[0].m_id;
 
 		m_network.updateExtends();
 
 		SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("Added network"), m_network);
 		undo->push(); // modifies project and updates views
+
+
+
 	}
 	else{
 		m_network.updateExtends();

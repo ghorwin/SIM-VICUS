@@ -260,6 +260,7 @@ void SVSettings::readDatabase() {
 	readXMLDB(dbDir / "DB_SurfaceProperties.xml", "SurfaceProperties", "SurfaceProperty", m_dbSurfaceProperty, true);
 	readXMLDB(dbDir / "DB_BoundaryConditions.xml", "BoundaryConditions", "BoundaryCondition", m_dbBoundaryCondition, true);
 	readXMLDB(dbDir / "DB_Pipes.xml", "Pipes", "Pipe", m_dbPipes, true);
+	readXMLDB(dbDir / "DB_Fluids.xml", "Fluids", "Fluid", m_dbFluids, true);
 
 	// user databases
 
@@ -271,7 +272,8 @@ void SVSettings::readDatabase() {
 	readXMLDB(dbDir / "DB_Constructions.xml", "Constructions", "Construction", m_dbConstructions);
 	readXMLDB(dbDir / "DB_SurfaceProperties.xml", "SurfaceProperties", "SurfaceProperty", m_dbSurfaceProperty);
 	readXMLDB(dbDir / "DB_BoundaryConditions.xml", "BoundaryConditions", "BoundaryCondition", m_dbBoundaryCondition);
-	readXMLDB(dbDir / "DB_Pipes.xml", "Pipes", "Pipe", m_dbPipes);
+	readXMLDB(userDbDir / "DB_Pipes.xml", "Pipes", "Pipe", m_dbPipes);
+	readXMLDB(userDbDir / "DB_Fluids.xml", "Fluids", "Fluid", m_dbFluids);
 }
 
 
@@ -288,6 +290,7 @@ void SVSettings::writeDatabase() {
 	writeXMLDB(userDbDir / "DB_SurfaceProperties.xml", "SurfaceProperties", m_dbSurfaceProperty);
 	writeXMLDB(userDbDir / "DB_BoundaryConditions.xml", "BoundaryConditions", m_dbBoundaryCondition);
 	writeXMLDB(userDbDir / "DB_Pipes.xml", "Pipes", m_dbPipes);
+	writeXMLDB(userDbDir / "DB_Fluids.xml", "Fluids", m_dbFluids);
 }
 
 

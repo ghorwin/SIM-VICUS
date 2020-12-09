@@ -16,6 +16,7 @@
 #include <VICUS_SurfaceProperties.h>
 #include <VICUS_BoundaryCondition.h>
 #include <VICUS_NetworkPipe.h>
+#include <VICUS_NetworkFluid.h>
 
 
 class QDockWidget;
@@ -218,6 +219,9 @@ public:
 
 	/*! Map of all database pipes */
 	std::map<unsigned int, VICUS::NetworkPipe>				m_dbPipes;
+
+	/*! Map of all database fluids */
+	std::map<unsigned int, VICUS::NetworkFluid>				m_dbFluids;
 
 private:
 

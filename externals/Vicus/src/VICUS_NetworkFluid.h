@@ -6,10 +6,11 @@
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
+#include "VICUS_AbstractDBElement.h"
 
-namespace VICUS {
+namespace VICUS{
 
-class NetworkFluid {
+class NetworkFluid: public AbstractDBElement {
 public:
 	/*! Basic parameters. */
 	enum para_t {
