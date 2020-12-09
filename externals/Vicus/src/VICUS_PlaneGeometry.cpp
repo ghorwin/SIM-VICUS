@@ -242,6 +242,63 @@ void PlaneGeometry::update2DPolygon() {
 		}
 	}
 }
+	/*!
+	Copyright 2000 softSurfer, 2012 Dan Sunday
+	This code may be freely used and modified for any purpose
+	providing that this copyright notice is included with it.
+	SoftSurfer makes no warranty for this code, and cannot be held
+	liable for any real or imagined damage resulting from its use.
+	Users of this code must verify correctness for their application.
+
+	 isLeft(): tests if a point is Left|On|Right of an infinite line.
+		Input:  three points P0, P1, and P2
+		Return: >0 for P2 left of the line through P0 and P1
+				=0 for P2  on the line
+				<0 for P2  right of the line
+		See: Algorithm 1 "Area of Triangles and Polygons"
+	*/
+
+
+inline int isLeft( QPoint P0, QPoint P1, QPoint P2 )
+{
+	return ( (P1.x() - P0.x()) * (P2.y() - P0.y())
+			- (P2.x() -  P0.x()) * (P1.y() - P0.y()) );
+}
+
+/*!
+	URL: http://geomalgorithms.com/a03-_inclusion.html
+
+	Copyright 2000 softSurfer, 2012 Dan Sunday
+	This code may be freely used and modified for any purpose
+	providing that this copyright notice is included with it.
+	SoftSurfer makes no warranty for this code, and cannot be held
+	liable for any real or imagined damage resulting from its use.
+	Users of this code must verify correctness for their application.
+
+	wn_PnPoly(): winding number test for a point in a polygon
+	  Input:   P = a point,
+			   V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
+	  Return:  wn = the winding number (=0 only when P is outside)
+	*/
+int wn_PnPoly( QPoint P, QPoint *V, int n )
+{
+	int wn = 0;											// the  winding number counter
+
+	// loop through all edges of the polygon
+	for (int i=0; i<n; i++) {							// edge from V[i] to  V[i+1]
+		if (V[i].y() <= P.y()) {						// start y <= P.y
+			if (V[i+1].y()  > P.y())					// an upward crossing
+				 if (isLeft( V[i], V[i+1], P) > 0)		// P left of  edge
+					 ++wn;								// have  a valid up intersect
+		}
+		else {											// start y > P.y (no test needed)
+			if (V[i+1].y()  <= P.y())					// a downward crossing
+				 if (isLeft( V[i], V[i+1], P) < 0)		// P right of  edge
+					 --wn;								// have  a valid down intersect
+		}
+	}
+	return wn;
+}
 
 QPolygonF PlaneGeometry::eleminateColinearPts(bool overrideMemberVar){
 
@@ -310,6 +367,21 @@ void PlaneGeometry::triangulate() {
 //				polygon << QPointF(-1,-1);
 //				polygon << QPointF(0,-1);
 				m_polygon = polygon;
+			}
+			else if (false) {
+				polygon.clear();
+				polygon << QPointF(0,0);
+				polygon << QPointF(-2,-1);
+				polygon << QPointF(2,-1);
+				polygon << QPointF(3,-2);
+
+				//build a closed int polygon
+				QPolygon intPoly;
+				for (QPointF p : polygon) {
+					intPoly << QPoint(p.x()/eps, p.y()/eps);
+				}
+				intPoly << QPoint(polygon.value(0).x()/eps, polygon.value(0).y()/eps);
+
 			}
 
 
