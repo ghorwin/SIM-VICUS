@@ -33,13 +33,13 @@ public:
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
-	enum networkType {
+	enum NetworkType {
 		NET_singlePipe,						// Keyword: SinglePipe
 		NET_doublePipe,						// Keyword: DoublePipe
 		NUM_NET
 	};
 
-	enum sizingParam{
+	enum SizingParam{
 		SP_TemperatureSetpoint,				// Keyword: TemperatureSetpoint					[C]		'Temperature for pipe dimensioning algorithm'
 		SP_TemperatureDifference,			// Keyword: TemperatureDifference				[K]		'Temperature difference for pipe dimensioning algorithm'
 		SP_MaxPressureLoss,					// Keyword: MaxPressureLoss						[Pa/m]	'Maximum pressure loss for pipe dimensioning algorithm'
@@ -188,7 +188,7 @@ public:
 	/*! the catalog of hydraulic components */
 	std::vector<NANDRAD::HydraulicNetworkComponent>	m_hydraulicComponents;				// XML:E
 
-	networkType								m_type = NET_doublePipe;					// XML:E
+	NetworkType								m_type = NET_doublePipe;					// XML:E
 
 	/*! Parameters used for pipe sizing algorithm. Will be stored only when the algorithm was used */
 	IBK::Parameter							m_sizingPara[NUM_SP];						// XML:E

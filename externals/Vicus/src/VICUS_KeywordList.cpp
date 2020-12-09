@@ -40,7 +40,7 @@ namespace VICUS {
 		"EPDDataset::para_t",
 		"Material::para_t",
 		"Material::Category",
-		"Network::NetworkType",
+		"Network::networkType",
 		"Network::sizingParam",
 		"NetworkFluid::para_t",
 		"NetworkNode::NodeType",
@@ -125,7 +125,7 @@ namespace VICUS {
 				case 11 : return "Foils";
 				case 12 : return "Miscellaneous";
 			} break;
-			// Network::NetworkType
+			// Network::networkType
 			case 5 :
 			switch (t) {
 				case 0 : return "SinglePipe";
@@ -296,7 +296,7 @@ namespace VICUS {
 				case 11 : return "Foils";
 				case 12 : return "Miscellaneous";
 			} break;
-			// Network::NetworkType
+			// Network::networkType
 			case 5 :
 			switch (t) {
 				case 0 : return "SinglePipe";
@@ -468,7 +468,7 @@ namespace VICUS {
 				case 11 : if (no_description != nullptr) *no_description = true; return "Foils";
 				case 12 : if (no_description != nullptr) *no_description = true; return "Miscellaneous";
 			} break;
-			// Network::NetworkType
+			// Network::networkType
 			case 5 :
 			switch (t) {
 				case 0 : if (no_description != nullptr) *no_description = true; return "SinglePipe";
@@ -639,7 +639,7 @@ namespace VICUS {
 				case 11 : return "";
 				case 12 : return "";
 			} break;
-			// Network::NetworkType
+			// Network::networkType
 			case 5 :
 			switch (t) {
 				case 0 : return "";
@@ -810,7 +810,7 @@ namespace VICUS {
 				case 11 : return "#FFFFFF";
 				case 12 : return "#FFFFFF";
 			} break;
-			// Network::NetworkType
+			// Network::networkType
 			case 5 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
@@ -981,7 +981,7 @@ namespace VICUS {
 				case 11 : return std::numeric_limits<double>::quiet_NaN();
 				case 12 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// Network::NetworkType
+			// Network::networkType
 			case 5 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
@@ -1110,7 +1110,7 @@ namespace VICUS {
 			case 3 : return 6;
 			// Material::Category
 			case 4 : return 13;
-			// Network::NetworkType
+			// Network::networkType
 			case 5 : return 2;
 			// Network::sizingParam
 			case 6 : return 3;
@@ -1162,7 +1162,7 @@ namespace VICUS {
 			case 3 : return 5;
 			// Material::Category
 			case 4 : return 12;
-			// Network::NetworkType
+			// Network::networkType
 			case 5 : return 1;
 			// Network::sizingParam
 			case 6 : return 2;

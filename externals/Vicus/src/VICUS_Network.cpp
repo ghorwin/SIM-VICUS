@@ -1,4 +1,8 @@
 #include "VICUS_Network.h"
+#include "VICUS_NetworkLine.h"
+#include "VICUS_NetworkFluid.h"
+#include "VICUS_NetworkPipe.h"
+#include "VICUS_Project.h"
 
 #include <IBK_assert.h>
 #include <IBK_Path.h>
@@ -8,13 +12,6 @@
 #include <algorithm>
 
 #include <NANDRAD_Utilities.h>
-
-#include "VICUS_NetworkLine.h"
-#include "VICUS_NetworkFluid.h"
-#include "VICUS_NetworkPipe.h"
-#include "VICUS_Project.h"
-
-
 
 namespace VICUS {
 
@@ -333,16 +330,15 @@ FUNCID(Network::sizePipeDimensions);
 	// for all buildings: add their heating demand to the pipes along their shortest path
 	for (NetworkNode &node: m_nodes) {
 
+		if (node.m_type != NetworkNode::NT_Building)
+			continue;
+		if (node.m_maxHeatingDemand <= 0)
+			throw IBK::Exception(IBK::FormatString("Maximum heating demand of node '%1' must be >0").arg(node.m_id), FUNC_ID);
+
 		std::vector<NetworkEdge * > path;
-		if (node.m_type == NetworkNode::NT_Building){
-
-			if (node.m_maxHeatingDemand <= 0)
-				throw IBK::Exception(IBK::FormatString("Maximum heating demand of node '%1' must be >0").arg(node.m_id), FUNC_ID);
-
-			dijkstraShortestPathToSource(node, path);
-			for (NetworkEdge * edge: path)
-				edge->m_maxHeatingDemand += node.m_maxHeatingDemand;
-		}
+		dijkstraShortestPathToSource(node, path);
+		for (NetworkEdge * edge: path)
+			edge->m_maxHeatingDemand += node.m_maxHeatingDemand;
 	}
 
 	// in case there is a pipe which is not part of any path (e.g. in circular grid): assign the adjacent heating demand
@@ -595,12 +591,7 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
 
 void Network::setDefaultSizingParams()
 {
-	NANDRAD::setParameter(m_sizingPara, "VICUS::Network::sizingParam_t",
-										Network::sizingParam::SP_TemperatureSetpoint, 5);
-	NANDRAD::setParameter(m_sizingPara, "VICUS::Network::sizingParam_t",
-										Network::sizingParam::SP_TemperatureDifference, 5);
-	NANDRAD::setParameter(m_sizingPara, "VICUS::Network::sizingParam_t",
-										Network::sizingParam::SP_MaxPressureLoss, 150);
+
 }
 
 

@@ -147,9 +147,9 @@ void Network::readXML(const TiXmlElement * element) {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
 				bool success = false;
-				sizingParam ptype;
+				SizingParam ptype;
 				try {
-					ptype = (sizingParam)KeywordList::Enumeration("Network::sizingParam", p.name);
+					ptype = (SizingParam)KeywordList::Enumeration("Network::sizingParam", p.name);
 					m_sizingPara[ptype] = p; success = true;
 				}
 				catch (...) { /* intentional fail */  }
@@ -158,7 +158,7 @@ void Network::readXML(const TiXmlElement * element) {
 			}
 			else if (cName == "Type") {
 				try {
-					m_type = (networkType)KeywordList::Enumeration("Network::NetworkType", c->GetText());
+					m_type = (NetworkType)KeywordList::Enumeration("Network::networkType", c->GetText());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
@@ -243,7 +243,7 @@ TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
 
 
 	if (m_type != NUM_NET)
-		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("Network::NetworkType",  m_type));
+		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("Network::networkType",  m_type));
 
 	for (unsigned int i=0; i<NUM_SP; ++i) {
 		if (!m_sizingPara[i].name.empty()) {
