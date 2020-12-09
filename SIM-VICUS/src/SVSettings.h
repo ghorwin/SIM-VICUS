@@ -15,6 +15,8 @@
 #include <VICUS_WindowDivider.h>
 #include <VICUS_SurfaceProperties.h>
 #include <VICUS_BoundaryCondition.h>
+#include <VICUS_NetworkPipe.h>
+
 
 class QDockWidget;
 
@@ -213,6 +215,9 @@ public:
 
 	/*! Map of all database components. */
 	std::map<unsigned int, VICUS::Component>				m_dbComponents;
+
+	/*! Map of all database pipes */
+	std::map<unsigned int, VICUS::NetworkPipe>				m_dbPipes;
 
 private:
 
