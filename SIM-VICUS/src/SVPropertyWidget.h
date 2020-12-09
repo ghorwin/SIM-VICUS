@@ -33,7 +33,7 @@ public:
 	/*! Toggles visibility of different child widgets.
 		Also, constructs property widgets on the fly on first show.
 	*/
-	void setMode(PropertyWidgets m);
+	void setWidgetVisible(PropertyWidgets m);
 
 public slots:
 

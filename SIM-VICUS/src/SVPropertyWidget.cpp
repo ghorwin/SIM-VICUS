@@ -21,14 +21,14 @@ SVPropertyWidget::SVPropertyWidget(QWidget * parent) :
 		w = nullptr;
 
 	setMinimumWidth(200);
-	setMode(M_EditGeometry);
+	setWidgetVisible(M_EditGeometry);
 
 	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::viewStateChanged,
 			this, &SVPropertyWidget::onViewStateChanged);
 }
 
 
-void SVPropertyWidget::setMode(PropertyWidgets m) {
+void SVPropertyWidget::setWidgetVisible(PropertyWidgets m) {
 	for (QWidget * w : m_propWidgets)
 		if (w != nullptr)
 			w->setVisible(false);
@@ -71,9 +71,15 @@ void SVPropertyWidget::setMode(PropertyWidgets m) {
 
 void SVPropertyWidget::onViewStateChanged() {
 	switch (SVViewStateHandler::instance().viewState().m_propertyWidgetMode) {
-		case SVViewState::PM_VertexList		: setMode(M_AddVertexesMode); break;
-		case SVViewState::PM_AddGeometry	: setMode(M_EditGeometry); break;
-		case SVViewState::PM_EditGeometry	: setMode(M_EditGeometry); break;
+		case SVViewState::PM_VertexList		: setWidgetVisible(M_AddVertexesMode); break;
+		case SVViewState::PM_AddGeometry	:
+			setWidgetVisible(M_EditGeometry);
+			// TODO : Stephan, show tab "Add Geometry" in m_propWidgets[M_EditGeometry]
+		break;
+		case SVViewState::PM_EditGeometry	:
+			setWidgetVisible(M_EditGeometry);
+			// TODO : Stephan, show tab "Edit Geometry" in m_propWidgets[M_EditGeometry]
+		break;
 		default:;
 	}
 }
