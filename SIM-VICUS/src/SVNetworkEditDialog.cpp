@@ -1,10 +1,13 @@
 #include "SVNetworkEditDialog.h"
 #include "ui_SVNetworkEditDialog.h"
 
-#include "VICUS_Project.h"
 #include "SVProjectHandler.h"
 #include "SVUndoAddNetwork.h"
 #include "SVUndoModifyExistingNetwork.h"
+
+#include <VICUS_Project.h>
+#include <VICUS_KeywordList.h>
+
 
 #include <QMessageBox>
 
@@ -65,7 +68,10 @@ void SVNetworkEditDialog::updateSizingParams()
 
 void SVNetworkEditDialog::modifySizingParams()
 {
-	m_network.m_sizingPara[VICUS::Network::SP_TemperatureSetpoint].value = m_ui->doubleSpinBoxTemperatureSetpoint->value();
+	m_network.m_sizingPara[VICUS::Network::SP_TemperatureSetpoint].set(VICUS::KeywordList::Keyword("Network::SizingParam", VICUS::Network::SP_TemperatureSetpoint),
+																	   m_ui->doubleSpinBoxTemperatureSetpoint->value(),
+																	   VICUS::KeywordList::Unit("Network::SizingParam", VICUS::Network::SP_TemperatureSetpoint));
+
 	m_network.m_sizingPara[VICUS::Network::SP_TemperatureDifference].value = m_ui->doubleSpinBoxTemperatureDifference->value();
 	m_network.m_sizingPara[VICUS::Network::SP_MaxPressureLoss].value = m_ui->doubleSpinBoxMaximumPressureLoss->value();
 }

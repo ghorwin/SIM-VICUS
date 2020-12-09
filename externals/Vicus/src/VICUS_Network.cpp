@@ -3,6 +3,7 @@
 #include "VICUS_NetworkFluid.h"
 #include "VICUS_NetworkPipe.h"
 #include "VICUS_Project.h"
+#include "VICUS_KeywordList.h"
 
 #include <IBK_assert.h>
 #include <IBK_Path.h>
@@ -324,7 +325,7 @@ FUNCID(Network::sizePipeDimensions);
 	// check parameters
 	for (unsigned n = 0; n < NUM_SP; ++n){
 		if (m_sizingPara[n].empty())
-			throw IBK::Exception(IBK::FormatString("'%1' not set").arg(NANDRAD::KeywordList::Keyword("Network::sizingParam", n)), FUNC_ID);
+			throw IBK::Exception(IBK::FormatString("'%1' not set").arg(VICUS::KeywordList::Keyword("Network::sizingParam", n)), FUNC_ID);
 	}
 
 	// for all buildings: add their heating demand to the pipes along their shortest path
