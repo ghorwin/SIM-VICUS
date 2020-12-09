@@ -29,18 +29,22 @@ void SVLCA::calculateLCA()
 	std::map<unsigned int, VICUS::Material>					m_dbOpaqueMaterials;
 	std::map<unsigned int, VICUS::EPDDataset>				m_dbEPDs;
 
-	// results
-	// cat set A - D with the results for this specific construction not multiplied by surface area
-	struct LCAComponentResult{
-		 std::vector<VICUS::EPDDataset>			m_epdDataset;		// user epd of the specific construction
-		 double									m_area;				// in m2
-	};
 
 	struct MatEpd{
 		VICUS::EPDDataset m_epdA;
 		VICUS::EPDDataset m_epdB;
 		VICUS::EPDDataset m_epdC;
 		VICUS::EPDDataset m_epdD;
+	};
+
+	// results
+	// cat set A - D with the results for this specific construction not multiplied by surface area
+	struct LCAComponentResult{
+		VICUS::EPDDataset m_epdA;
+		VICUS::EPDDataset m_epdB;
+		VICUS::EPDDataset m_epdC;
+		VICUS::EPDDataset m_epdD;		// user epd of the specific construction
+		 double									m_area;				// in m2
 	};
 
 	std::map<unsigned int, LCAComponentResult>		compRes;
@@ -107,6 +111,7 @@ void SVLCA::calculateLCA()
 						//add all values in a category e.g. A, B, ...
 						for (unsigned int i=0;i< VICUS::EPDDataset::NUM_P; ++i) {
 							IBK::Parameter para = epd.m_para[i];
+							//...
 							if(para.value != 0){
 								matEpd.m_epdA.m_para[i].set(para.name,
 															matEpd.m_epdA.m_para[i].get_value(para.unit())
@@ -122,17 +127,28 @@ void SVLCA::calculateLCA()
 			}
 		}
 	}
-	/*
-		schleife über alle components
-		schleife über constructions
 
-		berechnung mit erneuerungszyklen und dicke um konstruktionsergebnisse abzubilden
+	for (auto &e : compRes) {
+		//Component result object
+		LCAComponentResult &comp = e.second;
+		unsigned int compId =  e.first;
 
-		multiplikation mit fläche
+		//check if opaque construction is available
+		if(m_dbComponents[compId].m_idOpaqueConstruction != VICUS::INVALID_ID){
+			const VICUS::Construction constr = m_dbConstructions[m_dbComponents[compId].m_idOpaqueConstruction];
 
-		ausgabe aufbreiten
-		mit tabelle ...
-	*/
+			//gehe durch alle material layer
+			//hole material id und dicke und lebensdauer
+			//hole den epd datensatz aus "materialIdAndEpd" über id
+			//berechnung
+			//erstellen eines datensatzes für die component
+			//comp.m_epdA ...
+			//multi mit fläche
+			//fertig
+
+		}
+
+	}
 }
 
 }

@@ -11,7 +11,10 @@ class SVLCA
 {
 public:
 
-	/*! Calculate lca. */
+	/*! Calculate lca.
+		...
+		...
+	*/
 	void calculateLCA();
 
 	/*! TODO Andreas das ist noch falsch ie bekomm ich hier das gebäude*/
