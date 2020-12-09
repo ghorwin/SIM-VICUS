@@ -166,7 +166,7 @@ void NewPolygonObject::updateBuffers() {
 
 	// now also add a vertex for the current coordinate system's position
 	m_vertexBufferData.resize(m_vertexBufferData.size()+1);
-	m_vertexBufferData.back().m_coords = m_coordSystemObject->m_transform.translation();
+	m_vertexBufferData.back().m_coords = m_coordSystemObject->translation();
 
 	// transfer data stored in m_vertexBufferData
 	m_vertexBufferObject.bind();

@@ -36,9 +36,6 @@ public:
 
 	CoordinateSystemObject();
 
-	/*! Write Coordinates of Coordinate System to Edit Widget */
-	void writeCoordinates();
-
 	/*! The function is called during OpenGL initialization, where the OpenGL context is current. */
 	void create(ShaderProgram * shaderProgram);
 	void destroy();
@@ -46,6 +43,18 @@ public:
 	/*! Binds the buffer and paints. */
 	void render();
 
+	/*! Modifies the location of the local coordinate system.
+		This function also tells the edit geometry widget its new position.
+	*/
+	void setTranslation(const QVector3D & translation);
+
+	/*! Returns the current translation of the coordinate system. */
+	const QVector3D & translation() const { return m_transform.translation(); }
+
+	/*! Cached pointer to geometry edit widget - needed for direct communication. */
+	SVPropEditGeometry			*m_propEditGeometry = nullptr;
+
+private:
 	/*! The transformation object, transforms the coordinate system to its position and orientation in
 		the scene.
 	*/
@@ -70,7 +79,6 @@ public:
 	/*! Index buffer on CPU memory. */
 	std::vector<GLshort>		m_indexBufferData;
 
-	SVPropEditGeometry			*m_propEditGeometry = nullptr;
 
 };
 

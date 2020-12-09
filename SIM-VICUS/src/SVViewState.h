@@ -41,6 +41,15 @@ public:
 		navigation.
 	*/
 	enum SceneOperationMode {
+		/*! The scene is in passive mode and has at least one selected surface/element.
+			User can navigate and click on object to change selection.
+			In this mode the local coordinate system is shown permanently at a fixed location and
+			can be moved/rotated as needed.
+			When the selection changes, the local coordinate system is translated to the center point
+			of the selected geometry.
+			When the last selection was de-selected, the scene goes back to passive move NUM_OM.
+		*/
+		OM_SelectedGeometry,
 		/*! Place vertex mode.
 			In this mode, the local coordinate system is shown, and the user can click on any
 			snap point to place a vertex.

@@ -23,16 +23,11 @@ License    : BSD License,
 
 namespace Vic3D {
 
-CoordinateSystemObject::CoordinateSystemObject()
-{
+CoordinateSystemObject::CoordinateSystemObject() {
 	// make us known to the world
 	SVViewStateHandler::instance().m_coordinateSystemObject = this;
 }
 
-void CoordinateSystemObject::writeCoordinates()
-{
-	m_propEditGeometry->setCoordinates(m_transform);
-}
 
 void CoordinateSystemObject::create(ShaderProgram * shaderProgram) {
 	m_shaderProgram = shaderProgram;
@@ -164,6 +159,13 @@ void CoordinateSystemObject::render() {
 	glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
 	// release buffers again
 	m_vao.release();
+}
+
+
+void CoordinateSystemObject::setTranslation(const QVector3D & translation) {
+	m_transform.setTranslation(translation);
+	// tell the property widget for editing geometry our new position/rotation
+	m_propEditGeometry->setCoordinates(m_transform);
 }
 
 } // namespace Vic3D

@@ -150,9 +150,6 @@ private:
 	bool					m_orbitControllerActive = false;
 	/*! Holds the origin of the orbit controller coordinates. */
 	QVector3D				m_orbitControllerOrigin;
-
-	/*! If true, the coordinate system is active and snaps to selected objects. */
-	bool					m_coordinateSystemActive = false;
 };
 
 } // namespace Vic3D

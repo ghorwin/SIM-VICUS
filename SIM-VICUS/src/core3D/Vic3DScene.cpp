@@ -140,28 +140,19 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			if (selectionModified) {
 				m_selectedGeometryObject.updateBuffers();
 
-				/// \todo Stephan: show/hide movable coordinate system depending on whether we have a selection or not
-				///                also update the coordinates of the movable coordinate system object with
-				///                m_coordinateSystemObject.m_transform.setTranslation(...)
-				///                to the center of all selected surface-vertexes (call project().haveSelectedSurfaces())
-				///
-				///
-
 				SVViewState vs = SVViewStateHandler::instance().viewState();
 				IBKMK::Vector3D centerPoint;
 				if ( project().haveSelectedSurfaces(centerPoint) ) {
-					vs.m_sceneOperationMode = SVViewState::OM_AlignLocalCoordinateSystem;
+					vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
 					vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
-					m_coordinateSystemObject.m_transform.setTranslation( VICUS::IBKVector2QVector(centerPoint) );
 					SVViewStateHandler::instance().setViewState(vs);
-					m_coordinateSystemObject.writeCoordinates();
+					m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(centerPoint) );
 
 				}
 				else {
 					vs.m_sceneOperationMode = SVViewState::NUM_OM;
 					vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
 					SVViewStateHandler::instance().setViewState(vs);
-					m_coordinateSystemObject.writeCoordinates();
 				}
 				// now tell all UI components to toggle their view state
 
@@ -505,11 +496,11 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		if (m_gridObject.closestSnapPoint(VICUS::IBKVector2QVector(o.m_pickPoint), closestPoint)) {
 			// this is in world coordinates, use this as transformation vector for the
 			// coordinate system
-			m_coordinateSystemObject.m_transform.setTranslation(closestPoint);
+			m_coordinateSystemObject.setTranslation(closestPoint);
 		}
 
 		// update the movable coordinate system's location in the new polygon object
-		m_newPolygonObject.updateLastVertex(m_coordinateSystemObject.m_transform.translation());
+		m_newPolygonObject.updateLastVertex(m_coordinateSystemObject.translation());
 	}
 
 }
@@ -525,6 +516,8 @@ void Vic3DScene::render() {
 	glClearColor(backgroundColor.x(), backgroundColor.y(), backgroundColor.z(), 1.0f);
 
 	QVector3D viewPos = m_camera.translation();
+
+	const SVViewState & vs = SVViewStateHandler::instance().viewState();
 
 	// *** grid ***
 
@@ -558,7 +551,7 @@ void Vic3DScene::render() {
 
 	// *** movable coordinate system  ***
 
-	if (m_coordinateSystemActive) {
+	if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex || vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry) {
 		m_coordinateSystemShader->bind();
 		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[0], m_worldToView);
 		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[2], VICUS::QVector3DFromQColor(m_lightColor));
@@ -636,19 +629,8 @@ void Vic3DScene::render() {
 }
 
 
-void Vic3DScene::setViewState(const SVViewState & vs) {
-	// adjust scene based on view state
-	switch (vs.m_sceneOperationMode) {
-		case SVViewState::OM_PlaceVertex :
-			m_coordinateSystemActive = true;
-		break;
-		case SVViewState::OM_AlignLocalCoordinateSystem :
-			m_coordinateSystemActive = true;
-		break;
-
-		default:
-			m_coordinateSystemActive = false;
-	}
+void Vic3DScene::setViewState(const SVViewState &) {
+	// nothing to be done, for now
 }
 
 
@@ -925,7 +907,7 @@ void Vic3DScene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandl
 		// *** place a vertex ***
 		case SVViewState::OM_PlaceVertex : {
 			// get current coordinate system's position
-			IBKMK::Vector3D p = VICUS::QVector2IBKVector(m_coordinateSystemObject.m_transform.translation());
+			IBKMK::Vector3D p = VICUS::QVector2IBKVector(m_coordinateSystemObject.translation());
 			// append a vertex (this will automatically update the draw buffer) and also
 			// modify the vertexListWidget.
 			m_newPolygonObject.appendVertex(p);
