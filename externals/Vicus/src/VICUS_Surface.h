@@ -24,6 +24,7 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
+	/*! Update surface colors by surface type. */
 	void updateColor(const SurfaceType& type);
 
 	VICUS_READWRITE
@@ -43,6 +44,9 @@ public:
 	/*! Stores selected information for this surface (not serialized, for now). */
 	bool								m_selected = false;
 
+	// *** Extend parameters for thermal surfaces ***
+	/*! */
+	unsigned int						m_componentId = INVALID_ID;	// XML:A
 
 	// *** Runtime Variables ***
 
