@@ -22,13 +22,18 @@ public:
 	explicit SVDBMaterialsEditWidget(QWidget *parent = nullptr);
 	~SVDBMaterialsEditWidget();
 
-	/*! Start widget with this. */
+	/*! Update widget with this. */
+	void update(int id);
+
+	/*! Edit widget with this. */
 	void edit();
 
 private slots:
 	void on_toolButtonAdd_clicked();
 
 	void on_toolButtonCopy_clicked();
+
+	void onMaterialSelected(int);
 
 private:
 	Ui::SVDBMaterialsEditWidget *m_ui;

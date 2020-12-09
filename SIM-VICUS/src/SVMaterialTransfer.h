@@ -48,8 +48,14 @@ public:
 	/*! Saturation moisture content in [kg/m3].*/
 	virtual double						w_sat() const override { return m_mat.m_para[VICUS::Material::P_Density].get_value("kg/m3"); }
 
+	/*! Hatching type of the material according DIN ISO 128-50 or DIN 1356-1.*/
+	virtual QtExt::HatchingType				hatchingType() const override {return QtExt::HT_NoHatch;}
+
 	/*! Returns the material id.*/
 	virtual int materialId() const override {return static_cast<int>(m_mat.m_id); }
+
+	/*! Returns the water absorption coefficient in [kg/m2s^0.5].*/
+	virtual double Aw() const override {return 0;}
 
 	/*! Return if a material is a user material able to edit.*/
 	virtual bool isUserMaterial() const override {return false; }

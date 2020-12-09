@@ -34,7 +34,7 @@
    <item row="1" column="1">
     <widget class="QToolButton" name="toolButtonCopy">
      <property name="icon">
-      <iconset resource="../resources/SIM-VICUS.qrc">
+      <iconset>
        <normaloff>:/gfx/actions/32x32/editcopy_32x32.png</normaloff>:/gfx/actions/32x32/editcopy_32x32.png</iconset>
      </property>
      <property name="iconSize">
@@ -46,7 +46,7 @@
     </widget>
    </item>
    <item row="0" column="0" colspan="4">
-    <widget class="QWidget" name="widgetMaterialsDB" native="true"/>
+    <widget class="QtExt::MaterialDatabaseSelectionWidget" name="widgetMaterialsDB" native="true"/>
    </item>
    <item row="1" column="3">
     <spacer name="horizontalSpacer">
@@ -64,7 +64,7 @@
    <item row="1" column="0">
     <widget class="QToolButton" name="toolButtonAdd">
      <property name="icon">
-      <iconset resource="../resources/SIM-VICUS.qrc">
+      <iconset>
        <normaloff>:/gfx/actions/32x32/plus_32x32.png</normaloff>:/gfx/actions/32x32/plus_32x32.png</iconset>
      </property>
      <property name="iconSize">
@@ -78,7 +78,7 @@
    <item row="1" column="2">
     <widget class="QToolButton" name="toolButtonRemove">
      <property name="icon">
-      <iconset resource="../resources/SIM-VICUS.qrc">
+      <iconset>
        <normaloff>:/gfx/actions/32x32/minus_32x32.png</normaloff>:/gfx/actions/32x32/minus_32x32.png</iconset>
      </property>
      <property name="iconSize">
@@ -91,8 +91,14 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../resources/SIM-VICUS.qrc"/>
- </resources>
+ <customwidgets>
+  <customwidget>
+   <class>QtExt::MaterialDatabaseSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>QtExt_MaterialDatabaseSelectionWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
  <connections/>
 </ui>
