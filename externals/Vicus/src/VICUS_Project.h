@@ -115,7 +115,7 @@ public:
 			if (std::find(vec.begin(), vec.end(), id) == vec.end())
 				return id;
 		}
-		// TODO: Hauke: discuss with Andreas
+		return 999999; // just to make compiler happy, we will find an unused ID in the loop above
 	}
 
 	/*! Function to generate unique ID (const-version). */
@@ -125,7 +125,7 @@ public:
 			if (std::find(vec.begin(), vec.end(), id) == vec.end())
 				return id;
 		}
-		// TODO: Hauke: discuss with Andreas
+		return 999999; // just to make compiler happy, we will find an unused ID in the loop above
 	}
 
 
