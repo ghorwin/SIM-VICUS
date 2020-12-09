@@ -9,7 +9,29 @@ We have a continuous integration scripts running (build-test of all C/C++ code w
 
 Tests are located in `data/tests`, the validation suite(s) are in `data/validation` with summary given on the [Validation-Wiki-readme](https://github.com/ghorwin/SIM-VICUS/tree/master/data/validation/SimQuality) page.
 
-## Directory Structure
+## Repo-Documentation
+
+The `README.md` files are written with MarkDown syntax, GitHub flavour, so that they can be read in the web-view of github.
+All extensive documentation is written in AsciiDoctor format inside the doc directory.
+
+Source code documentation is done with Doxygen, which generates its documentation for the _entire_ source code and stores
+the output in `docs/api`. For this purpose run the `NandradSolver.doxyfile` in the `NandradSolver/doc` directory through Doxygen.
+
+
+## Mailing List 
+
+Community communication is handled through our mailing list:
+
+https://www.listserv.dfn.de/sympa/info/sim-vicus
+
+
+## Developer Info
+
+Any developer might (=should) read the developer documentation in:
+
+https://ghorwin.github.io/SIM-VICUS/Developer-Documentation
+
+### Directory Structure
 
 ```
 bin                  - binaries
@@ -22,22 +44,6 @@ NandradCodeGenerator - the NANDRAD code generator (keyword list and serializatio
 NandradSolver        - sources for the NANDRAD command line solver
 SIM-VICUS            - sources for the SIM-VICUS user interface
 ```
-
-
-## Repo-Documentation
-
-The `README.md` files are written with MarkDown syntax, GitHub flavour, so that they can be read in the web-view of github.
-All extensive documentation is written in AsciiDoctor format inside the doc directory.
-
-Source code documentation is done with Doxygen, which generates its documentation for the _entire_ source code and stores
-the output in `docs/api`. For this purpose run the `NandradSolver.doxyfile` in the `NandradSolver/doc` directory through Doxygen.
-
-
-## Developer Info
-
-Any developer might (=should) read the developer documentation in:
-
-https://ghorwin.github.io/SIM-VICUS/Developer-Documentation
 
 ### Libraries
 
