@@ -1812,6 +1812,7 @@ void hydraulicNetworkTest02(NANDRAD::Project &prj){
 	NANDRAD::HydraulicNetworkComponent heatExchanger;
 	heatExchanger.m_id = id++;
 	heatExchanger.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger;
+	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_HeatFlux] = IBK::Parameter("HeatFlux", 100, "W");
 	heatExchanger.m_displayName = "heat exchanger";
 
 
@@ -1842,7 +1843,6 @@ void hydraulicNetworkTest02(NANDRAD::Project &prj){
 
 	// heat exchanger 2
 	hydrNet.m_elements.push_back(NANDRAD::HydraulicNetworkElement(id++, 120, 140, heatExchanger.m_id));
-	hydrNet.m_elements.back().m_para[NANDRAD::HydraulicNetworkElement::P_HeatExchangeRate] = IBK::Parameter("HeatExchangeRate", 100, "W");
 
 	// pipe 3
 	hydrNet.m_elements.push_back(NANDRAD::HydraulicNetworkElement(id++, 110, 130, pipe.m_id));
@@ -1850,8 +1850,6 @@ void hydraulicNetworkTest02(NANDRAD::Project &prj){
 
 	// heat exchanger 3
 	hydrNet.m_elements.push_back(NANDRAD::HydraulicNetworkElement(id++, 130, 140, heatExchanger.m_id));
-	hydrNet.m_elements.back().m_para[NANDRAD::HydraulicNetworkElement::P_HeatExchangeRate] = IBK::Parameter("HeatExchangeRate", 100, "W");
-
 
 	hydrNet.m_fluid.defaultFluidWater(id++);
 	prj.m_hydraulicNetworks.clear();
