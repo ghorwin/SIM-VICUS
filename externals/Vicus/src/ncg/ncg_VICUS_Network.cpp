@@ -106,6 +106,18 @@ void Network::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
+			else if (cName == "NetworkPipeDB") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "NetworkPipe")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					NetworkPipe obj;
+					obj.readXML(c2);
+					m_networkPipeDB.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else if (cName == "Origin") {
 				try {
 					std::vector<double> vals;
@@ -149,7 +161,7 @@ void Network::readXML(const TiXmlElement * element) {
 				bool success = false;
 				SizingParam ptype;
 				try {
-					ptype = (SizingParam)KeywordList::Enumeration("Network::sizingParam", p.name);
+					ptype = (SizingParam)KeywordList::Enumeration("Network::SizingParam", p.name);
 					m_sizingPara[ptype] = p; success = true;
 				}
 				catch (...) { /* intentional fail */  }
@@ -158,7 +170,7 @@ void Network::readXML(const TiXmlElement * element) {
 			}
 			else if (cName == "Type") {
 				try {
-					m_type = (NetworkType)KeywordList::Enumeration("Network::networkType", c->GetText());
+					m_type = (NetworkType)KeywordList::Enumeration("Network::NetworkType", c->GetText());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
@@ -213,6 +225,18 @@ TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
 		}
 	}
 
+
+	if (!m_networkPipeDB.empty()) {
+		TiXmlElement * child = new TiXmlElement("NetworkPipeDB");
+		e->LinkEndChild(child);
+
+		for (std::vector<NetworkPipe>::const_iterator it = m_networkPipeDB.begin();
+			it != m_networkPipeDB.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
 	{
 		std::vector<double> v = { m_origin.m_x, m_origin.m_y, m_origin.m_z};
 		TiXmlElement::appendSingleAttributeElement(e, "Origin", nullptr, std::string(), IBK::vector2string<double>(v," "));
@@ -243,7 +267,7 @@ TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
 
 
 	if (m_type != NUM_NET)
-		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("Network::networkType",  m_type));
+		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("Network::NetworkType",  m_type));
 
 	for (unsigned int i=0; i<NUM_SP; ++i) {
 		if (!m_sizingPara[i].name.empty()) {
