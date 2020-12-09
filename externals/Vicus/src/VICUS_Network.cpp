@@ -44,7 +44,7 @@ unsigned Network::addNode(const NetworkNode &node, const bool considerCoordinate
 
 void Network::addEdge(const unsigned nodeId1, const unsigned nodeId2, const bool supply) {
 	IBK_ASSERT(nodeId1<m_nodes.size() && nodeId2<m_nodes.size());
-	NetworkEdge e(nodeId1, nodeId2, 0, supply, INVALID_ID);
+	NetworkEdge e(nodeId1, nodeId2, supply, 0, INVALID_ID);
 	m_edges.push_back(e);
 	// TODO : does this needs to be done very time a node is added? or manually, when we are done?
 	updateNodeEdgeConnectionPointers();
@@ -270,7 +270,7 @@ void Network::networkWithoutDeadEnds(Network &cleanNetwork, const unsigned maxSt
 			continue;
 		unsigned id1 = cleanNetwork.addNode(*edge.m_node1);
 		unsigned id2 = cleanNetwork.addNode(*edge.m_node2);
-		cleanNetwork.addEdge(NetworkEdge(id1, id2, edge.length(), edge.m_supply, edge.m_pipeId));
+		cleanNetwork.addEdge(NetworkEdge(id1, id2, edge.m_supply, edge.length(), edge.m_pipeId));
 	}
 }
 
@@ -302,12 +302,12 @@ void Network::networkWithReducedEdges(Network & reducedNetwork){
 			// add nodes and reduced edge to new network
 			unsigned id1 = reducedNetwork.addNode(*previousNode);
 			unsigned id2 = reducedNetwork.addNode(*nextNode);
-			reducedNetwork.addEdge(NetworkEdge(id1, id2, totalLength, edge.m_supply, edge.m_pipeId));
+			reducedNetwork.addEdge(NetworkEdge(id1, id2, edge.m_supply, totalLength, edge.m_pipeId));
 		}
 		else{
 			unsigned id1 = reducedNetwork.addNode(*edge.m_node1);
 			unsigned id2 = reducedNetwork.addNode(*edge.m_node2);
-			reducedNetwork.addEdge(NetworkEdge(id1, id2, edge.length(), edge.m_supply, edge.m_pipeId));
+			reducedNetwork.addEdge(NetworkEdge(id1, id2, edge.m_supply, edge.length(), edge.m_pipeId));
 		}
 	}
 }

@@ -23,8 +23,8 @@ public:
 	NetworkEdge()
 	{}
 	NetworkEdge(const unsigned nodeId1, const unsigned nodeId2, const bool supply, const double &length, const unsigned pipeId):
-		m_pipeId(pipeId),
 		m_supply(supply),
+		m_pipeId(pipeId),
 		m_nodeId1(nodeId1),
 		m_nodeId2(nodeId2),
 		m_length(length)
@@ -64,13 +64,14 @@ public:
 	NetworkNode											*m_node1 = nullptr;
 	NetworkNode											*m_node2 = nullptr;
 
-	/*! id of pipe in database */
-	unsigned int										m_pipeId = INVALID_ID;			// XML:E
-
 	/*! If false, this is a branch. */
 	bool												m_supply;						// XML:A
 
-	NANDRAD::HydraulicNetworkComponent::modelType_t		m_modelType;
+	/*! id of pipe in database */
+	unsigned int										m_pipeId = INVALID_ID;			// XML:E
+
+
+	NANDRAD::HydraulicNetworkComponent::modelType_t		m_modelType = NANDRAD::HydraulicNetworkComponent::NUM_MT;
 
 	// *** RUNTIME VARIABLES ***
 
