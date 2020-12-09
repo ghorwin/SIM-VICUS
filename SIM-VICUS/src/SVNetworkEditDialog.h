@@ -26,14 +26,18 @@ private slots:
 
 	void on_pushButtonConnectBuildings_clicked();
 
-	void on_pushButtonReduceRedundants_clicked();
-
 	void on_pushButtonReduceDeadEnds_clicked();
+
+	void on_pushButtonSizePipeDimensions_clicked();
 
 private:
 	Ui::SVNetworkEditDialog *m_ui;
 
 	void updateStatus() const;
+
+	void updateSizingParams();
+
+	void modifySizingParams();
 
 	void setNetwork();
 

@@ -39,6 +39,13 @@ public:
 		NET_NUM
 	};
 
+	enum sizingParam{
+		SP_TemperatureSetpoint,				// Keyword: TemperatureSetpoint					[C]		'Temperature for pipe dimensioning algorithm'
+		SP_TemperatureDifference,			// Keyword: TemperatureDifference				[K]		'Temperature difference for pipe dimensioning algorithm'
+		SP_MaxPressureLoss,					// Keyword: MaxPressureLoss						[Pa/m]	'Maximum pressure loss for pipe dimensioning algorithm'
+		NUM_SP
+	};
+
 	Network();
 
 	/*! call private addNode and set position relative to orign.
@@ -91,12 +98,8 @@ public:
 
 	/*! calculate pipe dimensions using a maximum pressure loss per length and fixed temperature difference
 	 * the mass flow rate of each pipe will be calculated based on the heatDemand of connected consumer loads (e.g. buildings)
-	 \param deltaPMax maximum pressure loss per length [Pa/m]
-	 \param deltaTemp temperature difference between supply and return [K]
-	 \param temp temperature used for determination of fluid properties [C]
 	 */
-	void sizePipeDimensions(const double &deltaPMax, const double &deltaTemp, const double &temp,
-							const NetworkFluid &fluid, const std::vector<NetworkPipe> &pipeDB);
+	void sizePipeDimensions(const NetworkFluid &fluid);
 
 	/*! stores a copy of the network without any redundant edges */
 	void networkWithReducedEdges(Network & reducedNetwork);
@@ -115,7 +118,7 @@ public:
 	/*! Recomputes the min/max coordinates of the network and updates m_extends. */
 	void updateExtends();
 
-	/*! pressure loss of a rough pipe according to colebrook equation
+	/*! pressure loss of a rough pipe according to colebrook equation, calcualtion is iterative
 	 \param length in [m]
 	 \param massFlow in [kg/s]
 	 \param temperature in [C]
@@ -143,6 +146,10 @@ public:
 
 	void createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
 									  std::vector<NANDRAD::HydraulicNetworkComponent> &hydraulicComponents) const;
+
+	/*! sets defauklt values for m_sizingPara. If m_sizingPara[0].empty(), call this function (e.g. to fill GUI)
+	 * before calling sizePipeDimensions() */
+	void setDefaultSizingParams();
 
 
 	// *** PUBLIC MEMBER VARIABLES ***
@@ -176,12 +183,15 @@ public:
 	IBKMK::Vector3D							m_origin = IBKMK::Vector3D(0.0, 0.0, 0.0);	// XML:E:required
 
 	/*! hydraulic sub networks in the Network */
-	std::vector<NANDRAD::HydraulicNetwork>	m_hydraulicSubNetworks;
+	std::vector<NANDRAD::HydraulicNetwork>	m_hydraulicSubNetworks;						// XML:E
 
 	/*! the catalog of hydraulic components */
-	std::vector<NANDRAD::HydraulicNetworkComponent>	m_hydraulicComponents;
+	std::vector<NANDRAD::HydraulicNetworkComponent>	m_hydraulicComponents;				// XML:E
 
-	NetworkType								m_type = NET_doublePipe;
+	NetworkType								m_type = NET_doublePipe;					// XML:E
+
+	/*! Parameters used for pipe sizing algorithm. Will be stored only when the algorithm was used */
+	IBK::Parameter							m_sizingPara[NUM_SP];						// XML:E
 
 	// *** RUNTIME VARIABLES ***
 

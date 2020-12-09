@@ -124,8 +124,8 @@ double NetworkNode::adjacentHeatingDemand(std::set<NetworkEdge *> visitedEdges){
 	for (NetworkEdge *e: m_edges){
 		if (visitedEdges.find(e)==visitedEdges.end()){
 			visitedEdges.insert(e);
-			if (e->m_heatingDemand>0)
-				return e->m_heatingDemand;
+			if (e->m_maxHeatingDemand>0)
+				return e->m_maxHeatingDemand;
 			e->neighbourNode(this)->adjacentHeatingDemand(visitedEdges);
 		}
 	}

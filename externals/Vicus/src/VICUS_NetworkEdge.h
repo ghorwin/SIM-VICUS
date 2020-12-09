@@ -76,7 +76,7 @@ public:
 	// *** RUNTIME VARIABLES ***
 
 	/*! heating demand of all connected buildings */
-	double												m_heatingDemand = 0;
+	double												m_maxHeatingDemand = 0;
 
 private:
 

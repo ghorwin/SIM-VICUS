@@ -35,6 +35,7 @@ void SVNetworkEditDialog::edit()
 	}
 
 	setNetwork();
+	updateSizingParams();
 
 	if (exec() != QDialog::Accepted)
 		return;
@@ -44,10 +45,29 @@ void SVNetworkEditDialog::edit()
 void SVNetworkEditDialog::updateStatus() const{
 	m_ui->labelEdgeCount->setText(QString("%1").arg(m_network.m_edges.size()));
 	m_ui->labelNodeCount->setText(QString("%1").arg(m_network.m_nodes.size()));
-	m_ui->labelNetworkConnected->setText(QString("%1").arg(m_network.checkConnectedGraph()));
+	if (m_network.checkConnectedGraph())
+		m_ui->labelNetworkConnected->setText("Connected");
+	else
+		m_ui->labelNetworkConnected->setText("Not Connected");
 	m_ui->labelTotalLength->setText(QString("%1").arg(m_network.totalLength()));
 	m_ui->pushButtonConnectBuildings->setEnabled(m_network.nextUnconnectedBuilding()>=0);
 	m_ui->pushButtonReduceDeadEnds->setEnabled(m_network.checkConnectedGraph() && m_network.numberOfBuildings() > 0);
+}
+
+void SVNetworkEditDialog::updateSizingParams()
+{
+	if (!m_network.m_sizingPara[VICUS::Network::SP_TemperatureSetpoint].empty())
+		m_network.setDefaultSizingParams();
+	m_ui->doubleSpinBoxTemperatureSetpoint->setValue(m_network.m_sizingPara[VICUS::Network::SP_TemperatureSetpoint].value);
+	m_ui->doubleSpinBoxTemperatureDifference->setValue(m_network.m_sizingPara[VICUS::Network::SP_TemperatureDifference].value);
+	m_ui->doubleSpinBoxMaximumPressureLoss->setValue(m_network.m_sizingPara[VICUS::Network::SP_MaxPressureLoss].value);
+}
+
+void SVNetworkEditDialog::modifySizingParams()
+{
+	m_network.m_sizingPara[VICUS::Network::SP_TemperatureSetpoint].value = m_ui->doubleSpinBoxTemperatureSetpoint->value();
+	m_network.m_sizingPara[VICUS::Network::SP_TemperatureDifference].value = m_ui->doubleSpinBoxTemperatureDifference->value();
+	m_network.m_sizingPara[VICUS::Network::SP_MaxPressureLoss].value = m_ui->doubleSpinBoxMaximumPressureLoss->value();
 }
 
 void SVNetworkEditDialog::setNetwork()
@@ -84,32 +104,41 @@ void SVNetworkEditDialog::on_pushButtonConnectBuildings_clicked()
 }
 
 
-void SVNetworkEditDialog::on_pushButtonReduceRedundants_clicked()
+// reduce redundants: do this only before export to NANDRAD, maybe show it but dont save this state
+
+//	VICUS::Network tmp;
+//	tmp.m_id = m_network.m_id;
+//	tmp.m_fluidID = m_network.m_fluidID;
+//	tmp.m_name = m_network.m_name;
+//	tmp.m_origin = m_network.m_origin;
+//	m_network.networkWithReducedEdges(tmp);
+//	m_network = tmp;
+//	m_network.updateNodeEdgeConnectionPointers();
+//	updateStatus();
+//	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Added network"), m_network);
+//	undo->push(); // modifies project and updates views
+
+
+void SVNetworkEditDialog::on_pushButtonReduceDeadEnds_clicked()
 {
-	VICUS::Network tmp;
-	tmp.m_id = m_network.m_id;
-	tmp.m_fluidID = m_network.m_fluidID;
-	tmp.m_name = m_network.m_name;
-	tmp.m_origin = m_network.m_origin;
-	m_network.networkWithReducedEdges(tmp);
-	m_network = tmp;
+	// not quite efficient, but safest method to transfer all parameters to new network
+	VICUS::Network tmp = m_network;
+	tmp.clear();
+	m_network.networkWithoutDeadEnds(tmp);
+	std::swap(m_network, tmp);
 	m_network.updateNodeEdgeConnectionPointers();
 	updateStatus();
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Added network"), m_network);
 	undo->push(); // modifies project and updates views
 }
 
-void SVNetworkEditDialog::on_pushButtonReduceDeadEnds_clicked()
+
+void SVNetworkEditDialog::on_pushButtonSizePipeDimensions_clicked()
 {
-	VICUS::Network tmp;
-	tmp.m_id = m_network.m_id;
-	tmp.m_fluidID = m_network.m_fluidID;
-	tmp.m_name = m_network.m_name;
-	tmp.m_origin = m_network.m_origin;
-	m_network.networkWithoutDeadEnds(tmp);
-	m_network = tmp;
-	m_network.updateNodeEdgeConnectionPointers();
-	updateStatus();
-	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Added network"), m_network);
-	undo->push(); // modifies project and updates views
+	modifySizingParams();
+
+	m_network.sizePipeDimensions(project().m_networkFluids[m_network.m_fluidID]);
 }
+
+
+

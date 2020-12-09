@@ -93,6 +93,9 @@ public:
 	*/
 	void mergeSameConstructions();
 
+
+	// TODO Andreas: this is just an idea, maybe there is an easier way. But without this, the command gets very large and its likely to make a mistake */
+
 	/*! convenience function to set an array of IBK::Parameter with correct name, value and unit */
 	static void setParameterWithKeyword(IBK::Parameter *para, const char * const enumtype, int n, const double &val){
 		*(para + n) = IBK::Parameter(NANDRAD::KeywordList::Keyword(enumtype, n), val, NANDRAD::KeywordList::Unit(enumtype, n));

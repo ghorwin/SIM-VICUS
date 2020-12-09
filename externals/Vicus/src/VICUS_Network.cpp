@@ -18,7 +18,6 @@ Network::Network() {
 
 }
 
-
 unsigned Network::addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool consistentCoordinates) {
 
 	// if there is an existing node with identical coordinates, return its id and dont add a new one
@@ -313,40 +312,56 @@ void Network::networkWithReducedEdges(Network & reducedNetwork){
 }
 
 
-void Network::sizePipeDimensions(const double &deltaPMax, const double &deltaTemp, const double &temp,
-								 const NetworkFluid &fluid, const std::vector<NetworkPipe> &pipeDB){
+void Network::sizePipeDimensions(const NetworkFluid &fluid){
+FUNCID(Network::sizePipeDimensions);
 
-	// for all buildings: add their heating demand to the pipes along their path
+	// check pipe database
+	if (m_networkPipeDB.empty())
+		throw IBK::Exception(IBK::FormatString("The pipe database of network '%1' is empty."
+												"Please add pipes to this network").arg(m_id), FUNC_ID);
+
+	// check parameters
+	for (unsigned n = 0; n < NUM_SP; ++n){
+		if (m_sizingPara[n].empty())
+			throw IBK::Exception(IBK::FormatString("'%1' not set").arg(NANDRAD::KeywordList::Keyword("Network::sizingParam", n)), FUNC_ID);
+	}
+
+	// for all buildings: add their heating demand to the pipes along their shortest path
 	for (NetworkNode &node: m_nodes) {
 		std::vector<NetworkEdge * > path;
 		if (node.m_type == NetworkNode::NT_Building){
 			dijkstraShortestPathToSource(node, path);
 			for (NetworkEdge * edge: path)
-				edge->m_heatingDemand += node.m_maxHeatingDemand;
+				edge->m_maxHeatingDemand += node.m_maxHeatingDemand;
 		}
 	}
 
 	// in case there is a pipe which is not part of any path (e.g. in circular grid): assign the adjacent heating demand
 	for (NetworkEdge &e: m_edges){
-		if (e.m_heatingDemand <= 0){
+		if (e.m_maxHeatingDemand <= 0){
 			std::set<NetworkEdge *> edges1, edges2;
-			e.m_heatingDemand = 0.5 * ( e.m_node1->adjacentHeatingDemand(edges1)
+			e.m_maxHeatingDemand = 0.5 * ( e.m_node1->adjacentHeatingDemand(edges1)
 										+ e.m_node2->adjacentHeatingDemand(edges2) );
 		}
 	}
 
+	// for each edge: find the smallest pipe from DB that has a pressure loss below deltapMax
+	double deltaPMax = m_sizingPara[SP_MaxPressureLoss].value;
 	for (NetworkEdge &e: m_edges){
-		for (const NetworkPipe &pipe: pipeDB){
-			double massFlow = e.m_heatingDemand / deltaTemp / fluid.m_para[NetworkFluid::P_HeatCapacity].value;
-			if (pressureLossColebrook(e.length(), massFlow, fluid, pipe, temp) < deltaPMax){
-
-				// TODO: add pipe from DB
-
-
-				break;
+		e.m_pipeId = INVALID_ID;
+		for (NetworkPipe &pipe: m_networkPipeDB){
+			double massFlow = e.m_maxHeatingDemand / (m_sizingPara[SP_TemperatureDifference].value
+													  * fluid.m_para[NetworkFluid::P_HeatCapacity].value);
+			//  compare pressure loss per length (Pa/m)
+			if (pressureLossColebrook(1.0, massFlow, fluid, pipe, m_sizingPara[SP_TemperatureSetpoint].value) < deltaPMax){
+				if (e.m_pipeId == INVALID_ID)
+					e.m_pipeId = pipe.m_id;
+				else if (pipe.m_diameterInside() < VICUS::Project::element(m_networkPipeDB, e.m_pipeId)->m_diameterInside())
+					e.m_pipeId = pipe.m_id;
 			}
 		}
 	}
+
 }
 
 
@@ -400,6 +415,7 @@ void Network::updateExtends() {
 }
 
 
+// TODO Hauke: this will be moved to NANDRAD Solver later (with a different interface)
 double Network::pressureLossColebrook(const double &length, const double &massFlow, const NetworkFluid &fluid,
 										const NetworkPipe &pipe, const double &temperature){
 
@@ -408,11 +424,7 @@ double Network::pressureLossColebrook(const double &length, const double &massFl
 	double lambda = 0.05;
 	double lambda_new = lambda;
 	for (unsigned n=0; n<100; ++n){
-
-		// TODO: use roughness from pipeDB
-
-//		lambda_new = std::pow(-2 * std::log10(2.51 / (Re * std::sqrt(lambda)) + pipe.m_roughness / (3.71 * pipe.m_diameterInside())), -2);
-
+		lambda_new = std::pow(-2 * std::log10(2.51 / (Re * std::sqrt(lambda)) + pipe.m_roughness / (3.71 * pipe.m_diameterInside())), -2);
 		if (abs(lambda_new - lambda) / lambda < 1e-3)
 			break;
 		lambda = lambda_new;
@@ -569,6 +581,17 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
 			network.m_elements.push_back(outletPipe);
 		}
 	}
+}
+
+
+void Network::setDefaultSizingParams()
+{
+	NANDRAD::Project::setParameterWithKeyword(&m_sizingPara[0], "Network::sizingParam",
+											Network::sizingParam::SP_TemperatureSetpoint, 5);
+	NANDRAD::Project::setParameterWithKeyword(&m_sizingPara[0], "Network::sizingParam",
+											Network::sizingParam::SP_TemperatureDifference, 5);
+	NANDRAD::Project::setParameterWithKeyword(&m_sizingPara[0], "Network::sizingParam",
+											Network::sizingParam::SP_MaxPressureLoss, 150);
 }
 
 
