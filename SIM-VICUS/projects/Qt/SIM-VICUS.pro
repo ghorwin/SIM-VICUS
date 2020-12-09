@@ -72,6 +72,7 @@ SOURCES += \
 		../../src/SVDBMaterialsEditWidget.cpp \
 		../../src/SVDBWindowEditWidget.cpp \
 		../../src/SVImportIDFDialog.cpp \
+		../../src/SVLCA.cpp \
 		../../src/SVMaterialTransfer.cpp \
 		../../src/SVNavigationTreeItemDelegate.cpp \
 		../../src/SVNetworkEditDialog.cpp \
@@ -128,6 +129,7 @@ HEADERS  += \
 		../../src/SVDBMaterialsEditWidget.h \
 		../../src/SVDBWindowEditWidget.h \
 		../../src/SVImportIDFDialog.h \
+		../../src/SVLCA.h \
 		../../src/SVMaterialTransfer.h \
 		../../src/SVNavigationTreeItemDelegate.h \
 		../../src/SVNetworkEditDialog.h \
