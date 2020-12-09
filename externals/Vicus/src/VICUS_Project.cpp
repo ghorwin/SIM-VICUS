@@ -346,9 +346,9 @@ bool Project::haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const {
 		}
 	}
 
-	// we go through all surfaces in side the buildings
+	// we go through all surfaces inside the buildings
 	// if surface is selected and visible, we store its coordinates and its coordinates count
-	for ( const Building b : m_buildings) {
+	for ( const Building &b : m_buildings) {
 		for ( const BuildingLevel &bl : b.m_buildingLevels) {
 			for ( const Room &r : bl.m_rooms) {
 				for ( const Surface &s : r.m_surfaces) {
@@ -363,7 +363,6 @@ bool Project::haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const {
 			}
 		}
 	}
-
 
 	if ( haveSelectedPolys )
 		centerPoint/=static_cast<double>(coordsCount);
