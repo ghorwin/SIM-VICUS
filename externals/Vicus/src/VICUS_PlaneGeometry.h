@@ -100,12 +100,14 @@ public:
 						bool hitBackfacingPlanes = false,
 						bool endlessPlane = false) const;
 
-
 	/*! Returns current vector of triangles. */
 	const std::vector<triangle_t> & triangles() const { return m_triangles; }
 
 	/*! Returns 3D vertex coordinates. */
 	std::vector<IBKMK::Vector3D> vertexes() const {	return m_vertexes; }
+
+	/*! Calculates surface area in m2. */
+	double area() const;
 
 	void setVertexes(const std::vector<IBKMK::Vector3D> & vertexes);
 

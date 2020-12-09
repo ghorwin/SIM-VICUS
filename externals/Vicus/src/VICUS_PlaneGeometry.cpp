@@ -607,6 +607,22 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 	return false;
 }
 
+double PlaneGeometry::area() const
+{
+	if(m_polygon.empty())
+		throw IBK::Exception(IBK::FormatString("Points of Polygon are not set.\n"), "[PlaneGeometry::area]");
+
+	double area = 0.0;
+
+	for (int i=0; i<m_polygon.size(); ++i)
+	{
+		int iN = (i+1)%m_polygon.size();
+		area += 0.5 * (m_polygon.value(i).x() * m_polygon.value(iN).y()
+					   - m_polygon.value(iN).x() * m_polygon.value(i).y());
+	}
+	return std::abs(area);
+}
+
 
 bool PlaneGeometry::operator!=(const PlaneGeometry & other) const {
 	if (m_type != other.m_type) return true;
