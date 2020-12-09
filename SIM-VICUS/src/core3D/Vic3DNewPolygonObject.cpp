@@ -95,7 +95,6 @@ void NewPolygonObject::appendVertex(const IBKMK::Vector3D & p) {
 	m_vertexListWidget->addVertex(p);
 }
 
-
 void NewPolygonObject::removeVertex(unsigned int idx) {
 	m_planeGeometry.removeVertex(idx);
 	updateBuffers();
@@ -222,8 +221,11 @@ void NewPolygonObject::render() {
 		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], lineCol);
 		// then the line consisting of the last two vertexes
 		glLineWidth(2);
-		glDrawArrays(GL_LINES, m_firstLineVertex, 2);
-		glLineWidth(1);
+
+		for (size_t i = 0; i < m_planeGeometry.vertexes().size(); ++i) {
+			glDrawArrays(GL_LINES, i, 2);
+		}
+
 	}
 	// release buffers again
 	m_vao.release();
