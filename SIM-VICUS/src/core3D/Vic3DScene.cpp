@@ -144,6 +144,16 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 				///                also update the coordinates of the movable coordinate system object with
 				///                m_coordinateSystemObject.m_transform.setTranslation(...)
 				///                to the center of all selected surface-vertexes (call project().haveSelectedSurfaces())
+				///
+				///
+				IBKMK::Vector3D centerPoint;
+				if ( project().haveSelectedSurfaces(centerPoint) ) {
+					m_coordinateSystemActive = true;
+					m_coordinateSystemObject.create(m_coordinateSystemShader);
+					m_coordinateSystemObject.m_transform.setTranslation( VICUS::IBKVector2QVector(centerPoint) );
+				} else
+					m_coordinateSystemObject.destroy();
+
 			}
 
 		} break;

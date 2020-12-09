@@ -204,14 +204,14 @@ void Project::parseHeader(const IBK::Path & filename) {
 
 	std::ifstream inputStream;
 #if defined(_WIN32)
-	#if defined(_MSC_VER)
-			inputStream.open(filename.wstr().c_str(), std::ios_base::binary);
-	#else
-			std::string filenameAnsi = IBK::WstringToANSI(filename.wstr(), false);
-			inputStream.open(filenameAnsi.c_str(), std::ios_base::binary);
-	#endif
+#if defined(_MSC_VER)
+	inputStream.open(filename.wstr().c_str(), std::ios_base::binary);
+#else
+	std::string filenameAnsi = IBK::WstringToANSI(filename.wstr(), false);
+	inputStream.open(filenameAnsi.c_str(), std::ios_base::binary);
+#endif
 #else // _WIN32
-			inputStream.open(filename.c_str(), std::ios_base::binary);
+	inputStream.open(filename.c_str(), std::ios_base::binary);
 #endif
 	if (!inputStream.is_open()) {
 		throw IBK::Exception( IBK::FormatString("Cannot open input file '%1' for reading").arg(filename), FUNC_ID);
@@ -331,7 +331,44 @@ const VICUS::Object * Project::objectById(unsigned int uniqueID) const {
 bool Project::haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const {
 	/// TODO: Stephan: implement
 
-	return false;
+	size_t coordsCount=0;
+	bool haveSelectedPolys = false;
+
+	// we go through all dump surfaces in m_plaingeometry
+	// if surface is selected and visible, we store its coordinates and its coordinates count
+	for ( const Surface &s : m_plainGeometry) {
+		if ( s.m_visible && s.m_selected ) {
+			!haveSelectedPolys ? haveSelectedPolys = true : haveSelectedPolys;
+			for ( const IBKMK::Vector3D &v : s.m_geometry.vertexes()  ) {
+				centerPoint += v;
+				++coordsCount;
+			}
+		}
+	}
+
+	// we go through all surfaces in side the buildings
+	// if surface is selected and visible, we store its coordinates and its coordinates count
+	for ( const Building b : m_buildings) {
+		for ( const BuildingLevel &bl : b.m_buildingLevels) {
+			for ( const Room &r : bl.m_rooms) {
+				for ( const Surface &s : r.m_surfaces) {
+					if ( s.m_visible && s.m_selected ) {
+						!haveSelectedPolys ? haveSelectedPolys = true : haveSelectedPolys;
+						for ( const IBKMK::Vector3D &v : s.m_geometry.vertexes()  ) {
+							centerPoint += v;
+							++coordsCount;
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+	if ( haveSelectedPolys )
+		centerPoint/=static_cast<double>(coordsCount);
+
+	return haveSelectedPolys;
 }
 
 
