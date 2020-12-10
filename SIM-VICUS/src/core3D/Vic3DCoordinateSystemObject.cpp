@@ -26,6 +26,10 @@ namespace Vic3D {
 CoordinateSystemObject::CoordinateSystemObject() {
 	// make us known to the world
 	SVViewStateHandler::instance().m_coordinateSystemObject = this;
+
+	// Initialize transform
+	m_transform.translate(QVector3D(0,0,0));
+	updateInverse();
 }
 
 
@@ -35,8 +39,6 @@ void CoordinateSystemObject::create(ShaderProgram * shaderProgram) {
 	if (m_vao.isCreated())
 		return;
 
-	// Initialize transform
-	m_transform.translate(QVector3D(1,1,1));
 
 	// *** create buffers on GPU memory ***
 
@@ -168,11 +170,26 @@ void CoordinateSystemObject::setTranslation(const QVector3D & translation) {
 	m_transform.setTranslation(translation);
 	// tell the property widget for editing geometry our new position/rotation
 	m_propEditGeometry->setCoordinates(m_transform);
+	updateInverse();
 }
 
 
 void CoordinateSystemObject::setRotation(const QQuaternion & rotMatrix) {
 	m_transform.setRotation(rotMatrix);
+	updateInverse();
+}
+
+
+void CoordinateSystemObject::setTransform(const Transform3D & transform) {
+	m_transform = transform;
+	updateInverse();
+}
+
+
+void CoordinateSystemObject::updateInverse() {
+	m_inverseMatrix.setToIdentity();
+	m_inverseMatrix.rotate(m_transform.rotation().conjugated());
+	m_inverseMatrix.translate(-m_transform.translation());
 }
 
 

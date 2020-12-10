@@ -54,19 +54,28 @@ public:
 	void setRotation(const QQuaternion & rotMatrix);
 
 	/*! Returns current transformation matrix (origin and rotation). */
-	void setTransform(const Transform3D & transform) { m_transform = transform; }
+	void setTransform(const Transform3D & transform);
 	/*! Sets new transformation matrix. */
 	Transform3D transform() const { return m_transform; }
+
+	/*! Returns the inverse transformation matrix. */
+	QMatrix4x4 inverseTransformationMatrix() const { return m_inverseMatrix; }
 
 	/*! Cached pointer to geometry edit widget - needed for direct communication. */
 	SVPropEditGeometry			*m_propEditGeometry = nullptr;
 
 
 private:
+	/*! Updates the inverse matrix. */
+	void updateInverse();
+
 	/*! The transformation object, transforms the coordinate system to its position and orientation in
 		the scene.
 	*/
 	Transform3D					m_transform;
+
+	/*! Inverse transformation, needed to fix light/view position for phong shader. */
+	QMatrix4x4					m_inverseMatrix;
 
 	/*! Shader program. */
 	ShaderProgram				*m_shaderProgram = nullptr;

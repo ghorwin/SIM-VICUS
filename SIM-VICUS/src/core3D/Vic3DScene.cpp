@@ -260,7 +260,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 	Transform3D oldCameraTransform = m_camera;
 
 	// *** Escape ***
-	if (keyboardHandler.keyDown(Qt::Key_Escape)) {
+	if (keyboardHandler.keyReleased(Qt::Key_Escape)) {
 		// different operation depending on scene's operation mode
 		switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
 
@@ -297,7 +297,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 	}
 
 	// *** Enter/Return ***
-	if (keyboardHandler.keyDown(Qt::Key_Return)) {
+	if (keyboardHandler.keyReleased(Qt::Key_Return)) {
 		// different operation depending on scene's operation mode
 		switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
 
@@ -671,10 +671,27 @@ void Vic3DScene::render() {
 		vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem)
 	{
 		m_coordinateSystemShader->bind();
+
+		// When we translate/rotate the local coordinate system, we actually move the world with respect to the camera
+		// by left-multiplying the model2world matrix with the coordinate system object.
+
+		// Suppose the local coordinate system shall be located at 20,0,0 and the camera looks at the coordinate
+		// system's origin from 20,-40,2. Now, inside the shader, all coordinates are multiplied by the
+		// model2world matrix, which basically moves all coordinates +20 in x direction. Now light and view position
+		// (the latter only being used to compute the phong shading) are at 40, -40, 2, wheras the local coordinate
+		// system is moved from local 0,0,0 to the desired 20,0,0.
+		// Consequently, the light and view position cause the phong shader to draw the sphere as if lighted slightly
+		// from the direction of positive x.
+
+		// To fix this, we translate/rotate the view/light position inversely to the model2world transformation and
+		// this revert the effect introduced by the model2world matrix on the light/view coordinates.
+		QVector3D translatedViewPos = m_coordinateSystemObject.inverseTransformationMatrix() * viewPos;
+//		qDebug() << viewPos << m_coordinateSystemObject.translation();
+
 		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[0], m_worldToView);
-		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[1], viewPos);
+		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[1], translatedViewPos); // lightpos
 		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[2], VICUS::QVector3DFromQColor(m_lightColor));
-		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[3], viewPos);
+		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[3], translatedViewPos); // viewpos
 		m_coordinateSystemObject.render();
 		m_coordinateSystemShader->release();
 	}

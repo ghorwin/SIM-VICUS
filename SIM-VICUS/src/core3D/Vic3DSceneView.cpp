@@ -265,7 +265,7 @@ void SceneView::paintGL() {
 
 
 	// Check for some changes in the input handler, which in turn may restart the paint loop
-	checkInput();
+	//checkInput();
 
 #ifdef SHOW_TIMINGS
 	QVector<GLuint64> intervals = m_gpuTimers.waitForIntervals();
