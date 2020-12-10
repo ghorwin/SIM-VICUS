@@ -81,6 +81,7 @@ SOURCES += \
 		../../src/SVPropVertexListWidget.cpp \
 		../../src/SVPropertyWidget.cpp \
 		../../src/SVUndoAddFluid.cpp \
+		../../src/SVUndoDeleteNetwork.cpp \
 		../../src/SVUndoModifyExistingNetwork.cpp \
 		../../src/SVUndoTreeNodeState.cpp \
 		../../src/SVUtils.cpp \
@@ -139,6 +140,7 @@ HEADERS  += \
 		../../src/SVPropVertexListWidget.h \
 		../../src/SVPropertyWidget.h \
 		../../src/SVUndoAddFluid.h \
+		../../src/SVUndoDeleteNetwork.h \
 		../../src/SVUndoModifyExistingNetwork.h \
 		../../src/SVUndoTreeNodeState.h \
 		../../src/SVUtils.h \

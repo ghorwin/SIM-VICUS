@@ -30,6 +30,14 @@ private slots:
 
 	void on_pushButtonSizePipeDimensions_clicked();
 
+	void on_pushButtonCopy_clicked();
+
+	void on_pushButtonDelete_clicked();
+
+	void on_pushButtonReduceRedundantNodes_clicked();
+
+	void on_pushButtonSimplify_clicked();
+
 private:
 	Ui::SVNetworkEditDialog *m_ui;
 
@@ -40,6 +48,10 @@ private:
 	void modifySizingParams();
 
 	void setNetwork();
+
+	void setupComboBox();
+
+	void copyNetwork(const std::string & appendName);
 
 	QMap<QString, unsigned> m_existingNetworksMap;
 

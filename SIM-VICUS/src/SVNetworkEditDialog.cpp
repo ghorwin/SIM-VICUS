@@ -4,6 +4,7 @@
 #include "SVProjectHandler.h"
 #include "SVUndoAddNetwork.h"
 #include "SVUndoModifyExistingNetwork.h"
+#include "SVUndoDeleteNetwork.h"
 
 #include <VICUS_Project.h>
 #include <VICUS_KeywordList.h>
@@ -26,17 +27,7 @@ SVNetworkEditDialog::~SVNetworkEditDialog()
 
 void SVNetworkEditDialog::edit()
 {
-	const VICUS::Project &p = project();
-
-	// setup combobox
-	if (!p.m_geometricNetworks.empty()){
-		m_existingNetworksMap.clear();
-		for (auto it = p.m_geometricNetworks.begin(); it!=p.m_geometricNetworks.end(); ++it)
-			m_existingNetworksMap.insert(QString::fromStdString(it->m_name), it->m_id);
-		m_ui->comboBoxSelectNetwork->clear();
-		m_ui->comboBoxSelectNetwork->addItems(QStringList(m_existingNetworksMap.keys()));
-	}
-
+	setupComboBox();
 	setNetwork();
 	updateSizingParams();
 
@@ -92,6 +83,38 @@ void SVNetworkEditDialog::setNetwork()
 	updateStatus();
 }
 
+void SVNetworkEditDialog::setupComboBox()
+{
+	const VICUS::Project &p = project();
+	// setup combobox
+	if (!p.m_geometricNetworks.empty()){
+		m_existingNetworksMap.clear();
+		for (auto it = p.m_geometricNetworks.begin(); it!=p.m_geometricNetworks.end(); ++it)
+			m_existingNetworksMap.insert(QString::fromStdString(it->m_name), it->m_id);
+		m_ui->comboBoxSelectNetwork->clear();
+		m_ui->comboBoxSelectNetwork->addItems(QStringList(m_existingNetworksMap.keys()));
+	}
+}
+
+void SVNetworkEditDialog::copyNetwork(const std::string &appendName)
+{
+	VICUS::Project p = project();
+
+	VICUS::Network copy = m_network;
+	copy.updateNodeEdgeConnectionPointers();
+	copy.m_name += "_" + appendName;
+	copy.m_id = p.uniqueId(p.m_geometricNetworks);
+	SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("copied network"), copy);
+	undo->push(); // modifies project and updates views
+
+	p.element(p.m_geometricNetworks, m_network.m_id)->m_visible = false;
+	SVUndoModifyExistingNetwork * undoMod = new SVUndoModifyExistingNetwork(tr("mod network"), m_network);
+	undoMod->push(); // modifies project and updates views
+
+	updateStatus();
+	setupComboBox();
+}
+
 void SVNetworkEditDialog::on_pushButtonGenerateIntersections_clicked()
 {
 	m_network.generateIntersections();
@@ -109,9 +132,9 @@ void SVNetworkEditDialog::on_comboBoxSelectNetwork_activated(const QString &arg1
 
 void SVNetworkEditDialog::on_pushButtonConnectBuildings_clicked()
 {
-	QMessageBox::StandardButton reply = QMessageBox::question(this, "Connect Buildings", "Extend supply pipes?",
-								   QMessageBox::Yes|QMessageBox::No);
-	m_network.connectBuildings(reply == QMessageBox::Yes);
+//	QMessageBox::StandardButton reply = QMessageBox::question(this, "Connect Buildings", "Extend supply pipes?",
+//								   QMessageBox::Yes|QMessageBox::No);
+	m_network.connectBuildings(false);
 	updateStatus();
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
 	undo->push(); // modifies project and updates views
@@ -157,4 +180,38 @@ void SVNetworkEditDialog::on_pushButtonSizePipeDimensions_clicked()
 }
 
 
+void SVNetworkEditDialog::on_pushButtonCopy_clicked()
+{
+	copyNetwork("copy");
+}
 
+void SVNetworkEditDialog::on_pushButtonDelete_clicked()
+{
+	QMessageBox::StandardButton reply = QMessageBox::question(this, "Delete Newtork", "Continue?",
+								   QMessageBox::Yes|QMessageBox::No);
+	if (reply == QMessageBox::No)
+		return;
+	SVUndoDeleteNetwork * undo = new SVUndoDeleteNetwork(tr("deleted network"), m_network);
+	undo->push(); // modifies project and updates views
+	updateStatus();
+	setupComboBox();
+}
+
+void SVNetworkEditDialog::on_pushButtonReduceRedundantNodes_clicked()
+{
+	copyNetwork("reduced");
+	// not quite efficient, but safest method to transfer all parameters to new network
+	VICUS::Network tmp = m_network;
+	tmp.clear();
+	m_network.networkWithReducedEdges(tmp);
+	std::swap(m_network, tmp);
+	m_network.updateNodeEdgeConnectionPointers();
+	updateStatus();
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
+	undo->push(); // modifies project and updates views
+}
+
+void SVNetworkEditDialog::on_pushButtonSimplify_clicked()
+{
+
+}
