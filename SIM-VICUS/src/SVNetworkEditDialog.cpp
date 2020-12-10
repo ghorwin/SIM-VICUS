@@ -63,19 +63,20 @@ void SVNetworkEditDialog::updateSizingParams()
 {
 	if (m_network.m_sizingPara[VICUS::Network::SP_TemperatureSetpoint].empty())
 		m_network.setDefaultSizingParams();
-	m_ui->doubleSpinBoxTemperatureSetpoint->setValue(m_network.m_sizingPara[VICUS::Network::SP_TemperatureSetpoint].value);
-	m_ui->doubleSpinBoxTemperatureDifference->setValue(m_network.m_sizingPara[VICUS::Network::SP_TemperatureDifference].value);
-	m_ui->doubleSpinBoxMaximumPressureLoss->setValue(m_network.m_sizingPara[VICUS::Network::SP_MaxPressureLoss].value);
+	m_ui->doubleSpinBoxTemperatureSetpoint->setValue(m_network.m_sizingPara[VICUS::Network::SP_TemperatureSetpoint].get_value("C"));
+	m_ui->doubleSpinBoxTemperatureDifference->setValue(m_network.m_sizingPara[VICUS::Network::SP_TemperatureDifference].get_value("K"));
+	m_ui->doubleSpinBoxMaximumPressureLoss->setValue(m_network.m_sizingPara[VICUS::Network::SP_MaxPressureLoss].get_value("Pa/m"));
 }
 
 void SVNetworkEditDialog::modifySizingParams()
 {
 	m_network.m_sizingPara[VICUS::Network::SP_TemperatureSetpoint].set(VICUS::KeywordList::Keyword("Network::SizingParam", VICUS::Network::SP_TemperatureSetpoint),
 																	   m_ui->doubleSpinBoxTemperatureSetpoint->value(),
-																	   VICUS::KeywordList::Unit("Network::SizingParam", VICUS::Network::SP_TemperatureSetpoint));
-
-	m_network.m_sizingPara[VICUS::Network::SP_TemperatureDifference].value = m_ui->doubleSpinBoxTemperatureDifference->value();
-	m_network.m_sizingPara[VICUS::Network::SP_MaxPressureLoss].value = m_ui->doubleSpinBoxMaximumPressureLoss->value();
+																	   IBK::Unit("C"));
+	VICUS::KeywordList::setParameter(m_network.m_sizingPara, "Network::SizingParam", VICUS::Network::SP_TemperatureDifference,
+									 m_ui->doubleSpinBoxTemperatureDifference->value());
+	VICUS::KeywordList::setParameter(m_network.m_sizingPara, "Network::SizingParam", VICUS::Network::SP_MaxPressureLoss,
+									 m_ui->doubleSpinBoxMaximumPressureLoss->value());
 }
 
 void SVNetworkEditDialog::setNetwork()
@@ -144,9 +145,8 @@ void SVNetworkEditDialog::on_pushButtonReduceDeadEnds_clicked()
 void SVNetworkEditDialog::on_pushButtonSizePipeDimensions_clicked()
 {
 	modifySizingParams();
-
 	m_network.sizePipeDimensions(project().m_networkFluids[m_network.m_fluidID]);
-
+	updateStatus();
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
 	undo->push(); // modifies project and updates views
 }

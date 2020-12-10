@@ -725,9 +725,14 @@ void Vic3DScene::generateNetworkGeometry() {
 
 
 	// add cylinders for all pipes
-	for (const VICUS::Network & n : p.m_geometricNetworks) {
-		for (const VICUS::NetworkEdge & e : n.m_edges) {
-			double radius = 0.5; //e.m_diameterOutside*5; // enlarge diameter, so that we see something
+	for (const VICUS::Network & network : p.m_geometricNetworks) {
+		for (const VICUS::NetworkEdge & e : network.m_edges) {
+			double radius = 0.5;
+			if (e.m_pipeId != VICUS::INVALID_ID){
+				const VICUS::NetworkPipe * pipe = VICUS::Project::element(network.m_networkPipeDB, e.m_pipeId);
+				if (pipe != nullptr)
+					radius *= VICUS::Project::element(network.m_networkPipeDB, e.m_pipeId)->m_diameterOutside/30;
+			}
 			addCylinder(e.m_node1->m_position, e.m_node2->m_position, Qt::red,
 						radius,
 						currentVertexIndex, currentElementIndex,
@@ -735,13 +740,16 @@ void Vic3DScene::generateNetworkGeometry() {
 						m_networkGeometryObject.m_colorBufferData,
 						m_networkGeometryObject.m_indexBufferData);
 		}
-		for (const VICUS::NetworkNode & no : n.m_nodes) {
-			double radius = 0.8; //e.m_diameterOutside*5; // enlarge diameter, so that we see something
+		for (const VICUS::NetworkNode & no : network.m_nodes) {
+			double radius = 1;
 			QColor color = Qt::black;
-			if (no.m_type == VICUS::NetworkNode::NT_Mixer)
+			if (no.m_type == VICUS::NetworkNode::NT_Source)
 				color = Qt::green;
-			else if (no.m_type == VICUS::NetworkNode::NT_Building)
-				color = Qt::cyan;
+			else if (no.m_type == VICUS::NetworkNode::NT_Building){
+				color = Qt::blue;
+				if (no.m_maxHeatingDemand > 0)
+					radius *= no.m_maxHeatingDemand/2000;
+			}
 			addSphere(no.m_position, color,
 						radius,
 						currentVertexIndex, currentElementIndex,

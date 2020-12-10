@@ -18,13 +18,8 @@ void SVUndoModifyExistingNetwork::undo()
 	*nw = m_newNetwork;
 	nw->updateNodeEdgeConnectionPointers();
 
-	std::swap(theProject().m_viewSettings.m_gridWidth, m_gridWidth);
-	std::swap(theProject().m_viewSettings.m_gridSpacing, m_gridSpacing);
-	std::swap(theProject().m_viewSettings.m_farDistance, m_farDistance);
-
 	// tell project that the network has changed
 	SVProjectHandler::instance().setModified( SVProjectHandler::NetworkModified);
-	SVProjectHandler::instance().setModified( SVProjectHandler::GridModified);
 }
 
 void SVUndoModifyExistingNetwork::redo()
@@ -34,11 +29,6 @@ void SVUndoModifyExistingNetwork::redo()
 	*nw = m_newNetwork;
 	nw->updateNodeEdgeConnectionPointers();
 
-	std::swap(theProject().m_viewSettings.m_gridWidth, m_gridWidth);
-	std::swap(theProject().m_viewSettings.m_gridSpacing, m_gridSpacing);
-	std::swap(theProject().m_viewSettings.m_farDistance, m_farDistance);
-
 	// tell project that the network has changed
 	SVProjectHandler::instance().setModified( SVProjectHandler::NetworkModified);
-	SVProjectHandler::instance().setModified( SVProjectHandler::GridModified);
 }

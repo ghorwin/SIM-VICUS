@@ -41,9 +41,9 @@ bool SVNetworkImportDialog::edit() {
 
 	m_ui->groupBoxSelectNetwork->setEnabled(true);
 	toggleReadEdges(m_ui->radioButtonEdges->isChecked());
-	toggleReadExistingNetwork(m_ui->radioButtonAddToExistingNetwork->isChecked());
 	m_ui->radioButtonAddToExistingNetwork->setEnabled(!p.m_geometricNetworks.empty());
 	m_ui->radioButtonAddToExistingNetwork->setChecked(!p.m_geometricNetworks.empty());
+	toggleReadExistingNetwork(m_ui->radioButtonAddToExistingNetwork->isChecked());
 
 
 	// update existing networks combobox
