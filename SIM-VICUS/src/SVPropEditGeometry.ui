@@ -6,16 +6,22 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>261</width>
-    <height>457</height>
+    <width>346</width>
+    <height>424</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
     <widget class="QToolBox" name="toolBoxGeometry">
+     <property name="minimumSize">
+      <size>
+       <width>300</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="currentIndex">
       <number>0</number>
      </property>
@@ -24,8 +30,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>249</width>
-        <height>401</height>
+        <width>328</width>
+        <height>344</height>
        </rect>
       </property>
       <attribute name="label">
@@ -86,8 +92,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>249</width>
-        <height>401</height>
+        <width>328</width>
+        <height>344</height>
        </rect>
       </property>
       <attribute name="label">

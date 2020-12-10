@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>370</width>
-    <height>374</height>
+    <width>413</width>
+    <height>350</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -49,6 +49,12 @@
       </item>
       <item row="1" column="0" rowspan="3">
        <widget class="QTableWidget" name="tableWidgetVertexes">
+        <property name="minimumSize">
+         <size>
+          <width>250</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="alternatingRowColors">
          <bool>true</bool>
         </property>

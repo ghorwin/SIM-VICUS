@@ -21,18 +21,33 @@ SVPropEditGeometry::~SVPropEditGeometry() {
 	delete m_ui;
 }
 
-void SVPropEditGeometry::setCurrentTab(const SVPropEditGeometry::TabState &state)
-{
+
+void SVPropEditGeometry::setCurrentTab(const SVPropEditGeometry::TabState & state) {
 	m_ui->toolBoxGeometry->setCurrentIndex(state);
+	if (state != TS_EditGeometry) {
+		// clear edit page
+		m_ui->lineEditXValue->clear();
+		m_ui->lineEditYValue->clear();
+		m_ui->lineEditZValue->clear();
+		m_ui->lineEditXValue->setEnabled(false);
+		m_ui->lineEditYValue->setEnabled(false);
+		m_ui->lineEditZValue->setEnabled(false);
+	}
+	else {
+		m_ui->lineEditXValue->setEnabled(true);
+		m_ui->lineEditYValue->setEnabled(true);
+		m_ui->lineEditZValue->setEnabled(true);
+	}
 }
 
-void SVPropEditGeometry::setCoordinates(const Vic3D::Transform3D &t)
-{
-//	m_ui->lineEditXValue->setText( "1" );
-	m_ui->lineEditXValue->setText( QString("%1").arg( t.translation().x() ) );
-	m_ui->lineEditYValue->setText( QString("%1").arg( t.translation().y() ) );
-	m_ui->lineEditZValue->setText( QString("%1").arg( t.translation().z() ) );
+
+
+void SVPropEditGeometry::setCoordinates(const Vic3D::Transform3D &t) {
+	m_ui->lineEditXValue->setText( QString("%L1").arg( t.translation().x() ) );
+	m_ui->lineEditYValue->setText( QString("%L1").arg( t.translation().y() ) );
+	m_ui->lineEditZValue->setText( QString("%L1").arg( t.translation().z() ) );
 }
+
 
 void SVPropEditGeometry::on_pushButtonAddPolygon_clicked() {
 	// reset new polygon object

@@ -96,11 +96,9 @@ void SVPropertyWidget::onViewStateChanged() {
 		case SVViewState::PM_VertexList		: setWidgetVisible(M_AddVertexesMode); break;
 		case SVViewState::PM_AddGeometry	:
 			setWidgetVisible(M_AddGeometry);
-			// TODO : Stephan, show tab "Add Geometry" in m_propWidgets[M_EditGeometry]
 		break;
 		case SVViewState::PM_EditGeometry	:
 			setWidgetVisible(M_EditGeometry);
-			// TODO : Stephan, show tab "Edit Geometry" in m_propWidgets[M_EditGeometry]
 		break;
 		default:;
 	}
