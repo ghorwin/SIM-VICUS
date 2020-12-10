@@ -187,6 +187,15 @@ bool KeyboardMouseHandler::keyDown(Qt::Key k) const {
 }
 
 
+bool KeyboardMouseHandler::keyReleased(Qt::Key k) const {
+	for (unsigned int i=0; i<m_keys.size(); ++i) {
+		if (m_keys[i] == k)
+			return m_keyStates[i] == StateWasPressed;
+	}
+	return false;
+}
+
+
 bool KeyboardMouseHandler::anyKeyDown() const {
 	for (unsigned int i=0; i<m_keys.size(); ++i)
 		if (m_keyStates[i] != StateNotPressed)

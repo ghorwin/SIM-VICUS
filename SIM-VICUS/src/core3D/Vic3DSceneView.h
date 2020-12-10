@@ -62,7 +62,7 @@ private:
 	/*! This function is called first thing in the paintGL() routine and
 		processes input received so far and updates camera position.
 	*/
-	void processInput();
+	bool processInput();
 
 	/*! If set to true, an input event was received, which will be evaluated at next repaint. */
 	bool						m_inputEventReceived;
@@ -76,6 +76,8 @@ private:
 	Vic3DScene					m_mainScene;
 
 	QElapsedTimer				m_cpuTimer;
+
+	unsigned int				m_paintCounter = 0;
 
 	/*! Framebuffer object (including image storage) for screenshots - multisample variant. */
 	QOpenGLFramebufferObject	*m_screenShotMultiSampleFrameBuffer = nullptr;

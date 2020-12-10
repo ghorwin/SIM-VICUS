@@ -95,8 +95,10 @@ public:
 	/*! Called when a mousebutton was released. */
 	bool releaseButton(Qt::MouseButton btn, QPoint currentPos);
 
-	/*! Returns, whether the key is pressed or was pressed in last query interval. */
+	/*! Returns, whether the key is pressed. */
 	bool keyDown(Qt::Key k) const;
+	/*! Returns, whether the key was pressed in last query interval (but is no longer pressed). */
+	bool keyReleased(Qt::Key k) const;
 	/*! Returns true, if any of the monitored keys was pressed. */
 	bool anyKeyDown() const;
 

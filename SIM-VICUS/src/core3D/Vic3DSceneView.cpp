@@ -234,19 +234,28 @@ void SceneView::paintGL() {
 		return;
 
 	// process input, i.e. check if any keys have been pressed
-	if (m_inputEventReceived)
-		processInput();
+	bool needRepaint = true;
+	if (m_inputEventReceived) {
+		// if paintGl was called because of an input event,
+		// only repaint if needed
+		needRepaint = processInput();
+	}
+
 #ifdef SHOW_TIMINGS
 	m_gpuTimers.reset();
 	m_gpuTimers.recordSample();
 #endif // SHOW_TIMINGS
 
-	// clear color and depth buffer
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	if (needRepaint)  {
+		// clear color and depth buffer
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// render main scene (grid, opaque planes, ...)
-	m_mainScene.render();
+		// render main scene (grid, opaque planes, ...)
+		m_mainScene.render();
 
+		qint64 elapsedMs = m_cpuTimer.elapsed();
+		qDebug() << ++m_paintCounter << "Total paintGL time: " << elapsedMs << "ms";
+	}
 
 	// Done painting
 
@@ -267,8 +276,6 @@ void SceneView::paintGL() {
 	qDebug() << "Total render time: " << (samples.back() - samples.front())*1e-6 << "ms/frame";
 
 #endif
-	qint64 elapsedMs = m_cpuTimer.elapsed();
-	qDebug() << "Total paintGL time: " << elapsedMs << "ms";
 }
 
 
@@ -308,7 +315,9 @@ void SceneView::checkInput() {
 
 	// special handling for moving coordinate system (only during place vertex mode, since this will
 	// cause the scene to update at monitor refresh rate)
-	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_PlaceVertex) {
+	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
+		SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem)
+	{
 		m_inputEventReceived = true;
 		renderLater();
 		return;
@@ -355,7 +364,7 @@ void SceneView::checkInput() {
 }
 
 
-void SceneView::processInput() {
+bool SceneView::processInput() {
 	// function must only be called if an input event has been received
 	Q_ASSERT(m_inputEventReceived);
 	m_inputEventReceived = false;
@@ -380,7 +389,8 @@ void SceneView::processInput() {
 	else
 		localMousePos = mapFromGlobal(m_keyboardMouseHandler.mouseDownPos());
 	QPoint newLocalMousePos;
-	m_mainScene.inputEvent(m_keyboardMouseHandler, localMousePos, newLocalMousePos);
+
+	bool needRepaint = m_mainScene.inputEvent(m_keyboardMouseHandler, localMousePos, newLocalMousePos);
 
 	if (localMousePos != newLocalMousePos) {
 		QCursor c = cursor();
@@ -396,6 +406,7 @@ void SceneView::processInput() {
 	m_keyboardMouseHandler.clearWasPressedKeyStates();
 
 	// not need to request update here, since we are called from paint anyway
+	return needRepaint;
 }
 
 

@@ -249,9 +249,13 @@ void Vic3DScene::updateWorld2ViewMatrix() {
 }
 
 
-void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoint & localMousePos, QPoint & newLocalMousePos) {
+bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoint & localMousePos, QPoint & newLocalMousePos) {
 
 	// we implement the following controls
+
+	bool needRepaint = false;
+
+	Transform3D oldCameraTransform = m_camera;
 
 	// *** Keyboard ***
 
@@ -291,6 +295,7 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 				vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
 				// now tell all UI components to toggle their view state
 				SVViewStateHandler::instance().setViewState(vs);
+				needRepaint = true;
 			} break;
 
 			case SVViewState::OM_AlignLocalCoordinateSystem:
@@ -298,12 +303,14 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 				m_coordinateSystemObject.setTransform(m_oldCoordinateSystemTransform);
 				// switch back to previous view state
 				SVViewStateHandler::instance().restoreLastViewState();
+				needRepaint = true;
 			break;
 
 			default:
 				// default mode - Escape clears selection
 				if (!m_selectedGeometryObject.m_selectedSurfaces.empty()) {
 					clearSelectionOfObjects();
+					needRepaint = true;
 				}
 		}
 	}
@@ -315,8 +322,9 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 			// *** place a vertex ***
 			case SVViewState::OM_PlaceVertex : {
-				// finish "place vertex" operation, this on
+				// finish "place vertex" operation
 				m_newPolygonObject.finish();
+				needRepaint = true;
 			} break;
 
 			// *** align coordinate system ***
@@ -326,6 +334,7 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 				m_coordinateSystemObject.setTranslation(m_oldCoordinateSystemTransform.translation());
 				// switch back to previous view state
 				SVViewStateHandler::instance().restoreLastViewState();
+				needRepaint = true;
 			} break;
 
 			default:; // in all other modes, Enter has no effect (for now)
@@ -336,7 +345,8 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 	// *** F4 - toggle "align coordinate system" mode ****
 
-	if (keyboardHandler.keyDown(Qt::Key_F4)) {
+	if (keyboardHandler.keyReleased(Qt::Key_F4)) {
+		qDebug() << "F4";
 		SVViewState vs = SVViewStateHandler::instance().viewState();
 		if (vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem) {
 			// restore origin of local coordinate system object
@@ -351,6 +361,7 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 			vs.m_sceneOperationMode = SVViewState::OM_AlignLocalCoordinateSystem;
 			SVViewStateHandler::instance().setViewState(vs);
 		}
+		needRepaint = true;
 	}
 
 
@@ -409,6 +420,7 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 			m_mouseMoveDistance = true;
 
 			m_orbitControllerActive = true;
+			needRepaint = true;
 		}
 		else {
 
@@ -488,6 +500,7 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 			// TODO : click code
 			qDebug() << "Mouse (selection) click received" << m_mouseMoveDistance;
 			handleLeftMouseClick(keyboardHandler, localMousePos);
+			needRepaint = true;
 		}
 		else {
 			qDebug() << "Leaving orbit controller mode" << m_mouseMoveDistance;
@@ -516,6 +529,7 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 	updateWorld2ViewMatrix();
 
 
+	QVector3D oldPos = m_coordinateSystemObject.translation();
 	// if in "place vertex" mode, perform picking operation and snap coordinate system to grid
 	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_PlaceVertex) {
 		/// \todo Stephan: customize picking object rules based on current snap selection
@@ -533,6 +547,28 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		m_newPolygonObject.updateLastVertex(m_coordinateSystemObject.translation());
 	}
 
+	// if in "align coordinate system mode" perform picking operation and update local coordinate system orientation
+	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem) {
+		PickObject o(localMousePos, PickObject::P_XY_Plane | PickObject::P_Surface);
+		pick(o);
+		// now determine which grid line is closest
+		QVector3D closestPoint;
+		if (m_gridObject.closestSnapPoint(VICUS::IBKVector2QVector(o.m_pickPoint), closestPoint)) {
+			// this is in world coordinates, use this as transformation vector for the
+			// coordinate system
+			m_coordinateSystemObject.setTranslation(closestPoint);
+			// if an object was selected, retrieve its normal vector and local x/localy vectors to set the alignment
+			// of the local coordinate system
+		}
+	}
+
+	if (oldPos != m_coordinateSystemObject.translation() || needRepaint ||
+			m_camera.translation() != oldCameraTransform.translation() ||
+			m_camera.rotation() != oldCameraTransform.rotation())
+	{
+		return true;
+	}
+	return false;
 }
 
 
@@ -578,7 +614,10 @@ void Vic3DScene::render() {
 
 	// *** movable coordinate system  ***
 
-	if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex || vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry) {
+	if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
+		vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry ||
+		vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem)
+	{
 		m_coordinateSystemShader->bind();
 		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[0], m_worldToView);
 		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[1], viewPos);

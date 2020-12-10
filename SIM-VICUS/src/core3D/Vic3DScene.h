@@ -55,8 +55,9 @@ public:
 	/*! Lets the scene handle keyboard/mouse input.
 		\param keyboardHandler Contains information on current state of keyboard and mouse (and mouse move/scroll deltas since last call).
 		\param localMousePos Contains mouse position of last left mouse button press or release.
+		\return Returns true, if input causes change in view and needs repainting.
 	*/
-	void inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoint & localMousePos, QPoint & newLocalMousePos);
+	bool inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoint & localMousePos, QPoint & newLocalMousePos);
 
 	/*! Actually renders to the current OpenGL context. */
 	void render();
