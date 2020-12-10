@@ -730,7 +730,7 @@ void Vic3DScene::generateNetworkGeometry() {
 			if (e.m_pipeId != VICUS::INVALID_ID){
 				const VICUS::NetworkPipe * pipe = VICUS::Project::element(network.m_networkPipeDB, e.m_pipeId);
 				if (pipe != nullptr)
-					radius *= VICUS::Project::element(network.m_networkPipeDB, e.m_pipeId)->m_diameterOutside/30;
+					radius *= pipe->m_diameterOutside/30;
 			}
 			addCylinder(e.m_node1->m_position, e.m_node2->m_position, Qt::red,
 						radius,
@@ -739,6 +739,8 @@ void Vic3DScene::generateNetworkGeometry() {
 						m_networkGeometryObject.m_colorBufferData,
 						m_networkGeometryObject.m_indexBufferData);
 		}
+
+		// add spheres for nodes
 		for (const VICUS::NetworkNode & no : network.m_nodes) {
 			double radius = 1;
 			QColor color = Qt::black;
@@ -748,6 +750,23 @@ void Vic3DScene::generateNetworkGeometry() {
 				color = Qt::blue;
 				if (no.m_maxHeatingDemand > 0)
 					radius *= no.m_maxHeatingDemand/2000;
+			}
+			// mean radius of adjacent pipes
+			else if (no.m_type == VICUS::NetworkNode::NT_Mixer){
+				int count = 0;
+				double avgDiameter = 0;
+				for (const VICUS::NetworkEdge * edge: no.m_edges){
+					if (edge->m_pipeId != VICUS::INVALID_ID){
+						const VICUS::NetworkPipe * pipe = VICUS::Project::element(network.m_networkPipeDB, edge->m_pipeId);
+						if (pipe != nullptr){
+							avgDiameter += pipe->m_diameterOutside;
+							++count;
+						}
+					}
+				}
+				avgDiameter /= count;
+				if (count>0)
+					radius = 0.5 * avgDiameter/30;
 			}
 			addSphere(no.m_position, color,
 						radius,
