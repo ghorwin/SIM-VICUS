@@ -76,16 +76,20 @@ public:
 	*/
 	void updateBuffers();
 
-	/*! Binds the vertex array object and renders the geometry. */
-	void render();
+	/*! Renders opaque parts of geometry. */
+	void renderOpqaue();
+	/*! Renders transparent parts of geometry. */
+	void renderTransparent();
 
 	/*! Returns true, if enough vertexes have been collected to complete the geometry.
 		This depends on the type of geometry being generated.
 	*/
 	bool canComplete() const { return m_planeGeometry.isValid(); }
 
-	/*! Can be used to check if object has data to paint. */
-	bool hasData() const { return !m_vertexBufferData.empty(); }
+	/*! Can be used to check if object has data to paint - this can be used to check if there is a polygon object at all.
+		Hence, this function could be named 'isVisible()' as well.
+	*/
+	bool hasData() const { return m_planeGeometry.isValid(); }
 
 	/*! Provides read-only access to the current plane geometry. */
 	const VICUS::PlaneGeometry planeGeometry() const { return m_planeGeometry; }

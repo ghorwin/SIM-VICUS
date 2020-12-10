@@ -124,8 +124,6 @@ void WireFrameObject::render() {
 	m_vao.bind();
 	// set transformation matrix
 	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[1], m_transform.toMatrix());
-	// set transformation matrix
-	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[1], m_transform.toMatrix());
 
 	glDisable(GL_CULL_FACE);
 	// set wireframe color (TODO : make this theme-dependent?)
@@ -152,15 +150,12 @@ void WireFrameObject::render() {
 	glDisable(GL_POLYGON_OFFSET_LINE);
 
 	// set selected plane color (QColor is passed as vec4, so no conversion is needed, here).
-	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2],
-			selColor);
+	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], selColor);
 	// now draw the geometry
 	if (m_drawTriangleStrips)
 		glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
 	else
 		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
-
-	glEnable(GL_CULL_FACE);
 
 	m_vao.release();
 }

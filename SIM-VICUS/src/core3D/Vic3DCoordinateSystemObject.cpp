@@ -153,6 +153,8 @@ void CoordinateSystemObject::destroy() {
 void CoordinateSystemObject::render() {
 	// bind all buffers ("position", "normal" and "color" arrays)
 	m_vao.bind();
+	// draw with face culling on
+	glEnable(GL_CULL_FACE);
 	// set transformation matrix
 	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[4], m_transform.toMatrix());
 	// now draw the geometry

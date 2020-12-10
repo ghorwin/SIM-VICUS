@@ -517,23 +517,15 @@ void Vic3DScene::render() {
 
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
 
-	// *** grid ***
 
 	// enable depth testing, important for the grid and for the drawing order of several objects
+	// needed for all opaque geometry
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-
-	m_gridShader->bind();
-	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[0], m_worldToView);
-	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[2], backgroundColor);
-	m_gridObject.render();
-	m_gridShader->release();
-
-
-	// *** selection object ***
 
 	m_fixedColorTransformShader->bind();
 	m_fixedColorTransformShader->shaderProgram()->setUniformValue(m_fixedColorTransformShader->m_uniformIDs[0], m_worldToView);
+
+	// *** selection object ***
 
 	m_selectedGeometryObject.render();
 
@@ -544,7 +536,12 @@ void Vic3DScene::render() {
 		m_orbitControllerObject.render();
 	}
 
+	// *** new geometry object (opqaue lines) ***
+
+	m_newPolygonObject.renderOpqaue();
+
 	m_fixedColorTransformShader->release();
+
 
 
 	// *** movable coordinate system  ***
@@ -552,8 +549,8 @@ void Vic3DScene::render() {
 	if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex || vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry) {
 		m_coordinateSystemShader->bind();
 		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[0], m_worldToView);
-		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[2], VICUS::QVector3DFromQColor(m_lightColor));
 		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[1], viewPos);
+		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[2], VICUS::QVector3DFromQColor(m_lightColor));
 		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[3], viewPos);
 		m_coordinateSystemObject.render();
 		m_coordinateSystemShader->release();
@@ -563,9 +560,9 @@ void Vic3DScene::render() {
 	// *** opaque background geometry ***
 
 	// tell OpenGL to show only faces whose normal vector points towards us
+	glEnable(GL_CULL_FACE);
 
 	/// \todo render dumb background geometry
-
 
 
 	// *** opaque building geometry ***
@@ -589,8 +586,6 @@ void Vic3DScene::render() {
 	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[3], viewPos);
 #endif // FIXED_LIGHT_POSITION
 
-
-
 	m_networkGeometryObject.render();
 
 	m_opaqueGeometryObject.render();
@@ -598,7 +593,18 @@ void Vic3DScene::render() {
 	m_buildingShader->release();
 
 
-	// *** transparent building geometry ***
+	// *** grid ***
+
+	m_gridShader->bind();
+	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[0], m_worldToView);
+	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[2], backgroundColor);
+	m_gridObject.render();
+	m_gridShader->release();
+
+
+
+
+	// *** transparent geometry ***
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -611,17 +617,18 @@ void Vic3DScene::render() {
 
 	// ... windows, ...
 
-	// re-enable updating of z-buffer
-	glDepthMask(GL_TRUE);
 
-	// *** new polygon draw object ***
+	// *** new polygon draw object (transparent plane) ***
 
 	if (m_newPolygonObject.hasData() != 0) {
 		m_fixedColorTransformShader->bind();
 		// Note: worldToView uniform has already been set
-		m_newPolygonObject.render();
+		m_newPolygonObject.renderTransparent();
 		m_fixedColorTransformShader->release();
 	}
+
+	// re-enable updating of z-buffer
+	glDepthMask(GL_TRUE);
 
 	glDisable(GL_BLEND);
 }

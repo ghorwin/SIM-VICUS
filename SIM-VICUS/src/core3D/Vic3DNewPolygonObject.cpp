@@ -192,14 +192,14 @@ void NewPolygonObject::updateBuffers() {
 }
 
 
-void NewPolygonObject::render() {
+void NewPolygonObject::renderOpqaue() {
+	if (m_vertexBufferData.empty())
+		return;
+
 	// bind all buffers
 	m_vao.bind();
 	// set transformation matrix - unity matrix, since we draw with world coordinates
 	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[1], QMatrix4x4());
-
-	// re-enable updating of z-buffer, so that polygon line fills the z-buffer
-	glDepthMask(GL_TRUE);
 
 	// draw the polygon line first
 	if (m_vertexBufferData.size() > 1) {
@@ -208,7 +208,6 @@ void NewPolygonObject::render() {
 		QColor lineCol = QColor(255,0,0,192);
 		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], lineCol);
 		// then the line consisting of the last two vertexes
-		glLineWidth(2);
 
 		// line drawing starts from vertex 0 if polygon is invalid, or
 		// from first vertex after polygon-vertexes
@@ -219,7 +218,6 @@ void NewPolygonObject::render() {
 			glDrawArrays(GL_LINES, i, 2);
 		}
 
-		glLineWidth(1);
 	}
 
 	// now draw the geometry
@@ -227,7 +225,7 @@ void NewPolygonObject::render() {
 		glDisable(GL_CULL_FACE);
 #if 1
 		// set wireframe color (TODO : make this theme-dependent?)
-		QColor wireFrameCol = QColor(255,255,255,192);
+		QColor wireFrameCol = QColor(255,255,255,255);
 		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], wireFrameCol);
 		// select wire frame drawing
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -236,6 +234,27 @@ void NewPolygonObject::render() {
 		// switch back to fill mode
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 #endif
+	}
+
+	// release buffers again
+	m_vao.release();
+}
+
+
+void NewPolygonObject::renderTransparent() {
+	// we expect:
+	//   glDepthMask(GL_FALSE);
+	//   shader program has already transform uniform set
+	//   glDisable(GL_CULL_FACE);
+
+	if (!m_indexBufferData.empty()) {
+		// bind all buffers
+		m_vao.bind();
+		// set transformation matrix - unity matrix, since we draw with world coordinates
+		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[1], QMatrix4x4());
+
+		// now draw the geometry
+
 		// disable updating of z-buffer
 		glDepthMask(GL_FALSE);
 		// set selected plane color (QColor is passed as vec4, so no conversion is needed, here).
@@ -251,12 +270,10 @@ void NewPolygonObject::render() {
 		glDisable(GL_POLYGON_OFFSET_FILL);
 
 		glEnable(GL_CULL_FACE);
-	}
-	// re-enable updating of z-buffer
-	glDepthMask(GL_TRUE);
 
-	// release buffers again
-	m_vao.release();
+		// release buffers again
+		m_vao.release();
+	}
 }
 
 } // namespace Vic3D
