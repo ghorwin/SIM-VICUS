@@ -143,10 +143,9 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 				SVViewState vs = SVViewStateHandler::instance().viewState();
 				IBKMK::Vector3D centerPoint;
 				if ( project().haveSelectedSurfaces(centerPoint) ) {
-					vs.m_sceneOperationMode = SVViewState::OM_AlignLocalCoordinateSystem;
+					vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
 					vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
-//					m_coordinateSystemObject.m_transform.setTranslation( VICUS::IBKVector2QVector(centerPoint) );
-//					m_coordinateSystemObject.writeCoordinates();
+					m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(centerPoint) );
 				}
 				else {
 					vs.m_sceneOperationMode = SVViewState::NUM_OM;

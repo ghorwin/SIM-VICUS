@@ -156,6 +156,7 @@ void NewPolygonObject::updateBuffers() {
 		addPlane(m_planeGeometry, currentVertexIndex, currentElementIndex,
 				 m_vertexBufferData, m_indexBufferData);
 		// TODO : Stephan, add the first vertex again, so that we can draw a closed line around the polygon
+		m_vertexBufferData.push_back( m_vertexBufferData[0] );
 	}
 	else {
 		// put all the vertexes of the current plane into buffer
