@@ -48,10 +48,15 @@ void SVNetworkEditDialog::edit()
 void SVNetworkEditDialog::updateStatus() const{
 	m_ui->labelEdgeCount->setText(QString("%1").arg(m_network.m_edges.size()));
 	m_ui->labelNodeCount->setText(QString("%1").arg(m_network.m_nodes.size()));
-	if (m_network.checkConnectedGraph())
-		m_ui->labelNetworkConnected->setText("Connected");
-	else
-		m_ui->labelNetworkConnected->setText("Not Connected");
+	if (m_network.checkConnectedGraph()){
+		m_ui->labelNetworkConnected->setText("Network is connected");
+		m_ui->labelNetworkConnected->setStyleSheet("QLabel {color: green}");
+	}
+	else{
+		m_ui->labelNetworkConnected->setText("Network is unconnected");
+		m_ui->labelNetworkConnected->setStyleSheet("QLabel {color: red}");
+	}
+
 	m_ui->labelTotalLength->setText(QString("%1").arg(m_network.totalLength()));
 	m_ui->pushButtonConnectBuildings->setEnabled(m_network.nextUnconnectedBuilding()>=0);
 	m_ui->pushButtonReduceDeadEnds->setEnabled(m_network.checkConnectedGraph() && m_network.numberOfBuildings() > 0);
