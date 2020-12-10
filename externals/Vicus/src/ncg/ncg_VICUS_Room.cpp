@@ -109,7 +109,8 @@ TiXmlElement * Room::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
-	e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
+	if (m_visible != Room().m_visible)
+		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {

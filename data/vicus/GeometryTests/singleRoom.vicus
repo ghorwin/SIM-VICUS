@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<VicusProject fileVersion="0.1">
+<VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Do. Nov. 26 15:22:50 2020</Created>
-		<LastEdited>Do. Nov. 26 15:22:50 2020</LastEdited>
+		<LastEdited>Do. Dez. 10 23:57:49 2020</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
-			<GridColor>#7f7fb2</GridColor>
 			<CameraTranslation>-11.8368 -21.5695 13.1608</CameraTranslation>
 			<RotationMatrix>
 				<Wp>0.791202</Wp>
@@ -25,23 +24,23 @@
 						<Rooms>
 							<Room id="1" displayName="SingleRoom">
 								<Surfaces>
-									<Surface id="1" displayName="South_1">
-										<PlaneGeometry type="Polygon">0 0 0, 2 0 0, 2 0 3, 0 0 3</PlaneGeometry>
+									<Surface id="1" displayName="South_1" visible="0">
+										<PlaneGeometry type="Rectangle">0 0 0, 2 0 0, 2 0 3, 0 0 3</PlaneGeometry>
 									</Surface>
-									<Surface id="2" displayName="West_2">
-										<PlaneGeometry type="Polygon">0 5 0, 0 0 0, 0 0 3, 0 5 3</PlaneGeometry>
+									<Surface id="2" displayName="West_2" visible="0">
+										<PlaneGeometry type="Rectangle">0 5 0, 0 0 0, 0 0 3, 0 5 3</PlaneGeometry>
 									</Surface>
 									<Surface id="3" displayName="East_3">
-										<PlaneGeometry type="Polygon">2 0 0, 2 5 0, 2 5 3, 2 0 3</PlaneGeometry>
+										<PlaneGeometry type="Rectangle">2 0 0, 2 5 0, 2 5 3, 2 0 3</PlaneGeometry>
 									</Surface>
 									<Surface id="4" displayName="North_4">
-										<PlaneGeometry type="Polygon">2 5 0, 0 5 0, 0 5 3, 2 5 3</PlaneGeometry>
+										<PlaneGeometry type="Rectangle">2 5 0, 0 5 0, 0 5 3, 2 5 3</PlaneGeometry>
 									</Surface>
 									<Surface id="5" displayName="Floor_5">
-										<PlaneGeometry type="Polygon">2 0 0, 0 0 0, 0 5 0, 2 5 0</PlaneGeometry>
+										<PlaneGeometry type="Rectangle">2 0 0, 0 0 0, 0 5 0, 2 5 0</PlaneGeometry>
 									</Surface>
 									<Surface id="6" displayName="Roof_6">
-										<PlaneGeometry type="Polygon">0 0 3, 2 0 3, 2 5 3, 0 5 3</PlaneGeometry>
+										<PlaneGeometry type="Rectangle">0 0 3, 2 0 3, 2 5 3, 0 5 3</PlaneGeometry>
 									</Surface>
 								</Surfaces>
 							</Room>

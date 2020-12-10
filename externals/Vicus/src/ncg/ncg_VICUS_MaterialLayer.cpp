@@ -98,7 +98,8 @@ TiXmlElement * MaterialLayer::writeXML(TiXmlElement * parent) const {
 
 	if (m_matId != VICUS::INVALID_ID)
 		e->SetAttribute("matId", IBK::val2string<unsigned int>(m_matId));
-	e->SetAttribute("isActive", IBK::val2string<bool>(m_isActive));
+	if (m_isActive != MaterialLayer().m_isActive)
+		e->SetAttribute("isActive", IBK::val2string<bool>(m_isActive));
 	if (!m_thickness.name.empty()) {
 		IBK_ASSERT("Thickness" == m_thickness.name);
 		TiXmlElement::appendIBKParameterElement(e, "Thickness", m_thickness.IO_unit.name(), m_thickness.get_value());

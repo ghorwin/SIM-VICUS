@@ -88,7 +88,8 @@ TiXmlElement * NetworkEdge::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("NetworkEdge");
 	parent->LinkEndChild(e);
 
-	e->SetAttribute("supply", IBK::val2string<bool>(m_supply));
+	if (m_supply != NetworkEdge().m_supply)
+		e->SetAttribute("supply", IBK::val2string<bool>(m_supply));
 	if (m_nodeId1 != VICUS::INVALID_ID)
 		e->SetAttribute("nodeId1", IBK::val2string<unsigned int>(m_nodeId1));
 	if (m_nodeId2 != VICUS::INVALID_ID)

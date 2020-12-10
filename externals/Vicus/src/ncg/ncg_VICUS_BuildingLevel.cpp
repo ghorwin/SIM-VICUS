@@ -96,7 +96,8 @@ TiXmlElement * BuildingLevel::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
-	e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
+	if (m_visible != BuildingLevel().m_visible)
+		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
 
 	if (!m_rooms.empty()) {
 		TiXmlElement * child = new TiXmlElement("Rooms");

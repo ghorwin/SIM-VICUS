@@ -327,6 +327,10 @@ void CodeGenerator::generateReadWriteCode() {
 						attribs += "	if (m_"+attribName+" != "+m_prefix+"::INVALID_ID)\n	";
 						includes.insert(m_prefix+"_Constants.h");
 					}
+					// for booleans, check if still default value, otherwise write it out
+					if (xmlInfo.typeStr == "bool") {
+						attribs += "	if (m_"+attribName+" != "+ci.m_className+"().m_"+attribName+")\n	";
+					}
 					attribs += "	e->SetAttribute(\""+attribName+"\", IBK::val2string<"+xmlInfo.typeStr+">(m_"+attribName+"));\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Path") {

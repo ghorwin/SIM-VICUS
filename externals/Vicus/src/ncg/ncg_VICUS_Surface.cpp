@@ -88,7 +88,8 @@ TiXmlElement * Surface::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
-	e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
+	if (m_visible != Surface().m_visible)
+		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
 	if (m_componentId != VICUS::INVALID_ID)
 		e->SetAttribute("componentId", IBK::val2string<unsigned int>(m_componentId));
 
