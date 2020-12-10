@@ -51,6 +51,8 @@ public:
 	/*! Returns the current translation of the coordinate system. */
 	const QVector3D & translation() const { return m_transform.translation(); }
 
+	void setRotation(const QQuaternion & rotMatrix);
+
 	/*! Returns current transformation matrix (origin and rotation). */
 	void setTransform(const Transform3D & transform) { m_transform = transform; }
 	/*! Sets new transformation matrix. */

@@ -108,6 +108,13 @@ public:
 		*this /= magnitude();
 	}
 
+	/*! Normalizes the vector: <math>v = \frac{v}{\left| v \right|}</math>. */
+	Vector3D normalized() const {
+		Vector3D t(*this);
+		t /= t.magnitude();
+		return t;
+	}
+
 	/*! Assignment operator. */
 	const Vector3D & operator=(const IBK::point3D<double> & pt) {
 		m_x = pt.m_x;

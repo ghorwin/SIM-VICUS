@@ -113,18 +113,14 @@ public:
 
 	void setVertexes(const std::vector<IBKMK::Vector3D> & vertexes);
 
-	/*! A simple polygon is a polygon without intersects by itself.
-		return true if no intersections
-		return false if minimum one intersection
-	*/
-	bool isSimplePolygon();
+	/*! Returns the 2D polygon (only if it exists). */
+	const QPolygonF & polygon() const { return m_polygon; }
 
+	/*! Returns the x-vector of the local coordinate system. */
+	const IBKMK::Vector3D & localX() const { return m_localX; }
 
-	/*! Eleminate colinear points in a polygon and return a new polygon. */
-	void eleminateColinearPts();
-
-
-	QPolygonF polygon() const;
+	/*! Returns the y-vector of the local coordinate system. */
+	const IBKMK::Vector3D & localY() const { return m_localY; }
 
 private:
 	// *** PRIVATE MEMBER FUNCTIONS ***
@@ -156,6 +152,15 @@ private:
 		normal vector is set to 0,0,0).
 	*/
 	void updateLocalCoordinateSystem();
+
+	/*! A simple polygon is a polygon without intersects by itself.
+		return true if no intersections
+		return false if minimum one intersection
+	*/
+	bool isSimplePolygon();
+
+	/*! Eleminate colinear points in a polygon and return a new polygon. */
+	void eleminateColinearPts();
 
 
 	// *** PRIVATE MEMBER VARIABLES ***

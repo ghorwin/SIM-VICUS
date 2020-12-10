@@ -140,8 +140,12 @@ PlaneGeometry::PlaneGeometry(PlaneGeometry::type_t t,
 
 
 void PlaneGeometry::readXML(const TiXmlElement * element) {
+	FUNCID(PlaneGeometry::readXML);
 	readXMLPrivate(element);
+	unsigned int nVert = m_vertexes.size();
 	computeGeometry();
+	if (nVert != m_vertexes.size())
+		IBK::IBK_Message(IBK::FormatString("Invalid polygon in project, removed invalid vertexes."), IBK::MSG_WARNING, FUNC_ID);
 }
 
 
@@ -665,14 +669,8 @@ void PlaneGeometry::updateLocalCoordinateSystem() {
 		m_normal.normalize();
 		return; // found a normal vector
 	}
-
-
 }
 
-QPolygonF PlaneGeometry::polygon() const
-{
-	return m_polygon;
-}
 
 void PlaneGeometry::setVertexes(const std::vector<IBKMK::Vector3D> & vertexes) {
 	m_type = T_Polygon;

@@ -171,4 +171,9 @@ void CoordinateSystemObject::setTranslation(const QVector3D & translation) {
 }
 
 
+void CoordinateSystemObject::setRotation(const QQuaternion & rotMatrix) {
+	m_transform.setRotation(rotMatrix);
+}
+
+
 } // namespace Vic3D

@@ -27,6 +27,8 @@
 const float TRANSLATION_SPEED = 1.2f;
 const float MOUSE_ROTATION_SPEED = 0.5f;
 
+/*! Plane definition for the xy Plane. */
+const VICUS::PlaneGeometry xyPlane(VICUS::PlaneGeometry::T_Triangle, IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(1,0,0), IBKMK::Vector3D(0,1,0));
 
 namespace Vic3D {
 
@@ -257,28 +259,6 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 	Transform3D oldCameraTransform = m_camera;
 
-	// *** Keyboard ***
-
-	// translation and rotation works always (no trigger key)
-
-	// Handle translations
-	QVector3D translation;
-	QVector3D rotationAxis;
-	if (keyboardHandler.keyDown(Qt::Key_W)) 		translation += m_camera.forward();
-	if (keyboardHandler.keyDown(Qt::Key_S)) 		translation -= m_camera.forward();
-	if (keyboardHandler.keyDown(Qt::Key_A)) 		translation -= m_camera.right();
-	if (keyboardHandler.keyDown(Qt::Key_D)) 		translation += m_camera.right();
-	if (keyboardHandler.keyDown(Qt::Key_F)) 		translation -= m_camera.up();
-	if (keyboardHandler.keyDown(Qt::Key_R))			translation += m_camera.up();
-	if (keyboardHandler.keyDown(Qt::Key_Q))			rotationAxis = QVector3D(.0f,.0f,1.f);
-	if (keyboardHandler.keyDown(Qt::Key_E))			rotationAxis = -QVector3D(.0f,.0f,1.f);
-
-	float transSpeed = TRANSLATION_SPEED;
-	if (keyboardHandler.keyDown(Qt::Key_Shift))
-		transSpeed = 0.1f;
-	m_camera.translate(transSpeed * translation);
-	m_camera.rotate(transSpeed, rotationAxis);
-
 	// *** Escape ***
 	if (keyboardHandler.keyDown(Qt::Key_Escape)) {
 		// different operation depending on scene's operation mode
@@ -366,6 +346,29 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		}
 		needRepaint = true;
 	}
+
+
+	// *** Keyboard navigation ***
+
+	// translation and rotation works always (no trigger key)
+
+	// Handle translations
+	QVector3D translation;
+	QVector3D rotationAxis;
+	if (keyboardHandler.keyDown(Qt::Key_W)) 		translation += m_camera.forward();
+	if (keyboardHandler.keyDown(Qt::Key_S)) 		translation -= m_camera.forward();
+	if (keyboardHandler.keyDown(Qt::Key_A)) 		translation -= m_camera.right();
+	if (keyboardHandler.keyDown(Qt::Key_D)) 		translation += m_camera.right();
+	if (keyboardHandler.keyDown(Qt::Key_F)) 		translation -= m_camera.up();
+	if (keyboardHandler.keyDown(Qt::Key_R))			translation += m_camera.up();
+	if (keyboardHandler.keyDown(Qt::Key_Q))			rotationAxis = QVector3D(.0f,.0f,1.f);
+	if (keyboardHandler.keyDown(Qt::Key_E))			rotationAxis = -QVector3D(.0f,.0f,1.f);
+
+	float transSpeed = TRANSLATION_SPEED;
+	if (keyboardHandler.keyDown(Qt::Key_Shift))
+		transSpeed = 0.1f;
+	m_camera.translate(transSpeed * translation);
+	m_camera.rotate(transSpeed, rotationAxis);
 
 
 	// *** Mouse ***
@@ -531,7 +534,10 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		SVProjectHandler::instance().viewSettings().m_cameraRotation = m_camera.rotation();
 	}
 	updateWorld2ViewMatrix();
+	// end of camera movement
 
+
+	// *** adjusting the local coordinate system ***
 
 	QVector3D oldPos = m_coordinateSystemObject.translation();
 	// if in "place vertex" mode, perform picking operation and snap coordinate system to grid
@@ -555,17 +561,59 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem) {
 		PickObject o(localMousePos, PickObject::P_XY_Plane | PickObject::P_Surface);
 		pick(o);
-		// now determine which grid line is closest
-		QVector3D closestPoint;
-		if (m_gridObject.closestSnapPoint(VICUS::IBKVector2QVector(o.m_pickPoint), closestPoint)) {
-			// this is in world coordinates, use this as transformation vector for the
-			// coordinate system
-			m_coordinateSystemObject.setTranslation(closestPoint);
-			// if an object was selected, retrieve its normal vector and local x/localy vectors to set the alignment
-			// of the local coordinate system
+		// get the picked object, if any
+		if (o.m_uniqueObjectID != 0) {
+			// lookup object
+			const VICUS::Object * obj = project().objectById(o.m_uniqueObjectID);
+			// should be a surface
+			const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(obj);
+			Q_ASSERT(s != nullptr);
+			// now get normal vector
+			IBKMK::Vector3D n = s->m_geometry.normal();
+			// get also local X and Y vectors
+			IBKMK::Vector3D localX = s->m_geometry.localX();
+			IBKMK::Vector3D localY = s->m_geometry.localY();
+			// compose rotation angle from global to local system via the following math:
+			// we have local system axes x,y,z and global axes g1, g2, g3
+			// and the rotation matrix R should do:
+			//  R(g1) = x,  R(g2) = y, R(g3) = z
+			//
+			// now, if we describe a body axis like:
+			//  x = B11.g1 + B21.g2 + B31.g3
+			//  y = B11.g1 + B21.g2 + B31.g3
+			//  z = B11.g1 + B21.g2 + B31.g3
+			//
+			// or in matrix writing
+			//  R[1,0,0] = [B11, B21, B31]
+			//
+			// each of the columns of the rotation matrix is the normalized local coordinate axis
+			//
+			// now build the rotation matrix
+//			QMatrix3x3 R;
+//			float * r = R.data();
+//			*(QVector3D*)r = VICUS::IBKVector2QVector(localX.normalized());
+//			r+=3;
+//			*(QVector3D*)r = VICUS::IBKVector2QVector(localY.normalized());
+//			r+=3;
+//			*(QVector3D*)r = VICUS::IBKVector2QVector(n.normalized());
+//			qDebug() << R;
+//			QQuaternion q = QQuaternion::fromRotationMatrix(R);
+//			qDebug() << q;
+
+			// or use the ready-made Qt function (which surprisingly gives the same result :-)
+			QQuaternion q2 = QQuaternion::fromAxes(VICUS::IBKVector2QVector(localX.normalized()),
+												   VICUS::IBKVector2QVector(localY.normalized()),
+												   VICUS::IBKVector2QVector(n.normalized()));
+//			qDebug() << q2;
+			m_coordinateSystemObject.setRotation(q2);
 		}
+
+		m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(o.m_pickPoint) );
 	}
 
+
+	// determine if we actually need a repaint: this is normally only necessary of the camera or
+	// the local coordinate system were moved
 	if (oldPos != m_coordinateSystemObject.translation() || needRepaint ||
 			m_camera.translation() != oldCameraTransform.translation() ||
 			m_camera.rotation() != oldCameraTransform.rotation())
@@ -932,7 +980,6 @@ void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3
 	// execute pick operation based on selection in pick object
 	if (pickObject.m_pickMask & PickObject::P_XY_Plane) {
 		// get intersection with xy plane
-		VICUS::PlaneGeometry xyPlane(VICUS::PlaneGeometry::T_Rectangle, IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(1,0,0), IBKMK::Vector3D(0,1,0));
 		IBKMK::Vector3D intersectionPoint;
 		double t;
 		if (xyPlane.intersectsLine(nearPoint2, d2, intersectionPoint, t, true, true)) {

@@ -153,6 +153,7 @@ private:
 	bool					m_orbitControllerActive = false;
 	/*! Holds the origin of the orbit controller coordinates. */
 	QVector3D				m_orbitControllerOrigin;
+
 };
 
 } // namespace Vic3D
