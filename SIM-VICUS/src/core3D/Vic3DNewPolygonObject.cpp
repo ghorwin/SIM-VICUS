@@ -169,7 +169,6 @@ void NewPolygonObject::updateBuffers() {
 		// TODO : Stephan, add the first vertex again, so that we can draw a closed line around the polygon
 		m_vertexBufferData.push_back( m_vertexBufferData[0] );
 	}
-	}
 
 	// put all the vertexes of the current polyline into buffer
 	m_vertexBufferData.reserve(m_vertexList.size()+ m_vertexBufferData.size()+1);
