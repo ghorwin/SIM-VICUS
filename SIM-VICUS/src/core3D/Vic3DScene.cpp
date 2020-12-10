@@ -542,7 +542,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 	QVector3D oldPos = m_coordinateSystemObject.translation();
 	// if in "place vertex" mode, perform picking operation and snap coordinate system to grid
 	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_PlaceVertex) {
-		/// \todo Stephan: customize picking object rules based on current snap selection
+		/// \todo customize picking object rules based on current snap selection
 		PickObject o(localMousePos, PickObject::P_XY_Plane);
 		pick(o);
 		// now determine which grid line is closest
@@ -606,6 +606,10 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 												   VICUS::IBKVector2QVector(n.normalized()));
 //			qDebug() << q2;
 			m_coordinateSystemObject.setRotation(q2);
+		}
+		else {
+			// restore to global orientation
+			m_coordinateSystemObject.setRotation(QQuaternion());
 		}
 
 		m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(o.m_pickPoint) );

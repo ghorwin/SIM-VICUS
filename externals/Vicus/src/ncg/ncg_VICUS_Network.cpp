@@ -60,6 +60,8 @@ void Network::readXML(const TiXmlElement * element) {
 				m_fluidID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "name")
 				m_name = attrib->ValueStr();
+			else if (attribName == "visible")
+				m_visible = NANDRAD::readPODAttributeValue<bool>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -201,6 +203,7 @@ TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("fluidID", IBK::val2string<unsigned int>(m_fluidID));
 	if (!m_name.empty())
 		e->SetAttribute("name", m_name);
+	e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
 
 	if (!m_nodes.empty()) {
 		TiXmlElement * child = new TiXmlElement("Nodes");

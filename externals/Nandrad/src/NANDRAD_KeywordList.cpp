@@ -1554,7 +1554,7 @@ namespace NANDRAD {
 				case 0 : return "mm";
 				case 1 : return "-";
 				case 2 : return "-";
-				case 3 : return "m";
+				case 3 : return "mm";
 				case 4 : return "W/m2K";
 				case 5 : return "K";
 				case 6 : return "Pa";
