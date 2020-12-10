@@ -188,6 +188,9 @@ void NewPolygonObject::render() {
 	// set transformation matrix - unity matrix, since we draw with world coordinates
 	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[1], QMatrix4x4());
 
+	// re-enable updating of z-buffer, so that polygon line fills the z-buffer
+	glDepthMask(GL_TRUE);
+
 	// draw the polygon line first
 	if (m_vertexBufferData.size() > 1) {
 
@@ -207,7 +210,7 @@ void NewPolygonObject::render() {
 	// now draw the geometry
 	if (!m_indexBufferData.empty()) {
 		glDisable(GL_CULL_FACE);
-#if 0
+#if 1
 		// set wireframe color (TODO : make this theme-dependent?)
 		QColor wireFrameCol = QColor(255,255,255,192);
 		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], wireFrameCol);
@@ -218,6 +221,8 @@ void NewPolygonObject::render() {
 		// switch back to fill mode
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 #endif
+		// disable updating of z-buffer
+		glDepthMask(GL_FALSE);
 		// set selected plane color (QColor is passed as vec4, so no conversion is needed, here).
 		QColor planeCol = QColor(255,0,128,64);
 		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], planeCol);
@@ -231,8 +236,9 @@ void NewPolygonObject::render() {
 		glDisable(GL_POLYGON_OFFSET_FILL);
 
 		glEnable(GL_CULL_FACE);
-
 	}
+	// re-enable updating of z-buffer
+	glDepthMask(GL_TRUE);
 
 	// release buffers again
 	m_vao.release();

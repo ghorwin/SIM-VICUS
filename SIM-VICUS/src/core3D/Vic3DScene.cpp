@@ -613,6 +613,8 @@ void Vic3DScene::render() {
 
 	// ... windows, ...
 
+	// re-enable updating of z-buffer
+	glDepthMask(GL_TRUE);
 
 	// *** new polygon draw object ***
 
@@ -623,8 +625,6 @@ void Vic3DScene::render() {
 		m_fixedColorTransformShader->release();
 	}
 
-	// re-enable updating of z-buffer
-	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);
 }
 
