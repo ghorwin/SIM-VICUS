@@ -732,6 +732,8 @@ void Vic3DScene::generateNetworkGeometry() {
 
 	// add cylinders for all pipes
 	for (const VICUS::Network & network : p.m_geometricNetworks) {
+		if (!network.m_visible)
+			continue;
 		for (const VICUS::NetworkEdge & e : network.m_edges) {
 			double radius = 0.5;
 			if (e.m_pipeId != VICUS::INVALID_ID){

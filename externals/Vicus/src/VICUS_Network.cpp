@@ -273,7 +273,7 @@ int Network::nextUnconnectedBuilding() const{
 }
 
 
-void Network::networkWithoutDeadEnds(Network &cleanNetwork, const unsigned maxSteps){
+void Network::cleanDeadEnds(Network &cleanNetwork, const unsigned maxSteps){
 
 	for (unsigned step=0; step<maxSteps; ++step){
 		for (unsigned n=0; n<m_nodes.size(); ++n)
@@ -289,7 +289,7 @@ void Network::networkWithoutDeadEnds(Network &cleanNetwork, const unsigned maxSt
 }
 
 
-void Network::networkWithReducedEdges(Network & reducedNetwork){
+void Network::cleanRedundantEdges(Network & cleanNetwork){
 
 	IBK_ASSERT(m_edges.size()>0);
 	std::set<unsigned> proccessedNodes;
@@ -314,15 +314,36 @@ void Network::networkWithReducedEdges(Network & reducedNetwork){
 				proccessedNodes.insert(nId);
 
 			// add nodes and reduced edge to new network
-			unsigned id1 = reducedNetwork.addNode(*previousNode);
-			unsigned id2 = reducedNetwork.addNode(*nextNode);
-			reducedNetwork.addEdge(NetworkEdge(id1, id2, edge.m_supply, totalLength, edge.m_pipeId));
+			unsigned id1 = cleanNetwork.addNode(*previousNode);
+			unsigned id2 = cleanNetwork.addNode(*nextNode);
+			cleanNetwork.addEdge(NetworkEdge(id1, id2, edge.m_supply, totalLength, edge.m_pipeId));
 		}
 		else{
-			unsigned id1 = reducedNetwork.addNode(*edge.m_node1);
-			unsigned id2 = reducedNetwork.addNode(*edge.m_node2);
-			reducedNetwork.addEdge(NetworkEdge(id1, id2, edge.m_supply, edge.length(), edge.m_pipeId));
+			unsigned id1 = cleanNetwork.addNode(*edge.m_node1);
+			unsigned id2 = cleanNetwork.addNode(*edge.m_node2);
+			cleanNetwork.addEdge(NetworkEdge(id1, id2, edge.m_supply, edge.length(), edge.m_pipeId));
 		}
+	}
+}
+
+
+void Network::cleanShortEdges(Network &cleanNetwork, const double &threshold)
+{
+	IBK_ASSERT(m_edges.size()>0);
+
+	for (const NetworkEdge &edge: m_edges){
+
+		if (edge.length() > threshold){
+			unsigned id1 = cleanNetwork.addNode(*edge.m_node1);
+			unsigned id2 = cleanNetwork.addNode(*edge.m_node2);
+			cleanNetwork.addEdge(NetworkEdge(id1, id2, edge.m_supply, edge.length(), edge.m_pipeId));
+		}
+		else{
+
+			// TODO Hauke
+		}
+
+
 	}
 }
 

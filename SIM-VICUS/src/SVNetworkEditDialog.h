@@ -38,6 +38,8 @@ private slots:
 
 	void on_pushButtonSimplify_clicked();
 
+	void on_checkBoxVisible_clicked();
+
 private:
 	Ui::SVNetworkEditDialog *m_ui;
 
@@ -45,7 +47,7 @@ private:
 
 	void updateSizingParams();
 
-	void modifySizingParams();
+	void modifyStatus();
 
 	void setNetwork();
 

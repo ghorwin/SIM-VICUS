@@ -53,6 +53,7 @@ void SVNetworkEditDialog::updateStatus() const{
 	m_ui->pushButtonReduceDeadEnds->setEnabled(m_network.checkConnectedGraph() && m_network.numberOfBuildings() > 0);
 	m_ui->labelLargestDiameter->setText(QString("%1").arg(m_network.largestDiameter()));
 	m_ui->labelSmallestDiameter->setText(QString("%1").arg(m_network.smallestDiameter()));
+	m_ui->checkBoxVisible->setChecked(m_network.m_visible);
 }
 
 void SVNetworkEditDialog::updateSizingParams()
@@ -64,8 +65,9 @@ void SVNetworkEditDialog::updateSizingParams()
 	m_ui->doubleSpinBoxMaximumPressureLoss->setValue(m_network.m_sizingPara[VICUS::Network::SP_MaxPressureLoss].get_value("Pa/m"));
 }
 
-void SVNetworkEditDialog::modifySizingParams()
+void SVNetworkEditDialog::modifyStatus()
 {
+	m_network.m_visible = m_ui->checkBoxVisible->isChecked();
 	m_network.m_sizingPara[VICUS::Network::SP_TemperatureSetpoint].set(VICUS::KeywordList::Keyword("Network::SizingParam", VICUS::Network::SP_TemperatureSetpoint),
 																	   m_ui->doubleSpinBoxTemperatureSetpoint->value(),
 																	   IBK::Unit("C"));
@@ -73,6 +75,7 @@ void SVNetworkEditDialog::modifySizingParams()
 									 m_ui->doubleSpinBoxTemperatureDifference->value());
 	VICUS::KeywordList::setParameter(m_network.m_sizingPara, "Network::SizingParam", VICUS::Network::SP_MaxPressureLoss,
 									 m_ui->doubleSpinBoxMaximumPressureLoss->value());
+
 }
 
 void SVNetworkEditDialog::setNetwork()
@@ -98,21 +101,25 @@ void SVNetworkEditDialog::setupComboBox()
 
 void SVNetworkEditDialog::copyNetwork(const std::string &appendName)
 {
-	VICUS::Project p = project();
-
-	VICUS::Network copy = m_network;
-	copy.updateNodeEdgeConnectionPointers();
-	copy.m_name += "_" + appendName;
-	copy.m_id = p.uniqueId(p.m_geometricNetworks);
-	SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("copied network"), copy);
-	undo->push(); // modifies project and updates views
-
-	p.element(p.m_geometricNetworks, m_network.m_id)->m_visible = false;
+	// make current network invisible (dont draw)
+	m_network.m_visible = false;
 	SVUndoModifyExistingNetwork * undoMod = new SVUndoModifyExistingNetwork(tr("mod network"), m_network);
 	undoMod->push(); // modifies project and updates views
 
-	updateStatus();
+	// make copy
+	VICUS::Network copy = m_network;
+	copy.m_visible = true;
+	copy.m_name += "_" + appendName;
+	const VICUS::Project & p = project();
+	copy.m_id = p.uniqueId(p.m_geometricNetworks);
+	copy.updateNodeEdgeConnectionPointers();
+	SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("copied network"), copy);
+	undo->push(); // modifies project and updates views
+
 	setupComboBox();
+	m_ui->comboBoxSelectNetwork->setCurrentIndex(copy.m_id);
+	setNetwork();
+	updateStatus();
 }
 
 void SVNetworkEditDialog::on_pushButtonGenerateIntersections_clicked()
@@ -141,27 +148,12 @@ void SVNetworkEditDialog::on_pushButtonConnectBuildings_clicked()
 }
 
 
-// reduce redundants: do this only before export to NANDRAD, maybe show it but dont save this state
-
-//	VICUS::Network tmp;
-//	tmp.m_id = m_network.m_id;
-//	tmp.m_fluidID = m_network.m_fluidID;
-//	tmp.m_name = m_network.m_name;
-//	tmp.m_origin = m_network.m_origin;
-//	m_network.networkWithReducedEdges(tmp);
-//	m_network = tmp;
-//	m_network.updateNodeEdgeConnectionPointers();
-//	updateStatus();
-//	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Added network"), m_network);
-//	undo->push(); // modifies project and updates views
-
-
 void SVNetworkEditDialog::on_pushButtonReduceDeadEnds_clicked()
 {
 	// not quite efficient, but safest method to transfer all parameters to new network
 	VICUS::Network tmp = m_network;
 	tmp.clear();
-	m_network.networkWithoutDeadEnds(tmp);
+	m_network.cleanDeadEnds(tmp);
 	std::swap(m_network, tmp);
 	m_network.updateNodeEdgeConnectionPointers();
 	updateStatus();
@@ -172,7 +164,7 @@ void SVNetworkEditDialog::on_pushButtonReduceDeadEnds_clicked()
 
 void SVNetworkEditDialog::on_pushButtonSizePipeDimensions_clicked()
 {
-	modifySizingParams();
+	modifyStatus();
 	m_network.sizePipeDimensions(project().m_networkFluids[m_network.m_fluidID]);
 	updateStatus();
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
@@ -199,19 +191,37 @@ void SVNetworkEditDialog::on_pushButtonDelete_clicked()
 
 void SVNetworkEditDialog::on_pushButtonReduceRedundantNodes_clicked()
 {
-	copyNetwork("reduced");
-	// not quite efficient, but safest method to transfer all parameters to new network
-	VICUS::Network tmp = m_network;
-	tmp.clear();
-	m_network.networkWithReducedEdges(tmp);
-	std::swap(m_network, tmp);
-	m_network.updateNodeEdgeConnectionPointers();
-	updateStatus();
-	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
+	// make current network invisible (dont draw)
+	m_network.m_visible = false;
+	SVUndoModifyExistingNetwork * undoMod = new SVUndoModifyExistingNetwork(tr("mod network"), m_network);
+	undoMod->push(); // modifies project and updates views
+
+	// make copy, reduce it
+	VICUS::Network copy = m_network;
+	copy.clear();
+	m_network.cleanRedundantEdges(copy);
+	copy.m_visible = true;
+	copy.m_name += "_reduced";
+	const VICUS::Project & p = project();
+	copy.m_id = p.uniqueId(p.m_geometricNetworks);
+	copy.updateNodeEdgeConnectionPointers();
+	SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("copied network"), copy);
 	undo->push(); // modifies project and updates views
+
+	setupComboBox();
+	m_ui->comboBoxSelectNetwork->setCurrentIndex(copy.m_id);
+	setNetwork();
+	updateStatus();
 }
 
 void SVNetworkEditDialog::on_pushButtonSimplify_clicked()
 {
 
+}
+
+void SVNetworkEditDialog::on_checkBoxVisible_clicked()
+{
+	modifyStatus();
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
+	undo->push(); // modifies project and updates views
 }

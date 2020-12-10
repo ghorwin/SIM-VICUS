@@ -94,15 +94,21 @@ public:
 
 	/*! stores a copy of the current network without "dead end" nodes (and their connecting edges)
 	 * "dead end" nodes have only one connecting edge and are not buildings nor sources  */
-	void networkWithoutDeadEnds(Network & cleanNetwork, const unsigned maxSteps=50);
+	void cleanDeadEnds(Network & cleanNetwork, const unsigned maxSteps=50);
+
+	/*! stores a copy of the network without any redundant edges */
+	void cleanRedundantEdges(Network & cleanNetwork);
+
+	void cleanShortEdges(Network & cleanNetwork, const double &threshold);
 
 	/*! calculate pipe dimensions using a maximum pressure loss per length and fixed temperature difference
 	 * the mass flow rate of each pipe will be calculated based on the heatDemand of connected consumer loads (e.g. buildings)
 	 */
 	void sizePipeDimensions(const NetworkFluid &fluid);
 
-	/*! stores a copy of the network without any redundant edges */
-	void networkWithReducedEdges(Network & reducedNetwork);
+
+
+//	void networksimpl
 
 	void writeNetworkCSV(const IBK::Path &file) const;
 
