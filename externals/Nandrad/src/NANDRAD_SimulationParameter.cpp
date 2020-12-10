@@ -31,18 +31,16 @@ namespace NANDRAD {
 
 
 void SimulationParameter::initDefaults() {
-
-	m_para[P_InitialTemperature].set( KeywordList::Keyword("SimulationParameter::para_t", P_InitialTemperature),	 20, IBK::Unit("C"));
-	m_para[P_InitialRelativeHumidity].set( KeywordList::Keyword("SimulationParameter::para_t", P_InitialRelativeHumidity),	 50, IBK::Unit("%"));
-
-	m_para[P_DomesticWaterSensitiveHeatGainFraction].set(KeywordList::Keyword("SimulationParameter::para_t", P_DomesticWaterSensitiveHeatGainFraction), 0.0, IBK::Unit("---"));
+	KeywordList::setParameter(m_para, "SimulationParameter::para_t", P_InitialTemperature, 20);
+	KeywordList::setParameter(m_para, "SimulationParameter::para_t", P_InitialRelativeHumidity, 50);
+	KeywordList::setParameter(m_para, "SimulationParameter::para_t", P_DomesticWaterSensitiveHeatGainFraction, 0);
 
 	m_intPara[IP_StartYear].set( KeywordList::Keyword("SimulationParameter::intPara_t", IP_StartYear), 2001);
 
 	// setting flags to false is normally not necessary, since the function Flag::isEnabled() returns false for undefined flags anyway
 
 	m_interval.m_para[NANDRAD::Interval::P_Start]		= IBK::Parameter("Start", 0, "d");
-	m_interval.m_para[NANDRAD::Interval::P_End]		= IBK::Parameter("End", 365, "d");
+	m_interval.m_para[NANDRAD::Interval::P_End]			= IBK::Parameter("End", 365, "d");
 
 	m_solarLoadsDistributionModel.initDefaults();
 }
