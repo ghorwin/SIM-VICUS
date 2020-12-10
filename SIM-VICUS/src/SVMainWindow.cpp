@@ -915,7 +915,7 @@ void SVMainWindow::onUpdateActions() {
 		updateWindowTitle();
 	}
 	else {
-		setWindowTitle(QString("SIM-VICUS %1").arg(VICUS::LONG_VERSION));
+		setWindowTitle(QString("SIM-VICUS %1").arg(VICUS::VERSION));
 		m_welcomeScreen->updateWelcomePage();
 	}
 }
@@ -1102,7 +1102,7 @@ void SVMainWindow::updateWindowTitle() {
 	}
 	if (m_projectHandler.isModified())
 		shortFileName += "*";
-	setWindowTitle(QString("SIM-VICUS %1 - %2").arg(VICUS::LONG_VERSION).arg(shortFileName));
+	setWindowTitle(QString("SIM-VICUS %1 - %2").arg(VICUS::VERSION).arg(shortFileName));
 }
 
 
@@ -1362,9 +1362,15 @@ void SVMainWindow::on_actionOnline_manual_triggered() {
 
 void SVMainWindow::on_actionKeyboard_and_mouse_controls_triggered() {
 	// show keyboard/mouse control cheat sheet
-	QTextEdit w(this);
-//	QFile manual_en()
-//	w.setHtml();
-
-
+	QDialog dlg(this);
+	QVBoxLayout * lay = new QVBoxLayout(&dlg);
+	QTextEdit * w = new QTextEdit(&dlg);
+	lay->addWidget(w);
+	dlg.setLayout(lay);
+	QFile manual_en(":/doc/KeyboardMouseControls.html");
+	manual_en.open(QFile::ReadOnly);
+	QString manual = manual_en.readAll();
+	w->setHtml(manual);
+	dlg.resize(1400,800);
+	dlg.exec();
 }

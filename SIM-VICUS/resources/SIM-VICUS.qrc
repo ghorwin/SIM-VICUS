@@ -39,5 +39,6 @@
         <file>gfx/actions/16x16/help-hint_gray.png</file>
         <file>gfx/actions/16x16/checkbox-empty.png</file>
         <file>gfx/actions/16x16/checkbox-full.png</file>
+        <file>doc/KeyboardMouseControls.html</file>
     </qresource>
 </RCC>

@@ -8,8 +8,6 @@ const char * const ORG_NAME			= "IBK";
 			 It needs to be synchronized with the VERSION string in VICUS_Constants.h
 */
 const char * const PROGRAM_NAME		= "SIM-VICUS 0.2";
-const char * const VERSION		    = "0.2";
-const char * const LONG_VERSION		= "0.2.0";
 
 const char * const UPDATE_FILE_URL	= "...";
 const char * const NEWS_FILE_URL	= "...";
