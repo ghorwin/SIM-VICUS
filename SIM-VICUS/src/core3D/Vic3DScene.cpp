@@ -294,6 +294,10 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 			} break;
 
 			case SVViewState::OM_AlignLocalCoordinateSystem:
+				// restore original local coordinate system
+				m_coordinateSystemObject.setTransform(m_oldCoordinateSystemTransform);
+				// switch back to previous view state
+				SVViewStateHandler::instance().restoreLastViewState();
 			break;
 
 			default:
@@ -303,7 +307,6 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 				}
 		}
 	}
-
 
 	// *** Enter/Return ***
 	if (keyboardHandler.keyDown(Qt::Key_Return)) {
@@ -316,8 +319,37 @@ void Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 				m_newPolygonObject.finish();
 			} break;
 
+			// *** align coordinate system ***
+			case SVViewState::OM_AlignLocalCoordinateSystem : {
+				// finish aligning coordinate system and keep selected rotation in coordinate system
+				// but restore origin of local coordinate system object
+				m_coordinateSystemObject.setTranslation(m_oldCoordinateSystemTransform.translation());
+				// switch back to previous view state
+				SVViewStateHandler::instance().restoreLastViewState();
+			} break;
+
 			default:; // in all other modes, Enter has no effect (for now)
 
+		}
+	}
+
+
+	// *** F4 - toggle "align coordinate system" mode ****
+
+	if (keyboardHandler.keyDown(Qt::Key_F4)) {
+		SVViewState vs = SVViewStateHandler::instance().viewState();
+		if (vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem) {
+			// restore origin of local coordinate system object
+			m_coordinateSystemObject.setTranslation(m_oldCoordinateSystemTransform.translation());
+			// switch back to previous view state
+			SVViewStateHandler::instance().restoreLastViewState();
+		}
+		else {
+			// store current transformation of local coordinate system object
+			m_oldCoordinateSystemTransform = m_coordinateSystemObject.transform();
+			// turn on AlignLocalCoordinateSystem mode
+			vs.m_sceneOperationMode = SVViewState::OM_AlignLocalCoordinateSystem;
+			SVViewStateHandler::instance().setViewState(vs);
 		}
 	}
 

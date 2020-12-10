@@ -28,3 +28,8 @@ void SVViewStateHandler::setViewState(const SVViewState & newViewState) {
 	m_viewState = newViewState;
 	emit viewStateChanged();
 }
+
+
+void SVViewStateHandler::restoreLastViewState() {
+	setViewState(m_previousViewState);
+}

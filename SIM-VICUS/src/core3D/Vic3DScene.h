@@ -141,6 +141,8 @@ private:
 	OrbitControllerObject	m_orbitControllerObject;
 	/*! The movable coordinate system. */
 	CoordinateSystemObject	m_coordinateSystemObject;
+	/*! Cached "old" transform of the coordinate system object (needed for "align coordinate system" operation). */
+	Transform3D				m_oldCoordinateSystemTransform;
 	/*! Object to display newly drawn geometry. */
 	NewPolygonObject		m_newPolygonObject;
 

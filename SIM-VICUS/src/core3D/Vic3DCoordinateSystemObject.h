@@ -51,8 +51,14 @@ public:
 	/*! Returns the current translation of the coordinate system. */
 	const QVector3D & translation() const { return m_transform.translation(); }
 
+	/*! Returns current transformation matrix (origin and rotation). */
+	void setTransform(const Transform3D & transform) { m_transform = transform; }
+	/*! Sets new transformation matrix. */
+	Transform3D transform() const { return m_transform; }
+
 	/*! Cached pointer to geometry edit widget - needed for direct communication. */
 	SVPropEditGeometry			*m_propEditGeometry = nullptr;
+
 
 private:
 	/*! The transformation object, transforms the coordinate system to its position and orientation in

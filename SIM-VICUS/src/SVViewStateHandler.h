@@ -32,6 +32,9 @@ public:
 	*/
 	void setViewState(const SVViewState & newViewState);
 
+	/*! Restores the last viewstate that was set before the current view state. */
+	void restoreLastViewState();
+
 	/*! Caches pointer to new polygon object, to allow direct access to object when removing vertexes.
 		The pointer is set in constructor of Vic3D::NewPolygonObject, object is not owned.
 		DO NOT DELETE the object or do any other crazy stuff with this pointer!

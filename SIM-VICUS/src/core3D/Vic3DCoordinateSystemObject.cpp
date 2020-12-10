@@ -170,4 +170,5 @@ void CoordinateSystemObject::setTranslation(const QVector3D & translation) {
 	m_propEditGeometry->setCoordinates(m_transform);
 }
 
+
 } // namespace Vic3D
