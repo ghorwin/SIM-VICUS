@@ -668,6 +668,11 @@ void PlaneGeometry::updateLocalCoordinateSystem() {
 
 }
 
+QPolygonF PlaneGeometry::polygon() const
+{
+	return m_polygon;
+}
+
 void PlaneGeometry::setVertexes(const std::vector<IBKMK::Vector3D> & vertexes) {
 	m_type = T_Polygon;
 	m_vertexes = vertexes;

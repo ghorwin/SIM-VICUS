@@ -123,6 +123,8 @@ public:
 	void eleminateColinearPts();
 
 
+	QPolygonF polygon() const;
+
 private:
 	// *** PRIVATE MEMBER FUNCTIONS ***
 
