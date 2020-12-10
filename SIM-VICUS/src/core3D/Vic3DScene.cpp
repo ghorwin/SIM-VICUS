@@ -749,7 +749,7 @@ void Vic3DScene::generateNetworkGeometry() {
 			else if (no.m_type == VICUS::NetworkNode::NT_Building){
 				color = Qt::blue;
 				if (no.m_maxHeatingDemand > 0)
-					radius *= no.m_maxHeatingDemand/2000;
+					radius *= no.m_maxHeatingDemand/4000;
 			}
 			// mean radius of adjacent pipes
 			else if (no.m_type == VICUS::NetworkNode::NT_Mixer){
@@ -766,7 +766,7 @@ void Vic3DScene::generateNetworkGeometry() {
 				}
 				avgDiameter /= count;
 				if (count>0)
-					radius = 0.5 * avgDiameter/30;
+					radius = 0.8 * avgDiameter/30;
 			}
 			addSphere(no.m_position, color,
 						radius,

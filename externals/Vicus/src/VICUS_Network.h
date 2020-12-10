@@ -34,8 +34,8 @@ public:
 	VICUS_COMPARE_WITH_ID
 
 	enum NetworkType {
-		NET_singlePipe,						// Keyword: SinglePipe
-		NET_doublePipe,						// Keyword: DoublePipe
+		NET_SinglePipe,						// Keyword: SinglePipe
+		NET_DoublePipe,						// Keyword: DoublePipe
 		NUM_NET
 	};
 
@@ -191,10 +191,13 @@ public:
 	/*! the catalog of hydraulic components */
 	std::vector<NANDRAD::HydraulicNetworkComponent>	m_hydraulicComponents;				// XML:E
 
-	NetworkType								m_type = NET_doublePipe;					// XML:E
+	NetworkType								m_type = NET_DoublePipe;					// XML:E
 
 	/*! Parameters used for pipe sizing algorithm. Will be stored only when the algorithm was used */
 	IBK::Parameter							m_sizingPara[NUM_SP];						// XML:E
+
+	/*! Stores visibility information for this network. */
+	bool									m_visible = true;							// XML:A
 
 	// *** RUNTIME VARIABLES ***
 

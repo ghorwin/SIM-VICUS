@@ -523,7 +523,7 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
 
 	unsigned idOffsetOutlet = 1e3;
 
-	if (m_type == NET_doublePipe){
+	if (m_type == NET_DoublePipe){
 
 		// subnetworks are not taken into account here
 		network.m_elements.reserve(m_nodes.size() + 2 * m_edges.size());
@@ -619,12 +619,9 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
 
 
 void Network::setDefaultSizingParams() {
-	VICUS::KeywordList::setParameter(m_sizingPara, "Network::SizingParam",
-										Network::SizingParam::SP_TemperatureSetpoint, 273.15 + 5);
-	VICUS::KeywordList::setParameter(m_sizingPara, "Network::SizingParam",
-										Network::SizingParam::SP_TemperatureDifference, 5);
-	VICUS::KeywordList::setParameter(m_sizingPara, "Network::SizingParam",
-									 Network::SizingParam::SP_MaxPressureLoss, 150);
+	m_sizingPara[Network::SizingParam::SP_TemperatureSetpoint] = IBK::Parameter("TemperatureSetpoint", 5, IBK::Unit("C"));
+	KeywordList::setParameter(m_sizingPara, "Network::SizingParam", Network::SizingParam::SP_TemperatureDifference, 5);
+	KeywordList::setParameter(m_sizingPara, "Network::SizingParam", Network::SizingParam::SP_MaxPressureLoss, 150);
 }
 
 
