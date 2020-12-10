@@ -144,7 +144,6 @@ void NewPolygonObject::updateBuffers() {
 
 	m_vertexBufferData.clear();
 	m_indexBufferData.clear();
-	m_firstLineVertex = 0;
 
 	// no vertexes, nothing to draw - we need at least one vertex in the geometry, so that we
 	// can draw a line from the last vertex to the current coordinate system's location
@@ -156,12 +155,13 @@ void NewPolygonObject::updateBuffers() {
 	if (m_planeGeometry.isValid()) {
 		addPlane(m_planeGeometry, currentVertexIndex, currentElementIndex,
 				 m_vertexBufferData, m_indexBufferData);
-		// remember index of vertex where "current" line starts
-		m_firstLineVertex = currentVertexIndex-1;
+		// TODO : Stephan, add the first vertex again, so that we can draw a closed line around the polygon
 	}
 	else {
-		m_vertexBufferData.resize(1);
-		m_vertexBufferData.back().m_coords = VICUS::IBKVector2QVector(m_planeGeometry.vertexes().back());
+		// put all the vertexes of the current plane into buffer
+		m_vertexBufferData.reserve(m_planeGeometry.vertexes().size());
+		for (const IBKMK::Vector3D & v : m_planeGeometry.vertexes())
+			m_vertexBufferData.push_back( VertexC(VICUS::IBKVector2QVector(v)) );
 	}
 
 	// now also add a vertex for the current coordinate system's position
@@ -188,35 +188,10 @@ void NewPolygonObject::render() {
 	// set transformation matrix - unity matrix, since we draw with world coordinates
 	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[1], QMatrix4x4());
 
-	// now draw the geometry - first the polygon (if any)
-	if (!m_indexBufferData.empty()) {
-		glDisable(GL_CULL_FACE);
-		// set wireframe color (TODO : make this theme-dependent?)
-		QColor wireFrameCol = QColor(255,255,255,192);
-		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], wireFrameCol);
-		// put OpenGL in offset mode
-		glEnable(GL_POLYGON_OFFSET_LINE);
-		// offset the wire frame geometry a bit
-		glPolygonOffset(0.0f, -2.0f);
-		// select wire frame drawing
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		// now draw the geometry
-		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
-		// switch back to fill mode
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		// turn off line offset mode
-		glDisable(GL_POLYGON_OFFSET_LINE);
-
-		// set selected plane color (QColor is passed as vec4, so no conversion is needed, here).
-		QColor planeCol = QColor(255,0,128,64);
-		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], planeCol);
-		// now draw the geometry
-		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
-
-		glEnable(GL_CULL_FACE);
-
-	}
+	// draw the polygon line first
 	if (m_vertexBufferData.size() > 1) {
+
+		// TODO : Stephan, change line color based on "validity" of polygon
 		QColor lineCol = QColor(255,0,0,192);
 		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], lineCol);
 		// then the line consisting of the last two vertexes
@@ -226,7 +201,39 @@ void NewPolygonObject::render() {
 			glDrawArrays(GL_LINES, i, 2);
 		}
 
+		glLineWidth(1);
 	}
+
+	// now draw the geometry
+	if (!m_indexBufferData.empty()) {
+		glDisable(GL_CULL_FACE);
+#if 0
+		// set wireframe color (TODO : make this theme-dependent?)
+		QColor wireFrameCol = QColor(255,255,255,192);
+		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], wireFrameCol);
+		// select wire frame drawing
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		// now draw the geometry
+		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
+		// switch back to fill mode
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+#endif
+		// set selected plane color (QColor is passed as vec4, so no conversion is needed, here).
+		QColor planeCol = QColor(255,0,128,64);
+		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], planeCol);
+		// put OpenGL in offset mode
+		glEnable(GL_POLYGON_OFFSET_FILL);
+		// offset plane geometry a bit so that the plane is drawn behind the wireframe
+		glPolygonOffset(0.1f, 2.0f);
+		// now draw the geometry
+		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
+		// turn off line offset mode
+		glDisable(GL_POLYGON_OFFSET_FILL);
+
+		glEnable(GL_CULL_FACE);
+
+	}
+
 	// release buffers again
 	m_vao.release();
 }

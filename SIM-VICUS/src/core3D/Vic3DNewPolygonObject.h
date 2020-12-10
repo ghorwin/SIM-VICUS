@@ -106,7 +106,6 @@ private:
 
 	/*! Stores the current geometry of the painted polygon. */
 	VICUS::PlaneGeometry			m_planeGeometry;
-	unsigned int					m_firstLineVertex = 0;
 
 	/*! Vertex buffer in CPU memory, holds data of all vertices (coords).
 		The last vertex is always the vertex of the current movable coordinate system's location.
