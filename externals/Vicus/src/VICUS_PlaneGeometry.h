@@ -120,7 +120,7 @@ public:
 
 
 	/*! Eleminate colinear points in a polygon and return a new polygon. */
-	QPolygonF eleminateColinearPts(bool overrideMemberVar = true);
+	void eleminateColinearPts();
 
 
 private:
@@ -132,10 +132,15 @@ private:
 	*/
 	void simplify();
 
-	/*! Creates a 2D representation of the 3D polygon. */
+	/*! Creates a 2D representation of the 3D polygon.
+		Function updateLocalCoordinateSystem() must compute first.
+		\sa updateLocalCoordinateSystem()
+	*/
 	bool update2DPolygon();
 
-	/*! Creates a 3D representation of the 2D polygon. */
+	/*! Creates a 3D representation of the 2D polygon.
+		Outdated
+	*/
 	void update3DPolygon();
 
 	/*! This function triangulates the geometry and populate the m_triangles vector.

@@ -178,7 +178,7 @@ void PlaneGeometry::removeVertex(unsigned int idx) {
 
 void PlaneGeometry::computeGeometry() {
 	m_triangles.clear();
-	eleminateColinearPts(true);
+	eleminateColinearPts();
 
 	// try to simplify polygon to internal rectangle/parallelogram definition
 	// this may change m_type to Rectangle or Triangle and subsequently speed up operations
@@ -187,7 +187,6 @@ void PlaneGeometry::computeGeometry() {
 	if (!isValid())
 		return;
 	// determine 2D plane coordinates
-	//nur die punkte von 3d in 2d
 	update2DPolygon();
 
 	//darf nicht verwunden sein
@@ -260,10 +259,10 @@ bool PlaneGeometry::update2DPolygon() {
 	// first point is v0 = origin
 	poly.append(QPointF(0,0));
 	// second point is v1 at (1,0), since v1-v0 is the vX vector
-	poly.append(QPointF(1,0));
+	//poly.append(QPointF(1,0));
 
 	// now process all other points
-	for (unsigned int i=2; i<m_vertexes.size(); ++i) {
+	for (unsigned int i=1; i<m_vertexes.size(); ++i) {
 		const IBKMK::Vector3D & v = m_vertexes[i];
 		double x,y;
 		/// TODO: Dirk, improve this - by simply calling planeCoordinates we
@@ -345,37 +344,58 @@ int wn_PnPoly( QPoint P, QPoint *V, int n )
 	return wn;
 }
 
-QPolygonF PlaneGeometry::eleminateColinearPts(bool overrideMemberVar){
+/* Eleminate one coolinear point. If a point is erased return true. */
+bool eleminateColinearPtsHelper(std::vector<IBKMK::Vector3D> &polyline){
 
-	//check for duplicate points in polyline and remove duplicates
-	for (size_t i=m_vertexes.size()-1; ; --i) {
-		size_t j=i-1;
-		if(i==0)
-			j=m_vertexes.size()-1;
-		if((m_vertexes[i]-m_vertexes[i-1]).magnitude()<0.001)
-			m_vertexes.erase(m_vertexes.begin()+i);
-	}
+	if(polyline.size()<=2)
+		return false;
 
 	const double eps = 1e-4;
-	unsigned int polySize = m_polygon.size();
-	QPolygonF newPoly;
+	unsigned int polySize = polyline.size();
+
 	for(unsigned int idx=0; idx<polySize; ++idx){
 		unsigned int idx0 = idx-1;
 		if(idx==0)
 			idx0 = polySize-1;
 
-		QVector2D a(m_polygon[idx0]-m_polygon[idx]);
-		QVector2D b(m_polygon[(idx+1) % polySize]-m_polygon[idx]);
-		double cosAngle = QVector2D::dotProduct(a.normalized() , b.normalized());
+		IBKMK::Vector3D a = polyline.at(idx0) - polyline.at(idx);
+		IBKMK::Vector3D b = polyline.at((idx+1) % polySize) - polyline.at(idx);
+		a.normalize();
+		b.normalize();
 
-		// points are not colinear add point to new polygon
-		if(cosAngle > -1+eps && cosAngle < 1-eps){
-			newPoly << m_polygon.value(idx);
+		double cosAngle = a.scalarProduct(b);
+
+
+		if(cosAngle < -1+eps || cosAngle > 1-eps){
+			polyline.erase(polyline.begin()+idx);
+			return true;
 		}
 	}
-	if(overrideMemberVar)
-		m_polygon = newPoly;
-	return  newPoly;
+	return false;
+}
+
+void PlaneGeometry::eleminateColinearPts(){
+
+	QPolygonF newPoly;
+	if(m_vertexes.size()<2)
+		return;
+	//check for duplicate points in polyline and remove duplicates
+	for (size_t i=m_vertexes.size()-1; i>=0; --i) {
+		if(i==std::numeric_limits<size_t>::max())
+			break;
+		if(m_vertexes.size()<2)
+			return;
+		size_t j=i-1;
+		if(i==0)
+			j=m_vertexes.size()-1;
+		if((m_vertexes[i]-m_vertexes[j]).magnitude()<0.001)
+			m_vertexes.erase(m_vertexes.begin()+i);
+	}
+
+	bool tryAgain =true;
+	while (tryAgain)
+		tryAgain = eleminateColinearPtsHelper(m_vertexes);
+
 }
 
 
@@ -633,10 +653,12 @@ void PlaneGeometry::updateLocalCoordinateSystem() {
 		return;
 
 	// calculate normal with first 3 points
-	m_localX = m_vertexes[2] - m_vertexes[1];
-	m_localY = m_vertexes[0] - m_vertexes[1];
+	m_localX = m_vertexes[1] - m_vertexes[0];
+	IBKMK::Vector3D y = m_vertexes.back() - m_vertexes[0];
 	IBKMK::Vector3D n;
-	m_localX.crossProduct(m_localY, n);
+	m_localX.crossProduct(y, n);
+	n.crossProduct(m_localX, m_localY);
+
 	if (n.magnitude() > 1e-4) {
 		m_normal = n;
 		m_normal.normalize();
@@ -647,6 +669,7 @@ void PlaneGeometry::updateLocalCoordinateSystem() {
 }
 
 void PlaneGeometry::setVertexes(const std::vector<IBKMK::Vector3D> & vertexes) {
+	m_type = T_Polygon;
 	m_vertexes = vertexes;
 	computeGeometry();
 }
