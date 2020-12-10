@@ -184,7 +184,8 @@ void PlaneGeometry::computeGeometry() {
 	// this may change m_type to Rectangle or Triangle and subsequently speed up operations
 	simplify();
 	updateLocalCoordinateSystem();
-	if (!isValid())
+	// we need 3 vertexes (not collinear) to continue
+	if (m_vertexes.size() < 3)
 		return;
 	// determine 2D plane coordinates
 	update2DPolygon();

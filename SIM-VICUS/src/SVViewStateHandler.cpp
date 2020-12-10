@@ -31,5 +31,5 @@ void SVViewStateHandler::setViewState(const SVViewState & newViewState) {
 
 
 void SVViewStateHandler::restoreLastViewState() {
-	setViewState(m_previousViewState);
+	setViewState(SVViewState(m_previousViewState)); // Mind: temporary object is needed here!
 }

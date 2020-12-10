@@ -166,11 +166,11 @@ void NewPolygonObject::updateBuffers() {
 	if (m_planeGeometry.isValid()) {
 		addPlane(m_planeGeometry, currentVertexIndex, currentElementIndex,
 				 m_vertexBufferData, m_indexBufferData);
-		// TODO : Stephan, add the first vertex again, so that we can draw a closed line around the polygon
 		m_vertexBufferData.push_back( m_vertexBufferData[0] );
 	}
 
 	// put all the vertexes of the current polyline into buffer
+	// first reserve memory
 	m_vertexBufferData.reserve(m_vertexList.size()+ m_vertexBufferData.size()+1);
 	for (const IBKMK::Vector3D & v : m_vertexList)
 		m_vertexBufferData.push_back( VertexC(VICUS::IBKVector2QVector(v)) );
@@ -204,8 +204,9 @@ void NewPolygonObject::renderOpqaue() {
 	// draw the polygon line first
 	if (m_vertexBufferData.size() > 1) {
 
-		// TODO : Stephan, change line color based on "validity" of polygon
 		QColor lineCol = QColor(255,0,0,192);
+		if (m_planeGeometry.isValid())
+			lineCol = QColor("#59de00"); // some greenish
 		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], lineCol);
 		// then the line consisting of the last two vertexes
 
@@ -213,10 +214,14 @@ void NewPolygonObject::renderOpqaue() {
 		// from first vertex after polygon-vertexes
 		size_t offset = 0;
 		if (m_planeGeometry.isValid())
-			offset = m_planeGeometry.vertexes().size();
-		for (size_t i = offset; i < m_vertexList.size() + offset; ++i) {
-			glDrawArrays(GL_LINES, i, 2);
+			offset = m_planeGeometry.vertexes().size() + 1; // +1, because we have added the first polygon again at the end
+		// paint a line for each of the vertexes in the list and one extra, for the trailing polygon line
+		for (size_t i = 1; i < m_vertexList.size(); ++i, ++offset) {
+			glDrawArrays(GL_LINES, offset, 2);
 		}
+		lineCol = QColor("#32c5ea");
+		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], lineCol);
+		glDrawArrays(GL_LINES, offset, 2);
 
 	}
 

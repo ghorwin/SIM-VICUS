@@ -61,9 +61,10 @@ public:
 
 	type_t type() const { return m_type; }
 
-	/*! TODO Andreas
-	 * Minimalistic check function - need vertexes . */
-	bool isValid() const { return m_vertexes.size() >= 3; }
+	/*! A polygon is considered "fully valid" for painting and additing to the data structure, if
+		it has enough vertexes and can be correctly triangulated (triangles not empty).
+	*/
+	bool isValid() const { return m_vertexes.size() >= 3 && !m_triangles.empty(); }
 
 	const IBKMK::Vector3D & normal() const { return m_normal; }
 

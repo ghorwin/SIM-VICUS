@@ -304,6 +304,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 				// switch back to previous view state
 				SVViewStateHandler::instance().restoreLastViewState();
 				needRepaint = true;
+				qDebug() << "Leaving 'Align coordinate system' mode";
 			break;
 
 			default:
@@ -334,6 +335,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 				m_coordinateSystemObject.setTranslation(m_oldCoordinateSystemTransform.translation());
 				// switch back to previous view state
 				SVViewStateHandler::instance().restoreLastViewState();
+				qDebug() << "Leaving 'Align coordinate system' mode";
 				needRepaint = true;
 			} break;
 
@@ -346,13 +348,13 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 	// *** F4 - toggle "align coordinate system" mode ****
 
 	if (keyboardHandler.keyReleased(Qt::Key_F4)) {
-		qDebug() << "F4";
 		SVViewState vs = SVViewStateHandler::instance().viewState();
 		if (vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem) {
 			// restore origin of local coordinate system object
 			m_coordinateSystemObject.setTranslation(m_oldCoordinateSystemTransform.translation());
 			// switch back to previous view state
 			SVViewStateHandler::instance().restoreLastViewState();
+			qDebug() << "Leaving 'Align coordinate system' mode";
 		}
 		else {
 			// store current transformation of local coordinate system object
@@ -360,6 +362,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 			// turn on AlignLocalCoordinateSystem mode
 			vs.m_sceneOperationMode = SVViewState::OM_AlignLocalCoordinateSystem;
 			SVViewStateHandler::instance().setViewState(vs);
+			qDebug() << "Entering 'Align coordinate system' mode";
 		}
 		needRepaint = true;
 	}
@@ -504,6 +507,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		}
 		else {
 			qDebug() << "Leaving orbit controller mode" << m_mouseMoveDistance;
+			needRepaint = true;
 		}
 
 		// clear orbit controller flag
