@@ -61,8 +61,9 @@ public:
 
 	type_t type() const { return m_type; }
 
-	/*! Minimalistic check function - need vertexes and normal vector. */
-	bool isValid() const { return m_vertexes.size() >= 3 && m_normal.magnitude() != 0.; }
+	/*! TODO Andreas
+	 * Minimalistic check function - need vertexes . */
+	bool isValid() const { return m_vertexes.size() >= 3; }
 
 	const IBKMK::Vector3D & normal() const { return m_normal; }
 
@@ -146,7 +147,7 @@ private:
 		If calculation is not possible (collinear vectors, vectors have zero lengths etc.), the
 		normal vector is set to 0,0,0).
 	*/
-	void updateNormal();
+	void updateLocalCoordinateSystem();
 
 
 	// *** PRIVATE MEMBER VARIABLES ***

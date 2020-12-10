@@ -183,11 +183,16 @@ void PlaneGeometry::computeGeometry() {
 	// try to simplify polygon to internal rectangle/parallelogram definition
 	// this may change m_type to Rectangle or Triangle and subsequently speed up operations
 	simplify();
-	updateNormal();
+	updateLocalCoordinateSystem();
 	if (!isValid())
 		return;
 	// determine 2D plane coordinates
-	if(update2DPolygon())
+	//nur die punkte von 3d in 2d
+	update2DPolygon();
+
+	//darf nicht verwunden sein
+	//wenn es verwunden ist dann keine triangulierung
+	if(isSimplePolygon())
 		triangulate();
 }
 
@@ -241,12 +246,16 @@ bool PlaneGeometry::update2DPolygon() {
 	//m_polygon.clear();
 	QPolygonF poly;
 
-	/// TODO: Dirk: Add check that m_vertexes[1] != m_vertexes[0]
+	/*
+	 * check:
+			m_vertexes[1] != m_vertexes[0]
+			is already done in updateLocatCoordinateSystem
+	*/
 
 	// x-axis vector in plane
-	m_localX = (m_vertexes[1] - m_vertexes[0]);
+	//m_localX = (m_vertexes[1] - m_vertexes[0]);
 	// y-axis vector in plane
-	m_normal.crossProduct(m_localX, m_localY);
+	//m_normal.crossProduct(m_localX, m_localY);
 
 	// first point is v0 = origin
 	poly.append(QPointF(0,0));
@@ -270,12 +279,12 @@ bool PlaneGeometry::update2DPolygon() {
 		}
 	}
 	poly.swap(m_polygon);
-	if(!isSimplePolygon()){
-		isSimplePolygon();
-		poly.swap(m_polygon);
-		//update3DPolygon();
-		return false;
-	}
+//	if(!isSimplePolygon()){
+//		isSimplePolygon();
+//		poly.swap(m_polygon);
+//		//update3DPolygon();
+//		return false;
+//	}
 	return true;
 }
 	/*!
@@ -338,6 +347,15 @@ int wn_PnPoly( QPoint P, QPoint *V, int n )
 
 QPolygonF PlaneGeometry::eleminateColinearPts(bool overrideMemberVar){
 
+	//check for duplicate points in polyline and remove duplicates
+	for (size_t i=m_vertexes.size()-1; ; --i) {
+		size_t j=i-1;
+		if(i==0)
+			j=m_vertexes.size()-1;
+		if((m_vertexes[i]-m_vertexes[i-1]).magnitude()<0.001)
+			m_vertexes.erase(m_vertexes.begin()+i);
+	}
+
 	const double eps = 1e-4;
 	unsigned int polySize = m_polygon.size();
 	QPolygonF newPoly;
@@ -347,7 +365,7 @@ QPolygonF PlaneGeometry::eleminateColinearPts(bool overrideMemberVar){
 			idx0 = polySize-1;
 
 		QVector2D a(m_polygon[idx0]-m_polygon[idx]);
-		QVector2D b(m_polygon[(idx+1)%polySize]-m_polygon[idx]);
+		QVector2D b(m_polygon[(idx+1) % polySize]-m_polygon[idx]);
 		double cosAngle = QVector2D::dotProduct(a.normalized() , b.normalized());
 
 		// points are not colinear add point to new polygon
@@ -609,23 +627,22 @@ void PlaneGeometry::triangulate() {
 }
 
 
-void PlaneGeometry::updateNormal() {
+void PlaneGeometry::updateLocalCoordinateSystem() {
 	m_normal = IBKMK::Vector3D(0,0,0);
 	if (m_vertexes.size() < 3)
 		return;
 
-	// loop around vertexes and try to find at least three vertexes with existing cross-product
-	for (unsigned int i=0; i<m_vertexes.size()-2; ++i) {
-		IBKMK::Vector3D ba = m_vertexes[2+i] - m_vertexes[1+i];
-		IBKMK::Vector3D ca = m_vertexes[0+i] - m_vertexes[1+i];
-		IBKMK::Vector3D n;
-		ba.crossProduct(ca, n);
-		if (n.magnitude() > 1e-4) {
-			m_normal = n;
-			m_normal.normalize();
-			return; // found a normal vector
-		}
+	// calculate normal with first 3 points
+	m_localX = m_vertexes[2] - m_vertexes[1];
+	m_localY = m_vertexes[0] - m_vertexes[1];
+	IBKMK::Vector3D n;
+	m_localX.crossProduct(m_localY, n);
+	if (n.magnitude() > 1e-4) {
+		m_normal = n;
+		m_normal.normalize();
+		return; // found a normal vector
 	}
+
 
 }
 
