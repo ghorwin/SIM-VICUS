@@ -19,6 +19,8 @@ extern const char * const UPDATE_FILE_URL;
 extern const char * const NEWS_FILE_URL;
 /*! URL for bug reports. */
 extern const char * const BUG_REPORT_URL;
+/*! URL for online manual. */
+extern const char * const MANUAL_URL;
 /*! URL for discussion forum. */
 extern const char * const FORUM_URL;
 

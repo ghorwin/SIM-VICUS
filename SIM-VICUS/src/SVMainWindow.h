@@ -194,6 +194,10 @@ private slots:
 	/*! Triggered by the "Run simulation" shortcut (F9), launches simulation right away. */
 	void on_actionSimulationNANDRAD_triggered();
 
+	void on_actionOnline_manual_triggered();
+
+	void on_actionKeyboard_and_mouse_controls_triggered();
+
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();

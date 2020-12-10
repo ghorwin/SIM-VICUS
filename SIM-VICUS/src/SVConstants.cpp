@@ -15,6 +15,7 @@ const char * const UPDATE_FILE_URL	= "...";
 const char * const NEWS_FILE_URL	= "...";
 const char * const BUG_REPORT_URL	= "...";
 const char * const FORUM_URL		= "...";
+const char * const MANUAL_URL		= "https://ghorwin.github.io/SIM-VICUS";
 
 const char * const SUPPORT_EMAIL	= "...";
 

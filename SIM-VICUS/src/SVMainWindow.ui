@@ -77,6 +77,9 @@
     <property name="title">
      <string>&amp;Help</string>
     </property>
+    <addaction name="actionOnline_manual"/>
+    <addaction name="actionKeyboard_and_mouse_controls"/>
+    <addaction name="separator"/>
     <addaction name="actionHelpCheckForUpdates"/>
     <addaction name="actionHelpBugReport"/>
     <addaction name="actionHelpVisitDiscussionForum"/>
@@ -424,6 +427,16 @@
    </property>
    <property name="shortcut">
     <string>F9</string>
+   </property>
+  </action>
+  <action name="actionKeyboard_and_mouse_controls">
+   <property name="text">
+    <string>Keyboard and mouse controls...</string>
+   </property>
+  </action>
+  <action name="actionOnline_manual">
+   <property name="text">
+    <string>Online manual...</string>
    </property>
   </action>
  </widget>

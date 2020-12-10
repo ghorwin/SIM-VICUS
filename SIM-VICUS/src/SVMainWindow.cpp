@@ -20,6 +20,7 @@
 #include <QFileInfo>
 #include <QInputDialog>
 #include <QSplitter>
+#include <QTextEdit>
 
 #include <numeric>
 
@@ -1352,4 +1353,18 @@ void SVMainWindow::on_actionFileExportNANDRAD_triggered() {
 void SVMainWindow::on_actionSimulationNANDRAD_triggered() {
 	// open simulation start dialog, with settings for climate location, simulation and
 	// solver settings and simulation start button
+}
+
+
+void SVMainWindow::on_actionOnline_manual_triggered() {
+	QDesktopServices::openUrl( QUrl(BUG_REPORT_URL));
+}
+
+void SVMainWindow::on_actionKeyboard_and_mouse_controls_triggered() {
+	// show keyboard/mouse control cheat sheet
+	QTextEdit w(this);
+//	QFile manual_en()
+//	w.setHtml();
+
+
 }
