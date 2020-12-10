@@ -89,20 +89,25 @@ void NewPolygonObject::destroy() {
 
 
 void NewPolygonObject::appendVertex(const IBKMK::Vector3D & p) {
-	m_planeGeometry.addVertex(p);
+	//m_planeGeometry.addVertex(p);
+	m_vertexList.push_back(p);
+	m_planeGeometry.setVertexes(m_vertexList);
 	updateBuffers();
 	// also tell the vertex list widget about our new point
 	m_vertexListWidget->addVertex(p);
 }
 
 void NewPolygonObject::removeVertex(unsigned int idx) {
-	m_planeGeometry.removeVertex(idx);
+	Q_ASSERT(idx < m_vertexList.size());
+	m_vertexList.erase(m_vertexList.begin()+idx);
+	m_planeGeometry.setVertexes(m_vertexList);
 	updateBuffers();
 }
 
 
 void NewPolygonObject::clear() {
 	m_planeGeometry.setVertexes(std::vector<IBKMK::Vector3D>());
+	m_vertexList.clear();
 	updateBuffers();
 }
 
@@ -142,6 +147,12 @@ void NewPolygonObject::updateBuffers() {
 	// first copy polygon from PlaneGeometry, if at least 3 vertexes are inserted
 	// then add vertex to last
 
+	/* Vertex buffer layout:
+		vertexes plane geometry (only for valid polygon)
+		vertexes polyline (m_vertexList)
+		vertexe coordinate system
+	*/
+
 	m_vertexBufferData.clear();
 	m_indexBufferData.clear();
 
@@ -158,16 +169,15 @@ void NewPolygonObject::updateBuffers() {
 		// TODO : Stephan, add the first vertex again, so that we can draw a closed line around the polygon
 		m_vertexBufferData.push_back( m_vertexBufferData[0] );
 	}
-	else {
-		// put all the vertexes of the current plane into buffer
-		m_vertexBufferData.reserve(m_planeGeometry.vertexes().size());
-		for (const IBKMK::Vector3D & v : m_planeGeometry.vertexes())
-			m_vertexBufferData.push_back( VertexC(VICUS::IBKVector2QVector(v)) );
 	}
 
+	// put all the vertexes of the current polyline into buffer
+	m_vertexBufferData.reserve(m_vertexList.size()+ m_vertexBufferData.size()+1);
+	for (const IBKMK::Vector3D & v : m_vertexList)
+		m_vertexBufferData.push_back( VertexC(VICUS::IBKVector2QVector(v)) );
+
 	// now also add a vertex for the current coordinate system's position
-	m_vertexBufferData.resize(m_vertexBufferData.size()+1);
-	m_vertexBufferData.back().m_coords = m_coordSystemObject->translation();
+	m_vertexBufferData.push_back( VertexC(m_coordSystemObject->translation() ) );
 
 	// transfer data stored in m_vertexBufferData
 	m_vertexBufferObject.bind();
@@ -201,7 +211,12 @@ void NewPolygonObject::render() {
 		// then the line consisting of the last two vertexes
 		glLineWidth(2);
 
-		for (size_t i = 0; i < m_planeGeometry.vertexes().size(); ++i) {
+		// line drawing starts from vertex 0 if polygon is invalid, or
+		// from first vertex after polygon-vertexes
+		size_t offset = 0;
+		if (m_planeGeometry.isValid())
+			offset = m_planeGeometry.vertexes().size();
+		for (size_t i = offset; i < m_vertexList.size() + offset; ++i) {
 			glDrawArrays(GL_LINES, i, 2);
 		}
 

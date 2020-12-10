@@ -107,6 +107,11 @@ private:
 	/*! Stores the current geometry of the painted polygon. */
 	VICUS::PlaneGeometry			m_planeGeometry;
 
+	/*! This list holds all points a the drawing method.
+		This list must not be a valid polygon
+	*/
+	std::vector<IBKMK::Vector3D>	m_vertexList;
+
 	/*! Vertex buffer in CPU memory, holds data of all vertices (coords).
 		The last vertex is always the vertex of the current movable coordinate system's location.
 		The line will be drawn between the last and the one before last vertex, using array draw command.
