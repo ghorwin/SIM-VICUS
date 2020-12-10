@@ -1357,8 +1357,9 @@ void SVMainWindow::on_actionSimulationNANDRAD_triggered() {
 
 
 void SVMainWindow::on_actionOnline_manual_triggered() {
-	QDesktopServices::openUrl( QUrl(BUG_REPORT_URL));
+	QDesktopServices::openUrl( QUrl(MANUAL_URL));
 }
+
 
 void SVMainWindow::on_actionKeyboard_and_mouse_controls_triggered() {
 	// show keyboard/mouse control cheat sheet
