@@ -23,6 +23,9 @@ public slots:
 	/*! Connected to SVProjectHandler::modified() */
 	void onModified( int modificationType, ModificationInfo * data );
 
+	/*! Connected to view-state handler. */
+	void onViewStateChanged();
+
 private slots:
 	void on_treeWidget_itemCollapsed(QTreeWidgetItem *item);
 

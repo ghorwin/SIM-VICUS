@@ -157,6 +157,7 @@
    <addaction name="actionFileSave"/>
    <addaction name="separator"/>
    <addaction name="actionViewToggleGeometryMode"/>
+   <addaction name="actionViewToggleParametrizationMode"/>
   </widget>
   <action name="actionFileNew">
    <property name="icon">
@@ -368,6 +369,9 @@
    </property>
   </action>
   <action name="actionViewToggleGeometryMode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
      <normaloff>:/gfx/actions/48x48/geometry.png</normaloff>:/gfx/actions/48x48/geometry.png</iconset>
@@ -437,6 +441,21 @@
   <action name="actionOnline_manual">
    <property name="text">
     <string>Online manual...</string>
+   </property>
+  </action>
+  <action name="actionViewToggleParametrizationMode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/48x48/propertyMode.png</normaloff>:/gfx/actions/48x48/propertyMode.png</iconset>
+   </property>
+   <property name="text">
+    <string>Edit properties</string>
+   </property>
+   <property name="toolTip">
+    <string>Turns on geometry edit mode</string>
    </property>
   </action>
  </widget>

@@ -9,6 +9,7 @@
 #include "SVStyle.h"
 #include "SVNavigationTreeItemDelegate.h"
 #include "SVUndoTreeNodeState.h"
+#include "SVViewStateHandler.h"
 
 SVNavigationTreeWidget::SVNavigationTreeWidget(QWidget *parent) :
 	QWidget(parent),
@@ -23,6 +24,9 @@ SVNavigationTreeWidget::SVNavigationTreeWidget(QWidget *parent) :
 
 	// register item delegate that paints the "visible" bulb
 	m_ui->treeWidget->setItemDelegate(new SVNavigationTreeItemDelegate(this));
+
+	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::viewStateChanged,
+			this, &SVNavigationTreeWidget::onViewStateChanged);
 }
 
 
@@ -163,6 +167,19 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 
 
 	m_ui->treeWidget->expandAll();
+
+	// update the item flags regarding selecting the item
+	onViewStateChanged();
+}
+
+
+void SVNavigationTreeWidget::onViewStateChanged() {
+	// depending on view state, items can be selected or not
+	const SVViewState & vs = SVViewStateHandler::instance().viewState();
+
+	// now process the tree view recursively, and set the item flags for "selectable"
+
+
 }
 
 

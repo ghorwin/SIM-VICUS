@@ -198,6 +198,8 @@ private slots:
 
 	void on_actionKeyboard_and_mouse_controls_triggered();
 
+	void on_actionViewToggleParametrizationMode_triggered();
+
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();

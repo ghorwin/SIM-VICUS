@@ -377,6 +377,8 @@ void SVMainWindow::setup() {
 	// TODO : other dock widgets
 	m_dockWidgetVisibility[m_logDockWidget] = SVSettings::instance().m_visibleDockWidgets.contains("Log");
 
+	// initialize view mode
+	on_actionViewToggleGeometryMode_triggered();
 
 	// *** Populate language menu ***
 	addLanguageAction("en", "English");
@@ -1323,7 +1325,25 @@ void SVMainWindow::on_actionNetworkEdit_triggered() {
 
 void SVMainWindow::on_actionViewToggleGeometryMode_triggered() {
 	// switch view state to geometry edit mode
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_viewMode = SVViewState::VM_GeometryEditMode;
+	vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+	vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	SVViewStateHandler::instance().setViewState(vs);
+	m_ui->actionViewToggleGeometryMode->setChecked(true);
+	m_ui->actionViewToggleParametrizationMode->setChecked(false);
+}
 
+
+void SVMainWindow::on_actionViewToggleParametrizationMode_triggered() {
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_viewMode = SVViewState::VM_PropertyEditMode;
+	vs.m_propertyWidgetMode = SVViewState::PM_SiteProperties;
+	vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	SVViewStateHandler::instance().setViewState(vs);
+
+	m_ui->actionViewToggleParametrizationMode->setChecked(true);
+	m_ui->actionViewToggleGeometryMode->setChecked(false);
 }
 
 
@@ -1375,3 +1395,4 @@ void SVMainWindow::on_actionKeyboard_and_mouse_controls_triggered() {
 	dlg.resize(1400,800);
 	dlg.exec();
 }
+

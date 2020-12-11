@@ -32,7 +32,12 @@ public:
 			elements. Rendering is only done when viewport changes or
 			when something is selected.
 		*/
-		VM_Standard,
+		VM_GeometryEditMode,
+		/*! Standard mode - allows scene navigation and selection of
+			elements. Rendering is only done when viewport changes or
+			when something is selected.
+		*/
+		VM_PropertyEditMode,
 		NUM_VM
 	};
 
@@ -73,6 +78,8 @@ public:
 		PM_EditGeometry,
 		/*! Shows the "Widget with list of newly placed vertexes" */
 		PM_VertexList,
+		/*! Shows the widget with global site (and view) properties. */
+		PM_SiteProperties,
 		NUM_PM
 	};
 
@@ -88,6 +95,7 @@ public:
 		Snap_ObjectEdgeCenter	= 0x0008
 	};
 
+	ViewMode			m_viewMode					= VM_GeometryEditMode;
 	SceneOperationMode	m_sceneOperationMode		= NUM_OM;
 	PropertyWidgetMode	m_propertyWidgetMode		= PM_EditGeometry;
 

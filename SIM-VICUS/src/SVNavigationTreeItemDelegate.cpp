@@ -49,6 +49,8 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 
 	// adjust text rectangle
 	targetRect.setX(targetRect.x()+36);
+
+	// check if item is selected/current
 	painter->drawText(targetRect, Qt::AlignLeft | Qt::AlignVCenter, index.data(Qt::DisplayRole).toString());
 }
 

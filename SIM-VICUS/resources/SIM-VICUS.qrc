@@ -40,5 +40,6 @@
         <file>gfx/actions/16x16/checkbox-empty.png</file>
         <file>gfx/actions/16x16/checkbox-full.png</file>
         <file>doc/KeyboardMouseControls.html</file>
+        <file>gfx/actions/48x48/propertyMode.png</file>
     </qresource>
 </RCC>
