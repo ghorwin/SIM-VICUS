@@ -63,7 +63,7 @@ public:
 	void render();
 
 	/*! Updates the view state based on the current operation.
-		\note This function should only be called from SVGeometryView!
+		\note This function should only be called from Vic3DSceneView::setViewState()!
 	*/
 	void setViewState(const SVViewState & vs);
 
@@ -83,6 +83,11 @@ private:
 		If an object is picked, selectedNodeID indicates the objects unique ID.
 	*/
 	void selectNearestObject(const QVector3D & nearPoint, const QVector3D & farPoint, PickObject & pickObject);
+
+	/*! Takes the picked objects and applies the snapping rules.
+		Once a snap point has been selected, the local coordinate system is translated to the snap point.
+	*/
+	void snapLocalCoordinateSystem(const PickObject & pickObject);
 
 	/*! Determines a new local mouse position (local to this viewport) such that a mouse passing over a border
 		while dragging/rotating the view is avoided through placement of the mouse to the other side of the window.
@@ -142,10 +147,11 @@ private:
 	OrbitControllerObject	m_orbitControllerObject;
 	/*! The movable coordinate system. */
 	CoordinateSystemObject	m_coordinateSystemObject;
-	/*! Cached "old" transform of the coordinate system object (needed for "align coordinate system" operation). */
-	Transform3D				m_oldCoordinateSystemTransform;
 	/*! Object to display newly drawn geometry. */
 	NewPolygonObject		m_newPolygonObject;
+
+
+	// *** Orbit controller stuff ***
 
 	/*! Stores the distance that the mouse has been moved in the last "Left-mouse button down ... release" interval. */
 	float					m_mouseMoveDistance = 0.f;
@@ -153,6 +159,11 @@ private:
 	bool					m_orbitControllerActive = false;
 	/*! Holds the origin of the orbit controller coordinates. */
 	QVector3D				m_orbitControllerOrigin;
+
+	// other members
+
+	/*! Cached "old" transform of the coordinate system object (needed for "align coordinate system" operation). */
+	Transform3D				m_oldCoordinateSystemTransform;
 
 };
 

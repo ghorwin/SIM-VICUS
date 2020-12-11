@@ -348,6 +348,25 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 	}
 
 
+	// *** F3 - toggle "snap mode" mode ****
+
+	if (keyboardHandler.keyReleased(Qt::Key_F3)) {
+		SVViewState vs = SVViewStateHandler::instance().viewState();
+		if (vs.m_snapEnabled) {
+			vs.m_snapEnabled = false;
+			qDebug() << "Snap turned off";
+		}
+		else {
+			vs.m_snapEnabled = true;
+			qDebug() << "Snap turned on";
+		}
+		SVViewStateHandler::instance().setViewState(vs);
+		// Nothing further to be done - the coordinate system position is adjusted below for
+		// all view modes that require snapping
+		needRepaint = true;
+	}
+
+
 	// *** Keyboard navigation ***
 
 	// translation and rotation works always (no trigger key)
@@ -419,7 +438,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 			pick(o);
 			// and store pick point
 			m_orbitControllerOrigin = VICUS::IBKVector2QVector(o.m_pickPoint);
-//			qDebug() << "Entering orbit controller mode, rotation around" << m_orbitControllerOrigin;
+			qDebug() << "Entering orbit controller mode, rotation around" << m_orbitControllerOrigin;
 			m_orbitControllerObject.m_transform.setTranslation(m_orbitControllerOrigin);
 
 			// Rotation matrix around origin point
@@ -503,7 +522,6 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		/// \todo adjust the THRESHOLD based on DPI/Screenresolution or have it as user option
 		// check if the mouse was moved not very far -> we have a mouse click
 		if (m_mouseMoveDistance < 10) {
-			// TODO : click code
 			qDebug() << "Mouse (selection) click received" << m_mouseMoveDistance;
 			handleLeftMouseClick(keyboardHandler, localMousePos);
 			needRepaint = true;
@@ -542,16 +560,14 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 	QVector3D oldPos = m_coordinateSystemObject.translation();
 	// if in "place vertex" mode, perform picking operation and snap coordinate system to grid
 	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_PlaceVertex) {
-		/// \todo customize picking object rules based on current snap selection
-		PickObject o(localMousePos, PickObject::P_XY_Plane);
+		// First we need to define what objects/surfaces we check for a picking operation,
+		// snapping is done later.
+		// We want to place a vertex on any plane we see, including the xy-plane
+		PickObject o(localMousePos, PickObject::P_XY_Plane | PickObject::P_Surface);
 		pick(o);
-		// now determine which grid line is closest
-		QVector3D closestPoint;
-		if (m_gridObject.closestSnapPoint(VICUS::IBKVector2QVector(o.m_pickPoint), closestPoint)) {
-			// this is in world coordinates, use this as transformation vector for the
-			// coordinate system
-			m_coordinateSystemObject.setTranslation(closestPoint);
-		}
+
+		// now we handle the snapping rules
+		snapLocalCoordinateSystem(o);
 
 		// update the movable coordinate system's location in the new polygon object
 		m_newPolygonObject.updateLastVertex(m_coordinateSystemObject.translation());
@@ -1052,6 +1068,27 @@ void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3
 		}
 
 	}
+}
+
+
+void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
+	const SVViewState & vs = SVViewStateHandler::instance().viewState();
+
+	// Snapping works as follows:
+	// We process all snap options and compute the relative distance to
+	// the current coordinate system's location and we store these distances in a list.
+	// Then, we select the closes snap point.
+
+	// If the distance between current coord
+
+	// now determine which grid line is closest
+	QVector3D closestPoint;
+	if (m_gridObject.closestSnapPoint(VICUS::IBKVector2QVector(pickObject.m_pickPoint), closestPoint)) {
+		// this is in world coordinates, use this as transformation vector for the
+		// coordinate system
+		m_coordinateSystemObject.setTranslation(closestPoint);
+	}
+
 }
 
 

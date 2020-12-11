@@ -76,8 +76,23 @@ public:
 		NUM_PM
 	};
 
+
+	/*! The different snap options. */
+	enum SnapOptions {
+		Snap_XYPlane_Grid		= 0x0001,
+		Snap_ObjectCenter		= 0x0002,
+		Snap_ObjectVertex		= 0x0004,
+		Snap_ObjectEdgeCenter	= 0x0008
+	};
+
 	SceneOperationMode	m_sceneOperationMode		= NUM_OM;
 	PropertyWidgetMode	m_propertyWidgetMode		= PM_EditGeometry;
+
+	/*! Bitmask with selected snap options. */
+	int						m_snapOptionMask		= Snap_XYPlane_Grid | Snap_ObjectVertex;
+	/*! Whether snapping is enabled or not. */
+	bool					m_snapEnabled			= true;
+
 };
 
 #endif // SVViewStateH
