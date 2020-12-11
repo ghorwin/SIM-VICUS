@@ -21,7 +21,18 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 	// get rectangle of area to paint into
 	QRect targetRect(option.rect);
 
-	if (index.parent() == QModelIndex()) {
+	// Note: the first part of the widget (the branch indicator) is not drawn by us, but rather by the tree view itself
+	//       to change that, we would need to derive from QTreeView and overload/re-implement drawRow().
+	//       --> later
+
+	unsigned int uniqueObjectId = index.data(NodeID).toUInt();
+
+	if (index.parent() == QModelIndex() || uniqueObjectId == 0) {
+		// check if item is selected/current
+		bool isSelected = option.state & QStyle::State_Selected;
+		QFont f = painter->font();
+		f.setBold(isSelected);
+		painter->setFont(f);
 		painter->drawText(targetRect, Qt::AlignLeft | Qt::AlignVCenter, index.data(Qt::DisplayRole).toString());
 		return;
 	}
@@ -51,6 +62,11 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 	targetRect.setX(targetRect.x()+36);
 
 	// check if item is selected/current
+	bool isSelected = option.state & QStyle::State_Selected;
+	QFont f = painter->font();
+	f.setBold(isSelected);
+	painter->setFont(f);
+
 	painter->drawText(targetRect, Qt::AlignLeft | Qt::AlignVCenter, index.data(Qt::DisplayRole).toString());
 }
 

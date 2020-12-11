@@ -29,7 +29,20 @@ public slots:
 private slots:
 	void on_treeWidget_itemCollapsed(QTreeWidgetItem *item);
 
+	void on_treeWidget_itemSelectionChanged();
+
 private:
+	enum NoteType {
+		NT_Site,
+		NT_Building,
+		NT_BuildingLevel,
+		NT_Room,
+		NT_Surface,
+		NT_Network,
+		NT_NetworkNode,
+		NT_NetworkEdge
+	};
+
 	/*! Recursively collapses all children. */
 	void collapseTreeWidgetItem(QTreeWidgetItem * parent);
 

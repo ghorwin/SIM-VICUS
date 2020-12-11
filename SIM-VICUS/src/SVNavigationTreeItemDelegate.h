@@ -10,7 +10,8 @@ public:
 	enum DataRoles {
 		NodeID = Qt::UserRole,
 		VisibleFlag = Qt::UserRole + 1,
-		SelectedFlag = Qt::UserRole + 2
+		SelectedFlag = Qt::UserRole + 2,
+		ItemType = Qt::UserRole + 3
 	};
 
 	SVNavigationTreeItemDelegate(QWidget * parent = nullptr);

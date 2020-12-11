@@ -712,7 +712,7 @@ void Vic3DScene::render() {
 		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[1], translatedViewPos); // lightpos
 		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[2], VICUS::QVector3DFromQColor(m_lightColor));
 		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[3], translatedViewPos); // viewpos
-		m_coordinateSystemObject.render();
+		m_coordinateSystemObject.renderOpaque();
 		m_coordinateSystemShader->release();
 	}
 

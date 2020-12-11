@@ -30,7 +30,20 @@ namespace Vic3D {
 
 class ShaderProgram;
 
-/*! Draws the coordinate system with adjustable ball/icosaeder coordinate system indicator. */
+/*! Draws the local coordinate system with adjustable ball/icosaeder coordinate system indicator.
+	The coordinate system object is composed of several objects, and only some of them are shown
+	together.
+
+	Regular coordinate system object:
+	- one big sphere in the middle          indexBufferObject 0
+	- one opaque cylinder per axis          indexBufferObject 1-3
+	- one small sphere at each axis end     indexBufferObject 4-6
+
+	Coordinate system while "positioning coordinate system":
+	- colored lines for each coordinate system axis meeting in the center (to allow very precise snapping)
+	- semi-transparent sphere in the middle indexBufferObject 7
+
+*/
 class CoordinateSystemObject {
 public:
 
@@ -41,7 +54,9 @@ public:
 	void destroy();
 
 	/*! Binds the buffer and paints. */
-	void render();
+	void renderOpaque();
+	/*! Binds the buffer and paints. */
+	void renderTransparent();
 
 	/*! Modifies the location of the local coordinate system.
 		This function also tells the edit geometry widget its new position.

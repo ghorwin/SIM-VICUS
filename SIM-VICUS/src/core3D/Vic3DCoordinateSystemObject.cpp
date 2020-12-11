@@ -152,7 +152,7 @@ void CoordinateSystemObject::destroy() {
 }
 
 
-void CoordinateSystemObject::render() {
+void CoordinateSystemObject::renderOpaque() {
 	// bind all buffers ("position", "normal" and "color" arrays)
 	m_vao.bind();
 	// draw with face culling on
@@ -163,6 +163,11 @@ void CoordinateSystemObject::render() {
 	glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
 	// release buffers again
 	m_vao.release();
+}
+
+
+void CoordinateSystemObject::renderTransparent() {
+
 }
 
 

@@ -49,7 +49,7 @@
       <set>QAbstractItemView::NoEditTriggers</set>
      </property>
      <property name="selectionMode">
-      <enum>QAbstractItemView::NoSelection</enum>
+      <enum>QAbstractItemView::SingleSelection</enum>
      </property>
      <property name="headerHidden">
       <bool>true</bool>

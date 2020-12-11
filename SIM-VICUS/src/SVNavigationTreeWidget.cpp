@@ -100,6 +100,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 
 	// insert root node
 	QTreeWidgetItem * root = new QTreeWidgetItem(QStringList() << "Site", QTreeWidgetItem::Type);
+	root->setData(0, SVNavigationTreeItemDelegate::ItemType, NT_Site);
 //	root->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, true);
 //	root->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, true);
 	m_ui->treeWidget->addTopLevelItem(root);
@@ -145,14 +146,33 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 
 	// Networks
 	for (const VICUS::Network & n : prj.m_geometricNetworks) {
-		QTreeWidgetItem * node = new QTreeWidgetItem(QStringList() << tr("Network: %1").arg(QString::fromStdString(n.m_name)), QTreeWidgetItem::Type);
-		root->addChild(node);
+		QTreeWidgetItem * networkItem = new QTreeWidgetItem(QStringList() << tr("Network: %1").arg(QString::fromStdString(n.m_name)), QTreeWidgetItem::Type);
+		root->addChild(networkItem);
+		networkItem->setData(0, SVNavigationTreeItemDelegate::ItemType, NT_Network);
+		networkItem->setData(0, SVNavigationTreeItemDelegate::NodeID, n.uniqueID());
 		QTreeWidgetItem * enode = new QTreeWidgetItem(QStringList() << tr("Edges"), QTreeWidgetItem::Type);
-		node->addChild(enode);
-		// Add child nodes for each "clickable" entities
+		enode->setFlags(Qt::ItemIsEnabled); // cannot select "Edges"
+		networkItem->addChild(enode);
+		// add child nodes for each edge in the network
+		/// TODO : Hauke, think about grouping for larger networks
+		for (const VICUS::NetworkEdge & e : n.m_edges) {
+			QTreeWidgetItem * en = new QTreeWidgetItem(QStringList() << QString("E [%1]").arg(e.uniqueID()), QTreeWidgetItem::Type);
+			en->setData(0, SVNavigationTreeItemDelegate::ItemType, NT_NetworkEdge);
+			en->setData(0, SVNavigationTreeItemDelegate::NodeID, e.uniqueID());
+			enode->addChild(en);
+		}
+
 		QTreeWidgetItem * nnode = new QTreeWidgetItem(QStringList() << tr("Nodes"), QTreeWidgetItem::Type);
-		node->addChild(nnode);
-		// Add child nodes for each "clickable" entities
+		nnode->setFlags(Qt::ItemIsEnabled); // cannot select "Nodes"
+		networkItem->addChild(nnode);
+		// add child nodes for each edge in the network
+		/// TODO : Hauke, think about grouping for larger networks
+		for (const VICUS::NetworkNode & nod : n.m_nodes) {
+			QTreeWidgetItem * no = new QTreeWidgetItem(QStringList() << QString("N [%1]").arg(nod.uniqueID()), QTreeWidgetItem::Type);
+			no->setData(0, SVNavigationTreeItemDelegate::ItemType, NT_NetworkNode);
+			no->setData(0, SVNavigationTreeItemDelegate::NodeID, nod.uniqueID());
+			nnode->addChild(no);
+		}
 	}
 
 	// Dumb plain geometry
@@ -177,9 +197,10 @@ void SVNavigationTreeWidget::onViewStateChanged() {
 	// depending on view state, items can be selected or not
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
 
-	// now process the tree view recursively, and set the item flags for "selectable"
-
-
+	if (vs.m_viewMode == SVViewState::VM_GeometryEditMode)
+		m_ui->treeWidget->setSelectionMode(QTreeView::NoSelection);
+	else
+		m_ui->treeWidget->setSelectionMode(QTreeView::SingleSelection);
 }
 
 
@@ -197,4 +218,15 @@ void SVNavigationTreeWidget::collapseTreeWidgetItem(QTreeWidgetItem * parent) {
 void SVNavigationTreeWidget::on_treeWidget_itemCollapsed(QTreeWidgetItem *item) {
 	// also collapse all children
 	collapseTreeWidgetItem(item);
+}
+
+
+void SVNavigationTreeWidget::on_treeWidget_itemSelectionChanged() {
+	// when user changes the selection, show the appropriate property widget
+	if (m_ui->treeWidget->selectedItems().isEmpty())
+		return;
+	QTreeWidgetItem * item = m_ui->treeWidget->selectedItems().first();
+
+	// we now need to figure out, what kind of icon this is
+
 }

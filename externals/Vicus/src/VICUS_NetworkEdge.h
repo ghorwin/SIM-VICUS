@@ -4,6 +4,7 @@
 #include "VICUS_NetworkNode.h"
 #include "VICUS_Constants.h"
 #include "VICUS_CodeGenMacros.h"
+#include "VICUS_Object.h"
 
 #include <NANDRAD_HydraulicNetworkComponent.h>
 
@@ -12,8 +13,7 @@
 
 namespace VICUS {
 
-class NetworkEdge {
-
+class NetworkEdge : public Object {
 public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***

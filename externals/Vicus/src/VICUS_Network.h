@@ -12,10 +12,12 @@
 #include <limits>
 #include <string>
 
-#include "IBK_rectangle.h"
+#include <IBK_rectangle.h>
 
 #include <NANDRAD_HydraulicNetwork.h>
 #include <NANDRAD_HydraulicNetworkComponent.h>
+
+#include "VICUS_Object.h"
 
 namespace IBK {
 	class Path;
@@ -25,7 +27,7 @@ namespace VICUS {
 
 class NetworkFluid;
 
-class Network {
+class Network : public Object {
 public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
