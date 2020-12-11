@@ -59,8 +59,6 @@ public:
 	point2D() : m_x(T()), m_y(T()) {}
 	/*! Constructor (initialises with coordinates 'a' and 'b'). */
 	point2D(T a, T b) : m_x(a), m_y(b) {}
-	/*! Virtual destructor, so that destructor of derived classes is called. */
-	virtual ~point2D() {}
 	/*! Sets both coordinates. */
 	void set(T a, T b) { m_x=a; m_y=b; }
 

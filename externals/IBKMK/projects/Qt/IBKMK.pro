@@ -35,7 +35,8 @@ SOURCES += \
 	../../src/IBKMK_DenseMatrix.cpp \
 	../../src/IBKMK_SparseMatrixCSR.cpp \
 	../../src/IBKMK_SparseMatrixPattern.cpp \
-	../../src/IBKMKC_ilut.c
+	../../src/IBKMKC_ilut.c \
+	../../src/IBKMK_Triangulation.cpp
 
 HEADERS += \
 	../../src/IBKMKC_dense_matrix.h \
@@ -46,6 +47,7 @@ HEADERS += \
 	../../src/IBKMK_SparseMatrix.h \
 	../../src/IBKMK_SparseMatrixCSR.h \
 	../../src/IBKMK_SparseMatrixPattern.h \
+	../../src/IBKMK_Triangulation.h \
 	../../src/IBKMK_Vector3D.h \
 	../../src/IBKMK_common_defines.h
 
