@@ -197,10 +197,6 @@ void SVSettings::read() {
 	m_themeSettings[TT_Dark].m_minorGridColor = settings.value("MinorGridColor", m_themeSettings[TT_Dark].m_minorGridColor).value<QColor>();
 	m_themeSettings[TT_Dark].m_sceneBackgroundColor = settings.value("SceneBackgroundColor", m_themeSettings[TT_Dark].m_sceneBackgroundColor).value<QColor>();
 	m_themeSettings[TT_Dark].m_selectedSurfaceColor = settings.value("SelectedSurfaceColor", m_themeSettings[TT_Dark].m_selectedSurfaceColor).value<QColor>();
-//	qDebug() << m_themeSettings[TT_Dark].m_majorGridColor.name()
-//			 << m_themeSettings[TT_Dark].m_minorGridColor.name()
-//			 << m_themeSettings[TT_Dark].m_sceneBackgroundColor.name()
-//			 << m_themeSettings[TT_Dark].m_selectedSurfaceColor.name();
 	settings.endGroup();
 	settings.beginGroup("BrightThemeSettings");
 	m_themeSettings[TT_White].m_majorGridColor = settings.value("MajorGridColor", m_themeSettings[TT_White].m_majorGridColor).value<QColor>();
@@ -208,6 +204,10 @@ void SVSettings::read() {
 	m_themeSettings[TT_White].m_sceneBackgroundColor = settings.value("SceneBackgroundColor", m_themeSettings[TT_White].m_sceneBackgroundColor).value<QColor>();
 	m_themeSettings[TT_White].m_selectedSurfaceColor = settings.value("SelectedSurfaceColor", m_themeSettings[TT_White].m_selectedSurfaceColor).value<QColor>();
 	settings.endGroup();
+//		qDebug() << m_themeSettings[TT_White].m_majorGridColor.name()
+//				 << m_themeSettings[TT_White].m_minorGridColor.name()
+//				 << m_themeSettings[TT_White].m_sceneBackgroundColor.name()
+//				 << m_themeSettings[TT_White].m_selectedSurfaceColor.name();
 
 	m_fontPointSize = settings.value("FontPointSize", 0).toUInt();
 }
@@ -232,6 +232,12 @@ void SVSettings::write(QByteArray geometry, QByteArray state) {
 	settings.setValue("SelectedSurfaceColor", m_themeSettings[TT_Dark].m_selectedSurfaceColor);
 	settings.endGroup();
 
+	settings.beginGroup("BrightThemeSettings");
+	settings.setValue("MajorGridColor", m_themeSettings[TT_White].m_majorGridColor);
+	settings.setValue("MinorGridColor", m_themeSettings[TT_White].m_minorGridColor);
+	settings.setValue("SceneBackgroundColor", m_themeSettings[TT_White].m_sceneBackgroundColor);
+	settings.setValue("SelectedSurfaceColor", m_themeSettings[TT_White].m_selectedSurfaceColor);
+	settings.endGroup();
 
 	for (QMap<PropertyType, QVariant>::const_iterator it = m_propertyMap.constBegin();
 		 it != m_propertyMap.constEnd(); ++it)
@@ -373,10 +379,10 @@ unsigned int SVSettings::defaultApplicationFontSize() {
 void SVSettings::ThemeSettings::setDefaults(SVSettings::ThemeType theme) {
 	switch (theme) {
 		case TT_White :
-			m_majorGridColor = QColor(32,32,32);
-			m_minorGridColor = QColor(128,128,128);
-			m_sceneBackgroundColor = QColor("#e2e9ed");
-			m_selectedSurfaceColor = Qt::magenta;
+			m_majorGridColor = QColor("#202020");
+			m_minorGridColor = QColor("#d3d7cf");
+			m_sceneBackgroundColor = QColor("#fffcf5");
+			m_selectedSurfaceColor = QColor("#729fcf");
 		break;
 
 		case TT_Dark :
