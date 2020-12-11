@@ -191,6 +191,10 @@ void GridObject::destroy() {
 	m_vbo.destroy();
 }
 
+QVector3D qColorToQVector3D(const QColor &c){
+	return QVector3D( c.redF(), c.greenF(), c.blueF() );
+}
+
 
 void GridObject::render() {
 	// grid disabled?
@@ -200,13 +204,27 @@ void GridObject::render() {
 	m_vao.bind();
 
 	// draw x axis
-	QVector3D xColor(1.0f, 0.2f, 0.2f);
-	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[1], xColor);
+	QColor xLine;
+	if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
+		xLine = QColor("#b30404");
+	else
+		xLine = QColor("#b30404");
+
+	// draw y axis
+	QColor yLine;
+	if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
+		yLine = QColor("#0d8429");
+	else
+		yLine = QColor("#26a343");
+
+//  QVector3D xColor(1.0f, 0.2f, 0.2f);
+	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[1], qColorToQVector3D(xLine) );
 	glDrawArrays(GL_LINES, m_vertexCount-4, 2);
 
 	// TODO : Stephan farbe schick machen
-	QVector3D yColor(0.2f, 1.0f, 0.2f);
-	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[1], yColor);
+//	QVector3D yColor(0.2f, 1.0f, 0.2f);
+	QVector3D v = qColorToQVector3D(yLine);
+	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[1], qColorToQVector3D(yLine));
 	glDrawArrays(GL_LINES, m_vertexCount-2, 2);
 
 	// draw major grid lines

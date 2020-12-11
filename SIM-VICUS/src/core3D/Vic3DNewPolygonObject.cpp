@@ -8,6 +8,7 @@
 #include <VICUS_Conversions.h>
 
 #include "SVProjectHandler.h"
+#include "SVSettings.h"
 #include "SVViewStateHandler.h"
 #include "SVPropVertexListWidget.h"
 #include "Vic3DGeometryHelpers.h"
@@ -215,9 +216,14 @@ void NewPolygonObject::renderOpqaue() {
 	// draw the polygon line first
 	if (m_vertexBufferData.size() > 1) {
 
-		QColor lineCol = QColor(255,0,0,192);
-		if (m_planeGeometry.isValid())
-			lineCol = QColor("#59de00"); // some greenish
+		QColor lineCol;
+		if (m_planeGeometry.isValid()) {
+			if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
+				lineCol = QColor("#32c5ea");
+			else
+				lineCol = QColor("#00ff48");
+		}
+
 		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], lineCol);
 		// then the line consisting of the last two vertexes
 
@@ -230,7 +236,13 @@ void NewPolygonObject::renderOpqaue() {
 		for (size_t i = 1; i < m_vertexList.size()+1; ++i, ++offset) {
 			glDrawArrays(GL_LINES, offset, 2);
 		}
-		lineCol = QColor("#32c5ea");
+		// set wireframe color (TODO : make this theme-dependent?)
+		if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
+			lineCol = QColor("#32c5ea");
+		else
+			lineCol = QColor("#106d90");
+
+
 		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], lineCol);
 		glDrawArrays(GL_LINES, offset, 2);
 		glDrawArrays(GL_LINES, ++offset, 2);
@@ -242,7 +254,12 @@ void NewPolygonObject::renderOpqaue() {
 		glDisable(GL_CULL_FACE);
 #if 1
 		// set wireframe color (TODO : make this theme-dependent?)
-		QColor wireFrameCol = QColor(255,255,255,255);
+		QColor wireFrameCol;
+		if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
+			wireFrameCol = QColor(255,255,255,255);
+		else
+			wireFrameCol = QColor(120,120,120,255);
+
 		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], wireFrameCol);
 		// select wire frame drawing
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
