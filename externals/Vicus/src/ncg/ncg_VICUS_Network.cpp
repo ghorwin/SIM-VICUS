@@ -203,9 +203,10 @@ TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("fluidID", IBK::val2string<unsigned int>(m_fluidID));
 	if (!m_name.empty())
 		e->SetAttribute("name", m_name);
+<<<<<<< HEAD
 	if (m_visible != Network().m_visible)
 		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
-
+		
 	if (!m_nodes.empty()) {
 		TiXmlElement * child = new TiXmlElement("Nodes");
 		e->LinkEndChild(child);

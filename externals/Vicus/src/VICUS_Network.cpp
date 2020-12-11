@@ -371,9 +371,13 @@ FUNCID(Network::sizePipeDimensions);
 	if (sourceFound == false)
 		throw IBK::Exception("Network has no source node. Set one node to type source.", FUNC_ID);
 
+
+	// set all edges heating demand = 0
+	for (NetworkEdge &edge: m_edges)
+
+		edge.m_maxHeatingDemand = 0;
 	// for all buildings: add their heating demand to the pipes along their shortest path
 	for (NetworkNode &node: m_nodes) {
-
 		if (node.m_type != NetworkNode::NT_Building)
 			continue;
 		if (node.m_maxHeatingDemand <= 0)
@@ -401,8 +405,9 @@ FUNCID(Network::sizePipeDimensions);
 		for (NetworkPipe &pipe: m_networkPipeDB){
 			double massFlow = e.m_maxHeatingDemand / (m_sizingPara[SP_TemperatureDifference].get_value("K")
 													  * fluid.m_para[NetworkFluid::P_HeatCapacity].get_value("J/kgK"));
-			//  compare pressure loss per length (Pa/m)
+			//  pressure loss per length (Pa/m)
 			double dp = pressureLossColebrook(1.0, massFlow, fluid, pipe, m_sizingPara[SP_TemperatureSetpoint].get_value("C"));
+			// select smallest possible pipe
 			if (dp < deltaPMax){
 				if (e.m_pipeId == INVALID_ID)
 					e.m_pipeId = pipe.m_id;
@@ -412,6 +417,17 @@ FUNCID(Network::sizePipeDimensions);
 		}
 	}
 
+	// if no pipe found: take largest pipe
+	for (NetworkEdge &e: m_edges){
+		if (e.m_pipeId == INVALID_ID){
+			NetworkPipe largestPipe = m_networkPipeDB[0];
+			for (NetworkPipe &pipe: m_networkPipeDB){
+				if (pipe.m_diameterInside() > largestPipe.m_diameterInside())
+					largestPipe = pipe;
+			}
+			e.m_pipeId = largestPipe.m_id;
+		}
+	}
 }
 
 

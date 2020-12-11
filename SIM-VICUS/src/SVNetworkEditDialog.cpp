@@ -81,9 +81,19 @@ void SVNetworkEditDialog::modifyStatus()
 void SVNetworkEditDialog::setNetwork()
 {
 	unsigned id = m_existingNetworksMap.value(m_ui->comboBoxSelectNetwork->currentText());
+
+	for (VICUS::Network net: project().m_geometricNetworks){
+		if (net.m_id != id)
+			net.m_visible = false;
+		else
+			net.m_visible = true;
+		SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), net);
+		undo->push(); // modifies project and updates views
+	}
 	m_network = *project().element(project().m_geometricNetworks, id);
 	m_network.updateNodeEdgeConnectionPointers();
 	updateStatus();
+
 }
 
 void SVNetworkEditDialog::setupComboBox()
@@ -101,11 +111,6 @@ void SVNetworkEditDialog::setupComboBox()
 
 void SVNetworkEditDialog::copyNetwork(const std::string &appendName)
 {
-	// make current network invisible (dont draw)
-	m_network.m_visible = false;
-	SVUndoModifyExistingNetwork * undoMod = new SVUndoModifyExistingNetwork(tr("mod network"), m_network);
-	undoMod->push(); // modifies project and updates views
-
 	// make copy
 	VICUS::Network copy = m_network;
 	copy.m_visible = true;
@@ -185,8 +190,9 @@ void SVNetworkEditDialog::on_pushButtonDelete_clicked()
 		return;
 	SVUndoDeleteNetwork * undo = new SVUndoDeleteNetwork(tr("deleted network"), m_network);
 	undo->push(); // modifies project and updates views
-	updateStatus();
 	setupComboBox();
+	setNetwork();
+	updateStatus();
 }
 
 void SVNetworkEditDialog::on_pushButtonReduceRedundantNodes_clicked()
