@@ -451,8 +451,8 @@ namespace VICUS {
 				case 3 : return "Photochemical Ozone Creation Potential.";
 				case 4 : return "Acidification potential.";
 				case 5 : return "Eutrophication potential.";
-				case 6 : return "Global Warming Potential.";
-				case 7 : return "Global Warming Potential.";
+				case 6 : return "Total use of non-renewable primary energy resources.";
+				case 7 : return "Total use of renewable primary energy resources .";
 			} break;
 			// KeywordList::MyParameters
 			case 3 :

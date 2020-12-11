@@ -76,7 +76,7 @@ void EPDDataset::readXML(const TiXmlElement * element) {
 			else if (cName == "ReferenceUnit")
 				m_referenceUnit = QString::fromStdString(c->GetText());
 			else if (cName == "ReferenceQuantity")
-				m_referenceQuantity = QString::fromStdString(c->GetText());
+				m_referenceQuantity = NANDRAD::readPODElement<double>(c, cName);
 			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
@@ -144,8 +144,7 @@ TiXmlElement * EPDDataset::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "ExpireDate", nullptr, std::string(), m_expireDate.toStdString());
 	if (!m_referenceUnit.isEmpty())
 		TiXmlElement::appendSingleAttributeElement(e, "ReferenceUnit", nullptr, std::string(), m_referenceUnit.toStdString());
-	if (!m_referenceQuantity.isEmpty())
-		TiXmlElement::appendSingleAttributeElement(e, "ReferenceQuantity", nullptr, std::string(), m_referenceQuantity.toStdString());
+	TiXmlElement::appendSingleAttributeElement(e, "ReferenceQuantity", nullptr, std::string(), IBK::val2string<double>(m_referenceQuantity));
 
 	if (m_subtype != NUM_M)
 		TiXmlElement::appendSingleAttributeElement(e, "Subtype", nullptr, std::string(), KeywordList::Keyword("EPDDataset::Mode",  m_subtype));

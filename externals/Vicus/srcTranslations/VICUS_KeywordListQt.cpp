@@ -36,8 +36,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Photochemical Ozone Creation Potential.");
 	tr("Acidification potential.");
 	tr("Eutrophication potential.");
-	tr("Global Warming Potential.");
-	tr("Global Warming Potential.");
+	tr("Total use of non-renewable primary energy resources.");
+	tr("Total use of renewable primary energy resources .");
 	tr("Some temperatures");
 	tr("Some mass");
 	tr("Dry density of the material.");
