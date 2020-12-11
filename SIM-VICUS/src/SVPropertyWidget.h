@@ -26,6 +26,7 @@ public:
 		M_EditGeometry,
 		M_AddGeometry,
 		M_AddVertexesMode,
+		M_SiteProperties,
 		NUM_M
 	};
 

@@ -5,9 +5,11 @@
 
 #include <IBKMK_Vector3D.h>
 
+#include "SVViewStateHandler.h"
+
 #include "SVPropVertexListWidget.h"
 #include "SVPropEditGeometry.h"
-#include "SVViewStateHandler.h"
+#include "SVPropSiteWidget.h"
 
 #include "Vic3DNewPolygonObject.h"
 #include "Vic3DCoordinateSystemObject.h"
@@ -42,32 +44,24 @@ void SVPropertyWidget::setWidgetVisible(PropertyWidgets m) {
 		} break;
 
 
-		case M_EditGeometry : {
+		case M_EditGeometry :
+		case M_AddGeometry : {
 			// create widget and add to layout, if not existing
 			if (m_propWidgets[M_EditGeometry] == nullptr) {
 				SVPropEditGeometry *propEditGeometry = new SVPropEditGeometry(this);
 				m_propWidgets[M_EditGeometry] = propEditGeometry;
 				m_layout->addWidget(m_propWidgets[M_EditGeometry]);
 				SVViewStateHandler::instance().m_coordinateSystemObject->m_propEditGeometry = propEditGeometry;
-//				SVViewStateHandler::instance().m_newPolygonObject->m_vertexListWidget = vertexListWidget;
 			}
 			m_propWidgets[M_EditGeometry]->setVisible(true);
 
-			((SVPropEditGeometry *) m_propWidgets[M_EditGeometry])->setCurrentTab(SVPropEditGeometry::TS_EditGeometry);
+			if (m == M_EditGeometry)
+				((SVPropEditGeometry *) m_propWidgets[M_EditGeometry])->setCurrentTab(SVPropEditGeometry::TS_EditGeometry);
+			else
+				((SVPropEditGeometry *) m_propWidgets[M_EditGeometry])->setCurrentTab(SVPropEditGeometry::TS_AddGeometry);
 
 		} break;
 
-		case M_AddGeometry : {
-			// create widget and add to layout, if not existing
-			if (m_propWidgets[M_EditGeometry] == nullptr) {
-				m_propWidgets[M_EditGeometry] = new SVPropEditGeometry(this);
-				m_layout->addWidget(m_propWidgets[M_EditGeometry]);
-			}
-			m_propWidgets[M_EditGeometry]->setVisible(true);
-
-			((SVPropEditGeometry *) m_propWidgets[M_EditGeometry])->setCurrentTab(SVPropEditGeometry::TS_AddGeometry);
-
-		} break;
 
 		case M_AddVertexesMode: {
 			// create widget and add to layout, if not existing
@@ -82,6 +76,18 @@ void SVPropertyWidget::setWidgetVisible(PropertyWidgets m) {
 				((SVPropVertexListWidget *)m_propWidgets[M_AddVertexesMode])->onNewVertexListStart();
 				m_propWidgets[M_AddVertexesMode]->setVisible(true);
 			}
+		} break;
+
+
+		case M_SiteProperties : {
+			// create widget and add to layout, if not existing
+			if (m_propWidgets[M_SiteProperties] == nullptr) {
+				SVPropSiteWidget *propSiteWidget = new SVPropSiteWidget(this);
+				m_propWidgets[M_SiteProperties] = propSiteWidget;
+				m_layout->addWidget(m_propWidgets[M_SiteProperties]);
+			}
+			m_propWidgets[M_SiteProperties]->setVisible(true);
+
 		} break;
 
 		default : {
@@ -100,6 +106,8 @@ void SVPropertyWidget::onViewStateChanged() {
 		case SVViewState::PM_EditGeometry	:
 			setWidgetVisible(M_EditGeometry);
 		break;
+		case SVViewState::PM_SiteProperties :
+			setWidgetVisible(M_SiteProperties);
 		default:;
 	}
 }

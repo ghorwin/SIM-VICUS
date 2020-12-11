@@ -78,6 +78,7 @@ SOURCES += \
 		../../src/SVNetworkEditDialog.cpp \
 		../../src/SVPreferencesPageStyle.cpp \
 		../../src/SVPropEditGeometry.cpp \
+		../../src/SVPropSiteWidget.cpp \
 		../../src/SVPropVertexListWidget.cpp \
 		../../src/SVPropertyWidget.cpp \
 		../../src/SVUndoAddFluid.cpp \
@@ -92,6 +93,7 @@ SOURCES += \
 		../../src/actions/SVUndoAddSurface.cpp \
 		../../src/actions/SVUndoCommandBase.cpp \
 		../../src/actions/SVUndoProject.cpp \
+		../../src/actions/SVUndoSiteDataChanged.cpp \
 		../../src/core3D/Vic3DCoordinateSystemObject.cpp \
 		../../src/core3D/Vic3DGeometryHelpers.cpp \
 		../../src/core3D/Vic3DGridObject.cpp \
@@ -137,6 +139,7 @@ HEADERS  += \
 		../../src/SVNetworkEditDialog.h \
 		../../src/SVPreferencesPageStyle.h \
 		../../src/SVPropEditGeometry.h \
+		../../src/SVPropSiteWidget.h \
 		../../src/SVPropVertexListWidget.h \
 		../../src/SVPropertyWidget.h \
 		../../src/SVUndoAddFluid.h \
@@ -151,6 +154,7 @@ HEADERS  += \
 		../../src/actions/SVUndoAddSurface.h \
 		../../src/actions/SVUndoCommandBase.h \
 		../../src/actions/SVUndoProject.h \
+		../../src/actions/SVUndoSiteDataChanged.h \
 		../../src/core3D/Vic3DCamera.h \
 		../../src/core3D/Vic3DConstants.h \
 		../../src/core3D/Vic3DCoordinateSystemObject.h \
@@ -202,6 +206,7 @@ FORMS    += \
 		../../src/SVPreferencesPageStyle.ui \
 		../../src/SVPreferencesPageTools.ui \
 		../../src/SVPropEditGeometry.ui \
+		../../src/SVPropSiteWidget.ui \
 		../../src/SVPropVertexListWidget.ui \
 		../../src/SVWelcomeScreen.ui
 

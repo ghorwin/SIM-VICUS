@@ -32,7 +32,8 @@ private slots:
 	void on_treeWidget_itemSelectionChanged();
 
 private:
-	enum NoteType {
+	enum NodeType {
+		NT_UndefinedNode,
 		NT_Site,
 		NT_Building,
 		NT_BuildingLevel,
