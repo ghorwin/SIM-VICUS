@@ -219,9 +219,15 @@ void NewPolygonObject::renderOpqaue() {
 		QColor lineCol;
 		if (m_planeGeometry.isValid()) {
 			if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
-				lineCol = QColor("#32c5ea");
+				lineCol = QColor("#2ed655");
 			else
 				lineCol = QColor("#00ff48");
+		}
+		else {
+			if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
+				lineCol = QColor("#c31818");
+			else
+				lineCol = QColor("#ed1f1f");
 		}
 
 		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], lineCol);
