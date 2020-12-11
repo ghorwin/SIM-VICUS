@@ -45,6 +45,15 @@ public:
 
 	/*! Vector of building levels. */
 	std::vector<BuildingLevel>			m_buildingLevels;			// XML:E
+
+
+	// *** RUNTIME VARIABLE ***
+
+	/*! Hole building net floor area in m2.
+		Therefor we  need a update function and/or a
+		user input.
+	*/
+	double								m_netFloorArea;
 };
 
 } // namespace VICUS

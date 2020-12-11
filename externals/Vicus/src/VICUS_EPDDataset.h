@@ -29,27 +29,30 @@ public:
 		P_POCP,						// Keyword: POCP					[W/mK]	'Photochemical Ozone Creation Potential.'
 		/*! Acidification potential . */
 		P_AP,						// Keyword: AP						[W/mK]	'Acidification potential.'
-
-        /// TODO Mira Docu übernehmen x
-
-		/*! Global Warming Potential. */
+		/*! Eutrophication potential. */
 		P_EP,						// Keyword: EP						[W/mK]	'Eutrophication potential.'
-		/*! Global Warming Potential. */
-		P_PENRT,					// Keyword: PENRT					[W/mK]	'Global Warming Potential.'
-		/*! Global Warming Potential. */
-		P_PERT,						// Keyword: PERT					[W/mK]	'Global Warming Potential.'
+		/*! Total use of non-renewable primary energy resources. */
+		P_PENRT,					// Keyword: PENRT					[W/mK]	'Total use of non-renewable primary energy resources.'
+		/*! Total use of renewable primary energy resources . */
+		P_PERT,						// Keyword: PERT					[W/mK]	'Total use of renewable primary energy resources .'
 
 		NUM_P
 	};
 
-	/// TODO Mira erweitern
-	enum Category {
+		//the most frequently used categories
+	enum Category{
 		C_A1,
 		C_A2,
+		C_A1_A2,
 		C_A3,
 		C_A1_A3,
-		C_B,
-		C_C,
+		C_B6,
+		C_C2,
+		C_C2_3,
+		C_C2_C4,
+		C_C3,
+		C_C3_C4,
+		C_C4,
 		C_D,
 		NUM_C
 	};
@@ -98,7 +101,7 @@ public:
 	QString							m_referenceUnit;						// XML:E
 
 	/*! Reference quantity. */
-	QString							m_referenceQuantity;					// XML:E
+	double							m_referenceQuantity;					// XML:E
 
 	/*! Sub type element. */
 	Mode							m_subtype = NUM_M;						// XML:E
