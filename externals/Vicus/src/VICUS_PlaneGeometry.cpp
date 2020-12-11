@@ -9,6 +9,8 @@
 #include <IBK_Line.h>
 #include <IBK_physics.h>
 
+#include <IBKMK_Triangulation.h>
+
 #include <NANDRAD_Utilities.h>
 
 #include <VICUS_Constants.h>
@@ -426,6 +428,42 @@ void PlaneGeometry::triangulate() {
 			//here the index is stored which is already taken into account
 			std::set<unsigned int> usedIdx;
 			std::vector<std::vector<unsigned int>>	trisIndices;
+
+			IBKMK::Triangulation triangu;
+
+			std::vector<IBK::point2D<double>> points;
+
+			//fill points vector
+			for (auto p: m_polygon)
+				points.emplace_back(IBK::point2D<double>(p.x(),p.y()));
+
+
+			triangu.setPoints(points);
+			//calculate middle point for each triangle and check if point is in polygon
+			for (IBKMK::Triangulation::triangle_t tri : triangu.m_triangles) {
+
+				QPointF a(m_polygon.value(tri.i1)), b(m_polygon.value(tri.i2)), c(m_polygon.value(tri.i3));
+				double distA, distB, distC;
+				distA = QPointF::dotProduct(a,b);
+				distB = QPointF::dotProduct(b,c);
+				distC = QPointF::dotProduct(c,a);
+				//calc half perimeter
+				double s = 0.5 + (distA + distB + distC);
+				QPointF middleP = QPointF(0.5/s * (distB * a.x() + distC * b.x() + distA * c.x()),
+										  0.5/s * (distB * a.y() + distC * b.y() + distA * c.y()));
+				if(pointInPolygon(middleP, m_polygon) == -1)
+					continue;
+
+				m_triangles.push_back(triangle_t(tri.i1, tri.i2, tri.i3));
+
+			}
+			break;
+
+
+
+
+
+
 #if 0
 			DelauWrapper delau;
 
