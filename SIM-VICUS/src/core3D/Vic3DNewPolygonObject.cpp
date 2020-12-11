@@ -126,7 +126,13 @@ void NewPolygonObject::updateLastVertex(const QVector3D & p) {
 	if (p == m_vertexBufferData.back().m_coords)
 		return;
 	// update last coordinate
-	m_vertexBufferData.back().m_coords = p;
+	// take the last value if no vertex line exists
+	// else update the second last point that is the local coordinate system
+	if (m_vertexBufferData.size()<2)
+		m_vertexBufferData.back().m_coords = p;
+	else
+		m_vertexBufferData[m_vertexBufferData.size()-2].m_coords = p;
+
 	// and update the last part of the buffer (later, for now we just upload the entire buffer again)
 	// transfer data stored in m_vertexBufferData
 	m_vertexBufferObject.bind();
@@ -171,12 +177,17 @@ void NewPolygonObject::updateBuffers() {
 
 	// put all the vertexes of the current polyline into buffer
 	// first reserve memory
-	m_vertexBufferData.reserve(m_vertexList.size()+ m_vertexBufferData.size()+1);
+	m_vertexBufferData.reserve(m_vertexList.size()+ m_vertexBufferData.size()+6);
 	for (const IBKMK::Vector3D & v : m_vertexList)
 		m_vertexBufferData.push_back( VertexC(VICUS::IBKVector2QVector(v)) );
 
+	m_vertexBufferData.push_back( m_vertexBufferData[0] );
+
 	// now also add a vertex for the current coordinate system's position
 	m_vertexBufferData.push_back( VertexC(m_coordSystemObject->translation() ) );
+
+	// and also the last point of the polygon in order to draw its line blue from local coordinate system
+	m_vertexBufferData.push_back( VertexC(VICUS::IBKVector2QVector(m_vertexList.back())) );
 
 	// transfer data stored in m_vertexBufferData
 	m_vertexBufferObject.bind();
@@ -216,13 +227,14 @@ void NewPolygonObject::renderOpqaue() {
 		if (m_planeGeometry.isValid())
 			offset = m_planeGeometry.vertexes().size() + 1; // +1, because we have added the first polygon again at the end
 		// paint a line for each of the vertexes in the list and one extra, for the trailing polygon line
-		for (size_t i = 1; i < m_vertexList.size(); ++i, ++offset) {
+		for (size_t i = 1; i < m_vertexList.size()+1; ++i, ++offset) {
 			glDrawArrays(GL_LINES, offset, 2);
 		}
 		lineCol = QColor("#32c5ea");
 		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], lineCol);
 		glDrawArrays(GL_LINES, offset, 2);
-
+		glDrawArrays(GL_LINES, ++offset, 2);
+//		glDrawArrays(GL_LINES, ++offset, 2);
 	}
 
 	// now draw the geometry
