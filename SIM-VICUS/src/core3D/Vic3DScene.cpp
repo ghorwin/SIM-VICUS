@@ -563,7 +563,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		// First we need to define what objects/surfaces we check for a picking operation,
 		// snapping is done later.
 		// We want to place a vertex on any plane we see, including the xy-plane
-		PickObject o(localMousePos, PickObject::P_XY_Plane | PickObject::P_Surface);
+		PickObject o(localMousePos, PickObject::P_XY_Plane | PickObject::P_Surface | PickObject::P_BackSide);
 		pick(o);
 
 		// now we handle the snapping rules
@@ -575,7 +575,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 	// if in "align coordinate system mode" perform picking operation and update local coordinate system orientation
 	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem) {
-		PickObject o(localMousePos, PickObject::P_XY_Plane | PickObject::P_Surface);
+		PickObject o(localMousePos, PickObject::P_XY_Plane | PickObject::P_Surface | PickObject::P_BackSide);
 		pick(o);
 		// get the picked object, if any
 		if (o.m_uniqueObjectID != 0) {
@@ -1070,25 +1070,71 @@ void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3
 	}
 }
 
+struct ClosestPointFinder {
+	bool operator()(const std::pair<float, QVector3D> & lhs, const std::pair<float, QVector3D> & rhs) {
+		return lhs.first < rhs.first;
+	}
+};
+
 
 void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
+
+	if (!vs.m_snapEnabled) {
+		m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(pickObject.m_pickPoint) );
+		return;
+	}
+
+	int snapOptions = vs.m_snapOptionMask;
 
 	// Snapping works as follows:
 	// We process all snap options and compute the relative distance to
 	// the current coordinate system's location and we store these distances in a list.
 	// Then, we select the closes snap point.
+	std::set<std::pair<float, QVector3D>, ClosestPointFinder> snapPoints;
 
 	// If the distance between current coord
+	QVector3D pickPoint = VICUS::IBKVector2QVector(pickObject.m_pickPoint);
 
-	// now determine which grid line is closest
-	QVector3D closestPoint;
-	if (m_gridObject.closestSnapPoint(VICUS::IBKVector2QVector(pickObject.m_pickPoint), closestPoint)) {
-		// this is in world coordinates, use this as transformation vector for the
-		// coordinate system
-		m_coordinateSystemObject.setTranslation(closestPoint);
+	if (snapOptions & SVViewState::Snap_XYPlane_Grid) {
+		// now determine which grid line is closest
+		QVector3D closestPoint;
+		if (m_gridObject.closestSnapPoint(VICUS::IBKVector2QVector(pickObject.m_pickPoint), closestPoint)) {
+			// this is in world coordinates, use this as transformation vector for the
+			// coordinate system
+			float dist = (closestPoint - pickPoint).lengthSquared();
+			snapPoints.insert( std::make_pair(dist, closestPoint) );
+		}
 	}
 
+	// for snap options that require an object, look it up
+	const VICUS::Surface * s = nullptr;
+	if (pickObject.m_uniqueObjectID != 0 && snapOptions > SVViewState::Snap_XYPlane_Grid) {
+		const VICUS::Object * o = project().objectById(pickObject.m_uniqueObjectID);
+		s = dynamic_cast<const VICUS::Surface *>(o);
+	}
+	// handle all object-related snaps
+	if (s != nullptr) {
+		if (snapOptions & SVViewState::Snap_ObjectVertex) {
+			// insert distances to all vertexes of selected object
+			for (const IBKMK::Vector3D & v : s->m_geometry.vertexes()) {
+				QVector3D p = VICUS::IBKVector2QVector(v);
+				float dist = (p - pickPoint).lengthSquared();
+				snapPoints.insert( std::make_pair(dist, p) );
+			}
+		}
+	}
+
+	// take closes snap point and snap to it
+	if (snapPoints.empty()) {
+		// no snap points? no snapping
+		m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(pickObject.m_pickPoint) );
+	}
+	else {
+		QVector3D closestPoint = snapPoints.begin()->second;
+		m_coordinateSystemObject.setTranslation(closestPoint);
+		qDebug() << (s != nullptr ? "object snap" : "grid snap") << closestPoint;
+	}
 }
 
 

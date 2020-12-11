@@ -77,7 +77,10 @@ public:
 	};
 
 
-	/*! The different snap options. */
+	/*! The different snap options.
+		\warning Do not change the order/enum values. For any bitmask value larger
+		than Snap_XYPlane_Grid a surface will be required.
+	*/
 	enum SnapOptions {
 		Snap_XYPlane_Grid		= 0x0001,
 		Snap_ObjectCenter		= 0x0002,
