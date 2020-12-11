@@ -608,7 +608,7 @@ namespace IBKMK {
 
 bool Triangulation::setPoints(const std::vector<IBK::point2D<double> > & points) {
 	IBK_ASSERT(sizeof(IBK::point2D<double>) == 2*sizeof(double));
-	return setPoints(points.size(), (const double*)points.data());
+	return setPoints(points.size()*2, (const double*)points.data());
 }
 
 
@@ -637,7 +637,7 @@ bool Triangulation::setPoints(const std::vector<double> & coords) {
 
 bool Triangulation::setPoints(unsigned int n, const double points[]) {
 	// create a vector out of passed memory
-	std::vector<double> coordinates(points, points+n);
+	std::vector<double> coordinates(points, points + n);
 	return setPoints(coordinates);
 }
 
