@@ -1123,6 +1123,29 @@ void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 				snapPoints.insert( std::make_pair(dist, p) );
 			}
 		}
+		if (snapOptions & SVViewState::Snap_ObjectCenter) {
+			// insert center point
+			IBKMK::Vector3D center(0,0,0);
+			for (const IBKMK::Vector3D & v : s->m_geometry.vertexes())
+				center += v;
+			center /= s->m_geometry.vertexes().size();
+			QVector3D p = VICUS::IBKVector2QVector(center);
+			float dist = (p - pickPoint).lengthSquared();
+			snapPoints.insert( std::make_pair(dist, p) );
+		}
+		if (snapOptions & SVViewState::Snap_ObjectEdgeCenter) {
+			// process all edges
+			IBKMK::Vector3D lastNode = s->m_geometry.vertexes().front();
+			for (unsigned int i=0; i<s->m_geometry.vertexes().size()+1; ++i) {
+				IBKMK::Vector3D center = lastNode;
+				lastNode = s->m_geometry.vertexes()[i % s->m_geometry.vertexes().size()];
+				center += lastNode;
+				center /= 2;
+				QVector3D p = VICUS::IBKVector2QVector(center);
+				float dist = (p - pickPoint).lengthSquared();
+				snapPoints.insert( std::make_pair(dist, p) );
+			}
+		}
 	}
 
 	// take closes snap point and snap to it

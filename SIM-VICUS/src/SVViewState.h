@@ -92,7 +92,7 @@ public:
 	PropertyWidgetMode	m_propertyWidgetMode		= PM_EditGeometry;
 
 	/*! Bitmask with selected snap options. */
-	int						m_snapOptionMask		= Snap_XYPlane_Grid | Snap_ObjectVertex;
+	int						m_snapOptionMask		= Snap_XYPlane_Grid | Snap_ObjectVertex | Snap_ObjectCenter | Snap_ObjectEdgeCenter;
 	/*! Whether snapping is enabled or not. */
 	bool					m_snapEnabled			= true;
 
