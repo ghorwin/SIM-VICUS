@@ -16,6 +16,12 @@ public:
 	bool setPoints(const std::vector<IBK::point2D<double> > & points);
 
 	/*! Set points to triangulate.
+		Overloaded function, expects vector with point coordinates with size 2*n and
+		coordinate order x1, y1, x2, y2, ....
+	*/
+	bool setPoints(const std::vector<double> & coords);
+
+	/*! Set points to triangulate.
 		No duplicate points (within tolerance allowed!)
 		Overloaded function, expects continuous memory array passed to 'points' with size 2*n (x1, y1, x2, y2, ...).
 	*/
