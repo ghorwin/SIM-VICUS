@@ -32,6 +32,8 @@ SVDBMaterialsEditWidget::SVDBMaterialsEditWidget(QWidget *parent) :
 	//	&onMaterialSelected
 	connect(m_ui->widgetMaterialsDB, SIGNAL(materialSelected(int)),this, SLOT(onMaterialSelected(int)));
 
+	m_ui->lineEditConductivity->setup(0,1000,"Thermal Conductivity",false,true);
+
 }
 
 void SVDBMaterialsEditWidget::onMaterialSelected(int id){
@@ -68,4 +70,11 @@ void SVDBMaterialsEditWidget::on_toolButtonAdd_clicked()
 void SVDBMaterialsEditWidget::on_toolButtonCopy_clicked()
 {
 
+}
+
+void SVDBMaterialsEditWidget::on_lineEditConductivity_editingFinished()
+{
+	if ( m_ui->lineEditConductivity->isValid() ){
+		// setze werte in datenbank
+	}
 }

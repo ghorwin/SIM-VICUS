@@ -28,6 +28,8 @@ public:
 	/*! Edit widget with this. */
 	void edit();
 
+
+
 private slots:
 	void on_toolButtonAdd_clicked();
 
@@ -35,8 +37,23 @@ private slots:
 
 	void onMaterialSelected(int);
 
+	void on_lineEditConductivity_editingFinished();
+
 private:
 	Ui::SVDBMaterialsEditWidget *m_ui;
+
+
+
+	/*! Conductivity in W/mK. */
+	double						m_conductivity;
+
+	/*! Conductivity in W/mK. */
+	double						m_density;
+
+	/*! Conductivity in W/mK. */
+	double						m_specHeat;
+
+
 };
 
 #endif // SVDBMaterialsEditWidgetH
