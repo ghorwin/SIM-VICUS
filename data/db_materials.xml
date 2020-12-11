@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Materials>
+	<Material id="100000" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete">
+		<Notes>en:Contrete to be used in SimQuality test cases.|de:Beton zur Verwendung in SimQuality.</Notes>
+		<Manufacturer>generic</Manufacturer>
+		<DataSource>SimQuality</DataSource>
+		<Category>Cementitious</Category>
+		<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+		<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+	</Material>
+	<Material id="100001" displayName="de:[SimQuality] Putz|en:[SimQuality] Plaster">
+		<Notes>en:Plaster to be used in SimQuality test cases.|de:Putz zur Verwendung in SimQuality.</Notes>
+		<Manufacturer>generic</Manufacturer>
+		<DataSource>SimQuality</DataSource>
+		<Category>Plaster</Category>
+		<IBK:Parameter name="Density" unit="kg/m3">800</IBK:Parameter>
+		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
+		<IBK:Parameter name="Conductivity" unit="W/mK">0.14</IBK:Parameter>
+	</Material>
+	<Material id="100002" displayName="de:[SimQuality] Dämmung|en:[SimQuality] Insulation">
+		<Notes>en:Insulation to be used in SimQuality test cases.|de:Dämmstoff zur Verwendung in SimQuality.</Notes>
+		<Manufacturer>generic</Manufacturer>
+		<DataSource>SimQuality</DataSource>
+		<Category>Insulations</Category>
+		<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>
+		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+		<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
+	</Material>
+</Materials>

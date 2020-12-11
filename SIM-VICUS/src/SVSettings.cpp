@@ -8,6 +8,8 @@
 #include <QtExt_Directories.h>
 #include <tinyxml.h>
 
+#include <VICUS_KeywordList.h>
+
 SVSettings * SVSettings::m_self = nullptr;
 
 const char * const SVSettings::PROPERTY_KEYWORDS[SVSettings::NUM_PT] = {
@@ -236,6 +238,8 @@ void SVSettings::write(QByteArray geometry, QByteArray state) {
 	{
 		settings.setValue(PROPERTY_KEYWORDS[it.key()], it.value());
 	}
+
+	writeDatabase();
 }
 
 
@@ -253,27 +257,27 @@ void SVSettings::readDatabase() {
 
 	IBK::Path dbDir(QtExt::Directories::databasesDir().toStdString());
 
-	readXMLDB(dbDir / "DB_Materials.xml", "Materials", "Material", m_dbOpaqueMaterials, true);
-	readXMLDB(dbDir / "DB_WindowGlazingSystems.xml", "WindowGlazingSystems", "WindowGlazingSystem", m_dbWindowGlazingSystems, true);
-	readXMLDB(dbDir / "DB_Windows.xml", "Windows", "Window", m_dbWindows, true);
-	readXMLDB(dbDir / "DB_Constructions.xml", "Constructions", "Construction", m_dbConstructions, true);
-	readXMLDB(dbDir / "DB_SurfaceProperties.xml", "SurfaceProperties", "SurfaceProperty", m_dbSurfaceProperty, true);
-	readXMLDB(dbDir / "DB_BoundaryConditions.xml", "BoundaryConditions", "BoundaryCondition", m_dbBoundaryCondition, true);
-	readXMLDB(dbDir / "DB_Pipes.xml", "Pipes", "Pipe", m_dbPipes, true);
-	readXMLDB(dbDir / "DB_Fluids.xml", "Fluids", "Fluid", m_dbFluids, true);
+	readXMLDB(dbDir / "db_materials.xml", "Materials", "Material", m_dbOpaqueMaterials, true);
+	readXMLDB(dbDir / "db_windowGlazingSystems.xml", "WindowGlazingSystems", "WindowGlazingSystem", m_dbWindowGlazingSystems, true);
+	readXMLDB(dbDir / "db_windows.xml", "Windows", "Window", m_dbWindows, true);
+	readXMLDB(dbDir / "db_constructions.xml", "Constructions", "Construction", m_dbConstructions, true);
+	readXMLDB(dbDir / "db_surfaceProperties.xml", "SurfaceProperties", "SurfaceProperty", m_dbSurfaceProperty, true);
+	readXMLDB(dbDir / "db_boundaryConditions.xml", "BoundaryConditions", "BoundaryCondition", m_dbBoundaryCondition, true);
+	readXMLDB(dbDir / "db_pipes.xml", "Pipes", "Pipe", m_dbPipes, true);
+	readXMLDB(dbDir / "db_fluids.xml", "Fluids", "Fluid", m_dbFluids, true);
 
 	// user databases
 
 	IBK::Path userDbDir(QtExt::Directories::userDataDir().toStdString());
 
-	readXMLDB(userDbDir / "DB_Materials.xml", "Materials", "Material", m_dbOpaqueMaterials);
-	readXMLDB(dbDir / "DB_Windows.xml", "Windows", "Window", m_dbWindows);
-	readXMLDB(dbDir / "DB_WindowGlazingSystems.xml", "WindowGlazingSystems", "WindowGlazingSystem", m_dbWindowGlazingSystems);
-	readXMLDB(dbDir / "DB_Constructions.xml", "Constructions", "Construction", m_dbConstructions);
-	readXMLDB(dbDir / "DB_SurfaceProperties.xml", "SurfaceProperties", "SurfaceProperty", m_dbSurfaceProperty);
-	readXMLDB(dbDir / "DB_BoundaryConditions.xml", "BoundaryConditions", "BoundaryCondition", m_dbBoundaryCondition);
-	readXMLDB(userDbDir / "DB_Pipes.xml", "Pipes", "Pipe", m_dbPipes);
-	readXMLDB(userDbDir / "DB_Fluids.xml", "Fluids", "Fluid", m_dbFluids);
+	readXMLDB(userDbDir / "db_materials.xml", "Materials", "Material", m_dbOpaqueMaterials);
+	readXMLDB(userDbDir / "db_windows.xml", "Windows", "Window", m_dbWindows);
+	readXMLDB(userDbDir / "db_windowGlazingSystems.xml", "WindowGlazingSystems", "WindowGlazingSystem", m_dbWindowGlazingSystems);
+	readXMLDB(userDbDir / "db_constructions.xml", "Constructions", "Construction", m_dbConstructions);
+	readXMLDB(userDbDir / "db_surfaceProperties.xml", "SurfaceProperties", "SurfaceProperty", m_dbSurfaceProperty);
+	readXMLDB(userDbDir / "db_boundaryConditions.xml", "BoundaryConditions", "BoundaryCondition", m_dbBoundaryCondition);
+	readXMLDB(userDbDir / "db_pipes.xml", "Pipes", "Pipe", m_dbPipes);
+	readXMLDB(userDbDir / "db_fluids.xml", "Fluids", "Fluid", m_dbFluids);
 }
 
 
@@ -283,14 +287,31 @@ void SVSettings::writeDatabase() {
 
 	IBK::Path userDbDir(QtExt::Directories::userDataDir().toStdString());
 
-	writeXMLDB(userDbDir / "DB_Materials.xml", "Materials", m_dbOpaqueMaterials);
-	writeXMLDB(userDbDir / "DB_Windows.xml", "Windows", m_dbWindowGlazingSystems);
-	writeXMLDB(userDbDir / "DB_WindowGlazingSystems.xml", "WindowGlazingSystems", m_dbWindowGlazingSystems);
-	writeXMLDB(userDbDir / "DB_Constructions.xml", "Constructions", m_dbConstructions);
-	writeXMLDB(userDbDir / "DB_SurfaceProperties.xml", "SurfaceProperties", m_dbSurfaceProperty);
-	writeXMLDB(userDbDir / "DB_BoundaryConditions.xml", "BoundaryConditions", m_dbBoundaryCondition);
-//	writeXMLDB(userDbDir / "DB_Pipes.xml", "Pipes", m_dbPipes);
-	writeXMLDB(userDbDir / "DB_Fluids.xml", "Fluids", m_dbFluids);
+#if 0
+	// create some dummy materials to write out
+	VICUS::Material m;
+	m.m_id = 100000;
+	m.m_category = VICUS::Material::MC_Bricks;
+	m.m_dataSource = "SimQuality";
+	m.m_manufacturer = "generic";
+	m.m_color = "#800000";
+	m.m_notes = "en:Massiv contrete-type material used in SimQuality test cases.|de:Massives, Beton-ähnliches Material zur Verwendung in SimQuality.";
+	m.m_displayName = "en:Concrete|de:Beton";
+	VICUS::KeywordList::setParameter(m.m_para, "Material::para_t", VICUS::Material::P_Density, 2000);
+	VICUS::KeywordList::setParameter(m.m_para, "Material::para_t", VICUS::Material::P_HeatCapacity, 1000);
+	VICUS::KeywordList::setParameter(m.m_para, "Material::para_t", VICUS::Material::P_Conductivity, 1.2);
+
+	m_dbOpaqueMaterials[m.m_id] = m;
+#endif
+
+	writeXMLDB(userDbDir / "db_materials.xml", "Materials", m_dbOpaqueMaterials);
+	writeXMLDB(userDbDir / "db_windows.xml", "Windows", m_dbWindowGlazingSystems);
+	writeXMLDB(userDbDir / "db_windowGlazingSystems.xml", "WindowGlazingSystems", m_dbWindowGlazingSystems);
+	writeXMLDB(userDbDir / "db_constructions.xml", "Constructions", m_dbConstructions);
+	writeXMLDB(userDbDir / "db_surfaceProperties.xml", "SurfaceProperties", m_dbSurfaceProperty);
+	writeXMLDB(userDbDir / "db_boundaryConditions.xml", "BoundaryConditions", m_dbBoundaryCondition);
+	writeXMLDB(userDbDir / "db_pipes.xml", "Pipes", m_dbPipes);
+	writeXMLDB(userDbDir / "db_fluids.xml", "Fluids", m_dbFluids);
 }
 
 
