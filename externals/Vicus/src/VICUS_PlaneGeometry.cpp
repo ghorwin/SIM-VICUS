@@ -426,6 +426,20 @@ void PlaneGeometry::triangulate() {
 			//here the index is stored which is already taken into account
 			std::set<unsigned int> usedIdx;
 			std::vector<std::vector<unsigned int>>	trisIndices;
+#if 0
+			DelauWrapper delau;
+
+			delau.setPoints(m_polygon);
+			std::vector<size_t> triIdx;
+			delau.getTriangleIdx(triIdx);
+
+			for (size_t i=0; i<triIdx.size(); i+=3)
+				m_triangles.push_back(triangle_t(triIdx.at(i),triIdx.at(i+1),triIdx.at(i+2)));
+
+
+			break;
+#endif
+
 
 
 			// create a polygon without colinear points
@@ -449,17 +463,13 @@ void PlaneGeometry::triangulate() {
 			}
 			else if (false) {
 				polygon.clear();
-				polygon << QPointF(0,0);
-				polygon << QPointF(-2,-1);
-				polygon << QPointF(2,-1);
-				polygon << QPointF(3,-2);
+				polygon << QPointF(11,-30);
+				polygon << QPointF(11,-23);
+				polygon << QPointF(4,-23);
+				polygon << QPointF(3,-30);
+				polygon << QPointF(7,-36);
+				polygon << QPointF(14,-35);
 
-				//build a closed int polygon
-				QPolygon intPoly;
-				for (QPointF p : polygon) {
-					intPoly << QPoint(p.x()/eps, p.y()/eps);
-				}
-				intPoly << QPoint(polygon.value(0).x()/eps, polygon.value(0).y()/eps);
 
 			}
 
