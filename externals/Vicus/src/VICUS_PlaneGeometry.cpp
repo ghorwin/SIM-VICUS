@@ -19,6 +19,7 @@
 #include <QPolygonF>
 #include <QVector2D>
 #include <QQuaternion>
+#include <QLine>
 
 #include <tinyxml.h>
 
@@ -444,11 +445,17 @@ void PlaneGeometry::triangulate() {
 
 				QPointF a(m_polygon.value(tri.i1)), b(m_polygon.value(tri.i2)), c(m_polygon.value(tri.i3));
 				double distA, distB, distC;
-				distA = QPointF::dotProduct(a,b);
-				distB = QPointF::dotProduct(b,c);
-				distC = QPointF::dotProduct(c,a);
+				QLineF ab(a,b), bc(b,c), ca(c,a);
+
+				distA = ab.length();
+				distB = bc.length();
+				distC = ca.length();
 				//calc half perimeter
-				double s = 0.5 + (distA + distB + distC);
+				double s = 0.5 * (distA + distB + distC);
+
+				double testX = 0.5/s * (distB * a.x() + distC * b.x() + distA * c.x());
+				double testY = 0.5/s * (distB * a.y() + distC * b.y() + distA * c.y());
+
 				QPointF middleP = QPointF(0.5/s * (distB * a.x() + distC * b.x() + distA * c.x()),
 										  0.5/s * (distB * a.y() + distC * b.y() + distA * c.y()));
 				if(pointInPolygon(middleP, m_polygon) == -1)
