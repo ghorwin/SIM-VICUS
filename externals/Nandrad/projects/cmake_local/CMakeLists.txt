@@ -32,7 +32,7 @@ add_custom_command (
 	OUTPUT   ${PROJECT_SOURCE_DIR}/../../src/NANDRAD_KeywordList.cpp
 	DEPENDS  ${Nandrad_HDRS} NandradCodeGenerator
 	COMMAND  NandradCodeGenerator
-	ARGS     NANDRAD ${PROJECT_SOURCE_DIR}/../../src 0 NANDRAD ncg
+	ARGS     NANDRAD ${PROJECT_SOURCE_DIR}/../../src 1 NANDRAD ncg
 )
 
 
