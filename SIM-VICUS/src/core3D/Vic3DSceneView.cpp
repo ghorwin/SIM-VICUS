@@ -265,8 +265,11 @@ void SceneView::paintGL() {
 #endif // SHOW_TIMINGS
 
 
-	// Check for some changes in the input handler, which in turn may restart the paint loop
-	//checkInput();
+	// Check for some changes in the input handler, which in turn may restart the paint loop,
+	// to avoid excessive CPU load when polling input, we only check for
+	// input when holding a key (WASD etc.) requires this.
+	if (m_keyboardMouseHandler.anyKeyDown())
+		checkInput();
 
 #ifdef SHOW_TIMINGS
 	QVector<GLuint64> intervals = m_gpuTimers.waitForIntervals();
