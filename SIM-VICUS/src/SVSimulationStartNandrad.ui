@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>SVSimulationStartNandrad</class>
  <widget class="QDialog" name="SVSimulationStartNandrad">
@@ -5,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>768</width>
+    <height>503</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Start building energy simulation</string>
   </property>
  </widget>
  <resources/>
