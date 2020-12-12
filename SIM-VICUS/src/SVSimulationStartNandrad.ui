@@ -6,13 +6,42 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>768</width>
-    <height>503</height>
+    <width>756</width>
+    <height>592</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Start building energy simulation</string>
   </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tabSimStart">
+      <attribute name="title">
+       <string>Simulation</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="tabClimate">
+      <attribute name="title">
+       <string>Location and climate</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="tabOutputs">
+      <attribute name="title">
+       <string>Outputs</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="tabPerformanceOptions">
+      <attribute name="title">
+       <string>Performance options</string>
+      </attribute>
+     </widget>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>

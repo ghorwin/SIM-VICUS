@@ -45,6 +45,7 @@ INCLUDEPATH = \
 		../../../externals/IBK/src \
 		../../../externals/IBKMK/src \
 		../../../externals/Nandrad/src \
+		../../../externals/Nandrad/srcTranslations \
 		../../../externals/Vicus/src \
 		../../../externals/TiCPP/src \
 		../../../externals/QuaZIP/src \
@@ -69,6 +70,7 @@ win32 {
 
 
 SOURCES += \
+	../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
 		../../src/SVDBMaterialsEditWidget.cpp \
 		../../src/SVDBWindowEditWidget.cpp \
 		../../src/SVImportIDFDialog.cpp \
@@ -81,6 +83,7 @@ SOURCES += \
 		../../src/SVPropSiteWidget.cpp \
 		../../src/SVPropVertexListWidget.cpp \
 		../../src/SVPropertyWidget.cpp \
+	../../src/SVSimulationPerformanceOptions.cpp \
 		../../src/SVUndoAddFluid.cpp \
 		../../src/SVUndoDeleteNetwork.cpp \
 		../../src/SVUndoModifyExistingNetwork.cpp \
@@ -128,7 +131,7 @@ SOURCES += \
 		../../src/SVStyle.cpp \
 		../../src/SVThreadBase.cpp \
 		../../src/SVWelcomeScreen.cpp \
-    ../../src/SVSimulationStartNandrad.cpp
+	../../src/SVSimulationStartNandrad.cpp
 
 HEADERS  += \
 		../../src/SVDBMaterialsEditWidget.h \
@@ -143,6 +146,7 @@ HEADERS  += \
 		../../src/SVPropSiteWidget.h \
 		../../src/SVPropVertexListWidget.h \
 		../../src/SVPropertyWidget.h \
+	../../src/SVSimulationPerformanceOptions.h \
 		../../src/SVUndoAddFluid.h \
 		../../src/SVUndoDeleteNetwork.h \
 		../../src/SVUndoModifyExistingNetwork.h \
@@ -192,7 +196,7 @@ HEADERS  += \
 		../../src/SVThreadBase.h \
 		../../src/SVWelcomeScreen.h \
 		../../src/core3D/Vic3DWireFrameObject.h \
-    ../../src/SVSimulationStartNandrad.h
+	../../src/SVSimulationStartNandrad.h
 
 FORMS    += \
 		../../src/SVAboutDialog.ui \
@@ -210,8 +214,9 @@ FORMS    += \
 		../../src/SVPropEditGeometry.ui \
 		../../src/SVPropSiteWidget.ui \
 		../../src/SVPropVertexListWidget.ui \
+	../../src/SVSimulationPerformanceOptions.ui \
 		../../src/SVWelcomeScreen.ui \
-    ../../src/SVSimulationStartNandrad.ui
+	../../src/SVSimulationStartNandrad.ui
 
 TRANSLATIONS += ../../resources/translations/SIM-VICUS_de.ts
 CODECFORSRC = UTF-8

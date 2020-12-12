@@ -10,6 +10,7 @@ include_directories(
 	${PROJECT_SOURCE_DIR}/../../../externals/IBK/src
 	${PROJECT_SOURCE_DIR}/../../../externals/IBKMK/src
 	${PROJECT_SOURCE_DIR}/../../../externals/Nandrad/src
+	${PROJECT_SOURCE_DIR}/../../../externals/Nandrad/srcTranslations
 	${PROJECT_SOURCE_DIR}/../../../externals/TiCPP/src
 	${PROJECT_SOURCE_DIR}/../../../externals/Vicus/src
 	${PROJECT_SOURCE_DIR}/../../../externals/QtExt/src
@@ -46,6 +47,12 @@ set( APP_HDRS
 
 # collect a list of all form files
 file( GLOB APP_UIS ${PROJECT_SOURCE_DIR}/../../src/*.ui )
+
+# add Qt-Keywordlist files
+set( APP_SRCS
+	${APP_SRCS}
+	${PROJECT_SOURCE_DIR}/../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp
+)
 
 # The Qt resource file (*.qrc)
 set( APP_QRCS	
