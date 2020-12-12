@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>1087</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -120,6 +120,7 @@
      <string>&amp;Simulation</string>
     </property>
     <addaction name="actionSimulationNANDRAD"/>
+    <addaction name="actionSimulationHydraulicNetwork"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
@@ -456,6 +457,14 @@
    </property>
    <property name="toolTip">
     <string>Turns on geometry edit mode</string>
+   </property>
+  </action>
+  <action name="actionSimulationHydraulicNetwork">
+   <property name="text">
+    <string>Hydraulic network calculation...</string>
+   </property>
+   <property name="toolTip">
+    <string>Opens the simulation start dialog.</string>
    </property>
   </action>
  </widget>

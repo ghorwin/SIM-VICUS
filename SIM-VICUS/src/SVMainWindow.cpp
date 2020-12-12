@@ -55,6 +55,7 @@
 
 #include "SVDBMaterialsEditWidget.h"
 #include "SVDBWindowEditWidget.h"
+#include "SVSimulationStartNandrad.h"
 
 #include "SVGeometryView.h"
 #include "Vic3DSceneView.h"
@@ -847,6 +848,7 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionViewToggleGeometryMode->setEnabled(have_project);
 
 	m_ui->actionSimulationNANDRAD->setEnabled(have_project);
+	m_ui->actionSimulationHydraulicNetwork->setEnabled(have_project);
 
 	// also disable menues that are not possible without project
 	m_ui->menuExport->setEnabled(have_project);
@@ -1371,8 +1373,11 @@ void SVMainWindow::on_actionFileExportNANDRAD_triggered() {
 
 
 void SVMainWindow::on_actionSimulationNANDRAD_triggered() {
+	if (m_simulationStartNandrad == nullptr)
+		m_simulationStartNandrad = new SVSimulationStartNandrad;
 	// open simulation start dialog, with settings for climate location, simulation and
 	// solver settings and simulation start button
+	m_simulationStartNandrad->exec();
 }
 
 

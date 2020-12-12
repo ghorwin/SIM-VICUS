@@ -127,7 +127,8 @@ SOURCES += \
 		../../src/SVSettings.cpp \
 		../../src/SVStyle.cpp \
 		../../src/SVThreadBase.cpp \
-		../../src/SVWelcomeScreen.cpp
+		../../src/SVWelcomeScreen.cpp \
+    ../../src/SVSimulationStartNandrad.cpp
 
 HEADERS  += \
 		../../src/SVDBMaterialsEditWidget.h \
@@ -190,7 +191,8 @@ HEADERS  += \
 		../../src/SVStyle.h \
 		../../src/SVThreadBase.h \
 		../../src/SVWelcomeScreen.h \
-		../../src/core3D/Vic3DWireFrameObject.h
+		../../src/core3D/Vic3DWireFrameObject.h \
+    ../../src/SVSimulationStartNandrad.h
 
 FORMS    += \
 		../../src/SVAboutDialog.ui \
@@ -208,7 +210,8 @@ FORMS    += \
 		../../src/SVPropEditGeometry.ui \
 		../../src/SVPropSiteWidget.ui \
 		../../src/SVPropVertexListWidget.ui \
-		../../src/SVWelcomeScreen.ui
+		../../src/SVWelcomeScreen.ui \
+    ../../src/SVSimulationStartNandrad.ui
 
 TRANSLATIONS += ../../resources/translations/SIM-VICUS_de.ts
 CODECFORSRC = UTF-8

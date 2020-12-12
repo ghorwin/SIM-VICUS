@@ -28,6 +28,7 @@ class SVNetworkImportDialog;
 class SVImportIDFDialog;
 class SVNetworkEditDialog;
 class SVViewStateHandler;
+class SVSimulationStartNandrad;
 
 class SVDBMaterialsEditWidget;
 class SVDBWindowEditWidget;
@@ -311,6 +312,10 @@ private:
 	/*! FMI Export dialog. */
 //	SVFMIExportDialog			*m_fmiExportDialog										= nullptr;
 
+	/*! Simulation start dialog. */
+	SVSimulationStartNandrad	*m_simulationStartNandrad								= nullptr;
+
+
 	/*! Contains the 3D scene view (and tool buttons and stuff). */
 	SVGeometryView				*m_geometryView											= nullptr;
 
@@ -322,6 +327,7 @@ private:
 
 	/*! Central handler for the user interface state. */
 	SVViewStateHandler			*m_viewStateHandler										= nullptr;
+
 
 
 	SVDBMaterialsEditWidget		*m_dbMaterialsEditWidget								= nullptr;
