@@ -48,10 +48,11 @@ HEADERS += \
 	../../src/QtExt_Locale.h \
 	../../src/QtExt_MaterialBase.h \
 	../../src/QtExt_MaterialCategory.h \
-	../../src/QtExt_MaterialDBItemDelegate.h \
 	../../src/QtExt_MaterialDatabaseSelectionWidget.h \
+	../../src/QtExt_MaterialDBItemDelegate.h \
 	../../src/QtExt_MaterialTableModel.h \
 	../../src/QtExt_MaterialTableProxyModel.h \
+	../../src/QtExt_ParameterEdit.h \
 	../../src/QtExt_Settings.h \
 	../../src/QtExt_Style.h \
 	../../src/QtExt_ValidatingInputBase.h \
@@ -72,10 +73,11 @@ SOURCES += \
 	../../src/QtExt_LanguageStringEditWidget3.cpp \
 	../../src/QtExt_Locale.cpp \
 	../../src/QtExt_MaterialCategory.cpp \
-	../../src/QtExt_MaterialDBItemDelegate.cpp \
 	../../src/QtExt_MaterialDatabaseSelectionWidget.cpp \
+	../../src/QtExt_MaterialDBItemDelegate.cpp \
 	../../src/QtExt_MaterialTableModel.cpp \
 	../../src/QtExt_MaterialTableProxyModel.cpp \
+	../../src/QtExt_ParameterEdit.cpp \
 	../../src/QtExt_Settings.cpp \
 	../../src/QtExt_Style.cpp \
 	../../src/QtExt_ValidatingInputBase.cpp \
