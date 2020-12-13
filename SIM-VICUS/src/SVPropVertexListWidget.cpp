@@ -18,6 +18,7 @@ SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 	m_ui(new Ui::SVPropVertexListWidget)
 {
 	m_ui->setupUi(this);
+
 	onNewVertexListStart();
 }
 

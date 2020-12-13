@@ -86,6 +86,11 @@ public:
 	*/
 	bool haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const;
 
+	/*! This function collects the pointers to all selected surfaces
+		\returns Returns true if any surface is selected
+	*/
+	bool selectedSurfaces(std::vector<Surface*> &surfaces);
+
 	// *** FUNCTIONS ***
 
 	/*! Function to find an element by ID. */

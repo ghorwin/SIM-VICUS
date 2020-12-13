@@ -1,7 +1,11 @@
 #include "SVPropEditGeometry.h"
 #include "ui_SVPropEditGeometry.h"
 
+#include "VICUS_Project.h"
+
 #include "SVViewStateHandler.h"
+#include "SVProjectHandler.h"
+#include "SVUndoModifySurfaceGeometry.h"
 
 #include "Vic3DNewPolygonObject.h"
 #include "Vic3DCoordinateSystemObject.h"
@@ -66,4 +70,34 @@ void SVPropEditGeometry::on_toolButtonAddZoneBox_clicked() {
 	// toggle property widget to show "placed vertexes" widget
 
 
+}
+
+void SVPropEditGeometry::on_pushButtonTranslate_clicked()
+{
+	// now we update all selected surfaces
+	VICUS::Project p = project();
+	Vic3D::Transform3D trans;
+	QVector3D transVec ( m_ui->lineEditXValueTrans->text().toDouble(),
+							m_ui->lineEditYValueTrans->text().toDouble(),
+							m_ui->lineEditZValueTrans->text().toDouble() );
+
+	std::vector<VICUS::Surface*> surfaces;
+	p.selectedSurfaces(surfaces);
+
+	for ( VICUS::Surface* s : surfaces ) {
+		std::vector<IBKMK::Vector3D> vs;
+		for ( IBKMK::Vector3D v : s->m_geometry.vertexes() ) {
+			Vic3D::Transform3D t;
+			t.setTranslation( v.m_x, v.m_y, v.m_z );
+			t.translate( transVec );
+			vs.push_back( IBKMK::Vector3D ( t.translation().x(), t.translation().y(), t.translation().z() ) );
+		}
+		s->m_geometry.setVertexes(vs);
+	}
+
+	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("modified surfaces"), surfaces );
+	undo->push();
+
+	SVProjectHandler::instance().setModified( SVProjectHandler::GeometryChanged);
+	SVProjectHandler::instance().setModified( SVProjectHandler::SelectionModified);
 }

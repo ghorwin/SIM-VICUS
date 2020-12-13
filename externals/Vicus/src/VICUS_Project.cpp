@@ -370,5 +370,37 @@ bool Project::haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const {
 	return haveSelectedPolys;
 }
 
+bool Project::selectedSurfaces(std::vector<Surface*> &surfaces) {
+	/// TODO: Stephan: implement
+
+	size_t coordsCount=0;
+	bool haveSelectedPolys = false;
+
+	// we go through all dump surfaces in m_plaingeometry
+	// if surface is selected and visible, we store its coordinates and its coordinates count
+	for ( Surface &s : m_plainGeometry) {
+		if ( s.m_visible && s.m_selected ) {
+			!haveSelectedPolys ? haveSelectedPolys = true : haveSelectedPolys;
+			surfaces.push_back(&s);
+		}
+	}
+
+	// we go through all surfaces inside the buildings
+	// if surface is selected and visible, we store its coordinates and its coordinates count
+	for ( Building &b : m_buildings) {
+		for ( BuildingLevel &bl : b.m_buildingLevels) {
+			for ( Room &r : bl.m_rooms) {
+				for ( Surface &s : r.m_surfaces) {
+					if ( s.m_visible && s.m_selected ) {
+						!haveSelectedPolys ? haveSelectedPolys = true : haveSelectedPolys;
+						surfaces.push_back(&s);
+					}
+				}
+			}
+		}
+	}
+
+	return haveSelectedPolys;
+}
 
 } // namespace VICUS

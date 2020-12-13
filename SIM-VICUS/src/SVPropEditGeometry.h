@@ -9,9 +9,16 @@ namespace Vic3D {
 class Transform3D;
 }
 
+namespace VICUS {
+class Project;
+}
+
 namespace Ui {
 class SVPropEditGeometry;
 }
+
+class SVProjectHandler;
+class SVUndoModifySurfaceGeometry;
 
 /*! This widget is shown when the scene is put into geometry editing mode. */
 class SVPropEditGeometry : public QWidget {
@@ -41,6 +48,8 @@ private slots:
 	void on_pushButtonAddPolygon_clicked();
 
 	void on_toolButtonAddZoneBox_clicked();
+
+	void on_pushButtonTranslate_clicked();
 
 private:
 	Ui::SVPropEditGeometry *m_ui;

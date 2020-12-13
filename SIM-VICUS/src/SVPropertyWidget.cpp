@@ -76,6 +76,7 @@ void SVPropertyWidget::setWidgetVisible(PropertyWidgets m) {
 				((SVPropVertexListWidget *)m_propWidgets[M_AddVertexesMode])->onNewVertexListStart();
 				m_propWidgets[M_AddVertexesMode]->setVisible(true);
 			}
+			setMinimumWidth(500);
 		} break;
 
 
