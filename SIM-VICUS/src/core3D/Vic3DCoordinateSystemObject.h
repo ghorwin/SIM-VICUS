@@ -79,6 +79,12 @@ public:
 	/*! Cached pointer to geometry edit widget - needed for direct communication. */
 	SVPropEditGeometry			*m_propEditGeometry = nullptr;
 
+	/*! Returns the local X-coordinate axis. */
+	QVector3D localXAxis() const { return m_transform.rotation().rotatedVector(QVector3D(1,0,0)); }
+	/*! Returns the local Y-coordinate axis. */
+	QVector3D localYAxis() const { return m_transform.rotation().rotatedVector(QVector3D(0,1,0)); }
+	/*! Returns the local Z-coordinate axis. */
+	QVector3D localZAxis() const { return m_transform.rotation().rotatedVector(QVector3D(0,0,1)); }
 
 private:
 	/*! Updates the inverse matrix. */
