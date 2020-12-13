@@ -88,6 +88,8 @@ void Project::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
+			else if (cName == "SolverParameter")
+				m_solverParameter.readXML(c);
 			else if (cName == "ViewSettings")
 				m_viewSettings.readXML(c);
 			else {
@@ -108,6 +110,8 @@ TiXmlElement * Project::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("Project");
 	parent->LinkEndChild(e);
 
+
+	m_solverParameter.writeXML(e);
 
 	m_viewSettings.writeXML(e);
 

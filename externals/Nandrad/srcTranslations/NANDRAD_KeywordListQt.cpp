@@ -197,14 +197,14 @@ KeywordListQt::KeywordListQt() {
 	tr("CVODE based solver");
 	tr("Explicit Euler solver");
 	tr("Implicit Euler solver");
-	tr("System selects integrator automatically.");
+	tr("Automatic selection of integrator");
 	tr("Dense solver");
 	tr("KLU sparse solver");
 	tr("GMRES iterative solver");
 	tr("BICGSTAB iterative solver");
-	tr("System selects les solver automatically.");
+	tr("Automatic selection of linear equation system solver");
 	tr("Incomplete LU preconditioner");
-	tr("System selects preconditioner automatically.");
+	tr("Automatic selection of preconditioner");
 	tr("Gas layer");
 	tr("Glass layer");
 	tr("Thickness of the window layer.");

@@ -35,6 +35,8 @@
 #include "VICUS_NetworkFluid.h"
 #include "VICUS_NetworkPipe.h"
 
+#include <NANDRAD_SolverParameter.h>
+
 namespace VICUS {
 
 class Project {
@@ -140,6 +142,9 @@ public:
 		and not inside Project node.
 	*/
 	NANDRAD::ProjectInfo								m_projectInfo;
+
+	/*! Solver parameters for NANDRAD. */
+	NANDRAD::SolverParameter							m_solverParameter;			// XML:E
 
 	ViewSettings										m_viewSettings;				// XML:E
 

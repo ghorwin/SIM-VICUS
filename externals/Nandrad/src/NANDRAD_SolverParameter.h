@@ -89,7 +89,7 @@ public:
 		I_CVODE,						// Keyword: CVODE						'CVODE based solver'
 		I_ExplicitEuler,				// Keyword: ExplicitEuler				'Explicit Euler solver'
 		I_ImplicitEuler,				// Keyword: ImplicitEuler				'Implicit Euler solver'
-		NUM_I							// Keyword: auto						'System selects integrator automatically.'
+		NUM_I							// Keyword: auto						'Automatic selection of integrator'
 	};
 
 	/*! Enumeration of available linear equation system (LES) solvers, to be used with
@@ -100,13 +100,13 @@ public:
 		LES_KLU,						// Keyword: KLU							'KLU sparse solver'
 		LES_GMRES,						// Keyword: GMRES						'GMRES iterative solver'
 		LES_BiCGStab,					// Keyword: BiCGStab					'BICGSTAB iterative solver'
-		NUM_LES							// Keyword: auto						'System selects les solver automatically.'
+		NUM_LES							// Keyword: auto						'Automatic selection of linear equation system solver'
 	};
 
 	/*! Enumeration of available preconditioners, to be used with iterative LES solvers. */
 	enum precond_t {
 		PRE_ILU,						// Keyword: ILU							'Incomplete LU preconditioner'
-		NUM_PRE							// Keyword: auto						'System selects preconditioner automatically.'
+		NUM_PRE							// Keyword: auto						'Automatic selection of preconditioner'
 	};
 
 

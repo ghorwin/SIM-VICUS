@@ -1404,7 +1404,7 @@ namespace NANDRAD {
 				case 0 : return "CVODE based solver";
 				case 1 : return "Explicit Euler solver";
 				case 2 : return "Implicit Euler solver";
-				case 3 : return "System selects integrator automatically.";
+				case 3 : return "Automatic selection of integrator";
 			} break;
 			// SolverParameter::lesSolver_t
 			case 49 :
@@ -1413,13 +1413,13 @@ namespace NANDRAD {
 				case 1 : return "KLU sparse solver";
 				case 2 : return "GMRES iterative solver";
 				case 3 : return "BICGSTAB iterative solver";
-				case 4 : return "System selects les solver automatically.";
+				case 4 : return "Automatic selection of linear equation system solver";
 			} break;
 			// SolverParameter::precond_t
 			case 50 :
 			switch (t) {
 				case 0 : return "Incomplete LU preconditioner";
-				case 1 : return "System selects preconditioner automatically.";
+				case 1 : return "Automatic selection of preconditioner";
 			} break;
 			// WindowGlazingLayer::type_t
 			case 51 :
