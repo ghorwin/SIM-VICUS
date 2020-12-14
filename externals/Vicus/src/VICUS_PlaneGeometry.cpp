@@ -406,7 +406,6 @@ void PlaneGeometry::eleminateColinearPts(){
 
 }
 
-
 void PlaneGeometry::triangulate() {
 	FUNCID(PlaneGeometry::triangulate);
 	Q_ASSERT(m_vertexes.size() >= 3);
@@ -442,7 +441,24 @@ void PlaneGeometry::triangulate() {
 			triangu.setPoints(points);
 			//calculate middle point for each triangle and check if point is in polygon
 			for (IBKMK::Triangulation::triangle_t tri : triangu.m_triangles) {
+//				QPolygonF checkTriangle;
+//				checkTriangle << QPointF(m_polygon[tri.i1]);
+//				checkTriangle << QPointF(m_polygon[tri.i2]);
+//				checkTriangle << QPointF(m_polygon[tri.i3]);
 
+//				QPolygonF newTri = m_polygon.intersected(checkTriangle);
+//				// check if delaunay triangle contain all points of intersected triangle
+//				// if not polygon is outside the polyline
+//				// skip it
+//				if(newTri.containsPoint(m_polygon[tri.i1],Qt::FillRule::OddEvenFill) &&
+//					newTri.containsPoint(m_polygon[tri.i2],Qt::FillRule::OddEvenFill) &&
+//					newTri.containsPoint(m_polygon[tri.i3],Qt::FillRule::OddEvenFill)){
+//					m_triangles.push_back(triangle_t(tri.i1, tri.i2, tri.i3));
+//				}
+
+
+
+				//das funktioniert nicht immer
 				QPointF a(m_polygon.value(tri.i1)), b(m_polygon.value(tri.i2)), c(m_polygon.value(tri.i3));
 				double distA, distB, distC;
 				QLineF ab(a,b), bc(b,c), ca(c,a);
