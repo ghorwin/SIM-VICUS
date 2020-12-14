@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <NandradProject fileVersion="1.999">
 	<Project>
-		<ProjectInfo />
-		<Location />
-		<SimulationParameter>
-			<SolarLoadsDistributionModel>
-				<DistributionType>AreaWeighted</DistributionType>
-			</SolarLoadsDistributionModel>
-		</SimulationParameter>
-		<SolverParameter />
+
+		<Location>
+			<IBK:Parameter name="Latitude" unit="Deg">51</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<ClimateFileName>${Project Directory}/../tests/climate/Konstantopol_20C.c6b</ClimateFileName>
+		</Location>
+		
+		<Zones>
+			<Zone id="1" displayName="Dummy zone" type="Active">
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">100</IBK:Parameter>
+			</Zone>
+		</Zones>
+
+
 		<HydraulicNetworks>
 			<HydraulicNetwork id="6" displayName="Test Network">
 				<HydraulicFluid id="21" displayName="Water">
