@@ -3,6 +3,7 @@
 namespace NANDRAD {
 
 void HydraulicFluid::defaultFluidWater(unsigned int id){
+	m_id = id;
 	m_displayName = "Water";
 	m_para[P_Density] = IBK::Parameter("Density", 998, "kg/m3");
 	m_para[P_Conductivity] = IBK::Parameter("Conductivity", 0.6, "W/mK");
