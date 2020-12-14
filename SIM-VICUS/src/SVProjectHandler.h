@@ -49,6 +49,8 @@ public:
 		NetworkModified,
 		/*! Anything in the geometry has changed. */
 		GeometryChanged,
+		/*! Geometry has been edited and we need to update the local coordinate system. */
+		GeometryModified,
 		/*! Selection has changed - update of entire selection object is requested. */
 		SelectionModified,
 		/*! The state (visibility/selection) of a node in the tree view/surface in the scene has changed.

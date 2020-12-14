@@ -40,8 +40,8 @@ void SVUndoModifySurfaceGeometry::undo() {
 
 
 	// tell project that the network has changed
-	SVProjectHandler::instance().setModified( SVProjectHandler::GeometryChanged);
-	SVProjectHandler::instance().setModified( SVProjectHandler::SelectionModified);
+	SVProjectHandler::instance().setModified( SVProjectHandler::GeometryChanged );
+	SVProjectHandler::instance().setModified( SVProjectHandler::GeometryModified );
 }
 
 

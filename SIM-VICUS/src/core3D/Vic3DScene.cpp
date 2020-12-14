@@ -88,7 +88,24 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 		case SVProjectHandler::NetworkModified :
 			updateNetwork = true;
 			break;
+		case SVProjectHandler::GeometryModified : {
+			m_selectedGeometryObject.updateBuffers();
 
+			SVViewState vs = SVViewStateHandler::instance().viewState();
+			IBKMK::Vector3D centerPoint;
+			if ( project().haveSelectedSurfaces(centerPoint) ) {
+				vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+				vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
+				m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(centerPoint) );
+			}
+			else {
+				vs.m_sceneOperationMode = SVViewState::NUM_OM;
+				vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+			}
+			// now tell all UI components to toggle their view state
+			SVViewStateHandler::instance().setViewState(vs);
+			break;
+		}
 		case SVProjectHandler::NodeStateModified : {
 			// we need to update the colors of some building elements
 			unsigned int smallestVertexIndex = m_opaqueGeometryObject.m_vertexBufferData.size();
@@ -153,11 +170,8 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 					vs.m_sceneOperationMode = SVViewState::NUM_OM;
 					vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
 				}
-				SVViewStateHandler::instance().setViewState(vs);
 				// now tell all UI components to toggle their view state
-
-
-
+				SVViewStateHandler::instance().setViewState(vs);
 			}
 
 		} break;

@@ -111,6 +111,9 @@ public:
 	/*! Calculates surface area in m2. */
 	double area() const;
 
+	/*! Calculates the center point of the surface */
+	IBKMK::Vector3D centerPoint() const;
+
 	void setVertexes(const std::vector<IBKMK::Vector3D> & vertexes);
 
 	/*! Returns the 2D polygon (only if it exists). */

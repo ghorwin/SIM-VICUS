@@ -30,7 +30,7 @@ SVSimulationStartNandrad::~SVSimulationStartNandrad() {
 
 int SVSimulationStartNandrad::edit() {
 	// store current project settings
-	m_solverParams = project().m_solverParameter;
+//	m_solverParams = project().m_solverParameter;
 	m_simulationPerformanceOptions->updateUi();
 
 	return exec();

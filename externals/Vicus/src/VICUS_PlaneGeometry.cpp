@@ -864,6 +864,20 @@ double PlaneGeometry::area() const
 	return std::abs(area);
 }
 
+IBKMK::Vector3D PlaneGeometry::centerPoint() const
+{
+	size_t counter=0;
+	IBKMK::Vector3D vCenter;
+
+	for ( IBKMK::Vector3D v : vertexes()) {
+		vCenter += v;
+		++counter;
+	}
+	vCenter/=static_cast<double>(counter);
+
+	return vCenter;
+}
+
 
 bool PlaneGeometry::operator!=(const PlaneGeometry & other) const {
 	if (m_type != other.m_type) return true;

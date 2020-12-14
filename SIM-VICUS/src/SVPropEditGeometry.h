@@ -51,6 +51,10 @@ private slots:
 
 	void on_pushButtonTranslate_clicked();
 
+	void on_pushButtonScale_clicked();
+
+	void on_pushButtonRotate_clicked();
+
 private:
 	Ui::SVPropEditGeometry *m_ui;
 };
