@@ -1349,7 +1349,7 @@ void NandradModel::initNetworks() {
 			HydraulicNetworkModel * nwmodel = new HydraulicNetworkModel(nw.m_id, nw.m_displayName);
 			m_modelContainer.push_back(nwmodel); // transfer ownership
 			// initialize
-			nwmodel->setup(nw);
+			nwmodel->setup(nw, m_project->m_hydraulicComponents);
 			// register model for evaluation
 			registerStateDependendModel(nwmodel);
 		}

@@ -131,7 +131,7 @@ HydraulicNetworkModel::~HydraulicNetworkModel() {
 }
 
 
-void HydraulicNetworkModel::setup(const NANDRAD::HydraulicNetwork & nw) {
+void HydraulicNetworkModel::setup(const NANDRAD::HydraulicNetwork & nw, const std::vector<NANDRAD::HydraulicNetworkComponent> & components) {
 	FUNCID(HydraulicNetworkModel::setup);
 
 	// create implementation instance

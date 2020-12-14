@@ -6,6 +6,7 @@
 
 namespace NANDRAD {
 	class HydraulicNetwork;
+	class HydraulicNetworkComponent;
 }
 
 
@@ -36,7 +37,7 @@ public:
 	/*! Initializes model.
 		\param nw The hydraulic network model definition/parametrization.
 	*/
-	void setup(const NANDRAD::HydraulicNetwork & nw);
+	void setup(const NANDRAD::HydraulicNetwork & nw, const std::vector<NANDRAD::HydraulicNetworkComponent> & components);
 
 
 	// *** Re-implemented from AbstractModel
