@@ -321,6 +321,7 @@ namespace NANDRAD {
 				case 6 : return "ObjectList";
 				case 7 : return "Model";
 				case 8 : return "Global";
+				case 9 : return "Network";
 			} break;
 			// NaturalVentilationModel::modelType_t
 			case 29 :
@@ -783,6 +784,7 @@ namespace NANDRAD {
 				case 6 : return "ObjectList";
 				case 7 : return "Model";
 				case 8 : return "Global";
+				case 9 : return "Network";
 			} break;
 			// NaturalVentilationModel::modelType_t
 			case 29 :
@@ -1244,8 +1246,9 @@ namespace NANDRAD {
 				case 4 : return "Model references an active object.";
 				case 5 : return "Model references scheduled data.";
 				case 6 : return "Model references an object list-specific value.";
-				case 7 : return "Model references another generic model.";
+				case 7 : return "Model references of a generic model.";
 				case 8 : return "Model references to global physical quantities.";
+				case 9 : return "Model references of a hydraulic network.";
 			} break;
 			// NaturalVentilationModel::modelType_t
 			case 29 :
@@ -1708,6 +1711,7 @@ namespace NANDRAD {
 				case 6 : return "";
 				case 7 : return "";
 				case 8 : return "";
+				case 9 : return "";
 			} break;
 			// NaturalVentilationModel::modelType_t
 			case 29 :
@@ -2170,6 +2174,7 @@ namespace NANDRAD {
 				case 6 : return "#FFFFFF";
 				case 7 : return "#FFFFFF";
 				case 8 : return "#FFFFFF";
+				case 9 : return "#FFFFFF";
 			} break;
 			// NaturalVentilationModel::modelType_t
 			case 29 :
@@ -2632,6 +2637,7 @@ namespace NANDRAD {
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
 				case 7 : return std::numeric_limits<double>::quiet_NaN();
 				case 8 : return std::numeric_limits<double>::quiet_NaN();
+				case 9 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NaturalVentilationModel::modelType_t
 			case 29 :
@@ -2942,7 +2948,7 @@ namespace NANDRAD {
 			// Material::para_t
 			case 27 : return 3;
 			// ModelInputReference::referenceType_t
-			case 28 : return 9;
+			case 28 : return 10;
 			// NaturalVentilationModel::modelType_t
 			case 29 : return 2;
 			// NaturalVentilationModel::para_t
@@ -3072,7 +3078,7 @@ namespace NANDRAD {
 			// Material::para_t
 			case 27 : return 2;
 			// ModelInputReference::referenceType_t
-			case 28 : return 8;
+			case 28 : return 9;
 			// NaturalVentilationModel::modelType_t
 			case 29 : return 1;
 			// NaturalVentilationModel::para_t

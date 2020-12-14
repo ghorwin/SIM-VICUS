@@ -245,6 +245,8 @@ private:
 			will be *empty*!!!
 	*/
 	void initObjectLists();
+	/*! Initializes all hydraulic networks. */
+	void initNetworks();
 	/*! Connects implicit and explicit models according to input references, calls
 		modelInputReference() of each model. .*/
 	void initModelDependencies();

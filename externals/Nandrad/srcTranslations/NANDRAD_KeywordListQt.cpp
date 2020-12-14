@@ -117,8 +117,9 @@ KeywordListQt::KeywordListQt() {
 	tr("Model references an active object.");
 	tr("Model references scheduled data.");
 	tr("Model references an object list-specific value.");
-	tr("Model references another generic model.");
+	tr("Model references of a generic model.");
 	tr("Model references to global physical quantities.");
+	tr("Model references of a hydraulic network.");
 	tr("Constant ventilation rate");
 	tr("Scheduled ventilation rate");
 	tr("Ventilation rate");

@@ -46,8 +46,9 @@ public:
 		MRT_ACTIVE_OBJECT,			// Keyword: ActiveObject			'Model references an active object.'
 		MRT_SCHEDULE,				// Keyword: Schedule				'Model references scheduled data.'
 		MRT_OBJECTLIST,				// Keyword: ObjectList				'Model references an object list-specific value.'
-		MRT_MODEL,					// Keyword: Model					'Model references another generic model.'
+		MRT_MODEL,					// Keyword: Model					'Model references of a generic model.'
 		MRT_GLOBAL,					// Keyword: Global					'Model references to global physical quantities.'
+		MRT_NETWORK,				// Keyword: Network					'Model references of a hydraulic network.'
 		NUM_MRT
 	};
 

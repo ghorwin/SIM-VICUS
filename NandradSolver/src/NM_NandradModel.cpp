@@ -82,6 +82,7 @@
 #include "NM_InternalLoadsModel.h"
 #include "NM_WindowModel.h"
 #include "NM_RoomRadiationLoadsModel.h"
+#include "NM_HydraulicNetworkModel.h"
 
 namespace NANDRAD_MODEL {
 
@@ -187,6 +188,8 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 	initZones();
 	// *** Initialize Wall/Construction Modules ***
 	initWallsAndInterfaces();
+	// *** Initialize Networks ***
+	initNetworks();
 	// *** Initialize ModelGroups ***
 //	initModelGroups();
 	// *** Initialize all internal fmus ***
@@ -1329,6 +1332,28 @@ void NandradModel::initObjectLists() {
 		}
 	}
 
+}
+
+
+void NandradModel::initNetworks() {
+	if (!m_project->m_hydraulicNetworks.empty()) {
+		FUNCID(NandradModel::initNetworks);
+		IBK::IBK_Message(IBK::FormatString("Initializing Networks\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		IBK_MSG_INDENT;
+		// process all networks and create NM::HydraulicNetworkModel instances
+		for (const NANDRAD::HydraulicNetwork & nw : m_project->m_hydraulicNetworks) {
+			IBK::IBK_Message(IBK::FormatString("Initializing network #%1 '%2'\n").arg(nw.m_id).arg(nw.m_displayName),
+							 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+			IBK_MSG_INDENT;
+			// create a network model object
+			HydraulicNetworkModel * nwmodel = new HydraulicNetworkModel(nw.m_id, nw.m_displayName);
+			m_modelContainer.push_back(nwmodel); // transfer ownership
+			// initialize
+			nwmodel->setup(nw);
+			// register model for evaluation
+			registerStateDependendModel(nwmodel);
+		}
+	}
 }
 
 
