@@ -9,25 +9,70 @@ namespace SV {
 template <typename T>
 T elementExists(std::map<unsigned int, T> database, unsigned int id, std::string displayName,
 				std::string idName, std::string objectType){
-	FUNCID(SVLCA::elementExists);
+	FUNCID(LCA::elementExists);
 	if(database.find(id) == database.end())
 		IBK::Exception(IBK::FormatString("%3 id %1 of %4 '%2' is not contained in database. ")
 					   .arg(id).arg(displayName).arg(idName).arg(objectType), FUNC_ID);
 	return  database[id];
 }
 
-double xxx(const QString &refQ){
-	if(refQ == "m3")
-		return 10;
-//	else if()
 
+/*! /// TODO Mira */
+void addEpdMaterialToComponent(VICUS::EPDDataset epd, LCA::LCAComponentResult &comp, LCA::LCAComponentResult &comp2,
+					double lifeCycle, double thickness, double rho, int idx = 0, double adjustment = 1.2){
 
-	return 0;
+	FUNCID(LCA::addEpdMaterialToComponent);
+
+	for(unsigned int i=0; i<VICUS::EPDDataset::NUM_P; ++i){
+		//skip empty values
+		if(epd.m_para[i].value == 0)
+			continue;
+
+		IBK::Unit unit = epd.m_para[i].unit();
+		//mass material
+		double mass = rho * comp.m_area  * thickness;
+
+		//take specific epd value for this category
+		double val = epd.m_para[i].get_value(unit);
+		QString &refUnit = epd.m_referenceUnit;
+		val *= mass;
+		if(QString::compare("kg", refUnit, Qt::CaseInsensitive) == 0){
+			//do nothing
+		}
+		else if (QString::compare("m3", refUnit, Qt::CaseInsensitive) == 0) {
+			//referencequantity in [m3]
+			if(epd.m_para[VICUS::EPDDataset::P_Density].get_value("kg/m3") > 0)
+				val /= epd.m_para[VICUS::EPDDataset::P_Density].get_value("kg/m3");		/// TODO Mira		/*volumen density*/
+		}
+		else if (QString::compare("m2", refUnit, Qt::CaseInsensitive) == 0) {
+			//referencequantity in [m2]
+			val /= epd.m_para[VICUS::EPDDataset::P_Density].get_value("kg/m3");	/// TODO Mira
+		}
+		else
+			throw IBK::Exception(IBK::FormatString("No valid specific Unit???? rho for epd mat. '%1' available for").
+								 arg(epd.m_displayName.toStdString()), FUNC_ID);
+		val /= epd.m_referenceQuantity;
+
+		val *= adjustment;
+
+		//Das könnten wir auch später machen - wir überlegen hier nochmal
+		/// TODO Mira
+		//val /= netFloorArea;
+		//val /= 50;					//reporting period [a]
+
+		comp.addValue(idx, static_cast<VICUS::EPDDataset::para_t>(i),
+					  IBK::Parameter(epd.m_para[i].name, val, unit));
+		if(lifeCycle >= 0)
+			comp2.addValue(idx, static_cast<VICUS::EPDDataset::para_t>(i),
+						   IBK::Parameter(epd.m_para[i].name, val*lifeCycle, unit));
+	}
 }
 
-void SVLCA::calculateLCA()
+
+
+void LCA::calculateLCA()
 {
-	FUNCID(SVLCA::calculateLCA);
+	FUNCID(LCA::calculateLCA);
 
 	/*! Summarize all components with all constructions and material layers.
 		Categorize all construction with their surface areas.
@@ -45,16 +90,6 @@ void SVLCA::calculateLCA()
 		VICUS::EPDDataset m_epdB;
 		VICUS::EPDDataset m_epdC;
 		VICUS::EPDDataset m_epdD;
-	};
-
-	// results
-	// cat set A - D with the results for this specific construction not multiplied by surface area
-	struct LCAComponentResult{
-		VICUS::EPDDataset m_epdA;
-		VICUS::EPDDataset m_epdB;
-		VICUS::EPDDataset m_epdC;
-		VICUS::EPDDataset m_epdD;		// user epd of the specific construction
-		 double									m_area;				// in m2
 	};
 
 	std::map<unsigned int, LCAComponentResult>		compRes;
@@ -182,14 +217,6 @@ void SVLCA::calculateLCA()
 			}
 		}
 	}
-			//hole den epd datensatz aus "materialIdAndEpd" über id
-			//berechnung
-			//erstellen eines datensatzes für die component
-			//comp.m_epdA ...or each component
-
-//    for(std::map<unsigned int, LCAComponentResult>::iterator it = compRes.begin();
-//                                                             it != compRes.end();
-//                                                             ++it){
 
 
 
@@ -200,44 +227,30 @@ void SVLCA::calculateLCA()
 
 		//check if opaque construction is available
 		if(m_dbComponents[compId].m_idOpaqueConstruction != VICUS::INVALID_ID){
-			const VICUS::Construction constr = m_dbConstructions[m_dbComponents[compId].m_idOpaqueConstruction];
+			const VICUS::Construction &constr = m_dbConstructions[m_dbComponents[compId].m_idOpaqueConstruction];
 
-
-			//gehe durch alle material layer
+			//gehe durch alle material layer ///TODO Mira
 			for(auto &l : constr.m_materialLayers){
 				MatEpd &matEpd = materialIdAndEpd[l.m_matId];
 				double rho = m_dbOpaqueMaterials[l.m_matId].m_para[VICUS::Material::P_Density].get_value("kg/m3");
 
+				addEpdMaterialToComponent(matEpd.m_epdA, comp, compResErsatz[compId],
+							   l.m_lifeCylce, l.m_thickness.get_value("m"),
+							   rho, 0, m_adjustment);
 
-				for(unsigned int i=0; i<VICUS::EPDDataset::NUM_P; ++i){
-					IBK::Unit unit = matEpd.m_epdA.m_para[i].unit();
-					if(matEpd.m_epdA.m_para[i].value != 0){
+				addEpdMaterialToComponent(matEpd.m_epdB, comp, compResErsatz[compId],
+							   0, l.m_thickness.get_value("m"),
+							   rho, 1, m_adjustment);
 
+				addEpdMaterialToComponent(matEpd.m_epdC, comp, compResErsatz[compId],
+							   l.m_lifeCylce, l.m_thickness.get_value("m"),
+							   rho, 2, m_adjustment);
 
-						double val = matEpd.m_epdA.m_para[i].get_value(unit)*l.m_thickness.get_value("m")/**MBEinheit*/;
-						val *= 1.2;//the factor 1.2 is according to the use of simplified procedure
-						//mal Fläche
-						//mal ReferenzUnit...--> Qstring in double umgeändert
-						//*Ersatzzykls //wo ist das? period of renewal...
-						//mal allumschlossene Nettogrundfläche
-						//mal Betrachtungszeitraum (normaly 50a)
-						val *= comp.m_area;
-						l.m_lifeCylce; //abrunden std::floor
-						comp.m_epdA.m_para[i].set(matEpd.m_epdA.m_para[i].name,
-												  comp.m_epdA.m_para[i].get_value(unit)
-												  +val,unit);
-//                        if(Ersatzzyklen > 0)
-						compResErsatz[compId].m_epdA.m_para[i].set(matEpd.m_epdA.m_para[i].name,
-																  compResErsatz[compId].m_epdA.m_para[i].get_value(unit)
-																  +val/**ersatz*/,unit);// = matEpd.m_epdA.m_para
-					}
-						//selbe für B,C,D
+				addEpdMaterialToComponent(matEpd.m_epdD, comp, compResErsatz[compId],
+							   l.m_lifeCylce, l.m_thickness.get_value("m"),
+							   rho, 3, m_adjustment);
 
-				}
 			}
-			//hole material id und dicke und le
-			//multi mit fläche
-			//fertig
 
 		}
 

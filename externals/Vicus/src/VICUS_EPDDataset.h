@@ -20,6 +20,7 @@ public:
 	enum para_t {
 		//thermal paramters
 		/*! Dry density of the material. */
+		//spezArea... vol mass..			///TODO Mira
 		P_Density,					// Keyword: Density					[kg/m3]	'Dry density of the material.'
 		/*! Global Warming Potential. */
 		P_GWP,						// Keyword: GWP						[W/mK]	'Global Warming Potential.'
