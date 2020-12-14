@@ -2,6 +2,8 @@
 
 #include <NANDRAD_HydraulicNetwork.h>
 
+#include <IBK_messages.h>
+
 #include <IBKMK_DenseMatrix.h>
 #include <IBKMK_SparseMatrixCSR.h>
 #include <IBKMK_SparseMatrixPattern.h>
@@ -16,6 +18,26 @@ namespace NANDRAD_MODEL {
 
 class HydraulicNetworkModelImpl {
 public:
+	HydraulicNetworkModelImpl();
+	~HydraulicNetworkModelImpl();
+
+	/*! Initialized solver based on current content of m_flowElements.
+		Setup needs to be called whenever m_flowElements vector changes
+		(but not, when parameters inside flow elements change!).
+	*/
+	void setup();
+
+	/*! Solves the flow network equation system.
+		You must call setup() before calling solve.
+	*/
+	void solve();
+
+	/*! Container for flow element implementation objects.
+		Need to be populated before calling setup.
+	*/
+	std::vector<HydraulicNetworkAbstractFlowElement*>	m_flowElements;
+
+private:
 
 	/*! Stores connectivity information. */
 	struct Node {
@@ -57,18 +79,13 @@ public:
 		klu_common								m_KLUParas;
 	};
 
-	HydraulicNetworkModelImpl();
-	~HydraulicNetworkModelImpl();
-
 	void printVars() const;
 	void writeNetworkGraph() const;
-	void solve();
 
 	/*! Computes system equation (becomes RHS of Newton method). */
 	void updateG();
 
-	/*! Initialize jacobian and create analytical structures (pattern,
-	 * KLU reordering,..). */
+	/*! Initialize jacobian and create analytical structures (pattern, KLU reordering,..). */
 	void jacobianInit();
 
 	/*! Updates jacobian data. */
@@ -92,7 +109,6 @@ public:
 	/*! Stucture storing sparse jacobian and KLU solver information. */
 	SparseSolver						m_sparseSolver;
 
-	std::vector<HydraulicNetworkAbstractFlowElement*>	m_flowElements;
 	std::vector<Node>					m_nodes;
 
 	unsigned int						m_nodeCount;
@@ -114,8 +130,21 @@ HydraulicNetworkModel::~HydraulicNetworkModel() {
 	delete m_p; // delete pimpl object
 }
 
-void HydraulicNetworkModel::setup(const NANDRAD::HydraulicNetwork & nw) {
 
+void HydraulicNetworkModel::setup(const NANDRAD::HydraulicNetwork & nw) {
+	FUNCID(HydraulicNetworkModel::setup);
+
+	// create implementation instance
+	m_p = new HydraulicNetworkModelImpl; // we take ownership
+
+	// now populate the m_flowElements vector of the network solver
+
+	// setup the flow equations
+	try {
+		m_p->setup();
+	} catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, "Error setting up equation system/Jacobian for flow network.", FUNC_ID);
+	}
 }
 
 
@@ -156,8 +185,18 @@ void HydraulicNetworkModel::stateDependencies(std::vector<std::pair<const double
 
 
 int HydraulicNetworkModel::update() {
+	FUNCID(HydraulicNetworkModel::update);
 	// re-compute hydraulic network
 
+	IBK_ASSERT(m_p != nullptr);
+	try {
+		m_p->solve();
+	} catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex,
+							 IBK::FormatString("Error solving hydraulic network equations for network #%1 '%2'.")
+							 .arg(m_id).arg(m_displayName), FUNC_ID);
+
+	}
 
 	return 0; // signal success
 }
@@ -264,6 +303,42 @@ HydraulicNetworkModelImpl::~HydraulicNetworkModelImpl() {
 }
 
 
+void HydraulicNetworkModelImpl::setup() {
+	FUNCID(HydraulicNetworkModelImpl::setup);
+
+	// count number of nodes
+	unsigned int nodeCount = 0;
+	for (HydraulicNetworkAbstractFlowElement * fe : m_flowElements) {
+		nodeCount = std::max(nodeCount, fe->m_nInlet);
+		nodeCount = std::max(nodeCount, fe->m_nOutlet);
+	}
+
+	// create fast access connections between nodes and flow elements
+	m_nodes.resize(nodeCount+1);
+	for (unsigned int i=0; i<m_flowElements.size(); ++i) {
+		HydraulicNetworkAbstractFlowElement * fe = m_flowElements[i];
+		m_nodes[fe->m_nInlet].m_flowElementIndexes.push_back(i);
+		m_nodes[fe->m_nOutlet].m_flowElementIndexes.push_back(i);
+	}
+
+	m_nodeCount = m_nodes.size();
+	m_elementCount = m_flowElements.size();
+	IBK::IBK_Message(IBK::FormatString("Nodes:         %1\n").arg(m_nodeCount), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	IBK::IBK_Message(IBK::FormatString("Flow elements: %1\n").arg(m_elementCount), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	unsigned int n = m_nodeCount + m_elementCount;
+
+	// set initial conditions
+	m_y.resize(n, 10);
+
+	m_G.resize(n);
+	m_massFluxes.resize(m_elementCount);
+	m_nodePressures.resize(m_nodeCount);
+
+	// create jacobian
+	jacobianInit();
+}
+
+
 double WRMSNorm(const std::vector<double> & vec) {
 	double resNorm = 0;
 	for (unsigned int i=0; i<vec.size(); ++i)
@@ -284,6 +359,7 @@ void HydraulicNetworkModelImpl::printVars() const {
 		std::cout << "  " << i << "   " << m_y[i + m_elementCount] << std::endl;
 }
 
+
 void HydraulicNetworkModelImpl::writeNetworkGraph() const {
 #if 0
 	// generate dot graph file for plotting
@@ -303,6 +379,7 @@ void HydraulicNetworkModelImpl::writeNetworkGraph() const {
 	out << strm.rdbuf();
 #endif
 }
+
 
 void HydraulicNetworkModelImpl::solve() {
 	unsigned int n = m_nodeCount + m_elementCount;
@@ -387,8 +464,8 @@ void HydraulicNetworkModelImpl::solve() {
 void HydraulicNetworkModelImpl::jacobianInit() {
 
 	unsigned int n = m_nodeCount + m_elementCount;
-	// if sparse solver is  not available use dense matrix
-	if(m_solverOptions == LESDense) {
+	// if sparse solver is not available use dense matrix
+	if (m_solverOptions == LESDense) {
 		m_denseSolver.m_jacobian.resize(n);
 		m_denseSolver.m_jacobianFactorized.resize(n);
 	}
@@ -472,7 +549,7 @@ void HydraulicNetworkModelImpl::jacobianInit() {
 		// generate transpose indes
 		std::vector<unsigned int> iaT;
 		std::vector<unsigned int> jaT;
-		::IBKMK::SparseMatrixCSR::generateTransposedIndex(ia, ja, iaT, jaT);
+		IBKMK::SparseMatrixCSR::generateTransposedIndex(ia, ja, iaT, jaT);
 		// resize jacobian
 		m_sparseSolver.m_jacobian.resize(n, ja.size(), &ia[0], &ja[0], &iaT[0], &jaT[0]);
 
@@ -538,7 +615,7 @@ void HydraulicNetworkModelImpl::jacobianSetup() {
 	// store G(y)
 	std::copy(m_G.begin(), m_G.end(), Gy.begin());
 
-	if(m_denseSolver.m_jacobian.n() > 0) {
+	if (m_denseSolver.m_jacobian.n() > 0) {
 
 		IBKMK::DenseMatrix &jacobian = m_denseSolver.m_jacobian;
 		IBKMK::DenseMatrix &jacobianFac = m_denseSolver.m_jacobianFactorized;
