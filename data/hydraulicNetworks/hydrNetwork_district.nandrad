@@ -11,7 +11,7 @@
 		<SolverParameter />
 		<HydraulicNetworks>
 			<HydraulicNetwork id="4" displayName="Test Network">
-				<HydraulicFluid displayName="Water">
+				<HydraulicFluid id="11" displayName="Water">
 					<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
 					<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
@@ -48,7 +48,7 @@
 				<IBK:Parameter name="HydraulicDiameter" unit="mm">100</IBK:Parameter>
 			</HydraulicNetworkComponent>
 			<HydraulicNetworkComponent id="3" displayName="heat exchanger" modelType="HeatExchanger">
-				<IBK:Parameter name="HeatExchangeRate" unit="W">100</IBK:Parameter>
+				<IBK:Parameter name="HeatFlux" unit="W">100</IBK:Parameter>
 			</HydraulicNetworkComponent>
 		</HydraulicComponents>
 		<Schedules />

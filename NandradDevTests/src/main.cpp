@@ -2265,6 +2265,16 @@ int main(int argc, char * argv[]) {
 		hydraulicNetworkTest02(prj2);
 		prj2.writeXML(IBK::Path("../../data/hydraulicNetworks/hydrNetwork_district.nandrad"));
 
+		try {
+			// try reading projects back in
+			NANDRAD::Project p;
+			p.readXML(IBK::Path("../../data/hydraulicNetworks/hydrNetwork_building.nandrad"));
+
+		} catch (IBK::Exception & ex) {
+			ex.writeMsgStackToError();
+			return EXIT_FAILURE;
+		}
+
 		return EXIT_SUCCESS;
 
 	}
