@@ -166,7 +166,7 @@ void SVPropEditGeometry::on_pushButtonScale_clicked()
 				t.setTranslation( centerPoint.m_x + scaleVec.x() * ( v.m_x - centerPoint.m_x ),
 								  centerPoint.m_y + scaleVec.y() * ( v.m_y - centerPoint.m_y),
 								  centerPoint.m_z + scaleVec.z() * ( v.m_z - centerPoint.m_z) );
-				vs.push_back( IBKMK::Vector3D ( t.translation().x(), t.translation().y(), t.translation().z() ) );
+				vs.push_back( VICUS::QVector2IBKVector( t.translation() ) );
 			}
 			s->m_geometry.setVertexes(vs);
 		}
@@ -182,24 +182,26 @@ void SVPropEditGeometry::on_pushButtonScale_clicked()
 			for ( IBKMK::Vector3D v : s->m_geometry.vertexes() ) {
 				Vic3D::Transform3D t;
 				QVector3D v3D ( VICUS::IBKVector2QVector(v) );
+
+				// first we find the scaling factors of our local cooridnate system
+
 				double localScaleFactorX = ( v.m_x - centerPointLocal.m_x ) / ( IBK::nearly_equal<4>(xAxis.x(), 0.0) ? 1E10 : xAxis.x() ) +
-										   ( v.m_y - centerPointLocal.m_y ) / ( IBK::nearly_equal<4>(yAxis.x(), 0.0) ? 1E10 : yAxis.x() ) +
-										   ( v.m_z - centerPointLocal.m_z ) / ( IBK::nearly_equal<4>(zAxis.x(), 0.0) ? 1E10 : zAxis.x() );
+										   ( v.m_y - centerPointLocal.m_y ) / ( IBK::nearly_equal<4>(xAxis.y(), 0.0) ? 1E10 : xAxis.y() ) +
+										   ( v.m_z - centerPointLocal.m_z ) / ( IBK::nearly_equal<4>(xAxis.z(), 0.0) ? 1E10 : xAxis.z() );
 
-				double localScaleFactorY = ( v.m_x - centerPointLocal.m_x ) / ( IBK::nearly_equal<4>(xAxis.y(), 0.0) ? 1E10 : xAxis.y() ) +
+				double localScaleFactorY = ( v.m_x - centerPointLocal.m_x ) / ( IBK::nearly_equal<4>(yAxis.x(), 0.0) ? 1E10 : yAxis.x() ) +
 										   ( v.m_y - centerPointLocal.m_y ) / ( IBK::nearly_equal<4>(yAxis.y(), 0.0) ? 1E10 : yAxis.y() ) +
-										   ( v.m_z - centerPointLocal.m_z ) / ( IBK::nearly_equal<4>(zAxis.y(), 0.0) ? 1E10 : zAxis.y() );
+										   ( v.m_z - centerPointLocal.m_z ) / ( IBK::nearly_equal<4>(yAxis.z(), 0.0) ? 1E10 : yAxis.z() );
 
-				double localScaleFactorZ = ( v.m_x - centerPointLocal.m_x ) / ( IBK::nearly_equal<4>(xAxis.z(), 0.0) ? 1E10 : xAxis.z() ) +
-										   ( v.m_y - centerPointLocal.m_y ) / ( IBK::nearly_equal<4>(yAxis.z(), 0.0) ? 1E10 : yAxis.z() ) +
+				double localScaleFactorZ = ( v.m_x - centerPointLocal.m_x ) / ( IBK::nearly_equal<4>(zAxis.x(), 0.0) ? 1E10 : zAxis.x() ) +
+										   ( v.m_y - centerPointLocal.m_y ) / ( IBK::nearly_equal<4>(zAxis.y(), 0.0) ? 1E10 : zAxis.y() ) +
 										   ( v.m_z - centerPointLocal.m_z ) / ( IBK::nearly_equal<4>(zAxis.z(), 0.0) ? 1E10 : zAxis.z() );
-				// t.scale(localScaleFactorX*scaleVec.x(), localScaleFactorY*scaleVec.y(), localScaleFactorZ*scaleVec.z());
 
-				double x = centerPointLocal.m_x + scaleVec.x() * ( localScaleFactorX * xAxis.x() + localScaleFactorY * yAxis.x() + localScaleFactorZ * zAxis.x() );
-				double y = centerPointLocal.m_y + scaleVec.y() * ( localScaleFactorX * xAxis.y() + localScaleFactorY * yAxis.y() + localScaleFactorZ * zAxis.y() );
-				double z = centerPointLocal.m_z + scaleVec.z() * ( localScaleFactorX * xAxis.z() + localScaleFactorY * yAxis.z() + localScaleFactorZ * zAxis.z() );
-
-				t.setTranslation( x, y, z );
+				// then we scale our points
+				QVector3D p = VICUS::IBKVector2QVector(centerPointLocal) + localScaleFactorX * scaleVec.x() * xAxis
+																		 + localScaleFactorY * scaleVec.y() * yAxis
+																		 + localScaleFactorZ * scaleVec.z() * zAxis;
+				t.setTranslation( p );
 				vs.push_back( VICUS::QVector2IBKVector( t.translation() ) );
 			}
 			s->m_geometry.setVertexes(vs);
@@ -207,7 +209,17 @@ void SVPropEditGeometry::on_pushButtonScale_clicked()
 	}
 	else {
 
-
+		for ( VICUS::Surface* s : surfaces ) {
+			std::vector<IBKMK::Vector3D> vs;
+			for ( IBKMK::Vector3D v : s->m_geometry.vertexes() ) {
+				Vic3D::Transform3D t;
+				t.setTranslation( centerPoint.m_x + scaleVec.x() * ( v.m_x - centerPoint.m_x ),
+								  centerPoint.m_y + scaleVec.y() * ( v.m_y - centerPoint.m_y),
+								  centerPoint.m_z + scaleVec.z() * ( v.m_z - centerPoint.m_z) );
+				vs.push_back( VICUS::QVector2IBKVector( t.translation() ) );
+			}
+			s->m_geometry.setVertexes(vs);
+		}
 
 	}
 
