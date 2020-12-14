@@ -57,7 +57,7 @@ DEPENDPATH = $${INCLUDEPATH}
 
 SOURCES += \
 #	../../../NandradDevTests/src/main.cpp \
-	../../src/NM_HydraulicNetworkAbstractFlowElement.cpp \
+	../../src/NM_HydraulicNetworkFlowElements.cpp \
 	../../src/NM_HydraulicNetworkModel.cpp \
 	../../src/NM_RoomRadiationLoadsModel.cpp \
 	../../src/NM_WindowModel.cpp \
@@ -97,6 +97,7 @@ HEADERS += \
 	../../src/NM_Directories.h \
 	../../src/NM_FMIInputOutput.h \
 	../../src/NM_HydraulicNetworkAbstractFlowElement.h \
+	../../src/NM_HydraulicNetworkFlowElements.h \
 	../../src/NM_HydraulicNetworkModel.h \
 	../../src/NM_InputReference.h \
 	../../src/NM_KeywordList.h \

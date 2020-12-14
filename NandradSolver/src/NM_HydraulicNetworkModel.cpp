@@ -10,7 +10,7 @@
 
 #include <klu.h>
 
-#include "NM_HydraulicNetworkAbstractFlowElement.h"
+#include "NM_HydraulicNetworkFlowElements.h"
 
 namespace NANDRAD_MODEL {
 
@@ -139,7 +139,25 @@ void HydraulicNetworkModel::setup(const NANDRAD::HydraulicNetwork & nw) {
 
 	// now populate the m_flowElements vector of the network solver
 
-	// setup the flow equations
+	// process all hydraulic network elements and instatiate respective flow equation classes
+	for (const NANDRAD::HydraulicNetworkElement & e : nw.m_elements) {
+		// each of the flow equation elements requires for calculation:
+		// - instance-specific parameters from HydraulicNetworkElement e
+		// - fluid property object from nw.m_fluid
+		// - component definition (via reference from e.m_componentId) and component DB stored
+		//   in network
+
+		// DISCUSS:
+		// - single class with "switch" bahavior?
+		// - factory pattern for flow element classes
+		// - how to select correct implementation?
+
+
+
+		// add to m_p->m_flowElements
+	}
+
+	// setup the equation system
 	try {
 		m_p->setup();
 	} catch (IBK::Exception & ex) {
@@ -183,7 +201,6 @@ void HydraulicNetworkModel::stateDependencies(std::vector<std::pair<const double
 }
 
 
-
 int HydraulicNetworkModel::update() {
 	FUNCID(HydraulicNetworkModel::update);
 	// re-compute hydraulic network
@@ -191,7 +208,8 @@ int HydraulicNetworkModel::update() {
 	IBK_ASSERT(m_p != nullptr);
 	try {
 		m_p->solve();
-	} catch (IBK::Exception & ex) {
+	}
+	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex,
 							 IBK::FormatString("Error solving hydraulic network equations for network #%1 '%2'.")
 							 .arg(m_id).arg(m_displayName), FUNC_ID);
