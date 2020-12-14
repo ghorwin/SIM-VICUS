@@ -11,6 +11,8 @@ namespace NANDRAD {
 
 namespace NANDRAD_MODEL {
 
+class HydraulicNetworkModelImpl;
+
 /*! A model for a hydraulic network.
 
 	Network model computes pressure and mass flux distribution in the network.
@@ -27,6 +29,9 @@ public:
 		m_id(id), m_displayName(displayName)
 	{
 	}
+
+	/*! D'tor, released pimpl object. */
+	~HydraulicNetworkModel() override;
 
 	/*! Initializes model.
 		\param nw The hydraulic network model definition/parametrization.
@@ -87,6 +92,9 @@ private:
 	unsigned int									m_id;
 	/*! Display name (for error messages). */
 	std::string										m_displayName;
+
+	/*! Private implementation (Pimpl) of the network solver. */
+	HydraulicNetworkModelImpl						*m_p = nullptr;
 
 };
 

@@ -50,12 +50,14 @@ INCLUDEPATH = \
 	../../../externals/Zeppelin/src \
 	../../../externals/Nandrad/src \
 	../../../externals/TiCPP/src \
+	../../../externals/SuiteSparse/src/include \
 	../../../externals/sundials/src/include
 
 DEPENDPATH = $${INCLUDEPATH}
 
 SOURCES += \
 #	../../../NandradDevTests/src/main.cpp \
+	../../src/NM_HydraulicNetworkAbstractFlowElement.cpp \
 	../../src/NM_HydraulicNetworkModel.cpp \
 	../../src/NM_RoomRadiationLoadsModel.cpp \
 	../../src/NM_WindowModel.cpp \
@@ -81,7 +83,7 @@ SOURCES += \
 	../../src/NM_SteadyStateSolver.cpp \
 	../../src/NM_VectorValuedQuantity.cpp \
 	../../src/NM_VectorValuedQuantityIndex.cpp \
-    ../../src/NM_InternalLoadsModel.cpp
+	../../src/NM_InternalLoadsModel.cpp
 
 HEADERS += \
 	../../doc/NandradSolverMainPage.h \
@@ -94,6 +96,7 @@ HEADERS += \
 	../../src/NM_DefaultStateDependency.h \
 	../../src/NM_Directories.h \
 	../../src/NM_FMIInputOutput.h \
+	../../src/NM_HydraulicNetworkAbstractFlowElement.h \
 	../../src/NM_HydraulicNetworkModel.h \
 	../../src/NM_InputReference.h \
 	../../src/NM_KeywordList.h \
@@ -115,6 +118,6 @@ HEADERS += \
 	../../src/NM_VectorValuedQuantity.h \
 	../../src/NM_VectorValuedQuantityIndex.h \
 	../../src/NM_WindowModel.h \
-    ../../src/NM_InternalLoadsModel.h
+	../../src/NM_InternalLoadsModel.h
 
 DISTFILES +=
