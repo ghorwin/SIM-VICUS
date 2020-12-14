@@ -12,7 +12,7 @@ HydraulicNetworkAbstractFlowElement::~HydraulicNetworkAbstractFlowElement() {
 
 
 HNPipeElement::HNPipeElement(const NANDRAD::HydraulicNetworkElement & def,
-											const std::vector<NANDRAD::HydraulicNetworkComponent> & components,
+											const NANDRAD::HydraulicNetworkComponent & component,
 											const NANDRAD::HydraulicFluid & fluid)
 {
 

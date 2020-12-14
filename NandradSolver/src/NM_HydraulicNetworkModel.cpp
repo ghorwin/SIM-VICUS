@@ -1,6 +1,7 @@
 #include "NM_HydraulicNetworkModel.h"
 
 #include <NANDRAD_HydraulicNetwork.h>
+#include <NANDRAD_HydraulicNetworkComponent.h>
 
 #include <IBK_messages.h>
 
@@ -147,14 +148,22 @@ void HydraulicNetworkModel::setup(const NANDRAD::HydraulicNetwork & nw, const st
 		// - component definition (via reference from e.m_componentId) and component DB stored
 		//   in network
 
-		// DISCUSS:
-		// - single class with "switch" bahavior?
-		// - factory pattern for flow element classes
-		// - how to select correct implementation?
+		// retrieve component
 
+		std::vector<NANDRAD::HydraulicNetworkComponent>::const_iterator it =
+				std::find(components.begin(), components.end(), e.m_componentId);
+		IBK_ASSERT(it != components.end());
 
-
-		// add to m_p->m_flowElements
+		switch (it->m_modelType) {
+			case NANDRAD::HydraulicNetworkComponent::MT_StaticPipe :
+			case NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe :
+			{
+				// create static pipe model
+				HNPipeElement * pipeElement = new HNPipeElement(e, *it, nw.m_fluid);
+				// add to flow elements
+				m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+			} break;
+		}
 	}
 
 	// setup the equation system
@@ -207,7 +216,10 @@ int HydraulicNetworkModel::update() {
 
 	IBK_ASSERT(m_p != nullptr);
 	try {
+		// TODO : check input ref values vs. old input ref values - no change, no recomputation needed
 		m_p->solve();
+
+		// TODO : add support for return values (e.g. recoverable convergence errors)
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex,
@@ -335,9 +347,14 @@ void HydraulicNetworkModelImpl::setup() {
 	m_nodes.resize(nodeCount+1);
 	for (unsigned int i=0; i<m_flowElements.size(); ++i) {
 		HydraulicNetworkAbstractFlowElement * fe = m_flowElements[i];
+		// TODO : check inlet must be different from outlet
 		m_nodes[fe->m_nInlet].m_flowElementIndexes.push_back(i);
 		m_nodes[fe->m_nOutlet].m_flowElementIndexes.push_back(i);
 	}
+
+	// TODO : checks:
+	// - all m_nodes[i] must have at least 2 m_flowElementIndexes
+	// - no distinct networks
 
 	m_nodeCount = m_nodes.size();
 	m_elementCount = m_flowElements.size();

@@ -18,7 +18,7 @@ class HNPipeElement : public HydraulicNetworkAbstractFlowElement {
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	HNPipeElement(const NANDRAD::HydraulicNetworkElement & def,
-				  const std::vector<NANDRAD::HydraulicNetworkComponent> & components,
+				  const NANDRAD::HydraulicNetworkComponent & component,
 				  const NANDRAD::HydraulicFluid & fluid);
 
 	// HydraulicNetworkAbstractFlowElement interface
@@ -30,6 +30,11 @@ private:
 	/*! Some fluid flow resistance. */
 	double m_res;
 };
+
+
+// TODO : add other flow element classes
+
+
 
 } // namespace NANDRAD_MODEL
 
