@@ -26,7 +26,7 @@ HNPipeElement::HNPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 
 
 double  HNPipeElement::systemFunction(double mdot, double p_inlet, double p_outlet) const {
-	// how do we get the fluid temperature here?
+	// TODO Andreas: how do we get the fluid temperature here?
 	double temp = 20;
 	return p_inlet - p_outlet - pressureLossFriction(mdot, temp);	// this is the system function
 }
@@ -42,13 +42,16 @@ void HNPipeElement::dmdot_dp(double mdot, double p_inlet, double p_outlet, doubl
 double HNPipeElement::pressureLossFriction(const double &mdot, const double &temperature) const{
 	double velocity = mdot / (m_fluid.m_para[NANDRAD::HydraulicFluid::P_Density].get_value(IBK::Unit("kg/m3")) * m_diameter * m_diameter * PI / 4);
 	double Re = velocity * m_diameter / m_fluid.m_kinematicViscosity.m_values.value(temperature);
-	return m_fluid.m_para[NANDRAD::HydraulicFluid::P_Density].get_value(IBK::Unit("kg/m3")) / 2 * velocity * velocity
-			* m_length / m_diameter * frictionFactorSwamee(Re, m_diameter, m_roughness);
+	if (Re < 1e-6) // TODO Anne: which threshold should we use?
+		return 0.0;
+	else
+		return m_fluid.m_para[NANDRAD::HydraulicFluid::P_Density].get_value(IBK::Unit("kg/m3")) / 2 * velocity * velocity
+				* m_length / m_diameter * frictionFactorSwamee(Re, m_diameter, m_roughness);
 }
 
 
 double HNPipeElement::frictionFactorSwamee(const double &Re, const double &diameter, const double &roughness){
-	IBK_ASSERT(roughness>0 && diameter>0 && Re>=0);
+	IBK_ASSERT(roughness>0 && diameter>0 && Re>0);
 	if (Re < m_Re1)
 		return 64/Re;
 	else if (Re < m_Re2){
@@ -63,7 +66,7 @@ double HNPipeElement::frictionFactorSwamee(const double &Re, const double &diame
 
 /*! this one is probably quite expensive ? */
 double HNPipeElement::frictionFactorCheng(const double &Re, const double &diameter, const double &roughness){
-	IBK_ASSERT(roughness>0 && diameter>0 && Re>=0);
+	IBK_ASSERT(roughness>0 && diameter>0 && Re>0);
 	double delta = diameter / roughness;
 	double a = 1 / (1 + std::pow(Re/m_Re1, 9));
 	double b = 1 / (1 + (Re / (160 * delta)) * (Re / (160 * delta)) );
