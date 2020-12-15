@@ -100,6 +100,10 @@ double HNFixedPressureLossCoeffElement::systemFunction(double mdot, double p_inl
 
 }
 
+void HNFixedPressureLossCoeffElement::dmdot_dp(double mdot, double p_inlet, double p_outlet, double &dmdp_in, double &dmdp_out) const{
+
+}
+
 
 
 } // namespace NANDRAD_MODEL
