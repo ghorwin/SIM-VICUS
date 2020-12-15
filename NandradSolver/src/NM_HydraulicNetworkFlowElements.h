@@ -39,7 +39,8 @@ public:
 	/*! darcy friction factor for pipe wall, swamee-jain equation (approximation of colebrook equation) */
 	static double frictionFactorSwamee(const double &Re, const double &diameter, const double &roughness);
 
-	/*! darcy friction factor for pipe wall, equation according to cheng 2008 (doi:10.1061/(asce)0733-9429(2008)134:9(1357))*/
+	/*! darcy friction factor for pipe wall, equation according to cheng 2008 (doi:10.1061/(asce)0733-9429(2008)134:9(1357))
+		relatively expensive ??? */
 	static double frictionFactorCheng(const double &Re, const double &diameter, const double &roughness);
 
 

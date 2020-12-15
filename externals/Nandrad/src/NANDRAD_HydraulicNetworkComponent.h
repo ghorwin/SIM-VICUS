@@ -36,7 +36,7 @@ public:
 	/*! Parameters for the component. */
 	enum para_t {
 		P_PipeRoughness,					// Keyword: PipeRoughness						[mm]	'Roughness of pipe material.'
-		P_PressureLossCoefficient,			// Keyword: PressureLossCoefficient				[-]		'Pressure loss coefficient for the component.'
+		P_PressureLossCoefficient,			// Keyword: PressureLossCoefficient				[-]		'Pressure loss coefficient for the component (zeta-value).'
 		P_MaximumPressureLossCoefficient,	// Keyword: MaximumPressureLossCoefficient		[-]		'Maximum pressure loss coefficient for the component.'
 		P_HydraulicDiameter,				// Keyword: HydraulicDiameter					[mm]	'Inside hydraulic diameter for the component.'
 		P_ExternalHeatTransferCoefficient,	// Keyword: ExternalHeatTransferCoefficient		[W/m2K]	'External heat transfer coeffient for the outside boundary.'

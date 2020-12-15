@@ -64,6 +64,7 @@ double HNPipeElement::frictionFactorSwamee(const double &Re, const double &diame
 	}
 }
 
+
 /*! this one is probably quite expensive ? */
 double HNPipeElement::frictionFactorCheng(const double &Re, const double &diameter, const double &roughness){
 	IBK_ASSERT(roughness>0 && diameter>0 && Re>0);
@@ -74,10 +75,30 @@ double HNPipeElement::frictionFactorCheng(const double &Re, const double &diamet
 			* std::pow( 2*std::log10(3.7*delta), 2*(1-a)*(1-b) ) );
 }
 
-
 double HNPipeElement::m_Re1 = 1700;
 
 double HNPipeElement::m_Re2 = 4000;
+
+
+
+
+HNFixedPressureLossCoeffElement::HNFixedPressureLossCoeffElement(const NANDRAD::HydraulicNetworkElement &elem,
+																 const NANDRAD::HydraulicNetworkComponent &component,
+																 const NANDRAD::HydraulicFluid &fluid):
+	m_fluid(fluid)
+{
+	m_zeta = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient].get_value(IBK::Unit("-"));
+	m_diameter = component.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].get_value(IBK::Unit("m"));
+}
+
+double HNFixedPressureLossCoeffElement::systemFunction(double mdot, double p_inlet, double p_outlet) const
+{
+	double area = PI / 4 * m_diameter * m_diameter;
+	double dp = mdot * mdot * m_zeta / (2 * m_fluid.m_para[NANDRAD::HydraulicFluid::P_Density].get_value(IBK::Unit("kg/m3"))
+			* (area * area));
+	return p_inlet - p_outlet - dp;
+
+}
 
 
 
