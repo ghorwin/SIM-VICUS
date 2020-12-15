@@ -19,8 +19,9 @@ public:
 	/*! Basic parameters. */
 	enum para_t {
 		//thermal paramters
+		/*! Mass of material in dependence to the area. */
+		P_BasisWeight,				//Keyword: BasisWeight				[kg/m2]	'mass of material in dependence of the area.'
 		/*! Dry density of the material. */
-		//spezArea... vol mass..			///TODO Mira
 		P_Density,					// Keyword: Density					[kg/m3]	'Dry density of the material.'
 		/*! Global Warming Potential. */
 		P_GWP,						// Keyword: GWP						[W/mK]	'Global Warming Potential.'

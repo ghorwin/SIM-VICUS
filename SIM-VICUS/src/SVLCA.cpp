@@ -17,7 +17,7 @@ T elementExists(std::map<unsigned int, T> database, unsigned int id, std::string
 }
 
 
-/*! /// TODO Mira */
+/*! gets all needed parameter values for the epd calculation and adds them to the related component. */
 void addEpdMaterialToComponent(VICUS::EPDDataset epd, LCA::LCAComponentResult &comp, LCA::LCAComponentResult &comp2,
 					double lifeCycle, double thickness, double rho, int idx = 0, double adjustment = 1.2){
 
@@ -42,14 +42,15 @@ void addEpdMaterialToComponent(VICUS::EPDDataset epd, LCA::LCAComponentResult &c
 		else if (QString::compare("m3", refUnit, Qt::CaseInsensitive) == 0) {
 			//referencequantity in [m3]
 			if(epd.m_para[VICUS::EPDDataset::P_Density].get_value("kg/m3") > 0)
-				val /= epd.m_para[VICUS::EPDDataset::P_Density].get_value("kg/m3");		/// TODO Mira		/*volumen density*/
+				val /= epd.m_para[VICUS::EPDDataset::P_Density].get_value("kg/m3");
 		}
 		else if (QString::compare("m2", refUnit, Qt::CaseInsensitive) == 0) {
 			//referencequantity in [m2]
-			val /= epd.m_para[VICUS::EPDDataset::P_Density].get_value("kg/m3");	/// TODO Mira
+			if(epd.m_para[VICUS::EPDDataset::P_BasisWeight].get_value("kg/m2") > 0)
+			val /= epd.m_para[VICUS::EPDDataset::P_BasisWeight].get_value("kg/m2");
 		}
 		else
-			throw IBK::Exception(IBK::FormatString("No valid specific Unit???? rho for epd mat. '%1' available for").
+			throw IBK::Exception(IBK::FormatString("No valid specific Unit of epd material '%1' available.").
 								 arg(epd.m_displayName.toStdString()), FUNC_ID);
 		val /= epd.m_referenceQuantity;
 
@@ -126,9 +127,8 @@ void LCA::calculateLCA()
 													   comp.m_displayName.toStdString(),"Construction",
 													   "component");
 
-			//calc each construction
+			//calculate each construction
 			for(auto l : constr.m_materialLayers){
-				//double thickness = l.m_thickness.get_value("m");	//thickness in m
 				//check if material exists
 				VICUS::Material mat =
 						elementExists<VICUS::Material>(m_dbOpaqueMaterials, l.m_matId,
@@ -229,7 +229,7 @@ void LCA::calculateLCA()
 		if(m_dbComponents[compId].m_idOpaqueConstruction != VICUS::INVALID_ID){
 			const VICUS::Construction &constr = m_dbConstructions[m_dbComponents[compId].m_idOpaqueConstruction];
 
-			//gehe durch alle material layer ///TODO Mira
+			//get values for all material layers in each category of the lifecycle
 			for(auto &l : constr.m_materialLayers){
 				MatEpd &matEpd = materialIdAndEpd[l.m_matId];
 				double rho = m_dbOpaqueMaterials[l.m_matId].m_para[VICUS::Material::P_Density].get_value("kg/m3");

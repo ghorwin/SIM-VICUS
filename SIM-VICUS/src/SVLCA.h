@@ -16,7 +16,9 @@ public:
 	// cat set A - D with the results for this specific construction not multiplied by surface area
 	struct LCAComponentResult{
 
-		/// TODO Mira
+		/*! adds all calculated parametervalus to the component (if called in combination with comp)
+			depending on the category of the lifecycle.
+		*/
 		void addValue(unsigned int catIdx, VICUS::EPDDataset::para_t paraIdx, const IBK::Parameter &para){
 			switch (catIdx) {
 				case 0:
