@@ -3,7 +3,15 @@
 
 #include <QWidget>
 
+
+namespace VICUS {
+class Material;
+}
+
+class SVSettings;
+
 namespace Ui {
+
 class SVDBMaterialsEditWidget;
 }
 
@@ -29,8 +37,13 @@ public:
 	void edit();
 
 
+protected:
+	void closeEvent(QCloseEvent *event) override;
+
 
 private slots:
+	void editingFinishedSuccessfully();
+
 	void on_toolButtonAdd_clicked();
 
 	void on_toolButtonCopy_clicked();
@@ -40,9 +53,13 @@ private slots:
 	void on_lineEditConductivity_editingFinished();
 
 private:
+
+
+
+
 	Ui::SVDBMaterialsEditWidget *m_ui;
 
-
+	std::map<unsigned int, VICUS::Material>	*m_dbMat;
 
 	/*! Conductivity in W/mK. */
 	double						m_conductivity;
@@ -52,6 +69,8 @@ private:
 
 	/*! Conductivity in W/mK. */
 	double						m_specHeat;
+
+	int							m_actualId;
 
 
 };

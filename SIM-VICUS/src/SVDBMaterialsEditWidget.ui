@@ -6,42 +6,108 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1087</width>
-    <height>508</height>
+    <width>1484</width>
+    <height>751</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="3">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>472</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
+  <layout class="QGridLayout" name="gridLayout_3">
    <item row="0" column="0" colspan="4">
     <widget class="QtExt::MaterialDatabaseSelectionWidget" name="widgetMaterialsDB" native="true"/>
    </item>
-   <item row="1" column="2">
-    <widget class="QToolButton" name="toolButtonRemove">
-     <property name="icon">
-      <iconset>
-       <normaloff>:/gfx/actions/32x32/minus_32x32.png</normaloff>:/gfx/actions/32x32/minus_32x32.png</iconset>
+   <item row="0" column="4" rowspan="2">
+    <widget class="QTabWidget" name="tabWidgetThermal">
+     <property name="currentIndex">
+      <number>0</number>
      </property>
-     <property name="iconSize">
-      <size>
-       <width>24</width>
-       <height>24</height>
-      </size>
-     </property>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Thermal</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
+       <item row="0" column="0" colspan="2">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLabel" name="labelDisplayName">
+           <property name="text">
+            <string>Name</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="comboBoxLanguage"/>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEditDisplayName"/>
+         </item>
+         <item>
+          <widget class="QtExt::ColorButton" name="pushButtonSceneBackgroundColor">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="labelCategory">
+         <property name="text">
+          <string>Category</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="comboBoxCategory"/>
+       </item>
+       <item row="2" column="0" colspan="2">
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="0">
+          <widget class="QLabel" name="labelConductivity">
+           <property name="text">
+            <string>Conductivity [W/mK]</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QtExt::ValidatingLineEdit" name="lineEditConductivity"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="labelDensity">
+           <property name="text">
+            <string>Density [kg/m3]</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QtExt::ValidatingLineEdit" name="lineEditDensity"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="labelSpecHeatCapacity">
+           <property name="text">
+            <string>Spec. Heat Capacity [J/kgK]</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QtExt::ValidatingLineEdit" name="lineEditSpecHeatCapacity"/>
+         </item>
+        </layout>
+       </item>
+       <item row="3" column="0" colspan="2">
+        <widget class="QGraphicsView" name="graphicsViewCategoryPicture"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
+       <string>Tab 2</string>
+      </attribute>
+     </widget>
     </widget>
    </item>
    <item row="1" column="0">
@@ -72,57 +138,32 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="4" rowspan="2">
-    <widget class="QTabWidget" name="tabWidgetThermal">
-     <property name="currentIndex">
-      <number>0</number>
+   <item row="1" column="2">
+    <widget class="QToolButton" name="toolButtonRemove">
+     <property name="icon">
+      <iconset>
+       <normaloff>:/gfx/actions/32x32/minus_32x32.png</normaloff>:/gfx/actions/32x32/minus_32x32.png</iconset>
      </property>
-     <widget class="QWidget" name="tab">
-      <attribute name="title">
-       <string>Thermal</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="0">
-        <widget class="QLabel" name="labelConductivity">
-         <property name="text">
-          <string>Conductivity [W/mK]</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QtExt::ValidatingLineEdit" name="lineEditConductivity"/>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="labelConductivity_2">
-         <property name="text">
-          <string>Conductivity [W/mK]</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QtExt::ValidatingLineEdit" name="lineEditConductivity_2"/>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="labelConductivity_3">
-         <property name="text">
-          <string>Conductivity [W/mK]</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QtExt::ValidatingLineEdit" name="lineEditConductivity_3"/>
-       </item>
-       <item row="3" column="0" colspan="2">
-        <widget class="QGraphicsView" name="graphicsView"/>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tab_2">
-      <attribute name="title">
-       <string>Tab 2</string>
-      </attribute>
-     </widget>
+     <property name="iconSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
+     </property>
     </widget>
+   </item>
+   <item row="1" column="3">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>472</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>
@@ -136,7 +177,12 @@
   <customwidget>
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>QtExt_ValidatingLineEdit.h</header>
+   <header location="global">QtExt_ValidatingLineEdit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::ColorButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">QtExt_ColorButton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
