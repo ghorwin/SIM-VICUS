@@ -61,6 +61,25 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
+	Material(){}
+
+
+	/*! Constructor.
+		\param	id
+		\param	name display name
+		\param conductivity in W/mK
+		\param density in kg/m3
+		\param specHeatCapa in J/kgK
+	*/
+	Material( unsigned int id, const QString &name, double conductivity, double density, double specHeatCapa):
+		m_id(id),
+		m_displayName(name)
+	{
+		m_para[P_Density] = (IBK::Parameter("Density", density, "kg/m3"));
+		m_para[P_Conductivity] = (IBK::Parameter("Conductivity", conductivity, "W/mK"));
+		m_para[P_HeatCapacity] = (IBK::Parameter("HeatCapacity", specHeatCapa, "J/kgK"));
+	}
+
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
