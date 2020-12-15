@@ -84,7 +84,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	// set simulation duration and solver parameters
 	NANDRAD::KeywordList::setParameter(p.m_simulationParameter.m_para, "SimulationParameter::para_t", NANDRAD::SimulationParameter::P_InitialTemperature, 20); // C
 	NANDRAD::KeywordList::setParameter(p.m_simulationParameter.m_interval.m_para,
-									   "Interval::para_t", NANDRAD::Interval::P_End, 1/24); // d
+									   "Interval::para_t", NANDRAD::Interval::P_End, 1.0/24); // d
 
 	// copy/generate hydraulic network
 	int networkIndex = m_ui->comboBoxNetwork->currentIndex();
