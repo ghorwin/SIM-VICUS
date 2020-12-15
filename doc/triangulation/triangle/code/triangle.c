@@ -209,6 +209,8 @@
 /*   you do not have enough memory.                                          */
 
 /* #define SINGLE */
+#define NO_TIMER
+
 
 #ifdef SINGLE
 #define REAL float
@@ -15666,7 +15668,7 @@ struct behavior *b;
 #ifdef TRILIBRARY
 
 #ifdef ANSI_DECLARATORS
-void triangulate(char *triswitches, struct triangulateio *in,
+void triangulate(const char *triswitches, struct triangulateio *in,
 				 struct triangulateio *out, struct triangulateio *vorout)
 #else /* not ANSI_DECLARATORS */
 void triangulate(triswitches, in, out, vorout)

@@ -120,10 +120,7 @@ void TriangleWrapper::triangulatePolygon() {
 	vorout.edgelist = (int *) NULL;          /* Needed only if -v switch used. */
 	vorout.normlist = (REAL *) NULL;         /* Needed only if -v switch used. */
 
-
 	triangulate("pczAeVn", &in, &mid, NULL);
 	for (unsigned int i=0; i<mid.numberoftriangles*3; i+=3)
 		std::cout << "[ " << mid.trianglelist[i] << "," << mid.trianglelist[i+1] << "," << mid.trianglelist[i+2] << "]\n";
-
-
 }
