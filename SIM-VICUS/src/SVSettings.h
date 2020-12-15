@@ -125,6 +125,14 @@ public:
 	*/
 	static void recursiveSearch(QDir baseDir, QStringList & files, const QStringList & extensions);
 
+	template <class T>
+	static unsigned int firstFreeId(const std::map<unsigned int, T> &db, unsigned int id){
+		for (;;++id) {
+			if(db.find(id) == db.end())
+				return id;
+		}
+		return id;
+	}
 
 	// ****** member variables ************
 
