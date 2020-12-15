@@ -48,6 +48,9 @@ void SVSimulationStartNetworkSim::on_checkBoxCloseConsoleWindow_toggled(bool che
 void SVSimulationStartNetworkSim::updateCmdLine() {
 	m_cmdLine.clear();
 	m_solverExecutable = QFileInfo(SVSettings::instance().m_installDir + "/NandradSolver").filePath();
+#ifdef WIN32
+	m_solverExecutable += ".exe";
+#endif // WIN32
 	if (m_ui->checkBoxCloseConsoleWindow->isChecked())
 		m_cmdLine << "-x";
 
@@ -72,11 +75,19 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	NANDRAD::KeywordList::setParameter(z.m_para, "Zone::para_t", NANDRAD::Zone::P_Area, 10);
 	p.m_zones.push_back(z);
 
-	// create dummy location
+	// create dummy location/climate data
 	p.m_location.m_climateFileName = (QtExt::Directories::databasesDir() + "/DB_climate/Konstantopol_20C.c6b").toStdString();
+	NANDRAD::KeywordList::setParameter(p.m_location.m_para, "Location::para_t", NANDRAD::Location::P_Albedo, 20); // %
+	NANDRAD::KeywordList::setParameter(p.m_location.m_para, "Location::para_t", NANDRAD::Location::P_Latitude, 53); // Deg
+	NANDRAD::KeywordList::setParameter(p.m_location.m_para, "Location::para_t", NANDRAD::Location::P_Longitude, 13); // Deg
+
+	// set simulation duration and solver parameters
+	NANDRAD::KeywordList::setParameter(p.m_simulationParameter.m_para, "SimulationParameter::para_t", NANDRAD::SimulationParameter::P_InitialTemperature, 20); // C
+	NANDRAD::KeywordList::setParameter(p.m_simulationParameter.m_interval.m_para,
+									   "Interval::para_t", NANDRAD::Interval::P_End, 1/24); // d
 
 	// copy/generate hydraulic network
-	unsigned int networkIndex = m_ui->comboBoxNetwork->currentIndex();
+	int networkIndex = m_ui->comboBoxNetwork->currentIndex();
 
 	// TODO : Hauke
 
