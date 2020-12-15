@@ -50,7 +50,11 @@ void SVSimulationStartNetworkSim::updateCmdLine() {
 	if (m_ui->checkBoxCloseConsoleWindow->isChecked())
 		m_cmdLine << "-x";
 
-	m_cmdLine << SVProjectHandler::instance().projectFile();
+	QString targetFile = QFileInfo(SVProjectHandler::instance().projectFile()).completeBaseName();
+
+	targetFile += ".nandrad";
+
+	m_cmdLine << targetFile;
 	m_ui->lineEditCmdLine->setText(m_cmdLine.join(" "));
 	m_ui->lineEditCmdLine->setCursorPosition( m_ui->lineEditCmdLine->text().length() );
 }
@@ -58,4 +62,13 @@ void SVSimulationStartNetworkSim::updateCmdLine() {
 
 void SVSimulationStartNetworkSim::on_pushButtonRun_clicked() {
 
+	// generate NANDRAD project
+
+	// save project
+
+
+	// launch solver
+
+
+	close(); // finally close dialog
 }
