@@ -31,7 +31,7 @@ public:
 	/*! Solves the flow network equation system.
 		You must call setup() before calling solve.
 	*/
-	void solve();
+	int solve();
 
 	/*! Container for flow element implementation objects.
 		Need to be populated before calling setup.
@@ -89,15 +89,15 @@ private:
 	/*! Initialize jacobian and create analytical structures (pattern, KLU reordering,..). */
 	void jacobianInit();
 
-	/*! Updates jacobian data. */
+	/*! Updates jacobian data and returns 1, if an error occured, otherwise 0. */
 
-	void jacobianSetup();
+	int jacobianSetup();
 
 	/*! Multiplies jacobian with b and stores result in res. */
 	void jacobianMultiply(const std::vector<double> &b, std::vector<double> &res);
 
-	/*! Solves linear equation system. */
-	void jacobianBacksolve(std::vector<double> & rhs);
+	/*! Solves linear equation system and returns 1, if an error occured, otherwise 0. */
+	int jacobianBacksolve(std::vector<double> & rhs);
 
 	/*! Writes jacobian to desctop. */
 	void jacobianWrite(std::vector<double> & rhs);
@@ -217,7 +217,10 @@ int HydraulicNetworkModel::update() {
 	IBK_ASSERT(m_p != nullptr);
 	try {
 		// TODO : check input ref values vs. old input ref values - no change, no recomputation needed
-		m_p->solve();
+		int res = m_p->solve();
+		// signal an error
+		if(res != 0)
+			return res;
 
 		// TODO : add support for return values (e.g. recoverable convergence errors)
 	}
@@ -383,6 +386,8 @@ void HydraulicNetworkModelImpl::setup() {
 	// -> each node must connect to any other
 	// -> transitive closure of connectivity must form a dense matrix
 	IBKMK::SparseMatrixPattern connectivity(m_nodes.size());
+	IBKMK::SparseMatrixPattern connectivityTranspose(m_nodes.size());
+
 	for (unsigned int k=0; k<m_flowElements.size(); ++k) {
 		HydraulicNetworkAbstractFlowElement * fe = m_flowElements[k];
 		// TODO : check inlet must be different from outlet
@@ -392,8 +397,8 @@ void HydraulicNetworkModelImpl::setup() {
 		if(!connectivity.test(i,j))
 			connectivity.set(i,j);
 		// as well as for the transposed
-		if(!connectivity.test(j,i))
-			connectivity.set(j,i);
+		if(!connectivityTranspose.test(j,i))
+			connectivityTranspose.set(j,i);
 	}
 
 	// calculate transitive closure
@@ -406,7 +411,7 @@ void HydraulicNetworkModelImpl::setup() {
 		for(unsigned int kIdx = 0; kIdx < cols.size(); ++kIdx) {
 			unsigned int k = cols[kIdx];
 			std::vector<unsigned int> rows;
-			connectivity.indexesPerRow(k,rows);
+			connectivityTranspose.indexesPerRow(k,rows);
 			// search for transitive connections
 			for(unsigned int jIdx = 0; jIdx < rows.size(); ++jIdx) {
 				unsigned int j = rows[jIdx];
@@ -414,13 +419,13 @@ void HydraulicNetworkModelImpl::setup() {
 				if(!connectivity.test(i,j))
 					connectivity.set(i,j);
 				// set symmetric entry
-				if(!connectivity.test(j,i))
-					connectivity.set(j,i);
+				if(!connectivityTranspose.test(j,i))
+					connectivityTranspose.set(j,i);
 			}
 		}
 	}
 
-	// now assume, that we have a dense atrix pattern for a connected graph
+	// now assume, that we have a dense matrix pattern for a connected graph
 	for(unsigned int i = 0; i < m_nodes.size(); ++i) {
 		// count column entries for each row
 		std::vector<unsigned int> cols;
@@ -515,7 +520,7 @@ void HydraulicNetworkModelImpl::writeNetworkGraph() const {
 }
 
 
-void HydraulicNetworkModelImpl::solve() {
+int HydraulicNetworkModelImpl::solve() {
 	unsigned int n = m_nodeCount + m_elementCount;
 
 
@@ -541,7 +546,12 @@ void HydraulicNetworkModelImpl::solve() {
 		// now compose Jacobian with FD quotients
 
 		// perform jacobian update
-		jacobianSetup();
+		int res = jacobianSetup();
+		// error signaled:
+		// may be result of a diverging Newton iteration
+		// -> regsiter a recoverable error and allow a retry
+		if(res != 0)
+			return 1;
 
 		std::cout << "\n\n*** Iter " << 100-iterations  << std::endl;
 
@@ -553,7 +563,10 @@ void HydraulicNetworkModelImpl::solve() {
 #endif // RESIDUAL_TEST
 
 		// now solve the equation system
-		jacobianBacksolve(rhs);
+		res = jacobianBacksolve(rhs);
+		// backsolving problems imply coarse structural errors
+		if(res != 0)
+			return 2;
 
 		std::cout << "deltaY" << std::endl;
 		for (unsigned int i=0; i<n; ++i)
@@ -587,12 +600,15 @@ void HydraulicNetworkModelImpl::solve() {
 		// TODO : add alternative convergence criterion based on rhs norm
 	}
 
-	if (iterations > 0)
-		std::cout << "\n*** converged" << std::endl;
-	else
-		std::cerr << "\n***** not converged *****" << std::endl;
-
 	printVars();
+
+	if (iterations > 0)
+		return 0;
+	// we register a recoverable error if the system did not converge
+	// (and allow a retry with a new guess)
+	else
+		return 1;
+
 }
 
 void HydraulicNetworkModelImpl::jacobianInit() {
@@ -674,6 +690,7 @@ void HydraulicNetworkModelImpl::jacobianInit() {
 			// get colors from pattern
 			std::vector<unsigned int> cols;
 			pattern.indexesPerRow(i, cols);
+			IBK_ASSERT(!cols.empty());
 			// store indexes
 			ja.insert(ja.end(), cols.begin(), cols.end());
 			// store offset
@@ -737,11 +754,13 @@ void HydraulicNetworkModelImpl::jacobianInit() {
 		// setup synmbolic matrix factorization
 		m_sparseSolver.m_KLUSymbolic = klu_analyze(n, (int*) (&ia[0]),
 						   (int*) (&ja[0]), &(m_sparseSolver.m_KLUParas));
+		// error may only occur if a wrong network topology was tolerated
+		IBK_ASSERT(m_sparseSolver.m_KLUSymbolic != nullptr);
 	}
 }
 
 
-void HydraulicNetworkModelImpl::jacobianSetup() {
+int HydraulicNetworkModelImpl::jacobianSetup() {
 
 	unsigned int n = m_nodeCount + m_elementCount;
 	std::vector<double> Gy(n);
@@ -776,8 +795,9 @@ void HydraulicNetworkModelImpl::jacobianSetup() {
 				  jacobianFac.data().begin());
 		// factorize matrix
 		int res = jacobianFac.lu(); // Note: might be singular!!!
-		if (res != 0)
-			std::cerr << "Singular matrix" << std::endl;
+		// singular
+		if( res != 0)
+			return 1;
 	}
 	// we use a sparse jacobian representation
 	else if(m_sparseSolver.m_jacobian.nnz() > 0) {
@@ -838,7 +858,11 @@ void HydraulicNetworkModelImpl::jacobianSetup() {
 					 jacobian.data(),
 					 m_sparseSolver.m_KLUSymbolic,
 					 &(m_sparseSolver.m_KLUParas));
+		// error treatment: singular matrix
+		if(m_sparseSolver.m_KLUNumeric == nullptr)
+			return 1;
 	}
+	return 0;
 }
 
 void HydraulicNetworkModelImpl::jacobianMultiply(const std::vector<double> &b, std::vector<double> &res) {
@@ -850,7 +874,7 @@ void HydraulicNetworkModelImpl::jacobianMultiply(const std::vector<double> &b, s
 }
 
 
-void HydraulicNetworkModelImpl::jacobianBacksolve(std::vector<double> & rhs) {
+int HydraulicNetworkModelImpl::jacobianBacksolve(std::vector<double> & rhs) {
 
 	// decide which matrix to use
 	if(m_denseSolver.m_jacobian.n() > 0) {
@@ -861,12 +885,16 @@ void HydraulicNetworkModelImpl::jacobianBacksolve(std::vector<double> & rhs) {
 		IBK_ASSERT(m_sparseSolver.m_KLUSymbolic != nullptr);
 		unsigned int n = m_nodeCount + m_elementCount;
 		/* Call KLU to solve the linear system */
-		klu_tsolve(m_sparseSolver.m_KLUSymbolic,
+		int res = klu_tsolve(m_sparseSolver.m_KLUSymbolic,
 				  m_sparseSolver.m_KLUNumeric,
 				  (int) n, 1,
 				  &rhs[0],
 				  &(m_sparseSolver.m_KLUParas));
+		// an error occured
+		if(res == 0)
+			return 1;
 	}
+	return 0;
 }
 
 
