@@ -4,10 +4,16 @@
 #include <QDialog>
 
 namespace Ui {
-class SVSimulationStartNetworkSim;
+	class SVSimulationStartNetworkSim;
 }
 
-/*! Dialog for starting a simulation. */
+namespace NANDRAD {
+	class Project;
+}
+
+/*! Dialog for starting a simulation.
+	It generates a NANDRAD project based on the current VICUS project contents.
+*/
 class SVSimulationStartNetworkSim : public QDialog {
 	Q_OBJECT
 
@@ -26,9 +32,13 @@ private slots:
 private:
 	void updateCmdLine();
 
+	bool generateNandradProject(NANDRAD::Project & p) const;
+
 	Ui::SVSimulationStartNetworkSim		*m_ui;
 
+	QString								m_solverExecutable;
 	QStringList							m_cmdLine;
+	QString								m_targetProjectFile;
 };
 
 #endif // SVSimulationStartNetworkSimH

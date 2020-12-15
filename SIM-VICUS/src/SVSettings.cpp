@@ -4,6 +4,12 @@
 #include <QSettings>
 #include <QScreen>
 #include <QDebug>
+#include <QProcess>
+
+#ifdef Q_OS_WIN
+#undef UNICODE
+#include <windows.h>
+#endif
 
 #include <QtExt_Directories.h>
 #include <tinyxml.h>
@@ -343,6 +349,66 @@ void SVSettings::recursiveSearch(QDir baseDir, QStringList & files, const QStrin
 				files.append(fullPath);
 		}
 	}
+}
+
+
+bool SVSettings::startProcess(const QString & executable,
+									QStringList commandLineArgs,
+									const QString & projectFile)
+{
+	bool success;
+	// spawn process
+#ifdef Q_OS_WIN
+
+	/// \todo use wide-string version of API and/or encapsulate spawn process into a function
+
+	// Use WinAPI to create a solver process
+	STARTUPINFO si;
+	PROCESS_INFORMATION pi;
+	ZeroMemory( &si, sizeof(si) );
+	si.cb = sizeof(si);
+	std::string utf8String = projectFile.toStdString().data();
+	si.lpTitle = (LPSTR)utf8String.c_str();
+//	si.dwFlags = STARTF_USESHOWWINDOW;
+//	si.wShowWindow = SW_SHOW;
+	ZeroMemory( &pi, sizeof(pi) );
+	const unsigned int lower_priority = 0x00004000;
+	QString cmdLine = QString("\"%1\" %2 \"%3\"")
+		.arg(executable)
+		.arg(commandLineArgs.join(" "))
+		.arg(projectFile);
+
+	std::string cmd = cmdLine.toLatin1().data();
+	// Start the child process.
+	if( !CreateProcess( NULL,   // No module name (use command line).
+		&cmd[0], 				// Command line.
+		NULL,             		// Process handle not inheritable.
+		NULL,             		// Thread handle not inheritable.
+		FALSE,            		// Set handle inheritance to FALSE.
+		lower_priority,   		// Create with priority lower then normal.
+		NULL,             		// Use parent's environment block.
+		NULL,             		// Use parent's starting directory.
+		&si,              		// Pointer to STARTUPINFO structure.
+		&pi )             		// Pointer to PROCESS_INFORMATION structure.
+	)
+	{
+		QMessageBox::critical(this, tr("Error running solver"),
+							  tr("Could not start solver executable '%1'.").arg(executable));
+		return false;
+	}
+	return true;
+
+#else // Q_OS_WIN
+
+	// append project file to arguments, no quotes needed, since Qt takes care of that
+	commandLineArgs << projectFile;
+	qint64 pid;
+	success = QProcess::startDetached(executable, commandLineArgs, QString(), &pid);
+
+	// TODO : do something with the process identifier... mayby check after a few seconds, if the process is still running?
+	return success;
+
+#endif // Q_OS_WIN
 }
 
 

@@ -70,29 +70,7 @@ win32 {
 
 
 SOURCES += \
-	../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
-	../../src/SVDBConstructionOpaqueEditWidget.cpp \
-		../../src/SVDBMaterialsEditWidget.cpp \
-		../../src/SVDBWindowEditWidget.cpp \
-		../../src/SVImportIDFDialog.cpp \
-		../../src/SVLCA.cpp \
-		../../src/SVMaterialTransfer.cpp \
-		../../src/SVNavigationTreeItemDelegate.cpp \
-		../../src/SVNetworkEditDialog.cpp \
-		../../src/SVPreferencesPageStyle.cpp \
-		../../src/SVPropEditGeometry.cpp \
-		../../src/SVPropSiteWidget.cpp \
-		../../src/SVPropVertexListWidget.cpp \
-		../../src/SVPropertyWidget.cpp \
-	../../src/SVSimulationPerformanceOptions.cpp \
-	../../src/SVSimulationStartNetworkSim.cpp \
-		../../src/SVUndoAddFluid.cpp \
-		../../src/SVUndoDeleteNetwork.cpp \
-		../../src/SVUndoModifyExistingNetwork.cpp \
-		../../src/SVUndoTreeNodeState.cpp \
-		../../src/SVUtils.cpp \
-		../../src/SVViewState.cpp \
-		../../src/SVViewStateHandler.cpp \
+		../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
 		../../src/actions/SVUndoAddBuilding.cpp \
 		../../src/actions/SVUndoAddNetwork.cpp \
 		../../src/actions/SVUndoAddSurface.cpp \
@@ -117,48 +95,48 @@ SOURCES += \
 		../../src/main.cpp \
 		../../src/SVAboutDialog.cpp \
 		../../src/SVConstants.cpp \
+		../../src/SVDBConstructionOpaqueEditWidget.cpp \
+		../../src/SVDBMaterialsEditWidget.cpp \
+		../../src/SVDBWindowEditWidget.cpp \
 		../../src/SVDebugApplication.cpp \
 		../../src/SVGeometryView.cpp \
+		../../src/SVImportIDFDialog.cpp \
+		../../src/SVLCA.cpp \
 		../../src/SVLogFileDialog.cpp \
 		../../src/SVLogWidget.cpp \
 		../../src/SVMainWindow.cpp \
+		../../src/SVMaterialTransfer.cpp \
 		../../src/SVMessageHandler.cpp \
+		../../src/SVNavigationTreeItemDelegate.cpp \
 		../../src/SVNavigationTreeWidget.cpp \
+		../../src/SVNetworkEditDialog.cpp \
 		../../src/SVNetworkImportDialog.cpp \
 		../../src/SVPostProcBindings.cpp \
 		../../src/SVPostProcHandler.cpp \
 		../../src/SVPreferencesDialog.cpp \
+		../../src/SVPreferencesPageStyle.cpp \
 		../../src/SVPreferencesPageTools.cpp \
 		../../src/SVProjectHandler.cpp \
+		../../src/SVPropEditGeometry.cpp \
+		../../src/SVPropertyWidget.cpp \
+		../../src/SVPropSiteWidget.cpp \
+		../../src/SVPropVertexListWidget.cpp \
 		../../src/SVSettings.cpp \
+		../../src/SVSimulationPerformanceOptions.cpp \
+		../../src/SVSimulationStartNandrad.cpp \
+		../../src/SVSimulationStartNetworkSim.cpp \
 		../../src/SVStyle.cpp \
 		../../src/SVThreadBase.cpp \
-		../../src/SVWelcomeScreen.cpp \
-	../../src/SVSimulationStartNandrad.cpp
+		../../src/SVUndoAddFluid.cpp \
+		../../src/SVUndoDeleteNetwork.cpp \
+		../../src/SVUndoModifyExistingNetwork.cpp \
+		../../src/SVUndoTreeNodeState.cpp \
+		../../src/SVUtils.cpp \
+		../../src/SVViewState.cpp \
+		../../src/SVViewStateHandler.cpp \
+		../../src/SVWelcomeScreen.cpp
 
 HEADERS  += \
-	../../src/SVDBConstructionOpaqueEditWidget.h \
-		../../src/SVDBMaterialsEditWidget.h \
-		../../src/SVDBWindowEditWidget.h \
-		../../src/SVImportIDFDialog.h \
-		../../src/SVLCA.h \
-		../../src/SVMaterialTransfer.h \
-		../../src/SVNavigationTreeItemDelegate.h \
-		../../src/SVNetworkEditDialog.h \
-		../../src/SVPreferencesPageStyle.h \
-		../../src/SVPropEditGeometry.h \
-		../../src/SVPropSiteWidget.h \
-		../../src/SVPropVertexListWidget.h \
-		../../src/SVPropertyWidget.h \
-	../../src/SVSimulationPerformanceOptions.h \
-	../../src/SVSimulationStartNetworkSim.h \
-		../../src/SVUndoAddFluid.h \
-		../../src/SVUndoDeleteNetwork.h \
-		../../src/SVUndoModifyExistingNetwork.h \
-		../../src/SVUndoTreeNodeState.h \
-		../../src/SVUtils.h \
-		../../src/SVViewState.h \
-		../../src/SVViewStateHandler.h \
 		../../src/actions/SVUndoAddBuilding.h \
 		../../src/actions/SVUndoAddNetwork.h \
 		../../src/actions/SVUndoAddSurface.h \
@@ -182,31 +160,53 @@ HEADERS  += \
 		../../src/core3D/Vic3DShaderProgram.h \
 		../../src/core3D/Vic3DTransform3D.h \
 		../../src/core3D/Vic3DVertex.h \
+		../../src/core3D/Vic3DWireFrameObject.h \
 		../../src/SVAboutDialog.h \
 		../../src/SVConstants.h \
+		../../src/SVDBConstructionOpaqueEditWidget.h \
+		../../src/SVDBMaterialsEditWidget.h \
+		../../src/SVDBWindowEditWidget.h \
 		../../src/SVDebugApplication.h \
 		../../src/SVGeometryView.h \
+		../../src/SVImportIDFDialog.h \
+		../../src/SVLCA.h \
 		../../src/SVLogFileDialog.h \
 		../../src/SVLogWidget.h \
 		../../src/SVMainWindow.h \
+		../../src/SVMaterialTransfer.h \
 		../../src/SVMessageHandler.h \
+		../../src/SVNavigationTreeItemDelegate.h \
 		../../src/SVNavigationTreeWidget.h \
+		../../src/SVNetworkEditDialog.h \
 		../../src/SVNetworkImportDialog.h \
 		../../src/SVPostProcBindings.h \
 		../../src/SVPostProcHandler.h \
 		../../src/SVPreferencesDialog.h \
+		../../src/SVPreferencesPageStyle.h \
 		../../src/SVPreferencesPageTools.h \
 		../../src/SVProjectHandler.h \
+		../../src/SVPropEditGeometry.h \
+		../../src/SVPropertyWidget.h \
+		../../src/SVPropSiteWidget.h \
+		../../src/SVPropVertexListWidget.h \
 		../../src/SVSettings.h \
+		../../src/SVSimulationPerformanceOptions.h \
+		../../src/SVSimulationStartNandrad.h \
+		../../src/SVSimulationStartNetworkSim.h \
 		../../src/SVStyle.h \
 		../../src/SVThreadBase.h \
-		../../src/SVWelcomeScreen.h \
-		../../src/core3D/Vic3DWireFrameObject.h \
-	../../src/SVSimulationStartNandrad.h
+		../../src/SVUndoAddFluid.h \
+		../../src/SVUndoDeleteNetwork.h \
+		../../src/SVUndoModifyExistingNetwork.h \
+		../../src/SVUndoTreeNodeState.h \
+		../../src/SVUtils.h \
+		../../src/SVViewState.h \
+		../../src/SVViewStateHandler.h \
+		../../src/SVWelcomeScreen.h
 
 FORMS    += \
 		../../src/SVAboutDialog.ui \
-	../../src/SVDBConstructionOpaqueEditWidget.ui \
+		../../src/SVDBConstructionOpaqueEditWidget.ui \
 		../../src/SVDBMaterialsEditWidget.ui \
 		../../src/SVDBWindowEditWidget.ui \
 		../../src/SVImportIDFDialog.ui \
@@ -221,10 +221,10 @@ FORMS    += \
 		../../src/SVPropEditGeometry.ui \
 		../../src/SVPropSiteWidget.ui \
 		../../src/SVPropVertexListWidget.ui \
-	../../src/SVSimulationPerformanceOptions.ui \
-	../../src/SVSimulationStartNetworkSim.ui \
-		../../src/SVWelcomeScreen.ui \
-	../../src/SVSimulationStartNandrad.ui
+		../../src/SVSimulationPerformanceOptions.ui \
+		../../src/SVSimulationStartNandrad.ui \
+		../../src/SVSimulationStartNetworkSim.ui \
+		../../src/SVWelcomeScreen.ui
 
 TRANSLATIONS += ../../resources/translations/SIM-VICUS_de.ts
 CODECFORSRC = UTF-8

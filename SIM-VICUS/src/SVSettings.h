@@ -134,6 +134,9 @@ public:
 		return id;
 	}
 
+	/*! Launches an external process (solver) in a console window. */
+	static bool startProcess(const QString & executable, QStringList commandLineArgs, const QString & projectFile);
+
 	// ****** member variables ************
 
 	/*! Holds all quantities currently known to the model/solver. */
