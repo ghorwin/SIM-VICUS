@@ -86,8 +86,17 @@ void SolverArgsParser::parse(int argc, const char * const argv[]) {
 	if (args().size() > 1) {
 		m_projectFile = args()[1];
 		// remove leading "file://" prefix if existing
-		if (IBK::string_nocase_find(m_projectFile.str(), "file://") == 0)
-			m_projectFile = IBK::Path( m_projectFile.str().substr(7));
+		if (IBK::string_nocase_find(m_projectFile.str(), "file://") == 0) {
+			// special check for Windows file:///C:\blabla
+			if (IBK::string_nocase_find(m_projectFile.str(), "file:///") == 0 &&
+					m_projectFile.str().size() > 10 &&
+					m_projectFile.str()[9] == ':')
+			{
+				m_projectFile = IBK::Path( m_projectFile.str().substr(8));
+			}
+			else
+				m_projectFile = IBK::Path( m_projectFile.str().substr(7));
+		}
 	}
 
 	// check restart option
