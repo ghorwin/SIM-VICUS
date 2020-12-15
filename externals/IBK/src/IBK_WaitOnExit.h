@@ -39,6 +39,8 @@
 #ifndef IBK_WaitOnExitH
 #define IBK_WaitOnExitH
 
+#include <iostream>
+
 #include "IBK_configuration.h"
 
 namespace IBK {
@@ -61,12 +63,17 @@ public:
 					upon destruction.
 	*/
 	WaitOnExit(bool wait = true) : m_wait(wait) {}
-#ifdef WIN32
-	/*! Destructor, only on Windows systems. */
+	/*! Destructor, stops execution unless 'wait' is true. */
 	~WaitOnExit() {
+#ifdef WIN32
 		if (m_wait) system("pause");
-	}
+#else
+		std::cout << "Press any key to continue...";
+		char c;
+		std::cin >> c;
+		std::cout << std::endl;
 #endif // WIN32
+	}
 
 
 	/*! If true, the "pause" command is issued on destruction of this object, if false, nothing happens. */

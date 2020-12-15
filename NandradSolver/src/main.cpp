@@ -24,6 +24,7 @@
 #include <IBK_MessageHandler.h>
 #include <IBK_MessageHandlerRegistry.h>
 #include <IBK_messages.h>
+#include <IBK_WaitOnExit.h>
 
 // include solver control framework and integrator
 #include <SOLFRA_SolverControlFramework.h>
@@ -47,6 +48,12 @@ const char * const PROGRAM_INFO =
 int main(int argc, char * argv[]) {
 	FUNCID(main);
 
+#ifdef WIN32
+	IBK::WaitOnExit wait;			// windows: default - wait
+#else
+	IBK::WaitOnExit wait(false);	// linux: default - don't wait
+#endif //WIN32
+
 	try {
 		// a stopwatch to measure time needed for solver initialization
 		IBK::StopWatch initWatch;
@@ -54,6 +61,15 @@ int main(int argc, char * argv[]) {
 		// *** Command line parsing ***
 		NANDRAD::ArgsParser args;
 		args.parse(argc, argv);
+
+#ifdef WIN32
+		// on windows, flag is interpreted as "close window at simulation end when flag is given"
+		wait.m_wait = !args.flagEnabled(IBK::SolverArgsParser::DO_CLOSE_ON_EXIT);
+#else
+		// on linux, flag is interpreted as "keep terminal open if flag is given"
+		wait.m_wait = args.flagEnabled(IBK::SolverArgsParser::DO_CLOSE_ON_EXIT);
+#endif //WIN32
+
 		// handle default arguments like help and man-page requests, which are printed to std::cout
 		if (args.handleDefaultFlags(std::cout))
 			// stop if help/man-page requested
