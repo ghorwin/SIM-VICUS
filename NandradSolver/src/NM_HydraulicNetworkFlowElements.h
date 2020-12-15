@@ -69,9 +69,31 @@ private:
 };
 
 
-// TODO : add other flow element classes
+
+class HNFixedPressureLossCoeffElement : public HydraulicNetworkAbstractFlowElement {
+public:
+	/*! C'tor, takes and caches parameters needed for function evaluation. */
+	HNFixedPressureLossCoeffElement(const NANDRAD::HydraulicNetworkElement & elem,
+				  const NANDRAD::HydraulicNetworkComponent & component,
+				  const NANDRAD::HydraulicFluid & fluid);
+
+	// HydraulicNetworkAbstractFlowElement interface
+	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
+	void dmdot_dp(double mdot, double p_inlet, double p_outlet, double & dmdp_in, double & dmdp_out) const override;
 
 
+private:
+
+	/*! the fluid, containing all physical parameters */
+	NANDRAD::HydraulicFluid		m_fluid;
+
+	/*! the pressure loss coefficient [-] */
+	double						m_zeta;
+
+	/*! hydraulic (inner) diameter of pipe in m */
+	double						m_diameter;
+
+};
 
 } // namespace NANDRAD_MODEL
 
