@@ -71,6 +71,7 @@ win32 {
 
 SOURCES += \
 	../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
+	../../src/SVDBConstructionOpaqueEditWidget.cpp \
 		../../src/SVDBMaterialsEditWidget.cpp \
 		../../src/SVDBWindowEditWidget.cpp \
 		../../src/SVImportIDFDialog.cpp \
@@ -135,6 +136,7 @@ SOURCES += \
 	../../src/SVSimulationStartNandrad.cpp
 
 HEADERS  += \
+	../../src/SVDBConstructionOpaqueEditWidget.h \
 		../../src/SVDBMaterialsEditWidget.h \
 		../../src/SVDBWindowEditWidget.h \
 		../../src/SVImportIDFDialog.h \
@@ -202,6 +204,7 @@ HEADERS  += \
 
 FORMS    += \
 		../../src/SVAboutDialog.ui \
+	../../src/SVDBConstructionOpaqueEditWidget.ui \
 		../../src/SVDBMaterialsEditWidget.ui \
 		../../src/SVDBWindowEditWidget.ui \
 		../../src/SVImportIDFDialog.ui \
