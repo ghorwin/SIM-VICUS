@@ -497,8 +497,6 @@ double Network::pressureLossColebrook(const double &length, const double &massFl
 			break;
 		lambda = lambda_new;
 	}
-	double rho = fluid.m_para[NetworkFluid::P_Density].value;
-	double kinvis = fluid.m_kinematicViscosity.m_values.value(temperature);
 	return lambda_new * length / (pipe.m_diameterInside()/1000)  * fluid.m_para[NetworkFluid::P_Density].value
 			/ 2 * velocity * velocity;
 }
