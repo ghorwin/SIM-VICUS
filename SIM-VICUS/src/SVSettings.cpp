@@ -392,8 +392,6 @@ bool SVSettings::startProcess(const QString & executable,
 		&pi )             		// Pointer to PROCESS_INFORMATION structure.
 	)
 	{
-		QMessageBox::critical(this, tr("Error running solver"),
-							  tr("Could not start solver executable '%1'.").arg(executable));
 		return false;
 	}
 	return true;
