@@ -346,6 +346,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#define NO_TIMER
 #ifndef NO_TIMER
 #include <sys/time.h>
 #endif /* not NO_TIMER */
