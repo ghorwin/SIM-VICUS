@@ -56,6 +56,7 @@
 #include "SVDBMaterialsEditWidget.h"
 #include "SVDBWindowEditWidget.h"
 #include "SVSimulationStartNandrad.h"
+#include "SVSimulationStartNetworkSim.h"
 
 #include "SVGeometryView.h"
 #include "Vic3DSceneView.h"
@@ -1381,6 +1382,23 @@ void SVMainWindow::on_actionSimulationNANDRAD_triggered() {
 }
 
 
+void SVMainWindow::on_actionSimulationHydraulicNetwork_triggered() {
+	if (m_simulationStartNetworkSim == nullptr)
+		m_simulationStartNetworkSim = new SVSimulationStartNetworkSim(this);
+	// we require a saved project with at least one network definition
+	if (SVProjectHandler::instance().projectFile().isEmpty()) {
+		QMessageBox::critical(this, QString(), tr("The project must be saved, first!"));
+		return;
+	}
+	if (project().m_geometricNetworks.empty()) {
+		QMessageBox::critical(this, QString(), tr("You need to define at least one network!"));
+		return;
+	}
+
+	m_simulationStartNetworkSim->edit();
+}
+
+
 void SVMainWindow::on_actionOnline_manual_triggered() {
 	QDesktopServices::openUrl( QUrl(MANUAL_URL));
 }
@@ -1400,4 +1418,3 @@ void SVMainWindow::on_actionKeyboard_and_mouse_controls_triggered() {
 	dlg.resize(1400,800);
 	dlg.exec();
 }
-

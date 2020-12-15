@@ -85,6 +85,7 @@ SOURCES += \
 		../../src/SVPropVertexListWidget.cpp \
 		../../src/SVPropertyWidget.cpp \
 	../../src/SVSimulationPerformanceOptions.cpp \
+	../../src/SVSimulationStartNetworkSim.cpp \
 		../../src/SVUndoAddFluid.cpp \
 		../../src/SVUndoDeleteNetwork.cpp \
 		../../src/SVUndoModifyExistingNetwork.cpp \
@@ -150,6 +151,7 @@ HEADERS  += \
 		../../src/SVPropVertexListWidget.h \
 		../../src/SVPropertyWidget.h \
 	../../src/SVSimulationPerformanceOptions.h \
+	../../src/SVSimulationStartNetworkSim.h \
 		../../src/SVUndoAddFluid.h \
 		../../src/SVUndoDeleteNetwork.h \
 		../../src/SVUndoModifyExistingNetwork.h \
@@ -220,6 +222,7 @@ FORMS    += \
 		../../src/SVPropSiteWidget.ui \
 		../../src/SVPropVertexListWidget.ui \
 	../../src/SVSimulationPerformanceOptions.ui \
+	../../src/SVSimulationStartNetworkSim.ui \
 		../../src/SVWelcomeScreen.ui \
 	../../src/SVSimulationStartNandrad.ui
 

@@ -29,6 +29,7 @@ class SVImportIDFDialog;
 class SVNetworkEditDialog;
 class SVViewStateHandler;
 class SVSimulationStartNandrad;
+class SVSimulationStartNetworkSim;
 
 class SVDBMaterialsEditWidget;
 class SVDBWindowEditWidget;
@@ -201,6 +202,8 @@ private slots:
 
 	void on_actionViewToggleParametrizationMode_triggered();
 
+	void on_actionSimulationHydraulicNetwork_triggered();
+
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();
@@ -314,7 +317,7 @@ private:
 
 	/*! Simulation start dialog. */
 	SVSimulationStartNandrad	*m_simulationStartNandrad								= nullptr;
-
+	SVSimulationStartNetworkSim	*m_simulationStartNetworkSim							= nullptr;
 
 	/*! Contains the 3D scene view (and tool buttons and stuff). */
 	SVGeometryView				*m_geometryView											= nullptr;
