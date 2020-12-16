@@ -14100,6 +14100,9 @@ int numberofpointattribs;
 #endif /* not ANSI_DECLARATORS */
 
 {
+	//double test = pointlist[0];
+
+	size_t lenArr = sizeof (pointlist);
   vertex vertexloop;
   REAL x, y;
   int i, j;

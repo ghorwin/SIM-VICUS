@@ -5,9 +5,13 @@
 #include <vector>
 #include <string>
 
+
+
 extern "C" {
 #include "triangle.h"
 }
+
+
 
 using namespace std;
 
@@ -79,15 +83,15 @@ void clear(struct triangulateio * io) {
 
 
 int main() {
-  cout << "Triangulation test" << endl;
+	cout << "Triangulation test" << endl;
 
-  TriangleWrapper w;
-  //w.m_vertexes = { Point(0,0), Point(2,0), Point(2,2),Point(0,2)}; // M shape
+	TriangleWrapper w;
+	//w.m_vertexes = { Point(0,0), Point(2,0), Point(2,2),Point(0,2)}; // M shape
 
-  w << Point(0,0);
-  w << Point(2,0);
-  w << Point(2,2);
-  w << Point(2,0);
+	w << Point(0,0);
+	w << Point(2,0);
+	w << Point(2,2);
+	w << Point(0,2);
 
   w.triangulatePolygon();
 
@@ -121,33 +125,33 @@ void TriangleWrapper::triangulatePolygon() {
   // *** Point marker list ***
 //	m_pointMarkerList.resize(n);
 
-  m_pointMarkerList = std::vector<int>(n,1);
-  in.pointmarkerlist = m_pointMarkerList.data();
+	m_pointMarkerList = std::vector<int>(n,1);
+	in.pointmarkerlist = nullptr; //m_pointMarkerList.data();
 //	for (unsigned int i=0; i<n; ++i)
 //		in.pointmarkerlist[i] = 1; // ??
 
-  // *** Point attributes list ***
-//  in.numberofpointattributes = 0; // ??
-//  in.pointattributelist = (REAL*) nullptr;
-//  m_pointAttributeList.resize(n*in.numberofpointattributes);
+	// *** Point attributes list ***
+	in.numberofpointattributes = 0; // ??
+	in.pointattributelist = nullptr;
+	m_pointAttributeList.resize(n*in.numberofpointattributes);
 
-  //in.pointattributelist = (REAL *) m_pointAttributeList.data();
+	//in.pointattributelist = (REAL *) m_pointAttributeList.data();
 
-  //for (unsigned int i=0; i<n; ++i)
-  //	in.pointattributelist[i] = m_vertexes[i].m_y; // ??
+	//for (unsigned int i=0; i<n; ++i)
+	//	in.pointattributelist[i] = m_vertexes[i].m_y; // ??
 
 
-  // *** Segment attributes list ***
-  in.numberofsegments = n;
-  std::vector<int> segmentMarkerList{0, 1, 1, 2, 2, 3, 3, 1};
-  in.segmentmarkerlist = segmentMarkerList.data();
+	// *** Segment attributes list ***
+	in.numberofsegments = 0; //n;
+	std::vector<int> segmentMarkerList{0, 1, 1, 2, 2, 3, 3, 1};
+	in.segmentmarkerlist = nullptr; //segmentMarkerList.data();
 
-  in.numberofholes = 0;
-  in.numberofregions = 0;
+	in.numberofholes = 0;
+	in.numberofregions = 0;
 
-  m_regionList.resize(in.numberofregions*4); // each region has 4 attributes
-//  in.regionlist = (REAL*) nullptr; //m_regionList.data();
-  //regionlist "x" "y" "attribute" "max Area" 4 indices
+	m_regionList.resize(in.numberofregions*4); // each region has 4 attributes
+	in.regionlist = nullptr; //m_regionList.data();
+	//regionlist "x" "y" "attribute" "max Area" 4 indices
 //	in.regionlist[0] = 0.5;
 //	in.regionlist[1] = 5.0;
 //	in.regionlist[2] = 7.0;            /* Regional attribute (for whole mesh). */
