@@ -249,6 +249,7 @@
 /*****************************************************************************/
 #define ANSI_DECLARATORS
 #define NO_TIMER
+#define VOID void
 
 #ifdef SINGLE
 #define REAL float
@@ -289,9 +290,9 @@ struct triangulateio {
 };
 
 #ifdef ANSI_DECLARATORS
-void triangulate(const char *, struct triangulateio *, struct triangulateio *,
-				 struct triangulateio *);
-void trifree(void *memptr);
+void triangulate(char *, struct triangulateio *, struct triangulateio *,
+                 struct triangulateio *);
+void trifree(VOID *memptr);
 #else /* not ANSI_DECLARATORS */
 void triangulate();
 void trifree();
