@@ -110,17 +110,6 @@ void SVPropertyWidget::onViewStateChanged() {
 			qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->updateUi();
 		} break;
 
-
-//		case M_EditNetwork :{
-//			// create widget and add to layout, if not existing
-//			if (m_propWidgets[M_EditNetwork] == nullptr) {
-//				SVPropEditNetwork *propNetworkWidget = new SVPropEditNetwork(this);
-//				m_propWidgets[M_EditNetwork] = propNetworkWidget;
-//				m_layout->addWidget(m_propWidgets[M_EditNetwork]);
-//			}
-//			m_propWidgets[M_EditNetwork]->setVisible(true);
-//		} break;
-
 		default : {
 			// set maximum size to 0, to avoid widget being expandible
 		}
@@ -128,24 +117,6 @@ void SVPropertyWidget::onViewStateChanged() {
 }
 
 
-//void SVPropertyWidget::onViewStateChanged() {
-//	switch (SVViewStateHandler::instance().viewState().m_propertyWidgetMode) {
-//		case SVViewState::PM_VertexList		: setWidgetVisible(M_AddVertexesMode); break;
-//		case SVViewState::PM_AddGeometry	:
-//			setWidgetVisible(M_AddGeometry);
-//		break;
-//		case SVViewState::PM_EditGeometry	:
-//			setWidgetVisible(M_EditGeometry);
-//		break;
-//		case SVViewState::PM_SiteProperties :
-//			setWidgetVisible(M_SiteProperties);
-//		break;
-//		case SVViewState::PM_EditNetwork :
-//			setWidgetVisible(M_EditNetwork);
-//		break;
-//		default:;
-//	}
-//}
 
 
 
