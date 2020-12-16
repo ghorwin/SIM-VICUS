@@ -12,20 +12,10 @@ public:
 
 	/*! Set points to triangulate.
 		No duplicate points (within tolerance allowed!)
+		Also, edges must mark outer and inner boundaries of surface.
 	*/
-	bool setPoints(const std::vector<IBK::point2D<double> > & points);
-
-	/*! Set points to triangulate.
-		Overloaded function, expects vector with point coordinates with size 2*n and
-		coordinate order x1, y1, x2, y2, ....
-	*/
-	bool setPoints(const std::vector<double> & coords);
-
-	/*! Set points to triangulate.
-		No duplicate points (within tolerance allowed!)
-		Overloaded function, expects continuous memory array passed to 'points' with size 2*n (x1, y1, x2, y2, ...).
-	*/
-	bool setPoints(unsigned int n, const double points[]);
+	bool setPoints(const std::vector<IBK::point2D<double> > & points,
+				   const std::vector<std::pair<unsigned int, unsigned int> > & edges);
 
 	/*! Tolerance criterion - points within this distances are
 		takes and "same".
@@ -33,6 +23,11 @@ public:
 	double	m_tolerance;
 
 	struct triangle_t {
+		triangle_t() {}
+		triangle_t(unsigned int n1, unsigned int n2, unsigned int n3) :
+			i1(n1), i2(n2), i3(n3)
+		{}
+
 		unsigned int i1, i2, i3;
 	};
 

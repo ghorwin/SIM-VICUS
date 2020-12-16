@@ -6,6 +6,8 @@
 TARGET = IBKMK
 TEMPLATE = lib
 
+DEFINES += CDT_USE_AS_COMPILED_LIBRARY
+
 # this pri must be sourced from all our libraries,
 # it contains all functions defined for casual libraries
 include( ../../../IBK/projects/Qt/IBK.pri )
@@ -25,10 +27,12 @@ LIBS += 		-lIBK
 
 
 INCLUDEPATH = \
-	../../../IBK/src
+	../../../IBK/src \
+	../../src/CDT
 
 
 SOURCES += \
+	../../src/CDT/CDT.cpp \
 	../../src/IBKMKC_dense_matrix.c \
 	../../src/IBKMKC_sparse_matrix.c \
 	../../src/IBKMKC_vector_operations.c \
@@ -39,6 +43,13 @@ SOURCES += \
 	../../src/IBKMK_Triangulation.cpp
 
 HEADERS += \
+	../../src/CDT/CDT.h \
+	../../src/CDT/CDT.hpp \
+	../../src/CDT/CDTUtils.h \
+	../../src/CDT/CDTUtils.hpp \
+	../../src/CDT/cdt_export.h \
+	../../src/CDT/predicates.h \
+	../../src/CDT/remove_at.hpp \
 	../../src/IBKMKC_dense_matrix.h \
 	../../src/IBKMKC_ilut.h \
 	../../src/IBKMKC_sparse_matrix.h \

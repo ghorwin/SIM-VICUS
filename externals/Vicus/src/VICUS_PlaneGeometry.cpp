@@ -199,7 +199,7 @@ void PlaneGeometry::computeGeometry() {
 
 	//darf nicht verwunden sein
 	//wenn es verwunden ist dann keine triangulierung
-	if(isSimplePolygon())
+	if (isSimplePolygon())
 		triangulate();
 }
 
@@ -403,8 +403,8 @@ void PlaneGeometry::eleminateColinearPts(){
 	bool tryAgain =true;
 	while (tryAgain)
 		tryAgain = eleminateColinearPtsHelper(m_vertexes);
-
 }
+
 
 void PlaneGeometry::triangulate() {
 	FUNCID(PlaneGeometry::triangulate);
@@ -424,6 +424,7 @@ void PlaneGeometry::triangulate() {
 		case T_Rectangle :
 			// TODO : there might be a faster way for rectangles, but for now
 			//        we use the same triangulation algorithm as for polygons
+
 		case T_Polygon : {
 			//here the index is stored which is already taken into account
 			std::set<unsigned int> usedIdx;
@@ -431,14 +432,19 @@ void PlaneGeometry::triangulate() {
 
 			IBKMK::Triangulation triangu;
 
-			std::vector<IBK::point2D<double>> points;
+			std::vector<IBK::point2D<double> > points;
+			std::vector<std::pair<unsigned int, unsigned int> > edges;
 
-			//fill points vector
-			for (auto p: m_polygon)
-				points.emplace_back(IBK::point2D<double>(p.x(),p.y()));
+			// fill points vector
+			points.resize(m_polygon.size());
+			for (unsigned int i=0; i<m_polygon.size(); ++i) {
+				const QPointF  & p = m_polygon[i];
+				points[i] = IBK::point2D<double>(p.x(), p.y());
+				edges.push_back(std::make_pair(i, i+1));
+			}
+			edges.back().second = 0;
 
-
-			triangu.setPoints(points);
+			triangu.setPoints(points, edges);
 			//calculate middle point for each triangle and check if point is in polygon
 			for (IBKMK::Triangulation::triangle_t tri : triangu.m_triangles) {
 //				QPolygonF checkTriangle;

@@ -180,6 +180,7 @@ private:
 	std::vector<IBKMK::Vector3D>		m_vertexes;
 
 	// *** Runtime Variables ***
+
 	/*! Polyline in 2D-coordinates. */
 	QPolygonF							m_polygon;
 
