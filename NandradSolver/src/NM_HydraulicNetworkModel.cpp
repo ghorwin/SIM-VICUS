@@ -199,7 +199,8 @@ void HydraulicNetworkModel::setup(const NANDRAD::HydraulicNetwork & nw, const st
 				throw IBK::Exception(IBK::FormatString("Model type '%1' for HydraulicNetworkComponent "
 									 "with id %2 is still not supported")
 									.arg(NANDRAD::KeywordList::Keyword(
-									"HydraulicNetworkComponent::modelType_t",it->m_modelType)),FUNC_ID);
+									"HydraulicNetworkComponent::modelType_t",it->m_modelType))
+									.arg(e.m_componentId),FUNC_ID);
 			}
 			default:{
 				throw IBK::Exception(IBK::FormatString("Unsupported model type for "
