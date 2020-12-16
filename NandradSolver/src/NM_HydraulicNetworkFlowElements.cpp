@@ -45,6 +45,7 @@ void HNPipeElement::dmdot_dp(double mdot, double p_inlet, double p_outlet, doubl
 
 
 double HNPipeElement::pressureLossFriction(const double &mdot) const{
+
 	double velocity = mdot / (m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value * m_diameter * m_diameter * PI / 4);
 	double Re = velocity * m_diameter / m_fluid->m_kinematicViscosity.m_values.value(m_fluidTemperature);
 	if (Re < 1e-6) // TODO Anne: which threshold should we use?
@@ -53,7 +54,6 @@ double HNPipeElement::pressureLossFriction(const double &mdot) const{
 		return m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value / 2 * velocity * velocity
 				* m_length / m_diameter * frictionFactorSwamee(Re, m_diameter, m_roughness);
 }
-
 
 double HNPipeElement::frictionFactorSwamee(const double &Re, const double &diameter, const double &roughness){
 	IBK_ASSERT(roughness>0 && diameter>0 && Re>0);
@@ -68,7 +68,6 @@ double HNPipeElement::frictionFactorSwamee(const double &Re, const double &diame
 		return	f*f;
 	}
 }
-
 
 /*! this one is probably quite expensive ? */
 double HNPipeElement::frictionFactorCheng(const double &Re, const double &diameter, const double &roughness){

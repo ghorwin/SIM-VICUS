@@ -21,6 +21,19 @@ class SVPropertyWidget : public QWidget {
 	Q_OBJECT
 public:
 
+	/*! This enum defines the property widgets that can be shown.
+		These are usually mapped to view states.
+	*/
+	enum PropertyWidgets {
+		M_ThermalSimulationProperties,
+		M_EditGeometry,
+		M_AddGeometry,
+		M_AddVertexesMode,
+		M_SiteProperties,
+		M_EditNetwork,
+		NUM_M
+	};
+
 	explicit SVPropertyWidget(QWidget * parent = nullptr);
 
 public slots:

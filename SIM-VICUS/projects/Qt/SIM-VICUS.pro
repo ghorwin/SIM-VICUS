@@ -135,7 +135,8 @@ SOURCES += \
 		../../src/SVUtils.cpp \
 		../../src/SVViewState.cpp \
 		../../src/SVViewStateHandler.cpp \
-		../../src/SVWelcomeScreen.cpp
+		../../src/SVWelcomeScreen.cpp \
+		SVPropEditNetwork.cpp
 
 HEADERS  += \
 		../../src/SVPropNetworkEditWidget.h \
@@ -204,7 +205,8 @@ HEADERS  += \
 		../../src/SVUtils.h \
 		../../src/SVViewState.h \
 		../../src/SVViewStateHandler.h \
-		../../src/SVWelcomeScreen.h
+		../../src/SVWelcomeScreen.h \
+		SVPropEditNetwork.h
 
 FORMS    += \
 		../../src/SVAboutDialog.ui \
@@ -227,7 +229,8 @@ FORMS    += \
 		../../src/SVSimulationPerformanceOptions.ui \
 		../../src/SVSimulationStartNandrad.ui \
 		../../src/SVSimulationStartNetworkSim.ui \
-		../../src/SVWelcomeScreen.ui
+		../../src/SVWelcomeScreen.ui \
+		SVPropEditNetwork.ui
 
 TRANSLATIONS += ../../resources/translations/SIM-VICUS_de.ts
 CODECFORSRC = UTF-8

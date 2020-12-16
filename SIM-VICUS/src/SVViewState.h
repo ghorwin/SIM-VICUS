@@ -82,6 +82,8 @@ public:
 		PM_SiteProperties,
 		/*! Shows the widget with network properties. */
 		PM_NetworkProperties,
+
+
 		NUM_PM
 	};
 

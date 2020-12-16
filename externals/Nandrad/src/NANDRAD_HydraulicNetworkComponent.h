@@ -37,7 +37,6 @@ public:
 	enum para_t {
 		P_PipeRoughness,					// Keyword: PipeRoughness						[mm]	'Roughness of pipe material.'
 		P_PressureLossCoefficient,			// Keyword: PressureLossCoefficient				[-]		'Pressure loss coefficient for the component (zeta-value).'
-		P_MaximumPressureLossCoefficient,	// Keyword: MaximumPressureLossCoefficient		[-]		'Maximum pressure loss coefficient for the component.'
 		P_HydraulicDiameter,				// Keyword: HydraulicDiameter					[mm]	'Inside hydraulic diameter for the component.'
 		P_ExternalHeatTransferCoefficient,	// Keyword: ExternalHeatTransferCoefficient		[W/m2K]	'External heat transfer coeffient for the outside boundary.'
 		P_TemperatureTolerance,				// Keyword: TemperatureTolerance				[K]		'Temperature tolerance for e.g. thermostats.'
@@ -57,7 +56,7 @@ public:
 
 	/*! type of interface to an external model or data file */
 	enum interfaceType_t {
-		IT_HeatFlux,						// Keyword: FixedHeatFlux						'Fixed heat flux'
+		IT_HeatFlux,						// Keyword: HeatFlux							'Fixed heat flux'
 		IT_HeatExchangeGivenTemperature,	// Keyword: HeatExchangeGivenTemperature		'Coupled to external model which requires a heat flux and calculates a temperature in return'
 		IT_ThermoHydraulicGivenPinPout,		// Keyword: ThermoHydraulicGivenPinPout			'Coupled to external model which requires p_in, p_out, T_in and calculates T_out and m_dot'
 		IT_ThermoHydraulicGivenPinMdot,		// Keyword: ThermoHydraulicGivenPinMdot			'Coupled to external model which requires p_in, m_dot, T_in and calculates T_out and p_out'

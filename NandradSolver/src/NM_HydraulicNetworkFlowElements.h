@@ -68,6 +68,7 @@ private:
 };
 
 
+
 /*! Element that calculates the pressure loss according to a given fixed pressure loss coefficient
  * (which is in Germany usually called zeta-value) */
 class HNFixedPressureLossCoeffElement : public HydraulicNetworkAbstractFlowElement {
@@ -97,6 +98,7 @@ private:
 
 
 
+/*! Pump model with fixed constant pressure head */
 class HNConstantPressurePump: public HydraulicNetworkAbstractFlowElement {
 
 public:
