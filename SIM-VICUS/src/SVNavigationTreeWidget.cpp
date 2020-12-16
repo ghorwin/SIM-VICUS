@@ -249,20 +249,13 @@ void SVNavigationTreeWidget::on_treeWidget_itemSelectionChanged() {
 			vs.m_propertyWidgetMode = SVViewState::PM_SiteProperties;
 		} break;
 		case NT_Network :{
-			vs.m_propertyWidgetMode = SVViewState::PM_EditNetwork;
+			vs.m_propertyWidgetMode = SVViewState::PM_NetworkProperties;
 		} break;
 		case NT_NetworkEdge:{
-			vs.m_propertyWidgetMode = SVViewState::PM_EditNetworkEdge;
+			vs.m_propertyWidgetMode = SVViewState::PM_NetworkEdgeProperties;
 		} break;
 		case NT_NetworkNode:{
-			vs.m_propertyWidgetMode = SVViewState::PM_EditNetworkNode;
-		} break;
-
-		case NT_Network : {
-			// switch view state to show property widget for side
-			SVViewState vs = SVViewStateHandler::instance().viewState();
-			vs.m_propertyWidgetMode = SVViewState::PM_NetworkProperties;
-			SVViewStateHandler::instance().setViewState(vs);
+			vs.m_propertyWidgetMode = SVViewState::PM_NetworkNodeProperties;
 		} break;
 
 		/// TODO : show other property widgets
