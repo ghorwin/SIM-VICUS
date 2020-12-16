@@ -98,7 +98,9 @@ void SVPropertyWidget::onViewStateChanged() {
 		} break;
 
 
-		case SVViewState::PM_NetworkProperties : {
+		case SVViewState::PM_NetworkProperties :
+		case SVViewState::PM_NetworkNodeProperties :
+		case SVViewState::PM_NetworkEdgeProperties : {
 			// create widget and add to layout, if not existing
 			if (m_propWidgets[SVViewState::PM_NetworkProperties] == nullptr) {
 				SVPropNetworkEditWidget *propWidget = new SVPropNetworkEditWidget(this);
@@ -108,6 +110,12 @@ void SVPropertyWidget::onViewStateChanged() {
 			m_propWidgets[SVViewState::PM_NetworkProperties]->setVisible(true);
 			// tell widget to update its content
 			qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->updateUi();
+			if (m == SVViewState::PM_NetworkProperties)
+				qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->showNetworkProperties();
+			else if (m == SVViewState::PM_NetworkNodeProperties)
+				qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->showNodeProperties();
+			else
+				qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->showEdgeProperties();
 		} break;
 
 		default : {

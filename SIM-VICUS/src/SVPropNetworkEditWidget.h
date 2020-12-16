@@ -3,6 +3,11 @@
 
 #include <QWidget>
 
+namespace VICUS {
+	class Network;
+
+}
+
 namespace Ui {
 	class SVPropNetworkEditWidget;
 }
@@ -18,8 +23,16 @@ public:
 		and selected node. */
 	void updateUi();
 
+	void showNetworkProperties();
+
+	void showNodeProperties();
+
+	void showEdgeProperties();
+
 private:
 	Ui::SVPropNetworkEditWidget *m_ui;
+
+	VICUS::Network *m_network;
 };
 
 #endif // SVPropNetworkEditWidgetH

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>641</height>
+    <height>753</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <widget class="QGroupBox" name="groupBox_5">
+    <widget class="QGroupBox" name="groupBoxNetwork">
      <property name="title">
       <string>Network</string>
      </property>
@@ -25,12 +25,16 @@
         <item>
          <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>Network</string>
+           <string>network id</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="comboBoxSelectNetwork"/>
+         <widget class="QLabel" name="labelNetworkId">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QPushButton" name="pushButtonCopy">
@@ -280,36 +284,50 @@
       <string>Edit Pipe</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="1">
-       <widget class="QLabel" name="labelPipeLength">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_11">
-        <property name="text">
-         <string>Length [m]</string>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="0">
-       <widget class="QCheckBox" name="checkBoxSupplyPipe">
-        <property name="text">
-         <string>supply pipe</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
        <widget class="QLabel" name="label_6">
         <property name="text">
          <string>model</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
+      <item row="4" column="0">
+       <widget class="QCheckBox" name="checkBoxSupplyPipe">
+        <property name="text">
+         <string>supply pipe</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
        <widget class="QComboBox" name="comboBoxPipeModel"/>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLabel" name="labelPipeLength">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_11">
+        <property name="text">
+         <string>Length [m]</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_14">
+        <property name="text">
+         <string>pipe id</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="labelPipeId">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -320,27 +338,41 @@
       <string>Edit Node</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0">
+      <item row="1" column="0">
        <widget class="QLabel" name="label_12">
         <property name="text">
          <string>model</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
+      <item row="1" column="1">
        <widget class="QComboBox" name="comboBoxNodeModel"/>
       </item>
-      <item row="2" column="1">
+      <item row="3" column="1">
        <widget class="QLabel" name="labelNodeHeat">
         <property name="text">
          <string>TextLabel</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
+      <item row="3" column="0">
        <widget class="QLabel" name="label_13">
         <property name="text">
          <string>heating demand</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_15">
+        <property name="text">
+         <string>node id</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="labelNodeId">
+        <property name="text">
+         <string/>
         </property>
        </widget>
       </item>
@@ -355,7 +387,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>40</height>
+       <height>69</height>
       </size>
      </property>
     </spacer>

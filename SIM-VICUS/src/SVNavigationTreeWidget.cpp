@@ -241,8 +241,8 @@ void SVNavigationTreeWidget::on_treeWidget_itemSelectionChanged() {
 
 	// we now need to figure out, what kind of icon this is
 
-	NodeType nt = static_cast<NodeType>(item->data(0, SVNavigationTreeItemDelegate::ItemType).toInt());
 	SVViewState vs = SVViewStateHandler::instance().viewState();
+	NodeType nt = static_cast<NodeType>(item->data(0, SVNavigationTreeItemDelegate::ItemType).toInt());
 	switch (nt) {
 		case NT_Site : {
 			// switch view state to show property widget for side
