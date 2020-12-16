@@ -100,7 +100,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	unsigned id3 = net.addNodeExt(IBKMK::Vector3D(100,70,0), VICUS::NetworkNode::NT_Building);
 	unsigned id4 = net.addNodeExt(IBKMK::Vector3D(0,200,0), VICUS::NetworkNode::NT_Mixer);
 	unsigned id5 = net.addNodeExt(IBKMK::Vector3D(100,200,0), VICUS::NetworkNode::NT_Building);
-	unsigned id6 = net.addNodeExt(IBKMK::Vector3D(-100,200,0), VICUS::NetworkNode::NT_Building);
+	unsigned id6 = net.addNodeExt(IBKMK::Vector3D(-50,200,0), VICUS::NetworkNode::NT_Building);
 	net.addEdge(id1, id2, true);
 	net.addEdge(id2, id3, true);
 	net.addEdge(id2, id4, true);

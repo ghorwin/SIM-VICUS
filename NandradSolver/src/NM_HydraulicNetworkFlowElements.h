@@ -32,7 +32,7 @@ public:
 	 * mdot:	mass flow  in kg/m3
 	 * temperature: temperature in C
 	 */
-	double pressureLossFriction(const double &mdot, const double &temperature) const;
+	double pressureLossFriction(const double &mdot) const;
 
 	// friction factors are static, so I can use them from VICUS for sizing algorithm
 

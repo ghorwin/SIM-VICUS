@@ -26,16 +26,14 @@ HNPipeElement::HNPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 							const NANDRAD::HydraulicFluid & fluid):
 	m_fluid(&fluid)
 {
-	m_length = elem.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value; // = get_value(IBK::Unit("m"));
-	m_diameter = component.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].value; // = get_value(IBK::Unit("m"));
-	m_roughness = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PipeRoughness].value; // = get_value(IBK::Unit("m"));
+	m_length = elem.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
+	m_diameter = component.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].value;
+	m_roughness = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PipeRoughness].value;
 }
 
 
 double  HNPipeElement::systemFunction(double mdot, double p_inlet, double p_outlet) const {
-	// TODO Andreas: how do we get the fluid temperature here?
-	double temp = 20;
-	return p_inlet - p_outlet - pressureLossFriction(mdot, temp);	// this is the system function
+	return p_inlet - p_outlet - pressureLossFriction(mdot);	// this is the system function
 }
 
 
@@ -46,13 +44,13 @@ void HNPipeElement::dmdot_dp(double mdot, double p_inlet, double p_outlet, doubl
 }
 
 
-double HNPipeElement::pressureLossFriction(const double &mdot, const double &temperature) const{
-	double velocity = mdot / (m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].get_value(IBK::Unit("kg/m3")) * m_diameter * m_diameter * PI / 4);
-	double Re = velocity * m_diameter / m_fluid->m_kinematicViscosity.m_values.value(temperature);
+double HNPipeElement::pressureLossFriction(const double &mdot) const{
+	double velocity = mdot / (m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value * m_diameter * m_diameter * PI / 4);
+	double Re = velocity * m_diameter / m_fluid->m_kinematicViscosity.m_values.value(m_fluidTemperature);
 	if (Re < 1e-6) // TODO Anne: which threshold should we use?
 		return 0.0;
 	else
-		return m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].get_value(IBK::Unit("kg/m3")) / 2 * velocity * velocity
+		return m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value / 2 * velocity * velocity
 				* m_length / m_diameter * frictionFactorSwamee(Re, m_diameter, m_roughness);
 }
 
@@ -92,14 +90,14 @@ HNFixedPressureLossCoeffElement::HNFixedPressureLossCoeffElement(const NANDRAD::
 																 const NANDRAD::HydraulicFluid &fluid):
 	m_fluid(&fluid)
 {
-	m_zeta = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient].value; // = get_value(IBK::Unit("-"));
-	m_diameter = component.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].value; // = get_value(IBK::Unit("m"));
+	m_zeta = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient].value;
+	m_diameter = component.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].value;
 }
 
 
 double HNFixedPressureLossCoeffElement::systemFunction(double mdot, double p_inlet, double p_outlet) const {
 	double area = PI / 4 * m_diameter * m_diameter;
-	double dp = mdot * mdot * m_zeta / (2 * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].get_value(IBK::Unit("kg/m3"))
+	double dp = mdot * mdot * m_zeta / (2 * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value
 			* (area * area));
 	return p_inlet - p_outlet - dp;
 
