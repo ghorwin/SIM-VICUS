@@ -47,21 +47,24 @@ public:
 private:
 
 	/*! Some fluid flow resistance. */
-	double						m_res;
+	double							m_res;
 
 	/*! the fluid, containing all physical parameters */
-	NANDRAD::HydraulicFluid		m_fluid;
+	const NANDRAD::HydraulicFluid	*m_fluid = nullptr;
 
 	/*! pipe length in m */
-	double						m_length;
+	double							m_length;
 
 	/*! hydraulic (inner) diameter of pipe in m */
-	double						m_diameter;
+	double							m_diameter;
 
 	/*! roughness of pipe wall in m */
-	double						m_roughness;
+	double							m_roughness;
 
-	/*! Reynolds number where flow switches from laminar to transition state */
+	/*! Fluid temperature, for now constant, will be an input reference and retrieved from network-thermal-balances model. */
+	double							m_fluidTemperature = 20 + 273.15;
+
+	/*! Reynolds number where flow switches from laminar to transition state. */
 	static double m_Re1;
 
 	/*! Reynolds number where flow switches from transition state to turbulent */
@@ -85,13 +88,13 @@ public:
 private:
 
 	/*! the fluid, containing all physical parameters */
-	NANDRAD::HydraulicFluid		m_fluid;
+	const NANDRAD::HydraulicFluid	*m_fluid = nullptr;
 
 	/*! the pressure loss coefficient [-] */
-	double						m_zeta;
+	double							m_zeta;
 
 	/*! hydraulic (inner) diameter of pipe in m */
-	double						m_diameter;
+	double							m_diameter;
 
 };
 
