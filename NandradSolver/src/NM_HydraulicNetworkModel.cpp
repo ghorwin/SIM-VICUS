@@ -2,6 +2,7 @@
 
 #include <NANDRAD_HydraulicNetwork.h>
 #include <NANDRAD_HydraulicNetworkComponent.h>
+#include <NANDRAD_KeywordList.h>
 
 #include <IBK_messages.h>
 
@@ -138,6 +139,14 @@ void HydraulicNetworkModel::setup(const NANDRAD::HydraulicNetwork & nw, const st
 	// create implementation instance
 	m_p = new HydraulicNetworkModelImpl; // we take ownership
 
+	// first register all nodes
+	std::set<unsigned int> nodeIds;
+	// for this purpose process all hydraulic network elements
+	for (const NANDRAD::HydraulicNetworkElement & e : nw.m_elements) {
+		nodeIds.insert(e.m_inletNodeId);
+		nodeIds.insert(e.m_outletNodeId);
+	}
+
 	// now populate the m_flowElements vector of the network solver
 
 	// process all hydraulic network elements and instatiate respective flow equation classes
@@ -155,13 +164,15 @@ void HydraulicNetworkModel::setup(const NANDRAD::HydraulicNetwork & nw, const st
 		IBK_ASSERT(it != components.end());
 
 		switch (it->m_modelType) {
-			case NANDRAD::HydraulicNetworkComponent::MT_StaticPipe :
 			case NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe :
 			case NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe :
 			case NANDRAD::HydraulicNetworkComponent::MT_DynamicAdiabaticPipe :
 			{
 				// create hydraulic pipe model
 				HNPipeElement * pipeElement = new HNPipeElement(e, *it, nw.m_fluid);
+				// set node index
+				pipeElement->m_nInlet = std::distance(nodeIds.begin(), nodeIds.find(e.m_inletNodeId));
+				pipeElement->m_nOutlet = std::distance(nodeIds.begin(), nodeIds.find(e.m_outletNodeId));
 				// add to flow elements
 				m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 			} break;
@@ -170,11 +181,35 @@ void HydraulicNetworkModel::setup(const NANDRAD::HydraulicNetwork & nw, const st
 			{
 				// create pump model
 				HNConstantPressurePump * pumpElement = new HNConstantPressurePump(e, *it, nw.m_fluid);
+				// set node index
+				pumpElement->m_nInlet = std::distance(nodeIds.begin(), nodeIds.find(e.m_inletNodeId));
+				pumpElement->m_nOutlet = std::distance(nodeIds.begin(), nodeIds.find(e.m_outletNodeId));
 				// add to flow elements
 				m_p->m_flowElements.push_back(pumpElement); // transfer ownership
 			} break;
+			case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger :
+			case NANDRAD::HydraulicNetworkComponent::MT_HeatPump :
+			case NANDRAD::HydraulicNetworkComponent::MT_GasBoiler :
+			case NANDRAD::HydraulicNetworkComponent::MT_ControlValve :
+			case NANDRAD::HydraulicNetworkComponent::MT_WaterStorage :
+			case NANDRAD::HydraulicNetworkComponent::MT_ComponentConditionSystem :
+			case NANDRAD::HydraulicNetworkComponent::MT_Radiator :
+			case NANDRAD::HydraulicNetworkComponent::MT_Mixer :
+			case NANDRAD::HydraulicNetworkComponent::MT_FMU : {
+				throw IBK::Exception(IBK::FormatString("Model type '%1' for HydraulicNetworkComponent "
+									 "with id %2 is still not supported")
+									.arg(NANDRAD::KeywordList::Keyword(
+									"HydraulicNetworkComponent::modelType_t",it->m_modelType)),FUNC_ID);
+			}
+			default:{
+				throw IBK::Exception(IBK::FormatString("Unsupported model type for "
+									"HydraulicNetworkComponent with id %1!")
+									.arg(e.m_componentId),FUNC_ID);
+			}
 		}
 	}
+
+	// set
 
 	// setup the equation system
 	try {
@@ -412,19 +447,18 @@ void HydraulicNetworkModelImpl::setup() {
 	}
 
 	// calculate transitive closure
-	for(unsigned int i = 0; i < m_nodes.size(); ++i) {
+	for(unsigned int k = 0; k < m_nodes.size(); ++k) {
 		// set a connection (i,j) for each entry (i,k), (k,j)
+		std::vector<unsigned int> rows;
 		std::vector<unsigned int> cols;
-		connectivity.indexesPerRow(i,cols);
+		connectivity.indexesPerRow(k,cols);
+		connectivityTranspose.indexesPerRow(k,rows);
 
-		// transpose direction (pattern is symmetric)
-		for(unsigned int kIdx = 0; kIdx < cols.size(); ++kIdx) {
-			unsigned int k = cols[kIdx];
-			std::vector<unsigned int> rows;
-			connectivityTranspose.indexesPerRow(k,rows);
-			// search for transitive connections
-			for(unsigned int jIdx = 0; jIdx < rows.size(); ++jIdx) {
-				unsigned int j = rows[jIdx];
+		// set all entries (rows[iIdx], cols[jIdx])
+		for(unsigned int iIdx = 0; iIdx < rows.size(); ++iIdx) {
+			unsigned int i = rows[iIdx];
+			for(unsigned int jIdx = 0; jIdx < cols.size(); ++jIdx) {
+				unsigned int j = cols[jIdx];
 				// set entry
 				if(!connectivity.test(i,j))
 					connectivity.set(i,j);
