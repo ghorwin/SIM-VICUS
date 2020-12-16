@@ -157,11 +157,21 @@ void HydraulicNetworkModel::setup(const NANDRAD::HydraulicNetwork & nw, const st
 		switch (it->m_modelType) {
 			case NANDRAD::HydraulicNetworkComponent::MT_StaticPipe :
 			case NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe :
+			case NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe :
+			case NANDRAD::HydraulicNetworkComponent::MT_DynamicAdiabaticPipe :
 			{
-				// create static pipe model
+				// create hydraulic pipe model
 				HNPipeElement * pipeElement = new HNPipeElement(e, *it, nw.m_fluid);
 				// add to flow elements
 				m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+			} break;
+
+			case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel :
+			{
+				// create pump model
+				HNConstantPressurePump * pumpElement = new HNConstantPressurePump(e, *it, nw.m_fluid);
+				// add to flow elements
+				m_p->m_flowElements.push_back(pumpElement); // transfer ownership
 			} break;
 		}
 	}

@@ -109,4 +109,26 @@ void HNFixedPressureLossCoeffElement::dmdot_dp(double mdot, double p_inlet, doub
 
 
 
+// *** HNConstantPressurePump ***
+
+HNConstantPressurePump::HNConstantPressurePump(const NANDRAD::HydraulicNetworkElement &elem,
+												const NANDRAD::HydraulicNetworkComponent &component,
+												const NANDRAD::HydraulicFluid &fluid):
+	m_fluid(&fluid)
+{
+	m_pressureHead = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value;
+}
+
+double HNConstantPressurePump::systemFunction(double mdot, double p_inlet, double p_outlet) const
+{
+	return p_inlet - p_outlet + m_pressureHead;
+}
+
+void HNConstantPressurePump::dmdot_dp(double mdot, double p_inlet, double p_outlet, double &dmdp_in, double &dmdp_out) const
+{
+
+}
+
+
+
 } // namespace NANDRAD_MODEL

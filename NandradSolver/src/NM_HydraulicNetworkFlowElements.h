@@ -16,7 +16,8 @@ namespace NANDRAD {
 
 namespace NANDRAD_MODEL {
 
-/*! Defines the interface for an abstract flow element. */
+
+/*! Element that calculates the pressure loss of a straight pipe */
 class HNPipeElement : public HydraulicNetworkAbstractFlowElement {
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
@@ -67,7 +68,8 @@ private:
 };
 
 
-
+/*! Element that calculates the pressure loss according to a given fixed pressure loss coefficient
+ * (which is in Germany usually called zeta-value) */
 class HNFixedPressureLossCoeffElement : public HydraulicNetworkAbstractFlowElement {
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
@@ -91,6 +93,28 @@ private:
 	/*! hydraulic (inner) diameter of pipe in m */
 	double							m_diameter;
 
+};
+
+
+
+class HNConstantPressurePump: public HydraulicNetworkAbstractFlowElement {
+
+public:
+	/*! C'tor, takes and caches parameters needed for function evaluation. */
+	HNConstantPressurePump(const NANDRAD::HydraulicNetworkElement & elem,
+				  const NANDRAD::HydraulicNetworkComponent & component,
+				  const NANDRAD::HydraulicFluid & fluid);
+
+	// HydraulicNetworkAbstractFlowElement interface
+	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
+	void dmdot_dp(double mdot, double p_inlet, double p_outlet, double & dmdp_in, double & dmdp_out) const override;
+
+private:
+
+	/*! the fluid, containing all physical parameters */
+	const NANDRAD::HydraulicFluid	*m_fluid = nullptr;
+
+	double							m_pressureHead;
 };
 
 } // namespace NANDRAD_MODEL
