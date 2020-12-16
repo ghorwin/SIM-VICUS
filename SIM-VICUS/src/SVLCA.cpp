@@ -1,7 +1,11 @@
 #include "SVLCA.h"
 
 #include "SVSettings.h"
+
 #include <VICUS_EPDCategroySet.h>
+
+#include <IBK_FileReader.h>
+#include <IBK_StringUtils.h>
 
 namespace SV {
 
@@ -254,6 +258,69 @@ void LCA::calculateLCA()
 
 		}
 
+	}
+}
+
+bool findUUID(QString uuid, unsigned int &id, const std::map<unsigned int, VICUS::EPDDataset> &db){
+	for (auto o : db) {
+		if(QString::compare(o.second.m_uuid, uuid,Qt::CaseInsensitive)){
+			id = o.first;
+			return true;
+		}
+	}
+	return false;
+}
+
+void LCA::readDatabaseOekobautdat(const IBK::Path & filename)
+{
+//	IBK::FileReader fileR(filename);
+//	IBK::FileReader::BOMType type = IBK::FileReader::getBOM(fileR.firstBytes(4));
+
+	std::vector<std::string> lines;
+
+	IBK::FileReader::readAll(filename, lines, std::vector<std::string>{"\n"});
+	std::string testStr = IBK::ANSIToUTF8String(lines[0]);
+
+	std::map<unsigned int, VICUS::EPDDataset> &db = SVSettings::instance().m_dbEPDElements;
+
+	/* falls eine datenbank existiert
+	 * prüfen ob die daten sich geändert haben und evtl nachbessern
+	 * ansonsten eintragen
+	 * prüfkriterium ist die uuid
+	*/
+
+	//skip first line (Header)
+	std::vector<std::string> tabElements;
+	IBK::explode(testStr, tabElements, ";",IBK::EF_TrimTokens);
+	size_t numberOfTabs = tabElements.size();
+	for (size_t iLine=1; iLine<lines.size(); ++iLine) {
+		tabElements.clear();
+		IBK::explode(testStr, tabElements, ";",IBK::EF_TrimTokens);
+
+		//skip lines that are not in the right manner
+		if(numberOfTabs != tabElements.size())
+			continue;
+
+		VICUS::EPDDataset epd;
+		epd.m_id = SVSettings::firstFreeId(db,1);
+		epd.m_uuid = QString::fromStdString(tabElements[0]);
+		//subtype
+		if(IBK::tolower_string(tabElements[5]) == "average dataset")
+			epd.m_subtype = VICUS::EPDDataset::M_Average;
+		else if(IBK::tolower_string(tabElements[5]) == "MIRA")
+			epd.m_subtype = VICUS::EPDDataset::M_Generic;
+
+		//created a epd dataset
+
+		//check if epd exists
+		unsigned int id;
+		if(findUUID(epd.m_uuid, id, db)){
+			///TODO Mira
+			/// behavelikes
+			if(epd.behavesLike(db[id]))
+				;
+
+		}
 	}
 }
 

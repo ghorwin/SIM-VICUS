@@ -57,6 +57,10 @@ public:
 	void calculateLCA();
 
 
+	/*! TODO MIRA */
+	void readDatabaseOekobautdat(const IBK::Path &filename);
+
+
 	//double adjustmentReferenceUnit(const QString &refQ);
 
 	/*! TODO Andreas das ist noch falsch ie bekomm ich hier das gebäude*/
@@ -64,7 +68,7 @@ public:
 
 	/*! EPD results for
 		//for-Schleife über alle Materialienhole building. */
-	VICUS::EPDCategroySet					m_results;							// XML:E
+	//VICUS::EPDCategroySet					m_results;							// XML:E
 
 	/*! the factor 1.2 is according to the use of simplified procedure. */
 	double									m_adjustment = 1.2;					// XML:E
