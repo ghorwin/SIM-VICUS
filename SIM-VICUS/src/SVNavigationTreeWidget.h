@@ -18,6 +18,9 @@ public:
 	explicit SVNavigationTreeWidget(QWidget *parent);
 	~SVNavigationTreeWidget();
 
+	/*! Returns the unique ID of a selected node, or 0, if none is selected. */
+	unsigned int selectedNodeID() const;
+
 public slots:
 
 	/*! Connected to SVProjectHandler::modified() */

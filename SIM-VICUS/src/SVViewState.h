@@ -80,6 +80,8 @@ public:
 		PM_VertexList,
 		/*! Shows the widget with global site (and view) properties. */
 		PM_SiteProperties,
+		/*! Shows the widget with network properties. */
+		PM_NetworkProperties,
 		NUM_PM
 	};
 

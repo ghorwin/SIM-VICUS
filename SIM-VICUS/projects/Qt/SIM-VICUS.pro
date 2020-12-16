@@ -71,6 +71,7 @@ win32 {
 
 SOURCES += \
 		../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
+		../../src/SVPropNetworkEditWidget.cpp \
 		../../src/actions/SVUndoAddBuilding.cpp \
 		../../src/actions/SVUndoAddNetwork.cpp \
 		../../src/actions/SVUndoAddSurface.cpp \
@@ -137,6 +138,7 @@ SOURCES += \
 		../../src/SVWelcomeScreen.cpp
 
 HEADERS  += \
+		../../src/SVPropNetworkEditWidget.h \
 		../../src/actions/SVUndoAddBuilding.h \
 		../../src/actions/SVUndoAddNetwork.h \
 		../../src/actions/SVUndoAddSurface.h \
@@ -219,6 +221,7 @@ FORMS    += \
 		../../src/SVPreferencesPageStyle.ui \
 		../../src/SVPreferencesPageTools.ui \
 		../../src/SVPropEditGeometry.ui \
+		../../src/SVPropNetworkEditWidget.ui \
 		../../src/SVPropSiteWidget.ui \
 		../../src/SVPropVertexListWidget.ui \
 		../../src/SVSimulationPerformanceOptions.ui \

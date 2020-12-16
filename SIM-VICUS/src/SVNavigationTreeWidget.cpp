@@ -17,13 +17,17 @@ SVNavigationTreeWidget::SVNavigationTreeWidget(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
-	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
-			this, &SVNavigationTreeWidget::onModified);
+	// give others access to us
+	SVViewStateHandler::instance().m_navigationTreeWidget = this;
+
 
 	SVStyle::formatWidgetWithLayout(this);
 
 	// register item delegate that paints the "visible" bulb
 	m_ui->treeWidget->setItemDelegate(new SVNavigationTreeItemDelegate(this));
+
+	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
+			this, &SVNavigationTreeWidget::onModified);
 
 	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::viewStateChanged,
 			this, &SVNavigationTreeWidget::onViewStateChanged);
@@ -32,6 +36,14 @@ SVNavigationTreeWidget::SVNavigationTreeWidget(QWidget *parent) :
 
 SVNavigationTreeWidget::~SVNavigationTreeWidget() {
 	delete m_ui;
+}
+
+
+unsigned int SVNavigationTreeWidget::selectedNodeID() const {
+	if (m_ui->treeWidget->selectedItems().isEmpty())
+		return 0;
+	QTreeWidgetItem * item = m_ui->treeWidget->selectedItems().first();
+	return item->data(0, SVNavigationTreeItemDelegate::NodeID).toUInt();
 }
 
 
@@ -235,6 +247,13 @@ void SVNavigationTreeWidget::on_treeWidget_itemSelectionChanged() {
 			// switch view state to show property widget for side
 			SVViewState vs = SVViewStateHandler::instance().viewState();
 			vs.m_propertyWidgetMode = SVViewState::PM_SiteProperties;
+			SVViewStateHandler::instance().setViewState(vs);
+		} break;
+
+		case NT_Network : {
+			// switch view state to show property widget for side
+			SVViewState vs = SVViewStateHandler::instance().viewState();
+			vs.m_propertyWidgetMode = SVViewState::PM_NetworkProperties;
 			SVViewStateHandler::instance().setViewState(vs);
 		} break;
 

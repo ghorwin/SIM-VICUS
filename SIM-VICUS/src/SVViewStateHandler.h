@@ -10,6 +10,8 @@ namespace Vic3D {
 	class CoordinateSystemObject;
 }
 
+class SVNavigationTreeWidget;
+
 /*! This singleton makes the current UI view state available to all.
 	Widgets that need to be informed from view state changes, should
 	connect to stateChanged() signal.
@@ -46,6 +48,11 @@ public:
 		DO NOT DELETE the object or do any other crazy stuff with this pointer!
 	*/
 	Vic3D::CoordinateSystemObject		*m_coordinateSystemObject = nullptr;
+
+	/*! Pointer to navigation tree widget - can be used to retrieve the currently selected node
+		from property widgets.
+	*/
+	SVNavigationTreeWidget				*m_navigationTreeWidget = nullptr;
 
 signals:
 	/*! Emitted, when the state has changed. */

@@ -1092,7 +1092,7 @@ namespace NANDRAD {
 			case 6 :
 			switch (t) {
 				case 0 : return "Roughness of pipe material.";
-				case 1 : return "Pressure loss coefficient for the component.";
+				case 1 : return "Pressure loss coefficient for the component (zeta-value).";
 				case 2 : return "Maximum pressure loss coefficient for the component.";
 				case 3 : return "Inside hydraulic diameter for the component.";
 				case 4 : return "External heat transfer coeffient for the outside boundary.";
