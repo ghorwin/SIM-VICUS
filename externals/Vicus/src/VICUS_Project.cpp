@@ -403,4 +403,34 @@ bool Project::selectedSurfaces(std::vector<Surface*> &surfaces) {
 	return haveSelectedPolys;
 }
 
+bool Project::boundingBoxofSelectedSurfaces(IBKMK::Vector3D &boundingbox) {
+	std::vector<VICUS::Surface*> surfaces;
+
+	// store selected surfaces
+	if ( !selectedSurfaces(surfaces) )
+		return false;
+
+	double maxX = std::numeric_limits<double>::min();
+	double maxY = std::numeric_limits<double>::min();
+	double maxZ = std::numeric_limits<double>::min();
+	double minX = std::numeric_limits<double>::max();
+	double minY = std::numeric_limits<double>::max();
+	double minZ = std::numeric_limits<double>::max();
+	for ( VICUS::Surface *s : surfaces ) {
+		for ( IBKMK::Vector3D v : s->m_geometry.vertexes() ) {
+			( v.m_x > maxX ) ? maxX = v.m_x : 0;
+			( v.m_y > maxY ) ? maxY = v.m_y : 0;
+			( v.m_z > maxZ ) ? maxZ = v.m_z : 0;
+
+			( v.m_x < minX ) ? minX = v.m_x : 0;
+			( v.m_y < minY ) ? minY = v.m_y : 0;
+			( v.m_z < minZ ) ? minZ = v.m_z : 0;
+		}
+	}
+	// set bounding box;
+	boundingbox.set( maxX -minX,  maxY -minY, maxZ -minZ );
+
+	return true;
+}
+
 } // namespace VICUS

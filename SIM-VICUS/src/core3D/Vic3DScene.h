@@ -23,6 +23,7 @@ namespace VICUS {
 }
 
 class SVViewState;
+class SVPropEditGeometry;
 
 namespace Vic3D {
 

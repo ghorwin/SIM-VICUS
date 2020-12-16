@@ -19,6 +19,7 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	m_ui->setupUi(this);
 	layout()->setMargin(0);
 	SVViewStateHandler::instance().m_coordinateSystemObject->m_propEditGeometry = this;
+	SVViewStateHandler::instance().m_propEditGeometryWidget = this;
 }
 
 
@@ -53,6 +54,17 @@ void SVPropEditGeometry::setCoordinates(const Vic3D::Transform3D &t) {
 	m_ui->lineEditZValue->setText( QString("%L1").arg( t.translation().z() ) );
 }
 
+void SVPropEditGeometry::setBoundingBox(const IBKMK::Vector3D &v)
+{
+//	QVector3D tmpScale ( m_ui->doubleSpinBoxScaleX->value(), m_ui->doubleSpinBoxScaleX->value() )
+
+	if ( m_ui->radioButtonScaleAbsolute->isChecked() ) {
+		m_ui->doubleSpinBoxScaleX->setValue( v.m_x );
+		m_ui->doubleSpinBoxScaleY->setValue( v.m_y );
+		m_ui->doubleSpinBoxScaleZ->setValue( v.m_z );
+	}
+
+}
 
 void SVPropEditGeometry::on_pushButtonAddPolygon_clicked() {
 	// reset new polygon object
@@ -150,8 +162,10 @@ void SVPropEditGeometry::on_pushButtonScale_clicked()
 	std::vector<VICUS::Surface*> surfaces;
 	IBKMK::Vector3D centerPoint;
 	IBKMK::Vector3D centerPointLocal;
+	IBKMK::Vector3D boundingBox;
 	p.selectedSurfaces(surfaces);
 	p.haveSelectedSurfaces(centerPointLocal);
+	p.boundingBoxofSelectedSurfaces(boundingBox);
 
 	// check if scale factor is not Null
 	if ( IBK::nearly_equal<3>( scaleVec.length(), 0.0 ) )
@@ -213,9 +227,15 @@ void SVPropEditGeometry::on_pushButtonScale_clicked()
 			std::vector<IBKMK::Vector3D> vs;
 			for ( IBKMK::Vector3D v : s->m_geometry.vertexes() ) {
 				Vic3D::Transform3D t;
-				t.setTranslation( centerPoint.m_x + scaleVec.x() * ( v.m_x - centerPoint.m_x ),
-								  centerPoint.m_y + scaleVec.y() * ( v.m_y - centerPoint.m_y),
-								  centerPoint.m_z + scaleVec.z() * ( v.m_z - centerPoint.m_z) );
+				QVector3D newScale;
+
+				newScale.setX( ( boundingBox.m_x == 0.0 ) ?  0 : ( scaleVec.x() / boundingBox.m_x ) );
+				newScale.setY( ( boundingBox.m_y == 0.0 ) ?  0 : ( scaleVec.y() / boundingBox.m_y ) );
+				newScale.setZ( ( boundingBox.m_z == 0.0 ) ?  0 : ( scaleVec.z() / boundingBox.m_z ) );
+
+				t.setTranslation( centerPointLocal.m_x + newScale.x() * ( v.m_x - centerPointLocal.m_x ),
+								  centerPointLocal.m_y + newScale.y() * ( v.m_y - centerPointLocal.m_y),
+								  centerPointLocal.m_z + newScale.z() * ( v.m_z - centerPointLocal.m_z) );
 				vs.push_back( VICUS::QVector2IBKVector( t.translation() ) );
 			}
 			s->m_geometry.setVertexes(vs);
@@ -315,3 +335,14 @@ void SVPropEditGeometry::on_pushButtonRotate_clicked()
 	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("modified surfaces"), surfaces );
 	undo->push();
 }
+
+void SVPropEditGeometry::on_radioButtonScaleAbsolute_toggled(bool abs)
+{
+	VICUS::Project p = project();
+	IBKMK::Vector3D v;
+
+	p.boundingBoxofSelectedSurfaces(v);
+
+	setBoundingBox(v);
+}
+

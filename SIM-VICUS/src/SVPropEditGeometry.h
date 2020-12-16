@@ -44,6 +44,11 @@ public:
 	*/
 	void setCoordinates(const Vic3D::Transform3D &t);
 
+	/*! Sets the Bounding Box Measurements of the selected surfaces
+	 * if absolute mode is clicked in scale groupbox
+	*/
+	void setBoundingBox(const IBKMK::Vector3D &v);
+
 private slots:
 	void on_pushButtonAddPolygon_clicked();
 
@@ -54,6 +59,8 @@ private slots:
 	void on_pushButtonScale_clicked();
 
 	void on_pushButtonRotate_clicked();
+
+	void on_radioButtonScaleAbsolute_toggled(bool checked);
 
 private:
 	Ui::SVPropEditGeometry *m_ui;

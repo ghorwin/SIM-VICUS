@@ -19,6 +19,7 @@
 #include "Vic3DSceneView.h"
 
 #include "SVProjectHandler.h"
+#include "SVPropEditGeometry.h"
 #include "SVViewStateHandler.h"
 #include "SVViewState.h"
 #include "SVSettings.h"
@@ -162,8 +163,15 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 				SVViewState vs = SVViewStateHandler::instance().viewState();
 				IBKMK::Vector3D centerPoint;
 				if ( project().haveSelectedSurfaces(centerPoint) ) {
+
+					IBKMK::Vector3D v;
+					// copy of scene to find bounding box;
+					VICUS::Project p = project();
+					p.boundingBoxofSelectedSurfaces(v);
+
 					vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
 					vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
+					SVViewStateHandler::instance().m_propEditGeometryWidget->setBoundingBox(v);
 					m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(centerPoint) );
 				}
 				else {
