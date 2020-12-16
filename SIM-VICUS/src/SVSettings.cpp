@@ -277,6 +277,7 @@ void SVSettings::readDatabase() {
 	readXMLDB(dbDir / "db_boundaryConditions.xml", "BoundaryConditions", "BoundaryCondition", m_dbBoundaryCondition, true);
 	readXMLDB(dbDir / "db_pipes.xml", "Pipes", "Pipe", m_dbPipes, true);
 	readXMLDB(dbDir / "db_fluids.xml", "Fluids", "Fluid", m_dbFluids, true);
+	readXMLDB(dbDir / "db_epdElements.xml", "EPDDatasets", "EPDDataset", m_dbEPDElements, true);
 
 	// user databases
 
@@ -290,6 +291,7 @@ void SVSettings::readDatabase() {
 	readXMLDB(userDbDir / "db_boundaryConditions.xml", "BoundaryConditions", "BoundaryCondition", m_dbBoundaryCondition);
 	readXMLDB(userDbDir / "db_pipes.xml", "Pipes", "Pipe", m_dbPipes);
 	readXMLDB(userDbDir / "db_fluids.xml", "Fluids", "Fluid", m_dbFluids);
+	readXMLDB(userDbDir / "db_epdElements.xml", "EPDDatasets", "EPDDataset", m_dbEPDElements);
 }
 
 
@@ -324,6 +326,7 @@ void SVSettings::writeDatabase() {
 	writeXMLDB(userDbDir / "db_boundaryConditions.xml", "BoundaryConditions", m_dbBoundaryCondition);
 	writeXMLDB(userDbDir / "db_pipes.xml", "Pipes", m_dbPipes);
 	writeXMLDB(userDbDir / "db_fluids.xml", "Fluids", m_dbFluids);
+	writeXMLDB(userDbDir / "db_epdElements.xml", "EPDDatasets", m_dbEPDElements);
 }
 
 

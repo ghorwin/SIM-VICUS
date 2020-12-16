@@ -17,6 +17,7 @@
 #include <VICUS_BoundaryCondition.h>
 #include <VICUS_NetworkPipe.h>
 #include <VICUS_NetworkFluid.h>
+#include <VICUS_EPDDataset.h>
 
 
 class QDockWidget;
@@ -233,6 +234,9 @@ public:
 
 	/*! Map of all database fluids */
 	std::map<unsigned int, VICUS::NetworkFluid>				m_dbFluids;
+
+	/*! Map of all database EPD elements */
+	std::map<unsigned int, VICUS::EPDDataset>				m_dbEPDElements;
 
 private:
 
