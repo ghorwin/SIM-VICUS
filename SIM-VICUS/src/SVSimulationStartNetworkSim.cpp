@@ -89,7 +89,86 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	// copy/generate hydraulic network
 	int networkIndex = m_ui->comboBoxNetwork->currentIndex();
 
-	// TODO : Hauke
+
+	// *** example network ****
+//	 VICUS::Project proj = project();
+
+	// geometric network
+	VICUS::Network net;
+	unsigned id1 = net.addNodeExt(IBKMK::Vector3D(0,0,0), VICUS::NetworkNode::NT_Source);
+	unsigned id2 = net.addNodeExt(IBKMK::Vector3D(0,70,0), VICUS::NetworkNode::NT_Mixer);
+	unsigned id3 = net.addNodeExt(IBKMK::Vector3D(100,70,0), VICUS::NetworkNode::NT_Building);
+	unsigned id4 = net.addNodeExt(IBKMK::Vector3D(0,200,0), VICUS::NetworkNode::NT_Mixer);
+	unsigned id5 = net.addNodeExt(IBKMK::Vector3D(100,200,0), VICUS::NetworkNode::NT_Building);
+	unsigned id6 = net.addNodeExt(IBKMK::Vector3D(-100,200,0), VICUS::NetworkNode::NT_Building);
+	net.addEdge(id1, id2, true);
+	net.addEdge(id2, id3, true);
+	net.addEdge(id2, id4, true);
+	net.addEdge(id4, id5, true);
+	net.addEdge(id4, id6, true);
+
+	//	 components
+	NANDRAD::HydraulicNetworkComponent pump;
+	pump.m_id = 0;
+	pump.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel;
+	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].set("PressureHead", 300, IBK::Unit("Pa"));
+	net.m_hydraulicComponents.push_back(pump);
+
+	NANDRAD::HydraulicNetworkComponent heatExchanger;
+	heatExchanger.m_id = 1;
+	heatExchanger.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger;
+	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_HeatFlux].set("HeatFlux", 100, IBK::Unit("W"));
+	net.m_hydraulicComponents.push_back(heatExchanger);
+
+	net.m_nodes[id1].m_componentId = pump.m_id;
+	net.m_nodes[id3].m_componentId = heatExchanger.m_id;
+	net.m_nodes[id5].m_componentId = heatExchanger.m_id;
+	net.m_nodes[id6].m_componentId = heatExchanger.m_id;
+
+
+	// pipes
+	VICUS::NetworkPipe pipe;
+	pipe.m_id = 0;
+	pipe.m_displayName = "PE 32 x 3.2";
+	pipe.m_diameterOutside = 32;
+	pipe.m_sWall = 3.2;
+	pipe.m_roughness = 0.007;
+	net.m_networkPipeDB.push_back(pipe);
+	VICUS::NetworkPipe pipe2;
+	pipe2.m_id = 1;
+	pipe2.m_displayName = "PE 50 x 4.6";
+	pipe2.m_diameterOutside = 60;
+	pipe2.m_sWall = 4.6;
+	pipe2.m_roughness = 0.007;
+	net.m_networkPipeDB.push_back(pipe2);
+
+	net.edge(id1, id2)->m_pipeId = pipe.m_id;
+	net.edge(id1, id2)->m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe;
+	net.edge(id2, id3)->m_pipeId = pipe2.m_id;
+	net.edge(id2, id3)->m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe;
+	net.edge(id2, id4)->m_pipeId = pipe.m_id;
+	net.edge(id2, id4)->m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe;
+	net.edge(id4, id5)->m_pipeId = pipe2.m_id;
+	net.edge(id4, id5)->m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe;
+	net.edge(id4, id6)->m_pipeId = pipe2.m_id;
+	net.edge(id4, id6)->m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe;
+
+	net.updateNodeEdgeConnectionPointers();
+
+	// create Nandrad Network
+	NANDRAD::HydraulicNetwork hydraulicNetwork;
+	std::vector<NANDRAD::HydraulicNetworkComponent> hydraulicComponents;
+	hydraulicNetwork.m_id = 1;
+	hydraulicNetwork.m_displayName = "auto generated from geometric network";
+	net.createNandradHydraulicNetwork(hydraulicNetwork, hydraulicComponents);
+	hydraulicNetwork.m_fluid.defaultFluidWater(1);
+
+
+	// finally add to nandrad project
+	p.m_hydraulicNetworks.clear();
+	p.m_hydraulicNetworks.push_back(hydraulicNetwork);
+	p.m_hydraulicComponents.clear();
+	p.m_hydraulicComponents = hydraulicComponents;
 
 	return true; // no errors, signal ok
 }

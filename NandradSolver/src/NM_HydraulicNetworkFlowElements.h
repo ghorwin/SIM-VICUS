@@ -64,11 +64,6 @@ private:
 	/*! Fluid temperature, for now constant, will be an input reference and retrieved from network-thermal-balances model. */
 	double							m_fluidTemperature = 20 + 273.15;
 
-	/*! Reynolds number where flow switches from laminar to transition state. */
-	static double m_Re1;
-
-	/*! Reynolds number where flow switches from transition state to turbulent */
-	static double m_Re2;
 };
 
 

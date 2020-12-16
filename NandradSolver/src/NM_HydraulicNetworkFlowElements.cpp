@@ -3,7 +3,13 @@
 #include "NANDRAD_HydraulicNetworkElement.h"
 #include "NANDRAD_HydraulicNetworkComponent.h"
 
-#define PI					3.141592653589793238
+#define PI				3.141592653589793238
+
+/*! Reynolds number where flow switches from laminar to transition state. */
+#define RE_LAMINAR		1700
+
+/*! Reynolds number where flow switches from transition state to turbulent */
+#define RE_TURBULENT	4000
 
 namespace NANDRAD_MODEL {
 
@@ -14,10 +20,6 @@ HydraulicNetworkAbstractFlowElement::~HydraulicNetworkAbstractFlowElement() {
 }
 
 // *** HNPipeElement ***
-
-/// TODO : change to constants (like PI), local to this cpp file unless needed elsewhere
-double HNPipeElement::m_Re1 = 1700;
-double HNPipeElement::m_Re2 = 4000;
 
 HNPipeElement::HNPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 							const NANDRAD::HydraulicNetworkComponent & component,
@@ -57,11 +59,11 @@ double HNPipeElement::pressureLossFriction(const double &mdot, const double &tem
 
 double HNPipeElement::frictionFactorSwamee(const double &Re, const double &diameter, const double &roughness){
 	IBK_ASSERT(roughness>0 && diameter>0 && Re>0);
-	if (Re < m_Re1)
+	if (Re < RE_LAMINAR)
 		return 64/Re;
-	else if (Re < m_Re2){
-		double fTurb = 0.25 / (std::log10((roughness / diameter) / 3.7 + 5.74 / std::pow(m_Re2, 0.9) ));
-		return 64/m_Re1 + (Re - m_Re1) * (fTurb*fTurb - 64/m_Re1) / (m_Re2 - m_Re1);
+	else if (Re < RE_TURBULENT){
+		double fTurb = 0.25 / (std::log10((roughness / diameter) / 3.7 + 5.74 / std::pow(RE_TURBULENT, 0.9) ));
+		return 64/RE_LAMINAR + (Re - RE_LAMINAR) * (fTurb*fTurb - 64/RE_LAMINAR) / (RE_TURBULENT - RE_LAMINAR);
 	}
 	else{
 		double f = 0.25 / (std::log10((roughness / diameter) / 3.7 + 5.74 / std::pow(Re, 0.9) ));
@@ -74,7 +76,7 @@ double HNPipeElement::frictionFactorSwamee(const double &Re, const double &diame
 double HNPipeElement::frictionFactorCheng(const double &Re, const double &diameter, const double &roughness){
 	IBK_ASSERT(roughness>0 && diameter>0 && Re>0);
 	double delta = diameter / roughness;
-	double a = 1 / (1 + std::pow(Re/m_Re1, 9));
+	double a = 1 / (1 + std::pow(Re/RE_LAMINAR, 9));
 	double b = 1 / (1 + (Re / (160 * delta)) * (Re / (160 * delta)) );
 	return 1 / ( std::pow(Re/64, a) * std::pow( 1.8*std::log10(Re / 6.8), 2*(1-a)*b )
 			* std::pow( 2*std::log10(3.7*delta), 2*(1-a)*(1-b) ) );
