@@ -8,8 +8,6 @@
 #include <QString>
 #include <QColor>
 
-#include <vector>
-
 #include <IBK_Parameter.h>
 
 #include <NANDRAD_LinearSplineParameter.h>

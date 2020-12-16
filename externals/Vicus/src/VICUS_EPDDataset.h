@@ -4,11 +4,9 @@
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
 #include "VICUS_AbstractDBElement.h"
-#include "VICUS_EPDCategroySet.h"
 
 #include <QString>
 #include <QColor>
-#include <QDate>
 
 #include <IBK_Parameter.h>
 
@@ -72,6 +70,24 @@ public:
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	VICUS_READWRITE
+
+	bool behavesLike(const EPDDataset &other) const{
+		if(m_referenceUnit != other.m_referenceUnit ||
+			m_referenceQuantity != other.m_referenceQuantity)
+			return false;
+
+		/// TODO MIRA
+
+		for (unsigned int i=0; i<NUM_P; ++i) {
+			para_t t = static_cast<para_t>(i);
+			if(m_para[t].empty() && other.m_para[t].empty())
+				continue;
+			if(m_para[t] != other.m_para[t])
+				return false;
+		}
+
+		return true;
+	}
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
