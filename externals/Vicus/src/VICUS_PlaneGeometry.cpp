@@ -440,13 +440,18 @@ void PlaneGeometry::triangulate() {
 			for (unsigned int i=0; i<m_polygon.size(); ++i) {
 				const QPointF  & p = m_polygon[i];
 				points[i] = IBK::point2D<double>(p.x(), p.y());
-				edges.push_back(std::make_pair(i, i+1));
+				edges.push_back(std::make_pair(i, (i+1)%m_polygon.size()));
 			}
 			edges.back().second = 0;
 
 			triangu.setPoints(points, edges);
+
+			for (auto tri : triangu.m_triangles)
+				m_triangles.push_back(triangle_t(tri.i1, tri.i2, tri.i3));
+
+
 			//calculate middle point for each triangle and check if point is in polygon
-			for (IBKMK::Triangulation::triangle_t tri : triangu.m_triangles) {
+//			for (IBKMK::Triangulation::triangle_t tri : triangu.m_triangles) {
 //				QPolygonF checkTriangle;
 //				checkTriangle << QPointF(m_polygon[tri.i1]);
 //				checkTriangle << QPointF(m_polygon[tri.i2]);
@@ -465,27 +470,28 @@ void PlaneGeometry::triangulate() {
 
 
 				//das funktioniert nicht immer
-				QPointF a(m_polygon.value(tri.i1)), b(m_polygon.value(tri.i2)), c(m_polygon.value(tri.i3));
-				double distA, distB, distC;
-				QLineF ab(a,b), bc(b,c), ca(c,a);
+//				QPointF a(m_polygon.value(tri.i1)), b(m_polygon.value(tri.i2)), c(m_polygon.value(tri.i3));
+//				double distA, distB, distC;
+//				QLineF ab(a,b), bc(b,c), ca(c,a);
 
-				distA = ab.length();
-				distB = bc.length();
-				distC = ca.length();
-				//calc half perimeter
-				double s = 0.5 * (distA + distB + distC);
+//				distA = ab.length();
+//				distB = bc.length();
+//				distC = ca.length();
+//				//calc half perimeter
+//				double s = 0.5 * (distA + distB + distC);
 
-				double testX = 0.5/s * (distB * a.x() + distC * b.x() + distA * c.x());
-				double testY = 0.5/s * (distB * a.y() + distC * b.y() + distA * c.y());
+//				double testX = 0.5/s * (distB * a.x() + distC * b.x() + distA * c.x());
+//				double testY = 0.5/s * (distB * a.y() + distC * b.y() + distA * c.y());
 
-				QPointF middleP = QPointF(0.5/s * (distB * a.x() + distC * b.x() + distA * c.x()),
-										  0.5/s * (distB * a.y() + distC * b.y() + distA * c.y()));
-				if(pointInPolygon(middleP, m_polygon) == -1)
-					continue;
+//				QPointF middleP = QPointF(0.5/s * (distB * a.x() + distC * b.x() + distA * c.x()),
+//										  0.5/s * (distB * a.y() + distC * b.y() + distA * c.y()));
+//				if(pointInPolygon(middleP, m_polygon) == -1)
+//					continue;
 
-				m_triangles.push_back(triangle_t(tri.i1, tri.i2, tri.i3));
+//				m_triangles.push_back(triangle_t(tri.i1, tri.i2, tri.i3));
 
-			}
+
+//			}
 			break;
 
 
