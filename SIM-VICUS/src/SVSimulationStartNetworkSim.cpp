@@ -121,6 +121,8 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	for (VICUS::NetworkEdge &edge: network->m_edges)
 		edge.m_modelType =  NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe;
 
+	network->updateNodeEdgeConnectionPointers();
+
 	/// until here
 
 	// create Nandrad Network

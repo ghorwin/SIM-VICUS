@@ -411,108 +411,108 @@ void HydraulicNetworkModelImpl::setup() {
 		m_nodes[fe->m_nOutlet].m_flowElementIndexes.push_back(i);
 	}
 
-	// error checks:
-	// 1.) no open ends
-	// -> all m_nodes[i] must have at least 2 m_flowElementIndexes
-	// 2.) no single cycles:
-	// -> inlet must be different from outlet
-	for (unsigned int i=0; i<m_nodes.size(); ++i) {
-		const Node &node = m_nodes[i];
-		// error check 1
-		if(node.m_flowElementIndexes.size() == 1){
-			throw IBK::Exception(IBK::FormatString(
-								"FlowElement with id %1 is an open end of hydraulic network!")
-								 .arg(node.m_flowElementIndexes[0]),
-								FUNC_ID);
-		}
-		// error check 2
-		std::set<unsigned int> indexes;
-		for(unsigned int j = 0; j < node.m_flowElementIndexes.size(); ++j) {
-			unsigned int elementIdx = node.m_flowElementIndexes[j];
-			if(indexes.find(elementIdx) != indexes.end()){
-				throw IBK::Exception(IBK::FormatString(
-									"FlowElement with id %1 is an invalid cyclic connection!")
-									 .arg(elementIdx),
-									FUNC_ID);
-			}
-		}
-	}
+//	// error checks:
+//	// 1.) no open ends
+//	// -> all m_nodes[i] must have at least 2 m_flowElementIndexes
+//	// 2.) no single cycles:
+//	// -> inlet must be different from outlet
+//	for (unsigned int i=0; i<m_nodes.size(); ++i) {
+//		const Node &node = m_nodes[i];
+//		// error check 1
+//		if(node.m_flowElementIndexes.size() == 1){
+//			throw IBK::Exception(IBK::FormatString(
+//								"FlowElement with id %1 is an open end of hydraulic network!")
+//								 .arg(node.m_flowElementIndexes[0]),
+//								FUNC_ID);
+//		}
+//		// error check 2
+//		std::set<unsigned int> indexes;
+//		for(unsigned int j = 0; j < node.m_flowElementIndexes.size(); ++j) {
+//			unsigned int elementIdx = node.m_flowElementIndexes[j];
+//			if(indexes.find(elementIdx) != indexes.end()){
+//				throw IBK::Exception(IBK::FormatString(
+//									"FlowElement with id %1 is an invalid cyclic connection!")
+//									 .arg(elementIdx),
+//									FUNC_ID);
+//			}
+//		}
+//	}
 
-	// 3.) no distinct networks
-	// -> each node must connect to any other
-	// -> transitive closure of connectivity must form a dense matrix
-	IBKMK::SparseMatrixPattern connectivity(m_nodes.size());
-	IBKMK::SparseMatrixPattern connectivityTranspose(m_nodes.size());
+//	// 3.) no distinct networks
+//	// -> each node must connect to any other
+//	// -> transitive closure of connectivity must form a dense matrix
+//	IBKMK::SparseMatrixPattern connectivity(m_nodes.size());
+//	IBKMK::SparseMatrixPattern connectivityTranspose(m_nodes.size());
 
-	for (unsigned int k=0; k<m_flowElements.size(); ++k) {
-		HydraulicNetworkAbstractFlowElement * fe = m_flowElements[k];
-		// TODO : check inlet must be different from outlet
-		unsigned int i = fe->m_nInlet;
-		unsigned int j = fe->m_nOutlet;
-		// set a pattern entry for connected nodes
-		if(!connectivity.test(i,j))
-			connectivity.set(i,j);
-		// as well as for the transposed
-		if(!connectivityTranspose.test(j,i))
-			connectivityTranspose.set(j,i);
-	}
+//	for (unsigned int k=0; k<m_flowElements.size(); ++k) {
+//		HydraulicNetworkAbstractFlowElement * fe = m_flowElements[k];
+//		// TODO : check inlet must be different from outlet
+//		unsigned int i = fe->m_nInlet;
+//		unsigned int j = fe->m_nOutlet;
+//		// set a pattern entry for connected nodes
+//		if(!connectivity.test(i,j))
+//			connectivity.set(i,j);
+//		// as well as for the transposed
+//		if(!connectivityTranspose.test(j,i))
+//			connectivityTranspose.set(j,i);
+//	}
 
-	// calculate transitive closure
-	for(unsigned int k = 0; k < m_nodes.size(); ++k) {
-		// set a connection (i,j) for each entry (i,k), (k,j)
-		std::vector<unsigned int> rows;
-		std::vector<unsigned int> cols;
-		connectivity.indexesPerRow(k,cols);
-		connectivityTranspose.indexesPerRow(k,rows);
+//	// calculate transitive closure
+//	for(unsigned int k = 0; k < m_nodes.size(); ++k) {
+//		// set a connection (i,j) for each entry (i,k), (k,j)
+//		std::vector<unsigned int> rows;
+//		std::vector<unsigned int> cols;
+//		connectivity.indexesPerRow(k,cols);
+//		connectivityTranspose.indexesPerRow(k,rows);
 
-		// set all entries (rows[iIdx], cols[jIdx])
-		for(unsigned int iIdx = 0; iIdx < rows.size(); ++iIdx) {
-			unsigned int i = rows[iIdx];
-			for(unsigned int jIdx = 0; jIdx < cols.size(); ++jIdx) {
-				unsigned int j = cols[jIdx];
-				// set entry
-				if(!connectivity.test(i,j))
-					connectivity.set(i,j);
-				// set symmetric entry
-				if(!connectivityTranspose.test(j,i))
-					connectivityTranspose.set(j,i);
-			}
-		}
-	}
+//		// set all entries (rows[iIdx], cols[jIdx])
+//		for(unsigned int iIdx = 0; iIdx < rows.size(); ++iIdx) {
+//			unsigned int i = rows[iIdx];
+//			for(unsigned int jIdx = 0; jIdx < cols.size(); ++jIdx) {
+//				unsigned int j = cols[jIdx];
+//				// set entry
+//				if(!connectivity.test(i,j))
+//					connectivity.set(i,j);
+//				// set symmetric entry
+//				if(!connectivityTranspose.test(j,i))
+//					connectivityTranspose.set(j,i);
+//			}
+//		}
+//	}
 
-	// now assume, that we have a dense matrix pattern for a connected graph
-	for(unsigned int i = 0; i < m_nodes.size(); ++i) {
-		// count column entries for each row
-		std::vector<unsigned int> cols;
-		connectivity.indexesPerRow(i,cols);
+//	// now assume, that we have a dense matrix pattern for a connected graph
+//	for(unsigned int i = 0; i < m_nodes.size(); ++i) {
+//		// count column entries for each row
+//		std::vector<unsigned int> cols;
+//		connectivity.indexesPerRow(i,cols);
 
-		// error: missing connections
-		if(cols.size() != m_nodes.size()) {
-			// isolated nodes are not allowed
-			IBK_ASSERT(!cols.empty());
+//		// error: missing connections
+//		if(cols.size() != m_nodes.size()) {
+//			// isolated nodes are not allowed
+//			IBK_ASSERT(!cols.empty());
 
-			// find out disjunct network elements
-			std::vector<unsigned int> disjunctElements;
-			for(unsigned int j = 0; j < cols.size(); ++j) {
-				const Node &node = m_nodes[cols[j]];
+//			// find out disjunct network elements
+//			std::vector<unsigned int> disjunctElements;
+//			for(unsigned int j = 0; j < cols.size(); ++j) {
+//				const Node &node = m_nodes[cols[j]];
 
-				for(unsigned int k =0; k < node.m_flowElementIndexes.size(); ++k)
-					disjunctElements.push_back(node.m_flowElementIndexes[k]);
-			}
+//				for(unsigned int k =0; k < node.m_flowElementIndexes.size(); ++k)
+//					disjunctElements.push_back(node.m_flowElementIndexes[k]);
+//			}
 
-			// create an error message string
-			IBK_ASSERT(!disjunctElements.empty());
-			std::string networkStr(IBK::val2string<unsigned int>(disjunctElements[0]));
+//			// create an error message string
+//			IBK_ASSERT(!disjunctElements.empty());
+//			std::string networkStr(IBK::val2string<unsigned int>(disjunctElements[0]));
 
-			for(unsigned int k = 1; k < disjunctElements.size(); ++k)
-				networkStr += std::string(",") + IBK::val2string<unsigned int>(disjunctElements[k]);
+//			for(unsigned int k = 1; k < disjunctElements.size(); ++k)
+//				networkStr += std::string(",") + IBK::val2string<unsigned int>(disjunctElements[k]);
 
-			throw IBK::Exception(IBK::FormatString(
-								"Network is not completely connected! Distinct network formed by flow elements (%1)!")
-								 .arg(networkStr),
-								FUNC_ID);
-		}
-	}
+//			throw IBK::Exception(IBK::FormatString(
+//								"Network is not completely connected! Distinct network formed by flow elements (%1)!")
+//								 .arg(networkStr),
+//								FUNC_ID);
+//		}
+//	}
 
 
 	m_nodeCount = m_nodes.size();
@@ -594,7 +594,7 @@ int HydraulicNetworkModelImpl::solve() {
 		// compose right hand side (mind the minus sign)
 		// and evaluate residuals
 		double resNorm = WRMSNorm(m_G);
-		std::cout << "res = " << resNorm << std::endl;
+//		std::cout << "res = " << resNorm << std::endl;
 		if (resNorm < THRESHOLD)
 			break;
 
@@ -608,10 +608,10 @@ int HydraulicNetworkModelImpl::solve() {
 		if(res != 0)
 			return 1;
 
-		std::cout << "\n\n*** Iter " << 100-iterations  << std::endl;
+//		std::cout << "\n\n*** Iter " << 100-iterations  << std::endl;
 
-		printVars();
-		jacobianWrite(rhs);
+//		printVars();
+//		jacobianWrite(rhs);
 
 #ifdef RESIDUAL_TEST
 		std::vector<double> originalRHS(rhs);
@@ -623,9 +623,9 @@ int HydraulicNetworkModelImpl::solve() {
 		if(res != 0)
 			return 2;
 
-		std::cout << "deltaY" << std::endl;
-		for (unsigned int i=0; i<n; ++i)
-			std::cout << "  " << i << "   " << rhs[i]  << std::endl;
+//		std::cout << "deltaY" << std::endl;
+//		for (unsigned int i=0; i<n; ++i)
+//			std::cout << "  " << i << "   " << rhs[i]  << std::endl;
 
 #ifdef RESIDUAL_TEST
 		// check if equation system was solved correctly.
@@ -648,9 +648,9 @@ int HydraulicNetworkModelImpl::solve() {
 		for (unsigned int i=0; i<n; ++i) {
 			m_y[i] += max_scale*rhs[i];
 		}
-		std::cout << "deltaY (improved)" << std::endl;
-		for (unsigned int i=0; i<n; ++i)
-			std::cout << "  " << i << "   " << rhs[i]  << std::endl;
+//		std::cout << "deltaY (improved)" << std::endl;
+//		for (unsigned int i=0; i<n; ++i)
+//			std::cout << "  " << i << "   " << rhs[i]  << std::endl;
 
 		// TODO : add alternative convergence criterion based on rhs norm
 	}
