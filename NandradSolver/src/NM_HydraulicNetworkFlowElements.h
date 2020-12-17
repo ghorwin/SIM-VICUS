@@ -27,7 +27,8 @@ public:
 
 	// HydraulicNetworkAbstractFlowElement interface
 	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
-	void dmdot_dp(double mdot, double p_inlet, double p_outlet, double & dmdp_in, double & dmdp_out) const override;
+	virtual void partials(double mdot, double p_inlet, double p_outlet,
+						  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
 
 	/*! pressure loss due to pipe wall friction in Pa. For positive mass flows, there will be a positive pressure loss
 	 * mdot:	mass flow  in kg/m3
@@ -80,7 +81,8 @@ public:
 
 	// HydraulicNetworkAbstractFlowElement interface
 	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
-	void dmdot_dp(double mdot, double p_inlet, double p_outlet, double & dmdp_in, double & dmdp_out) const override;
+	virtual void partials(double mdot, double p_inlet, double p_outlet,
+						  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
 
 
 private:
@@ -109,7 +111,8 @@ public:
 
 	// HydraulicNetworkAbstractFlowElement interface
 	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
-	void dmdot_dp(double mdot, double p_inlet, double p_outlet, double & dmdp_in, double & dmdp_out) const override;
+	virtual void partials(double mdot, double p_inlet, double p_outlet,
+						  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
 
 private:
 

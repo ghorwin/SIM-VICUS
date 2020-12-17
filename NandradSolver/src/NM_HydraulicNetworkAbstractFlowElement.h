@@ -16,7 +16,8 @@ public:
 	virtual double systemFunction(double mdot, double p_inlet, double p_outlet) const = 0;
 
 	/*! Returns partial derivatives. */
-	virtual void dmdot_dp(double mdot, double p_inlet, double p_outlet, double & dmdp_in, double & dmdp_out) const = 0;
+	virtual void partials(double mdot, double p_inlet, double p_outlet,
+						  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const = 0;
 
 	/*! Index of inlet node. */
 	unsigned int m_nInlet;

@@ -45,10 +45,18 @@ double  HNPipeElement::systemFunction(double mdot, double p_inlet, double p_outl
 }
 
 
-void HNPipeElement::dmdot_dp(double mdot, double p_inlet, double p_outlet, double & dmdp_in, double & dmdp_out) const {
-	// partial derivatives of the system function are constants
-	dmdp_in = 1./(2*m_res*mdot+1e-8);
-	dmdp_out = -dmdp_in;
+void HNPipeElement::partials(double mdot, double p_inlet, double p_outlet,
+							 double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
+{
+	// partial derivatives of the system function to pressures are constants
+	df_dp_inlet = 1;
+	df_dp_outlet = -1;
+
+	// generic DQ approximation of partial derivative
+	const double EPS = 1e-5; // in kg/s
+	double f_eps = systemFunction(mdot+EPS, p_inlet, p_outlet);
+	double f = systemFunction(mdot, p_inlet, p_outlet);
+	df_dmdot = (f_eps - f)/EPS;
 }
 
 
@@ -113,8 +121,17 @@ double HNFixedPressureLossCoeffElement::systemFunction(double mdot, double p_inl
 
 }
 
-void HNFixedPressureLossCoeffElement::dmdot_dp(double mdot, double p_inlet, double p_outlet, double &dmdp_in, double &dmdp_out) const{
-
+void HNFixedPressureLossCoeffElement::partials(double mdot, double p_inlet, double p_outlet,
+							 double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
+{
+	// partial derivatives of the system function to pressures are constants
+	df_dp_inlet = 1;
+	df_dp_outlet = -1;
+	// generic DQ approximation of partial derivative
+	const double EPS = 1e-5; // in kg/s
+	double f_eps = systemFunction(mdot+EPS, p_inlet, p_outlet);
+	double f = systemFunction(mdot, p_inlet, p_outlet);
+	df_dmdot = (f_eps - f)/EPS;
 }
 
 
@@ -127,17 +144,22 @@ HNConstantPressurePump::HNConstantPressurePump(const NANDRAD::HydraulicNetworkEl
 	m_fluid(&fluid)
 {
 	m_pressureHead = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value;
-
 }
 
-double HNConstantPressurePump::systemFunction(double mdot, double p_inlet, double p_outlet) const
-{
+double HNConstantPressurePump::systemFunction(double mdot, double p_inlet, double p_outlet) const {
+	// TODO : This seems wrong - when the mass flow is increase and increased, at some point the
+	//        the pump cannot possibly add pressure to the fluid anylonger (all energy goes into local
+	//        fluid stirring).
 	return p_inlet - p_outlet - m_pressureHead;
 }
 
-void HNConstantPressurePump::dmdot_dp(double mdot, double p_inlet, double p_outlet, double &dmdp_in, double &dmdp_out) const
+void HNConstantPressurePump::partials(double mdot, double p_inlet, double p_outlet,
+							 double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
 {
-
+	// partial derivatives of the system function to pressures are constants
+	df_dp_inlet = 1;
+	df_dp_outlet = -1;
+	df_dmdot = 0;
 }
 
 
