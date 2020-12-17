@@ -18,6 +18,7 @@ unix {
 }
 
 LIBS += -L../../../lib$${DIR_PREFIX} \
+				-lCCM \
 				-lIBK \
 				-lIBKMK \
 				-lNandrad \
@@ -42,6 +43,7 @@ INCLUDEPATH = \
 		../../src \
 		../../src/actions \
 		../../src/core3D \
+		../../../externals/CCM/src \
 		../../../externals/IBK/src \
 		../../../externals/IBKMK/src \
 		../../../externals/Nandrad/src \
@@ -57,20 +59,21 @@ DEPENDPATH = $${INCLUDEPATH}
 
 win32 {
 		PRE_TARGETDEPS +=   $$PWD/../../../externals/lib$${DIR_PREFIX}/IBK.lib \
-												$$PWD/../../../externals/lib$${DIR_PREFIX}/CCM.lib \
-												$$PWD/../../../externals/lib$${DIR_PREFIX}/QtExt.lib \
-												$$PWD/../../../externals/lib$${DIR_PREFIX}/qwt6.lib \
-												$$PWD/../../../externals/lib$${DIR_PREFIX}/QuaZIP.lib \
-												$$PWD/../../../externals/lib$${DIR_PREFIX}/Vicus.lib \
-												$$PWD/../../../externals/lib$${DIR_PREFIX}/Nandrad.lib \
-												$$PWD/../../../externals/lib$${DIR_PREFIX}/TiCPP.lib \
-												$$PWD/../../../externals/lib$${DIR_PREFIX}/GenericBuildings.lib \
-												$$PWD/../../../externals/lib$${DIR_PREFIX}/IBKMK.lib
+							$$PWD/../../../externals/lib$${DIR_PREFIX}/CCM.lib \
+							$$PWD/../../../externals/lib$${DIR_PREFIX}/QtExt.lib \
+							$$PWD/../../../externals/lib$${DIR_PREFIX}/qwt6.lib \
+							$$PWD/../../../externals/lib$${DIR_PREFIX}/QuaZIP.lib \
+							$$PWD/../../../externals/lib$${DIR_PREFIX}/Vicus.lib \
+							$$PWD/../../../externals/lib$${DIR_PREFIX}/Nandrad.lib \
+							$$PWD/../../../externals/lib$${DIR_PREFIX}/TiCPP.lib \
+							$$PWD/../../../externals/lib$${DIR_PREFIX}/GenericBuildings.lib \
+							$$PWD/../../../externals/lib$${DIR_PREFIX}/IBKMK.lib
 }
 
 
 SOURCES += \
 		../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
+		../../src/SVClimateFileInfo.cpp \
 		../../src/SVPropNetworkEditWidget.cpp \
 		../../src/SVSimulationLocationOptions.cpp \
 		../../src/actions/SVUndoAddBuilding.cpp \
@@ -139,6 +142,7 @@ SOURCES += \
 		../../src/SVWelcomeScreen.cpp
 
 HEADERS  += \
+		../../src/SVClimateFileInfo.h \
 		../../src/SVPropNetworkEditWidget.h \
 		../../src/SVSimulationLocationOptions.h \
 		../../src/actions/SVUndoAddBuilding.h \

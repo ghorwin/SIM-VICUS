@@ -24,8 +24,30 @@ public:
 
 	int edit();
 
+private slots:
+	void on_pushButtonClose_clicked();
+
+	void on_pushButtonRun_clicked();
+
+	void on_checkBoxCloseConsoleWindow_toggled(bool checked);
+
+	void on_checkBoxStepStats_toggled(bool checked);
+
+	void on_pushButtonShowScreenLog_clicked();
+
 private:
+	/*! Composes correct command line (stored in m_cmdArgs). */
+	void updateCmdLine();
+	/*! Generates a NANDRAD project from the currently given VICUS project data. */
+	bool generateNandradProject(NANDRAD::Project & p) const;
+	/*! Stores current input into project data structure. */
+	void storeInput();
+
 	Ui::SVSimulationStartNandrad	*m_ui;
+
+	QString							m_solverExecutable;
+	QString							m_nandradProjectFilePath;
+	QStringList						m_cmdArgs;
 
 	/*! Page with solver options. */
 	SVSimulationPerformanceOptions	*m_simulationPerformanceOptions = nullptr;
