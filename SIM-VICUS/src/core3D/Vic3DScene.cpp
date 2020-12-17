@@ -780,6 +780,8 @@ void Vic3DScene::render() {
 	m_gridShader->bind();
 	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[0], m_worldToView);
 	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[2], backgroundColor);
+	float farDistance = std::max(500.f, farDistance = SVProjectHandler::instance().viewSettings().m_farDistance);
+	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[3], farDistance);
 	m_gridObject.render();
 	m_gridShader->release();
 

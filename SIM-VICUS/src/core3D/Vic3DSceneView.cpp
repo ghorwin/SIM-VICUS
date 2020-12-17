@@ -43,6 +43,7 @@ SceneView::SceneView() :
 	grid.m_uniformNames.append("worldToView"); // mat4
 	grid.m_uniformNames.append("gridColor"); // vec3
 	grid.m_uniformNames.append("backColor"); // vec3
+	grid.m_uniformNames.append("farplane"); // float
 	m_shaderPrograms[SHADER_GRID] = grid;
 
 	// Shaderprogram : regular geometry (opaque geometry with lighting)
@@ -135,6 +136,14 @@ void SceneView::onModified(int modificationType, ModificationInfo * data) {
 	// relay change notification to scene objects
 	m_mainScene.onModified(modificationType, data);
 
+	SVProjectHandler::ModificationTypes mod = (SVProjectHandler::ModificationTypes)modificationType;
+	switch (mod) {
+		case SVProjectHandler::GridModified :
+			resizeGL(width(), height());
+		break;
+		default:; // nothing to do for other modification events
+
+	}
 	// finally render
 	renderLater();
 }
