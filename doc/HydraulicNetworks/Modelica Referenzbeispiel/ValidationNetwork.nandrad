@@ -36,7 +36,7 @@
 					</LinearSplineParameter>
 				</HydraulicFluid>
 				<Elements>
-					<HydraulicNetworkElement id="0" inletNodeId="1000000" outletNodeId="0" componentId="0" displayName="node 0" />
+					<HydraulicNetworkElement id="0" inletNodeId="0" outletNodeId="1000000" componentId="0" displayName="node 0" />
 					<HydraulicNetworkElement id="2" inletNodeId="2" outletNodeId="1000002" componentId="1" displayName="node 2" />
 					<HydraulicNetworkElement id="4" inletNodeId="4" outletNodeId="1000004" componentId="1" displayName="node 4" />
 					<HydraulicNetworkElement id="5" inletNodeId="5" outletNodeId="1000005" componentId="1" displayName="node 5" />
