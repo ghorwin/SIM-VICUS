@@ -5,6 +5,7 @@ project( IBKMK )
 # add include directories
 include_directories(
 	${PROJECT_SOURCE_DIR}/../../../IBK/src
+	${PROJECT_SOURCE_DIR}/../../src/CDT
 )
 
 # collect a list of all source files of the IBK library
