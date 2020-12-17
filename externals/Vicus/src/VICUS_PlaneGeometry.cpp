@@ -195,7 +195,8 @@ void PlaneGeometry::computeGeometry() {
 	if (m_vertexes.size() < 3)
 		return;
 	// determine 2D plane coordinates
-	update2DPolygon();
+	if (!update2DPolygon())
+		return; // can happen, if a point is not in the plane
 
 	//darf nicht verwunden sein
 	//wenn es verwunden ist dann keine triangulierung
@@ -223,7 +224,6 @@ void PlaneGeometry::simplify() {
 }
 
 
-
 void PlaneGeometry::update3DPolygon() {
 	QQuaternion qq;
 	double angle = std::acos(m_normal.scalarProduct(IBKMK::Vector3D(0,0,1)))/IBK::DEG2RAD;
@@ -246,8 +246,9 @@ void PlaneGeometry::update3DPolygon() {
 
 }
 
+
 bool PlaneGeometry::update2DPolygon() {
-	FUNCID(PlaneGeometry::update2DPolygon);
+//	FUNCID(PlaneGeometry::update2DPolygon);
 
 	//first clear the old polyline
 	//m_polygon.clear();
@@ -282,19 +283,14 @@ bool PlaneGeometry::update2DPolygon() {
 		}
 		else {
 			// Throw an exception if point is outside plane
-			throw IBK::Exception("Point is outside plane.", FUNC_ID);
+			return false;// throw IBK::Exception("Point is outside plane.", FUNC_ID);
 		}
 	}
 	poly.swap(m_polygon);
-//	if(!isSimplePolygon()){
-//		isSimplePolygon();
-//		poly.swap(m_polygon);
-//		//update3DPolygon();
-//		return false;
-//	}
 	return true;
 }
-	/*!
+
+/*!
 	Copyright 2000 softSurfer, 2012 Dan Sunday
 	This code may be freely used and modified for any purpose
 	providing that this copyright notice is included with it.
