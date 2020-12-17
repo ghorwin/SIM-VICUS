@@ -56,7 +56,8 @@ HEADERS += \
 	../../src/QtExt_Settings.h \
 	../../src/QtExt_Style.h \
 	../../src/QtExt_ValidatingInputBase.h \
-	../../src/QtExt_ValidatingLineEdit.h
+	../../src/QtExt_ValidatingLineEdit.h \
+	../../src/QtExt_ValueInputComboBox.h
 
 SOURCES += \
 	../../src/QtExt_ActiveLabel.cpp \
@@ -81,4 +82,5 @@ SOURCES += \
 	../../src/QtExt_Settings.cpp \
 	../../src/QtExt_Style.cpp \
 	../../src/QtExt_ValidatingInputBase.cpp \
-	../../src/QtExt_ValidatingLineEdit.cpp
+	../../src/QtExt_ValidatingLineEdit.cpp \
+	../../src/QtExt_ValueInputComboBox.cpp
