@@ -31,7 +31,10 @@ public:
 	{}
 
 	void collectConnectedNodes(std::set<const NetworkNode*> & connectedNodes,
-							   std::set<const NetworkEdge*> & connectedEdge) const;
+								std::set<const NetworkEdge*> & connectedEdge) const;
+
+	void orderEdges(std::set<const NetworkNode*> & visitedNodes,
+					std::set<NetworkEdge*> & orderedEdges);
 
 	bool operator==(const NetworkEdge &e2){
 		return (m_nodeId1 == e2.m_nodeId1) && (m_nodeId2 == e2.m_nodeId2);
@@ -43,6 +46,8 @@ public:
 
 	/*! returns opposite node of the given one */
 	NetworkNode * neighbourNode(const NetworkNode *node) const;
+
+	unsigned NetworkEdge::neighbourNode(unsigned nodeId) const;
 
 	double length() const;
 
@@ -77,6 +82,9 @@ public:
 
 	/*! heating demand of all connected buildings */
 	double												m_maxHeatingDemand = 0;
+
+	unsigned int										m_nodeIdInlet = INVALID_ID;
+	unsigned int										m_nodeIdOutlet = INVALID_ID;
 
 private:
 

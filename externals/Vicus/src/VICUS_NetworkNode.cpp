@@ -6,7 +6,7 @@
 namespace VICUS {
 
 void NetworkNode::collectConnectedEdges(std::set<const NetworkNode *> & connectedNodes,
-										  std::set<const NetworkEdge *> & connectedEdge) const {
+										std::set<const NetworkEdge *> & connectedEdge) const {
 	// store ourselves as connected
 	connectedNodes.insert(this);
 	// now ask connected elements to collect their nodes
@@ -14,6 +14,21 @@ void NetworkNode::collectConnectedEdges(std::set<const NetworkNode *> & connecte
 		// only process edges that are not yet collected
 		if (connectedEdge.find(e) == connectedEdge.end())
 			e->collectConnectedNodes(connectedNodes, connectedEdge);
+	}
+}
+
+
+void NetworkNode::orderEdges(std::set<const NetworkNode *> &visitedNodes, std::set<NetworkEdge *> &orderedEdges) const {
+	// store ourselves as connected
+	visitedNodes.insert(this);
+	// now ask connected elements to collect their nodes
+	for (NetworkEdge * e : m_edges) {
+		// only process edges that are not yet collected
+		if (orderedEdges.find(e) == orderedEdges.end()){
+			e->m_nodeIdInlet = m_id;
+			e->m_nodeIdOutlet = e->neighbourNode(m_id);
+			e->orderEdges(visitedNodes, orderedEdges);
+		}
 	}
 }
 

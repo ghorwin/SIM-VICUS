@@ -40,8 +40,12 @@ public:
 		m_maxHeatingDemand(heatDemand)
 	{}
 
+	/*! check connectivity of graph trhough recursive search */
 	void collectConnectedEdges(std::set<const NetworkNode*> & connectedNodes,
 		std::set<const NetworkEdge*> & connectedEdge) const;
+
+	void orderEdges(std::set< const NetworkNode*> & visitedNodes,
+		std::set<NetworkEdge*> & orderedEdges) const;
 
 	/*! updates m_isDeadEnd. If node has less than two neighbours which are not a deadEnd and node is not a building
 	 * nor a source: m_isDeadEdnd = true */
