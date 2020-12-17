@@ -30,10 +30,11 @@ SVSimulationStartNetworkSim::~SVSimulationStartNetworkSim() {
 void SVSimulationStartNetworkSim::edit() {
 	// transfer network names to ui and select the first
 
+	m_networksMap.clear();
+	for (const VICUS::Network & n : project().m_geometricNetworks)
+		m_networksMap.insert(QString::fromStdString(n.m_name), n.m_id);
 	m_ui->comboBoxNetwork->clear();
-	for (const VICUS::Network & n : project().m_geometricNetworks) {
-		m_ui->comboBoxNetwork->addItem(QString::fromStdString(n.m_name));
-	}
+	m_ui->comboBoxNetwork->addItems(m_networksMap.keys());
 	m_ui->comboBoxNetwork->setCurrentIndex(0);
 	updateCmdLine();
 	exec();
@@ -86,13 +87,61 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	NANDRAD::KeywordList::setParameter(p.m_simulationParameter.m_interval.m_para,
 									   "Interval::para_t", NANDRAD::Interval::P_End, 1.0/24); // d
 
-	// copy/generate hydraulic network
-	int networkIndex = m_ui->comboBoxNetwork->currentIndex();
+//	// generate NANDRAD hydraulic network
+
+	VICUS::Project proj = project();
+
+	unsigned int networkId = m_networksMap.value(m_ui->comboBoxNetwork->currentText());
+	VICUS::Network *network = proj.element(proj.m_geometricNetworks, networkId);
+
+	/// TODO Hauke: this can be removed later
+
+	//	 components
+	NANDRAD::HydraulicNetworkComponent pump;
+	pump.m_id = 0;
+	pump.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel;
+	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].set("PressureHead", 1e5, IBK::Unit("Pa"));
+	network->m_hydraulicComponents.push_back(pump);
+
+	NANDRAD::HydraulicNetworkComponent heatExchanger;
+	heatExchanger.m_id = 1;
+	heatExchanger.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger;
+	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_HeatFlux].set("HeatFlux", 100, IBK::Unit("W"));
+	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient].set("PressureLossCoefficient", 10, IBK::Unit("-"));
+	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].set("HydraulicDiameter", 50, IBK::Unit("mm"));
+	network->m_hydraulicComponents.push_back(heatExchanger);
+
+	for (VICUS::NetworkNode &node: network->m_nodes){
+		if (node.m_type == VICUS::NetworkNode::NT_Source)
+			node.m_componentId = pump.m_id;
+		else if (node.m_type == VICUS::NetworkNode::NT_Building)
+			node.m_componentId = heatExchanger.m_id;
+	}
+
+	for (VICUS::NetworkEdge &edge: network->m_edges)
+		edge.m_modelType =  NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe;
+
+	/// until here
+
+	// create Nandrad Network
+	NANDRAD::HydraulicNetwork hydraulicNetwork;
+	std::vector<NANDRAD::HydraulicNetworkComponent> hydraulicComponents;
+	hydraulicNetwork.m_id = networkId;
+	hydraulicNetwork.m_displayName = network->m_name;
+	network->createNandradHydraulicNetwork(hydraulicNetwork, hydraulicComponents);
+	hydraulicNetwork.m_fluid.defaultFluidWater(1);
+
+	// finally add to nandrad project
+	p.m_hydraulicNetworks.clear();
+	p.m_hydraulicNetworks.push_back(hydraulicNetwork);
+	p.m_hydraulicComponents.clear();
+	p.m_hydraulicComponents = hydraulicComponents;
 
 
+
+
+#if 0
 	// *** example network ****
-//	 VICUS::Project proj = project();
-
 	// geometric network
 	VICUS::Network net;
 	unsigned id1 = net.addNodeExt(IBKMK::Vector3D(0,0,0), VICUS::NetworkNode::NT_Source);
@@ -111,7 +160,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	NANDRAD::HydraulicNetworkComponent pump;
 	pump.m_id = 0;
 	pump.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel;
-	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].set("PressureHead", -1000, IBK::Unit("Pa"));
+	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].set("PressureHead", 1000, IBK::Unit("Pa"));
 	net.m_hydraulicComponents.push_back(pump);
 
 	NANDRAD::HydraulicNetworkComponent heatExchanger;
@@ -171,6 +220,9 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	p.m_hydraulicNetworks.push_back(hydraulicNetwork);
 	p.m_hydraulicComponents.clear();
 	p.m_hydraulicComponents = hydraulicComponents;
+
+#endif
+
 
 	return true; // no errors, signal ok
 }

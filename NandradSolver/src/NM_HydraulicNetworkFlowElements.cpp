@@ -146,11 +146,11 @@ HNConstantPressurePump::HNConstantPressurePump(const NANDRAD::HydraulicNetworkEl
 	m_pressureHead = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value;
 }
 
-double HNConstantPressurePump::systemFunction(double mdot, double p_inlet, double p_outlet) const {
-	// TODO : This seems wrong - when the mass flow is increase and increased, at some point the
-	//        the pump cannot possibly add pressure to the fluid anylonger (all energy goes into local
-	//        fluid stirring).
-	return p_inlet - p_outlet - m_pressureHead;
+
+double HNConstantPressurePump::systemFunction(double mdot, double p_inlet, double p_outlet) const
+{
+	return p_inlet - p_outlet + m_pressureHead;
+>>>>>>> create real nandrad network with simulation start
 }
 
 void HNConstantPressurePump::partials(double mdot, double p_inlet, double p_outlet,

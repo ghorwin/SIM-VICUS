@@ -2,6 +2,7 @@
 #define SVSimulationStartNetworkSimH
 
 #include <QDialog>
+#include <QMap>
 
 namespace Ui {
 	class SVSimulationStartNetworkSim;
@@ -36,6 +37,7 @@ private:
 
 	Ui::SVSimulationStartNetworkSim		*m_ui;
 
+	QMap<QString, unsigned int>			m_networksMap;
 	QString								m_solverExecutable;
 	QStringList							m_cmdLine;
 	QString								m_targetProjectFile;

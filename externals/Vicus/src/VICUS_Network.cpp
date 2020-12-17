@@ -556,7 +556,7 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
 			throw IBK::Exception(IBK::FormatString("node with id '%1' has both subnetworkId and componentId.").arg(n.m_id), FUNC_ID);
 	}
 
-	unsigned idOffsetOutlet = 1e3;
+	unsigned idOffsetOutlet = 1e6;
 
 	if (m_type == NET_DoublePipe){
 
