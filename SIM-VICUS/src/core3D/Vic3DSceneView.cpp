@@ -256,16 +256,14 @@ void SceneView::paintGL() {
 	m_gpuTimers.recordSample();
 #endif // SHOW_TIMINGS
 
-	if (needRepaint)  {
-		// clear color and depth buffer
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	// clear color and depth buffer
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// render main scene (grid, opaque planes, ...)
-		m_mainScene.render();
+	// render main scene (grid, opaque planes, ...)
+	m_mainScene.render();
 
-		qint64 elapsedMs = m_cpuTimer.elapsed();
-		qDebug() << ++m_paintCounter << "Total paintGL time: " << elapsedMs << "ms";
-	}
+	qint64 elapsedMs = m_cpuTimer.elapsed();
+	qDebug() << ++m_paintCounter << "Total paintGL time: " << elapsedMs << "ms";
 
 	// Done painting
 

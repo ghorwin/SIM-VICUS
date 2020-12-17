@@ -590,6 +590,8 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 		// now we handle the snapping rules
 		snapLocalCoordinateSystem(o);
+		needRepaint = true;
+//		qDebug() << localMousePos << VICUS::IBKVector2QVector(o.m_pickPoint) << m_coordinateSystemObject.translation();
 
 		// update the movable coordinate system's location in the new polygon object
 		m_newPolygonObject.updateLastVertex(m_coordinateSystemObject.translation());
@@ -599,6 +601,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem) {
 		PickObject o(localMousePos, PickObject::P_XY_Plane | PickObject::P_Surface | PickObject::P_BackSide);
 		pick(o);
+		needRepaint = true;
 		// get the picked object, if any
 		if (o.m_uniqueObjectID != 0) {
 			// lookup object
@@ -1180,7 +1183,7 @@ void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 	else {
 		QVector3D closestPoint = snapPoints.begin()->second;
 		m_coordinateSystemObject.setTranslation(closestPoint);
-		qDebug() << (s != nullptr ? "object snap" : "grid snap") << closestPoint;
+//		qDebug() << (s != nullptr ? "object snap" : "grid snap") << closestPoint;
 	}
 }
 
