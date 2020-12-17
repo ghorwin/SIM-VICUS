@@ -63,7 +63,7 @@ private:
 	double							m_roughness;
 
 	/*! Fluid temperature, for now constant, will be an input reference and retrieved from network-thermal-balances model. */
-	double							m_fluidTemperature = 20 + 273.15;
+	double							m_fluidTemperature = 20;
 
 };
 

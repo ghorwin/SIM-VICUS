@@ -26,9 +26,17 @@ HNPipeElement::HNPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 							const NANDRAD::HydraulicFluid & fluid):
 	m_fluid(&fluid)
 {
+	FUNCID(HNPipeElement::HNPipeElement);
 	m_length = elem.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
 	m_diameter = component.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].value;
 	m_roughness = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PipeRoughness].value;
+
+	if (m_length<=0)
+		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has length <= 0").arg(elem.m_id),FUNC_ID);
+	if (m_diameter<=0)
+		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has diameter <= 0").arg(elem.m_id),FUNC_ID);
+	if (m_roughness<=0)
+		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has roughness <= 0").arg(elem.m_id),FUNC_ID);
 }
 
 
@@ -45,33 +53,28 @@ void HNPipeElement::dmdot_dp(double mdot, double p_inlet, double p_outlet, doubl
 
 
 double HNPipeElement::pressureLossFriction(const double &mdot) const{
-
+	// for negative mass flow: Reynolds number is positive, velocity and pressure loss are negative
 	double velocity = mdot / (m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value * m_diameter * m_diameter * PI / 4);
-	double Re = velocity * m_diameter / m_fluid->m_kinematicViscosity.m_values.value(m_fluidTemperature);
-	if (Re < 1e-6) // TODO Anne: which threshold should we use?
-		return 0.0;
-	else
-		return m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value / 2 * velocity * velocity
+	double Re = std::abs(velocity) * m_diameter / m_fluid->m_kinematicViscosity.m_values.value(m_fluidTemperature);
+	return m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value / 2 * std::abs(velocity) * velocity
 				* m_length / m_diameter * frictionFactorSwamee(Re, m_diameter, m_roughness);
 }
 
 double HNPipeElement::frictionFactorSwamee(const double &Re, const double &diameter, const double &roughness){
-	IBK_ASSERT(roughness>0 && diameter>0 && Re>0);
 	if (Re < RE_LAMINAR)
 		return 64/Re;
 	else if (Re < RE_TURBULENT){
-		double fTurb = 0.25 / (std::log10((roughness / diameter) / 3.7 + 5.74 / std::pow(RE_TURBULENT, 0.9) ));
-		return 64/RE_LAMINAR + (Re - RE_LAMINAR) * (fTurb*fTurb - 64/RE_LAMINAR) / (RE_TURBULENT - RE_LAMINAR);
+		double fTurb = std::log10((roughness / diameter) / 3.7 + 5.74 / std::pow(RE_TURBULENT, 0.9) );
+		return 64/RE_LAMINAR + (Re - RE_LAMINAR) * (0.25/(fTurb*fTurb) - 64/RE_LAMINAR) / (RE_TURBULENT - RE_LAMINAR);
 	}
 	else{
-		double f = 0.25 / (std::log10((roughness / diameter) / 3.7 + 5.74 / std::pow(Re, 0.9) ));
-		return	f*f;
+		double f = std::log10( (roughness / diameter) / 3.7 + 5.74 / std::pow(Re, 0.9) ) ;
+		return	0.25 / (f*f);
 	}
 }
 
 /*! this one is probably quite expensive ? */
 double HNPipeElement::frictionFactorCheng(const double &Re, const double &diameter, const double &roughness){
-	IBK_ASSERT(roughness>0 && diameter>0 && Re>0);
 	double delta = diameter / roughness;
 	double a = 1 / (1 + std::pow(Re/RE_LAMINAR, 9));
 	double b = 1 / (1 + (Re / (160 * delta)) * (Re / (160 * delta)) );
@@ -89,14 +92,22 @@ HNFixedPressureLossCoeffElement::HNFixedPressureLossCoeffElement(const NANDRAD::
 																 const NANDRAD::HydraulicFluid &fluid):
 	m_fluid(&fluid)
 {
+	FUNCID(HNFixedPressureLossCoeffElement::HNFixedPressureLossCoeffElement);
+
 	m_zeta = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient].value;
 	m_diameter = component.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].value;
+
+	if (m_diameter<=0)
+		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has diameter <= 0").arg(elem.m_id),FUNC_ID);
+	if (m_zeta<=0)
+		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has PressureLossCoefficient <= 0").arg(elem.m_id),FUNC_ID);
 }
 
 
 double HNFixedPressureLossCoeffElement::systemFunction(double mdot, double p_inlet, double p_outlet) const {
+	// for negative mass flow: dp is negative
 	double area = PI / 4 * m_diameter * m_diameter;
-	double dp = mdot * mdot * m_zeta / (2 * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value
+	double dp = std::abs(mdot) * mdot * m_zeta / (2 * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value
 			* (area * area));
 	return p_inlet - p_outlet - dp;
 
@@ -116,11 +127,12 @@ HNConstantPressurePump::HNConstantPressurePump(const NANDRAD::HydraulicNetworkEl
 	m_fluid(&fluid)
 {
 	m_pressureHead = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value;
+
 }
 
 double HNConstantPressurePump::systemFunction(double mdot, double p_inlet, double p_outlet) const
 {
-	return p_inlet - p_outlet + m_pressureHead;
+	return p_inlet - p_outlet - m_pressureHead;
 }
 
 void HNConstantPressurePump::dmdot_dp(double mdot, double p_inlet, double p_outlet, double &dmdp_in, double &dmdp_out) const

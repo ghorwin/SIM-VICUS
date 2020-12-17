@@ -52,7 +52,6 @@ KeywordListQt::KeywordListQt() {
 	tr("Flow characteristics provided by FMU");
 	tr("Roughness of pipe material.");
 	tr("Pressure loss coefficient for the component (zeta-value).");
-	tr("Maximum pressure loss coefficient for the component.");
 	tr("Inside hydraulic diameter for the component.");
 	tr("External heat transfer coeffient for the outside boundary.");
 	tr("Temperature tolerance for e.g. thermostats.");

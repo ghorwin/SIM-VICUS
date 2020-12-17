@@ -96,8 +96,8 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	// geometric network
 	VICUS::Network net;
 	unsigned id1 = net.addNodeExt(IBKMK::Vector3D(0,0,0), VICUS::NetworkNode::NT_Source);
-	unsigned id2 = net.addNodeExt(IBKMK::Vector3D(0,70,0), VICUS::NetworkNode::NT_Mixer);
-	unsigned id3 = net.addNodeExt(IBKMK::Vector3D(100,70,0), VICUS::NetworkNode::NT_Building);
+	unsigned id2 = net.addNodeExt(IBKMK::Vector3D(0,100,0), VICUS::NetworkNode::NT_Mixer);
+	unsigned id3 = net.addNodeExt(IBKMK::Vector3D(100,100,0), VICUS::NetworkNode::NT_Building);
 	unsigned id4 = net.addNodeExt(IBKMK::Vector3D(0,200,0), VICUS::NetworkNode::NT_Mixer);
 	unsigned id5 = net.addNodeExt(IBKMK::Vector3D(100,200,0), VICUS::NetworkNode::NT_Building);
 	unsigned id6 = net.addNodeExt(IBKMK::Vector3D(-50,200,0), VICUS::NetworkNode::NT_Building);
@@ -111,13 +111,15 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	NANDRAD::HydraulicNetworkComponent pump;
 	pump.m_id = 0;
 	pump.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel;
-	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].set("PressureHead", 300, IBK::Unit("Pa"));
+	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].set("PressureHead", -1000, IBK::Unit("Pa"));
 	net.m_hydraulicComponents.push_back(pump);
 
 	NANDRAD::HydraulicNetworkComponent heatExchanger;
 	heatExchanger.m_id = 1;
 	heatExchanger.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger;
 	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_HeatFlux].set("HeatFlux", 100, IBK::Unit("W"));
+	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient].set("PressureLossCoefficient", 5, IBK::Unit("-"));
+	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].set("HydraulicDiameter", 25.6, IBK::Unit("mm"));
 	net.m_hydraulicComponents.push_back(heatExchanger);
 
 	net.m_nodes[id1].m_componentId = pump.m_id;
@@ -127,13 +129,13 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 
 
 	// pipes
-	VICUS::NetworkPipe pipe;
-	pipe.m_id = 0;
-	pipe.m_displayName = "PE 32 x 3.2";
-	pipe.m_diameterOutside = 32;
-	pipe.m_sWall = 3.2;
-	pipe.m_roughness = 0.007;
-	net.m_networkPipeDB.push_back(pipe);
+	VICUS::NetworkPipe pipe1;
+	pipe1.m_id = 0;
+	pipe1.m_displayName = "PE 32 x 3.2";
+	pipe1.m_diameterOutside = 32;
+	pipe1.m_sWall = 3.2;
+	pipe1.m_roughness = 0.007;
+	net.m_networkPipeDB.push_back(pipe1);
 	VICUS::NetworkPipe pipe2;
 	pipe2.m_id = 1;
 	pipe2.m_displayName = "PE 50 x 4.6";
@@ -142,15 +144,15 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	pipe2.m_roughness = 0.007;
 	net.m_networkPipeDB.push_back(pipe2);
 
-	net.edge(id1, id2)->m_pipeId = pipe.m_id;
+	net.edge(id1, id2)->m_pipeId = pipe2.m_id;
 	net.edge(id1, id2)->m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe;
-	net.edge(id2, id3)->m_pipeId = pipe2.m_id;
+	net.edge(id2, id3)->m_pipeId = pipe1.m_id;
 	net.edge(id2, id3)->m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe;
-	net.edge(id2, id4)->m_pipeId = pipe.m_id;
+	net.edge(id2, id4)->m_pipeId = pipe1.m_id;
 	net.edge(id2, id4)->m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe;
-	net.edge(id4, id5)->m_pipeId = pipe2.m_id;
+	net.edge(id4, id5)->m_pipeId = pipe1.m_id;
 	net.edge(id4, id5)->m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe;
-	net.edge(id4, id6)->m_pipeId = pipe2.m_id;
+	net.edge(id4, id6)->m_pipeId = pipe1.m_id;
 	net.edge(id4, id6)->m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe;
 
 	net.updateNodeEdgeConnectionPointers();

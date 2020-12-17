@@ -187,7 +187,17 @@ void HydraulicNetworkModel::setup(const NANDRAD::HydraulicNetwork & nw, const st
 				// add to flow elements
 				m_p->m_flowElements.push_back(pumpElement); // transfer ownership
 			} break;
+
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger :
+			{
+				// create pump model
+				HNFixedPressureLossCoeffElement * hxElement = new HNFixedPressureLossCoeffElement(e, *it, nw.m_fluid);
+				// set node index
+				hxElement->m_nInlet = std::distance(nodeIds.begin(), nodeIds.find(e.m_inletNodeId));
+				hxElement->m_nOutlet = std::distance(nodeIds.begin(), nodeIds.find(e.m_outletNodeId));
+				// add to flow elements
+				m_p->m_flowElements.push_back(hxElement); // transfer ownership
+			} break;
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatPump :
 			case NANDRAD::HydraulicNetworkComponent::MT_GasBoiler :
 			case NANDRAD::HydraulicNetworkComponent::MT_ControlValve :
