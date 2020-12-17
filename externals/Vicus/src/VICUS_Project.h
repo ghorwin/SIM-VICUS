@@ -150,6 +150,8 @@ public:
 
 	/*! Solver parameters for NANDRAD. */
 	NANDRAD::SolverParameter							m_solverParameter;			// XML:E
+	/*! Location and climate settings for NANDRAD. */
+	NANDRAD::Location									m_location;					// XML:E
 
 	ViewSettings										m_viewSettings;				// XML:E
 
