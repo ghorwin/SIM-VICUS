@@ -164,7 +164,8 @@ void SceneView::onViewStateChanged() {
 	// tell scene view about the viewstate change
 	m_mainScene.setViewState(SVViewStateHandler::instance().viewState());
 
-	// and call renderLater(), in case the snap position has changed
+	// and call renderLater(), to update the view when geometry modification is through or objects have been added
+	renderLater();
 }
 
 

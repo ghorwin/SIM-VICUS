@@ -74,11 +74,16 @@ void SVPropVertexListWidget::on_pushButtonDeleteLast_clicked() {
 	Q_ASSERT(rows > 0);
 	// remove last vertex from polygon
 	Vic3D::NewPolygonObject * po = SVViewStateHandler::instance().m_newPolygonObject;
-	po->removeVertex(rows-1);
+	po->removeVertex((unsigned int)rows-1);
 
 	m_ui->pushButtonDeleteLast->setEnabled(rows > 1);
 	m_ui->tableWidgetVertexes->setRowCount(rows-1);
 	m_ui->pushButtonFinish->setEnabled(SVViewStateHandler::instance().m_newPolygonObject->canComplete());
+	// continue in place-vertex mode (setting the viewstate also triggers a repaint)
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
+	vs.m_propertyWidgetMode = SVViewState::PM_VertexList;
+	SVViewStateHandler::instance().setViewState(vs);
 }
 
 
@@ -112,6 +117,12 @@ void SVPropVertexListWidget::on_pushButtonDeleteSelected_clicked() {
 	// now remove selected row from table widget
 	m_ui->tableWidgetVertexes->removeRow(currentRow);
 	m_ui->pushButtonFinish->setEnabled(SVViewStateHandler::instance().m_newPolygonObject->canComplete());
+
+	// continue in place-vertex mode (setting the viewstate also triggers a repaint)
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
+	vs.m_propertyWidgetMode = SVViewState::PM_VertexList;
+	SVViewStateHandler::instance().setViewState(vs);
 }
 
 

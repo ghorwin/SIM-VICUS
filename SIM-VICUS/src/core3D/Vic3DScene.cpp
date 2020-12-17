@@ -1223,6 +1223,17 @@ void Vic3DScene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandl
 			m_newPolygonObject.appendVertex(p);
 			return;
 		}
+
+		// *** align coordinate system ***
+		case SVViewState::OM_AlignLocalCoordinateSystem : {
+			// finish aligning coordinate system and keep selected rotation in coordinate system
+			// but restore origin of local coordinate system object
+			m_coordinateSystemObject.setTranslation(m_oldCoordinateSystemTransform.translation());
+			// switch back to previous view state
+			SVViewStateHandler::instance().restoreLastViewState();
+			qDebug() << "Leaving 'Align coordinate system' mode";
+			return;
+		}
 		default :; // in all other modes we do selection stuff
 	}
 
