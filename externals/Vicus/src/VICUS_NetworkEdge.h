@@ -47,7 +47,7 @@ public:
 	/*! returns opposite node of the given one */
 	NetworkNode * neighbourNode(const NetworkNode *node) const;
 
-	unsigned NetworkEdge::neighbourNode(unsigned nodeId) const;
+	unsigned neighbourNode(unsigned nodeId) const;
 
 	double length() const;
 
