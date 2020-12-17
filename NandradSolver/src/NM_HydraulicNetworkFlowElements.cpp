@@ -150,7 +150,7 @@ HNConstantPressurePump::HNConstantPressurePump(const NANDRAD::HydraulicNetworkEl
 double HNConstantPressurePump::systemFunction(double mdot, double p_inlet, double p_outlet) const
 {
 	return p_inlet - p_outlet + m_pressureHead;
->>>>>>> create real nandrad network with simulation start
+
 }
 
 void HNConstantPressurePump::partials(double mdot, double p_inlet, double p_outlet,
