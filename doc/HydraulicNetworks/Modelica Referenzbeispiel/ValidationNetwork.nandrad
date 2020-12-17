@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.999">
+	<Project>
+		<ProjectInfo />
+		<Location>
+			<IBK:Parameter name="Latitude" unit="Deg">53</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="%">20</IBK:Parameter>
+			<ClimateFileName>C:/Daten/git/SIMVICUS/data/DB_climate/Konstantopol_20C.c6b</ClimateFileName>
+		</Location>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<Interval>
+				<IBK:Parameter name="End" unit="d">0.04166666667</IBK:Parameter>
+			</Interval>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
+		<SolverParameter />
+		<Zones>
+			<Zone id="1" displayName="dummy" type="Active">
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">100</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<HydraulicNetworks>
+			<HydraulicNetwork id="1" displayName="auto generated from geometric network">
+				<HydraulicFluid id="1" displayName="Water">
+					<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
+					<LinearSplineParameter name="KinematicViscosity" interpolationMethod="linear">
+						<X unit="C">0 10 20 30 40 50 60 70 80 90 </X>
+						<Y unit="m2/s">1.793e-06 1.307e-06 1.004e-06 8.01e-07 6.58e-07 5.54e-07 4.75e-07 4.13e-07 3.65e-07 3.26e-07 </Y>
+					</LinearSplineParameter>
+				</HydraulicFluid>
+				<Elements>
+					<HydraulicNetworkElement id="0" inletNodeId="1000000" outletNodeId="0" componentId="0" displayName="node 0" />
+					<HydraulicNetworkElement id="2" inletNodeId="2" outletNodeId="1000002" componentId="1" displayName="node 2" />
+					<HydraulicNetworkElement id="4" inletNodeId="4" outletNodeId="1000004" componentId="1" displayName="node 4" />
+					<HydraulicNetworkElement id="5" inletNodeId="5" outletNodeId="1000005" componentId="1" displayName="node 5" />
+					<HydraulicNetworkElement id="1" inletNodeId="0" outletNodeId="1" componentId="2" displayName="inlet pipe from 0 to 1">
+						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="3" inletNodeId="1000001" outletNodeId="1000000" componentId="2" displayName="outlet pipe from 1000001 to 1000000">
+						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="6" inletNodeId="1" outletNodeId="2" componentId="3" displayName="inlet pipe from 1 to 2">
+						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="7" inletNodeId="1000002" outletNodeId="1000001" componentId="3" displayName="outlet pipe from 1000002 to 1000001">
+						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="8" inletNodeId="1" outletNodeId="3" componentId="3" displayName="inlet pipe from 1 to 3">
+						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="9" inletNodeId="1000003" outletNodeId="1000001" componentId="3" displayName="outlet pipe from 1000003 to 1000001">
+						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="10" inletNodeId="3" outletNodeId="4" componentId="3" displayName="inlet pipe from 3 to 4">
+						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="11" inletNodeId="1000004" outletNodeId="1000003" componentId="3" displayName="outlet pipe from 1000004 to 1000003">
+						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="12" inletNodeId="3" outletNodeId="5" componentId="3" displayName="inlet pipe from 3 to 5">
+						<IBK:Parameter name="Length" unit="m">50</IBK:Parameter>
+					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="13" inletNodeId="1000005" outletNodeId="1000003" componentId="3" displayName="outlet pipe from 1000005 to 1000003">
+						<IBK:Parameter name="Length" unit="m">50</IBK:Parameter>
+					</HydraulicNetworkElement>
+				</Elements>
+			</HydraulicNetwork>
+		</HydraulicNetworks>
+		<HydraulicComponents>
+			<HydraulicNetworkComponent id="0" modelType="ConstantPressurePumpModel">
+				<IBK:Parameter name="PressureHead" unit="Pa">1000</IBK:Parameter>
+			</HydraulicNetworkComponent>
+			<HydraulicNetworkComponent id="1" modelType="HeatExchanger">
+				<IBK:Parameter name="PressureLossCoefficient" unit="-">5</IBK:Parameter>
+				<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
+				<IBK:Parameter name="HeatFlux" unit="W">100</IBK:Parameter>
+			</HydraulicNetworkComponent>
+			<HydraulicNetworkComponent id="2" modelType="StaticAdiabaticPipe">
+				<IBK:Parameter name="PipeRoughness" unit="mm">0.007</IBK:Parameter>
+				<IBK:Parameter name="HydraulicDiameter" unit="mm">50.8</IBK:Parameter>
+			</HydraulicNetworkComponent>
+			<HydraulicNetworkComponent id="3" modelType="StaticAdiabaticPipe">
+				<IBK:Parameter name="PipeRoughness" unit="mm">0.007</IBK:Parameter>
+				<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
+			</HydraulicNetworkComponent>
+		</HydraulicComponents>
+		<Schedules />
+	</Project>
+</NandradProject>
