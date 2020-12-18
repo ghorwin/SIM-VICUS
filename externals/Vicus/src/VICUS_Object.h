@@ -35,6 +35,9 @@ public:
 	/*! Recursively selected all unique IDs of children. */
 	void collectChildIDs(std::set<unsigned int> & nodeContainer) const;
 
+	/*! Stores selected information for this surface (not serialized, for now). */
+	bool								m_selected = false;
+
 protected:
 	/*! List of all children. */
 	std::vector<Object *>	m_children;

@@ -35,8 +35,6 @@ public:
 
 	/*! Stores visibility information for this surface. */
 	bool								m_visible = true;			// XML:A
-	/*! Stores selected information for this surface (not serialized, for now). */
-	bool								m_selected = false;
 
 	/*! Vector of all rooms in a building level. */
 	std::vector<Room>					m_rooms;					// XML:E

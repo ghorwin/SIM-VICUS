@@ -41,8 +41,6 @@ public:
 
 	/*! Stores visibility information for this surface. */
 	bool								m_visible = true;			// XML:A
-	/*! Stores selected information for this surface (not serialized, for now). */
-	bool								m_selected = false;
 
 	// *** Extend parameters for thermal surfaces ***
 	/*! */

@@ -102,6 +102,9 @@ public:
 
 	// *** RUNTIME VARIABLES ***
 
+	/*! Whether the node is visible or not - may be stored in project file? */
+	bool							m_visible = true;
+
 	double							m_distanceToStart = std::numeric_limits<double>::max();
 	NetworkNode *					m_predecessor = nullptr;
 	bool							m_isDeadEnd = false;
