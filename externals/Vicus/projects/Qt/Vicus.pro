@@ -72,6 +72,7 @@ SOURCES += \
 	../../src/VICUS_EPDCategroySet.cpp \
 	../../src/VICUS_EPDDataset.cpp \
 	../../src/VICUS_KeywordList.cpp \
+	../../src/VICUS_Material.cpp \
 	../../src/VICUS_Network.cpp \
 	../../src/VICUS_NetworkEdge.cpp \
 	../../src/VICUS_NetworkFluid.cpp \

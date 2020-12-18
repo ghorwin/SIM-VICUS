@@ -7,6 +7,11 @@
 
 #include <NANDRAD_KeywordList.h>
 
+///TODO Andreas wie kann die Table nach einem editieren wieder geupdatet werden. Die Werte der Materialien werden
+/// gespeichert aber die Daten in der Tabelle werden nicht erneuert.
+/// TODO Heiko wie bin ich die anderen Sachen ein ohne das es zu einem Absturz kommt
+/// Wie können wir beim Spaltenbreite editieren verhindern dass die anderen Spalten "verzogen" werden.
+
 SVDBMaterialsEditWidget::SVDBMaterialsEditWidget(QWidget *parent) :
 	QWidget(parent),
 	m_ui(new Ui::SVDBMaterialsEditWidget)
@@ -46,9 +51,9 @@ SVDBMaterialsEditWidget::SVDBMaterialsEditWidget(QWidget *parent) :
 	connect(m_ui->lineEditSpecHeatCapacity, SIGNAL(editingFinishedSuccessfully()),this, SLOT(editingFinishedSuccessfully()));
 
 	//setup line edits
-	m_ui->lineEditConductivity->setup(0,500,"Thermal Conductivity",false,true);
-	m_ui->lineEditDensity->setup(1, 10000,"Thermal Density",true,true);
-	m_ui->lineEditSpecHeatCapacity->setup(200, 4500,"Specific Heat Capacity",true,true);
+	m_ui->lineEditConductivity->setup(0,500,tr("Thermal Conductivity. Value between >0 and 500."),false,true);
+	m_ui->lineEditDensity->setup(1, 10000,tr("Thermal Density. Value between 1 and 10000."),true,true);
+	m_ui->lineEditSpecHeatCapacity->setup(200, 4500,tr("Specific Heat Capacity. Value between 200 and 4500."),true,true);
 
 	//set names
 	m_ui->labelDensity->setText(tr("Density [kg/m3]"));
@@ -59,6 +64,18 @@ SVDBMaterialsEditWidget::SVDBMaterialsEditWidget(QWidget *parent) :
 	m_ui->toolButtonRemove->setEnabled(false);
 	m_ui->toolButtonCopy->setEnabled(false);
 
+	//init comboboxes
+	m_ui->comboBoxLanguage->addItem(QString("EN"), 0);
+	m_ui->comboBoxLanguage->addItem(QString("DE"), 1);
+	m_ui->comboBoxLanguage->setCurrentIndex(0);
+
+	for (unsigned int i=0; i< VICUS::Material::Category::NUM_MC; ++i) {
+		m_ui->comboBoxCategory->addItem(VICUS::Material::categoryToString( (VICUS::Material::Category)(i) ) );
+	}
+
+	//init line edit
+	m_ui->lineEditDisplayName->setText("");
+	update(-1);
 }
 
 void SVDBMaterialsEditWidget::onMaterialSelected(int id){
@@ -76,15 +93,44 @@ SVDBMaterialsEditWidget::~SVDBMaterialsEditWidget() {
 void SVDBMaterialsEditWidget::update(int id)
 {
 	if(id == -1){
+		//disable buttons
 		m_ui->toolButtonRemove->setEnabled(false);
 		m_ui->toolButtonCopy->setEnabled(false);
+
+		//disable and clear input controls
+		m_ui->lineEditDensity->setReadOnly(true);
+		m_ui->lineEditDensity->setText("");
+		m_ui->lineEditConductivity->setReadOnly(true);
+		m_ui->lineEditConductivity->setText("");
+		m_ui->lineEditSpecHeatCapacity->setReadOnly(true);
+		m_ui->lineEditSpecHeatCapacity->setText("");
+		m_ui->lineEditDisplayName->setReadOnly(true);
+		m_ui->lineEditDisplayName->setText("");
+		m_ui->comboBoxCategory->setEnabled(false);
+		m_ui->comboBoxLanguage->setEnabled(false);
+		m_ui->pushButtonOpaqueMaterialColor->setEnabled(false);
 	}
 	else {
+		//enable controls
+		m_ui->lineEditDisplayName->setReadOnly(false);
+		m_ui->lineEditDensity->setReadOnly(false);
+		m_ui->lineEditConductivity->setReadOnly(false);
+		m_ui->lineEditSpecHeatCapacity->setReadOnly(false);
+		m_ui->comboBoxCategory->setEnabled(true);
+		m_ui->comboBoxLanguage->setEnabled(true);
+		m_ui->pushButtonOpaqueMaterialColor->setEnabled(true);
+
+
+
 		std::map<unsigned int, VICUS::Material>::const_iterator matIt = m_dbMat->find(id);
 		Q_ASSERT(matIt != m_dbMat->end());
-		m_ui->lineEditDensity->setValue(matIt->second.m_para[VICUS::Material::P_Density].get_value("kg/m3"));
-		m_ui->lineEditConductivity->setValue(matIt->second.m_para[VICUS::Material::P_Conductivity].get_value("W/mK"));
-		m_ui->lineEditSpecHeatCapacity->setValue(matIt->second.m_para[VICUS::Material::P_HeatCapacity].get_value("J/kgK"));
+		const VICUS::Material &mat = matIt->second;
+		m_ui->lineEditDensity->setValue(mat.m_para[VICUS::Material::P_Density].get_value("kg/m3"));
+		m_ui->lineEditConductivity->setValue(mat.m_para[VICUS::Material::P_Conductivity].get_value("W/mK"));
+		m_ui->lineEditSpecHeatCapacity->setValue(mat.m_para[VICUS::Material::P_HeatCapacity].get_value("J/kgK"));
+		m_ui->comboBoxCategory->setCurrentIndex(mat.m_category);
+		///TODO Dirk Einbauen des Multilanguage string --> Andreas fragen
+
 
 		/// TODO Andreas woher weiß ich wann es ein User Material ist und wann nicht?
 		//m_ui->widgetMaterialsDB->
@@ -96,9 +142,9 @@ void SVDBMaterialsEditWidget::update(int id)
 //		m_selectedMaterial = matIt->first;
 //		m_toolButtonCopy->setEnabled(m_selectedMaterial > -1);
 
-//		bool enabled = m_selectedMaterial > 10000;
+		if(!mat.m_builtIn)
+			m_ui->toolButtonRemove->setEnabled(true);
 
-//		m_toolButtonRemove->setEnabled(enabled);
 	}
 
 }
@@ -121,17 +167,21 @@ void SVDBMaterialsEditWidget::closeEvent(QCloseEvent * event)
 void SVDBMaterialsEditWidget::editingFinishedSuccessfully()
 {
 	int id = m_actualId;
+	VICUS::Material &mat = m_dbMat->find(id)->second;
 	if(m_ui->lineEditDensity->isValid()){
 //		NANDRAD::KeywordList::setParameter(m_dbMat->find(id)->second.m_para, "VICUS::Material::para_t",
 //										   VICUS::Material::P_Density, m_ui->lineEditDensity->value());
-		m_dbMat->find(id)->second.m_para[VICUS::Material::P_Density].set("Density", m_ui->lineEditDensity->value(), "kg/m3");
+		mat.m_para[VICUS::Material::P_Density].set("Density", m_ui->lineEditDensity->value(), "kg/m3");
 	}
 	if(m_ui->lineEditConductivity->isValid()){
-		m_dbMat->find(id)->second.m_para[VICUS::Material::P_Conductivity].set("Conductivity", m_ui->lineEditConductivity->value(), "W/mK");
+		mat.m_para[VICUS::Material::P_Conductivity].set("Conductivity", m_ui->lineEditConductivity->value(), "W/mK");
 	}
 	if(m_ui->lineEditSpecHeatCapacity->isValid()){
-		m_dbMat->find(id)->second.m_para[VICUS::Material::P_HeatCapacity].set("HeatCapacity", m_ui->lineEditSpecHeatCapacity->value(), "J/kgK");
+		mat.m_para[VICUS::Material::P_HeatCapacity].set("HeatCapacity", m_ui->lineEditSpecHeatCapacity->value(), "J/kgK");
 	}
+	///TODO Dirk name to multilanguage string
+	mat.m_displayName = m_ui->lineEditDisplayName->text();
+	mat.m_category = (VICUS::Material::Category)(m_ui->comboBoxCategory->currentIndex());
 }
 
 
@@ -142,7 +192,6 @@ void SVDBMaterialsEditWidget::on_toolButtonAdd_clicked()
 
 	unsigned int id = SVSettings::firstFreeId(db, 1000000);//getFreeId<VICUS::Material>(*m_dbMat, 1000000);
 	VICUS::Material newMat(id, "unnamed", 1, 1000, 840);
-
 	db[id] = newMat;
 
 	std::vector<QtExt::MaterialBase*> mats;
@@ -156,6 +205,22 @@ void SVDBMaterialsEditWidget::on_toolButtonAdd_clicked()
 
 void SVDBMaterialsEditWidget::on_toolButtonCopy_clicked()
 {
+	if(m_actualId<0)
+		return;
+	std::map<unsigned int, VICUS::Material> & db = *m_dbMat;
+
+	unsigned int id = SVSettings::firstFreeId(db, 1000000);//getFreeId<VICUS::Material>(*m_dbMat, 1000000);
+	VICUS::Material newMat = db[m_actualId];
+	newMat.m_builtIn = false;
+	db[id] = newMat;
+
+	std::vector<QtExt::MaterialBase*> mats;
+	for(auto & e : db)
+		mats.push_back(new SVMaterialTransfer(e.second));
+
+	m_ui->widgetMaterialsDB->setMaterials(mats);
+
+
 
 }
 

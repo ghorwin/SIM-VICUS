@@ -31,6 +31,12 @@
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <widget class="QLabel" name="labelDisplayName">
+           <property name="minimumSize">
+            <size>
+             <width>60</width>
+             <height>0</height>
+            </size>
+           </property>
            <property name="text">
             <string>Name</string>
            </property>
@@ -43,7 +49,7 @@
           <widget class="QLineEdit" name="lineEditDisplayName"/>
          </item>
          <item>
-          <widget class="QtExt::ColorButton" name="pushButtonSceneBackgroundColor">
+          <widget class="QtExt::ColorButton" name="pushButtonOpaqueMaterialColor">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -56,6 +62,12 @@
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="labelCategory">
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
           <string>Category</string>
          </property>

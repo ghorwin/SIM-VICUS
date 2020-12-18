@@ -7,6 +7,7 @@
 
 #include <QString>
 #include <QColor>
+#include <QCoreApplication>
 
 #include <IBK_Parameter.h>
 
@@ -15,6 +16,7 @@
 namespace VICUS {
 
 class Material : public AbstractDBElement {
+	Q_DECLARE_TR_FUNCTIONS(Material)
 public:
 
 	/*! Basic parameters. */
@@ -45,14 +47,14 @@ public:
 		MC_Plaster,					// Keyword: Plaster
 		MC_Bricks,					// Keyword: Bricks
 		MC_NaturalStones,			// Keyword: NaturalStones
-		MC_Cementitious,			// Keyword: Cementitious
+		MC_Cementitious,				// Keyword: Cementitious
 		MC_Insulations,				// Keyword: Insulations
 		MC_BuildingBoards,			// Keyword: BuildingBoards
-		MC_Woodbased,				// Keyword: Woodbased
+		MC_Woodbased,					// Keyword: Woodbased
 		MC_NaturalMaterials,		// Keyword: NaturalMaterials
-		MC_Soils,					// Keyword: Soils
+		MC_Soils,						// Keyword: Soils
 		MC_CladdingSystems,			// Keyword: CladdingSystems
-		MC_Foils,					// Keyword: Foils
+		MC_Foils,						// Keyword: Foils
 		MC_Miscellaneous,			// Keyword: Miscellaneous
 		NUM_MC
 	};
@@ -80,6 +82,8 @@ public:
 
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
+
+	static QString categoryToString(Category c);
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
