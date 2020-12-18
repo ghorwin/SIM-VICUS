@@ -22,15 +22,15 @@ public:
 		/*! Dry density of the material. */
 		P_Density,					// Keyword: Density					[kg/m3]	'Dry density of the material.'
 		/*! Global Warming Potential. */
-		P_GWP,						// Keyword: GWP						[W/mK]	'Global Warming Potential.'
+		P_GWP,						// Keyword: GWP						[kg]	'Global Warming Potential.'
 		/*! Depletion potential of the stratospheric ozone layer . */
-		P_ODP,						// Keyword: ODP						[W/mK]	'Depletion potential of the stratospheric ozone layer.'
+		P_ODP,						// Keyword: ODP						[kg]	'Depletion potential of the stratospheric ozone layer.'
 		/*! Photochemical Ozone Creation Potential . */
-		P_POCP,						// Keyword: POCP					[W/mK]	'Photochemical Ozone Creation Potential.'
+		P_POCP,						// Keyword: POCP					[kg]	'Photochemical Ozone Creation Potential.'
 		/*! Acidification potential . */
-		P_AP,						// Keyword: AP						[W/mK]	'Acidification potential.'
+		P_AP,						// Keyword: AP						[kg]	'Acidification potential.'
 		/*! Eutrophication potential. */
-		P_EP,						// Keyword: EP						[W/mK]	'Eutrophication potential.'
+		P_EP,						// Keyword: EP						[kg]	'Eutrophication potential.'
 		/*! Total use of non-renewable primary energy resources. */
 		P_PENRT,					// Keyword: PENRT					[W/mK]	'Total use of non-renewable primary energy resources.'
 		/*! Total use of renewable primary energy resources . */
@@ -71,23 +71,10 @@ public:
 
 	VICUS_READWRITE
 
-	bool behavesLike(const EPDDataset &other) const{
-		if(m_referenceUnit != other.m_referenceUnit ||
-			m_referenceQuantity != other.m_referenceQuantity)
-			return false;
-
-		/// TODO MIRA
-
-		for (unsigned int i=0; i<NUM_P; ++i) {
-			para_t t = static_cast<para_t>(i);
-			if(m_para[t].empty() && other.m_para[t].empty())
-				continue;
-			if(m_para[t] != other.m_para[t])
-				return false;
-		}
-
-		return true;
-	}
+	/*! checks the parameters referenceunit, referencequantity, the categories and the different values of the EPDs
+		to see if the EPDDatest exists already and has the latest version.
+	*/
+	bool behavesLike(const EPDDataset &other) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
