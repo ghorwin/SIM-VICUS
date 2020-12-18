@@ -14,8 +14,9 @@ ist, kann man Objekte durch links-klicken auswählen. Alternativ kann man im Nav
 
 Wenn ein Linksklick registriert wird, werden alle geometrischen Primitiven auf Kollision mit der Sichtgeraden geprüft und ggfs. selektiert/deselektiert. Dies erfolgt in der Funktion `Vic3DScene::handleSelection()`.
 
-Hier wird zunächst die "pick"-Operation durchgeführt, wobei der Sichtstrahl konstruiert und die Kollisionsprüfung mit allen Objekten durchgeführt wird.
+Hier wird zunächst die "pick"-Operation durchgeführt, wobei der Sichtstrahl konstruiert und die Kollisionsprüfung mit allen Objekten durchgeführt wird. Ist ein Objekt ermittelt, wird dieses eindeutig durch seinen uniqueID identifiziert. Alle Objekte im Navigationsbaum müssen eine solche haben, und sind deshalb von `VICUS::Object` abgeleitet. Diese Klasse speichert auch das "selected"-Flag.
 
+Wurde ein Objekt angeklickt, wird eine Undo-Action vom Typ `SVUndoTreeNodeState` erstellt. Diese sammelt zunächst basierend auf der übergebenen uniqueID alle zu verändernden Elemente aus.
 
 
 [[UI-object_picking]]
@@ -27,7 +28,7 @@ Optionen sind:
 
 - `XY_Plane` - es wird ein Schnittpunkt mit der XY-Ebene bestimmt
 - `Surface` - es werden alle Oberflächen geprüft
-- `Network` - es werden Netzwerkobjekte geprüft
+- `Network` - es werden Netzwerkobjekte (Nodes/Edges) geprüft
 - `Backside` - es werden auch die Rückseiten von Objekten geprüft
 
 

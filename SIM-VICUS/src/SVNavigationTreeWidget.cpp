@@ -72,26 +72,22 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 				// find the object in question
 				const VICUS::Object * obj = project().objectById(id);
 				bool visible = true;
-				bool selected = true;
+				bool selected = obj->m_selected;
 				const VICUS::Building* b;
 				const VICUS::BuildingLevel* bl;
 				const VICUS::Room * r;
 				const VICUS::Surface * s;
 				if ((b = dynamic_cast<const VICUS::Building*>(obj)) != nullptr) {
 					visible = b->m_visible;
-					selected = b->m_selected;
 				}
 				if ((bl = dynamic_cast<const VICUS::BuildingLevel*>(obj)) != nullptr) {
 					visible = bl->m_visible;
-					selected = bl->m_selected;
 				}
 				if ((r = dynamic_cast<const VICUS::Room*>(obj)) != nullptr) {
 					visible = r->m_visible;
-					selected = r->m_selected;
 				}
 				if ((s = dynamic_cast<const VICUS::Surface*>(obj)) != nullptr) {
 					visible = s->m_visible;
-					selected = s->m_selected;
 				}
 				m_treeItemMap[id]->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, visible);
 				m_treeItemMap[id]->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, selected);
@@ -159,6 +155,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 	// Networks
 	for (const VICUS::Network & n : prj.m_geometricNetworks) {
 		QTreeWidgetItem * networkItem = new QTreeWidgetItem(QStringList() << tr("Network: %1").arg(QString::fromStdString(n.m_name)), QTreeWidgetItem::Type);
+		m_treeItemMap[n.uniqueID()] = networkItem;
 		root->addChild(networkItem);
 		networkItem->setData(0, SVNavigationTreeItemDelegate::ItemType, NT_Network);
 		networkItem->setData(0, SVNavigationTreeItemDelegate::NodeID, n.uniqueID());
@@ -169,8 +166,11 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		/// TODO : Hauke, think about grouping for larger networks
 		for (const VICUS::NetworkEdge & e : n.m_edges) {
 			QTreeWidgetItem * en = new QTreeWidgetItem(QStringList() << QString("E [%1]").arg(e.uniqueID()), QTreeWidgetItem::Type);
+			m_treeItemMap[e.uniqueID()] = en;
 			en->setData(0, SVNavigationTreeItemDelegate::ItemType, NT_NetworkEdge);
 			en->setData(0, SVNavigationTreeItemDelegate::NodeID, e.uniqueID());
+			en->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, e.m_visible);
+			en->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, e.m_selected);
 			enode->addChild(en);
 		}
 
@@ -181,8 +181,11 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		/// TODO : Hauke, think about grouping for larger networks
 		for (const VICUS::NetworkNode & nod : n.m_nodes) {
 			QTreeWidgetItem * no = new QTreeWidgetItem(QStringList() << QString("N [%1]").arg(nod.uniqueID()), QTreeWidgetItem::Type);
+			m_treeItemMap[nod.uniqueID()] = no;
 			no->setData(0, SVNavigationTreeItemDelegate::ItemType, NT_NetworkNode);
 			no->setData(0, SVNavigationTreeItemDelegate::NodeID, nod.uniqueID());
+			no->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, nod.m_visible);
+			no->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, nod.m_selected);
 			nnode->addChild(no);
 		}
 	}

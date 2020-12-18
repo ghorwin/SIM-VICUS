@@ -80,6 +80,9 @@ public:
 
 	// *** RUNTIME VARIABLES ***
 
+	/*! Whether the node is visible or not - may be stored in project file? */
+	bool												m_visible = true;
+
 	/*! heating demand of all connected buildings */
 	double												m_maxHeatingDemand = 0;
 

@@ -94,6 +94,18 @@ void Network::updateNodeEdgeConnectionPointers() {
 		e.m_node1->m_edges.push_back(&e);
 		e.m_node2->m_edges.push_back(&e);
 	}
+
+	// finally, also update all VICUS::Object data members
+	m_children.clear();
+	for (NetworkEdge & e : m_edges) {
+		e.m_parent = this;
+		m_children.push_back(&e);
+	}
+	for (NetworkNode & n : m_nodes) {
+		n.m_parent = this;
+		m_children.push_back(&n);
+	}
+
 }
 
 

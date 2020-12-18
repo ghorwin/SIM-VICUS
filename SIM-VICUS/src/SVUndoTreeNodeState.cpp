@@ -51,6 +51,22 @@ SVUndoTreeNodeState::SVUndoTreeNodeState(const QString & label,
 			storeState(s, m_nodeStates[s.uniqueID()]);
 	}
 
+	// search in networks
+	for (const VICUS::Network & n : p.m_geometricNetworks) {
+		if (nodeIDs.find(n.uniqueID()) != nodeIDs.end())
+			storeState(n, m_nodeStates[n.uniqueID()]);
+		// search nodes
+		for (const VICUS::NetworkNode & no : n.m_nodes) {
+			if (nodeIDs.find(no.uniqueID()) != nodeIDs.end())
+				storeState(no, m_nodeStates[no.uniqueID()]);
+		}
+		// search edges
+		for (const VICUS::NetworkEdge & ne : n.m_edges) {
+			if (nodeIDs.find(ne.uniqueID()) != nodeIDs.end())
+				storeState(ne, m_nodeStates[ne.uniqueID()]);
+		}
+	}
+
 	m_otherNodeStates = m_nodeStates;
 	// now set the "new" node states
 	for (auto & s : m_nodeStates) {
@@ -72,6 +88,7 @@ SVUndoTreeNodeState::SVUndoTreeNodeState(const QString & label,
 	}
 }
 
+
 SVUndoTreeNodeState * SVUndoTreeNodeState::createUndoAction(const QString & label,
 															SVUndoTreeNodeState::NodeState t,
 															unsigned int nodeID, bool withChildren, bool on)
@@ -82,15 +99,12 @@ SVUndoTreeNodeState * SVUndoTreeNodeState::createUndoAction(const QString & labe
 	// compose set of nodeIDs - first store object that is referenced by nodeID
 	nodeIDs.insert(nodeID);
 
-	// now look in buildings and collect child IDs
+	// now find the object collect child IDs
 	if (withChildren) {
-		for (const VICUS::Building & b : p.m_buildings) {
-			const VICUS::Object * obj = b.findChild(nodeID);
-			if (obj != nullptr) {
-					// also store IDs of all children
-					obj->collectChildIDs(nodeIDs);
-				break;
-			}
+		const VICUS::Object * obj = p.objectById(nodeID);
+		if (obj != nullptr) {
+			// also store IDs of all children
+			obj->collectChildIDs(nodeIDs);
 		}
 	}
 
@@ -116,7 +130,7 @@ void SVUndoTreeNodeState::redo() {
 	// we set the values in m_nodeStates in the project
 	std::map<unsigned int, int >::const_iterator it;
 
-	// search in buildings
+	// process all buildings
 	for (VICUS::Building & b : p.m_buildings) {
 		if ((it = m_nodeStates.find(b.uniqueID())) != m_nodeStates.end()) {
 			setState(b, it->second);
@@ -147,6 +161,28 @@ void SVUndoTreeNodeState::redo() {
 		if ((it = m_nodeStates.find(s.uniqueID())) != m_nodeStates.end()) {
 			setState(s, it->second);
 			modifiedIDs.push_back(it->first);
+		}
+	}
+
+	// search in networks
+	for (VICUS::Network & n : p.m_geometricNetworks) {
+		if ((it = m_nodeStates.find(n.uniqueID())) != m_nodeStates.end()) {
+			setState(n, it->second);
+			modifiedIDs.push_back(it->first);
+		}
+		// search nodes
+		for (VICUS::NetworkNode & no : n.m_nodes) {
+			if ((it = m_nodeStates.find(no.uniqueID())) != m_nodeStates.end()) {
+				setState(no, it->second);
+				modifiedIDs.push_back(it->first);
+			}
+		}
+		// search edges
+		for (VICUS::NetworkEdge & ne : n.m_edges) {
+			if ((it = m_nodeStates.find(ne.uniqueID())) != m_nodeStates.end()) {
+				setState(ne, it->second);
+				modifiedIDs.push_back(it->first);
+			}
 		}
 	}
 
