@@ -33,6 +33,7 @@ class SVSimulationStartNetworkSim;
 
 class SVDBMaterialsEditWidget;
 class SVDBWindowEditWidget;
+class SVDBConstructionEditDialog;
 
 /*! Main window class. */
 class SVMainWindow : public QMainWindow {
@@ -204,6 +205,8 @@ private slots:
 
 	void on_actionSimulationHydraulicNetwork_triggered();
 
+	void on_actionDBConstructions_triggered();
+
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();
@@ -335,6 +338,7 @@ private:
 
 	SVDBMaterialsEditWidget		*m_dbMaterialsEditWidget								= nullptr;
 	SVDBWindowEditWidget		*m_dbWindowEditWidget									= nullptr;
+	SVDBConstructionEditDialog	*m_dbConstructionEditDialog								= nullptr;
 
 	friend class SVThreadBase;
 

@@ -55,6 +55,8 @@
 
 #include "SVDBMaterialsEditWidget.h"
 #include "SVDBWindowEditWidget.h"
+#include "SVDBConstructionEditDialog.h"
+
 #include "SVSimulationStartNandrad.h"
 #include "SVSimulationStartNetworkSim.h"
 
@@ -1363,7 +1365,13 @@ void SVMainWindow::on_actionDBWindows_triggered() {
 		m_dbWindowEditWidget = new SVDBWindowEditWidget(nullptr); // global widget, not inside main window
 	}
 	m_dbWindowEditWidget->edit();
+}
 
+
+void SVMainWindow::on_actionDBConstructions_triggered() {
+	if (m_dbConstructionEditDialog == nullptr)
+		m_dbConstructionEditDialog = new SVDBConstructionEditDialog(nullptr);
+	m_dbConstructionEditDialog->edit();
 }
 
 
@@ -1418,3 +1426,4 @@ void SVMainWindow::on_actionKeyboard_and_mouse_controls_triggered() {
 	dlg.resize(1400,800);
 	dlg.exec();
 }
+
