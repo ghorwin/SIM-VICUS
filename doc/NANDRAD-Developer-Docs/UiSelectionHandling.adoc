@@ -3,4 +3,33 @@
 [[UI-SelectionHandling]]
 # Auswahl von Objekten
 
-Es gibt 
+Wenn die Benutzeroberfläche im Zustand: 
+
+- Standard (NUM_OM)
+- OM_SelectedGeometry
+
+ist, kann man Objekte durch links-klicken auswählen. Alternativ kann man im Navigationsbaum auswählebare Objekte durch Ankreuzen der Auswahlboxen auswählen.
+
+## Auswahl in der Scene
+
+Wenn ein Linksklick registriert wird, werden alle geometrischen Primitiven auf Kollision mit der Sichtgeraden geprüft und ggfs. selektiert/deselektiert. Dies erfolgt in der Funktion `Vic3DScene::handleSelection()`.
+
+Hier wird zunächst die "pick"-Operation durchgeführt, wobei der Sichtstrahl konstruiert und die Kollisionsprüfung mit allen Objekten durchgeführt wird.
+
+
+
+[[UI-object_picking]]
+# Objekt-Pick-Operation
+
+Die Erkennung, was sich unter dem Mauscursor befindet, kann unterschiedliche Ergebnisse haben, je nach Konfiguration. Dafür wird zunächst ein `PickObject` erstellt und konfiguriert und dann dem Pick-Algorithmus übergeben.
+
+Optionen sind:
+
+- `XY_Plane` - es wird ein Schnittpunkt mit der XY-Ebene bestimmt
+- `Surface` - es werden alle Oberflächen geprüft
+- `Network` - es werden Netzwerkobjekte geprüft
+- `Backside` - es werden auch die Rückseiten von Objekten geprüft
+
+
+
+
