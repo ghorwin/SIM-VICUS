@@ -81,6 +81,8 @@ SOURCES += \
 	../../src/NM_Schedules.cpp \
 	../../src/NM_StateModelGroup.cpp \
 	../../src/NM_SteadyStateSolver.cpp \
+	../../src/NM_ThermalNetworkBalanceModel.cpp \
+	../../src/NM_ThermalNetworkStatesModel.cpp \
 	../../src/NM_VectorValuedQuantity.cpp \
 	../../src/NM_VectorValuedQuantityIndex.cpp \
 	../../src/NM_InternalLoadsModel.cpp
@@ -115,6 +117,8 @@ HEADERS += \
 	../../src/NM_Schedules.h \
 	../../src/NM_StateModelGroup.h \
 	../../src/NM_SteadyStateSolver.h \
+	../../src/NM_ThermalNetworkBalanceModel.h \
+	../../src/NM_ThermalNetworkStatesModel.h \
 	../../src/NM_ValueReference.h \
 	../../src/NM_VectorValuedQuantity.h \
 	../../src/NM_VectorValuedQuantityIndex.h \
