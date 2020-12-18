@@ -50,14 +50,15 @@ public:
 		 double									m_area;				// in m2
 	};
 
-	/*! Calculate lca.
+	/*! Calculate lca (Life Cycle Assessment).
 		This function calculates all the EPDs for the whole lifecycle in the categories which are filled with Data.
 		This is mostly the case for the used categories. Others exist, but are rarely populated with datasets. That is why they are not considered until now.
 	*/
 	void calculateLCA();
 
 
-	/*! TODO MIRA */
+	/*! Imports the database Oekobaudat from the ministery BMI.
+		All values required at the present time are imported. */
 	void readDatabaseOekobautdat(const IBK::Path &filename);
 
 

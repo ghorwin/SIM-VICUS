@@ -273,6 +273,7 @@ bool findUUID(QString uuid, unsigned int &id, const std::map<unsigned int, VICUS
 
 void LCA::readDatabaseOekobautdat(const IBK::Path & filename)
 {
+	FUNCID(LCA::readDatabaseOekobautdat);
 //	IBK::FileReader fileR(filename);
 //	IBK::FileReader::BOMType type = IBK::FileReader::getBOM(fileR.firstBytes(4));
 
@@ -308,11 +309,82 @@ void LCA::readDatabaseOekobautdat(const IBK::Path & filename)
 		VICUS::EPDDataset epd;
 		epd.m_id = SVSettings::firstFreeId(db,1);
 		epd.m_uuid = QString::fromStdString(tabElements[0]);
+
+		std::string checkStr;
+
 		//subtype
-		if(IBK::tolower_string(tabElements[5]) == "average dataset")
+		checkStr = IBK::tolower_string(tabElements[5]);
+		if(checkStr == "average dataset")
 			epd.m_subtype = VICUS::EPDDataset::M_Average;
-		else if(IBK::tolower_string(tabElements[5]) == "MIRA")
+		else if(checkStr == "generic dataset")
 			epd.m_subtype = VICUS::EPDDataset::M_Generic;
+		else if(checkStr == "representative dataset")
+			epd.m_subtype = VICUS::EPDDataset::M_Representative;
+		else if(checkStr == "specific dataset")
+			epd.m_subtype = VICUS::EPDDataset::M_Specific;
+		else if(checkStr == "template dataset")
+			epd.m_subtype = VICUS::EPDDataset::M_Template;
+		else
+			throw IBK::Exception(IBK::FormatString("No valid subtype of epd material '%1' available.").
+								 arg(epd.m_displayName.toStdString()), FUNC_ID);
+		epd.m_displayName = QString::fromStdString(tabElements[2]);
+		epd.m_referenceQuantity = IBK::string2val<double>(tabElements[6]);
+
+		//reference unit
+		checkStr = IBK::tolower_string(tabElements[7]);
+		if(checkStr == "kg")
+			epd.m_referenceUnit = "kg";
+		else if(checkStr == "qm")
+			epd.m_referenceUnit = "m2";
+		else if(checkStr == "pcs.")
+			epd.m_referenceUnit = "pcs.";
+		else if(checkStr == "m3")
+			epd.m_referenceUnit = "m3";
+		else
+			throw IBK::Exception(IBK::FormatString("No valid reference unit for epd material '%1' available.")
+								 .arg(epd.m_displayName.toStdString()), FUNC_ID);
+		IBK::Unit("m2");
+		epd.m_para[VICUS::EPDDataset::P_BasisWeight] = IBK::Parameter("BasisWeight", IBK::string2val<double>(tabElements[11]), "kg/m2");
+		epd.m_para[VICUS::EPDDataset::P_Density] = IBK::Parameter("Density", IBK::string2val<double>(tabElements[12]), "kg/m3");
+
+		//Categories
+		checkStr = IBK::tolower_string(tabElements[17]);
+		if(checkStr == "A1_A3")
+			epd.m_category = VICUS::EPDDataset::C_A1_A3;
+		else if(checkStr == "A1")
+			epd.m_category = VICUS::EPDDataset::C_A1;
+		else if(checkStr == "A2")
+			epd.m_category = VICUS::EPDDataset::C_A2;
+		else if(checkStr == "A3")
+			epd.m_category = VICUS::EPDDataset::C_A3;
+		else if(checkStr == "A1_A2")
+			epd.m_category = VICUS::EPDDataset::C_A1_A2;
+		else if(checkStr == "B")
+			epd.m_category = VICUS::EPDDataset::C_B6;
+		else if(checkStr == "C2")
+			epd.m_category = VICUS::EPDDataset::C_C2;
+		else if(checkStr == "C2_C3")
+			epd.m_category = VICUS::EPDDataset::C_C2_3;
+		else if(checkStr == "C2_C4")
+			epd.m_category = VICUS::EPDDataset::C_C2_C4;
+		else if(checkStr == "C3")
+			epd.m_category = VICUS::EPDDataset::C_C3;
+		else if(checkStr == "C3_C4")
+			epd.m_category = VICUS::EPDDataset::C_C3_C4;
+		else if(checkStr == "C4")
+			epd.m_category = VICUS::EPDDataset::C_C4;
+		else if(checkStr == "D")
+			epd.m_category = VICUS::EPDDataset::C_D;
+		else
+			throw IBK::Exception(IBK::FormatString("No valid category for epd material '%1' given.")
+								 .arg(epd.m_displayName.toStdString()), FUNC_ID);
+		epd.m_para[VICUS::EPDDataset::P_GWP] = IBK::Parameter("GWP", IBK::string2val<double>(tabElements[18]), "kg");
+		epd.m_para[VICUS::EPDDataset::P_ODP] = IBK::Parameter("ODP", IBK::string2val<double>(tabElements[19]), "kg");
+		epd.m_para[VICUS::EPDDataset::P_POCP] = IBK::Parameter("POCP", IBK::string2val<double>(tabElements[20]), "kg");
+		epd.m_para[VICUS::EPDDataset::P_AP] = IBK::Parameter("AP", IBK::string2val<double>(tabElements[21]), "kg");
+		epd.m_para[VICUS::EPDDataset::P_EP] = IBK::Parameter("EP", IBK::string2val<double>(tabElements[22]), "kg");
+		epd.m_para[VICUS::EPDDataset::P_PERT] = IBK::Parameter("PERT", IBK::string2val<double>(tabElements[27]), "W/mK");
+		epd.m_para[VICUS::EPDDataset::P_PENRT] = IBK::Parameter("PENRT", IBK::string2val<double>(tabElements[30]), "W/mK");
 
 		//created a epd dataset
 
@@ -322,10 +394,14 @@ void LCA::readDatabaseOekobautdat(const IBK::Path & filename)
 			///TODO Mira
 			/// behavelikes
 			if(epd.behavesLike(db[id]))
+				//wenn Datenbanken übereinstimmen, nimm die bereits existierende,
+				//wenn Datenbanken nicht übereinstimmen und eine neue existiert, nimm neue
+				//wenn keine Datenbank existiert, nimm neue
 				;
 
 		}
 	}
+
 }
 
 }
