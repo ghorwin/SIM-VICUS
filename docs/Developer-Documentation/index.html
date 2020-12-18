@@ -73,7 +73,7 @@ table {
 <div class="details">
 <span id="author" class="author">Andreas Nicolai</span><br>
 <span id="email" class="email"><a href="mailto:andreas.nicolai@tu-dresden.de">andreas.nicolai@tu-dresden.de</a></span><br>
-<span id="revdate">0.2.0 (04.12.2020)</span>
+<span id="revdate">0.2.0 (18.12.2020)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -96,10 +96,12 @@ table {
 <li><a href="#_file_naming_and_header_guards">2.2.4. File naming and header guards</a></li>
 <li><a href="#_namespaces">2.2.5. Namespaces</a></li>
 <li><a href="#_class_and_variable_naming">2.2.6. Class and variable naming</a></li>
-<li><a href="#exception_handling">2.2.7. Exception handling</a></li>
-<li><a href="#_documentation">2.2.8. Documentation</a></li>
-<li><a href="#_git_workflow">2.2.9. Git Workflow</a></li>
-<li><a href="#_tips_and_tricks">2.2.10. Tips and tricks</a></li>
+<li><a href="#_suggestions_for_writing_clean_and_neat_code">2.2.7. Suggestions for writing clean and neat code</a></li>
+<li><a href="#_enumeration_types">2.2.8. Enumeration types</a></li>
+<li><a href="#exception_handling">2.2.9. Exception handling</a></li>
+<li><a href="#_documentation">2.2.10. Documentation</a></li>
+<li><a href="#_git_workflow">2.2.11. Git Workflow</a></li>
+<li><a href="#_tips_and_tricks">2.2.12. Tips and tricks</a></li>
 </ul>
 </li>
 <li><a href="#qt_creator">2.3. Qt Creator Configuration</a>
@@ -226,6 +228,9 @@ table {
 </li>
 </ol>
 </div>
+<div class="paragraph">
+<p>Also, install a suitable git client (SmartGit is recommendet). Don&#8217;t forget to specify your git user name and email (user settings).</p>
+</div>
 </div>
 <div class="sect4">
 <h5 id="_linux">Linux</h5>
@@ -235,6 +240,15 @@ table {
 <div class="literalblock">
 <div class="content">
 <pre>&gt; sudo apt install build-essential cmake qt5-default libqt5svg5-dev</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Also, install git or a suitable git client (SmartGit is recommendet). Don&#8217;t forget to specify your git user name and email:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&gt; git config --global user.name "Your name here"
+&gt; git config --global user.email "your_email@example.com"</pre>
 </div>
 </div>
 </div>
@@ -263,6 +277,15 @@ compilation problems.</p>
 </div>
 <div class="paragraph">
 <p>Parallel gcc OpenMP code require a bit of extra work (to be documented later :-)</p>
+</div>
+<div class="paragraph">
+<p>Also, install git or a suitable git client (SmartGit is recommendet). Don&#8217;t forget to specify your git user name and email:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&gt; git config --global user.name "Your name here"
+&gt; git config --global user.email "your_email@example.com"</pre>
+</div>
 </div>
 </div>
 </div>
@@ -512,7 +535,154 @@ With code-checking-while-typing (see clang checks in Qt Creator), you&#8217;ll c
 </div>
 </div>
 <div class="sect3">
-<h4 id="exception_handling">2.2.7. Exception handling</h4>
+<h4 id="_suggestions_for_writing_clean_and_neat_code">2.2.7. Suggestions for writing clean and neat code</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="c1">// Short function declarations may have the { in the same line</span>
+<span class="kt">void</span> <span class="nf">someFunction</span><span class="p">(</span><span class="kt">int</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// indent with one tab character</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">t</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// also place the opening brace in this line</span>
+        <span class="c1">// code</span>
+    <span class="p">}</span>
+    <span class="c1">// longer for-clauses with more than one line should place</span>
+    <span class="c1">// the opening { into the next line to mark the opening scope.</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;::</span><span class="n">iterator</span> <span class="n">it</span> <span class="o">=</span> <span class="n">m_localVec</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+        <span class="n">it</span> <span class="o">!=</span> <span class="n">m_localVec</span><span class="p">.</span><span class="n">end</span><span class="p">();</span> <span class="o">++</span><span class="n">it</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// code</span>
+    <span class="p">}</span>
+    <span class="c1">// similar rules apply for if and other clauses, for example</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="o">==</span> <span class="mi">15</span> <span class="o">||</span> <span class="n">takeNextStep</span> <span class="o">||</span>
+        <span class="p">(</span><span class="n">firstStepCounter</span> <span class="o">&gt;</span> <span class="mi">15</span> <span class="o">&amp;&amp;</span> <span class="n">repeat</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="c1">// code</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Longer function declarations in two or more lines should place</span>
+<span class="c1">// the { in the next line to clearly mark the start of the scope.</span>
+<span class="kt">void</span> <span class="nf">someFunctionWithManyArguments</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">vec1</span><span class="p">,</span>
+    <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">vec2</span><span class="p">,</span>
+    <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">vec3</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// code</span>
+<span class="p">}</span>
+
+
+<span class="c1">// The following source code shows typical indentation rules</span>
+<span class="kt">void</span> <span class="nf">indentationAndOtherRules</span><span class="p">()</span> <span class="p">{</span>
+
+    <span class="c1">// recommendation: use 'if (' instead of 'if( '</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">someCondition</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// code</span>
+    <span class="p">}</span>
+    <span class="c1">// put else in a separate line and put code comments</span>
+    <span class="c1">// like this before the else clause to document what's</span>
+    <span class="c1">// done in the else block</span>
+    <span class="k">else</span> <span class="p">{</span>
+       <span class="c1">//</span>
+    <span class="p">}</span>
+
+    <span class="c1">// put spaces between ; separated tokens in for loops</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">20</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="c1">// indent switch clauses like the example below</span>
+    <span class="k">switch</span> <span class="p">(</span><span class="n">condition</span><span class="p">)</span> <span class="p">{</span>
+         <span class="k">case</span> <span class="n">Well</span><span class="p">:</span>
+             <span class="c1">// code</span>
+             <span class="c1">// more code</span>
+         <span class="k">break</span><span class="p">;</span> <span class="c1">// break on same level as case</span>
+
+         <span class="c1">// document case clauses before the case</span>
+         <span class="k">case</span> <span class="n">Sick</span><span class="p">:</span>
+             <span class="c1">// code</span>
+         <span class="k">return</span> <span class="s">"sick"</span><span class="p">;</span>
+
+         <span class="c1">// when you declare local variables within switch</span>
+         <span class="c1">// open a dedicated scope</span>
+         <span class="k">case</span> <span class="n">DontKnow</span><span class="p">:</span> <span class="p">{</span>
+             <span class="kt">int</span> <span class="n">var1</span><span class="p">;</span>  <span class="c1">// local variable, only valid for case clause</span>
+             <span class="c1">// code</span>
+         <span class="p">}</span>
+         <span class="k">break</span><span class="p">;</span>
+
+         <span class="c1">// if you have many short case clauses, you can use properly indented one-line versions</span>
+         <span class="k">case</span> <span class="n">ABitSick</span>        <span class="p">:</span> <span class="k">return</span> <span class="s">"a bit sick"</span><span class="p">;</span>
+         <span class="k">case</span> <span class="n">ALittleBitSick</span>  <span class="p">:</span> <span class="k">return</span> <span class="s">"a little bit sick"</span><span class="p">;</span>
+         <span class="k">case</span> <span class="n">QuiteWell</span>       <span class="p">:</span> <span class="k">break</span><span class="p">;</span>
+
+         <span class="nl">default:</span> <span class="p">;</span> <span class="c1">// only implement the default clause, when needed.</span>
+                    <span class="c1">// Otherwise compiler will remind you about forgotten clauses</span>
+                    <span class="c1">// (which might be quite helpful).</span>
+    <span class="p">}</span> <span class="c1">// switch (condition)</span>
+    <span class="c1">// in long nested scopes, document the end of the scope as done in the line above</span>
+
+    <span class="c1">// another example of documented nested scopes</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">k</span><span class="o">&lt;</span><span class="mi">10</span><span class="p">;</span> <span class="o">++</span><span class="n">k</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">j</span><span class="o">=</span><span class="n">k</span><span class="p">;</span> <span class="n">j</span><span class="o">&lt;</span><span class="mi">10</span><span class="p">;</span> <span class="o">++</span><span class="n">j</span><span class="p">)</span> <span class="p">{</span>
+
+            <span class="c1">// lots of code</span>
+
+        <span class="p">}</span> <span class="c1">// for (j=k; j&lt;10; ++j)</span>
+
+    <span class="p">}</span> <span class="c1">// for (k=0; k&lt;10; ++k)</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_enumeration_types">2.2.8. Enumeration types</h4>
+<div class="paragraph">
+<p>Generally, enumeration types shall be named just as class names, that is using camel-case.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">enum</span> <span class="n">ModelType</span> <span class="p">{</span>
+  <span class="n">MT_Standard</span><span class="p">,</span>
+  <span class="n">MT_MoreComplicated</span><span class="p">,</span>
+  <span class="n">MT_ReallyReallyDifficult</span><span class="p">,</span>
+  <span class="n">NUM_MT</span>
+<span class="p">};</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The individual enum values shall use camel-cased names, and a prefix that is composed of
+initials of the actual enum type. This assists while typing, since one can just write "MT_" and will get the list of accepted enum types in the autocompletion list (avoids mixing enum value programm errors).</p>
+</div>
+<div class="paragraph">
+<p>Add the <code>NUM_MT</code> enumeration value if keyword list support is needed (see documentation of code generator).</p>
+</div>
+<div class="paragraph">
+<p>For keyword-list enums for parameters, integer parameters and flags there is the convention to use:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">enum</span> <span class="n">para_t</span> <span class="p">{</span>
+  <span class="n">P_XXX</span><span class="p">,</span>
+  <span class="p">...</span>
+  <span class="n">NUM_P</span>
+<span class="p">};</span>
+
+<span class="k">enum</span> <span class="n">intPara_t</span> <span class="p">{</span>
+  <span class="n">IP_XXX</span><span class="p">,</span>
+  <span class="p">...</span>
+  <span class="n">NUM_PI</span>
+<span class="p">};</span>
+
+<span class="k">enum</span> <span class="n">flag_t</span> <span class="p">{</span>
+  <span class="n">F_XXX</span><span class="p">,</span>
+  <span class="p">...</span>
+  <span class="n">NUM_F</span>
+<span class="p">};</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is a legacy naming that is just used everywhere in the code and best kept this way (never touch a running system :-)</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="exception_handling">2.2.9. Exception handling</h4>
 <div class="paragraph">
 <p>Basic rule:</p>
 </div>
@@ -606,7 +776,7 @@ SomeClass::myFunction                         [Error]           I got an invalid
 </div>
 </div>
 <div class="sect3">
-<h4 id="_documentation">2.2.8. Documentation</h4>
+<h4 id="_documentation">2.2.10. Documentation</h4>
 <div class="paragraph">
 <p>Doxygen-style, prefer:</p>
 </div>
@@ -629,7 +799,7 @@ Physical variables used for calculation should always be stored in base SI units
 </div>
 </div>
 <div class="sect3">
-<h4 id="_git_workflow">2.2.9. Git Workflow</h4>
+<h4 id="_git_workflow">2.2.11. Git Workflow</h4>
 <div class="paragraph">
 <p>Since we are a small team, and we want to have close communication of new features/code changes, and also short code-review cycles, we use a single development branch <strong>master</strong> with the following rules:</p>
 </div>
@@ -663,7 +833,7 @@ Physical variables used for calculation should always be stored in base SI units
 </div>
 </div>
 <div class="sect3">
-<h4 id="_tips_and_tricks">2.2.10. Tips and tricks</h4>
+<h4 id="_tips_and_tricks">2.2.12. Tips and tricks</h4>
 <div class="sect4">
 <h5 id="_detecting_uninitialized_variable_access_during_debugging">Detecting uninitialized variable access during debugging</h5>
 <div class="paragraph">
@@ -1710,7 +1880,7 @@ Total initialization time: 802 ms
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-12-04 17:56:52 +0100
+Last updated 2020-12-18 11:35:45 +0100
 </div>
 </div>
 <style>

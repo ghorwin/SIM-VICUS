@@ -1,7 +1,7 @@
 NANDRAD Developers Manual
 =========================
 Andreas Nicolai <andreas.nicolai@tu-dresden.de>
-0.2.0 (04.12.2020)
+0.2.0 (18.12.2020)
 // 0.2.0 date_on_line_above
 :Author Initials: AN
 :toc: left

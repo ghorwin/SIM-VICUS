@@ -94,6 +94,146 @@ The reason for having strict rules for these access functions is two-fold:
 1. you do not need to remember the actual names for the getter/setter functions or the variable itself - knowing one will give you the name of the others (less stuff to remember)
 2. efficiency: you can use the Qt-Creator feature -> Refactor->Add getter/setter function when right-clicking on the member variable declaration
 
+## Suggestions for writing clean and neat code
+
+[source,c++]
+----
+// Short function declarations may have the { in the same line 
+void someFunction(int t) {
+    // indent with one tab character
+    for (int i=0; i<t; ++i) { // also place the opening brace in this line
+        // code
+    }
+    // longer for-clauses with more than one line should place
+    // the opening { into the next line to mark the opening scope.
+    for (std::vector<double>::iterator it = m_localVec.begin();
+        it != m_localVec.end(); ++it)
+    {
+        // code
+    }
+    // similar rules apply for if and other clauses, for example
+    if (value == 15 || takeNextStep || 
+        (firstStepCounter > 15 && repeat))
+    {
+        // code
+    }
+}
+
+// Longer function declarations in two or more lines should place 
+// the { in the next line to clearly mark the start of the scope.
+void someFunctionWithManyArguments(const std::vector<double> & vec1,
+    const std::vector<double> & vec2,
+    const std::vector<double> & vec3)
+{
+    // code
+}
+
+
+// The following source code shows typical indentation rules
+void indentationAndOtherRules() {
+
+    // recommendation: use 'if (' instead of 'if( ' 
+    if (someCondition) {
+        // code
+    }
+    // put else in a separate line and put code comments
+    // like this before the else clause to document what's
+    // done in the else block
+    else {
+       //
+    }
+
+    // put spaces between ; separated tokens in for loops
+    for (i=0; i<20; ++i) {
+    }
+
+    // indent switch clauses like the example below
+    switch (condition) {
+         case Well: 
+             // code
+             // more code
+         break; // break on same level as case
+
+         // document case clauses before the case
+         case Sick:
+             // code
+         return "sick";
+
+         // when you declare local variables within switch
+         // open a dedicated scope
+         case DontKnow: {
+             int var1;  // local variable, only valid for case clause
+             // code
+         } 
+         break; 
+
+         // if you have many short case clauses, you can use properly indented one-line versions
+         case ABitSick        : return "a bit sick";
+         case ALittleBitSick  : return "a little bit sick";
+         case QuiteWell       : break;
+
+         default: ; // only implement the default clause, when needed.
+                    // Otherwise compiler will remind you about forgotten clauses
+                    // (which might be quite helpful).
+    } // switch (condition)
+    // in long nested scopes, document the end of the scope as done in the line above
+
+    // another example of documented nested scopes
+    for (k=0; k<10; ++k) {
+        for (j=k; j<10; ++j) {
+
+            // lots of code
+
+        } // for (j=k; j<10; ++j)
+ 
+    } // for (k=0; k<10; ++k)
+}
+----
+
+## Enumeration types
+
+Generally, enumeration types shall be named just as class names, that is using camel-case.
+
+[source,c++]
+----
+enum ModelType {
+  MT_Standard,
+  MT_MoreComplicated,
+  MT_ReallyReallyDifficult,
+  NUM_MT
+};
+----
+
+The individual enum values shall use camel-cased names, and a prefix that is composed of
+initials of the actual enum type. This assists while typing, since one can just write "MT_" and will get the list of accepted enum types in the autocompletion list (avoids mixing enum value programm errors).
+
+Add the `NUM_MT` enumeration value if keyword list support is needed (see documentation of code generator). 
+
+For keyword-list enums for parameters, integer parameters and flags there is the convention to use:
+
+[source,c++]
+----
+enum para_t {
+  P_XXX,
+  ...
+  NUM_P
+};
+
+enum intPara_t {
+  IP_XXX,
+  ...
+  NUM_PI
+};
+
+enum flag_t {
+  F_XXX,
+  ...
+  NUM_F
+};
+----
+
+This is a legacy naming that is just used everywhere in the code and best kept this way (never touch a running system :-)
+
 [[exception_handling]]
 ## Exception handling
 
