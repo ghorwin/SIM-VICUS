@@ -72,8 +72,8 @@ double lineToLineDistance(const IBKMK::Vector3D & a1, const IBKMK::Vector3D & d1
 		  double d1d2Scalar = d1.scalarProduct(d2);
 		  double d2Scalar = d2.scalarProduct(d2);
 
-		  double a1vScalar = a1.scalarProduct(v);// always >= 0
-		  double a2vScalar = d2.scalarProduct(v);
+		  double d1vScalar = d1.scalarProduct(v);// always >= 0
+		  double d2vScalar = d2.scalarProduct(v);
 
 		  double d = d1Scalar*d2Scalar - d1d2Scalar*d1d2Scalar;// always >= 0
 		  double l2;
@@ -81,11 +81,11 @@ double lineToLineDistance(const IBKMK::Vector3D & a1, const IBKMK::Vector3D & d1
 		  // compute the line parameters of the two closest points
 		  if (d < 0.001) {          // the lines are almost parallel
 				  l1 = 0.0;
-				  l2 = (d1d2Scalar>d2Scalar ? a1vScalar/d1d2Scalar : a2vScalar/d2Scalar);    // use the largest denominator
+				  l2 = (d1d2Scalar>d2Scalar ? d1vScalar/d1d2Scalar : d2vScalar/d2Scalar);    // use the largest denominator
 		  }
 		  else {
-				  l1 = (d1d2Scalar*a2vScalar - d2Scalar*a1vScalar) / d;
-				  l2 = (d1Scalar*a2vScalar - d1d2Scalar*a1vScalar) / d;
+				  l1 = (d1d2Scalar*d2vScalar - d2Scalar*d1vScalar) / d;
+				  l2 = (d1Scalar*d2vScalar - d1d2Scalar*d1vScalar) / d;
 		  }
 
 		  p1 = a1 + ( l1 * d1 );				// point 1
