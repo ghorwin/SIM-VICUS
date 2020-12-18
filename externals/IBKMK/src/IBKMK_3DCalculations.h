@@ -43,6 +43,7 @@
 
 namespace IBKMK {
 
+
 /*! Computes the distance between a line (defined through offset point a, and directional vector d) and a point p.
 	\return Returns the shortest distance between line and point. Factor lineFactor contains the scale factor for
 			the line equation and p2 contains the closest point on the line (p2 = a + lineFactor*d).
@@ -51,8 +52,8 @@ double lineToPointDistance(const IBKMK::Vector3D & a, const IBKMK::Vector3D & d,
 						   double & lineFactor, IBKMK::Vector3D & p2);
 
 /*! Computes the shortest distance between two lines.
-	\return Returns the shortest distance between line and point. Factor l1 contains the scale factor for
-		the line equation 1 with p1 as the closest point (p1 = a1 +l1*d2).
+	\return Returns the shortest distance between line and line. Factor l1 contains the scale factor for
+		the line equation 1 with p1 as the closest point (p1 = a1 +l1*d1).
 */
 double lineToLineDistance(const IBKMK::Vector3D & a1, const IBKMK::Vector3D & d1,
 						  const IBKMK::Vector3D & a2, const IBKMK::Vector3D & d2,
