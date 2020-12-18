@@ -74,6 +74,7 @@ win32 {
 SOURCES += \
 		../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
 		../../src/SVClimateFileInfo.cpp \
+		../../src/SVDBComponentEditWidget.cpp \
 		../../src/SVPropNetworkEditWidget.cpp \
 		../../src/SVSimulationLocationOptions.cpp \
 		../../src/actions/SVUndoAddBuilding.cpp \
@@ -143,6 +144,7 @@ SOURCES += \
 
 HEADERS  += \
 		../../src/SVClimateFileInfo.h \
+		../../src/SVDBComponentEditWidget.h \
 		../../src/SVPropNetworkEditWidget.h \
 		../../src/SVSimulationLocationOptions.h \
 		../../src/actions/SVUndoAddBuilding.h \
@@ -214,6 +216,7 @@ HEADERS  += \
 
 FORMS    += \
 		../../src/SVAboutDialog.ui \
+		../../src/SVDBComponentEditWidget.ui \
 		../../src/SVDBConstructionOpaqueEditWidget.ui \
 		../../src/SVDBMaterialsEditWidget.ui \
 		../../src/SVDBWindowEditWidget.ui \

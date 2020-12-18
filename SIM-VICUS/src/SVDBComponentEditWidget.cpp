@@ -1,5 +1,5 @@
-#include "SVDBComponent.h"
-#include "ui_SVDBComponent.h"
+#include "SVDBComponentEditWidget.h"
+#include "ui_SVDBComponentEditWidget.h"
 
 SVDBComponent::SVDBComponent(QWidget *parent) :
 	QWidget(parent),

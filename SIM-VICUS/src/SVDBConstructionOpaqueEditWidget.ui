@@ -6,51 +6,234 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1257</width>
+    <width>1730</width>
     <height>825</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QWidget" name="layoutWidget">
+  <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
-     <x>820</x>
+     <x>632</x>
      <y>150</y>
-     <width>370</width>
-     <height>27</height>
+     <width>731</width>
+     <height>476</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QLabel" name="labelDisplayName">
-      <property name="minimumSize">
-       <size>
-        <width>60</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>Name</string>
-      </property>
-     </widget>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0" colspan="3">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="labelDisplayName">
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Name</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBoxLanguage"/>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEditDisplayName"/>
+        </item>
+        <item>
+         <widget class="QtExt::ColorButton" name="pushButtonOpaqueConstructionColor">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="3" rowspan="6">
+       <widget class="QGraphicsView" name="graphicsView"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelSideToSideResistance">
+        <property name="text">
+         <string>Durchlasswiderstand</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="labelSideToSideResistance_2">
+        <property name="text">
+         <string>[m2K/W]</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLineEdit" name="lineEditSideToSideResistance"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="labelTotalResistance">
+        <property name="text">
+         <string>Durchgangswiderstand mit Standard-übergangswiderständen</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLabel" name="labelTotalResistance_3">
+        <property name="text">
+         <string>[m2K/W]</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLineEdit" name="lineEditTotalResistance"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="labelTotalResistance_2">
+        <property name="text">
+         <string>U-Wert mit Standard-übergangskoeffizienten</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLabel" name="labelTotalResistance_4">
+        <property name="text">
+         <string>[W/m2K]</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QLineEdit" name="lineEditUValue"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="labelThermalMassSideA">
+        <property name="text">
+         <string>Wirksame Speicherkapazität
+Seite A</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLabel" name="labelThermalMassSideA_2">
+        <property name="text">
+         <string>[Wh/K]</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="QLineEdit" name="lineEditThermalMassSideA">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="labelThermalMassSideB">
+        <property name="text">
+         <string>Wirksame Speicherkapazität
+Seite B</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QLabel" name="labelThermalMassSideB_2">
+        <property name="text">
+         <string>[Wh/K]</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="2">
+       <widget class="QLineEdit" name="lineEditThermalMassSideB">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
     <item>
-     <widget class="QComboBox" name="comboBoxLanguage"/>
-    </item>
-    <item>
-     <widget class="QLineEdit" name="lineEditDisplayName"/>
-    </item>
-    <item>
-     <widget class="QtExt::ColorButton" name="pushButtonOpaqueConstructionColor">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-     </widget>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="labelConstructionSideA">
+        <property name="text">
+         <string>Seite A (Zonenaußenseite)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QPushButton" name="pushButtonMoveUp">
+          <property name="text">
+           <string>^</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButtonMoveDown">
+          <property name="text">
+           <string>^</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButtonMoveAdd">
+          <property name="text">
+           <string>+</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButtonRemove">
+          <property name="text">
+           <string>-</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QTableWidget" name="tableWidget"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="labelConstructionSideB">
+        <property name="text">
+         <string>Seite B (Zoneninnenseite)</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
