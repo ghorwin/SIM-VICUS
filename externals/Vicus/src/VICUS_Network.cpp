@@ -149,15 +149,18 @@ void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heat
 	IBK::FileReader::readAll(filePath, cont, std::vector<std::string>());
 
 	// extract vector of string-xy
+	std::vector<std::string> lineSepStr;
 	std::vector<std::string> xyStr;
 	for (std::string line: cont){
 		if (line.find("POINT") == std::string::npos)
 			continue;
-		IBK::trim(line, ",");
-		IBK::trim(line, "\"");
-		IBK::trim(line, "POINT ((");
-		IBK::trim(line, "))");
-		IBK::explode(line, xyStr, " ", IBK::EF_NoFlags);
+		IBK::explode(line, lineSepStr, ",", IBK::EF_NoFlags);
+		IBK::trim(lineSepStr[0], "\"");
+		IBK::trim(lineSepStr[0], "POINT ((");
+		IBK::trim(lineSepStr[0], "))");
+		IBK::explode(lineSepStr[0], xyStr, " ", IBK::EF_NoFlags);
+		if (xyStr.size()!=2)
+			continue;
 		// add node
 		unsigned id = addNodeExt(IBKMK::Vector3D(IBK::string2val<double>(xyStr[0]), IBK::string2val<double>(xyStr[1]), 0), NetworkNode::NT_Building);
 		m_nodes[id].m_maxHeatingDemand = heatDemand;

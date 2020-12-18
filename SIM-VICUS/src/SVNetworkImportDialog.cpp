@@ -98,7 +98,7 @@ bool SVNetworkImportDialog::edit() {
 
 
 		// TODO Hauke: rmeove this later
-		m_network.assignSourceNode(IBKMK::Vector3D(481691, 5577509.9, 0));
+//		m_network.assignSourceNode(IBKMK::Vector3D(481691, 5577509.9, 0));
 
 		m_network.updateExtends();
 

@@ -182,16 +182,16 @@ public:
 		Node & n = m_nodes[e.m_n1];
 		\endcode
 	*/
-	std::vector<NetworkNode>				m_nodes;									// XML:E:required
+	std::vector<NetworkNode>				m_nodes;									// XML:E
 
 	/*! vector with edges */
-	std::vector<NetworkEdge>				m_edges;									// XML:E:required
+	std::vector<NetworkEdge>				m_edges;									// XML:E
 
 	/*! Pipe database, pipe dimensioning algorithm may use any pipes defined in this list. */
 	std::vector<NetworkPipe>				m_networkPipeDB;							// XML:E
 
 	/*! origin of the network */
-	IBKMK::Vector3D							m_origin = IBKMK::Vector3D(0.0, 0.0, 0.0);	// XML:E:required
+	IBKMK::Vector3D							m_origin = IBKMK::Vector3D(0.0, 0.0, 0.0);	// XML:E
 
 	/*! hydraulic sub networks in the Network */
 	std::vector<NANDRAD::HydraulicNetwork>	m_hydraulicSubNetworks;						// XML:E
