@@ -90,6 +90,8 @@ void Project::readXML(const TiXmlElement * element) {
 			}
 			else if (cName == "SolverParameter")
 				m_solverParameter.readXML(c);
+			else if (cName == "Location")
+				m_location.readXML(c);
 			else if (cName == "ViewSettings")
 				m_viewSettings.readXML(c);
 			else {
@@ -112,6 +114,8 @@ TiXmlElement * Project::writeXML(TiXmlElement * parent) const {
 
 
 	m_solverParameter.writeXML(e);
+
+	m_location.writeXML(e);
 
 	m_viewSettings.writeXML(e);
 
