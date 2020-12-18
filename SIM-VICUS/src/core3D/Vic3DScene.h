@@ -98,6 +98,9 @@ private:
 	/*! Due something with the mouse click, depending on current operation mode. */
 	void handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandler, const QPoint & localMousePos);
 
+	/*! Selects/deselects objects. */
+	void handleSelection(const KeyboardMouseHandler & keyboardHandler, const QPoint & localMousePos);
+
 	/*! Cached pointer to parent widget - needed so that we can tell a QObject-based class to send
 		out signals.
 	*/

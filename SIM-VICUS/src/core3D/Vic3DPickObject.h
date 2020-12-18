@@ -19,7 +19,9 @@ struct PickObject {
 		P_XY_Plane			= 0x0001,
 		P_Surface			= 0x0002,
 		/*! Also pick the back-side of a surface (when visible and active for picking). */
-		P_BackSide			= 0x0004
+		P_BackSide			= 0x0004,
+		/*! Check network objects (node spheres and edge cylinders). */
+		P_Network			= 0x0008
 	};
 
 	PickObject(const QPoint & localMousePos, unsigned int pickMask) :

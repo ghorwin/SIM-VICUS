@@ -11,6 +11,8 @@
 #include <VICUS_NetworkLine.h>
 #include <VICUS_Conversions.h>
 
+#include <IBKMK_3DCalculations.h>
+
 #include "Vic3DShaderProgram.h"
 #include "Vic3DKeyboardMouseHandler.h"
 #include "Vic3DPickObject.h"
@@ -854,6 +856,7 @@ void Vic3DScene::generateBuildingGeometry() {
 
 	// recursively process all buildings, building levels etc.
 
+	m_opaqueGeometryObject.m_vertexStartMap.clear();
 	unsigned int currentVertexIndex = 0;
 	unsigned int currentElementIndex = 0;
 
@@ -913,6 +916,7 @@ void Vic3DScene::generateNetworkGeometry() {
 
 	// process all network elements
 
+	m_networkGeometryObject.m_vertexStartMap.clear();
 	unsigned int currentVertexIndex = 0;
 	unsigned int currentElementIndex = 0;
 
@@ -928,6 +932,8 @@ void Vic3DScene::generateNetworkGeometry() {
 				if (pipe != nullptr)
 					radius *= pipe->m_diameterOutside/30;
 			}
+
+			m_networkGeometryObject.m_vertexStartMap[e.uniqueID()] = currentVertexIndex;
 			addCylinder(e.m_node1->m_position, e.m_node2->m_position, Qt::red,
 						radius,
 						currentVertexIndex, currentElementIndex,
@@ -964,6 +970,7 @@ void Vic3DScene::generateNetworkGeometry() {
 				if (count>0)
 					radius = 0.8 * avgDiameter/30;
 			}
+			m_networkGeometryObject.m_vertexStartMap[no.uniqueID()] = currentVertexIndex;
 			addSphere(no.m_position, color,
 						radius,
 						currentVertexIndex, currentElementIndex,
@@ -1038,25 +1045,26 @@ void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3
 
 	// compute view direction (vector for line equation)
 	QVector3D d = farPoint - nearPoint;
-	IBKMK::Vector3D d2 = VICUS::QVector2IBKVector(d);
-	IBKMK::Vector3D nearPoint2 = VICUS::QVector2IBKVector(nearPoint);
+	IBKMK::Vector3D direction = VICUS::QVector2IBKVector(d);	// direction of line-of-sight
+	IBKMK::Vector3D lineOffset = VICUS::QVector2IBKVector(nearPoint); // offset of line-of-sight
 
 	// execute pick operation based on selection in pick object
 	if (pickObject.m_pickMask & PickObject::P_XY_Plane) {
 		// get intersection with xy plane
 		IBKMK::Vector3D intersectionPoint;
 		double t;
-		if (xyPlane.intersectsLine(nearPoint2, d2, intersectionPoint, t, true, true)) {
+		if (xyPlane.intersectsLine(lineOffset, direction, intersectionPoint, t, true, true)) {
 			// got an intersection point, store it
 			pickObject.m_dist = t;
 			pickObject.m_pickPoint = intersectionPoint;
 		}
 	}
 
+	// now process all surfaces and update p to hold the closest hit
+	const VICUS::Project & prj = project();
+
 	// pick on surfaces?
 	if (pickObject.m_pickMask & PickObject::P_Surface) {
-		// now process all surfaces and update p to hold the closest hit
-		const VICUS::Project & prj = project();
 		// first try surfaces in buildings
 		for (const VICUS::Building & b : prj.m_buildings) {
 			for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
@@ -1067,7 +1075,7 @@ void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3
 							continue;
 						IBKMK::Vector3D intersectionPoint;
 						double dist;
-						if (s.m_geometry.intersectsLine(nearPoint2, d2, intersectionPoint, dist, pickObject.m_pickMask & PickObject::P_BackSide)) {
+						if (s.m_geometry.intersectsLine(lineOffset, direction, intersectionPoint, dist, pickObject.m_pickMask & PickObject::P_BackSide)) {
 							if (dist < pickObject.m_dist) {
 								pickObject.m_dist = dist;
 								pickObject.m_pickPoint = intersectionPoint;
@@ -1085,11 +1093,60 @@ void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3
 				continue;
 			IBKMK::Vector3D intersectionPoint;
 			double dist;
-			if (s.m_geometry.intersectsLine(nearPoint2, d2, intersectionPoint, dist, pickObject.m_pickMask & PickObject::P_BackSide)) {
+			if (s.m_geometry.intersectsLine(lineOffset, direction, intersectionPoint, dist, pickObject.m_pickMask & PickObject::P_BackSide)) {
 				if (dist < pickObject.m_dist) {
 					pickObject.m_dist = dist;
 					pickObject.m_pickPoint = intersectionPoint;
 					pickObject.m_uniqueObjectID = s.uniqueID();
+				}
+			}
+		}
+	}
+
+	// pick on network objects?
+	if (pickObject.m_pickMask & PickObject::P_Network) {
+		// process all networks
+		for (const VICUS::Network & n : prj.m_geometricNetworks) {
+
+			// process all nodes
+			for (const VICUS::NetworkNode & no : n.m_nodes) {
+
+				// skip invisible nodes
+				if (!no.m_visible)
+					continue;
+
+				// compute closest distance between nodal center point and line
+				double dist;
+				IBKMK::Vector3D closestPoint;
+				double linePointDist = IBKMK::lineToPointDistance(lineOffset, direction, no.m_position, dist, closestPoint);
+				// check distance against radius of sphere
+
+				// finally test for closest point
+				if (dist < pickObject.m_dist) {
+					pickObject.m_dist = dist;
+					pickObject.m_pickPoint = no.m_position;
+					pickObject.m_uniqueObjectID = no.uniqueID();
+				}
+			}
+
+			// process all edges
+			for (const VICUS::NetworkNode & no : n.m_nodes) {
+
+				// skip invisible nodes
+				if (!no.m_visible)
+					continue;
+
+				// compute closest distance between nodal center point and line
+				double dist;
+				IBKMK::Vector3D closestPoint;
+				double line2LineDistance = IBKMK::lineToPointDistance(lineOffset, direction, no.m_position, dist, closestPoint);
+				// check distance against cylinder radius
+
+				// finally test for closest point
+				if (dist < pickObject.m_dist) {
+					pickObject.m_dist = dist;
+					pickObject.m_pickPoint = no.m_position;
+					pickObject.m_uniqueObjectID = no.uniqueID();
 				}
 			}
 		}
@@ -1215,6 +1272,14 @@ void Vic3DScene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandl
 	switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
 
 		// *** place a vertex ***
+		case SVViewState::NUM_OM :
+		case SVViewState::OM_SelectedGeometry : {
+			// selection handling
+			handleSelection(keyboardHandler, localMousePos);
+			return;
+		}
+
+		// *** place a vertex ***
 		case SVViewState::OM_PlaceVertex : {
 			// get current coordinate system's position
 			IBKMK::Vector3D p = VICUS::QVector2IBKVector(m_coordinateSystemObject.translation());
@@ -1234,29 +1299,28 @@ void Vic3DScene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandl
 			qDebug() << "Leaving 'Align coordinate system' mode";
 			return;
 		}
-		default :; // in all other modes we do selection stuff
 	}
 
+}
+
+
+void Vic3DScene::handleSelection(const KeyboardMouseHandler & keyboardHandler, const QPoint & localMousePos) {
 	// this will be a selection click - execute pick() operation
-	PickObject o(localMousePos, PickObject::P_Surface | PickObject::P_BackSide);
+	PickObject o(localMousePos, PickObject::P_Surface | PickObject::P_Network);
 	pick(o);
 	if (o.m_uniqueObjectID != 0) {
 		// find the selected object
 		const VICUS::Object * obj = project().objectById(o.m_uniqueObjectID);
-		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface*>(obj);
-		// for now, it must be a surface, since only surfaces are drawn
-		Q_ASSERT(s != nullptr);
 
 		// create undo-action that toggles the selection
-		bool selected = s->m_selected;
 		bool withoutChildren = keyboardHandler.keyDown(Qt::Key_Shift);
-		// compose an undo action that selects/de-selects objects
 		SVUndoTreeNodeState * action = SVUndoTreeNodeState::createUndoAction(tr("Selection changed"),
 															   SVUndoTreeNodeState::SelectedState,
 															   o.m_uniqueObjectID,
 															   !withoutChildren,
-															   !selected);
+															   !obj->m_selected);
 		action->push();
+		return;
 	}
 }
 
