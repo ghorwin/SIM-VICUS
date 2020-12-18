@@ -54,10 +54,7 @@ int SVDBConstructionTreeModel::rowCount(const QModelIndex &parent) const {
 
 
 int SVDBConstructionTreeModel::columnCount(const QModelIndex &parent) const {
-	if (!parent.isValid())
-		return 1;
-	else
-		return 2;
+	return 2;
 }
 
 
@@ -69,7 +66,8 @@ QVariant SVDBConstructionTreeModel::data(const QModelIndex &index, int role) con
 	if (index.internalPointer() == nullptr) {
 		switch (role) {
 			case Qt::DisplayRole :
-				return m_categoryItems[index.row()].m_categoryName;
+				if (index.column()==0)
+					return m_categoryItems[index.row()].m_categoryName;
 		}
 	}
 	else {
@@ -78,7 +76,10 @@ QVariant SVDBConstructionTreeModel::data(const QModelIndex &index, int role) con
 		unsigned int constructionId = catItem->m_constructions[index.row()];
 		switch (role) {
 			case Qt::DisplayRole :
-				return QString("%1").arg(constructionId);
+				if (index.column() == 0)
+					return QString("%1").arg(constructionId);
+				else
+					return QString("%1 fdsfsd").arg(constructionId);
 		}
 
 	}

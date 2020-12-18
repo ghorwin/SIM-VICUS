@@ -34,6 +34,7 @@ void SVDBConstructionEditDialog::edit() {
 
 	// ask database model to update its content
 
+	m_ui->treeView->resizeColumnToContents(0);
 	exec();
 }
 
