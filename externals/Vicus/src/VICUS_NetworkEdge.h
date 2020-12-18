@@ -33,7 +33,7 @@ public:
 	void collectConnectedNodes(std::set<const NetworkNode*> & connectedNodes,
 								std::set<const NetworkEdge*> & connectedEdge) const;
 
-	void orderEdges(std::set<const NetworkNode*> & visitedNodes,
+	void setInletOutletNode(std::set<const NetworkNode*> & visitedNodes,
 					std::set<NetworkEdge*> & orderedEdges);
 
 	bool operator==(const NetworkEdge &e2){

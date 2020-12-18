@@ -18,7 +18,7 @@ void NetworkNode::collectConnectedEdges(std::set<const NetworkNode *> & connecte
 }
 
 
-void NetworkNode::orderEdges(std::set<const NetworkNode *> &visitedNodes, std::set<NetworkEdge *> &orderedEdges) const {
+void NetworkNode::setInletOutletNode(std::set<const NetworkNode *> &visitedNodes, std::set<NetworkEdge *> &orderedEdges) const {
 	// store ourselves as connected
 	visitedNodes.insert(this);
 	// now ask connected elements to collect their nodes
@@ -27,7 +27,7 @@ void NetworkNode::orderEdges(std::set<const NetworkNode *> &visitedNodes, std::s
 		if (orderedEdges.find(e) == orderedEdges.end()){
 			e->m_nodeIdInlet = m_id;
 			e->m_nodeIdOutlet = e->neighbourNode(m_id);
-			e->orderEdges(visitedNodes, orderedEdges);
+			e->setInletOutletNode(visitedNodes, orderedEdges);
 		}
 	}
 }

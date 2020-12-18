@@ -600,7 +600,7 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &hydraulic
 		std::set<NetworkEdge *> orderedEdges;
 		for (const NetworkNode &node: m_nodes){
 			if (node.m_type == NetworkNode::NT_Source){
-				node.orderEdges(dummyNodeSet, orderedEdges);
+				node.setInletOutletNode(dummyNodeSet, orderedEdges);
 				break;
 			}
 		}

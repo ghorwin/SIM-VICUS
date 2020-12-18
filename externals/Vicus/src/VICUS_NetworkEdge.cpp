@@ -15,13 +15,13 @@ void NetworkEdge::collectConnectedNodes(std::set<const NetworkNode *> & connecte
 	m_node2->collectConnectedEdges(connectedNodes, connectedEdge);
 }
 
-void NetworkEdge::orderEdges(std::set<const NetworkNode *> &visitedNodes, std::set<NetworkEdge *> &orderedEdges)
+void NetworkEdge::setInletOutletNode(std::set<const NetworkNode *> &visitedNodes, std::set<NetworkEdge *> &orderedEdges)
 {
 	// first store ourselves as connected
 	orderedEdges.insert(this);
 	// now ask our nodes to collect their connected elements
-	m_node1->orderEdges(visitedNodes, orderedEdges);
-	m_node2->orderEdges(visitedNodes, orderedEdges);
+	m_node1->setInletOutletNode(visitedNodes, orderedEdges);
+	m_node2->setInletOutletNode(visitedNodes, orderedEdges);
 }
 
 
