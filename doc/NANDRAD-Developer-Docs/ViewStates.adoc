@@ -1,0 +1,38 @@
+:imagesdir: ./images
+# Zustand der Benutzeroberfläche (View State)
+
+Die Benutzeroberfläche hat verschiedene Zustände, wobei ein Zustand beschreibt:
+
+- welche Ansicht ein Widget zeigt, z.B. welches Property-Widget gerade aktiv/sichtbar ist
+- welche Maus-/Tastaturinteraktionsmöglichkeiten bestehen, z.B. was die linke
+  Maustaste bewirkt oder welche Snap-Funktionen eingeschaltet sind
+- was die Szene anzeigt (z.B. lokales Koordinatensystem sichtbar oder nicht)
+
+Da das Verändern eines Zustands mehrere Teile der Oberfläche (und damit mehrere Objekte)
+betrifft, wird das Ändern des Oberflächenzustands zentralisiert über einen
+Zustandsmanager (`SVViewStateHandler`) erledigt. 
+Beim Setzen eines neuen Zustands sendet dieser ein Signal aus.
+
+Alle Widgets/Objekte, die sich in Abhängigkeit des
+Zustands verändern müssen, sollten auf dieses Signal reagieren und sich
+entsprechend anpassen.
+
+Eine Veränderung des Zustands kann überall in der Programmoberfläche ausgelöst werden und
+erfolgt in folgenden Schritten:
+
+- holen des aktuellen Zustands (Objekt `ViewState`)
+- anpassen des Zustandsbeschreibungsobjekts
+- setzen des neuen Zustands
+
+
+[source,c++]
+----
+// aktuellen ViewState holen
+ViewState vs = SVViewStateHandler::instance().viewState();
+// anpassen
+vs.m_sceneOperationMode = OM_SelectedGeometry;
+vs.m_propertyWidgetMode = PM_EditGeometry;
+// setzen
+SVViewStateHandler::instance().setViewState(vs);
+----
+

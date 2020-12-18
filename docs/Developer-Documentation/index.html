@@ -148,6 +148,7 @@ table {
 <li><a href="#_shaders">4.1.3. Shaders</a></li>
 </ul>
 </li>
+<li><a href="#_zustand_der_benutzeroberfläche_view_state">4.2. Zustand der Benutzeroberfläche (View State)</a></li>
 </ul>
 </li>
 </ul>
@@ -1875,12 +1876,71 @@ Total initialization time: 802 ms
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_zustand_der_benutzeroberfläche_view_state">4.2. Zustand der Benutzeroberfläche (View State)</h3>
+<div class="paragraph">
+<p>Die Benutzeroberfläche hat verschiedene Zustände, wobei ein Zustand beschreibt:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>welche Ansicht ein Widget zeigt, z.B. welches Property-Widget gerade aktiv/sichtbar ist</p>
+</li>
+<li>
+<p>welche Maus-/Tastaturinteraktionsmöglichkeiten bestehen, z.B. was die linke
+Maustaste bewirkt oder welche Snap-Funktionen eingeschaltet sind</p>
+</li>
+<li>
+<p>was die Szene anzeigt (z.B. lokales Koordinatensystem sichtbar oder nicht)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Da das Verändern eines Zustands mehrere Teile der Oberfläche (und damit mehrere Objekte)
+betrifft, wird das Ändern des Oberflächenzustands zentralisiert über einen
+Zustandsmanager (<code>SVViewStateHandler</code>) erledigt.
+Beim Setzen eines neuen Zustands sendet dieser ein Signal aus.</p>
+</div>
+<div class="paragraph">
+<p>Alle Widgets/Objekte, die sich in Abhängigkeit des
+Zustands verändern müssen, sollten auf dieses Signal reagieren und sich
+entsprechend anpassen.</p>
+</div>
+<div class="paragraph">
+<p>Eine Veränderung des Zustands kann überall in der Programmoberfläche ausgelöst werden und
+erfolgt in folgenden Schritten:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>holen des aktuellen Zustands (Objekt <code>ViewState</code>)</p>
+</li>
+<li>
+<p>anpassen des Zustandsbeschreibungsobjekts</p>
+</li>
+<li>
+<p>setzen des neuen Zustands</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="c1">// aktuellen ViewState holen</span>
+<span class="n">ViewState</span> <span class="n">vs</span> <span class="o">=</span> <span class="n">SVViewStateHandler</span><span class="o">::</span><span class="n">instance</span><span class="p">().</span><span class="n">viewState</span><span class="p">();</span>
+<span class="c1">// anpassen</span>
+<span class="n">vs</span><span class="p">.</span><span class="n">m_sceneOperationMode</span> <span class="o">=</span> <span class="n">OM_SelectedGeometry</span><span class="p">;</span>
+<span class="n">vs</span><span class="p">.</span><span class="n">m_propertyWidgetMode</span> <span class="o">=</span> <span class="n">PM_EditGeometry</span><span class="p">;</span>
+<span class="c1">// setzen</span>
+<span class="n">SVViewStateHandler</span><span class="o">::</span><span class="n">instance</span><span class="p">().</span><span class="n">setViewState</span><span class="p">(</span><span class="n">vs</span><span class="p">);</span></code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-12-18 11:35:45 +0100
+Last updated 2020-12-18 11:57:42 +0100
 </div>
 </div>
 <style>
