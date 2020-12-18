@@ -14,18 +14,29 @@ QVariant SVDBConstructionTreeModel::headerData(int section, Qt::Orientation orie
 
 
 QModelIndex SVDBConstructionTreeModel::index(int row, int column, const QModelIndex &parent) const {
-	if (parent.isValid()) {
-		// create model indexes for root categories
-		Q_ASSERT((unsigned int)row < m_categoryItems.size());
+	if (!parent.isValid()) {
 		// get adress of vector with category-list
-		return createIndex(row, column, (void*)(&m_categoryItems[row]));
+		return createIndex(row, column, nullptr); // category items have a nullptr as internal pointer
+	}
+	else {
+		// create model indexes for root categories
+		Q_ASSERT((unsigned int)parent.row() < m_categoryItems.size());
+		// get adress of vector with category-list
+		return createIndex(row, column, (void*)(&m_categoryItems[parent.row()])); // leaf nodes have the vector of their category as internal pointer
 	}
 	return QModelIndex();
 }
 
 
 QModelIndex SVDBConstructionTreeModel::parent(const QModelIndex &index) const {
-	return QModelIndex();
+	if (index.internalPointer() == nullptr)
+		return QModelIndex();
+	else {
+		CategoryItem * catItem = reinterpret_cast<CategoryItem *>(index.internalPointer());
+		// find out, which row this item belongs to
+		int row = catItem - m_categoryItems.data();
+		return createIndex(row, 0, nullptr);
+	}
 }
 
 
@@ -33,7 +44,11 @@ int SVDBConstructionTreeModel::rowCount(const QModelIndex &parent) const {
 	if (!parent.isValid())
 		return m_categoryItems.size();
 	else {
-		return 0;
+		// only second level leaves have childs, hence the parent of the parent must be invalid
+		if (!parent.parent().isValid())
+			return m_categoryItems[parent.row()].m_constructions.size();
+		else
+			return 0;
 	}
 }
 
@@ -42,7 +57,7 @@ int SVDBConstructionTreeModel::columnCount(const QModelIndex &parent) const {
 	if (!parent.isValid())
 		return 1;
 	else
-		return 0;
+		return 2;
 }
 
 
@@ -51,10 +66,21 @@ QVariant SVDBConstructionTreeModel::data(const QModelIndex &index, int role) con
 		return QVariant();
 
 	// category item?
+	if (index.internalPointer() == nullptr) {
+		switch (role) {
+			case Qt::DisplayRole :
+				return m_categoryItems[index.row()].m_categoryName;
+		}
+	}
+	else {
+		// get vector with construction instances
+		CategoryItem * catItem = reinterpret_cast<CategoryItem *>(index.internalPointer());
+		unsigned int constructionId = catItem->m_constructions[index.row()];
+		switch (role) {
+			case Qt::DisplayRole :
+				return QString("%1").arg(constructionId);
+		}
 
-	switch (role) {
-		case Qt::DisplayRole :
-			return m_categoryItems[index.row()].m_categoryName;
 	}
 
 	return QVariant();
@@ -78,6 +104,7 @@ void SVDBConstructionTreeModel::setDataStore(std::map<unsigned int, VICUS::Const
 		catItem.m_usageType = c.first;
 		catItem.m_constructions = c.second;
 		catItem.m_categoryName = QString::fromStdString(VICUS::KeywordList::Description("Construction::UsageType", c.first));
+		m_categoryItems.emplace_back(catItem);
 	}
 
 	endResetModel(); // model is complete, views can update

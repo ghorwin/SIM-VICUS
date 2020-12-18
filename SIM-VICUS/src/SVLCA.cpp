@@ -238,21 +238,21 @@ void LCA::calculateLCA()
 				MatEpd &matEpd = materialIdAndEpd[l.m_matId];
 				double rho = m_dbOpaqueMaterials[l.m_matId].m_para[VICUS::Material::P_Density].get_value("kg/m3");
 
-				addEpdMaterialToComponent(matEpd.m_epdA, comp, compResErsatz[compId],
-							   l.m_lifeCylce, l.m_thickness.get_value("m"),
-							   rho, 0, m_adjustment);
+//				addEpdMaterialToComponent(matEpd.m_epdA, comp, compResErsatz[compId],
+//							   l.m_lifeCylce, l.m_thickness.get_value("m"),
+//							   rho, 0, m_adjustment);
 
 				addEpdMaterialToComponent(matEpd.m_epdB, comp, compResErsatz[compId],
 							   0, l.m_thickness.get_value("m"),
 							   rho, 1, m_adjustment);
 
-				addEpdMaterialToComponent(matEpd.m_epdC, comp, compResErsatz[compId],
-							   l.m_lifeCylce, l.m_thickness.get_value("m"),
-							   rho, 2, m_adjustment);
+//				addEpdMaterialToComponent(matEpd.m_epdC, comp, compResErsatz[compId],
+//							   l.m_lifeCylce, l.m_thickness.get_value("m"),
+//							   rho, 2, m_adjustment);
 
-				addEpdMaterialToComponent(matEpd.m_epdD, comp, compResErsatz[compId],
-							   l.m_lifeCylce, l.m_thickness.get_value("m"),
-							   rho, 3, m_adjustment);
+//				addEpdMaterialToComponent(matEpd.m_epdD, comp, compResErsatz[compId],
+//							   l.m_lifeCylce, l.m_thickness.get_value("m"),
+//							   rho, 3, m_adjustment);
 
 			}
 

@@ -84,7 +84,6 @@ bool SVNetworkImportDialog::edit() {
 		settings.writeDatabase();
 
 		// read database, add pipes to network
-		settings.readDatabase();
 		for (auto it = settings.m_dbPipes.begin(); it != settings.m_dbPipes.end(); ++it)
 			m_network.m_networkPipeDB.push_back(it->second);
 

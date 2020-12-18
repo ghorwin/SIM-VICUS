@@ -56,10 +56,6 @@ void MaterialLayer::readXML(const TiXmlElement * element) {
 			attrib = attrib->Next();
 		}
 		// search for mandatory elements
-		if (!element->FirstChildElement("Thickness"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'Thickness' element.") ), FUNC_ID);
-
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
@@ -76,8 +72,6 @@ void MaterialLayer::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
-			else if (cName == "LifeCylce")
-				m_lifeCylce = NANDRAD::readPODElement<double>(c, cName);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -104,7 +98,6 @@ TiXmlElement * MaterialLayer::writeXML(TiXmlElement * parent) const {
 		IBK_ASSERT("Thickness" == m_thickness.name);
 		TiXmlElement::appendIBKParameterElement(e, "Thickness", m_thickness.IO_unit.name(), m_thickness.get_value());
 	}
-	TiXmlElement::appendSingleAttributeElement(e, "LifeCylce", nullptr, std::string(), IBK::val2string<double>(m_lifeCylce));
 	return e;
 }
 

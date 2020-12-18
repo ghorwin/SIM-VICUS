@@ -29,7 +29,6 @@ SVDBMaterialsEditWidget::SVDBMaterialsEditWidget(QWidget *parent) :
 
 	///TODO Dirk Einstellungsfenster bauen um sich die Tabellenspalten selbst einzustellen
 
-	SVSettings::instance().readDatabase();
 	m_dbMat = &SVSettings::instance().m_dbOpaqueMaterials;
 
 	m_ui->widgetMaterialsDB->setup(visibleParams,ORG_NAME, PROGRAM_NAME, "Material Editor");

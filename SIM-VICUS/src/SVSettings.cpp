@@ -47,26 +47,26 @@ void readXMLDB(const IBK::Path & fname, const std::string & topLevelTag,
 	if (!fname.isFile() )
 		return;
 
-	if (!doc.LoadFile(fname.str().c_str(), TIXML_ENCODING_UTF8)) {
-		throw IBK::Exception(IBK::FormatString("Error in line %1 of project file '%2':\n%3")
-				.arg(doc.ErrorRow())
-				.arg(fname)
-				.arg(doc.ErrorDesc()), FUNC_ID);
-	}
-
-	// we use a handle so that NULL pointer checks are done during the query functions
-	TiXmlHandle xmlHandleDoc(&doc);
-
-	// read root element
-	TiXmlElement * xmlElem = xmlHandleDoc.FirstChildElement().Element();
-	if (!xmlElem)
-		return; // empty file?
-	std::string rootnode = xmlElem->Value();
-	if (rootnode != topLevelTag)
-		throw IBK::Exception( IBK::FormatString("Expected '%1' as root node in XML file.")
-							  .arg(topLevelTag), FUNC_ID);
-
 	try {
+		if (!doc.LoadFile(fname.str().c_str(), TIXML_ENCODING_UTF8)) {
+			throw IBK::Exception(IBK::FormatString("Error in line %1 of project file '%2':\n%3")
+					.arg(doc.ErrorRow())
+					.arg(fname)
+					.arg(doc.ErrorDesc()), FUNC_ID);
+		}
+
+		// we use a handle so that NULL pointer checks are done during the query functions
+		TiXmlHandle xmlHandleDoc(&doc);
+
+		// read root element
+		TiXmlElement * xmlElem = xmlHandleDoc.FirstChildElement().Element();
+		if (!xmlElem)
+			return; // empty file?
+		std::string rootnode = xmlElem->Value();
+		if (rootnode != topLevelTag)
+			throw IBK::Exception( IBK::FormatString("Expected '%1' as root node in XML file.")
+								  .arg(topLevelTag), FUNC_ID);
+
 		const TiXmlElement * c2 = xmlElem->FirstChildElement();
 		while (c2) {
 			const std::string & c2Name = c2->ValueStr();
@@ -88,7 +88,8 @@ void readXMLDB(const IBK::Path & fname, const std::string & topLevelTag,
 		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception(ex, IBK::FormatString("Error reading XML database '%1'.").arg(fname), FUNC_ID);
+		ex.writeMsgStackToError();
+		IBK::IBK_Message(IBK::FormatString("Error reading XML database '%1'.").arg(fname), IBK::MSG_ERROR, FUNC_ID);
 	}
 
 }
@@ -223,6 +224,8 @@ void SVSettings::read() {
 //				 << m_themeSettings[TT_White].m_selectedSurfaceColor.name();
 
 	m_fontPointSize = settings.value("FontPointSize", 0).toUInt();
+
+	readDatabase();
 }
 
 
@@ -326,6 +329,22 @@ void SVSettings::writeDatabase() {
 	VICUS::KeywordList::setParameter(m.m_para, "Material::para_t", VICUS::Material::P_Conductivity, 1.2);
 
 	m_dbOpaqueMaterials[m.m_id] = m;
+#endif
+
+#if 0
+	VICUS::Construction c;
+	c.m_id = 10000;
+	c.m_usageType = VICUS::Construction::UT_OutsideWall;
+	c.m_color = QColor("0x800000");
+	c.m_notes = "blabal";
+	c.m_dataSource = "IBK, generic";
+	c.m_displayName = "Heavy metal wall";
+	c.m_materialLayers.resize(1);
+	c.m_manufacturer = "Stahlwerk";
+	c.m_materialLayers[0].m_matId = 10000;
+	c.m_materialLayers[0].m_isActive = true;
+	c.m_materialLayers[0].m_thickness.set("Thickness", 0.2, "m");
+	m_dbConstructions[c.m_id] = c;
 #endif
 
 	writeXMLDB(userDbDir / "db_materials.xml", "Materials", m_dbOpaqueMaterials);

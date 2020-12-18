@@ -789,11 +789,25 @@ void CodeGenerator::generateReadWriteCode() {
 					std::string varName = xmlInfo.varName;
 					std::string tagName = char(toupper(varName[0])) + varName.substr(1);
 
-					elements +=
-						"		if (!element->FirstChildElement(\""+tagName+"\"))\n"
-						"			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
-						"				IBK::FormatString(\"Missing required '"+tagName+"' element.\") ), FUNC_ID);\n"
-						"\n";
+					// special code for group-type elements like "<IBK:Parameter name="Length" ...>..</IBK:Parameter>
+					// here, we now simply check, that any parameter tag exists, and afterwards check, if it was
+					// read
+					if (xmlInfo.typeStr == "IBK::Parameter" ||
+						xmlInfo.typeStr == "IBK::LinearSpline" ||
+						xmlInfo.typeStr == "IBK::Flag" ||
+						xmlInfo.typeStr == "IBK::IntPara" ||
+						xmlInfo.typeStr == "LinearSplineParameter")
+					{
+						// do nothing here, but at the end, we check if the respective value still has an empty
+						// name, which indicates it was not found and read in the xml section
+					}
+					else {
+						elements +=
+							"		if (!element->FirstChildElement(\""+tagName+"\"))\n"
+							"			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
+							"				IBK::FormatString(\"Missing required '"+tagName+"' element.\") ), FUNC_ID);\n"
+							"\n";
+					}
 				}
 
 				elements +=
