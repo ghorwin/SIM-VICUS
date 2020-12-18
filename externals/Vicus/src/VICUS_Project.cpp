@@ -322,6 +322,18 @@ const VICUS::Object * Project::objectById(unsigned int uniqueID) const {
 			}
 		}
 	}
+	// now look in geometric networks
+	if (obj == nullptr) {
+		for (const VICUS::Network & n : m_geometricNetworks) {
+			if (n.uniqueID() == uniqueID) {
+				obj = &n;
+				break;
+			}
+			obj = n.findChild(uniqueID);
+			if (obj != nullptr)
+				break;
+		}
+	}
 	if (obj == nullptr)
 		throw IBK::Exception(IBK::FormatString("Missing object with unique ID %1.").arg(uniqueID), FUNC_ID);
 	return obj;
