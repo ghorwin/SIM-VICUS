@@ -47,9 +47,9 @@ HEADERS += \
 	../../src/CDT/CDT.hpp \
 	../../src/CDT/CDTUtils.h \
 	../../src/CDT/CDTUtils.hpp \
+	../../src/CDT/CDT_predicates.h \
+	../../src/CDT/CDT_remove_at.hpp \
 	../../src/CDT/cdt_export.h \
-	../../src/CDT/predicates.h \
-	../../src/CDT/remove_at.hpp \
 	../../src/IBKMKC_dense_matrix.h \
 	../../src/IBKMKC_ilut.h \
 	../../src/IBKMKC_sparse_matrix.h \

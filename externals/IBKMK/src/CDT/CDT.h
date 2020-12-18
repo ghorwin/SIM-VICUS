@@ -15,7 +15,7 @@
 #include "PointRTree.h"
 #endif
 
-#include "remove_at.hpp"
+#include "CDT_remove_at.hpp"
 
 #include <cassert>
 #include <cstdlib>

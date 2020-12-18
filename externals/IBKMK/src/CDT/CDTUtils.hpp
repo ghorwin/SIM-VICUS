@@ -10,7 +10,7 @@
 #include "CDTUtils.h"
 
 //! @{ Doxygen suppression
-#include "predicates.h" // robust predicates: orient, in-circle
+#include "CDT_predicates.h" // robust predicates: orient, in-circle
 //! @}
 
 namespace CDT
