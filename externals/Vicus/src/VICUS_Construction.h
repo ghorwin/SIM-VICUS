@@ -19,6 +19,12 @@ namespace VICUS {
 
 class Construction : public AbstractDBElement {
 public:
+	enum UsageType {
+		UT_OutsideWall,		// Keyword: OutsideWall		'Outside wall construction'
+		UT_InsideWall,		// Keyword: InsideWall		'Interior construction'
+		UT_Floor,			// Keyword: FloorWall		'Floor/ceiling construction'
+		NUM_UT
+	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -31,6 +37,9 @@ public:
 
 	/*! Unique ID of construction. */
 	unsigned int					m_id = INVALID_ID;		// XML:A:required
+
+	/*! The usage type, used as category in tree view. */
+	UsageType						m_usageType;			// XML:E
 
 	/*! Display name of construction. */
 	QString							m_displayName;			// XML:A
@@ -47,16 +56,7 @@ public:
 	/*! Data source. */
 	QString							m_dataSource;			// XML:E
 
-	IBK::Flag						m_isOpaque;				// XML:E:required
-
 	std::vector<MaterialLayer>		m_materialLayers;		// XML:E
-
-	//Transparent Construction
-	/*! Frame ID. */
-	unsigned int					m_idFrame;				// XML:E
-
-	/*! Divider ID. */
-	unsigned int					m_idDivider;			// XML:E
 };
 
 } // namespace VICUS

@@ -19,7 +19,7 @@
 #include <VICUS_NetworkFluid.h>
 #include <VICUS_EPDDataset.h>
 
-
+class SVDBConstructionTreeModel;
 class QDockWidget;
 
 #include <IBK_QuantityManager.h>
@@ -113,6 +113,10 @@ public:
 
 	/*! Writes all built-in and user databases. */
 	void writeDatabase();
+
+
+	/*! Returns construction tree model (owned by SVSettings). */
+	SVDBConstructionTreeModel * constructionTreeModel() { return m_constructionTreeModel; }
 
 	// ****** static functions ************
 
@@ -245,6 +249,10 @@ private:
 	*/
 	static SVSettings			*m_self;
 
+
+	// *** Database models ***
+
+	SVDBConstructionTreeModel	*m_constructionTreeModel			= nullptr;
 };
 
 

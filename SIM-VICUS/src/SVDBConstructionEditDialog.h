@@ -8,6 +8,7 @@ namespace Ui {
 }
 
 class SVDBConstructionEditWidget;
+class SVDBConstructionTreeModel;
 
 /*! The edit dialog for construction types. */
 class SVDBConstructionEditDialog : public QDialog {
@@ -34,8 +35,21 @@ private slots:
 
 	void on_pushButtonClose_clicked();
 
+	void on_toolButtonAdd_clicked();
+
+	void on_toolButtonCopy_clicked();
+
+	void on_toolButtonRemove_clicked();
+
 private:
+	/*! Updates content of tree widget. */
+	void updateTreeWidget();
+
+
 	Ui::SVDBConstructionEditDialog	*m_ui;
+
+	/*! Cached pointer to construction tree model (provided and owned by SVSettings). */
+	SVDBConstructionTreeModel		*m_constructionTreeModel = nullptr;
 
 	/*! The actual edit widget for a single construction type. */
 	SVDBConstructionEditWidget		*m_constructionEditWidget = nullptr;

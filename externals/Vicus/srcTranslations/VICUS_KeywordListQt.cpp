@@ -30,6 +30,9 @@ KeywordListQt::KeywordListQt() {
 	tr("Constant heat transfer coefficient.");
 	tr("Constant model.");
 	tr("Heat transfer coefficient depends on wind velocity.");
+	tr("Outside wall construction");
+	tr("Interior construction");
+	tr("Floor/ceiling construction");
 	tr("Dry density of the material.");
 	tr("Global Warming Potential.");
 	tr("Depletion potential of the stratospheric ozone layer.");

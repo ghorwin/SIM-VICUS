@@ -28,6 +28,7 @@
 #include <VICUS_Constants.h>
 #include <NANDRAD_Utilities.h>
 #include <VICUS_Constants.h>
+#include <VICUS_KeywordList.h>
 
 #include <tinyxml.h>
 
@@ -58,10 +59,6 @@ void Construction::readXML(const TiXmlElement * element) {
 			attrib = attrib->Next();
 		}
 		// search for mandatory elements
-		if (!element->FirstChildElement("IsOpaque"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'IsOpaque' element.") ), FUNC_ID);
-
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
@@ -72,16 +69,6 @@ void Construction::readXML(const TiXmlElement * element) {
 				m_manufacturer = QString::fromStdString(c->GetText());
 			else if (cName == "DataSource")
 				m_dataSource = QString::fromStdString(c->GetText());
-			else if (cName == "IBK:Flag") {
-				IBK::Flag f;
-				NANDRAD::readFlagElement(c, f);
-				bool success = false;
-				if (f.name() == "IsOpaque") {
-					m_isOpaque = f; success=true;
-				}
-				if (!success)
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
 			else if (cName == "MaterialLayers") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
@@ -94,10 +81,15 @@ void Construction::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
-			else if (cName == "IdFrame")
-				m_idFrame = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "IdDivider")
-				m_idDivider = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "UsageType") {
+				try {
+					m_usageType = (UsageType)KeywordList::Enumeration("Construction::UsageType", c->GetText());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
+				}
+			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -122,16 +114,15 @@ TiXmlElement * Construction::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("displayName", m_displayName.toStdString());
 	if (!m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
+
+	if (m_usageType != NUM_UT)
+		TiXmlElement::appendSingleAttributeElement(e, "UsageType", nullptr, std::string(), KeywordList::Keyword("Construction::UsageType",  m_usageType));
 	if (!m_notes.isEmpty())
 		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.toStdString());
 	if (!m_manufacturer.isEmpty())
 		TiXmlElement::appendSingleAttributeElement(e, "Manufacturer", nullptr, std::string(), m_manufacturer.toStdString());
 	if (!m_dataSource.isEmpty())
 		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.toStdString());
-	if (!m_isOpaque.name().empty()) {
-		IBK_ASSERT("IsOpaque" == m_isOpaque.name());
-		TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", "IsOpaque", m_isOpaque.isEnabled() ? "true" : "false");
-	}
 
 	if (!m_materialLayers.empty()) {
 		TiXmlElement * child = new TiXmlElement("MaterialLayers");
@@ -144,10 +135,6 @@ TiXmlElement * Construction::writeXML(TiXmlElement * parent) const {
 		}
 	}
 
-	if (m_idFrame != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "IdFrame", nullptr, std::string(), IBK::val2string<unsigned int>(m_idFrame));
-	if (m_idDivider != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "IdDivider", nullptr, std::string(), IBK::val2string<unsigned int>(m_idDivider));
 	return e;
 }
 

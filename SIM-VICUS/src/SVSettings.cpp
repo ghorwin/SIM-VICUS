@@ -16,6 +16,8 @@
 
 #include <VICUS_KeywordList.h>
 
+#include "SVDBConstructionTreeModel.h"
+
 SVSettings * SVSettings::m_self = nullptr;
 
 const char * const SVSettings::PROPERTY_KEYWORDS[SVSettings::NUM_PT] = {
@@ -119,11 +121,16 @@ SVSettings::SVSettings(const QString & organization, const QString & appName) :
 	for(unsigned int i=0; i<NumCmdLineFlags; ++i)
 		m_flags[i] = false;
 	m_self = this;
+
+	// create database model
+
+	m_constructionTreeModel = new SVDBConstructionTreeModel;
 }
 
 
 SVSettings::~SVSettings() {
 	m_self = nullptr;
+	delete m_constructionTreeModel;
 }
 
 
@@ -292,6 +299,9 @@ void SVSettings::readDatabase() {
 	readXMLDB(userDbDir / "db_pipes.xml", "Pipes", "Pipe", m_dbPipes);
 	readXMLDB(userDbDir / "db_fluids.xml", "Fluids", "Fluid", m_dbFluids);
 	readXMLDB(userDbDir / "db_epdElements.xml", "EPDDatasets", "EPDDataset", m_dbEPDElements);
+
+	// populate models
+	m_constructionTreeModel->setDataStore(m_dbConstructions);
 }
 
 
