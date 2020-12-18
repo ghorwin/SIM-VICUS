@@ -109,6 +109,8 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			SVViewStateHandler::instance().setViewState(vs);
 			break;
 		}
+
+		// *** selection and visibility properties changed ***
 		case SVProjectHandler::NodeStateModified : {
 			// we need to update the colors of some building elements
 			unsigned int smallestVertexIndex = m_opaqueGeometryObject.m_vertexBufferData.size();
@@ -123,31 +125,64 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			for (unsigned int id : info->m_nodeIDs) {
 				// find the object in question
 				const VICUS::Object * obj = project().objectById(id);
+
+				// is this ID a surface?
 				const VICUS::Surface * s = dynamic_cast<const VICUS::Surface*>(obj);
-				// skip all node except surfaces, since only surfaces are drawn
-				if (s == nullptr)
-					continue;
+				if (s != nullptr) {
 
-				// get vertex start address of selected node
-				Q_ASSERT(m_opaqueGeometryObject.m_vertexStartMap.find(id) != m_opaqueGeometryObject.m_vertexStartMap.end());
-				unsigned int vertexStart = m_opaqueGeometryObject.m_vertexStartMap[id];
-				smallestVertexIndex = std::min(smallestVertexIndex, vertexStart);
-				// now update the color buffer for this surface depending
-				updateSurfaceColors(*s, vertexStart, m_opaqueGeometryObject.m_colorBufferData);
-				largestVertexIndex = std::min(smallestVertexIndex, vertexStart);
+					// get vertex start address of selected node
+					Q_ASSERT(m_opaqueGeometryObject.m_vertexStartMap.find(id) != m_opaqueGeometryObject.m_vertexStartMap.end());
+					unsigned int vertexStart = m_opaqueGeometryObject.m_vertexStartMap[id];
+					smallestVertexIndex = std::min(smallestVertexIndex, vertexStart);
+					// now update the color buffer for this surface
+					updateColors(*s, vertexStart, m_opaqueGeometryObject.m_colorBufferData);
+					largestVertexIndex = std::min(smallestVertexIndex, vertexStart);
 
-				// update selection set, but only keep visible and selected objects in the set
-				if (s->m_selected && s->m_visible) {
-					if (m_selectedGeometryObject.m_selectedSurfaces.insert(s).second)
-						selectionModified = true;
-				}
-				else {
-					std::set<const VICUS::Surface*>::const_iterator it = m_selectedGeometryObject.m_selectedSurfaces.find(s);
-					if (it != m_selectedGeometryObject.m_selectedSurfaces.end()) {
-						m_selectedGeometryObject.m_selectedSurfaces.erase(*it);
-						selectionModified = true;
+					// update selection set, but only keep visible and selected objects in the set
+					if (s->m_selected && s->m_visible) {
+						if (m_selectedGeometryObject.m_selectedSurfaces.insert(s).second)
+							selectionModified = true;
+					}
+					else {
+						std::set<const VICUS::Surface*>::const_iterator it = m_selectedGeometryObject.m_selectedSurfaces.find(s);
+						if (it != m_selectedGeometryObject.m_selectedSurfaces.end()) {
+							m_selectedGeometryObject.m_selectedSurfaces.erase(*it);
+							selectionModified = true;
+						}
 					}
 				}
+
+				// is it a NetworkNode or NetworkEdge?
+				const VICUS::NetworkEdge * edge = dynamic_cast<const VICUS::NetworkEdge*>(obj);
+				const VICUS::NetworkNode * node= dynamic_cast<const VICUS::NetworkNode*>(obj);
+				if (edge != nullptr || node != nullptr) {
+					// get vertex start address of selected node/edge
+					Q_ASSERT(m_networkGeometryObject.m_vertexStartMap.find(id) != m_networkGeometryObject.m_vertexStartMap.end());
+					unsigned int vertexStart = m_networkGeometryObject.m_vertexStartMap[id];
+					smallestVertexIndex = std::min(smallestVertexIndex, vertexStart);
+					// now update the color buffer for this object depending on type
+					if (edge != nullptr)
+						updateColors(*edge, vertexStart, m_networkGeometryObject.m_colorBufferData);
+					else
+						updateColors(*node, vertexStart, m_networkGeometryObject.m_colorBufferData);
+					largestVertexIndex = std::min(smallestVertexIndex, vertexStart);
+
+					// update selection set, but only keep visible and selected objects in the set
+					if (s->m_selected && s->m_visible) {
+						if (m_selectedGeometryObject.m_selectedSurfaces.insert(s).second)
+							selectionModified = true;
+					}
+					else {
+						std::set<const VICUS::Surface*>::const_iterator it = m_selectedGeometryObject.m_selectedSurfaces.find(s);
+						if (it != m_selectedGeometryObject.m_selectedSurfaces.end()) {
+							m_selectedGeometryObject.m_selectedSurfaces.erase(*it);
+							selectionModified = true;
+						}
+					}
+
+				}
+
+
 			}
 
 			// finally, transfer only the modified portion of the color buffer to GPU memory

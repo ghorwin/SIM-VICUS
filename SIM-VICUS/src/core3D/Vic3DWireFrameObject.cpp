@@ -101,9 +101,17 @@ void WireFrameObject::updateBuffers() {
 	unsigned int currentElementIndex = 0;
 
 	qDebug() << m_selectedSurfaces.size() << " selected surfaces";
+	qDebug() << m_selectedEdges.size() << " selected edges";
+	qDebug() << m_selectedNodes.size() << " selected nodes";
 
 	for (const VICUS::Surface * s : m_selectedSurfaces) {
 		addPlane(s->m_geometry, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+	}
+	for (const VICUS::NetworkEdge * e : m_selectedEdges) {
+//		addCylinder(s->m_geometry, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+	}
+	for (const VICUS::NetworkNode * n : m_selectedNodes) {
+//		addCylinder(s->m_geometry, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
 	}
 
 	// transfer data to GPU

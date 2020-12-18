@@ -31,7 +31,7 @@ void addSurface(const VICUS::Surface & s,
 
 
 /*! This updates the surface color. */
-void updateSurfaceColors(const VICUS::Surface & s, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData) {
+void updateColors(const VICUS::Surface & s, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData) {
 	// skip invalid geometry
 	if (!s.m_geometry.isValid())
 		return;
@@ -247,15 +247,11 @@ void updatePlaneColor(const VICUS::PlaneGeometry & g, const QColor & col, unsign
 }
 
 
-void addNetworkEdge(const VICUS::NetworkEdge & e, unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
-					std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLshort> & indexBufferData){
-	addCylinder(e.m_node1->m_position, e.m_node2->m_position, Qt::red, 0.1, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData);
-}
-
-
 void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const QColor & c, double radius,
-			  unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
-				 std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLshort> & indexBufferData)
+				 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+				 std::vector<Vertex> & vertexBufferData,
+				 std::vector<ColorRGBA> & colorBufferData,
+				 std::vector<GLshort> & indexBufferData)
 {
 	// we generate vertices for a cylinder starting at 0,0,0 and extending to 1,0,0 (x-axis is the rotation axis)
 
@@ -523,6 +519,16 @@ void addIkosaeder(const IBKMK::Vector3D & p, const std::vector<QColor> & cols, d
 	currentElementIndex += v2.size() + 1;
 
 	currentVertexIndex += nVertices;
+}
+
+
+void updateColors(const VICUS::NetworkEdge & e, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData) {
+
+}
+
+
+void updateColors(const VICUS::NetworkNode & n, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData) {
+
 }
 
 

@@ -15,6 +15,8 @@ QT_END_NAMESPACE
 
 namespace VICUS {
 	class Surface;
+	class NetworkEdge;
+	class NetworkNode;
 }
 
 namespace Vic3D {
@@ -66,7 +68,9 @@ public:
 	/*! This set caches the list of current selected surface objects.
 		This set is processed in updateBuffers() to fill the coordinate buffers.
 	*/
-	std::set<const VICUS::Surface*>	m_selectedSurfaces;
+	std::set<const VICUS::Surface*>		m_selectedSurfaces;
+	std::set<const VICUS::NetworkEdge*>	m_selectedEdges;
+	std::set<const VICUS::NetworkNode*>	m_selectedNodes;
 
 	ShaderProgram				*m_shaderProgram = nullptr;
 
