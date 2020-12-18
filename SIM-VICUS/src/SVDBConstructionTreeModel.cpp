@@ -54,7 +54,7 @@ int SVDBConstructionTreeModel::rowCount(const QModelIndex &parent) const {
 
 
 int SVDBConstructionTreeModel::columnCount(const QModelIndex &parent) const {
-	return 2;
+	return NUM_C;
 }
 
 
@@ -74,17 +74,34 @@ QVariant SVDBConstructionTreeModel::data(const QModelIndex &index, int role) con
 		// get vector with construction instances
 		CategoryItem * catItem = reinterpret_cast<CategoryItem *>(index.internalPointer());
 		unsigned int constructionId = catItem->m_constructions[index.row()];
+		// now get the construction data
+		Q_ASSERT(m_dbConstructions->find(constructionId) != m_dbConstructions->end());
+		const VICUS::Construction * con = &m_dbConstructions->at(constructionId);
 		switch (role) {
 			case Qt::DisplayRole :
-				if (index.column() == 0)
-					return QString("%1").arg(constructionId);
-				else
-					return QString("%1 fdsfsd").arg(constructionId);
+				switch (index.column()) {
+					case C_Name		: return con->m_displayName;
+					case C_UValue	: return "<todo: uvalue here>";
+				}
+			default:;
 		}
 
 	}
 
 	return QVariant();
+}
+
+
+Qt::ItemFlags SVDBConstructionTreeModel::flags(const QModelIndex & index) const {
+	if (!index.isValid())
+		return Qt::ItemFlags();
+
+	// category item?
+	if (index.internalPointer() == nullptr) {
+		return Qt::ItemIsEnabled;
+	}
+	else
+		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
 
@@ -110,3 +127,5 @@ void SVDBConstructionTreeModel::setDataStore(std::map<unsigned int, VICUS::Const
 
 	endResetModel(); // model is complete, views can update
 }
+
+

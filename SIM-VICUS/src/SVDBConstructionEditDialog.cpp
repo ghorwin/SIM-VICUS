@@ -4,6 +4,8 @@
 #include "SVSettings.h"
 #include "SVDBConstructionTreeModel.h"
 
+#include <QItemSelectionModel>
+
 #include "SVDBConstructionEditWidget.h"
 
 SVDBConstructionEditDialog::SVDBConstructionEditDialog(QWidget *parent) :
@@ -17,6 +19,9 @@ SVDBConstructionEditDialog::SVDBConstructionEditDialog(QWidget *parent) :
 	// \todo insert sortfilterproxymodel later
 
 	m_ui->treeView->setModel(m_constructionTreeModel);
+
+	connect(m_ui->treeView->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+			this, SLOT(onSelectionChanged(const QItemSelection &, const QItemSelection &)));
 }
 
 
@@ -34,7 +39,9 @@ void SVDBConstructionEditDialog::edit() {
 
 	// ask database model to update its content
 
+	m_ui->treeView->expandAll();
 	m_ui->treeView->resizeColumnToContents(0);
+	onSelectionChanged(QItemSelection(), QItemSelection());
 	exec();
 }
 
@@ -44,6 +51,10 @@ unsigned int SVDBConstructionEditDialog::select() {
 	m_ui->pushButtonClose->setVisible(false);
 	m_ui->pushButtonSelect->setVisible(true);
 	m_ui->pushButtonCancel->setVisible(true);
+
+	m_ui->treeView->expandAll();
+	m_ui->treeView->resizeColumnToContents(0);
+	onSelectionChanged(QItemSelection(), QItemSelection());
 
 	int res = exec();
 	if (res == QDialog::Accepted) {
@@ -85,6 +96,27 @@ void SVDBConstructionEditDialog::on_toolButtonCopy_clicked() {
 
 void SVDBConstructionEditDialog::on_toolButtonRemove_clicked() {
 
+}
+
+
+void SVDBConstructionEditDialog::onSelectionChanged(const QItemSelection & selected, const QItemSelection & deselected) {
+	// if there is no selection, deactivate all buttons that need a selection
+	if (selected.isEmpty()) {
+		m_ui->pushButtonSelect->setEnabled(false);
+		m_ui->toolButtonRemove->setEnabled(false);
+		m_ui->toolButtonCopy->setEnabled(false);
+
+		// hide edit widget and show placeholder
+		m_ui->label->show();
+	}
+	else {
+		m_ui->pushButtonSelect->setEnabled(true);
+		m_ui->toolButtonRemove->setEnabled(true);
+		m_ui->toolButtonCopy->setEnabled(true);
+
+		// show and activate edit widget
+		m_ui->label->hide();
+	}
 }
 
 

@@ -32,6 +32,10 @@ public:
 	int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+	Qt::ItemFlags flags(const QModelIndex & index) const override;
+
+
+	// other public functions
 
 	void setDataStore(std::map<unsigned int, VICUS::Construction> & dbConstructions);
 
@@ -50,6 +54,8 @@ private:
 
 	/*! Pointer to data storager for this model (owned by SVSettings). */
 	std::map<unsigned int, VICUS::Construction> * m_dbConstructions;
+
+	// QAbstractItemModel interface
 };
 
 #endif // SVDBConstructionTreeModelH

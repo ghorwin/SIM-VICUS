@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Constructions>
+	<Construction id="100" displayName="Heavy metal wall" color="#4040a0">
+		<UsageType>OutsideWall</UsageType>
+		<Notes>blabal</Notes>
+		<Manufacturer>Stahlwerk</Manufacturer>
+		<DataSource>IBK, generic</DataSource>
+		<MaterialLayers>
+			<MaterialLayer matId="10000">
+				<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+				<LifeCylce>1.20161e-306</LifeCylce>
+			</MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="101" displayName="Wood metal wall" color="#000050">
+		<UsageType>InsideWall</UsageType>
+		<Notes>blabal</Notes>
+		<Manufacturer>Stahlwerk</Manufacturer>
+		<DataSource>IBK, generic</DataSource>
+		<MaterialLayers>
+			<MaterialLayer matId="10000">
+				<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+				<LifeCylce>1.20161e-306</LifeCylce>
+			</MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="102" displayName="Even woodier metal wall" color="#80a000">
+		<UsageType>InsideWall</UsageType>
+		<Notes>blabal</Notes>
+		<Manufacturer>Stahlwerk</Manufacturer>
+		<DataSource>IBK, generic</DataSource>
+		<MaterialLayers>
+			<MaterialLayer matId="10000">
+				<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+				<LifeCylce>1.20161e-306</LifeCylce>
+			</MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="103" displayName="blablamell" color="#80a000">
+		<Notes>blabal</Notes>
+		<Manufacturer>Wald und Wiese</Manufacturer>
+		<DataSource>IBK, generic</DataSource>
+		<MaterialLayers>
+			<MaterialLayer matId="10000">
+				<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+				<LifeCylce>1.20161e-306</LifeCylce>
+			</MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+</Constructions>

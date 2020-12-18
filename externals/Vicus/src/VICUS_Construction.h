@@ -50,9 +50,6 @@ public:
 	/*! Notes. */
 	QString							m_notes;				// XML:E
 
-	/*! Manufacturer. */
-	QString							m_manufacturer;			// XML:E
-
 	/*! Data source. */
 	QString							m_dataSource;			// XML:E
 

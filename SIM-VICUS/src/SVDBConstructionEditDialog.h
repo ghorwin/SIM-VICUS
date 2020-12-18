@@ -7,6 +7,8 @@ namespace Ui {
 	class SVDBConstructionEditDialog;
 }
 
+class QItemSelection;
+
 class SVDBConstructionEditWidget;
 class SVDBConstructionTreeModel;
 
@@ -40,6 +42,8 @@ private slots:
 	void on_toolButtonCopy_clicked();
 
 	void on_toolButtonRemove_clicked();
+
+	void onSelectionChanged(const QItemSelection & selected, const QItemSelection & deselected);
 
 private:
 	/*! Updates content of tree widget. */
