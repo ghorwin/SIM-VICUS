@@ -167,18 +167,18 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 						updateColors(*node, vertexStart, m_networkGeometryObject.m_colorBufferData);
 					largestVertexIndex = std::min(smallestVertexIndex, vertexStart);
 
-					// update selection set, but only keep visible and selected objects in the set
-					if (s->m_selected && s->m_visible) {
-						if (m_selectedGeometryObject.m_selectedSurfaces.insert(s).second)
-							selectionModified = true;
-					}
-					else {
-						std::set<const VICUS::Surface*>::const_iterator it = m_selectedGeometryObject.m_selectedSurfaces.find(s);
-						if (it != m_selectedGeometryObject.m_selectedSurfaces.end()) {
-							m_selectedGeometryObject.m_selectedSurfaces.erase(*it);
-							selectionModified = true;
-						}
-					}
+//					// update selection set, but only keep visible and selected objects in the set
+//					if (s->m_selected && s->m_visible) {
+//						if (m_selectedGeometryObject.m_selectedSurfaces.insert(s).second)
+//							selectionModified = true;
+//					}
+//					else {
+//						std::set<const VICUS::Surface*>::const_iterator it = m_selectedGeometryObject.m_selectedSurfaces.find(s);
+//						if (it != m_selectedGeometryObject.m_selectedSurfaces.end()) {
+//							m_selectedGeometryObject.m_selectedSurfaces.erase(*it);
+//							selectionModified = true;
+//						}
+//					}
 
 				}
 
@@ -891,7 +891,6 @@ void Vic3DScene::generateBuildingGeometry() {
 
 	// recursively process all buildings, building levels etc.
 
-	m_opaqueGeometryObject.m_vertexStartMap.clear();
 	unsigned int currentVertexIndex = 0;
 	unsigned int currentElementIndex = 0;
 
@@ -944,6 +943,7 @@ void Vic3DScene::generateNetworkGeometry() {
 	m_networkGeometryObject.m_vertexBufferData.clear();
 	m_networkGeometryObject.m_colorBufferData.clear();
 	m_networkGeometryObject.m_indexBufferData.clear();
+	m_networkGeometryObject.m_vertexStartMap.clear();
 
 	m_networkGeometryObject.m_vertexBufferData.reserve(100000);
 	m_networkGeometryObject.m_colorBufferData.reserve(100000);
@@ -951,7 +951,6 @@ void Vic3DScene::generateNetworkGeometry() {
 
 	// process all network elements
 
-	m_networkGeometryObject.m_vertexStartMap.clear();
 	unsigned int currentVertexIndex = 0;
 	unsigned int currentElementIndex = 0;
 

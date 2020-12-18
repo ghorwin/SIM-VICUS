@@ -1,4 +1,4 @@
-#include "SVDBConstructionOpaqueEditWidget.h"
+#include "SVDBConstructionEditWidget.h"
 #include "ui_SVDBConstructionOpaqueEditWidget.h"
 
 SVDBConstructionOpaqueEditWidget::SVDBConstructionOpaqueEditWidget(QWidget *parent) :

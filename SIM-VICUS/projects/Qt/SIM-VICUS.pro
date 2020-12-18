@@ -75,6 +75,8 @@ SOURCES += \
 		../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
 		../../src/SVClimateFileInfo.cpp \
 		../../src/SVDBComponentEditWidget.cpp \
+		../../src/SVDBConstructionEditDialog.cpp \
+		../../src/SVDBConstructionEditWidget.cpp \
 		../../src/SVPropNetworkEditWidget.cpp \
 		../../src/SVSimulationLocationOptions.cpp \
 		../../src/actions/SVUndoAddBuilding.cpp \
@@ -101,7 +103,6 @@ SOURCES += \
 		../../src/main.cpp \
 		../../src/SVAboutDialog.cpp \
 		../../src/SVConstants.cpp \
-		../../src/SVDBConstructionOpaqueEditWidget.cpp \
 		../../src/SVDBMaterialsEditWidget.cpp \
 		../../src/SVDBWindowEditWidget.cpp \
 		../../src/SVDebugApplication.cpp \
@@ -145,6 +146,8 @@ SOURCES += \
 HEADERS  += \
 		../../src/SVClimateFileInfo.h \
 		../../src/SVDBComponentEditWidget.h \
+		../../src/SVDBConstructionEditDialog.h \
+		../../src/SVDBConstructionEditWidget.h \
 		../../src/SVPropNetworkEditWidget.h \
 		../../src/SVSimulationLocationOptions.h \
 		../../src/actions/SVUndoAddBuilding.h \
@@ -173,7 +176,6 @@ HEADERS  += \
 		../../src/core3D/Vic3DWireFrameObject.h \
 		../../src/SVAboutDialog.h \
 		../../src/SVConstants.h \
-		../../src/SVDBConstructionOpaqueEditWidget.h \
 		../../src/SVDBMaterialsEditWidget.h \
 		../../src/SVDBWindowEditWidget.h \
 		../../src/SVDebugApplication.h \
@@ -217,7 +219,8 @@ HEADERS  += \
 FORMS    += \
 		../../src/SVAboutDialog.ui \
 		../../src/SVDBComponentEditWidget.ui \
-		../../src/SVDBConstructionOpaqueEditWidget.ui \
+		../../src/SVDBConstructionEditDialog.ui \
+		../../src/SVDBConstructionEditWidget.ui \
 		../../src/SVDBMaterialsEditWidget.ui \
 		../../src/SVDBWindowEditWidget.ui \
 		../../src/SVImportIDFDialog.ui \
