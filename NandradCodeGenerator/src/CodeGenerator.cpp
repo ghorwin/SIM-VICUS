@@ -403,6 +403,7 @@ void CodeGenerator::generateReadWriteCode() {
 				// - IBK::Unit
 				// - IBK::Time
 				// - IBK::Path
+				// - IBK::MultiLanguageString
 				// - IBK::LinearSpline
 				// - IBK::Parameter and IBK::Parameter[NUM_xxx]
 				// - IBK::IntPara and IBK::IntPara[NUM_xxx]
@@ -435,6 +436,11 @@ void CodeGenerator::generateReadWriteCode() {
 					elements +=
 							"	if (!m_" + varName + ".isEmpty())\n"
 							"		TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".toStdString());\n";
+				}
+				else if (xmlInfo.typeStr == "IBK::MultiLanguageString") {
+					elements +=
+							"	if (!m_" + varName + ".empty())\n"
+							"		TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".encodedString());\n";
 				}
 				else if (xmlInfo.typeStr == "QColor") {
 					elements +=
@@ -859,6 +865,12 @@ void CodeGenerator::generateReadWriteCode() {
 						elements +=
 							"			"+elseStr+"if (cName == \""+tagName+"\")\n"
 							"				m_"+varName+" = QString::fromStdString(c->GetText());\n";
+						handledVariables.insert(varName);
+					}
+					else if (xmlInfo.typeStr == "IBK::MultiLanguageString") {
+						elements +=
+							"			"+elseStr+"if (cName == \""+tagName+"\")\n"
+							"				m_"+varName+".setEncodedString(c->GetText());\n";
 						handledVariables.insert(varName);
 					}
 					else if (xmlInfo.typeStr == "QColor") {
