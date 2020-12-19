@@ -50,7 +50,7 @@ void Construction::readXML(const TiXmlElement * element) {
 			if (attribName == "id")
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
-				m_displayName = QString::fromStdString(attrib->ValueStr());
+				m_displayName.setEncodedString(attrib->ValueStr());
 			else if (attribName == "color")
 				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
 			else {
@@ -64,9 +64,9 @@ void Construction::readXML(const TiXmlElement * element) {
 		while (c) {
 			const std::string & cName = c->ValueStr();
 			if (cName == "Notes")
-				m_notes = QString::fromStdString(c->GetText());
+				m_notes.setEncodedString(c->GetText());
 			else if (cName == "DataSource")
-				m_dataSource = QString::fromStdString(c->GetText());
+				m_dataSource.setEncodedString(c->GetText());
 			else if (cName == "MaterialLayers") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
@@ -108,17 +108,17 @@ TiXmlElement * Construction::writeXML(TiXmlElement * parent) const {
 
 	if (m_id != VICUS::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (!m_displayName.isEmpty())
-		e->SetAttribute("displayName", m_displayName.toStdString());
+	if (!m_displayName.empty())
+		e->SetAttribute("displayName", m_displayName.encodedString());
 	if (!m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
 
 	if (m_usageType != NUM_UT)
 		TiXmlElement::appendSingleAttributeElement(e, "UsageType", nullptr, std::string(), KeywordList::Keyword("Construction::UsageType",  m_usageType));
-	if (!m_notes.isEmpty())
-		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.toStdString());
-	if (!m_dataSource.isEmpty())
-		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.toStdString());
+	if (!m_notes.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.encodedString());
+	if (!m_dataSource.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.encodedString());
 
 	if (!m_materialLayers.empty()) {
 		TiXmlElement * child = new TiXmlElement("MaterialLayers");

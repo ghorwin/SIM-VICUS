@@ -14,6 +14,8 @@
 #include <IBK_Parameter.h>
 
 #include "VICUS_AbstractDBElement.h"
+#include "VICUS_Database.h"
+#include "VICUS_Material.h"
 
 namespace VICUS {
 
@@ -31,7 +33,11 @@ public:
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
-	///TODO Andreas : sollen hier funktionen rein für die Berechnung des U-Werte etc.?
+	/*! Checks if all referenced materials exist and if their parameters are valid. */
+	bool isValid(const VICUS::Database<VICUS::Material> & materials) const;
+
+	/*! Computes the u-value. */
+	bool calculateUValue(double & UValue, const VICUS::Database<Material> & materials, double ri, double re) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -42,17 +48,18 @@ public:
 	UsageType						m_usageType;			// XML:E
 
 	/*! Display name of construction. */
-	QString							m_displayName;			// XML:A
+	IBK::MultiLanguageString		m_displayName;			// XML:A
 
 	/*! False color. */
 	QColor							m_color;				// XML:A
 
 	/*! Notes. */
-	QString							m_notes;				// XML:E
+	IBK::MultiLanguageString		m_notes;				// XML:E
 
 	/*! Data source. */
-	QString							m_dataSource;			// XML:E
+	IBK::MultiLanguageString		m_dataSource;			// XML:E
 
+	/*! The individual material layers. */
 	std::vector<MaterialLayer>		m_materialLayers;		// XML:E
 };
 

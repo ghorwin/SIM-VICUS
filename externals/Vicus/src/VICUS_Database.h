@@ -42,6 +42,8 @@ public:
 	typename std::map<unsigned int, T>::const_iterator begin() const { return m_data.begin(); }
 	/*! Returns end for iterator-type read-only access to data store. */
 	typename std::map<unsigned int, T>::const_iterator end() const { return m_data.end(); }
+	/*! Returns number of DB elements. */
+	size_t size() const { return m_data.size(); }
 
 	/*! Adds a new item to the database.
 		\param newData New object to be added.
@@ -83,12 +85,25 @@ public:
 		return newData.m_id;
 	}
 
+	/*! Removes a database element identifies by its ID
+		\warning Throws an IBK::Exception if no element with given ID exists.
+	*/
+	void remove(unsigned int id) {
+		FUNCID(Database::remove);
+		typename std::map<unsigned int, T>::const_iterator it = m_data.find(id);
+		if (it == m_data.end())
+			throw IBK::Exception( IBK::FormatString("Error removing database element with id=%1. No such ID in database.").arg(id), FUNC_ID);
+		m_data.erase(it);
+	}
+
 	/*! Reads database from xml file.
 		Usage:
 		\code
 		// read built-in material DB
 		db.readXML("db_materials.xml", "Materials", "Material", true);
 		\endcode
+
+		\warning Throws an IBK::Exception if reading fails.
 	*/
 	void readXML(const IBK::Path & fname, const std::string & topLevelTag,
 				   const std::string & childTagName,
