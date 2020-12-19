@@ -6,23 +6,9 @@
 #include <QDir>
 #include <QVariant>
 
-#include <VICUS_Material.h>
-#include <VICUS_Component.h>
-#include <VICUS_Construction.h>
-#include <VICUS_WindowGlazingSystem.h>
-#include <VICUS_Window.h>
-#include <VICUS_WindowFrame.h>
-#include <VICUS_WindowDivider.h>
-#include <VICUS_SurfaceProperties.h>
-#include <VICUS_BoundaryCondition.h>
-#include <VICUS_NetworkPipe.h>
-#include <VICUS_NetworkFluid.h>
-#include <VICUS_EPDDataset.h>
-
-class SVDBConstructionTreeModel;
 class QDockWidget;
 
-#include <IBK_QuantityManager.h>
+#include "SVDatabase.h"
 
 /*! This class provides settings functionality, including:
 	* read and write method of settings
@@ -108,16 +94,6 @@ public:
 	/*! Convenience check function, tests if a property is in the map. */
 	bool hasProperty(PropertyType t) const { return m_propertyMap.find(t) != m_propertyMap.end(); }
 
-	/*! Reads all built-in and user databases. */
-	void readDatabase();
-
-	/*! Writes all built-in and user databases. */
-	void writeDatabase();
-
-
-	/*! Returns construction tree model (owned by SVSettings). */
-	SVDBConstructionTreeModel * constructionTreeModel() { return m_constructionTreeModel; }
-
 	// ****** static functions ************
 
 	/*! Computes the default application font size based on screen properties. */
@@ -144,8 +120,6 @@ public:
 
 	// ****** member variables ************
 
-	/*! Holds all quantities currently known to the model/solver. */
-	IBK::QuantityManager		m_quantityManager;
 
 	// *** members below are stored in settings file ***
 
@@ -203,44 +177,9 @@ public:
 	QList<QString>				m_frequentlyUsedQuantities;
 
 
+	/*! Our database. */
+	Database					m_db;
 
-	// Databases
-
-	/*! Map of all opaque database materials. */
-	std::map<unsigned int, VICUS::Material>					m_dbOpaqueMaterials;
-
-	/*! Map of all window definitions. */
-	std::map<unsigned int, VICUS::Window>					m_dbWindows;
-
-	/*! Map of all database glazing systems. */
-	std::map<unsigned int, VICUS::WindowGlazingSystem>		m_dbWindowGlazingSystems;
-
-	/*! Map of all database window frames. */
-//	std::map<unsigned int, VICUS::WindowFrame>				m_dbWindowFrame;
-
-	/*! Map of all database window dividers. */
-//	std::map<unsigned int, VICUS::WindowDivider>			m_dbWindowDivider;
-
-	/*! Map of all database constructions. */
-	std::map<unsigned int, VICUS::Construction>				m_dbConstructions;
-
-	/*! Map of all database surface properties. */
-	std::map<unsigned int, VICUS::SurfaceProperties>		m_dbSurfaceProperty;
-
-	/*! Map of all database boundary conditions. */
-	std::map<unsigned int, VICUS::BoundaryCondition>		m_dbBoundaryCondition;
-
-	/*! Map of all database components. */
-	std::map<unsigned int, VICUS::Component>				m_dbComponents;
-
-	/*! Map of all database pipes */
-	std::map<unsigned int, VICUS::NetworkPipe>				m_dbPipes;
-
-	/*! Map of all database fluids */
-	std::map<unsigned int, VICUS::NetworkFluid>				m_dbFluids;
-
-	/*! Map of all database EPD elements */
-	std::map<unsigned int, VICUS::EPDDataset>				m_dbEPDElements;
 
 private:
 
@@ -249,10 +188,6 @@ private:
 	*/
 	static SVSettings			*m_self;
 
-
-	// *** Database models ***
-
-	SVDBConstructionTreeModel	*m_constructionTreeModel			= nullptr;
 };
 
 

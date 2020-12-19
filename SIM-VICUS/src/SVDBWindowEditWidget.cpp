@@ -41,6 +41,7 @@ void SVDBWindowEditWidget::edit() {
 
 
 void SVDBWindowEditWidget::on_toolButtonAdd_clicked() {
+#if 0
 	// add a new window definition
 	VICUS::Window * w = newDatabaseElement(SVSettings::instance().m_dbWindows);
 	unsigned int newID = w->m_id;
@@ -64,10 +65,12 @@ void SVDBWindowEditWidget::on_toolButtonAdd_clicked() {
 
 	// now select row of the item
 	m_ui->tableWidget->selectRow(newItem->row());
+#endif
 }
 
 
 void SVDBWindowEditWidget::on_toolButtonCopy_clicked() {
+#if 0
 	// get ID of selected item
 	Q_ASSERT(!m_ui->tableWidget->selectedItems().isEmpty());
 	QTableWidgetItem * item = m_ui->tableWidget->selectedItems().front();
@@ -93,10 +96,12 @@ void SVDBWindowEditWidget::on_toolButtonCopy_clicked() {
 
 	// now select row of the item
 	m_ui->tableWidget->selectRow(newItem->row());
+#endif
 }
 
 
 void SVDBWindowEditWidget::on_toolButtonRemove_clicked() {
+#if 0
 	// get ID of selected item
 	Q_ASSERT(!m_ui->tableWidget->selectedItems().isEmpty());
 	QTableWidgetItem * item = m_ui->tableWidget->selectedItems().front();
@@ -118,11 +123,12 @@ void SVDBWindowEditWidget::on_toolButtonRemove_clicked() {
 		m_ui->tableWidget->selectRow(currentRow);
 	}
 
-
+#endif
 }
 
 
 void SVDBWindowEditWidget::updateUi() {
+#if 0
 	m_ui->tableWidget->clearContents();
 	m_ui->tableWidget->setRowCount(SVSettings::instance().m_dbWindows.size());
 
@@ -142,10 +148,12 @@ void SVDBWindowEditWidget::updateUi() {
 		++row;
 	}
 	m_ui->tableWidget->setSortingEnabled(true);
+#endif
 }
 
 
 void SVDBWindowEditWidget::updateEditWidget(unsigned int id) {
+#if 0
 	if (id == VICUS::INVALID_ID) {
 		// TODO : hide edit widget, or place all widets
 		m_ui->groupBoxEditProperties->hide();
@@ -162,6 +170,7 @@ void SVDBWindowEditWidget::updateEditWidget(unsigned int id) {
 		m_ui->nameEditWidget->setString( w->m_displayName );
 
 	}
+#endif
 }
 
 

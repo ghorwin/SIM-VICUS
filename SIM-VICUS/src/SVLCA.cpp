@@ -273,6 +273,7 @@ bool findUUID(QString uuid, unsigned int &id, const std::map<unsigned int, VICUS
 
 void LCA::readDatabaseOekobautdat(const IBK::Path & filename)
 {
+#if 0
 	FUNCID(LCA::readDatabaseOekobautdat);
 //	IBK::FileReader fileR(filename);
 //	IBK::FileReader::BOMType type = IBK::FileReader::getBOM(fileR.firstBytes(4));
@@ -401,7 +402,7 @@ void LCA::readDatabaseOekobautdat(const IBK::Path & filename)
 
 		}
 	}
-
+#endif
 }
 
 }

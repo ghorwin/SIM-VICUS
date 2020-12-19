@@ -80,15 +80,15 @@ bool SVNetworkImportDialog::edit() {
 
 		// write database
 		SVSettings &settings = SVSettings::instance();
-		settings.m_dbFluids[fluid.m_id] = fluid;
-		settings.writeDatabase();
+		settings.m_db.m_fluids.add(fluid, fluid.m_id);
+		settings.m_db.writeDatabases();
 
 		// read database, add pipes to network
-		for (auto it = settings.m_dbPipes.begin(); it != settings.m_dbPipes.end(); ++it)
+		for (auto it = settings.m_db.m_pipes.begin(); it != settings.m_db.m_pipes.end(); ++it)
 			m_network.m_networkPipeDB.push_back(it->second);
 
 		// add fluid to project
-		fluid = settings.m_dbFluids[0];
+		fluid = settings.m_db.m_fluids.begin()->second;
 		SVUndoAddFluid * undoF = new SVUndoAddFluid(tr("Added fluid"), fluid);
 		undoF->push();
 

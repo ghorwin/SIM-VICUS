@@ -31,23 +31,19 @@ public:
 
 private slots:
 	void on_pushButtonSelect_clicked();
-
 	void on_pushButtonCancel_clicked();
-
 	void on_pushButtonClose_clicked();
 
 	void on_toolButtonAdd_clicked();
-
 	void on_toolButtonCopy_clicked();
-
 	void on_toolButtonRemove_clicked();
 
-	void onSelectionChanged(const QItemSelection & selected, const QItemSelection & deselected);
+	/*! Connected to the respective signal in the table view.
+		Enables/disables the remove button.
+	*/
+//	void onCurrentIndexChanged(QModelIndex,QModelIndex);
 
 private:
-	/*! Updates content of tree widget. */
-	void updateTreeWidget();
-
 
 	Ui::SVDBConstructionEditDialog	*m_ui;
 
