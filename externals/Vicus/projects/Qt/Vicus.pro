@@ -70,6 +70,7 @@ HEADERS += \
 SOURCES += \
 	../../src/VICUS_ArgsParser.cpp \
 	../../src/VICUS_Constants.cpp \
+	../../src/VICUS_Construction.cpp \
 	../../src/VICUS_Database.cpp \
 	../../src/VICUS_EPDCategroySet.cpp \
 	../../src/VICUS_EPDDataset.cpp \
