@@ -3,7 +3,6 @@
 namespace VICUS {
 
 bool Construction::isValid(const VICUS::Database<Material> & materials) const {
-	Q_ASSERT(materials.size() == m_materialLayers.size());
 	for (unsigned int i=0; i<m_materialLayers.size(); ++i) {
 		const Material * mat = materials[m_materialLayers[i].m_matId];
 		if (mat == nullptr)
@@ -20,7 +19,6 @@ bool Construction::isValid(const VICUS::Database<Material> & materials) const {
 bool Construction::calculateUValue(double & UValue, const VICUS::Database<Material> & materials, double ri, double re) const {
 	// simple calculation
 	double R = ri + re;
-	Q_ASSERT(materials.size() == m_materialLayers.size());
 	for (unsigned int i=0; i<m_materialLayers.size(); ++i) {
 		const Material * mat = materials[m_materialLayers[i].m_matId];
 		if (mat == nullptr)

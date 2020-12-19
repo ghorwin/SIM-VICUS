@@ -8,7 +8,6 @@
 		<MaterialLayers>
 			<MaterialLayer matId="10000">
 				<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
-				<LifeCylce>1.20161e-306</LifeCylce>
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
@@ -20,7 +19,6 @@
 		<MaterialLayers>
 			<MaterialLayer matId="10000">
 				<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
-				<LifeCylce>1.20161e-306</LifeCylce>
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
@@ -32,7 +30,6 @@
 		<MaterialLayers>
 			<MaterialLayer matId="10000">
 				<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
-				<LifeCylce>1.20161e-306</LifeCylce>
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
@@ -43,7 +40,6 @@
 		<MaterialLayers>
 			<MaterialLayer matId="10000">
 				<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
-				<LifeCylce>1.20161e-306</LifeCylce>
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>

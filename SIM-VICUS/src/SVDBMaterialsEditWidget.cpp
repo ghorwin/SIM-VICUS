@@ -177,8 +177,8 @@ void SVDBMaterialsEditWidget::editingFinishedSuccessfully()
 	if(m_ui->lineEditSpecHeatCapacity->isValid()){
 		mat.m_para[VICUS::Material::P_HeatCapacity].set("HeatCapacity", m_ui->lineEditSpecHeatCapacity->value(), "J/kgK");
 	}
-	///TODO Dirk name to multilanguage string
-	mat.m_displayName = m_ui->lineEditDisplayName->text();
+	/// TODO : Dirk name to multilanguage string -> fix language ID
+	mat.m_displayName.setString(m_ui->lineEditDisplayName->text().toStdString(), "en");
 	mat.m_category = (VICUS::Material::Category)(m_ui->comboBoxCategory->currentIndex());
 }
 

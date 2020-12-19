@@ -73,7 +73,7 @@ public:
 	*/
 	Material( unsigned int id, const QString &name, double conductivity, double density, double specHeatCapa):
 		m_id(id),
-		m_displayName(name)
+		m_displayName(name.toStdString())
 	{
 		m_para[P_Density] = (IBK::Parameter("Density", density, "kg/m3"));
 		m_para[P_Conductivity] = (IBK::Parameter("Conductivity", conductivity, "W/mK"));
@@ -91,19 +91,19 @@ public:
 	unsigned int					m_id = INVALID_ID;						// XML:A:required
 
 	/*! Display name of material. */
-	QString							m_displayName;							// XML:A
+	IBK::MultiLanguageString		m_displayName;							// XML:A
 
 	/*! False color. */
 	QColor							m_color;								// XML:A
 
 	/*! Notes. */
-	QString							m_notes;								// XML:E
+	IBK::MultiLanguageString		m_notes;								// XML:E
 
 	/*! Manufacturer. */
-	QString							m_manufacturer;							// XML:E
+	IBK::MultiLanguageString		m_manufacturer;							// XML:E
 
 	/*! Data source. */
-	QString							m_dataSource;							// XML:E
+	IBK::MultiLanguageString		m_dataSource;							// XML:E
 
 	/*! Material category. */
 	Category						m_category = NUM_MC;					// XML:E:required

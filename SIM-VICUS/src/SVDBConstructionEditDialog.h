@@ -1,5 +1,5 @@
-#ifndef SVDBCONSTRUCTIONEDITDIALOG_H
-#define SVDBCONSTRUCTIONEDITDIALOG_H
+#ifndef SVDBConstructionEditDialogH
+#define SVDBConstructionEditDialogH
 
 #include <QDialog>
 
@@ -8,8 +8,9 @@ namespace Ui {
 }
 
 class QItemSelection;
+class QSortFilterProxyModel;
 
-class SVDBConstructionTreeModel;
+class DBConstructionTableModel;
 
 /*! The edit dialog for construction types. */
 class SVDBConstructionEditDialog : public QDialog {
@@ -47,8 +48,8 @@ private:
 
 	Ui::SVDBConstructionEditDialog	*m_ui;
 
-	/*! Cached pointer to construction tree model (provided and owned by SVSettings). */
-	SVDBConstructionTreeModel		*m_constructionTreeModel = nullptr;
+	DBConstructionTableModel		*m_dbModel		= nullptr;
+	QSortFilterProxyModel			*m_proxyModel	= nullptr;
 };
 
-#endif // SVDBCONSTRUCTIONEDITDIALOG_H
+#endif // SVDBConstructionEditDialogH

@@ -10,7 +10,7 @@
 #include <VICUS_Construction.h>
 #include <VICUS_Database.h>
 
-ConstructionDBModel::ConstructionDBModel(QObject * parent, Database & db) :
+DBConstructionTableModel::DBConstructionTableModel(QObject * parent, Database & db) :
 	QAbstractTableModel(parent),
 	m_db(&db)
 {
@@ -18,16 +18,16 @@ ConstructionDBModel::ConstructionDBModel(QObject * parent, Database & db) :
 }
 
 
-ConstructionDBModel::~ConstructionDBModel() {
+DBConstructionTableModel::~DBConstructionTableModel() {
 }
 
 
-int ConstructionDBModel::columnCount ( const QModelIndex & ) const {
+int DBConstructionTableModel::columnCount ( const QModelIndex & ) const {
 	return NumColumns;
 }
 
 
-QVariant ConstructionDBModel::data ( const QModelIndex & index, int role) const {
+QVariant DBConstructionTableModel::data ( const QModelIndex & index, int role) const {
 	if (!index.isValid())
 		return QVariant();
 
@@ -45,7 +45,7 @@ QVariant ConstructionDBModel::data ( const QModelIndex & index, int role) const 
 		case Qt::DisplayRole : {
 			switch (index.column()) {
 				case ColId					: return it->first;
-				case ColName				: return QString::fromStdString(it->second.m_displayName.string()); // Note: take name in current language
+				case ColName				: return QString::fromStdString(it->second.m_displayName.string("de", true)); // Note: take name in current language or if missing, "all"
 //				case ColInsulationKind		: return TH::ConstructionType::insulationKindString(it->second.m_insulationKind);
 //				case ColMaterialKind		: return TH::ConstructionType::materialKindString(it->second.m_materialKind);
 //				case ColConstructionKind	: return TH::ConstructionType::constructionKindString(it->second.m_constructionKind);
@@ -91,12 +91,12 @@ QVariant ConstructionDBModel::data ( const QModelIndex & index, int role) const 
 }
 
 
-int ConstructionDBModel::rowCount ( const QModelIndex & ) const {
+int DBConstructionTableModel::rowCount ( const QModelIndex & ) const {
 	return (int)m_db->m_constructions.size();
 }
 
 
-QVariant ConstructionDBModel::headerData(int section, Qt::Orientation orientation, int role) const {
+QVariant DBConstructionTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
 	if (orientation == Qt::Vertical || role != Qt::DisplayRole)
 		return QVariant();
 	switch ( section ) {
@@ -113,7 +113,7 @@ QVariant ConstructionDBModel::headerData(int section, Qt::Orientation orientatio
 }
 
 
-QModelIndex ConstructionDBModel::addNewItem() {
+QModelIndex DBConstructionTableModel::addNewItem() {
 	VICUS::Construction c;
 	c.m_displayName.setEncodedString("en:<new construction type>");
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
@@ -124,7 +124,7 @@ QModelIndex ConstructionDBModel::addNewItem() {
 }
 
 
-QModelIndex ConstructionDBModel::addNewItem(VICUS::Construction c) {
+QModelIndex DBConstructionTableModel::addNewItem(VICUS::Construction c) {
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_constructions.add( c );
 	endInsertRows();
@@ -133,7 +133,7 @@ QModelIndex ConstructionDBModel::addNewItem(VICUS::Construction c) {
 }
 
 
-bool ConstructionDBModel::deleteItem(QModelIndex index) {
+bool DBConstructionTableModel::deleteItem(QModelIndex index) {
 	if (!index.isValid())
 		return false;
 	unsigned int id = data(index, Qt::UserRole).toUInt();
@@ -144,13 +144,13 @@ bool ConstructionDBModel::deleteItem(QModelIndex index) {
 }
 
 
-void ConstructionDBModel::resetModel() {
+void DBConstructionTableModel::resetModel() {
 	beginResetModel();
 	endResetModel();
 }
 
 
-void ConstructionDBModel::setItemModified(unsigned int id) {
+void DBConstructionTableModel::setItemModified(unsigned int id) {
 	QModelIndex idx = indexById(id);
 	QModelIndex left = index(idx.row(), 0);
 	QModelIndex right = index(idx.row(), NumColumns-1);
@@ -158,7 +158,7 @@ void ConstructionDBModel::setItemModified(unsigned int id) {
 }
 
 
-QModelIndex ConstructionDBModel::indexById(unsigned int id) const {
+QModelIndex DBConstructionTableModel::indexById(unsigned int id) const {
 	for (int i=0; i<rowCount(); ++i) {
 		QModelIndex idx = index(i, 0);
 		if (data(idx, Qt::UserRole).toUInt() == id)

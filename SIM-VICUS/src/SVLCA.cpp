@@ -136,7 +136,7 @@ void LCA::calculateLCA()
 				//check if material exists
 				VICUS::Material mat =
 						elementExists<VICUS::Material>(m_dbOpaqueMaterials, l.m_matId,
-														   constr.m_displayName.toStdString(),
+														   constr.m_displayName.string(),
 														   "Material",
 														   "construction");
 
@@ -151,7 +151,7 @@ void LCA::calculateLCA()
 						continue;
 
 					VICUS::EPDDataset epd = elementExists<VICUS::EPDDataset>(m_dbEPDs, idEpd,
-																   mat.m_displayName.toStdString(),
+																   mat.m_displayName.string(),
 																   "EPD",
 																   "material");
 

@@ -19,16 +19,16 @@ public:
 	virtual QColor						color() const override { return m_mat.m_color; }
 
 	/*! Information and notes for the product.*/
-	virtual QString						notes() const override { return m_mat.m_notes; }
+	virtual QString						notes() const override { return QString::fromStdString(m_mat.m_notes.string()); }
 
 	/*! Product-ID or brand name.*/
 	virtual QString						productName() const override { return QString(); }
 
 	/*! Name of producer or provider.*/
-	virtual QString						producer() const override { return m_mat.m_manufacturer; }
+	virtual QString						producer() const override { return QString::fromStdString(m_mat.m_manufacturer.string()); }
 
 	/*! Name of data source.*/
-	virtual QString						dataSource() const override { return m_mat.m_dataSource; }
+	virtual QString						dataSource() const override { return QString::fromStdString(m_mat.m_dataSource.string()); }
 
 	/*! Bulk density in [kg/m3].*/
 	virtual double						rho() const override { return m_mat.m_para[VICUS::Material::P_Density].get_value("kg/m3"); }

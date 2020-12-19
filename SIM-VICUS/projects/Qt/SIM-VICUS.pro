@@ -78,6 +78,7 @@ SOURCES += \
 		../../src/SVDBConstructionEditDialog.cpp \
 		../../src/SVDBConstructionEditWidget.cpp \
 		../../src/SVDBConstructionTableModel.cpp \
+		../../src/SVDBModelDelegate.cpp \
 		../../src/SVDatabase.cpp \
 		../../src/SVPropNetworkEditWidget.cpp \
 		../../src/SVSimulationLocationOptions.cpp \
@@ -151,6 +152,7 @@ HEADERS  += \
 		../../src/SVDBConstructionEditDialog.h \
 		../../src/SVDBConstructionEditWidget.h \
 		../../src/SVDBConstructionTableModel.h \
+		../../src/SVDBModelDelegate.h \
 		../../src/SVDatabase.h \
 		../../src/SVPropNetworkEditWidget.h \
 		../../src/SVSimulationLocationOptions.h \

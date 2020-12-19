@@ -2,11 +2,15 @@
 #include "ui_SVDBConstructionEditDialog.h"
 
 #include "SVSettings.h"
-#include "SVDBConstructionTreeModel.h"
+#include "SVDBConstructionTableModel.h"
 
 #include <QItemSelectionModel>
+#include <QTableView>
+#include <QSortFilterProxyModel>
 
 #include "SVDBConstructionEditWidget.h"
+#include "SVStyle.h"
+#include "SVDBModelDelegate.h"
 
 SVDBConstructionEditDialog::SVDBConstructionEditDialog(QWidget *parent) :
 	QDialog(parent),
@@ -14,14 +18,35 @@ SVDBConstructionEditDialog::SVDBConstructionEditDialog(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
-	m_constructionTreeModel = nullptr; // SVSettings::instance().constructionTreeModel();
+	SVStyle::formatDatabaseTableView(m_ui->tableView);
 
-	// \todo insert sortfilterproxymodel later
+	m_dbModel = new DBConstructionTableModel(this, SVSettings::instance().m_db);
 
-	m_ui->treeView->setModel(m_constructionTreeModel);
+	m_proxyModel = new QSortFilterProxyModel(this);
+	m_proxyModel->setSourceModel(m_dbModel);
+	m_ui->tableView->setModel(m_proxyModel);
 
-	connect(m_ui->treeView->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-			this, SLOT(onSelectionChanged(const QItemSelection &, const QItemSelection &)));
+	// specific setup for construction DB table
+
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(DBConstructionTableModel::ColId, QHeaderView::Fixed);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(DBConstructionTableModel::ColCheck, QHeaderView::Fixed);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(DBConstructionTableModel::ColName, QHeaderView::Stretch);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(DBConstructionTableModel::ColNumLayers, QHeaderView::ResizeToContents);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(DBConstructionTableModel::ColUValue, QHeaderView::ResizeToContents);
+
+	m_ui->tableView->setColumnWidth(DBConstructionTableModel::ColId, 60);
+#if defined(Q_OS_MAC)
+	m_ui->tableView->setColumnWidth(ConstructionDBModel::ColCheck, 26);
+#else
+	m_ui->tableView->setColumnWidth(DBConstructionTableModel::ColCheck, 22);
+#endif
+	m_ui->tableView->setColumnWidth(DBConstructionTableModel::ColName, 120);
+	m_ui->tableView->setAlternatingRowColors(true);
+
+	// set item delegate for coloring built-ins
+	DBModelDelegate * dg = new DBModelDelegate(this, DBConstructionTableModel::Role_BuiltIn);
+	m_ui->tableView->setItemDelegate(dg);
+
 }
 
 
@@ -39,8 +64,6 @@ void SVDBConstructionEditDialog::edit() {
 
 	// ask database model to update its content
 
-	m_ui->treeView->expandAll();
-	m_ui->treeView->resizeColumnToContents(0);
 //	onSelectionChanged(QItemSelection(), QItemSelection());
 	exec();
 }
@@ -52,8 +75,6 @@ unsigned int SVDBConstructionEditDialog::select() {
 	m_ui->pushButtonSelect->setVisible(true);
 	m_ui->pushButtonCancel->setVisible(true);
 
-	m_ui->treeView->expandAll();
-	m_ui->treeView->resizeColumnToContents(0);
 //	onSelectionChanged(QItemSelection(), QItemSelection());
 
 	int res = exec();

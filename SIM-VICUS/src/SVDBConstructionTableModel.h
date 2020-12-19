@@ -6,7 +6,7 @@
 #include "SVDatabase.h"
 
 /*! Model for accessing the constructions in the construction database. */
-class ConstructionDBModel : public QAbstractTableModel {
+class DBConstructionTableModel : public QAbstractTableModel {
 	Q_OBJECT
 public:
 	/*! Columns shown in the table view. */
@@ -32,8 +32,8 @@ public:
 	/*! Constructor, requires a read/write pointer to the central database object.
 		\note Pointer to database must be valid throughout the lifetime of the Model!
 		*/
-	ConstructionDBModel(QObject * parent, Database & db);
-	virtual ~ConstructionDBModel();
+	DBConstructionTableModel(QObject * parent, Database & db);
+	virtual ~DBConstructionTableModel();
 
 	// ** QAbstractItemModel interface **
 

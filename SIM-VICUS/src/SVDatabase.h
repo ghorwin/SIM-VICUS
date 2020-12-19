@@ -33,7 +33,7 @@ public:
 	void readDatabases();
 
 	/*! Writes user-defined database. */
-	bool writeDatabases() const;
+	void writeDatabases() const;
 
 
 	// Databases
@@ -47,8 +47,8 @@ public:
 	/*! Map of all window definitions. */
 	VICUS::Database<VICUS::Window>						m_windows;
 
-	/*! Map of all database glazing systems. */
-	VICUS::Database<VICUS::WindowGlazingSystem>			m_windowGlazingSystems;
+//	/*! Map of all database glazing systems. */
+//	VICUS::Database<VICUS::WindowGlazingSystem>			m_windowGlazingSystems;
 
 //	/*! Map of all database surface properties. */
 //	VICUS::Database<VICUS::SurfaceProperties>			m_surfaceProperty;

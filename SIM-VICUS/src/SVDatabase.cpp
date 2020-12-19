@@ -14,7 +14,6 @@ Database::Database() :
 	m_materials(USER_ID_SPACE_START),
 	m_constructions(USER_ID_SPACE_START),
 	m_windows(USER_ID_SPACE_START),
-	m_windowGlazingSystems(USER_ID_SPACE_START),
 	m_pipes(USER_ID_SPACE_START),
 	m_fluids(USER_ID_SPACE_START),
 	m_EPDElements(USER_ID_SPACE_START)
@@ -55,7 +54,7 @@ void Database::readDatabases() {
 }
 
 
-bool Database::writeDatabases() const {
+void Database::writeDatabases() const {
 	// we only write user databases
 
 	IBK::Path userDbDir(QtExt::Directories::userDataDir().toStdString());

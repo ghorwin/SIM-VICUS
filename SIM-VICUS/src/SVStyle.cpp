@@ -5,6 +5,8 @@
 
 #include <QPlainTextEdit>
 #include <QLayout>
+#include <QTableView>
+#include <QHeaderView>
 
 #include "SVSettings.h"
 
@@ -51,6 +53,10 @@ SVStyle::SVStyle() {
 	m_fontMonoSpacePointSize = 9;
 #endif // Q_OS_WIN
 
+	m_alternativeBackgroundBright = "#fff4b8";
+	m_alternativeBackgroundDark = "#ffe49d";
+	m_alternativeBackgroundText = "#760000";
+
 }
 
 
@@ -76,6 +82,16 @@ void SVStyle::formatWidgetWithLayout(QWidget * w) {
 	l->setMargin(0);
 
 	// TODO : other customization or call formatWidget() function for basic styling
+}
+
+
+void SVStyle::formatDatabaseTableView(QTableView * v) {
+	v->verticalHeader()->setDefaultSectionSize(19);
+	v->verticalHeader()->setVisible(false);
+	v->setSelectionBehavior(QAbstractItemView::SelectRows);
+	v->setSelectionMode(QAbstractItemView::SingleSelection);
+	v->setSortingEnabled(true);
+	v->sortByColumn(0, Qt::AscendingOrder);
 }
 
 

@@ -7,7 +7,7 @@ SVMaterialTransfer::SVMaterialTransfer(const VICUS::Material& mat):
 
 QString SVMaterialTransfer::name() const
 {
-	return m_mat.m_displayName;
+	return QString::fromStdString(m_mat.m_displayName.string());
 }
 
 QtExt::MaterialCategory SVMaterialTransfer::category() const
