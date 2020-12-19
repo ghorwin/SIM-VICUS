@@ -28,7 +28,8 @@
 
 namespace NANDRAD_MODEL {
 
-void ThermalNetworkBalanceModel::setup( ) {
+void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel * statesModel) {
+	m_statesModel = statesModel;
 	// TODO: implement
 }
 

@@ -27,8 +27,21 @@
 
 namespace NANDRAD_MODEL {
 
-/*!	The thermal network balance model manages the calculation of enrhalpy fuxes through
-	the network elements and correponding solver feedback.
+class ThermalNetworkStatesModel;
+
+/*!	The thermal network balance model manages the calculation of enthalpy fuxes through
+	the network elements and corresponding solver feedback.
+
+	The thermal network states model and balance model share the same data structures (i.e.
+	flow element thermal balance objects). To simplify things, the ThermalNetworkBalanceModel
+	gets a pointer to the corresponding ThermalNetworkStatesModel instance.
+
+	To evaluate the thermal balances in each flow element of the network, it needs:
+	- prescribed/imposed fluxes to flow elements (externally computed)
+	- surrounding temperatures (for example room air and radiation surface temperatures for heater equation models)
+	- mass fluxes computed by network model
+
+	The latter are
 */
 class ThermalNetworkBalanceModel : public AbstractModel, public AbstractStateDependency {
 public:
@@ -40,7 +53,7 @@ public:
 	}
 
 	/*! Initializes model by resizing the y and ydot vectors. */
-	void setup();
+	void setup(ThermalNetworkStatesModel * statesModel);
 
 
 	// *** Re-implemented from AbstractModel
@@ -114,6 +127,8 @@ private:
 	/*! Vector with cached derivatives, updated at last call to update(). */
 	std::vector<double>								m_ydot;
 
+	/*! Direct access the matching states model. */
+	ThermalNetworkStatesModel						*m_statesModel = nullptr;
 };
 
 } // namespace NANDRAD_MODEL

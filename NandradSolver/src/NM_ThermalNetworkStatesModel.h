@@ -26,9 +26,17 @@
 
 namespace NANDRAD_MODEL {
 
-/*!	A model that computes all temperature states of hydraulic network given the internal energy density
-*/
+/*!	A model that computes all temperature states of hydraulic network given the internal energy density.
 
+	The model publishes the temperatures for each flow element, so that these temperatures can be taken
+	as fluid temperature inputs by the hydraulic network elements.
+
+	Other models may request this quantities via:
+	ModelReferenceType = MRT_NETWORK
+	id = (id of network model)
+	Quantities:
+	  - FlowElementTemperatures: in [K], vector-valued, access via flow element ID
+*/
 class ThermalNetworkStatesModel : public AbstractModel {
 public:
 
@@ -103,6 +111,9 @@ private:
 
 	/*! Cached input data vector (size nPrimaryStateResults()). */
 	std::vector<double>								m_y;
+
+
+	// for each flow element instantiate an appropriate NetworkThermalBalanceFlowElement
 
 };
 
