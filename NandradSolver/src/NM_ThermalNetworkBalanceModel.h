@@ -41,7 +41,11 @@ class ThermalNetworkStatesModel;
 	- surrounding temperatures (for example room air and radiation surface temperatures for heater equation models)
 	- mass fluxes computed by network model
 
-	The latter are
+	The latter are retrieved from hydraulic network model. The nodal temperatures are then computed using upwinding
+	rules and the "inlet/outlet" temperatures provided from the flow element thermal models.
+
+	The other dependencies are formulated by the flow element thermal models themselves, and simply forwarded by
+	the ThermalNetworkBalanceModel to the framework.
 */
 class ThermalNetworkBalanceModel : public AbstractModel, public AbstractStateDependency {
 public:
