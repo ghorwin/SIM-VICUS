@@ -8,7 +8,13 @@ SVDBConstructionEditWidget::SVDBConstructionEditWidget(QWidget *parent) :
 	m_ui->setupUi(this);
 }
 
-SVDBConstructionEditWidget::~SVDBConstructionEditWidget()
-{
+
+SVDBConstructionEditWidget::~SVDBConstructionEditWidget() {
 	delete m_ui;
 }
+
+
+void SVDBConstructionEditWidget::setConstruction(const VICUS::Construction & con) {
+
+}
+

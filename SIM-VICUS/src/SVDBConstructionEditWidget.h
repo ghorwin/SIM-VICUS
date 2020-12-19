@@ -7,6 +7,8 @@ namespace Ui {
 class SVDBConstructionEditWidget;
 }
 
+#include <VICUS_Construction.h>
+
 /*! Edit widget for construction (types). */
 class SVDBConstructionEditWidget : public QWidget {
 	Q_OBJECT
@@ -38,8 +40,25 @@ public:
 	explicit SVDBConstructionEditWidget(QWidget *parent = nullptr);
 	~SVDBConstructionEditWidget();
 
+
+	/*! Updates widget with content of given construction data. */
+	void setConstruction(const VICUS::Construction & con);
+
+	/*! Returns current construction data. */
+	const VICUS::Construction & construction() const { return m_construction; }
+
+signals:
+
+	/*! Emitted, whenever m_construction changes due to user interaction. */
+	void constructionChanged();
+
 private:
-	Ui::SVDBConstructionEditWidget *m_ui;
+	Ui::SVDBConstructionEditWidget	*m_ui;
+
+	/*! Stores data currently shown in widget.
+		Any change commited in widget are stored first here, then the change signal is emitted.
+	*/
+	VICUS::Construction				m_construction;
 };
 
 #endif // SVDBConstructionEditWidgetH
