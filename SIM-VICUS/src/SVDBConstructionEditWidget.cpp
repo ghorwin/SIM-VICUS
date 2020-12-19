@@ -1,14 +1,14 @@
 #include "SVDBConstructionEditWidget.h"
-#include "ui_SVDBConstructionOpaqueEditWidget.h"
+#include "ui_SVDBConstructionEditWidget.h"
 
-SVDBConstructionOpaqueEditWidget::SVDBConstructionOpaqueEditWidget(QWidget *parent) :
+SVDBConstructionEditWidget::SVDBConstructionEditWidget(QWidget *parent) :
 	QWidget(parent),
-	ui(new Ui::SVDBConstructionOpaqueEditWidget)
+	m_ui(new Ui::SVDBConstructionEditWidget)
 {
-	ui->setupUi(this);
+	m_ui->setupUi(this);
 }
 
-SVDBConstructionOpaqueEditWidget::~SVDBConstructionOpaqueEditWidget()
+SVDBConstructionEditWidget::~SVDBConstructionEditWidget()
 {
-	delete ui;
+	delete m_ui;
 }

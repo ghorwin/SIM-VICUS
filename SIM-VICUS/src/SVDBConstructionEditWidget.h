@@ -1,14 +1,14 @@
-#ifndef SVDBCONSTRUCTIONOPAQUEEDITWIDGET_H
-#define SVDBCONSTRUCTIONOPAQUEEDITWIDGET_H
+#ifndef SVDBConstructionEditWidgetH
+#define SVDBConstructionEditWidgetH
 
 #include <QWidget>
 
 namespace Ui {
-class SVDBConstructionOpaqueEditWidget;
+class SVDBConstructionEditWidget;
 }
 
-class SVDBConstructionOpaqueEditWidget : public QWidget
-{
+/*! Edit widget for construction (types). */
+class SVDBConstructionEditWidget : public QWidget {
 	Q_OBJECT
 
 	/*! TODO SIM VICUS TEAM
@@ -35,11 +35,11 @@ class SVDBConstructionOpaqueEditWidget : public QWidget
 		Hersteller, etc...
 	*/
 public:
-	explicit SVDBConstructionOpaqueEditWidget(QWidget *parent = nullptr);
-	~SVDBConstructionOpaqueEditWidget();
+	explicit SVDBConstructionEditWidget(QWidget *parent = nullptr);
+	~SVDBConstructionEditWidget();
 
 private:
-	Ui::SVDBConstructionOpaqueEditWidget *ui;
+	Ui::SVDBConstructionEditWidget *m_ui;
 };
 
-#endif // SVDBCONSTRUCTIONOPAQUEEDITWIDGET_H
+#endif // SVDBConstructionEditWidgetH

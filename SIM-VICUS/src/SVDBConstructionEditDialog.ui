@@ -117,17 +117,7 @@
        </widget>
       </item>
       <item>
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>338</height>
-         </size>
-        </property>
-       </spacer>
+       <widget class="SVDBConstructionEditWidget" name="editWidget" native="true"/>
       </item>
      </layout>
     </widget>
@@ -172,6 +162,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>SVDBConstructionEditWidget</class>
+   <extends>QWidget</extends>
+   <header>SVDBConstructionEditWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../resources/SIM-VICUS.qrc"/>
  </resources>

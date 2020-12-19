@@ -108,6 +108,8 @@ void SVDBConstructionEditDialog::onSelectionChanged(const QItemSelection & selec
 
 		// hide edit widget and show placeholder
 		m_ui->label->show();
+		m_ui->editWidget->hide();
+		m_ui->verticalLayout->addStretch(1);
 	}
 	else {
 		m_ui->pushButtonSelect->setEnabled(true);
@@ -116,6 +118,8 @@ void SVDBConstructionEditDialog::onSelectionChanged(const QItemSelection & selec
 
 		// show and activate edit widget
 		m_ui->label->hide();
+		m_ui->editWidget->show();
+		m_ui->verticalLayout->removeItem(m_ui->verticalLayout->itemAt(2));
 	}
 }
 
