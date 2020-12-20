@@ -111,19 +111,35 @@ void SVDBConstructionEditDialog::on_toolButtonAdd_clicked() {
 	// add new construction
 	QModelIndex sourceIndex = m_dbModel->addNewItem();
 	QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
-	m_ui->tableView->selectionModel()->clear();
 	m_ui->tableView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
-	m_ui->tableView->selectRow(proxyIndex.row());
+//	m_ui->tableView->selectRow(proxyIndex.row());
 }
 
 
 void SVDBConstructionEditDialog::on_toolButtonCopy_clicked() {
+	// determine current item
+	QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
+	Q_ASSERT(currentProxyIndex.isValid());
+	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
 
+	unsigned int id = m_dbModel->data(sourceIndex, SVDBConstructionTableModel::Role_Id).toUInt();
+	const VICUS::Construction * con = SVSettings::instance().m_db.m_constructions[id];
+
+	// add item as copy
+	sourceIndex = m_dbModel->addNewItem(*con);
+	QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
+	m_ui->tableView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
 }
 
 
 void SVDBConstructionEditDialog::on_toolButtonRemove_clicked() {
-
+	QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
+	Q_ASSERT(currentProxyIndex.isValid());
+	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
+	m_dbModel->deleteItem(sourceIndex);
+	// last construction removed? clear input widget
+	if (m_dbModel->rowCount() == 0)
+		onCurrentIndexChanged(QModelIndex(), QModelIndex());
 }
 
 
@@ -137,6 +153,7 @@ void SVDBConstructionEditDialog::onCurrentIndexChanged(const QModelIndex &curren
 	}
 	else {
 		m_ui->pushButtonSelect->setEnabled(true);
+		// remove is not allowed for built-ins
 		m_ui->toolButtonRemove->setEnabled(true);
 		m_ui->toolButtonCopy->setEnabled(true);
 		m_ui->tableView->selectRow(current.row());
@@ -147,3 +164,16 @@ void SVDBConstructionEditDialog::onCurrentIndexChanged(const QModelIndex &curren
 }
 
 
+
+void SVDBConstructionEditDialog::on_pushButtonReloadUserDB_clicked() {
+	if (QMessageBox::question(this, QString(), tr("Reloading the user database from file will revert all changes made in this dialog since the program was started. Continue?"),
+							  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+	{
+		// tell db to drop all user-defined materials and re-read the construction DB
+		SVSettings::instance().m_db.m_constructions.removeUserElements();
+		SVSettings::instance().m_db.readDatabases(SVDatabase::DT_Constructions);
+		// tell model to reset completely
+		m_dbModel->resetModel();
+	}
+
+}

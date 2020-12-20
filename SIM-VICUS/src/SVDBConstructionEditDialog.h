@@ -45,6 +45,8 @@ private slots:
 	*/
 	void onCurrentIndexChanged(const QModelIndex &current, const QModelIndex &/*previous*/);
 
+	void on_pushButtonReloadUserDB_clicked();
+
 private:
 
 	Ui::SVDBConstructionEditDialog	*m_ui;

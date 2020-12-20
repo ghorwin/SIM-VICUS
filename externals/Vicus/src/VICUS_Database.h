@@ -90,7 +90,7 @@ public:
 		return newData.m_id;
 	}
 
-	/*! Removes a database element identifies by its ID
+	/*! Removes a database element identified by its ID
 		\warning Throws an IBK::Exception if no element with given ID exists.
 	*/
 	void remove(unsigned int id) {
@@ -100,6 +100,17 @@ public:
 			throw IBK::Exception( IBK::FormatString("Error removing database element with id=%1. No such ID in database.").arg(id), FUNC_ID);
 		m_data.erase(it);
 		m_modified = true;
+	}
+
+	/*! Removes all user-defined elements (element not marked as built-in) */
+	void removeUserElements() {
+		// iterate over all elements - mind: no increment of the iterator needed here!
+		for (typename std::map<unsigned int, T>::const_iterator it = m_data.begin(); it != m_data.end(); /* no increment here */) {
+			if (it->second.m_builtIn)
+				++it;
+			else
+				it = m_data.erase(it); // remove it, and set it to next following element iterator
+		}
 	}
 
 	/*! Reads database from xml file.
