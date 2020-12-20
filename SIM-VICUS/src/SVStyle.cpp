@@ -94,6 +94,10 @@ void SVStyle::formatDatabaseTableView(QTableView * v) {
 	v->setSelectionMode(QAbstractItemView::SingleSelection);
 	v->setSortingEnabled(true);
 	v->sortByColumn(0, Qt::AscendingOrder);
+	QFont f = v->font();
+	f.setPointSizeF(f.pointSizeF()*0.8);
+	v->setFont(f);
+	v->horizontalHeader()->setFont(f);
 }
 
 
@@ -135,11 +139,13 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 		file.open(QFile::ReadOnly);
 		m_styleSheet = QLatin1String(file.readAll());
 		qApp->setStyleSheet(m_styleSheet);
+		/// TODO : Stephan: adjust theme color members
 	}
 	else if ( theme == SVSettings::TT_White && fileWhite.exists()) {
 		fileWhite.open(QFile::ReadOnly);
 		m_styleSheet = QLatin1String(fileWhite.readAll());
 		qApp->setStyleSheet(m_styleSheet);
+		/// TODO : Stephan: adjust theme color members
 	}
 	else {
 		// clear style sheet for default style.

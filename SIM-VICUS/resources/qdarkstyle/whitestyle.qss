@@ -1,11 +1,12 @@
-
-QTextEdit:hover,  QDockWidget:hover, QGroupBox:hover, QTextBrowser:hover, 
- QRadioButton:hover, QSpinBox:hover, QToolButton:hover, 
-QTreeView:hover, QCheckBox:hover, QMenuBar:hover, QScrollBar:hover, 
-QHeaderView:hover, QStatusBar:hover, QListView:hover, QPushButton:hover,  QComboBox:hover, 
+/*
+QTextEdit:hover,  QDockWidget:hover, QGroupBox:hover, QTextBrowser:hover,
+ QRadioButton:hover, QSpinBox:hover, QToolButton:hover,
+QTreeView:hover, QCheckBox:hover, QMenuBar:hover, QScrollBar:hover,
+QHeaderView:hover, QStatusBar:hover, QListView:hover, QPushButton:hover,  QComboBox:hover,
 QTableView:hover, QToolBox:hover {
   border: 1px solid #ffaa00;
 }
+*/
 
 QSplitter::handle {
   spacing: 0px;

@@ -14,9 +14,9 @@ public:
 		ColId,
 		ColCheck,
 		ColName,
+		ColUsageType,
 		ColInsulationKind,
 		ColMaterialKind,
-		ColConstructionKind,
 		ColNumLayers,
 		ColUValue,
 		NumColumns

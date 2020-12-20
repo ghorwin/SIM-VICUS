@@ -6,9 +6,11 @@
 #include <QtExt_varianthelper.h>
 
 #include <QIcon>
+#include <QFont>
 
 #include <VICUS_Construction.h>
 #include <VICUS_Database.h>
+#include <VICUS_KeywordListQt.h>
 
 SVDBConstructionTableModel::SVDBConstructionTableModel(QObject * parent, SVDatabase & db) :
 	QAbstractTableModel(parent),
@@ -46,9 +48,9 @@ QVariant SVDBConstructionTableModel::data ( const QModelIndex & index, int role)
 			switch (index.column()) {
 				case ColId					: return it->first;
 				case ColName				: return QString::fromStdString(it->second.m_displayName.string("de", true)); // Note: take name in current language or if missing, "all"
-//				case ColInsulationKind		: return TH::ConstructionType::insulationKindString(it->second.m_insulationKind);
-//				case ColMaterialKind		: return TH::ConstructionType::materialKindString(it->second.m_materialKind);
-//				case ColConstructionKind	: return TH::ConstructionType::constructionKindString(it->second.m_constructionKind);
+				case ColUsageType			: return VICUS::KeywordListQt::Description("Construction::UsageType", it->second.m_usageType);
+				case ColInsulationKind		: return VICUS::KeywordListQt::Description("Construction::InsulationKind", it->second.m_insulationKind);
+				case ColMaterialKind		: return VICUS::KeywordListQt::Description("Construction::MaterialKind", it->second.m_materialKind);
 				case ColNumLayers			: return QString("%1").arg(it->second.m_materialLayers.size());
 				case ColUValue				: {
 					double UValue;
@@ -97,18 +99,28 @@ int SVDBConstructionTableModel::rowCount ( const QModelIndex & ) const {
 
 
 QVariant SVDBConstructionTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
-	if (orientation == Qt::Vertical || role != Qt::DisplayRole)
+	if (orientation == Qt::Vertical)
 		return QVariant();
-	switch ( section ) {
-		case ColId					: return tr("Id");
-		case ColName				: return tr("Name");
-		case ColInsulationKind		: return tr("Insulation");
-		case ColMaterialKind		: return tr("Material");
-		case ColConstructionKind	: return tr("Construction");
-		case ColNumLayers			: return tr("Layers");
-		case ColUValue				: return tr("U [W/m2K]");
-		default: ;
-	}
+	switch (role) {
+		case Qt::DisplayRole: {
+			switch ( section ) {
+				case ColId					: return tr("Id");
+				case ColName				: return tr("Name");
+				case ColInsulationKind		: return tr("Insulation");
+				case ColMaterialKind		: return tr("Material");
+				case ColUsageType			: return tr("Usage");
+				case ColNumLayers			: return tr("Layers");
+				case ColUValue				: return tr("U [W/m2K]");
+				default: ;
+			}
+		} break;
+		case Qt::FontRole : {
+			QFont f;
+			f.setBold(true);
+			f.setPointSizeF(f.pointSizeF()*0.8);
+			return f;
+		}
+	} // switch
 	return QVariant();
 }
 

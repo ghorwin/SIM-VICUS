@@ -19,6 +19,7 @@ SVDBConstructionEditDialog::SVDBConstructionEditDialog(QWidget *parent) :
 	m_ui->setupUi(this);
 
 	SVStyle::formatDatabaseTableView(m_ui->tableView);
+	m_ui->tableView->horizontalHeader()->setVisible(true);
 
 	m_dbModel = new SVDBConstructionTableModel(this, SVSettings::instance().m_db);
 
@@ -67,8 +68,8 @@ void SVDBConstructionEditDialog::edit() {
 	m_ui->pushButtonCancel->setVisible(false);
 
 	// ask database model to update its content
+	m_ui->tableView->resizeColumnsToContents();
 
-//	onSelectionChanged(QItemSelection(), QItemSelection());
 	exec();
 }
 
@@ -78,8 +79,6 @@ unsigned int SVDBConstructionEditDialog::select() {
 	m_ui->pushButtonClose->setVisible(false);
 	m_ui->pushButtonSelect->setVisible(true);
 	m_ui->pushButtonCancel->setVisible(true);
-
-//	onSelectionChanged(QItemSelection(), QItemSelection());
 
 	int res = exec();
 	if (res == QDialog::Accepted) {
@@ -136,6 +135,7 @@ void SVDBConstructionEditDialog::onCurrentIndexChanged(const QModelIndex &curren
 		m_ui->pushButtonSelect->setEnabled(true);
 		m_ui->toolButtonRemove->setEnabled(true);
 		m_ui->toolButtonCopy->setEnabled(true);
+		m_ui->tableView->selectRow(current.row());
 		// retrieve current construction ID
 		int conId = current.data(SVDBConstructionTableModel::Role_Id).toInt();
 		m_ui->editWidget->updateInput(conId);
