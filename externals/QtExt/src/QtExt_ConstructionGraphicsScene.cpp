@@ -192,7 +192,8 @@ QString ConstructionGraphicsScene::dimLabel(double d) {
 }
 
 void ConstructionGraphicsScene::setup(QRect frame, QPaintDevice *device, double res,
-						 const QVector<ConstructionLayer>& layers)
+						 const QVector<ConstructionLayer>& layers,
+						 QString leftLabel, QString rightLabel)
 {
 	Q_ASSERT(device);
 	m_device = device;
@@ -200,6 +201,9 @@ void ConstructionGraphicsScene::setup(QRect frame, QPaintDevice *device, double 
 	// If no change no calculations needed
 	bool noCalculationNeeded = frame == m_frame;
 	noCalculationNeeded = noCalculationNeeded && layers == m_inputData;
+
+	m_leftSideLabel = leftLabel;
+	m_rightSideLabel = rightLabel;
 
 	if( noCalculationNeeded)
 		return;
@@ -526,13 +530,13 @@ void ConstructionGraphicsScene::drawWall() {
 	addLine(xl, yb, xr, yb, m_internalPens->m_hborderPen);
 
 	// draw inside/outside text
-	QGraphicsTextItem* outsideLeft = addText(tr("outside"), m_tickFont);
+	QGraphicsTextItem* outsideLeft = addText(m_leftSideLabel, m_tickFont);
 	setAlignment(outsideLeft->document(), Qt::AlignVCenter);
 	outsideLeft->document()->setTextWidth(m_xpos.front());
 	double textWidth = outsideLeft->document()->idealWidth();
 	outsideLeft->setPos((m_xpos.front() - textWidth) / 2, yt - 2);
 
-	QGraphicsTextItem* insideRight = addText(tr("inside"), m_tickFont);
+	QGraphicsTextItem* insideRight = addText(m_rightSideLabel, m_tickFont);
 	setAlignment(insideRight->document(), Qt::AlignVCenter);
 	int outerBond = m_frame.width() - m_xpos.back();
 	insideRight->document()->setTextWidth(outerBond);

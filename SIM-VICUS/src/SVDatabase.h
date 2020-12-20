@@ -26,11 +26,20 @@
 */
 class SVDatabase {
 public:
+	enum DatabaseTypes {
+		DT_Materials,
+		DT_Constructions,
+		NUM_DT // used for "all"
+	};
+
 	/*! Standard constructor.*/
 	SVDatabase();
 
-	/*! Reads built-in and user-defined database. */
-	void readDatabases();
+	/*! Reads built-in and user-defined database.
+		If t is not NUM_DT, only the *user-db* for the selected database is read. Use this to restore the
+		user-defined database elements ("Undo" for database editing).
+	*/
+	void readDatabases(DatabaseTypes t = NUM_DT);
 
 	/*! Writes user-defined database. */
 	void writeDatabases() const;

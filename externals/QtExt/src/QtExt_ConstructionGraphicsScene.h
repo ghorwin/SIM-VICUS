@@ -35,7 +35,8 @@ public:
 		\param layers Vector of layers for drawing (material and thickness).
 	*/
 	void setup(QRect frame, QPaintDevice *device, double res,
-			   const QVector<ConstructionLayer>& layers);
+			   const QVector<ConstructionLayer>& layers,
+			   QString leftLabel = tr("Outside"), QString rightLabel = tr("Room side"));
 
 signals:
 
@@ -124,6 +125,9 @@ private:
 	// Pens
 	InternalPens*			m_internalPens;
 	InternalStringItems*	m_internalStringItems;
+
+	QString					m_leftSideLabel;
+	QString					m_rightSideLabel;
 };
 
 } // namespace QtExt

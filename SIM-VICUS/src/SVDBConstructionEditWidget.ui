@@ -198,7 +198,7 @@
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,2">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <widget class="QTableWidget" name="tableWidget">
           <property name="alternatingRowColors">
@@ -207,6 +207,9 @@
           <property name="selectionMode">
            <enum>QAbstractItemView::SingleSelection</enum>
           </property>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
          </widget>
         </item>
         <item>

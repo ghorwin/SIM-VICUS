@@ -21,28 +21,33 @@ SVDatabase::SVDatabase() :
 }
 
 
-void SVDatabase::readDatabases() {
+void SVDatabase::readDatabases(DatabaseTypes t) {
 	// built-in databases
 
-	IBK::Path dbDir(QtExt::Directories::databasesDir().toStdString());
+	// built-in dbs are only read when no filter is applied (i.e. general initialization)
+	if (t == NUM_DT) {
+		IBK::Path dbDir(QtExt::Directories::databasesDir().toStdString());
 
-	m_materials.readXML(		dbDir / "db_materials.xml", "Materials", "Material", true);
-	m_constructions.readXML(	dbDir / "db_constructions.xml", "Constructions", "Construction", true);
-	m_windows.readXML(			dbDir / "db_windows.xml", "Windows", "Window", true);
-	m_pipes.readXML(			dbDir / "db_pipes.xml", "Pipes", "Pipe", true);
-	m_fluids.readXML(			dbDir / "db_fluids.xml", "Fluids", "Fluid", true);
+		m_materials.readXML(		dbDir / "db_materials.xml", "Materials", "Material", true);
+		m_constructions.readXML(	dbDir / "db_constructions.xml", "Constructions", "Construction", true);
+		m_windows.readXML(			dbDir / "db_windows.xml", "Windows", "Window", true);
+		m_pipes.readXML(			dbDir / "db_pipes.xml", "Pipes", "Pipe", true);
+		m_fluids.readXML(			dbDir / "db_fluids.xml", "Fluids", "Fluid", true);
 
-//	readXMLDB(dbDir / "db_windowGlazingSystems.xml", "WindowGlazingSystems", "WindowGlazingSystem", m_dbWindowGlazingSystems, true);
-//	readXMLDB(dbDir / "db_surfaceProperties.xml", "SurfaceProperties", "SurfaceProperty", m_dbSurfaceProperty, true);
-//	readXMLDB(dbDir / "db_boundaryConditions.xml", "BoundaryConditions", "BoundaryCondition", m_dbBoundaryCondition, true);
-//	readXML(dbDir / "db_epdElements.xml", "EPDDatasets", "EPDDataset", m_dbEPDElements, true);
+	//	readXMLDB(dbDir / "db_windowGlazingSystems.xml", "WindowGlazingSystems", "WindowGlazingSystem", m_dbWindowGlazingSystems, true);
+	//	readXMLDB(dbDir / "db_surfaceProperties.xml", "SurfaceProperties", "SurfaceProperty", m_dbSurfaceProperty, true);
+	//	readXMLDB(dbDir / "db_boundaryConditions.xml", "BoundaryConditions", "BoundaryCondition", m_dbBoundaryCondition, true);
+	//	readXML(dbDir / "db_epdElements.xml", "EPDDatasets", "EPDDataset", m_dbEPDElements, true);
+	}
 
 	// user databases
 
 	IBK::Path userDbDir(QtExt::Directories::userDataDir().toStdString());
 
-	m_materials.readXML(		userDbDir / "db_materials.xml", "Materials", "Material", false);
-	m_constructions.readXML(	userDbDir / "db_constructions.xml", "Constructions", "Construction", false);
+	if (t == NUM_DT || t == DT_Materials)
+		m_materials.readXML(		userDbDir / "db_materials.xml", "Materials", "Material", false);
+	if (t == NUM_DT || t == DT_Constructions)
+		m_constructions.readXML(	userDbDir / "db_constructions.xml", "Constructions", "Construction", false);
 	m_windows.readXML(			userDbDir / "db_windows.xml", "Windows", "Window", false);
 	m_pipes.readXML(			userDbDir / "db_pipes.xml", "Pipes", "Pipe", false);
 	m_fluids.readXML(			userDbDir / "db_fluids.xml", "Fluids", "Fluid", false);

@@ -60,7 +60,7 @@ void ConstructionView::setData(QPaintDevice* paintDevice, const QVector<Construc
 	int w = width();
 	int h = height();
 	QRect frame(m_margins, m_margins, w - m_margins * 2, h - m_margins * 2);
-	m_diagramScene->setup(frame, m_device, m_resolution, m_inputData);
+	m_diagramScene->setup(frame, m_device, m_resolution, m_inputData, m_leftSideLabel, m_rightSideLabel);
 	show();
 }
 

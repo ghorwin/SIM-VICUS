@@ -49,6 +49,9 @@ public:
 	/*! Return selected layer.*/
 	int selectedLayer() const { return m_selectedLayer; }
 
+	QString	m_leftSideLabel;
+	QString	m_rightSideLabel;
+
 signals:
 	/*! Signal that contains selected layer or -1 if no layer is selected.*/
 	void layerSelected(int index);

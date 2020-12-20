@@ -25,7 +25,10 @@ public:
 		\param layers Vector with construction layers
 		\param fixed If true construction cannot be changed
 	*/
-	void setData(const QVector<ConstructionLayer>& layers, bool fixed);
+	void setData(const QVector<ConstructionLayer>& layers, bool fixed,
+				 QString	leftSideLabel = tr("Outside"),
+				 QString	rightSideLabel = tr("Inside")
+				 );
 
 	/*! Set visibility of toolbar widget.*/
 	void setToolbarVisible(bool visible);

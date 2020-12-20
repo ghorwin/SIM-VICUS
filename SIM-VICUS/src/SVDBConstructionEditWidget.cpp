@@ -30,9 +30,6 @@ SVDBConstructionEditWidget::SVDBConstructionEditWidget(QWidget * parent) :
 	m_ui->labelNameDe->setPixmap( QPixmap(":/gfx/icons/de.png") );
 
 	m_ui->tableWidget->setColumnCount(5);
-	QStringList headerLabels;
-	headerLabels << tr("Material") << tr("Width [cm]") << tr("rho [kg/m3]") << tr("cT [J/kgK]") << tr("lambda [W/mK]");
-	m_ui->tableWidget->setHorizontalHeaderLabels(headerLabels);
 
 	/// TODO : move style adjustment to SVStyle class
 	QFont f = m_ui->tableWidget->font();
@@ -50,6 +47,10 @@ SVDBConstructionEditWidget::SVDBConstructionEditWidget(QWidget * parent) :
 #endif
 	m_ui->tableWidget->horizontalHeader()->setFont(f);
 	m_ui->tableWidget->verticalHeader()->setDefaultSectionSize(height);
+
+	QStringList headerLabels;
+	headerLabels << tr("Material") << tr("Width [cm]") << tr("rho [kg/m3]") << tr("cT [J/kgK]") << tr("lambda [W/mK]");
+	m_ui->tableWidget->setHorizontalHeaderLabels(headerLabels);
 
 
 	m_ui->tableWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
@@ -131,6 +132,9 @@ void SVDBConstructionEditWidget::updateInput(int id) {
 	m_current = nullptr; // disable edit triggers
 	// find the construction data object matching the index
 	if (id == -1) {
+		m_ui->groupBox->setEnabled(false);
+		m_ui->groupBox_2->setEnabled(false);
+
 		// clear all input and disable controls
 		m_ui->lineEditNameEn->setText("");
 		m_ui->lineEditNameDe->setText("");
@@ -139,9 +143,9 @@ void SVDBConstructionEditWidget::updateInput(int id) {
 		m_ui->spinBoxLayerCount->setValue(0);
 		m_ui->lineEditNameEn->setReadOnly(true);
 		m_ui->lineEditNameDe->setReadOnly(true);
-		m_ui->spinBoxLayerCount->setEnabled(false);
 		m_ui->spinBoxLayerCount->setValue(0);
-		m_ui->tableWidget->setRowCount(0);
+		m_ui->tableWidget->setRowCount(0); // Must be called after spinBoxLayerCount->setValue(0); !
+
 		m_ui->comboBoxMaterialKind->blockSignals(true);
 		m_ui->comboBoxInsulationKind->blockSignals(true);
 		m_ui->comboBoxConstructionUsage->blockSignals(true);
@@ -153,8 +157,14 @@ void SVDBConstructionEditWidget::updateInput(int id) {
 		m_ui->comboBoxMaterialKind->blockSignals(false);
 		m_ui->comboBoxInsulationKind->blockSignals(false);
 		m_ui->comboBoxConstructionUsage->blockSignals(false);
+
+		m_ui->widgetConstructionView->clear();
+
 		return;
 	}
+	m_ui->groupBox->setEnabled(true);
+	m_ui->groupBox_2->setEnabled(true);
+
 	VICUS::Construction * con = const_cast<VICUS::Construction *>(m_db->m_constructions[(unsigned int)id]);
 	m_current = con;
 
@@ -304,6 +314,10 @@ void SVDBConstructionEditWidget::updateTable() {
 	m_ui->tableWidget->blockSignals(false);
 	// update UValue and thermal mass
 	updateUValue();
+	m_ui->tableWidget->resizeColumnToContents(0);
+	m_ui->tableWidget->resizeColumnToContents(2);
+	m_ui->tableWidget->resizeColumnToContents(3);
+	m_ui->tableWidget->resizeColumnToContents(4);
 }
 
 
@@ -316,27 +330,27 @@ void SVDBConstructionEditWidget::updateConstructionView() {
 		QtExt::ConstructionLayer layer;
 		unsigned int matID = m_current->m_materialLayers[i].m_matId;
 		const VICUS::Material * mat = m_db->m_materials[matID];
-		if (mat == nullptr) {
+		if (mat != nullptr) {
 			layer.m_name = QString::fromStdString(mat->m_displayName("de", true));
-			layer.m_color = mat->m_color;
+//			layer.m_color = mat->m_color;
 		}
 		else {
 			layer.m_name = tr("<select material>");
 		}
 
 		layer.m_width = m_current->m_materialLayers[i].m_thickness.value;
-		if (!layer.m_color.isValid())
+//		if (!layer.m_color.isValid())
 			layer.m_color = QtExt::ConstructionView::ColorList[i % 12];
 		layer.m_id = (int)matID;
 		layers.push_back(layer);
 	}
-	m_ui->widgetConstructionView->setData(layers, m_current->m_builtIn);
+	m_ui->widgetConstructionView->setData(layers, m_current->m_builtIn, tr("Side A"), tr("Side B"));
 }
 
 
 void SVDBConstructionEditWidget::on_spinBoxLayerCount_valueChanged(int val) {
+	if (m_current == nullptr) return; // m_current is nullptr, when nothing is selected and controls are defaulted to "empty"
 	m_ui->tableWidget->setRowCount(val+2);
-	Q_ASSERT(m_current != nullptr);
 
 	// only update, if number of layers has changed
 	if ((int)m_current->m_materialLayers.size() != val) {
@@ -384,7 +398,7 @@ void SVDBConstructionEditWidget::on_lineEditNameDe_editingFinished() {
 
 
 void SVDBConstructionEditWidget::on_comboBoxInsulationKind_currentIndexChanged(int) {
-	Q_ASSERT(m_current != nullptr);
+	if (m_current == nullptr) return; // m_current is nullptr, when nothing is selected and controls are defaulted to "empty"
 
 	VICUS::Construction::InsulationKind ik = static_cast<VICUS::Construction::InsulationKind>(m_ui->comboBoxInsulationKind->currentData().toInt());
 	if (ik != m_current->m_insulationKind) {
@@ -396,7 +410,7 @@ void SVDBConstructionEditWidget::on_comboBoxInsulationKind_currentIndexChanged(i
 }
 
 void SVDBConstructionEditWidget::on_comboBoxMaterialKind_currentIndexChanged(int ) {
-	Q_ASSERT(m_current != nullptr);
+	if (m_current == nullptr) return; // m_current is nullptr, when nothing is selected and controls are defaulted to "empty"
 
 	VICUS::Construction::MaterialKind mk = static_cast<VICUS::Construction::MaterialKind>(m_ui->comboBoxMaterialKind->currentData().toInt());
 	if (mk != m_current->m_materialKind) {
@@ -409,7 +423,7 @@ void SVDBConstructionEditWidget::on_comboBoxMaterialKind_currentIndexChanged(int
 
 
 void SVDBConstructionEditWidget::on_comboBoxConstructionUsage_currentIndexChanged(int ) {
-	Q_ASSERT(m_current != nullptr);
+	if (m_current == nullptr) return; // m_current is nullptr, when nothing is selected and controls are defaulted to "empty"
 
 	VICUS::Construction::UsageType ut = static_cast<VICUS::Construction::UsageType>(m_ui->comboBoxConstructionUsage->currentData().toInt());
 	if (ut != m_current->m_usageType) {
@@ -422,7 +436,7 @@ void SVDBConstructionEditWidget::on_comboBoxConstructionUsage_currentIndexChange
 
 
 void SVDBConstructionEditWidget::on_comboBoxUserKey1_currentIndexChanged(int ) {
-	Q_ASSERT(m_current != nullptr);
+	if (m_current == nullptr) return; // m_current is nullptr, when nothing is selected and controls are defaulted to "empty"
 
 
 //	QString key1 = m_ui->comboBoxUserKey1->currentText();
@@ -434,7 +448,7 @@ void SVDBConstructionEditWidget::on_comboBoxUserKey1_currentIndexChanged(int ) {
 }
 
 void SVDBConstructionEditWidget::on_comboBoxUserKey2_currentIndexChanged(int ) {
-	Q_ASSERT(m_current != nullptr);
+	if (m_current == nullptr) return; // m_current is nullptr, when nothing is selected and controls are defaulted to "empty"
 
 //	QString key2 = m_ui->comboBoxUserKey2->currentText();
 //	if(key2 != m_current->m_userKey2) {
@@ -445,7 +459,7 @@ void SVDBConstructionEditWidget::on_comboBoxUserKey2_currentIndexChanged(int ) {
 }
 
 void SVDBConstructionEditWidget::onUserKey1EditingFinished() {
-	Q_ASSERT(m_current != nullptr);
+	if (m_current == nullptr) return; // m_current is nullptr, when nothing is selected and controls are defaulted to "empty"
 
 //	QString key1 = m_ui->comboBoxUserKey1->currentText();
 //	if(key1 != m_current->m_userKey1) {
@@ -457,7 +471,7 @@ void SVDBConstructionEditWidget::onUserKey1EditingFinished() {
 }
 
 void SVDBConstructionEditWidget::onUserKey2EditingFinished() {
-	Q_ASSERT(m_current != nullptr);
+	if (m_current == nullptr) return; // m_current is nullptr, when nothing is selected and controls are defaulted to "empty"
 
 //	QString key2 = m_ui->comboBoxUserKey2->currentText();
 //	if(key2 != m_current->m_userKey2) {
@@ -517,6 +531,9 @@ void SVDBConstructionEditWidget::tableItemClicked(QTableWidgetItem * item) {
 	// ignore all but the first two columns
 	if (item->column() > 1)
 		return;
+	// first and last row are ignored
+	if (item->row() == 0 || item->row() == m_ui->tableWidget->rowCount()-1)
+		return;
 
 	Q_ASSERT(m_current != nullptr);
 
@@ -527,6 +544,10 @@ void SVDBConstructionEditWidget::tableItemClicked(QTableWidgetItem * item) {
 
 void SVDBConstructionEditWidget::onCellDoubleClicked(int row, int col) {
 	if (col != 0)
+		return;
+
+	// first and last row are ignored
+	if (row == 0 || row == m_ui->tableWidget->rowCount()-1)
 		return;
 
 	if (m_current == nullptr || m_current->m_builtIn)
