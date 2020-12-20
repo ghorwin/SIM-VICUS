@@ -10,7 +10,7 @@
 #include <VICUS_Construction.h>
 #include <VICUS_Database.h>
 
-DBConstructionTableModel::DBConstructionTableModel(QObject * parent, Database & db) :
+SVDBConstructionTableModel::SVDBConstructionTableModel(QObject * parent, SVDatabase & db) :
 	QAbstractTableModel(parent),
 	m_db(&db)
 {
@@ -18,16 +18,16 @@ DBConstructionTableModel::DBConstructionTableModel(QObject * parent, Database & 
 }
 
 
-DBConstructionTableModel::~DBConstructionTableModel() {
+SVDBConstructionTableModel::~SVDBConstructionTableModel() {
 }
 
 
-int DBConstructionTableModel::columnCount ( const QModelIndex & ) const {
+int SVDBConstructionTableModel::columnCount ( const QModelIndex & ) const {
 	return NumColumns;
 }
 
 
-QVariant DBConstructionTableModel::data ( const QModelIndex & index, int role) const {
+QVariant SVDBConstructionTableModel::data ( const QModelIndex & index, int role) const {
 	if (!index.isValid())
 		return QVariant();
 
@@ -91,12 +91,12 @@ QVariant DBConstructionTableModel::data ( const QModelIndex & index, int role) c
 }
 
 
-int DBConstructionTableModel::rowCount ( const QModelIndex & ) const {
+int SVDBConstructionTableModel::rowCount ( const QModelIndex & ) const {
 	return (int)m_db->m_constructions.size();
 }
 
 
-QVariant DBConstructionTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
+QVariant SVDBConstructionTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
 	if (orientation == Qt::Vertical || role != Qt::DisplayRole)
 		return QVariant();
 	switch ( section ) {
@@ -113,7 +113,7 @@ QVariant DBConstructionTableModel::headerData(int section, Qt::Orientation orien
 }
 
 
-QModelIndex DBConstructionTableModel::addNewItem() {
+QModelIndex SVDBConstructionTableModel::addNewItem() {
 	VICUS::Construction c;
 	c.m_displayName.setEncodedString("en:<new construction type>");
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
@@ -124,7 +124,7 @@ QModelIndex DBConstructionTableModel::addNewItem() {
 }
 
 
-QModelIndex DBConstructionTableModel::addNewItem(VICUS::Construction c) {
+QModelIndex SVDBConstructionTableModel::addNewItem(VICUS::Construction c) {
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_constructions.add( c );
 	endInsertRows();
@@ -133,7 +133,7 @@ QModelIndex DBConstructionTableModel::addNewItem(VICUS::Construction c) {
 }
 
 
-bool DBConstructionTableModel::deleteItem(QModelIndex index) {
+bool SVDBConstructionTableModel::deleteItem(QModelIndex index) {
 	if (!index.isValid())
 		return false;
 	unsigned int id = data(index, Qt::UserRole).toUInt();
@@ -144,13 +144,13 @@ bool DBConstructionTableModel::deleteItem(QModelIndex index) {
 }
 
 
-void DBConstructionTableModel::resetModel() {
+void SVDBConstructionTableModel::resetModel() {
 	beginResetModel();
 	endResetModel();
 }
 
 
-void DBConstructionTableModel::setItemModified(unsigned int id) {
+void SVDBConstructionTableModel::setItemModified(unsigned int id) {
 	QModelIndex idx = indexById(id);
 	QModelIndex left = index(idx.row(), 0);
 	QModelIndex right = index(idx.row(), NumColumns-1);
@@ -158,7 +158,7 @@ void DBConstructionTableModel::setItemModified(unsigned int id) {
 }
 
 
-QModelIndex DBConstructionTableModel::indexById(unsigned int id) const {
+QModelIndex SVDBConstructionTableModel::indexById(unsigned int id) const {
 	for (int i=0; i<rowCount(); ++i) {
 		QModelIndex idx = index(i, 0);
 		if (data(idx, Qt::UserRole).toUInt() == id)

@@ -10,7 +10,7 @@ namespace Ui {
 class QItemSelection;
 class QSortFilterProxyModel;
 
-class DBConstructionTableModel;
+class SVDBConstructionTableModel;
 
 /*! The edit dialog for construction types. */
 class SVDBConstructionEditDialog : public QDialog {
@@ -48,7 +48,7 @@ private:
 
 	Ui::SVDBConstructionEditDialog	*m_ui;
 
-	DBConstructionTableModel		*m_dbModel		= nullptr;
+	SVDBConstructionTableModel		*m_dbModel		= nullptr;
 	QSortFilterProxyModel			*m_proxyModel	= nullptr;
 };
 

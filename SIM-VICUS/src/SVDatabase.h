@@ -24,10 +24,10 @@
 	The items in the lists of the db are uniquely identified through their IDs. The display name
 	is usually given as encoded multi-language string.
 */
-class Database {
+class SVDatabase {
 public:
 	/*! Standard constructor.*/
-	Database();
+	SVDatabase();
 
 	/*! Reads built-in and user-defined database. */
 	void readDatabases();

@@ -3,62 +3,112 @@
 
 #include <QWidget>
 
+#include <QtExt_ConstructionLayer.h>
+
 namespace Ui {
-class SVDBConstructionEditWidget;
+	class SVDBConstructionEditWidget;
 }
 
-#include <VICUS_Construction.h>
+class QModelIndex;
+class QComboBox;
+class QTableWidgetItem;
 
-/*! Edit widget for construction (types). */
+namespace VICUS {
+	class Construction;
+}
+
+class SVDBConstructionTableModel;
+class SVDatabase;
+
+/*! Edit widget for construction types.
+
+	A call to updateInput() initializes the widget and fill the GUI controls with data.
+	As long as the widget is visible the pointer to the data must be valid. Keep this
+	in mind if you change the container that the data object belongs to! If the pointer
+	is no longer valid or you want to resize the container (through adding new items)
+	call updateInput() with an invalid index and/or nullptr pointer to the model.
+*/
 class SVDBConstructionEditWidget : public QWidget {
 	Q_OBJECT
-
-	/*! TODO SIM VICUS TEAM
-		Die Materialschichttabelle besteht aus folgenden Punkten
-		Nr | Aktiv | Material | Dicke | Wärmeleitfähigkeit | Dichte | spec. Wärmekapazität | Widerstand
-		   |       |          |  cm   | W/m2K              | kg/m3  |         J/kgK        |   m2K/W
-
-		Bei Aktiv sind checkboxen drin
-		Nur Aktiv und Dicke kann editiert werden
-		Rest sind nur Infos
-		Die Zeilen werden immer in unterschiedlichen Hintergrundfarben dargestellt
-		grau
-		hellgrau
-		grau
-		etc...
-
-		Beispiel
-		1 | o | Bitumen | 0.1 | 1 | 1500 | 840 | ...
-		1 | x | Beton	| 20  | 2 | 2300 | 840 | ...
-
-
-		TODO Dirk
-		Die weiteren Eigenschaften müssen noch gesetzt werden
-		Hersteller, etc...
-	*/
 public:
-	explicit SVDBConstructionEditWidget(QWidget *parent = nullptr);
+	/*! Constructor, requires read/write access to database object. */
+	SVDBConstructionEditWidget(QWidget * parent);
 	~SVDBConstructionEditWidget();
 
+	/*! Needs to be called once, before the widget is being used. */
+	void setup(SVDatabase * db, SVDBConstructionTableModel * dbModel);
 
-	/*! Updates widget with content of given construction data. */
-	void setConstruction(const VICUS::Construction & con);
-
-	/*! Returns current construction data. */
-	const VICUS::Construction & construction() const { return m_construction; }
+	/*! Called whenever the user selects a new construction type. */
+	virtual void updateInput(int id);
 
 signals:
-
-	/*! Emitted, whenever m_construction changes due to user interaction. */
-	void constructionChanged();
+	/*! Emitted, whenever model data has been changed that is shown in the table
+		and may have an effect on sorting.
+	*/
+	void tableDataChanged();
 
 private:
+	/*! Updates the content of the table. */
+	void updateTable();
+
+	/*! Updates the graphical construction view.*/
+	void updateConstructionView();
+
+	/*! Updates the U value and thermal storage mass line edits. */
+	void updateUValue();
+
+	/*! Show a material database view in order to select a new material and change the current selection.
+		\param index Index of the layer for material change.
+	*/
+	void showMaterialSelectionDialog(int index);
+
+	/*! The UI class. */
 	Ui::SVDBConstructionEditWidget	*m_ui;
 
-	/*! Stores data currently shown in widget.
-		Any change commited in widget are stored first here, then the change signal is emitted.
+	/*! Cached pointer to database object. */
+	SVDatabase					*m_db;
+
+	/*! Pointer to the database model used to populate the list view. */
+	SVDBConstructionTableModel	*m_dbModel;
+
+	/*! Pointer to currently edited construction type.
+		The pointer is updated whenever updateInput() is called.
+		A nullptr pointer means that there isn't a current construction to edit.
 	*/
-	VICUS::Construction				m_construction;
+	VICUS::Construction			*m_current;
+
+private slots:
+	void on_lineEditNameEn_editingFinished();
+	void on_lineEditNameDe_editingFinished();
+	void on_comboBoxInsulationKind_currentIndexChanged(int index);
+	void on_comboBoxMaterialKind_currentIndexChanged(int index);
+	void on_comboBoxConstructionKind_currentIndexChanged(int index);
+	void on_comboBoxUserKey1_currentIndexChanged(int index);
+	void on_comboBoxUserKey2_currentIndexChanged(int index);
+	void onUserKey1EditingFinished();
+	void onUserKey2EditingFinished();
+	void on_spinBoxLayerCount_valueChanged(int);
+	/*! Triggered when user modifies a table cell, only needed for 'width'-column. */
+	void tableItemChanged(QTableWidgetItem *);
+	/*! Triggered when user modifies a table cell, only needed for 'width'-column. */
+	void tableItemClicked(QTableWidgetItem *);
+	/*! Slot for react on double click on table cell.*/
+	void onCellDoubleClicked(int row, int col);
+
+	/*! Connected with construction view widget layer selection changed.*/
+	void constructionViewlayerSelected(int index);
+
+	/*! Connected with construction view widget assign material signal.*/
+	void constructionViewAssign_material(int index);
+
+	/*! Connected with construction view widget insert layer signal.*/
+	void constructionViewInsert_layer(int index, bool left);
+
+	/*! Connected with construction view widget remove layer signal.*/
+	void constructionViewRemove_layer(int index);
+
+	/*! Connected with construction view widget move layer signal.*/
+	void constructionViewMove_layer(int index, bool left);
 };
 
 #endif // SVDBConstructionEditWidgetH

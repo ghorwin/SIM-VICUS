@@ -10,7 +10,7 @@
 const unsigned int USER_ID_SPACE_START = 10000;
 
 
-Database::Database() :
+SVDatabase::SVDatabase() :
 	m_materials(USER_ID_SPACE_START),
 	m_constructions(USER_ID_SPACE_START),
 	m_windows(USER_ID_SPACE_START),
@@ -21,7 +21,7 @@ Database::Database() :
 }
 
 
-void Database::readDatabases() {
+void SVDatabase::readDatabases() {
 	// built-in databases
 
 	IBK::Path dbDir(QtExt::Directories::databasesDir().toStdString());
@@ -54,7 +54,7 @@ void Database::readDatabases() {
 }
 
 
-void Database::writeDatabases() const {
+void SVDatabase::writeDatabases() const {
 	// we only write user databases
 
 	IBK::Path userDbDir(QtExt::Directories::userDataDir().toStdString());

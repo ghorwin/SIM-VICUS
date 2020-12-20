@@ -39,6 +39,9 @@ public:
 	QColor				m_alternativeBackgroundDark;
 	QColor				m_alternativeBackgroundBright;
 	QColor				m_alternativeBackgroundText;
+	QColor				m_readOnlyEditFieldBackground;
+	QColor				m_alternativeReadOnlyEditFieldBackground;
+	QColor				m_errorEditFieldBackground;
 
 private:
 	static SVStyle		*m_self;

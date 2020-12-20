@@ -178,7 +178,7 @@ public:
 
 
 	/*! Our database. */
-	Database					m_db;
+	SVDatabase					m_db;
 
 
 private:

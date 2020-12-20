@@ -7,16 +7,16 @@
 
 #include "SVStyle.h"
 
-DBModelDelegate::DBModelDelegate(QObject * parent, int builtInRole) :
+SVDBModelDelegate::SVDBModelDelegate(QObject * parent, int builtInRole) :
 	QItemDelegate(parent),
 	m_builtInRole(builtInRole)
 {
 }
 
-DBModelDelegate::~DBModelDelegate() {
+SVDBModelDelegate::~SVDBModelDelegate() {
 }
 
-void DBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const {
+void SVDBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const {
 	const QStyleOptionViewItem * opt = &option;
 	// find out if our index is of a built-in element
 	bool builtin = index.data(m_builtInRole).toBool();
@@ -31,7 +31,10 @@ void DBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & op
 		// adjust text color for subsequent call to QItemDelegate::paint()
 		QPalette pal = opt->palette;
 		pal.setColor(QPalette::Text, SVStyle::instance().m_alternativeBackgroundText);
-		((QStyleOptionViewItem *)opt)->palette = pal; /// \warning this may be unsafe and may not work in future Qt versions
+		QStyleOptionViewItem modifiedOption(option);
+		modifiedOption.palette = pal;
+		QItemDelegate::paint(painter, modifiedOption, index);
 	}
-	QItemDelegate::paint(painter, option, index);
+	else
+		QItemDelegate::paint(painter, option, index);
 }

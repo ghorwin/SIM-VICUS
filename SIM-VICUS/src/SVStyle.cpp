@@ -56,7 +56,9 @@ SVStyle::SVStyle() {
 	m_alternativeBackgroundBright = "#fff4b8";
 	m_alternativeBackgroundDark = "#ffe49d";
 	m_alternativeBackgroundText = "#760000";
-
+	m_readOnlyEditFieldBackground = "#d6e9ff";
+	m_alternativeReadOnlyEditFieldBackground = "#b5d8ff";
+	m_errorEditFieldBackground = "#ff7777";
 }
 
 

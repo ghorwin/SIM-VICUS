@@ -6,13 +6,13 @@
 /*!	Colors background and text of built-in database items in different colors.
 	Expects built-in
 */
-class DBModelDelegate : public QItemDelegate {
+class SVDBModelDelegate : public QItemDelegate {
 	Q_OBJECT
 public:
 	/*! Default constructor. */
-	DBModelDelegate(QObject * parent, int builtInRole);
+	SVDBModelDelegate(QObject * parent, int builtInRole);
 	/*! Default destructor. */
-	~DBModelDelegate();
+	~SVDBModelDelegate();
 
 	void paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 

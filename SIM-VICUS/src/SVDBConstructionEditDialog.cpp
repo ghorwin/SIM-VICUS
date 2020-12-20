@@ -20,31 +20,33 @@ SVDBConstructionEditDialog::SVDBConstructionEditDialog(QWidget *parent) :
 
 	SVStyle::formatDatabaseTableView(m_ui->tableView);
 
-	m_dbModel = new DBConstructionTableModel(this, SVSettings::instance().m_db);
+	m_dbModel = new SVDBConstructionTableModel(this, SVSettings::instance().m_db);
 
 	m_proxyModel = new QSortFilterProxyModel(this);
 	m_proxyModel->setSourceModel(m_dbModel);
 	m_ui->tableView->setModel(m_proxyModel);
 
+	m_ui->editWidget->setup(&SVSettings::instance().m_db, m_dbModel);
+
 	// specific setup for construction DB table
 
-	m_ui->tableView->horizontalHeader()->setSectionResizeMode(DBConstructionTableModel::ColId, QHeaderView::Fixed);
-	m_ui->tableView->horizontalHeader()->setSectionResizeMode(DBConstructionTableModel::ColCheck, QHeaderView::Fixed);
-	m_ui->tableView->horizontalHeader()->setSectionResizeMode(DBConstructionTableModel::ColName, QHeaderView::Stretch);
-	m_ui->tableView->horizontalHeader()->setSectionResizeMode(DBConstructionTableModel::ColNumLayers, QHeaderView::ResizeToContents);
-	m_ui->tableView->horizontalHeader()->setSectionResizeMode(DBConstructionTableModel::ColUValue, QHeaderView::ResizeToContents);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBConstructionTableModel::ColId, QHeaderView::Fixed);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBConstructionTableModel::ColCheck, QHeaderView::Fixed);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBConstructionTableModel::ColName, QHeaderView::Stretch);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBConstructionTableModel::ColNumLayers, QHeaderView::ResizeToContents);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBConstructionTableModel::ColUValue, QHeaderView::ResizeToContents);
 
-	m_ui->tableView->setColumnWidth(DBConstructionTableModel::ColId, 60);
+	m_ui->tableView->setColumnWidth(SVDBConstructionTableModel::ColId, 60);
 #if defined(Q_OS_MAC)
 	m_ui->tableView->setColumnWidth(ConstructionDBModel::ColCheck, 26);
 #else
-	m_ui->tableView->setColumnWidth(DBConstructionTableModel::ColCheck, 22);
+	m_ui->tableView->setColumnWidth(SVDBConstructionTableModel::ColCheck, 22);
 #endif
-	m_ui->tableView->setColumnWidth(DBConstructionTableModel::ColName, 120);
+	m_ui->tableView->setColumnWidth(SVDBConstructionTableModel::ColName, 120);
 	m_ui->tableView->setAlternatingRowColors(true);
 
 	// set item delegate for coloring built-ins
-	DBModelDelegate * dg = new DBModelDelegate(this, DBConstructionTableModel::Role_BuiltIn);
+	SVDBModelDelegate * dg = new SVDBModelDelegate(this, SVDBConstructionTableModel::Role_BuiltIn);
 	m_ui->tableView->setItemDelegate(dg);
 
 }
