@@ -13,6 +13,7 @@ include_directories(
 	${PROJECT_SOURCE_DIR}/../../../externals/Nandrad/srcTranslations
 	${PROJECT_SOURCE_DIR}/../../../externals/TiCPP/src
 	${PROJECT_SOURCE_DIR}/../../../externals/Vicus/src
+	${PROJECT_SOURCE_DIR}/../../../externals/Vicus/srcTranslations
 	${PROJECT_SOURCE_DIR}/../../../externals/QtExt/src
 	${PROJECT_SOURCE_DIR}/../../../externals/QuaZIP/src
 	${PROJECT_SOURCE_DIR}/../../../externals/QuaZIP/src/zlib
