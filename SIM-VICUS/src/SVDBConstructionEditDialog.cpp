@@ -154,7 +154,9 @@ void SVDBConstructionEditDialog::onCurrentIndexChanged(const QModelIndex &curren
 	else {
 		m_ui->pushButtonSelect->setEnabled(true);
 		// remove is not allowed for built-ins
-		m_ui->toolButtonRemove->setEnabled(true);
+		QModelIndex sourceIndex = m_proxyModel->mapToSource(current);
+		m_ui->toolButtonRemove->setEnabled(!sourceIndex.data(SVDBConstructionTableModel::Role_BuiltIn).toBool());
+
 		m_ui->toolButtonCopy->setEnabled(true);
 		m_ui->tableView->selectRow(current.row());
 		// retrieve current construction ID
