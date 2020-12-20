@@ -115,6 +115,11 @@ public:
 	*/
 	std::string string(const std::string& languageId = m_language, bool returnAllString=false) const;
 
+	/*! Operator (), just a convenience overload of function string(). */
+	std::string operator()(const std::string& languageId = m_language, bool returnAllString=false) const {
+		return string(languageId, returnAllString);
+	}
+
 	/*! Clears all internal member variables.*/
 	void clear();
 
