@@ -14,10 +14,11 @@
 
 namespace QtExt {
 
-class ConstructionView : public QGraphicsView
-{
+/*! The view that shows the 1D construction model. */
+class ConstructionView : public QGraphicsView {
 	Q_OBJECT
 public:
+	/*! Pre-defined colors for the individual layers. */
 	static const QColor ColorList[12];
 
 	/*! Default constructor.
