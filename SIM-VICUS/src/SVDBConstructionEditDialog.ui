@@ -97,14 +97,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="SVDBConstructionEditWidget" name="editWidget" native="true">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>150</height>
-       </size>
-      </property>
-     </widget>
+     <widget class="SVDBConstructionEditWidget" name="editWidget" native="true"/>
     </widget>
    </item>
    <item>

@@ -49,6 +49,7 @@ INCLUDEPATH = \
 		../../../externals/Nandrad/src \
 		../../../externals/Nandrad/srcTranslations \
 		../../../externals/Vicus/src \
+		../../../externals/Vicus/srcTranslations \
 		../../../externals/TiCPP/src \
 		../../../externals/QuaZIP/src \
 		../../../externals/QuaZIP/src/zlib \
@@ -73,6 +74,7 @@ win32 {
 
 SOURCES += \
 		../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
+		../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
 		../../src/SVClimateFileInfo.cpp \
 		../../src/SVDBComponentEditWidget.cpp \
 		../../src/SVDBConstructionEditDialog.cpp \

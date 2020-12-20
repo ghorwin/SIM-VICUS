@@ -1,10 +1,6 @@
 #include "SVDBConstructionEditWidget.h"
 
 #include <QHeaderView>
-#include <QDebug>
-#include <QMessageBox>
-#include <QCloseEvent>
-#include <QFileDialog>
 
 #include "ui_SVDBConstructionEditWidget.h"
 
@@ -14,6 +10,8 @@
 #include <QtExt_Locale.h>
 
 #include "SVStyle.h"
+
+#include <VICUS_KeywordListQt.h>
 
 #include "SVDBConstructionTableModel.h"
 //#include "MaterialSelectorDialog.h"
@@ -35,18 +33,24 @@ SVDBConstructionEditWidget::SVDBConstructionEditWidget(QWidget * parent) :
 	QStringList headerLabels;
 	headerLabels << tr("Material") << tr("Width [cm]") << tr("rho [kg/m3]") << tr("cT [J/kgK]") << tr("lambda [W/mK]");
 	m_ui->tableWidget->setHorizontalHeaderLabels(headerLabels);
-	m_ui->tableWidget->verticalHeader()->setVisible(false);
 
 	/// TODO : move style adjustment to SVStyle class
-	QFont f(m_ui->tableWidget->horizontalHeader()->font());
+	QFont f = m_ui->tableWidget->font();
+	f.setPointSizeF( f.pointSize()*0.8);
+	m_ui->tableWidget->setFont(f);
+
+	f = m_ui->tableWidget->horizontalHeader()->font();
 	f.setBold(true);
+	f.setPointSizeF( f.pointSize()*0.8);
 	QFontMetrics fm(f);
 #if defined(Q_OS_MAC)
 	int height = fm.lineSpacing()+ 6;
 #else
 	int height = fm.lineSpacing()+ 3;
 #endif
+	m_ui->tableWidget->horizontalHeader()->setFont(f);
 	m_ui->tableWidget->verticalHeader()->setDefaultSectionSize(height);
+
 
 	m_ui->tableWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
 	for (int i=1; i<4; ++i) {
@@ -56,35 +60,30 @@ SVDBConstructionEditWidget::SVDBConstructionEditWidget(QWidget * parent) :
 	m_ui->tableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Fixed);
 
 	//	m_ui->tableWidget->horizontalHeader()->resizeSection(1, 100);
-#if 0
-	for(int i=0; i<=VICUS::Construction::Num_IK; ++i) {
-		VICUS::ConstructionType::InsulationKind ik = static_cast<VICUS::ConstructionType::InsulationKind>(i);
-		m_ui->comboBoxInsulationKind->addItem(VICUS::ConstructionType::insulationKindString(ik), ik);
-	}
-	m_ui->comboBoxInsulationKind->setCurrentIndex(VICUS::ConstructionType::Num_IK);
 
-	for(int i=0; i<=VICUS::ConstructionType::Num_MK; ++i) {
-		VICUS::ConstructionType::MaterialKind mk = static_cast<VICUS::ConstructionType::MaterialKind>(i);
-		m_ui->comboBoxMaterialKind->addItem(VICUS::ConstructionType::materialKindString(mk), mk);
-	}
-	m_ui->comboBoxMaterialKind->setCurrentIndex(VICUS::ConstructionType::Num_MK);
+	// *** populate combo boxes ***
 
-	for(int i=0; i<=VICUS::ConstructionType::Num_CK; ++i) {
-		VICUS::ConstructionType::ConstructionKind ck = static_cast<VICUS::ConstructionType::ConstructionKind>(i);
-		m_ui->comboBoxConstructionKind->addItem(VICUS::ConstructionType::constructionKindString(ck), ck);
+	m_ui->comboBoxInsulationKind->blockSignals(true);
+	for (int i=0; i<VICUS::Construction::NUM_IK; ++i) {
+		QString description = VICUS::KeywordListQt::Description("Construction::InsulationKind", i);
+		m_ui->comboBoxInsulationKind->addItem(description, i);
 	}
-	m_ui->comboBoxConstructionKind->setCurrentIndex(VICUS::ConstructionType::Num_CK);
+	m_ui->comboBoxInsulationKind->blockSignals(false);
 
-	for(const QString& str : m_db->constructionKeys1()) {
-		m_ui->comboBoxUserKey1->addItem(str);
+	m_ui->comboBoxMaterialKind->blockSignals(true);
+	for (int i=0; i<VICUS::Construction::NUM_MK; ++i) {
+		QString description = VICUS::KeywordListQt::Description("Construction::MaterialKind", i);
+		m_ui->comboBoxMaterialKind->addItem(description, i);
 	}
-	m_ui->comboBoxUserKey1->setCurrentIndex(-1);
+	m_ui->comboBoxMaterialKind->blockSignals(false);
 
-	for(const QString& str : m_db->constructionKeys2()) {
-		m_ui->comboBoxUserKey2->addItem(str);
+	m_ui->comboBoxConstructionUsage->blockSignals(true);
+	for(int i=0; i<=VICUS::Construction::NUM_UT; ++i) {
+		QString description = VICUS::KeywordListQt::Description("Construction::UsageType", i);
+		m_ui->comboBoxConstructionUsage->addItem(description, i);
 	}
-	m_ui->comboBoxUserKey2->setCurrentIndex(-1);
-#endif
+	m_ui->comboBoxConstructionUsage->blockSignals(false);
+
 
 	// register change events for user keys
 
@@ -145,14 +144,14 @@ void SVDBConstructionEditWidget::updateInput(int id) {
 		m_ui->tableWidget->setRowCount(0);
 		return;
 	}
-	VICUS::Construction * conType = const_cast<VICUS::Construction *>(m_db->m_constructions[(unsigned int)id]);
+	VICUS::Construction * con = const_cast<VICUS::Construction *>(m_db->m_constructions[(unsigned int)id]);
 
 	// now update the GUI controls
 
 	// construction name and layer count
-	m_ui->lineEditNameEn->setText(QString::fromStdString(conType->m_displayName("en")));
-	m_ui->lineEditNameDe->setText(QString::fromStdString(conType->m_displayName("de")));
-	int n = std::max<int>(1, conType->m_materialLayers.size());
+	m_ui->lineEditNameEn->setText(QString::fromStdString(con->m_displayName("en")));
+	m_ui->lineEditNameDe->setText(QString::fromStdString(con->m_displayName("de")));
+	int n = std::max<int>(1, con->m_materialLayers.size());
 	m_ui->spinBoxLayerCount->setValue(n);
 #if 0
 	// kinds
@@ -164,10 +163,10 @@ void SVDBConstructionEditWidget::updateInput(int id) {
 	if(indexMK == -1)
 		indexMK = VICUS::ConstructionType::Num_MK;
 	m_ui->comboBoxMaterialKind->setCurrentIndex(indexMK);
-	int indexCK = m_ui->comboBoxConstructionKind->findData(conType->m_constructionKind);
+	int indexCK = m_ui->comboBoxConstructionUsage->findData(conType->m_constructionKind);
 	if(indexCK == -1)
 		indexCK = VICUS::ConstructionType::Num_CK;
-	m_ui->comboBoxConstructionKind->setCurrentIndex(indexCK);
+	m_ui->comboBoxConstructionUsage->setCurrentIndex(indexCK);
 	int indexK1 = m_ui->comboBoxUserKey1->findText(conType->m_userKey1);
 	if(indexK1 == -1) {
 		if(!conType->m_userKey1.isEmpty()) {
@@ -188,24 +187,24 @@ void SVDBConstructionEditWidget::updateInput(int id) {
 #endif
 
 	// update read-only/enabled states
-	m_ui->lineEditNameEn->setReadOnly(conType->m_builtIn);
-	m_ui->lineEditNameDe->setReadOnly(conType->m_builtIn);
-	m_ui->spinBoxLayerCount->setEnabled(!conType->m_builtIn);
-	m_ui->comboBoxInsulationKind->setEnabled(!conType->m_builtIn);
-	m_ui->comboBoxMaterialKind->setEnabled(!conType->m_builtIn);
-	m_ui->comboBoxConstructionKind->setEnabled(!conType->m_builtIn);
-	m_ui->comboBoxUserKey1->setEnabled(!conType->m_builtIn);
-	m_ui->comboBoxUserKey2->setEnabled(!conType->m_builtIn);
+	m_ui->lineEditNameEn->setReadOnly(con->m_builtIn);
+	m_ui->lineEditNameDe->setReadOnly(con->m_builtIn);
+	m_ui->spinBoxLayerCount->setEnabled(!con->m_builtIn);
+	m_ui->comboBoxInsulationKind->setEnabled(!con->m_builtIn);
+	m_ui->comboBoxMaterialKind->setEnabled(!con->m_builtIn);
+	m_ui->comboBoxConstructionUsage->setEnabled(!con->m_builtIn);
+	m_ui->comboBoxUserKey1->setEnabled(!con->m_builtIn);
+	m_ui->comboBoxUserKey2->setEnabled(!con->m_builtIn);
 
 	// set palette
 	QPalette pal;
-	if (conType->m_builtIn)
+	if (con->m_builtIn)
 		pal.setColor(QPalette::Base, SVStyle::instance().m_readOnlyEditFieldBackground);
 	m_ui->lineEditNameEn->setPalette(pal);
 	m_ui->lineEditNameDe->setPalette(pal);
 	m_ui->spinBoxLayerCount->setPalette(pal);
 
-	m_current = conType;
+	m_current = con;
 	on_spinBoxLayerCount_valueChanged(n);
 	updateTable();
 	updateConstructionView();
@@ -417,10 +416,10 @@ void SVDBConstructionEditWidget::on_comboBoxMaterialKind_currentIndexChanged(int
 //	}
 }
 
-void SVDBConstructionEditWidget::on_comboBoxConstructionKind_currentIndexChanged(int ) {
+void SVDBConstructionEditWidget::on_comboBoxConstructionUsage_currentIndexChanged(int ) {
 	Q_ASSERT(m_current != nullptr);
 
-//	VICUS::ConstructionType::ConstructionKind ck = static_cast<VICUS::ConstructionType::ConstructionKind>(m_ui->comboBoxConstructionKind->currentData().toInt());
+//	VICUS::ConstructionType::ConstructionKind ck = static_cast<VICUS::ConstructionType::ConstructionKind>(m_ui->comboBoxConstructionUsage->currentData().toInt());
 //	if(ck != m_current->m_constructionKind) {
 //		m_current->m_constructionKind = ck;
 //		m_db->setModified(true);
