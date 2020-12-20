@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QtExt::ConstructionViewWidget</class>
+ <widget class="QWidget" name="QtExt::ConstructionViewWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>500</width>
+    <height>326</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>1</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QtExt::ConstructionView" name="graphicsView"/>
+   </item>
+  </layout>
+  <action name="actionAssign_material">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/Construction_assign_material_32x32.png</normaloff>:/Construction_assign_material_32x32.png</iconset>
+   </property>
+   <property name="text">
+    <string>Assign material</string>
+   </property>
+   <property name="toolTip">
+    <string>Assign material to the selected layer</string>
+   </property>
+  </action>
+  <action name="actionInsert_layer_left">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/Construction_insert_layer_left_32x32.png</normaloff>:/Construction_insert_layer_left_32x32.png</iconset>
+   </property>
+   <property name="text">
+    <string>Insert layer left</string>
+   </property>
+   <property name="toolTip">
+    <string>Insert a new layer left from selected one</string>
+   </property>
+  </action>
+  <action name="actionInsert_layer_right">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/Construction_insert_layer_right_32x32.png</normaloff>:/Construction_insert_layer_right_32x32.png</iconset>
+   </property>
+   <property name="text">
+    <string>Insert layer right</string>
+   </property>
+   <property name="toolTip">
+    <string>Insert a new layer right from selected one</string>
+   </property>
+  </action>
+  <action name="actionRemove_layer">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/Construction_remove_layer_32x32.png</normaloff>:/Construction_remove_layer_32x32.png</iconset>
+   </property>
+   <property name="text">
+    <string>Remove layer</string>
+   </property>
+   <property name="toolTip">
+    <string>Remove selected layer</string>
+   </property>
+  </action>
+  <action name="actionMove_layer_left">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/Construction_move_layer_to_left_32x32.png</normaloff>:/Construction_move_layer_to_left_32x32.png</iconset>
+   </property>
+   <property name="text">
+    <string>Move layer left</string>
+   </property>
+   <property name="toolTip">
+    <string>Move selected layer to left</string>
+   </property>
+  </action>
+  <action name="actionMove_layer_right">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/Construction_move_layer_to_right_32x32.png</normaloff>:/Construction_move_layer_to_right_32x32.png</iconset>
+   </property>
+   <property name="text">
+    <string>Move layer right</string>
+   </property>
+   <property name="toolTip">
+    <string>Move selected layer to right</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QtExt::ConstructionView</class>
+   <extends>QGraphicsView</extends>
+   <header>QtExt_ConstructionView.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

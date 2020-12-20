@@ -10,7 +10,7 @@ TEMPLATE = lib
 include( ../../../IBK/projects/Qt/IBK.pri )
 
 
-QT += gui core network widgets
+QT += gui core network widgets printsupport svg
 
 unix|mac {
 	VER_MAJ = 1
@@ -28,6 +28,7 @@ DEPENDPATH = $${INCLUDEPATH}
 
 FORMS += \
 	../../src/QtExt_AutoUpdateDialog.ui \
+	../../src/QtExt_ConstructionViewWidget.ui \
 	../../src/QtExt_LanguageStringEditWidget1.ui \
 	../../src/QtExt_LanguageStringEditWidget3.ui \
 	../../src/QtExt_MaterialDatabaseSelectionWidget.ui
@@ -39,8 +40,13 @@ HEADERS += \
 	../../src/QtExt_BrowseFilenameWidget.h \
 	../../src/QtExt_ColorButton.h \
 	../../src/QtExt_Constants.h \
+	../../src/QtExt_ConstructionGraphicsScene.h \
+	../../src/QtExt_ConstructionLayer.h \
+	../../src/QtExt_ConstructionView.h \
+	../../src/QtExt_ConstructionViewWidget.h \
 	../../src/QtExt_Directories.h \
 	../../src/QtExt_FeatureWidget.h \
+	../../src/QtExt_GraphicsRectItemWithHatch.h \
 	../../src/QtExt_IconButton.h \
 	../../src/QtExt_LanguageHandler.h \
 	../../src/QtExt_LanguageStringEditWidget1.h \
@@ -53,11 +59,14 @@ HEADERS += \
 	../../src/QtExt_MaterialTableModel.h \
 	../../src/QtExt_MaterialTableProxyModel.h \
 	../../src/QtExt_ParameterEdit.h \
+	../../src/QtExt_RectHatchingFunctions.h \
 	../../src/QtExt_Settings.h \
 	../../src/QtExt_Style.h \
+	../../src/QtExt_TextFrame.h \
 	../../src/QtExt_ValidatingInputBase.h \
 	../../src/QtExt_ValidatingLineEdit.h \
-	../../src/QtExt_ValueInputComboBox.h
+	../../src/QtExt_ValueInputComboBox.h \
+	../../src/QtExt_varianthelper.h
 
 SOURCES += \
 	../../src/QtExt_ActiveLabel.cpp \
@@ -66,8 +75,13 @@ SOURCES += \
 	../../src/QtExt_BrowseFilenameWidget.cpp \
 	../../src/QtExt_ColorButton.cpp \
 	../../src/QtExt_Constants.cpp \
+	../../src/QtExt_ConstructionGraphicsScene.cpp \
+	../../src/QtExt_ConstructionLayer.cpp \
+	../../src/QtExt_ConstructionView.cpp \
+	../../src/QtExt_ConstructionViewWidget.cpp \
 	../../src/QtExt_Directories.cpp \
 	../../src/QtExt_FeatureWidget.cpp \
+	../../src/QtExt_GraphicsRectItemWithHatch.cpp \
 	../../src/QtExt_IconButton.cpp \
 	../../src/QtExt_LanguageHandler.cpp \
 	../../src/QtExt_LanguageStringEditWidget1.cpp \
@@ -79,8 +93,10 @@ SOURCES += \
 	../../src/QtExt_MaterialTableModel.cpp \
 	../../src/QtExt_MaterialTableProxyModel.cpp \
 	../../src/QtExt_ParameterEdit.cpp \
+	../../src/QtExt_RectHatchingFunctions.cpp \
 	../../src/QtExt_Settings.cpp \
 	../../src/QtExt_Style.cpp \
+	../../src/QtExt_TextFrame.cpp \
 	../../src/QtExt_ValidatingInputBase.cpp \
 	../../src/QtExt_ValidatingLineEdit.cpp \
 	../../src/QtExt_ValueInputComboBox.cpp
