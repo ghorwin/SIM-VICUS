@@ -184,7 +184,8 @@ public:
 		doc.LinkEndChild(root);
 
 		for (auto e : m_data)
-			e.second.writeXML(root);
+			if (!e.second.m_builtIn)
+				e.second.writeXML(root);
 
 		doc.SaveFile( fname.c_str() );
 	}
