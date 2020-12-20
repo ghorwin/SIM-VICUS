@@ -53,6 +53,7 @@ file( GLOB APP_UIS ${PROJECT_SOURCE_DIR}/../../src/*.ui )
 set( APP_SRCS
 	${APP_SRCS}
 	${PROJECT_SOURCE_DIR}/../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp
+	${PROJECT_SOURCE_DIR}/../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp
 )
 
 # The Qt resource file (*.qrc)
