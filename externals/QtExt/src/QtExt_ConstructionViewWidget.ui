@@ -35,8 +35,8 @@
   </layout>
   <action name="actionAssign_material">
    <property name="icon">
-    <iconset>
-     <normaloff>:/Construction_assign_material_32x32.png</normaloff>:/Construction_assign_material_32x32.png</iconset>
+    <iconset resource="../resources/QtExt.qrc">
+     <normaloff>:/gfx/constructionEditor/Construction_assign_material_32x32.png</normaloff>:/gfx/constructionEditor/Construction_assign_material_32x32.png</iconset>
    </property>
    <property name="text">
     <string>Assign material</string>
@@ -47,8 +47,8 @@
   </action>
   <action name="actionInsert_layer_left">
    <property name="icon">
-    <iconset>
-     <normaloff>:/Construction_insert_layer_left_32x32.png</normaloff>:/Construction_insert_layer_left_32x32.png</iconset>
+    <iconset resource="../resources/QtExt.qrc">
+     <normaloff>:/gfx/constructionEditor/Construction_insert_layer_left_32x32.png</normaloff>:/gfx/constructionEditor/Construction_insert_layer_left_32x32.png</iconset>
    </property>
    <property name="text">
     <string>Insert layer left</string>
@@ -59,8 +59,8 @@
   </action>
   <action name="actionInsert_layer_right">
    <property name="icon">
-    <iconset>
-     <normaloff>:/Construction_insert_layer_right_32x32.png</normaloff>:/Construction_insert_layer_right_32x32.png</iconset>
+    <iconset resource="../resources/QtExt.qrc">
+     <normaloff>:/gfx/constructionEditor/Construction_insert_layer_right_32x32.png</normaloff>:/gfx/constructionEditor/Construction_insert_layer_right_32x32.png</iconset>
    </property>
    <property name="text">
     <string>Insert layer right</string>
@@ -71,8 +71,8 @@
   </action>
   <action name="actionRemove_layer">
    <property name="icon">
-    <iconset>
-     <normaloff>:/Construction_remove_layer_32x32.png</normaloff>:/Construction_remove_layer_32x32.png</iconset>
+    <iconset resource="../resources/QtExt.qrc">
+     <normaloff>:/gfx/constructionEditor/Construction_remove_layer_32x32.png</normaloff>:/gfx/constructionEditor/Construction_remove_layer_32x32.png</iconset>
    </property>
    <property name="text">
     <string>Remove layer</string>
@@ -83,8 +83,8 @@
   </action>
   <action name="actionMove_layer_left">
    <property name="icon">
-    <iconset>
-     <normaloff>:/Construction_move_layer_to_left_32x32.png</normaloff>:/Construction_move_layer_to_left_32x32.png</iconset>
+    <iconset resource="../resources/QtExt.qrc">
+     <normaloff>:/gfx/constructionEditor/Construction_move_layer_to_left_32x32.png</normaloff>:/gfx/constructionEditor/Construction_move_layer_to_left_32x32.png</iconset>
    </property>
    <property name="text">
     <string>Move layer left</string>
@@ -95,8 +95,8 @@
   </action>
   <action name="actionMove_layer_right">
    <property name="icon">
-    <iconset>
-     <normaloff>:/Construction_move_layer_to_right_32x32.png</normaloff>:/Construction_move_layer_to_right_32x32.png</iconset>
+    <iconset resource="../resources/QtExt.qrc">
+     <normaloff>:/gfx/constructionEditor/Construction_move_layer_to_right_32x32.png</normaloff>:/gfx/constructionEditor/Construction_move_layer_to_right_32x32.png</iconset>
    </property>
    <property name="text">
     <string>Move layer right</string>
@@ -113,6 +113,8 @@
    <header>QtExt_ConstructionView.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../resources/QtExt.qrc"/>
+ </resources>
  <connections/>
 </ui>

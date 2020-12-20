@@ -66,12 +66,10 @@ void ConstructionViewWidget::setupUI() {
 #endif
 	Q_ASSERT(screen != nullptr);
 	qreal dpi = screen->logicalDotsPerInch();
-	if(dpi <= 100) {
-		m_toolBar->setFixedHeight(34);
+	if (dpi <= 100) {
 		m_toolBar->setIconSize(QSize(32,32));
 	}
 	else {
-		m_toolBar->setFixedHeight(50);
 		m_toolBar->setIconSize(QSize(48,48));
 	}
 }

@@ -100,3 +100,6 @@ SOURCES += \
 	../../src/QtExt_ValidatingInputBase.cpp \
 	../../src/QtExt_ValidatingLineEdit.cpp \
 	../../src/QtExt_ValueInputComboBox.cpp
+
+RESOURCES += \
+	../../resources/QtExt.qrc
