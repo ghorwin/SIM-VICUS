@@ -22,10 +22,33 @@ namespace VICUS {
 class Construction : public AbstractDBElement {
 public:
 	enum UsageType {
-		UT_OutsideWall,		// Keyword: OutsideWall		'Outside wall construction'
-		UT_InsideWall,		// Keyword: InsideWall		'Interior construction'
-		UT_Floor,			// Keyword: FloorWall		'Floor/ceiling construction'
-		NUM_UT
+		UT_OutsideWall,				// Keyword: OutsideWall				'Outside wall construction'
+		UT_OutsideWallToGround,		// Keyword: OutsideWallToGround		'Outside wall construction in contact with ground'
+		UT_InsideWall,				// Keyword: InsideWall				'Interior construction'
+		UT_FloorToCellar,			// Keyword: FloorToCellar			'Floor to basement'
+		UK_FloorToGround,			// Keyword: FloorToGround			'Floor in contact with ground'
+		UK_Ceiling,					// Keyword: Ceiling					'Ceiling construction'
+		UK_SlopedRoof,				// Keyword: SlopedRoof				'Sloped roof construction'
+		UK_FlatRoof,				// Keyword: FlatRoof				'Flat roof construction'
+		NUM_UT						// Keyword: ---						'Miscellaneous'
+	};
+
+	enum InsulationKind {
+		IK_NotInsulated,			// Keyword: NotInsulated			'Not insulated'
+		IK_InsideInsulation,		// Keyword: InsideInsulation		'Inside insulated'
+		IK_CoreInsulation,			// Keyword: CoreInsulation			'Core insulation'
+		IK_OutsideInsulation,		// Keyword: OutsideInsulation		'Outside insulated'
+		NUM_IK
+	};
+
+	enum MaterialKind {
+		MK_BrickMasonry,			// Keyword: BrickMasonry			'Brick masonry'
+		MK_NaturalStoneMasonry,		// Keyword: NaturalStoneMasonry		'Natural stones'
+		MK_Concrete,				// Keyword: Concrete				'Concrete'
+		MK_Wood,					// Keyword: Wood					'Wood'
+		MK_FrameWork,				// Keyword: FrameWork				'Frame construction'
+		MK_Loam,					// Keyword: Loam					'Loam'
+		NUM_MK
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
