@@ -222,7 +222,9 @@ void ConstructionView::sceneSelectionChanged() {
 	if(items.size() == 1)
 		index = items.front()->data(0).toInt();
 	m_selectedLayer = index;
-	emit layerSelected(m_selectedLayer);
+	// only emit selection change, if index is != -1
+	if (m_selectedLayer != -1)
+		emit layerSelected(m_selectedLayer);
 }
 
 void ConstructionView::sceneDoubleClicked() {

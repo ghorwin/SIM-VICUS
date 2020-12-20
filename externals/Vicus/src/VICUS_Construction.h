@@ -38,7 +38,7 @@ public:
 		IK_InsideInsulation,		// Keyword: InsideInsulation		'Inside insulated'
 		IK_CoreInsulation,			// Keyword: CoreInsulation			'Core insulation'
 		IK_OutsideInsulation,		// Keyword: OutsideInsulation		'Outside insulated'
-		NUM_IK
+		NUM_IK						// Keyword: ---						'Not selected'
 	};
 
 	enum MaterialKind {
@@ -48,7 +48,7 @@ public:
 		MK_Wood,					// Keyword: Wood					'Wood'
 		MK_FrameWork,				// Keyword: FrameWork				'Frame construction'
 		MK_Loam,					// Keyword: Loam					'Loam'
-		NUM_MK
+		NUM_MK						// Keyword: ---						'Not selected'
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -65,25 +65,29 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of construction. */
-	unsigned int					m_id = INVALID_ID;		// XML:A:required
+	unsigned int					m_id = INVALID_ID;					// XML:A:required
 
-	/*! The usage type, used as category in tree view. */
-	UsageType						m_usageType;			// XML:E
+	/*! The usage type (classification property). */
+	UsageType						m_usageType = NUM_UT;				// XML:E
+	/*! The type of insulation used (classification property). */
+	InsulationKind					m_insulationKind = NUM_IK;			// XML:E
+	/*! The main/load bearing material (classification property). */
+	MaterialKind					m_materialKind = NUM_MK;			// XML:E
 
 	/*! Display name of construction. */
-	IBK::MultiLanguageString		m_displayName;			// XML:A
+	IBK::MultiLanguageString		m_displayName;						// XML:A
 
 	/*! False color. */
-	QColor							m_color;				// XML:A
+	QColor							m_color;							// XML:A
 
 	/*! Notes. */
-	IBK::MultiLanguageString		m_notes;				// XML:E
+	IBK::MultiLanguageString		m_notes;							// XML:E
 
 	/*! Data source. */
-	IBK::MultiLanguageString		m_dataSource;			// XML:E
+	IBK::MultiLanguageString		m_dataSource;						// XML:E
 
 	/*! The individual material layers. */
-	std::vector<MaterialLayer>		m_materialLayers;		// XML:E
+	std::vector<MaterialLayer>		m_materialLayers;					// XML:E
 };
 
 } // namespace VICUS

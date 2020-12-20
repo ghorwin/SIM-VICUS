@@ -109,7 +109,11 @@ void SVDBConstructionEditDialog::on_pushButtonClose_clicked() {
 
 void SVDBConstructionEditDialog::on_toolButtonAdd_clicked() {
 	// add new construction
-
+	QModelIndex sourceIndex = m_dbModel->addNewItem();
+	QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
+	m_ui->tableView->selectionModel()->clear();
+	m_ui->tableView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
+	m_ui->tableView->selectRow(proxyIndex.row());
 }
 
 

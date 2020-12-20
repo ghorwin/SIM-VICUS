@@ -43,12 +43,14 @@ KeywordListQt::KeywordListQt() {
 	tr("Inside insulated");
 	tr("Core insulation");
 	tr("Outside insulated");
+	tr("Not selected");
 	tr("Brick masonry");
 	tr("Natural stones");
 	tr("Concrete");
 	tr("Wood");
 	tr("Frame construction");
 	tr("Loam");
+	tr("Not selected");
 	tr("Dry density of the material.");
 	tr("Global Warming Potential.");
 	tr("Depletion potential of the stratospheric ozone layer.");

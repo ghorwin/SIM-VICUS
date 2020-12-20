@@ -11,10 +11,9 @@
 namespace QtExt {
 
 /*! Class contains basic parameter for 1D construction layer.*/
-class ConstructionLayer
-{
+class ConstructionLayer {
 public:
-	/*! Standard constructor. Creates a non valid object.
+	/*! Standard constructor. Creates an invalid object.
 		Validity can be checked by test m_id != -1.
 	*/
 	ConstructionLayer();

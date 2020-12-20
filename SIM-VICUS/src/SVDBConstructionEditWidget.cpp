@@ -161,7 +161,7 @@ void SVDBConstructionEditWidget::updateInput(int id) {
 	// now update the GUI controls
 
 	// construction name and layer count
-	m_ui->lineEditNameEn->setText(QString::fromStdString(con->m_displayName("en")));
+	m_ui->lineEditNameEn->setText(QString::fromStdString(con->m_displayName("en", true)));
 	m_ui->lineEditNameDe->setText(QString::fromStdString(con->m_displayName("de")));
 	int n = std::max<int>(1, con->m_materialLayers.size());
 	m_ui->spinBoxLayerCount->setValue(n);
@@ -398,27 +398,28 @@ void SVDBConstructionEditWidget::on_comboBoxInsulationKind_currentIndexChanged(i
 void SVDBConstructionEditWidget::on_comboBoxMaterialKind_currentIndexChanged(int ) {
 	Q_ASSERT(m_current != nullptr);
 
-
-//	VICUS::Construction::MaterialKind mk = static_cast<VICUS::Construction::MaterialKind>(m_ui->comboBoxMaterialKind->currentData().toInt());
-//	if(mk != m_current->m_materialKind) {
-//		m_current->m_materialKind = mk;
-//		m_db->setModified(true);
-//		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-//		emit tableDataChanged();
-//	}
+	VICUS::Construction::MaterialKind mk = static_cast<VICUS::Construction::MaterialKind>(m_ui->comboBoxMaterialKind->currentData().toInt());
+	if (mk != m_current->m_materialKind) {
+		m_current->m_materialKind = mk;
+		m_db->m_constructions.m_modified = true;
+		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		emit tableDataChanged();
+	}
 }
+
 
 void SVDBConstructionEditWidget::on_comboBoxConstructionUsage_currentIndexChanged(int ) {
 	Q_ASSERT(m_current != nullptr);
 
-//	VICUS::Construction::ConstructionKind ck = static_cast<VICUS::Construction::ConstructionKind>(m_ui->comboBoxConstructionUsage->currentData().toInt());
-//	if(ck != m_current->m_constructionKind) {
-//		m_current->m_constructionKind = ck;
-//		m_db->setModified(true);
-//		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-//		emit tableDataChanged();
-//	}
+	VICUS::Construction::UsageType ut = static_cast<VICUS::Construction::UsageType>(m_ui->comboBoxConstructionUsage->currentData().toInt());
+	if (ut != m_current->m_usageType) {
+		m_current->m_usageType = ut;
+		m_db->m_constructions.m_modified = true;
+		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		emit tableDataChanged();
+	}
 }
+
 
 void SVDBConstructionEditWidget::on_comboBoxUserKey1_currentIndexChanged(int ) {
 	Q_ASSERT(m_current != nullptr);

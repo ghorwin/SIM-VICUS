@@ -110,6 +110,7 @@ namespace VICUS {
 				case 1 : return "InsideInsulation";
 				case 2 : return "CoreInsulation";
 				case 3 : return "OutsideInsulation";
+				case 4 : return "---";
 			} break;
 			// Construction::MaterialKind
 			case 4 :
@@ -120,6 +121,7 @@ namespace VICUS {
 				case 3 : return "Wood";
 				case 4 : return "FrameWork";
 				case 5 : return "Loam";
+				case 6 : return "---";
 			} break;
 			// EPDDataset::para_t
 			case 5 :
@@ -318,6 +320,7 @@ namespace VICUS {
 				case 1 : return "InsideInsulation";
 				case 2 : return "CoreInsulation";
 				case 3 : return "OutsideInsulation";
+				case 4 : return "---";
 			} break;
 			// Construction::MaterialKind
 			case 4 :
@@ -328,6 +331,7 @@ namespace VICUS {
 				case 3 : return "Wood";
 				case 4 : return "FrameWork";
 				case 5 : return "Loam";
+				case 6 : return "---";
 			} break;
 			// EPDDataset::para_t
 			case 5 :
@@ -527,6 +531,7 @@ namespace VICUS {
 				case 1 : return "Inside insulated";
 				case 2 : return "Core insulation";
 				case 3 : return "Outside insulated";
+				case 4 : return "Not selected";
 			} break;
 			// Construction::MaterialKind
 			case 4 :
@@ -537,6 +542,7 @@ namespace VICUS {
 				case 3 : return "Wood";
 				case 4 : return "Frame construction";
 				case 5 : return "Loam";
+				case 6 : return "Not selected";
 			} break;
 			// EPDDataset::para_t
 			case 5 :
@@ -735,6 +741,7 @@ namespace VICUS {
 				case 1 : return "";
 				case 2 : return "";
 				case 3 : return "";
+				case 4 : return "";
 			} break;
 			// Construction::MaterialKind
 			case 4 :
@@ -745,6 +752,7 @@ namespace VICUS {
 				case 3 : return "";
 				case 4 : return "";
 				case 5 : return "";
+				case 6 : return "";
 			} break;
 			// EPDDataset::para_t
 			case 5 :
@@ -943,6 +951,7 @@ namespace VICUS {
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
+				case 4 : return "#FFFFFF";
 			} break;
 			// Construction::MaterialKind
 			case 4 :
@@ -953,6 +962,7 @@ namespace VICUS {
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
 				case 5 : return "#FFFFFF";
+				case 6 : return "#FFFFFF";
 			} break;
 			// EPDDataset::para_t
 			case 5 :
@@ -1151,6 +1161,7 @@ namespace VICUS {
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
+				case 4 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// Construction::MaterialKind
 			case 4 :
@@ -1161,6 +1172,7 @@ namespace VICUS {
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
+				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// EPDDataset::para_t
 			case 5 :
@@ -1333,9 +1345,9 @@ namespace VICUS {
 			// Construction::UsageType
 			case 2 : return 9;
 			// Construction::InsulationKind
-			case 3 : return 4;
+			case 3 : return 5;
 			// Construction::MaterialKind
-			case 4 : return 6;
+			case 4 : return 7;
 			// EPDDataset::para_t
 			case 5 : return 8;
 			// KeywordList::MyParameters
@@ -1393,9 +1405,9 @@ namespace VICUS {
 			// Construction::UsageType
 			case 2 : return 8;
 			// Construction::InsulationKind
-			case 3 : return 3;
+			case 3 : return 4;
 			// Construction::MaterialKind
-			case 4 : return 5;
+			case 4 : return 6;
 			// EPDDataset::para_t
 			case 5 : return 7;
 			// KeywordList::MyParameters

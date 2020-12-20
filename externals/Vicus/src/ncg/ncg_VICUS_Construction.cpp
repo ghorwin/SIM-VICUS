@@ -88,6 +88,24 @@ void Construction::readXML(const TiXmlElement * element) {
 						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
 				}
 			}
+			else if (cName == "InsulationKind") {
+				try {
+					m_insulationKind = (InsulationKind)KeywordList::Enumeration("Construction::InsulationKind", c->GetText());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
+				}
+			}
+			else if (cName == "MaterialKind") {
+				try {
+					m_materialKind = (MaterialKind)KeywordList::Enumeration("Construction::MaterialKind", c->GetText());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
+				}
+			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -115,6 +133,12 @@ TiXmlElement * Construction::writeXML(TiXmlElement * parent) const {
 
 	if (m_usageType != NUM_UT)
 		TiXmlElement::appendSingleAttributeElement(e, "UsageType", nullptr, std::string(), KeywordList::Keyword("Construction::UsageType",  m_usageType));
+
+	if (m_insulationKind != NUM_IK)
+		TiXmlElement::appendSingleAttributeElement(e, "InsulationKind", nullptr, std::string(), KeywordList::Keyword("Construction::InsulationKind",  m_insulationKind));
+
+	if (m_materialKind != NUM_MK)
+		TiXmlElement::appendSingleAttributeElement(e, "MaterialKind", nullptr, std::string(), KeywordList::Keyword("Construction::MaterialKind",  m_materialKind));
 	if (!m_notes.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.encodedString());
 	if (!m_dataSource.empty())

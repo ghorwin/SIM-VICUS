@@ -148,7 +148,7 @@ QModelIndex SVDBConstructionTableModel::addNewItem(VICUS::Construction c) {
 bool SVDBConstructionTableModel::deleteItem(QModelIndex index) {
 	if (!index.isValid())
 		return false;
-	unsigned int id = data(index, Qt::UserRole).toUInt();
+	unsigned int id = data(index, Role_Id).toUInt();
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
 	m_db->m_constructions.remove(id);
 	endRemoveRows();
@@ -173,7 +173,7 @@ void SVDBConstructionTableModel::setItemModified(unsigned int id) {
 QModelIndex SVDBConstructionTableModel::indexById(unsigned int id) const {
 	for (int i=0; i<rowCount(); ++i) {
 		QModelIndex idx = index(i, 0);
-		if (data(idx, Qt::UserRole).toUInt() == id)
+		if (data(idx, Role_Id).toUInt() == id)
 			return idx;
 	}
 	return QModelIndex();
