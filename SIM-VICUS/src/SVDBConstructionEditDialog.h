@@ -9,6 +9,7 @@ namespace Ui {
 
 class QItemSelection;
 class QSortFilterProxyModel;
+class QModelIndex;
 
 class SVDBConstructionTableModel;
 
@@ -42,13 +43,15 @@ private slots:
 	/*! Connected to the respective signal in the table view.
 		Enables/disables the remove button.
 	*/
-//	void onCurrentIndexChanged(QModelIndex,QModelIndex);
+	void onCurrentIndexChanged(const QModelIndex &current, const QModelIndex &/*previous*/);
 
 private:
 
 	Ui::SVDBConstructionEditDialog	*m_ui;
 
+	/*! The construction table model (owned). */
 	SVDBConstructionTableModel		*m_dbModel		= nullptr;
+	/*! The sort filter model (owned). */
 	QSortFilterProxyModel			*m_proxyModel	= nullptr;
 };
 

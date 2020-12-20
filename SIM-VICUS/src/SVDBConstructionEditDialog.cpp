@@ -43,7 +43,9 @@ SVDBConstructionEditDialog::SVDBConstructionEditDialog(QWidget *parent) :
 	m_ui->tableView->setColumnWidth(SVDBConstructionTableModel::ColCheck, 22);
 #endif
 	m_ui->tableView->setColumnWidth(SVDBConstructionTableModel::ColName, 120);
-	m_ui->tableView->setAlternatingRowColors(true);
+
+	connect(m_ui->tableView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)),
+			this, SLOT(onCurrentIndexChanged(const QModelIndex &, const QModelIndex &)) );
 
 	// set item delegate for coloring built-ins
 	SVDBModelDelegate * dg = new SVDBModelDelegate(this, SVDBConstructionTableModel::Role_BuiltIn);
@@ -122,28 +124,22 @@ void SVDBConstructionEditDialog::on_toolButtonRemove_clicked() {
 }
 
 
-//void SVDBConstructionEditDialog::onCurrentIndexChanged(QModelIndex current,QModelIndex) {
-//	// if there is no selection, deactivate all buttons that need a selection
-//	if (current.isValid()) {
-//		m_ui->pushButtonSelect->setEnabled(false);
-//		m_ui->toolButtonRemove->setEnabled(false);
-//		m_ui->toolButtonCopy->setEnabled(false);
-
-//		// hide edit widget and show placeholder
-//		m_ui->label->show();
-//		m_ui->editWidget->hide();
-//		m_ui->verticalLayout->addStretch(1);
-//	}
-//	else {
-//		m_ui->pushButtonSelect->setEnabled(true);
-//		m_ui->toolButtonRemove->setEnabled(true);
-//		m_ui->toolButtonCopy->setEnabled(true);
-
-//		// show and activate edit widget
-//		m_ui->label->hide();
-//		m_ui->editWidget->show();
-//		m_ui->verticalLayout->removeItem(m_ui->verticalLayout->itemAt(2));
-//	}
-//}
+void SVDBConstructionEditDialog::onCurrentIndexChanged(const QModelIndex &current, const QModelIndex & /*previous*/) {
+	// if there is no selection, deactivate all buttons that need a selection
+	if (!current.isValid()) {
+		m_ui->pushButtonSelect->setEnabled(false);
+		m_ui->toolButtonRemove->setEnabled(false);
+		m_ui->toolButtonCopy->setEnabled(false);
+		m_ui->editWidget->updateInput(-1); // nothing selected
+	}
+	else {
+		m_ui->pushButtonSelect->setEnabled(true);
+		m_ui->toolButtonRemove->setEnabled(true);
+		m_ui->toolButtonCopy->setEnabled(true);
+		// retrieve current construction ID
+		int conId = current.data(SVDBConstructionTableModel::Role_Id).toInt();
+		m_ui->editWidget->updateInput(conId);
+	}
+}
 
 
