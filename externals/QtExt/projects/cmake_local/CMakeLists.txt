@@ -12,7 +12,7 @@ file( GLOB LIB_HDRS ${PROJECT_SOURCE_DIR}/../../src/*.h )
 file( GLOB LIB_UIS ${PROJECT_SOURCE_DIR}/../../src/*.ui )
 
 # set resource files
-#set( LIB_QRCS ${PROJECT_SOURCE_DIR}/../../resources/gfx/QtExt.qrc )
+set( LIB_QRCS ${PROJECT_SOURCE_DIR}/../../resources/QtExt.qrc )
 
 include_directories(
 	${PROJECT_SOURCE_DIR}/../../src			# needed so that ui-generated header files find our own headers
