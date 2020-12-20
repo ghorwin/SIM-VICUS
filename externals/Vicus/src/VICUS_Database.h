@@ -11,6 +11,9 @@
 namespace VICUS {
 
 /*! Wrapper class for different databases.
+	Template argument classes must provide a public bool member m_builtIn, and the functions
+	readXML(const TiXmlElement * element) and writeXML(TiXmlElement * parent) const.
+
 	Usage:
 	\code
 		VICUS::Database<Material> materials;
@@ -35,7 +38,7 @@ public:
 	const T * operator[](unsigned int id) const {
 		typename std::map<unsigned int, T>::const_iterator it = m_data.find(id);
 		if (it == m_data.end())		return nullptr;
-		else						*it;
+		else						return &(it->second);
 	}
 
 	/*! Returns begin for iterator-type read-only access to data store. */
@@ -44,6 +47,8 @@ public:
 	typename std::map<unsigned int, T>::const_iterator end() const { return m_data.end(); }
 	/*! Returns number of DB elements. */
 	size_t size() const { return m_data.size(); }
+	/*! Returns true if database is empty. */
+	bool empty() const { return m_data.empty(); }
 
 	/*! Adds a new item to the database.
 		\param newData New object to be added.
@@ -94,6 +99,7 @@ public:
 		if (it == m_data.end())
 			throw IBK::Exception( IBK::FormatString("Error removing database element with id=%1. No such ID in database.").arg(id), FUNC_ID);
 		m_data.erase(it);
+		m_modified = true;
 	}
 
 	/*! Reads database from xml file.
@@ -183,15 +189,12 @@ public:
 		doc.SaveFile( fname.c_str() );
 	}
 
-
-	/*! Returns true, if database was modified. */
-	bool modified() const { return m_modified; }
-
-	/*! Clears the modified flag, for example, when */
-	void clearModified() { m_modified = false; }
+	/*! Modified marker, should be changed to true, whenever a database object was modified.
+		Will be automatically set to true in functions add() and remove().
+	*/
+	bool										m_modified = false;
 
 private:
-	bool										m_modified = false;
 	std::map<unsigned int, T>					m_data;
 
 	/*! Counter that holds the first user material ID. */
