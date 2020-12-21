@@ -31,7 +31,7 @@ class SVViewStateHandler;
 class SVSimulationStartNandrad;
 class SVSimulationStartNetworkSim;
 
-class SVDBMaterialsEditDialog;
+class SVDBMaterialEditDialog;
 class SVDBWindowEditWidget;
 class SVDBConstructionEditDialog;
 
@@ -335,7 +335,7 @@ private:
 	SVViewStateHandler			*m_viewStateHandler										= nullptr;
 
 
-	SVDBMaterialsEditDialog		*m_dbMaterialsEditDialog									= nullptr;
+	SVDBMaterialEditDialog		*m_dbMaterialEditDialog									= nullptr;
 	SVDBConstructionEditDialog	*m_dbConstructionEditDialog								= nullptr;
 	SVDBWindowEditWidget		*m_dbWindowEditWidget									= nullptr;
 

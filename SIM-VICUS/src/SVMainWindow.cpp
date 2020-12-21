@@ -112,7 +112,7 @@ SVMainWindow::~SVMainWindow() {
 	delete m_viewStateHandler;
 
 	// explicitely delete all top-level DB edit widgets
-	delete m_dbMaterialsEditDialog;
+	delete m_dbMaterialEditDialog;
 
 	m_self = nullptr;
 }
@@ -1353,10 +1353,10 @@ void SVMainWindow::on_actionViewToggleParametrizationMode_triggered() {
 
 
 void SVMainWindow::on_actionDBMaterials_triggered() {
-	if (m_dbMaterialsEditDialog == nullptr) {
-		m_dbMaterialsEditDialog = new SVDBMaterialsEditDialog(nullptr); // global widget, not inside main window
+	if (m_dbMaterialEditDialog == nullptr) {
+		m_dbMaterialEditDialog = new SVDBMaterialEditDialog(nullptr); // global widget, not inside main window
 	}
-	m_dbMaterialsEditDialog->edit();
+	m_dbMaterialEditDialog->edit();
 }
 
 

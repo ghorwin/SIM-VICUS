@@ -1,5 +1,5 @@
 #include "SVDBMaterialEditDialog.h"
-#include "ui_SVDBMaterialsEditDialog.h"
+#include "ui_SVDBMaterialEditDialog.h"
 
 #include <QItemSelectionModel>
 #include <QTableView>
@@ -13,9 +13,9 @@
 #include "SVDBMaterialTableModel.h"
 #include "SVDBMaterialEditWidget.h"
 
-SVDBMaterialsEditDialog::SVDBMaterialsEditDialog(QWidget *parent) :
+SVDBMaterialEditDialog::SVDBMaterialEditDialog(QWidget *parent) :
 	QDialog(parent),
-	m_ui(new Ui::SVDBMaterialsEditDialog)
+	m_ui(new Ui::SVDBMaterialEditDialog)
 {
 	m_ui->setupUi(this);
 
@@ -45,12 +45,12 @@ SVDBMaterialsEditDialog::SVDBMaterialsEditDialog(QWidget *parent) :
 }
 
 
-SVDBMaterialsEditDialog::~SVDBMaterialsEditDialog() {
+SVDBMaterialEditDialog::~SVDBMaterialEditDialog() {
 	delete m_ui;
 }
 
 
-void SVDBMaterialsEditDialog::edit() {
+void SVDBMaterialEditDialog::edit() {
 
 	// hide select/cancel buttons, and show "close" button
 	m_ui->pushButtonClose->setVisible(true);
@@ -67,7 +67,7 @@ void SVDBMaterialsEditDialog::edit() {
 }
 
 
-unsigned int SVDBMaterialsEditDialog::select() {
+unsigned int SVDBMaterialEditDialog::select() {
 
 	m_ui->pushButtonClose->setVisible(false);
 	m_ui->pushButtonSelect->setVisible(true);
@@ -89,22 +89,22 @@ unsigned int SVDBMaterialsEditDialog::select() {
 }
 
 
-void SVDBMaterialsEditDialog::on_pushButtonSelect_clicked() {
+void SVDBMaterialEditDialog::on_pushButtonSelect_clicked() {
 	accept();
 }
 
 
-void SVDBMaterialsEditDialog::on_pushButtonCancel_clicked() {
+void SVDBMaterialEditDialog::on_pushButtonCancel_clicked() {
 	reject();
 }
 
 
-void SVDBMaterialsEditDialog::on_pushButtonClose_clicked() {
+void SVDBMaterialEditDialog::on_pushButtonClose_clicked() {
 	accept();
 }
 
 
-void SVDBMaterialsEditDialog::on_toolButtonAdd_clicked() {
+void SVDBMaterialEditDialog::on_toolButtonAdd_clicked() {
 	// add new item
 	QModelIndex sourceIndex = m_dbModel->addNewItem();
 	QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
@@ -113,7 +113,7 @@ void SVDBMaterialsEditDialog::on_toolButtonAdd_clicked() {
 }
 
 
-void SVDBMaterialsEditDialog::on_toolButtonCopy_clicked() {
+void SVDBMaterialEditDialog::on_toolButtonCopy_clicked() {
 	// determine current item
 	QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
 	Q_ASSERT(currentProxyIndex.isValid());
@@ -129,7 +129,7 @@ void SVDBMaterialsEditDialog::on_toolButtonCopy_clicked() {
 }
 
 
-void SVDBMaterialsEditDialog::on_toolButtonRemove_clicked() {
+void SVDBMaterialEditDialog::on_toolButtonRemove_clicked() {
 	QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
 	Q_ASSERT(currentProxyIndex.isValid());
 	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
@@ -140,7 +140,7 @@ void SVDBMaterialsEditDialog::on_toolButtonRemove_clicked() {
 }
 
 
-void SVDBMaterialsEditDialog::onCurrentIndexChanged(const QModelIndex &current, const QModelIndex & /*previous*/) {
+void SVDBMaterialEditDialog::onCurrentIndexChanged(const QModelIndex &current, const QModelIndex & /*previous*/) {
 	// if there is no selection, deactivate all buttons that need a selection
 	if (!current.isValid()) {
 		m_ui->pushButtonSelect->setEnabled(false);
@@ -164,7 +164,7 @@ void SVDBMaterialsEditDialog::onCurrentIndexChanged(const QModelIndex &current, 
 
 
 
-void SVDBMaterialsEditDialog::on_pushButtonReloadUserDB_clicked() {
+void SVDBMaterialEditDialog::on_pushButtonReloadUserDB_clicked() {
 	if (QMessageBox::question(this, QString(), tr("Reloading the user database from file will revert all changes made in this dialog since the program was started. Continue?"),
 							  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
 	{

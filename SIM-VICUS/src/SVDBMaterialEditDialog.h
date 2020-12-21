@@ -1,10 +1,10 @@
-#ifndef SVDBMaterialsEditDialogH
-#define SVDBMaterialsEditDialogH
+#ifndef SVDBMaterialEditDialogH
+#define SVDBMaterialEditDialogH
 
 #include <QDialog>
 
 namespace Ui {
-class SVDBMaterialsEditDialog;
+class SVDBMaterialEditDialog;
 }
 
 class SVDBMaterialTableModel;
@@ -12,12 +12,12 @@ class QModelIndex;
 class QSortFilterProxyModel;
 
 /*! The edit dialog for materials types. */
-class SVDBMaterialsEditDialog : public QDialog {
+class SVDBMaterialEditDialog : public QDialog {
 	Q_OBJECT
 
 public:
-	explicit SVDBMaterialsEditDialog(QWidget *parent = nullptr);
-	~SVDBMaterialsEditDialog();
+	explicit SVDBMaterialEditDialog(QWidget *parent = nullptr);
+	~SVDBMaterialEditDialog();
 
 	/*! Starts the dialog in "edit materials" mode. */
 	void edit();
@@ -46,7 +46,7 @@ private slots:
 	void on_pushButtonReloadUserDB_clicked();
 
 private:
-	Ui::SVDBMaterialsEditDialog *m_ui;
+	Ui::SVDBMaterialEditDialog *m_ui;
 
 	/*! The sort filter model (owned). */
 	QSortFilterProxyModel			*m_proxyModel	= nullptr;
@@ -54,4 +54,4 @@ private:
 	SVDBMaterialTableModel		*m_dbModel		= nullptr;
 };
 
-#endif // SVDBMaterialsEditDialogH
+#endif // SVDBMaterialEditDialogH

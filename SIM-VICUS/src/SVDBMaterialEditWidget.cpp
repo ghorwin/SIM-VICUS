@@ -1,5 +1,5 @@
 #include "SVDBMaterialEditWidget.h"
-#include "ui_SVDBMaterialsEditWidget.h"
+#include "ui_SVDBMaterialEditWidget.h"
 
 #include "SVConstants.h"
 #include "SVSettings.h"
@@ -7,21 +7,21 @@
 
 #include <VICUS_KeywordList.h>
 
-SVDBMaterialsEditWidget::SVDBMaterialsEditWidget(QWidget *parent) :
+SVDBMaterialEditWidget::SVDBMaterialEditWidget(QWidget *parent) :
 	QWidget(parent),
-	m_ui(new Ui::SVDBMaterialsEditWidget)
+	m_ui(new Ui::SVDBMaterialEditWidget)
 {
 	m_ui->setupUi(this);
 
 }
 
 
-SVDBMaterialsEditWidget::~SVDBMaterialsEditWidget() {
+SVDBMaterialEditWidget::~SVDBMaterialEditWidget() {
 	delete m_ui;
 }
 
 
-void SVDBMaterialsEditWidget::updateInput(int id) {
+void SVDBMaterialEditWidget::updateInput(int id) {
 	m_current = nullptr; // disable edit triggers
 
 	if (id == -1) {
@@ -53,7 +53,7 @@ void SVDBMaterialsEditWidget::updateInput(int id) {
 }
 
 
-void SVDBMaterialsEditWidget::on_lineEditConductivity_editingFinished() {
+void SVDBMaterialEditWidget::on_lineEditConductivity_editingFinished() {
 	if ( m_ui->lineEditConductivity->isValid() ){
 		// setze werte in datenbank
 	}

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SVDBMaterialsEditDialog</class>
- <widget class="QDialog" name="SVDBMaterialsEditDialog">
+ <class>SVDBMaterialEditDialog</class>
+ <widget class="QDialog" name="SVDBMaterialEditDialog">
   <property name="geometry">
    <rect>
     <x>0</x>

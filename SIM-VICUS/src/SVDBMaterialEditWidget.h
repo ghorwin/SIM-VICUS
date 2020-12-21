@@ -1,5 +1,5 @@
-#ifndef SVDBMaterialsEditWidgetH
-#define SVDBMaterialsEditWidgetH
+#ifndef SVDBMaterialEditWidgetH
+#define SVDBMaterialEditWidgetH
 
 #include <QWidget>
 
@@ -12,7 +12,7 @@ class SVDBMaterialTableModel;
 class SVDatabase;
 
 namespace Ui {
-	class SVDBMaterialsEditWidget;
+	class SVDBMaterialEditWidget;
 }
 /*! Edit widget for materials.
 
@@ -22,12 +22,12 @@ namespace Ui {
 	is no longer valid or you want to resize the container (through adding new items)
 	call updateInput() with an invalid index and/or nullptr pointer to the model.
 */
-class SVDBMaterialsEditWidget : public QWidget {
+class SVDBMaterialEditWidget : public QWidget {
 	Q_OBJECT
 
 public:
-	explicit SVDBMaterialsEditWidget(QWidget *parent = nullptr);
-	~SVDBMaterialsEditWidget();
+	explicit SVDBMaterialEditWidget(QWidget *parent = nullptr);
+	~SVDBMaterialEditWidget();
 
 	/*! Needs to be called once, before the widget is being used. */
 	void setup(SVDatabase * db, SVDBMaterialTableModel * dbModel);
@@ -46,7 +46,7 @@ private slots:
 
 private:
 
-	Ui::SVDBMaterialsEditWidget *m_ui;
+	Ui::SVDBMaterialEditWidget *m_ui;
 
 	/*! Cached pointer to database object. */
 	SVDatabase					*m_db;
@@ -61,4 +61,4 @@ private:
 	VICUS::Material				*m_current;
 };
 
-#endif // SVDBMaterialsEditWidgetH
+#endif // SVDBMaterialEditWidgetH
