@@ -1,5 +1,5 @@
-#ifndef ConstructionDBModelH
-#define ConstructionDBModelH
+#ifndef SVDBConstructionTableModelH
+#define SVDBConstructionTableModelH
 
 #include <QAbstractTableModel>
 
@@ -20,13 +20,6 @@ public:
 		ColNumLayers,
 		ColUValue,
 		NumColumns
-	};
-
-	/*! Custom data roles provided by the model. */
-	enum DataRoles {
-		Role_Id				= Qt::UserRole,
-		Role_BuiltIn,
-		Role_RawPointer
 	};
 
 	/*! Constructor, requires a read/write pointer to the central database object.
@@ -70,4 +63,4 @@ private:
 	SVDatabase	* m_db;
 };
 
-#endif // ConstructionDBModelH
+#endif // SVDBConstructionTableModelH

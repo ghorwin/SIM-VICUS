@@ -3,14 +3,14 @@
 #include <map>
 #include <algorithm>
 
-#include <QtExt_varianthelper.h>
-
 #include <QIcon>
 #include <QFont>
 
 #include <VICUS_Construction.h>
 #include <VICUS_Database.h>
 #include <VICUS_KeywordListQt.h>
+
+#include "SVConstants.h"
 
 SVDBConstructionTableModel::SVDBConstructionTableModel(QObject * parent, SVDatabase & db) :
 	QAbstractTableModel(parent),
@@ -84,9 +84,6 @@ QVariant SVDBConstructionTableModel::data ( const QModelIndex & index, int role)
 
 		case Role_BuiltIn :
 			return it->second.m_builtIn;
-
-		case Role_RawPointer :
-			return QtExt::VPtr<const VICUS::Construction>::asQVariant(&it->second);
 	}
 
 	return QVariant();

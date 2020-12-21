@@ -11,6 +11,7 @@
 #include "SVDBConstructionEditWidget.h"
 #include "SVStyle.h"
 #include "SVDBModelDelegate.h"
+#include "SVConstants.h"
 
 SVDBConstructionEditDialog::SVDBConstructionEditDialog(QWidget *parent) :
 	QDialog(parent),
@@ -49,7 +50,7 @@ SVDBConstructionEditDialog::SVDBConstructionEditDialog(QWidget *parent) :
 			this, SLOT(onCurrentIndexChanged(const QModelIndex &, const QModelIndex &)) );
 
 	// set item delegate for coloring built-ins
-	SVDBModelDelegate * dg = new SVDBModelDelegate(this, SVDBConstructionTableModel::Role_BuiltIn);
+	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn);
 	m_ui->tableView->setItemDelegate(dg);
 
 }
@@ -122,7 +123,7 @@ void SVDBConstructionEditDialog::on_toolButtonCopy_clicked() {
 	Q_ASSERT(currentProxyIndex.isValid());
 	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
 
-	unsigned int id = m_dbModel->data(sourceIndex, SVDBConstructionTableModel::Role_Id).toUInt();
+	unsigned int id = m_dbModel->data(sourceIndex, Role_Id).toUInt();
 	const VICUS::Construction * con = SVSettings::instance().m_db.m_constructions[id];
 
 	// add item as copy
@@ -155,12 +156,12 @@ void SVDBConstructionEditDialog::onCurrentIndexChanged(const QModelIndex &curren
 		m_ui->pushButtonSelect->setEnabled(true);
 		// remove is not allowed for built-ins
 		QModelIndex sourceIndex = m_proxyModel->mapToSource(current);
-		m_ui->toolButtonRemove->setEnabled(!sourceIndex.data(SVDBConstructionTableModel::Role_BuiltIn).toBool());
+		m_ui->toolButtonRemove->setEnabled(!sourceIndex.data(Role_BuiltIn).toBool());
 
 		m_ui->toolButtonCopy->setEnabled(true);
 		m_ui->tableView->selectRow(current.row());
 		// retrieve current construction ID
-		int conId = current.data(SVDBConstructionTableModel::Role_Id).toInt();
+		int conId = current.data(Role_Id).toInt();
 		m_ui->editWidget->updateInput(conId);
 	}
 }

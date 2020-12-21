@@ -31,6 +31,13 @@ extern const char * const FIXED_FONT_FAMILY;
 /*! Defines the first index to be user for user IDs. */
 extern unsigned int USER_ID_SPACE;
 
+/*! Custom data roles provided by the models. */
+enum DataRoles {
+	Role_Id				= Qt::UserRole,
+	Role_BuiltIn
+};
+
+
 /*! \file SVConstants.h
 	Contains constants which are used in several ui files. This is to
 	avoid multiple specifications of constants or even worse, the use of

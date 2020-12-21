@@ -7,6 +7,9 @@ namespace Ui {
 class SVDBMaterialsEditDialog;
 }
 
+class SVDBMaterialTableModel;
+class QModelIndex;
+
 /*! The edit dialog for materials types. */
 class SVDBMaterialsEditDialog : public QDialog {
 	Q_OBJECT

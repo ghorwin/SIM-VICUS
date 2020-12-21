@@ -7,7 +7,6 @@ namespace Ui {
 	class SVDBConstructionEditDialog;
 }
 
-class QItemSelection;
 class QSortFilterProxyModel;
 class QModelIndex;
 
