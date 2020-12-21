@@ -16,14 +16,22 @@ class MaterialTableModel;
 class MaterialDBItemDelegate;
 
 namespace Ui {
-class MaterialDatabaseSelectionWidget;
+	class MaterialDatabaseSelectionWidget;
 }
 
-/*! \brief Basic widget for selecting materials from a database.
-   It only contains viewing and filtering functions. Adding or removing materials from database has to be done outside.
+/*! Basic widget for selecting materials from a database.
+	It only contains viewing and filtering functions. Adding or removing materials from database has to be done outside.
+
+	The table view inside the widget can be configured to only show a subset of all available columns.
+	Once the widget has been instantiated, materials must be set in the widget with setMaterials().
+
+	The widget includes functionality for adding/copying and removing materials from the list. These operations
+	modify the internally stored list of materials, and emits corresponding signals which allows
+	classes using the widget to keep their data store in sync.
+
+	The widget remembers the column widths adjusted by users in a settings object.
 */
-class MaterialDatabaseSelectionWidget : public QWidget
-{
+class MaterialDatabaseSelectionWidget : public QWidget {
 	Q_OBJECT
 
 public:
@@ -34,10 +42,10 @@ public:
 
 	/*! Extended constructor.*/
 	MaterialDatabaseSelectionWidget(const QSet<MaterialBase::parameter_t>& visibleParams,
-											 const QString& orgName, const QString& programName, const QString& widgetName,
-											 QWidget *parent = 0);
+									const QString& orgName, const QString& programName, const QString& widgetName,
+									QWidget *parent = 0);
 
-	/*! Standard destructor only delete ui.*/
+	/*! Standard destructor, only deletes ui.*/
 	~MaterialDatabaseSelectionWidget() override;
 
 	/*! Setup of view. Must be called in case of use of standard constructor. The extended constructor calls setup itself.
@@ -46,7 +54,8 @@ public:
 		\param programName Name of the calling program for use in settings for store view parameters
 		\param widgetName Name of the widget for use in settings for store view parameters
 	*/
-	void setup(const QSet<MaterialBase::parameter_t>& visibleParams, const QString& orgName, const QString& programName, const QString& widgetName);
+	void setup(const QSet<MaterialBase::parameter_t>& visibleParams,
+			   const QString& orgName, const QString& programName, const QString& widgetName);
 
 	/*! Fill the material list with pointer to MaterialBase.
 		The model takes ownership of this pointer.
