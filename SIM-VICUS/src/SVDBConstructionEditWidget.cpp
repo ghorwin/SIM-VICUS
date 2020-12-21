@@ -639,11 +639,11 @@ void SVDBConstructionEditWidget::constructionViewRemove_layer(int index) {
 
 void SVDBConstructionEditWidget::constructionViewMove_layer(int index, bool left) {
 	/// FIXME: these checks should be asserts
-	if(index == -1)
+	if (index == -1)
 		return;
-	if(index == 0 && left)
+	if (index == 0 && left)
 		return;
-	if(index == m_current->m_materialLayers.size() - 1 && !left)
+	if ((index == (int)m_current->m_materialLayers.size() - 1) && !left)
 		return;
 
 	if (left) {
