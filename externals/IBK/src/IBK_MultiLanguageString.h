@@ -114,6 +114,7 @@ public:
 		\warning You must not use 'all' as languageId (otherwise an IBK::Exception is thrown).
 	*/
 	std::string string(const std::string& languageId = m_language, bool returnAllString=false) const;
+	std::string string(const std::string& languageId, const std::string& fallBackLangId) const;
 
 	/*! Operator (), just a convenience overload of function string(). */
 	std::string operator()(const std::string& languageId = m_language, bool returnAllString=false) const {

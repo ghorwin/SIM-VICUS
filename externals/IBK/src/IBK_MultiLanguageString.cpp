@@ -81,6 +81,26 @@ std::string MultiLanguageString::string(const std::string& languageId, bool retu
 // ----------------------------------------------------------------------------
 
 
+std::string MultiLanguageString::string(const std::string& languageId, const std::string& fallBackLangId) const {
+	std::string lang = IBK::tolower_string(languageId);
+	// ensure that "all" is not used as languageId
+	if (lang=="all")
+		throw IBK::Exception("Cannot use 'all' as language ID for MultiLanguageString.", "[MultiLanguageString::string]");
+	std::map<std::string,std::string>::const_iterator fit = m_taglist.find(lang);
+	if (fit == m_taglist.end()) {
+		// try to find fallback string
+		fit = m_taglist.find(fallBackLangId);
+		if (fit == m_taglist.end())
+			// if neither requested nor fallback language has been found, return the entire string
+			return m_taglist.find("all")->second;
+		else
+			return fit->second;
+	}
+	return fit->second;
+}
+// ----------------------------------------------------------------------------
+
+
 void MultiLanguageString::setString(const std::string& str, const std::string& languageId) {
 	std::string lang = IBK::tolower_string(languageId);
 	// setting the "all" string is prohibited
