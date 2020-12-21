@@ -53,7 +53,7 @@
 #include "SVViewStateHandler.h"
 #include "SVImportIDFDialog.h"
 
-#include "SVDBMaterialsEditDialog.h"
+#include "SVDBMaterialEditDialog.h"
 #include "SVDBConstructionEditDialog.h"
 #include "SVDBWindowEditWidget.h"
 

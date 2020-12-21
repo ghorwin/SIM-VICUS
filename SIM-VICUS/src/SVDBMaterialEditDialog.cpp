@@ -1,4 +1,4 @@
-#include "SVDBMaterialsEditDialog.h"
+#include "SVDBMaterialEditDialog.h"
 #include "ui_SVDBMaterialsEditDialog.h"
 
 #include <QItemSelectionModel>
@@ -11,7 +11,7 @@
 #include "SVConstants.h"
 #include "SVDBModelDelegate.h"
 #include "SVDBMaterialTableModel.h"
-#include "SVDBMaterialsEditWidget.h"
+#include "SVDBMaterialEditWidget.h"
 
 SVDBMaterialsEditDialog::SVDBMaterialsEditDialog(QWidget *parent) :
 	QDialog(parent),

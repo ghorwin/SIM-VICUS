@@ -1,4 +1,4 @@
-#include "SVDBMaterialsEditWidget.h"
+#include "SVDBMaterialEditWidget.h"
 #include "ui_SVDBMaterialsEditWidget.h"
 
 #include "SVConstants.h"
