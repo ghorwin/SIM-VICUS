@@ -2,10 +2,11 @@
 #define SVPropNetworkEditWidgetH
 
 #include <QWidget>
+#include <QMap>
 
 namespace VICUS {
 	class Network;
-
+	class Object;
 }
 
 namespace Ui {
@@ -29,10 +30,61 @@ public:
 
 	void showEdgeProperties();
 
+	void setupComboboxPipeDB();
+
+	void setupComboboxComponents();
+
+	void updateSizingParams();
+
+	void modifyUI();
+
+private slots:
+	void on_comboBoxNodeType_activated(int index);
+
+	void on_comboBoxComponent_activated(int index);
+
+	void on_doubleSpinBoxNodeNeatingDemand_editingFinished();
+
+	void on_lineEditNodeX_editingFinished();
+
+	void on_comboBoxPipeModel_activated(int index);
+
+	void on_comboBoxPipeDB_activated(int index);
+
+	void on_checkBoxSupplyPipe_clicked();
+
+	void on_pushButtonSizePipeDimensions_clicked();
+
+	void on_pushButtonGenerateIntersections_clicked();
+
+	void on_pushButtonConnectBuildings_clicked();
+
+	void on_pushButtonReduceDeadEnds_clicked();
+
+	void on_pushButtonReduceRedundantNodes_clicked();
+
+	void on_lineEditNodeY_editingFinished();
+
 private:
+
+	void networkFromId();
+
 	Ui::SVPropNetworkEditWidget *m_ui;
 
-	VICUS::Network *m_network;
+	const VICUS::Network *m_network = nullptr;
+
+	const VICUS::Object * m_obj = nullptr;
+
+	QMap<QString, unsigned> m_mapPipeModels;
+
+	QMap<QString, unsigned> m_mapComponents;
+
+	QMap<QString, unsigned> m_mapNodeTypes;
+
+	QMap<QString, unsigned> m_mapDBPipes;
+
+	unsigned int m_treeItemId = 0;
+
 };
 
 #endif // SVPropNetworkEditWidgetH

@@ -378,14 +378,8 @@ FUNCID(Network::sizePipeDimensions);
 	}
 
 	// check for source
-	bool sourceFound = false;
-	for (NetworkNode &n: m_nodes){
-		if (n.m_type==NetworkNode::NT_Source)
-			sourceFound = true;
-	}
-	if (sourceFound == false)
+	if (sourceNodes().size() < 1)
 		throw IBK::Exception("Network has no source node. Set one node to type source.", FUNC_ID);
-
 
 	// set all edges heating demand = 0
 	for (NetworkEdge &edge: m_edges)
@@ -398,9 +392,22 @@ FUNCID(Network::sizePipeDimensions);
 		if (node.m_maxHeatingDemand <= 0)
 			throw IBK::Exception(IBK::FormatString("Maximum heating demand of node '%1' must be >0").arg(node.m_id), FUNC_ID);
 
-		std::vector<NetworkEdge * > path;
-		dijkstraShortestPathToSource(node, path);
-		for (NetworkEdge * edge: path)
+		// for each source find the shortest path to current node. Finally select the shortest of these paths
+		std::vector<NetworkEdge * > minPath;
+		double minPathLength = std::numeric_limits<double>::max();
+		std::vector<NetworkNode * > sources = sourceNodes();
+		for (NetworkNode * source: sources){
+			std::vector<NetworkEdge * > path;
+			dijkstraShortestPathToSource(node, *source, path);  // shortest path between source and node
+			double pathLength = 0;
+			for (NetworkEdge *edge: path)
+				pathLength += edge->length();
+			if (pathLength < minPathLength){
+				minPathLength = pathLength;
+				minPath = path;
+			}
+		}
+		for (NetworkEdge * edge: minPath)
 			edge->m_maxHeatingDemand += node.m_maxHeatingDemand;
 	}
 
@@ -446,7 +453,19 @@ FUNCID(Network::sizePipeDimensions);
 }
 
 
-void Network::dijkstraShortestPathToSource(NetworkNode &startNode, std::vector<NetworkEdge*> &pathSourceToStart){
+std::vector<NetworkNode *> Network::sourceNodes(){
+
+	std::vector<NetworkNode *> sources;
+	for (NetworkNode &n: m_nodes){
+		if (n.m_type==NetworkNode::NT_Source)
+			sources.push_back(&n);
+	}
+	return sources;
+}
+
+
+void Network::dijkstraShortestPathToSource(NetworkNode &startNode, const NetworkNode &endNode,
+										   std::vector<NetworkEdge*> &pathEndToStart){
 
 	// init: all nodes have infinte distance to start node and no predecessor
 	for (NetworkNode &n: m_nodes){
@@ -468,8 +487,8 @@ void Network::dijkstraShortestPathToSource(NetworkNode &startNode, std::vector<N
 			}
 		}
 		// if source reached: return path
-		if (nMin->m_type == NetworkNode::NT_Source){
-			nMin->pathToNull(pathSourceToStart);
+		if (nMin == &endNode){
+			nMin->pathToNull(pathEndToStart);
 			return;
 		}
 		// update distance from start to neighbours of nMin
@@ -569,6 +588,13 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &hydraulic
 	for (const NetworkNode &n: m_nodes){
 		if (n.m_componentId != INVALID_ID && n.m_subNetworkId != INVALID_ID)
 			throw IBK::Exception(IBK::FormatString("node with id '%1' has both subnetworkId and componentId.").arg(n.m_id), FUNC_ID);
+	}
+
+	// sources and buildings can only have one connected edge
+	for (const NetworkNode &node: m_nodes){
+		if ((node.m_type == NetworkNode::NT_Source || node.m_type == NetworkNode::NT_Building) && node.m_edges.size()>1 )
+			throw IBK::Exception(IBK::FormatString("Node %1 has more than onde edge connected, but is a source or building.")
+								 .arg(node.m_id), FUNC_ID);
 	}
 
 	unsigned idOffsetOutlet = std::pow( 10, std::ceil( std::log10(m_nodes.size())) + 1 );

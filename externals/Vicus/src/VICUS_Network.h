@@ -108,9 +108,7 @@ public:
 	 */
 	void sizePipeDimensions(const NetworkFluid &fluid);
 
-
-
-//	void networksimpl
+	std::vector<NetworkNode *> sourceNodes();
 
 	void writeNetworkCSV(const IBK::Path &file) const;
 
@@ -121,7 +119,7 @@ public:
 	/*! find shortest Path from given startNode (e.g. a building) to Node with type source
 	 * using dijkstra-algorithm, implemented according to Wikipedia and return path as vector of edges
 	 */
-	void dijkstraShortestPathToSource(NetworkNode &startNode, std::vector<NetworkEdge*> &pathToSource);
+	void dijkstraShortestPathToSource(NetworkNode &startNode, const NetworkNode &endNode, std::vector<NetworkEdge*> &pathEndToStart);
 
 	/*! Recomputes the min/max coordinates of the network and updates m_extends. */
 	void updateExtends();

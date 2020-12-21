@@ -4,6 +4,7 @@
 #include <QTreeWidgetItem>
 
 #include <VICUS_Project.h>
+#include <VICUS_KeywordList.h>
 
 #include "SVProjectHandler.h"
 #include "SVStyle.h"
@@ -180,7 +181,10 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		// add child nodes for each edge in the network
 		/// TODO : Hauke, think about grouping for larger networks
 		for (const VICUS::NetworkNode & nod : n.m_nodes) {
-			QTreeWidgetItem * no = new QTreeWidgetItem(QStringList() << QString("N [%1]").arg(nod.uniqueID()), QTreeWidgetItem::Type);
+			QTreeWidgetItem * no = new QTreeWidgetItem(QStringList() << QString("%1 [%2]")
+													   .arg(VICUS::KeywordList::Keyword("NetworkNode::NodeType", nod.m_type))
+													   .arg(nod.uniqueID()), QTreeWidgetItem::Type);
+
 			m_treeItemMap[nod.uniqueID()] = no;
 			no->setData(0, SVNavigationTreeItemDelegate::ItemType, NT_NetworkNode);
 			no->setData(0, SVNavigationTreeItemDelegate::NodeID, nod.uniqueID());
