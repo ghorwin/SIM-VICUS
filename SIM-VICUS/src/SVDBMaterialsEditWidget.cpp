@@ -91,12 +91,8 @@ SVDBMaterialsEditWidget::~SVDBMaterialsEditWidget() {
 	delete m_ui;
 }
 
-void SVDBMaterialsEditWidget::update(int id)
-{
+void SVDBMaterialsEditWidget::update(int id) {
 	if(id == -1){
-		//disable buttons
-		m_ui->toolButtonRemove->setEnabled(false);
-		m_ui->toolButtonCopy->setEnabled(false);
 
 		//disable and clear input controls
 		m_ui->lineEditDensity->setReadOnly(true);
@@ -132,19 +128,6 @@ void SVDBMaterialsEditWidget::update(int id)
 		m_ui->comboBoxCategory->setCurrentIndex(mat.m_category);
 		///TODO Dirk Einbauen des Multilanguage string --> Andreas fragen
 
-
-		/// TODO Andreas woher weiß ich wann es ein User Material ist und wann nicht?
-		//m_ui->widgetMaterialsDB->
-		if(false)
-			m_ui->toolButtonRemove->setEnabled(true);
-
-		m_ui->toolButtonCopy->setEnabled(true);
-
-//		m_selectedMaterial = matIt->first;
-//		m_toolButtonCopy->setEnabled(m_selectedMaterial > -1);
-
-		if(!mat.m_builtIn)
-			m_ui->toolButtonRemove->setEnabled(true);
 
 	}
 

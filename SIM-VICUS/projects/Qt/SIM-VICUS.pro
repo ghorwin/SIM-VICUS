@@ -9,7 +9,7 @@ TEMPLATE = app
 # this pri must be sourced from all our applications
 include( ../../../externals/IBK/projects/Qt/IBK.pri )
 
-QT += xml opengl network printsupport widgets
+QT += xml opengl network printsupport widgets svg
 
 CONFIG += c++11
 
