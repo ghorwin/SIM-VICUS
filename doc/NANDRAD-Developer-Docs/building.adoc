@@ -39,7 +39,7 @@ Also, install a suitable git client (SmartGit is recommendet). Don't forget to s
 
 On Linux it's a walk in the park. Just install the build-essential package (g++/clang and cmake and qt5default packages). On Ubuntu simply run:
 
-    > sudo apt install build-essential cmake qt5-default libqt5svg5-dev
+    > sudo apt install build-essential cmake qt5-default libqt5svg5-dev git qtcreator
 
 Also, install git or a suitable git client (SmartGit is recommendet). Don't forget to specify your git user name and email:
 
