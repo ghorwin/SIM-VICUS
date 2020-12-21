@@ -182,10 +182,12 @@ private:
 	/*! Cached input data vector (size nPrimaryStateResults()). */
 	std::vector<double>								m_y;
 
-
 	// for each flow element instantiate an appropriate NetworkThermalBalanceFlowElement
 	/*! Total number of unknowns.*/
 	unsigned int									m_n;
+
+	/*! Pointer to NANDRAD network structure*/
+	const NANDRAD::HydraulicNetwork					*m_network=nullptr;
 
 	/*! Private implementation (Pimpl) of the network solver. */
 	ThermalNetworkModelImpl							*m_p = nullptr;

@@ -40,11 +40,14 @@ public:
 	ThermalNetworkModelImpl() { }
 	~ThermalNetworkModelImpl() { }
 
+	/*! Constant access to heat flux vector*/
+	const double *heatFluxes() const;
+
 	/*! Initialized solver based on current content of m_flowElements.
 		Setup needs to be called whenever m_flowElements vector changes
 		(but not, when parameters inside flow elements change!).
 	*/
-	void setup(const NANDRAD::HydraulicNetwork & nw);
+	void setup();
 
 	/*! Updates all states at network nodes.
 	*/
@@ -59,9 +62,9 @@ public:
 	*/
 	std::vector<ThermalNetworkAbstractFlowElement*>	m_flowElements;
 
-	/*! Container with mass flux references for each flow element.
+	/*! Container with global pointer to calculated mass fluxes.
 	*/
-	std::vector<const double*>						m_massFluxReferences;
+	const double									*m_massFluxes;
 
 private:
 	/*! Stores connectivity information. */
@@ -84,6 +87,8 @@ private:
 	/*! Container with specific enthalpy for each node.
 	*/
 	std::vector<double>								m_specificEnthalpy;
+	/*! Vector result heat fluxes. */
+	std::vector<double>								m_heatFluxes;
 };
 
 
@@ -96,6 +101,9 @@ ThermalNetworkStatesModel::~ThermalNetworkStatesModel() {
 
 void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw, const std::vector<NANDRAD::HydraulicNetworkComponent> & components) {
 	FUNCID(ThermalNetworkStatesModel::setup);
+
+	// store network pointer
+	m_network = &nw;
 	// create implementation instance
 	m_p = new ThermalNetworkModelImpl; // we take ownership
 
@@ -118,8 +126,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw, cons
 
 		// retrieve component
 
-		std::vector<NANDRAD::HydraulicNetworkComponent>::const_iterator it /*=
-				std::find(components.begin(), components.end(), e.m_componentId)*/;
+		std::vector<NANDRAD::HydraulicNetworkComponent>::const_iterator it =
+				std::find(components.begin(), components.end(), e.m_componentId);
 		IBK_ASSERT(it != components.end());
 
 		switch (it->m_modelType) {
@@ -141,7 +149,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw, cons
 	}
 	// setup the enetwork
 	try {
-		m_p->setup(nw);
+		m_p->setup();
 	} catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, "Error setting up flow network.", FUNC_ID);
 	}
@@ -201,25 +209,63 @@ int ThermalNetworkStatesModel::update(const double * y) {
 void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 	// copy states model pointer
 	m_statesModel = statesModel;
-	// resize results
-	m_heatFluxes.resize(m_statesModel->m_p->m_flowElements.size());
+	// create id vector for later access to heat fluxes
+	IBK_ASSERT(m_statesModel->m_network != nullptr);
+	IBK_ASSERT(!m_statesModel->m_network->m_elements.empty());
+	IBK_ASSERT(m_statesModel->m_network->m_elements.size() ==
+			   m_statesModel->m_p->m_flowElements.size());
+
+	// fill ids
+	for(const NANDRAD::HydraulicNetworkElement &elem : m_statesModel->m_network->m_elements) {
+		m_componentIds.push_back(elem.m_componentId);
+	}
 }
 
 
 void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
-	// TODO: implement
+	if(!resDesc.empty())
+		resDesc.clear();
+	// mass flux vector is a result
+	QuantityDescription desc("HeatFlux", "W", "Heat flux from all flow elements into environment", false);
+	// deactivate description;
+	if(m_componentIds.empty())
+		desc.m_size = 0;
+	else
+		desc.resize(m_componentIds, VectorValuedQuantityIndex::IK_ModelID);
+	resDesc.push_back(desc);
 }
 
 
 void ThermalNetworkBalanceModel::resultValueRefs(std::vector<const double *> &res) const {
-	// first seach in m_results vector
-	res.clear();
-	// TODO: implement
+	if(!res.empty())
+		res.clear();
+	// mass flux vector is a result quantity
+	if(m_statesModel->m_p->heatFluxes() != nullptr) {
+		for(unsigned int i = 0; i < m_statesModel->m_n; ++i)
+		res.push_back(m_statesModel->m_p->heatFluxes() + i);
+	}
 }
 
 
 const double * ThermalNetworkBalanceModel::resultValueRef(const QuantityName & quantityName) const {
-	// TODO: implement
+	// return vector of heat fluxes
+	if(quantityName == std::string("HeatFlux")) {
+		// whole vector access
+		if(quantityName.m_index == -1)
+			return m_statesModel->m_p->heatFluxes();
+		// find component id
+		std::vector<unsigned int>::const_iterator it =
+				std::find(m_componentIds.begin(), m_componentIds.end(),
+						  quantityName.m_index);
+		// not found
+		if(it == m_componentIds.end())
+			return nullptr;
+
+		unsigned int index = std::distance(m_componentIds.begin(), it);
+		IBK_ASSERT(index < m_statesModel->m_n);
+		// found a valid entry
+		return m_statesModel->m_p->heatFluxes() + index;
+	}
 	return nullptr;
 }
 
@@ -243,22 +289,17 @@ void ThermalNetworkBalanceModel::inputReferences(std::vector<InputReference> & i
 	InputReference inputRef;
 	inputRef.m_id = id();
 	inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORK;
+	inputRef.m_name = std::string("MassFlux");
 	inputRef.m_required = true;
-
-	for(unsigned int i = 0; i < m_statesModel->m_p->m_flowElements.size(); ++i) {
-		// generate name of the quantity
-		inputRef.m_name = QuantityName("MassFlux",(int) i);
-		inputRefs.push_back(inputRef);
-	}
 }
 
 
 void ThermalNetworkBalanceModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/,
 										 const std::vector<const double *> & resultValueRefs)
 {
-	IBK_ASSERT(resultValueRefs.size() == m_statesModel->m_p->m_flowElements.size());
+	IBK_ASSERT(resultValueRefs.size() == 1);
 	// copy references into mass flux vector
-	m_statesModel->m_p->m_massFluxReferences = resultValueRefs;
+	m_statesModel->m_p->m_massFluxes = resultValueRefs[0];
 }
 
 
@@ -286,28 +327,12 @@ int ThermalNetworkBalanceModel::update() {
 		offset += fe->nInternalStates();
 	}
 
-	offset = 0;
-	for(unsigned int i = 0; i < m_statesModel->m_p->m_flowElements.size(); ++i) {
-		const ThermalNetworkAbstractFlowElement *fe = m_statesModel->m_p->m_flowElements[i];
-		// sum up
-		double heatFlux = 0.0;
-		for(unsigned int j = offset; j < offset + fe->nInternalStates(); ++j)
-			heatFlux -= m_ydot[j];
-		// copy heat flux
-		m_heatFluxes[i] = heatFlux;
-		offset += fe->nInternalStates();
-	}
 	return 0;
 }
 
 
 int ThermalNetworkBalanceModel::ydot(double* ydot) {
 	// get inlet heat losses from all flow elements
-	unsigned int offset = 0;
-	for(ThermalNetworkAbstractFlowElement *fe : m_statesModel->m_p->m_flowElements) {
-		fe->internalHeatLosses(&m_ydot[offset]);
-		offset += fe->nInternalStates();
-	}
 	// copy values to ydot
 	std::memcpy(ydot, &m_ydot[0], m_ydot.size() * sizeof (double));
 	// signal success
@@ -315,11 +340,14 @@ int ThermalNetworkBalanceModel::ydot(double* ydot) {
 }
 
 
-void ThermalNetworkModelImpl::setup(const NANDRAD::HydraulicNetwork & nw) {
-	FUNCID(HydraulicNetworkModelImpl::setup);
+const double *ThermalNetworkModelImpl::heatFluxes() const {
+	if(!m_heatFluxes.empty())
+		return &m_heatFluxes[0];
+	return nullptr;
+}
 
-	// resize specific enthalpy
-	m_specificEnthalpy.resize(m_nodes.size());
+void ThermalNetworkModelImpl::setup() {
+	FUNCID(ThermalNetworkModelImpl::setup);
 
 	// count number of nodes
 	unsigned int nodeCount = 0;
@@ -497,6 +525,10 @@ void ThermalNetworkModelImpl::setup(const NANDRAD::HydraulicNetwork & nw) {
 	IBK::IBK_Message(IBK::FormatString("Nodes:         %1\n").arg(m_nodes.size()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK::IBK_Message(IBK::FormatString("Flow elements: %1\n").arg(m_flowElements.size()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
+	// resize specific enthalpy
+	m_specificEnthalpy.resize(m_nodes.size());
+	// resize heat fluxes
+	m_heatFluxes.resize(m_flowElements.size());
 }
 
 
@@ -515,8 +547,7 @@ int ThermalNetworkModelImpl::updateStates() {
 		double massFluxInlet = 0.0;
 		// select all pipes with positive flux into element
 		for(unsigned int idx : inletIdxs) {
-			IBK_ASSERT(m_massFluxReferences[idx] != nullptr);
-			const double massFlux = *m_massFluxReferences[idx];
+			const double massFlux = m_massFluxes[idx];
 			if(massFlux > 0) {
 				massFluxInlet += massFlux;
 				// and retrieve specfic enthalpy
@@ -528,8 +559,7 @@ int ThermalNetworkModelImpl::updateStates() {
 		}
 		// select all pipes with negative flux into element
 		for(unsigned int idx : outletIdxs) {
-			IBK_ASSERT(m_massFluxReferences[idx] != nullptr);
-			const double massFlux = *m_massFluxReferences[idx];
+			const double massFlux = m_massFluxes[idx];
 			if(massFlux < 0) {
 				massFluxInlet -= massFlux;
 				// and retrieve specfic enthalpy
@@ -553,18 +583,19 @@ int ThermalNetworkModelImpl::updateFluxes() 	{
 	for(unsigned int i = 0; i < m_flowElements.size(); ++i) {
 		ThermalNetworkAbstractFlowElement *flowElem = m_flowElements[i];
 		// get inlet node
-		IBK_ASSERT(m_massFluxReferences[i] != nullptr);
-		const double massFlux = *m_massFluxReferences[i];
+		const double massFlux = m_massFluxes[i];
+		const double specEnthalpInlet = m_specificEnthalpy[flowElem->m_nInlet];
+		const double specEnthalpOutlet = m_specificEnthalpy[flowElem->m_nOutlet];
 		// positive mass flux
 		if(massFlux >= 0) {
-			const double specEnthalp = m_specificEnthalpy[flowElem->m_nInlet];
-			flowElem->setInletFluxes(massFlux, specEnthalp * massFlux);
+			flowElem->setInletFluxes(massFlux, specEnthalpInlet * massFlux);
 		}
 		// negative mass flux
 		else {
-			const double specEnthalp = m_specificEnthalpy[flowElem->m_nOutlet];
-			flowElem->setInletFluxes(massFlux, specEnthalp * massFlux);
+			flowElem->setInletFluxes(massFlux, specEnthalpOutlet * massFlux);
 		}
+		// heat los equals difference of enthalpy fluxes between inlet and outlet
+		m_heatFluxes[i] = massFlux * (specEnthalpInlet - specEnthalpOutlet);
 	}
 	return 0;
 }

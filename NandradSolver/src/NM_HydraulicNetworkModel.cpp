@@ -23,6 +23,9 @@ public:
 	HydraulicNetworkModelImpl();
 	~HydraulicNetworkModelImpl();
 
+	/*! Constant access to mass flux vector*/
+	const double *massFluxes() const;
+
 	/*! Initialized solver based on current content of m_flowElements.
 		Setup needs to be called whenever m_flowElements vector changes
 		(but not, when parameters inside flow elements change!).
@@ -232,16 +235,31 @@ void HydraulicNetworkModel::setup(const NANDRAD::HydraulicNetwork & nw, const st
 
 
 void HydraulicNetworkModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
-	// no results for now
+	if(!resDesc.empty())
+		resDesc.clear();
+	// mass flux vector is a result
+	QuantityDescription desc("MassFlux", "kg/s", "Fluid mass flux trough all flow elements", false);
+	// deactivate description;
+	if(m_p->m_flowElements.empty())
+		desc.m_size = 0;
+	resDesc.push_back(desc);
 }
 
 
 void HydraulicNetworkModel::resultValueRefs(std::vector<const double *> & res) const {
-	// no results for now
+	if(!res.empty())
+		res.clear();
+	// mass flux vector is a result quantity
+	if(m_p->massFluxes() != nullptr)
+		res.push_back(m_p->massFluxes());
 }
 
 
 const double * HydraulicNetworkModel::resultValueRef(const QuantityName & quantityName) const {
+	// return vector of mass fluxes
+	if(quantityName == std::string("MassFlux")) {
+		return m_p->massFluxes();
+	}
 	return nullptr;
 }
 
@@ -391,6 +409,11 @@ HydraulicNetworkModelImpl::~HydraulicNetworkModelImpl() {
 	}
 }
 
+const double *HydraulicNetworkModelImpl::massFluxes() const {
+	if(!m_massFluxes.empty())
+		return &m_massFluxes[0];
+	return nullptr;
+}
 
 void HydraulicNetworkModelImpl::setup() {
 	FUNCID(HydraulicNetworkModelImpl::setup);

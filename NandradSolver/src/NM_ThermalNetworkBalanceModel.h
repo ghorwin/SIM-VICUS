@@ -132,8 +132,8 @@ private:
 	std::string										m_displayName;
 	/*! Vector with cached derivatives, updated at last call to update(). */
 	std::vector<double>								m_ydot;
-	/*! Vector result heat fluxes. */
-	std::vector<double>								m_heatFluxes;
+	/*! Storage of all component ids, used for vector output. */
+	std::vector<unsigned int>						m_componentIds;
 
 	/*! Poiter to states model. */
 	ThermalNetworkStatesModel						*m_statesModel;
