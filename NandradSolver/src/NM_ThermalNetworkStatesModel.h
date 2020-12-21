@@ -32,12 +32,11 @@ namespace NANDRAD {
 
 namespace NANDRAD_MODEL {
 
-<<<<<<< Updated upstream
 /*!	A model that computes all temperature states of hydraulic network given the internal energy density.
 
 	The model publishes the temperatures for each flow element, so that these temperatures can be taken
 	as fluid temperature inputs by the hydraulic network elements.
-=======
+*/
 
 class ThermalNetworkStatesModelImpl;
 
