@@ -1,26 +1,45 @@
 #include "VICUS_Material.h"
 
+#include <VICUS_KeywordList.h>
 
 namespace VICUS {
 
-QString Material::categoryToString(Material::Category c)
+Material::Material( unsigned int id, const IBK::MultiLanguageString &name,
+					double conductivity, double density, double specHeatCapa) :
+	m_id(id),
+	m_displayName(name)
 {
-	switch (c) {
-		case MC_Coating:				return tr("Coating");
-		case MC_Plaster:				return tr("Plaster");
-		case MC_Bricks:					return tr("Bricks");
-		case MC_NaturalStones:			return tr("NaturalStones");
-		case MC_Cementitious:			return tr("Cementitious");
-		case MC_Insulations:			return tr("Insulations");
-		case MC_BuildingBoards:			return tr("BuildingBoards");
-		case MC_Woodbased:				return tr("Woodbased");
-		case MC_NaturalMaterials:		return tr("NaturalMaterials");
-		case MC_Soils:					return tr("Soils");
-		case MC_CladdingSystems:		return tr("CladdingSystems");
-		case MC_Foils:					return tr("Foils");
-		case MC_Miscellaneous:			return tr("Miscellaneous");
-		default:						return tr("Miscellaneous");
-	}
+	VICUS::KeywordList::setParameter(m_para, "Material::para_t", P_Density, density);
+	VICUS::KeywordList::setParameter(m_para, "Material::para_t", P_Conductivity, conductivity);
+	VICUS::KeywordList::setParameter(m_para, "Material::para_t", P_HeatCapacity, specHeatCapa);
 }
+
+
+NANDRAD::Material Material::toNandrad() const {
+	NANDRAD::Material mat;
+	mat.m_id = m_id;
+	mat.m_para[NANDRAD::Material::P_Density] = m_para[NANDRAD::Material::P_Density];
+	mat.m_para[NANDRAD::Material::P_Conductivity] = m_para[NANDRAD::Material::P_Conductivity];
+	mat.m_para[NANDRAD::Material::P_HeatCapacity] = m_para[NANDRAD::Material::P_HeatCapacity];
+	return mat;
+}
+
+
+bool Material::isValid(bool hygrothermalCalculation) const {
+
+	NANDRAD::Material mat = toNandrad();
+	try {
+		mat.checkParameters();
+	} catch (...) {
+		return false;
+	}
+
+	if (hygrothermalCalculation) {
+		// TODO : additional checks for hygrothermal parameters
+	}
+
+	return true;
+}
+
 
 }

@@ -12,6 +12,7 @@
 #include <IBK_Parameter.h>
 
 #include <NANDRAD_LinearSplineParameter.h>
+#include <NANDRAD_Material.h>
 
 namespace VICUS {
 
@@ -32,58 +33,56 @@ public:
 		//hygrothermal parameters
 		/*! Thermal conductivity of the dry material. */
 		P_Mu,						// Keyword: Mu						[-]		'Vapor diffusion resistance factor.'
-		/// TODO Beschreibung einfügen
+		/*! Moisture content at 80% relative humidity. */
 		P_W80,						// Keyword: W80						[kg/m3]	'Water content in relation to 80% humidity.'
-		/// TODO Beschreibung einfügen
+		/*! Moisture content at saturation. */
 		P_Wsat,						// Keyword: Wsat					[kg/m3]	'Water content at saturation.'
 
 		NUM_P
 	};
 
 	/*! Material categories.*/
-	enum Category{
+	enum Category {
 		//opaque categories
 		MC_Coating,					// Keyword: Coating
 		MC_Plaster,					// Keyword: Plaster
 		MC_Bricks,					// Keyword: Bricks
 		MC_NaturalStones,			// Keyword: NaturalStones
-		MC_Cementitious,				// Keyword: Cementitious
+		MC_Cementitious,			// Keyword: Cementitious
 		MC_Insulations,				// Keyword: Insulations
 		MC_BuildingBoards,			// Keyword: BuildingBoards
-		MC_Woodbased,					// Keyword: Woodbased
+		MC_Woodbased,				// Keyword: Woodbased
 		MC_NaturalMaterials,		// Keyword: NaturalMaterials
-		MC_Soils,						// Keyword: Soils
+		MC_Soils,					// Keyword: Soils
 		MC_CladdingSystems,			// Keyword: CladdingSystems
-		MC_Foils,						// Keyword: Foils
+		MC_Foils,					// Keyword: Foils
 		MC_Miscellaneous,			// Keyword: Miscellaneous
 		NUM_MC
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	Material(){}
+	/*! Default c'tor. */
+	Material() {}
 
-
-	/*! Constructor.
-		\param	id
-		\param	name display name
-		\param conductivity in W/mK
-		\param density in kg/m3
-		\param specHeatCapa in J/kgK
+	/*! Initializing constructor.
+		\param id
+		\param name Display name.
+		\param conductivity Thermal conductivity in W/mK
+		\param density Bulk density in kg/m3
+		\param specHeatCapa Specific heat capacity in J/kgK
 	*/
-	Material( unsigned int id, const QString &name, double conductivity, double density, double specHeatCapa):
-		m_id(id),
-		m_displayName(name.toStdString())
-	{
-		m_para[P_Density] = (IBK::Parameter("Density", density, "kg/m3"));
-		m_para[P_Conductivity] = (IBK::Parameter("Conductivity", conductivity, "W/mK"));
-		m_para[P_HeatCapacity] = (IBK::Parameter("HeatCapacity", specHeatCapa, "J/kgK"));
-	}
+	Material( unsigned int id, const IBK::MultiLanguageString &name, double conductivity, double density, double specHeatCapa);
 
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
-	static QString categoryToString(Category c);
+	/*! Composes a NANDRAD material from the VICUS data structure. */
+	NANDRAD::Material toNandrad() const;
+
+	/*! Checks if all parameters are valid. */
+	bool isValid(bool hygrothermalCalculation = false) const;
+
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
