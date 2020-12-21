@@ -79,6 +79,13 @@ QVariant SVDBConstructionTableModel::data ( const QModelIndex & index, int role)
 			}
 			break;
 
+		case Qt::SizeHintRole :
+			switch (index.column()) {
+				case ColCheck :
+					return QSize(22, 16);
+			} // switch
+			break;
+
 		case Role_Id :
 			return it->first;
 

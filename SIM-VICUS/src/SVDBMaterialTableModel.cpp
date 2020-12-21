@@ -6,7 +6,7 @@
 #include <QIcon>
 #include <QFont>
 
-#include <VICUS_Construction.h>
+#include <VICUS_Material.h>
 #include <VICUS_Database.h>
 #include <VICUS_KeywordListQt.h>
 
@@ -66,6 +66,13 @@ QVariant SVDBMaterialTableModel::data ( const QModelIndex & index, int role) con
 				return int(Qt::AlignRight | Qt::AlignVCenter);
 			break;
 
+		case Qt::SizeHintRole :
+			switch (index.column()) {
+				case ColCheck :
+					return QSize(22, 16);
+			} // switch
+			break;
+
 		case Role_Id :
 			return it->first;
 
@@ -78,7 +85,7 @@ QVariant SVDBMaterialTableModel::data ( const QModelIndex & index, int role) con
 
 
 int SVDBMaterialTableModel::rowCount ( const QModelIndex & ) const {
-	return (int)m_db->m_constructions.size();
+	return (int)m_db->m_materials.size();
 }
 
 

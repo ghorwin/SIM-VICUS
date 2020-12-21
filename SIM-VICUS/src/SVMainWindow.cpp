@@ -53,9 +53,9 @@
 #include "SVViewStateHandler.h"
 #include "SVImportIDFDialog.h"
 
-#include "SVDBMaterialsEditWidget.h"
-#include "SVDBWindowEditWidget.h"
+#include "SVDBMaterialsEditDialog.h"
 #include "SVDBConstructionEditDialog.h"
+#include "SVDBWindowEditWidget.h"
 
 #include "SVSimulationStartNandrad.h"
 #include "SVSimulationStartNetworkSim.h"
@@ -112,7 +112,7 @@ SVMainWindow::~SVMainWindow() {
 	delete m_viewStateHandler;
 
 	// explicitely delete all top-level DB edit widgets
-	delete m_dbMaterialsEditWidget;
+	delete m_dbMaterialsEditDialog;
 
 	m_self = nullptr;
 }
@@ -1353,10 +1353,17 @@ void SVMainWindow::on_actionViewToggleParametrizationMode_triggered() {
 
 
 void SVMainWindow::on_actionDBMaterials_triggered() {
-	if (m_dbMaterialsEditWidget == nullptr) {
-		m_dbMaterialsEditWidget = new SVDBMaterialsEditWidget(nullptr); // global widget, not inside main window
+	if (m_dbMaterialsEditDialog == nullptr) {
+		m_dbMaterialsEditDialog = new SVDBMaterialsEditDialog(nullptr); // global widget, not inside main window
 	}
-	m_dbMaterialsEditWidget->edit();
+	m_dbMaterialsEditDialog->edit();
+}
+
+
+void SVMainWindow::on_actionDBConstructions_triggered() {
+	if (m_dbConstructionEditDialog == nullptr)
+		m_dbConstructionEditDialog = new SVDBConstructionEditDialog(nullptr);
+	m_dbConstructionEditDialog->edit();
 }
 
 
@@ -1365,13 +1372,6 @@ void SVMainWindow::on_actionDBWindows_triggered() {
 		m_dbWindowEditWidget = new SVDBWindowEditWidget(nullptr); // global widget, not inside main window
 	}
 	m_dbWindowEditWidget->edit();
-}
-
-
-void SVMainWindow::on_actionDBConstructions_triggered() {
-	if (m_dbConstructionEditDialog == nullptr)
-		m_dbConstructionEditDialog = new SVDBConstructionEditDialog(nullptr);
-	m_dbConstructionEditDialog->edit();
 }
 
 

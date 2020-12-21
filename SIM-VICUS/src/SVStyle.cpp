@@ -90,6 +90,7 @@ void SVStyle::formatWidgetWithLayout(QWidget * w) {
 void SVStyle::formatDatabaseTableView(QTableView * v) {
 	v->verticalHeader()->setDefaultSectionSize(19);
 	v->verticalHeader()->setVisible(false);
+	v->horizontalHeader()->setMinimumSectionSize(19);
 	v->setSelectionBehavior(QAbstractItemView::SelectRows);
 	v->setSelectionMode(QAbstractItemView::SingleSelection);
 	v->setSortingEnabled(true);

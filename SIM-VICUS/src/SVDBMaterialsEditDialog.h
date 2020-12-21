@@ -9,6 +9,7 @@ class SVDBMaterialsEditDialog;
 
 class SVDBMaterialTableModel;
 class QModelIndex;
+class QSortFilterProxyModel;
 
 /*! The edit dialog for materials types. */
 class SVDBMaterialsEditDialog : public QDialog {
@@ -46,6 +47,11 @@ private slots:
 
 private:
 	Ui::SVDBMaterialsEditDialog *m_ui;
+
+	/*! The sort filter model (owned). */
+	QSortFilterProxyModel			*m_proxyModel	= nullptr;
+	/*! The material table model (owned). */
+	SVDBMaterialTableModel		*m_dbModel		= nullptr;
 };
 
 #endif // SVDBMaterialsEditDialogH

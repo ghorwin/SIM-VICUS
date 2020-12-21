@@ -1,17 +1,16 @@
 #include "SVDBConstructionEditDialog.h"
 #include "ui_SVDBConstructionEditDialog.h"
 
-#include "SVSettings.h"
-#include "SVDBConstructionTableModel.h"
-
 #include <QItemSelectionModel>
 #include <QTableView>
 #include <QSortFilterProxyModel>
 
-#include "SVDBConstructionEditWidget.h"
+#include "SVSettings.h"
 #include "SVStyle.h"
-#include "SVDBModelDelegate.h"
 #include "SVConstants.h"
+#include "SVDBModelDelegate.h"
+#include "SVDBConstructionTableModel.h"
+#include "SVDBConstructionEditWidget.h"
 
 SVDBConstructionEditDialog::SVDBConstructionEditDialog(QWidget *parent) :
 	QDialog(parent),
@@ -40,7 +39,7 @@ SVDBConstructionEditDialog::SVDBConstructionEditDialog(QWidget *parent) :
 
 	m_ui->tableView->setColumnWidth(SVDBConstructionTableModel::ColId, 60);
 #if defined(Q_OS_MAC)
-	m_ui->tableView->setColumnWidth(ConstructionDBModel::ColCheck, 26);
+	m_ui->tableView->setColumnWidth(SVDBConstructionTableModel::ColCheck, 26);
 #else
 	m_ui->tableView->setColumnWidth(SVDBConstructionTableModel::ColCheck, 22);
 #endif
@@ -83,9 +82,13 @@ unsigned int SVDBConstructionEditDialog::select() {
 
 	int res = exec();
 	if (res == QDialog::Accepted) {
-		// get selected construction
+		// determine current item
+		QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
+		Q_ASSERT(currentProxyIndex.isValid());
+		QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
 
 		// return ID
+		return sourceIndex.data(Role_Id).toUInt();
 	}
 
 	// nothing selected/dialog aborted
@@ -165,7 +168,6 @@ void SVDBConstructionEditDialog::onCurrentIndexChanged(const QModelIndex &curren
 		m_ui->editWidget->updateInput(conId);
 	}
 }
-
 
 
 void SVDBConstructionEditDialog::on_pushButtonReloadUserDB_clicked() {
