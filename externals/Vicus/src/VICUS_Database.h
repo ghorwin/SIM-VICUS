@@ -24,7 +24,7 @@ namespace VICUS {
 		unsigned ínt newId = materials.add(m);
 
 		const VICUS::Material * materials[newId]; // -> either VICUS::Material pointer or nullptr, if object doesn't exist
-	\endcodde
+	\endcode
 */
 template<typename T>
 class Database {
