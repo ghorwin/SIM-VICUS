@@ -13,55 +13,27 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_3">
-   <item row="0" column="0" colspan="4">
-    <widget class="QtExt::MaterialDatabaseSelectionWidget" name="widgetMaterialsDB" native="true"/>
-   </item>
-   <item row="0" column="4" rowspan="2">
-    <widget class="QTabWidget" name="tabWidgetThermal">
-     <property name="currentIndex">
-      <number>0</number>
-     </property>
-     <widget class="QWidget" name="Thermal">
-      <attribute name="title">
-       <string>Thermal</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
-       <item row="0" column="0" colspan="2">
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QLabel" name="labelDisplayName">
-           <property name="minimumSize">
-            <size>
-             <width>60</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Name</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="comboBoxLanguage"/>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="lineEditDisplayName"/>
-         </item>
-         <item>
-          <widget class="QtExt::ColorButton" name="pushButtonOpaqueMaterialColor">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="labelCategory">
+  <widget class="QTabWidget" name="tabWidgetThermal">
+   <property name="geometry">
+    <rect>
+     <x>802</x>
+     <y>9</y>
+     <width>378</width>
+     <height>402</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
+   <widget class="QWidget" name="Thermal">
+    <attribute name="title">
+     <string>Thermal</string>
+    </attribute>
+    <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
+     <item row="0" column="0" colspan="2">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLabel" name="labelDisplayName">
          <property name="minimumSize">
           <size>
            <width>60</width>
@@ -69,177 +41,205 @@
           </size>
          </property>
          <property name="text">
-          <string>Category</string>
+          <string>Name</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBoxLanguage"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEditDisplayName"/>
+       </item>
+       <item>
+        <widget class="QtExt::ColorButton" name="pushButtonOpaqueMaterialColor">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="labelCategory">
+       <property name="minimumSize">
+        <size>
+         <width>60</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Category</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="comboBoxCategory"/>
+     </item>
+     <item row="2" column="0" colspan="2">
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="labelConductivity">
+         <property name="text">
+          <string>Conductivity [W/mK]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QtExt::ValidatingLineEdit" name="lineEditConductivity"/>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="labelDensity">
+         <property name="text">
+          <string>Density [kg/m3]</string>
          </property>
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QComboBox" name="comboBoxCategory"/>
+        <widget class="QtExt::ValidatingLineEdit" name="lineEditDensity"/>
        </item>
-       <item row="2" column="0" colspan="2">
-        <layout class="QGridLayout" name="gridLayout">
-         <item row="0" column="0">
-          <widget class="QLabel" name="labelConductivity">
-           <property name="text">
-            <string>Conductivity [W/mK]</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QtExt::ValidatingLineEdit" name="lineEditConductivity"/>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="labelDensity">
-           <property name="text">
-            <string>Density [kg/m3]</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QtExt::ValidatingLineEdit" name="lineEditDensity"/>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="labelSpecHeatCapacity">
-           <property name="text">
-            <string>Spec. Heat Capacity [J/kgK]</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QtExt::ValidatingLineEdit" name="lineEditSpecHeatCapacity"/>
-         </item>
-        </layout>
+       <item row="2" column="0">
+        <widget class="QLabel" name="labelSpecHeatCapacity">
+         <property name="text">
+          <string>Spec. Heat Capacity [J/kgK]</string>
+         </property>
+        </widget>
        </item>
-       <item row="3" column="0" colspan="2">
-        <widget class="QGraphicsView" name="graphicsViewCategoryPicture"/>
+       <item row="2" column="1">
+        <widget class="QtExt::ValidatingLineEdit" name="lineEditSpecHeatCapacity"/>
        </item>
       </layout>
-     </widget>
-     <widget class="QWidget" name="Information">
-      <attribute name="title">
-       <string>Information</string>
-      </attribute>
-      <widget class="QWidget" name="">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>150</y>
-         <width>421</width>
-         <height>83</height>
-        </rect>
-       </property>
-       <layout class="QGridLayout" name="gridLayout_4">
-        <item row="0" column="0">
-         <widget class="QLabel" name="labelDensity_2">
-          <property name="text">
-           <string>Manfacturer</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QtExt::ValidatingLineEdit" name="lineEditDensity_2">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="labelDensity_3">
-          <property name="text">
-           <string>Data Source</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QtExt::ValidatingLineEdit" name="lineEditDensity_3">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="labelDensity_4">
-          <property name="text">
-           <string>Notes</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QtExt::ValidatingLineEdit" name="lineEditDensity_4">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </widget>
+     </item>
+     <item row="3" column="0" colspan="2">
+      <widget class="QGraphicsView" name="graphicsViewCategoryPicture"/>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="Information">
+    <attribute name="title">
+     <string>Information</string>
+    </attribute>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>150</y>
+       <width>421</width>
+       <height>89</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="0">
+       <widget class="QLabel" name="labelDensity_2">
+        <property name="text">
+         <string>Manfacturer</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditDensity_2">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelDensity_3">
+        <property name="text">
+         <string>Data Source</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditDensity_3">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="labelDensity_4">
+        <property name="text">
+         <string>Notes</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditDensity_4">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QToolButton" name="toolButtonAdd">
-     <property name="icon">
-      <iconset>
-       <normaloff>:/gfx/actions/32x32/plus_32x32.png</normaloff>:/gfx/actions/32x32/plus_32x32.png</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>24</width>
-       <height>24</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QToolButton" name="toolButtonCopy">
-     <property name="icon">
-      <iconset>
-       <normaloff>:/gfx/actions/32x32/editcopy_32x32.png</normaloff>:/gfx/actions/32x32/editcopy_32x32.png</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>24</width>
-       <height>24</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QToolButton" name="toolButtonRemove">
-     <property name="icon">
-      <iconset>
-       <normaloff>:/gfx/actions/32x32/minus_32x32.png</normaloff>:/gfx/actions/32x32/minus_32x32.png</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>24</width>
-       <height>24</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="3">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>472</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-  </layout>
+   </widget>
+  </widget>
+  <widget class="QToolButton" name="toolButtonAdd">
+   <property name="geometry">
+    <rect>
+     <x>9</x>
+     <y>711</y>
+     <width>32</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/gfx/actions/32x32/plus_32x32.png</normaloff>:/gfx/actions/32x32/plus_32x32.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>24</width>
+     <height>24</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QToolButton" name="toolButtonCopy">
+   <property name="geometry">
+    <rect>
+     <x>47</x>
+     <y>711</y>
+     <width>32</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/gfx/actions/32x32/editcopy_32x32.png</normaloff>:/gfx/actions/32x32/editcopy_32x32.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>24</width>
+     <height>24</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QToolButton" name="toolButtonRemove">
+   <property name="geometry">
+    <rect>
+     <x>85</x>
+     <y>711</y>
+     <width>32</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/gfx/actions/32x32/minus_32x32.png</normaloff>:/gfx/actions/32x32/minus_32x32.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>24</width>
+     <height>24</height>
+    </size>
+   </property>
+  </widget>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>QtExt::MaterialDatabaseSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>QtExt_MaterialDatabaseSelectionWidget.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>

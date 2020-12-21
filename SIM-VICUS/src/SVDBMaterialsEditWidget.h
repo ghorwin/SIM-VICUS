@@ -44,10 +44,6 @@ protected:
 private slots:
 	void editingFinishedSuccessfully();
 
-	void on_toolButtonAdd_clicked();
-
-	void on_toolButtonCopy_clicked();
-
 	void onMaterialSelected(int);
 
 	void on_lineEditConductivity_editingFinished();

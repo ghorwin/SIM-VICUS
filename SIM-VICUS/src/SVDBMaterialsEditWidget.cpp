@@ -17,6 +17,7 @@ SVDBMaterialsEditWidget::SVDBMaterialsEditWidget(QWidget *parent) :
 	m_ui(new Ui::SVDBMaterialsEditWidget)
 {
 	m_ui->setupUi(this);
+#if 0
 	QSet<QtExt::MaterialBase::parameter_t> visibleParams;
 
 	//here select all configuration for visible params
@@ -31,13 +32,13 @@ SVDBMaterialsEditWidget::SVDBMaterialsEditWidget(QWidget *parent) :
 
 //	m_dbMat = &SVSettings::instance().m_dbOpaqueMaterials;
 
-	m_ui->widgetMaterialsDB->setup(visibleParams,ORG_NAME, PROGRAM_NAME, "Material Editor");
+//	m_ui->widgetMaterialsDB->setup(visibleParams,ORG_NAME, PROGRAM_NAME, "Material Editor");
 
 	std::vector<QtExt::MaterialBase*> mats;
 	for(auto & e : *m_dbMat)
 		mats.push_back(new SVMaterialTransfer(e.second));
 
-	m_ui->widgetMaterialsDB->setMaterials(mats);
+//	m_ui->widgetMaterialsDB->setMaterials(mats);
 
 	//old style
 	//	SLOT(onMaterialSelected(int));
@@ -75,6 +76,7 @@ SVDBMaterialsEditWidget::SVDBMaterialsEditWidget(QWidget *parent) :
 	//init line edit
 	m_ui->lineEditDisplayName->setText("");
 	update(-1);
+#endif
 }
 
 void SVDBMaterialsEditWidget::onMaterialSelected(int id){
@@ -183,44 +185,6 @@ void SVDBMaterialsEditWidget::editingFinishedSuccessfully()
 }
 
 
-void SVDBMaterialsEditWidget::on_toolButtonAdd_clicked()
-{
-	//getFreeId<VICUS::Material>(*m_dbMat, 1000000);
-	std::map<unsigned int, VICUS::Material> & db = *m_dbMat;
-
-	unsigned int id = SVSettings::firstFreeId(db, 1000000);//getFreeId<VICUS::Material>(*m_dbMat, 1000000);
-	VICUS::Material newMat(id, "unnamed", 1, 1000, 840);
-	db[id] = newMat;
-
-	std::vector<QtExt::MaterialBase*> mats;
-	for(auto & e : db)
-		mats.push_back(new SVMaterialTransfer(e.second));
-
-	m_ui->widgetMaterialsDB->setMaterials(mats);
-
-	//select new material for user
-}
-
-void SVDBMaterialsEditWidget::on_toolButtonCopy_clicked()
-{
-	if(m_actualId<0)
-		return;
-	std::map<unsigned int, VICUS::Material> & db = *m_dbMat;
-
-	unsigned int id = SVSettings::firstFreeId(db, 1000000);//getFreeId<VICUS::Material>(*m_dbMat, 1000000);
-	VICUS::Material newMat = db[m_actualId];
-	newMat.m_builtIn = false;
-	db[id] = newMat;
-
-	std::vector<QtExt::MaterialBase*> mats;
-	for(auto & e : db)
-		mats.push_back(new SVMaterialTransfer(e.second));
-
-	m_ui->widgetMaterialsDB->setMaterials(mats);
-
-
-
-}
 
 void SVDBMaterialsEditWidget::on_lineEditConductivity_editingFinished()
 {

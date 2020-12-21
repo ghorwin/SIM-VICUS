@@ -80,6 +80,7 @@ SOURCES += \
 		../../src/SVDBConstructionEditDialog.cpp \
 		../../src/SVDBConstructionEditWidget.cpp \
 		../../src/SVDBConstructionTableModel.cpp \
+		../../src/SVDBMaterialsEditDialog.cpp \
 		../../src/SVDBModelDelegate.cpp \
 		../../src/SVDatabase.cpp \
 		../../src/SVPropNetworkEditWidget.cpp \
@@ -154,6 +155,7 @@ HEADERS  += \
 		../../src/SVDBConstructionEditDialog.h \
 		../../src/SVDBConstructionEditWidget.h \
 		../../src/SVDBConstructionTableModel.h \
+		../../src/SVDBMaterialsEditDialog.h \
 		../../src/SVDBModelDelegate.h \
 		../../src/SVDatabase.h \
 		../../src/SVPropNetworkEditWidget.h \
@@ -229,6 +231,7 @@ FORMS    += \
 		../../src/SVDBComponentEditWidget.ui \
 		../../src/SVDBConstructionEditDialog.ui \
 		../../src/SVDBConstructionEditWidget.ui \
+		../../src/SVDBMaterialsEditDialog.ui \
 		../../src/SVDBMaterialsEditWidget.ui \
 		../../src/SVDBWindowEditWidget.ui \
 		../../src/SVImportIDFDialog.ui \
