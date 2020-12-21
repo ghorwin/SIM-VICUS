@@ -56,7 +56,7 @@ public:
 	/*! Inserts a new item and returns the model index of the new item.
 		\note Pass-by-value is intended.
 	*/
-	QModelIndex addNewItem(VICUS::Material c);
+	QModelIndex addNewItem(VICUS::Material m);
 
 	/*! Removes a selected item.
 		\return Returns true on success, false if the item wasn't deleted (invalid index etc.)

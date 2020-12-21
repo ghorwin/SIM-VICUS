@@ -10,6 +10,8 @@
 #include <VICUS_Database.h>
 #include <VICUS_KeywordListQt.h>
 
+#include <QtExt_LanguageHandler.h>
+
 #include "SVConstants.h"
 
 SVDBConstructionTableModel::SVDBConstructionTableModel(QObject * parent, SVDatabase & db) :
@@ -33,7 +35,7 @@ QVariant SVDBConstructionTableModel::data ( const QModelIndex & index, int role)
 	if (!index.isValid())
 		return QVariant();
 
-	// readibility improvement
+	// readability improvement
 	const VICUS::Database<VICUS::Construction> & conDB = m_db->m_constructions;
 
 	int row = index.row();
@@ -45,9 +47,13 @@ QVariant SVDBConstructionTableModel::data ( const QModelIndex & index, int role)
 
 	switch (role) {
 		case Qt::DisplayRole : {
+			// Note: when accessing multilanguage strings below, take name in current language or if missing, "all"
+			std::string langId = QtExt::LanguageHandler::instance().langId().toStdString();
+			std::string fallBackLangId = "en";
+
 			switch (index.column()) {
 				case ColId					: return it->first;
-				case ColName				: return QString::fromStdString(it->second.m_displayName.string("de", true)); // Note: take name in current language or if missing, "all"
+				case ColName				: return QString::fromStdString(it->second.m_displayName.string(langId, fallBackLangId));
 				case ColUsageType			: return VICUS::KeywordListQt::Description("Construction::UsageType", it->second.m_usageType);
 				case ColInsulationKind		: return VICUS::KeywordListQt::Description("Construction::InsulationKind", it->second.m_insulationKind);
 				case ColMaterialKind		: return VICUS::KeywordListQt::Description("Construction::MaterialKind", it->second.m_materialKind);

@@ -116,7 +116,11 @@ void SVDBConstructionEditDialog::on_toolButtonAdd_clicked() {
 	QModelIndex sourceIndex = m_dbModel->addNewItem();
 	QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
 	m_ui->tableView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
-//	m_ui->tableView->selectRow(proxyIndex.row());
+	// resize ID column
+	sourceIndex = m_dbModel->index(0,SVDBConstructionTableModel::ColId);
+	proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
+	if (proxyIndex.isValid())
+		m_ui->tableView->resizeColumnToContents(proxyIndex.column());
 }
 
 

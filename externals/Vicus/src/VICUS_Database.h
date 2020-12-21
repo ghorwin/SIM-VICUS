@@ -81,8 +81,7 @@ public:
 			}
 		}
 		// set built-in flag to identify material as built-in or user-defined base on UI space
-		if (newData.m_id >= USER_ID_SPACE_START)
-			newData.m_builtIn = false;
+		newData.m_builtIn = false;
 		m_data[newData.m_id] = newData;
 		// for now database is always modified when data is set, callers have to ensure that
 		// they don't re-set data with original data and id

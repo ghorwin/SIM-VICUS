@@ -119,7 +119,6 @@ SOURCES += \
 		../../src/SVLogFileDialog.cpp \
 		../../src/SVLogWidget.cpp \
 		../../src/SVMainWindow.cpp \
-		../../src/SVMaterialTransfer.cpp \
 		../../src/SVMessageHandler.cpp \
 		../../src/SVNavigationTreeItemDelegate.cpp \
 		../../src/SVNavigationTreeWidget.cpp \
@@ -197,7 +196,6 @@ HEADERS  += \
 		../../src/SVLogFileDialog.h \
 		../../src/SVLogWidget.h \
 		../../src/SVMainWindow.h \
-		../../src/SVMaterialTransfer.h \
 		../../src/SVMessageHandler.h \
 		../../src/SVNavigationTreeItemDelegate.h \
 		../../src/SVNavigationTreeWidget.h \

@@ -28,7 +28,7 @@ SVDBMaterialEditDialog::SVDBMaterialEditDialog(QWidget *parent) :
 	m_proxyModel->setSourceModel(m_dbModel);
 	m_ui->tableView->setModel(m_proxyModel);
 
-//	m_ui->editWidget->setup(&SVSettings::instance().m_db, m_dbModel);
+	m_ui->editWidget->setup(&SVSettings::instance().m_db, m_dbModel);
 
 	// specific setup for construction DB table
 
@@ -60,8 +60,6 @@ void SVDBMaterialEditDialog::edit() {
 	// ask database model to update its content
 	// TODO : smart resizing of columns - restore user-defined column widths if adjusted by user
 	m_ui->tableView->resizeColumnsToContents();
-
-	qDebug() << m_ui->tableView->columnWidth(SVDBMaterialTableModel::ColCheck);
 
 	exec();
 }
@@ -109,7 +107,11 @@ void SVDBMaterialEditDialog::on_toolButtonAdd_clicked() {
 	QModelIndex sourceIndex = m_dbModel->addNewItem();
 	QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
 	m_ui->tableView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
-	m_ui->tableView->selectRow(proxyIndex.row());
+	// resize ID column
+	sourceIndex = m_dbModel->index(0,SVDBMaterialTableModel::ColId);
+	proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
+	if (proxyIndex.isValid())
+		m_ui->tableView->resizeColumnToContents(proxyIndex.column());
 }
 
 
@@ -146,7 +148,7 @@ void SVDBMaterialEditDialog::onCurrentIndexChanged(const QModelIndex &current, c
 		m_ui->pushButtonSelect->setEnabled(false);
 		m_ui->toolButtonRemove->setEnabled(false);
 		m_ui->toolButtonCopy->setEnabled(false);
-//		m_ui->editWidget->updateInput(-1); // nothing selected
+		m_ui->editWidget->updateInput(-1); // nothing selected
 	}
 	else {
 		m_ui->pushButtonSelect->setEnabled(true);
@@ -157,8 +159,8 @@ void SVDBMaterialEditDialog::onCurrentIndexChanged(const QModelIndex &current, c
 		m_ui->toolButtonCopy->setEnabled(true);
 		m_ui->tableView->selectRow(current.row());
 		// retrieve current construction ID
-		int conId = current.data(Role_Id).toInt();
-//		m_ui->editWidget->updateInput(conId);
+		int matId = current.data(Role_Id).toInt();
+		m_ui->editWidget->updateInput(matId);
 	}
 }
 

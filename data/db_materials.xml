@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Materials>
-	<Material id="10000" displayName="de:Konstruktionseditor-Testmaterial|en:Construction editor test material">
+	<Material id="9999" displayName="de:Konstruktionseditor-Testmaterial|en:Construction editor test material">
 		<Notes>en:Contrete to be used in SimQuality test cases.|de:Beton zur Verwendung in SimQuality.</Notes>
 		<Manufacturer>generic</Manufacturer>
 		<DataSource>SimQuality</DataSource>
@@ -9,7 +9,7 @@
 		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
 		<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
 	</Material>
-	<Material id="100000" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete">
+	<Material id="10000" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete">
 		<Notes>en:Contrete to be used in SimQuality test cases.|de:Beton zur Verwendung in SimQuality.</Notes>
 		<Manufacturer>generic</Manufacturer>
 		<DataSource>SimQuality</DataSource>
@@ -18,7 +18,7 @@
 		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
 		<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
 	</Material>
-	<Material id="100001" displayName="de:[SimQuality] Putz|en:[SimQuality] Plaster">
+	<Material id="10001" displayName="de:[SimQuality] Putz|en:[SimQuality] Plaster">
 		<Notes>en:Plaster to be used in SimQuality test cases.|de:Putz zur Verwendung in SimQuality.</Notes>
 		<Manufacturer>generic</Manufacturer>
 		<DataSource>SimQuality</DataSource>
@@ -27,7 +27,7 @@
 		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
 		<IBK:Parameter name="Conductivity" unit="W/mK">0.14</IBK:Parameter>
 	</Material>
-	<Material id="100002" displayName="de:[SimQuality] Dämmung|en:[SimQuality] Insulation">
+	<Material id="10002" displayName="de:[SimQuality] Dämmung|en:[SimQuality] Insulation">
 		<Notes>en:Insulation to be used in SimQuality test cases.|de:Dämmstoff zur Verwendung in SimQuality.</Notes>
 		<Manufacturer>generic</Manufacturer>
 		<DataSource>SimQuality</DataSource>

@@ -31,4 +31,3 @@ const char * const FIXED_FONT_FAMILY = "Courier New";
 
 #endif
 
-unsigned int USER_ID_SPACE = 100000;

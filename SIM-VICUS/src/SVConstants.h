@@ -28,9 +28,6 @@ extern const char * const FORUM_URL;
 /*! Fixed-size font family to be used in tables. */
 extern const char * const FIXED_FONT_FAMILY;
 
-/*! Defines the first index to be user for user IDs. */
-extern unsigned int USER_ID_SPACE;
-
 /*! Custom data roles provided by the models. */
 enum DataRoles {
 	Role_Id				= Qt::UserRole,

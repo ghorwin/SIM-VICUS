@@ -3,7 +3,6 @@
 
 #include "SVConstants.h"
 #include "SVSettings.h"
-#include "SVMaterialTransfer.h"
 
 #include <VICUS_KeywordList.h>
 
@@ -18,6 +17,12 @@ SVDBMaterialEditWidget::SVDBMaterialEditWidget(QWidget *parent) :
 
 SVDBMaterialEditWidget::~SVDBMaterialEditWidget() {
 	delete m_ui;
+}
+
+
+void SVDBMaterialEditWidget::setup(SVDatabase * db, SVDBMaterialTableModel * dbModel) {
+	m_db = db;
+	m_dbModel = dbModel;
 }
 
 

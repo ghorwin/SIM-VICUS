@@ -7,7 +7,7 @@
 
 #include <QtExt_Directories.h>
 
-const unsigned int USER_ID_SPACE_START = 10000;
+const unsigned int USER_ID_SPACE_START = 100000;
 
 
 SVDatabase::SVDatabase() :

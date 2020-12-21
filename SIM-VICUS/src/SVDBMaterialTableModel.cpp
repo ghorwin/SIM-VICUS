@@ -10,6 +10,8 @@
 #include <VICUS_Database.h>
 #include <VICUS_KeywordListQt.h>
 
+#include <QtExt_LanguageHandler.h>
+
 #include "SVConstants.h"
 
 
@@ -34,7 +36,7 @@ QVariant SVDBMaterialTableModel::data ( const QModelIndex & index, int role) con
 	if (!index.isValid())
 		return QVariant();
 
-	// readibility improvement
+	// readability improvement
 	const VICUS::Database<VICUS::Material> & matDB = m_db->m_materials;
 
 	int row = index.row();
@@ -46,9 +48,20 @@ QVariant SVDBMaterialTableModel::data ( const QModelIndex & index, int role) con
 
 	switch (role) {
 		case Qt::DisplayRole : {
+			// Note: when accessing multilanguage strings below, take name in current language or if missing, "all"
+			std::string langId = QtExt::LanguageHandler::instance().langId().toStdString();
+			std::string fallBackLangId = "en";
+
 			switch (index.column()) {
 				case ColId					: return it->first;
-				case ColName				: return QString::fromStdString(it->second.m_displayName.string("de", true)); // Note: take name in current language or if missing, "all"
+				case ColName				: return QString::fromStdString(it->second.m_displayName.string(langId, fallBackLangId));
+				case ColCategory			: return VICUS::KeywordListQt::Keyword("Material::Category",it->second.m_category);
+				case ColProductID			: return "--";
+				case ColProducer			: return QString::fromStdString(it->second.m_manufacturer.string(langId, fallBackLangId));
+				case ColSource				: return QString::fromStdString(it->second.m_dataSource.string(langId, fallBackLangId));
+				case ColRho					: return QString("%L1").arg(it->second.m_para[VICUS::Material::P_Density].value, 0, 'f', 1);
+				case ColCet					: return QString("%L1").arg(it->second.m_para[VICUS::Material::P_HeatCapacity].value, 0, 'f', 0);
+				case ColLambda				: return QString("%L1").arg(it->second.m_para[VICUS::Material::P_Conductivity].value, 0, 'f', 3);
 			}
 		} break;
 
@@ -97,7 +110,15 @@ QVariant SVDBMaterialTableModel::headerData(int section, Qt::Orientation orienta
 			switch ( section ) {
 				case ColId					: return tr("Id");
 				case ColName				: return tr("Name");
-				default: ;
+				case ColCategory			: return tr("Category");
+				case ColProductID			: return tr("ProductID");
+				case ColProducer			: return tr("Producer");
+				case ColSource				: return tr("Source");
+				case ColRho					: return tr("Rho [kg/m3]");
+				case ColCet					: return tr("Ce [J/kgK]");
+				case ColLambda				: return tr("Lambda [W/m2K]");
+
+					// TODO : Dirk, andere Spaltenüberschriften
 			}
 		} break;
 
@@ -123,9 +144,9 @@ QModelIndex SVDBMaterialTableModel::addNewItem() {
 }
 
 
-QModelIndex SVDBMaterialTableModel::addNewItem(VICUS::Material c) {
+QModelIndex SVDBMaterialTableModel::addNewItem(VICUS::Material m) {
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
-	unsigned int id = m_db->m_materials.add( c );
+	unsigned int id = m_db->m_materials.add( m );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
 	return idx;
