@@ -27,8 +27,6 @@
 
 namespace NANDRAD_MODEL {
 
-class ThermalNetworkStatesModel;
-
 /*!	The thermal network balance model manages the calculation of enthalpy fuxes through
 	the network elements and corresponding solver feedback.
 
@@ -47,6 +45,11 @@ class ThermalNetworkStatesModel;
 	The other dependencies are formulated by the flow element thermal models themselves, and simply forwarded by
 	the ThermalNetworkBalanceModel to the framework.
 */
+class ThermalNetworkStatesModel;
+
+/*!	The thermal network balance model manages the calculation of enrhalpy fuxes through
+	the network elements and correponding solver feedback.
+*/
 class ThermalNetworkBalanceModel : public AbstractModel, public AbstractStateDependency {
 public:
 
@@ -57,8 +60,7 @@ public:
 	}
 
 	/*! Initializes model by resizing the y and ydot vectors. */
-	void setup(ThermalNetworkStatesModel * statesModel);
-
+	void setup(ThermalNetworkStatesModel *statesModel);
 
 	// *** Re-implemented from AbstractModel
 
@@ -130,9 +132,11 @@ private:
 	std::string										m_displayName;
 	/*! Vector with cached derivatives, updated at last call to update(). */
 	std::vector<double>								m_ydot;
+	/*! Vector result heat fluxes. */
+	std::vector<double>								m_heatFluxes;
 
-	/*! Direct access the matching states model. */
-	ThermalNetworkStatesModel						*m_statesModel = nullptr;
+	/*! Poiter to states model. */
+	ThermalNetworkStatesModel						*m_statesModel;
 };
 
 } // namespace NANDRAD_MODEL
