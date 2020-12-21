@@ -8,20 +8,19 @@ namespace VICUS {
 class Material;
 }
 
-class SVSettings;
+class SVDBMaterialTableModel;
+class SVDatabase;
 
 namespace Ui {
-
-class SVDBMaterialsEditWidget;
+	class SVDBMaterialsEditWidget;
 }
+/*! Edit widget for materials.
 
-/*! This is a non-modal dialog/widget and stays open parallel to the UI.
-	When a new project is created/read or any other action is performed
-	that changes the content of the materials DB externally, this
-	widget has to be closed.
-
-	Call edit() to show this widget, since this updates the widget to the
-	current setting's data.
+	A call to updateInput() initializes the widget and fill the GUI controls with data.
+	As long as the widget is visible the pointer to the data must be valid. Keep this
+	in mind if you change the container that the data object belongs to! If the pointer
+	is no longer valid or you want to resize the container (through adding new items)
+	call updateInput() with an invalid index and/or nullptr pointer to the model.
 */
 class SVDBMaterialsEditWidget : public QWidget {
 	Q_OBJECT
@@ -30,45 +29,36 @@ public:
 	explicit SVDBMaterialsEditWidget(QWidget *parent = nullptr);
 	~SVDBMaterialsEditWidget();
 
+	/*! Needs to be called once, before the widget is being used. */
+	void setup(SVDatabase * db, SVDBMaterialTableModel * dbModel);
+
 	/*! Update widget with this. */
-	void update(int id);
+	void updateInput(int id);
 
-	/*! Edit widget with this. */
-	void edit();
-
-
-protected:
-	void closeEvent(QCloseEvent *event) override;
-
+signals:
+	/*! Emitted, whenever model data has been changed that is shown in the table
+		and may have an effect on sorting.
+	*/
+	void tableDataChanged();
 
 private slots:
-	void editingFinishedSuccessfully();
-
-	void onMaterialSelected(int);
-
 	void on_lineEditConductivity_editingFinished();
 
 private:
 
-
-
-
 	Ui::SVDBMaterialsEditWidget *m_ui;
 
-	std::map<unsigned int, VICUS::Material>	*m_dbMat;
+	/*! Cached pointer to database object. */
+	SVDatabase					*m_db;
 
-	/*! Conductivity in W/mK. */
-	double						m_conductivity;
+	/*! Pointer to the database model, to modify items when data has changed in the widget. */
+	SVDBMaterialTableModel		*m_dbModel;
 
-	/*! Conductivity in W/mK. */
-	double						m_density;
-
-	/*! Conductivity in W/mK. */
-	double						m_specHeat;
-
-	int							m_actualId;
-
-
+	/*! Pointer to currently edited material.
+		The pointer is updated whenever updateInput() is called.
+		A nullptr pointer means that there is no material to edit.
+	*/
+	VICUS::Material				*m_current;
 };
 
 #endif // SVDBMaterialsEditWidgetH

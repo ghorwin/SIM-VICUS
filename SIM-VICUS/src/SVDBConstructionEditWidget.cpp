@@ -130,41 +130,34 @@ void SVDBConstructionEditWidget::setup(SVDatabase * db, SVDBConstructionTableMod
 
 void SVDBConstructionEditWidget::updateInput(int id) {
 	m_current = nullptr; // disable edit triggers
-	// find the construction data object matching the index
 	if (id == -1) {
+		// disable all ui components
 		m_ui->groupBox->setEnabled(false);
 		m_ui->groupBox_2->setEnabled(false);
 
-		// clear all input and disable controls
+		// clear all inputs
 		m_ui->lineEditNameEn->setText("");
 		m_ui->lineEditNameDe->setText("");
 		m_ui->lineEditUValue->setText("");
-		m_ui->lineEditUValue->setText("");
-		m_ui->spinBoxLayerCount->setValue(0);
-		m_ui->lineEditNameEn->setReadOnly(true);
-		m_ui->lineEditNameDe->setReadOnly(true);
 		m_ui->spinBoxLayerCount->setValue(0);
 		m_ui->tableWidget->setRowCount(0); // Must be called after spinBoxLayerCount->setValue(0); !
 
-		m_ui->comboBoxMaterialKind->blockSignals(true);
-		m_ui->comboBoxInsulationKind->blockSignals(true);
-		m_ui->comboBoxConstructionUsage->blockSignals(true);
+		// disable the line edits (they change background color)
+		m_ui->lineEditNameEn->setReadOnly(true);
+		m_ui->lineEditNameDe->setReadOnly(true);
 
 		m_ui->comboBoxMaterialKind->setCurrentIndex(-1);
 		m_ui->comboBoxInsulationKind->setCurrentIndex(-1);
 		m_ui->comboBoxConstructionUsage->setCurrentIndex(-1);
 
-		m_ui->comboBoxMaterialKind->blockSignals(false);
-		m_ui->comboBoxInsulationKind->blockSignals(false);
-		m_ui->comboBoxConstructionUsage->blockSignals(false);
-
 		m_ui->widgetConstructionView->clear();
-
 		return;
 	}
+	// enable all ui components
 	m_ui->groupBox->setEnabled(true);
 	m_ui->groupBox_2->setEnabled(true);
 
+	// retrieve selected construction from DB
 	VICUS::Construction * con = const_cast<VICUS::Construction *>(m_db->m_constructions[(unsigned int)id]);
 	m_current = con;
 

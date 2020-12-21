@@ -68,12 +68,12 @@ private:
 	/*! Cached pointer to database object. */
 	SVDatabase					*m_db;
 
-	/*! Pointer to the database model used to populate the list view. */
+	/*! Pointer to the database model, to modify items when data has changed in the widget. */
 	SVDBConstructionTableModel	*m_dbModel;
 
-	/*! Pointer to currently edited construction type.
+	/*! Pointer to currently edited construction.
 		The pointer is updated whenever updateInput() is called.
-		A nullptr pointer means that there isn't a current construction to edit.
+		A nullptr pointer means that there is no construction to edit.
 	*/
 	VICUS::Construction			*m_current;
 
