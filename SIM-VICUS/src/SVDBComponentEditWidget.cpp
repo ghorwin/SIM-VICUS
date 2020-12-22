@@ -3,12 +3,14 @@
 
 SVDBComponent::SVDBComponent(QWidget *parent) :
 	QWidget(parent),
-	ui(new Ui::SVDBComponent)
+	m_ui(new Ui::SVDBComponent)
 {
-	ui->setupUi(this);
+	m_ui->setupUi(this);
+
+
 }
 
 SVDBComponent::~SVDBComponent()
 {
-	delete ui;
+	delete m_ui;
 }

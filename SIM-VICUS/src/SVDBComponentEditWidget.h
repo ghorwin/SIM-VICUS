@@ -16,7 +16,7 @@ public:
 	~SVDBComponent();
 
 private:
-	Ui::SVDBComponent *ui;
+	Ui::SVDBComponent *m_ui;
 };
 
 #endif // SVDBCOMPONENT_H

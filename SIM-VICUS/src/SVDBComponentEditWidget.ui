@@ -6,237 +6,354 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1442</width>
-    <height>1153</height>
+    <width>1105</width>
+    <height>836</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>760</x>
-     <y>290</y>
-     <width>465</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" name="horizontalLayout">
-    <item>
-     <widget class="QLabel" name="labelDisplayName">
-      <property name="minimumSize">
-       <size>
-        <width>60</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>Name</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QComboBox" name="comboBoxLanguage"/>
-    </item>
-    <item>
-     <widget class="QLineEdit" name="lineEditDisplayName"/>
-    </item>
-    <item>
-     <widget class="QtExt::ColorButton" name="pushButtonComponentColor">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="groupBox">
-   <property name="geometry">
-    <rect>
-     <x>200</x>
-     <y>380</y>
-     <width>511</width>
-     <height>391</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>Construction</string>
-   </property>
-   <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="0">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLabel" name="labelDisplayName">
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Name</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
+       </item>
+       <item>
+        <widget class="QtExt::ColorButton" name="pushButtonComponentColor">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>378</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Construction</string>
+     </property>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0" colspan="2">
+       <widget class="QLineEdit" name="lineEditConstructionName"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QPushButton" name="pushButtonSelectConstruction">
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3" rowspan="3">
+       <widget class="QGroupBox" name="groupBox_4">
+        <property name="title">
+         <string>LCA</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_4">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>TODO</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="labelUValue">
         <property name="text">
-         <string>UValue</string>
+         <string>UValue:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="lineEditUValue"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="labelUValue_2">
+        <property name="text">
+         <string>W/m2K</string>
         </property>
        </widget>
       </item>
       <item row="2" column="0" colspan="3">
        <widget class="QGraphicsView" name="graphicsViewConstruction"/>
       </item>
-      <item row="1" column="2">
-       <widget class="QLineEdit" name="lineEditUValue"/>
-      </item>
-      <item row="0" column="2">
-       <widget class="QPushButton" name="pushButton">
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLabel" name="labelUValue_2">
-        <property name="text">
-         <string>[W/m2K]</string>
-        </property>
-       </widget>
-      </item>
      </layout>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="groupBox_2">
-   <property name="geometry">
-    <rect>
-     <x>770</x>
-     <y>390</y>
-     <width>511</width>
-     <height>391</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>Boundary Condition</string>
-   </property>
-   <widget class="QLabel" name="labelUValue_5">
-    <property name="geometry">
-     <rect>
-      <x>170</x>
-      <y>150</y>
-      <width>57</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>[-]</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEditThermalAbsorptionSideA_2">
-    <property name="geometry">
-     <rect>
-      <x>233</x>
-      <y>150</y>
-      <width>167</width>
-      <height>23</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="labelUValue_6">
-    <property name="geometry">
-     <rect>
-      <x>11</x>
-      <y>150</y>
-      <width>141</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Solar Absorption</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEditThermalAbsorptionSideA_3">
-    <property name="geometry">
-     <rect>
-      <x>230</x>
-      <y>70</y>
-      <width>167</width>
-      <height>23</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="labelUValue_7">
-    <property name="geometry">
-     <rect>
-      <x>167</x>
-      <y>70</y>
-      <width>57</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>[W/m2K]</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="labelUValue_8">
-    <property name="geometry">
-     <rect>
-      <x>8</x>
-      <y>70</y>
-      <width>141</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Heat transfer Coeff.</string>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="comboBoxBoundaryConditionSideA">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>30</y>
-      <width>381</width>
-      <height>23</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="labelUValue_3">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>110</y>
-      <width>141</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Thermal Absorption</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEditThermalAbsorptionSideA">
-    <property name="geometry">
-     <rect>
-      <x>232</x>
-      <y>110</y>
-      <width>167</width>
-      <height>23</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="labelUValue_4">
-    <property name="geometry">
-     <rect>
-      <x>169</x>
-      <y>110</y>
-      <width>57</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>[-]</string>
-    </property>
-   </widget>
-  </widget>
+    </widget>
+   </item>
+   <item>
+    <layout class="QGridLayout" name="gridLayout_7">
+     <item row="0" column="0">
+      <widget class="QGroupBox" name="groupBox_2">
+       <property name="title">
+        <string>Boundary Condition Side A</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0" colspan="2">
+         <widget class="QLineEdit" name="lineEditBoundaryConditionSideAName"/>
+        </item>
+        <item row="0" column="2">
+         <widget class="QPushButton" name="pushButtonBoundaryConditionSideAName">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="labelUValue_8">
+          <property name="text">
+           <string>Heat transfer Coeff.:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="lineEditHeatTransferCoeffSideA"/>
+        </item>
+        <item row="1" column="2">
+         <widget class="QLabel" name="labelUValue_7">
+          <property name="text">
+           <string>W/m2K</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="labelUValue_3">
+          <property name="text">
+           <string>Thermal Absorption:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="lineEditThermalAbsorptionSideA"/>
+        </item>
+        <item row="2" column="2" rowspan="2">
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>53</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="labelUValue_6">
+          <property name="text">
+           <string>Solar Absorption:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="lineEditSolarAbsorptionSideA"/>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QGroupBox" name="groupBox_3">
+       <property name="title">
+        <string>Boundary Condition Side B</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="0" colspan="2">
+         <widget class="QLineEdit" name="lineEditBoundaryConditionSideBName"/>
+        </item>
+        <item row="0" column="2">
+         <widget class="QPushButton" name="pushButtonBoundaryConditionSideBName">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Heat transfer Coeff.:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="lineEditHeatTransferCoeffSideB"/>
+        </item>
+        <item row="1" column="2">
+         <widget class="QLabel" name="labelUValue_10">
+          <property name="text">
+           <string>W/m2K</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="labelUValue_4">
+          <property name="text">
+           <string>Thermal Absorption:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="lineEditThermalAbsorptionSideB"/>
+        </item>
+        <item row="2" column="2" rowspan="2">
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>53</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="labelUValue_11">
+          <property name="text">
+           <string>Solar Absorption:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="lineEditSolarAbsorptionSideB"/>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QGroupBox" name="groupBox_5">
+       <property name="title">
+        <string>Interal Source</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_6">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Art der Quelle&lt;/p&gt;&lt;p&gt;Schicht in der Konstruktion &lt;/p&gt;&lt;p&gt;Rohrmaterial&lt;/p&gt;&lt;p&gt;Rohrdurchmesser&lt;/p&gt;&lt;p&gt;Verlegeabstand&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QGroupBox" name="groupBox_6">
+       <property name="title">
+        <string>Surface conditions</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <layout class="QGridLayout" name="gridLayout_5">
+          <item row="0" column="0">
+           <widget class="QLabel" name="labelDaylight">
+            <property name="text">
+             <string>Color</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QtExt::ColorButton" name="pushButtonDaylightColor">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="labelDaylight_2">
+            <property name="text">
+             <string>Roughness</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditRoughness"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="labelDaylight_3">
+            <property name="text">
+             <string>Specularity</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditSpecularity"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>76</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QtExt::ValidatingLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_ValidatingLineEdit.h</header>
+  </customwidget>
   <customwidget>
    <class>QtExt::ColorButton</class>
    <extends>QPushButton</extends>
    <header location="global">QtExt_ColorButton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::LanguageStringEditWidget1</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_LanguageStringEditWidget1.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
