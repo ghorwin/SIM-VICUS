@@ -9,43 +9,9 @@
 
 namespace Vic3D {
 
-void addSurface(const VICUS::Surface & s,
-				unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
-				std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLshort> & indexBufferData)
-{
-	// skip invalid geometry
-	if (!s.m_geometry.isValid())
-		return;
-	// change color depending on visibility state and selection state
-	QColor col = s.m_color;
-	if (!s.m_visible)
-		col.setAlphaF(0);
-	else if (s.m_selected) {
-		col = SVSettings::instance().m_themeSettings[SVSettings::instance().m_theme].m_selectedSurfaceColor;
-	}
-	// first add the plane regular
-	addPlane(s.m_geometry, col, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
-	// then add the plane again inverted
-	addPlane(s.m_geometry, col, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, true);
-}
 
+// *** Primitives ***
 
-/*! This updates the surface color. */
-void updateColors(const VICUS::Surface & s, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData) {
-	// skip invalid geometry
-	if (!s.m_geometry.isValid())
-		return;
-	// change color depending on visibility and selection state
-	// invisible objects are now drawn, and selected objects are drawn by a different object (and are hence invisible in this
-	// object as well).
-	QColor col = s.m_color;
-	if (!s.m_visible || s.m_selected) {
-		col.setAlphaF(0);
-	}
-	// call updatePlaneColor() twice, since we have front and backside planes to color
-	updatePlaneColor(s.m_geometry, col, currentVertexIndex, colorBufferData);
-	updatePlaneColor(s.m_geometry, col, currentVertexIndex, colorBufferData);
-}
 
 
 void addPlane(const VICUS::PlaneGeometry & g, const QColor & col,
@@ -213,7 +179,7 @@ void addPlane(const VICUS::PlaneGeometry & g, unsigned int & currentVertexIndex,
 }
 
 
-void updatePlaneColor(const VICUS::PlaneGeometry & g, const QColor & col, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData) {
+void updateColors(const VICUS::PlaneGeometry & g, const QColor & col, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData) {
 	// different handling based on surface type
 	switch (g.type()) {
 		case VICUS::PlaneGeometry::T_Triangle : {
@@ -522,14 +488,79 @@ void addIkosaeder(const IBKMK::Vector3D & p, const std::vector<QColor> & cols, d
 }
 
 
-void updateColors(const VICUS::NetworkEdge & e, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData) {
+
+// *** High-level objects ***
+
+// This adds two planes, one after another, with the second one facing the opposite direction.
+void addSurface(const VICUS::Surface & s,
+				unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+				std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLshort> & indexBufferData)
+{
+	// skip invalid geometry
+	if (!s.m_geometry.isValid())
+		return;
+	// change color depending on visibility state and selection state
+	QColor col = s.m_color;
+	if (!s.m_visible)
+		col.setAlphaF(0);
+	else if (s.m_selected) {
+		col = SVSettings::instance().m_themeSettings[SVSettings::instance().m_theme].m_selectedSurfaceColor;
+	}
+	// first add the plane regular
+	addPlane(s.m_geometry, col, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
+	// then add the plane again inverted
+	addPlane(s.m_geometry, col, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, true);
+}
+
+
+// This updates the surface color of the two planes generated from a single surface definition
+void updateColors(const VICUS::Surface & s, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData) {
+	// skip invalid geometry
+	if (!s.m_geometry.isValid())
+		return;
+	// change color depending on visibility and selection state
+	// invisible objects are now drawn, and selected objects are drawn by a different object (and are hence invisible in this
+	// object as well).
+	QColor col = s.m_color;
+	if (!s.m_visible || s.m_selected) {
+		col.setAlphaF(0);
+	}
+	// call updatePlaneColor() twice, since we have front and backside planes to color
+	updateColors(s.m_geometry, col, currentVertexIndex, colorBufferData);
+	updateColors(s.m_geometry, col, currentVertexIndex, colorBufferData);
+}
+
+
+// Adds a network edge
+void addNetworkEdge(const VICUS::NetworkEdge & e, unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+					std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
+					std::vector<GLshort> & indexBufferData)
+{
+
+}
+
+// Updates the colors in the color buffer for the edge.
+void updateColors(const VICUS::NetworkEdge & e, unsigned int & currentVertexIndex,
+				  std::vector<ColorRGBA> & colorBufferData)
+{
 
 }
 
 
-void updateColors(const VICUS::NetworkNode & n, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData) {
+void addNetworkNode(const VICUS::NetworkNode & n, unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+					std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
+					std::vector<GLshort> & indexBufferData)
+{
 
 }
+
+
+void updateColors(const VICUS::NetworkNode & n, unsigned int & currentVertexIndex,
+				  std::vector<ColorRGBA> & colorBufferData)
+{
+
+}
+
 
 
 

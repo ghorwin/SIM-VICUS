@@ -100,18 +100,27 @@ void WireFrameObject::updateBuffers() {
 	unsigned int currentVertexIndex = 0;
 	unsigned int currentElementIndex = 0;
 
-	qDebug() << m_selectedSurfaces.size() << " selected surfaces";
-	qDebug() << m_selectedEdges.size() << " selected edges";
-	qDebug() << m_selectedNodes.size() << " selected nodes";
+	qDebug() << m_selectedObjects.size() << " selected objects";
 
-	for (const VICUS::Surface * s : m_selectedSurfaces) {
-		addPlane(s->m_geometry, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
-	}
-	for (const VICUS::NetworkEdge * e : m_selectedEdges) {
-//		addCylinder(s->m_geometry, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
-	}
-	for (const VICUS::NetworkNode * n : m_selectedNodes) {
-//		addCylinder(s->m_geometry, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+	for (const VICUS::Object * o : m_selectedObjects) {
+
+		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
+		if (s != nullptr) {
+			addPlane(s->m_geometry, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			continue;
+		}
+
+		const VICUS::NetworkEdge * e = dynamic_cast<const VICUS::NetworkEdge *>(e);
+		if (e != nullptr) {
+//			addNetworkEdge(*e, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			continue;
+		}
+
+		const VICUS::NetworkNode * n = dynamic_cast<const VICUS::NetworkNode *>(n);
+		if (e != nullptr) {
+//			addNetworkNode(*n, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			continue;
+		}
 	}
 
 	// transfer data to GPU
@@ -126,7 +135,7 @@ void WireFrameObject::updateBuffers() {
 
 
 void WireFrameObject::render() {
-	if (m_selectedSurfaces.empty())
+	if (m_selectedObjects.empty())
 		return; // nothing to render
 	// bind all buffers ("position", "normal" and "color" arrays)
 	m_vao.bind();

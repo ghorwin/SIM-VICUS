@@ -14,9 +14,7 @@ class QOpenGLShaderProgram;
 QT_END_NAMESPACE
 
 namespace VICUS {
-	class Surface;
-	class NetworkEdge;
-	class NetworkNode;
+	class Object;
 }
 
 namespace Vic3D {
@@ -65,12 +63,10 @@ public:
 	/*! The transformation from model coordinates to (current) world coordinates. */
 	Transform3D					m_transform;
 
-	/*! This set caches the list of current selected surface objects.
+	/*! This set caches the list of current selected objects.
 		This set is processed in updateBuffers() to fill the coordinate buffers.
 	*/
-	std::set<const VICUS::Surface*>		m_selectedSurfaces;
-	std::set<const VICUS::NetworkEdge*>	m_selectedEdges;
-	std::set<const VICUS::NetworkNode*>	m_selectedNodes;
+	std::set<const VICUS::Object*>		m_selectedObjects;
 
 	ShaderProgram				*m_shaderProgram = nullptr;
 

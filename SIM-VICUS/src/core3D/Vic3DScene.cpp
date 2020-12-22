@@ -140,13 +140,13 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 
 					// update selection set, but only keep visible and selected objects in the set
 					if (s->m_selected && s->m_visible) {
-						if (m_selectedGeometryObject.m_selectedSurfaces.insert(s).second)
+						if (m_selectedGeometryObject.m_selectedObjects.insert(s).second)
 							selectionModified = true;
 					}
 					else {
-						std::set<const VICUS::Surface*>::const_iterator it = m_selectedGeometryObject.m_selectedSurfaces.find(s);
-						if (it != m_selectedGeometryObject.m_selectedSurfaces.end()) {
-							m_selectedGeometryObject.m_selectedSurfaces.erase(*it);
+						std::set<const VICUS::Object*>::const_iterator it = m_selectedGeometryObject.m_selectedObjects.find(s);
+						if (it != m_selectedGeometryObject.m_selectedObjects.end()) {
+							m_selectedGeometryObject.m_selectedObjects.erase(*it);
 							selectionModified = true;
 						}
 					}
@@ -167,18 +167,18 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 						updateColors(*node, vertexStart, m_networkGeometryObject.m_colorBufferData);
 					largestVertexIndex = std::min(smallestVertexIndex, vertexStart);
 
-//					// update selection set, but only keep visible and selected objects in the set
-//					if (s->m_selected && s->m_visible) {
-//						if (m_selectedGeometryObject.m_selectedSurfaces.insert(s).second)
-//							selectionModified = true;
-//					}
-//					else {
-//						std::set<const VICUS::Surface*>::const_iterator it = m_selectedGeometryObject.m_selectedSurfaces.find(s);
-//						if (it != m_selectedGeometryObject.m_selectedSurfaces.end()) {
+					// update selection set, but only keep visible and selected objects in the set
+					if (s->m_selected && s->m_visible) {
+						if (m_selectedGeometryObject.m_selectedObjects.insert(s).second)
+							selectionModified = true;
+					}
+					else {
+						std::set<const VICUS::Object*>::const_iterator it = m_selectedGeometryObject.m_selectedObjects.find(s);
+						if (it != m_selectedGeometryObject.m_selectedObjects.end()) {
 //							m_selectedGeometryObject.m_selectedSurfaces.erase(*it);
-//							selectionModified = true;
-//						}
-//					}
+							selectionModified = true;
+						}
+					}
 
 				}
 
@@ -348,7 +348,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 			default:
 				// default mode - Escape clears selection
-				if (!m_selectedGeometryObject.m_selectedSurfaces.empty()) {
+				if (!m_selectedGeometryObject.m_selectedObjects.empty()) {
 					clearSelectionOfObjects();
 					needRepaint = true;
 				}
@@ -957,8 +957,6 @@ void Vic3DScene::generateNetworkGeometry() {
 
 	// add cylinders for all pipes
 	for (const VICUS::Network & network : p.m_geometricNetworks) {
-		if (!network.m_visible)
-			continue;
 		for (const VICUS::NetworkEdge & e : network.m_edges) {
 			double radius = 0.5;
 			if (e.m_pipeId != VICUS::INVALID_ID){
@@ -1019,13 +1017,14 @@ void Vic3DScene::generateNetworkGeometry() {
 
 void Vic3DScene::clearSelectionOfObjects() {
 	// compose undo-action of objects currently selected
-	if (m_selectedGeometryObject.m_selectedSurfaces.empty())
+	if (m_selectedGeometryObject.m_selectedObjects.empty())
 		return; // nothing selected, nothing to do
 
 	std::set<unsigned int> nodeIDs;
-	for (const VICUS::Surface * s : m_selectedGeometryObject.m_selectedSurfaces)
-		nodeIDs.insert(s->uniqueID());
-	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Selected cleared"), SVUndoTreeNodeState::SelectedState, nodeIDs, false);
+	for (const VICUS::Object * o : m_selectedGeometryObject.m_selectedObjects)
+		nodeIDs.insert(o->uniqueID());
+	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Selected cleared"),
+														 SVUndoTreeNodeState::SelectedState, nodeIDs, false);
 	undo->push();
 }
 
