@@ -76,7 +76,9 @@ SOURCES += \
 		../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
 		../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
 		../../src/SVClimateFileInfo.cpp \
+		../../src/SVDBComponentEditDialog.cpp \
 		../../src/SVDBComponentEditWidget.cpp \
+		../../src/SVDBComponentTableModel.cpp \
 		../../src/SVDBConstructionEditDialog.cpp \
 		../../src/SVDBConstructionEditWidget.cpp \
 		../../src/SVDBConstructionTableModel.cpp \
@@ -151,7 +153,9 @@ SOURCES += \
 
 HEADERS  += \
 		../../src/SVClimateFileInfo.h \
+		../../src/SVDBComponentEditDialog.h \
 		../../src/SVDBComponentEditWidget.h \
+		../../src/SVDBComponentTableModel.h \
 		../../src/SVDBConstructionEditDialog.h \
 		../../src/SVDBConstructionEditWidget.h \
 		../../src/SVDBConstructionTableModel.h \
@@ -228,6 +232,7 @@ HEADERS  += \
 
 FORMS    += \
 		../../src/SVAboutDialog.ui \
+		../../src/SVDBComponentEditDialog.ui \
 		../../src/SVDBComponentEditWidget.ui \
 		../../src/SVDBConstructionEditDialog.ui \
 		../../src/SVDBConstructionEditWidget.ui \
