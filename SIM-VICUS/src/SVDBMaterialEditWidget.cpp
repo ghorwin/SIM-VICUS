@@ -12,10 +12,37 @@ SVDBMaterialEditWidget::SVDBMaterialEditWidget(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
+
+	m_ui->lineEditDensity->setup(1, 10000, tr("Density"), true, true);
+	m_ui->lineEditConductivity->setup(0.001, 500, tr("Thermal conductivity"), true, true);
+	m_ui->lineEditSpecHeatCapacity->setup(200, 5000, tr("Specific heat capacity"), true, true);
+
+	QStringList sl;
+	sl << "Coating";
+	sl << "Plaster";
+	sl << "Bricks";
+	sl << "NaturalStones";
+	sl << "Cementitious";
+	sl << "Insulations";
+	sl << "BuildingBoards";
+	sl << "Woodbased";
+	sl << "NaturalMaterials";
+	sl << "Soils";
+	sl << "CladdingSystems";
+	sl << "Foils";
+	sl << "Miscellaneous";
+	m_ui->comboBoxCategory->addItems(sl);
+
+	sl.clear();
+	sl << "ENG";
+	sl << "DE";
+	m_ui->comboBoxLanguage->addItems(sl);
+
 }
 
 
 SVDBMaterialEditWidget::~SVDBMaterialEditWidget() {
+
 	delete m_ui;
 }
 
@@ -54,6 +81,8 @@ void SVDBMaterialEditWidget::updateInput(int id) {
 	m_ui->comboBoxCategory->setCurrentIndex(mat->m_category);
 
 	// TODO : Dirk, andere Editfelder implementieren
+	IBK::MultiLanguageString mStr;
+	//if(mStr.hasLanguage()
 
 }
 
