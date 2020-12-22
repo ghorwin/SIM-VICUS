@@ -180,7 +180,7 @@ void SVDBMaterialEditDialog::onCurrentIndexChanged(const QModelIndex &current, c
 
 		m_ui->toolButtonCopy->setEnabled(true);
 		m_ui->tableView->selectRow(current.row());
-		// retrieve current construction ID
+		// retrieve current material ID
 		int matId = current.data(Role_Id).toInt();
 		m_ui->editWidget->updateInput(matId);
 	}
