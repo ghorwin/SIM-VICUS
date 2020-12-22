@@ -65,11 +65,23 @@ void SVDBMaterialEditDialog::edit() {
 }
 
 
-unsigned int SVDBMaterialEditDialog::select() {
+int SVDBMaterialEditDialog::select(unsigned int initialMatId) {
 
 	m_ui->pushButtonClose->setVisible(false);
 	m_ui->pushButtonSelect->setVisible(true);
 	m_ui->pushButtonCancel->setVisible(true);
+
+	// select material with given matId
+	for (int i=0, count = m_dbModel->rowCount(); i<count; ++i) {
+		QModelIndex sourceIndex = m_dbModel->index(i,0);
+		if (m_dbModel->data(sourceIndex, Role_Id).toUInt() == initialMatId) {
+			// get proxy index
+			QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
+			if (proxyIndex.isValid())
+				m_ui->tableView->setCurrentIndex(proxyIndex);
+			break;
+		}
+	}
 
 	int res = exec();
 	if (res == QDialog::Accepted) {
@@ -79,11 +91,11 @@ unsigned int SVDBMaterialEditDialog::select() {
 		QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
 
 		// return ID
-		return sourceIndex.data(Role_Id).toUInt();
+		return sourceIndex.data(Role_Id).toInt();
 	}
 
 	// nothing selected/dialog aborted
-	return 0;
+	return -1;
 }
 
 

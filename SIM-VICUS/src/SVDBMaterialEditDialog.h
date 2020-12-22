@@ -23,11 +23,12 @@ public:
 	void edit();
 
 	/*! Starts the dialog in "select materials mode".
+		\param initialMadId The material indicated by this ID is initially selected.
 		\return If a material was selected and double-clicked/or the "Select" button was
 				pressed, the function returns the ID of the selected material. Otherwise, if the
-				dialog was aborted, the function returns 0.
+				dialog was aborted, the function returns -1.
 	*/
-	unsigned int select();
+	int select(unsigned int initialMatId);
 
 private slots:
 	void on_pushButtonSelect_clicked();
@@ -49,7 +50,7 @@ private:
 	Ui::SVDBMaterialEditDialog *m_ui;
 
 	/*! The sort filter model (owned). */
-	QSortFilterProxyModel			*m_proxyModel	= nullptr;
+	QSortFilterProxyModel		*m_proxyModel	= nullptr;
 	/*! The material table model (owned). */
 	SVDBMaterialTableModel		*m_dbModel		= nullptr;
 };

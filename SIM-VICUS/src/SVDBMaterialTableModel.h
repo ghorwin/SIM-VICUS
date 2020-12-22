@@ -5,7 +5,14 @@
 
 #include "SVDatabase.h"
 
-/*! Model for accessing the materials in the materials database. */
+/*! Model for accessing the materials in the materials database.
+
+	The individual columns have different values for the DisplayRole (and some
+	also for alignment). The column 'ColCheck' shows an indication if all data
+	in construction and used materials is valid.
+	All columns (i.e. all model indexes) return custom role data for global
+	id and built-in roles (see SVConstants.h).
+*/
 class SVDBMaterialTableModel : public QAbstractTableModel {
 	Q_OBJECT
 public:
@@ -34,7 +41,7 @@ public:
 
 	/*! Constructor, requires a read/write pointer to the central database object.
 		\note Pointer to database must be valid throughout the lifetime of the Model!
-		*/
+	*/
 	SVDBMaterialTableModel(QObject * parent, SVDatabase & db);
 	virtual ~SVDBMaterialTableModel();
 

@@ -14,7 +14,7 @@
 #include <VICUS_KeywordListQt.h>
 
 #include "SVDBConstructionTableModel.h"
-//#include "MaterialSelectorDialog.h"
+#include "SVDBMaterialEditDialog.h"
 
 SVDBConstructionEditWidget::SVDBConstructionEditWidget(QWidget * parent) :
 	QWidget(parent),
@@ -572,18 +572,19 @@ void SVDBConstructionEditWidget::updateUValue() {
 
 
 void SVDBConstructionEditWidget::showMaterialSelectionDialog(int index) {
-//	MaterialSelectorDialog matSelect(m_db, this);
-//	matSelect.selectMaterial(m_current->m_materialIds[index]);
-//	int res = matSelect.exec();
-//	if( res == QDialog::Accepted) {
-//		int matid = matSelect.selectedMaterialID();
-//		if(matid > -1) {
-//			m_current->m_materialIds[index] = matid;
-//			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-//			updateTable();
-//			updateConstructionView();
-//		}
-//	}
+	Q_ASSERT(index >= 0);
+	SVDBMaterialEditDialog matSelect(this);
+	// TODO : we may keep our material dialog around to save resources, but then we need
+	//        to make sure it synchronizes its model with the current SVSettings::m_db object,
+	//        in case this was changed in the mean time. For now it is safer to just re-create
+	//        the dialog every time.
+	int matId = matSelect.select(m_current->m_materialLayers[(unsigned int)index].m_matId);
+	if (matId != 0) {
+		m_current->m_materialLayers[(unsigned int)index].m_matId = (unsigned int)matId;
+		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		updateTable();
+		updateConstructionView();
+	}
 }
 
 
