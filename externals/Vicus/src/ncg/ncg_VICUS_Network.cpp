@@ -158,6 +158,10 @@ void Network::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
+			else if (cName == "ScaleNodes")
+				m_scaleNodes = NANDRAD::readPODElement<double>(c, cName);
+			else if (cName == "ScaleEdges")
+				m_scaleEdges = NANDRAD::readPODElement<double>(c, cName);
 			else if (cName == "Type") {
 				try {
 					m_type = (NetworkType)KeywordList::Enumeration("Network::NetworkType", c->GetText());
@@ -266,6 +270,8 @@ TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
 			TiXmlElement::appendIBKParameterElement(e, m_sizingPara[i].name, m_sizingPara[i].IO_unit.name(), m_sizingPara[i].get_value());
 		}
 	}
+	TiXmlElement::appendSingleAttributeElement(e, "ScaleNodes", nullptr, std::string(), IBK::val2string<double>(m_scaleNodes));
+	TiXmlElement::appendSingleAttributeElement(e, "ScaleEdges", nullptr, std::string(), IBK::val2string<double>(m_scaleEdges));
 	return e;
 }
 

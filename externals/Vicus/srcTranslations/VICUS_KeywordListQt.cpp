@@ -34,6 +34,18 @@ KeywordListQt::KeywordListQt() {
 	tr("Outside wall construction in contact with ground");
 	tr("Interior construction");
 	tr("Floor to basement");
+	tr("Floor in contact with air");
+	tr("Floor in contact with ground");
+	tr("Ceiling construction");
+	tr("Sloped roof construction");
+	tr("Flat roof construction");
+	tr("Flat roof construction (to heated/insulated space)");
+	tr("Flat roof construction (to cold/ventilated space)");
+	tr("Some other component type");
+	tr("Outside wall construction");
+	tr("Outside wall construction in contact with ground");
+	tr("Interior construction");
+	tr("Floor to basement");
 	tr("Floor in contact with ground");
 	tr("Ceiling construction");
 	tr("Sloped roof construction");

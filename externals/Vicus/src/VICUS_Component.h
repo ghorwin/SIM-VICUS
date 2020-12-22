@@ -18,19 +18,20 @@ public:
 
 	/*! Component types. */
 	enum CompontType {
-		CT_OuterWall,
-		CT_OuterWallGround,
-		CT_InnerWall,
-		CT_SlopedRoof,
-		CT_FlatRoof,
-		CT_ColdRoof,
-		CT_WarmRoof,
-		CT_FloorToAir,
-		CT_FloorToGround,
-		CT_Ceiling,
-		CT_Window,
-		CT_Door,
-		CT_Miscellaneous,
+		CT_OutsideWall,				// Keyword: OutsideWall				'Outside wall construction'
+		CT_OutsideWallToGround,		// Keyword: OutsideWallToGround		'Outside wall construction in contact with ground'
+		CT_InsideWall,				// Keyword: InsideWall				'Interior construction'
+		CT_FloorToCellar,			// Keyword: FloorToCellar			'Floor to basement'
+		CT_FloorToAir,				// Keyword: FloorToAir				'Floor in contact with air'
+		CT_FloorToGround,			// Keyword: FloorToGround			'Floor in contact with ground'
+		CT_Ceiling,					// Keyword: Ceiling					'Ceiling construction'
+		CT_SlopedRoof,				// Keyword: SlopedRoof				'Sloped roof construction'
+		CT_FlatRoof,				// Keyword: FlatRoof				'Flat roof construction'
+		CT_ColdRoof,				// Keyword: ColdRoof				'Flat roof construction (to heated/insulated space)'
+		CT_WarmRoof,				// Keyword: WarmRoof				'Flat roof construction (to cold/ventilated space)'
+//		CT_Window,
+//		CT_Door,
+		CT_Miscellaneous,			// Keyword: Miscellaneous			'Some other component type'
 		NUM_CT
 	};
 
@@ -61,7 +62,7 @@ public:
 	IBK::MultiLanguageString		m_dataSource;								// XML:E
 
 	/*! Component type. */
-	CompontType						m_type = NUM_CT;							// XML:E:required
+	CompontType						m_type = CT_Miscellaneous;					// XML:E:required
 
 	/*! Opaque construction ID. */
 	unsigned int					m_idOpaqueConstruction = INVALID_ID;		// XML:E

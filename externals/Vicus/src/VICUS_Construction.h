@@ -26,10 +26,10 @@ public:
 		UT_OutsideWallToGround,		// Keyword: OutsideWallToGround		'Outside wall construction in contact with ground'
 		UT_InsideWall,				// Keyword: InsideWall				'Interior construction'
 		UT_FloorToCellar,			// Keyword: FloorToCellar			'Floor to basement'
-		UK_FloorToGround,			// Keyword: FloorToGround			'Floor in contact with ground'
-		UK_Ceiling,					// Keyword: Ceiling					'Ceiling construction'
-		UK_SlopedRoof,				// Keyword: SlopedRoof				'Sloped roof construction'
-		UK_FlatRoof,				// Keyword: FlatRoof				'Flat roof construction'
+		UT_FloorToGround,			// Keyword: FloorToGround			'Floor in contact with ground'
+		UT_Ceiling,					// Keyword: Ceiling					'Ceiling construction'
+		UT_SlopedRoof,				// Keyword: SlopedRoof				'Sloped roof construction'
+		UT_FlatRoof,				// Keyword: FlatRoof				'Flat roof construction'
 		NUM_UT						// Keyword: ---						'Miscellaneous'
 	};
 

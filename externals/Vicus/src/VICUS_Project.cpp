@@ -341,8 +341,6 @@ const VICUS::Object * Project::objectById(unsigned int uniqueID) const {
 
 
 bool Project::haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const {
-	/// TODO: Stephan: implement
-
 	size_t coordsCount=0;
 	bool haveSelectedPolys = false;
 
@@ -382,10 +380,8 @@ bool Project::haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const {
 	return haveSelectedPolys;
 }
 
-bool Project::selectedSurfaces(std::vector<Surface*> &surfaces) {
-	/// TODO: Stephan: implement
 
-	size_t coordsCount=0;
+bool Project::selectedSurfaces(std::vector<Surface*> &surfaces) {
 	bool haveSelectedPolys = false;
 
 	// we go through all dump surfaces in m_plaingeometry
@@ -414,6 +410,7 @@ bool Project::selectedSurfaces(std::vector<Surface*> &surfaces) {
 
 	return haveSelectedPolys;
 }
+
 
 bool Project::boundingBoxofSelectedSurfaces(IBKMK::Vector3D &boundingbox) {
 	std::vector<VICUS::Surface*> surfaces;
