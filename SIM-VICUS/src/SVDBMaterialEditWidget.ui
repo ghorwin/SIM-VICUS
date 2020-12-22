@@ -23,39 +23,32 @@
       <attribute name="title">
        <string>Thermal</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
-       <item row="0" column="0" colspan="2">
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QLabel" name="labelDisplayName">
-           <property name="minimumSize">
-            <size>
-             <width>60</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Name</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="comboBoxLanguage"/>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="lineEditDisplayName"/>
-         </item>
-         <item>
-          <widget class="QtExt::ColorButton" name="pushButtonOpaqueMaterialColor">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-          </widget>
-         </item>
-        </layout>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QLabel" name="labelDisplayName">
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Name:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
+       </item>
+       <item row="0" column="2">
+        <widget class="QtExt::ColorButton" name="pushButtonOpaqueMaterialColor">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="labelCategory">
@@ -66,14 +59,14 @@
           </size>
          </property>
          <property name="text">
-          <string>Category</string>
+          <string>Category:</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
+       <item row="1" column="1" colspan="2">
         <widget class="QComboBox" name="comboBoxCategory"/>
        </item>
-       <item row="2" column="0" colspan="2">
+       <item row="2" column="0" colspan="3">
         <layout class="QGridLayout" name="gridLayout">
          <item row="0" column="0">
           <widget class="QLabel" name="labelConductivity">
@@ -107,7 +100,7 @@
          </item>
         </layout>
        </item>
-       <item row="3" column="0" colspan="2">
+       <item row="3" column="0" colspan="3">
         <widget class="QGraphicsView" name="graphicsViewCategoryPicture"/>
        </item>
       </layout>
@@ -185,6 +178,11 @@
    <class>QtExt::ColorButton</class>
    <extends>QPushButton</extends>
    <header location="global">QtExt_ColorButton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::LanguageStringEditWidget1</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_LanguageStringEditWidget1.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

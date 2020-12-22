@@ -55,7 +55,12 @@ QVariant SVDBMaterialTableModel::data ( const QModelIndex & index, int role) con
 			switch (index.column()) {
 				case ColId					: return it->first;
 				case ColName				: return QString::fromStdString(it->second.m_displayName.string(langId, fallBackLangId));
-				case ColCategory			: return VICUS::KeywordListQt::Keyword("Material::Category",it->second.m_category);
+				case ColCategory			:
+					try {
+						return VICUS::KeywordListQt::Keyword("Material::Category",it->second.m_category);
+					} catch (...) {
+						return "";
+					}
 				case ColProductID			: return "--";
 				case ColProducer			: return QString::fromStdString(it->second.m_manufacturer.string(langId, fallBackLangId));
 				case ColSource				: return QString::fromStdString(it->second.m_dataSource.string(langId, fallBackLangId));

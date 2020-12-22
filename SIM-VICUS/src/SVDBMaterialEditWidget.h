@@ -44,6 +44,7 @@ signals:
 	void tableDataChanged();
 
 private slots:
+	void on_lineEditName_editingFinished();
 	void on_lineEditConductivity_editingFinished();
 
 private:

@@ -56,7 +56,8 @@ public:
 		MC_Soils,					// Keyword: Soils
 		MC_CladdingSystems,			// Keyword: CladdingSystems
 		MC_Foils,					// Keyword: Foils
-		NUM_MC						// Keyword: Miscellaneous
+		MC_Miscellaneous,			// Keyword: Miscellaneous
+		NUM_MC
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
