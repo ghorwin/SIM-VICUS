@@ -8,6 +8,7 @@
 #include <QtExt_ConstructionView.h>
 #include <QtExt_ConstructionViewWidget.h>
 #include <QtExt_Locale.h>
+#include <QtExt_LanguageHandler.h>
 
 #include "SVStyle.h"
 
@@ -24,10 +25,9 @@ SVDBConstructionEditWidget::SVDBConstructionEditWidget(QWidget * parent) :
 	m_ui->setupUi(this);
 	layout()->setMargin(0);
 
-	m_ui->labelNameEn->setText("");
-	m_ui->labelNameDe->setText("");
-	m_ui->labelNameEn->setPixmap( QPixmap(":/gfx/icons/en.png") );
-	m_ui->labelNameDe->setPixmap( QPixmap(":/gfx/icons/de.png") );
+
+	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), "fr", true);
+	m_ui->lineEditName->setDialog3Caption(tr("Construction identification name"));
 
 	m_ui->tableWidget->setColumnCount(5);
 
@@ -136,15 +136,14 @@ void SVDBConstructionEditWidget::updateInput(int id) {
 		m_ui->groupBox_2->setEnabled(false);
 
 		// clear all inputs
-		m_ui->lineEditNameEn->setText("");
-		m_ui->lineEditNameDe->setText("");
+
+		m_ui->lineEditName->setString(IBK::MultiLanguageString());
 		m_ui->lineEditUValue->setText("");
 		m_ui->spinBoxLayerCount->setValue(0);
 		m_ui->tableWidget->setRowCount(0); // Must be called after spinBoxLayerCount->setValue(0); !
 
 		// disable the line edits (they change background color)
-		m_ui->lineEditNameEn->setReadOnly(true);
-		m_ui->lineEditNameDe->setReadOnly(true);
+		m_ui->lineEditName->setEnabled(false);
 
 		m_ui->comboBoxMaterialKind->setCurrentIndex(-1);
 		m_ui->comboBoxInsulationKind->setCurrentIndex(-1);
@@ -164,8 +163,7 @@ void SVDBConstructionEditWidget::updateInput(int id) {
 	// now update the GUI controls
 
 	// construction name and layer count
-	m_ui->lineEditNameEn->setText(QString::fromStdString(con->m_displayName("en", true)));
-	m_ui->lineEditNameDe->setText(QString::fromStdString(con->m_displayName("de")));
+	m_ui->lineEditName->setString(con->m_displayName);
 	int n = std::max<int>(1, con->m_materialLayers.size());
 	m_ui->spinBoxLayerCount->setValue(n);
 
@@ -184,8 +182,7 @@ void SVDBConstructionEditWidget::updateInput(int id) {
 	m_ui->comboBoxConstructionUsage->setCurrentIndex(indexUT);
 
 	// update read-only/enabled states
-	m_ui->lineEditNameEn->setReadOnly(con->m_builtIn);
-	m_ui->lineEditNameDe->setReadOnly(con->m_builtIn);
+	m_ui->lineEditName->setEnabled(con->m_builtIn);
 	m_ui->spinBoxLayerCount->setEnabled(!con->m_builtIn);
 	m_ui->comboBoxInsulationKind->setEnabled(!con->m_builtIn);
 	m_ui->comboBoxMaterialKind->setEnabled(!con->m_builtIn);
@@ -197,8 +194,6 @@ void SVDBConstructionEditWidget::updateInput(int id) {
 	QPalette pal;
 	if (con->m_builtIn)
 		pal.setColor(QPalette::Base, SVStyle::instance().m_readOnlyEditFieldBackground);
-	m_ui->lineEditNameEn->setPalette(pal);
-	m_ui->lineEditNameDe->setPalette(pal);
 	m_ui->spinBoxLayerCount->setPalette(pal);
 
 	on_spinBoxLayerCount_valueChanged(n);
@@ -366,29 +361,16 @@ void SVDBConstructionEditWidget::on_spinBoxLayerCount_valueChanged(int val) {
 }
 
 
-void SVDBConstructionEditWidget::on_lineEditNameEn_editingFinished() {
+void SVDBConstructionEditWidget::on_lineEditName_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
 
-	if (m_current->m_displayName("en") != m_ui->lineEditNameEn->text().toStdString()) {
-		m_current->m_displayName.setString(m_ui->lineEditNameEn->text().toStdString(), "en");
+	if (m_current->m_displayName != m_ui->lineEditName->string()) {
+		m_current->m_displayName = m_ui->lineEditName->string();
 		m_db->m_constructions.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		emit tableDataChanged();
 	}
 }
-
-
-void SVDBConstructionEditWidget::on_lineEditNameDe_editingFinished() {
-	Q_ASSERT(m_current != nullptr);
-
-	if (m_current->m_displayName("de") != m_ui->lineEditNameDe->text().toStdString()) {
-		m_current->m_displayName.setString(m_ui->lineEditNameDe->text().toStdString(), "de");
-		m_db->m_constructions.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-		emit tableDataChanged();
-	}
-}
-
 
 void SVDBConstructionEditWidget::on_comboBoxInsulationKind_currentIndexChanged(int) {
 	if (m_current == nullptr) return; // m_current is nullptr, when nothing is selected and controls are defaulted to "empty"

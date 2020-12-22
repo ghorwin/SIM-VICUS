@@ -78,7 +78,7 @@ private:
 	VICUS::Construction			*m_current;
 
 private slots:
-	void on_lineEditNameEn_editingFinished();
+	void on_lineEditName_editingFinished();
 	void on_lineEditNameDe_editingFinished();
 	void on_comboBoxInsulationKind_currentIndexChanged(int index);
 	void on_comboBoxMaterialKind_currentIndexChanged(int index);
