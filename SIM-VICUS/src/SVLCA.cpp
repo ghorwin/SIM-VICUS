@@ -126,10 +126,11 @@ void LCA::calculateLCA()
 		//opaque construction
 		if(comp.m_idOpaqueConstruction != VICUS::INVALID_ID){
 			//get construction
-			VICUS::Construction constr =
-					elementExists<VICUS::Construction>(m_dbConstructions, comp.m_idOpaqueConstruction,
-													   comp.m_displayName.toStdString(),"Construction",
-													   "component");
+			///TODO Dirk baufähig gemacht müsste rückgängig gemacht werden
+			VICUS::Construction constr;
+//					elementExists<VICUS::Construction>(m_dbConstructions, comp.m_idOpaqueConstruction,
+//													   comp.m_displayName.toStdString(),"Construction",
+//													   "component");
 
 			//calculate each construction
 			for(auto l : constr.m_materialLayers){
