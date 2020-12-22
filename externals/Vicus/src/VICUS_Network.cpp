@@ -24,7 +24,7 @@
 namespace VICUS {
 
 Network::Network() {
-
+	setDefaultSizingParams();
 }
 
 unsigned Network::addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool consistentCoordinates) {
@@ -304,7 +304,7 @@ void Network::cleanDeadEnds(Network &cleanNetwork, const unsigned maxSteps){
 }
 
 
-void Network::cleanRedundantEdges(Network & cleanNetwork){
+void Network::cleanRedundantEdges(Network & cleanNetwork) const{
 
 	IBK_ASSERT(m_edges.size()>0);
 	std::set<unsigned> proccessedNodes;
@@ -363,7 +363,7 @@ void Network::cleanShortEdges(Network &cleanNetwork, const double &threshold)
 }
 
 
-void Network::sizePipeDimensions(const NetworkFluid &fluid){
+void Network::sizePipeDimensions(const NetworkFluid *fluid){
 FUNCID(Network::sizePipeDimensions);
 
 	// check pipe database
@@ -378,13 +378,15 @@ FUNCID(Network::sizePipeDimensions);
 	}
 
 	// check for source
-	if (sourceNodes().size() < 1)
+	std::vector<NetworkNode> sources;
+	findSourceNodes(sources);
+	if (sources.size() < 1)
 		throw IBK::Exception("Network has no source node. Set one node to type source.", FUNC_ID);
 
 	// set all edges heating demand = 0
 	for (NetworkEdge &edge: m_edges)
-
 		edge.m_maxHeatingDemand = 0;
+
 	// for all buildings: add their heating demand to the pipes along their shortest path
 	for (NetworkNode &node: m_nodes) {
 		if (node.m_type != NetworkNode::NT_Building)
@@ -395,10 +397,9 @@ FUNCID(Network::sizePipeDimensions);
 		// for each source find the shortest path to current node. Finally select the shortest of these paths
 		std::vector<NetworkEdge * > minPath;
 		double minPathLength = std::numeric_limits<double>::max();
-		std::vector<NetworkNode * > sources = sourceNodes();
-		for (NetworkNode * source: sources){
+		for (const NetworkNode &source: sources){
 			std::vector<NetworkEdge * > path;
-			dijkstraShortestPathToSource(node, *source, path);  // shortest path between source and node
+			dijkstraShortestPathToSource(node, source, path);  // shortest path between source and node
 			double pathLength = 0;
 			for (NetworkEdge *edge: path)
 				pathLength += edge->length();
@@ -426,7 +427,7 @@ FUNCID(Network::sizePipeDimensions);
 		e.m_pipeId = INVALID_ID;
 		for (NetworkPipe &pipe: m_networkPipeDB){
 			double massFlow = e.m_maxHeatingDemand / (m_sizingPara[SP_TemperatureDifference].get_value("K")
-													  * fluid.m_para[NetworkFluid::P_HeatCapacity].get_value("J/kgK"));
+													  * fluid->m_para[NetworkFluid::P_HeatCapacity].get_value("J/kgK"));
 			//  pressure loss per length (Pa/m)
 			double dp = pressureLossColebrook(1.0, massFlow, fluid, pipe, m_sizingPara[SP_TemperatureSetpoint].get_value("C"));
 			// select smallest possible pipe
@@ -453,14 +454,11 @@ FUNCID(Network::sizePipeDimensions);
 }
 
 
-std::vector<NetworkNode *> Network::sourceNodes(){
-
-	std::vector<NetworkNode *> sources;
-	for (NetworkNode &n: m_nodes){
+void Network::findSourceNodes(std::vector<NetworkNode> &sources) const{
+	for (NetworkNode n: m_nodes){
 		if (n.m_type==NetworkNode::NT_Source)
-			sources.push_back(&n);
+			sources.push_back(n);
 	}
-	return sources;
 }
 
 
@@ -486,8 +484,9 @@ void Network::dijkstraShortestPathToSource(NetworkNode &startNode, const Network
 				nMin = &m_nodes[id];
 			}
 		}
-		// if source reached: return path
-		if (nMin == &endNode){
+		IBK_ASSERT(nMin != nullptr);
+		// if endNode reached: return path
+		if (nMin->m_id == endNode.m_id){
 			nMin->pathToNull(pathEndToStart);
 			return;
 		}
@@ -516,12 +515,12 @@ void Network::updateExtends() {
 
 
 // TODO Hauke: this will be moved to NANDRAD Solver later (with a different interface)
-double Network::pressureLossColebrook(const double &length, const double &massFlow, const NetworkFluid &fluid,
+double Network::pressureLossColebrook(const double &length, const double &massFlow, const NetworkFluid *fluid,
 										const NetworkPipe &pipe, const double &temperature){
 
-	double velocity = massFlow / (fluid.m_para[NetworkFluid::P_Density].value * pipe.m_diameterInside()/1000
+	double velocity = massFlow / (fluid->m_para[NetworkFluid::P_Density].value * pipe.m_diameterInside()/1000
 			* pipe.m_diameterInside()/1000  * 3.14159 / 4);
-	double Re = velocity * pipe.m_diameterInside()/1000 / fluid.m_kinematicViscosity.m_values.value(temperature);
+	double Re = velocity * pipe.m_diameterInside()/1000 / fluid->m_kinematicViscosity.m_values.value(temperature);
 	double lambda = 0.05;
 	double lambda_new = lambda;
 	for (unsigned n=0; n<100; ++n){
@@ -531,7 +530,7 @@ double Network::pressureLossColebrook(const double &length, const double &massFl
 			break;
 		lambda = lambda_new;
 	}
-	return lambda_new * length / (pipe.m_diameterInside()/1000)  * fluid.m_para[NetworkFluid::P_Density].value
+	return lambda_new * length / (pipe.m_diameterInside()/1000)  * fluid->m_para[NetworkFluid::P_Density].value
 			/ 2 * velocity * velocity;
 }
 

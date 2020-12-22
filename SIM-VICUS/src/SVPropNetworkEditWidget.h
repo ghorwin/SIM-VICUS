@@ -24,6 +24,16 @@ public:
 		and selected node. */
 	void updateUi();
 
+	void updateSizingParams();
+
+	void modifyStatus();
+
+	void modifySizingParams();
+
+	void modifyNodeProperties();
+
+	void modifyEdgeProperties();
+
 	void showNetworkProperties();
 
 	void showNodeProperties();
@@ -33,10 +43,6 @@ public:
 	void setupComboboxPipeDB();
 
 	void setupComboboxComponents();
-
-	void updateSizingParams();
-
-	void modifyUI();
 
 private slots:
 	void on_comboBoxNodeType_activated(int index);
@@ -64,6 +70,10 @@ private slots:
 	void on_pushButtonReduceRedundantNodes_clicked();
 
 	void on_lineEditNodeY_editingFinished();
+
+	void on_horizontalSliderScaleNodes_actionTriggered(int action);
+
+	void on_horizontalSliderScaleEdges_actionTriggered(int action);
 
 private:
 

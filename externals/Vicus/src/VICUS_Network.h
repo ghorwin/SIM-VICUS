@@ -99,16 +99,16 @@ public:
 	void cleanDeadEnds(Network & cleanNetwork, const unsigned maxSteps=50);
 
 	/*! stores a copy of the network without any redundant edges */
-	void cleanRedundantEdges(Network & cleanNetwork);
+	void cleanRedundantEdges(Network & cleanNetwork) const;
 
 	void cleanShortEdges(Network & cleanNetwork, const double &threshold);
 
 	/*! calculate pipe dimensions using a maximum pressure loss per length and fixed temperature difference
 	 * the mass flow rate of each pipe will be calculated based on the heatDemand of connected consumer loads (e.g. buildings)
 	 */
-	void sizePipeDimensions(const NetworkFluid &fluid);
+	void sizePipeDimensions(const NetworkFluid *fluid);
 
-	std::vector<NetworkNode *> sourceNodes();
+	void findSourceNodes(std::vector<NetworkNode> &sources) const;
 
 	void writeNetworkCSV(const IBK::Path &file) const;
 
@@ -129,7 +129,7 @@ public:
 	 \param massFlow in [kg/s]
 	 \param temperature in [C]
 	 */
-	static double pressureLossColebrook(const double &length, const double &massFlow, const NetworkFluid &fluid,
+	static double pressureLossColebrook(const double &length, const double &massFlow, const NetworkFluid *fluid,
 										const NetworkPipe &pipe, const double &temperature);
 
 	IBKMK::Vector3D origin() const;
@@ -201,6 +201,10 @@ public:
 
 	/*! Parameters used for pipe sizing algorithm. Will be stored only when the algorithm was used */
 	IBK::Parameter							m_sizingPara[NUM_SP];						// XML:E
+
+	double									m_scaleNodes = 5000;						// XML:E
+
+	double									m_scaleEdges = 30;							// XML:E
 
 	/*! Stores visibility information for this network. */
 	bool									m_visible = true;							// XML:A

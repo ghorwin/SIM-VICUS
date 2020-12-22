@@ -169,11 +169,11 @@ void SVNetworkEditDialog::on_pushButtonReduceDeadEnds_clicked()
 
 void SVNetworkEditDialog::on_pushButtonSizePipeDimensions_clicked()
 {
-	modifyStatus();
-	m_network.sizePipeDimensions(project().m_networkFluids[m_network.m_fluidID]);
-	updateStatus();
-	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
-	undo->push(); // modifies project and updates views
+//	modifyStatus();
+//	m_network.sizePipeDimensions(project().m_networkFluids[m_network.m_fluidID]);
+//	updateStatus();
+//	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
+//	undo->push(); // modifies project and updates views
 }
 
 

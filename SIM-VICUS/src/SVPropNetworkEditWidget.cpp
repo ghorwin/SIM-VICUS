@@ -20,6 +20,8 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 
 	m_ui->groupBoxNode->setVisible(false);
 	m_ui->groupBoxEdge->setVisible(false);
+	m_ui->groupBoxSizePipes->setVisible(false);
+	m_ui->groupBoxEditNetwork->setVisible(false);
 
 	// setup combobox pipe models
 	m_mapPipeModels.clear();
@@ -72,6 +74,9 @@ void SVPropNetworkEditWidget::updateUi() {
 		m_ui->labelSmallestDiameter->setText(QString("%1 mm").arg(m_network->smallestDiameter()));
 		m_ui->checkBoxVisible->setChecked(m_network->m_visible);
 
+		m_ui->horizontalSliderScaleEdges->setValue(m_network->m_scaleEdges);
+		m_ui->horizontalSliderScaleNodes->setValue(m_network->m_scaleNodes);
+
 		updateSizingParams();
 	}
 
@@ -88,37 +93,45 @@ void SVPropNetworkEditWidget::updateUi() {
 	// update node ui
 	const VICUS::NetworkNode *node = dynamic_cast<const VICUS::NetworkNode *>(m_obj);
 	if (node != nullptr){
+		m_ui->lineEditNodeHeatingDemand->setEnabled(node->m_type == VICUS::NetworkNode::NT_Building);
 		setupComboboxComponents();
 		m_ui->comboBoxComponent->setCurrentText(m_mapComponents.key(node->m_componentId));
 		m_ui->comboBoxNodeType->setCurrentText(m_mapNodeTypes.key(node->m_type));
 		m_ui->labelNodeId->setText(QString("%1").arg(node->m_id));
 		m_ui->label->setText(QString("%1").arg(node->m_id));
-		m_ui->doubleSpinBoxNodeNeatingDemand->setValue(node->m_maxHeatingDemand);
-		m_ui->lineEditNodeX->setText(QString("%1").arg(node->m_position.m_x));
-		m_ui->lineEditNodeY->setText(QString("%1").arg(node->m_position.m_y));
-		m_ui->lineEditNodeZ->setText(QString("%1").arg(node->m_position.m_z));
+		m_ui->lineEditNodeHeatingDemand->setValue(node->m_maxHeatingDemand);
+		m_ui->lineEditNodeX->setValue(node->m_position.m_x);
+		m_ui->lineEditNodeY->setValue(node->m_position.m_y);
 	}
 }
 
 
 void SVPropNetworkEditWidget::updateSizingParams()
 {
-//	if (m_network->m_sizingPara[VICUS::Network::SP_TemperatureSetpoint].empty())
-//		m_network->setDefaultSizingParams();
-	m_ui->doubleSpinBoxTemperatureSetpoint->setValue(m_network->m_sizingPara[VICUS::Network::SP_TemperatureSetpoint].get_value("C"));
-	m_ui->doubleSpinBoxTemperatureDifference->setValue(m_network->m_sizingPara[VICUS::Network::SP_TemperatureDifference].get_value("K"));
-	m_ui->doubleSpinBoxMaximumPressureLoss->setValue(m_network->m_sizingPara[VICUS::Network::SP_MaxPressureLoss].get_value("Pa/m"));
+	m_ui->doubleSpinBoxTemperatureSetpoint->setValue(m_network->m_sizingPara[VICUS::Network::SP_TemperatureSetpoint].get_value(IBK::Unit("C")));
+	m_ui->doubleSpinBoxTemperatureDifference->setValue(m_network->m_sizingPara[VICUS::Network::SP_TemperatureDifference].value);
+	m_ui->doubleSpinBoxMaximumPressureLoss->setValue(m_network->m_sizingPara[VICUS::Network::SP_MaxPressureLoss].value);
 }
 
-void SVPropNetworkEditWidget::modifyUI()
+void SVPropNetworkEditWidget::modifyStatus()
 {
-	// get currently selected network object
 	networkFromId();
 	if (m_network == nullptr)
 		return;
 	VICUS::Network network = *m_network;
-
 	network.m_visible = m_ui->checkBoxVisible->isChecked();
+	network.m_scaleEdges = m_ui->horizontalSliderScaleEdges->value();
+	network.m_scaleNodes = m_ui->horizontalSliderScaleNodes->value();
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), network);
+	undo->push(); // modifies project and updates views
+}
+
+void SVPropNetworkEditWidget::modifySizingParams()
+{
+	networkFromId();
+	if (m_network == nullptr)
+		return;
+	VICUS::Network network = *m_network;
 	network.m_sizingPara[VICUS::Network::SP_TemperatureSetpoint].set(VICUS::KeywordList::Keyword("Network::SizingParam", VICUS::Network::SP_TemperatureSetpoint),
 																	   m_ui->doubleSpinBoxTemperatureSetpoint->value(),
 																	   IBK::Unit("C"));
@@ -126,7 +139,17 @@ void SVPropNetworkEditWidget::modifyUI()
 									 m_ui->doubleSpinBoxTemperatureDifference->value());
 	VICUS::KeywordList::setParameter(network.m_sizingPara, "Network::SizingParam", VICUS::Network::SP_MaxPressureLoss,
 									 m_ui->doubleSpinBoxMaximumPressureLoss->value());
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), network);
+	undo->push(); // modifies project and updates views
+}
 
+
+void SVPropNetworkEditWidget::modifyEdgeProperties()
+{
+	networkFromId();
+	if (m_network == nullptr)
+		return;
+	VICUS::Network network = *m_network;
 	const VICUS::NetworkEdge *edge = dynamic_cast<const VICUS::NetworkEdge *>(m_obj);
 	if (edge != nullptr){
 		VICUS::NetworkEdge *e = network.edge(edge->nodeId1(), edge->nodeId2());
@@ -134,18 +157,31 @@ void SVPropNetworkEditWidget::modifyUI()
 		e->m_modelType = NANDRAD::HydraulicNetworkComponent::modelType_t(m_mapPipeModels.value(m_ui->comboBoxPipeModel->currentText()));
 		e->m_pipeId = m_mapDBPipes.value(m_ui->comboBoxPipeDB->currentText());
 	}
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), network);
+	undo->push(); // modifies project and updates views
+}
 
+
+void SVPropNetworkEditWidget::modifyNodeProperties()
+{
+	networkFromId();
+	if (m_network == nullptr)
+		return;
+	VICUS::Network network = *m_network;
 	const VICUS::NetworkNode *node = dynamic_cast<const VICUS::NetworkNode *>(m_obj);
 	if (node != nullptr){
 		VICUS::NetworkNode *n = &network.m_nodes[node->m_id];
 		n->m_type = VICUS::NetworkNode::NodeType(m_mapNodeTypes.value(m_ui->comboBoxNodeType->currentText()));
 		n->m_componentId = NANDRAD::HydraulicNetworkComponent::modelType_t(m_mapComponents.value(m_ui->comboBoxComponent->currentText()));
-		n->m_maxHeatingDemand = m_ui->doubleSpinBoxNodeNeatingDemand->value();
-		n->m_position.m_x = QLocale().toDouble(m_ui->lineEditNodeX->text());
-		n->m_position.m_y = QLocale().toDouble(m_ui->lineEditNodeY->text());
-//		n->m_position.m_z = QLocale().toDouble(m_ui->lineEditNodeZ->text());
+		if (m_ui->lineEditNodeHeatingDemand->isValid())
+			n->m_maxHeatingDemand = m_ui->lineEditNodeHeatingDemand->value();
+		if (m_ui->lineEditNodeX->isValid())
+			n->m_position.m_x = m_ui->lineEditNodeX->value();
+		if (m_ui->lineEditNodeY->isValid())
+			n->m_position.m_y = m_ui->lineEditNodeY->value();
+//		if (m_ui->lineEditNodeZ->isValid())
+//			n->m_position.m_z = m_ui->lineEditNodeZ->value();
 	}
-
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), network);
 	undo->push(); // modifies project and updates views
 }
@@ -199,81 +235,161 @@ void SVPropNetworkEditWidget::showNetworkProperties()
 {
 	m_ui->groupBoxNode->setVisible(false);
 	m_ui->groupBoxEdge->setVisible(false);
+	m_ui->groupBoxSizePipes->setVisible(true);
+	m_ui->groupBoxEditNetwork->setVisible(true);
 }
 
 void SVPropNetworkEditWidget::showNodeProperties()
 {
 	m_ui->groupBoxNode->setVisible(true);
 	m_ui->groupBoxEdge->setVisible(false);
+	m_ui->groupBoxSizePipes->setVisible(false);
+	m_ui->groupBoxEditNetwork->setVisible(false);
 }
 
 void SVPropNetworkEditWidget::showEdgeProperties()
 {
 	m_ui->groupBoxNode->setVisible(false);
 	m_ui->groupBoxEdge->setVisible(true);
+	m_ui->groupBoxSizePipes->setVisible(false);
+	m_ui->groupBoxEditNetwork->setVisible(false);
 }
 
 void SVPropNetworkEditWidget::on_comboBoxNodeType_activated(int index)
 {
-	modifyUI();
+	modifyNodeProperties();
 }
 
 void SVPropNetworkEditWidget::on_comboBoxComponent_activated(int index)
 {
-	modifyUI();
+	modifyNodeProperties();
 }
 
 void SVPropNetworkEditWidget::on_doubleSpinBoxNodeNeatingDemand_editingFinished()
 {
-	modifyUI();
+	modifyNodeProperties();
 }
 
 void SVPropNetworkEditWidget::on_lineEditNodeX_editingFinished()
 {
-	modifyUI();
-}
-
-void SVPropNetworkEditWidget::on_comboBoxPipeModel_activated(int index)
-{
-	modifyUI();
-}
-
-void SVPropNetworkEditWidget::on_comboBoxPipeDB_activated(int index)
-{
-	modifyUI();
-}
-
-void SVPropNetworkEditWidget::on_checkBoxSupplyPipe_clicked()
-{
-	modifyUI();
-}
-
-void SVPropNetworkEditWidget::on_pushButtonSizePipeDimensions_clicked()
-{
-
-}
-
-void SVPropNetworkEditWidget::on_pushButtonGenerateIntersections_clicked()
-{
-
-}
-
-void SVPropNetworkEditWidget::on_pushButtonConnectBuildings_clicked()
-{
-
-}
-
-void SVPropNetworkEditWidget::on_pushButtonReduceDeadEnds_clicked()
-{
-
-}
-
-void SVPropNetworkEditWidget::on_pushButtonReduceRedundantNodes_clicked()
-{
-
+	modifyNodeProperties();
 }
 
 void SVPropNetworkEditWidget::on_lineEditNodeY_editingFinished()
 {
-	modifyUI();
+	modifyNodeProperties();
+}
+
+void SVPropNetworkEditWidget::on_comboBoxPipeModel_activated(int index)
+{
+	modifyEdgeProperties();
+}
+
+void SVPropNetworkEditWidget::on_comboBoxPipeDB_activated(int index)
+{
+	modifyEdgeProperties();
+}
+
+void SVPropNetworkEditWidget::on_checkBoxSupplyPipe_clicked()
+{
+	modifyEdgeProperties();
+}
+
+void SVPropNetworkEditWidget::on_pushButtonSizePipeDimensions_clicked()
+{
+	FUNCID(SVPropNetworkEditWidget::on_pushButtonSizePipeDimensions_clicked);
+	modifySizingParams();
+	networkFromId();
+	if (m_network == nullptr)
+		return;
+	const VICUS::Project &p = project();
+	const VICUS::NetworkFluid * fluid = p.element(p.m_networkFluids, m_network->m_fluidID);
+	if (fluid == nullptr)
+		throw IBK::Exception(IBK::FormatString("Could not find fluid with id %1 in fluid database")
+							.arg(m_network->m_fluidID), FUNC_ID);
+	VICUS::Network network = *m_network;
+	network.updateNodeEdgeConnectionPointers();
+	network.sizePipeDimensions(fluid);
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), network);
+	undo->push(); // modifies project and updates views
+	updateUi();
+}
+
+void SVPropNetworkEditWidget::on_pushButtonGenerateIntersections_clicked()
+{
+	networkFromId();
+	if (m_network == nullptr)
+		return;
+	VICUS::Network network = *m_network;
+	network.updateNodeEdgeConnectionPointers();
+	network.generateIntersections();
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), network);
+	undo->push(); // modifies project and updates views
+	updateUi();
+}
+
+void SVPropNetworkEditWidget::on_pushButtonConnectBuildings_clicked()
+{
+	networkFromId();
+	if (m_network == nullptr)
+		return;
+	VICUS::Network network = *m_network;
+	network.updateNodeEdgeConnectionPointers();
+	network.connectBuildings(false);
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), network);
+	undo->push(); // modifies project and updates views
+	updateUi();
+}
+
+void SVPropNetworkEditWidget::on_pushButtonReduceDeadEnds_clicked()
+{
+	networkFromId();
+	if (m_network == nullptr)
+		return;
+	VICUS::Network network = *m_network;
+	network.updateNodeEdgeConnectionPointers();
+	VICUS::Network tmp = network;
+	tmp.clear();
+	network.cleanDeadEnds(tmp);
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), tmp);
+	undo->push(); // modifies project and updates views
+	updateUi();
+}
+
+void SVPropNetworkEditWidget::on_pushButtonReduceRedundantNodes_clicked()
+{
+	networkFromId();
+	if (m_network == nullptr)
+		return;
+
+	// set current network invisible
+	VICUS::Network network = *m_network;
+	network.updateNodeEdgeConnectionPointers();
+	network.m_visible = false;
+	SVUndoModifyExistingNetwork * undoMod = new SVUndoModifyExistingNetwork(tr("mod network"), network);
+	undoMod->push(); // modifies project and updates views
+
+	// make copy with reduced edges
+	VICUS::Network copy = network;
+	copy.clear();
+	network.cleanRedundantEdges(copy);
+	copy.m_visible = true;
+	copy.m_name += "_reduced";
+	const VICUS::Project & p = project();
+	copy.m_id = p.uniqueId(p.m_geometricNetworks);
+	copy.updateNodeEdgeConnectionPointers();
+
+	SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("modified network"), copy);
+	undo->push(); // modifies project and updates views
+	updateUi();
+}
+
+void SVPropNetworkEditWidget::on_horizontalSliderScaleNodes_actionTriggered(int action)
+{
+	modifyStatus();
+}
+
+void SVPropNetworkEditWidget::on_horizontalSliderScaleEdges_actionTriggered(int action)
+{
+	modifyStatus();
 }
