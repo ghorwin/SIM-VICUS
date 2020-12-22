@@ -29,6 +29,7 @@ public:
 	enum DatabaseTypes {
 		DT_Materials,
 		DT_Constructions,
+		DT_Components,
 		NUM_DT // used for "all"
 	};
 
@@ -65,8 +66,8 @@ public:
 //	/*! Map of all database boundary conditions. */
 //	VICUS::Database<VICUS::BoundaryCondition>			m_boundaryCondition;
 
-//	/*! Map of all database components. */
-//	VICUS::Database<VICUS::Component>					m_components;
+	/*! Map of all database components. */
+	VICUS::Database<VICUS::Component>					m_components;
 
 	/*! Map of all database pipes */
 	VICUS::Database<VICUS::NetworkPipe>					m_pipes;
