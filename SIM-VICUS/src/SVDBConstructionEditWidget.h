@@ -82,10 +82,6 @@ private slots:
 	void on_comboBoxInsulationKind_currentIndexChanged(int index);
 	void on_comboBoxMaterialKind_currentIndexChanged(int index);
 	void on_comboBoxConstructionUsage_currentIndexChanged(int index);
-	void on_comboBoxUserKey1_currentIndexChanged(int index);
-	void on_comboBoxUserKey2_currentIndexChanged(int index);
-	void onUserKey1EditingFinished();
-	void onUserKey2EditingFinished();
 	void on_spinBoxLayerCount_valueChanged(int);
 	/*! Triggered when user modifies a table cell, only needed for 'width'-column. */
 	void tableItemChanged(QTableWidgetItem *);

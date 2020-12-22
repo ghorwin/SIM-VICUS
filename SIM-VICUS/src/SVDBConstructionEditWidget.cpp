@@ -86,11 +86,6 @@ SVDBConstructionEditWidget::SVDBConstructionEditWidget(QWidget * parent) :
 	m_ui->comboBoxConstructionUsage->blockSignals(false);
 
 
-	// register change events for user keys
-
-	connect(m_ui->comboBoxUserKey1->lineEdit(), SIGNAL(editingFinished()), SLOT(onUserKey1EditingFinished()));
-	connect(m_ui->comboBoxUserKey2->lineEdit(), SIGNAL(editingFinished()), SLOT(onUserKey2EditingFinished()));
-
 	// for changing thickness
 	connect(m_ui->tableWidget, SIGNAL(itemChanged(QTableWidgetItem *)),
 		this, SLOT(tableItemChanged(QTableWidgetItem *)));
@@ -187,8 +182,6 @@ void SVDBConstructionEditWidget::updateInput(int id) {
 	m_ui->comboBoxInsulationKind->setEnabled(!con->m_builtIn);
 	m_ui->comboBoxMaterialKind->setEnabled(!con->m_builtIn);
 	m_ui->comboBoxConstructionUsage->setEnabled(!con->m_builtIn);
-	m_ui->comboBoxUserKey1->setEnabled(!con->m_builtIn);
-	m_ui->comboBoxUserKey2->setEnabled(!con->m_builtIn);
 
 	// set palette
 	QPalette pal;
@@ -407,54 +400,6 @@ void SVDBConstructionEditWidget::on_comboBoxConstructionUsage_currentIndexChange
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		emit tableDataChanged();
 	}
-}
-
-
-void SVDBConstructionEditWidget::on_comboBoxUserKey1_currentIndexChanged(int ) {
-	if (m_current == nullptr) return; // m_current is nullptr, when nothing is selected and controls are defaulted to "empty"
-
-
-//	QString key1 = m_ui->comboBoxUserKey1->currentText();
-//	if(key1 != m_current->m_userKey1) {
-//		m_current->m_userKey1 = key1;
-//		m_db->setModified(true);
-//		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-//	}
-}
-
-void SVDBConstructionEditWidget::on_comboBoxUserKey2_currentIndexChanged(int ) {
-	if (m_current == nullptr) return; // m_current is nullptr, when nothing is selected and controls are defaulted to "empty"
-
-//	QString key2 = m_ui->comboBoxUserKey2->currentText();
-//	if(key2 != m_current->m_userKey2) {
-//		m_current->m_userKey2 = key2;
-//		m_db->setModified(true);
-//		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-//	}
-}
-
-void SVDBConstructionEditWidget::onUserKey1EditingFinished() {
-	if (m_current == nullptr) return; // m_current is nullptr, when nothing is selected and controls are defaulted to "empty"
-
-//	QString key1 = m_ui->comboBoxUserKey1->currentText();
-//	if(key1 != m_current->m_userKey1) {
-//		m_current->m_userKey1 = key1;
-//		m_db->setModified(true);
-//		m_db->addConstructionUserkey1(key1);
-//		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-//	}
-}
-
-void SVDBConstructionEditWidget::onUserKey2EditingFinished() {
-	if (m_current == nullptr) return; // m_current is nullptr, when nothing is selected and controls are defaulted to "empty"
-
-//	QString key2 = m_ui->comboBoxUserKey2->currentText();
-//	if(key2 != m_current->m_userKey2) {
-//		m_current->m_userKey2 = key2;
-//		m_db->setModified(true);
-//		m_db->addConstructionUserkey2(key2);
-//		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-//	}
 }
 
 
