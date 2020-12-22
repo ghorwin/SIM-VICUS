@@ -45,7 +45,7 @@ QVariant SVDBComponentTableModel::data ( const QModelIndex & index, int role) co
 			switch (index.column()) {
 				case ColId					: return it->first;
 				case ColName				: return QString::fromStdString(it->second.m_displayName.string(langId, fallBackLangId));
-				case ColType				: return VICUS::KeywordListQt::Description("Component::CompontType", it->second.m_type);
+				case ColType				: return VICUS::KeywordListQt::Description("Component::ComponentType", it->second.m_type);
 			}
 		} break;
 

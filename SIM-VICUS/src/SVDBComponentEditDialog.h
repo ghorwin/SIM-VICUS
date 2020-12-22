@@ -13,24 +13,15 @@ class QModelIndex;
 class SVDBComponentTableModel;
 
 /*! The edit dialog for component types. */
-class SVDBComponentEditDialog : public QDialog
-{
+class SVDBComponentEditDialog : public QDialog {
 	Q_OBJECT
 
 public:
 	explicit SVDBComponentEditDialog(QWidget *parent = nullptr);
 	~SVDBComponentEditDialog();
 
-
 	/*! Starts the dialog in "edit components" mode. */
 	void edit();
-
-	/*! Starts the dialog in "select component mode".
-		\return If a component was selected and double-clicked/or the "Select" button was
-				pressed, the function returns the ID of the selected component. Otherwise, if the
-				dialog was aborted, the function returns 0.
-	*/
-	unsigned int select();
 
 private slots:
 	void on_pushButtonSelect_clicked();

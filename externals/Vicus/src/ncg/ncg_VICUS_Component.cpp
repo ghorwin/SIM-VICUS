@@ -85,7 +85,7 @@ void Component::readXML(const TiXmlElement * element) {
 				m_idSurfaceProperty = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "Type") {
 				try {
-					m_type = (CompontType)KeywordList::Enumeration("Component::CompontType", c->GetText());
+					m_type = (ComponentType)KeywordList::Enumeration("Component::ComponentType", c->GetText());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
@@ -124,7 +124,7 @@ TiXmlElement * Component::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.encodedString());
 
 	if (m_type != NUM_CT)
-		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("Component::CompontType",  m_type));
+		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("Component::ComponentType",  m_type));
 	if (m_idOpaqueConstruction != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "IdOpaqueConstruction", nullptr, std::string(), IBK::val2string<unsigned int>(m_idOpaqueConstruction));
 	if (m_idGlazingSystem != VICUS::INVALID_ID)

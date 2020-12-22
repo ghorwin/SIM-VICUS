@@ -37,7 +37,7 @@ namespace VICUS {
 	const char * const ENUM_TYPES[27] = {
 		"BoundaryCondition::para_t",
 		"BoundaryCondition::HeatConductionModel",
-		"Component::CompontType",
+		"Component::ComponentType",
 		"Construction::UsageType",
 		"Construction::InsulationKind",
 		"Construction::MaterialKind",
@@ -91,7 +91,7 @@ namespace VICUS {
 				case 0 : return "Constant";
 				case 1 : return "WindVelocity";
 			} break;
-			// Component::CompontType
+			// Component::ComponentType
 			case 2 :
 			switch (t) {
 				case 0 : return "OutsideWall";
@@ -317,7 +317,7 @@ namespace VICUS {
 				case 0 : return "Constant";
 				case 1 : return "WindVelocity";
 			} break;
-			// Component::CompontType
+			// Component::ComponentType
 			case 2 :
 			switch (t) {
 				case 0 : return "OutsideWall";
@@ -544,7 +544,7 @@ namespace VICUS {
 				case 0 : return "Constant model.";
 				case 1 : return "Heat transfer coefficient depends on wind velocity.";
 			} break;
-			// Component::CompontType
+			// Component::ComponentType
 			case 2 :
 			switch (t) {
 				case 0 : return "Outside wall construction";
@@ -770,7 +770,7 @@ namespace VICUS {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
-			// Component::CompontType
+			// Component::ComponentType
 			case 2 :
 			switch (t) {
 				case 0 : return "";
@@ -996,7 +996,7 @@ namespace VICUS {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
-			// Component::CompontType
+			// Component::ComponentType
 			case 2 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
@@ -1222,7 +1222,7 @@ namespace VICUS {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// Component::CompontType
+			// Component::ComponentType
 			case 2 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
@@ -1439,7 +1439,7 @@ namespace VICUS {
 			case 0 : return 4;
 			// BoundaryCondition::HeatConductionModel
 			case 1 : return 2;
-			// Component::CompontType
+			// Component::ComponentType
 			case 2 : return 12;
 			// Construction::UsageType
 			case 3 : return 9;
@@ -1501,7 +1501,7 @@ namespace VICUS {
 			case 0 : return 3;
 			// BoundaryCondition::HeatConductionModel
 			case 1 : return 1;
-			// Component::CompontType
+			// Component::ComponentType
 			case 2 : return 11;
 			// Construction::UsageType
 			case 3 : return 8;

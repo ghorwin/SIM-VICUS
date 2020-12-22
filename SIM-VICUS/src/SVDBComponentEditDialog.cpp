@@ -27,19 +27,34 @@ SVDBComponentEditDialog::SVDBComponentEditDialog(QWidget *parent) :
 	m_ui->tableView->setModel(m_proxyModel);
 
 	m_ui->editWidget->setup(&SVSettings::instance().m_db, m_dbModel);
-
-
-
 }
 
-SVDBComponentEditDialog::~SVDBComponentEditDialog()
-{
+
+SVDBComponentEditDialog::~SVDBComponentEditDialog() {
 	delete m_ui;
 }
+
+
+void SVDBComponentEditDialog::edit() {
+
+	// hide select/cancel buttons, and show "close" button
+	m_ui->pushButtonClose->setVisible(true);
+	m_ui->pushButtonSelect->setVisible(false);
+	m_ui->pushButtonCancel->setVisible(false);
+
+	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
+
+	// ask database model to update its content
+	m_ui->tableView->resizeColumnsToContents();
+
+	exec();
+}
+
 
 void SVDBComponentEditDialog::on_pushButtonSelect_clicked(){
 	accept();
 }
+
 
 void SVDBComponentEditDialog::on_pushButtonCancel_clicked() {
 	reject();
@@ -49,6 +64,7 @@ void SVDBComponentEditDialog::on_pushButtonCancel_clicked() {
 void SVDBComponentEditDialog::on_pushButtonClose_clicked() {
 	accept();
 }
+
 
 void SVDBComponentEditDialog::on_toolButtonAdd_clicked() {
 	// add new item

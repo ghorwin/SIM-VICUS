@@ -56,6 +56,7 @@
 #include "SVDBMaterialEditDialog.h"
 #include "SVDBConstructionEditDialog.h"
 #include "SVDBWindowEditWidget.h"
+#include "SVDBComponentEditDialog.h"
 
 #include "SVSimulationStartNandrad.h"
 #include "SVSimulationStartNetworkSim.h"
@@ -1375,6 +1376,13 @@ void SVMainWindow::on_actionDBWindows_triggered() {
 }
 
 
+void SVMainWindow::on_actionDBComponents_triggered() {
+	if (m_dbComponentEditDialog == nullptr)
+		m_dbComponentEditDialog = new SVDBComponentEditDialog(nullptr);
+	m_dbComponentEditDialog->edit();
+}
+
+
 void SVMainWindow::on_actionFileExportNANDRAD_triggered() {
 	// ask user for target file name
 	// open export dialog, call via edit(fname) (with ok and cancel)
@@ -1426,4 +1434,5 @@ void SVMainWindow::on_actionKeyboard_and_mouse_controls_triggered() {
 	dlg.resize(1400,800);
 	dlg.exec();
 }
+
 

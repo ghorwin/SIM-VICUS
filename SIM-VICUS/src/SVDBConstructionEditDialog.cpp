@@ -59,6 +59,8 @@ void SVDBConstructionEditDialog::edit() {
 	m_ui->pushButtonSelect->setVisible(false);
 	m_ui->pushButtonCancel->setVisible(false);
 
+	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
+
 	// ask database model to update its content
 	m_ui->tableView->resizeColumnsToContents();
 
@@ -71,6 +73,8 @@ unsigned int SVDBConstructionEditDialog::select() {
 	m_ui->pushButtonClose->setVisible(false);
 	m_ui->pushButtonSelect->setVisible(true);
 	m_ui->pushButtonCancel->setVisible(true);
+
+	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
 
 	int res = exec();
 	if (res == QDialog::Accepted) {

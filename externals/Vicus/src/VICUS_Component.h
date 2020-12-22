@@ -17,7 +17,7 @@ class Component		: public AbstractDBElement {
 public:
 
 	/*! Component types. */
-	enum CompontType {
+	enum ComponentType {
 		CT_OutsideWall,				// Keyword: OutsideWall				'Outside wall construction'
 		CT_OutsideWallToGround,		// Keyword: OutsideWallToGround		'Outside wall construction in contact with ground'
 		CT_InsideWall,				// Keyword: InsideWall				'Interior construction'
@@ -62,7 +62,7 @@ public:
 	IBK::MultiLanguageString		m_dataSource;								// XML:E
 
 	/*! Component type. */
-	CompontType						m_type = CT_Miscellaneous;					// XML:E:required
+	ComponentType					m_type = CT_Miscellaneous;					// XML:E:required
 
 	/*! Opaque construction ID. */
 	unsigned int					m_idOpaqueConstruction = INVALID_ID;		// XML:E

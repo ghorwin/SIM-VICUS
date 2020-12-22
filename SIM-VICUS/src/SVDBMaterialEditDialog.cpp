@@ -59,6 +59,8 @@ void SVDBMaterialEditDialog::edit() {
 	m_ui->pushButtonSelect->setVisible(false);
 	m_ui->pushButtonCancel->setVisible(false);
 
+	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
+
 	// ask database model to update its content
 	// TODO : smart resizing of columns - restore user-defined column widths if adjusted by user
 	m_ui->tableView->resizeColumnsToContents();
@@ -74,6 +76,8 @@ int SVDBMaterialEditDialog::select(unsigned int initialMatId) {
 	m_ui->pushButtonClose->setVisible(false);
 	m_ui->pushButtonSelect->setVisible(true);
 	m_ui->pushButtonCancel->setVisible(true);
+
+	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
 
 	// select material with given matId
 	for (int i=0, count = m_dbModel->rowCount(); i<count; ++i) {

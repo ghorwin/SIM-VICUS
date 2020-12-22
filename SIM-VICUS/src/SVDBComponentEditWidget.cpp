@@ -22,7 +22,7 @@ SVDBComponentEditWidget::SVDBComponentEditWidget(QWidget *parent) :
 	// block signals to avoid getting "changed" calls
 	m_ui->comboBoxComponentType->blockSignals(true);
 	for(int i=0; i<VICUS::Component::NUM_CT; ++i)
-		m_ui->comboBoxComponentType->addItem(VICUS::KeywordListQt::Keyword("VICUS::Component", i), i);
+		m_ui->comboBoxComponentType->addItem(VICUS::KeywordListQt::Keyword("Component::ComponentType", i), i);
 	m_ui->comboBoxComponentType->blockSignals(false);
 
 	//construction group box
@@ -176,7 +176,7 @@ void SVDBComponentEditWidget::on_lineEditName_editingFinished(){
 void SVDBComponentEditWidget::on_comboBoxComponentType_currentIndexChanged(int index){
 	if (m_current == nullptr) return; // m_current is nullptr, when nothing is selected and controls are defaulted to "empty"
 
-	VICUS::Component::CompontType ct = static_cast<VICUS::Component::CompontType>(m_ui->comboBoxComponentType->currentData().toInt());
+	VICUS::Component::ComponentType ct = static_cast<VICUS::Component::ComponentType>(m_ui->comboBoxComponentType->currentData().toInt());
 	if (ct != m_current->m_type) {
 		m_current->m_type = ct;
 		m_db->m_constructions.m_modified = true;

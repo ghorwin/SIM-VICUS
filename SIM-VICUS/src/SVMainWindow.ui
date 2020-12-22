@@ -113,6 +113,7 @@
     </property>
     <addaction name="actionDBMaterials"/>
     <addaction name="actionDBConstructions"/>
+    <addaction name="actionDBComponents"/>
     <addaction name="actionDBWindows"/>
    </widget>
    <widget class="QMenu" name="menuSimulation">
@@ -465,6 +466,11 @@
    </property>
    <property name="toolTip">
     <string>Opens the simulation start dialog.</string>
+   </property>
+  </action>
+  <action name="actionDBComponents">
+   <property name="text">
+    <string>Components...</string>
    </property>
   </action>
  </widget>
