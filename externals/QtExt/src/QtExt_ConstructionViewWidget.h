@@ -46,7 +46,7 @@ public slots:
 signals:
 	/*! Layer index is selected.*/
 	void layerSelected(int index);
-	/*! Toolbutton 'assign material' is triggered while layer index is selcted.*/
+	/*! Toolbutton 'assign material' is triggered while layer index is selected.*/
 	void assignMaterial(int index);
 	/*! Toolbutton 'insert layer' is triggered while layer index is selcted. If left ist true inserting on left side.*/
 	void insertLayer(int index, bool left);
