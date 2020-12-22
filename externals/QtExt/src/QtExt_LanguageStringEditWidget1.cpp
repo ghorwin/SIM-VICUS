@@ -45,6 +45,11 @@ const IBK::MultiLanguageString& LanguageStringEditWidget1::string() const {
 	return m_string;
 }
 
+void LanguageStringEditWidget1::setReadOnly(bool readOnly) {
+	ui->lineEdit->setReadOnly(readOnly);
+	ui->toolButton->setEnabled(!readOnly);
+}
+
 void LanguageStringEditWidget1::on_lineEdit_textChanged(const QString &arg1) {
 	m_string.setString(arg1.toUtf8().data(), m_currentLang);
 	emit textChanged(m_string);

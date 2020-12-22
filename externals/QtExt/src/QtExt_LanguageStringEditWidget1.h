@@ -14,8 +14,8 @@ namespace Ui {
 class LanguageStringEditWidget1;
 }
 
-class LanguageStringEditWidget1 : public QWidget
-{
+/*! A widget to edit multi-language strings of type IBK::MultiLanguageString. */
+class LanguageStringEditWidget1 : public QWidget {
 	Q_OBJECT
 
 public:
@@ -29,6 +29,14 @@ public:
 	void set3rdLanguage(const std::string& lang);
 
 	const IBK::MultiLanguageString& string() const;
+
+	/*! Sets the line-edit into read-only mode and disables the push-button. */
+	void setReadOnly(bool readOnly);
+
+public slots:
+	void setText(const QString & text) {
+		m_string.setString(text.toStdString(), m_currentLang);
+	}
 
 signals:
 	void editingFinished();
