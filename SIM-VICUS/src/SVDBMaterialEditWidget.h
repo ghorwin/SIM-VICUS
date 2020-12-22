@@ -45,7 +45,13 @@ signals:
 
 private slots:
 	void on_lineEditName_editingFinished();
+	void on_lineEditDataSource_editingFinished();
+	void on_lineEditManufacturer_editingFinished();
+	void on_lineEditNotes_editingFinished();
 	void on_lineEditConductivity_editingFinished();
+	void on_lineEditDensity_editingFinished();
+	void on_lineEditSpecHeatCapacity_editingFinished();
+	void on_comboBoxCategory_currentIndexChanged(int index);
 
 private:
 

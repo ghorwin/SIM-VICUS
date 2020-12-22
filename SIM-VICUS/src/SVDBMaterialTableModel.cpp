@@ -141,6 +141,16 @@ QVariant SVDBMaterialTableModel::headerData(int section, Qt::Orientation orienta
 QModelIndex SVDBMaterialTableModel::addNewItem() {
 	VICUS::Material m;
 	m.m_displayName.setEncodedString("en:<new material>");
+
+	//set default parameters
+	VICUS::KeywordList::setParameter(m.m_para, "Material::para_t", VICUS::Material::P_Conductivity, 1);
+	VICUS::KeywordList::setParameter(m.m_para, "Material::para_t", VICUS::Material::P_Density, 1000);
+	VICUS::KeywordList::setParameter(m.m_para, "Material::para_t", VICUS::Material::P_HeatCapacity, 840);
+
+	m.m_category = VICUS::Material::MC_Bricks;
+
+	///TODO HEIKO was sind default parameter bei den hygrischen Eigenschaften
+
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_materials.add( m );
 	endInsertRows();

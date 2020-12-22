@@ -23,85 +23,114 @@
       <attribute name="title">
        <string>Thermal</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_2">
+      <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0">
-        <widget class="QLabel" name="labelDisplayName">
-         <property name="minimumSize">
-          <size>
-           <width>60</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Name:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
-       </item>
-       <item row="0" column="2">
-        <widget class="QtExt::ColorButton" name="pushButtonOpaqueMaterialColor">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="labelCategory">
-         <property name="minimumSize">
-          <size>
-           <width>60</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Category:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1" colspan="2">
-        <widget class="QComboBox" name="comboBoxCategory"/>
-       </item>
-       <item row="2" column="0" colspan="3">
-        <layout class="QGridLayout" name="gridLayout">
-         <item row="0" column="0">
-          <widget class="QLabel" name="labelConductivity">
-           <property name="text">
-            <string>Conductivity [W/mK]</string>
-           </property>
-          </widget>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <layout class="QGridLayout" name="gridLayout_2">
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelDisplayName">
+             <property name="minimumSize">
+              <size>
+               <width>60</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Name:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
+           </item>
+           <item row="0" column="2">
+            <widget class="QtExt::ColorButton" name="pushButtonOpaqueMaterialColor">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="labelCategory">
+             <property name="minimumSize">
+              <size>
+               <width>60</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Category:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1" colspan="2">
+            <widget class="QComboBox" name="comboBoxCategory"/>
+           </item>
+          </layout>
          </item>
-         <item row="0" column="1">
-          <widget class="QtExt::ValidatingLineEdit" name="lineEditConductivity"/>
+         <item>
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelConductivity">
+             <property name="text">
+              <string>Conductivity:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QtExt::ValidatingLineEdit" name="lineEditConductivity"/>
+           </item>
+           <item row="0" column="2">
+            <widget class="QLabel" name="labelConductivity_2">
+             <property name="text">
+              <string>W/mK</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="labelDensity">
+             <property name="text">
+              <string>Density:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QtExt::ValidatingLineEdit" name="lineEditDensity"/>
+           </item>
+           <item row="1" column="2">
+            <widget class="QLabel" name="labelDensity_5">
+             <property name="text">
+              <string>kg/m3</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="labelSpecHeatCapacity">
+             <property name="text">
+              <string>Spec. Heat Capacity:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QtExt::ValidatingLineEdit" name="lineEditSpecHeatCapacity"/>
+           </item>
+           <item row="2" column="2">
+            <widget class="QLabel" name="labelSpecHeatCapacity_2">
+             <property name="text">
+              <string>J/kgK</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="labelDensity">
-           <property name="text">
-            <string>Density [kg/m3]</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QtExt::ValidatingLineEdit" name="lineEditDensity"/>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="labelSpecHeatCapacity">
-           <property name="text">
-            <string>Spec. Heat Capacity [J/kgK]</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QtExt::ValidatingLineEdit" name="lineEditSpecHeatCapacity"/>
+         <item>
+          <widget class="QGraphicsView" name="graphicsViewCategoryPicture"/>
          </item>
         </layout>
-       </item>
-       <item row="3" column="0" colspan="3">
-        <widget class="QGraphicsView" name="graphicsViewCategoryPicture"/>
        </item>
       </layout>
      </widget>
@@ -109,60 +138,67 @@
       <attribute name="title">
        <string>Information</string>
       </attribute>
-      <widget class="QWidget" name="layoutWidget">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>150</y>
-         <width>421</width>
-         <height>89</height>
-        </rect>
-       </property>
-       <layout class="QGridLayout" name="gridLayout_4">
-        <item row="0" column="0">
-         <widget class="QLabel" name="labelDensity_2">
-          <property name="text">
-           <string>Manfacturer</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QtExt::ValidatingLineEdit" name="lineEditDensity_2">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="labelDensity_3">
-          <property name="text">
-           <string>Data Source</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QtExt::ValidatingLineEdit" name="lineEditDensity_3">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="labelDensity_4">
-          <property name="text">
-           <string>Notes</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QtExt::ValidatingLineEdit" name="lineEditDensity_4">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
+      <layout class="QGridLayout" name="gridLayout_5">
+       <item row="0" column="0">
+        <layout class="QGridLayout" name="gridLayout_4">
+         <item row="0" column="0">
+          <widget class="QLabel" name="labelManufacturer">
+           <property name="text">
+            <string>Manufacturer:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QtExt::LanguageStringEditWidget1" name="lineEditManufacturer">
+           <property name="text">
+            <string notr="true"/>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="labelDataSource">
+           <property name="text">
+            <string>Data Source:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QtExt::LanguageStringEditWidget1" name="lineEditDataSource">
+           <property name="text">
+            <string notr="true"/>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="labelNotes">
+           <property name="text">
+            <string>Notes:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QtExt::LanguageStringEditWidget1" name="lineEditNotes">
+           <property name="text">
+            <string notr="true"/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="0">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>234</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </widget>
     </widget>
    </item>
