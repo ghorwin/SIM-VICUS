@@ -10,14 +10,17 @@
     <height>399</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Form</string>
+  <property name="minimumSize">
+   <size>
+    <width>400</width>
+    <height>0</height>
+   </size>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTabWidget" name="tabWidgetThermal">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="Thermal">
       <attribute name="title">
@@ -149,11 +152,7 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QtExt::LanguageStringEditWidget1" name="lineEditManufacturer">
-           <property name="text">
-            <string notr="true"/>
-           </property>
-          </widget>
+          <widget class="QtExt::LanguageStringEditWidget1" name="lineEditManufacturer"/>
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="labelDataSource">
@@ -163,11 +162,7 @@
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QtExt::LanguageStringEditWidget1" name="lineEditDataSource">
-           <property name="text">
-            <string notr="true"/>
-           </property>
-          </widget>
+          <widget class="QtExt::LanguageStringEditWidget1" name="lineEditDataSource"/>
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="labelNotes">
@@ -177,11 +172,7 @@
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QtExt::LanguageStringEditWidget1" name="lineEditNotes">
-           <property name="text">
-            <string notr="true"/>
-           </property>
-          </widget>
+          <widget class="QtExt::LanguageStringEditWidget1" name="lineEditNotes"/>
          </item>
         </layout>
        </item>

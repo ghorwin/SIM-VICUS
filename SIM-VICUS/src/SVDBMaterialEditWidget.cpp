@@ -92,15 +92,20 @@ void SVDBMaterialEditWidget::updateInput(int id) {
 	if (mat->m_builtIn)
 		isEditable = false;
 
-	m_ui->lineEditName->setEnabled(isEditable);
-	m_ui->lineEditDataSource->setEnabled(isEditable);
-	m_ui->lineEditManufacturer->setEnabled(isEditable);
-	m_ui->lineEditNotes->setEnabled(isEditable);
-	m_ui->lineEditDensity->setEnabled(isEditable);
-	m_ui->lineEditConductivity->setEnabled(isEditable);
-	m_ui->lineEditSpecHeatCapacity->setEnabled(isEditable);
+	m_ui->lineEditName->setReadOnly(!isEditable);
+	m_ui->lineEditDataSource->setReadOnly(!isEditable);
+	m_ui->lineEditManufacturer->setReadOnly(!isEditable);
+	m_ui->lineEditNotes->setReadOnly(!isEditable);
+	m_ui->lineEditDensity->setReadOnly(!isEditable);
+	m_ui->lineEditConductivity->setReadOnly(!isEditable);
+	m_ui->lineEditSpecHeatCapacity->setReadOnly(!isEditable);
 	m_ui->comboBoxCategory->setEnabled(isEditable);
 
+}
+
+
+void SVDBMaterialEditWidget::setCurrentTabIndex(int idx) {
+	m_ui->tabWidgetThermal->setCurrentIndex(idx);
 }
 
 

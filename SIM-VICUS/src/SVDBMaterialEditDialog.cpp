@@ -29,6 +29,7 @@ SVDBMaterialEditDialog::SVDBMaterialEditDialog(QWidget *parent) :
 	m_ui->tableView->setModel(m_proxyModel);
 
 	m_ui->editWidget->setup(&SVSettings::instance().m_db, m_dbModel);
+	m_ui->verticalLayoutEditWidget->setMargin(0);
 
 	// specific setup for construction DB table
 
@@ -42,6 +43,7 @@ SVDBMaterialEditDialog::SVDBMaterialEditDialog(QWidget *parent) :
 	// set item delegate for coloring built-ins
 	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn);
 	m_ui->tableView->setItemDelegate(dg);
+
 }
 
 
@@ -60,6 +62,8 @@ void SVDBMaterialEditDialog::edit() {
 	// ask database model to update its content
 	// TODO : smart resizing of columns - restore user-defined column widths if adjusted by user
 	m_ui->tableView->resizeColumnsToContents();
+
+	m_ui->editWidget->setCurrentTabIndex(0);
 
 	exec();
 }
@@ -82,6 +86,12 @@ int SVDBMaterialEditDialog::select(unsigned int initialMatId) {
 			break;
 		}
 	}
+
+	// ask database model to update its content
+	// TODO : smart resizing of columns - restore user-defined column widths if adjusted by user
+	m_ui->tableView->resizeColumnsToContents();
+
+	m_ui->editWidget->setCurrentTabIndex(0);
 
 	int res = exec();
 	if (res == QDialog::Accepted) {
@@ -192,3 +202,10 @@ void SVDBMaterialEditDialog::on_pushButtonReloadUserDB_clicked() {
 }
 
 
+void SVDBMaterialEditDialog::showEvent(QShowEvent * /*event*/) {
+	// resize splitter
+	QList<int> widgetSizes;
+	int w = width();
+	widgetSizes << w-400 << 400;
+	m_ui->splitter->setSizes(widgetSizes);
+}

@@ -35,7 +35,8 @@ public:
 	/*! Update widget with this. */
 	void updateInput(int id);
 
-
+	/*! Activates a tab by index. */
+	void setCurrentTabIndex(int idx);
 
 signals:
 	/*! Emitted, whenever model data has been changed that is shown in the table

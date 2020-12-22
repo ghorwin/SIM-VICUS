@@ -37,14 +37,6 @@ SVDBConstructionEditDialog::SVDBConstructionEditDialog(QWidget *parent) :
 	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBConstructionTableModel::ColNumLayers, QHeaderView::ResizeToContents);
 	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBConstructionTableModel::ColUValue, QHeaderView::ResizeToContents);
 
-	m_ui->tableView->setColumnWidth(SVDBConstructionTableModel::ColId, 60);
-#if defined(Q_OS_MAC)
-	m_ui->tableView->setColumnWidth(SVDBConstructionTableModel::ColCheck, 26);
-#else
-	m_ui->tableView->setColumnWidth(SVDBConstructionTableModel::ColCheck, 22);
-#endif
-	m_ui->tableView->setColumnWidth(SVDBConstructionTableModel::ColName, 120);
-
 	connect(m_ui->tableView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)),
 			this, SLOT(onCurrentIndexChanged(const QModelIndex &, const QModelIndex &)) );
 

@@ -19,6 +19,9 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
+     <property name="childrenCollapsible">
+      <bool>false</bool>
+     </property>
      <widget class="QGroupBox" name="groupBox">
       <property name="title">
        <string>Materials</string>
@@ -101,7 +104,7 @@
       <property name="title">
        <string>Material properties</string>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
+      <layout class="QVBoxLayout" name="verticalLayoutEditWidget">
        <item>
         <widget class="SVDBMaterialEditWidget" name="editWidget" native="true">
          <property name="sizePolicy">

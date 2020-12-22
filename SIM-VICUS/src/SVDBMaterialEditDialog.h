@@ -30,6 +30,9 @@ public:
 	*/
 	int select(unsigned int initialMatId);
 
+protected:
+	void showEvent(QShowEvent * event) override;
+
 private slots:
 	void on_pushButtonSelect_clicked();
 	void on_pushButtonCancel_clicked();
@@ -53,6 +56,7 @@ private:
 	QSortFilterProxyModel		*m_proxyModel	= nullptr;
 	/*! The material table model (owned). */
 	SVDBMaterialTableModel		*m_dbModel		= nullptr;
+
 };
 
 #endif // SVDBMaterialEditDialogH
