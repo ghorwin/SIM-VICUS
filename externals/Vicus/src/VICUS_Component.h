@@ -5,6 +5,8 @@
 #include "VICUS_Constants.h"
 #include "VICUS_AbstractDBElement.h"
 
+#include <IBK_MultiLanguageString.h>
+
 #include <QString>
 #include <QColor>
 #include <vector>
@@ -29,7 +31,7 @@ public:
 		CT_Window,
 		CT_Door,
 		CT_Miscellaneous,
-		NUM_CK
+		NUM_CT
 	};
 
 
@@ -44,22 +46,22 @@ public:
 	unsigned int					m_id = INVALID_ID;							// XML:A:required
 
 	/*! Display name of component. */
-	QString							m_displayName;								// XML:A
+	IBK::MultiLanguageString		m_displayName;								// XML:A
 
 	/*! False color. */
 	QColor							m_color;									// XML:A
 
-	/*! Manufacturer. */
-	QString							m_notes;								// XML:E
+	/*! Notes. */
+	IBK::MultiLanguageString		m_notes;									// XML:E
 
 	/*! Manufacturer. */
-	QString							m_manufacturer;								// XML:E
+	IBK::MultiLanguageString		m_manufacturer;								// XML:E
 
 	/*! Data source. */
-	QString							m_dataSource;								// XML:E
+	IBK::MultiLanguageString		m_dataSource;								// XML:E
 
 	/*! Component type. */
-	CompontType						m_type = NUM_CK;							// XML:E:required
+	CompontType						m_type = NUM_CT;							// XML:E:required
 
 	/*! Opaque construction ID. */
 	unsigned int					m_idOpaqueConstruction = INVALID_ID;		// XML:E
