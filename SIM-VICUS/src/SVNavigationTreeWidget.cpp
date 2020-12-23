@@ -165,6 +165,8 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		root->addChild(networkItem);
 		networkItem->setData(0, SVNavigationTreeItemDelegate::ItemType, NT_Network);
 		networkItem->setData(0, SVNavigationTreeItemDelegate::NodeID, n.uniqueID());
+		networkItem->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, n.m_visible);
+		networkItem->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, n.m_selected);
 		QTreeWidgetItem * enode = new QTreeWidgetItem(QStringList() << tr("Edges"), QTreeWidgetItem::Type);
 		enode->setFlags(Qt::ItemIsEnabled); // cannot select "Edges"
 		networkItem->addChild(enode);

@@ -160,7 +160,6 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 						visible = edge->m_visible;
 					else
 						visible = node->m_visible;
-
 				}
 
 				// update selection set, but only keep visible and selected objects in the set
