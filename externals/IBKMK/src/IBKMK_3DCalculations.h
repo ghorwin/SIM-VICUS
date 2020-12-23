@@ -53,11 +53,12 @@ double lineToPointDistance(const IBKMK::Vector3D & a, const IBKMK::Vector3D & d,
 
 /*! Computes the shortest distance between two lines.
 	\return Returns the shortest distance between line and line. Factor l1 contains the scale factor for
-		the line equation 1 with p1 as the closest point (p1 = a1 +l1*d1).
+		the line equation 1 with p1 as the closest point (p1 = a1 +l1*d1). l2 is the line equation factor for line 2
+		and can be used to check if the projection of the closest point is inside the line 2.
 */
 double lineToLineDistance(const IBKMK::Vector3D & a1, const IBKMK::Vector3D & d1,
 						  const IBKMK::Vector3D & a2, const IBKMK::Vector3D & d2,
-						  double & l1, IBKMK::Vector3D & p1);
+						  double & l1, IBKMK::Vector3D & p1, double & l2);
 
 } // namespace IBKMK
 

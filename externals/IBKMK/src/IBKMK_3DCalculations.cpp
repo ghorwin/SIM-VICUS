@@ -61,37 +61,35 @@ double lineToPointDistance(const IBKMK::Vector3D & a, const IBKMK::Vector3D & d,
 
 double lineToLineDistance(const IBKMK::Vector3D & a1, const IBKMK::Vector3D & d1,
 												  const IBKMK::Vector3D & a2, const IBKMK::Vector3D & d2,
-												  double & l1, IBKMK::Vector3D & p1)
+												  double & l1, IBKMK::Vector3D & p1, double & l2)
 {
-		/// source: http://geomalgorithms.com/a02-_lines.html
-		IBKMK::Vector3D v = a1 - a2;
+	/// source: http://geomalgorithms.com/a02-_lines.html
+	IBKMK::Vector3D v = a1 - a2;
 
-		double d1Scalar = d1.scalarProduct(d1);// always >= 0
-		double d1d2Scalar = d1.scalarProduct(d2);
-		double d2Scalar = d2.scalarProduct(d2);
+	double d1Scalar = d1.scalarProduct(d1);// always >= 0
+	double d1d2Scalar = d1.scalarProduct(d2);
+	double d2Scalar = d2.scalarProduct(d2);
 
-		double d1vScalar = d1.scalarProduct(v);// always >= 0
-		double d2vScalar = d2.scalarProduct(v);
+	double d1vScalar = d1.scalarProduct(v);// always >= 0
+	double d2vScalar = d2.scalarProduct(v);
 
-		double d = d1Scalar*d2Scalar - d1d2Scalar*d1d2Scalar;// always >= 0
-		double l2;
+	double d = d1Scalar*d2Scalar - d1d2Scalar*d1d2Scalar;// always >= 0
 
-		// compute the line parameters of the two closest points
-		if (d<1E-4) {// the lines are almost parallel
-				l1 = 0.0; // we have to set one factor to determine a point since there are infinite
-				l2 = (d1d2Scalar>d2Scalar ? d1vScalar/d1d2Scalar : d2vScalar/d2Scalar);    // use the largest denominator
-		}
-		else {
-				l1 = (d1d2Scalar*d2vScalar - d2Scalar*d1vScalar) / d;
-				l2 = (d1Scalar*d2vScalar - d1d2Scalar*d1vScalar) / d;
-		}
+	// compute the line parameters of the two closest points
+	if (d<1E-4) {// the lines are almost parallel
+			l1 = 0.0; // we have to set one factor to determine a point since there are infinite
+			l2 = (d1d2Scalar>d2Scalar ? d1vScalar/d1d2Scalar : d2vScalar/d2Scalar);    // use the largest denominator
+	}
+	else {
+			l1 = (d1d2Scalar*d2vScalar - d2Scalar*d1vScalar) / d;
+			l2 = (d1Scalar*d2vScalar - d1d2Scalar*d1vScalar) / d;
+	}
 
-		p1 = a1 + ( l1 * d1 );				// point 1
-		IBKMK::Vector3D p2 = a2 + (l2 * d2 ); // point 2
+	p1 = a1 + ( l1 * d1 );				// point 1
+	IBKMK::Vector3D p2 = a2 + (l2 * d2 ); // point 2
 
-		// get the difference of the two closest points
-		  return ( p1 - p2 ).magnitude();   // return the closest distance
-
+	// get the difference of the two closest points
+	return ( p1 - p2 ).magnitude();   // return the closest distance
 }
 
 } // namespace IBKMK

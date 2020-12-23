@@ -1119,33 +1119,39 @@ void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3
 				IBKMK::Vector3D closestPoint;
 				double linePointDist = IBKMK::lineToPointDistance(lineOffset, direction, no.m_position, dist, closestPoint);
 				// check distance against radius of sphere
-
-				// finally test for closest point
-				if (dist < pickObject.m_dist) {
-					pickObject.m_dist = dist;
-					pickObject.m_pickPoint = no.m_position;
-					pickObject.m_uniqueObjectID = no.uniqueID();
+				if (linePointDist < no.m_visualizationRadius) {
+					// finally test for closest point
+					if (dist < pickObject.m_dist) {
+						pickObject.m_dist = dist;
+						pickObject.m_pickPoint = no.m_position;
+						pickObject.m_uniqueObjectID = no.uniqueID();
+					}
 				}
 			}
 
 			// process all edges
-			for (const VICUS::NetworkNode & no : n.m_nodes) {
+			for (const VICUS::NetworkEdge & e : n.m_edges) {
 
 				// skip invisible nodes
-				if (!no.m_visible)
+				if (!e.m_visible)
 					continue;
 
 				// compute closest distance between nodal center point and line
 				double dist;
 				IBKMK::Vector3D closestPoint;
-				double line2LineDistance = IBKMK::lineToPointDistance(lineOffset, direction, no.m_position, dist, closestPoint);
+				double lineFactor;
+				double line2LineDistance = IBKMK::lineToLineDistance(lineOffset, direction,
+																	 e.m_node1->m_position, e.m_node2->m_position - e.m_node1->m_position,
+																	 dist, closestPoint, lineFactor);
 				// check distance against cylinder radius
+				if (line2LineDistance < e.m_visualizationRadius && lineFactor >= 0 && lineFactor <= 1) {
 
-				// finally test for closest point
-				if (dist < pickObject.m_dist) {
-					pickObject.m_dist = dist;
-					pickObject.m_pickPoint = no.m_position;
-					pickObject.m_uniqueObjectID = no.uniqueID();
+					// finally test for closest point
+					if (dist < pickObject.m_dist) {
+						pickObject.m_dist = dist;
+						pickObject.m_pickPoint = closestPoint;
+						pickObject.m_uniqueObjectID = e.uniqueID();
+					}
 				}
 			}
 		}
