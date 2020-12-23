@@ -152,13 +152,13 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 					// now update the color buffer for this object depending on type
 					if (edge != nullptr) {
 						QColor col = Qt::red;
-						if (!edge->m_visible)
+						if (!edge->m_visible || edge->m_selected)
 							col.setAlpha(0);
 						updateCylinderColors(col, vertexStart, m_networkGeometryObject.m_colorBufferData);
 					}
 					else {
 						QColor col = node->m_visualizationColor;
-						if (!node->m_visible)
+						if (!node->m_visible || node->m_selected)
 							col.setAlpha(0);
 						updateSphereColors(col, vertexStart, m_networkGeometryObject.m_colorBufferData);
 					}
