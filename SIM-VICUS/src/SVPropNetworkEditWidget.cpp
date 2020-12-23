@@ -106,22 +106,22 @@ void SVPropNetworkEditWidget::updateUi() {
 }
 
 
-void SVPropNetworkEditWidget::updateSizingParams()
-{
+void SVPropNetworkEditWidget::updateSizingParams() {
 	m_ui->doubleSpinBoxTemperatureSetpoint->setValue(m_network->m_sizingPara[VICUS::Network::SP_TemperatureSetpoint].get_value(IBK::Unit("C")));
 	m_ui->doubleSpinBoxTemperatureDifference->setValue(m_network->m_sizingPara[VICUS::Network::SP_TemperatureDifference].value);
 	m_ui->doubleSpinBoxMaximumPressureLoss->setValue(m_network->m_sizingPara[VICUS::Network::SP_MaxPressureLoss].value);
 }
 
-void SVPropNetworkEditWidget::modifyStatus()
-{
+
+void SVPropNetworkEditWidget::modifyStatus() {
 	networkFromId();
 	if (m_network == nullptr)
 		return;
-	VICUS::Network network = *m_network;
+	VICUS::Network network = *m_network; // Note: keeps unique IDs, but pointers are invalidated!
 	network.m_visible = m_ui->checkBoxVisible->isChecked();
 	network.m_scaleEdges = m_ui->horizontalSliderScaleEdges->value();
 	network.m_scaleNodes = m_ui->horizontalSliderScaleNodes->value();
+	network.updateVisualizationData(); // update visualization-related properties in network
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), network);
 	undo->push(); // modifies project and updates views
 }
@@ -227,7 +227,8 @@ void SVPropNetworkEditWidget::networkFromId()
 	else if (dynamic_cast<const VICUS::Network *>(m_obj->m_parent) != nullptr)
 		m_network = dynamic_cast<const VICUS::Network *>(m_obj->m_parent);
 	else
-		return;
+		return; /// TODO: undefined state - m_network remains old value... this is unsafe. Probably set to nullptr or
+				/// handle as assert
 }
 
 

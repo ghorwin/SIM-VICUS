@@ -85,6 +85,12 @@ public:
 	/*! Should be called whenever m_nodes or m_edges has been modified. */
 	void updateNodeEdgeConnectionPointers();
 
+	/*! Processes all nodes and edges and updates the runtime properties needed for visualization.
+		Call this function whenever the scale factors for edges/nodes in the network have changed,
+		or any pipe IDs or nodal properties related to visualization have changed.
+	*/
+	void updateVisualizationData();
+
 	/*! Checks that all edges and nodes are connected with each other (i.e. single graph network). */
 	bool checkConnectedGraph() const;
 

@@ -299,8 +299,10 @@ void Project::updatePointers() {
 	for (VICUS::Building & b : m_buildings)
 		b.updateParents();
 
-	for (VICUS::Network & n : m_geometricNetworks)
+	for (VICUS::Network & n : m_geometricNetworks) {
 		n.updateNodeEdgeConnectionPointers();
+		n.updateVisualizationData();
+	}
 }
 
 

@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Do Dez 10 12:42:13 2020</Created>
-		<LastEdited>Di. Dez. 22 14:29:36 2020</LastEdited>
+		<LastEdited>Mi. Dez. 23 15:46:39 2020</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter />
@@ -10,7 +10,7 @@
 		<ViewSettings>
 			<GridSpacing>100</GridSpacing>
 			<GridWidth>500</GridWidth>
-			<CameraTranslation>130.943 -36.4666 23.7349</CameraTranslation>
+			<CameraTranslation>76.1649 -23.2692 80.5238</CameraTranslation>
 			<RotationMatrix>
 				<Wp>0.555226</Wp>
 				<X>0.242514</X>
@@ -37,15 +37,15 @@
 				</Nodes>
 				<Edges>
 					<NetworkEdge supply="1" nodeId1="0" nodeId2="3">
-						<PipeId>100</PipeId>
+						<PipeId>10</PipeId>
 						<Length>4</Length>
 					</NetworkEdge>
 					<NetworkEdge supply="1" nodeId1="3" nodeId2="1">
-						<PipeId>101</PipeId>
+						<PipeId>7</PipeId>
 						<Length>4</Length>
 					</NetworkEdge>
 					<NetworkEdge supply="1" nodeId1="3" nodeId2="2">
-						<PipeId>102</PipeId>
+						<PipeId>3</PipeId>
 						<Length>4</Length>
 					</NetworkEdge>
 				</Edges>
@@ -73,6 +73,8 @@
 				<IBK:Parameter name="TemperatureSetpoint" unit="C">20</IBK:Parameter>
 				<IBK:Parameter name="TemperatureDifference" unit="K">4</IBK:Parameter>
 				<IBK:Parameter name="MaxPressureLoss" unit="Pa/m">150</IBK:Parameter>
+				<ScaleNodes>5000</ScaleNodes>
+				<ScaleEdges>12</ScaleEdges>
 			</Network>
 		</GeometricNetworks>
 		<NetworkFluids>

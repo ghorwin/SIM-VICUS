@@ -239,7 +239,7 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 
 	// create geometry object (if already existing, nothing happens here)
 	if (updateBuilding) {
-		m_opaqueGeometryObject.create(m_buildingShader->shaderProgram());
+		m_opaqueGeometryObject.create(m_buildingShader->shaderProgram()); // Note: does nothing, if already existing
 
 		// transfer data from building geometry to vertex array caches
 		generateBuildingGeometry();
@@ -251,7 +251,7 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 	// create network
 	if (updateNetwork) {
 		// we use the same shader as for building elements
-		m_networkGeometryObject.create(m_buildingShader->shaderProgram());
+		m_networkGeometryObject.create(m_buildingShader->shaderProgram()); // Note: does nothing, if already existing
 
 		// transfer data from building geometry to vertex array caches
 		generateNetworkGeometry();
@@ -958,12 +958,7 @@ void Vic3DScene::generateNetworkGeometry() {
 	// add cylinders for all pipes
 	for (const VICUS::Network & network : p.m_geometricNetworks) {
 		for (const VICUS::NetworkEdge & e : network.m_edges) {
-			double radius = 0.5;
-			if (e.m_pipeId != VICUS::INVALID_ID){
-				const VICUS::NetworkPipe * pipe = VICUS::Project::element(network.m_networkPipeDB, e.m_pipeId);
-				if (pipe != nullptr)
-					radius *= pipe->m_diameterOutside/1000 * network.m_scaleEdges;
-			}
+			double radius = e.m_visualizationRadius;
 
 			m_networkGeometryObject.m_vertexStartMap[e.uniqueID()] = currentVertexIndex;
 			addCylinder(e.m_node1->m_position, e.m_node2->m_position, Qt::red,

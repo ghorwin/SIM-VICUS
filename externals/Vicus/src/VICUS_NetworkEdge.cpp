@@ -3,6 +3,8 @@
 
 #include <IBK_assert.h>
 
+#include "VICUS_Project.h"
+
 namespace VICUS {
 
 
@@ -69,6 +71,7 @@ void NetworkEdge::setNodeId2(unsigned int nodeId2)
 	m_nodeId2 = nodeId2;
 	setLengthFromCoordinates();
 }
+
 
 double NetworkEdge::length() const{
 	return m_length;

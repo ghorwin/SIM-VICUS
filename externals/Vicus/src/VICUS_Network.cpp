@@ -109,6 +109,21 @@ void Network::updateNodeEdgeConnectionPointers() {
 }
 
 
+void Network::updateVisualizationData() {
+	// process all edges and update their display radius
+	for (VICUS::NetworkEdge & e : m_edges) {
+		double radius = 0.5;
+		if (e.m_pipeId != VICUS::INVALID_ID){
+			const VICUS::NetworkPipe * pipe = VICUS::Project::element(m_networkPipeDB, e.m_pipeId);
+			if (pipe != nullptr)
+				radius *= pipe->m_diameterOutside/1000 * m_scaleEdges;
+		}
+		e.m_visualizationRadius = radius;
+	}
+
+}
+
+
 bool Network::checkConnectedGraph() const {
 	std::set<const NetworkNode*> connectedNodes;
 	std::set<const NetworkEdge*> connectedEdge;

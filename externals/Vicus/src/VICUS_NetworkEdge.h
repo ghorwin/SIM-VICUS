@@ -7,6 +7,7 @@
 #include "VICUS_Object.h"
 
 #include <NANDRAD_HydraulicNetworkComponent.h>
+#include "VICUS_NetworkPipe.h"
 
 #include <vector>
 #include <set>
@@ -63,7 +64,6 @@ public:
 	// sets nodeId and pointer to the node and calculates the new length of this edge
 	void setNodeId2(unsigned int nodeId2);
 
-
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	NetworkNode											*m_node1 = nullptr;
@@ -82,6 +82,11 @@ public:
 
 	/*! Whether the node is visible or not - may be stored in project file? */
 	bool												m_visible = true;
+
+	/*! The radius used for the visualization of this edge in the 3D scene
+		Updated whenever the scale factor Network::m_scaleEdges changes, or the pipe ID.
+	*/
+	double												m_visualizationRadius;
 
 	/*! heating demand of all connected buildings */
 	double												m_maxHeatingDemand = 0;
