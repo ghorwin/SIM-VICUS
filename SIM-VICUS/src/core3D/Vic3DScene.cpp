@@ -150,10 +150,18 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 					unsigned int vertexStart = m_networkGeometryObject.m_vertexStartMap[id];
 					smallestVertexIndex = std::min(smallestVertexIndex, vertexStart);
 					// now update the color buffer for this object depending on type
-					if (edge != nullptr)
-						updateColors(*edge, vertexStart, m_networkGeometryObject.m_colorBufferData);
-					else
-						updateColors(*node, vertexStart, m_networkGeometryObject.m_colorBufferData);
+					if (edge != nullptr) {
+						QColor col = Qt::red;
+						if (!edge->m_visible)
+							col.setAlpha(0);
+						updateCylinderColors(col, vertexStart, m_networkGeometryObject.m_colorBufferData);
+					}
+					else {
+						QColor col = node->m_visualizationColor;
+						if (!node->m_visible)
+							col.setAlpha(0);
+						updateSphereColors(col, vertexStart, m_networkGeometryObject.m_colorBufferData);
+					}
 					largestVertexIndex = std::min(smallestVertexIndex, vertexStart);
 
 					if (edge != nullptr)

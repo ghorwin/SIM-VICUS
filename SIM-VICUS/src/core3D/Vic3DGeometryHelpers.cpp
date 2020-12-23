@@ -276,6 +276,18 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const Q
 }
 
 
+void updateCylinderColors(const QColor & c, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData) {
+	unsigned int nSeg = 16; // number of segments to generate
+
+	// insert vertexes, 2 per segment
+	for (unsigned int i=0; i<nSeg; ++i, currentVertexIndex += 2) {
+		// set colors
+		colorBufferData[currentVertexIndex     ] = c;
+		colorBufferData[currentVertexIndex  + 1] = c;
+	}
+}
+
+
 void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 			   unsigned int & currentVertexIndex,
 			   unsigned int & currentElementIndex,
@@ -285,71 +297,6 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 {
 
 	QVector3D trans = VICUS::IBKVector2QVector(p);
-
-#if 0
-	unsigned int nVertices = 12;
-	vertexBufferData.resize(vertexBufferData.size() + nVertices);
-	colorBufferData.resize(colorBufferData.size() + nVertices);
-	std::vector<unsigned int> v0{0,5,1,9,8,3,6,2,10,11,0,5};
-	std::vector<unsigned int> v1{11,4,5,4,9,4,3,4,2,4,11};
-	std::vector<unsigned int>v2{6,7,8,7,1,7,0,7,10,7,6};
-	indexBufferData.resize(indexBufferData.size() + v0.size()+v1.size()+v2.size()+3);
-
-	//add vertices
-	const double phi = 0.5 * (1+std::sqrt(5));
-
-	radius *= 0.5;
-	vertexBufferData[currentVertexIndex+0  ].m_coords = QVector3D(-1.0, phi, 0.0)*radius + trans;	//0
-	vertexBufferData[currentVertexIndex+1  ].m_coords = QVector3D( 1.0, phi, 0.0)*radius + trans;	//1
-	vertexBufferData[currentVertexIndex+2  ].m_coords = QVector3D(-1.0, -phi, 0.0)*radius + trans;	//2
-	vertexBufferData[currentVertexIndex+3  ].m_coords = QVector3D( 1.0, -phi, 0.0)*radius + trans;	//3
-	vertexBufferData[currentVertexIndex+4  ].m_coords = QVector3D(0.0, -1.0, phi)*radius + trans;	//4
-	vertexBufferData[currentVertexIndex+5  ].m_coords = QVector3D(0.0,  1.0, phi)*radius + trans;	//5
-	vertexBufferData[currentVertexIndex+6  ].m_coords = QVector3D(0.0, -1.0, -phi)*radius + trans;	//6
-	vertexBufferData[currentVertexIndex+7  ].m_coords = QVector3D(0.0,  1.0, -phi)*radius + trans;	//7
-	vertexBufferData[currentVertexIndex+8  ].m_coords = QVector3D(phi, 0.0, -1.0)*radius + trans;	//8
-	vertexBufferData[currentVertexIndex+9  ].m_coords = QVector3D(phi, 0.0,  1.0)*radius + trans;	//9
-	vertexBufferData[currentVertexIndex+10 ].m_coords = QVector3D(-phi, 0.0, -1.0)*radius + trans;//10
-	vertexBufferData[currentVertexIndex+11 ].m_coords = QVector3D(-phi, 0.0,  1.0)*radius + trans;//11
-
-	vertexBufferData[currentVertexIndex+0  ].m_normal = QVector3D(-1.0, phi, 0.0).normalized();	//0
-	vertexBufferData[currentVertexIndex+1  ].m_normal = QVector3D( 1.0, phi, 0.0).normalized();	//1
-	vertexBufferData[currentVertexIndex+2  ].m_normal = QVector3D(-1.0, -phi, 0.0).normalized();	//2
-	vertexBufferData[currentVertexIndex+3  ].m_normal = QVector3D( 1.0, -phi, 0.0).normalized();	//3
-	vertexBufferData[currentVertexIndex+4  ].m_normal = QVector3D(0.0, -1.0, phi).normalized();	//4
-	vertexBufferData[currentVertexIndex+5  ].m_normal = QVector3D(0.0,  1.0, phi).normalized();	//5
-	vertexBufferData[currentVertexIndex+6  ].m_normal = QVector3D(0.0, -1.0, -phi).normalized();	//6
-	vertexBufferData[currentVertexIndex+7  ].m_normal = QVector3D(0.0,  1.0, -phi).normalized();	//7
-	vertexBufferData[currentVertexIndex+8  ].m_normal = QVector3D(phi, 0.0, -1.0).normalized();	//8
-	vertexBufferData[currentVertexIndex+9  ].m_normal = QVector3D(phi, 0.0,  1.0).normalized();	//9
-	vertexBufferData[currentVertexIndex+10 ].m_normal = QVector3D(-phi, 0.0, -1.0).normalized();//10
-	vertexBufferData[currentVertexIndex+11 ].m_normal = QVector3D(-phi, 0.0,  1.0).normalized();//11
-
-
-	for (unsigned int i=0; i<nVertices;++i)
-		colorBufferData[currentVertexIndex + i] = c;
-	colorBufferData[currentVertexIndex + 4 ] = c.darker(); // QColor(Qt::green);
-	colorBufferData[currentVertexIndex + 7 ] = c.lighter(); // QColor(Qt::green);
-
-
-	for (unsigned int i=0; i<v0.size(); ++i)
-		indexBufferData[currentElementIndex+i] = currentVertexIndex+ v0[i];
-	indexBufferData[currentElementIndex+v0.size()] = 0xFFFF;
-	currentElementIndex += v0.size() + 1;
-
-	for (unsigned int i=0; i<v1.size(); ++i)
-		indexBufferData[currentElementIndex+i] = currentVertexIndex + v1[i];
-	indexBufferData[currentElementIndex+v1.size()] = 0xFFFF;
-	currentElementIndex += v1.size() + 1;
-
-	for (unsigned int i=0; i<v2.size(); ++i)
-		indexBufferData[currentElementIndex+i] = currentVertexIndex + v2[i];
-	indexBufferData[currentElementIndex+v2.size()] = 0xFFFF;
-	currentElementIndex += v2.size() + 1;
-
-	currentVertexIndex += nVertices;
-//	currentElementIndex += v0.size()+v1.size()+v2.size()+3;
-#else
 
 	unsigned int nSeg = 8; // number of segments to split 180° into
 	unsigned int nSeg2 = nSeg*2; // number of segments to split 360° into
@@ -432,7 +379,29 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 	indexBufferData[currentElementIndex++] = vertexStart - nSeg2;
 	indexBufferData[currentElementIndex++] = 0xFFFF; // set stop index
 
-#endif
+}
+
+
+void updateSphereColors(const QColor & c, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData) {
+	unsigned int nSeg = 8; // number of segments to split 180° into
+	unsigned int nSeg2 = nSeg*2; // number of segments to split 360° into
+
+	// the vertex 0 is (1, 0, 0)*radius
+	colorBufferData[currentVertexIndex] = c;
+	++currentVertexIndex;
+
+	// now generate the vertexes
+	for (unsigned int i=1; i<nSeg; ++i) {
+
+		for (unsigned int j=0; j<nSeg2; ++j, ++currentVertexIndex) {
+			colorBufferData[currentVertexIndex] = c;
+		}
+	}
+
+	// now add last vertex
+	// the vertex 1 + nSeg*nSeg2 is (-1, 0, 0)*radius
+	colorBufferData[currentVertexIndex] = c;
+	++currentVertexIndex;
 }
 
 
@@ -531,35 +500,9 @@ void updateColors(const VICUS::Surface & s, unsigned int & currentVertexIndex, s
 }
 
 
-// Adds a network edge
-void addNetworkEdge(const VICUS::NetworkEdge & e, unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
-					std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
-					std::vector<GLshort> & indexBufferData)
-{
-
-}
-
-// Updates the colors in the color buffer for the edge.
-void updateColors(const VICUS::NetworkEdge & e, unsigned int & currentVertexIndex,
-				  std::vector<ColorRGBA> & colorBufferData)
-{
-
-}
 
 
-void addNetworkNode(const VICUS::NetworkNode & n, unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
-					std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
-					std::vector<GLshort> & indexBufferData)
-{
 
-}
-
-
-void updateColors(const VICUS::NetworkNode & n, unsigned int & currentVertexIndex,
-				  std::vector<ColorRGBA> & colorBufferData)
-{
-
-}
 
 
 

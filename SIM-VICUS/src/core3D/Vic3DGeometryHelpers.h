@@ -46,6 +46,9 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const Q
 				 std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
 				 std::vector<GLshort> & indexBufferData);
 
+/*! Adds a cylinder mesh to a vertex, color and index buffer. */
+void updateCylinderColors(const QColor & c, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData);
+
 // ** Spheres **
 
 /*! Adds a sphere mesh to a vertex, color and index buffer. */
@@ -53,6 +56,9 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 			   unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 			   std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
 			   std::vector<GLshort> & indexBufferData);
+
+/*! This updates the surface color of the selected surface in the color buffer. */
+void updateSphereColors(const QColor & c, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData);
 
 // ** Ikosaeder **
 
@@ -82,17 +88,6 @@ void updateColors(const VICUS::Surface & s, unsigned int & currentVertexIndex,
 
 
 
-void addNetworkEdge(const VICUS::NetworkEdge & e, unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
-					std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
-					std::vector<GLshort> & indexBufferData);
-
-/*! This updates the surface color of the selected surface in the color buffer. */
-void updateColors(const VICUS::NetworkEdge & e,
-				 unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData);
-
-void addNetworkNode(const VICUS::NetworkNode & n, unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
-					std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
-					std::vector<GLshort> & indexBufferData);
 
 /*! This updates the surface color of the selected surface in the color buffer. */
 void updateColors(const VICUS::NetworkNode & n,
