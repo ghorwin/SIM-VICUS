@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<VicusProject fileVersion="0.2">
+	<ProjectInfo>
+		<Created>Do Dez 10 12:42:13 2020</Created>
+		<LastEdited>Di. Dez. 22 14:29:36 2020</LastEdited>
+	</ProjectInfo>
+	<Project>
+		<SolverParameter />
+		<Location />
+		<ViewSettings>
+			<GridSpacing>100</GridSpacing>
+			<GridWidth>500</GridWidth>
+			<CameraTranslation>130.943 -36.4666 23.7349</CameraTranslation>
+			<RotationMatrix>
+				<Wp>0.555226</Wp>
+				<X>0.242514</X>
+				<Y>-0.29368</Y>
+				<Z>-0.739355</Z>
+			</RotationMatrix>
+			<FarDistance>1700</FarDistance>
+		</ViewSettings>
+		<GeometricNetworks>
+			<Network id="0" fluidID="0" name="Mini Netzwerk">
+				<Nodes>
+					<NetworkNode id="0" type="Source" maxHeatingDemand="0">
+						<Position>0 0 0</Position>
+					</NetworkNode>
+					<NetworkNode id="1" type="Building" maxHeatingDemand="4800">
+						<Position>200 -70 0</Position>
+					</NetworkNode>
+					<NetworkNode id="2" type="Building" maxHeatingDemand="4800">
+						<Position>250 0 0</Position>
+					</NetworkNode>
+					<NetworkNode id="3" type="Mixer" maxHeatingDemand="0">
+						<Position>150 -40 0</Position>
+					</NetworkNode>
+				</Nodes>
+				<Edges>
+					<NetworkEdge supply="1" nodeId1="0" nodeId2="3">
+						<PipeId>100</PipeId>
+						<Length>4</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="1" nodeId1="3" nodeId2="1">
+						<PipeId>101</PipeId>
+						<Length>4</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="1" nodeId1="3" nodeId2="2">
+						<PipeId>102</PipeId>
+						<Length>4</Length>
+					</NetworkEdge>
+				</Edges>
+				<NetworkPipeDB>
+					<NetworkPipe id="0" displayName="PE 25 x 2.3" diameterOutside="25" sWall="2.3" roughness="0.007" />
+					<NetworkPipe id="1" displayName="PE 32 x 2.9" diameterOutside="32" sWall="2.9" roughness="0.007" />
+					<NetworkPipe id="2" displayName="PE 40 x 3.7" diameterOutside="40" sWall="3.7" roughness="0.007" />
+					<NetworkPipe id="3" displayName="PE 50 x 4.6" diameterOutside="50" sWall="4.6" roughness="0.007" />
+					<NetworkPipe id="4" displayName="PE 63 x 5.8" diameterOutside="63" sWall="5.8" roughness="0.007" />
+					<NetworkPipe id="5" displayName="PE 75 x 6.8" diameterOutside="75" sWall="6.8" roughness="0.007" />
+					<NetworkPipe id="6" displayName="PE 90 x 8.2" diameterOutside="90" sWall="8.2" roughness="0.007" />
+					<NetworkPipe id="7" displayName="PE 110 x 10.0" diameterOutside="110" sWall="10" roughness="0.007" />
+					<NetworkPipe id="8" displayName="PE 125 x 11.4" diameterOutside="125" sWall="11.4" roughness="0.007" />
+					<NetworkPipe id="9" displayName="PE 160 x 14.6" diameterOutside="160" sWall="14.6" roughness="0.007" />
+					<NetworkPipe id="10" displayName="PE 180 x 16.4" diameterOutside="180" sWall="16.4" roughness="0.007" />
+					<NetworkPipe id="11" displayName="PE 200 x 18.2" diameterOutside="200" sWall="18.2" roughness="0.007" />
+					<NetworkPipe id="12" displayName="PE 225x 20.5" diameterOutside="225" sWall="20.5" roughness="0.007" />
+					<NetworkPipe id="13" displayName="PE 280 x 22.7" diameterOutside="280" sWall="22.7" roughness="0.007" />
+					<NetworkPipe id="14" displayName="PE 315 x 28.6" diameterOutside="315" sWall="28.6" roughness="0.007" />
+					<NetworkPipe id="15" displayName="PE 355 x 32.2" diameterOutside="355" sWall="32.2" roughness="0.007" />
+					<NetworkPipe id="16" displayName="PE 400 x 36.3" diameterOutside="400" sWall="36.3" roughness="0.007" />
+				</NetworkPipeDB>
+				<Origin>0 0 0</Origin>
+				<Type>DoublePipe</Type>
+				<IBK:Parameter name="TemperatureSetpoint" unit="C">20</IBK:Parameter>
+				<IBK:Parameter name="TemperatureDifference" unit="K">4</IBK:Parameter>
+				<IBK:Parameter name="MaxPressureLoss" unit="Pa/m">150</IBK:Parameter>
+			</Network>
+		</GeometricNetworks>
+		<NetworkFluids>
+			<NetworkFluid id="0" displayName="Water">
+				<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
+				<LinearSplineParameter name="KinematicViscosity" interpolationMethod="linear">
+					<X unit="C">0 10 20 30 40 50 60 70 80 90 </X>
+					<Y unit="m2/s">1.793e-06 1.307e-06 1.004e-06 8.01e-07 6.58e-07 5.54e-07 4.75e-07 4.13e-07 3.65e-07 3.26e-07 </Y>
+				</LinearSplineParameter>
+			</NetworkFluid>
+		</NetworkFluids>
+	</Project>
+</VicusProject>
