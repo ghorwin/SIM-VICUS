@@ -276,6 +276,59 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const Q
 }
 
 
+void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, double radius,
+				 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+				 std::vector<VertexC> & vertexBufferData, std::vector<GLshort> & indexBufferData)
+{
+	// we generate vertices for a cylinder starting at 0,0,0 and extending to 1,0,0 (x-axis is the rotation axis)
+
+	// after each generated vertex, it is scaled, rotated into position, and translated to p1
+
+#define PI_CONST 3.14159265
+
+	// our vertices are numbered 0, 1, 2 with odd vertices at x=0, and even vertices at x=1
+
+	IBKMK::Vector3D cylinderAxis = p2-p1;
+	double L = cylinderAxis.magnitude();
+
+	// this is the rotation matrix to be applied to each generated vertex and normal vector
+	QQuaternion rot = QQuaternion::rotationTo(QVector3D(1,0,0), VICUS::IBKVector2QVector(cylinderAxis));
+	QVector3D trans = VICUS::IBKVector2QVector(p1);
+
+	// add the first two vertices (which are also the last)
+
+	unsigned int nSeg = 16; // number of segments to generate
+	// insert nSeg*2 vertexes
+	vertexBufferData.resize(vertexBufferData.size() + nSeg*2);
+	// (nSeg+1)*2 + 1 element indexes ((nSeg+1)*2 for the triangle strip, 1 primitive restart index)
+	indexBufferData.resize(indexBufferData.size() + (nSeg+1)*2 + 1);
+
+	unsigned int vertexIndexStart = currentVertexIndex;
+
+	// insert vertexes, 2 per segment
+	for (unsigned int i=0; i<nSeg; ++i, currentVertexIndex += 2) {
+		double angle = -2*PI_CONST*i/nSeg;
+		double ny = std::cos(angle);
+		double y = ny*radius;
+		double nz = std::sin(angle);
+		double z = nz*radius;
+
+		// coordinates are rotated and translated
+		vertexBufferData[currentVertexIndex    ].m_coords = rot.rotatedVector(QVector3D(0, y, z)) + trans;
+		vertexBufferData[currentVertexIndex + 1].m_coords = rot.rotatedVector(QVector3D(L, y, z)) + trans;
+	}
+
+	// now add elements
+	for (unsigned int i=0; i<nSeg*2; ++i, ++currentElementIndex)
+		indexBufferData[currentElementIndex] = i + vertexIndexStart;
+
+	// finally add first two vertices again
+	indexBufferData[currentElementIndex++] = vertexIndexStart;
+	indexBufferData[currentElementIndex++] = vertexIndexStart+1;
+	indexBufferData[currentElementIndex++] = 0xFFFF; // set stop index
+}
+
+
 void updateCylinderColors(const QColor & c, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData) {
 	unsigned int nSeg = 16; // number of segments to generate
 
@@ -379,6 +432,89 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 	indexBufferData[currentElementIndex++] = vertexStart - nSeg2;
 	indexBufferData[currentElementIndex++] = 0xFFFF; // set stop index
 
+}
+
+
+void addSphere(const IBKMK::Vector3D & p, double radius,
+			   unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+			   std::vector<VertexC> & vertexBufferData, std::vector<GLshort> & indexBufferData)
+{
+
+	QVector3D trans = VICUS::IBKVector2QVector(p);
+
+	unsigned int nSeg = 8; // number of segments to split 180° into
+	unsigned int nSeg2 = nSeg*2; // number of segments to split 360° into
+
+	vertexBufferData.resize(vertexBufferData.size() + (nSeg-1)*nSeg2 + 2);
+	// (nSeg+1)*2 + 1 element indexes ((nSeg+1)*2 for the triangle strip, 1 primitive restart index)
+	indexBufferData.resize(indexBufferData.size() + nSeg2*2 + 2 + 1 /* stop index */  +  (nSeg-2)*(nSeg2*2 + 2 + 1 /* stop index */ )  + nSeg2*2 + 1 + 1 /* stop index */ );
+
+	unsigned int vertexStart = currentVertexIndex;
+
+	// the vertex 0 is (1, 0, 0)*radius
+	vertexBufferData[currentVertexIndex].m_coords = QVector3D(radius, 0.0, 0.0) + trans;
+	++currentVertexIndex;
+
+	// now generate the vertexes
+	for (unsigned int i=1; i<nSeg; ++i) {
+		double beta = PI_CONST*i/nSeg;
+		double flat_radius = std::sin(beta)*radius;
+		double nx = std::cos(beta);
+		double x = nx*radius;
+
+		for (unsigned int j=0; j<nSeg2; ++j, ++currentVertexIndex) {
+			double angle = -2*PI_CONST*j/nSeg2;
+			double ny = std::cos(angle);
+			double y = ny*flat_radius;
+			double nz = std::sin(angle);
+			double z = nz*flat_radius;
+
+			vertexBufferData[currentVertexIndex].m_coords = QVector3D(x, y, z) + trans;
+		}
+	}
+
+	// now add last vertex
+	// the vertex 1 + nSeg*nSeg2 is (-1, 0, 0)*radius
+	vertexBufferData[currentVertexIndex].m_coords = QVector3D(-radius, 0.0, 0.0) + trans;
+	++currentVertexIndex;
+
+
+	// first circle
+	unsigned int lastVertex = vertexStart+1; // start with first vertex in for circle
+	for (unsigned int i=0; i<nSeg2*2; ++i, ++currentElementIndex) {
+		if (i % 2 == 0)
+			indexBufferData[currentElementIndex] = lastVertex++;
+		else {
+			indexBufferData[currentElementIndex] = vertexStart;
+		}
+	}
+	indexBufferData[currentElementIndex++] = vertexStart+1; // finish circle with first vertex
+	indexBufferData[currentElementIndex++] = 0xFFFF; // set stop index
+
+	// middle circles
+	for (unsigned int j=1; j<nSeg-1; ++j) {
+		vertexStart = lastVertex;
+		for (unsigned int i=0; i<nSeg2; ++i, currentElementIndex += 2, ++lastVertex) {
+			indexBufferData[currentElementIndex  ] = lastVertex;
+			indexBufferData[currentElementIndex+1] = lastVertex - nSeg2;
+		}
+		indexBufferData[currentElementIndex++] = vertexStart;
+		indexBufferData[currentElementIndex++] = vertexStart - nSeg2;
+
+		indexBufferData[currentElementIndex++] = 0xFFFF; // set stop index
+	}
+
+	vertexStart = lastVertex;
+	for (unsigned int i=0; i<nSeg2*2; ++i, ++currentElementIndex) {
+		if (i % 2 == 0)
+			indexBufferData[currentElementIndex] = currentVertexIndex-1;
+		else {
+			indexBufferData[currentElementIndex] = lastVertex++ - nSeg2;
+		}
+	}
+	indexBufferData[currentElementIndex++] = currentVertexIndex-1;
+	indexBufferData[currentElementIndex++] = vertexStart - nSeg2;
+	indexBufferData[currentElementIndex++] = 0xFFFF; // set stop index
 }
 
 

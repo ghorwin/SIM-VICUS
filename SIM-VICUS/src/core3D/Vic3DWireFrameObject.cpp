@@ -110,15 +110,20 @@ void WireFrameObject::updateBuffers() {
 			continue;
 		}
 
-		const VICUS::NetworkEdge * e = dynamic_cast<const VICUS::NetworkEdge *>(e);
+		const VICUS::NetworkEdge * e = dynamic_cast<const VICUS::NetworkEdge *>(o);
 		if (e != nullptr) {
-//			addNetworkEdge(*e, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			double radius = e->m_visualizationRadius;
+			addCylinder(e->m_node1->m_position, e->m_node2->m_position, radius,
+						currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+
 			continue;
 		}
 
-		const VICUS::NetworkNode * n = dynamic_cast<const VICUS::NetworkNode *>(n);
-		if (e != nullptr) {
-//			addNetworkNode(*n, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+		const VICUS::NetworkNode * n = dynamic_cast<const VICUS::NetworkNode *>(o);
+		if (n != nullptr) {
+			double radius = n->m_visualizationRadius;
+			addSphere(n->m_position, radius,
+					  currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
 			continue;
 		}
 	}

@@ -46,6 +46,11 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const Q
 				 std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
 				 std::vector<GLshort> & indexBufferData);
 
+/*! Same as addCylinder, but only adds coordinates (no normals, no color buffer). */
+void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, double radius,
+				 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+				 std::vector<VertexC> & vertexBufferData, std::vector<GLshort> & indexBufferData);
+
 /*! Adds a cylinder mesh to a vertex, color and index buffer. */
 void updateCylinderColors(const QColor & c, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData);
 
@@ -56,6 +61,11 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 			   unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 			   std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
 			   std::vector<GLshort> & indexBufferData);
+
+/*! Same as addSphere, but only adds coordinates (no normals, no color buffer). */
+void addSphere(const IBKMK::Vector3D & p, double radius,
+			   unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+			   std::vector<VertexC> & vertexBufferData, std::vector<GLshort> & indexBufferData);
 
 /*! This updates the surface color of the selected surface in the color buffer. */
 void updateSphereColors(const QColor & c, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData);
