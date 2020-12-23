@@ -10,6 +10,8 @@
 namespace Vic3D {
 
 
+#define CYLINDER_SEGMENTS 16
+#define SPHERE_SEGMENTS 16
 // *** Primitives ***
 
 
@@ -236,7 +238,7 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const Q
 
 	// add the first two vertices (which are also the last)
 
-	unsigned int nSeg = 16; // number of segments to generate
+	unsigned int nSeg = CYLINDER_SEGMENTS; // number of segments to generate
 	// insert nSeg*2 vertexes
 	vertexBufferData.resize(vertexBufferData.size() + nSeg*2);
 	colorBufferData.resize(colorBufferData.size() + nSeg*2);
@@ -297,17 +299,17 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, double 
 
 	// add the first two vertices (which are also the last)
 
-	unsigned int nSeg = 16; // number of segments to generate
+	unsigned int nSeg = CYLINDER_SEGMENTS; // number of segments to generate
 	// insert nSeg*2 vertexes
 	vertexBufferData.resize(vertexBufferData.size() + nSeg*2);
-	// (nSeg+1)*2 + 1 element indexes ((nSeg+1)*2 for the triangle strip, 1 primitive restart index)
-	indexBufferData.resize(indexBufferData.size() + (nSeg+1)*2 + 1);
+	// (nSeg*3*2 element indexes (2 triangls per segment)
+	indexBufferData.resize(indexBufferData.size() + nSeg*6);
 
 	unsigned int vertexIndexStart = currentVertexIndex;
 
 	// insert vertexes, 2 per segment
 	for (unsigned int i=0; i<nSeg; ++i, currentVertexIndex += 2) {
-		double angle = -2*PI_CONST*i/nSeg;
+		double angle = 2*PI_CONST*i/nSeg;
 		double ny = std::cos(angle);
 		double y = ny*radius;
 		double nz = std::sin(angle);
@@ -319,18 +321,19 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, double 
 	}
 
 	// now add elements
-	for (unsigned int i=0; i<nSeg*2; ++i, ++currentElementIndex)
-		indexBufferData[currentElementIndex] = i + vertexIndexStart;
-
-	// finally add first two vertices again
-	indexBufferData[currentElementIndex++] = vertexIndexStart;
-	indexBufferData[currentElementIndex++] = vertexIndexStart+1;
-	indexBufferData[currentElementIndex++] = 0xFFFF; // set stop index
+	for (unsigned int i=0; i<nSeg; ++i, currentElementIndex+=6) {
+		indexBufferData[currentElementIndex  ] = 2*i           + vertexIndexStart;
+		indexBufferData[currentElementIndex+1] = 2*i + 1       + vertexIndexStart;
+		indexBufferData[currentElementIndex+2] = (2*i + 2) % (nSeg*2) + vertexIndexStart;
+		indexBufferData[currentElementIndex+3] = 2*i + 1       + vertexIndexStart;
+		indexBufferData[currentElementIndex+4] = (2*i + 3) % (nSeg*2) + vertexIndexStart;
+		indexBufferData[currentElementIndex+5] = (2*i + 2) % (nSeg*2) + vertexIndexStart;
+	}
 }
 
 
 void updateCylinderColors(const QColor & c, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData) {
-	unsigned int nSeg = 16; // number of segments to generate
+	unsigned int nSeg = CYLINDER_SEGMENTS; // number of segments to generate
 
 	// insert vertexes, 2 per segment
 	for (unsigned int i=0; i<nSeg; ++i, currentVertexIndex += 2) {
