@@ -49,6 +49,8 @@ private slots:
 	void on_lineEditName_editingFinished();
 	void on_comboBoxComponentType_currentIndexChanged(int index);
 
+	void on_pushButtonSelectConstruction_clicked();
+
 private:
 	Ui::SVDBComponentEditWidget *m_ui;
 

@@ -27,6 +27,10 @@ SVDBComponentEditDialog::SVDBComponentEditDialog(QWidget *parent) :
 	m_ui->tableView->setModel(m_proxyModel);
 
 	m_ui->editWidget->setup(&SVSettings::instance().m_db, m_dbModel);
+
+	connect(m_ui->tableView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)),
+			this, SLOT(onCurrentIndexChanged(const QModelIndex &, const QModelIndex &)) );
+
 }
 
 

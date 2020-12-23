@@ -86,6 +86,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 		m_ui->lineEditSolarAbsorptionSideB->setEnabled(false);
 		m_ui->lineEditThermalAbsorptionSideB->setEnabled(false);
 
+		m_ui->lineEditDaylightName->setEnabled(false);
 		m_ui->lineEditRoughness->setEnabled(false);
 		m_ui->lineEditSpecularity->setEnabled(false);
 
@@ -105,6 +106,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 		m_ui->lineEditSolarAbsorptionSideB->setText("");
 		m_ui->lineEditThermalAbsorptionSideB->setText("");
 
+		m_ui->lineEditDaylightName->setText("");
 		m_ui->lineEditRoughness->setText("");
 		m_ui->lineEditSpecularity->setText("");
 
@@ -158,7 +160,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	m_ui->lineEditSpecularity->setText("");
 
 	//read only?
-	m_ui->lineEditName->setReadOnly(isEditable);
+	m_ui->lineEditName->setReadOnly(!isEditable);
 
 }
 
@@ -188,3 +190,8 @@ void SVDBComponentEditWidget::on_comboBoxComponentType_currentIndexChanged(int i
 
 
 
+
+void SVDBComponentEditWidget::on_pushButtonSelectConstruction_clicked()
+{
+	/// TODO Andreas: wie verweise ich jetzt hier auf das construction view dialog fenster und wähle was aus?
+}
