@@ -126,6 +126,7 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 				// find the object in question
 				const VICUS::Object * obj = project().objectById(id);
 
+				bool visible = true;
 				// is this ID a surface?
 				const VICUS::Surface * s = dynamic_cast<const VICUS::Surface*>(obj);
 				if (s != nullptr) {
@@ -137,19 +138,7 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 					// now update the color buffer for this surface
 					updateColors(*s, vertexStart, m_opaqueGeometryObject.m_colorBufferData);
 					largestVertexIndex = std::min(smallestVertexIndex, vertexStart);
-
-					// update selection set, but only keep visible and selected objects in the set
-					if (s->m_selected && s->m_visible) {
-						if (m_selectedGeometryObject.m_selectedObjects.insert(s).second)
-							selectionModified = true;
-					}
-					else {
-						std::set<const VICUS::Object*>::const_iterator it = m_selectedGeometryObject.m_selectedObjects.find(s);
-						if (it != m_selectedGeometryObject.m_selectedObjects.end()) {
-							m_selectedGeometryObject.m_selectedObjects.erase(*it);
-							selectionModified = true;
-						}
-					}
+					visible = s->m_visible;
 				}
 
 				// is it a NetworkNode or NetworkEdge?
@@ -167,22 +156,25 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 						updateColors(*node, vertexStart, m_networkGeometryObject.m_colorBufferData);
 					largestVertexIndex = std::min(smallestVertexIndex, vertexStart);
 
-					// update selection set, but only keep visible and selected objects in the set
-					if (s->m_selected && s->m_visible) {
-						if (m_selectedGeometryObject.m_selectedObjects.insert(s).second)
-							selectionModified = true;
-					}
-					else {
-						std::set<const VICUS::Object*>::const_iterator it = m_selectedGeometryObject.m_selectedObjects.find(s);
-						if (it != m_selectedGeometryObject.m_selectedObjects.end()) {
-//							m_selectedGeometryObject.m_selectedSurfaces.erase(*it);
-							selectionModified = true;
-						}
-					}
+					if (edge != nullptr)
+						visible = edge->m_visible;
+					else
+						visible = node->m_visible;
 
 				}
 
-
+				// update selection set, but only keep visible and selected objects in the set
+				if (obj->m_selected && visible) {
+					if (m_selectedGeometryObject.m_selectedObjects.insert(obj).second)
+						selectionModified = true;
+				}
+				else {
+					std::set<const VICUS::Object*>::const_iterator it = m_selectedGeometryObject.m_selectedObjects.find(obj);
+					if (it != m_selectedGeometryObject.m_selectedObjects.end()) {
+						m_selectedGeometryObject.m_selectedObjects.erase(*it);
+						selectionModified = true;
+					}
+				}
 			}
 
 			// finally, transfer only the modified portion of the color buffer to GPU memory
