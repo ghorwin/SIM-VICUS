@@ -78,18 +78,23 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 				const VICUS::BuildingLevel* bl;
 				const VICUS::Room * r;
 				const VICUS::Surface * s;
-				if ((b = dynamic_cast<const VICUS::Building*>(obj)) != nullptr) {
+				const VICUS::Network * n;
+				const VICUS::NetworkEdge * e;
+				const VICUS::NetworkNode * no;
+				if ((b = dynamic_cast<const VICUS::Building*>(obj)) != nullptr)
 					visible = b->m_visible;
-				}
-				if ((bl = dynamic_cast<const VICUS::BuildingLevel*>(obj)) != nullptr) {
+				if ((bl = dynamic_cast<const VICUS::BuildingLevel*>(obj)) != nullptr)
 					visible = bl->m_visible;
-				}
-				if ((r = dynamic_cast<const VICUS::Room*>(obj)) != nullptr) {
+				if ((r = dynamic_cast<const VICUS::Room*>(obj)) != nullptr)
 					visible = r->m_visible;
-				}
-				if ((s = dynamic_cast<const VICUS::Surface*>(obj)) != nullptr) {
+				if ((s = dynamic_cast<const VICUS::Surface*>(obj)) != nullptr)
 					visible = s->m_visible;
-				}
+				if ((n = dynamic_cast<const VICUS::Network*>(obj)) != nullptr)
+					visible = n->m_visible;
+				if ((e = dynamic_cast<const VICUS::NetworkEdge*>(obj)) != nullptr)
+					visible = e->m_visible;
+				if ((no = dynamic_cast<const VICUS::NetworkNode*>(obj)) != nullptr)
+					visible = no->m_visible;
 				m_treeItemMap[id]->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, visible);
 				m_treeItemMap[id]->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, selected);
 			}
