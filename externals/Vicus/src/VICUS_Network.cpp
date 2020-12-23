@@ -121,6 +121,41 @@ void Network::updateVisualizationData() {
 		e.m_visualizationRadius = radius;
 	}
 
+	for (VICUS::NetworkNode & no : m_nodes) {
+		// color
+		QColor color(10,10,10,255);
+		switch (no.m_type) {
+			case VICUS::NetworkNode::NT_Source:
+				color = Qt::green;
+			break;
+			case VICUS::NetworkNode::NT_Building:
+				color = Qt::blue;
+			break;
+			default:;
+		}
+		no.m_visualizationColor = color;
+
+		// radius
+
+		// default radius = 1 cm
+		double radius = 1 * m_scaleNodes / 10000; /// TODO : why not have scalenodes in same order of magnitude as scaleEdges?
+		switch (no.m_type) {
+			case NetworkNode::NT_Source:
+			case NetworkNode::NT_Building: {
+				// scale node by heating demand - 1 mm / 1000 W; 4800 W -> 48 * 0.01 = radius = 0.48
+				if (no.m_maxHeatingDemand > 0)
+					radius *= no.m_maxHeatingDemand / 1000;
+			} break;
+			default:;
+		}
+
+		// if we have connected pipes, compute max radius of adjacent pipes (our node should be larger than the pipes)
+		for (const VICUS::NetworkEdge * edge: no.m_edges)
+			radius = std::max(radius, edge->m_visualizationRadius*1.2); // enlarge by 20 %  over edge diameter
+
+		// store values
+		no.m_visualizationRadius = radius;
+	}
 }
 
 

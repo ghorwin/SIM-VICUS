@@ -121,6 +121,7 @@ void SVPropNetworkEditWidget::modifyStatus() {
 	network.m_visible = m_ui->checkBoxVisible->isChecked();
 	network.m_scaleEdges = m_ui->horizontalSliderScaleEdges->value();
 	network.m_scaleNodes = m_ui->horizontalSliderScaleNodes->value();
+	network.updateNodeEdgeConnectionPointers(); // update pointers, since next function depends on it
 	network.updateVisualizationData(); // update visualization-related properties in network
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), network);
 	undo->push(); // modifies project and updates views

@@ -208,7 +208,7 @@ public:
 	/*! Parameters used for pipe sizing algorithm. Will be stored only when the algorithm was used */
 	IBK::Parameter							m_sizingPara[NUM_SP];						// XML:E
 
-	double									m_scaleNodes = 5000;						// XML:E
+	double									m_scaleNodes = 30;							// XML:E
 
 	double									m_scaleEdges = 30;							// XML:E
 

@@ -12,6 +12,7 @@
 #include <limits>
 #include <IBKMK_Vector3D.h>
 
+#include <QColor>
 
 namespace VICUS {
 
@@ -89,6 +90,10 @@ public:
 	unsigned int					m_id  = INVALID_ID;										// XML:A:required
 	IBKMK::Vector3D					m_position = IBKMK::Vector3D(-9.99,-9.99,-9.99);		// XML:E:required
 	NodeType						m_type = NUM_NT;										// XML:A:required
+
+	/*! Heating demand.
+		\todo refactor to IBK::Parameter
+	*/
 	double							m_maxHeatingDemand = 0;									// XML:A
 
 	/*! reference id to a hydraulic component in the catalog */
@@ -104,6 +109,14 @@ public:
 
 	/*! Whether the node is visible or not - may be stored in project file? */
 	bool							m_visible = true;
+
+	/*! The radius used for the visualization of this node in the 3D scene
+		Updated whenever the scale factor Network::m_scaleNodes changes.
+	*/
+	double							m_visualizationRadius;
+	/*! Color to be used for displaying (visible) nodes. */
+	QColor							m_visualizationColor;
+
 
 	double							m_distanceToStart = std::numeric_limits<double>::max();
 	NetworkNode *					m_predecessor = nullptr;
