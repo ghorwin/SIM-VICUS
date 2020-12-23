@@ -8,6 +8,8 @@
 
 #include "SVSettings.h"
 #include "SVDBComponentTableModel.h"
+#include "SVDBConstructionEditDialog.h"
+#include "SVMainWindow.h"
 
 SVDBComponentEditWidget::SVDBComponentEditWidget(QWidget *parent) :
 	QWidget(parent),
@@ -45,11 +47,12 @@ SVDBComponentEditWidget::SVDBComponentEditWidget(QWidget *parent) :
 	m_ui->lineEditRoughness->setReadOnly(true);
 	m_ui->lineEditSpecularity->setReadOnly(true);
 
+
 	updateInput(-1);
 }
 
-SVDBComponentEditWidget::~SVDBComponentEditWidget()
-{
+
+SVDBComponentEditWidget::~SVDBComponentEditWidget() {
 	delete m_ui;
 }
 
@@ -68,7 +71,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 		m_ui->lineEditName->setEnabled(false);
 		m_ui->comboBoxComponentType->setEnabled(false);
 		m_ui->pushButtonComponentColor->setEnabled(false);
-		m_ui->pushButtonSelectConstruction->setEnabled(false);
+		m_ui->toolButtonSelectConstruction->setEnabled(false);
 		m_ui->pushButtonBoundaryConditionSideAName->setEnabled(false);
 		m_ui->pushButtonBoundaryConditionSideBName->setEnabled(false);
 		m_ui->pushButtonDaylight->setEnabled(false);
@@ -122,22 +125,25 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	// clear input controls
 	m_ui->lineEditName->setString(comp->m_displayName);
 
+	m_ui->lineEditConstructionName->setEnabled(true);
+	m_ui->lineEditUValue->setEnabled(true);
+	m_ui->lineEditUValue->setText("---");
+	m_ui->lineEditConstructionName->setText("");
+
 	const VICUS::Construction *con = m_db->m_constructions[comp->m_idOpaqueConstruction];
-	if(con != nullptr){
-		m_ui->lineEditConstructionName->setText(QString::fromStdString(con->m_displayName.string(IBK::MultiLanguageString::m_language)));
+	if (con != nullptr) {
+		m_ui->lineEditConstructionName->setText(QString::fromStdString(con->m_displayName.string(IBK::MultiLanguageString::m_language,std::string("en"))));
 		double UValue;
 		bool validUValue = con->calculateUValue(UValue, m_db->m_materials, 0.13, 0.04);
-		if(validUValue)
+		if (validUValue)
 			m_ui->lineEditUValue->setValue(UValue);
-		else
-			m_ui->lineEditUValue->setText("---");
 	}
 
 	// for built-ins, disable editing/make read-only
 	bool isEditable = !comp->m_builtIn;
 	m_ui->lineEditName->setEnabled(true);
 	m_ui->comboBoxComponentType->setEnabled(isEditable);
-	m_ui->pushButtonSelectConstruction->setEnabled(isEditable);
+	m_ui->toolButtonSelectConstruction->setEnabled(isEditable);
 	m_ui->pushButtonComponentColor->setEnabled(isEditable);
 	m_ui->pushButtonBoundaryConditionSideAName->setEnabled(isEditable);
 	m_ui->pushButtonBoundaryConditionSideBName->setEnabled(isEditable);
@@ -164,6 +170,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 
 }
 
+
 void SVDBComponentEditWidget::on_lineEditName_editingFinished(){
 	Q_ASSERT(m_current != nullptr);
 
@@ -174,6 +181,7 @@ void SVDBComponentEditWidget::on_lineEditName_editingFinished(){
 		emit tableDataChanged();
 	}
 }
+
 
 void SVDBComponentEditWidget::on_comboBoxComponentType_currentIndexChanged(int index){
 	if (m_current == nullptr) return; // m_current is nullptr, when nothing is selected and controls are defaulted to "empty"
@@ -188,10 +196,13 @@ void SVDBComponentEditWidget::on_comboBoxComponentType_currentIndexChanged(int i
 }
 
 
-
-
-
-void SVDBComponentEditWidget::on_pushButtonSelectConstruction_clicked()
-{
-	/// TODO Andreas: wie verweise ich jetzt hier auf das construction view dialog fenster und wähle was aus?
+void SVDBComponentEditWidget::on_toolButtonSelectConstruction_clicked() {
+	// get construction edit dialog from mainwindow
+	SVDBConstructionEditDialog * conEditDialog = SVMainWindow::instance().dbConstructionEditDialog();
+	int conId = conEditDialog->select(m_current->m_idOpaqueConstruction);
+	if (conId != 0) {
+		m_current->m_idOpaqueConstruction = conId;
+		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		updateInput(m_current->m_id);
+	}
 }

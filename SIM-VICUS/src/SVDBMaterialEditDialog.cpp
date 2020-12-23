@@ -12,11 +12,14 @@
 #include "SVDBModelDelegate.h"
 #include "SVDBMaterialTableModel.h"
 #include "SVDBMaterialEditWidget.h"
+#include "SVMainWindow.h"
 
 SVDBMaterialEditDialog::SVDBMaterialEditDialog(QWidget *parent) :
 	QDialog(parent),
 	m_ui(new Ui::SVDBMaterialEditDialog)
 {
+	// dialog most only be created by main window
+	Q_ASSERT(dynamic_cast<SVMainWindow*>(parent) != nullptr);
 	m_ui->setupUi(this);
 
 	SVStyle::formatDatabaseTableView(m_ui->tableView);

@@ -90,6 +90,11 @@ public:
 	*/
 	bool exportProjectPackage(const QString & exportFilePath, bool withTopLevelDir);
 
+	/*! Returns the material edit dialog. */
+	SVDBMaterialEditDialog * dbMaterialEditDialog();
+	/*! Returns the construction edit dialog. */
+	SVDBConstructionEditDialog * dbConstructionEditDialog();
+
 protected:
 	/*! Checks if project file has been changed by external application. */
 	void changeEvent(QEvent *event);
@@ -209,6 +214,7 @@ private slots:
 	void on_actionDBConstructions_triggered();
 
 	void on_actionDBComponents_triggered();
+
 
 private:
 	/*! Sets up all dock widgets with definition lists. */

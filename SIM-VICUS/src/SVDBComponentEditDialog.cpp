@@ -8,6 +8,8 @@
 #include "SVSettings.h"
 #include "SVStyle.h"
 #include "SVConstants.h"
+#include "SVDBModelDelegate.h"
+
 #include "SVDBComponentTableModel.h"
 #include "SVDBComponentEditWidget.h"
 
@@ -30,6 +32,10 @@ SVDBComponentEditDialog::SVDBComponentEditDialog(QWidget *parent) :
 
 	connect(m_ui->tableView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)),
 			this, SLOT(onCurrentIndexChanged(const QModelIndex &, const QModelIndex &)) );
+
+	// set item delegate for coloring built-ins
+	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn);
+	m_ui->tableView->setItemDelegate(dg);
 
 }
 

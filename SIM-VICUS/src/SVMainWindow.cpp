@@ -184,6 +184,20 @@ bool SVMainWindow::exportProjectPackage(const QString & exportFilePath, bool wit
 }
 
 
+SVDBMaterialEditDialog * SVMainWindow::dbMaterialEditDialog() {
+	if (m_dbMaterialEditDialog == nullptr) {
+		m_dbMaterialEditDialog = new SVDBMaterialEditDialog(this);
+	}
+	return m_dbMaterialEditDialog;
+}
+
+SVDBConstructionEditDialog * SVMainWindow::dbConstructionEditDialog() {
+	if (m_dbConstructionEditDialog == nullptr)
+		m_dbConstructionEditDialog = new SVDBConstructionEditDialog(this);
+	return m_dbConstructionEditDialog;
+}
+
+
 
 bool SVMainWindow::exportProjectCopy(QString targetDirPath, const VICUS::Project & project) {
 	QDir targetBaseDir(targetDirPath);
@@ -1354,17 +1368,12 @@ void SVMainWindow::on_actionViewToggleParametrizationMode_triggered() {
 
 
 void SVMainWindow::on_actionDBMaterials_triggered() {
-	if (m_dbMaterialEditDialog == nullptr) {
-		m_dbMaterialEditDialog = new SVDBMaterialEditDialog(nullptr); // global widget, not inside main window
-	}
-	m_dbMaterialEditDialog->edit();
+	dbMaterialEditDialog()->edit();
 }
 
 
 void SVMainWindow::on_actionDBConstructions_triggered() {
-	if (m_dbConstructionEditDialog == nullptr)
-		m_dbConstructionEditDialog = new SVDBConstructionEditDialog(nullptr);
-	m_dbConstructionEditDialog->edit();
+	dbConstructionEditDialog()->edit();
 }
 
 

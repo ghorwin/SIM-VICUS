@@ -11,11 +11,14 @@
 #include "SVDBModelDelegate.h"
 #include "SVDBConstructionTableModel.h"
 #include "SVDBConstructionEditWidget.h"
+#include "SVMainWindow.h"
 
 SVDBConstructionEditDialog::SVDBConstructionEditDialog(QWidget *parent) :
 	QDialog(parent),
 	m_ui(new Ui::SVDBConstructionEditDialog)
 {
+	// Must only be created from main window. */
+	Q_ASSERT(dynamic_cast<SVMainWindow*>(parent) != nullptr);
 	m_ui->setupUi(this);
 
 	SVStyle::formatDatabaseTableView(m_ui->tableView);
@@ -67,14 +70,29 @@ void SVDBConstructionEditDialog::edit() {
 	exec();
 }
 
-
-unsigned int SVDBConstructionEditDialog::select() {
+int SVDBConstructionEditDialog::select(unsigned int initialId) {
 
 	m_ui->pushButtonClose->setVisible(false);
 	m_ui->pushButtonSelect->setVisible(true);
 	m_ui->pushButtonCancel->setVisible(true);
 
 	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
+
+	// select construction with given matId
+	for (int i=0, count = m_dbModel->rowCount(); i<count; ++i) {
+		QModelIndex sourceIndex = m_dbModel->index(i,0);
+		if (m_dbModel->data(sourceIndex, Role_Id).toUInt() == initialId) {
+			// get proxy index
+			QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
+			if (proxyIndex.isValid())
+				m_ui->tableView->setCurrentIndex(proxyIndex);
+			break;
+		}
+	}
+
+	// ask database model to update its content
+	// TODO : smart resizing of columns - restore user-defined column widths if adjusted by user
+	m_ui->tableView->resizeColumnsToContents();
 
 	int res = exec();
 	if (res == QDialog::Accepted) {
@@ -84,11 +102,11 @@ unsigned int SVDBConstructionEditDialog::select() {
 		QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
 
 		// return ID
-		return sourceIndex.data(Role_Id).toUInt();
+		return sourceIndex.data(Role_Id).toInt();
 	}
 
 	// nothing selected/dialog aborted
-	return 0;
+	return -1;
 }
 
 

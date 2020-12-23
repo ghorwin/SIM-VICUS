@@ -24,11 +24,12 @@ public:
 	void edit();
 
 	/*! Starts the dialog in "select construction mode".
+		\param initialId The construction indicated by this ID is initially selected.
 		\return If a construction was selected and double-clicked/or the "Select" button was
 				pressed, the function returns the ID of the selected construction. Otherwise, if the
-				dialog was aborted, the function returns 0.
+				dialog was aborted, the function returns -1.
 	*/
-	unsigned int select();
+	int select(unsigned int initialId);
 
 private slots:
 	void on_pushButtonSelect_clicked();

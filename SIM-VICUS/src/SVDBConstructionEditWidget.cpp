@@ -16,6 +16,7 @@
 
 #include "SVDBConstructionTableModel.h"
 #include "SVDBMaterialEditDialog.h"
+#include "SVMainWindow.h"
 
 SVDBConstructionEditWidget::SVDBConstructionEditWidget(QWidget * parent) :
 	QWidget(parent),
@@ -500,12 +501,11 @@ void SVDBConstructionEditWidget::updateUValue() {
 
 void SVDBConstructionEditWidget::showMaterialSelectionDialog(int index) {
 	Q_ASSERT(index >= 0);
-	SVDBMaterialEditDialog matSelect(this);
-	// TODO : we may keep our material dialog around to save resources, but then we need
-	//        to make sure it synchronizes its model with the current SVSettings::m_db object,
-	//        in case this was changed in the mean time. For now it is safer to just re-create
-	//        the dialog every time.
-	int matId = matSelect.select(m_current->m_materialLayers[(unsigned int)index].m_matId);
+
+	// get material edit dialog (owned/managed by main window)
+	SVDBMaterialEditDialog * matSelect = SVMainWindow::instance().dbMaterialEditDialog();
+	// ask to select a material
+	int matId = matSelect->select(m_current->m_materialLayers[(unsigned int)index].m_matId);
 	if (matId != 0) {
 		m_current->m_materialLayers[(unsigned int)index].m_matId = (unsigned int)matId;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
