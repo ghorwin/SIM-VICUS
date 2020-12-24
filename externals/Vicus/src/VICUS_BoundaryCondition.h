@@ -8,6 +8,7 @@
 #include <vector>
 
 #include <IBK_Parameter.h>
+#include <IBK_MultiLanguageString.h>
 
 #include "VICUS_AbstractDBElement.h"
 
@@ -47,7 +48,7 @@ public:
 	unsigned int					m_id = INVALID_ID;		// XML:A:required
 
 	/*! Display name of boundary condition. */
-	QString							m_displayName;			// XML:A
+	IBK::MultiLanguageString		m_displayName;			// XML:A
 
 	/*! List of parameters. */
 	IBK::Parameter					m_para[NUM_P];			// XML:E
