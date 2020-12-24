@@ -3,7 +3,7 @@
 #include <QIcon>
 #include <QFont>
 
-#include <VICUS_Material.h>
+#include <VICUS_BoundaryCondition.h>
 #include <VICUS_Database.h>
 #include <VICUS_KeywordListQt.h>
 
@@ -76,7 +76,7 @@ QVariant SVDBBoundaryConditionTableModel::data ( const QModelIndex & index, int 
 
 
 int SVDBBoundaryConditionTableModel::rowCount ( const QModelIndex & ) const {
-	return (int)m_db->m_materials.size();
+	return (int)m_db->m_boundaryConditions.size();
 }
 
 
@@ -104,7 +104,7 @@ QVariant SVDBBoundaryConditionTableModel::headerData(int section, Qt::Orientatio
 
 QModelIndex SVDBBoundaryConditionTableModel::addNewItem() {
 	VICUS::BoundaryCondition bc;
-	bc.m_displayName.setEncodedString("en:<new material>");
+	bc.m_displayName.setEncodedString("en:<new boundary condition>");
 
 	//set default parameters
 	VICUS::KeywordList::setParameter(bc.m_para, "BoundaryCondition::para_t", VICUS::BoundaryCondition::P_Emissivity, 0.9);

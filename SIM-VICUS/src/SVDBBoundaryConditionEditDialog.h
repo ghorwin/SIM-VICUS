@@ -23,6 +23,14 @@ public:
 	/*! Starts the dialog in "edit boundary condition" mode. */
 	void edit();
 
+	/*! Starts the dialog in "select boundary condition mode".
+		\param initialId The boundary condition indicated by this ID is initially selected.
+		\return If a boundary condition was selected and double-clicked/or the "Select" button was
+				pressed, the function returns the ID of the selected boundary condition. Otherwise, if the
+				dialog was aborted, the function returns -1.
+	*/
+	int select(unsigned int initialId);
+
 private slots:
 	void on_pushButtonSelect_clicked();
 	void on_pushButtonCancel_clicked();

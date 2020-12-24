@@ -59,6 +59,46 @@ void SVDBBoundaryConditionEditDialog::edit() {
 	exec();
 }
 
+int SVDBBoundaryConditionEditDialog::select(unsigned int initialId)
+{
+	m_ui->pushButtonClose->setVisible(false);
+	m_ui->pushButtonSelect->setVisible(true);
+	m_ui->pushButtonCancel->setVisible(true);
+
+	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
+
+	// select boundary condition with given matId
+	for (int i=0, count = m_dbModel->rowCount(); i<count; ++i) {
+		QModelIndex sourceIndex = m_dbModel->index(i,0);
+		if (m_dbModel->data(sourceIndex, Role_Id).toUInt() == initialId) {
+			// get proxy index
+			QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
+			if (proxyIndex.isValid())
+				m_ui->tableView->setCurrentIndex(proxyIndex);
+			break;
+		}
+	}
+
+	// ask database model to update its content
+	// TODO : smart resizing of columns - restore user-defined column widths if adjusted by user
+	m_ui->tableView->resizeColumnsToContents();
+
+	int res = exec();
+	if (res == QDialog::Accepted) {
+		// determine current item
+		QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
+		Q_ASSERT(currentProxyIndex.isValid());
+		QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
+
+		// return ID
+		return sourceIndex.data(Role_Id).toInt();
+	}
+
+	// nothing selected/dialog aborted
+	return -1;
+
+}
+
 
 void SVDBBoundaryConditionEditDialog::on_pushButtonSelect_clicked(){
 	accept();

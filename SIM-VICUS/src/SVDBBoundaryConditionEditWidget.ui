@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>552</width>
-    <height>136</height>
+    <height>296</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -76,6 +76,19 @@
       <string>W/m2K</string>
      </property>
     </widget>
+   </item>
+   <item row="4" column="2">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>151</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>
