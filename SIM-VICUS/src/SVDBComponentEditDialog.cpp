@@ -110,7 +110,7 @@ void SVDBComponentEditDialog::on_toolButtonRemove_clicked() {
 	Q_ASSERT(currentProxyIndex.isValid());
 	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
 	m_dbModel->deleteItem(sourceIndex);
-	// last construction removed? clear input widget
+	// last boundary condition removed? clear input widget
 	if (m_dbModel->rowCount() == 0)
 		onCurrentIndexChanged(QModelIndex(), QModelIndex());
 }
@@ -144,7 +144,7 @@ void SVDBComponentEditDialog::on_pushButtonReloadUserDB_clicked() {
 	if (QMessageBox::question(this, QString(), tr("Reloading the user database from file will revert all changes made in this dialog since the program was started. Continue?"),
 							  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
 	{
-		// tell db to drop all user-defined materials and re-read the construction DB
+		// tell db to drop all user-defined elements and re-read the DB
 		SVSettings::instance().m_db.m_components.removeUserElements();
 		SVSettings::instance().m_db.readDatabases(SVDatabase::DT_Components);
 		// tell model to reset completely
