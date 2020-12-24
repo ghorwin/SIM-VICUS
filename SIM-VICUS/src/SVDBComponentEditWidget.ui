@@ -46,19 +46,6 @@
        </item>
       </layout>
      </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>378</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
     </layout>
    </item>
    <item>
@@ -136,16 +123,6 @@
         <string>Boundary Condition Side A</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_2">
-        <item row="0" column="0" colspan="2">
-         <widget class="QLineEdit" name="lineEditBoundaryConditionSideAName"/>
-        </item>
-        <item row="0" column="2">
-         <widget class="QPushButton" name="pushButtonBoundaryConditionSideAName">
-          <property name="text">
-           <string>...</string>
-          </property>
-         </widget>
-        </item>
         <item row="1" column="0">
          <widget class="QLabel" name="labelUValue_8">
           <property name="text">
@@ -153,15 +130,8 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
-         <widget class="QtExt::ValidatingLineEdit" name="lineEditHeatTransferCoeffSideA"/>
-        </item>
-        <item row="1" column="2">
-         <widget class="QLabel" name="labelUValue_7">
-          <property name="text">
-           <string>W/m2K</string>
-          </property>
-         </widget>
+        <item row="0" column="0" colspan="2">
+         <widget class="QLineEdit" name="lineEditBoundaryConditionSideAName"/>
         </item>
         <item row="2" column="0">
          <widget class="QLabel" name="labelUValue_3">
@@ -173,7 +143,17 @@
         <item row="2" column="1">
          <widget class="QtExt::ValidatingLineEdit" name="lineEditThermalAbsorptionSideA"/>
         </item>
-        <item row="2" column="2" rowspan="2">
+        <item row="1" column="1">
+         <widget class="QtExt::ValidatingLineEdit" name="lineEditHeatTransferCoeffSideA"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="labelUValue_6">
+          <property name="text">
+           <string>Solar Absorption:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="3" rowspan="2">
          <spacer name="verticalSpacer">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -186,15 +166,22 @@
           </property>
          </spacer>
         </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="labelUValue_6">
+        <item row="1" column="3">
+         <widget class="QLabel" name="labelUValue_7">
           <property name="text">
-           <string>Solar Absorption:</string>
+           <string>W/m2K</string>
           </property>
          </widget>
         </item>
         <item row="3" column="1">
          <widget class="QtExt::ValidatingLineEdit" name="lineEditSolarAbsorptionSideA"/>
+        </item>
+        <item row="0" column="3">
+         <widget class="QToolButton" name="toolButtonSelectBoundaryConditionSideAName">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -205,13 +192,23 @@
         <string>Boundary Condition Side B</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_3">
-        <item row="0" column="0" colspan="2">
-         <widget class="QLineEdit" name="lineEditBoundaryConditionSideBName"/>
-        </item>
-        <item row="0" column="2">
-         <widget class="QPushButton" name="pushButtonBoundaryConditionSideBName">
+        <item row="1" column="3">
+         <widget class="QLabel" name="labelUValue_10">
           <property name="text">
-           <string>...</string>
+           <string>W/m2K</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QtExt::ValidatingLineEdit" name="lineEditHeatTransferCoeffSideB"/>
+        </item>
+        <item row="3" column="1">
+         <widget class="QtExt::ValidatingLineEdit" name="lineEditSolarAbsorptionSideB"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="labelUValue_4">
+          <property name="text">
+           <string>Thermal Absorption:</string>
           </property>
          </widget>
         </item>
@@ -222,27 +219,20 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
-         <widget class="QtExt::ValidatingLineEdit" name="lineEditHeatTransferCoeffSideB"/>
-        </item>
-        <item row="1" column="2">
-         <widget class="QLabel" name="labelUValue_10">
-          <property name="text">
-           <string>W/m2K</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="labelUValue_4">
-          <property name="text">
-           <string>Thermal Absorption:</string>
-          </property>
-         </widget>
-        </item>
         <item row="2" column="1">
          <widget class="QtExt::ValidatingLineEdit" name="lineEditThermalAbsorptionSideB"/>
         </item>
-        <item row="2" column="2" rowspan="2">
+        <item row="0" column="0" colspan="2">
+         <widget class="QLineEdit" name="lineEditBoundaryConditionSideBName"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="labelUValue_11">
+          <property name="text">
+           <string>Solar Absorption:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="3" rowspan="2">
          <spacer name="verticalSpacer_2">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -255,15 +245,12 @@
           </property>
          </spacer>
         </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="labelUValue_11">
+        <item row="0" column="2" colspan="2">
+         <widget class="QToolButton" name="toolButtonSelectBoundaryConditionSideBName">
           <property name="text">
-           <string>Solar Absorption:</string>
+           <string>...</string>
           </property>
          </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QtExt::ValidatingLineEdit" name="lineEditSolarAbsorptionSideB"/>
         </item>
        </layout>
       </widget>

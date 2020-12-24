@@ -50,6 +50,9 @@ private slots:
 	void on_comboBoxComponentType_currentIndexChanged(int index);
 
 	void on_toolButtonSelectConstruction_clicked();
+	void on_toolButtonSelectBoundaryConditionSideAName_clicked();
+	void on_toolButtonSelectBoundaryConditionSideBName_clicked();
+
 
 private:
 	Ui::SVDBComponentEditWidget *m_ui;
