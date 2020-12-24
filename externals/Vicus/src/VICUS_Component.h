@@ -27,6 +27,7 @@ public:
 		CT_Ceiling,					// Keyword: Ceiling					'Ceiling construction'
 		CT_SlopedRoof,				// Keyword: SlopedRoof				'Sloped roof construction'
 		CT_FlatRoof,				// Keyword: FlatRoof				'Flat roof construction'
+		///TODO Heiko ist der Kommentar hier richtig?
 		CT_ColdRoof,				// Keyword: ColdRoof				'Flat roof construction (to heated/insulated space)'
 		CT_WarmRoof,				// Keyword: WarmRoof				'Flat roof construction (to cold/ventilated space)'
 //		CT_Window,
@@ -70,10 +71,10 @@ public:
 	/*! Transparent construction ID. */
 	unsigned int					m_idGlazingSystem = INVALID_ID;				// XML:E
 
-	/*! Outside boundary condition ID. */
+	/*! Outside boundary condition ID (Side A). */
 	unsigned int					m_idOutsideBoundaryCondition = INVALID_ID;	// XML:E
 
-	/*! Inside boundary condition ID. */
+	/*! Inside boundary condition ID  (Side B). */
 	unsigned int					m_idInsideBoundaryCondition = INVALID_ID;	// XML:E
 
 	/*! Surface property ID. */
