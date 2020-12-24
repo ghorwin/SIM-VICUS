@@ -178,7 +178,7 @@ void SVDBConstructionEditWidget::updateInput(int id) {
 	m_ui->comboBoxConstructionUsage->setCurrentIndex(indexUT);
 
 	// update read-only/enabled states
-	m_ui->lineEditName->setEnabled(con->m_builtIn);
+	m_ui->lineEditName->setEnabled(!con->m_builtIn);
 	m_ui->spinBoxLayerCount->setEnabled(!con->m_builtIn);
 	m_ui->comboBoxInsulationKind->setEnabled(!con->m_builtIn);
 	m_ui->comboBoxMaterialKind->setEnabled(!con->m_builtIn);
