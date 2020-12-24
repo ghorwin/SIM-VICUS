@@ -115,6 +115,7 @@
     <addaction name="actionDBConstructions"/>
     <addaction name="actionDBComponents"/>
     <addaction name="actionDBWindows"/>
+    <addaction name="actionDBBoundaryConditions"/>
    </widget>
    <widget class="QMenu" name="menuSimulation">
     <property name="title">
@@ -471,6 +472,11 @@
   <action name="actionDBComponents">
    <property name="text">
     <string>Components...</string>
+   </property>
+  </action>
+  <action name="actionDBBoundaryConditions">
+   <property name="text">
+    <string>Boundary conditions...</string>
    </property>
   </action>
  </widget>

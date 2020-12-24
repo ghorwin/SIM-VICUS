@@ -57,6 +57,7 @@
 #include "SVDBConstructionEditDialog.h"
 #include "SVDBWindowEditWidget.h"
 #include "SVDBComponentEditDialog.h"
+#include "SVDBBoundaryConditionEditDialog.h"
 
 #include "SVSimulationStartNandrad.h"
 #include "SVSimulationStartNetworkSim.h"
@@ -195,6 +196,12 @@ SVDBConstructionEditDialog * SVMainWindow::dbConstructionEditDialog() {
 	if (m_dbConstructionEditDialog == nullptr)
 		m_dbConstructionEditDialog = new SVDBConstructionEditDialog(this);
 	return m_dbConstructionEditDialog;
+}
+
+SVDBBoundaryConditionEditDialog * SVMainWindow::dbBoundaryConditionEditDialog() {
+	if (m_dbBoundaryConditionEditDialog == nullptr)
+		m_dbBoundaryConditionEditDialog = new SVDBBoundaryConditionEditDialog(this);
+	return m_dbBoundaryConditionEditDialog;
 }
 
 
@@ -1389,6 +1396,11 @@ void SVMainWindow::on_actionDBComponents_triggered() {
 	if (m_dbComponentEditDialog == nullptr)
 		m_dbComponentEditDialog = new SVDBComponentEditDialog(nullptr);
 	m_dbComponentEditDialog->edit();
+}
+
+
+void SVMainWindow::on_actionDBBoundaryConditions_triggered() {
+	dbBoundaryConditionEditDialog()->edit();
 }
 
 

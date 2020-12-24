@@ -35,6 +35,7 @@ class SVDBMaterialEditDialog;
 class SVDBWindowEditWidget;
 class SVDBConstructionEditDialog;
 class SVDBComponentEditDialog;
+class SVDBBoundaryConditionEditDialog;
 
 /*! Main window class. */
 class SVMainWindow : public QMainWindow {
@@ -94,6 +95,8 @@ public:
 	SVDBMaterialEditDialog * dbMaterialEditDialog();
 	/*! Returns the construction edit dialog. */
 	SVDBConstructionEditDialog * dbConstructionEditDialog();
+	/*! Returns the boundary condition edit dialog. */
+	SVDBBoundaryConditionEditDialog * dbBoundaryConditionEditDialog();
 
 protected:
 	/*! Checks if project file has been changed by external application. */
@@ -214,6 +217,8 @@ private slots:
 	void on_actionDBConstructions_triggered();
 
 	void on_actionDBComponents_triggered();
+
+	void on_actionDBBoundaryConditions_triggered();
 
 
 private:
@@ -344,10 +349,11 @@ private:
 	SVViewStateHandler			*m_viewStateHandler										= nullptr;
 
 
-	SVDBMaterialEditDialog		*m_dbMaterialEditDialog									= nullptr;
-	SVDBConstructionEditDialog	*m_dbConstructionEditDialog								= nullptr;
-	SVDBWindowEditWidget		*m_dbWindowEditWidget									= nullptr;
-	SVDBComponentEditDialog		*m_dbComponentEditDialog								= nullptr;
+	SVDBMaterialEditDialog				*m_dbMaterialEditDialog							= nullptr;
+	SVDBConstructionEditDialog			*m_dbConstructionEditDialog						= nullptr;
+	SVDBWindowEditWidget				*m_dbWindowEditWidget							= nullptr;
+	SVDBComponentEditDialog				*m_dbComponentEditDialog						= nullptr;
+	SVDBBoundaryConditionEditDialog		*m_dbBoundaryConditionEditDialog				= nullptr;
 
 	friend class SVThreadBase;
 
