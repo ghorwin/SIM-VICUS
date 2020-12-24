@@ -30,6 +30,7 @@ public:
 		DT_Materials,
 		DT_Constructions,
 		DT_Components,
+		DT_BoundaryConditions,
 		NUM_DT // used for "all"
 	};
 
@@ -63,8 +64,8 @@ public:
 //	/*! Map of all database surface properties. */
 //	VICUS::Database<VICUS::SurfaceProperties>			m_surfaceProperty;
 
-//	/*! Map of all database boundary conditions. */
-//	VICUS::Database<VICUS::BoundaryCondition>			m_boundaryCondition;
+	/*! Map of all database boundary conditions. */
+	VICUS::Database<VICUS::BoundaryCondition>			m_boundaryConditions;
 
 	/*! Map of all database components. */
 	VICUS::Database<VICUS::Component>					m_components;

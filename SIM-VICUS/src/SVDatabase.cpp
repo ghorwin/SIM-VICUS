@@ -14,6 +14,7 @@ SVDatabase::SVDatabase() :
 	m_materials(USER_ID_SPACE_START),
 	m_constructions(USER_ID_SPACE_START),
 	m_windows(USER_ID_SPACE_START),
+	m_boundaryConditions(USER_ID_SPACE_START),
 	m_components(USER_ID_SPACE_START),
 	m_pipes(USER_ID_SPACE_START),
 	m_fluids(USER_ID_SPACE_START),
@@ -35,6 +36,7 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_pipes.readXML(			dbDir / "db_pipes.xml", "Pipes", "Pipe", true);
 		m_fluids.readXML(			dbDir / "db_fluids.xml", "Fluids", "Fluid", true);
 		m_components.readXML(		dbDir / "db_components.xml", "Components", "Component", true);
+		m_boundaryConditions.readXML(dbDir / "db_boundaryConditions.xml", "BoundaryConditions", "BoundaryCondition", true);
 
 	//	readXMLDB(dbDir / "db_windowGlazingSystems.xml", "WindowGlazingSystems", "WindowGlazingSystem", m_dbWindowGlazingSystems, true);
 	//	readXMLDB(dbDir / "db_surfaceProperties.xml", "SurfaceProperties", "SurfaceProperty", m_dbSurfaceProperty, true);
@@ -52,13 +54,15 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_constructions.readXML(	userDbDir / "db_constructions.xml", "Constructions", "Construction", false);
 	if (t == NUM_DT || t == DT_Components)
 		m_components.readXML(	userDbDir / "db_components.xml", "Components", "Component", false);
+	if (t == NUM_DT || t == DT_BoundaryConditions)
+		m_boundaryConditions.readXML(userDbDir / "db_boundaryConditions.xml", "BoundaryConditions", "BoundaryCondition", false);
+
 	m_windows.readXML(			userDbDir / "db_windows.xml", "Windows", "Window", false);
 	m_pipes.readXML(			userDbDir / "db_pipes.xml", "Pipes", "Pipe", false);
 	m_fluids.readXML(			userDbDir / "db_fluids.xml", "Fluids", "Fluid", false);
 
 //	readXMLDB(userDbDir / "db_windowGlazingSystems.xml", "WindowGlazingSystems", "WindowGlazingSystem", m_dbWindowGlazingSystems);
 //	readXMLDB(userDbDir / "db_surfaceProperties.xml", "SurfaceProperties", "SurfaceProperty", m_dbSurfaceProperty);
-//	readXMLDB(userDbDir / "db_boundaryConditions.xml", "BoundaryConditions", "BoundaryCondition", m_dbBoundaryCondition);
 //	readXMLDB(userDbDir / "db_epdElements.xml", "EPDDatasets", "EPDDataset", m_dbEPDElements);
 }
 
@@ -100,15 +104,15 @@ void SVDatabase::writeDatabases() const {
 	const_cast<Database*>(this)->m_constructions.add(c); // const-cast needed to trick modification of DB here
 #endif
 
-	m_materials.writeXML(		userDbDir / "db_materials.xml", "Materials");
-	m_windows.writeXML(			userDbDir / "db_windows.xml", "Windows");
-	m_constructions.writeXML(	userDbDir / "db_constructions.xml", "Constructions");
-	m_pipes.writeXML(			userDbDir / "db_pipes.xml", "Pipes");
-	m_fluids.writeXML(			userDbDir / "db_fluids.xml", "Fluids");
-	m_components.writeXML(		userDbDir / "db_components.xml", "Components");
+	m_materials.writeXML(			userDbDir / "db_materials.xml", "Materials");
+	m_windows.writeXML(				userDbDir / "db_windows.xml", "Windows");
+	m_constructions.writeXML(		userDbDir / "db_constructions.xml", "Constructions");
+	m_pipes.writeXML(				userDbDir / "db_pipes.xml", "Pipes");
+	m_fluids.writeXML(				userDbDir / "db_fluids.xml", "Fluids");
+	m_components.writeXML(			userDbDir / "db_components.xml", "Components");
+	m_boundaryConditions.writeXML(	userDbDir / "db_boundaryConditions.xml", "BoundaryConditions");
 
 //	writeXMLDB(userDbDir / "db_surfaceProperties.xml", "SurfaceProperties", m_dbSurfaceProperty);
-//	writeXMLDB(userDbDir / "db_boundaryConditions.xml", "BoundaryConditions", m_dbBoundaryCondition);
 //	writeXMLDB(userDbDir / "db_epdElements.xml", "EPDDatasets", m_dbEPDElements);
 }
 
