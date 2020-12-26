@@ -11,7 +11,8 @@ namespace Vic3D {
 
 
 #define CYLINDER_SEGMENTS 16
-#define SPHERE_SEGMENTS 16
+#define SPHERE_SEGMENTS 12
+
 // *** Primitives ***
 
 
@@ -354,8 +355,8 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 
 	QVector3D trans = VICUS::IBKVector2QVector(p);
 
-	unsigned int nSeg = 8; // number of segments to split 180° into
-	unsigned int nSeg2 = nSeg*2; // number of segments to split 360° into
+	unsigned int nSeg = SPHERE_SEGMENTS; // number of segments to split 180° into
+	unsigned int nSeg2 = SPHERE_SEGMENTS*2; // number of segments to split 360° into
 
 	vertexBufferData.resize(vertexBufferData.size() + (nSeg-1)*nSeg2 + 2);
 	colorBufferData.resize(colorBufferData.size() + (nSeg-1)*nSeg2 + 2);
@@ -378,7 +379,7 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 		double x = nx*radius;
 
 		for (unsigned int j=0; j<nSeg2; ++j, ++currentVertexIndex) {
-			double angle = -2*PI_CONST*j/nSeg2;
+			double angle = -2*PI_CONST*j/nSeg2 - PI_CONST/nSeg2*(i % 2);
 			double ny = std::cos(angle);
 			double y = ny*flat_radius;
 			double nz = std::sin(angle);
@@ -445,12 +446,12 @@ void addSphere(const IBKMK::Vector3D & p, double radius,
 
 	QVector3D trans = VICUS::IBKVector2QVector(p);
 
-	unsigned int nSeg = 8; // number of segments to split 180° into
+	unsigned int nSeg = SPHERE_SEGMENTS; // number of segments to split 180° into
 	unsigned int nSeg2 = nSeg*2; // number of segments to split 360° into
 
 	vertexBufferData.resize(vertexBufferData.size() + (nSeg-1)*nSeg2 + 2);
-	// (nSeg+1)*2 + 1 element indexes ((nSeg+1)*2 for the triangle strip, 1 primitive restart index)
-	indexBufferData.resize(indexBufferData.size() + nSeg2*2 + 2 + 1 /* stop index */  +  (nSeg-2)*(nSeg2*2 + 2 + 1 /* stop index */ )  + nSeg2*2 + 1 + 1 /* stop index */ );
+	// (nSeg-2)*nSeg2*3*2 element indexes for the triangles in the middle rings, and 2*nSeg2*3 for the top and bottom ring
+	indexBufferData.resize(indexBufferData.size() + (nSeg-2)*nSeg2*3*2 + 2*nSeg2*3);
 
 	unsigned int vertexStart = currentVertexIndex;
 
@@ -466,7 +467,7 @@ void addSphere(const IBKMK::Vector3D & p, double radius,
 		double x = nx*radius;
 
 		for (unsigned int j=0; j<nSeg2; ++j, ++currentVertexIndex) {
-			double angle = -2*PI_CONST*j/nSeg2;
+			double angle = -2*PI_CONST/nSeg2*j - PI_CONST/nSeg2*(i % 2);
 			double ny = std::cos(angle);
 			double y = ny*flat_radius;
 			double nz = std::sin(angle);
@@ -481,48 +482,42 @@ void addSphere(const IBKMK::Vector3D & p, double radius,
 	vertexBufferData[currentVertexIndex].m_coords = QVector3D(-radius, 0.0, 0.0) + trans;
 	++currentVertexIndex;
 
-
-	// first circle
-	unsigned int lastVertex = vertexStart+1; // start with first vertex in for circle
-	for (unsigned int i=0; i<nSeg2*2; ++i, ++currentElementIndex) {
-		if (i % 2 == 0)
-			indexBufferData[currentElementIndex] = lastVertex++;
-		else {
-			indexBufferData[currentElementIndex] = vertexStart;
-		}
+	// first circle - triangles are: 0, 1, 2,   0, 2, 3,    0, 3, 4, --- 0, nSeg-2, nSeg-1
+	for (unsigned int i=0; i<nSeg2; ++i, currentElementIndex += 3) {
+		indexBufferData[currentElementIndex    ] = vertexStart;
+		indexBufferData[currentElementIndex + 1] = vertexStart + 1 + i;
+		indexBufferData[currentElementIndex + 2] = vertexStart + 1 + (i + 1) % nSeg2;
 	}
-	indexBufferData[currentElementIndex++] = vertexStart+1; // finish circle with first vertex
-	indexBufferData[currentElementIndex++] = 0xFFFF; // set stop index
 
-	// middle circles
+	// middle circles - triangles are created between circles of vertexes
 	for (unsigned int j=1; j<nSeg-1; ++j) {
-		vertexStart = lastVertex;
-		for (unsigned int i=0; i<nSeg2; ++i, currentElementIndex += 2, ++lastVertex) {
-			indexBufferData[currentElementIndex  ] = lastVertex;
-			indexBufferData[currentElementIndex+1] = lastVertex - nSeg2;
-		}
-		indexBufferData[currentElementIndex++] = vertexStart;
-		indexBufferData[currentElementIndex++] = vertexStart - nSeg2;
+		unsigned int topCircleVertexStart = (j-1)*nSeg2 + 1;
+		unsigned int bottomCircleVertexStart = j*nSeg2 + 1;
 
-		indexBufferData[currentElementIndex++] = 0xFFFF; // set stop index
-	}
-
-	vertexStart = lastVertex;
-	for (unsigned int i=0; i<nSeg2*2; ++i, ++currentElementIndex) {
-		if (i % 2 == 0)
-			indexBufferData[currentElementIndex] = currentVertexIndex-1;
-		else {
-			indexBufferData[currentElementIndex] = lastVertex++ - nSeg2;
+		// we add always 2 triangles
+		for (unsigned int i=0; i<nSeg2; ++i, currentElementIndex += 6) {
+			indexBufferData[currentElementIndex  ] = vertexStart + topCircleVertexStart + i;
+			indexBufferData[currentElementIndex+1] = vertexStart + bottomCircleVertexStart + i;
+			indexBufferData[currentElementIndex+2] = vertexStart + bottomCircleVertexStart + (i+1) % nSeg2;
+			indexBufferData[currentElementIndex+3] = vertexStart + topCircleVertexStart + i;
+			indexBufferData[currentElementIndex+4] = vertexStart + bottomCircleVertexStart + (i+1) % nSeg2;
+			indexBufferData[currentElementIndex+5] = vertexStart + topCircleVertexStart + (i+1) % nSeg2;
 		}
 	}
-	indexBufferData[currentElementIndex++] = currentVertexIndex-1;
-	indexBufferData[currentElementIndex++] = vertexStart - nSeg2;
-	indexBufferData[currentElementIndex++] = 0xFFFF; // set stop index
+
+	// last circle - triangles are: 0, 1, 2,   0, 2, 3,    0, 3, 4, --- 0, nSeg-2, nSeg-1
+	unsigned int topCircleVertexStart = (nSeg-2)*nSeg2 + 1;
+	unsigned int lastVertex = vertexStart + (nSeg-1)*nSeg2 + 1;
+	for (unsigned int i=0; i<nSeg2; ++i, currentElementIndex +=3) {
+		indexBufferData[currentElementIndex  ] = lastVertex;
+		indexBufferData[currentElementIndex+1] = vertexStart + topCircleVertexStart + i;
+		indexBufferData[currentElementIndex+2] = vertexStart + topCircleVertexStart + (i+1) % nSeg2;
+	}
 }
 
 
 void updateSphereColors(const QColor & c, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData) {
-	unsigned int nSeg = 8; // number of segments to split 180° into
+	unsigned int nSeg = SPHERE_SEGMENTS; // number of segments to split 180° into
 	unsigned int nSeg2 = nSeg*2; // number of segments to split 360° into
 
 	// the vertex 0 is (1, 0, 0)*radius
