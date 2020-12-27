@@ -424,6 +424,28 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		needRepaint = true;
 	}
 
+	// *** X,Y,Z locks - only in "place vertex" mode and transform modes ***
+
+	if (keyboardHandler.keyReleased(Qt::Key_X) ||
+		keyboardHandler.keyReleased(Qt::Key_Y) ||
+		keyboardHandler.keyReleased(Qt::Key_Z))
+	{
+		SVViewState vs = SVViewStateHandler::instance().viewState();
+		if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex) {
+			if (keyboardHandler.keyReleased(Qt::Key_X))
+				vs.m_locks ^= SVViewState::L_LocalX;
+			if (keyboardHandler.keyReleased(Qt::Key_Y))
+				vs.m_locks ^= SVViewState::L_LocalY;
+			if (keyboardHandler.keyReleased(Qt::Key_Z))
+				vs.m_locks ^= SVViewState::L_LocalZ;
+			qDebug() << "Locks: " << (vs.m_locks & SVViewState::L_LocalX) << (vs.m_locks & SVViewState::L_LocalY) << (vs.m_locks & SVViewState::L_LocalZ);
+		}
+		SVViewStateHandler::instance().setViewState(vs);
+		// Nothing further to be done - the coordinate system position is adjusted below for
+		// all view modes that require snapping
+		needRepaint = true;
+	}
+
 
 	// *** Keyboard navigation ***
 

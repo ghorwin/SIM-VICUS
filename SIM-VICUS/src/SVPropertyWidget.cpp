@@ -78,11 +78,7 @@ void SVPropertyWidget::onViewStateChanged() {
 				m_layout->addWidget(m_propWidgets[SVViewState::PM_VertexList]);
 				SVViewStateHandler::instance().m_newPolygonObject->m_vertexListWidget = vertexListWidget;
 			}
-			if (!m_propWidgets[SVViewState::PM_VertexList]->isVisibleTo(this)) {
-				// when shown, we always reset the widget to "new surface" mode
-				((SVPropVertexListWidget *)m_propWidgets[SVViewState::PM_VertexList])->onNewVertexListStart();
-				m_propWidgets[SVViewState::PM_VertexList]->setVisible(true);
-			}
+			m_propWidgets[SVViewState::PM_VertexList]->setVisible(true);
 			setMinimumWidth(500);
 		} break;
 

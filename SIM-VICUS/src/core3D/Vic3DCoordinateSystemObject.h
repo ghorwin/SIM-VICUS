@@ -42,7 +42,6 @@ class ShaderProgram;
 	Coordinate system while "positioning coordinate system":
 	- colored lines for each coordinate system axis meeting in the center (to allow very precise snapping)
 	- semi-transparent sphere in the middle indexBufferObject 7
-
 */
 class CoordinateSystemObject {
 public:
@@ -109,6 +108,12 @@ private:
 	QOpenGLBuffer				m_colorBufferObject;
 	/*! Handle for index buffer on GPU memory */
 	QOpenGLBuffer				m_indexBufferObject;
+
+	/*! VertexArrayObject for lines. */
+	QOpenGLVertexArrayObject	m_lineVao;
+	/*! Holds positions of lines (x-x, y-y, z-z lines, 6 VertexC coordinates). */
+	QOpenGLBuffer				m_lineVbo;
+
 
 	/*! Vertex buffer in CPU memory, holds data of all vertices (coords and normals). */
 	std::vector<Vertex>			m_vertexBufferData;

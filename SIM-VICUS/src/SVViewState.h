@@ -92,6 +92,16 @@ public:
 	};
 
 
+	/*! Snapping/navigation locks, apply to movement of the
+		local coordinate system when in "place vertex" mode.
+		You can use a bitmask or'd combination of the three (but never all three together).
+	*/
+	enum Locks {
+		L_LocalX		= 0x001,
+		L_LocalY		= 0x002,
+		L_LocalZ		= 0x004
+	};
+
 	/*! The different snap options.
 		\warning Do not change the order/enum values. For any bitmask value larger
 		than Snap_XYPlane_Grid a surface will be required.
@@ -111,7 +121,8 @@ public:
 	int						m_snapOptionMask		= Snap_XYPlane_Grid | Snap_ObjectVertex | Snap_ObjectCenter | Snap_ObjectEdgeCenter;
 	/*! Whether snapping is enabled or not. */
 	bool					m_snapEnabled			= true;
-
+	/*! Coordinate system movement locks. */
+	int						m_locks					= 0;
 };
 
 #endif // SVViewStateH

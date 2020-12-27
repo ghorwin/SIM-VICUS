@@ -7,6 +7,7 @@
 #include "SVViewStateHandler.h"
 #include "SVProjectHandler.h"
 #include "SVUndoModifySurfaceGeometry.h"
+#include "SVPropVertexListWidget.h"
 
 #include "Vic3DNewPolygonObject.h"
 #include "Vic3DCoordinateSystemObject.h"
@@ -75,6 +76,8 @@ void SVPropEditGeometry::on_pushButtonAddPolygon_clicked() {
 	vs.m_propertyWidgetMode = SVViewState::PM_VertexList;
 	// now tell all UI components to toggle their view state
 	SVViewStateHandler::instance().setViewState(vs);
+	// clear vertex list in property widget
+	SVViewStateHandler::instance().m_propVertexListWidget->onNewVertexListStart();
 }
 
 

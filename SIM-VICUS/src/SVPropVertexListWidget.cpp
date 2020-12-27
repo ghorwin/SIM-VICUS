@@ -19,6 +19,7 @@ SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
+	SVViewStateHandler::instance().m_propVertexListWidget = this;
 	onNewVertexListStart();
 }
 

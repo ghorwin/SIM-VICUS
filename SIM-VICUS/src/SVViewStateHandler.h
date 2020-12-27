@@ -12,6 +12,7 @@ namespace Vic3D {
 
 class SVNavigationTreeWidget;
 class SVPropEditGeometry;
+class SVPropVertexListWidget;
 
 /*! This singleton makes the current UI view state available to all.
 	Widgets that need to be informed from view state changes, should
@@ -57,6 +58,9 @@ public:
 
 	/*! Pointer to geometry edit widget - is needed to set the absolute scale factor ( bounding box) on selection change. */
 	SVPropEditGeometry					*m_propEditGeometryWidget = nullptr;
+
+	/*! Pointer to place vertex edit widget - is needed to clear the vertex list when a new polygon/geometrical object is being drawn. */
+	SVPropVertexListWidget				*m_propVertexListWidget = nullptr;
 
 signals:
 	/*! Emitted, when the state has changed. */

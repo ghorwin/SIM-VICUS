@@ -141,6 +141,22 @@ void CoordinateSystemObject::create(ShaderProgram * shaderProgram) {
 	m_indexBufferObject.bind();
 	m_indexBufferObject.allocate(m_indexBufferData.data(), m_indexBufferData.size()*sizeof(GLuint));
 	m_indexBufferObject.release();
+
+#if 0
+	// now create the coordinate lines
+	m_lineVbo.create();
+	m_lineVbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
+
+	m_lineVao.create();
+	m_lineVao.bind(); // now the VAO is active and remembers states modified in following calls
+
+	m_lineVbo.bind();
+
+	// coordinates
+	QOpenGLShaderProgram * shaderProg = shaderProgram->shaderProgram();
+	shaderProg->enableAttributeArray(VERTEX_ARRAY_INDEX);
+	shaderProg->setAttributeBuffer(VERTEX_ARRAY_INDEX, GL_FLOAT, 0, 3 /* vec3 */, sizeof(Vertex));
+#endif
 }
 
 
