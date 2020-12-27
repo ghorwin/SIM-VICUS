@@ -151,9 +151,9 @@ void WireFrameObject::render() {
 	// set wireframe color (TODO : make this theme-dependent?)
 	QColor selColor = SVSettings::instance().m_themeSettings[SVSettings::instance().m_theme].m_selectedSurfaceColor;
 	double brightness = 0.299*selColor.redF() + 0.587*selColor.greenF() + 0.114*selColor.blueF();
-	QColor wireFrameCol = Qt::white;
+	QColor wireFrameCol = selColor.lighter();
 	if (brightness > 0.4)
-		wireFrameCol = Qt::black;
+		wireFrameCol = selColor.darker();
 	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], wireFrameCol);
 	// put OpenGL in offset mode
 	glEnable(GL_POLYGON_OFFSET_LINE);
