@@ -1006,7 +1006,7 @@ QPushButton {
   padding: 5px 10px 5px 10px;
   outline: none;
   /* Issue #194 - Special case of QPushButton inside dialogs, for better UI */
-  min-width: 80px;
+  //min-width: 80px;
 }
 
 QPushButton:disabled {
