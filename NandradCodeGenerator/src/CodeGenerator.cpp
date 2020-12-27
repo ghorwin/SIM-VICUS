@@ -355,7 +355,7 @@ void CodeGenerator::generateReadWriteCode() {
 				}
 				else if (xmlInfo.typeStr == "QColor") {
 					attribs +=
-							"	if (!m_" + attribName + ".isValid())\n"
+							"	if (m_" + attribName + ".isValid())\n"
 							"		e->SetAttribute(\""+attribName+"\", m_" + attribName + ".name().toStdString());\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Unit") {
@@ -444,7 +444,7 @@ void CodeGenerator::generateReadWriteCode() {
 				}
 				else if (xmlInfo.typeStr == "QColor") {
 					elements +=
-							"	if (!m_" + varName + ".isValid())\n"
+							"	if (m_" + varName + ".isValid())\n"
 							"		TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".name().toStdString());\n";
 				}
 				else if (xmlInfo.typeStr == "IBKMK::Vector3D") {
