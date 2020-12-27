@@ -21,6 +21,7 @@ SVDBMaterialEditDialog::SVDBMaterialEditDialog(QWidget *parent) :
 	// dialog most only be created by main window
 	Q_ASSERT(dynamic_cast<SVMainWindow*>(parent) != nullptr);
 	m_ui->setupUi(this);
+	m_ui->gridLayout->setMargin(4);
 
 	SVStyle::formatDatabaseTableView(m_ui->tableView);
 	m_ui->tableView->horizontalHeader()->setVisible(true);

@@ -53,6 +53,7 @@ private slots:
 	void on_lineEditDensity_editingFinished();
 	void on_lineEditSpecHeatCapacity_editingFinished();
 	void on_comboBoxCategory_currentIndexChanged(int index);
+	void on_pushButtonOpaqueMaterialColor_colorChanged();
 
 private:
 
