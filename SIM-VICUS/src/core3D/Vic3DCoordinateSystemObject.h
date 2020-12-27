@@ -115,7 +115,7 @@ private:
 	/*! Color buffer in CPU memory, holds colors of all vertices (same size as m_vertexBufferData). */
 	std::vector<ColorRGBA>		m_colorBufferData;
 	/*! Index buffer on CPU memory. */
-	std::vector<GLshort>		m_indexBufferData;
+	std::vector<GLuint>			m_indexBufferData;
 
 
 };

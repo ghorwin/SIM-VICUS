@@ -197,7 +197,7 @@ void NewPolygonObject::updateBuffers() {
 
 	if (!m_indexBufferData.empty()) {
 		m_indexBufferObject.bind();
-		m_indexBufferObject.allocate(m_indexBufferData.data(), m_indexBufferData.size()*sizeof(GLshort));
+		m_indexBufferObject.allocate(m_indexBufferData.data(), m_indexBufferData.size()*sizeof(GLuint));
 		m_indexBufferObject.release();
 	}
 
@@ -270,7 +270,7 @@ void NewPolygonObject::renderOpqaue() {
 		// select wire frame drawing
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		// now draw the geometry
-		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
+		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_INT, nullptr);
 		// switch back to fill mode
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 #endif
@@ -305,7 +305,7 @@ void NewPolygonObject::renderTransparent() {
 		// offset plane geometry a bit so that the plane is drawn behind the wireframe
 		glPolygonOffset(0.1f, 2.0f);
 		// now draw the geometry
-		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
+		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_INT, nullptr);
 		// turn off line offset mode
 		glDisable(GL_POLYGON_OFFSET_FILL);
 

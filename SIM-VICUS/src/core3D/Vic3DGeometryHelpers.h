@@ -23,7 +23,7 @@ namespace Vic3D {
 void addPlane(const VICUS::PlaneGeometry & g, const QColor & c,
 			  unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 			  std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
-			  std::vector<GLshort> & indexBufferData,
+			  std::vector<GLuint> & indexBufferData,
 			  bool inverted);
 
 /*! Same as addPlane, but only adds coordinates (no normals, no color buffer).
@@ -31,7 +31,7 @@ void addPlane(const VICUS::PlaneGeometry & g, const QColor & c,
 */
 void addPlane(const VICUS::PlaneGeometry & g,
 			  unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
-			  std::vector<VertexC> & vertexBufferData, std::vector<GLshort> & indexBufferData);
+			  std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData);
 
 /*! This updates the plane color in the vertex buffer. */
 void updateColors(const VICUS::PlaneGeometry & g, const QColor & c,
@@ -44,7 +44,7 @@ void updateColors(const VICUS::PlaneGeometry & g, const QColor & c,
 void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const QColor & c, double radius,
 				 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 				 std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
-				 std::vector<GLshort> & indexBufferData);
+				 std::vector<GLuint> & indexBufferData);
 
 /*! Same as addCylinder, but only adds coordinates (no normals, no color buffer).
 	Also, the index buffer contains indexes to be drawn with GL_TRIANGLES, whereas the other addCylinder function
@@ -52,7 +52,7 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const Q
 */
 void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, double radius,
 				 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
-				 std::vector<VertexC> & vertexBufferData, std::vector<GLshort> & indexBufferData);
+				 std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData);
 
 /*! Adds a cylinder mesh to a vertex, color and index buffer. */
 void updateCylinderColors(const QColor & c, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData);
@@ -63,12 +63,12 @@ void updateCylinderColors(const QColor & c, unsigned int & currentVertexIndex, s
 void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 			   unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 			   std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
-			   std::vector<GLshort> & indexBufferData);
+			   std::vector<GLuint> & indexBufferData);
 
 /*! Same as addSphere, but only adds coordinates (no normals, no color buffer). */
 void addSphere(const IBKMK::Vector3D & p, double radius,
 			   unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
-			   std::vector<VertexC> & vertexBufferData, std::vector<GLshort> & indexBufferData);
+			   std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData);
 
 /*! This updates the surface color of the selected surface in the color buffer. */
 void updateSphereColors(const QColor & c, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData);
@@ -78,7 +78,7 @@ void updateSphereColors(const QColor & c, unsigned int & currentVertexIndex, std
 /*! Adds an ikosaeder with individual colors a vertex+color buffer (no normals). */
 void addIkosaeder(const IBKMK::Vector3D & p, const std::vector<QColor> & cols, double radius,
 				 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
-				 std::vector<VertexCR> & vertexBufferData, std::vector<GLushort> & indexBufferData);
+				 std::vector<VertexCR> & vertexBufferData, std::vector<GLuint> & indexBufferData);
 
 
 
@@ -93,7 +93,7 @@ void addIkosaeder(const IBKMK::Vector3D & p, const std::vector<QColor> & cols, d
 void addSurface(const VICUS::Surface & s,
 				unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 				std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
-				std::vector<GLshort> & indexBufferData);
+				std::vector<GLuint> & indexBufferData);
 
 /*! This updates the surface color of the selected surface in the color buffer. */
 void updateColors(const VICUS::Surface & s, unsigned int & currentVertexIndex,

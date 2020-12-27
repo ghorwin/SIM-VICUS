@@ -12,14 +12,14 @@ namespace Vic3D {
 
 #define CYLINDER_SEGMENTS 16
 #define SPHERE_SEGMENTS 12
-
+#define STRIP_STOP_INDEX 0xFFFFFFFF
 // *** Primitives ***
 
 
 
 void addPlane(const VICUS::PlaneGeometry & g, const QColor & col,
 			  unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
-			  std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLshort> & indexBufferData,
+			  std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLuint> & indexBufferData,
 			  bool inverted)
 {
 	// add vertex data to buffers
@@ -117,7 +117,7 @@ void addPlane(const VICUS::PlaneGeometry & g, const QColor & col,
 
 
 void addPlane(const VICUS::PlaneGeometry & g, unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
-			  std::vector<VertexC> & vertexBufferData, std::vector<GLshort> & indexBufferData)
+			  std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData)
 {
 	// add vertex data to buffers
 	unsigned int nVertexes = g.vertexes().size();
@@ -220,7 +220,7 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const Q
 				 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 				 std::vector<Vertex> & vertexBufferData,
 				 std::vector<ColorRGBA> & colorBufferData,
-				 std::vector<GLshort> & indexBufferData)
+				 std::vector<GLuint> & indexBufferData)
 {
 	// we generate vertices for a cylinder starting at 0,0,0 and extending to 1,0,0 (x-axis is the rotation axis)
 
@@ -275,13 +275,13 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const Q
 	// finally add first two vertices again
 	indexBufferData[currentElementIndex++] = vertexIndexStart;
 	indexBufferData[currentElementIndex++] = vertexIndexStart+1;
-	indexBufferData[currentElementIndex++] = 0xFFFF; // set stop index
+	indexBufferData[currentElementIndex++] = STRIP_STOP_INDEX; // set stop index
 }
 
 
 void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, double radius,
 				 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
-				 std::vector<VertexC> & vertexBufferData, std::vector<GLshort> & indexBufferData)
+				 std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData)
 {
 	// we generate vertices for a cylinder starting at 0,0,0 and extending to 1,0,0 (x-axis is the rotation axis)
 
@@ -350,7 +350,7 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 			   unsigned int & currentElementIndex,
 			   std::vector<Vertex> & vertexBufferData,
 			   std::vector<ColorRGBA> & colorBufferData,
-			   std::vector<GLshort> & indexBufferData)
+			   std::vector<GLuint> & indexBufferData)
 {
 
 	QVector3D trans = VICUS::IBKVector2QVector(p);
@@ -409,7 +409,7 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 		}
 	}
 	indexBufferData[currentElementIndex++] = vertexStart+1; // finish circle with first vertex
-	indexBufferData[currentElementIndex++] = 0xFFFF; // set stop index
+	indexBufferData[currentElementIndex++] = STRIP_STOP_INDEX; // set stop index
 
 	// middle circles
 	for (unsigned int j=1; j<nSeg-1; ++j) {
@@ -421,7 +421,7 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 		indexBufferData[currentElementIndex++] = vertexStart;
 		indexBufferData[currentElementIndex++] = vertexStart - nSeg2;
 
-		indexBufferData[currentElementIndex++] = 0xFFFF; // set stop index
+		indexBufferData[currentElementIndex++] = STRIP_STOP_INDEX; // set stop index
 	}
 
 	vertexStart = lastVertex;
@@ -434,14 +434,14 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 	}
 	indexBufferData[currentElementIndex++] = currentVertexIndex-1;
 	indexBufferData[currentElementIndex++] = vertexStart - nSeg2;
-	indexBufferData[currentElementIndex++] = 0xFFFF; // set stop index
+	indexBufferData[currentElementIndex++] = STRIP_STOP_INDEX; // set stop index
 
 }
 
 
 void addSphere(const IBKMK::Vector3D & p, double radius,
 			   unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
-			   std::vector<VertexC> & vertexBufferData, std::vector<GLshort> & indexBufferData)
+			   std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData)
 {
 
 	QVector3D trans = VICUS::IBKVector2QVector(p);
@@ -541,7 +541,7 @@ void updateSphereColors(const QColor & c, unsigned int & currentVertexIndex, std
 
 void addIkosaeder(const IBKMK::Vector3D & p, const std::vector<QColor> & cols, double radius,
 				  unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
-				  std::vector<VertexCR> & vertexBufferData, std::vector<GLushort> & indexBufferData)
+				  std::vector<VertexCR> & vertexBufferData, std::vector<GLuint> & indexBufferData)
 {
 	QVector3D trans = VICUS::IBKVector2QVector(p);
 
@@ -574,17 +574,17 @@ void addIkosaeder(const IBKMK::Vector3D & p, const std::vector<QColor> & cols, d
 
 	for (unsigned int i=0; i<v0.size(); ++i)
 		indexBufferData[currentElementIndex+i] = currentVertexIndex+ v0[i];
-	indexBufferData[currentElementIndex+v0.size()] = 0xFFFF;
+	indexBufferData[currentElementIndex+v0.size()] = STRIP_STOP_INDEX;
 	currentElementIndex += v0.size() + 1;
 
 	for (unsigned int i=0; i<v1.size(); ++i)
 		indexBufferData[currentElementIndex+i] = currentVertexIndex + v1[i];
-	indexBufferData[currentElementIndex+v1.size()] = 0xFFFF;
+	indexBufferData[currentElementIndex+v1.size()] = STRIP_STOP_INDEX;
 	currentElementIndex += v1.size() + 1;
 
 	for (unsigned int i=0; i<v2.size(); ++i)
 		indexBufferData[currentElementIndex+i] = currentVertexIndex + v2[i];
-	indexBufferData[currentElementIndex+v2.size()] = 0xFFFF;
+	indexBufferData[currentElementIndex+v2.size()] = STRIP_STOP_INDEX;
 	currentElementIndex += v2.size() + 1;
 
 	currentVertexIndex += nVertices;
@@ -597,7 +597,7 @@ void addIkosaeder(const IBKMK::Vector3D & p, const std::vector<QColor> & cols, d
 // This adds two planes, one after another, with the second one facing the opposite direction.
 void addSurface(const VICUS::Surface & s,
 				unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
-				std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLshort> & indexBufferData)
+				std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLuint> & indexBufferData)
 {
 	// skip invalid geometry
 	if (!s.m_geometry.isValid())

@@ -134,7 +134,7 @@ void WireFrameObject::updateBuffers() {
 	m_vertexBufferObject.release();
 
 	m_indexBufferObject.bind();
-	m_indexBufferObject.allocate(m_indexBufferData.data(), m_indexBufferData.size()*sizeof(GLshort));
+	m_indexBufferObject.allocate(m_indexBufferData.data(), m_indexBufferData.size()*sizeof(GLuint));
 	m_indexBufferObject.release();
 }
 
@@ -163,9 +163,9 @@ void WireFrameObject::render() {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	// now draw the geometry
 	if (m_drawTriangleStrips)
-		glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
+		glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_INT, nullptr);
 	else
-		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
+		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_INT, nullptr);
 	// switch back to fill mode
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	// turn off line offset mode
@@ -175,9 +175,9 @@ void WireFrameObject::render() {
 	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], selColor);
 	// now draw the geometry
 	if (m_drawTriangleStrips)
-		glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
+		glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_INT, nullptr);
 	else
-		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
+		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_INT, nullptr);
 
 	m_vao.release();
 }

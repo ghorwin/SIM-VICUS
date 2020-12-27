@@ -122,7 +122,7 @@ private:
 	*/
 	std::vector<VertexC>			m_vertexBufferData;
 	/*! Index buffer on CPU memory (only for the triangle strip). */
-	std::vector<GLshort>			m_indexBufferData;
+	std::vector<GLuint>			m_indexBufferData;
 
 	/*! VertexArrayObject, references the vertex, color and index buffers. */
 	QOpenGLVertexArrayObject		m_vao;

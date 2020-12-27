@@ -81,7 +81,7 @@ public:
 	/*! Vertex buffer in CPU memory, holds data of all vertices (coords and normals). */
 	std::vector<VertexC>		m_vertexBufferData;
 	/*! Index buffer on CPU memory. */
-	std::vector<GLshort>		m_indexBufferData;
+	std::vector<GLuint>		m_indexBufferData;
 
 	/*! Maps unique surface/node ID to vertex start index in m_vertexBufferData. */
 	std::map<unsigned int, unsigned int>	m_vertexStartMap;

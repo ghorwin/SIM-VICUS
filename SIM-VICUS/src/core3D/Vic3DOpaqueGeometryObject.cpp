@@ -107,7 +107,7 @@ void OpaqueGeometryObject::updateBuffers() {
 	m_vertexBufferObject.release();
 
 	m_indexBufferObject.bind();
-	m_indexBufferObject.allocate(m_indexBufferData.data(), m_indexBufferData.size()*sizeof(GLshort));
+	m_indexBufferObject.allocate(m_indexBufferData.data(), m_indexBufferData.size()*sizeof(GLuint));
 	m_indexBufferObject.release();
 
 	// also update the color buffer
@@ -132,9 +132,9 @@ void OpaqueGeometryObject::render() {
 	m_vao.bind();
 	// now draw the geometry
 	if (m_drawTriangleStrips)
-		glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
+		glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_INT, nullptr);
 	else
-		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_SHORT, nullptr);
+		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_INT, nullptr);
 	// release buffers again
 	m_vao.release();
 }
