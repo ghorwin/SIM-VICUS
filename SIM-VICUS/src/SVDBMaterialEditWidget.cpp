@@ -17,6 +17,8 @@ SVDBMaterialEditWidget::SVDBMaterialEditWidget(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 	m_ui->verticalLayout->setMargin(4);
+	// adjust color botton width
+	m_ui->pushButtonOpaqueMaterialColor->setMaximumSize(m_ui->lineEditName->height(), m_ui->lineEditName->height());
 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), "fr", true);
 	m_ui->lineEditName->setDialog3Caption(tr("Material identification name"));
@@ -37,6 +39,8 @@ SVDBMaterialEditWidget::SVDBMaterialEditWidget(QWidget *parent) :
 	for (int i=0; i<VICUS::Material::NUM_MC; ++i)
 		m_ui->comboBoxCategory->addItem(VICUS::KeywordListQt::Keyword("Material::Category", i), i);
 	m_ui->comboBoxCategory->blockSignals(false);
+
+	// color button size fix (overriding style settings)
 
 	// initial state is "nothing selected"
 	updateInput(-1);
@@ -121,6 +125,8 @@ void SVDBMaterialEditWidget::on_lineEditName_editingFinished() {
 		emit tableDataChanged();
 	}
 }
+
+
 void SVDBMaterialEditWidget::on_lineEditDataSource_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
 
@@ -131,6 +137,7 @@ void SVDBMaterialEditWidget::on_lineEditDataSource_editingFinished() {
 		emit tableDataChanged();
 	}
 }
+
 
 void SVDBMaterialEditWidget::on_lineEditManufacturer_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
@@ -143,6 +150,7 @@ void SVDBMaterialEditWidget::on_lineEditManufacturer_editingFinished() {
 	}
 }
 
+
 void SVDBMaterialEditWidget::on_lineEditNotes_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
 
@@ -153,6 +161,7 @@ void SVDBMaterialEditWidget::on_lineEditNotes_editingFinished() {
 		emit tableDataChanged();
 	}
 }
+
 
 void SVDBMaterialEditWidget::on_lineEditConductivity_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
@@ -170,6 +179,7 @@ void SVDBMaterialEditWidget::on_lineEditConductivity_editingFinished() {
 		}
 	}
 }
+
 
 void SVDBMaterialEditWidget::on_lineEditDensity_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
@@ -190,6 +200,7 @@ void SVDBMaterialEditWidget::on_lineEditDensity_editingFinished() {
 
 }
 
+
 void SVDBMaterialEditWidget::on_lineEditSpecHeatCapacity_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
 
@@ -206,6 +217,7 @@ void SVDBMaterialEditWidget::on_lineEditSpecHeatCapacity_editingFinished() {
 		}
 	}
 }
+
 
 void SVDBMaterialEditWidget::on_comboBoxCategory_currentIndexChanged(int index){
 	Q_ASSERT(m_current != nullptr);

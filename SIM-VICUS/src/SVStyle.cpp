@@ -53,12 +53,6 @@ SVStyle::SVStyle() {
 	m_fontMonoSpacePointSize = 9;
 #endif // Q_OS_WIN
 
-	m_alternativeBackgroundBright = "#fff4b8";
-	m_alternativeBackgroundDark = "#ffe49d";
-	m_alternativeBackgroundText = "#760000";
-	m_readOnlyEditFieldBackground = "#d6e9ff";
-	m_alternativeReadOnlyEditFieldBackground = "#b5d8ff";
-	m_errorEditFieldBackground = "#ff7777";
 }
 
 
@@ -140,13 +134,26 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 		file.open(QFile::ReadOnly);
 		m_styleSheet = QLatin1String(file.readAll());
 		qApp->setStyleSheet(m_styleSheet);
-		/// TODO : Stephan: adjust theme color members
+		// set specific background/font colors
+		m_alternativeBackgroundBright = "#73580e";
+		m_alternativeBackgroundDark = "#57430b";
+		m_alternativeBackgroundText = "#ffedce";
+		m_readOnlyEditFieldBackground = "#5f7da0";
+		m_alternativeReadOnlyEditFieldBackground = "#7f94ab";
+		m_errorEditFieldBackground = "#ab4e4e";
 	}
 	else if ( theme == SVSettings::TT_White && fileWhite.exists()) {
 		fileWhite.open(QFile::ReadOnly);
 		m_styleSheet = QLatin1String(fileWhite.readAll());
 		qApp->setStyleSheet(m_styleSheet);
-		/// TODO : Stephan: adjust theme color members
+
+		// set specific background/font colors
+		m_alternativeBackgroundBright = "#fff4b8";
+		m_alternativeBackgroundDark = "#ffe49d";
+		m_alternativeBackgroundText = "#760000";
+		m_readOnlyEditFieldBackground = "#d6e9ff";
+		m_alternativeReadOnlyEditFieldBackground = "#b5d8ff";
+		m_errorEditFieldBackground = "#ff7777";
 	}
 	else {
 		// clear style sheet for default style.
