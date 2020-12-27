@@ -123,7 +123,7 @@ void Network::updateVisualizationData() {
 
 	for (VICUS::NetworkNode & no : m_nodes) {
 		// color
-		QColor color(10,10,10,255);
+		QColor color("#0e4355");
 		switch (no.m_type) {
 			case VICUS::NetworkNode::NT_Source:
 				color = Qt::green;

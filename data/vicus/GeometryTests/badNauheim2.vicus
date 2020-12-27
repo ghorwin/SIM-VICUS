@@ -2,18 +2,20 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Do Dez 10 12:42:13 2020</Created>
-		<LastEdited>Do Dez 10 19:31:24 2020</LastEdited>
+		<LastEdited>So. Dez. 27 11:20:34 2020</LastEdited>
 	</ProjectInfo>
 	<Project>
+		<SolverParameter />
+		<Location />
 		<ViewSettings>
 			<GridSpacing>100</GridSpacing>
-			<GridWidth>100</GridWidth>
-			<CameraTranslation>-45.5968 -267.551 374.177</CameraTranslation>
+			<GridWidth>1000</GridWidth>
+			<CameraTranslation>-329.287 -476.076 324.613</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.958998</Wp>
-				<X>0.274644</X>
-				<Y>-0.0227678</Y>
-				<Z>-0.066088</Z>
+				<Wp>0.813263</Wp>
+				<X>0.516853</X>
+				<Y>-0.146587</Y>
+				<Z>-0.223527</Z>
 			</RotationMatrix>
 			<FarDistance>1700</FarDistance>
 		</ViewSettings>
@@ -2773,8 +2775,10 @@
 				<IBK:Parameter name="TemperatureSetpoint" unit="C">20</IBK:Parameter>
 				<IBK:Parameter name="TemperatureDifference" unit="K">4</IBK:Parameter>
 				<IBK:Parameter name="MaxPressureLoss" unit="Pa/m">150</IBK:Parameter>
+				<ScaleNodes>30</ScaleNodes>
+				<ScaleEdges>30</ScaleEdges>
 			</Network>
-			<Network id="1" fluidID="0" name="Bad Nauheim_reduced" visible="1">
+			<Network id="1" fluidID="0" name="Bad Nauheim_reduced">
 				<Nodes>
 					<NetworkNode id="0" type="Source" maxHeatingDemand="0">
 						<Position>271.954 -400.129 0</Position>
@@ -5284,6 +5288,8 @@
 				<IBK:Parameter name="TemperatureSetpoint" unit="C">20</IBK:Parameter>
 				<IBK:Parameter name="TemperatureDifference" unit="K">4</IBK:Parameter>
 				<IBK:Parameter name="MaxPressureLoss" unit="Pa/m">150</IBK:Parameter>
+				<ScaleNodes>30</ScaleNodes>
+				<ScaleEdges>30</ScaleEdges>
 			</Network>
 		</GeometricNetworks>
 		<NetworkFluids>
