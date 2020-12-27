@@ -72,7 +72,6 @@ void SVPropNetworkEditWidget::updateUi() {
 		m_ui->pushButtonReduceDeadEnds->setEnabled(m_network->checkConnectedGraph() && m_network->numberOfBuildings() > 0);
 		m_ui->labelLargestDiameter->setText(QString("%1 mm").arg(m_network->largestDiameter()));
 		m_ui->labelSmallestDiameter->setText(QString("%1 mm").arg(m_network->smallestDiameter()));
-		m_ui->checkBoxVisible->setChecked(m_network->m_visible);
 
 		m_ui->horizontalSliderScaleEdges->setValue(m_network->m_scaleEdges);
 		m_ui->horizontalSliderScaleNodes->setValue(m_network->m_scaleNodes);
@@ -118,7 +117,6 @@ void SVPropNetworkEditWidget::modifyStatus() {
 	if (m_network == nullptr)
 		return;
 	VICUS::Network network = *m_network; // Note: keeps unique IDs, but pointers are invalidated!
-	network.m_visible = m_ui->checkBoxVisible->isChecked();
 	network.m_scaleEdges = m_ui->horizontalSliderScaleEdges->value();
 	network.m_scaleNodes = m_ui->horizontalSliderScaleNodes->value();
 	network.updateNodeEdgeConnectionPointers(); // update pointers, since next function depends on it
@@ -219,6 +217,7 @@ void SVPropNetworkEditWidget::setupComboboxComponents()
 void SVPropNetworkEditWidget::networkFromId()
 {
 	unsigned int id = SVViewStateHandler::instance().m_navigationTreeWidget->selectedNodeID();
+//	SVViewStateHandler::instance().m_navigationTreeWidget->ch
 	if (id != 0)
 		m_treeItemId = id;
 	const VICUS::Project &p = project();
