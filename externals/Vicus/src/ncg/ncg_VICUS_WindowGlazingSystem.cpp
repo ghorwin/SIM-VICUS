@@ -141,7 +141,7 @@ TiXmlElement * WindowGlazingSystem::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
-	if (!m_color.isValid())
+	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
 	if (m_modelType != NUM_MT)
 		e->SetAttribute("modelType", KeywordList::Keyword("WindowGlazingSystem::modelType_t",  m_modelType));

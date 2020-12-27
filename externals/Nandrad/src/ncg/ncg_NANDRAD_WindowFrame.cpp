@@ -54,14 +54,6 @@ void WindowFrame::readXMLPrivate(const TiXmlElement * element) {
 			attrib = attrib->Next();
 		}
 		// search for mandatory elements
-		if (!element->FirstChildElement("Area"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'Area' element.") ), FUNC_ID);
-
-		if (!element->FirstChildElement("Thickness"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'Thickness' element.") ), FUNC_ID);
-
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {

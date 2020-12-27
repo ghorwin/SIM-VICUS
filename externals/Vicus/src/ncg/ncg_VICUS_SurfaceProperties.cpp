@@ -111,7 +111,7 @@ TiXmlElement * SurfaceProperties::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
-	if (!m_color.isValid())
+	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
 	if (!m_manufacturer.isEmpty())
 		TiXmlElement::appendSingleAttributeElement(e, "Manufacturer", nullptr, std::string(), m_manufacturer.toStdString());

@@ -132,7 +132,7 @@ TiXmlElement * EPDDataset::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("uuid", m_uuid.toStdString());
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
-	if (!m_color.isValid())
+	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
 	if (!m_notes.isEmpty())
 		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.toStdString());
