@@ -239,9 +239,10 @@ QGroupBox {
   font-weight: bold;
   border: 1px solid #3a3b3f;
   border-radius: 0px;
-  padding: 2px 0px 0px 0px;
-  margin-top: 16px;
+  padding: 0px 0px 0px 0px;
+  margin-top: 22px;
 }
+/*
 
 QGroupBox::title {
   subcontrol-origin: margin;
@@ -258,7 +259,7 @@ QGroupBox::indicator {
   height: 16px;
   width: 16px;
 }
-
+*/
 QGroupBox::indicator:unchecked {
   border: none;
   image: url(":/qss_icons/rc/checkbox_unchecked.png");
