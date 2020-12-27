@@ -32,6 +32,13 @@ public:
 	/*! Returns the currently selected color. */
 	const QColor color() const { return m_color; }
 
+	/*! Sets a special "disabled" state - button will be disabled
+		but being painted as regular.
+	*/
+	void setReadOnly(bool readOnly);
+
+	void setEnabled(bool enabled);
+
 signals:
 	/*! Emitted, when color has been changed by user. */
 	void colorChanged();
@@ -45,6 +52,8 @@ private slots:
 private:
 	/*! Holds the color to be drawn on the button. */
 	QColor	m_color;
+
+	bool	m_readOnly;
 
 };
 
