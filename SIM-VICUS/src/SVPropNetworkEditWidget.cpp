@@ -44,6 +44,42 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 						  VICUS::NetworkNode::NT_Building);
 	m_ui->comboBoxNodeType->clear();
 	m_ui->comboBoxNodeType->addItems(m_mapNodeTypes.keys());
+
+	// setup comobox components
+	m_mapComponents.clear();
+	m_mapComponents.insert(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::modelType_t",
+														NANDRAD::HydraulicNetworkComponent::MT_Radiator),
+														NANDRAD::HydraulicNetworkComponent::MT_Radiator);
+	m_mapComponents.insert(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::modelType_t",
+														NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger),
+														NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger);
+	m_mapComponents.insert(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::modelType_t",
+														NANDRAD::HydraulicNetworkComponent::MT_HeatPump),
+														NANDRAD::HydraulicNetworkComponent::MT_HeatPump);
+	m_mapComponents.insert(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::modelType_t",
+														NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel),
+														NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel);
+	m_ui->comboBoxComponent->clear();
+	m_ui->comboBoxComponent->addItems(m_mapComponents.keys());
+
+	// setup combobox heat exchange type
+	m_mapHeatExchangeType.clear();
+	m_mapHeatExchangeType.insert("None", NANDRAD::HydraulicNetworkComponent::NUM_HT);
+	m_mapHeatExchangeType.insert(NANDRAD::KeywordList::Description("HydraulicNetworkComponent::heatExchangeType_t",
+								NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant),
+								NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant);
+	m_mapHeatExchangeType.insert(NANDRAD::KeywordList::Description("HydraulicNetworkComponent::heatExchangeType_t",
+								NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile),
+								NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile);
+	m_mapHeatExchangeType.insert(NANDRAD::KeywordList::Description("HydraulicNetworkComponent::heatExchangeType_t",
+								NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithFMUTemperature),
+								NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithFMUTemperature);
+	m_mapHeatExchangeType.insert(NANDRAD::KeywordList::Description("HydraulicNetworkComponent::heatExchangeType_t",
+								NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature),
+								NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature);
+	m_ui->comboBoxHeatExchangeType->clear();
+	m_ui->comboBoxHeatExchangeType->addItems(m_mapHeatExchangeType.keys());
+	m_ui->comboBoxHeatExchangeType->setCurrentIndex(NANDRAD::HydraulicNetworkComponent::NUM_HT);
 }
 
 
@@ -172,6 +208,8 @@ void SVPropNetworkEditWidget::modifyNodeProperties()
 		VICUS::NetworkNode *n = &network.m_nodes[node->m_id];
 		n->m_type = VICUS::NetworkNode::NodeType(m_mapNodeTypes.value(m_ui->comboBoxNodeType->currentText()));
 		n->m_componentId = NANDRAD::HydraulicNetworkComponent::modelType_t(m_mapComponents.value(m_ui->comboBoxComponent->currentText()));
+//		n->m_heatExchangePara = NANDRAD::HydraulicNetworkComponent::heatExchangeType_t(
+//					m_mapHeatExchangeType.value(m_ui->comboBoxHeatExchangeType->currentText()));
 		if (m_ui->lineEditNodeHeatingDemand->isValid())
 			n->m_maxHeatingDemand = m_ui->lineEditNodeHeatingDemand->value();
 		if (m_ui->lineEditNodeX->isValid())
@@ -257,11 +295,6 @@ void SVPropNetworkEditWidget::showEdgeProperties()
 }
 
 void SVPropNetworkEditWidget::on_comboBoxNodeType_activated(int index)
-{
-	modifyNodeProperties();
-}
-
-void SVPropNetworkEditWidget::on_comboBoxComponent_activated(int index)
 {
 	modifyNodeProperties();
 }
@@ -393,4 +426,12 @@ void SVPropNetworkEditWidget::on_horizontalSliderScaleNodes_actionTriggered(int 
 void SVPropNetworkEditWidget::on_horizontalSliderScaleEdges_actionTriggered(int action)
 {
 	modifyStatus();
+}
+
+void SVPropNetworkEditWidget::on_comboBoxComponent_activated(const QString &arg1)
+{
+	bool hasHX = NANDRAD::HydraulicNetworkComponent::hasHeatExchange(
+				NANDRAD::HydraulicNetworkComponent::modelType_t(m_mapHeatExchangeType.value(arg1)));
+	m_ui->groupBoxHeatExchange->setVisible(hasHX);
+	modifyNodeProperties();
 }

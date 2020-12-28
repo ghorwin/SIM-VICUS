@@ -106,7 +106,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	NANDRAD::HydraulicNetworkComponent heatExchanger;
 	heatExchanger.m_id = 1;
 	heatExchanger.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger;
-	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_HeatFlux].set("HeatFlux", 100, IBK::Unit("W"));
+//	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_].set("HeatFlux", 100, IBK::Unit("W"));
 	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient].set("PressureLossCoefficient", 10, IBK::Unit("-"));
 	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].set("HydraulicDiameter", 50, IBK::Unit("mm"));
 	network->m_hydraulicComponents.push_back(heatExchanger);

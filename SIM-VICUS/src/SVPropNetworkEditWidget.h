@@ -47,8 +47,6 @@ public:
 private slots:
 	void on_comboBoxNodeType_activated(int index);
 
-	void on_comboBoxComponent_activated(int index);
-
 	void on_doubleSpinBoxNodeNeatingDemand_editingFinished();
 
 	void on_lineEditNodeX_editingFinished();
@@ -75,6 +73,8 @@ private slots:
 
 	void on_horizontalSliderScaleEdges_actionTriggered(int action);
 
+	void on_comboBoxComponent_activated(const QString &arg1);
+
 private:
 
 	void networkFromId();
@@ -92,6 +92,8 @@ private:
 	QMap<QString, unsigned> m_mapNodeTypes;
 
 	QMap<QString, unsigned> m_mapDBPipes;
+
+	QMap<QString, unsigned> m_mapHeatExchangeType;
 
 	unsigned int m_treeItemId = 0;
 

@@ -49,8 +49,8 @@ unsigned Network::addNode(const NetworkNode &node, const bool considerCoordinate
 	unsigned id = addNode(node.m_position, node.m_type, considerCoordinates);
 	m_nodes[id].m_componentId = node.m_componentId;
 	m_nodes[id].m_subNetworkId = node.m_subNetworkId;
-	for (unsigned n=0; n<NANDRAD::HydraulicNetworkElement::NUM_IP; ++n)
-		m_nodes[id].m_interfacePara[n] = node.m_interfacePara[n];
+	for (unsigned n=0; n<NANDRAD::HydraulicNetworkElement::NUM_HP; ++n)
+		m_nodes[id].m_heatExchangePara[n] = node.m_heatExchangePara[n];
 	m_nodes[id].m_maxHeatingDemand = node.m_maxHeatingDemand;
 	return id;
 }
@@ -671,8 +671,8 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &hydraulic
 				else
 					elem = NANDRAD::HydraulicNetworkElement(node.m_id, node.m_id, node.m_id + idOffsetOutlet, node.m_componentId);
 				// add parameters
-				for (unsigned i=0; i<NANDRAD::HydraulicNetworkElement::NUM_IP; ++i)
-					elem.m_interfacePara[i] = node.m_interfacePara[i];
+				for (unsigned i=0; i<NANDRAD::HydraulicNetworkElement::NUM_HP; ++i)
+					elem.m_heatExchangePara[i] = node.m_heatExchangePara[i];
 				elem.m_displayName = "node " + IBK::val2string(node.m_id);
 
 				hydraulicNetwork.m_elements.push_back(elem);

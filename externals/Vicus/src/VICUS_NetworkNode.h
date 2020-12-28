@@ -103,7 +103,7 @@ public:
 	unsigned int					m_subNetworkId = INVALID_ID;							// XML:A
 
 	/*! Parameter for interface */
-	IBK::Parameter					m_interfacePara[NANDRAD::HydraulicNetworkElement::NUM_IP];
+	IBK::Parameter					m_heatExchangePara[NANDRAD::HydraulicNetworkElement::NUM_HP];
 
 	// *** RUNTIME VARIABLES ***
 
