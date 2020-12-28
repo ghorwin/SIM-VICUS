@@ -1,7 +1,8 @@
 #include "SVUndoModifySurfaceGeometry.h"
 #include "SVProjectHandler.h"
 
-SVUndoModifySurfaceGeometry::SVUndoModifySurfaceGeometry(const QString & label, const std::vector<VICUS::Surface> & surfaces)
+SVUndoModifySurfaceGeometry::SVUndoModifySurfaceGeometry(const QString & label,
+														 const std::vector<VICUS::Surface> & surfaces)
 	: m_surfaces(surfaces)
 {
 	setText( label );

@@ -38,13 +38,19 @@ void SVUndoDeleteSelected::undo() {
 		rptr->m_surfaces.insert(rptr->m_surfaces.begin()+rsi.m_insertIdx, rsi.m_surface);
 	}
 
+	// we now insert the cached data back into the data model
+	// Note: we need to do this backwards, in order to keep the insert positions!
+	for (std::vector<RemovedSurfaceInfo>::const_reverse_iterator rit = m_plainGeometry.rbegin();
+		 rit != m_plainGeometry.rend(); ++rit)
+	{
+		const RemovedSurfaceInfo & rsi = *rit;
+		theProject().m_plainGeometry.insert(theProject().m_plainGeometry.begin()+rsi.m_insertIdx, rsi.m_surface);
+	}
+
 	// rebuild pointer hierarchy
 	theProject().updatePointers();
 	// tell project that the geometry has changed (i.e. rebuild navigation tree and scene)
 	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged);
-
-	// after the undo, we have a selection, so let's change the view-state to
-
 }
 
 
