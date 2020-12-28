@@ -37,17 +37,17 @@ void SVPropertyWidget::onViewStateChanged() {
 
 	SVViewState::PropertyWidgetMode m = SVViewStateHandler::instance().viewState().m_propertyWidgetMode;
 
-	// cache visibility state
-	bool visible[SVViewState::NUM_PM];
-	for (unsigned int i=0; i<SVViewState::NUM_PM; ++i) {
-		QWidget * w = m_propWidgets[i];
-		if (w != nullptr) {
-			visible[i] = w->isVisibleTo(this);
-			w->setVisible(false);
-		}
-		else
-			visible[i] = false;
-	}
+//	// cache visibility state
+//	bool visible[SVViewState::NUM_PM];
+//	for (unsigned int i=0; i<SVViewState::NUM_PM; ++i) {
+//		QWidget * w = m_propWidgets[i];
+//		if (w != nullptr) {
+//			visible[i] = w->isVisibleTo(this);
+//			w->setVisible(false);
+//		}
+//		else
+//			visible[i] = false;
+//	}
 
 	switch (m) {
 		case SVViewState::PM_EditGeometry :
