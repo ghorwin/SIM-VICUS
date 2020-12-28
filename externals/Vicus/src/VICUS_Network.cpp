@@ -789,6 +789,20 @@ double Network::smallestDiameter() const
 }
 
 
+void Network::cleanHydraulicComponentCatalog()
+{
+	std::vector<unsigned int> collectedIds;
+	for (const NetworkNode & node: m_nodes)	{
+		if (node.m_componentId != INVALID_ID)
+			collectedIds.push_back(node.m_componentId);
+	}
+	// remove components if there id can not be found in the collectedIds (we use a lambda capture here)
+	std::remove_if(m_hydraulicComponents.begin(), m_hydraulicComponents.end(),
+				   [collectedIds](const NANDRAD::HydraulicNetworkComponent & c) {
+		return std::find(collectedIds.begin(), collectedIds.end(), c.m_id) == collectedIds.end(); } );
+}
+
+
 void Network::writeNetworkCSV(const IBK::Path &file) const{
 	std::ofstream f;
 	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);

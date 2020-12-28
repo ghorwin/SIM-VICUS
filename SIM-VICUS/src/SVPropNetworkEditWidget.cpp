@@ -11,6 +11,7 @@
 
 #include "VICUS_KeywordList.h"
 
+#include "QtExt_Locale.h"
 
 SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 	QWidget(parent),
@@ -18,10 +19,13 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
+	m_ui->tableViewComponentParams->horizontalHeader()->setVisible(true);
+
 	m_ui->groupBoxNode->setVisible(false);
 	m_ui->groupBoxEdge->setVisible(false);
 	m_ui->groupBoxSizePipes->setVisible(false);
 	m_ui->groupBoxEditNetwork->setVisible(false);
+	m_ui->groupBoxHeatExchange->setVisible(false);
 
 	// setup combobox pipe models
 	m_mapPipeModels.clear();
@@ -47,6 +51,7 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 
 	// setup comobox components
 	m_mapComponents.clear();
+	m_mapComponents.insert("<None>", NANDRAD::HydraulicNetworkComponent::NUM_MT);
 	m_mapComponents.insert(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::modelType_t",
 														NANDRAD::HydraulicNetworkComponent::MT_Radiator),
 														NANDRAD::HydraulicNetworkComponent::MT_Radiator);
@@ -61,6 +66,7 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 														NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel);
 	m_ui->comboBoxComponent->clear();
 	m_ui->comboBoxComponent->addItems(m_mapComponents.keys());
+	m_ui->comboBoxComponent->setCurrentText(m_mapComponents.key(NANDRAD::HydraulicNetworkComponent::NUM_MT));
 
 	// setup combobox heat exchange type
 	m_mapHeatExchangeType.clear();
@@ -79,7 +85,8 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 								NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature);
 	m_ui->comboBoxHeatExchangeType->clear();
 	m_ui->comboBoxHeatExchangeType->addItems(m_mapHeatExchangeType.keys());
-	m_ui->comboBoxHeatExchangeType->setCurrentIndex(NANDRAD::HydraulicNetworkComponent::NUM_HT);
+	m_ui->comboBoxHeatExchangeType->setCurrentText(m_mapHeatExchangeType.key(NANDRAD::HydraulicNetworkComponent::NUM_HT));
+
 }
 
 
@@ -129,8 +136,6 @@ void SVPropNetworkEditWidget::updateUi() {
 	const VICUS::NetworkNode *node = dynamic_cast<const VICUS::NetworkNode *>(m_obj);
 	if (node != nullptr){
 		m_ui->lineEditNodeHeatingDemand->setEnabled(node->m_type == VICUS::NetworkNode::NT_Building);
-		setupComboboxComponents();
-		m_ui->comboBoxComponent->setCurrentText(m_mapComponents.key(node->m_componentId));
 		m_ui->comboBoxNodeType->setCurrentText(m_mapNodeTypes.key(node->m_type));
 		m_ui->labelNodeId->setText(QString("%1").arg(node->m_id));
 		m_ui->label->setText(QString("%1").arg(node->m_id));
@@ -147,6 +152,92 @@ void SVPropNetworkEditWidget::updateSizingParams() {
 	m_ui->doubleSpinBoxMaximumPressureLoss->setValue(m_network->m_sizingPara[VICUS::Network::SP_MaxPressureLoss].value);
 }
 
+
+void SVPropNetworkEditWidget::updateHydraulicComponent()
+{
+	const VICUS::NetworkNode *node = dynamic_cast<const VICUS::NetworkNode *>(m_obj);
+	if (node == nullptr )
+		return;
+	NANDRAD::HydraulicNetworkComponent component;
+	const NANDRAD::HydraulicNetworkComponent *tmpComp = VICUS::Project::element(m_network->m_hydraulicComponents, node->m_componentId);
+	if (tmpComp == nullptr)
+		return;
+	component = *tmpComp;
+
+	m_ui->comboBoxComponent->setCurrentText(m_mapComponents.key(component.m_modelType));
+	m_ui->groupBoxHeatExchange->setVisible(NANDRAD::HydraulicNetworkComponent::hasHeatExchange(component.m_modelType));
+	m_ui->comboBoxHeatExchangeType->setCurrentText(m_mapHeatExchangeType.key(component.m_heatExchangeType));
+	// ... hx parameter
+
+	// Create component parameter model and connect model to table view:
+	m_componentParModel = new ComponentParameterModel(this);
+	connect(m_componentParModel, SIGNAL(editCompleted(void)), this, SLOT(on_componentParModel_editCompleted(void)));
+	m_componentParModel->setComponent(component);
+	m_ui->tableViewComponentParams->setModel(m_componentParModel);
+	m_ui->tableViewComponentParams->show();
+}
+
+
+void SVPropNetworkEditWidget::modifyHydraulicComponent()
+{
+	FUNCID(SVPropNetworkEditWidget::modifyHydraulicComponent);
+
+	// get network
+	networkFromId();
+	if (m_network == nullptr)
+		return;
+	VICUS::Network network = *m_network;
+	network.updateNodeEdgeConnectionPointers();
+
+	// get node
+	const VICUS::NetworkNode *nodeConst = dynamic_cast<const VICUS::NetworkNode *>(m_obj);
+	if (nodeConst == nullptr )
+		return;
+	VICUS::NetworkNode *node = &network.m_nodes[nodeConst->m_id];
+
+	// check if this node has a component id already, and get the according component
+	NANDRAD::HydraulicNetworkComponent component;
+	if (nodeConst->m_componentId != VICUS::INVALID_ID){
+		const NANDRAD::HydraulicNetworkComponent *tmpComp = VICUS::Project::element(m_network->m_hydraulicComponents, nodeConst->m_componentId);
+		if (tmpComp == nullptr)
+			throw IBK::Exception(IBK::FormatString("Component with id %1 not found in hyraulic components")
+								 .arg(nodeConst->m_componentId), FUNC_ID);
+		component = *tmpComp;
+	}
+
+	// this makes sure, we have no components in the catalog that dont belong to any node
+	network.cleanHydraulicComponentCatalog();
+
+	// read model type and parameter
+	component.m_modelType = NANDRAD::HydraulicNetworkComponent::modelType_t(
+				m_mapComponents.value(m_ui->comboBoxComponent->currentText()));
+	if (component.m_modelType == NANDRAD::HydraulicNetworkComponent::NUM_MT)
+		return;
+
+	m_componentParModel->getComponentParameter(component.m_para);
+
+	component.m_heatExchangeType = NANDRAD::HydraulicNetworkComponent::heatExchangeType_t(
+				m_mapHeatExchangeType.value(m_ui->comboBoxHeatExchangeType->currentText()));
+	// hx params ...
+
+	// if the same component is already in the catalog, set node componentId accordingly
+	for (const NANDRAD::HydraulicNetworkComponent &exComponent: m_network->m_hydraulicComponents){
+		if (component == exComponent){
+			node->m_componentId = exComponent.m_id;
+			return;
+		}
+	}
+
+	// if we have obtained a component with new properties, we get a new id for it and add it to the catalog
+	component.m_id = VICUS::Project::uniqueId(m_network->m_hydraulicComponents);
+	network.m_hydraulicComponents.push_back(component);
+	node->m_componentId = component.m_id;
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), network);
+	undo->push();
+
+
+
+}
 
 void SVPropNetworkEditWidget::modifyStatus() {
 	networkFromId();
@@ -185,12 +276,12 @@ void SVPropNetworkEditWidget::modifyEdgeProperties()
 	if (m_network == nullptr)
 		return;
 	VICUS::Network network = *m_network;
-	const VICUS::NetworkEdge *edge = dynamic_cast<const VICUS::NetworkEdge *>(m_obj);
-	if (edge != nullptr){
-		VICUS::NetworkEdge *e = network.edge(edge->nodeId1(), edge->nodeId2());
-		e->m_supply = m_ui->checkBoxSupplyPipe->isChecked();
-		e->m_modelType = NANDRAD::HydraulicNetworkComponent::modelType_t(m_mapPipeModels.value(m_ui->comboBoxPipeModel->currentText()));
-		e->m_pipeId = m_mapDBPipes.value(m_ui->comboBoxPipeDB->currentText());
+	const VICUS::NetworkEdge *edgeConst = dynamic_cast<const VICUS::NetworkEdge *>(m_obj);
+	if (edgeConst != nullptr){
+		VICUS::NetworkEdge *edge = network.edge(edgeConst->nodeId1(), edgeConst->nodeId2());
+		edge->m_supply = m_ui->checkBoxSupplyPipe->isChecked();
+		edge->m_modelType = NANDRAD::HydraulicNetworkComponent::modelType_t(m_mapPipeModels.value(m_ui->comboBoxPipeModel->currentText()));
+		edge->m_pipeId = m_mapDBPipes.value(m_ui->comboBoxPipeDB->currentText());
 	}
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), network);
 	undo->push(); // modifies project and updates views
@@ -203,19 +294,18 @@ void SVPropNetworkEditWidget::modifyNodeProperties()
 	if (m_network == nullptr)
 		return;
 	VICUS::Network network = *m_network;
-	const VICUS::NetworkNode *node = dynamic_cast<const VICUS::NetworkNode *>(m_obj);
-	if (node != nullptr){
-		VICUS::NetworkNode *n = &network.m_nodes[node->m_id];
-		n->m_type = VICUS::NetworkNode::NodeType(m_mapNodeTypes.value(m_ui->comboBoxNodeType->currentText()));
-		n->m_componentId = NANDRAD::HydraulicNetworkComponent::modelType_t(m_mapComponents.value(m_ui->comboBoxComponent->currentText()));
+	const VICUS::NetworkNode *nodeConst = dynamic_cast<const VICUS::NetworkNode *>(m_obj);
+	if (nodeConst != nullptr){
+		VICUS::NetworkNode *node = &network.m_nodes[nodeConst->m_id];
+		node->m_type = VICUS::NetworkNode::NodeType(m_mapNodeTypes.value(m_ui->comboBoxNodeType->currentText()));
 //		n->m_heatExchangePara = NANDRAD::HydraulicNetworkComponent::heatExchangeType_t(
 //					m_mapHeatExchangeType.value(m_ui->comboBoxHeatExchangeType->currentText()));
 		if (m_ui->lineEditNodeHeatingDemand->isValid())
-			n->m_maxHeatingDemand = m_ui->lineEditNodeHeatingDemand->value();
+			node->m_maxHeatingDemand = m_ui->lineEditNodeHeatingDemand->value();
 		if (m_ui->lineEditNodeX->isValid())
-			n->m_position.m_x = m_ui->lineEditNodeX->value();
+			node->m_position.m_x = m_ui->lineEditNodeX->value();
 		if (m_ui->lineEditNodeY->isValid())
-			n->m_position.m_y = m_ui->lineEditNodeY->value();
+			node->m_position.m_y = m_ui->lineEditNodeY->value();
 //		if (m_ui->lineEditNodeZ->isValid())
 //			n->m_position.m_z = m_ui->lineEditNodeZ->value();
 	}
@@ -239,23 +329,9 @@ void SVPropNetworkEditWidget::setupComboboxPipeDB()
 }
 
 
-void SVPropNetworkEditWidget::setupComboboxComponents()
-{
-	networkFromId();
-	if (m_network == nullptr)
-		return;
-	m_mapComponents.clear();
-	for (const NANDRAD::HydraulicNetworkComponent &comp: m_network->m_hydraulicComponents)
-		m_mapComponents.insert(QString::fromStdString(comp.m_displayName), comp.m_id);
-	m_ui->comboBoxComponent->clear();
-	m_ui->comboBoxComponent->addItems(m_mapComponents.keys());
-}
-
-
 void SVPropNetworkEditWidget::networkFromId()
 {
 	unsigned int id = SVViewStateHandler::instance().m_navigationTreeWidget->selectedNodeID();
-//	SVViewStateHandler::instance().m_navigationTreeWidget->ch
 	if (id != 0)
 		m_treeItemId = id;
 	const VICUS::Project &p = project();
@@ -265,8 +341,7 @@ void SVPropNetworkEditWidget::networkFromId()
 	else if (dynamic_cast<const VICUS::Network *>(m_obj->m_parent) != nullptr)
 		m_network = dynamic_cast<const VICUS::Network *>(m_obj->m_parent);
 	else
-		return; /// TODO: undefined state - m_network remains old value... this is unsafe. Probably set to nullptr or
-				/// handle as assert
+		m_network = nullptr;
 }
 
 
@@ -430,8 +505,103 @@ void SVPropNetworkEditWidget::on_horizontalSliderScaleEdges_actionTriggered(int 
 
 void SVPropNetworkEditWidget::on_comboBoxComponent_activated(const QString &arg1)
 {
-	bool hasHX = NANDRAD::HydraulicNetworkComponent::hasHeatExchange(
-				NANDRAD::HydraulicNetworkComponent::modelType_t(m_mapHeatExchangeType.value(arg1)));
-	m_ui->groupBoxHeatExchange->setVisible(hasHX);
 	modifyNodeProperties();
+	modifyHydraulicComponent();
+}
+
+void SVPropNetworkEditWidget::on_componentParModel_editCompleted()
+{
+	modifyHydraulicComponent();
+}
+
+
+
+// *** ComponentParameterModel ***
+
+ComponentParameterModel::ComponentParameterModel(QObject *parent) : QAbstractTableModel(parent)
+{
+}
+
+void ComponentParameterModel::setComponent(const NANDRAD::HydraulicNetworkComponent & component)
+{
+	m_component = component;
+	m_parameterList = NANDRAD::HydraulicNetworkComponent::requiredParameter(m_component.m_modelType);
+}
+
+void ComponentParameterModel::getComponentParameter(IBK::Parameter m_para[])
+{
+	m_para = m_component.m_para;
+}
+
+int ComponentParameterModel::rowCount(const QModelIndex &parent) const
+{
+	Q_UNUSED(parent);
+	return m_parameterList.size();
+}
+
+int ComponentParameterModel::columnCount(const QModelIndex &parent) const
+{
+	Q_UNUSED(parent);
+	return 3;
+}
+
+QVariant ComponentParameterModel::data(const QModelIndex &index, int role) const
+{
+	if (!index.isValid() || role != Qt::DisplayRole)
+		return QVariant();
+
+	if (index.row()==0){
+		if (index.column()==0)
+			return "componentId";
+		else if (index.column()==1)
+			return m_component.m_id;
+		else
+			return QVariant();
+	}
+
+	if (index.column()==0)
+		return NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::para_t", m_parameterList[index.row()-1]);
+	else if (index.column()==1)
+		return m_component.m_para[m_parameterList[index.row()-1]].value;
+	else if (index.column()==2)
+		return NANDRAD::KeywordList::Unit("HydraulicNetworkComponent::para_t", m_parameterList[index.row()-1]);
+}
+
+QVariant ComponentParameterModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+	if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
+		if (section == 0)
+			return QString("Parameter");
+		else if (section == 1)
+			return QString("Value");
+		else if (section == 2)
+			return QString("Unit");
+	}
+	return QVariant();
+}
+
+bool ComponentParameterModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+
+	if (index.column()==1 && index.row()!=0){
+		bool ok = false;
+		double number = QtExt::Locale().toDouble(value.toString(), &ok);
+		if (!ok)
+			return false;
+		m_component.m_para[m_parameterList[index.row()-1]].value = number;
+		emit editCompleted();
+	}
+	return true;
+}
+
+Qt::ItemFlags ComponentParameterModel::flags(const QModelIndex &index) const
+{
+	if (index.row()==0)
+		return !Qt::ItemIsEnabled | !Qt::ItemIsSelectable;
+	else
+		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+	if (index.column()==1)
+		return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+	else
+		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }

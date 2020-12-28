@@ -119,6 +119,19 @@ public:
 		}
 	}
 
+	static std::vector<unsigned int> requiredParameter(const modelType_t modelType){
+		switch (modelType) {
+			case MT_ConstantPressurePumpModel:
+				return {P_PressureHead, P_PumpEfficiency, P_MotorEfficiency};
+			case MT_HeatPump:
+				return {P_PressureLossCoefficient, P_COP};
+			case MT_HeatExchanger:
+				return {P_PressureLossCoefficient};
+			default:
+				return {};
+		}
+	}
+
 };
 
 } // namespace NANDRAD

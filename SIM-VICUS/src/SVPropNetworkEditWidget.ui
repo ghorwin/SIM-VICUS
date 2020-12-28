@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>616</width>
-    <height>899</height>
+    <height>951</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -316,39 +316,38 @@
       <string>Edit Node</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="3" column="0">
+      <item row="0" column="1">
+       <widget class="QLabel" name="labelNodeId">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
        <widget class="QLabel" name="label_12">
         <property name="text">
          <string>component</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_14">
-        <property name="text">
-         <string>type</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="label_13">
-        <property name="text">
-         <string>maximum heating demand</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_15">
-        <property name="text">
-         <string>node id</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeHeatingDemand"/>
-      </item>
       <item row="2" column="1">
        <widget class="QComboBox" name="comboBoxNodeType"/>
+      </item>
+      <item row="5" column="1">
+       <widget class="QTableView" name="tableViewComponentParams">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="horizontalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QComboBox" name="comboBoxComponent"/>
       </item>
       <item row="1" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout">
@@ -384,23 +383,27 @@
         </item>
        </layout>
       </item>
-      <item row="0" column="1">
-       <widget class="QLabel" name="labelNodeId">
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_14">
         <property name="text">
-         <string/>
+         <string>type</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_15">
+        <property name="text">
+         <string>node id</string>
         </property>
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QComboBox" name="comboBoxComponent"/>
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeHeatingDemand"/>
       </item>
-      <item row="4" column="1">
-       <widget class="QTableView" name="tableViewComponentParams">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_13">
+        <property name="text">
+         <string>maximum heating demand</string>
         </property>
        </widget>
       </item>
@@ -463,9 +466,6 @@
       <string>Heat Exchange</string>
      </property>
      <layout class="QFormLayout" name="formLayout_4">
-      <item row="0" column="1">
-       <widget class="QComboBox" name="comboBoxHeatExchangeType"/>
-      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label_22">
         <property name="text">
@@ -473,15 +473,8 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QTableView" name="tableViewHeatExchangeParams">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-       </widget>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="comboBoxHeatExchangeType"/>
       </item>
      </layout>
     </widget>

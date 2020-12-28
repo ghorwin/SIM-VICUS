@@ -167,6 +167,9 @@ public:
 
 	double smallestDiameter() const;
 
+	/*! removes components from catalog if there is no node which holds an according componentId */
+	void cleanHydraulicComponentCatalog();
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! unique ID of network */
