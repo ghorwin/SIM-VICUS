@@ -236,7 +236,7 @@ void PlaneGeometry::update3DPolygon() {
 
 	m_vertexes.clear();
 
-	for (unsigned int i=0; i< m_polygon.size(); ++i) {
+	for (int i=0; i< m_polygon.size(); ++i) {
 		QVector3D vecA(m_polygon.value(i).x(),m_polygon.value(i).y(),0);
 		vecA = qq * vecA;
 		IBKMK::Vector3D vecB(vecA.x(),vecA.y(),vecA.z());

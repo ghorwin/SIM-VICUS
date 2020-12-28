@@ -7,6 +7,8 @@
 #include <VICUS_Project.h>
 #include <VICUS_Conversions.h>
 
+#include <IBKMK_3DCalculations.h>
+
 #include "SVProjectHandler.h"
 #include "SVSettings.h"
 #include "SVViewStateHandler.h"
@@ -123,16 +125,27 @@ void NewPolygonObject::updateLastVertex(const QVector3D & p) {
 	// no vertex added yet? should normally not happen, but during testing we just check it
 	if (m_vertexBufferData.empty())
 		return;
+
+	QVector3D newPoint = p;
+
+	// if we have already a valid plane (i.e. normal vector not 0,0,0), then check if point is in plane
+	if (m_planeGeometry.normal() != IBKMK::Vector3D(0,0,0)) {
+		IBKMK::Vector3D p2(VICUS::QVector2IBKVector(p));
+		IBKMK::Vector3D projected;
+		IBKMK::pointProjectedOnPlane(m_planeGeometry.vertexes()[0], m_planeGeometry.normal(), p2, projected);
+		newPoint = VICUS::IBKVector2QVector(projected);
+	}
+
 	// any change to the previously stored point?
-	if (p == m_vertexBufferData.back().m_coords)
+	if (m_vertexBufferData.back().m_coords == newPoint)
 		return;
 	// update last coordinate
 	// take the last value if no vertex line exists
 	// else update the second last point that is the local coordinate system
 	if (m_vertexBufferData.size()<2)
-		m_vertexBufferData.back().m_coords = p;
+		m_vertexBufferData.back().m_coords = newPoint;
 	else
-		m_vertexBufferData[m_vertexBufferData.size()-2].m_coords = p;
+		m_vertexBufferData[m_vertexBufferData.size()-2].m_coords = newPoint;
 
 	// and update the last part of the buffer (later, for now we just upload the entire buffer again)
 	// transfer data stored in m_vertexBufferData

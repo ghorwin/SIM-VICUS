@@ -66,6 +66,10 @@ public:
 		The function first compares the point with the currently set point - if no change is recognized, nothing happens.
 		If the point was indeed moved, the buffer will be updated and only the last vertex will be updated in the
 		GPU memory.
+
+		The vertex passed is the position of the local coordinate system. This may be, however, outside the
+		plane (if already enough vertices have been placed to form a plane). If this is the case, the function
+		computes the projection onto the plane and adds the projected point coordinates instead.
 	*/
 	void updateLastVertex(const QVector3D & p);
 
@@ -122,7 +126,7 @@ private:
 	*/
 	std::vector<VertexC>			m_vertexBufferData;
 	/*! Index buffer on CPU memory (only for the triangle strip). */
-	std::vector<GLuint>			m_indexBufferData;
+	std::vector<GLuint>				m_indexBufferData;
 
 	/*! VertexArrayObject, references the vertex, color and index buffers. */
 	QOpenGLVertexArrayObject		m_vao;

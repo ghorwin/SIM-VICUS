@@ -1268,15 +1268,21 @@ void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 	}
 
 	// take closes snap point and snap to it
+	QVector3D newCoordinatePoint;
 	if (snapPoints.empty()) {
 		// no snap points? no snapping
-		m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(pickObject.m_pickPoint) );
+		newCoordinatePoint = VICUS::IBKVector2QVector(pickObject.m_pickPoint);
 	}
 	else {
 		QVector3D closestPoint = snapPoints.begin()->second;
-		m_coordinateSystemObject.setTranslation(closestPoint);
+		newCoordinatePoint = closestPoint;
 //		qDebug() << (s != nullptr ? "object snap" : "grid snap") << closestPoint;
 	}
+
+	// if we have x,y or z local axis lock enabled, allow only movement in local x, y or z direction, that means,
+	// get the projection onto the locked axis
+
+	m_coordinateSystemObject.setTranslation(newCoordinatePoint);
 }
 
 
