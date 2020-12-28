@@ -57,14 +57,15 @@ void Vic3DScene::create(SceneView * parent, std::vector<ShaderProgram> & shaderP
 
 void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 
-	// no shader - not initialized yet, skip
-
+	// no shader - not initialized yet, skip modified event
 	if (m_gridShader == nullptr)
 		return;
 
 	bool updateGrid = false;
 	bool updateNetwork = false;
 	bool updateBuilding = false;
+	bool updateCamera = false;
+	bool updateSelection = false;
 	// filter out all modification types that we handle
 	SVProjectHandler::ModificationTypes mod = (SVProjectHandler::ModificationTypes)modificationType;
 	switch (mod) {
@@ -72,6 +73,8 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			updateGrid = true;
 			updateBuilding = true;
 			updateNetwork = true;
+			updateCamera = true;
+			updateSelection = true;
 			// clear new polygon drawing object
 			m_newPolygonObject.clear();
 			// set scene operation mode to "normal"
@@ -81,8 +84,9 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			SVViewStateHandler::instance().setViewState(vs);
 		} break;
 
-		case SVProjectHandler::GeometryChanged :
+		case SVProjectHandler::BuildingGeometryChanged :
 			updateBuilding = true;
+			updateSelection = true;
 			break;
 
 		case SVProjectHandler::GridModified :
@@ -91,25 +95,12 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 
 		case SVProjectHandler::NetworkModified :
 			updateNetwork = true;
+			updateSelection = true;
 			break;
-		case SVProjectHandler::GeometryModified : {
-			m_selectedGeometryObject.updateBuffers();
 
-			SVViewState vs = SVViewStateHandler::instance().viewState();
-			IBKMK::Vector3D centerPoint;
-			if ( project().haveSelectedSurfaces(centerPoint) ) {
-				vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-				vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
-				m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(centerPoint) );
-			}
-			else {
-				vs.m_sceneOperationMode = SVViewState::NUM_OM;
-				vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
-			}
-			// now tell all UI components to toggle their view state
-			SVViewStateHandler::instance().setViewState(vs);
+		case SVProjectHandler::SelectionModified :
+			updateSelection = true;
 			break;
-		}
 
 		// *** selection and visibility properties changed ***
 		case SVProjectHandler::NodeStateModified : {
@@ -195,30 +186,8 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			// Note: actually, selected surfaces can be de-selected by hiding them - we do not want to move/alter
 			//       invisible geometry
 			if (selectionModified) {
-				m_selectedGeometryObject.updateBuffers();
-
-				SVViewState vs = SVViewStateHandler::instance().viewState();
-				IBKMK::Vector3D centerPoint;
-				if ( project().haveSelectedSurfaces(centerPoint) ) {
-
-					IBKMK::Vector3D v;
-					// copy of scene to find bounding box;
-					VICUS::Project p = project();
-					p.boundingBoxofSelectedSurfaces(v);
-
-					vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-					vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
-					SVViewStateHandler::instance().m_propEditGeometryWidget->setBoundingBox(v);
-					m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(centerPoint) );
-				}
-				else {
-					vs.m_sceneOperationMode = SVViewState::NUM_OM;
-					vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
-				}
-				// now tell all UI components to toggle their view state
-				SVViewStateHandler::instance().setViewState(vs);
+				updateSelection = true;
 			}
-
 		} break;
 
 		default:
@@ -227,9 +196,11 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 
 	// *** initialize camera placement and model placement in the world ***
 
-	QVector3D cameraTrans = VICUS::IBKVector2QVector(SVProjectHandler::instance().viewSettings().m_cameraTranslation);
-	m_camera.setTranslation(cameraTrans);
-	m_camera.setRotation( SVProjectHandler::instance().viewSettings().m_cameraRotation.toQuaternion() );
+	if (updateCamera) {
+		QVector3D cameraTrans = VICUS::IBKVector2QVector(SVProjectHandler::instance().viewSettings().m_cameraTranslation);
+		m_camera.setTranslation(cameraTrans);
+		m_camera.setRotation( SVProjectHandler::instance().viewSettings().m_cameraRotation.toQuaternion() );
+	}
 
 	// re-create grid with updated properties
 	// since grid object is very small, this function also regenerates the grid line buffers and
@@ -237,15 +208,38 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 	if (updateGrid)
 		m_gridObject.create(m_gridShader);
 
+	if (updateSelection) {
+		// update selected objects
+		m_selectedGeometryObject.create(m_fixedColorTransformShader);
+		m_selectedGeometryObject.updateBuffers();
+
+		SVViewState vs = SVViewStateHandler::instance().viewState();
+		IBKMK::Vector3D centerPoint;
+		if ( project().haveSelectedSurfaces(centerPoint) ) {
+			vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+			vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
+			m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(centerPoint) );
+			IBKMK::Vector3D v;
+			project().boundingBoxofSelectedSurfaces(v);
+
+								vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+								vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
+								SVViewStateHandler::instance().m_propEditGeometryWidget->setBoundingBox(v);
+								m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(centerPoint) );		}
+		else {
+			vs.m_sceneOperationMode = SVViewState::NUM_OM;
+			vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+		}
+		// now tell all UI components to toggle their view state
+		SVViewStateHandler::instance().setViewState(vs);
+	}
+
 	// create geometry object (if already existing, nothing happens here)
 	if (updateBuilding) {
 		m_opaqueGeometryObject.create(m_buildingShader->shaderProgram()); // Note: does nothing, if already existing
 
 		// transfer data from building geometry to vertex array caches
 		generateBuildingGeometry();
-
-		m_selectedGeometryObject.create(m_fixedColorTransformShader);
-		m_selectedGeometryObject.updateBuffers();
 	}
 
 	// create network

@@ -23,7 +23,7 @@ void SVUndoAddSurface::undo() {
 	}
 
 	// tell project that the geometry has changed (i.e. rebuild navigation tree and scene)
-	SVProjectHandler::instance().setModified( SVProjectHandler::GeometryChanged);
+	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged);
 }
 
 
@@ -44,6 +44,6 @@ void SVUndoAddSurface::redo() {
 	}
 
 	// tell project that the network has changed
-	SVProjectHandler::instance().setModified( SVProjectHandler::GeometryChanged);
+	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged);
 }
 

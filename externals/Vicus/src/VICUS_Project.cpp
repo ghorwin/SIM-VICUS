@@ -383,12 +383,12 @@ bool Project::haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const {
 }
 
 
-bool Project::selectedSurfaces(std::vector<Surface*> &surfaces) {
+bool Project::selectedSurfaces(std::vector<const Surface*> &surfaces) const {
 	bool haveSelectedPolys = false;
 
 	// we go through all dump surfaces in m_plaingeometry
 	// if surface is selected and visible, we store its coordinates and its coordinates count
-	for ( Surface &s : m_plainGeometry) {
+	for (const Surface &s : m_plainGeometry) {
 		if ( s.m_visible && s.m_selected ) {
 			!haveSelectedPolys ? haveSelectedPolys = true : haveSelectedPolys;
 			surfaces.push_back(&s);
@@ -397,10 +397,10 @@ bool Project::selectedSurfaces(std::vector<Surface*> &surfaces) {
 
 	// we go through all surfaces inside the buildings
 	// if surface is selected and visible, we store its coordinates and its coordinates count
-	for ( Building &b : m_buildings) {
-		for ( BuildingLevel &bl : b.m_buildingLevels) {
-			for ( Room &r : bl.m_rooms) {
-				for ( Surface &s : r.m_surfaces) {
+	for (const  Building & b : m_buildings) {
+		for (const BuildingLevel & bl : b.m_buildingLevels) {
+			for (const Room & r : bl.m_rooms) {
+				for (const Surface & s : r.m_surfaces) {
 					if ( s.m_visible && s.m_selected ) {
 						!haveSelectedPolys ? haveSelectedPolys = true : haveSelectedPolys;
 						surfaces.push_back(&s);
@@ -414,8 +414,8 @@ bool Project::selectedSurfaces(std::vector<Surface*> &surfaces) {
 }
 
 
-bool Project::boundingBoxofSelectedSurfaces(IBKMK::Vector3D &boundingbox) {
-	std::vector<VICUS::Surface*> surfaces;
+bool Project::boundingBoxofSelectedSurfaces(IBKMK::Vector3D &boundingbox) const {
+	std::vector<const VICUS::Surface*> surfaces;
 
 	// store selected surfaces
 	if ( !selectedSurfaces(surfaces) )
@@ -427,7 +427,7 @@ bool Project::boundingBoxofSelectedSurfaces(IBKMK::Vector3D &boundingbox) {
 	double minX = std::numeric_limits<double>::max();
 	double minY = std::numeric_limits<double>::max();
 	double minZ = std::numeric_limits<double>::max();
-	for ( VICUS::Surface *s : surfaces ) {
+	for (const VICUS::Surface *s : surfaces ) {
 		for ( IBKMK::Vector3D v : s->m_geometry.vertexes() ) {
 			( v.m_x > maxX ) ? maxX = v.m_x : 0;
 			( v.m_y > maxY ) ? maxY = v.m_y : 0;

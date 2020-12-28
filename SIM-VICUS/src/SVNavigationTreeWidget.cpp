@@ -55,7 +55,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 	switch (mod) {
 		case SVProjectHandler::AllModified :
 		case SVProjectHandler::NetworkModified :
-		case SVProjectHandler::GeometryChanged :
+		case SVProjectHandler::BuildingGeometryChanged :
 			/// \todo parse 'data' to determine what has changed and avoid updating entire tree (and losing collapsed state)
 			break;
 

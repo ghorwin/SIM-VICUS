@@ -148,7 +148,6 @@ void SceneView::onModified(int modificationType, ModificationInfo * data) {
 void SceneView::onStyleChanged() {
 	// notify grid and selection objects to rebuild their appearance
 	m_mainScene.onModified(SVProjectHandler::GridModified, nullptr);
-	m_mainScene.onModified(SVProjectHandler::SelectionModified, nullptr);
 
 	// need double-painting on Linux/Mac (first in back-buffer than on screen)
 	renderNow();

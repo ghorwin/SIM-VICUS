@@ -60,6 +60,11 @@ public:
 	/*! Binds the vertex array object and renders the geometry. */
 	void render();
 
+	/*! Processed project data and updates the m_selectedObjects vector based
+		on the selection property of the objects.
+	*/
+	void updateSelectedObjectsFromProject();
+
 	/*! The transformation from model coordinates to (current) world coordinates. */
 	Transform3D					m_transform;
 

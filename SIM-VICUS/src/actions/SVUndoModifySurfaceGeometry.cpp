@@ -1,52 +1,36 @@
 #include "SVUndoModifySurfaceGeometry.h"
 #include "SVProjectHandler.h"
 
-SVUndoModifySurfaceGeometry::SVUndoModifySurfaceGeometry(const QString & label, /*const std::vector<VICUS::Building> & b,
-														 const std::vector<VICUS::Surface> & s*/ std::vector<VICUS::Surface*> surfaces) /*:*/
-//	m_buildings(b),
-//	m_surfaces(surfaces)
+SVUndoModifySurfaceGeometry::SVUndoModifySurfaceGeometry(const QString & label, const std::vector<VICUS::Surface> & surfaces)
+	: m_surfaces(surfaces)
 {
-	for (VICUS::Surface *s : surfaces) {
-		m_surfaces.push_back(*s);
-	}
-
 	setText( label );
-
 }
 
 
 void SVUndoModifySurfaceGeometry::undo() {
 
-	std::vector<VICUS::Surface*> surfacesProject;
+	std::vector<const VICUS::Surface*> surfacesProject;
 
+	// since selection change is also an undo property, we can rely on having the same selection
+	// here as when the surface properties were modified
 	theProject().selectedSurfaces(surfacesProject);
 
-	for ( VICUS::Surface *sOld : surfacesProject ) {
+	for (const VICUS::Surface *sOld : surfacesProject ) {
 		for ( VICUS::Surface &sNew : m_surfaces ) {
 			if ( sOld->m_id == sNew.m_id )
-				std::swap(sOld->m_geometry, sNew.m_geometry);
+				std::swap(const_cast<VICUS::Surface *>(sOld)->m_geometry, sNew.m_geometry);
 		}
 	}
 
-	// remove last network
-//	for (std::map< VICUS::Surface*, std::vector<IBKMK::Vector3D> >::const_iterator itSurfPointerToVertexes = m_surfaceMap.begin();
-//		 itSurfPointerToVertexes != m_surfaceMap.end(); ++itSurfPointerToVertexes ) {
-//		std::swap( itSurfPointerToVertexes->first->m_geometry.vertexes(), itSurfPointerToVertexes->second )
 
-//	}
-
-//	std::swap( theProject().m_buildings, m_buildings );
-//	std::swap( theProject().m_plainGeometry, m_surfaces );
-
-
-	// tell project that the network has changed
-	SVProjectHandler::instance().setModified( SVProjectHandler::GeometryChanged );
-	SVProjectHandler::instance().setModified( SVProjectHandler::GeometryModified );
+	// tell project that geometry has changed
+	// NOTE: this may be slow for larger geometries...
+	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged );
 }
 
 
 void SVUndoModifySurfaceGeometry::redo() {
-
 	undo();
 }
 

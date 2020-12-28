@@ -85,6 +85,9 @@ void WireFrameObject::destroy() {
 
 
 void WireFrameObject::updateBuffers() {
+
+	updateSelectedObjectsFromProject();
+
 	// clear out existing cache
 
 	m_vertexBufferData.clear();
@@ -180,6 +183,43 @@ void WireFrameObject::render() {
 		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_INT, nullptr);
 
 	m_vao.release();
+}
+
+
+void WireFrameObject::updateSelectedObjectsFromProject() {
+	m_selectedObjects.clear();
+	// process all building surfaces
+	const VICUS::Project & prj = project();
+	// Buildings
+	for (const VICUS::Building & b : prj.m_buildings) {
+		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+			for (const VICUS::Room & r : bl.m_rooms) {
+				for (const VICUS::Surface & s : r.m_surfaces) {
+					if (s.m_selected)
+						m_selectedObjects.insert(&s);
+				}
+			}
+		}
+	}
+
+	// Networks
+	for (const VICUS::Network & n : prj.m_geometricNetworks) {
+		for (const VICUS::NetworkEdge & e : n.m_edges) {
+			if (e.m_selected)
+				m_selectedObjects.insert(&e);
+		}
+
+		for (const VICUS::NetworkNode & nod : n.m_nodes) {
+			if (nod.m_selected)
+				m_selectedObjects.insert(&nod);
+		}
+	}
+
+	// Dumb plain geometry
+	for (const VICUS::Surface & s : prj.m_plainGeometry) {
+		if (s.m_selected)
+			m_selectedObjects.insert(&s);
+	}
 }
 
 } // namespace Vic3D

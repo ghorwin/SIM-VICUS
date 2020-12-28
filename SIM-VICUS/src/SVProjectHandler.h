@@ -36,6 +36,8 @@ public:
 	static SVProjectHandler & instance();
 
 	/*! Modification types used in undo actions.
+		You can set multiple different modification types after another in subsequent calls
+		to setModified().
 		\see setModified()
 	*/
 	enum ModificationTypes {
@@ -47,18 +49,20 @@ public:
 		GridModified,
 		/*! Network data changed. */
 		NetworkModified,
-		/*! Anything in the geometry has changed. */
-		GeometryChanged,
-		/*! Geometry has been edited and we need to update the local coordinate system. */
-		GeometryModified,
-		/*! Selection has changed - update of entire selection object is requested. */
+		/*! Anything in the geometry (building, network, dump geometry, ...) has changed. */
+		BuildingGeometryChanged,
+		/*! Selection has changed (color due to style settings, or selected objects) -
+			update of entire selection object is requested (only the visual part).
+		*/
 		SelectionModified,
 		/*! The state (visibility/selection) of a node in the tree view/surface in the scene has changed.
 			data pointer is a std::vector<unsigned int> that contains the unique IDs of modified elements.
+			Note: if any selection property was changed, this undo-action also executes the SelectionChanged modification.
 		*/
 		NodeStateModified,
 		/*! Used whenever the project data changes completely (new project created, project loaded etc.)
-			and a complete reset of all views and models is needed. */
+			and a complete reset of all views and models is needed.
+		*/
 		AllModified = 0x00FF0001
 	};
 

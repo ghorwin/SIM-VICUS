@@ -24,10 +24,14 @@ public:
 private:
 	struct RemovedSurfaceInfo {
 		RemovedSurfaceInfo() {}
-		RemovedSurfaceInfo(unsigned int	parentRoomId, const VICUS::Surface & surface) :
-			m_parentRoomId(parentRoomId), m_surface(surface)
+		RemovedSurfaceInfo(unsigned int	parentRoomId, unsigned int insertIdx, const VICUS::Surface & surface) :
+			m_parentRoomId(parentRoomId), m_insertIdx(insertIdx), m_surface(surface)
 		{}
+		/*! The unique ID of the containing room object */
 		unsigned int	m_parentRoomId;
+		/*! The index of the object when inserted in the original vector. */
+		unsigned int	m_insertIdx;
+		/*! The cached object. */
 		VICUS::Surface	m_surface;
 	};
 
@@ -37,7 +41,7 @@ private:
 	/*! Vector with planar geometry. */
 	std::vector<RemovedSurfaceInfo>						m_roomGeometry;
 	/*! Vector with planar anonymous geometry. */
-	std::vector<VICUS::Surface>							m_plainGeometry;
+	std::vector<RemovedSurfaceInfo>						m_plainGeometry;
 };
 
 

@@ -1,6 +1,8 @@
 #include "SVUndoDeleteSelected.h"
 #include "SVProjectHandler.h"
 
+#include "SVViewStateHandler.h"
+
 SVUndoDeleteSelected::SVUndoDeleteSelected(const QString & label, const std::vector<unsigned int> & selectedIDs) :
 	m_selectedIDs(selectedIDs)
 {
@@ -21,11 +23,28 @@ public:
 
 void SVUndoDeleteSelected::undo() {
 
+	// we now insert the cached data back into the data model
+	// Note: we need to do this backwards, in order to keep the insert positions!
+	for (std::vector<RemovedSurfaceInfo>::const_reverse_iterator rit = m_roomGeometry.rbegin();
+		 rit != m_roomGeometry.rend(); ++rit)
+	{
+		const RemovedSurfaceInfo & rsi = *rit;
+		// find the room with given ID
+		const VICUS::Object * o = theProject().objectById(rsi.m_parentRoomId);
+		Q_ASSERT(o != nullptr);
+		const VICUS::Room * r = dynamic_cast<const VICUS::Room*>(o);
+		Q_ASSERT(r != nullptr);
+		VICUS::Room * rptr = const_cast<VICUS::Room*>(r);
+		rptr->m_surfaces.insert(rptr->m_surfaces.begin()+rsi.m_insertIdx, rsi.m_surface);
+	}
 
 	// rebuild pointer hierarchy
 	theProject().updatePointers();
 	// tell project that the geometry has changed (i.e. rebuild navigation tree and scene)
-	SVProjectHandler::instance().setModified( SVProjectHandler::GeometryChanged);
+	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged);
+
+	// after the undo, we have a selection, so let's change the view-state to
+
 }
 
 
@@ -53,7 +72,8 @@ void SVUndoDeleteSelected::redo() {
 								roomIt->m_surfaces.begin(), roomIt->m_surfaces.end(), hasUniqueID(uID));
 					if (it != roomIt->m_surfaces.end()) {
 						// copy surface over to data store
-						m_roomGeometry.push_back(RemovedSurfaceInfo(roomIt->uniqueID(), *it));
+						unsigned int idx = std::distance(roomIt->m_surfaces.begin(), it);
+						m_roomGeometry.push_back(RemovedSurfaceInfo(roomIt->uniqueID(), idx, *it));
 						// now remove the surface
 						roomIt->m_surfaces.erase(it);
 						found = true;
@@ -70,7 +90,8 @@ void SVUndoDeleteSelected::redo() {
 					prj.m_plainGeometry.begin(), prj.m_plainGeometry.end(), hasUniqueID(uID));
 		if (it != prj.m_plainGeometry.end()) {
 			// copy surface over to data store
-			m_plainGeometry.push_back(*it);
+			unsigned int idx = std::distance(prj.m_plainGeometry.begin(), it);
+			m_plainGeometry.push_back(RemovedSurfaceInfo(0, idx, *it));
 			// now remove the surface
 			prj.m_plainGeometry.erase(it);
 			found = true;
@@ -83,6 +104,6 @@ void SVUndoDeleteSelected::redo() {
 	theProject().updatePointers();
 
 	// tell project that the network has changed
-	SVProjectHandler::instance().setModified( SVProjectHandler::GeometryChanged);
+	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged);
 }
 

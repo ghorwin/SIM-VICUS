@@ -91,21 +91,24 @@ void SVPropEditGeometry::on_toolButtonAddZoneBox_clicked() {
 
 }
 
-void SVPropEditGeometry::on_pushButtonTranslate_clicked()
-{
+
+void SVPropEditGeometry::on_pushButtonTranslate_clicked() {
 	// now we update all selected surfaces
-	VICUS::Project p = project();
 	Vic3D::Transform3D trans;
 	QVector3D transVec ( m_ui->doubleSpinBoxTranslateX->value(),
 						 m_ui->doubleSpinBoxTranslateY->value(),
 						 m_ui->doubleSpinBoxTranslateZ->value() );
 
-	std::vector<VICUS::Surface*> surfaces;
+
+	// compose vector of modified surface geometries
+	std::vector<VICUS::Surface> modifiedSurfaces;
+
 	IBKMK::Vector3D centerPoint;
-	p.selectedSurfaces(surfaces);
+	std::vector<const VICUS::Surface*> surfaces;
+	project().selectedSurfaces(surfaces);
 
 	if ( m_ui->radioButtonRelative->isChecked() ) {
-		for ( VICUS::Surface* s : surfaces ) {
+		for (const VICUS::Surface* s : surfaces ) {
 			std::vector<IBKMK::Vector3D> vs;
 			for ( IBKMK::Vector3D v : s->m_geometry.vertexes() ) {
 				Vic3D::Transform3D t;
@@ -114,11 +117,13 @@ void SVPropEditGeometry::on_pushButtonTranslate_clicked()
 				t.translate( transVec );
 				vs.push_back( IBKMK::Vector3D ( t.translation().x(), t.translation().y(), t.translation().z() ) );
 			}
-			s->m_geometry.setVertexes(vs);
+			VICUS::Surface newS(*s);
+			newS.m_geometry.setVertexes(vs);
+			modifiedSurfaces.push_back(newS);
 		}
 	}
 	else if ( m_ui->radioButtonLocal->isChecked() ) {
-		for ( VICUS::Surface* s : surfaces ) {
+		for (const VICUS::Surface* s : surfaces ) {
 			std::vector<IBKMK::Vector3D> vs;
 			QVector3D xAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localXAxis();
 			QVector3D yAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localYAxis();
@@ -132,12 +137,14 @@ void SVPropEditGeometry::on_pushButtonTranslate_clicked()
 				t.translate( zAxis *transVec.z() );
 				vs.push_back( IBKMK::Vector3D ( t.translation().x(), t.translation().y(), t.translation().z() ) );
 			}
-			s->m_geometry.setVertexes(vs);
+			VICUS::Surface newS(*s);
+			newS.m_geometry.setVertexes(vs);
+			modifiedSurfaces.push_back(newS);
 		}
 	}
 	else {
-		p.haveSelectedSurfaces(centerPoint);
-		for ( VICUS::Surface* s : surfaces ) {
+		project().haveSelectedSurfaces(centerPoint);
+		for (const VICUS::Surface* s : surfaces ) {
 			std::vector<IBKMK::Vector3D> vs;
 			for ( IBKMK::Vector3D v : s->m_geometry.vertexes() ) {
 				Vic3D::Transform3D t;
@@ -146,20 +153,22 @@ void SVPropEditGeometry::on_pushButtonTranslate_clicked()
 								  transVec.z() + ( v.m_z - centerPoint.m_z) );
 				vs.push_back( IBKMK::Vector3D ( t.translation().x(), t.translation().y(), t.translation().z() ) );
 			}
-			s->m_geometry.setVertexes(vs);
+			VICUS::Surface newS(*s);
+			newS.m_geometry.setVertexes(vs);
+			modifiedSurfaces.push_back(newS);
 		}
 	}
 
-	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("modified surfaces"), surfaces );
+	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("modified surfaces"), modifiedSurfaces );
 	undo->push();
-
-
 }
 
-void SVPropEditGeometry::on_pushButtonScale_clicked()
-{
+
+void SVPropEditGeometry::on_pushButtonScale_clicked() {
+
+	// TODO : Stephan, fix this like on_pushButtonTranslate_clicked()
+#if 0
 	// now we update all selected surfaces
-	VICUS::Project p = project();
 	Vic3D::Transform3D trans;
 	QVector3D scaleVec (	m_ui->doubleSpinBoxScaleX->value(),
 							m_ui->doubleSpinBoxScaleY->value(),
@@ -251,10 +260,13 @@ void SVPropEditGeometry::on_pushButtonScale_clicked()
 
 	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("modified surfaces"), surfaces );
 	undo->push();
+#endif
 }
 
-void SVPropEditGeometry::on_pushButtonRotate_clicked()
-{
+
+void SVPropEditGeometry::on_pushButtonRotate_clicked() {
+	// TODO : Stephan, fix this like on_pushButtonTranslate_clicked()
+#if 0
 	// now we update all selected surfaces
 	VICUS::Project p = project();
 	Vic3D::Transform3D trans;
@@ -340,14 +352,14 @@ void SVPropEditGeometry::on_pushButtonRotate_clicked()
 
 	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("modified surfaces"), surfaces );
 	undo->push();
+#endif
 }
 
-void SVPropEditGeometry::on_radioButtonScaleAbsolute_toggled(bool abs)
-{
-	VICUS::Project p = project();
+
+void SVPropEditGeometry::on_radioButtonScaleAbsolute_toggled(bool /*abs*/) {
 	IBKMK::Vector3D v;
 
-	p.boundingBoxofSelectedSurfaces(v);
+	project().boundingBoxofSelectedSurfaces(v);
 
 	setBoundingBox(v);
 }

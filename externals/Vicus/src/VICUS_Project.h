@@ -91,12 +91,12 @@ public:
 	/*! This function collects the pointers to all selected surfaces
 		\returns Returns true if any surface is selected
 	*/
-	bool selectedSurfaces(std::vector<Surface*> & surfaces);
+	bool selectedSurfaces(std::vector<const Surface*> & surfaces) const;
 
 	/*! This function returns the Bounding Box of all selected surfaces
 		\returns Returns true, if any surface is selected
 	*/
-	bool boundingBoxofSelectedSurfaces(IBKMK::Vector3D & boundingbox);
+	bool boundingBoxofSelectedSurfaces(IBKMK::Vector3D & boundingbox) const;
 
 	// *** FUNCTIONS ***
 
