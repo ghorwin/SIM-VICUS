@@ -68,11 +68,17 @@ public:
 	*/
 	void setViewState(const SVViewState & vs);
 
+	/*! When Escape was pressed, all selected objects become un-selected again. */
+	void deselectAll();
+
+	/*! Toggles "align coordinate system" mode on. */
+	void enterCoordinateSystemAdjustmentMode();
+	/*! Leaves the coordinate system alignment/positioning mode and returns to previous mode. */
+	void leaveCoordinateSystemAdjustmentMode(bool abort);
+
 private:
 	void generateBuildingGeometry();
 	void generateNetworkGeometry();
-	/*! When Escape was pressed, all selected objects become un-selected again. */
-	void clearSelectionOfObjects();
 
 	/*! Mouse pick handler: collects all surfaces along the pick line and stores first intersection point's
 		coordinates in m_pickPoint.

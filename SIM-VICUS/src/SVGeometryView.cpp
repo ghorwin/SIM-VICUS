@@ -137,6 +137,7 @@ void SVGeometryView::onNumberKeyPressed(Qt::Key k) {
 		case Qt::Key_7 : text += "7"; break;
 		case Qt::Key_8 : text += "8"; break;
 		case Qt::Key_9 : text += "9"; break;
+		case Qt::Key_Minus : text += "-"; break;
 		case Qt::Key_Comma : text += ","; break;
 		case Qt::Key_Period : text += "."; break;
 		case Qt::Key_Space : text += " "; break;

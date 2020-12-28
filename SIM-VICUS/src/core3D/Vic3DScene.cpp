@@ -311,138 +311,12 @@ void Vic3DScene::updateWorld2ViewMatrix() {
 
 bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoint & localMousePos, QPoint & newLocalMousePos) {
 
-	// we implement the following controls
+	// NOTE: In this function we handle only those keyboard inputs that affect the scene navigation.
+	//       Single key release events are handled in Vic3DSceneView, since they do not require repeated screen redraws.
 
 	bool needRepaint = false;
 
 	Transform3D oldCameraTransform = m_camera;
-
-	// *** Escape ***
-	if (keyboardHandler.keyReleased(Qt::Key_Escape)) {
-		// different operation depending on scene's operation mode
-		switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
-
-			// *** place a vertex ***
-			case SVViewState::OM_PlaceVertex : {
-				// abort "place vertex" operation
-				// reset new polygon object, so that it won't be drawn anylonger
-				m_newPolygonObject.clear();
-				// signal, that we are no longer in "add vertex" mode
-				SVViewState vs = SVViewStateHandler::instance().viewState();
-				vs.m_sceneOperationMode = SVViewState::NUM_OM;
-				vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
-				// now tell all UI components to toggle their view state
-				SVViewStateHandler::instance().setViewState(vs);
-				needRepaint = true;
-			} break;
-
-			case SVViewState::OM_AlignLocalCoordinateSystem:
-				// restore original local coordinate system
-				m_coordinateSystemObject.setTransform(m_oldCoordinateSystemTransform);
-				// switch back to previous view state
-				SVViewStateHandler::instance().restoreLastViewState();
-				needRepaint = true;
-				qDebug() << "Leaving 'Align coordinate system' mode";
-			break;
-
-			default:
-				// default mode - Escape clears selection
-				if (!m_selectedGeometryObject.m_selectedObjects.empty()) {
-					clearSelectionOfObjects();
-					needRepaint = true;
-				}
-		}
-	}
-
-	// *** Enter/Return ***
-	if (keyboardHandler.keyReleased(Qt::Key_Return)) {
-		// different operation depending on scene's operation mode
-		switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
-
-			// Note: place vertex mode is ended by "Enter" press through the "coordinate input widget" in the
-			//       geometry view's toolbar - either with coordinates, or without, there the polygon
-			//       is finished (if possible, otherwise an error message pops up)
-
-			// *** align coordinate system ***
-			case SVViewState::OM_AlignLocalCoordinateSystem : {
-				// finish aligning coordinate system and keep selected rotation in coordinate system
-				// but restore origin of local coordinate system object
-				m_coordinateSystemObject.setTranslation(m_oldCoordinateSystemTransform.translation());
-				// switch back to previous view state
-				SVViewStateHandler::instance().restoreLastViewState();
-				qDebug() << "Leaving 'Align coordinate system' mode";
-				needRepaint = true;
-			} break;
-
-			default:; // in all other modes, Enter has no effect (for now)
-
-		}
-	}
-
-
-	// *** F4 - toggle "align coordinate system" mode ****
-
-	if (keyboardHandler.keyReleased(Qt::Key_F4)) {
-		SVViewState vs = SVViewStateHandler::instance().viewState();
-		if (vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem) {
-			// restore origin of local coordinate system object
-			m_coordinateSystemObject.setTranslation(m_oldCoordinateSystemTransform.translation());
-			// switch back to previous view state
-			SVViewStateHandler::instance().restoreLastViewState();
-			qDebug() << "Leaving 'Align coordinate system' mode";
-		}
-		else {
-			// store current transformation of local coordinate system object
-			m_oldCoordinateSystemTransform = m_coordinateSystemObject.transform();
-			// turn on AlignLocalCoordinateSystem mode
-			vs.m_sceneOperationMode = SVViewState::OM_AlignLocalCoordinateSystem;
-			SVViewStateHandler::instance().setViewState(vs);
-			qDebug() << "Entering 'Align coordinate system' mode";
-		}
-		needRepaint = true;
-	}
-
-
-	// *** F3 - toggle "snap mode" mode ****
-
-	if (keyboardHandler.keyReleased(Qt::Key_F3)) {
-		SVViewState vs = SVViewStateHandler::instance().viewState();
-		if (vs.m_snapEnabled) {
-			vs.m_snapEnabled = false;
-			qDebug() << "Snap turned off";
-		}
-		else {
-			vs.m_snapEnabled = true;
-			qDebug() << "Snap turned on";
-		}
-		SVViewStateHandler::instance().setViewState(vs);
-		// Nothing further to be done - the coordinate system position is adjusted below for
-		// all view modes that require snapping
-		needRepaint = true;
-	}
-
-	// *** X,Y,Z locks - only in "place vertex" mode and transform modes ***
-
-	if (keyboardHandler.keyReleased(Qt::Key_X) ||
-		keyboardHandler.keyReleased(Qt::Key_Y) ||
-		keyboardHandler.keyReleased(Qt::Key_Z))
-	{
-		SVViewState vs = SVViewStateHandler::instance().viewState();
-		if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex) {
-			if (keyboardHandler.keyReleased(Qt::Key_X))
-				vs.m_locks ^= SVViewState::L_LocalX;
-			if (keyboardHandler.keyReleased(Qt::Key_Y))
-				vs.m_locks ^= SVViewState::L_LocalY;
-			if (keyboardHandler.keyReleased(Qt::Key_Z))
-				vs.m_locks ^= SVViewState::L_LocalZ;
-			qDebug() << "Locks: " << (vs.m_locks & SVViewState::L_LocalX) << (vs.m_locks & SVViewState::L_LocalY) << (vs.m_locks & SVViewState::L_LocalZ);
-		}
-		SVViewStateHandler::instance().setViewState(vs);
-		// Nothing further to be done - the coordinate system position is adjusted below for
-		// all view modes that require snapping
-		needRepaint = true;
-	}
-
 
 	// *** Keyboard navigation ***
 
@@ -1007,7 +881,7 @@ void Vic3DScene::generateNetworkGeometry() {
 }
 
 
-void Vic3DScene::clearSelectionOfObjects() {
+void Vic3DScene::deselectAll() {
 	// compose undo-action of objects currently selected
 	if (m_selectedGeometryObject.m_selectedObjects.empty())
 		return; // nothing selected, nothing to do
@@ -1018,6 +892,34 @@ void Vic3DScene::clearSelectionOfObjects() {
 	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Selected cleared"),
 														 SVUndoTreeNodeState::SelectedState, nodeIDs, false);
 	undo->push();
+}
+
+
+void Vic3DScene::leaveCoordinateSystemAdjustmentMode(bool abort) {
+	// restore original local coordinate system
+	if (abort) {
+		m_coordinateSystemObject.setTransform(m_oldCoordinateSystemTransform);
+		qDebug() << "Aborting 'Align coordinate system' mode (no change)";
+	}
+	else {
+		// finish aligning coordinate system and keep selected rotation in coordinate system
+		// but restore origin of local coordinate system object
+		m_coordinateSystemObject.setTranslation(m_oldCoordinateSystemTransform.translation());
+		qDebug() << "Leaving 'Align coordinate system' mode";
+	}
+	// switch back to previous view state
+	SVViewStateHandler::instance().restoreLastViewState();
+}
+
+
+void Vic3DScene::enterCoordinateSystemAdjustmentMode() {
+	// store current transformation of local coordinate system object
+	m_oldCoordinateSystemTransform = m_coordinateSystemObject.transform();
+	// turn on AlignLocalCoordinateSystem mode
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_sceneOperationMode = SVViewState::OM_AlignLocalCoordinateSystem;
+	SVViewStateHandler::instance().setViewState(vs);
+	qDebug() << "Entering 'Align coordinate system' mode";
 }
 
 

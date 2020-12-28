@@ -19,7 +19,7 @@ namespace Vic3D {
 SceneView::SceneView() :
 	m_inputEventReceived(false)
 {
-	// tell keyboard handler to monitor certain keys
+	// tell keyboard handler to monitor certain keys - only those needed for scene navigation
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_W);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_A);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_S);
@@ -28,14 +28,7 @@ SceneView::SceneView() :
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_E);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_R);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_F);
-	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_X);
-	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Y);
-	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Z);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Shift);
-	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Escape);
-	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Return);
-	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_F3);
-	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_F4);
 
 	// *** create scene (no OpenGL calls are being issued below, just the data structures are created.
 
@@ -296,13 +289,15 @@ void SceneView::paintGL() {
 
 void SceneView::keyPressEvent(QKeyEvent *event) {
 	m_keyboardMouseHandler.keyPressEvent(event);
-	// in place vertex mode, filter out number keys
+	// in place vertex mode, filter out number keys - we do this right at the moment that
+	// the key is pressed, since afterwards we switch focus to the coordinate line edit
+	// which handles repeating keys
 	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_PlaceVertex) {
 		Qt::Key k = static_cast<Qt::Key>(event->key());
 		if ((k >= Qt::Key_0 && k <= Qt::Key_9) ||
 			k == Qt::Key_Comma || k == Qt::Key_Period ||
 			k == Qt::Key_Space || k == Qt::Key_Return ||
-			k == Qt::Key_Backspace)
+			k == Qt::Key_Backspace || k == Qt::Key_Minus )
 		{
 			emit numberKeyPressed(k);
 		}
@@ -314,6 +309,110 @@ void SceneView::keyReleaseEvent(QKeyEvent *event) {
 	qDebug() << "SceneView::keyReleaseEvent";
 	m_keyboardMouseHandler.keyReleaseEvent(event);
 	checkInput();
+
+	// handle everything that are not scene navigation keys
+	Qt::Key k = static_cast<Qt::Key>(event->key());
+	switch (k) {
+
+		// *** Escape ***
+		case Qt::Key_Escape : {
+			// different operation depending on scene's operation mode
+			switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
+
+				// *** place a vertex ***
+				case SVViewState::OM_PlaceVertex : {
+					// abort "place vertex" operation
+					// reset new polygon object, so that it won't be drawn anylonger
+					SVViewStateHandler::instance().m_newPolygonObject->clear();
+					// signal, that we are no longer in "add vertex" mode
+					SVViewState vs = SVViewStateHandler::instance().viewState();
+					vs.m_sceneOperationMode = SVViewState::NUM_OM;
+					vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+					// now tell all UI components to toggle their view state
+					SVViewStateHandler::instance().setViewState(vs);
+				} break;
+
+				case SVViewState::OM_AlignLocalCoordinateSystem :
+					m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
+				break;
+
+				default:
+					// default mode - Escape clears selection
+					m_mainScene.deselectAll();
+			}
+		} break;
+
+
+		// *** Enter/Return ***
+		case Qt::Key_Return : {
+			// different operation depending on scene's operation mode
+			switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
+
+				// Note: place vertex mode is ended by "Enter" press through the "coordinate input widget" in the
+				//       geometry view's toolbar - either with coordinates, or without, there the polygon
+				//       is finished (if possible, otherwise an error message pops up)
+
+				// *** align coordinate system ***
+				case SVViewState::OM_AlignLocalCoordinateSystem : {
+					m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
+				} break;
+
+				default:; // in all other modes, Enter has no effect (for now)
+			}
+		} break;
+
+
+		// *** F3 - toggle "snap mode" mode ****
+		case Qt::Key_F3 : {
+			SVViewState vs = SVViewStateHandler::instance().viewState();
+			if (vs.m_snapEnabled) {
+				vs.m_snapEnabled = false;
+				qDebug() << "Snap turned off";
+			}
+			else {
+				vs.m_snapEnabled = true;
+				qDebug() << "Snap turned on";
+			}
+			SVViewStateHandler::instance().setViewState(vs);
+			// Nothing further to be done - the coordinate system position is adjusted below for
+			// all view modes that require snapping
+		} break;
+
+
+		// *** F4 - toggle "align coordinate system" mode ****
+		case Qt::Key_F4 : {
+			SVViewState vs = SVViewStateHandler::instance().viewState();
+			if (vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem)
+				m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
+			else
+				m_mainScene.enterCoordinateSystemAdjustmentMode();
+		} break;
+
+
+			// *** X,Y,Z locks - only in "place vertex" mode and transform modes ***
+		case Qt::Key_X :
+		case Qt::Key_Y :
+		case Qt::Key_Z :
+		{
+			SVViewState vs = SVViewStateHandler::instance().viewState();
+			if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex) {
+				if (k == Qt::Key_X)
+					vs.m_locks ^= SVViewState::L_LocalX;
+				else if (k == Qt::Key_Y)
+					vs.m_locks ^= SVViewState::L_LocalY;
+				else if (k == Qt::Key_Z)
+					vs.m_locks ^= SVViewState::L_LocalZ;
+				qDebug() << "Locks: " << (vs.m_locks & SVViewState::L_LocalX) << (vs.m_locks & SVViewState::L_LocalY) << (vs.m_locks & SVViewState::L_LocalZ);
+			}
+			SVViewStateHandler::instance().setViewState(vs);
+			// Nothing further to be done - the coordinate system position is adjusted below for
+			// all view modes that require snapping
+
+		} break;
+
+		default :; // ignore the rest
+	} // switch
+
 }
 
 void SceneView::mousePressEvent(QMouseEvent *event) {
