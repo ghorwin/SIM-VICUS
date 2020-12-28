@@ -60,6 +60,12 @@ double lineToLineDistance(const IBKMK::Vector3D & a1, const IBKMK::Vector3D & d1
 						  const IBKMK::Vector3D & a2, const IBKMK::Vector3D & d2,
 						  double & l1, IBKMK::Vector3D & p1, double & l2);
 
+/*! This function computes the projection of a point p in a plane (given by offset 'a' and 'normal' vector).
+	Returns projected point coordinates.
+*/
+void pointProjectedOnPlane(const IBKMK::Vector3D & a, const IBKMK::Vector3D & normal,
+						  const IBKMK::Vector3D & p, IBKMK::Vector3D & projectedP);
+
 } // namespace IBKMK
 
 #endif // IBKMK_3DCalculationsH

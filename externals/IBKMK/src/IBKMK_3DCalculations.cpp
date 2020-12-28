@@ -92,5 +92,15 @@ double lineToLineDistance(const IBKMK::Vector3D & a1, const IBKMK::Vector3D & d1
 	return ( p1 - p2 ).magnitude();   // return the closest distance
 }
 
+
+void pointProjectedOnPlane(const Vector3D & a, const Vector3D & normal, const Vector3D & p, Vector3D & projectedP) {
+	// vector from point to plane origin
+	projectedP = p-a;
+	// scalar product between this vector and plane's normal
+	double dist = normal.m_x*projectedP.m_x + normal.m_y*projectedP.m_y + normal.m_z*projectedP.m_z;
+	// subtract normal vector's contribution of project P from p
+	projectedP = p - dist*normal;
+}
+
 } // namespace IBKMK
 
