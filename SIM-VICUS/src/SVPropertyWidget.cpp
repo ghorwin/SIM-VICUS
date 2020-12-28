@@ -48,6 +48,12 @@ void SVPropertyWidget::onViewStateChanged() {
 //		else
 //			visible[i] = false;
 //	}
+	// hide all already created widgets
+	for (unsigned int i=0; i<SVViewState::NUM_PM; ++i) {
+		QWidget * w = m_propWidgets[i];
+		if (w != nullptr)
+			w->setVisible(false);
+	}
 
 	switch (m) {
 		case SVViewState::PM_EditGeometry :

@@ -92,8 +92,14 @@ void NewPolygonObject::destroy() {
 
 
 void NewPolygonObject::appendVertex(const IBKMK::Vector3D & p) {
-	//m_planeGeometry.addVertex(p);
-	m_vertexList.push_back(p);
+	// if we have already a valid plane (i.e. normal vector not 0,0,0), then check if point is in plane
+	if (m_planeGeometry.normal() != IBKMK::Vector3D(0,0,0)) {
+		IBKMK::Vector3D projected;
+		IBKMK::pointProjectedOnPlane(m_planeGeometry.vertexes()[0], m_planeGeometry.normal(), p, projected);
+		m_vertexList.push_back(projected);
+	}
+	else
+		m_vertexList.push_back(p);
 	m_planeGeometry.setVertexes(m_vertexList);
 	updateBuffers();
 	// also tell the vertex list widget about our new point

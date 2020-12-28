@@ -237,7 +237,7 @@ void PlaneGeometry::update3DPolygon() {
 	m_vertexes.clear();
 
 	for (int i=0; i< m_polygon.size(); ++i) {
-		QVector3D vecA(m_polygon.value(i).x(),m_polygon.value(i).y(),0);
+		QVector3D vecA(m_polygon.value(i).x(), m_polygon.value(i).y(), 0);
 		vecA = qq * vecA;
 		IBKMK::Vector3D vecB(vecA.x(),vecA.y(),vecA.z());
 
@@ -384,7 +384,7 @@ void PlaneGeometry::eleminateColinearPts(){
 	if(m_vertexes.size()<2)
 		return;
 	//check for duplicate points in polyline and remove duplicates
-	for (size_t i=m_vertexes.size()-1; i>=0; --i) {
+	for (int i=(int)m_vertexes.size()-1; i>=0; --i) {
 		if(i==std::numeric_limits<size_t>::max())
 			break;
 		if(m_vertexes.size()<2)
