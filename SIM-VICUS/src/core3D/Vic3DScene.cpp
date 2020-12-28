@@ -26,6 +26,7 @@
 #include "SVViewState.h"
 #include "SVSettings.h"
 #include "SVUndoTreeNodeState.h"
+#include "SVUndoDeleteSelected.h"
 
 const float TRANSLATION_SPEED = 1.2f;
 const float MOUSE_ROTATION_SPEED = 0.5f;
@@ -385,7 +386,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 			// we enter orbital controller mode
 
 			// configure the pick object and pick a point on the XY plane/or any visible surface
-			PickObject o(localMousePos, PickObject::P_XY_Plane | PickObject::P_Surface | PickObject::P_BackSide);
+			PickObject o(localMousePos, PickObject::P_XY_Plane | PickObject::P_Surface);
 			pick(o);
 			// and store pick point
 			m_orbitControllerOrigin = VICUS::IBKVector2QVector(o.m_pickPoint);
@@ -514,7 +515,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		// First we need to define what objects/surfaces we check for a picking operation,
 		// snapping is done later.
 		// We want to place a vertex on any plane we see, including the xy-plane
-		PickObject o(localMousePos, PickObject::P_XY_Plane | PickObject::P_Surface | PickObject::P_BackSide);
+		PickObject o(localMousePos, PickObject::P_XY_Plane | PickObject::P_Surface);
 		pick(o);
 
 		// now we handle the snapping rules
@@ -528,7 +529,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 	// if in "align coordinate system mode" perform picking operation and update local coordinate system orientation
 	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem) {
-		PickObject o(localMousePos, PickObject::P_XY_Plane | PickObject::P_Surface | PickObject::P_BackSide);
+		PickObject o(localMousePos, PickObject::P_XY_Plane | PickObject::P_Surface);
 		pick(o);
 		needRepaint = true;
 		// get the picked object, if any
@@ -895,6 +896,21 @@ void Vic3DScene::deselectAll() {
 }
 
 
+void Vic3DScene::deleteSelected() {
+	// process all project geometry and keep (in a copy) only those that need to be removed
+	std::vector<unsigned int> selectedObjectIDs;
+	for (const VICUS::Object * obj : m_selectedGeometryObject.m_selectedObjects)
+		selectedObjectIDs.push_back(obj->uniqueID());
+
+	// clear selected objects (since they are now removed)
+	m_selectedGeometryObject.m_selectedObjects.clear();
+	SVUndoDeleteSelected * undo = new SVUndoDeleteSelected(tr("Removing selected geometry"),
+														   selectedObjectIDs);
+	// clear selection
+	undo->push();
+}
+
+
 void Vic3DScene::leaveCoordinateSystemAdjustmentMode(bool abort) {
 	// restore original local coordinate system
 	if (abort) {
@@ -980,6 +996,7 @@ void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3
 		// get intersection with xy plane
 		IBKMK::Vector3D intersectionPoint;
 		double t;
+		// X-Y-Plane is picked from both sides
 		if (xyPlane.intersectsLine(lineOffset, direction, intersectionPoint, t, true, true)) {
 			// got an intersection point, store it
 			pickObject.m_dist = t;
@@ -1002,7 +1019,8 @@ void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3
 							continue;
 						IBKMK::Vector3D intersectionPoint;
 						double dist;
-						if (s.m_geometry.intersectsLine(lineOffset, direction, intersectionPoint, dist, pickObject.m_pickMask & PickObject::P_BackSide)) {
+						// surfaces are picked only from front-side
+						if (s.m_geometry.intersectsLine(lineOffset, direction, intersectionPoint, dist, false)) {
 							if (dist < pickObject.m_dist) {
 								pickObject.m_dist = dist;
 								pickObject.m_pickPoint = intersectionPoint;
@@ -1020,7 +1038,8 @@ void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3
 				continue;
 			IBKMK::Vector3D intersectionPoint;
 			double dist;
-			if (s.m_geometry.intersectsLine(lineOffset, direction, intersectionPoint, dist, pickObject.m_pickMask & PickObject::P_BackSide)) {
+			// dump geometry is rendered front/back facing and also picked from both sides
+			if (s.m_geometry.intersectsLine(lineOffset, direction, intersectionPoint, dist, true)) {
 				if (dist < pickObject.m_dist) {
 					pickObject.m_dist = dist;
 					pickObject.m_pickPoint = intersectionPoint;
@@ -1083,9 +1102,9 @@ void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3
 				}
 			}
 		}
-
 	}
 }
+
 
 struct ClosestPointFinder {
 	bool operator()(const std::pair<float, QVector3D> & lhs, const std::pair<float, QVector3D> & rhs) {

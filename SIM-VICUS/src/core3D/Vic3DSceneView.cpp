@@ -410,6 +410,11 @@ void SceneView::keyReleaseEvent(QKeyEvent *event) {
 
 		} break;
 
+		// *** Delete selected geometry ***
+		case Qt::Key_Delete : {
+			m_mainScene.deleteSelected();
+		} break;
+
 		default :; // ignore the rest
 	} // switch
 
