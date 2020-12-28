@@ -1416,6 +1416,10 @@ void SVMainWindow::on_actionSimulationNANDRAD_triggered() {
 	// open simulation start dialog, with settings for climate location, simulation and
 	// solver settings and simulation start button
 	int res = m_simulationStartNandrad->edit();
+	if (res == QDialog::Accepted) {
+		// transfer data to VICUS project
+		// TODO : Andreas
+	}
 }
 
 

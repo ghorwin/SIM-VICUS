@@ -46,7 +46,7 @@ void KeyboardMouseHandler::keyReleaseEvent(QKeyEvent *event) {
 		event->ignore();
 	}
 	else {
-		releaseKey(static_cast<Qt::Key>((event->key())));
+		releaseKey(static_cast<Qt::Key>(event->key()));
 	}
 }
 

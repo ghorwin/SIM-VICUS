@@ -31,18 +31,6 @@ SceneView::SceneView() :
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_X);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Y);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Z);
-	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_0);
-	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_1);
-	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_2);
-	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_3);
-	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_4);
-	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_5);
-	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_6);
-	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_7);
-	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_8);
-	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_9);
-	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Comma);
-	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Period);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Shift);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Escape);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Return);
@@ -308,10 +296,22 @@ void SceneView::paintGL() {
 
 void SceneView::keyPressEvent(QKeyEvent *event) {
 	m_keyboardMouseHandler.keyPressEvent(event);
+	// in place vertex mode, filter out number keys
+	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_PlaceVertex) {
+		Qt::Key k = static_cast<Qt::Key>(event->key());
+		if ((k >= Qt::Key_0 && k <= Qt::Key_9) ||
+			k == Qt::Key_Comma || k == Qt::Key_Period ||
+			k == Qt::Key_Space || k == Qt::Key_Return ||
+			k == Qt::Key_Backspace)
+		{
+			emit numberKeyPressed(k);
+		}
+	}
 	checkInput();
 }
 
 void SceneView::keyReleaseEvent(QKeyEvent *event) {
+	qDebug() << "SceneView::keyReleaseEvent";
 	m_keyboardMouseHandler.keyReleaseEvent(event);
 	checkInput();
 }

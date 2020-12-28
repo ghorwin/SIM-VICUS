@@ -6,10 +6,15 @@
 #include <QPushButton>
 #include <QToolBar>
 #include <QAction>
+#include <QLineEdit>
+#include <QMessageBox>
+
+#include <IBK_StringUtils.h>
 
 #include "Vic3DSceneView.h"
 #include "SVPropertyWidget.h"
 #include "SVViewStateHandler.h"
+#include "Vic3DNewPolygonObject.h"
 
 SVGeometryView::SVGeometryView(QWidget *parent) :
 	QWidget(parent)
@@ -31,16 +36,18 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 
 	// *** create window container widget
 
-	QWidget *container = QWidget::createWindowContainer(m_sceneView);
-	container->setFocusPolicy(Qt::TabFocus);
-	container->setMinimumSize(QSize(640,400));
+	m_sceneViewContainerWidget = QWidget::createWindowContainer(m_sceneView);
+	m_sceneViewContainerWidget->setFocusPolicy(Qt::TabFocus);
+	m_sceneViewContainerWidget->setMinimumSize(QSize(640,400));
 
 	// *** create toolbar and place it above the scene
 
-	m_toolBar = new QToolBar(tr("Geometry tool bar"), this);
+	m_toolBar = new QToolBar(this);
+	m_toolBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	m_toolBar->setMaximumHeight(32);
 	QVBoxLayout * vbLay = new QVBoxLayout;
 	vbLay->addWidget(m_toolBar);
-	vbLay->addWidget(container);
+	vbLay->addWidget(m_sceneViewContainerWidget);
 	vbLay->setMargin(0);
 
 	QWidget* w = new QWidget(this);
@@ -72,17 +79,33 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 
 	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-	container->setFocusPolicy(Qt::StrongFocus); // we want to get all keyboard/mouse events
+	m_sceneViewContainerWidget->setFocusPolicy(Qt::StrongFocus); // we want to get all keyboard/mouse events
 
-	setupActions();
+	setupToolBar();
 
 	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::viewStateChanged,
 			this, &SVGeometryView::onViewStateChanged);
+
+	connect(m_sceneView, &Vic3D::SceneView::numberKeyPressed,
+			this, &SVGeometryView::onNumberKeyPressed);
+
+	SVViewStateHandler::instance().m_geometryView = this;
+	onViewStateChanged();
 }
 
 
 void SVGeometryView::saveScreenShot(const QString & imgFilePath) {
 	m_sceneView->dumpScreenshot(imgFilePath);
+}
+
+
+void SVGeometryView::focusSceneView() {
+	m_sceneViewContainerWidget->setFocus();
+}
+
+
+void SVGeometryView::refreshSceneView() {
+	m_sceneView->renderNow();
 }
 
 
@@ -96,10 +119,106 @@ void SVGeometryView::onViewStateChanged() {
 	m_xLockAction->setVisible(lockVisible);
 	m_yLockAction->setVisible(lockVisible);
 	m_zLockAction->setVisible(lockVisible);
+	m_actionCoordinateInput->setVisible(lockVisible);
 }
 
 
-void SVGeometryView::setupActions() {
+void SVGeometryView::onNumberKeyPressed(Qt::Key k) {
+	qDebug() << k;
+	QString text = m_lineEditCoordinateInput->text();
+	switch (k) {
+		case Qt::Key_0 : text += "0"; break;
+		case Qt::Key_1 : text += "1"; break;
+		case Qt::Key_2 : text += "2"; break;
+		case Qt::Key_3 : text += "3"; break;
+		case Qt::Key_4 : text += "4"; break;
+		case Qt::Key_5 : text += "5"; break;
+		case Qt::Key_6 : text += "6"; break;
+		case Qt::Key_7 : text += "7"; break;
+		case Qt::Key_8 : text += "8"; break;
+		case Qt::Key_9 : text += "9"; break;
+		case Qt::Key_Comma : text += ","; break;
+		case Qt::Key_Period : text += "."; break;
+		case Qt::Key_Space : text += " "; break;
+		case Qt::Key_Backspace : {
+			if (text.length()>0)
+				text = text.left(text.length()-1);
+		}
+		break;
+		case Qt::Key_Return : {
+			coordinateInputFinished();
+			return;
+		}
+		default: return;
+	}
+	m_lineEditCoordinateInput->setText(text);
+	m_lineEditCoordinateInput->setFocus(); // shift focus to edit line - since user apparently wants to enter coordinates
+}
+
+
+void SVGeometryView::coordinateInputFinished() {
+	// either, the line edit coordinate input is empty, in which case the polygon object may be completed
+	// (if possible)
+
+	Vic3D::NewPolygonObject * po = SVViewStateHandler::instance().m_newPolygonObject;
+	if (m_lineEditCoordinateInput->text().trimmed().isEmpty()) {
+		if (po->planeGeometry().isValid())
+			po->finish();
+		else
+			QMessageBox::critical(this, QString(), tr("Invalid polygon (must be planar and not winding)."));
+		return;
+	}
+
+	// otherwise, if line edit is not empty, we parse it and if it is valid, we place a new vertex based on
+	// the entered coordinates
+
+	std::string coordinateLine = m_lineEditCoordinateInput->text().trimmed().toStdString();
+	std::vector<double> vec;
+	try {
+		IBK::string2valueVector(coordinateLine, vec);
+		if (vec.size() == 0)
+			throw IBK::Exception("","");
+	}
+	catch (...) {
+		QMessageBox::critical(this, QString(), tr("Invalid number format. Cannot parse coordinate inputs."));
+		m_lineEditCoordinateInput->setFocus();
+		m_lineEditCoordinateInput->selectAll();
+		return;
+	}
+
+	IBKMK::Vector3D offset;
+	offset.m_x = vec[0];
+	if (vec.size() > 1)
+		offset.m_y = vec[1];
+	if (vec.size() > 2)
+		offset.m_z = vec[2];
+
+	// add last vertex, if existing
+	if (po->planeGeometry().vertexes().size() > 0) {
+		offset += po->planeGeometry().vertexes().back();
+	}
+
+	// check if adding the vertex would invalidate the polygon
+	VICUS::PlaneGeometry p = po->planeGeometry();
+	p.addVertex(offset);
+	if (!p.isValid()) {
+		QMessageBox::critical(this, QString(), tr("Adding this vertex would invalidate the polygon."));
+		m_lineEditCoordinateInput->setFocus();
+		m_lineEditCoordinateInput->selectAll();
+		return;
+	}
+
+	// now add vertex
+	po->appendVertex(offset);
+
+	SVViewStateHandler::instance().m_geometryView->refreshSceneView();
+
+	// if successful, clear the input widget
+	m_lineEditCoordinateInput->clear();
+}
+
+
+void SVGeometryView::setupToolBar() {
 	m_snapAction = new QAction(tr("Snap"));
 	m_snapAction->setCheckable(true);
 	m_toolBar->addAction(m_snapAction);
@@ -113,5 +232,17 @@ void SVGeometryView::setupActions() {
 	m_zLockAction = new QAction(tr("Z"));
 	m_zLockAction->setCheckable(true);
 	m_toolBar->addAction(m_zLockAction);
+
+	m_toolBar->addSeparator();
+
+	m_lineEditCoordinateInput = new QLineEdit(m_toolBar);
+	m_actionCoordinateInput = m_toolBar->addWidget(m_lineEditCoordinateInput);
+	connect(m_lineEditCoordinateInput, &QLineEdit::returnPressed,
+			this, &SVGeometryView::coordinateInputFinished);
+
+//	QWidget* stretch = new QWidget();
+//	stretch->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
+//	m_toolBar->addWidget(stretch);
 }
+
 

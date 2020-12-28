@@ -42,6 +42,12 @@ public slots:
 	/*! Connected to view-state handler. */
 	void onViewStateChanged();
 
+signals:
+	/*! Emitted when numbers where typed.
+		Only during "PlaceVertex" scene operation mode.
+	*/
+	void numberKeyPressed(Qt::Key k);
+
 protected:
 	void initializeGL() override;
 	void resizeGL(int width, int height) override;

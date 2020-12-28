@@ -280,7 +280,7 @@ void Vic3DScene::resize(int width, int height, qreal retinaScale) {
 	float farDistance = 1000;
 	// retrieve far viewing distance from project, if one exists
 	if (SVProjectHandler::instance().isValid())
-		farDistance = SVProjectHandler::instance().viewSettings().m_farDistance;
+		farDistance = (float)SVProjectHandler::instance().viewSettings().m_farDistance;
 	// the projection matrix need to be updated only for window size changes
 	m_projection.setToIdentity();
 	// create projection matrix, i.e. camera lens
@@ -359,12 +359,9 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		// different operation depending on scene's operation mode
 		switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
 
-			// *** place a vertex ***
-			case SVViewState::OM_PlaceVertex : {
-				// finish "place vertex" operation
-				m_newPolygonObject.finish();
-				needRepaint = true;
-			} break;
+			// Note: place vertex mode is ended by "Enter" press through the "coordinate input widget" in the
+			//       geometry view's toolbar - either with coordinates, or without, there the polygon
+			//       is finished (if possible, otherwise an error message pops up)
 
 			// *** align coordinate system ***
 			case SVViewState::OM_AlignLocalCoordinateSystem : {
@@ -560,21 +557,21 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 #if 1
 				// fix "roll" error due to rounding
 				// only do this when we are not viewing the scene from vertically from above/below
-				double cosViewAngle = QVector3D::dotProduct(m_camera.forward(), GlobalUpwardsVector);
-				if (std::fabs(cosViewAngle) < 0.3) {
+				float cosViewAngle = QVector3D::dotProduct(m_camera.forward(), GlobalUpwardsVector);
+				if (std::fabs(cosViewAngle) < 0.6f) {
 					// up and forward vectors should be always in a vertical plane
 					// forward and z-axis form a vertical plane with normal
 					QVector3D verticalPlaneNormal = QVector3D::crossProduct(m_camera.forward(), GlobalUpwardsVector);
 					verticalPlaneNormal.normalize();
 
 					// the camera right angle should always match this normal vector
-					double cosBeta = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
+					float cosBeta = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
 					if (cosBeta > -1 && cosBeta < 1) {
-						double beta = std::acos(cosBeta)/3.14159265*180;
+						float beta = std::acos(cosBeta)/3.14159265f*180;
 						// which direction to rotate?
 						m_camera.rotate(beta, m_camera.forward());
-						double cosBeta2 = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
-						if (std::fabs(std::fabs(cosBeta2) - 1) > 1e-5)
+						float cosBeta2 = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
+						if (std::fabs(std::fabs(cosBeta2) - 1) > 1e-5f)
 							m_camera.rotate(-2*beta, m_camera.forward());
 //						cosBeta2 = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
 					}
@@ -841,11 +838,10 @@ void Vic3DScene::render() {
 	m_gridShader->bind();
 	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[0], m_worldToView);
 	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[2], backgroundColor);
-	float farDistance = std::max(500.f, farDistance = SVProjectHandler::instance().viewSettings().m_farDistance);
+	float farDistance = (float)std::max(500., SVProjectHandler::instance().viewSettings().m_farDistance);
 	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[3], farDistance);
 	m_gridObject.render();
 	m_gridShader->release();
-
 
 
 

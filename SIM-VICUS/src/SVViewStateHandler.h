@@ -13,6 +13,7 @@ namespace Vic3D {
 class SVNavigationTreeWidget;
 class SVPropEditGeometry;
 class SVPropVertexListWidget;
+class SVGeometryView;
 
 /*! This singleton makes the current UI view state available to all.
 	Widgets that need to be informed from view state changes, should
@@ -38,6 +39,9 @@ public:
 
 	/*! Restores the last viewstate that was set before the current view state. */
 	void restoreLastViewState();
+
+	/*! Pointer to geometry view object - so that we can give focus to the scene view when we start a drawing operation. */
+	SVGeometryView						*m_geometryView		= nullptr;
 
 	/*! Caches pointer to new polygon object, to allow direct access to object when removing vertexes.
 		The pointer is set in constructor of Vic3D::NewPolygonObject, object is not owned.

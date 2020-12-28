@@ -10,6 +10,7 @@
 #include "SVProjectHandler.h"
 #include "SVViewStateHandler.h"
 #include "SVUndoAddSurface.h"
+#include "SVGeometryView.h"
 
 #include "Vic3DNewPolygonObject.h"
 
@@ -85,6 +86,7 @@ void SVPropVertexListWidget::on_pushButtonDeleteLast_clicked() {
 	vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
 	vs.m_propertyWidgetMode = SVViewState::PM_VertexList;
 	SVViewStateHandler::instance().setViewState(vs);
+	SVViewStateHandler::instance().m_geometryView->focusSceneView();
 }
 
 
@@ -124,6 +126,7 @@ void SVPropVertexListWidget::on_pushButtonDeleteSelected_clicked() {
 	vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
 	vs.m_propertyWidgetMode = SVViewState::PM_VertexList;
 	SVViewStateHandler::instance().setViewState(vs);
+	SVViewStateHandler::instance().m_geometryView->focusSceneView();
 }
 
 

@@ -8,6 +8,7 @@
 #include "SVProjectHandler.h"
 #include "SVUndoModifySurfaceGeometry.h"
 #include "SVPropVertexListWidget.h"
+#include "SVGeometryView.h"
 
 #include "Vic3DNewPolygonObject.h"
 #include "Vic3DCoordinateSystemObject.h"
@@ -55,8 +56,8 @@ void SVPropEditGeometry::setCoordinates(const Vic3D::Transform3D &t) {
 	m_ui->lineEditZValue->setText( QString("%L1").arg( t.translation().z() ) );
 }
 
-void SVPropEditGeometry::setBoundingBox(const IBKMK::Vector3D &v)
-{
+
+void SVPropEditGeometry::setBoundingBox(const IBKMK::Vector3D &v) {
 //	QVector3D tmpScale ( m_ui->doubleSpinBoxScaleX->value(), m_ui->doubleSpinBoxScaleX->value() )
 
 	if ( m_ui->radioButtonScaleAbsolute->isChecked() ) {
@@ -66,6 +67,7 @@ void SVPropEditGeometry::setBoundingBox(const IBKMK::Vector3D &v)
 	}
 
 }
+
 
 void SVPropEditGeometry::on_pushButtonAddPolygon_clicked() {
 	// reset new polygon object
@@ -78,6 +80,7 @@ void SVPropEditGeometry::on_pushButtonAddPolygon_clicked() {
 	SVViewStateHandler::instance().setViewState(vs);
 	// clear vertex list in property widget
 	SVViewStateHandler::instance().m_propVertexListWidget->onNewVertexListStart();
+	SVViewStateHandler::instance().m_geometryView->focusSceneView();
 }
 
 
