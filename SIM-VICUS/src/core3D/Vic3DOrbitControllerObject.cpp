@@ -11,6 +11,8 @@ License    : BSD License,
 
 #include "Vic3DOrbitControllerObject.h"
 
+#include <cmath>
+
 #include <QOpenGLShaderProgram>
 
 #include "Vic3DShaderProgram.h"
@@ -28,7 +30,23 @@ void OrbitControllerObject::create(ShaderProgram * shaderProgram) {
 	lineVertexBuffer.resize(2);
 	lineVertexBuffer[0] = QVector3D(0,0,-5.f);
 	lineVertexBuffer[1] = QVector3D(0,0,+5.f);
-	m_vertexCount = 2;
+	// create a circle with line segments
+	const unsigned int N_SEGMENTS = 32;
+	const double RADIUS = 2;
+#define PI_CONST 3.14159265
+	for (unsigned int i=0; i<N_SEGMENTS; ++i) {
+		double angle = 2*PI_CONST*i/N_SEGMENTS;
+		double x = std::sin(angle)*RADIUS;
+		double y = std::cos(angle)*RADIUS;
+		lineVertexBuffer.push_back( QVector3D(float(x),float(y),0) );
+		angle = 2*PI_CONST*((i+1) % N_SEGMENTS)/N_SEGMENTS;
+		x = std::sin(angle)*RADIUS;
+		y = std::cos(angle)*RADIUS;
+		lineVertexBuffer.push_back( QVector3D(float(x),float(y),0) );
+	}
+
+
+	m_vertexCount = lineVertexBuffer.size();
 
 	// Create Vertex Array Object and buffers if not done, yet
 	if (!m_vao.isCreated()) {
