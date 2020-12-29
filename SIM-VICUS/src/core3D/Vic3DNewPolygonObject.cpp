@@ -127,7 +127,7 @@ void NewPolygonObject::finish() {
 }
 
 
-void NewPolygonObject::updateLastVertex(const QVector3D & p) {
+void NewPolygonObject::newLocalCoordinateSystemPosition(const QVector3D & p) {
 	// no vertex added yet? should normally not happen, but during testing we just check it
 	if (m_vertexBufferData.empty())
 		return;

@@ -39,6 +39,30 @@ class ShaderProgram;
 */
 class NewPolygonObject {
 public:
+
+	/*! Defines the state that the system is currently at, when adding new geometry.
+		The state is initialized when some "Add..." button is pressed and afterwards
+		changed through placement of vertexes or others.
+	*/
+	enum NewGeometryMode {
+		/*! A rectangle is being created - after the second vertex has been placed,
+			the third vertex is a projection onto the line perpendicular to the first and
+			in the plane of the three vertexes. Also, a fourth vertex is automatically added,
+			that closes the rectangle. A rectangle plane is drawn (using Vic3DNewRectObject) once the first
+			two vertexes have been placed. Confirming the third point, the plane is created.
+		*/
+		NGM_Rect,
+		/*! A polygon is being created - after the third non-collinear vertex has been drawn, all subsequent
+			points are projected into the created plane. The polygon is shown using Vic3DNewPolygonObject
+			To create the polygon, it must be valid (not winding).
+		*/
+		NGM_Polygon,
+		NGM_ZoneFloor,
+		NGM_ZoneExtrusion,
+		NUM_NGM
+	};
+
+
 	NewPolygonObject();
 
 	/*! The function is called during OpenGL initialization, where the OpenGL context is current.
@@ -64,21 +88,16 @@ public:
 
 	/*! This function is to be called whenever the movable coordinate system changes its (snapped) position.
 		The function first compares the point with the currently set point - if no change is recognized, nothing happens.
-		If the point was indeed moved, the buffer will be updated and only the last vertex will be updated in the
-		GPU memory.
+		If the point was indeed moved, the GPU buffer will be updated.
 
 		The vertex passed is the position of the local coordinate system. This may be, however, outside the
 		plane (if already enough vertices have been placed to form a plane). If this is the case, the function
 		computes the projection onto the plane and adds the projected point coordinates instead.
-	*/
-	void updateLastVertex(const QVector3D & p);
 
-	/*! Populates the color and vertex buffer with data for the "last segment" line and the polygon.
-		Resizes vertex and element buffers on GPU memory and copies data from locally stored vertex/element arrays to GPU.
-
-		Basically transfers data in m_vertexBufferData, m_colorBufferData and m_elementBufferData to GPU memory.
+		Actually what happens depends on the m_newGeometryMode.
 	*/
-	void updateBuffers();
+	void newLocalCoordinateSystemPosition(const QVector3D & p);
+
 
 	/*! Renders opaque parts of geometry. */
 	void renderOpqaue();
@@ -105,6 +124,13 @@ public:
 	SVPropVertexListWidget			*m_vertexListWidget = nullptr;
 
 private:
+	/*! Populates the color and vertex buffer with data for the "last segment" line and the polygon.
+		Resizes vertex and element buffers on GPU memory and copies data from locally stored vertex/element arrays to GPU.
+
+		Basically transfers data in m_vertexBufferData, m_colorBufferData and m_elementBufferData to GPU memory.
+	*/
+	void updateBuffers();
+
 
 	/*! Shader program (not owned). */
 	ShaderProgram					*m_shaderProgram = nullptr;
@@ -135,6 +161,13 @@ private:
 	QOpenGLBuffer					m_vertexBufferObject;
 	/*! Handle for index buffer on GPU memory */
 	QOpenGLBuffer					m_indexBufferObject;
+
+	/*! Defines the current geometry mode that we are in.
+		This determines the visualization of the current object and what happens if a vertex is placed
+		(i.e. user clicks somewhere in the scene) and local coordinate system is moved.
+	*/
+	NewGeometryMode					m_newGeometryMode;
+
 };
 
 } // namespace Vic3D

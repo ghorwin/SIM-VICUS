@@ -384,7 +384,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 			// we enter orbital controller mode
 
 			// configure the pick object and pick a point on the XY plane/or any visible surface
-			PickObject o(localMousePos, PickObject::P_XY_Plane | PickObject::P_Surface);
+			PickObject o(localMousePos, PickObject::P_XY_Plane | PickObject::P_Surface | PickObject::P_Network);
 			pick(o);
 			// and store pick point
 			m_orbitControllerOrigin = VICUS::IBKVector2QVector(o.m_pickPoint);
@@ -522,7 +522,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 //		qDebug() << localMousePos << VICUS::IBKVector2QVector(o.m_pickPoint) << m_coordinateSystemObject.translation();
 
 		// update the movable coordinate system's location in the new polygon object
-		m_newPolygonObject.updateLastVertex(m_coordinateSystemObject.translation());
+		m_newPolygonObject.newLocalCoordinateSystemPosition(m_coordinateSystemObject.translation());
 	}
 
 	// if in "align coordinate system mode" perform picking operation and update local coordinate system orientation

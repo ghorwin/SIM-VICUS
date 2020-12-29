@@ -11,7 +11,12 @@ namespace IBKMK {
 	class Vector3D;
 }
 
-/*! The widget with newly placed vertexes while constructing a new primitive/object. */
+/*! The widget with newly placed vertexes while constructing a new primitive/object.
+	It directly communicates with the new geometry object.
+
+	The appearance of the place vertex list widget depends on the type of geometry
+	currently being added.
+*/
 class SVPropVertexListWidget : public QWidget {
 	Q_OBJECT
 
