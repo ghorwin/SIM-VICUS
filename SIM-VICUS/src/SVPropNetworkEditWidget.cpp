@@ -594,10 +594,10 @@ bool ComponentParameterModel::setData(const QModelIndex &index, const QVariant &
 	return true;
 }
 
-Qt::ItemFlags ComponentParameterModel::flags(const QModelIndex &index) const
-{
+
+Qt::ItemFlags ComponentParameterModel::flags(const QModelIndex &index) const {
 	if (index.row()==0)
-		return !Qt::ItemIsEnabled | !Qt::ItemIsSelectable;
+		return Qt::ItemFlags();
 	else
 		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 	if (index.column()==1)
