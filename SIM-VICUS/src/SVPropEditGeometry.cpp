@@ -69,8 +69,10 @@ void SVPropEditGeometry::setBoundingBox(const IBKMK::Vector3D &v) {
 }
 
 
+// *** slots ***
+
 void SVPropEditGeometry::on_pushButtonAddPolygon_clicked() {
-	// reset new polygon object
+	// reset new polygon object and set it into polygon mode
 	SVViewStateHandler::instance().m_newPolygonObject->clear();
 	// signal, that we want to start adding a new polygon
 	SVViewState vs = SVViewStateHandler::instance().viewState();
@@ -84,11 +86,33 @@ void SVPropEditGeometry::on_pushButtonAddPolygon_clicked() {
 }
 
 
-void SVPropEditGeometry::on_toolButtonAddZoneBox_clicked() {
-	// configure the view to go into "place first vertex" mode,
-	// toggle property widget to show "placed vertexes" widget
+void SVPropEditGeometry::on_pushButtonAddRect_clicked() {
+	// reset new polygon object and set it into rect mode
+	SVViewStateHandler::instance().m_newPolygonObject->clear();
+	// signal, that we want to start adding a new polygon
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
+	vs.m_propertyWidgetMode = SVViewState::PM_VertexList;
+	// now tell all UI components to toggle their view state
+	SVViewStateHandler::instance().setViewState(vs);
+	// clear vertex list in property widget
+	SVViewStateHandler::instance().m_propVertexListWidget->onNewVertexListStart();
+	SVViewStateHandler::instance().m_geometryView->focusSceneView();
+}
 
 
+void SVPropEditGeometry::on_pushButtonAddZoneBox_clicked() {
+	// reset new polygon object and set it into zone box mode
+	SVViewStateHandler::instance().m_newPolygonObject->clear();
+	// signal, that we want to start adding a new polygon
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
+	vs.m_propertyWidgetMode = SVViewState::PM_VertexList;
+	// now tell all UI components to toggle their view state
+	SVViewStateHandler::instance().setViewState(vs);
+	// clear vertex list in property widget
+	SVViewStateHandler::instance().m_propVertexListWidget->onNewVertexListStart();
+	SVViewStateHandler::instance().m_geometryView->focusSceneView();
 }
 
 
@@ -363,4 +387,5 @@ void SVPropEditGeometry::on_radioButtonScaleAbsolute_toggled(bool /*abs*/) {
 
 	setBoundingBox(v);
 }
+
 

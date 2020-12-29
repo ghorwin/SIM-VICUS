@@ -51,8 +51,8 @@ public:
 
 private slots:
 	void on_pushButtonAddPolygon_clicked();
-
-	void on_toolButtonAddZoneBox_clicked();
+	void on_pushButtonAddRect_clicked();
+	void on_pushButtonAddZoneBox_clicked();
 
 	void on_pushButtonTranslate_clicked();
 
@@ -61,6 +61,7 @@ private slots:
 	void on_pushButtonRotate_clicked();
 
 	void on_radioButtonScaleAbsolute_toggled(bool checked);
+
 
 private:
 	Ui::SVPropEditGeometry *m_ui;
