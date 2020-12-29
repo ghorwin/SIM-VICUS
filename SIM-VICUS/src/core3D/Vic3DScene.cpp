@@ -213,25 +213,29 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 		m_selectedGeometryObject.create(m_fixedColorTransformShader);
 		m_selectedGeometryObject.updateBuffers();
 
+		// if we are in "Geometry editing" mode, we also show and update the property widget
 		SVViewState vs = SVViewStateHandler::instance().viewState();
-		IBKMK::Vector3D centerPoint;
-		if ( project().haveSelectedSurfaces(centerPoint) ) {
-			vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-			vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
-			m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(centerPoint) );
-			IBKMK::Vector3D v;
-			project().boundingBoxofSelectedSurfaces(v);
+		if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
 
-								vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-								vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
-								SVViewStateHandler::instance().m_propEditGeometryWidget->setBoundingBox(v);
-								m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(centerPoint) );		}
-		else {
-			vs.m_sceneOperationMode = SVViewState::NUM_OM;
-			vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+			IBKMK::Vector3D centerPoint;
+			if ( project().haveSelectedSurfaces(centerPoint) ) {
+				vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+				vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
+				m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(centerPoint) );
+				IBKMK::Vector3D v;
+				project().boundingBoxofSelectedSurfaces(v);
+
+									vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+									vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
+									SVViewStateHandler::instance().m_propEditGeometryWidget->setBoundingBox(v);
+									m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(centerPoint) );		}
+			else {
+				vs.m_sceneOperationMode = SVViewState::NUM_OM;
+				vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+			}
+			// now tell all UI components to toggle their view state
+			SVViewStateHandler::instance().setViewState(vs);
 		}
-		// now tell all UI components to toggle their view state
-		SVViewStateHandler::instance().setViewState(vs);
 	}
 
 	// create geometry object (if already existing, nothing happens here)
@@ -744,8 +748,12 @@ void Vic3DScene::render() {
 }
 
 
-void Vic3DScene::setViewState(const SVViewState &) {
-	// nothing to be done, for now
+void Vic3DScene::setViewState(const SVViewState & vs) {
+	// if we are currently constructing geometry, and we switch the view mode to
+	// "Parameter edit" mode, reset the new polygon object
+	if (vs.m_viewMode == SVViewState::VM_PropertyEditMode) {
+		m_newPolygonObject.clear();
+	}
 }
 
 

@@ -33,9 +33,8 @@ public:
 			when something is selected.
 		*/
 		VM_GeometryEditMode,
-		/*! Standard mode - allows scene navigation and selection of
-			elements. Rendering is only done when viewport changes or
-			when something is selected.
+		/*! Property edit mode - items in navigation tree view can be made active
+			and property widget shows properties.
 		*/
 		VM_PropertyEditMode,
 		NUM_VM
