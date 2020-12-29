@@ -90,6 +90,12 @@ public:
 
 	// Functions related to modifying the stored geometry
 
+	/*! This function clears the current buffer and vertex lists. */
+	void startNewGeometry(NewGeometryMode m) {
+		clear();
+		m_newGeometryMode = m;
+	}
+
 	/*! Appends a vertex to the geometry.
 		This function is used to manually add a vertex, for example when entering a vertex
 		by keyboard.

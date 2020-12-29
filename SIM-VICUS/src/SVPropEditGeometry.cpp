@@ -10,7 +10,7 @@
 #include "SVPropVertexListWidget.h"
 #include "SVGeometryView.h"
 
-#include "Vic3DNewPolygonObject.h"
+#include "Vic3DNewGeometryObject.h"
 #include "Vic3DCoordinateSystemObject.h"
 #include "Vic3DTransform3D.h"
 
@@ -73,7 +73,7 @@ void SVPropEditGeometry::setBoundingBox(const IBKMK::Vector3D &v) {
 
 void SVPropEditGeometry::on_pushButtonAddPolygon_clicked() {
 	// reset new polygon object and set it into polygon mode
-	SVViewStateHandler::instance().m_newGeometryObject->clear();
+	SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_Polygon);
 	// signal, that we want to start adding a new polygon
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;

@@ -13,7 +13,7 @@
 #include "Vic3DOrbitControllerObject.h"
 #include "Vic3DCoordinateSystemObject.h"
 #include "Vic3DWireFrameObject.h"
-#include "Vic3DNewPolygonObject.h"
+#include "Vic3DNewGeometryObject.h"
 #include "Vic3DPickObject.h"
 
 class ModificationInfo;

@@ -1,4 +1,4 @@
-#include "Vic3DNewPolygonObject.h"
+#include "Vic3DNewGeometryObject.h"
 
 #include <QVector3D>
 #include <QOpenGLShaderProgram>

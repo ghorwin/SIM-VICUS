@@ -12,7 +12,7 @@
 #include "SVUndoAddSurface.h"
 #include "SVGeometryView.h"
 
-#include "Vic3DNewPolygonObject.h"
+#include "Vic3DNewGeometryObject.h"
 
 SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 	QWidget(parent),

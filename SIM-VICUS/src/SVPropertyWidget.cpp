@@ -11,7 +11,7 @@
 #include "SVPropEditGeometry.h"
 #include "SVPropSiteWidget.h"
 #include "SVPropNetworkEditWidget.h"
-#include "Vic3DNewPolygonObject.h"
+#include "Vic3DNewGeometryObject.h"
 #include "Vic3DCoordinateSystemObject.h"
 
 SVPropertyWidget::SVPropertyWidget(QWidget * parent) :

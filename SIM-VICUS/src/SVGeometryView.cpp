@@ -14,7 +14,7 @@
 #include "Vic3DSceneView.h"
 #include "SVPropertyWidget.h"
 #include "SVViewStateHandler.h"
-#include "Vic3DNewPolygonObject.h"
+#include "Vic3DNewGeometryObject.h"
 
 SVGeometryView::SVGeometryView(QWidget *parent) :
 	QWidget(parent)
