@@ -24,14 +24,24 @@ public:
 	explicit SVPropVertexListWidget(QWidget *parent = nullptr);
 	~SVPropVertexListWidget();
 
-	/*! Appends a new vertex to the list of vertexes in the table widget. */
+	/*! Appends a new vertex to the list of vertexes in the table widget.
+		Called from NewGeometryObject.
+	*/
 	void addVertex(const IBKMK::Vector3D & p);
+
+	/*! Removes selected index from table widget.
+		Called from NewGeometryObject.
+	*/
+	void removeVertex(unsigned int idx);
 
 public slots:
 
 	/*! Called, when user starts with a new polygon/geometry. */
 	void onNewVertexListStart();
 
+	/*! Finishes the geometry and creates the undo action to modify the
+		project.
+	*/
 	void on_pushButtonFinish_clicked();
 
 private slots:

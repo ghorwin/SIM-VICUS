@@ -160,7 +160,7 @@ private:
 	/*! The movable coordinate system. */
 	CoordinateSystemObject	m_coordinateSystemObject;
 	/*! Object to display newly drawn geometry. */
-	NewPolygonObject		m_newPolygonObject;
+	NewGeometryObject		m_newGeometryObject;
 
 
 	// *** Orbit controller stuff ***

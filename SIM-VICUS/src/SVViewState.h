@@ -29,12 +29,12 @@ public:
 	*/
 	enum ViewMode {
 		/*! Standard mode - allows scene navigation and selection of
-			elements. Rendering is only done when viewport changes or
-			when something is selected.
+			elements. Allows adding new geometry.
+			Property widgets related to geometry creation/modification are shown.
 		*/
 		VM_GeometryEditMode,
 		/*! Property edit mode - items in navigation tree view can be made active
-			and property widget shows properties.
+			and property widgets show physical properties/attributes.
 		*/
 		VM_PropertyEditMode,
 		NUM_VM
@@ -56,7 +56,8 @@ public:
 		OM_SelectedGeometry,
 		/*! Place vertex mode.
 			In this mode, the local coordinate system is shown, and the user can click on any
-			snap point to place a vertex.
+			snap point to place a vertex. Also, movement of the local coordinate system is
+			communicated to the NewGeometryObject.
 		*/
 		OM_PlaceVertex,
 		/*! In this mode, the local coordinate system is shown, and the user can align the coordinate

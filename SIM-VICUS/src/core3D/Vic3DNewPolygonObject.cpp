@@ -19,18 +19,17 @@
 
 namespace Vic3D {
 
-NewPolygonObject::NewPolygonObject() :
+NewGeometryObject::NewGeometryObject() :
 	m_vertexBufferObject(QOpenGLBuffer::VertexBuffer), // VertexBuffer is the default, so default constructor would have been enough
 	m_indexBufferObject(QOpenGLBuffer::IndexBuffer) // make this an Index Buffer
 {
 	// make us known to the world
-	SVViewStateHandler::instance().m_newPolygonObject = this;
+	SVViewStateHandler::instance().m_newGeometryObject = this;
 }
 
 
-void NewPolygonObject::create(ShaderProgram * shaderProgram, const CoordinateSystemObject * coordSystemObject) {
+void NewGeometryObject::create(ShaderProgram * shaderProgram) {
 	m_shaderProgram = shaderProgram;
-	m_coordSystemObject = coordSystemObject;
 
 	// *** create buffers on GPU memory ***
 
@@ -84,84 +83,129 @@ void NewPolygonObject::create(ShaderProgram * shaderProgram, const CoordinateSys
 }
 
 
-void NewPolygonObject::destroy() {
+void NewGeometryObject::destroy() {
 	m_vao.destroy();
 	m_vertexBufferObject.destroy();
 	m_indexBufferObject.destroy();
 }
 
 
-void NewPolygonObject::appendVertex(const IBKMK::Vector3D & p) {
-	// if we have already a valid plane (i.e. normal vector not 0,0,0), then check if point is in plane
-	if (m_planeGeometry.normal() != IBKMK::Vector3D(0,0,0)) {
-		IBKMK::Vector3D projected;
-		IBKMK::pointProjectedOnPlane(m_planeGeometry.vertexes()[0], m_planeGeometry.normal(), p, projected);
-		m_vertexList.push_back(projected);
+void NewGeometryObject::appendVertex(const IBKMK::Vector3D & p) {
+	switch (m_newGeometryMode) {
+		case NGM_Polygon :
+		case NGM_ZoneFloor :
+			// if we have already a valid plane (i.e. normal vector not 0,0,0), then check if point is in plane
+			if (m_planeGeometry.normal() != IBKMK::Vector3D(0,0,0)) {
+				IBKMK::Vector3D projected;
+				IBKMK::pointProjectedOnPlane(m_planeGeometry.vertexes()[0], m_planeGeometry.normal(), p, projected);
+				m_vertexList.push_back(projected);
+			}
+			else
+				m_vertexList.push_back(p);
+			m_planeGeometry.setVertexes(m_vertexList);
+			// also tell the vertex list widget about our new point
+			SVViewStateHandler::instance().m_propVertexListWidget->addVertex(p);
+		break;
 	}
-	else
-		m_vertexList.push_back(p);
-	m_planeGeometry.setVertexes(m_vertexList);
-	updateBuffers();
-	// also tell the vertex list widget about our new point
-	m_vertexListWidget->addVertex(p);
+	// finally update draw buffers
+	updateBuffers(false);
 }
 
-void NewPolygonObject::removeVertex(unsigned int idx) {
+
+void NewGeometryObject::appendVertexOffset(const IBKMK::Vector3D & offset) {
+	if (m_vertexList.empty())
+		appendVertex(offset);
+	else
+		appendVertex(m_vertexList.back() + offset);
+}
+
+
+void NewGeometryObject::removeVertex(unsigned int idx) {
 	Q_ASSERT(idx < m_vertexList.size());
 	m_vertexList.erase(m_vertexList.begin()+idx);
-	m_planeGeometry.setVertexes(m_vertexList);
-	updateBuffers();
+	switch (m_newGeometryMode) {
+		case NGM_Polygon :
+			m_planeGeometry.setVertexes(m_vertexList);
+			SVViewStateHandler::instance().m_propVertexListWidget->removeVertex(idx);
+		break;
+	}
+	updateBuffers(false);
 }
 
 
-void NewPolygonObject::clear() {
+void NewGeometryObject::removeLastVertex() {
+	Q_ASSERT(!m_vertexList.empty());
+	removeVertex(m_vertexList.size()-1);
+}
+
+
+void NewGeometryObject::clear() {
 	m_planeGeometry.setVertexes(std::vector<IBKMK::Vector3D>());
 	m_vertexList.clear();
-	updateBuffers();
+	updateBuffers(false);
 }
 
 
-void NewPolygonObject::finish() {
-	if (m_planeGeometry.isValid())
-		m_vertexListWidget->on_pushButtonFinish_clicked();
+bool NewGeometryObject::canComplete() const {
+	switch (m_newGeometryMode) {
+		case NGM_Polygon :
+			return m_planeGeometry.isValid();
+	}
+	return false;
 }
 
 
-void NewPolygonObject::newLocalCoordinateSystemPosition(const QVector3D & p) {
-	// no vertex added yet? should normally not happen, but during testing we just check it
-	if (m_vertexBufferData.empty())
-		return;
+bool NewGeometryObject::hasData() const {
+	switch (m_newGeometryMode) {
+		case NGM_Polygon :
+			return m_planeGeometry.isValid();
+	}
+	return false;
+}
 
+
+void NewGeometryObject::finish() {
+	switch (m_newGeometryMode) {
+		case NGM_Polygon :
+			if (m_planeGeometry.isValid()) {
+				// tell property widget to modify the project with our data
+				SVViewStateHandler::instance().m_propVertexListWidget->on_pushButtonFinish_clicked();
+			}
+			return;
+	}
+}
+
+
+void NewGeometryObject::updateLocalCoordinateSystemPosition(const QVector3D & p) {
 	QVector3D newPoint = p;
 
-	// if we have already a valid plane (i.e. normal vector not 0,0,0), then check if point is in plane
-	if (m_planeGeometry.normal() != IBKMK::Vector3D(0,0,0)) {
-		IBKMK::Vector3D p2(VICUS::QVector2IBKVector(p));
-		IBKMK::Vector3D projected;
-		IBKMK::pointProjectedOnPlane(m_planeGeometry.vertexes()[0], m_planeGeometry.normal(), p2, projected);
-		newPoint = VICUS::IBKVector2QVector(projected);
+	switch (m_newGeometryMode) {
+		case NGM_Polygon :
+		case NGM_ZoneFloor :
+			// if we have already a valid plane (i.e. normal vector not 0,0,0),
+			// then check if point is in plane
+			if (m_planeGeometry.normal() != IBKMK::Vector3D(0,0,0)) {
+				IBKMK::Vector3D p2(VICUS::QVector2IBKVector(p));
+				IBKMK::Vector3D projected;
+				IBKMK::pointProjectedOnPlane(m_planeGeometry.vertexes()[0], m_planeGeometry.normal(), p2, projected);
+				newPoint = VICUS::IBKVector2QVector(projected);
+			}
+		break;
 	}
 
 	// any change to the previously stored point?
-	if (m_vertexBufferData.back().m_coords == newPoint)
+	if (m_localCoordinateSystemPosition == newPoint)
 		return;
-	// update last coordinate
-	// take the last value if no vertex line exists
-	// else update the second last point that is the local coordinate system
-	if (m_vertexBufferData.size()<2)
-		m_vertexBufferData.back().m_coords = newPoint;
-	else
-		m_vertexBufferData[m_vertexBufferData.size()-2].m_coords = newPoint;
 
-	// and update the last part of the buffer (later, for now we just upload the entire buffer again)
-	// transfer data stored in m_vertexBufferData
-	m_vertexBufferObject.bind();
-	m_vertexBufferObject.allocate(m_vertexBufferData.data(), m_vertexBufferData.size()*sizeof(VertexC));
-	m_vertexBufferObject.release();
+	// store new position
+	m_localCoordinateSystemPosition = newPoint;
+
+	// update buffer (but only that portion that depends on the local coordinate system's location)
+	updateBuffers(true);
 }
 
 
-void NewPolygonObject::updateBuffers() {
+void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 	// create geometry
 
 	// memory layout:
@@ -204,7 +248,7 @@ void NewPolygonObject::updateBuffers() {
 	m_vertexBufferData.push_back( m_vertexBufferData[0] );
 
 	// now also add a vertex for the current coordinate system's position
-	m_vertexBufferData.push_back( VertexC(m_coordSystemObject->translation() ) );
+	m_vertexBufferData.push_back( VertexC(m_localCoordinateSystemPosition ) );
 
 	// and also the last point of the polygon in order to draw its line blue from local coordinate system
 	m_vertexBufferData.push_back( VertexC(VICUS::IBKVector2QVector(m_vertexList.back())) );
@@ -223,7 +267,7 @@ void NewPolygonObject::updateBuffers() {
 }
 
 
-void NewPolygonObject::renderOpqaue() {
+void NewGeometryObject::renderOpqaue() {
 	if (m_vertexBufferData.empty())
 		return;
 
@@ -300,7 +344,7 @@ void NewPolygonObject::renderOpqaue() {
 }
 
 
-void NewPolygonObject::renderTransparent() {
+void NewGeometryObject::renderTransparent() {
 	// we expect:
 	//   glDepthMask(GL_FALSE);
 	//   shader program has already transform uniform set

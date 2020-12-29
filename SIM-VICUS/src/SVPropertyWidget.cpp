@@ -82,7 +82,6 @@ void SVPropertyWidget::onViewStateChanged() {
 				SVPropVertexListWidget * vertexListWidget = new SVPropVertexListWidget(this);
 				m_propWidgets[SVViewState::PM_VertexList] = vertexListWidget;
 				m_layout->addWidget(m_propWidgets[SVViewState::PM_VertexList]);
-				SVViewStateHandler::instance().m_newPolygonObject->m_vertexListWidget = vertexListWidget;
 			}
 			m_propWidgets[SVViewState::PM_VertexList]->setVisible(true);
 			setMinimumWidth(500);

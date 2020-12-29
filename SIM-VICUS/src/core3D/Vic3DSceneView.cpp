@@ -322,7 +322,7 @@ void SceneView::keyReleaseEvent(QKeyEvent *event) {
 				case SVViewState::OM_PlaceVertex : {
 					// abort "place vertex" operation
 					// reset new polygon object, so that it won't be drawn anylonger
-					SVViewStateHandler::instance().m_newPolygonObject->clear();
+					SVViewStateHandler::instance().m_newGeometryObject->clear();
 					// signal, that we are no longer in "add vertex" mode
 					SVViewState vs = SVViewStateHandler::instance().viewState();
 					vs.m_sceneOperationMode = SVViewState::NUM_OM;

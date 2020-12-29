@@ -31,6 +31,8 @@ SVPropVertexListWidget::~SVPropVertexListWidget() {
 
 
 void SVPropVertexListWidget::addVertex(const IBKMK::Vector3D & p) {
+	// Note: the vertex is already in the NewGeometryObject, we only
+	//       modify the table widget and update the button enabled states
 	int row = m_ui->tableWidgetVertexes->rowCount();
 	m_ui->tableWidgetVertexes->setRowCount(row + 1);
 	QTableWidgetItem * item = new QTableWidgetItem(QString("%1").arg(row+1));
@@ -42,7 +44,27 @@ void SVPropVertexListWidget::addVertex(const IBKMK::Vector3D & p) {
 
 	m_ui->pushButtonDeleteLast->setEnabled(true);
 
-	m_ui->pushButtonFinish->setEnabled(SVViewStateHandler::instance().m_newPolygonObject->canComplete());
+	m_ui->pushButtonFinish->setEnabled(SVViewStateHandler::instance().m_newGeometryObject->canComplete());
+}
+
+
+void SVPropVertexListWidget::removeVertex(unsigned int idx) {
+	// Note: the vertex has already been removed in the NewGeometryObject, we only
+	//       modify the table widget and update the button enabled states
+	int rows = m_ui->tableWidgetVertexes->rowCount();
+	Q_ASSERT(rows > 0);
+	Q_ASSERT((int)idx < m_ui->tableWidgetVertexes->rowCount());
+	// now remove selected row from table widget
+	m_ui->tableWidgetVertexes->removeRow((int)idx);
+	m_ui->pushButtonDeleteLast->setEnabled(rows > 1);
+	m_ui->pushButtonFinish->setEnabled(SVViewStateHandler::instance().m_newGeometryObject->canComplete());
+
+	// continue in place-vertex mode (setting the viewstate also triggers a repaint)
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
+	vs.m_propertyWidgetMode = SVViewState::PM_VertexList;
+	SVViewStateHandler::instance().setViewState(vs);
+	SVViewStateHandler::instance().m_geometryView->focusSceneView();
 }
 
 
@@ -72,21 +94,9 @@ void SVPropVertexListWidget::onNewVertexListStart() {
 
 
 void SVPropVertexListWidget::on_pushButtonDeleteLast_clicked() {
-	int rows = m_ui->tableWidgetVertexes->rowCount();
-	Q_ASSERT(rows > 0);
 	// remove last vertex from polygon
-	Vic3D::NewPolygonObject * po = SVViewStateHandler::instance().m_newPolygonObject;
-	po->removeVertex((unsigned int)rows-1);
-
-	m_ui->pushButtonDeleteLast->setEnabled(rows > 1);
-	m_ui->tableWidgetVertexes->setRowCount(rows-1);
-	m_ui->pushButtonFinish->setEnabled(SVViewStateHandler::instance().m_newPolygonObject->canComplete());
-	// continue in place-vertex mode (setting the viewstate also triggers a repaint)
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
-	vs.m_propertyWidgetMode = SVViewState::PM_VertexList;
-	SVViewStateHandler::instance().setViewState(vs);
-	SVViewStateHandler::instance().m_geometryView->focusSceneView();
+	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
+	po->removeLastVertex();
 }
 
 
@@ -97,7 +107,7 @@ void SVPropVertexListWidget::on_tableWidgetVertexes_itemSelectionChanged() {
 
 void SVPropVertexListWidget::on_pushButtonCancel_clicked() {
 	// reset new polygon object, so that it won't be drawn anylonger
-	SVViewStateHandler::instance().m_newPolygonObject->clear();
+	SVViewStateHandler::instance().m_newGeometryObject->clear();
 	// signal, that we are no longer in "add vertex" mode
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	vs.m_sceneOperationMode = SVViewState::NUM_OM;
@@ -108,25 +118,11 @@ void SVPropVertexListWidget::on_pushButtonCancel_clicked() {
 
 
 void SVPropVertexListWidget::on_pushButtonDeleteSelected_clicked() {
-	int rows = m_ui->tableWidgetVertexes->rowCount();
-	Q_ASSERT(rows > 0);
 	int currentRow = m_ui->tableWidgetVertexes->currentRow();
 	Q_ASSERT(currentRow != -1);
 	// remove selected vertex from polygon
-	Vic3D::NewPolygonObject * po = SVViewStateHandler::instance().m_newPolygonObject;
+	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
 	po->removeVertex((unsigned int)currentRow);
-
-	m_ui->pushButtonDeleteLast->setEnabled(rows > 1);
-	// now remove selected row from table widget
-	m_ui->tableWidgetVertexes->removeRow(currentRow);
-	m_ui->pushButtonFinish->setEnabled(SVViewStateHandler::instance().m_newPolygonObject->canComplete());
-
-	// continue in place-vertex mode (setting the viewstate also triggers a repaint)
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
-	vs.m_propertyWidgetMode = SVViewState::PM_VertexList;
-	SVViewStateHandler::instance().setViewState(vs);
-	SVViewStateHandler::instance().m_geometryView->focusSceneView();
 }
 
 
@@ -140,7 +136,7 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 	// compose a surface object based on the current content of the new polygon object
 	VICUS::Surface s;
 	s.m_displayName = m_ui->lineEditName->text().trimmed();
-	Vic3D::NewPolygonObject * po = SVViewStateHandler::instance().m_newPolygonObject;
+	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
 	s.m_geometry = po->planeGeometry();
 	s.m_id = s.uniqueID();
 	s.m_color = QColor("silver");

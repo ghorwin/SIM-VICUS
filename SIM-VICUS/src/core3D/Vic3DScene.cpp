@@ -50,8 +50,8 @@ void Vic3DScene::create(SceneView * parent, std::vector<ShaderProgram> & shaderP
 	// same for the coordinate system object
 	m_coordinateSystemObject.create(m_coordinateSystemShader);
 
-	// we create the new polygon object here, but data is added once it is used
-	m_newPolygonObject.create(m_fixedColorTransformShader, &m_coordinateSystemObject);
+	// we create the new geometry object here, but data is added once it is used
+	m_newGeometryObject.create(m_fixedColorTransformShader);
 }
 
 
@@ -76,7 +76,7 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			updateCamera = true;
 			updateSelection = true;
 			// clear new polygon drawing object
-			m_newPolygonObject.clear();
+			m_newGeometryObject.clear();
 			// set scene operation mode to "normal"
 			SVViewState vs = SVViewStateHandler::instance().viewState();
 			vs.m_sceneOperationMode = SVViewState::NUM_OM;
@@ -271,7 +271,7 @@ void Vic3DScene::destroy() {
 	m_networkGeometryObject.destroy();
 	m_selectedGeometryObject.destroy();
 	m_coordinateSystemObject.destroy();
-	m_newPolygonObject.destroy();
+	m_newGeometryObject.destroy();
 }
 
 
@@ -522,7 +522,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 //		qDebug() << localMousePos << VICUS::IBKVector2QVector(o.m_pickPoint) << m_coordinateSystemObject.translation();
 
 		// update the movable coordinate system's location in the new polygon object
-		m_newPolygonObject.newLocalCoordinateSystemPosition(m_coordinateSystemObject.translation());
+		m_newGeometryObject.updateLocalCoordinateSystemPosition(m_coordinateSystemObject.translation());
 	}
 
 	// if in "align coordinate system mode" perform picking operation and update local coordinate system orientation
@@ -631,7 +631,7 @@ void Vic3DScene::render() {
 
 	// *** new geometry object (opqaue lines) ***
 
-	m_newPolygonObject.renderOpqaue();
+	m_newGeometryObject.renderOpqaue();
 
 	m_fixedColorTransformShader->release();
 
@@ -734,10 +734,10 @@ void Vic3DScene::render() {
 
 	// *** new polygon draw object (transparent plane) ***
 
-	if (m_newPolygonObject.hasData() != 0) {
+	if (m_newGeometryObject.hasData() != 0) {
 		m_fixedColorTransformShader->bind();
 		// Note: worldToView uniform has already been set
-		m_newPolygonObject.renderTransparent();
+		m_newGeometryObject.renderTransparent();
 		m_fixedColorTransformShader->release();
 	}
 
@@ -752,7 +752,7 @@ void Vic3DScene::setViewState(const SVViewState & vs) {
 	// if we are currently constructing geometry, and we switch the view mode to
 	// "Parameter edit" mode, reset the new polygon object
 	if (vs.m_viewMode == SVViewState::VM_PropertyEditMode) {
-		m_newPolygonObject.clear();
+		m_newGeometryObject.clear();
 	}
 }
 
@@ -1245,7 +1245,7 @@ void Vic3DScene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandl
 			IBKMK::Vector3D p = VICUS::QVector2IBKVector(m_coordinateSystemObject.translation());
 			// append a vertex (this will automatically update the draw buffer) and also
 			// modify the vertexListWidget.
-			m_newPolygonObject.appendVertex(p);
+			m_newGeometryObject.appendVertex(p);
 			return;
 		}
 

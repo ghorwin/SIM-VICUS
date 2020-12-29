@@ -161,7 +161,7 @@ void SVGeometryView::coordinateInputFinished() {
 	// either, the line edit coordinate input is empty, in which case the polygon object may be completed
 	// (if possible)
 
-	Vic3D::NewPolygonObject * po = SVViewStateHandler::instance().m_newPolygonObject;
+	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
 	if (m_lineEditCoordinateInput->text().trimmed().isEmpty()) {
 		if (po->planeGeometry().isValid())
 			po->finish();

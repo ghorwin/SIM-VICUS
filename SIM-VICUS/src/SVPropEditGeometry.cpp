@@ -73,7 +73,7 @@ void SVPropEditGeometry::setBoundingBox(const IBKMK::Vector3D &v) {
 
 void SVPropEditGeometry::on_pushButtonAddPolygon_clicked() {
 	// reset new polygon object and set it into polygon mode
-	SVViewStateHandler::instance().m_newPolygonObject->clear();
+	SVViewStateHandler::instance().m_newGeometryObject->clear();
 	// signal, that we want to start adding a new polygon
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
@@ -88,7 +88,7 @@ void SVPropEditGeometry::on_pushButtonAddPolygon_clicked() {
 
 void SVPropEditGeometry::on_pushButtonAddRect_clicked() {
 	// reset new polygon object and set it into rect mode
-	SVViewStateHandler::instance().m_newPolygonObject->clear();
+	SVViewStateHandler::instance().m_newGeometryObject->clear();
 	// signal, that we want to start adding a new polygon
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
@@ -103,7 +103,7 @@ void SVPropEditGeometry::on_pushButtonAddRect_clicked() {
 
 void SVPropEditGeometry::on_pushButtonAddZoneBox_clicked() {
 	// reset new polygon object and set it into zone box mode
-	SVViewStateHandler::instance().m_newPolygonObject->clear();
+	SVViewStateHandler::instance().m_newGeometryObject->clear();
 	// signal, that we want to start adding a new polygon
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;

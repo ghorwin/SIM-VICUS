@@ -6,7 +6,7 @@
 #include "SVViewState.h"
 
 namespace Vic3D {
-	class NewPolygonObject;
+	class NewGeometryObject;
 	class CoordinateSystemObject;
 }
 
@@ -43,11 +43,12 @@ public:
 	/*! Pointer to geometry view object - so that we can give focus to the scene view when we start a drawing operation. */
 	SVGeometryView						*m_geometryView		= nullptr;
 
-	/*! Caches pointer to new polygon object, to allow direct access to object when removing vertexes.
-		The pointer is set in constructor of Vic3D::NewPolygonObject, object is not owned.
+	/*! Caches pointer to new geometry object, to allow direct access to object when
+		adding/removing vertexes.
+		The pointer is set in constructor of Vic3D::NewGeometryObject, object is not owned.
 		DO NOT DELETE the object or do any other crazy stuff with this pointer!
 	*/
-	Vic3D::NewPolygonObject				*m_newPolygonObject = nullptr;
+	Vic3D::NewGeometryObject			*m_newGeometryObject = nullptr;
 
 	/*! Caches pointer to the coordinate system object, to allow direct access to object when removing vertexes.
 		The pointer is set in constructor of Vic3D::CoordinateSystemObject, object is not owned.
