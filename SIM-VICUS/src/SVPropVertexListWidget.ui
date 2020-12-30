@@ -21,36 +21,26 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="2" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Building level:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QComboBox" name="comboBoxBuilding"/>
-      </item>
-      <item row="3" column="1">
-       <widget class="QComboBox" name="comboBoxZone"/>
-      </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="comboBoxBuildingLevel"/>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_2">
+       <widget class="QLabel" name="labelBuilding">
         <property name="text">
          <string>Building:</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_4">
+      <item row="2" column="1">
+       <widget class="QComboBox" name="comboBoxBuilding"/>
+      </item>
+      <item row="4" column="1">
+       <widget class="QComboBox" name="comboBoxZone"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="labelZone">
         <property name="text">
          <string>Zone:</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
+      <item row="2" column="2">
        <widget class="QToolButton" name="toolButtonAddBuilding">
         <property name="icon">
          <iconset resource="../resources/SIM-VICUS.qrc">
@@ -58,7 +48,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="2">
+      <item row="3" column="2">
        <widget class="QToolButton" name="toolButtonAddBuildingLevel">
         <property name="icon">
          <iconset resource="../resources/SIM-VICUS.qrc">
@@ -66,7 +56,7 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="2">
+      <item row="4" column="2">
        <widget class="QToolButton" name="toolButtonAddZone">
         <property name="icon">
          <iconset resource="../resources/SIM-VICUS.qrc">
@@ -87,6 +77,23 @@
          <widget class="QLineEdit" name="lineEditName"/>
         </item>
        </layout>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="labelBuildingLevel">
+        <property name="text">
+         <string>Building level:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QComboBox" name="comboBoxBuildingLevel"/>
+      </item>
+      <item row="1" column="0" colspan="3">
+       <widget class="QCheckBox" name="checkBoxAnnonymousGeometry">
+        <property name="text">
+         <string>Annonymous background geometry</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

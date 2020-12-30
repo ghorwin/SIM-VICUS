@@ -56,14 +56,17 @@ void SVPropVertexListWidget::setup(int newGeometryType) {
 	m_ui->groupBoxPolygonVertexes->setVisible(false);
 	m_ui->groupBoxZoneProperties->setVisible(false);
 	m_ui->groupBoxSurfaceProperties->setVisible(false);
+	m_ui->checkBoxAnnonymousGeometry->setVisible(false);
 	QString baseName(tr("New surface"));
 	switch (newGeometryType) {
 		case Vic3D::NewGeometryObject::NGM_Rect :
 			m_ui->groupBoxSurfaceProperties->setVisible(true);
+			m_ui->checkBoxAnnonymousGeometry->setVisible(true);
 		break;
 		case Vic3D::NewGeometryObject::NGM_Polygon :
 			m_ui->groupBoxPolygonVertexes->setVisible(true);
 			m_ui->groupBoxSurfaceProperties->setVisible(true);
+			m_ui->checkBoxAnnonymousGeometry->setVisible(true);
 		break;
 		case Vic3D::NewGeometryObject::NGM_ZoneFloor :
 			m_ui->groupBoxPolygonVertexes->setVisible(true);
@@ -131,14 +134,6 @@ void SVPropVertexListWidget::updateBuildingComboBox() {
 	}
 	m_ui->comboBoxBuilding->blockSignals(false);
 
-	// disable combo box if empty
-	if (m_ui->comboBoxBuilding->count() == 0) {
-		m_ui->comboBoxBuilding->setEnabled(false);
-	}
-	else {
-		m_ui->comboBoxBuilding->setEnabled(true);
-	}
-
 	// also update the building levels combo box
 	updateBuildingLevelsComboBox();
 }
@@ -168,22 +163,8 @@ void SVPropVertexListWidget::updateBuildingLevelsComboBox() {
 			m_ui->comboBoxBuildingLevel->setCurrentIndex(m_ui->comboBoxBuildingLevel->count()-1); // Note: if none, nothing will be selected
 		}
 
-		// enable tool button to add new levels
-		m_ui->toolButtonAddBuildingLevel->setEnabled(true);
-	}
-	else {
-		// no building, no levels to add
-		m_ui->toolButtonAddBuildingLevel->setEnabled(false);
 	}
 	m_ui->comboBoxBuildingLevel->blockSignals(false);
-
-	// disable combo box if empty
-	if (m_ui->comboBoxBuildingLevel->count() == 0) {
-		m_ui->comboBoxBuildingLevel->setEnabled(false);
-	}
-	else {
-		m_ui->comboBoxBuildingLevel->setEnabled(true);
-	}
 
 	// also update the zones combo box
 	updateZoneComboBox();
@@ -213,23 +194,9 @@ void SVPropVertexListWidget::updateZoneComboBox() {
 		else {
 			m_ui->comboBoxZone->setCurrentIndex(m_ui->comboBoxZone->count()-1); // Note: if none, nothing will be selected
 		}
-
-		// enable tool button to add new zones
-		m_ui->toolButtonAddZone->setEnabled(true);
-	}
-	else {
-		// no level, no zones to add
-		m_ui->toolButtonAddZone->setEnabled(false);
 	}
 	m_ui->comboBoxZone->blockSignals(false);
-
-	// disable combo box if empty
-	if (m_ui->comboBoxZone->count() == 0) {
-		m_ui->comboBoxZone->setEnabled(false);
-	}
-	else {
-		m_ui->comboBoxZone->setEnabled(true);
-	}
+	updateEnabledStates();
 }
 
 
@@ -489,4 +456,89 @@ void SVPropVertexListWidget::on_toolButtonAddZone_clicked() {
 
 	// now also select the matching item
 	reselectById(m_ui->comboBoxZone, (int)r.uniqueID());
+}
+
+
+void SVPropVertexListWidget::on_checkBoxAnnonymousGeometry_stateChanged(int /*arg1*/) {
+	updateEnabledStates();
+}
+
+
+bool SVPropVertexListWidget::createAnnonymousGeometry() const {
+	return (m_ui->checkBoxAnnonymousGeometry->isVisibleTo(this) && m_ui->checkBoxAnnonymousGeometry->isChecked());
+}
+
+void SVPropVertexListWidget::updateEnabledStates() {
+	// if checkbox is visible, we adjust the enabled state of other inputs
+	bool annonymousGeometry = createAnnonymousGeometry();
+	if (annonymousGeometry) {
+		m_ui->groupBoxSurfaceProperties->setEnabled(false);
+
+		m_ui->labelBuilding->setEnabled(false);
+		m_ui->comboBoxBuilding->setEnabled(false);
+		m_ui->toolButtonAddBuilding->setEnabled(false);
+
+		m_ui->labelBuildingLevel->setEnabled(false);
+		m_ui->comboBoxBuildingLevel->setEnabled(false);
+		m_ui->toolButtonAddBuildingLevel->setEnabled(false);
+
+		m_ui->labelZone->setEnabled(false);
+		m_ui->comboBoxZone->setEnabled(false);
+		m_ui->toolButtonAddZone->setEnabled(false);
+	}
+	else {
+		m_ui->groupBoxSurfaceProperties->setEnabled(true);
+
+		// building controls
+		if (m_ui->comboBoxBuilding->count() == 0) {
+			m_ui->comboBoxBuilding->setEnabled(false);
+		}
+		else {
+			m_ui->comboBoxBuilding->setEnabled(true);
+		}
+		m_ui->labelBuilding->setEnabled(true);
+		m_ui->toolButtonAddBuilding->setEnabled(true);
+
+
+		// building level controls
+		if (m_ui->comboBoxBuildingLevel->count() == 0) {
+			m_ui->comboBoxBuildingLevel->setEnabled(false);
+		}
+		else {
+			m_ui->comboBoxBuildingLevel->setEnabled(true);
+		}
+		// enable tool button to add new levels
+		m_ui->toolButtonAddBuildingLevel->setEnabled(m_ui->comboBoxBuilding->count() != 0);
+		m_ui->labelBuildingLevel->setEnabled(m_ui->comboBoxBuilding->count() != 0);
+
+
+		// room controls
+		// never enabled when we create zones
+		if (m_ui->groupBoxZoneProperties->isVisibleTo(this)) {
+			m_ui->labelZone->setEnabled(false);
+			m_ui->comboBoxZone->setEnabled(false);
+			m_ui->toolButtonAddZone->setEnabled(false);
+		}
+		else {
+			if (m_ui->comboBoxZone->count() == 0) {
+				m_ui->comboBoxZone->setEnabled(false);
+			}
+			else {
+				m_ui->comboBoxZone->setEnabled(true);
+			}
+			// enable tool button to add new zones
+			m_ui->toolButtonAddZone->setEnabled(m_ui->comboBoxBuildingLevel->count() != 0);
+			m_ui->labelZone->setEnabled(m_ui->comboBoxBuildingLevel->count() != 0);
+		}
+	}
+}
+
+
+void SVPropVertexListWidget::on_comboBoxBuilding_currentIndexChanged(int /*index*/) {
+	updateBuildingLevelsComboBox();
+}
+
+
+void SVPropVertexListWidget::on_comboBoxBuildingLevel_currentIndexChanged(int index) {
+	updateZoneComboBox();
 }

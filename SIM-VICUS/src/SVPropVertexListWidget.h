@@ -83,7 +83,19 @@ private slots:
 
 	void on_toolButtonAddZone_clicked();
 
+	void on_checkBoxAnnonymousGeometry_stateChanged(int arg1);
+
+	void on_comboBoxBuilding_currentIndexChanged(int index);
+
+	void on_comboBoxBuildingLevel_currentIndexChanged(int index);
+
 private:
+	/*! Returns true, if annonymous geometry is being created (i.e. checkbox is visible and checked). */
+	bool createAnnonymousGeometry() const;
+
+	/*! Updates the enabled/disable states of all labels/combo boxes and tool buttons depending on available data. */
+	void updateEnabledStates();
+
 	bool reselectById(QComboBox * combo, int id) const;
 
 	/*! Updates the content of the building combo box with data from the project.
