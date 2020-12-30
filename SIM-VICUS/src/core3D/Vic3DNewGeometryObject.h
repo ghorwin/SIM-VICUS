@@ -214,6 +214,8 @@ private:
 	*/
 	NewGeometryMode					m_newGeometryMode;
 
+	/*! Height of the zone when constructing a zone through extrusion. */
+	double							m_zoneHeight;
 
 	/*! Vertex buffer in CPU memory, holds data of all vertices (coords).
 		The last vertex is always the vertex of the current movable coordinate system's location.

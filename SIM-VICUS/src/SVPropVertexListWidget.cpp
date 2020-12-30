@@ -587,4 +587,7 @@ void SVPropVertexListWidget::on_pushButtonFloorDone_clicked() {
 	m_ui->pushButtonFloorDone->setEnabled(false);
 	m_ui->pushButtonFinish->setEnabled(true);
 	m_ui->groupBoxPolygonVertexes->setEnabled(false);
+
+	// we now must align the local coordinate system to the newly created plane
+	// also, we must fix the snap to the line that's
 }

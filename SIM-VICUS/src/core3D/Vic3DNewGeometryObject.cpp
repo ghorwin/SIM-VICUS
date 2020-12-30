@@ -229,6 +229,7 @@ void NewGeometryObject::updateLocalCoordinateSystemPosition(const QVector3D & p)
 	switch (m_newGeometryMode) {
 		case NGM_Rect : // nothing to do - we can only ever add 3 points here
 		break;
+
 		case NGM_Polygon :
 		case NGM_ZoneFloor :
 			// if we have already a valid plane (i.e. normal vector not 0,0,0),
@@ -240,7 +241,23 @@ void NewGeometryObject::updateLocalCoordinateSystemPosition(const QVector3D & p)
 				newPoint = VICUS::IBKVector2QVector(projected);
 			}
 		break;
-	}
+		case NGM_ZoneExtrusion : {
+			Q_ASSERT(m_planeGeometry.isValid());
+			// compute the projection of the current coordinate systems position on the plane
+			IBKMK::Vector3D p2(VICUS::QVector2IBKVector(p));
+			IBKMK::Vector3D projected;
+			IBKMK::pointProjectedOnPlane(m_planeGeometry.vertexes()[0], m_planeGeometry.normal(), p2, projected);
+			newPoint = VICUS::IBKVector2QVector(projected);
+			// now get the offset vector
+			QVector3D verticalOffset = p-newPoint; // Note: this vector should be collinear to the plane's normal
+			// and add it to the first vertex of the polygon
+			newPoint = verticalOffset + VICUS::IBKVector2QVector(m_planeGeometry.vertexes()[0]);
+			// also store the absolute height
+			m_zoneHeight = verticalOffset.length();
+		}
+
+	} // switch
+
 
 	// any change to the previously stored point?
 	if (m_localCoordinateSystemPosition == newPoint)
@@ -374,6 +391,29 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 			//  - for invalid polygons with just draw the outline of the placed vertexes
 			//  - for valid polygons we draw the line segments of the individual planes only, but no triangulation grids
 			//  - height of the polygon is taken from m_zoneHeight
+
+			if (m_zoneHeight != 0) {
+				Q_ASSERT(m_planeGeometry.isValid());
+				// we need to create at first the base polygon
+				addPlane(m_planeGeometry, currentVertexIndex, currentElementIndex,
+						 m_vertexBufferData, m_indexBufferData);
+				// re-add first vertex so that we have a closed loop
+				m_vertexBufferData.push_back( m_vertexBufferData[0] ); ++currentVertexIndex;
+
+				// now we create the polygon that is offset by m_zoneHeight along the plane normal vector
+				VICUS::PlaneGeometry topPlane;
+				std::vector<IBKMK::Vector3D> vertexes = m_planeGeometry.vertexes();
+
+				// the offset vector is the normal vector times the zoneHeight
+				IBKMK::Vector3D offset = VICUS::QVector2IBKVector(m_localCoordinateSystemPosition) - vertexes[0];
+				for (IBKMK::Vector3D & v : vertexes)
+					v += offset;
+				topPlane.setVertexes(vertexes);
+				addPlane(topPlane, currentVertexIndex, currentElementIndex,
+						 m_vertexBufferData, m_indexBufferData);
+				// re-add first vertex so that we have a closed loop
+				m_vertexBufferData.push_back( m_vertexBufferData[0] ); ++currentVertexIndex;
+			}
 
 		} break;
 	}
