@@ -34,17 +34,12 @@ void OrbitControllerObject::create(ShaderProgram * shaderProgram) {
 	const unsigned int N_SEGMENTS = 32;
 	const double RADIUS = 2;
 #define PI_CONST 3.14159265
-	for (unsigned int i=0; i<N_SEGMENTS; ++i) {
-		double angle = 2*PI_CONST*i/N_SEGMENTS;
+	for (unsigned int i=0; i<=N_SEGMENTS; ++i) {
+		double angle = 2*PI_CONST*((i+1) % N_SEGMENTS)/N_SEGMENTS;
 		double x = std::sin(angle)*RADIUS;
 		double y = std::cos(angle)*RADIUS;
 		lineVertexBuffer.push_back( QVector3D(float(x),float(y),0) );
-		angle = 2*PI_CONST*((i+1) % N_SEGMENTS)/N_SEGMENTS;
-		x = std::sin(angle)*RADIUS;
-		y = std::cos(angle)*RADIUS;
-		lineVertexBuffer.push_back( QVector3D(float(x),float(y),0) );
 	}
-
 
 	m_vertexCount = lineVertexBuffer.size();
 
@@ -87,7 +82,8 @@ void OrbitControllerObject::render() {
 	// set transformation matrix
 	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[1], m_transform.toMatrix());
 	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], QVector4D(1.f, 1.f, .8f, 1.f));
-	glDrawArrays(GL_LINES, 0, m_vertexCount);
+	glDrawArrays(GL_LINES, 0, 2);
+	glDrawArrays(GL_LINE_STRIP, 2, m_vertexCount-2);
 
 	m_vao.release();
 }

@@ -631,7 +631,7 @@ void Vic3DScene::render() {
 
 	// *** new geometry object (opqaue lines) ***
 
-	m_newGeometryObject.renderOpqaue();
+	m_newGeometryObject.renderOpaque();
 
 	m_fixedColorTransformShader->release();
 

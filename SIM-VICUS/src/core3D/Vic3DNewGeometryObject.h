@@ -40,6 +40,11 @@ class ShaderProgram;
 	coordinate's position.
 	And if more than 3 vertices have been places already, a transparent plane is painted.
 
+	For rect drawing:
+
+	The user can click and add two points at will. These must not be the same.
+	The third point that is added finishes the shape.
+	When two points have been added, the third point will cause the final shape to be shown already.
 
 
 	Uses two shaders: one for drawing transparent planes in renderTransparent(),
@@ -166,7 +171,7 @@ public:
 
 
 	/*! Renders opaque parts of geometry. */
-	void renderOpqaue();
+	void renderOpaque();
 	/*! Renders transparent parts of geometry. */
 	void renderTransparent();
 

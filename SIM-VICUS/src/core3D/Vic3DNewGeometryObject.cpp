@@ -91,7 +91,29 @@ void NewGeometryObject::destroy() {
 
 
 void NewGeometryObject::appendVertex(const IBKMK::Vector3D & p) {
+	// check that not the same points are added twice
+	if (!m_vertexList.empty() && p==m_vertexList.back()) {
+		IBK::IBK_Message("Identical point added. Ignored.");
+		return; // ignore the vertex
+	}
 	switch (m_newGeometryMode) {
+		case NGM_Rect :
+			// if we have already 2 points and a third is added (that is not the same as the first),
+			// finish the shape
+			if (m_vertexList.size() == 2) {
+				if (p == m_vertexList.front()) {
+					IBK::IBK_Message("Point is identical to first. Ignored.");
+					return; // ignore the vertex
+				}
+				// tell property widget to modify the project with our data
+				SVViewStateHandler::instance().m_propVertexListWidget->on_pushButtonFinish_clicked();
+			}
+			m_vertexList.push_back(p);
+			m_planeGeometry.setVertexes(m_vertexList);
+			// also tell the vertex list widget about our new point
+			SVViewStateHandler::instance().m_propVertexListWidget->addVertex(p);
+		break;
+
 		case NGM_Polygon :
 		case NGM_ZoneFloor :
 			// if we have already a valid plane (i.e. normal vector not 0,0,0), then check if point is in plane
@@ -167,6 +189,7 @@ bool NewGeometryObject::hasData() const {
 void NewGeometryObject::finish() {
 	switch (m_newGeometryMode) {
 		case NGM_Polygon :
+		case NGM_Rect :
 			if (m_planeGeometry.isValid()) {
 				// tell property widget to modify the project with our data
 				SVViewStateHandler::instance().m_propVertexListWidget->on_pushButtonFinish_clicked();
@@ -180,6 +203,8 @@ void NewGeometryObject::updateLocalCoordinateSystemPosition(const QVector3D & p)
 	QVector3D newPoint = p;
 
 	switch (m_newGeometryMode) {
+		case NGM_Rect : // nothing to do - we can only ever add 3 points here
+		break;
 		case NGM_Polygon :
 		case NGM_ZoneFloor :
 			// if we have already a valid plane (i.e. normal vector not 0,0,0),
@@ -233,25 +258,68 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 
 	unsigned int currentVertexIndex = 0;
 	unsigned int currentElementIndex = 0;
-	if (m_planeGeometry.isValid()) {
-		addPlane(m_planeGeometry, currentVertexIndex, currentElementIndex,
-				 m_vertexBufferData, m_indexBufferData);
-		m_vertexBufferData.push_back( m_vertexBufferData[0] );
+
+	// different handling depending on the object that's being painted
+
+	switch (m_newGeometryMode) {
+		case NGM_Rect : {
+			// if we do not yet have three points, only draw a single line between the first two vertexes
+			for (const IBKMK::Vector3D & v : m_vertexList)
+				m_vertexBufferData.push_back( VertexC(VICUS::IBKVector2QVector(v)) );
+			// now also add a vertex for the current coordinate system's position
+			m_vertexBufferData.push_back( VertexC(m_localCoordinateSystemPosition ) );
+
+		}
+		break;
+		case NGM_Polygon : {
+
+			// Buffer layout:
+			//  - if we have a valid polygon:    npg x VC | VC (first vertex) | VC (last placed vertex) | VC (local coordinate system) | VC (first vertex)
+			//  - if we have an invalid polygon: nvl x VC | VC (local coordinate system) | VC (first vertex)
+			//
+			//   VC  - Vertex with coordinates
+			//   npg - number of vertexes in plane geometry
+			//   nvl - number of vertexes in vertex list
+			// Note: first vertex of nvl is also the vertex needed to close the loop
+			//
+			// Also note: actually, if the polygon would always be valid we would only need the vertexes of
+			//            the polygon to draw the outline. But, alas, the user may add any kind of invalid vertexes
+			//            and hence we also need to store
+
+			// rendered will be:
+			//   outline around polygon, using npg+1 vertexes for valid polygon, otherwise nvl vertexes
+			//   render two lines: a) between last placed vertex and local coordinate system
+			//                     b) between local coordinate system and first vertex
+			//
+			//   the transparent shape is drawn only for valid polygons
+
+			if (m_planeGeometry.isValid()) {
+				addPlane(m_planeGeometry, currentVertexIndex, currentElementIndex,
+						 m_vertexBufferData, m_indexBufferData);
+				// re-add first vertex so that we have a closed loop
+				m_vertexBufferData.push_back( m_vertexBufferData[0] );
+				// add last placed vertex to draw line to current local coordinate system
+				m_vertexBufferData.push_back( VertexC(VICUS::IBKVector2QVector(m_vertexList.back())) );
+			}
+			else {
+				// for invalid polygons
+				// put all the vertexes of the current polyline into buffer
+				for (const IBKMK::Vector3D & v : m_vertexList)
+					m_vertexBufferData.push_back( VertexC(VICUS::IBKVector2QVector(v)) );
+			}
+			// last vertex in buffer is now the last placed vertex
+
+			// now also add a vertex for the current coordinate system's position
+			m_vertexBufferData.push_back( VertexC(m_localCoordinateSystemPosition ) );
+
+			// add again the first point of the polygon in order to draw a blue line from local coordinate system to first point of polygon
+			m_vertexBufferData.push_back( VertexC(VICUS::IBKVector2QVector(m_vertexList.front())) );
+		} break;
+
+		case NGM_ZoneFloor : {
+
+		} break;
 	}
-
-	// put all the vertexes of the current polyline into buffer
-	// first reserve memory
-	m_vertexBufferData.reserve(m_vertexList.size()+ m_vertexBufferData.size()+6);
-	for (const IBKMK::Vector3D & v : m_vertexList)
-		m_vertexBufferData.push_back( VertexC(VICUS::IBKVector2QVector(v)) );
-
-	m_vertexBufferData.push_back( m_vertexBufferData[0] );
-
-	// now also add a vertex for the current coordinate system's position
-	m_vertexBufferData.push_back( VertexC(m_localCoordinateSystemPosition ) );
-
-	// and also the last point of the polygon in order to draw its line blue from local coordinate system
-	m_vertexBufferData.push_back( VertexC(VICUS::IBKVector2QVector(m_vertexList.back())) );
 
 	// transfer data stored in m_vertexBufferData
 	m_vertexBufferObject.bind();
@@ -267,7 +335,7 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 }
 
 
-void NewGeometryObject::renderOpqaue() {
+void NewGeometryObject::renderOpaque() {
 	if (m_vertexBufferData.empty())
 		return;
 
@@ -276,52 +344,62 @@ void NewGeometryObject::renderOpqaue() {
 	// set transformation matrix - unity matrix, since we draw with world coordinates
 	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[1], QMatrix4x4());
 
-	// draw the polygon line first
-	if (m_vertexBufferData.size() > 1) {
+	// render lines - outline and wireframe mesh, depending on the geometry being created
 
-		QColor lineCol;
-		if (m_planeGeometry.isValid()) {
-			if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
-				lineCol = QColor("#2ed655");
-			else
-				lineCol = QColor("#00ff48");
-		}
-		else {
-			if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
-				lineCol = QColor("#c31818");
-			else
-				lineCol = QColor("#ed1f1f");
-		}
+	switch (m_newGeometryMode) {
+		case NGM_Rect:
+			// we
+		break;
+		case NGM_Polygon:
+			// draw the polygon line first
+			if (m_vertexBufferData.size() > 1) {
 
-		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], lineCol);
-		// then the line consisting of the last two vertexes
+				QColor lineCol;
+				if (m_planeGeometry.isValid()) {
+					if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
+						lineCol = QColor("#2ed655");
+					else
+						lineCol = QColor("#00ff48");
+				}
+				else {
+					if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
+						lineCol = QColor("#c31818");
+					else
+						lineCol = QColor("#ed1f1f");
+				}
 
-		// line drawing starts from vertex 0 if polygon is invalid, or
-		// from first vertex after polygon-vertexes
-		size_t offset = 0;
-		if (m_planeGeometry.isValid())
-			offset = m_planeGeometry.vertexes().size() + 1; // +1, because we have added the first polygon again at the end
-		// paint a line for each of the vertexes in the list and one extra, for the trailing polygon line
-		for (size_t i = 1; i < m_vertexList.size()+1; ++i, ++offset) {
-			glDrawArrays(GL_LINES, offset, 2);
-		}
-		// set wireframe color (TODO : make this theme-dependent?)
-		if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
-			lineCol = QColor("#32c5ea");
-		else
-			lineCol = QColor("#106d90");
+				m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], lineCol);
+
+				// if we have a valid polygon, draw the outline using the first npg+1 vertexes
+				size_t offset = 0;
+				if (m_planeGeometry.isValid()) {
+					glDrawArrays(GL_LINE_STRIP, 0, m_planeGeometry.vertexes().size() + 1);
+					// start offset for the two lines of the local coordinate system - use the last vertex again
+					offset = m_planeGeometry.vertexes().size() + 1;
+				}
+				else {
+					glDrawArrays(GL_LINE_STRIP, 0, m_vertexList.size());
+					// start offset for the two lines of the local coordinate system - use the last vertex again
+					offset = m_vertexList.size()-1;
+				}
+				// set wireframe color (TODO : make this theme-dependent?)
+				if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
+					lineCol = QColor("#32c5ea");
+				else
+					lineCol = QColor("#106d90");
+
+				m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], lineCol);
+				glDrawArrays(GL_LINE_STRIP, offset, 3);
+			}
+		break;
+	} // switch
 
 
-		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], lineCol);
-		glDrawArrays(GL_LINES, offset, 2);
-		glDrawArrays(GL_LINES, ++offset, 2);
-//		glDrawArrays(GL_LINES, ++offset, 2);
-	}
-
-	// now draw the geometry
+	// now draw the geometry - this code is the same for all geometry objects, since it only relies on the index buffer
+	// values
 	if (!m_indexBufferData.empty()) {
 		glDisable(GL_CULL_FACE);
-#if 1
+
 		// set wireframe color (TODO : make this theme-dependent?)
 		QColor wireFrameCol;
 		if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
@@ -336,7 +414,6 @@ void NewGeometryObject::renderOpqaue() {
 		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_INT, nullptr);
 		// switch back to fill mode
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-#endif
 	}
 
 	// release buffers again
@@ -350,6 +427,7 @@ void NewGeometryObject::renderTransparent() {
 	//   shader program has already transform uniform set
 	//   glDisable(GL_CULL_FACE);
 
+	// the render code below is the same for all geometry types, since only the index buffer is used
 	if (!m_indexBufferData.empty()) {
 		// bind all buffers
 		m_vao.bind();
