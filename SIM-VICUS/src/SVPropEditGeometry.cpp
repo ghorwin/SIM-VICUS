@@ -88,7 +88,7 @@ void SVPropEditGeometry::on_pushButtonAddPolygon_clicked() {
 
 void SVPropEditGeometry::on_pushButtonAddRect_clicked() {
 	// reset new polygon object and set it into rect mode
-	SVViewStateHandler::instance().m_newGeometryObject->clear();
+	SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_Rect);
 	// signal, that we want to start adding a new polygon
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
@@ -102,8 +102,8 @@ void SVPropEditGeometry::on_pushButtonAddRect_clicked() {
 
 
 void SVPropEditGeometry::on_pushButtonAddZoneBox_clicked() {
-	// reset new polygon object and set it into zone box mode
-	SVViewStateHandler::instance().m_newGeometryObject->clear();
+	// reset new polygon object and set it into zone floor drawing mode
+	SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_ZoneFloor);
 	// signal, that we want to start adding a new polygon
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;

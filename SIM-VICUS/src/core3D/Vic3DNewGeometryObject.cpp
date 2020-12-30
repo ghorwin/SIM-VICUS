@@ -90,6 +90,18 @@ void NewGeometryObject::destroy() {
 }
 
 
+void NewGeometryObject::switchTo(NewGeometryObject::NewGeometryMode m) {
+	switch (m) {
+		case NGM_ZoneExtrusion :
+			Q_ASSERT(m_newGeometryMode == NGM_ZoneFloor);
+			m_newGeometryMode = m;
+		break;
+		default:;
+	}
+	updateBuffers(false);
+}
+
+
 void NewGeometryObject::appendVertex(const IBKMK::Vector3D & p) {
 	// check that not the same points are added twice
 	if (!m_vertexList.empty() && p==m_vertexList.back()) {
@@ -306,7 +318,8 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 		}
 		break;
 
-		case NGM_Polygon : {
+		case NGM_Polygon :
+		case NGM_ZoneFloor : {
 
 			// Buffer layout:
 			//  - if we have a valid polygon:    npg x VC | VC (first vertex) | VC (last placed vertex) | VC (local coordinate system) | VC (first vertex)
@@ -351,7 +364,16 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 			m_vertexBufferData.push_back( VertexC(VICUS::IBKVector2QVector(m_vertexList.front())) );
 		} break;
 
-		case NGM_ZoneFloor : {
+
+		case NGM_ZoneExtrusion : {
+			// Buffer layout:
+			//  - we add 2 polygons (top and bottom), and also nSegments planes for each wall, with m_zoneHeight as height.
+			//    after each plane we add a vertex for the first point of the plane, so that we can draw outlines
+			//
+			//  - we render all planes transparent
+			//  - for invalid polygons with just draw the outline of the placed vertexes
+			//  - for valid polygons we draw the line segments of the individual planes only, but no triangulation grids
+			//  - height of the polygon is taken from m_zoneHeight
 
 		} break;
 	}
@@ -394,6 +416,7 @@ void NewGeometryObject::renderOpaque() {
 		} break;
 
 		case NGM_Polygon:
+		case NGM_ZoneFloor:
 			// draw the polygon line first
 			if (m_vertexBufferData.size() > 1) {
 
@@ -438,9 +461,8 @@ void NewGeometryObject::renderOpaque() {
 	} // switch
 
 
-	// now draw the geometry - this code is the same for all geometry objects, since it only relies on the index buffer
-	// values
-	if (!m_indexBufferData.empty()) {
+	// now draw the wireframe triangles - only done for polygons for now (maybe we do not need this anylonger?)
+	if (!m_indexBufferData.empty() && m_newGeometryMode == NGM_Polygon) {
 		glDisable(GL_CULL_FACE);
 
 		// set wireframe color (TODO : make this theme-dependent?)

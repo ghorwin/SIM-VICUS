@@ -62,20 +62,23 @@ void SVPropVertexListWidget::setup(int newGeometryType) {
 		case Vic3D::NewGeometryObject::NGM_Rect :
 			m_ui->groupBoxSurfaceProperties->setVisible(true);
 			m_ui->checkBoxAnnonymousGeometry->setVisible(true);
+			m_ui->pushButtonFinish->setText(tr("Create surface"));
 		break;
 		case Vic3D::NewGeometryObject::NGM_Polygon :
 			m_ui->groupBoxPolygonVertexes->setVisible(true);
 			m_ui->groupBoxSurfaceProperties->setVisible(true);
 			m_ui->checkBoxAnnonymousGeometry->setVisible(true);
+			m_ui->pushButtonFinish->setText(tr("Create surface"));
 		break;
 		case Vic3D::NewGeometryObject::NGM_ZoneFloor :
 			m_ui->groupBoxPolygonVertexes->setVisible(true);
 			m_ui->groupBoxZoneProperties->setVisible(true);
 			baseName = tr("New zone");
+			m_ui->pushButtonFinish->setText(tr("Create zone"));
 		break;
-		case Vic3D::NewGeometryObject::NGM_ZoneExtrusion :
-			m_ui->groupBoxZoneProperties->setVisible(true);
-		break;
+
+		// we do not have other geometries, yet
+		default:;
 	}
 
 	// populate component combo boxes
@@ -277,6 +280,7 @@ void SVPropVertexListWidget::addVertex(const IBKMK::Vector3D & p) {
 	m_ui->pushButtonDeleteLast->setEnabled(true);
 
 	m_ui->pushButtonFinish->setEnabled(SVViewStateHandler::instance().m_newGeometryObject->canComplete());
+	m_ui->pushButtonFloorDone->setEnabled(SVViewStateHandler::instance().m_newGeometryObject->planeGeometry().isValid());
 }
 
 
@@ -290,6 +294,7 @@ void SVPropVertexListWidget::removeVertex(unsigned int idx) {
 	m_ui->tableWidgetVertexes->removeRow((int)idx);
 	m_ui->pushButtonDeleteLast->setEnabled(rows > 1);
 	m_ui->pushButtonFinish->setEnabled(SVViewStateHandler::instance().m_newGeometryObject->canComplete());
+	m_ui->pushButtonFloorDone->setEnabled(SVViewStateHandler::instance().m_newGeometryObject->planeGeometry().isValid());
 
 	// continue in place-vertex mode (setting the viewstate also triggers a repaint)
 	SVViewState vs = SVViewStateHandler::instance().viewState();
@@ -320,6 +325,7 @@ void SVPropVertexListWidget::clearPolygonVertexList() {
 	// clear table widget and disable "delete" and "finish" buttons
 	m_ui->tableWidgetVertexes->setRowCount(0);
 	m_ui->pushButtonFinish->setEnabled(false);
+	m_ui->pushButtonFloorDone->setEnabled(false);
 	m_ui->pushButtonDeleteLast->setEnabled(false);
 	m_ui->pushButtonDeleteSelected->setEnabled(false);
 }
@@ -354,7 +360,7 @@ void SVPropVertexListWidget::on_pushButtonDeleteSelected_clicked() {
 	Q_ASSERT(currentRow != -1);
 	// remove selected vertex from polygon
 	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
-	po->removeVertex((unsigned int)currentRow);
+	po->removeVertex((unsigned int)currentRow); // this will in turn call removeVertex() above
 }
 
 
@@ -389,6 +395,8 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 				if (m_ui->comboBoxZone->currentIndex() != -1) {
 					unsigned int zoneUUID = m_ui->comboBoxZone->currentData().toUInt();
 					s.updateColor(); // set color based on orientation
+					// also store component information
+					s.m_componentId = m_ui->comboBoxComponent->currentData().toUInt();
 					// modify project
 					SVUndoAddSurface * undo = new SVUndoAddSurface(tr("Added surface '%1'").arg(s.m_displayName), s, zoneUUID);
 					undo->push();
@@ -400,7 +408,8 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 			}
 		} break;
 
-		case Vic3D::NewGeometryObject::NGM_ZoneFloor:
+		case Vic3D::NewGeometryObject::NGM_ZoneExtrusion :
+
 		break;
 	}
 
@@ -568,4 +577,14 @@ void SVPropVertexListWidget::on_comboBoxBuilding_currentIndexChanged(int /*index
 
 void SVPropVertexListWidget::on_comboBoxBuildingLevel_currentIndexChanged(int index) {
 	updateZoneComboBox();
+}
+
+
+void SVPropVertexListWidget::on_pushButtonFloorDone_clicked() {
+	// we switch to floor-extrusion mode now
+	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
+	po->switchTo(Vic3D::NewGeometryObject::NGM_ZoneExtrusion);
+	m_ui->pushButtonFloorDone->setEnabled(false);
+	m_ui->pushButtonFinish->setEnabled(true);
+	m_ui->groupBoxPolygonVertexes->setEnabled(false);
 }

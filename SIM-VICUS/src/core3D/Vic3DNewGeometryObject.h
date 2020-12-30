@@ -104,6 +104,9 @@ public:
 	/*! Returns the current geometry type. */
 	NewGeometryMode newGeometryMode() const {	return m_newGeometryMode; }
 
+	/*! For two-stage geometry construction, you can here switch from one mode to another. */
+	void switchTo(NewGeometryMode m);
+
 	/*! Appends a vertex to the geometry.
 		This function is used to manually add a vertex, for example when entering a vertex
 		by keyboard.

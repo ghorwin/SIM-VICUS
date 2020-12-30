@@ -89,6 +89,8 @@ private slots:
 
 	void on_comboBoxBuildingLevel_currentIndexChanged(int index);
 
+	void on_pushButtonFloorDone_clicked();
+
 private:
 	/*! Returns true, if annonymous geometry is being created (i.e. checkbox is visible and checked). */
 	bool createAnnonymousGeometry() const;
