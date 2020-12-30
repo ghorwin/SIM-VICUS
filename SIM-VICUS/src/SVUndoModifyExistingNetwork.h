@@ -6,7 +6,7 @@
 #include "SVUndoCommandBase.h"
 
 class SVUndoModifyExistingNetwork : public SVUndoCommandBase {
-	Q_DECLARE_TR_FUNCTIONS(SVUndoAddToExistingNetwork)
+	Q_DECLARE_TR_FUNCTIONS(SVUndoModifyExistingNetwork)
 public:
 	SVUndoModifyExistingNetwork(const QString & label, const VICUS::Network & modNetwork);
 

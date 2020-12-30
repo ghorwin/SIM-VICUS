@@ -55,6 +55,8 @@ public:
 			update of entire selection object is requested (only the visual part).
 		*/
 		SelectionModified,
+		/*! Network hydraulic component changed. */
+		NetworkHydraulicComponentModified,
 		/*! The state (visibility/selection) of a node in the tree view/surface in the scene has changed.
 			data pointer is a std::vector<unsigned int> that contains the unique IDs of modified elements.
 			Note: if any selection property was changed, this undo-action also executes the SelectionChanged modification.

@@ -213,6 +213,8 @@ private slots:
 
 
 
+	void on_actionNetwork_Hydraulic_Components_triggered();
+
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();

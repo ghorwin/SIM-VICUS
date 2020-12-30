@@ -11,15 +11,11 @@
 
 #include "VICUS_KeywordList.h"
 
-#include "QtExt_Locale.h"
-
 SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 	QWidget(parent),
 	m_ui(new Ui::SVPropNetworkEditWidget)
 {
 	m_ui->setupUi(this);
-
-	m_ui->tableViewComponentParams->horizontalHeader()->setVisible(true);
 
 	m_ui->groupBoxNode->setVisible(false);
 	m_ui->groupBoxEdge->setVisible(false);
@@ -169,12 +165,12 @@ void SVPropNetworkEditWidget::updateHydraulicComponent()
 	m_ui->comboBoxHeatExchangeType->setCurrentText(m_mapHeatExchangeType.key(component.m_heatExchangeType));
 	// ... hx parameter
 
-	// Create component parameter model and connect model to table view:
-	m_componentParModel = new ComponentParameterModel(this);
-	connect(m_componentParModel, SIGNAL(editCompleted(void)), this, SLOT(on_componentParModel_editCompleted(void)));
-	m_componentParModel->setComponent(component);
-	m_ui->tableViewComponentParams->setModel(m_componentParModel);
-	m_ui->tableViewComponentParams->show();
+//	// Create component parameter model and connect model to table view:
+//	m_componentParModel = new HydraulicComponentParameterModel(this);
+//	connect(m_componentParModel, SIGNAL(editCompleted(void)), this, SLOT(on_componentParModel_editCompleted(void)));
+//	m_componentParModel->setComponent(component);
+//	m_ui->tableViewComponentParams->setModel(m_componentParModel);
+//	m_ui->tableViewComponentParams->show();
 }
 
 
@@ -205,35 +201,38 @@ void SVPropNetworkEditWidget::modifyHydraulicComponent()
 		component = *tmpComp;
 	}
 
-	// this makes sure, we have no components in the catalog that dont belong to any node
-	network.cleanHydraulicComponentCatalog();
+//	// read model type and parameter
+//	component.m_modelType = NANDRAD::HydraulicNetworkComponent::modelType_t(
+//				m_mapComponents.value(m_ui->comboBoxComponent->currentText()));
+//	if (component.m_modelType == NANDRAD::HydraulicNetworkComponent::NUM_MT){
+//		node->m_componentId = VICUS::INVALID_ID;
+//		// this makes sure, we have no components in the catalog that dont belong to any node
+//		network.cleanHydraulicComponentCatalog();
+//		return;
+//	}
 
-	// read model type and parameter
-	component.m_modelType = NANDRAD::HydraulicNetworkComponent::modelType_t(
-				m_mapComponents.value(m_ui->comboBoxComponent->currentText()));
-	if (component.m_modelType == NANDRAD::HydraulicNetworkComponent::NUM_MT)
-		return;
+//	// this makes sure, we have no components in the catalog that dont belong to any node
+//	network.cleanHydraulicComponentCatalog();
 
-	m_componentParModel->getComponentParameter(component.m_para);
+//	m_componentParModel->getComponentParameter(component.m_para);
+//	component.m_heatExchangeType = NANDRAD::HydraulicNetworkComponent::heatExchangeType_t(
+//				m_mapHeatExchangeType.value(m_ui->comboBoxHeatExchangeType->currentText()));
+//	// hx params ...
 
-	component.m_heatExchangeType = NANDRAD::HydraulicNetworkComponent::heatExchangeType_t(
-				m_mapHeatExchangeType.value(m_ui->comboBoxHeatExchangeType->currentText()));
-	// hx params ...
+//	// if the same component is already in the catalog, set node componentId accordingly
+//	for (const NANDRAD::HydraulicNetworkComponent &exComponent: m_network->m_hydraulicComponents){
+//		if (component == exComponent){
+//			node->m_componentId = exComponent.m_id;
+//			return;
+//		}
+//	}
 
-	// if the same component is already in the catalog, set node componentId accordingly
-	for (const NANDRAD::HydraulicNetworkComponent &exComponent: m_network->m_hydraulicComponents){
-		if (component == exComponent){
-			node->m_componentId = exComponent.m_id;
-			return;
-		}
-	}
-
-	// if we have obtained a component with new properties, we get a new id for it and add it to the catalog
-	component.m_id = VICUS::Project::uniqueId(m_network->m_hydraulicComponents);
-	network.m_hydraulicComponents.push_back(component);
-	node->m_componentId = component.m_id;
-	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), network);
-	undo->push();
+//	// if we have obtained a component with new properties, we get a new id for it and add it to the catalog
+//	component.m_id = VICUS::Project::uniqueId(m_network->m_hydraulicComponents);
+//	network.m_hydraulicComponents.push_back(component);
+//	node->m_componentId = component.m_id;
+//	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), network);
+//	undo->push();
 
 
 
@@ -512,96 +511,4 @@ void SVPropNetworkEditWidget::on_comboBoxComponent_activated(const QString &arg1
 void SVPropNetworkEditWidget::on_componentParModel_editCompleted()
 {
 	modifyHydraulicComponent();
-}
-
-
-
-// *** ComponentParameterModel ***
-
-ComponentParameterModel::ComponentParameterModel(QObject *parent) : QAbstractTableModel(parent)
-{
-}
-
-void ComponentParameterModel::setComponent(const NANDRAD::HydraulicNetworkComponent & component)
-{
-	m_component = component;
-	m_parameterList = NANDRAD::HydraulicNetworkComponent::requiredParameter(m_component.m_modelType);
-}
-
-void ComponentParameterModel::getComponentParameter(IBK::Parameter m_para[])
-{
-	m_para = m_component.m_para;
-}
-
-int ComponentParameterModel::rowCount(const QModelIndex &parent) const
-{
-	Q_UNUSED(parent);
-	return m_parameterList.size();
-}
-
-int ComponentParameterModel::columnCount(const QModelIndex &parent) const
-{
-	Q_UNUSED(parent);
-	return 3;
-}
-
-QVariant ComponentParameterModel::data(const QModelIndex &index, int role) const
-{
-	if (!index.isValid() || role != Qt::DisplayRole)
-		return QVariant();
-
-	if (index.row()==0){
-		if (index.column()==0)
-			return "componentId";
-		else if (index.column()==1)
-			return m_component.m_id;
-		else
-			return QVariant();
-	}
-
-	if (index.column()==0)
-		return NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::para_t", m_parameterList[index.row()-1]);
-	else if (index.column()==1)
-		return m_component.m_para[m_parameterList[index.row()-1]].value;
-	else if (index.column()==2)
-		return NANDRAD::KeywordList::Unit("HydraulicNetworkComponent::para_t", m_parameterList[index.row()-1]);
-}
-
-QVariant ComponentParameterModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-	if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
-		if (section == 0)
-			return QString("Parameter");
-		else if (section == 1)
-			return QString("Value");
-		else if (section == 2)
-			return QString("Unit");
-	}
-	return QVariant();
-}
-
-bool ComponentParameterModel::setData(const QModelIndex &index, const QVariant &value, int role)
-{
-
-	if (index.column()==1 && index.row()!=0){
-		bool ok = false;
-		double number = QtExt::Locale().toDouble(value.toString(), &ok);
-		if (!ok)
-			return false;
-		m_component.m_para[m_parameterList[index.row()-1]].value = number;
-		emit editCompleted();
-	}
-	return true;
-}
-
-
-Qt::ItemFlags ComponentParameterModel::flags(const QModelIndex &index) const {
-	if (index.row()==0)
-		return Qt::ItemFlags();
-	else
-		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-	if (index.column()==1)
-		return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-	else
-		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }

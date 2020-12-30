@@ -102,7 +102,7 @@ public:
 	/*! reference id to a plant (hydraulic network) */
 	unsigned int					m_subNetworkId = INVALID_ID;							// XML:A
 
-	/*! Parameter for interface */
+	/*! Parameter for heat exchange */
 	IBK::Parameter					m_heatExchangePara[NANDRAD::HydraulicNetworkElement::NUM_HP];
 
 	// *** RUNTIME VARIABLES ***

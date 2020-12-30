@@ -316,13 +316,6 @@
       <string>Edit Node</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="1">
-       <widget class="QLabel" name="labelNodeId">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
       <item row="4" column="0">
        <widget class="QLabel" name="label_12">
         <property name="text">
@@ -330,19 +323,16 @@
         </property>
        </widget>
       </item>
+      <item row="3" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeHeatingDemand"/>
+      </item>
       <item row="2" column="1">
        <widget class="QComboBox" name="comboBoxNodeType"/>
       </item>
-      <item row="5" column="1">
-       <widget class="QTableView" name="tableViewComponentParams">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="horizontalScrollBarPolicy">
-         <enum>Qt::ScrollBarAlwaysOff</enum>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_13">
+        <property name="text">
+         <string>maximum heating demand</string>
         </property>
        </widget>
       </item>
@@ -383,13 +373,6 @@
         </item>
        </layout>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_14">
-        <property name="text">
-         <string>type</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label_15">
         <property name="text">
@@ -397,13 +380,17 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeHeatingDemand"/>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_13">
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_14">
         <property name="text">
-         <string>maximum heating demand</string>
+         <string>type</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="labelNodeId">
+        <property name="text">
+         <string/>
         </property>
        </widget>
       </item>
@@ -416,7 +403,10 @@
       <string>Edit Pipe</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="3" column="1">
+      <item row="1" column="1">
+       <widget class="QComboBox" name="comboBoxPipeDB"/>
+      </item>
+      <item row="5" column="1">
        <widget class="QLabel" name="labelPipeLength">
         <property name="text">
          <string/>
@@ -424,38 +414,45 @@
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>model</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
        <widget class="QLabel" name="label_16">
         <property name="text">
-         <string>pipe</string>
+         <string>pipe geometry</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="comboBoxPipeDB"/>
-      </item>
-      <item row="3" column="0">
+      <item row="5" column="0">
        <widget class="QLabel" name="label_11">
         <property name="text">
          <string>length</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QComboBox" name="comboBoxPipeModel"/>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>pipe model</string>
+        </property>
+       </widget>
       </item>
-      <item row="4" column="0">
+      <item row="6" column="0">
        <widget class="QCheckBox" name="checkBoxSupplyPipe">
         <property name="text">
          <string>supply pipe</string>
         </property>
        </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="comboBoxPipeModel"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_22">
+        <property name="text">
+         <string>type of heat exchange</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QComboBox" name="comboBoxHeatExchangeType"/>
       </item>
      </layout>
     </widget>
@@ -465,18 +462,7 @@
      <property name="title">
       <string>Heat Exchange</string>
      </property>
-     <layout class="QFormLayout" name="formLayout_4">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_22">
-        <property name="text">
-         <string>type</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="comboBoxHeatExchangeType"/>
-      </item>
-     </layout>
+     <layout class="QFormLayout" name="formLayout_4"/>
     </widget>
    </item>
    <item>

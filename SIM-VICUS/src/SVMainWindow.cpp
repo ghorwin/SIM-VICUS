@@ -49,6 +49,7 @@
 //#include "SVFMIExportDialog.h"
 #include "SVNetworkImportDialog.h"
 #include "SVNetworkEditDialog.h"
+#include "SVDialogHydraulicComponents.h"
 #include "SVPreferencesPageStyle.h"
 #include "SVViewStateHandler.h"
 #include "SVImportIDFDialog.h"
@@ -1210,6 +1211,11 @@ void SVMainWindow::on_actionHelpKeyboardAndMouseControls_triggered() {
 }
 
 
+void SVMainWindow::on_actionNetwork_Hydraulic_Components_triggered()
+{
+	SVDialogHydraulicComponents *dialog = new SVDialogHydraulicComponents(this);
+	dialog->edit(0);
+}
 
 
 
@@ -1473,5 +1479,3 @@ static bool copyRecursively(const QString &srcFilePath,
 	}
 	return true;
 }
-
-

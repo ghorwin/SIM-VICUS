@@ -90,8 +90,10 @@ SOURCES += \
 		../../src/SVDBMaterialTableModel.cpp \
 		../../src/SVDBModelDelegate.cpp \
 		../../src/SVDatabase.cpp \
+		../../src/SVDialogHydraulicComponents.cpp \
 		../../src/SVPropNetworkEditWidget.cpp \
 		../../src/SVSimulationLocationOptions.cpp \
+		../../src/SVUndoNetworkHydraulicComponent.cpp \
 		../../src/actions/SVUndoAddBuilding.cpp \
 		../../src/actions/SVUndoAddNetwork.cpp \
 		../../src/actions/SVUndoAddSurface.cpp \
@@ -171,8 +173,10 @@ HEADERS  += \
 		../../src/SVDBMaterialTableModel.h \
 		../../src/SVDBModelDelegate.h \
 		../../src/SVDatabase.h \
+		../../src/SVDialogHydraulicComponents.h \
 		../../src/SVPropNetworkEditWidget.h \
 		../../src/SVSimulationLocationOptions.h \
+		../../src/SVUndoNetworkHydraulicComponent.h \
 		../../src/actions/SVUndoAddBuilding.h \
 		../../src/actions/SVUndoAddNetwork.h \
 		../../src/actions/SVUndoAddSurface.h \
@@ -249,6 +253,7 @@ FORMS    += \
 		../../src/SVDBMaterialEditDialog.ui \
 		../../src/SVDBMaterialEditWidget.ui \
 		../../src/SVDBWindowEditWidget.ui \
+		../../src/SVDialogHydraulicComponents.ui \
 		../../src/SVImportIDFDialog.ui \
 		../../src/SVLogFileDialog.ui \
 		../../src/SVMainWindow.ui \
