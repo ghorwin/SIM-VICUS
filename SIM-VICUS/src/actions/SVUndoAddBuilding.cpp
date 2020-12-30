@@ -1,9 +1,9 @@
 #include "SVUndoAddBuilding.h"
 #include "SVProjectHandler.h"
 
-SVUndoAddBuilding::SVUndoAddBuilding(const QString & label, const VICUS::Building & addedBuilding, bool emptyBuildingOnly) :
+SVUndoAddBuilding::SVUndoAddBuilding(const QString & label, const VICUS::Building & addedBuilding, bool topologyOnly) :
 	m_addedBuilding(addedBuilding),
-	m_emptyBuildingOnly(emptyBuildingOnly)
+	m_topologyOnly(topologyOnly)
 {
 	setText( label );
 }
@@ -17,7 +17,7 @@ void SVUndoAddBuilding::undo() {
 	theProject().m_buildings.pop_back();
 
 	// tell project that the geometry has changed (i.e. rebuild navigation tree and scene)
-	if (m_emptyBuildingOnly)
+	if (m_topologyOnly)
 		SVProjectHandler::instance().setModified( SVProjectHandler::BuildingTopologyChanged);
 	else
 		SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged);
@@ -29,8 +29,8 @@ void SVUndoAddBuilding::redo() {
 	theProject().m_buildings.push_back(m_addedBuilding);
 	theProject().updatePointers();
 
-	// tell project that the network has changed
-	if (m_emptyBuildingOnly)
+	// tell project that the geometry has changed (i.e. rebuild navigation tree and scene)
+	if (m_topologyOnly)
 		SVProjectHandler::instance().setModified( SVProjectHandler::BuildingTopologyChanged);
 	else
 		SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged);

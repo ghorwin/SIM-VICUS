@@ -95,6 +95,7 @@ SOURCES += \
 		../../src/SVSimulationLocationOptions.cpp \
 		../../src/SVUndoNetworkHydraulicComponent.cpp \
 		../../src/actions/SVUndoAddBuilding.cpp \
+		../../src/actions/SVUndoAddBuildingLevel.cpp \
 		../../src/actions/SVUndoAddNetwork.cpp \
 		../../src/actions/SVUndoAddSurface.cpp \
 		../../src/actions/SVUndoCommandBase.cpp \
@@ -178,6 +179,7 @@ HEADERS  += \
 		../../src/SVSimulationLocationOptions.h \
 		../../src/SVUndoNetworkHydraulicComponent.h \
 		../../src/actions/SVUndoAddBuilding.h \
+		../../src/actions/SVUndoAddBuildingLevel.h \
 		../../src/actions/SVUndoAddNetwork.h \
 		../../src/actions/SVUndoAddSurface.h \
 		../../src/actions/SVUndoCommandBase.h \

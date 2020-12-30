@@ -1092,15 +1092,15 @@ namespace NANDRAD {
 				case 1 : return "Simple pipe at stationary flow conditions with heat exchange";
 				case 2 : return "Pipe with a discretized fluid volume, without heat exchange";
 				case 3 : return "Pipe with a discretized fluid volume and heat exchange";
-				case 4 : return "A pump with constant pressure.";
+				case 4 : return "Pump with constant pressure";
 				case 5 : return "Simple heat exchanger with given heat flux";
-				case 6 : return "A heat pump.";
-				case 7 : return "Gas boiler.";
-				case 8 : return "Control valve.";
-				case 9 : return "Water storage.";
-				case 10 : return "Component conditioning system is a system for heating or cooling of components.";
-				case 11 : return "Radiator.";
-				case 12 : return "Mixer component.";
+				case 6 : return "Heat pump";
+				case 7 : return "Gas boiler";
+				case 8 : return "Control valve";
+				case 9 : return "Water storage";
+				case 10 : return "Component conditioning system is a system for heating or cooling of components";
+				case 11 : return "Radiator";
+				case 12 : return "Mixer component";
 				case 13 : return "Flow characteristics provided by FMU";
 			} break;
 			// HydraulicNetworkComponent::para_t
