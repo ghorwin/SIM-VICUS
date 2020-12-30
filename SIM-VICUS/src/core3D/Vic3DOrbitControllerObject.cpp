@@ -82,7 +82,8 @@ void OrbitControllerObject::render() {
 	// set transformation matrix
 	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[1], m_transform.toMatrix());
 	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], QVector4D(1.f, 1.f, .8f, 1.f));
-	glDrawArrays(GL_LINES, 0, 2);
+	glDrawArrays(GL_LINES, 0, 2); // rotation axis
+	// line strip making up the circle
 	glDrawArrays(GL_LINE_STRIP, 2, m_vertexCount-2);
 
 	m_vao.release();

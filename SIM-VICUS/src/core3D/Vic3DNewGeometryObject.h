@@ -139,7 +139,7 @@ public:
 	/*! Can be used to check if object has data to paint - this can be used to check if there is a polygon object at all.
 		Hence, this function could be named 'isVisible()' as well.
 	*/
-	bool hasData() const;
+	bool canDrawTransparent() const;
 
 	/*! Adds the newly created geometry polygon to the data structure. */
 	void finish();

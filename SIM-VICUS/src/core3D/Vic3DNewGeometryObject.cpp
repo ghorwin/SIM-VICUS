@@ -98,20 +98,31 @@ void NewGeometryObject::appendVertex(const IBKMK::Vector3D & p) {
 	}
 	switch (m_newGeometryMode) {
 		case NGM_Rect :
+			// if the rectangle is complete and we have a click, consider this as confirmation (rather than rejecting it)
+			if (m_planeGeometry.isValid()) {
+				finish();
+				return;
+			}
 			// if we have already 2 points and a third is added (that is not the same as the first),
-			// finish the shape
+			// finish the shape by creating a polygon object
 			if (m_vertexList.size() == 2) {
 				if (p == m_vertexList.front()) {
 					IBK::IBK_Message("Point is identical to first. Ignored.");
 					return; // ignore the vertex
 				}
-				// tell property widget to modify the project with our data
-				SVViewStateHandler::instance().m_propVertexListWidget->on_pushButtonFinish_clicked();
+				IBKMK::Vector3D a = m_vertexList.front();
+				IBKMK::Vector3D b = m_vertexList.back();
+				IBKMK::Vector3D c = p;
+				IBKMK::Vector3D d = a + (c-b);
+				m_planeGeometry = VICUS::PlaneGeometry(VICUS::PlaneGeometry::T_Rectangle, a, b, d);
+				SVViewStateHandler::instance().m_propVertexListWidget->addVertex(p);
 			}
-			m_vertexList.push_back(p);
-			m_planeGeometry.setVertexes(m_vertexList);
-			// also tell the vertex list widget about our new point
-			SVViewStateHandler::instance().m_propVertexListWidget->addVertex(p);
+			else {
+				m_vertexList.push_back(p);
+				m_planeGeometry.setVertexes(m_vertexList);
+				// also tell the vertex list widget about our new point
+				SVViewStateHandler::instance().m_propVertexListWidget->addVertex(p);
+			}
 		break;
 
 		case NGM_Polygon :
@@ -156,8 +167,12 @@ void NewGeometryObject::removeVertex(unsigned int idx) {
 
 
 void NewGeometryObject::removeLastVertex() {
-	Q_ASSERT(!m_vertexList.empty());
-	removeVertex(m_vertexList.size()-1);
+	switch (m_newGeometryMode) {
+		case NGM_Polygon :
+			Q_ASSERT(!m_vertexList.empty());
+			removeVertex(m_vertexList.size()-1);
+		break;
+	}
 }
 
 
@@ -170,6 +185,7 @@ void NewGeometryObject::clear() {
 
 bool NewGeometryObject::canComplete() const {
 	switch (m_newGeometryMode) {
+		case NGM_Rect :
 		case NGM_Polygon :
 			return m_planeGeometry.isValid();
 	}
@@ -177,19 +193,15 @@ bool NewGeometryObject::canComplete() const {
 }
 
 
-bool NewGeometryObject::hasData() const {
-	switch (m_newGeometryMode) {
-		case NGM_Polygon :
-			return m_planeGeometry.isValid();
-	}
-	return false;
+bool NewGeometryObject::canDrawTransparent() const {
+	return !m_indexBufferData.empty();
 }
 
 
 void NewGeometryObject::finish() {
 	switch (m_newGeometryMode) {
-		case NGM_Polygon :
 		case NGM_Rect :
+		case NGM_Polygon :
 			if (m_planeGeometry.isValid()) {
 				// tell property widget to modify the project with our data
 				SVViewStateHandler::instance().m_propVertexListWidget->on_pushButtonFinish_clicked();
@@ -263,14 +275,37 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 
 	switch (m_newGeometryMode) {
 		case NGM_Rect : {
-			// if we do not yet have three points, only draw a single line between the first two vertexes
-			for (const IBKMK::Vector3D & v : m_vertexList)
-				m_vertexBufferData.push_back( VertexC(VICUS::IBKVector2QVector(v)) );
-			// now also add a vertex for the current coordinate system's position
-			m_vertexBufferData.push_back( VertexC(m_localCoordinateSystemPosition ) );
+			// Buffer layout:
+			// - if we have 1 vertex: VC (first vertex) | VC (local coordinate system)
+			// - if we have 2 vertexes: VC (first vertex) | VC (second vertex) | VC (local coordinate system) | VC (computed 4th vertex) | VC (first vertex)
+			// - if we have a valid polygon: 4 * VC
 
+			if (m_planeGeometry.isValid()) {
+				addPlane(m_planeGeometry, currentVertexIndex, currentElementIndex,
+						 m_vertexBufferData, m_indexBufferData);
+				// re-add first vertex so that we have a closed loop
+				m_vertexBufferData.push_back( m_vertexBufferData[0] );
+			}
+			else if (m_vertexList.size() == 1) {
+				m_vertexBufferData.push_back( VertexC(VICUS::IBKVector2QVector(m_vertexList.front())) );
+				// now also add a vertex for the current coordinate system's position
+				m_vertexBufferData.push_back( VertexC(m_localCoordinateSystemPosition ) );
+			}
+			else if (m_vertexList.size() == 2) {
+				// create a temporary plane geometry from the three given vertexes
+				IBKMK::Vector3D a = m_vertexList.front();
+				IBKMK::Vector3D b = m_vertexList.back();
+				IBKMK::Vector3D c = VICUS::QVector2IBKVector(m_localCoordinateSystemPosition);
+				IBKMK::Vector3D d = a + (c-b);
+				VICUS::PlaneGeometry pg(VICUS::PlaneGeometry::T_Rectangle, a, b, d);
+				addPlane(pg, currentVertexIndex, currentElementIndex,
+						 m_vertexBufferData, m_indexBufferData);
+				// re-add first vertex so that we have a closed loop
+				m_vertexBufferData.push_back( m_vertexBufferData[0] );
+			}
 		}
 		break;
+
 		case NGM_Polygon : {
 
 			// Buffer layout:
@@ -347,9 +382,17 @@ void NewGeometryObject::renderOpaque() {
 	// render lines - outline and wireframe mesh, depending on the geometry being created
 
 	switch (m_newGeometryMode) {
-		case NGM_Rect:
-			// we
-		break;
+		case NGM_Rect: {
+			// we draw the outline first
+			QColor lineCol;
+			if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
+				lineCol = QColor("#2ed655");
+			else
+				lineCol = QColor("#00ff48");
+			m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], lineCol);
+			glDrawArrays(GL_LINE_STRIP, 0, m_vertexBufferData.size());
+		} break;
+
 		case NGM_Polygon:
 			// draw the polygon line first
 			if (m_vertexBufferData.size() > 1) {

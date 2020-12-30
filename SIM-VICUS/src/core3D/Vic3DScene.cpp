@@ -734,7 +734,7 @@ void Vic3DScene::render() {
 
 	// *** new polygon draw object (transparent plane) ***
 
-	if (m_newGeometryObject.hasData() != 0) {
+	if (m_newGeometryObject.canDrawTransparent() != 0) {
 		m_fixedColorTransformShader->bind();
 		// Note: worldToView uniform has already been set
 		m_newGeometryObject.renderTransparent();

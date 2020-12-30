@@ -133,7 +133,8 @@ PlaneGeometry::PlaneGeometry(PlaneGeometry::type_t t,
 	m_vertexes({a,b,c})
 {
 	if (m_type == T_Rectangle) {
-		// third vertex is actually point d of the rectangle
+		// third vertex is actually point d of the rectangle, so we first set vertex[3] = vertex[2],
+		// then compute vertex [c] again
 		m_vertexes.push_back(m_vertexes.back());
 		// c = a + (b-a) + (d-a) = b + (d - a)
 		m_vertexes[2] = m_vertexes[1] + (m_vertexes[3]-m_vertexes[0]);
