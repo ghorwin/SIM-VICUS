@@ -81,7 +81,7 @@ void SVPropEditGeometry::on_pushButtonAddPolygon_clicked() {
 	// now tell all UI components to toggle their view state
 	SVViewStateHandler::instance().setViewState(vs);
 	// clear vertex list in property widget
-	SVViewStateHandler::instance().m_propVertexListWidget->onNewVertexListStart();
+	SVViewStateHandler::instance().m_propVertexListWidget->setup(Vic3D::NewGeometryObject::NGM_Polygon);
 	SVViewStateHandler::instance().m_geometryView->focusSceneView();
 }
 
@@ -96,7 +96,7 @@ void SVPropEditGeometry::on_pushButtonAddRect_clicked() {
 	// now tell all UI components to toggle their view state
 	SVViewStateHandler::instance().setViewState(vs);
 	// clear vertex list in property widget
-	SVViewStateHandler::instance().m_propVertexListWidget->onNewVertexListStart();
+	SVViewStateHandler::instance().m_propVertexListWidget->setup(Vic3D::NewGeometryObject::NGM_Rect);
 	SVViewStateHandler::instance().m_geometryView->focusSceneView();
 }
 
@@ -111,7 +111,7 @@ void SVPropEditGeometry::on_pushButtonAddZoneBox_clicked() {
 	// now tell all UI components to toggle their view state
 	SVViewStateHandler::instance().setViewState(vs);
 	// clear vertex list in property widget
-	SVViewStateHandler::instance().m_propVertexListWidget->onNewVertexListStart();
+	SVViewStateHandler::instance().m_propVertexListWidget->setup(Vic3D::NewGeometryObject::NGM_ZoneFloor);
 	SVViewStateHandler::instance().m_geometryView->focusSceneView();
 }
 
