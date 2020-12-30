@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Constructions>
+	<Construction id="1" displayName="DE: Vollziegelwand, 36,5 cm |EN: Brick wall">
+		<UsageType>OutsideWall</UsageType>
+		<MaterialKind>BrickMasonry</MaterialKind>
+		<MaterialLayers>
+			<MaterialLayer matId="34">
+				<IBK:Parameter name="Thickness" unit="m">0.365</IBK:Parameter>
+			</MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+
 	<Construction id="100" displayName="Heavy metal wall" color="#4040a0">
 		<UsageType>OutsideWall</UsageType>
 		<Notes>blabal</Notes>

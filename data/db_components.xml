@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Components>
+	<Component id="1" displayName="DE: Außenwand, Ziegel |EN: Outside wall, brick" color="#000000">
+		<Type>OutsideWall</Type>
+		<IdOpaqueConstruction>1</IdOpaqueConstruction>
+	</Component>
+</Components>
