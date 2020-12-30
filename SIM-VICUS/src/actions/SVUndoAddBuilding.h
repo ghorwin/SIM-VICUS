@@ -8,7 +8,7 @@
 class SVUndoAddBuilding : public SVUndoCommandBase {
 	Q_DECLARE_TR_FUNCTIONS(SVUndoAddBuilding)
 public:
-	SVUndoAddBuilding(const QString & label, const VICUS::Building & addedBuilding);
+	SVUndoAddBuilding(const QString & label, const VICUS::Building & addedBuilding, bool emptyBuildingOnly);
 
 	virtual void undo();
 	virtual void redo();
@@ -16,7 +16,10 @@ public:
 private:
 
 	/*! Cache for added building. */
-	VICUS::Building	m_addedBuilding;
+	VICUS::Building		m_addedBuilding;
+
+	/*! If true, the change event sent is BuildingTopologyChanged, otherwise BuildingGeometryChanged. */
+	bool				m_emptyBuildingOnly;
 };
 
 

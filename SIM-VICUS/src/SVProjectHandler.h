@@ -49,8 +49,16 @@ public:
 		GridModified,
 		/*! Network data changed. */
 		NetworkModified,
-		/*! Anything in the geometry (building, network, dump geometry, ...) has changed. */
+		/*! Anything in the geometry (building, network, dump geometry, ...) has changed.
+			Needs a complete redraw of scene, also view state is reset to "default mode".
+		*/
 		BuildingGeometryChanged,
+		/*! Only the structure of the building or the naming of buildings, levels, zones has changed - does
+			not require change of scene or change of view state.
+			The navigation tree widget must be updated, and all widgets currently showing the names/hierarchy
+			of buildings, levels, zones.
+		*/
+		BuildingTopologyChanged,
 		/*! Selection has changed (color due to style settings, or selected objects) -
 			update of entire selection object is requested (only the visual part).
 		*/

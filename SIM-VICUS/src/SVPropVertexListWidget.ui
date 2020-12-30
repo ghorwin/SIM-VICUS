@@ -51,23 +51,26 @@
        </widget>
       </item>
       <item row="1" column="2">
-       <widget class="QToolButton" name="toolButtonFloorManager1">
-        <property name="text">
-         <string>...</string>
+       <widget class="QToolButton" name="toolButtonAddBuilding">
+        <property name="icon">
+         <iconset resource="../resources/SIM-VICUS.qrc">
+          <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
         </property>
        </widget>
       </item>
       <item row="2" column="2">
-       <widget class="QToolButton" name="toolButtonFloorManager2">
-        <property name="text">
-         <string>...</string>
+       <widget class="QToolButton" name="toolButtonAddBuildingLevel">
+        <property name="icon">
+         <iconset resource="../resources/SIM-VICUS.qrc">
+          <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
         </property>
        </widget>
       </item>
       <item row="3" column="2">
-       <widget class="QToolButton" name="toolButtonFloorManager3">
-        <property name="text">
-         <string>...</string>
+       <widget class="QToolButton" name="toolButtonAddZone">
+        <property name="icon">
+         <iconset resource="../resources/SIM-VICUS.qrc">
+          <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
         </property>
        </widget>
       </item>
@@ -284,6 +287,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources/SIM-VICUS.qrc"/>
+ </resources>
  <connections/>
 </ui>

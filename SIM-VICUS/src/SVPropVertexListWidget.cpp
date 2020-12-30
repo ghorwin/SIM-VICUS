@@ -2,6 +2,7 @@
 #include "ui_SVPropVertexListWidget.h"
 
 #include <QMessageBox>
+#include <QInputDialog>
 
 #include <IBKMK_Vector3D.h>
 
@@ -14,6 +15,7 @@
 #include "SVGeometryView.h"
 #include "SVSettings.h"
 #include "SVMainWindow.h"
+#include "SVUndoAddBuilding.h"
 
 #include "Vic3DNewGeometryObject.h"
 
@@ -61,57 +63,37 @@ void SVPropVertexListWidget::setup(int newGeometryType) {
 		case Vic3D::NewGeometryObject::NGM_ZoneFloor :
 			m_ui->groupBoxPolygonVertexes->setVisible(true);
 			m_ui->groupBoxZoneProperties->setVisible(true);
-			baseName = tr("Zone");
+			baseName = tr("New zone");
 		break;
 		case Vic3D::NewGeometryObject::NGM_ZoneExtrusion :
 			m_ui->groupBoxZoneProperties->setVisible(true);
 		break;
 	}
-	// populate the combo boxes
-	m_ui->comboBoxZone->blockSignals(true);
-	m_ui->comboBoxBuilding->blockSignals(true);
-	m_ui->comboBoxBuildingLevel->blockSignals(true);
-	m_ui->comboBoxComponent->blockSignals(true);
-
-	m_ui->comboBoxZone->clear();
-	m_ui->comboBoxBuilding->clear();
-	m_ui->comboBoxBuildingLevel->clear();
-	m_ui->comboBoxComponent->clear();
-
-
-	m_ui->comboBoxZone->blockSignals(false);
-	m_ui->comboBoxBuilding->blockSignals(false);
-	m_ui->comboBoxBuildingLevel->blockSignals(false);
-	m_ui->comboBoxComponent->blockSignals(false);
 
 	// populate component combo boxes
+	updateBuildingComboBox();
+	updateBuildingLevelsComboBox();
+	updateZoneComboBox();
 	updateComponentComboBoxes();
 
-	// generate new unique object/surface name
-	unsigned int count = 1;
 	// compose object names until we found a unique object name
 	std::set<QString> existingNames;
-	for (const VICUS::Surface & s : project().m_plainGeometry) {
+	for (const VICUS::Surface & s : project().m_plainGeometry)
 		existingNames.insert(s.m_displayName);
-	}
-	QString name = baseName;
-	for (;;) {
-		// process all surfaces and check if we have already a new surface with our current name
-		if (existingNames.find(name) == existingNames.end())
-			break;
-		name = QString("%1 [%2]").arg(baseName).arg(++count);
-	}
-	m_ui->lineEditName->setText(name);
+
+	// set new unique object/surface name
+	m_ui->lineEditName->setText( VICUS::Project::uniqueName(baseName, existingNames));
 	clearPolygonVertexList();
 }
 
 
-void SVPropVertexListWidget::reselectById(QComboBox * combo, int id) const {
+bool SVPropVertexListWidget::reselectById(QComboBox * combo, int id) const {
+	combo->setEnabled(true);
 	if (id != -1) {
 		id = combo->findData(id);
 		if (id != -1) {
 			combo->setCurrentIndex(id);
-			return;
+			return true;
 		}
 	}
 	if (combo->count() != 0)
@@ -119,6 +101,75 @@ void SVPropVertexListWidget::reselectById(QComboBox * combo, int id) const {
 	else {
 		combo->setEnabled(false);
 	}
+	return false;
+}
+
+
+void SVPropVertexListWidget::updateBuildingComboBox() {
+	// populate the combo boxes
+	m_ui->comboBoxBuilding->blockSignals(true);
+	unsigned int currentUniqueId = m_ui->comboBoxBuilding->currentData().toUInt();
+	m_ui->comboBoxBuilding->clear();
+
+	const VICUS::Project & prj = project();
+	int rowOfCurrent = -1;
+	for (unsigned int i=0; i<prj.m_buildings.size(); ++i) {
+		const VICUS::Building & b = prj.m_buildings[i];
+		m_ui->comboBoxBuilding->addItem(b.m_displayName, b.uniqueID());
+		if (b.uniqueID() == currentUniqueId)
+			rowOfCurrent = i;
+	}
+
+	if (rowOfCurrent != -1) {
+		m_ui->comboBoxBuilding->setCurrentIndex(rowOfCurrent);
+	}
+	else {
+		m_ui->comboBoxBuilding->setCurrentIndex(m_ui->comboBoxBuilding->count()-1); // Note: if no buildings, nothing will be selected
+		updateBuildingLevelsComboBox();
+	}
+
+	m_ui->comboBoxBuilding->blockSignals(false);
+
+	// disable edit buttons for level and room, if there is no building
+	if (m_ui->comboBoxBuilding->count() == 0) {
+		m_ui->comboBoxBuilding->setEnabled(false);
+		m_ui->comboBoxBuildingLevel->setEnabled(false);
+		m_ui->comboBoxZone->setEnabled(false);
+		m_ui->toolButtonAddBuildingLevel->setEnabled(false);
+		m_ui->toolButtonAddZone->setEnabled(false);
+	}
+	else {
+		m_ui->comboBoxBuilding->setEnabled(true);
+		m_ui->toolButtonAddBuildingLevel->setEnabled(true);
+		// zone tool button will be enabled/disabled in updateBuildingLevelsComboBox()
+	}
+}
+
+
+void SVPropVertexListWidget::updateBuildingLevelsComboBox() {
+	m_ui->comboBoxBuildingLevel->blockSignals(true);
+	m_ui->comboBoxBuildingLevel->clear();
+//	const VICUS::Project & prj = project();
+//	int idx = m_ui->comboBoxBuilding->currentIndex();
+//	if (idx != -1) {
+//		for (unsigned int i=0; i<prj.m_buildings[idx].m_buildingLevels.size(); ++i) {
+//			const VICUS::BuildingLevel & bl = prj.m_buildings[idx].m_buildingLevels[i];
+//			m_ui->comboBoxBuildingLevel->addItem(bl.m_displayName, i);
+//		}
+//	}
+//	else {
+//		m_ui->comboBoxBuildingLevel->addItem(tr("<no building>"));
+//	}
+	m_ui->comboBoxBuildingLevel->blockSignals(false);
+	updateZoneComboBox();
+}
+
+
+void SVPropVertexListWidget::updateZoneComboBox() {
+	m_ui->comboBoxZone->blockSignals(true);
+	m_ui->comboBoxZone->clear();
+
+	m_ui->comboBoxZone->blockSignals(false);
 }
 
 
@@ -222,6 +273,24 @@ void SVPropVertexListWidget::removeVertex(unsigned int idx) {
 }
 
 
+void SVPropVertexListWidget::onModified(int modificationType, ModificationInfo * /*data*/) {
+	// only do something here, if this widget is actually visible
+	if (!isVisibleTo(qobject_cast<QWidget*>(parent())) )
+		return;
+	SVProjectHandler::ModificationTypes mod = (SVProjectHandler::ModificationTypes)modificationType;
+	switch (mod) {
+		/*! We only need to handle changes of the building topology, in all other cases
+			the "create new geometry" action is aborted and the widget will be hidden. */
+		case SVProjectHandler::BuildingTopologyChanged:
+			updateBuildingComboBox();
+			updateBuildingLevelsComboBox();
+			updateZoneComboBox();
+		break;
+		default:;
+	}
+}
+
+
 void SVPropVertexListWidget::clearPolygonVertexList() {
 	// clear table widget and disable "delete" and "finish" buttons
 	m_ui->tableWidgetVertexes->setRowCount(0);
@@ -291,5 +360,35 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 void SVPropVertexListWidget::onEditComponents() {
 	// ask main window to show database dialog, afterwards update component combos
 	SVMainWindow::instance().on_actionDBComponents_triggered();
-	updateComponentComboBoxes();
+	// Note: SVMainWindow::instance().on_actionDBComponents_triggered() calls updateComponentCombos() itself, so
+	//       no need to call this here
+}
+
+
+void SVPropVertexListWidget::on_toolButtonAddBuilding_clicked() {
+	std::set<QString> existingNames;
+	for (const VICUS::Building & b : project().m_buildings)
+		existingNames.insert(b.m_displayName);
+	QString defaultName = VICUS::Project::uniqueName(tr("Building"), existingNames);
+	QString text = QInputDialog::getText(this, tr("Add building"), tr("New building name:"), QLineEdit::Normal, defaultName).trimmed();
+	if (text.isEmpty()) return;
+	// modify project
+	VICUS::Building b;
+	b.m_id = VICUS::Project::uniqueId(project().m_buildings);
+	b.m_displayName = text;
+	SVUndoAddBuilding * undo = new SVUndoAddBuilding(tr("Adding building '%1'").arg(b.m_displayName), b, true);
+	undo->push(); // this will update our combo boxes
+
+	// now also select the matching item
+	reselectById(m_ui->comboBoxBuilding, (int)b.uniqueID());
+}
+
+
+void SVPropVertexListWidget::on_toolButtonAddBuildingLevel_clicked() {
+
+}
+
+
+void SVPropVertexListWidget::on_toolButtonAddZone_clicked() {
+
 }

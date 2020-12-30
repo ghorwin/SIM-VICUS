@@ -12,6 +12,8 @@ namespace IBKMK {
 }
 
 class QComboBox;
+class ModificationInfo;
+
 
 /*! The widget with newly placed vertexes while constructing a new primitive/object.
 	It directly communicates with the new geometry object.
@@ -29,12 +31,13 @@ public:
 	explicit SVPropVertexListWidget(QWidget *parent = nullptr);
 	~SVPropVertexListWidget();
 
+
 	/*! Sets up the widget to be used for creating geometry of a given type.
 		\param newGeometryType A type as declared in NewGeometryObject::NewGeometryMode
 	*/
 	void setup(int newGeometryType);
 
-	/*! Updates the component combo boxes (this needs to be done whenever the component DB has been changed. */
+	/*! Updates the component combo boxes (this needs to be done whenever the component DB has been changed). */
 	void updateComponentComboBoxes();
 
 	/*! Appends a new vertex to the list of vertexes in the table widget.
@@ -48,6 +51,12 @@ public:
 	void removeVertex(unsigned int idx);
 
 public slots:
+
+	/*! Connected to SVProjectHandler::modified().
+		Updates the building, building level and zone combo boxes with data from the project.
+		This function does nothing, if the widget is currently inactive/invisible.
+	*/
+	void onModified( int modificationType, ModificationInfo * data );
 
 	/*! Called, when user starts with a new polygon/geometry. */
 	void clearPolygonVertexList();
@@ -68,8 +77,33 @@ private slots:
 
 	void onEditComponents();
 
+	void on_toolButtonAddBuilding_clicked();
+
+	void on_toolButtonAddBuildingLevel_clicked();
+
+	void on_toolButtonAddZone_clicked();
+
 private:
-	void reselectById(QComboBox * combo, int id) const;
+	bool reselectById(QComboBox * combo, int id) const;
+
+	/*! Updates the content of the building combo box with data from the project.
+		The current item is kept (identified via unique ID), if it still exists after the update.
+		If the current item changed, the function updateBuildingLevelsComboBox() will be called to update
+		the dependent combo boxes.
+	*/
+	void updateBuildingComboBox();
+
+	/*! Updates the content of the building levels combo box with data from the project.
+		The current item is kept (identified via unique ID), if it still exists after the update.
+		If the current item changed, the function updateZoneComboBox() will be called to update
+		the dependent combo boxes.
+	*/
+	void updateBuildingLevelsComboBox();
+
+	/*! Updates the content of the building levels combo box with data from the project.
+		The current item is kept (identified via unique ID), if it still exists after the update.
+	*/
+	void updateZoneComboBox();
 
 	Ui::SVPropVertexListWidget	*m_ui;
 };

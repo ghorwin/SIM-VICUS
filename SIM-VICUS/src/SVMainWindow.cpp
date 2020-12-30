@@ -53,6 +53,7 @@
 #include "SVPreferencesPageStyle.h"
 #include "SVViewStateHandler.h"
 #include "SVImportIDFDialog.h"
+#include "SVPropVertexListWidget.h"
 
 #include "SVDBMaterialEditDialog.h"
 #include "SVDBConstructionEditDialog.h"
@@ -235,6 +236,8 @@ void SVMainWindow::on_actionDBComponents_triggered() {
 	if (m_dbComponentEditDialog == nullptr)
 		m_dbComponentEditDialog = new SVDBComponentEditDialog(nullptr);
 	m_dbComponentEditDialog->edit();
+	// update all widgets that show the components somewhere (in a combo box or else)
+	SVViewStateHandler::instance().m_propVertexListWidget->updateComponentComboBoxes();
 }
 
 
@@ -612,7 +615,7 @@ void SVMainWindow::on_actionFileImportEneryPlusIDF_triggered() {
 
 			// take building from project and add as new building to existing data structure via undo-action
 			if (!m_importIDFDialog->m_importedProject.m_buildings.empty()) {
-				SVUndoAddBuilding * undo = new SVUndoAddBuilding(tr("Added imported building"), m_importIDFDialog->m_importedProject.m_buildings[0]);
+				SVUndoAddBuilding * undo = new SVUndoAddBuilding(tr("Added imported building"), m_importIDFDialog->m_importedProject.m_buildings[0], false);
 				undo->push();
 			}
 		} break;
