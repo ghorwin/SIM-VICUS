@@ -27,7 +27,9 @@ public:
 	explicit SVDialogHydraulicComponents(QWidget *parent = nullptr);
 	~SVDialogHydraulicComponents();
 
-	void edit(const unsigned int networkId);
+	int edit(const unsigned int networkId=0, const unsigned int currentComponentId=0);
+
+	unsigned int currentComponentId();
 
 private slots:
 	void on_toolButtonAdd_clicked();
@@ -45,6 +47,8 @@ private slots:
 	void on_listWidget_itemClicked(QListWidgetItem *item);
 
 private:
+
+	void populateListWidget(unsigned int currentComponentId=0);
 
 	const VICUS::Network * currentNetwork();
 
@@ -74,6 +78,8 @@ private slots:
 };
 
 
+
+// *** HydraulicComponentItem ***
 
 class HydraulicComponentItem: public QListWidgetItem
 {

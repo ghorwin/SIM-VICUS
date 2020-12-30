@@ -37,7 +37,7 @@ public:
 		HP_DataFilepath,					// Keyword: DataFilepath						[-]		'Data file in tsv-format'
 		HP_FMUFilepath,						// Keyword: FMUFilepath							[-]		'FMU file'
 		HP_ZoneId,							// Keyword: ZoneId								[-]		'id of coupled zone'
-		NUM_HP
+		NUM_HP								// Keyword: None								[-]		'none'
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***

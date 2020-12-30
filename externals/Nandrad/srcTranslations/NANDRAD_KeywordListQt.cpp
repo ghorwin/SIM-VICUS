@@ -69,16 +69,12 @@ KeywordListQt::KeywordListQt() {
 	tr("Heat flux from data file");
 	tr("Heat exchange with zone");
 	tr("Heat exchange with FMU which requires temperature and provides heat flux");
-	tr("Fixed heat flux");
-	tr("Fixed temperature");
-	tr("Coupled to external model which requires a heat flux and calculates a temperature in return");
-	tr("Coupled to external model which requires p_in, p_out, T_in and calculates T_out and m_dot");
-	tr("Coupled to external model which requires p_in, m_dot, T_in and calculates T_out and p_out");
 	tr("Pipe length");
 	tr("Constant heat flux");
 	tr("Data file in tsv-format");
 	tr("FMU file");
 	tr("id of coupled zone");
+	tr("none");
 	tr("Pressure coeffient.");
 	tr("Use results from external wind flow calculation.");
 	tr("Constant heat transfer coefficient.");

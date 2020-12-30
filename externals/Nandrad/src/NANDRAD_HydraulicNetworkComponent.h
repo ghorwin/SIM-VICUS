@@ -80,7 +80,7 @@ public:
 	modelType_t						m_modelType		= NUM_MT;							// XML:A:required
 
 	/*! Type of interface to external data or model */
-	heatExchangeType_t				m_heatExchangeType = NUM_HT;
+	heatExchangeType_t				m_heatExchangeType = NUM_HT;						// XML:E
 
 	/*! Parameters of the flow component. */
 	IBK::Parameter					m_para[NUM_P];										// XML:E

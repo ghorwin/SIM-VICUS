@@ -67,7 +67,8 @@ bool SVHydraulicComponentParameterModel::setData(const QModelIndex &index, const
 		double number = QtExt::Locale().toDouble(value.toString(), &ok);
 		if (!ok)
 			return false;
-		m_component.m_para[m_parameterList[index.row()]].value = number;
+		NANDRAD::KeywordList::setParameter(m_component.m_para, "HydraulicNetworkComponent::para_t",
+										   m_parameterList[index.row()], number);
 		emit editCompleted();
 	}
 	return true;

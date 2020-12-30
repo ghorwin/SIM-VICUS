@@ -65,6 +65,10 @@ private slots:
 
 	void on_pushButtonEditComponents_clicked();
 
+	void on_lineEditHeatFlux_editingFinished();
+
+	void on_comboBoxHeatExchangeType_activated(const QString &arg1);
+
 private:
 
 	void setupComboBoxComponents();
@@ -72,6 +76,14 @@ private:
 	void setupComboboxPipeDB();
 
 	void updateSizingParams();
+
+	void updateNodeProperties();
+
+	void updateEdgeProperties();
+
+	void updateNetworkProperties();
+
+	void updateHeatExchangeParams();
 
 	void modifyStatus();
 

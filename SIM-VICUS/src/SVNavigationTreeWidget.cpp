@@ -174,7 +174,11 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		// add child nodes for each edge in the network
 		/// TODO : Hauke, think about grouping for larger networks
 		for (const VICUS::NetworkEdge & e : n.m_edges) {
-			QTreeWidgetItem * en = new QTreeWidgetItem(QStringList() << QString("E [%1]").arg(e.uniqueID()), QTreeWidgetItem::Type);
+			QString name = QString("[%1->%2]").arg(e.nodeId1()).arg(e.nodeId2());
+			const VICUS::NetworkPipe * pipe = prj.element(n.m_networkPipeDB, e.m_pipeId);
+			if (pipe != nullptr)
+				name += " "  + QString::fromStdString(pipe->m_displayName);
+			QTreeWidgetItem * en = new QTreeWidgetItem(QStringList() << name, QTreeWidgetItem::Type);
 			m_treeItemMap[e.uniqueID()] = en;
 			en->setData(0, SVNavigationTreeItemDelegate::ItemType, NT_NetworkEdge);
 			en->setData(0, SVNavigationTreeItemDelegate::NodeID, e.uniqueID());
@@ -189,10 +193,8 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		// add child nodes for each edge in the network
 		/// TODO : Hauke, think about grouping for larger networks
 		for (const VICUS::NetworkNode & nod : n.m_nodes) {
-			QTreeWidgetItem * no = new QTreeWidgetItem(QStringList() << QString("%1 [%2]")
-													   .arg(VICUS::KeywordList::Keyword("NetworkNode::NodeType", nod.m_type))
-													   .arg(nod.uniqueID()), QTreeWidgetItem::Type);
-
+			QString name = QString("[%1] %2").arg(nod.m_id).arg(VICUS::KeywordList::Keyword("NetworkNode::NodeType", nod.m_type));
+			QTreeWidgetItem * no = new QTreeWidgetItem(QStringList() << name, QTreeWidgetItem::Type);
 			m_treeItemMap[nod.uniqueID()] = no;
 			no->setData(0, SVNavigationTreeItemDelegate::ItemType, NT_NetworkNode);
 			no->setData(0, SVNavigationTreeItemDelegate::NodeID, nod.uniqueID());

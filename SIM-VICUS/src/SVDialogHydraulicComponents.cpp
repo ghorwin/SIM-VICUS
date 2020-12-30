@@ -67,7 +67,7 @@ SVDialogHydraulicComponents::~SVDialogHydraulicComponents()
 }
 
 
-void SVDialogHydraulicComponents::edit(const unsigned int networkId)
+int SVDialogHydraulicComponents::edit(const unsigned int networkId, const unsigned int currentComponentId)
 {
 	const VICUS::Project &p = project();
 
@@ -80,17 +80,18 @@ void SVDialogHydraulicComponents::edit(const unsigned int networkId)
 	if (p.element(p.m_geometricNetworks, networkId) != nullptr)
 		m_ui->comboBoxNetwork->setCurrentText(m_mapNetworks.key(networkId));
 
-	const VICUS::Network * network = currentNetwork();
+	populateListWidget(currentComponentId);
 
-	// populate list widget
-	m_ui->listWidget->clear();
-	for (const NANDRAD::HydraulicNetworkComponent &comp: network->m_hydraulicComponents){
-		HydraulicComponentItem * item = new HydraulicComponentItem(QString::fromStdString(comp.m_displayName));
-		item->setId(comp.m_id);
-		m_ui->listWidget->addItem(item);
-	}
+	return exec();
+}
 
-	exec();
+unsigned int SVDialogHydraulicComponents::currentComponentId()
+{
+	HydraulicComponentItem *item = dynamic_cast<HydraulicComponentItem* >(m_ui->listWidget->currentItem());
+	if (item != nullptr)
+		return item->id();
+	else
+		return 0;
 }
 
 
@@ -102,14 +103,19 @@ const VICUS::Network * SVDialogHydraulicComponents::currentNetwork()
 
 void SVDialogHydraulicComponents::updateComponent()
 {
-	HydraulicComponentItem *item = dynamic_cast<HydraulicComponentItem* >(m_ui->listWidget->currentItem());
 	const VICUS::Network * network = currentNetwork();
-	const NANDRAD::HydraulicNetworkComponent *component = VICUS::Project::element(network->m_hydraulicComponents, item->id());
+	if (network->m_hydraulicComponents.empty())
+		return;
+	HydraulicComponentItem * item = dynamic_cast<HydraulicComponentItem* >(m_ui->listWidget->currentItem());
+	if (item == nullptr)
+		return;
+	const NANDRAD::HydraulicNetworkComponent * component = VICUS::Project::element(network->m_hydraulicComponents, item->id());
 	IBK_ASSERT(component != nullptr);
 
 	m_ui->labelComponentId->setText(tr("%1").arg(component->m_id));
 	m_ui->lineEditName->setText(QString::fromStdString(component->m_displayName));
 	m_ui->comboBoxComponentType->setCurrentText(m_mapComponents.key(component->m_modelType));
+	m_ui->comboBoxHeatExchangeType->setEnabled(NANDRAD::HydraulicNetworkComponent::hasHeatExchange(component->m_modelType));
 	m_ui->comboBoxHeatExchangeType->setCurrentText(m_mapHeatExchangeType.key(component->m_heatExchangeType));
 
 	item->setText(QString::fromStdString(component->m_displayName));
@@ -121,13 +127,12 @@ void SVDialogHydraulicComponents::updateTableView()
 {
 	HydraulicComponentItem *item = dynamic_cast<HydraulicComponentItem* >(m_ui->listWidget->currentItem());
 	const VICUS::Network * network = currentNetwork();
-	const NANDRAD::HydraulicNetworkComponent *tmpComp = VICUS::Project::element(network->m_hydraulicComponents, item->id());
-	IBK_ASSERT(tmpComp != nullptr);
-	NANDRAD::HydraulicNetworkComponent component = *tmpComp;
+	const NANDRAD::HydraulicNetworkComponent *comp = VICUS::Project::element(network->m_hydraulicComponents, item->id());
+	IBK_ASSERT(comp != nullptr);
 
 	m_componentParModel = new SVHydraulicComponentParameterModel(this);
 	connect(m_componentParModel, SIGNAL(editCompleted()), this, SLOT(on_componentParModel_editCompleted()));
-	m_componentParModel->setComponent(component);
+	m_componentParModel->setComponent(*comp);
 	m_ui->tableViewComponentParams->setModel(m_componentParModel);
 	m_ui->tableViewComponentParams->show();
 }
@@ -165,9 +170,7 @@ void SVDialogHydraulicComponents::modifyTableView()
 	const NANDRAD::HydraulicNetworkComponent *tmpComp = VICUS::Project::element(network->m_hydraulicComponents, item->id());
 	IBK_ASSERT(tmpComp != nullptr);
 	NANDRAD::HydraulicNetworkComponent component = *tmpComp;
-
 	m_componentParModel->getComponentParameter(component.m_para);
-
 	SVUndoModifyNetworkHydraulicComponent *undo = new SVUndoModifyNetworkHydraulicComponent("modified comp",
 																							network->m_id, component);
 	undo->push();
@@ -253,11 +256,25 @@ void SVDialogHydraulicComponents::on_toolButtonRemove_clicked()
 
 void SVDialogHydraulicComponents::on_comboBoxNetwork_activated(int index)
 {
-
+	populateListWidget();
 }
 
 void SVDialogHydraulicComponents::on_listWidget_itemClicked(QListWidgetItem *item)
 {
+	updateComponent();
+}
+
+void SVDialogHydraulicComponents::populateListWidget(unsigned int componentId)
+{
+	const VICUS::Network * network = currentNetwork();
+	m_ui->listWidget->clear();
+	for (const NANDRAD::HydraulicNetworkComponent &comp: network->m_hydraulicComponents){
+		HydraulicComponentItem * item = new HydraulicComponentItem(QString::fromStdString(comp.m_displayName));
+		item->setId(comp.m_id);
+		m_ui->listWidget->addItem(item);
+		if (item->id() == componentId)
+			m_ui->listWidget->setCurrentItem(item);
+	}
 	updateComponent();
 }
 

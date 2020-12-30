@@ -87,23 +87,25 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	unsigned int					m_id  = INVALID_ID;										// XML:A:required
-	IBKMK::Vector3D					m_position = IBKMK::Vector3D(-9.99,-9.99,-9.99);		// XML:E:required
-	NodeType						m_type = NUM_NT;										// XML:A:required
+	unsigned int					m_id  = INVALID_ID;												// XML:A:required
+	IBKMK::Vector3D					m_position = IBKMK::Vector3D(-9.99,-9.99,-9.99);				// XML:E:required
+	NodeType						m_type = NUM_NT;												// XML:A:required
 
 	/*! Heating demand.
 		\todo refactor to IBK::Parameter
 	*/
-	double							m_maxHeatingDemand = 0;									// XML:A
+	double							m_maxHeatingDemand = 0;											// XML:A
 
 	/*! reference id to a hydraulic component in the catalog */
-	unsigned int					m_componentId = INVALID_ID;								// XML:A
+	unsigned int					m_componentId = INVALID_ID;										// XML:A
 
 	/*! reference id to a plant (hydraulic network) */
-	unsigned int					m_subNetworkId = INVALID_ID;							// XML:A
+	unsigned int					m_subNetworkId = INVALID_ID;									// XML:A
 
 	/*! Parameter for heat exchange */
-	IBK::Parameter					m_heatExchangePara[NANDRAD::HydraulicNetworkElement::NUM_HP];
+	IBK::Parameter					m_heatExchangePara[NANDRAD::HydraulicNetworkElement::NUM_HP];	// XML:E
+
+	std::string						m_displayName;													// XML:A
 
 	// *** RUNTIME VARIABLES ***
 
