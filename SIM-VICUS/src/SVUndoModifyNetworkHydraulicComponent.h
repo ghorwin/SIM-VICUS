@@ -5,11 +5,11 @@
 
 #include "NANDRAD_HydraulicNetworkComponent.h"
 
-class SVUndoNetworkHydraulicComponent: public SVUndoCommandBase {
-	Q_DECLARE_TR_FUNCTIONS(SVUndoNetworkHydraulicComponent)
+class SVUndoModifyNetworkHydraulicComponent: public SVUndoCommandBase {
+	Q_DECLARE_TR_FUNCTIONS(SVUndoModifyNetworkHydraulicComponent)
 
 public:
-	SVUndoNetworkHydraulicComponent(const QString & label, const unsigned int networkId,
+	SVUndoModifyNetworkHydraulicComponent(const QString & label, const unsigned int networkId,
 										const NANDRAD::HydraulicNetworkComponent &comp);
 
 	virtual void undo();

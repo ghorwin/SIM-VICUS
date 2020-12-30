@@ -1,6 +1,6 @@
-#include "SVUndoNetworkHydraulicComponent.h"
+#include "SVUndoModifyNetworkHydraulicComponent.h"
 
-SVUndoNetworkHydraulicComponent::SVUndoNetworkHydraulicComponent(const QString & label, const unsigned int networkId,
+SVUndoModifyNetworkHydraulicComponent::SVUndoModifyNetworkHydraulicComponent(const QString & label, const unsigned int networkId,
 																			 const NANDRAD::HydraulicNetworkComponent &component):
 	m_newComponent(component),
 	m_networkId(networkId)
@@ -15,7 +15,7 @@ SVUndoNetworkHydraulicComponent::SVUndoNetworkHydraulicComponent(const QString &
 		m_oldComponent.m_id = NANDRAD::INVALID_ID;
 }
 
-void SVUndoNetworkHydraulicComponent::undo()
+void SVUndoModifyNetworkHydraulicComponent::undo()
 {
 	VICUS::Network * nw = theProject().element(theProject().m_geometricNetworks, m_networkId);
 	IBK_ASSERT(nw != nullptr);
@@ -33,7 +33,7 @@ void SVUndoNetworkHydraulicComponent::undo()
 	SVProjectHandler::instance().setModified( SVProjectHandler::NetworkHydraulicComponentModified);
 }
 
-void SVUndoNetworkHydraulicComponent::redo()
+void SVUndoModifyNetworkHydraulicComponent::redo()
 {
 	VICUS::Network * nw = theProject().element(theProject().m_geometricNetworks, m_networkId);
 	IBK_ASSERT(nw != nullptr);

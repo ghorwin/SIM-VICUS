@@ -2,7 +2,7 @@
 #include "ui_SVDialogHydraulicComponents.h"
 
 #include "SVProjectHandler.h"
-#include "SVUndoNetworkHydraulicComponent.h"
+#include "SVUndoModifyNetworkHydraulicComponent.h"
 #include "SVUndoDeleteNetworkHydraulicComponent.h"
 
 #include "VICUS_Project.h"
@@ -109,7 +109,7 @@ void SVDialogHydraulicComponents::updateComponent()
 	const NANDRAD::HydraulicNetworkComponent *component = VICUS::Project::element(network->m_hydraulicComponents, item->id());
 	IBK_ASSERT(component != nullptr);
 
-	m_ui->lineEditId->setText(tr("%1").arg(component->m_id));
+	m_ui->labelComponentId->setText(tr("%1").arg(component->m_id));
 	m_ui->lineEditName->setText(QString::fromStdString(component->m_displayName));
 	m_ui->comboBoxComponentType->setCurrentText(m_mapComponents.key(component->m_modelType));
 
@@ -143,12 +143,14 @@ void SVDialogHydraulicComponents::modifyComponent()
 	NANDRAD::HydraulicNetworkComponent component = *tmpComp;
 
 	component.m_displayName = m_ui->lineEditName->text().toStdString();
-	component.m_modelType = NANDRAD::HydraulicNetworkComponent::modelType_t(m_mapComponents.value(m_ui->comboBoxComponentType->currentText()));
+	component.m_modelType = NANDRAD::HydraulicNetworkComponent::modelType_t(
+				m_mapComponents.value(m_ui->comboBoxComponentType->currentText()));
 
 	if (component.m_modelType == NANDRAD::HydraulicNetworkComponent::NUM_MT)
 		return;
 
-	SVUndoNetworkHydraulicComponent *undo = new SVUndoNetworkHydraulicComponent("modified comp", network->m_id, component);
+	SVUndoModifyNetworkHydraulicComponent *undo = new SVUndoModifyNetworkHydraulicComponent("modified comp",
+																							network->m_id, component);
 	undo->push();
 
 	updateComponent();
@@ -165,7 +167,8 @@ void SVDialogHydraulicComponents::modifyTableView()
 
 	m_componentParModel->getComponentParameter(component.m_para);
 
-	SVUndoNetworkHydraulicComponent *undo = new SVUndoNetworkHydraulicComponent("modified comp", network->m_id, component);
+	SVUndoModifyNetworkHydraulicComponent *undo = new SVUndoModifyNetworkHydraulicComponent("modified comp",
+																							network->m_id, component);
 	undo->push();
 }
 
@@ -190,7 +193,8 @@ void SVDialogHydraulicComponents::addComponent(const std::string & name, const N
 	component.m_displayName = name;
 	component.m_id = id;
 
-	SVUndoNetworkHydraulicComponent *undo = new SVUndoNetworkHydraulicComponent("modified comp", network->m_id, component);
+	SVUndoModifyNetworkHydraulicComponent *undo = new SVUndoModifyNetworkHydraulicComponent("modified comp",
+																							network->m_id, component);
 	undo->push();
 
 	updateComponent();

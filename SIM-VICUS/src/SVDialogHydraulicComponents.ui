@@ -109,14 +109,51 @@
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <layout class="QGridLayout" name="gridLayout">
-         <item row="3" column="0">
+         <item row="1" column="0">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>name</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>id</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
           <widget class="QLabel" name="label_3">
            <property name="text">
             <string>heat exchange type</string>
            </property>
           </widget>
          </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="lineEditName"/>
+         </item>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="comboBoxComponentType"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>component type</string>
+           </property>
+          </widget>
+         </item>
          <item row="4" column="1">
+          <widget class="QComboBox" name="comboBoxHeatExchangeType"/>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="labelComponentId">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
           <widget class="QTableView" name="tableViewComponentParams">
            <property name="minimumSize">
             <size>
@@ -134,50 +171,6 @@
             <enum>Qt::ScrollBarAlwaysOff</enum>
            </property>
           </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="lineEditName"/>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="label_6">
-           <property name="text">
-            <string>parameters</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>id</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>name</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QComboBox" name="comboBoxComponentType"/>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="lineEditId">
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>component</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QComboBox" name="comboBoxHeatExchangeType"/>
          </item>
         </layout>
        </item>

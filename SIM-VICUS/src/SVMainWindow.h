@@ -188,7 +188,6 @@ private slots:
 	void on_actionEditCleanProject_triggered();
 
 	void on_actionNetworkImport_triggered();
-	void on_actionNetworkEdit_triggered();
 
 	void on_actionViewExternalPostProcessing_triggered();
 	void on_actionViewCCMeditor_triggered();

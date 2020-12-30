@@ -94,7 +94,7 @@ SOURCES += \
 		../../src/SVPropNetworkEditWidget.cpp \
 		../../src/SVSimulationLocationOptions.cpp \
 		../../src/SVUndoDeleteNetworkHydraulicComponent.cpp \
-		../../src/SVUndoNetworkHydraulicComponent.cpp \
+		../../src/SVUndoModifyNetworkHydraulicComponent.cpp \
 		../../src/actions/SVUndoAddBuilding.cpp \
 		../../src/actions/SVUndoAddBuildingLevel.cpp \
 		../../src/actions/SVUndoAddNetwork.cpp \
@@ -179,7 +179,7 @@ HEADERS  += \
 		../../src/SVPropNetworkEditWidget.h \
 		../../src/SVSimulationLocationOptions.h \
 		../../src/SVUndoDeleteNetworkHydraulicComponent.h \
-		../../src/SVUndoNetworkHydraulicComponent.h \
+		../../src/SVUndoModifyNetworkHydraulicComponent.h \
 		../../src/actions/SVUndoAddBuilding.h \
 		../../src/actions/SVUndoAddBuildingLevel.h \
 		../../src/actions/SVUndoAddNetwork.h \

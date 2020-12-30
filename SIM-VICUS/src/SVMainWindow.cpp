@@ -48,7 +48,6 @@
 #include "SVNavigationTreeWidget.h"
 //#include "SVFMIExportDialog.h"
 #include "SVNetworkImportDialog.h"
-#include "SVNetworkEditDialog.h"
 #include "SVDialogHydraulicComponents.h"
 #include "SVPreferencesPageStyle.h"
 #include "SVViewStateHandler.h"
@@ -1123,14 +1122,6 @@ void SVMainWindow::onFixProjectAfterRead() {
 
 }
 
-void SVMainWindow::on_actionNetworkEdit_triggered() {
-	// opens edit network dialog
-	if (m_networkEditDialog == nullptr)
-		m_networkEditDialog = new SVNetworkEditDialog(this);
-
-	m_networkEditDialog->edit();
-}
-
 
 void SVMainWindow::on_actionViewToggleGeometryMode_triggered() {
 	// switch view state to geometry edit mode
@@ -1216,6 +1207,10 @@ void SVMainWindow::on_actionHelpKeyboardAndMouseControls_triggered() {
 
 void SVMainWindow::on_actionNetwork_Hydraulic_Components_triggered()
 {
+
+	// TODO Andreas : this menu entry should be disabled when there is no network
+	if (project().m_geometricNetworks.empty())
+		return;
 	SVDialogHydraulicComponents *dialog = new SVDialogHydraulicComponents(this);
 	dialog->edit(0);
 }
