@@ -262,7 +262,7 @@ void SceneView::paintGL() {
 	m_mainScene.render();
 
 	qint64 elapsedMs = m_cpuTimer.elapsed();
-	qDebug() << ++m_paintCounter << "Total paintGL time: " << elapsedMs << "ms";
+//	qDebug() << ++m_paintCounter << "Total paintGL time: " << elapsedMs << "ms";
 
 	// Done painting
 

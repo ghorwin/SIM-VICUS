@@ -111,13 +111,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 			surf.m_geometry.setVertexes(bsd.m_polyline);
 			surf.m_geometry.computeGeometry();
 
-			switch (bsd.m_surfaceType) {
-				case EP::BuildingSurfaceDetailed::ST_Ceiling :
-				case EP::BuildingSurfaceDetailed::ST_Roof :			surf.updateColor(VICUS::Surface::SC_Roof); break;
-				case EP::BuildingSurfaceDetailed::ST_Wall :			surf.updateColor(VICUS::Surface::SC_Wall); break;
-				case EP::BuildingSurfaceDetailed::ST_Floor :		surf.updateColor(VICUS::Surface::SC_Floor); break;
-				default:											surf.updateColor(VICUS::Surface::SC_Wall); break;
-			}
+			surf.updateColor();
 			bl.m_rooms[idx].m_surfaces.push_back(surf);
 		}
 

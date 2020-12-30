@@ -365,20 +365,47 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 		m_ui->lineEditName->setFocus();
 		return;
 	}
-	// compose a surface object based on the current content of the new polygon object
-	VICUS::Surface s;
-	s.m_displayName = m_ui->lineEditName->text().trimmed();
+	// depending on the type of geometry that's being created,
+	// perform additional checks
 	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
-	s.m_geometry = po->planeGeometry();
-	s.m_id = s.uniqueID();
-	s.m_color = QColor("silver");
+	switch (po->newGeometryMode()) {
+		case Vic3D::NewGeometryObject::NGM_Rect:
+		case Vic3D::NewGeometryObject::NGM_Polygon: {
+			// compose a surface object based on the current content of the new polygon object
+			VICUS::Surface s;
+			s.m_displayName = m_ui->lineEditName->text().trimmed();
+			s.m_geometry = po->planeGeometry();
+			s.m_id = s.uniqueID();
+
+			// we need all properties, unless we create annonymous geometry
+			if (m_ui->checkBoxAnnonymousGeometry->isChecked()) {
+				s.m_color = QColor("silver");
+				// modify project
+				SVUndoAddSurface * undo = new SVUndoAddSurface(tr("Added surface '%1'").arg(s.m_displayName), s, 0);
+				undo->push();
+			}
+			else {
+				// we need inputs for room (if there is a room, there is also a building and level)
+				if (m_ui->comboBoxZone->currentIndex() != -1) {
+					unsigned int zoneUUID = m_ui->comboBoxZone->currentData().toUInt();
+					s.updateColor(); // set color based on orientation
+					// modify project
+					SVUndoAddSurface * undo = new SVUndoAddSurface(tr("Added surface '%1'").arg(s.m_displayName), s, zoneUUID);
+					undo->push();
+				}
+				else {
+					QMessageBox::critical(this, QString(), tr("Select a zone first to add the surface to!"));
+					return;
+				}
+			}
+		} break;
+
+		case Vic3D::NewGeometryObject::NGM_ZoneFloor:
+		break;
+	}
 
 	// reset view
 	on_pushButtonCancel_clicked();
-
-	// modify project
-	SVUndoAddSurface * undo = new SVUndoAddSurface(tr("Added surface '%1'").arg(s.m_displayName), s, 0);
-	undo->push();
 }
 
 

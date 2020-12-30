@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Do. Nov. 26 15:15:10 2020</Created>
-		<LastEdited>Mo. Dez. 28 16:03:55 2020</LastEdited>
+		<LastEdited>Mi. Dez. 30 15:51:41 2020</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter />
@@ -10,14 +10,14 @@
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
-			<CameraTranslation>20.7127 -58.6337 34.2906</CameraTranslation>
+			<CameraTranslation>-9.3038 -24.4915 9.37101</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.844889</Wp>
-				<X>0.533133</X>
-				<Y>0.0234914</Y>
-				<Z>0.0371131</Z>
+				<Wp>0.802707</Wp>
+				<X>0.562133</X>
+				<Y>-0.11414</Y>
+				<Z>-0.163093</Z>
 			</RotationMatrix>
-			<FarDistance>10000</FarDistance>
+			<FarDistance>1000</FarDistance>
 		</ViewSettings>
 		<Buildings>
 			<Building id="0" displayName="BuildingName">
@@ -138,11 +138,9 @@
 					</BuildingLevel>
 				</BuildingLevels>
 			</Building>
+			<Building id="1" displayName="Building" />
 		</Buildings>
 		<PlainGeometry>
-			<Surface id="45" displayName="New surface">
-				<PlaneGeometry type="Triangle">8 -5 0, 10 -3 0, 8 -3 0</PlaneGeometry>
-			</Surface>
 			<Surface id="46" displayName="New surface [2]">
 				<PlaneGeometry type="Polygon">12 2 0, 5 31 0, 2 25 0, 8 2 0</PlaneGeometry>
 			</Surface>

@@ -16,7 +16,7 @@ void main() {
   if (fragColor.a == 0.)
    discard;
   // ambient
-  float ambientStrength = 0.3;
+  float ambientStrength = 0.6;
   vec3 ambient = ambientStrength * lightColor;
 
   // compute vector from view pos to fragment

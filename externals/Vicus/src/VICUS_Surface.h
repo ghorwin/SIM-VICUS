@@ -15,17 +15,12 @@ namespace VICUS {
 class Surface : public Object {
 public:
 
-	enum SurfaceType{
-		SC_Wall,
-		SC_Floor,
-		SC_Roof,
-		NUM_SC
-	};
-
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	/*! Update surface colors by surface type. */
-	void updateColor(const SurfaceType& type);
+	/*! Update surface colors based on orientation of associated plane geometry.
+		Color is only updated if current color is QColor::Invalid.
+	*/
+	void updateColor();
 
 	VICUS_READWRITE
 

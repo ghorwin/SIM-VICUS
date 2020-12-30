@@ -96,6 +96,9 @@ public:
 		m_newGeometryMode = m;
 	}
 
+	/*! Returns the current geometry type. */
+	NewGeometryMode newGeometryMode() const {	return m_newGeometryMode; }
+
 	/*! Appends a vertex to the geometry.
 		This function is used to manually add a vertex, for example when entering a vertex
 		by keyboard.

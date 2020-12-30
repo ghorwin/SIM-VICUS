@@ -523,19 +523,7 @@ void SVProjectHandler::updateSurfaceColors() {
 		for (VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			for (VICUS::Room &r : bl.m_rooms) {
 				for (VICUS::Surface &s : r.m_surfaces) {
-					if (s.m_color == QColor::Invalid) {
-						double angleForWalls = 0.707;
-						//Floor
-						if(s.m_geometry.normal().m_z < -angleForWalls)
-							s.updateColor(VICUS::Surface::SC_Floor);
-						//Roof
-						else if(s.m_geometry.normal().m_z > angleForWalls)
-							s.updateColor(VICUS::Surface::SC_Roof);
-						//Wall
-						else
-							s.updateColor(VICUS::Surface::SC_Wall);
-					}
-
+					s.updateColor();
 				}
 			}
 		}
