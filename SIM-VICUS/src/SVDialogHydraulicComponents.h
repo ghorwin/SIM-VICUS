@@ -57,7 +57,7 @@ private:
 
 	void modifyTableView();
 
-	void addComponent();
+	void addComponent(const std::string & name, const NANDRAD::HydraulicNetworkComponent * comp);
 
 	Ui::SVDialogHydraulicComponents *m_ui;
 
@@ -71,6 +71,7 @@ private:
 
 private slots:
 	void on_componentParModel_editCompleted();
+	void on_toolButtonCopy_clicked();
 };
 
 

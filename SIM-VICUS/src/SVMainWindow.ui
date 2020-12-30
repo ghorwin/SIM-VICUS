@@ -105,7 +105,6 @@
      <string>&amp;Networks</string>
     </property>
     <addaction name="actionNetworkImport"/>
-    <addaction name="actionNetworkEdit"/>
     <addaction name="actionNetwork_Hydraulic_Components"/>
    </widget>
    <widget class="QMenu" name="menuDatabases">

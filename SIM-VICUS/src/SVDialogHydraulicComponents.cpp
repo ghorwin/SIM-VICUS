@@ -3,6 +3,7 @@
 
 #include "SVProjectHandler.h"
 #include "SVUndoNetworkHydraulicComponent.h"
+#include "SVUndoDeleteNetworkHydraulicComponent.h"
 
 #include "VICUS_Project.h"
 
@@ -17,6 +18,8 @@ SVDialogHydraulicComponents::SVDialogHydraulicComponents(QWidget *parent) :
 	m_ui(new Ui::SVDialogHydraulicComponents)
 {
 	m_ui->setupUi(this);
+
+	setWindowTitle("Hydraulic Components");
 
 	m_ui->tableViewComponentParams->horizontalHeader()->setVisible(true);
 
@@ -160,13 +163,37 @@ void SVDialogHydraulicComponents::modifyTableView()
 	IBK_ASSERT(tmpComp != nullptr);
 	NANDRAD::HydraulicNetworkComponent component = *tmpComp;
 
-
-	// hier
-
 	m_componentParModel->getComponentParameter(component.m_para);
 
 	SVUndoNetworkHydraulicComponent *undo = new SVUndoNetworkHydraulicComponent("modified comp", network->m_id, component);
 	undo->push();
+}
+
+
+void SVDialogHydraulicComponents::addComponent(const std::string & name, const NANDRAD::HydraulicNetworkComponent * comp)
+{
+	const VICUS::Project &p = project();
+	const VICUS::Network * network = currentNetwork();
+	unsigned int id = p.uniqueId(network->m_hydraulicComponents);
+
+	// new list widget item
+	HydraulicComponentItem * item = new HydraulicComponentItem(QString::fromStdString(name));
+	item->setName(QString::fromStdString(name));
+	item->setId(id);
+	m_ui->listWidget->addItem(item);
+	m_ui->listWidget->setCurrentItem(item);
+
+	// new component
+	NANDRAD::HydraulicNetworkComponent component;
+	if (comp != nullptr)
+		component = *comp;
+	component.m_displayName = name;
+	component.m_id = id;
+
+	SVUndoNetworkHydraulicComponent *undo = new SVUndoNetworkHydraulicComponent("modified comp", network->m_id, component);
+	undo->push();
+
+	updateComponent();
 }
 
 void SVDialogHydraulicComponents::on_componentParModel_editCompleted()
@@ -192,34 +219,32 @@ void SVDialogHydraulicComponents::on_comboBoxHeatExchangeType_activated(const QS
 
 void SVDialogHydraulicComponents::on_toolButtonAdd_clicked()
 {
-	const VICUS::Project &p = project();
+	addComponent("new component", nullptr);
+}
+
+void SVDialogHydraulicComponents::on_toolButtonCopy_clicked()
+{
+	HydraulicComponentItem *item = dynamic_cast<HydraulicComponentItem* >(m_ui->listWidget->currentItem());
+	if (item == nullptr)
+		return;
 	const VICUS::Network * network = currentNetwork();
-	unsigned int id = p.uniqueId(network->m_hydraulicComponents);
-	QString name = "unnamed";
+	const NANDRAD::HydraulicNetworkComponent * tmpComp = VICUS::Project::element(network->m_hydraulicComponents, item->id());
 
-	// new list widget item
-	HydraulicComponentItem * item = new HydraulicComponentItem(name);
-	item->setName(name);
-	item->setId(id);
-	m_ui->listWidget->addItem(item);
-	m_ui->listWidget->setCurrentItem(item);
-
-	// new component
-	NANDRAD::HydraulicNetworkComponent component;
-	component.m_displayName = name.toStdString();
-	component.m_id = id;
-	component.m_modelType = NANDRAD::HydraulicNetworkComponent::NUM_MT;
-	component.m_heatExchangeType = NANDRAD::HydraulicNetworkComponent::NUM_HT;
-
-	SVUndoNetworkHydraulicComponent *undo = new SVUndoNetworkHydraulicComponent("modified comp", network->m_id, component);
-	undo->push();
-
-	updateComponent();
+	addComponent(tmpComp->m_displayName + " copy", tmpComp);
 }
 
 void SVDialogHydraulicComponents::on_toolButtonRemove_clicked()
 {
+	HydraulicComponentItem *item = dynamic_cast<HydraulicComponentItem* >(m_ui->listWidget->currentItem());
+	if (item == nullptr)
+		return;
+	const VICUS::Network * network = currentNetwork();
+	const NANDRAD::HydraulicNetworkComponent * comp = VICUS::Project::element(network->m_hydraulicComponents, item->id());
+	IBK_ASSERT(comp != nullptr);
 
+	delete item;
+	SVUndoDeleteNetworkHydraulicComponent *undo = new SVUndoDeleteNetworkHydraulicComponent("delete comp", network->m_id, *comp);
+	undo->push();
 }
 
 void SVDialogHydraulicComponents::on_comboBoxNetwork_activated(int index)
@@ -279,7 +304,8 @@ void HydraulicComponentParameterModel::setComponent(const NANDRAD::HydraulicNetw
 
 void HydraulicComponentParameterModel::getComponentParameter(IBK::Parameter m_para[])
 {
-	m_para = m_component.m_para;
+	for (unsigned i = 0; i < NANDRAD::HydraulicNetworkComponent::NUM_P; ++i)
+		*(m_para + i) = *(m_component.m_para + i);
 }
 
 int HydraulicComponentParameterModel::rowCount(const QModelIndex &parent) const
@@ -341,5 +367,6 @@ Qt::ItemFlags HydraulicComponentParameterModel::flags(const QModelIndex &index) 
 	else
 		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
+
 
 
