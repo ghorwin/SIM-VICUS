@@ -91,6 +91,7 @@ SOURCES += \
 		../../src/SVDBModelDelegate.cpp \
 		../../src/SVDatabase.cpp \
 		../../src/SVDialogHydraulicComponents.cpp \
+		../../src/SVHydraulicComponentParameterModel.cpp \
 		../../src/SVPropNetworkEditWidget.cpp \
 		../../src/SVSimulationLocationOptions.cpp \
 		../../src/SVUndoDeleteNetworkHydraulicComponent.cpp \
@@ -176,6 +177,7 @@ HEADERS  += \
 		../../src/SVDBModelDelegate.h \
 		../../src/SVDatabase.h \
 		../../src/SVDialogHydraulicComponents.h \
+		../../src/SVHydraulicComponentParameterModel.h \
 		../../src/SVPropNetworkEditWidget.h \
 		../../src/SVSimulationLocationOptions.h \
 		../../src/SVUndoDeleteNetworkHydraulicComponent.h \

@@ -4,13 +4,12 @@
 #include "SVProjectHandler.h"
 #include "SVUndoModifyNetworkHydraulicComponent.h"
 #include "SVUndoDeleteNetworkHydraulicComponent.h"
+#include "SVHydraulicComponentParameterModel.h"
 
 #include "VICUS_Project.h"
 
 #include "NANDRAD_HydraulicNetworkComponent.h"
 #include "NANDRAD_KeywordList.h"
-
-#include "QtExt_Locale.h"
 
 
 SVDialogHydraulicComponents::SVDialogHydraulicComponents(QWidget *parent) :
@@ -87,7 +86,6 @@ void SVDialogHydraulicComponents::edit(const unsigned int networkId)
 	m_ui->listWidget->clear();
 	for (const NANDRAD::HydraulicNetworkComponent &comp: network->m_hydraulicComponents){
 		HydraulicComponentItem * item = new HydraulicComponentItem(QString::fromStdString(comp.m_displayName));
-		item->setName(QString::fromStdString(comp.m_displayName));
 		item->setId(comp.m_id);
 		m_ui->listWidget->addItem(item);
 	}
@@ -112,6 +110,7 @@ void SVDialogHydraulicComponents::updateComponent()
 	m_ui->labelComponentId->setText(tr("%1").arg(component->m_id));
 	m_ui->lineEditName->setText(QString::fromStdString(component->m_displayName));
 	m_ui->comboBoxComponentType->setCurrentText(m_mapComponents.key(component->m_modelType));
+	m_ui->comboBoxHeatExchangeType->setCurrentText(m_mapHeatExchangeType.key(component->m_heatExchangeType));
 
 	item->setText(QString::fromStdString(component->m_displayName));
 
@@ -126,7 +125,7 @@ void SVDialogHydraulicComponents::updateTableView()
 	IBK_ASSERT(tmpComp != nullptr);
 	NANDRAD::HydraulicNetworkComponent component = *tmpComp;
 
-	m_componentParModel = new HydraulicComponentParameterModel(this);
+	m_componentParModel = new SVHydraulicComponentParameterModel(this);
 	connect(m_componentParModel, SIGNAL(editCompleted()), this, SLOT(on_componentParModel_editCompleted()));
 	m_componentParModel->setComponent(component);
 	m_ui->tableViewComponentParams->setModel(m_componentParModel);
@@ -145,6 +144,8 @@ void SVDialogHydraulicComponents::modifyComponent()
 	component.m_displayName = m_ui->lineEditName->text().toStdString();
 	component.m_modelType = NANDRAD::HydraulicNetworkComponent::modelType_t(
 				m_mapComponents.value(m_ui->comboBoxComponentType->currentText()));
+	component.m_heatExchangeType = NANDRAD::HydraulicNetworkComponent::heatExchangeType_t(
+				m_mapHeatExchangeType.value(m_ui->comboBoxHeatExchangeType->currentText()));
 
 	if (component.m_modelType == NANDRAD::HydraulicNetworkComponent::NUM_MT)
 		return;
@@ -181,7 +182,6 @@ void SVDialogHydraulicComponents::addComponent(const std::string & name, const N
 
 	// new list widget item
 	HydraulicComponentItem * item = new HydraulicComponentItem(QString::fromStdString(name));
-	item->setName(QString::fromStdString(name));
 	item->setId(id);
 	m_ui->listWidget->addItem(item);
 	m_ui->listWidget->setCurrentItem(item);
@@ -263,8 +263,7 @@ void SVDialogHydraulicComponents::on_listWidget_itemClicked(QListWidgetItem *ite
 
 
 
-
-
+// *** HydraulicComponentItem ***
 
 HydraulicComponentItem::HydraulicComponentItem(const QString & name, QListWidget * parent, int type):
 	QListWidgetItem(name, parent, type)
@@ -280,97 +279,5 @@ void HydraulicComponentItem::setId(const unsigned &id)
 {
 	m_id = id;
 }
-
-QString HydraulicComponentItem::name() const
-{
-	return m_name;
-}
-
-void HydraulicComponentItem::setName(const QString &name)
-{
-	m_name = name;
-}
-
-
-
-
-// *** ComponentParameterModel ***
-
-HydraulicComponentParameterModel::HydraulicComponentParameterModel(QObject *parent) : QAbstractTableModel(parent)
-{
-}
-
-void HydraulicComponentParameterModel::setComponent(const NANDRAD::HydraulicNetworkComponent & component)
-{
-	m_component = component;
-	m_parameterList = NANDRAD::HydraulicNetworkComponent::requiredParameter(m_component.m_modelType);
-}
-
-void HydraulicComponentParameterModel::getComponentParameter(IBK::Parameter m_para[])
-{
-	for (unsigned i = 0; i < NANDRAD::HydraulicNetworkComponent::NUM_P; ++i)
-		*(m_para + i) = *(m_component.m_para + i);
-}
-
-int HydraulicComponentParameterModel::rowCount(const QModelIndex &parent) const
-{
-	Q_UNUSED(parent);
-	return m_parameterList.size();
-}
-
-int HydraulicComponentParameterModel::columnCount(const QModelIndex &parent) const
-{
-	Q_UNUSED(parent);
-	return 3;
-}
-
-QVariant HydraulicComponentParameterModel::data(const QModelIndex &index, int role) const
-{
-	if (!index.isValid() || role != Qt::DisplayRole)
-		return QVariant();
-
-	if (index.column()==0)
-		return NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::para_t", m_parameterList[index.row()]);
-	else if (index.column()==1)
-		return m_component.m_para[m_parameterList[index.row()]].value;
-	else if (index.column()==2)
-		return NANDRAD::KeywordList::Unit("HydraulicNetworkComponent::para_t", m_parameterList[index.row()]);
-}
-
-QVariant HydraulicComponentParameterModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-	if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
-		if (section == 0)
-			return QString("Parameter");
-		else if (section == 1)
-			return QString("Value");
-		else if (section == 2)
-			return QString("Unit");
-	}
-	return QVariant();
-}
-
-bool HydraulicComponentParameterModel::setData(const QModelIndex &index, const QVariant &value, int role)
-{
-
-	if (index.column()==1){
-		bool ok = false;
-		double number = QtExt::Locale().toDouble(value.toString(), &ok);
-		if (!ok)
-			return false;
-		m_component.m_para[m_parameterList[index.row()]].value = number;
-		emit editCompleted();
-	}
-	return true;
-}
-
-Qt::ItemFlags HydraulicComponentParameterModel::flags(const QModelIndex &index) const
-{
-	if (index.column()==1)
-		return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-	else
-		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-}
-
 
 

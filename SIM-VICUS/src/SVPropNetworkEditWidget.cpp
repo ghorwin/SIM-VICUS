@@ -6,6 +6,7 @@
 #include "SVUndoAddNetwork.h"
 #include "SVUndoModifyExistingNetwork.h"
 #include "SVProjectHandler.h"
+#include "SVDialogHydraulicComponents.h"
 
 #include "NANDRAD_HydraulicNetworkComponent.h"
 
@@ -22,6 +23,8 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 	m_ui->groupBoxSizePipes->setVisible(false);
 	m_ui->groupBoxEditNetwork->setVisible(false);
 	m_ui->groupBoxHeatExchange->setVisible(false);
+
+	setupComboBoxComponents();
 
 	// setup combobox pipe models
 	m_mapPipeModels.clear();
@@ -44,25 +47,6 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 						  VICUS::NetworkNode::NT_Building);
 	m_ui->comboBoxNodeType->clear();
 	m_ui->comboBoxNodeType->addItems(m_mapNodeTypes.keys());
-
-	// setup comobox components
-	m_mapComponents.clear();
-	m_mapComponents.insert("<None>", NANDRAD::HydraulicNetworkComponent::NUM_MT);
-	m_mapComponents.insert(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::modelType_t",
-														NANDRAD::HydraulicNetworkComponent::MT_Radiator),
-														NANDRAD::HydraulicNetworkComponent::MT_Radiator);
-	m_mapComponents.insert(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::modelType_t",
-														NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger),
-														NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger);
-	m_mapComponents.insert(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::modelType_t",
-														NANDRAD::HydraulicNetworkComponent::MT_HeatPump),
-														NANDRAD::HydraulicNetworkComponent::MT_HeatPump);
-	m_mapComponents.insert(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::modelType_t",
-														NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel),
-														NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel);
-	m_ui->comboBoxComponent->clear();
-	m_ui->comboBoxComponent->addItems(m_mapComponents.keys());
-	m_ui->comboBoxComponent->setCurrentText(m_mapComponents.key(NANDRAD::HydraulicNetworkComponent::NUM_MT));
 
 	// setup combobox heat exchange type
 	m_mapHeatExchangeType.clear();
@@ -91,10 +75,10 @@ SVPropNetworkEditWidget::~SVPropNetworkEditWidget() {
 }
 
 
-void SVPropNetworkEditWidget::updateUi() {
+void SVPropNetworkEditWidget::updateStatus() {
 
 	// update network ui
-	networkFromId();
+	setCurrentNetwork();
 	if (m_network != nullptr){
 		m_ui->labelEdgeCount->setText(QString("%1").arg(m_network->m_edges.size()));
 		m_ui->labelNodeCount->setText(QString("%1").arg(m_network->m_nodes.size()));
@@ -149,97 +133,8 @@ void SVPropNetworkEditWidget::updateSizingParams() {
 }
 
 
-void SVPropNetworkEditWidget::updateHydraulicComponent()
-{
-	const VICUS::NetworkNode *node = dynamic_cast<const VICUS::NetworkNode *>(m_obj);
-	if (node == nullptr )
-		return;
-	NANDRAD::HydraulicNetworkComponent component;
-	const NANDRAD::HydraulicNetworkComponent *tmpComp = VICUS::Project::element(m_network->m_hydraulicComponents, node->m_componentId);
-	if (tmpComp == nullptr)
-		return;
-	component = *tmpComp;
-
-	m_ui->comboBoxComponent->setCurrentText(m_mapComponents.key(component.m_modelType));
-	m_ui->groupBoxHeatExchange->setVisible(NANDRAD::HydraulicNetworkComponent::hasHeatExchange(component.m_modelType));
-	m_ui->comboBoxHeatExchangeType->setCurrentText(m_mapHeatExchangeType.key(component.m_heatExchangeType));
-	// ... hx parameter
-
-//	// Create component parameter model and connect model to table view:
-//	m_componentParModel = new HydraulicComponentParameterModel(this);
-//	connect(m_componentParModel, SIGNAL(editCompleted(void)), this, SLOT(on_componentParModel_editCompleted(void)));
-//	m_componentParModel->setComponent(component);
-//	m_ui->tableViewComponentParams->setModel(m_componentParModel);
-//	m_ui->tableViewComponentParams->show();
-}
-
-
-void SVPropNetworkEditWidget::modifyHydraulicComponent()
-{
-	FUNCID(SVPropNetworkEditWidget::modifyHydraulicComponent);
-
-	// get network
-	networkFromId();
-	if (m_network == nullptr)
-		return;
-	VICUS::Network network = *m_network;
-	network.updateNodeEdgeConnectionPointers();
-
-	// get node
-	const VICUS::NetworkNode *nodeConst = dynamic_cast<const VICUS::NetworkNode *>(m_obj);
-	if (nodeConst == nullptr )
-		return;
-	VICUS::NetworkNode *node = &network.m_nodes[nodeConst->m_id];
-
-	// check if this node has a component id already, and get the according component
-	NANDRAD::HydraulicNetworkComponent component;
-	if (nodeConst->m_componentId != VICUS::INVALID_ID){
-		const NANDRAD::HydraulicNetworkComponent *tmpComp = VICUS::Project::element(m_network->m_hydraulicComponents, nodeConst->m_componentId);
-		if (tmpComp == nullptr)
-			throw IBK::Exception(IBK::FormatString("Component with id %1 not found in hyraulic components")
-								 .arg(nodeConst->m_componentId), FUNC_ID);
-		component = *tmpComp;
-	}
-
-//	// read model type and parameter
-//	component.m_modelType = NANDRAD::HydraulicNetworkComponent::modelType_t(
-//				m_mapComponents.value(m_ui->comboBoxComponent->currentText()));
-//	if (component.m_modelType == NANDRAD::HydraulicNetworkComponent::NUM_MT){
-//		node->m_componentId = VICUS::INVALID_ID;
-//		// this makes sure, we have no components in the catalog that dont belong to any node
-//		network.cleanHydraulicComponentCatalog();
-//		return;
-//	}
-
-//	// this makes sure, we have no components in the catalog that dont belong to any node
-//	network.cleanHydraulicComponentCatalog();
-
-//	m_componentParModel->getComponentParameter(component.m_para);
-//	component.m_heatExchangeType = NANDRAD::HydraulicNetworkComponent::heatExchangeType_t(
-//				m_mapHeatExchangeType.value(m_ui->comboBoxHeatExchangeType->currentText()));
-//	// hx params ...
-
-//	// if the same component is already in the catalog, set node componentId accordingly
-//	for (const NANDRAD::HydraulicNetworkComponent &exComponent: m_network->m_hydraulicComponents){
-//		if (component == exComponent){
-//			node->m_componentId = exComponent.m_id;
-//			return;
-//		}
-//	}
-
-//	// if we have obtained a component with new properties, we get a new id for it and add it to the catalog
-//	component.m_id = VICUS::Project::uniqueId(m_network->m_hydraulicComponents);
-//	network.m_hydraulicComponents.push_back(component);
-//	node->m_componentId = component.m_id;
-//	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), network);
-//	undo->push();
-
-
-
-}
-
 void SVPropNetworkEditWidget::modifyStatus() {
-	networkFromId();
+	setCurrentNetwork();
 	if (m_network == nullptr)
 		return;
 	VICUS::Network network = *m_network; // Note: keeps unique IDs, but pointers are invalidated!
@@ -253,7 +148,7 @@ void SVPropNetworkEditWidget::modifyStatus() {
 
 void SVPropNetworkEditWidget::modifySizingParams()
 {
-	networkFromId();
+	setCurrentNetwork();
 	if (m_network == nullptr)
 		return;
 	VICUS::Network network = *m_network;
@@ -271,7 +166,7 @@ void SVPropNetworkEditWidget::modifySizingParams()
 
 void SVPropNetworkEditWidget::modifyEdgeProperties()
 {
-	networkFromId();
+	setCurrentNetwork();
 	if (m_network == nullptr)
 		return;
 	VICUS::Network network = *m_network;
@@ -289,7 +184,7 @@ void SVPropNetworkEditWidget::modifyEdgeProperties()
 
 void SVPropNetworkEditWidget::modifyNodeProperties()
 {
-	networkFromId();
+	setCurrentNetwork();
 	if (m_network == nullptr)
 		return;
 	VICUS::Network network = *m_network;
@@ -315,7 +210,7 @@ void SVPropNetworkEditWidget::modifyNodeProperties()
 
 void SVPropNetworkEditWidget::setupComboboxPipeDB()
 {
-	networkFromId();
+	setCurrentNetwork();
 	if (m_network == nullptr)
 		return;
 	m_mapDBPipes.clear();
@@ -328,7 +223,7 @@ void SVPropNetworkEditWidget::setupComboboxPipeDB()
 }
 
 
-void SVPropNetworkEditWidget::networkFromId()
+void SVPropNetworkEditWidget::setCurrentNetwork()
 {
 	unsigned int id = SVViewStateHandler::instance().m_navigationTreeWidget->selectedNodeID();
 	if (id != 0)
@@ -341,6 +236,22 @@ void SVPropNetworkEditWidget::networkFromId()
 		m_network = dynamic_cast<const VICUS::Network *>(m_obj->m_parent);
 	else
 		m_network = nullptr;
+}
+
+
+void SVPropNetworkEditWidget::setupComboBoxComponents()
+{
+	setCurrentNetwork();
+	if (m_network == nullptr)
+		return;
+
+	// setup comobox components
+	m_mapComponents.clear();
+	m_mapComponents.insert("", NANDRAD::INVALID_ID);
+	for (const NANDRAD::HydraulicNetworkComponent &comp: m_network->m_hydraulicComponents)
+		m_mapComponents.insert(QString::fromStdString(comp.m_displayName), comp.m_id);
+	m_ui->comboBoxComponent->clear();
+	m_ui->comboBoxComponent->addItems(m_mapComponents.keys());
 }
 
 
@@ -369,11 +280,6 @@ void SVPropNetworkEditWidget::showEdgeProperties()
 }
 
 void SVPropNetworkEditWidget::on_comboBoxNodeType_activated(int index)
-{
-	modifyNodeProperties();
-}
-
-void SVPropNetworkEditWidget::on_doubleSpinBoxNodeNeatingDemand_editingFinished()
 {
 	modifyNodeProperties();
 }
@@ -407,7 +313,7 @@ void SVPropNetworkEditWidget::on_pushButtonSizePipeDimensions_clicked()
 {
 	FUNCID(SVPropNetworkEditWidget::on_pushButtonSizePipeDimensions_clicked);
 	modifySizingParams();
-	networkFromId();
+	setCurrentNetwork();
 	if (m_network == nullptr)
 		return;
 	const VICUS::Project &p = project();
@@ -420,12 +326,12 @@ void SVPropNetworkEditWidget::on_pushButtonSizePipeDimensions_clicked()
 	network.sizePipeDimensions(fluid);
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), network);
 	undo->push(); // modifies project and updates views
-	updateUi();
+	updateStatus();
 }
 
 void SVPropNetworkEditWidget::on_pushButtonGenerateIntersections_clicked()
 {
-	networkFromId();
+	setCurrentNetwork();
 	if (m_network == nullptr)
 		return;
 	VICUS::Network network = *m_network;
@@ -433,12 +339,12 @@ void SVPropNetworkEditWidget::on_pushButtonGenerateIntersections_clicked()
 	network.generateIntersections();
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), network);
 	undo->push(); // modifies project and updates views
-	updateUi();
+	updateStatus();
 }
 
 void SVPropNetworkEditWidget::on_pushButtonConnectBuildings_clicked()
 {
-	networkFromId();
+	setCurrentNetwork();
 	if (m_network == nullptr)
 		return;
 	VICUS::Network network = *m_network;
@@ -446,12 +352,12 @@ void SVPropNetworkEditWidget::on_pushButtonConnectBuildings_clicked()
 	network.connectBuildings(false);
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), network);
 	undo->push(); // modifies project and updates views
-	updateUi();
+	updateStatus();
 }
 
 void SVPropNetworkEditWidget::on_pushButtonReduceDeadEnds_clicked()
 {
-	networkFromId();
+	setCurrentNetwork();
 	if (m_network == nullptr)
 		return;
 	VICUS::Network network = *m_network;
@@ -461,12 +367,12 @@ void SVPropNetworkEditWidget::on_pushButtonReduceDeadEnds_clicked()
 	network.cleanDeadEnds(tmp);
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), tmp);
 	undo->push(); // modifies project and updates views
-	updateUi();
+	updateStatus();
 }
 
 void SVPropNetworkEditWidget::on_pushButtonReduceRedundantNodes_clicked()
 {
-	networkFromId();
+	setCurrentNetwork();
 	if (m_network == nullptr)
 		return;
 
@@ -489,7 +395,7 @@ void SVPropNetworkEditWidget::on_pushButtonReduceRedundantNodes_clicked()
 
 	SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("modified network"), copy);
 	undo->push(); // modifies project and updates views
-	updateUi();
+	updateStatus();
 }
 
 void SVPropNetworkEditWidget::on_horizontalSliderScaleNodes_actionTriggered(int action)
@@ -505,10 +411,16 @@ void SVPropNetworkEditWidget::on_horizontalSliderScaleEdges_actionTriggered(int 
 void SVPropNetworkEditWidget::on_comboBoxComponent_activated(const QString &arg1)
 {
 	modifyNodeProperties();
-	modifyHydraulicComponent();
 }
 
-void SVPropNetworkEditWidget::on_componentParModel_editCompleted()
+void SVPropNetworkEditWidget::on_pushButtonEditComponents_clicked()
 {
-	modifyHydraulicComponent();
+	setCurrentNetwork();
+	if (m_network == nullptr)
+		return;
+	SVDialogHydraulicComponents *dialog = new SVDialogHydraulicComponents(this);
+	dialog->edit(m_network->m_id);
+
+	setupComboBoxComponents();
 }
+

@@ -315,29 +315,20 @@
      <property name="title">
       <string>Edit Node</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_12">
+     <layout class="QFormLayout" name="formLayout_5">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_15">
         <property name="text">
-         <string>component</string>
+         <string>node id</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeHeatingDemand"/>
-      </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="comboBoxNodeType"/>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_13">
+      <item row="0" column="1">
+       <widget class="QLabel" name="labelNodeId">
         <property name="text">
-         <string>maximum heating demand</string>
+         <string/>
         </property>
        </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QComboBox" name="comboBoxComponent"/>
       </item>
       <item row="1" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout">
@@ -373,13 +364,6 @@
         </item>
        </layout>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_15">
-        <property name="text">
-         <string>node id</string>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_14">
         <property name="text">
@@ -387,12 +371,45 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QLabel" name="labelNodeId">
+      <item row="2" column="1">
+       <widget class="QComboBox" name="comboBoxNodeType"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_13">
         <property name="text">
-         <string/>
+         <string>maximum heating demand</string>
         </property>
        </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeHeatingDemand"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_12">
+        <property name="text">
+         <string>component</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="QComboBox" name="comboBoxComponent"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButtonEditComponents">
+          <property name="maximumSize">
+           <size>
+            <width>120</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>edit components...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
