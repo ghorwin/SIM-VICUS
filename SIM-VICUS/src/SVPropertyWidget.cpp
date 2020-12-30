@@ -110,7 +110,7 @@ void SVPropertyWidget::onViewStateChanged() {
 			}
 			m_propWidgets[SVViewState::PM_NetworkProperties]->setVisible(true);
 			// tell widget to update its content
-			qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->updateStatus();
+			qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->updateUi();
 			if (m == SVViewState::PM_NetworkProperties)
 				qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->showNetworkProperties();
 			else if (m == SVViewState::PM_NetworkNodeProperties)

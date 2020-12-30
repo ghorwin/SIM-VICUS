@@ -4,10 +4,11 @@
 #include <QWidget>
 #include <QMap>
 
+#include "VICUS_Network.h"
 
 namespace VICUS {
-	class Network;
-	class Object;
+	class NetworkEdge;
+	class NetworkNode;
 }
 
 namespace Ui {
@@ -25,7 +26,7 @@ public:
 
 	/*! Called when widget is just shown, updates content to current project's data
 		and selected node. */
-	void updateStatus();
+	void updateUi();
 
 	void showNetworkProperties();
 
@@ -80,13 +81,17 @@ private:
 
 	void modifyEdgeProperties();
 
-	void setCurrentNetwork();
+	bool setNetwork();
+
+	const VICUS::Network * currentNetwork();
+
+	const VICUS::NetworkEdge * currentNetworkEdge();
+
+	const VICUS::NetworkNode * currentNetworkNode();
 
 	Ui::SVPropNetworkEditWidget *m_ui;
 
-	const VICUS::Network *m_network = nullptr;
-
-	const VICUS::Object * m_obj = nullptr;
+	VICUS::Network m_network;
 
 	QMap<QString, unsigned> m_mapPipeModels;
 

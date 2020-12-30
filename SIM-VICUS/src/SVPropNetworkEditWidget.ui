@@ -319,7 +319,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label_15">
         <property name="text">
-         <string>node id</string>
+         <string>Node id</string>
         </property>
        </widget>
       </item>
@@ -367,7 +367,7 @@
       <item row="2" column="0">
        <widget class="QLabel" name="label_14">
         <property name="text">
-         <string>type</string>
+         <string>Type</string>
         </property>
        </widget>
       </item>
@@ -377,7 +377,7 @@
       <item row="3" column="0">
        <widget class="QLabel" name="label_13">
         <property name="text">
-         <string>maximum heating demand</string>
+         <string>Maximum heating demand</string>
         </property>
        </widget>
       </item>
@@ -387,7 +387,7 @@
       <item row="4" column="0">
        <widget class="QLabel" name="label_12">
         <property name="text">
-         <string>component</string>
+         <string>Component</string>
         </property>
        </widget>
       </item>
@@ -433,21 +433,21 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_16">
         <property name="text">
-         <string>pipe geometry</string>
+         <string>Pipe geometry</string>
         </property>
        </widget>
       </item>
       <item row="5" column="0">
        <widget class="QLabel" name="label_11">
         <property name="text">
-         <string>length</string>
+         <string>Llength</string>
         </property>
        </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_6">
         <property name="text">
-         <string>pipe model</string>
+         <string>Pipe model</string>
         </property>
        </widget>
       </item>
@@ -464,7 +464,7 @@
       <item row="4" column="0">
        <widget class="QLabel" name="label_22">
         <property name="text">
-         <string>type of heat exchange</string>
+         <string>Type of heat exchange</string>
         </property>
        </widget>
       </item>
@@ -479,7 +479,48 @@
      <property name="title">
       <string>Heat Exchange</string>
      </property>
-     <layout class="QFormLayout" name="formLayout_4"/>
+     <layout class="QFormLayout" name="formLayout_4">
+      <item row="0" column="0">
+       <widget class="QLabel" name="labelHeatFlux">
+        <property name="text">
+         <string>Heat flux [W]</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditHeatFlux"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelDataFile">
+        <property name="text">
+         <string>Data file</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QtExt::BrowseFilenameWidget" name="widgetBrowseFileNameData" native="true"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="labelFMUFile">
+        <property name="text">
+         <string>FMU file</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QtExt::BrowseFilenameWidget" name="widgetBrowseFileNameFMU" native="true"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="labelZoneId">
+        <property name="text">
+         <string>Zone Id</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QComboBox" name="comboBoxZoneId"/>
+      </item>
+     </layout>
     </widget>
    </item>
    <item>
@@ -502,6 +543,12 @@
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_ValidatingLineEdit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::BrowseFilenameWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">QtExt_BrowseFilenameWidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

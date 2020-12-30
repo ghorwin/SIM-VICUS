@@ -63,18 +63,6 @@ public:
 		NUM_HT
 	};
 
-
-//	/*! type of interface to an external model or data file */
-//	enum interfaceType_t {
-//		IT_HeatFlux,						// Keyword: HeatFlux							'Fixed heat flux'
-//		IT_Temperature,						// Keyword: Temperature							'Fixed temperature'
-//		IT_HeatExchangeGivenTemperature,	// Keyword: HeatExchangeGivenTemperature		'Coupled to external model which requires a heat flux and calculates a temperature in return'
-//		IT_ThermoHydraulicGivenPinPout,		// Keyword: ThermoHydraulicGivenPinPout			'Coupled to external model which requires p_in, p_out, T_in and calculates T_out and m_dot'
-//		IT_ThermoHydraulicGivenPinMdot,		// Keyword: ThermoHydraulicGivenPinMdot			'Coupled to external model which requires p_in, m_dot, T_in and calculates T_out and p_out'
-//		NUM_IT
-//	};
-
-
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	NANDRAD_READWRITE
