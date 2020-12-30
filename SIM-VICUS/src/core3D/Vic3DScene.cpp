@@ -1021,8 +1021,9 @@ void Vic3DScene::selectNearestObject(const QVector3D & nearPoint, const QVector3
 							continue;
 						IBKMK::Vector3D intersectionPoint;
 						double dist;
-						// surfaces are picked only from front-side
-						if (s.m_geometry.intersectsLine(lineOffset, direction, intersectionPoint, dist, false)) {
+						// check if we hit the surface - since we show the surface from both sides, we
+						// can also pick both sides
+						if (s.m_geometry.intersectsLine(lineOffset, direction, intersectionPoint, dist, true)) {
 							if (dist < pickObject.m_dist) {
 								pickObject.m_dist = dist;
 								pickObject.m_pickPoint = intersectionPoint;

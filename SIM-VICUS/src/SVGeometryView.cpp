@@ -202,7 +202,8 @@ void SVGeometryView::coordinateInputFinished() {
 	// check if adding the vertex would invalidate the polygon
 	VICUS::PlaneGeometry p = po->planeGeometry();
 	p.addVertex(offset);
-	if (!p.isValid()) {
+	// two vertexes are always valid, so we do not check for valid vertexes then
+	if (p.vertexes().size() > 2 && !p.isValid()) {
 		QMessageBox::critical(this, QString(), tr("Adding this vertex would invalidate the polygon."));
 		m_lineEditCoordinateInput->setFocus();
 		m_lineEditCoordinateInput->selectAll();
