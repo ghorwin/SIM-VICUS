@@ -34,7 +34,7 @@ void LanguageStringEditWidget1::initLanguages(const std::string& currentLanguage
 
 void LanguageStringEditWidget1::setString(const IBK::MultiLanguageString& str) {
 	m_string = str;
-	ui->lineEdit->setText(QString::fromUtf8(m_string.string(m_currentLang, true).c_str()));
+	ui->lineEdit->setText(QString::fromStdString(m_string.string(m_currentLang, "en")));
 }
 
 void LanguageStringEditWidget1::set3rdLanguage(const std::string& lang) {
@@ -79,10 +79,13 @@ LanguageStringEditDialog3::LanguageStringEditDialog3(const std::string& currentL
 	m_widget = new LanguageStringEditWidget3(currentLanguage, showLanguageSelection, this);
 	layout->addWidget(m_widget);
 	layout->addWidget(buttonBox);
+	/// TODO : resize dialog to some meaningful initial size
+	resize(1000,300);
 
 	connect(accept, SIGNAL(clicked()), this, SLOT(accept()));
 	connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
 }
+
 void LanguageStringEditDialog3::set(const IBK::MultiLanguageString& str) {
 	m_widget->set(str);
 }
