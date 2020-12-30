@@ -39,6 +39,9 @@ SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 			this, &SVPropVertexListWidget::onEditComponents);
 	connect(m_ui->toolButtonEditComponents4, &QToolButton::clicked,
 			this, &SVPropVertexListWidget::onEditComponents);
+
+	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
+			this, &SVPropVertexListWidget::onModified);
 }
 
 
@@ -71,9 +74,7 @@ void SVPropVertexListWidget::setup(int newGeometryType) {
 	}
 
 	// populate component combo boxes
-	updateBuildingComboBox();
-	updateBuildingLevelsComboBox();
-	updateZoneComboBox();
+	updateBuildingComboBox(); // this will also update the other combo boxes
 	updateComponentComboBoxes();
 
 	// compose object names until we found a unique object name
@@ -117,7 +118,7 @@ void SVPropVertexListWidget::updateBuildingComboBox() {
 		const VICUS::Building & b = prj.m_buildings[i];
 		m_ui->comboBoxBuilding->addItem(b.m_displayName, b.uniqueID());
 		if (b.uniqueID() == currentUniqueId)
-			rowOfCurrent = i;
+			rowOfCurrent = (int)i;
 	}
 
 	if (rowOfCurrent != -1) {
@@ -125,42 +126,64 @@ void SVPropVertexListWidget::updateBuildingComboBox() {
 	}
 	else {
 		m_ui->comboBoxBuilding->setCurrentIndex(m_ui->comboBoxBuilding->count()-1); // Note: if no buildings, nothing will be selected
-		updateBuildingLevelsComboBox();
 	}
-
 	m_ui->comboBoxBuilding->blockSignals(false);
 
-	// disable edit buttons for level and room, if there is no building
+	// disable combo box if empty
 	if (m_ui->comboBoxBuilding->count() == 0) {
 		m_ui->comboBoxBuilding->setEnabled(false);
-		m_ui->comboBoxBuildingLevel->setEnabled(false);
-		m_ui->comboBoxZone->setEnabled(false);
-		m_ui->toolButtonAddBuildingLevel->setEnabled(false);
-		m_ui->toolButtonAddZone->setEnabled(false);
 	}
 	else {
 		m_ui->comboBoxBuilding->setEnabled(true);
-		m_ui->toolButtonAddBuildingLevel->setEnabled(true);
-		// zone tool button will be enabled/disabled in updateBuildingLevelsComboBox()
 	}
+
+	// also update the building levels combo box
+	updateBuildingLevelsComboBox();
 }
 
 
 void SVPropVertexListWidget::updateBuildingLevelsComboBox() {
 	m_ui->comboBoxBuildingLevel->blockSignals(true);
+	unsigned int currentUniqueId = m_ui->comboBoxBuildingLevel->currentData().toUInt();
 	m_ui->comboBoxBuildingLevel->clear();
-//	const VICUS::Project & prj = project();
-//	int idx = m_ui->comboBoxBuilding->currentIndex();
-//	if (idx != -1) {
-//		for (unsigned int i=0; i<prj.m_buildings[idx].m_buildingLevels.size(); ++i) {
-//			const VICUS::BuildingLevel & bl = prj.m_buildings[idx].m_buildingLevels[i];
-//			m_ui->comboBoxBuildingLevel->addItem(bl.m_displayName, i);
-//		}
-//	}
-//	else {
-//		m_ui->comboBoxBuildingLevel->addItem(tr("<no building>"));
-//	}
+	// only add items if we have a building selected
+	if (m_ui->comboBoxBuilding->count() != 0) {
+		const VICUS::Project & prj = project();
+		unsigned int buildingUniqueID = m_ui->comboBoxBuilding->currentData().toUInt();
+		const VICUS::Building * b = dynamic_cast<const VICUS::Building*>(prj.objectById(buildingUniqueID));
+		Q_ASSERT(b != nullptr);
+		int rowOfCurrent = -1;
+		for (unsigned int i=0; i<b->m_buildingLevels.size(); ++i) {
+			const VICUS::BuildingLevel & bl = b->m_buildingLevels[i];
+			m_ui->comboBoxBuildingLevel->addItem(bl.m_displayName, bl.uniqueID());
+			if (bl.uniqueID() == currentUniqueId)
+				rowOfCurrent = (int)i;
+		}
+		if (rowOfCurrent != -1) {
+			m_ui->comboBoxBuildingLevel->setCurrentIndex(rowOfCurrent);
+		}
+		else {
+			m_ui->comboBoxBuildingLevel->setCurrentIndex(m_ui->comboBoxBuildingLevel->count()-1); // Note: if none, nothing will be selected
+		}
+
+		// enable tool button to add new levels
+		m_ui->toolButtonAddBuildingLevel->setEnabled(true);
+	}
+	else {
+		// no building, no levels to add
+		m_ui->toolButtonAddBuildingLevel->setEnabled(false);
+	}
 	m_ui->comboBoxBuildingLevel->blockSignals(false);
+
+	// disable combo box if empty
+	if (m_ui->comboBoxBuildingLevel->count() == 0) {
+		m_ui->comboBoxBuildingLevel->setEnabled(false);
+	}
+	else {
+		m_ui->comboBoxBuildingLevel->setEnabled(true);
+	}
+
+	// also update the zones combo box
 	updateZoneComboBox();
 }
 
@@ -282,9 +305,7 @@ void SVPropVertexListWidget::onModified(int modificationType, ModificationInfo *
 		/*! We only need to handle changes of the building topology, in all other cases
 			the "create new geometry" action is aborted and the widget will be hidden. */
 		case SVProjectHandler::BuildingTopologyChanged:
-			updateBuildingComboBox();
-			updateBuildingLevelsComboBox();
-			updateZoneComboBox();
+			updateBuildingComboBox(); // this will also update the other combo boxes
 		break;
 		default:;
 	}
