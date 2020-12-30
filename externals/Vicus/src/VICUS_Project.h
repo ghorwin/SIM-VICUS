@@ -123,7 +123,7 @@ public:
 	/*! Function to generate unique ID */
 	template <typename T>
 	static unsigned uniqueId(std::vector<T>& vec) {
-		for (unsigned id=0; id<std::numeric_limits<unsigned>::max(); ++id){
+		for (unsigned id=1; id<std::numeric_limits<unsigned>::max(); ++id){
 			if (std::find(vec.begin(), vec.end(), id) == vec.end())
 				return id;
 		}
@@ -133,13 +133,29 @@ public:
 	/*! Function to generate unique ID (const-version). */
 	template <typename T>
 	static unsigned uniqueId(const std::vector<T>& vec) {
-		for (unsigned id=0; id<std::numeric_limits<unsigned>::max(); ++id){
+		for (unsigned id=1; id<std::numeric_limits<unsigned>::max(); ++id){
 			if (std::find(vec.begin(), vec.end(), id) == vec.end())
 				return id;
 		}
 		return 999999; // just to make compiler happy, we will find an unused ID in the loop above
 	}
 
+
+	/*! Generates a new unique name in format "basename" or "basename [<nr>]" with increasing numbers until
+		the name no longer exists in set existingNames.
+	*/
+	static QString uniqueName(const QString & baseName, const std::set<QString> & existingNames) {
+		// generate new unique object/surface name
+		unsigned int count = 1;
+		QString name = baseName;
+		for (;;) {
+			// process all surfaces and check if we have already a new surface with our current name
+			if (existingNames.find(name) == existingNames.end())
+				break;
+			name = QString("%1 [%2]").arg(baseName).arg(++count);
+		}
+		return name;
+	}
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
