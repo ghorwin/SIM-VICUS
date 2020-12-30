@@ -100,6 +100,7 @@ SOURCES += \
 		../../src/actions/SVUndoAddBuildingLevel.cpp \
 		../../src/actions/SVUndoAddNetwork.cpp \
 		../../src/actions/SVUndoAddSurface.cpp \
+		../../src/actions/SVUndoAddZone.cpp \
 		../../src/actions/SVUndoCommandBase.cpp \
 		../../src/actions/SVUndoDeleteSelected.cpp \
 		../../src/actions/SVUndoModifySurfaceGeometry.cpp \
@@ -186,6 +187,7 @@ HEADERS  += \
 		../../src/actions/SVUndoAddBuildingLevel.h \
 		../../src/actions/SVUndoAddNetwork.h \
 		../../src/actions/SVUndoAddSurface.h \
+		../../src/actions/SVUndoAddZone.h \
 		../../src/actions/SVUndoCommandBase.h \
 		../../src/actions/SVUndoDeleteSelected.h \
 		../../src/actions/SVUndoModifySurfaceGeometry.h \

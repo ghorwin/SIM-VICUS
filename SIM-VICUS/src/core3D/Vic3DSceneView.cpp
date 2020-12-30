@@ -134,6 +134,9 @@ void SceneView::onModified(int modificationType, ModificationInfo * data) {
 
 	SVProjectHandler::ModificationTypes mod = (SVProjectHandler::ModificationTypes)modificationType;
 	switch (mod) {
+		case SVProjectHandler::AllModified :
+			m_mainScene.updateWorld2ViewMatrix(); // reposition camera
+		break;
 		case SVProjectHandler::GridModified :
 			resizeGL(width(), height());
 		break;

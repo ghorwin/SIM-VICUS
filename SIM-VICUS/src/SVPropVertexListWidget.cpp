@@ -17,6 +17,7 @@
 #include "SVMainWindow.h"
 #include "SVUndoAddBuilding.h"
 #include "SVUndoAddBuildingLevel.h"
+#include "SVUndoAddZone.h"
 
 #include "Vic3DNewGeometryObject.h"
 
@@ -202,7 +203,7 @@ void SVPropVertexListWidget::updateZoneComboBox() {
 		int rowOfCurrent = -1;
 		for (unsigned int i=0; i<bl->m_rooms.size(); ++i) {
 			const VICUS::Room & r = bl->m_rooms[i];
-			m_ui->comboBoxBuildingLevel->addItem(r.m_displayName, r.uniqueID());
+			m_ui->comboBoxZone->addItem(r.m_displayName, r.uniqueID());
 			if (r.uniqueID() == currentUniqueId)
 				rowOfCurrent = (int)i;
 		}
@@ -442,18 +443,18 @@ void SVPropVertexListWidget::on_toolButtonAddBuilding_clicked() {
 
 
 void SVPropVertexListWidget::on_toolButtonAddBuildingLevel_clicked() {
-	std::set<QString> existingNames;
-	for (const VICUS::Building & b : project().m_buildings)
-		existingNames.insert(b.m_displayName);
-	QString defaultName = VICUS::Project::uniqueName(tr("Level"), existingNames);
-	QString text = QInputDialog::getText(this, tr("Add building level"), tr("New building level/floor name:"), QLineEdit::Normal, defaultName).trimmed();
-	if (text.isEmpty()) return;
-	// modify project
-
 	// get currently selected building
 	unsigned int buildingUniqueID = m_ui->comboBoxBuilding->currentData().toUInt();
 	const VICUS::Building * b = dynamic_cast<const VICUS::Building*>(project().objectById(buildingUniqueID));
 	Q_ASSERT(b != nullptr);
+
+	std::set<QString> existingNames;
+	for (const VICUS::BuildingLevel & bl : b->m_buildingLevels)
+		existingNames.insert(bl.m_displayName);
+	QString defaultName = VICUS::Project::uniqueName(tr("Level"), existingNames);
+	QString text = QInputDialog::getText(this, tr("Add building level"), tr("New building level/floor name:"), QLineEdit::Normal, defaultName).trimmed();
+	if (text.isEmpty()) return;
+
 	// modify project
 	VICUS::BuildingLevel bl;
 	bl.m_id = VICUS::Project::uniqueId(b->m_buildingLevels);
@@ -467,5 +468,25 @@ void SVPropVertexListWidget::on_toolButtonAddBuildingLevel_clicked() {
 
 
 void SVPropVertexListWidget::on_toolButtonAddZone_clicked() {
+	// get currently selected building
+	unsigned int buildingLevelUniqueID = m_ui->comboBoxBuildingLevel->currentData().toUInt();
+	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(project().objectById(buildingLevelUniqueID));
+	Q_ASSERT(bl != nullptr);
 
+	std::set<QString> existingNames;
+	for (const VICUS::Room & r : bl->m_rooms)
+		existingNames.insert(r.m_displayName);
+	QString defaultName = VICUS::Project::uniqueName(tr("Room"), existingNames);
+	QString text = QInputDialog::getText(this, tr("Add room/zone"), tr("New room/zone name:"), QLineEdit::Normal, defaultName).trimmed();
+	if (text.isEmpty()) return;
+
+	// modify project
+	VICUS::Room r;
+	r.m_id = VICUS::Project::uniqueId(bl->m_rooms);
+	r.m_displayName = text;
+	SVUndoAddZone * undo = new SVUndoAddZone(tr("Adding building zone '%1'").arg(r.m_displayName), buildingLevelUniqueID, r, true);
+	undo->push(); // this will update our combo boxes
+
+	// now also select the matching item
+	reselectById(m_ui->comboBoxZone, (int)r.uniqueID());
 }
