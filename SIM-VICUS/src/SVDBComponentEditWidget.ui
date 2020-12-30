@@ -75,7 +75,11 @@
        <item row="0" column="0" colspan="3">
         <layout class="QHBoxLayout" name="horizontalLayout_5">
          <item>
-          <widget class="QLineEdit" name="lineEditConstructionName"/>
+          <widget class="QLineEdit" name="lineEditConstructionName">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QToolButton" name="toolButtonSelectConstruction">
@@ -94,7 +98,14 @@
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QtExt::ValidatingLineEdit" name="lineEditUValue"/>
+        <widget class="QLineEdit" name="lineEditUValue">
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
        <item row="1" column="2">
         <widget class="QLabel" name="labelUValue_2">

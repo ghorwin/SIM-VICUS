@@ -13,6 +13,7 @@
 #include "SVUndoAddSurface.h"
 #include "SVGeometryView.h"
 #include "SVSettings.h"
+#include "SVMainWindow.h"
 
 #include "Vic3DNewGeometryObject.h"
 
@@ -27,6 +28,15 @@ SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 	m_ui->groupBoxPolygonVertexes->setSizePolicy(sp_retain);
 
 	SVViewStateHandler::instance().m_propVertexListWidget = this;
+
+	connect(m_ui->toolButtonEditComponents1, &QToolButton::clicked,
+			this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponents2, &QToolButton::clicked,
+			this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponents3, &QToolButton::clicked,
+			this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponents4, &QToolButton::clicked,
+			this, &SVPropVertexListWidget::onEditComponents);
 }
 
 
@@ -99,20 +109,18 @@ void SVPropVertexListWidget::setup(int newGeometryType) {
 void SVPropVertexListWidget::reselectById(QComboBox * combo, int id) const {
 	if (id != -1) {
 		id = combo->findData(id);
-		if (id != -1)
+		if (id != -1) {
 			combo->setCurrentIndex(id);
-		else {
-			if (combo->count() != 0)
-				combo->setCurrentIndex(0);
-			else {
-				combo->setEnabled(false);
-				combo->setCurrentText(tr("<no component>"));
-			}
+			return;
 		}
-
 	}
-
+	if (combo->count() != 0)
+		combo->setCurrentIndex(0);
+	else {
+		combo->setEnabled(false);
+	}
 }
+
 
 void SVPropVertexListWidget::updateComponentComboBoxes() {
 	// remember currently selected component IDs
@@ -158,6 +166,7 @@ void SVPropVertexListWidget::updateComponentComboBoxes() {
 			break;
 
 			case VICUS::Component::CT_Miscellaneous :
+			case VICUS::Component::NUM_CT:
 				m_ui->comboBoxComponentFloor->addItem( QString::fromStdString(c.second.m_displayName.string(langID, "en")), c.first);
 				m_ui->comboBoxComponentCeiling->addItem( QString::fromStdString(c.second.m_displayName.string(langID, "en")), c.first);
 				m_ui->comboBoxComponentWalls->addItem( QString::fromStdString(c.second.m_displayName.string(langID, "en")), c.first);
@@ -278,3 +287,9 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 	undo->push();
 }
 
+
+void SVPropVertexListWidget::onEditComponents() {
+	// ask main window to show database dialog, afterwards update component combos
+	SVMainWindow::instance().on_actionDBComponents_triggered();
+	updateComponentComboBoxes();
+}

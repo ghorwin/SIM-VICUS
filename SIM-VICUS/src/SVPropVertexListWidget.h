@@ -66,6 +66,7 @@ private slots:
 
 	void on_pushButtonDeleteSelected_clicked();
 
+	void onEditComponents();
 
 private:
 	void reselectById(QComboBox * combo, int id) const;

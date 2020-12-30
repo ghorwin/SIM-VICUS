@@ -127,9 +127,8 @@ void SVDBConstructionEditWidget::setup(SVDatabase * db, SVDBConstructionTableMod
 void SVDBConstructionEditWidget::updateInput(int id) {
 	m_current = nullptr; // disable edit triggers
 	if (id == -1) {
-		// disable all ui components
-		m_ui->groupBox->setEnabled(false);
-		m_ui->groupBox_2->setEnabled(false);
+		// disable all controls
+		setEnabled(false);
 
 		// clear all inputs
 
@@ -148,9 +147,8 @@ void SVDBConstructionEditWidget::updateInput(int id) {
 		m_ui->widgetConstructionView->clear();
 		return;
 	}
-	// enable all ui components
-	m_ui->groupBox->setEnabled(true);
-	m_ui->groupBox_2->setEnabled(true);
+	// re-enable all controls
+	setEnabled(true);
 
 	// retrieve selected construction from DB
 	VICUS::Construction * con = const_cast<VICUS::Construction *>(m_db->m_constructions[(unsigned int)id]);

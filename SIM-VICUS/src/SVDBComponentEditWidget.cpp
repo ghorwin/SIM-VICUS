@@ -69,35 +69,14 @@ void SVDBComponentEditWidget::updateInput(int id) {
 
 	if (id == -1) {
 		// disable all controls
-		m_ui->lineEditName->setEnabled(false);
-		m_ui->comboBoxComponentType->setEnabled(false);
-		m_ui->pushButtonComponentColor->setEnabled(false);
-		m_ui->toolButtonSelectConstruction->setEnabled(false);
-		m_ui->toolButtonSelectBoundaryConditionSideAName->setEnabled(false);
-		m_ui->toolButtonSelectBoundaryConditionSideBName->setEnabled(false);
-		m_ui->pushButtonDaylight->setEnabled(false);
-
-		m_ui->lineEditUValue->setEnabled(false);
-		m_ui->lineEditConstructionName->setEnabled(false);
-
-		m_ui->lineEditBoundaryConditionSideAName->setEnabled(false);
-		m_ui->lineEditHeatTransferCoeffSideA->setEnabled(false);
-		m_ui->lineEditSolarAbsorptionSideA->setEnabled(false);
-		m_ui->lineEditThermalAbsorptionSideA->setEnabled(false);
-
-		m_ui->lineEditBoundaryConditionSideBName->setEnabled(false);
-		m_ui->lineEditHeatTransferCoeffSideB->setEnabled(false);
-		m_ui->lineEditSolarAbsorptionSideB->setEnabled(false);
-		m_ui->lineEditThermalAbsorptionSideB->setEnabled(false);
-
-		m_ui->lineEditDaylightName->setEnabled(false);
-		m_ui->lineEditRoughness->setEnabled(false);
-		m_ui->lineEditSpecularity->setEnabled(false);
-
-
+		setEnabled(false);
 
 		// clear input controls
 		m_ui->lineEditName->setString(IBK::MultiLanguageString());
+
+		// construction property info fields
+		m_ui->comboBoxComponentType->setCurrentText("");
+		m_ui->lineEditConstructionName->setText("");
 		m_ui->lineEditUValue->setText("");
 
 		m_ui->lineEditBoundaryConditionSideAName->setText("");
@@ -116,20 +95,18 @@ void SVDBComponentEditWidget::updateInput(int id) {
 
 		return;
 	}
+	// re-enable all controls
+	setEnabled(true);
 
 	VICUS::Component * comp = const_cast<VICUS::Component*>(m_db->m_components[(unsigned int)id]);
 	m_current = comp;
 
 	// now update the GUI controls
-	// disable all controls
-
-	// clear input controls
+	m_ui->comboBoxComponentType->blockSignals(true);
 	m_ui->lineEditName->setString(comp->m_displayName);
-
-	m_ui->lineEditConstructionName->setEnabled(true);
-	m_ui->lineEditUValue->setEnabled(true);
-	m_ui->lineEditUValue->setText("---");
-	m_ui->lineEditConstructionName->setText("");
+	int typeIdx = m_ui->comboBoxComponentType->findData(comp->m_type);
+	m_ui->comboBoxComponentType->setCurrentIndex(typeIdx);
+	m_ui->comboBoxComponentType->blockSignals(false);
 
 	m_ui->lineEditBoundaryConditionSideAName->setEnabled(true);
 	m_ui->lineEditHeatTransferCoeffSideA->setEnabled(true);
@@ -155,7 +132,11 @@ void SVDBComponentEditWidget::updateInput(int id) {
 		double UValue;
 		bool validUValue = con->calculateUValue(UValue, m_db->m_materials, 0.13, 0.04);
 		if (validUValue)
-			m_ui->lineEditUValue->setValue(UValue);
+			m_ui->lineEditUValue->setText(QString("%L1").arg(UValue, 0, 'f', 4));
+	}
+	else {
+		m_ui->lineEditUValue->setText("---");
+		m_ui->lineEditConstructionName->setText("");
 	}
 
 	const VICUS::BoundaryCondition *bcA = m_db->m_boundaryConditions[comp->m_idOutsideBoundaryCondition];

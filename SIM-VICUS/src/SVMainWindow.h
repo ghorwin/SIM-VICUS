@@ -53,6 +53,8 @@ public:
 	*/
 	static void addUndoCommand(QUndoCommand * command);
 
+
+
 	/*! Default SVMainWindow constructor. */
 	explicit SVMainWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = 0);
 
@@ -98,6 +100,13 @@ public:
 	/*! Returns the boundary condition edit dialog. */
 	SVDBBoundaryConditionEditDialog * dbBoundaryConditionEditDialog();
 
+public slots:
+	void on_actionDBMaterials_triggered();
+	void on_actionDBWindows_triggered();
+	void on_actionDBConstructions_triggered();
+	void on_actionDBComponents_triggered();
+	void on_actionDBBoundaryConditions_triggered();
+
 protected:
 	/*! Checks if project file has been changed by external application. */
 	void changeEvent(QEvent *event);
@@ -110,25 +119,6 @@ private slots:
 		completed!
 	*/
 	void setup();
-
-	void on_actionFileNew_triggered();
-	void on_actionFileOpen_triggered();
-	void on_actionFileSave_triggered();
-	void on_actionFileSaveAs_triggered();
-	void on_actionFileReload_triggered();
-	void on_actionFileExport_triggered();
-	void on_actionFileClose_triggered();
-	void on_actionFileQuit_triggered();
-
-	void on_actionEditTextEditProject_triggered();
-	void on_actionEditPreferences_triggered();
-	void on_actionEditCleanProject_triggered();
-
-	void on_actionViewExternalPostProcessing_triggered();
-	void on_actionViewCCMeditor_triggered();
-
-	void on_actionHelpAboutQt_triggered();
-	void on_actionHelpAbout_triggered();
 
 	/*! Triggered when a recent file menu entry was clicked. */
 	void onActionOpenRecentFile();
@@ -175,50 +165,52 @@ private slots:
 
 	/*! Triggered whenever a project was read successfully. */
 	void onFixProjectAfterRead();
-
-	/*! Opens a web browser with a window for adding bug reports and feature wishes. */
-	void on_actionHelpBugReport_triggered();
-
-	void on_actionHelpVisitDiscussionForum_triggered();
-
-	void on_actionFileExportFMU_triggered();
-
-	void on_actionHelpCheckForUpdates_triggered();
-
-	void on_actionNetworkImport_triggered();
-
-	void on_actionFileOpenProjectDir_triggered();
-
 	void onStyleChanged();
 
+
+	// all menu action slots below
+
+	void on_actionFileNew_triggered();
+	void on_actionFileOpen_triggered();
+	void on_actionFileSave_triggered();
+	void on_actionFileSaveAs_triggered();
+	void on_actionFileReload_triggered();
+	void on_actionFileImportEneryPlusIDF_triggered();
+	void on_actionFileExport_triggered();
+	void on_actionFileExportFMU_triggered();
+	void on_actionFileExportNANDRAD_triggered();
+	void on_actionFileOpenProjectDir_triggered();
+	void on_actionFileClose_triggered();
+	void on_actionFileQuit_triggered();
+
+	void on_actionEditTextEditProject_triggered();
+	void on_actionEditPreferences_triggered();
+	void on_actionEditCleanProject_triggered();
+
+	void on_actionNetworkImport_triggered();
 	void on_actionNetworkEdit_triggered();
 
+	void on_actionViewExternalPostProcessing_triggered();
+	void on_actionViewCCMeditor_triggered();
 	void on_actionViewToggleGeometryMode_triggered();
-
-	void on_actionDBMaterials_triggered();
-
-	void on_actionFileImportEneryPlusIDF_triggered();
-
-	void on_actionDBWindows_triggered();
-
-	void on_actionFileExportNANDRAD_triggered();
-
-	/*! Triggered by the "Run simulation" shortcut (F9), launches simulation right away. */
-	void on_actionSimulationNANDRAD_triggered();
-
-	void on_actionOnline_manual_triggered();
-
-	void on_actionKeyboard_and_mouse_controls_triggered();
-
 	void on_actionViewToggleParametrizationMode_triggered();
 
+	void on_actionSimulationNANDRAD_triggered();
 	void on_actionSimulationHydraulicNetwork_triggered();
 
-	void on_actionDBConstructions_triggered();
+	void on_actionHelpAboutQt_triggered();
+	void on_actionHelpAbout_triggered();
 
-	void on_actionDBComponents_triggered();
+	void on_actionHelpBugReport_triggered();
+	void on_actionHelpVisitDiscussionForum_triggered();
+	void on_actionHelpCheckForUpdates_triggered();
+	void on_actionHelpOnlineManual_triggered();
+	void on_actionHelpKeyboardAndMouseControls_triggered();
 
-	void on_actionDBBoundaryConditions_triggered();
+
+
+
+
 
 
 private:

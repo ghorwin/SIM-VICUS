@@ -75,6 +75,8 @@ static bool copyRecursively(const QString &srcFilePath, const QString &tgtFilePa
 
 SVMainWindow * SVMainWindow::m_self = nullptr;
 
+// *** public static functions ***
+
 SVMainWindow & SVMainWindow::instance() {
 	Q_ASSERT_X(m_self != nullptr, "[SVMainWindow::instance]",
 		"You must not access SVMainWindow::instance() when the is no SVMainWindow "
@@ -89,6 +91,8 @@ void SVMainWindow::addUndoCommand(QUndoCommand * command) {
 	SVMainWindow::instance().updateWindowTitle();
 }
 
+
+// *** public functions ***
 
 SVMainWindow::SVMainWindow(QWidget * /*parent*/, Qt::WindowFlags /*flags*/) :
 	m_ui(new Ui::SVMainWindow),
@@ -205,19 +209,43 @@ SVDBBoundaryConditionEditDialog * SVMainWindow::dbBoundaryConditionEditDialog() 
 }
 
 
+// *** public slots ***
 
-bool SVMainWindow::exportProjectCopy(QString targetDirPath, const VICUS::Project & project) {
-	QDir targetBaseDir(targetDirPath);
-	// create subdirectory for materials
-	targetBaseDir.mkpath(targetDirPath + "/db");
-	// create subdirectory for climate data (if any climate data reference is used)
-	targetBaseDir.mkpath(targetDirPath + "/climate");
 
-	// TODO : implement project export
-	(void)project;
-
-	return true;
+void SVMainWindow::on_actionDBMaterials_triggered() {
+	dbMaterialEditDialog()->edit();
 }
+
+
+void SVMainWindow::on_actionDBConstructions_triggered() {
+	dbConstructionEditDialog()->edit();
+}
+
+
+void SVMainWindow::on_actionDBWindows_triggered() {
+	if (m_dbWindowEditWidget == nullptr) {
+		m_dbWindowEditWidget = new SVDBWindowEditWidget(nullptr); // global widget, not inside main window
+	}
+	m_dbWindowEditWidget->edit();
+}
+
+
+void SVMainWindow::on_actionDBComponents_triggered() {
+	if (m_dbComponentEditDialog == nullptr)
+		m_dbComponentEditDialog = new SVDBComponentEditDialog(nullptr);
+	m_dbComponentEditDialog->edit();
+}
+
+
+void SVMainWindow::on_actionDBBoundaryConditions_triggered() {
+	dbBoundaryConditionEditDialog()->edit();
+}
+
+// *** protected functions ***
+
+
+
+// *** private slots ***
 
 
 void SVMainWindow::changeEvent(QEvent *event) {
@@ -1091,6 +1119,97 @@ void SVMainWindow::onFixProjectAfterRead() {
 
 }
 
+void SVMainWindow::on_actionNetworkEdit_triggered() {
+	// opens edit network dialog
+	if (m_networkEditDialog == nullptr)
+		m_networkEditDialog = new SVNetworkEditDialog(this);
+
+	m_networkEditDialog->edit();
+}
+
+
+void SVMainWindow::on_actionViewToggleGeometryMode_triggered() {
+	// switch view state to geometry edit mode
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_viewMode = SVViewState::VM_GeometryEditMode;
+	vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+	vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	SVViewStateHandler::instance().setViewState(vs);
+	m_ui->actionViewToggleGeometryMode->setChecked(true);
+	m_ui->actionViewToggleParametrizationMode->setChecked(false);
+}
+
+
+void SVMainWindow::on_actionViewToggleParametrizationMode_triggered() {
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_viewMode = SVViewState::VM_PropertyEditMode;
+	vs.m_propertyWidgetMode = SVViewState::PM_SiteProperties;
+	vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	SVViewStateHandler::instance().setViewState(vs);
+
+	m_ui->actionViewToggleParametrizationMode->setChecked(true);
+	m_ui->actionViewToggleGeometryMode->setChecked(false);
+}
+
+
+
+void SVMainWindow::on_actionFileExportNANDRAD_triggered() {
+	// ask user for target file name
+	// open export dialog, call via edit(fname) (with ok and cancel)
+}
+
+
+void SVMainWindow::on_actionSimulationNANDRAD_triggered() {
+	if (m_simulationStartNandrad == nullptr)
+		m_simulationStartNandrad = new SVSimulationStartNandrad;
+	// open simulation start dialog, with settings for climate location, simulation and
+	// solver settings and simulation start button
+	int res = m_simulationStartNandrad->edit();
+	if (res == QDialog::Accepted) {
+		// transfer data to VICUS project
+		// TODO : Andreas
+	}
+}
+
+
+void SVMainWindow::on_actionSimulationHydraulicNetwork_triggered() {
+	if (m_simulationStartNetworkSim == nullptr)
+		m_simulationStartNetworkSim = new SVSimulationStartNetworkSim(this);
+	// we require a saved project with at least one network definition
+	if (SVProjectHandler::instance().projectFile().isEmpty()) {
+		QMessageBox::critical(this, QString(), tr("The project must be saved, first!"));
+		return;
+	}
+	if (project().m_geometricNetworks.empty()) {
+		QMessageBox::critical(this, QString(), tr("You need to define at least one network!"));
+		return;
+	}
+
+	m_simulationStartNetworkSim->edit();
+}
+
+
+void SVMainWindow::on_actionHelpOnlineManual_triggered() {
+	QDesktopServices::openUrl( QUrl(MANUAL_URL));
+}
+
+
+void SVMainWindow::on_actionHelpKeyboardAndMouseControls_triggered() {
+	// show keyboard/mouse control cheat sheet
+	QDialog dlg(this);
+	QVBoxLayout * lay = new QVBoxLayout(&dlg);
+	QTextEdit * w = new QTextEdit(&dlg);
+	lay->addWidget(w);
+	dlg.setLayout(lay);
+	QFile manual_en(":/doc/KeyboardMouseControls.html");
+	manual_en.open(QFile::ReadOnly);
+	QString manual = manual_en.readAll();
+	w->setHtml(manual);
+	dlg.resize(1400,800);
+	dlg.exec();
+}
+
+
 
 
 
@@ -1305,6 +1424,21 @@ bool SVMainWindow::processProjectPackage(QString & filename, bool renameProjectF
 }
 
 
+bool SVMainWindow::exportProjectCopy(QString targetDirPath, const VICUS::Project & project) {
+	QDir targetBaseDir(targetDirPath);
+	// create subdirectory for materials
+	targetBaseDir.mkpath(targetDirPath + "/db");
+	// create subdirectory for climate data (if any climate data reference is used)
+	targetBaseDir.mkpath(targetDirPath + "/climate");
+
+	// TODO : implement project export
+	(void)project;
+
+	return true;
+}
+
+
+
 //https://qt.gitorious.org/qt-creator/qt-creator/source/1a37da73abb60ad06b7e33983ca51b266be5910e:src/app/main.cpp#L13-189
 // taken from utils/fileutils.cpp. We can not use utils here since that depends app_version.h.
 static bool copyRecursively(const QString &srcFilePath,
@@ -1338,126 +1472,6 @@ static bool copyRecursively(const QString &srcFilePath,
 			return false;
 	}
 	return true;
-}
-
-
-void SVMainWindow::on_actionNetworkEdit_triggered() {
-	// opens edit network dialog
-	if (m_networkEditDialog == nullptr)
-		m_networkEditDialog = new SVNetworkEditDialog(this);
-
-	m_networkEditDialog->edit();
-}
-
-
-void SVMainWindow::on_actionViewToggleGeometryMode_triggered() {
-	// switch view state to geometry edit mode
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	vs.m_viewMode = SVViewState::VM_GeometryEditMode;
-	vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
-	vs.m_sceneOperationMode = SVViewState::NUM_OM;
-	SVViewStateHandler::instance().setViewState(vs);
-	m_ui->actionViewToggleGeometryMode->setChecked(true);
-	m_ui->actionViewToggleParametrizationMode->setChecked(false);
-}
-
-
-void SVMainWindow::on_actionViewToggleParametrizationMode_triggered() {
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	vs.m_viewMode = SVViewState::VM_PropertyEditMode;
-	vs.m_propertyWidgetMode = SVViewState::PM_SiteProperties;
-	vs.m_sceneOperationMode = SVViewState::NUM_OM;
-	SVViewStateHandler::instance().setViewState(vs);
-
-	m_ui->actionViewToggleParametrizationMode->setChecked(true);
-	m_ui->actionViewToggleGeometryMode->setChecked(false);
-}
-
-
-void SVMainWindow::on_actionDBMaterials_triggered() {
-	dbMaterialEditDialog()->edit();
-}
-
-
-void SVMainWindow::on_actionDBConstructions_triggered() {
-	dbConstructionEditDialog()->edit();
-}
-
-
-void SVMainWindow::on_actionDBWindows_triggered() {
-	if (m_dbWindowEditWidget == nullptr) {
-		m_dbWindowEditWidget = new SVDBWindowEditWidget(nullptr); // global widget, not inside main window
-	}
-	m_dbWindowEditWidget->edit();
-}
-
-
-void SVMainWindow::on_actionDBComponents_triggered() {
-	if (m_dbComponentEditDialog == nullptr)
-		m_dbComponentEditDialog = new SVDBComponentEditDialog(nullptr);
-	m_dbComponentEditDialog->edit();
-}
-
-
-void SVMainWindow::on_actionDBBoundaryConditions_triggered() {
-	dbBoundaryConditionEditDialog()->edit();
-}
-
-
-void SVMainWindow::on_actionFileExportNANDRAD_triggered() {
-	// ask user for target file name
-	// open export dialog, call via edit(fname) (with ok and cancel)
-}
-
-
-void SVMainWindow::on_actionSimulationNANDRAD_triggered() {
-	if (m_simulationStartNandrad == nullptr)
-		m_simulationStartNandrad = new SVSimulationStartNandrad;
-	// open simulation start dialog, with settings for climate location, simulation and
-	// solver settings and simulation start button
-	int res = m_simulationStartNandrad->edit();
-	if (res == QDialog::Accepted) {
-		// transfer data to VICUS project
-		// TODO : Andreas
-	}
-}
-
-
-void SVMainWindow::on_actionSimulationHydraulicNetwork_triggered() {
-	if (m_simulationStartNetworkSim == nullptr)
-		m_simulationStartNetworkSim = new SVSimulationStartNetworkSim(this);
-	// we require a saved project with at least one network definition
-	if (SVProjectHandler::instance().projectFile().isEmpty()) {
-		QMessageBox::critical(this, QString(), tr("The project must be saved, first!"));
-		return;
-	}
-	if (project().m_geometricNetworks.empty()) {
-		QMessageBox::critical(this, QString(), tr("You need to define at least one network!"));
-		return;
-	}
-
-	m_simulationStartNetworkSim->edit();
-}
-
-
-void SVMainWindow::on_actionOnline_manual_triggered() {
-	QDesktopServices::openUrl( QUrl(MANUAL_URL));
-}
-
-
-void SVMainWindow::on_actionKeyboard_and_mouse_controls_triggered() {
-	// show keyboard/mouse control cheat sheet
-	QDialog dlg(this);
-	QVBoxLayout * lay = new QVBoxLayout(&dlg);
-	QTextEdit * w = new QTextEdit(&dlg);
-	lay->addWidget(w);
-	dlg.setLayout(lay);
-	QFile manual_en(":/doc/KeyboardMouseControls.html");
-	manual_en.open(QFile::ReadOnly);
-	QString manual = manual_en.readAll();
-	w->setHtml(manual);
-	dlg.resize(1400,800);
-	dlg.exec();
 }
 
 
