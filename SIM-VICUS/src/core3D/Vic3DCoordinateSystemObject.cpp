@@ -20,6 +20,7 @@ License    : BSD License,
 
 #include "SVViewStateHandler.h"
 #include "SVPropEditGeometry.h"
+#include "SVViewStateHandler.h"
 
 namespace Vic3D {
 
@@ -190,7 +191,7 @@ void CoordinateSystemObject::renderTransparent() {
 void CoordinateSystemObject::setTranslation(const QVector3D & translation) {
 	m_transform.setTranslation(translation);
 	// tell the property widget for editing geometry our new position/rotation
-	m_propEditGeometry->setCoordinates(m_transform);
+	SVViewStateHandler::instance().m_propEditGeometryWidget->setCoordinates(m_transform);
 	updateInverse();
 }
 

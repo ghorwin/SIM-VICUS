@@ -20,7 +20,6 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 	layout()->setMargin(0);
-	SVViewStateHandler::instance().m_coordinateSystemObject->m_propEditGeometry = this;
 	SVViewStateHandler::instance().m_propEditGeometryWidget = this;
 }
 

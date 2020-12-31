@@ -134,6 +134,12 @@ public:
 	/*! Clear current geometry (clears also all buffers) - nothing is drawn afterwards. */
 	void clear();
 
+	/*! Returns the last vertex placed by the user.
+		This is used as snap-line-offset point for axis-snap operations and
+		when creating snap planes.
+	*/
+	IBKMK::Vector3D lastVertex() const;
+
 	/*! Returns true, if enough (valid) data has been collected to complete the geometry.
 		This depends on the type of geometry being generated.
 	*/

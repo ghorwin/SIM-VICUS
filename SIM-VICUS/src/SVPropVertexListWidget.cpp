@@ -6,8 +6,10 @@
 
 #include <IBKMK_Vector3D.h>
 
-#include <VICUS_Project.h>
 #include <QtExt_LanguageHandler.h>
+
+#include <VICUS_Project.h>
+#include <VICUS_Conversions.h>
 
 #include "SVProjectHandler.h"
 #include "SVViewStateHandler.h"
@@ -20,6 +22,7 @@
 #include "SVUndoAddZone.h"
 
 #include "Vic3DNewGeometryObject.h"
+#include "Vic3DCoordinateSystemObject.h"
 
 SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 	QWidget(parent),
@@ -589,5 +592,18 @@ void SVPropVertexListWidget::on_pushButtonFloorDone_clicked() {
 	m_ui->groupBoxPolygonVertexes->setEnabled(false);
 
 	// we now must align the local coordinate system to the newly created plane
-	// also, we must fix the snap to the line that's
+	// also, we must fix the snap to the local z-coordinate
+
+	IBKMK::Vector3D x = po->planeGeometry().localX();
+	IBKMK::Vector3D y = po->planeGeometry().localY();
+	IBKMK::Vector3D z = po->planeGeometry().normal();
+
+	QQuaternion q2 = QQuaternion::fromAxes(VICUS::IBKVector2QVector(x.normalized()),
+										   VICUS::IBKVector2QVector(y.normalized()),
+										   VICUS::IBKVector2QVector(z.normalized()));
+	SVViewStateHandler::instance().m_coordinateSystemObject->setRotation(q2);
+
+	// now also enable the z snap operation
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_locks = SVViewState::L_LocalZ;
 }

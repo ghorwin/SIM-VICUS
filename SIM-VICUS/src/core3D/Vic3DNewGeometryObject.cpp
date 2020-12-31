@@ -195,6 +195,14 @@ void NewGeometryObject::clear() {
 }
 
 
+IBKMK::Vector3D NewGeometryObject::lastVertex() const {
+	if (!m_vertexList.empty())
+		return m_vertexList.back();
+	else
+		return IBKMK::Vector3D();
+}
+
+
 bool NewGeometryObject::canComplete() const {
 	switch (m_newGeometryMode) {
 		case NGM_Rect :

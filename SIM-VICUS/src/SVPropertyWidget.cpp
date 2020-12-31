@@ -63,7 +63,6 @@ void SVPropertyWidget::onViewStateChanged() {
 				SVPropEditGeometry *propEditGeometry = new SVPropEditGeometry(this);
 				m_propWidgets[SVViewState::PM_EditGeometry] = propEditGeometry;
 				m_layout->addWidget(m_propWidgets[SVViewState::PM_EditGeometry]);
-				SVViewStateHandler::instance().m_coordinateSystemObject->m_propEditGeometry = propEditGeometry;
 			}
 			m_propWidgets[SVViewState::PM_EditGeometry]->setVisible(true);
 

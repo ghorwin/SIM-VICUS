@@ -516,8 +516,14 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		PickObject o(localMousePos, PickObject::P_XY_Plane | PickObject::P_Surface);
 		pick(o);
 
+		// now apply the locking rules (i.e. compute projection on locked line in space)
+		// this modifies the pick point, but keeps the other information of the pick object
+//		applyLockingOnLocalCoordinateSystem(o);
+
 		// now we handle the snapping rules
 		snapLocalCoordinateSystem(o);
+
+
 		needRepaint = true;
 //		qDebug() << localMousePos << VICUS::IBKVector2QVector(o.m_pickPoint) << m_coordinateSystemObject.translation();
 

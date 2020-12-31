@@ -75,9 +75,6 @@ public:
 	/*! Returns the inverse transformation matrix. */
 	QMatrix4x4 inverseTransformationMatrix() const { return m_inverseMatrix; }
 
-	/*! Cached pointer to geometry edit widget - needed for direct communication. */
-	SVPropEditGeometry			*m_propEditGeometry = nullptr;
-
 	/*! Returns the local X-coordinate axis. */
 	QVector3D localXAxis() const { return m_transform.rotation().rotatedVector(QVector3D(1,0,0)); }
 	/*! Returns the local Y-coordinate axis. */
