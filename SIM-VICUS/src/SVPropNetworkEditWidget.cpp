@@ -239,6 +239,8 @@ void SVPropNetworkEditWidget::modifyEdgeProperties()
 	edge->m_pipeId = m_mapDBPipes.value(m_ui->comboBoxPipeDB->currentText());
 	edge->m_heatExchangeType = NANDRAD::HydraulicNetworkComponent::heatExchangeType_t(
 				m_mapHeatExchangeType.value(m_ui->comboBoxHeatExchangeType->currentText()));
+	m_network.updateNodeEdgeConnectionPointers(); // update pointers, since next function depends on it
+	m_network.updateVisualizationData(); // update visualization-related properties in network
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
 	undo->push(); // modifies project and updates views
 	updateEdgeProperties();
