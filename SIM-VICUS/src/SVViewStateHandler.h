@@ -8,6 +8,7 @@
 namespace Vic3D {
 	class NewGeometryObject;
 	class CoordinateSystemObject;
+	class WireFrameObject;
 }
 
 class SVNavigationTreeWidget;
@@ -55,6 +56,12 @@ public:
 		DO NOT DELETE the object or do any other crazy stuff with this pointer!
 	*/
 	Vic3D::CoordinateSystemObject		*m_coordinateSystemObject = nullptr;
+
+	/*! Caches pointer to the object containing/showing selected geometry.
+		The pointer is set in constructor of Vic3D::WireFrameObject, object is not owned.
+		DO NOT DELETE the object or do any other crazy stuff with this pointer!
+	*/
+	Vic3D::WireFrameObject				*m_selectedGeometryObject = nullptr;
 
 	/*! Pointer to navigation tree widget - can be used to retrieve the currently selected node
 		from property widgets.

@@ -8,6 +8,7 @@
 #include <VICUS_Conversions.h>
 
 #include "SVProjectHandler.h"
+#include "SVViewStateHandler.h"
 #include "SVSettings.h"
 #include "Vic3DGeometryHelpers.h"
 #include "Vic3DShaderProgram.h"
@@ -18,6 +19,7 @@ WireFrameObject::WireFrameObject() :
 	m_vertexBufferObject(QOpenGLBuffer::VertexBuffer), // VertexBuffer is the default, so default constructor would have been enough
 	m_indexBufferObject(QOpenGLBuffer::IndexBuffer) // make this an Index Buffer
 {
+	SVViewStateHandler::instance().m_selectedGeometryObject = this;
 }
 
 
