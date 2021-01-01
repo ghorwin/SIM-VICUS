@@ -82,16 +82,10 @@ private:
 	void generateBuildingGeometry();
 	void generateNetworkGeometry();
 
-	/*! Mouse pick handler: collects all surfaces along the pick line and stores first intersection point's
-		coordinates in m_pickPoint.
+	/*! Mouse pick handler: collects all pickable objects/surfaces/planes along the line-of-sight and stores all possible
+		pick candidates in pickObject.
 	*/
 	void pick(PickObject & pickObject);
-
-	/*! Determine which objects/planes are selected and color them accordingly.
-		nearPoint and farPoint define the current ray and are given in model coordinates.
-		If an object is picked, selectedNodeID indicates the objects unique ID.
-	*/
-	void selectNearestObject(const QVector3D & nearPoint, const QVector3D & farPoint, PickObject & pickObject);
 
 	/*! Takes the picked objects and applies the snapping rules.
 		Once a snap point has been selected, the local coordinate system is translated to the snap point.
@@ -104,10 +98,10 @@ private:
 	void adjustCurserDuringMouseDrag(const QPoint & mouseDelta, const QPoint & localMousePos, QPoint & newLocalMousePos);
 
 	/*! Due something with the mouse click, depending on current operation mode. */
-	void handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandler, const QPoint & localMousePos);
+	void handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandler, PickObject & o);
 
 	/*! Selects/deselects objects. */
-	void handleSelection(const KeyboardMouseHandler & keyboardHandler, const QPoint & localMousePos);
+	void handleSelection(const KeyboardMouseHandler & keyboardHandler, PickObject & o);
 
 	/*! Cached pointer to parent widget - needed so that we can tell a QObject-based class to send
 		out signals.
