@@ -43,6 +43,16 @@
 
 namespace IBKMK {
 
+/*! Computes the coordinates x, y of a point 'p' in a plane spanned by vectors a and b from a point 'offset', where rhs = p-offset.
+	The computed plane coordinates are stored in variables x and y (the factors for vectors a and b, respectively).
+	If no solution could be found (only possible if a and b are collinear or one of the vectors has length 0?),
+	the function returns false.
+
+	Note: when the point p is not in the plane, this function will still get a valid result.
+*/
+bool planeCoordinates(const IBKMK::Vector3D & offset, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b,
+					  const IBKMK::Vector3D & v, double & x, double & y);
+
 
 /*! Computes the distance between a line (defined through offset point a, and directional vector d) and a point p.
 	\return Returns the shortest distance between line and point. Factor lineFactor contains the scale factor for

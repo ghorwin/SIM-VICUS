@@ -43,6 +43,55 @@
 namespace IBKMK {
 
 
+/* Solves equation system with Cramer's rule:
+	 a x + c y = e
+	 b x + d y = f
+*/
+static bool solve(double a, double b, double c,  double d,  double e,  double f, double & x, double & y) {
+	double det = a*d - b*c;
+	if (det == 0.)
+		return false;
+
+	x = (e*d - c*f)/det;
+	y = (a*f - e*b)/det;
+	return true;
+}
+
+
+/* Computes the coordinates x, y of a point 'p' in a plane spanned by vectors a and b from a point 'offset', where rhs = p-offset.
+	The computed plane coordinates are stored in variables x and y (the factors for vectors a and b, respectively).
+	If no solution could be found (only possible if a and b are collinear or one of the vectors has length 0?),
+	the function returns false.
+
+	Note: when the point p is not in the plane, this function will still get a valid result.
+*/
+bool planeCoordinates(const IBKMK::Vector3D & offset, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b,
+							 const IBKMK::Vector3D & v, double & x, double & y)
+{
+	// We have 3 equations, but only two unknowns - so we have 3 different options to compute them.
+	// Some of them may fail, so we try them all.
+
+	const IBKMK::Vector3D & rhs = v-offset;
+	// rows 1 and 2
+	bool success = solve(a.m_x, a.m_y, b.m_x, b.m_y, rhs.m_x, rhs.m_y, x, y);
+	if (!success)
+		// rows 1 and 3
+		success = solve(a.m_x, a.m_z, b.m_x, b.m_z, rhs.m_x, rhs.m_z, x, y);
+	if (!success)
+		// rows 2 and 3
+		success = solve(a.m_y, a.m_z, b.m_y, b.m_z, rhs.m_y, rhs.m_z, x, y);
+	if (!success)
+		return false;
+
+	// check that the point was indeed in the plane
+	IBKMK::Vector3D v2 = offset + x*a + y*b;
+	v2 -= v;
+	if (v2.magnitude() > 1e-4)
+		return false;
+	return true;
+}
+
+
 double lineToPointDistance(const IBKMK::Vector3D & a, const IBKMK::Vector3D & d, const IBKMK::Vector3D & p,
 												   double & lineFactor, IBKMK::Vector3D & p2)
 {
