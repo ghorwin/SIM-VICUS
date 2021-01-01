@@ -76,14 +76,18 @@ public:
 	unsigned int										m_pipeId = INVALID_ID;			// XML:E
 
 
-	/*! hydraulic model type (should be a pipe model) */
-	NANDRAD::HydraulicNetworkComponent::modelType_t		m_modelType = NANDRAD::HydraulicNetworkComponent::NUM_MT;				// XML:E
+	/*! hydraulic model type (should be a pipe model)
+		FIXME:
+	*/
+	int													m_modelType = NANDRAD::HydraulicNetworkComponent::NUM_MT;	// XML:E
 
-	/*! type of heat exchange */
-	NANDRAD::HydraulicNetworkComponent::heatExchangeType_t	m_heatExchangeType = NANDRAD::HydraulicNetworkComponent::NUM_HT;	// XML:E
+	/*! type of heat exchange
+		FIXME:
+	*/
+	int													m_heatExchangeType = NANDRAD::HydraulicNetworkComponent::NUM_HT;	// XML:E
 
 	/*! Parameter for heat exchange */
-	IBK::Parameter					m_heatExchangePara[NANDRAD::HydraulicNetworkElement::NUM_HP];								// XML:E
+	//	IBK::Parameter										m_heatExchangePara[NUM_HP];
 
 	// *** RUNTIME VARIABLES ***
 

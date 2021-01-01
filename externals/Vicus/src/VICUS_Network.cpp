@@ -49,8 +49,8 @@ unsigned Network::addNode(const NetworkNode &node, const bool considerCoordinate
 	unsigned id = addNode(node.m_position, node.m_type, considerCoordinates);
 	m_nodes[id].m_componentId = node.m_componentId;
 	m_nodes[id].m_subNetworkId = node.m_subNetworkId;
-	for (unsigned n=0; n<NANDRAD::HydraulicNetworkElement::NUM_HP; ++n)
-		m_nodes[id].m_heatExchangePara[n] = node.m_heatExchangePara[n];
+//	for (unsigned n=0; n<NANDRAD::HydraulicNetworkElement::NUM_HP; ++n)
+//		m_nodes[id].m_heatExchangePara[n] = node.m_heatExchangePara[n];
 	m_nodes[id].m_maxHeatingDemand = node.m_maxHeatingDemand;
 	return id;
 }
@@ -671,8 +671,8 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &hydraulic
 				else
 					elem = NANDRAD::HydraulicNetworkElement(node.m_id, node.m_id, node.m_id + idOffsetOutlet, node.m_componentId);
 				// add parameters
-				for (unsigned i=0; i<NANDRAD::HydraulicNetworkElement::NUM_HP; ++i)
-					elem.m_heatExchangePara[i] = node.m_heatExchangePara[i];
+//				for (unsigned i=0; i<NANDRAD::HydraulicNetworkElement::NUM_HP; ++i)
+//					elem.m_heatExchangePara[i] = node.m_heatExchangePara[i];
 				elem.m_displayName = "node " + IBK::val2string(node.m_id);
 
 				hydraulicNetwork.m_elements.push_back(elem);
@@ -704,7 +704,7 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &hydraulic
 				edge->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe||
 				edge->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe ||
 				edge->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_DynamicAdiabaticPipe)
-				comp.m_modelType = edge->m_modelType;
+				comp.m_modelType = (NANDRAD::HydraulicNetworkComponent::modelType_t)edge->m_modelType;
 			else
 				throw IBK::Exception(IBK::FormatString("Edge connected to nodes '%1' and '%2' has a model type which does "
 													   "not represent a pipe.").arg(edge->m_node1->m_id).arg(edge->m_node2->m_id), FUNC_ID);

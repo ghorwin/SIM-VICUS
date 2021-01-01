@@ -68,6 +68,10 @@ void NetworkEdge::readXML(const TiXmlElement * element) {
 			const std::string & cName = c->ValueStr();
 			if (cName == "PipeId")
 				m_pipeId = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "ModelType")
+				m_modelType = NANDRAD::readPODElement<int>(c, cName);
+			else if (cName == "HeatExchangeType")
+				m_heatExchangeType = NANDRAD::readPODElement<int>(c, cName);
 			else if (cName == "Length")
 				m_length = NANDRAD::readPODElement<double>(c, cName);
 			else {
@@ -96,6 +100,8 @@ TiXmlElement * NetworkEdge::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("nodeId2", IBK::val2string<unsigned int>(m_nodeId2));
 	if (m_pipeId != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "PipeId", nullptr, std::string(), IBK::val2string<unsigned int>(m_pipeId));
+	TiXmlElement::appendSingleAttributeElement(e, "ModelType", nullptr, std::string(), IBK::val2string<int>(m_modelType));
+	TiXmlElement::appendSingleAttributeElement(e, "HeatExchangeType", nullptr, std::string(), IBK::val2string<int>(m_heatExchangeType));
 	TiXmlElement::appendSingleAttributeElement(e, "Length", nullptr, std::string(), IBK::val2string<double>(m_length));
 	return e;
 }

@@ -77,7 +77,7 @@ public:
 	std::string						m_displayName;										// XML:A
 
 	/*! Model type. */
-	modelType_t						m_modelType		= NUM_MT;							// XML:A:required
+	modelType_t						m_modelType			= NUM_MT;						// XML:A:required
 
 	/*! Type of interface to external data or model */
 	heatExchangeType_t				m_heatExchangeType = NUM_HT;						// XML:E

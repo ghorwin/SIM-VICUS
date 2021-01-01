@@ -3,6 +3,7 @@
 
 #include <IBK_Parameter.h>
 #include <IBK_IntPara.h>
+#include <IBK_Path.h>
 
 #include "NANDRAD_CodeGenMacros.h"
 #include "NANDRAD_Constants.h"
@@ -28,16 +29,14 @@ public:
 	/*! Parameters for the element . */
 	enum para_t {
 		P_Length,							// Keyword: Length								[m]		'Pipe length'
+		P_HeatFlux,							// Keyword: HeatFlux							[W]		'Constant heat flux'
 		NUM_P
 	};
 
-	/*! Heat Exchange parameters */
-	enum heatExchangePara_t {
-		HP_HeatFlux,						// Keyword: HeatFlux							[W]		'Constant heat flux'
-		HP_DataFilepath,					// Keyword: DataFilepath						[-]		'Data file in tsv-format'
-		HP_FMUFilepath,						// Keyword: FMUFilepath							[-]		'FMU file'
-		HP_ZoneId,							// Keyword: ZoneId								[-]		'id of coupled zone'
-		NUM_HP								// Keyword: None								[-]		'none'
+	/*! Integer/whole number parameters. */
+	enum intPara_t {
+		IP_ZoneId,							// Keyword: ZoneId								[-]		'ID of coupled zone for thermal exchange'
+		NUM_IP
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -65,8 +64,14 @@ public:
 	/*! Parameters of the flow component. */
 	IBK::Parameter					m_para[NUM_P];										// XML:E
 
-	/*! Parameter for heat exchange */
-	IBK::Parameter					m_heatExchangePara[NUM_HP];
+
+	/// TODO : Fixme - this wouldn't work in Solver context!
+	IBK::Path						m_filepathData;										// XML:E
+	IBK::Path						m_filepathFMU;										// XML:E
+
+
+	/*! Integer parameters. */
+	IBK::IntPara					m_intPara[NUM_IP];									// XML:E
 };
 
 } // namespace NANDRAD

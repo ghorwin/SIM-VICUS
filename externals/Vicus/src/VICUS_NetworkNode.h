@@ -103,7 +103,8 @@ public:
 	unsigned int					m_subNetworkId = INVALID_ID;									// XML:A
 
 	/*! Parameter for heat exchange */
-	IBK::Parameter					m_heatExchangePara[NANDRAD::HydraulicNetworkElement::NUM_HP];	// XML:E
+	/// FIXME: this doesn't work this way
+//	IBK::Parameter					m_heatExchangePara[NANDRAD::HydraulicNetworkElement::NUM_HP];
 
 	std::string						m_displayName;													// XML:A
 
