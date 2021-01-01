@@ -11,9 +11,6 @@ SVUndoAddSurface::SVUndoAddSurface(const QString & label, const VICUS::Surface &
 
 void SVUndoAddSurface::undo() {
 
-	// remove last building
-	Q_ASSERT(!theProject().m_plainGeometry.empty());
-
 	// find room, if given
 	if (m_parentNodeID != 0) {
 		// find the parent room node (it must be a room node!)
