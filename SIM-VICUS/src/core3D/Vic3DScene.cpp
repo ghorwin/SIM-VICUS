@@ -30,6 +30,8 @@
 
 const float TRANSLATION_SPEED = 1.2f;
 const float MOUSE_ROTATION_SPEED = 0.5f;
+
+/// \todo adjust the THRESHOLD based on DPI/Screenresolution or have it as user option
 const float MOUSE_MOVE_DISTANCE_ORBIT_CONTROLLER = 1;
 
 /*! Plane definition for the xy Plane. */
@@ -484,7 +486,6 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 	if (keyboardHandler.buttonReleased(Qt::LeftButton)) {
 
-		/// \todo adjust the THRESHOLD based on DPI/Screenresolution or have it as user option
 		// check if the mouse was moved not very far -> we have a mouse click
 		if (m_mouseMoveDistance < MOUSE_MOVE_DISTANCE_ORBIT_CONTROLLER) {
 			qDebug() << "Mouse (selection) click received" << m_mouseMoveDistance;
@@ -568,6 +569,10 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 			if (r.m_snapPointType == PickObject::RT_Object) {
 				nearestPoint = r.m_pickPoint;
 				uniqueID = r.m_uniqueObjectID;
+				break;
+			}
+			if (r.m_snapPointType == PickObject::RT_GlobalXYPlane) {
+				nearestPoint = r.m_pickPoint;
 				break;
 			}
 		}
@@ -1044,6 +1049,72 @@ void Vic3DScene::pick(PickObject & pickObject) {
 		pickObject.m_candidates.push_back(r);
 	}
 
+	// if lock is enabled, compute intersection point with plane, or in case of axis lock, the closest point on
+	// axis.
+	const SVViewState & vs = SVViewStateHandler::instance().viewState();
+	if (vs.m_locks != 0) {
+		// get reference point for relative translation/plane/line snap
+		IBKMK::Vector3D offset = referencePoint();
+		IBKMK::Vector3D a, b;
+		bool planeSnap = true;
+		// now process all the different combinations of locks
+		switch (vs.m_locks) {
+			case SVViewState::L_LocalX :
+				a = VICUS::QVector2IBKVector(m_coordinateSystemObject.transform().rotation().rotatedVector(QVector3D(0,1,0)) );
+				b = VICUS::QVector2IBKVector(m_coordinateSystemObject.transform().rotation().rotatedVector(QVector3D(0,0,1)) );
+			break;
+			case SVViewState::L_LocalY :
+				a = VICUS::QVector2IBKVector(m_coordinateSystemObject.transform().rotation().rotatedVector(QVector3D(1,0,0)) );
+				b = VICUS::QVector2IBKVector(m_coordinateSystemObject.transform().rotation().rotatedVector(QVector3D(0,0,1)) );
+			break;
+			case SVViewState::L_LocalZ :
+				a = VICUS::QVector2IBKVector(m_coordinateSystemObject.transform().rotation().rotatedVector(QVector3D(1,0,0)) );
+				b = VICUS::QVector2IBKVector(m_coordinateSystemObject.transform().rotation().rotatedVector(QVector3D(0,1,0)) );
+			break;
+			case SVViewState::L_LocalX | SVViewState::L_LocalY :
+			case SVViewState::L_LocalX | SVViewState::L_LocalY | SVViewState::L_LocalZ : // this is actually invalid, but we treat it as "X+Y locked"
+				a = VICUS::QVector2IBKVector(m_coordinateSystemObject.transform().rotation().rotatedVector(QVector3D(0,0,1)) );
+				planeSnap = false;
+			break;
+			case SVViewState::L_LocalX | SVViewState::L_LocalZ :
+				a = VICUS::QVector2IBKVector(m_coordinateSystemObject.transform().rotation().rotatedVector(QVector3D(0,1,0)) );
+				planeSnap = false;
+			break;
+			case SVViewState::L_LocalY | SVViewState::L_LocalZ :
+				a = VICUS::QVector2IBKVector(m_coordinateSystemObject.transform().rotation().rotatedVector(QVector3D(1,0,0)) );
+				planeSnap = false;
+			break;
+		}
+		// plane intersection?
+		if (planeSnap) {
+			VICUS::PlaneGeometry pg(VICUS::PlaneGeometry::T_Rectangle, offset, offset+a, offset+a+b);
+			if (pg.intersectsLine(nearPoint, direction, intersectionPoint, t, true, true)) {
+				// got an intersection point, store it
+				PickObject::PickResult r;
+				r.m_snapPointType = PickObject::RT_LocalPlaneFixedAxis;
+				r.m_depth = t;
+				r.m_pickPoint = intersectionPoint;
+				pickObject.m_candidates.push_back(r);
+			}
+		}
+		else {
+			// line2line intersection
+			double dist;
+			IBKMK::Vector3D closestPoint;
+			double lineFactor;
+			IBKMK::lineToLineDistance(nearPoint, direction,
+									  offset, a,
+									  dist, closestPoint, lineFactor);
+			// check distance against cylinder radius
+			PickObject::PickResult r;
+			r.m_snapPointType = PickObject::RT_LocalFixedAxis;
+			r.m_depth = dist;
+			r.m_pickPoint = offset + lineFactor*a;
+			pickObject.m_candidates.push_back(r);
+		}
+	}
+
+
 	// now process all surfaces and update p to hold the closest hit
 	const VICUS::Project & prj = project();
 
@@ -1344,6 +1415,15 @@ void Vic3DScene::handleSelection(const KeyboardMouseHandler & keyboardHandler, P
 		action->push();
 		return;
 	}
+}
+
+
+IBKMK::Vector3D Vic3DScene::referencePoint() const {
+	// for now, return the position of the last added vertex, if any
+	if (m_newGeometryObject.vertexList().empty())
+		return IBKMK::Vector3D();
+	else
+		return m_newGeometryObject.vertexList().back();
 }
 
 

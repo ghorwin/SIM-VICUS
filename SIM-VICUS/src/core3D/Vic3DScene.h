@@ -103,6 +103,14 @@ private:
 	/*! Selects/deselects objects. */
 	void handleSelection(const KeyboardMouseHandler & keyboardHandler, PickObject & o);
 
+	/*! Returns the current reference point for relative movement of the local coordinate system.
+		In PlaceVertex-mode, the reference point is the last placed vertex.
+		In ObjectTranslation-mode, the reference point is the last fixed position of the local coordinate system
+		(which is usually first set when selection changes, and changed lateron when the local coordinate system is
+		manually translated).
+	*/
+	IBKMK::Vector3D referencePoint() const;
+
 	/*! Cached pointer to parent widget - needed so that we can tell a QObject-based class to send
 		out signals.
 	*/
