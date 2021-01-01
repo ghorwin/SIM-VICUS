@@ -532,20 +532,6 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		if (!pickObject.m_pickPerformed)
 			pick(pickObject);
 
-		// if we have axis-lock, we need to create additional hit planes/lines
-		// also, we need to check, if there is already a vertex placed, or if we place the first one
-		// Note: axis lock only applies when there was already one vertex placed
-
-		if (!m_newGeometryObject.vertexList().empty()) {
-			int lockMask = SVViewStateHandler::instance().viewState().m_locks;
-			if (lockMask != 0) {
-				// we need a new picking operation, so first clear the pick object (that will trigger a "new pick" below)
-				pickObject.m_candidates.clear();
-				// now
-			}
-		}
-
-
 		// now we handle the snapping rules and also the locking
 		snapLocalCoordinateSystem(pickObject);
 
@@ -1233,6 +1219,8 @@ void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
 
 	// we have now several surfaces/objects stored in the pickObject
+
+	// first we handle the situation without snap
 	if (!vs.m_snapEnabled || true) {
 		// no snapping enabled - three options:
 		// a) no axis lock -> place coordinate system on either a visible surface, or the global XY plane
@@ -1252,10 +1240,52 @@ void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 				}
 			}
 			m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(p) );
+			return;
 		}
+		// if we have plane snap?
+		switch (vs.m_locks) {
+			case SVViewState::L_LocalX :
+			case SVViewState::L_LocalY :
+			case SVViewState::L_LocalZ :
+			{
+				// search for plane or object
+				IBKMK::Vector3D p;
+				for (const PickObject::PickResult & r : pickObject.m_candidates) {
+					if (r.m_snapPointType == PickObject::RT_LocalPlaneFixedAxis) {
+						p = r.m_pickPoint;
+						break;
+					}
+					if (r.m_snapPointType == PickObject::RT_Object) {
+						p = r.m_pickPoint;
+						break;
+					}
+				}
+				m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(p) );
+			} break;
 
+			// all others are line-snap
+			default :
+			{
+				// search for plane or object
+				IBKMK::Vector3D p;
+				for (const PickObject::PickResult & r : pickObject.m_candidates) {
+					if (r.m_snapPointType == PickObject::RT_LocalFixedAxis) {
+						p = r.m_pickPoint;
+						break;
+					}
+					if (r.m_snapPointType == PickObject::RT_Object) {
+						p = r.m_pickPoint;
+						break;
+					}
+				}
+				m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(p) );
+			} break;
+		}
 		return;
 	}
+
+
+
 #if 0
 	// first, we need to filter out, which ones we snap to
 	// for that purpose, we do the following:
