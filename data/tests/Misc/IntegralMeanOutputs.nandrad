@@ -24,7 +24,7 @@
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<IBK:Flag name="PerezDiffuseRadiationModel">false</IBK:Flag>
-			<ClimateFileName>${Project Directory}/climate/DEU_Potsdam_60.c6b</ClimateFileName>
+			<ClimateFileName>${Project Directory}/../climate/DEU_Potsdam_60.c6b</ClimateFileName>
 			<Sensors>
 				<!-- Radiation sensors automatically provide sensor quantities like DirectSWRadOnPlane, DiffuseSWRadOnPlane, GlobalSWRadOnPlane and IncidenceAngle, which
 					can be queried as vector-valued results of the LOCATION object using the sensor ID as modelID-index. -->

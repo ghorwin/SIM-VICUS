@@ -8,7 +8,7 @@
 			<IBK:Parameter name="Latitude" unit="Deg">51</IBK:Parameter>
 			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
-			<ClimateFileName>${Project Directory}/climate/TF03-Sprung2.c6b</ClimateFileName>
+			<ClimateFileName>${Project Directory}/../climate/TF03-Sprung2.c6b</ClimateFileName>
 		</Location>
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>

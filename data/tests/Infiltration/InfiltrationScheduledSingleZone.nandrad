@@ -22,7 +22,7 @@
 		</SimulationParameter>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
-			<ClimateFileName>${Project Directory}/climate/Konstantopol_20C.c6b</ClimateFileName>
+			<ClimateFileName>${Project Directory}/../climate/Konstantopol_20C.c6b</ClimateFileName>
 		</Location>
 		<Models>
 			<NaturalVentilationModel id="501" displayName="Zone vent" modelType="Scheduled">
