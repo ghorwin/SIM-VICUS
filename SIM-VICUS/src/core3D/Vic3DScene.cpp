@@ -1233,15 +1233,30 @@ void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
 
 	// we have now several surfaces/objects stored in the pickObject
-#if 0
-	if (!vs.m_snapEnabled) {
-		// if we do not have snapping enabled, we do the following
-		//
+	if (!vs.m_snapEnabled || true) {
+		// no snapping enabled - three options:
+		// a) no axis lock -> place coordinate system on either a visible surface, or the global XY plane
+		// b) plane lock is enabled -> place coordinate system on locked plane or visible surface, whatever is closest
+		// c) place coordinate system on locked axis position
+		if (vs.m_locks == 0) {
+			// get snap point with XY plane
+			IBKMK::Vector3D p;
+			for (const PickObject::PickResult & r : pickObject.m_candidates) {
+				if (r.m_snapPointType == PickObject::RT_GlobalXYPlane) {
+					p = r.m_pickPoint;
+					break;
+				}
+				if (r.m_snapPointType == PickObject::RT_Object) {
+					p = r.m_pickPoint;
+					break;
+				}
+			}
+			m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(p) );
+		}
 
-		m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(pickObject.m_pickPoint) );
 		return;
 	}
-
+#if 0
 	// first, we need to filter out, which ones we snap to
 	// for that purpose, we do the following:
 	// - loop over all snap candidates
