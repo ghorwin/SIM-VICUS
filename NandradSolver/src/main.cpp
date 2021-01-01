@@ -50,8 +50,6 @@ int main(int argc, char * argv[]) {
 
 #ifdef WIN32
 	IBK::WaitOnExit wait;			// windows: default - wait
-#else
-	IBK::WaitOnExit wait(false);	// linux: default - don't wait
 #endif //WIN32
 
 	try {
@@ -65,9 +63,6 @@ int main(int argc, char * argv[]) {
 #ifdef WIN32
 		// on windows, flag is interpreted as "close window at simulation end when flag is given"
 		wait.m_wait = !args.flagEnabled(IBK::SolverArgsParser::DO_CLOSE_ON_EXIT);
-#else
-		// on linux, flag is interpreted as "keep terminal open if flag is given"
-		wait.m_wait = args.flagEnabled(IBK::SolverArgsParser::DO_CLOSE_ON_EXIT);
 #endif //WIN32
 
 		// handle default arguments like help and man-page requests, which are printed to std::cout
