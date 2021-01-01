@@ -109,7 +109,7 @@ void SVPropNetworkEditWidget::updateNodeProperties()
 						&& comp->m_heatExchangeType != NANDRAD::HydraulicNetworkComponent::NUM_HT);
 	else
 		m_ui->groupBoxHeatExchange->setEnabled(false);
-	m_ui->lineEditHeatFlux->setValue(node->m_heatExchangePara[NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant].value);
+//	m_ui->lineEditHeatFlux->setValue(node->m_heatExchangePara[NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant].value);
 }
 
 
@@ -125,10 +125,10 @@ void SVPropNetworkEditWidget::updateEdgeProperties()
 	m_ui->comboBoxHeatExchangeType->setCurrentText(m_mapHeatExchangeType.key(edge->m_heatExchangeType));
 	m_ui->checkBoxSupplyPipe->setChecked(edge->m_supply);
 
-	m_ui->comboBoxHeatExchangeType->setEnabled(NANDRAD::HydraulicNetworkComponent::hasHeatExchange(edge->m_modelType));
-	m_ui->groupBoxHeatExchange->setEnabled(NANDRAD::HydraulicNetworkComponent::hasHeatExchange(edge->m_modelType)
-										   && edge->m_heatExchangeType != NANDRAD::HydraulicNetworkComponent::NUM_HT);
-	m_ui->lineEditHeatFlux->setValue(edge->m_heatExchangePara[NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant].value);
+//	m_ui->comboBoxHeatExchangeType->setEnabled(NANDRAD::HydraulicNetworkComponent::hasHeatExchange(edge->m_modelType));
+//	m_ui->groupBoxHeatExchange->setEnabled(NANDRAD::HydraulicNetworkComponent::hasHeatExchange(edge->m_modelType)
+//										   && edge->m_heatExchangeType != NANDRAD::HydraulicNetworkComponent::NUM_HT);
+//	m_ui->lineEditHeatFlux->setValue(edge->m_heatExchangePara[NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant].value);
 }
 
 
@@ -480,18 +480,18 @@ void SVPropNetworkEditWidget::on_lineEditHeatFlux_editingFinished()
 	const VICUS::NetworkEdge * edgeConst = currentNetworkEdge();
 	if (nodeConst != nullptr){
 		VICUS::NetworkNode & node = m_network.m_nodes[nodeConst->m_id];
-		NANDRAD::KeywordList::setParameter(node.m_heatExchangePara, "HydraulicNetworkElement::heatExchangePara_t",
-											NANDRAD::HydraulicNetworkElement::HP_HeatFlux,
-										   m_ui->lineEditHeatFlux->value());
+//		NANDRAD::KeywordList::setParameter(node.m_heatExchangePara, "HydraulicNetworkElement::heatExchangePara_t",
+//											NANDRAD::HydraulicNetworkElement::HP_HeatFlux,
+//										   m_ui->lineEditHeatFlux->value());
 		SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
 		undo->push();
 		updateNodeProperties();
 	}
 	else if (edgeConst != nullptr){
 		VICUS::NetworkEdge * edge = m_network.edge(edgeConst->nodeId1(), edgeConst->nodeId2());
-		NANDRAD::KeywordList::setParameter(edge->m_heatExchangePara, "HydraulicNetworkElement::heatExchangePara_t",
-											NANDRAD::HydraulicNetworkElement::HP_HeatFlux,
-										   m_ui->lineEditHeatFlux->value());
+//		NANDRAD::KeywordList::setParameter(edge->m_heatExchangePara, "HydraulicNetworkElement::heatExchangePara_t",
+//											NANDRAD::HydraulicNetworkElement::HP_HeatFlux,
+//										   m_ui->lineEditHeatFlux->value());
 		SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
 		undo->push();
 		updateEdgeProperties();
