@@ -1091,7 +1091,7 @@ void Vic3DScene::pick(PickObject & pickObject) {
 			IBKMK::lineToLineDistance(nearPoint, direction,
 									  offset, a,
 									  dist, closestPoint, lineFactor);
-			// check distance against cylinder radius
+			// store "lot" point on line-of-sight as snap point
 			PickObject::PickResult r;
 			r.m_snapPointType = PickObject::RT_LocalFixedAxis;
 			r.m_depth = dist;

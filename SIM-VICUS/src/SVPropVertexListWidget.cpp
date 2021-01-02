@@ -605,8 +605,8 @@ void SVPropVertexListWidget::on_pushButtonFloorDone_clicked() {
 
 	// now also enable the z snap operation
 	SVViewState vs = SVViewStateHandler::instance().viewState();
-	vs.m_locks = SVViewState::L_LocalZ;
+	vs.m_locks = SVViewState::L_LocalX | SVViewState::L_LocalY; // local Z axis only
 	// take xy plane out of snap option mask
-	vs.m_snapOptionMask &= ~ SVViewState::Snap_XYPlane_Grid;
+	vs.m_snapEnabled = false;
 	SVViewStateHandler::instance().setViewState(vs);
 }
