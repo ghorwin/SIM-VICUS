@@ -128,7 +128,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 
 	const VICUS::Construction *con = m_db->m_constructions[comp->m_idOpaqueConstruction];
 	if (con != nullptr) {
-		m_ui->lineEditConstructionName->setText(QString::fromStdString(con->m_displayName.string(IBK::MultiLanguageString::m_language,std::string("en"))));
+		m_ui->lineEditConstructionName->setText(QString::fromStdString(con->m_displayName.string(QtExt::LanguageHandler::langId().toStdString(), "en")));
 		double UValue;
 		bool validUValue = con->calculateUValue(UValue, m_db->m_materials, 0.13, 0.04);
 		if (validUValue)
@@ -141,7 +141,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 
 	const VICUS::BoundaryCondition *bcA = m_db->m_boundaryConditions[comp->m_idOutsideBoundaryCondition];
 	if(bcA != nullptr){
-		m_ui->lineEditBoundaryConditionSideAName->setText(QString::fromStdString(bcA->m_displayName.string(IBK::MultiLanguageString::m_language, std::string("en"))));
+		m_ui->lineEditBoundaryConditionSideAName->setText(QString::fromStdString(bcA->m_displayName.string(QtExt::LanguageHandler::langId().toStdString(), std::string("en"))));
 		m_ui->lineEditHeatTransferCoeffSideA->setValue(bcA->m_para[VICUS::BoundaryCondition::P_HeatTransferCoefficient].value);
 		m_ui->lineEditSolarAbsorptionSideA->setValue(bcA->m_para[VICUS::BoundaryCondition::P_SolarAbsorption].value);
 		m_ui->lineEditThermalAbsorptionSideA->setValue(bcA->m_para[VICUS::BoundaryCondition::P_Emissivity].value);
@@ -149,7 +149,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 
 	const VICUS::BoundaryCondition *bcB = m_db->m_boundaryConditions[comp->m_idInsideBoundaryCondition];
 	if(bcB != nullptr){
-		m_ui->lineEditBoundaryConditionSideBName->setText(QString::fromStdString(bcB->m_displayName.string(IBK::MultiLanguageString::m_language, std::string("en"))));
+		m_ui->lineEditBoundaryConditionSideBName->setText(QString::fromStdString(bcB->m_displayName.string(QtExt::LanguageHandler::langId().toStdString(), std::string("en"))));
 		m_ui->lineEditHeatTransferCoeffSideB->setValue(bcB->m_para[VICUS::BoundaryCondition::P_HeatTransferCoefficient].value);
 		m_ui->lineEditSolarAbsorptionSideB->setValue(bcB->m_para[VICUS::BoundaryCondition::P_SolarAbsorption].value);
 		m_ui->lineEditThermalAbsorptionSideB->setValue(bcB->m_para[VICUS::BoundaryCondition::P_Emissivity].value);
@@ -216,22 +216,24 @@ void SVDBComponentEditWidget::on_toolButtonSelectConstruction_clicked() {
 	}
 }
 
+
 void SVDBComponentEditWidget::on_toolButtonSelectBoundaryConditionSideAName_clicked() {
 	// get boundary condition edit dialog from mainwindow
 	SVDBBoundaryConditionEditDialog * bcEditDialog = SVMainWindow::instance().dbBoundaryConditionEditDialog();
 	int bcId = bcEditDialog->select(m_current->m_idOutsideBoundaryCondition);
-	if (bcId != 0) {
+	if (bcId != -1) {
 		m_current->m_idOutsideBoundaryCondition= bcId;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		updateInput(m_current->m_id);
 	}
 }
 
+
 void SVDBComponentEditWidget::on_toolButtonSelectBoundaryConditionSideBName_clicked() {
 	// get boundary condition edit dialog from mainwindow
 	SVDBBoundaryConditionEditDialog * bcEditDialog = SVMainWindow::instance().dbBoundaryConditionEditDialog();
 	int bcId = bcEditDialog->select(m_current->m_idInsideBoundaryCondition);
-	if (bcId != 0) {
+	if (bcId != -1) {
 		m_current->m_idInsideBoundaryCondition = bcId;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		updateInput(m_current->m_id);

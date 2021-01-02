@@ -123,6 +123,9 @@ int main(int argc, char *argv[]) {
 		QtExt::LanguageHandler::instance().installTranslator(QtExt::LanguageHandler::langId());
 	}
 
+	// set default language in IBK MultiLanguageString
+	IBK::MultiLanguageString::m_language = QtExt::LanguageHandler::langId().toStdString();
+
 
 	// *** Create and show splash-screen ***
 	std::unique_ptr<QSplashScreen> splash;

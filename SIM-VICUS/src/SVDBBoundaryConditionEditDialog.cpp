@@ -177,6 +177,7 @@ void SVDBBoundaryConditionEditDialog::onCurrentIndexChanged(const QModelIndex &c
 	}
 }
 
+
 void SVDBBoundaryConditionEditDialog::on_pushButtonReloadUserDB_clicked() {
 	if (QMessageBox::question(this, QString(), tr("Reloading the user database from file will revert all changes made in this dialog since the program was started. Continue?"),
 							  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
@@ -188,4 +189,10 @@ void SVDBBoundaryConditionEditDialog::on_pushButtonReloadUserDB_clicked() {
 		m_dbModel->resetModel();
 	}
 
+}
+
+
+void SVDBBoundaryConditionEditDialog::on_tableView_doubleClicked(const QModelIndex &index) {
+	if (m_ui->pushButtonSelect->isVisible() && index.isValid())
+		accept();
 }
