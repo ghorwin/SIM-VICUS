@@ -1018,7 +1018,7 @@ void Vic3DScene::pick(PickObject & pickObject) {
 	IBKMK::Vector3D direction = farPoint - nearPoint;	// direction vector of line-of-sight
 
 	// now do the actual picking
-#define SHOW_PICK_TIME
+//#define SHOW_PICK_TIME
 #ifdef SHOW_PICK_TIME
 	QElapsedTimer pickTimer;
 	pickTimer.start();

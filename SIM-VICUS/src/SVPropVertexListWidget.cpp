@@ -711,3 +711,22 @@ void SVPropVertexListWidget::on_pushButtonFloorDone_clicked() {
 	vs.m_snapEnabled = false;
 	SVViewStateHandler::instance().setViewState(vs);
 }
+
+
+void SVPropVertexListWidget::on_lineEditZoneHeight_editingFinished() {
+	// read entered line height and if valid move local coordinate system to new height
+	double val;
+	bool ok;
+	val = QLocale().toDouble(m_ui->lineEditZoneHeight->text(), &ok);
+	if (ok) {
+		Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
+		if (po->newGeometryMode() == Vic3D::NewGeometryObject::NGM_ZoneExtrusion) {
+			IBKMK::Vector3D a = po->planeGeometry().vertexes()[0];
+			IBKMK::Vector3D offset = val*po->planeGeometry().normal();
+			IBKMK::Vector3D newLocalCoordinateSystemPos = a+offset;
+			po->updateLocalCoordinateSystemPosition(VICUS::IBKVector2QVector(newLocalCoordinateSystemPos));
+			// we need to trigger a redraw here
+			SVViewStateHandler::instance().m_geometryView->refreshSceneView();
+		}
+	}
+}
