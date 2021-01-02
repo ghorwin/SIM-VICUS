@@ -824,6 +824,7 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 			// test if point is in polygon
 			if (pointInPolygon(QPointF(x,y), m_polygon) != -1) {
 				dist = t;
+				intersectionPoint = x0;
 				return true;
 			}
 			else
