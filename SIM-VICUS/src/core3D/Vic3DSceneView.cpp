@@ -238,7 +238,10 @@ void SceneView::resizeGL(int width, int height) {
 
 
 void SceneView::paintGL() {
+//#define SHOW_PAINT_CPU_TIMINGS
+#ifdef SHOW_PAINT_CPU_TIMINGS
 	m_cpuTimer.start();
+#endif
 	if (((SVDebugApplication *)qApp)->m_aboutToTerminate)
 		return;
 
@@ -261,8 +264,10 @@ void SceneView::paintGL() {
 	// render main scene (grid, opaque planes, ...)
 	m_mainScene.render();
 
+#ifdef SHOW_PAINT_CPU_TIMINGS
 	qint64 elapsedMs = m_cpuTimer.elapsed();
-//	qDebug() << ++m_paintCounter << "Total paintGL time: " << elapsedMs << "ms";
+	qDebug() << "Paintcount =" << ++m_paintCounter << ", total paintGL time: " << elapsedMs << "ms";
+#endif
 
 	// Done painting
 
@@ -308,7 +313,6 @@ void SceneView::keyPressEvent(QKeyEvent *event) {
 }
 
 void SceneView::keyReleaseEvent(QKeyEvent *event) {
-	qDebug() << "SceneView::keyReleaseEvent";
 	m_keyboardMouseHandler.keyReleaseEvent(event);
 	checkInput();
 

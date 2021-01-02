@@ -84,9 +84,11 @@ int SVSimulationStartNandrad::edit() {
 	// store current project settings
 	m_solverParams = project().m_solverParameter;
 	m_location = project().m_location;
+	m_outputs = project().m_outputs;
 
 	m_simulationPerformanceOptions->updateUi();
 	m_simulationLocationOptions->updateUi();
+	m_simulationOutputOptions->updateUi();
 
 	updateCmdLine();
 

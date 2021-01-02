@@ -34,6 +34,7 @@
 #include "VICUS_ViewSettings.h"
 #include "VICUS_NetworkFluid.h"
 #include "VICUS_NetworkPipe.h"
+#include "VICUS_Outputs.h"
 
 #include <NANDRAD_SolverParameter.h>
 
@@ -168,6 +169,9 @@ public:
 	NANDRAD::SolverParameter							m_solverParameter;			// XML:E
 	/*! Location and climate settings for NANDRAD. */
 	NANDRAD::Location									m_location;					// XML:E
+
+	/*! Output definitions. */
+	VICUS::Outputs										m_outputs;					// XML:E
 
 	ViewSettings										m_viewSettings;				// XML:E
 

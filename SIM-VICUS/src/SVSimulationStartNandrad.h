@@ -4,6 +4,7 @@
 #include <QDialog>
 
 #include <NANDRAD_Project.h>
+#include <VICUS_Outputs.h>
 
 namespace Ui {
 	class SVSimulationStartNandrad;
@@ -63,7 +64,7 @@ private:
 	*/
 	NANDRAD::SolverParameter		m_solverParams;
 	NANDRAD::Location				m_location;
-	NANDRAD::Outputs				m_outputs;
+	VICUS::Outputs					m_outputs;
 };
 
 #endif // SVSimulationStartNandradH

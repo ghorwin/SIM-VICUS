@@ -34,7 +34,7 @@ namespace VICUS {
 	const char * const INVALID_KEYWORD_INDEX_STRING = "KEYWORD_ERROR_STRING: Invalid type index";
 
 	/*! Holds a list of all enum types/categories. */
-	const char * const ENUM_TYPES[27] = {
+	const char * const ENUM_TYPES[28] = {
 		"BoundaryCondition::para_t",
 		"BoundaryCondition::HeatConductionModel",
 		"Component::ComponentType",
@@ -49,6 +49,7 @@ namespace VICUS {
 		"Network::SizingParam",
 		"NetworkFluid::para_t",
 		"NetworkNode::NodeType",
+		"Outputs::flag_t",
 		"PlaneGeometry::type_t",
 		"Project::ViewFlags",
 		"Room::para_t",
@@ -66,7 +67,7 @@ namespace VICUS {
 
 	/*! Converts a category string to respective enumeration value. */
 	int enum2index(const std::string & enumtype) {
-		for (int i=0; i<27; ++i) {
+		for (int i=0; i<28; ++i) {
 			if (enumtype == ENUM_TYPES[i]) return i;
 		}
 		//std::cerr << "Unknown enumeration type '" << enumtype<< "'." << std::endl;
@@ -212,55 +213,61 @@ namespace VICUS {
 				case 1 : return "Mixer";
 				case 2 : return "Source";
 			} break;
-			// PlaneGeometry::type_t
+			// Outputs::flag_t
 			case 14 :
+			switch (t) {
+				case 0 : return "BinaryOutputs";
+				case 1 : return "CreateDefaultZoneOutputs";
+			} break;
+			// PlaneGeometry::type_t
+			case 15 :
 			switch (t) {
 				case 0 : return "Triangle";
 				case 1 : return "Rectangle";
 				case 2 : return "Polygon";
 			} break;
 			// Project::ViewFlags
-			case 15 :
+			case 16 :
 			switch (t) {
 				case 0 : return "All";
 			} break;
 			// Room::para_t
-			case 16 :
+			case 17 :
 			switch (t) {
 				case 0 : return "Area";
 				case 1 : return "Volume";
 			} break;
 			// SurfaceProperties::para_t
-			case 17 :
+			case 18 :
 			switch (t) {
 				case 0 : return "Specularity";
 				case 1 : return "Roughness";
 			} break;
 			// SurfaceProperties::Type
-			case 18 :
+			case 19 :
 			switch (t) {
 				case 0 : return "Plastic";
 				case 1 : return "Metal";
 				case 2 : return "Glass";
 			} break;
 			// ViewSettings::Flags
-			case 19 :
+			case 20 :
 			switch (t) {
 				case 0 : return "GridVisible";
 			} break;
 			// WindowDivider::para_t
-			case 20 :
+			case 21 :
 			switch (t) {
 				case 0 : return "Area";
 			} break;
 			// WindowGlazingLayer::type_t
-			case 21 :
+			case 22 :
 			switch (t) {
 				case 0 : return "Gas";
 				case 1 : return "Glass";
 			} break;
 			// WindowGlazingLayer::para_t
-			case 22 :
+			case 23 :
 			switch (t) {
 				case 0 : return "Thickness";
 				case 1 : return "Conductivity";
@@ -271,7 +278,7 @@ namespace VICUS {
 				case 6 : return "LongWaveEmissivityOutside";
 			} break;
 			// WindowGlazingLayer::splinePara_t
-			case 23 :
+			case 24 :
 			switch (t) {
 				case 0 : return "ShortWaveTransmittance";
 				case 1 : return "ShortWaveReflectanceOutside";
@@ -281,18 +288,18 @@ namespace VICUS {
 				case 5 : return "HeatCapacity";
 			} break;
 			// WindowGlazingSystem::modelType_t
-			case 24 :
+			case 25 :
 			switch (t) {
 				case 0 : return "Simple";
 				case 1 : return "Detailed";
 			} break;
 			// WindowGlazingSystem::para_t
-			case 25 :
+			case 26 :
 			switch (t) {
 				case 0 : return "ThermalTransmittance";
 			} break;
 			// WindowGlazingSystem::splinePara_t
-			case 26 :
+			case 27 :
 			switch (t) {
 				case 0 : return "SHGC";
 			} break;
@@ -438,55 +445,61 @@ namespace VICUS {
 				case 1 : return "Mixer";
 				case 2 : return "Source";
 			} break;
-			// PlaneGeometry::type_t
+			// Outputs::flag_t
 			case 14 :
+			switch (t) {
+				case 0 : return "BinaryOutputs";
+				case 1 : return "CreateDefaultZoneOutputs";
+			} break;
+			// PlaneGeometry::type_t
+			case 15 :
 			switch (t) {
 				case 0 : return "Triangle";
 				case 1 : return "Rectangle";
 				case 2 : return "Polygon";
 			} break;
 			// Project::ViewFlags
-			case 15 :
+			case 16 :
 			switch (t) {
 				case 0 : return "All";
 			} break;
 			// Room::para_t
-			case 16 :
+			case 17 :
 			switch (t) {
 				case 0 : return "Area";
 				case 1 : return "Volume";
 			} break;
 			// SurfaceProperties::para_t
-			case 17 :
+			case 18 :
 			switch (t) {
 				case 0 : return "Specularity";
 				case 1 : return "Roughness";
 			} break;
 			// SurfaceProperties::Type
-			case 18 :
+			case 19 :
 			switch (t) {
 				case 0 : return "Plastic";
 				case 1 : return "Metal";
 				case 2 : return "Glass";
 			} break;
 			// ViewSettings::Flags
-			case 19 :
+			case 20 :
 			switch (t) {
 				case 0 : return "GridVisible";
 			} break;
 			// WindowDivider::para_t
-			case 20 :
+			case 21 :
 			switch (t) {
 				case 0 : return "Area";
 			} break;
 			// WindowGlazingLayer::type_t
-			case 21 :
+			case 22 :
 			switch (t) {
 				case 0 : return "Gas";
 				case 1 : return "Glass";
 			} break;
 			// WindowGlazingLayer::para_t
-			case 22 :
+			case 23 :
 			switch (t) {
 				case 0 : return "Thickness";
 				case 1 : return "Conductivity";
@@ -497,7 +510,7 @@ namespace VICUS {
 				case 6 : return "LongWaveEmissivityOutside";
 			} break;
 			// WindowGlazingLayer::splinePara_t
-			case 23 :
+			case 24 :
 			switch (t) {
 				case 0 : return "ShortWaveTransmittance";
 				case 1 : return "ShortWaveReflectanceOutside";
@@ -507,18 +520,18 @@ namespace VICUS {
 				case 5 : return "HeatCapacity";
 			} break;
 			// WindowGlazingSystem::modelType_t
-			case 24 :
+			case 25 :
 			switch (t) {
 				case 0 : return "Simple";
 				case 1 : return "Detailed";
 			} break;
 			// WindowGlazingSystem::para_t
-			case 25 :
+			case 26 :
 			switch (t) {
 				case 0 : return "ThermalTransmittance";
 			} break;
 			// WindowGlazingSystem::splinePara_t
-			case 26 :
+			case 27 :
 			switch (t) {
 				case 0 : return "SHGC";
 			} break;
@@ -665,55 +678,61 @@ namespace VICUS {
 				case 1 : if (no_description != nullptr) *no_description = true; return "Mixer";
 				case 2 : if (no_description != nullptr) *no_description = true; return "Source";
 			} break;
-			// PlaneGeometry::type_t
+			// Outputs::flag_t
 			case 14 :
+			switch (t) {
+				case 0 : return "If true, output files are written in binary format (the default, if flag is missing).";
+				case 1 : return "If true, default output definitions for zones are created.";
+			} break;
+			// PlaneGeometry::type_t
+			case 15 :
 			switch (t) {
 				case 0 : if (no_description != nullptr) *no_description = true; return "Triangle";
 				case 1 : if (no_description != nullptr) *no_description = true; return "Rectangle";
 				case 2 : if (no_description != nullptr) *no_description = true; return "Polygon";
 			} break;
 			// Project::ViewFlags
-			case 15 :
+			case 16 :
 			switch (t) {
 				case 0 : if (no_description != nullptr) *no_description = true; return "All";
 			} break;
 			// Room::para_t
-			case 16 :
+			case 17 :
 			switch (t) {
 				case 0 : return "Floor area of the zone.";
 				case 1 : return "Volume of the zone.";
 			} break;
 			// SurfaceProperties::para_t
-			case 17 :
+			case 18 :
 			switch (t) {
 				case 0 : return "Specularity of the material.";
 				case 1 : return "Roughness of the material.";
 			} break;
 			// SurfaceProperties::Type
-			case 18 :
+			case 19 :
 			switch (t) {
 				case 0 : if (no_description != nullptr) *no_description = true; return "Plastic";
 				case 1 : if (no_description != nullptr) *no_description = true; return "Metal";
 				case 2 : if (no_description != nullptr) *no_description = true; return "Glass";
 			} break;
 			// ViewSettings::Flags
-			case 19 :
+			case 20 :
 			switch (t) {
 				case 0 : return "Grid is visible";
 			} break;
 			// WindowDivider::para_t
-			case 20 :
+			case 21 :
 			switch (t) {
 				case 0 : return "Area of the divider.";
 			} break;
 			// WindowGlazingLayer::type_t
-			case 21 :
+			case 22 :
 			switch (t) {
 				case 0 : return "Gas layer";
 				case 1 : return "Glass layer";
 			} break;
 			// WindowGlazingLayer::para_t
-			case 22 :
+			case 23 :
 			switch (t) {
 				case 0 : return "Thickness of the window layer.";
 				case 1 : return "Thermal conductivity of the window layer.";
@@ -724,7 +743,7 @@ namespace VICUS {
 				case 6 : return "Emissivity of surface facing inside.";
 			} break;
 			// WindowGlazingLayer::splinePara_t
-			case 23 :
+			case 24 :
 			switch (t) {
 				case 0 : return "Short wave transmittance at outside directed surface.";
 				case 1 : return "Short wave reflectance of surface facing outside.";
@@ -734,18 +753,18 @@ namespace VICUS {
 				case 5 : return "Specific heat capacity of the gas layer.";
 			} break;
 			// WindowGlazingSystem::modelType_t
-			case 24 :
+			case 25 :
 			switch (t) {
 				case 0 : return "Standard globbed-layers model.";
 				case 1 : return "Detailed window model with layers.";
 			} break;
 			// WindowGlazingSystem::para_t
-			case 25 :
+			case 26 :
 			switch (t) {
 				case 0 : return "Thermal transmittance";
 			} break;
 			// WindowGlazingSystem::splinePara_t
-			case 26 :
+			case 27 :
 			switch (t) {
 				case 0 : return "Short wave transmittance at outside directed surface.";
 			} break;
@@ -891,55 +910,61 @@ namespace VICUS {
 				case 1 : return "";
 				case 2 : return "";
 			} break;
-			// PlaneGeometry::type_t
+			// Outputs::flag_t
 			case 14 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+			} break;
+			// PlaneGeometry::type_t
+			case 15 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
 			} break;
 			// Project::ViewFlags
-			case 15 :
+			case 16 :
 			switch (t) {
 				case 0 : return "";
 			} break;
 			// Room::para_t
-			case 16 :
+			case 17 :
 			switch (t) {
 				case 0 : return "m2";
 				case 1 : return "m3";
 			} break;
 			// SurfaceProperties::para_t
-			case 17 :
+			case 18 :
 			switch (t) {
 				case 0 : return "---";
 				case 1 : return "---";
 			} break;
 			// SurfaceProperties::Type
-			case 18 :
+			case 19 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
 			} break;
 			// ViewSettings::Flags
-			case 19 :
+			case 20 :
 			switch (t) {
 				case 0 : return "";
 			} break;
 			// WindowDivider::para_t
-			case 20 :
+			case 21 :
 			switch (t) {
 				case 0 : return "m2";
 			} break;
 			// WindowGlazingLayer::type_t
-			case 21 :
+			case 22 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
 			// WindowGlazingLayer::para_t
-			case 22 :
+			case 23 :
 			switch (t) {
 				case 0 : return "m";
 				case 1 : return "W/mK";
@@ -950,7 +975,7 @@ namespace VICUS {
 				case 6 : return "---";
 			} break;
 			// WindowGlazingLayer::splinePara_t
-			case 23 :
+			case 24 :
 			switch (t) {
 				case 0 : return "---";
 				case 1 : return "---";
@@ -960,18 +985,18 @@ namespace VICUS {
 				case 5 : return "J/kgK";
 			} break;
 			// WindowGlazingSystem::modelType_t
-			case 24 :
+			case 25 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
 			// WindowGlazingSystem::para_t
-			case 25 :
+			case 26 :
 			switch (t) {
 				case 0 : return "W/m2K";
 			} break;
 			// WindowGlazingSystem::splinePara_t
-			case 26 :
+			case 27 :
 			switch (t) {
 				case 0 : return "---";
 			} break;
@@ -1117,55 +1142,61 @@ namespace VICUS {
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
-			// PlaneGeometry::type_t
+			// Outputs::flag_t
 			case 14 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// PlaneGeometry::type_t
+			case 15 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
 			// Project::ViewFlags
-			case 15 :
+			case 16 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
 			// Room::para_t
-			case 16 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-			} break;
-			// SurfaceProperties::para_t
 			case 17 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
-			// SurfaceProperties::Type
+			// SurfaceProperties::para_t
 			case 18 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// SurfaceProperties::Type
+			case 19 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
 			// ViewSettings::Flags
-			case 19 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-			} break;
-			// WindowDivider::para_t
 			case 20 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
-			// WindowGlazingLayer::type_t
+			// WindowDivider::para_t
 			case 21 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+			} break;
+			// WindowGlazingLayer::type_t
+			case 22 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
 			// WindowGlazingLayer::para_t
-			case 22 :
+			case 23 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -1176,7 +1207,7 @@ namespace VICUS {
 				case 6 : return "#FFFFFF";
 			} break;
 			// WindowGlazingLayer::splinePara_t
-			case 23 :
+			case 24 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -1186,18 +1217,18 @@ namespace VICUS {
 				case 5 : return "#FFFFFF";
 			} break;
 			// WindowGlazingSystem::modelType_t
-			case 24 :
+			case 25 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
 			// WindowGlazingSystem::para_t
-			case 25 :
+			case 26 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
 			// WindowGlazingSystem::splinePara_t
-			case 26 :
+			case 27 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
@@ -1343,55 +1374,61 @@ namespace VICUS {
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// PlaneGeometry::type_t
+			// Outputs::flag_t
 			case 14 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// PlaneGeometry::type_t
+			case 15 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// Project::ViewFlags
-			case 15 :
+			case 16 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// Room::para_t
-			case 16 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// SurfaceProperties::para_t
 			case 17 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// SurfaceProperties::Type
+			// SurfaceProperties::para_t
 			case 18 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// SurfaceProperties::Type
+			case 19 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// ViewSettings::Flags
-			case 19 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// WindowDivider::para_t
 			case 20 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// WindowGlazingLayer::type_t
+			// WindowDivider::para_t
 			case 21 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// WindowGlazingLayer::type_t
+			case 22 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// WindowGlazingLayer::para_t
-			case 22 :
+			case 23 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -1402,7 +1439,7 @@ namespace VICUS {
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// WindowGlazingLayer::splinePara_t
-			case 23 :
+			case 24 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -1412,18 +1449,18 @@ namespace VICUS {
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// WindowGlazingSystem::modelType_t
-			case 24 :
+			case 25 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// WindowGlazingSystem::para_t
-			case 25 :
+			case 26 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// WindowGlazingSystem::splinePara_t
-			case 26 :
+			case 27 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
@@ -1463,32 +1500,34 @@ namespace VICUS {
 			case 12 : return 3;
 			// NetworkNode::NodeType
 			case 13 : return 3;
+			// Outputs::flag_t
+			case 14 : return 2;
 			// PlaneGeometry::type_t
-			case 14 : return 3;
+			case 15 : return 3;
 			// Project::ViewFlags
-			case 15 : return 1;
+			case 16 : return 1;
 			// Room::para_t
-			case 16 : return 2;
-			// SurfaceProperties::para_t
 			case 17 : return 2;
+			// SurfaceProperties::para_t
+			case 18 : return 2;
 			// SurfaceProperties::Type
-			case 18 : return 3;
+			case 19 : return 3;
 			// ViewSettings::Flags
-			case 19 : return 1;
-			// WindowDivider::para_t
 			case 20 : return 1;
+			// WindowDivider::para_t
+			case 21 : return 1;
 			// WindowGlazingLayer::type_t
-			case 21 : return 2;
+			case 22 : return 2;
 			// WindowGlazingLayer::para_t
-			case 22 : return 7;
+			case 23 : return 7;
 			// WindowGlazingLayer::splinePara_t
-			case 23 : return 6;
+			case 24 : return 6;
 			// WindowGlazingSystem::modelType_t
-			case 24 : return 2;
+			case 25 : return 2;
 			// WindowGlazingSystem::para_t
-			case 25 : return 1;
-			// WindowGlazingSystem::splinePara_t
 			case 26 : return 1;
+			// WindowGlazingSystem::splinePara_t
+			case 27 : return 1;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::Count]");
@@ -1525,32 +1564,34 @@ namespace VICUS {
 			case 12 : return 2;
 			// NetworkNode::NodeType
 			case 13 : return 2;
+			// Outputs::flag_t
+			case 14 : return 1;
 			// PlaneGeometry::type_t
-			case 14 : return 2;
+			case 15 : return 2;
 			// Project::ViewFlags
-			case 15 : return 0;
+			case 16 : return 0;
 			// Room::para_t
-			case 16 : return 1;
-			// SurfaceProperties::para_t
 			case 17 : return 1;
+			// SurfaceProperties::para_t
+			case 18 : return 1;
 			// SurfaceProperties::Type
-			case 18 : return 2;
+			case 19 : return 2;
 			// ViewSettings::Flags
-			case 19 : return 0;
-			// WindowDivider::para_t
 			case 20 : return 0;
+			// WindowDivider::para_t
+			case 21 : return 0;
 			// WindowGlazingLayer::type_t
-			case 21 : return 1;
+			case 22 : return 1;
 			// WindowGlazingLayer::para_t
-			case 22 : return 6;
+			case 23 : return 6;
 			// WindowGlazingLayer::splinePara_t
-			case 23 : return 5;
+			case 24 : return 5;
 			// WindowGlazingSystem::modelType_t
-			case 24 : return 1;
+			case 25 : return 1;
 			// WindowGlazingSystem::para_t
-			case 25 : return 0;
+			case 26 : return 0;
 			// WindowGlazingSystem::splinePara_t
-			case 26 : return 1;
+			case 27 : return 1;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::MaxIndex]");

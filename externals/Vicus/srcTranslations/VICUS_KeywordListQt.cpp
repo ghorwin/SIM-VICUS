@@ -103,6 +103,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Building");
 	tr("Mixer");
 	tr("Source");
+	tr("If true, output files are written in binary format (the default, if flag is missing).");
+	tr("If true, default output definitions for zones are created.");
 	tr("Triangle");
 	tr("Rectangle");
 	tr("Polygon");

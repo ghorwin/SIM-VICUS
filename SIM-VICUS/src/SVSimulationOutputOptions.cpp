@@ -1,7 +1,10 @@
 #include "SVSimulationOutputOptions.h"
 #include "ui_SVSimulationOutputOptions.h"
 
-SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, NANDRAD::Outputs & outputs) :
+#include <VICUS_Outputs.h>
+#include <VICUS_KeywordList.h>
+
+SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Outputs & outputs) :
 	QWidget(parent),
 	m_ui(new Ui::SVSimulationOutputOptions),
 	m_outputs(&outputs)
@@ -16,5 +19,14 @@ SVSimulationOutputOptions::~SVSimulationOutputOptions() {
 
 
 void SVSimulationOutputOptions::updateUi() {
+	m_ui->checkBoxDefaultZoneOutputs->setChecked(m_outputs->m_flags[VICUS::Outputs::OF_CreateDefaultZoneOutputs].isEnabled());
+}
 
+
+void SVSimulationOutputOptions::on_checkBoxDefaultZoneOutputs_toggled(bool checked) {
+	if (checked)
+		m_outputs->m_flags[VICUS::Outputs::OF_CreateDefaultZoneOutputs]
+				.set(VICUS::KeywordList::Keyword("Outputs::flag_t", VICUS::Outputs::OF_CreateDefaultZoneOutputs), checked);
+	else
+		m_outputs->m_flags[VICUS::Outputs::OF_CreateDefaultZoneOutputs].clear();
 }

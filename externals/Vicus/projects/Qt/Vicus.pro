@@ -54,6 +54,7 @@ HEADERS += \
 	../../src/VICUS_NetworkNode.h \
 	../../src/VICUS_NetworkPipe.h \
 	../../src/VICUS_Object.h \
+	../../src/VICUS_Outputs.h \
 	../../src/VICUS_PlaneGeometry.h \
 	../../src/VICUS_Project.h \
 	../../src/VICUS_Room.h \
@@ -82,6 +83,7 @@ SOURCES += \
 	../../src/VICUS_NetworkNode.cpp \
 	../../src/VICUS_NetworkPipe.cpp \
 	../../src/VICUS_Object.cpp \
+	../../src/VICUS_Outputs.cpp \
 	../../src/VICUS_PlaneGeometry.cpp \
 	../../src/VICUS_Project.cpp \
 	../../src/VICUS_Surface.cpp \
@@ -98,6 +100,7 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_NetworkFluid.cpp \
 	../../src/ncg/ncg_VICUS_NetworkNode.cpp \
 	../../src/ncg/ncg_VICUS_NetworkPipe.cpp \
+	../../src/ncg/ncg_VICUS_Outputs.cpp \
 	../../src/ncg/ncg_VICUS_Room.cpp \
 	../../src/ncg/ncg_VICUS_Project.cpp \
 	../../src/ncg/ncg_VICUS_RotationMatrix.cpp \

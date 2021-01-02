@@ -7,7 +7,7 @@ namespace Ui {
 	class SVSimulationOutputOptions;
 }
 
-namespace NANDRAD {
+namespace VICUS {
 	class Outputs;
 }
 
@@ -16,7 +16,7 @@ class SVSimulationOutputOptions : public QWidget {
 	Q_OBJECT
 
 public:
-	SVSimulationOutputOptions(QWidget *parent, NANDRAD::Outputs & outputs);
+	SVSimulationOutputOptions(QWidget *parent, VICUS::Outputs & outputs);
 	~SVSimulationOutputOptions();
 
 	/*! Updates user interface with properties from the project data structure.
@@ -24,9 +24,12 @@ public:
 	*/
 	void updateUi();
 
+private slots:
+	void on_checkBoxDefaultZoneOutputs_toggled(bool checked);
+
 private:
 	Ui::SVSimulationOutputOptions		*m_ui;
-	NANDRAD::Outputs					*m_outputs;
+	VICUS::Outputs						*m_outputs;
 };
 
 #endif // SVSimulationOutputOptionsH
