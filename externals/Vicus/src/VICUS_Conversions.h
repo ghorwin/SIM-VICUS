@@ -26,6 +26,9 @@ inline QVector4D QVector4DFromQColor(const QColor & c, float alpha) {
 	return QVector4D((float)c.redF(), (float)c.greenF(), (float)c.blueF(), alpha);
 }
 
+inline QString IBKVector2String(const IBKMK::Vector3D & v) {
+	return QString("[%1,%2,%3]").arg(v.m_x).arg(v.m_y).arg(v.m_z);
+}
 
 
 } // VICUS

@@ -1208,12 +1208,6 @@ void Vic3DScene::pick(PickObject & pickObject) {
 }
 
 
-struct ClosestPointFinder {
-	bool operator()(const std::pair<float, QVector3D> & lhs, const std::pair<float, QVector3D> & rhs) {
-		return lhs.first < rhs.first;
-	}
-};
-
 
 void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
@@ -1221,7 +1215,7 @@ void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 	// we have now several surfaces/objects stored in the pickObject
 
 	// first we handle the situation without snap
-	if (!vs.m_snapEnabled || true) {
+	if (!vs.m_snapEnabled) {
 		// no snapping enabled - three options:
 		// a) no axis lock -> place coordinate system on either a visible surface, or the global XY plane
 		// b) plane lock is enabled -> place coordinate system on locked plane or visible surface, whatever is closest
@@ -1285,91 +1279,153 @@ void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 	}
 
 
+	// now the variants with snap, two variants:
+	// a) with locking - all snap point candidates are projected onto the locked plane or line, the RT_Local*** are
+	//                   taken as fallback, if no pick was found. Also, the global XY axis hit is ignored here.
+	// b) without locking - all snap points are inspected
+	//
+	// for both variants: only those snap points are considered that are part of the snap selection
 
-#if 0
-	// first, we need to filter out, which ones we snap to
-	// for that purpose, we do the following:
-	// - loop over all snap candidates
-	int snapOptions = vs.m_snapOptionMask;
+	const double SNAP_DISTANCES_THRESHHOLD = 10; // 1 m should be enough, right?
 
-	// Snapping works as follows:
-	// We process all snap options and compute the relative distance to
-	// the current coordinate system's location and we store these distances in a list.
-	// Then, we select the closes snap point.
-	std::set<std::pair<float, QVector3D>, ClosestPointFinder> snapPoints;
-
-	// If the distance between current coord
-	QVector3D pickPoint = VICUS::IBKVector2QVector(pickObject.m_pickPoint);
-
-	if (snapOptions & SVViewState::Snap_XYPlane_Grid) {
-		// now determine which grid line is closest
-		QVector3D closestPoint;
-		if (m_gridObject.closestSnapPoint(VICUS::IBKVector2QVector(pickObject.m_pickPoint), closestPoint)) {
-			// this is in world coordinates, use this as transformation vector for the
-			// coordinate system
-			float dist = (closestPoint - pickPoint).lengthSquared();
-			snapPoints.insert( std::make_pair(dist, closestPoint) );
-		}
-	}
-
-	// for snap options that require an object, look it up
-	const VICUS::Surface * s = nullptr;
-	if (pickObject.m_uniqueObjectID != 0 && snapOptions > SVViewState::Snap_XYPlane_Grid) {
-		const VICUS::Object * o = project().objectById(pickObject.m_uniqueObjectID);
-		s = dynamic_cast<const VICUS::Surface *>(o);
-	}
-	// handle all object-related snaps
-	if (s != nullptr) {
-		if (snapOptions & SVViewState::Snap_ObjectVertex) {
-			// insert distances to all vertexes of selected object
-			for (const IBKMK::Vector3D & v : s->m_geometry.vertexes()) {
-				QVector3D p = VICUS::IBKVector2QVector(v);
-				float dist = (p - pickPoint).lengthSquared();
-				snapPoints.insert( std::make_pair(dist, p) );
-			}
-		}
-		if (snapOptions & SVViewState::Snap_ObjectCenter) {
-			// insert center point
-			IBKMK::Vector3D center(0,0,0);
-			for (const IBKMK::Vector3D & v : s->m_geometry.vertexes())
-				center += v;
-			center /= s->m_geometry.vertexes().size();
-			QVector3D p = VICUS::IBKVector2QVector(center);
-			float dist = (p - pickPoint).lengthSquared();
-			snapPoints.insert( std::make_pair(dist, p) );
-		}
-		if (snapOptions & SVViewState::Snap_ObjectEdgeCenter) {
-			// process all edges
-			IBKMK::Vector3D lastNode = s->m_geometry.vertexes().front();
-			for (unsigned int i=0; i<s->m_geometry.vertexes().size()+1; ++i) {
-				IBKMK::Vector3D center = lastNode;
-				lastNode = s->m_geometry.vertexes()[i % s->m_geometry.vertexes().size()];
-				center += lastNode;
-				center /= 2;
-				QVector3D p = VICUS::IBKVector2QVector(center);
-				float dist = (p - pickPoint).lengthSquared();
-				snapPoints.insert( std::make_pair(dist, p) );
-			}
-		}
-	}
-
-	// take closes snap point and snap to it
-	QVector3D newCoordinatePoint;
-	if (snapPoints.empty()) {
-		// no snap points? no snapping
-		newCoordinatePoint = VICUS::IBKVector2QVector(pickObject.m_pickPoint);
+	std::vector<PickObject::PickResult> processedCandidates;
+	if (vs.m_locks != 0) {
+		// process projections and update processedCandidates
 	}
 	else {
-		QVector3D closestPoint = snapPoints.begin()->second;
-		newCoordinatePoint = closestPoint;
-//		qDebug() << (s != nullptr ? "object snap" : "grid snap") << closestPoint;
+
+		int snapOptions = vs.m_snapOptionMask;
+
+		// Snapping works as follows:
+		// - we consider all pick point candidates
+		// - apply the snapping; for example, if a surface was hit, we add the corners, center point etc.
+		// - we apply threashold checking and add candidates to processedCandidates
+		// - afterwards we sort based on distance from eys
+
+		double closestDepthSoFar = 1; // speedup - do not bother with hits that are behind
+
+		for (const PickObject::PickResult & r : pickObject.m_candidates) {
+
+			QVector3D pickPoint = VICUS::IBKVector2QVector(r.m_pickPoint);
+
+			// snap to XY-Plane
+			if (snapOptions & SVViewState::Snap_XYPlane_Grid) {
+				// we always add the intersection with the XYPlane as fallback at the very back of the scene
+				PickObject::PickResult rfallback(r);
+				rfallback.m_pickPoint = r.m_pickPoint;
+				rfallback.m_depth = 1;
+				processedCandidates.push_back(rfallback);
+
+				// now determine which grid line is closest
+				QVector3D closestPoint;
+				if (m_gridObject.closestSnapPoint(VICUS::IBKVector2QVector(r.m_pickPoint), closestPoint)) {
+					// this is in world coordinates, use this as transformation vector for the
+					// coordinate system
+					double dist = (double)(closestPoint - pickPoint).lengthSquared();
+					if (dist < SNAP_DISTANCES_THRESHHOLD) {
+						PickObject::PickResult r2(r);
+						r2.m_pickPoint = VICUS::QVector2IBKVector(closestPoint);
+						r2.m_depth = dist;
+						closestDepthSoFar = std::min(closestDepthSoFar, dist);
+						processedCandidates.push_back(r2);
+					}
+				}
+			}
+
+			const VICUS::Surface * s = nullptr;
+
+			// for snap options that require an object, look it up
+			if ((snapOptions & SVViewState::Snap_ObjectCenter) ||
+				(snapOptions & SVViewState::Snap_ObjectVertex) ||
+				(snapOptions & SVViewState::Snap_ObjectEdgeCenter))
+			{
+				if (r.m_uniqueObjectID != 0) {
+					const VICUS::Object * o = project().objectById(r.m_uniqueObjectID);
+					s = dynamic_cast<const VICUS::Surface *>(o);
+				}
+			}
+			// handle all object-related snaps
+			if (s != nullptr) {
+				if (snapOptions & SVViewState::Snap_ObjectVertex) {
+					// insert distances to all vertexes of selected object
+					for (const IBKMK::Vector3D & v : s->m_geometry.vertexes()) {
+						QVector3D p = VICUS::IBKVector2QVector(v);
+						float dist = (p - pickPoint).lengthSquared();
+						if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
+							PickObject::PickResult r2;
+							r2.m_depth = dist;
+							r2.m_snapPointType = PickObject::RT_Object;
+							r2.m_uniqueObjectID = r.m_uniqueObjectID;
+							r2.m_pickPoint = v;
+							processedCandidates.push_back(r2);
+							closestDepthSoFar = dist;
+						}
+					}
+				}
+				if (snapOptions & SVViewState::Snap_ObjectCenter) {
+					// insert center point
+					IBKMK::Vector3D center(0,0,0);
+					for (const IBKMK::Vector3D & v : s->m_geometry.vertexes())
+						center += v;
+					center /= s->m_geometry.vertexes().size();
+					QVector3D p = VICUS::IBKVector2QVector(center);
+					float dist = (p - pickPoint).lengthSquared();
+					if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
+						PickObject::PickResult r2;
+						r2.m_depth = dist;
+						r2.m_snapPointType = PickObject::RT_Object;
+						r2.m_uniqueObjectID = r.m_uniqueObjectID;
+						r2.m_pickPoint = center;
+						processedCandidates.push_back(r2);
+						closestDepthSoFar = dist;
+					}
+				}
+				if (snapOptions & SVViewState::Snap_ObjectEdgeCenter) {
+					// process all edges
+					IBKMK::Vector3D lastNode = s->m_geometry.vertexes().front();
+					for (unsigned int i=0; i<s->m_geometry.vertexes().size()+1; ++i) {
+						IBKMK::Vector3D center = lastNode;
+						lastNode = s->m_geometry.vertexes()[i % s->m_geometry.vertexes().size()];
+						center += lastNode;
+						center /= 2;
+						QVector3D p = VICUS::IBKVector2QVector(center);
+						float dist = (p - pickPoint).lengthSquared();
+						if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
+							PickObject::PickResult r2;
+							r2.m_depth = dist;
+							r2.m_snapPointType = PickObject::RT_Object;
+							r2.m_uniqueObjectID = r.m_uniqueObjectID;
+							r2.m_pickPoint = center;
+							processedCandidates.push_back(r2);
+							closestDepthSoFar = dist;
+						}
+					}
+				}
+
+			} // if (s != nullptr) - object snap
+
+		} // pick object candidates
+
+	} // with snapping
+
+	// now sort the snap point candidates
+	std::sort(processedCandidates.begin(), processedCandidates.end());
+#if 1
+	for (auto & r : processedCandidates) {
+		qDebug() << r.m_depth << VICUS::IBKVector2String(r.m_pickPoint) << r.m_snapPointType << r.m_uniqueObjectID;
 	}
-
-	// if we have x,y or z local axis lock enabled, allow only movement in local x, y or z direction, that means,
-	// get the projection onto the locked axis
-
-	m_coordinateSystemObject.setTranslation(newCoordinatePoint);
 #endif
+
+	// always add origin as fallback point
+	PickObject::PickResult r;
+	r.m_depth = 1;
+	r.m_pickPoint = IBKMK::Vector3D(0,0,0);
+	r.m_snapPointType = PickObject::RT_GlobalXYPlane;
+	processedCandidates.push_back(r);
+
+	// take closest snap point and snap to it
+	QVector3D newCoordinatePoint = VICUS::IBKVector2QVector(processedCandidates.front().m_pickPoint);
+	m_coordinateSystemObject.setTranslation(newCoordinatePoint);
 }
 
 
