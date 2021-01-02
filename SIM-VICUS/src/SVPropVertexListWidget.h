@@ -69,6 +69,9 @@ public slots:
 	*/
 	void on_pushButtonFinish_clicked();
 
+	/*! Switches from floor polygon mode to extrusion mode. */
+	void on_pushButtonFloorDone_clicked();
+
 private slots:
 	void on_pushButtonDeleteLast_clicked();
 
@@ -92,7 +95,6 @@ private slots:
 
 	void on_comboBoxBuildingLevel_currentIndexChanged(int index);
 
-	void on_pushButtonFloorDone_clicked();
 
 private:
 	/*! Returns true, if annonymous geometry is being created (i.e. checkbox is visible and checked). */

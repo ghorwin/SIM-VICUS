@@ -422,7 +422,7 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 			}
 		} break;
 
-		case Vic3D::NewGeometryObject::NGM_ZoneExtrusion :
+		case Vic3D::NewGeometryObject::NGM_ZoneExtrusion : {
 			// tricky part starts now
 			// 1. we need to get a list of surfaces and make their normal vectors point outwards
 			// 2. we need to assign colors to the surfaces and default components based on
@@ -430,7 +430,23 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 			// 3. we need to create an undo-action
 
 			// take the polygon
+			VICUS::PlaneGeometry floor = po->planeGeometry();
+			VICUS::PlaneGeometry ceiling = po->offsetPlaneGeometry();
+			// Note: both polygons have the same normal vector!
 
+			// compute offset vector
+			IBKMK::Vector3D offset = ceiling.vertexes()[0] - floor.vertexes()[0];
+			// now check if ceiling is offset in same direction as normal vector of floor plane?
+			if (offset.scalarProduct(floor.normal()) > 0) {
+				// same direction, we need to reverse floor polygon
+				floor.flip();
+			}
+			else {
+				// opposite direction, we need to reverse the ceiling polygon
+				ceiling.flip();
+			}
+
+		}
 		break;
 	}
 
