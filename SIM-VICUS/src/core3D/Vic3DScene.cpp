@@ -551,6 +551,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		needRepaint = true;
 		// get nearest match
 		IBKMK::Vector3D nearestPoint;
+		IBKMK::Vector3D nearestPointXY;
 		unsigned int uniqueID = 0;
 		for (const PickObject::PickResult & r : pickObject.m_candidates) {
 			if (r.m_snapPointType == PickObject::RT_Object) {
@@ -559,8 +560,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 				break;
 			}
 			if (r.m_snapPointType == PickObject::RT_GlobalXYPlane) {
-				nearestPoint = r.m_pickPoint;
-				break;
+				nearestPointXY = r.m_pickPoint;
 			}
 		}
 		if (uniqueID != 0) {
@@ -611,6 +611,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		else {
 			// restore to global orientation
 			m_coordinateSystemObject.setRotation(QQuaternion());
+			nearestPoint = nearestPointXY;
 		}
 
 		m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(nearestPoint) );
