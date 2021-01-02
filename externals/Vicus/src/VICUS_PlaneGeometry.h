@@ -87,6 +87,9 @@ public:
 	*/
 	void computeGeometry();
 
+	/*! Inverts vertexes so that normal vector is inverted/flipped. */
+	void flip();
+
 	/*! Tests if a line (with equation p = p1 + t * d) hits this plane. Returns true if
 		intersection is found, and returns the normalized distance (t) between intersection point
 		'intersectionPoint' and point p1.

@@ -158,6 +158,17 @@ void PlaneGeometry::computeGeometry() {
 }
 
 
+void PlaneGeometry::flip() {
+	std::vector<IBKMK::Vector3D> inverseVertexes;
+	for (std::vector<IBKMK::Vector3D>::const_reverse_iterator rit = m_vertexes.rbegin();
+		 rit != m_vertexes.rend(); ++rit)
+	{
+		inverseVertexes.push_back(*rit);
+	}
+	setVertexes(inverseVertexes);
+}
+
+
 void PlaneGeometry::simplify() {
 	if (m_vertexes.size() == 3) {
 		m_type = T_Triangle;
