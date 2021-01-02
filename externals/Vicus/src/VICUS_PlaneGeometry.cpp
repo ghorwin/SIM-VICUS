@@ -762,6 +762,9 @@ bool PlaneGeometry::isSimplePolygon()
 bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & d, IBKMK::Vector3D & intersectionPoint,
 								   double & dist, bool hitBackfacingPlanes, bool endlessPlane) const
 {
+	// We need to guard against invalid geometry
+	if (!isValid())
+		return false;
 	IBK_ASSERT(m_vertexes.size() >= 3);
 	// first the normal test
 

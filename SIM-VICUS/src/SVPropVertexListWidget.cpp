@@ -445,13 +445,16 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 			// compute offset vector
 			IBKMK::Vector3D offset = ceiling.vertexes()[0] - floor.vertexes()[0];
 			// now check if ceiling is offset in same direction as normal vector of floor plane?
-			if (offset.scalarProduct(floor.normal()) > 0) {
+			double dotProduct = offset.scalarProduct(floor.normal());
+			if (dotProduct > 0) {
 				// same direction, we need to reverse floor polygon
+				qDebug() << "Upside" << dotProduct;
 				floor.flip();
 			}
 			else {
 				// opposite direction, we need to reverse the ceiling polygon
 				ceiling.flip();
+				qDebug() << "Inverted" << dotProduct;
 			}
 
 			VICUS::Room r;
@@ -490,9 +493,19 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 			unsigned int nVert = floor.vertexes().size();
 			for (unsigned int i=0; i<nVert; ++i) {
 				// mind the winding order
-				IBKMK::Vector3D p0 = floor.vertexes()[ (i+1) % nVert];
-				IBKMK::Vector3D p1 = floor.vertexes()[ i ];
-				IBKMK::Vector3D p2 = ceiling.vertexes()[ (nVert - 2 - i) % nVert];
+				// when looked from above, floor vertexes go clock-wise,
+				// and ceiling vertices go anti-clockwise
+				unsigned int vIdx1 = (2*nVert - 1 - i) % nVert;
+				unsigned int vIdx2 = (2*nVert - 2 - i) % nVert;
+				IBKMK::Vector3D p0 = floor.vertexes()[ vIdx1 ];
+				IBKMK::Vector3D p1 = floor.vertexes()[ vIdx2 ];
+				IBKMK::Vector3D p2 = ceiling.vertexes()[ i ];
+
+//				IBKMK::Vector3D a = p1-p0;
+//				IBKMK::Vector3D b = p2-p0;
+
+//				qDebug() << "Plane: " << VICUS::IBKVector2String(a) << " : " << VICUS::IBKVector2String(b);
+
 				VICUS::Surface sWall;
 				sWall.m_id = sWall.uniqueID();
 				sWall.m_displayName = tr("Wall %1").arg(i+1);
