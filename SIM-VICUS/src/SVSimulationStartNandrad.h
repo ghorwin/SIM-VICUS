@@ -11,6 +11,7 @@ namespace Ui {
 
 class SVSimulationPerformanceOptions;
 class SVSimulationLocationOptions;
+class SVSimulationOutputOptions;
 
 /*! The start dialog for a NANDRAD simulation.
 	Contains pages for all global simulation properties.
@@ -53,6 +54,8 @@ private:
 	SVSimulationPerformanceOptions	*m_simulationPerformanceOptions = nullptr;
 	/*! Page with location options. */
 	SVSimulationLocationOptions		*m_simulationLocationOptions = nullptr;
+	/*! Page with output options. */
+	SVSimulationOutputOptions		*m_simulationOutputOptions = nullptr;
 
 	/*! Cache for data edited in this dialog.
 		Transferred to project, when simulation is started or dialog
@@ -60,6 +63,7 @@ private:
 	*/
 	NANDRAD::SolverParameter		m_solverParams;
 	NANDRAD::Location				m_location;
+	NANDRAD::Outputs				m_outputs;
 };
 
 #endif // SVSimulationStartNandradH

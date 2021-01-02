@@ -10,6 +10,7 @@
 #include "SVSettings.h"
 #include "SVSimulationPerformanceOptions.h"
 #include "SVSimulationLocationOptions.h"
+#include "SVSimulationOutputOptions.h"
 
 SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 	QDialog(parent),
@@ -55,6 +56,12 @@ SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 		QHBoxLayout * h = new QHBoxLayout;
 		h->addWidget(m_simulationLocationOptions);
 		m_ui->tabClimate->setLayout(h);
+	}
+	{
+		m_simulationOutputOptions = new SVSimulationOutputOptions(this, m_outputs);
+		QHBoxLayout * h = new QHBoxLayout;
+		h->addWidget(m_simulationOutputOptions);
+		m_ui->tabOutputs->setLayout(h);
 	}
 }
 
