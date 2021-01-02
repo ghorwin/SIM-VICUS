@@ -57,6 +57,7 @@ SVPropVertexListWidget::~SVPropVertexListWidget() {
 
 void SVPropVertexListWidget::setup(int newGeometryType) {
 	m_ui->groupBoxPolygonVertexes->setVisible(false);
+	m_ui->groupBoxPolygonVertexes->setEnabled(true);
 	m_ui->groupBoxZoneProperties->setVisible(false);
 	m_ui->groupBoxSurfaceProperties->setVisible(false);
 	m_ui->checkBoxAnnonymousGeometry->setVisible(false);
@@ -308,6 +309,13 @@ void SVPropVertexListWidget::removeVertex(unsigned int idx) {
 }
 
 
+void SVPropVertexListWidget::setExtrusionDistance(double dist) {
+	if (m_ui->groupBoxZoneProperties->isVisibleTo(this)) {
+		m_ui->lineEditZoneHeight->setText(QString("%L1").arg(dist));
+	}
+}
+
+
 void SVPropVertexListWidget::onModified(int modificationType, ModificationInfo * /*data*/) {
 	// only do something here, if this widget is actually visible
 	if (!isVisibleTo(qobject_cast<QWidget*>(parent())) )
@@ -353,6 +361,9 @@ void SVPropVertexListWidget::on_pushButtonCancel_clicked() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	vs.m_sceneOperationMode = SVViewState::NUM_OM;
 	vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+	// reset locks
+	vs.m_locks = 0;
+
 	// now tell all UI components to toggle their view state
 	SVViewStateHandler::instance().setViewState(vs);
 }
@@ -412,6 +423,13 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 		} break;
 
 		case Vic3D::NewGeometryObject::NGM_ZoneExtrusion :
+			// tricky part starts now
+			// 1. we need to get a list of surfaces and make their normal vectors point outwards
+			// 2. we need to assign colors to the surfaces and default components based on
+			//    inclination
+			// 3. we need to create an undo-action
+
+			// take the polygon
 
 		break;
 	}

@@ -134,12 +134,6 @@ public:
 	/*! Clear current geometry (clears also all buffers) - nothing is drawn afterwards. */
 	void clear();
 
-	/*! Returns the last vertex placed by the user.
-		This is used as snap-line-offset point for axis-snap operations and
-		when creating snap planes.
-	*/
-	IBKMK::Vector3D lastVertex() const;
-
 	/*! Returns true, if enough (valid) data has been collected to complete the geometry.
 		This depends on the type of geometry being generated.
 	*/
@@ -158,6 +152,8 @@ public:
 
 	/*! Provides read-only access to the current plane geometry. */
 	const VICUS::PlaneGeometry planeGeometry() const { return m_planeGeometry; }
+	/*! Returns the plane geometry for extruded surface (i.e. zone ceiling). */
+	VICUS::PlaneGeometry offsetPlaneGeometry() const;
 
 	/*! Gives access to the internally stored vertex list. */
 	const std::vector<IBKMK::Vector3D> & vertexList() const { return m_vertexList; }

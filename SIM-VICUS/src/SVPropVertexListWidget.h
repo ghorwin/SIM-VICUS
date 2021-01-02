@@ -50,6 +50,9 @@ public:
 	*/
 	void removeVertex(unsigned int idx);
 
+	/*! Transfers the distance into the respective line widget. */
+	void setExtrusionDistance(double dist);
+
 public slots:
 
 	/*! Connected to SVProjectHandler::modified().

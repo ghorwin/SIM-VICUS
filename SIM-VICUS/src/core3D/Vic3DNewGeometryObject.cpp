@@ -151,6 +151,11 @@ void NewGeometryObject::appendVertex(const IBKMK::Vector3D & p) {
 			// also tell the vertex list widget about our new point
 			SVViewStateHandler::instance().m_propVertexListWidget->addVertex(p);
 		break;
+
+		case NGM_ZoneExtrusion :
+			// just signal the property list widget that we are done with the zone
+			finish();
+		break;
 	}
 	// finally update draw buffers
 	updateBuffers(false);
@@ -195,14 +200,6 @@ void NewGeometryObject::clear() {
 }
 
 
-IBKMK::Vector3D NewGeometryObject::lastVertex() const {
-	if (!m_vertexList.empty())
-		return m_vertexList.back();
-	else
-		return IBKMK::Vector3D();
-}
-
-
 bool NewGeometryObject::canComplete() const {
 	switch (m_newGeometryMode) {
 		case NGM_Rect :
@@ -222,12 +219,28 @@ void NewGeometryObject::finish() {
 	switch (m_newGeometryMode) {
 		case NGM_Rect :
 		case NGM_Polygon :
+		case NGM_ZoneExtrusion :
 			if (m_planeGeometry.isValid()) {
 				// tell property widget to modify the project with our data
 				SVViewStateHandler::instance().m_propVertexListWidget->on_pushButtonFinish_clicked();
 			}
 			return;
+		case NGM_ZoneFloor : break; // nothing to do - cannot "finish" zone floor
+		case NUM_NGM : break; // nothing to do
 	}
+}
+
+
+VICUS::PlaneGeometry NewGeometryObject::offsetPlaneGeometry() const {
+	Q_ASSERT(m_planeGeometry.isValid());
+	VICUS::PlaneGeometry pg(planeGeometry());
+	IBKMK::Vector3D offset = VICUS::QVector2IBKVector(m_localCoordinateSystemPosition) - planeGeometry().vertexes()[0];
+	// now offset all the coordinates
+	std::vector<IBKMK::Vector3D> vertexes(pg.vertexes());
+	for (IBKMK::Vector3D & v : vertexes)
+		v += offset;
+	pg.setVertexes(vertexes);
+	return pg;
 }
 
 
@@ -261,7 +274,8 @@ void NewGeometryObject::updateLocalCoordinateSystemPosition(const QVector3D & p)
 			// and add it to the first vertex of the polygon
 			newPoint = verticalOffset + VICUS::IBKVector2QVector(m_planeGeometry.vertexes()[0]);
 			// also store the absolute height
-			m_zoneHeight = verticalOffset.length();
+			m_zoneHeight = (double)verticalOffset.length();
+			SVViewStateHandler::instance().m_propVertexListWidget->setExtrusionDistance(m_zoneHeight);
 		}
 
 	} // switch
@@ -420,7 +434,14 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 				addPlane(topPlane, currentVertexIndex, currentElementIndex,
 						 m_vertexBufferData, m_indexBufferData);
 				// re-add first vertex so that we have a closed loop
-				m_vertexBufferData.push_back( m_vertexBufferData[0] ); ++currentVertexIndex;
+				m_vertexBufferData.push_back( m_vertexBufferData[m_planeGeometry.vertexes().size()+1] ); ++currentVertexIndex;
+
+				// now add vertexes to draw the vertical zone walls
+				for (unsigned int i=0; i<vertexes.size(); ++i) {
+					m_vertexBufferData.push_back( VertexC(VICUS::IBKVector2QVector(m_planeGeometry.vertexes()[i])) );
+					m_vertexBufferData.push_back( VertexC(VICUS::IBKVector2QVector(vertexes[i])) );
+				}
+
 			}
 
 		} break;
@@ -506,6 +527,26 @@ void NewGeometryObject::renderOpaque() {
 				glDrawArrays(GL_LINE_STRIP, offset, 3);
 			}
 		break;
+		case NGM_ZoneExtrusion: {
+			QColor lineCol;
+			if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
+				lineCol = QColor("#32c5ea");
+			else
+				lineCol = QColor("#106d90");
+
+			m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], lineCol);
+			// draw outlines of bottom and top polygons first
+			glDrawArrays(GL_LINE_STRIP, 0, m_planeGeometry.vertexes().size()+1);
+			// draw outlines of bottom and top polygons first
+			glDrawArrays(GL_LINE_STRIP, m_planeGeometry.vertexes().size()+1, m_planeGeometry.vertexes().size()+1);
+
+			// now draw the zone wall segments
+			unsigned int offset = 2*m_planeGeometry.vertexes().size()+2;
+			for (unsigned int i=0; i<m_planeGeometry.vertexes().size(); ++i) {
+				glDrawArrays(GL_LINES, 2*i+offset, 2);
+			}
+
+		} break;
 	} // switch
 
 

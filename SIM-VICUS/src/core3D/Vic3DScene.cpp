@@ -539,7 +539,8 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 //		qDebug() << localMousePos << VICUS::IBKVector2QVector(o.m_pickPoint) << m_coordinateSystemObject.translation();
 
 		// update the movable coordinate system's location in the new polygon object
-		m_newGeometryObject.updateLocalCoordinateSystemPosition(m_coordinateSystemObject.translation());
+		QVector3D newPoint = m_coordinateSystemObject.translation();
+		m_newGeometryObject.updateLocalCoordinateSystemPosition(newPoint);
 	}
 
 	// if in "align coordinate system mode" perform picking operation and update local coordinate system orientation
