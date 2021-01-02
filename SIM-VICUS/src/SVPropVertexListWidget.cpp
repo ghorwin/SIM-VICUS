@@ -10,6 +10,7 @@
 
 #include <VICUS_Project.h>
 #include <VICUS_Conversions.h>
+#include <VICUS_KeywordList.h>
 
 #include "SVProjectHandler.h"
 #include "SVViewStateHandler.h"
@@ -395,11 +396,11 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 			VICUS::Surface s;
 			s.m_displayName = m_ui->lineEditName->text().trimmed();
 			s.m_geometry = po->planeGeometry();
-			s.m_id = s.uniqueID();
 
 			// we need all properties, unless we create annonymous geometry
 			if (m_ui->checkBoxAnnonymousGeometry->isChecked()) {
 				s.m_color = QColor("silver");
+				s.m_id = VICUS::Project::uniqueId(project().m_plainGeometry);
 				// modify project
 				SVUndoAddSurface * undo = new SVUndoAddSurface(tr("Added surface '%1'").arg(s.m_displayName), s, 0);
 				undo->push();
@@ -411,6 +412,8 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 					s.updateColor(); // set color based on orientation
 					// also store component information
 					s.m_componentId = m_ui->comboBoxComponent->currentData().toUInt();
+					// TODO : get unique surface ID from all surfaces in all buildings/rooms... or let's use the unique ID for now, doesn't matter...
+					s.m_id = s.uniqueID();
 					// modify project
 					SVUndoAddSurface * undo = new SVUndoAddSurface(tr("Added surface '%1'").arg(s.m_displayName), s, zoneUUID);
 					undo->push();
@@ -446,6 +449,41 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 				ceiling.flip();
 			}
 
+			VICUS::Room r;
+			r.m_displayName = m_ui->lineEditName->text().trimmed();
+			// now we can create the surfaces for top and bottom
+			// compose a surface object based on the current content of the new polygon object
+			VICUS::Surface sFloor;
+			sFloor.m_displayName = QString("%1-floor").arg(r.m_displayName);
+			sFloor.m_id = sFloor.uniqueID();
+			VICUS::Surface sCeiling;
+			sCeiling.m_displayName = QString("%1-ceiling").arg(r.m_displayName);
+			sCeiling.m_id = sFloor.uniqueID();
+			// if the ceiling has a normal vector pointing up, we take it as ceiling, otherwise it's going to be the floor
+			if (IBKMK::Vector3D(0,0,1).scalarProduct(ceiling.normal()) > 0) {
+				sCeiling.m_geometry = ceiling;
+				sFloor.m_geometry = floor;
+			}
+			else {
+				sCeiling.m_geometry = floor;
+				sFloor.m_geometry = ceiling;
+			}
+
+			sFloor.updateColor();
+			sCeiling.updateColor();
+
+			r.m_id = r.uniqueID();
+			r.m_surfaces.push_back(sFloor);
+			r.m_surfaces.push_back(sCeiling);
+			double area = sFloor.m_geometry.area();
+			VICUS::KeywordList::setParameter(r.m_para, "Room::para_t", VICUS::Room::P_Area, area);
+			VICUS::KeywordList::setParameter(r.m_para, "Room::para_t", VICUS::Room::P_Volume, area*offset.magnitude());
+
+			// now create the undo action
+			SVUndoAddZone * undo = new SVUndoAddZone(tr("Adding new zone '%1'").arg(r.m_displayName),
+													 m_ui->comboBoxBuildingLevel->currentData().toUInt(),
+													 r, false);
+			undo->push();
 		}
 		break;
 	}
