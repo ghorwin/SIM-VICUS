@@ -706,6 +706,9 @@ void PlaneGeometry::updateLocalCoordinateSystem() {
 	IBKMK::Vector3D n;
 	m_localX.crossProduct(y, n);
 	n.crossProduct(m_localX, m_localY);
+	// normalize localX and localY
+	m_localX.normalize();
+	m_localY.normalize();
 
 	if (n.magnitude() > 1e-4) {
 		m_normal = n;

@@ -407,25 +407,30 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 			}
 			else {
 				// we need inputs for room (if there is a room, there is also a building and level)
-				if (m_ui->comboBoxZone->currentIndex() != -1) {
-					unsigned int zoneUUID = m_ui->comboBoxZone->currentData().toUInt();
-					s.updateColor(); // set color based on orientation
-					// also store component information
-					s.m_componentId = m_ui->comboBoxComponent->currentData().toUInt();
-					// TODO : get unique surface ID from all surfaces in all buildings/rooms... or let's use the unique ID for now, doesn't matter...
-					s.m_id = s.uniqueID();
-					// modify project
-					SVUndoAddSurface * undo = new SVUndoAddSurface(tr("Added surface '%1'").arg(s.m_displayName), s, zoneUUID);
-					undo->push();
-				}
-				else {
-					QMessageBox::critical(this, QString(), tr("Select a zone first to add the surface to!"));
+				if (m_ui->comboBoxZone->currentIndex() == -1) {
+					QMessageBox::critical(this, QString(), tr("First select a zone to add the surface to!"));
 					return;
 				}
+				unsigned int zoneUUID = m_ui->comboBoxZone->currentData().toUInt();
+				Q_ASSERT(zoneUUID != 0);
+
+				s.updateColor(); // set color based on orientation
+				// also store component information
+				s.m_componentId = m_ui->comboBoxComponent->currentData().toUInt();
+				// TODO : get unique surface ID from all surfaces in all buildings/rooms... or let's use the unique ID for now, doesn't matter...
+				s.m_id = s.uniqueID();
+				// modify project
+				SVUndoAddSurface * undo = new SVUndoAddSurface(tr("Added surface '%1'").arg(s.m_displayName), s, zoneUUID);
+				undo->push();
 			}
 		} break;
 
 		case Vic3D::NewGeometryObject::NGM_ZoneExtrusion : {
+			// we need a building level
+			if (m_ui->comboBoxBuildingLevel->currentIndex() == -1) {
+				QMessageBox::critical(this, QString(), tr("First select a building level to add the zone/room to!"));
+				return;
+			}
 			// tricky part starts now
 			// 1. we need to get a list of surfaces and make their normal vectors point outwards
 			// 2. we need to assign colors to the surfaces and default components based on
@@ -475,13 +480,32 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 			r.m_id = r.uniqueID();
 			r.m_surfaces.push_back(sFloor);
 			r.m_surfaces.push_back(sCeiling);
+
+			// now loop around the circle and create planes for wall segments
+			// we take the floor polygon
+
+			unsigned int nVert = floor.vertexes().size();
+			for (unsigned int i=0; i<nVert; ++i) {
+				IBKMK::Vector3D p0 = floor.vertexes()[ (i+1) % nVert];
+				IBKMK::Vector3D p1 = floor.vertexes()[ i ];
+				IBKMK::Vector3D p2 = ceiling.vertexes()[ (nVert - 2 - i) % nVert];
+				VICUS::Surface sWall;
+				sWall.m_id = sWall.uniqueID();
+				sWall.m_displayName = tr("Wall %1").arg(i+1);
+				sWall.m_geometry = VICUS::PlaneGeometry( VICUS::PlaneGeometry::T_Rectangle, p0, p1, p2);
+				sWall.updateColor();
+				r.m_surfaces.push_back(sWall);
+			}
+
 			double area = sFloor.m_geometry.area();
 			VICUS::KeywordList::setParameter(r.m_para, "Room::para_t", VICUS::Room::P_Area, area);
 			VICUS::KeywordList::setParameter(r.m_para, "Room::para_t", VICUS::Room::P_Volume, area*offset.magnitude());
 
 			// now create the undo action
+			unsigned int buildingLevelUid = m_ui->comboBoxBuildingLevel->currentData().toUInt();
+			Q_ASSERT(buildingLevelUid != 0);
 			SVUndoAddZone * undo = new SVUndoAddZone(tr("Adding new zone '%1'").arg(r.m_displayName),
-													 m_ui->comboBoxBuildingLevel->currentData().toUInt(),
+													 buildingLevelUid,
 													 r, false);
 			undo->push();
 		}
