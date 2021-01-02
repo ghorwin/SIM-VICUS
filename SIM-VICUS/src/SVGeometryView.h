@@ -49,6 +49,11 @@ private slots:
 	*/
 	void coordinateInputFinished();
 
+	void on_actionSnap_toggled(bool);
+	void on_actionXLock_toggled(bool);
+	void on_actionYLock_toggled(bool);
+	void on_actionZLock_toggled(bool);
+
 private:
 	void setupToolBar();
 

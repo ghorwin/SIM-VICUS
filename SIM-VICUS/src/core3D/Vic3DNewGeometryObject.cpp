@@ -175,6 +175,7 @@ void NewGeometryObject::removeVertex(unsigned int idx) {
 	m_vertexList.erase(m_vertexList.begin()+idx);
 	switch (m_newGeometryMode) {
 		case NGM_Polygon :
+		case NGM_ZoneFloor :
 			m_planeGeometry.setVertexes(m_vertexList);
 			SVViewStateHandler::instance().m_propVertexListWidget->removeVertex(idx);
 		break;
@@ -186,6 +187,7 @@ void NewGeometryObject::removeVertex(unsigned int idx) {
 void NewGeometryObject::removeLastVertex() {
 	switch (m_newGeometryMode) {
 		case NGM_Polygon :
+		case NGM_ZoneFloor :
 			Q_ASSERT(!m_vertexList.empty());
 			removeVertex(m_vertexList.size()-1);
 		break;

@@ -20,6 +20,7 @@
 SVGeometryView::SVGeometryView(QWidget *parent) :
 	QWidget(parent)
 {
+
 	// *** create OpenGL window
 
 	QSurfaceFormat format;
@@ -112,10 +113,22 @@ void SVGeometryView::refreshSceneView() {
 
 void SVGeometryView::onViewStateChanged() {
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
+	m_snapAction->blockSignals(true);
 	m_snapAction->setChecked(vs.m_snapEnabled);
+	m_snapAction->blockSignals(false);
+
+	m_xLockAction->blockSignals(true);
 	m_xLockAction->setChecked(vs.m_locks & SVViewState::L_LocalX);
+	m_xLockAction->blockSignals(false);
+
+	m_yLockAction->blockSignals(true);
 	m_yLockAction->setChecked(vs.m_locks & SVViewState::L_LocalY);
+	m_yLockAction->blockSignals(false);
+
+	m_zLockAction->blockSignals(true);
 	m_zLockAction->setChecked(vs.m_locks & SVViewState::L_LocalZ);
+	m_zLockAction->blockSignals(false);
+
 	bool lockVisible = (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex);
 	m_xLockAction->setVisible(lockVisible);
 	m_yLockAction->setVisible(lockVisible);
@@ -226,20 +239,73 @@ void SVGeometryView::coordinateInputFinished() {
 }
 
 
+void SVGeometryView::on_actionSnap_toggled(bool on) {
+	// switch toggle view state
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_snapEnabled = on;
+	SVViewStateHandler::instance().setViewState(vs);
+	focusSceneView();
+}
+
+
+void SVGeometryView::on_actionXLock_toggled(bool on) {
+	// switch toggle view state
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	if (on)
+		vs.m_locks |= SVViewState::L_LocalX;
+	else
+		vs.m_locks &= ~SVViewState::L_LocalX;
+
+	SVViewStateHandler::instance().setViewState(vs);
+	focusSceneView();
+}
+
+
+void SVGeometryView::on_actionYLock_toggled(bool on) {
+	// switch toggle view state
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	if (on)
+		vs.m_locks |= SVViewState::L_LocalY;
+	else
+		vs.m_locks &= ~SVViewState::L_LocalY;
+
+	SVViewStateHandler::instance().setViewState(vs);
+	focusSceneView();
+}
+
+
+void SVGeometryView::on_actionZLock_toggled(bool on) {
+	// switch toggle view state
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	if (on)
+		vs.m_locks |= SVViewState::L_LocalZ;
+	else
+		vs.m_locks &= ~SVViewState::L_LocalZ;
+
+	SVViewStateHandler::instance().setViewState(vs);
+	focusSceneView();
+}
+
 void SVGeometryView::setupToolBar() {
 	m_snapAction = new QAction(tr("Snap"));
 	m_snapAction->setCheckable(true);
 	m_toolBar->addAction(m_snapAction);
+	connect(m_snapAction, &QAction::toggled, this, &SVGeometryView::on_actionSnap_toggled);
 
 	m_xLockAction = new QAction(tr("X"));
 	m_xLockAction->setCheckable(true);
 	m_toolBar->addAction(m_xLockAction);
+	connect(m_xLockAction, &QAction::toggled, this, &SVGeometryView::on_actionXLock_toggled);
+
 	m_yLockAction = new QAction(tr("Y"));
 	m_yLockAction->setCheckable(true);
 	m_toolBar->addAction(m_yLockAction);
+	connect(m_yLockAction, &QAction::toggled, this, &SVGeometryView::on_actionXLock_toggled);
+
 	m_zLockAction = new QAction(tr("Z"));
 	m_zLockAction->setCheckable(true);
 	m_toolBar->addAction(m_zLockAction);
+	connect(m_zLockAction, &QAction::toggled, this, &SVGeometryView::on_actionXLock_toggled);
 
 	m_toolBar->addSeparator();
 
@@ -251,6 +317,8 @@ void SVGeometryView::setupToolBar() {
 //	QWidget* stretch = new QWidget();
 //	stretch->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
 //	m_toolBar->addWidget(stretch);
+
+
 }
 
 
