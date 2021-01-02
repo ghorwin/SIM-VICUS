@@ -184,6 +184,13 @@ inline IBKMK::Vector3D operator*(double scalar, const IBKMK::Vector3D &other) {
 	return tmp;
 }
 
+/*! Scales all components of the vector with the scalar \a scalar. */
+inline IBKMK::Vector3D operator*(const IBKMK::Vector3D &other, double scalar) {
+	IBKMK::Vector3D tmp = other;
+	tmp *= scalar;
+	return tmp;
+}
+
 } // namespace IBKMK
 
 
