@@ -105,13 +105,15 @@ public:
 
 	/*! Normalizes the vector: <math>v = \frac{v}{\left| v \right|}</math>. */
 	void normalize() {
-		*this /= magnitude();
+		double mag = magnitude();
+		if (mag != 0.0)
+			*this /= magnitude();
 	}
 
 	/*! Normalizes the vector: <math>v = \frac{v}{\left| v \right|}</math>. */
 	Vector3D normalized() const {
 		Vector3D t(*this);
-		t /= t.magnitude();
+		t.normalize();
 		return t;
 	}
 
