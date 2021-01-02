@@ -15,6 +15,7 @@ namespace VICUS {
 class Room : public Object {
 public:
 
+	/*! Room parameters. */
 	enum para_t{
 		/*! Dry density of the material. */
 		P_Area,					// Keyword: Area					[m2]	'Floor area of the zone.'

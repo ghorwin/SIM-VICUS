@@ -23,6 +23,7 @@ public:
 	void updateColor();
 
 	VICUS_READWRITE
+	VICUS_COMPARE_WITH_ID
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
