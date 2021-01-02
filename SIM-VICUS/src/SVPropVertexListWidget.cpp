@@ -474,7 +474,10 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 				sFloor.m_geometry = ceiling;
 			}
 
+			sFloor.m_componentId = m_ui->comboBoxComponentFloor->currentData().toUInt();
 			sFloor.updateColor();
+
+			sCeiling.m_componentId = m_ui->comboBoxComponentCeiling->currentData().toUInt();
 			sCeiling.updateColor();
 
 			r.m_id = r.uniqueID();
@@ -486,6 +489,7 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 
 			unsigned int nVert = floor.vertexes().size();
 			for (unsigned int i=0; i<nVert; ++i) {
+				// mind the winding order
 				IBKMK::Vector3D p0 = floor.vertexes()[ (i+1) % nVert];
 				IBKMK::Vector3D p1 = floor.vertexes()[ i ];
 				IBKMK::Vector3D p2 = ceiling.vertexes()[ (nVert - 2 - i) % nVert];
@@ -493,6 +497,7 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 				sWall.m_id = sWall.uniqueID();
 				sWall.m_displayName = tr("Wall %1").arg(i+1);
 				sWall.m_geometry = VICUS::PlaneGeometry( VICUS::PlaneGeometry::T_Rectangle, p0, p1, p2);
+				sWall.m_componentId = m_ui->comboBoxComponentWalls->currentData().toUInt();
 				sWall.updateColor();
 				r.m_surfaces.push_back(sWall);
 			}
