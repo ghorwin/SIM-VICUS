@@ -152,3 +152,14 @@ void SVDBComponentEditDialog::on_pushButtonReloadUserDB_clicked() {
 	}
 
 }
+
+
+void SVDBComponentEditDialog::showEvent(QShowEvent * event) {
+	QWidget::showEvent(event);
+	// now resize name column to span the available space
+	int width = m_ui->tableView->width()-2;
+	width -= m_ui->tableView->columnWidth(0);
+	width -= m_ui->tableView->columnWidth(1);
+	width -= m_ui->tableView->columnWidth(3);
+	m_ui->tableView->setColumnWidth(2, width);
+}

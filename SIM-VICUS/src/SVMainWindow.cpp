@@ -236,7 +236,8 @@ void SVMainWindow::on_actionDBComponents_triggered() {
 		m_dbComponentEditDialog = new SVDBComponentEditDialog(nullptr);
 	m_dbComponentEditDialog->edit();
 	// update all widgets that show the components somewhere (in a combo box or else)
-	SVViewStateHandler::instance().m_propVertexListWidget->updateComponentComboBoxes();
+	if (SVViewStateHandler::instance().m_propVertexListWidget != nullptr) // guard against not yet created property widget
+		SVViewStateHandler::instance().m_propVertexListWidget->updateComponentComboBoxes();
 }
 
 

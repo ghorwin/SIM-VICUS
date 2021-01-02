@@ -14,21 +14,22 @@
 
 namespace VICUS {
 
+/*! This is a template for boundary conditions, to be referenced by components. */
 class BoundaryCondition : public AbstractDBElement {
 public:
 
 	/*! Basic parameters. */
 	enum para_t {
-		//thermal paramters
 		P_SolarAbsorption,			// Keyword: SolarAbsorption			[---]	'Solar absorption coefficient.'
 		P_Emissivity,				// Keyword: Emissivity				[---]	'Constant Long wave emissivity.'
 		//P_VisibleAbsorption,		// Keyword: VisibleAbsorption		[---]	'Visible absorption coefficient.'
-		/*! 'Constant heat transfer coefficient [W/m2K].' */
+		/*! Constant heat transfer coefficient [W/m2K] */
 		P_HeatTransferCoefficient,	// Keyword: HeatTransferCoefficient [W/m2K]		'Constant heat transfer coefficient.'
 		NUM_P
 	};
 
-	enum HeatConductionModel{
+	/*! Optionally, store all heat condition parameters in a struct. */
+	enum HeatConductionModel {
 		/*! Constant transfer coefficient. */
 		MT_Constant,				// Keyword: Constant		'Constant model.'
 		/// TODO Andreas : ist das hier so richtig falls das Modell detaillierter wird?

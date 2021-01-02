@@ -679,7 +679,7 @@ void SVPropVertexListWidget::on_comboBoxBuilding_currentIndexChanged(int /*index
 }
 
 
-void SVPropVertexListWidget::on_comboBoxBuildingLevel_currentIndexChanged(int index) {
+void SVPropVertexListWidget::on_comboBoxBuildingLevel_currentIndexChanged(int /*index*/) {
 	updateZoneComboBox();
 }
 

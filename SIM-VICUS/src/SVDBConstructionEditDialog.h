@@ -47,6 +47,8 @@ private slots:
 
 	void on_pushButtonReloadUserDB_clicked();
 
+	void on_tableView_doubleClicked(const QModelIndex &index);
+
 private:
 
 	Ui::SVDBConstructionEditDialog	*m_ui;

@@ -200,3 +200,9 @@ void SVDBConstructionEditDialog::on_pushButtonReloadUserDB_clicked() {
 	}
 
 }
+
+
+void SVDBConstructionEditDialog::on_tableView_doubleClicked(const QModelIndex &index) {
+	if (m_ui->pushButtonSelect->isVisible() && index.isValid())
+		accept();
+}

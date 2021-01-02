@@ -46,8 +46,8 @@ signals:
 private slots:
 	void on_lineEditName_editingFinished();
 	void on_lineEditHeatTransferCoefficient_editingFinished();
-	void on_lineEditSolarAbsorption_editingFinished();
-	void on_lineEditThermalAbsorption_editingFinished();
+	void on_lineEditSolarAbsorptionCoefficient_editingFinished();
+	void on_lineEditLongWaveEmissivity_editingFinished();
 
 
 private:

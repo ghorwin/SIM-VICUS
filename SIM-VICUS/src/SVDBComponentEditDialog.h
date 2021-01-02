@@ -23,6 +23,10 @@ public:
 	/*! Starts the dialog in "edit components" mode. */
 	void edit();
 
+	// QWidget interface
+protected:
+	void showEvent(QShowEvent * event) override;
+
 private slots:
 	void on_pushButtonSelect_clicked();
 	void on_pushButtonCancel_clicked();
@@ -39,8 +43,6 @@ private slots:
 
 	void on_pushButtonReloadUserDB_clicked();
 
-
-
 private:
 	Ui::SVDBComponentEditDialog *m_ui;
 
@@ -48,6 +50,7 @@ private:
 	SVDBComponentTableModel			*m_dbModel		= nullptr;
 	/*! The sort filter model (owned). */
 	QSortFilterProxyModel			*m_proxyModel	= nullptr;
+
 };
 
 #endif // SVDBComponentEditDialogH

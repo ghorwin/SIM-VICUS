@@ -209,7 +209,7 @@ void SVDBComponentEditWidget::on_toolButtonSelectConstruction_clicked() {
 	// get construction edit dialog from mainwindow
 	SVDBConstructionEditDialog * conEditDialog = SVMainWindow::instance().dbConstructionEditDialog();
 	int conId = conEditDialog->select(m_current->m_idOpaqueConstruction);
-	if (conId != 0) {
+	if (conId != -1) {
 		m_current->m_idOpaqueConstruction = conId;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		updateInput(m_current->m_id);

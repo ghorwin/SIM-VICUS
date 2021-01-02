@@ -217,3 +217,9 @@ void SVDBMaterialEditDialog::showEvent(QShowEvent * /*event*/) {
 	widgetSizes << w-400 << 400;
 	m_ui->splitter->setSizes(widgetSizes);
 }
+
+
+void SVDBMaterialEditDialog::on_tableView_doubleClicked(const QModelIndex &index) {
+	if (m_ui->pushButtonSelect->isVisible() && index.isValid())
+		accept();
+}
