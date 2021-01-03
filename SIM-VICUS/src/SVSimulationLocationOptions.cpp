@@ -8,6 +8,7 @@
 #include "SVStyle.h"
 #include "SVConstants.h"
 #include "SVDBModelDelegate.h"
+#include "SVClimateDataSortFilterProxyModel.h"
 
 SVSimulationLocationOptions::SVSimulationLocationOptions(QWidget *parent, NANDRAD::Location & location) :
 	QWidget(parent),
@@ -15,8 +16,16 @@ SVSimulationLocationOptions::SVSimulationLocationOptions(QWidget *parent, NANDRA
 	m_location(&location)
 {
 	m_ui->setupUi(this);
+
+	// source model
 	m_climateDataModel = SVSettings::instance().climateDataTableModel();
-	m_ui->tableViewClimateFiles->setModel(m_climateDataModel);
+
+	// proxy model
+	m_filterModel = new SVClimateDataSortFilterProxyModel(this);
+	m_filterModel->setSourceModel(m_climateDataModel);
+
+	// set proxy model into table
+	m_ui->tableViewClimateFiles->setModel(m_filterModel);
 
 	SVDBModelDelegate * delegate = new SVDBModelDelegate(this, Role_BuiltIn);
 	m_ui->tableViewClimateFiles->setItemDelegate(delegate);
@@ -61,11 +70,24 @@ void SVSimulationLocationOptions::updateUi() {
 	else {
 		m_ui->radioButtonFromDB->setChecked(true);
 	}
-
+	on_radioButtonFromDB_toggled(m_ui->radioButtonFromDB->isChecked());
 }
 
 
 void SVSimulationLocationOptions::on_radioButtonFromDB_toggled(bool checked) {
 	m_ui->tableViewClimateFiles->setEnabled(checked);
+	m_ui->labelTextFilter->setEnabled(checked);
+	m_ui->lineEditTextFilter->setEnabled(checked);
 	m_ui->filepathClimateDataFile->setEnabled(!checked);
+}
+
+
+void SVSimulationLocationOptions::on_lineEditTextFilter_editingFinished() {
+	// update the filter text
+	m_filterModel->setFilterWildcard(m_ui->lineEditTextFilter->text().trimmed());
+}
+
+
+void SVSimulationLocationOptions::on_lineEditTextFilter_textChanged(const QString &arg1) {
+	m_filterModel->setFilterWildcard(arg1);
 }

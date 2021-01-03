@@ -23,6 +23,7 @@ public:
 		C_Longitude,
 		C_Latitude,
 		C_TimeZone,
+		C_Elevation,
 		NUM_C
 	};
 

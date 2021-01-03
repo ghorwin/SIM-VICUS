@@ -34,7 +34,9 @@ enum DataRoles {
 	/*! Role to be used to identify built-in database components. */
 	Role_BuiltIn,
 	/*! Role to be used when a file path is to be returned.*/
-	Role_FilePath
+	Role_FilePath,
+	/*! Role to use for double values needed for comparisions. */
+	Role_Value
 };
 
 

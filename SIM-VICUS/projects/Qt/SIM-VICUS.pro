@@ -161,7 +161,8 @@ SOURCES += \
 		../../src/SVUtils.cpp \
 		../../src/SVViewState.cpp \
 		../../src/SVViewStateHandler.cpp \
-		../../src/SVWelcomeScreen.cpp
+		../../src/SVWelcomeScreen.cpp \
+    ../../src/SVClimateDataSortFilterProxyModel.cpp
 
 HEADERS  += \
 		../../src/SVClimateDataTableModel.h \
@@ -252,7 +253,8 @@ HEADERS  += \
 		../../src/SVUtils.h \
 		../../src/SVViewState.h \
 		../../src/SVViewStateHandler.h \
-		../../src/SVWelcomeScreen.h
+		../../src/SVWelcomeScreen.h \
+    ../../src/SVClimateDataSortFilterProxyModel.h
 
 FORMS    += \
 		../../src/SVAboutDialog.ui \

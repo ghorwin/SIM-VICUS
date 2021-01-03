@@ -37,12 +37,16 @@ QVariant SVClimateDataTableModel::data(const QModelIndex & index, int role) cons
 				case SVClimateDataTableModel::C_Region:
 					if (f.m_categories.size() >= 1)
 						return f.m_categories[0];
+					else
+						return "---";
 				break;
 				case SVClimateDataTableModel::C_Country:
 					return f.m_country;
 				case SVClimateDataTableModel::C_Sub:
 					if (f.m_categories.size() >= 3)
 						return f.m_categories[2];
+					else
+						return "---";
 				break;
 				case SVClimateDataTableModel::C_City:
 					return f.m_city;
@@ -55,11 +59,35 @@ QVariant SVClimateDataTableModel::data(const QModelIndex & index, int role) cons
 						return QString("+ %1").arg(f.m_timeZone);
 					else
 						return QString("- %1").arg(-f.m_timeZone);
+				case SVClimateDataTableModel::C_Elevation:
+					return QString("%L1").arg(f.m_elevation);
+				case SVClimateDataTableModel::NUM_C:
+					break;
 			}
 		} break;
 
+		case Qt::ToolTipRole :
+			return f.m_filename;
+
 		case Role_BuiltIn :
 			return f.m_builtIn;
+
+		case Role_FilePath :
+			return f.m_filename;
+
+		case Role_Value : {
+			switch ((Columns)index.column()) {
+				case SVClimateDataTableModel::C_Longitude:
+					return f.m_longitudeInDegree;
+				case SVClimateDataTableModel::C_Latitude:
+					return f.m_latitudeInDegree;
+				case SVClimateDataTableModel::C_TimeZone:
+					return f.m_timeZone;
+				case SVClimateDataTableModel::C_Elevation:
+					return f.m_elevation;
+				default:;
+			}
+		} break;
 	}
 	return QVariant();
 }
@@ -85,6 +113,8 @@ QVariant SVClimateDataTableModel::headerData(int section, Qt::Orientation orient
 					return tr("Latitude [deg]");
 				case SVClimateDataTableModel::C_TimeZone:
 					return tr("Time zone");
+				case SVClimateDataTableModel::C_Elevation:
+					return tr("Elevation [m]");
 				default:;
 			}
 		} break;
