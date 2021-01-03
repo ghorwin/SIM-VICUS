@@ -38,8 +38,6 @@ public:
 	static QString AlternativeEditFieldBackground;
 	/*! Background color when input is in invalid state. */
 	static QString ErrorEditFieldBackground;
-	/*! Background color when input is in invalid state but for alternative row colors. */
-	static QString AlternativeErrorEditFieldBackground;
 	/*! Background color when input is read-only. */
 	static QString ReadOnlyEditFieldBackground;
 

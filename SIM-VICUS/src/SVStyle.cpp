@@ -8,6 +8,8 @@
 #include <QTableView>
 #include <QHeaderView>
 
+#include <QtExt_Style.h>
+
 #include "SVSettings.h"
 
 SVStyle * SVStyle::m_self = nullptr;
@@ -142,6 +144,16 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 		m_readOnlyEditFieldBackground = "#5f7da0";
 		m_alternativeReadOnlyEditFieldBackground = "#7f94ab";
 		m_errorEditFieldBackground = "#ab4e4e";
+
+		// now adjust the style settings for QtExt components
+		QtExt::Style::EditFieldBackground = "#212124";
+		QtExt::Style::AlternativeEditFieldBackground = "#3a3b3f";
+		QtExt::Style::ErrorEditFieldBackground = "#ab4e4e";
+		QtExt::Style::ReadOnlyEditFieldBackground = "#5f7da0";
+
+		QtExt::Style::AlternativeBackgroundBright = "#73580e";
+		QtExt::Style::AlternativeBackgroundDark = "#57430b";
+		QtExt::Style::AlternativeBackgroundText = "#ffedce";
 	}
 	else if ( theme == SVSettings::TT_White && fileWhite.exists()) {
 		fileWhite.open(QFile::ReadOnly);
@@ -155,6 +167,16 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 		m_readOnlyEditFieldBackground = "#d6e9ff";
 		m_alternativeReadOnlyEditFieldBackground = "#b5d8ff";
 		m_errorEditFieldBackground = "#ff7777";
+
+		QtExt::Style::EditFieldBackground						= "#f9f6c8";
+		QtExt::Style::AlternativeEditFieldBackground			= "#f9ffd8";
+		QtExt::Style::ErrorEditFieldBackground					= "#ff7777";
+		QtExt::Style::ReadOnlyEditFieldBackground				= "#d6e9ff";
+
+		QtExt::Style::AlternativeBackgroundBright				= "#fff4b8";
+		QtExt::Style::AlternativeBackgroundDark					= "#ffe49d";
+		QtExt::Style::AlternativeBackgroundText					= "#760000";
+
 	}
 	else {
 		// clear style sheet for default style.
