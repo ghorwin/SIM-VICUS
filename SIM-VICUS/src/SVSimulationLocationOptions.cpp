@@ -228,6 +228,13 @@ void SVSimulationLocationOptions::on_radioButtonFromDB_toggled(bool checked) {
 	m_ui->labelTextFilter->setEnabled(checked);
 	m_ui->lineEditTextFilter->setEnabled(checked);
 	m_ui->filepathClimateDataFile->setEnabled(!checked);
+	if (checked) {
+		onCurrentIndexChanged(m_ui->tableViewClimateFiles->currentIndex(), QModelIndex());
+	}
+	else {
+		updateUserClimateFileInfo();
+		updateLocationInfo(&m_userClimateFile);
+	}
 }
 
 
@@ -241,6 +248,11 @@ void SVSimulationLocationOptions::on_lineEditTextFilter_textChanged(const QStrin
 	m_filterModel->setFilterWildcard(arg1);
 }
 
+
+void SVSimulationLocationOptions::on_filepathClimateDataFile_editingFinished() {
+	updateUserClimateFileInfo();
+	updateLocationInfo(&m_userClimateFile);
+}
 
 void SVSimulationLocationOptions::on_checkBoxCustomLocation_toggled(bool checked) {
 	m_ui->lineEditLatitude->setEnabled(checked);
