@@ -39,6 +39,8 @@ private slots:
 
 	void onCurrentIndexChanged(const QModelIndex &current, const QModelIndex & /*previous*/);
 
+	void on_checkBoxCustomLocation_toggled(bool checked);
+
 private:
 	void updateLocationInfo(const SVClimateFileInfo * dataPtr);
 	void updateUserClimateFileInfo();

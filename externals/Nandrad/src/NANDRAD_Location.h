@@ -50,6 +50,7 @@ public:
 		NUM_P
 	};
 
+
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	NANDRAD_READWRITE
@@ -58,6 +59,11 @@ public:
 
 	/*! Parameter set. */
 	IBK::Parameter				m_para[NUM_P];							// XML:E
+
+	/*! Time zone, only used when both P_Longitude and P_Latitude are given and thus
+		a custom climatic location is being used.
+	*/
+	int							m_timeZone = 13;						// XML:E
 
 	/*! Name of the climate data file. */
 	IBK::Path					m_climateFileName;						// XML:E

@@ -54,9 +54,9 @@ QVariant SVClimateDataTableModel::data(const QModelIndex & index, int role) cons
 					return QString("%L1").arg(f.m_latitudeInDegree);
 				case SVClimateDataTableModel::C_TimeZone:
 					if (f.m_timeZone >= 0)
-						return QString("+ %1").arg(f.m_timeZone);
+						return QString("UTC + %1").arg(f.m_timeZone);
 					else
-						return QString("- %1").arg(-f.m_timeZone);
+						return QString("UTC - %1").arg(-f.m_timeZone);
 				case SVClimateDataTableModel::C_Elevation:
 					return QString("%L1").arg(f.m_elevation);
 				case SVClimateDataTableModel::NUM_C:

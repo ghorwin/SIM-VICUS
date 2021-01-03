@@ -18,6 +18,7 @@ SVSimulationLocationOptions::SVSimulationLocationOptions(QWidget *parent, NANDRA
 	m_location(&location)
 {
 	m_ui->setupUi(this);
+	m_ui->verticalLayout->setMargin(0);
 
 	// source model
 	m_climateDataModel = SVSettings::instance().climateDataTableModel();
@@ -35,6 +36,34 @@ SVSimulationLocationOptions::SVSimulationLocationOptions(QWidget *parent, NANDRA
 
 	connect(m_ui->tableViewClimateFiles->selectionModel(), &QItemSelectionModel::currentChanged,
 			this, &SVSimulationLocationOptions::onCurrentIndexChanged);
+
+
+
+	// populate combo boxes
+	m_ui->comboBoxTimeZone->blockSignals(true);
+	for (int i=-12; i<13; ++i) {
+		m_ui->comboBoxTimeZone->addItem(tr("UTC %1%2").arg(i>=0 ? "+" : "").arg(i), i);
+	}
+	m_ui->comboBoxTimeZone->blockSignals(false);
+
+	m_ui->lineEditLatitude->setup(-90, 90, tr("Latitude in degrees, -90 (south pole) to +90 (north pole).") );
+	m_ui->lineEditLongitude->setup(-180, 180, tr("Longitude in degrees -180 (west) to +180 (east).") );
+
+	// Albedo values from VDI 3789-2
+	m_ui->comboBoxAlbedo->blockSignals(true);
+	m_ui->comboBoxAlbedo->addItem(tr("Dry leveled soil - 0.2"), 0.2);
+	m_ui->comboBoxAlbedo->addItem(tr("Clay soil - 0.23"), 0.23);
+	m_ui->comboBoxAlbedo->addItem(tr("Light sand - 0.37"), 0.37);
+	m_ui->comboBoxAlbedo->addItem(tr("Coniferous forest - 0.12"), 0.12);
+	m_ui->comboBoxAlbedo->addItem(tr("Deciduous forest - 0.2"), 0.2);
+	m_ui->comboBoxAlbedo->addItem(tr("Pavement - 0.15"), 0.15);
+	m_ui->comboBoxAlbedo->addItem(tr("Red tiles - 0.33"), 0.33);
+	m_ui->comboBoxAlbedo->addItem(tr("Wet medium grained snow - 0.64"), 0.64);
+	m_ui->comboBoxAlbedo->addItem(tr("Dry new fallen snow - 0.82"), 0.82);
+	m_ui->comboBoxAlbedo->setCompleter(nullptr); // no auto-completion, otherwise we have text in a value-only combo box
+	m_ui->comboBoxAlbedo->blockSignals(false);
+
+	m_ui->filepathClimateDataFile->setup("", true, true, tr("Climate data container files (*.c6b *.epw *.wac);;All files (*.*)"));
 }
 
 
@@ -45,6 +74,26 @@ SVSimulationLocationOptions::~SVSimulationLocationOptions() {
 
 void SVSimulationLocationOptions::updateUi() {
 	m_ui->tableViewClimateFiles->resizeColumnsToContents();
+
+	if (m_location->m_para[NANDRAD::Location::P_Albedo].name.empty())
+		m_location->m_para[NANDRAD::Location::P_Albedo].set("Albedo", 0.2, "---");
+
+	m_ui->comboBoxAlbedo->setValue(m_location->m_para[NANDRAD::Location::P_Albedo].value);
+	m_ui->checkBoxCustomLocation->blockSignals(true);
+	// if both latitude and longitude are given, we have a custom climate location
+	if (!m_location->m_para[NANDRAD::Location::P_Latitude].name.empty() &&
+		!m_location->m_para[NANDRAD::Location::P_Longitude].name.empty())
+	{
+		m_ui->checkBoxCustomLocation->setChecked(true);
+	}
+	else {
+		// no custom location? clear location and latitude parameters
+		m_location->m_para[NANDRAD::Location::P_Latitude].clear();
+		m_location->m_para[NANDRAD::Location::P_Longitude].clear();
+		m_ui->checkBoxCustomLocation->setChecked(false);
+	}
+	m_ui->checkBoxCustomLocation->blockSignals(false);
+	on_checkBoxCustomLocation_toggled(m_ui->checkBoxCustomLocation->isChecked());
 
 	if (m_location->m_climateFileName.isValid()) {
 		// is the referenced file in the climate database?
@@ -107,15 +156,20 @@ void SVSimulationLocationOptions::onCurrentIndexChanged(const QModelIndex &curre
 }
 
 
-void SVSimulationLocationOptions::updateLocationInfo(const SVClimateFileInfo * dataPtr) {
+void SVSimulationLocationOptions::updateLocationInfo(const SVClimateFileInfo * climateInfoPtr) {
 	// update info text on climate location
 	m_ui->textBrowserDescription->clear();
-	if (dataPtr == nullptr) {
+	// default values for location
+	m_ui->lineEditLatitude->setValue(51.1);
+	m_ui->lineEditLongitude->setValue(13.1);
+	m_ui->comboBoxTimeZone->setCurrentIndex(13);
+
+	if (climateInfoPtr == nullptr) {
 		return;
 	}
 	QString infoText;
 	infoText = "<html><body>";
-	if (!dataPtr->m_file.isFile()) {
+	if (!climateInfoPtr->m_file.isFile()) {
 		infoText += "<p>" + tr("Invalid climate data file path.") + "</p>";
 	}
 	else {
@@ -123,23 +177,34 @@ void SVSimulationLocationOptions::updateLocationInfo(const SVClimateFileInfo * d
 			infoText += "<p>" + tr("User climate data file.");
 		}
 		else {
-			if (!dataPtr->m_builtIn)
+			if (!climateInfoPtr->m_builtIn)
 				infoText += "<p>" + tr("Climate data from user database.");
 			else
 				infoText += "<p>" + tr("Climate data from standard database.");
 		}
-		infoText += "<br>" + dataPtr->m_timeBehaviour + "</p>";
-		infoText += "<p>" + tr("City/Country") + ": <b>" + dataPtr->m_city + "</b>/";
-		infoText += "<b>" + dataPtr->m_country + "</b>, ";
-		infoText += tr("Source") + ": <b>" + dataPtr->m_source + "</b><br>";
-		infoText += tr("Longitude") + ": <b>" + QString("%L1 Deg").arg(dataPtr->m_longitudeInDegree, 0, 'f', 2) + " </b>, ";
-		infoText += tr("Latitude") + ": <b>" + QString("%L1 Deg").arg(dataPtr->m_latitudeInDegree, 0, 'f', 2) + " </b>, ";
-		infoText += tr("Elevation") + ": <b>" + QString("%L1 m").arg(dataPtr->m_elevation, 0, 'f', 0) + " </b></p>";
-		infoText += "<p>" + dataPtr->m_comment + "</p>";
+		infoText += "<br>" + climateInfoPtr->m_timeBehaviour + "</p>";
+		infoText += "<p>" + tr("City/Country") + ": <b>" + climateInfoPtr->m_city + "</b>/";
+		infoText += "<b>" + climateInfoPtr->m_country + "</b>, ";
+		infoText += tr("Source") + ": <b>" + climateInfoPtr->m_source + "</b><br>";
+		infoText += tr("Longitude") + ": <b>" + QString("%L1 Deg").arg(climateInfoPtr->m_longitudeInDegree, 0, 'f', 2) + " </b>, ";
+		infoText += tr("Latitude") + ": <b>" + QString("%L1 Deg").arg(climateInfoPtr->m_latitudeInDegree, 0, 'f', 2) + " </b>, ";
+		infoText += tr("Elevation") + ": <b>" + QString("%L1 m").arg(climateInfoPtr->m_elevation, 0, 'f', 0) + " </b></p>";
+		infoText += "<p>" + climateInfoPtr->m_comment + "</p>";
 	}
 	infoText += "</body></html>";
 
 	m_ui->textBrowserDescription->setHtml(infoText);
+	QFont f;
+	f.setPointSizeF(f.pointSizeF()*0.8);
+	m_ui->textBrowserDescription->setFont(f);
+
+	// also update the location line edits
+	m_ui->lineEditLatitude->setValue(climateInfoPtr->m_latitudeInDegree);
+	m_ui->lineEditLongitude->setValue(climateInfoPtr->m_longitudeInDegree);
+	int index = climateInfoPtr->m_timeZone+12;
+	if (index < 0 || index > 24)
+		index = 12;
+	m_ui->comboBoxTimeZone->setCurrentIndex(index);
 }
 
 
@@ -174,4 +239,14 @@ void SVSimulationLocationOptions::on_lineEditTextFilter_editingFinished() {
 
 void SVSimulationLocationOptions::on_lineEditTextFilter_textChanged(const QString &arg1) {
 	m_filterModel->setFilterWildcard(arg1);
+}
+
+
+void SVSimulationLocationOptions::on_checkBoxCustomLocation_toggled(bool checked) {
+	m_ui->lineEditLatitude->setEnabled(checked);
+	m_ui->lineEditLongitude->setEnabled(checked);
+	m_ui->comboBoxTimeZone->setEnabled(checked);
+	m_ui->labelLatitude->setEnabled(checked);
+	m_ui->labelLongitude->setEnabled(checked);
+	m_ui->labelTimeZone->setEnabled(checked);
 }

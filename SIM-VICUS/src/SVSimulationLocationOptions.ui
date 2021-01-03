@@ -137,21 +137,21 @@
          </widget>
         </item>
         <item row="2" column="0">
-         <widget class="QLabel" name="label_3">
+         <widget class="QLabel" name="labelLongitude">
           <property name="text">
            <string>Longitude [-180..180 Deg]:</string>
           </property>
          </widget>
         </item>
         <item row="1" column="0">
-         <widget class="QLabel" name="label_2">
+         <widget class="QLabel" name="labelLatitude">
           <property name="text">
            <string>Latitude [+90..-90 Deg]:</string>
           </property>
          </widget>
         </item>
         <item row="3" column="0">
-         <widget class="QLabel" name="label_6">
+         <widget class="QLabel" name="labelTimeZone">
           <property name="text">
            <string>Time zone:</string>
           </property>
