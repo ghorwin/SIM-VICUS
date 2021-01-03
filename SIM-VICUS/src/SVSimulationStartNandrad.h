@@ -13,6 +13,8 @@ namespace Ui {
 class SVSimulationPerformanceOptions;
 class SVSimulationLocationOptions;
 class SVSimulationOutputOptions;
+class SVSimulationModelOptions;
+
 
 /*! The start dialog for a NANDRAD simulation.
 	Contains pages for all global simulation properties.
@@ -37,6 +39,10 @@ private slots:
 
 	void on_pushButtonShowScreenLog_clicked();
 
+	void on_lineEditDuration_editingFinishedSuccessfully();
+	void on_lineEditStartDate_editingFinished();
+	void on_lineEditEndDate_editingFinished();
+
 private:
 	/*! Composes correct command line (stored in m_cmdArgs). */
 	void updateCmdLine();
@@ -44,6 +50,7 @@ private:
 	bool generateNandradProject(NANDRAD::Project & p) const;
 	/*! Stores current input into project data structure. */
 	void storeInput();
+	void updateTimeFrameEdits();
 
 	Ui::SVSimulationStartNandrad	*m_ui;
 
@@ -57,12 +64,15 @@ private:
 	SVSimulationLocationOptions		*m_simulationLocationOptions = nullptr;
 	/*! Page with output options. */
 	SVSimulationOutputOptions		*m_simulationOutputOptions = nullptr;
+	/*! Page with all other model options. */
+	SVSimulationModelOptions		*m_simulationModelOptions = nullptr;
 
-	/*! Cache for data edited in this dialog.
+	/*  Cache for data edited in this dialog.
 		Transferred to project, when simulation is started or dialog
 		is closed with "close".
 	*/
 	NANDRAD::SolverParameter		m_solverParams;
+	NANDRAD::SimulationParameter	m_simParams;
 	NANDRAD::Location				m_location;
 	VICUS::Outputs					m_outputs;
 };

@@ -1,8 +1,6 @@
 #include "SVSimulationPerformanceOptions.h"
 #include "ui_SVSimulationPerformanceOptions.h"
 
-#include <QSignalMapper>
-
 #include <limits>
 
 #include <NANDRAD_KeywordList.h>

@@ -80,15 +80,15 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! List of parameters. */
-	IBK::Parameter		m_para[NUM_P];					// XML:E
+	IBK::Parameter		m_para[NUM_P];							// XML:E
 	/*! Integer parameters. */
-	IBK::IntPara		m_intPara[NUM_IP];				// XML:E
+	IBK::IntPara		m_intPara[NUM_IP];						// XML:E
 	/*! List of flags. */
-	IBK::Flag			m_flags[NUM_F];					// XML:E
+	IBK::Flag			m_flags[NUM_F];							// XML:E
 
 	/*! The time interval of simulation beginning, offset
 		and duration from January 1, 0:00 of the start year. */
-	Interval			m_interval;						// XML:E
+	Interval			m_interval;								// XML:E
 
 	SolarLoadsDistributionModel	m_solarLoadsDistributionModel;	// XML:E
 };

@@ -94,6 +94,7 @@ SOURCES += \
 		../../src/SVHydraulicComponentParameterModel.cpp \
 		../../src/SVPropNetworkEditWidget.cpp \
 		../../src/SVSimulationLocationOptions.cpp \
+		../../src/SVSimulationModelOptions.cpp \
 		../../src/SVSimulationOutputOptions.cpp \
 		../../src/SVUndoDeleteNetworkHydraulicComponent.cpp \
 		../../src/SVUndoModifyNetworkHydraulicComponent.cpp \
@@ -181,6 +182,7 @@ HEADERS  += \
 		../../src/SVHydraulicComponentParameterModel.h \
 		../../src/SVPropNetworkEditWidget.h \
 		../../src/SVSimulationLocationOptions.h \
+		../../src/SVSimulationModelOptions.h \
 		../../src/SVSimulationOutputOptions.h \
 		../../src/SVUndoDeleteNetworkHydraulicComponent.h \
 		../../src/SVUndoModifyNetworkHydraulicComponent.h \
@@ -275,6 +277,7 @@ FORMS    += \
 		../../src/SVPropSiteWidget.ui \
 		../../src/SVPropVertexListWidget.ui \
 		../../src/SVSimulationLocationOptions.ui \
+		../../src/SVSimulationModelOptions.ui \
 		../../src/SVSimulationOutputOptions.ui \
 		../../src/SVSimulationPerformanceOptions.ui \
 		../../src/SVSimulationStartNandrad.ui \
