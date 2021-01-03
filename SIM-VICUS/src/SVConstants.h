@@ -31,7 +31,10 @@ extern const char * const FIXED_FONT_FAMILY;
 /*! Custom data roles provided by the models. */
 enum DataRoles {
 	Role_Id				= Qt::UserRole,
-	Role_BuiltIn
+	/*! Role to be used to identify built-in database components. */
+	Role_BuiltIn,
+	/*! Role to be used when a file path is to be returned.*/
+	Role_FilePath
 };
 
 

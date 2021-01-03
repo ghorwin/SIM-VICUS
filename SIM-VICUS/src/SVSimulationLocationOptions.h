@@ -11,6 +11,8 @@ namespace NANDRAD {
 	class Location;
 }
 
+class SVClimateDataTableModel;
+
 /*! Widget with settings related to location. */
 class SVSimulationLocationOptions : public QWidget {
 	Q_OBJECT
@@ -24,8 +26,12 @@ public:
 	*/
 	void updateUi();
 
+private slots:
+	void on_radioButtonFromDB_toggled(bool checked);
+
 private:
 	Ui::SVSimulationLocationOptions		*m_ui;
+	SVClimateDataTableModel				*m_climateDataModel = nullptr;
 	NANDRAD::Location					*m_location;
 };
 

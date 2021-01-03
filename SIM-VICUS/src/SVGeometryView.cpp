@@ -138,7 +138,6 @@ void SVGeometryView::onViewStateChanged() {
 
 
 void SVGeometryView::onNumberKeyPressed(Qt::Key k) {
-	qDebug() << k;
 	QString text = m_lineEditCoordinateInput->text();
 	switch (k) {
 		case Qt::Key_0 : text += "0"; break;

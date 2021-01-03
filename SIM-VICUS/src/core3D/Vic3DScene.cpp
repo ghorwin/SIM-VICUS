@@ -1412,7 +1412,7 @@ void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 
 	// now sort the snap point candidates
 	std::sort(processedCandidates.begin(), processedCandidates.end());
-#if 1
+#if 0
 	for (auto & r : processedCandidates) {
 		qDebug() << r.m_depth << VICUS::IBKVector2String(r.m_pickPoint) << r.m_snapPointType << r.m_uniqueObjectID;
 	}

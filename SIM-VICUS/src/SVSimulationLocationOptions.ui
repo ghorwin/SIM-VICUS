@@ -13,15 +13,42 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
+  <layout class="QGridLayout" name="gridLayout_3">
    <item row="0" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Climate data</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
+     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
+      <item row="0" column="0" colspan="2">
+       <widget class="QRadioButton" name="radioButtonFromDB">
+        <property name="text">
+         <string>From climate database</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
        <widget class="QTableView" name="tableViewClimateFiles"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QRadioButton" name="radioButtonFromFile">
+        <property name="text">
+         <string>Custom file path:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QtExt::BrowseFilenameWidget" name="filepathClimateDataFile" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>20</height>
+         </size>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -166,6 +193,12 @@
    <class>QtExt::ValueInputComboBox</class>
    <extends>QComboBox</extends>
    <header location="global">QtExt_ValueInputComboBox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::BrowseFilenameWidget</class>
+   <extends>QWidget</extends>
+   <header>QtExt_BrowseFilenameWidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
