@@ -23,7 +23,7 @@
       <attribute name="title">
        <string>Simulation</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_4">
+      <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,1">
        <item row="0" column="0">
         <widget class="QGroupBox" name="groupBoxSimulationTimeFrame">
          <property name="title">

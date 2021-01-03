@@ -46,6 +46,8 @@ SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 	m_ui->comboBoxVerboseLevel->setCurrentIndex(1);
 #ifdef WIN32
 	m_ui->checkBoxCloseConsoleWindow->setChecked(true);
+	m_ui->labelTerminalEmulator->setVisible(false);
+	m_ui->comboBoxTermEmulator->setVisible(false);
 #else
 	m_ui->checkBoxCloseConsoleWindow->setVisible(false);
 #endif
@@ -148,6 +150,7 @@ void SVSimulationStartNandrad::on_pushButtonRun_clicked() {
 
 	p.m_location = m_location;
 	p.m_solverParameter = m_solverParams;
+	p.m_simulationParameter = m_simParams;
 
 	generateNandradProject(p);
 

@@ -9,6 +9,7 @@
 class QDockWidget;
 
 #include "SVDatabase.h"
+#include "SVClimateFileInfo.h"
 
 /*! This class provides settings functionality, including:
 	* read and write method of settings
@@ -94,6 +95,9 @@ public:
 	/*! Convenience check function, tests if a property is in the map. */
 	bool hasProperty(PropertyType t) const { return m_propertyMap.find(t) != m_propertyMap.end(); }
 
+	/*! Parses the built-in and user climate data directories and updates the listing. */
+	void updateClimateFileList();
+
 	// ****** static functions ************
 
 	/*! Computes the default application font size based on screen properties. */
@@ -176,6 +180,8 @@ public:
 	/*! Sorted list of the top 10 frequently used quantities. */
 	QList<QString>				m_frequentlyUsedQuantities;
 
+	/*! Available climate data files (updated in updateClimateFileList()). */
+	QList<SVClimateFileInfo>	m_climateFiles;	///< List of all climate wrapper objects from default and user climate dir
 
 	/*! Our database. */
 	SVDatabase					m_db;

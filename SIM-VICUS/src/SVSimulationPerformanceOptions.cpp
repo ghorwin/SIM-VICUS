@@ -101,7 +101,10 @@ void SVSimulationPerformanceOptions::updateUi() {
 		m_ui->lineEditInitialDT->setFromParameter(
 			m_solverParams->m_para[NANDRAD::SolverParameter::P_InitialTimeStep]);
 
-	m_ui->comboBoxIntegrator->setCurrentIndex( m_solverParams->m_integrator);
+	if (m_solverParams->m_integrator == NANDRAD::SolverParameter::NUM_I)
+		m_ui->comboBoxIntegrator->setCurrentIndex(NANDRAD::SolverParameter::I_CVODE);
+	else
+		m_ui->comboBoxIntegrator->setCurrentIndex( m_solverParams->m_integrator);
 	m_ui->comboBoxLesSolver->setCurrentIndex( m_solverParams->m_lesSolver);
 	m_ui->comboBoxPreCond->setCurrentIndex( m_solverParams->m_preconditioner);
 

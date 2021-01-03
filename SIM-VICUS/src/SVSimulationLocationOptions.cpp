@@ -1,6 +1,8 @@
 #include "SVSimulationLocationOptions.h"
 #include "ui_SVSimulationLocationOptions.h"
 
+#include "SVSettings.h"
+
 SVSimulationLocationOptions::SVSimulationLocationOptions(QWidget *parent, NANDRAD::Location & location) :
 	QWidget(parent),
 	m_ui(new Ui::SVSimulationLocationOptions),
@@ -16,5 +18,7 @@ SVSimulationLocationOptions::~SVSimulationLocationOptions() {
 
 
 void SVSimulationLocationOptions::updateUi() {
+	// parse climate dabase paths, read in CCM files and populate the combo boxes
+	SVSettings::instance().updateClimateFileList();
 
 }
