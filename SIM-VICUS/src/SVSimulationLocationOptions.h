@@ -14,6 +14,9 @@ namespace NANDRAD {
 class SVClimateDataTableModel;
 class SVClimateDataSortFilterProxyModel;
 
+#include "SVClimateFileInfo.h"
+
+
 /*! Widget with settings related to location. */
 class SVSimulationLocationOptions : public QWidget {
 	Q_OBJECT
@@ -34,11 +37,19 @@ private slots:
 
 	void on_lineEditTextFilter_textChanged(const QString &arg1);
 
+	void onCurrentIndexChanged(const QModelIndex &current, const QModelIndex & /*previous*/);
+
 private:
+	void updateLocationInfo(const SVClimateFileInfo * dataPtr);
+	void updateUserClimateFileInfo();
+
 	Ui::SVSimulationLocationOptions		*m_ui;
 	SVClimateDataTableModel				*m_climateDataModel = nullptr;
 	SVClimateDataSortFilterProxyModel	*m_filterModel		= nullptr;
 	NANDRAD::Location					*m_location;
+
+	/*! Climate data file info, used to store the data when user climate was selected. */
+	SVClimateFileInfo					m_userClimateFile;
 };
 
 #endif // SVSimulationLocationOptionsH

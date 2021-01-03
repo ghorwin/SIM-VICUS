@@ -39,7 +39,6 @@ QVariant SVClimateDataTableModel::data(const QModelIndex & index, int role) cons
 						return f.m_categories[0];
 					else
 						return "---";
-				break;
 				case SVClimateDataTableModel::C_Country:
 					return f.m_country;
 				case SVClimateDataTableModel::C_Sub:
@@ -47,7 +46,6 @@ QVariant SVClimateDataTableModel::data(const QModelIndex & index, int role) cons
 						return f.m_categories[2];
 					else
 						return "---";
-				break;
 				case SVClimateDataTableModel::C_City:
 					return f.m_city;
 				case SVClimateDataTableModel::C_Longitude:
@@ -88,6 +86,9 @@ QVariant SVClimateDataTableModel::data(const QModelIndex & index, int role) cons
 				default:;
 			}
 		} break;
+
+		case Role_RawPointer :
+			return QVariant::fromValue<void*>((void*)&f);
 	}
 	return QVariant();
 }

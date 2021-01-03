@@ -28,7 +28,10 @@ extern const char * const FORUM_URL;
 /*! Fixed-size font family to be used in tables. */
 extern const char * const FIXED_FONT_FAMILY;
 
-/*! Custom data roles provided by the models. */
+/*! Custom data roles provided by the models.
+	Note: not all models provide all roles. But when they do, they should use the
+		  constants below
+*/
 enum DataRoles {
 	Role_Id				= Qt::UserRole,
 	/*! Role to be used to identify built-in database components. */
@@ -36,7 +39,10 @@ enum DataRoles {
 	/*! Role to be used when a file path is to be returned.*/
 	Role_FilePath,
 	/*! Role to use for double values needed for comparisions. */
-	Role_Value
+	Role_Value,
+	/*! Role to use for passing raw data pointers to whatever data structure
+		the item corresponds to. */
+	Role_RawPointer
 };
 
 
