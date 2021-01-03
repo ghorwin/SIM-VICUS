@@ -367,7 +367,7 @@ void PlaneGeometry::eleminateColinearPts(){
 
 
 void PlaneGeometry::triangulate() {
-	FUNCID(PlaneGeometry::triangulate);
+//	FUNCID(PlaneGeometry::triangulate);
 	Q_ASSERT(m_vertexes.size() >= 3);
 	Q_ASSERT(m_polygon.size() == m_vertexes.size());
 

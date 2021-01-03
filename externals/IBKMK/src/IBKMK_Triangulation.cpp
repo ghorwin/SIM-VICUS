@@ -9,7 +9,7 @@ namespace IBKMK {
 bool Triangulation::setPoints(const std::vector<IBK::point2D<double> > & points,
 							  const std::vector<std::pair<unsigned int, unsigned int> > & edges)
 {
-	FUNCID(Triangulation::setPoints);
+//	FUNCID(Triangulation::setPoints);
 
 	CDT::Triangulation<double> cdt(CDT::FindingClosestPoint::ClosestRandom); // Note: we don't want to use boost
 

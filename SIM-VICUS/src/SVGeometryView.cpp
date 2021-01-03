@@ -287,22 +287,22 @@ void SVGeometryView::on_actionZLock_toggled(bool on) {
 }
 
 void SVGeometryView::setupToolBar() {
-	m_snapAction = new QAction(tr("Snap"));
+	m_snapAction = new QAction(tr("Snap"), this);
 	m_snapAction->setCheckable(true);
 	m_toolBar->addAction(m_snapAction);
 	connect(m_snapAction, &QAction::toggled, this, &SVGeometryView::on_actionSnap_toggled);
 
-	m_xLockAction = new QAction(tr("X"));
+	m_xLockAction = new QAction(tr("X"), this);
 	m_xLockAction->setCheckable(true);
 	m_toolBar->addAction(m_xLockAction);
 	connect(m_xLockAction, &QAction::toggled, this, &SVGeometryView::on_actionXLock_toggled);
 
-	m_yLockAction = new QAction(tr("Y"));
+	m_yLockAction = new QAction(tr("Y"), this);
 	m_yLockAction->setCheckable(true);
 	m_toolBar->addAction(m_yLockAction);
 	connect(m_yLockAction, &QAction::toggled, this, &SVGeometryView::on_actionXLock_toggled);
 
-	m_zLockAction = new QAction(tr("Z"));
+	m_zLockAction = new QAction(tr("Z"), this);
 	m_zLockAction->setCheckable(true);
 	m_toolBar->addAction(m_zLockAction);
 	connect(m_zLockAction, &QAction::toggled, this, &SVGeometryView::on_actionXLock_toggled);
