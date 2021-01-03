@@ -28,7 +28,7 @@ namespace QtExt {
 
 ParameterEdit::ParameterEdit(QWidget *parent) :
 	ValidatingLineEdit(parent),
-	m_buddyUnitCombo(NULL)
+	m_buddyUnitCombo(nullptr)
 {
 }
 
@@ -160,11 +160,11 @@ void ParameterEdit::unitChanged(QString unit) {
 }
 
 void ParameterEdit::setBuddyUnitCombo(QComboBox * comboBox, const IBK::Unit & unit) {
-	if (m_buddyUnitCombo != NULL) {
+	if (m_buddyUnitCombo != nullptr) {
 		disconnect(m_buddyUnitCombo, SIGNAL(currentIndexChanged(QString)), this, SLOT(unitChanged(QString)));
 	}
 	m_buddyUnitCombo = comboBox;
-	if (m_buddyUnitCombo != NULL) {
+	if (m_buddyUnitCombo != nullptr) {
 		m_buddyUnitCombo->clear();
 		populateUnitCombo(m_buddyUnitCombo, unit);
 		connect(m_buddyUnitCombo, SIGNAL(currentIndexChanged(QString)), this, SLOT(unitChanged(QString)));
@@ -174,7 +174,7 @@ void ParameterEdit::setBuddyUnitCombo(QComboBox * comboBox, const IBK::Unit & un
 
 void ParameterEdit::setUnit(const IBK::Unit & unit) {
 	const char * const FUNC_ID = "[ParameterEdit::setUnit]";
-	if (m_buddyUnitCombo == NULL)
+	if (m_buddyUnitCombo == nullptr)
 		throw IBK::Exception("UnitCombo buddy not set.", FUNC_ID);
 
 	m_buddyUnitCombo->blockSignals(true);
@@ -195,7 +195,7 @@ void ParameterEdit::populateUnitCombo(QComboBox * combo, const IBK::Unit & u) {
 	std::vector<IBK::Unit> units;
 	IBK::UnitList::instance().convertible_units(units, u);
 	for (unsigned int i=0; i<units.size(); ++i)
-		combo->addItem(QString::fromUtf8(units[i].name().c_str()),units[i].id());
+		combo->addItem(QString::fromStdString(units[i].name()), units[i].id());
 }
 
 } // namespace QtExt
