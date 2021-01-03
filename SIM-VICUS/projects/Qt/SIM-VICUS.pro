@@ -75,6 +75,7 @@ win32 {
 SOURCES += \
 		../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
 		../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
+		../../src/SVClimateDataTableModel.cpp \
 		../../src/SVClimateFileInfo.cpp \
 		../../src/SVDBBoundaryConditionEditDialog.cpp \
 		../../src/SVDBBoundaryConditionEditWidget.cpp \
@@ -163,6 +164,7 @@ SOURCES += \
 		../../src/SVWelcomeScreen.cpp
 
 HEADERS  += \
+		../../src/SVClimateDataTableModel.h \
 		../../src/SVClimateFileInfo.h \
 		../../src/SVDBBoundaryConditionEditDialog.h \
 		../../src/SVDBBoundaryConditionEditWidget.h \

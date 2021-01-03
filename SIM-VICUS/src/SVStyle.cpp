@@ -87,6 +87,7 @@ void SVStyle::formatDatabaseTableView(QTableView * v) {
 	v->horizontalHeader()->setMinimumSectionSize(19);
 	v->setSelectionBehavior(QAbstractItemView::SelectRows);
 	v->setSelectionMode(QAbstractItemView::SingleSelection);
+	v->setAlternatingRowColors(true);
 	v->setSortingEnabled(true);
 	v->sortByColumn(0, Qt::AscendingOrder);
 	QFont f = v->font();

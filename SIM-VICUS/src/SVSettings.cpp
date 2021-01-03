@@ -12,9 +12,12 @@
 #endif
 
 #include <QtExt_Directories.h>
+
 #include <tinyxml.h>
 
 #include <VICUS_KeywordList.h>
+
+#include "SVClimateDataTableModel.h"
 
 SVSettings * SVSettings::m_self = nullptr;
 
@@ -49,6 +52,8 @@ SVSettings::SVSettings(const QString & organization, const QString & appName) :
 
 SVSettings::~SVSettings() {
 	m_self = nullptr;
+	delete m_climateDataTableModel;
+	m_climateDataTableModel = nullptr;
 }
 
 
@@ -191,72 +196,6 @@ void SVSettings::readMainWindowSettings(QByteArray &geometry, QByteArray &state)
 }
 
 
-void SVSettings::updateClimateFileList() {
-	FUNCID(SVSettings::updateClimateFileList);
-
-	m_climateFiles.clear();
-
-	QStringList ccFileExtensions = QStringList() << "c6b" << "epw" << "wac";
-	QString ccDir(QtExt::Directories::databasesDir() + "/DB_climate");
-	QDir builtInDir(ccDir);
-	QStringList defaultFiles;
-	if (builtInDir.exists()) {
-		SVSettings::recursiveSearch(builtInDir, defaultFiles, ccFileExtensions);
-	}
-	QString uccDir(QtExt::Directories::userDataDir() + "/DB_climate");
-	QDir userCCDir(uccDir);
-	QStringList userFiles;
-	if (userCCDir.exists()) {
-		SVSettings::recursiveSearch(userCCDir, userFiles, ccFileExtensions);
-	}
-
-	IBK::Path ccPath(ccDir.toStdString());
-	foreach(const QString& file, defaultFiles) {
-		QFileInfo fileInfo(file);
-		SVClimateFileInfo item;
-		item.m_filename = fileInfo.fileName();
-		item.m_name = fileInfo.baseName();
-		item.m_fileLocationType = SVClimateFileInfo::FLT_ClimateDatabase;
-		try {
-			item.readInfo(fileInfo,true,false);
-			IBK::Path itemPath(file.toStdString());
-			itemPath = itemPath.relativePath(ccPath);
-			QStringList categories = QString::fromStdString(itemPath.str()).split('/');
-			categories.removeLast();
-			item.m_categories = categories;
-			m_climateFiles.push_back(item);
-		}
-		catch(IBK::Exception& ex) {
-			ex.writeMsgStackToError();
-			IBK::IBK_Message(IBK::FormatString("Error in climate data set '%1'.\n")
-							 .arg(file.toStdString()), IBK::MSG_WARNING, FUNC_ID);
-		}
-	}
-
-	IBK::Path uccPath(uccDir.toStdString());
-	foreach(const QString& file, userFiles) {
-		QFileInfo fileInfo(file);
-		SVClimateFileInfo item;
-		item.m_filename = fileInfo.fileName();
-		item.m_name = fileInfo.baseName();
-		item.m_fileLocationType = SVClimateFileInfo::FLT_UserClimateDatabase;
-		try {
-			item.readInfo(fileInfo,true,false);
-			IBK::Path itemPath(file.toStdString());
-			itemPath = itemPath.relativePath(uccPath);
-			QStringList categories = QString::fromStdString(itemPath.str()).split('/');
-			categories.removeLast();
-			item.m_categories = categories;
-			m_climateFiles.push_back(item);
-		}
-		catch(IBK::Exception& ex) {
-			IBK::IBK_Message(IBK::FormatString("Error in climate data set '%1'.\n%2")
-							 .arg(file.toStdString())
-							 .arg(ex.what()), IBK::MSG_WARNING, FUNC_ID);
-		}
-	}
-}
-
 
 void SVSettings::recursiveSearch(QDir baseDir, QStringList & files, const QStringList & extensions) {
 	QStringList	fileList = baseDir.entryList(QStringList(), QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Name);
@@ -337,6 +276,15 @@ bool SVSettings::startProcess(const QString & executable,
 	return success;
 
 #endif // Q_OS_WIN
+}
+
+
+SVClimateDataTableModel * SVSettings::climateDataTableModel() {
+	if (m_climateDataTableModel == nullptr) {
+		m_climateDataTableModel = new SVClimateDataTableModel(nullptr); // we delete the object in the destructor
+		m_climateDataTableModel->updateClimateFileList();
+	}
+	return m_climateDataTableModel;
 }
 
 

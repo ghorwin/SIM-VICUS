@@ -21,7 +21,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QTableWidget" name="tableWidgetClimateFiles"/>
+       <widget class="QTableView" name="tableViewClimateFiles"/>
       </item>
      </layout>
     </widget>

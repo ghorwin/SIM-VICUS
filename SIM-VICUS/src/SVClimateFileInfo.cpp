@@ -5,7 +5,7 @@
 #include "SVSettings.h"
 
 SVClimateFileInfo::SVClimateFileInfo() :
-	m_fileLocationType(FLT_CustomPath),
+	m_builtIn(false),
 	m_longitudeInDegree(13.737),
 	m_latitudeInDegree(51.05),
 	m_elevation(0),
@@ -15,10 +15,10 @@ SVClimateFileInfo::SVClimateFileInfo() :
 }
 
 
-SVClimateFileInfo::SVClimateFileInfo(const QString& name, const QString& file, FileLocationType fileLocationType) :
+SVClimateFileInfo::SVClimateFileInfo(const QString& name, const QString& file, bool builtIn) :
 	m_name(name),
 	m_filename(file),
-	m_fileLocationType(fileLocationType),
+	m_builtIn(builtIn),
 	m_longitudeInDegree(13.737),
 	m_latitudeInDegree(51.05),
 	m_elevation(0),

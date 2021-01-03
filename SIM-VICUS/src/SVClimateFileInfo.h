@@ -12,18 +12,11 @@
 class SVClimateFileInfo {
 	Q_DECLARE_TR_FUNCTIONS(SVClimateFileInfo)
 public:
-	/*! Defines where file is located (used for relative path selection and for display properties in tree widget). */
-	enum FileLocationType {
-		FLT_ClimateDatabase,
-		FLT_UserClimateDatabase,
-		FLT_CustomPath
-	};
-
 	/*! Standard constructor.*/
 	SVClimateFileInfo();
 
 	/*! Constructor for basic initialisiation.*/
-	SVClimateFileInfo(const QString& name, const QString& file, FileLocationType fileLocationType);
+	SVClimateFileInfo(const QString& name, const QString& file, bool builtIn);
 
 	/*! Read all the information from c6b file.
 		Set m_file and m_filename but not m_name.
@@ -62,7 +55,7 @@ public:
 	/*! Filename of the c6b file without path.*/
 	QString		m_filename;
 	/*! Defines where the file is located. */
-	FileLocationType	m_fileLocationType;
+	bool		m_builtIn;
 	/*! List of category strings which will be created from directory structure.*/
 	QStringList	m_categories;
 	/*! Complete description of c6b file.*/

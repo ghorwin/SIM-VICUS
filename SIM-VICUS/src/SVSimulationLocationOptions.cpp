@@ -2,6 +2,10 @@
 #include "ui_SVSimulationLocationOptions.h"
 
 #include "SVSettings.h"
+#include "SVClimateDataTableModel.h"
+#include "SVStyle.h"
+#include "SVConstants.h"
+#include "SVDBModelDelegate.h"
 
 SVSimulationLocationOptions::SVSimulationLocationOptions(QWidget *parent, NANDRAD::Location & location) :
 	QWidget(parent),
@@ -9,6 +13,12 @@ SVSimulationLocationOptions::SVSimulationLocationOptions(QWidget *parent, NANDRA
 	m_location(&location)
 {
 	m_ui->setupUi(this);
+	QAbstractTableModel  * model = SVSettings::instance().climateDataTableModel();
+	m_ui->tableViewClimateFiles->setModel(model);
+
+	SVDBModelDelegate * delegate = new SVDBModelDelegate(this, Role_BuiltIn);
+	m_ui->tableViewClimateFiles->setItemDelegate(delegate);
+	SVStyle::formatDatabaseTableView(m_ui->tableViewClimateFiles);
 }
 
 
@@ -18,7 +28,6 @@ SVSimulationLocationOptions::~SVSimulationLocationOptions() {
 
 
 void SVSimulationLocationOptions::updateUi() {
-	// parse climate dabase paths, read in CCM files and populate the combo boxes
-	SVSettings::instance().updateClimateFileList();
+	m_ui->tableViewClimateFiles->resizeColumnsToContents();
 
 }
