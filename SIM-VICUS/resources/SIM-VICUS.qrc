@@ -43,5 +43,6 @@
         <file>gfx/actions/48x48/propertyMode.png</file>
         <file>gfx/actions/16x16/error.png</file>
         <file>gfx/actions/16x16/ok.png</file>
+        <file>gfx/actions/32x32/sim_start.png</file>
     </qresource>
 </RCC>

@@ -12,6 +12,7 @@
 #include "SVSimulationLocationOptions.h"
 #include "SVSimulationOutputOptions.h"
 #include "SVSimulationModelOptions.h"
+#include "SVSimulationRunRequestDialog.h"
 
 #include "SVLogFileDialog.h"
 
@@ -177,29 +178,9 @@ void SVSimulationStartNandrad::on_pushButtonClose_clicked() {
 
 
 void SVSimulationStartNandrad::on_pushButtonRun_clicked() {
-	// compose NANDRAD project file and start simulation
+	startSimulation(false);
 
-	// generate NANDRAD project
-	NANDRAD::Project p;
-
-	p.m_location = m_location;
-	p.m_solverParameter = m_solverParams;
-	p.m_simulationParameter = m_simParams;
-
-	generateNandradProject(p);
-
-	// save project
-	p.writeXML(IBK::Path(m_nandradProjectFilePath.toStdString()));
-	/// TODO : check if project file was correctly written
-
-	// launch solver - run option is only needed for linux, and otherwise it will always be -1
-	SVSettings::TerminalEmulators runOption = (SVSettings::TerminalEmulators)m_ui->comboBoxTermEmulator->currentIndex();
-	bool success = SVSettings::startProcess(m_solverExecutable, m_cmdArgs, m_nandradProjectFilePath, runOption);
-	if (!success) {
-		QMessageBox::critical(this, QString(), tr("Could not run solver '%1'").arg(m_solverExecutable));
-		return;
-	}
-
+	// TODO : should we keep the dialog open if simulation crashed?
 	storeInput();
 	close(); // finally close dialog
 }
@@ -343,6 +324,90 @@ void SVSimulationStartNandrad::updateTimeFrameEdits() {
 }
 
 
+void SVSimulationStartNandrad::startSimulation(bool testInit) {
+	// compose NANDRAD project file and start simulation
+
+	// generate NANDRAD project
+	NANDRAD::Project p;
+
+	p.m_location = m_location;
+	p.m_solverParameter = m_solverParams;
+	p.m_simulationParameter = m_simParams;
+
+	generateNandradProject(p);
+
+	// save project
+	p.writeXML(IBK::Path(m_nandradProjectFilePath.toStdString()));
+	/// TODO : check if project file was correctly written
+
+	QString resultPath = QFileInfo(SVProjectHandler::instance().projectFile()).completeBaseName();
+	resultPath = QFileInfo(SVProjectHandler::instance().projectFile()).dir().filePath(resultPath);
+	IBK::Path resultDir(resultPath.toStdString());
+
+	bool cleanDir = false;
+	QStringList commandLineArgs = m_cmdArgs;
+	if (testInit) {
+		commandLineArgs.append("--test-init");
+	}
+	else {
+		SVSimulationRunRequestDialog::SimulationStartType startType = SVSimulationRunRequestDialog::Normal;
+		// check if result directory exists and if yes, ask user about overwriting
+		if (resultDir.exists()) {
+			if (!resultDir.isDirectory()) {
+				QMessageBox::critical(this, tr("Solver error"),
+									  tr("There is already a file with the name of the output "
+										 "directory to be created '%1'. Please remove this file "
+										 "or save the project with a new name!").arg(resultPath));
+				return;
+			}
+			// ask user for confirmation
+			if (m_simulationRunRequestDialog == nullptr)
+				m_simulationRunRequestDialog = new SVSimulationRunRequestDialog(this);
+			startType = m_simulationRunRequestDialog->askForOption();
+			// if user aborted dialog, do nothing
+			if (startType == SVSimulationRunRequestDialog::DoNotRun)
+				return;
+			// only clean directory when user selected normal
+			if (startType == SVSimulationRunRequestDialog::Normal)
+				cleanDir = true;
+		}
+
+		// add command line option if needed
+		if (startType == SVSimulationRunRequestDialog::Continue)
+			commandLineArgs.append("--restart");
+	}
+	// clean result directory if requested
+	if (cleanDir) {
+		// We only delete a subdirectory with correct subdirectory structure. This
+		// generally prevents accidental deleting of directories.
+		IBK::Path resFolder = resultDir / "results";
+		IBK::Path logFolder = resultDir / "log";
+		if (resFolder.exists() && logFolder.exists()) {
+			if (!IBK::Path::remove(resultDir)) {
+				QMessageBox::critical(this, tr("Solver error"),
+									  tr("Cannot remove result directory '%1', maybe files are still being used?").arg(resultPath) );
+				return;
+			}
+		}
+	}
+
+	// delete working directory if requested
+	// launch solver - run option is only needed for linux, and otherwise it will always be -1
+	SVSettings::TerminalEmulators runOption = (SVSettings::TerminalEmulators)m_ui->comboBoxTermEmulator->currentIndex();
+	bool success = SVSettings::startProcess(m_solverExecutable, commandLineArgs, m_nandradProjectFilePath, runOption);
+	if (!success) {
+		QMessageBox::critical(this, QString(), tr("Could not run solver '%1'").arg(m_solverExecutable));
+		return;
+	}
+}
+
+
 void SVSimulationStartNandrad::on_comboBoxTermEmulator_currentIndexChanged(int index) {
 	SVSettings::instance().m_terminalEmulator = (SVSettings::TerminalEmulators)(index);
+}
+
+
+
+void SVSimulationStartNandrad::on_pushButtonTestInit_clicked() {
+	startSimulation(true);
 }

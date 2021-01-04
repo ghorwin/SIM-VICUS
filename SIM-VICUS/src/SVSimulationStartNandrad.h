@@ -14,7 +14,7 @@ class SVSimulationPerformanceOptions;
 class SVSimulationLocationOptions;
 class SVSimulationOutputOptions;
 class SVSimulationModelOptions;
-
+class SVSimulationRunRequestDialog;
 
 /*! The start dialog for a NANDRAD simulation.
 	Contains pages for all global simulation properties.
@@ -45,6 +45,8 @@ private slots:
 
 	void on_comboBoxTermEmulator_currentIndexChanged(int index);
 
+	void on_pushButtonTestInit_clicked();
+
 private:
 	/*! Composes correct command line (stored in m_cmdArgs). */
 	void updateCmdLine();
@@ -53,6 +55,9 @@ private:
 	/*! Stores current input into project data structure. */
 	void storeInput();
 	void updateTimeFrameEdits();
+
+	/*! Starts the simulation, either in test-init mode or regular mode. */
+	void startSimulation(bool testInit);
 
 	Ui::SVSimulationStartNandrad	*m_ui;
 
@@ -77,6 +82,8 @@ private:
 	NANDRAD::SimulationParameter	m_simParams;
 	NANDRAD::Location				m_location;
 	VICUS::Outputs					m_outputs;
+
+	SVSimulationRunRequestDialog	*m_simulationRunRequestDialog = nullptr;
 };
 
 #endif // SVSimulationStartNandradH
