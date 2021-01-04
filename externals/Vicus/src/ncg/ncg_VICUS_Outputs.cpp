@@ -124,7 +124,7 @@ TiXmlElement * Outputs::writeXMLPrivate(TiXmlElement * parent) const {
 	if (m_timeUnit.id() != 0)
 		TiXmlElement::appendSingleAttributeElement(e, "TimeUnit", nullptr, std::string(), m_timeUnit.name());
 
-	for (int i=0; i<NUM_OF; ++i) {
+	for (int i=0; i<NUM_F; ++i) {
 		if (!m_flags[i].name().empty()) {
 			TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_flags[i].name(), m_flags[i].isEnabled() ? "true" : "false");
 		}

@@ -26,9 +26,9 @@ public:
 
 	/*! Flags. */
 	enum flag_t {
-		OF_BinaryOutputs,				// Keyword: BinaryOutputs		'If true, output files are written in binary format (the default, if flag is missing).'
-		OF_CreateDefaultZoneOutputs,	// Keyword: CreateDefaultZoneOutputs	'If true, default output definitions for zones are created.'
-		NUM_OF
+		F_BinaryOutputs,				// Keyword: BinaryOutputs				'If true, output files are written in binary format (the default, if flag is missing).'
+		F_CreateDefaultZoneOutputs,		// Keyword: CreateDefaultZoneOutputs	'If true, default output definitions for zones are created.'
+		NUM_F
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -51,7 +51,7 @@ public:
 	IBK::Unit											m_timeUnit;					// XML:E
 
 	/*! (optional) If true, output files are written in binary format (the default, if flag is missing). */
-	IBK::Flag											m_flags[NUM_OF];			// XML:E
+	IBK::Flag											m_flags[NUM_F];			// XML:E
 };
 
 } // namespace VICUS

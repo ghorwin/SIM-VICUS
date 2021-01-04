@@ -20,7 +20,8 @@ void SVDBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & 
 	const QStyleOptionViewItem * opt = &option;
 	// find out if our index is of a built-in element
 	bool builtin = index.data(m_builtInRole).toBool();
-	if (builtin) {
+	bool enabled = opt->widget->isEnabled();
+	if (builtin && enabled) {
 		// draw background
 		QBrush b;
 		if (opt->features & QStyleOptionViewItemV2::Alternate)

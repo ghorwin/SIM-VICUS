@@ -105,8 +105,16 @@ void SVSimulationPerformanceOptions::updateUi() {
 		m_ui->comboBoxIntegrator->setCurrentIndex(NANDRAD::SolverParameter::I_CVODE);
 	else
 		m_ui->comboBoxIntegrator->setCurrentIndex( m_solverParams->m_integrator);
-	m_ui->comboBoxLesSolver->setCurrentIndex( m_solverParams->m_lesSolver);
-	m_ui->comboBoxPreCond->setCurrentIndex( m_solverParams->m_preconditioner);
+
+	if (m_solverParams->m_lesSolver == NANDRAD::SolverParameter::NUM_LES)
+		m_ui->comboBoxLesSolver->setCurrentIndex(NANDRAD::SolverParameter::LES_KLU);
+	else
+		m_ui->comboBoxLesSolver->setCurrentIndex( m_solverParams->m_lesSolver);
+
+	if (m_solverParams->m_preconditioner == NANDRAD::SolverParameter::NUM_PRE)
+		m_ui->comboBoxPreCond->setCurrentIndex(NANDRAD::SolverParameter::PRE_ILU);
+	else
+		m_ui->comboBoxPreCond->setCurrentIndex( m_solverParams->m_preconditioner);
 
 	m_ui->comboBoxIntegrator->blockSignals(false);
 	m_ui->comboBoxLesSolver->blockSignals(false);

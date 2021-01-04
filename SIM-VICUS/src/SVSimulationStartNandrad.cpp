@@ -123,6 +123,19 @@ int SVSimulationStartNandrad::edit() {
 		m_simParams.m_interval.m_para[ NANDRAD::Interval::P_End].set("End", 1, IBK::Unit("a"));
 	}
 
+	// create default output settings, if nothing has been defined, yet
+	if (m_outputs == VICUS::Outputs()) {
+		m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs].set("CreateDefaultZoneOutputs", true);
+		NANDRAD::OutputGrid og;
+		og.m_name = tr("Hourly values").toStdString();
+		NANDRAD::Interval iv;
+		NANDRAD::KeywordList::setParameter(iv.m_para, "Interval::para_t", NANDRAD::Interval::P_Start, 0);
+//		NANDRAD::KeywordList::setParameter(iv.m_para, "Interval::para_t", NANDRAD::Interval::P_End, 0);
+		NANDRAD::KeywordList::setParameter(iv.m_para, "Interval::para_t", NANDRAD::Interval::P_StepSize, 1);
+		og.m_intervals.push_back(iv);
+		m_outputs.m_grids.push_back(og);
+	}
+
 	m_simulationPerformanceOptions->updateUi();
 	m_simulationLocationOptions->updateUi();
 	m_simulationOutputOptions->updateUi();

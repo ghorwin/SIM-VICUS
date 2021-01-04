@@ -3,7 +3,7 @@
 namespace VICUS {
 
 bool Outputs::operator!=(const Outputs & other) const {
-	for (int i=0; i<NUM_OF; ++i)
+	for (int i=0; i<NUM_F; ++i)
 		if (m_flags[i] != other.m_flags[i])
 			return true;
 	if (m_timeUnit != other.m_timeUnit)
@@ -15,5 +15,6 @@ bool Outputs::operator!=(const Outputs & other) const {
 
 	return false;
 }
+
 
 } // namespace VICUS
