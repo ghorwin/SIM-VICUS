@@ -5,6 +5,7 @@
 #include <QScreen>
 #include <QDebug>
 #include <QProcess>
+#include <QFontInfo>
 
 #ifdef Q_OS_WIN
 #undef UNICODE
@@ -75,6 +76,20 @@ void SVSettings::setDefaults() {
 	m_themeSettings[TT_White].setDefaults(TT_White);
 	m_themeSettings[TT_Dark].setDefaults(TT_Dark);
 
+	// default to XTerm
+
+	m_terminalEmulator = TE_XTerm;
+//	m_monospaceFont = "Monospace";
+//	// if we have "Bitstream Vera Sans Mono" or "Cousine" we use that instead
+//	QStringList fontCandidates = QStringList() << "Bitstream Vera Sans Mono" << "Cousine";
+//	for (QString f : fontCandidates) {
+//		QFont fo(f);
+//		if (QFontInfo(fo).exactMatch()) {
+//			m_monospaceFont = f;
+//			break;
+//		}
+//	}
+
 	// initialize random number generator
 	qsrand(time(nullptr));
 }
@@ -123,7 +138,9 @@ void SVSettings::read() {
 			m_CCMEditorExecutable = tmpCCMExecutable;
 	}
 
+	m_fontPointSize = settings.value("FontPointSize", 0).toUInt();
 	m_invertYMouseAxis = settings.value("InvertYMouseAxis", m_invertYMouseAxis).toBool();
+	m_terminalEmulator = (TerminalEmulators)settings.value("TerminalEmulator", TE_XTerm).toInt();
 
 	SVSettings::ThemeType tmpTheme = (SVSettings::ThemeType)settings.value("Theme", m_theme ).toInt();
 	m_theme = tmpTheme;
@@ -145,7 +162,6 @@ void SVSettings::read() {
 //				 << m_themeSettings[TT_White].m_sceneBackgroundColor.name()
 //				 << m_themeSettings[TT_White].m_selectedSurfaceColor.name();
 
-	m_fontPointSize = settings.value("FontPointSize", 0).toUInt();
 
 	m_db.readDatabases();
 }
@@ -160,6 +176,8 @@ void SVSettings::write(QByteArray geometry, QByteArray state) {
 	settings.setValue("CCMEditorExecutable", m_CCMEditorExecutable );
 	settings.setValue("FontPointSize", m_fontPointSize);
 	settings.setValue("InvertYMouseAxis", m_invertYMouseAxis);
+	settings.setValue("TerminalEmulator", m_terminalEmulator);
+
 	settings.setValue("Theme", m_theme);
 
 	// write theme-specific settings
@@ -223,7 +241,8 @@ void SVSettings::recursiveSearch(QDir baseDir, QStringList & files, const QStrin
 
 bool SVSettings::startProcess(const QString & executable,
 									QStringList commandLineArgs,
-									const QString & projectFile)
+									const QString & projectFile,
+									TerminalEmulators terminalEmulator)
 {
 	bool success;
 	// spawn process
@@ -270,7 +289,26 @@ bool SVSettings::startProcess(const QString & executable,
 	// append project file to arguments, no quotes needed, since Qt takes care of that
 	commandLineArgs << projectFile;
 	qint64 pid;
-	success = QProcess::startDetached(executable, commandLineArgs, QString(), &pid);
+	switch (terminalEmulator) {
+		case TE_XTerm : {
+			commandLineArgs = QStringList() << "-hold"
+											<< "-fa" << "'Monospace'"
+											<< "-fs" << "9"
+											<< "-geometry" << "120x40" << "-e" << executable << commandLineArgs;
+			QString terminalProgram = "xterm";
+			success = QProcess::startDetached(terminalProgram, commandLineArgs, QString(), &pid);
+		} break;
+
+		case TE_GnomeTerminal : {
+			commandLineArgs = QStringList() << "--tab"  << "--" << "/bin/bash" << "'" + commandLineArgs.join(" ") + "'";
+			QString terminalProgram = "gnome-terminal";
+			success = QProcess::startDetached(terminalProgram, commandLineArgs, QString(), &pid);
+		} break;
+
+		default:
+			success = QProcess::startDetached(executable, commandLineArgs, QString(), &pid);
+	}
+
 
 	// TODO : do something with the process identifier... mayby check after a few seconds, if the process is still running?
 	return success;

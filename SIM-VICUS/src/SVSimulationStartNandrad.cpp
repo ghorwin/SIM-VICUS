@@ -48,9 +48,17 @@ SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 	m_ui->checkBoxCloseConsoleWindow->setChecked(true);
 	m_ui->labelTerminalEmulator->setVisible(false);
 	m_ui->comboBoxTermEmulator->setVisible(false);
-#else
+#elif defined(Q_OS_LINUX)
 	m_ui->checkBoxCloseConsoleWindow->setVisible(false);
+#else
+	// mac has neither option
+	m_ui->checkBoxCloseConsoleWindow->setVisible(false);
+	m_ui->labelTerminalEmulator->setVisible(false);
+	m_ui->comboBoxTermEmulator->setVisible(false);
 #endif
+	m_ui->comboBoxTermEmulator->blockSignals(true);
+	m_ui->comboBoxTermEmulator->setCurrentIndex(SVSettings::instance().m_terminalEmulator);
+	m_ui->comboBoxTermEmulator->blockSignals(false);
 
 
 	{
@@ -72,7 +80,7 @@ SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 		m_ui->tabOutputs->setLayout(h);
 	}
 	{
-		m_simulationModelOptions = new SVSimulationModelOptions(this, m_simParams);
+		m_simulationModelOptions = new SVSimulationModelOptions(this, m_simParams, m_location);
 		QHBoxLayout * h = new QHBoxLayout;
 		h->addWidget(m_simulationModelOptions);
 		m_ui->tabSimOptions->setLayout(h);
@@ -102,6 +110,12 @@ int SVSimulationStartNandrad::edit() {
 	m_simParams = project().m_simulationParameter;
 
 
+	if (m_simParams == NANDRAD::SimulationParameter()) {
+		m_simParams.m_solarLoadsDistributionModel.m_distributionType = NANDRAD::SolarLoadsDistributionModel::SWR_AreaWeighted;
+		NANDRAD::KeywordList::setParameter(m_simParams.m_solarLoadsDistributionModel.m_para,
+										   "SolarLoadsDistributionModel::para_t",
+										   NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionZone, 50);
+	}
 	// initialize simulation parameters with meaningful defaults and fix possibly wrong values
 	// in project (wherever they come from)
 	if (m_simParams.m_intPara[NANDRAD::SimulationParameter::IP_StartYear].name.empty() ||
@@ -121,6 +135,13 @@ int SVSimulationStartNandrad::edit() {
 		m_simParams.m_interval.m_para[ NANDRAD::Interval::P_End].value < 0)
 	{
 		m_simParams.m_interval.m_para[ NANDRAD::Interval::P_End].set("End", 1, IBK::Unit("a"));
+	}
+	if (m_simParams.m_para[NANDRAD::SimulationParameter::P_InitialTemperature].name.empty() ||
+		m_simParams.m_para[NANDRAD::SimulationParameter::P_InitialTemperature].IO_unit.base_id() != IBK_UNIT_ID_SECONDS)
+	{
+		NANDRAD::KeywordList::setParameter(m_simParams.m_para,
+										   "SimulationParameter::para_t",
+										   NANDRAD::SimulationParameter::P_InitialTemperature, 20);
 	}
 
 	// create default output settings, if nothing has been defined, yet
@@ -171,8 +192,9 @@ void SVSimulationStartNandrad::on_pushButtonRun_clicked() {
 	p.writeXML(IBK::Path(m_nandradProjectFilePath.toStdString()));
 	/// TODO : check if project file was correctly written
 
-	// launch solver
-	bool success = SVSettings::startProcess(m_solverExecutable, m_cmdArgs, m_nandradProjectFilePath);
+	// launch solver - run option is only needed for linux, and otherwise it will always be -1
+	SVSettings::TerminalEmulators runOption = (SVSettings::TerminalEmulators)m_ui->comboBoxTermEmulator->currentIndex();
+	bool success = SVSettings::startProcess(m_solverExecutable, m_cmdArgs, m_nandradProjectFilePath, runOption);
 	if (!success) {
 		QMessageBox::critical(this, QString(), tr("Could not run solver '%1'").arg(m_solverExecutable));
 		return;
@@ -320,3 +342,7 @@ void SVSimulationStartNandrad::updateTimeFrameEdits() {
 	m_ui->lineEditDuration->blockSignals(false);
 }
 
+
+void SVSimulationStartNandrad::on_comboBoxTermEmulator_currentIndexChanged(int index) {
+	SVSettings::instance().m_terminalEmulator = (SVSettings::TerminalEmulators)(index);
+}

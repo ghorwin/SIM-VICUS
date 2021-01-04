@@ -49,6 +49,14 @@ public:
 		NUM_TT
 	};
 
+	/*! Different choices for terminal emulators (Linux only). */
+	enum TerminalEmulators {
+		TE_None, // background process; no terminal window
+		TE_XTerm,
+		TE_GnomeTerminal
+	};
+
+
 	/*! Keywords used for serialization of the properties. */
 	static const char * const			PROPERTY_KEYWORDS[NUM_PT];
 
@@ -120,8 +128,10 @@ public:
 		return id;
 	}
 
+
 	/*! Launches an external process (solver) in a console window. */
-	static bool startProcess(const QString & executable, QStringList commandLineArgs, const QString & projectFile);
+	static bool startProcess(const QString & executable, QStringList commandLineArgs,
+							 const QString & projectFile, TerminalEmulators terminalEmulator = TE_None);
 
 	// ****** member variables ************
 
@@ -142,6 +152,11 @@ public:
 
 	/*! ThemeType of theme applied */
 	ThemeType					m_theme = TT_Dark;
+
+	/*! Stores the choice of terminal emulator. */
+	TerminalEmulators			m_terminalEmulator;
+	/*! Mono-space font to use on Linux terminals. */
+	QString						m_monospaceFont;
 
 	/*! This struct stores the theme-specific settings that can be customized by the user. */
 	struct ThemeSettings {

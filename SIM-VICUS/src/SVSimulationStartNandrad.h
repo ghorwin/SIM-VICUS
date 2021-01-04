@@ -43,6 +43,8 @@ private slots:
 	void on_lineEditStartDate_editingFinished();
 	void on_lineEditEndDate_editingFinished();
 
+	void on_comboBoxTermEmulator_currentIndexChanged(int index);
+
 private:
 	/*! Composes correct command line (stored in m_cmdArgs). */
 	void updateCmdLine();

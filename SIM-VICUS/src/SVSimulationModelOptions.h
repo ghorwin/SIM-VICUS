@@ -10,6 +10,7 @@ namespace QtExt {
 
 namespace NANDRAD {
 	class SimulationParameter;
+	class Location;
 }
 
 namespace Ui {
@@ -21,7 +22,8 @@ class SVSimulationModelOptions : public QWidget {
 	Q_OBJECT
 public:
 	/*! Constructor, takes solver settings object reference (object is stored in main start dialog). */
-	explicit SVSimulationModelOptions(QWidget *parent, NANDRAD::SimulationParameter & solverParams);
+	explicit SVSimulationModelOptions(QWidget *parent,
+									  NANDRAD::SimulationParameter & solverParams, NANDRAD::Location & location);
 	~SVSimulationModelOptions();
 
 	/*! Updates user interface with properties from the project data structure.
@@ -29,13 +31,17 @@ public:
 	*/
 	void updateUi();
 
+private slots:
+	void on_comboBoxSolarDistributionModeltype_currentIndexChanged(int index);
+
 private:
 
 	/*! UI pointer. */
 	Ui::SVSimulationModelOptions	*m_ui;
 
-	/*! Data storage location, synchronized with user interface. */
+	// Data storage locations, synchronized with user interface.
 	NANDRAD::SimulationParameter	*m_simParams = nullptr;
+	NANDRAD::Location				*m_location = nullptr;
 
 };
 
