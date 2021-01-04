@@ -275,6 +275,29 @@ void SVSimulationStartNandrad::updateCmdLine() {
 	m_ui->lineEditCmdLine->setCursorPosition( m_ui->lineEditCmdLine->text().length() );
 }
 
+struct ComponentInstance {
+	ComponentInstance() {}
+	ComponentInstance(unsigned int componentID, unsigned int sideARoomID, unsigned int sideBRoomID) :
+		m_componentID(componentID),
+		m_sideARoomID(sideARoomID),
+		m_sideBRoomID(sideBRoomID)
+	{
+	}
+
+	unsigned int m_componentID = 0;
+	unsigned int m_sideARoomID = 0; // ambient by default
+	unsigned int m_sideBRoomID = 0; // ambient by default
+};
+
+/*! This exception class collects information about errors that occurred during transformation of data.
+	The data in this class can be used to select the problematic geometry so that errors/missing data can be fixed quickly.
+*/
+class ConversionError : public IBK::Exception {
+public:
+	/*! TODO: */
+	ConversionError(const std::string & errmsg) : IBK::Exception(errmsg, "ConversionError") {}
+	ConversionError(const IBK::FormatString & errmsg) : IBK::Exception(errmsg, "ConversionError") {}
+};
 
 bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 
@@ -292,6 +315,63 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 		QMessageBox::critical(this, tr("Starting NANDRAD simulation"), tr("Please select a climate data file!"));
 		return false;
 	}
+
+	// geometry
+
+	// we process all zones and buildings and create NANDRAD project data
+	// we also check that all referenced database properties are available and transfer them accordingly
+
+	// first we build up a directory of all component-instances and their left/right neighbors
+//	// TODO : this directory might be part of VICUS::Project, if it is needed elsewhere in the user interface
+//	std::map<unsigned int, ComponentInstance> componentList;
+//	for (const VICUS::Building & b : project().m_buildings) {
+//		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+//			for (const VICUS::Room & r : bl.m_rooms) {
+//				for (const VICUS::Surface & s : r.m_surfaces) {
+//					if (s.m_componentId == VICUS::INVALID_ID)
+//						throw ConversionError(IBK::FormatString("Missing component ID in surface #%1.").arg(s.m_id));
+//					ComponentInstance & ci = componentList[s.m_componentId];
+
+//				}
+//			}
+//		}
+//	}
+
+	// this set collects all component instances that are actually used/referenced by zone surfaces
+	// for now, unassociated components are ignored
+	std::set<unsigned int> usedComponentInstances;
+
+	for (const VICUS::Building & b : project().m_buildings) {
+		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+			for (const VICUS::Room & r : bl.m_rooms) {
+				// first create a NANDRAD zone for the room
+				NANDRAD::Zone z;
+				z.m_id = r.m_id;
+				z.m_displayName = r.m_displayName.toStdString();
+				// Note: in the code below we expect the parameter's base units to be the same as the default unit for the
+				//       populated parameters
+
+				// TODO : what if we do not have an area or a zone volume, yet?
+				NANDRAD::KeywordList::setParameter(z.m_para, "Zone::para_t", NANDRAD::Zone::P_Area, r.m_para[VICUS::Room::P_Area].value);
+				NANDRAD::KeywordList::setParameter(z.m_para, "Zone::para_t", NANDRAD::Zone::P_Volume, r.m_para[VICUS::Room::P_Volume].value);
+
+				// for now, zones are always active
+				z.m_type = NANDRAD::Zone::ZT_Active;
+
+				// now process all surfaces
+				for (const VICUS::Surface & s : r.m_surfaces) {
+					// each surface can be either a construction to the outside, to a fixed zone or to a different zone
+					// the latter is only recognized, if we search through all zones and check their association with a surface.
+
+				}
+			}
+		}
+	}
+
+
+	// outputs
+
+
 
 	return true;
 }

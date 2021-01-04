@@ -19,7 +19,7 @@
 	Lesser General Public License for more details.
 */
 
-#include <VICUS_Surface.h>
+#include <VICUS_ComponentInstance.h>
 #include <VICUS_KeywordList.h>
 
 #include <IBK_messages.h>
@@ -33,63 +33,49 @@
 
 namespace VICUS {
 
-void Surface::readXML(const TiXmlElement * element) {
-	FUNCID(Surface::readXML);
+void ComponentInstance::readXML(const TiXmlElement * element) {
+	FUNCID(ComponentInstance::readXML);
 
 	try {
 		// search for mandatory attributes
-		if (!TiXmlAttribute::attributeByName(element, "id"))
+		if (!TiXmlAttribute::attributeByName(element, "componentID"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
+				IBK::FormatString("Missing required 'componentID' attribute.") ), FUNC_ID);
 
 		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
-			if (attribName == "id")
-				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "displayName")
-				m_displayName = QString::fromStdString(attrib->ValueStr());
-			else if (attribName == "visible")
-				m_visible = NANDRAD::readPODAttributeValue<bool>(element, attrib);
+			if (attribName == "componentID")
+				m_componentID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "sideASurfaceID")
+				m_sideASurfaceID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "sideBSurfaceID")
+				m_sideBSurfaceID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			attrib = attrib->Next();
 		}
-		// search for mandatory elements
-		// reading elements
-		const TiXmlElement * c = element->FirstChildElement();
-		while (c) {
-			const std::string & cName = c->ValueStr();
-			if (cName == "PlaneGeometry")
-				m_geometry.readXML(c);
-			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			c = c->NextSiblingElement();
-		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Surface' element."), FUNC_ID);
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'ComponentInstance' element."), FUNC_ID);
 	}
 	catch (std::exception & ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading 'Surface' element.").arg(ex2.what()), FUNC_ID);
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'ComponentInstance' element.").arg(ex2.what()), FUNC_ID);
 	}
 }
 
-TiXmlElement * Surface::writeXML(TiXmlElement * parent) const {
-	TiXmlElement * e = new TiXmlElement("Surface");
+TiXmlElement * ComponentInstance::writeXML(TiXmlElement * parent) const {
+	TiXmlElement * e = new TiXmlElement("ComponentInstance");
 	parent->LinkEndChild(e);
 
-	if (m_id != VICUS::INVALID_ID)
-		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (!m_displayName.isEmpty())
-		e->SetAttribute("displayName", m_displayName.toStdString());
-	if (m_visible != Surface().m_visible)
-		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
-
-	m_geometry.writeXML(e);
+	if (m_componentID != VICUS::INVALID_ID)
+		e->SetAttribute("componentID", IBK::val2string<unsigned int>(m_componentID));
+	if (m_sideASurfaceID != VICUS::INVALID_ID)
+		e->SetAttribute("sideASurfaceID", IBK::val2string<unsigned int>(m_sideASurfaceID));
+	if (m_sideBSurfaceID != VICUS::INVALID_ID)
+		e->SetAttribute("sideBSurfaceID", IBK::val2string<unsigned int>(m_sideBSurfaceID));
 	return e;
 }
 

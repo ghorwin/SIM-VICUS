@@ -1342,17 +1342,17 @@ namespace NANDRAD {
 			// SolarLoadsDistributionModel::distribution_t
 			case 43 :
 			switch (t) {
-				case 0 : return "Distribution based on surface area.";
-				case 1 : return "Distribution based on surface type.";
-				case 2 : return "Distribution based on zone-specific view factors.";
+				case 0 : return "Distribution based on surface area";
+				case 1 : return "Distribution based on surface type";
+				case 2 : return "Distribution based on zone-specific view factors";
 			} break;
 			// SolarLoadsDistributionModel::para_t
 			case 44 :
 			switch (t) {
-				case 0 : return "Percentage of solar radiation gains attributed direcly to room [%].";
-				case 1 : return "Percentage of surface solar radiation attributed to floor [%].";
-				case 2 : return "Percentage of surface solar radiation attributed to roof/ceiling[%].";
-				case 3 : return "Percentage of surface solar radiation attributed to walls [%].";
+				case 0 : return "Percentage of solar radiation gains attributed direcly to room [%]";
+				case 1 : return "Percentage of surface solar radiation attributed to floor [%]";
+				case 2 : return "Percentage of surface solar radiation attributed to roof/ceiling[%]";
+				case 3 : return "Percentage of surface solar radiation attributed to walls [%]";
 			} break;
 			// SolverParameter::para_t
 			case 45 :

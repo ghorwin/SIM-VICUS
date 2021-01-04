@@ -11,6 +11,8 @@
 
 namespace VICUS {
 
+class ComponentInstance;
+
 /*! Represents a surface and its associated properties. */
 class Surface : public Object {
 public:
@@ -38,10 +40,6 @@ public:
 	/*! Stores visibility information for this surface. */
 	bool								m_visible = true;			// XML:A
 
-	// *** Extend parameters for thermal surfaces ***
-	/*! */
-	unsigned int						m_componentId = INVALID_ID;	// XML:A
-
 	// *** Runtime Variables ***
 
 	/*! Color to be used when next updating the geometry.
@@ -50,6 +48,13 @@ public:
 		Color is not a regular property of a surface, but rather of the associated parameter elements.
 	*/
 	QColor								m_color;
+
+	/*! Runtime-only pointer to the associated component instance (or nullptr, if surface
+		is not yet connected to any component. This would be considered an incomplete
+		data model.
+		The pointer is updated in VICUS::Project::updatePointers().
+	*/
+	ComponentInstance					*m_componentInstance = nullptr;
 
 };
 

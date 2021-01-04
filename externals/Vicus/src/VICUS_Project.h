@@ -35,6 +35,8 @@
 #include "VICUS_NetworkFluid.h"
 #include "VICUS_NetworkPipe.h"
 #include "VICUS_Outputs.h"
+#include "VICUS_ComponentInstance.h"
+
 
 #include <NANDRAD_SolverParameter.h>
 
@@ -180,6 +182,12 @@ public:
 	std::vector<Network>								m_geometricNetworks;		// XML:E
 
 	std::vector<Building>								m_buildings;				// XML:E
+
+	/*! All components actually placed in the geometry.
+		This vector is outside buildings, so that two building parts can be connected with
+		a component.
+	*/
+	std::vector<ComponentInstance>						m_componentInstance;		// XML:E
 
 	/*! Vector with plain (dumb) geometry. */
 	std::vector<Surface>								m_plainGeometry;			// XML:E

@@ -1,11 +1,14 @@
 #include "SVUndoAddSurface.h"
 #include "SVProjectHandler.h"
 
-SVUndoAddSurface::SVUndoAddSurface(const QString & label, const VICUS::Surface & addedSurface, unsigned int parentNodeID) :
+SVUndoAddSurface::SVUndoAddSurface(const QString & label, const VICUS::Surface & addedSurface,
+								   unsigned int parentNodeID, const VICUS::ComponentInstance * compInstance) :
 	m_addedSurface(addedSurface),
 	m_parentNodeID(parentNodeID)
 {
 	setText( label );
+	if (compInstance != nullptr)
+		m_componentInstance = *compInstance;
 }
 
 

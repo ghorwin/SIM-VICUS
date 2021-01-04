@@ -1,12 +1,15 @@
 #include "SVUndoAddZone.h"
 #include "SVProjectHandler.h"
 
-SVUndoAddZone::SVUndoAddZone(const QString & label, unsigned int buildingLevelUUID, const VICUS::Room & addedRoom, bool topologyOnly) :
+SVUndoAddZone::SVUndoAddZone(const QString & label, unsigned int buildingLevelUUID, const VICUS::Room & addedRoom,
+							 bool topologyOnly, const std::vector<VICUS::ComponentInstance> * componentInstances) :
 	m_addedRoom(addedRoom),
 	m_topologyOnly(topologyOnly),
 	m_buildingLevelUUID(buildingLevelUUID)
 {
 	setText( label );
+	if (componentInstances != nullptr)
+		m_componentInstances = *componentInstances;
 }
 
 

@@ -147,7 +147,6 @@ void SVSimulationLocationOptions::updateUi() {
 }
 
 
-
 void SVSimulationLocationOptions::onCurrentIndexChanged(const QModelIndex &current, const QModelIndex & /*previous*/)  {
 	if (m_ui->radioButtonFromDB->isChecked()) {
 		// get filename from current model and then update the climate station info text box

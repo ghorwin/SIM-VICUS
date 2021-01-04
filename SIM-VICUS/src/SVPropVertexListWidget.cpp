@@ -11,6 +11,7 @@
 #include <VICUS_Project.h>
 #include <VICUS_Conversions.h>
 #include <VICUS_KeywordList.h>
+#include <VICUS_ComponentInstance.h>
 
 #include "SVProjectHandler.h"
 #include "SVViewStateHandler.h"
@@ -415,12 +416,15 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 				Q_ASSERT(zoneUUID != 0);
 
 				s.updateColor(); // set color based on orientation
-				// also store component information
-				s.m_componentId = m_ui->comboBoxComponent->currentData().toUInt();
-				// TODO : get unique surface ID from all surfaces in all buildings/rooms... or let's use the unique ID for now, doesn't matter...
+				// the surface will get the unique ID as persistant ID
 				s.m_id = s.uniqueID();
+				// also store component information
+				VICUS::ComponentInstance compInstance;
+				compInstance.m_componentID = m_ui->comboBoxComponent->currentData().toUInt();
+				// for now we assume that the zone's surface is connected to the b-side of the component
+				compInstance.m_sideBSurfaceID = s.m_id;
 				// modify project
-				SVUndoAddSurface * undo = new SVUndoAddSurface(tr("Added surface '%1'").arg(s.m_displayName), s, zoneUUID);
+				SVUndoAddSurface * undo = new SVUndoAddSurface(tr("Added surface '%1'").arg(s.m_displayName), s, zoneUUID, &compInstance);
 				undo->push();
 			}
 		} break;
@@ -440,7 +444,7 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 			// take the polygon
 			VICUS::PlaneGeometry floor = po->planeGeometry();
 			VICUS::PlaneGeometry ceiling = po->offsetPlaneGeometry();
-			// Note: both polygons have the same normal vector!
+			// Note: both polygons still have the same normal vector!
 
 			// compute offset vector
 			IBKMK::Vector3D offset = ceiling.vertexes()[0] - floor.vertexes()[0];
@@ -457,6 +461,7 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 				qDebug() << "Inverted" << dotProduct;
 			}
 
+			std::vector<VICUS::ComponentInstance> components;
 			VICUS::Room r;
 			r.m_displayName = m_ui->lineEditName->text().trimmed();
 			// now we can create the surfaces for top and bottom
@@ -477,11 +482,13 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 				sFloor.m_geometry = ceiling;
 			}
 
-			sFloor.m_componentId = m_ui->comboBoxComponentFloor->currentData().toUInt();
 			sFloor.updateColor();
+			components.push_back(VICUS::ComponentInstance(
+				m_ui->comboBoxComponentFloor->currentData().toUInt(), VICUS::INVALID_ID, sFloor.m_id));
 
-			sCeiling.m_componentId = m_ui->comboBoxComponentCeiling->currentData().toUInt();
 			sCeiling.updateColor();
+			components.push_back(VICUS::ComponentInstance(
+				m_ui->comboBoxComponentCeiling->currentData().toUInt(), VICUS::INVALID_ID, sCeiling.m_id));
 
 			r.m_id = r.uniqueID();
 			r.m_surfaces.push_back(sFloor);
@@ -491,6 +498,7 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 			// we take the floor polygon
 
 			unsigned int nVert = floor.vertexes().size();
+			unsigned int wallComponentID = m_ui->comboBoxComponentWalls->currentData().toUInt();
 			for (unsigned int i=0; i<nVert; ++i) {
 				// mind the winding order
 				// when looked from above, floor vertexes go clock-wise,
@@ -510,8 +518,9 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 				sWall.m_id = sWall.uniqueID();
 				sWall.m_displayName = tr("Wall %1").arg(i+1);
 				sWall.m_geometry = VICUS::PlaneGeometry( VICUS::PlaneGeometry::T_Rectangle, p0, p1, p2);
-				sWall.m_componentId = m_ui->comboBoxComponentWalls->currentData().toUInt();
 				sWall.updateColor();
+				components.push_back(VICUS::ComponentInstance(wallComponentID, VICUS::INVALID_ID, sWall.m_id));
+
 				r.m_surfaces.push_back(sWall);
 			}
 
@@ -524,7 +533,7 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 			Q_ASSERT(buildingLevelUid != 0);
 			SVUndoAddZone * undo = new SVUndoAddZone(tr("Adding new zone '%1'").arg(r.m_displayName),
 													 buildingLevelUid,
-													 r, false);
+													 r, false, &components);
 			undo->push();
 		}
 		break;

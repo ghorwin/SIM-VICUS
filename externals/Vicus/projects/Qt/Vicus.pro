@@ -38,6 +38,7 @@ HEADERS += \
 	../../src/VICUS_BuildingLevel.h \
 	../../src/VICUS_CodeGenMacros.h \
 	../../src/VICUS_Component.h \
+	../../src/VICUS_ComponentInstance.h \
 	../../src/VICUS_Constants.h \ \
 	../../src/VICUS_Construction.h \
 	../../src/VICUS_Conversions.h \

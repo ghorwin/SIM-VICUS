@@ -3,6 +3,7 @@
 #include "SVSettings.h"
 
 #include <VICUS_EPDCategroySet.h>
+#include <VICUS_ComponentInstance.h>
 
 #include <IBK_FileReader.h>
 #include <IBK_StringUtils.h>
@@ -110,11 +111,17 @@ void LCA::calculateLCA()
 			for (auto &s : r.m_surfaces) {
 				const VICUS::Surface &surf = s;
 
-				//get component
-				VICUS::Component comp = elementExists<VICUS::Component>(m_dbComponents, s.m_componentId,
-												s.m_displayName.toStdString(),"Component", "surface");
-				//save surface area
-				compRes[comp.m_id].m_area += surf.m_geometry.area();
+				// get component
+				const VICUS::ComponentInstance * compInstance = s.m_componentInstance;
+				if (compInstance != nullptr) {
+					VICUS::Component comp = elementExists<VICUS::Component>(m_dbComponents, compInstance->m_componentID,
+													s.m_displayName.toStdString(),"Component", "surface");
+					//save surface area
+					compRes[comp.m_id].m_area += surf.m_geometry.area();
+				}
+				else {
+					/// TODO : error handling if component instance pointer is empty (no component associated)
+				}
 			}
 		}
 	}
