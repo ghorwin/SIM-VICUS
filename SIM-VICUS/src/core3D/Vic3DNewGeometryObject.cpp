@@ -156,6 +156,9 @@ void NewGeometryObject::appendVertex(const IBKMK::Vector3D & p) {
 			// just signal the property list widget that we are done with the zone
 			finish();
 		break;
+
+		case NUM_NGM:
+			return; // nothing to do here
 	}
 	// finally update draw buffers
 	updateBuffers(false);
@@ -179,6 +182,11 @@ void NewGeometryObject::removeVertex(unsigned int idx) {
 			m_planeGeometry.setVertexes(m_vertexList);
 			SVViewStateHandler::instance().m_propVertexListWidget->removeVertex(idx);
 		break;
+		case NGM_Rect :
+		case NGM_ZoneExtrusion :
+		case NUM_NGM :
+			Q_ASSERT(false); // operation not allowed
+			return;
 	}
 	updateBuffers(false);
 }
@@ -191,6 +199,12 @@ void NewGeometryObject::removeLastVertex() {
 			Q_ASSERT(!m_vertexList.empty());
 			removeVertex(m_vertexList.size()-1);
 		break;
+
+		case NGM_Rect :
+		case NGM_ZoneExtrusion :
+		case NUM_NGM :
+			Q_ASSERT(false); // operation not allowed
+			return;
 	}
 }
 
@@ -207,6 +221,11 @@ bool NewGeometryObject::canComplete() const {
 		case NGM_Rect :
 		case NGM_Polygon :
 			return m_planeGeometry.isValid();
+
+		case NGM_ZoneFloor :
+		case NGM_ZoneExtrusion :
+		case NUM_NGM :
+			Q_ASSERT(false); // operation not allowed
 	}
 	return false;
 }
@@ -279,7 +298,11 @@ void NewGeometryObject::updateLocalCoordinateSystemPosition(const QVector3D & p)
 			m_zoneHeight = (double)verticalOffset.length();
 			SVViewStateHandler::instance().m_propVertexListWidget->setExtrusionDistance(m_zoneHeight);
 		}
+		break;
 
+		case NUM_NGM :
+			Q_ASSERT(false); // invalid call
+			return;
 	} // switch
 
 
@@ -416,7 +439,7 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 			//  - for valid polygons we draw the line segments of the individual planes only, but no triangulation grids
 			//  - height of the polygon is taken from m_zoneHeight
 
-			if (m_zoneHeight != 0) {
+			if (m_zoneHeight != 0.0) {
 				Q_ASSERT(m_planeGeometry.isValid());
 				// we need to create at first the base polygon
 				addPlane(m_planeGeometry, currentVertexIndex, currentElementIndex,
@@ -447,6 +470,10 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 			}
 
 		} break;
+
+		case NUM_NGM :
+			Q_ASSERT(false); // invalid call
+			return;
 	}
 
 	// transfer data stored in m_vertexBufferData
@@ -545,10 +572,14 @@ void NewGeometryObject::renderOpaque() {
 			// now draw the zone wall segments
 			unsigned int offset = 2*m_planeGeometry.vertexes().size()+2;
 			for (unsigned int i=0; i<m_planeGeometry.vertexes().size(); ++i) {
-				glDrawArrays(GL_LINES, 2*i+offset, 2);
+				glDrawArrays(GL_LINES, (int)(2*i + offset), 2);
 			}
 
 		} break;
+
+		case NUM_NGM :
+			Q_ASSERT(false); // invalid call
+			return;
 	} // switch
 
 
