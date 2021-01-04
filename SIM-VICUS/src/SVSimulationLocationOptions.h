@@ -47,6 +47,8 @@ private:
 	void updateLocationInfo(const SVClimateFileInfo * dataPtr);
 	void updateUserClimateFileInfo();
 
+	void storeCustomLocationInputs();
+
 	Ui::SVSimulationLocationOptions		*m_ui;
 	SVClimateDataTableModel				*m_climateDataModel = nullptr;
 	SVClimateDataSortFilterProxyModel	*m_filterModel		= nullptr;

@@ -2,6 +2,7 @@
 #include "ui_SVSimulationStartNandrad.h"
 
 #include <QHBoxLayout>
+#include <QMessageBox>
 
 
 #include <VICUS_Project.h>
@@ -275,8 +276,22 @@ void SVSimulationStartNandrad::updateCmdLine() {
 }
 
 
-bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) const {
+bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
+
 	// simulation settings
+	p.m_simulationParameter = m_simParams;
+
+	// solver parameters
+	p.m_solverParameter = m_solverParams;
+
+	// location settings
+	p.m_location = m_location;
+	// do we have a climate path?
+	if (!m_location.m_climateFileName.isValid()) {
+		m_ui->tabWidget->setCurrentWidget(m_ui->tabClimate);
+		QMessageBox::critical(this, tr("Starting NANDRAD simulation"), tr("Please select a climate data file!"));
+		return false;
+	}
 
 	return true;
 }
@@ -334,7 +349,8 @@ void SVSimulationStartNandrad::startSimulation(bool testInit) {
 	p.m_solverParameter = m_solverParams;
 	p.m_simulationParameter = m_simParams;
 
-	generateNandradProject(p);
+	if (!generateNandradProject(p))
+		return;
 
 	// save project
 	p.writeXML(IBK::Path(m_nandradProjectFilePath.toStdString()));

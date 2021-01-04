@@ -4,6 +4,7 @@
 #include <QFileInfo>
 
 #include <NANDRAD_Location.h>
+#include <NANDRAD_KeywordList.h>
 
 #include "SVSettings.h"
 #include "SVClimateDataTableModel.h"
@@ -157,6 +158,11 @@ void SVSimulationLocationOptions::onCurrentIndexChanged(const QModelIndex &curre
 
 
 void SVSimulationLocationOptions::updateLocationInfo(const SVClimateFileInfo * climateInfoPtr) {
+	if (climateInfoPtr == nullptr)
+		m_location->m_climateFileName.clear();
+	else
+		m_location->m_climateFileName = climateInfoPtr->m_file.absoluteFilePath().toStdString();
+
 	// update info text on climate location
 	m_ui->textBrowserDescription->clear();
 	// default values for location
@@ -223,6 +229,14 @@ void SVSimulationLocationOptions::updateUserClimateFileInfo() {
 }
 
 
+void SVSimulationLocationOptions::storeCustomLocationInputs(){
+	NANDRAD::KeywordList::setParameter(m_location->m_para, "Location::para_t",
+									   NANDRAD::Location::P_Latitude, m_ui->lineEditLatitude->value());
+	NANDRAD::KeywordList::setParameter(m_location->m_para, "Location::para_t",
+									   NANDRAD::Location::P_Longitude, m_ui->lineEditLongitude->value());
+}
+
+
 void SVSimulationLocationOptions::on_radioButtonFromDB_toggled(bool checked) {
 	m_ui->tableViewClimateFiles->setEnabled(checked);
 	m_ui->labelTextFilter->setEnabled(checked);
@@ -261,4 +275,13 @@ void SVSimulationLocationOptions::on_checkBoxCustomLocation_toggled(bool checked
 	m_ui->labelLatitude->setEnabled(checked);
 	m_ui->labelLongitude->setEnabled(checked);
 	m_ui->labelTimeZone->setEnabled(checked);
+	if (checked) {
+		storeCustomLocationInputs();
+	}
+	else {
+		// no custom location - clear custom inputs
+		m_location->m_para[NANDRAD::Location::P_Altitude].clear();
+		m_location->m_para[NANDRAD::Location::P_Latitude].clear();
+		m_location->m_para[NANDRAD::Location::P_Longitude].clear();
+	}
 }
