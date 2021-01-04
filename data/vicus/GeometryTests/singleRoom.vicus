@@ -1,46 +1,57 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
-		<Created>Do. Nov. 26 15:22:50 2020</Created>
-		<LastEdited>Do. Dez. 10 23:57:49 2020</LastEdited>
+		<Created>Mo. Jan. 4 22:04:35 2021</Created>
+		<LastEdited>Mo. Jan. 4 22:05:20 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
+		<SolverParameter />
+		<SimulationParameter>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
+		<Location>
+			<TimeZone>13</TimeZone>
+		</Location>
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
-			<CameraTranslation>-11.8368 -21.5695 13.1608</CameraTranslation>
+			<CameraTranslation>15.6945 -27.8869 30.0116</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.791202</Wp>
-				<X>0.543779</X>
-				<Y>-0.158497</Y>
-				<Z>-0.230614</Z>
+				<Wp>0.87188</Wp>
+				<X>0.36945</X>
+				<Y>0.127041</Y>
+				<Z>0.295276</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 		</ViewSettings>
 		<Buildings>
-			<Building id="0" displayName="BuildingName">
+			<Building id="1" displayName="Building">
 				<BuildingLevels>
-					<BuildingLevel id="1" displayName="E0">
+					<BuildingLevel id="1" displayName="Level">
 						<Rooms>
-							<Room id="1" displayName="SingleRoom">
+							<Room id="10" displayName="New zone">
+								<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">45</IBK:Parameter>
 								<Surfaces>
-									<Surface id="1" displayName="South_1" visible="0">
-										<PlaneGeometry type="Rectangle">0 0 0, 2 0 0, 2 0 3, 0 0 3</PlaneGeometry>
+									<Surface id="11" displayName="New zone-floor">
+										<PlaneGeometry type="Rectangle">0 5 0, 3 5 0, 3 0 0, 0 0 0</PlaneGeometry>
 									</Surface>
-									<Surface id="2" displayName="West_2" visible="0">
+									<Surface id="11" displayName="New zone-ceiling">
+										<PlaneGeometry type="Rectangle">0 0 3, 3 0 3, 3 5 3, 0 5 3</PlaneGeometry>
+									</Surface>
+									<Surface id="13" displayName="Wall 1">
+										<PlaneGeometry type="Rectangle">0 0 0, 3 0 0, 3 0 3, 0 0 3</PlaneGeometry>
+									</Surface>
+									<Surface id="14" displayName="Wall 2">
+										<PlaneGeometry type="Rectangle">3 0 0, 3 5 0, 3 5 3, 3 0 3</PlaneGeometry>
+									</Surface>
+									<Surface id="15" displayName="Wall 3">
+										<PlaneGeometry type="Rectangle">3 5 0, 0 5 0, 0 5 3, 3 5 3</PlaneGeometry>
+									</Surface>
+									<Surface id="16" displayName="Wall 4">
 										<PlaneGeometry type="Rectangle">0 5 0, 0 0 0, 0 0 3, 0 5 3</PlaneGeometry>
-									</Surface>
-									<Surface id="3" displayName="East_3">
-										<PlaneGeometry type="Rectangle">2 0 0, 2 5 0, 2 5 3, 2 0 3</PlaneGeometry>
-									</Surface>
-									<Surface id="4" displayName="North_4">
-										<PlaneGeometry type="Rectangle">2 5 0, 0 5 0, 0 5 3, 2 5 3</PlaneGeometry>
-									</Surface>
-									<Surface id="5" displayName="Floor_5">
-										<PlaneGeometry type="Rectangle">2 0 0, 0 0 0, 0 5 0, 2 5 0</PlaneGeometry>
-									</Surface>
-									<Surface id="6" displayName="Roof_6">
-										<PlaneGeometry type="Rectangle">0 0 3, 2 0 3, 2 5 3, 0 5 3</PlaneGeometry>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -49,5 +60,13 @@
 				</BuildingLevels>
 			</Building>
 		</Buildings>
+		<ComponentInstance>
+			<ComponentInstance componentID="100002" sideBSurfaceID="11" />
+			<ComponentInstance componentID="100001" sideBSurfaceID="11" />
+			<ComponentInstance componentID="1" sideBSurfaceID="13" />
+			<ComponentInstance componentID="1" sideBSurfaceID="14" />
+			<ComponentInstance componentID="1" sideBSurfaceID="15" />
+			<ComponentInstance componentID="1" sideBSurfaceID="16" />
+		</ComponentInstance>
 	</Project>
 </VicusProject>

@@ -21,7 +21,12 @@ void SVUndoAddZone::undo() {
 	// remove last building level
 	Q_ASSERT(!bl->m_rooms.empty());
 
+	// remove appended room
 	const_cast<VICUS::BuildingLevel *>(bl)->m_rooms.pop_back();
+
+	// remove appended component instances (if any)
+	Q_ASSERT(theProject().m_componentInstances.size() >= m_componentInstances.size());
+	theProject().m_componentInstances.resize(theProject().m_componentInstances.size() - m_componentInstances.size());
 
 	// tell project that the geometry has changed (i.e. rebuild navigation tree and scene)
 	if (m_topologyOnly)
@@ -38,6 +43,8 @@ void SVUndoAddZone::redo() {
 
 	// append building level
 	const_cast<VICUS::BuildingLevel *>(bl)->m_rooms.push_back(m_addedRoom);
+	// append component instances (if vector is empty, nothing happens here)
+	theProject().m_componentInstances.insert(theProject().m_componentInstances.end(), m_componentInstances.begin(), m_componentInstances.end());
 	theProject().updatePointers();
 
 	// tell project that the building geometry has changed

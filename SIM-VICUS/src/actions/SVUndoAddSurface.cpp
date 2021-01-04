@@ -27,6 +27,10 @@ void SVUndoAddSurface::undo() {
 		Q_ASSERT(!theProject().m_plainGeometry.empty());
 		theProject().m_plainGeometry.pop_back();
 	}
+	if (m_componentInstance.m_componentID != VICUS::INVALID_ID) {
+		Q_ASSERT(!theProject().m_componentInstances.empty());
+		theProject().m_componentInstances.pop_back();
+	}
 
 	// tell project that the geometry has changed (i.e. rebuild navigation tree and scene)
 	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged);
@@ -46,6 +50,10 @@ void SVUndoAddSurface::redo() {
 	else {
 		// add to anonymous geometry
 		theProject().m_plainGeometry.push_back(m_addedSurface);
+	}
+
+	if (m_componentInstance.m_componentID != VICUS::INVALID_ID) {
+		theProject().m_componentInstances.push_back(m_componentInstance);
 	}
 	theProject().updatePointers();
 

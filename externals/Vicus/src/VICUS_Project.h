@@ -187,7 +187,7 @@ public:
 		This vector is outside buildings, so that two building parts can be connected with
 		a component.
 	*/
-	std::vector<ComponentInstance>						m_componentInstance;		// XML:E
+	std::vector<ComponentInstance>						m_componentInstances;		// XML:E
 
 	/*! Vector with plain (dumb) geometry. */
 	std::vector<Surface>								m_plainGeometry;			// XML:E

@@ -64,7 +64,7 @@ void Project::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
-			else if (cName == "ComponentInstance") {
+			else if (cName == "ComponentInstances") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
@@ -72,7 +72,7 @@ void Project::readXML(const TiXmlElement * element) {
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					ComponentInstance obj;
 					obj.readXML(c2);
-					m_componentInstance.push_back(obj);
+					m_componentInstances.push_back(obj);
 					c2 = c2->NextSiblingElement();
 				}
 			}
@@ -163,12 +163,12 @@ TiXmlElement * Project::writeXML(TiXmlElement * parent) const {
 	}
 
 
-	if (!m_componentInstance.empty()) {
-		TiXmlElement * child = new TiXmlElement("ComponentInstance");
+	if (!m_componentInstances.empty()) {
+		TiXmlElement * child = new TiXmlElement("ComponentInstances");
 		e->LinkEndChild(child);
 
-		for (std::vector<ComponentInstance>::const_iterator it = m_componentInstance.begin();
-			it != m_componentInstance.end(); ++it)
+		for (std::vector<ComponentInstance>::const_iterator it = m_componentInstances.begin();
+			it != m_componentInstances.end(); ++it)
 		{
 			it->writeXML(child);
 		}
