@@ -82,9 +82,11 @@ SOURCES += \
     ../../src/NM_Schedules.cpp \
     ../../src/NM_StateModelGroup.cpp \
     ../../src/NM_SteadyStateSolver.cpp \
-    ../../src/NM_ThermalNetworkModel.cpp \
     ../../src/NM_VectorValuedQuantity.cpp \
     ../../src/NM_VectorValuedQuantityIndex.cpp \
+    ../../src/NM_ThermalNetworkPrivate.cpp \
+    ../../src/NM_ThermalNetworkStatesModel.cpp \
+    ../../src/NM_ThermalNetworkBalanceModel.cpp
 
 HEADERS += \
     ../../doc/NandradSolverMainPage.h \
@@ -122,6 +124,8 @@ HEADERS += \
     ../../src/NM_VectorValuedQuantity.h \
     ../../src/NM_VectorValuedQuantityIndex.h \
     ../../src/NM_WindowModel.h \
-    ../../src/NM_InternalLoadsModel.h
+    ../../src/NM_InternalLoadsModel.h \
+    ../../src/NM_ThermalNetworkPrivate.h \
+    ../../src/NM_ThermalNetworkAbstractFlowElement.h
 
 DISTFILES +=
