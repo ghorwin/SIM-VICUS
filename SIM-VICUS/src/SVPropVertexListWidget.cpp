@@ -484,11 +484,11 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 
 			sFloor.updateColor();
 			components.push_back(VICUS::ComponentInstance(
-				m_ui->comboBoxComponentFloor->currentData().toUInt(), VICUS::INVALID_ID, sFloor.m_id));
+									 m_ui->comboBoxComponentFloor->currentData().toUInt(), VICUS::INVALID_ID, sFloor.m_id));
 
 			sCeiling.updateColor();
 			components.push_back(VICUS::ComponentInstance(
-				m_ui->comboBoxComponentCeiling->currentData().toUInt(), VICUS::INVALID_ID, sCeiling.m_id));
+									 m_ui->comboBoxComponentCeiling->currentData().toUInt(), VICUS::INVALID_ID, sCeiling.m_id));
 
 			r.m_id = r.uniqueID();
 			r.m_surfaces.push_back(sFloor);
@@ -509,10 +509,10 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 				IBKMK::Vector3D p1 = floor.vertexes()[ vIdx2 ];
 				IBKMK::Vector3D p2 = ceiling.vertexes()[ i ];
 
-//				IBKMK::Vector3D a = p1-p0;
-//				IBKMK::Vector3D b = p2-p0;
+				//				IBKMK::Vector3D a = p1-p0;
+				//				IBKMK::Vector3D b = p2-p0;
 
-//				qDebug() << "Plane: " << VICUS::IBKVector2String(a) << " : " << VICUS::IBKVector2String(b);
+				//				qDebug() << "Plane: " << VICUS::IBKVector2String(a) << " : " << VICUS::IBKVector2String(b);
 
 				VICUS::Surface sWall;
 				sWall.m_id = sWall.uniqueID();
@@ -537,6 +537,11 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 			undo->push();
 		}
 		break;
+
+		case Vic3D::NewGeometryObject::NGM_ZoneFloor:
+		case Vic3D::NewGeometryObject::NUM_NGM:
+			Q_ASSERT(false); // invalid operation
+			return;
 	}
 
 	// reset view
