@@ -225,7 +225,7 @@ bool NewGeometryObject::canComplete() const {
 		case NGM_ZoneFloor :
 		case NGM_ZoneExtrusion :
 		case NUM_NGM :
-			Q_ASSERT(false); // operation not allowed
+			return false;
 	}
 	return false;
 }
