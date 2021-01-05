@@ -295,9 +295,52 @@ void Project::clean() {
 
 }
 
+
 void Project::updatePointers() {
+	FUNCID(Project::updatePointers);
+	// update hierarchy
 	for (VICUS::Building & b : m_buildings)
 		b.updateParents();
+
+	// clear component/surface pointers (this is needed to check for duplicate IDs later on)
+	for (VICUS::Building & b : m_buildings)
+		for (VICUS::BuildingLevel & bl : b.m_buildingLevels)
+			for (VICUS::Room & r : bl.m_rooms)
+				for (VICUS::Surface & s : r.m_surfaces)
+					s.m_componentInstance = nullptr;
+	// update pointers
+	for (VICUS::ComponentInstance & ci : m_componentInstances) {
+		ci.m_component = nullptr;
+		// Note: we cannot set the component pointer here, since we do not have access to the
+		//       component database here.
+
+		// lookup surfaces
+		ci.m_sideASurface = surfaceByID(ci.m_sideASurfaceID);
+		if (ci.m_sideASurface != nullptr) {
+			// check that no two components reference the same surface
+			if (ci.m_sideASurface->m_componentInstance != nullptr) {
+				IBK::IBK_Message(IBK::FormatString("Surface %1 is referenced by multiple component instances!")
+								 .arg(ci.m_sideASurfaceID), IBK::MSG_ERROR, FUNC_ID);
+			}
+			else {
+				ci.m_sideASurface->m_componentInstance = &ci;
+			}
+		}
+
+		ci.m_sideBSurface = surfaceByID(ci.m_sideBSurfaceID);
+		if (ci.m_sideBSurface != nullptr) {
+			// check that no two components reference the same surface
+			if (ci.m_sideBSurface->m_componentInstance != nullptr) {
+				IBK::IBK_Message(IBK::FormatString("Surface %1 is referenced by multiple component instances!")
+								 .arg(ci.m_sideBSurfaceID), IBK::MSG_ERROR, FUNC_ID);
+			}
+			else {
+				ci.m_sideBSurface->m_componentInstance = &ci;
+			}
+		}
+
+	}
+
 
 	for (VICUS::Network & n : m_geometricNetworks) {
 		n.updateNodeEdgeConnectionPointers();
@@ -339,6 +382,18 @@ const VICUS::Object * Project::objectById(unsigned int uniqueID) const {
 	if (obj == nullptr)
 		throw IBK::Exception(IBK::FormatString("Missing object with unique ID %1.").arg(uniqueID), FUNC_ID);
 	return obj;
+}
+
+
+Surface * Project::surfaceByID(unsigned int surfaceID) {
+	for (Building & b : m_buildings)
+		for (BuildingLevel & bl : b.m_buildingLevels)
+			for (Room & r : bl.m_rooms)
+				for (Surface & s : r.m_surfaces) {
+					if (s.m_id == surfaceID)
+						return &s;
+				}
+	return nullptr;
 }
 
 

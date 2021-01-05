@@ -85,6 +85,11 @@ public:
 	*/
 	const VICUS::Object * objectById(unsigned int uniqueID) const;
 
+	/*! Searches through all buildings and tries to find a surface with given surface ID (this
+		is not the uniqueID, but the persistant id from the data model.
+	*/
+	VICUS::Surface * surfaceByID(unsigned int surfaceID);
+
 	/*! This function checks all surfaces in the project if they are selected or not.
 		\returns Returns true, if any surface is selected, and if so, stores the arithmetic average of all
 				 surface vertexes in variable centerPoint.
