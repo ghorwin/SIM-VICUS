@@ -7,8 +7,6 @@ namespace NANDRAD_MODEL {
 class ThermalNetworkAbstractFlowElement {
 public:
 	ThermalNetworkAbstractFlowElement() {}
-	ThermalNetworkAbstractFlowElement(unsigned int n_inlet, unsigned int n_outlet) :
-		m_nInlet(n_inlet), m_nOutlet(n_outlet) {}
 
 	/*! D'tor, definition is in NM_HydraulicNetworkFlowElements.cpp. */
 	virtual ~ThermalNetworkAbstractFlowElement() { }
@@ -28,11 +26,6 @@ public:
 
 	/*! Returns fluid outlet states: spcific enthalpy. */
 	virtual void outletSpecificEnthalpy(double &h) const = 0;
-
-	/*! Index of inlet node. */
-	unsigned int m_nInlet;
-	/*! Index of outlet node. */
-	unsigned int m_nOutlet;
 };
 
 

@@ -31,6 +31,7 @@ namespace NANDRAD_MODEL {
 /*!	A model that computes all temperature states of hydraulic network given the internal energy density.
 */
 
+class HydraulicNetwork;
 class ThermalNetworkModelImpl {
 public:
 	ThermalNetworkModelImpl() { }
@@ -43,7 +44,7 @@ public:
 		Setup needs to be called whenever m_flowElements vector changes
 		(but not, when parameters inside flow elements change!).
 	*/
-	void setup();
+	void setup(const HydraulicNetwork &nw);
 
 	/*! Updates all states at network nodes.
 	*/
@@ -63,23 +64,8 @@ public:
 	const double									*m_massFluxes;
 
 private:
-	/*! Stores connectivity information. */
-	struct Node {
-		Node() {}
-		Node(unsigned int i1, unsigned int i2) {
-			m_flowElementIndexesInlet.push_back(i1);
-			m_flowElementIndexesOutlet.push_back(i2);
-		}
-
-		/*! Vector with indexes of inlet flow elements. */
-		std::vector<unsigned int> m_flowElementIndexesInlet;
-		std::vector<unsigned int> m_flowElementIndexesOutlet;
-	};
-
-
-	/*! Vector of nodes.
-	*/
-	std::vector<Node>								m_nodes;
+	/*! Constant access to network. */
+	const HydraulicNetwork							*m_network;
 	/*! Container with specific enthalpy for each node.
 	*/
 	std::vector<double>								m_specificEnthalpy;

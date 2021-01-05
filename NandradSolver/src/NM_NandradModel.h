@@ -53,6 +53,7 @@ class SteadyStateSolver;
 class StateModelGroup;
 class ParallelStateObjects;
 
+class HydraulicNetwork;
 class Loads;
 class Schedules;
 class FMIInputOutput;
@@ -486,6 +487,9 @@ private:
 
 	/*! Single object/model providing schedules quantities. */
 	Schedules												*m_schedules = nullptr;
+
+	/*! Single object/model providing schedules quantities. */
+	std::vector<HydraulicNetwork*>							m_hydraulicNetworks;
 
 	/*! FMI import/export model. */
 	FMIInputOutput											*m_fmiInputOutput = nullptr;

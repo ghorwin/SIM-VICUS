@@ -82,6 +82,7 @@
 #include "NM_InternalLoadsModel.h"
 #include "NM_WindowModel.h"
 #include "NM_RoomRadiationLoadsModel.h"
+#include "NM_HydraulicNetwork.h"
 #include "NM_HydraulicNetworkModel.h"
 
 namespace NANDRAD_MODEL {
@@ -113,6 +114,12 @@ NandradModel::~NandradModel() {
 	}
 	for (std::set<StateModelGroup*>::iterator it = m_stateModelGroups.begin();
 		it != m_stateModelGroups.end(); ++it)
+	{
+		delete *it;
+	}
+
+	for (std::vector<HydraulicNetwork*>::iterator it = m_hydraulicNetworks.begin();
+		it != m_hydraulicNetworks.end(); ++it)
 	{
 		delete *it;
 	}
@@ -1345,11 +1352,16 @@ void NandradModel::initNetworks() {
 			IBK::IBK_Message(IBK::FormatString("Initializing network #%1 '%2'\n").arg(nw.m_id).arg(nw.m_displayName),
 							 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 			IBK_MSG_INDENT;
+			// create a moswl specific network
+			HydraulicNetwork *network = new HydraulicNetwork;
+			network->setup(nw);
+			// store inside container
+			m_hydraulicNetworks.push_back(network);
 			// create a network model object
 			HydraulicNetworkModel * nwmodel = new HydraulicNetworkModel(nw.m_id, nw.m_displayName);
 			m_modelContainer.push_back(nwmodel); // transfer ownership
 			// initialize
-			nwmodel->setup(nw, m_project->m_hydraulicComponents);
+			nwmodel->setup(nw, m_project->m_hydraulicComponents, *network);
 			// register model for evaluation
 			registerStateDependendModel(nwmodel);
 		}

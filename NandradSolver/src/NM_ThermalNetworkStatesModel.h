@@ -38,6 +38,7 @@ namespace NANDRAD_MODEL {
 	as fluid temperature inputs by the hydraulic network elements.
 */
 
+class HydraulicNetwork;
 class ThermalNetworkModelImpl;
 
 /*!	A model that computes all temperature states of hydraulic network given the internal energy density
@@ -63,7 +64,8 @@ public:
 	/*! Initializes model.
 	*/
 	void setup(const NANDRAD::HydraulicNetwork & nw,
-			   const std::vector<NANDRAD::HydraulicNetworkComponent> & components);
+			   const std::vector<NANDRAD::HydraulicNetworkComponent> & components,
+			   const HydraulicNetwork &network);
 
 	// *** Re-implemented from AbstractModel
 

@@ -21,8 +21,10 @@
 
 #include <IBK_messages.h>
 
-#include "NM_ThermalNetworkPrivate.h"
 #include "NM_ThermalNetworkStatesModel.h"
+
+#include "NM_HydraulicNetwork.h"
+#include "NM_ThermalNetworkPrivate.h"
 #include "NM_KeywordList.h"
 
 #include <NANDRAD_HydraulicNetwork.h>
@@ -43,7 +45,9 @@ ThermalNetworkStatesModel::~ThermalNetworkStatesModel() {
 }
 
 
-void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw, const std::vector<NANDRAD::HydraulicNetworkComponent> & components) {
+void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
+									  const std::vector<NANDRAD::HydraulicNetworkComponent> & components,
+									  const HydraulicNetwork &network) {
 	FUNCID(ThermalNetworkStatesModel::setup);
 
 	// store network pointer
@@ -81,9 +85,6 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw, cons
 			{
 				// create hydraulic pipe model
 				TNPipeElement * pipeElement = new TNPipeElement;
-				// set node index
-				pipeElement->m_nInlet = std::distance(nodeIds.begin(), nodeIds.find(e.m_inletNodeId));
-				pipeElement->m_nOutlet = std::distance(nodeIds.begin(), nodeIds.find(e.m_outletNodeId));
 				// add to flow elements
 				m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 			} break;
@@ -93,7 +94,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw, cons
 	}
 	// setup the enetwork
 	try {
-		m_p->setup();
+		m_p->setup(network);
 	} catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, "Error setting up flow network.", FUNC_ID);
 	}
