@@ -29,7 +29,7 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique ID of building level. */
+	/*! Persistant ID of building level. */
 	unsigned int						m_id = INVALID_ID;			// XML:A:required
 
 	QString								m_displayName;				// XML:A

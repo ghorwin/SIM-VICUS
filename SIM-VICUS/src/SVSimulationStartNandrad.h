@@ -56,8 +56,10 @@ private:
 	void storeInput();
 	void updateTimeFrameEdits();
 
-	/*! Starts the simulation, either in test-init mode or regular mode. */
-	void startSimulation(bool testInit);
+	/*! Starts the simulation, either in test-init mode or regular mode.
+		Returns false if some error occurred during creation of the NANDRAD project.
+	*/
+	bool startSimulation(bool testInit);
 
 	Ui::SVSimulationStartNandrad	*m_ui;
 

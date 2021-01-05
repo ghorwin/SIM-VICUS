@@ -17,6 +17,9 @@ const char * const MANUAL_URL		= "https://ghorwin.github.io/SIM-VICUS";
 
 const char * const SUPPORT_EMAIL	= "...";
 
+const double SAME_DISTANCE_PARAMETER_ABSTOL = 1e-4;
+
+
 #if defined(Q_OS_MAC) // Q_OS_UNIX
 
 const char * const FIXED_FONT_FAMILY = "Monaco";

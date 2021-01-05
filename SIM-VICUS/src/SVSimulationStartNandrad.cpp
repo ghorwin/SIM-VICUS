@@ -14,6 +14,7 @@
 #include "SVSimulationOutputOptions.h"
 #include "SVSimulationModelOptions.h"
 #include "SVSimulationRunRequestDialog.h"
+#include "SVConstants.h"
 
 #include "SVLogFileDialog.h"
 
@@ -179,7 +180,8 @@ void SVSimulationStartNandrad::on_pushButtonClose_clicked() {
 
 
 void SVSimulationStartNandrad::on_pushButtonRun_clicked() {
-	startSimulation(false);
+	if (!startSimulation(false))
+		return; // keep dialog open
 
 	// TODO : should we keep the dialog open if simulation crashed?
 	storeInput();
@@ -275,19 +277,6 @@ void SVSimulationStartNandrad::updateCmdLine() {
 	m_ui->lineEditCmdLine->setCursorPosition( m_ui->lineEditCmdLine->text().length() );
 }
 
-struct ComponentInstance {
-	ComponentInstance() {}
-	ComponentInstance(unsigned int componentID, unsigned int sideARoomID, unsigned int sideBRoomID) :
-		m_componentID(componentID),
-		m_sideARoomID(sideARoomID),
-		m_sideBRoomID(sideBRoomID)
-	{
-	}
-
-	unsigned int m_componentID = 0;
-	unsigned int m_sideARoomID = 0; // ambient by default
-	unsigned int m_sideBRoomID = 0; // ambient by default
-};
 
 /*! This exception class collects information about errors that occurred during transformation of data.
 	The data in this class can be used to select the problematic geometry so that errors/missing data can be fixed quickly.
@@ -312,7 +301,7 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 	// do we have a climate path?
 	if (!m_location.m_climateFileName.isValid()) {
 		m_ui->tabWidget->setCurrentWidget(m_ui->tabClimate);
-		QMessageBox::critical(this, tr("Starting NANDRAD simulation"), tr("Please select a climate data file!"));
+		QMessageBox::critical(this, tr("Starting NANDRAD simulation"), tr("A climate data file is needed. Please select a climate data file!"));
 		return false;
 	}
 
@@ -321,25 +310,9 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 	// we process all zones and buildings and create NANDRAD project data
 	// we also check that all referenced database properties are available and transfer them accordingly
 
-	// first we build up a directory of all component-instances and their left/right neighbors
-//	// TODO : this directory might be part of VICUS::Project, if it is needed elsewhere in the user interface
-//	std::map<unsigned int, ComponentInstance> componentList;
-//	for (const VICUS::Building & b : project().m_buildings) {
-//		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
-//			for (const VICUS::Room & r : bl.m_rooms) {
-//				for (const VICUS::Surface & s : r.m_surfaces) {
-//					if (s.m_componentId == VICUS::INVALID_ID)
-//						throw ConversionError(IBK::FormatString("Missing component ID in surface #%1.").arg(s.m_id));
-//					ComponentInstance & ci = componentList[s.m_componentId];
-
-//				}
-//			}
-//		}
-//	}
-
 	// this set collects all component instances that are actually used/referenced by zone surfaces
 	// for now, unassociated components are ignored
-	std::set<unsigned int> usedComponentInstances;
+	std::set<const VICUS::ComponentInstance*> usedComponentInstances;
 
 	for (const VICUS::Building & b : project().m_buildings) {
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
@@ -357,17 +330,118 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 
 				// for now, zones are always active
 				z.m_type = NANDRAD::Zone::ZT_Active;
+				// finally append zone
+				p.m_zones.push_back(z);
 
 				// now process all surfaces
 				for (const VICUS::Surface & s : r.m_surfaces) {
 					// each surface can be either a construction to the outside, to a fixed zone or to a different zone
 					// the latter is only recognized, if we search through all zones and check their association with a surface.
 
+					// if we have a component associated, remember its ID
+					usedComponentInstances.insert(s.m_componentInstance);
 				}
 			}
 		}
 	}
 
+	// this set collects all construction type IDs, which will be used to create constructionInstances
+	std::set<unsigned int> usedConstructionTypes;
+
+	// now process all components and generate construction instances
+	for (const VICUS::ComponentInstance * ci : usedComponentInstances) {
+		if (ci == nullptr)
+			continue; // skip invalid
+		// lookup component that's referenced by componantInstance
+		Q_ASSERT(ci->m_componentID != VICUS::INVALID_ID);
+		// Note: component ID may be invalid or component may have been deleted from DB already
+		const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci->m_componentID];
+		if (comp == nullptr) {
+			QMessageBox::critical(this, tr("Starting NANDRAD simulation"),
+				tr("Component ID %1 referenced from component instance %2, but there is no such component.")
+								  .arg(ci->m_componentID).arg(ci->m_id));
+			return false;
+		}
+
+		// now generate a construction instance
+		NANDRAD::ConstructionInstance cinst;
+		cinst.m_id = ci->m_id;
+//		cinst.m_displayName = ci->m_displayName;
+
+		// store reference to construction type (i.e. to be generated from component)
+		cinst.m_constructionTypeId = comp->m_idOpaqueConstruction;
+		usedConstructionTypes.insert(comp->m_idOpaqueConstruction);
+
+		// set construction instance parameters
+		// we have eitherone or two surfaces associated
+		if (ci->m_sideASurface != nullptr) {
+			// compute area
+			double area = ci->m_sideASurface->m_geometry.area();
+			if (ci->m_sideBSurface != nullptr) {
+				// have both
+				double areaB = ci->m_sideBSurface->m_geometry.area();
+				// check if both areas are approximately the same
+				if (std::fabs(area - areaB) > SAME_DISTANCE_PARAMETER_ABSTOL) {
+					QMessageBox::critical(this, tr("Starting NANDRAD simulation"),
+						tr("Component/construction %1 references surfaces %2 and %3, with mismatching areas %3 and %4 m2.")
+										  .arg(ci->m_id).arg(ci->m_sideASurfaceID).arg(ci->m_sideBSurfaceID)
+										  .arg(area).arg(areaB));
+					return false;
+				}
+				/// TODO : Dirk, we have orientation of side A and B... which one do we use?
+				double orientation = 0;
+				double inclination = 0;
+
+				// set parameters
+				NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
+												   NANDRAD::ConstructionInstance::P_Inclination, inclination);
+				NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
+												   NANDRAD::ConstructionInstance::P_Orientation, orientation);
+
+			}
+			else {
+
+				// we only have side A, take orientation and inclination from side A
+
+				/// TODO : Dirk, berechnen
+				double orientation = 0;
+				double inclination = 0;
+
+				// set parameters
+				NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
+												   NANDRAD::ConstructionInstance::P_Inclination, inclination);
+				NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
+												   NANDRAD::ConstructionInstance::P_Orientation, orientation);
+
+			}
+			// set area parameter (computed from side A, but if side B is given as well, the area is the same
+			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
+											   NANDRAD::ConstructionInstance::P_Area, area);
+		}
+		else {
+			Q_ASSERT(ci->m_sideBSurface != nullptr);
+
+			// we only have side B, take orientation and inclination from side B
+
+			/// TODO : Dirk, berechnen
+			double orientation = 0;
+			double inclination = 0;
+
+			// set parameters
+			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
+											   NANDRAD::ConstructionInstance::P_Inclination, inclination);
+			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
+											   NANDRAD::ConstructionInstance::P_Orientation, orientation);
+
+			// set area parameter
+			double area = ci->m_sideBSurface->m_geometry.area();
+			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
+											   NANDRAD::ConstructionInstance::P_Area, area);
+		}
+
+		// add to list of construction instances
+		p.m_constructionInstances.push_back(cinst);
+	}
 
 	// outputs
 
@@ -419,7 +493,7 @@ void SVSimulationStartNandrad::updateTimeFrameEdits() {
 }
 
 
-void SVSimulationStartNandrad::startSimulation(bool testInit) {
+bool SVSimulationStartNandrad::startSimulation(bool testInit) {
 	// compose NANDRAD project file and start simulation
 
 	// generate NANDRAD project
@@ -429,8 +503,9 @@ void SVSimulationStartNandrad::startSimulation(bool testInit) {
 	p.m_solverParameter = m_solverParams;
 	p.m_simulationParameter = m_simParams;
 
-	if (!generateNandradProject(p))
-		return;
+	if (!generateNandradProject(p)) {
+		return false;
+	}
 
 	// save project
 	p.writeXML(IBK::Path(m_nandradProjectFilePath.toStdString()));
@@ -454,7 +529,7 @@ void SVSimulationStartNandrad::startSimulation(bool testInit) {
 									  tr("There is already a file with the name of the output "
 										 "directory to be created '%1'. Please remove this file "
 										 "or save the project with a new name!").arg(resultPath));
-				return;
+				return false;
 			}
 			// ask user for confirmation
 			if (m_simulationRunRequestDialog == nullptr)
@@ -462,7 +537,7 @@ void SVSimulationStartNandrad::startSimulation(bool testInit) {
 			startType = m_simulationRunRequestDialog->askForOption();
 			// if user aborted dialog, do nothing
 			if (startType == SVSimulationRunRequestDialog::DoNotRun)
-				return;
+				return false;
 			// only clean directory when user selected normal
 			if (startType == SVSimulationRunRequestDialog::Normal)
 				cleanDir = true;
@@ -482,7 +557,7 @@ void SVSimulationStartNandrad::startSimulation(bool testInit) {
 			if (!IBK::Path::remove(resultDir)) {
 				QMessageBox::critical(this, tr("Solver error"),
 									  tr("Cannot remove result directory '%1', maybe files are still being used?").arg(resultPath) );
-				return;
+				return false;
 			}
 		}
 	}
@@ -493,15 +568,17 @@ void SVSimulationStartNandrad::startSimulation(bool testInit) {
 	bool success = SVSettings::startProcess(m_solverExecutable, commandLineArgs, m_nandradProjectFilePath, runOption);
 	if (!success) {
 		QMessageBox::critical(this, QString(), tr("Could not run solver '%1'").arg(m_solverExecutable));
-		return;
+		return false;
 	}
+
+	// all ok, solver is running
+	return true;
 }
 
 
 void SVSimulationStartNandrad::on_comboBoxTermEmulator_currentIndexChanged(int index) {
 	SVSettings::instance().m_terminalEmulator = (SVSettings::TerminalEmulators)(index);
 }
-
 
 
 void SVSimulationStartNandrad::on_pushButtonTestInit_clicked() {

@@ -45,6 +45,8 @@ enum DataRoles {
 	Role_RawPointer
 };
 
+/*! Threshold to accept distance/area/volume parameters as equal */
+extern const double SAME_DISTANCE_PARAMETER_ABSTOL;
 
 /*! \file SVConstants.h
 	Contains constants which are used in several ui files. This is to

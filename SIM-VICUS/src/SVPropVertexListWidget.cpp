@@ -420,6 +420,7 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 				s.m_id = s.uniqueID();
 				// also store component information
 				VICUS::ComponentInstance compInstance;
+				compInstance.m_id = VICUS::Project::uniqueId(project().m_componentInstances);
 				compInstance.m_componentID = m_ui->comboBoxComponent->currentData().toUInt();
 				// for now we assume that the zone's surface is connected to the b-side of the component
 				compInstance.m_sideBSurfaceID = s.m_id;
@@ -483,12 +484,12 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 			}
 
 			sFloor.updateColor();
-			components.push_back(VICUS::ComponentInstance(
-									 m_ui->comboBoxComponentFloor->currentData().toUInt(), VICUS::INVALID_ID, sFloor.m_id));
+			components.push_back(VICUS::ComponentInstance(VICUS::Project::uniqueId(project().m_componentInstances),
+				 m_ui->comboBoxComponentFloor->currentData().toUInt(), VICUS::INVALID_ID, sFloor.m_id));
 
 			sCeiling.updateColor();
-			components.push_back(VICUS::ComponentInstance(
-									 m_ui->comboBoxComponentCeiling->currentData().toUInt(), VICUS::INVALID_ID, sCeiling.m_id));
+			components.push_back(VICUS::ComponentInstance(VICUS::Project::uniqueId(project().m_componentInstances),
+				 m_ui->comboBoxComponentCeiling->currentData().toUInt(), VICUS::INVALID_ID, sCeiling.m_id));
 
 			r.m_id = r.uniqueID();
 			r.m_surfaces.push_back(sFloor);
@@ -519,7 +520,8 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 				sWall.m_displayName = tr("Wall %1").arg(i+1);
 				sWall.m_geometry = VICUS::PlaneGeometry( VICUS::PlaneGeometry::T_Rectangle, p0, p1, p2);
 				sWall.updateColor();
-				components.push_back(VICUS::ComponentInstance(wallComponentID, VICUS::INVALID_ID, sWall.m_id));
+				components.push_back(VICUS::ComponentInstance(VICUS::Project::uniqueId(project().m_componentInstances),
+															  wallComponentID, VICUS::INVALID_ID, sWall.m_id));
 
 				r.m_surfaces.push_back(sWall);
 			}

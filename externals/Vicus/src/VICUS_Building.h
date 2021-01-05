@@ -32,7 +32,7 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique ID of building. */
+	/*! Persistant ID of building. */
 	unsigned int						m_id = INVALID_ID;			// XML:A:required
 
 	/*! Display name of building. */

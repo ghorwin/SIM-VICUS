@@ -15,18 +15,23 @@ class Surface;
 */
 class ComponentInstance {
 public:
-
+	/*! Default c'tor. */
 	ComponentInstance() {}
-	ComponentInstance(unsigned int componentID, unsigned int sideASurfaceID, unsigned int sideBSurfaceID)
-		: m_componentID(componentID), m_sideASurfaceID(sideASurfaceID), m_sideBSurfaceID(sideBSurfaceID)
+	/*! Initializing constructor. */
+	ComponentInstance(unsigned int id,
+					  unsigned int componentID, unsigned int sideASurfaceID, unsigned int sideBSurfaceID)
+		: m_id(id), m_componentID(componentID), m_sideASurfaceID(sideASurfaceID), m_sideBSurfaceID(sideBSurfaceID)
 	{}
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	VICUS_READWRITE
+	VICUS_COMPARE_WITH_ID
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
+	/*! ID of component instance (will be used for NANDRAD::ConstructionInstance). */
+	unsigned int						m_id = INVALID_ID;					// XML:A:required
 	/*! ID of referenced component. */
 	unsigned int						m_componentID = INVALID_ID;			// XML:A:required
 	/*! ID of surface at side A (optional, ID = 0 reserved for "ambient", INVALID_ID means adiabatic). */
