@@ -484,7 +484,91 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 		}
 	}
 
+	for (unsigned int matID : usedMaterials) {
+		// lookup in DB - since we checked component definitions with isValid() already above,
+		// we can be sure that the material exist and have valid parameters
+		const VICUS::Material * mat = db.m_materials[matID];
+		Q_ASSERT(mat != nullptr);
+
+		// now create a construction type
+		NANDRAD::Material matdata;
+		matdata.m_id = matID;
+		matdata.m_displayName = mat->m_displayName.string(IBK::MultiLanguageString::m_language, "en");
+
+		// now transfer parameters - fortunately, they have the same keywords, what a coincidence :-)
+		matdata.m_para[NANDRAD::Material::P_Density] = mat->m_para[VICUS::Material::P_Density];
+		matdata.m_para[NANDRAD::Material::P_HeatCapacity] = mat->m_para[VICUS::Material::P_HeatCapacity];
+		matdata.m_para[NANDRAD::Material::P_Conductivity] = mat->m_para[VICUS::Material::P_Conductivity];
+
+		p.m_materials.push_back(matdata);
+	}
+
 	// outputs
+
+	// transfer output grids
+	p.m_outputs.m_grids = project().m_outputs.m_grids;
+
+	// transfer options
+	p.m_outputs.m_binaryFormat = project().m_outputs.m_flags[VICUS::Outputs::F_BinaryOutputs];
+	p.m_outputs.m_timeUnit = project().m_outputs.m_timeUnit;
+
+	// transfer pre-defined output definitions
+	p.m_outputs.m_definitions = project().m_outputs.m_definitions;
+
+	// generate default output definitions, if requested
+	if (project().m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs].isEnabled()) {
+
+		// we need an hourly output grid, look if we have already one defined (should be!)
+		int ogInd = -1;
+		for (unsigned int i=0; i<p.m_outputs.m_grids.size(); ++i) {
+			NANDRAD::OutputGrid & og = p.m_outputs.m_grids[i];
+			if (og.m_intervals.size() == 1 &&
+				og.m_intervals.back().m_para[NANDRAD::Interval::P_Start].value == 0.0 &&
+				og.m_intervals.back().m_para[NANDRAD::Interval::P_End].name.empty() &&
+				og.m_intervals.back().m_para[NANDRAD::Interval::P_StepSize].value == 3600.0)
+			{
+				ogInd = (int)i;
+				break;
+			}
+		}
+		// create one, if not yet existing
+		std::string refName;
+		if (ogInd == -1) {
+			NANDRAD::OutputGrid og;
+			og.m_name = refName = tr("Hourly values").toStdString();
+			NANDRAD::Interval iv;
+			NANDRAD::KeywordList::setParameter(iv.m_para, "Interval::para_t", NANDRAD::Interval::P_Start, 0);
+			NANDRAD::KeywordList::setParameter(iv.m_para, "Interval::para_t", NANDRAD::Interval::P_StepSize, 1);
+			og.m_intervals.push_back(iv);
+			p.m_outputs.m_grids.push_back(og);
+		}
+		else {
+			refName = p.m_outputs.m_grids[(unsigned int)ogInd].m_name;
+		}
+
+
+		// now we have a name for the output grid, start generating default outputs
+		std::string objectListAllZones = tr("All zones").toStdString();
+		{
+			NANDRAD::OutputDefinition od;
+			od.m_gridName = refName;
+			od.m_quantity = "AirTemperature";
+			od.m_objectListName = objectListAllZones;
+			p.m_outputs.m_definitions.push_back(od);
+		}
+
+		// and also generate the needed object lists
+
+		{
+			NANDRAD::ObjectList ol;
+			ol.m_name = objectListAllZones;
+			ol.m_filterID.setEncodedString("*");
+			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+			p.m_objectLists.push_back(ol);
+		}
+
+
+	}
 
 
 
