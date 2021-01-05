@@ -4,6 +4,10 @@
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
 #include "VICUS_AbstractDBElement.h"
+#include "VICUS_Database.h"
+#include "VICUS_Material.h"
+#include "VICUS_Construction.h"
+#include "VICUS_BoundaryCondition.h"
 
 #include <IBK_MultiLanguageString.h>
 
@@ -13,7 +17,7 @@
 
 namespace VICUS {
 
-class Component		: public AbstractDBElement {
+class Component : public AbstractDBElement {
 public:
 
 	/*! Component types. */
@@ -41,6 +45,11 @@ public:
 
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
+
+	/*! Checks if all referenced materials exist and if their parameters are valid. */
+	bool isValid(const VICUS::Database<VICUS::Material> & materials,
+				 const VICUS::Database<VICUS::Construction> & constructions,
+				 const VICUS::Database<VICUS::BoundaryCondition> & bcs) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

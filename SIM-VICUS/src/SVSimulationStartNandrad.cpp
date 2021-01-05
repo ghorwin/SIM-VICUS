@@ -288,7 +288,11 @@ public:
 	ConversionError(const IBK::FormatString & errmsg) : IBK::Exception(errmsg, "ConversionError") {}
 };
 
+
 bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
+
+	// TODO : in time this will be a rather lengthy function, maybe we should move this to a separate class with
+	//        different member functions
 
 	// simulation settings
 	p.m_simulationParameter = m_simParams;
@@ -348,6 +352,8 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 	// this set collects all construction type IDs, which will be used to create constructionInstances
 	std::set<unsigned int> usedConstructionTypes;
 
+	const SVDatabase & db = SVSettings::instance().m_db;
+
 	// now process all components and generate construction instances
 	for (const VICUS::ComponentInstance * ci : usedComponentInstances) {
 		if (ci == nullptr)
@@ -362,11 +368,17 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 								  .arg(ci->m_componentID).arg(ci->m_id));
 			return false;
 		}
+		if (!comp->isValid(db.m_materials, db.m_constructions, db.m_boundaryConditions)) {
+			QMessageBox::critical(this, tr("Starting NANDRAD simulation"),
+				tr("Component '%1' (id=%2), referenced from component instance (id=%3) has invalid/incomplete parametrization.")
+					.arg(QString::fromStdString(comp->m_displayName.string(IBK::MultiLanguageString::m_language, "en")))
+					.arg(ci->m_componentID).arg(ci->m_id));
+			return false;
+		}
 
 		// now generate a construction instance
 		NANDRAD::ConstructionInstance cinst;
 		cinst.m_id = ci->m_id;
-//		cinst.m_displayName = ci->m_displayName;
 
 		// store reference to construction type (i.e. to be generated from component)
 		cinst.m_constructionTypeId = comp->m_idOpaqueConstruction;
@@ -398,6 +410,8 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 				NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
 												   NANDRAD::ConstructionInstance::P_Orientation, orientation);
 
+				cinst.m_displayName = tr("Internal wall between surfaces '%1' and '%2'")
+						.arg(ci->m_sideASurface->m_displayName).arg(ci->m_sideBSurface->m_displayName).toStdString();
 			}
 			else {
 
@@ -413,6 +427,7 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 				NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
 												   NANDRAD::ConstructionInstance::P_Orientation, orientation);
 
+				cinst.m_displayName = ci->m_sideASurface->m_displayName.toStdString();
 			}
 			// set area parameter (computed from side A, but if side B is given as well, the area is the same
 			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
@@ -437,10 +452,36 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 			double area = ci->m_sideBSurface->m_geometry.area();
 			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
 											   NANDRAD::ConstructionInstance::P_Area, area);
+
+			cinst.m_displayName = ci->m_sideBSurface->m_displayName.toStdString();
 		}
 
 		// add to list of construction instances
 		p.m_constructionInstances.push_back(cinst);
+	}
+
+	// database elements
+
+	std::set<unsigned int> usedMaterials;
+
+	for (unsigned int conTypeID : usedConstructionTypes) {
+		// lookup construction type in DB - since we checked component definitions with isValid() already above,
+		// we can be sure that the construction instances exist and have valid parameters
+		const VICUS::Construction * con = db.m_constructions[conTypeID];
+		Q_ASSERT(con != nullptr);
+
+		// now create a construction type
+		NANDRAD::ConstructionType conType;
+		conType.m_id = conTypeID;
+		conType.m_displayName = con->m_displayName.string(IBK::MultiLanguageString::m_language, "en");
+
+		for (const VICUS::MaterialLayer & ml : con->m_materialLayers) {
+			NANDRAD::MaterialLayer mlayer;
+			mlayer.m_matId = ml.m_matId;
+			usedMaterials.insert(ml.m_matId);
+			mlayer.m_thickness = ml.m_thickness.value;
+			conType.m_materialLayers.push_back(mlayer);
+		}
 	}
 
 	// outputs
