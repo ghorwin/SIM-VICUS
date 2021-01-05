@@ -6,7 +6,7 @@ bool Component::isValid(const VICUS::Database<Material> & materials, const VICUS
 						const VICUS::Database<BoundaryCondition> & bcs) const
 {
 	// referenced construction instance exists and is valid?
-	const Construction * con = constructions[m_idOpaqueConstruction];
+	const Construction * con = constructions[m_idConstruction];
 	if (con == nullptr)
 		return false;
 

@@ -75,16 +75,16 @@ public:
 	ComponentType					m_type = CT_Miscellaneous;					// XML:E:required
 
 	/*! Opaque construction ID. */
-	unsigned int					m_idOpaqueConstruction = INVALID_ID;		// XML:E
+	unsigned int					m_idConstruction = INVALID_ID;				// XML:E
 
 	/*! Transparent construction ID. */
 	unsigned int					m_idGlazingSystem = INVALID_ID;				// XML:E
 
-	/*! Outside boundary condition ID (Side A). */
-	unsigned int					m_idOutsideBoundaryCondition = INVALID_ID;	// XML:E
+	/*! Boundary condition ID for Side A (usually outside). */
+	unsigned int					m_idSideABoundaryCondition = INVALID_ID;	// XML:E
 
-	/*! Inside boundary condition ID  (Side B). */
-	unsigned int					m_idInsideBoundaryCondition = INVALID_ID;	// XML:E
+	/*! Boundary condition ID for Side B (usually inside). */
+	unsigned int					m_idSideBBoundaryCondition = INVALID_ID;	// XML:E
 
 	/*! Surface property ID. */
 	unsigned int					m_idSurfaceProperty = INVALID_ID;			// XML:E

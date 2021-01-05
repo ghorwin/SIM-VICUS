@@ -126,7 +126,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	m_ui->lineEditSolarAbsorptionSideB->setText("---");
 	m_ui->lineEditThermalAbsorptionSideB->setText("---");
 
-	const VICUS::Construction *con = m_db->m_constructions[comp->m_idOpaqueConstruction];
+	const VICUS::Construction *con = m_db->m_constructions[comp->m_idConstruction];
 	if (con != nullptr) {
 		m_ui->lineEditConstructionName->setText(QString::fromStdString(con->m_displayName.string(QtExt::LanguageHandler::langId().toStdString(), "en")));
 		double UValue;
@@ -139,7 +139,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 		m_ui->lineEditConstructionName->setText("");
 	}
 
-	const VICUS::BoundaryCondition *bcA = m_db->m_boundaryConditions[comp->m_idOutsideBoundaryCondition];
+	const VICUS::BoundaryCondition *bcA = m_db->m_boundaryConditions[comp->m_idSideABoundaryCondition];
 	if(bcA != nullptr){
 		m_ui->lineEditBoundaryConditionSideAName->setText(QString::fromStdString(bcA->m_displayName.string(QtExt::LanguageHandler::langId().toStdString(), std::string("en"))));
 		m_ui->lineEditHeatTransferCoeffSideA->setValue(bcA->m_para[VICUS::BoundaryCondition::P_HeatTransferCoefficient].value);
@@ -147,7 +147,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 		m_ui->lineEditThermalAbsorptionSideA->setValue(bcA->m_para[VICUS::BoundaryCondition::P_Emissivity].value);
 	}
 
-	const VICUS::BoundaryCondition *bcB = m_db->m_boundaryConditions[comp->m_idInsideBoundaryCondition];
+	const VICUS::BoundaryCondition *bcB = m_db->m_boundaryConditions[comp->m_idSideBBoundaryCondition];
 	if(bcB != nullptr){
 		m_ui->lineEditBoundaryConditionSideBName->setText(QString::fromStdString(bcB->m_displayName.string(QtExt::LanguageHandler::langId().toStdString(), std::string("en"))));
 		m_ui->lineEditHeatTransferCoeffSideB->setValue(bcB->m_para[VICUS::BoundaryCondition::P_HeatTransferCoefficient].value);
@@ -208,9 +208,9 @@ void SVDBComponentEditWidget::on_comboBoxComponentType_currentIndexChanged(int i
 void SVDBComponentEditWidget::on_toolButtonSelectConstruction_clicked() {
 	// get construction edit dialog from mainwindow
 	SVDBConstructionEditDialog * conEditDialog = SVMainWindow::instance().dbConstructionEditDialog();
-	int conId = conEditDialog->select(m_current->m_idOpaqueConstruction);
+	int conId = conEditDialog->select(m_current->m_idConstruction);
 	if (conId != -1) {
-		m_current->m_idOpaqueConstruction = conId;
+		m_current->m_idConstruction = conId;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		updateInput(m_current->m_id);
 	}
@@ -220,9 +220,9 @@ void SVDBComponentEditWidget::on_toolButtonSelectConstruction_clicked() {
 void SVDBComponentEditWidget::on_toolButtonSelectBoundaryConditionSideAName_clicked() {
 	// get boundary condition edit dialog from mainwindow
 	SVDBBoundaryConditionEditDialog * bcEditDialog = SVMainWindow::instance().dbBoundaryConditionEditDialog();
-	int bcId = bcEditDialog->select(m_current->m_idOutsideBoundaryCondition);
+	int bcId = bcEditDialog->select(m_current->m_idSideABoundaryCondition);
 	if (bcId != -1) {
-		m_current->m_idOutsideBoundaryCondition= bcId;
+		m_current->m_idSideABoundaryCondition= bcId;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		updateInput(m_current->m_id);
 	}
@@ -232,9 +232,9 @@ void SVDBComponentEditWidget::on_toolButtonSelectBoundaryConditionSideAName_clic
 void SVDBComponentEditWidget::on_toolButtonSelectBoundaryConditionSideBName_clicked() {
 	// get boundary condition edit dialog from mainwindow
 	SVDBBoundaryConditionEditDialog * bcEditDialog = SVMainWindow::instance().dbBoundaryConditionEditDialog();
-	int bcId = bcEditDialog->select(m_current->m_idInsideBoundaryCondition);
+	int bcId = bcEditDialog->select(m_current->m_idSideBBoundaryCondition);
 	if (bcId != -1) {
-		m_current->m_idInsideBoundaryCondition = bcId;
+		m_current->m_idSideBBoundaryCondition = bcId;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		updateInput(m_current->m_id);
 	}

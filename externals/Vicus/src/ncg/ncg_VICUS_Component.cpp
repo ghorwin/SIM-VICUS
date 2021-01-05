@@ -73,14 +73,14 @@ void Component::readXML(const TiXmlElement * element) {
 				m_manufacturer.setEncodedString(c->GetText());
 			else if (cName == "DataSource")
 				m_dataSource.setEncodedString(c->GetText());
-			else if (cName == "IdOpaqueConstruction")
-				m_idOpaqueConstruction = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "IdConstruction")
+				m_idConstruction = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IdGlazingSystem")
 				m_idGlazingSystem = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "IdOutsideBoundaryCondition")
-				m_idOutsideBoundaryCondition = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "IdInsideBoundaryCondition")
-				m_idInsideBoundaryCondition = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "IdSideABoundaryCondition")
+				m_idSideABoundaryCondition = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "IdSideBBoundaryCondition")
+				m_idSideBBoundaryCondition = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IdSurfaceProperty")
 				m_idSurfaceProperty = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "Type") {
@@ -125,14 +125,14 @@ TiXmlElement * Component::writeXML(TiXmlElement * parent) const {
 
 	if (m_type != NUM_CT)
 		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("Component::ComponentType",  m_type));
-	if (m_idOpaqueConstruction != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "IdOpaqueConstruction", nullptr, std::string(), IBK::val2string<unsigned int>(m_idOpaqueConstruction));
+	if (m_idConstruction != VICUS::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "IdConstruction", nullptr, std::string(), IBK::val2string<unsigned int>(m_idConstruction));
 	if (m_idGlazingSystem != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "IdGlazingSystem", nullptr, std::string(), IBK::val2string<unsigned int>(m_idGlazingSystem));
-	if (m_idOutsideBoundaryCondition != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "IdOutsideBoundaryCondition", nullptr, std::string(), IBK::val2string<unsigned int>(m_idOutsideBoundaryCondition));
-	if (m_idInsideBoundaryCondition != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "IdInsideBoundaryCondition", nullptr, std::string(), IBK::val2string<unsigned int>(m_idInsideBoundaryCondition));
+	if (m_idSideABoundaryCondition != VICUS::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "IdSideABoundaryCondition", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSideABoundaryCondition));
+	if (m_idSideBBoundaryCondition != VICUS::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "IdSideBBoundaryCondition", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSideBBoundaryCondition));
 	if (m_idSurfaceProperty != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "IdSurfaceProperty", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSurfaceProperty));
 	return e;

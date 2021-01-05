@@ -311,6 +311,8 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 
 	// geometry
 
+	unsigned int interfaceID = 1; // used to generate unique interface IDs
+
 	// we process all zones and buildings and create NANDRAD project data
 	// we also check that all referenced database properties are available and transfer them accordingly
 
@@ -381,8 +383,8 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 		cinst.m_id = ci->m_id;
 
 		// store reference to construction type (i.e. to be generated from component)
-		cinst.m_constructionTypeId = comp->m_idOpaqueConstruction;
-		usedConstructionTypes.insert(comp->m_idOpaqueConstruction);
+		cinst.m_constructionTypeId = comp->m_idConstruction;
+		usedConstructionTypes.insert(comp->m_idConstruction);
 
 		// set construction instance parameters
 		// we have eitherone or two surfaces associated
@@ -454,6 +456,28 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 											   NANDRAD::ConstructionInstance::P_Area, area);
 
 			cinst.m_displayName = ci->m_sideBSurface->m_displayName.toStdString();
+		}
+
+		// add boundary conditions, side A
+		if (ci->m_sideASurface != nullptr) {
+			// lookup boundary condition definitino
+			const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
+
+			cinst.m_interfaceA.m_id = ++interfaceID; // for now, all interfaces have the same ID
+			cinst.m_interfaceA.m_heatConduction.m_modelType = NANDRAD::InterfaceHeatConduction::MT_Constant;
+			cinst.m_interfaceA.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient] =
+					bc->m_para[VICUS::BoundaryCondition::P_HeatTransferCoefficient];
+		}
+
+		// add boundary conditions, side B
+		if (ci->m_sideBSurface != nullptr) {
+			// lookup boundary condition definitino
+			const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
+
+			cinst.m_interfaceB.m_id = ++interfaceID; // for now, all interfaces have the same ID
+			cinst.m_interfaceB.m_heatConduction.m_modelType = NANDRAD::InterfaceHeatConduction::MT_Constant;
+			cinst.m_interfaceB.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient] =
+					bc->m_para[VICUS::BoundaryCondition::P_HeatTransferCoefficient];
 		}
 
 		// add to list of construction instances

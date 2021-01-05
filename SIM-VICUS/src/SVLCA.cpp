@@ -131,7 +131,7 @@ void LCA::calculateLCA()
 		const VICUS::Component &comp = m_dbComponents[c.first];
 
 		//opaque construction
-		if(comp.m_idOpaqueConstruction != VICUS::INVALID_ID){
+		if(comp.m_idConstruction != VICUS::INVALID_ID){
 			//get construction
 			///TODO Dirk baufähig gemacht müsste rückgängig gemacht werden
 			VICUS::Construction constr;
@@ -238,8 +238,8 @@ void LCA::calculateLCA()
 		unsigned int compId = e.first;
 
 		//check if opaque construction is available
-		if(m_dbComponents[compId].m_idOpaqueConstruction != VICUS::INVALID_ID){
-			const VICUS::Construction &constr = m_dbConstructions[m_dbComponents[compId].m_idOpaqueConstruction];
+		if(m_dbComponents[compId].m_idConstruction != VICUS::INVALID_ID){
+			const VICUS::Construction &constr = m_dbConstructions[m_dbComponents[compId].m_idConstruction];
 
 			//get values for all material layers in each category of the lifecycle
 			for(auto &l : constr.m_materialLayers){
