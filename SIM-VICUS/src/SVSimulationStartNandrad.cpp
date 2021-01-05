@@ -482,6 +482,9 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 			mlayer.m_thickness = ml.m_thickness.value;
 			conType.m_materialLayers.push_back(mlayer);
 		}
+
+		// add to construction type list
+		p.m_constructionTypes.push_back(conType);
 	}
 
 	for (unsigned int matID : usedMaterials) {
@@ -500,6 +503,7 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 		matdata.m_para[NANDRAD::Material::P_HeatCapacity] = mat->m_para[VICUS::Material::P_HeatCapacity];
 		matdata.m_para[NANDRAD::Material::P_Conductivity] = mat->m_para[VICUS::Material::P_Conductivity];
 
+		// add to material list
 		p.m_materials.push_back(matdata);
 	}
 
