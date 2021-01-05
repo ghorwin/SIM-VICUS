@@ -5,6 +5,8 @@
 #include <QFile>
 #include <QTextStream>
 #include <QScrollBar>
+#include <QDebug>
+#include <QApplication>
 
 #include <QtExt_Directories.h>
 
@@ -45,11 +47,11 @@ void SVLogWidget::showLogFile( const QString & logFilePath ) {
 		QString html = QString("<span style=\"white-space:pre; color:%2\">%1</span>").arg(line);
 		// color lines according to message type
 		if (line.indexOf("[Warning") != -1)
-			html = html.arg("#aa8800");
+			html = html.arg(SVStyle::instance().m_logWarningText.name());
 		else if (line.indexOf("[Error") != -1)
-			html = html.arg("#bb0000");
+			html = html.arg(SVStyle::instance().m_logErrorText.name());
 		else
-			html = html.arg("#000000");
+			html = html.arg(SVStyle::instance().m_alternativeBackgroundText.name());
 		m_textEdit->appendHtml(html);
 		line = strm.readLine();
 	}
@@ -68,16 +70,16 @@ void SVLogWidget::onMsgReceived(int type, QString msgString) {
 	switch (type) {
 		case IBK::MSG_PROGRESS :
 		case IBK::MSG_CONTINUED :
-			html = html.arg("#000000");
+			html = html.arg(SVStyle::instance().m_alternativeBackgroundText.name());
 			break;
 		case IBK::MSG_WARNING :
-			html = html.arg("#aa8800");
+			html = html.arg(SVStyle::instance().m_logWarningText.name());
 			break;
 		case IBK::MSG_ERROR :
-			html = html.arg("#bb0000");
+			html = html.arg(SVStyle::instance().m_logErrorText.name());
 			break;
 		case IBK::MSG_DEBUG :
-			html = html.arg("#a0a0a0");
+			html = html.arg(SVStyle::instance().m_logDebugText.name());
 			break;
 	}
 

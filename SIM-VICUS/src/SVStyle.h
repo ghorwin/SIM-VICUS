@@ -43,6 +43,11 @@ public:
 	QColor				m_alternativeReadOnlyEditFieldBackground;
 	QColor				m_errorEditFieldBackground;
 
+
+	QColor				m_logErrorText;
+	QColor				m_logWarningText;
+	QColor				m_logDebugText;
+
 private:
 	static SVStyle		*m_self;
 

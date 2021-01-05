@@ -7,6 +7,7 @@
 #include <QLayout>
 #include <QTableView>
 #include <QHeaderView>
+#include <QDebug>
 
 #include <QtExt_Style.h>
 
@@ -138,12 +139,16 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 		m_styleSheet = QLatin1String(file.readAll());
 		qApp->setStyleSheet(m_styleSheet);
 		// set specific background/font colors
-		m_alternativeBackgroundBright = "#73580e";
-		m_alternativeBackgroundDark = "#57430b";
-		m_alternativeBackgroundText = "#ffedce";
-		m_readOnlyEditFieldBackground = "#5f7da0";
-		m_alternativeReadOnlyEditFieldBackground = "#7f94ab";
-		m_errorEditFieldBackground = "#ab4e4e";
+		m_alternativeBackgroundBright				= "#73580e";
+		m_alternativeBackgroundDark					= "#57430b";
+		m_alternativeBackgroundText					= "#ffedce";
+		m_readOnlyEditFieldBackground				= "#5f7da0";
+		m_alternativeReadOnlyEditFieldBackground	= "#7f94ab";
+		m_errorEditFieldBackground					= "#ab4e4e";
+
+		m_logErrorText								= "#ea3030";
+		m_logWarningText							= "#f0dc00";
+		m_logDebugText								= "#39b1d9";
 
 		// now adjust the style settings for QtExt components
 		QtExt::Style::EditFieldBackground = "#212124";
@@ -161,12 +166,16 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 		qApp->setStyleSheet(m_styleSheet);
 
 		// set specific background/font colors
-		m_alternativeBackgroundBright = "#fff4b8";
-		m_alternativeBackgroundDark = "#ffe49d";
-		m_alternativeBackgroundText = "#760000";
-		m_readOnlyEditFieldBackground = "#d6e9ff";
-		m_alternativeReadOnlyEditFieldBackground = "#b5d8ff";
-		m_errorEditFieldBackground = "#ff7777";
+		m_alternativeBackgroundBright				= "#fff4b8";
+		m_alternativeBackgroundDark					= "#ffe49d";
+		m_alternativeBackgroundText					= "#760000";
+		m_readOnlyEditFieldBackground				= "#d6e9ff";
+		m_alternativeReadOnlyEditFieldBackground	= "#b5d8ff";
+		m_errorEditFieldBackground					= "#ff7777";
+
+		m_logErrorText								= "#ff7466";
+		m_logWarningText							= "#ffe831";
+		m_logDebugText								= "#39b1d9";
 
 		QtExt::Style::EditFieldBackground						= "#f9f6c8";
 		QtExt::Style::AlternativeEditFieldBackground			= "#f9ffd8";
