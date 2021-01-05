@@ -468,11 +468,11 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 			// now we can create the surfaces for top and bottom
 			// compose a surface object based on the current content of the new polygon object
 			VICUS::Surface sFloor;
-			sFloor.m_displayName = QString("%1-floor").arg(r.m_displayName);
+			sFloor.m_displayName = QString("Floor");
 			sFloor.m_id = sFloor.uniqueID();
 			VICUS::Surface sCeiling;
-			sCeiling.m_displayName = QString("%1-ceiling").arg(r.m_displayName);
-			sCeiling.m_id = sFloor.uniqueID();
+			sCeiling.m_displayName = QString("Ceiling");
+			sCeiling.m_id = sCeiling.uniqueID();
 			// if the ceiling has a normal vector pointing up, we take it as ceiling, otherwise it's going to be the floor
 			if (IBKMK::Vector3D(0,0,1).scalarProduct(ceiling.normal()) > 0) {
 				sCeiling.m_geometry = ceiling;
@@ -484,11 +484,15 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 			}
 
 			sFloor.updateColor();
-			components.push_back(VICUS::ComponentInstance(VICUS::Project::uniqueId(project().m_componentInstances),
+			// get the smallest yet free ID for component instances/construction instances
+			unsigned int conInstID = 1000;
+			for (const VICUS::ComponentInstance & cinst : project().m_componentInstances)
+				conInstID = std::max(conInstID, cinst.m_id);
+			components.push_back(VICUS::ComponentInstance(++conInstID,
 				 m_ui->comboBoxComponentFloor->currentData().toUInt(), VICUS::INVALID_ID, sFloor.m_id));
 
 			sCeiling.updateColor();
-			components.push_back(VICUS::ComponentInstance(VICUS::Project::uniqueId(project().m_componentInstances),
+			components.push_back(VICUS::ComponentInstance(++conInstID,
 				 m_ui->comboBoxComponentCeiling->currentData().toUInt(), VICUS::INVALID_ID, sCeiling.m_id));
 
 			r.m_id = r.uniqueID();
@@ -520,7 +524,7 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 				sWall.m_displayName = tr("Wall %1").arg(i+1);
 				sWall.m_geometry = VICUS::PlaneGeometry( VICUS::PlaneGeometry::T_Rectangle, p0, p1, p2);
 				sWall.updateColor();
-				components.push_back(VICUS::ComponentInstance(VICUS::Project::uniqueId(project().m_componentInstances),
+				components.push_back(VICUS::ComponentInstance(++conInstID,
 															  wallComponentID, VICUS::INVALID_ID, sWall.m_id));
 
 				r.m_surfaces.push_back(sWall);

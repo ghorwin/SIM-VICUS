@@ -38,6 +38,10 @@ void ComponentInstance::readXML(const TiXmlElement * element) {
 
 	try {
 		// search for mandatory attributes
+		if (!TiXmlAttribute::attributeByName(element, "id"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
+
 		if (!TiXmlAttribute::attributeByName(element, "componentID"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'componentID' attribute.") ), FUNC_ID);
@@ -46,7 +50,9 @@ void ComponentInstance::readXML(const TiXmlElement * element) {
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
-			if (attribName == "componentID")
+			if (attribName == "id")
+				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "componentID")
 				m_componentID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "sideASurfaceID")
 				m_sideASurfaceID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
@@ -70,6 +76,8 @@ TiXmlElement * ComponentInstance::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("ComponentInstance");
 	parent->LinkEndChild(e);
 
+	if (m_id != VICUS::INVALID_ID)
+		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (m_componentID != VICUS::INVALID_ID)
 		e->SetAttribute("componentID", IBK::val2string<unsigned int>(m_componentID));
 	if (m_sideASurfaceID != VICUS::INVALID_ID)
