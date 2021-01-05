@@ -279,3 +279,8 @@ void SVNavigationTreeWidget::on_treeWidget_itemSelectionChanged() {
 	}
 	SVViewStateHandler::instance().setViewState(vs);
 }
+
+
+void SVNavigationTreeWidget::on_actionRemoveSelected_triggered() {
+	// process all selected objects
+}

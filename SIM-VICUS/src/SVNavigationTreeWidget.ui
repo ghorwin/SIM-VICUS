@@ -71,6 +71,21 @@
     <string>Add...</string>
    </property>
   </action>
+  <action name="actionRemoveSelected">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
+   </property>
+   <property name="text">
+    <string>Remove</string>
+   </property>
+   <property name="toolTip">
+    <string>Removed selected objects</string>
+   </property>
+   <property name="shortcut">
+    <string>Del</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../resources/SIM-VICUS.qrc"/>

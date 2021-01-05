@@ -34,6 +34,8 @@ private slots:
 
 	void on_treeWidget_itemSelectionChanged();
 
+	void on_actionRemoveSelected_triggered();
+
 private:
 	enum NodeType {
 		NT_UndefinedNode,
