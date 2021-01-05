@@ -83,8 +83,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "SolarAbsorption";
 				case 1 : return "Emissivity";
-				case 2 : return "VisibleAbsorption";
-				case 3 : return "HeatTransferCoefficient";
+				case 2 : return "HeatTransferCoefficient";
 			} break;
 			// BoundaryCondition::HeatConductionModel
 			case 1 :
@@ -315,8 +314,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "SolarAbsorption";
 				case 1 : return "Emissivity";
-				case 2 : return "VisibleAbsorption";
-				case 3 : return "HeatTransferCoefficient";
+				case 2 : return "HeatTransferCoefficient";
 			} break;
 			// BoundaryCondition::HeatConductionModel
 			case 1 :
@@ -548,8 +546,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "Solar absorption coefficient.";
 				case 1 : return "Constant Long wave emissivity.";
-				case 2 : return "Visible absorption coefficient.";
-				case 3 : return "Constant heat transfer coefficient.";
+				case 2 : return "Constant heat transfer coefficient.";
 			} break;
 			// BoundaryCondition::HeatConductionModel
 			case 1 :
@@ -780,8 +777,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "---";
 				case 1 : return "---";
-				case 2 : return "---";
-				case 3 : return "W/m2K";
+				case 2 : return "W/m2K";
 			} break;
 			// BoundaryCondition::HeatConductionModel
 			case 1 :
@@ -1013,7 +1009,6 @@ namespace VICUS {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
-				case 3 : return "#FFFFFF";
 			} break;
 			// BoundaryCondition::HeatConductionModel
 			case 1 :
@@ -1245,7 +1240,6 @@ namespace VICUS {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
-				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// BoundaryCondition::HeatConductionModel
 			case 1 :
@@ -1473,7 +1467,7 @@ namespace VICUS {
 	unsigned int KeywordList::Count(const char * const enumtype) {
 		switch (enum2index(enumtype)) {
 			// BoundaryCondition::para_t
-			case 0 : return 4;
+			case 0 : return 3;
 			// BoundaryCondition::HeatConductionModel
 			case 1 : return 2;
 			// Component::ComponentType
@@ -1537,7 +1531,7 @@ namespace VICUS {
 	int KeywordList::MaxIndex(const char * const enumtype) {
 		switch (enum2index(enumtype)) {
 			// BoundaryCondition::para_t
-			case 0 : return 3;
+			case 0 : return 2;
 			// BoundaryCondition::HeatConductionModel
 			case 1 : return 1;
 			// Component::ComponentType

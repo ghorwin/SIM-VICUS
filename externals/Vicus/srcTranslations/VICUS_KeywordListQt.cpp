@@ -26,7 +26,6 @@ KeywordListQt::KeywordListQt() {
 
 	tr("Solar absorption coefficient.");
 	tr("Constant Long wave emissivity.");
-	tr("Visible absorption coefficient.");
 	tr("Constant heat transfer coefficient.");
 	tr("Constant model.");
 	tr("Heat transfer coefficient depends on wind velocity.");

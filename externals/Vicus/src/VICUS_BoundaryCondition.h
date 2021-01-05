@@ -20,11 +20,10 @@ public:
 
 	/*! Basic parameters. */
 	enum para_t {
-		P_SolarAbsorption,			// Keyword: SolarAbsorption			[---]	'Solar absorption coefficient.'
-		P_Emissivity,				// Keyword: Emissivity				[---]	'Constant Long wave emissivity.'
-		//P_VisibleAbsorption,		// Keyword: VisibleAbsorption		[---]	'Visible absorption coefficient.'
+		P_SolarAbsorption,			// Keyword: SolarAbsorption			[---]	'Solar absorption coefficient'
+		P_Emissivity,				// Keyword: Emissivity				[---]	'Constant Long wave emissivity'
 		/*! Constant heat transfer coefficient [W/m2K] */
-		P_HeatTransferCoefficient,	// Keyword: HeatTransferCoefficient [W/m2K]		'Constant heat transfer coefficient.'
+		P_HeatTransferCoefficient,	// Keyword: HeatTransferCoefficient [W/m2K]		'Constant heat transfer coefficient'
 		NUM_P
 	};
 
@@ -32,9 +31,6 @@ public:
 	enum HeatConductionModel {
 		/*! Constant transfer coefficient. */
 		MT_Constant,				// Keyword: Constant		'Constant model.'
-		/// TODO Andreas : ist das hier so richtig falls das Modell detaillierter wird?
-		/// Wie wird dann mit weiteren Parameter umgegangen die das Model benötigt
-		//MT_WindVelocity,			// Keyword: WindVelocity	'Heat transfer coefficient depends on wind velocity.'
 		NUM_MT
 	};
 
