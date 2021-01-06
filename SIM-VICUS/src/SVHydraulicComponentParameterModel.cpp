@@ -44,6 +44,7 @@ QVariant SVHydraulicComponentParameterModel::data(const QModelIndex &index, int 
 		return m_component.m_para[m_parameterList[index.row()]].value;
 	else if (index.column()==2)
 		return NANDRAD::KeywordList::Unit("HydraulicNetworkComponent::para_t", m_parameterList[index.row()]);
+	return QVariant();
 }
 
 QVariant SVHydraulicComponentParameterModel::headerData(int section, Qt::Orientation orientation, int role) const

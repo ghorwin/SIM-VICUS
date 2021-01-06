@@ -1,6 +1,8 @@
 #include "SVPropNetworkEditWidget.h"
 #include "ui_SVPropNetworkEditWidget.h"
 
+#include <QMessageBox>
+
 #include "SVViewStateHandler.h"
 #include "SVNavigationTreeWidget.h"
 #include "SVUndoAddNetwork.h"
@@ -8,9 +10,9 @@
 #include "SVProjectHandler.h"
 #include "SVDialogHydraulicComponents.h"
 
-#include "NANDRAD_HydraulicNetworkComponent.h"
+#include <NANDRAD_HydraulicNetworkComponent.h>
 
-#include "VICUS_KeywordList.h"
+#include <VICUS_KeywordList.h>
 
 SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 	QWidget(parent),
@@ -232,12 +234,13 @@ void SVPropNetworkEditWidget::modifyEdgeProperties()
 	if (edgeConst == nullptr)
 		return;
 	VICUS::NetworkEdge * edge = m_network.edge(edgeConst->nodeId1(), edgeConst->nodeId2());
+	if (edge == nullptr) {
+		QMessageBox::critical(this, QString(), tr("Invalid/missing nodes assigned to edge."));
+	}
 	edge->m_supply = m_ui->checkBoxSupplyPipe->isChecked();
-	edge->m_modelType = NANDRAD::HydraulicNetworkComponent::modelType_t(
-				m_mapPipeModels.value(m_ui->comboBoxPipeModel->currentText()));
+	edge->m_modelType = (VICUS::NetworkEdge::ModelType)m_mapPipeModels.value(m_ui->comboBoxPipeModel->currentText());
 	edge->m_pipeId = m_mapDBPipes.value(m_ui->comboBoxPipeDB->currentText());
-	edge->m_heatExchangeType = NANDRAD::HydraulicNetworkComponent::heatExchangeType_t(
-				m_mapHeatExchangeType.value(m_ui->comboBoxHeatExchangeType->currentText()));
+	edge->m_heatExchangeType = (VICUS::NetworkEdge::HeatExchangeType)m_mapHeatExchangeType.value(m_ui->comboBoxHeatExchangeType->currentText());
 	m_network.updateNodeEdgeConnectionPointers(); // update pointers, since next function depends on it
 	m_network.updateVisualizationData(); // update visualization-related properties in network
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
