@@ -1498,7 +1498,10 @@ void Vic3DScene::handleSelection(const KeyboardMouseHandler & keyboardHandler, P
 	// check if any of the pick candidates is of type object
 	unsigned int uniqueID = 0;
 	for (const PickObject::PickResult & r : o.m_candidates) {
-		if (r.m_snapPointType == PickObject::RT_Object) {
+		if (r.m_snapPointType == PickObject::RT_Object ||
+			r.m_snapPointType == PickObject::RT_NetworkEdge ||
+			r.m_snapPointType == PickObject::RT_NetworkNode)
+		{
 			uniqueID = r.m_uniqueObjectID;
 			break;
 		}
