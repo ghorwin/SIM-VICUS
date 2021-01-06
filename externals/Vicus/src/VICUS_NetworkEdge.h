@@ -103,17 +103,17 @@ public:
 	/*! If false, this is a branch. */
 	bool												m_supply;						// XML:A
 
+	/*! Type of pipe model to generate. */
+	ModelType											m_modelType = NUM_MT;			// XML:A:required
+
+	/*! Heat exchange type. */
+	HeatExchangeType									m_heatExchangeType = NUM_HT;	// XML:A
+
 	/*! ID of pipe in database */
 	unsigned int										m_pipeId = INVALID_ID;			// XML:E
 
 	/*! ID of component parameters. */
-	unsigned int										m_componentId = INVALID_ID;			// XML:E
-
-	/*! Type of pipe model to generate. */
-	ModelType											m_modelType = NUM_MT;			// XML:E:required
-
-	/*! Heat exchange type. */
-	HeatExchangeType									m_heatExchangeType = NUM_HT;	// XML:E
+	unsigned int										m_componentId = INVALID_ID;		// XML:E
 
 	// *** RUNTIME VARIABLES ***
 

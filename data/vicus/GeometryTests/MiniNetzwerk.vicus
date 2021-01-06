@@ -2,20 +2,27 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Do Dez 10 12:42:13 2020</Created>
-		<LastEdited>Sa. Dez. 26 15:36:22 2020</LastEdited>
+		<LastEdited>Mi. Jan. 6 19:34:09 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter />
-		<Location />
+		<SimulationParameter>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
+		<Location>
+			<TimeZone>13</TimeZone>
+		</Location>
 		<ViewSettings>
 			<GridSpacing>100</GridSpacing>
 			<GridWidth>500</GridWidth>
-			<CameraTranslation>198.77 -102.068 5.17953</CameraTranslation>
+			<CameraTranslation>-116.648 175.074 116.749</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.731216</Wp>
-				<X>0.67998</X>
-				<Y>-0.0232563</Y>
-				<Z>-0.0489005</Z>
+				<Wp>-0.304546</Wp>
+				<X>-0.237876</X>
+				<Y>0.566145</Y>
+				<Z>0.728079</Z>
 			</RotationMatrix>
 			<FarDistance>1700</FarDistance>
 		</ViewSettings>
@@ -36,15 +43,15 @@
 					</NetworkNode>
 				</Nodes>
 				<Edges>
-					<NetworkEdge supply="1" nodeId1="0" nodeId2="3">
+					<NetworkEdge supply="1" modelType="StaticPipe" nodeId1="0" nodeId2="3">
 						<PipeId>10</PipeId>
 						<Length>4</Length>
 					</NetworkEdge>
-					<NetworkEdge supply="1" nodeId1="3" nodeId2="1">
+					<NetworkEdge supply="1" modelType="StaticPipe" nodeId1="3" nodeId2="1">
 						<PipeId>7</PipeId>
 						<Length>4</Length>
 					</NetworkEdge>
-					<NetworkEdge supply="1" nodeId1="3" nodeId2="2">
+					<NetworkEdge supply="1" modelType="StaticPipe" nodeId1="3" nodeId2="2">
 						<PipeId>3</PipeId>
 						<Length>4</Length>
 					</NetworkEdge>
@@ -73,7 +80,7 @@
 				<IBK:Parameter name="TemperatureSetpoint" unit="C">20</IBK:Parameter>
 				<IBK:Parameter name="TemperatureDifference" unit="K">4</IBK:Parameter>
 				<IBK:Parameter name="MaxPressureLoss" unit="Pa/m">150</IBK:Parameter>
-				<ScaleNodes>5000</ScaleNodes>
+				<ScaleNodes>41</ScaleNodes>
 				<ScaleEdges>12</ScaleEdges>
 			</Network>
 		</GeometricNetworks>
