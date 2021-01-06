@@ -119,9 +119,6 @@ public:
 	/*! All hydraulic networks defined for this project. */
 	std::vector<HydraulicNetwork>					m_hydraulicNetworks;				// XML:E
 
-	/*! Hydraulic component database for this project. */
-	std::vector<HydraulicNetworkComponent>			m_hydraulicComponents;				// XML:E
-
 	/*! All construction types reference construction parameters. */
 	std::vector<ConstructionType>					m_constructionTypes;				// XML:E
 

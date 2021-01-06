@@ -13,6 +13,7 @@
 
 namespace VICUS {
 
+/* TODO : replace with NANDRAD::MaterialLayer */
 class MaterialLayer {
 public:
 

@@ -60,7 +60,31 @@ void HydraulicNetwork::readXMLPrivate(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "Elements") {
+			if (cName == "PipeProperties") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "HydraulicNetworkPipeProperties")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					HydraulicNetworkPipeProperties obj;
+					obj.readXML(c2);
+					m_pipeProperties.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "Components") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "HydraulicNetworkComponent")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					HydraulicNetworkComponent obj;
+					obj.readXML(c2);
+					m_components.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "Elements") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
@@ -98,6 +122,30 @@ TiXmlElement * HydraulicNetwork::writeXMLPrivate(TiXmlElement * parent) const {
 		e->SetAttribute("displayName", m_displayName);
 
 	m_fluid.writeXML(e);
+
+	if (!m_pipeProperties.empty()) {
+		TiXmlElement * child = new TiXmlElement("PipeProperties");
+		e->LinkEndChild(child);
+
+		for (std::vector<HydraulicNetworkPipeProperties>::const_iterator it = m_pipeProperties.begin();
+			it != m_pipeProperties.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_components.empty()) {
+		TiXmlElement * child = new TiXmlElement("Components");
+		e->LinkEndChild(child);
+
+		for (std::vector<HydraulicNetworkComponent>::const_iterator it = m_components.begin();
+			it != m_components.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
 
 	if (!m_elements.empty()) {
 		TiXmlElement * child = new TiXmlElement("Elements");

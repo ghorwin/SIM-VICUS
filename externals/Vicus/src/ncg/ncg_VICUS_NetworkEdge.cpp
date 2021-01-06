@@ -28,6 +28,7 @@
 #include <VICUS_Constants.h>
 #include <NANDRAD_Utilities.h>
 #include <VICUS_Constants.h>
+#include <VICUS_KeywordList.h>
 
 #include <tinyxml.h>
 
@@ -62,18 +63,38 @@ void NetworkEdge::readXML(const TiXmlElement * element) {
 			attrib = attrib->Next();
 		}
 		// search for mandatory elements
+		if (!element->FirstChildElement("ModelType"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'ModelType' element.") ), FUNC_ID);
+
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
 			if (cName == "PipeId")
 				m_pipeId = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "ModelType")
-				m_modelType = NANDRAD::readPODElement<int>(c, cName);
-			else if (cName == "HeatExchangeType")
-				m_heatExchangeType = NANDRAD::readPODElement<int>(c, cName);
+			else if (cName == "ComponentId")
+				m_componentId = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "Length")
 				m_length = NANDRAD::readPODElement<double>(c, cName);
+			else if (cName == "ModelType") {
+				try {
+					m_modelType = (ModelType)KeywordList::Enumeration("NetworkEdge::ModelType", c->GetText());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
+				}
+			}
+			else if (cName == "HeatExchangeType") {
+				try {
+					m_heatExchangeType = (HeatExchangeType)KeywordList::Enumeration("NetworkEdge::HeatExchangeType", c->GetText());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
+				}
+			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -100,8 +121,14 @@ TiXmlElement * NetworkEdge::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("nodeId2", IBK::val2string<unsigned int>(m_nodeId2));
 	if (m_pipeId != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "PipeId", nullptr, std::string(), IBK::val2string<unsigned int>(m_pipeId));
-	TiXmlElement::appendSingleAttributeElement(e, "ModelType", nullptr, std::string(), IBK::val2string<int>(m_modelType));
-	TiXmlElement::appendSingleAttributeElement(e, "HeatExchangeType", nullptr, std::string(), IBK::val2string<int>(m_heatExchangeType));
+	if (m_componentId != VICUS::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "ComponentId", nullptr, std::string(), IBK::val2string<unsigned int>(m_componentId));
+
+	if (m_modelType != NUM_MT)
+		TiXmlElement::appendSingleAttributeElement(e, "ModelType", nullptr, std::string(), KeywordList::Keyword("NetworkEdge::ModelType",  m_modelType));
+
+	if (m_heatExchangeType != NUM_HT)
+		TiXmlElement::appendSingleAttributeElement(e, "HeatExchangeType", nullptr, std::string(), KeywordList::Keyword("NetworkEdge::HeatExchangeType",  m_heatExchangeType));
 	TiXmlElement::appendSingleAttributeElement(e, "Length", nullptr, std::string(), IBK::val2string<double>(m_length));
 	return e;
 }

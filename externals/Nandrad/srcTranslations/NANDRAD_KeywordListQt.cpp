@@ -50,9 +50,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Radiator");
 	tr("Mixer component");
 	tr("Flow characteristics provided by FMU");
-	tr("Roughness of pipe material.");
 	tr("Pressure loss coefficient for the component (zeta-value).");
-	tr("Inside hydraulic diameter for the component.");
 	tr("External heat transfer coeffient for the outside boundary.");
 	tr("Temperature tolerance for e.g. thermostats.");
 	tr("Pressure head form a pump.");
@@ -70,8 +68,9 @@ KeywordListQt::KeywordListQt() {
 	tr("Heat exchange with zone");
 	tr("Heat exchange with FMU which requires temperature and provides heat flux");
 	tr("Pipe length");
-	tr("Constant heat flux");
 	tr("ID of coupled zone for thermal exchange");
+	tr("Roughness of pipe material.");
+	tr("Inside hydraulic diameter for the pipe.");
 	tr("Pressure coeffient.");
 	tr("Use results from external wind flow calculation.");
 	tr("Constant heat transfer coefficient.");

@@ -144,6 +144,7 @@ double NetworkNode::adjacentHeatingDemand(std::set<NetworkEdge *> visitedEdges){
 			e->neighbourNode(this)->adjacentHeatingDemand(visitedEdges);
 		}
 	}
+	return 0;
 }
 
 }

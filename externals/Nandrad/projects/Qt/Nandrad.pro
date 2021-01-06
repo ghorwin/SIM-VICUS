@@ -39,6 +39,7 @@ HEADERS += \
 	../../src/NANDRAD_HydraulicNetwork.h \
 	../../src/NANDRAD_HydraulicNetworkComponent.h \
 	../../src/NANDRAD_HydraulicNetworkElement.h \
+	../../src/NANDRAD_HydraulicNetworkPipeProperties.h \
 	../../src/NANDRAD_IDGroup.h \
 	../../src/NANDRAD_Interface.h \
 	../../src/NANDRAD_InterfaceAirFlow.h \
@@ -91,6 +92,7 @@ SOURCES += \
 	../../src/NANDRAD_HydraulicNetwork.cpp \
 	../../src/NANDRAD_HydraulicNetworkComponent.cpp \
 	../../src/NANDRAD_HydraulicNetworkElement.cpp \
+	../../src/NANDRAD_HydraulicNetworkPipeProperties.cpp \
 	../../src/NANDRAD_IDGroup.cpp \
 	../../src/NANDRAD_Interface.cpp \
 	../../src/NANDRAD_InterfaceAirFlow.cpp \
@@ -125,6 +127,7 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_HydraulicNetworkComponent.cpp \
 	../../src/ncg/ncg_NANDRAD_HydraulicNetworkElement.cpp \
 	../../src/ncg/ncg_NANDRAD_HydraulicFluid.cpp \
+	../../src/ncg/ncg_NANDRAD_HydraulicNetworkPipeProperties.cpp \
 	../../src/ncg/ncg_NANDRAD_Interface.cpp \
 	../../src/ncg/ncg_NANDRAD_InterfaceAirFlow.cpp \
 	../../src/ncg/ncg_NANDRAD_InterfaceHeatConduction.cpp \

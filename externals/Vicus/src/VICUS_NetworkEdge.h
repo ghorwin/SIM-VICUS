@@ -14,8 +14,39 @@
 
 namespace VICUS {
 
+/*! A network edge defines all parameters needed to generate pipe hydraulic network elements.
+	The pipe-specific hydraulic parameters are stored in the pipe database (NetworkPipe).
+	The type of pipe model is defined in m_modelType and the kind of heat exchange to be considered
+	is defined in m_heatExchangeType.
+	Parameters for generation of the hydraulic element are stored in m_para. Also, the double-parameters needed
+	for the heat exchange models are stored in m_para.
+
+
+*/
 class NetworkEdge : public Object {
 public:
+
+	/*! The various types (equations) of the hydraulic pipe model to be generated from the edge. */
+	enum ModelType {
+		MT_StaticAdiabaticPipe,				// Keyword: StaticAdiabaticPipe			'Simple pipe at stationary flow conditions without heat exchange'
+		MT_StaticPipe,						// Keyword: StaticPipe					'Simple pipe at stationary flow conditions with heat exchange'
+		MT_DynamicAdiabaticPipe,			// Keyword: DynamicAdiabaticPipe		'Pipe with a discretized fluid volume, without heat exchange'
+		MT_DynamicPipe,						// Keyword: DynamicPipe					'Pipe with a discretized fluid volume and heat exchange'
+		NUM_MT
+	};
+
+	enum HeatExchangeType {
+		HT_HeatFluxConstant,				// Keyword: HeatFluxConstant					[-]		'Constant heat flux'
+		HT_HeatFluxDataFile,				// Keyword: HeatFluxDataFile					[-]		'Heat flux from data file'
+		HT_HeatExchangeWithZoneTemperature,	// Keyword: HeatExchangeWithZoneTemperature		[-]		'Heat exchange with zone'
+		HT_HeatExchangeWithFMUTemperature,	// Keyword: HeatExchangeWithFMUTemperature		[-]		'Heat exchange with FMU which requires temperature and provides heat flux'
+		/*! No heat exchange, just hydraulic element. */
+		NUM_HT
+	};
+
+	enum para_t {
+
+	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -72,22 +103,17 @@ public:
 	/*! If false, this is a branch. */
 	bool												m_supply;						// XML:A
 
-	/*! id of pipe in database */
+	/*! ID of pipe in database */
 	unsigned int										m_pipeId = INVALID_ID;			// XML:E
 
+	/*! ID of component parameters. */
+	unsigned int										m_componentId = INVALID_ID;			// XML:E
 
-	/*! hydraulic model type (should be a pipe model)
-		FIXME:
-	*/
-	int													m_modelType = NANDRAD::HydraulicNetworkComponent::NUM_MT;	// XML:E
+	/*! Type of pipe model to generate. */
+	ModelType											m_modelType = NUM_MT;			// XML:E:required
 
-	/*! type of heat exchange
-		FIXME:
-	*/
-	int													m_heatExchangeType = NANDRAD::HydraulicNetworkComponent::NUM_HT;	// XML:E
-
-	/*! Parameter for heat exchange */
-	//	IBK::Parameter										m_heatExchangePara[NUM_HP];
+	/*! Heat exchange type. */
+	HeatExchangeType									m_heatExchangeType = NUM_HT;	// XML:E
 
 	// *** RUNTIME VARIABLES ***
 

@@ -156,8 +156,7 @@ public:
 
 	double numberOfBuildings() const;
 
-	void createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network,
-									  std::vector<NANDRAD::HydraulicNetworkComponent> &hydraulicComponents) const;
+	void createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network) const;
 
 	/*! sets defauklt values for m_sizingPara. If m_sizingPara[0].empty(), call this function (e.g. to fill GUI)
 	 * before calling sizePipeDimensions() */

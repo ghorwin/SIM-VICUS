@@ -36,9 +36,7 @@ public:
 
 	/*! Parameters for the component. */
 	enum para_t {
-		P_PipeRoughness,					// Keyword: PipeRoughness						[mm]	'Roughness of pipe material.'
 		P_PressureLossCoefficient,			// Keyword: PressureLossCoefficient				[-]		'Pressure loss coefficient for the component (zeta-value).'
-		P_HydraulicDiameter,				// Keyword: HydraulicDiameter					[mm]	'Inside hydraulic diameter for the component.'
 		P_ExternalHeatTransferCoefficient,	// Keyword: ExternalHeatTransferCoefficient		[W/m2K]	'External heat transfer coeffient for the outside boundary.'
 		P_TemperatureTolerance,				// Keyword: TemperatureTolerance				[K]		'Temperature tolerance for e.g. thermostats.'
 		P_PressureHead,						// Keyword: PressureHead						[Pa]	'Pressure head form a pump.'
@@ -67,6 +65,10 @@ public:
 
 	NANDRAD_READWRITE
 	NANDRAD_COMPARE_WITH_ID
+	NANDRAD_COMP(HydraulicNetworkComponent)
+
+	/*! Compares two component definitions by parameters only, without comparing ID. */
+	bool sameParametersAs(const HydraulicNetworkComponent & other) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -85,16 +87,9 @@ public:
 	/*! Parameters of the flow component. */
 	IBK::Parameter					m_para[NUM_P];										// XML:E
 
-	bool operator==(const HydraulicNetworkComponent &other) const{
-		for (unsigned n=0; n<NUM_P; ++n){
-			if (m_para[n] != other.m_para[n])
-				return false;
-		}
-		return (m_modelType == other.m_modelType && m_heatExchangeType == other.m_heatExchangeType);
-	}
 
 
-	static bool hasHeatExchange(const modelType_t modelType){
+	static bool hasHeatExchange(const modelType_t modelType) {
 		switch (modelType) {
 			case MT_StaticPipe:
 			case MT_DynamicPipe:

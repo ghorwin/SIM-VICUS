@@ -78,7 +78,9 @@ void HydraulicNetworkElement::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "IBK:Parameter") {
+			if (cName == "PipeId")
+				m_pipeId = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
 				bool success = false;
@@ -91,10 +93,6 @@ void HydraulicNetworkElement::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
-			else if (cName == "FilepathData")
-				m_filepathData = IBK::Path(c->GetText());
-			else if (cName == "FilepathFMU")
-				m_filepathFMU = IBK::Path(c->GetText());
 			else if (cName == "IBK:IntPara") {
 				IBK::IntPara p;
 				NANDRAD::readIntParaElement(c, p);
@@ -135,16 +133,14 @@ TiXmlElement * HydraulicNetworkElement::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("componentId", IBK::val2string<unsigned int>(m_componentId));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
+	if (m_pipeId != NANDRAD::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "PipeId", nullptr, std::string(), IBK::val2string<unsigned int>(m_pipeId));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
 		}
 	}
-	if (m_filepathData.isValid())
-		TiXmlElement::appendSingleAttributeElement(e, "FilepathData", nullptr, std::string(), m_filepathData.str());
-	if (m_filepathFMU.isValid())
-		TiXmlElement::appendSingleAttributeElement(e, "FilepathFMU", nullptr, std::string(), m_filepathFMU.str());
 
 	for (unsigned int i=0; i<NUM_IP; ++i) {
 		if (!m_intPara[i].name.empty()) {

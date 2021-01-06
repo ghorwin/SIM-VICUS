@@ -9,6 +9,8 @@
 #include "NANDRAD_Constants.h"
 #include "NANDRAD_HydraulicNetworkElement.h"
 #include "NANDRAD_HydraulicFluid.h"
+#include "NANDRAD_HydraulicNetworkPipeProperties.h"
+#include "NANDRAD_HydraulicNetworkComponent.h"
 
 namespace NANDRAD {
 
@@ -17,21 +19,25 @@ class HydraulicNetwork {
 	NANDRAD_READWRITE_PRIVATE
 public:
 
-
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	NANDRAD_READWRITE_IFNOT_INVALID_ID
 	NANDRAD_COMPARE_WITH_ID
 
 	/*! Unique ID for this network. */
-	unsigned int							m_id			= NANDRAD::INVALID_ID;				// XML:A:required
+	unsigned int									m_id			= NANDRAD::INVALID_ID;		// XML:A:required
 	/*! Descriptive name. */
-	std::string								m_displayName;										// XML:A
+	std::string										m_displayName;								// XML:A
 
-	HydraulicFluid							m_fluid;											// XML:E
+	HydraulicFluid									m_fluid;									// XML:E
+
+	/*! Pipes used in this network. */
+	std::vector<HydraulicNetworkPipeProperties>		m_pipeProperties;							// XML:E
+	/*! Hydraulic components used in this network. */
+	std::vector<HydraulicNetworkComponent>			m_components;								// XML:E
 
 	/*! List of flow elements that make up this network. */
-	std::vector<HydraulicNetworkElement>	m_elements;											// XML:E
+	std::vector<HydraulicNetworkElement>			m_elements;									// XML:E
 };
 
 } // namespace NANDRAD

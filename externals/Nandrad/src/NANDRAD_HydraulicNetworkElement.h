@@ -11,25 +11,31 @@
 namespace NANDRAD {
 
 /*! Contains data of a flow element inside a network.
-
+	Pipe-specific parameters are stored in HydraulicNetworkPipeProperties objects, referenced via m_pipeID. For
+	other elements, this ID is unused.
 */
 class HydraulicNetworkElement {
 public:
 
 	HydraulicNetworkElement(){}
 
+	/*! C'tor for a network element other than pipes. */
 	HydraulicNetworkElement(unsigned int id, unsigned int inletNodeId, unsigned int outletNodeId,
 							unsigned int componentId):
 		m_id(id),
 		m_inletNodeId(inletNodeId),
 		m_outletNodeId(outletNodeId),
-		m_componentId(componentId)
+		m_componentId(componentId),
+		m_pipeId(INVALID_ID)
 	{}
+
+	/*! Specific constructor to create pipe elements. */
+	HydraulicNetworkElement(unsigned int id, unsigned int inletNodeId, unsigned int outletNodeId,
+							unsigned int componentId, unsigned int pipeID, double length);
 
 	/*! Parameters for the element . */
 	enum para_t {
 		P_Length,							// Keyword: Length								[m]		'Pipe length'
-		P_HeatFlux,							// Keyword: HeatFlux							[W]		'Constant heat flux'
 		NUM_P
 	};
 
@@ -57,18 +63,14 @@ public:
 	unsigned int					m_outletNodeId	= NANDRAD::INVALID_ID;				// XML:A:required
 	/*! Hydraulic component ID. */
 	unsigned int					m_componentId	= NANDRAD::INVALID_ID;				// XML:A:required
+	/*! Pipe ID (only needed for elements that are pipes). */
+	unsigned int					m_pipeId		= NANDRAD::INVALID_ID;				// XML:E
 
 	/*! Display name. */
 	std::string						m_displayName;										// XML:A
 
 	/*! Parameters of the flow component. */
 	IBK::Parameter					m_para[NUM_P];										// XML:E
-
-
-	/// TODO : Fixme - this wouldn't work in Solver context!
-	IBK::Path						m_filepathData;										// XML:E
-	IBK::Path						m_filepathFMU;										// XML:E
-
 
 	/*! Integer parameters. */
 	IBK::IntPara					m_intPara[NUM_IP];									// XML:E

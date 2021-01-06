@@ -617,6 +617,7 @@ NetworkEdge *Network::edge(unsigned nodeId1, unsigned nodeId2){
 			return &e;
 	}
 	IBK_ASSERT(false);
+	return nullptr;
 }
 
 
@@ -630,14 +631,10 @@ double Network::numberOfBuildings() const{
 }
 
 
-void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &hydraulicNetwork,
-											std::vector<NANDRAD::HydraulicNetworkComponent> &hydraulicComponents) const{
+void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &hydraulicNetwork) const{
 	FUNCID(Network::createNandradHydraulicNetwork);
 
 	hydraulicNetwork.m_elements.clear();
-
-	// add all hydraulic components from existing network (only from nodes)
-	hydraulicComponents = m_hydraulicComponents;
 
 	for (const NetworkNode &n: m_nodes){
 		if (n.m_componentId != INVALID_ID && n.m_subNetworkId != INVALID_ID)
@@ -653,19 +650,19 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &hydraulic
 
 	unsigned idOffsetOutlet = std::pow( 10, std::ceil( std::log10(m_nodes.size())) + 1 );
 
-	if (m_type == NET_DoublePipe){
+	if (m_type == NET_DoublePipe) {
 
 		// subnetworks are not taken into account here
 		hydraulicNetwork.m_elements.reserve(m_nodes.size() + 2 * m_edges.size());
 
 		// writes nodes
 		unsigned count = 0;
-		for (const NetworkNode &node: m_nodes){
+		for (const NetworkNode &node: m_nodes) {
 
 			if (node.m_type == NetworkNode::NT_Mixer)
 				continue;
 
-			if (node.m_componentId != INVALID_ID){
+			if (node.m_componentId != INVALID_ID) {
 
 				// create element
 				NANDRAD::HydraulicNetworkElement elem;
@@ -701,10 +698,11 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &hydraulic
 		}
 
 		// write edges
-		for (const NetworkEdge *edge: orderedEdges){
+		for (const NetworkEdge *edge: orderedEdges) {
 
 			// create hydraulic component from pipe and set according model
 			NANDRAD::HydraulicNetworkComponent comp;
+			// TODO Hauke, fix/remove check below
 			if (edge->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_StaticPipe ||
 				edge->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe||
 				edge->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe ||
@@ -720,39 +718,39 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &hydraulic
 				throw IBK::Exception(IBK::FormatString("Edge connected to nodes '%1' and '%2' has no defined pipe from database")
 									 .arg(edge->m_node1->m_id).arg(edge->m_node2->m_id), FUNC_ID);
 
+
+			// TODO : Hauke, create pipe parameter and add to hydraulicNetwork.m_pipeProperties
+			unsigned int pipeID = INVALID_ID;
+
 			// set parameters of hydraulic component
-			NANDRAD::KeywordList::setParameter(comp.m_para, "HydraulicNetworkComponent::para_t",
-												NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter,
-												pipe->m_diameterInside());
-			NANDRAD::KeywordList::setParameter(comp.m_para, "HydraulicNetworkComponent::para_t",
-												NANDRAD::HydraulicNetworkComponent::P_PipeRoughness,
-												pipe->m_roughness);
+//			NANDRAD::KeywordList::setParameter(comp.m_para, "HydraulicNetworkComponent::para_t",
+//												NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter,
+//												pipe->m_diameterInside());
+//			NANDRAD::KeywordList::setParameter(comp.m_para, "HydraulicNetworkComponent::para_t",
+//												NANDRAD::HydraulicNetworkComponent::P_PipeRoughness,
+//												pipe->m_roughness);
 
 			// if this component does not exists yet in catalog: add it with unique id
-			unsigned componentId = 0;
-			auto it = std::find(hydraulicComponents.begin(), hydraulicComponents.end(), comp); // compares component attributes, not id
-			if (it == hydraulicComponents.end()){
-				componentId = Project::uniqueId(hydraulicComponents);
-				comp.m_id = componentId;
-				hydraulicComponents.push_back(comp);
+			unsigned componentId = INVALID_ID;
+			for (const NANDRAD::HydraulicNetworkComponent & nc : hydraulicNetwork.m_components) {
+				if (nc.sameParametersAs(comp)) {
+					componentId = nc.m_id;
+				}
 			}
-			else
-				componentId = it->m_id;
+			if (componentId == INVALID_ID) {
+				componentId = Project::uniqueId(hydraulicNetwork.m_components);
+				comp.m_id = componentId;
+				hydraulicNetwork.m_components.push_back(comp);
+			}
 
 			// add inlet pipe element
 			NANDRAD::HydraulicNetworkElement inletPipe(Project::uniqueId(hydraulicNetwork.m_elements), edge->m_nodeIdInlet,
-														edge->m_nodeIdOutlet, componentId);
-			NANDRAD::KeywordList::setParameter(inletPipe.m_para, "HydraulicNetworkElement::para_t",
-													 NANDRAD::HydraulicNetworkElement::P_Length,
-													 edge->length());
+														edge->m_nodeIdOutlet, componentId, pipeID, edge->length());
 			hydraulicNetwork.m_elements.push_back(inletPipe);
 
 			// add outlet pipe element
 			NANDRAD::HydraulicNetworkElement outletPipe(Project::uniqueId(hydraulicNetwork.m_elements), edge->m_nodeIdOutlet + idOffsetOutlet,
-														edge->m_nodeIdInlet + idOffsetOutlet, componentId);
-			NANDRAD::KeywordList::setParameter(outletPipe.m_para, "HydraulicNetworkElement::para_t",
-													  NANDRAD::HydraulicNetworkElement::P_Length,
-													  edge->length());
+														edge->m_nodeIdInlet + idOffsetOutlet, componentId, pipeID, edge->length());
 			hydraulicNetwork.m_elements.push_back(outletPipe);
 		}
 	}

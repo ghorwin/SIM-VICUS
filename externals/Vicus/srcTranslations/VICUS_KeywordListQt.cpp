@@ -91,6 +91,14 @@ KeywordListQt::KeywordListQt() {
 	tr("Temperature for pipe dimensioning algorithm");
 	tr("Temperature difference for pipe dimensioning algorithm");
 	tr("Maximum pressure loss for pipe dimensioning algorithm");
+	tr("Simple pipe at stationary flow conditions without heat exchange");
+	tr("Simple pipe at stationary flow conditions with heat exchange");
+	tr("Pipe with a discretized fluid volume, without heat exchange");
+	tr("Pipe with a discretized fluid volume and heat exchange");
+	tr("Constant heat flux");
+	tr("Heat flux from data file");
+	tr("Heat exchange with zone");
+	tr("Heat exchange with FMU which requires temperature and provides heat flux");
 	tr("Dry density of the material.");
 	tr("Specific heat capacity of the material.");
 	tr("Thermal conductivity of the dry material.");
