@@ -12,27 +12,17 @@
 
 #include "VICUS_AbstractDBElement.h"
 
+#include <NANDRAD_InterfaceHeatConduction.h>
+#include <NANDRAD_InterfaceLongWaveEmission.h>
+#include <NANDRAD_InterfaceSolarAbsorption.h>
+#include <NANDRAD_InterfaceVaporDiffusion.h>
+#include <NANDRAD_InterfaceAirFlow.h>
+
 namespace VICUS {
 
 /*! This is a template for boundary conditions, to be referenced by components. */
 class BoundaryCondition : public AbstractDBElement {
 public:
-
-	/*! Basic parameters. */
-	enum para_t {
-		P_SolarAbsorption,			// Keyword: SolarAbsorption			[---]	'Solar absorption coefficient'
-		P_Emissivity,				// Keyword: Emissivity				[---]	'Constant Long wave emissivity'
-		/*! Constant heat transfer coefficient [W/m2K] */
-		P_HeatTransferCoefficient,	// Keyword: HeatTransferCoefficient [W/m2K]		'Constant heat transfer coefficient'
-		NUM_P
-	};
-
-	/*! Optionally, store all heat condition parameters in a struct. */
-	enum HeatConductionModel {
-		/*! Constant transfer coefficient. */
-		MT_Constant,				// Keyword: Constant		'Constant model.'
-		NUM_MT
-	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -47,9 +37,17 @@ public:
 	/*! Display name of boundary condition. */
 	IBK::MultiLanguageString		m_displayName;			// XML:A
 
-	/*! List of parameters. */
-	IBK::Parameter					m_para[NUM_P];			// XML:E
-
+	// Boundary condition parameters
+	/*! Model for convective heat transfer. */
+	NANDRAD::InterfaceHeatConduction					m_heatConduction;		// XML:E
+	/*! Model for solar absorption. */
+	NANDRAD::InterfaceSolarAbsorption					m_solarAbsorption;		// XML:E
+	/*! Model for long wave emissivity. */
+	NANDRAD::InterfaceLongWaveEmission					m_longWaveEmission;		// XML:E
+	/*! Model for vapor diffusion (requires enabled moisture balance). */
+	NANDRAD::InterfaceVaporDiffusion					m_vaporDiffusion;		// XML:E
+	/*! Model for air flow calculation. */
+	NANDRAD::InterfaceAirFlow							m_airFlow;				// XML:E
 
 };
 

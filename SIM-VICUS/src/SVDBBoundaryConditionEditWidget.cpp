@@ -4,8 +4,9 @@
 #include "SVConstants.h"
 #include "SVSettings.h"
 
-#include <VICUS_KeywordList.h>
+//#include <VICUS_KeywordList.h>
 #include <VICUS_KeywordListQt.h>
+#include <NANDRAD_KeywordList.h>
 
 #include <QtExt_LanguageHandler.h>
 
@@ -67,9 +68,9 @@ void SVDBBoundaryConditionEditWidget::updateInput(int id) {
 	// now update the GUI controls
 	m_ui->lineEditName->setString(bc->m_displayName);
 
-	m_ui->lineEditSolarAbsorptionCoefficient->setValue(bc->m_para[VICUS::BoundaryCondition::P_SolarAbsorption].value);
-	m_ui->lineEditLongWaveEmissivity->setValue(bc->m_para[VICUS::BoundaryCondition::P_Emissivity].value);
-	m_ui->lineEditHeatTransferCoefficient->setValue(bc->m_para[VICUS::BoundaryCondition::P_HeatTransferCoefficient].value);
+	m_ui->lineEditHeatTransferCoefficient->setValue(bc->m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value);
+	m_ui->lineEditSolarAbsorptionCoefficient->setValue(bc->m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].value);
+	m_ui->lineEditLongWaveEmissivity->setValue(bc->m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value);
 
 	// for built-ins, disable editing/make read-only
 	bool isEditable = true;
@@ -101,10 +102,10 @@ void SVDBBoundaryConditionEditWidget::on_lineEditHeatTransferCoefficient_editing
 	if ( m_ui->lineEditHeatTransferCoefficient->isValid() ) {
 		double val = m_ui->lineEditHeatTransferCoefficient->value();
 		// update database but only if different from original
-		if (m_current->m_para[VICUS::BoundaryCondition::P_HeatTransferCoefficient].empty() ||
-			val != m_current->m_para[VICUS::BoundaryCondition::P_HeatTransferCoefficient].value)
+		if (m_current->m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].empty() ||
+			val != m_current->m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value)
 		{
-			VICUS::KeywordList::setParameter(m_current->m_para, "BoundaryCondition::para_t", VICUS::BoundaryCondition::P_HeatTransferCoefficient, val);
+			NANDRAD::KeywordList::setParameter(m_current->m_heatConduction.m_para, "InterfaceHeatConduction::para_t", NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient, val);
 			m_db->m_boundaryConditions.m_modified = true;
 			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 			emit tableDataChanged();
@@ -119,10 +120,10 @@ void SVDBBoundaryConditionEditWidget::on_lineEditSolarAbsorptionCoefficient_edit
 	if ( m_ui->lineEditSolarAbsorptionCoefficient->isValid() ) {
 		double val = m_ui->lineEditSolarAbsorptionCoefficient->value();
 		// update database but only if different from original
-		if (m_current->m_para[VICUS::BoundaryCondition::P_SolarAbsorption].empty() ||
-			val != m_current->m_para[VICUS::BoundaryCondition::P_SolarAbsorption].value)
+		if (m_current->m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].empty() ||
+			val != m_current->m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].value)
 		{
-			VICUS::KeywordList::setParameter(m_current->m_para, "BoundaryCondition::para_t", VICUS::BoundaryCondition::P_SolarAbsorption, val);
+			NANDRAD::KeywordList::setParameter(m_current->m_solarAbsorption.m_para, "InterfaceSolarAbsorption::para_t", NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient, val);
 			m_db->m_boundaryConditions.m_modified = true;
 			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 			emit tableDataChanged();
@@ -137,10 +138,10 @@ void SVDBBoundaryConditionEditWidget::on_lineEditLongWaveEmissivity_editingFinis
 	if ( m_ui->lineEditLongWaveEmissivity->isValid() ) {
 		double val = m_ui->lineEditLongWaveEmissivity->value();
 		// update database but only if different from original
-		if (m_current->m_para[VICUS::BoundaryCondition::P_Emissivity].empty() ||
-			val != m_current->m_para[VICUS::BoundaryCondition::P_Emissivity].value)
+		if (m_current->m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].empty() ||
+			val != m_current->m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value)
 		{
-			VICUS::KeywordList::setParameter(m_current->m_para, "BoundaryCondition::para_t", VICUS::BoundaryCondition::P_Emissivity, val);
+			NANDRAD::KeywordList::setParameter(m_current->m_longWaveEmission.m_para, "InterfaceLongWaveEmission::para_t", NANDRAD::InterfaceLongWaveEmission::P_Emissivity, val);
 			m_db->m_boundaryConditions.m_modified = true;
 			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 			emit tableDataChanged();

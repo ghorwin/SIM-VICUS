@@ -7,6 +7,8 @@
 #include <VICUS_Database.h>
 #include <VICUS_KeywordListQt.h>
 
+#include <NANDRAD_KeywordList.h>
+
 #include <QtExt_LanguageHandler.h>
 
 #include "SVConstants.h"
@@ -107,9 +109,14 @@ QModelIndex SVDBBoundaryConditionTableModel::addNewItem() {
 	bc.m_displayName.setEncodedString("en:<new boundary condition>");
 
 	//set default parameters
-	VICUS::KeywordList::setParameter(bc.m_para, "BoundaryCondition::para_t", VICUS::BoundaryCondition::P_Emissivity, 0.9);
-	VICUS::KeywordList::setParameter(bc.m_para, "BoundaryCondition::para_t", VICUS::BoundaryCondition::P_SolarAbsorption, 0.6);
-	VICUS::KeywordList::setParameter(bc.m_para, "BoundaryCondition::para_t", VICUS::BoundaryCondition::P_HeatTransferCoefficient, 8);
+	bc.m_heatConduction.m_modelType = NANDRAD::InterfaceHeatConduction::MT_Constant;
+	NANDRAD::KeywordList::setParameter(bc.m_heatConduction.m_para, "InterfaceHeatConduction::para_t", NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient, 8);
+
+	bc.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_Constant;
+	NANDRAD::KeywordList::setParameter(bc.m_solarAbsorption.m_para, "InterfaceSolarAbsorption::para_t", NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient, 0.6);
+
+	bc.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_Constant;
+	NANDRAD::KeywordList::setParameter(bc.m_longWaveEmission.m_para, "InterfaceLongWaveEmission::para_t", NANDRAD::InterfaceLongWaveEmission::P_Emissivity, 0.9);
 
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_boundaryConditions.add( bc );

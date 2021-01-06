@@ -60,19 +60,16 @@ void BoundaryCondition::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "IBK:Parameter") {
-				IBK::Parameter p;
-				NANDRAD::readParameterElement(c, p);
-				bool success = false;
-				para_t ptype;
-				try {
-					ptype = (para_t)KeywordList::Enumeration("BoundaryCondition::para_t", p.name);
-					m_para[ptype] = p; success = true;
-				}
-				catch (...) { /* intentional fail */  }
-				if (!success)
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
+			if (cName == "InterfaceHeatConduction")
+				m_heatConduction.readXML(c);
+			else if (cName == "InterfaceSolarAbsorption")
+				m_solarAbsorption.readXML(c);
+			else if (cName == "InterfaceLongWaveEmission")
+				m_longWaveEmission.readXML(c);
+			else if (cName == "InterfaceVaporDiffusion")
+				m_vaporDiffusion.readXML(c);
+			else if (cName == "InterfaceAirFlow")
+				m_airFlow.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -96,11 +93,15 @@ TiXmlElement * BoundaryCondition::writeXML(TiXmlElement * parent) const {
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName.encodedString());
 
-	for (unsigned int i=0; i<NUM_P; ++i) {
-		if (!m_para[i].name.empty()) {
-			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
-		}
-	}
+	m_heatConduction.writeXML(e);
+
+	m_solarAbsorption.writeXML(e);
+
+	m_longWaveEmission.writeXML(e);
+
+	m_vaporDiffusion.writeXML(e);
+
+	m_airFlow.writeXML(e);
 	return e;
 }
 

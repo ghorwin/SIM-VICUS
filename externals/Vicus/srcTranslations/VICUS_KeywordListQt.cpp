@@ -24,11 +24,6 @@
 namespace VICUS {
 KeywordListQt::KeywordListQt() {
 
-	tr("Solar absorption coefficient.");
-	tr("Constant Long wave emissivity.");
-	tr("Constant heat transfer coefficient.");
-	tr("Constant model.");
-	tr("Heat transfer coefficient depends on wind velocity.");
 	tr("Outside wall construction");
 	tr("Outside wall construction in contact with ground");
 	tr("Interior construction");

@@ -291,7 +291,7 @@ public:
 
 bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 
-	// TODO : in time this will be a rather lengthy function, maybe we should move this to a separate class with
+	// TODO : Andreas, in time this will be a rather lengthy function, maybe we should move this to a separate class with
 	//        different member functions
 
 	// simulation settings
@@ -309,9 +309,14 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 		return false;
 	}
 
-	// geometry
+	// *** geometry ***
 
-	unsigned int interfaceID = 1; // used to generate unique interface IDs
+	// used to generate unique interface IDs
+	unsigned int interfaceID = 1;
+	// TODO : Andreas, for now, we generate interface IDs on the fly, which means they might be different when NANDRAD
+	//        file is generated with small changes in the project. This will make it difficult to assign specific
+	//        id associations with interfaces (once needed, maybe in FMUs?), so we may need to add interface IDs to
+	//        the VICUS::ComponentInstance data structure.
 
 	// we process all zones and buildings and create NANDRAD project data
 	// we also check that all referenced database properties are available and transfer them accordingly
@@ -460,24 +465,71 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 
 		// add boundary conditions, side A
 		if (ci->m_sideASurface != nullptr) {
+			// get the zone that this interface is connected to
+			const VICUS::Object * obj = ci->m_sideASurface->m_parent;
+			const VICUS::Room * room = dynamic_cast<const VICUS::Room *>(obj);
+			if (room == nullptr) {
+				QMessageBox::critical(this, tr("Starting NANDRAD simulation"),
+					tr("Component/construction %1 references surface %2, which is not associated to a zone.")
+									  .arg(ci->m_id).arg(ci->m_sideASurfaceID));
+				return false;
+			}
+
 			// lookup boundary condition definitino
 			const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
 
-			cinst.m_interfaceA.m_id = ++interfaceID; // for now, all interfaces have the same ID
-			cinst.m_interfaceA.m_heatConduction.m_modelType = NANDRAD::InterfaceHeatConduction::MT_Constant;
-			cinst.m_interfaceA.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient] =
-					bc->m_para[VICUS::BoundaryCondition::P_HeatTransferCoefficient];
+			cinst.m_interfaceA.m_id = ++interfaceID;
+			cinst.m_interfaceA.m_zoneId = room->m_id;
+			cinst.m_interfaceA.m_heatConduction = bc->m_heatConduction;
+			cinst.m_interfaceA.m_solarAbsorption = bc->m_solarAbsorption;
+			cinst.m_interfaceA.m_longWaveEmission = bc->m_longWaveEmission;
 		}
+		else {
+			// no surface? must be an interface to the outside
+
+			// lookup boundary condition definitino
+			const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
+
+			cinst.m_interfaceA.m_id = ++interfaceID;
+			cinst.m_interfaceA.m_zoneId = 0; // outside zone
+			cinst.m_interfaceA.m_heatConduction = bc->m_heatConduction;
+			cinst.m_interfaceA.m_solarAbsorption = bc->m_solarAbsorption;
+			cinst.m_interfaceA.m_longWaveEmission = bc->m_longWaveEmission;
+		}
+
 
 		// add boundary conditions, side B
 		if (ci->m_sideBSurface != nullptr) {
+			// get the zone that this interface is connected to
+			const VICUS::Object * obj = ci->m_sideBSurface->m_parent;
+			const VICUS::Room * room = dynamic_cast<const VICUS::Room *>(obj);
+			if (room == nullptr) {
+				QMessageBox::critical(this, tr("Starting NANDRAD simulation"),
+					tr("Component/construction %1 references surface %2, which is not associated to a zone.")
+									  .arg(ci->m_id).arg(ci->m_sideASurfaceID));
+				return false;
+			}
+
 			// lookup boundary condition definitino
 			const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
 
-			cinst.m_interfaceB.m_id = ++interfaceID; // for now, all interfaces have the same ID
-			cinst.m_interfaceB.m_heatConduction.m_modelType = NANDRAD::InterfaceHeatConduction::MT_Constant;
-			cinst.m_interfaceB.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient] =
-					bc->m_para[VICUS::BoundaryCondition::P_HeatTransferCoefficient];
+			cinst.m_interfaceB.m_id = ++interfaceID;
+			cinst.m_interfaceA.m_zoneId = room->m_id;
+			cinst.m_interfaceB.m_heatConduction = bc->m_heatConduction;
+			cinst.m_interfaceB.m_solarAbsorption = bc->m_solarAbsorption;
+			cinst.m_interfaceB.m_longWaveEmission = bc->m_longWaveEmission;
+		}
+		else {
+			// no surface? must be an interface to the outside
+
+			// lookup boundary condition definitino
+			const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
+
+			cinst.m_interfaceB.m_id = ++interfaceID;
+			cinst.m_interfaceB.m_zoneId = 0; // outside zone
+			cinst.m_interfaceB.m_heatConduction = bc->m_heatConduction;
+			cinst.m_interfaceB.m_solarAbsorption = bc->m_solarAbsorption;
+			cinst.m_interfaceB.m_longWaveEmission = bc->m_longWaveEmission;
 		}
 
 		// add to list of construction instances

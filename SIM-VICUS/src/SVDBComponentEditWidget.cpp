@@ -32,16 +32,6 @@ SVDBComponentEditWidget::SVDBComponentEditWidget(QWidget *parent) :
 	m_ui->lineEditUValue->setReadOnly(true);
 	m_ui->lineEditConstructionName->setReadOnly(true);
 
-	//Boundary condition Side A
-	m_ui->lineEditHeatTransferCoeffSideA->setReadOnly(true);
-	m_ui->lineEditSolarAbsorptionSideA->setReadOnly(true);
-	m_ui->lineEditThermalAbsorptionSideA->setReadOnly(true);
-
-	//Boundary condition Side B
-	m_ui->lineEditHeatTransferCoeffSideB->setReadOnly(true);
-	m_ui->lineEditSolarAbsorptionSideB->setReadOnly(true);
-	m_ui->lineEditThermalAbsorptionSideB->setReadOnly(true);
-
 	//Daylight
 	m_ui->lineEditDaylightName->setReadOnly(true);
 	m_ui->pushButtonDaylightColor->setEnabled(false);
@@ -80,14 +70,8 @@ void SVDBComponentEditWidget::updateInput(int id) {
 		m_ui->lineEditUValue->setText("");
 
 		m_ui->lineEditBoundaryConditionSideAName->setText("");
-		m_ui->lineEditHeatTransferCoeffSideA->setText("");
-		m_ui->lineEditSolarAbsorptionSideA->setText("");
-		m_ui->lineEditThermalAbsorptionSideA->setText("");
 
 		m_ui->lineEditBoundaryConditionSideBName->setText("");
-		m_ui->lineEditHeatTransferCoeffSideB->setText("");
-		m_ui->lineEditSolarAbsorptionSideB->setText("");
-		m_ui->lineEditThermalAbsorptionSideB->setText("");
 
 		m_ui->lineEditDaylightName->setText("");
 		m_ui->lineEditRoughness->setText("");
@@ -109,22 +93,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	m_ui->comboBoxComponentType->blockSignals(false);
 
 	m_ui->lineEditBoundaryConditionSideAName->setEnabled(true);
-	m_ui->lineEditHeatTransferCoeffSideA->setEnabled(true);
-	m_ui->lineEditSolarAbsorptionSideA->setEnabled(true);
-	m_ui->lineEditThermalAbsorptionSideA->setEnabled(true);
-	m_ui->lineEditBoundaryConditionSideAName->setText("");
-	m_ui->lineEditHeatTransferCoeffSideA->setText("---");
-	m_ui->lineEditSolarAbsorptionSideA->setText("---");
-	m_ui->lineEditThermalAbsorptionSideA->setText("---");
-
 	m_ui->lineEditBoundaryConditionSideBName->setEnabled(true);
-	m_ui->lineEditHeatTransferCoeffSideB->setEnabled(true);
-	m_ui->lineEditSolarAbsorptionSideB->setEnabled(true);
-	m_ui->lineEditThermalAbsorptionSideB->setEnabled(true);
-	m_ui->lineEditBoundaryConditionSideBName->setText("");
-	m_ui->lineEditHeatTransferCoeffSideB->setText("---");
-	m_ui->lineEditSolarAbsorptionSideB->setText("---");
-	m_ui->lineEditThermalAbsorptionSideB->setText("---");
 
 	const VICUS::Construction *con = m_db->m_constructions[comp->m_idConstruction];
 	if (con != nullptr) {
@@ -140,19 +109,15 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	}
 
 	const VICUS::BoundaryCondition *bcA = m_db->m_boundaryConditions[comp->m_idSideABoundaryCondition];
-	if(bcA != nullptr){
+	if (bcA != nullptr){
 		m_ui->lineEditBoundaryConditionSideAName->setText(QString::fromStdString(bcA->m_displayName.string(QtExt::LanguageHandler::langId().toStdString(), std::string("en"))));
-		m_ui->lineEditHeatTransferCoeffSideA->setValue(bcA->m_para[VICUS::BoundaryCondition::P_HeatTransferCoefficient].value);
-		m_ui->lineEditSolarAbsorptionSideA->setValue(bcA->m_para[VICUS::BoundaryCondition::P_SolarAbsorption].value);
-		m_ui->lineEditThermalAbsorptionSideA->setValue(bcA->m_para[VICUS::BoundaryCondition::P_Emissivity].value);
+		// TODO : generate HTML description text with info about boundary condition
 	}
 
 	const VICUS::BoundaryCondition *bcB = m_db->m_boundaryConditions[comp->m_idSideBBoundaryCondition];
-	if(bcB != nullptr){
+	if (bcB != nullptr){
 		m_ui->lineEditBoundaryConditionSideBName->setText(QString::fromStdString(bcB->m_displayName.string(QtExt::LanguageHandler::langId().toStdString(), std::string("en"))));
-		m_ui->lineEditHeatTransferCoeffSideB->setValue(bcB->m_para[VICUS::BoundaryCondition::P_HeatTransferCoefficient].value);
-		m_ui->lineEditSolarAbsorptionSideB->setValue(bcB->m_para[VICUS::BoundaryCondition::P_SolarAbsorption].value);
-		m_ui->lineEditThermalAbsorptionSideB->setValue(bcB->m_para[VICUS::BoundaryCondition::P_Emissivity].value);
+		// TODO : generate HTML description text with info about boundary condition
 	}
 
 	// for built-ins, disable editing/make read-only
