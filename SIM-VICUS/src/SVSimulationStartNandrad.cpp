@@ -463,6 +463,8 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 			cinst.m_displayName = ci->m_sideBSurface->m_displayName.toStdString();
 		}
 
+
+
 		// add boundary conditions, side A
 		if (ci->m_sideASurface != nullptr) {
 			// get the zone that this interface is connected to
@@ -481,7 +483,7 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 			cinst.m_interfaceA.m_id = ++interfaceID;
 			cinst.m_interfaceA.m_zoneId = room->m_id;
 			cinst.m_interfaceA.m_heatConduction = bc->m_heatConduction;
-			cinst.m_interfaceA.m_solarAbsorption = bc->m_solarAbsorption;
+			cinst.m_interfaceA.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::NUM_MT; // no solar radiation on inside surfaces
 			cinst.m_interfaceA.m_longWaveEmission = bc->m_longWaveEmission;
 		}
 		else {
@@ -514,9 +516,9 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 			const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
 
 			cinst.m_interfaceB.m_id = ++interfaceID;
-			cinst.m_interfaceA.m_zoneId = room->m_id;
+			cinst.m_interfaceB.m_zoneId = room->m_id;
 			cinst.m_interfaceB.m_heatConduction = bc->m_heatConduction;
-			cinst.m_interfaceB.m_solarAbsorption = bc->m_solarAbsorption;
+			cinst.m_interfaceB.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::NUM_MT; // no solar radiation on inside surfaces
 			cinst.m_interfaceB.m_longWaveEmission = bc->m_longWaveEmission;
 		}
 		else {
@@ -586,17 +588,17 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 	// outputs
 
 	// transfer output grids
-	p.m_outputs.m_grids = project().m_outputs.m_grids;
+	p.m_outputs.m_grids = m_outputs.m_grids;
 
 	// transfer options
-	p.m_outputs.m_binaryFormat = project().m_outputs.m_flags[VICUS::Outputs::F_BinaryOutputs];
-	p.m_outputs.m_timeUnit = project().m_outputs.m_timeUnit;
+	p.m_outputs.m_binaryFormat = m_outputs.m_flags[VICUS::Outputs::F_BinaryOutputs];
+	p.m_outputs.m_timeUnit = m_outputs.m_timeUnit;
 
 	// transfer pre-defined output definitions
-	p.m_outputs.m_definitions = project().m_outputs.m_definitions;
+	p.m_outputs.m_definitions = m_outputs.m_definitions;
 
 	// generate default output definitions, if requested
-	if (project().m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs].isEnabled()) {
+	if (m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs].isEnabled()) {
 
 		// we need an hourly output grid, look if we have already one defined (should be!)
 		int ogInd = -1;
