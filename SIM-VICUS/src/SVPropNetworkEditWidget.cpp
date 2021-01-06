@@ -93,7 +93,6 @@ void SVPropNetworkEditWidget::updateNodeProperties()
 	m_ui->lineEditNodeHeatingDemand->setEnabled(node->m_type == VICUS::NetworkNode::NT_Building);
 	m_ui->comboBoxNodeType->setCurrentText(m_mapNodeTypes.key(node->m_type));
 	m_ui->labelNodeId->setText(QString("%1").arg(node->m_id));
-	m_ui->label->setText(QString("%1").arg(node->m_id));
 	m_ui->lineEditNodeHeatingDemand->setValue(node->m_maxHeatingDemand);
 	m_ui->lineEditNodeX->setValue(node->m_position.m_x);
 	m_ui->lineEditNodeY->setValue(node->m_position.m_y);
@@ -386,6 +385,7 @@ void SVPropNetworkEditWidget::on_pushButtonGenerateIntersections_clicked()
 {
 	if (!setNetwork())
 		return;
+	m_network.updateNodeEdgeConnectionPointers();
 	m_network.generateIntersections();
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
 	undo->push(); // modifies project and updates views
@@ -396,6 +396,7 @@ void SVPropNetworkEditWidget::on_pushButtonConnectBuildings_clicked()
 {
 	if (!setNetwork())
 		return;
+	m_network.updateNodeEdgeConnectionPointers();
 	m_network.connectBuildings(false);
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
 	undo->push(); // modifies project and updates views
@@ -408,6 +409,7 @@ void SVPropNetworkEditWidget::on_pushButtonReduceDeadEnds_clicked()
 		return;
 	VICUS::Network tmp = m_network;
 	tmp.clear();
+	m_network.updateNodeEdgeConnectionPointers();
 	m_network.cleanDeadEnds(tmp);
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), tmp);
 	undo->push(); // modifies project and updates views
@@ -427,6 +429,7 @@ void SVPropNetworkEditWidget::on_pushButtonReduceRedundantNodes_clicked()
 	// make copy with reduced edges
 	VICUS::Network tmp = m_network;
 	tmp.clear();
+	m_network.updateNodeEdgeConnectionPointers();
 	m_network.cleanRedundantEdges(tmp);
 	tmp.m_visible = true;
 	tmp.m_name += "_reduced";

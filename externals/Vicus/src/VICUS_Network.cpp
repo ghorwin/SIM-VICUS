@@ -138,7 +138,7 @@ void Network::updateVisualizationData() {
 		// radius
 
 		// default radius = 1 cm
-		double radius = 1 * m_scaleNodes / 10000; /// TODO : why not have scalenodes in same order of magnitude as scaleEdges?
+		double radius = 1 * m_scaleNodes / 100; /// TODO : why not have scalenodes in same order of magnitude as scaleEdges?
 		switch (no.m_type) {
 			case NetworkNode::NT_Source:
 			case NetworkNode::NT_Building: {
@@ -160,6 +160,9 @@ void Network::updateVisualizationData() {
 
 
 bool Network::checkConnectedGraph() const {
+	if (m_edges.size()==0 || m_nodes.size()==0)
+		return false;
+
 	std::set<const NetworkNode*> connectedNodes;
 	std::set<const NetworkEdge*> connectedEdge;
 
@@ -415,6 +418,8 @@ void Network::cleanShortEdges(Network &cleanNetwork, const double &threshold)
 
 void Network::sizePipeDimensions(const NetworkFluid *fluid){
 FUNCID(Network::sizePipeDimensions);
+
+	updateNodeEdgeConnectionPointers();
 
 	// check pipe database
 	if (m_networkPipeDB.empty())

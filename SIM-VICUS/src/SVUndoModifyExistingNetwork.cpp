@@ -17,6 +17,7 @@ void SVUndoModifyExistingNetwork::undo()
 	IBK_ASSERT(nw != nullptr);
 	*nw = m_newNetwork;
 	nw->updateNodeEdgeConnectionPointers();
+	nw->updateVisualizationData();
 
 	// tell project that the network has changed
 	SVProjectHandler::instance().setModified( SVProjectHandler::NetworkModified);
@@ -28,6 +29,7 @@ void SVUndoModifyExistingNetwork::redo()
 	IBK_ASSERT(nw != nullptr);
 	*nw = m_newNetwork;
 	nw->updateNodeEdgeConnectionPointers();
+	nw->updateVisualizationData();
 
 	// tell project that the network has changed
 	SVProjectHandler::instance().setModified( SVProjectHandler::NetworkModified);

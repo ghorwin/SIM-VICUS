@@ -268,25 +268,6 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
-       <widget class="QSlider" name="horizontalSliderScaleNodes">
-        <property name="minimum">
-         <number>1000</number>
-        </property>
-        <property name="maximum">
-         <number>30000</number>
-        </property>
-        <property name="singleStep">
-         <number>100</number>
-        </property>
-        <property name="pageStep">
-         <number>1000</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
       <item row="5" column="0">
        <widget class="QLabel" name="label_21">
         <property name="text">
@@ -301,6 +282,25 @@
         </property>
         <property name="maximum">
          <number>100</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QSlider" name="horizontalSliderScaleNodes">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>100</number>
+        </property>
+        <property name="singleStep">
+         <number>1</number>
+        </property>
+        <property name="pageStep">
+         <number>10</number>
         </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
