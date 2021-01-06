@@ -24,6 +24,7 @@
 
 #include "SVSettings.h"
 #include "SVConstants.h"
+#include "SVLogFileDialog.h"
 
 SVProjectHandler * SVProjectHandler::m_self = nullptr;
 
@@ -155,11 +156,10 @@ void SVProjectHandler::loadProject(QWidget * parent, const QString & fileName,	b
 							.arg(fileName)
 							.arg(QtExt::Directories::globalLogFile())
 							);
-#if 0
+
 				SVLogFileDialog dlg;
 				dlg.setLogFile(QtExt::Directories::globalLogFile(), fileName, true);
 				dlg.exec();
-#endif
 			}
 			// remove project again
 			destroyProject();
