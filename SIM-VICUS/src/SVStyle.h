@@ -44,6 +44,7 @@ public:
 	QColor				m_errorEditFieldBackground;
 
 
+	QColor				m_logProgressText;
 	QColor				m_logErrorText;
 	QColor				m_logWarningText;
 	QColor				m_logDebugText;

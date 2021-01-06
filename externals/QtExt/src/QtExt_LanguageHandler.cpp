@@ -76,15 +76,15 @@ QString LanguageHandler::langId() {
 	if (langid.isEmpty()) {
 		// try to determine language id from OS
 		QString localeName = QLocale::system().name();
-				IBK::IBK_Message( IBK::FormatString("System locale: '%1'.\n").arg(localeName.toUtf8().data()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-				int pos = localeName.indexOf('_');
+		IBK::IBK_Message( IBK::FormatString("System locale: '%1'.\n").arg(localeName.toUtf8().data()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+		int pos = localeName.indexOf('_');
 		if (pos != -1)
 			localeName = localeName.left(pos);
 		IBK::IBK_Message( IBK::FormatString("Translation required for locale: '%1'.\n").arg(localeName.toUtf8().data()),
-			IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+			IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 		langid = localeName;
 
-		if(langid.isEmpty())
+		if (langid.isEmpty())
 			langid = "en";
 	}
 	return langid;

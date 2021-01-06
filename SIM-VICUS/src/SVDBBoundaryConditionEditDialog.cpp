@@ -30,19 +30,25 @@ SVDBBoundaryConditionEditDialog::SVDBBoundaryConditionEditDialog(QWidget *parent
 
 	m_ui->editWidget->setup(&SVSettings::instance().m_db, m_dbModel);
 
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColId, QHeaderView::Fixed);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColCheck, QHeaderView::Fixed);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColName, QHeaderView::Stretch);
+
 	connect(m_ui->tableView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)),
 			this, SLOT(onCurrentIndexChanged(const QModelIndex &, const QModelIndex &)) );
+
+	resize(1200,600);
 
 	// set item delegate for coloring built-ins
 	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn);
 	m_ui->tableView->setItemDelegate(dg);
-
 }
 
-SVDBBoundaryConditionEditDialog::~SVDBBoundaryConditionEditDialog()
-{
+
+SVDBBoundaryConditionEditDialog::~SVDBBoundaryConditionEditDialog() {
 	delete m_ui;
 }
+
 
 void SVDBBoundaryConditionEditDialog::edit() {
 
@@ -53,14 +59,14 @@ void SVDBBoundaryConditionEditDialog::edit() {
 
 	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
 
-	// ask database model to update its content
+	// resize columns
 	m_ui->tableView->resizeColumnsToContents();
 
 	exec();
 }
 
-int SVDBBoundaryConditionEditDialog::select(unsigned int initialId)
-{
+
+int SVDBBoundaryConditionEditDialog::select(unsigned int initialId) {
 	m_ui->pushButtonClose->setVisible(false);
 	m_ui->pushButtonSelect->setVisible(true);
 	m_ui->pushButtonCancel->setVisible(true);

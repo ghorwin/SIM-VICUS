@@ -64,7 +64,7 @@ void SVDBConstructionEditDialog::edit() {
 
 	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
 
-	// ask database model to update its content
+	// resize columns
 	m_ui->tableView->resizeColumnsToContents();
 
 	exec();

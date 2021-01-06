@@ -51,7 +51,7 @@ void SVLogWidget::showLogFile( const QString & logFilePath ) {
 		else if (line.indexOf("[Error") != -1)
 			html = html.arg(SVStyle::instance().m_logErrorText.name());
 		else
-			html = html.arg(SVStyle::instance().m_alternativeBackgroundText.name());
+			html = html.arg(SVStyle::instance().m_logProgressText.name());
 		m_textEdit->appendHtml(html);
 		line = strm.readLine();
 	}
@@ -70,7 +70,7 @@ void SVLogWidget::onMsgReceived(int type, QString msgString) {
 	switch (type) {
 		case IBK::MSG_PROGRESS :
 		case IBK::MSG_CONTINUED :
-			html = html.arg(SVStyle::instance().m_alternativeBackgroundText.name());
+			html = html.arg(SVStyle::instance().m_logProgressText.name());
 			break;
 		case IBK::MSG_WARNING :
 			html = html.arg(SVStyle::instance().m_logWarningText.name());

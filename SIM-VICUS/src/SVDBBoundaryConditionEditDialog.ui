@@ -101,6 +101,12 @@
       </layout>
      </widget>
      <widget class="QGroupBox" name="groupBox_2">
+      <property name="minimumSize">
+       <size>
+        <width>500</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="title">
        <string>Boundary Condition properties</string>
       </property>

@@ -146,7 +146,8 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 		m_alternativeReadOnlyEditFieldBackground	= "#7f94ab";
 		m_errorEditFieldBackground					= "#ab4e4e";
 
-		m_logErrorText								= "#ea3030";
+		m_logProgressText							= "#c0c0c0";
+		m_logErrorText								= "#ff2222";
 		m_logWarningText							= "#f0dc00";
 		m_logDebugText								= "#39b1d9";
 
@@ -173,8 +174,9 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 		m_alternativeReadOnlyEditFieldBackground	= "#b5d8ff";
 		m_errorEditFieldBackground					= "#ff7777";
 
-		m_logErrorText								= "#ff7466";
-		m_logWarningText							= "#ffe831";
+		m_logProgressText							= "#202020";
+		m_logErrorText								= "#ab0000";
+		m_logWarningText							= "#b17d00";
 		m_logDebugText								= "#39b1d9";
 
 		QtExt::Style::EditFieldBackground						= "#f9f6c8";
