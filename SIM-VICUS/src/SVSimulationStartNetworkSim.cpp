@@ -108,7 +108,8 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	heatExchanger.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger;
 //	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_].set("HeatFlux", 100, IBK::Unit("W"));
 	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient].set("PressureLossCoefficient", 10, IBK::Unit("-"));
-	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].set("HydraulicDiameter", 50, IBK::Unit("mm"));
+	// TODO Hauke, check if we need a cross section here, see NM_HydraulicNetworkFlowElements.cpp:112
+//	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].set("HydraulicDiameter", 50, IBK::Unit("mm"));
 	network->m_hydraulicComponents.push_back(heatExchanger);
 
 	for (VICUS::NetworkNode &node: network->m_nodes){
@@ -119,7 +120,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	}
 
 	for (VICUS::NetworkEdge &edge: network->m_edges)
-		edge.m_modelType =  NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe;
+		edge.m_modelType =  VICUS::NetworkEdge::MT_StaticAdiabaticPipe;
 
 	network->updateNodeEdgeConnectionPointers();
 
@@ -127,17 +128,14 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 
 	// create Nandrad Network
 	NANDRAD::HydraulicNetwork hydraulicNetwork;
-	std::vector<NANDRAD::HydraulicNetworkComponent> hydraulicComponents;
 	hydraulicNetwork.m_id = networkId;
 	hydraulicNetwork.m_displayName = network->m_name;
-	network->createNandradHydraulicNetwork(hydraulicNetwork, hydraulicComponents);
+	network->createNandradHydraulicNetwork(hydraulicNetwork);
 	hydraulicNetwork.m_fluid.defaultFluidWater(1);
 
 	// finally add to nandrad project
 	p.m_hydraulicNetworks.clear();
 	p.m_hydraulicNetworks.push_back(hydraulicNetwork);
-	p.m_hydraulicComponents.clear();
-	p.m_hydraulicComponents = hydraulicComponents;
 
 
 
