@@ -1,6 +1,7 @@
 #include "NM_HydraulicNetworkFlowElements.h"
 
 #include "NANDRAD_HydraulicNetworkElement.h"
+#include "NANDRAD_HydraulicNetworkPipeProperties.h"
 #include "NANDRAD_HydraulicNetworkComponent.h"
 
 #define PI				3.141592653589793238
@@ -23,13 +24,18 @@ HydraulicNetworkAbstractFlowElement::~HydraulicNetworkAbstractFlowElement() {
 
 HNPipeElement::HNPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 							const NANDRAD::HydraulicNetworkComponent & component,
+							const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
 							const NANDRAD::HydraulicFluid & fluid):
 	m_fluid(&fluid)
 {
 	FUNCID(HNPipeElement::HNPipeElement);
+
+	// TODO : Hauke, check if parameters are actually given and issue error message like "Missing 'xxx' parameter in
+	//        network element 'displayname (id=xxx)'." so that users know how to fix the problem.
+
 	m_length = elem.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
-	m_diameter = component.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].value;
-	m_roughness = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PipeRoughness].value;
+	m_diameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_HydraulicDiameter].value;
+	m_roughness = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeRoughness].value;
 
 	if (m_length<=0)
 		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has length <= 0").arg(elem.m_id),FUNC_ID);
@@ -103,7 +109,8 @@ HNFixedPressureLossCoeffElement::HNFixedPressureLossCoeffElement(const NANDRAD::
 	FUNCID(HNFixedPressureLossCoeffElement::HNFixedPressureLossCoeffElement);
 
 	m_zeta = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient].value;
-	m_diameter = component.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].value;
+	// TODO : Hauke, check if we need a diameter here or more generally a "flow cross section"
+	m_diameter = 1; // component.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].value;
 
 	if (m_diameter<=0)
 		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has diameter <= 0").arg(elem.m_id),FUNC_ID);

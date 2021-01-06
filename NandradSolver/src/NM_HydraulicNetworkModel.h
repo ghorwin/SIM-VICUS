@@ -38,9 +38,7 @@ public:
 	/*! Initializes model.
 		\param nw The hydraulic network model definition/parametrization.
 	*/
-	void setup(const NANDRAD::HydraulicNetwork & nw,
-			   const std::vector<NANDRAD::HydraulicNetworkComponent> & components,
-			   const HydraulicNetwork &network);
+	void setup(const NANDRAD::HydraulicNetwork & nw, const HydraulicNetwork &network);
 
 
 	// *** Re-implemented from AbstractModel

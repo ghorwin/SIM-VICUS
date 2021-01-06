@@ -127,7 +127,6 @@ HydraulicNetworkModel::~HydraulicNetworkModel() {
 
 
 void HydraulicNetworkModel::setup(const NANDRAD::HydraulicNetwork & nw,
-								  const std::vector<NANDRAD::HydraulicNetworkComponent> & components,
 								  const HydraulicNetwork &network) {
 	FUNCID(HydraulicNetworkModel::setup);
 
@@ -144,11 +143,14 @@ void HydraulicNetworkModel::setup(const NANDRAD::HydraulicNetwork & nw,
 		// - component definition (via reference from e.m_componentId) and component DB stored
 		//   in network
 
-		// retrieve component
+		// retrieve component - this is mandatory
 
 		std::vector<NANDRAD::HydraulicNetworkComponent>::const_iterator it =
-				std::find(components.begin(), components.end(), e.m_componentId);
-		IBK_ASSERT(it != components.end());
+				std::find(nw.m_components.begin(), nw.m_components.end(), e.m_componentId);
+		if (it == nw.m_components.end()) {
+			throw IBK::Exception(IBK::FormatString("Missing component reference in hydraulic network element '%1' (id=%2).")
+								 .arg(e.m_displayName).arg(e.m_id), FUNC_ID);
+		}
 
 		switch (it->m_modelType) {
 			case NANDRAD::HydraulicNetworkComponent::MT_StaticPipe:
@@ -156,8 +158,16 @@ void HydraulicNetworkModel::setup(const NANDRAD::HydraulicNetwork & nw,
 			case NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe :
 			case NANDRAD::HydraulicNetworkComponent::MT_DynamicAdiabaticPipe :
 			{
+				// lookup pipe
+				std::vector<NANDRAD::HydraulicNetworkPipeProperties>::const_iterator pipe_it =
+						std::find(nw.m_pipeProperties.begin(), nw.m_pipeProperties.end(), e.m_pipeId);
+				if (pipe_it == nw.m_pipeProperties.end()) {
+					throw IBK::Exception(IBK::FormatString("Missing pipe properties reference in hydraulic network element '%1' (id=%2).")
+										 .arg(e.m_displayName).arg(e.m_id), FUNC_ID);
+				}
+
 				// create hydraulic pipe model
-				HNPipeElement * pipeElement = new HNPipeElement(e, *it, nw.m_fluid);
+				HNPipeElement * pipeElement = new HNPipeElement(e, *it, *pipe_it, nw.m_fluid);
 				// add to flow elements
 				m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 			} break;

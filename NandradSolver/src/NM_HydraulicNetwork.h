@@ -44,14 +44,16 @@ struct HydraulicNetworkNode {
 	are stored as well as their connecitivy information.
 */
 class HydraulicNetwork {
-
 public:
+
 	HydraulicNetwork()  {}
 
 	/*! Setup network from NANDRAD data structure.*/
 	void setup(const NANDRAD::HydraulicNetwork &nw);
 
-	/*! Checks network for completeness and uniqueness.*/
+	/*! Checks network for completeness and uniqueness.
+		// TODO : Anne, check if this needs to be called from somewhere...
+	*/
 	void check(std::string &errmsg) const;
 
 	/*! Sorted list of elements*/

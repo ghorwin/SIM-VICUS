@@ -10,6 +10,7 @@
 namespace NANDRAD {
 	class HydraulicNetworkElement;
 	class HydraulicNetworkComponent;
+	class HydraulicNetworkPipeProperties;
 	class HydraulicFluid;
 }
 
@@ -23,6 +24,7 @@ public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	HNPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 				  const NANDRAD::HydraulicNetworkComponent & component,
+				  const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
 				  const NANDRAD::HydraulicFluid & fluid);
 
 	// HydraulicNetworkAbstractFlowElement interface
