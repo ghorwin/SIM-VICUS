@@ -117,12 +117,6 @@ NandradModel::~NandradModel() {
 		delete *it;
 	}
 
-	for (std::vector<HydraulicNetwork*>::iterator it = m_hydraulicNetworks.begin();
-		it != m_hydraulicNetworks.end(); ++it)
-	{
-		delete *it;
-	}
-
 	delete m_schedules;
 	delete m_fmiInputOutput;
 	delete m_outputHandler;
