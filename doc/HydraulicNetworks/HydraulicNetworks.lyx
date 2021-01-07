@@ -36,6 +36,7 @@ position=bottom]{caption}
 
 \usepackage{lastpage}
 \end_preamble
+\options fleqn
 \use_default_options false
 \begin_modules
 customHeadersFooters
@@ -359,8 +360,16 @@ footrulewidth}{0.4pt} %untere Trennlinie
 
 \end_layout
 
+\begin_layout Part
+Modeling of Thermo-Hydraulic Networks
+\end_layout
+
 \begin_layout Section
 Configuration of Thermo-Hydraulic Networks
+\end_layout
+
+\begin_layout Standard
+A thermo-hydraulic network has the following characteristics:
 \end_layout
 
 \begin_layout Itemize
@@ -391,99 +400,6 @@ Nodes connect elements and hold a pressure and temperature state (no flow,
 \begin_layout Itemize
 Mass flux through an element is conserved, i.e.
  the same at either side.
-\end_layout
-
-\begin_layout Subsection
-Model Generation Process / Transformation of GIS based Topologies
-\end_layout
-
-\begin_layout Standard
-The transformation process of GIS-based network data to model data is a
- three-step process:
-\end_layout
-
-\begin_layout Enumerate
-Determine geometry of all active components (
-\begin_inset Quotes eld
-\end_inset
-
-nodes
-\begin_inset Quotes erd
-\end_inset
-
- in GIS terminology), e.g.
- houses, pumps, storage systems
-\end_layout
-
-\begin_layout Enumerate
-Semi-automatic routing of pipes (
-\begin_inset Quotes eld
-\end_inset
-
-edges
-\begin_inset Quotes erd
-\end_inset
-
- in GIS terminology); Based on some predefined pipe layout the remaining
- pipe connections are determined using a 
-\begin_inset Quotes eld
-\end_inset
-
-shortest path
-\begin_inset Quotes erd
-\end_inset
-
- algorithm.
- In the result all active component nodes are connected with the network.
- Afterwards all redundant edges are merged, when they have the same property,
- yet keeping their total length.
- 
-\end_layout
-
-\begin_layout Enumerate
-Idealization and creation of the Thermo-Hydraulic network.
- Each of the 
-\begin_inset Quotes eld
-\end_inset
-
-nodes
-\begin_inset Quotes erd
-\end_inset
-
- and 
-\begin_inset Quotes eld
-\end_inset
-
-edges
-\begin_inset Quotes erd
-\end_inset
-
- from the GIS import process are transformed into 
-\begin_inset Quotes eld
-\end_inset
-
-nodes
-\begin_inset Quotes erd
-\end_inset
-
- and 
-\begin_inset Quotes eld
-\end_inset
-
-elements
-\begin_inset Quotes erd
-\end_inset
-
- in terms of the thermo-hydraulic network model.
- Hereby all elements of the network are expressed in terms of elements with
- exactly two flow connections and a finite (though maybe extremely small)
- pressure drop across the element.
- All elements are connected in nodes.
-\end_layout
-
-\begin_layout Standard
-TODO : Hauke, add figs from presentation and add specific example of step
- 3
 \end_layout
 
 \begin_layout Subsection
@@ -528,10 +444,6 @@ Schematics of an abstract flow element and sign definition of fluxes across
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Plain Layout
 
 \end_layout
 
@@ -792,14 +704,17 @@ with
 \begin_inset Formula $r\left(t\right)$
 \end_inset
 
- will be a transient quantity that more or less slowly approaches this set
- point value.
- With respect to the steady-state solution of the flow network, the control
+ will be a transient quantity that more or less slowly (depending on 
+\begin_inset Formula $\tau$
+\end_inset
+
+) approaches this set point value.
+ When solving the steady-state hydraulic flow network equations, the control
  variable 
 \begin_inset Formula $r$
 \end_inset
 
- is now again a constant, which simplifies solution of the network significantly.
+ is a constant, which simplifies solution of the equation system significantly.
 \end_layout
 
 \begin_layout Section
@@ -807,8 +722,8 @@ Solution procedure
 \end_layout
 
 \begin_layout Standard
-We will derive the general solution procedure for all kinds of thermo-hydraulic
- networks by starting with a simple example.
+We will illustrate the general solution procedure for all kinds of thermo-hydrau
+lic networks by starting with a simple example.
 \end_layout
 
 \begin_layout Subsection
@@ -1225,443 +1140,21 @@ Manual elimination of variables to obtain a reduced set of solution variables
 
 Note that we simply added the additional constraint with the pressure at
  node 1 to the first equation.
-\end_layout
-
-\begin_layout Subsubsection
-Solving for nodal pressures alone
-\end_layout
-
-\begin_layout Standard
-The composition of such an equation system like in example 1 is rather straight-
-forward.
- The number of nodes in the network determine the number of unknowns and
- equations.
- For each node the mass fluxes through the connected flow elements are summed
- up using the inlet/outlet sign definition shown in Figure
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:Schematics-flow-element"
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-We could now solve the equation system for the unknowns 
-\begin_inset Formula $\boldsymbol{p}$
-\end_inset
-
-.
- Since the entire system is non-linear, a Newton iteration seems in order,
- which leads to the following Newton iteration scheme (with 
-\begin_inset Formula $m$
-\end_inset
-
- being the iteration level):
-\begin_inset Formula 
-\[
-\left.\frac{\partial G}{\partial p}\right|_{m}\Delta p_{m+1}=-G\left(p_{m}\right)
-\]
-
-\end_inset
-
-However, we face a minor problem because of our implicit formulation of
- the flow element equations, that we cannot easily re-arranged to be expressions
- for mass fluxes 
-\begin_inset Formula $\dot{m}$
-\end_inset
-
-.
- This makes the evaluation of the non-linear equation system function 
-\begin_inset Formula $\boldsymbol{G}\left(\boldsymbol{p_{m}}\right)$
-\end_inset
-
- expensive (where 
-\begin_inset Formula $\boldsymbol{p_{m}}$
-\end_inset
-
- is the vector with the current estimate of the nodal pressures), since
- we cannot just take the estimated pressures and evaluate each mass flux
- to obtain the residuals.
- Instead, we would need to iteratively determine each flow element system
- function until we find the 
-\begin_inset Formula $\dot{m}$
-\end_inset
-
- for the given inlet and outlet pressures.
- In the example 1 this would mean that we take estimates for 
-\begin_inset Formula $p_{1}$
-\end_inset
-
- and 
-\begin_inset Formula $p_{3}$
-\end_inset
-
- and solve 
-\begin_inset Formula $0=f_{1}\left(\dot{m},p_{1},p_{3}\right)$
-\end_inset
-
- with a Newton method
-\begin_inset Formula 
-\[
-\left.\frac{df_{1}}{d\dot{m}}\right|_{n}\Delta\dot{m}_{n+1}=-f_{1}\left(\dot{m}_{n}\right)
-\]
-
-\end_inset
-
-until we have found the matching mass flux 
-\begin_inset Formula $\dot{m}$
-\end_inset
-
- .
- In this Newton method 
-\begin_inset Formula $n$
-\end_inset
-
- is the iteration level and 
-\begin_inset Formula $p_{1}$
-\end_inset
-
- and 
-\begin_inset Formula $p_{3}$
-\end_inset
-
- are given constants.
-\end_layout
-
-\begin_layout Standard
-Having an iterative calculation procedure inside another iteration method
- is generally not a good idea, even though this is probably not as bad as
- it looks, since:
-\end_layout
-
-\begin_layout Itemize
-it is a scalar function and thus a Newton method (or even Newton method
- stabilized by some secand method) is fairly fast and robust (i.e.
- no equation system solving involved)
-\end_layout
-
-\begin_layout Itemize
-since we solve this function repeatedly for small changing 
-\begin_inset Formula $\dot{m}$
-\end_inset
-
- and 
-\begin_inset Formula $p$
-\end_inset
-
- the initial guess will very often be very close to the solution
-\end_layout
-
-\begin_layout Itemize
-selecting convergence tolerances sufficiently tight is not a problem
-\end_layout
-
-\begin_layout Itemize
-implementation can be well encapsulated so that an evaluation of 
-\begin_inset Formula $\dot{m}\left(p_{1},p_{2}\right)$
-\end_inset
-
- is not problematic
-\end_layout
-
-\begin_layout Itemize
-the same mass fluxes are used in several equations (at least twice), so
- that caching these variables speeds up calculation of 
-\begin_inset Formula $\boldsymbol{G}\left(\boldsymbol{p_{m}}\right)$
-\end_inset
-
- somewhat
-\end_layout
-
-\begin_layout Standard
-However, there is the issue of computing the Jacobian matrix 
-\begin_inset Formula $\frac{\partial G}{\partial p}$
-\end_inset
-
- of the general solution method which ultimately requires computation of
- derivatives 
-\begin_inset Formula $d\dot{m}/dp$
-\end_inset
-
- for the various mass flux equations and pressures.
- Obtaining analytical expressions for these derivatives is difficult (or
- nearly impossible in some cases).
- 
-\end_layout
-
-\begin_layout Standard
-The most simple and straight-forward approach is to generate a lookup table
- of the relation 
-\begin_inset Formula $\dot{m}\left(p\right)$
-\end_inset
-
- and use linear (or any other form of) interpolation to approximate the
- relationship.
- This can be implemented in a very generic way, and the small errors from
- the approximation won't be critical, since only the Jacobian is affected.
- For some flow elements like the pump there is a parameterized 
-\begin_inset Formula $\Delta p\left(\dot{m}\right)$
-\end_inset
-
- curve which can be inverted and yields the required derivative right away.
- 
-\end_layout
-
-\begin_layout Standard
-For models that have a large temperature dependence (where 
-\begin_inset Formula $\dot{m}\left(p\right)$
-\end_inset
-
- might change drastically depending on temperature), a single lookup table
- might not be sufficient.
- Either, a correction factor is used to adjust the results of some reference
- curve 
-\begin_inset Formula $\dot{m}\left(p,T_{ref}\right)$
-\end_inset
-
- somewhat to account for the temperature effect.
- Or, if that still gives too much of an error, we can still approximate
- the derivative with a small trick.
-\end_layout
-
-\begin_layout Standard
-Suppose we had the partial derivatives 
-\begin_inset Formula $\frac{\partial f}{\partial p}$
-\end_inset
-
- and 
-\begin_inset Formula $\frac{\partial f}{\partial\dot{m}}$
-\end_inset
-
- and we can somehow invert the second gradient to 
-\begin_inset Formula $\frac{\partial\dot{m}}{\partial f}$
-\end_inset
-
- we get our required derivative: 
-\begin_inset Formula 
-\[
-\frac{\partial\dot{m}}{\partial p}=\frac{\partial\dot{m}}{\partial f}\frac{\partial f}{\partial p}
-\]
-
-\end_inset
-
-Since both variables 
-\begin_inset Formula $p$
-\end_inset
-
- and 
-\begin_inset Formula $\dot{m}$
-\end_inset
-
- are related, the inversion of the gradient is done with:
-\begin_inset Formula 
-\[
-\frac{\partial\dot{m}}{\partial f}=-\frac{1}{\frac{\partial f}{\partial\dot{m}}}
-\]
-
-\end_inset
-
-@Anne: is there somewhere a mathematical proof why this works? For scalar
- functions it is 
-\begin_inset Formula $\frac{dy}{dx}=\frac{1}{\frac{dx}{dy}}$
-\end_inset
-
- but for partial derivatives we need the minus sign.
- This has something to do with the difference between gradients and niveau-line
- slopes, but why does inserting the minus gives correct results?
-\end_layout
-
-\begin_layout Standard
-Lets illustrate this with an example.
- Suppose our flow element system function looks like
-\begin_inset Formula 
-\[
-f\left(p_{1},p_{2},\dot{m}\right)=0=p_{1}-p_{2}-a\dot{m}^{2}
-\]
-
-\end_inset
-
-where 
-\begin_inset Formula $a$
-\end_inset
-
- is some friction coefficient and 
-\begin_inset Formula $a\dot{m}^{2}$
-\end_inset
-
- corresponds to the pressure loss that increases quadratically with the
- flow rate.
- This function can easily be rearranged to:
-\begin_inset Formula 
-\[
-\dot{m}\left(p_{1}\right)=\sqrt{\frac{p_{1}-p_{2}}{a}}
-\]
-
-\end_inset
-
-and the derivative we look for is
-\begin_inset Formula 
-\[
-\frac{\partial\dot{m}}{\partial p_{1}}=\frac{1}{2}\left(\frac{p_{1}-p_{2}}{a}\right)^{-\frac{1}{2}}\frac{1}{a}=\frac{1}{2a\sqrt{\frac{p_{1}-p_{2}}{a}}}=\frac{1}{2a\dot{m}}
-\]
-
-\end_inset
-
-Now let try to construct this without rearranging the equation.
- We first get the partial derivatives
-\begin_inset Formula 
-\begin{align*}
-\frac{\partial f}{\partial p_{1}} & =1\\
-\frac{\partial f}{\partial\dot{m}} & =-2a\dot{m}
-\end{align*}
-
-\end_inset
-
-invert the second partial derivative
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\begin{align*}
-\frac{\partial\dot{m}}{\partial f} & =\frac{1}{2a\dot{m}}
-\end{align*}
-
-\end_inset
-
-and apply the chain rule to get:
-\begin_inset Formula 
-\[
-\frac{\partial\dot{m}}{\partial f}\frac{\partial f}{\partial p_{1}}=\frac{\partial\dot{m}}{\partial p_{1}}=\frac{1}{2a\dot{m}}
-\]
-
-\end_inset
-
-This even works for more complex system functions.
- Let's try constructing 
-\begin_inset Formula $dy/dx$
-\end_inset
-
- for a function: 
-\begin_inset Formula 
-\[
-f\left(x,y\right)=y/\sin x+2=0
-\]
-
-\end_inset
-
-First the direct approach:
-\begin_inset Formula 
-\begin{align*}
-y & =-2\sin x\\
--2 & =\frac{y}{\sin x}\\
-\frac{dy}{dx} & =-2\cos x\\
- & =\frac{y\cos x}{\sin x}
-\end{align*}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-and now the indirect approach using partial derivatives:
-\begin_inset Formula 
-\begin{align*}
-\frac{\partial f}{\partial x} & =-\frac{y\cos x}{\sin^{2}x}\\
-\frac{\partial f}{\partial y} & =\frac{1}{\sin x}\\
-\frac{\partial y}{\partial f} & =-\sin x\\
-\frac{\partial y}{\partial f}\frac{\partial f}{\partial x} & =-\sin x\cdot-\frac{y\cos x}{\sin^{2}x}\\
- & =\frac{y\cos x}{\sin x}
-\end{align*}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-In a generic implementation, i.e.
- where there's no knowledge of the function 
-\begin_inset Formula $f\left(p_{1},p_{2},\dot{m}\right)$
-\end_inset
-
-, the derivatives 
-\begin_inset Formula $\frac{\partial f}{\partial p}$
-\end_inset
-
- and 
-\begin_inset Formula $\frac{\partial f}{\partial\dot{m}}$
-\end_inset
-
- can be obtained using finite difference quotients.
-\end_layout
-
-\begin_layout Subsubsection
-Solving for mass fluxes together
-\end_layout
-
-\begin_layout Standard
-Just as with the previously described variant, we could simply use the mass
- fluxes across the flow elements as solution variables and solve 
-\begin_inset Formula $\boldsymbol{G}\left(\dot{\boldsymbol{m}}\right)$
-\end_inset
-
-.
- However, this would lead to several difficulties:
-\end_layout
-
-\begin_layout Itemize
-we have to evaluate the implicit flow element system functions with an estimate
- of the mass flux only, which leads to the same problems as described earlier
- for the pressures
-\end_layout
-
-\begin_layout Itemize
-the evaluation of the flow element function would yield pressure differences
- (pressure drops) but no actual pressure values
-\end_layout
-
-\begin_layout Itemize
-the equations for nodal mass balances do not account for computing the actual
- nodal pressure values and computing residuals for each equation
-\end_layout
-
-\begin_layout Standard
-In fact, in order to solve the system directly for mass flows, which is
- possible, requires adding additional terms to the nodal mass balance equations
- which depend on the networks topography and make the solution less generic.
-\end_layout
-
-\begin_layout Subsubsection
-Solving for nodal pressures and element mass fluxes together
-\end_layout
-
-\begin_layout Standard
-An alternative approach allows a much more generic way of evaluation the
- system function and does not require specific flow element based solution
- functions.
- The problems addressed above resulted from the fact that only pressures
- were known and mass fluxes needed to be computed and vice versa.
-\end_layout
-
-\begin_layout Standard
-The flow element system equations would be best evaluated if 
-\emph on
-nodal pressures and mass fluxes 
-\emph default
-were available.
- In example 1 this would mean that we define a vector of solution variables
- 
+ The equation system for example 1 has six unknowns, three nodal pressures
+ and three mass fluxes, summarized in a vector of solution variables 
 \begin_inset Formula $y=\left\{ p_{1},p_{2},p_{3},\dot{m}_{1},\dot{m}_{2},\dot{m}_{3}\right\} $
 \end_inset
 
- and the following 6 equations:
+.
+ 
+\end_layout
+
+\begin_layout Standard
+The equation system is complemented by the flow element system equations,
+ yielding 6 equations:
+\end_layout
+
+\begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
 \boldsymbol{G}\left(\boldsymbol{y}\right)=0=\left\{ \begin{array}{cclc}
@@ -1676,9 +1169,23 @@ were available.
 
 \end_inset
 
-The system size (and most remarkable Jacobian matrix size) is doubled, yet
- now we have all variables available to evaluate the system function and
- its derivatives easily in a very generic way.
+
+\end_layout
+
+\begin_layout Standard
+This non-linear equation system can be solved efficiently with a Newton-Raphson
+ method.
+ This requires the evaluation of the system function 
+\begin_inset Formula $G\left(y\right)$
+\end_inset
+
+.
+ Since nodal pressures and mass fluxes are given, these system functions
+ for the individual flow elements 
+\begin_inset Formula $f_{i}$
+\end_inset
+
+ can be easily evaluated.
 \end_layout
 
 \begin_layout Section
@@ -1691,219 +1198,159 @@ The sections below detail the flow equations for the various elements in
 \end_layout
 
 \begin_layout Subsection
-Fluid Properties
+Basic equations
 \end_layout
 
 \begin_layout Standard
-We use the following constant fluid properties
+In thermo-hydraulic networks, fluid properties depend on temperature 
+\begin_inset Formula $T$
+\end_inset
+
+ and flow velocity 
+\begin_inset Formula $v$
+\end_inset
+
+.
+ The flow equations describe the relation of pressure-drop 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ and mass flux 
+\begin_inset Formula $\dot{m}$
+\end_inset
+
+ through a flow element.
+\end_layout
+
+\begin_layout Subsubsection
+Kinematic viscosity
 \end_layout
 
 \begin_layout Standard
-\begin_inset Tabular
-<lyxtabular version="3" rows="3" columns="3">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<row>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
+The kinematic viscosity 
+\begin_inset Formula $\nu$
+\end_inset
+
+ is temperature depent.
+\begin_inset Note Note
+status open
 
 \begin_layout Plain Layout
-thermal conductivity
+maybe give an example for an analytical approximation here, such as the
+ Andrade equation.
+ Otherwise just state that this should be a fluid parameter.
 \end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $\lambda$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $W/mK$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-density
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $\rho$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $kg/m^{3}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-spec.
- heat capacity
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $c_{p}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $J/kg\,K$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
 
 \end_inset
 
 
 \end_layout
 
-\begin_layout Standard
-and the temperature dependent properties
+\begin_layout Itemize
+\begin_inset Formula $\nu$
+\end_inset
+
+ kinematic viscosity [m2/s] (temperature dependet, fluid parameter)
 \end_layout
 
-\begin_layout Standard
-\begin_inset Tabular
-<lyxtabular version="3" rows="1" columns="3">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-kinematic viscosity
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $\nu=\nu(T)$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $m^{2}/s$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-as well as the Prandtl number 
-\begin_inset Formula 
-\[
-Pr(T)=\frac{\nu(T)\rho c_{p}}{\lambda}
-\]
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsection
+\begin_layout Subsubsection
 Reynolds number
 \end_layout
 
 \begin_layout Standard
-Note that the Reynolds number is temperature dependent
-\end_layout
-
-\begin_layout Standard
 \begin_inset Formula 
-\[
-Re(T)=\frac{vd}{\nu(T)}
-\]
+\begin{align}
+Re & =\frac{vd}{\nu}\label{eq:Reynolds}
+\end{align}
 
 \end_inset
 
 
 \end_layout
 
+\begin_layout Standard
+with 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $v$
+\end_inset
+
+ flow velocity [m/s]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $d$
+\end_inset
+
+ characteristic length [m], in pipes this will be the inner diameter
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+Caution
+\series default
+: Different choices of characteristic lengths can cause differences with
+ other model parameter sets who use, for example, radius as characteristic
+ length.
+\end_layout
+
+\begin_layout Subsubsection
+Prandtl number
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+Pr & =\frac{\nu\rho c_{p}}{\lambda}\label{eq:Prandtl}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+with the fluid properties (constant parameters):
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\rho$
+\end_inset
+
+ density of the fluid [kg/m3]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $c_{p}$
+\end_inset
+
+ specific heat capacity (at constant pressure) [J/kgK]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\lambda$
+\end_inset
+
+ thermal conductivity [
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+W/mK]
+\end_layout
+
 \begin_layout Subsection
-Pipes
+Flow equations for pipes
 \end_layout
 
 \begin_layout Subsubsection
@@ -1918,141 +1365,36 @@ name "subsec:General-Hydraulic-Pipe"
 \end_layout
 
 \begin_layout Standard
-parameters
+Pipe parameters:
 \end_layout
 
-\begin_layout Standard
-\begin_inset Tabular
-<lyxtabular version="3" rows="3" columns="3">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<row>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-length
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
+\begin_layout Itemize
 \begin_inset Formula $l$
 \end_inset
 
-
+ length [m]
 \end_layout
 
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $m$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-inner diameter
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
+\begin_layout Itemize
 \begin_inset Formula $d$
 \end_inset
 
-
+ inner diameter [m]
 \end_layout
 
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $m$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-roughness
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
+\begin_layout Itemize
 \begin_inset Formula $k$
 \end_inset
 
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $m$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
+ roughness [m]
 \end_layout
 
 \begin_layout Standard
-The velocity is 
-\end_layout
-
-\begin_layout Standard
+The fluid flow velocity is 
 \begin_inset Formula 
-\[
-v=\frac{\dot{m}}{\rho\frac{\pi}{4}d^{2}}
-\]
+\begin{align*}
+v & =\frac{\dot{m}}{\rho\frac{\pi}{4}d^{2}}
+\end{align*}
 
 \end_inset
 
@@ -2064,14 +1406,15 @@ For laminar flows (
 \begin_inset Formula $Re<2300$
 \end_inset
 
-)
-\end_layout
+) the Darcy friction factor/flow coefficient 
+\begin_inset Formula $\lambda$
+\end_inset
 
-\begin_layout Standard
+ is
 \begin_inset Formula 
-\[
-\lambda=\frac{64}{Re}
-\]
+\begin{align*}
+\lambda & =\frac{64}{Re}
+\end{align*}
 
 \end_inset
 
@@ -2084,13 +1427,10 @@ For turbulent flows (
 \end_inset
 
  we use the equation from Colebrook
-\end_layout
-
-\begin_layout Standard
 \begin_inset Formula 
-\[
-\lambda=\left[-2log_{10}\left(\frac{2.51}{Re\sqrt{\lambda}}+\frac{k}{3,71d}\right)\right]^{-2}
-\]
+\begin{align*}
+\lambda & =\left[-2log_{10}\left(\frac{2.51}{Re\sqrt{\lambda}}+\frac{k}{3,71d}\right)\right]^{-2}
+\end{align*}
 
 \end_inset
 
@@ -2098,12 +1438,25 @@ For turbulent flows (
 \end_layout
 
 \begin_layout Standard
-for 
+For 
 \begin_inset Formula $2300\leq Re\leq1e4$
 \end_inset
 
  we use linear interpolation between the two equations.
- (QUELLE VDI Wärmeatlas)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+TODO : express this more clearly, how the interpolation is done (see next
+ section)
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2116,13 +1469,10 @@ The pressure loss coefficient
 \end_inset
 
 , where
-\end_layout
-
-\begin_layout Standard
 \begin_inset Formula 
-\[
-\text{\ensuremath{\zeta}}=\lambda\frac{l}{d}
-\]
+\begin{align*}
+\text{\ensuremath{\zeta}} & =\lambda\frac{l}{d}
+\end{align*}
 
 \end_inset
 
@@ -2130,11 +1480,11 @@ The pressure loss coefficient
 \end_layout
 
 \begin_layout Standard
-The pressure drop is 
+The pressure drop is
 \begin_inset Formula 
-\[
-\Delta p=\zeta\frac{\rho}{2}v^{2}
-\]
+\begin{align}
+\Delta p & =\zeta\frac{\rho}{2}v^{2}\label{eq:pressureLossPipe}
+\end{align}
 
 \end_inset
 
@@ -2153,95 +1503,8 @@ name "subsec:Convection-coefficient-inside"
 \end_layout
 
 \begin_layout Standard
-parameters
-\end_layout
-
-\begin_layout Standard
-\begin_inset Tabular
-<lyxtabular version="3" rows="2" columns="3">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-length
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $l$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $m$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-diameter
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $d$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $m$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
+Heat transfer from fluid to pipe surface is expressed in terms of the convective
+ heat transfer coefficient, which depends also on the flow regime.
 \end_layout
 
 \begin_layout Standard
@@ -2250,12 +1513,9 @@ For laminar flows (
 \end_inset
 
 )
-\end_layout
-
-\begin_layout Standard
 \begin_inset Formula 
 \[
-Nu_{lam}=\left(49.37+\left(1.615*\left(Re\,Pr\frac{d}{l}\right)^{\frac{1}{3}}-0.7\right)^{3}\right)^{\frac{1}{3}}
+Nu_{lam}=\left(49.37+\left(1.615\cdot\left(Re\,Pr\frac{d}{l}\right)-0.7\right)^{3}\right)^{\frac{1}{3}}
 \]
 
 \end_inset
@@ -2264,14 +1524,11 @@ Nu_{lam}=\left(49.37+\left(1.615*\left(Re\,Pr\frac{d}{l}\right)^{\frac{1}{3}}-0.
 \end_layout
 
 \begin_layout Standard
-for turbulent flows (
+For turbulent flows (
 \begin_inset Formula $Re>1e4$
 \end_inset
 
 )
-\end_layout
-
-\begin_layout Standard
 \begin_inset Formula 
 \[
 Nu_{turb}=\frac{\left(\zeta/8\right)Re\,Pr}{1+12.7\sqrt{\zeta/8}\,\left(Pr^{^{2/3}}-1\right)}\left(1+\left(\frac{d}{l}\right)^{2/3}\right)
@@ -2283,17 +1540,14 @@ Nu_{turb}=\frac{\left(\zeta/8\right)Re\,Pr}{1+12.7\sqrt{\zeta/8}\,\left(Pr^{^{2/
 \end_layout
 
 \begin_layout Standard
-for 
+For 
 \begin_inset Formula $2300\leq Re\leq1e4$
 \end_inset
 
  we use linear interpolation
-\end_layout
-
-\begin_layout Standard
 \begin_inset Formula 
 \[
-Nu_{int}=\left(1-a\right)Nu_{lam,Re=2300}+a\,Nu_{turb,Re=1e4}
+Nu_{int}=\left(1-a\right)Nu{}_{lam,Re=2300}+a\,Nu{}_{turb,Re=1e4}
 \]
 
 \end_inset
@@ -2303,9 +1557,6 @@ Nu_{int}=\left(1-a\right)Nu_{lam,Re=2300}+a\,Nu_{turb,Re=1e4}
 
 \begin_layout Standard
 where
-\end_layout
-
-\begin_layout Standard
 \begin_inset Formula 
 \[
 a=\frac{Re-2300}{1e4-2300}
@@ -2317,16 +1568,12 @@ a=\frac{Re-2300}{1e4-2300}
 \end_layout
 
 \begin_layout Standard
-(QUELLE VDI Wärmeatlas)
-\end_layout
-
-\begin_layout Standard
-Note that 
-\begin_inset Formula $Re(T)$
+Note, as above, 
+\begin_inset Formula $Re$
 \end_inset
 
  and 
-\begin_inset Formula $Pr(T)$
+\begin_inset Formula $Pr$
 \end_inset
 
  are temperature dependent.
@@ -2334,13 +1581,14 @@ Note that
 \end_layout
 
 \begin_layout Standard
-The convection coefficient inside a pipe is
-\end_layout
+The convection coefficient 
+\begin_inset Formula $h_{i}$
+\end_inset
 
-\begin_layout Standard
+ inside a pipe is
 \begin_inset Formula 
 \[
-h_{i}(T)=Nu(T)\frac{\lambda}{d}
+h_{i}=Nu\frac{\lambda}{d}
 \]
 
 \end_inset
@@ -2353,134 +1601,11 @@ Static adiabatic pipe
 \end_layout
 
 \begin_layout Standard
-parameters
-\end_layout
-
-\begin_layout Standard
-\begin_inset Tabular
-<lyxtabular version="3" rows="3" columns="3">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<row>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-length
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $l$
+This model considers pressure loss according as described in section
+\begin_inset space ~
 \end_inset
 
 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $m$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-inner diameter
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $d$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $m$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-roughness
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $k$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $m$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-This model considers pressure loss according to 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "subsec:General-Hydraulic-Pipe"
@@ -2490,14 +1615,15 @@ noprefix "false"
 
 \end_inset
 
- 
+.
 \end_layout
 
 \begin_layout Standard
+The system equation is
 \begin_inset Formula 
-\[
-p_{in}-p_{out}=\Delta p(\dot{m},T_{in},l,d,k)
-\]
+\begin{equation}
+0=p_{in}-p_{out}-\Delta p\left(\dot{m}\right)
+\end{equation}
 
 \end_inset
 
@@ -2505,10 +1631,35 @@ p_{in}-p_{out}=\Delta p(\dot{m},T_{in},l,d,k)
 \end_layout
 
 \begin_layout Standard
-but has no heat exchange to the surrounding, thus
+with 
+\begin_inset Formula $\Delta p\left(\dot{m}\right)$
+\end_inset
+
+ evaluated with equation
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:pressureLossPipe"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ The fluid properties are evaluated using the temperature from the inlet
+ node (
+\begin_inset Formula $T=T_{in}$
+\end_inset
+
+), which is assumed to be the same in the entire pipe.
 \end_layout
 
 \begin_layout Standard
+There is no heat exchange with the surrounding, thus
 \begin_inset Formula 
 \[
 \dot{Q}_{loss}=0
@@ -2521,6 +1672,19 @@ but has no heat exchange to the surrounding, thus
 
 \begin_layout Subsubsection
 Static pipe with heat exchange with the surroundings
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+only introduce new parameters
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2917,6 +2081,28 @@ noprefix "false"
 \end_inset
 
  
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Annahme des Temperaturverlaufs im Rohr diskutieren.
+ Auswirkung auf Fluid-Eigenschaften diskutieren: Annahme 
+\begin_inset Quotes eld
+\end_inset
+
+Einlasstemperatur
+\begin_inset Quotes erd
+\end_inset
+
+ konstant für Auswertung der Fluid-Eigenschaften? Warum?
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -4428,6 +3614,483 @@ Soil Heat Collectors
 
 \begin_layout Subsection
 Valves
+\end_layout
+
+\begin_layout Part
+Model Generation and Pre-Processing Algorithms
+\end_layout
+
+\begin_layout Section
+Model Generation Process / Transformation of GIS based Topologies
+\end_layout
+
+\begin_layout Standard
+The transformation process of GIS-based network data to model data is a
+ three-step process:
+\end_layout
+
+\begin_layout Enumerate
+Determine geometry of all active components (
+\begin_inset Quotes eld
+\end_inset
+
+nodes
+\begin_inset Quotes erd
+\end_inset
+
+ in GIS terminology), e.g.
+ houses, pumps, storage systems
+\end_layout
+
+\begin_layout Enumerate
+Semi-automatic routing of pipes (
+\begin_inset Quotes eld
+\end_inset
+
+edges
+\begin_inset Quotes erd
+\end_inset
+
+ in GIS terminology); Based on some predefined pipe layout the remaining
+ pipe connections are determined using a 
+\begin_inset Quotes eld
+\end_inset
+
+shortest path
+\begin_inset Quotes erd
+\end_inset
+
+ algorithm.
+ In the result all active component nodes are connected with the network.
+ Afterwards all redundant edges are merged, when they have the same property,
+ yet keeping their total length.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Idealization and creation of the Thermo-Hydraulic network.
+ Each of the 
+\begin_inset Quotes eld
+\end_inset
+
+nodes
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+edges
+\begin_inset Quotes erd
+\end_inset
+
+ from the GIS import process are transformed into 
+\begin_inset Quotes eld
+\end_inset
+
+nodes
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+elements
+\begin_inset Quotes erd
+\end_inset
+
+ in terms of the thermo-hydraulic network model.
+ Hereby all elements of the network are expressed in terms of elements with
+ exactly two flow connections and a finite (though maybe extremely small)
+ pressure drop across the element.
+ All elements are connected in nodes.
+\end_layout
+
+\begin_layout Standard
+TODO : Hauke, add figs from presentation and add specific example of step
+ 3
+\end_layout
+
+\begin_layout Section
+\start_of_appendix
+Alternative solution procedures
+\end_layout
+
+\begin_layout Subsection
+Solving for nodal pressures alone
+\end_layout
+
+\begin_layout Standard
+The composition of such an equation system like in example 1 is rather straight-
+forward.
+ The number of nodes in the network determine the number of unknowns and
+ equations.
+ For each node the mass fluxes through the connected flow elements are summed
+ up using the inlet/outlet sign definition shown in Figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Schematics-flow-element"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+We could now solve the equation system for the unknowns 
+\begin_inset Formula $\boldsymbol{p}$
+\end_inset
+
+.
+ Since the entire system is non-linear, a Newton iteration seems in order,
+ which leads to the following Newton iteration scheme (with 
+\begin_inset Formula $m$
+\end_inset
+
+ being the iteration level):
+\begin_inset Formula 
+\[
+\left.\frac{\partial G}{\partial p}\right|_{m}\Delta p_{m+1}=-G\left(p_{m}\right)
+\]
+
+\end_inset
+
+However, we face a minor problem because of our implicit formulation of
+ the flow element equations, that we cannot easily re-arranged to be expressions
+ for mass fluxes 
+\begin_inset Formula $\dot{m}$
+\end_inset
+
+.
+ This makes the evaluation of the non-linear equation system function 
+\begin_inset Formula $\boldsymbol{G}\left(\boldsymbol{p_{m}}\right)$
+\end_inset
+
+ expensive (where 
+\begin_inset Formula $\boldsymbol{p_{m}}$
+\end_inset
+
+ is the vector with the current estimate of the nodal pressures), since
+ we cannot just take the estimated pressures and evaluate each mass flux
+ to obtain the residuals.
+ Instead, we would need to iteratively determine each flow element system
+ function until we find the 
+\begin_inset Formula $\dot{m}$
+\end_inset
+
+ for the given inlet and outlet pressures.
+ In the example 1 this would mean that we take estimates for 
+\begin_inset Formula $p_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $p_{3}$
+\end_inset
+
+ and solve 
+\begin_inset Formula $0=f_{1}\left(\dot{m},p_{1},p_{3}\right)$
+\end_inset
+
+ with a Newton method
+\begin_inset Formula 
+\[
+\left.\frac{df_{1}}{d\dot{m}}\right|_{n}\Delta\dot{m}_{n+1}=-f_{1}\left(\dot{m}_{n}\right)
+\]
+
+\end_inset
+
+until we have found the matching mass flux 
+\begin_inset Formula $\dot{m}$
+\end_inset
+
+ .
+ In this Newton method 
+\begin_inset Formula $n$
+\end_inset
+
+ is the iteration level and 
+\begin_inset Formula $p_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $p_{3}$
+\end_inset
+
+ are given constants.
+\end_layout
+
+\begin_layout Standard
+Having an iterative calculation procedure inside another iteration method
+ is generally not a good idea, even though this is probably not as bad as
+ it looks, since:
+\end_layout
+
+\begin_layout Itemize
+it is a scalar function and thus a Newton method (or even Newton method
+ stabilized by some secand method) is fairly fast and robust (i.e.
+ no equation system solving involved)
+\end_layout
+
+\begin_layout Itemize
+since we solve this function repeatedly for small changing 
+\begin_inset Formula $\dot{m}$
+\end_inset
+
+ and 
+\begin_inset Formula $p$
+\end_inset
+
+ the initial guess will very often be very close to the solution
+\end_layout
+
+\begin_layout Itemize
+selecting convergence tolerances sufficiently tight is not a problem
+\end_layout
+
+\begin_layout Itemize
+implementation can be well encapsulated so that an evaluation of 
+\begin_inset Formula $\dot{m}\left(p_{1},p_{2}\right)$
+\end_inset
+
+ is not problematic
+\end_layout
+
+\begin_layout Itemize
+the same mass fluxes are used in several equations (at least twice), so
+ that caching these variables speeds up calculation of 
+\begin_inset Formula $\boldsymbol{G}\left(\boldsymbol{p_{m}}\right)$
+\end_inset
+
+ somewhat
+\end_layout
+
+\begin_layout Standard
+However, there is the issue of computing the Jacobian matrix 
+\begin_inset Formula $\frac{\partial G}{\partial p}$
+\end_inset
+
+ of the general solution method which ultimately requires computation of
+ derivatives 
+\begin_inset Formula $d\dot{m}/dp$
+\end_inset
+
+ for the various mass flux equations and pressures.
+ Obtaining analytical expressions for these derivatives is difficult (or
+ nearly impossible in some cases).
+ 
+\end_layout
+
+\begin_layout Standard
+The most simple and straight-forward approach is to generate a lookup table
+ of the relation 
+\begin_inset Formula $\dot{m}\left(p\right)$
+\end_inset
+
+ and use linear (or any other form of) interpolation to approximate the
+ relationship.
+ This can be implemented in a very generic way, and the small errors from
+ the approximation won't be critical, since only the Jacobian is affected.
+ For some flow elements like the pump there is a parameterized 
+\begin_inset Formula $\Delta p\left(\dot{m}\right)$
+\end_inset
+
+ curve which can be inverted and yields the required derivative right away.
+ 
+\end_layout
+
+\begin_layout Standard
+For models that have a large temperature dependence (where 
+\begin_inset Formula $\dot{m}\left(p\right)$
+\end_inset
+
+ might change drastically depending on temperature), a single lookup table
+ might not be sufficient.
+ Either, a correction factor is used to adjust the results of some reference
+ curve 
+\begin_inset Formula $\dot{m}\left(p,T_{ref}\right)$
+\end_inset
+
+ somewhat to account for the temperature effect.
+ Or, if that still gives too much of an error, we can still approximate
+ the derivative with a small trick.
+\end_layout
+
+\begin_layout Standard
+Suppose we had the partial derivatives 
+\begin_inset Formula $\frac{\partial f}{\partial p}$
+\end_inset
+
+ and 
+\begin_inset Formula $\frac{\partial f}{\partial\dot{m}}$
+\end_inset
+
+ and we can somehow invert the second gradient to 
+\begin_inset Formula $\frac{\partial\dot{m}}{\partial f}$
+\end_inset
+
+ we get our required derivative: 
+\begin_inset Formula 
+\[
+\frac{\partial\dot{m}}{\partial p}=\frac{\partial\dot{m}}{\partial f}\frac{\partial f}{\partial p}
+\]
+
+\end_inset
+
+Since both variables 
+\begin_inset Formula $p$
+\end_inset
+
+ and 
+\begin_inset Formula $\dot{m}$
+\end_inset
+
+ are related, the inversion of the gradient is done with:
+\begin_inset Formula 
+\[
+\frac{\partial\dot{m}}{\partial f}=-\frac{1}{\frac{\partial f}{\partial\dot{m}}}
+\]
+
+\end_inset
+
+@Anne: is there somewhere a mathematical proof why this works? For scalar
+ functions it is 
+\begin_inset Formula $\frac{dy}{dx}=\frac{1}{\frac{dx}{dy}}$
+\end_inset
+
+ but for partial derivatives we need the minus sign.
+ This has something to do with the difference between gradients and niveau-line
+ slopes, but why does inserting the minus gives correct results?
+\end_layout
+
+\begin_layout Standard
+Lets illustrate this with an example.
+ Suppose our flow element system function looks like
+\begin_inset Formula 
+\[
+f\left(p_{1},p_{2},\dot{m}\right)=0=p_{1}-p_{2}-a\dot{m}^{2}
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $a$
+\end_inset
+
+ is some friction coefficient and 
+\begin_inset Formula $a\dot{m}^{2}$
+\end_inset
+
+ corresponds to the pressure loss that increases quadratically with the
+ flow rate.
+ This function can easily be rearranged to:
+\begin_inset Formula 
+\[
+\dot{m}\left(p_{1}\right)=\sqrt{\frac{p_{1}-p_{2}}{a}}
+\]
+
+\end_inset
+
+and the derivative we look for is
+\begin_inset Formula 
+\[
+\frac{\partial\dot{m}}{\partial p_{1}}=\frac{1}{2}\left(\frac{p_{1}-p_{2}}{a}\right)^{-\frac{1}{2}}\frac{1}{a}=\frac{1}{2a\sqrt{\frac{p_{1}-p_{2}}{a}}}=\frac{1}{2a\dot{m}}
+\]
+
+\end_inset
+
+Now let try to construct this without rearranging the equation.
+ We first get the partial derivatives
+\begin_inset Formula 
+\begin{align*}
+\frac{\partial f}{\partial p_{1}} & =1\\
+\frac{\partial f}{\partial\dot{m}} & =-2a\dot{m}
+\end{align*}
+
+\end_inset
+
+invert the second partial derivative
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\frac{\partial\dot{m}}{\partial f} & =\frac{1}{2a\dot{m}}
+\end{align*}
+
+\end_inset
+
+and apply the chain rule to get:
+\begin_inset Formula 
+\[
+\frac{\partial\dot{m}}{\partial f}\frac{\partial f}{\partial p_{1}}=\frac{\partial\dot{m}}{\partial p_{1}}=\frac{1}{2a\dot{m}}
+\]
+
+\end_inset
+
+This even works for more complex system functions.
+ Let's try constructing 
+\begin_inset Formula $dy/dx$
+\end_inset
+
+ for a function: 
+\begin_inset Formula 
+\[
+f\left(x,y\right)=y/\sin x+2=0
+\]
+
+\end_inset
+
+First the direct approach:
+\begin_inset Formula 
+\begin{align*}
+y & =-2\sin x\\
+-2 & =\frac{y}{\sin x}\\
+\frac{dy}{dx} & =-2\cos x\\
+ & =\frac{y\cos x}{\sin x}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and now the indirect approach using partial derivatives:
+\begin_inset Formula 
+\begin{align*}
+\frac{\partial f}{\partial x} & =-\frac{y\cos x}{\sin^{2}x}\\
+\frac{\partial f}{\partial y} & =\frac{1}{\sin x}\\
+\frac{\partial y}{\partial f} & =-\sin x\\
+\frac{\partial y}{\partial f}\frac{\partial f}{\partial x} & =-\sin x\cdot-\frac{y\cos x}{\sin^{2}x}\\
+ & =\frac{y\cos x}{\sin x}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In a generic implementation, i.e.
+ where there's no knowledge of the function 
+\begin_inset Formula $f\left(p_{1},p_{2},\dot{m}\right)$
+\end_inset
+
+, the derivatives 
+\begin_inset Formula $\frac{\partial f}{\partial p}$
+\end_inset
+
+ and 
+\begin_inset Formula $\frac{\partial f}{\partial\dot{m}}$
+\end_inset
+
+ can be obtained using finite difference quotients.
 \end_layout
 
 \end_body
