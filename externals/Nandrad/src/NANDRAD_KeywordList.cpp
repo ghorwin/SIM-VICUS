@@ -40,9 +40,9 @@ namespace NANDRAD {
 		"EmbeddedObject::para_t",
 		"EmbeddedObject::objectType_t",
 		"HydraulicFluid::para_t",
-		"HydraulicNetworkComponent::modelType_t",
+		"HydraulicNetworkComponent::ModelType",
 		"HydraulicNetworkComponent::para_t",
-		"HydraulicNetworkComponent::heatExchangeType_t",
+		"HydraulicNetworkComponent::HeatExchangeType",
 		"HydraulicNetworkElement::para_t",
 		"HydraulicNetworkElement::intPara_t",
 		"HydraulicNetworkPipeProperties::para_t",
@@ -144,7 +144,7 @@ namespace NANDRAD {
 				case 1 : return "HeatCapacity";
 				case 2 : return "Conductivity";
 			} break;
-			// HydraulicNetworkComponent::modelType_t
+			// HydraulicNetworkComponent::ModelType
 			case 5 :
 			switch (t) {
 				case 0 : return "StaticAdiabaticPipe";
@@ -165,21 +165,22 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::para_t
 			case 6 :
 			switch (t) {
-				case 0 : return "PressureLossCoefficient";
-				case 1 : return "ExternalHeatTransferCoefficient";
-				case 2 : return "TemperatureTolerance";
-				case 3 : return "PressureHead";
-				case 4 : return "PumpEfficiency";
-				case 5 : return "MotorEfficiency";
-				case 6 : return "RatedHeatingCapacity";
-				case 7 : return "RatedCoolingCapacity";
-				case 8 : return "AuxiliaryPower";
-				case 9 : return "Volume";
-				case 10 : return "ExternalSurfaceArea";
-				case 11 : return "ConvectiveFraction";
-				case 12 : return "COP";
+				case 0 : return "HydraulicDiameter";
+				case 1 : return "PressureLossCoefficient";
+				case 2 : return "ExternalHeatTransferCoefficient";
+				case 3 : return "TemperatureTolerance";
+				case 4 : return "PressureHead";
+				case 5 : return "PumpEfficiency";
+				case 6 : return "MotorEfficiency";
+				case 7 : return "RatedHeatingCapacity";
+				case 8 : return "RatedCoolingCapacity";
+				case 9 : return "AuxiliaryPower";
+				case 10 : return "Volume";
+				case 11 : return "ExternalSurfaceArea";
+				case 12 : return "ConvectiveFraction";
+				case 13 : return "COP";
 			} break;
-			// HydraulicNetworkComponent::heatExchangeType_t
+			// HydraulicNetworkComponent::HeatExchangeType
 			case 7 :
 			switch (t) {
 				case 0 : return "HeatFluxConstant";
@@ -606,7 +607,7 @@ namespace NANDRAD {
 				case 1 : return "HeatCapacity";
 				case 2 : return "Conductivity";
 			} break;
-			// HydraulicNetworkComponent::modelType_t
+			// HydraulicNetworkComponent::ModelType
 			case 5 :
 			switch (t) {
 				case 0 : return "StaticAdiabaticPipe";
@@ -627,21 +628,22 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::para_t
 			case 6 :
 			switch (t) {
-				case 0 : return "PressureLossCoefficient";
-				case 1 : return "ExternalHeatTransferCoefficient";
-				case 2 : return "TemperatureTolerance";
-				case 3 : return "PressureHead";
-				case 4 : return "PumpEfficiency";
-				case 5 : return "MotorEfficiency";
-				case 6 : return "RatedHeatingCapacity";
-				case 7 : return "RatedCoolingCapacity";
-				case 8 : return "AuxiliaryPower";
-				case 9 : return "Volume";
-				case 10 : return "ExternalSurfaceArea";
-				case 11 : return "ConvectiveFraction";
-				case 12 : return "COP";
+				case 0 : return "HydraulicDiameter";
+				case 1 : return "PressureLossCoefficient";
+				case 2 : return "ExternalHeatTransferCoefficient";
+				case 3 : return "TemperatureTolerance";
+				case 4 : return "PressureHead";
+				case 5 : return "PumpEfficiency";
+				case 6 : return "MotorEfficiency";
+				case 7 : return "RatedHeatingCapacity";
+				case 8 : return "RatedCoolingCapacity";
+				case 9 : return "AuxiliaryPower";
+				case 10 : return "Volume";
+				case 11 : return "ExternalSurfaceArea";
+				case 12 : return "ConvectiveFraction";
+				case 13 : return "COP";
 			} break;
-			// HydraulicNetworkComponent::heatExchangeType_t
+			// HydraulicNetworkComponent::HeatExchangeType
 			case 7 :
 			switch (t) {
 				case 0 : return "HeatFluxConstant";
@@ -1069,7 +1071,7 @@ namespace NANDRAD {
 				case 1 : return "Specific heat capacity of the material.";
 				case 2 : return "Thermal conductivity of the dry material.";
 			} break;
-			// HydraulicNetworkComponent::modelType_t
+			// HydraulicNetworkComponent::ModelType
 			case 5 :
 			switch (t) {
 				case 0 : return "Simple pipe at stationary flow conditions without heat exchange";
@@ -1090,21 +1092,22 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::para_t
 			case 6 :
 			switch (t) {
-				case 0 : return "Pressure loss coefficient for the component (zeta-value).";
-				case 1 : return "External heat transfer coeffient for the outside boundary.";
-				case 2 : return "Temperature tolerance for e.g. thermostats.";
-				case 3 : return "Pressure head form a pump.";
-				case 4 : return "Pump efficiency.";
-				case 5 : return "Motor efficiency for a pump.";
-				case 6 : return "Rated heating capacity of the component.";
-				case 7 : return "Rated Cooling capacity of the component.";
-				case 8 : return "Auxiliary power of the component.";
-				case 9 : return "Water or air volume of the component.";
-				case 10 : return "External surface area of the component.";
-				case 11 : return "Convective fraction for heating or cooling.";
-				case 12 : return "Coefficient of performance of the component.";
+				case 0 : return "Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes).";
+				case 1 : return "Pressure loss coefficient for the component (zeta-value).";
+				case 2 : return "External heat transfer coeffient for the outside boundary.";
+				case 3 : return "Temperature tolerance for e.g. thermostats.";
+				case 4 : return "Pressure head form a pump.";
+				case 5 : return "Pump efficiency.";
+				case 6 : return "Motor efficiency for a pump.";
+				case 7 : return "Rated heating capacity of the component.";
+				case 8 : return "Rated Cooling capacity of the component.";
+				case 9 : return "Auxiliary power of the component.";
+				case 10 : return "Water or air volume of the component.";
+				case 11 : return "External surface area of the component.";
+				case 12 : return "Convective fraction for heating or cooling.";
+				case 13 : return "Coefficient of performance of the component.";
 			} break;
-			// HydraulicNetworkComponent::heatExchangeType_t
+			// HydraulicNetworkComponent::HeatExchangeType
 			case 7 :
 			switch (t) {
 				case 0 : return "Constant heat flux";
@@ -1531,7 +1534,7 @@ namespace NANDRAD {
 				case 1 : return "J/kgK";
 				case 2 : return "W/mK";
 			} break;
-			// HydraulicNetworkComponent::modelType_t
+			// HydraulicNetworkComponent::ModelType
 			case 5 :
 			switch (t) {
 				case 0 : return "";
@@ -1552,21 +1555,22 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::para_t
 			case 6 :
 			switch (t) {
-				case 0 : return "-";
-				case 1 : return "W/m2K";
-				case 2 : return "K";
-				case 3 : return "Pa";
-				case 4 : return "---";
+				case 0 : return "mm";
+				case 1 : return "-";
+				case 2 : return "W/m2K";
+				case 3 : return "K";
+				case 4 : return "Pa";
 				case 5 : return "---";
-				case 6 : return "W";
+				case 6 : return "---";
 				case 7 : return "W";
 				case 8 : return "W";
-				case 9 : return "m3";
-				case 10 : return "m2";
-				case 11 : return "---";
-				case 12 : return "-";
+				case 9 : return "W";
+				case 10 : return "m3";
+				case 11 : return "m2";
+				case 12 : return "---";
+				case 13 : return "-";
 			} break;
-			// HydraulicNetworkComponent::heatExchangeType_t
+			// HydraulicNetworkComponent::HeatExchangeType
 			case 7 :
 			switch (t) {
 				case 0 : return "-";
@@ -1993,7 +1997,7 @@ namespace NANDRAD {
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
-			// HydraulicNetworkComponent::modelType_t
+			// HydraulicNetworkComponent::ModelType
 			case 5 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
@@ -2027,8 +2031,9 @@ namespace NANDRAD {
 				case 10 : return "#FFFFFF";
 				case 11 : return "#FFFFFF";
 				case 12 : return "#FFFFFF";
+				case 13 : return "#FFFFFF";
 			} break;
-			// HydraulicNetworkComponent::heatExchangeType_t
+			// HydraulicNetworkComponent::HeatExchangeType
 			case 7 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
@@ -2455,7 +2460,7 @@ namespace NANDRAD {
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// HydraulicNetworkComponent::modelType_t
+			// HydraulicNetworkComponent::ModelType
 			case 5 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
@@ -2489,8 +2494,9 @@ namespace NANDRAD {
 				case 10 : return std::numeric_limits<double>::quiet_NaN();
 				case 11 : return std::numeric_limits<double>::quiet_NaN();
 				case 12 : return std::numeric_limits<double>::quiet_NaN();
+				case 13 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// HydraulicNetworkComponent::heatExchangeType_t
+			// HydraulicNetworkComponent::HeatExchangeType
 			case 7 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
@@ -2896,11 +2902,11 @@ namespace NANDRAD {
 			case 3 : return 3;
 			// HydraulicFluid::para_t
 			case 4 : return 3;
-			// HydraulicNetworkComponent::modelType_t
+			// HydraulicNetworkComponent::ModelType
 			case 5 : return 14;
 			// HydraulicNetworkComponent::para_t
-			case 6 : return 13;
-			// HydraulicNetworkComponent::heatExchangeType_t
+			case 6 : return 14;
+			// HydraulicNetworkComponent::HeatExchangeType
 			case 7 : return 4;
 			// HydraulicNetworkElement::para_t
 			case 8 : return 1;
@@ -3028,11 +3034,11 @@ namespace NANDRAD {
 			case 3 : return 2;
 			// HydraulicFluid::para_t
 			case 4 : return 2;
-			// HydraulicNetworkComponent::modelType_t
+			// HydraulicNetworkComponent::ModelType
 			case 5 : return 13;
 			// HydraulicNetworkComponent::para_t
-			case 6 : return 12;
-			// HydraulicNetworkComponent::heatExchangeType_t
+			case 6 : return 13;
+			// HydraulicNetworkComponent::HeatExchangeType
 			case 7 : return 3;
 			// HydraulicNetworkElement::para_t
 			case 8 : return 0;

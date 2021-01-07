@@ -36,7 +36,7 @@ public:
 
 	/*! Parameters for the component. */
 	enum para_t {
-		P_HydraulicDiameter,				// Keyword: HydraulicDiameter					[mm]	'Inner Diameter, used for pressure loss calculation with pressure loss coefficient.'
+		P_HydraulicDiameter,				// Keyword: HydraulicDiameter					[mm]	'Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes).'
 		P_PressureLossCoefficient,			// Keyword: PressureLossCoefficient				[-]		'Pressure loss coefficient for the component (zeta-value).'
 		P_ExternalHeatTransferCoefficient,	// Keyword: ExternalHeatTransferCoefficient		[W/m2K]	'External heat transfer coeffient for the outside boundary.'
 		P_TemperatureTolerance,				// Keyword: TemperatureTolerance				[K]		'Temperature tolerance for e.g. thermostats.'

@@ -57,7 +57,7 @@ void HydraulicNetworkComponent::readXML(const TiXmlElement * element) {
 				m_displayName = attrib->ValueStr();
 			else if (attribName == "modelType")
 			try {
-				m_modelType = (ModelType)KeywordList::Enumeration("HydraulicNetworkComponent::modelType_t", attrib->ValueStr());
+				m_modelType = (ModelType)KeywordList::Enumeration("HydraulicNetworkComponent::ModelType", attrib->ValueStr());
 			}
 			catch (IBK::Exception & ex) {
 				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
@@ -88,7 +88,7 @@ void HydraulicNetworkComponent::readXML(const TiXmlElement * element) {
 			}
 			else if (cName == "HeatExchangeType") {
 				try {
-					m_heatExchangeType = (HeatExchangeType)KeywordList::Enumeration("HydraulicNetworkComponent::heatExchangeType_t", c->GetText());
+					m_heatExchangeType = (HeatExchangeType)KeywordList::Enumeration("HydraulicNetworkComponent::HeatExchangeType", c->GetText());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
@@ -118,10 +118,10 @@ TiXmlElement * HydraulicNetworkComponent::writeXML(TiXmlElement * parent) const 
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
 	if (m_modelType != NUM_MT)
-		e->SetAttribute("modelType", KeywordList::Keyword("HydraulicNetworkComponent::modelType_t",  m_modelType));
+		e->SetAttribute("modelType", KeywordList::Keyword("HydraulicNetworkComponent::ModelType",  m_modelType));
 
 	if (m_heatExchangeType != NUM_HT)
-		TiXmlElement::appendSingleAttributeElement(e, "HeatExchangeType", nullptr, std::string(), KeywordList::Keyword("HydraulicNetworkComponent::heatExchangeType_t",  m_heatExchangeType));
+		TiXmlElement::appendSingleAttributeElement(e, "HeatExchangeType", nullptr, std::string(), KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",  m_heatExchangeType));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {
