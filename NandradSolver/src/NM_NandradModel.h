@@ -53,7 +53,6 @@ class SteadyStateSolver;
 class StateModelGroup;
 class ParallelStateObjects;
 
-class HydraulicNetwork;
 class Loads;
 class Schedules;
 class FMIInputOutput;
