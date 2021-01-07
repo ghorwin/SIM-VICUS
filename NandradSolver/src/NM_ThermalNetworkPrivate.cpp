@@ -23,7 +23,7 @@
 
 #include "NM_ThermalNetworkPrivate.h"
 
-#include "NM_HydraulicNetwork.h"
+#include "NM_HydraulicNetworkModel.h"
 
 #include <IBK_assert.h>
 #include <IBK_Exception.h>
@@ -41,7 +41,7 @@ const double *ThermalNetworkModelImpl::heatFluxes() const {
 	return nullptr;
 }
 
-void ThermalNetworkModelImpl::setup(const HydraulicNetwork &nw) {
+void ThermalNetworkModelImpl::setup(const Network &nw) {
 	// copy nodes pointer from network
 	m_network = &nw;
 	// resize specific enthalpy
@@ -101,7 +101,7 @@ int ThermalNetworkModelImpl::updateFluxes() 	{
 	// and update their simulation results
 	for(unsigned int i = 0; i < m_flowElements.size(); ++i) {
 		ThermalNetworkAbstractFlowElement *flowElem = m_flowElements[i];
-		const HydraulicNetworkElement &fe = m_network->m_elements[i];
+		const Element &fe = m_network->m_elements[i];
 		// get inlet node
 		const double massFlux = m_massFluxes[i];
 		const double specEnthalpInlet = m_specificEnthalpy[fe.m_nInlet];

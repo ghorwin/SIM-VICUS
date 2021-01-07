@@ -23,7 +23,7 @@
 
 #include "NM_ThermalNetworkStatesModel.h"
 
-#include "NM_HydraulicNetwork.h"
+#include "NM_HydraulicNetworkModel.h"
 #include "NM_ThermalNetworkPrivate.h"
 #include "NM_KeywordList.h"
 
@@ -47,7 +47,7 @@ ThermalNetworkStatesModel::~ThermalNetworkStatesModel() {
 
 void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 									  const std::vector<NANDRAD::HydraulicNetworkComponent> & components,
-									  const HydraulicNetwork &network) {
+									  const HydraulicNetworkModel &networkModel) {
 	FUNCID(ThermalNetworkStatesModel::setup);
 
 	// store network pointer
@@ -94,7 +94,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 	}
 	// setup the enetwork
 	try {
-		m_p->setup(network);
+		m_p->setup(*networkModel.network());
 	} catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, "Error setting up flow network.", FUNC_ID);
 	}

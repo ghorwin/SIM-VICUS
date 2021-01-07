@@ -12,7 +12,6 @@
 
 #include <klu.h>
 
-#include "NM_HydraulicNetwork.h"
 #include "NM_HydraulicNetworkFlowElements.h"
 
 namespace NANDRAD_MODEL {
@@ -21,7 +20,7 @@ namespace NANDRAD_MODEL {
 
 class HydraulicNetworkModelImpl {
 public:
-	HydraulicNetworkModelImpl();
+	HydraulicNetworkModelImpl(const std::vector<Element> &elems);
 	~HydraulicNetworkModelImpl();
 
 	/*! Constant access to mass flux vector*/
@@ -31,8 +30,7 @@ public:
 		Setup needs to be called whenever m_flowElements vector changes
 		(but not, when parameters inside flow elements change!).
 	*/
-	void setup(const HydraulicNetwork &nw);
-
+	void setup();
 	/*! Solves the flow network equation system.
 		You must call setup() before calling solve.
 	*/
@@ -42,6 +40,8 @@ public:
 		Need to be populated before calling setup.
 	*/
 	std::vector<HydraulicNetworkAbstractFlowElement*>	m_flowElements;
+	/*! Network structure. */
+	Network												m_network;
 
 private:
 
@@ -103,9 +103,6 @@ private:
 	/*! Stucture storing sparse jacobian and KLU solver information. */
 	SparseSolver						m_sparseSolver;
 
-	/*! Constant access to network. */
-	const HydraulicNetwork				*m_network;
-
 	unsigned int						m_nodeCount;
 	unsigned int						m_elementCount;
 
@@ -121,33 +118,60 @@ private:
 
 // *** HydraulicNetworkModel members ***
 
+HydraulicNetworkModel::HydraulicNetworkModel(const NANDRAD::HydraulicNetwork & nw,
+	unsigned int id, const std::string &displayName) :
+	m_id(id), m_displayName(displayName),m_hydraulicNetwork(&nw)
+{
+	// first register all nodes
+	std::set<unsigned int> nodeIds;
+	// for this purpose process all hydraulic network elements
+	for (const NANDRAD::HydraulicNetworkElement & e : nw.m_elements) {
+		nodeIds.insert(e.m_inletNodeId);
+		nodeIds.insert(e.m_outletNodeId);
+	}
+
+	// now populate the m_flowElements vector of the network solver
+	std::vector<Element> elems;
+	// process all hydraulic network elements and copy index
+	for (const NANDRAD::HydraulicNetworkElement & e : nw.m_elements) {
+		unsigned int nInlet = std::distance(nodeIds.begin(), nodeIds.find(e.m_inletNodeId));
+		unsigned int nOutlet = std::distance(nodeIds.begin(), nodeIds.find(e.m_outletNodeId));
+		elems.push_back(Element(nInlet, nOutlet) );
+	}
+
+	// create implementation instance
+	m_p = new HydraulicNetworkModelImpl(elems); // we take ownership
+
+}
+
 HydraulicNetworkModel::~HydraulicNetworkModel() {
 	delete m_p; // delete pimpl object
 }
 
 
-void HydraulicNetworkModel::setup(const NANDRAD::HydraulicNetwork & nw,
-								  const HydraulicNetwork &network) {
-	FUNCID(HydraulicNetworkModel::setup);
+const Network * HydraulicNetworkModel::network() const {
+	return &m_p->m_network;
+}
 
-	// create implementation instance
-	m_p = new HydraulicNetworkModelImpl; // we take ownership
+void HydraulicNetworkModel::setup() {
+	FUNCID(HydraulicNetworkModel::setup);
 
 	// now populate the m_flowElements vector of the network solver
 
 	// process all hydraulic network elements and instatiate respective flow equation classes
-	for (const NANDRAD::HydraulicNetworkElement & e : nw.m_elements) {
+	for (const NANDRAD::HydraulicNetworkElement & e : m_hydraulicNetwork->m_elements) {
 		// each of the flow equation elements requires for calculation:
 		// - instance-specific parameters from HydraulicNetworkElement e
-		// - fluid property object from nw.m_fluid
+		// - fluid property object from m_hydraulicNetwork->m_fluid
 		// - component definition (via reference from e.m_componentId) and component DB stored
 		//   in network
 
 		// retrieve component - this is mandatory
 
 		std::vector<NANDRAD::HydraulicNetworkComponent>::const_iterator it =
-				std::find(nw.m_components.begin(), nw.m_components.end(), e.m_componentId);
-		if (it == nw.m_components.end()) {
+				std::find(m_hydraulicNetwork->m_components.begin(),
+						  m_hydraulicNetwork->m_components.end(), e.m_componentId);
+		if (it == m_hydraulicNetwork->m_components.end()) {
 			throw IBK::Exception(IBK::FormatString("Missing component reference in hydraulic network element '%1' (id=%2).")
 								 .arg(e.m_displayName).arg(e.m_id), FUNC_ID);
 		}
@@ -160,14 +184,14 @@ void HydraulicNetworkModel::setup(const NANDRAD::HydraulicNetwork & nw,
 			{
 				// lookup pipe
 				std::vector<NANDRAD::HydraulicNetworkPipeProperties>::const_iterator pipe_it =
-						std::find(nw.m_pipeProperties.begin(), nw.m_pipeProperties.end(), e.m_pipeId);
-				if (pipe_it == nw.m_pipeProperties.end()) {
+						std::find(m_hydraulicNetwork->m_pipeProperties.begin(), m_hydraulicNetwork->m_pipeProperties.end(), e.m_pipeId);
+				if (pipe_it == m_hydraulicNetwork->m_pipeProperties.end()) {
 					throw IBK::Exception(IBK::FormatString("Missing pipe properties reference in hydraulic network element '%1' (id=%2).")
 										 .arg(e.m_displayName).arg(e.m_id), FUNC_ID);
 				}
 
 				// create hydraulic pipe model
-				HNPipeElement * pipeElement = new HNPipeElement(e, *it, *pipe_it, nw.m_fluid);
+				HNPipeElement * pipeElement = new HNPipeElement(e, *it, *pipe_it, m_hydraulicNetwork->m_fluid);
 				// add to flow elements
 				m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 			} break;
@@ -175,7 +199,7 @@ void HydraulicNetworkModel::setup(const NANDRAD::HydraulicNetwork & nw,
 			case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel :
 			{
 				// create pump model
-				HNConstantPressurePump * pumpElement = new HNConstantPressurePump(e, *it, nw.m_fluid);
+				HNConstantPressurePump * pumpElement = new HNConstantPressurePump(e, *it, m_hydraulicNetwork->m_fluid);
 				// add to flow elements
 				m_p->m_flowElements.push_back(pumpElement); // transfer ownership
 			} break;
@@ -183,7 +207,7 @@ void HydraulicNetworkModel::setup(const NANDRAD::HydraulicNetwork & nw,
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger :
 			{
 				// create pump model
-				HNFixedPressureLossCoeffElement * hxElement = new HNFixedPressureLossCoeffElement(e, *it, nw.m_fluid);
+				HNFixedPressureLossCoeffElement * hxElement = new HNFixedPressureLossCoeffElement(e, *it, m_hydraulicNetwork->m_fluid);
 				// add to flow elements
 				m_p->m_flowElements.push_back(hxElement); // transfer ownership
 			} break;
@@ -213,7 +237,7 @@ void HydraulicNetworkModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 	// setup the equation system
 	try {
-		m_p->setup(network);
+		m_p->setup();
 	} catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, "Error setting up equation system/Jacobian for flow network.", FUNC_ID);
 	}
@@ -303,7 +327,28 @@ const double THRESHOLD = 1;
 const double MASS_FLUX_SCALE = 1000;
 
 
-HydraulicNetworkModelImpl::HydraulicNetworkModelImpl() {
+HydraulicNetworkModelImpl::HydraulicNetworkModelImpl(const std::vector<Element> &elems)
+{
+	// copy elements vector
+	m_network.m_elements = elems;
+	// count number of nodes
+	unsigned int nodeCount = 0;
+	for (const Element &fe :elems) {
+		nodeCount = std::max(nodeCount, fe.m_nInlet);
+		nodeCount = std::max(nodeCount, fe.m_nOutlet);
+	}
+
+	// create fast access connections between nodes and flow elements
+	m_network.m_nodes.resize(nodeCount+1);
+	for (unsigned int i=0; i<elems.size(); ++i) {
+		const Element &fe = elems[i];
+		// TODO : check inlet must be different from outlet
+		m_network.m_nodes[fe.m_nInlet].m_elementIndexesInlet.push_back(i);
+		m_network.m_nodes[fe.m_nOutlet].m_elementIndexesOutlet.push_back(i);
+		m_network.m_nodes[fe.m_nInlet].m_elementIndexes.push_back(i);
+		m_network.m_nodes[fe.m_nOutlet].m_elementIndexes.push_back(i);
+	}
+
 #if 0
 	// create a minimalistic network with 3 nodes
 
@@ -381,6 +426,7 @@ HydraulicNetworkModelImpl::HydraulicNetworkModelImpl() {
 	// create jacobian
 	jacobianInit();
 #endif
+
 }
 
 HydraulicNetworkModelImpl::~HydraulicNetworkModelImpl() {
@@ -401,14 +447,156 @@ const double *HydraulicNetworkModelImpl::massFluxes() const {
 	return nullptr;
 }
 
-void HydraulicNetworkModelImpl::setup(const HydraulicNetwork &nw) {
+void HydraulicNetworkModelImpl::setup() {
 	FUNCID(HydraulicNetworkModelImpl::setup);
 
-	// copy nodes pointer from network
-	m_network = &nw;
+
+	// error checks:
+	// 1.) no open ends
+	// -> all m_nodes[i] must have at least 2 m_flowElementIndexes
+	// 2.) no single cycles:
+	// -> inlet must be different from outlet
+	for (unsigned int i=0; i<m_network.m_nodes.size(); ++i) {
+		const Node &node = m_network.m_nodes[i];
+		// error check 1
+		if(node.m_elementIndexes.size() == 1){
+			throw IBK::Exception(IBK::FormatString(
+					"FlowElement with id %1 is an open end of hydraulic network!")
+					 .arg(node.m_elementIndexes[0]).str(),
+					FUNC_ID);
+		}
+		// error check 2
+		std::set<unsigned int> indexes;
+		for(unsigned int j = 0; j < node.m_elementIndexes.size(); ++j) {
+			unsigned int elementIdx = node.m_elementIndexes[j];
+			if(indexes.find(elementIdx) != indexes.end()){
+				throw IBK::Exception(IBK::FormatString(
+						"FlowElement with id %1 is an invalid cyclic connection!")
+						 .arg(elementIdx).str(),
+						FUNC_ID);
+			}
+		}
+	}
+
+
+	// 3.) no distinct networks
+	// -> each node must connect to any other
+	// -> transitive closure of connectivity must form a dense matrix
+	IBKMK::SparseMatrixPattern connectivity(m_network.m_nodes.size());
+#ifdef BIDIRECTIONAL
+
+	for (unsigned int k=0; k<m_network.m_elements.size(); ++k) {
+		const Element &fe = m_network.m_elements[k];
+
+		unsigned int i = fe.m_nInlet;
+		unsigned int j = fe.m_nOutlet;
+		// set a pattern entry for connected nodes
+		if(!connectivity.test(i,j))
+			connectivity.set(i,j);
+		// as well as for the transposed
+		if(!connectivity.test(j,i))
+			connectivity.set(j,i);
+	}
+
+	// calculate transitive closure
+	for(unsigned int k = 0; k < m_network.m_nodes.size(); ++k) {
+		// set a connection (i,j) for each entry (i,k), (k,j)
+		std::vector<unsigned int> rows;
+		std::vector<unsigned int> cols;
+		connectivity.indexesPerRow(k,cols);
+		connectivity.indexesPerRow(k,rows);
+
+		// set all entries (rows[iIdx], cols[jIdx])
+		for(unsigned int iIdx = 0; iIdx < rows.size(); ++iIdx) {
+			unsigned int i = rows[iIdx];
+			for(unsigned int jIdx = 0; jIdx < cols.size(); ++jIdx) {
+				unsigned int j = cols[jIdx];
+				// set entry
+				if(!connectivity.test(i,j))
+					connectivity.set(i,j);
+				// set symmetric entry
+				if(!connectivity.test(j,i))
+					connectivity.set(j,i);
+			}
+		}
+	}
+
+#else
+	IBKMK::SparseMatrixPattern connectivityTranspose(m_network.m_nodes.size());
+
+	for (unsigned int k=0; k<m_network.m_elements.size(); ++k) {
+		const Element &fe = m_network.m_elements[k];
+
+		unsigned int i = fe.m_nInlet;
+		unsigned int j = fe.m_nOutlet;
+		// set a pattern entry for connected nodes
+		if(!connectivity.test(i,j))
+			connectivity.set(i,j);
+		// as well as for the transposed
+		if(!connectivityTranspose.test(j,i))
+			connectivityTranspose.set(j,i);
+	}
+
+	// calculate transitive closure
+	for(unsigned int k = 0; k < m_network.m_nodes.size(); ++k) {
+		// set a connection (i,j) for each entry (i,k), (k,j)
+		std::vector<unsigned int> rows;
+		std::vector<unsigned int> cols;
+		connectivity.indexesPerRow(k,cols);
+		connectivityTranspose.indexesPerRow(k,rows);
+
+		// set all entries (rows[iIdx], cols[jIdx])
+		for(unsigned int iIdx = 0; iIdx < rows.size(); ++iIdx) {
+			unsigned int i = rows[iIdx];
+			for(unsigned int jIdx = 0; jIdx < cols.size(); ++jIdx) {
+				unsigned int j = cols[jIdx];
+				// set entry
+				if(!connectivity.test(i,j))
+					connectivity.set(i,j);
+				// set symmetric entry
+				if(!connectivityTranspose.test(j,i))
+					connectivityTranspose.set(j,i);
+			}
+		}
+	}
+
+#endif
+	// now assume, that we have a dense matrix pattern for a connected graph
+	for(unsigned int i = 0; i < m_network.m_nodes.size(); ++i) {
+		// count column entries for each row
+		std::vector<unsigned int> cols;
+		connectivity.indexesPerRow(i,cols);
+
+		// error: missing connections
+		if(cols.size() != m_network.m_nodes.size()) {
+			// isolated nodes are not allowed
+			IBK_ASSERT(!cols.empty());
+
+			// find out disjunct network elements
+			std::vector<unsigned int> disjunctElements;
+			for(unsigned int j = 0; j < cols.size(); ++j) {
+				const Node &node = m_network.m_nodes[cols[j]];
+
+				for(unsigned int k =0; k < node.m_elementIndexes.size(); ++k)
+					disjunctElements.push_back(node.m_elementIndexes[k]);
+			}
+
+			// create an error message string
+			IBK_ASSERT(!disjunctElements.empty());
+			std::string networkStr(IBK::val2string<unsigned int>(disjunctElements[0]));
+
+			for(unsigned int k = 1; k < disjunctElements.size(); ++k)
+				networkStr += std::string(",") + IBK::val2string<unsigned int>(disjunctElements[k]);
+
+			throw IBK::Exception(IBK::FormatString(
+					"Network is not completely connected! Distinct network formed by flow elements (%1)!")
+					.arg(networkStr).str(),
+					FUNC_ID);
+		}
+	}
 	// count number of nodes
-	m_nodeCount = nw.m_nodes.size();
-	m_elementCount = m_flowElements.size();
+	m_nodeCount = m_network.m_nodes.size();
+	m_elementCount = m_network.m_elements.size();
 	IBK::IBK_Message(IBK::FormatString("Nodes:         %1\n").arg(m_nodeCount), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK::IBK_Message(IBK::FormatString("Flow elements: %1\n").arg(m_elementCount), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	unsigned int n = m_nodeCount + m_elementCount;
@@ -602,8 +790,8 @@ void HydraulicNetworkModelImpl::jacobianInit() {
 		// nodal equations
 		for (unsigned int i=0; i<m_nodeCount; ++i) {
 			// now sum up all the mass fluxes in the nodes
-			for (unsigned int j=0; j<m_network->m_nodes[i].m_elementIndexes.size(); ++j) {
-				unsigned int feIndex = m_network->m_nodes[i].m_elementIndexes[j];
+			for (unsigned int j=0; j<m_network.m_nodes[i].m_elementIndexes.size(); ++j) {
+				unsigned int feIndex = m_network.m_nodes[i].m_elementIndexes[j];
 				// node is connected to all inflow and outflow elements
 				if (!pattern.test(i + m_elementCount, feIndex))
 					pattern.set(i + m_elementCount, feIndex);
@@ -616,7 +804,7 @@ void HydraulicNetworkModelImpl::jacobianInit() {
 
 		// flow element equations
 		for (unsigned int i=0; i<m_elementCount; ++i) {
-			const HydraulicNetworkElement &fe = m_network->m_elements[i];
+			const Element &fe = m_network.m_elements[i];
 			// we need mass flux for pressure loss calculatiopn
 			if (!pattern.test(i, i))
 				pattern.set(i, i);
@@ -869,9 +1057,9 @@ void HydraulicNetworkModelImpl::updateG() {
 
 		// now sum up all the mass fluxes in the nodes
 		double massSum = 0;
-		for (unsigned int j=0; j<m_network->m_nodes[i].m_elementIndexes.size(); ++j) {
-			unsigned int feIndex = m_network->m_nodes[i].m_elementIndexes[j];
-			const HydraulicNetworkElement &fe = m_network->m_elements[ feIndex ];
+		for (unsigned int j=0; j<m_network.m_nodes[i].m_elementIndexes.size(); ++j) {
+			unsigned int feIndex = m_network.m_nodes[i].m_elementIndexes[j];
+			const Element &fe = m_network.m_elements[ feIndex ];
 			// if the flow element is connected to the node via inlet, the mass goes from node to flow element
 			// and hence has a negative sign
 			if (fe.m_nInlet == i)
@@ -889,7 +1077,7 @@ void HydraulicNetworkModelImpl::updateG() {
 
 	// now evaluate the flow system equations
 	for (unsigned int i=0; i<m_elementCount; ++i) {
-		const HydraulicNetworkElement &fe = m_network->m_elements[i];
+		const Element &fe = m_network.m_elements[i];
 		m_G[m_nodeCount + i] = m_flowElements[i]->systemFunction( m_massFluxes[i], m_nodePressures[fe->m_nInlet], m_nodePressures[fe->m_nOutlet]);
 	}
 
@@ -909,9 +1097,9 @@ void HydraulicNetworkModelImpl::updateG() {
 
 		// now sum up all the mass fluxes in the nodes
 		double massSum = 0;
-		for (unsigned int j=0; j<m_network->m_nodes[i].m_elementIndexes.size(); ++j) {
-			unsigned int feIndex = m_network->m_nodes[i].m_elementIndexes[j];
-			const HydraulicNetworkElement &fe = m_network->m_elements[ feIndex ];
+		for (unsigned int j=0; j<m_network.m_nodes[i].m_elementIndexes.size(); ++j) {
+			unsigned int feIndex = m_network.m_nodes[i].m_elementIndexes[j];
+			const Element &fe = m_network.m_elements[ feIndex ];
 			// if the flow element is connected to the node via inlet, the mass goes from node to flow element
 			// and hence has a negative sign
 			if (fe.m_nInlet == i)
@@ -929,7 +1117,7 @@ void HydraulicNetworkModelImpl::updateG() {
 
 	// now evaluate the flow system equations
 	for (unsigned int i=0; i<m_elementCount; ++i) {
-		const HydraulicNetworkElement &fe = m_network->m_elements[i];
+		const Element &fe = m_network.m_elements[i];
 		m_G[i] = m_flowElements[i]->systemFunction( m_massFluxes[i], m_nodePressures[fe.m_nInlet], m_nodePressures[fe.m_nOutlet]);
 	}
 

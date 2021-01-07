@@ -9,11 +9,54 @@ namespace NANDRAD {
 	class HydraulicNetworkComponent;
 }
 
+//#define BIDIRECTIONAL
 
 namespace NANDRAD_MODEL {
 
-class HydraulicNetwork;
 class HydraulicNetworkModelImpl;
+
+/*! Define a network connection. */
+struct Element {
+	Element() {}
+	Element(unsigned int n_inlet, unsigned int n_outlet) :
+		m_nInlet(n_inlet), m_nOutlet(n_outlet) {}
+
+	/*! Index of inlet node. */
+	unsigned int m_nInlet;
+	/*! Index of outlet node. */
+	unsigned int m_nOutlet;
+};
+
+/*! Defines a network node including connected elements. */
+struct Node {
+	Node()  {}
+	Node(unsigned int i1, unsigned int i2) {
+		m_elementIndexesInlet.push_back(i1);
+		m_elementIndexesOutlet.push_back(i2);
+		m_elementIndexes.push_back(i1);
+		m_elementIndexes.push_back(i2);
+	}
+
+	/*! Vector with indexes of inlet flow elements. */
+	std::vector<unsigned int> m_elementIndexesInlet;
+	std::vector<unsigned int> m_elementIndexesOutlet;
+	/*! Complete vector of indexes. */
+	std::vector<unsigned int> m_elementIndexes;
+};
+
+/*! Defines a hydraulic network including nodes and elements.
+	Contrary to the NANDRAD data structure, indexes (not ids) of elements and nodes
+	are stored as well as their connecitivy information.
+*/
+struct Network {
+
+	Network()  {}
+
+	/*! Sorted list of elements*/
+	std::vector<Element>	m_elements;
+	/*! Sorted list of Nodes*/
+	std::vector<Node>		m_nodes;
+};
 
 /*! A model for a hydraulic network.
 
@@ -27,18 +70,19 @@ class HydraulicNetworkModelImpl;
 class HydraulicNetworkModel : public AbstractModel, public AbstractStateDependency {
 public:
 	/*! Constructor. */
-	HydraulicNetworkModel(unsigned int id, const std::string &displayName) :
-		m_id(id), m_displayName(displayName)
-	{
-	}
+	HydraulicNetworkModel(const NANDRAD::HydraulicNetwork & nw,
+		unsigned int id, const std::string &displayName);
 
 	/*! D'tor, released pimpl object. */
 	~HydraulicNetworkModel() override;
 
+	/*! Constant access to network topology*/
+	const Network *network() const;
+
 	/*! Initializes model.
 		\param nw The hydraulic network model definition/parametrization.
 	*/
-	void setup(const NANDRAD::HydraulicNetwork & nw, const HydraulicNetwork &network);
+	void setup();
 
 
 	// *** Re-implemented from AbstractModel
@@ -94,9 +138,13 @@ private:
 	unsigned int									m_id;
 	/*! Display name (for error messages). */
 	std::string										m_displayName;
+	/*! Constant reference to NANDRAD network data structure */
+	const NANDRAD::HydraulicNetwork					*m_hydraulicNetwork= nullptr;
 
 	/*! Private implementation (Pimpl) of the network solver. */
 	HydraulicNetworkModelImpl						*m_p = nullptr;
+
+	friend class ThermalNetworkStatesModel;
 
 };
 

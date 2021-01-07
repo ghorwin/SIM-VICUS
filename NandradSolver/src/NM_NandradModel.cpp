@@ -82,7 +82,6 @@
 #include "NM_InternalLoadsModel.h"
 #include "NM_WindowModel.h"
 #include "NM_RoomRadiationLoadsModel.h"
-#include "NM_HydraulicNetwork.h"
 #include "NM_HydraulicNetworkModel.h"
 
 namespace NANDRAD_MODEL {
@@ -1352,16 +1351,11 @@ void NandradModel::initNetworks() {
 			IBK::IBK_Message(IBK::FormatString("Initializing network #%1 '%2'\n").arg(nw.m_id).arg(nw.m_displayName),
 							 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 			IBK_MSG_INDENT;
-			// first create a network topology
-			HydraulicNetwork *network = new HydraulicNetwork;
-			network->setup(nw);
-			// store inside container
-			m_hydraulicNetworks.push_back(network);
 			// create a network model object
-			HydraulicNetworkModel * nwmodel = new HydraulicNetworkModel(nw.m_id, nw.m_displayName);
+			HydraulicNetworkModel * nwmodel = new HydraulicNetworkModel(nw, nw.m_id, nw.m_displayName);
 			m_modelContainer.push_back(nwmodel); // transfer ownership
 			// initialize
-			nwmodel->setup(nw, *network);
+			nwmodel->setup();
 			// register model for evaluation
 			registerStateDependendModel(nwmodel);
 		}
