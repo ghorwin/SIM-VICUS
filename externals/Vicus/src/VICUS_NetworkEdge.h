@@ -26,27 +26,27 @@ namespace VICUS {
 class NetworkEdge : public Object {
 public:
 
-	/*! The various types (equations) of the hydraulic pipe model to be generated from the edge. */
-	enum ModelType {
-		MT_StaticAdiabaticPipe,				// Keyword: StaticAdiabaticPipe			'Simple pipe at stationary flow conditions without heat exchange'
-		MT_StaticPipe,						// Keyword: StaticPipe					'Simple pipe at stationary flow conditions with heat exchange'
-		MT_DynamicAdiabaticPipe,			// Keyword: DynamicAdiabaticPipe		'Pipe with a discretized fluid volume, without heat exchange'
-		MT_DynamicPipe,						// Keyword: DynamicPipe					'Pipe with a discretized fluid volume and heat exchange'
-		NUM_MT
-	};
+//	/*! The various types (equations) of the hydraulic pipe model to be generated from the edge. */
+//	enum PipeModelType {
+//		MT_StaticAdiabaticPipe,				// Keyword: StaticAdiabaticPipe			'Simple pipe at stationary flow conditions without heat exchange'
+//		MT_StaticPipe,						// Keyword: StaticPipe					'Simple pipe at stationary flow conditions with heat exchange'
+//		MT_DynamicAdiabaticPipe,			// Keyword: DynamicAdiabaticPipe		'Pipe with a discretized fluid volume, without heat exchange'
+//		MT_DynamicPipe,						// Keyword: DynamicPipe					'Pipe with a discretized fluid volume and heat exchange'
+//		NUM_MT
+//	};
 
-	enum HeatExchangeType {
-		HT_HeatFluxConstant,				// Keyword: HeatFluxConstant					[-]		'Constant heat flux'
-		HT_HeatFluxDataFile,				// Keyword: HeatFluxDataFile					[-]		'Heat flux from data file'
-		HT_HeatExchangeWithZoneTemperature,	// Keyword: HeatExchangeWithZoneTemperature		[-]		'Heat exchange with zone'
-		HT_HeatExchangeWithFMUTemperature,	// Keyword: HeatExchangeWithFMUTemperature		[-]		'Heat exchange with FMU which requires temperature and provides heat flux'
-		/*! No heat exchange, just hydraulic element. */
-		NUM_HT
-	};
+//	enum HeatExchangeType {
+//		HT_HeatFluxConstant,				// Keyword: HeatFluxConstant					[-]		'Constant heat flux'
+//		HT_HeatFluxDataFile,				// Keyword: HeatFluxDataFile					[-]		'Heat flux from data file'
+//		HT_HeatExchangeWithZoneTemperature,	// Keyword: HeatExchangeWithZoneTemperature		[-]		'Heat exchange with zone'
+//		HT_HeatExchangeWithFMUTemperature,	// Keyword: HeatExchangeWithFMUTemperature		[-]		'Heat exchange with FMU which requires temperature and provides heat flux'
+//		/*! No heat exchange, just hydraulic element. */
+//		NUM_HT
+//	};
 
-	enum para_t {
+//	enum para_t {
 
-	};
+//	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -103,11 +103,11 @@ public:
 	/*! If false, this is a branch. */
 	bool												m_supply;						// XML:A
 
-	/*! Type of pipe model to generate. */
-	ModelType											m_modelType = NUM_MT;			// XML:A:required
+//	/*! Type of pipe model to generate. */
+//	PipeModelType										m_pipeModelType = NUM_MT;		// XML:A:required
 
-	/*! Heat exchange type. */
-	HeatExchangeType									m_heatExchangeType = NUM_HT;	// XML:A
+//	/*! Heat exchange type. */
+//	HeatExchangeType									m_heatExchangeType = NUM_HT;	// XML:A
 
 	/*! ID of pipe in database */
 	unsigned int										m_pipeId = INVALID_ID;			// XML:E

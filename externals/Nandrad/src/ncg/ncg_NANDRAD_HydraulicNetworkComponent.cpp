@@ -57,7 +57,7 @@ void HydraulicNetworkComponent::readXML(const TiXmlElement * element) {
 				m_displayName = attrib->ValueStr();
 			else if (attribName == "modelType")
 			try {
-				m_modelType = (modelType_t)KeywordList::Enumeration("HydraulicNetworkComponent::modelType_t", attrib->ValueStr());
+				m_modelType = (ModelType)KeywordList::Enumeration("HydraulicNetworkComponent::modelType_t", attrib->ValueStr());
 			}
 			catch (IBK::Exception & ex) {
 				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
@@ -88,7 +88,7 @@ void HydraulicNetworkComponent::readXML(const TiXmlElement * element) {
 			}
 			else if (cName == "HeatExchangeType") {
 				try {
-					m_heatExchangeType = (heatExchangeType_t)KeywordList::Enumeration("HydraulicNetworkComponent::heatExchangeType_t", c->GetText());
+					m_heatExchangeType = (HeatExchangeType)KeywordList::Enumeration("HydraulicNetworkComponent::heatExchangeType_t", c->GetText());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(

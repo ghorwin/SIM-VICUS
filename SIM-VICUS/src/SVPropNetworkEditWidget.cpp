@@ -121,7 +121,7 @@ void SVPropNetworkEditWidget::updateEdgeProperties()
 		return;
 	setupComboboxPipeDB();
 	m_ui->labelPipeLength->setText(QString("%1 m").arg(edge->length()));
-	m_ui->comboBoxPipeModel->setCurrentText(m_mapPipeModels.key(edge->m_modelType));
+	m_ui->comboBoxPipeModel->setCurrentText(m_mapPipeModels.key(edge->m_pipeModelType));
 	m_ui->comboBoxPipeDB->setCurrentText(m_mapDBPipes.key(edge->m_pipeId));
 	m_ui->comboBoxHeatExchangeType->setCurrentText(m_mapHeatExchangeType.key(edge->m_heatExchangeType));
 	m_ui->checkBoxSupplyPipe->setChecked(edge->m_supply);
@@ -238,7 +238,7 @@ void SVPropNetworkEditWidget::modifyEdgeProperties()
 		QMessageBox::critical(this, QString(), tr("Invalid/missing nodes assigned to edge."));
 	}
 	edge->m_supply = m_ui->checkBoxSupplyPipe->isChecked();
-	edge->m_modelType = (VICUS::NetworkEdge::ModelType)m_mapPipeModels.value(m_ui->comboBoxPipeModel->currentText());
+	edge->m_pipeModelType = (VICUS::NetworkEdge::PipeModelType)m_mapPipeModels.value(m_ui->comboBoxPipeModel->currentText());
 	edge->m_pipeId = m_mapDBPipes.value(m_ui->comboBoxPipeDB->currentText());
 	edge->m_heatExchangeType = (VICUS::NetworkEdge::HeatExchangeType)m_mapHeatExchangeType.value(m_ui->comboBoxHeatExchangeType->currentText());
 	m_network.updateNodeEdgeConnectionPointers(); // update pointers, since next function depends on it

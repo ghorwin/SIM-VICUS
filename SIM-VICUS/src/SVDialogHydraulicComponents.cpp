@@ -147,9 +147,9 @@ void SVDialogHydraulicComponents::modifyComponent()
 	NANDRAD::HydraulicNetworkComponent component = *tmpComp;
 
 	component.m_displayName = m_ui->lineEditName->text().toStdString();
-	component.m_modelType = NANDRAD::HydraulicNetworkComponent::modelType_t(
+	component.m_modelType = NANDRAD::HydraulicNetworkComponent::ModelType(
 				m_mapComponents.value(m_ui->comboBoxComponentType->currentText()));
-	component.m_heatExchangeType = NANDRAD::HydraulicNetworkComponent::heatExchangeType_t(
+	component.m_heatExchangeType = NANDRAD::HydraulicNetworkComponent::HeatExchangeType(
 				m_mapHeatExchangeType.value(m_ui->comboBoxHeatExchangeType->currentText()));
 
 	if (component.m_modelType == NANDRAD::HydraulicNetworkComponent::NUM_MT)

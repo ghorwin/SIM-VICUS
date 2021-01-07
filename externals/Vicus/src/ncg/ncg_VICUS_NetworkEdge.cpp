@@ -59,7 +59,7 @@ void NetworkEdge::readXML(const TiXmlElement * element) {
 				m_supply = NANDRAD::readPODAttributeValue<bool>(element, attrib);
 			else if (attribName == "modelType")
 			try {
-				m_modelType = (ModelType)KeywordList::Enumeration("NetworkEdge::ModelType", attrib->ValueStr());
+				m_pipeModelType = (PipeModelType)KeywordList::Enumeration("NetworkEdge::ModelType", attrib->ValueStr());
 			}
 			catch (IBK::Exception & ex) {
 				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
@@ -113,8 +113,8 @@ TiXmlElement * NetworkEdge::writeXML(TiXmlElement * parent) const {
 
 	if (m_supply != NetworkEdge().m_supply)
 		e->SetAttribute("supply", IBK::val2string<bool>(m_supply));
-	if (m_modelType != NUM_MT)
-		e->SetAttribute("modelType", KeywordList::Keyword("NetworkEdge::ModelType",  m_modelType));
+	if (m_pipeModelType != NUM_MT)
+		e->SetAttribute("modelType", KeywordList::Keyword("NetworkEdge::ModelType",  m_pipeModelType));
 	if (m_heatExchangeType != NUM_HT)
 		e->SetAttribute("heatExchangeType", KeywordList::Keyword("NetworkEdge::HeatExchangeType",  m_heatExchangeType));
 	if (m_nodeId1 != VICUS::INVALID_ID)

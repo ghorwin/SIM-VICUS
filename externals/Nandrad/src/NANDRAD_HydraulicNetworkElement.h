@@ -20,8 +20,7 @@ public:
 	HydraulicNetworkElement(){}
 
 	/*! C'tor for a network element other than pipes. */
-	HydraulicNetworkElement(unsigned int id, unsigned int inletNodeId, unsigned int outletNodeId,
-							unsigned int componentId):
+	HydraulicNetworkElement(unsigned int id, unsigned int inletNodeId, unsigned int outletNodeId, unsigned int componentId):
 		m_id(id),
 		m_inletNodeId(inletNodeId),
 		m_outletNodeId(outletNodeId),
