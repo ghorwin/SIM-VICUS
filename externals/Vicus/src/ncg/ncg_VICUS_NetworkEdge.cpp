@@ -28,7 +28,6 @@
 #include <VICUS_Constants.h>
 #include <NANDRAD_Utilities.h>
 #include <VICUS_Constants.h>
-#include <VICUS_KeywordList.h>
 
 #include <tinyxml.h>
 
@@ -39,10 +38,6 @@ void NetworkEdge::readXML(const TiXmlElement * element) {
 
 	try {
 		// search for mandatory attributes
-		if (!TiXmlAttribute::attributeByName(element, "modelType"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'modelType' attribute.") ), FUNC_ID);
-
 		if (!TiXmlAttribute::attributeByName(element, "nodeId1"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'nodeId1' attribute.") ), FUNC_ID);
@@ -57,22 +52,6 @@ void NetworkEdge::readXML(const TiXmlElement * element) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "supply")
 				m_supply = NANDRAD::readPODAttributeValue<bool>(element, attrib);
-			else if (attribName == "modelType")
-			try {
-				m_modelType = (ModelType)KeywordList::Enumeration("NetworkEdge::ModelType", attrib->ValueStr());
-			}
-			catch (IBK::Exception & ex) {
-				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-					IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
-			}
-			else if (attribName == "heatExchangeType")
-			try {
-				m_heatExchangeType = (HeatExchangeType)KeywordList::Enumeration("NetworkEdge::HeatExchangeType", attrib->ValueStr());
-			}
-			catch (IBK::Exception & ex) {
-				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-					IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
-			}
 			else if (attribName == "nodeId1")
 				m_nodeId1 = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "nodeId2")
@@ -113,10 +92,6 @@ TiXmlElement * NetworkEdge::writeXML(TiXmlElement * parent) const {
 
 	if (m_supply != NetworkEdge().m_supply)
 		e->SetAttribute("supply", IBK::val2string<bool>(m_supply));
-	if (m_modelType != NUM_MT)
-		e->SetAttribute("modelType", KeywordList::Keyword("NetworkEdge::ModelType",  m_modelType));
-	if (m_heatExchangeType != NUM_HT)
-		e->SetAttribute("heatExchangeType", KeywordList::Keyword("NetworkEdge::HeatExchangeType",  m_heatExchangeType));
 	if (m_nodeId1 != VICUS::INVALID_ID)
 		e->SetAttribute("nodeId1", IBK::val2string<unsigned int>(m_nodeId1));
 	if (m_nodeId2 != VICUS::INVALID_ID)

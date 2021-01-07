@@ -16,7 +16,7 @@ class HydraulicNetworkComponent {
 public:
 
 	/*! The various types (equations) of the hydraulic component. */
-	enum modelType_t {
+	enum ModelType {
 		MT_StaticAdiabaticPipe,				// Keyword: StaticAdiabaticPipe			'Simple pipe at stationary flow conditions without heat exchange'
 		MT_StaticPipe,						// Keyword: StaticPipe					'Simple pipe at stationary flow conditions with heat exchange'
 		MT_DynamicAdiabaticPipe,			// Keyword: DynamicAdiabaticPipe		'Pipe with a discretized fluid volume, without heat exchange'
@@ -36,6 +36,7 @@ public:
 
 	/*! Parameters for the component. */
 	enum para_t {
+		P_HydraulicDiameter,				// Keyword: HydraulicDiameter					[mm]	'Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes).'
 		P_PressureLossCoefficient,			// Keyword: PressureLossCoefficient				[-]		'Pressure loss coefficient for the component (zeta-value).'
 		P_ExternalHeatTransferCoefficient,	// Keyword: ExternalHeatTransferCoefficient		[W/m2K]	'External heat transfer coeffient for the outside boundary.'
 		P_TemperatureTolerance,				// Keyword: TemperatureTolerance				[K]		'Temperature tolerance for e.g. thermostats.'
@@ -53,7 +54,7 @@ public:
 	};
 
 
-	enum heatExchangeType_t {
+	enum HeatExchangeType {
 		HT_HeatFluxConstant,				// Keyword: HeatFluxConstant					[-]		'Constant heat flux'
 		HT_HeatFluxDataFile,				// Keyword: HeatFluxDataFile					[-]		'Heat flux from data file '
 		HT_HeatExchangeWithZoneTemperature,	// Keyword: HeatExchangeWithZoneTemperature		[-]		'Heat exchange with zone'
@@ -79,17 +80,17 @@ public:
 	std::string						m_displayName;										// XML:A
 
 	/*! Model type. */
-	modelType_t						m_modelType			= NUM_MT;						// XML:A:required
+	ModelType						m_modelType			= NUM_MT;						// XML:A:required
 
 	/*! Type of interface to external data or model */
-	heatExchangeType_t				m_heatExchangeType = NUM_HT;						// XML:E
+	HeatExchangeType				m_heatExchangeType = NUM_HT;						// XML:E
 
 	/*! Parameters of the flow component. */
 	IBK::Parameter					m_para[NUM_P];										// XML:E
 
 
 
-	static bool hasHeatExchange(const modelType_t modelType) {
+	static bool hasHeatExchange(const ModelType modelType) {
 		switch (modelType) {
 			case MT_StaticPipe:
 			case MT_DynamicPipe:
@@ -102,14 +103,14 @@ public:
 		}
 	}
 
-	static std::vector<unsigned int> requiredParameter(const modelType_t modelType){
+	static std::vector<unsigned int> requiredParameter(const ModelType modelType){
 		switch (modelType) {
 			case MT_ConstantPressurePumpModel:
 				return {P_PressureHead, P_PumpEfficiency, P_MotorEfficiency};
 			case MT_HeatPump:
-				return {P_PressureLossCoefficient, P_COP};
+				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_COP};
 			case MT_HeatExchanger:
-				return {P_PressureLossCoefficient};
+				return {P_PressureLossCoefficient, P_HydraulicDiameter};
 			default:
 				return {};
 		}

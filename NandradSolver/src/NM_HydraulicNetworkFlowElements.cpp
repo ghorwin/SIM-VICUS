@@ -109,8 +109,7 @@ HNFixedPressureLossCoeffElement::HNFixedPressureLossCoeffElement(const NANDRAD::
 	FUNCID(HNFixedPressureLossCoeffElement::HNFixedPressureLossCoeffElement);
 
 	m_zeta = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient].value;
-	// TODO : Hauke, check if we need a diameter here or more generally a "flow cross section"
-	m_diameter = 1; // component.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].value;
+	m_diameter = component.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].value;
 
 	if (m_diameter<=0)
 		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has diameter <= 0").arg(elem.m_id),FUNC_ID);

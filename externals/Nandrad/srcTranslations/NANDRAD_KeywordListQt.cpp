@@ -50,6 +50,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Radiator");
 	tr("Mixer component");
 	tr("Flow characteristics provided by FMU");
+	tr("Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes).");
 	tr("Pressure loss coefficient for the component (zeta-value).");
 	tr("External heat transfer coeffient for the outside boundary.");
 	tr("Temperature tolerance for e.g. thermostats.");

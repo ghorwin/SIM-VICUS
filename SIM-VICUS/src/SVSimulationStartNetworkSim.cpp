@@ -94,7 +94,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	unsigned int networkId = m_networksMap.value(m_ui->comboBoxNetwork->currentText());
 	VICUS::Network *network = proj.element(proj.m_geometricNetworks, networkId);
 
-	/// TODO Hauke: this can be removed later
+	// *** this is a test project ***
 
 	//	 components
 	NANDRAD::HydraulicNetworkComponent pump;
@@ -106,10 +106,8 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	NANDRAD::HydraulicNetworkComponent heatExchanger;
 	heatExchanger.m_id = 1;
 	heatExchanger.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger;
-//	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_].set("HeatFlux", 100, IBK::Unit("W"));
 	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient].set("PressureLossCoefficient", 10, IBK::Unit("-"));
-	// TODO Hauke, check if we need a cross section here, see NM_HydraulicNetworkFlowElements.cpp:112
-//	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].set("HydraulicDiameter", 50, IBK::Unit("mm"));
+	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].set("HydraulicDiameter", 50, IBK::Unit("mm"));
 	network->m_hydraulicComponents.push_back(heatExchanger);
 
 	for (VICUS::NetworkNode &node: network->m_nodes){
@@ -119,12 +117,10 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 			node.m_componentId = heatExchanger.m_id;
 	}
 
-	for (VICUS::NetworkEdge &edge: network->m_edges)
-		edge.m_modelType =  VICUS::NetworkEdge::MT_StaticAdiabaticPipe;
-
 	network->updateNodeEdgeConnectionPointers();
 
-	/// until here
+	// *** test project until here ***
+
 
 	// create Nandrad Network
 	NANDRAD::HydraulicNetwork hydraulicNetwork;
