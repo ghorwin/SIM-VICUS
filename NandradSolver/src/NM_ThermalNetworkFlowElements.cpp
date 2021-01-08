@@ -12,7 +12,6 @@ namespace NANDRAD_MODEL {
 // *** HNPipeElement ***
 
 TNPipeElement::TNPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
-							const NANDRAD::HydraulicNetworkComponent & component,
 							const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
 							const NANDRAD::HydraulicFluid & fluid):
 	m_fluid(&fluid)
@@ -21,20 +20,21 @@ TNPipeElement::TNPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 
 	m_length = elem.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
 	m_diameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_HydraulicDiameter].value;
+	const double wallSpecificUValue =
+			pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_LengthSpecificUValue].value;
 	// TODO : add correponding parameeter to pipe properties
 	const double wallThickness = 0.01;
-	const double wallThermalTransmittance = 5;
 	// TODO : perform parameter checking inide NANDRAD data structure, so that we avoid
 	// exceptions at this place
 	if (m_length<=0)
 		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has length <= 0").arg(elem.m_id),FUNC_ID);
 	if (m_diameter<=0)
 		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has diameter <= 0").arg(elem.m_id),FUNC_ID);
-	if (wallThermalTransmittance<=0)
-		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has theral transmittance <= 0").arg(elem.m_id),FUNC_ID);
+	if (wallSpecificUValue<=0)
+		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has specific UValue <= 0").arg(elem.m_id),FUNC_ID);
 
 	// calculate thermal resstance
-	m_thermalResistanceWall = 1.0/(2.0 * fluid.m_para[NANDRAD::HydraulicFluid::P_Conductivity].value)
+	m_thermalResistanceWall = 1.0/(2.0 * wallSpecificUValue)
 			* std::log((m_diameter + wallThickness)/m_diameter);
 
 	// calculate fluid volume inside the pipe

@@ -19,7 +19,6 @@ public:
 
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	TNPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
-				  const NANDRAD::HydraulicNetworkComponent & component,
 				  const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
 				  const NANDRAD::HydraulicFluid & fluid);
 
