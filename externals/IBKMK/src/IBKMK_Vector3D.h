@@ -42,6 +42,11 @@
 #include <IBK_point.h>
 #include <IBK_Exception.h>
 
+/*! The namespace IBKMK contains math calculation routines that are not part of the IBK
+	library. IBKMK is short for 'IBK math kernel'. 
+	The name IBK stands for Institut fuer Bauklimatik der TU Dresden
+	(TUD) in Germany, where most of this library was coded.
+*/
 namespace IBKMK {
 
 /*! A vector class in 3D, extends the IBK::point3D<> template class with computation

@@ -43,6 +43,11 @@
 #include "IBK_FormatString.h"
 #include "IBK_MessageHandlerRegistry.h"
 
+/*! The namespace IBK contains all functions/classes/data types of the IBK
+	library.
+	The name IBK stands for Institut fuer Bauklimatik der TU Dresden
+	(TUD) in Germany, where most of this library was coded.
+*/
 namespace IBK {
 
 #define IBK_MessageFilter(x) 	if (IBK::MessageHandlerRegistry::instance().messageHandler()->consoleVerbosityLevel() >= (x))

@@ -42,6 +42,10 @@ namespace NANDRAD {
 	class Project;
 }
 
+/*! The namespace NANDRAD_MODEL contains all classes/functions of the
+	NANDRAD command line solver. The central class is NandradModel, which implements
+	the integrator interface used by the SOLFRA integrator classes. 
+*/ 
 namespace NANDRAD_MODEL {
 
 class AbstractModel;
