@@ -5,9 +5,9 @@
 #include <QMap>
 #include <QListWidgetItem>
 
-#include "VICUS_Constants.h"
+#include <VICUS_Constants.h>
 
-#include "NANDRAD_HydraulicNetworkComponent.h"
+#include <NANDRAD_HydraulicNetworkComponent.h>
 
 namespace Ui {
 class SVDialogHydraulicComponents;

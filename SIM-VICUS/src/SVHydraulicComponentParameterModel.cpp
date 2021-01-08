@@ -1,8 +1,8 @@
 #include "SVHydraulicComponentParameterModel.h"
 
-#include "NANDRAD_KeywordList.h"
+#include <NANDRAD_KeywordList.h>
 
-#include "QtExt_Locale.h"
+#include <QtExt_Locale.h>
 
 
 SVHydraulicComponentParameterModel::SVHydraulicComponentParameterModel(QObject *parent) : QAbstractTableModel(parent)
