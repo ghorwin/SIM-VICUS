@@ -1,6 +1,8 @@
 #include "SVPropEditGeometry.h"
 #include "ui_SVPropEditGeometry.h"
 
+#include "IBK_physics.h"
+
 #include "VICUS_Project.h"
 #include "VICUS_Conversions.h"
 
@@ -14,6 +16,21 @@
 #include "Vic3DCoordinateSystemObject.h"
 #include "Vic3DTransform3D.h"
 
+#include "QLocale"
+
+/*! helper function to compare two IBKMK vectors */
+template <int digits>
+bool checkVectors(const IBKMK::Vector3D &v1, const IBKMK::Vector3D &v2 ) {
+	return ( IBK::nearly_equal<digits>(v1.m_x, v2.m_x) &&
+			 IBK::nearly_equal<digits>(v1.m_y, v2.m_y) &&
+			 IBK::nearly_equal<digits>(v1.m_z, v2.m_z) );
+}
+
+/*! Returns the inner Angle between two Vectors of a Polygon in Degree */
+static double angleBetweenVectorsDeg ( const IBKMK::Vector3D &v1, const IBKMK::Vector3D &v2) {
+	return std::acos( v1.scalarProduct(v2) / sqrt(v1.magnitude() * v2.magnitude() ) ) / IBK::DEG2RAD;
+}
+
 SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	QWidget(parent),
 	m_ui(new Ui::SVPropEditGeometry)
@@ -21,6 +38,14 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	m_ui->setupUi(this);
 	layout()->setMargin(0);
 	SVViewStateHandler::instance().m_propEditGeometryWidget = this;
+
+	on_radioButtonRotateAbsolute_toggled(false);
+	m_ui->doubleSpinBoxRotateInclinationAbs->setSuffix(" °");
+	m_ui->doubleSpinBoxRotateOrientationAbs->setSuffix(" °");
+
+	m_ui->doubleSpinBoxRotateX->setSuffix(" °");
+	m_ui->doubleSpinBoxRotateY->setSuffix(" °");
+	m_ui->doubleSpinBoxRotateZ->setSuffix(" °");
 }
 
 
@@ -53,6 +78,15 @@ void SVPropEditGeometry::setCoordinates(const Vic3D::Transform3D &t) {
 	m_ui->lineEditXValue->setText( QString("%L1").arg( t.translation().x() ) );
 	m_ui->lineEditYValue->setText( QString("%L1").arg( t.translation().y() ) );
 	m_ui->lineEditZValue->setText( QString("%L1").arg( t.translation().z() ) );
+
+	if ( m_ui->radioButtonAbsolute->isChecked() ) {
+		QLocale loc;
+
+		m_ui->doubleSpinBoxTranslateX->setValue( loc.toDouble(m_ui->lineEditXValue->text() ) );
+		m_ui->doubleSpinBoxTranslateY->setValue( loc.toDouble(m_ui->lineEditYValue->text() ) );
+		m_ui->doubleSpinBoxTranslateZ->setValue( loc.toDouble(m_ui->lineEditZValue->text() ) );
+	}
+
 }
 
 
@@ -63,6 +97,17 @@ void SVPropEditGeometry::setBoundingBox(const IBKMK::Vector3D &v) {
 		m_ui->doubleSpinBoxScaleX->setValue( v.m_x );
 		m_ui->doubleSpinBoxScaleY->setValue( v.m_y );
 		m_ui->doubleSpinBoxScaleZ->setValue( v.m_z );
+	}
+
+}
+
+void SVPropEditGeometry::setRotation(const IBKMK::Vector3D &normal) {
+	//	QVector3D tmpScale ( m_ui->doubleSpinBoxScaleX->value(), m_ui->doubleSpinBoxScaleX->value() )
+	normal.normalized();
+	if ( m_ui->radioButtonRotateAbsolute->isChecked() ) {
+		m_ui->doubleSpinBoxRotateInclinationAbs->setValue( std::acos(normal.m_z)/IBK::DEG2RAD );
+		double orientation = std::atan2(normal.m_x, ( normal.m_y == 0 ? 1E-8 : normal.m_y ) ) /IBK::DEG2RAD ;
+		m_ui->doubleSpinBoxRotateOrientationAbs->setValue( orientation < 0 ? ( orientation + 360 ) : orientation );
 	}
 
 }
@@ -190,37 +235,42 @@ void SVPropEditGeometry::on_pushButtonTranslate_clicked() {
 void SVPropEditGeometry::on_pushButtonScale_clicked() {
 
 	// TODO : Stephan, fix this like on_pushButtonTranslate_clicked()
-#if 0
 	// now we update all selected surfaces
 	Vic3D::Transform3D trans;
-	QVector3D scaleVec (	m_ui->doubleSpinBoxScaleX->value(),
-							m_ui->doubleSpinBoxScaleY->value(),
-							m_ui->doubleSpinBoxScaleZ->value() );
+	QVector3D scaleVec (m_ui->doubleSpinBoxScaleX->value(),
+						m_ui->doubleSpinBoxScaleY->value(),
+						m_ui->doubleSpinBoxScaleZ->value() );
 
-	std::vector<VICUS::Surface*> surfaces;
+	// compose vector of modified surface geometries
+	std::vector<VICUS::Surface> modifiedSurfaces;
+	std::vector<const VICUS::Surface*> surfaces;
+
 	IBKMK::Vector3D centerPoint;
 	IBKMK::Vector3D centerPointLocal;
 	IBKMK::Vector3D boundingBox;
-	p.selectedSurfaces(surfaces);
-	p.haveSelectedSurfaces(centerPointLocal);
-	p.boundingBoxofSelectedSurfaces(boundingBox);
+
+	project().selectedSurfaces(surfaces);
+	project().haveSelectedSurfaces(centerPointLocal);
+	project().boundingBoxofSelectedSurfaces(boundingBox);
 
 	// check if scale factor is not Null
 	if ( IBK::nearly_equal<3>( scaleVec.length(), 0.0 ) )
 		return;
 
 	if ( m_ui->radioButtonScaleRelative->isChecked() ) {
-		for ( VICUS::Surface* s : surfaces ) {
+		for (const VICUS::Surface* s : surfaces ) {
 			centerPoint = s->m_geometry.centerPoint();
 			std::vector<IBKMK::Vector3D> vs;
 			for ( IBKMK::Vector3D v : s->m_geometry.vertexes() ) {
 				Vic3D::Transform3D t;
 				t.setTranslation( centerPoint.m_x + scaleVec.x() * ( v.m_x - centerPoint.m_x ),
-								  centerPoint.m_y + scaleVec.y() * ( v.m_y - centerPoint.m_y),
-								  centerPoint.m_z + scaleVec.z() * ( v.m_z - centerPoint.m_z) );
+								  centerPoint.m_y + scaleVec.y() * ( v.m_y - centerPoint.m_y ),
+								  centerPoint.m_z + scaleVec.z() * ( v.m_z - centerPoint.m_z ) );
 				vs.push_back( VICUS::QVector2IBKVector( t.translation() ) );
 			}
-			s->m_geometry.setVertexes(vs);
+			VICUS::Surface newS(*s);
+			newS.m_geometry.setVertexes(vs);
+			modifiedSurfaces.push_back(newS);
 		}
 	}
 	else if ( m_ui->radioButtonScaleLocal->isChecked() ) {
@@ -229,14 +279,12 @@ void SVPropEditGeometry::on_pushButtonScale_clicked() {
 		QVector3D yAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localYAxis();
 		QVector3D zAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis();
 
-		for ( VICUS::Surface* s : surfaces ) {
+		for (const VICUS::Surface* s : surfaces ) {
 			std::vector<IBKMK::Vector3D> vs;
 			for ( IBKMK::Vector3D v : s->m_geometry.vertexes() ) {
 				Vic3D::Transform3D t;
-				QVector3D v3D ( VICUS::IBKVector2QVector(v) );
 
 				// first we find the scaling factors of our local cooridnate system
-
 				double localScaleFactorX = ( v.m_x - centerPointLocal.m_x ) / ( IBK::nearly_equal<4>(xAxis.x(), 0.0) ? 1E10 : xAxis.x() ) +
 										   ( v.m_y - centerPointLocal.m_y ) / ( IBK::nearly_equal<4>(xAxis.y(), 0.0) ? 1E10 : xAxis.y() ) +
 										   ( v.m_z - centerPointLocal.m_z ) / ( IBK::nearly_equal<4>(xAxis.z(), 0.0) ? 1E10 : xAxis.z() );
@@ -250,64 +298,74 @@ void SVPropEditGeometry::on_pushButtonScale_clicked() {
 										   ( v.m_z - centerPointLocal.m_z ) / ( IBK::nearly_equal<4>(zAxis.z(), 0.0) ? 1E10 : zAxis.z() );
 
 				// then we scale our points
-				QVector3D p = VICUS::IBKVector2QVector(centerPointLocal) + localScaleFactorX * scaleVec.x() * xAxis
-																		 + localScaleFactorY * scaleVec.y() * yAxis
-																		 + localScaleFactorZ * scaleVec.z() * zAxis;
-				t.setTranslation( p );
-				vs.push_back( VICUS::QVector2IBKVector( t.translation() ) );
+				QVector3D p = VICUS::IBKVector2QVector(centerPointLocal)+ localScaleFactorX * scaleVec.x() * xAxis
+																		+ localScaleFactorY * scaleVec.y() * yAxis
+																		+ localScaleFactorZ * scaleVec.z() * zAxis;
+				t.setTranslation(p);
+				vs.push_back(VICUS::QVector2IBKVector(t.translation() ) );
 			}
-			s->m_geometry.setVertexes(vs);
+			VICUS::Surface newS(*s);
+			newS.m_geometry.setVertexes(vs);
+			modifiedSurfaces.push_back(newS);
 		}
 	}
 	else {
 
-		for ( VICUS::Surface* s : surfaces ) {
+		for (const VICUS::Surface* s : surfaces ) {
 			std::vector<IBKMK::Vector3D> vs;
 			for ( IBKMK::Vector3D v : s->m_geometry.vertexes() ) {
 				Vic3D::Transform3D t;
-				QVector3D newScale;
+				IBKMK::Vector3D newScale;
 
-				newScale.setX( ( boundingBox.m_x == 0.0 ) ?  0 : ( scaleVec.x() / boundingBox.m_x ) );
-				newScale.setY( ( boundingBox.m_y == 0.0 ) ?  0 : ( scaleVec.y() / boundingBox.m_y ) );
-				newScale.setZ( ( boundingBox.m_z == 0.0 ) ?  0 : ( scaleVec.z() / boundingBox.m_z ) );
+				newScale.m_x = ( boundingBox.m_x == 0.0 ) ?  0 : ( scaleVec.x() / boundingBox.m_x );
+				newScale.m_y = ( boundingBox.m_y == 0.0 ) ?  0 : ( scaleVec.y() / boundingBox.m_y );
+				newScale.m_z = ( boundingBox.m_z == 0.0 ) ?  0 : ( scaleVec.z() / boundingBox.m_z );
 
-				t.setTranslation( centerPointLocal.m_x + newScale.x() * ( v.m_x - centerPointLocal.m_x ),
-								  centerPointLocal.m_y + newScale.y() * ( v.m_y - centerPointLocal.m_y),
-								  centerPointLocal.m_z + newScale.z() * ( v.m_z - centerPointLocal.m_z) );
+				t.setTranslation( centerPointLocal.m_x + newScale.m_x * ( v.m_x - centerPointLocal.m_x ),
+								  centerPointLocal.m_y + newScale.m_y * ( v.m_y - centerPointLocal.m_y),
+								  centerPointLocal.m_z + newScale.m_z * ( v.m_z - centerPointLocal.m_z) );
 				vs.push_back( VICUS::QVector2IBKVector( t.translation() ) );
 			}
-			s->m_geometry.setVertexes(vs);
+			VICUS::Surface newS(*s);
+			newS.m_geometry.setVertexes(vs);
+			modifiedSurfaces.push_back(newS);
 		}
 
 	}
 
-	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("modified surfaces"), surfaces );
+	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("modified surfaces"), modifiedSurfaces );
 	undo->push();
-#endif
+
 }
 
 
 void SVPropEditGeometry::on_pushButtonRotate_clicked() {
 	// TODO : Stephan, fix this like on_pushButtonTranslate_clicked()
-#if 0
+
 	// now we update all selected surfaces
 	VICUS::Project p = project();
 	Vic3D::Transform3D trans;
-	QVector3D rotateVec ( m_ui->doubleSpinBoxRotateX->value(),
+	QVector3D rotateVecDeg ( m_ui->doubleSpinBoxRotateX->value(),
 						  m_ui->doubleSpinBoxRotateY->value(),
 						  m_ui->doubleSpinBoxRotateZ->value() );
 
-	std::vector<VICUS::Surface*> surfaces;
+	// compose vector of modified surface geometries
+	std::vector<VICUS::Surface> modifiedSurfaces;
+	std::vector<const VICUS::Surface*> surfaces;
+
 	IBKMK::Vector3D centerPoint (0,0,0);
 	IBKMK::Vector3D centerPointLocal;
 
-	p.selectedSurfaces(surfaces);
-	p.haveSelectedSurfaces(centerPointLocal);
+	project().selectedSurfaces(surfaces);
+	project().haveSelectedSurfaces(centerPointLocal);
 
-	for ( VICUS::Surface* s : surfaces ) {
+	for (const VICUS::Surface* s : surfaces ) {
 		std::vector<IBKMK::Vector3D> vs;
 
-		IBKMK::Vector3D normal = s->m_geometry.normal();
+		IBKMK::Vector3D normal = ( surfaces.size() == 1 ?
+									s->m_geometry.normal() :
+									VICUS::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localXAxis() ) );
+
 		for ( IBKMK::Vector3D v : s->m_geometry.vertexes() ) {
 			Vic3D::Transform3D tTrans, tRota;
 
@@ -316,16 +374,24 @@ void SVPropEditGeometry::on_pushButtonRotate_clicked() {
 
 			if ( m_ui->radioButtonRotateAbsolute->isChecked() ) {
 
+				centerPoint = centerPointLocal;
+
+				double oriRad = m_ui->doubleSpinBoxRotateOrientationAbs->value() * IBK::DEG2RAD;
+				double incliRad = m_ui->doubleSpinBoxRotateInclinationAbs->value() * IBK::DEG2RAD;
+
+				IBKMK::Vector3D newNormal (std::sin( oriRad ) * std::sin( incliRad ),
+										   std::cos( oriRad ) * std::sin( incliRad ),
+										   std::cos( incliRad ) );
+
+				if ( checkVectors<4>( normal, newNormal ) )
+					return; // do nothing
+
+				QVector3D rotationAxis ( VICUS::IBKVector2QVector(normal.crossProduct(newNormal) ) ) ;
+
 				tTrans.setTranslation( VICUS::IBKVector2QVector(-1*centerPoint) );
 				v3D = tTrans.toMatrix() * v3D;
 
-				// rotate around specified axis
-				if ( !IBK::nearly_equal<3>( rotateVec.x(), 0.0 ) )
-					tRota.rotate( rotateVec.x(), 1, 0, 0 );
-				if ( !IBK::nearly_equal<3>( rotateVec.y(), 0.0 ) )
-					tRota.rotate( rotateVec.y(), 0, 1, 0 );
-				if ( !IBK::nearly_equal<3>( rotateVec.z(), 0.0 ) )
-					tRota.rotate( rotateVec.z(), 0, 0, 1 );
+				tRota.rotate( angleBetweenVectorsDeg( normal, newNormal ), rotationAxis );
 				v3D = tRota.toMatrix() * v3D;
 
 			} else if ( m_ui->radioButtonRotateLocal->isChecked() ) {
@@ -340,12 +406,12 @@ void SVPropEditGeometry::on_pushButtonRotate_clicked() {
 				QVector3D zAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis();
 
 				// rotate around specified axis
-				if ( !IBK::nearly_equal<3>( rotateVec.x(), 0.0 ) )
-					tRota.rotate( rotateVec.x(), xAxis );
-				if ( !IBK::nearly_equal<3>( rotateVec.y(), 0.0 ) )
-					tRota.rotate( rotateVec.y(), yAxis );
-				if ( !IBK::nearly_equal<3>( rotateVec.z(), 0.0 ) )
-					tRota.rotate( rotateVec.z(), zAxis );
+				if ( !IBK::nearly_equal<3>( rotateVecDeg.x(), 0.0 ) )
+					tRota.rotate( rotateVecDeg.x(), xAxis );
+				if ( !IBK::nearly_equal<3>( rotateVecDeg.y(), 0.0 ) )
+					tRota.rotate( rotateVecDeg.y(), yAxis );
+				if ( !IBK::nearly_equal<3>( rotateVecDeg.z(), 0.0 ) )
+					tRota.rotate( rotateVecDeg.z(), zAxis );
 				v3D = tRota.toMatrix() * v3D;
 			}
 
@@ -356,12 +422,12 @@ void SVPropEditGeometry::on_pushButtonRotate_clicked() {
 				v3D = tTrans.toMatrix() * v3D;
 
 				// rotate around specified axis
-				if ( !IBK::nearly_equal<3>( rotateVec.x(), 0.0 ) )
-					tRota.rotate( rotateVec.x(), VICUS::IBKVector2QVector(s->m_geometry.localX() ) );
-				if ( !IBK::nearly_equal<3>( rotateVec.y(), 0.0 ) )
-					tRota.rotate( rotateVec.y(), VICUS::IBKVector2QVector(s->m_geometry.localY() ) );
-				if ( !IBK::nearly_equal<3>( rotateVec.z(), 0.0 ) )
-					tRota.rotate( rotateVec.z(), normal.m_x, normal.m_y, normal.m_z );
+				if ( !IBK::nearly_equal<3>( rotateVecDeg.x(), 0.0 ) )
+					tRota.rotate( rotateVecDeg.x(), VICUS::IBKVector2QVector(s->m_geometry.localX() ) );
+				if ( !IBK::nearly_equal<3>( rotateVecDeg.y(), 0.0 ) )
+					tRota.rotate( rotateVecDeg.y(), VICUS::IBKVector2QVector(s->m_geometry.localY() ) );
+				if ( !IBK::nearly_equal<3>( rotateVecDeg.z(), 0.0 ) )
+					tRota.rotate( rotateVecDeg.z(), normal.m_x, normal.m_y, normal.m_z );
 				v3D = tRota.toMatrix() * v3D;
 			}
 			// translatae back to original center point
@@ -369,17 +435,18 @@ void SVPropEditGeometry::on_pushButtonRotate_clicked() {
 			v3D = tTrans.toMatrix() * v3D;
 			vs.push_back( IBKMK::Vector3D( v3D.x(), v3D.y(), v3D.z() ) );
 		}
-		s->m_geometry.setVertexes(vs);
+		VICUS::Surface newS(*s);
+		newS.m_geometry.setVertexes(vs);
+		modifiedSurfaces.push_back(newS);
 
 	}
 
-	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("modified surfaces"), surfaces );
+	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("modified surfaces"), modifiedSurfaces );
 	undo->push();
-#endif
 }
 
 
-void SVPropEditGeometry::on_radioButtonScaleAbsolute_toggled(bool /*abs*/) {
+void SVPropEditGeometry::on_radioButtonScaleAbsolute_toggled(bool absScale) {
 	IBKMK::Vector3D v;
 
 	project().boundingBoxofSelectedSurfaces(v);
@@ -388,3 +455,76 @@ void SVPropEditGeometry::on_radioButtonScaleAbsolute_toggled(bool /*abs*/) {
 }
 
 
+
+void SVPropEditGeometry::on_radioButtonRotateAbsolute_toggled(bool absRotate)
+{
+	if ( absRotate ) {
+
+		m_ui->horizontalLayoutAbsRotate->setEnabled(true);
+
+		std::vector<const VICUS::Surface*> surfaces;
+
+		IBKMK::Vector3D centerPoint (0,0,0);
+		IBKMK::Vector3D centerPointLocal;
+
+		project().selectedSurfaces(surfaces);
+
+		m_ui->labelRotateInclinationAbs->setEnabled(true);
+		m_ui->labelRotateOrientationAbs->setEnabled(true);
+		m_ui->doubleSpinBoxRotateInclinationAbs->setEnabled(true);
+		m_ui->doubleSpinBoxRotateOrientationAbs->setEnabled(true);
+
+		m_ui->labelRotateX->setEnabled(false);
+		m_ui->labelRotateY->setEnabled(false);
+		m_ui->labelRotateZ->setEnabled(false);
+		m_ui->doubleSpinBoxRotateX->setEnabled(false);
+		m_ui->doubleSpinBoxRotateY->setEnabled(false);
+		m_ui->doubleSpinBoxRotateZ->setEnabled(false);
+
+
+		if ( surfaces.size() == 1 ) {
+			const VICUS::Surface* s = surfaces[0];
+			m_ui->doubleSpinBoxRotateX->setValue( s->m_geometry.normal().m_x );
+			m_ui->doubleSpinBoxRotateY->setValue( s->m_geometry.normal().m_y );
+			m_ui->doubleSpinBoxRotateZ->setValue( s->m_geometry.normal().m_z );
+			setRotation(s->m_geometry.normal());
+		}
+		else
+			setRotation(VICUS::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis() ) );
+	}
+	else {
+		m_ui->labelRotateInclinationAbs->setEnabled(false);
+		m_ui->labelRotateOrientationAbs->setEnabled(false);
+		m_ui->doubleSpinBoxRotateInclinationAbs->setEnabled(false);
+		m_ui->doubleSpinBoxRotateOrientationAbs->setEnabled(false);
+
+		m_ui->labelRotateX->setEnabled(true);
+		m_ui->labelRotateY->setEnabled(true);
+		m_ui->labelRotateZ->setEnabled(true);
+		m_ui->doubleSpinBoxRotateX->setEnabled(true);
+		m_ui->doubleSpinBoxRotateY->setEnabled(true);
+		m_ui->doubleSpinBoxRotateZ->setEnabled(true);
+	}
+
+
+}
+
+void SVPropEditGeometry::on_radioButtonAbsolute_toggled(bool absTrans)
+{
+	if ( absTrans ) {
+		m_ui->labelTranslationX->setText("X");
+		m_ui->labelTranslationY->setText("Y");
+		m_ui->labelTranslationZ->setText("Z");
+
+		QLocale loc;
+
+		m_ui->doubleSpinBoxTranslateX->setValue( loc.toDouble(m_ui->lineEditXValue->text() ) );
+		m_ui->doubleSpinBoxTranslateY->setValue( loc.toDouble(m_ui->lineEditYValue->text() ) );
+		m_ui->doubleSpinBoxTranslateZ->setValue( loc.toDouble(m_ui->lineEditZValue->text() ) );
+	}
+	else {
+		m_ui->labelTranslationX->setText("ΔX");
+		m_ui->labelTranslationY->setText("ΔY");
+		m_ui->labelTranslationZ->setText("ΔZ");
+	}
+}

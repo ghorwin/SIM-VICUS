@@ -45,13 +45,22 @@ public:
 	void setCoordinates(const Vic3D::Transform3D &t);
 
 	/*! Sets the Bounding Box Measurements of the selected surfaces
-	 * if absolute mode is clicked in scale groupbox
+		if absolute mode is clicked in scale groupbox
 	*/
 	void setBoundingBox(const IBKMK::Vector3D &v);
 
+	/*! Sets the Rotation and Inclination of the selected surfaces
+		if more then one surface is selected it takes the z-value of the local coordinate system
+		as normal
+	*/
+	void setRotation(const IBKMK::Vector3D &normal);
+
 private slots:
+
 	void on_pushButtonAddPolygon_clicked();
+
 	void on_pushButtonAddRect_clicked();
+
 	void on_pushButtonAddZoneBox_clicked();
 
 	void on_pushButtonTranslate_clicked();
@@ -60,8 +69,11 @@ private slots:
 
 	void on_pushButtonRotate_clicked();
 
-	void on_radioButtonScaleAbsolute_toggled(bool checked);
+	void on_radioButtonScaleAbsolute_toggled(bool absScale);
 
+	void on_radioButtonRotateAbsolute_toggled(bool absRotate);
+
+	void on_radioButtonAbsolute_toggled(bool checked);
 
 private:
 	Ui::SVPropEditGeometry *m_ui;

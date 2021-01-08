@@ -228,10 +228,22 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 				IBKMK::Vector3D v;
 				project().boundingBoxofSelectedSurfaces(v);
 
-									vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-									vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
-									SVViewStateHandler::instance().m_propEditGeometryWidget->setBoundingBox(v);
-									m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(centerPoint) );		}
+				std::vector<const VICUS::Surface *> surfaces;
+				project().selectedSurfaces(surfaces);
+
+				if ( surfaces.size() == 1 ) {
+					const VICUS::Surface *s = surfaces[0];
+					SVViewStateHandler::instance().m_propEditGeometryWidget->setRotation(s->m_geometry.normal() );
+				}
+				else
+					SVViewStateHandler::instance().m_propEditGeometryWidget->setRotation(
+								VICUS::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localXAxis() ) );
+
+				vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+				vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
+				SVViewStateHandler::instance().m_propEditGeometryWidget->setBoundingBox(v);
+				m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(centerPoint) );
+			}
 			else {
 				vs.m_sceneOperationMode = SVViewState::NUM_OM;
 				vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
