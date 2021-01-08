@@ -25,6 +25,7 @@
 
 #include "NM_HydraulicNetworkModel.h"
 #include "NM_ThermalNetworkPrivate.h"
+#include "NM_ThermalNetworkFlowElements.h"
 #include "NM_KeywordList.h"
 
 #include <NANDRAD_HydraulicNetwork.h>
@@ -46,7 +47,6 @@ ThermalNetworkStatesModel::~ThermalNetworkStatesModel() {
 
 
 void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
-									  const std::vector<NANDRAD::HydraulicNetworkComponent> & components,
 									  const HydraulicNetworkModel &networkModel) {
 	FUNCID(ThermalNetworkStatesModel::setup);
 
@@ -75,8 +75,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 		// retrieve component
 
 		std::vector<NANDRAD::HydraulicNetworkComponent>::const_iterator it =
-				std::find(components.begin(), components.end(), e.m_componentId);
-		IBK_ASSERT(it != components.end());
+				std::find(nw.m_components.begin(), nw.m_components.end(), e.m_componentId);
+		IBK_ASSERT(it != nw.m_components.end());
 
 		switch (it->m_modelType) {
 			case NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe :
@@ -144,7 +144,7 @@ int ThermalNetworkStatesModel::update(const double * y) {
 	// set internal states
 	unsigned int offset = 0;
 	for(ThermalNetworkAbstractFlowElement* fe :m_p->m_flowElements) {
-		fe->setInternalStates(y + offset);
+		fe->setInternalEnthalpies(y + offset);
 		offset += fe->nInternalStates();
 	}
 	return 0;

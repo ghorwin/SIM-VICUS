@@ -83,6 +83,8 @@
 #include "NM_WindowModel.h"
 #include "NM_RoomRadiationLoadsModel.h"
 #include "NM_HydraulicNetworkModel.h"
+#include "NM_ThermalNetworkStatesModel.h"
+#include "NM_ThermalNetworkBalanceModel.h"
 
 namespace NANDRAD_MODEL {
 
@@ -1352,6 +1354,16 @@ void NandradModel::initNetworks() {
 			nwmodel->setup();
 			// register model for evaluation
 			registerStateDependendModel(nwmodel);
+			// add thermal network states model
+			ThermalNetworkStatesModel *statesModel = new ThermalNetworkStatesModel(nw.m_id, nw.m_displayName);
+			// initialize
+			statesModel->setup(nw, *nwmodel);
+			// add thermal network balance model
+			ThermalNetworkBalanceModel *balanceModel = new ThermalNetworkBalanceModel(nw.m_id, nw.m_displayName);
+			// initialize
+			balanceModel->setup(statesModel);
+			// register model for evaluation
+			registerStateDependendModel(balanceModel);
 		}
 	}
 }

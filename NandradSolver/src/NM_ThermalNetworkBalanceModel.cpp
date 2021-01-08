@@ -123,6 +123,7 @@ void ThermalNetworkBalanceModel::inputReferences(std::vector<InputReference> & i
 	inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORK;
 	inputRef.m_name = std::string("MassFlux");
 	inputRef.m_required = true;
+	// TODO: add references to ambient conditions
 }
 
 
@@ -132,6 +133,12 @@ void ThermalNetworkBalanceModel::setInputValueRefs(const std::vector<QuantityDes
 	IBK_ASSERT(resultValueRefs.size() == 1);
 	// copy references into mass flux vector
 	m_statesModel->m_p->m_massFluxes = resultValueRefs[0];
+	// references to ambient conditions
+	unsigned int count = 1;
+	for(unsigned int i = 0; i < m_statesModel->m_p->m_flowElements.size(); ++i, ++count)
+		m_statesModel->m_p->m_ambientTemperatureRefs[i] = resultValueRefs[count];
+	for(unsigned int i = 0; i < m_statesModel->m_p->m_flowElements.size(); ++i, ++count)
+		m_statesModel->m_p->m_ambientHeatTransferRefs[i] = resultValueRefs[count];
 }
 
 
@@ -147,6 +154,7 @@ int ThermalNetworkBalanceModel::update() {
 
 	if(res != 0)
 		return res;
+	// TODO: call m_statesModel->m_p->
 	res = m_statesModel->m_p->updateFluxes();
 
 	if(res != 0)

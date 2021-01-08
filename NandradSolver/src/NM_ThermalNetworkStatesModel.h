@@ -64,7 +64,6 @@ public:
 	/*! Initializes model.
 	*/
 	void setup(const NANDRAD::HydraulicNetwork & nw,
-			   const std::vector<NANDRAD::HydraulicNetworkComponent> & components,
 			   const HydraulicNetworkModel &networkModel);
 
 	// *** Re-implemented from AbstractModel

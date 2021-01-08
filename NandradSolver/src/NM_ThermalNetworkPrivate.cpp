@@ -48,6 +48,9 @@ void ThermalNetworkModelImpl::setup(const Network &nw) {
 	m_specificEnthalpy.resize(nw.m_nodes.size());
 	// resize heat fluxes
 	m_heatFluxes.resize(nw.m_elements.size());
+	// resize reference vectors
+	m_ambientTemperatureRefs.resize(nw.m_elements.size(), nullptr);
+	m_ambientHeatTransferRefs.resize(nw.m_elements.size(), nullptr);
 }
 
 
@@ -97,6 +100,17 @@ int ThermalNetworkModelImpl::updateStates() {
 }
 
 int ThermalNetworkModelImpl::updateFluxes() 	{
+	// set ambient conditions
+	for(unsigned int i = 0; i < m_flowElements.size(); ++i) {
+		ThermalNetworkAbstractFlowElement *flowElem = m_flowElements[i];
+		const double* Tamb = m_ambientTemperatureRefs[i];
+		const double* alphaAmb = m_ambientHeatTransferRefs[i];
+
+		IBK_ASSERT(Tamb != nullptr);
+		IBK_ASSERT(alphaAmb != nullptr);
+
+		flowElem->setAmbientConditions(*Tamb, *alphaAmb);
+	}
 	// set enthalpy and mass fluxes for all flow elements
 	// and update their simulation results
 	for(unsigned int i = 0; i < m_flowElements.size(); ++i) {
