@@ -6,10 +6,10 @@
 #include "SVUndoDeleteNetworkHydraulicComponent.h"
 #include "SVHydraulicComponentParameterModel.h"
 
-#include "VICUS_Project.h"
+#include <VICUS_Project.h>
 
-#include "NANDRAD_HydraulicNetworkComponent.h"
-#include "NANDRAD_KeywordList.h"
+#include <NANDRAD_HydraulicNetworkComponent.h>
+#include <NANDRAD_KeywordList.h>
 
 
 SVDialogHydraulicComponents::SVDialogHydraulicComponents(QWidget *parent) :

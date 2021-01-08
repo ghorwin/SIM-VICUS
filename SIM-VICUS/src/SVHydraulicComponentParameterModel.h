@@ -3,7 +3,7 @@
 
 #include <QAbstractTableModel>
 
-#include "NANDRAD_HydraulicNetworkComponent.h"
+#include <NANDRAD_HydraulicNetworkComponent.h>
 
 
 class SVHydraulicComponentParameterModel : public QAbstractTableModel
