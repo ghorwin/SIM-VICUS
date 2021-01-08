@@ -242,7 +242,7 @@ QGroupBox {
   padding: 0px 0px 0px 0px;
   margin-top: 22px;
 }
-/*
+
 
 QGroupBox::title {
   subcontrol-origin: margin;
@@ -259,7 +259,7 @@ QGroupBox::indicator {
   height: 16px;
   width: 16px;
 }
-*/
+
 QGroupBox::indicator:unchecked {
   border: none;
   image: url(":/qss_icons/rc/checkbox_unchecked.png");
@@ -1824,6 +1824,17 @@ QListView::indicator:indeterminate:pressed {
   image: url(":/qss_icons/rc/checkbox_indeterminate_focus.png");
 }
 
+QTreeView::title,
+QListView::title,
+QTableView::title,
+QColumnView::title {
+  background-color: #212124;
+  border: 1px solid #3a3b3f;
+  color: #F0F0F0;
+  gridline-color: #3a3b3f;
+  border-radius: 0px;
+}
+
 QTreeView,
 QListView,
 QTableView,
@@ -1915,7 +1926,7 @@ QHeaderView:disabled {
   padding: 2px;
 }
 
-/*
+
 QHeaderView::section {
   background-color: #3a3b3f;
   color: #F0F0F0;
@@ -1926,7 +1937,7 @@ QHeaderView::section {
 
 QHeaderView::section:checked {
   color: #F0F0F0;
-  background-color: #a08918;
+  background-color: #3a3b3f;
 }
 
 QHeaderView::section:checked:disabled {
@@ -1960,7 +1971,7 @@ QHeaderView::section::vertical::first, QHeaderView::section::vertical::only-one 
 QHeaderView::section::vertical:disabled {
   color: #787878;
 }
-*/
+
 
 QHeaderView::down-arrow {
   /* Those settings (border/width/height/background-color) solve bug */
