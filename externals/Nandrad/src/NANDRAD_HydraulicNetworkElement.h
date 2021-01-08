@@ -4,6 +4,7 @@
 #include <IBK_Parameter.h>
 #include <IBK_IntPara.h>
 #include <IBK_Path.h>
+#include <IBK_LinearSpline.h>
 
 #include "NANDRAD_CodeGenMacros.h"
 #include "NANDRAD_Constants.h"
@@ -44,6 +45,12 @@ public:
 		NUM_IP
 	};
 
+	enum HeatExchangeParameter {
+		HE_Temperature,
+		HE_HeatFlux,
+		NUM_HE
+	};
+
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	NANDRAD_READWRITE
@@ -73,6 +80,10 @@ public:
 
 	/*! Integer parameters. */
 	IBK::IntPara					m_intPara[NUM_IP];									// XML:E
+
+	IBK::Parameter					m_heatExchangeConstParameter[NUM_HE];
+
+	IBK::LinearSpline				m_heatExchangeSplineParameter[NUM_HE];
 };
 
 } // namespace NANDRAD
