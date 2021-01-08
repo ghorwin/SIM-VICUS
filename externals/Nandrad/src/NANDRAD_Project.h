@@ -43,6 +43,9 @@
 #include "NANDRAD_HydraulicNetworkComponent.h"
 #include "NANDRAD_KeywordList.h"
 
+/*! The namespace NANDRAD contains the data model classes that make up
+	the NANDRAD solver input data. The main class is NANDRAD::Project.
+*/
 namespace NANDRAD {
 
 /*! Contains all input data that describes a room with walls, floor, ceiling, usage, HVAC etc.

@@ -792,7 +792,10 @@ WARN_LOGFILE           = warnings.txt
 
 INPUT                  = ../src \
                          ../../externals/Nandrad/src \
-                         NandradSolverMainPage.h
+                         NandradSolverMainPage.h \
+                         ../../externals/IBK/src \
+                         ../../externals/IntegratorFramework/src \
+                         ../../externals/IBKMK/src
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -1074,7 +1077,10 @@ COLS_IN_ALPHA_INDEX    = 3
 # This tag requires that the tag ALPHABETICAL_INDEX is set to YES.
 
 IGNORE_PREFIX          = NANDRAD \
-                         NANDRAD_MODEL
+                         NANDRAD_MODEL \
+                         IBK \
+                         IBKMK \
+                         SOLFRA
 
 #---------------------------------------------------------------------------
 # Configuration options related to the HTML output
@@ -2144,7 +2150,7 @@ PERL_PATH              = /usr/bin/perl
 # powerful graphs.
 # The default value is: YES.
 
-CLASS_DIAGRAMS         = NO
+CLASS_DIAGRAMS         = YES
 
 # You can define message sequence charts within doxygen comments using the \msc
 # command. Doxygen will then run the mscgen tool (see:
@@ -2185,7 +2191,7 @@ HAVE_DOT               = YES
 # Minimum value: 0, maximum value: 32, default value: 0.
 # This tag requires that the tag HAVE_DOT is set to YES.
 
-DOT_NUM_THREADS        = 0
+DOT_NUM_THREADS        = 4
 
 # When you want a differently looking font in the dot files that doxygen
 # generates you can specify the font name using DOT_FONTNAME. You need to make
@@ -2202,7 +2208,7 @@ DOT_FONTNAME           = Helvetica
 # Minimum value: 4, maximum value: 24, default value: 10.
 # This tag requires that the tag HAVE_DOT is set to YES.
 
-DOT_FONTSIZE           = 10
+DOT_FONTSIZE           = 8
 
 # By default doxygen will tell dot to use the default font as specified with
 # DOT_FONTNAME. If you specify a different font using DOT_FONTNAME you can set
