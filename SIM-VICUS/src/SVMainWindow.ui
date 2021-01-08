@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>1087</width>
-     <height>21</height>
+     <height>17</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -165,7 +165,7 @@
   <action name="actionFileNew">
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/32x32/filenew_32x32.png</normaloff>:/gfx/actions/32x32/filenew_32x32.png</iconset>
+     <normaloff>:/gfx/actions/icon-file-file-empty.svg</normaloff>:/gfx/actions/icon-file-file-empty.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;New...</string>
@@ -177,7 +177,7 @@
   <action name="actionFileOpen">
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/32x32/fileopen_32x32.png</normaloff>:/gfx/actions/32x32/fileopen_32x32.png</iconset>
+     <normaloff>:/gfx/actions/icon-content-folder-open.svg</normaloff>:/gfx/actions/icon-content-folder-open.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Open...</string>
@@ -189,7 +189,7 @@
   <action name="actionFileSave">
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/32x32/filesave_32x32.png</normaloff>:/gfx/actions/32x32/filesave_32x32.png</iconset>
+     <normaloff>:/gfx/actions/icon-device-floppy.svg</normaloff>:/gfx/actions/icon-device-floppy.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Save</string>
@@ -377,7 +377,7 @@
    </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/48x48/geometry.png</normaloff>:/gfx/actions/48x48/geometry.png</iconset>
+     <normaloff>:/gfx/actions/icon-shape-shape-cube.svg</normaloff>:/gfx/actions/icon-shape-shape-cube.svg</iconset>
    </property>
    <property name="text">
     <string>Edit Geometry</string>
@@ -452,7 +452,7 @@
    </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/48x48/propertyMode.png</normaloff>:/gfx/actions/48x48/propertyMode.png</iconset>
+     <normaloff>:/gfx/actions/icon-filter-slider-circle-h.svg</normaloff>:/gfx/actions/icon-filter-slider-circle-h.svg</iconset>
    </property>
    <property name="text">
     <string>Edit properties</string>

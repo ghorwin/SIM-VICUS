@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Mo. Jan. 4 22:04:35 2021</Created>
-		<LastEdited>Mo. Jan. 4 22:05:20 2021</LastEdited>
+		<LastEdited>Fr Jan 8 17:45:58 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter />
@@ -17,12 +17,12 @@
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
-			<CameraTranslation>15.6945 -27.8869 30.0116</CameraTranslation>
+			<CameraTranslation>16.2527 -28.6202 28.8675</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.87188</Wp>
-				<X>0.36945</X>
-				<Y>0.127041</Y>
-				<Z>0.295276</Z>
+				<Wp>0.865299</Wp>
+				<X>0.38461</X>
+				<Y>0.132175</Y>
+				<Z>0.293014</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 		</ViewSettings>
@@ -60,13 +60,5 @@
 				</BuildingLevels>
 			</Building>
 		</Buildings>
-		<ComponentInstance>
-			<ComponentInstance componentID="100002" sideBSurfaceID="11" />
-			<ComponentInstance componentID="100001" sideBSurfaceID="11" />
-			<ComponentInstance componentID="1" sideBSurfaceID="13" />
-			<ComponentInstance componentID="1" sideBSurfaceID="14" />
-			<ComponentInstance componentID="1" sideBSurfaceID="15" />
-			<ComponentInstance componentID="1" sideBSurfaceID="16" />
-		</ComponentInstance>
 	</Project>
 </VicusProject>

@@ -44,5 +44,12 @@
         <file>gfx/actions/16x16/error.png</file>
         <file>gfx/actions/16x16/ok.png</file>
         <file>gfx/actions/32x32/sim_start.png</file>
+        <file>gfx/actions/icon-device-floppy.svg</file>
+        <file>gfx/actions/icon-filter-slider-circle-h.svg</file>
+        <file>gfx/actions/icon-shape-shape-cube.svg</file>
+        <file>gfx/actions/icon-arrow-redo.svg</file>
+        <file>gfx/actions/icon-arrow-undo.svg</file>
+        <file>gfx/actions/icon-content-folder-open.svg</file>
+        <file>gfx/actions/icon-file-file-empty.svg</file>
     </qresource>
 </RCC>
