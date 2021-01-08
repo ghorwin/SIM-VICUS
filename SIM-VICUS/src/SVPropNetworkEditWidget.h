@@ -15,7 +15,11 @@ namespace Ui {
 	class SVPropNetworkEditWidget;
 }
 
-class SVHydraulicComponentParameterModel;
+enum SelectionState {
+	S_SingleObject,
+	S_MultipleObjects,
+	NUM_S
+};
 
 /*! A property widget for editing network properties. */
 class SVPropNetworkEditWidget : public QWidget {
@@ -26,7 +30,7 @@ public:
 
 	/*! Called when widget is just shown, updates content to current project's data
 		and selected node. */
-	void updateUi();
+	void updateUi(const SelectionState selectionState);
 
 	void showNetworkProperties();
 
@@ -99,27 +103,27 @@ private:
 
 	const VICUS::NetworkEdge * currentNetworkEdge();
 
-	const VICUS::NetworkNode * currentNetworkNode();
+	std::set <const VICUS::NetworkNode *> currentNetworkNode();
 
-	Ui::SVPropNetworkEditWidget *m_ui;
+	Ui::SVPropNetworkEditWidget		*m_ui;
 
-	VICUS::Network m_network;
+	VICUS::Network					m_network;
 
-	QMap<QString, unsigned> m_mapPipeModels;
+	QMap<QString, unsigned>			m_mapPipeModels;
 
-	QMap<QString, unsigned> m_mapComponents;
+	QMap<QString, unsigned>			m_mapComponents;
 
-	QMap<QString, unsigned> m_mapNodeTypes;
+	QMap<QString, unsigned>			m_mapNodeTypes;
 
-	QMap<QString, unsigned> m_mapDBPipes;
+	QMap<QString, unsigned>			m_mapDBPipes;
 
-	QMap<QString, unsigned> m_mapHeatExchangeType;
+	QMap<QString, unsigned>			m_mapHeatExchangeType;
 
-	unsigned int m_treeItemId = 0;
+	unsigned int					m_treeItemId = 0;
 
-	std::set<const VICUS::Object*> m_selectedObjects;
+	std::set<const VICUS::Object*>	m_selectedObjects;
 
-	SVHydraulicComponentParameterModel * m_componentParModel = nullptr;
+	SelectionState					m_selection = NUM_S;
 };
 
 

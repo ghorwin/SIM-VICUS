@@ -80,11 +80,21 @@ SVPropNetworkEditWidget::~SVPropNetworkEditWidget() {
 }
 
 
-void SVPropNetworkEditWidget::updateUi() {
-	// get single object from currently selected node in tree widget
-	m_treeItemId = SVViewStateHandler::instance().m_navigationTreeWidget->selectedNodeID();
-	// get multiple selected objects (checked nodes in tree widget or selected in 3d scene)
-	m_selectedObjects = SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects;
+void SVPropNetworkEditWidget::updateUi(const SelectionState selectionState) {
+	m_selection = selectionState;
+	switch (m_selection) {
+		case S_SingleObject: {// get single object from currently selected node in tree widget
+			m_treeItemId = SVViewStateHandler::instance().m_navigationTreeWidget->selectedNodeID();
+			break;
+		}
+		case S_MultipleObjects: {// get multiple selected objects (checked nodes in tree widget or selected in 3d scene)
+			m_selectedObjects = SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects;
+			break;
+		}
+		default: return;
+	}
+	// TODO check if it is a mixed selection, if so show notification and no updates
+
 	updateNetworkProperties();
 	updateNodeProperties();
 	updateEdgeProperties();
@@ -94,28 +104,32 @@ void SVPropNetworkEditWidget::updateUi() {
 
 void SVPropNetworkEditWidget::updateNodeProperties()
 {
-	const VICUS::NetworkNode *node = currentNetworkNode();
-	if (node == nullptr)
-		return;
-	m_ui->lineEditNodeHeatingDemand->setEnabled(node->m_type == VICUS::NetworkNode::NT_Building);
-	m_ui->comboBoxNodeType->setCurrentText(m_mapNodeTypes.key(node->m_type));
-	m_ui->labelNodeId->setText(QString("%1").arg(node->m_id));
-	m_ui->lineEditNodeHeatingDemand->setValue(node->m_maxHeatingDemand);
-	m_ui->lineEditNodeX->setValue(node->m_position.m_x);
-	m_ui->lineEditNodeY->setValue(node->m_position.m_y);
-	m_ui->comboBoxNodeComponent->setCurrentText(m_mapComponents.key(node->m_componentId));
-
 	const VICUS::Network * network = currentNetwork();
-	if (network == nullptr)
-		return;
-	const NANDRAD::HydraulicNetworkComponent *comp = VICUS::Project::element(network->m_hydraulicComponents,
-																			 node->m_componentId);
-	if (comp != nullptr)
-		m_ui->groupBoxHeatExchange->setEnabled(NANDRAD::HydraulicNetworkComponent::hasHeatExchange(comp->m_modelType)
-						&& comp->m_heatExchangeType != NANDRAD::HydraulicNetworkComponent::NUM_HT);
-	else
-		m_ui->groupBoxHeatExchange->setEnabled(false);
-//	m_ui->lineEditHeatFlux->setValue(node->m_heatExchangePara[NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant].value);
+	std::set<const VICUS::NetworkNode *> nodes = currentNetworkNode();
+	for (const VICUS::NetworkNode * node: nodes){
+		if (node == nullptr)
+			return;
+	}
+	for (const VICUS::NetworkNode * node: nodes){
+		m_ui->lineEditNodeHeatingDemand->setEnabled(node->m_type == VICUS::NetworkNode::NT_Building);
+		m_ui->comboBoxNodeType->setCurrentText(m_mapNodeTypes.key(node->m_type));
+		m_ui->labelNodeId->setText(QString("%1").arg(node->m_id));
+		m_ui->lineEditNodeHeatingDemand->setValue(node->m_maxHeatingDemand);
+		m_ui->lineEditNodeX->setValue(node->m_position.m_x);
+		m_ui->lineEditNodeY->setValue(node->m_position.m_y);
+		m_ui->comboBoxNodeComponent->setCurrentText(m_mapComponents.key(node->m_componentId));
+
+		const NANDRAD::HydraulicNetworkComponent *comp = VICUS::Project::element(network->m_hydraulicComponents,
+																				 node->m_componentId);
+		if (comp != nullptr)
+			m_ui->groupBoxHeatExchange->setEnabled(NANDRAD::HydraulicNetworkComponent::hasHeatExchange(comp->m_modelType)
+							&& comp->m_heatExchangeType != NANDRAD::HydraulicNetworkComponent::NUM_HT);
+		else
+			m_ui->groupBoxHeatExchange->setEnabled(false);
+	//	m_ui->lineEditHeatFlux->setValue(node->m_heatExchangePara[NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant].value);
+
+	}
+
 }
 
 
@@ -289,26 +303,25 @@ bool SVPropNetworkEditWidget::setNetwork()
 
 const VICUS::Network * SVPropNetworkEditWidget::currentNetwork()
 {
-	if (m_treeItemId != 0){
+	if (m_selection == S_SingleObject){
 		const VICUS::Project & p = project();
 		const VICUS::Object * obj = p.objectById(m_treeItemId);
 		if (dynamic_cast<const VICUS::Network *>(obj) != nullptr)
 			return dynamic_cast<const VICUS::Network *>(obj);
 		else if (dynamic_cast<const VICUS::Network *>(obj->m_parent) != nullptr)
 			return dynamic_cast<const VICUS::Network *>(obj->m_parent);
-		else
-			return nullptr;
 	}
-	else if(m_selectedObjects.size()>0){
-		for (const VICUS::Object * o : m_selectedObjects) {
-			const VICUS::Network * network = dynamic_cast<const VICUS::Network *>(o);
-			if (network != nullptr)
-				return network;
-			network = dynamic_cast<const VICUS::Network *>(o->m_parent);
-//			else if (network) {
-
-			}
+	else if(m_selection == S_MultipleObjects){
+		Q_ASSERT(!m_selectedObjects.empty());
+		for (const VICUS::Object * obj : m_selectedObjects) {
+			if (dynamic_cast<const VICUS::Network *>(obj) != nullptr)
+				return dynamic_cast<const VICUS::Network *>(obj);
+			else if (dynamic_cast<const VICUS::Network *>(obj->m_parent) != nullptr)
+				return dynamic_cast<const VICUS::Network *>(obj->m_parent);
 		}
+	}
+
+	return nullptr;
 }
 
 const VICUS::NetworkEdge *SVPropNetworkEditWidget::currentNetworkEdge()
@@ -320,23 +333,24 @@ const VICUS::NetworkEdge *SVPropNetworkEditWidget::currentNetworkEdge()
 	}
 }
 
-const VICUS::NetworkNode *SVPropNetworkEditWidget::currentNetworkNode()
+std::set <const VICUS::NetworkNode *> SVPropNetworkEditWidget::currentNetworkNode()
 {
-	if (m_treeItemId != 0){
+	if (m_selection == S_SingleObject){
 		const VICUS::Project & p = project();
 		const VICUS::Object * obj = p.objectById(m_treeItemId);
-		return dynamic_cast<const VICUS::NetworkNode *>(obj);
+		return {dynamic_cast<const VICUS::NetworkNode *>(obj)};
 	}
-//	else{
-//		std::set<const VICUS::Object*> selObjects = SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects;
-//		for (const VICUS::Object * o : selObjects) {
-//			const VICUS::NetworkNode * node = dynamic_cast<const VICUS::NetworkNode *>(o);
-//			if (node != nullptr) {
-//				int a=1;
-//			}
-//		}
-//		return nullptr;
-//	}
+	else if(m_selection == S_MultipleObjects){
+		std::set <const VICUS::NetworkNode *> currentNodes;
+		for (const VICUS::Object * obj : m_selectedObjects) {
+			const VICUS::NetworkNode * node = dynamic_cast<const VICUS::NetworkNode *>(obj);
+			if (node != nullptr)
+				currentNodes.insert(node);
+		}
+		if (!currentNodes.empty())
+			return currentNodes;
+		else
+			return {nullptr};
 }
 
 
