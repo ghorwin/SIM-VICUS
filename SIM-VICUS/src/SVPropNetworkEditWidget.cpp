@@ -9,6 +9,7 @@
 #include "SVUndoModifyExistingNetwork.h"
 #include "SVProjectHandler.h"
 #include "SVDialogHydraulicComponents.h"
+#include "Vic3DWireFrameObject.h"
 
 #include <NANDRAD_HydraulicNetworkComponent.h>
 
@@ -28,17 +29,17 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 
 	setupComboBoxComponents();
 
-	// setup combobox pipe models
-	m_mapPipeModels.clear();
-	m_mapPipeModels.insert("<None>", NANDRAD::HydraulicNetworkComponent::NUM_MT);
-	m_mapPipeModels.insert(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::modelType_t",
-														NANDRAD::HydraulicNetworkComponent::MT_StaticPipe),
-														NANDRAD::HydraulicNetworkComponent::MT_StaticPipe);
-	m_mapPipeModels.insert(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::modelType_t",
-														NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe),
-														NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe);
-	m_ui->comboBoxPipeModel->clear();
-	m_ui->comboBoxPipeModel->addItems(m_mapPipeModels.keys());
+//	// setup combobox pipe models
+//	m_mapPipeModels.clear();
+//	m_mapPipeModels.insert("<None>", NANDRAD::HydraulicNetworkComponent::NUM_MT);
+//	m_mapPipeModels.insert(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::modelType_t",
+//														NANDRAD::HydraulicNetworkComponent::MT_StaticPipe),
+//														NANDRAD::HydraulicNetworkComponent::MT_StaticPipe);
+//	m_mapPipeModels.insert(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::modelType_t",
+//														NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe),
+//														NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe);
+//	m_ui->comboBoxPipeModel->clear();
+//	m_ui->comboBoxPipeModel->addItems(m_mapPipeModels.keys());
 
 	// setup combobox node types
 	m_mapNodeTypes.clear();
@@ -51,25 +52,25 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 	m_ui->comboBoxNodeType->clear();
 	m_ui->comboBoxNodeType->addItems(m_mapNodeTypes.keys());
 
-	// setup combobox heat exchange type
-	m_mapHeatExchangeType.clear();
-	m_mapHeatExchangeType.insert("<None>", NANDRAD::HydraulicNetworkComponent::NUM_HT);
-	m_mapHeatExchangeType.insert(NANDRAD::KeywordList::Description("HydraulicNetworkComponent::heatExchangeType_t",
-								NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant),
-								NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant);
-	m_mapHeatExchangeType.insert(NANDRAD::KeywordList::Description("HydraulicNetworkComponent::heatExchangeType_t",
-								NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile),
-								NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile);
-	m_mapHeatExchangeType.insert(NANDRAD::KeywordList::Description("HydraulicNetworkComponent::heatExchangeType_t",
-								NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithFMUTemperature),
-								NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithFMUTemperature);
-	m_mapHeatExchangeType.insert(NANDRAD::KeywordList::Description("HydraulicNetworkComponent::heatExchangeType_t",
-								NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature),
-								NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature);
-	m_ui->comboBoxHeatExchangeType->clear();
-	m_ui->comboBoxHeatExchangeType->addItems(m_mapHeatExchangeType.keys());
-	m_ui->comboBoxHeatExchangeType->setCurrentText(m_mapHeatExchangeType.key(NANDRAD::HydraulicNetworkComponent::NUM_HT));
-	m_ui->comboBoxHeatExchangeType->setEnabled(false);
+//	// setup combobox heat exchange type
+//	m_mapHeatExchangeType.clear();
+//	m_mapHeatExchangeType.insert("<None>", NANDRAD::HydraulicNetworkComponent::NUM_HT);
+//	m_mapHeatExchangeType.insert(NANDRAD::KeywordList::Description("HydraulicNetworkComponent::heatExchangeType_t",
+//								NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant),
+//								NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant);
+//	m_mapHeatExchangeType.insert(NANDRAD::KeywordList::Description("HydraulicNetworkComponent::heatExchangeType_t",
+//								NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile),
+//								NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile);
+//	m_mapHeatExchangeType.insert(NANDRAD::KeywordList::Description("HydraulicNetworkComponent::heatExchangeType_t",
+//								NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithFMUTemperature),
+//								NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithFMUTemperature);
+//	m_mapHeatExchangeType.insert(NANDRAD::KeywordList::Description("HydraulicNetworkComponent::heatExchangeType_t",
+//								NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature),
+//								NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature);
+//	m_ui->comboBoxHeatExchangeType->clear();
+//	m_ui->comboBoxHeatExchangeType->addItems(m_mapHeatExchangeType.keys());
+//	m_ui->comboBoxHeatExchangeType->setCurrentText(m_mapHeatExchangeType.key(NANDRAD::HydraulicNetworkComponent::NUM_HT));
+//	m_ui->comboBoxHeatExchangeType->setEnabled(false);
 
 }
 
@@ -80,6 +81,9 @@ SVPropNetworkEditWidget::~SVPropNetworkEditWidget() {
 
 
 void SVPropNetworkEditWidget::updateUi() {
+	// get single object through treeWdiget or multiple objects through selectedGeoemetryObject
+	m_treeItemId = SVViewStateHandler::instance().m_navigationTreeWidget->selectedNodeID();
+	m_selectedObjects = SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects;
 	updateNetworkProperties();
 	updateNodeProperties();
 	updateEdgeProperties();
@@ -98,7 +102,7 @@ void SVPropNetworkEditWidget::updateNodeProperties()
 	m_ui->lineEditNodeHeatingDemand->setValue(node->m_maxHeatingDemand);
 	m_ui->lineEditNodeX->setValue(node->m_position.m_x);
 	m_ui->lineEditNodeY->setValue(node->m_position.m_y);
-	m_ui->comboBoxComponent->setCurrentText(m_mapComponents.key(node->m_componentId));
+	m_ui->comboBoxNodeComponent->setCurrentText(m_mapComponents.key(node->m_componentId));
 
 	const VICUS::Network * network = currentNetwork();
 	if (network == nullptr)
@@ -193,8 +197,8 @@ void SVPropNetworkEditWidget::setupComboBoxComponents()
 	m_mapComponents.insert("<None>", NANDRAD::INVALID_ID);
 	for (const NANDRAD::HydraulicNetworkComponent &comp: network->m_hydraulicComponents)
 		m_mapComponents.insert(QString::fromStdString(comp.m_displayName), comp.m_id);
-	m_ui->comboBoxComponent->clear();
-	m_ui->comboBoxComponent->addItems(m_mapComponents.keys());
+	m_ui->comboBoxNodeComponent->clear();
+	m_ui->comboBoxNodeComponent->addItems(m_mapComponents.keys());
 }
 
 
@@ -258,7 +262,7 @@ void SVPropNetworkEditWidget::modifyNodeProperties()
 		return;
 	VICUS::NetworkNode & node = m_network.m_nodes[nodeConst->m_id];
 	node.m_type = VICUS::NetworkNode::NodeType(m_mapNodeTypes.value(m_ui->comboBoxNodeType->currentText()));
-	node.m_componentId = m_mapComponents.value(m_ui->comboBoxComponent->currentText());
+	node.m_componentId = m_mapComponents.value(m_ui->comboBoxNodeComponent->currentText());
 	if (m_ui->lineEditNodeHeatingDemand->isValid())
 		node.m_maxHeatingDemand = m_ui->lineEditNodeHeatingDemand->value();
 	if (m_ui->lineEditNodeX->isValid())
@@ -284,31 +288,54 @@ bool SVPropNetworkEditWidget::setNetwork()
 
 const VICUS::Network * SVPropNetworkEditWidget::currentNetwork()
 {
-	unsigned int id = SVViewStateHandler::instance().m_navigationTreeWidget->selectedNodeID();
-	if (id != 0)
-		m_treeItemId = id;
-	const VICUS::Project & p = project();
-	const VICUS::Object * obj = p.objectById(m_treeItemId);
-	if (dynamic_cast<const VICUS::Network *>(obj) != nullptr)
-		return dynamic_cast<const VICUS::Network *>(obj);
-	else if (dynamic_cast<const VICUS::Network *>(obj->m_parent) != nullptr)
-		return dynamic_cast<const VICUS::Network *>(obj->m_parent);
-	else
-		return nullptr;
+	if (m_treeItemId != 0){
+		const VICUS::Project & p = project();
+		const VICUS::Object * obj = p.objectById(m_treeItemId);
+		if (dynamic_cast<const VICUS::Network *>(obj) != nullptr)
+			return dynamic_cast<const VICUS::Network *>(obj);
+		else if (dynamic_cast<const VICUS::Network *>(obj->m_parent) != nullptr)
+			return dynamic_cast<const VICUS::Network *>(obj->m_parent);
+		else
+			return nullptr;
+	}
+	else if(m_selectedObjects.size()>0)
+		for (const VICUS::Object * o : m_selectedObjects) {
+			const VICUS::Network * network = dynamic_cast<const VICUS::Network *>(o);
+			if (network != nullptr)
+				return network;
+			network = dynamic_cast<const VICUS::Network *>(o->m_parent);
+//			else if (network) {
+
+			}
+		}
 }
 
 const VICUS::NetworkEdge *SVPropNetworkEditWidget::currentNetworkEdge()
 {
-	const VICUS::Project & p = project();
-	const VICUS::Object * obj = p.objectById(m_treeItemId);
-	return dynamic_cast<const VICUS::NetworkEdge *>(obj);
+	if (m_treeItemId != 0){
+		const VICUS::Project & p = project();
+		const VICUS::Object * obj = p.objectById(m_treeItemId);
+		return dynamic_cast<const VICUS::NetworkEdge *>(obj);
+	}
 }
 
 const VICUS::NetworkNode *SVPropNetworkEditWidget::currentNetworkNode()
 {
-	const VICUS::Project & p = project();
-	const VICUS::Object * obj = p.objectById(m_treeItemId);
-	return dynamic_cast<const VICUS::NetworkNode *>(obj);
+	if (m_treeItemId != 0){
+		const VICUS::Project & p = project();
+		const VICUS::Object * obj = p.objectById(m_treeItemId);
+		return dynamic_cast<const VICUS::NetworkNode *>(obj);
+	}
+//	else{
+//		std::set<const VICUS::Object*> selObjects = SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects;
+//		for (const VICUS::Object * o : selObjects) {
+//			const VICUS::NetworkNode * node = dynamic_cast<const VICUS::NetworkNode *>(o);
+//			if (node != nullptr) {
+//				int a=1;
+//			}
+//		}
+//		return nullptr;
+//	}
 }
 
 
@@ -467,7 +494,7 @@ void SVPropNetworkEditWidget::on_pushButtonEditComponents_clicked()
 	SVDialogHydraulicComponents *dialog = new SVDialogHydraulicComponents(this);
 	if (dialog->edit(network->m_id, node->m_componentId) == QDialog::Accepted){
 		setupComboBoxComponents();
-		m_ui->comboBoxComponent->setCurrentText(m_mapComponents.key(dialog->currentComponentId()));
+		m_ui->comboBoxNodeComponent->setCurrentText(m_mapComponents.key(dialog->currentComponentId()));
 	}
 	else
 		setupComboBoxComponents();

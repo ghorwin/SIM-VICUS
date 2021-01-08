@@ -13,6 +13,7 @@
 #include "SVPropNetworkEditWidget.h"
 #include "Vic3DNewGeometryObject.h"
 #include "Vic3DCoordinateSystemObject.h"
+#include "Vic3DWireFrameObject.h"
 
 SVPropertyWidget::SVPropertyWidget(QWidget * parent) :
 	QWidget(parent)
@@ -34,6 +35,16 @@ SVPropertyWidget::SVPropertyWidget(QWidget * parent) :
 
 
 void SVPropertyWidget::onViewStateChanged() {
+
+	// catch changes in object selection
+	std::set<const VICUS::Object*> selObjects = SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects;
+	for (const VICUS::Object * o : selObjects) {
+		const VICUS::NetworkNode * node = dynamic_cast<const VICUS::NetworkNode *>(o);
+		if (node != nullptr) {
+			int a=1;
+		}
+	}
+
 
 	SVViewState::PropertyWidgetMode m = SVViewStateHandler::instance().viewState().m_propertyWidgetMode;
 

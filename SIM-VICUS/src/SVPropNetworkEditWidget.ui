@@ -392,12 +392,12 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
-         <widget class="QComboBox" name="comboBoxComponent"/>
+         <widget class="QComboBox" name="comboBoxNodeComponent"/>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButtonEditComponents">
+         <widget class="QPushButton" name="pushButtonEditNodeComponents">
           <property name="maximumSize">
            <size>
             <width>120</width>
@@ -405,7 +405,7 @@
            </size>
           </property>
           <property name="text">
-           <string>edit components...</string>
+           <string>...</string>
           </property>
          </widget>
         </item>
@@ -420,10 +420,31 @@
       <string>Edit Pipe</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="1">
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_16">
+        <property name="text">
+         <string>Pipe geometry</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_11">
+        <property name="text">
+         <string>Length</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
        <widget class="QComboBox" name="comboBoxPipeDB"/>
       </item>
-      <item row="5" column="1">
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Component</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
        <widget class="QLabel" name="labelPipeLength">
         <property name="text">
          <string/>
@@ -431,45 +452,31 @@
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="label_16">
-        <property name="text">
-         <string>Pipe geometry</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="label_11">
-        <property name="text">
-         <string>Llength</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>Pipe model</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
        <widget class="QCheckBox" name="checkBoxSupplyPipe">
         <property name="text">
          <string>supply pipe</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="comboBoxPipeModel"/>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_22">
-        <property name="text">
-         <string>Type of heat exchange</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QComboBox" name="comboBoxHeatExchangeType"/>
+      <item row="3" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="QComboBox" name="comboBoxEdgeComponent"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButtonEditEdgeComponents">
+          <property name="maximumSize">
+           <size>
+            <width>120</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>

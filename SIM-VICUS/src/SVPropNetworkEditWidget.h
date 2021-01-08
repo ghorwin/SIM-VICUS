@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QMap>
 
-#include "VICUS_Network.h"
+#include <VICUS_Network.h>
 
 namespace VICUS {
 	class NetworkEdge;
@@ -116,6 +116,8 @@ private:
 	QMap<QString, unsigned> m_mapHeatExchangeType;
 
 	unsigned int m_treeItemId = 0;
+
+	std::set<const VICUS::Object*> m_selectedObjects;
 
 	SVHydraulicComponentParameterModel * m_componentParModel = nullptr;
 };
