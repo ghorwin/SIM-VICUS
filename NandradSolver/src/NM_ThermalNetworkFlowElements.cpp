@@ -51,13 +51,13 @@ unsigned int TNPipeElement::nInternalStates() const
 	return 1;
 }
 
-void TNPipeElement::setInternalEnthalpies(const double * y)
+void TNPipeElement::setInternalStates(const double * y)
 {
 	// calculate specific enthalpy
 	m_specificEnthalpy = y[0] / (m_volume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value);
 }
 
-void TNPipeElement::internalHeatLosses(double * ydot)
+void TNPipeElement::internalDerivatives(double * ydot)
 {
 	// calculate heat transfer
 	const double thermalResistance = 1.0/(m_innerHeatTransfer * m_diameter)
@@ -72,7 +72,10 @@ void TNPipeElement::internalHeatLosses(double * ydot)
 	m_heatLoss = m_massFlux * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value *
 			(m_inletTemperature - m_ambientTemperature) *
 			(1. - std::exp(-NTU));
-	ydot[0] = m_heatLoss;
+	const double specificInletEnthalpy = m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value *
+			m_inletTemperature;
+	// heat fluxes into the fluid and enthalpy change are heat sources
+	ydot[0] = -m_heatLoss + m_massFlux * (specificInletEnthalpy - m_specificEnthalpy);
 }
 
 void TNPipeElement::setInletFluxes(double mdot, double Hdot)

@@ -144,7 +144,7 @@ int ThermalNetworkStatesModel::update(const double * y) {
 	// set internal states
 	unsigned int offset = 0;
 	for(ThermalNetworkAbstractFlowElement* fe :m_p->m_flowElements) {
-		fe->setInternalEnthalpies(y + offset);
+		fe->setInternalStates(y + offset);
 		offset += fe->nInternalStates();
 	}
 	return 0;

@@ -30,10 +30,10 @@ public:
 
 	/*! Function for setting internal states such as internal enery.
 		May be vector valued for layered temperature models.*/
-	virtual void setInternalEnthalpies(const double *y);
+	virtual void setInternalStates(const double *y);
 
 	/*! Function for retrieving heat fluxes out of the flow element.*/
-	virtual void internalHeatLosses(double *ydot);
+	virtual void internalDerivatives(double *ydot);
 
 	/*! Set fluid inlet conditions. */
 	virtual void setInletFluxes(double mdot, double Hdot);

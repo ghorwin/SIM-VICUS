@@ -163,7 +163,7 @@ int ThermalNetworkBalanceModel::update() {
 	// sum up heat fluxes
 	unsigned int offset = 0;
 	for(ThermalNetworkAbstractFlowElement *fe : m_statesModel->m_p->m_flowElements) {
-		fe->internalHeatLosses(&m_ydot[offset]);
+		fe->internalDerivatives(&m_ydot[offset]);
 		offset += fe->nInternalStates();
 	}
 
