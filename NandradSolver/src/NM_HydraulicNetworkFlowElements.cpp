@@ -34,7 +34,7 @@ HNPipeElement::HNPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 	//        network element 'displayname (id=xxx)'." so that users know how to fix the problem.
 
 	m_length = elem.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
-	m_diameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_HydraulicDiameter].value;
+	m_diameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
 	m_roughness = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeRoughness].value;
 
 	if (m_length<=0)

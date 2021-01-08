@@ -74,17 +74,24 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 		// retrieve component
 
-		std::vector<NANDRAD::HydraulicNetworkComponent>::const_iterator it =
+		std::vector<NANDRAD::HydraulicNetworkComponent>::const_iterator itComp =
 				std::find(nw.m_components.begin(), nw.m_components.end(), e.m_componentId);
-		IBK_ASSERT(it != nw.m_components.end());
+		IBK_ASSERT(itComp != nw.m_components.end());
 
-		switch (it->m_modelType) {
+		switch (itComp->m_modelType) {
 			case NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe :
 			case NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe :
 			case NANDRAD::HydraulicNetworkComponent::MT_DynamicAdiabaticPipe :
 			{
+				// lookup pipe
+				std::vector<NANDRAD::HydraulicNetworkPipeProperties>::const_iterator itPipe =
+						std::find(m_network->m_pipeProperties.begin(), m_network->m_pipeProperties.end(), e.m_pipeId);
+				if (itPipe == m_network->m_pipeProperties.end()) {
+					throw IBK::Exception(IBK::FormatString("Missing pipe properties reference in hydraulic network element '%1' (id=%2).")
+										 .arg(e.m_displayName).arg(e.m_id), FUNC_ID);
+				}
 				// create hydraulic pipe model
-				TNPipeElement * pipeElement = new TNPipeElement;
+				TNPipeElement * pipeElement = new TNPipeElement(e, *itComp,  *itPipe, m_network->m_fluid);
 				// add to flow elements
 				m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 			} break;

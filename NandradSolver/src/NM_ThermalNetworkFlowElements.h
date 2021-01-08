@@ -19,30 +19,31 @@ public:
 
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	TNPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
+				  const NANDRAD::HydraulicNetworkComponent & comp,
 				  const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
 				  const NANDRAD::HydraulicFluid & fluid);
 
 	/*! D'tor, definition is in NM_HydraulicNetworkFlowElements.cpp. */
-	virtual ~TNPipeElement();
+	~TNPipeElement();
 
 	/*! Function retrieving number of internal states.*/
-	virtual unsigned int nInternalStates() const;
+	unsigned int nInternalStates() const;
 
 	/*! Function for setting internal states such as internal enery.
 		May be vector valued for layered temperature models.*/
-	virtual void setInternalStates(const double *y);
+	void setInternalStates(const double *y);
 
 	/*! Function for retrieving heat fluxes out of the flow element.*/
-	virtual void internalDerivatives(double *ydot);
+	void internalDerivatives(double *ydot);
 
 	/*! Set fluid inlet conditions. */
-	virtual void setInletFluxes(double mdot, double Hdot);
+	void setInletFluxes(double mdot, double Hdot);
 
 	/*! Set ambient conditions. */
-	virtual void setAmbientConditions(double Tamb, double alphaAmb);
+	void setAmbientConditions(double Tamb, double alphaAmb);
 
 	/*! Returns fluid outlet states: spcific enthalpy. */
-	virtual void outletSpecificEnthalpy(double &h) const;
+	void outletSpecificEnthalpy(double &h) const;
 
 private:
 
@@ -53,19 +54,22 @@ private:
 	double							m_length;
 
 	/*! hydraulic (inner) diameter of pipe in m */
-	double							m_diameter;
+	double							m_innerDiameter;
+
+	/*! outer diameter of pipe in m */
+	double							m_outerDiameter;
 
 	/*! fluid volume inside the pipe m3 */
 	double							m_volume;
 
 	/*! thermal resistance of the pipe wall in Km2/W */
-	double							m_thermalResistanceWall;
+	double							m_UValuePipeWall;
 
 	/*! Heat transfer coeffient from fluid towards the wall in W/m2K */
-	double							m_innerHeatTransfer;
+	double							m_innerHeatTransferCoefficient;
 
 	/*! Heat transfer coefficient from outer pipe wall to environment in W/m2K */
-	double							m_ambientHeatTransfer;
+	double							m_outerHeatTransferCoefficient;
 
 	/*! Fluid inlet temperature */
 	double							m_inletTemperature = 273.15;

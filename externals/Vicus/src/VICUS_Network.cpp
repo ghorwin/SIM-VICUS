@@ -738,7 +738,7 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &hydraulic
 			NANDRAD::HydraulicNetworkPipeProperties pipeProp;
 			pipeProp.m_id = pipe->m_id;
 			NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
-											   NANDRAD::HydraulicNetworkPipeProperties::P_HydraulicDiameter, pipe->m_diameterInside());
+											   NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter, pipe->m_diameterInside());
 			NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
 											   NANDRAD::HydraulicNetworkPipeProperties::P_PipeRoughness, pipe->m_roughness);
 			// if not existing yet, add it to pipe properties

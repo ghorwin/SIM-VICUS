@@ -272,21 +272,21 @@ void SVPropNetworkEditWidget::modifyNodeProperties()
 {
 	if (!setNetwork())
 		return;
-	const VICUS::NetworkNode *nodeConst = currentNetworkNode();
-	if (nodeConst == nullptr)
-		return;
-	VICUS::NetworkNode & node = m_network.m_nodes[nodeConst->m_id];
-	node.m_type = VICUS::NetworkNode::NodeType(m_mapNodeTypes.value(m_ui->comboBoxNodeType->currentText()));
-	node.m_componentId = m_mapComponents.value(m_ui->comboBoxNodeComponent->currentText());
-	if (m_ui->lineEditNodeHeatingDemand->isValid())
-		node.m_maxHeatingDemand = m_ui->lineEditNodeHeatingDemand->value();
-	if (m_ui->lineEditNodeX->isValid())
-		node.m_position.m_x = m_ui->lineEditNodeX->value();
-	if (m_ui->lineEditNodeY->isValid())
-		node.m_position.m_y = m_ui->lineEditNodeY->value();
-	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
-	undo->push(); // modifies project and updates views
-	updateNodeProperties();
+//	const VICUS::NetworkNode *nodeConst = currentNetworkNode();
+//	if (nodeConst == nullptr)
+//		return;
+//	VICUS::NetworkNode & node = m_network.m_nodes[nodeConst->m_id];
+//	node.m_type = VICUS::NetworkNode::NodeType(m_mapNodeTypes.value(m_ui->comboBoxNodeType->currentText()));
+//	node.m_componentId = m_mapComponents.value(m_ui->comboBoxNodeComponent->currentText());
+//	if (m_ui->lineEditNodeHeatingDemand->isValid())
+//		node.m_maxHeatingDemand = m_ui->lineEditNodeHeatingDemand->value();
+//	if (m_ui->lineEditNodeX->isValid())
+//		node.m_position.m_x = m_ui->lineEditNodeX->value();
+//	if (m_ui->lineEditNodeY->isValid())
+//		node.m_position.m_y = m_ui->lineEditNodeY->value();
+//	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
+//	undo->push(); // modifies project and updates views
+//	updateNodeProperties();
 }
 
 
@@ -349,8 +349,8 @@ std::set <const VICUS::NetworkNode *> SVPropNetworkEditWidget::currentNetworkNod
 		}
 		if (!currentNodes.empty())
 			return currentNodes;
-		else
-			return {nullptr};
+	}
+	return {nullptr};
 }
 
 
@@ -504,46 +504,46 @@ void SVPropNetworkEditWidget::on_comboBoxComponent_activated(const QString &arg1
 
 void SVPropNetworkEditWidget::on_pushButtonEditComponents_clicked()
 {
-	const VICUS::Network * network = currentNetwork();
-	const VICUS::NetworkNode * node = currentNetworkNode();
-	SVDialogHydraulicComponents *dialog = new SVDialogHydraulicComponents(this);
-	if (dialog->edit(network->m_id, node->m_componentId) == QDialog::Accepted){
-		setupComboBoxComponents();
-		m_ui->comboBoxNodeComponent->setCurrentText(m_mapComponents.key(dialog->currentComponentId()));
-	}
-	else
-		setupComboBoxComponents();
+//	const VICUS::Network * network = currentNetwork();
+//	const VICUS::NetworkNode * node = currentNetworkNode();
+//	SVDialogHydraulicComponents *dialog = new SVDialogHydraulicComponents(this);
+//	if (dialog->edit(network->m_id, node->m_componentId) == QDialog::Accepted){
+//		setupComboBoxComponents();
+//		m_ui->comboBoxNodeComponent->setCurrentText(m_mapComponents.key(dialog->currentComponentId()));
+//	}
+//	else
+//		setupComboBoxComponents();
 
-	modifyNodeProperties();
+//	modifyNodeProperties();
 }
 
 
 void SVPropNetworkEditWidget::on_lineEditHeatFlux_editingFinished()
 {
-	if (!m_ui->lineEditHeatFlux->isValid())
-		return;
-	if (!setNetwork())
-		return;
-	const VICUS::NetworkNode * nodeConst = currentNetworkNode();
-	const VICUS::NetworkEdge * edgeConst = currentNetworkEdge();
-	if (nodeConst != nullptr){
-		VICUS::NetworkNode & node = m_network.m_nodes[nodeConst->m_id];
-//		NANDRAD::KeywordList::setParameter(node.m_heatExchangePara, "HydraulicNetworkElement::heatExchangePara_t",
-//											NANDRAD::HydraulicNetworkElement::HP_HeatFlux,
-//										   m_ui->lineEditHeatFlux->value());
-		SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
-		undo->push();
-		updateNodeProperties();
-	}
-	else if (edgeConst != nullptr){
-		VICUS::NetworkEdge * edge = m_network.edge(edgeConst->nodeId1(), edgeConst->nodeId2());
-//		NANDRAD::KeywordList::setParameter(edge->m_heatExchangePara, "HydraulicNetworkElement::heatExchangePara_t",
-//											NANDRAD::HydraulicNetworkElement::HP_HeatFlux,
-//										   m_ui->lineEditHeatFlux->value());
-		SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
-		undo->push();
-		updateEdgeProperties();
-	}
+//	if (!m_ui->lineEditHeatFlux->isValid())
+//		return;
+//	if (!setNetwork())
+//		return;
+//	const VICUS::NetworkNode * nodeConst = currentNetworkNode();
+//	const VICUS::NetworkEdge * edgeConst = currentNetworkEdge();
+//	if (nodeConst != nullptr){
+//		VICUS::NetworkNode & node = m_network.m_nodes[nodeConst->m_id];
+////		NANDRAD::KeywordList::setParameter(node.m_heatExchangePara, "HydraulicNetworkElement::heatExchangePara_t",
+////											NANDRAD::HydraulicNetworkElement::HP_HeatFlux,
+////										   m_ui->lineEditHeatFlux->value());
+//		SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
+//		undo->push();
+//		updateNodeProperties();
+//	}
+//	else if (edgeConst != nullptr){
+//		VICUS::NetworkEdge * edge = m_network.edge(edgeConst->nodeId1(), edgeConst->nodeId2());
+////		NANDRAD::KeywordList::setParameter(edge->m_heatExchangePara, "HydraulicNetworkElement::heatExchangePara_t",
+////											NANDRAD::HydraulicNetworkElement::HP_HeatFlux,
+////										   m_ui->lineEditHeatFlux->value());
+//		SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
+//		undo->push();
+//		updateEdgeProperties();
+//	}
 }
 
 

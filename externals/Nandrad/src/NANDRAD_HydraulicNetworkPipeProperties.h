@@ -15,8 +15,9 @@ public:
 	/*! Parameters for the component. */
 	enum para_t {
 		P_PipeRoughness,					// Keyword: PipeRoughness						[m]		'Roughness of pipe material.'
-		P_HydraulicDiameter,				// Keyword: HydraulicDiameter					[m]		'Inside hydraulic diameter for pipe.'
-		P_LengthSpecificUValue,				// Keyword: LengthSpecificUValue				[W/Km]	'Length specific overall U-Value of pipe (with insulation)'
+		P_PipeInnerDiameter,				// Keyword: PipeInnerDiameter					[m]		'Inner diameter of pipe.'
+		P_PipeOuterDiameter,				// Keyword: PipeOuterDiameter					[m]		'Outer diameter of pipe.'
+		P_UValuePipeWall,					// Keyword: UValuePipeWall						[W/mK]  'Length specific U-Value of pipe wall incl. insulation'
 		NUM_P
 	};
 
