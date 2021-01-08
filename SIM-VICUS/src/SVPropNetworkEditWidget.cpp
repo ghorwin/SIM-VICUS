@@ -81,8 +81,9 @@ SVPropNetworkEditWidget::~SVPropNetworkEditWidget() {
 
 
 void SVPropNetworkEditWidget::updateUi() {
-	// get single object through treeWdiget or multiple objects through selectedGeoemetryObject
+	// get single object from currently selected node in tree widget
 	m_treeItemId = SVViewStateHandler::instance().m_navigationTreeWidget->selectedNodeID();
+	// get multiple selected objects (checked nodes in tree widget or selected in 3d scene)
 	m_selectedObjects = SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects;
 	updateNetworkProperties();
 	updateNodeProperties();
@@ -298,7 +299,7 @@ const VICUS::Network * SVPropNetworkEditWidget::currentNetwork()
 		else
 			return nullptr;
 	}
-	else if(m_selectedObjects.size()>0)
+	else if(m_selectedObjects.size()>0){
 		for (const VICUS::Object * o : m_selectedObjects) {
 			const VICUS::Network * network = dynamic_cast<const VICUS::Network *>(o);
 			if (network != nullptr)
