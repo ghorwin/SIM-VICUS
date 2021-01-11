@@ -275,16 +275,20 @@ unsigned int SolarRadiationModel::addSurface(double orientation, double inclinat
 
 
 double SolarRadiationModel::localMeanTimeFromLocalStandardTime( double secondsOfYear) {
+	return localMeanTimeFromLocalStandardTime(secondsOfYear, m_climateDataLoader.m_timeZone, m_sunPositionModel.m_longitude/DEG2RAD);
+}
+
+double SolarRadiationModel::localMeanTimeFromLocalStandardTime( double secondsOfYear, double timeZone, double longitudeInDeg) {
 	// Correction of standart clock time due to deviations from the time zone longitude
 	// Kologirou - Solar Engineering, ch. 2.1.2.
 
 	// start with meridian of the current time zone
-	double standardLongitudeInDeg = (double) m_climateDataLoader.m_timeZone * 15.;
-	double localLongitudeInDeg	  = m_sunPositionModel.m_longitude/DEG2RAD;
+	double standardLongitudeInDeg = (double) timeZone * 15.;
+	double localLongitudeInDeg	  = longitudeInDeg;
 	double longitudeDeviationInDeg = standardLongitudeInDeg - localLongitudeInDeg;
 
 	// special treatment of time zone +/- 12
-	if (m_climateDataLoader.m_timeZone == 12 || m_climateDataLoader.m_timeZone == -12) {
+	if (timeZone == 12 || timeZone == -12) {
 		if (longitudeDeviationInDeg >= 345.)
 			longitudeDeviationInDeg -= 360.;
 		else if (longitudeDeviationInDeg <= -345.)

@@ -928,12 +928,13 @@ void ClimateDataLoader::readClimateDataBBSRDat(const IBK::Path & fname, bool hea
 
 		m_city = "BBSR";
 		m_comment = "Import from BBSR-Data";
+		m_country = "Germany";
+		m_source = "DWD/BBSR TRY 2017";
 
 		// convert to longitude and latitude
 		IBK::transformLambertProjectionToWSG84(rightVal, highVal, m_longitudeInDegree, m_latitudeInDegree);
 		m_elevation = heightOverNN;
 		m_timeZone = 1; // always MEZ
-
 
 		// read until end of header is found
 		std::string line;

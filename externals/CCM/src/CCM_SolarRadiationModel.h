@@ -140,6 +140,20 @@ public:
 	*/
 	double diffuseRadiationPerez(double inclinationAngle, double incidenceAngleRad, double diffuseRadHorizontal, double directRadNormal) const;
 
+	/*! Calculates local time from local location standard time
+		This calculation includes the correction due to longitude correction to the time zone median
+		\param secondsOfYear seconds of the current year in local standard time
+		\param timeZone Time zone of location in h
+		\param longitudeInDeg Longitude of location in DEG
+	*/
+	static double localMeanTimeFromLocalStandardTime( double secondsOfYear, double timeZone, double longitudeInDeg);
+
+	/*! Calculate observer (apparent solar) time from local time at time zone median.
+		This calculation includes the correction due to orbital eccentricity of earth
+		\para secondsOfYear Seconds of the current year in local time (always 0 <= t < 365*24*3600)
+	*/
+	static double apparentSolarTimeFromLocalMeanTime( double secondsOfYear );
+
 	/*! The sun position calculation model. */
 	SunPositionModel							m_sunPositionModel;
 
@@ -169,12 +183,6 @@ private:
 		\para secondsOfYear seconds of the current year in local standard time
 	*/
 	double localMeanTimeFromLocalStandardTime( double secondsOfYear);
-
-	/*! Calculate observer (apparent solar) time from local time at time zone median.
-		This calculation includes the correction due to orbital eccentricity of earth
-		\para secondsOfYear Seconds of the current year in local time (always 0 <= t < 365*24*3600)
-	*/
-	double apparentSolarTimeFromLocalMeanTime( double secondsOfYear );
 
 
 	/*! Vector of surfaces to compute radiation loads on, first value in pair is the orientation,
