@@ -79,6 +79,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 		IBK_ASSERT(itComp != nw.m_components.end());
 
 		switch (itComp->m_modelType) {
+			case NANDRAD::HydraulicNetworkComponent::MT_StaticPipe :
 			case NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe :
 			case NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe :
 			case NANDRAD::HydraulicNetworkComponent::MT_DynamicAdiabaticPipe :
@@ -90,11 +91,28 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 					throw IBK::Exception(IBK::FormatString("Missing pipe properties reference in hydraulic network element '%1' (id=%2).")
 										 .arg(e.m_displayName).arg(e.m_id), FUNC_ID);
 				}
+
 				// create hydraulic pipe model
 				TNPipeElement * pipeElement = new TNPipeElement(e, *itComp,  *itPipe, m_network->m_fluid);
 				// add to flow elements
 				m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 			} break;
+
+
+			case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel :
+			{
+				TNPump * pumpElement = new TNPump(e, *itComp, m_network->m_fluid);
+				m_p->m_flowElements.push_back(pumpElement);
+				break;
+			}
+
+
+			case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger:
+			{
+				TNHeatExchanger * heatEx = new TNHeatExchanger(e, *itComp, m_network->m_fluid);
+				m_p->m_flowElements.push_back(heatEx);
+				break;
+			}
 			default:
 			break;
 		}
