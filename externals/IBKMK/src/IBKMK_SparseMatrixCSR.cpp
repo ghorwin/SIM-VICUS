@@ -113,7 +113,8 @@ void SparseMatrixCSR::generateTransposedIndex(const std::vector<unsigned int> &i
 
 
 void SparseMatrixCSR::resize(unsigned int n, unsigned int nnz, const unsigned int * ia, const unsigned int * ja,
-		const unsigned int * iaT, const unsigned int * jaT) {
+		const unsigned int * iaT, const unsigned int * jaT)
+{
 	FUNCID(SparseMatrixCSR::resize);
 	if (n <= 0 || nnz <= 0)
 		throw IBK::Exception("Invalid input in n or nnz.", FUNC_ID);

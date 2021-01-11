@@ -50,7 +50,8 @@ void SparseMatrixPattern::calculateTransitiveClosure(
 	SparseMatrixPattern &transposePattern,
 	unsigned int n,
 	unsigned int startIndex,
-	unsigned int endIndex) {
+	unsigned int endIndex)
+{
 
 	FUNCID(SparseMatrixPattern::calculateTransitiveClosure);
 	// error: index exceeds matrix dimension

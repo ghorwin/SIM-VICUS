@@ -55,7 +55,7 @@ namespace IBKMK {
 	This is an implementation for a square dense matrix with corresponding math algorithms.
 	Resizing is possible, see resize() for details.
 
-	Data storage is column-based, the element (2,5) has the index [2*n + 5] in the linear
+	Data storage is column-major, the element (2,5) has the index [2 + 5*n] in the linear
 	memory array.
 */
 class DenseMatrix {
@@ -87,7 +87,7 @@ public:
 	double & operator()(unsigned int i, unsigned int j) {
 		IBK_ASSERT(i < m_n);
 		IBK_ASSERT(j < m_n);
-		return m_data[j + i*m_n];
+		return m_data[i + j*m_n];
 	}
 
 	/*! Returns a constant reference to the element at the coordinates [i, j].
@@ -96,13 +96,11 @@ public:
 		\code
 		val = A.value(i,j);
 		\endcode
-		When an element is requested, that is not part of the
-		matrix pattern the function returns a zero instead.
 	*/
 	double value(unsigned int i, unsigned int j) const {
 		IBK_ASSERT(i < m_n);
 		IBK_ASSERT(j < m_n);
-		return m_data[j + i*m_n];
+		return m_data[i + j*m_n];
 	}
 
 	/*! Returns the number of rows/columns in the matrix. */
@@ -150,37 +148,19 @@ public:
 	*/
 	void multiply(const double * b, double * res) const;
 
-	/*! Returns the row sum norm of the matrix. */
-	double rowSumNorm();
-	/*! Returns the column sum norm of the matrix. */
-	double columnSumNorm();
-	/*! Returns the condition based of the row sum norm of the matrix. */
-	double conditionRowBased();
-	/*! Returns the condition based of the column sum norm of the matrix. */
-	double conditionColBased();
-
-	/*! Calculates the normalized maximum residual of the solution to the linear equation solution A*x = d.
-		The residuals are calculated for each line and the absolute maximum of all residuals is returned normalized by the
-		left hand side of the equation.
-		\param d Const reference to a vector with the right-hand-side of the equation system (at least rows() elements).
-		\param x Reference to a vector with the result.
-		\return Returns absolute value of maximum normalized residual.
-	*/
-	double max_residual(const double * d, const double * x) const;
-
 	/*! Gives access to raw memory holding the matrix data. */
 	std::vector<double> & data() { return m_data; }
 
 
 	/*! Dumps the matrix to an output stream in human-readibly.
 		\param out Output stream (ASCII).
-		\param b Pointer to vector to print alongside matrix, size = n, nullptr if no vector to print.
+		\param b Pointer to vector to print alongside matrix, size = n, NULL if no vector to print.
 		\param eulerFormat If true, prints in Euler-Mathtoolbox format
 		\param width Column width for matrix output (precision is expected to be set as stream property)
 		\param matrixLabel The label to be used for defining the matrix in Euler format, defaults to 'A'
 		\param vectorLabel The label to be used for defining the vector b in Euler format, defaults to 'b'
 	*/
-	void write(std::ostream & out, double * b = nullptr, bool eulerFormat = false, unsigned int width=4,
+	void write(std::ostream & out, double * b = NULL, bool eulerFormat = false, unsigned int width=4,
 					   const char * const matrixLabel = "A", const char * const vectorLabel = "b") const;
 
 	/*! Computes and returns serialization size in bytes.
