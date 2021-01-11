@@ -90,10 +90,10 @@ void HydraulicNetworkElement::readXML(const TiXmlElement * element) {
 					m_para[ptype] = p; success = true;
 				}
 				catch (...) { /* intentional fail */  }
-				HeatExchangeParameter ptype2;
+				HeatExchangeParameter HEtype;
 				try {
-					ptype2 = (HeatExchangeParameter)KeywordList::Enumeration("HydraulicNetworkElement::HeatExchangeParameter", p.name);
-					m_heatExchangeConstParameter[ptype] = p; success = true;
+					HEtype = (HeatExchangeParameter)KeywordList::Enumeration("HydraulicNetworkElement::HeatExchangeParameter", p.name);
+					m_heatExchangeConstParameter[HEtype] = p; success = true;
 				}
 				catch (...) { /* intentional fail */  }
 				if (!success)
