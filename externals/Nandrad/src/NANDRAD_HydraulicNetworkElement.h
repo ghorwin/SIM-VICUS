@@ -67,7 +67,7 @@ public:
 	/*! Hydraulic component ID. */
 	unsigned int					m_componentId	= NANDRAD::INVALID_ID;				// XML:A:required
 	/*! Pipe ID (only needed for elements that are pipes). */
-	unsigned int					m_pipeId		= NANDRAD::INVALID_ID;				// XML:E
+	unsigned int					m_pipeId		= NANDRAD::INVALID_ID;				// XML:A
 
 	/*! Display name. */
 	std::string						m_displayName;										// XML:A

@@ -760,6 +760,7 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &hydraulic
 														edge->length());
 			// TODO: Hauke
 			inletPipe.m_para[NANDRAD::HydraulicNetworkElement::P_Temperature] = edge->m_ambientTemperature;
+			inletPipe.m_pipeId = pipeProp.m_id;
 			hydraulicNetwork.m_elements.push_back(inletPipe);
 
 			// add outlet pipe element
@@ -771,6 +772,7 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &hydraulic
 														edge->length());
 			// TODO: Hauke
 			outletPipe.m_para[NANDRAD::HydraulicNetworkElement::P_Temperature] = edge->m_ambientTemperature;
+			outletPipe.m_pipeId = pipeProp.m_id;
 			hydraulicNetwork.m_elements.push_back(outletPipe);
 		}
 	}

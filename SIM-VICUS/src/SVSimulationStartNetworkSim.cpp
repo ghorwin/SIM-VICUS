@@ -99,6 +99,8 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 
 	// geometric network
 	VICUS::Network geoNetwork;
+	geoNetwork.m_id = 0;
+	geoNetwork.m_name = "simple test";
 	unsigned id1 = geoNetwork.addNodeExt(IBKMK::Vector3D(0,0,0), VICUS::NetworkNode::NT_Source);
 	unsigned id2 = geoNetwork.addNodeExt(IBKMK::Vector3D(0,100,0), VICUS::NetworkNode::NT_Building);
 	geoNetwork.addEdge(id1, id2, true);
@@ -110,20 +112,26 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	pump.m_id = 0;
 	pump.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel;
 	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].set("PressureHead", -1000, IBK::Unit("Pa"));
+	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].set("Volume", 0.01, IBK::Unit("m3"));
+	pump.m_heatExchangeType = NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant;
 	geoNetwork.m_hydraulicComponents.push_back(pump);
 
 	// -> heat exchanger
 	NANDRAD::HydraulicNetworkComponent heatExchanger;
 	heatExchanger.m_id = 1;
 	heatExchanger.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger;
+	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].set("Volume", 0.1, IBK::Unit("m3"));
+	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_UAValue].set("UA", 1, IBK::Unit("W/m2K"));
 	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient].set("PressureLossCoefficient", 5, IBK::Unit("-"));
 	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].set("HydraulicDiameter", 25.6, IBK::Unit("mm"));
+	heatExchanger.m_heatExchangeType = NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant;
 	geoNetwork.m_hydraulicComponents.push_back(heatExchanger);
 
 	// -> pipe
 	NANDRAD::HydraulicNetworkComponent pipeComponent;
 	pipeComponent.m_id = 2;
 	pipeComponent.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe;
+	pipeComponent.m_heatExchangeType = NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant;
 	geoNetwork.m_hydraulicComponents.push_back(pipeComponent);
 
 	// *** pipe catalog
