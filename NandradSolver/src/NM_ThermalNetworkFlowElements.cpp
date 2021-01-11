@@ -132,7 +132,7 @@ TNHeatExchanger::TNHeatExchanger(const NANDRAD::HydraulicNetworkElement & elem,
 
 	m_volume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
 	m_UAValue = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_UAValue].value;
-	m_heatFluxToAmbient = elem.m_heatExchangeConstParameter[NANDRAD::HydraulicNetworkElement::HE_HeatFlux].value;
+	m_heatFluxToAmbient = elem.m_para[NANDRAD::HydraulicNetworkElement::P_HeatFlux].value;
 
 	// TODO : perform parameter checking inide NANDRAD data structure, so that we avoid
 	// exceptions at this place

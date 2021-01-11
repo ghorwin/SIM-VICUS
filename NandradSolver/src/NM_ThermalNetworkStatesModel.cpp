@@ -128,9 +128,9 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				case NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithFMUTemperature:
 				case NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature: {
 					// retrieve constant temperature
-					if(!e.m_heatExchangeConstParameter[NANDRAD::HydraulicNetworkElement::HE_Temperature].name.empty()) {
+					if(!e.m_para[NANDRAD::HydraulicNetworkElement::P_Temperature].name.empty()) {
 						m_p->m_ambientTemperatureRefs.push_back(
-							&e.m_heatExchangeConstParameter[NANDRAD::HydraulicNetworkElement::HE_Temperature].value);
+							&e.m_para[NANDRAD::HydraulicNetworkElement::P_Temperature].value);
 					}
 					else {
 						throw IBK::Exception(IBK::FormatString("Missing constant temperature for exchange type %1!")
