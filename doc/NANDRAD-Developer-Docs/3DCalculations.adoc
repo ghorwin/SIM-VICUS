@@ -40,10 +40,10 @@ When drawing a polygon or starting with a given set of vertexes, we can remove v
 
 :xrefstyle: short
 
-Polygons are expected to be not-winding and defined in counter-clockwise manner. Then, the normal vector of the polygon can be created by computing the cross product of two adjacent edges. However, if polygons are convex, the sign of the normal vector depends on the edge being selected. <<fig_convex_polygon>> shows a convex polygon.
+Polygons are expected to be not-winding and defined in counter-clockwise manner. Then, the normal vector of the polygon can be created by computing the cross product of two adjacent edges. However, if polygons are concave, the sign of the normal vector depends on the edge being selected. <<fig_concave_polygon>> shows a concave polygon.
 
-[[fig_convex_polygon]]
-.Convex polygon example
+[[fig_concave_polygon]]
+.Concave polygon example
 image::polygon_normal_vector.svg[pdfwidth=8cm]
 
 Suppose the following vertex coordinates define the polygon:
@@ -72,10 +72,13 @@ b = v4-v3 = (-4,1,0)
 n = a x b = (0,0,-6)  (pointing downwards)
 ----
 
-So, just picking a random point and computing the cross product between the adjacent edges doesn't work.
+So, just picking a random point and computing the cross product between the adjacent edges __does not work__.
 
-TODO : Dirk
-
+Since we do a triangulation for any valid polygon anyways (needed for drawing purposes), we can then easily just take the any of the generated triangles and compute the normal of the triangle (all triangles will have the same normal vector). 
+[NOTE]
+====
+We actually need to compute the normal vector already *before* we have a triangulation: for checking if all vertexes lie in a plane. However, for this check the sign of the normal vector is of no importance, and once the triangulation has been computed, we just update the normal vector with the correct one.
+====
 
 
 :xrefstyle: basic
