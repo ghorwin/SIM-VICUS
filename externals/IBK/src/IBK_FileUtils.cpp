@@ -230,6 +230,14 @@ IBK::Path userDirectory() {
 	return IBK::Path(result);
 }
 
+std::ofstream* create_ofstream(const IBK::Path& file, std::ios_base::openmode mode) {
+#if defined(_MSC_VER)
+	return new std::ofstream(file.wstr().c_str(), mode);
+#else //_WIN32
+	// FIXME: utf8 encoding fix
+	return new std::ofstream(file.str().c_str(), mode);
+#endif // _WIN32
+}
 
 }  // namespace IBK
 
