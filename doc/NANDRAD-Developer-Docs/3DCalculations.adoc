@@ -74,7 +74,8 @@ n = a x b = (0,0,-6)  (pointing downwards)
 
 So, just picking a random point and computing the cross product between the adjacent edges __does not work__.
 
-Since we do a triangulation for any valid polygon anyways (needed for drawing purposes), we can then easily just take the any of the generated triangles and compute the normal of the triangle (all triangles will have the same normal vector). 
+Since we do a triangulation for any valid polygon anyways (needed for drawing purposes), we can then easily just take any of the generated triangles and compute the normal of the triangle (all triangles will have the same normal vector).
+
 [NOTE]
 ====
 We actually need to compute the normal vector already *before* we have a triangulation: for checking if all vertexes lie in a plane. However, for this check the sign of the normal vector is of no importance, and once the triangulation has been computed, we just update the normal vector with the correct one.
