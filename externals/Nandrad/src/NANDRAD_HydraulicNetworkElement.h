@@ -35,7 +35,9 @@ public:
 
 	/*! Parameters for the element . */
 	enum para_t {
-		P_Length,							// Keyword: Length								[m]		'Pipe length'
+		P_Length,						// Keyword: Length									[m]		'Pipe length'
+		P_Temperature,					// Keyword: Temperature								[C]		'Temperature for heat exchange'
+		P_HeatFlux,						// Keyword: HeatFlux								[W]		'Heat flux for heat exchange'
 		NUM_P
 	};
 
@@ -45,11 +47,6 @@ public:
 		NUM_IP
 	};
 
-	enum HeatExchangeParameter {
-		HE_Temperature,					// Keyword: Temperature								[C]		'temperature '
-		HE_HeatFlux,					// Keyword: HeatFlux								[W]		'heat flux'
-		NUM_HE
-	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -80,8 +77,6 @@ public:
 
 	/*! Integer parameters. */
 	IBK::IntPara					m_intPara[NUM_IP];									// XML:E
-
-	IBK::Parameter					m_heatExchangeConstParameter[NUM_HE];				// XML:E
 
 };
 
