@@ -34,7 +34,6 @@
 #include <sundials/sundials_timer.h>
 
 #include "SOLFRA_LESInterface.h"
-#include "SOLFRA_LESADI.h"
 #include "SOLFRA_PrecondInterface.h"
 #include "SOLFRA_JacobianInterface.h"
 
@@ -517,18 +516,6 @@ IntegratorImplicitEuler::StepResult IntegratorImplicitEuler::tryStep() {
 	//   Jacobian data may be from last or several steps before
 
 	// model is at state m_t, m_y(pred)
-
-	// if we have an ADI LES Solver, we just need to take one ADI step, instead of
-	// a Newton iteration
-	if (dynamic_cast<SOLFRA::LESADI*>(m_lesSolver) != NULL) {
-		// ADI solver setup gets old yn values, time steps
-		m_lesSolver->setup(DOUBLE_PTR(m_yn), DOUBLE_PTR(m_ydot), 0, m_dt);
-		// ADI solver step
-		m_lesSolver->solve(DOUBLE_PTR(m_deltaY));
-		// done
-		return IntegratorImplicitEuler::Success;
-	}
-
 
 	// this flag is true when we have updated the Jacobian matrix at least once in this tryStep() run with the current time step size
 	m_jacCurrent = false;

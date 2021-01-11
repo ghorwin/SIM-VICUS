@@ -522,7 +522,7 @@ SOLFRA::IntegratorInterface * NandradModel::integratorInterface() {
 		integrator->m_relTol = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::P_RelTol].value;
 		integrator->m_dtMax = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::P_MaxTimeStep].value;
 		integrator->m_nonLinConvCoeff = m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::P_NonlinSolverConvCoeff].value;
-		integrator->m_maxNonLinIters = m_project->m_solverParameter.m_intPara[NANDRAD::SolverParameter::IP_MaxNonlinIter].toUInt(true);
+		integrator->m_maximumNonlinearIterations = m_project->m_solverParameter.m_intPara[NANDRAD::SolverParameter::IP_MaxNonlinIter].toUInt(true);
 
 		m_integrator = integrator;
 	}
