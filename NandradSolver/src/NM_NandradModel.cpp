@@ -1358,12 +1358,16 @@ void NandradModel::initNetworks() {
 			ThermalNetworkStatesModel *statesModel = new ThermalNetworkStatesModel(nw.m_id, nw.m_displayName);
 			// initialize
 			statesModel->setup(nw, *nwmodel);
+			// add to thermal network states container
+			m_networkStatesModelContainer.push_back(statesModel);
 			// add thermal network balance model
 			ThermalNetworkBalanceModel *balanceModel = new ThermalNetworkBalanceModel(nw.m_id, nw.m_displayName);
 			// initialize
 			balanceModel->setup(statesModel);
 			// register model for evaluation
 			registerStateDependendModel(balanceModel);
+			// add to thermal network balance container
+			m_networkBalanceModelContainer.push_back(balanceModel);
 		}
 	}
 }
@@ -1949,6 +1953,18 @@ void NandradModel::initSolverVariables() {
 		m_n += nUnknowns;
 	}
 
+	// *** count number of unknowns in thermal networks and initialize wall offsets ***
+
+	// m_n counts the number of unknowns
+	m_networkVariableOffset.resize(m_project->m_hydraulicNetworks.size());
+	for (unsigned int i=0; i<m_project->m_hydraulicNetworks.size(); ++i) {
+		// store starting position inside y-vector
+		m_networkVariableOffset[i] = m_n;
+		// number of unknowns/state variabes
+		unsigned int nUnknowns = m_networkStatesModelContainer[i]->nPrimaryStateResults();
+		m_n += nUnknowns;
+	}
+
 	// *** set weighting factor ***
 
 	// Problem: there are many more construction elements/states than room states. When computing
@@ -2174,7 +2190,7 @@ void NandradModel::initSolverMatrix() {
 			}
 		}
 
-		// ... and for all constructions
+		// ... for all constructions
 		for (unsigned int i = 0; i < m_constructionBalanceModelContainer.size(); ++i) {
 
 			const ConstructionBalanceModel *constructionModel = m_constructionBalanceModelContainer[i];
@@ -2195,6 +2211,48 @@ void NandradModel::initSolverMatrix() {
 			std::vector< std::pair<const double *, const double *> > dependenciesIJ;
 			// temporarilly store all elements that can be removed and that one that can be inserted
 			constructionModel->stateDependencies(dependenciesIJ);
+
+			std::vector<std::pair<const double *, const double *> >::const_iterator
+				dependencyIJ = dependenciesIJ.begin();
+			// loop over all result quantities of the next pattern (elements aij)
+			for (; dependencyIJ != dependenciesIJ.end(); ++dependencyIJ) {
+				// retrieve row and column storage adresses
+				const double * valueRef = dependencyIJ->first;
+
+				// already stored
+				if (registeredLocalValueRefs.find(valueRef) != registeredLocalValueRefs.end())
+					continue;
+
+				// insert element into map with index valueRefs.size()
+				registeredLocalValueRefs.insert(valueRef);
+				// store inside global container
+				resultValueRefs[valueRef] = nUnknowns;
+				// update counter
+				++nUnknowns;
+			}
+		}
+
+		// ... and for all networks
+		for (unsigned int i = 0; i < m_networkBalanceModelContainer.size(); ++i) {
+
+			const ThermalNetworkBalanceModel *networkModel = m_networkBalanceModelContainer[i];
+			// access internal y-vector
+			const double *ydot = networkModel->resultValueRef(QuantityName("ydot"));
+
+			// map storing local valueRefs according to their value pointers
+			std::set<const double*> registeredLocalValueRefs;
+			// sort values into glibal data container
+			for (unsigned int k = 0; k < m_networkStatesModelContainer[i]->nPrimaryStateResults(); ++k) {
+				resultValueRefs[ydot + k] = nYStates + nYdotStates + k;
+				// register in local container
+				registeredLocalValueRefs.insert(ydot + k);
+			}
+			nYdotStates += m_networkStatesModelContainer[i]->nPrimaryStateResults();
+
+			// find all other unknowns
+			std::vector< std::pair<const double *, const double *> > dependenciesIJ;
+			// temporarilly store all elements that can be removed and that one that can be inserted
+			networkModel->stateDependencies(dependenciesIJ);
 
 			std::vector<std::pair<const double *, const double *> >::const_iterator
 				dependencyIJ = dependenciesIJ.begin();
@@ -2570,6 +2628,10 @@ int NandradModel::updateStateDependentModels() {
 		}
 	}
 
+	// update network model container
+	for (unsigned int i = 0; i < m_networkStatesModelContainer.size(); ++i) {
+		m_networkStatesModelContainer[i]->update(&m_y[0] + m_networkVariableOffset[i]);
+	}
 
 
 	// evaluate ordered graph
@@ -2681,6 +2743,24 @@ int NandradModel::updateStateDependentModels() {
 		++m_nYdotCalls;
 #else
 		calculationResultFlag |= m_constructionBalanceModelContainer[i]->ydot(&m_ydot[0] + m_constructionVariableOffset[i]);
+#endif
+	}
+	if (calculationResultFlag != 0) {
+		if (calculationResultFlag & 2)
+			return 2;
+		else
+			return 1;
+	}
+
+	// update states in all thermal network models
+	for (unsigned int i=0; i<m_networkBalanceModelContainer.size(); ++i) {
+#ifdef IBK_STATISTICS
+		SUNDIALS_TIMED_FUNCTION(NANDRAD_TIMER_YDOT,
+			calculationResultFlag |= m_networkBalanceModelContainer[i]->ydot(&m_ydot[0] + m_networkVariableOffset[i]);
+		);
+		++m_nYdotCalls;
+#else
+		calculationResultFlag |= m_networkBalanceModelContainer[i]->ydot(&m_ydot[0] + m_networkVariableOffset[i]);
 #endif
 	}
 	if (calculationResultFlag != 0) {

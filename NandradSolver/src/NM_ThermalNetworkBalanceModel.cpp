@@ -98,6 +98,20 @@ const double * ThermalNetworkBalanceModel::resultValueRef(const QuantityName & q
 		// found a valid entry
 		return m_statesModel->m_p->heatFluxes() + index;
 	}
+	// return y
+	if(quantityName == std::string("y")) {
+		// whole vector access
+		if(quantityName.m_index == -1)
+			return &m_statesModel->m_y[0];
+		return nullptr;
+	}
+	// return ydot
+	if(quantityName == std::string("ydot")) {
+		// whole vector access
+		if(quantityName.m_index == -1)
+			return &m_ydot[0];
+		return nullptr;
+	}
 	return nullptr;
 }
 
@@ -123,7 +137,6 @@ void ThermalNetworkBalanceModel::inputReferences(std::vector<InputReference> & i
 	inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORK;
 	inputRef.m_name = std::string("MassFlux");
 	inputRef.m_required = true;
-	// TODO: add references to ambient conditions
 }
 
 
@@ -133,17 +146,28 @@ void ThermalNetworkBalanceModel::setInputValueRefs(const std::vector<QuantityDes
 	IBK_ASSERT(resultValueRefs.size() == 1);
 	// copy references into mass flux vector
 	m_statesModel->m_p->m_massFluxes = resultValueRefs[0];
-	// references to ambient conditions
-	unsigned int count = 1;
-	for(unsigned int i = 0; i < m_statesModel->m_p->m_flowElements.size(); ++i, ++count)
-		m_statesModel->m_p->m_ambientTemperatureRefs[i] = resultValueRefs[count];
-	for(unsigned int i = 0; i < m_statesModel->m_p->m_flowElements.size(); ++i, ++count)
-		m_statesModel->m_p->m_ambientHeatTransferRefs[i] = resultValueRefs[count];
 }
 
 
 void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
-	// TODO: implement
+	// we at first try use dense pattern
+	for(unsigned int i = 0; i < m_statesModel->m_n; ++i) {
+		for(unsigned int j = 0; j < m_statesModel->m_n; ++j) {
+			resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], &m_statesModel->m_y[j]) );
+		}
+		for(unsigned int j = 0; j < m_statesModel->m_network->m_elements.size(); ++j) {
+			resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_statesModel->m_p->m_massFluxes + j) );
+			resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_statesModel->m_p->heatFluxes() + j) );
+		}
+	}
+	for(unsigned int j = 0; j < m_statesModel->m_network->m_elements.size(); ++j) {
+		for(unsigned int j = 0; j < m_statesModel->m_n; ++j) {
+			resultInputValueReferences.push_back(std::make_pair(m_statesModel->m_p->heatFluxes() + j, &m_statesModel->m_y[j]) );
+		}
+		for(unsigned int j = 0; j < m_statesModel->m_network->m_elements.size(); ++j) {
+			resultInputValueReferences.push_back(std::make_pair(m_statesModel->m_p->heatFluxes() + j, m_statesModel->m_p->m_massFluxes + j) );
+		}
+	}
 }
 
 

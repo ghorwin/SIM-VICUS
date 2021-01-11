@@ -44,8 +44,8 @@ namespace NANDRAD {
 
 /*! The namespace NANDRAD_MODEL contains all classes/functions of the
 	NANDRAD command line solver. The central class is NandradModel, which implements
-	the integrator interface used by the SOLFRA integrator classes. 
-*/ 
+	the integrator interface used by the SOLFRA integrator classes.
+*/
 namespace NANDRAD_MODEL {
 
 class AbstractModel;
@@ -66,6 +66,9 @@ class OutputHandler;
 
 class ConstructionStatesModel;
 class ConstructionBalanceModel;
+
+class ThermalNetworkStatesModel;
+class ThermalNetworkBalanceModel;
 
 /*! Main NANDRAD model implementation class.
 	This class implements the interface of SOLFRA::ModelInterface and SOLFRA::OutputScheduler and contains
@@ -476,6 +479,13 @@ private:
 	*/
 	std::vector<unsigned int>								m_constructionVariableOffset;
 
+	/*! Holds references to thermal network state models (does not own the models). */
+	std::vector<ThermalNetworkStatesModel*>					m_networkStatesModelContainer;
+	/*! Holds references to thermal network balance models (does not own the models). */
+	std::vector<ThermalNetworkBalanceModel*>					m_networkBalanceModelContainer;
+	/*! Vector with offsets for conserved quantities of the network models.
+	*/
+	std::vector<unsigned int>								m_networkVariableOffset;
 
 	// *** Models and sub-models ***
 

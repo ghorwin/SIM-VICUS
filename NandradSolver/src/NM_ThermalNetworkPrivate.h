@@ -55,6 +55,10 @@ public:
 	*/
 	int updateFluxes();
 
+	/*! Vector of dependencies.
+	*/
+	void dependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const;
+
 	/*! Container for flow element implementation objects.
 		Size must equal the number of edges.
 	*/

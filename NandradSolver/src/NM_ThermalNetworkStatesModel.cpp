@@ -30,6 +30,7 @@
 
 #include <NANDRAD_HydraulicNetwork.h>
 #include <NANDRAD_HydraulicNetworkComponent.h>
+#include <NANDRAD_KeywordList.h>
 
 #include <IBKMK_SparseMatrixPattern.h>
 
@@ -72,49 +73,95 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 		// - component definition (via reference from e.m_componentId) and component DB stored
 		//   in network
 
-		// retrieve component
+		try {
+			// retrieve component
 
-		std::vector<NANDRAD::HydraulicNetworkComponent>::const_iterator itComp =
-				std::find(nw.m_components.begin(), nw.m_components.end(), e.m_componentId);
-		IBK_ASSERT(itComp != nw.m_components.end());
+			std::vector<NANDRAD::HydraulicNetworkComponent>::const_iterator itComp =
+					std::find(nw.m_components.begin(), nw.m_components.end(), e.m_componentId);
+			IBK_ASSERT(itComp != nw.m_components.end());
 
-		switch (itComp->m_modelType) {
-			case NANDRAD::HydraulicNetworkComponent::MT_StaticPipe :
-			case NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe :
-			case NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe :
-			case NANDRAD::HydraulicNetworkComponent::MT_DynamicAdiabaticPipe :
-			{
-				// lookup pipe
-				std::vector<NANDRAD::HydraulicNetworkPipeProperties>::const_iterator itPipe =
-						std::find(m_network->m_pipeProperties.begin(), m_network->m_pipeProperties.end(), e.m_pipeId);
-				if (itPipe == m_network->m_pipeProperties.end()) {
-					throw IBK::Exception(IBK::FormatString("Missing pipe properties reference in hydraulic network element '%1' (id=%2).")
-										 .arg(e.m_displayName).arg(e.m_id), FUNC_ID);
+			switch (itComp->m_modelType) {
+				case NANDRAD::HydraulicNetworkComponent::MT_StaticPipe :
+				case NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe :
+				case NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe :
+				case NANDRAD::HydraulicNetworkComponent::MT_DynamicAdiabaticPipe :
+				{
+					// lookup pipe
+					std::vector<NANDRAD::HydraulicNetworkPipeProperties>::const_iterator itPipe =
+							std::find(m_network->m_pipeProperties.begin(), m_network->m_pipeProperties.end(), e.m_pipeId);
+					if (itPipe == m_network->m_pipeProperties.end()) {
+						throw IBK::Exception(IBK::FormatString("Missing pipe properties reference in hydraulic network element '%1' (id=%2).")
+											 .arg(e.m_displayName).arg(e.m_id), FUNC_ID);
+					}
+
+					// create hydraulic pipe model
+					TNPipeElement * pipeElement = new TNPipeElement(e, *itComp,  *itPipe, m_network->m_fluid);
+					// add to flow elements
+					m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+				} break;
+
+
+				case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel :
+				{
+					TNPump * pumpElement = new TNPump(e, *itComp, m_network->m_fluid);
+					m_p->m_flowElements.push_back(pumpElement);
+					break;
 				}
 
-				// create hydraulic pipe model
-				TNPipeElement * pipeElement = new TNPipeElement(e, *itComp,  *itPipe, m_network->m_fluid);
-				// add to flow elements
-				m_p->m_flowElements.push_back(pipeElement); // transfer ownership
-			} break;
 
-
-			case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel :
-			{
-				TNPump * pumpElement = new TNPump(e, *itComp, m_network->m_fluid);
-				m_p->m_flowElements.push_back(pumpElement);
+				case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger:
+				{
+					TNHeatExchanger * heatEx = new TNHeatExchanger(e, *itComp, m_network->m_fluid);
+					m_p->m_flowElements.push_back(heatEx);
+					break;
+				}
+				default: {
+					throw IBK::Exception(IBK::FormatString("Model of type %1 is not supported, yet!")
+								.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::ModelType",
+								itComp->m_modelType)),
+								FUNC_ID);
+				}
 				break;
 			}
-
-
-			case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger:
-			{
-				TNHeatExchanger * heatEx = new TNHeatExchanger(e, *itComp, m_network->m_fluid);
-				m_p->m_flowElements.push_back(heatEx);
+			// decide which heat exchange is chosen
+			switch(itComp->m_heatExchangeType) {
+				case NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithFMUTemperature:
+				case NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature: {
+					// retrieve constant temperature
+					if(!e.m_heatExchangeConstParameter[NANDRAD::HydraulicNetworkElement::HE_Temperature].name.empty()) {
+						m_p->m_ambientTemperatureRefs.push_back(
+							&e.m_heatExchangeConstParameter[NANDRAD::HydraulicNetworkElement::HE_Temperature].value);
+					}
+					else {
+						throw IBK::Exception(IBK::FormatString("Missing constant temperature for exchange type %1!")
+									.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
+									itComp->m_heatExchangeType)),
+									FUNC_ID);
+					}
+					// retrieve external heat transfer coefficient
+					if(itComp->m_para[NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].name.empty()){
+						throw IBK::Exception(IBK::FormatString("Missing parameteter '%1 for exchange type %2!")
+									.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::para_t",
+									NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient))
+									.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
+									itComp->m_heatExchangeType)),
+									FUNC_ID);
+					}
+					m_p->m_ambientHeatTransferRefs.push_back(&itComp->m_para[
+						NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].value);
+				} break;
+				default: {
+					throw IBK::Exception(IBK::FormatString("Heat exchange type %1 is not supported, yet!")
+								.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
+								itComp->m_heatExchangeType)),
+								FUNC_ID);
+				}
 				break;
 			}
-			default:
-			break;
+		}
+		catch(IBK::Exception &ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error initializing HydraulicFlowElement with id %1")
+								.arg(e.m_componentId), FUNC_ID);
 		}
 	}
 	// setup the enetwork
@@ -159,7 +206,12 @@ void ThermalNetworkStatesModel::stateDependencies(std::vector<std::pair<const do
 
 
 void ThermalNetworkStatesModel::yInitial(double * y) const {
-	// TODO: implement
+	// per copy default states from all models
+	unsigned int offset = 0;
+	for(ThermalNetworkAbstractFlowElement* fe :m_p->m_flowElements) {
+		fe->initialStates(y + offset);
+		offset += fe->nInternalStates();
+	}
 }
 
 

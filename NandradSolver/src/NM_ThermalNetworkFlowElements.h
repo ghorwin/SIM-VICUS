@@ -29,6 +29,10 @@ public:
 	/*! Function retrieving number of internal states.*/
 	unsigned int nInternalStates() const;
 
+	/*! Function for retreiving initial states such as internal enery
+	 * from each model.*/
+	void initialStates(double *y0);
+
 	/*! Function for setting internal states such as internal enery.
 		May be vector valued for layered temperature models.*/
 	void setInternalStates(const double *y);
@@ -106,6 +110,10 @@ public:
 	/*! Function retrieving number of internal states.*/
 	unsigned int nInternalStates() const;
 
+	/*! Function for retreiving initial states such as internal enery
+	 * from each model.*/
+	void initialStates(double *y0);
+
 	/*! Function for setting internal states such as internal enery.
 		May be vector valued for layered temperature models.*/
 	void setInternalStates(const double *y);
@@ -166,6 +174,10 @@ public:
 
 	/*! Function retrieving number of internal states.*/
 	unsigned int nInternalStates() const;
+
+	/*! Function for retreiving initial states such as internal enery
+	 * from each model.*/
+	void initialStates(double *y0);
 
 	/*! Function for setting internal states such as internal enery.
 		May be vector valued for layered temperature models.*/

@@ -53,6 +53,11 @@ unsigned int TNPipeElement::nInternalStates() const
 	return 1;
 }
 
+void TNPipeElement::initialStates(double *y0) {
+	// TODO: retrieve initial temperature from fluid
+	y0[0] = 293.15 * m_volume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value;
+}
+
 void TNPipeElement::setInternalStates(const double * y)
 {
 	// calculate specific enthalpy
@@ -147,10 +152,14 @@ unsigned int TNHeatExchanger::nInternalStates() const
 	return 1;
 }
 
+void TNHeatExchanger::initialStates(double *y0) {
+	// TODO: retrieve initial temperature from fluid
+	y0[0] = 293.15 * m_volume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value;
+}
+
 void TNHeatExchanger::setInternalStates(const double * y)
 {
-	// TODO Anne calculate specific enthalpy
-//	m_specificEnthalpy = y[0] / (m_volume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value);
+	m_specificEnthalpy = y[0] / (m_volume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value);
 }
 
 double TNHeatExchanger::heatLoss()
@@ -173,7 +182,7 @@ void TNHeatExchanger::setInletFluxes(double mdot, double Hdot)
 	m_massFlux = mdot;
 }
 
-void TNHeatExchanger::setAmbientConditions(double Tamb, double alphaAmb)
+void TNHeatExchanger::setAmbientConditions(double /*Tamb*/, double /*alphaAmb*/)
 {
 }
 
@@ -212,10 +221,14 @@ unsigned int TNPump::nInternalStates() const
 	return 1;
 }
 
+void TNPump::initialStates(double *y0) {
+	// TODO: retrieve initial temperature from fluid
+	y0[0] = 293.15 * m_volume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value;
+}
+
 void TNPump::setInternalStates(const double * y)
 {
-	// TODO Anne calculate specific enthalpy
-//	m_specificEnthalpy = y[0] / (m_volume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value);
+	m_specificEnthalpy = y[0] / (m_volume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value);
 }
 
 double TNPump::heatLoss()
@@ -238,7 +251,7 @@ void TNPump::setInletFluxes(double mdot, double Hdot)
 	m_massFlux = mdot;
 }
 
-void TNPump::setAmbientConditions(double Tamb, double alphaAmb)
+void TNPump::setAmbientConditions(double /*Tamb*/, double /*alphaAmb*/)
 {
 }
 
