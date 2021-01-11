@@ -46,8 +46,8 @@ public:
 	};
 
 	enum HeatExchangeParameter {
-		HE_Temperature,
-		HE_HeatFlux,
+		HE_Temperature,					// Keyword: Temperature								[C]		'temperature '
+		HE_HeatFlux,					// Keyword: HeatFlux								[W]		'heat flux'
 		NUM_HE
 	};
 
@@ -81,9 +81,8 @@ public:
 	/*! Integer parameters. */
 	IBK::IntPara					m_intPara[NUM_IP];									// XML:E
 
-	IBK::Parameter					m_heatExchangeConstParameter[NUM_HE];
+	IBK::Parameter					m_heatExchangeConstParameter[NUM_HE];				// XML:E
 
-	IBK::LinearSpline				m_heatExchangeSplineParameter[NUM_HE];
 };
 
 } // namespace NANDRAD

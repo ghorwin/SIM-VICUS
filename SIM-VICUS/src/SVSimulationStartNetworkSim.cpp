@@ -87,137 +87,176 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	NANDRAD::KeywordList::setParameter(p.m_simulationParameter.m_interval.m_para,
 									   "Interval::para_t", NANDRAD::Interval::P_End, 1.0/24); // d
 
-//	// generate NANDRAD hydraulic network
-
-	VICUS::Project proj = project();
-
-	unsigned int networkId = m_networksMap.value(m_ui->comboBoxNetwork->currentText());
-	VICUS::Network *network = proj.element(proj.m_geometricNetworks, networkId);
-
-	// *** this is a test project ***
-
-	//	 components
-	NANDRAD::HydraulicNetworkComponent pump;
-	pump.m_id = 0;
-	pump.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel;
-	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].set("PressureHead", 1e5, IBK::Unit("Pa"));
-	network->m_hydraulicComponents.push_back(pump);
-
-	NANDRAD::HydraulicNetworkComponent heatExchanger;
-	heatExchanger.m_id = 1;
-	heatExchanger.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger;
-	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient].set("PressureLossCoefficient", 10, IBK::Unit("-"));
-	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].set("HydraulicDiameter", 50, IBK::Unit("mm"));
-	network->m_hydraulicComponents.push_back(heatExchanger);
-
-	for (VICUS::NetworkNode &node: network->m_nodes){
-		if (node.m_type == VICUS::NetworkNode::NT_Source)
-			node.m_componentId = pump.m_id;
-		else if (node.m_type == VICUS::NetworkNode::NT_Building)
-			node.m_componentId = heatExchanger.m_id;
-	}
-
-	network->updateNodeEdgeConnectionPointers();
-
-	// *** test project until here ***
 
 
-	// create Nandrad Network
-	NANDRAD::HydraulicNetwork hydraulicNetwork;
-	hydraulicNetwork.m_id = networkId;
-	hydraulicNetwork.m_displayName = network->m_name;
-	network->createNandradHydraulicNetwork(hydraulicNetwork);
-	hydraulicNetwork.m_fluid.defaultFluidWater(1);
-
-	// finally add to nandrad project
-	p.m_hydraulicNetworks.clear();
-	p.m_hydraulicNetworks.push_back(hydraulicNetwork);
+	// generate NANDRAD hydraulic network
 
 
 
+//#if 0
 
-#if 0
-	// *** example network ****
+	// *** test example 1: very simple, one pump, one pipe, one HX ***
+
 	// geometric network
-	VICUS::Network net;
-	unsigned id1 = net.addNodeExt(IBKMK::Vector3D(0,0,0), VICUS::NetworkNode::NT_Source);
-	unsigned id2 = net.addNodeExt(IBKMK::Vector3D(0,100,0), VICUS::NetworkNode::NT_Mixer);
-	unsigned id3 = net.addNodeExt(IBKMK::Vector3D(100,100,0), VICUS::NetworkNode::NT_Building);
-	unsigned id4 = net.addNodeExt(IBKMK::Vector3D(0,200,0), VICUS::NetworkNode::NT_Mixer);
-	unsigned id5 = net.addNodeExt(IBKMK::Vector3D(100,200,0), VICUS::NetworkNode::NT_Building);
-	unsigned id6 = net.addNodeExt(IBKMK::Vector3D(-50,200,0), VICUS::NetworkNode::NT_Building);
-	net.addEdge(id1, id2, true);
-	net.addEdge(id2, id3, true);
-	net.addEdge(id2, id4, true);
-	net.addEdge(id4, id5, true);
-	net.addEdge(id4, id6, true);
+	VICUS::Network geoNetwork;
+	unsigned id1 = geoNetwork.addNodeExt(IBKMK::Vector3D(0,0,0), VICUS::NetworkNode::NT_Source);
+	unsigned id2 = geoNetwork.addNodeExt(IBKMK::Vector3D(0,100,0), VICUS::NetworkNode::NT_Building);
+	geoNetwork.addEdge(id1, id2, true);
 
-	//	 components
+	//	*** Components
+
+	// -> pump
 	NANDRAD::HydraulicNetworkComponent pump;
 	pump.m_id = 0;
 	pump.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel;
-	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].set("PressureHead", 1000, IBK::Unit("Pa"));
-	net.m_hydraulicComponents.push_back(pump);
+	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].set("PressureHead", -1000, IBK::Unit("Pa"));
+	geoNetwork.m_hydraulicComponents.push_back(pump);
 
+	// -> heat exchanger
 	NANDRAD::HydraulicNetworkComponent heatExchanger;
 	heatExchanger.m_id = 1;
 	heatExchanger.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger;
-	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_HeatFlux].set("HeatFlux", 100, IBK::Unit("W"));
 	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient].set("PressureLossCoefficient", 5, IBK::Unit("-"));
 	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].set("HydraulicDiameter", 25.6, IBK::Unit("mm"));
-	net.m_hydraulicComponents.push_back(heatExchanger);
+	geoNetwork.m_hydraulicComponents.push_back(heatExchanger);
 
-	net.m_nodes[id1].m_componentId = pump.m_id;
-	net.m_nodes[id3].m_componentId = heatExchanger.m_id;
-	net.m_nodes[id5].m_componentId = heatExchanger.m_id;
-	net.m_nodes[id6].m_componentId = heatExchanger.m_id;
+	// -> pipe
+	NANDRAD::HydraulicNetworkComponent pipeComponent;
+	pipeComponent.m_id = 2;
+	pipeComponent.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe;
+	geoNetwork.m_hydraulicComponents.push_back(pipeComponent);
 
-
-	// pipes
+	// *** pipe catalog
 	VICUS::NetworkPipe pipe1;
 	pipe1.m_id = 0;
 	pipe1.m_displayName = "PE 32 x 3.2";
 	pipe1.m_diameterOutside = 32;
 	pipe1.m_sWall = 3.2;
 	pipe1.m_roughness = 0.007;
-	net.m_networkPipeDB.push_back(pipe1);
+	geoNetwork.m_networkPipeDB.push_back(pipe1);
+
+	// *** add IDs to nodes, edges
+	geoNetwork.m_nodes[id1].m_componentId = pump.m_id;
+	geoNetwork.m_nodes[id2].m_componentId = heatExchanger.m_id;
+	geoNetwork.m_nodes[id2].m_heatFlux = IBK::Parameter("heat flux", 100, IBK::Unit("W"));
+
+	geoNetwork.edge(id1, id2)->m_pipeId = pipe1.m_id;
+	geoNetwork.edge(id1, id2)->m_componentId = pipeComponent.m_id;
+	geoNetwork.edge(id1, id2)->m_ambientTemperature = IBK::Parameter("Temperature", 10, IBK::Unit("C"));
+
+	geoNetwork.updateNodeEdgeConnectionPointers();
+
+	// *** test example 1 until here ***
+
+//#endif
+
+
+
+#if 0
+	// *** test example 2: bit larger ***
+
+	// geometric network
+	VICUS::Network geoNetwork;
+	unsigned id1 = geoNetwork.addNodeExt(IBKMK::Vector3D(0,0,0), VICUS::NetworkNode::NT_Source);
+	unsigned id2 = geoNetwork.addNodeExt(IBKMK::Vector3D(0,100,0), VICUS::NetworkNode::NT_Mixer);
+	unsigned id3 = geoNetwork.addNodeExt(IBKMK::Vector3D(100,100,0), VICUS::NetworkNode::NT_Building);
+	unsigned id4 = geoNetwork.addNodeExt(IBKMK::Vector3D(0,200,0), VICUS::NetworkNode::NT_Mixer);
+	unsigned id5 = geoNetwork.addNodeExt(IBKMK::Vector3D(100,200,0), VICUS::NetworkNode::NT_Building);
+	unsigned id6 = geoNetwork.addNodeExt(IBKMK::Vector3D(-50,200,0), VICUS::NetworkNode::NT_Building);
+	geoNetwork.addEdge(id1, id2, true);
+	geoNetwork.addEdge(id2, id3, true);
+	geoNetwork.addEdge(id2, id4, true);
+	geoNetwork.addEdge(id4, id5, true);
+	geoNetwork.addEdge(id4, id6, true);
+
+	//	*** Components
+
+	// -> pump
+	NANDRAD::HydraulicNetworkComponent pump;
+	pump.m_id = 0;
+	pump.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel;
+	pump.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].set("PressureHead", -1000, IBK::Unit("Pa"));
+	geoNetwork.m_hydraulicComponents.push_back(pump);
+
+	// -> heat exchanger
+	NANDRAD::HydraulicNetworkComponent heatExchanger;
+	heatExchanger.m_id = 1;
+	heatExchanger.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger;
+	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient].set("PressureLossCoefficient", 5, IBK::Unit("-"));
+	heatExchanger.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].set("HydraulicDiameter", 25.6, IBK::Unit("mm"));
+	geoNetwork.m_hydraulicComponents.push_back(heatExchanger);
+
+	// -> pipe
+	NANDRAD::HydraulicNetworkComponent pipeComponent;
+	pipeComponent.m_id = 2;
+	pipeComponent.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe;
+	geoNetwork.m_hydraulicComponents.push_back(pipeComponent);
+
+	// *** pipe catalog
+	VICUS::NetworkPipe pipe1;
+	pipe1.m_id = 0;
+	pipe1.m_displayName = "PE 32 x 3.2";
+	pipe1.m_diameterOutside = 32;
+	pipe1.m_sWall = 3.2;
+	pipe1.m_roughness = 0.007;
+	geoNetwork.m_networkPipeDB.push_back(pipe1);
 	VICUS::NetworkPipe pipe2;
 	pipe2.m_id = 1;
 	pipe2.m_displayName = "PE 50 x 4.6";
 	pipe2.m_diameterOutside = 60;
 	pipe2.m_sWall = 4.6;
 	pipe2.m_roughness = 0.007;
-	net.m_networkPipeDB.push_back(pipe2);
+	geoNetwork.m_networkPipeDB.push_back(pipe2);
 
-	net.edge(id1, id2)->m_pipeId = pipe2.m_id;
-	net.edge(id1, id2)->m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe;
-	net.edge(id2, id3)->m_pipeId = pipe1.m_id;
-	net.edge(id2, id3)->m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe;
-	net.edge(id2, id4)->m_pipeId = pipe1.m_id;
-	net.edge(id2, id4)->m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe;
-	net.edge(id4, id5)->m_pipeId = pipe1.m_id;
-	net.edge(id4, id5)->m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe;
-	net.edge(id4, id6)->m_pipeId = pipe1.m_id;
-	net.edge(id4, id6)->m_modelType = NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe;
+	// *** add IDs to nodes, edges
+	geoNetwork.m_nodes[id1].m_componentId = pump.m_id;
+	geoNetwork.m_nodes[id3].m_componentId = heatExchanger.m_id;
+	geoNetwork.m_nodes[id3].m_heatFlux = IBK::Parameter("heat flux", 100, IBK::Unit("W"));
+	geoNetwork.m_nodes[id5].m_componentId = heatExchanger.m_id;
+	geoNetwork.m_nodes[id5].m_heatFlux = IBK::Parameter("heat flux", 100, IBK::Unit("W"));
+	geoNetwork.m_nodes[id6].m_componentId = heatExchanger.m_id;
+	geoNetwork.m_nodes[id6].m_heatFlux = IBK::Parameter("heat flux", 100, IBK::Unit("W"));
 
-	net.updateNodeEdgeConnectionPointers();
+	geoNetwork.edge(id1, id2)->m_pipeId = pipe2.m_id;
+	geoNetwork.edge(id1, id2)->m_componentId = pipeComponent.m_id;
+	geoNetwork.edge(id1, id2)->m_ambientTemperature = IBK::Parameter("Temperature", 10, IBK::Unit("C"));
+	geoNetwork.edge(id2, id3)->m_pipeId = pipe1.m_id;
+	geoNetwork.edge(id2, id3)->m_componentId = pipeComponent.m_id;
+	geoNetwork.edge(id2, id3)->m_ambientTemperature = IBK::Parameter("Temperature", 10, IBK::Unit("C"));
+	geoNetwork.edge(id2, id4)->m_pipeId = pipe1.m_id;
+	geoNetwork.edge(id2, id4)->m_componentId = pipeComponent.m_id;
+	geoNetwork.edge(id2, id4)->m_ambientTemperature = IBK::Parameter("Temperature", 10, IBK::Unit("C"));
+	geoNetwork.edge(id4, id5)->m_pipeId = pipe1.m_id;
+	geoNetwork.edge(id4, id5)->m_componentId = pipeComponent.m_id;
+	geoNetwork.edge(id4, id5)->m_ambientTemperature = IBK::Parameter("Temperature", 10, IBK::Unit("C"));
+	geoNetwork.edge(id4, id6)->m_pipeId = pipe1.m_id;
+	geoNetwork.edge(id4, id6)->m_componentId = pipeComponent.m_id;
+	geoNetwork.edge(id4, id6)->m_ambientTemperature = IBK::Parameter("Temperature", 10, IBK::Unit("C"));
+
+	geoNetwork.updateNodeEdgeConnectionPointers();
+
+	// *** test example 2 until here ***
+
+#endif
+
+
+
+//	VICUS::Project proj = project();
+//	unsigned int networkId = m_networksMap.value(m_ui->comboBoxNetwork->currentText());
+//	const VICUS::Network geoNetwork = *proj.element(proj.m_geometricNetworks, networkId);
 
 	// create Nandrad Network
 	NANDRAD::HydraulicNetwork hydraulicNetwork;
-	std::vector<NANDRAD::HydraulicNetworkComponent> hydraulicComponents;
-	hydraulicNetwork.m_id = 1;
-	hydraulicNetwork.m_displayName = "auto generated from geometric network";
-	net.createNandradHydraulicNetwork(hydraulicNetwork, hydraulicComponents);
-	hydraulicNetwork.m_fluid.defaultFluidWater(1);
+	hydraulicNetwork.m_id = geoNetwork.m_id;
+	hydraulicNetwork.m_displayName = geoNetwork.m_name;
 
+	geoNetwork.createNandradHydraulicNetwork(hydraulicNetwork);
+
+	hydraulicNetwork.m_fluid.defaultFluidWater(1);
 
 	// finally add to nandrad project
 	p.m_hydraulicNetworks.clear();
 	p.m_hydraulicNetworks.push_back(hydraulicNetwork);
-	p.m_hydraulicComponents.clear();
-	p.m_hydraulicComponents = hydraulicComponents;
-
-#endif
 
 
 	return true; // no errors, signal ok

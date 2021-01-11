@@ -684,9 +684,11 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &hydraulic
 					elem = NANDRAD::HydraulicNetworkElement(node.m_id, node.m_id+ idOffsetOutlet, node.m_id, node.m_componentId);
 				else
 					elem = NANDRAD::HydraulicNetworkElement(node.m_id, node.m_id, node.m_id + idOffsetOutlet, node.m_componentId);
-				// add parameters
-//				for (unsigned i=0; i<NANDRAD::HydraulicNetworkElement::NUM_HP; ++i)
-//					elem.m_heatExchangePara[i] = node.m_heatExchangePara[i];
+
+				// TODO: Hauke
+				elem.m_heatExchangeConstParameter[HeatExchangeParameter::HE_HeatFlux] = node.m_heatFlux;
+
+
 				elem.m_displayName = "node " + IBK::val2string(node.m_id);
 
 				hydraulicNetwork.m_elements.push_back(elem);
@@ -719,7 +721,7 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &hydraulic
 									 .arg(edge->nodeId1()).arg(edge->nodeId2()).arg(edge->m_componentId), FUNC_ID);
 
 			// check if the component has a model type which corresponds to a pipe
-			const NANDRAD::HydraulicNetworkComponent * comp = Project::element(m_hydraulicComponents, edge->m_componentId);
+			const NANDRAD::HydraulicNetworkComponent * comp = Project::element(hydraulicNetwork.m_components, edge->m_componentId);
 			if ( ! (comp->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_StaticPipe ||
 					comp->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe ||
 					comp->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe ||
@@ -738,6 +740,8 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &hydraulic
 			NANDRAD::HydraulicNetworkPipeProperties pipeProp;
 			pipeProp.m_id = pipe->m_id;
 			NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
+											   NANDRAD::HydraulicNetworkPipeProperties::P_PipeOuterDiameter, pipe->m_diameterOutside);
+			NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
 											   NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter, pipe->m_diameterInside());
 			NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
 											   NANDRAD::HydraulicNetworkPipeProperties::P_PipeRoughness, pipe->m_roughness);
@@ -754,6 +758,8 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &hydraulic
 														edge->m_componentId,
 														edge->m_pipeId,
 														edge->length());
+			// TODO: Hauke
+			inletPipe.m_heatExchangeConstParameter[NANDRAD::HydraulicNetworkElement::HE_Temperature] = edge->m_ambientTemperature;
 			hydraulicNetwork.m_elements.push_back(inletPipe);
 
 			// add outlet pipe element
@@ -763,6 +769,8 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &hydraulic
 														edge->m_componentId,
 														edge->m_pipeId,
 														edge->length());
+			// TODO: Hauke
+			outletPipe.m_heatExchangeConstParameter[NANDRAD::HydraulicNetworkElement::HE_Temperature] = edge->m_ambientTemperature;
 			hydraulicNetwork.m_elements.push_back(outletPipe);
 		}
 	}

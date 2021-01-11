@@ -5,9 +5,9 @@
 #include "VICUS_Constants.h"
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Object.h"
+#include "VICUS_NetworkPipe.h"
 
 #include <NANDRAD_HydraulicNetworkComponent.h>
-#include "VICUS_NetworkPipe.h"
 
 #include <vector>
 #include <set>
@@ -86,6 +86,9 @@ public:
 
 	/*! ID of component parameters. */
 	unsigned int										m_componentId = INVALID_ID;		// XML:E
+
+	// not final !!! //
+	IBK::Parameter										m_ambientTemperature;
 
 	// *** RUNTIME VARIABLES ***
 

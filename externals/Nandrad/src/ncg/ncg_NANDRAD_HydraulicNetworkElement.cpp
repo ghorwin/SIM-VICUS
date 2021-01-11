@@ -90,6 +90,12 @@ void HydraulicNetworkElement::readXML(const TiXmlElement * element) {
 					m_para[ptype] = p; success = true;
 				}
 				catch (...) { /* intentional fail */  }
+				HeatExchangeParameter ptype2;
+				try {
+					ptype2 = (HeatExchangeParameter)KeywordList::Enumeration("HydraulicNetworkElement::HeatExchangeParameter", p.name);
+					m_heatExchangeConstParameter[ptype] = p; success = true;
+				}
+				catch (...) { /* intentional fail */  }
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -145,6 +151,12 @@ TiXmlElement * HydraulicNetworkElement::writeXML(TiXmlElement * parent) const {
 	for (unsigned int i=0; i<NUM_IP; ++i) {
 		if (!m_intPara[i].name.empty()) {
 			TiXmlElement::appendSingleAttributeElement(e, "IBK:IntPara", "name", m_intPara[i].name, IBK::val2string(m_intPara[i].value));
+		}
+	}
+
+	for (unsigned int i=0; i<NUM_HE; ++i) {
+		if (!m_heatExchangeConstParameter[i].name.empty()) {
+			TiXmlElement::appendIBKParameterElement(e, m_heatExchangeConstParameter[i].name, m_heatExchangeConstParameter[i].IO_unit.name(), m_heatExchangeConstParameter[i].get_value());
 		}
 	}
 	return e;

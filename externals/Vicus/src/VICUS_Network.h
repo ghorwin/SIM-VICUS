@@ -48,6 +48,12 @@ public:
 		NUM_SP
 	};
 
+	enum HeatExchangeParameter {
+		HE_Temperature,
+		HE_HeatFlux,
+		NUM_HE
+	};
+
 	Network();
 
 	/*! call private addNode and set position relative to orign.
