@@ -11,6 +11,7 @@
 #include <IBK_assert.h>
 #include <IBK_Time.h>
 #include <IBK_messages.h>
+#include <IBK_FileUtils.h>
 
 #include "SOLFRA_IntegratorSundialsCVODE.h"
 #include "SOLFRA_LESKLU.h"
@@ -20,10 +21,10 @@ namespace SOLFRA {
 void LESInterfaceDirect::writeStatisticsHeader(const IBK::Path & logfilePath, bool doRestart) {
 
 	if (doRestart) {
-		m_statsFileStream = new std::ofstream( (logfilePath + "/LES_direct_stats.tsv").c_str(), std::ios_base::app);
+		m_statsFileStream = IBK::create_ofstream(logfilePath / "LES_direct_stats.tsv", std::ios_base::app);
 	}
 	else {
-		m_statsFileStream = new std::ofstream( (logfilePath + "/LES_direct_stats.tsv").c_str());
+		m_statsFileStream = IBK::create_ofstream(logfilePath / "LES_direct_stats.tsv");
 		std::ostream & out = *m_statsFileStream;
 		out << std::setw(25) << std::right << "Time\t";
 		out << std::setw(13) << std::right << "NJacEvals\t";

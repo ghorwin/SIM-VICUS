@@ -26,6 +26,7 @@
 #include <IBK_assert.h>
 #include <IBK_Time.h>
 #include <IBK_messages.h>
+#include <IBK_FileUtils.h>
 
 #include <IBKMKC_vector_operations.h>
 #include <IBK_openMP.h>
@@ -33,6 +34,7 @@
 #include <sundials/sundials_timer.h>
 
 #include "SOLFRA_LESInterface.h"
+#include "SOLFRA_LESADI.h"
 #include "SOLFRA_PrecondInterface.h"
 #include "SOLFRA_JacobianInterface.h"
 
@@ -48,7 +50,7 @@ inline const double * DOUBLE_PTR(const std::vector<double> & vec) { return &vec[
 const double ERROR_NORM_SAFETY = 6;
 
 IntegratorImplicitEuler::IntegratorImplicitEuler() :
-	m_maxNonLinIters(3),
+	m_maximumNonlinearIterations(3),
 	m_NLResidualTolerance(1e-5),
 	m_nonLinConvCoeff(0.1),
 	m_modifiedNewtonStrategy(MN_ONCE_AT_STEP_START),
@@ -134,7 +136,7 @@ void IntegratorImplicitEuler::init(	ModelInterface * model,
 		throw IBK::Exception("Invalid size of absTolVec.", FUNC_ID);
 
 	IBK::IBK_Message( IBK::FormatString("Setting NonlinConvCoef to %1.\n").arg(m_nonLinConvCoeff), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-	IBK::IBK_Message( IBK::FormatString("Setting MaxNonLinIters to %1.\n").arg(m_maxNonLinIters), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	IBK::IBK_Message( IBK::FormatString("Setting MaxNonLinIters to %1.\n").arg(m_maximumNonlinearIterations), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
 	// *** Initialize Linear Equation Solver ***
 	lesSolver->init(m_model, this, precond, jacobian);
@@ -298,10 +300,10 @@ const double * IntegratorImplicitEuler::yOut(double t_out) const {
 
 void IntegratorImplicitEuler::writeStatisticsHeader(const IBK::Path & logfilePath, bool doRestart) {
 	if (doRestart) {
-		m_statsFileStream = new std::ofstream( (logfilePath + "/integrator_ImplicitEuler_stats.tsv").c_str(), std::ios_base::app);
+		m_statsFileStream = IBK::create_ofstream(logfilePath / "integrator_ImplicitEuler_stats.tsv", std::ios_base::app);
 	}
 	else {
-		m_statsFileStream = new std::ofstream( (logfilePath + "/integrator_ImplicitEuler_stats.tsv").c_str());
+		m_statsFileStream = IBK::create_ofstream(logfilePath / "integrator_ImplicitEuler_stats.tsv");
 		std::ostream & out = *(m_statsFileStream);
 		out << std::setw(25) << std::right << "Time [s]" << "\t";
 		out << std::setw(10) << std::right << "Steps" << "\t";
@@ -516,6 +518,18 @@ IntegratorImplicitEuler::StepResult IntegratorImplicitEuler::tryStep() {
 
 	// model is at state m_t, m_y(pred)
 
+	// if we have an ADI LES Solver, we just need to take one ADI step, instead of
+	// a Newton iteration
+	if (dynamic_cast<SOLFRA::LESADI*>(m_lesSolver) != NULL) {
+		// ADI solver setup gets old yn values, time steps
+		m_lesSolver->setup(DOUBLE_PTR(m_yn), DOUBLE_PTR(m_ydot), 0, m_dt);
+		// ADI solver step
+		m_lesSolver->solve(DOUBLE_PTR(m_deltaY));
+		// done
+		return IntegratorImplicitEuler::Success;
+	}
+
+
 	// this flag is true when we have updated the Jacobian matrix at least once in this tryStep() run with the current time step size
 	m_jacCurrent = false;
 
@@ -699,7 +713,7 @@ IntegratorImplicitEuler::StepResult IntegratorImplicitEuler::newtonIteration() {
 		}
 
 		// *** Iteration limit check ***
-		if (m_nIterations >= m_maxNonLinIters) {
+		if (m_nIterations >= m_maximumNonlinearIterations) {
 			// doesn't work, only creates more error failes
 			//if (m_residualNorm/residualNormPred < 0.1 || deltaNorm/deltaNormPred < 0.1) {
 			//	break; // converged?
@@ -814,7 +828,8 @@ void IntegratorImplicitEuler::writeIterationStats(double convRateResiduals, doub
 	FUNCID(IntegratorImplicitEuler::writeIterationStats);
 	// on first iteration print headers
 #ifdef SOLVER_STEP_STATS
-	std::ofstream dump( (m_logFilePath + "/iter_stats.txt").c_str(), std::ios_base::app);
+	// TODO : Refactor to IBK::create_stream()
+	std::ofstream dump( (m_logFilePath + "/iter_stats.txt").str().c_str(), std::ios_base::app);
 #endif // SOLVER_STEP_STATS
 	if (m_statNumIters == 0 && m_statNumSteps == 0) {
 #ifdef SOLVER_STEP_STATS

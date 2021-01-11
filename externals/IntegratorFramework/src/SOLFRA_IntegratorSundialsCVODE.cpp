@@ -11,6 +11,7 @@
 #include <IBK_assert.h>
 #include <IBK_Time.h>
 #include <IBK_StopWatch.h>
+#include <IBK_FileUtils.h>
 
 #include <sundials/sundials_types.h>
 #include <sundials/sundials_direct.h>
@@ -473,10 +474,10 @@ const double * IntegratorSundialsCVODE::yOut(double t_out) const {
 
 void IntegratorSundialsCVODE::writeStatisticsHeader(const IBK::Path & logfilePath, bool doRestart) {
 	if (doRestart) {
-		m_impl->m_statsFileStream = new std::ofstream( (logfilePath + "/integrator_cvode_stats.tsv").c_str(), ios_base::app);
+		m_impl->m_statsFileStream = IBK::create_ofstream(logfilePath / "integrator_cvode_stats.tsv", ios_base::app);
 	}
 	else {
-		m_impl->m_statsFileStream = new std::ofstream( (logfilePath + "/integrator_cvode_stats.tsv").c_str());
+		m_impl->m_statsFileStream = IBK::create_ofstream(logfilePath / "integrator_cvode_stats.tsv");
 		std::ostream & out = *(m_impl->m_statsFileStream);
 		out << setw(25) << right << "Time [s]" << "\t";
 		out << setw(10) << right << "Steps" << "\t";

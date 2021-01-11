@@ -32,6 +32,7 @@
 #include <IBK_FormatString.h>
 #include <IBK_Exception.h>
 #include <IBK_Time.h>
+#include <IBK_FileUtils.h>
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -97,6 +98,7 @@ SolverControlFramework::~SolverControlFramework() {
 
 
 void SolverControlFramework::setModel(ModelInterface * model) {
+	FUNCID(SolverControlFramework::setModel);
 
 	// clean up previously created
 	delete m_defaultIntegrator;
@@ -502,7 +504,6 @@ void SolverControlFramework::run(double t) {
 
 
 void SolverControlFramework::appendRestartInfo(double t, const double * y) const {
-
 	FUNCID(SolverControlFramework::appendRestartInfo);
 
 	// do nothing if no filename is set
@@ -516,9 +517,13 @@ void SolverControlFramework::appendRestartInfo(double t, const double * y) const
 	else
 		out.open(m_restartFilename.wstr().c_str(), std::ios_base::binary);
 #else
-		out.open(m_restartFilename.str().c_str(), std::ios_base::app | std::ios_base::binary);
-	else
-		out.open(m_restartFilename.str().c_str(), std::ios_base::binary);
+		out.open(m_restartFilename.c_str(), std::ios_base::app | std::ios_base::binary);
+	else {
+		// if restart file exists, rename it to bak
+		if (m_restartFilename.isFile())
+			IBK::Path::move(m_restartFilename, m_restartFilename + ".bak");
+		out.open(m_restartFilename.c_str(), std::ios_base::binary);
+	}
 #endif
 	if (!out)
 		throw IBK::Exception( IBK::FormatString("Cannot open restart file '%1' for writing.").arg(m_restartFilename), FUNC_ID);
@@ -645,7 +650,7 @@ void SolverControlFramework::writeMetrics() {
 #endif
 	std::ofstream * of = nullptr;
 	if (m_logDirectory.isValid()) {
-		of_ptr.reset( new std::ofstream( (m_logDirectory + "/summary.txt").c_str() ) );
+		of_ptr.reset( IBK::create_ofstream(m_logDirectory / "summary.txt") );
 		of = of_ptr.get();
 		*of << "WallClockTime=" << wct << std::endl;
 	}

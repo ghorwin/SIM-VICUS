@@ -8,6 +8,7 @@
 #include <IBK_assert.h>
 #include <IBK_Time.h>
 #include <IBK_messages.h>
+#include <IBK_FileUtils.h>
 
 #include <cvode/cvode_spils.h>
 #include <sundials/sundials_timer.h>
@@ -21,10 +22,10 @@ namespace SOLFRA {
 void LESInterfaceIterative::writeStatisticsHeader(const IBK::Path & logfilePath, bool doRestart ) {
 
 	if (doRestart) {
-		m_statsFileStream = new std::ofstream( (logfilePath + "/LES_iterative_stats.tsv").c_str(), std::ios_base::app);
+		m_statsFileStream = IBK::create_ofstream(logfilePath / "LES_iterative_stats.tsv", std::ios_base::app);
 	}
 	else {
-		m_statsFileStream = new std::ofstream( (logfilePath + "/LES_iterative_stats.tsv").c_str());
+		m_statsFileStream = IBK::create_ofstream(logfilePath / "LES_iterative_stats.tsv", std::ios_base::app);
 		std::ostream & out = *m_statsFileStream;
 		out << std::setw(25) << std::right << "Time\t";
 		out << std::setw(10) << std::right << "NLIters\t";

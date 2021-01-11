@@ -3,6 +3,7 @@
 #include <fstream>
 
 #include "SOLFRA_IntegratorSundialsCVODE.h"
+#include "SOLFRA_IntegratorImplicitEuler.h"
 #include "SOLFRA_ModelInterface.h"
 #include "SOLFRA_JacobianInterface.h" // for the DUMP_JACOBIAN defines
 
@@ -56,11 +57,27 @@ void LESDense::init(ModelInterface * model, IntegratorInterface * integrator,
 		}
 		return;
 	}
+	else if (IntegratorImplicitEuler* intEuler = dynamic_cast<IntegratorImplicitEuler*>(m_integrator)) {
+		(void)intEuler;
+		// for now, only resize matrix and vectors when using implicit Euler (so that we are not wasting memory)
+		m_n = model->n();
+		m_jacobian = new IBKMK::DenseMatrix(m_n);
+		m_yMod.resize(m_n);
+		m_ydotMod.resize(m_n);
+		m_FMod.resize(m_n);
+		m_ydiff.resize(m_n);
+
+		return;
+	}
 
 	throw IBK::Exception("Error initialising Dense linear solver: solver is only defined for CVODE, IDA or implicit Euler integrator",FUNC_ID);
 }
 
 void LESDense::setup(const double * y, const double * ydot, const double * /* residuals */, double gamma) {
+	// only setup linear equation system explicitely if integrator implicit Euler is chosen
+	if (dynamic_cast<IntegratorImplicitEuler*>(m_integrator) == NULL)
+		return;
+
 	m_jacobian->fill(0.0);
 	// store current solution guess
 	std::memcpy(&m_yMod[0], y, m_yMod.size()*sizeof(double));
@@ -109,6 +126,10 @@ void LESDense::setup(const double * y, const double * ydot, const double * /* re
 
 
 void LESDense::solve(double * rhs) {
+	// only solve linear equation system explicitely if integrator implicit Euler is chosen
+	if (dynamic_cast<IntegratorImplicitEuler*>(m_integrator) == NULL)
+		return;
+
 	// backsolve with given lu factorisation
 	m_jacobian->backsolve(rhs);
 }
