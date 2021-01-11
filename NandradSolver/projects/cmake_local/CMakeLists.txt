@@ -67,7 +67,7 @@ set( LINK_LIBS
 #if( WIN32 )
 #	set (LINK_LIBS ${LINK_LIBS} zlibstatic)
 #else( WIN32 )
-#	set (LINK_LIBS ${LINK_LIBS} zlib dl)
+#	set (LINK_LIBS ${LINK_LIBS} zlibstatic dl)
 #endif( WIN32 )
 
 add_executable( ${PROJECT_NAME}
