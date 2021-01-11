@@ -1,0 +1,82 @@
+:imagesdir: ./images
+# 3D Calculations
+
+This chapter describes/discusses many of the unterlying 3D geometry calculations
+used in SIM-VICUS.
+
+[NOTE]
+====
+We are dealing with limited number precision when performing geometry calculations. Hence, when checking for same vertexes, collinearity, and many other properties we need to deal with a little bit of fuzzyness. For example, the vertexes (0,1,0) and (1e-4, 0.9999, -1e.4) should be treated the same.
+
+Generally speaking, we need to define a (problem specific) _relative_ and _absolute tolerance_ to be used when comparing geometrical properties.
+
+However, in the implementation we often use comparisons with cached variables to avoid updates when no changes have been made. In these comparisons we need to check for exactly the same values.
+====
+
+## Polygons
+
+Polygons are defined through lists of vertexes. There can be valid and invalid polygons.
+
+### Valid polygons
+
+Valid polygons have the following properties:
+
+. there are at least 3 vertexes
+. all vertexes must lie in a plane (within given tolerance limit)
+. all vertices are different (within given tolerance limit)
+. two subsequent edges are not collinear (within given tolerance limit)
+. polygon is not winding (i.e. no two edges cross)
+
+
+### Reducing vertex lists to get valid polygons
+
+When drawing a polygon or starting with a given set of vertexes, we can remove vertexes that would violate any of the rules above in the following manner:
+
+- remove subsequent vertexes which are the same
+- compute edge direction vectors, and if two adjacent edge direction vectors are collinear, remove the middle vertex
+
+
+## Normal vector calculation of polygons
+
+:xrefstyle: short
+
+Polygons are expected to be not-winding and defined in counter-clockwise manner. Then, the normal vector of the polygon can be created by computing the cross product of two adjacent edges. However, if polygons are convex, the sign of the normal vector depends on the edge being selected. <<fig_convex_polygon>> shows a convex polygon.
+
+[[fig_convex_polygon]]
+.Convex polygon example
+image::polygon_normal_vector.svg[pdfwidth=8cm]
+
+Suppose the following vertex coordinates define the polygon:
+
+----
+1:   4,0,0
+2:   2,2,0
+3:   4,3,0
+4:   0,4,0
+5:   0,0,0
+----
+
+If we select vertexes 1, 2 and 3 and compose the cross product of the enclosed edges, we get:
+
+----
+a = v1-v2 = (2,-2,0)
+b = v3-v2 = (2,1,0)
+n = a x b = (0,0,6) (pointing upwards)
+----
+
+If we select vertexes 2, 3 and 4 we get:
+
+----
+a = v2-v3 = (-2,-1,0)
+b = v4-v3 = (-4,1,0)
+n = a x b = (0,0,-6)  (pointing downwards)
+----
+
+So, just picking a random point and computing the cross product between the adjacent edges doesn't work.
+
+TODO : Dirk
+
+
+
+:xrefstyle: basic
+

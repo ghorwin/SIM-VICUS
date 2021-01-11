@@ -73,7 +73,7 @@ table {
 <div class="details">
 <span id="author" class="author">Andreas Nicolai</span><br>
 <span id="email" class="email"><a href="mailto:andreas.nicolai@tu-dresden.de">andreas.nicolai@tu-dresden.de</a></span><br>
-<span id="revdate">0.2.0 (18.12.2020)</span>
+<span id="revdate">0.2.0 (11.01.2021)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -148,7 +148,19 @@ table {
 <li><a href="#_shaders">4.1.3. Shaders</a></li>
 </ul>
 </li>
-<li><a href="#_zustand_der_benutzeroberfläche_view_state">4.2. Zustand der Benutzeroberfläche (View State)</a></li>
+<li><a href="#_3d_calculations">4.2. 3D Calculations</a>
+<ul class="sectlevel3">
+<li><a href="#_polygons">4.2.1. Polygons</a></li>
+<li><a href="#_normal_vector_calculation_of_polygons">4.2.2. Normal vector calculation of polygons</a></li>
+</ul>
+</li>
+<li><a href="#_zustand_der_benutzeroberfläche_view_state">4.3. Zustand der Benutzeroberfläche (View State)</a></li>
+<li><a href="#UI-SelectionHandling">4.4. Auswahl von Objekten</a>
+<ul class="sectlevel3">
+<li><a href="#_auswahl_in_der_scene">4.4.1. Auswahl in der Scene</a></li>
+</ul>
+</li>
+<li><a href="#UI-object_picking">4.5. Objekt-Pick-Operation</a></li>
 </ul>
 </li>
 </ul>
@@ -240,7 +252,7 @@ table {
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>&gt; sudo apt install build-essential cmake qt5-default libqt5svg5-dev</pre>
+<pre>&gt; sudo apt install build-essential cmake qt5-default libqt5svg5-dev git qtcreator</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1877,7 +1889,131 @@ Total initialization time: 802 ms
 </div>
 </div>
 <div class="sect2">
-<h3 id="_zustand_der_benutzeroberfläche_view_state">4.2. Zustand der Benutzeroberfläche (View State)</h3>
+<h3 id="_3d_calculations">4.2. 3D Calculations</h3>
+<div class="paragraph">
+<p>This chapter describes/discusses many of the unterlying 3D geometry calculations
+used in SIM-VICUS.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>We are dealing with limited number precision when performing geometry calculations. Hence, when checking for same vertexes, collinearity, and many other properties we need to deal with a little bit of fuzzyness. For example, the vertexes (0,1,0) and (1e-4, 0.9999, -1e.4) should be treated the same.</p>
+</div>
+<div class="paragraph">
+<p>Generally speaking, we need to define a (problem specific) <em>relative</em> and <em>absolute tolerance</em> to be used when comparing geometrical properties.</p>
+</div>
+<div class="paragraph">
+<p>However, in the implementation we often use comparisons with cached variables to avoid updates when no changes have been made. In these comparisons we need to check for exactly the same values.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_polygons">4.2.1. Polygons</h4>
+<div class="paragraph">
+<p>Polygons are defined through lists of vertexes. There can be valid and invalid polygons.</p>
+</div>
+<div class="sect4">
+<h5 id="_valid_polygons">Valid polygons</h5>
+<div class="paragraph">
+<p>Valid polygons have the following properties:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>there are at least 3 vertexes</p>
+</li>
+<li>
+<p>all vertexes must lie in a plane (within given tolerance limit)</p>
+</li>
+<li>
+<p>all vertices are different (within given tolerance limit)</p>
+</li>
+<li>
+<p>two subsequent edges are not collinear (within given tolerance limit)</p>
+</li>
+<li>
+<p>polygon is not winding (i.e. no two edges cross)</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_reducing_vertex_lists_to_get_valid_polygons">Reducing vertex lists to get valid polygons</h5>
+<div class="paragraph">
+<p>When drawing a polygon or starting with a given set of vertexes, we can remove vertexes that would violate any of the rules above in the following manner:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>remove subsequent vertexes which are the same</p>
+</li>
+<li>
+<p>compute edge direction vectors, and if two adjacent edge direction vectors are collinear, remove the middle vertex</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_normal_vector_calculation_of_polygons">4.2.2. Normal vector calculation of polygons</h4>
+<div class="paragraph">
+<p>Polygons are expected to be not-winding and defined in counter-clockwise manner. Then, the normal vector of the polygon can be created by computing the cross product of two adjacent edges. However, if polygons are convex, the sign of the normal vector depends on the edge being selected. <a href="#fig_convex_polygon">Figure 3</a> shows a convex polygon.</p>
+</div>
+<div id="fig_convex_polygon" class="imageblock">
+<div class="content">
+<img src="./images/polygon_normal_vector.svg" alt="polygon normal vector">
+</div>
+<div class="title">Figure 3. Convex polygon example</div>
+</div>
+<div class="paragraph">
+<p>Suppose the following vertex coordinates define the polygon:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>1:   4,0,0
+2:   2,2,0
+3:   4,3,0
+4:   0,4,0
+5:   0,0,0</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If we select vertexes 1, 2 and 3 and compose the cross product of the enclosed edges, we get:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>a = v1-v2 = (2,-2,0)
+b = v3-v2 = (2,1,0)
+n = a x b = (0,0,6) (pointing upwards)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If we select vertexes 2, 3 and 4 we get:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>a = v2-v3 = (-2,-1,0)
+b = v4-v3 = (-4,1,0)
+n = a x b = (0,0,-6)  (pointing downwards)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>So, just picking a random point and computing the cross product between the adjacent edges doesn&#8217;t work.</p>
+</div>
+<div class="paragraph">
+<p>TODO : Dirk</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_zustand_der_benutzeroberfläche_view_state">4.3. Zustand der Benutzeroberfläche (View State)</h3>
 <div class="paragraph">
 <p>Die Benutzeroberfläche hat verschiedene Zustände, wobei ein Zustand beschreibt:</p>
 </div>
@@ -1935,12 +2071,68 @@ erfolgt in folgenden Schritten:</p>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="UI-SelectionHandling">4.4. Auswahl von Objekten</h3>
+<div class="paragraph">
+<p>Wenn die Benutzeroberfläche im Zustand:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Standard (NUM_OM)</p>
+</li>
+<li>
+<p>OM_SelectedGeometry</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>ist, kann man Objekte durch links-klicken auswählen. Alternativ kann man im Navigationsbaum auswählebare Objekte durch Ankreuzen der Auswahlboxen auswählen.</p>
+</div>
+<div class="sect3">
+<h4 id="_auswahl_in_der_scene">4.4.1. Auswahl in der Scene</h4>
+<div class="paragraph">
+<p>Wenn ein Linksklick registriert wird, werden alle geometrischen Primitiven auf Kollision mit der Sichtgeraden geprüft und ggfs. selektiert/deselektiert. Dies erfolgt in der Funktion <code>Vic3DScene::handleSelection()</code>.</p>
+</div>
+<div class="paragraph">
+<p>Hier wird zunächst die "pick"-Operation durchgeführt, wobei der Sichtstrahl konstruiert und die Kollisionsprüfung mit allen Objekten durchgeführt wird. Ist ein Objekt ermittelt, wird dieses eindeutig durch seinen uniqueID identifiziert. Alle Objekte im Navigationsbaum müssen eine solche haben, und sind deshalb von <code>VICUS::Object</code> abgeleitet. Diese Klasse speichert auch das "selected"-Flag.</p>
+</div>
+<div class="paragraph">
+<p>Wurde ein Objekt angeklickt, wird eine Undo-Action vom Typ <code>SVUndoTreeNodeState</code> erstellt. Diese sammelt zunächst basierend auf der übergebenen uniqueID alle zu verändernden Elemente aus.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="UI-object_picking">4.5. Objekt-Pick-Operation</h3>
+<div class="paragraph">
+<p>Die Erkennung, was sich unter dem Mauscursor befindet, kann unterschiedliche Ergebnisse haben, je nach Konfiguration. Dafür wird zunächst ein <code>PickObject</code> erstellt und konfiguriert und dann dem Pick-Algorithmus übergeben.</p>
+</div>
+<div class="paragraph">
+<p>Optionen sind:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>XY_Plane</code> - es wird ein Schnittpunkt mit der XY-Ebene bestimmt</p>
+</li>
+<li>
+<p><code>Surface</code> - es werden alle Oberflächen geprüft</p>
+</li>
+<li>
+<p><code>Network</code> - es werden Netzwerkobjekte (Nodes/Edges) geprüft</p>
+</li>
+<li>
+<p><code>Backside</code> - es werden auch die Rückseiten von Objekten geprüft</p>
+</li>
+</ul>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-12-18 11:57:42 +0100
+Last updated 2021-01-11 12:15:52 +0100
 </div>
 </div>
 <style>

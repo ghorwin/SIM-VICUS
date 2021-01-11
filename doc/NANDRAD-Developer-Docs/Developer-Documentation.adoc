@@ -1,7 +1,7 @@
 NANDRAD Developers Manual
 =========================
 Andreas Nicolai <andreas.nicolai@tu-dresden.de>
-0.2.0 (18.12.2020)
+0.2.0 (11.01.2021)
 // 0.2.0 date_on_line_above
 :Author Initials: AN
 :toc: left
@@ -39,5 +39,6 @@ include::Variable-Referencing.adoc[leveloffset=+2]
 ## SIM-VICUS User-Interface
 
 include::3DEngine.adoc[leveloffset=+2]
+include::3DCalculations.adoc[leveloffset=+2]
 include::UIViewStates.adoc[leveloffset=+2]
 include::UISelectionHandling.adoc[leveloffset=+2]
