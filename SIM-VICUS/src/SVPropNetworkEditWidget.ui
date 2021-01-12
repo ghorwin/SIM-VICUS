@@ -377,39 +377,12 @@
       <item row="3" column="0">
        <widget class="QLabel" name="label_13">
         <property name="text">
-         <string>Maximum heating demand</string>
+         <string>Maximum heating demand [W]</string>
         </property>
        </widget>
       </item>
       <item row="3" column="1">
        <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeHeatingDemand"/>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_12">
-        <property name="text">
-         <string>Component</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
-        <item>
-         <widget class="QComboBox" name="comboBoxNodeComponent"/>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButtonEditNodeComponents">
-          <property name="maximumSize">
-           <size>
-            <width>120</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>...</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
       </item>
      </layout>
     </widget>
@@ -420,10 +393,10 @@
       <string>Edit Pipe</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_16">
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="checkBoxSupplyPipe">
         <property name="text">
-         <string>Pipe geometry</string>
+         <string>supply pipe</string>
         </property>
        </widget>
       </item>
@@ -434,15 +407,15 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="comboBoxPipeDB"/>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_6">
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_16">
         <property name="text">
-         <string>Component</string>
+         <string>Pipe geometry</string>
         </property>
        </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="comboBoxPipeDB"/>
       </item>
       <item row="0" column="1">
        <widget class="QLabel" name="labelPipeLength">
@@ -451,32 +424,30 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QCheckBox" name="checkBoxSupplyPipe">
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBoxComponent">
+     <property name="title">
+      <string>Component</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_6">
+      <item>
+       <widget class="QComboBox" name="comboBoxComponent"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonEditComponents">
+        <property name="maximumSize">
+         <size>
+          <width>120</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="text">
-         <string>supply pipe</string>
+         <string>...</string>
         </property>
        </widget>
-      </item>
-      <item row="3" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
-        <item>
-         <widget class="QComboBox" name="comboBoxEdgeComponent"/>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButtonEditEdgeComponents">
-          <property name="maximumSize">
-           <size>
-            <width>120</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>...</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
       </item>
      </layout>
     </widget>

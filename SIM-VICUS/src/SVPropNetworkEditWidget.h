@@ -73,6 +73,8 @@ private slots:
 
 	void on_comboBoxHeatExchangeType_activated(const QString &arg1);
 
+	void on_lineEditNodeHeatingDemand_editingFinished();
+
 private:
 
 	void setupComboBoxComponents();
@@ -99,11 +101,14 @@ private:
 
 	bool setNetwork();
 
+	template <class Telem, class Tprop>
+	bool uniformProperty(std::vector<Telem*> vec, Tprop prop);
+
 	const VICUS::Network * currentNetwork();
 
-	const VICUS::NetworkEdge * currentNetworkEdge();
+	const VICUS::NetworkEdge * currentNetworkEdges();
 
-	std::set <const VICUS::NetworkNode *> currentNetworkNode();
+	std::vector<const VICUS::NetworkNode *> currentNetworkNodes();
 
 	Ui::SVPropNetworkEditWidget		*m_ui;
 
