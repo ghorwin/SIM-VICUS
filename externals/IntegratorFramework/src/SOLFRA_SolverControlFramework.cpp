@@ -98,7 +98,7 @@ SolverControlFramework::~SolverControlFramework() {
 
 
 void SolverControlFramework::setModel(ModelInterface * model) {
-	FUNCID(SolverControlFramework::setModel);
+//	FUNCID(SolverControlFramework::setModel);
 
 	// clean up previously created
 	delete m_defaultIntegrator;
