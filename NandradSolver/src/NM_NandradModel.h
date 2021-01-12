@@ -311,6 +311,8 @@ private:
 	unsigned int											m_nZones = 0;
 	/*! Cached number of walls. */
 	unsigned int											m_nWalls = 0;
+	/*! Cached number of thermal networks. */
+	unsigned int											m_nNetworks = 0;
 	/*! Starting time point in [s]. */
 	double													m_t0 = 0;
 	/*! End time point in [s]. */

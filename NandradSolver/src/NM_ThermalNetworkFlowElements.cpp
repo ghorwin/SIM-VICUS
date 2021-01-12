@@ -55,7 +55,8 @@ unsigned int TNPipeElement::nInternalStates() const
 
 void TNPipeElement::initialStates(double *y0) {
 	// TODO: retrieve initial temperature from fluid
-	y0[0] = 293.15 * m_volume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value;
+	y0[0] = 293.15 * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value
+			* m_volume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value;
 }
 
 void TNPipeElement::setInternalStates(const double * y)
@@ -72,9 +73,9 @@ void TNPipeElement::internalDerivatives(double * ydot)
 													+ 1.0/(2.0*m_UValuePipeWall) );
 
 	// calculate heat loss with given parameters
-	m_heatLoss = m_massFlux * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value *
+	m_heatLoss = std::fabs(m_massFlux) * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value *
 			(m_inletTemperature - m_ambientTemperature) *
-			(1. - std::exp(totalUValuePipe / (m_massFlux * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value )));
+			(1. - std::exp(-totalUValuePipe / (std::fabs(m_massFlux) * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value )));
 	const double specificInletEnthalpy = m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value * m_inletTemperature;
 
 	// heat fluxes into the fluid and enthalpy change are heat sources
@@ -154,7 +155,8 @@ unsigned int TNHeatExchanger::nInternalStates() const
 
 void TNHeatExchanger::initialStates(double *y0) {
 	// TODO: retrieve initial temperature from fluid
-	y0[0] = 293.15 * m_volume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value;
+	y0[0] = 293.15 * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value
+			* m_volume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value;
 }
 
 void TNHeatExchanger::setInternalStates(const double * y)
@@ -223,7 +225,8 @@ unsigned int TNPump::nInternalStates() const
 
 void TNPump::initialStates(double *y0) {
 	// TODO: retrieve initial temperature from fluid
-	y0[0] = 293.15 * m_volume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value;
+	y0[0] = 293.15 * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value *
+			m_volume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value;
 }
 
 void TNPump::setInternalStates(const double * y)

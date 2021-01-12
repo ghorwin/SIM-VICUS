@@ -343,8 +343,8 @@ HydraulicNetworkModelImpl::HydraulicNetworkModelImpl(const std::vector<Element> 
 	for (unsigned int i=0; i<elems.size(); ++i) {
 		const Element &fe = elems[i];
 		// TODO : check inlet must be different from outlet
-		m_network.m_nodes[fe.m_nInlet].m_elementIndexesInlet.push_back(i);
-		m_network.m_nodes[fe.m_nOutlet].m_elementIndexesOutlet.push_back(i);
+		m_network.m_nodes[fe.m_nInlet].m_elementIndexesOutlet.push_back(i);
+		m_network.m_nodes[fe.m_nOutlet].m_elementIndexesInlet.push_back(i);
 		m_network.m_nodes[fe.m_nInlet].m_elementIndexes.push_back(i);
 		m_network.m_nodes[fe.m_nOutlet].m_elementIndexes.push_back(i);
 	}

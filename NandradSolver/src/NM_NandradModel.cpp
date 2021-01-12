@@ -1356,12 +1356,14 @@ void NandradModel::initNetworks() {
 			registerStateDependendModel(nwmodel);
 			// add thermal network states model
 			ThermalNetworkStatesModel *statesModel = new ThermalNetworkStatesModel(nw.m_id, nw.m_displayName);
+			m_modelContainer.push_back(statesModel); // transfer ownership
 			// initialize
 			statesModel->setup(nw, *nwmodel);
 			// add to thermal network states container
 			m_networkStatesModelContainer.push_back(statesModel);
 			// add thermal network balance model
 			ThermalNetworkBalanceModel *balanceModel = new ThermalNetworkBalanceModel(nw.m_id, nw.m_displayName);
+			m_modelContainer.push_back(balanceModel); // transfer ownership
 			// initialize
 			balanceModel->setup(statesModel);
 			// register model for evaluation
@@ -1370,6 +1372,7 @@ void NandradModel::initNetworks() {
 			m_networkBalanceModelContainer.push_back(balanceModel);
 		}
 	}
+	m_nNetworks = (unsigned int) m_networkBalanceModelContainer.size();
 }
 
 
@@ -1956,8 +1959,8 @@ void NandradModel::initSolverVariables() {
 	// *** count number of unknowns in thermal networks and initialize wall offsets ***
 
 	// m_n counts the number of unknowns
-	m_networkVariableOffset.resize(m_project->m_hydraulicNetworks.size());
-	for (unsigned int i=0; i<m_project->m_hydraulicNetworks.size(); ++i) {
+	m_networkVariableOffset.resize(m_nNetworks);
+	for (unsigned int i=0; i<m_nNetworks; ++i) {
 		// store starting position inside y-vector
 		m_networkVariableOffset[i] = m_n;
 		// number of unknowns/state variabes
@@ -1998,6 +2001,11 @@ void NandradModel::initSolverVariables() {
 	// energy density of the constructions
 	for (unsigned int i=0; i<m_nWalls; ++i) {
 		m_constructionStatesModelContainer[i]->yInitial(&m_y0[0] + m_constructionVariableOffset[i]);
+	}
+
+	// enthalpies of the thermal networks
+	for (unsigned int i=0; i<m_nNetworks; ++i) {
+		m_networkStatesModelContainer[i]->yInitial(&m_y0[0] + m_networkVariableOffset[i]);
 	}
 
 #if 0
@@ -2142,6 +2150,21 @@ void NandradModel::initSolverMatrix() {
 				// update counter
 				++nUnknowns;
 			}
+		}
+
+		// ... all networks (same procedure as above for zones)
+		for (unsigned int i = 0; i < m_networkStatesModelContainer.size(); ++i) {
+
+			const ThermalNetworkStatesModel *networkModel = m_networkStatesModelContainer[i];
+			// access internal y-vector
+			const double *y = networkModel->resultValueRef(QuantityName("y"));
+
+			std::set<const double*> registeredLocalValueRefs;
+			for (unsigned int k = 0; k < networkModel->nPrimaryStateResults(); ++k) {
+				resultValueRefs[y + k] = nYStates + k;
+				registeredLocalValueRefs.insert(y + k);
+			}
+			nYStates += networkModel->nPrimaryStateResults();
 		}
 
 		// counted y-components must equal global y-vector size

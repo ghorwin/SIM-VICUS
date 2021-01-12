@@ -67,6 +67,9 @@ public:
 	/*! Container with global pointer to calculated mass fluxes.
 	*/
 	const double									*m_massFluxes;
+	/*! Container with pointers to heat fluxes.
+	*/
+	std::vector<const double*>						m_ambientHeatFluxRefs;
 	/*! Container with pointers to ambient temperatures.
 	*/
 	std::vector<const double*>						m_ambientTemperatureRefs;
@@ -75,6 +78,8 @@ public:
 	std::vector<const double*>						m_ambientHeatTransferRefs;
 
 private:
+	void printVars() const;
+
 	/*! Constant access to network. */
 	const Network									*m_network;
 	/*! Container with specific enthalpy for each node.

@@ -125,30 +125,37 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 			}
 			// decide which heat exchange is chosen
 			switch(itComp->m_heatExchangeType) {
-				case NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithFMUTemperature:
-				case NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature: {
+				case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant: {
 					// retrieve constant temperature
 					if(!e.m_para[NANDRAD::HydraulicNetworkElement::P_Temperature].name.empty()) {
 						m_p->m_ambientTemperatureRefs.push_back(
 							&e.m_para[NANDRAD::HydraulicNetworkElement::P_Temperature].value);
+						// retrieve external heat transfer coefficient
+						if(itComp->m_para[NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].name.empty()){
+							throw IBK::Exception(IBK::FormatString("Missing parameteter '%1 for exchange type %2!")
+										.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::para_t",
+										NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient))
+										.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
+										itComp->m_heatExchangeType)),
+										FUNC_ID);
+						}
+						m_p->m_ambientHeatTransferRefs.push_back(&itComp->m_para[
+							NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].value);
+						// set heat flux to zero
+						m_p->m_ambientHeatFluxRefs.push_back(nullptr);
+					}
+					else if(!e.m_para[NANDRAD::HydraulicNetworkElement::P_HeatFlux].name.empty()) {
+						m_p->m_ambientHeatFluxRefs.push_back(
+							&e.m_para[NANDRAD::HydraulicNetworkElement::P_HeatFlux].value);
+						// set temperature and heat trabsfer coefficient to zero
+						m_p->m_ambientTemperatureRefs.push_back(nullptr);
+						m_p->m_ambientHeatTransferRefs.push_back(nullptr);
 					}
 					else {
-						throw IBK::Exception(IBK::FormatString("Missing constant temperature for exchange type %1!")
-									.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
-									itComp->m_heatExchangeType)),
-									FUNC_ID);
+						m_p->m_ambientHeatFluxRefs.push_back(nullptr);
+						m_p->m_ambientTemperatureRefs.push_back(nullptr);
+						m_p->m_ambientHeatTransferRefs.push_back(nullptr);
 					}
-					// retrieve external heat transfer coefficient
-					if(itComp->m_para[NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].name.empty()){
-						throw IBK::Exception(IBK::FormatString("Missing parameteter '%1 for exchange type %2!")
-									.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::para_t",
-									NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient))
-									.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
-									itComp->m_heatExchangeType)),
-									FUNC_ID);
-					}
-					m_p->m_ambientHeatTransferRefs.push_back(&itComp->m_para[
-						NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].value);
 				} break;
 				default: {
 					throw IBK::Exception(IBK::FormatString("Heat exchange type %1 is not supported, yet!")
@@ -190,7 +197,13 @@ void ThermalNetworkStatesModel::resultDescriptions(std::vector<QuantityDescripti
 
 
 const double * ThermalNetworkStatesModel::resultValueRef(const QuantityName & quantityName) const {
-	// TODO: implement
+	// return y
+	if(quantityName == std::string("y")) {
+		// whole vector access
+		if(quantityName.m_index == -1)
+			return &m_y[0];
+		return nullptr;
+	}
 	return nullptr;
 }
 

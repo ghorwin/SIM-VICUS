@@ -30,6 +30,7 @@
 #include <IBKMK_SparseMatrixPattern.h>
 
 #include <algorithm>
+#include <iostream>
 
 namespace NANDRAD_MODEL {
 
@@ -96,22 +97,26 @@ int ThermalNetworkModelImpl::updateStates() {
 	return 0;
 }
 
+
 int ThermalNetworkModelImpl::updateFluxes() 	{
-	// set ambient conditions
+
 	for(unsigned int i = 0; i < m_flowElements.size(); ++i) {
 		ThermalNetworkAbstractFlowElement *flowElem = m_flowElements[i];
+
+		// set ambient conditions
 		const double* Tamb = m_ambientTemperatureRefs[i];
 		const double* alphaAmb = m_ambientHeatTransferRefs[i];
+		const double* heatFluxAmb = m_ambientHeatFluxRefs[i];
 
-		IBK_ASSERT(Tamb != nullptr);
-		IBK_ASSERT(alphaAmb != nullptr);
+		// ambient temperature is given
+		if(Tamb != nullptr) {
+			IBK_ASSERT(alphaAmb != nullptr);
 
-		flowElem->setAmbientConditions(*Tamb, *alphaAmb);
-	}
-	// set enthalpy and mass fluxes for all flow elements
-	// and update their simulation results
-	for(unsigned int i = 0; i < m_flowElements.size(); ++i) {
-		ThermalNetworkAbstractFlowElement *flowElem = m_flowElements[i];
+			flowElem->setAmbientConditions(*Tamb, *alphaAmb);
+		}
+
+		// set enthalpy and mass fluxes for all flow elements
+		// and update their simulation results
 		const Element &fe = m_network->m_elements[i];
 		// get inlet node
 		const double massFlux = m_massFluxes[i];
@@ -125,12 +130,29 @@ int ThermalNetworkModelImpl::updateFluxes() 	{
 		else {
 			flowElem->setInletFluxes(massFlux, specEnthalpOutlet * massFlux);
 		}
-		// heat los equals difference of enthalpy fluxes between inlet and outlet
-		m_heatFluxes[i] = massFlux * (specEnthalpInlet - specEnthalpOutlet);
+		// calculate heat flux
+		if(heatFluxAmb != nullptr) {
+			// copy ambient heat flux
+			m_heatFluxes[i] = *heatFluxAmb;
+		}
+		else {
+			// heat loss equals difference of enthalpy fluxes between inlet and outlet
+			m_heatFluxes[i] = massFlux * (specEnthalpInlet - specEnthalpOutlet);
+		}
 	}
+	printVars();
 	return 0;
 }
 
+void ThermalNetworkModelImpl::printVars() const {
+	std::cout << "Heat fluxes [W]" << std::endl;
+	for (unsigned int i=0; i<m_heatFluxes.size(); ++i)
+		std::cout << "  " << i << "   " << m_heatFluxes[i]  << std::endl;
+
+	std::cout << "Nodal enthalpies [J/kg]" << std::endl;
+	for (unsigned int i=0; i<m_specificEnthalpy.size(); ++i)
+		std::cout << "  " << i << "   " << m_specificEnthalpy[i] << std::endl;
+}
 
 
 } // namespace NANDRAD_MODEL

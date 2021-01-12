@@ -51,6 +51,8 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 	for(const NANDRAD::HydraulicNetworkElement &elem : m_statesModel->m_network->m_elements) {
 		m_componentIds.push_back(elem.m_componentId);
 	}
+	// resize vectors
+	m_ydot.resize(m_statesModel->nPrimaryStateResults());
 }
 
 
@@ -98,13 +100,6 @@ const double * ThermalNetworkBalanceModel::resultValueRef(const QuantityName & q
 		// found a valid entry
 		return m_statesModel->m_p->heatFluxes() + index;
 	}
-	// return y
-	if(quantityName == std::string("y")) {
-		// whole vector access
-		if(quantityName.m_index == -1)
-			return &m_statesModel->m_y[0];
-		return nullptr;
-	}
 	// return ydot
 	if(quantityName == std::string("ydot")) {
 		// whole vector access
@@ -137,6 +132,8 @@ void ThermalNetworkBalanceModel::inputReferences(std::vector<InputReference> & i
 	inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORK;
 	inputRef.m_name = std::string("MassFlux");
 	inputRef.m_required = true;
+	// register reference
+	inputRefs.push_back(inputRef);
 }
 
 
