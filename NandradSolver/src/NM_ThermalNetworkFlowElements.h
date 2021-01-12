@@ -13,7 +13,9 @@ namespace NANDRAD {
 
 namespace NANDRAD_MODEL {
 
-class TNPipeElement : public ThermalNetworkAbstractFlowElement {
+// **** Pipe ***
+
+class TNPipeElement : public ThermalNetworkAbstractFlowElement { // NO KEYWORDS
 public:
 	TNPipeElement() { }
 
@@ -95,7 +97,7 @@ private:
 
 // **** HeatExchanger ***
 
-class TNHeatExchanger : public ThermalNetworkAbstractFlowElement {
+class TNHeatExchanger : public ThermalNetworkAbstractFlowElement { // NO KEYWORDS
 public:
 	TNHeatExchanger() { }
 
@@ -158,9 +160,9 @@ private:
 
 
 
-// **** HeatExchanger ***
+// **** Pump ***
 
-class TNPump: public ThermalNetworkAbstractFlowElement {
+class TNPump: public ThermalNetworkAbstractFlowElement { // NO KEYWORDS
 public:
 	TNPump() { }
 

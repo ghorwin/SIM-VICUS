@@ -19,7 +19,7 @@ namespace NANDRAD_MODEL {
 
 
 /*! Element that calculates the pressure loss of a straight pipe */
-class HNPipeElement : public HydraulicNetworkAbstractFlowElement {
+class HNPipeElement : public HydraulicNetworkAbstractFlowElement { // NO KEYWORDS
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	HNPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
@@ -74,7 +74,7 @@ private:
 
 /*! Element that calculates the pressure loss according to a given fixed pressure loss coefficient
  * (which is in Germany usually called zeta-value) */
-class HNFixedPressureLossCoeffElement : public HydraulicNetworkAbstractFlowElement {
+class HNFixedPressureLossCoeffElement : public HydraulicNetworkAbstractFlowElement { // NO KEYWORDS
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	HNFixedPressureLossCoeffElement(const NANDRAD::HydraulicNetworkElement & elem,
@@ -103,7 +103,7 @@ private:
 
 
 /*! Pump model with fixed constant pressure head */
-class HNConstantPressurePump: public HydraulicNetworkAbstractFlowElement {
+class HNConstantPressurePump: public HydraulicNetworkAbstractFlowElement { // NO KEYWORDS
 
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
