@@ -163,7 +163,7 @@ add_subdirectory( ../../externals/Nandrad/projects/cmake_local Nandrad )
 add_subdirectory( ../../externals/IntegratorFramework/projects/cmake_local IntegratorFramework )
 add_subdirectory( ../../externals/Zeppelin/projects/cmake_local Zeppelin )
 add_subdirectory( ../../externals/TiCPP/projects/cmake_local TiCPP )
-add_subdirectory( ../../externals/zlib/src zlib )
+#add_subdirectory( ../../externals/zlib/src zlib )
 add_subdirectory( ../../externals/GenericBuildings/projects/cmake_local GenericBuildings )
 
 if (NOT DISABLE_QT)
