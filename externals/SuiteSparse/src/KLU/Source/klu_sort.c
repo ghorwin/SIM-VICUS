@@ -98,7 +98,7 @@ Int KLU_sort
     Int *R, *W, *Tp, *Ti, *Lip, *Uip, *Llen, *Ulen ;
     Entry *Tx ;
     Unit **LUbx ;
-    Int n, nk, nz, block, nblocks, maxblock, k1 ;
+    Int nk, nz, block, nblocks, maxblock, k1 ;
     size_t m1 ;
 
     if (Common == NULL)
@@ -107,7 +107,6 @@ Int KLU_sort
     }
     Common->status = KLU_OK ;
 
-    n = Symbolic->n ;
     R = Symbolic->R ;
     nblocks = Symbolic->nblocks ;
     maxblock = Symbolic->maxblock ;

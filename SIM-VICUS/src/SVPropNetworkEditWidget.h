@@ -101,8 +101,19 @@ private:
 
 	bool setNetwork();
 
-	template <class Telem, class Tprop>
-	bool uniformProperty(std::vector<Telem*> vec, Tprop prop);
+	template <typename Telem, typename Tprop>
+	static bool uniformProperty(const std::vector<Telem *> & vec, Tprop prop)
+	{
+		// guard against empty vector
+		if (vec.empty())
+			return false;
+		typename std::vector<Telem *>::const_iterator itFirst = vec.begin();
+		for (typename std::vector<Telem *>::const_iterator it = vec.begin(); it != vec.end(); ++it) {
+			if ((*itFirst)->*prop != (*it)->*prop)
+				return false;
+		}
+		return true;
+	}
 
 	const VICUS::Network * currentNetwork();
 

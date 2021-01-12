@@ -45,8 +45,12 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 			// get class declaration and remember in which class we are
 			pos = line.find("class");
 			if (pos != std::string::npos && pos+6 < line.size()) {
+				// skip class if there is a NO KEYWORDS tag
+				if (line.find("NO KEYWORDS") != std::string::npos)
+					continue;
 				// check that there is nothing but whitespace before the class
 				if (line.find_first_not_of(" \t") == pos) {
+					// skip this class
 					if (!m_className.empty())
 						throw IBK::Exception("Multiple class declarations in source file are not supported.", FUNC_ID);
 					std::string cname = line.substr(pos+6); // might be "ThisAndThat: public Parent {"
@@ -223,7 +227,12 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 			}
 
 
+		} catch (IBK::Exception & ex) {
+			std::cerr << "Parse error in line '"<< IBK::trim_copy(line) << "', in file " << m_sourceHeaderFile.filename() << std::endl;
+			std::cerr.flush();
+			ex.writeMsgStackToError();
 		} catch (...) {
+
 			std::cerr << "Parse error in line '"<< line << "'" << std::endl;
 		}
 	}
