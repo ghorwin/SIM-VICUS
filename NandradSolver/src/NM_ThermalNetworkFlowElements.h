@@ -29,13 +29,15 @@ public:
 	/*! Function retrieving number of internal states.*/
 	unsigned int nInternalStates() const;
 
-	/*! Function for retreiving initial states such as internal enery
+	/*! Function for retreiving initial temperatures
 	 * from each model.*/
-	void initialStates(double *y0);
+	void initialTemperatures(double *T0) const;
 
-	/*! Function for setting internal states such as internal enery.
-		May be vector valued for layered temperature models.*/
+	/*! Function for setting internal states.*/
 	void setInternalStates(const double *y);
+
+	/*! Returns fluid internal heat losses for all discretization elements. */
+	void internalHeatLosses(double *Qdot) const;
 
 	/*! Function for retrieving heat fluxes out of the flow element.*/
 	void internalDerivatives(double *ydot);
@@ -47,7 +49,13 @@ public:
 	void setAmbientConditions(double Tamb, double alphaAmb);
 
 	/*! Returns fluid outlet states: spcific enthalpy. */
-	void outletSpecificEnthalpy(double &h) const;
+	double outletSpecificEnthalpy() const;
+
+	/*! Returns overall heat loss along the flow element. */
+	double heatLoss() const;
+
+	/*! Returns fluid volume inside the flow element. */
+	double volume() const;
 
 private:
 
@@ -77,6 +85,9 @@ private:
 
 	/*! Fluid inlet temperature */
 	double							m_inletTemperature = 273.15;
+
+	/*! Fluid inlet specific enthalpy */
+	double							m_inletSpecificEnthalpy = 0.0;
 
 	/*! Environamental temperature */
 	double							m_ambientTemperature = 273.15;
@@ -110,12 +121,11 @@ public:
 	/*! Function retrieving number of internal states.*/
 	unsigned int nInternalStates() const;
 
-	/*! Function for retreiving initial states such as internal enery
+	/*! Function for retreiving initial temperatures
 	 * from each model.*/
-	void initialStates(double *y0);
+	void initialTemperatures(double *T0) const;
 
-	/*! Function for setting internal states such as internal enery.
-		May be vector valued for layered temperature models.*/
+	/*! Function for setting internal states.*/
 	void setInternalStates(const double *y);
 
 	/*! Function for retrieving heat fluxes out of the flow element.*/
@@ -128,9 +138,13 @@ public:
 	void setAmbientConditions(double Tamb, double alphaAmb);
 
 	/*! Returns fluid outlet states: spcific enthalpy. */
-	void outletSpecificEnthalpy(double &h) const;
+	double outletSpecificEnthalpy() const;
 
-	double heatLoss();
+	/*! Returns overall heat loss along the flow element. */
+	double heatLoss() const;
+
+	/*! Returns fluid volume inside the flow element. */
+	double volume() const;
 
 private:
 
@@ -146,6 +160,9 @@ private:
 
 	/*! Fluid inlet temperature */
 	double							m_inletTemperature = 273.15;
+
+	/*! Fluid inlet specific enthalpy */
+	double							m_inletSpecificEnthalpy = 0.0;
 
 	/*! Fluid mass flux */
 	double							m_massFlux = 0.0;
@@ -175,12 +192,11 @@ public:
 	/*! Function retrieving number of internal states.*/
 	unsigned int nInternalStates() const;
 
-	/*! Function for retreiving initial states such as internal enery
+	/*! Function for retreiving initial temperatures
 	 * from each model.*/
-	void initialStates(double *y0);
+	void initialTemperatures(double *T0) const;
 
-	/*! Function for setting internal states such as internal enery.
-		May be vector valued for layered temperature models.*/
+	/*! Function for setting internal states.*/
 	void setInternalStates(const double *y);
 
 	/*! Function for retrieving heat fluxes out of the flow element.*/
@@ -193,9 +209,13 @@ public:
 	void setAmbientConditions(double Tamb, double alphaAmb);
 
 	/*! Returns fluid outlet states: spcific enthalpy. */
-	void outletSpecificEnthalpy(double &h) const;
+	double outletSpecificEnthalpy() const;
 
-	double heatLoss();
+	/*! Returns overall heat loss along the flow element. */
+	double heatLoss() const;
+
+	/*! Returns fluid volume inside the flow element. */
+	double volume() const;
 
 private:
 
@@ -207,6 +227,9 @@ private:
 
 	/*! Fluid inlet temperature */
 	double							m_inletTemperature = 273.15;
+
+	/*! Fluid inlet specific enthalpy */
+	double							m_inletSpecificEnthalpy = 0.0;
 
 	/*! Fluid mass flux */
 	double							m_massFlux = 0.0;

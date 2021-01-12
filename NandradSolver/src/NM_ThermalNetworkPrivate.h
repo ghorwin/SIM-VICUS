@@ -26,6 +26,10 @@
 
 #include <vector>
 
+namespace NANDRAD {
+	class HydraulicFluid;
+}
+
 namespace NANDRAD_MODEL {
 
 /*!	A model that computes all temperature states of hydraulic network given the internal energy density.
@@ -45,7 +49,8 @@ public:
 		Setup needs to be called whenever m_flowElements vector changes
 		(but not, when parameters inside flow elements change!).
 	*/
-	void setup(const Network &nw);
+	void setup(const Network &nw,
+			   const NANDRAD::HydraulicFluid &fluid);
 
 	/*! Updates all states at network nodes.
 	*/
@@ -81,7 +86,12 @@ private:
 	void printVars() const;
 
 	/*! Constant access to network. */
-	const Network									*m_network;
+	const Network									*m_network = nullptr;
+	/*! Constant access to fluid. */
+	const NANDRAD::HydraulicFluid					*m_fluid = nullptr;
+	/*! Container with temperatures for each node.
+	*/
+	std::vector<double>								m_temperatures;
 	/*! Container with specific enthalpy for each node.
 	*/
 	std::vector<double>								m_specificEnthalpy;

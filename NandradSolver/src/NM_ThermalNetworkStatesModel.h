@@ -125,6 +125,9 @@ private:
 	/*! Cached input data vector (size nPrimaryStateResults()). */
 	std::vector<double>								m_y;
 
+	/*! CVector of internal specific enthalpies. */
+	std::vector<double>								m_specificEnthalpies;
+
 	// for each flow element instantiate an appropriate NetworkThermalBalanceFlowElement
 	/*! Total number of unknowns.*/
 	unsigned int									m_n;

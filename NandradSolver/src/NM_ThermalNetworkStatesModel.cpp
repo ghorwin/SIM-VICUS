@@ -173,7 +173,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 	}
 	// setup the enetwork
 	try {
-		m_p->setup(*networkModel.network());
+		m_p->setup(*networkModel.network(), nw.m_fluid);
 	} catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, "Error setting up flow network.", FUNC_ID);
 	}
@@ -187,6 +187,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 		m_n += fe->nInternalStates();
 	}
 	m_y.resize(m_n,0.0);
+	m_specificEnthalpies.resize(m_n, 0.0);
 }
 
 
@@ -219,10 +220,18 @@ void ThermalNetworkStatesModel::stateDependencies(std::vector<std::pair<const do
 
 
 void ThermalNetworkStatesModel::yInitial(double * y) const {
-	// per copy default states from all models
+	// calculate specific enthalpy
+	const double heatCapacity = m_network->m_fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+	const double density = m_network->m_fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
+	// set internal states
 	unsigned int offset = 0;
 	for(ThermalNetworkAbstractFlowElement* fe :m_p->m_flowElements) {
-		fe->initialStates(y + offset);
+		fe->initialTemperatures(y + offset);
+		// calculate internal enthalpies for all flow elements
+		const double volume = fe->volume();
+		for(unsigned int i = 0; i < fe->nInternalStates(); ++i) {
+			y[offset + i] *= volume * heatCapacity * density;
+		}
 		offset += fe->nInternalStates();
 	}
 }
@@ -234,6 +243,7 @@ int ThermalNetworkStatesModel::update(const double * y) {
 	// set internal states
 	unsigned int offset = 0;
 	for(ThermalNetworkAbstractFlowElement* fe :m_p->m_flowElements) {
+		// calculate internal enthalpies for all flow elements
 		fe->setInternalStates(y + offset);
 		offset += fe->nInternalStates();
 	}

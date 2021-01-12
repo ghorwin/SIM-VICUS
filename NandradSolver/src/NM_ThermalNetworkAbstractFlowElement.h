@@ -19,9 +19,9 @@ namespace NANDRAD_MODEL {
 	// ...
 	// global solver initialization
 	// ...
-	model.initialStates(&y0[offset]);
+	model.initialTemperatures(&T0[offset]);
 	offset += model.nInternalStates();
-	nextModel.initialStates(&y0[offset]);
+	nextModel.initialTemperatures(&T0[offset]);
 	// ...
 	// global solver step
 	// ...
@@ -63,25 +63,30 @@ public:
 	/*! Function retrieving number of internal states.*/
 	virtual unsigned int nInternalStates() const = 0;
 
-	/*! Function for retreiving initial states such as internal enery
+	/*! Function for retreiving initial temperatures
 	 * from each model.*/
-	virtual void initialStates(double *y0) = 0;
+	virtual void initialTemperatures(double *T0) const = 0;
 
-	/*! Function for setting internal states such as internal enery.
-		May be vector valued for layered temperature models.*/
+	/*! Function for setting internal states.*/
 	virtual void setInternalStates(const double *y) = 0;
 
 	/*! Function for retrieving heat fluxes out of the flow element.*/
 	virtual void internalDerivatives(double *ydot) = 0;
 
-	/*! Set fluid inlet conditions. */
+	/*! Set fluid inlet conditions: inlet depends on mass flux direction. */
 	virtual void setInletFluxes(double mdot, double Hdot) = 0;
 
 	/*! Set ambient conditions. */
 	virtual void setAmbientConditions(double Tamb, double alphaAmb) = 0;
 
-	/*! Returns fluid outlet states: spcific enthalpy. */
-	virtual void outletSpecificEnthalpy(double &h) const = 0;
+	/*! Returns fluid outlet states: specific enthalpy. */
+	virtual double outletSpecificEnthalpy() const = 0;
+
+	/*! Returns overall heat loss along the flow element. */
+	virtual double heatLoss() const = 0;
+
+	/*! Returns fluid volume inside the flow element. */
+	virtual double volume() const = 0;
 };
 
 

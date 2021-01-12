@@ -12,7 +12,7 @@
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 			<Interval>
-				<IBK:Parameter name="End" unit="d">0.04166666667</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">1</IBK:Parameter>
 			</Interval>
 			<SolarLoadsDistributionModel>
 				<DistributionType>AreaWeighted</DistributionType>
@@ -39,7 +39,7 @@
 				<PipeProperties>
 					<HydraulicNetworkPipeProperties id="0">
 						<IBK:Parameter name="PipeRoughness" unit="m">0.007</IBK:Parameter>
-						<IBK:Parameter name="PipeInnerDiameter" unit="m">25.6</IBK:Parameter>
+						<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PipeOuterDiameter" unit="m">32</IBK:Parameter>
 						<IBK:Parameter name="UValuePipeWall" unit="W/m2K">5</IBK:Parameter>
 					</HydraulicNetworkPipeProperties>

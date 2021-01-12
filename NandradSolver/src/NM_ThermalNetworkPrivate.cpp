@@ -25,6 +25,8 @@
 
 #include "NM_HydraulicNetworkModel.h"
 
+#include <NANDRAD_HydraulicFluid.h>
+
 #include <IBK_assert.h>
 #include <IBK_Exception.h>
 #include <IBKMK_SparseMatrixPattern.h>
@@ -42,13 +44,18 @@ const double *ThermalNetworkModelImpl::heatFluxes() const {
 	return nullptr;
 }
 
-void ThermalNetworkModelImpl::setup(const Network &nw) {
+void ThermalNetworkModelImpl::setup(const Network &nw,
+									const NANDRAD::HydraulicFluid &fluid) {
 	// copy nodes pointer from network
 	m_network = &nw;
+	// resize temperatures
+	m_temperatures.resize(nw.m_nodes.size());
 	// resize specific enthalpy
 	m_specificEnthalpy.resize(nw.m_nodes.size());
 	// resize heat fluxes
 	m_heatFluxes.resize(nw.m_elements.size());
+	// get fluid heat capacity
+	m_fluid = &fluid;
 }
 
 
@@ -71,8 +78,7 @@ int ThermalNetworkModelImpl::updateStates() {
 			if(massFlux > 0) {
 				massFluxInlet += massFlux;
 				// and retrieve specfic enthalpy
-				double specEnthalpy;
-				m_flowElements[idx]->outletSpecificEnthalpy(specEnthalpy);
+				double specEnthalpy = m_flowElements[idx]->outletSpecificEnthalpy();
 				// sum up
 				specEnthalp += massFlux * specEnthalpy;
 			}
@@ -83,8 +89,7 @@ int ThermalNetworkModelImpl::updateStates() {
 			if(massFlux < 0) {
 				massFluxInlet -= massFlux;
 				// and retrieve specfic enthalpy
-				double specEnthalpy;
-				m_flowElements[idx]->outletSpecificEnthalpy(specEnthalpy);
+				double specEnthalpy = m_flowElements[idx]->outletSpecificEnthalpy();
 				// sum up
 				specEnthalp -= massFlux * specEnthalpy;
 			}
@@ -93,7 +98,25 @@ int ThermalNetworkModelImpl::updateStates() {
 		specEnthalp/=massFluxInlet;
 
 		m_specificEnthalpy[i] = specEnthalp;
+		m_temperatures[i] = specEnthalp/m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 	}
+
+	// set ambient conditions
+	for(unsigned int i = 0; i < m_flowElements.size(); ++i) {
+		ThermalNetworkAbstractFlowElement *flowElem = m_flowElements[i];
+
+		// set ambient conditions
+		const double* Tamb = m_ambientTemperatureRefs[i];
+		const double* alphaAmb = m_ambientHeatTransferRefs[i];
+
+		// ambient temperature is given
+		if(Tamb != nullptr) {
+			IBK_ASSERT(alphaAmb != nullptr);
+
+			flowElem->setAmbientConditions(*Tamb, *alphaAmb);
+		}
+	}
+
 	return 0;
 }
 
@@ -102,19 +125,6 @@ int ThermalNetworkModelImpl::updateFluxes() 	{
 
 	for(unsigned int i = 0; i < m_flowElements.size(); ++i) {
 		ThermalNetworkAbstractFlowElement *flowElem = m_flowElements[i];
-
-		// set ambient conditions
-		const double* Tamb = m_ambientTemperatureRefs[i];
-		const double* alphaAmb = m_ambientHeatTransferRefs[i];
-		const double* heatFluxAmb = m_ambientHeatFluxRefs[i];
-
-		// ambient temperature is given
-		if(Tamb != nullptr) {
-			IBK_ASSERT(alphaAmb != nullptr);
-
-			flowElem->setAmbientConditions(*Tamb, *alphaAmb);
-		}
-
 		// set enthalpy and mass fluxes for all flow elements
 		// and update their simulation results
 		const Element &fe = m_network->m_elements[i];
@@ -130,15 +140,8 @@ int ThermalNetworkModelImpl::updateFluxes() 	{
 		else {
 			flowElem->setInletFluxes(massFlux, specEnthalpOutlet * massFlux);
 		}
-		// calculate heat flux
-		if(heatFluxAmb != nullptr) {
-			// copy ambient heat flux
-			m_heatFluxes[i] = *heatFluxAmb;
-		}
-		else {
-			// heat loss equals difference of enthalpy fluxes between inlet and outlet
-			m_heatFluxes[i] = massFlux * (specEnthalpInlet - specEnthalpOutlet);
-		}
+		// retrieve heat loss
+		m_heatFluxes[i] = flowElem->heatLoss();
 	}
 	printVars();
 	return 0;
@@ -149,9 +152,9 @@ void ThermalNetworkModelImpl::printVars() const {
 	for (unsigned int i=0; i<m_heatFluxes.size(); ++i)
 		std::cout << "  " << i << "   " << m_heatFluxes[i]  << std::endl;
 
-	std::cout << "Nodal enthalpies [J/kg]" << std::endl;
-	for (unsigned int i=0; i<m_specificEnthalpy.size(); ++i)
-		std::cout << "  " << i << "   " << m_specificEnthalpy[i] << std::endl;
+	std::cout << "Nodal tempertaures [C]" << std::endl;
+	for (unsigned int i=0; i<m_temperatures.size(); ++i)
+		std::cout << "  " << i << "   " << m_temperatures[i] - 273.15 << std::endl;
 }
 
 
