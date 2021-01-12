@@ -104,43 +104,54 @@ void SVPropNetworkEditWidget::updateUi(const SelectionState selectionState) {
 
 void SVPropNetworkEditWidget::updateNodeProperties()
 {
-	const VICUS::Network * network = currentNetwork();
-	std::set<const VICUS::NetworkNode *> nodes = currentNetworkNode();
-	for (const VICUS::NetworkNode * node: nodes){
-		if (node == nullptr)
-			return;
-	}
-	for (const VICUS::NetworkNode * node: nodes){
-		m_ui->lineEditNodeHeatingDemand->setEnabled(node->m_type == VICUS::NetworkNode::NT_Building);
-		m_ui->comboBoxNodeType->setCurrentText(m_mapNodeTypes.key(node->m_type));
-		m_ui->labelNodeId->setText(QString("%1").arg(node->m_id));
-		m_ui->lineEditNodeHeatingDemand->setValue(node->m_maxHeatingDemand);
-		m_ui->lineEditNodeX->setValue(node->m_position.m_x);
-		m_ui->lineEditNodeY->setValue(node->m_position.m_y);
-		m_ui->comboBoxNodeComponent->setCurrentText(m_mapComponents.key(node->m_componentId));
+	std::vector<const VICUS::NetworkNode *> nodes = currentNetworkNodes();
 
+	if (nodes.size() == 1){
+		m_ui->labelNodeId->setText(QString("%1").arg(nodes[0]->m_id));
+		m_ui->lineEditNodeX->setValue(nodes[0]->m_position.m_x);
+		m_ui->lineEditNodeY->setValue(nodes[0]->m_position.m_y);
+	}
+	else{
+		m_ui->labelNodeId->setText("");
+		m_ui->lineEditNodeX->clear();
+		m_ui->lineEditNodeY->clear();
+	}
+
+	if (uniformProperty(nodes, &VICUS::NetworkNode::m_type)){
+		m_ui->comboBoxNodeType->setCurrentText(m_mapNodeTypes.key(nodes[0]->m_type));
+		m_ui->lineEditNodeHeatingDemand->setEnabled(nodes[0]->m_type == VICUS::NetworkNode::NT_Building);
+	}
+	else
+		m_ui->comboBoxNodeType->setCurrentText("");
+
+	if (uniformProperty(nodes, &VICUS::NetworkNode::m_maxHeatingDemand))
+		m_ui->lineEditNodeHeatingDemand->setValue(nodes[0]->m_maxHeatingDemand);
+	else
+		m_ui->lineEditNodeHeatingDemand->clear();
+
+	if (uniformProperty(nodes, &VICUS::NetworkNode::m_componentId)){
+		m_ui->comboBoxComponent->setCurrentText(m_mapComponents.key(nodes[0]->m_componentId));
+		const VICUS::Network * network = currentNetwork();
 		const NANDRAD::HydraulicNetworkComponent *comp = VICUS::Project::element(network->m_hydraulicComponents,
-																				 node->m_componentId);
+																					 nodes[0]->m_componentId);
 		if (comp != nullptr)
 			m_ui->groupBoxHeatExchange->setEnabled(NANDRAD::HydraulicNetworkComponent::hasHeatExchange(comp->m_modelType)
 							&& comp->m_heatExchangeType != NANDRAD::HydraulicNetworkComponent::NUM_HT);
 		else
 			m_ui->groupBoxHeatExchange->setEnabled(false);
-	//	m_ui->lineEditHeatFlux->setValue(node->m_heatExchangePara[NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant].value);
-
 	}
-
+	else
+		m_ui->comboBoxComponent->setCurrentText("");
 }
 
 
 void SVPropNetworkEditWidget::updateEdgeProperties()
 {
-	const VICUS::NetworkEdge *edge = currentNetworkEdge();
+	const VICUS::NetworkEdge *edge = currentNetworkEdges();
 	if (edge == nullptr)
 		return;
 	setupComboboxPipeDB();
 	m_ui->labelPipeLength->setText(QString("%1 m").arg(edge->length()));
-//	m_ui->comboBoxPipeModel->setCurrentText(m_mapPipeModels.key(edge->m_pipeModelType));
 	m_ui->comboBoxPipeDB->setCurrentText(m_mapDBPipes.key(edge->m_pipeId));
 //	m_ui->comboBoxHeatExchangeType->setCurrentText(m_mapHeatExchangeType.key(edge->m_heatExchangeType));
 	m_ui->checkBoxSupplyPipe->setChecked(edge->m_supply);
@@ -212,8 +223,8 @@ void SVPropNetworkEditWidget::setupComboBoxComponents()
 	m_mapComponents.insert("<None>", NANDRAD::INVALID_ID);
 	for (const NANDRAD::HydraulicNetworkComponent &comp: network->m_hydraulicComponents)
 		m_mapComponents.insert(QString::fromStdString(comp.m_displayName), comp.m_id);
-	m_ui->comboBoxNodeComponent->clear();
-	m_ui->comboBoxNodeComponent->addItems(m_mapComponents.keys());
+	m_ui->comboBoxComponent->clear();
+	m_ui->comboBoxComponent->addItems(m_mapComponents.keys());
 }
 
 
@@ -249,7 +260,7 @@ void SVPropNetworkEditWidget::modifyEdgeProperties()
 {
 	if (!setNetwork())
 		return;
-	const VICUS::NetworkEdge *edgeConst = currentNetworkEdge();
+	const VICUS::NetworkEdge *edgeConst = currentNetworkEdges();
 	if (edgeConst == nullptr)
 		return;
 	VICUS::NetworkEdge * edge = m_network.edge(edgeConst->nodeId1(), edgeConst->nodeId2());
@@ -272,21 +283,23 @@ void SVPropNetworkEditWidget::modifyNodeProperties()
 {
 	if (!setNetwork())
 		return;
-//	const VICUS::NetworkNode *nodeConst = currentNetworkNode();
-//	if (nodeConst == nullptr)
-//		return;
-//	VICUS::NetworkNode & node = m_network.m_nodes[nodeConst->m_id];
-//	node.m_type = VICUS::NetworkNode::NodeType(m_mapNodeTypes.value(m_ui->comboBoxNodeType->currentText()));
-//	node.m_componentId = m_mapComponents.value(m_ui->comboBoxNodeComponent->currentText());
-//	if (m_ui->lineEditNodeHeatingDemand->isValid())
-//		node.m_maxHeatingDemand = m_ui->lineEditNodeHeatingDemand->value();
-//	if (m_ui->lineEditNodeX->isValid())
-//		node.m_position.m_x = m_ui->lineEditNodeX->value();
-//	if (m_ui->lineEditNodeY->isValid())
-//		node.m_position.m_y = m_ui->lineEditNodeY->value();
-//	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
-//	undo->push(); // modifies project and updates views
-//	updateNodeProperties();
+	std::vector<const VICUS::NetworkNode *> nodes = currentNetworkNodes();
+	for (const VICUS::NetworkNode * nodeConst: nodes){
+		VICUS::NetworkNode & node = m_network.m_nodes[nodeConst->m_id];
+		if (m_ui->comboBoxNodeType->currentText() != "")
+			node.m_type = VICUS::NetworkNode::NodeType(m_mapNodeTypes.value(m_ui->comboBoxNodeType->currentText()));
+		if (m_ui->lineEditNodeHeatingDemand->isValid())
+			node.m_maxHeatingDemand = m_ui->lineEditNodeHeatingDemand->value();
+		if (m_ui->lineEditNodeX->isValid())
+			node.m_position.m_x = m_ui->lineEditNodeX->value();
+		if (m_ui->lineEditNodeY->isValid())
+			node.m_position.m_y = m_ui->lineEditNodeY->value();
+		if (m_ui->comboBoxComponent->currentText() != "")
+			node.m_componentId = m_mapComponents.value(m_ui->comboBoxComponent->currentText());
+	}
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
+	undo->push(); // modifies project and updates views
+	updateNodeProperties();
 }
 
 
@@ -324,16 +337,18 @@ const VICUS::Network * SVPropNetworkEditWidget::currentNetwork()
 	return nullptr;
 }
 
-const VICUS::NetworkEdge *SVPropNetworkEditWidget::currentNetworkEdge()
+const VICUS::NetworkEdge * SVPropNetworkEditWidget::currentNetworkEdges()
 {
-	if (m_treeItemId != 0){
+	if (m_selection == S_SingleObject){
 		const VICUS::Project & p = project();
 		const VICUS::Object * obj = p.objectById(m_treeItemId);
 		return dynamic_cast<const VICUS::NetworkEdge *>(obj);
 	}
+	return nullptr;
+	// TODO hauke
 }
 
-std::set <const VICUS::NetworkNode *> SVPropNetworkEditWidget::currentNetworkNode()
+std::vector <const VICUS::NetworkNode *> SVPropNetworkEditWidget::currentNetworkNodes()
 {
 	if (m_selection == S_SingleObject){
 		const VICUS::Project & p = project();
@@ -341,11 +356,11 @@ std::set <const VICUS::NetworkNode *> SVPropNetworkEditWidget::currentNetworkNod
 		return {dynamic_cast<const VICUS::NetworkNode *>(obj)};
 	}
 	else if(m_selection == S_MultipleObjects){
-		std::set <const VICUS::NetworkNode *> currentNodes;
+		std::vector <const VICUS::NetworkNode *> currentNodes;
 		for (const VICUS::Object * obj : m_selectedObjects) {
 			const VICUS::NetworkNode * node = dynamic_cast<const VICUS::NetworkNode *>(obj);
 			if (node != nullptr)
-				currentNodes.insert(node);
+				currentNodes.push_back(node);
 		}
 		if (!currentNodes.empty())
 			return currentNodes;
@@ -504,17 +519,22 @@ void SVPropNetworkEditWidget::on_comboBoxComponent_activated(const QString &arg1
 
 void SVPropNetworkEditWidget::on_pushButtonEditComponents_clicked()
 {
-//	const VICUS::Network * network = currentNetwork();
-//	const VICUS::NetworkNode * node = currentNetworkNode();
-//	SVDialogHydraulicComponents *dialog = new SVDialogHydraulicComponents(this);
-//	if (dialog->edit(network->m_id, node->m_componentId) == QDialog::Accepted){
-//		setupComboBoxComponents();
-//		m_ui->comboBoxNodeComponent->setCurrentText(m_mapComponents.key(dialog->currentComponentId()));
-//	}
-//	else
-//		setupComboBoxComponents();
+	const VICUS::Network * network = currentNetwork();
+	std::vector<const VICUS::NetworkNode *> nodes = currentNetworkNodes();
+	SVDialogHydraulicComponents *dialog = new SVDialogHydraulicComponents(this);
+	if (dialog->edit(network->m_id, nodes[0]->m_componentId) == QDialog::Accepted){
+		setupComboBoxComponents();
+		m_ui->comboBoxComponent->setCurrentText(m_mapComponents.key(dialog->currentComponentId()));
+	}
+	else
+		setupComboBoxComponents();
 
-//	modifyNodeProperties();
+	modifyNodeProperties();
+}
+
+void SVPropNetworkEditWidget::on_lineEditNodeHeatingDemand_editingFinished()
+{
+	modifyNodeProperties();
 }
 
 
@@ -551,3 +571,16 @@ void SVPropNetworkEditWidget::on_comboBoxHeatExchangeType_activated(const QStrin
 {
 	modifyEdgeProperties();
 }
+
+
+template<class Telem, class Tprop>
+bool SVPropNetworkEditWidget::uniformProperty(std::vector<Telem *> vec, Tprop prop)
+{
+	auto itFirst = vec.begin();
+	for (auto it = std::next(itFirst, 1); it != vec.end(); ++it){
+		if ((*itFirst)->*prop != (*it)->*prop)
+			return false;
+	}
+	return true;
+}
+

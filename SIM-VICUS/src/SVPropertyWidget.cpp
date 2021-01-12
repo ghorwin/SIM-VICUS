@@ -36,17 +36,33 @@ SVPropertyWidget::SVPropertyWidget(QWidget * parent) :
 
 void SVPropertyWidget::onViewStateChanged() {
 
+	// hide all already created widgets
+	for (unsigned int i=0; i<SVViewState::NUM_PM; ++i) {
+		QWidget * w = m_propWidgets[i];
+		if (w != nullptr)
+			w->setVisible(false);
+	}
+
 	// catch changes in object selection
 	std::set<const VICUS::Object*> selObjects = SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects;
 	for (const VICUS::Object * o : selObjects) {
-		const VICUS::NetworkNode * node = dynamic_cast<const VICUS::NetworkNode *>(o);
-		if (node != nullptr) {
-			int a=1;
+		if (dynamic_cast<const VICUS::NetworkNode *>(o) != nullptr) {
+
+			SVPropNetworkEditWidget *propWidget = new SVPropNetworkEditWidget(this);
+			m_propWidgets[SVViewState::PM_NetworkProperties] = propWidget;
+			m_propWidgets[SVViewState::PM_NetworkProperties]->setVisible(true);
+			m_layout->addWidget(m_propWidgets[SVViewState::PM_NetworkProperties]);
+
+			qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->updateUi(S_MultipleObjects);
+			qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->showNodeProperties();
+
+			return;
 		}
+
 	}
 
 
-	SVViewState::PropertyWidgetMode m = SVViewStateHandler::instance().viewState().m_propertyWidgetMode;
+	// TODO Andreas: still needed ?
 
 //	// cache visibility state
 //	bool visible[SVViewState::NUM_PM];
@@ -59,12 +75,8 @@ void SVPropertyWidget::onViewStateChanged() {
 //		else
 //			visible[i] = false;
 //	}
-	// hide all already created widgets
-	for (unsigned int i=0; i<SVViewState::NUM_PM; ++i) {
-		QWidget * w = m_propWidgets[i];
-		if (w != nullptr)
-			w->setVisible(false);
-	}
+
+	SVViewState::PropertyWidgetMode m = SVViewStateHandler::instance().viewState().m_propertyWidgetMode;
 
 	switch (m) {
 		case SVViewState::PM_EditGeometry :
