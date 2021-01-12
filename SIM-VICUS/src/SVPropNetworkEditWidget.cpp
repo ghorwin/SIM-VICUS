@@ -572,15 +572,3 @@ void SVPropNetworkEditWidget::on_comboBoxHeatExchangeType_activated(const QStrin
 	modifyEdgeProperties();
 }
 
-
-template<class Telem, class Tprop>
-bool SVPropNetworkEditWidget::uniformProperty(std::vector<Telem *> vec, Tprop prop)
-{
-	auto itFirst = vec.begin();
-	for (auto it = std::next(itFirst, 1); it != vec.end(); ++it){
-		if ((*itFirst)->*prop != (*it)->*prop)
-			return false;
-	}
-	return true;
-}
-
