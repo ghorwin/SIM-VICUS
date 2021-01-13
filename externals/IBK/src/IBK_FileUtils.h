@@ -43,6 +43,7 @@
 #include <string>
 #include <cstring>
 #include <fstream>
+#include <memory>
 
 namespace IBK {
 
@@ -131,10 +132,15 @@ unsigned int bytes2value(const std::vector<unsigned char>& bytes, T& value, unsi
 */
 IBK::Path userDirectory();
 
-/*! Create a output file stream for the given file.
+/*! Create a output file stream for the given file (with utf8-filename support).
 	The calling function must take ownership.
 */
-std::ofstream* create_ofstream(const IBK::Path& file, std::ios_base::openmode = std::ios_base::out);
+std::ofstream * create_ofstream(const IBK::Path& file, std::ios_base::openmode = std::ios_base::trunc);
+
+/*! Create a input file stream for the given file (with utf8-filename support).
+	The calling function must take ownership.
+*/
+std::ifstream * create_ifstream(const IBK::Path& file, std::ios_base::openmode = std::ios_base::in);
 
 }  // namespace IBK
 
