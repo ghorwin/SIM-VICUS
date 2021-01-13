@@ -24,7 +24,7 @@ TNPipeElement::TNPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 	m_outerDiameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeOuterDiameter].value;
 	m_UValuePipeWall = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_UValuePipeWall].value;
 	m_outerHeatTransferCoefficient =
-			pipePara.m_para[NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].value;
+			comp.m_para[NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].value;
 
 	// TODO : perform parameter checking inide NANDRAD data structure, so that we avoid
 	// exceptions at this place
@@ -97,7 +97,7 @@ void TNPipeElement::setInletFluxes(double mdot, double Hdot)
 
 	// calculate heat transfer
 	const double totalUValuePipe = (PI*m_length) / (1.0/(m_innerHeatTransferCoefficient * m_innerDiameter)
-													+ 1.0/(m_outerHeatTransferCoefficient * m_innerDiameter)
+													+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter)
 													+ 1.0/(2.0*m_UValuePipeWall) );
 
 	// calculate heat loss with given parameters
@@ -106,7 +106,7 @@ void TNPipeElement::setInletFluxes(double mdot, double Hdot)
 			(1. - std::exp(-totalUValuePipe / (std::fabs(m_massFlux) * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value )));
 }
 
-void TNPipeElement::setAmbientConditions(double Tamb, double alphaAmb)
+void TNPipeElement::setAmbientConditions(double Tamb, double /*alphaAmb*/)
 {
 	//copy ambient temperature
 	m_ambientTemperature = Tamb;

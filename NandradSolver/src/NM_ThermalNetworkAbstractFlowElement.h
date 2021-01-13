@@ -1,6 +1,10 @@
 #ifndef ThermalNetworkAbstractFlowElementH
 #define ThermalNetworkAbstractFlowElementH
 
+#include <vector>
+#include <utility>
+
+
 namespace NANDRAD_MODEL {
 
 /*! Defines the interface for an abstract flow element.
@@ -72,6 +76,12 @@ public:
 
 	/*! Function for retrieving heat fluxes out of the flow element.*/
 	virtual void internalDerivatives(double *ydot) = 0;
+
+	/*! Optional function for registering dependencies between derivaites, internal states
+		and model results.*/
+	virtual void dependencies(const double */*ydot*/, const double */*y*/,
+							  std::vector<std::pair<const double *, const double *> > & ) const
+	{ }
 
 	/*! Set fluid inlet conditions: inlet depends on mass flux direction. */
 	virtual void setInletFluxes(double mdot, double Hdot) = 0;

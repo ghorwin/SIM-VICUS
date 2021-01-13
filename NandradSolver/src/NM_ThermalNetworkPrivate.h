@@ -42,9 +42,6 @@ public:
 	ThermalNetworkModelImpl() { }
 	~ThermalNetworkModelImpl() { }
 
-	/*! Constant access to heat flux vector*/
-	const double *heatFluxes() const;
-
 	/*! Initialized solver based on current content of m_flowElements.
 		Setup needs to be called whenever m_flowElements vector changes
 		(but not, when parameters inside flow elements change!).
@@ -69,6 +66,13 @@ public:
 	*/
 	std::vector<ThermalNetworkAbstractFlowElement*>	m_flowElements;
 
+	/*! Constant access to network. */
+	const Network									*m_network = nullptr;
+	/*! Container with specific enthalpy for each node.
+	*/
+	std::vector<double>								m_specificEnthalpies;
+	/*! Heat heat fluxes out of each flow element. */
+	std::vector<double>								m_heatFluxes;
 	/*! Container with global pointer to calculated mass fluxes.
 	*/
 	const double									*m_massFluxes;
@@ -85,18 +89,11 @@ public:
 private:
 	void printVars() const;
 
-	/*! Constant access to network. */
-	const Network									*m_network = nullptr;
 	/*! Constant access to fluid. */
 	const NANDRAD::HydraulicFluid					*m_fluid = nullptr;
 	/*! Container with temperatures for each node.
 	*/
 	std::vector<double>								m_temperatures;
-	/*! Container with specific enthalpy for each node.
-	*/
-	std::vector<double>								m_specificEnthalpy;
-	/*! Vector result heat fluxes. */
-	std::vector<double>								m_heatFluxes;
 };
 
 

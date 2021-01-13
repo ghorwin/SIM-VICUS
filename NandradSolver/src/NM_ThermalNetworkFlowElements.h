@@ -38,9 +38,6 @@ public:
 	/*! Function for setting internal states.*/
 	void setInternalStates(const double *y);
 
-	/*! Returns fluid internal heat losses for all discretization elements. */
-	void internalHeatLosses(double *Qdot) const;
-
 	/*! Function for retrieving heat fluxes out of the flow element.*/
 	void internalDerivatives(double *ydot);
 
@@ -209,6 +206,9 @@ public:
 
 	/*! Set ambient conditions. */
 	void setAmbientConditions(double Tamb, double alphaAmb);
+
+	/*! Returns fluid inlet states: spcific enthalpy. */
+	const double &inletSpecificEnthalpy() const;
 
 	/*! Returns fluid outlet states: spcific enthalpy. */
 	double outletSpecificEnthalpy() const;

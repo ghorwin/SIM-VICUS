@@ -2309,6 +2309,8 @@ void NandradModel::initSolverMatrix() {
 				continue;
 			if (dynamic_cast<ConstructionBalanceModel*> (stateDep) != nullptr)
 				continue;
+			if (dynamic_cast<ThermalNetworkBalanceModel*> (stateDep) != nullptr)
+				continue;
 
 			// local pattern of results and input references
 			std::vector< std::pair<const double *, const double *> > dependenciesIJ;
@@ -2404,6 +2406,48 @@ void NandradModel::initSolverMatrix() {
 			std::vector< std::pair<const double *, const double *> > dependenciesIJ;
 			// temporarilly store all elements that can be removed and that one that can be inserted
 			constructionModel->stateDependencies(dependenciesIJ);
+
+			std::vector<std::pair<const double *, const double *> >::const_iterator
+				dependencyIJ = dependenciesIJ.begin();
+			// loop over all result quantities of the next pattern (elements aij)
+			for (; dependencyIJ != dependenciesIJ.end(); ++dependencyIJ) {
+				// retrieve row and column storage adresses
+				const double * resultRef = dependencyIJ->first;
+				const double * inputRef = dependencyIJ->second;
+
+				// search for input value reference inside result vector
+				std::map<const double*, unsigned int>::const_iterator inputRefIt =
+					resultValueRefs.find(inputRef);
+
+				// skip all references to quantiteis that are no results
+				if (inputRefIt == resultValueRefs.end())
+					continue;
+
+				// search result reference
+				std::map<const double*, unsigned int>::const_iterator resultRefIt = resultValueRefs.find(resultRef);
+				// result adress must! be given
+				IBK_ASSERT(resultRefIt != resultValueRefs.end());
+
+				// get local index
+				unsigned int i = resultRefIt->second;
+				unsigned int j = inputRefIt->second;
+				// register pattern entry
+				if (!pattern.test(i, j))
+					pattern.set(i, j);
+				// register transpose pattern entry
+				if (!transposePattern.test(j, i))
+					transposePattern.set(j, i);
+			}
+		}
+
+		// ... all network states models
+		for (unsigned int i = 0; i < m_networkStatesModelContainer.size(); ++i) {
+
+			const ThermalNetworkStatesModel *networkModel = m_networkStatesModelContainer[i];
+			// find all dependencies
+			std::vector< std::pair<const double *, const double *> > dependenciesIJ;
+			// temporarilly store all elements that can be removed and that one that can be inserted
+			networkModel->stateDependencies(dependenciesIJ);
 
 			std::vector<std::pair<const double *, const double *> >::const_iterator
 				dependencyIJ = dependenciesIJ.begin();
