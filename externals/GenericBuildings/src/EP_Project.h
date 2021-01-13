@@ -13,28 +13,26 @@
 
 namespace EP {
 
+class IDFParser;
 
-class Project
-{
+class Project {
 public:
-
-
-
-
 	// *** PUBLIC MEMBER FUNCTIONS ***
-	void version(const std::string & str);
-
 	/*! Read IDF. */
-	void readIDF(const IBK::Path &filename);
+	void readIDF(const IDFParser &idfData);
 
-	/*! Write an class object in energy plus format. Returns a string with all elements. */
+
+
+	/*! Write an class object in energy plus format.
+		Returns a string with all elements.
+	*/
 	template <class T>
-	std::string writeClassObj(const std::vector<T> &objects, const EP::Version::VersionNumber &version) const{
+	std::string writeClassObj(const std::vector<T> &objects) const {
 		std::stringstream ss;
 		for (size_t i=0; i<objects.size(); ++i) {
 			const T &obj = objects[i];
 			std::string str;
-			obj.write(str, version);
+			obj.write(str, m_version);
 			ss << str;
 		}
 
@@ -59,7 +57,7 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Version of IDF*/
-	EP::Version::VersionNumber						m_version;
+	EP::Version										m_version;
 
 	/*! Vector of all building surface detailed objects (opace surfaces) */
 	std::vector<Zone>   							m_zones;

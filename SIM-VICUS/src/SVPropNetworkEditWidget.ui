@@ -440,7 +440,7 @@
        <widget class="QPushButton" name="pushButtonEditComponents">
         <property name="maximumSize">
          <size>
-          <width>120</width>
+          <width>16777215</width>
           <height>16777215</height>
          </size>
         </property>
@@ -499,6 +499,21 @@
        <widget class="QComboBox" name="comboBoxZoneId"/>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="labelSelectionInfo">
+     <property name="font">
+      <font>
+       <italic>true</italic>
+      </font>
+     </property>
+     <property name="text">
+      <string>mixed selection: please select either nodes or edges</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
     </widget>
    </item>
    <item>

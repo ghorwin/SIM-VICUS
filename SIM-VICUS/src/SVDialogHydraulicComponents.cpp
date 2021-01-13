@@ -24,36 +24,27 @@ SVDialogHydraulicComponents::SVDialogHydraulicComponents(QWidget *parent) :
 
 	// populate combobox components
 	m_mapComponents.clear();
-	m_mapComponents.insert("<None>", NANDRAD::HydraulicNetworkComponent::NUM_MT);
-	m_mapComponents.insert(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::modelType_t",
-														NANDRAD::HydraulicNetworkComponent::MT_Radiator),
-														NANDRAD::HydraulicNetworkComponent::MT_Radiator);
-	m_mapComponents.insert(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::modelType_t",
-														NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger),
-														NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger);
-	m_mapComponents.insert(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::modelType_t",
-														NANDRAD::HydraulicNetworkComponent::MT_HeatPump),
-														NANDRAD::HydraulicNetworkComponent::MT_HeatPump);
-	m_mapComponents.insert(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::modelType_t",
-														NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel),
-														NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel);
+	for (unsigned int i=0; i<NANDRAD::HydraulicNetworkComponent::NUM_MT; ++i){
+	m_mapComponents.insert(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::ModelType",
+														NANDRAD::HydraulicNetworkComponent::ModelType(i)),
+														NANDRAD::HydraulicNetworkComponent::ModelType(i));
+	}
 	m_ui->comboBoxComponentType->clear();
 	m_ui->comboBoxComponentType->addItems(m_mapComponents.keys());
-	m_ui->comboBoxComponentType->setCurrentText(m_mapComponents.key(NANDRAD::HydraulicNetworkComponent::NUM_MT));
 
-	// setup combobox heat exchange type
+	// populate combobox heat exchange type
 	m_mapHeatExchangeType.clear();
 	m_mapHeatExchangeType.insert("None", NANDRAD::HydraulicNetworkComponent::NUM_HT);
-	m_mapHeatExchangeType.insert(NANDRAD::KeywordList::Description("HydraulicNetworkComponent::heatExchangeType_t",
+	m_mapHeatExchangeType.insert(NANDRAD::KeywordList::Description("HydraulicNetworkComponent::HeatExchangeType",
 								NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant),
 								NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant);
-	m_mapHeatExchangeType.insert(NANDRAD::KeywordList::Description("HydraulicNetworkComponent::heatExchangeType_t",
+	m_mapHeatExchangeType.insert(NANDRAD::KeywordList::Description("HydraulicNetworkComponent::HeatExchangeType",
 								NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile),
 								NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile);
-	m_mapHeatExchangeType.insert(NANDRAD::KeywordList::Description("HydraulicNetworkComponent::heatExchangeType_t",
+	m_mapHeatExchangeType.insert(NANDRAD::KeywordList::Description("HydraulicNetworkComponent::HeatExchangeType",
 								NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithFMUTemperature),
 								NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithFMUTemperature);
-	m_mapHeatExchangeType.insert(NANDRAD::KeywordList::Description("HydraulicNetworkComponent::heatExchangeType_t",
+	m_mapHeatExchangeType.insert(NANDRAD::KeywordList::Description("HydraulicNetworkComponent::HeatExchangeType",
 								NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature),
 								NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature);
 	m_ui->comboBoxHeatExchangeType->clear();

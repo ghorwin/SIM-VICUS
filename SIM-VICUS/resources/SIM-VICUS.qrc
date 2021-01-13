@@ -51,5 +51,7 @@
         <file>gfx/actions/icon-arrow-undo.svg</file>
         <file>gfx/actions/icon-content-folder-open.svg</file>
         <file>gfx/actions/icon-file-file-empty.svg</file>
+        <file>gfx/actions/icon-filter-slider-circle-h-dark.svg</file>
+        <file>gfx/actions/icon-shape-shape-cube-dark.svg</file>
     </qresource>
 </RCC>

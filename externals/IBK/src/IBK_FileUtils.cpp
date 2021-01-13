@@ -230,14 +230,38 @@ IBK::Path userDirectory() {
 	return IBK::Path(result);
 }
 
-std::ofstream* create_ofstream(const IBK::Path& file, std::ios_base::openmode mode) {
+std::ofstream * create_ofstream(const IBK::Path& file, std::ios_base::openmode mode) {
+#if defined(_MSC_VER)
+
 #if defined(_MSC_VER)
 	return new std::ofstream(file.wstr().c_str(), mode);
+#else
+	std::string filenameAnsi = IBK::WstringToANSI(file.wstr(), false);
+	return new std::ofstream(filenameAnsi.c_str(), mode);
+#endif // _MSC_VER
+
 #else //_WIN32
-	// FIXME: utf8 encoding fix
 	return new std::ofstream(file.str().c_str(), mode);
 #endif // _WIN32
 }
+
+std::ifstream * open_ifstream(const IBK::Path& file, std::ios_base::openmode mode) {
+#if defined(_WIN32)
+
+#if defined(_MSC_VER)
+		return new std::ifstream(file.wstr().c_str(), mode);
+#else
+		std::string filenameAnsi = IBK::WstringToANSI(file.wstr(), false);
+		return new std::ifstream(filenameAnsi.c_str(), mode);
+#endif // _MSC_VER
+
+#else // _WIN32
+
+	return new std::ifstream(file.c_str(), mode);
+#endif
+}
+
+
 
 }  // namespace IBK
 

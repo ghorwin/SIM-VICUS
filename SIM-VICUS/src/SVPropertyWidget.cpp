@@ -45,20 +45,33 @@ void SVPropertyWidget::onViewStateChanged() {
 
 	// catch changes in object selection
 	std::set<const VICUS::Object*> selObjects = SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects;
+	bool nodeFound = false;
+	bool edgeFound = false;
 	for (const VICUS::Object * o : selObjects) {
 		if (dynamic_cast<const VICUS::NetworkNode *>(o) != nullptr) {
-
-			SVPropNetworkEditWidget *propWidget = new SVPropNetworkEditWidget(this);
-			m_propWidgets[SVViewState::PM_NetworkProperties] = propWidget;
-			m_propWidgets[SVViewState::PM_NetworkProperties]->setVisible(true);
-			m_layout->addWidget(m_propWidgets[SVViewState::PM_NetworkProperties]);
-
-			qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->updateUi(S_MultipleObjects);
-			qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->showNodeProperties();
-
-			return;
+			nodeFound = true;
 		}
-
+		if (dynamic_cast<const VICUS::NetworkEdge *>(o) != nullptr) {
+			edgeFound = true;
+		}
+	}
+	if (edgeFound && nodeFound){
+		showNetworkPropertyWidget();
+		qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->updateUi(S_MultipleObjects);
+		qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->showMixedSelectionInfo();
+		return;
+	}
+	else if (nodeFound){
+		showNetworkPropertyWidget();
+		qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->updateUi(S_MultipleObjects);
+		qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->showNodeProperties();
+		return;
+	}
+	else if (edgeFound){
+		showNetworkPropertyWidget();
+		qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->updateUi(S_MultipleObjects);
+		qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->showEdgeProperties();
+		return;
 	}
 
 
@@ -124,13 +137,7 @@ void SVPropertyWidget::onViewStateChanged() {
 		case SVViewState::PM_NetworkProperties :
 		case SVViewState::PM_NetworkNodeProperties :
 		case SVViewState::PM_NetworkEdgeProperties : {
-			// create widget and add to layout, if not existing
-			if (m_propWidgets[SVViewState::PM_NetworkProperties] == nullptr) {
-				SVPropNetworkEditWidget *propWidget = new SVPropNetworkEditWidget(this);
-				m_propWidgets[SVViewState::PM_NetworkProperties] = propWidget;
-				m_layout->addWidget(m_propWidgets[SVViewState::PM_NetworkProperties]);
-			}
-			m_propWidgets[SVViewState::PM_NetworkProperties]->setVisible(true);
+			showNetworkPropertyWidget();
 			// tell widget to update its content
 			qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->updateUi(S_SingleObject);
 			if (m == SVViewState::PM_NetworkProperties)
@@ -145,6 +152,17 @@ void SVPropertyWidget::onViewStateChanged() {
 			// set maximum size to 0, to avoid widget being expandible
 		}
 	}
+}
+
+void SVPropertyWidget::showNetworkPropertyWidget()
+{
+	// create widget and add to layout, if not existing
+	if (m_propWidgets[SVViewState::PM_NetworkProperties] == nullptr) {
+		SVPropNetworkEditWidget *propWidget = new SVPropNetworkEditWidget(this);
+		m_propWidgets[SVViewState::PM_NetworkProperties] = propWidget;
+		m_layout->addWidget(m_propWidgets[SVViewState::PM_NetworkProperties]);
+	}
+	m_propWidgets[SVViewState::PM_NetworkProperties]->setVisible(true);
 }
 
 

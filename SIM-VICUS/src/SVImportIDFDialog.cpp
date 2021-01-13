@@ -30,7 +30,7 @@ SVImportIDFDialog::ImportResults SVImportIDFDialog::import(const QString & fname
 		parser.read(IBK::Path(fname.toStdString()));
 
 		EP::Project prj;
-		prj.readIDF(IBK::Path(fname.toStdString()));
+		prj.readIDF(parser);
 
 		// now transfer data to temporary VICUS project structure.
 		m_importedProject = VICUS::Project(); // clear data from previous import

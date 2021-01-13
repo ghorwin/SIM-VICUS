@@ -53,6 +53,7 @@
 #include "SVViewStateHandler.h"
 #include "SVImportIDFDialog.h"
 #include "SVPropVertexListWidget.h"
+#include "SVStyle.h"
 
 #include "SVDBMaterialEditDialog.h"
 #include "SVDBConstructionEditDialog.h"
@@ -395,23 +396,23 @@ void SVMainWindow::setup() {
 
 	// *** setup tool bar (add actions for undo and redo) ***
 
-	QAction * undoAction = m_undoStack->createUndoAction(this, tr("Undo"));
-	undoAction->setIcon(QIcon(":/gfx/actions/icon-arrow-undo.svg"));
-	undoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Z));
-	QAction * redoAction = m_undoStack->createRedoAction(this, tr("Redo"));
-	redoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
-	redoAction->setIcon(QIcon(":/gfx/actions/icon-arrow-redo.svg"));
+	m_undoAction = m_undoStack->createUndoAction(this, tr("Undo"));
+	m_undoAction->setIcon(QIcon(":/gfx/actions/24x24/undo.png"));
+	m_undoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Z));
+	m_redoAction = m_undoStack->createRedoAction(this, tr("Redo"));
+	m_redoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
+	m_redoAction->setIcon(QIcon(":/gfx/actions/24x24/redo.png"));
 
 	// this is a bit messy, but there seems to be no other way, unless we create the whole menu ourselves
 	QList<QAction*> acts = m_ui->menu_Edit->actions();
-	m_ui->menu_Edit->addAction(undoAction);
-	m_ui->menu_Edit->addAction(redoAction);
+	m_ui->menu_Edit->addAction(m_undoAction);
+	m_ui->menu_Edit->addAction(m_redoAction);
 	// now move all the actions to bottom
 	for (int i=0; i<acts.count(); ++i)
 		m_ui->menu_Edit->addAction(acts[i]);
 
-	m_ui->toolBar->addAction(undoAction);
-	m_ui->toolBar->addAction(redoAction);
+	m_ui->toolBar->addAction(m_undoAction);
+	m_ui->toolBar->addAction(m_redoAction);
 	m_ui->menu_View->addAction(m_ui->toolBar->toggleViewAction());
 
 	// *** Create definition lists dock widgets
@@ -458,6 +459,8 @@ void SVMainWindow::setup() {
 		}
 	}
 
+	// final style touches (icon themes etc.)
+	onStyleChanged();
 
 	// add user settings related window resize at program start
 #if defined(Q_OS_WIN)
@@ -641,6 +644,19 @@ void SVMainWindow::on_actionFileOpenProjectDir_triggered() {
 void SVMainWindow::onStyleChanged() {
 	m_welcomeScreen->updateWelcomePage();
 	m_welcomeScreen->update();
+
+	// manually change icons
+	// if we have, at some point, really different icon sets for dark and bright themes, we
+	// may just centrally replace the entire icon set, but this is tricky and also would require
+	// a lot of work maintaining two icon themes. So for now, we just manually switch between the icon sets
+	if (SVSettings::instance().m_theme == SVSettings::TT_Dark) {
+		m_ui->actionViewToggleGeometryMode->setIcon(QIcon(":/gfx/actions/icon-shape-shape-cube.svg"));
+		m_ui->actionViewToggleParametrizationMode->setIcon(QIcon(":/gfx/actions/icon-filter-slider-circle-h.svg"));
+	}
+	else {
+		m_ui->actionViewToggleGeometryMode->setIcon(QIcon(":/gfx/actions/icon-shape-shape-cube-dark.svg"));
+		m_ui->actionViewToggleParametrizationMode->setIcon(QIcon(":/gfx/actions/icon-filter-slider-circle-h-dark.svg"));
+	}
 }
 
 

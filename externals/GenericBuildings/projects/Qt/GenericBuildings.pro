@@ -30,7 +30,6 @@ SOURCES += \
 		../../src/EP_FenestrationSurfaceDetailed.cpp \
 		../../src/EP_Material.cpp \
 		../../src/EP_Project.cpp \
-		../../src/EP_Version.cpp \
 		../../src/EP_WindowMaterial.cpp \
 #		../../src/NSG_Polygon.cpp \
 #		../../src/NSG_PolygonWrapper.cpp \
@@ -38,13 +37,13 @@ SOURCES += \
 
 HEADERS += \
 		../../src/EP_IDFParser.h \
+	../../src/EP_Version.h \
 		../../src/EP_Zone.h \
 		../../src/EP_BuildingSurfaceDetailed.h \
 		../../src/EP_Construction.h \
 		../../src/EP_FenestrationSurfaceDetailed.h \
 		../../src/EP_Material.h \
 		../../src/EP_Project.h \
-		../../src/EP_Version.h \
 		../../src/EP_WindowMaterial.h \
 #		../../src/NSG_Polygon.h \
 #		../../src/NSG_PolygonWrapper.h \
