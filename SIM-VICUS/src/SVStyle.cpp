@@ -193,5 +193,8 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 		// clear style sheet for default style.
 		qApp->setStyleSheet("");
 	}
+
+	// Note: other, widget-specific adjustments, like change of action icons etc. is handled
+	//       in the individual format update slots connected to the SVPreferencesPageStyle::styleChanged() slots.
 }
 

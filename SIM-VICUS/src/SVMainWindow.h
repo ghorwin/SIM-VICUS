@@ -298,6 +298,9 @@ private:
 	/*! The thread pool managed by the main window. */
 	QList<SVThreadBase*>		m_threadPool;
 
+	QAction *					m_undoAction;
+	QAction *					m_redoAction;
+
 	/*! The welcome screen. */
 	SVWelcomeScreen				*m_welcomeScreen										= nullptr;
 
