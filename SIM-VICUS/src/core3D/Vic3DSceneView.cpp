@@ -402,13 +402,24 @@ void SceneView::keyReleaseEvent(QKeyEvent *event) {
 		{
 			SVViewState vs = SVViewStateHandler::instance().viewState();
 			if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex) {
-				if (k == Qt::Key_X)
-					vs.m_locks ^= SVViewState::L_LocalX;
-				else if (k == Qt::Key_Y)
-					vs.m_locks ^= SVViewState::L_LocalY;
-				else if (k == Qt::Key_Z)
-					vs.m_locks ^= SVViewState::L_LocalZ;
-				qDebug() << "Locks: " << (vs.m_locks & SVViewState::L_LocalX) << (vs.m_locks & SVViewState::L_LocalY) << (vs.m_locks & SVViewState::L_LocalZ);
+				if (k == Qt::Key_X) {
+					if (vs.m_locks != SVViewState::L_LocalX)
+						vs.m_locks = SVViewState::L_LocalX;
+					else
+						vs.m_locks = SVViewState::NUM_L;
+				}
+				else if (k == Qt::Key_Y) {
+					if (vs.m_locks != SVViewState::L_LocalY)
+						vs.m_locks = SVViewState::L_LocalY;
+					else
+						vs.m_locks = SVViewState::NUM_L;
+				}
+				else if (k == Qt::Key_Z) {
+					if (vs.m_locks != SVViewState::L_LocalZ)
+						vs.m_locks = SVViewState::L_LocalZ;
+					else
+						vs.m_locks = SVViewState::NUM_L;
+				}
 			}
 			SVViewStateHandler::instance().setViewState(vs);
 			// Nothing further to be done - the coordinate system position is adjusted below for

@@ -34,9 +34,6 @@ const float MOUSE_ROTATION_SPEED = 0.5f;
 /// \todo adjust the THRESHOLD based on DPI/Screenresolution or have it as user option
 const float MOUSE_MOVE_DISTANCE_ORBIT_CONTROLLER = 1;
 
-/*! Plane definition for the xy Plane. */
-const VICUS::PlaneGeometry xyPlane(VICUS::PlaneGeometry::T_Triangle, IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(1,0,0), IBKMK::Vector3D(0,1,0));
-
 namespace Vic3D {
 
 void Vic3DScene::create(SceneView * parent, std::vector<ShaderProgram> & shaderPrograms) {
@@ -55,6 +52,9 @@ void Vic3DScene::create(SceneView * parent, std::vector<ShaderProgram> & shaderP
 
 	// we create the new geometry object here, but data is added once it is used
 	m_newGeometryObject.create(m_fixedColorTransformShader);
+
+	m_gridPlanes.push_back( VICUS::PlaneGeometry(VICUS::PlaneGeometry::T_Triangle,
+												 IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(1,0,0), IBKMK::Vector3D(0,1,0)) );
 }
 
 
@@ -406,25 +406,21 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 			if (!pickObject.m_pickPerformed)
 				pick(pickObject);
 
-			IBKMK::Vector3D nearestPoint;
-			for (const PickObject::PickResult & r : pickObject.m_candidates) {
-				if (r.m_snapPointType == PickObject::RT_Object ||
-					r.m_snapPointType == PickObject::RT_GlobalXYPlane) {
-					nearestPoint = r.m_pickPoint;
-					break;
-				}
+			// only enter orbit controller mode, if we actually hit something
+			if (!pickObject.m_candidates.empty()) {
+				IBKMK::Vector3D nearestPoint = pickObject.m_candidates.front().m_pickPoint;
+
+				// for orbit-controller, we  take the closest point of either
+				m_orbitControllerOrigin = VICUS::IBKVector2QVector(nearestPoint);
+				qDebug() << "Entering orbit controller mode, rotation around" << m_orbitControllerOrigin;
+				m_orbitControllerObject.m_transform.setTranslation(m_orbitControllerOrigin);
+
+				// Rotation matrix around origin point
+				m_mouseMoveDistance = 0;
+
+				m_orbitControllerActive = true;
+				needRepaint = true;
 			}
-
-			// for orbit-controller, we  take the closest point of either
-			m_orbitControllerOrigin = VICUS::IBKVector2QVector(nearestPoint);
-			qDebug() << "Entering orbit controller mode, rotation around" << m_orbitControllerOrigin;
-			m_orbitControllerObject.m_transform.setTranslation(m_orbitControllerOrigin);
-
-			// Rotation matrix around origin point
-			m_mouseMoveDistance = 0;
-
-			m_orbitControllerActive = true;
-			needRepaint = true;
 		}
 		else {
 
@@ -561,72 +557,85 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		if (!pickObject.m_pickPerformed)
 			pick(pickObject);
 		needRepaint = true;
-		// get nearest match
+
+		// get nearest match; look for an object
 		IBKMK::Vector3D nearestPoint;
-		IBKMK::Vector3D nearestPointXY;
+		bool found = false;
 		unsigned int uniqueID = 0;
 		for (const PickObject::PickResult & r : pickObject.m_candidates) {
 			if (r.m_snapPointType == PickObject::RT_Object) {
 				nearestPoint = r.m_pickPoint;
 				uniqueID = r.m_uniqueObjectID;
+				found = true;
 				break;
 			}
-			if (r.m_snapPointType == PickObject::RT_GlobalXYPlane) {
-				nearestPointXY = r.m_pickPoint;
+		}
+		// no object found, try a plane
+		if (!found) {
+			for (const PickObject::PickResult & r : pickObject.m_candidates) {
+				if (r.m_snapPointType == PickObject::RT_GridPlane) {
+					nearestPoint = r.m_pickPoint;
+					uniqueID = r.m_uniqueObjectID;
+					found = true;
+					break;
+				}
 			}
 		}
-		if (uniqueID != 0) {
-			// lookup object
-			const VICUS::Object * obj = project().objectById(uniqueID);
-			// should be a surface
-			const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(obj);
-			Q_ASSERT(s != nullptr);
-			// now get normal vector
-			IBKMK::Vector3D n = s->m_geometry.normal();
-			// get also local X and Y vectors
-			IBKMK::Vector3D localX = s->m_geometry.localX();
-			IBKMK::Vector3D localY = s->m_geometry.localY();
-			// compose rotation angle from global to local system via the following math:
-			// we have local system axes x,y,z and global axes g1, g2, g3
-			// and the rotation matrix R should do:
-			//  R(g1) = x,  R(g2) = y, R(g3) = z
-			//
-			// now, if we describe a body axis like:
-			//  x = B11.g1 + B21.g2 + B31.g3
-			//  y = B11.g1 + B21.g2 + B31.g3
-			//  z = B11.g1 + B21.g2 + B31.g3
-			//
-			// or in matrix writing
-			//  R[1,0,0] = [B11, B21, B31]
-			//
-			// each of the columns of the rotation matrix is the normalized local coordinate axis
-			//
-			// now build the rotation matrix
-//			QMatrix3x3 R;
-//			float * r = R.data();
-//			*(QVector3D*)r = VICUS::IBKVector2QVector(localX.normalized());
-//			r+=3;
-//			*(QVector3D*)r = VICUS::IBKVector2QVector(localY.normalized());
-//			r+=3;
-//			*(QVector3D*)r = VICUS::IBKVector2QVector(n.normalized());
-//			qDebug() << R;
-//			QQuaternion q = QQuaternion::fromRotationMatrix(R);
-//			qDebug() << q;
+		// did we hit anything?
+		if (found) {
+			// object found?
+			if (uniqueID != 0) {
+				// lookup object
+				const VICUS::Object * obj = project().objectById(uniqueID);
+				// should be a surface
+				const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(obj);
+				Q_ASSERT(s != nullptr);
+				// now get normal vector
+				IBKMK::Vector3D n = s->m_geometry.normal();
+				// get also local X and Y vectors
+				IBKMK::Vector3D localX = s->m_geometry.localX();
+				IBKMK::Vector3D localY = s->m_geometry.localY();
+				// compose rotation angle from global to local system via the following math:
+				// we have local system axes x,y,z and global axes g1, g2, g3
+				// and the rotation matrix R should do:
+				//  R(g1) = x,  R(g2) = y, R(g3) = z
+				//
+				// now, if we describe a body axis like:
+				//  x = B11.g1 + B21.g2 + B31.g3
+				//  y = B11.g1 + B21.g2 + B31.g3
+				//  z = B11.g1 + B21.g2 + B31.g3
+				//
+				// or in matrix writing
+				//  R[1,0,0] = [B11, B21, B31]
+				//
+				// each of the columns of the rotation matrix is the normalized local coordinate axis
+				//
+				// now build the rotation matrix
+	//			QMatrix3x3 R;
+	//			float * r = R.data();
+	//			*(QVector3D*)r = VICUS::IBKVector2QVector(localX.normalized());
+	//			r+=3;
+	//			*(QVector3D*)r = VICUS::IBKVector2QVector(localY.normalized());
+	//			r+=3;
+	//			*(QVector3D*)r = VICUS::IBKVector2QVector(n.normalized());
+	//			qDebug() << R;
+	//			QQuaternion q = QQuaternion::fromRotationMatrix(R);
+	//			qDebug() << q;
 
-			// or use the ready-made Qt function (which surprisingly gives the same result :-)
-			QQuaternion q2 = QQuaternion::fromAxes(VICUS::IBKVector2QVector(localX.normalized()),
-												   VICUS::IBKVector2QVector(localY.normalized()),
-												   VICUS::IBKVector2QVector(n.normalized()));
-//			qDebug() << q2;
-			m_coordinateSystemObject.setRotation(q2);
-		}
-		else {
-			// restore to global orientation
-			m_coordinateSystemObject.setRotation(QQuaternion());
-			nearestPoint = nearestPointXY;
-		}
+				// or use the ready-made Qt function (which surprisingly gives the same result :-)
+				QQuaternion q2 = QQuaternion::fromAxes(VICUS::IBKVector2QVector(localX.normalized()),
+													   VICUS::IBKVector2QVector(localY.normalized()),
+													   VICUS::IBKVector2QVector(n.normalized()));
+	//			qDebug() << q2;
+				m_coordinateSystemObject.setRotation(q2);
+			}
+			else {
+				// restore to global orientation
+				m_coordinateSystemObject.setRotation(QQuaternion());
+			}
 
-		m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(nearestPoint) );
+			m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(nearestPoint) );
+		}
 	}
 
 
@@ -1006,8 +1015,8 @@ void Vic3DScene::pick(PickObject & pickObject) {
 
 	// mouse position in NDC space, one point on near plane and one point on far plane
 	QVector4D nearPos(
-				(mx - halfVpw) / halfVpw,
-				-1*(my - halfVph) / halfVph,
+				float((mx - halfVpw) / halfVpw),
+				float(-1.*(my - halfVph) / halfVph),
 				-1,
 				1.0);
 
@@ -1029,7 +1038,12 @@ void Vic3DScene::pick(PickObject & pickObject) {
 	IBKMK::Vector3D farPoint = VICUS::QVector2IBKVector(farResult.toVector3D());
 	IBKMK::Vector3D direction = farPoint - nearPoint;	// direction vector of line-of-sight
 
-	// now do the actual picking
+	// *** now do the actual picking ***
+	//
+	// We collect a list of pick candidates, all with pick points along the line-of-sight.
+	// In this function we only collect the pick candidates. The calling function has to
+	// pick the right one.
+
 //#define SHOW_PICK_TIME
 #ifdef SHOW_PICK_TIME
 	QElapsedTimer pickTimer;
@@ -1039,81 +1053,18 @@ void Vic3DScene::pick(PickObject & pickObject) {
 	// get intersection with global xy plane
 	IBKMK::Vector3D intersectionPoint;
 	double t;
-	// X-Y-Plane is picked from both sides
-	if (xyPlane.intersectsLine(nearPoint, direction, intersectionPoint, t, true, true)) {
-		// got an intersection point, store it
-		PickObject::PickResult r;
-		r.m_snapPointType = PickObject::RT_GlobalXYPlane;
-		r.m_depth = t;
-		r.m_pickPoint = intersectionPoint;
-		pickObject.m_candidates.push_back(r);
-	}
-
-	// if lock is enabled, compute intersection point with plane, or in case of axis lock, the closest point on
-	// axis.
-	const SVViewState & vs = SVViewStateHandler::instance().viewState();
-	if (vs.m_locks != 0) {
-		// get reference point for relative translation/plane/line snap
-		IBKMK::Vector3D offset = referencePoint();
-		IBKMK::Vector3D a, b;
-		bool planeSnap = true;
-		// now process all the different combinations of locks
-		switch (vs.m_locks) {
-			case SVViewState::L_LocalX :
-				a = VICUS::QVector2IBKVector(m_coordinateSystemObject.transform().rotation().rotatedVector(QVector3D(0,1,0)) );
-				b = VICUS::QVector2IBKVector(m_coordinateSystemObject.transform().rotation().rotatedVector(QVector3D(0,0,1)) );
-			break;
-			case SVViewState::L_LocalY :
-				a = VICUS::QVector2IBKVector(m_coordinateSystemObject.transform().rotation().rotatedVector(QVector3D(1,0,0)) );
-				b = VICUS::QVector2IBKVector(m_coordinateSystemObject.transform().rotation().rotatedVector(QVector3D(0,0,1)) );
-			break;
-			case SVViewState::L_LocalZ :
-				a = VICUS::QVector2IBKVector(m_coordinateSystemObject.transform().rotation().rotatedVector(QVector3D(1,0,0)) );
-				b = VICUS::QVector2IBKVector(m_coordinateSystemObject.transform().rotation().rotatedVector(QVector3D(0,1,0)) );
-			break;
-			case SVViewState::L_LocalX | SVViewState::L_LocalY :
-			case SVViewState::L_LocalX | SVViewState::L_LocalY | SVViewState::L_LocalZ : // this is actually invalid, but we treat it as "X+Y locked"
-				a = VICUS::QVector2IBKVector(m_coordinateSystemObject.transform().rotation().rotatedVector(QVector3D(0,0,1)) );
-				planeSnap = false;
-			break;
-			case SVViewState::L_LocalX | SVViewState::L_LocalZ :
-				a = VICUS::QVector2IBKVector(m_coordinateSystemObject.transform().rotation().rotatedVector(QVector3D(0,1,0)) );
-				planeSnap = false;
-			break;
-			case SVViewState::L_LocalY | SVViewState::L_LocalZ :
-				a = VICUS::QVector2IBKVector(m_coordinateSystemObject.transform().rotation().rotatedVector(QVector3D(1,0,0)) );
-				planeSnap = false;
-			break;
-		}
-		// plane intersection?
-		if (planeSnap) {
-			VICUS::PlaneGeometry pg(VICUS::PlaneGeometry::T_Rectangle, offset, offset+a, offset+a+b);
-			if (pg.intersectsLine(nearPoint, direction, intersectionPoint, t, true, true)) {
-				// got an intersection point, store it
-				PickObject::PickResult r;
-				r.m_snapPointType = PickObject::RT_LocalPlaneFixedAxis;
-				r.m_depth = t;
-				r.m_pickPoint = intersectionPoint;
-				pickObject.m_candidates.push_back(r);
-			}
-		}
-		else {
-			// line2line intersection
-			double dist;
-			IBKMK::Vector3D closestPoint;
-			double lineFactor;
-			IBKMK::lineToLineDistance(nearPoint, direction,
-									  offset, a,
-									  dist, closestPoint, lineFactor);
-			// store "lot" point on line-of-sight as snap point
+	// process all grid planes - being transparent, these are picked from both sides
+	for (unsigned int i=0; i< m_gridPlanes.size(); ++i) {
+		if (m_gridPlanes[i].intersectsLine(nearPoint, direction, intersectionPoint, t, true, true)) {
+			// got an intersection point, store it
 			PickObject::PickResult r;
-			r.m_snapPointType = PickObject::RT_LocalFixedAxis;
-			r.m_depth = dist;
-			r.m_pickPoint = offset + lineFactor*a;
+			r.m_snapPointType = PickObject::RT_GridPlane;
+			r.m_uniqueObjectID = i;
+			r.m_depth = t;
+			r.m_pickPoint = intersectionPoint;
 			pickObject.m_candidates.push_back(r);
 		}
 	}
-
 
 	// now process all surfaces and update p to hold the closest hit
 	const VICUS::Project & prj = project();
@@ -1177,7 +1128,7 @@ void Vic3DScene::pick(PickObject & pickObject) {
 			// check distance against radius of sphere
 			if (linePointDist < no.m_visualizationRadius) {
 				PickObject::PickResult r;
-				r.m_snapPointType = PickObject::RT_NetworkNode;
+				r.m_snapPointType = PickObject::RT_Object;
 				r.m_depth = dist;
 				r.m_pickPoint = closestPoint;
 				r.m_uniqueObjectID = no.uniqueID();
@@ -1202,7 +1153,7 @@ void Vic3DScene::pick(PickObject & pickObject) {
 			// check distance against cylinder radius
 			if (line2LineDistance < e.m_visualizationRadius && lineFactor >= 0 && lineFactor <= 1) {
 				PickObject::PickResult r;
-				r.m_snapPointType = PickObject::RT_NetworkEdge;
+				r.m_snapPointType = PickObject::RT_Object;
 				r.m_depth = dist;
 				r.m_pickPoint = closestPoint;
 				r.m_uniqueObjectID = e.uniqueID();
@@ -1222,223 +1173,188 @@ void Vic3DScene::pick(PickObject & pickObject) {
 }
 
 
+struct SnapCandidate {
+	bool operator<(const SnapCandidate & other) const {
+		return m_distToLineOfSight < other.m_distToLineOfSight;
+	}
+
+	/*! The correspondig snap location. */
+	IBKMK::Vector3D		m_pickPoint;
+	/*! Distance of this candidate to pick point on line-of-sight. */
+	double				m_distToLineOfSight;
+};
+
 
 void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
 
-	// we have now several surfaces/objects stored in the pickObject
+	const float SNAP_DISTANCES_THRESHHOLD = 10; // 1 m should be enough, right?
 
-	// first we handle the situation without snap
-	if (!vs.m_snapEnabled) {
-		// no snapping enabled - three options:
-		// a) no axis lock -> place coordinate system on either a visible surface, or the global XY plane
-		// b) plane lock is enabled -> place coordinate system on locked plane or visible surface, whatever is closest
-		// c) place coordinate system on locked axis position
-		if (vs.m_locks == 0) {
-			// get snap point with XY plane
-			IBKMK::Vector3D p;
-			for (const PickObject::PickResult & r : pickObject.m_candidates) {
-				if (r.m_snapPointType == PickObject::RT_GlobalXYPlane) {
-					p = r.m_pickPoint;
-					break;
-				}
-				if (r.m_snapPointType == PickObject::RT_Object) {
-					p = r.m_pickPoint;
-					break;
-				}
-			}
-			m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(p) );
-			return;
-		}
-		// if we have plane snap?
-		switch (vs.m_locks) {
-			case SVViewState::L_LocalX :
-			case SVViewState::L_LocalY :
-			case SVViewState::L_LocalZ :
-			{
-				// search for plane or object
-				IBKMK::Vector3D p;
-				for (const PickObject::PickResult & r : pickObject.m_candidates) {
-					if (r.m_snapPointType == PickObject::RT_LocalPlaneFixedAxis) {
-						p = r.m_pickPoint;
-						break;
-					}
-					if (r.m_snapPointType == PickObject::RT_Object) {
-						p = r.m_pickPoint;
-						break;
-					}
-				}
-				m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(p) );
-			} break;
-
-			// all others are line-snap
-			default :
-			{
-				// search for plane or object
-				IBKMK::Vector3D p;
-				for (const PickObject::PickResult & r : pickObject.m_candidates) {
-					if (r.m_snapPointType == PickObject::RT_LocalFixedAxis) {
-						p = r.m_pickPoint;
-						break;
-					}
-					if (r.m_snapPointType == PickObject::RT_Object) {
-						p = r.m_pickPoint;
-						break;
-					}
-				}
-				m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(p) );
-			} break;
-		}
-		return;
-	}
+	IBKMK::Vector3D		snapPoint; // default snap point = origin
 
 
-	// now the variants with snap, two variants:
-	// a) with locking - all snap point candidates are projected onto the locked plane or line, the RT_Local*** are
-	//                   taken as fallback, if no pick was found. Also, the global XY axis hit is ignored here.
-	// b) without locking - all snap points are inspected
+	// *** no snap ***
 	//
-	// for both variants: only those snap points are considered that are part of the snap selection
+	if (!vs.m_snapEnabled) {
 
-	const double SNAP_DISTANCES_THRESHHOLD = 10; // 1 m should be enough, right?
+		// take closest hit and be done
+		if (!pickObject.m_candidates.empty()) {
+			snapPoint = pickObject.m_candidates.front().m_pickPoint;
+		}
+		else {
+			// we take the global coordinate origin as point
+			snapPoint = IBKMK::Vector3D();
+		}
 
-	std::vector<PickObject::PickResult> processedCandidates;
-	if (vs.m_locks != 0) {
-		// process projections and update processedCandidates
+		// now our candidate is stored as snapPoint - if axis lock is enabled, we still project the point
+		// towards the locked axis (line) defined via last coordinate's position and locked local axis vector
 	}
+
+
+	// *** with snap ***
+	//
 	else {
 
+		// we have now several surfaces/objects stored in the pickObject as candidates
+		// we take the first hit and process the snap options
+
 		int snapOptions = vs.m_snapOptionMask;
-
-		// Snapping works as follows:
-		// - we consider all pick point candidates
-		// - apply the snapping; for example, if a surface was hit, we add the corners, center point etc.
-		// - we apply threashold checking and add candidates to processedCandidates
-		// - afterwards we sort based on distance from eys
-
-		double closestDepthSoFar = 1; // speedup - do not bother with hits that are behind
-
-		for (const PickObject::PickResult & r : pickObject.m_candidates) {
+		if (!pickObject.m_candidates.empty()) {
+			const PickObject::PickResult & r = pickObject.m_candidates.front();
 
 			QVector3D pickPoint = VICUS::IBKVector2QVector(r.m_pickPoint);
 
-			// snap to XY-Plane
-			if (snapOptions & SVViewState::Snap_XYPlane_Grid) {
-				// we always add the intersection with the XYPlane as fallback at the very back of the scene
-				PickObject::PickResult rfallback(r);
-				rfallback.m_pickPoint = r.m_pickPoint;
-				rfallback.m_depth = 1;
-				processedCandidates.push_back(rfallback);
-
-				// now determine which grid line is closest
-				QVector3D closestPoint;
-				if (m_gridObject.closestSnapPoint(VICUS::IBKVector2QVector(r.m_pickPoint), closestPoint)) {
-					// this is in world coordinates, use this as transformation vector for the
-					// coordinate system
-					double dist = (double)(closestPoint - pickPoint).lengthSquared();
-					if (dist < SNAP_DISTANCES_THRESHHOLD) {
-						PickObject::PickResult r2(r);
-						r2.m_pickPoint = VICUS::QVector2IBKVector(closestPoint);
-						r2.m_depth = dist;
-						closestDepthSoFar = std::min(closestDepthSoFar, dist);
-						processedCandidates.push_back(r2);
-					}
-				}
-			}
-
-			const VICUS::Surface * s = nullptr;
-
-			// for snap options that require an object, look it up
-			if ((snapOptions & SVViewState::Snap_ObjectCenter) ||
-				(snapOptions & SVViewState::Snap_ObjectVertex) ||
-				(snapOptions & SVViewState::Snap_ObjectEdgeCenter))
-			{
-				if (r.m_uniqueObjectID != 0) {
-					const VICUS::Object * o = project().objectById(r.m_uniqueObjectID);
-					s = dynamic_cast<const VICUS::Surface *>(o);
-				}
-			}
-			// handle all object-related snaps
-			if (s != nullptr) {
-				if (snapOptions & SVViewState::Snap_ObjectVertex) {
-					// insert distances to all vertexes of selected object
-					for (const IBKMK::Vector3D & v : s->m_geometry.vertexes()) {
-						QVector3D p = VICUS::IBKVector2QVector(v);
-						float dist = (p - pickPoint).lengthSquared();
-						if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
-							PickObject::PickResult r2;
-							r2.m_depth = dist;
-							r2.m_snapPointType = PickObject::RT_Object;
-							r2.m_uniqueObjectID = r.m_uniqueObjectID;
-							r2.m_pickPoint = v;
-							processedCandidates.push_back(r2);
-							closestDepthSoFar = dist;
+			// depending on type of object, process the different snap options
+			if (r.m_snapPointType == PickObject::RT_GridPlane) {
+				// use the intersection point with the grid as default snap point (in case no grid point is close enough)
+				snapPoint = r.m_pickPoint;
+				// do we snap to grid?
+				if (snapOptions & SVViewState::Snap_GridPlane) {
+					// now determine which grid line is closest
+					QVector3D closestPoint;
+					/// \todo add support for several grid objects, or one grid object with several planes
+					///		  r.m_uniqueObjectID -> index of plane that we hit.
+					if (m_gridObject.closestSnapPoint(VICUS::IBKVector2QVector(r.m_pickPoint), closestPoint)) {
+						// this is in world coordinates, use this as transformation vector for the
+						// coordinate system
+						float dist = (closestPoint - pickPoint).lengthSquared();
+						// close enough?
+						if (dist < SNAP_DISTANCES_THRESHHOLD) {
+							// got a snap point, store it
+							snapPoint = VICUS::QVector2IBKVector(closestPoint);
 						}
 					}
 				}
-				if (snapOptions & SVViewState::Snap_ObjectCenter) {
-					// insert center point
-					IBKMK::Vector3D center(0,0,0);
-					for (const IBKMK::Vector3D & v : s->m_geometry.vertexes())
-						center += v;
-					center /= s->m_geometry.vertexes().size();
-					QVector3D p = VICUS::IBKVector2QVector(center);
-					float dist = (p - pickPoint).lengthSquared();
-					if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
-						PickObject::PickResult r2;
-						r2.m_depth = dist;
-						r2.m_snapPointType = PickObject::RT_Object;
-						r2.m_uniqueObjectID = r.m_uniqueObjectID;
-						r2.m_pickPoint = center;
-						processedCandidates.push_back(r2);
-						closestDepthSoFar = dist;
+			}
+
+			if (r.m_snapPointType == PickObject::RT_Object) {
+				// We hit an object!
+
+				// find out if this is a surface, a network node or an edge
+				const VICUS::Object * obj = project().objectById(r.m_uniqueObjectID);
+				Q_ASSERT(obj != nullptr);
+
+				const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(obj);
+
+				if (s != nullptr) {
+					// a surface object might have several snap points which we collect first in a vector
+					std::vector<SnapCandidate> snapCandidates;
+					float closestDepthSoFar = SNAP_DISTANCES_THRESHHOLD;
+
+					// we always add the intersection point with the surface as fall-back snappoint,
+					// but with a large distance so that it is only used as last resort
+					SnapCandidate sc;
+					sc.m_distToLineOfSight = (double)SNAP_DISTANCES_THRESHHOLD*2;
+					sc.m_pickPoint = r.m_pickPoint;
+					snapCandidates.push_back(sc);
+
+					if (snapOptions & SVViewState::Snap_ObjectVertex) {
+						// insert distances to all vertexes of selected object
+						for (const IBKMK::Vector3D & v : s->m_geometry.vertexes()) {
+							QVector3D p = VICUS::IBKVector2QVector(v);
+							float dist = (p - pickPoint).lengthSquared();
+							// Only add if close enough (< SNAP_DISTANCES_THRESHHOLD) and if there isn't yet
+							// another snap point that's closer.
+							if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
+								sc.m_distToLineOfSight = (double)dist;
+								sc.m_pickPoint = v;
+								snapCandidates.push_back(sc);
+								closestDepthSoFar = dist;
+							}
+						}
 					}
-				}
-				if (snapOptions & SVViewState::Snap_ObjectEdgeCenter) {
-					// process all edges
-					IBKMK::Vector3D lastNode = s->m_geometry.vertexes().front();
-					for (unsigned int i=0; i<s->m_geometry.vertexes().size()+1; ++i) {
-						IBKMK::Vector3D center = lastNode;
-						lastNode = s->m_geometry.vertexes()[i % s->m_geometry.vertexes().size()];
-						center += lastNode;
-						center /= 2;
+					if (snapOptions & SVViewState::Snap_ObjectCenter) {
+						// insert center point
+						IBKMK::Vector3D center(0,0,0);
+						for (const IBKMK::Vector3D & v : s->m_geometry.vertexes())
+							center += v;
+						center /= s->m_geometry.vertexes().size();
 						QVector3D p = VICUS::IBKVector2QVector(center);
 						float dist = (p - pickPoint).lengthSquared();
 						if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
-							PickObject::PickResult r2;
-							r2.m_depth = dist;
-							r2.m_snapPointType = PickObject::RT_Object;
-							r2.m_uniqueObjectID = r.m_uniqueObjectID;
-							r2.m_pickPoint = center;
-							processedCandidates.push_back(r2);
+							sc.m_distToLineOfSight = (double)dist;
+							sc.m_pickPoint = center;
+							snapCandidates.push_back(sc);
 							closestDepthSoFar = dist;
 						}
 					}
-				}
+					if (snapOptions & SVViewState::Snap_ObjectEdgeCenter) {
+						// process all edges
+						IBKMK::Vector3D lastNode = s->m_geometry.vertexes().front();
+						for (unsigned int i=0; i<s->m_geometry.vertexes().size()+1; ++i) {
+							IBKMK::Vector3D center = lastNode;
+							lastNode = s->m_geometry.vertexes()[i % s->m_geometry.vertexes().size()];
+							center += lastNode;
+							center /= 2;
+							QVector3D p = VICUS::IBKVector2QVector(center);
+							float dist = (p - pickPoint).lengthSquared();
+							if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
+								sc.m_distToLineOfSight = (double)dist;
+								sc.m_pickPoint = center;
+								snapCandidates.push_back(sc);
+								closestDepthSoFar = dist;
+							}
+						}
+					}
 
-			} // if (s != nullptr) - object snap
+					// now we take the snap point that's closest - even if all the snap options of an object are
+					// turned off, we still get the intersection point as last straw to pick.
+					std::sort(snapCandidates.begin(), snapCandidates.end());
+					snapPoint = snapCandidates.front().m_pickPoint;
+				} // if (s != nullptr)
 
-		} // pick object candidates
+				// currently there is such snapping to nodes, yet
+
+				/// \todo Add snapping to nodes (i.e. when drawing edges)
+
+			} // object snap
+
+		} // (!pickObject.m_candidates.empty())
 
 	} // with snapping
 
-	// now sort the snap point candidates
-	std::sort(processedCandidates.begin(), processedCandidates.end());
-#if 0
-	for (auto & r : processedCandidates) {
-		qDebug() << r.m_depth << VICUS::IBKVector2String(r.m_pickPoint) << r.m_snapPointType << r.m_uniqueObjectID;
-	}
-#endif
+	// we now have a snap point
+	// if we also have line snap on, calculate the projection of this intersection point with the line
 
-	// always add origin as fallback point
-	PickObject::PickResult r;
-	r.m_depth = 1;
-	r.m_pickPoint = IBKMK::Vector3D(0,0,0);
-	r.m_snapPointType = PickObject::RT_GlobalXYPlane;
-	processedCandidates.push_back(r);
+	IBKMK::Vector3D refPoint = referencePoint();
+	IBKMK::Vector3D direction;
+	// get direction in case of axis lock
+	switch (vs.m_locks) {
+		case SVViewState::L_LocalX : direction = VICUS::QVector2IBKVector(m_coordinateSystemObject.localXAxis()); break;
+		case SVViewState::L_LocalY : direction = VICUS::QVector2IBKVector(m_coordinateSystemObject.localYAxis()); break;
+		case SVViewState::L_LocalZ : direction = VICUS::QVector2IBKVector(m_coordinateSystemObject.localZAxis()); break;
+		case SVViewState::NUM_L: ; // no lock
+	}
+	// compute projection of current snapPoint onto line defined by refPoint and direction
+	if (vs.m_locks != SVViewState::NUM_L) {
+		double lineFactor;
+		IBKMK::Vector3D projectedPoint;
+		IBKMK::lineToPointDistance(refPoint, direction, snapPoint, lineFactor, projectedPoint);
+		snapPoint = projectedPoint; // update snap point with projected point
+	}
 
 	// take closest snap point and snap to it
-	QVector3D newCoordinatePoint = VICUS::IBKVector2QVector(processedCandidates.front().m_pickPoint);
+	QVector3D newCoordinatePoint = VICUS::IBKVector2QVector(snapPoint);
 	m_coordinateSystemObject.setTranslation(newCoordinatePoint);
 }
 
@@ -1510,9 +1426,7 @@ void Vic3DScene::handleSelection(const KeyboardMouseHandler & keyboardHandler, P
 	// check if any of the pick candidates is of type object
 	unsigned int uniqueID = 0;
 	for (const PickObject::PickResult & r : o.m_candidates) {
-		if (r.m_snapPointType == PickObject::RT_Object ||
-			r.m_snapPointType == PickObject::RT_NetworkEdge ||
-			r.m_snapPointType == PickObject::RT_NetworkNode)
+		if (r.m_snapPointType == PickObject::RT_Object)
 		{
 			uniqueID = r.m_uniqueObjectID;
 			break;

@@ -179,6 +179,10 @@ private:
 	/*! Cached "old" transform of the coordinate system object (needed for "align coordinate system" operation). */
 	Transform3D				m_oldCoordinateSystemTransform;
 
+
+	// vector with drawing helping planes
+	std::vector<VICUS::PlaneGeometry>	m_gridPlanes;
+
 };
 
 } // namespace Vic3D

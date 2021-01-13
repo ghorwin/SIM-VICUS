@@ -118,15 +118,15 @@ void SVGeometryView::onViewStateChanged() {
 	m_snapAction->blockSignals(false);
 
 	m_xLockAction->blockSignals(true);
-	m_xLockAction->setChecked(vs.m_locks & SVViewState::L_LocalX);
+	m_xLockAction->setChecked(vs.m_locks == SVViewState::L_LocalX);
 	m_xLockAction->blockSignals(false);
 
 	m_yLockAction->blockSignals(true);
-	m_yLockAction->setChecked(vs.m_locks & SVViewState::L_LocalY);
+	m_yLockAction->setChecked(vs.m_locks == SVViewState::L_LocalY);
 	m_yLockAction->blockSignals(false);
 
 	m_zLockAction->blockSignals(true);
-	m_zLockAction->setChecked(vs.m_locks & SVViewState::L_LocalZ);
+	m_zLockAction->setChecked(vs.m_locks == SVViewState::L_LocalZ);
 	m_zLockAction->blockSignals(false);
 
 	bool lockVisible = (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex);
@@ -251,9 +251,9 @@ void SVGeometryView::on_actionXLock_toggled(bool on) {
 	// switch toggle view state
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	if (on)
-		vs.m_locks |= SVViewState::L_LocalX;
+		vs.m_locks = SVViewState::L_LocalX;
 	else
-		vs.m_locks &= ~SVViewState::L_LocalX;
+		vs.m_locks = SVViewState::NUM_L;
 
 	SVViewStateHandler::instance().setViewState(vs);
 	focusSceneView();
@@ -264,9 +264,9 @@ void SVGeometryView::on_actionYLock_toggled(bool on) {
 	// switch toggle view state
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	if (on)
-		vs.m_locks |= SVViewState::L_LocalY;
+		vs.m_locks = SVViewState::L_LocalY;
 	else
-		vs.m_locks &= ~SVViewState::L_LocalY;
+		vs.m_locks = SVViewState::NUM_L;
 
 	SVViewStateHandler::instance().setViewState(vs);
 	focusSceneView();
@@ -277,9 +277,9 @@ void SVGeometryView::on_actionZLock_toggled(bool on) {
 	// switch toggle view state
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	if (on)
-		vs.m_locks |= SVViewState::L_LocalZ;
+		vs.m_locks = SVViewState::L_LocalY;
 	else
-		vs.m_locks &= ~SVViewState::L_LocalZ;
+		vs.m_locks = SVViewState::NUM_L;
 
 	SVViewStateHandler::instance().setViewState(vs);
 	focusSceneView();

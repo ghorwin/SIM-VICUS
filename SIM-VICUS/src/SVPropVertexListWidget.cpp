@@ -364,7 +364,7 @@ void SVPropVertexListWidget::on_pushButtonCancel_clicked() {
 	vs.m_sceneOperationMode = SVViewState::NUM_OM;
 	vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
 	// reset locks
-	vs.m_locks = 0;
+	vs.m_locks = SVViewState::NUM_L;
 
 	// now tell all UI components to toggle their view state
 	SVViewStateHandler::instance().setViewState(vs);
@@ -739,7 +739,7 @@ void SVPropVertexListWidget::on_pushButtonFloorDone_clicked() {
 
 	// now also enable the z snap operation
 	SVViewState vs = SVViewStateHandler::instance().viewState();
-	vs.m_locks = SVViewState::L_LocalX | SVViewState::L_LocalY; // local Z axis only
+	vs.m_locks = SVViewState::L_LocalZ; // local Z axis is locked
 	// take xy plane out of snap option mask
 	vs.m_snapEnabled = false;
 	SVViewStateHandler::instance().setViewState(vs);

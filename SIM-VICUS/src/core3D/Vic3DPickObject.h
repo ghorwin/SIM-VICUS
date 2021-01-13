@@ -24,15 +24,14 @@ struct PickObject {
 
 	/*! Identifies the type of snap point found. */
 	enum ResultType {
+		/*! An object was hit.
+			The unique ID of the object is stored in m_uniqueObjectID.
+		*/
 		RT_Object,
-		RT_GlobalXYPlane,
-		RT_LocalXYPlane,
-		/*! Intersection point with local axis if only one axis is locked. */
-		RT_LocalPlaneFixedAxis,
-		/*! Lotpunkt on free axis if two axes are locked. */
-		RT_LocalFixedAxis,
-		RT_NetworkNode,
-		RT_NetworkEdge
+		/*! The global XY plane or any other artifical plane.
+			The index of the plane in the list of planes is stored in m_uniqueObjectID.
+		*/
+		RT_GridPlane
 	};
 
 	/*! Stores information about a particular snap point candidate. */
@@ -42,15 +41,16 @@ struct PickObject {
 		}
 
 		ResultType		m_snapPointType;
-		/*! Scale factor to be used in line-of-sight equation to get the plumb point (Lotpunkt). */
+		/*! Distance from observer/near plane point. */
 		double			m_depth;
 
-		/*! Stores the unique ID of the clicked-on object, only for m_snapPointType == SP_Object or SP_Network*** . */
+		/*! Stores the unique ID of the clicked-on object for m_snapPointType == SP_Object.
+			For m_snapPointType == RT_GridPlane, this holds the index of the plane in the Vic3DScene::m_gridPlanes vector.
+		*/
 		unsigned int	m_uniqueObjectID = 0;
 
 		/*! Coordinates of the picked point. */
 		IBKMK::Vector3D	m_pickPoint;
-
 	};
 
 
