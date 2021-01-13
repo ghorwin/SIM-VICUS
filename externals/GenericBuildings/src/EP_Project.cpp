@@ -1,168 +1,32 @@
 #include "EP_Project.h"
 
-#include <iostream>
-#include <fstream>
+#include "EP_IDFParser.h"
 
 namespace EP {
 
-
-
-void Project::version(const std::string & str)
-{
-	size_t pos = str.find(".");
-
-	unsigned int majorNumber, minorNumber;
-	if(pos != std::string::npos){
-		majorNumber = IBK::string2val<unsigned int>(str.substr(0,pos));
-		size_t pos2 = str.find(".", pos+1);
-		if(pos2 == std::string::npos){
-			auto TestDirk = str.substr(pos+1, pos2-pos);
-			minorNumber = IBK::string2val<unsigned int>(str.substr(pos+1, pos2-pos));
-		}
-		else{
-			auto TestDirk = str.substr(pos+1, str.length()-pos);
-			minorNumber = IBK::string2val<unsigned int>(str.substr(pos+1, str.length()-pos));
-
-		}
-
-	}
-	else{
-		majorNumber = IBK::string2val<unsigned int>(str);
-		minorNumber = 0;
-	}
-
-	if(majorNumber == 8 && minorNumber == 3)
-		m_version = EP::Version::VN_8_3;
-
-
-//	std::string subNumber;
-//	if(pos == std::string::npos){
-//		if(version == "8")
-//		{
-//			//nicht ideal versuchen zu lesen
-//		}
-//	}
-//	else if (version.substr(0,pos) == "8") {
-//		size_t pos2 = version.find(".",pos+1);
-//		if(pos2 == std::string::npos){
-//			subNumber = version.substr(pos+1, version.length() - (pos + 1) );
-//		}
-//		else{
-//			subNumber = version.substr(pos+1, pos2-pos);
-//		}
-//	}
-}
-
-void Project::readIDF(const IBK::Path & filename)
-{
+void Project::readIDF(const IDFParser & idfData) {
 	FUNCID(Project::readIDF);
 
-	if(!filename.exists())
-		throw IBK::Exception(IBK::FormatString("Filename '%1' does not exist.").arg(filename.str()), FUNC_ID);
-#if defined(_WIN32)
-	std::ifstream inFile(IBK::UTF8ToANSIString(filename.str()));
-#else
-	std::ifstream inFile(filename.str());
-#endif
+	m_version = idfData.m_version;
 
-
-	std::string line;
-	bool firstLine = true;
-	size_t lineCounter=0;
-	while(!inFile.eof()){
-		++lineCounter;
-		std::getline(inFile, line);
-		//skip first line
-		if(firstLine){
-			firstLine = false;
-			continue;
-		}
-
-		//search line for comment or empty lines
-		IBK::trim(line);
-
-		if(line.empty())
-			continue;
-		size_t pos = line.find("!");
-		if(pos>0){
-			line = line.substr(0,pos);
-			if(line.empty())
-				continue;
-		}
-		else {
-			continue;
-		}
-
-		size_t posSemicolon = line.find(";");
-
-		std::string lineStr;
-		if(posSemicolon == std::string::npos){
-			lineStr += line;
-			while (true){
-				++lineCounter;
-				std::getline(inFile,line);
-				IBK::trim(line);
-				posSemicolon = line.find(";");
-				if(posSemicolon != std::string::npos){
-					line = line.substr(0,posSemicolon);
-					lineStr += line;
-					break;
-				}
-				else
-					lineStr += line;
-			}
-		}
-		else {
-			lineStr+=line;
-		}
-
-		std::vector<std::string>	tokens;
-		IBK::explode(lineStr,tokens, ",",/*IBK::EF_TrimTokens &*/ IBK::EF_KeepEmptyTokens);
-
-		if(tokens.size()<=1)
-			continue;
-		std::string className = IBK::tolower_string(tokens[0]);
-		if(className == "version"){
-			version(tokens[1]);
-		}
-		else if(className == "buildingsurface:detailed"){
-			EP::BuildingSurfaceDetailed bsd;
-			bsd.read(tokens,m_version);
-			m_bsd.push_back(bsd);
-		}
-		else if(className == "fenestrationsurface:detailed"){
-			EP::FenestrationSurfaceDetailed fsd;
-			fsd.read(tokens,m_version);
-			m_fsd.push_back(fsd);
-		}
-		else if(className == "zone"){
-			EP::Zone zone;
-			zone.read(tokens,m_version);
-			m_zones.push_back(zone);
-		}
-		else if(className == "material" ||
-				className == "material:nomass"){
-			EP::Material material;
-			material.read(tokens,m_version);
-			m_materials.push_back(material);
-		}
-		else if(className == "windowmaterial:simpleglazingsystem"){
-			EP::WindowMaterial obj;
-			obj.read(tokens,m_version);
-			m_windowMaterial.push_back(obj);
-		}
-		else if(className == "construction"){
-			EP::Construction obj;
-			obj.read(tokens,m_version);
-			m_constructions.push_back(obj);
-		}
-
+	try {
+		// now read all sections one after another
+		idfData.readClassObj("buildingsurface:detailed", m_bsd);
+		idfData.readClassObj("fenestrationsurface:detailed", m_fsd);
+		idfData.readClassObj("zone", m_zones);
+		idfData.readClassObj("material", m_materials);
+		idfData.readClassObj("material:nomass", m_materials); // data get's added to m_materials
+		idfData.readClassObj("windowmaterial:simpleglazingsystem", m_windowMaterial);
+		idfData.readClassObj("construction", m_constructions);
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, "Error extracting data from IDF.", FUNC_ID);
 	}
 }
 
-void Project::writeIDF(const IBK::Path & filename)
-{
 
+void Project::writeIDF(const IBK::Path & filename) {
+#if 0
 
 #if defined(_WIN32)
 	std::ofstream out(IBK::UTF8ToANSIString(filename.str()));
@@ -222,6 +86,7 @@ void Project::writeIDF(const IBK::Path & filename)
 //	}
 	//....
 	std::cout << "Finished writing IDF." << std::endl;
+#endif
 }
 
 

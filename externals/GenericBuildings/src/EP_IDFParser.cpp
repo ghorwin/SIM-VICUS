@@ -5,6 +5,7 @@
 
 #include <IBK_Exception.h>
 #include <IBK_FileReader.h>
+#include <IBK_Version.h>
 
 namespace EP {
 
@@ -126,6 +127,20 @@ void IDFParser::read(const IBK::Path & fname) {
 				break;
 
 		} // for (;;)
+
+		// extract version number
+		std::vector<Entity> versionData = m_tables["version"];
+		if (versionData.size() != 1 || versionData[0].m_tokens.size() != 2)
+			throw IBK::Exception("There must be exactly one 'version' definition with one data item in the IDF file!", FUNC_ID);
+
+		const std::string & str = versionData[0].m_tokens[1];
+		unsigned int majorNumber, minorNumber;
+		if (IBK::Version::extractMajorMinorVersionNumber(str, majorNumber, minorNumber)) {
+			if (majorNumber == 8 && minorNumber == 3)
+				m_version = VN_8_3;
+		}
+
+		// TODO : what shall we do with invalid version numbers?
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Error reading '%1'.").arg(fname), FUNC_ID);
@@ -134,5 +149,6 @@ void IDFParser::read(const IBK::Path & fname) {
 		throw IBK::Exception(IBK::FormatString("%2\nError reading '%1'.").arg(fname).arg(ex.what()), FUNC_ID);
 	}
 }
+
 
 } // namespace EP

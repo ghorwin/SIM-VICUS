@@ -5,14 +5,12 @@
 
 #include "EP_Material.h"
 #include "EP_WindowMaterial.h"
-#include "EP_Version.h"
+#include "EP_IDFParser.h"
 
 namespace EP {
 
-void Construction::read(const std::vector<std::string> & str, unsigned int version)
-{
+void Construction::read(const std::vector<std::string> & str, unsigned int version) {
 //	const char * const FUNC_ID = "[Construction::read]";
-
 
 	//for version 8.3
 //	if(version != EP::Version::VN_8_3)
@@ -25,9 +23,9 @@ void Construction::read(const std::vector<std::string> & str, unsigned int versi
 	}
 }
 
-void Construction::write(std::string &outStr, unsigned int version) const
-{
-	if(version != EP::Version::VN_8_3)
+
+void Construction::write(std::string &outStr, unsigned int version) const {
+	if (version != EP::VN_8_3)
 		return;
 
 	if(m_layers.empty())
