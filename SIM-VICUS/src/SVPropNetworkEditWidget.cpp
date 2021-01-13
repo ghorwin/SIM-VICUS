@@ -21,8 +21,10 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
+	m_ui->labelSelectionInfo->setVisible(false);
 	m_ui->groupBoxNode->setVisible(false);
 	m_ui->groupBoxEdge->setVisible(false);
+	m_ui->groupBoxComponent->setVisible(false);
 	m_ui->groupBoxSizePipes->setVisible(false);
 	m_ui->groupBoxEditNetwork->setVisible(false);
 	m_ui->groupBoxHeatExchange->setEnabled(false);
@@ -58,12 +60,12 @@ void SVPropNetworkEditWidget::updateUi(const SelectionState selectionState) {
 		}
 		default: return;
 	}
-	// TODO Hauke: check if it is a mixed selection, if so show notification and no updates
 
 	updateNetworkProperties();
+	updateSizingParams();
 	updateNodeProperties();
 	updateEdgeProperties();
-	updateSizingParams();
+
 }
 
 
@@ -336,26 +338,38 @@ std::vector <const VICUS::NetworkNode *> SVPropNetworkEditWidget::currentNetwork
 
 void SVPropNetworkEditWidget::showNetworkProperties()
 {
+	m_ui->labelSelectionInfo->setVisible(false);
 	m_ui->groupBoxNode->setVisible(false);
 	m_ui->groupBoxEdge->setVisible(false);
 	m_ui->groupBoxSizePipes->setVisible(true);
 	m_ui->groupBoxEditNetwork->setVisible(true);
+	m_ui->groupBoxHeatExchange->setVisible(false);
 }
 
 void SVPropNetworkEditWidget::showNodeProperties()
 {
+	m_ui->labelSelectionInfo->setVisible(false);
 	m_ui->groupBoxNode->setVisible(true);
 	m_ui->groupBoxEdge->setVisible(false);
 	m_ui->groupBoxSizePipes->setVisible(false);
 	m_ui->groupBoxEditNetwork->setVisible(false);
+	m_ui->groupBoxHeatExchange->setVisible(true);
 }
 
 void SVPropNetworkEditWidget::showEdgeProperties()
 {
+	m_ui->labelSelectionInfo->setVisible(false);
 	m_ui->groupBoxNode->setVisible(false);
 	m_ui->groupBoxEdge->setVisible(true);
 	m_ui->groupBoxSizePipes->setVisible(false);
 	m_ui->groupBoxEditNetwork->setVisible(false);
+	m_ui->groupBoxHeatExchange->setVisible(true);
+}
+
+void SVPropNetworkEditWidget::showMixedSelectionInfo()
+{
+	showNetworkProperties();
+	m_ui->labelSelectionInfo->setVisible(true);
 }
 
 void SVPropNetworkEditWidget::on_comboBoxNodeType_activated(int index)
@@ -558,3 +572,4 @@ void SVPropNetworkEditWidget::modifyNodeProperty(TNodeProp property, const Tval 
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified node"), m_network);
 	undo->push(); // modifies project and updates views
 }
+

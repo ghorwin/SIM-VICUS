@@ -38,6 +38,8 @@ public:
 
 	void showEdgeProperties();
 
+	void showMixedSelectionInfo();
+
 private slots:
 	void on_comboBoxNodeType_activated(int index);
 

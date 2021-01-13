@@ -45,19 +45,33 @@ void SVPropertyWidget::onViewStateChanged() {
 
 	// catch changes in object selection
 	std::set<const VICUS::Object*> selObjects = SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects;
+	bool nodeFound = false;
+	bool edgeFound = false;
 	for (const VICUS::Object * o : selObjects) {
 		if (dynamic_cast<const VICUS::NetworkNode *>(o) != nullptr) {
-			showNetworkPropertyWidget();
-			qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->updateUi(S_MultipleObjects);
-			qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->showNodeProperties();
-			return;
+			nodeFound = true;
 		}
 		if (dynamic_cast<const VICUS::NetworkEdge *>(o) != nullptr) {
-			showNetworkPropertyWidget();
-			qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->updateUi(S_MultipleObjects);
-			qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->showEdgeProperties();
-			return;
+			edgeFound = true;
 		}
+	}
+	if (edgeFound && nodeFound){
+		showNetworkPropertyWidget();
+		qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->updateUi(S_MultipleObjects);
+		qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->showMixedSelectionInfo();
+		return;
+	}
+	else if (nodeFound){
+		showNetworkPropertyWidget();
+		qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->updateUi(S_MultipleObjects);
+		qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->showNodeProperties();
+		return;
+	}
+	else if (edgeFound){
+		showNetworkPropertyWidget();
+		qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->updateUi(S_MultipleObjects);
+		qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->showEdgeProperties();
+		return;
 	}
 
 

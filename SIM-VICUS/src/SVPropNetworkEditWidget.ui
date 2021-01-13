@@ -502,6 +502,21 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="labelSelectionInfo">
+     <property name="font">
+      <font>
+       <italic>true</italic>
+      </font>
+     </property>
+     <property name="text">
+      <string>mixed selection: please select either nodes or edges</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
