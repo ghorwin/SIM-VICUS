@@ -45,8 +45,6 @@ private slots:
 
 	void on_lineEditNodeY_editingFinished();
 
-	void on_comboBoxPipeModel_activated(int index);
-
 	void on_comboBoxPipeDB_activated(int index);
 
 	void on_checkBoxSupplyPipe_clicked();
@@ -71,8 +69,6 @@ private slots:
 
 	void on_lineEditHeatFlux_editingFinished();
 
-	void on_comboBoxHeatExchangeType_activated(const QString &arg1);
-
 	void on_lineEditNodeHeatingDemand_editingFinished();
 
 private:
@@ -95,21 +91,27 @@ private:
 
 	void modifySizingParams();
 
-	void modifyNodeProperties();
-
-	void modifyEdgeProperties();
-
 	bool setNetwork();
 
+	/*! modifies the given property of selected edge(s).
+	 * Encapsulates the process of retrieving the according edge and conducting the undo */
+	template <typename TEdgeProp, typename Tval>
+	void modifyEdgeProperty(TEdgeProp property, const Tval & value);
+
+	/*! modifies the given property of selected node(s).
+	 * Encapsulates the process of retrieving the according node and conducting the undo */
+	template <typename TNodeProp, typename Tval>
+	void modifyNodeProperty(TNodeProp property, const Tval & value);
+
+	/*! determines wether the given property of the vector of objects is constant for all elements in the vector */
 	template <typename Telem, typename Tprop>
-	static bool uniformProperty(const std::vector<Telem *> & vec, Tprop prop)
+	static bool uniformProperty(const std::vector<Telem *> & vec, Tprop property)
 	{
-		// guard against empty vector
 		if (vec.empty())
 			return false;
 		typename std::vector<Telem *>::const_iterator itFirst = vec.begin();
 		for (typename std::vector<Telem *>::const_iterator it = vec.begin(); it != vec.end(); ++it) {
-			if ((*itFirst)->*prop != (*it)->*prop)
+			if ((*itFirst)->*property != (*it)->*property)
 				return false;
 		}
 		return true;
@@ -117,7 +119,7 @@ private:
 
 	const VICUS::Network * currentNetwork();
 
-	const VICUS::NetworkEdge * currentNetworkEdges();
+	std::vector<const VICUS::NetworkEdge *> currentNetworkEdges();
 
 	std::vector<const VICUS::NetworkNode *> currentNetworkNodes();
 
@@ -125,15 +127,11 @@ private:
 
 	VICUS::Network					m_network;
 
-	QMap<QString, unsigned>			m_mapPipeModels;
-
 	QMap<QString, unsigned>			m_mapComponents;
 
 	QMap<QString, unsigned>			m_mapNodeTypes;
 
 	QMap<QString, unsigned>			m_mapDBPipes;
-
-	QMap<QString, unsigned>			m_mapHeatExchangeType;
 
 	unsigned int					m_treeItemId = 0;
 
