@@ -144,6 +144,9 @@ private:
 	/*! Private implementation (Pimpl) of the network solver. */
 	HydraulicNetworkModelImpl						*m_p = nullptr;
 
+	/*! Container with global pointer to calculated fluid temperatures.
+	*/
+	const double									*m_fluidTemperatures;
 	friend class ThermalNetworkStatesModel;
 
 };

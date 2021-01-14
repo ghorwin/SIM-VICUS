@@ -70,7 +70,7 @@ public:
 	const Network									*m_network = nullptr;
 	/*! Container with specific enthalpy for each node.
 	*/
-	std::vector<double>								m_specificEnthalpies;
+	std::vector<double>								m_nodalSpecificEnthalpies;
 	/*! Heat heat fluxes out of each flow element. */
 	std::vector<double>								m_heatFluxes;
 	/*! Container with global pointer to calculated mass fluxes.
@@ -87,13 +87,12 @@ public:
 	std::vector<const double*>						m_ambientHeatTransferRefs;
 
 private:
-	void printVars() const;
 
 	/*! Constant access to fluid. */
 	const NANDRAD::HydraulicFluid					*m_fluid = nullptr;
 	/*! Container with temperatures for each node.
 	*/
-	std::vector<double>								m_temperatures;
+	std::vector<double>								m_nodalTemperatures;
 };
 
 

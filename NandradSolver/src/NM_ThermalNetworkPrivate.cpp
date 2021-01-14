@@ -32,7 +32,6 @@
 #include <IBKMK_SparseMatrixPattern.h>
 
 #include <algorithm>
-#include <iostream>
 
 namespace NANDRAD_MODEL {
 
@@ -43,9 +42,9 @@ void ThermalNetworkModelImpl::setup(const Network &nw,
 	// copy nodes pointer from network
 	m_network = &nw;
 	// resize temperatures
-	m_temperatures.resize(nw.m_nodes.size());
+	m_nodalTemperatures.resize(nw.m_nodes.size());
 	// resize specific enthalpy
-	m_specificEnthalpies.resize(nw.m_nodes.size());
+	m_nodalSpecificEnthalpies.resize(nw.m_nodes.size());
 	// resize heat fluxes
 	m_heatFluxes.resize(nw.m_elements.size());
 	// get fluid heat capacity
@@ -54,6 +53,22 @@ void ThermalNetworkModelImpl::setup(const Network &nw,
 
 
 int ThermalNetworkModelImpl::updateStates() {
+
+	// set ambient conditions and calculate outlet temperatures
+	for(unsigned int i = 0; i < m_flowElements.size(); ++i) {
+		ThermalNetworkAbstractFlowElement *flowElem = m_flowElements[i];
+
+		// set ambient conditions
+		const double* Tamb = m_ambientTemperatureRefs[i];
+		const double* alphaAmb = m_ambientHeatTransferRefs[i];
+
+		// ambient temperature is given
+		if(Tamb != nullptr) {
+			IBK_ASSERT(alphaAmb != nullptr);
+
+			flowElem->setAmbientConditions(*Tamb, *alphaAmb);
+		}
+	}
 
 	// calculate enthalpy fluxes for all nodes
 	for(unsigned int i = 0; i < m_network->m_nodes.size(); ++i) {
@@ -91,24 +106,8 @@ int ThermalNetworkModelImpl::updateStates() {
 		IBK_ASSERT(massFluxInlet != 0.0);
 		specEnthalp/=massFluxInlet;
 
-		m_specificEnthalpies[i] = specEnthalp;
-		m_temperatures[i] = specEnthalp/m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
-	}
-
-	// set ambient conditions
-	for(unsigned int i = 0; i < m_flowElements.size(); ++i) {
-		ThermalNetworkAbstractFlowElement *flowElem = m_flowElements[i];
-
-		// set ambient conditions
-		const double* Tamb = m_ambientTemperatureRefs[i];
-		const double* alphaAmb = m_ambientHeatTransferRefs[i];
-
-		// ambient temperature is given
-		if(Tamb != nullptr) {
-			IBK_ASSERT(alphaAmb != nullptr);
-
-			flowElem->setAmbientConditions(*Tamb, *alphaAmb);
-		}
+		m_nodalSpecificEnthalpies[i] = specEnthalp;
+		m_nodalTemperatures[i] = specEnthalp/m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 	}
 
 	return 0;
@@ -124,8 +123,8 @@ int ThermalNetworkModelImpl::updateFluxes() 	{
 		const Element &fe = m_network->m_elements[i];
 		// get inlet node
 		const double massFlux = m_massFluxes[i];
-		const double specEnthalpInlet = m_specificEnthalpies[fe.m_nInlet];
-		const double specEnthalpOutlet = m_specificEnthalpies[fe.m_nOutlet];
+		const double specEnthalpInlet = m_nodalSpecificEnthalpies[fe.m_nInlet];
+		const double specEnthalpOutlet = m_nodalSpecificEnthalpies[fe.m_nOutlet];
 		// positive mass flux
 		if(massFlux >= 0) {
 			flowElem->setInletFluxes(massFlux, specEnthalpInlet * massFlux);
@@ -137,7 +136,6 @@ int ThermalNetworkModelImpl::updateFluxes() 	{
 		// copy heat fluxes
 		m_heatFluxes[i] = flowElem->heatLoss();
 	}
-	printVars();
 	return 0;
 }
 
@@ -147,8 +145,8 @@ void ThermalNetworkModelImpl::dependencies(std::vector<std::pair<const double *,
 	// dependencies of all nodal enthalpies
 	for(unsigned int i = 0; i < m_network->m_nodes.size(); ++i) {
 		// result quantities
-		const double* specEnthPtr = &m_specificEnthalpies[i];
-		const double* tempPtr = &m_temperatures[i];
+		const double* specEnthPtr = &m_nodalSpecificEnthalpies[i];
+		const double* tempPtr = &m_nodalTemperatures[i];
 
 		std::vector<unsigned int> inletIdxs =
 				m_network->m_nodes[i].m_elementIndexesInlet;
@@ -175,13 +173,13 @@ void ThermalNetworkModelImpl::dependencies(std::vector<std::pair<const double *,
 		const Element &fe = m_network->m_elements[i];
 		// get inlet node
 		const double *massFluxRef = m_massFluxes + i;
-		const double *specEnthalpRef = &m_specificEnthalpies[fe.m_nInlet];
+		const double *specEnthalpRef = &m_nodalSpecificEnthalpies[fe.m_nInlet];
 		// enthalpy and heat flux dependencies
 		const double *heatFluxRef = &m_heatFluxes[i];
 		resultInputValueReferences.push_back(std::make_pair(heatFluxRef, massFluxRef) );
 		resultInputValueReferences.push_back(std::make_pair(heatFluxRef, specEnthalpRef) );
 		// inverse direction
-		specEnthalpRef = &m_specificEnthalpies[fe.m_nOutlet];
+		specEnthalpRef = &m_nodalSpecificEnthalpies[fe.m_nOutlet];
 		// enthalpy dependencies
 		resultInputValueReferences.push_back(std::make_pair(heatFluxRef, specEnthalpRef) );
 
@@ -194,17 +192,6 @@ void ThermalNetworkModelImpl::dependencies(std::vector<std::pair<const double *,
 			resultInputValueReferences.push_back(std::make_pair(heatFluxRef, alphaAmb) );
 		}
 	}
-}
-
-
-void ThermalNetworkModelImpl::printVars() const {
-	std::cout << "Heat fluxes [W]" << std::endl;
-	for (unsigned int i=0; i<m_heatFluxes.size(); ++i)
-		std::cout << "  " << i << "   " << m_heatFluxes[i]  << std::endl;
-
-	std::cout << "Nodal tempertaures [C]" << std::endl;
-	for (unsigned int i=0; i<m_temperatures.size(); ++i)
-		std::cout << "  " << i << "   " << m_temperatures[i] - 273.15 << std::endl;
 }
 
 

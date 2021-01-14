@@ -171,6 +171,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 								.arg(e.m_componentId), FUNC_ID);
 		}
 	}
+
 	// setup the enetwork
 	try {
 		m_p->setup(*networkModel.network(), nw.m_fluid);
@@ -187,13 +188,30 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 		m_n += fe->nInternalStates();
 	}
 	m_y.resize(m_n,0.0);
-	m_specificEnthalpies.resize(m_n, 0.0);
+	m_fluidTemperatures.resize(m_n, 293.15);
+
+	// initialize all fluid temperatures
+	unsigned int offset = 0;
+	for(ThermalNetworkAbstractFlowElement* fe :m_p->m_flowElements) {
+		std::vector<double> fluidTemp(fe->nInternalStates());
+		fe->initialTemperatures(&fluidTemp[0]);
+		for(unsigned int n = 0; n < fe->nInternalStates(); ++n) {
+			m_fluidTemperatures[offset + n] = fluidTemp[n];
+		}
+		offset += fe->nInternalStates();
+	}
 }
 
 
 void ThermalNetworkStatesModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
-
-	// TODO: implement
+	if(!resDesc.empty())
+		resDesc.clear();
+	// mass flux vector is a result
+	QuantityDescription desc("FluidTemperatures", "FluidTemperatures", "Internal fluid temperatures fo all network elements", false);
+	// deactivate description;
+	if(m_p->m_flowElements.empty())
+		desc.m_size = 0;
+	resDesc.push_back(desc);
 }
 
 
@@ -203,6 +221,12 @@ const double * ThermalNetworkStatesModel::resultValueRef(const QuantityName & qu
 		// whole vector access
 		if(quantityName.m_index == -1)
 			return &m_y[0];
+		return nullptr;
+	}
+	if(quantityName == std::string("FluidTemperatures")) {
+		// whole vector access
+		if(quantityName.m_index == -1)
+			return &m_fluidTemperatures[0];
 		return nullptr;
 	}
 	return nullptr;
@@ -229,8 +253,8 @@ void ThermalNetworkStatesModel::yInitial(double * y) const {
 		fe->initialTemperatures(y + offset);
 		// calculate internal enthalpies for all flow elements
 		const double volume = fe->volume();
-		for(unsigned int i = 0; i < fe->nInternalStates(); ++i) {
-			y[offset + i] *= volume * heatCapacity * density;
+		for(unsigned int n = 0; n < fe->nInternalStates(); ++n) {
+			y[offset + n] *= volume * heatCapacity * density;
 		}
 		offset += fe->nInternalStates();
 	}
@@ -241,10 +265,18 @@ int ThermalNetworkStatesModel::update(const double * y) {
 	// copy states vector
 	std::memcpy(&m_y[0], y, m_n*sizeof(double));
 	// set internal states
+	const double heatCapacity = m_network->m_fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+	const double density = m_network->m_fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
+
 	unsigned int offset = 0;
 	for(ThermalNetworkAbstractFlowElement* fe :m_p->m_flowElements) {
 		// calculate internal enthalpies for all flow elements
 		fe->setInternalStates(y + offset);
+		// calulte fluid temperatures
+		const double volume = fe->volume();
+		for(unsigned int n = 0; n < fe->nInternalStates(); ++n) {
+			m_fluidTemperatures[offset + n] = y[offset + n]/(volume * heatCapacity * density);
+		}
 		offset += fe->nInternalStates();
 	}
 	return 0;

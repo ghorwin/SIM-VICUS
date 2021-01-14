@@ -35,6 +35,7 @@
 #include <IBKMK_SparseMatrixPattern.h>
 
 #include <algorithm>
+#include <iostream>
 
 namespace NANDRAD_MODEL {
 
@@ -75,7 +76,7 @@ void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescript
 void ThermalNetworkBalanceModel::resultValueRefs(std::vector<const double *> &res) const {
 	if(!res.empty())
 		res.clear();
-	// mass flux vector is a result quantity
+	// heat flux vector is a result quantity
 	for(unsigned int i = 0; i < m_statesModel->m_p->m_flowElements.size(); ++i)
 		res.push_back(&m_statesModel->m_p->m_heatFluxes[i]);
 }
@@ -116,7 +117,7 @@ int ThermalNetworkBalanceModel::priorityOfModelEvaluation() const {
 	return AbstractStateDependency::priorityOffsetTail+3;
 }
 
-void ThermalNetworkBalanceModel::initInputReferences(const std::vector<AbstractModel *> & models) {
+void ThermalNetworkBalanceModel::initInputReferences(const std::vector<AbstractModel *> & /*models*/) {
 	// TODO: implement
 }
 
@@ -147,6 +148,13 @@ void ThermalNetworkBalanceModel::setInputValueRefs(const std::vector<QuantityDes
 
 void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
 
+	// set depndency between y and fluid temperatures
+	const double *y = &m_statesModel->m_y[0];
+	const double *temp = &m_statesModel->m_fluidTemperatures[0];
+	for(unsigned int i = 0; i < m_statesModel->nPrimaryStateResults(); ++i) {
+		resultInputValueReferences.push_back(std::make_pair(y + i, temp + i));
+	}
+
 	unsigned int offset = 0;
 	// we at first try use dense pattern between all element results and internal states
 	for(unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
@@ -165,13 +173,13 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 			const Element &elem = m_statesModel->m_p->m_network->m_elements[i];
 			for(unsigned int j = 0; j < fe->nInternalStates(); ++j) {
 				// outlet specific enthalpy is a result quantity dependending on all internal states
-				resultInputValueReferences.push_back(std::make_pair(&m_statesModel->m_p->m_specificEnthalpies[elem.m_nInlet], &m_statesModel->m_y[offset + j]) );
-				resultInputValueReferences.push_back(std::make_pair(&m_statesModel->m_p->m_specificEnthalpies[elem.m_nOutlet], &m_statesModel->m_y[offset + j]) );
+				resultInputValueReferences.push_back(std::make_pair(&m_statesModel->m_p->m_nodalSpecificEnthalpies[elem.m_nInlet], &m_statesModel->m_y[offset + j]) );
+				resultInputValueReferences.push_back(std::make_pair(&m_statesModel->m_p->m_nodalSpecificEnthalpies[elem.m_nOutlet], &m_statesModel->m_y[offset + j]) );
 				// heat balance per default sums up heat fluxes and entahpy flux differences through the pipe
 				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + j], m_statesModel->m_p->m_massFluxes + i) );
 				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + j], &m_statesModel->m_p->m_heatFluxes[i] ) );
-				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + j], &m_statesModel->m_p->m_specificEnthalpies[elem.m_nInlet]) );
-				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + j], &m_statesModel->m_p->m_specificEnthalpies[elem.m_nOutlet]) );
+				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + j], &m_statesModel->m_p->m_nodalSpecificEnthalpies[elem.m_nInlet]) );
+				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + j], &m_statesModel->m_p->m_nodalSpecificEnthalpies[elem.m_nOutlet]) );
 			}
 		}
 		offset += fe->nInternalStates();
@@ -201,6 +209,7 @@ int ThermalNetworkBalanceModel::update() {
 		offset += fe->nInternalStates();
 	}
 
+	printVars();
 	return 0;
 }
 
@@ -212,6 +221,17 @@ int ThermalNetworkBalanceModel::ydot(double* ydot) {
 	// signal success
 	return 0;
 }
+
+void ThermalNetworkBalanceModel::printVars() const {
+	std::cout << "Heat fluxes [W]" << std::endl;
+	for (unsigned int i=0; i<m_statesModel->m_p->m_heatFluxes.size(); ++i)
+		std::cout << "  " << i << "   " << m_statesModel->m_p->m_heatFluxes[i]  << std::endl;
+
+	std::cout << "Fluid tempertaures [C]" << std::endl;
+	for (unsigned int i=0; i<m_statesModel->m_fluidTemperatures.size(); ++i)
+		std::cout << "  " << i << "   " << m_statesModel->m_fluidTemperatures[i] - 273.15 << std::endl;
+}
+
 
 
 

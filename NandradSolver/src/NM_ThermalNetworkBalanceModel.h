@@ -126,6 +126,8 @@ public:
 	int ydot(double* ydot);
 
 private:
+	void printVars() const;
+
 	/*! Zone ID. */
 	unsigned int									m_id;
 	/*! Display name (for error messages). */

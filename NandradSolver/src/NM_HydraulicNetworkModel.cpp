@@ -23,9 +23,6 @@ public:
 	HydraulicNetworkModelImpl(const std::vector<Element> &elems);
 	~HydraulicNetworkModelImpl();
 
-	/*! Constant access to mass flux vector*/
-	const double *massFluxes() const;
-
 	/*! Initialized solver based on current content of m_flowElements.
 		Setup needs to be called whenever m_flowElements vector changes
 		(but not, when parameters inside flow elements change!).
@@ -42,6 +39,8 @@ public:
 	std::vector<HydraulicNetworkAbstractFlowElement*>	m_flowElements;
 	/*! Network structure. */
 	Network												m_network;
+	/*! Mass fluxes through all elements*/
+	std::vector<double>									m_massFluxes;
 
 private:
 
@@ -106,8 +105,7 @@ private:
 	unsigned int						m_nodeCount;
 	unsigned int						m_elementCount;
 
-	std::vector<double>					m_massFluxes;
-	std::vector<double>					m_nodePressures;
+	std::vector<double>					m_nodalPressures;
 
 	/*! Vector with unknowns. */
 	std::vector<double>					m_y;
@@ -260,15 +258,17 @@ void HydraulicNetworkModel::resultValueRefs(std::vector<const double *> & res) c
 	if(!res.empty())
 		res.clear();
 	// mass flux vector is a result quantity
-	if(m_p->massFluxes() != nullptr)
-		res.push_back(m_p->massFluxes());
+	if(!m_p->m_massFluxes.empty())
+		res.push_back(&m_p->m_massFluxes[0]);
 }
 
 
 const double * HydraulicNetworkModel::resultValueRef(const QuantityName & quantityName) const {
 	// return vector of mass fluxes
 	if(quantityName == std::string("MassFlux")) {
-		return m_p->massFluxes();
+		if(!m_p->m_massFluxes.empty())
+			return &m_p->m_massFluxes[0];
+		return nullptr;
 	}
 	return nullptr;
 }
@@ -280,12 +280,25 @@ void HydraulicNetworkModel::initInputReferences(const std::vector<AbstractModel 
 
 
 void HydraulicNetworkModel::inputReferences(std::vector<InputReference> & inputRefs) const {
-	// no inputs for now
+	// enforce access to internal fluid temperatures
+	if(!inputRefs.empty())
+		inputRefs.clear();
+	// use hydraulic network model to generate mass flux references
+	InputReference inputRef;
+	inputRef.m_id = id();
+	inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORK;
+	inputRef.m_name = std::string("FluidTemperatures");
+	inputRef.m_required = true;
+	// register reference
+	inputRefs.push_back(inputRef);
+
 }
 
 
 void HydraulicNetworkModel::setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs) {
-	// no inputs for now
+	IBK_ASSERT(resultValueRefs.size() == 1);
+	// copy references into mass flux vector
+	m_fluidTemperatures = resultValueRefs[0];
 }
 
 
@@ -296,6 +309,13 @@ void HydraulicNetworkModel::stateDependencies(std::vector<std::pair<const double
 
 int HydraulicNetworkModel::update() {
 	FUNCID(HydraulicNetworkModel::update);
+	// set all fluid temperatures
+	unsigned int offset = 0;
+	for(HydraulicNetworkAbstractFlowElement *fe : m_p->m_flowElements) {
+		fe->setFluidTemperature(m_fluidTemperatures + offset);
+		offset += fe->nInternalStates();
+	}
+
 	// re-compute hydraulic network
 
 	IBK_ASSERT(m_p != nullptr);
@@ -441,11 +461,6 @@ HydraulicNetworkModelImpl::~HydraulicNetworkModelImpl() {
 	}
 }
 
-const double *HydraulicNetworkModelImpl::massFluxes() const {
-	if(!m_massFluxes.empty())
-		return &m_massFluxes[0];
-	return nullptr;
-}
 
 void HydraulicNetworkModelImpl::setup() {
 	FUNCID(HydraulicNetworkModelImpl::setup);
@@ -606,7 +621,7 @@ void HydraulicNetworkModelImpl::setup() {
 
 	m_G.resize(n);
 	m_massFluxes.resize(m_elementCount);
-	m_nodePressures.resize(m_nodeCount);
+	m_nodalPressures.resize(m_nodeCount);
 
 	// create jacobian
 	jacobianInit();
@@ -657,7 +672,6 @@ void HydraulicNetworkModelImpl::writeNetworkGraph() const {
 
 int HydraulicNetworkModelImpl::solve() {
 	unsigned int n = m_nodeCount + m_elementCount;
-
 
 	std::vector<double> rhs(n);
 
@@ -1054,6 +1068,17 @@ void HydraulicNetworkModelImpl::updateG() {
 	// first nodal equations
 	for (unsigned int i=0; i<m_nodeCount; ++i) {
 		m_nodePressures[i] = m_y[i];
+		// set pressure of all inlets and outlets
+		for(unsigned int idx : m_network.m_nodes[i].m_elementIndexesInlet) {
+			if(m_massFluxes[idx] < 0) {
+				m_outletPressures[idx] = m_nodalPressures[i];
+			}
+		}
+		for(unsigned int idx : m_network.m_nodes[i].m_elementIndexesOutlet) {
+			if(m_massFluxes[idx] >= 0) {
+				m_outletPressures[idx] = m_nodalPressures[i];
+			}
+		}
 
 		// now sum up all the mass fluxes in the nodes
 		double massSum = 0;
@@ -1093,7 +1118,7 @@ void HydraulicNetworkModelImpl::updateG() {
 	}
 	// first nodal equations
 	for (unsigned int i=0; i<m_nodeCount; ++i) {
-		m_nodePressures[i] = m_y[i + m_elementCount];
+		m_nodalPressures[i] = m_y[i + m_elementCount];
 
 		// now sum up all the mass fluxes in the nodes
 		double massSum = 0;
@@ -1113,12 +1138,12 @@ void HydraulicNetworkModelImpl::updateG() {
 	}
 
 	// nodal constraint to first node
-	m_G[0 + m_elementCount] += m_nodePressures[0] - 0; // 0 Pa on first node
+	m_G[0 + m_elementCount] += m_nodalPressures[0] - 0; // 0 Pa on first node
 
 	// now evaluate the flow system equations
 	for (unsigned int i=0; i<m_elementCount; ++i) {
 		const Element &fe = m_network.m_elements[i];
-		m_G[i] = m_flowElements[i]->systemFunction( m_massFluxes[i], m_nodePressures[fe.m_nInlet], m_nodePressures[fe.m_nOutlet]);
+		m_G[i] = m_flowElements[i]->systemFunction( m_massFluxes[i], m_nodalPressures[fe.m_nInlet], m_nodalPressures[fe.m_nOutlet]);
 	}
 
 }
