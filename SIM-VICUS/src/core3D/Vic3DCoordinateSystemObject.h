@@ -119,7 +119,11 @@ private:
 	/*! Index buffer on CPU memory. */
 	std::vector<GLuint>			m_indexBufferData;
 
-
+	/*! Index of vertexes for axis lines. For each axis line we have two indexes, so
+		the x-axis is drawn with vertexes starting at m_axisLinesVertexIndex, the y-axis starting at
+		m_axisLinesVertexIndex+2 etc.
+	*/
+	unsigned int				m_axisLinesVertexIndex;
 };
 
 } // namespace Vic3D

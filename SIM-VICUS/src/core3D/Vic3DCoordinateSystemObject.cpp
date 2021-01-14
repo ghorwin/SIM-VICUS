@@ -129,6 +129,21 @@ void CoordinateSystemObject::create(ShaderProgram * shaderProgram) {
 	addSphere(IBKMK::Vector3D(0,0,2), QColor(255, 245, 152), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 
+	// add vertexes for x, y, and z axis lines
+	m_axisLinesVertexIndex = m_vertexBufferData.size();
+	m_vertexBufferData.push_back(Vertex(QVector3D(-100000,0,0),QVector3D(0,0,0)));
+	m_vertexBufferData.push_back(Vertex(QVector3D(+100000,0,0),QVector3D(0,0,0)));
+	m_vertexBufferData.push_back(Vertex(QVector3D(0,-100000,0),QVector3D(0,0,0)));
+	m_vertexBufferData.push_back(Vertex(QVector3D(0,+100000,0),QVector3D(0,0,0)));
+	m_vertexBufferData.push_back(Vertex(QVector3D(0,0,-100000),QVector3D(0,0,0)));
+	m_vertexBufferData.push_back(Vertex(QVector3D(0,0,+100000),QVector3D(0,0,0)));
+	m_colorBufferData.push_back(ColorRGBA(QColor(Qt::red)));
+	m_colorBufferData.push_back(ColorRGBA(QColor(Qt::red)));
+	m_colorBufferData.push_back(ColorRGBA(QColor(0,196,0)));
+	m_colorBufferData.push_back(ColorRGBA(QColor(0,196,0)));
+	m_colorBufferData.push_back(ColorRGBA(QColor(32,32,255)));
+	m_colorBufferData.push_back(ColorRGBA(QColor(32,32,255)));
+
 	// transfer geometry to GPU
 
 	m_vertexBufferObject.bind();
@@ -178,6 +193,14 @@ void CoordinateSystemObject::renderOpaque() {
 	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[4], m_transform.toMatrix());
 	// now draw the geometry
 	glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_INT, nullptr);
+
+	// render lock lines
+	switch (SVViewStateHandler::instance().viewState().m_locks) {
+		case SVViewState::L_LocalX:			glDrawArrays(GL_LINES, (GLint)m_axisLinesVertexIndex  , 2); break;
+		case SVViewState::L_LocalY:			glDrawArrays(GL_LINES, (GLint)m_axisLinesVertexIndex+2, 2); break;
+		case SVViewState::L_LocalZ:			glDrawArrays(GL_LINES, (GLint)m_axisLinesVertexIndex+4, 2); break;
+		case SVViewState::NUM_L:			break;
+	}
 	// release buffers again
 	m_vao.release();
 }
