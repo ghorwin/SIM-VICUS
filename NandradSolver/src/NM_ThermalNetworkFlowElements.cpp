@@ -67,7 +67,7 @@ void TNPipeElement::setInternalStates(const double * y)
 void TNPipeElement::internalDerivatives(double * ydot)
 {
 	// heat fluxes into the fluid and enthalpy change are heat sources
-	ydot[0] = -m_heatLoss + m_massFlux * (m_inletSpecificEnthalpy - m_specificEnthalpy);
+	ydot[0] = -m_heatLoss + fabs(m_massFlux) * (m_inletSpecificEnthalpy - m_specificEnthalpy);
 }
 
 void TNPipeElement::setInletFluxes(double mdot, double Hdot)
@@ -82,7 +82,7 @@ void TNPipeElement::setInletFluxes(double mdot, double Hdot)
 	// calculate inner heat transfer and for simpicity use laminar flow equations
 	// TODO Hauke: add turbulent flow equations
 	// first calculate reynolds number
-	const double velocity = mdot/(m_volume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value);
+	const double velocity = std::fabs(mdot)/(m_volume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value);
 	// TODO Anne: we use the kinematic viscosity based on inlet temperature? Should be ok.
 	const double reynolds = velocity * m_innerDiameter/m_fluid->m_kinematicViscosity.m_values.value(m_inletTemperature);
 	// calculate prandtl number
@@ -172,7 +172,7 @@ void TNHeatExchanger::setInternalStates(const double * y)
 void TNHeatExchanger::internalDerivatives(double * ydot)
 {
 	// heat fluxes into the fluid and enthalpy change are heat sources
-	ydot[0] = -heatLoss() + m_massFlux * (m_inletSpecificEnthalpy - m_specificEnthalpy);
+	ydot[0] = -heatLoss() + fabs(m_massFlux) * (m_inletSpecificEnthalpy - m_specificEnthalpy);
 }
 
 void TNHeatExchanger::setInletFluxes(double mdot, double Hdot)
@@ -245,7 +245,7 @@ void TNPump::setInternalStates(const double * y)
 void TNPump::internalDerivatives(double * ydot)
 {
 	// heat fluxes into the fluid and enthalpy change are heat sources
-	ydot[0] = -heatLoss() + m_massFlux * (m_inletSpecificEnthalpy - m_specificEnthalpy);
+	ydot[0] = -heatLoss() + std::fabs(m_massFlux) * (m_inletSpecificEnthalpy - m_specificEnthalpy);
 }
 
 void TNPump::setInletFluxes(double mdot, double Hdot)
