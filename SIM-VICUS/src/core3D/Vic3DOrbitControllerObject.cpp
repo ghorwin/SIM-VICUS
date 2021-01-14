@@ -17,6 +17,7 @@ License    : BSD License,
 
 #include "Vic3DShaderProgram.h"
 #include "Vic3DVertex.h"
+#include "SVSettings.h"
 
 namespace Vic3D {
 
@@ -81,7 +82,11 @@ void OrbitControllerObject::render() {
 
 	// set transformation matrix
 	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[1], m_transform.toMatrix());
-	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], QVector4D(1.f, 1.f, .8f, 1.f));
+	// line color
+	if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
+		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], QVector4D(1.f, 1.f, .8f, 1.f));
+	else
+		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], QVector4D(0.3f, 0.3f, 0.4f, 1.f));
 	glDrawArrays(GL_LINES, 0, 2); // rotation axis
 	// line strip making up the circle
 	glDrawArrays(GL_LINE_STRIP, 2, m_vertexCount-2);
