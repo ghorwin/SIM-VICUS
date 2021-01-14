@@ -166,7 +166,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 
 	// geometric network
 	VICUS::Network geoNetwork;
-	geoNetwork.m_id = 0;
+	geoNetwork.m_id = 1;
 	geoNetwork.m_name = "validation example";
 	unsigned id1 = geoNetwork.addNodeExt(IBKMK::Vector3D(0,0,0), VICUS::NetworkNode::NT_Source);
 	unsigned id2 = geoNetwork.addNodeExt(IBKMK::Vector3D(0,100,0), VICUS::NetworkNode::NT_Mixer);
@@ -184,7 +184,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 
 	// -> pump
 	NANDRAD::HydraulicNetworkComponent pump;
-	pump.m_id = 0;
+	pump.m_id = 1;
 	pump.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel;
 	NANDRAD::KeywordList::setParameter(pump.m_para, "HydraulicNetworkComponent::para_t",
 									   NANDRAD::HydraulicNetworkComponent::P_PressureHead, -1000);
@@ -195,7 +195,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 
 	// -> heat exchanger
 	NANDRAD::HydraulicNetworkComponent heatExchanger;
-	heatExchanger.m_id = 1;
+	heatExchanger.m_id = 2;
 	heatExchanger.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger;
 	NANDRAD::KeywordList::setParameter(heatExchanger.m_para, "HydraulicNetworkComponent::para_t",
 									   NANDRAD::HydraulicNetworkComponent::P_Volume, 0.01);
@@ -210,7 +210,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 
 	// -> pipe
 	NANDRAD::HydraulicNetworkComponent pipeComponent;
-	pipeComponent.m_id = 2;
+	pipeComponent.m_id = 3;
 	pipeComponent.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe;
 	pipeComponent.m_heatExchangeType = NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant;
 	NANDRAD::KeywordList::setParameter(pipeComponent.m_para, "HydraulicNetworkComponent::para_t",
@@ -219,16 +219,16 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 
 	// *** pipe catalog
 	VICUS::NetworkPipe pipe1;
-	pipe1.m_id = 0;
-	pipe1.m_displayName = "PE 32 x 3.2";
+	pipe1.m_id = 1;
+	pipe1.m_displayName = IBK::MultiLanguageString("PE 32 x 3.2");
 	pipe1.m_diameterOutside = 0.032;
 	pipe1.m_wallThickness = 3.2/1000;
 	pipe1.m_roughness = 0.007/1000;
 	pipe1.m_lambdaWall = 0.4;
 	geoNetwork.m_networkPipeDB.push_back(pipe1);
 	VICUS::NetworkPipe pipe2;
-	pipe2.m_id = 1;
-	pipe2.m_displayName = "PE 50 x 4.6";
+	pipe2.m_id = 2;
+	pipe2.m_displayName = IBK::MultiLanguageString("PE 50 x 4.6");
 	pipe2.m_diameterOutside = 0.05;
 	pipe2.m_wallThickness = 4.6/1000;
 	pipe2.m_roughness = 0.007/1000;
