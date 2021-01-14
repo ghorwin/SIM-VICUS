@@ -409,6 +409,14 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 			// only enter orbit controller mode, if we actually hit something
 			if (!pickObject.m_candidates.empty()) {
 				IBKMK::Vector3D nearestPoint = pickObject.m_candidates.front().m_pickPoint;
+				// if we hit the a plane, limit the orbit controller to the extends of the grid
+				if (pickObject.m_candidates.front().m_snapPointType == PickObject::RT_GridPlane) {
+					/// \todo add support for several grid planes
+					nearestPoint.m_x = std::min(nearestPoint.m_x, m_gridObject.m_maxGrid);
+					nearestPoint.m_y = std::min(nearestPoint.m_y, m_gridObject.m_maxGrid);
+					nearestPoint.m_x = std::max(nearestPoint.m_x, m_gridObject.m_minGrid);
+					nearestPoint.m_y = std::max(nearestPoint.m_y, m_gridObject.m_minGrid);
+				}
 
 				// for orbit-controller, we  take the closest point of either
 				m_orbitControllerOrigin = VICUS::IBKVector2QVector(nearestPoint);
@@ -1037,6 +1045,8 @@ void Vic3DScene::pick(PickObject & pickObject) {
 	IBKMK::Vector3D nearPoint = VICUS::QVector2IBKVector(nearResult.toVector3D()); // line offset = nearPoint
 	IBKMK::Vector3D farPoint = VICUS::QVector2IBKVector(farResult.toVector3D());
 	IBKMK::Vector3D direction = farPoint - nearPoint;	// direction vector of line-of-sight
+	pickObject.m_lineOfSightOffset = nearPoint;
+	pickObject.m_lineOfSightDirection = direction;
 
 	// *** now do the actual picking ***
 	//
@@ -1188,10 +1198,29 @@ struct SnapCandidate {
 void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
 
-	const float SNAP_DISTANCES_THRESHHOLD = 10; // 1 m should be enough, right?
+	const float SNAP_DISTANCES_THRESHHOLD = 2; // 1 m should be enough, right?
+
+	// if we have axis lock, determine offset and direction
+	IBKMK::Vector3D axisLockOffset = referencePoint();
+	IBKMK::Vector3D direction;
+	// get direction in case of axis lock
+	switch (vs.m_locks) {
+		case SVViewState::L_LocalX : direction = VICUS::QVector2IBKVector(m_coordinateSystemObject.localXAxis()); break;
+		case SVViewState::L_LocalY : direction = VICUS::QVector2IBKVector(m_coordinateSystemObject.localYAxis()); break;
+		case SVViewState::L_LocalZ : direction = VICUS::QVector2IBKVector(m_coordinateSystemObject.localZAxis()); break;
+		case SVViewState::NUM_L: ; // no lock
+	}
+
+	// compute closest point between line-of-sight and locked axis
+	double lineOfSightDist, lockedAxisDist;
+	IBKMK::Vector3D closestPointOnAxis;
+	IBKMK::lineToLineDistance(axisLockOffset, direction,
+							  pickObject.m_lineOfSightOffset, pickObject.m_lineOfSightDirection,
+							  lockedAxisDist, closestPointOnAxis, lineOfSightDist);
+
 
 	IBKMK::Vector3D		snapPoint; // default snap point = origin
-
+	std::string snapInfo = "no hit (fall-back to coordinate origin)";
 
 	// *** no snap ***
 	//
@@ -1200,10 +1229,24 @@ void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 		// take closest hit and be done
 		if (!pickObject.m_candidates.empty()) {
 			snapPoint = pickObject.m_candidates.front().m_pickPoint;
+			// if we have a locked axis, and the "closest point to axis" is actually closer than the pick point candidate,
+			// we take the closest point instead
+			if (vs.m_locks != SVViewState::NUM_L && lineOfSightDist < pickObject.m_candidates.front().m_depth) {
+				snapPoint = closestPointOnAxis;
+				snapInfo = "closest point on locked axis";
+			}
+			else
+				snapInfo = "nearest object/plane hit";
 		}
 		else {
 			// we take the global coordinate origin as point
 			snapPoint = IBKMK::Vector3D();
+			if (vs.m_locks != SVViewState::NUM_L) {
+				snapPoint = closestPointOnAxis;
+				snapInfo = "closest point on locked axis";
+			}
+			else
+				snapInfo = "global origin (no snap points found)";
 		}
 
 		// now our candidate is stored as snapPoint - if axis lock is enabled, we still project the point
@@ -1214,6 +1257,12 @@ void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 	// *** with snap ***
 	//
 	else {
+
+		// by default, we snap to the closest point on a locked axis, if one is locked
+		if (vs.m_locks != SVViewState::NUM_L) {
+			snapPoint = closestPointOnAxis;
+			snapInfo = "closest point on locked axis";
+		}
 
 		// we have now several surfaces/objects stored in the pickObject as candidates
 		// we take the first hit and process the snap options
@@ -1227,7 +1276,11 @@ void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 			// depending on type of object, process the different snap options
 			if (r.m_snapPointType == PickObject::RT_GridPlane) {
 				// use the intersection point with the grid as default snap point (in case no grid point is close enough)
-				snapPoint = r.m_pickPoint;
+				// but only, if there is no axis lock enabled
+				if (vs.m_locks == SVViewState::NUM_L) {
+					snapPoint = r.m_pickPoint;
+					snapInfo = "intersection point with plane (fall-back if no grid-point is in snap distance)";
+				}
 				// do we snap to grid?
 				if (snapOptions & SVViewState::Snap_GridPlane) {
 					// now determine which grid line is closest
@@ -1242,6 +1295,7 @@ void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 						if (dist < SNAP_DISTANCES_THRESHHOLD) {
 							// got a snap point, store it
 							snapPoint = VICUS::QVector2IBKVector(closestPoint);
+							snapInfo = "snap to grid point";
 						}
 					}
 				}
@@ -1321,6 +1375,7 @@ void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 					// turned off, we still get the intersection point as last straw to pick.
 					std::sort(snapCandidates.begin(), snapCandidates.end());
 					snapPoint = snapCandidates.front().m_pickPoint;
+					snapInfo = "snap to object";
 				} // if (s != nullptr)
 
 				// currently there is such snapping to nodes, yet
@@ -1333,23 +1388,16 @@ void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 
 	} // with snapping
 
+	qDebug() << "Snap to: " << snapInfo.c_str();
+
 	// we now have a snap point
 	// if we also have line snap on, calculate the projection of this intersection point with the line
 
-	IBKMK::Vector3D refPoint = referencePoint();
-	IBKMK::Vector3D direction;
-	// get direction in case of axis lock
-	switch (vs.m_locks) {
-		case SVViewState::L_LocalX : direction = VICUS::QVector2IBKVector(m_coordinateSystemObject.localXAxis()); break;
-		case SVViewState::L_LocalY : direction = VICUS::QVector2IBKVector(m_coordinateSystemObject.localYAxis()); break;
-		case SVViewState::L_LocalZ : direction = VICUS::QVector2IBKVector(m_coordinateSystemObject.localZAxis()); break;
-		case SVViewState::NUM_L: ; // no lock
-	}
 	// compute projection of current snapPoint onto line defined by refPoint and direction
 	if (vs.m_locks != SVViewState::NUM_L) {
 		double lineFactor;
 		IBKMK::Vector3D projectedPoint;
-		IBKMK::lineToPointDistance(refPoint, direction, snapPoint, lineFactor, projectedPoint);
+		IBKMK::lineToPointDistance(axisLockOffset, direction, snapPoint, lineFactor, projectedPoint);
 		snapPoint = projectedPoint; // update snap point with projected point
 	}
 

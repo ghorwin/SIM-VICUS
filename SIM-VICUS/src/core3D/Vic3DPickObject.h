@@ -69,6 +69,9 @@ struct PickObject {
 		Added will be only those, whose depths is between 0 and 1 (line-of-sight factor).
 	*/
 	std::vector<PickResult>	m_candidates;
+
+	IBKMK::Vector3D			m_lineOfSightOffset;
+	IBKMK::Vector3D			m_lineOfSightDirection;
 };
 
 
