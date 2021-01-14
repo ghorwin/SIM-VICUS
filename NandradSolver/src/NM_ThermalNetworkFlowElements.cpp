@@ -146,7 +146,7 @@ TNHeatExchanger::TNHeatExchanger(const NANDRAD::HydraulicNetworkElement & elem,
 	if (m_volume<=0)
 		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has volume <= 0").arg(elem.m_id),FUNC_ID);
 	if (m_UAValue<=0)
-		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has outer heat transfer coefficient <= 0").arg(elem.m_id),FUNC_ID);
+		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has UA-Value <= 0").arg(elem.m_id),FUNC_ID);
 }
 
 TNHeatExchanger::~TNHeatExchanger()
