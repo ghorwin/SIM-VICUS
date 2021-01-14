@@ -4,11 +4,24 @@ name: CI
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
+#on:
+#  push:
+#    branches: [ master ]
+#  pull_request:
+#    branches: [ master ]
+
+# Note: Running the CI script for each and every change is not meaningful. If we
+#       would developed in feature branches only, and merge into the main branch only
+#       once in a while, this would be ok, but since we all commit permanently to
+#       'master' this CI script is a major energy and resource eater. So, instead, we
+#       run it once every night and be happy with it.
+#       Actually, since we have a Jenkins job running for all major OSes, there is
+#       no need for CI integration in github anylonger, so we may just drop it.
+
+# Run 6 o'clock in the morning...
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  schedule:
+    - cron: '0 6 * * *'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
