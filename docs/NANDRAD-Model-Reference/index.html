@@ -72,8 +72,7 @@ table {
 <h1>NANDRAD Model Reference</h1>
 <div class="details">
 <span id="author" class="author">Andreas Nicolai &lt;andreas.nicolai@tu-dresden.de&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski</span><br>
-<span id="revnumber">version 1.1.0,</span>
-<span id="revdate">September 2020</span>
+<span id="revdate">(14.01.2021)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -162,12 +161,23 @@ table {
 <ul class="sectlevel3">
 <li><a href="#_natural_ventilation_model_infiltration">2.15.1. Natural Ventilation Model (Infiltration)</a></li>
 <li><a href="#_shading_control_model">2.15.2. Shading Control Model</a></li>
+<li><a href="#_internal_loads_model">2.15.3. Internal Loads Model</a></li>
 </ul>
 </li>
-<li><a href="#_reference">2.16. Reference</a>
+<li><a href="#networks">2.16. HydraulicNetworks</a>
 <ul class="sectlevel3">
-<li><a href="#units">2.16.1. Unit Definitions</a></li>
-<li><a href="#quantities">2.16.2. Quantity References</a></li>
+<li><a href="#_definition_eines_hydraulischen_netzwerks">2.16.1. Definition eines hydraulischen Netzwerks</a></li>
+<li><a href="#_medieneigenschaften">2.16.2. Medieneigenschaften</a></li>
+<li><a href="#_rohreigenschaften">2.16.3. Rohreigenschaften</a></li>
+<li><a href="#_komponentendefinitionen">2.16.4. Komponentendefinitionen</a></li>
+<li><a href="#HydraulicNetworkElement">2.16.5. Strömungselemente</a></li>
+<li><a href="#_ausgaben">2.16.6. Ausgaben</a></li>
+</ul>
+</li>
+<li><a href="#_reference">2.17. Reference</a>
+<ul class="sectlevel3">
+<li><a href="#units">2.17.1. Unit Definitions</a></li>
+<li><a href="#quantities">2.17.2. Quantity References</a></li>
 </ul>
 </li>
 </ul>
@@ -227,6 +237,7 @@ table {
       <span class="nt">&lt;SolverParameter&gt;</span>...<span class="nt">&lt;/SolverParameter&gt;</span>
       <span class="nt">&lt;Zones&gt;</span>...<span class="nt">&lt;/Zones&gt;</span>
       <span class="nt">&lt;ConstructionInstances&gt;</span>...<span class="nt">&lt;/ConstructionInstances&gt;</span>
+      <span class="nt">&lt;HydraulicNetworks&gt;</span>...<span class="nt">&lt;/HydraulicNetworks&gt;</span>
       <span class="nt">&lt;ConstructionTypes&gt;</span>...<span class="nt">&lt;/ConstructionTypes&gt;</span>
       <span class="nt">&lt;Materials&gt;</span>...<span class="nt">&lt;/Materials&gt;</span>
       <span class="nt">&lt;Models&gt;</span>...<span class="nt">&lt;/Models&gt;</span>
@@ -283,6 +294,10 @@ table {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ConstructionInstances</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Building components and boundary conditions &#8594; <a href="#construction_instances">Construction Instances</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>HydraulicNetworks</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Thermo-hydraulic networks &#8594; <a href="#networks">HydraulicNetworks</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ConstructionTypes</code></p></td>
@@ -3386,7 +3401,7 @@ the scheduled values)</p>
 </table>
 </div>
 <div class="paragraph">
-<p>Inside the XML tag <code>AnnualSchedules</code> there are one or more <code>ScheduleGroup</code> XML child tags, each with a mandatory XML attribute <code>objectList</code>. Just as with daily cycle schedules, this references an object list and herewith objects, that the scheduled variables apply to. <a href="#ex_AnnualSchedule">Example 33</a> shows an example for a annual schedules defined within a single <code>ScheduleGroup</code>.</p>
+<p>Inside the XML tag <code>AnnualSchedules</code> there are one or more <code>ScheduleGroup</code> XML child tags, each with a mandatory XML attribute <code>objectList</code>. Just as with daily cycle schedules, this references an object list and herewith objects, that the scheduled variables apply to. <a href="#ex_AnnualSchedule">Example 33</a> shows an example for annual schedules defined within a single <code>ScheduleGroup</code>.</p>
 </div>
 <div id="ex_AnnualSchedule" class="exampleblock">
 <div class="title">Example 33. Definition of annual schedules</div>
@@ -3625,7 +3640,7 @@ the scheduled values)</p>
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Outputs&gt;</span>
-   ... <span class="c">&lt;!-- global output parameters --&gt;</span>
+    ... <span class="c">&lt;!-- global output parameters --&gt;</span>
 
     <span class="nt">&lt;Grids&gt;</span>
         ... <span class="c">&lt;!-- Definition of output grids --&gt;</span>
@@ -5140,23 +5155,36 @@ Start = 14*24 + 6 = 342 h</pre>
 <div class="sect3">
 <h4 id="_natural_ventilation_model_infiltration">2.15.1. Natural Ventilation Model (Infiltration)</h4>
 <div class="paragraph">
-<p>A natural ventilation/infiltration model defines air exchange with the outside air.</p>
+<p>A natural ventilation/infiltration model defines air exchange with the outside air. Natural ventilation can be enabled for specific zones by defining a <code>NaturalVentilationModel</code> model parameter block. Via the object list, the zones with natural ventilation are selected.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 45. Parameter definition for a natural ventilation model (Constant and Scheduled model variants)</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;NaturalVentilationModel</span> <span class="na">id=</span><span class="s">"501"</span> <span class="na">displayName=</span><span class="s">"Zone vent"</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;ZoneObjectList&gt;</span>All zones<span class="nt">&lt;/ZoneObjectList&gt;</span>
+  <span class="nt">&lt;ZoneObjectList&gt;</span>Office zones<span class="nt">&lt;/ZoneObjectList&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"VentilationRate"</span> <span class="na">unit=</span><span class="s">"1/h"</span><span class="nt">&gt;</span>0.5<span class="nt">&lt;/IBK:Parameter&gt;</span>
 <span class="nt">&lt;/NaturalVentilationModel&gt;</span>
 <span class="nt">&lt;NaturalVentilationModel</span> <span class="na">id=</span><span class="s">"502"</span> <span class="na">displayName=</span><span class="s">"Zone vent"</span> <span class="na">modelType=</span><span class="s">"Scheduled"</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;ZoneObjectList&gt;</span>All zones<span class="nt">&lt;/ZoneObjectList&gt;</span>
+  <span class="nt">&lt;ZoneObjectList&gt;</span>Other zones<span class="nt">&lt;/ZoneObjectList&gt;</span>
 <span class="nt">&lt;/NaturalVentilationModel&gt;</span></code></pre>
 </div>
 </div>
 </div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>There must be only one natural ventilation model block defined for a zone. Hence, you must not define two ventilation model blocks with object lists that both contain the same zone(s).</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>The <code>NaturalVentilationModel</code> needs to be defined with the following XML attributes:</p>
@@ -5187,7 +5215,7 @@ Start = 14*24 + 6 = 342 h</pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>modelType</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Sets the type of the heat conduction model</p>
+<p>Sets the type of the ventilation model</p>
 </div>
 <div class="ulist">
 <ul>
@@ -5244,7 +5272,7 @@ Start = 14*24 + 6 = 342 h</pre>
 <p>Below is an example of a schedule that provides the <code>InfiltrationRateSchedule</code> for such a scheduled natural ventilation model:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 46. Example schedule that provides a InfiltrationRateSchedule parameter</div>
+<div class="title">Example 45. Example schedule that provides a InfiltrationRateSchedule parameter</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -5288,7 +5316,7 @@ Start = 14*24 + 6 = 342 h</pre>
 <p>A shading control model is a special type of control model, returning a signal value between 0 (no shading) and 1 (fully shaded). The actual amount of shading, or reduction of solar gains, is determined by the shading parameter block. Thus, you can use the same control model for different types of shadings.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 47. Parameter definition for shading control model</div>
+<div class="title">Example 46. Parameter definition for shading control model</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -5312,11 +5340,598 @@ Start = 14*24 + 6 = 342 h</pre>
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_internal_loads_model">2.15.3. Internal Loads Model</h4>
+<div class="paragraph">
+<p>The internal loads model is used to define equipment, person and lighting heat loads for zones. Internal loads are defined just as natural ventilation models. The object list tag <code>ZoneObjectList</code> identifies the zones, where internal loads shall be considered.
+You must not have two internal load models which reference the same zones (only one internal load per zone).</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 47. Example for a internal loads model</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;InternalLoadsModel</span> <span class="na">id=</span><span class="s">"200"</span> <span class="na">modelType=</span><span class="s">"Scheduled"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;ZoneObjectList&gt;</span>Office zones<span class="nt">&lt;/ZoneObjectList&gt;</span>
+  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"RadiantFraction"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0.5<span class="nt">&lt;/IBK:Parameter&gt;</span>
+<span class="nt">&lt;/InternalLoadsModel&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>InternalLoadsModel</code> needs to be defined with the following XML attributes:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch indent-me">
+<caption class="title">Table 28. Attributes</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 60%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-center valign-top">Format</th>
+<th class="tableblock halign-center valign-top">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Identifier of the natural ventilation model</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>modelType</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Indicates how internal loads are to be applied</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Constant</code> - Constant equipment, person and lighting energy loads</p>
+</li>
+<li>
+<p><code>Scheduled</code> - Loads are provided via schedule parameters.</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">key</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Floating point parameters (see section <a href="#IBK_Parameter">IBK:Parameter</a> for a description of the <code>IBK:Parameter</code> tag):</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 15%;">
+<col style="width: 35%;">
+<col style="width: 20%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-center valign-top">Default Unit</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-center valign-top">Value Range</th>
+<th class="tableblock halign-center valign-top">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>EquipmentHeatLoadPerArea</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">W/m2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Complete equipment load per zone floor area</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;=&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required for Constant model</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PersonHeatLoadPerArea</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">W/m2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Complete equipment load per zone floor area</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;=&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required for Constant model</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LightingHeatLoadPerArea</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">W/m2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Complete equipment load per zone floor area</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;=&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required for Constant model</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>EquipmentRadiationFraction</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Percentage of equipment load that is radiant emitted</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;=&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PersonRadiationFraction</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Percentage of equipment load that is radiant emitted</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;=&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LightingRadiationFraction</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Percentage of equipment load that is radiant emitted</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;=&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The model type <code>Constant</code> takes the internal loads from the parameters (see above).
+If the model type <code>Scheduled</code> is being used, the actual loads are taken from the schedule.</p>
+</div>
+<div class="paragraph">
+<p>The following schedule parameters are required:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>EquipmentHeatLoadPerAreaSchedule [W/m2]</code></p>
+</li>
+<li>
+<p><code>PersonHeatLoadPerAreaSchedule [W/m2]</code></p>
+</li>
+<li>
+<p><code>LightingHeatLoadPerAreaSchedule [W/m2]</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Both, scheduled and constant internal load parameteres are relative to the usage area, defined as zone parameter <code>Area</code>, which is required once an <code>InternalLoadsModel</code> has been defined. Hence, the computed internal loads are different if the zone&#8217;s usage area differs. The zone-specific output quantities are named:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ConvectiveEquipmentHeatLoad [W]</code></p>
+</li>
+<li>
+<p><code>ConvectivePersonHeatLoad [W]</code></p>
+</li>
+<li>
+<p><code>ConvectiveLightingHeatLoad [W]</code></p>
+</li>
+<li>
+<p><code>RadiantEquipmentHeatLoad [W]</code></p>
+</li>
+<li>
+<p><code>RadiantPersonHeatLoad [W]</code></p>
+</li>
+<li>
+<p><code>RadiantLightingHeatLoad [W]</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These are vector-valued quantities are need to be referenced in output definitions, for example, with: <code>ConvectiveEquipmentHeatLoad[id=3]</code> for the convective equipment load in zone #3.</p>
+</div>
+<div class="paragraph">
+<p>The <code>xxxRadiationFraction</code> parameters indicate which percentage of the computed internal loads are to be imposed as radiative flux, area-weighted onto opaque surfaces that enclose the zone.</p>
+</div>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_reference">2.16. Reference</h3>
+<h3 id="networks">2.16. HydraulicNetworks</h3>
+<div class="paragraph">
+<p>Dieser Abschnitt beschreibt die Parametrisierung von thermo-hydraulischen Netzwerken.</p>
+</div>
+<div class="paragraph">
+<p>In einer Projektdatei kann es mehrere Netzwerke geben. Diese sind im XML tag <code>HydraulicNetworks</code> abgelegt.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 48. Hydraulische Netzwerke</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;HydraulicNetworks&gt;</span>
+  <span class="nt">&lt;HydraulicNetwork</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">displayName=</span><span class="s">"xxx"</span><span class="nt">&gt;</span>
+        ... <span class="c">&lt;!-- network parameters --&gt;</span>
+  <span class="nt">&lt;/HydraulicNetwork&gt;</span>
+
+  <span class="nt">&lt;HydraulicNetwork</span> <span class="na">id=</span><span class="s">"2"</span> <span class="na">displayName=</span><span class="s">"yyy"</span><span class="nt">&gt;</span>
+        ... <span class="c">&lt;!-- network parameters --&gt;</span>
+  <span class="nt">&lt;/HydraulicNetwork&gt;</span>
+
+    ... <span class="c">&lt;!-- other networks --&gt;</span>
+
+<span class="nt">&lt;/HydraulicNetworks&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Die einzelnen Netzwerke sind hydraulisch unabhängig, d.h. es gibt keinen Fluidaustausch zwischen Netzwerken. Die Netzwerke können aber thermisch verknüpft sein, z.B. kann ein Quartierswärmenetz mit einem Gebäudeanlagennetz Wärme austauschen.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="sect3">
-<h4 id="units">2.16.1. Unit Definitions</h4>
+<h4 id="_definition_eines_hydraulischen_netzwerks">2.16.1. Definition eines hydraulischen Netzwerks</h4>
+<div class="paragraph">
+<p>Ein einzelnen Netzwerk wird im XML-tag <code>HydraulicNetwork</code> definiert, wie im folgenden Beispiel:</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 49. Typische Definition eines einzelnen Netzwerks</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;HydraulicNetwork</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">displayName=</span><span class="s">"Simple network"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;HydraulicFluid</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">displayName=</span><span class="s">"Water"</span><span class="nt">&gt;</span>
+        ... <span class="c">&lt;!-- fluid parameters --&gt;</span>
+    <span class="nt">&lt;/HydraulicFluid&gt;</span>
+
+  <span class="nt">&lt;PipeProperties&gt;</span>
+        ... <span class="c">&lt;!-- database with pipe definitions --&gt;</span>
+  <span class="nt">&lt;/PipeProperties&gt;</span>
+
+  <span class="nt">&lt;Components&gt;</span>
+        ... <span class="c">&lt;!-- database with component definitions --&gt;</span>
+  <span class="nt">&lt;/Components&gt;</span>
+
+  <span class="nt">&lt;Elements&gt;</span>
+        ... <span class="c">&lt;!-- network flow elements with topology definition --&gt;</span>
+  <span class="nt">&lt;/Elements&gt;</span>
+
+<span class="nt">&lt;/HydraulicNetwork&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>XML-tag <code>HydraulicNetwork</code> hat folgende Attribute:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 29. Attributes</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 60%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-center valign-top">Format</th>
+<th class="tableblock halign-center valign-top">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique identifier of the network</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">(&#160;&gt;&#160;0&#160;)</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>displayName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Display name of the network.</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Innerhalb des Netzwerk-Definitionsblocks gibt es vier Kind-Elemente.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_medieneigenschaften">2.16.2. Medieneigenschaften</h4>
+<div class="paragraph">
+<p>Der XML-tag <code>HydraulicFluid</code> enthält die Definition des im Netzwerk strömenden Mediums.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>In jedem Netzwerk gibt es nur ein einziges Fluid, und deshalb ist auch nur eine einzige Instanz des <code>HydraulicFluid</code> tags erlaubt.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="exampleblock">
+<div class="title">Example 50. Definition eines Netzwerkfluids</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;HydraulicFluid</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">displayName=</span><span class="s">"Water"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Density"</span> <span class="na">unit=</span><span class="s">"kg/m3"</span><span class="nt">&gt;</span>998<span class="nt">&lt;/IBK:Parameter&gt;</span>
+  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"HeatCapacity"</span> <span class="na">unit=</span><span class="s">"J/kgK"</span><span class="nt">&gt;</span>4180<span class="nt">&lt;/IBK:Parameter&gt;</span>
+  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Conductivity"</span> <span class="na">unit=</span><span class="s">"W/mK"</span><span class="nt">&gt;</span>0.6<span class="nt">&lt;/IBK:Parameter&gt;</span>
+  <span class="nt">&lt;LinearSplineParameter</span> <span class="na">name=</span><span class="s">"KinematicViscosity"</span> <span class="na">interpolationMethod=</span><span class="s">"linear"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;X</span> <span class="na">unit=</span><span class="s">"C"</span><span class="nt">&gt;</span>0 10 20 30 40 50 60 70 80 90 <span class="nt">&lt;/X&gt;</span>
+    <span class="nt">&lt;Y</span> <span class="na">unit=</span><span class="s">"m2/s"</span><span class="nt">&gt;</span>1.793e-06 1.307e-06 1.004e-06 8.01e-07 6.58e-07 5.54e-07 4.75e-07 4.13e-07 3.65e-07 3.26e-07 <span class="nt">&lt;/Y&gt;</span>
+  <span class="nt">&lt;/LinearSplineParameter&gt;</span>
+<span class="nt">&lt;/HydraulicFluid&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>XML-tag <code>HydraulicFluid</code> hat folgende Attribute:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 30. Attributes</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 60%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-center valign-top">Format</th>
+<th class="tableblock halign-center valign-top">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique identifier of the fluid</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">(&#160;&gt;&#160;0&#160;)</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>displayName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Display name of the network.</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Da es nur eine Fluid-Definition per Netzwerk geben darf, ist das <em>id</em> Attribut eigentlich überflüssig. Es wird lediglich zur Aktualisierung der Programmdatenbank beim Import eines Projekts benötigt.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Parameter des Netzwerkfluids (see section <a href="#IBK_Parameter">IBK:Parameter</a> for a description of the <code>IBK:Parameter</code> tag):</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 17.8217%;">
+<col style="width: 14.8514%;">
+<col style="width: 37.6237%;">
+<col style="width: 19.8019%;">
+<col style="width: 9.9013%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-center valign-top">Unit</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-center valign-top">Value Range</th>
+<th class="tableblock halign-center valign-top">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Density</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">kg/m3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dichte bei Referenztemperatur</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>HeatCapacity</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">J/kgK</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Spezifische Wärmekapazität</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Conductivity</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">W/mK</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmeleitfähigkeit bei Referenztemperatur</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;=&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Die obigen Eigenschaften, insbesondere die Dichte, werden zur Vereinfachung als temperaturunabhänig konstant angenommen. Für die meisten Anwendungsfälle der thermo-hydraulischen Simulation im Gebäude-/Quartierskontext wird die thermische Ausdehnung des Fluids nicht benötigt. Und die Auslegung des Ausdehngefäßes erfolgt nicht mit der Simulation.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Desweiteren gibt es noch temperaturabhängige Parameter, welche in linear interpolierten Datentabellen abgelegt werden (siehe Abschnitt <a href="#LinearSplineParameter">LinearSplineParameter</a> für eine Beschreibung des  <code>LinearSplineParameter</code> Elements):</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 17.8217%;">
+<col style="width: 14.8514%;">
+<col style="width: 37.6237%;">
+<col style="width: 19.8019%;">
+<col style="width: 9.9013%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-center valign-top">Unit</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-center valign-top">Value Range</th>
+<th class="tableblock halign-center valign-top">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>KinematicViscosity</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">m2/s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Kinematische Viscosität</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_rohreigenschaften">2.16.3. Rohreigenschaften</h4>
+<div class="paragraph">
+<p>TODO</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_komponentendefinitionen">2.16.4. Komponentendefinitionen</h4>
+<div class="paragraph">
+<p>TODO</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="HydraulicNetworkElement">2.16.5. Strömungselemente</h4>
+<div class="paragraph">
+<p>Ein Netzwerk besteht aus vielen durchströmten Bauteilen, sogenannten <em>Strömungselementen</em> (engl. <em>flow elements</em>).</p>
+</div>
+<div class="paragraph">
+<p>TODO</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_ausgaben">2.16.6. Ausgaben</h4>
+<div class="paragraph">
+<p>Die Ergebnisgrößen eines thermo-hydraulischen Netzwerkmodells werden wie folgt definiert. Also Referenzierungstyp dient <code>Network</code>, welche in der entsprechenden <code>ObjectList</code> angegeben wird.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 51. Objektlist für die Referenzierung des Netzwerks mit der ID 1</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;ObjectLists&gt;</span>
+  <span class="nt">&lt;ObjectList</span> <span class="na">name=</span><span class="s">"the Network"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;FilterID&gt;</span>1<span class="nt">&lt;/FilterID&gt;</span> <span class="c">&lt;!-- ID of network --&gt;</span>
+    <span class="nt">&lt;ReferenceType&gt;</span>Network<span class="nt">&lt;/ReferenceType&gt;</span>
+  <span class="nt">&lt;/ObjectList&gt;</span>
+<span class="nt">&lt;/ObjectLists&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_verfügbare_ausgaben">Verfügbare Ausgaben</h5>
+<div class="paragraph">
+<p>Das Netzwerk-Objekt liefert eine Vielzahl von Ergebnisgrößen für die einzelnen Strömungselemente.</p>
+</div>
+<div class="paragraph">
+<p>Jedes Strömungselement hat eine (mittlere) Temperatur, welche über die Ausgabegröße <code>Temperature[&lt;id&gt;]</code> abgefragt werden kann. Die ID entspricht hier der Element-ID (siehe <a href="#HydraulicNetworkElement">Strömungselemente</a>).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Die mittlere Temperatur einen Strömungselements kann zur Visualisierung/Farbgebung des Elements verwendet werden.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Je nach physikalischer Modellierung eines Strömungselements muss die Mitteltemperatur einen Strömungselements nicht mit der Auslasstemperatur übereinstimmen (siehe Modelldokumentation). Beispiele dafür sind Speicher oder lange verlustbehaftete Rohre.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Jedes Strömungselement hat auch einen Massestrom, wobei die Strömungsrichtung immer von <em>inletNode</em> zu <em>outletNode</em> positiv definiert ist. Der Massestrom kann über die Größe <code>MassFlux[&lt;id&gt;]</code> abgefragt werden.</p>
+</div>
+<div class="paragraph">
+<p>Zur Vereinfachung dienen die Variablennamen <code>Temperatures</code> und <code>MassFluxes</code>, welche jeweils Ausgaben für alle Strömungselemente anfordern.</p>
+</div>
+<div class="paragraph">
+<p>Die Variablen werden in den Ausgabedateien wie folgt angegeben: <code>Network(id=3).Temperature(id=101)</code> wobei hier <code>id=3</code> die ID des ausgewählten Netzwerks angibt und <code>id=101</code> das Strömungselement, dessen Temperatur ausgegeben wird.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_spezielle_ausgaben">Spezielle Ausgaben</h5>
+<div class="paragraph">
+<p>Bei Strömungselementen mit mehreren Segmenten und Temperaturverteilungen werden bei Abfrage der Temperatur mittels <code>Temperature[&lt;id&gt;]</code> stets alle Segmenttemperaturen ausgegeben. In der Ausgabedatei werden diese wie folgt kodiert:</p>
+</div>
+<div class="paragraph">
+<p><code>Network(id=3).Temperature(id=101).1</code>, <code>Network(id=3).Temperature(id=101).2</code>, &#8230;&#8203;,  <code>Network(id=3).Temperature(id=101).&lt;n&gt;</code></p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Die Benennung der Variablennamen wird intern in einer <code>InputReference</code> Klasse beschrieben. <code>Network</code> entspricht dem Referenzierungstyp, <code>Temperature</code> ist der <code>QuantityName</code> und <code>id=&lt;id&gt;</code> ergibt sich bei vektorwertigen Größen aus der ID/Index.</p>
+</div>
+<div class="paragraph">
+<p>DAHER GIBT ES DERZEIT KEINE MÖGLICHKEIT, VEKTORWERTIGE ERGEBNISSE EINER VEKTORVERTIGEN AUSGABE AUSZUGEBEN!!! Das funktioniert also so nicht&#8230;&#8203;</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>TODO weitere Ausgaben</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_reference">2.17. Reference</h3>
+<div class="sect3">
+<h4 id="units">2.17.1. Unit Definitions</h4>
 <div class="paragraph">
 <p>Throughout the NANDRAD solver, units are <em>only</em> used for input/output purposes. Within the calculation functions, <em>always</em> the base SI units are used, hereby avoiding problems from unit conversions.</p>
 </div>
@@ -5679,7 +6294,7 @@ Start = 14*24 + 6 = 342 h</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="quantities">2.16.2. Quantity References</h4>
+<h4 id="quantities">2.17.2. Quantity References</h4>
 <div class="paragraph">
 <p>The following list of quantities is an overview of all available results that can be requested as outputs. Which outputs are actually available  depends on the project and will be printed into the file <code>var/output_reference_list.txt</code> (see discussion in section <a href="#outputs">Outputs/Results</a>).</p>
 </div>
@@ -6236,8 +6851,7 @@ The example below shows how the output of the models is referenced via the objec
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.1.0<br>
-Last updated 2020-11-05 18:03:34 +0100
+Last updated 2021-01-14 20:46:37 +0100
 </div>
 </div>
 <style>
