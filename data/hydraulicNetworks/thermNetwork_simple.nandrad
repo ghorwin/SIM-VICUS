@@ -7,7 +7,7 @@
 			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
 			<IBK:Parameter name="Albedo" unit="%">20</IBK:Parameter>
 			<TimeZone>13</TimeZone>
-			<ClimateFileName>/media/ischta/Datengrab/Programmierung/SIM-VICUS/data/DB_climate/Konstantopol_20C.c6b</ClimateFileName>
+			<ClimateFileName>C:/Daten/git/SIMVICUS/data/DB_climate/Konstantopol_20C.c6b</ClimateFileName>
 		</Location>
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
@@ -80,5 +80,31 @@
 			</HydraulicNetwork>
 		</HydraulicNetworks>
 		<Schedules />
+		
+		<Outputs>
+			<Definitions>
+				<OutputDefinition>
+					<Quantity>OutletTemperatures</Quantity>
+					<ObjectListName>the Network</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+			</Definitions>
+			<Grids>
+				<OutputGrid name="hourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="the Network">
+				<FilterID>0</FilterID>
+				<ReferenceType>Network</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+		
 	</Project>
 </NandradProject>
