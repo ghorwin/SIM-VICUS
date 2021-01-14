@@ -46,6 +46,8 @@ public:
 		P_COP,								// Keyword: COP									[-]		'Coefficient of performance of the component.'
 		P_UAValue,							// Keyword: UAValue								[W/m2K]	'UA-Value of heat exchanger'
 
+		// we can add those, once we know what to do with them
+
 //		P_TemperatureTolerance,				// xKxeyword: TemperatureTolerance				[K]		'Temperature tolerance for e.g. thermostats.'
 //		P_RatedHeatingCapacity,				// xKxeyword: RatedHeatingCapacity				[W]		'Rated heating capacity of the component.'
 //		P_RatedCoolingCapacity,				// xKxeyword: RatedCoolingCapacity				[W]		'Rated Cooling capacity of the component.'
@@ -109,11 +111,11 @@ public:
 	static std::vector<unsigned int> requiredParameter(const ModelType modelType){
 		switch (modelType) {
 			case MT_ConstantPressurePumpModel:
-				return {P_PressureHead, P_PumpEfficiency, P_MotorEfficiency};
+				return {P_PressureHead, P_PumpEfficiency, P_MotorEfficiency, P_Volume};
 			case MT_HeatPump:
-				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_COP};
+				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_COP, P_Volume};
 			case MT_HeatExchanger:
-				return {P_PressureLossCoefficient, P_HydraulicDiameter};
+				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
 			default:
 				return {};
 		}

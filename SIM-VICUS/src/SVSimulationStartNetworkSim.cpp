@@ -139,7 +139,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	pipe1.m_id = 0;
 	pipe1.m_displayName = "PE 32 x 3.2";
 	pipe1.m_diameterOutside = 32;
-	pipe1.m_sWall = 3.2;
+	pipe1.m_wallThickness = 3.2;
 	pipe1.m_roughness = 0.007;
 	geoNetwork.m_networkPipeDB.push_back(pipe1);
 

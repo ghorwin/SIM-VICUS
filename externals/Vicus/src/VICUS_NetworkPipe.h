@@ -19,7 +19,7 @@ public:
 	VICUS_COMPARE_WITH_ID
 
 	double m_diameterInside() const{
-		return m_diameterOutside - 2 * m_sWall;
+		return m_diameterOutside - 2 * m_wallThickness;
 	}
 
 	// *** PUBLIC MEMBER VARIABLES ***
@@ -28,13 +28,18 @@ public:
 	unsigned int						m_id = INVALID_ID;				// XML:A:required
 	/*! Display name of fluid. */
 	std::string							m_displayName;					// XML:A
-	/*! Outside diameter in [mm]. */
+	/*! Outside diameter pipe in [mm]. */
 	double								m_diameterOutside;				// XML:A:required
-	/*! Wall thickness in [mm]. */
-	double								m_sWall;						// XML:A:required
-	/*! pipe wall roughness in [mm] */
+	/*! Wall thickness pipe in [mm]. */
+	double								m_wallThickness;				// XML:A:required
+	/*! Pipe wall thermal conductivity in [W/mK] */
+	double								m_lambdaWall;					// XML:A:required
+	/*! Pipe wall roughness in [mm] */
 	double								m_roughness;					// XML:A:required
-
+	/*! outisde diameter of insulation in [mm] */
+	double								m_insulationThickness = 0.0;	// XML:A
+	/*! thermal conductivity of insulation in [W/mK] */
+	double								m_lambdaInsulation = 0.0;		// XML:A
 };
 
 

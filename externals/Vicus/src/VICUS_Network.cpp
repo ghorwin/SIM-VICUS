@@ -735,6 +735,16 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &hydraulic
 				throw IBK::Exception(IBK::FormatString("Edge  %1->%2 has no defined pipe from database")
 									 .arg(edge->m_node1->m_id).arg(edge->m_node2->m_id), FUNC_ID);
 
+			// calculate pipe wall U-Value
+			double UValue;
+			if (pipe->m_insulationThickness>0 && pipe->m_lambdaInsulation>0){
+				UValue = 1/ ( 1/pipe->m_lambdaWall * IBK::f_log(pipe->m_diameterOutside / pipe->m_diameterInside())
+							+ 1/pipe->m_lambdaInsulation *
+							  IBK::f_log((pipe->m_diameterOutside + 2*pipe->m_insulationThickness) / pipe->m_diameterOutside) );
+			}
+			else {
+				UValue = 1/ ( 1/pipe->m_lambdaWall * IBK::f_log(pipe->m_diameterOutside / pipe->m_diameterInside()) );
+			}
 
 			// transform vicus pipe to NANDRAD::HydraulicNetworkPipeProperties, keeping same id
 			NANDRAD::HydraulicNetworkPipeProperties pipeProp;
@@ -745,6 +755,8 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &hydraulic
 											   NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter, pipe->m_diameterInside());
 			NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
 											   NANDRAD::HydraulicNetworkPipeProperties::P_PipeRoughness, pipe->m_roughness);
+			NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
+											   NANDRAD::HydraulicNetworkPipeProperties::P_UValuePipeWall, UValue);
 			// if not existing yet, add it to pipe properties
 			if (std::find(hydraulicNetwork.m_pipeProperties.begin(), hydraulicNetwork.m_pipeProperties.end(), pipeProp)
 					== hydraulicNetwork.m_pipeProperties.end())
