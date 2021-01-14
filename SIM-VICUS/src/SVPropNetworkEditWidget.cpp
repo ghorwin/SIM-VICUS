@@ -231,18 +231,6 @@ void SVPropNetworkEditWidget::setupComboBoxComponents()
 }
 
 
-void SVPropNetworkEditWidget::modifyStatus() {
-	if (!setNetwork())
-		return;
-	m_network.m_scaleEdges = m_ui->horizontalSliderScaleEdges->value();
-	m_network.m_scaleNodes = m_ui->horizontalSliderScaleNodes->value();
-	m_network.updateNodeEdgeConnectionPointers(); // update pointers, since next function depends on it
-	m_network.updateVisualizationData(); // update visualization-related properties in network
-	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
-	undo->push(); // modifies project and updates views
-}
-
-
 void SVPropNetworkEditWidget::modifySizingParams()
 {
 	if (!setNetwork())
@@ -404,21 +392,29 @@ void SVPropNetworkEditWidget::on_checkBoxSupplyPipe_clicked()
 	modifyEdgeProperty(&VICUS::NetworkEdge::m_supply, m_ui->checkBoxSupplyPipe->isChecked());
 }
 
-void SVPropNetworkEditWidget::on_horizontalSliderScaleNodes_actionTriggered(int action)
-{
-	modifyStatus();
-}
-
-void SVPropNetworkEditWidget::on_horizontalSliderScaleEdges_actionTriggered(int action)
-{
-	modifyStatus();
-}
-
 void SVPropNetworkEditWidget::on_comboBoxComponent_activated(const QString &arg1)
 {
 	// the functions will simply return in case it is not a Node/Edge
 	modifyEdgeProperty(&VICUS::NetworkEdge::m_componentId, m_mapComponents.value(m_ui->comboBoxComponent->currentText()));
 	modifyNodeProperty(&VICUS::NetworkNode::m_componentId, m_mapComponents.value(m_ui->comboBoxComponent->currentText()));
+}
+
+void SVPropNetworkEditWidget::on_horizontalSliderScaleNodes_valueChanged(int value)
+{
+	if (!setNetwork())
+		return;
+	m_network.m_scaleNodes = value;
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
+	undo->push(); // modifies project and updates views
+}
+
+void SVPropNetworkEditWidget::on_horizontalSliderScaleEdges_valueChanged(int value)
+{
+	if (!setNetwork())
+		return;
+	m_network.m_scaleEdges = value;
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
+	undo->push(); // modifies project and updates views
 }
 
 void SVPropNetworkEditWidget::on_pushButtonEditComponents_clicked()

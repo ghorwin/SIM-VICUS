@@ -61,10 +61,6 @@ private slots:
 
 	void on_pushButtonReduceRedundantNodes_clicked();
 
-	void on_horizontalSliderScaleNodes_actionTriggered(int action);
-
-	void on_horizontalSliderScaleEdges_actionTriggered(int action);
-
 	void on_comboBoxComponent_activated(const QString &arg1);
 
 	void on_pushButtonEditComponents_clicked();
@@ -72,6 +68,10 @@ private slots:
 	void on_lineEditHeatFlux_editingFinished();
 
 	void on_lineEditNodeHeatingDemand_editingFinished();
+
+	void on_horizontalSliderScaleNodes_valueChanged(int value);
+
+	void on_horizontalSliderScaleEdges_valueChanged(int value);
 
 private:
 
