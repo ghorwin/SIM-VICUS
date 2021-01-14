@@ -47,7 +47,7 @@ private slots:
 	void on_tableView_doubleClicked(const QModelIndex &index);
 
 private:
-	Ui::SVDBPipeEditDialog *ui;
+	Ui::SVDBPipeEditDialog *m_ui;
 
 	/*! The component table model (owned). */
 	SVDBPipeTableModel						*m_dbModel		= nullptr;

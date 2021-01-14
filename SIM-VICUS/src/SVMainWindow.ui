@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>1112</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -116,6 +116,7 @@
     <addaction name="actionDBComponents"/>
     <addaction name="actionDBWindows"/>
     <addaction name="actionDBBoundaryConditions"/>
+    <addaction name="actionPipes"/>
    </widget>
    <widget class="QMenu" name="menuSimulation">
     <property name="title">
@@ -482,6 +483,11 @@
   <action name="actionNetwork_Hydraulic_Components">
    <property name="text">
     <string>Network Hydraulic Components...</string>
+   </property>
+  </action>
+  <action name="actionPipes">
+   <property name="text">
+    <string>Pipes...</string>
    </property>
   </action>
  </widget>

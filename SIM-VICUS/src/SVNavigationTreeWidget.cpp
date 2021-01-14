@@ -177,7 +177,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 			QString name = QString("[%1->%2]").arg(e.nodeId1()).arg(e.nodeId2());
 			const VICUS::NetworkPipe * pipe = prj.element(n.m_networkPipeDB, e.m_pipeId);
 			if (pipe != nullptr)
-				name += " "  + QString::fromStdString(pipe->m_displayName);
+				name += " "  + QString::fromStdString(pipe->m_displayName.string());
 			QTreeWidgetItem * en = new QTreeWidgetItem(QStringList() << name, QTreeWidgetItem::Type);
 			m_treeItemMap[e.uniqueID()] = en;
 			en->setData(0, SVNavigationTreeItemDelegate::ItemType, NT_NetworkEdge);

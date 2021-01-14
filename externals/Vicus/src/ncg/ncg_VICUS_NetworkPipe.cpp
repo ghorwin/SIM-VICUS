@@ -65,7 +65,7 @@ void NetworkPipe::readXML(const TiXmlElement * element) {
 			if (attribName == "id")
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
-				m_displayName = attrib->ValueStr();
+				m_displayName.setEncodedString(attrib->ValueStr());
 			else if (attribName == "diameterOutside")
 				m_diameterOutside = NANDRAD::readPODAttributeValue<double>(element, attrib);
 			else if (attribName == "wallThickness")
@@ -99,7 +99,7 @@ TiXmlElement * NetworkPipe::writeXML(TiXmlElement * parent) const {
 	if (m_id != VICUS::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.empty())
-		e->SetAttribute("displayName", m_displayName);
+		e->SetAttribute("displayName", m_displayName.encodedString());
 	e->SetAttribute("diameterOutside", IBK::val2string<double>(m_diameterOutside));
 	e->SetAttribute("wallThickness", IBK::val2string<double>(m_wallThickness));
 	e->SetAttribute("lambdaWall", IBK::val2string<double>(m_lambdaWall));

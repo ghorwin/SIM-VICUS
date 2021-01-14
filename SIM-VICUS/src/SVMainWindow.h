@@ -36,6 +36,7 @@ class SVDBWindowEditWidget;
 class SVDBConstructionEditDialog;
 class SVDBComponentEditDialog;
 class SVDBBoundaryConditionEditDialog;
+class SVDBPipeEditDialog;
 
 /*! Main window class. */
 class SVMainWindow : public QMainWindow {
@@ -99,6 +100,8 @@ public:
 	SVDBConstructionEditDialog * dbConstructionEditDialog();
 	/*! Returns the boundary condition edit dialog. */
 	SVDBBoundaryConditionEditDialog * dbBoundaryConditionEditDialog();
+	/*! Returns the pipe edit dialog. */
+	SVDBPipeEditDialog *dbPipeEditDialog();
 
 public slots:
 	void on_actionDBMaterials_triggered();
@@ -213,6 +216,8 @@ private slots:
 
 
 	void on_actionNetwork_Hydraulic_Components_triggered();
+
+	void on_actionPipes_triggered();
 
 private:
 	/*! Sets up all dock widgets with definition lists. */
@@ -350,6 +355,7 @@ private:
 	SVDBWindowEditWidget				*m_dbWindowEditWidget							= nullptr;
 	SVDBComponentEditDialog				*m_dbComponentEditDialog						= nullptr;
 	SVDBBoundaryConditionEditDialog		*m_dbBoundaryConditionEditDialog				= nullptr;
+	SVDBPipeEditDialog					*m_dbPipeEditDialog								= nullptr;
 
 	friend class SVThreadBase;
 

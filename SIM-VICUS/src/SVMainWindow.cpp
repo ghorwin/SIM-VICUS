@@ -60,6 +60,7 @@
 #include "SVDBWindowEditWidget.h"
 #include "SVDBComponentEditDialog.h"
 #include "SVDBBoundaryConditionEditDialog.h"
+#include "SVDBPipeEditDialog.h"
 
 #include "SVSimulationStartNandrad.h"
 #include "SVSimulationStartNetworkSim.h"
@@ -210,6 +211,13 @@ SVDBBoundaryConditionEditDialog * SVMainWindow::dbBoundaryConditionEditDialog() 
 	return m_dbBoundaryConditionEditDialog;
 }
 
+SVDBPipeEditDialog *SVMainWindow::dbPipeEditDialog(){
+	if (m_dbPipeEditDialog == nullptr)
+		m_dbPipeEditDialog = new SVDBPipeEditDialog(this);
+	return m_dbPipeEditDialog;
+}
+
+
 
 // *** public slots ***
 
@@ -246,6 +254,11 @@ void SVMainWindow::on_actionDBBoundaryConditions_triggered() {
 	dbBoundaryConditionEditDialog()->edit();
 }
 
+
+void SVMainWindow::on_actionPipes_triggered()
+{
+	dbPipeEditDialog()->edit();
+}
 // *** protected functions ***
 
 
@@ -1494,3 +1507,5 @@ static bool copyRecursively(const QString &srcFilePath,
 	}
 	return true;
 }
+
+

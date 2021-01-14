@@ -1,5 +1,6 @@
 #include "SVDBPipeTableModel.h"
 
+#include "SVDBPipeEditDialog.h"
 #include "SVConstants.h"
 
 #include <QIcon>
@@ -16,9 +17,9 @@ SVDBPipeTableModel::SVDBPipeTableModel(QObject *parent, SVDatabase &db) :
 	QAbstractTableModel(parent),
 	m_db(&db)
 {
-//	// must only be created from SVDBBoundaryConditionEditDialog
-//	Q_ASSERT(dynamic_cast<SVDBBoundaryConditionEditDialog*>(parent) != nullptr);
-//	Q_ASSERT(m_db != nullptr);
+	// must only be created from SVDBPipeEditDialog
+	Q_ASSERT(dynamic_cast<SVDBPipeEditDialog*>(parent) != nullptr);
+	Q_ASSERT(m_db != nullptr);
 }
 
 SVDBPipeTableModel::~SVDBPipeTableModel() {
@@ -48,7 +49,7 @@ QVariant SVDBPipeTableModel::data ( const QModelIndex & index, int role) const {
 		case Qt::DisplayRole : {
 			switch (index.column()) {
 				case ColId					: return it->first;
-				case ColName				: return QString::fromStdString(it->second.m_displayName);
+				case ColName				: return QString::fromStdString(it->second.m_displayName.string());
 			}
 		} break;
 
@@ -99,7 +100,7 @@ QVariant SVDBPipeTableModel::headerData(int section, Qt::Orientation orientation
 
 QModelIndex SVDBPipeTableModel::addNewItem() {
 	VICUS::NetworkPipe pipe;
-	pipe.m_displayName = "<new pipe>";
+	pipe.m_displayName.setEncodedString("en:<new boundary condition>");
 
 	pipe.m_roughness = 7e-6;
 	pipe.m_lambdaWall = 0.4;
