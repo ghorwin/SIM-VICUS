@@ -168,6 +168,4 @@ if [[ $SKIP_TESTS = "false"  ]];
 then
     echo "*** Running Testsuite ***" &&
     ./run_tests.sh
-    # We do not want the test suite to signal failure of build here, that's why we have the additional echo here
-    echo "*** Test suite done ***"
 fi
