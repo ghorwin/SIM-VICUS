@@ -162,4 +162,10 @@ else
 	then
 		cp $BUILDDIR/SIM-VICUS/SIM-VICUS ../../bin/release/SIM-VICUS
 	fi
+fi &&
+
+if [[ $SKIP_TESTS = "false"  ]];
+then
+    echo "*** Running Testsuite ***" &&
+    ./run_tests.sh
 fi
