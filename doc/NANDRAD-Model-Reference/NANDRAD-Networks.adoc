@@ -241,7 +241,7 @@ Daher erscheint die Ausgabe von Segmenttemperaturen in vom Netzwerk unabhängige
 
 Innerhalb der Datei kann die Benennung der Temperaturen wie folgt vorgenommen werden:
 
-`Temperature[0]`, `Temperature[1]', ..., `Temperature[n]' 
+`Temperature[0]`, `Temperature[1]`, ..., `Temperature[n]` 
 
 
 Alternative 2:
@@ -252,7 +252,7 @@ Mehrere Elemente werden in einer Datei zusammengefasst, also
 
 mit den Dateieinträgen
 
-`Networkelement(id=101).Temperature[0]`, `Networkelement(id=101).Temperature[1]', ..., `Networkelement(id=101).Temperature[n]' 
+`Networkelement(id=101).Temperature[0]`, `Networkelement(id=101).Temperature[1]`, ..., `Networkelement(id=101).Temperature[n]` 
 
 [NOTE]
 ====
