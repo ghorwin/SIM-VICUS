@@ -170,6 +170,20 @@ Die Ergebnisgrößen eines thermo-hydraulischen Netzwerkmodells werden wie folgt
 ----
 ====
 
+[NOTE]
+==== 
+Gibt es eventuell Alternativen zum Zugriff? 
+
+Das Netzwerk enthält derzeit die Temperaturen und Masseströme aller Komponenten. Wünschenswert wäre hingegen, nur ausgewählte Elemente auszugeben. Dies ist mit den
+jetzigen Konventionen nur möglich, wenn alle dafür relevanten Temperatur- und Massestromeinträge jeweils als einzelne Ausgabedefinition aufgelistet werden.
+
+Denkbar wäre, statt auf das Netzwerk direkt auf die Netzwerkelemente zu referenzieren, also mit `ReferenceType` `NetworkElement` und `FilterID` die Ids aller Netzwerkelemente.
+Soll dies funktionieren, so müssen alle Netzwerkelemente einem gemeinsamen ID-Raum uterliegen, siehe Kommentar unten.
+
+Ein Referenzierung eines konkreten Netzwerkes, zusammen mit ausgewählten Netzwerkelementen, ist auf diesem Wege nicht möglich - man bräuchte dazu sowohl den Referenztyp und Id-Filter des Netzwerkes, aber
+gleichzeitig für seine Elemente. 
+====
+
 ### Verfügbare Ausgaben
 
 Das Netzwerk-Objekt liefert eine Vielzahl von Ergebnisgrößen für die einzelnen Strömungselemente.
@@ -231,9 +245,10 @@ DAHER GIBT ES DERZEIT KEINE MÖGLICHKEIT, VEKTORWERTIGE ERGEBNISSE EINER VEKTORV
 
 Alternative 1:
 
-Es kann davon ausgegangen werden, dass die Temperaturstratifierung in einem einzelnen Strömungselement nur auf der Ebene des einzelnen Bauteils von Interesse ist, so zum Beispiel, wenn die Temperaturverteilung in einem Speicher verfolgt werden soll. Solche Analysen finden nicht auf der globalen Netzwerkebene statt, sondern haben stets das Einzelbauteil im Fokus.
- i
-Passend dazu kann die Ausgabe der Segmenttemperaturen als raumaufgelöste Spezialinformation gedeutet werden, die auch in einer späteren Visualisierung eine eigene vm Netzwerk unabhngige Sicht erhält. 
+Es kann davon ausgegangen werden, dass die Temperaturstratifierung in einem einzelnen Strömungselement nur auf der Ebene des einzelnen Bauteils von Interesse ist, so zum Beispiel, wenn die Temperaturverteilung in einem Speicher verfolgt werden soll. 
+Solche Analysen finden nicht auf der globalen Netzwerkebene statt, sondern haben stets das Einzelbauteil im Fokus.
+ 
+Passend dazu kann die Ausgabe der Segmenttemperaturen als raumaufgelöste Spezialinformation gedeutet werden, die auch in einer späteren Visualisierung eine eigene vom Netzwerk unabhängige Sicht erhält. 
 
 Daher erscheint die Ausgabe von Segmenttemperaturen in vom Netzwerk unabhängige Dateien schlüssig:
 
@@ -243,16 +258,6 @@ Innerhalb der Datei kann die Benennung der Temperaturen wie folgt vorgenommen we
 
 `Temperature[0]`, `Temperature[1]`, ..., `Temperature[n]` 
 
-
-Alternative 2:
-
-Mehrere Elemente werden in einer Datei zusammengefasst, also
-
-* networkelement -> `networkelement_<gridname>.tsv`
-
-mit den Dateieinträgen
-
-`Networkelement(id=101).Temperature[0]`, `Networkelement(id=101).Temperature[1]`, ..., `Networkelement(id=101).Temperature[n]` 
 
 [NOTE]
 ====
@@ -265,3 +270,15 @@ Beispielsweise können Komponenten wie Wärmetauscher auftreten, die zu zwei unt
 
 TODO: Ideen gesucht
 ====
+
+Alternative 2:
+
+Mehrere Elemente werden in einer Datei zusammengefasst, also
+
+* network -> `network(id=1)_<gridname>.tsv`
+
+mit den Dateieinträgen
+
+`Networkelement(id=101).Temperature[0]`, `Networkelement(id=101).Temperature[1]`, ..., `Networkelement(id=101).Temperature[n]` 
+
+
