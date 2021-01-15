@@ -188,17 +188,22 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 		m_n += fe->nInternalStates();
 	}
 	m_y.resize(m_n,0.0);
-	m_fluidTemperatures.resize(m_n, 293.15);
+	m_fluidTemperatures.resize(m_p->m_flowElements.size(), 293.15);
 
 	// initialize all fluid temperatures
 	unsigned int offset = 0;
-	for(ThermalNetworkAbstractFlowElement* fe :m_p->m_flowElements) {
+	for(unsigned int i = 0; i < m_p->m_flowElements.size(); ++i) {
+		ThermalNetworkAbstractFlowElement *fe = m_p->m_flowElements[i];
 		std::vector<double> fluidTemp(fe->nInternalStates());
 		fe->initialTemperatures(&fluidTemp[0]);
-		for(unsigned int n = 0; n < fe->nInternalStates(); ++n) {
-			m_fluidTemperatures[offset + n] = fluidTemp[n];
+		unsigned int nStates = fe->nInternalStates();
+		double meanTemperature = 0;
+		for(unsigned int n = 0; n < nStates; ++n) {
+			meanTemperature += fluidTemp[n];
 		}
-		offset += fe->nInternalStates();
+		meanTemperature/= (double) nStates;
+		m_fluidTemperatures[i] = meanTemperature;
+		offset += nStates;
 	}
 }
 
@@ -269,15 +274,20 @@ int ThermalNetworkStatesModel::update(const double * y) {
 	const double density = m_network->m_fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 
 	unsigned int offset = 0;
-	for(ThermalNetworkAbstractFlowElement* fe :m_p->m_flowElements) {
+	for(unsigned int i = 0; i < m_p->m_flowElements.size(); ++i) {
+		ThermalNetworkAbstractFlowElement *fe = m_p->m_flowElements[i];
 		// calculate internal enthalpies for all flow elements
 		fe->setInternalStates(y + offset);
 		// calulte fluid temperatures
 		const double volume = fe->volume();
-		for(unsigned int n = 0; n < fe->nInternalStates(); ++n) {
-			m_fluidTemperatures[offset + n] = y[offset + n]/(volume * heatCapacity * density);
+		unsigned int nStates = fe->nInternalStates();
+		double meanTemperature = 0.0;
+		for(unsigned int n = 0; n < nStates; ++n) {
+			meanTemperature += y[offset + n]/(volume * heatCapacity * density);
 		}
-		offset += fe->nInternalStates();
+		meanTemperature/= (double) nStates;
+		m_fluidTemperatures[i] = meanTemperature;
+		offset += nStates;
 	}
 	return 0;
 }

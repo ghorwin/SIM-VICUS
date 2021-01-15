@@ -65,8 +65,8 @@ void HNPipeElement::partials(double mdot, double p_inlet, double p_outlet,
 	df_dmdot = (f_eps - f)/EPS;
 }
 
-void HNPipeElement::setFluidTemperature(const double *fluidTemp) {
-	m_fluidTemperature = fluidTemp[0];
+void HNPipeElement::setFluidTemperature(double fluidTemp) {
+	m_fluidTemperature = fluidTemp;
 }
 
 double HNPipeElement::pressureLossFriction(const double &mdot) const{

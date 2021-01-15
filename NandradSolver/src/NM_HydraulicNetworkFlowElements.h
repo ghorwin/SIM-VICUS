@@ -32,11 +32,8 @@ public:
 	void partials(double mdot, double p_inlet, double p_outlet,
 						  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
 
-	/*! Function retrieving number of internal states.*/
-	unsigned int nInternalStates() const override { return 1;}
-
 	/*! Sets fluid temperature [K] for all internal pipe volumes. */
-	void setFluidTemperature(const double *fluidTemp) override;
+	void setFluidTemperature(double fluidTemp) override;
 
 	/*! pressure loss due to pipe wall friction in Pa. For positive mass flows, there will be a positive pressure loss
 	 * mdot:	mass flow  in kg/m3
@@ -91,9 +88,7 @@ public:
 	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
 	void partials(double mdot, double p_inlet, double p_outlet,
 						  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
-	void setFluidTemperature(const double */*fluidTemp*/) override { }
-	/*! Function retrieving number of internal states.*/
-	unsigned int nInternalStates() const override { return 1;}
+	void setFluidTemperature(double /*fluidTemp*/) override { }
 
 
 private:
@@ -124,9 +119,7 @@ public:
 	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
 	void partials(double mdot, double p_inlet, double p_outlet,
 						  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
-	void setFluidTemperature(const double */*fluidTemp*/) override { }
-	/*! Function retrieving number of internal states.*/
-	unsigned int nInternalStates() const override { return 1;}
+	void setFluidTemperature(double /*fluidTemp*/) override { }
 
 private:
 

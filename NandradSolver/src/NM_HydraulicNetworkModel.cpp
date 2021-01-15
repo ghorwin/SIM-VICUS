@@ -310,10 +310,9 @@ void HydraulicNetworkModel::stateDependencies(std::vector<std::pair<const double
 int HydraulicNetworkModel::update() {
 	FUNCID(HydraulicNetworkModel::update);
 	// set all fluid temperatures
-	unsigned int offset = 0;
-	for(HydraulicNetworkAbstractFlowElement *fe : m_p->m_flowElements) {
-		fe->setFluidTemperature(m_fluidTemperatures + offset);
-		offset += fe->nInternalStates();
+	for(unsigned int i = 0; i < m_p->m_flowElements.size(); ++i) {
+		HydraulicNetworkAbstractFlowElement *fe = m_p->m_flowElements[i];
+		fe->setFluidTemperature(m_fluidTemperatures[i]);
 	}
 
 	// re-compute hydraulic network

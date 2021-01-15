@@ -124,7 +124,7 @@ private:
 
 	/*! Cached input data vector (size nPrimaryStateResults()). */
 	std::vector<double>								m_y;
-	/*! Vector of internal fluid temperatures, size = size(y). */
+	/*! Vector of internal fluid temperatures, size = elements.size(). */
 	std::vector<double>								m_fluidTemperatures;
 
 

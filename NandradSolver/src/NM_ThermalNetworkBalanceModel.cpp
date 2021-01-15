@@ -150,12 +150,18 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 
 	// set depndency between y and fluid temperatures
 	const double *y = &m_statesModel->m_y[0];
-	const double *temp = &m_statesModel->m_fluidTemperatures[0];
-	for(unsigned int i = 0; i < m_statesModel->nPrimaryStateResults(); ++i) {
-		resultInputValueReferences.push_back(std::make_pair(y + i, temp + i));
-	}
 
 	unsigned int offset = 0;
+	for(unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
+		const ThermalNetworkAbstractFlowElement *fe = m_statesModel->m_p->m_flowElements[i];
+		unsigned int nStates = fe->nInternalStates();
+		for(unsigned int n = 0; n < nStates; ++n) {
+			resultInputValueReferences.push_back(std::make_pair(&m_statesModel->m_fluidTemperatures[i], y + offset + n));
+		}
+		offset += nStates;
+	}
+
+	offset = 0;
 	// we at first try use dense pattern between all element results and internal states
 	for(unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
 
