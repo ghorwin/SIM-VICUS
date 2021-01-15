@@ -8,6 +8,8 @@
 #include "VICUS_Constants.h"
 #include "VICUS_AbstractDBElement.h"
 
+#include <IBK_MultiLanguageString.h>
+
 namespace VICUS {
 
 class NetworkPipe: public AbstractDBElement {
@@ -27,7 +29,7 @@ public:
 	/*! Unique id number. */
 	unsigned int						m_id = INVALID_ID;				// XML:A:required
 	/*! Display name of fluid. */
-	std::string							m_displayName;					// XML:A
+	IBK::MultiLanguageString			m_displayName;					// XML:A
 	/*! Outside diameter pipe in [mm]. */
 	double								m_diameterOutside;				// XML:A:required
 	/*! Wall thickness pipe in [mm]. */

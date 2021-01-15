@@ -22,7 +22,7 @@ Outputs are stored in the XML-tag `Outputs`, with the following general structur
 [source,xml]
 ----
 <Outputs>
-   ... <!-- global output parameters -->
+    ... <!-- global output parameters -->
     
     <Grids>
         ... <!-- Definition of output grids -->

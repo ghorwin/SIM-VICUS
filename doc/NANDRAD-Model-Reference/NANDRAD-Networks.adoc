@@ -1,0 +1,212 @@
+:imagesdir: ./images
+
+[[networks]]
+# HydraulicNetworks
+
+Dieser Abschnitt beschreibt die Parametrisierung von thermo-hydraulischen Netzwerken.
+
+In einer Projektdatei kann es mehrere Netzwerke geben. Diese sind im XML tag `HydraulicNetworks` abgelegt.
+
+.Hydraulische Netzwerke
+====
+[source,xml]
+----
+<HydraulicNetworks>
+	<HydraulicNetwork id="1" displayName="xxx">
+        ... <!-- network parameters -->
+	</HydraulicNetwork>
+
+	<HydraulicNetwork id="2" displayName="yyy">
+        ... <!-- network parameters -->
+	</HydraulicNetwork>
+
+    ... <!-- other networks -->
+	
+</HydraulicNetworks>
+----
+====
+
+[IMPORTANT]
+====
+Die einzelnen Netzwerke sind hydraulisch unabhängig, d.h. es gibt keinen Fluidaustausch zwischen Netzwerken. Die Netzwerke können aber thermisch verknüpft sein, z.B. kann ein Quartierswärmenetz mit einem Gebäudeanlagennetz Wärme austauschen.
+====
+
+## Definition eines hydraulischen Netzwerks
+
+Ein einzelnen Netzwerk wird im XML-tag `HydraulicNetwork` definiert, wie im folgenden Beispiel:
+
+.Typische Definition eines einzelnen Netzwerks
+====
+[source,xml]
+----
+<HydraulicNetwork id="1" displayName="Simple network">
+	<HydraulicFluid id="1" displayName="Water">
+        ... <!-- fluid parameters -->
+    </HydraulicFluid>
+    
+	<PipeProperties>
+        ... <!-- database with pipe definitions -->
+	</PipeProperties>
+	
+	<Components>
+        ... <!-- database with component definitions -->
+	</Components>
+	
+	<Elements>
+        ... <!-- network flow elements with topology definition -->
+	</Elements>
+	
+</HydraulicNetwork>
+----
+====
+
+XML-tag `HydraulicNetwork` hat folgende Attribute:
+
+.Attributes
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Attribute  | Description | Format | Usage 
+| `id` |  Unique identifier of the network | ({nbsp}>{nbsp}0{nbsp})  | _required_
+| `displayName`  |  Display name of the network. | string | _optional_
+|====================
+
+Innerhalb des Netzwerk-Definitionsblocks gibt es vier Kind-Elemente.
+
+## Medieneigenschaften
+
+Der XML-tag `HydraulicFluid` enthält die Definition des im Netzwerk strömenden Mediums. 
+
+[IMPORTANT]
+====
+In jedem Netzwerk gibt es nur ein einziges Fluid, und deshalb ist auch nur eine einzige Instanz des `HydraulicFluid` tags erlaubt.
+====
+
+.Definition eines Netzwerkfluids
+====
+[source,xml]
+----
+<HydraulicFluid id="1" displayName="Water">
+	<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
+	<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
+	<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
+	<LinearSplineParameter name="KinematicViscosity" interpolationMethod="linear">
+		<X unit="C">0 10 20 30 40 50 60 70 80 90 </X>
+		<Y unit="m2/s">1.793e-06 1.307e-06 1.004e-06 8.01e-07 6.58e-07 5.54e-07 4.75e-07 4.13e-07 3.65e-07 3.26e-07 </Y>
+	</LinearSplineParameter>
+</HydraulicFluid>
+----
+====
+
+XML-tag `HydraulicFluid` hat folgende Attribute:
+
+.Attributes
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Attribute  | Description | Format | Usage 
+| `id` |  Unique identifier of the fluid | ({nbsp}>{nbsp}0{nbsp})  | _required_
+| `displayName`  |  Display name of the network. | string | _optional_
+|====================
+
+[NOTE]
+====
+Da es nur eine Fluid-Definition per Netzwerk geben darf, ist das _id_ Attribut eigentlich überflüssig. Es wird lediglich zur Aktualisierung der Programmdatenbank beim Import eines Projekts benötigt.
+====
+
+
+Parameter des Netzwerkfluids (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
+
+[options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
+|====================
+|Name|Unit|Description|Value Range |Usage
+| `Density` | kg/m3 | Dichte bei Referenztemperatur | {nbsp}>{nbsp}0.0{nbsp} | _required_
+| `HeatCapacity` | J/kgK | Spezifische Wärmekapazität | {nbsp}>{nbsp}0.0{nbsp} | _required_
+| `Conductivity` | W/mK | Wärmeleitfähigkeit bei Referenztemperatur | {nbsp}>={nbsp}0.0{nbsp} | _required_
+|====================
+
+[NOTE]
+====
+Die obigen Eigenschaften, insbesondere die Dichte, werden zur Vereinfachung als temperaturunabhänig konstant angenommen. Für die meisten Anwendungsfälle der thermo-hydraulischen Simulation im Gebäude-/Quartierskontext wird die thermische Ausdehnung des Fluids nicht benötigt. Und die Auslegung des Ausdehngefäßes erfolgt nicht mit der Simulation.
+====
+
+Desweiteren gibt es noch temperaturabhängige Parameter, welche in linear interpolierten Datentabellen abgelegt werden (siehe Abschnitt <<LinearSplineParameter>> für eine Beschreibung des  `LinearSplineParameter` Elements):
+
+[options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
+|====================
+|Name|Unit|Description|Value Range |Usage
+| `KinematicViscosity` | m2/s | Kinematische Viscosität | {nbsp}>{nbsp}0.0{nbsp} | _required_
+|====================
+
+## Rohreigenschaften
+
+TODO 
+
+## Komponentendefinitionen
+
+TODO 
+
+[[HydraulicNetworkElement]]
+## Strömungselemente
+
+Ein Netzwerk besteht aus vielen durchströmten Bauteilen, sogenannten _Strömungselementen_ (engl. _flow elements_).
+
+TODO 
+
+
+
+## Ausgaben
+
+Die Ergebnisgrößen eines thermo-hydraulischen Netzwerkmodells werden wie folgt definiert. Also Referenzierungstyp dient `Network`, welche in der entsprechenden `ObjectList` angegeben wird.
+
+.Objektlist für die Referenzierung des Netzwerks mit der ID 1
+====
+[source,xml]
+----
+<ObjectLists>
+	<ObjectList name="the Network">
+		<FilterID>1</FilterID> <!-- ID of network -->
+		<ReferenceType>Network</ReferenceType>
+	</ObjectList>
+</ObjectLists>
+----
+====
+
+### Verfügbare Ausgaben
+
+Das Netzwerk-Objekt liefert eine Vielzahl von Ergebnisgrößen für die einzelnen Strömungselemente.
+
+Jedes Strömungselement hat eine (mittlere) Temperatur, welche über die Ausgabegröße `Temperature[<id>]` abgefragt werden kann. Die ID entspricht hier der Element-ID (siehe <<HydraulicNetworkElement>>).
+
+[NOTE]
+====
+Die mittlere Temperatur einen Strömungselements kann zur Visualisierung/Farbgebung des Elements verwendet werden.
+====
+
+[CAUTION]
+====
+Je nach physikalischer Modellierung eines Strömungselements muss die Mitteltemperatur einen Strömungselements nicht mit der Auslasstemperatur übereinstimmen (siehe Modelldokumentation). Beispiele dafür sind Speicher oder lange verlustbehaftete Rohre.
+====
+
+Jedes Strömungselement hat auch einen Massestrom, wobei die Strömungsrichtung immer von _inletNode_ zu _outletNode_ positiv definiert ist. Der Massestrom kann über die Größe `MassFlux[<id>]` abgefragt werden.
+
+
+Zur Vereinfachung dienen die Variablennamen `Temperatures` und `MassFluxes`, welche jeweils Ausgaben für alle Strömungselemente anfordern.
+
+
+Die Variablen werden in den Ausgabedateien wie folgt angegeben: `Network(id=3).Temperature(id=101)` wobei hier `id=3` die ID des ausgewählten Netzwerks angibt und `id=101` das Strömungselement, dessen Temperatur ausgegeben wird.
+
+### Spezielle Ausgaben
+
+Bei Strömungselementen mit mehreren Segmenten und Temperaturverteilungen werden bei Abfrage der Temperatur mittels `Temperature[<id>]` stets alle Segmenttemperaturen ausgegeben. In der Ausgabedatei werden diese wie folgt kodiert:
+
+`Network(id=3).Temperature(id=101).1`, `Network(id=3).Temperature(id=101).2`, ...,  `Network(id=3).Temperature(id=101).<n>`
+
+[NOTE]
+====
+Die Benennung der Variablennamen wird intern in einer `InputReference` Klasse beschrieben. `Network` entspricht dem Referenzierungstyp, `Temperature` ist der `QuantityName` und `id=<id>` ergibt sich bei vektorwertigen Größen aus der ID/Index.
+
+DAHER GIBT ES DERZEIT KEINE MÖGLICHKEIT, VEKTORWERTIGE ERGEBNISSE EINER VEKTORVERTIGEN AUSGABE AUSZUGEBEN!!! Das funktioniert also so nicht...
+====
+
+
+TODO weitere Ausgaben
+

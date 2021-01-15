@@ -4,7 +4,6 @@
 #include "SVConstants.h"
 #include "SVSettings.h"
 
-//#include <VICUS_KeywordList.h>
 #include <VICUS_KeywordListQt.h>
 #include <NANDRAD_KeywordList.h>
 

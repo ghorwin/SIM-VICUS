@@ -26,7 +26,7 @@
 			</Zone>
 		</Zones>
 		<HydraulicNetworks>
-			<HydraulicNetwork id="0" displayName="simple test">
+			<HydraulicNetwork id="1" displayName="simple test">
 				<HydraulicFluid id="1" displayName="Water">
 					<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
@@ -37,7 +37,7 @@
 					</LinearSplineParameter>
 				</HydraulicFluid>
 				<PipeProperties>
-					<HydraulicNetworkPipeProperties id="0">
+					<HydraulicNetworkPipeProperties id="1">
 						<IBK:Parameter name="PipeRoughness" unit="m">0.007</IBK:Parameter>
 						<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PipeOuterDiameter" unit="mm">32</IBK:Parameter>
@@ -45,12 +45,12 @@
 					</HydraulicNetworkPipeProperties>
 				</PipeProperties>
 				<Components>
-					<HydraulicNetworkComponent id="0" modelType="ConstantPressurePumpModel">
+					<HydraulicNetworkComponent id="1" modelType="ConstantPressurePumpModel">
 						<HeatExchangeType>HeatFluxConstant</HeatExchangeType>
 						<IBK:Parameter name="PressureHead" unit="Pa">1000</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
 					</HydraulicNetworkComponent>
-					<HydraulicNetworkComponent id="1" modelType="HeatExchanger">
+					<HydraulicNetworkComponent id="2" modelType="HeatExchanger">
 						<HeatExchangeType>HeatFluxConstant</HeatExchangeType>
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PressureLossCoefficient" unit="-">5</IBK:Parameter>
@@ -58,21 +58,21 @@
 						<IBK:Parameter name="UAValue" unit="W/m2K">1</IBK:Parameter>
 						<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">5</IBK:Parameter>
 					</HydraulicNetworkComponent>
-					<HydraulicNetworkComponent id="2" modelType="DynamicPipe">
+					<HydraulicNetworkComponent id="3" modelType="DynamicPipe">
 						<HeatExchangeType>HeatFluxConstant</HeatExchangeType>
 						<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">5</IBK:Parameter>
 					</HydraulicNetworkComponent>
 				</Components>
 				<Elements>
-					<HydraulicNetworkElement id="0" inletNodeId="101" outletNodeId="0" componentId="0" displayName="node 0" />
-					<HydraulicNetworkElement id="1" inletNodeId="0" outletNodeId="1" componentId="2" pipeId="0">
+					<HydraulicNetworkElement id="1" inletNodeId="101" outletNodeId="0" componentId="1" displayName="node 0" />
+					<HydraulicNetworkElement id="2" inletNodeId="0" outletNodeId="1" componentId="3" pipeId="1">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 						<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
 					</HydraulicNetworkElement>
-					<HydraulicNetworkElement id="2" inletNodeId="1" outletNodeId="100" componentId="1" displayName="node 1">
+					<HydraulicNetworkElement id="3" inletNodeId="1" outletNodeId="100" componentId="2" displayName="node 1">
 						<IBK:Parameter name="HeatFlux" unit="W">100</IBK:Parameter>
 					</HydraulicNetworkElement>
-					<HydraulicNetworkElement id="3" inletNodeId="100" outletNodeId="101" componentId="2" pipeId="0">
+					<HydraulicNetworkElement id="4" inletNodeId="100" outletNodeId="101" componentId="3" pipeId="1">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 						<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
 					</HydraulicNetworkElement>
@@ -116,7 +116,7 @@
 		</Outputs>
 		<ObjectLists>
 			<ObjectList name="the Network">
-				<FilterID>0</FilterID>
+				<FilterID>1</FilterID>
 				<ReferenceType>Network</ReferenceType>
 			</ObjectList>
 		</ObjectLists>

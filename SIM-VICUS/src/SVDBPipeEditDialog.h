@@ -1,24 +1,23 @@
-#ifndef SVDBBoundaryConditionEditDialogH
-#define SVDBBoundaryConditionEditDialogH
+#ifndef SVDBPIPEEDITDIALOG_H
+#define SVDBPIPEEDITDIALOG_H
 
 #include <QDialog>
 
 namespace Ui {
-class SVDBBoundaryConditionEditDialog;
+class SVDBPipeEditDialog;
 }
 
 class QSortFilterProxyModel;
 class QModelIndex;
+class SVDBPipeTableModel;
 
-class SVDBBoundaryConditionTableModel;
-
-/*! The edit dialog for component types. */
-class SVDBBoundaryConditionEditDialog : public QDialog{
+class SVDBPipeEditDialog : public QDialog
+{
 	Q_OBJECT
 
 public:
-	explicit SVDBBoundaryConditionEditDialog(QWidget *parent = nullptr);
-	~SVDBBoundaryConditionEditDialog();
+	explicit SVDBPipeEditDialog(QWidget *parent = nullptr);
+	~SVDBPipeEditDialog();
 
 	/*! Starts the dialog in "edit boundary condition" mode. */
 	void edit();
@@ -45,18 +44,17 @@ private slots:
 	*/
 	void onCurrentIndexChanged(const QModelIndex &current, const QModelIndex &/*previous*/);
 
-	void on_pushButtonReloadUserDB_clicked();
-
 	void on_tableView_doubleClicked(const QModelIndex &index);
 
 private:
-	Ui::SVDBBoundaryConditionEditDialog		*m_ui;
+	Ui::SVDBPipeEditDialog *m_ui;
 
 	/*! The component table model (owned). */
-	SVDBBoundaryConditionTableModel			*m_dbModel		= nullptr;
+	SVDBPipeTableModel						*m_dbModel		= nullptr;
 	/*! The sort filter model (owned). */
 	QSortFilterProxyModel					*m_proxyModel	= nullptr;
-
 };
 
-#endif // SVDBBoundaryConditionEditDialogH
+#endif // SVDBPIPEEDITDIALOG_H
+
+

@@ -1,7 +1,7 @@
 NANDRAD Model Reference
 =======================
 Andreas Nicolai <andreas.nicolai@tu-dresden.de>, Dirk Weiß, Stephan Hirth, Katja Tribulowski
-v1.1.0, September 2020
+ (14.01.2021)
 // date_on_line_above
 :Author Initials: AN
 :toc: left
@@ -42,6 +42,7 @@ include::NANDRAD-Outputs.adoc[leveloffset=+2]
 
 include::NANDRAD-GlobalParameters.adoc[leveloffset=+2]
 include::NANDRAD-Models.adoc[leveloffset=+2]
+include::NANDRAD-Networks.adoc[leveloffset=+2]
 
 
 include::NANDRAD-Reference.adoc[leveloffset=+2]

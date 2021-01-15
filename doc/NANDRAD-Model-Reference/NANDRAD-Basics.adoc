@@ -21,6 +21,7 @@ The NANDRAD project specification is stored in an XML-file with the extension `n
 	    <SolverParameter>...</SolverParameter>
 	    <Zones>...</Zones>
 	    <ConstructionInstances>...</ConstructionInstances>
+	    <HydraulicNetworks>...</HydraulicNetworks>
 	    <ConstructionTypes>...</ConstructionTypes>
 	    <Materials>...</Materials>
 	    <Models>...</Models>
@@ -47,6 +48,7 @@ A project file may contain the following child tags (order is arbitrary):
 | `SolverParameter` | Numerical solver settings and performance options -> <<solver_parameters>>
 | `Zones` | Zone specifications -> <<zones>>
 | `ConstructionInstances` | Building components and boundary conditions -> <<construction_instances>>
+| `HydraulicNetworks` | Thermo-hydraulic networks -> <<networks>>
 | `ConstructionTypes` | Definition of multi-layered constructions -> <<construction_types>>
 | `Materials` | Material properties -> <<materials>>
 | `Models` | Model parameter blocks -> <<models>>

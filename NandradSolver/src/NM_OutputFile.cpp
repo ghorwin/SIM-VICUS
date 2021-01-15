@@ -262,6 +262,7 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 	}
 
 	// create file now and write header
+	/// \todo refactor and use IBK::create_ofstream() from IBK_FileUtils.h
 	if (binary) {
 #if defined(_WIN32)
 	#if defined(_MSC_VER)

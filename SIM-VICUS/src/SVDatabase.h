@@ -31,6 +31,7 @@ public:
 		DT_Constructions,
 		DT_Components,
 		DT_BoundaryConditions,
+		DT_Pipes,
 		NUM_DT // used for "all"
 	};
 

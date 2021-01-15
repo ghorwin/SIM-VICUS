@@ -90,6 +90,9 @@ SOURCES += \
 		../../src/SVDBMaterialEditWidget.cpp \
 		../../src/SVDBMaterialTableModel.cpp \
 		../../src/SVDBModelDelegate.cpp \
+	../../src/SVDBPipeEditDialog.cpp \
+	../../src/SVDBPipeEditWidget.cpp \
+	../../src/SVDBPipeTableModel.cpp \
 		../../src/SVDatabase.cpp \
 		../../src/SVDialogHydraulicComponents.cpp \
 		../../src/SVHydraulicComponentParameterModel.cpp \
@@ -181,6 +184,9 @@ HEADERS  += \
 		../../src/SVDBMaterialEditWidget.h \
 		../../src/SVDBMaterialTableModel.h \
 		../../src/SVDBModelDelegate.h \
+	../../src/SVDBPipeEditDialog.h \
+	../../src/SVDBPipeEditWidget.h \
+	../../src/SVDBPipeTableModel.h \
 		../../src/SVDatabase.h \
 		../../src/SVDialogHydraulicComponents.h \
 		../../src/SVHydraulicComponentParameterModel.h \
@@ -268,6 +274,8 @@ FORMS    += \
 		../../src/SVDBConstructionEditWidget.ui \
 		../../src/SVDBMaterialEditDialog.ui \
 		../../src/SVDBMaterialEditWidget.ui \
+		../../src/SVDBPipeEditDialog.ui \
+		../../src/SVDBPipeEditWidget.ui \
 		../../src/SVDBWindowEditWidget.ui \
 		../../src/SVDialogHydraulicComponents.ui \
 		../../src/SVImportIDFDialog.ui \
