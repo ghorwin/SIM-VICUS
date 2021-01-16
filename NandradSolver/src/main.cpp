@@ -39,11 +39,12 @@
 const char * const PROGRAM_INFO =
 	"NANDRAD Solver\n"
 	"All rights reserved.\n\n"
-	"The NANDRAD Development Team:\n"
-	"Anne Paepcke, Andreas Nicolai\n"
+	"The NANDRAD/SIM-VICUS Development Team.\n"
+	"Core developers:\n"
+	"Andreas Nicolai and Anne Paepcke\n"
 	"Contact: \n"
-	"  anne.paepcke [at] tu-dresden.de\n"
-	"  andreas.nicolai [at] tu-dresden.de\n\n";
+	"  andreas.nicolai [at] tu-dresden.de\n"
+	"  anne.paepcke [at] tu-dresden.de\n\n";
 
 int main(int argc, char * argv[]) {
 	FUNCID(main);

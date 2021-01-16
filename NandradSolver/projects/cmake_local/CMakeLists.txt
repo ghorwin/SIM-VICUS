@@ -11,17 +11,17 @@ endif (CMAKE_COMPILER_IS_GNUCC)
 
 # add include directories
 include_directories(
-	${CMAKE_BINARY_DIR}/sundials/include
+	${PROJECT_BINARY_DIR}/../sundials/include
 	${PROJECT_SOURCE_DIR}/../../src
-	${PROJECT_SOURCE_DIR}/../../../externals/sundials/src/include
-	${PROJECT_SOURCE_DIR}/../../../externals/SuiteSparse/src/include
+	${PROJECT_SOURCE_DIR}/../../../externals/Nandrad/src
+	${PROJECT_SOURCE_DIR}/../../../externals/NandradModel/src
+	${PROJECT_SOURCE_DIR}/../../../externals/IntegratorFramework/src
 	${PROJECT_SOURCE_DIR}/../../../externals/CCM/src
+	${PROJECT_SOURCE_DIR}/../../../externals/DataIO/src
+	${PROJECT_SOURCE_DIR}/../../../externals/TiCPP/src
 	${PROJECT_SOURCE_DIR}/../../../externals/IBK/src
 	${PROJECT_SOURCE_DIR}/../../../externals/IBKMK/src
-	${PROJECT_SOURCE_DIR}/../../../externals/Nandrad/src
-	${PROJECT_SOURCE_DIR}/../../../externals/IntegratorFramework/src
-	${PROJECT_SOURCE_DIR}/../../../externals/TiCPP/src
-	${PROJECT_SOURCE_DIR}/../../../externals/Zeppelin/src
+	${PROJECT_SOURCE_DIR}/../../../externals/sundials/src/include
 )
 
 file( GLOB NandradSolver_SRCS ${PROJECT_SOURCE_DIR}/../../src/*.cpp )
