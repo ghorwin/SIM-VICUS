@@ -31,6 +31,9 @@
 const float TRANSLATION_SPEED = 1.2f;
 const float MOUSE_ROTATION_SPEED = 0.5f;
 
+// Size of the local coordinate system window
+const int SUBWINDOWSIZE = 150;
+
 /// \todo adjust the THRESHOLD based on DPI/Screenresolution or have it as user option
 const float MOUSE_MOVE_DISTANCE_ORBIT_CONTROLLER = 1;
 
@@ -50,11 +53,16 @@ void Vic3DScene::create(SceneView * parent, std::vector<ShaderProgram> & shaderP
 	// same for the coordinate system object
 	m_coordinateSystemObject.create(m_coordinateSystemShader);
 
+	// and for the small coordinate system object
+	m_smallCoordinateSystemObject.create(m_coordinateSystemShader, m_transparencyShader);
+
 	// we create the new geometry object here, but data is added once it is used
 	m_newGeometryObject.create(m_fixedColorTransformShader);
 
 	m_gridPlanes.push_back( VICUS::PlaneGeometry(VICUS::PlaneGeometry::T_Triangle,
 												 IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(1,0,0), IBKMK::Vector3D(0,1,0)) );
+
+
 }
 
 
@@ -286,6 +294,7 @@ void Vic3DScene::destroy() {
 	m_networkGeometryObject.destroy();
 	m_selectedGeometryObject.destroy();
 	m_coordinateSystemObject.destroy();
+	m_smallCoordinateSystemObject.destroy();
 	m_newGeometryObject.destroy();
 }
 
@@ -306,11 +315,23 @@ void Vic3DScene::resize(int width, int height, qreal retinaScale) {
 		);
 	// Mind: to not use 0.0 for near plane, otherwise depth buffering and depth testing won't work!
 
+	// the small view projection matrix is constant
+	m_smallViewProjection.setToIdentity();
+	// create projection matrix, i.e. camera lens
+	m_smallViewProjection.perspective(
+				/* vertical angle */ 45.0f,
+				/* aspect ratio */   1, // it's a square window
+				/* near */           0.1f,
+				/* far */            farDistance
+		);
+
 	// update cached world2view matrix
 	updateWorld2ViewMatrix();
 
 	// update viewport
 	m_viewPort = QRect(0, 0, static_cast<int>(width * retinaScale), static_cast<int>(height * retinaScale) );
+
+	m_smallViewPort = QRect(0, 0, static_cast<int>(SUBWINDOWSIZE * retinaScale), static_cast<int>(SUBWINDOWSIZE * retinaScale) );
 }
 
 
@@ -320,6 +341,18 @@ void Vic3DScene::updateWorld2ViewMatrix() {
 	//   world space -> camera/eye -> camera view
 	//   camera view -> projection -> normalized device coordinates (NDC)
 	m_worldToView = m_projection * m_camera.toMatrix(); // * m_transform.toMatrix();
+
+
+	// update small coordinate system camera
+
+	// take the current camera
+	m_smallCoordinateSystemObject.m_smallViewCamera = m_camera;
+	// move it into origin
+	m_smallCoordinateSystemObject.m_smallViewCamera.setTranslation(QVector3D(0,0,0));
+	// move 10 units backwards
+	m_smallCoordinateSystemObject.m_smallViewCamera.translate( -6*m_smallCoordinateSystemObject.m_smallViewCamera.forward());
+	// store in m_smallCoordinateSystemMatrix
+	m_smallCoordinateSystemObject.m_worldToSmallView = m_smallViewProjection * m_smallCoordinateSystemObject.m_smallViewCamera.toMatrix();
 }
 
 
@@ -672,10 +705,11 @@ void Vic3DScene::render() {
 
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
 
-
 	// enable depth testing, important for the grid and for the drawing order of several objects
 	// needed for all opaque geometry
 	glEnable(GL_DEPTH_TEST);
+	// enable depth mask update (only disabled for transparent geometry)
+	glDepthMask(GL_TRUE);
 
 	m_fixedColorTransformShader->bind();
 	m_fixedColorTransformShader->shaderProgram()->setUniformValue(m_fixedColorTransformShader->m_uniformIDs[0], m_worldToView);
@@ -806,7 +840,12 @@ void Vic3DScene::render() {
 	// re-enable updating of z-buffer
 	glDepthMask(GL_TRUE);
 
-	glDisable(GL_BLEND);
+	glViewport(m_smallViewPort.x(), m_smallViewPort.y(), m_smallViewPort.width(), m_smallViewPort.height());
+
+	// blending is still enabled, so that should work
+	m_smallCoordinateSystemObject.render();
+
+
 }
 
 

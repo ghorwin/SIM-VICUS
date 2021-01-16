@@ -26,6 +26,14 @@ void addPlane(const VICUS::PlaneGeometry & g, const QColor & c,
 			  std::vector<GLuint> & indexBufferData,
 			  bool inverted);
 
+/*! Adds a plane to a vertex, color and index buffer.
+	Index buffer contains data for GL_TRIANGLE_STRIP.
+*/
+void addPlaneAsStrip(const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & d, const QColor & c,
+			  unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+			  std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
+			  std::vector<GLuint> & indexBufferData);
+
 /*! Same as addPlane, but only adds coordinates (no normals, no color buffer).
 	Index buffer contains data for triangles.
 */
@@ -59,13 +67,18 @@ void updateCylinderColors(const QColor & c, unsigned int & currentVertexIndex, s
 
 // ** Spheres **
 
-/*! Adds a sphere mesh to a vertex, color and index buffer. */
+/*! Adds a sphere mesh to a vertex, color and index buffer.
+	Index buffer is populated to be drawn with GL_TRIANGLE_STRIP.
+*/
 void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 			   unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 			   std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
 			   std::vector<GLuint> & indexBufferData);
 
-/*! Same as addSphere, but only adds coordinates (no normals, no color buffer). */
+/*! Same as addSphere, but only adds coordinates (no normals, no color buffer).
+	Also, the index buffer contains indexes to be drawn with GL_TRIANGLES, whereas the other addCylinder function
+	generates index buffer data for GL_TRIANGLE_STRIP.
+*/
 void addSphere(const IBKMK::Vector3D & p, double radius,
 			   unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 			   std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData);

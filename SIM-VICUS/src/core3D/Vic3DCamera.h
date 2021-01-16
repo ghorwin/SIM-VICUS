@@ -54,7 +54,6 @@ public:
 		}
 		return m_world;
 	}
-
 };
 
 } // namespace Vic3D

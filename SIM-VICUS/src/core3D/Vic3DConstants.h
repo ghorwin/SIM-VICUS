@@ -55,7 +55,13 @@ enum Shaders {
 	SHADER_COORDINATE_SYSTEM,
 
 	/*!	VertexNormalColor.vert:
+		layout(location = 0) in vec3 position; // input:  attribute with index '0' with 3 elements per vertex (coordinates)
+		layout(location = 1) in vec3 normal;   // input:  attribute with index '1' with 3 elements per vertex (normal)
+		layout(location = 2) in vec4 color;    // input:  attribute with index '2' with 4 elements (=rgba) per vertex
+		uniform mat4 worldToView;              // parameter: the world-to-view matrix
+
 		simple.frag:
+		no uniforms
 	*/
 	SHADER_TRANSPARENT_GEOMETRY,
 	NUM_SHADER_PROGRAMS

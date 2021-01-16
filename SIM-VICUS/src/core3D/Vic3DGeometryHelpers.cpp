@@ -634,6 +634,43 @@ void updateColors(const VICUS::Surface & s, unsigned int & currentVertexIndex, s
 }
 
 
+void addPlaneAsStrip(const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & d, const QColor & col,
+					 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+					 std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLuint> & indexBufferData)
+{
+	VICUS::PlaneGeometry g(VICUS::PlaneGeometry::T_Rectangle, a, b, d);
+
+	// add vertex data to buffers
+	unsigned int nVertexes = g.vertexes().size();
+	// insert count vertexes
+	vertexBufferData.resize(vertexBufferData.size()+nVertexes);
+	colorBufferData.resize(colorBufferData.size()+nVertexes);
+	// set data
+	QVector3D n = VICUS::IBKVector2QVector(g.normal());
+	for (unsigned int i=0; i<nVertexes; ++i) {
+		vertexBufferData[currentVertexIndex + i].m_coords = VICUS::IBKVector2QVector(g.vertexes()[i]);
+		vertexBufferData[currentVertexIndex + i].m_normal = n;
+		colorBufferData[currentVertexIndex  + i] = col;
+	}
+
+
+	// 5 elements (4 triangle strip indexs + 1 stop index)
+	indexBufferData.resize(indexBufferData.size()+5);
+
+	// anti-clock-wise winding order for all triangles in strip
+	// 0, 1, 2
+	// 2, 3, 0
+	indexBufferData[currentElementIndex    ] = currentVertexIndex + 0;
+	indexBufferData[currentElementIndex + 1] = currentVertexIndex + 1;
+	indexBufferData[currentElementIndex + 2] = currentVertexIndex + 3;
+	indexBufferData[currentElementIndex + 3] = currentVertexIndex + 2;
+	indexBufferData[currentElementIndex + 4] = STRIP_STOP_INDEX;
+
+	// advance index in element/index buffer
+	currentElementIndex += 5;
+}
+
+
 
 
 

@@ -12,6 +12,7 @@
 #include "Vic3DOpaqueGeometryObject.h"
 #include "Vic3DOrbitControllerObject.h"
 #include "Vic3DCoordinateSystemObject.h"
+#include "Vic3DSmallCoordinateSystemObject.h"
 #include "Vic3DWireFrameObject.h"
 #include "Vic3DNewGeometryObject.h"
 #include "Vic3DPickObject.h"
@@ -118,6 +119,8 @@ private:
 
 	/*! Stores viewport geometry. */
 	QRect					m_viewPort;
+	/*! Stores minature viewport geometry. */
+	QRect					m_smallViewPort;
 
 	/*! Shader program 'Grid' (managed by SceneView). */
 	ShaderProgram			*m_gridShader				= nullptr;
@@ -132,6 +135,8 @@ private:
 
 	/*! The projection matrix, updated whenever the viewport geometry changes (in resizeGL() ). */
 	QMatrix4x4				m_projection;
+	/*! The projection matrix for the small view (the view is a constant square, so this project matrix does not change over time). */
+	QMatrix4x4				m_smallViewProjection;
 	/*! World transformation matrix generator. */
 	Transform3D				m_transform;
 	/*! Camera position, orientation and lens data. */
@@ -164,6 +169,8 @@ private:
 	/*! Object to display newly drawn geometry. */
 	NewGeometryObject		m_newGeometryObject;
 
+	/*! The small coordinate system at the bottom/left. */
+	SmallCoordinateSystemObject	m_smallCoordinateSystemObject;
 
 	// *** Orbit controller stuff ***
 

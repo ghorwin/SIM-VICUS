@@ -125,6 +125,7 @@ SOURCES += \
 		../../src/core3D/Vic3DScene.cpp \
 		../../src/core3D/Vic3DSceneView.cpp \
 		../../src/core3D/Vic3DShaderProgram.cpp \
+	../../src/core3D/Vic3DSmallCoordinateSystemObject.cpp \
 		../../src/core3D/Vic3DTransform3D.cpp \
 		../../src/core3D/Vic3DWireFrameObject.cpp \
 		../../src/main.cpp \
@@ -221,6 +222,7 @@ HEADERS  += \
 		../../src/core3D/Vic3DScene.h \
 		../../src/core3D/Vic3DSceneView.h \
 		../../src/core3D/Vic3DShaderProgram.h \
+	../../src/core3D/Vic3DSmallCoordinateSystemObject.h \
 		../../src/core3D/Vic3DTransform3D.h \
 		../../src/core3D/Vic3DVertex.h \
 		../../src/core3D/Vic3DWireFrameObject.h \
