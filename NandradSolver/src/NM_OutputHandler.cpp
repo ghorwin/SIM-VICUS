@@ -63,7 +63,8 @@ const char * const FLUX_QUANTITIES[] = {
 	"FluxShortWaveRadiationB",
 	"ConstructionHeatConductionLoad",
 	"WindowHeatConductionLoad",
-	"WindowSolarRadiationLoad"
+	"WindowSolarRadiationLoad",
+	"WindowSolarRadiationFluxSum"
 };
 
 namespace NANDRAD_MODEL {
