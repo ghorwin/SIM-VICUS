@@ -18,11 +18,13 @@ SUBDIRS = \
 	TiCPP \
 	Zeppelin \
 	GenericBuildings\
-	NandradCodeGenerator
+	NandradCodeGenerator \
+	NandradSolverFMI
 
 # where to find the sub projects
 SIM-VICUS.file = ../../SIM-VICUS/projects/Qt/SIM-VICUS.pro
 NandradSolver.file = ../../NandradSolver/projects/Qt/NandradSolver.pro
+NandradSolverFMI.file = ../../NandradSolverFMI/projects/Qt/NandradSolverFMI.pro
 NandradCodeGenerator.file = ../../NandradCodeGenerator/projects/Qt/NandradCodeGenerator.pro
 
 CCM.file = ../../externals/CCM/projects/Qt/CCM.pro
@@ -43,6 +45,7 @@ GenericBuildings.file = ../../externals/GenericBuildings/projects/Qt/GenericBuil
 
 # dependencies
 NandradSolver.depends = DataIO CCM TiCPP IBK IntegratorFramework Nandrad IBKMK
+NandradSolverFMI.depends = DataIO CCM TiCPP IBK IntegratorFramework Nandrad IBKMK
 NandradCodeGenerator.depends = IBK
 SIM-VICUS.depends = QuaZIP qwt Vicus Nandrad IBK TiCPP CCM QtExt Zeppelin
 

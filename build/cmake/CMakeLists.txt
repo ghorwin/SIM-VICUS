@@ -179,10 +179,11 @@ endif (NOT DISABLE_QT)
 
 
 # -------------------------------------------------------------
-# main project
+# applications and FMI Interface
 # -------------------------------------------------------------
 
 add_subdirectory( ../../NandradSolver/projects/cmake_local NandradSolver)
+add_subdirectory( ../../NandradSolverFMI/projects/cmake_local NandradSolverFMI)
 
 if (NOT DISABLE_QT)
 	add_subdirectory( ../../SIM-VICUS/projects/cmake_local SIM-VICUS)
