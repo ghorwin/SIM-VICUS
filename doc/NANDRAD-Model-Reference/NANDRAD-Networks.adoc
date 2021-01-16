@@ -33,7 +33,7 @@ Die einzelnen Netzwerke sind hydraulisch unabhängig, d.h. es gibt keinen Fluida
 
 ## Definition eines hydraulischen Netzwerks
 
-Ein einzelnen Netzwerk wird im XML-tag `HydraulicNetwork` definiert, wie im folgenden Beispiel:
+Ein einzelnes Netzwerk wird im XML-tag `HydraulicNetwork` definiert, wie im folgenden Beispiel:
 
 .Typische Definition eines einzelnen Netzwerks
 ====
@@ -149,6 +149,21 @@ TODO
 
 Ein Netzwerk besteht aus vielen durchströmten Bauteilen, sogenannten _Strömungselementen_ (engl. _flow elements_).
 
+XML-tag `HydraulicNetworkElement` hat folgende Attribute:
+
+.Attributes
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Attribute  | Description | Format | Usage 
+| `id` |  Unique identifier of the network element. | ({nbsp}>{nbsp}0{nbsp})  | _required_
+| `displayName`  |  Display name of the element. | string | _optional_
+|====================
+
+[IMPORTANT]
+====
+Die ID eines Netzwerkelements muss global eindeutig sein, d.h. Netzwerkübergreifend müssen Strömungselemente mit einer eindeutigen ID bezeichnet werden.
+====
+
 TODO 
 
 
@@ -199,7 +214,7 @@ Für Analyse der Netzwerke und Übergabesysteme sind sowohl die Masseströme und
 
 Da die Netzwerkvisualisierungsebene keine Knoten kennt, müssen Knotentemperaturen am Ein- und Auslass des Verbindungselementes abgegriffen werden. Ein- und Auslässe sind physikalisch abhängig von der Strömungsrichtung definiert. Angesichts dessen, dass stets die Zustände an einem physisch definierten Punkt gemessen werden, ist die klassische Definition ungeeignet. Geometrisch eindeutig hingegen ist die Zuweisung von Temperaturen an den Einlass- und Auslassknoten der Netzwerkelemente. 
 
-Als Konvention damit gesetzt, dass Einlass- und Auslassknoten nicht mit dem physikalsichem Einlass- oder Auslass des Fluides übereinstimmen müssen!
+Als Konvention damit gesetzt, dass Einlass- und Auslassknoten nicht mit dem physikalischem Einlass- oder Auslass des Fluides übereinstimmen müssen!
 
 Damit ergeben sich die folgenden Ergebnisgrößen:
 
