@@ -67,6 +67,15 @@ const char * const FLUX_QUANTITIES[] = {
 	"WindowSolarRadiationFluxSum"
 };
 
+const char * const NETWORK_QUANTITIES[] = {
+	"FluidMassFlux",
+	"FluidTemperature",
+	"InletNodeTemperature",
+	"OutletNodeTemperature",
+	"FluidHeatFlux"
+};
+
+
 namespace NANDRAD_MODEL {
 
 OutputHandler::~OutputHandler() {
@@ -257,6 +266,19 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 				groupMap[od.m_gridName][OFN_FluxIntegrals].push_back(od);
 			else
 				groupMap[od.m_gridName][OFN_Fluxes].push_back(od);
+			continue;
+		}
+
+		// network quantity?
+		found = false;
+		for (const char * const quantityName : NETWORK_QUANTITIES) {
+			if (qn.m_name == quantityName) {
+				found = true;
+				break;
+			}
+		}
+		if (found) {
+			groupMap[od.m_gridName][OFN_NetworkElements].push_back(od);
 			continue;
 		}
 

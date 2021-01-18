@@ -115,6 +115,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Model references of a generic model.");
 	tr("Model references to global physical quantities.");
 	tr("Model references of a hydraulic network.");
+	tr("Model references of flow elements of a hydraulic network.");
 	tr("Constant ventilation rate");
 	tr("Scheduled ventilation rate");
 	tr("Ventilation rate");

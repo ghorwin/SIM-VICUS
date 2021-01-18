@@ -50,10 +50,6 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 	IBK_ASSERT(m_statesModel->m_network->m_elements.size() ==
 			   m_statesModel->m_p->m_flowElements.size());
 
-	// fill ids
-	for(const NANDRAD::HydraulicNetworkElement &elem : m_statesModel->m_network->m_elements) {
-		m_componentIds.push_back(elem.m_componentId);
-	}
 	// resize vectors
 	m_ydot.resize(m_statesModel->nPrimaryStateResults());
 }
@@ -63,31 +59,59 @@ void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescript
 	if(!resDesc.empty())
 		resDesc.clear();
 	// heat flux vector is a result
-	QuantityDescription desc("HeatFlux", "W", "Heat flux from all flow elements into environment", false);
+	QuantityDescription desc("HeatFluxes", "W", "Heat flux from all flow elements into environment", false);
 	// deactivate description;
-	if(m_componentIds.empty())
+	if(m_statesModel->m_elementIds.empty())
 		desc.m_size = 0;
 	else
-		desc.resize(m_componentIds, VectorValuedQuantityIndex::IK_ModelID);
+		desc.resize(m_statesModel->m_elementIds, VectorValuedQuantityIndex::IK_ModelID);
 	resDesc.push_back(desc);
+
+	// set a description for each flow element
+	desc.m_name = "HeatFlux";
+	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	// loop through all flow elements
+	for(unsigned int i = 0; i < m_statesModel->m_elementIds.size(); ++i) {
+		desc.m_id = m_statesModel->m_elementIds[i];
+		resDesc.push_back(desc);
+	}
 
 	// inlet node temperature is a result
 	desc = QuantityDescription("InletNodeTemperatures", "C", "Inlet node temperatures of all flow elements", false);
 	// deactivate description;
-	if(m_componentIds.empty())
+	if(m_statesModel->m_elementIds.empty())
 		desc.m_size = 0;
 	else
-		desc.resize(m_componentIds, VectorValuedQuantityIndex::IK_ModelID);
+		desc.resize(m_statesModel->m_elementIds, VectorValuedQuantityIndex::IK_ModelID);
 	resDesc.push_back(desc);
+
+	// set a description for each flow element
+	desc.m_name = "InletNodeTemperature";
+	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	// loop through all flow elements
+	for(unsigned int i = 0; i < m_statesModel->m_elementIds.size(); ++i) {
+		desc.m_id = m_statesModel->m_elementIds[i];
+		resDesc.push_back(desc);
+	}
 
 	// outlet node temperature is a result
 	desc = QuantityDescription("OutletNodeTemperatures", "C", "Outlet node temperatures of all flow elements", false);
 	// deactivate description;
-	if(m_componentIds.empty())
+	if(m_statesModel->m_elementIds.empty())
 		desc.m_size = 0;
 	else
-		desc.resize(m_componentIds, VectorValuedQuantityIndex::IK_ModelID);
+		desc.resize(m_statesModel->m_elementIds, VectorValuedQuantityIndex::IK_ModelID);
 	resDesc.push_back(desc);
+
+	// set a description for each flow element
+	desc.m_name = "OutletNodeTemperature";
+	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	// loop through all flow elements
+	for(unsigned int i = 0; i < m_statesModel->m_elementIds.size(); ++i) {
+		desc.m_id = m_statesModel->m_elementIds[i];
+		resDesc.push_back(desc);
+	}
+
 }
 
 
@@ -96,7 +120,7 @@ void ThermalNetworkBalanceModel::resultValueRefs(std::vector<const double *> &re
 		res.clear();
 	// heat flux vector is a result quantity
 	for(unsigned int i = 0; i < m_statesModel->m_p->m_flowElements.size(); ++i)
-		res.push_back(&m_statesModel->m_p->m_heatFluxes[i]);
+		res.push_back(&m_statesModel->m_p->m_fluidHeatFluxes[i]);
 	// inlet node temperature vector is a result quantity
 	for(unsigned int i = 0; i < m_statesModel->m_p->m_flowElements.size(); ++i)
 		res.push_back(&m_statesModel->m_p->m_inletNodeTemperatures[i]);
@@ -108,55 +132,69 @@ void ThermalNetworkBalanceModel::resultValueRefs(std::vector<const double *> &re
 
 const double * ThermalNetworkBalanceModel::resultValueRef(const QuantityName & quantityName) const {
 	// return vector of heat fluxes
-	if(quantityName == std::string("HeatFlux")) {
-		// whole vector access
+	if(quantityName == std::string("FluidHeatFluxes")) {
+		if(!m_statesModel->m_p->m_fluidHeatFluxes.empty())
+			return &m_statesModel->m_p->m_fluidHeatFluxes[0];
+		return nullptr;
+	}
+	if(quantityName.m_name == std::string("FluidHeatFlux")) {
+		// invalid whole vector access
 		if(quantityName.m_index == -1)
-			return  &m_statesModel->m_p->m_heatFluxes[0];
-		// find component id
-		std::vector<unsigned int>::const_iterator it =
-				std::find(m_componentIds.begin(), m_componentIds.end(),
-						  quantityName.m_index);
-		// not found
-		if(it == m_componentIds.end())
 			return nullptr;
-
-		unsigned int index = std::distance(m_componentIds.begin(), it);
+		// access to an element heat flux
+		std::vector<unsigned int>::iterator fIt =
+				std::find(m_statesModel->m_elementIds.begin(),m_statesModel-> m_elementIds.end(),
+						  (unsigned int) quantityName.m_index);
+		// invalid index access
+		if(fIt == m_statesModel->m_elementIds.end())
+			return nullptr;
+		unsigned int index = (unsigned int) std::distance(m_statesModel->m_elementIds.begin(), fIt);
 		IBK_ASSERT(index < m_statesModel->m_n);
-		// found a valid entry
-		return &m_statesModel->m_p->m_heatFluxes[index];
+		return &m_statesModel->m_p->m_fluidHeatFluxes[index];
 	}
 	// return vector of inlet node temperatures
 	if(quantityName == std::string("InletNodeTemperatures")) {
-		// whole vector access
-		if(quantityName.m_index == -1)
+		if(!m_statesModel->m_p->m_inletNodeTemperatures.empty())
 			return  &m_statesModel->m_p->m_inletNodeTemperatures[0];
+		return nullptr;
+	}
+	if(quantityName.m_name == std::string("InletNodeTemperature")) {
+		// invalid whole vector access
+		if(quantityName.m_index == -1)
+			return nullptr;
 		// find component id
-		std::vector<unsigned int>::const_iterator it =
-				std::find(m_componentIds.begin(), m_componentIds.end(),
-						  quantityName.m_index);
-		// not found
-		if(it == m_componentIds.end())
+		// access to an element temperature
+		std::vector<unsigned int>::iterator fIt =
+				std::find(m_statesModel->m_elementIds.begin(),m_statesModel-> m_elementIds.end(),
+						  (unsigned int) quantityName.m_index);
+		// invalid index access
+		if(fIt == m_statesModel->m_elementIds.end())
 			return nullptr;
 
-		unsigned int index = std::distance(m_componentIds.begin(), it);
+		unsigned int index = (unsigned int) std::distance(m_statesModel->m_elementIds.begin(), fIt);
 		IBK_ASSERT(index < m_statesModel->m_n);
 		// found a valid entry
 		return &m_statesModel->m_p->m_inletNodeTemperatures[index];
 	}
 	// return vector of outlet node temperatures
 	if(quantityName == std::string("OutletNodeTemperatures")) {
-		// whole vector access
-		if(quantityName.m_index == -1)
+		if(!m_statesModel->m_p->m_outletNodeTemperatures.empty())
 			return  &m_statesModel->m_p->m_outletNodeTemperatures[0];
+		return nullptr;
+	}
+	if(quantityName.m_name == std::string("OutletNodeTemperature")) {
+		// invalid whole vector access
+		if(quantityName.m_index == -1)
+			return nullptr;
 		// find component id
-		std::vector<unsigned int>::const_iterator it =
-				std::find(m_componentIds.begin(), m_componentIds.end(),
-						  quantityName.m_index);
-		// not found
-		if(it == m_componentIds.end())
+		std::vector<unsigned int>::iterator fIt =
+			std::find(m_statesModel->m_elementIds.begin(),m_statesModel-> m_elementIds.end(),
+				  (unsigned int) quantityName.m_index);
+		// invalid index access
+		if(fIt == m_statesModel->m_elementIds.end())
 			return nullptr;
 
-		unsigned int index = std::distance(m_componentIds.begin(), it);
+		unsigned int index = (unsigned int) std::distance(m_statesModel->m_elementIds.begin(), fIt);
 		IBK_ASSERT(index < m_statesModel->m_n);
 		// found a valid entry
 		return &m_statesModel->m_p->m_outletNodeTemperatures[index];
@@ -190,7 +228,7 @@ void ThermalNetworkBalanceModel::inputReferences(std::vector<InputReference> & i
 	InputReference inputRef;
 	inputRef.m_id = id();
 	inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORK;
-	inputRef.m_name = std::string("MassFlux");
+	inputRef.m_name = std::string("FluidMassFluxes");
 	inputRef.m_required = true;
 	// register reference
 	inputRefs.push_back(inputRef);
@@ -202,7 +240,7 @@ void ThermalNetworkBalanceModel::setInputValueRefs(const std::vector<QuantityDes
 {
 	IBK_ASSERT(resultValueRefs.size() == 1);
 	// copy references into mass flux vector
-	m_statesModel->m_p->m_massFluxes = resultValueRefs[0];
+	m_statesModel->m_p->m_fluidMassFluxes = resultValueRefs[0];
 }
 
 
@@ -242,8 +280,8 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 				resultInputValueReferences.push_back(std::make_pair(&m_statesModel->m_p->m_nodalSpecificEnthalpies[elem.m_nInlet], &m_statesModel->m_y[offset + j]) );
 				resultInputValueReferences.push_back(std::make_pair(&m_statesModel->m_p->m_nodalSpecificEnthalpies[elem.m_nOutlet], &m_statesModel->m_y[offset + j]) );
 				// heat balance per default sums up heat fluxes and entahpy flux differences through the pipe
-				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + j], m_statesModel->m_p->m_massFluxes + i) );
-				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + j], &m_statesModel->m_p->m_heatFluxes[i] ) );
+				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + j], m_statesModel->m_p->m_fluidMassFluxes + i) );
+				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + j], &m_statesModel->m_p->m_fluidHeatFluxes[i] ) );
 				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + j], &m_statesModel->m_p->m_nodalSpecificEnthalpies[elem.m_nInlet]) );
 				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + j], &m_statesModel->m_p->m_nodalSpecificEnthalpies[elem.m_nOutlet]) );
 			}
@@ -290,8 +328,8 @@ int ThermalNetworkBalanceModel::ydot(double* ydot) {
 
 void ThermalNetworkBalanceModel::printVars() const {
 	std::cout << "Heat fluxes [W]" << std::endl;
-	for (unsigned int i=0; i<m_statesModel->m_p->m_heatFluxes.size(); ++i)
-		std::cout << "  " << i << "   " << m_statesModel->m_p->m_heatFluxes[i]  << std::endl;
+	for (unsigned int i=0; i<m_statesModel->m_p->m_fluidHeatFluxes.size(); ++i)
+		std::cout << "  " << i << "   " << m_statesModel->m_p->m_fluidHeatFluxes[i]  << std::endl;
 
 	std::cout << "Fluid tempertaures [C]" << std::endl;
 	for (unsigned int i=0; i<m_statesModel->m_fluidTemperatures.size(); ++i)

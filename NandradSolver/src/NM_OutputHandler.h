@@ -70,6 +70,7 @@ public:
 		OFN_LoadIntegrals,		// Keyword: load_integrals
 		OFN_Fluxes,				// Keyword: fluxes
 		OFN_FluxIntegrals,		// Keyword: flux_integrals
+		OFN_NetworkElements,	// Keyword: network_elements
 		OFN_Misc,				// Keyword: misc
 		NUM_OFN
 	};

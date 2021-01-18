@@ -138,6 +138,8 @@ private:
 	unsigned int									m_id;
 	/*! Display name (for error messages). */
 	std::string										m_displayName;
+	/*! Storage of all network element ids, used for vector output. */
+	std::vector<unsigned int>						m_elementIds;
 	/*! Constant reference to NANDRAD network data structure */
 	const NANDRAD::HydraulicNetwork					*m_hydraulicNetwork= nullptr;
 
@@ -147,6 +149,7 @@ private:
 	/*! Container with global pointer to calculated fluid temperatures.
 	*/
 	const double									*m_fluidTemperatures;
+
 	friend class ThermalNetworkStatesModel;
 
 };

@@ -121,6 +121,8 @@ private:
 	unsigned int									m_id;
 	/*! Display name (for error messages). */
 	std::string										m_displayName;
+	/*! Storage of all network element ids, used for vector output. */
+	std::vector<unsigned int>						m_elementIds;
 
 	/*! Cached input data vector (size nPrimaryStateResults()). */
 	std::vector<double>								m_y;

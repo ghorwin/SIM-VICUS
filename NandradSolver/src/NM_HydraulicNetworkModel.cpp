@@ -40,7 +40,7 @@ public:
 	/*! Network structure. */
 	Network												m_network;
 	/*! Mass fluxes through all elements*/
-	std::vector<double>									m_massFluxes;
+	std::vector<double>									m_fluidMassFluxes;
 
 private:
 
@@ -229,6 +229,8 @@ void HydraulicNetworkModel::setup() {
 									.arg(e.m_componentId),FUNC_ID);
 			}
 		}
+		// fill ids
+		m_elementIds.push_back(e.m_id);
 	}
 
 	// set
@@ -246,11 +248,19 @@ void HydraulicNetworkModel::resultDescriptions(std::vector<QuantityDescription> 
 	if(!resDesc.empty())
 		resDesc.clear();
 	// mass flux vector is a result
-	QuantityDescription desc("MassFlux", "kg/s", "Fluid mass flux trough all flow elements", false);
+	QuantityDescription desc("FluidMassFluxes", "kg/s", "Fluid mass flux trough all flow elements", false);
 	// deactivate description;
 	if(m_p->m_flowElements.empty())
 		desc.m_size = 0;
 	resDesc.push_back(desc);
+	// set a description for each flow element
+	desc.m_name = "FluidMassFlux";
+	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	// loop through all flow elements
+	for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
+		desc.m_id = m_elementIds[i];
+		resDesc.push_back(desc);
+	}
 }
 
 
@@ -258,17 +268,31 @@ void HydraulicNetworkModel::resultValueRefs(std::vector<const double *> & res) c
 	if(!res.empty())
 		res.clear();
 	// mass flux vector is a result quantity
-	if(!m_p->m_massFluxes.empty())
-		res.push_back(&m_p->m_massFluxes[0]);
+	for(unsigned int i = 0; i < m_p->m_fluidMassFluxes.size(); ++i)
+		res.push_back(&m_p->m_fluidMassFluxes[i]);
 }
 
 
 const double * HydraulicNetworkModel::resultValueRef(const QuantityName & quantityName) const {
 	// return vector of mass fluxes
-	if(quantityName == std::string("MassFlux")) {
-		if(!m_p->m_massFluxes.empty())
-			return &m_p->m_massFluxes[0];
+	if(quantityName == std::string("FluidMassFluxes")) {
+		if(!m_p->m_fluidMassFluxes.empty())
+			return &m_p->m_fluidMassFluxes[0];
 		return nullptr;
+	}
+	if(quantityName.m_name == std::string("FluidMassFlux")) {
+		// invalid whole vector access
+		if(quantityName.m_index == -1)
+			return nullptr;
+		// access to an element mass flux
+		std::vector<unsigned int>::const_iterator fIt =
+				std::find(m_elementIds.begin(), m_elementIds.end(),
+						  (unsigned int) quantityName.m_index);
+		// invalid index access
+		if(fIt == m_elementIds.end())
+			return nullptr;
+		unsigned int pos = (unsigned int) std::distance(m_elementIds.begin(), fIt);
+		return &m_p->m_fluidMassFluxes[pos];
 	}
 	return nullptr;
 }
@@ -348,6 +372,7 @@ const double MASS_FLUX_SCALE = 1000;
 
 HydraulicNetworkModelImpl::HydraulicNetworkModelImpl(const std::vector<Element> &elems)
 {
+	FUNCID("HydraulicNetworkModelImpl::HydraulicNetworkModelImpl");
 	// copy elements vector
 	m_network.m_elements = elems;
 	// count number of nodes
@@ -367,6 +392,11 @@ HydraulicNetworkModelImpl::HydraulicNetworkModelImpl(const std::vector<Element> 
 		m_network.m_nodes[fe.m_nInlet].m_elementIndexes.push_back(i);
 		m_network.m_nodes[fe.m_nOutlet].m_elementIndexes.push_back(i);
 	}
+
+	m_nodeCount = m_network.m_nodes.size();
+	m_elementCount = m_network.m_elements.size();
+	IBK::IBK_Message(IBK::FormatString("Nodes:         %1\n").arg(m_nodeCount), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	IBK::IBK_Message(IBK::FormatString("Flow elements: %1\n").arg(m_elementCount), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
 #if 0
 	// create a minimalistic network with 3 nodes
@@ -609,17 +639,13 @@ void HydraulicNetworkModelImpl::setup() {
 		}
 	}
 	// count number of nodes
-	m_nodeCount = m_network.m_nodes.size();
-	m_elementCount = m_network.m_elements.size();
-	IBK::IBK_Message(IBK::FormatString("Nodes:         %1\n").arg(m_nodeCount), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-	IBK::IBK_Message(IBK::FormatString("Flow elements: %1\n").arg(m_elementCount), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	unsigned int n = m_nodeCount + m_elementCount;
 
 	// set initial conditions
 	m_y.resize(n, 10);
 
 	m_G.resize(n);
-	m_massFluxes.resize(m_elementCount);
+	m_fluidMassFluxes.resize(m_elementCount);
 	m_nodalPressures.resize(m_nodeCount);
 
 	// create jacobian
@@ -1113,7 +1139,7 @@ void HydraulicNetworkModelImpl::updateG() {
 
 	// extract mass flows
 	for (unsigned int i=0; i<m_elementCount; ++i) {
-		m_massFluxes[i] = m_y[i]/MASS_FLUX_SCALE;
+		m_fluidMassFluxes[i] = m_y[i]/MASS_FLUX_SCALE;
 	}
 	// first nodal equations
 	for (unsigned int i=0; i<m_nodeCount; ++i) {
@@ -1127,9 +1153,9 @@ void HydraulicNetworkModelImpl::updateG() {
 			// if the flow element is connected to the node via inlet, the mass goes from node to flow element
 			// and hence has a negative sign
 			if (fe.m_nInlet == i)
-				massSum -= m_massFluxes[feIndex];
+				massSum -= m_fluidMassFluxes[feIndex];
 			else
-				massSum += m_massFluxes[feIndex]; // otherwise flux goes into the node -> positive sign
+				massSum += m_fluidMassFluxes[feIndex]; // otherwise flux goes into the node -> positive sign
 		}
 		// store in system function vector
 		m_G[i + m_elementCount] = massSum*MASS_FLUX_SCALE; // we'll apply scaling here
@@ -1142,7 +1168,7 @@ void HydraulicNetworkModelImpl::updateG() {
 	// now evaluate the flow system equations
 	for (unsigned int i=0; i<m_elementCount; ++i) {
 		const Element &fe = m_network.m_elements[i];
-		m_G[i] = m_flowElements[i]->systemFunction( m_massFluxes[i], m_nodalPressures[fe.m_nInlet], m_nodalPressures[fe.m_nOutlet]);
+		m_G[i] = m_flowElements[i]->systemFunction( m_fluidMassFluxes[i], m_nodalPressures[fe.m_nInlet], m_nodalPressures[fe.m_nOutlet]);
 	}
 
 }

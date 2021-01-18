@@ -322,6 +322,7 @@ namespace NANDRAD {
 				case 7 : return "Model";
 				case 8 : return "Global";
 				case 9 : return "Network";
+				case 10 : return "NetworkElement";
 			} break;
 			// NaturalVentilationModel::modelType_t
 			case 30 :
@@ -784,6 +785,7 @@ namespace NANDRAD {
 				case 7 : return "Model";
 				case 8 : return "Global";
 				case 9 : return "Network";
+				case 10 : return "NetworkElement";
 			} break;
 			// NaturalVentilationModel::modelType_t
 			case 30 :
@@ -1247,6 +1249,7 @@ namespace NANDRAD {
 				case 7 : return "Model references of a generic model.";
 				case 8 : return "Model references to global physical quantities.";
 				case 9 : return "Model references of a hydraulic network.";
+				case 10 : return "Model references of flow elements of a hydraulic network.";
 			} break;
 			// NaturalVentilationModel::modelType_t
 			case 30 :
@@ -1709,6 +1712,7 @@ namespace NANDRAD {
 				case 7 : return "";
 				case 8 : return "";
 				case 9 : return "";
+				case 10 : return "";
 			} break;
 			// NaturalVentilationModel::modelType_t
 			case 30 :
@@ -2171,6 +2175,7 @@ namespace NANDRAD {
 				case 7 : return "#FFFFFF";
 				case 8 : return "#FFFFFF";
 				case 9 : return "#FFFFFF";
+				case 10 : return "#FFFFFF";
 			} break;
 			// NaturalVentilationModel::modelType_t
 			case 30 :
@@ -2633,6 +2638,7 @@ namespace NANDRAD {
 				case 7 : return std::numeric_limits<double>::quiet_NaN();
 				case 8 : return std::numeric_limits<double>::quiet_NaN();
 				case 9 : return std::numeric_limits<double>::quiet_NaN();
+				case 10 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NaturalVentilationModel::modelType_t
 			case 30 :
@@ -2945,7 +2951,7 @@ namespace NANDRAD {
 			// Material::para_t
 			case 28 : return 3;
 			// ModelInputReference::referenceType_t
-			case 29 : return 10;
+			case 29 : return 11;
 			// NaturalVentilationModel::modelType_t
 			case 30 : return 2;
 			// NaturalVentilationModel::para_t
@@ -3077,7 +3083,7 @@ namespace NANDRAD {
 			// Material::para_t
 			case 28 : return 2;
 			// ModelInputReference::referenceType_t
-			case 29 : return 9;
+			case 29 : return 10;
 			// NaturalVentilationModel::modelType_t
 			case 30 : return 1;
 			// NaturalVentilationModel::para_t

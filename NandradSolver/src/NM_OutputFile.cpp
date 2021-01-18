@@ -180,6 +180,22 @@ void OutputFile::createInputReferences() {
 			m_outputDefMap.push_back(i);
 			continue;
 		}
+		// special treatment for network element ref type
+		if(ol->m_referenceType == NANDRAD::ModelInputReference::MRT_NETWORKELEMENT) {
+			// process all IDs in the object list's id group
+			for (unsigned int id : ol->m_filterID.m_ids) {
+				InputReference inref;
+				inref.m_id = id;
+				inref.m_required = false;
+				inref.m_name.fromEncodedString(od.m_quantity);
+				// set index to id
+				inref.m_name.m_index = (int) id;
+				inref.m_referenceType = ol->m_referenceType;
+				m_inputRefs.push_back(inref);
+				m_outputDefMap.push_back(i);
+			}
+			continue;
+		}
 		// process all IDs in the object list's id group
 		for (unsigned int id : ol->m_filterID.m_ids) {
 			InputReference inref;

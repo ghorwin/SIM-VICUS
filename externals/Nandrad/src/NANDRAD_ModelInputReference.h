@@ -49,6 +49,7 @@ public:
 		MRT_MODEL,					// Keyword: Model					'Model references of a generic model.'
 		MRT_GLOBAL,					// Keyword: Global					'Model references to global physical quantities.'
 		MRT_NETWORK,				// Keyword: Network					'Model references of a hydraulic network.'
+		MRT_NETWORKELEMENT,			// Keyword: NetworkElement			'Model references of flow elements of a hydraulic network.'
 		NUM_MRT
 	};
 

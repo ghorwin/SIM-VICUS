@@ -1299,6 +1299,31 @@ void NandradModel::initObjectLists() {
 					.arg(i).arg(objectlist.m_name), FUNC_ID);
 		}
 
+		// special treatment for network elements
+		if(objectlist.m_referenceType == NANDRAD::ModelInputReference::MRT_NETWORKELEMENT)  {
+			// resolve IDs by searching through model objects
+			std::set<unsigned int> resolvedIds;
+			// search model id inside network model container
+			for(const NANDRAD::HydraulicNetwork &network : m_project->m_hydraulicNetworks) {
+				// find all network elements
+				for(const NANDRAD::HydraulicNetworkElement &e : network.m_elements) {
+					// element coverd requested id space
+					if(objectlist.m_filterID.contains(e.m_id))
+						resolvedIds.insert(e.m_id);
+				}
+			}
+			// clear id filter
+			objectlist.m_filterID.m_ids.clear();
+			objectlist.m_filterID.m_ids.insert(resolvedIds.begin(), resolvedIds.end());
+			// continue in loop
+			// issue a warning if the object list resolved no valid IDs
+			if (objectlist.m_filterID.m_ids.empty()) {
+				IBK::IBK_Message(IBK::FormatString("Object list '%1' did not select any valid/existing objects.")
+								 .arg(objectlist.m_name), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			continue;
+		}
+
 		// resolve IDs by searching through model objects
 		std::set<unsigned int> resolvedIds;
 		// insert all models that match current definition
@@ -1313,6 +1338,7 @@ void NandradModel::initObjectLists() {
 				resolvedIds.insert(model->id());
 				continue;
 			}
+			// TODO: special treatment of networks
 		}
 		// fill the id filter, but only add resolved IDs (clear existing ones first)!
 		objectlist.m_filterID.m_ids.clear();

@@ -66,6 +66,7 @@ public:
 
 	/*! Default constructor. */
 	QuantityDescription() :
+		m_referenceType(NANDRAD::ModelInputReference::NUM_MRT),
 		m_minMaxValue(std::make_pair<double, double>
 		(-std::numeric_limits<double>::max(), std::numeric_limits<double>::max()))
 	{}
@@ -73,6 +74,7 @@ public:
 	/*! Constructor for scalar valued quantities.*/
 	QuantityDescription(const std::string & name, const std::string & unit, const std::string & description,
 						const bool constant) :
+		m_referenceType(NANDRAD::ModelInputReference::NUM_MRT),
 		m_name(name),
 		m_unit(unit),
 		m_description(description),
@@ -85,6 +87,7 @@ public:
 	QuantityDescription(const std::string & name, const std::string & unit, const std::string & description,
 						const bool constant, VectorValuedQuantityIndex::IndexKeyType indexKeyType,
 						const std::vector<unsigned int> &indexKeys) :
+		m_referenceType(NANDRAD::ModelInputReference::NUM_MRT),
 		m_name(name),
 		m_unit(unit),
 		m_description(description),

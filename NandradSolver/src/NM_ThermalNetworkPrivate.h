@@ -72,7 +72,7 @@ public:
 	*/
 	std::vector<double>								m_nodalSpecificEnthalpies;
 	/*! Heat heat fluxes out of each flow element. */
-	std::vector<double>								m_heatFluxes;
+	std::vector<double>								m_fluidHeatFluxes;
 	/*! Container with temperatures for inlet node of each flow element.
 	*/
 	std::vector<double>								m_inletNodeTemperatures;
@@ -81,7 +81,7 @@ public:
 	std::vector<double>								m_outletNodeTemperatures;
 	/*! Container with global pointer to calculated mass fluxes.
 	*/
-	const double									*m_massFluxes;
+	const double									*m_fluidMassFluxes;
 	/*! Container with pointers to heat fluxes.
 	*/
 	std::vector<const double*>						m_ambientHeatFluxRefs;

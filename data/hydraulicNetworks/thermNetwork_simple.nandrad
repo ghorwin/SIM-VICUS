@@ -84,22 +84,32 @@
 		<Outputs>
 			<Definitions>
 				<OutputDefinition>
-					<Quantity>OutletTemperatures</Quantity>
+					<Quantity>OutletNodeTemperature</Quantity>
 					<ObjectListName>the Network</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
-					<Quantity>MassFluxes</Quantity>
+					<Quantity>InletNodeTemperature</Quantity>
+					<ObjectListName>the Network</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FluidTemperature</Quantity>
+					<ObjectListName>the Network</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FluidMassFlux</Quantity>
+					<ObjectListName>the Network</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FluidHeatFlux</Quantity>
 					<ObjectListName>the Network</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>OutletPressures</Quantity>
-					<ObjectListName>the Network</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>HeatFluxes</Quantity>
 					<ObjectListName>the Network</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
@@ -116,8 +126,8 @@
 		</Outputs>
 		<ObjectLists>
 			<ObjectList name="the Network">
-				<FilterID>1</FilterID>
-				<ReferenceType>Network</ReferenceType>
+				<FilterID>*</FilterID>
+				<ReferenceType>NetworkElement</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
 		

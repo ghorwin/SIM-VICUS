@@ -171,6 +171,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 								.arg(e.m_componentId), FUNC_ID);
 		}
 	}
+	m_elementIds = networkModel.m_elementIds;
 
 	// setup the enetwork
 	try {
@@ -212,11 +213,19 @@ void ThermalNetworkStatesModel::resultDescriptions(std::vector<QuantityDescripti
 	if(!resDesc.empty())
 		resDesc.clear();
 	// mass flux vector is a result
-	QuantityDescription desc("FluidTemperatures", "FluidTemperatures", "Internal fluid temperatures fo all network elements", false);
+	QuantityDescription desc("FluidTemperatures", "C", "Internal fluid temperatures fo all network elements", false);
 	// deactivate description;
 	if(m_p->m_flowElements.empty())
 		desc.m_size = 0;
 	resDesc.push_back(desc);
+	// set a description for each flow element
+	desc.m_name = "FluidTemperature";
+	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	// loop through all flow elements
+	for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
+		desc.m_id = m_elementIds[i];
+		resDesc.push_back(desc);
+	}
 }
 
 
@@ -229,10 +238,23 @@ const double * ThermalNetworkStatesModel::resultValueRef(const QuantityName & qu
 		return nullptr;
 	}
 	if(quantityName == std::string("FluidTemperatures")) {
-		// whole vector access
-		if(quantityName.m_index == -1)
+		if(!m_fluidTemperatures.empty())
 			return &m_fluidTemperatures[0];
 		return nullptr;
+	}
+	if(quantityName.m_name == std::string("FluidTemperature")) {
+		// invalid whole vector access
+		if(quantityName.m_index == -1)
+			return nullptr;
+		// access to an element temperature
+		std::vector<unsigned int>::const_iterator fIt =
+				std::find(m_elementIds.begin(), m_elementIds.end(),
+						  (unsigned int) quantityName.m_index);
+		// invalid index access
+		if(fIt == m_elementIds.end())
+			return nullptr;
+		unsigned int pos = (unsigned int) std::distance(m_elementIds.begin(), fIt);
+		return &m_fluidTemperatures[pos];
 	}
 	return nullptr;
 }
