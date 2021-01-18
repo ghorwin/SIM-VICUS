@@ -1,0 +1,59 @@
+# Anzeigen und Setzen von Eigenschaften
+
+## Anzeigen von Eigenschaften
+
+image::img/Ausgangsbildschirm.jpg[]
+
+### Templatevariante
+
+Für das Anzeigen von Eigenschaften wird zunächst in der Menüleiste (links neben dem Navigationsbereich) der Modus auf "Eigenschaften" umgestellt. Anschließend ändert sich der Bereich rechts von der 3D Szene. Hierbei wird ein neues Widget verwendet. 
+In diesem Widget wird zuerst ausgewählt welchen Eigenschaftstyp man genauer dargestellt bekommen möchte.
+Am Beispiel der Komponenten wird das genauer erläutert.
+Zuerst wird im Widget rechts in der Combobox "Komponenten"-Ansicht (später sollte das evtl ein interaktiver Baum werden aus Übersichtlichkeitsgründen) ausgewählt.
+Anschließend erscheint in der 3D Szene ein Widget oder als separater Dialog die Legende. In die Legende werden alle Komponenten aufgenommen die im 3D Model verwendet **und** sichtbar sind. Wir also alles unsichtbar gestellt bleibt die Legende leer.
+In der Legende gibt es eine Tabelle mit den Komponenten. Dabei wird der Name und die gewählte Farbe (laut Kompoentendefinition) dargestellt. Jeder Name ist anklickbar. Durch das Anklicken einer Komponente wird der Übersichtsdialog (siehe Komponenten-Widget) im rechten Fenster dargestellt. Darunter befinden sich Buttons zum Editieren/Zuweisen von neuen/anderen Komponenten.
+Wenn man den Button betätigt wird der Komponenten-Dialog gestartet. Dabei kann man alles editieren und zusätzlich falls Flächen ausgewählt worden sind diese mit der gewählten Komponente belegen.
+
+image::img/ComponentenWidget.jpg[]
+
+
+Diese Prozedur eignet sich für eine Art Templatelösung. Die Komponente ist hierbei das Template.
+
+Nun zu Eigenschaften von einzelnen oder vielen Elementen.
+
+### Gleichartige Elemente
+
+Gleichartige Elemente wie Räume oder Netzwerkkomponenten müssen in einem separaten Dialog editiert werden. Dazu reicht das Widget rechts neben der 3D Szene nur bedingt oder gar nicht aus.
+
+Zusätzlich kann man von Eigenschaften die automatisch berechnet werden eine Art Berichtform erzeugen.
+
+Beispiel dafür:
+
+#### Raumeigenschaften
+
+image::img/EigenschaftWidget.jpg[]
+
+Ein Raum ist durch folgende Eigenschaften spezifiziert:
+
+* Grundfläche (auf diese wirken sich später auch die Lasten aus)
+* Volumen
+* mittlere Raumhöhe
+* Name
+* Zonetemplate
+* Sensorzuweisung für den oder die Tageslichtsensoren
+* Raumstempelnummer
+* Beschreibung
+* zusätzliche interne Massen
+* Tabelle der einzelnen Hüllflächenobjekte
+
+Name | Typ | Componente | Componentenseite | Fläche | Orientierung | Neigung |Verknüpfungselement | Randbedingung
+Wand 1 | Wall | Component1 | A | 13.5 | 180 | 90 | --- | outdoors
+Wand 2| Wall | Component2 | A | 20 | 90 | 90 | Wand 8 | surface
+
+Wie aus dem Beispiel hervorgeht können hier schnell viele Elemente entstehen. Die Tabelle kann auch mal gut 100 Einträge haben. Damit wäre das Widget rechts viel zu klein um alles darzustellen.
+Daher lieber einen neuen Dialog in solchen Fällen erstellen worin man (evtl. durch Multiselektion) die Objekte editieren kann.
+
+Gleichfalls sehe ich das auch bei Haukes Objekten vom Netzwerk.
+Man muss hier ersten gescheite Lösungen für Template generieren und zweitens die Dialoge zum Editieren erstellen. Dabei wird sich meiner Meinung nach vieles im Tabellenbereich abspielen.
+Ein Interaktion zwischen der Darstellung der Szene und dem gewählten im Dialog kann es ja geben. So könnten zum Beispiel alle in der Tabelle befindlichen Objekte halbtransparent dargestellt werden und die in der Tabelle selektierten Objekte werden zusätzlich noch anders eingefärbt.
+
