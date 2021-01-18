@@ -366,6 +366,8 @@ void SVPropVertexListWidget::on_pushButtonCancel_clicked() {
 	// reset locks
 	vs.m_locks = SVViewState::NUM_L;
 
+	// take xy plane out of snap option mask
+	vs.m_snapEnabled = true;
 	// now tell all UI components to toggle their view state
 	SVViewStateHandler::instance().setViewState(vs);
 }
