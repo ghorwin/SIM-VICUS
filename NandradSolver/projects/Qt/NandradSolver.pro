@@ -111,7 +111,6 @@ HEADERS += \
 	../../src/NM_SteadyStateSolver.h \
 	../../src/NM_ThermalNetworkBalanceModel.h \
 	../../src/NM_ThermalNetworkStatesModel.h \
-	../../src/NM_ValueReference.h \
 	../../src/NM_VectorValuedQuantity.h \
 	../../src/NM_VectorValuedQuantityIndex.h \
 	../../src/NM_WindowModel.h \

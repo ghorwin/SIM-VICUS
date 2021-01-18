@@ -73,7 +73,6 @@
 #include "NM_RoomBalanceModel.h"
 #include "NM_OutputFile.h"
 #include "NM_StateModelGroup.h"
-#include "NM_ValueReference.h"
 #include "NM_FMIInputOutput.h"
 #include "NM_OutputHandler.h"
 #include "NM_ConstructionStatesModel.h"
@@ -1422,17 +1421,18 @@ void NandradModel::initModelDependencies() {
 	IBK::IBK_Message(IBK::FormatString("Initializing all model results\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	std::unique_ptr<IBK::MessageIndentor> indent(new IBK::MessageIndentor);
 
-	// The key is of type ValueReference, a simply class that identifies a variable based on reference type and id
+	// The key is of type QuantityDescription, a simply class that identifies a variable based on reference type and id
 	// (both addressing an object) and variable name (identifying the variable of the object).
 	// The map can be used to quickly find the object the holds a required result variable.
-	// It maps ValueReference (i.e. global identification of a result variable) to the object that provides this variable.
-	std::map<ValueReference, AbstractModel*> modelResultReferences;
+	// It maps QuantityDescription (i.e. global identification of a result variable) to the object that provides this variable.
+	// Note: the object's reference type must not necessarily match the reference type stored in the QuantityDescription.
+	std::map<QuantityDescription, AbstractModel*> modelResultReferences;
 
 	// prepare for parallelization - get number of threads and prepare thread-storage vectors
 #if defined(_OPENMP)
 	// for openMP we need to collect vector within each loop and merge them into the central map together - this avoids synchronization overhead during runtime
 	// since each thread can operate in its own memory vector
-	std::vector<std::vector<std::pair<ValueReference, AbstractModel*> > > modelResultReferencesVec(m_numThreads);
+	std::vector<std::vector<std::pair<QuantityDescription, AbstractModel*> > > modelResultReferencesVec(m_numThreads);
 	std::vector<std::string> threadErrors(m_numThreads);
 #endif
 
@@ -1460,21 +1460,21 @@ void NandradModel::initModelDependencies() {
 			currentModel->resultDescriptions(resDescs);
 			// now process all published variables
 			for (unsigned int j = 0; j < resDescs.size(); ++j) {
-				const QuantityDescription &resDesc = resDescs[j];
+				QuantityDescription resRef = resDescs[j];
 				// now create our "key" data type for the lookup map
-				ValueReference resRef;
-				// In case you don't know the syntax below: we copy the base class attributes to
-				// the derived class by casting the derived class to the base class and thus using
-				// base class to base class assignment operator.
-				static_cast<QuantityDescription&>(resRef) = resDesc;
-				// store additional information for object lookup (not included in QuantityDescription)
-				resRef.m_id = currentModel->id();
-				resRef.m_referenceType = currentModel->referenceType();
+
+				// If quantity reference does not yet have a referenceTyp assigned,
+				// store additional information for object lookup
+				// This should be the standard for most model objects and their results.
+				if (resRef.m_referenceType == NANDRAD::ModelInputReference::NUM_MRT) {
+					resRef.m_id = currentModel->id();
+					resRef.m_referenceType = currentModel->referenceType();
+				}
 
 #if !defined(_OPENMP)
 				IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("%1(id=%2).%3 [%4]\n")
 												  .arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",resRef.m_referenceType))
-												  .arg(resRef.m_id).arg(resRef.m_name).arg(resDesc.m_unit), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
+												  .arg(resRef.m_id).arg(resRef.m_name).arg(resRef.m_unit), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
 #endif
 
 #if defined(_OPENMP)
@@ -1616,12 +1616,12 @@ void NandradModel::initModelDependencies() {
 				if (srcVarAddress == nullptr) {
 					// compose search key - for vector valued quantities we ignore the index in ValueReference,
 					// since we only want to find the object that actually provides the *variable*
-					ValueReference valueRef;
+					QuantityDescription valueRef;
 					valueRef.m_id = inputRef.m_id;
 					valueRef.m_referenceType = inputRef.m_referenceType;
 					valueRef.m_name = inputRef.m_name.m_name;
 
-					std::map<ValueReference, AbstractModel*>::const_iterator it = modelResultReferences.find(valueRef);
+					std::map<QuantityDescription, AbstractModel*>::const_iterator it = modelResultReferences.find(valueRef);
 					if (it != modelResultReferences.end()) {
 						// remember source object's pointer, to create the dependency graph afterwards
 						srcObject = it->second;

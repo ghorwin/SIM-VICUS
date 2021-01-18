@@ -28,12 +28,27 @@
 #include <IBK_Unit.h>
 
 #include <NANDRAD_CodeGenMacros.h>
+#include <NANDRAD_ModelInputReference.h>
 
 #include "NM_VectorValuedQuantityIndex.h"
 
 namespace NANDRAD_MODEL {
 
-/*! Datatype returned by resultDescriptions() and inputReferenceDescriptions(). It contains
+/*! Data type that uniquely identifies a (result) variable.
+
+	Reference type (m_referenceType) and id (m_id) identify the object that generates the data.
+	Variable name (m_name) identifies the name of the variable to retrieve (may be a vector-valued variable name, without
+	index of course).
+
+	This data structure is used to determine the object a variable is requested from. The results
+	from all objects/model instances are stored in a map (from variable reference to object), hence
+	the operator< in this class.
+
+	When looking up requested input variables from models, we simply search for this quantity descriptino, and hereby determine
+	object and id and eventually get the object instance that provides the variable we need. Then, we can ask
+	the object instance to give us a persistent pointer to the result variable's memory location.
+
+	This is the datatype returned by resultDescriptions() and inputReferenceDescriptions(). It contains
 	definitions of result values and input references as name and physical unit. For
 	vector-valued results or input references to vector-valued target quantities additional
 	vector information (size, indices of occupied vector elements and index key type) is provided.
@@ -49,6 +64,7 @@ namespace NANDRAD_MODEL {
 class QuantityDescription {
 public:
 
+	/*! Default constructor. */
 	QuantityDescription() :
 		m_minMaxValue(std::make_pair<double, double>
 		(-std::numeric_limits<double>::max(), std::numeric_limits<double>::max()))
@@ -81,6 +97,24 @@ public:
 	{
 	}
 
+	/*! Comparison operator for sorting result quantities.
+		Sorts quantities based on reference type and id and name. This operator is used
+		to find a QuantityDescription in a map, when id, refType and variable name are give
+		(in an input reference, for example).
+	*/
+	bool operator<(const QuantityDescription &other) const {
+		if (m_referenceType < other.m_referenceType)
+			return true;
+		if (m_referenceType > other.m_referenceType)
+			return false;
+		if (m_id < other.m_id)
+			return true;
+		if (m_id > other.m_id)
+			return false;
+
+		// string comparison last, because slowest
+		return (m_name < other.m_name);
+	}
 
 	/*! Sets index key type and indexes to initialize vector valued quantity description. */
 	void resize(const std::vector<unsigned int> &indexes, VectorValuedQuantityIndex::IndexKeyType keyType) {
@@ -107,6 +141,16 @@ public:
 	NANDRAD_COMPARE_WITH_NAME
 
 	// *** General attributes ***
+
+	/*! ReferenceType: zone, model or constructionInstance, etc.
+		Note: the reference type is NUM_MRT by default. Unless explicitely set by models providing QuantityDescriptions,
+			  reference type and ID are set by the framework based on the exporting model object.
+	*/
+	NANDRAD::ModelInputReference::referenceType_t	m_referenceType = NANDRAD::ModelInputReference::NUM_MRT;
+	/*! ID of the referenced source model/parametrization entity.
+		Note: ID is initialized with 0, which is an invalid object ID in NANDRAD.
+	*/
+	unsigned int							m_id = 0;
 
 	/*! Quantity/variable name */
 	std::string								m_name;
