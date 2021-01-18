@@ -1,7 +1,6 @@
 :imagesdir: ./images
 # 3D Engine
 
-
 ## Camera
 
 - world-2-view-translation = m_projection * m_camera * m_transform
@@ -14,6 +13,26 @@
   + forward = towards the viewer
   
 - camera object without translation and rotation -> x and y coordinates map to i-j coordinates of screen (0,0 top left; 1,1 bottom right), so that point x,y,z = (-50,-200,0) becomes i,j = (-100, 400) (bottom left) in screen coordinates.
+
+## Navigation
+
+Die Kamera kann mittels Tastatur- und Mauseingaben verschoben und gedreht werden.
+
+Tastaturnavigation erfolgt mit den Tasten W, A (Vor- und Zurück), S, D (nach links, nach rechts verschieben), R, F (hoch oder runter verschieben), Q, E (links oder rechts um die globale Z-Achse drehen).
+
+Mit der Maus sind 4 verschiedene Operationen möglich:
+
+1. First-Persion-View-Modus: beim Halten der rechten Maustaste führt die Mausbewegung um einen Kameraschwenk um die Kameraposition
+
+2. Verschieben der Kamera: beim Halten der mittleren Maustaste wird die Kamera so verschoben, sodass der angeklickte Punkt unter dem Cursor bleibt.
+
+3. Orbit-Modus: beim Halten der linken Maustaste bewegt und rotiert sich die Kamera um den angeklickten Punkt.
+
+4. Schneller Vor-/Zurück-Modus: beim Bewegen des Scroll-Rads bewegt sich die Kamera schnell vor/zurück entlang der aktuellen Sichtrichtung. Ist gleichzeitig die linke Maustaste gedrückt, so bewegt sich die Kamera entlang der Sichtline auf den angeklickten Punkt zu.
+
+
+Die Operation 1-3 sind exclusive, d.h. man kann stets nur eine gleichzeitig ausführen.
+
 
 ## Data transfer
 
