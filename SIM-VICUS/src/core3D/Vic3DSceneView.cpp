@@ -102,6 +102,7 @@ void SceneView::dumpScreenshot(const QString & imgFilePath) {
 
 	// resize main scene
 	m_mainScene.resize(m_screenShotMultiSampleFrameBuffer->size().width(), m_screenShotMultiSampleFrameBuffer->size().height(), 1);
+	m_mainScene.m_smallCoordinateSystemObjectVisible = false;
 
 	// make framebuffer (for multi-sample rendering) active
 	m_screenShotMultiSampleFrameBuffer->bind();
@@ -121,6 +122,8 @@ void SceneView::dumpScreenshot(const QString & imgFilePath) {
 	QOpenGLFramebufferObject::blitFramebuffer(
 		m_screenShotDownSampleFrameBuffer, m_screenShotMultiSampleFrameBuffer,
 		GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+	m_mainScene.m_smallCoordinateSystemObjectVisible = true;
 
 	// finally dump buffer to file
 	QImage screenShot = m_screenShotDownSampleFrameBuffer->toImage();
@@ -480,7 +483,9 @@ void SceneView::checkInput() {
 	}
 
 	// has the mouse been moved while the right button was held (first-person controller)?
-	if ( m_keyboardMouseHandler.buttonDown(Qt::RightButton)) {
+	if (m_keyboardMouseHandler.buttonDown(Qt::RightButton) ||
+		m_keyboardMouseHandler.buttonReleased(Qt::RightButton))
+	{
 		m_inputEventReceived = true;
 		//			qDebug() << "SceneView::checkInput() inputEventReceived: " << QCursor::pos() << m_keyboardMouseHandler.mouseDownPos();
 		renderLater();
@@ -497,7 +502,9 @@ void SceneView::checkInput() {
 	}
 
 	// is the middle mouse butten been held (translate camera)?
-	if (m_keyboardMouseHandler.buttonDown(Qt::MidButton)){
+	if (m_keyboardMouseHandler.buttonDown(Qt::MidButton) ||
+		m_keyboardMouseHandler.buttonReleased(Qt::MidButton))
+	{
 		m_inputEventReceived = true;
 		renderLater();
 		return;
@@ -518,26 +525,12 @@ bool SceneView::processInput() {
 	m_inputEventReceived = false;
 //	qDebug() << "SceneView::processInput()";
 
-	// here, we check for registered key/mouse action combinations
-	// these are configured as follows:
-	// - mouse key down
-	// - mouse key up
-	// - mouse key held + mouse move
-	// - key press
-	//
-	// - each event may have a modifier key associated
-
-	// we now loop through all registered key events and call the associated actions
-
-
-	// for now, delegate the call to the scene object, so that it can alter it's camera position
-	QPoint localMousePos;
-	if (m_keyboardMouseHandler.buttonReleased(Qt::LeftButton))
-		localMousePos = mapFromGlobal(m_keyboardMouseHandler.mouseReleasePos());
-	else
-		localMousePos = mapFromGlobal(m_keyboardMouseHandler.mouseDownPos());
+	// get current cursor position - might be different from last mouse press/release position,
+	// but usually is the same
+	QPoint localMousePos = mapFromGlobal(QCursor::pos());
 	QPoint newLocalMousePos;
 
+	// for now, delegate the call to the scene object, so that it can alter it's camera position
 	bool needRepaint = m_mainScene.inputEvent(m_keyboardMouseHandler, localMousePos, newLocalMousePos);
 
 	if (localMousePos != newLocalMousePos) {

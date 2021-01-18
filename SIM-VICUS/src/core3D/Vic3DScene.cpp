@@ -313,7 +313,7 @@ void Vic3DScene::resize(int width, int height, qreal retinaScale) {
 				/* near */           0.1f,
 				/* far */            farDistance
 		);
-	// Mind: to not use 0.0 for near plane, otherwise depth buffering and depth testing won't work!
+	// Mind: do not use 0.0 for near plane, otherwise depth buffering and depth testing won't work!
 
 	// the small view projection matrix is constant
 	m_smallViewProjection.setToIdentity();
@@ -357,6 +357,11 @@ void Vic3DScene::updateWorld2ViewMatrix() {
 
 
 bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoint & localMousePos, QPoint & newLocalMousePos) {
+//	QPoint lastLeftButtonPos;
+//	if (keyboardMouseHandler.buttonReleased(Qt::LeftButton))
+//		lastLeftButtonPos = mapFromGlobal(m_keyboardMouseHandler.mouseReleasePos());
+//	else
+//		localMousePos = mapFromGlobal(m_keyboardMouseHandler.mouseDownPos());
 
 	// NOTE: In this function we handle only those keyboard inputs that affect the scene navigation.
 	//       Single key release events are handled in Vic3DSceneView, since they do not require repeated screen redraws.
@@ -397,42 +402,56 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 	newLocalMousePos = localMousePos;
 	// retrieve mouse delta
 	QPoint mouseDelta = keyboardHandler.mouseDelta(QCursor::pos());
+//	qDebug() << mouseDelta << m_navigationMode;
 	int mouse_dx = mouseDelta.x();
 	int mouse_dy = mouseDelta.y();
 
 	// if right mouse button is pressed, mouse delta is translated into first camera perspective rotations
 	if (keyboardHandler.buttonDown(Qt::RightButton)) {
-		// get and reset mouse delta (pass current mouse cursor position)
-		const QVector3D LocalUp(0.0f, 0.0f, 1.0f); // same as in Camera::up()
-		m_camera.rotate(-MOUSE_ROTATION_SPEED * mouse_dx, LocalUp);
-		m_camera.rotate(-MOUSE_ROTATION_SPEED * mouse_dy, m_camera.right());
-		// cursor wrap adjustment
-		adjustCurserDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos);
+		// only do first-person mode, if not in any other mode
+		if (m_navigationMode == NUM_NM) {
+			m_navigationMode = NM_FirstPerson;
+			qDebug() << "Entering first-person controller mode";
+		}
+		if (m_navigationMode == NM_FirstPerson) {
+			// get and reset mouse delta (pass current mouse cursor position)
+			const QVector3D LocalUp(0.0f, 0.0f, 1.0f); // same as in Camera::up()
+			m_camera.rotate(-MOUSE_ROTATION_SPEED * mouse_dx, LocalUp);
+			m_camera.rotate(-MOUSE_ROTATION_SPEED * mouse_dy, m_camera.right());
+			// cursor wrap adjustment
+			adjustCurserDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos);
+		}
 	}
 
-	// middle mouse button moves the geometry
-	else if (keyboardHandler.buttonDown(Qt::MidButton)) {
-		/// \todo Stephan/Dirk: implement something like the orbit controller:
-		///                - add a flag that indicates "we are in translate mode"
-		///                - when mid-mousebutton is pressed:
-		///                  + set the flag
-		///                  + pick the current location in screen (if picked point is invalid/on far plane, select middle
-		///                    between far and near plane), also remember distance from viewer (i.e. line intersection factor)
-		///                - when mouse is moved while mid-mousebutton is pressed
-		///                  + move the camera such, that the selected point remains under the mouse cursor at the
-		///                    same distance from viewer
-		///                - clear the flag, when button is released
-		if (mouse_dx != 0)
-			m_camera.translate(transSpeed * (mouse_dx < 0 ? 1 : -1) * m_camera.right());
-		if (mouse_dy != 0)
-			m_camera.translate(transSpeed * (mouse_dy > 0 ? 1 : -1) * m_camera.up());
-		// cursor wrap adjustment
-		adjustCurserDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos);
+	// middle mouse button moves the geometry (panning)
+	if (keyboardHandler.buttonDown(Qt::MidButton)) {
+		// only do panning, if not in any other mode
+		if (m_navigationMode == NUM_NM) {
+			// we enter pan mode
+
+			// configure the pick object and pick a point on the XY plane/or any visible surface
+			if (!pickObject.m_pickPerformed)
+				pick(pickObject);
+
+			// only enter orbit controller mode, if we actually hit something
+			if (!pickObject.m_candidates.empty()) {
+
+			}
+
+			if (mouse_dx != 0)
+				m_camera.translate(transSpeed * (mouse_dx < 0 ? 1 : -1) * m_camera.right());
+			if (mouse_dy != 0)
+				m_camera.translate(transSpeed * (mouse_dy > 0 ? 1 : -1) * m_camera.up());
+			// cursor wrap adjustment
+			adjustCurserDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos);
+		}
 	}
 
-	else if (keyboardHandler.buttonDown(Qt::LeftButton)) {
-		// detect "enter orbital controller mode" switch
-		if (!m_orbitControllerActive) {
+
+	// left mouse button starts orbit controller, or performs a left-click
+	if (keyboardHandler.buttonDown(Qt::LeftButton)) {
+		// only do orbit controller mode, if not in any other mode
+		if (m_navigationMode == NUM_NM) {
 			// we enter orbital controller mode
 
 			// configure the pick object and pick a point on the XY plane/or any visible surface
@@ -453,19 +472,21 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 				// for orbit-controller, we  take the closest point of either
 				m_orbitControllerOrigin = VICUS::IBKVector2QVector(nearestPoint);
-				qDebug() << "Entering orbit controller mode, rotation around" << m_orbitControllerOrigin;
 				m_orbitControllerObject.m_transform.setTranslation(m_orbitControllerOrigin);
 
 				// Rotation matrix around origin point
 				m_mouseMoveDistance = 0;
 
-				m_orbitControllerActive = true;
 				needRepaint = true;
+
+				// Note: Orbit controller mode is enabled, once a little bit of movement took place
+				m_navigationMode = NM_OrbitController;
+				qDebug() << "Entering orbit controller mode, rotation around" << m_orbitControllerOrigin;
 			}
 		}
 		else {
 
-			if (mouseDelta != QPoint(0,0)) {
+			if ((mouseDelta != QPoint(0,0)) && (m_navigationMode == NM_OrbitController)) {
 				// vector from pick point (center of orbit) to camera position
 				QVector3D lineOfSight = m_camera.translation() - m_orbitControllerOrigin;
 
@@ -527,36 +548,70 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 				// cursor wrap adjustment
 				adjustCurserDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos);
-			}
+			} // orbit controller active
 		}
 
-
 	} // left button down
+
+
+	// *** mouse button release ***
 
 	if (keyboardHandler.buttonReleased(Qt::LeftButton)) {
 
 		// check if the mouse was moved not very far -> we have a mouse click
 		if (m_mouseMoveDistance < MOUSE_MOVE_DISTANCE_ORBIT_CONTROLLER) {
-			qDebug() << "Mouse (selection) click received" << m_mouseMoveDistance;
 			handleLeftMouseClick(keyboardHandler, pickObject);
 			needRepaint = true;
 		}
-		else {
-			qDebug() << "Leaving orbit controller mode" << m_mouseMoveDistance;
+		if (m_navigationMode == NM_OrbitController) {
+			qDebug() << "Leaving orbit controller mode";
 			needRepaint = true;
 		}
-
 		// clear orbit controller flag
-		m_orbitControllerActive = false;
+		m_navigationMode = NUM_NM;
+
 	} // left button released
+
+	if (keyboardHandler.buttonReleased(Qt::MidButton)) {
+		if (m_navigationMode == NM_Panning) {
+			qDebug() << "Leaving panning mode";
+			m_navigationMode = NUM_NM;
+		}
+	}
+
+	if (keyboardHandler.buttonReleased(Qt::RightButton)) {
+		if (m_navigationMode == NM_FirstPerson) {
+			qDebug() << "Leaving first-person controller mode";
+			m_navigationMode = NUM_NM;
+		}
+	}
+
 
 	// scroll wheel does fast zoom in/out
 	int wheelDelta = keyboardHandler.wheelDelta();
 	if (wheelDelta != 0) {
-		float transSpeed = 8.f;
+
+		// configure the pick object and pick a point on the XY plane/or any visible surface
+		if (!pickObject.m_pickPerformed)
+			pick(pickObject);
+
+		// move forward along camera's forward vector
+		float transSpeed = 5.f;
 		if (keyboardHandler.keyDown(Qt::Key_Shift))
-			transSpeed = 0.8f;
-		m_camera.translate(wheelDelta * transSpeed * m_camera.forward());
+			transSpeed = 0.5f;
+		if (!pickObject.m_candidates.empty()) {
+			// 2% of translation distance from camera to selected object
+			IBKMK::Vector3D moveDist = 0.05*pickObject.m_candidates.front().m_depth*pickObject.m_lineOfSightDirection;
+			double transDist = moveDist.magnitude();
+			if (transDist < transSpeed) {
+				moveDist *= transSpeed/(transDist+1e-8);
+			}
+			// move camera along line of sight towards selected object
+			m_camera.translate(VICUS::IBKVector2QVector(wheelDelta*moveDist));
+		}
+		else {
+			m_camera.translate(wheelDelta * transSpeed * m_camera.forward());
+		}
 	}
 
 	// store camera position in view settings, but only if we have a project
@@ -720,7 +775,7 @@ void Vic3DScene::render() {
 
 	// *** orbit controller indicator ***
 
-	if (m_orbitControllerActive && m_mouseMoveDistance > MOUSE_MOVE_DISTANCE_ORBIT_CONTROLLER) {
+	if (m_navigationMode == NM_OrbitController && m_mouseMoveDistance > MOUSE_MOVE_DISTANCE_ORBIT_CONTROLLER) {
 		// Note: uses also m_fixedColorTransformShader, which is already active with up-to-date worldToView matrix
 		m_orbitControllerObject.render();
 	}
@@ -840,12 +895,12 @@ void Vic3DScene::render() {
 	// re-enable updating of z-buffer
 	glDepthMask(GL_TRUE);
 
-	glViewport(m_smallViewPort.x(), m_smallViewPort.y(), m_smallViewPort.width(), m_smallViewPort.height());
+	if (m_smallCoordinateSystemObjectVisible) {
+		glViewport(m_smallViewPort.x(), m_smallViewPort.y(), m_smallViewPort.width(), m_smallViewPort.height());
 
-	// blending is still enabled, so that should work
-	m_smallCoordinateSystemObject.render();
-
-
+		// blending is still enabled, so that should work
+		m_smallCoordinateSystemObject.render();
+	}
 }
 
 
@@ -1072,7 +1127,6 @@ void Vic3DScene::pick(PickObject & pickObject) {
 				nearPos.y(),
 				1,
 				1.0);
-
 	// transform from NDC to model coordinates
 	QVector4D nearResult = projectionMatrixInverted*nearPos;
 	QVector4D farResult = projectionMatrixInverted*farPos;
@@ -1082,6 +1136,11 @@ void Vic3DScene::pick(PickObject & pickObject) {
 
 	// compute line-of-sight equation
 	IBKMK::Vector3D nearPoint = VICUS::QVector2IBKVector(nearResult.toVector3D()); // line offset = nearPoint
+	// Note: Since the NearPlane-distance is 1 and thus nearly attached to the camera (distance 0 is not permitted!),
+	//       the calculated nearPoint is actually (almost) the camera position, regardless of where one has clicked
+	//       on the screen!
+	//       So we might actually just take the camera position here and avoid the extra work, but since there may
+	//       be later the demand for "zoom" and perspective adjustment, we leave it this way.
 	IBKMK::Vector3D farPoint = VICUS::QVector2IBKVector(farResult.toVector3D());
 	IBKMK::Vector3D direction = farPoint - nearPoint;	// direction vector of line-of-sight
 	pickObject.m_lineOfSightOffset = nearPoint;

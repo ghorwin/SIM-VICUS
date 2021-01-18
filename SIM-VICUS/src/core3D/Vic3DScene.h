@@ -55,8 +55,9 @@ public:
 	void updateWorld2ViewMatrix();
 
 	/*! Lets the scene handle keyboard/mouse input.
+		Note: to retrieve the last mouse down/release positions, query the keyboardHandler directly.
 		\param keyboardHandler Contains information on current state of keyboard and mouse (and mouse move/scroll deltas since last call).
-		\param localMousePos Contains mouse position of last left mouse button press or release.
+		\param localMousePos Contains current mouse position (QCursor::pos() converted to local widget coordinates/viewport coordinates).
 		\return Returns true, if input causes change in view and needs repainting.
 	*/
 	bool inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoint & localMousePos, QPoint & newLocalMousePos);
@@ -78,6 +79,8 @@ public:
 	void enterCoordinateSystemAdjustmentMode();
 	/*! Leaves the coordinate system alignment/positioning mode and returns to previous mode. */
 	void leaveCoordinateSystemAdjustmentMode(bool abort);
+
+	bool m_smallCoordinateSystemObjectVisible = true;
 
 private:
 	void generateBuildingGeometry();
@@ -172,12 +175,28 @@ private:
 	/*! The small coordinate system at the bottom/left. */
 	SmallCoordinateSystemObject	m_smallCoordinateSystemObject;
 
+
+	// *** Navigation stuff ***
+
+	/*! Struct for exclusive navigation modes.
+		While one navigation mode is active, we cannot also start another navigation mode.
+	*/
+	enum NavigationMode {
+		NM_OrbitController,
+		NM_Panning,
+		NM_FirstPerson,
+		NUM_NM
+	};
+
+	/*! Identifies the current navigation mode.
+		Toggled in inputEvent() and reset when anything changes the scene operation mode (like reloading the project etc.)
+	*/
+	NavigationMode			m_navigationMode = NUM_NM;
+
 	// *** Orbit controller stuff ***
 
 	/*! Stores the distance that the mouse has been moved in the last "Left-mouse button down ... release" interval. */
 	float					m_mouseMoveDistance = 0.f;
-	/*! If true, the orbit controller is active and the rotation axis is to be shown. */
-	bool					m_orbitControllerActive = false;
 	/*! Holds the origin of the orbit controller coordinates. */
 	QVector3D				m_orbitControllerOrigin;
 

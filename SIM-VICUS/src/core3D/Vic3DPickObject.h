@@ -55,12 +55,12 @@ struct PickObject {
 
 
 	PickObject(const QPoint & localMousePos) :
-		m_pickPerformed(false), m_localMousePos(localMousePos)
+		m_localMousePos(localMousePos)
 	{
 	}
 
 	/*! Set to true, if picking was already performed. */
-	bool					m_pickPerformed;
+	bool					m_pickPerformed = false;
 
 	/*! The local mouse position. */
 	QPoint					m_localMousePos;
