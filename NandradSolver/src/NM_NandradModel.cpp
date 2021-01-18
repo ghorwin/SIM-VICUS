@@ -1462,7 +1462,9 @@ void NandradModel::initModelDependencies() {
 	std::vector<std::string> threadErrors(m_numThreads);
 #endif
 
+#if defined(_OPENMP)
 #pragma omp parallel for schedule(static,200)
+#endif
 	for (int i = 0; i < (int)m_modelContainer.size(); ++i) { // omp loop variables must be int's for Visual Studio
 
 		// progress is handled by master thread only
@@ -1580,7 +1582,9 @@ void NandradModel::initModelDependencies() {
 	IBK::IBK_Message(IBK::FormatString("Initializing all model input references\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	indent.reset(new IBK::MessageIndentor);
 
+#if defined(_OPENMP)
 #pragma omp parallel for schedule(static,200)
+#endif
 	for (int i = 0; i < (int) m_modelContainer.size(); ++i) {
 		// progress is handled by master thread only
 #if defined(_OPENMP)
