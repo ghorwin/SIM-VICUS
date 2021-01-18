@@ -45,6 +45,10 @@ void ThermalNetworkModelImpl::setup(const Network &nw,
 	m_nodalTemperatures.resize(nw.m_nodes.size());
 	// resize specific enthalpy
 	m_nodalSpecificEnthalpies.resize(nw.m_nodes.size());
+	// resize temperatures
+	m_inletNodeTemperatures.resize(nw.m_elements.size());
+	// resize temperatures
+	m_outletNodeTemperatures.resize(nw.m_elements.size());
 	// resize heat fluxes
 	m_heatFluxes.resize(nw.m_elements.size());
 	// get fluid heat capacity
@@ -133,6 +137,9 @@ int ThermalNetworkModelImpl::updateFluxes() 	{
 		else {
 			flowElem->setInletFluxes(massFlux, specEnthalpOutlet * massFlux);
 		}
+		// copy nodal temperatures
+		m_inletNodeTemperatures[i] = specEnthalpInlet/m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+		m_outletNodeTemperatures[i] = specEnthalpOutlet/m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 		// copy heat fluxes
 		m_heatFluxes[i] = flowElem->heatLoss();
 	}
@@ -174,14 +181,20 @@ void ThermalNetworkModelImpl::dependencies(std::vector<std::pair<const double *,
 		// get inlet node
 		const double *massFluxRef = m_massFluxes + i;
 		const double *specEnthalpRef = &m_nodalSpecificEnthalpies[fe.m_nInlet];
+		const double *tempInletRef = &m_inletNodeTemperatures[i];
 		// enthalpy and heat flux dependencies
 		const double *heatFluxRef = &m_heatFluxes[i];
 		resultInputValueReferences.push_back(std::make_pair(heatFluxRef, massFluxRef) );
 		resultInputValueReferences.push_back(std::make_pair(heatFluxRef, specEnthalpRef) );
+		// temperature dependencies
+		resultInputValueReferences.push_back(std::make_pair(tempInletRef, specEnthalpRef) );
 		// inverse direction
 		specEnthalpRef = &m_nodalSpecificEnthalpies[fe.m_nOutlet];
+		const double *tempOutletRef = &m_outletNodeTemperatures[i];
 		// enthalpy dependencies
 		resultInputValueReferences.push_back(std::make_pair(heatFluxRef, specEnthalpRef) );
+		// temperature dependencies
+		resultInputValueReferences.push_back(std::make_pair(tempOutletRef, specEnthalpRef) );
 
 		// set dependencies to ambient conditions
 		const double* Tamb = m_ambientTemperatureRefs[i];
