@@ -1,0 +1,3 @@
+Time [h]	NetworkElement(id=1).FluidMassFlux [kg/s]	NetworkElement(id=2).FluidMassFlux [kg/s]	NetworkElement(id=3).FluidMassFlux [kg/s]	NetworkElement(id=4).FluidMassFlux [kg/s]	NetworkElement(id=1).OutletNodePressure [Pa]	NetworkElement(id=2).OutletNodePressure [Pa]	NetworkElement(id=3).OutletNodePressure [Pa]	NetworkElement(id=4).OutletNodePressure [Pa]
+0	0.0217489	0.0217489	0.0217489	0.0217489	3.46676e-17	-497.765	-502.235	-1000
+1	0.0217489	0.0217489	0.0217489	0.0217489	3.46676e-17	-497.765	-502.235	-1000
