@@ -229,7 +229,8 @@ void ThermalNetworkStatesModel::resultDescriptions(std::vector<QuantityDescripti
 }
 
 
-const double * ThermalNetworkStatesModel::resultValueRef(const QuantityName & quantityName) const {
+const double * ThermalNetworkStatesModel::resultValueRef(const InputReference & quantity) const {
+	const QuantityName & quantityName = quantity.m_name;
 	// return y
 	if(quantityName == std::string("y")) {
 		// whole vector access

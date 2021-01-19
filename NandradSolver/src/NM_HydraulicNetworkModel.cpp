@@ -273,7 +273,8 @@ void HydraulicNetworkModel::resultValueRefs(std::vector<const double *> & res) c
 }
 
 
-const double * HydraulicNetworkModel::resultValueRef(const QuantityName & quantityName) const {
+const double * HydraulicNetworkModel::resultValueRef(const InputReference & quantity) const {
+	const QuantityName & quantityName = quantity.m_name;
 	// return vector of mass fluxes
 	if(quantityName == std::string("FluidMassFluxes")) {
 		if(!m_p->m_fluidMassFluxes.empty())

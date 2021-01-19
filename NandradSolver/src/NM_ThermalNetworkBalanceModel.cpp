@@ -130,7 +130,8 @@ void ThermalNetworkBalanceModel::resultValueRefs(std::vector<const double *> &re
 }
 
 
-const double * ThermalNetworkBalanceModel::resultValueRef(const QuantityName & quantityName) const {
+const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference & quantity) const {
+	const QuantityName & quantityName = quantity.m_name;
 	// return vector of heat fluxes
 	if(quantityName == std::string("FluidHeatFluxes")) {
 		if(!m_statesModel->m_p->m_fluidHeatFluxes.empty())

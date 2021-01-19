@@ -67,7 +67,8 @@ void WindowModel::resultDescriptions(std::vector<QuantityDescription> & resDesc)
 }
 
 
-const double * WindowModel::resultValueRef(const QuantityName & quantityName) const {
+const double * WindowModel::resultValueRef(const InputReference & quantity) const {
+	const QuantityName & quantityName = quantity.m_name;
 	// search inside keyword list result quantities
 	// Note: index in m_results corresponds to enumeration values in enum 'Results'
 	const char * const category = "WindowModel::Results";

@@ -111,7 +111,7 @@ public:
 		\note For quantity 'ydot' the memory with computed ydot-values is returned.
 		\return Returns pointer to memory location with this quantity, otherwise nullptr if parameter ID was not found.
 	*/
-	virtual const double * resultValueRef(const QuantityName & quantityName) const override;
+	virtual const double * resultValueRef(const InputReference & quantity) const override;
 
 
 	// *** Re-implemented from AbstractStateDependency

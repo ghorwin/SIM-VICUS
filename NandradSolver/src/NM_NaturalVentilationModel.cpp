@@ -117,7 +117,8 @@ void NaturalVentilationModel::resultDescriptions(std::vector<QuantityDescription
 }
 
 
-const double * NaturalVentilationModel::resultValueRef(const QuantityName & quantityName) const {
+const double * NaturalVentilationModel::resultValueRef(const InputReference & quantity) const {
+	const QuantityName & quantityName = quantity.m_name;
 	// determine variable enum index
 	unsigned int varIndex=0;
 	for (; varIndex<NUM_VVR; ++varIndex) {

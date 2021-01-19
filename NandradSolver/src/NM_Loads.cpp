@@ -398,12 +398,6 @@ void Loads::resultDescriptions(std::vector<QuantityDescription> & resDesc) const
 }
 
 
-const double * Loads::resultValueRef(const QuantityName & quantityName) const {
-	// otherwise fall back to original implementation
-	return DefaultModel::resultValueRef(quantityName);
-}
-
-
 void Loads::addSurface(unsigned int objectID, double orientationInDeg, double inclinationInDeg) {
 //	FUNCID(Loads::addSurface);
 

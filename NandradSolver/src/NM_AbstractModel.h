@@ -25,7 +25,7 @@
 #include <NANDRAD_ModelInputReference.h>
 
 #include "NM_QuantityDescription.h"
-#include "NM_QuantityName.h"
+#include "NM_InputReference.h"
 
 namespace NANDRAD_MODEL {
 
@@ -131,7 +131,7 @@ public:
 			the caller must be notified of possibly erroneous input data, so make sure to wrap the call to resultValueRef()
 			in a try-catch-clause!
 	*/
-	virtual const double * resultValueRef(const QuantityName & quantityName) const { (void)quantityName; return nullptr; }
+	virtual const double * resultValueRef(const InputReference & quantity) const { (void)quantity; return nullptr; }
 
 };
 

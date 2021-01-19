@@ -119,9 +119,6 @@ public:
 	*/
 	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const override;
 
-	/*! Retrieves reference pointer to a value with given input reference name. */
-	virtual const double * resultValueRef(const QuantityName & quantityName) const override;
-
 	/*! Resizes m_results vector. */
 	virtual void initResults(const std::vector<AbstractModel*> & /* models */) override;
 

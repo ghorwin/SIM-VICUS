@@ -105,7 +105,8 @@ void RoomStatesModel::resultDescriptions(std::vector<QuantityDescription> & resD
 }
 
 
-const double * RoomStatesModel::resultValueRef(const QuantityName & quantityName) const {
+const double * RoomStatesModel::resultValueRef(const InputReference & quantity) const {
+	const QuantityName & quantityName = quantity.m_name;
 	// search inside keyword list result quantities
 	// Note: index in m_results corresponds to enumeration values in enum 'Results'
 	const char * const category = "RoomStatesModel::Results";

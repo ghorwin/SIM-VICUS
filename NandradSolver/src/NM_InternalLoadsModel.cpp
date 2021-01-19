@@ -160,7 +160,8 @@ void InternalLoadsModel::resultDescriptions(std::vector<QuantityDescription> & r
 }
 
 
-const double * InternalLoadsModel::resultValueRef(const QuantityName & quantityName) const {
+const double * InternalLoadsModel::resultValueRef(const InputReference & quantity) const {
+	const QuantityName & quantityName = quantity.m_name;
 	// determine variable enum index
 	unsigned int varIndex=0;
 	for (; varIndex<NUM_VVR; ++varIndex) {

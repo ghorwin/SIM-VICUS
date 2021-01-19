@@ -40,7 +40,8 @@ void RoomRadiationLoadsModel::resultDescriptions(std::vector<QuantityDescription
 }
 
 
-const double * RoomRadiationLoadsModel::resultValueRef(const QuantityName & quantityName) const {
+const double * RoomRadiationLoadsModel::resultValueRef(const InputReference & quantity) const {
+	const QuantityName & quantityName = quantity.m_name;
 	if (quantityName.m_name == NANDRAD_MODEL::KeywordList::Keyword("RoomRadiationLoadsModel::Results", R_WindowSolarRadiationFluxSum))
 		return &m_result;
 	else

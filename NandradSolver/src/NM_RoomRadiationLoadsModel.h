@@ -66,7 +66,7 @@ public:
 	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const override;
 
 	/*! Retrieves reference pointer to a value with given input reference name. */
-	virtual const double * resultValueRef(const QuantityName & quantityName) const override;
+	virtual const double * resultValueRef(const InputReference & quantity) const override;
 
 
 	// *** Re-implemented from AbstractStateDependency

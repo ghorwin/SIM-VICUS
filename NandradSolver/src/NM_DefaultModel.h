@@ -89,7 +89,7 @@ public:
 
 		\warning Function throws an exception in case of invalid indexes for vector-valued quantities
 	*/
-	virtual const double * resultValueRef(const QuantityName & quantityName) const override;
+	virtual const double * resultValueRef(const InputReference & quantity) const override;
 
 protected:
 
