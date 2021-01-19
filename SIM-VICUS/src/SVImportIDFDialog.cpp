@@ -67,8 +67,14 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	vp.m_buildings[0].m_buildingLevels.resize(1);
 	VICUS::BuildingLevel & bl = vp.m_buildings[0].m_buildingLevels[0];
 
+	vp.m_buildings[0].m_displayName = "Import_IDF_Building";
+	bl.m_displayName = "Floor0";
+
 	std::map<std::string, unsigned int> mapZoneID;
 	std::map<std::string, unsigned int>	mapZoneNameToIdx;
+
+	unsigned int transferedBSDCounter = 0;
+
 	// import all zones
 	for (const EP::Zone & z : prj.m_zones) {
 		VICUS::Room r;
@@ -98,6 +104,10 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 		//import all building surface detailed -> opaque surfaces
 		for(const EP::BuildingSurfaceDetailed &bsd : prj.m_bsd){
+
+			if(IBK::tolower_string(bsd.m_zoneName) != IBK::tolower_string(z.m_name))
+				continue;
+
 			if(mapZoneNameToIdx.find(bsd.m_zoneName) == mapZoneNameToIdx.end())
 				throw IBK::Exception(IBK::FormatString("Zone name '%1' does not exist, which is "
 													   "referenced in Building Surface Detailed '%2'").arg(bsd.m_zoneName)
@@ -113,11 +123,17 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 			surf.updateColor();
 			bl.m_rooms[idx].m_surfaces.push_back(surf);
+			++transferedBSDCounter;
 		}
 
 		//add surfaces windows, doors, ...
 		//add constructions, materials
 		//add internal loads ...
+	}
+
+	if(transferedBSDCounter != prj.m_bsd.size())
+	{
+		//nicht alle BSD's wurden transferiert.
 	}
 }
 

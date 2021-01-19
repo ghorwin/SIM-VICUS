@@ -11,6 +11,7 @@ void Project::readIDF(const IDFParser & idfData) {
 
 	try {
 		// now read all sections one after another
+		// attention all class names in lower case
 		idfData.readClassObj("buildingsurface:detailed", m_bsd);
 		idfData.readClassObj("fenestrationsurface:detailed", m_fsd);
 		idfData.readClassObj("zone", m_zones);

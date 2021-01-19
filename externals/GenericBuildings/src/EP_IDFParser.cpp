@@ -90,6 +90,7 @@ void IDFParser::read(const IBK::Path & fname) {
 						if (!inComment) {
 							if (entity.m_tokens.size() != 0) {
 								entity.m_comment = lastComment;
+								entity.m_tokens[0] = IBK::tolower_string(entity.m_tokens[0]);
 								m_tables[entity.m_tokens[0]].push_back(entity);
 								std::cout << "[" << entity.m_tokens[0] << "] " << lastComment << std::endl;
 								lastComment.clear();
