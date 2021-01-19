@@ -197,7 +197,7 @@ void WireFrameObject::updateSelectedObjectsFromProject() {
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			for (const VICUS::Room & r : bl.m_rooms) {
 				for (const VICUS::Surface & s : r.m_surfaces) {
-					if (s.m_selected)
+					if (s.m_selected && s.m_visible)
 						m_selectedObjects.insert(&s);
 				}
 			}
@@ -207,19 +207,19 @@ void WireFrameObject::updateSelectedObjectsFromProject() {
 	// Networks
 	for (const VICUS::Network & n : prj.m_geometricNetworks) {
 		for (const VICUS::NetworkEdge & e : n.m_edges) {
-			if (e.m_selected)
+			if (e.m_selected && e.m_visible)
 				m_selectedObjects.insert(&e);
 		}
 
 		for (const VICUS::NetworkNode & nod : n.m_nodes) {
-			if (nod.m_selected)
+			if (nod.m_selected && nod.m_visible)
 				m_selectedObjects.insert(&nod);
 		}
 	}
 
 	// Dumb plain geometry
 	for (const VICUS::Surface & s : prj.m_plainGeometry) {
-		if (s.m_selected)
+		if (s.m_selected && s.m_visible)
 			m_selectedObjects.insert(&s);
 	}
 }

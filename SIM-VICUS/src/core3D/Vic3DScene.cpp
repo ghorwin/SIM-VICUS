@@ -115,6 +115,18 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 
 		// *** selection and visibility properties changed ***
 		case SVProjectHandler::NodeStateModified : {
+			// we need to implement the following logic:
+			//
+			// - object is visible, but not selected -> draw object with regular geometry shader
+			// - object is visible and selected -> object is hidden from regular geometry shader but shown in wireframe object
+			// - object is not visible and either selected/not selected -> object is hidden
+
+			// The update of the selection object can be quite lengthy, hence we try to limit this to cases, where
+			// this is needed. We populate a temporary set with pointers to selected objects. If this set
+			// is the same as currently set in the wire frame object, the selection hasn't changed and we do not
+			// need to redraw.
+			std::set<const VICUS::Object*> selectedObjects;
+
 			// we need to update the colors of some building elements
 			unsigned int smallestVertexIndex = m_opaqueGeometryObject.m_vertexBufferData.size();
 			unsigned int largestVertexIndex = 0;
