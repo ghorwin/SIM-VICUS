@@ -419,7 +419,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 			m_camera.rotate(-MOUSE_ROTATION_SPEED * mouse_dx, LocalUp);
 			m_camera.rotate(-MOUSE_ROTATION_SPEED * mouse_dy, m_camera.right());
 			// cursor wrap adjustment
-			adjustCurserDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos);
+			adjustCurserDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos, pickObject);
 		}
 	}
 
@@ -428,34 +428,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		// only do panning, if not in any other mode
 		if (m_navigationMode == NUM_NM) {
 			// we enter pan mode
-
-			// configure the pick object and pick a point on the XY plane/or any visible surface
-			if (!pickObject.m_pickPerformed)
-				pick(pickObject);
-
-			// only enter orbit controller mode, if we actually hit something
-			if (!pickObject.m_candidates.empty()) {
-				m_navigationMode = NM_Panning;
-				qDebug() << "Entering panning mode";
-
-				// we need to store initial camera pos, selected object pos, far point
-				m_panCameraStart = VICUS::QVector2IBKVector(m_camera.translation());	// Point A
-				m_panObjectStart = pickObject.m_candidates.front().m_pickPoint;			// Point C
-				m_panFarPointStart = pickObject.m_lineOfSightOffset + pickObject.m_lineOfSightDirection;	// Point B
-				double BADistance = (m_panFarPointStart - m_panCameraStart).magnitude(); // Same as far distance?
-				double CADistance = (m_panObjectStart - m_panCameraStart).magnitude();
-				m_panCABARatio = CADistance/BADistance;
-				m_panMousePos = localMousePos;
-
-				// invert world2view matrix, with m_worldToView = m_projection * m_camera.toMatrix() * m_transform.toMatrix();
-				bool invertible;
-				m_panOriginalTransformMatrix = m_worldToView.inverted(&invertible);
-				if (!invertible) {
-					qWarning()<< "Cannot invert projection matrix.";
-					m_panOriginalTransformMatrix = QMatrix4x4();
-				}
-
-			}
+			panStart(localMousePos, pickObject);
 		}
 		if ((mouseDelta != QPoint(0,0)) && (m_navigationMode == NM_Panning)) {
 
@@ -469,7 +442,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 			m_camera.setTranslation(VICUS::IBKVector2QVector(m_panCameraStart + cameraTrans));
 			// cursor wrap adjustment
-			adjustCurserDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos);
+			adjustCurserDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos, pickObject);
 		}
 	}
 
@@ -573,7 +546,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 				m_camera.setTranslation(newCamPos);
 
 				// cursor wrap adjustment
-				adjustCurserDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos);
+				adjustCurserDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos, pickObject);
 			} // orbit controller active
 		}
 
@@ -1123,31 +1096,6 @@ void Vic3DScene::enterCoordinateSystemAdjustmentMode() {
 }
 
 
-IBKMK::Vector3D Vic3DScene::calculateFarPoint(const QPoint & mousPos, const QMatrix4x4 & projectionMatrixInverted) {
-	// local mouse coordinates
-	int my = mousPos.y();
-	int mx = mousPos.x();
-
-	// viewport dimensions
-	double Dx = m_viewPort.width();
-	double Dy = m_viewPort.height();
-
-	double nx = (2*mx-Dx)/Dx;
-	double ny = -(2*my-Dy)/Dy;
-
-	// mouse position in NDC space, one point on near plane and one point on far plane
-	QVector4D nearPos(float(nx), float(ny), -1, 1.0);
-	QVector4D farPos (float(nx), float(ny),  1, 1.0);
-
-	// transform from NDC to model coordinates
-	QVector4D farResult = projectionMatrixInverted*farPos;
-	// don't forget normalization!
-	farResult /= farResult.w();
-
-	return VICUS::QVector2IBKVector(farResult.toVector3D());
-}
-
-
 void Vic3DScene::pick(PickObject & pickObject) {
 
 	// local mouse coordinates
@@ -1551,7 +1499,9 @@ void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 }
 
 
-void Vic3DScene::adjustCurserDuringMouseDrag(const QPoint & mouseDelta, const QPoint & localMousePos, QPoint & newLocalMousePos) {
+void Vic3DScene::adjustCurserDuringMouseDrag(const QPoint & mouseDelta, const QPoint & localMousePos,
+											 QPoint & newLocalMousePos, PickObject & pickObject)
+{
 	// cursor position moves out of window?
 	const int WINDOW_MOVE_MARGIN = 50;
 	if (localMousePos.x() < WINDOW_MOVE_MARGIN && mouseDelta.x() < 0) {
@@ -1568,6 +1518,13 @@ void Vic3DScene::adjustCurserDuringMouseDrag(const QPoint & mouseDelta, const QP
 	}
 	else if (localMousePos.y() > (m_viewPort.height()-WINDOW_MOVE_MARGIN) && mouseDelta.y() > 0) {
 		newLocalMousePos.setY(WINDOW_MOVE_MARGIN);
+	}
+
+	// if panning is enabled, reset the pan start positions/variables
+	if (m_navigationMode == NM_Panning && newLocalMousePos != localMousePos) {
+		pickObject.m_localMousePos = newLocalMousePos;
+		pick(pickObject);
+		panStart(newLocalMousePos, pickObject);
 	}
 }
 
@@ -1650,5 +1607,61 @@ IBKMK::Vector3D Vic3DScene::referencePoint() const {
 		return m_newGeometryObject.vertexList().back();
 }
 
+
+IBKMK::Vector3D Vic3DScene::calculateFarPoint(const QPoint & mousPos, const QMatrix4x4 & projectionMatrixInverted) {
+	// local mouse coordinates
+	int my = mousPos.y();
+	int mx = mousPos.x();
+
+	// viewport dimensions
+	double Dx = m_viewPort.width();
+	double Dy = m_viewPort.height();
+
+	double nx = (2*mx-Dx)/Dx;
+	double ny = -(2*my-Dy)/Dy;
+
+	// mouse position in NDC space, one point on near plane and one point on far plane
+	QVector4D nearPos(float(nx), float(ny), -1, 1.0);
+	QVector4D farPos (float(nx), float(ny),  1, 1.0);
+
+	// transform from NDC to model coordinates
+	QVector4D farResult = projectionMatrixInverted*farPos;
+	// don't forget normalization!
+	farResult /= farResult.w();
+
+	return VICUS::QVector2IBKVector(farResult.toVector3D());
+}
+
+
+void Vic3DScene::panStart(const QPoint & localMousePos, PickObject & pickObject) {
+
+	// configure the pick object and pick a point on the XY plane/or any visible surface
+	if (!pickObject.m_pickPerformed)
+		pick(pickObject);
+
+	// only enter orbit controller mode, if we actually hit something
+	if (!pickObject.m_candidates.empty()) {
+		m_navigationMode = NM_Panning;
+		qDebug() << "Entering panning mode";
+
+		// we need to store initial camera pos, selected object pos, far point
+		m_panCameraStart = VICUS::QVector2IBKVector(m_camera.translation());	// Point A
+		m_panObjectStart = pickObject.m_candidates.front().m_pickPoint;			// Point C
+		m_panFarPointStart = pickObject.m_lineOfSightOffset + pickObject.m_lineOfSightDirection;	// Point B
+		double BADistance = (m_panFarPointStart - m_panCameraStart).magnitude(); // Same as far distance?
+		double CADistance = (m_panObjectStart - m_panCameraStart).magnitude();
+		m_panCABARatio = CADistance/BADistance;
+		m_panMousePos = localMousePos;
+
+		// invert world2view matrix, with m_worldToView = m_projection * m_camera.toMatrix() * m_transform.toMatrix();
+		bool invertible;
+		m_panOriginalTransformMatrix = m_worldToView.inverted(&invertible);
+		if (!invertible) {
+			qWarning()<< "Cannot invert projection matrix.";
+			m_panOriginalTransformMatrix = QMatrix4x4();
+		}
+
+	}
+}
 
 } // namespace Vic3D
