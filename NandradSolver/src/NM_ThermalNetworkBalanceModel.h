@@ -134,6 +134,8 @@ private:
 	std::string										m_displayName;
 	/*! Vector with cached derivatives, updated at last call to update(). */
 	std::vector<double>								m_ydot;
+	/*! Heat heat fluxes towards all referenced zones [W]. */
+	std::vector<double>								m_zoneHeatFluxes;
 
 	/*! Poiter to states model. */
 	ThermalNetworkStatesModel						*m_statesModel;

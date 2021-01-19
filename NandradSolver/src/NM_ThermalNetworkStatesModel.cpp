@@ -67,7 +67,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 	// now populate the m_edges vector of the network solver
 
 	// process all hydraulic network elements and instatiate respective flow equation classes
-	for (const NANDRAD::HydraulicNetworkElement & e : nw.m_elements) {
+	for (unsigned int i =0; i < nw.m_elements.size(); ++i) {
+		const NANDRAD::HydraulicNetworkElement & e = nw.m_elements[i];
 		// - instance-specific parameters from HydraulicNetworkElement e
 		// - fluid property object from nw.m_fluid
 		// - component definition (via reference from e.m_componentId) and component DB stored
@@ -121,7 +122,6 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 								itComp->m_modelType)),
 								FUNC_ID);
 				}
-				break;
 			}
 			// decide which heat exchange is chosen
 			switch(itComp->m_heatExchangeType) {
@@ -163,7 +163,31 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 								itComp->m_heatExchangeType)),
 								FUNC_ID);
 				}
-				break;
+			}
+			// check for zone id
+			if(!e.m_intPara[NANDRAD::HydraulicNetworkElement::IP_ZoneId].name.empty()) {
+				// parameters are checked, already
+				unsigned int zoneId = (unsigned int) e.m_intPara[NANDRAD::HydraulicNetworkElement::IP_ZoneId].value;
+				// check whether zone is registered
+				if(!m_zoneIds.empty()) {
+					std::vector<unsigned int>::iterator fIt = std::find(m_zoneIds.begin(),
+																			  m_zoneIds.end(),zoneId);
+					// add a new entry
+					if(fIt == m_zoneIds.end()) {
+						m_zoneIdxs[i] = m_zoneIds.size();
+						m_zoneIds.push_back(zoneId);
+					}
+					else {
+						unsigned int index = std::distance(m_zoneIds.begin(), fIt);
+						m_zoneIdxs[i] = index;
+					}
+				}
+				else {
+					// resize zone idx vector
+					m_zoneIdxs.resize(m_network->m_elements.size(), (unsigned int) (-1));
+					m_zoneIdxs[i] = 0;
+					m_zoneIds.push_back(zoneId);
+				}
 			}
 		}
 		catch(IBK::Exception &ex) {

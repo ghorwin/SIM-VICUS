@@ -123,6 +123,11 @@ private:
 	std::string										m_displayName;
 	/*! Storage of all network element ids, used for vector output. */
 	std::vector<unsigned int>						m_elementIds;
+	/*! All zone ids referenced by a fluid component. */
+	std::vector<unsigned int>						m_zoneIds;
+	/*! Indexes of all zones for each network element, (unsigned int) (-1) for
+		missing zone. */
+	std::vector<unsigned int>						m_zoneIdxs;
 
 	/*! Cached input data vector (size nPrimaryStateResults()). */
 	std::vector<double>								m_y;

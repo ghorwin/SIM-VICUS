@@ -165,7 +165,8 @@ namespace NANDRAD_MODEL {
 				case 5 : return "ConstructionHeatConductionLoad";
 				case 6 : return "WindowHeatConductionLoad";
 				case 7 : return "WindowSolarRadiationLoad";
-				case 8 : return "CompleteMoistureLoad";
+				case 8 : return "HydraulicHeatingLoad";
+				case 9 : return "CompleteMoistureLoad";
 			} break;
 			// RoomRadiationLoadsModel::Results
 			case 11 :
@@ -302,7 +303,8 @@ namespace NANDRAD_MODEL {
 				case 5 : return "ConstructionHeatConductionLoad";
 				case 6 : return "WindowHeatConductionLoad";
 				case 7 : return "WindowSolarRadiationLoad";
-				case 8 : return "CompleteMoistureLoad";
+				case 8 : return "HydraulicHeatingLoad";
+				case 9 : return "CompleteMoistureLoad";
 			} break;
 			// RoomRadiationLoadsModel::Results
 			case 11 :
@@ -440,7 +442,8 @@ namespace NANDRAD_MODEL {
 				case 5 : return "Sum of heat conduction fluxes from construction surfaces into the room.";
 				case 6 : return "Sum of heat conduction fluxes through windows into the room.";
 				case 7 : return "Sum of solar radiation fluxes through windows into the room (only the fraction applied to room volume).";
-				case 8 : return "Sum of all moisture fluxes into the room and moisture sources.";
+				case 8 : return "Sum of heat fluxes from components of a hydraulic network into the room (only the fraction applied to room volume).";
+				case 9 : return "Sum of all moisture fluxes into the room and moisture sources.";
 			} break;
 			// RoomRadiationLoadsModel::Results
 			case 11 :
@@ -577,7 +580,8 @@ namespace NANDRAD_MODEL {
 				case 5 : return "W";
 				case 6 : return "W";
 				case 7 : return "W";
-				case 8 : return "kg/s";
+				case 8 : return "W";
+				case 9 : return "kg/s";
 			} break;
 			// RoomRadiationLoadsModel::Results
 			case 11 :
@@ -715,6 +719,7 @@ namespace NANDRAD_MODEL {
 				case 6 : return "#FFFFFF";
 				case 7 : return "#FFFFFF";
 				case 8 : return "#FFFFFF";
+				case 9 : return "#FFFFFF";
 			} break;
 			// RoomRadiationLoadsModel::Results
 			case 11 :
@@ -852,6 +857,7 @@ namespace NANDRAD_MODEL {
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
 				case 7 : return std::numeric_limits<double>::quiet_NaN();
 				case 8 : return std::numeric_limits<double>::quiet_NaN();
+				case 9 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// RoomRadiationLoadsModel::Results
 			case 11 :
@@ -910,7 +916,7 @@ namespace NANDRAD_MODEL {
 			// OutputHandler::OutputFileNames
 			case 9 : return 7;
 			// RoomBalanceModel::Results
-			case 10 : return 9;
+			case 10 : return 10;
 			// RoomRadiationLoadsModel::Results
 			case 11 : return 1;
 			// RoomStatesModel::Results
@@ -948,7 +954,7 @@ namespace NANDRAD_MODEL {
 			// OutputHandler::OutputFileNames
 			case 9 : return 6;
 			// RoomBalanceModel::Results
-			case 10 : return 8;
+			case 10 : return 9;
 			// RoomRadiationLoadsModel::Results
 			case 11 : return 0;
 			// RoomStatesModel::Results

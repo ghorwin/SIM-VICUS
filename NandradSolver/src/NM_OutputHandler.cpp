@@ -64,7 +64,9 @@ const char * const FLUX_QUANTITIES[] = {
 	"ConstructionHeatConductionLoad",
 	"WindowHeatConductionLoad",
 	"WindowSolarRadiationLoad",
-	"WindowSolarRadiationFluxSum"
+	"WindowSolarRadiationFluxSum",
+	"HydraulicHeatingLoad"
+
 };
 
 const char * const NETWORK_QUANTITIES[] = {

@@ -59,6 +59,7 @@ public:
 		R_ConstructionHeatConductionLoad,					// Keyword: ConstructionHeatConductionLoad				[W]		'Sum of heat conduction fluxes from construction surfaces into the room.'
 		R_WindowHeatConductionLoad,							// Keyword: WindowHeatConductionLoad					[W]		'Sum of heat conduction fluxes through windows into the room.'
 		R_WindowSolarRadiationLoad,							// Keyword: WindowSolarRadiationLoad					[W]		'Sum of solar radiation fluxes through windows into the room (only the fraction applied to room volume).'
+		R_HydraulicHeatingLoad,								// Keyword: HydraulicHeatingLoad						[W]		'Sum of heat fluxes from components of a hydraulic network into the room (only the fraction applied to room volume).'
 		R_CompleteMoistureLoad,								// Keyword: CompleteMoistureLoad						[kg/s]	'Sum of all moisture fluxes into the room and moisture sources.'
 		NUM_R
 	};
@@ -163,6 +164,8 @@ private:
 	std::vector<const double *>						m_heatCondValueRefs;
 	/*! Value references for window heat conduction fluxes in [W] (positive if out-of-room). */
 	std::vector<const double *>						m_windowHeatCondValueRefs;
+	/*! Value references for heat fluxes from networks in [W] (positive if out-of-room). */
+	std::vector<const double *>						m_hydraulicHeatingLoadValueRefs;
 
 	/*! True, if we have a model providing solar radiation loads to zone. */
 	bool											m_haveSolarRadiationModel = false;
@@ -174,6 +177,8 @@ private:
 	const double *									m_infiltrationValueRef = nullptr;
 	/*! Number of internal loads model input refs that we have generated and that we get value refs for. */
 	unsigned int									m_internalLoadsModelCount = 0;
+	/*! Number of network load model input refs that we have generated and that we get value refs for. */
+	unsigned int									m_hydraulicHeatingLoadsModelCount = 0;
 	/*! Value reference for natural equipment loads in [W] (positive if into room). */
 	const double *									m_equipmentLoadValueRef = nullptr;
 	/*! Value reference for natural person loads in [W] (positive if into room). */

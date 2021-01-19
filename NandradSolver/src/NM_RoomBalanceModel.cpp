@@ -31,6 +31,7 @@
 #include "NM_NaturalVentilationModel.h"
 #include "NM_WindowModel.h"
 #include "NM_RoomRadiationLoadsModel.h"
+#include "NM_ThermalNetworkBalanceModel.h"
 
 
 namespace NANDRAD_MODEL {
@@ -127,6 +128,7 @@ void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & 
 	InputReference	windowSolarRadIR;
 	std::vector<InputReference> ventilationRH;
 	std::vector<InputReference> internalLoadsRH;
+	std::vector<InputReference> networkLoadsRH;
 
 	// search all models for construction models that have an interface to this zone
 	for (AbstractModel * model : models) {
@@ -250,6 +252,24 @@ void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & 
 				internalLoadsRH.push_back(r);
 			}
 		}
+		// create input references for heat fluxes out of hydraulic networks
+		else if (model->referenceType() == NANDRAD::ModelInputReference::MRT_NETWORK) {
+			ThermalNetworkBalanceModel * thermNetworkModel = dynamic_cast<ThermalNetworkBalanceModel *>(model);
+			if (thermNetworkModel != nullptr) {
+				++m_hydraulicHeatingLoadsModelCount;
+				InputReference r;
+				r.m_name.m_name = "ZoneHeatFlux";
+				// add current id as index so that we can sum uphat fluxes from all networks
+				r.m_name.m_index = (int) id();
+				r.m_id = model->id();
+				r.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORK;
+				// this reference is only provided if the corresponding network with element
+				// heat flux into current zone
+				r.m_required = false;
+				m_hydraulicHeatingLoadValueRefs.push_back(nullptr);
+				networkLoadsRH.push_back(r);
+			}
+		}
 	} // model object loop
 
 
@@ -260,6 +280,7 @@ void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & 
 		m_inputRefs.push_back(windowSolarRadIR);
 	m_inputRefs.insert(m_inputRefs.end(), ventilationRH.begin(), ventilationRH.end());
 	m_inputRefs.insert(m_inputRefs.end(), internalLoadsRH.begin(), internalLoadsRH.end());
+	m_inputRefs.insert(m_inputRefs.end(), networkLoadsRH.begin(), networkLoadsRH.end());
 
 }
 
@@ -301,6 +322,7 @@ void RoomBalanceModel::setInputValueRefs(const std::vector<QuantityDescription> 
 		m_infiltrationValueRef = *it;
 	}
 
+
 	// internal loads
 	for (unsigned int i=0; i<m_internalLoadsModelCount; ++i) {
 		// check against duplicate definition
@@ -330,6 +352,10 @@ void RoomBalanceModel::setInputValueRefs(const std::vector<QuantityDescription> 
 		}
 	}
 
+	// network loads
+	for (unsigned int i=0; i<m_hydraulicHeatingLoadsModelCount; ++i) {
+		m_hydraulicHeatingLoadValueRefs[i] = *(it++);
+	}
 	/// \todo other input fluxes that we sum up
 
 	// check that we have all
@@ -349,6 +375,13 @@ void RoomBalanceModel::stateDependencies(std::vector<std::pair<const double *, c
 			resultInputValueReferences.push_back(std::make_pair(&m_results[R_ConstructionHeatConductionLoad], heatCondVars));
 		for (const double * heatCondVars : m_windowHeatCondValueRefs)
 			resultInputValueReferences.push_back(std::make_pair(&m_results[R_WindowHeatConductionLoad], heatCondVars));
+		// Sum up all network loads
+		for (const double * networkVars : m_hydraulicHeatingLoadValueRefs) {
+			if(networkVars == nullptr)
+				continue;
+			resultInputValueReferences.push_back(std::make_pair(&m_results[R_HydraulicHeatingLoad], networkVars));
+			resultInputValueReferences.push_back(std::make_pair(&m_results[R_CompleteThermalLoad], networkVars));
+		}
 
 		if (m_haveSolarRadiationModel)
 			resultInputValueReferences.push_back(std::make_pair(&m_results[R_WindowSolarRadiationLoad], m_windowSolarRadiationLoadsRef));
@@ -397,6 +430,18 @@ int RoomBalanceModel::update() {
 
 	double SumQdot =	sumQHeatCondToWalls +
 						sumQHeatCondThroughWindows;
+
+	double sumQHydraHeating = 0.0; // sum up all heat fluxes from hydraulic networks
+
+	for (const double * flux : m_hydraulicHeatingLoadValueRefs) {
+		if(flux == nullptr)
+			continue;
+		sumQHydraHeating += *flux;
+	}
+
+	// add network loads
+	m_results[R_HydraulicHeatingLoad] = sumQHydraHeating;
+	SumQdot += sumQHydraHeating;
 
 	// add solar radiation flux load
 	if (m_haveSolarRadiationModel) {

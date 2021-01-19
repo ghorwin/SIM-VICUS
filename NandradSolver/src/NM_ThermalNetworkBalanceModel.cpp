@@ -50,6 +50,10 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 	IBK_ASSERT(m_statesModel->m_network->m_elements.size() ==
 			   m_statesModel->m_p->m_flowElements.size());
 
+	// resize heat fluxes to zones
+	if(!statesModel->m_zoneIds.empty())
+		m_zoneHeatFluxes.resize(statesModel->m_zoneIds.size());
+
 	// resize vectors
 	m_ydot.resize(m_statesModel->nPrimaryStateResults());
 }
@@ -59,7 +63,7 @@ void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescript
 	if(!resDesc.empty())
 		resDesc.clear();
 	// heat flux vector is a result
-	QuantityDescription desc("HeatFluxes", "W", "Heat flux from all flow elements into environment", false);
+	QuantityDescription desc("FluidHeatFluxes", "W", "Heat flux from all flow elements into environment", false);
 	// deactivate description;
 	if(m_statesModel->m_elementIds.empty())
 		desc.m_size = 0;
@@ -68,11 +72,19 @@ void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescript
 	resDesc.push_back(desc);
 
 	// set a description for each flow element
-	desc.m_name = "HeatFlux";
+	desc.m_name = "FluidHeatFlux";
 	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 	// loop through all flow elements
 	for(unsigned int i = 0; i < m_statesModel->m_elementIds.size(); ++i) {
 		desc.m_id = m_statesModel->m_elementIds[i];
+		resDesc.push_back(desc);
+	}
+
+	if(!m_statesModel->m_zoneIds.empty()) {
+		// set a description for each zone
+		desc = QuantityDescription("ZoneHeatFlux", "W", "Heat flux into all zones from flow elements", false);
+		// add current index to description
+		desc.resize(m_statesModel->m_zoneIds, VectorValuedQuantityIndex::IK_ModelID);
 		resDesc.push_back(desc);
 	}
 
@@ -121,6 +133,9 @@ void ThermalNetworkBalanceModel::resultValueRefs(std::vector<const double *> &re
 	// heat flux vector is a result quantity
 	for(unsigned int i = 0; i < m_statesModel->m_p->m_flowElements.size(); ++i)
 		res.push_back(&m_statesModel->m_p->m_fluidHeatFluxes[i]);
+	// heat flux vector is a result quantity
+	for(unsigned int i = 0; i < m_zoneHeatFluxes.size(); ++i)
+		res.push_back(&m_zoneHeatFluxes[i]);
 	// inlet node temperature vector is a result quantity
 	for(unsigned int i = 0; i < m_statesModel->m_p->m_flowElements.size(); ++i)
 		res.push_back(&m_statesModel->m_p->m_inletNodeTemperatures[i]);
@@ -149,6 +164,22 @@ const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference &
 		unsigned int index = (unsigned int) std::distance(m_statesModel->m_elementIds.begin(), fIt);
 		IBK_ASSERT(index < m_statesModel->m_n);
 		return &m_statesModel->m_p->m_fluidHeatFluxes[index];
+	}
+	if(quantityName.m_name == std::string("ZoneHeatFlux")) {
+		// no zones are given
+		if(m_statesModel->m_zoneIds.empty())
+			return nullptr;
+		// find zone id
+		std::vector<unsigned int>::iterator fIt =
+			std::find(m_statesModel->m_zoneIds.begin(), m_statesModel->m_zoneIds.end(),
+				  (unsigned int) quantityName.m_index);
+		// invalid index access
+		if(fIt == m_statesModel->m_zoneIds.end())
+			return nullptr;
+
+		unsigned int index = (unsigned int) std::distance(m_statesModel->m_zoneIds.begin(), fIt);
+		// found a valid entry
+		return &m_zoneHeatFluxes[index];
 	}
 	// return vector of inlet node temperatures
 	if(quantityName == std::string("InletNodeTemperatures")) {
@@ -297,7 +328,26 @@ int ThermalNetworkBalanceModel::update() {
 	if(res != 0)
 		return res;
 
-	// sum up heat fluxes
+
+	// update zone specific fluxes
+	if(!m_statesModel->m_zoneIds.empty()) {
+		// set zone heat fluxes to 0
+		std::fill(m_zoneHeatFluxes.begin(), m_zoneHeatFluxes.end(), 0);
+
+		IBK_ASSERT(m_statesModel->m_zoneIdxs.size() == m_statesModel->m_p->m_fluidHeatFluxes.size());
+
+		for(unsigned int i = 0; i < m_statesModel->m_zoneIdxs.size(); ++i) {
+			unsigned int index = m_statesModel->m_zoneIdxs[i];
+			// invaid index
+			if(index == (unsigned int)(-1))
+				continue;
+			// we sum up heat flux of all zones
+			IBK_ASSERT(index < m_zoneHeatFluxes.size());
+			m_zoneHeatFluxes[index] += m_statesModel->m_p->m_fluidHeatFluxes[i];
+		}
+	}
+
+	// update derivatives
 	unsigned int offset = 0;
 	for(ThermalNetworkAbstractFlowElement *fe : m_statesModel->m_p->m_flowElements) {
 		fe->internalDerivatives(&m_ydot[offset]);

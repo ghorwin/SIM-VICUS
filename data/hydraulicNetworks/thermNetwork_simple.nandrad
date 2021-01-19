@@ -66,6 +66,7 @@
 				<Elements>
 					<HydraulicNetworkElement id="1" inletNodeId="101" outletNodeId="0" componentId="1" displayName="node 0" />
 					<HydraulicNetworkElement id="2" inletNodeId="0" outletNodeId="1" componentId="3" pipeId="1">
+						<IBK:IntPara name="ZoneId">1</IBK:IntPara>
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 						<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
 					</HydraulicNetworkElement>
@@ -73,6 +74,7 @@
 						<IBK:Parameter name="HeatFlux" unit="W">100</IBK:Parameter>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="4" inletNodeId="100" outletNodeId="101" componentId="3" pipeId="1">
+						<IBK:IntPara name="ZoneId">1</IBK:IntPara>
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 						<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
 					</HydraulicNetworkElement>
@@ -114,8 +116,8 @@
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
-					<Quantity>InletNodePressure</Quantity>
-					<ObjectListName>the Network</ObjectListName>
+					<Quantity>HydraulicHeatingLoad</Quantity>
+					<ObjectListName>Zones</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 			</Definitions>
@@ -133,6 +135,10 @@
 			<ObjectList name="the Network">
 				<FilterID>*</FilterID>
 				<ReferenceType>NetworkElement</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Zones">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
 		
