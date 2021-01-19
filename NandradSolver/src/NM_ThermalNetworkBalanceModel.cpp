@@ -374,7 +374,10 @@ int ThermalNetworkBalanceModel::update() {
 		offset += fe->nInternalStates();
 	}
 
+#ifdef NANDRAD_NETWORK_DEBUG_OUTPUTS
 	printVars();
+#endif // NANDRAD_NETWORK_DEBUG_OUTPUTS
+
 	return 0;
 }
 

@@ -844,7 +844,9 @@ int HydraulicNetworkModelImpl::solve() {
 		// TODO : add alternative convergence criterion based on rhs norm
 	}
 
+#ifdef NANDRAD_NETWORK_DEBUG_OUTPUTS
 	printVars();
+#endif // NANDRAD_NETWORK_DEBUG_OUTPUTS
 
 	// update nodal values
 	for(unsigned int i = 0; i < m_network.m_elements.size(); ++i) {
