@@ -46,10 +46,25 @@ set( LINK_LIBS
 	SuiteSparse
 )
 
+# collect sources from NandradSolver project directory
+
+file( GLOB NandradSolver_SRCS ${PROJECT_SOURCE_DIR}/../../../NandradSolver/src/*.cpp )
+
+# add NANDRAD_KeywordList.cpp
+set( NandradSolver_SRCS
+	${NandradSolver_SRCS}
+	${PROJECT_SOURCE_DIR}/../../../NandradSolver/src/NM_KeywordList.cpp
+)
+
+# remove main from list
+list(REMOVE_ITEM NandradSolver_SRCS ${PROJECT_SOURCE_DIR}/../../../NandradSolver/src/main.cpp)
+
 add_library( ${PROJECT_NAME} SHARED
 	${PROJECT_SOURCE_DIR}/../../src/InstanceData.cpp
+	${PROJECT_SOURCE_DIR}/../../src/NandradModelFMU.cpp
 	${PROJECT_SOURCE_DIR}/../../src/fmi2common/fmi2Functions.cpp
 	${PROJECT_SOURCE_DIR}/../../src/fmi2common/InstanceDataCommon.cpp
+	${NandradSolver_SRCS}
 )
 
 # link against the dependent libraries

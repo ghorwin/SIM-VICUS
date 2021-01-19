@@ -77,7 +77,37 @@ SOURCES += \
 	../../src/InstanceData.cpp \
 	../../src/NandradModelFMU.cpp \
 	../../src/fmi2common/fmi2Functions.cpp \
-	../../src/fmi2common/InstanceDataCommon.cpp
+	../../src/fmi2common/InstanceDataCommon.cpp \
+    ../../../NandradSolver/src/NM_AbstractModel.cpp \
+    ../../../NandradSolver/src/NM_ConstructionBalanceModel.cpp \
+    ../../../NandradSolver/src/NM_ConstructionStatesModel.cpp \
+    ../../../NandradSolver/src/NM_DefaultModel.cpp \
+    ../../../NandradSolver/src/NM_DefaultStateDependency.cpp \
+    ../../../NandradSolver/src/NM_Directories.cpp \
+    ../../../NandradSolver/src/NM_FMIInputOutput.cpp \
+    ../../../NandradSolver/src/NM_HydraulicNetworkFlowElements.cpp \
+    ../../../NandradSolver/src/NM_HydraulicNetworkModel.cpp \
+    ../../../NandradSolver/src/NM_InternalLoadsModel.cpp \
+    ../../../NandradSolver/src/NM_KeywordList.cpp \
+    ../../../NandradSolver/src/NM_Loads.cpp \
+    ../../../NandradSolver/src/NM_NandradModel.cpp \
+    ../../../NandradSolver/src/NM_NaturalVentilationModel.cpp \
+    ../../../NandradSolver/src/NM_OutputFile.cpp \
+    ../../../NandradSolver/src/NM_OutputHandler.cpp \
+    ../../../NandradSolver/src/NM_QuantityName.cpp \
+    ../../../NandradSolver/src/NM_RoomBalanceModel.cpp \
+    ../../../NandradSolver/src/NM_RoomRadiationLoadsModel.cpp \
+    ../../../NandradSolver/src/NM_RoomStatesModel.cpp \
+    ../../../NandradSolver/src/NM_Schedules.cpp \
+    ../../../NandradSolver/src/NM_StateModelGroup.cpp \
+    ../../../NandradSolver/src/NM_SteadyStateSolver.cpp \
+    ../../../NandradSolver/src/NM_ThermalNetworkBalanceModel.cpp \
+    ../../../NandradSolver/src/NM_ThermalNetworkFlowElements.cpp \
+    ../../../NandradSolver/src/NM_ThermalNetworkPrivate.cpp \
+    ../../../NandradSolver/src/NM_ThermalNetworkStatesModel.cpp \
+    ../../../NandradSolver/src/NM_VectorValuedQuantity.cpp \
+    ../../../NandradSolver/src/NM_VectorValuedQuantityIndex.cpp \
+    ../../../NandradSolver/src/NM_WindowModel.cpp
 
 HEADERS += \
 	../../src/InstanceData.h \
