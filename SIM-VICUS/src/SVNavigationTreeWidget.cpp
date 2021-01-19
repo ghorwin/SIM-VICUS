@@ -282,5 +282,13 @@ void SVNavigationTreeWidget::on_treeWidget_itemSelectionChanged() {
 
 
 void SVNavigationTreeWidget::on_actionRemoveSelected_triggered() {
-	// process all selected objects
+	emit removeSelected();
+}
+
+void SVNavigationTreeWidget::on_actionShowSelected_triggered() {
+	emit showSelected();
+}
+
+void SVNavigationTreeWidget::on_actionHideSelected_triggered() {
+	emit hideSelected();
 }

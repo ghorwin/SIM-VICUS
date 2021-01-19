@@ -92,6 +92,9 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			SVViewState vs = SVViewStateHandler::instance().viewState();
 			vs.m_sceneOperationMode = SVViewState::NUM_OM;
 			vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+
+			// clear selection object, to avoid accessing invalidated pointers
+			m_selectedGeometryObject.m_selectedObjects.clear();
 			SVViewStateHandler::instance().setViewState(vs);
 		} break;
 
@@ -1050,8 +1053,11 @@ void Vic3DScene::deleteSelected() {
 	for (const VICUS::Object * obj : m_selectedGeometryObject.m_selectedObjects)
 		selectedObjectIDs.push_back(obj->uniqueID());
 
+	if (selectedObjectIDs.empty())
+		return;
+
 	// clear selected objects (since they are now removed)
-	m_selectedGeometryObject.m_selectedObjects.clear();
+//	m_selectedGeometryObject.m_selectedObjects.clear();
 	SVUndoDeleteSelected * undo = new SVUndoDeleteSelected(tr("Removing selected geometry"),
 														   selectedObjectIDs);
 	// clear selection
@@ -1060,10 +1066,16 @@ void Vic3DScene::deleteSelected() {
 
 
 void Vic3DScene::showSelected() {
-	// process all project geometry and create data for a state modification undo action
+	std::set<const VICUS::Object*> selectedObjects;
+	// process all objects in project, take all objects that are selected, yet invisible
+	WireFrameObject::updateSelectedObjectsFromProject(selectedObjects, true);
 	std::set<unsigned int> selectedObjectIDs;
-	for (const VICUS::Object * obj : m_selectedGeometryObject.m_selectedObjects)
+	// Note: all objects in m_selectedGeometryObject.m_selectedObjects are required to be visible!
+	for (const VICUS::Object * obj : selectedObjects)
 		selectedObjectIDs.insert(obj->uniqueID());
+
+	if (selectedObjectIDs.empty())
+		return;
 
 	SVUndoTreeNodeState * action = new SVUndoTreeNodeState(tr("Visibility changed"),
 														   SVUndoTreeNodeState::VisibilityState,
@@ -1076,8 +1088,12 @@ void Vic3DScene::showSelected() {
 void Vic3DScene::hideSelected() {
 	// process all project geometry and create data for a state modification undo action
 	std::set<unsigned int> selectedObjectIDs;
+	// Note: all objects in m_selectedGeometryObject.m_selectedObjects are required to be visible!
 	for (const VICUS::Object * obj : m_selectedGeometryObject.m_selectedObjects)
 		selectedObjectIDs.insert(obj->uniqueID());
+
+	if (selectedObjectIDs.empty())
+		return;
 
 	SVUndoTreeNodeState * action = new SVUndoTreeNodeState(tr("Visibility changed"),
 														   SVUndoTreeNodeState::VisibilityState,

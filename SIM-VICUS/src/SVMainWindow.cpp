@@ -401,11 +401,18 @@ void SVMainWindow::setup() {
 	m_geometryViewSplitter->addWidget(m_navigationTreeWidget);
 	m_geometryViewSplitter->setCollapsible(0, false);
 
-	// *** Create geometry view ***
+	// *** Geometry view ***
+
 	m_geometryView = new SVGeometryView(this);
 	m_geometryViewSplitter->addWidget(m_geometryView);
 	m_geometryViewSplitter->setCollapsible(1, false);
 
+	// *** Signal/slot connections ***
+
+	Vic3D::SceneView * sv = const_cast<Vic3D::SceneView*>(m_geometryView->sceneView());
+	connect(m_navigationTreeWidget, SIGNAL(removeSelected()), sv, SLOT(onDeleteSelected()));
+	connect(m_navigationTreeWidget, SIGNAL(showSelected()), sv, SLOT(onShowSelected()));
+	connect(m_navigationTreeWidget, SIGNAL(hideSelected()), sv, SLOT(onHideSelected()));
 
 	// *** setup tool bar (add actions for undo and redo) ***
 

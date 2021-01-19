@@ -62,8 +62,11 @@ public:
 
 	/*! Processed project data and updates the m_selectedObjects vector based
 		on the selection property of the objects.
+		\param selectedObjects Here the pointers of selected objects will be stored.
+		\param takeInvisible If true, only invisible objects with selection status are taken. If false, only visible
+							 selected objects will be taken.
 	*/
-	static void updateSelectedObjectsFromProject(std::set<const VICUS::Object *> & selectedObjects);
+	static void updateSelectedObjectsFromProject(std::set<const VICUS::Object *> & selectedObjects, bool takeInvisible=false);
 
 	/*! The transformation from model coordinates to (current) world coordinates. */
 	Transform3D					m_transform;

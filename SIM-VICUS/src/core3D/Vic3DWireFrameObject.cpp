@@ -188,8 +188,11 @@ void WireFrameObject::render() {
 }
 
 
-void WireFrameObject::updateSelectedObjectsFromProject(std::set<const VICUS::Object*> & selectedObjects) {
+void WireFrameObject::updateSelectedObjectsFromProject(std::set<const VICUS::Object*> & selectedObjects, bool takeInvisible) {
 	selectedObjects.clear();
+
+	// first, we take *all* objects that are selected
+
 	// process all building surfaces
 	const VICUS::Project & prj = project();
 	// Buildings
@@ -197,7 +200,7 @@ void WireFrameObject::updateSelectedObjectsFromProject(std::set<const VICUS::Obj
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			for (const VICUS::Room & r : bl.m_rooms) {
 				for (const VICUS::Surface & s : r.m_surfaces) {
-					if (s.m_selected && s.m_visible)
+					if (s.m_selected)
 						selectedObjects.insert(&s);
 				}
 			}
@@ -207,21 +210,36 @@ void WireFrameObject::updateSelectedObjectsFromProject(std::set<const VICUS::Obj
 	// Networks
 	for (const VICUS::Network & n : prj.m_geometricNetworks) {
 		for (const VICUS::NetworkEdge & e : n.m_edges) {
-			if (e.m_selected && e.m_visible)
+			if (e.m_selected)
 				selectedObjects.insert(&e);
 		}
 
 		for (const VICUS::NetworkNode & nod : n.m_nodes) {
-			if (nod.m_selected && nod.m_visible)
+			if (nod.m_selected)
 				selectedObjects.insert(&nod);
 		}
 	}
 
 	// Dumb plain geometry
 	for (const VICUS::Surface & s : prj.m_plainGeometry) {
-		if (s.m_selected && s.m_visible)
+		if (s.m_selected)
 			selectedObjects.insert(&s);
 	}
+
+	// now filter out those that are not wanted
+
+	std::set<const VICUS::Object*> filteredSet;
+	if (takeInvisible) {
+		for (const VICUS::Object* o : selectedObjects)
+			if (!o->m_visible)
+				filteredSet.insert(o);
+	}
+	else {
+		for (const VICUS::Object* o : selectedObjects)
+			if (o->m_visible)
+				filteredSet.insert(o);
+	}
+	selectedObjects.swap(filteredSet);
 }
 
 } // namespace Vic3D

@@ -285,6 +285,7 @@ void SVGeometryView::on_actionZLock_toggled(bool on) {
 	focusSceneView();
 }
 
+
 void SVGeometryView::setupToolBar() {
 	m_snapAction = new QAction(tr("Snap"), this);
 	m_snapAction->setCheckable(true);

@@ -29,12 +29,21 @@ public slots:
 	/*! Connected to view-state handler. */
 	void onViewStateChanged();
 
+signals:
+	void removeSelected();
+	void hideSelected();
+	void showSelected();
+
 private slots:
 	void on_treeWidget_itemCollapsed(QTreeWidgetItem *item);
 
 	void on_treeWidget_itemSelectionChanged();
 
 	void on_actionRemoveSelected_triggered();
+
+	void on_actionShowSelected_triggered();
+
+	void on_actionHideSelected_triggered();
 
 private:
 	enum NodeType {
