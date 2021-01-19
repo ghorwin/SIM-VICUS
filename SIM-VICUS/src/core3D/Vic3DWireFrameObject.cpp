@@ -88,7 +88,7 @@ void WireFrameObject::destroy() {
 
 void WireFrameObject::updateBuffers() {
 
-	updateSelectedObjectsFromProject();
+	updateSelectedObjectsFromProject(m_selectedObjects);
 
 	// clear out existing cache
 
@@ -188,8 +188,8 @@ void WireFrameObject::render() {
 }
 
 
-void WireFrameObject::updateSelectedObjectsFromProject() {
-	m_selectedObjects.clear();
+void WireFrameObject::updateSelectedObjectsFromProject(std::set<const VICUS::Object*> & selectedObjects) {
+	selectedObjects.clear();
 	// process all building surfaces
 	const VICUS::Project & prj = project();
 	// Buildings
@@ -198,7 +198,7 @@ void WireFrameObject::updateSelectedObjectsFromProject() {
 			for (const VICUS::Room & r : bl.m_rooms) {
 				for (const VICUS::Surface & s : r.m_surfaces) {
 					if (s.m_selected && s.m_visible)
-						m_selectedObjects.insert(&s);
+						selectedObjects.insert(&s);
 				}
 			}
 		}
@@ -208,19 +208,19 @@ void WireFrameObject::updateSelectedObjectsFromProject() {
 	for (const VICUS::Network & n : prj.m_geometricNetworks) {
 		for (const VICUS::NetworkEdge & e : n.m_edges) {
 			if (e.m_selected && e.m_visible)
-				m_selectedObjects.insert(&e);
+				selectedObjects.insert(&e);
 		}
 
 		for (const VICUS::NetworkNode & nod : n.m_nodes) {
 			if (nod.m_selected && nod.m_visible)
-				m_selectedObjects.insert(&nod);
+				selectedObjects.insert(&nod);
 		}
 	}
 
 	// Dumb plain geometry
 	for (const VICUS::Surface & s : prj.m_plainGeometry) {
 		if (s.m_selected && s.m_visible)
-			m_selectedObjects.insert(&s);
+			selectedObjects.insert(&s);
 	}
 }
 

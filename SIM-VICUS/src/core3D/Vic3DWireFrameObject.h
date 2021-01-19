@@ -63,7 +63,7 @@ public:
 	/*! Processed project data and updates the m_selectedObjects vector based
 		on the selection property of the objects.
 	*/
-	void updateSelectedObjectsFromProject();
+	static void updateSelectedObjectsFromProject(std::set<const VICUS::Object *> & selectedObjects);
 
 	/*! The transformation from model coordinates to (current) world coordinates. */
 	Transform3D					m_transform;

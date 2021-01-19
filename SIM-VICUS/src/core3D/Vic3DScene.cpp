@@ -117,15 +117,15 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 		case SVProjectHandler::NodeStateModified : {
 			// we need to implement the following logic:
 			//
-			// - object is visible, but not selected -> draw object with regular geometry shader
-			// - object is visible and selected -> object is hidden from regular geometry shader but shown in wireframe object
-			// - object is not visible and either selected/not selected -> object is hidden
-
-			// The update of the selection object can be quite lengthy, hence we try to limit this to cases, where
-			// this is needed. We populate a temporary set with pointers to selected objects. If this set
-			// is the same as currently set in the wire frame object, the selection hasn't changed and we do not
-			// need to redraw.
-			std::set<const VICUS::Object*> selectedObjects;
+			// a) object is visible, but not selected -> draw object with regular geometry shader
+			// b) object is visible and selected -> object is hidden from regular geometry shader but shown in wireframe object
+			// c) object is not visible and either selected/not selected -> object is hidden
+			//
+			// In the loop below we first update the colors painted with the opaque regular geometry shaders.
+			// All visible and not selected objects/surfaces (option a) will get painted with the
+			// current property color.
+			// In order to keep the memory transfor to the GPU small, we remember first and last vertex index to be changed
+			// and only copy the affected color buffer into GPU memory.
 
 			// we need to update the colors of some building elements
 			unsigned int smallestVertexIndex = m_opaqueGeometryObject.m_vertexBufferData.size();
@@ -134,14 +134,11 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			const SVUndoTreeNodeState::ModifiedNodes * info = dynamic_cast<SVUndoTreeNodeState::ModifiedNodes *>(data);
 			Q_ASSERT(info != nullptr);
 
-			bool selectionModified = false;
-
-			// process all modified nodes
+			// process all _modified_ objects (the other remain unchanged
 			for (unsigned int id : info->m_nodeIDs) {
 				// find the object in question
 				const VICUS::Object * obj = project().objectById(id);
 
-				bool visible = true;
 				// is this ID a surface?
 				const VICUS::Surface * s = dynamic_cast<const VICUS::Surface*>(obj);
 				if (s != nullptr) {
@@ -151,9 +148,9 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 					unsigned int vertexStart = m_opaqueGeometryObject.m_vertexStartMap[id];
 					smallestVertexIndex = std::min(smallestVertexIndex, vertexStart);
 					// now update the color buffer for this surface
+					// color will be fully transparent if surface is either invisible or selected
 					updateColors(*s, vertexStart, m_opaqueGeometryObject.m_colorBufferData);
 					largestVertexIndex = std::min(smallestVertexIndex, vertexStart);
-					visible = s->m_visible;
 				}
 
 				// is it a NetworkNode or NetworkEdge?
@@ -166,51 +163,33 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 					smallestVertexIndex = std::min(smallestVertexIndex, vertexStart);
 					// now update the color buffer for this object depending on type
 					if (edge != nullptr) {
+						/// TODO : switch color based on current property mode
 						QColor col = Qt::red;
+						// color will be fully transparent if surface is either invisible or selected
 						if (!edge->m_visible || edge->m_selected)
 							col.setAlpha(0);
 						updateCylinderColors(col, vertexStart, m_networkGeometryObject.m_colorBufferData);
 					}
 					else {
+						/// TODO : switch color based on current property mode
 						QColor col = node->m_visualizationColor;
+						// color will be fully transparent if surface is either invisible or selected
 						if (!node->m_visible || node->m_selected)
 							col.setAlpha(0);
 						updateSphereColors(col, vertexStart, m_networkGeometryObject.m_colorBufferData);
 					}
 					largestVertexIndex = std::min(smallestVertexIndex, vertexStart);
-
-					if (edge != nullptr)
-						visible = edge->m_visible;
-					else
-						visible = node->m_visible;
-				}
-
-				// update selection set, but only keep visible and selected objects in the set
-				if (obj->m_selected && visible) {
-					if (m_selectedGeometryObject.m_selectedObjects.insert(obj).second)
-						selectionModified = true;
-				}
-				else {
-					std::set<const VICUS::Object*>::const_iterator it = m_selectedGeometryObject.m_selectedObjects.find(obj);
-					if (it != m_selectedGeometryObject.m_selectedObjects.end()) {
-						m_selectedGeometryObject.m_selectedObjects.erase(*it);
-						selectionModified = true;
-					}
 				}
 			}
 
 			// finally, transfer only the modified portion of the color buffer to GPU memory
 			m_opaqueGeometryObject.updateColorBuffer(smallestVertexIndex, largestVertexIndex-smallestVertexIndex);
 
-			// we only need to update the selection object, but only if:
-			// - the modification state was "SelectedState"
-			// - and indeed a selection was changed
-			//
-			// Note: actually, selected surfaces can be de-selected by hiding them - we do not want to move/alter
-			//       invisible geometry
-			if (selectionModified) {
+			// Now check if our new selection set is different from the previous selection set.
+			std::set<const VICUS::Object*> selectedObjects;
+			WireFrameObject::updateSelectedObjectsFromProject(selectedObjects);
+			if (selectedObjects != m_selectedGeometryObject.m_selectedObjects)
 				updateSelection = true;
-			}
 		} break;
 
 		default:
