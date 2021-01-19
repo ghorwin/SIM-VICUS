@@ -399,13 +399,11 @@ Surface * Project::surfaceByID(unsigned int surfaceID) {
 
 bool Project::haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const {
 	size_t coordsCount=0;
-	bool haveSelectedPolys = false;
 
 	// we go through all dump surfaces in m_plaingeometry
 	// if surface is selected and visible, we store its coordinates and its coordinates count
 	for ( const Surface &s : m_plainGeometry) {
 		if ( s.m_visible && s.m_selected ) {
-			!haveSelectedPolys ? haveSelectedPolys = true : haveSelectedPolys;
 			for ( const IBKMK::Vector3D &v : s.m_geometry.vertexes()  ) {
 				centerPoint += v;
 				++coordsCount;
@@ -420,7 +418,6 @@ bool Project::haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const {
 			for ( const Room &r : bl.m_rooms) {
 				for ( const Surface &s : r.m_surfaces) {
 					if ( s.m_visible && s.m_selected ) {
-						!haveSelectedPolys ? haveSelectedPolys = true : haveSelectedPolys;
 						for ( const IBKMK::Vector3D &v : s.m_geometry.vertexes()  ) {
 							centerPoint += v;
 							++coordsCount;
@@ -431,10 +428,10 @@ bool Project::haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const {
 		}
 	}
 
-	if ( haveSelectedPolys )
+	if (coordsCount > 0)
 		centerPoint/=static_cast<double>(coordsCount);
 
-	return haveSelectedPolys;
+	return (coordsCount > 0);
 }
 
 
