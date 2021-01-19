@@ -37,6 +37,8 @@ public:
 
 	/*! Stores selected information for this surface (not serialized, for now). */
 	bool								m_selected = false;
+	/*! Stores visibility information for this surface (serialized manually in derived classes). */
+	bool								m_visible = true;
 
 protected:
 	/*! List of all children. */

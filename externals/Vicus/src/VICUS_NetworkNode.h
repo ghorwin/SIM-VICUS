@@ -107,10 +107,13 @@ public:
 	// not final !!! //
 	IBK::Parameter					m_heatFlux;
 
-	// *** RUNTIME VARIABLES ***
+	/*! Whether the node is visible or not
+		Note: keep the next line - this will cause the code generator to create serialization code
+			  for the inherited m_visible variable.
+	*/
+	//:inherited	bool							m_visible = true;								// XML:A
 
-	/*! Whether the node is visible or not - may be stored in project file? */
-	bool							m_visible = true;
+	// *** RUNTIME VARIABLES ***
 
 	/*! The radius used for the visualization of this node in the 3D scene
 		Updated whenever the scale factor Network::m_scaleNodes changes.

@@ -149,6 +149,12 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 			pos = line.find("// XML:");
 			if (pos != std::string::npos && pos+7 < line.size()) {
 				// line has format: <type> m_<varName>; // XML:<specs>
+				//              or //inherited: <type> m_<varName>; // XML:<specs>
+				std::string::size_type pos_inherited = line.find("//:inherited");
+				if (pos_inherited != std::string::npos) {
+					line = line.substr(pos_inherited + 12);
+					pos -= (pos_inherited + 12);
+				}
 				std::string::size_type pos2 = line.find_first_not_of(" \t");
 				std::string typeDeclaration = line.substr(pos2, pos-pos2);
 				// split type declaration at the "m_"

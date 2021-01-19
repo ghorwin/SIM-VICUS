@@ -220,8 +220,11 @@ public:
 
 	double									m_scaleEdges = 30;							// XML:E
 
-	/*! Stores visibility information for this network. */
-	bool									m_visible = true;							// XML:A
+	/*! Stores visibility information for this network.
+		Note: keep the next line - this will cause the code generator to create serialization code
+			  for the inherited m_visible variable.
+	*/
+	//:inherited	bool									m_visible = true;							// XML:A
 
 	// *** RUNTIME VARIABLES ***
 

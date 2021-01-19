@@ -38,8 +38,11 @@ public:
 	/*! Display name of building. */
 	QString								m_displayName;				// XML:A
 
-	/*! Stores visibility information for this surface. */
-	bool								m_visible = true;			// XML:A
+	/*! Stores visibility information for this surface.
+		Note: keep the next line - this will cause the code generator to create serialization code
+			  for the inherited m_visible variable.
+	*/
+	//:inherited	bool								m_visible = true;			// XML:A
 
 	/*! Vector of building levels. */
 	std::vector<BuildingLevel>			m_buildingLevels;			// XML:E

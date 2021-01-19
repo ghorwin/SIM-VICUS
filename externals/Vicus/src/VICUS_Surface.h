@@ -37,8 +37,11 @@ public:
 	/*! The actual geometry. */
 	PlaneGeometry						m_geometry;					// XML:E
 
-	/*! Stores visibility information for this surface. */
-	bool								m_visible = true;			// XML:A
+	/*! Stores visibility information for this surface.
+		Note: keep the next line - this will cause the code generator to create serialization code
+			  for the inherited m_visible variable.
+	*/
+	//:inherited	bool								m_visible = true;			// XML:A
 
 	// *** Runtime Variables ***
 

@@ -72,6 +72,8 @@ void NetworkNode::readXML(const TiXmlElement * element) {
 				m_subNetworkId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName = attrib->ValueStr();
+			else if (attribName == "visible")
+				m_visible = NANDRAD::readPODAttributeValue<bool>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -128,6 +130,8 @@ TiXmlElement * NetworkNode::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("subNetworkId", IBK::val2string<unsigned int>(m_subNetworkId));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
+	if (m_visible != NetworkNode().m_visible)
+		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
 	{
 		std::vector<double> v = { m_position.m_x, m_position.m_y, m_position.m_z};
 		TiXmlElement::appendSingleAttributeElement(e, "Position", nullptr, std::string(), IBK::vector2string<double>(v," "));
