@@ -45,37 +45,28 @@
 				</PipeProperties>
 				<Components>
 					<HydraulicNetworkComponent id="1" modelType="ConstantPressurePumpModel">
-						<HeatExchangeType>HeatFluxConstant</HeatExchangeType>
 						<IBK:Parameter name="PressureHead" unit="Pa">1000</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="2" modelType="HeatExchanger">
-						<HeatExchangeType>HeatFluxConstant</HeatExchangeType>
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PressureLossCoefficient" unit="-">5</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.1</IBK:Parameter>
 						<IBK:Parameter name="UAValue" unit="W/m2K">1</IBK:Parameter>
-						<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">5</IBK:Parameter>
 					</HydraulicNetworkComponent>
-					<HydraulicNetworkComponent id="3" modelType="DynamicPipe">
-						<HeatExchangeType>HeatFluxConstant</HeatExchangeType>
-						<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">5</IBK:Parameter>
+					<HydraulicNetworkComponent id="3" modelType="DynamicAdiabaticPipe">
 					</HydraulicNetworkComponent>
 				</Components>
 				<Elements>
 					<HydraulicNetworkElement id="1" inletNodeId="101" outletNodeId="0" componentId="1" displayName="node 0" />
 					<HydraulicNetworkElement id="2" inletNodeId="0" outletNodeId="1" componentId="3" pipeId="1">
-						<IBK:IntPara name="ZoneId">1</IBK:IntPara>
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
-						<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="3" inletNodeId="1" outletNodeId="100" componentId="2" displayName="node 1">
-						<IBK:Parameter name="HeatFlux" unit="W">100</IBK:Parameter>
+						<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="4" inletNodeId="100" outletNodeId="101" componentId="3" pipeId="1">
-						<IBK:IntPara name="ZoneId">1</IBK:IntPara>
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
-						<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
 					</HydraulicNetworkElement>
 				</Elements>
 			</HydraulicNetwork>
