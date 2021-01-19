@@ -254,15 +254,35 @@ void ThermalNetworkBalanceModel::inputReferences(std::vector<InputReference> & i
 	inputRef.m_required = true;
 	// register reference
 	inputRefs.push_back(inputRef);
+
+	// set references to zone air temperatures
+	if(!m_statesModel->m_zoneIds.empty()) {
+		InputReference inputRef;
+		inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+		inputRef.m_name = std::string("AirTemperature");
+		inputRef.m_required = true;
+		for(unsigned int zoneId : m_statesModel->m_zoneIds) {
+			inputRef.m_id = zoneId;
+			inputRefs.push_back(inputRef);
+		}
+	}
 }
 
 
 void ThermalNetworkBalanceModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/,
 										 const std::vector<const double *> & resultValueRefs)
 {
-	IBK_ASSERT(resultValueRefs.size() == 1);
 	// copy references into mass flux vector
 	m_statesModel->m_p->m_fluidMassFluxes = resultValueRefs[0];
+	//set ambient temparture references inside network
+	for(unsigned int i = 0; i < m_statesModel->m_zoneIdxs.size(); ++i) {
+		unsigned int zoneIdx = m_statesModel->m_zoneIdxs[i];
+		// skip invalid zone ids
+		if(zoneIdx == (unsigned int)(-1))
+			continue;
+		// set reference to zone temperature
+		m_statesModel->m_p->m_ambientTemperatureRefs[i] = resultValueRefs[1 + zoneIdx];
+	}
 }
 
 

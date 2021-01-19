@@ -157,36 +157,62 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						m_p->m_ambientHeatTransferRefs.push_back(nullptr);
 					}
 				} break;
+				case NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature: {
+
+					// check for zone id
+					if(!e.m_intPara[NANDRAD::HydraulicNetworkElement::IP_ZoneId].name.empty()) {
+						// parameters are checked, already
+						unsigned int zoneId = (unsigned int) e.m_intPara[NANDRAD::HydraulicNetworkElement::IP_ZoneId].value;
+						// check whether zone is registered
+						if(!m_zoneIds.empty()) {
+							std::vector<unsigned int>::iterator fIt = std::find(m_zoneIds.begin(),
+																					  m_zoneIds.end(),zoneId);
+							// add a new entry
+							if(fIt == m_zoneIds.end()) {
+								m_zoneIdxs[i] = m_zoneIds.size();
+								m_zoneIds.push_back(zoneId);
+							}
+							else {
+								unsigned int index = std::distance(m_zoneIds.begin(), fIt);
+								m_zoneIdxs[i] = index;
+							}
+						}
+						else {
+							// resize zone idx vector
+							m_zoneIdxs.resize(m_network->m_elements.size(), (unsigned int) (-1));
+							m_zoneIdxs[i] = 0;
+							m_zoneIds.push_back(zoneId);
+						}
+					}
+					else {
+						throw IBK::Exception(IBK::FormatString("Missing IntParameter '%1 for exchange type %2!")
+									.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkElement::intpara_t",
+									NANDRAD::HydraulicNetworkElement::IP_ZoneId))
+									.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
+									itComp->m_heatExchangeType)),
+									FUNC_ID);
+
+					}
+					// retrieve external heat transfer coefficient
+					if(itComp->m_para[NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].name.empty()){
+						throw IBK::Exception(IBK::FormatString("Missing parameteter '%1 for exchange type %2!")
+									.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::para_t",
+									NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient))
+									.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
+									itComp->m_heatExchangeType)),
+									FUNC_ID);
+					}
+					m_p->m_ambientHeatTransferRefs.push_back(&itComp->m_para[
+						NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].value);
+					// at the moment set reference to 0
+					m_p->m_ambientTemperatureRefs.push_back(nullptr);
+
+				} break;
 				default: {
 					throw IBK::Exception(IBK::FormatString("Heat exchange type %1 is not supported, yet!")
 								.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
 								itComp->m_heatExchangeType)),
 								FUNC_ID);
-				}
-			}
-			// check for zone id
-			if(!e.m_intPara[NANDRAD::HydraulicNetworkElement::IP_ZoneId].name.empty()) {
-				// parameters are checked, already
-				unsigned int zoneId = (unsigned int) e.m_intPara[NANDRAD::HydraulicNetworkElement::IP_ZoneId].value;
-				// check whether zone is registered
-				if(!m_zoneIds.empty()) {
-					std::vector<unsigned int>::iterator fIt = std::find(m_zoneIds.begin(),
-																			  m_zoneIds.end(),zoneId);
-					// add a new entry
-					if(fIt == m_zoneIds.end()) {
-						m_zoneIdxs[i] = m_zoneIds.size();
-						m_zoneIds.push_back(zoneId);
-					}
-					else {
-						unsigned int index = std::distance(m_zoneIds.begin(), fIt);
-						m_zoneIdxs[i] = index;
-					}
-				}
-				else {
-					// resize zone idx vector
-					m_zoneIdxs.resize(m_network->m_elements.size(), (unsigned int) (-1));
-					m_zoneIdxs[i] = 0;
-					m_zoneIds.push_back(zoneId);
 				}
 			}
 		}
