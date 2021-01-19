@@ -513,7 +513,8 @@ void SVMainWindow::on_actionFileOpen_triggered() {
 							tr("Select SIM-VICUS project"),
 							SVSettings::instance().m_propertyMap[SVSettings::PT_LastFileOpenDirectory].toString(),
 							tr("SIM-VICUS projects and project packages (*%1 *%2);;All files (*.*)")
-			.arg(SVSettings::instance().m_projectFileSuffix).arg(SVSettings::instance().m_projectPackageSuffix)
+							.arg(SVSettings::instance().m_projectFileSuffix).arg(SVSettings::instance().m_projectPackageSuffix), nullptr,
+							QFileDialog::DontUseNativeDialog
 						);
 
 	if (filename.isEmpty()) return;
@@ -593,7 +594,8 @@ void SVMainWindow::on_actionFileImportEneryPlusIDF_triggered() {
 							this,
 							tr("Select IDF file"),
 							SVSettings::instance().m_propertyMap[SVSettings::PT_LastFileOpenDirectory].toString(),
-							tr("EnergyPlus IDF files (*.idf);;All files (*.*)")
+							tr("EnergyPlus IDF files (*.idf);;All files (*.*)"), nullptr,
+									QFileDialog::DontUseNativeDialog
 						);
 
 	if (filename.isEmpty()) return;
@@ -631,6 +633,9 @@ void SVMainWindow::on_actionFileImportEneryPlusIDF_triggered() {
 
 			// take building from project and add as new building to existing data structure via undo-action
 			if (!m_importIDFDialog->m_importedProject.m_buildings.empty()) {
+				// TODO : Dirk, merge databases into UI DB
+				// TODO : Dirk, import all project data with overwriting tests
+
 				SVUndoAddBuilding * undo = new SVUndoAddBuilding(tr("Added imported building"), m_importIDFDialog->m_importedProject.m_buildings[0], false);
 				undo->push();
 			}
@@ -806,7 +811,8 @@ void SVMainWindow::on_actionViewExternalPostProcessing_triggered() {
 			else {
 				sessionFile = QFileDialog::getOpenFileName(nullptr, tr("Postproc session files"),
 															QFileInfo(m_projectHandler.projectFile()).absolutePath(),
-															QString("*.p2"));
+															QString("*.p2"), nullptr,
+														   QFileDialog::DontUseNativeDialog);
 			}
 		}
 

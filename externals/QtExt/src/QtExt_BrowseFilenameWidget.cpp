@@ -83,7 +83,8 @@ void BrowseFilenameWidget::onToolBtnClicked() {
 	blockSignals(true);
 	if (m_filenameMode) {
 		if (m_fileMustExist) {
-			fn = QFileDialog::getOpenFileName(nullptr, tr("Select filename"), filename(), m_filter);
+			fn = QFileDialog::getOpenFileName(nullptr, tr("Select filename"), filename(), m_filter, nullptr,
+											  QFileDialog::DontUseNativeDialog);
 		}
 		else {
 			fn = QFileDialog::getSaveFileName(this, tr("Select filename"), filename(), m_filter);

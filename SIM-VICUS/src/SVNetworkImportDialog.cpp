@@ -120,7 +120,8 @@ bool SVNetworkImportDialog::edit() {
 void SVNetworkImportDialog::on_pushButtonGISNetwork_clicked() {
 	// ask user to select csv file
 	QString fname = QFileDialog::getOpenFileName(this, tr("Select csv-file with GIS data"),
-												 "../../data/vicus/GeometryTests/Network", tr("CSV-Files (*.csv)"));
+												 "../../data/vicus/GeometryTests/Network", tr("CSV-Files (*.csv)"), nullptr,
+												 QFileDialog::DontUseNativeDialog);
 	if (fname.isEmpty())
 		return;
 
