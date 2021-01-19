@@ -1059,6 +1059,34 @@ void Vic3DScene::deleteSelected() {
 }
 
 
+void Vic3DScene::showSelected() {
+	// process all project geometry and create data for a state modification undo action
+	std::set<unsigned int> selectedObjectIDs;
+	for (const VICUS::Object * obj : m_selectedGeometryObject.m_selectedObjects)
+		selectedObjectIDs.insert(obj->uniqueID());
+
+	SVUndoTreeNodeState * action = new SVUndoTreeNodeState(tr("Visibility changed"),
+														   SVUndoTreeNodeState::VisibilityState,
+														   selectedObjectIDs,
+														   true);
+	action->push();
+}
+
+
+void Vic3DScene::hideSelected() {
+	// process all project geometry and create data for a state modification undo action
+	std::set<unsigned int> selectedObjectIDs;
+	for (const VICUS::Object * obj : m_selectedGeometryObject.m_selectedObjects)
+		selectedObjectIDs.insert(obj->uniqueID());
+
+	SVUndoTreeNodeState * action = new SVUndoTreeNodeState(tr("Visibility changed"),
+														   SVUndoTreeNodeState::VisibilityState,
+														   selectedObjectIDs,
+														   false);
+	action->push();
+}
+
+
 void Vic3DScene::leaveCoordinateSystemAdjustmentMode(bool abort) {
 	// restore original local coordinate system
 	if (abort) {

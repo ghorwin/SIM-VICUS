@@ -41,6 +41,9 @@
       <bool>false</bool>
      </property>
      <addaction name="actionAdd"/>
+     <addaction name="actionRemoveSelected"/>
+     <addaction name="actionShowSelected"/>
+     <addaction name="actionHideSelected"/>
     </widget>
    </item>
    <item>
@@ -84,6 +87,36 @@
    </property>
    <property name="shortcut">
     <string>Del</string>
+   </property>
+  </action>
+  <action name="actionShowSelected">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/16x16/help-hint.png</normaloff>:/gfx/actions/16x16/help-hint.png</iconset>
+   </property>
+   <property name="text">
+    <string>Show selected objects</string>
+   </property>
+   <property name="toolTip">
+    <string>Makes all selected objects visible.</string>
+   </property>
+   <property name="shortcut">
+    <string>F6</string>
+   </property>
+  </action>
+  <action name="actionHideSelected">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/16x16/help-hint_gray.png</normaloff>:/gfx/actions/16x16/help-hint_gray.png</iconset>
+   </property>
+   <property name="text">
+    <string>Hides selected objects</string>
+   </property>
+   <property name="toolTip">
+    <string>Hides all selected objects.</string>
+   </property>
+   <property name="shortcut">
+    <string>F7</string>
    </property>
   </action>
  </widget>

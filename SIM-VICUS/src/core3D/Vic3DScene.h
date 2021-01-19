@@ -72,8 +72,12 @@ public:
 
 	/*! When Escape was pressed, all selected objects become un-selected again. */
 	void deselectAll();
-	/*! Removes all selected geometry (creates an undo-action on the selected geometry. */
+	/*! Removes all selected geometry (creates an undo-action on the selected geometry). */
 	void deleteSelected();
+	/*! Makes all selected geometry. */
+	void showSelected();
+	/*! Shows all selected geometry. */
+	void hideSelected();
 
 	/*! Toggles "align coordinate system" mode on. */
 	void enterCoordinateSystemAdjustmentMode();

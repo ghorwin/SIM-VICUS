@@ -42,6 +42,15 @@ public slots:
 	/*! Connected to view-state handler. */
 	void onViewStateChanged();
 
+	/*! Action to make all selected objects invisible. */
+	void onHideSelected();
+
+	/*! Action to show all selected objects. */
+	void onShowSelected();
+
+	/*! Action to delete all selected objects. */
+	void onDeleteSelected();
+
 signals:
 	/*! Emitted when numbers where typed.
 		Only during "PlaceVertex" scene operation mode.

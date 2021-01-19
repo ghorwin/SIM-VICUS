@@ -170,6 +170,21 @@ void SceneView::onViewStateChanged() {
 }
 
 
+void SceneView::onHideSelected() {
+	m_mainScene.hideSelected();
+}
+
+
+void SceneView::onShowSelected() {
+	m_mainScene.showSelected();
+}
+
+
+void SceneView::onDeleteSelected() {
+	m_mainScene.deleteSelected();
+}
+
+
 void SceneView::initializeGL() {
 	FUNCID(SceneView::initializeGL);
 	try {
