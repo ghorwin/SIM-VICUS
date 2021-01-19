@@ -99,6 +99,9 @@ private:
 
 	/*! Heat loss through the pipe */
 	double							m_heatLoss = 0.0;
+
+	/*! Set to true, if heat transfer is enabled. */
+	bool							m_haveHeatExchange;
 };
 
 
@@ -238,7 +241,6 @@ private:
 
 	/*! Fluid specific enthalpy */
 	double							m_specificEnthalpy = 0.0;
-
 };
 
 

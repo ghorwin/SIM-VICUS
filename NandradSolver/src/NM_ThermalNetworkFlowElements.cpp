@@ -34,10 +34,17 @@ TNPipeElement::TNPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has inner diameter <= 0").arg(elem.m_id),FUNC_ID);
 	if (m_outerDiameter<=0)
 		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has outer diameter <= 0").arg(elem.m_id),FUNC_ID);
-	if (m_UValuePipeWall<=0)
-		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has U-Value <= 0").arg(elem.m_id),FUNC_ID);
-	if (m_outerHeatTransferCoefficient<=0)
-		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has outer heat transfer coefficient <= 0").arg(elem.m_id),FUNC_ID);
+	// check thermal parameters only if heat transfer is enabled
+	if (comp.m_heatExchangeType != NANDRAD::HydraulicNetworkComponent::NUM_HT) {
+		m_haveHeatExchange = true;
+		if (m_UValuePipeWall<=0)
+			throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has U-Value <= 0").arg(elem.m_id),FUNC_ID);
+		if (m_outerHeatTransferCoefficient<=0)
+			throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has outer heat transfer coefficient <= 0").arg(elem.m_id),FUNC_ID);
+	}
+	else {
+		m_haveHeatExchange = false;
+	}
 
 	// calculate fluid volume inside the pipe
 	m_volume = PI/4. * m_innerDiameter * m_innerDiameter * m_length;
@@ -79,31 +86,37 @@ void TNPipeElement::setInletFluxes(double mdot, double Hdot)
 	// copy mass flux
 	m_massFlux = mdot;
 
-	// calculate inner heat transfer and for simpicity use laminar flow equations
-	// TODO Hauke: add turbulent flow equations
-	// first calculate reynolds number
-	const double velocity = std::fabs(mdot)/(m_volume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value);
-	// TODO Anne: we use the kinematic viscosity based on inlet temperature? Should be ok.
-	const double reynolds = velocity * m_innerDiameter/m_fluid->m_kinematicViscosity.m_values.value(m_inletTemperature);
-	// calculate prandtl number
-	const double prandtl = velocity * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value *
-			m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value/
-			m_fluid->m_para[NANDRAD::HydraulicFluid::P_Conductivity].value;
-	// calculate laminar nusselt number
-	double val = 1.615 * (reynolds*prandtl * m_innerDiameter/m_length-0.7);
-	const double nusselt = std::pow(49.37 + val*val*val,0.33333);
-	// calculate convection coefficient for the inner side
-	m_innerHeatTransferCoefficient = nusselt * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Conductivity].value/m_innerDiameter;
+	if (m_haveHeatExchange) {
 
-	// calculate heat transfer
-	const double totalUValuePipe = (PI*m_length) / (1.0/(m_innerHeatTransferCoefficient * m_innerDiameter)
-													+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter)
-													+ 1.0/(2.0*m_UValuePipeWall) );
+		// calculate inner heat transfer and for simpicity use laminar flow equations
+		// TODO Hauke: add turbulent flow equations
+		// first calculate reynolds number
+		const double velocity = std::fabs(mdot)/(m_volume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value);
+		// TODO Anne: we use the kinematic viscosity based on inlet temperature? Should be ok.
+		const double reynolds = velocity * m_innerDiameter/m_fluid->m_kinematicViscosity.m_values.value(m_inletTemperature);
+		// calculate prandtl number
+		const double prandtl = velocity * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value *
+				m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value/
+				m_fluid->m_para[NANDRAD::HydraulicFluid::P_Conductivity].value;
+		// calculate laminar nusselt number
+		double val = 1.615 * (reynolds*prandtl * m_innerDiameter/m_length-0.7);
+		const double nusselt = std::pow(49.37 + val*val*val,0.33333);
+		// calculate convection coefficient for the inner side
+		m_innerHeatTransferCoefficient = nusselt * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Conductivity].value/m_innerDiameter;
 
-	// calculate heat loss with given parameters
-	m_heatLoss = std::fabs(m_massFlux) * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value *
-			(m_inletTemperature - m_ambientTemperature) *
-			(1. - std::exp(-totalUValuePipe / (std::fabs(m_massFlux) * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value )));
+		// calculate heat transfer
+		const double totalUValuePipe = (PI*m_length) / (1.0/(m_innerHeatTransferCoefficient * m_innerDiameter)
+														+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter)
+														+ 1.0/(2.0*m_UValuePipeWall) );
+
+		// calculate heat loss with given parameters
+		m_heatLoss = std::fabs(m_massFlux) * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value *
+				(m_inletTemperature - m_ambientTemperature) *
+				(1. - std::exp(-totalUValuePipe / (std::fabs(m_massFlux) * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value )));
+	}
+	else {
+		m_heatLoss = 0;
+	}
 }
 
 void TNPipeElement::setAmbientConditions(double Tamb, double /*alphaAmb*/)

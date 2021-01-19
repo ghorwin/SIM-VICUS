@@ -438,9 +438,8 @@ const double THRESHOLD = 1;
 const double MASS_FLUX_SCALE = 1000;
 
 
-HydraulicNetworkModelImpl::HydraulicNetworkModelImpl(const std::vector<Element> &elems)
-{
-	FUNCID("HydraulicNetworkModelImpl::HydraulicNetworkModelImpl");
+HydraulicNetworkModelImpl::HydraulicNetworkModelImpl(const std::vector<Element> &elems) {
+	FUNCID(HydraulicNetworkModelImpl::HydraulicNetworkModelImpl);
 	// copy elements vector
 	m_network.m_elements = elems;
 	// count number of nodes

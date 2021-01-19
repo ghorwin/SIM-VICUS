@@ -208,6 +208,9 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 					m_p->m_ambientTemperatureRefs.push_back(nullptr);
 
 				} break;
+				case NANDRAD::HydraulicNetworkComponent::NUM_HT:
+					// No thermal exchange, nothing to initialize
+				break;
 				default: {
 					throw IBK::Exception(IBK::FormatString("Heat exchange type %1 is not supported, yet!")
 								.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
