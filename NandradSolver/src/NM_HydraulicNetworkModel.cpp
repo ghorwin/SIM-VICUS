@@ -41,6 +41,12 @@ public:
 	Network												m_network;
 	/*! Mass fluxes through all elements*/
 	std::vector<double>									m_fluidMassFluxes;
+	/*! Container with temperatures for inlet node of each flow element.
+	*/
+	std::vector<double>									m_inletNodePressures;
+	/*! Container with temperatures for each node.
+	*/
+	std::vector<double>									m_outletNodePressures;
 
 private:
 
@@ -261,6 +267,36 @@ void HydraulicNetworkModel::resultDescriptions(std::vector<QuantityDescription> 
 		desc.m_id = m_elementIds[i];
 		resDesc.push_back(desc);
 	}
+
+	// inlet node pressure vector is a result
+	desc = QuantityDescription("InletNodePressures", "Pa", "Fluid pressure at inlet node of all flow elements", false);
+	// deactivate description;
+	if(m_p->m_flowElements.empty())
+		desc.m_size = 0;
+	resDesc.push_back(desc);
+	// set a description for each flow element
+	desc.m_name = "InletNodePressure";
+	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	// loop through all flow elements
+	for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
+		desc.m_id = m_elementIds[i];
+		resDesc.push_back(desc);
+	}
+
+	// outlet node pressure vector is a result
+	desc = QuantityDescription("OutletNodePressures", "Pa", "Fluid pressure at outlet node of all flow elements", false);
+	// deactivate description;
+	if(m_p->m_flowElements.empty())
+		desc.m_size = 0;
+	resDesc.push_back(desc);
+	// set a description for each flow element
+	desc.m_name = "OutletNodePressure";
+	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	// loop through all flow elements
+	for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
+		desc.m_id = m_elementIds[i];
+		resDesc.push_back(desc);
+	}
 }
 
 
@@ -281,19 +317,50 @@ const double * HydraulicNetworkModel::resultValueRef(const InputReference & quan
 			return &m_p->m_fluidMassFluxes[0];
 		return nullptr;
 	}
-	if(quantityName.m_name == std::string("FluidMassFlux")) {
-		// invalid whole vector access
-		if(quantityName.m_index == -1)
-			return nullptr;
+	if(quantityName == std::string("FluidMassFlux")) {
 		// access to an element mass flux
 		std::vector<unsigned int>::const_iterator fIt =
 				std::find(m_elementIds.begin(), m_elementIds.end(),
-						  (unsigned int) quantityName.m_index);
+						  (unsigned int) quantity.m_id);
 		// invalid index access
 		if(fIt == m_elementIds.end())
 			return nullptr;
 		unsigned int pos = (unsigned int) std::distance(m_elementIds.begin(), fIt);
 		return &m_p->m_fluidMassFluxes[pos];
+	}
+	// return vector of inlet node pressures
+	if(quantityName == std::string("InletNodePressures")) {
+		if(!m_p->m_fluidMassFluxes.empty())
+			return &m_p->m_inletNodePressures[0];
+		return nullptr;
+	}
+	if(quantityName == std::string("InletNodePressure")) {
+		// access to an single inlet node
+		std::vector<unsigned int>::const_iterator fIt =
+				std::find(m_elementIds.begin(), m_elementIds.end(),
+						  (unsigned int) quantity.m_id);
+		// invalid index access
+		if(fIt == m_elementIds.end())
+			return nullptr;
+		unsigned int pos = (unsigned int) std::distance(m_elementIds.begin(), fIt);
+		return &m_p->m_inletNodePressures[pos];
+	}
+	// return vector of outlet node pressures
+	if(quantityName == std::string("OutletNodePressures")) {
+		if(!m_p->m_fluidMassFluxes.empty())
+			return &m_p->m_outletNodePressures[0];
+		return nullptr;
+	}
+	if(quantityName == std::string("OutletNodePressure")) {
+		// access to an single inlet node
+		std::vector<unsigned int>::const_iterator fIt =
+				std::find(m_elementIds.begin(), m_elementIds.end(),
+						  (unsigned int) quantity.m_id);
+		// invalid index access
+		if(fIt == m_elementIds.end())
+			return nullptr;
+		unsigned int pos = (unsigned int) std::distance(m_elementIds.begin(), fIt);
+		return &m_p->m_outletNodePressures[pos];
 	}
 	return nullptr;
 }
@@ -647,6 +714,8 @@ void HydraulicNetworkModelImpl::setup() {
 
 	m_G.resize(n);
 	m_fluidMassFluxes.resize(m_elementCount);
+	m_inletNodePressures.resize(m_elementCount);
+	m_outletNodePressures.resize(m_elementCount);
 	m_nodalPressures.resize(m_nodeCount);
 
 	// create jacobian
@@ -776,6 +845,14 @@ int HydraulicNetworkModelImpl::solve() {
 	}
 
 	printVars();
+
+	// update nodal values
+	for(unsigned int i = 0; i < m_network.m_elements.size(); ++i) {
+		const Element &e = m_network.m_elements[i];
+		m_inletNodePressures[i] = m_nodalPressures[e.m_nInlet];
+		m_outletNodePressures[i] = m_nodalPressures[e.m_nOutlet];
+	}
+
 
 	if (iterations > 0)
 		return 0;

@@ -139,13 +139,10 @@ const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference &
 		return nullptr;
 	}
 	if(quantityName.m_name == std::string("FluidHeatFlux")) {
-		// invalid whole vector access
-		if(quantityName.m_index == -1)
-			return nullptr;
 		// access to an element heat flux
 		std::vector<unsigned int>::iterator fIt =
 				std::find(m_statesModel->m_elementIds.begin(),m_statesModel-> m_elementIds.end(),
-						  (unsigned int) quantityName.m_index);
+						  (unsigned int) quantity.m_id);
 		// invalid index access
 		if(fIt == m_statesModel->m_elementIds.end())
 			return nullptr;
@@ -160,14 +157,10 @@ const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference &
 		return nullptr;
 	}
 	if(quantityName.m_name == std::string("InletNodeTemperature")) {
-		// invalid whole vector access
-		if(quantityName.m_index == -1)
-			return nullptr;
 		// find component id
-		// access to an element temperature
 		std::vector<unsigned int>::iterator fIt =
 				std::find(m_statesModel->m_elementIds.begin(),m_statesModel-> m_elementIds.end(),
-						  (unsigned int) quantityName.m_index);
+						  (unsigned int) quantity.m_id);
 		// invalid index access
 		if(fIt == m_statesModel->m_elementIds.end())
 			return nullptr;
@@ -184,13 +177,10 @@ const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference &
 		return nullptr;
 	}
 	if(quantityName.m_name == std::string("OutletNodeTemperature")) {
-		// invalid whole vector access
-		if(quantityName.m_index == -1)
-			return nullptr;
 		// find component id
 		std::vector<unsigned int>::iterator fIt =
 			std::find(m_statesModel->m_elementIds.begin(),m_statesModel-> m_elementIds.end(),
-				  (unsigned int) quantityName.m_index);
+				  (unsigned int) quantity.m_id);
 		// invalid index access
 		if(fIt == m_statesModel->m_elementIds.end())
 			return nullptr;

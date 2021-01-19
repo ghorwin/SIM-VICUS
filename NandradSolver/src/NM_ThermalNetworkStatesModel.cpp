@@ -243,14 +243,11 @@ const double * ThermalNetworkStatesModel::resultValueRef(const InputReference & 
 			return &m_fluidTemperatures[0];
 		return nullptr;
 	}
-	if(quantityName.m_name == std::string("FluidTemperature")) {
-		// invalid whole vector access
-		if(quantityName.m_index == -1)
-			return nullptr;
+	if(quantityName == std::string("FluidTemperature")) {
 		// access to an element temperature
 		std::vector<unsigned int>::const_iterator fIt =
 				std::find(m_elementIds.begin(), m_elementIds.end(),
-						  (unsigned int) quantityName.m_index);
+						  (unsigned int) quantity.m_id);
 		// invalid index access
 		if(fIt == m_elementIds.end())
 			return nullptr;

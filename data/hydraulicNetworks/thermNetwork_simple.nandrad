@@ -109,7 +109,12 @@
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
-					<Quantity>OutletPressures</Quantity>
+					<Quantity>OutletNodePressure</Quantity>
+					<ObjectListName>the Network</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>InletNodePressure</Quantity>
 					<ObjectListName>the Network</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>

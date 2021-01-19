@@ -72,6 +72,8 @@ const char * const NETWORK_QUANTITIES[] = {
 	"FluidTemperature",
 	"InletNodeTemperature",
 	"OutletNodeTemperature",
+	"InletNodePressure",
+	"OutletNodePressure",
 	"FluidHeatFlux"
 };
 
