@@ -435,13 +435,39 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 			// only enter orbit controller mode, if we actually hit something
 			if (!pickObject.m_candidates.empty()) {
+				m_navigationMode = NM_Panning;
+				qDebug() << "Entering panning mode";
+
+				// we need to store initial camera pos, selected object pos, far point
+				m_panCameraStart = VICUS::QVector2IBKVector(m_camera.translation());	// Point A
+				m_panObjectStart = pickObject.m_candidates.front().m_pickPoint;			// Point C
+				m_panFarPointStart = pickObject.m_lineOfSightOffset + pickObject.m_lineOfSightDirection;	// Point B
+				double BADistance = (m_panFarPointStart - m_panCameraStart).magnitude(); // Same as far distance?
+				double CADistance = (m_panObjectStart - m_panCameraStart).magnitude();
+				m_panCABARatio = CADistance/BADistance;
+				m_panMousePos = localMousePos;
+
+				// invert world2view matrix, with m_worldToView = m_projection * m_camera.toMatrix() * m_transform.toMatrix();
+				bool invertible;
+				m_panOriginalTransformMatrix = m_worldToView.inverted(&invertible);
+				if (!invertible) {
+					qWarning()<< "Cannot invert projection matrix.";
+					m_panOriginalTransformMatrix = QMatrix4x4();
+				}
 
 			}
+		}
+		if ((mouseDelta != QPoint(0,0)) && (m_navigationMode == NM_Panning)) {
 
-			if (mouse_dx != 0)
-				m_camera.translate(transSpeed * (mouse_dx < 0 ? 1 : -1) * m_camera.right());
-			if (mouse_dy != 0)
-				m_camera.translate(transSpeed * (mouse_dy > 0 ? 1 : -1) * m_camera.up());
+			// get the new far point, the point B'
+			IBKMK::Vector3D newFarPoint = calculateFarPoint(localMousePos, m_panOriginalTransformMatrix);
+
+			IBKMK::Vector3D BBDashVec = m_panFarPointStart-newFarPoint;
+			IBKMK::Vector3D cameraTrans = m_panCABARatio*BBDashVec;
+
+			// translate camera
+
+			m_camera.setTranslation(VICUS::IBKVector2QVector(m_panCameraStart + cameraTrans));
 			// cursor wrap adjustment
 			adjustCurserDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos);
 		}
@@ -1097,6 +1123,31 @@ void Vic3DScene::enterCoordinateSystemAdjustmentMode() {
 }
 
 
+IBKMK::Vector3D Vic3DScene::calculateFarPoint(const QPoint & mousPos, const QMatrix4x4 & projectionMatrixInverted) {
+	// local mouse coordinates
+	int my = mousPos.y();
+	int mx = mousPos.x();
+
+	// viewport dimensions
+	double Dx = m_viewPort.width();
+	double Dy = m_viewPort.height();
+
+	double nx = (2*mx-Dx)/Dx;
+	double ny = -(2*my-Dy)/Dy;
+
+	// mouse position in NDC space, one point on near plane and one point on far plane
+	QVector4D nearPos(float(nx), float(ny), -1, 1.0);
+	QVector4D farPos (float(nx), float(ny),  1, 1.0);
+
+	// transform from NDC to model coordinates
+	QVector4D farResult = projectionMatrixInverted*farPos;
+	// don't forget normalization!
+	farResult /= farResult.w();
+
+	return VICUS::QVector2IBKVector(farResult.toVector3D());
+}
+
+
 void Vic3DScene::pick(PickObject & pickObject) {
 
 	// local mouse coordinates
@@ -1104,8 +1155,11 @@ void Vic3DScene::pick(PickObject & pickObject) {
 	int mx = pickObject.m_localMousePos.x();
 
 	// viewport dimensions
-	qreal halfVpw = m_viewPort.width()/2;
-	qreal halfVph = m_viewPort.height()/2;
+	double Dx = m_viewPort.width();
+	double Dy = m_viewPort.height();
+
+	double nx = (2*mx-Dx)/Dx;
+	double ny = -(2*my-Dy)/Dy;
 
 	// invert world2view matrix, with m_worldToView = m_projection * m_camera.toMatrix() * m_transform.toMatrix();
 	bool invertible;
@@ -1116,17 +1170,9 @@ void Vic3DScene::pick(PickObject & pickObject) {
 	}
 
 	// mouse position in NDC space, one point on near plane and one point on far plane
-	QVector4D nearPos(
-				float((mx - halfVpw) / halfVpw),
-				float(-1.*(my - halfVph) / halfVph),
-				-1,
-				1.0);
+	QVector4D nearPos(float(nx), float(ny), -1, 1.0);
+	QVector4D farPos (float(nx), float(ny),  1, 1.0);
 
-	QVector4D farPos(
-				nearPos.x(),
-				nearPos.y(),
-				1,
-				1.0);
 	// transform from NDC to model coordinates
 	QVector4D nearResult = projectionMatrixInverted*nearPos;
 	QVector4D farResult = projectionMatrixInverted*farPos;

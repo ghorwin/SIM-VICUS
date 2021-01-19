@@ -115,6 +115,8 @@ private:
 	*/
 	IBKMK::Vector3D referencePoint() const;
 
+	IBKMK::Vector3D calculateFarPoint(const QPoint & mousPos, const QMatrix4x4 & projectionMatrixInverted);
+
 	/*! Cached pointer to parent widget - needed so that we can tell a QObject-based class to send
 		out signals.
 	*/
@@ -205,6 +207,18 @@ private:
 	/*! Cached "old" transform of the coordinate system object (needed for "align coordinate system" operation). */
 	Transform3D				m_oldCoordinateSystemTransform;
 
+	/*! Point A in "perfect panning" algorithm. */
+	IBKMK::Vector3D			m_panCameraStart;
+	/*! Point B in "perfect panning" algorithm. */
+	IBKMK::Vector3D			m_panFarPointStart;
+	/*! Point E in "perfect panning" algorithm. */
+	IBKMK::Vector3D			m_panObjectStart;
+	/*! Mouse position (local coordinate system) when starting move. */
+	QPoint					m_panMousePos;
+
+	QMatrix4x4				m_panOriginalTransformMatrix;
+
+	double					m_panCABARatio;
 
 	// vector with drawing helping planes
 	std::vector<VICUS::PlaneGeometry>	m_gridPlanes;

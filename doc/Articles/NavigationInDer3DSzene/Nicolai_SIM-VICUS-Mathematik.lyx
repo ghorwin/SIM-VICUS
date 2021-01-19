@@ -1,0 +1,638 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language ngerman
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 10
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2.5cm
+\bottommargin 2.5cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip smallskip
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style german
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+SIM-VICUS: Mathematik der 3D Oberfläche
+\end_layout
+
+\begin_layout Author
+Andreas Nicolai
+\end_layout
+
+\begin_layout Abstract
+Dieser Artikel fasst die wesentlichen Gleichungen in Bezug auf die 3D Szene,
+ Interaktion mit Objekten und Navigation in der 3D Szene zusammen.
+ Es werden die mathematischen Gleichungen und deren algorithmische Umsetzung
+ in SIM-VICUS dokumentiert.
+\end_layout
+
+\begin_layout Section
+Hintergrund/Grundlagen
+\end_layout
+
+\begin_layout Standard
+...
+ Kamera, World2View Transformation
+\end_layout
+
+\begin_layout Subsection
+Schnittpunkt mit einer Ebene
+\end_layout
+
+\begin_layout Subsection
+Lotpunkt eines Punktes auf einer Linie
+\end_layout
+
+\begin_layout Subsection
+Dichtester Punkt zwischen zwei Linien
+\end_layout
+
+\begin_layout Subsection
+Sichtlinienberechnung
+\end_layout
+
+\begin_layout Standard
+Die Position des Mauszeigers auf dem Bildschirm entspricht einer Linie in
+ der 3D Welt.
+ Der dargestellte Ausschnitt aus der Welt wird durch eine Nah- und eine
+ Fernebene begrenzt, welche parallel zur Betrachterebene (Bildschirm) liegen.
+ Der Sichtstrahl durchstößt diese Ebenen.
+ Diese Durchstoßungspunkte definieren auch die Sichtlinien.
+\end_layout
+
+\begin_layout Standard
+Die Durchstoßungspunkte werden zunächst in normalisierten Gerätekoordinaten
+ (engl.
+ 
+\emph on
+normalized device coordinates, NDC
+\emph default
+) definiert.
+ Der Wertebereich der normalisierten Koordinaten geht jeweils von -1 bis
+ 1.
+ Der Bildschirm ist hierbei die xy-Ebene, mit Ausdehnung -1..1 in beide Richtungen.
+ Die Nahebene liegt bei der Koordinate z=-1, die Fernebene bei Koordinate
+ z=1.
+\end_layout
+
+\begin_layout Standard
+Die lokale Mauscursorposition 
+\begin_inset Formula $m_{x},m_{y}$
+\end_inset
+
+ ist im Bildschirmkoordinatensystem (Ursprung oben links, Wertebereich 0...Größe
+ des Viewports (
+\begin_inset Formula $D_{x},D_{y}$
+\end_inset
+
+) gegeben.
+ Die normalisierten x und y-Koordinaten 
+\begin_inset Formula $n_{x}$
+\end_inset
+
+ und 
+\begin_inset Formula $n_{y}$
+\end_inset
+
+ ergeben sich aus den Verhältnisgleichungen:
+\begin_inset Formula 
+\begin{align*}
+n_{x} & =\frac{2m_{x}-D_{x}}{D_{x}}\\
+n_{y} & =-\frac{2m_{y}-D_{y}}{D_{y}}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Beispielsweise ergibt die Mauskoordinate (400,500) bei einem Viewport mit
+ Auflösung (1200,600) die normalisierten Koordinaten: 
+\begin_inset Formula $n_{x}=\left(2\cdot400-1200\right)/1200=-1/3$
+\end_inset
+
+ und 
+\begin_inset Formula $n_{y}=-\left(2\cdot500-600\right)/600=-2/3$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Die normalisierten Koordinaten für die Schnittpunkte mit der Nahebene 
+\begin_inset Formula $\widetilde{s}_{0}$
+\end_inset
+
+ und Fernebene 
+\begin_inset Formula $\widetilde{s}_{1}$
+\end_inset
+
+ sind somit:
+\begin_inset Formula 
+\begin{align}
+\widetilde{s}_{o} & =\left[\begin{array}{c}
+n_{x}\\
+n_{y}\\
+-1\\
+1
+\end{array}\right]\\
+\widetilde{s}_{1} & =\left[\begin{array}{c}
+n_{x}\\
+n_{y}\\
+1\\
+1
+\end{array}\right]
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Die w-Komponenten sind jeweils 1, weil keine Skalierung angewendet werden
+ soll.
+\end_layout
+
+\begin_layout Standard
+Diese normalisierten Koordinaten werden nun in die 3D Weltkoordinaten durch
+ Anwenden der inversen Welt-zu-Sicht-Transformationsmatrix (World2View-Matrix)
+ umgerechnet:
+\begin_inset Formula 
+\begin{align}
+s_{0} & =T^{-1}\widetilde{s}_{o}\\
+s_{1} & =T^{-1}\widetilde{s}_{1}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+wobei die Welt-zu-Sicht-Transformationsmatrix sich aus der Projektionsmatrix
+ 
+\begin_inset Formula $P$
+\end_inset
+
+ und Kameramatrix 
+\begin_inset Formula $C$
+\end_inset
+
+ zusammensetzt:
+\begin_inset Formula 
+\begin{equation}
+T=P\cdot C
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Diese beiden Vektoren müssen noch mit ihren w-Kompenten 
+\begin_inset Formula $N_{0}=s_{0}\cdot\left[\begin{array}{cccc}
+0 & 0 & 0 & 1\end{array}\right]^{T}$
+\end_inset
+
+ und 
+\begin_inset Formula $N_{1}=s_{1}\cdot\left[\begin{array}{cccc}
+0 & 0 & 0 & 1\end{array}\right]^{T}$
+\end_inset
+
+ normalisiert werden.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+s_{near} & =\frac{s_{0}}{N_{0}}\\
+s_{far} & =\frac{s_{1}}{N_{1}}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Und die Geradengleichung der Sichtgeraden lautet mit 
+\begin_inset Formula $d=s_{far}-s_{near}$
+\end_inset
+
+ und 
+\begin_inset Formula $t\in\mathbb{R}$
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{align}
+p\left(t\right) & =s_{near}+t\ d\label{eq:lineOfSight}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Polygone
+\end_layout
+
+\begin_layout Subsection
+Triangulierung
+\end_layout
+
+\begin_layout Subsubsection
+Trivialösungen
+\end_layout
+
+\begin_layout Standard
+Dreieck, Rechteck
+\end_layout
+
+\begin_layout Subsubsection
+CDT Algorithmus
+\end_layout
+
+\begin_layout Section
+Navigation in der 3D Scene
+\end_layout
+
+\begin_layout Subsection
+Verschiebungen der Kamera mit der Tastatur
+\end_layout
+
+\begin_layout Standard
+WASDEQRF
+\end_layout
+
+\begin_layout Subsection
+First-Person Controller
+\end_layout
+
+\begin_layout Subsection
+Orbit Controller
+\end_layout
+
+\begin_layout Subsection
+Scroll-Rad-Zoom
+\end_layout
+
+\begin_layout Subsection
+Verschiebung der Szene mit der Maus
+\end_layout
+
+\begin_layout Standard
+Verschiebung der Szene mit der Maus (engl.
+ 
+\emph on
+panning
+\emph default
+) soll nach folgenden Regeln geschehen:
+\end_layout
+
+\begin_layout Enumerate
+Man klickt irgendwo in die Szene mit der mittleren Maustaste.
+ Die Bildschirmkoordinate unter der Mausposition entspricht einer Sichtlinie
+ im 3D-Raum.
+\end_layout
+
+\begin_layout Enumerate
+Der Sichtstrahl trifft ein Objekt/eine Ebene in einem bestimmten Punkt 
+\begin_inset Formula $p$
+\end_inset
+
+, welches der Bezugspunkt sein soll.
+ Wird nichts getroffen, so gilt der Fernpunkt als Punkt 
+\begin_inset Formula $p$
+\end_inset
+
+.
+ Es wird der Abstand 
+\begin_inset Formula $t$
+\end_inset
+
+ vom Nahpunkt mittels der Sichtgeradengleichung
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:lineOfSight"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ bestimmt.
+\end_layout
+
+\begin_layout Enumerate
+Man bewegt die Maus um ein 
+\begin_inset Formula $\Delta x_{m}$
+\end_inset
+
+ und 
+\begin_inset Formula $\Delta y_{m}$
+\end_inset
+
+ auf dem Bildschirm.
+ Nun soll die Kameraposition so verschoben werden (lediglich verschoben,
+ nicht gedreht!), sodass folgende Bedingungen eingehalten werden:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+der vorab ausgewählte 3D Punkt bleibt in der Sichtgeraden, d.h.
+ unter dem Mauscursor.
+\end_layout
+
+\begin_layout Itemize
+der Abstand des ausgewählten Punktes zur Nah-Ebene (bzw.
+ Linienfaktor der Sichtlinie) bleibt konstant
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+Abbildung
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Illustration-Panning"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ zeigt eine Draufsicht auf das Viewfrustum einer Kamera, positioniert in
+ Punkt 
+\begin_inset Formula $A$
+\end_inset
+
+.
+ Die durchgängigen schwarzen Linien bezeichnen die Begrenzung des View-Frustums.
+ Zu Beginn der Verschiebeoperation wird entsprechend der Mausposition ein
+ Sichtstrahl auf die Fernebene geworfen und trifft dort auf Punkt 
+\begin_inset Formula $B$
+\end_inset
+
+.
+ Der Punkt, an dem der Sichtstrahl zuerst auf eine Ebene/Fläche trifft,
+ wird mit 
+\begin_inset Formula $C$
+\end_inset
+
+ bezeichnet.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename panning_illustration.svg
+	width 8cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Illustration-Panning"
+
+\end_inset
+
+Illustration des View-Frustums in der Draufsicht (Erläuterung siehe Text)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Nun wird die Maus bewegt.
+ Entsprechend der neuen Mausposition wird ein neuer Sichtstrahl berechnet.
+ Dieser trifft auf die Fernebene bei Punkt 
+\begin_inset Formula $B'$
+\end_inset
+
+.
+ Es soll nun gelten, dass 
+\emph on
+nach
+\emph default
+ der Verschiebung das Objekt wiederum auf der Sichtlinie mit gleichem (relativen
+) Abstand zum Betrachter liegen soll.
+ Würde man das Objekt im Weltenkoordinatensystem verschieben, würde es im
+ Punkt 
+\begin_inset Formula $C'$
+\end_inset
+
+ liegen, also um die Strecke 
+\begin_inset Formula $\overline{CC'}$
+\end_inset
+
+ verschoben sein.
+\end_layout
+
+\begin_layout Standard
+Die Punkte 
+\begin_inset Formula $A$
+\end_inset
+
+, 
+\begin_inset Formula $B$
+\end_inset
+
+, 
+\begin_inset Formula $C$
+\end_inset
+
+ und 
+\begin_inset Formula $B'$
+\end_inset
+
+ sind bekannt.
+ Der Punkt 
+\begin_inset Formula $C'$
+\end_inset
+
+ kann über die Verhältnisbeziehung im Dreieck ABB' berechnet werden.
+\begin_inset Formula 
+\begin{align*}
+\frac{\overline{BB'}}{\overline{BA}} & =\frac{\overline{CC'}}{\overline{CA}}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Umgestellt ergibt sich:
+\begin_inset Formula 
+\begin{align}
+\frac{\overline{CC'}}{\overline{BB'}} & =\frac{\overline{CA}}{\overline{BA}}\label{eq:panning_relations}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Mit dem Verhältnis nach Gleichung
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:panning_relations"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ lässt sich der Verschiebungsvektor 
+\begin_inset Formula $C-C'$
+\end_inset
+
+ berechnen:
+\begin_inset Formula 
+\begin{equation}
+C-C'=\frac{\overline{CC'}}{\overline{BB'}}\left(B-B'\right)
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Da nun das Objekt im Punkte 
+\begin_inset Formula $C$
+\end_inset
+
+ nicht im Weltenkoordinatensystem verschoben werden soll, kann man stattdessen
+ die Kamera verschieben.
+ Wie in der Abbildung zu sehen ist, entspricht die Verschiebung von Punkt
+ 
+\begin_inset Formula $A$
+\end_inset
+
+ nach 
+\begin_inset Formula $D$
+\end_inset
+
+ genau der Verschiebung 
+\begin_inset Formula $C-C'$
+\end_inset
+
+ in entgegengesetzter Richtung.
+ Ist die Kamera in den Punkt 
+\begin_inset Formula $D$
+\end_inset
+
+ verschoben, so verläuft der neue Sichtstrahl durch das ursprünglich getroffene
+ Objekt in Punkt C.
+\end_layout
+
+\end_body
+\end_document
