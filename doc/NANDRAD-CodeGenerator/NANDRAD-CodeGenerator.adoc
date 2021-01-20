@@ -1,4 +1,6 @@
 The NANDRAD CodeGenerator
+=========================
+Andreas Nicolai <andreas.nicolai@tu-dresden.de>
 11.11.2020  20:30
 // date_on_line_above
 :Author Initials: AN
