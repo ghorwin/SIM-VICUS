@@ -64,6 +64,11 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 		nodeIds.insert(e.m_outletNodeId);
 	}
 
+	// resize vectors
+	m_p->m_ambientHeatFluxRefs.resize(nw.m_elements.size(),nullptr);
+	m_p->m_ambientTemperatureRefs.resize(nw.m_elements.size(),nullptr);
+	m_p->m_ambientHeatTransferRefs.resize(nw.m_elements.size(),nullptr);
+
 	// now populate the m_edges vector of the network solver
 
 	// process all hydraulic network elements and instatiate respective flow equation classes
@@ -139,22 +144,12 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 										itComp->m_heatExchangeType)),
 										FUNC_ID);
 						}
-						m_p->m_ambientHeatTransferRefs.push_back(&itComp->m_para[
-							NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].value);
-						// set heat flux to zero
-						m_p->m_ambientHeatFluxRefs.push_back(nullptr);
+						m_p->m_ambientHeatTransferRefs[i] = &itComp->m_para[
+							NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].value;
 					}
 					else if(!e.m_para[NANDRAD::HydraulicNetworkElement::P_HeatFlux].name.empty()) {
-						m_p->m_ambientHeatFluxRefs.push_back(
-							&e.m_para[NANDRAD::HydraulicNetworkElement::P_HeatFlux].value);
-						// set temperature and heat trabsfer coefficient to zero
-						m_p->m_ambientTemperatureRefs.push_back(nullptr);
-						m_p->m_ambientHeatTransferRefs.push_back(nullptr);
-					}
-					else {
-						m_p->m_ambientHeatFluxRefs.push_back(nullptr);
-						m_p->m_ambientTemperatureRefs.push_back(nullptr);
-						m_p->m_ambientHeatTransferRefs.push_back(nullptr);
+						m_p->m_ambientHeatFluxRefs[i] =
+							&e.m_para[NANDRAD::HydraulicNetworkElement::P_HeatFlux].value;
 					}
 				} break;
 				case NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature: {
@@ -202,10 +197,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 									itComp->m_heatExchangeType)),
 									FUNC_ID);
 					}
-					m_p->m_ambientHeatTransferRefs.push_back(&itComp->m_para[
-						NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].value);
-					// at the moment set reference to 0
-					m_p->m_ambientTemperatureRefs.push_back(nullptr);
+					m_p->m_ambientHeatTransferRefs[i] = &itComp->m_para[
+						NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].value;
 
 				} break;
 				case NANDRAD::HydraulicNetworkComponent::NUM_HT:
