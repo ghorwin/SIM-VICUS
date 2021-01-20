@@ -29,9 +29,6 @@ SVNavigationTreeWidget::SVNavigationTreeWidget(QWidget *parent) :
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVNavigationTreeWidget::onModified);
-
-	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::viewStateChanged,
-			this, &SVNavigationTreeWidget::onViewStateChanged);
 }
 
 
@@ -39,13 +36,6 @@ SVNavigationTreeWidget::~SVNavigationTreeWidget() {
 	delete m_ui;
 }
 
-
-unsigned int SVNavigationTreeWidget::selectedNodeID() const {
-	if (m_ui->treeWidget->selectedItems().isEmpty())
-		return 0;
-	QTreeWidgetItem * item = m_ui->treeWidget->selectedItems().first();
-	return item->data(0, SVNavigationTreeItemDelegate::NodeID).toUInt();
-}
 
 
 void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo * data) {
@@ -115,7 +105,6 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 
 	// insert root node
 	QTreeWidgetItem * root = new QTreeWidgetItem(QStringList() << "Site", QTreeWidgetItem::Type);
-	root->setData(0, SVNavigationTreeItemDelegate::ItemType, NT_Site);
 //	root->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, true);
 //	root->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, true);
 	m_ui->treeWidget->addTopLevelItem(root);
@@ -164,7 +153,6 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		QTreeWidgetItem * networkItem = new QTreeWidgetItem(QStringList() << tr("Network: %1").arg(QString::fromStdString(n.m_name)), QTreeWidgetItem::Type);
 		m_treeItemMap[n.uniqueID()] = networkItem;
 		root->addChild(networkItem);
-		networkItem->setData(0, SVNavigationTreeItemDelegate::ItemType, NT_Network);
 		networkItem->setData(0, SVNavigationTreeItemDelegate::NodeID, n.uniqueID());
 		networkItem->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, n.m_visible);
 		networkItem->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, n.m_selected);
@@ -180,7 +168,6 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 				name += " "  + QString::fromStdString(pipe->m_displayName.string());
 			QTreeWidgetItem * en = new QTreeWidgetItem(QStringList() << name, QTreeWidgetItem::Type);
 			m_treeItemMap[e.uniqueID()] = en;
-			en->setData(0, SVNavigationTreeItemDelegate::ItemType, NT_NetworkEdge);
 			en->setData(0, SVNavigationTreeItemDelegate::NodeID, e.uniqueID());
 			en->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, e.m_visible);
 			en->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, e.m_selected);
@@ -196,7 +183,6 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 			QString name = QString("[%1] %2").arg(nod.m_id).arg(VICUS::KeywordList::Keyword("NetworkNode::NodeType", nod.m_type));
 			QTreeWidgetItem * no = new QTreeWidgetItem(QStringList() << name, QTreeWidgetItem::Type);
 			m_treeItemMap[nod.uniqueID()] = no;
-			no->setData(0, SVNavigationTreeItemDelegate::ItemType, NT_NetworkNode);
 			no->setData(0, SVNavigationTreeItemDelegate::NodeID, nod.uniqueID());
 			no->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, nod.m_visible);
 			no->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, nod.m_selected);
@@ -216,21 +202,8 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 
 
 	m_ui->treeWidget->expandAll();
-
-	// update the item flags regarding selecting the item
-	onViewStateChanged();
 }
 
-
-void SVNavigationTreeWidget::onViewStateChanged() {
-	// depending on view state, items can be selected or not
-	const SVViewState & vs = SVViewStateHandler::instance().viewState();
-
-	if (vs.m_viewMode == SVViewState::VM_GeometryEditMode)
-		m_ui->treeWidget->setSelectionMode(QTreeView::NoSelection);
-	else
-		m_ui->treeWidget->setSelectionMode(QTreeView::SingleSelection);
-}
 
 
 void SVNavigationTreeWidget::collapseTreeWidgetItem(QTreeWidgetItem * parent) {
@@ -250,36 +223,6 @@ void SVNavigationTreeWidget::on_treeWidget_itemCollapsed(QTreeWidgetItem *item) 
 }
 
 
-void SVNavigationTreeWidget::on_treeWidget_itemSelectionChanged() {
-	// when user changes the selection, show the appropriate property widget
-	if (m_ui->treeWidget->selectedItems().isEmpty())
-		return;
-	QTreeWidgetItem * item = m_ui->treeWidget->selectedItems().first();
-
-	// we now need to figure out, what kind of icon this is
-
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	NodeType nt = static_cast<NodeType>(item->data(0, SVNavigationTreeItemDelegate::ItemType).toInt());
-	switch (nt) {
-		case NT_Site : {
-			// switch view state to show property widget for side
-			vs.m_propertyWidgetMode = SVViewState::PM_SiteProperties;
-		} break;
-		case NT_Network :{
-			vs.m_propertyWidgetMode = SVViewState::PM_NetworkProperties;
-		} break;
-		case NT_NetworkEdge:{
-			vs.m_propertyWidgetMode = SVViewState::PM_NetworkEdgeProperties;
-		} break;
-		case NT_NetworkNode:{
-			vs.m_propertyWidgetMode = SVViewState::PM_NetworkNodeProperties;
-		} break;
-
-		/// TODO : show other property widgets
-	}
-	SVViewStateHandler::instance().setViewState(vs);
-}
-
 
 void SVNavigationTreeWidget::on_actionRemoveSelected_triggered() {
 	emit removeSelected();
@@ -291,4 +234,8 @@ void SVNavigationTreeWidget::on_actionShowSelected_triggered() {
 
 void SVNavigationTreeWidget::on_actionHideSelected_triggered() {
 	emit hideSelected();
+}
+
+void SVNavigationTreeWidget::on_actionSelect_all_triggered() {
+	emit selectAll();
 }

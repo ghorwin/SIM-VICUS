@@ -18,26 +18,19 @@ public:
 	explicit SVNavigationTreeWidget(QWidget *parent);
 	~SVNavigationTreeWidget();
 
-	/*! Returns the unique ID of a selected node, or 0, if none is selected. */
-	unsigned int selectedNodeID() const;
-
 public slots:
 
 	/*! Connected to SVProjectHandler::modified() */
 	void onModified( int modificationType, ModificationInfo * data );
 
-	/*! Connected to view-state handler. */
-	void onViewStateChanged();
-
 signals:
 	void removeSelected();
 	void hideSelected();
 	void showSelected();
+	void selectAll();
 
 private slots:
 	void on_treeWidget_itemCollapsed(QTreeWidgetItem *item);
-
-	void on_treeWidget_itemSelectionChanged();
 
 	void on_actionRemoveSelected_triggered();
 
@@ -45,19 +38,9 @@ private slots:
 
 	void on_actionHideSelected_triggered();
 
-private:
-	enum NodeType {
-		NT_UndefinedNode,
-		NT_Site,
-		NT_Building,
-		NT_BuildingLevel,
-		NT_Room,
-		NT_Surface,
-		NT_Network,
-		NT_NetworkNode,
-		NT_NetworkEdge
-	};
+	void on_actionSelect_all_triggered();
 
+private:
 	/*! Recursively collapses all children. */
 	void collapseTreeWidgetItem(QTreeWidgetItem * parent);
 

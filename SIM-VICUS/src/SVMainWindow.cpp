@@ -413,6 +413,7 @@ void SVMainWindow::setup() {
 	connect(m_navigationTreeWidget, SIGNAL(removeSelected()), sv, SLOT(onDeleteSelected()));
 	connect(m_navigationTreeWidget, SIGNAL(showSelected()), sv, SLOT(onShowSelected()));
 	connect(m_navigationTreeWidget, SIGNAL(hideSelected()), sv, SLOT(onHideSelected()));
+	connect(m_navigationTreeWidget, SIGNAL(selectAll()), sv, SLOT(onSelectAll()));
 
 	// *** setup tool bar (add actions for undo and redo) ***
 

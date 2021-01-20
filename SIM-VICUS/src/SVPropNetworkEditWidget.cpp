@@ -48,18 +48,18 @@ SVPropNetworkEditWidget::~SVPropNetworkEditWidget() {
 
 
 void SVPropNetworkEditWidget::updateUi(const SelectionState selectionState) {
-	m_selection = selectionState;
-	switch (m_selection) {
-		case S_SingleObject: {// get single object from currently selected node in tree widget
-			m_treeItemId = SVViewStateHandler::instance().m_navigationTreeWidget->selectedNodeID();
-			break;
-		}
-		case S_MultipleObjects: {// get multiple selected objects (checked nodes in tree widget or selected in 3d scene)
-			m_selectedObjects = SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects;
-			break;
-		}
-		default: return;
-	}
+//	m_selection = selectionState;
+//	switch (m_selection) {
+//		case S_SingleObject: {// get single object from currently selected node in tree widget
+//			m_treeItemId = SVViewStateHandler::instance().m_navigationTreeWidget->selectedNodeID();
+//			break;
+//		}
+//		case S_MultipleObjects: {// get multiple selected objects (checked nodes in tree widget or selected in 3d scene)
+//			m_selectedObjects = SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects;
+//			break;
+//		}
+//		default: return;
+//	}
 
 	updateNetworkProperties();
 	updateSizingParams();

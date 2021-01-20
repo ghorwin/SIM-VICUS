@@ -50,8 +50,8 @@ private:
 	/*! Pointer to property widget: add polygon */
 	QWidget					*m_propWidgets[SVViewState::NUM_PM];
 
-	/*! creates network property widget and adds it to layout (if not yet existing), sets it visible */
-	void showNetworkPropertyWidget();
+//	/*! creates network property widget and adds it to layout (if not yet existing), sets it visible */
+//	void showNetworkPropertyWidget();
 };
 
 #endif // SVPROPERTYWIDGET_H
