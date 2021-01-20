@@ -39,6 +39,44 @@ void SVPropModeSelectionWidget::updateUI() {
 }
 
 
+void SVPropModeSelectionWidget::selectionChanged() {
+	if (m_ui->pushButtonNetwork->isChecked()) {
+		// do we have a network?
+		if (m_ui->comboBoxNetwork->currentIndex() == -1)
+			return; // cannot do anything without network
+		// still in default mode?
+		if (m_ui->comboBoxNetworkProperties->currentIndex() != 0)
+			return; // specific mode already selected
+		// now check the selected objects and if we have only nodes - go to node edit more,
+		// if we have only edges - go to edge edit mode
+
+		std::set<const VICUS::Object*> objs;
+		project().selectObjects(objs, VICUS::Project::SG_Network, true, true);
+		bool haveNode = false;
+		bool haveEdge = false;
+		for (const VICUS::Object* o : objs) {
+			if (dynamic_cast<const VICUS::NetworkNode*>(o) != nullptr)
+				haveNode = true;
+			else if (dynamic_cast<const VICUS::NetworkEdge*>(o) != nullptr) {
+				haveEdge = true;
+			}
+			if (haveNode && haveEdge)
+				return; // both selected, cannot do anything
+		}
+		// only nodes selected?
+		if (haveNode && !haveEdge) {
+			m_ui->comboBoxNetworkProperties->setCurrentIndex(1);	// sends a signal to change property widget
+		}
+		if (!haveNode && haveEdge) {
+			m_ui->comboBoxNetworkProperties->setCurrentIndex(2);	// sends a signal to change property widget
+		}
+	}
+
+	// TODO : what about building editing default mode?
+
+}
+
+
 void SVPropModeSelectionWidget::on_pushButtonBuilding_toggled(bool) {
 	updateProperties();
 	// emit a signal with the information about the changed input
@@ -72,3 +110,17 @@ void SVPropModeSelectionWidget::updateProperties() {
 	m_ui->comboBoxBuildingProperties->setVisible(showBuildingProps);
 }
 
+
+void SVPropModeSelectionWidget::on_comboBoxNetwork_currentIndexChanged(int index) {
+
+}
+
+
+void SVPropModeSelectionWidget::on_comboBoxNetworkProperties_currentIndexChanged(int index) {
+
+}
+
+
+void SVPropModeSelectionWidget::on_comboBoxBuildingProperties_currentIndexChanged(int index) {
+
+}

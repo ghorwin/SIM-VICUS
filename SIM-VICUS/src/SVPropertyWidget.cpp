@@ -40,8 +40,16 @@ SVPropertyWidget::SVPropertyWidget(QWidget * parent) :
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropertyWidget::onModified);
 
+	connect(m_propModeSelectionWidget, &SVPropModeSelectionWidget::buildingPropertiesSelected,
+			this, &SVPropertyWidget::onBuildingPropertiesSelected);
+	connect(m_propModeSelectionWidget, &SVPropModeSelectionWidget::networkPropertiesSelected,
+			this, &SVPropertyWidget::onNetworkPropertiesSelected);
+	connect(m_propModeSelectionWidget, &SVPropModeSelectionWidget::sitePropertiesSelected,
+			this, &SVPropertyWidget::onSitePropertiesSelected);
+
 	onViewStateChanged();
 }
+
 
 
 void SVPropertyWidget::onViewStateChanged() {
@@ -186,10 +194,37 @@ void SVPropertyWidget::onModified(int modificationType, ModificationInfo * ) {
 		break;
 
 		case SVProjectHandler::NodeStateModified:
+			// Tell mode selection widget that the selection property has changed
+			// this is used to switch from "generic" building/network edit modes
+			// into a more specific mode. For example, when "Network" mode is selected
+			// and a node is selected, we automatically switch to "Node" edit mode.
+			m_propModeSelectionWidget->selectionChanged();
 		break;
 
 		default: ; // just to make compiler happy
 	}
+}
+
+
+void SVPropertyWidget::onSitePropertiesSelected() {
+	// change view state to "edit site properties"
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_propertyWidgetMode = SVViewState::PM_SiteProperties;
+	SVViewStateHandler::instance().setViewState(vs);
+}
+
+
+void SVPropertyWidget::onBuildingPropertiesSelected(int propertyIndex) {
+	// change view state to "edit building properties"
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_propertyWidgetMode = SVViewState::PM_BuildingProperties;
+	SVViewStateHandler::instance().setViewState(vs);
+}
+
+
+void SVPropertyWidget::onNetworkPropertiesSelected(int networkIndex, int propertyIndex) {
+	// change view state to "edit network properties"
+
 }
 
 //void SVPropertyWidget::showNetworkPropertyWidget() {

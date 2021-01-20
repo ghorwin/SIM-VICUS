@@ -16,8 +16,12 @@ class ModificationInfo;
 /*! The property widget is located at the right side of the screen.
 	Depending on the mode the UI is in, it shows a different set of widgets.
 	This class is simply a manager that toggles visibility of the widgets,
-	and creates them on first use. The latter help speed-up the start of the application,
+	and creates them on first use. The latter helps speed-up the start of the application,
 	since less UI widgets need to be created (and less memory is occupied by the user interface).
+
+	When the view is in property edit mode (SVViewState::VM_PropertyEditMode), the embedded
+	SVPropModeSelectionWidget is used to toggle/switch between individual mode widgets.
+
 */
 class SVPropertyWidget : public QWidget {
 	Q_OBJECT
@@ -47,6 +51,24 @@ public slots:
 
 	/*! Connected to SVProjectHandler::modified() */
 	void onModified( int modificationType, ModificationInfo * data );
+
+private slots:
+
+	/*! Emitted when user has selected the site properties. */
+	void onSitePropertiesSelected();
+
+	/*! Emitted when user activates building properties combo box or changes
+		the selection in the combo box.
+		\param propertyIndex Index of the selected property in the combo box
+	*/
+	void onBuildingPropertiesSelected(int propertyIndex);
+
+	/*! Emitted when user activates network properties combo box or changes
+		the selection in the combo box.
+		\param networkIndex Index of the selected network in the combo box, may be -1 if empty.
+		\param propertyIndex Index of the selected network property in the combo box, 0 = network, 1 = node, 2 = element.
+	*/
+	void onNetworkPropertiesSelected(int networkIndex, int propertyIndex);
 
 private:
 

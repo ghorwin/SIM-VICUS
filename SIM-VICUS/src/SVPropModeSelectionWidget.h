@@ -21,6 +21,11 @@ public:
 	/*! Called to update combo boxes. */
 	void updateUI();
 
+	/*! Based on selected properties, switch to one of the specific edit modes, when still
+		in "default" mode.
+	*/
+	void selectionChanged();
+
 signals:
 
 	/*! Emitted when user has selected the site properties. */
@@ -45,6 +50,12 @@ private slots:
 	void on_pushButtonNetwork_toggled(bool checked);
 
 	void on_pushButtonSite_toggled(bool checked);
+
+	void on_comboBoxNetwork_currentIndexChanged(int index);
+
+	void on_comboBoxNetworkProperties_currentIndexChanged(int index);
+
+	void on_comboBoxBuildingProperties_currentIndexChanged(int index);
 
 private:
 	/*! This is called whenever the user has made changes to any of the components in
