@@ -1102,6 +1102,19 @@ void Vic3DScene::hideSelected() {
 	action->push();
 }
 
+void Vic3DScene::selectAll()
+{
+	project().selectObjects(m_selectedGeometryObject.m_selectedObjects, VICUS::Project::SG_All);
+
+	std::set<unsigned int> nodeIDs;
+	for (const VICUS::Object * o : m_selectedGeometryObject.m_selectedObjects)
+		nodeIDs.insert(o->uniqueID());
+	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Selected all"),
+														 SVUndoTreeNodeState::SelectedState, nodeIDs, true);
+	// select all
+	undo->push();
+}
+
 
 void Vic3DScene::leaveCoordinateSystemAdjustmentMode(bool abort) {
 	// restore original local coordinate system

@@ -29,6 +29,7 @@ SceneView::SceneView() :
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_R);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_F);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Shift);
+	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Control);
 
 	// *** create scene (no OpenGL calls are being issued below, just the data structures are created.
 
@@ -449,6 +450,13 @@ void SceneView::keyReleaseEvent(QKeyEvent *event) {
 		case Qt::Key_Delete : {
 			m_mainScene.deleteSelected();
 		} break;
+
+		case Qt::Key_A:
+		{
+			if(event->modifiers() & Qt::ControlModifier){
+				m_mainScene.selectAll();
+			}
+		}
 
 		default :; // ignore the rest
 	} // switch

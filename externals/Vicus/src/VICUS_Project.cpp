@@ -434,6 +434,54 @@ bool Project::haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const {
 	return (coordsCount > 0);
 }
 
+void Project::selectObjects(std::set<const Object*> &selectedObjs, const SelectionGroups &sg, bool takeInvisible) const
+{
+	// Buildings
+	if(sg == SG_All || sg == SG_Building){
+		for (const VICUS::Building & b : m_buildings) {
+			for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+				for (const VICUS::Room & r : bl.m_rooms) {
+					for (const VICUS::Surface & s : r.m_surfaces) {
+						if(takeInvisible || s.m_visible)
+							selectedObjs.insert(&s);
+					}
+					if(takeInvisible || r.m_visible)
+						selectedObjs.insert(&r);
+				}
+				if(takeInvisible || bl.m_visible)
+					selectedObjs.insert(&bl);
+			}
+			if(takeInvisible || b.m_visible)
+				selectedObjs.insert(&b);
+		}
+	}
+
+	// Networks
+	if(sg == SG_All || sg == SG_Network){
+		for (const VICUS::Network & n : m_geometricNetworks) {
+			for (const VICUS::NetworkEdge & e : n.m_edges) {
+				if(takeInvisible || e.m_visible)
+					selectedObjs.insert(&e);
+			}
+
+			for (const VICUS::NetworkNode & nod : n.m_nodes) {
+				if(takeInvisible || nod.m_visible)
+					selectedObjs.insert(&nod);
+			}
+			if(takeInvisible || n.m_visible)
+				selectedObjs.insert(&n);
+		}
+	}
+
+	// Dumb plain geometry
+	if(sg == SG_All) {
+		for (const VICUS::Surface & s : m_plainGeometry) {
+
+			selectedObjs.insert(&s);
+		}
+	}
+}
+
 
 bool Project::selectedSurfaces(std::vector<const Surface*> &surfaces) const {
 	bool haveSelectedPolys = false;

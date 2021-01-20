@@ -79,6 +79,9 @@ public:
 	/*! Shows all selected geometry. */
 	void hideSelected();
 
+	/*! Select all objects like surfaces, rooms, buildings, etc. */
+	void selectAll();
+
 	/*! Toggles "align coordinate system" mode on. */
 	void enterCoordinateSystemAdjustmentMode();
 	/*! Leaves the coordinate system alignment/positioning mode and returns to previous mode. */

@@ -51,6 +51,13 @@ public:
 		NUM_VF
 	};
 
+	enum SelectionGroups{
+		SG_All,
+		SG_Building,
+		SG_Network,
+		NUM_SG
+	};
+
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	/*! Constructor, creates dummy data. */
@@ -95,6 +102,13 @@ public:
 				 surface vertexes in variable centerPoint.
 	*/
 	bool haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const;
+
+	/*! Selects objects according to two properties:
+		1. objectGroup
+		2. visibility
+		Exports an set of pointer of Objects
+	*/
+	void selectObjects(std::set<const Object *> &selectedObjs, const SelectionGroups &sg, bool takeInvisible =true) const;
 
 	/*! This function collects the pointers to all selected surfaces
 		\returns Returns true if any surface is selected
