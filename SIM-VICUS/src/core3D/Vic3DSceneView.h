@@ -51,6 +51,9 @@ public slots:
 	/*! Action to delete all selected objects. */
 	void onDeleteSelected();
 
+	/*! Action to show all selected objects. */
+	void onSelectAll();
+
 signals:
 	/*! Emitted when numbers where typed.
 		Only during "PlaceVertex" scene operation mode.

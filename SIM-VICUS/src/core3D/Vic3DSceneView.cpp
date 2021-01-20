@@ -186,6 +186,11 @@ void SceneView::onDeleteSelected() {
 }
 
 
+void SceneView::onSelectAll() {
+	m_mainScene.selectAll();
+}
+
+
 void SceneView::initializeGL() {
 	FUNCID(SceneView::initializeGL);
 	try {

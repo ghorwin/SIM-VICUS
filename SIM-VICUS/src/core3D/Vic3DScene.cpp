@@ -366,25 +366,27 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 	// *** Keyboard navigation ***
 
-	// translation and rotation works always (no trigger key)
+	// translation and rotation works always (no trigger key) unless the Ctrl-key is held at the same time
+	if (!keyboardHandler.keyDown(Qt::Key_Control)) {
 
-	// Handle translations
-	QVector3D translation;
-	QVector3D rotationAxis;
-	if (keyboardHandler.keyDown(Qt::Key_W)) 		translation += m_camera.forward();
-	if (keyboardHandler.keyDown(Qt::Key_S)) 		translation -= m_camera.forward();
-	if (keyboardHandler.keyDown(Qt::Key_A)) 		translation -= m_camera.right();
-	if (keyboardHandler.keyDown(Qt::Key_D)) 		translation += m_camera.right();
-	if (keyboardHandler.keyDown(Qt::Key_F)) 		translation -= m_camera.up();
-	if (keyboardHandler.keyDown(Qt::Key_R))			translation += m_camera.up();
-	if (keyboardHandler.keyDown(Qt::Key_Q))			rotationAxis = QVector3D(.0f,.0f,1.f);
-	if (keyboardHandler.keyDown(Qt::Key_E))			rotationAxis = -QVector3D(.0f,.0f,1.f);
+		// Handle translations
+		QVector3D translation;
+		QVector3D rotationAxis;
+		if (keyboardHandler.keyDown(Qt::Key_W)) 		translation += m_camera.forward();
+		if (keyboardHandler.keyDown(Qt::Key_S)) 		translation -= m_camera.forward();
+		if (keyboardHandler.keyDown(Qt::Key_A)) 		translation -= m_camera.right();
+		if (keyboardHandler.keyDown(Qt::Key_D)) 		translation += m_camera.right();
+		if (keyboardHandler.keyDown(Qt::Key_F)) 		translation -= m_camera.up();
+		if (keyboardHandler.keyDown(Qt::Key_R))			translation += m_camera.up();
+		if (keyboardHandler.keyDown(Qt::Key_Q))			rotationAxis = QVector3D(.0f,.0f,1.f);
+		if (keyboardHandler.keyDown(Qt::Key_E))			rotationAxis = -QVector3D(.0f,.0f,1.f);
 
-	float transSpeed = TRANSLATION_SPEED;
-	if (keyboardHandler.keyDown(Qt::Key_Shift))
-		transSpeed = 0.1f;
-	m_camera.translate(transSpeed * translation);
-	m_camera.rotate(transSpeed, rotationAxis);
+		float transSpeed = TRANSLATION_SPEED;
+		if (keyboardHandler.keyDown(Qt::Key_Shift))
+			transSpeed = 0.1f;
+		m_camera.translate(transSpeed * translation);
+		m_camera.rotate(transSpeed, rotationAxis);
+	}
 
 	// To avoid duplicate picking operation, we create the pick object here.
 	// Then, when we actually need picking, we check if the pick was already executed, and then only
@@ -1102,14 +1104,20 @@ void Vic3DScene::hideSelected() {
 	action->push();
 }
 
-void Vic3DScene::selectAll()
-{
-	project().selectObjects(m_selectedGeometryObject.m_selectedObjects, VICUS::Project::SG_All);
 
+void Vic3DScene::selectAll() {
+	std::set<const VICUS::Object *> selObjects;
+	// select all objects, wether they are selected already or not, and whether they are visible or not
+	project().selectObjects(selObjects, VICUS::Project::SG_All, false, false);
+
+	// get a list of IDs of nodes to be selected (only those who are not yet selected)
 	std::set<unsigned int> nodeIDs;
-	for (const VICUS::Object * o : m_selectedGeometryObject.m_selectedObjects)
-		nodeIDs.insert(o->uniqueID());
-	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Selected all"),
+	for (const VICUS::Object * o : selObjects) {
+		if (!o->m_selected)
+			nodeIDs.insert(o->uniqueID());
+	}
+
+	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("All objects selected"),
 														 SVUndoTreeNodeState::SelectedState, nodeIDs, true);
 	// select all
 	undo->push();
