@@ -112,10 +112,6 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			updateSelection = true;
 			break;
 
-		case SVProjectHandler::SelectionModified :
-			updateSelection = true;
-			break;
-
 		// *** selection and visibility properties changed ***
 		case SVProjectHandler::NodeStateModified : {
 			// we need to implement the following logic:

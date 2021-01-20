@@ -6,12 +6,15 @@
 #include <IBKMK_Vector3D.h>
 
 #include "SVViewStateHandler.h"
+#include "SVProjectHandler.h"
 
 #include "SVPropVertexListWidget.h"
 #include "SVPropEditGeometry.h"
 #include "SVPropSiteWidget.h"
 #include "SVPropNetworkEditWidget.h"
 #include "SVPropModeSelectionWidget.h"
+
+
 #include "Vic3DNewGeometryObject.h"
 #include "Vic3DCoordinateSystemObject.h"
 #include "Vic3DWireFrameObject.h"
@@ -33,6 +36,9 @@ SVPropertyWidget::SVPropertyWidget(QWidget * parent) :
 
 	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::viewStateChanged,
 			this, &SVPropertyWidget::onViewStateChanged);
+
+	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
+			this, &SVPropertyWidget::onModified);
 
 	onViewStateChanged();
 }
@@ -166,6 +172,23 @@ void SVPropertyWidget::onViewStateChanged() {
 		default : {
 			// set maximum size to 0, to avoid widget being expandible
 		}
+	}
+}
+
+
+void SVPropertyWidget::onModified(int modificationType, ModificationInfo * ) {
+	SVProjectHandler::ModificationTypes modType((SVProjectHandler::ModificationTypes)modificationType);
+	switch (modType) {
+		case SVProjectHandler::NetworkModified:
+		case SVProjectHandler::AllModified:
+			// update combobox with network names in mode selection widget widget
+			m_propModeSelectionWidget->updateUI();
+		break;
+
+		case SVProjectHandler::NodeStateModified:
+		break;
+
+		default: ; // just to make compiler happy
 	}
 }
 

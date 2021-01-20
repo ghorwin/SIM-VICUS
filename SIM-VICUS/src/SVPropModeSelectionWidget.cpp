@@ -11,6 +11,7 @@ SVPropModeSelectionWidget::SVPropModeSelectionWidget(QWidget *parent) :
 	m_ui(new Ui::SVPropModeSelectionWidget)
 {
 	m_ui->setupUi(this);
+	m_ui->verticalLayout->setMargin(0);
 	updateProperties();
 }
 

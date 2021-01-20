@@ -9,6 +9,7 @@ namespace IBKMK {
 
 class QVBoxLayout;
 class SVPropModeSelectionWidget;
+class ModificationInfo;
 
 #include <SVViewState.h>
 
@@ -43,6 +44,9 @@ public slots:
 		Toggles the visibility of the individual property widgets based on the current viewstate.
 	*/
 	void onViewStateChanged();
+
+	/*! Connected to SVProjectHandler::modified() */
+	void onModified( int modificationType, ModificationInfo * data );
 
 private:
 
