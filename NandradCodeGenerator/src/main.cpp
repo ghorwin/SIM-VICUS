@@ -31,9 +31,9 @@ const char * const SYNTAX =
 // ******* MAIN ********
 
 int main(int argc, char *argv[]) {
-	std::cout << "--------------------------------------------------------------------------" << std::endl;
-	std::cout << "NandradCodeGenerator - SIM-VICUS project (based on IBK-KeywordListCreator)" << std::endl;
-	std::cout << "--------------------------------------------------------------------------" << std::endl;
+	std::cout << "-------------------------------------------------------------------------------" << std::endl;
+	std::cout << "NandradCodeGenerator v1.1 - SIM-VICUS project (based on IBK-KeywordListCreator)" << std::endl;
+	std::cout << "-------------------------------------------------------------------------------" << std::endl;
 
 	if (argc != 6) {
 		std::cerr << "Invalid syntax." << std::endl;

@@ -1,8 +1,8 @@
 The NANDRAD CodeGenerator
 =========================
 Andreas Nicolai <andreas.nicolai@tu-dresden.de>
-11.11.2020  20:30
-// date_on_line_above
+v1.1 (20.01.2021)
+// v1.1 date_on_line_above
 :Author Initials: AN
 :toc: left
 :toclevels: 3
@@ -26,6 +26,11 @@ What is the NANDRAD-Code-Generator? Basically, it is a tool to parse NANDRAD hea
 - translating enumeration values into strings, descriptions, colors and units (very handy for physical parameter lists)
 - reading and writing xml data structures (elements and attributes) for designated member variables
 - comparing data structures with default instances (so that only modified members are written to file), and other utility functions
+
+[NOTE]
+====
+Actually, the NANDRAD code generator is also used for the VICUS library. And the keyword list functionality is further used in the NandradSolver itself.
+====
 
 ### How does it work?
 
@@ -289,6 +294,11 @@ public:
 The `// XML:A` says: make this an attribute. The `// XML:E` says: make this a child-element. The additional `required` keyword means: this attribute (or element) must be provided, otherwise `readXML()` will throw an exception.
 
 The annotations can be used for quite a few data types. Rules for these are given in section <<xml_serialization_rules>>.
+
+
+#### Special features
+
+There are a few special syntax forms supported by the code generator, see <<xml_serialization_rules>> for details.
 
 
 ### Utility Macros
@@ -982,3 +992,29 @@ You can have multi-line comments, by adding `\n` in the string, but the indentat
 ====
 You cannot combine `XML:C` with any other xml element option.
 ====
+
+#### Serialization of inherited data members
+
+Sometimes a base class holds data members that should be serialized in derived classes. Rather than manually implementing `readXML()` and `writeXML()` functions, you can simply copy the variable declaration into the derived class, add the `XML:...` serialization suffix and then prefix the entire line with `//:inherited` like in the following example.
+
+.Serialization of inherited data members
+[source,c++]
+----
+class Parent {
+public:
+
+    int m_value;
+};
+
+
+class Child : public Parent {
+
+    // the following line tells the code generator to generate the serialization code
+    // for variable m_value. The C++ compiler ignores this line.
+    
+    //:inherited int m_value; // XML:E
+};
+----
+
+Basically, the code generator looks for the token `//:inherited`, removes it from the line and then handles the line just as a regular variable declaration with serialization tag.
+

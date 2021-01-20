@@ -5,460 +5,132 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Overview</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<meta name="author" content="Andreas Nicolai">
+<title>The NANDRAD CodeGenerator</title>
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
-/* Uncomment @import statement to use as custom stylesheet */
-/*@import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700";*/
-article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section{display:block}
-audio,video{display:inline-block}
-audio:not([controls]){display:none;height:0}
-html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}
-a{background:none}
-a:focus{outline:thin dotted}
-a:active,a:hover{outline:0}
-h1{font-size:2em;margin:.67em 0}
-abbr[title]{border-bottom:1px dotted}
-b,strong{font-weight:bold}
-dfn{font-style:italic}
-hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0}
-mark{background:#ff0;color:#000}
-code,kbd,pre,samp{font-family:monospace;font-size:1em}
-pre{white-space:pre-wrap}
-q{quotes:"\201C" "\201D" "\2018" "\2019"}
-small{font-size:80%}
-sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}
-sup{top:-.5em}
-sub{bottom:-.25em}
-img{border:0}
-svg:not(:root){overflow:hidden}
-figure{margin:0}
-fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em}
-legend{border:0;padding:0}
-button,input,select,textarea{font-family:inherit;font-size:100%;margin:0}
-button,input{line-height:normal}
-button,select{text-transform:none}
-button,html input[type="button"],input[type="reset"],input[type="submit"]{-webkit-appearance:button;cursor:pointer}
-button[disabled],html input[disabled]{cursor:default}
-input[type="checkbox"],input[type="radio"]{box-sizing:border-box;padding:0}
-button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}
-textarea{overflow:auto;vertical-align:top}
-table{border-collapse:collapse;border-spacing:0}
-*,*::before,*::after{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}
-html,body{font-size:100%}
-body{background:#fff;color:rgba(0,0,0,.8);padding:0;margin:0;font-family:"Noto Serif","DejaVu Serif",serif;font-weight:400;font-style:normal;line-height:1;position:relative;cursor:auto;tab-size:4;-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased}
-a:hover{cursor:pointer}
-img,object,embed{max-width:100%;height:auto}
-object,embed{height:100%}
-img{-ms-interpolation-mode:bicubic}
-.left{float:left!important}
-.right{float:right!important}
-.text-left{text-align:left!important}
-.text-right{text-align:right!important}
-.text-center{text-align:center!important}
-.text-justify{text-align:justify!important}
-.hide{display:none}
-img,object,svg{display:inline-block;vertical-align:middle}
-textarea{height:auto;min-height:50px}
-select{width:100%}
-.center{margin-left:auto;margin-right:auto}
-.stretch{width:100%}
-.subheader,.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{line-height:1.45;color:#7a2518;font-weight:400;margin-top:0;margin-bottom:.25em}
-div,dl,dt,dd,ul,ol,li,h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6,pre,form,p,blockquote,th,td{margin:0;padding:0;direction:ltr}
-a{color:#2156a5;text-decoration:underline;line-height:inherit}
-a:hover,a:focus{color:#1d4b8f}
-a img{border:0}
-p{font-family:inherit;font-weight:400;font-size:1em;line-height:1.6;margin-bottom:1.25em;text-rendering:optimizeLegibility}
-p aside{font-size:.875em;line-height:1.35;font-style:italic}
-h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{font-family:"Open Sans","DejaVu Sans",sans-serif;font-weight:300;font-style:normal;color:#ba3925;text-rendering:optimizeLegibility;margin-top:1em;margin-bottom:.5em;line-height:1.0125em}
-h1 small,h2 small,h3 small,#toctitle small,.sidebarblock>.content>.title small,h4 small,h5 small,h6 small{font-size:60%;color:#e99b8f;line-height:0}
-h1{font-size:2.125em}
-h2{font-size:1.6875em}
-h3,#toctitle,.sidebarblock>.content>.title{font-size:1.375em}
-h4,h5{font-size:1.125em}
-h6{font-size:1em}
-hr{border:solid #dddddf;border-width:1px 0 0;clear:both;margin:1.25em 0 1.1875em;height:0}
-em,i{font-style:italic;line-height:inherit}
-strong,b{font-weight:bold;line-height:inherit}
-small{font-size:60%;line-height:inherit}
-code{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;color:rgba(0,0,0,.9)}
-ul,ol,dl{font-size:1em;line-height:1.6;margin-bottom:1.25em;list-style-position:outside;font-family:inherit}
-ul,ol{margin-left:1.5em}
-ul li ul,ul li ol{margin-left:1.25em;margin-bottom:0;font-size:1em}
-ul.square li ul,ul.circle li ul,ul.disc li ul{list-style:inherit}
-ul.square{list-style-type:square}
-ul.circle{list-style-type:circle}
-ul.disc{list-style-type:disc}
-ol li ul,ol li ol{margin-left:1.25em;margin-bottom:0}
-dl dt{margin-bottom:.3125em;font-weight:bold}
-dl dd{margin-bottom:1.25em}
-abbr,acronym{text-transform:uppercase;font-size:90%;color:rgba(0,0,0,.8);border-bottom:1px dotted #ddd;cursor:help}
-abbr{text-transform:none}
-blockquote{margin:0 0 1.25em;padding:.5625em 1.25em 0 1.1875em;border-left:1px solid #ddd}
-blockquote cite{display:block;font-size:.9375em;color:rgba(0,0,0,.6)}
-blockquote cite::before{content:"\2014 \0020"}
-blockquote cite a,blockquote cite a:visited{color:rgba(0,0,0,.6)}
-blockquote,blockquote p{line-height:1.6;color:rgba(0,0,0,.85)}
-@media screen and (min-width:768px){h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2}
-h1{font-size:2.75em}
-h2{font-size:2.3125em}
-h3,#toctitle,.sidebarblock>.content>.title{font-size:1.6875em}
-h4{font-size:1.4375em}}
-table{background:#fff;margin-bottom:1.25em;border:solid 1px #dedede}
-table thead,table tfoot{background:#f7f8f7}
-table thead tr th,table thead tr td,table tfoot tr th,table tfoot tr td{padding:.5em .625em .625em;font-size:inherit;color:rgba(0,0,0,.8);text-align:left}
-table tr th,table tr td{padding:.5625em .625em;font-size:inherit;color:rgba(0,0,0,.8)}
-table tr.even,table tr.alt{background:#f8f8f7}
-table thead tr th,table tfoot tr th,table tbody tr td,table tr td,table tfoot tr td{display:table-cell;line-height:1.6}
-h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2;word-spacing:-.05em}
-h1 strong,h2 strong,h3 strong,#toctitle strong,.sidebarblock>.content>.title strong,h4 strong,h5 strong,h6 strong{font-weight:400}
-.clearfix::before,.clearfix::after,.float-group::before,.float-group::after{content:" ";display:table}
-.clearfix::after,.float-group::after{clear:both}
-:not(pre):not([class^=L])>code{font-size:.9375em;font-style:normal!important;letter-spacing:0;padding:.1em .5ex;word-spacing:-.15em;background:#f7f7f8;-webkit-border-radius:4px;border-radius:4px;line-height:1.45;text-rendering:optimizeSpeed;word-wrap:break-word}
-:not(pre)>code.nobreak{word-wrap:normal}
-:not(pre)>code.nowrap{white-space:nowrap}
-pre{color:rgba(0,0,0,.9);font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;line-height:1.45;text-rendering:optimizeSpeed}
-pre code,pre pre{color:inherit;font-size:inherit;line-height:inherit}
-pre>code{display:block}
-pre.nowrap,pre.nowrap pre{white-space:pre;word-wrap:normal}
-em em{font-style:normal}
-strong strong{font-weight:400}
-.keyseq{color:rgba(51,51,51,.8)}
-kbd{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;display:inline-block;color:rgba(0,0,0,.8);font-size:.65em;line-height:1.45;background:#f7f7f7;border:1px solid #ccc;-webkit-border-radius:3px;border-radius:3px;-webkit-box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em white inset;box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em #fff inset;margin:0 .15em;padding:.2em .5em;vertical-align:middle;position:relative;top:-.1em;white-space:nowrap}
-.keyseq kbd:first-child{margin-left:0}
-.keyseq kbd:last-child{margin-right:0}
-.menuseq,.menuref{color:#000}
-.menuseq b:not(.caret),.menuref{font-weight:inherit}
-.menuseq{word-spacing:-.02em}
-.menuseq b.caret{font-size:1.25em;line-height:.8}
-.menuseq i.caret{font-weight:bold;text-align:center;width:.45em}
-b.button::before,b.button::after{position:relative;top:-1px;font-weight:400}
-b.button::before{content:"[";padding:0 3px 0 2px}
-b.button::after{content:"]";padding:0 2px 0 3px}
-p a>code:hover{color:rgba(0,0,0,.9)}
-#header,#content,#footnotes,#footer{width:100%;margin-left:auto;margin-right:auto;margin-top:0;margin-bottom:0;max-width:62.5em;*zoom:1;position:relative;padding-left:.9375em;padding-right:.9375em}
-#header::before,#header::after,#content::before,#content::after,#footnotes::before,#footnotes::after,#footer::before,#footer::after{content:" ";display:table}
-#header::after,#content::after,#footnotes::after,#footer::after{clear:both}
-#content{margin-top:1.25em}
-#content::before{content:none}
-#header>h1:first-child{color:rgba(0,0,0,.85);margin-top:2.25rem;margin-bottom:0}
-#header>h1:first-child+#toc{margin-top:8px;border-top:1px solid #dddddf}
-#header>h1:only-child,body.toc2 #header>h1:nth-last-child(2){border-bottom:1px solid #dddddf;padding-bottom:8px}
-#header .details{border-bottom:1px solid #dddddf;line-height:1.45;padding-top:.25em;padding-bottom:.25em;padding-left:.25em;color:rgba(0,0,0,.6);display:-ms-flexbox;display:-webkit-flex;display:flex;-ms-flex-flow:row wrap;-webkit-flex-flow:row wrap;flex-flow:row wrap}
-#header .details span:first-child{margin-left:-.125em}
-#header .details span.email a{color:rgba(0,0,0,.85)}
-#header .details br{display:none}
-#header .details br+span::before{content:"\00a0\2013\00a0"}
-#header .details br+span.author::before{content:"\00a0\22c5\00a0";color:rgba(0,0,0,.85)}
-#header .details br+span#revremark::before{content:"\00a0|\00a0"}
-#header #revnumber{text-transform:capitalize}
-#header #revnumber::after{content:"\00a0"}
-#content>h1:first-child:not([class]){color:rgba(0,0,0,.85);border-bottom:1px solid #dddddf;padding-bottom:8px;margin-top:0;padding-top:1rem;margin-bottom:1.25rem}
-#toc{border-bottom:1px solid #e7e7e9;padding-bottom:.5em}
-#toc>ul{margin-left:.125em}
-#toc ul.sectlevel0>li>a{font-style:italic}
-#toc ul.sectlevel0 ul.sectlevel1{margin:.5em 0}
-#toc ul{font-family:"Open Sans","DejaVu Sans",sans-serif;list-style-type:none}
-#toc li{line-height:1.3334;margin-top:.3334em}
-#toc a{text-decoration:none}
-#toc a:active{text-decoration:underline}
-#toctitle{color:#7a2518;font-size:1.2em}
-@media screen and (min-width:768px){#toctitle{font-size:1.375em}
-body.toc2{padding-left:15em;padding-right:0}
-#toc.toc2{margin-top:0!important;background:#f8f8f7;position:fixed;width:15em;left:0;top:0;border-right:1px solid #e7e7e9;border-top-width:0!important;border-bottom-width:0!important;z-index:1000;padding:1.25em 1em;height:100%;overflow:auto}
-#toc.toc2 #toctitle{margin-top:0;margin-bottom:.8rem;font-size:1.2em}
-#toc.toc2>ul{font-size:.9em;margin-bottom:0}
-#toc.toc2 ul ul{margin-left:0;padding-left:1em}
-#toc.toc2 ul.sectlevel0 ul.sectlevel1{padding-left:0;margin-top:.5em;margin-bottom:.5em}
-body.toc2.toc-right{padding-left:0;padding-right:15em}
-body.toc2.toc-right #toc.toc2{border-right-width:0;border-left:1px solid #e7e7e9;left:auto;right:0}}
-@media screen and (min-width:1280px){body.toc2{padding-left:20em;padding-right:0}
-#toc.toc2{width:20em}
-#toc.toc2 #toctitle{font-size:1.375em}
-#toc.toc2>ul{font-size:.95em}
-#toc.toc2 ul ul{padding-left:1.25em}
-body.toc2.toc-right{padding-left:0;padding-right:20em}}
-#content #toc{border-style:solid;border-width:1px;border-color:#e0e0dc;margin-bottom:1.25em;padding:1.25em;background:#f8f8f7;-webkit-border-radius:4px;border-radius:4px}
-#content #toc>:first-child{margin-top:0}
-#content #toc>:last-child{margin-bottom:0}
-#footer{max-width:100%;background:rgba(0,0,0,.8);padding:1.25em}
-#footer-text{color:rgba(255,255,255,.8);line-height:1.44}
-#content{margin-bottom:.625em}
-.sect1{padding-bottom:.625em}
-@media screen and (min-width:768px){#content{margin-bottom:1.25em}
-.sect1{padding-bottom:1.25em}}
-.sect1:last-child{padding-bottom:0}
-.sect1+.sect1{border-top:1px solid #e7e7e9}
-#content h1>a.anchor,h2>a.anchor,h3>a.anchor,#toctitle>a.anchor,.sidebarblock>.content>.title>a.anchor,h4>a.anchor,h5>a.anchor,h6>a.anchor{position:absolute;z-index:1001;width:1.5ex;margin-left:-1.5ex;display:block;text-decoration:none!important;visibility:hidden;text-align:center;font-weight:400}
-#content h1>a.anchor::before,h2>a.anchor::before,h3>a.anchor::before,#toctitle>a.anchor::before,.sidebarblock>.content>.title>a.anchor::before,h4>a.anchor::before,h5>a.anchor::before,h6>a.anchor::before{content:"\00A7";font-size:.85em;display:block;padding-top:.1em}
-#content h1:hover>a.anchor,#content h1>a.anchor:hover,h2:hover>a.anchor,h2>a.anchor:hover,h3:hover>a.anchor,#toctitle:hover>a.anchor,.sidebarblock>.content>.title:hover>a.anchor,h3>a.anchor:hover,#toctitle>a.anchor:hover,.sidebarblock>.content>.title>a.anchor:hover,h4:hover>a.anchor,h4>a.anchor:hover,h5:hover>a.anchor,h5>a.anchor:hover,h6:hover>a.anchor,h6>a.anchor:hover{visibility:visible}
-#content h1>a.link,h2>a.link,h3>a.link,#toctitle>a.link,.sidebarblock>.content>.title>a.link,h4>a.link,h5>a.link,h6>a.link{color:#ba3925;text-decoration:none}
-#content h1>a.link:hover,h2>a.link:hover,h3>a.link:hover,#toctitle>a.link:hover,.sidebarblock>.content>.title>a.link:hover,h4>a.link:hover,h5>a.link:hover,h6>a.link:hover{color:#a53221}
-details,.audioblock,.imageblock,.literalblock,.listingblock,.stemblock,.videoblock{margin-bottom:1.25em}
-details>summary:first-of-type{cursor:pointer;display:list-item;outline:none;margin-bottom:.75em}
-.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{text-rendering:optimizeLegibility;text-align:left;font-family:"Noto Serif","DejaVu Serif",serif;font-size:1rem;font-style:italic}
-table.tableblock.fit-content>caption.title{white-space:nowrap;width:0}
-.paragraph.lead>p,#preamble>.sectionbody>[class="paragraph"]:first-of-type p{font-size:1.21875em;line-height:1.6;color:rgba(0,0,0,.85)}
-table.tableblock #preamble>.sectionbody>[class="paragraph"]:first-of-type p{font-size:inherit}
-.admonitionblock>table{border-collapse:separate;border:0;background:none;width:100%}
-.admonitionblock>table td.icon{text-align:center;width:80px}
-.admonitionblock>table td.icon img{max-width:none}
-.admonitionblock>table td.icon .title{font-weight:bold;font-family:"Open Sans","DejaVu Sans",sans-serif;text-transform:uppercase}
-.admonitionblock>table td.content{padding-left:1.125em;padding-right:1.25em;border-left:1px solid #dddddf;color:rgba(0,0,0,.6)}
-.admonitionblock>table td.content>:last-child>:last-child{margin-bottom:0}
-.exampleblock>.content{border-style:solid;border-width:1px;border-color:#e6e6e6;margin-bottom:1.25em;padding:1.25em;background:#fff;-webkit-border-radius:4px;border-radius:4px}
-.exampleblock>.content>:first-child{margin-top:0}
-.exampleblock>.content>:last-child{margin-bottom:0}
-.sidebarblock{border-style:solid;border-width:1px;border-color:#dbdbd6;margin-bottom:1.25em;padding:1.25em;background:#f3f3f2;-webkit-border-radius:4px;border-radius:4px}
-.sidebarblock>:first-child{margin-top:0}
-.sidebarblock>:last-child{margin-bottom:0}
-.sidebarblock>.content>.title{color:#7a2518;margin-top:0;text-align:center}
-.exampleblock>.content>:last-child>:last-child,.exampleblock>.content .olist>ol>li:last-child>:last-child,.exampleblock>.content .ulist>ul>li:last-child>:last-child,.exampleblock>.content .qlist>ol>li:last-child>:last-child,.sidebarblock>.content>:last-child>:last-child,.sidebarblock>.content .olist>ol>li:last-child>:last-child,.sidebarblock>.content .ulist>ul>li:last-child>:last-child,.sidebarblock>.content .qlist>ol>li:last-child>:last-child{margin-bottom:0}
-.literalblock pre,.listingblock>.content>pre{-webkit-border-radius:4px;border-radius:4px;word-wrap:break-word;overflow-x:auto;padding:1em;font-size:.8125em}
-@media screen and (min-width:768px){.literalblock pre,.listingblock>.content>pre{font-size:.90625em}}
-@media screen and (min-width:1280px){.literalblock pre,.listingblock>.content>pre{font-size:1em}}
-.literalblock pre,.listingblock>.content>pre:not(.highlight),.listingblock>.content>pre[class="highlight"],.listingblock>.content>pre[class^="highlight "]{background:#f7f7f8}
-.literalblock.output pre{color:#f7f7f8;background:rgba(0,0,0,.9)}
-.listingblock>.content{position:relative}
-.listingblock code[data-lang]::before{display:none;content:attr(data-lang);position:absolute;font-size:.75em;top:.425rem;right:.5rem;line-height:1;text-transform:uppercase;color:inherit;opacity:.5}
-.listingblock:hover code[data-lang]::before{display:block}
-.listingblock.terminal pre .command::before{content:attr(data-prompt);padding-right:.5em;color:inherit;opacity:.5}
-.listingblock.terminal pre .command:not([data-prompt])::before{content:"$"}
-.listingblock pre.highlightjs{padding:0}
-.listingblock pre.highlightjs>code{padding:1em;-webkit-border-radius:4px;border-radius:4px}
-.listingblock pre.prettyprint{border-width:0}
-.prettyprint{background:#f7f7f8}
-pre.prettyprint .linenums{line-height:1.45;margin-left:2em}
-pre.prettyprint li{background:none;list-style-type:inherit;padding-left:0}
-pre.prettyprint li code[data-lang]::before{opacity:1}
-pre.prettyprint li:not(:first-child) code[data-lang]::before{display:none}
-table.linenotable{border-collapse:separate;border:0;margin-bottom:0;background:none}
-table.linenotable td[class]{color:inherit;vertical-align:top;padding:0;line-height:inherit;white-space:normal}
-table.linenotable td.code{padding-left:.75em}
-table.linenotable td.linenos{border-right:1px solid currentColor;opacity:.35;padding-right:.5em}
-pre.pygments .lineno{border-right:1px solid currentColor;opacity:.35;display:inline-block;margin-right:.75em}
-pre.pygments .lineno::before{content:"";margin-right:-.125em}
-.quoteblock{margin:0 1em 1.25em 1.5em;display:table}
-.quoteblock:not(.excerpt)>.title{margin-left:-1.5em;margin-bottom:.75em}
-.quoteblock blockquote,.quoteblock p{color:rgba(0,0,0,.85);font-size:1.15rem;line-height:1.75;word-spacing:.1em;letter-spacing:0;font-style:italic;text-align:justify}
-.quoteblock blockquote{margin:0;padding:0;border:0}
-.quoteblock blockquote::before{content:"\201c";float:left;font-size:2.75em;font-weight:bold;line-height:.6em;margin-left:-.6em;color:#7a2518;text-shadow:0 1px 2px rgba(0,0,0,.1)}
-.quoteblock blockquote>.paragraph:last-child p{margin-bottom:0}
-.quoteblock .attribution{margin-top:.75em;margin-right:.5ex;text-align:right}
-.verseblock{margin:0 1em 1.25em}
-.verseblock pre{font-family:"Open Sans","DejaVu Sans",sans;font-size:1.15rem;color:rgba(0,0,0,.85);font-weight:300;text-rendering:optimizeLegibility}
-.verseblock pre strong{font-weight:400}
-.verseblock .attribution{margin-top:1.25rem;margin-left:.5ex}
-.quoteblock .attribution,.verseblock .attribution{font-size:.9375em;line-height:1.45;font-style:italic}
-.quoteblock .attribution br,.verseblock .attribution br{display:none}
-.quoteblock .attribution cite,.verseblock .attribution cite{display:block;letter-spacing:-.025em;color:rgba(0,0,0,.6)}
-.quoteblock.abstract blockquote::before,.quoteblock.excerpt blockquote::before,.quoteblock .quoteblock blockquote::before{display:none}
-.quoteblock.abstract blockquote,.quoteblock.abstract p,.quoteblock.excerpt blockquote,.quoteblock.excerpt p,.quoteblock .quoteblock blockquote,.quoteblock .quoteblock p{line-height:1.6;word-spacing:0}
-.quoteblock.abstract{margin:0 1em 1.25em;display:block}
-.quoteblock.abstract>.title{margin:0 0 .375em;font-size:1.15em;text-align:center}
-.quoteblock.excerpt>blockquote,.quoteblock .quoteblock{padding:0 0 .25em 1em;border-left:.25em solid #dddddf}
-.quoteblock.excerpt,.quoteblock .quoteblock{margin-left:0}
-.quoteblock.excerpt blockquote,.quoteblock.excerpt p,.quoteblock .quoteblock blockquote,.quoteblock .quoteblock p{color:inherit;font-size:1.0625rem}
-.quoteblock.excerpt .attribution,.quoteblock .quoteblock .attribution{color:inherit;text-align:left;margin-right:0}
-table.tableblock{max-width:100%;border-collapse:separate}
-p.tableblock:last-child{margin-bottom:0}
-td.tableblock>.content>:last-child{margin-bottom:-1.25em}
-td.tableblock>.content>:last-child.sidebarblock{margin-bottom:0}
-table.tableblock,th.tableblock,td.tableblock{border:0 solid #dedede}
-table.grid-all>thead>tr>.tableblock,table.grid-all>tbody>tr>.tableblock{border-width:0 1px 1px 0}
-table.grid-all>tfoot>tr>.tableblock{border-width:1px 1px 0 0}
-table.grid-cols>*>tr>.tableblock{border-width:0 1px 0 0}
-table.grid-rows>thead>tr>.tableblock,table.grid-rows>tbody>tr>.tableblock{border-width:0 0 1px}
-table.grid-rows>tfoot>tr>.tableblock{border-width:1px 0 0}
-table.grid-all>*>tr>.tableblock:last-child,table.grid-cols>*>tr>.tableblock:last-child{border-right-width:0}
-table.grid-all>tbody>tr:last-child>.tableblock,table.grid-all>thead:last-child>tr>.tableblock,table.grid-rows>tbody>tr:last-child>.tableblock,table.grid-rows>thead:last-child>tr>.tableblock{border-bottom-width:0}
-table.frame-all{border-width:1px}
-table.frame-sides{border-width:0 1px}
-table.frame-topbot,table.frame-ends{border-width:1px 0}
-table.stripes-all tr,table.stripes-odd tr:nth-of-type(odd),table.stripes-even tr:nth-of-type(even),table.stripes-hover tr:hover{background:#f8f8f7}
-th.halign-left,td.halign-left{text-align:left}
-th.halign-right,td.halign-right{text-align:right}
-th.halign-center,td.halign-center{text-align:center}
-th.valign-top,td.valign-top{vertical-align:top}
-th.valign-bottom,td.valign-bottom{vertical-align:bottom}
-th.valign-middle,td.valign-middle{vertical-align:middle}
-table thead th,table tfoot th{font-weight:bold}
-tbody tr th{display:table-cell;line-height:1.6;background:#f7f8f7}
-tbody tr th,tbody tr th p,tfoot tr th,tfoot tr th p{color:rgba(0,0,0,.8);font-weight:bold}
-p.tableblock>code:only-child{background:none;padding:0}
-p.tableblock{font-size:1em}
-ol{margin-left:1.75em}
-ul li ol{margin-left:1.5em}
-dl dd{margin-left:1.125em}
-dl dd:last-child,dl dd:last-child>:last-child{margin-bottom:0}
-ol>li p,ul>li p,ul dd,ol dd,.olist .olist,.ulist .ulist,.ulist .olist,.olist .ulist{margin-bottom:.625em}
-ul.checklist,ul.none,ol.none,ul.no-bullet,ol.no-bullet,ol.unnumbered,ul.unstyled,ol.unstyled{list-style-type:none}
-ul.no-bullet,ol.no-bullet,ol.unnumbered{margin-left:.625em}
-ul.unstyled,ol.unstyled{margin-left:0}
-ul.checklist{margin-left:.625em}
-ul.checklist li>p:first-child>.fa-square-o:first-child,ul.checklist li>p:first-child>.fa-check-square-o:first-child{width:1.25em;font-size:.8em;position:relative;bottom:.125em}
-ul.checklist li>p:first-child>input[type="checkbox"]:first-child{margin-right:.25em}
-ul.inline{display:-ms-flexbox;display:-webkit-box;display:flex;-ms-flex-flow:row wrap;-webkit-flex-flow:row wrap;flex-flow:row wrap;list-style:none;margin:0 0 .625em -1.25em}
-ul.inline>li{margin-left:1.25em}
-.unstyled dl dt{font-weight:400;font-style:normal}
-ol.arabic{list-style-type:decimal}
-ol.decimal{list-style-type:decimal-leading-zero}
-ol.loweralpha{list-style-type:lower-alpha}
-ol.upperalpha{list-style-type:upper-alpha}
-ol.lowerroman{list-style-type:lower-roman}
-ol.upperroman{list-style-type:upper-roman}
-ol.lowergreek{list-style-type:lower-greek}
-.hdlist>table,.colist>table{border:0;background:none}
-.hdlist>table>tbody>tr,.colist>table>tbody>tr{background:none}
-td.hdlist1,td.hdlist2{vertical-align:top;padding:0 .625em}
-td.hdlist1{font-weight:bold;padding-bottom:1.25em}
-.literalblock+.colist,.listingblock+.colist{margin-top:-.5em}
-.colist td:not([class]):first-child{padding:.4em .75em 0;line-height:1;vertical-align:top}
-.colist td:not([class]):first-child img{max-width:none}
-.colist td:not([class]):last-child{padding:.25em 0}
-.thumb,.th{line-height:0;display:inline-block;border:solid 4px #fff;-webkit-box-shadow:0 0 0 1px #ddd;box-shadow:0 0 0 1px #ddd}
-.imageblock.left{margin:.25em .625em 1.25em 0}
-.imageblock.right{margin:.25em 0 1.25em .625em}
-.imageblock>.title{margin-bottom:0}
-.imageblock.thumb,.imageblock.th{border-width:6px}
-.imageblock.thumb>.title,.imageblock.th>.title{padding:0 .125em}
-.image.left,.image.right{margin-top:.25em;margin-bottom:.25em;display:inline-block;line-height:0}
-.image.left{margin-right:.625em}
-.image.right{margin-left:.625em}
-a.image{text-decoration:none;display:inline-block}
-a.image object{pointer-events:none}
-sup.footnote,sup.footnoteref{font-size:.875em;position:static;vertical-align:super}
-sup.footnote a,sup.footnoteref a{text-decoration:none}
-sup.footnote a:active,sup.footnoteref a:active{text-decoration:underline}
-#footnotes{padding-top:.75em;padding-bottom:.75em;margin-bottom:.625em}
-#footnotes hr{width:20%;min-width:6.25em;margin:-.25em 0 .75em;border-width:1px 0 0}
-#footnotes .footnote{padding:0 .375em 0 .225em;line-height:1.3334;font-size:.875em;margin-left:1.2em;margin-bottom:.2em}
-#footnotes .footnote a:first-of-type{font-weight:bold;text-decoration:none;margin-left:-1.05em}
-#footnotes .footnote:last-of-type{margin-bottom:0}
-#content #footnotes{margin-top:-.625em;margin-bottom:0;padding:.75em 0}
-.gist .file-data>table{border:0;background:#fff;width:100%;margin-bottom:0}
-.gist .file-data>table td.line-data{width:99%}
-div.unbreakable{page-break-inside:avoid}
-.big{font-size:larger}
-.small{font-size:smaller}
-.underline{text-decoration:underline}
-.overline{text-decoration:overline}
-.line-through{text-decoration:line-through}
-.aqua{color:#00bfbf}
-.aqua-background{background:#00fafa}
-.black{color:#000}
-.black-background{background:#000}
-.blue{color:#0000bf}
-.blue-background{background:#0000fa}
-.fuchsia{color:#bf00bf}
-.fuchsia-background{background:#fa00fa}
-.gray{color:#606060}
-.gray-background{background:#7d7d7d}
-.green{color:#006000}
-.green-background{background:#007d00}
-.lime{color:#00bf00}
-.lime-background{background:#00fa00}
-.maroon{color:#600000}
-.maroon-background{background:#7d0000}
-.navy{color:#000060}
-.navy-background{background:#00007d}
-.olive{color:#606000}
-.olive-background{background:#7d7d00}
-.purple{color:#600060}
-.purple-background{background:#7d007d}
-.red{color:#bf0000}
-.red-background{background:#fa0000}
-.silver{color:#909090}
-.silver-background{background:#bcbcbc}
-.teal{color:#006060}
-.teal-background{background:#007d7d}
-.white{color:#bfbfbf}
-.white-background{background:#fafafa}
-.yellow{color:#bfbf00}
-.yellow-background{background:#fafa00}
-span.icon>.fa{cursor:default}
-a span.icon>.fa{cursor:inherit}
-.admonitionblock td.icon [class^="fa icon-"]{font-size:2.5em;text-shadow:1px 1px 2px rgba(0,0,0,.5);cursor:default}
-.admonitionblock td.icon .icon-note::before{content:"\f05a";color:#19407c}
-.admonitionblock td.icon .icon-tip::before{content:"\f0eb";text-shadow:1px 1px 2px rgba(155,155,0,.8);color:#111}
-.admonitionblock td.icon .icon-warning::before{content:"\f071";color:#bf6900}
-.admonitionblock td.icon .icon-caution::before{content:"\f06d";color:#bf3400}
-.admonitionblock td.icon .icon-important::before{content:"\f06a";color:#bf0000}
-.conum[data-value]{display:inline-block;color:#fff!important;background:rgba(0,0,0,.8);-webkit-border-radius:100px;border-radius:100px;text-align:center;font-size:.75em;width:1.67em;height:1.67em;line-height:1.67em;font-family:"Open Sans","DejaVu Sans",sans-serif;font-style:normal;font-weight:bold}
-.conum[data-value] *{color:#fff!important}
-.conum[data-value]+b{display:none}
-.conum[data-value]::after{content:attr(data-value)}
-pre .conum[data-value]{position:relative;top:-.125em}
-b.conum *{color:inherit!important}
-.conum:not([data-value]):empty{display:none}
-dt,th.tableblock,td.content,div.footnote{text-rendering:optimizeLegibility}
-h1,h2,p,td.content,span.alt{letter-spacing:-.01em}
-p strong,td.content strong,div.footnote strong{letter-spacing:-.005em}
-p,blockquote,dt,td.content,span.alt{font-size:1.0625rem}
-p{margin-bottom:1.25rem}
-.sidebarblock p,.sidebarblock dt,.sidebarblock td.content,p.tableblock{font-size:1em}
-.exampleblock>.content{background:#fffef7;border-color:#e0e0dc;-webkit-box-shadow:0 1px 4px #e0e0dc;box-shadow:0 1px 4px #e0e0dc}
-.print-only{display:none!important}
-@page{margin:1.25cm .75cm}
-@media print{*{-webkit-box-shadow:none!important;box-shadow:none!important;text-shadow:none!important}
-html{font-size:80%}
-a{color:inherit!important;text-decoration:underline!important}
-a.bare,a[href^="#"],a[href^="mailto:"]{text-decoration:none!important}
-a[href^="http:"]:not(.bare)::after,a[href^="https:"]:not(.bare)::after{content:"(" attr(href) ")";display:inline-block;font-size:.875em;padding-left:.25em}
-abbr[title]::after{content:" (" attr(title) ")"}
-pre,blockquote,tr,img,object,svg{page-break-inside:avoid}
-thead{display:table-header-group}
-svg{max-width:100%}
-p,blockquote,dt,td.content{font-size:1em;orphans:3;widows:3}
-h2,h3,#toctitle,.sidebarblock>.content>.title{page-break-after:avoid}
-#toc,.sidebarblock,.exampleblock>.content{background:none!important}
-#toc{border-bottom:1px solid #dddddf!important;padding-bottom:0!important}
-body.book #header{text-align:center}
-body.book #header>h1:first-child{border:0!important;margin:2.5em 0 1em}
-body.book #header .details{border:0!important;display:block;padding:0!important}
-body.book #header .details span:first-child{margin-left:0!important}
-body.book #header .details br{display:block}
-body.book #header .details br+span::before{content:none!important}
-body.book #toc{border:0!important;text-align:left!important;padding:0!important;margin:0!important}
-body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-break-before:always}
-.listingblock code[data-lang]::before{display:block}
-#footer{padding:0 .9375em}
-.hide-on-print{display:none!important}
-.print-only{display:block!important}
-.hide-for-print{display:none!important}
-.show-for-print{display:inherit!important}}
-@media print,amzn-kf8{#header>h1:first-child{margin-top:1.25rem}
-.sect1{padding:0!important}
-.sect1+.sect1{border:0}
-#footer{background:none}
-#footer-text{color:rgba(0,0,0,.6);font-size:.9em}}
-@media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
+
+@import url(https://fonts.googleapis.com/css?family=Roboto+Condensed);
+@import url(../css/asciidoctor.css); /* Default asciidoc style framework - important */
+
+/* CUSTOMISATIONS */
+/* Change the values in root for quick customisation. If you want even more fine grain... venture further. */
+
+:root{
+--maincolor:#FFFFFF;
+--primarycolor:#a90e22;
+--secondarycolor:#9f1d0b;
+--tertiarycolor: #ededed;
+--sidebarbackground:#CCC;
+--linkcolor:#b71c1c;
+--linkcoloralternate:#f44336;
+--white:#FFFFFF;
+--black:#000000;
+}
+
+/* Text styles */
+body{font-family: "Roboto Condensed",sans-serif;}
+
+h1,h2{color:var(--primarycolor) !important;font-family:"Roboto Condensed",sans-serif;}
+h3,h4,h5,h6{color:var(--secondarycolor);font-family: "Roboto Condensed",sans-serif; }
+.title{color:(--primarycolor) !important;font-family:"Roboto Condensed",sans-serif;font-style: normal; font-weight: normal;}
+p{font-family: "Roboto Condensed",sans-serif ! important}
+#toc.toc2 a{font-family:"Roboto Condensed",sans-serif;}
+/*#toc.toc2 a:link{color:(--linkcolor) !important}
+a:visited {color: #ffdbad;}
+a.bare:visited {color: #204f83;}
+a:hover {color: #317ed4;}
+#toc.toc2 a:hover {color: #f1b464;}*/
+/* code{background-color: var(--secondarycolor) !important;color:var(--white)} */
+code,kbd,pre,samp{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;monospace;font-size:1em}
+
+/* Table styles */
+th{background-color: var(--tertiarycolor);color:var(--black) !important;}
+
+#toctitle{color:var(--primarycolor);font-family: "Roboto Condensed",sans-serif;font-size: 1.6875em;}
+#toc.toc2{background-color:#f4f8fd;}
+/*#toc.toc2{background-color:#2C001E;color:white;}
+#toc.toc2.a{color:white;}
+*/
+
+/* Responsiveness fixes */
+video {
+  max-width: 100%;
+}
+
+@media all and (max-width: 600px) {
+table {
+  width: 55vw!important;
+  font-size: 3vw;
+}
+
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body class="article">
+<body class="article toc2 toc-left">
 <div id="header">
+<h1>The NANDRAD CodeGenerator</h1>
+<div class="details">
+<span id="author" class="author">Andreas Nicolai</span><br>
+<span id="email" class="email"><a href="mailto:andreas.nicolai@tu-dresden.de">andreas.nicolai@tu-dresden.de</a></span><br>
+<span id="revnumber">version 1.1 (20.01.2021)</span>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#overview">1. Overview</a>
+<ul class="sectlevel2">
+<li><a href="#_how_does_it_work">1.1. How does it work?</a></li>
+</ul>
+</li>
+<li><a href="#_functionality_example">2. Functionality Example</a>
+<ul class="sectlevel2">
+<li><a href="#_keyword_support">2.1. Keyword support</a></li>
+<li><a href="#_usage">2.2. Usage</a></li>
+<li><a href="#cmake_automation">2.3. CMake automation</a></li>
+</ul>
+</li>
+<li><a href="#_readwrite_to_xml_support_and_utility_macros">3. Read/write to XML support, and utility macros</a>
+<ul class="sectlevel2">
+<li><a href="#_supported_data_types">3.1. Supported data types</a></li>
+<li><a href="#_readwrite_code">3.2. Read/write code</a>
+<ul class="sectlevel3">
+<li><a href="#_special_features">3.2.1. Special features</a></li>
+</ul>
+</li>
+<li><a href="#_utility_macros">3.3. Utility Macros</a>
+<ul class="sectlevel3">
+<li><a href="#_comparison_operator_macro">3.3.1. Comparison operator macro</a></li>
+<li><a href="#xml_custom_readwrite">3.3.2. Custom read/write functionality</a></li>
+<li><a href="#_only_writing_data_if_not_still_default_content">3.3.3. Only writing data if not still default content</a></li>
+<li><a href="#_utility_macro_overview">3.3.4. Utility Macro Overview</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_specifications">4. Specifications</a>
+<ul class="sectlevel2">
+<li><a href="#command_line">4.1. Command line arguments for the code generator</a></li>
+<li><a href="#_keyword_list_support">4.2. Keyword List Support</a></li>
+<li><a href="#_keyword_parameters">4.3. Keyword Parameters</a></li>
+<li><a href="#xml_serialization_rules">4.4. XML Serialization</a>
+<ul class="sectlevel3">
+<li><a href="#xml_complexTypes">4.4.1. Reading/writing custom complex types</a></li>
+<li><a href="#_readingwriting_custom_complex_types_with_user_defined_tag_names">4.4.2. Reading/writing custom complex types with user-defined tag names</a></li>
+<li><a href="#_handling_of_uninitialized_ids_nandradinvalid_id">4.4.3. Handling of uninitialized IDs (<code>= NANDRAD::INVALID_ID</code>)</a></li>
+<li><a href="#_unsupported_data_member_types">4.4.4. Unsupported data member types</a></li>
+<li><a href="#_xml_comments">4.4.5. XML Comments</a></li>
+<li><a href="#_serialization_of_inherited_data_members">4.4.6. Serialization of inherited data members</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <div id="content">
-<div class="paragraph">
-<p>The NANDRAD CodeGenerator
-11.11.2020  20:30
-:Author Initials: AN
-:toc: left
-:toclevels: 3
-:toc-title: Table of Contents
-:icons: font
-:imagesdir: ./images
-:numbered:
-:website: <a href="https://github.com/ghorwin/SIM-VICUS" class="bare">https://github.com/ghorwin/SIM-VICUS</a>
-:source-highlighter: rouge
-:rouge-style: custom
-:title-page:
-:stylesdir: ../adoc_utils/css
-:stylesheet: roboto_ubuntu.css</p>
-</div>
 <div class="sect1">
-<h2 id="overview">Overview</h2>
+<h2 id="overview">1. Overview</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>What is the NANDRAD-Code-Generator? Basically, it is a tool to parse NANDRAD header files, pick up lines with special comments and then generate code for:</p>
@@ -476,8 +148,22 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Actually, the NANDRAD code generator is also used for the VICUS library. And the keyword list functionality is further used in the NandradSolver itself.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="sect2">
-<h3 id="_how_does_it_work">How does it work?</h3>
+<h3 id="_how_does_it_work">1.1. How does it work?</h3>
 <div class="paragraph">
 <p>The code generator is called as part of the CMake build chain (see sections <a href="#command_line">command line options</a> and <a href="#cmake_automation">CMake Automation</a>). It detects changes in header files and then updates the respective generated files, including the file <code>NANDRAD_KeywordList.cpp</code>. It places the class-specific generated files into a subdirectory <code>ncg</code> (for <strong>N</strong>ANDRAD <strong>C</strong>ode <strong>G</strong>enerator files) where they are compiled just as any other cpp file of the project.</p>
 </div>
@@ -488,7 +174,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <table>
 <tr>
 <td class="icon">
-<div class="title">Caution</div>
+<i class="fa icon-caution" title="Caution"></i>
 </td>
 <td class="content">
 <div class="paragraph">
@@ -502,30 +188,30 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect1">
-<h2 id="_functionality_example">Functionality Example</h2>
+<h2 id="_functionality_example">2. Functionality Example</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_keyword_support">Keyword support</h3>
+<h3 id="_keyword_support">2.1. Keyword support</h3>
 <div class="paragraph">
 <p>You may have a class header, that looks as follows:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">class Interval {
-public:
-	/*! Parameters. */
-	enum para_t {
-		IP_START,		// Keyword: Start		[d] 'Start time point'
-		IP_END,			// Keyword: End			[d] 'End time point'
-		IP_STEPSIZE,	// Keyword: StepSize	[h] 'StepSize'
-		NUM_IP
-	};
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">Interval</span> <span class="p">{</span>
+<span class="nl">public:</span>
+	<span class="cm">/*! Parameters. */</span>
+	<span class="k">enum</span> <span class="n">para_t</span> <span class="p">{</span>
+		<span class="n">IP_START</span><span class="p">,</span>		<span class="c1">// Keyword: Start		[d] 'Start time point'</span>
+		<span class="n">IP_END</span><span class="p">,</span>			<span class="c1">// Keyword: End			[d] 'End time point'</span>
+		<span class="n">IP_STEPSIZE</span><span class="p">,</span>	<span class="c1">// Keyword: StepSize	[h] 'StepSize'</span>
+		<span class="n">NUM_IP</span>
+	<span class="p">};</span>
 
-	...
+	<span class="p">...</span>
 
-	/*! The parameters defining the interval. */
-	IBK::Parameter   m_para[NUM_IP];
-};</code></pre>
+	<span class="cm">/*! The parameters defining the interval. */</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Parameter</span>   <span class="n">m_para</span><span class="p">[</span><span class="n">NUM_IP</span><span class="p">];</span>
+<span class="p">};</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -533,7 +219,7 @@ public:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">double endtime = m_para[Interval::IP_END].value;</code></pre>
+<pre class="rouge highlight"><code data-lang="c++"><span class="kt">double</span> <span class="n">endtime</span> <span class="o">=</span> <span class="n">m_para</span><span class="p">[</span><span class="n">Interval</span><span class="o">::</span><span class="n">IP_END</span><span class="p">].</span><span class="n">value</span><span class="p">;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -541,12 +227,12 @@ public:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">// construct a parameter
-m_para[Interval::IP_END].set(
-        NANDRAD::KeywordList::Keyword("Interval::para_t", Interval::IP_END), // the keyword is used as name
-        24, // value
-        NANDRAD::KeywordList::Unit("Interval::para_t", Interval::IP_END) // the unit
-    );</code></pre>
+<pre class="rouge highlight"><code data-lang="c++"><span class="c1">// construct a parameter</span>
+<span class="n">m_para</span><span class="p">[</span><span class="n">Interval</span><span class="o">::</span><span class="n">IP_END</span><span class="p">].</span><span class="n">set</span><span class="p">(</span>
+        <span class="n">NANDRAD</span><span class="o">::</span><span class="n">KeywordList</span><span class="o">::</span><span class="n">Keyword</span><span class="p">(</span><span class="s">"Interval::para_t"</span><span class="p">,</span> <span class="n">Interval</span><span class="o">::</span><span class="n">IP_END</span><span class="p">),</span> <span class="c1">// the keyword is used as name</span>
+        <span class="mi">24</span><span class="p">,</span> <span class="c1">// value</span>
+        <span class="n">NANDRAD</span><span class="o">::</span><span class="n">KeywordList</span><span class="o">::</span><span class="n">Unit</span><span class="p">(</span><span class="s">"Interval::para_t"</span><span class="p">,</span> <span class="n">Interval</span><span class="o">::</span><span class="n">IP_END</span><span class="p">)</span> <span class="c1">// the unit</span>
+    <span class="p">);</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -557,11 +243,11 @@ m_para[Interval::IP_END].set(
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">if (condition_failed) {
-    IBK::IBK_Message(IBK::FormatString("Parameter %1 (%2) is required.")
-        .arg(KeywordList::Keyword("Interval::para_t", Interval::IP_END))
-        .arg(KeywordList::Description("Interval::para_t", Interval::IP_END)) );
-}</code></pre>
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">if</span> <span class="p">(</span><span class="n">condition_failed</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">IBK</span><span class="o">::</span><span class="n">IBK_Message</span><span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="s">"Parameter %1 (%2) is required."</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">arg</span><span class="p">(</span><span class="n">KeywordList</span><span class="o">::</span><span class="n">Keyword</span><span class="p">(</span><span class="s">"Interval::para_t"</span><span class="p">,</span> <span class="n">Interval</span><span class="o">::</span><span class="n">IP_END</span><span class="p">))</span>
+        <span class="p">.</span><span class="n">arg</span><span class="p">(</span><span class="n">KeywordList</span><span class="o">::</span><span class="n">Description</span><span class="p">(</span><span class="s">"Interval::para_t"</span><span class="p">,</span> <span class="n">Interval</span><span class="o">::</span><span class="n">IP_END</span><span class="p">))</span> <span class="p">);</span>
+<span class="p">}</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -569,8 +255,8 @@ m_para[Interval::IP_END].set(
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;IBK:Parameter name="Start" unit="d"&gt;36&lt;/IBK:Parameter&gt;
-&lt;IBK:Parameter name="End" unit="d"&gt;72&lt;/IBK:Parameter&gt;</code></pre>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Start"</span> <span class="na">unit=</span><span class="s">"d"</span><span class="nt">&gt;</span>36<span class="nt">&lt;/IBK:Parameter&gt;</span>
+<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"End"</span> <span class="na">unit=</span><span class="s">"d"</span><span class="nt">&gt;</span>72<span class="nt">&lt;/IBK:Parameter&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -578,10 +264,10 @@ m_para[Interval::IP_END].set(
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">nameAttrib = getAttributeText(xmlTag, "name"); // might be 'End'
+<pre class="rouge highlight"><code data-lang="c++"><span class="n">nameAttrib</span> <span class="o">=</span> <span class="n">getAttributeText</span><span class="p">(</span><span class="n">xmlTag</span><span class="p">,</span> <span class="s">"name"</span><span class="p">);</span> <span class="c1">// might be 'End'</span>
 
-// resolve enumeration value
-Interval::para_t p = (Interval::para_t)KeywordList::Enumeration("Interval::para_t", nameAttrib);</code></pre>
+<span class="c1">// resolve enumeration value</span>
+<span class="n">Interval</span><span class="o">::</span><span class="n">para_t</span> <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">Interval</span><span class="o">::</span><span class="n">para_t</span><span class="p">)</span><span class="n">KeywordList</span><span class="o">::</span><span class="n">Enumeration</span><span class="p">(</span><span class="s">"Interval::para_t"</span><span class="p">,</span> <span class="n">nameAttrib</span><span class="p">);</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -617,29 +303,29 @@ Interval::para_t p = (Interval::para_t)KeywordList::Enumeration("Interval::para_
 </div>
 </div>
 <div class="sect2">
-<h3 id="_usage">Usage</h3>
+<h3 id="_usage">2.2. Usage</h3>
 <div class="paragraph">
 <p>The header file <code>NANDRAD_KeywordList.h</code> is always the same and can be included directory. The corresponding implementation file <code>NANDRAD_KeywordList.cpp</code> is generated in the same directory as the NANDRAD header files.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="cmake_automation">CMake automation</h3>
+<h3 id="cmake_automation">2.3. CMake automation</h3>
 <div class="paragraph">
 <p>The automatic update of the keyword list is triggered by a custom rule in the NANDRAD CMake project file:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-cmake" data-lang="cmake"># collect a list of all header files of the Nandrad library
-file( GLOB Nandrad_HDRS ${PROJECT_SOURCE_DIR}/../../src/*.h )
+<pre class="rouge highlight"><code data-lang="cmake"><span class="c1"># collect a list of all header files of the Nandrad library</span>
+<span class="nb">file</span><span class="p">(</span> GLOB Nandrad_HDRS <span class="si">${</span><span class="nv">PROJECT_SOURCE_DIR</span><span class="si">}</span>/../../src/*.h <span class="p">)</span>
 
-# run the NandradCodeGenerator tool whenever the header files have changed
-# to update the NANDRAD_KeywordList.h and NANDRAD_KeywordList.cpp file
-add_custom_command (
-	OUTPUT   ${PROJECT_SOURCE_DIR}/../../src/NANDRAD_KeywordList.cpp
-	DEPENDS  ${Nandrad_HDRS} NandradCodeGenerator
+<span class="c1"># run the NandradCodeGenerator tool whenever the header files have changed</span>
+<span class="c1"># to update the NANDRAD_KeywordList.h and NANDRAD_KeywordList.cpp file</span>
+<span class="nb">add_custom_command</span> <span class="p">(</span>
+	OUTPUT   <span class="si">${</span><span class="nv">PROJECT_SOURCE_DIR</span><span class="si">}</span>/../../src/NANDRAD_KeywordList.cpp
+	DEPENDS  <span class="si">${</span><span class="nv">Nandrad_HDRS</span><span class="si">}</span> NandradCodeGenerator
 	COMMAND  NandradCodeGenerator
-	ARGS     NANDRAD ${PROJECT_SOURCE_DIR}/../../src
-)</code></pre>
+	ARGS     NANDRAD <span class="si">${</span><span class="nv">PROJECT_SOURCE_DIR</span><span class="si">}</span>/../../src
+<span class="p">)</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -649,46 +335,46 @@ add_custom_command (
 </div>
 </div>
 <div class="sect1">
-<h2 id="_readwrite_to_xml_support_and_utility_macros">Read/write to XML support, and utility macros</h2>
+<h2 id="_readwrite_to_xml_support_and_utility_macros">3. Read/write to XML support, and utility macros</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>A second task for the code generator is to create functions for serialization of data structures to XML files. Hereby, the TinyXML-library is used.</p>
 </div>
 <div class="sect2">
-<h3 id="_supported_data_types">Supported data types</h3>
+<h3 id="_supported_data_types">3.1. Supported data types</h3>
 <div class="paragraph">
 <p>See section <a href="#xml_serialization_rules">XML Serialization</a> for a list and examples of supported data types.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_readwrite_code">Read/write code</h3>
+<h3 id="_readwrite_code">3.2. Read/write code</h3>
 <div class="paragraph">
 <p>Since reading/writing XML code is pretty straight forward, much of this code writing can be generalized. Let&#8217;s take a look at a simple example.</p>
 </div>
 <div class="listingblock">
 <div class="title">Class Sensor, with declarations of <code>readXML()</code> and <code>writeXML()</code> functions</div>
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">class Sensor {
-public:
-	// *** PUBLIC MEMBER FUNCTIONS ***
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">Sensor</span> <span class="p">{</span>
+<span class="nl">public:</span>
+	<span class="c1">// *** PUBLIC MEMBER FUNCTIONS ***</span>
 
-	void readXML(const TiXmlElement * element);
-	TiXmlElement * writeXML(TiXmlElement * parent) const;
+	<span class="kt">void</span> <span class="n">readXML</span><span class="p">(</span><span class="k">const</span> <span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">element</span><span class="p">);</span>
+	<span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">writeXML</span><span class="p">(</span><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">parent</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
 
-	// *** PUBLIC MEMBER VARIABLES ***
+	<span class="c1">// *** PUBLIC MEMBER VARIABLES ***</span>
 
-	/*! Unique ID-number of the sensor.*/
-	unsigned int						m_id = NANDRAD::INVALID_ID;		// XML:A:required
-	/*! Name of the measured quantity */
-	std::string							m_quantity;						// XML:E
-};</code></pre>
+	<span class="cm">/*! Unique ID-number of the sensor.*/</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span>						<span class="n">m_id</span> <span class="o">=</span> <span class="n">NANDRAD</span><span class="o">::</span><span class="n">INVALID_ID</span><span class="p">;</span>		<span class="c1">// XML:A:required</span>
+	<span class="cm">/*! Name of the measured quantity */</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">string</span>							<span class="n">m_quantity</span><span class="p">;</span>						<span class="c1">// XML:E</span>
+<span class="p">};</span></code></pre>
 </div>
 </div>
 <div class="admonitionblock tip">
 <table>
 <tr>
 <td class="icon">
-<div class="title">Tip</div>
+<i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
 <div class="paragraph">
@@ -703,9 +389,9 @@ public:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;Sensor id="12"&gt;
-    &lt;Quantity&gt;Temperature&lt;/Quantity&gt;
-&lt;/Sensor&gt;</code></pre>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Sensor</span> <span class="na">id=</span><span class="s">"12"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;Quantity&gt;</span>Temperature<span class="nt">&lt;/Quantity&gt;</span>
+<span class="nt">&lt;/Sensor&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -714,50 +400,50 @@ public:
 <div id="generated_readXML" class="listingblock">
 <div class="title">Implementation of <code>Sensor::readXML()</code></div>
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">void Sensor::readXML(const TiXmlElement * element) {
-	FUNCID(Sensor::readXML);
+<pre class="rouge highlight"><code data-lang="c++"><span class="kt">void</span> <span class="n">Sensor</span><span class="o">::</span><span class="n">readXML</span><span class="p">(</span><span class="k">const</span> <span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">element</span><span class="p">)</span> <span class="p">{</span>
+	<span class="n">FUNCID</span><span class="p">(</span><span class="n">Sensor</span><span class="o">::</span><span class="n">readXML</span><span class="p">);</span>
 
-	try {
-		// search for mandatory attributes
-		if (!TiXmlAttribute::attributeByName(element, "id"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element-&gt;Row()).arg(
-				IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
+	<span class="k">try</span> <span class="p">{</span>
+		<span class="c1">// search for mandatory attributes</span>
+		<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">TiXmlAttribute</span><span class="o">::</span><span class="n">attributeByName</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="s">"id"</span><span class="p">))</span>
+			<span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span> <span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="n">XML_READ_ERROR</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">element</span><span class="o">-&gt;</span><span class="n">Row</span><span class="p">()).</span><span class="n">arg</span><span class="p">(</span>
+				<span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="s">"Missing required 'id' attribute."</span><span class="p">)</span> <span class="p">),</span> <span class="n">FUNC_ID</span><span class="p">);</span>
 
-		// reading attributes
-		const TiXmlAttribute * attrib = element-&gt;FirstAttribute();
-		while (attrib) {
-			const std::string &amp; attribName = attrib-&gt;NameStr();
-			if (attribName == "id")
-				m_id = readPODAttributeValue&lt;unsigned int&gt;(element, attrib);
-			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName)
-				    .arg(element-&gt;Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			attrib = attrib-&gt;Next();
-		}
-		// search for mandatory elements
-		// reading elements
-		const TiXmlElement * c = element-&gt;FirstChildElement();
-		while (c) {
-			const std::string &amp; cName = c-&gt;ValueStr();
-			if (cName == "Quantity")
-				m_quantity = c-&gt;GetText();
-			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName)
-				    .arg(element-&gt;Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			c = c-&gt;NextSiblingElement();
-		}
-	}
-	catch (IBK::Exception &amp; ex) {
-		throw IBK::Exception( ex,
-		    IBK::FormatString("Error reading 'Sensor' element."), FUNC_ID);
-	}
-	catch (std::exception &amp; ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading 'Sensor' element.")
-		    .arg(ex2.what()), FUNC_ID);
-	}
-}</code></pre>
+		<span class="c1">// reading attributes</span>
+		<span class="k">const</span> <span class="n">TiXmlAttribute</span> <span class="o">*</span> <span class="n">attrib</span> <span class="o">=</span> <span class="n">element</span><span class="o">-&gt;</span><span class="n">FirstAttribute</span><span class="p">();</span>
+		<span class="k">while</span> <span class="p">(</span><span class="n">attrib</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span> <span class="n">attribName</span> <span class="o">=</span> <span class="n">attrib</span><span class="o">-&gt;</span><span class="n">NameStr</span><span class="p">();</span>
+			<span class="k">if</span> <span class="p">(</span><span class="n">attribName</span> <span class="o">==</span> <span class="s">"id"</span><span class="p">)</span>
+				<span class="n">m_id</span> <span class="o">=</span> <span class="n">readPODAttributeValue</span><span class="o">&lt;</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">attrib</span><span class="p">);</span>
+			<span class="k">else</span> <span class="p">{</span>
+				<span class="n">IBK</span><span class="o">::</span><span class="n">IBK_Message</span><span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="n">XML_READ_UNKNOWN_ATTRIBUTE</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">attribName</span><span class="p">)</span>
+				    <span class="p">.</span><span class="n">arg</span><span class="p">(</span><span class="n">element</span><span class="o">-&gt;</span><span class="n">Row</span><span class="p">()),</span> <span class="n">IBK</span><span class="o">::</span><span class="n">MSG_WARNING</span><span class="p">,</span> <span class="n">FUNC_ID</span><span class="p">,</span> <span class="n">IBK</span><span class="o">::</span><span class="n">VL_STANDARD</span><span class="p">);</span>
+			<span class="p">}</span>
+			<span class="n">attrib</span> <span class="o">=</span> <span class="n">attrib</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">();</span>
+		<span class="p">}</span>
+		<span class="c1">// search for mandatory elements</span>
+		<span class="c1">// reading elements</span>
+		<span class="k">const</span> <span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">c</span> <span class="o">=</span> <span class="n">element</span><span class="o">-&gt;</span><span class="n">FirstChildElement</span><span class="p">();</span>
+		<span class="k">while</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span> <span class="n">cName</span> <span class="o">=</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">ValueStr</span><span class="p">();</span>
+			<span class="k">if</span> <span class="p">(</span><span class="n">cName</span> <span class="o">==</span> <span class="s">"Quantity"</span><span class="p">)</span>
+				<span class="n">m_quantity</span> <span class="o">=</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">GetText</span><span class="p">();</span>
+			<span class="k">else</span> <span class="p">{</span>
+				<span class="n">IBK</span><span class="o">::</span><span class="n">IBK_Message</span><span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="n">XML_READ_UNKNOWN_ELEMENT</span><span class="p">).</span><span class="n">arg</span><span class="p">(</span><span class="n">cName</span><span class="p">)</span>
+				    <span class="p">.</span><span class="n">arg</span><span class="p">(</span><span class="n">element</span><span class="o">-&gt;</span><span class="n">Row</span><span class="p">()),</span> <span class="n">IBK</span><span class="o">::</span><span class="n">MSG_WARNING</span><span class="p">,</span> <span class="n">FUNC_ID</span><span class="p">,</span> <span class="n">IBK</span><span class="o">::</span><span class="n">VL_STANDARD</span><span class="p">);</span>
+			<span class="p">}</span>
+			<span class="n">c</span> <span class="o">=</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">NextSiblingElement</span><span class="p">();</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="k">catch</span> <span class="p">(</span><span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span> <span class="o">&amp;</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span> <span class="n">ex</span><span class="p">,</span>
+		    <span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="s">"Error reading 'Sensor' element."</span><span class="p">),</span> <span class="n">FUNC_ID</span><span class="p">);</span>
+	<span class="p">}</span>
+	<span class="k">catch</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">exception</span> <span class="o">&amp;</span> <span class="n">ex2</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">throw</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Exception</span><span class="p">(</span> <span class="n">IBK</span><span class="o">::</span><span class="n">FormatString</span><span class="p">(</span><span class="s">"%1</span><span class="se">\n</span><span class="s">Error reading 'Sensor' element."</span><span class="p">)</span>
+		    <span class="p">.</span><span class="n">arg</span><span class="p">(</span><span class="n">ex2</span><span class="p">.</span><span class="n">what</span><span class="p">()),</span> <span class="n">FUNC_ID</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">}</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -766,16 +452,16 @@ public:
 <div class="listingblock">
 <div class="title">Implementation of <code>Sensor::writeXML()</code></div>
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">TiXmlElement * Sensor::writeXML(TiXmlElement * parent) const {
-	TiXmlElement * e = new TiXmlElement("Sensor");
-	parent-&gt;LinkEndChild(e);
+<pre class="rouge highlight"><code data-lang="c++"><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">Sensor</span><span class="o">::</span><span class="n">writeXML</span><span class="p">(</span><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">parent</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+	<span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">e</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TiXmlElement</span><span class="p">(</span><span class="s">"Sensor"</span><span class="p">);</span>
+	<span class="n">parent</span><span class="o">-&gt;</span><span class="n">LinkEndChild</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
 
-	e-&gt;SetAttribute("id", IBK::val2string&lt;unsigned int&gt;(m_id));
-	if (!m_quantity.empty())
-		TiXmlElement::appendSingleAttributeElement(e,
-		    "Quantity", nullptr, std::string(), m_quantity);
-	return e;
-}</code></pre>
+	<span class="n">e</span><span class="o">-&gt;</span><span class="n">SetAttribute</span><span class="p">(</span><span class="s">"id"</span><span class="p">,</span> <span class="n">IBK</span><span class="o">::</span><span class="n">val2string</span><span class="o">&lt;</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_id</span><span class="p">));</span>
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">m_quantity</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span>
+		<span class="n">TiXmlElement</span><span class="o">::</span><span class="n">appendSingleAttributeElement</span><span class="p">(</span><span class="n">e</span><span class="p">,</span>
+		    <span class="s">"Quantity"</span><span class="p">,</span> <span class="nb">nullptr</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(),</span> <span class="n">m_quantity</span><span class="p">);</span>
+	<span class="k">return</span> <span class="n">e</span><span class="p">;</span>
+<span class="p">}</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -784,20 +470,20 @@ public:
 <div class="listingblock">
 <div class="title">Class Sensor, with annotations for read/write code generation</div>
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">class Sensor {
-public:
-	// *** PUBLIC MEMBER FUNCTIONS ***
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">Sensor</span> <span class="p">{</span>
+<span class="nl">public:</span>
+	<span class="c1">// *** PUBLIC MEMBER FUNCTIONS ***</span>
 
-	void readXML(const TiXmlElement * element);
-	TiXmlElement * writeXML(TiXmlElement * parent) const;
+	<span class="kt">void</span> <span class="n">readXML</span><span class="p">(</span><span class="k">const</span> <span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">element</span><span class="p">);</span>
+	<span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">writeXML</span><span class="p">(</span><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">parent</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
 
-	// *** PUBLIC MEMBER VARIABLES ***
+	<span class="c1">// *** PUBLIC MEMBER VARIABLES ***</span>
 
-	/*! Unique ID-number of the sensor.*/
-	unsigned int						m_id = NANDRAD::INVALID_ID;		// XML:A:required
-	/*! Name of the measured quantity */
-	std::string							m_quantity;						// XML:E
-};</code></pre>
+	<span class="cm">/*! Unique ID-number of the sensor.*/</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span>						<span class="n">m_id</span> <span class="o">=</span> <span class="n">NANDRAD</span><span class="o">::</span><span class="n">INVALID_ID</span><span class="p">;</span>		<span class="c1">// XML:A:required</span>
+	<span class="cm">/*! Name of the measured quantity */</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">string</span>							<span class="n">m_quantity</span><span class="p">;</span>						<span class="c1">// XML:E</span>
+<span class="p">};</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -806,18 +492,24 @@ public:
 <div class="paragraph">
 <p>The annotations can be used for quite a few data types. Rules for these are given in section <a href="#xml_serialization_rules">XML Serialization</a>.</p>
 </div>
+<div class="sect3">
+<h4 id="_special_features">3.2.1. Special features</h4>
+<div class="paragraph">
+<p>There are a few special syntax forms supported by the code generator, see <a href="#xml_serialization_rules">XML Serialization</a> for details.</p>
+</div>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_utility_macros">Utility Macros</h3>
+<h3 id="_utility_macros">3.3. Utility Macros</h3>
 <div class="paragraph">
 <p>Since the declaration for the <code>readXML()</code> and <code>writeXML()</code> functions are always the same, we can avoid typing errors by using a define:</p>
 </div>
 <div class="listingblock">
 <div class="title">Global code generator helpers</div>
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">#define NANDRAD_READWRITE \
+<pre class="rouge highlight"><code data-lang="c++"><span class="cp">#define NANDRAD_READWRITE \
 	void readXML(const TiXmlElement * element); \
-	TiXmlElement * writeXML(TiXmlElement * parent) const;</code></pre>
+	TiXmlElement * writeXML(TiXmlElement * parent) const;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -826,19 +518,19 @@ public:
 <div class="listingblock">
 <div class="title">Class Sensor, using code generator</div>
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">class Sensor {
-public:
-	// *** PUBLIC MEMBER FUNCTIONS ***
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">Sensor</span> <span class="p">{</span>
+<span class="nl">public:</span>
+	<span class="c1">// *** PUBLIC MEMBER FUNCTIONS ***</span>
 
-	NANDRAD_READWRITE
+	<span class="n">NANDRAD_READWRITE</span>
 
-	// *** PUBLIC MEMBER VARIABLES ***
+	<span class="c1">// *** PUBLIC MEMBER VARIABLES ***</span>
 
-	/*! Unique ID-number of the sensor.*/
-	unsigned int						m_id = NANDRAD::INVALID_ID;		// XML:A:required
-	/*! Name of the measured quantity */
-	std::string							m_quantity;						// XML:E
-};</code></pre>
+	<span class="cm">/*! Unique ID-number of the sensor.*/</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span>						<span class="n">m_id</span> <span class="o">=</span> <span class="n">NANDRAD</span><span class="o">::</span><span class="n">INVALID_ID</span><span class="p">;</span>		<span class="c1">// XML:A:required</span>
+	<span class="cm">/*! Name of the measured quantity */</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">string</span>							<span class="n">m_quantity</span><span class="p">;</span>						<span class="c1">// XML:E</span>
+<span class="p">};</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -851,7 +543,7 @@ public:
 <table>
 <tr>
 <td class="icon">
-<div class="title">Note</div>
+<i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
 <div class="paragraph">
@@ -862,18 +554,18 @@ public:
 </table>
 </div>
 <div class="sect3">
-<h4 id="_comparison_operator_macro">Comparison operator macro</h4>
+<h4 id="_comparison_operator_macro">3.3.1. Comparison operator macro</h4>
 <div class="paragraph">
 <p>When checking if the content of an object is effectively the same as that of another (possibly freshly constructed) object, we need a comparison operator. Actually, we usually need both <code>operator==</code> and <code>operator!=</code> (depending on the alorithm used, either of the two is needed). The code for the class <code>Sensor</code> normally looks like that:</p>
 </div>
 <div class="listingblock">
 <div class="title">Comparison operator (inequality)</div>
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">bool Sensor::operator!=(const Sensor &amp; other) const {
-	if (m_id != other.m_id)				return true;
-	if (m_quantity != other.m_quantity)	return true;
-	return false;
-}</code></pre>
+<pre class="rouge highlight"><code data-lang="c++"><span class="kt">bool</span> <span class="n">Sensor</span><span class="o">::</span><span class="k">operator</span><span class="o">!=</span><span class="p">(</span><span class="k">const</span> <span class="n">Sensor</span> <span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">m_id</span> <span class="o">!=</span> <span class="n">other</span><span class="p">.</span><span class="n">m_id</span><span class="p">)</span>				<span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">m_quantity</span> <span class="o">!=</span> <span class="n">other</span><span class="p">.</span><span class="n">m_quantity</span><span class="p">)</span>	<span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+	<span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -882,7 +574,7 @@ public:
 <div class="listingblock">
 <div class="title">Comparison operator (equality)</div>
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">bool operator==(const Sensor &amp; other) const { return !operator!=(other); }</code></pre>
+<pre class="rouge highlight"><code data-lang="c++"><span class="kt">bool</span> <span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="k">const</span> <span class="n">Sensor</span> <span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="o">!</span><span class="k">operator</span><span class="o">!=</span><span class="p">(</span><span class="n">other</span><span class="p">);</span> <span class="p">}</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -891,8 +583,8 @@ public:
 <div class="listingblock">
 <div class="title">Global code generator helpers</div>
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">#define NANDRAD_COMP(X) \
-	bool operator!=(const X &amp; other) const;</code></pre>
+<pre class="rouge highlight"><code data-lang="c++"><span class="cp">#define NANDRAD_COMP(X) \
+	bool operator!=(const X &amp; other) const;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -901,34 +593,34 @@ public:
 <div class="listingblock">
 <div class="title">Class Sensor, with comparison function declarations</div>
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">class Sensor {
-public:
-	// *** PUBLIC MEMBER FUNCTIONS ***
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">Sensor</span> <span class="p">{</span>
+<span class="nl">public:</span>
+	<span class="c1">// *** PUBLIC MEMBER FUNCTIONS ***</span>
 
-	NANDRAD_READWRITE
-	NANDRAD_COMP(Sensor)
+	<span class="n">NANDRAD_READWRITE</span>
+	<span class="n">NANDRAD_COMP</span><span class="p">(</span><span class="n">Sensor</span><span class="p">)</span>
 
-	// *** PUBLIC MEMBER VARIABLES ***
+	<span class="c1">// *** PUBLIC MEMBER VARIABLES ***</span>
 
-	/*! Unique ID-number of the sensor.*/
-	unsigned int						m_id = NANDRAD::INVALID_ID;		// XML:A:required
-	/*! Name of the measured quantity */
-	std::string							m_quantity;						// XML:E
-};</code></pre>
+	<span class="cm">/*! Unique ID-number of the sensor.*/</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span>						<span class="n">m_id</span> <span class="o">=</span> <span class="n">NANDRAD</span><span class="o">::</span><span class="n">INVALID_ID</span><span class="p">;</span>		<span class="c1">// XML:A:required</span>
+	<span class="cm">/*! Name of the measured quantity */</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">string</span>							<span class="n">m_quantity</span><span class="p">;</span>						<span class="c1">// XML:E</span>
+<span class="p">};</span></code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="xml_custom_readwrite">Custom read/write functionality</h4>
+<h4 id="xml_custom_readwrite">3.3.2. Custom read/write functionality</h4>
 <div class="paragraph">
 <p>Sometimes, the default read/write code is not enough, because something special needs to be written/read as well. Here, you can simply use an alternative define <code>NANDRAD_READWRITE_PRIVATE</code>:</p>
 </div>
 <div class="listingblock">
 <div class="title">Global code generator helpers</div>
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">#define NANDRAD_READWRITE_PRIVATE \
+<pre class="rouge highlight"><code data-lang="c++"><span class="cp">#define NANDRAD_READWRITE_PRIVATE \
 	void readXMLPrivate(const TiXmlElement * element); \
-	TiXmlElement * writeXMLPrivate(TiXmlElement * parent) const;</code></pre>
+	TiXmlElement * writeXMLPrivate(TiXmlElement * parent) const;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -940,65 +632,65 @@ public:
 <div class="listingblock">
 <div class="title">Class Sensor, using code generator with private read/write functions</div>
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">class Sensor {
-	NANDRAD_READWRITE_PRIVATE
-public:
-	// *** PUBLIC MEMBER FUNCTIONS ***
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">Sensor</span> <span class="p">{</span>
+	<span class="n">NANDRAD_READWRITE_PRIVATE</span>
+<span class="nl">public:</span>
+	<span class="c1">// *** PUBLIC MEMBER FUNCTIONS ***</span>
 
-	NANDRAD_READWRITE
-	NANDRAD_COMP(Sensor)
+	<span class="n">NANDRAD_READWRITE</span>
+	<span class="n">NANDRAD_COMP</span><span class="p">(</span><span class="n">Sensor</span><span class="p">)</span>
 
-	// *** PUBLIC MEMBER VARIABLES ***
+	<span class="c1">// *** PUBLIC MEMBER VARIABLES ***</span>
 
-	/*! Unique ID-number of the sensor.*/
-	unsigned int						m_id = NANDRAD::INVALID_ID;		// XML:A:required
-	/*! Name of the measured quantity */
-	std::string							m_quantity;						// XML:E
-};</code></pre>
+	<span class="cm">/*! Unique ID-number of the sensor.*/</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span>						<span class="n">m_id</span> <span class="o">=</span> <span class="n">NANDRAD</span><span class="o">::</span><span class="n">INVALID_ID</span><span class="p">;</span>		<span class="c1">// XML:A:required</span>
+	<span class="cm">/*! Name of the measured quantity */</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">string</span>							<span class="n">m_quantity</span><span class="p">;</span>						<span class="c1">// XML:E</span>
+<span class="p">};</span></code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">Implementation file <code>NANDRAD_Sensor.cpp</code></div>
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">void Sensor::readXML(const TiXmlElement * element) {
-	// simply reuse generated code
-	readXMLPrivate(element);
+<pre class="rouge highlight"><code data-lang="c++"><span class="kt">void</span> <span class="n">Sensor</span><span class="o">::</span><span class="n">readXML</span><span class="p">(</span><span class="k">const</span> <span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">element</span><span class="p">)</span> <span class="p">{</span>
+	<span class="c1">// simply reuse generated code</span>
+	<span class="n">readXMLPrivate</span><span class="p">(</span><span class="n">element</span><span class="p">);</span>
 
-	// ... read other data from element
-}
+	<span class="c1">// ... read other data from element</span>
+<span class="p">}</span>
 
 
-TiXmlElement * Sensor::writeXML(TiXmlElement * parent) const {
-	TiXmlElement * e = writeXMLPrivate(parent);
+<span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">Sensor</span><span class="o">::</span><span class="n">writeXML</span><span class="p">(</span><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">parent</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+	<span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">e</span> <span class="o">=</span> <span class="n">writeXMLPrivate</span><span class="p">(</span><span class="n">parent</span><span class="p">);</span>
 
-	// .... append other data to e
-	return e;
-}</code></pre>
+	<span class="c1">// .... append other data to e</span>
+	<span class="k">return</span> <span class="n">e</span><span class="p">;</span>
+<span class="p">}</span></code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_only_writing_data_if_not_still_default_content">Only writing data if not still default content</h4>
+<h4 id="_only_writing_data_if_not_still_default_content">3.3.3. Only writing data if not still default content</h4>
 <div class="paragraph">
 <p>To avoid writing empty tags or default values, you can write code like:</p>
 </div>
 <div class="listingblock">
 <div class="title">Implementation of writeXML with default check</div>
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">TiXmlElement * Sensor::writeXML(TiXmlElement * parent) const {
-    // check if we still have default data
-    if (*this == Sensor())
-        return; // still default, do not write anything
+<pre class="rouge highlight"><code data-lang="c++"><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">Sensor</span><span class="o">::</span><span class="n">writeXML</span><span class="p">(</span><span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">parent</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+    <span class="c1">// check if we still have default data</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">*</span><span class="k">this</span> <span class="o">==</span> <span class="n">Sensor</span><span class="p">())</span>
+        <span class="k">return</span><span class="p">;</span> <span class="c1">// still default, do not write anything</span>
 
-	TiXmlElement * e = new TiXmlElement("Sensor");
-	parent-&gt;LinkEndChild(e);
+	<span class="n">TiXmlElement</span> <span class="o">*</span> <span class="n">e</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TiXmlElement</span><span class="p">(</span><span class="s">"Sensor"</span><span class="p">);</span>
+	<span class="n">parent</span><span class="o">-&gt;</span><span class="n">LinkEndChild</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
 
-	e-&gt;SetAttribute("id", IBK::val2string&lt;unsigned int&gt;(m_id));
-	if (!m_quantity.empty())
-		TiXmlElement::appendSingleAttributeElement(e,
-		    "Quantity", nullptr, std::string(), m_quantity);
-	return e;
-}</code></pre>
+	<span class="n">e</span><span class="o">-&gt;</span><span class="n">SetAttribute</span><span class="p">(</span><span class="s">"id"</span><span class="p">,</span> <span class="n">IBK</span><span class="o">::</span><span class="n">val2string</span><span class="o">&lt;</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_id</span><span class="p">));</span>
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">m_quantity</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span>
+		<span class="n">TiXmlElement</span><span class="o">::</span><span class="n">appendSingleAttributeElement</span><span class="p">(</span><span class="n">e</span><span class="p">,</span>
+		    <span class="s">"Quantity"</span><span class="p">,</span> <span class="nb">nullptr</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(),</span> <span class="n">m_quantity</span><span class="p">);</span>
+	<span class="k">return</span> <span class="n">e</span><span class="p">;</span>
+<span class="p">}</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1010,9 +702,9 @@ TiXmlElement * Sensor::writeXML(TiXmlElement * parent) const {
 <div class="listingblock">
 <div class="title">Macro with check for default values</div>
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">#define NANDRAD_READWRITE_IFNOTEMPTY(X) \
+<pre class="rouge highlight"><code data-lang="c++"><span class="cp">#define NANDRAD_READWRITE_IFNOTEMPTY(X) \
 	void readXML(const TiXmlElement * element) { readXMLPrivate(element); } \
-	TiXmlElement * writeXML(TiXmlElement * parent) const { if (*this != X()) return writeXMLPrivate(parent); else return nullptr; }</code></pre>
+	TiXmlElement * writeXML(TiXmlElement * parent) const { if (*this != X()) return writeXMLPrivate(parent); else return nullptr; }</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1021,21 +713,21 @@ TiXmlElement * Sensor::writeXML(TiXmlElement * parent) const {
 <div class="listingblock">
 <div class="title">Class Sensor, using code generator with private read/write functions and check to not write default data</div>
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">class Sensor {
-	NANDRAD_READWRITE_PRIVATE
-public:
-	// *** PUBLIC MEMBER FUNCTIONS ***
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">Sensor</span> <span class="p">{</span>
+	<span class="n">NANDRAD_READWRITE_PRIVATE</span>
+<span class="nl">public:</span>
+	<span class="c1">// *** PUBLIC MEMBER FUNCTIONS ***</span>
 
-	NANDRAD_READWRITE_IFNOTEMPTY(Sensor)
-	NANDRAD_COMP(Sensor)
+	<span class="n">NANDRAD_READWRITE_IFNOTEMPTY</span><span class="p">(</span><span class="n">Sensor</span><span class="p">)</span>
+	<span class="n">NANDRAD_COMP</span><span class="p">(</span><span class="n">Sensor</span><span class="p">)</span>
 
-	// *** PUBLIC MEMBER VARIABLES ***
+	<span class="c1">// *** PUBLIC MEMBER VARIABLES ***</span>
 
-	/*! Unique ID-number of the sensor.*/
-	unsigned int						m_id = NANDRAD::INVALID_ID;		// XML:A:required
-	/*! Name of the measured quantity */
-	std::string							m_quantity;						// XML:E
-};</code></pre>
+	<span class="cm">/*! Unique ID-number of the sensor.*/</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span>						<span class="n">m_id</span> <span class="o">=</span> <span class="n">NANDRAD</span><span class="o">::</span><span class="n">INVALID_ID</span><span class="p">;</span>		<span class="c1">// XML:A:required</span>
+	<span class="cm">/*! Name of the measured quantity */</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">string</span>							<span class="n">m_quantity</span><span class="p">;</span>						<span class="c1">// XML:E</span>
+<span class="p">};</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1044,60 +736,61 @@ public:
 <div class="listingblock">
 <div class="title">Class Sensor, using code generator with private read/write functions and check to not write unused data objects</div>
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">class Sensor {
-	NANDRAD_READWRITE_PRIVATE
-public:
-	// *** PUBLIC MEMBER FUNCTIONS ***
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">Sensor</span> <span class="p">{</span>
+	<span class="n">NANDRAD_READWRITE_PRIVATE</span>
+<span class="nl">public:</span>
+	<span class="c1">// *** PUBLIC MEMBER FUNCTIONS ***</span>
 
-	NANDRAD_READWRITE_IFNOT_INVALID_ID
+	<span class="n">NANDRAD_READWRITE_IFNOT_INVALID_ID</span>
 
-	// *** PUBLIC MEMBER VARIABLES ***
+	<span class="c1">// *** PUBLIC MEMBER VARIABLES ***</span>
 
-	/*! Unique ID-number of the sensor.*/
-	unsigned int						m_id = NANDRAD::INVALID_ID;		// XML:A:required
-	/*! Name of the measured quantity */
-	std::string							m_quantity;						// XML:E
-};</code></pre>
+	<span class="cm">/*! Unique ID-number of the sensor.*/</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span>						<span class="n">m_id</span> <span class="o">=</span> <span class="n">NANDRAD</span><span class="o">::</span><span class="n">INVALID_ID</span><span class="p">;</span>		<span class="c1">// XML:A:required</span>
+	<span class="cm">/*! Name of the measured quantity */</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">string</span>							<span class="n">m_quantity</span><span class="p">;</span>						<span class="c1">// XML:E</span>
+<span class="p">};</span></code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_utility_macro_overview">Utility Macro Overview</h4>
+<h4 id="_utility_macro_overview">3.3.4. Utility Macro Overview</h4>
 <div class="listingblock">
 <div class="title">All utility macros</div>
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">#define NANDRAD_READWRITE \
+<pre class="rouge highlight"><code data-lang="c++"><span class="cp">#define NANDRAD_READWRITE \
 	void readXML(const TiXmlElement * element); \
 	TiXmlElement * writeXML(TiXmlElement * parent) const;
-
-#define NANDRAD_READWRITE_IFNOTEMPTY(X) \
+</span>
+<span class="cp">#define NANDRAD_READWRITE_IFNOTEMPTY(X) \
 	void readXML(const TiXmlElement * element) { readXMLPrivate(element); } \
 	TiXmlElement * writeXML(TiXmlElement * parent) const { if (*this != X()) return writeXMLPrivate(parent); else return nullptr; }
-
-#define NANDRAD_READWRITE_IFNOT_INVALID_ID \
+</span>
+<span class="cp">#define NANDRAD_READWRITE_IFNOT_INVALID_ID \
 	void readXML(const TiXmlElement * element) { readXMLPrivate(element); } \
 	TiXmlElement * writeXML(TiXmlElement * parent) const { if (m_id != INVALID_ID) return writeXMLPrivate(parent); else return nullptr; }
-
-#define NANDRAD_READWRITE_PRIVATE \
+</span>
+<span class="cp">#define NANDRAD_READWRITE_PRIVATE \
 	void readXMLPrivate(const TiXmlElement * element); \
 	TiXmlElement * writeXMLPrivate(TiXmlElement * parent) const;
-
-#define NANDRAD_COMP(X) \
+</span>
+<span class="cp">#define NANDRAD_COMP(X) \
 	bool operator!=(const X &amp; other) const; \
 	bool operator==(const X &amp; other) const { return !operator!=(other); }
-
-#define NANDRAD_COMPARE_WITH_ID \
+</span>
+<span class="cp">#define NANDRAD_COMPARE_WITH_ID \
 	bool operator==(unsigned int x) const { return m_id == x; }
-
-#define NANDRAD_COMPARE_WITH_NAME \
-	bool operator==(const std::string &amp; name) const { return m_name == name; }</code></pre>
+</span>
+<span class="cp">#define NANDRAD_COMPARE_WITH_NAME \
+	bool operator==(const std::string &amp; name) const { return m_name == name; }
+</span></code></pre>
 </div>
 </div>
 <div class="admonitionblock important">
 <table>
 <tr>
 <td class="icon">
-<div class="title">Important</div>
+<i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
 <div class="paragraph">
@@ -1112,10 +805,10 @@ public:
 </div>
 </div>
 <div class="sect1">
-<h2 id="_specifications">Specifications</h2>
+<h2 id="_specifications">4. Specifications</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="command_line">Command line arguments for the code generator</h3>
+<h3 id="command_line">4.1. Command line arguments for the code generator</h3>
 <div class="paragraph">
 <p>The code generator is called with the following syntax:</p>
 </div>
@@ -1139,7 +832,7 @@ public:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">&gt; NandradCodeGenerator NANDRAD ~/git/SIM-VICUS/externals/Nandrad/src 0 NANDRAD ncg</code></pre>
+<pre class="rouge highlight"><code data-lang="bash"><span class="o">&gt;</span> NandradCodeGenerator NANDRAD ~/git/SIM-VICUS/externals/Nandrad/src 0 NANDRAD ncg</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1147,35 +840,35 @@ public:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">&gt; NandradCodeGenerator NANDRAD_MODEL ~/git/SIM-VICUS/NandradSolver/src 0 NM ncg</code></pre>
+<pre class="rouge highlight"><code data-lang="bash"><span class="o">&gt;</span> NandradCodeGenerator NANDRAD_MODEL ~/git/SIM-VICUS/NandradSolver/src 0 NM ncg</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_keyword_list_support">Keyword List Support</h3>
+<h3 id="_keyword_list_support">4.2. Keyword List Support</h3>
 <div class="paragraph">
 <p>The parse requires fairly consistent code to be recognized, with the following rules. Look at the following example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">class MyClass {
-public:
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">MyClass</span> <span class="p">{</span>
+<span class="nl">public:</span>
 
 
-    enum parameterSet {
-        PS_PARA1,      // Keyword: PARA1     'some lengthy description'
-        PS_PARA2,      // Keyword: PARA2     [K] &lt;#4512FF&gt; {273.15} 'A temperature parameter'
-        NUM_PS
-    }
+    <span class="k">enum</span> <span class="n">parameterSet</span> <span class="p">{</span>
+        <span class="n">PS_PARA1</span><span class="p">,</span>      <span class="c1">// Keyword: PARA1     'some lengthy description'</span>
+        <span class="n">PS_PARA2</span><span class="p">,</span>      <span class="c1">// Keyword: PARA2     [K] &lt;#4512FF&gt; {273.15} 'A temperature parameter'</span>
+        <span class="n">NUM_PS</span>
+    <span class="p">}</span>
 
-    enum otherPara_t {
-        OP_P1,         // Keyword: P1
-        OP_P2,         // Keyword: P2
-        OP_P3,         // Keyword: P3
-        NUM_OP
-    }
-...
-}</code></pre>
+    <span class="k">enum</span> <span class="n">otherPara_t</span> <span class="p">{</span>
+        <span class="n">OP_P1</span><span class="p">,</span>         <span class="c1">// Keyword: P1</span>
+        <span class="n">OP_P2</span><span class="p">,</span>         <span class="c1">// Keyword: P2</span>
+        <span class="n">OP_P3</span><span class="p">,</span>         <span class="c1">// Keyword: P3</span>
+        <span class="n">NUM_OP</span>
+    <span class="p">}</span>
+<span class="p">...</span>
+<span class="p">}</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1204,7 +897,7 @@ public:
 <table>
 <tr>
 <td class="icon">
-<div class="title">Caution</div>
+<i class="fa icon-caution" title="Caution"></i>
 </td>
 <td class="content">
 <div class="paragraph">
@@ -1212,19 +905,19 @@ public:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">class MyClass {
-public:
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">MyClass</span> <span class="p">{</span>
+<span class="nl">public:</span>
 
-    /* Inside this
+    <span class="cm">/* Inside this
        class my stuff will work
        perfectly!
-    */
+    */</span>
 
-    enum para_t {
-    ...
-    }
-...
-}</code></pre>
+    <span class="k">enum</span> <span class="n">para_t</span> <span class="p">{</span>
+    <span class="p">...</span>
+    <span class="p">}</span>
+<span class="p">...</span>
+<span class="p">}</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1242,10 +935,10 @@ public:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">// forward declarations
-class OtherClass;
-class OtherParentClass;
-class YetAnotherClass;</code></pre>
+<pre class="rouge highlight"><code data-lang="c++"><span class="c1">// forward declarations</span>
+<span class="k">class</span> <span class="nc">OtherClass</span><span class="p">;</span>
+<span class="k">class</span> <span class="nc">OtherParentClass</span><span class="p">;</span>
+<span class="k">class</span> <span class="nc">YetAnotherClass</span><span class="p">;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1253,7 +946,7 @@ class YetAnotherClass;</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_keyword_parameters">Keyword Parameters</h3>
+<h3 id="_keyword_parameters">4.3. Keyword Parameters</h3>
 <div class="paragraph">
 <p>A keyword specification line has the following format:</p>
 </div>
@@ -1281,7 +974,7 @@ class YetAnotherClass;</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="xml_serialization_rules">XML Serialization</h3>
+<h3 id="xml_serialization_rules">4.4. XML Serialization</h3>
 <div class="paragraph">
 <p>In order for the CodeGenerator to work correct, we need a <span class="line-through">few</span> lots of conventions:</p>
 </div>
@@ -1304,81 +997,81 @@ class YetAnotherClass;</code></pre>
 <div class="listingblock">
 <div class="title">Example class with different types currently supported by code generator</div>
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">class SerializationTest {
-public:
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">SerializationTest</span> <span class="p">{</span>
+<span class="nl">public:</span>
 
-	NANDRAD_READWRITE
+	<span class="n">NANDRAD_READWRITE</span>
 
-	enum test_t {
-		t_x1,												// Keyword: X1
-		t_x2,												// Keyword: X2
-		NUM_test
-	};
+	<span class="k">enum</span> <span class="n">test_t</span> <span class="p">{</span>
+		<span class="n">t_x1</span><span class="p">,</span>												<span class="c1">// Keyword: X1</span>
+		<span class="n">t_x2</span><span class="p">,</span>												<span class="c1">// Keyword: X2</span>
+		<span class="n">NUM_test</span>
+	<span class="p">};</span>
 
-	enum intPara_t {
-		IP_i1,												// Keyword: I1
-		IP_i2,												// Keyword: I2
-		NUM_IP
-	};
+	<span class="k">enum</span> <span class="n">intPara_t</span> <span class="p">{</span>
+		<span class="n">IP_i1</span><span class="p">,</span>												<span class="c1">// Keyword: I1</span>
+		<span class="n">IP_i2</span><span class="p">,</span>												<span class="c1">// Keyword: I2</span>
+		<span class="n">NUM_IP</span>
+	<span class="p">};</span>
 
-	enum splinePara_t {
-		SP_ParameterSet1,									// Keyword: ParameterSet1
-		SP_ParameterSet2,									// Keyword: ParameterSet2
-		NUM_SP
-	};
+	<span class="k">enum</span> <span class="n">splinePara_t</span> <span class="p">{</span>
+		<span class="n">SP_ParameterSet1</span><span class="p">,</span>									<span class="c1">// Keyword: ParameterSet1</span>
+		<span class="n">SP_ParameterSet2</span><span class="p">,</span>									<span class="c1">// Keyword: ParameterSet2</span>
+		<span class="n">NUM_SP</span>
+	<span class="p">};</span>
 
-	int					m_id1		= 5;					// XML:A:required
-	unsigned int		m_id2		= 10;					// XML:A
-	bool				m_flag1		= false;				// XML:A
-	double				m_val1		= 42.42;				// XML:A
-	test_t				m_testBla	= t_x1;					// XML:A
-	std::string			m_str1		= "Blubb";				// XML:A
-	IBK::Path			m_path1		= IBK::Path("/tmp");	// XML:A
-	IBK::Unit			m_u1		= IBK::Unit("K");		// XML:A
+	<span class="kt">int</span>					<span class="n">m_id1</span>		<span class="o">=</span> <span class="mi">5</span><span class="p">;</span>					<span class="c1">// XML:A:required</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span>		<span class="n">m_id2</span>		<span class="o">=</span> <span class="mi">10</span><span class="p">;</span>					<span class="c1">// XML:A</span>
+	<span class="kt">bool</span>				<span class="n">m_flag1</span>		<span class="o">=</span> <span class="nb">false</span><span class="p">;</span>				<span class="c1">// XML:A</span>
+	<span class="kt">double</span>				<span class="n">m_val1</span>		<span class="o">=</span> <span class="mf">42.42</span><span class="p">;</span>				<span class="c1">// XML:A</span>
+	<span class="n">test_t</span>				<span class="n">m_testBla</span>	<span class="o">=</span> <span class="n">t_x1</span><span class="p">;</span>					<span class="c1">// XML:A</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">string</span>			<span class="n">m_str1</span>		<span class="o">=</span> <span class="s">"Blubb"</span><span class="p">;</span>				<span class="c1">// XML:A</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Path</span>			<span class="n">m_path1</span>		<span class="o">=</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Path</span><span class="p">(</span><span class="s">"/tmp"</span><span class="p">);</span>	<span class="c1">// XML:A</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Unit</span>			<span class="n">m_u1</span>		<span class="o">=</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Unit</span><span class="p">(</span><span class="s">"K"</span><span class="p">);</span>		<span class="c1">// XML:A</span>
 
-	int					m_id3		= 10;					// XML:E:required
-	unsigned int		m_id4		= 12;					// XML:E
-	bool				m_flag2		= true;					// XML:E
-	double				m_val2		= 41.41;				// XML:E
-	test_t				m_testBlo	= t_x2;					// XML:E
-	std::string			m_str2		= "blabb";				// XML:E
+	<span class="kt">int</span>					<span class="n">m_id3</span>		<span class="o">=</span> <span class="mi">10</span><span class="p">;</span>					<span class="c1">// XML:E:required</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span>		<span class="n">m_id4</span>		<span class="o">=</span> <span class="mi">12</span><span class="p">;</span>					<span class="c1">// XML:E</span>
+	<span class="kt">bool</span>				<span class="n">m_flag2</span>		<span class="o">=</span> <span class="nb">true</span><span class="p">;</span>					<span class="c1">// XML:E</span>
+	<span class="kt">double</span>				<span class="n">m_val2</span>		<span class="o">=</span> <span class="mf">41.41</span><span class="p">;</span>				<span class="c1">// XML:E</span>
+	<span class="n">test_t</span>				<span class="n">m_testBlo</span>	<span class="o">=</span> <span class="n">t_x2</span><span class="p">;</span>					<span class="c1">// XML:E</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">string</span>			<span class="n">m_str2</span>		<span class="o">=</span> <span class="s">"blabb"</span><span class="p">;</span>				<span class="c1">// XML:E</span>
 
-	IBK::Path			m_path2		= IBK::Path("/var");	// XML:E
-	IBK::Path			m_path22;							// XML:E
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Path</span>			<span class="n">m_path2</span>		<span class="o">=</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Path</span><span class="p">(</span><span class="s">"/var"</span><span class="p">);</span>	<span class="c1">// XML:E</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Path</span>			<span class="n">m_path22</span><span class="p">;</span>							<span class="c1">// XML:E</span>
 
-	IBK::Unit			m_u2		= IBK::Unit("C");		// XML:E
-	double				m_x5		= 43.43;				// XML:E
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Unit</span>			<span class="n">m_u2</span>		<span class="o">=</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Unit</span><span class="p">(</span><span class="s">"C"</span><span class="p">);</span>		<span class="c1">// XML:E</span>
+	<span class="kt">double</span>				<span class="n">m_x5</span>		<span class="o">=</span> <span class="mf">43.43</span><span class="p">;</span>				<span class="c1">// XML:E</span>
 
-	IBK::Flag			m_f;								// XML:E
-	IBK::Flag			m_f2;								// XML:E
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Flag</span>			<span class="n">m_f</span><span class="p">;</span>								<span class="c1">// XML:E</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Flag</span>			<span class="n">m_f2</span><span class="p">;</span>								<span class="c1">// XML:E</span>
 
-	IBK::Time			m_time1;							// XML:E
-	IBK::Time			m_time2;							// XML:E
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Time</span>			<span class="n">m_time1</span><span class="p">;</span>							<span class="c1">// XML:E</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Time</span>			<span class="n">m_time2</span><span class="p">;</span>							<span class="c1">// XML:E</span>
 
-	DataTable			m_table;							// XML:E
-	DataTable			m_table2;							// XML:E
+	<span class="n">DataTable</span>			<span class="n">m_table</span><span class="p">;</span>							<span class="c1">// XML:E</span>
+	<span class="n">DataTable</span>			<span class="n">m_table2</span><span class="p">;</span>							<span class="c1">// XML:E</span>
 
-	std::vector&lt;double&gt;		m_dblVec;						// XML:E
+	<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span>		<span class="n">m_dblVec</span><span class="p">;</span>						<span class="c1">// XML:E</span>
 
-	std::vector&lt;Interface&gt;	m_interfaces;					// XML:E
+	<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Interface</span><span class="o">&gt;</span>	<span class="n">m_interfaces</span><span class="p">;</span>					<span class="c1">// XML:E</span>
 
-	Interface				m_interfaceA;					// XML:E:tag=InterfaceA
+	<span class="n">Interface</span>				<span class="n">m_interfaceA</span><span class="p">;</span>					<span class="c1">// XML:E:tag=InterfaceA</span>
 
-	IBK::Parameter		m_singlePara;						            // XML:E
-	IBK::IntPara		m_singleIntegerPara = IBK::IntPara("blubb",12);	// XML:E
-	IBK::LinearSpline	m_linSpl;							            // XML:E
-	NANDRAD::LinearSplineParameter	m_splineParameter;			        // XML:E
-	LinearSplineParameter			m_anotherSplineParameter;	        // XML:E
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Parameter</span>		<span class="n">m_singlePara</span><span class="p">;</span>						            <span class="c1">// XML:E</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">IntPara</span>		<span class="n">m_singleIntegerPara</span> <span class="o">=</span> <span class="n">IBK</span><span class="o">::</span><span class="n">IntPara</span><span class="p">(</span><span class="s">"blubb"</span><span class="p">,</span><span class="mi">12</span><span class="p">);</span>	<span class="c1">// XML:E</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">LinearSpline</span>	<span class="n">m_linSpl</span><span class="p">;</span>							            <span class="c1">// XML:E</span>
+	<span class="n">NANDRAD</span><span class="o">::</span><span class="n">LinearSplineParameter</span>	<span class="n">m_splineParameter</span><span class="p">;</span>			        <span class="c1">// XML:E</span>
+	<span class="n">LinearSplineParameter</span>			<span class="n">m_anotherSplineParameter</span><span class="p">;</span>	        <span class="c1">// XML:E</span>
 
-	IBK::Parameter		m_para[NUM_test];					// XML:E
-	IBK::IntPara		m_intPara[NUM_IP];					// XML:E
-	IBK::Flag			m_flags[NUM_test];					// XML:E
-	NANDRAD::LinearSplineParameter m_splinePara[NUM_SP];	// XML:E
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Parameter</span>		<span class="n">m_para</span><span class="p">[</span><span class="n">NUM_test</span><span class="p">];</span>					<span class="c1">// XML:E</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">IntPara</span>		<span class="n">m_intPara</span><span class="p">[</span><span class="n">NUM_IP</span><span class="p">];</span>					<span class="c1">// XML:E</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Flag</span>			<span class="n">m_flags</span><span class="p">[</span><span class="n">NUM_test</span><span class="p">];</span>					<span class="c1">// XML:E</span>
+	<span class="n">NANDRAD</span><span class="o">::</span><span class="n">LinearSplineParameter</span> <span class="n">m_splinePara</span><span class="p">[</span><span class="n">NUM_SP</span><span class="p">];</span>	<span class="c1">// XML:E</span>
 
-	Schedule			m_sched;							// XML:E
-	Schedule			m_sched2;							// XML:E:tag=OtherSchedule
+	<span class="n">Schedule</span>			<span class="n">m_sched</span><span class="p">;</span>							<span class="c1">// XML:E</span>
+	<span class="n">Schedule</span>			<span class="n">m_sched2</span><span class="p">;</span>							<span class="c1">// XML:E:tag=OtherSchedule</span>
 
-};</code></pre>
+<span class="p">};</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1411,72 +1104,72 @@ public:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
-&lt;NandradProject&gt;
-	&lt;SerializationTest id1="5" id2="10" flag1="0" val1="42.42" testBla="X1" str1="Blubb" path1="/tmp" u1="K"&gt;
-		&lt;Id3&gt;10&lt;/Id3&gt;
-		&lt;Id4&gt;12&lt;/Id4&gt;
-		&lt;Flag2&gt;1&lt;/Flag2&gt;
-		&lt;Val2&gt;41.41&lt;/Val2&gt;
-		&lt;TestBlo&gt;X2&lt;/TestBlo&gt;
-		&lt;Str2&gt;blabb&lt;/Str2&gt;
-		&lt;Path2&gt;/var&lt;/Path2&gt;
-		&lt;U2&gt;C&lt;/U2&gt;
-		&lt;X5&gt;43.43&lt;/X5&gt;
-		&lt;IBK:Flag name="F"&gt;true&lt;/IBK:Flag&gt;
-		&lt;Time1&gt;01.01.07 12:47:12&lt;/Time1&gt;
-		&lt;Table&gt;Col1:1,5,3;Col2:7,2,2;&lt;/Table&gt;
-		&lt;DblVec&gt;0,12,24&lt;/DblVec&gt;
-		&lt;Interfaces&gt;
-			&lt;Interface id="1" zoneId="0"&gt;
+<pre class="rouge highlight"><code data-lang="xml"><span class="cp">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;</span>
+<span class="nt">&lt;NandradProject&gt;</span>
+	<span class="nt">&lt;SerializationTest</span> <span class="na">id1=</span><span class="s">"5"</span> <span class="na">id2=</span><span class="s">"10"</span> <span class="na">flag1=</span><span class="s">"0"</span> <span class="na">val1=</span><span class="s">"42.42"</span> <span class="na">testBla=</span><span class="s">"X1"</span> <span class="na">str1=</span><span class="s">"Blubb"</span> <span class="na">path1=</span><span class="s">"/tmp"</span> <span class="na">u1=</span><span class="s">"K"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;Id3&gt;</span>10<span class="nt">&lt;/Id3&gt;</span>
+		<span class="nt">&lt;Id4&gt;</span>12<span class="nt">&lt;/Id4&gt;</span>
+		<span class="nt">&lt;Flag2&gt;</span>1<span class="nt">&lt;/Flag2&gt;</span>
+		<span class="nt">&lt;Val2&gt;</span>41.41<span class="nt">&lt;/Val2&gt;</span>
+		<span class="nt">&lt;TestBlo&gt;</span>X2<span class="nt">&lt;/TestBlo&gt;</span>
+		<span class="nt">&lt;Str2&gt;</span>blabb<span class="nt">&lt;/Str2&gt;</span>
+		<span class="nt">&lt;Path2&gt;</span>/var<span class="nt">&lt;/Path2&gt;</span>
+		<span class="nt">&lt;U2&gt;</span>C<span class="nt">&lt;/U2&gt;</span>
+		<span class="nt">&lt;X5&gt;</span>43.43<span class="nt">&lt;/X5&gt;</span>
+		<span class="nt">&lt;IBK:Flag</span> <span class="na">name=</span><span class="s">"F"</span><span class="nt">&gt;</span>true<span class="nt">&lt;/IBK:Flag&gt;</span>
+		<span class="nt">&lt;Time1&gt;</span>01.01.07 12:47:12<span class="nt">&lt;/Time1&gt;</span>
+		<span class="nt">&lt;Table&gt;</span>Col1:1,5,3;Col2:7,2,2;<span class="nt">&lt;/Table&gt;</span>
+		<span class="nt">&lt;DblVec&gt;</span>0,12,24<span class="nt">&lt;/DblVec&gt;</span>
+		<span class="nt">&lt;Interfaces&gt;</span>
+			<span class="nt">&lt;Interface</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">zoneId=</span><span class="s">"0"</span><span class="nt">&gt;</span>
 
-			&lt;/Interface&gt;
-		&lt;/Interfaces&gt;
-		&lt;IBK:Parameter name="SinglePara" unit="C"&gt;20&lt;/IBK:Parameter&gt;
-		&lt;IBK:IntPara name="SingleIntegerPara"&gt;12&lt;/IBK:IntPara&gt;
-		&lt;IBK:Parameter name="X1" unit="C"&gt;12&lt;/IBK:Parameter&gt;
-		&lt;IBK:IntPara name="I1"&gt;13&lt;/IBK:IntPara&gt;
-		&lt;IBK:IntPara name="I2"&gt;15&lt;/IBK:IntPara&gt;
-		&lt;IBK:Flag name="X2"&gt;true&lt;/IBK:Flag&gt;
-		&lt;IBK:LinearSpline name="LinSpl"&gt;
-			&lt;X unit="-"&gt;0 1 1.4 2 &lt;/X&gt;
-			&lt;Y unit="-"&gt;1 2 3.4 5 &lt;/Y&gt;
-		&lt;/IBK:LinearSpline&gt;
-		&lt;LinearSplineParameter name="SplineParameter"&gt;
-			&lt;X unit="m"&gt;0 5 10 &lt;/X&gt;
-			&lt;Y unit="C"&gt;5 4 3 &lt;/Y&gt;
-		&lt;/LinearSplineParameter&gt;
-		&lt;LinearSplineParameter name="AnotherSplineParameter"&gt;
-			&lt;X unit="m"&gt;0 5 10 &lt;/X&gt;
-			&lt;Y unit="C"&gt;5 4 3 &lt;/Y&gt;
-		&lt;/LinearSplineParameter&gt;
-		&lt;LinearSplineParameter name="ParameterSet1"&gt;
-			&lt;X unit="m"&gt;0 5 10 &lt;/X&gt;
-			&lt;Y unit="C"&gt;5 4 3 &lt;/Y&gt;
-		&lt;/LinearSplineParameter&gt;
-		&lt;Schedule type="Friday"&gt;
-			&lt;StartDayOfTheYear&gt;0&lt;/StartDayOfTheYear&gt;
-			&lt;EndDayOfTheYear&gt;0&lt;/EndDayOfTheYear&gt;
-			&lt;DailyCycles&gt;
-				&lt;DailyCycle /&gt;
-			&lt;/DailyCycles&gt;
-		&lt;/Schedule&gt;
-		&lt;OtherSchedule type="Friday"&gt;
-			&lt;StartDayOfTheYear&gt;0&lt;/StartDayOfTheYear&gt;
-			&lt;EndDayOfTheYear&gt;0&lt;/EndDayOfTheYear&gt;
-			&lt;DailyCycles&gt;
-				&lt;DailyCycle /&gt;
-			&lt;/DailyCycles&gt;
-		&lt;/OtherSchedule&gt;
-	&lt;/SerializationTest&gt;
-&lt;/NandradProject&gt;</code></pre>
+			<span class="nt">&lt;/Interface&gt;</span>
+		<span class="nt">&lt;/Interfaces&gt;</span>
+		<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"SinglePara"</span> <span class="na">unit=</span><span class="s">"C"</span><span class="nt">&gt;</span>20<span class="nt">&lt;/IBK:Parameter&gt;</span>
+		<span class="nt">&lt;IBK:IntPara</span> <span class="na">name=</span><span class="s">"SingleIntegerPara"</span><span class="nt">&gt;</span>12<span class="nt">&lt;/IBK:IntPara&gt;</span>
+		<span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"X1"</span> <span class="na">unit=</span><span class="s">"C"</span><span class="nt">&gt;</span>12<span class="nt">&lt;/IBK:Parameter&gt;</span>
+		<span class="nt">&lt;IBK:IntPara</span> <span class="na">name=</span><span class="s">"I1"</span><span class="nt">&gt;</span>13<span class="nt">&lt;/IBK:IntPara&gt;</span>
+		<span class="nt">&lt;IBK:IntPara</span> <span class="na">name=</span><span class="s">"I2"</span><span class="nt">&gt;</span>15<span class="nt">&lt;/IBK:IntPara&gt;</span>
+		<span class="nt">&lt;IBK:Flag</span> <span class="na">name=</span><span class="s">"X2"</span><span class="nt">&gt;</span>true<span class="nt">&lt;/IBK:Flag&gt;</span>
+		<span class="nt">&lt;IBK:LinearSpline</span> <span class="na">name=</span><span class="s">"LinSpl"</span><span class="nt">&gt;</span>
+			<span class="nt">&lt;X</span> <span class="na">unit=</span><span class="s">"-"</span><span class="nt">&gt;</span>0 1 1.4 2 <span class="nt">&lt;/X&gt;</span>
+			<span class="nt">&lt;Y</span> <span class="na">unit=</span><span class="s">"-"</span><span class="nt">&gt;</span>1 2 3.4 5 <span class="nt">&lt;/Y&gt;</span>
+		<span class="nt">&lt;/IBK:LinearSpline&gt;</span>
+		<span class="nt">&lt;LinearSplineParameter</span> <span class="na">name=</span><span class="s">"SplineParameter"</span><span class="nt">&gt;</span>
+			<span class="nt">&lt;X</span> <span class="na">unit=</span><span class="s">"m"</span><span class="nt">&gt;</span>0 5 10 <span class="nt">&lt;/X&gt;</span>
+			<span class="nt">&lt;Y</span> <span class="na">unit=</span><span class="s">"C"</span><span class="nt">&gt;</span>5 4 3 <span class="nt">&lt;/Y&gt;</span>
+		<span class="nt">&lt;/LinearSplineParameter&gt;</span>
+		<span class="nt">&lt;LinearSplineParameter</span> <span class="na">name=</span><span class="s">"AnotherSplineParameter"</span><span class="nt">&gt;</span>
+			<span class="nt">&lt;X</span> <span class="na">unit=</span><span class="s">"m"</span><span class="nt">&gt;</span>0 5 10 <span class="nt">&lt;/X&gt;</span>
+			<span class="nt">&lt;Y</span> <span class="na">unit=</span><span class="s">"C"</span><span class="nt">&gt;</span>5 4 3 <span class="nt">&lt;/Y&gt;</span>
+		<span class="nt">&lt;/LinearSplineParameter&gt;</span>
+		<span class="nt">&lt;LinearSplineParameter</span> <span class="na">name=</span><span class="s">"ParameterSet1"</span><span class="nt">&gt;</span>
+			<span class="nt">&lt;X</span> <span class="na">unit=</span><span class="s">"m"</span><span class="nt">&gt;</span>0 5 10 <span class="nt">&lt;/X&gt;</span>
+			<span class="nt">&lt;Y</span> <span class="na">unit=</span><span class="s">"C"</span><span class="nt">&gt;</span>5 4 3 <span class="nt">&lt;/Y&gt;</span>
+		<span class="nt">&lt;/LinearSplineParameter&gt;</span>
+		<span class="nt">&lt;Schedule</span> <span class="na">type=</span><span class="s">"Friday"</span><span class="nt">&gt;</span>
+			<span class="nt">&lt;StartDayOfTheYear&gt;</span>0<span class="nt">&lt;/StartDayOfTheYear&gt;</span>
+			<span class="nt">&lt;EndDayOfTheYear&gt;</span>0<span class="nt">&lt;/EndDayOfTheYear&gt;</span>
+			<span class="nt">&lt;DailyCycles&gt;</span>
+				<span class="nt">&lt;DailyCycle</span> <span class="nt">/&gt;</span>
+			<span class="nt">&lt;/DailyCycles&gt;</span>
+		<span class="nt">&lt;/Schedule&gt;</span>
+		<span class="nt">&lt;OtherSchedule</span> <span class="na">type=</span><span class="s">"Friday"</span><span class="nt">&gt;</span>
+			<span class="nt">&lt;StartDayOfTheYear&gt;</span>0<span class="nt">&lt;/StartDayOfTheYear&gt;</span>
+			<span class="nt">&lt;EndDayOfTheYear&gt;</span>0<span class="nt">&lt;/EndDayOfTheYear&gt;</span>
+			<span class="nt">&lt;DailyCycles&gt;</span>
+				<span class="nt">&lt;DailyCycle</span> <span class="nt">/&gt;</span>
+			<span class="nt">&lt;/DailyCycles&gt;</span>
+		<span class="nt">&lt;/OtherSchedule&gt;</span>
+	<span class="nt">&lt;/SerializationTest&gt;</span>
+<span class="nt">&lt;/NandradProject&gt;</span></code></pre>
 </div>
 </div>
 <div class="admonitionblock caution">
 <table>
 <tr>
 <td class="icon">
-<div class="title">Caution</div>
+<i class="fa icon-caution" title="Caution"></i>
 </td>
 <td class="content">
 <div class="paragraph">
@@ -1490,7 +1183,7 @@ public:
 <table>
 <tr>
 <td class="icon">
-<div class="title">Important</div>
+<i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
 <div class="paragraph">
@@ -1523,7 +1216,7 @@ public:
 </ul>
 </div>
 <div class="sect3">
-<h4 id="xml_complexTypes">Reading/writing custom complex types</h4>
+<h4 id="xml_complexTypes">4.4.1. Reading/writing custom complex types</h4>
 <div class="paragraph">
 <p>Any data type not listed in the example above and with <code>// XML:E</code> annotation is treated by the code generator as a complex type with own functions <code>readXML()</code> and <code>writeXML()</code> according to the <code>NANDRAD_READWRITE</code> macro. The code generator with create code to simply call these functions when writing such code.</p>
 </div>
@@ -1532,14 +1225,14 @@ public:
 </div>
 </div>
 <div class="sect3">
-<h4 id="_readingwriting_custom_complex_types_with_user_defined_tag_names">Reading/writing custom complex types with user-defined tag names</h4>
+<h4 id="_readingwriting_custom_complex_types_with_user_defined_tag_names">4.4.2. Reading/writing custom complex types with user-defined tag names</h4>
 <div class="paragraph">
 <p>Normally, the tag names for complex types are generated based on the complex type&#8217;s class name. For example:</p>
 </div>
 <div class="listingblock">
 <div class="title">Example for complex data member with automatic tag name generation</div>
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">Interface m_iface;  // XML:E</code></pre>
+<pre class="rouge highlight"><code data-lang="c++"><span class="n">Interface</span> <span class="n">m_iface</span><span class="p">;</span>  <span class="c1">// XML:E</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1547,9 +1240,9 @@ public:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;Interface id="1" zoneId="0"&gt;
-	&lt;!--Interface to outside--&gt;
-&lt;/Interface&gt;</code></pre>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Interface</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">zoneId=</span><span class="s">"0"</span><span class="nt">&gt;</span>
+	<span class="c">&lt;!--Interface to outside--&gt;</span>
+<span class="nt">&lt;/Interface&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1558,7 +1251,7 @@ public:
 <div class="listingblock">
 <div class="title">Example for complex data member with custom tag name</div>
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">Interface m_iface;  // XML:E:tag=MyFancyInterface</code></pre>
+<pre class="rouge highlight"><code data-lang="c++"><span class="n">Interface</span> <span class="n">m_iface</span><span class="p">;</span>  <span class="c1">// XML:E:tag=MyFancyInterface</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1566,16 +1259,16 @@ public:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;MyFancyInterface id="1" zoneId="0"&gt;
-	&lt;!--Interface to outside--&gt;
-&lt;/MyFancyInterface&gt;</code></pre>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;MyFancyInterface</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">zoneId=</span><span class="s">"0"</span><span class="nt">&gt;</span>
+	<span class="c">&lt;!--Interface to outside--&gt;</span>
+<span class="nt">&lt;/MyFancyInterface&gt;</span></code></pre>
 </div>
 </div>
 <div class="admonitionblock caution">
 <table>
 <tr>
 <td class="icon">
-<div class="title">Caution</div>
+<i class="fa icon-caution" title="Caution"></i>
 </td>
 <td class="content">
 <div class="paragraph">
@@ -1587,7 +1280,7 @@ public:
 </div>
 </div>
 <div class="sect3">
-<h4 id="_handling_of_uninitialized_ids_nandradinvalid_id">Handling of uninitialized IDs (<code>= NANDRAD::INVALID_ID</code>)</h4>
+<h4 id="_handling_of_uninitialized_ids_nandradinvalid_id">4.4.3. Handling of uninitialized IDs (<code>= NANDRAD::INVALID_ID</code>)</h4>
 <div class="paragraph">
 <p>The code generator automatically inserts code that compares unsigned int parameters with the constant <code>NANDRAD::INVALID_ID</code>. If the variable holds this default value, the variable will not be written.</p>
 </div>
@@ -1598,7 +1291,7 @@ public:
 <table>
 <tr>
 <td class="icon">
-<div class="title">Important</div>
+<i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
 <div class="paragraph">
@@ -1613,7 +1306,7 @@ public:
 </div>
 </div>
 <div class="sect3">
-<h4 id="_unsupported_data_member_types">Unsupported data member types</h4>
+<h4 id="_unsupported_data_member_types">4.4.4. Unsupported data member types</h4>
 <div class="paragraph">
 <p>For any kind of special data types, like <code>std::map&lt;std::string, std::vector&lt;double&gt; &gt;</code> you cannot use the code generator to create read/write code for. When you add a read/write annotation to such variables, the code generator will complain about unsupported types and may generate not compiling code.</p>
 </div>
@@ -1632,7 +1325,7 @@ public:
 </div>
 </div>
 <div class="sect3">
-<h4 id="_xml_comments">XML Comments</h4>
+<h4 id="_xml_comments">4.4.5. XML Comments</h4>
 <div class="paragraph">
 <p>Sometimes, it is nice to add comments about certain data members in the file. These are not xml tags, but merely xml comments and as such have no meaning for the project (only for humans reading the file in the text editor).</p>
 </div>
@@ -1648,16 +1341,16 @@ public:
 <div class="listingblock">
 <div class="title">Using a comment annotation on a string variable</div>
 <div class="content">
-<pre class="highlight"><code class="language-c++" data-lang="c++">class Interface {
-public:
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">Interface</span> <span class="p">{</span>
+<span class="nl">public:</span>
 
-    ...
+    <span class="p">...</span>
 
-	/*! Comment, indicating the zone this interface links to. */
-	std::string									m_comment;				// XML:C
+	<span class="cm">/*! Comment, indicating the zone this interface links to. */</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">string</span>									<span class="n">m_comment</span><span class="p">;</span>				<span class="c1">// XML:C</span>
 
-	...
-}</code></pre>
+	<span class="p">...</span>
+<span class="p">}</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1665,18 +1358,18 @@ public:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;Interface id="12" zoneId="1"&gt;
-	&lt;!--Interface to 'TF05.1'--&gt;
-	&lt;InterfaceHeatConduction modelType="Constant"&gt;
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Interface</span> <span class="na">id=</span><span class="s">"12"</span> <span class="na">zoneId=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+	<span class="c">&lt;!--Interface to 'TF05.1'--&gt;</span>
+	<span class="nt">&lt;InterfaceHeatConduction</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
     ...
-&lt;/Interface&gt;</code></pre>
+<span class="nt">&lt;/Interface&gt;</span></code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
-<div class="title">Note</div>
+<i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
 <div class="paragraph">
@@ -1690,7 +1383,7 @@ public:
 <table>
 <tr>
 <td class="icon">
-<div class="title">Important</div>
+<i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
 <div class="paragraph">
@@ -1701,14 +1394,254 @@ public:
 </table>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_serialization_of_inherited_data_members">4.4.6. Serialization of inherited data members</h4>
+<div class="paragraph">
+<p>Sometimes a base class holds data members that should be serialized in derived classes. Rather than manually implementing <code>readXML()</code> and <code>writeXML()</code> functions, you can simply copy the variable declaration into the derived class, add the <code>XML:...</code> serialization suffix and then prefix the entire line with <code>//:inherited</code> like in the following example.</p>
+</div>
+<div class="listingblock">
+<div class="title">Serialization of inherited data members</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">Parent</span> <span class="p">{</span>
+<span class="nl">public:</span>
+
+    <span class="kt">int</span> <span class="n">m_value</span><span class="p">;</span>
+<span class="p">};</span>
+
+
+<span class="k">class</span> <span class="nc">Child</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Parent</span> <span class="p">{</span>
+
+    <span class="c1">// the following line tells the code generator to generate the serialization code</span>
+    <span class="c1">// for variable m_value. The C++ compiler ignores this line.</span>
+
+    <span class="c1">//:inherited int m_value; // XML:E</span>
+<span class="p">};</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Basically, the code generator looks for the token <code>//:inherited</code>, removes it from the line and then handles the line just as a regular variable declaration with serialization tag.</p>
+</div>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-11-11 20:30:55 +0100
+Version 1.1 (20.01.2021)<br>
+Last updated 2021-01-20 17:37:16 +0100
 </div>
 </div>
+<style>
+pre.rouge table td { padding: 5px; }
+pre.rouge table pre { margin: 0; }
+pre.rouge .cm {
+  color: #999988;
+  font-style: italic;
+}
+pre.rouge .cp {
+  color: #999999;
+  font-weight: bold;
+}
+pre.rouge .c1 {
+  color: #999988;
+  font-style: italic;
+}
+pre.rouge .cs {
+  color: #999999;
+  font-weight: bold;
+  font-style: italic;
+}
+pre.rouge .c, pre.rouge .ch, pre.rouge .cd, pre.rouge .cpf {
+  color: #999988;
+  font-style: italic;
+}
+pre.rouge .err {
+  color: #a61717;
+  background-color: #e3d2d2;
+}
+pre.rouge .gd {
+  color: #000000;
+  background-color: #ffdddd;
+}
+pre.rouge .ge {
+  color: #000000;
+  font-style: italic;
+}
+pre.rouge .gr {
+  color: #aa0000;
+}
+pre.rouge .gh {
+  color: #999999;
+}
+pre.rouge .gi {
+  color: #000000;
+  background-color: #ddffdd;
+}
+pre.rouge .go {
+  color: #888888;
+}
+pre.rouge .gp {
+  color: #555555;
+}
+pre.rouge .gs {
+  font-weight: bold;
+}
+pre.rouge .gu {
+  color: #aaaaaa;
+}
+pre.rouge .gt {
+  color: #aa0000;
+}
+pre.rouge .kc {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kd {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kn {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kp {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kr {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kt {
+  color: #445588;
+  font-weight: bold;
+}
+pre.rouge .k, pre.rouge .kv {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .mf {
+  color: #009999;
+}
+pre.rouge .mh {
+  color: #009999;
+}
+pre.rouge .il {
+  color: #009999;
+}
+pre.rouge .mi {
+  color: #009999;
+}
+pre.rouge .mo {
+  color: #009999;
+}
+pre.rouge .m, pre.rouge .mb, pre.rouge .mx {
+  color: #009999;
+}
+pre.rouge .sb {
+  color: #d14;
+}
+pre.rouge .sc {
+  color: #d14;
+}
+pre.rouge .sd {
+  color: #d14;
+}
+pre.rouge .s2 {
+  color: #d14;
+}
+pre.rouge .se {
+  color: #d14;
+}
+pre.rouge .sh {
+  color: #d14;
+}
+pre.rouge .si {
+  color: #d14;
+}
+pre.rouge .sx {
+  color: #d14;
+}
+pre.rouge .sr {
+  color: #009926;
+}
+pre.rouge .s1 {
+  color: #d14;
+}
+pre.rouge .ss {
+  color: #990073;
+}
+pre.rouge .s, pre.rouge .sa, pre.rouge .dl {
+  color: #d14;
+}
+pre.rouge .na {
+  color: #008080;
+}
+pre.rouge .bp {
+  color: #999999;
+}
+pre.rouge .nb {
+  color: #0086B3;
+}
+pre.rouge .nc {
+  color: #445588;
+  font-weight: bold;
+}
+pre.rouge .no {
+  color: #008080;
+}
+pre.rouge .nd {
+  color: #3c5d5d;
+  font-weight: bold;
+}
+pre.rouge .ni {
+  color: #800080;
+}
+pre.rouge .ne {
+  color: #990000;
+  font-weight: bold;
+}
+pre.rouge .nf, pre.rouge .fm {
+  color: #990000;
+  font-weight: bold;
+}
+pre.rouge .nl {
+  color: #990000;
+  font-weight: bold;
+}
+pre.rouge .nn {
+  color: #555555;
+}
+pre.rouge .nt {
+  color: #000080;
+}
+pre.rouge .vc {
+  color: #008080;
+}
+pre.rouge .vg {
+  color: #008080;
+}
+pre.rouge .vi {
+  color: #008080;
+}
+pre.rouge .nv, pre.rouge .vm {
+  color: #008080;
+}
+pre.rouge .ow {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .o {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .w {
+  color: #bbbbbb;
+}
+pre.rouge {
+  background-color: #f8f8f8;
+}
+</style>
 </body>
 </html>
