@@ -11,6 +11,7 @@
 #include "SVPropEditGeometry.h"
 #include "SVPropSiteWidget.h"
 #include "SVPropNetworkEditWidget.h"
+#include "SVPropModeSelectionWidget.h"
 #include "Vic3DNewGeometryObject.h"
 #include "Vic3DCoordinateSystemObject.h"
 #include "Vic3DWireFrameObject.h"
@@ -20,10 +21,13 @@ SVPropertyWidget::SVPropertyWidget(QWidget * parent) :
 {
 	m_layout = new QVBoxLayout(this);
 	m_layout->setMargin(0);
-	m_layout->setMargin(0);
 	setLayout(m_layout);
 	for (QWidget * &w : m_propWidgets)
 		w = nullptr;
+
+	m_propModeSelectionWidget = new SVPropModeSelectionWidget(this);
+	m_layout->addWidget(m_propModeSelectionWidget);
+
 
 	setMinimumWidth(200);
 
@@ -89,7 +93,18 @@ void SVPropertyWidget::onViewStateChanged() {
 //			visible[i] = false;
 //	}
 
-	SVViewState::PropertyWidgetMode m = SVViewStateHandler::instance().viewState().m_propertyWidgetMode;
+	const SVViewState & vs = SVViewStateHandler::instance().viewState();
+	SVViewState::PropertyWidgetMode m = vs.m_propertyWidgetMode;
+
+	switch (vs.m_viewMode) {
+		case SVViewState::VM_GeometryEditMode:
+			m_propModeSelectionWidget->setVisible(false);
+		break;
+		case SVViewState::VM_PropertyEditMode:
+			m_propModeSelectionWidget->setVisible(true);
+		break;
+		case SVViewState::NUM_VM: break; // just to make compiler happy
+	}
 
 	switch (m) {
 		case SVViewState::PM_EditGeometry :

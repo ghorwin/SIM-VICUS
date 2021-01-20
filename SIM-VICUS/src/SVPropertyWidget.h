@@ -8,6 +8,7 @@ namespace IBKMK {
 }
 
 class QVBoxLayout;
+class SVPropModeSelectionWidget;
 
 #include <SVViewState.h>
 
@@ -49,6 +50,11 @@ private:
 	QVBoxLayout				*m_layout = nullptr;
 	/*! Pointer to property widget: add polygon */
 	QWidget					*m_propWidgets[SVViewState::NUM_PM];
+
+	/*! The widget with property edit selection mode, shown when view is in
+		VM_PropertyEditMode.
+	*/
+	SVPropModeSelectionWidget * m_propModeSelectionWidget = nullptr;
 
 //	/*! creates network property widget and adds it to layout (if not yet existing), sets it visible */
 //	void showNetworkPropertyWidget();
