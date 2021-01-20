@@ -434,50 +434,58 @@ bool Project::haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const {
 	return (coordsCount > 0);
 }
 
-void Project::selectObjects(std::set<const Object*> &selectedObjs, const SelectionGroups &sg, bool takeInvisible) const
+
+bool selectionCheck(const VICUS::Object & o, bool takeSelected, bool takeVisible) {
+	bool selCheck = takeSelected ? o.m_selected : true;
+	bool visCheck = takeVisible ? o.m_visible : true;
+	return (selCheck && visCheck);
+}
+
+void Project::selectObjects(std::set<const Object*> &selectedObjs, SelectionGroups sg,
+							bool takeSelected, bool takeVisible) const
 {
 	// Buildings
-	if(sg == SG_All || sg == SG_Building){
+	if (sg & SG_Building) {
 		for (const VICUS::Building & b : m_buildings) {
 			for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 				for (const VICUS::Room & r : bl.m_rooms) {
 					for (const VICUS::Surface & s : r.m_surfaces) {
-						if(takeInvisible || s.m_visible)
+						if (selectionCheck(s, takeSelected, takeVisible))
 							selectedObjs.insert(&s);
 					}
-					if(takeInvisible || r.m_visible)
+					if (selectionCheck(r, takeSelected, takeVisible))
 						selectedObjs.insert(&r);
 				}
-				if(takeInvisible || bl.m_visible)
+				if (selectionCheck(bl, takeSelected, takeVisible))
 					selectedObjs.insert(&bl);
 			}
-			if(takeInvisible || b.m_visible)
+			if (selectionCheck(b, takeSelected, takeVisible))
 				selectedObjs.insert(&b);
 		}
 	}
 
 	// Networks
-	if(sg == SG_All || sg == SG_Network){
+	if (sg & SG_Network) {
 		for (const VICUS::Network & n : m_geometricNetworks) {
 			for (const VICUS::NetworkEdge & e : n.m_edges) {
-				if(takeInvisible || e.m_visible)
+				if (selectionCheck(e, takeSelected, takeVisible))
 					selectedObjs.insert(&e);
 			}
 
 			for (const VICUS::NetworkNode & nod : n.m_nodes) {
-				if(takeInvisible || nod.m_visible)
+				if (selectionCheck(nod, takeSelected, takeVisible))
 					selectedObjs.insert(&nod);
 			}
-			if(takeInvisible || n.m_visible)
+			if (selectionCheck(n, takeSelected, takeVisible))
 				selectedObjs.insert(&n);
 		}
 	}
 
 	// Dumb plain geometry
-	if(sg == SG_All) {
+	if (sg == SG_All) {
 		for (const VICUS::Surface & s : m_plainGeometry) {
-
-			selectedObjs.insert(&s);
+			if (selectionCheck(s, takeSelected, takeVisible))
+				selectedObjs.insert(&s);
 		}
 	}
 }

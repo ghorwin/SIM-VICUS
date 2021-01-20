@@ -46,15 +46,11 @@ class Project {
 	VICUS_READWRITE
 public:
 
-	enum ViewFlags {
-		VF_All,			// Keyword: All
-		NUM_VF
-	};
-
-	enum SelectionGroups{
-		SG_All,
-		SG_Building,
-		SG_Network,
+	/*! Bitmasks for different selection groups used in selectObjects(). */
+	enum SelectionGroups {
+		SG_Building			= 0x001,
+		SG_Network			= 0x002,
+		SG_All				= SG_Building | SG_Network,
 		NUM_SG
 	};
 
@@ -103,12 +99,17 @@ public:
 	*/
 	bool haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const;
 
-	/*! Selects objects according to two properties:
-		1. objectGroup
-		2. visibility
-		Exports an set of pointer of Objects
+	/*! Selects objects and return set with pointers according to additional filters.
+		\param selectedObjs Here the pointers to selected objects are returned.
+		\param sg			Selection group, that the object belongs to.
+		\param takeSelected	If true, only objects with "selected" property enabled are taken. If false,
+			selection property is ignored.
+		\param takeVisible	If true, only objects with "visible" property enabled are taken. If false,
+			visible property is ignored.
 	*/
-	void selectObjects(std::set<const Object *> &selectedObjs, const SelectionGroups &sg, bool takeInvisible =true) const;
+	void selectObjects(std::set<const Object *> &selectedObjs, SelectionGroups sg,
+					   bool takeSelected,
+					   bool takeVisible) const;
 
 	/*! This function collects the pointers to all selected surfaces
 		\returns Returns true if any surface is selected
