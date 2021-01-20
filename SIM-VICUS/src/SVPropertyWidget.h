@@ -2,12 +2,12 @@
 #define SVPROPERTYWIDGET_H
 
 #include <QWidget>
+#include <QLayout>
 
 namespace IBKMK {
 	class Vector3D;
 }
 
-class QVBoxLayout;
 class SVPropModeSelectionWidget;
 class ModificationInfo;
 
@@ -28,15 +28,15 @@ class SVPropertyWidget : public QWidget {
 public:
 
 	/*! This enum defines the property widgets that can be shown.
-		These are usually mapped to view states.
+		These usually correspond to view states.
 	*/
 	enum PropertyWidgets {
 		M_ThermalSimulationProperties,
-		M_EditGeometry,
-		M_AddGeometry,
-		M_AddVertexesMode,
+		M_Geometry,
+		M_VertexListWidget,
 		M_SiteProperties,
-		M_EditNetwork,
+		M_NetworkProperties,
+		M_BuildingProperties,
 		NUM_M
 	};
 
@@ -71,19 +71,29 @@ private slots:
 	void onNetworkPropertiesSelected(int networkIndex, int propertyIndex);
 
 private:
+	/*! Convenience function for creating a widget, if not existing yet, adding it to
+		the layout and showing it.
+	*/
+	template <typename T>
+	void showPropertyWidget(PropertyWidgets propWidget) {
+		if (m_propWidgets[propWidget] == nullptr) {
+			T * w = new T(this);
+			m_propWidgets[propWidget] = w;
+			m_layout->addWidget(m_propWidgets[propWidget]);
+		}
+		m_propWidgets[propWidget]->setVisible(true);
+	}
+
 
 	/*! The layout, that holds all widgets. */
 	QVBoxLayout				*m_layout = nullptr;
 	/*! Pointer to property widget: add polygon */
-	QWidget					*m_propWidgets[SVViewState::NUM_PM];
+	QWidget					*m_propWidgets[NUM_M];
 
 	/*! The widget with property edit selection mode, shown when view is in
 		VM_PropertyEditMode.
 	*/
 	SVPropModeSelectionWidget * m_propModeSelectionWidget = nullptr;
-
-//	/*! creates network property widget and adds it to layout (if not yet existing), sets it visible */
-//	void showNetworkPropertyWidget();
 };
 
 #endif // SVPROPERTYWIDGET_H

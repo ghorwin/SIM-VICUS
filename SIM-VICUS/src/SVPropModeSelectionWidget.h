@@ -21,8 +21,8 @@ public:
 	/*! Called to update combo boxes. */
 	void updateUI();
 
-	/*! Based on selected properties, switch to one of the specific edit modes, when still
-		in "default" mode.
+	/*! Based on selected properties, switch to one of the specific edit modes, based on
+		the selected objects.
 	*/
 	void selectionChanged();
 

@@ -13,6 +13,7 @@
 #include "SVPropSiteWidget.h"
 #include "SVPropNetworkEditWidget.h"
 #include "SVPropModeSelectionWidget.h"
+#include "SVPropBuildingEditWidget.h"
 
 
 #include "Vic3DNewGeometryObject.h"
@@ -61,52 +62,6 @@ void SVPropertyWidget::onViewStateChanged() {
 			w->setVisible(false);
 	}
 
-//	// catch changes in object selection
-//	std::set<const VICUS::Object*> selObjects = SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects;
-//	bool nodeFound = false;
-//	bool edgeFound = false;
-//	for (const VICUS::Object * o : selObjects) {
-//		if (dynamic_cast<const VICUS::NetworkNode *>(o) != nullptr) {
-//			nodeFound = true;
-//		}
-//		if (dynamic_cast<const VICUS::NetworkEdge *>(o) != nullptr) {
-//			edgeFound = true;
-//		}
-//	}
-//	if (edgeFound && nodeFound){
-//		showNetworkPropertyWidget();
-//		qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->updateUi(S_MultipleObjects);
-//		qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->showMixedSelectionInfo();
-//		return;
-//	}
-//	else if (nodeFound){
-//		showNetworkPropertyWidget();
-//		qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->updateUi(S_MultipleObjects);
-//		qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->showNodeProperties();
-//		return;
-//	}
-//	else if (edgeFound){
-//		showNetworkPropertyWidget();
-//		qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->updateUi(S_MultipleObjects);
-//		qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->showEdgeProperties();
-//		return;
-//	}
-
-
-	// TODO Andreas: still needed ?
-
-//	// cache visibility state
-//	bool visible[SVViewState::NUM_PM];
-//	for (unsigned int i=0; i<SVViewState::NUM_PM; ++i) {
-//		QWidget * w = m_propWidgets[i];
-//		if (w != nullptr) {
-//			visible[i] = w->isVisibleTo(this);
-//			w->setVisible(false);
-//		}
-//		else
-//			visible[i] = false;
-//	}
-
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
 	SVViewState::PropertyWidgetMode m = vs.m_propertyWidgetMode;
 
@@ -120,62 +75,36 @@ void SVPropertyWidget::onViewStateChanged() {
 		case SVViewState::NUM_VM: break; // just to make compiler happy
 	}
 
+
+	// now show the respective property widget
 	switch (m) {
 		case SVViewState::PM_EditGeometry :
 		case SVViewState::PM_AddGeometry : {
-			// create widget and add to layout, if not existing
-			if (m_propWidgets[SVViewState::PM_EditGeometry] == nullptr) {
-				SVPropEditGeometry *propEditGeometry = new SVPropEditGeometry(this);
-				m_propWidgets[SVViewState::PM_EditGeometry] = propEditGeometry;
-				m_layout->addWidget(m_propWidgets[SVViewState::PM_EditGeometry]);
-			}
-			m_propWidgets[SVViewState::PM_EditGeometry]->setVisible(true);
+			showPropertyWidget<SVPropEditGeometry>(M_Geometry);
 
 			// Note: we do not use the slot for SVViewState::PM_AddGeometry; instead we just show a different tab
 			if (m == SVViewState::PM_EditGeometry)
-				((SVPropEditGeometry *) m_propWidgets[SVViewState::PM_EditGeometry])->setCurrentTab(SVPropEditGeometry::TS_EditGeometry);
+				qobject_cast<SVPropEditGeometry *>(m_propWidgets[M_Geometry])->setCurrentTab(SVPropEditGeometry::TS_EditGeometry);
 			else
-				((SVPropEditGeometry *) m_propWidgets[SVViewState::PM_EditGeometry])->setCurrentTab(SVPropEditGeometry::TS_AddGeometry);
-
+				qobject_cast<SVPropEditGeometry *>(m_propWidgets[M_Geometry])->setCurrentTab(SVPropEditGeometry::TS_AddGeometry);
 		} break;
 
-
-		case SVViewState::PM_VertexList: {
-			// create widget and add to layout, if not existing
-			if (m_propWidgets[SVViewState::PM_VertexList] == nullptr) {
-				SVPropVertexListWidget * vertexListWidget = new SVPropVertexListWidget(this);
-				m_propWidgets[SVViewState::PM_VertexList] = vertexListWidget;
-				m_layout->addWidget(m_propWidgets[SVViewState::PM_VertexList]);
-			}
-			m_propWidgets[SVViewState::PM_VertexList]->setVisible(true);
+		case SVViewState::PM_VertexList:
+			showPropertyWidget<SVPropVertexListWidget>(M_VertexListWidget);
 			setMinimumWidth(500);
-		} break;
+		break;
 
+		case SVViewState::PM_SiteProperties :
+			showPropertyWidget<SVPropSiteWidget>(M_SiteProperties);
+		break;
 
-		case SVViewState::PM_SiteProperties : {
-			// create widget and add to layout, if not existing
-			if (m_propWidgets[SVViewState::PM_SiteProperties] == nullptr) {
-				SVPropSiteWidget *propSiteWidget = new SVPropSiteWidget(this);
-				m_propWidgets[SVViewState::PM_SiteProperties] = propSiteWidget;
-				m_layout->addWidget(m_propWidgets[SVViewState::PM_SiteProperties]);
-			}
-			m_propWidgets[SVViewState::PM_SiteProperties]->setVisible(true);
-		} break;
-
+		case SVViewState::PM_BuildingProperties :
+			showPropertyWidget<SVPropBuildingEditWidget>(M_BuildingProperties);
+		break;
 
 		case SVViewState::PM_NetworkProperties :
-		case SVViewState::PM_NetworkNodeProperties :
-		case SVViewState::PM_NetworkEdgeProperties : {
-//			showNetworkPropertyWidget();
-//			// tell widget to update its content
-//			qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->updateUi(S_SingleObject);
-//			if (m == SVViewState::PM_NetworkProperties)
-//				qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->showNetworkProperties();
-//			else if (m == SVViewState::PM_NetworkNodeProperties)
-//				qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->showNodeProperties();
-//			else
-//				qobject_cast<SVPropNetworkEditWidget *>(m_propWidgets[SVViewState::PM_NetworkProperties])->showEdgeProperties();
-		} break;
+			showPropertyWidget<SVPropNetworkEditWidget>(M_NetworkProperties);
+		break;
 
 		default : {
 			// set maximum size to 0, to avoid widget being expandible
@@ -219,25 +148,22 @@ void SVPropertyWidget::onBuildingPropertiesSelected(int propertyIndex) {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	vs.m_propertyWidgetMode = SVViewState::PM_BuildingProperties;
 	SVViewStateHandler::instance().setViewState(vs);
+	// now the building property widget exists and is shown
+	// select highlighting/edit mode -> this will send a signal to update the scene's geometry coloring
+	qobject_cast<SVPropBuildingEditWidget*>(m_propWidgets[M_BuildingProperties])->setPropertyMode(propertyIndex);
 }
 
 
 void SVPropertyWidget::onNetworkPropertiesSelected(int networkIndex, int propertyIndex) {
 	// change view state to "edit network properties"
+	SVViewState vs = SVViewStateHandler::instance().viewState();
 
+	vs.m_propertyWidgetMode = SVViewState::PM_BuildingProperties;
+	SVViewStateHandler::instance().setViewState(vs);
+	// now the network property widget exists and is shown
+	// select highlighting/edit mode -> this will send a signal to update the scene's geometry coloring
+	qobject_cast<SVPropNetworkEditWidget*>(m_propWidgets[M_NetworkProperties])->setPropertyMode(networkIndex, propertyIndex);
 }
-
-//void SVPropertyWidget::showNetworkPropertyWidget() {
-//	// create widget and add to layout, if not existing
-//	if (m_propWidgets[SVViewState::PM_NetworkProperties] == nullptr) {
-//		SVPropNetworkEditWidget *propWidget = new SVPropNetworkEditWidget(this);
-//		m_propWidgets[SVViewState::PM_NetworkProperties] = propWidget;
-//		m_layout->addWidget(m_propWidgets[SVViewState::PM_NetworkProperties]);
-//	}
-//	m_propWidgets[SVViewState::PM_NetworkProperties]->setVisible(true);
-//}
-
-
 
 
 

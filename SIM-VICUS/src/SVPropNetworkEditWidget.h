@@ -32,6 +32,12 @@ public:
 		and selected node. */
 	void updateUi(const SelectionState selectionState);
 
+	/*! Selects the respective edit mode for the widget.
+		This function is called whenever a selection change or edit mode change has occurred
+		that needs an update of the scene mode or switch of active network.
+	*/
+	void setPropertyMode(int networkIndex, int propertyIndex);
+
 	void showNetworkProperties();
 
 	void showNodeProperties();

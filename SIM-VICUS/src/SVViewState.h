@@ -84,11 +84,6 @@ public:
 		PM_BuildingProperties,
 		/*! Shows the widget with network properties. */
 		PM_NetworkProperties,
-		/*! Shows the widget with network properties. */
-		PM_NetworkNodeProperties,
-		/*! Shows the widget with network properties. */
-		PM_NetworkEdgeProperties,
-
 
 		NUM_PM
 	};

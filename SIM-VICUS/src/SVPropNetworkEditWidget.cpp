@@ -68,6 +68,10 @@ void SVPropNetworkEditWidget::updateUi(const SelectionState selectionState) {
 
 }
 
+void SVPropNetworkEditWidget::setPropertyMode(int networkIndex, int propertyIndex) {
+	qDebug() << "SVPropNetworkEditWidget::setPropertyMode: network index =" << networkIndex << ", propertyIndex =" << propertyIndex;
+}
+
 
 void SVPropNetworkEditWidget::updateNodeProperties()
 {

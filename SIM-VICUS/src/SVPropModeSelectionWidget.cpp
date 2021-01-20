@@ -44,9 +44,6 @@ void SVPropModeSelectionWidget::selectionChanged() {
 		// do we have a network?
 		if (m_ui->comboBoxNetwork->currentIndex() == -1)
 			return; // cannot do anything without network
-		// still in default mode?
-		if (m_ui->comboBoxNetworkProperties->currentIndex() != 0)
-			return; // specific mode already selected
 		// now check the selected objects and if we have only nodes - go to node edit more,
 		// if we have only edges - go to edge edit mode
 
@@ -111,16 +108,16 @@ void SVPropModeSelectionWidget::updateProperties() {
 }
 
 
-void SVPropModeSelectionWidget::on_comboBoxNetwork_currentIndexChanged(int index) {
-
+void SVPropModeSelectionWidget::on_comboBoxNetwork_currentIndexChanged(int) {
+	emit networkPropertiesSelected(m_ui->comboBoxNetwork->currentIndex(), m_ui->comboBoxNetworkProperties->currentIndex());
 }
 
 
-void SVPropModeSelectionWidget::on_comboBoxNetworkProperties_currentIndexChanged(int index) {
-
+void SVPropModeSelectionWidget::on_comboBoxNetworkProperties_currentIndexChanged(int) {
+	emit networkPropertiesSelected(m_ui->comboBoxNetwork->currentIndex(), m_ui->comboBoxNetworkProperties->currentIndex());
 }
 
 
 void SVPropModeSelectionWidget::on_comboBoxBuildingProperties_currentIndexChanged(int index) {
-
+	emit buildingPropertiesSelected(index);
 }
