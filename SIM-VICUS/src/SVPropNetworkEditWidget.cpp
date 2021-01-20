@@ -71,12 +71,13 @@ void SVPropNetworkEditWidget::updateUi() {
 void SVPropNetworkEditWidget::setPropertyMode(int propertyIndex) {
 	qDebug() << "SVPropNetworkEditWidget::setPropertyMode: propertyIndex =" << propertyIndex;
 
-	// TODO : update user interface to match propertyIndex: 0 = Network, 1 = Nodes, 2 = edges
 	switch (propertyIndex) {
 		case 0 : showNetworkProperties(); break;
 		case 1 : showNodeProperties(); break;
 		case 2 : showEdgeProperties(); break;
 	}
+
+	selectionChanged();
 }
 
 

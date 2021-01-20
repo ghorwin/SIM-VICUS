@@ -154,7 +154,7 @@ void SVPropertyWidget::onNetworkPropertiesSelected(int propertyIndex) {
 	// change view state to "edit network properties"
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 
-	vs.m_propertyWidgetMode = SVViewState::PM_BuildingProperties;
+	vs.m_propertyWidgetMode = SVViewState::PM_NetworkProperties;
 	SVViewStateHandler::instance().setViewState(vs);
 	// now the network property widget exists and is shown
 	// select highlighting/edit mode -> this will send a signal to update the scene's geometry coloring
