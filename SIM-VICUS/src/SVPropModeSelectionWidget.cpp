@@ -12,7 +12,6 @@ SVPropModeSelectionWidget::SVPropModeSelectionWidget(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 	m_ui->verticalLayout->setMargin(0);
-	updateProperties();
 }
 
 
@@ -36,6 +35,8 @@ void SVPropModeSelectionWidget::updateUI() {
 		currentIdx = m_ui->comboBoxNetwork->count()-1;
 	m_ui->comboBoxNetwork->setCurrentIndex(currentIdx);
 	m_ui->comboBoxNetwork->blockSignals(false);
+
+	updateProperties();
 }
 
 
@@ -105,6 +106,8 @@ void SVPropModeSelectionWidget::updateProperties() {
 
 	m_ui->labelBuildingProperties->setVisible(showBuildingProps);
 	m_ui->comboBoxBuildingProperties->setVisible(showBuildingProps);
+
+	selectionChanged();
 }
 
 
