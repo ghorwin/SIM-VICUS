@@ -451,12 +451,11 @@ void SceneView::keyReleaseEvent(QKeyEvent *event) {
 			m_mainScene.deleteSelected();
 		} break;
 
-		case Qt::Key_A:
-		{
-			if(event->modifiers() & Qt::ControlModifier){
+		// *** Selected all selectable objects (i.e. objects shown in the scene) ***
+		case Qt::Key_A : {
+			if (event->modifiers() & Qt::ControlModifier)
 				m_mainScene.selectAll();
-			}
-		}
+		} break;
 
 		default :; // ignore the rest
 	} // switch
