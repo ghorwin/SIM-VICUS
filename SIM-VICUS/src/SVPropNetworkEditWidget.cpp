@@ -47,7 +47,7 @@ SVPropNetworkEditWidget::~SVPropNetworkEditWidget() {
 }
 
 
-void SVPropNetworkEditWidget::updateUi(const SelectionState selectionState) {
+void SVPropNetworkEditWidget::updateUi() {
 //	m_selection = selectionState;
 //	switch (m_selection) {
 //		case S_SingleObject: {// get single object from currently selected node in tree widget
@@ -68,8 +68,10 @@ void SVPropNetworkEditWidget::updateUi(const SelectionState selectionState) {
 
 }
 
-void SVPropNetworkEditWidget::setPropertyMode(int networkIndex, int propertyIndex) {
-	qDebug() << "SVPropNetworkEditWidget::setPropertyMode: network index =" << networkIndex << ", propertyIndex =" << propertyIndex;
+void SVPropNetworkEditWidget::setPropertyMode(int propertyIndex) {
+	qDebug() << "SVPropNetworkEditWidget::setPropertyMode: propertyIndex =" << propertyIndex;
+
+	// TODO : update user interface to match propertyIndex: 0 = Network, 1 = Nodes, 2 = edges
 }
 
 
@@ -364,6 +366,21 @@ void SVPropNetworkEditWidget::showMixedSelectionInfo()
 	m_ui->labelSelectionInfo->setVisible(true);
 }
 
+
+void SVPropNetworkEditWidget::onModified(int modificationType, ModificationInfo * /*data*/) {
+	SVProjectHandler::ModificationTypes modType((SVProjectHandler::ModificationTypes)modificationType);
+	switch (modType) {
+		case SVProjectHandler::NetworkModified:
+		case SVProjectHandler::AllModified:
+		case SVProjectHandler::NodeStateModified:
+			selectionChanged();
+		break;
+
+		default: ; // just to make compiler happy
+	}
+}
+
+
 void SVPropNetworkEditWidget::on_comboBoxNodeType_activated(int index)
 {
 	modifyNodeProperty(&VICUS::NetworkNode::m_type, VICUS::NetworkNode::NodeType(
@@ -421,8 +438,41 @@ void SVPropNetworkEditWidget::on_horizontalSliderScaleEdges_valueChanged(int val
 	undo->push(); // modifies project and updates views
 }
 
-void SVPropNetworkEditWidget::on_pushButtonEditComponents_clicked()
-{
+
+void SVPropNetworkEditWidget::selectionChanged() {
+	std::set<const VICUS::Object *> objs;
+	// get all selected objects of type network, objects must be visible
+	project().selectObjects(objs, VICUS::Project::SG_Network, true, true);
+
+	std::vector<const VICUS::NetworkEdge*> edges;
+	std::vector<const VICUS::NetworkNode*> nodes;
+	std::vector<const VICUS::Network*> networks;
+
+	for (const VICUS::Object* o : objs) {
+		const VICUS::NetworkEdge * edge = dynamic_cast<const VICUS::NetworkEdge*>(o);
+		if (edge != nullptr) {
+			edges.push_back(edge);
+			continue;
+		}
+		const VICUS::NetworkNode * node = dynamic_cast<const VICUS::NetworkNode*>(o);
+		if (node != nullptr) {
+			nodes.push_back(node);
+			continue;
+		}
+		const VICUS::Network * nw = dynamic_cast<const VICUS::Network*>(o);
+		if (nw != nullptr) {
+			networks.push_back(nw);
+			continue;
+		}
+	}
+
+	// now we have all selected network-type objects nicely sorted in vectors
+
+	// TODO : Hauke, implement
+}
+
+
+void SVPropNetworkEditWidget::on_pushButtonEditComponents_clicked() {
 	const VICUS::Network * network = currentNetwork();
 	std::vector<const VICUS::NetworkNode *> nodes = currentNetworkNodes();
 	std::vector<const VICUS::NetworkEdge *> edges = currentNetworkEdges();

@@ -31,7 +31,6 @@ public:
 		These usually correspond to view states.
 	*/
 	enum PropertyWidgets {
-		M_ThermalSimulationProperties,
 		M_Geometry,
 		M_VertexListWidget,
 		M_SiteProperties,
@@ -65,10 +64,9 @@ private slots:
 
 	/*! Emitted when user activates network properties combo box or changes
 		the selection in the combo box.
-		\param networkIndex Index of the selected network in the combo box, may be -1 if empty.
 		\param propertyIndex Index of the selected network property in the combo box, 0 = network, 1 = node, 2 = element.
 	*/
-	void onNetworkPropertiesSelected(int networkIndex, int propertyIndex);
+	void onNetworkPropertiesSelected(int propertyIndex);
 
 private:
 	/*! Convenience function for creating a widget, if not existing yet, adding it to

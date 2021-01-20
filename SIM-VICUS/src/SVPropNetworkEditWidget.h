@@ -15,11 +15,7 @@ namespace Ui {
 	class SVPropNetworkEditWidget;
 }
 
-enum SelectionState {
-	S_SingleObject,
-	S_MultipleObjects,
-	NUM_S
-};
+class ModificationInfo;
 
 /*! A property widget for editing network properties. */
 class SVPropNetworkEditWidget : public QWidget {
@@ -30,13 +26,13 @@ public:
 
 	/*! Called when widget is just shown, updates content to current project's data
 		and selected node. */
-	void updateUi(const SelectionState selectionState);
+	void updateUi();
 
 	/*! Selects the respective edit mode for the widget.
 		This function is called whenever a selection change or edit mode change has occurred
 		that needs an update of the scene mode or switch of active network.
 	*/
-	void setPropertyMode(int networkIndex, int propertyIndex);
+	void setPropertyMode(int propertyIndex);
 
 	void showNetworkProperties();
 
@@ -45,6 +41,12 @@ public:
 	void showEdgeProperties();
 
 	void showMixedSelectionInfo();
+
+public slots:
+
+	/*! Connected to SVProjectHandler::modified(), we listen to changes in selections. */
+	void onModified( int modificationType, ModificationInfo * data );
+
 
 private slots:
 	void on_comboBoxNodeType_activated(int index);
@@ -80,6 +82,13 @@ private slots:
 	void on_horizontalSliderScaleEdges_valueChanged(int value);
 
 private:
+	/*! This function is called whenever the current selection of edges/nodes/objects has changed.
+		This can be due to user interaction with the scene, or because objects were added/deleted or
+		because a project was newly loaded.
+		In any case, the currently shown input widgets must be updated according to the current
+		selection in the project.
+	*/
+	void selectionChanged();
 
 	void setupComboBoxComponents();
 
@@ -144,8 +153,6 @@ private:
 	unsigned int					m_treeItemId = 0;
 
 	std::set<const VICUS::Object*>	m_selectedObjects;
-
-	SelectionState					m_selection = NUM_S;
 };
 
 

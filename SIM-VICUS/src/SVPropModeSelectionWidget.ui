@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>389</width>
-    <height>207</height>
+    <width>405</width>
+    <height>151</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,13 +19,48 @@
      <property name="title">
       <string>Property group mode</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_3">
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QPushButton" name="pushButtonBuilding">
+        <property name="text">
+         <string>Building</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+        <property name="autoExclusive">
+         <bool>true</bool>
+        </property>
+        <property name="default">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="1">
        <widget class="QPushButton" name="pushButtonNetwork">
         <property name="text">
          <string>Network</string>
         </property>
         <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QPushButton" name="pushButtonSite">
+        <property name="text">
+         <string>Site</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
          <bool>true</bool>
         </property>
         <property name="autoExclusive">
@@ -46,38 +81,43 @@
         </property>
        </spacer>
       </item>
-      <item row="0" column="2">
-       <widget class="QPushButton" name="pushButtonSite">
-        <property name="text">
-         <string>Site</string>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-        <property name="autoExclusive">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="4">
-       <layout class="QGridLayout" name="gridLayout_2">
+      <item row="1" column="0" colspan="4">
+       <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="0">
-         <widget class="QLabel" name="labelNetwork">
+         <widget class="QLabel" name="labelBuildingProperties">
           <property name="text">
-           <string>Network:</string>
+           <string>Object properties:</string>
           </property>
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QComboBox" name="comboBoxNetwork"/>
+         <widget class="QComboBox" name="comboBoxBuildingProperties">
+          <item>
+           <property name="text">
+            <string>Components</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Boundary conditions</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Surface materials</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Windows</string>
+           </property>
+          </item>
+         </widget>
         </item>
         <item row="1" column="0">
          <widget class="QLabel" name="labelNetworkProperties">
           <property name="text">
-           <string>Network object properties:</string>
+           <string>Object properties:</string>
           </property>
          </widget>
         </item>
@@ -99,39 +139,6 @@
            </property>
           </item>
          </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="0" column="0">
-       <widget class="QPushButton" name="pushButtonBuilding">
-        <property name="text">
-         <string>Building</string>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-        <property name="autoExclusive">
-         <bool>true</bool>
-        </property>
-        <property name="default">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="4">
-       <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="0">
-         <widget class="QLabel" name="labelBuildingProperties">
-          <property name="text">
-           <string>Building object properties:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QComboBox" name="comboBoxBuildingProperties"/>
         </item>
        </layout>
       </item>

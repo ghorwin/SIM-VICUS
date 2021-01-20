@@ -118,14 +118,10 @@ void SVPropertyWidget::onModified(int modificationType, ModificationInfo * ) {
 	switch (modType) {
 		case SVProjectHandler::NetworkModified:
 		case SVProjectHandler::AllModified:
-			// update combobox with network names in mode selection widget widget
-			m_propModeSelectionWidget->updateUI();
-		break;
-
 		case SVProjectHandler::NodeStateModified:
-			// Tell mode selection widget that the selection property has changed
-			// this is used to switch from "generic" building/network edit modes
-			// into a more specific mode. For example, when "Network" mode is selected
+			// Tell mode selection widget that the selection property has changed.
+			// This is used to switch into a specific building/network edit mode
+			// based on the current selection. For example, when "Network" mode is selected
 			// and a node is selected, we automatically switch to "Node" edit mode.
 			m_propModeSelectionWidget->selectionChanged();
 		break;
@@ -154,7 +150,7 @@ void SVPropertyWidget::onBuildingPropertiesSelected(int propertyIndex) {
 }
 
 
-void SVPropertyWidget::onNetworkPropertiesSelected(int networkIndex, int propertyIndex) {
+void SVPropertyWidget::onNetworkPropertiesSelected(int propertyIndex) {
 	// change view state to "edit network properties"
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 
@@ -162,7 +158,7 @@ void SVPropertyWidget::onNetworkPropertiesSelected(int networkIndex, int propert
 	SVViewStateHandler::instance().setViewState(vs);
 	// now the network property widget exists and is shown
 	// select highlighting/edit mode -> this will send a signal to update the scene's geometry coloring
-	qobject_cast<SVPropNetworkEditWidget*>(m_propWidgets[M_NetworkProperties])->setPropertyMode(networkIndex, propertyIndex);
+	qobject_cast<SVPropNetworkEditWidget*>(m_propWidgets[M_NetworkProperties])->setPropertyMode(propertyIndex);
 }
 
 

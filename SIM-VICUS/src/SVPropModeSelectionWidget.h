@@ -39,10 +39,9 @@ signals:
 
 	/*! Emitted when user activates network properties combo box or changes
 		the selection in the combo box.
-		\param networkIndex Index of the selected network in the combo box, may be -1 if empty.
 		\param propertyIndex Index of the selected network property in the combo box, 0 = network, 1 = node, 2 = element.
 	*/
-	void networkPropertiesSelected(int networkIndex, int propertyIndex);
+	void networkPropertiesSelected(int propertyIndex);
 
 private slots:
 	void on_pushButtonBuilding_toggled(bool checked);
@@ -50,8 +49,6 @@ private slots:
 	void on_pushButtonNetwork_toggled(bool checked);
 
 	void on_pushButtonSite_toggled(bool checked);
-
-	void on_comboBoxNetwork_currentIndexChanged(int index);
 
 	void on_comboBoxNetworkProperties_currentIndexChanged(int index);
 
@@ -61,7 +58,7 @@ private:
 	/*! This is called whenever the user has made changes to any of the components in
 		this widget and updates the enabled/disabled states of all controls.
 	*/
-	void updateProperties();
+	void updateWidgetVisibility();
 
 	Ui::SVPropModeSelectionWidget *m_ui;
 };
