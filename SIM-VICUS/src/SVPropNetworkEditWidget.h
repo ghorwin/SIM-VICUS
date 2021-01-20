@@ -134,12 +134,6 @@ private:
 		return true;
 	}
 
-	const VICUS::Network * currentNetwork();
-
-	std::vector<const VICUS::NetworkEdge *> currentNetworkEdges();
-
-	std::vector<const VICUS::NetworkNode *> currentNetworkNodes();
-
 	Ui::SVPropNetworkEditWidget		*m_ui;
 
 	VICUS::Network					m_network;
@@ -152,7 +146,15 @@ private:
 
 	unsigned int					m_treeItemId = 0;
 
-	std::set<const VICUS::Object*>	m_selectedObjects;
+
+	/*! Contains the currently selected network, or the network, of the currently selected nodes/edges.
+		TODO : Hauke, what happens if nodes of several networks are concurrently selected?
+	*/
+	const VICUS::Network *			m_currentNetwork = nullptr;
+
+	std::vector<const VICUS::NetworkEdge *> m_currentNetworkEdges;
+
+	std::vector<const VICUS::NetworkNode *> m_currentNetworkNodes;
 };
 
 

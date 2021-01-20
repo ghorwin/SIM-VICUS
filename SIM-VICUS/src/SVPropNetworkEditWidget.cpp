@@ -72,12 +72,17 @@ void SVPropNetworkEditWidget::setPropertyMode(int propertyIndex) {
 	qDebug() << "SVPropNetworkEditWidget::setPropertyMode: propertyIndex =" << propertyIndex;
 
 	// TODO : update user interface to match propertyIndex: 0 = Network, 1 = Nodes, 2 = edges
+	switch (propertyIndex) {
+		case 0 : showNetworkProperties(); break;
+		case 1 : showNodeProperties(); break;
+		case 2 : showEdgeProperties(); break;
+	}
 }
 
 
 void SVPropNetworkEditWidget::updateNodeProperties()
 {
-	std::vector<const VICUS::NetworkNode *> nodes = currentNetworkNodes();
+	std::vector<const VICUS::NetworkNode *> nodes = m_currentNetworkNodes;
 	if (nodes[0] == nullptr)
 		return;
 
@@ -109,7 +114,7 @@ void SVPropNetworkEditWidget::updateNodeProperties()
 	if (uniformProperty(nodes, &VICUS::NetworkNode::m_componentId)){
 		QString test = m_mapComponents.key(nodes[0]->m_componentId);
 		m_ui->comboBoxComponent->setCurrentText(m_mapComponents.key(nodes[0]->m_componentId));
-		const VICUS::Network * network = currentNetwork();
+		const VICUS::Network * network = m_currentNetwork;
 		const NANDRAD::HydraulicNetworkComponent *comp = VICUS::Project::element(network->m_hydraulicComponents,
 																					 nodes[0]->m_componentId);
 		if (comp != nullptr)
@@ -124,9 +129,8 @@ void SVPropNetworkEditWidget::updateNodeProperties()
 }
 
 
-void SVPropNetworkEditWidget::updateEdgeProperties()
-{
-	std::vector<const VICUS::NetworkEdge *> edges = currentNetworkEdges();
+void SVPropNetworkEditWidget::updateEdgeProperties() {
+	const std::vector<const VICUS::NetworkEdge *> & edges = m_currentNetworkEdges;
 	if (edges[0] == nullptr)
 		return;
 
@@ -150,7 +154,7 @@ void SVPropNetworkEditWidget::updateEdgeProperties()
 
 	if (uniformProperty(edges, &VICUS::NetworkEdge::m_componentId)){
 		m_ui->comboBoxComponent->setCurrentText(m_mapComponents.key(edges[0]->m_componentId));
-		const VICUS::Network * network = currentNetwork();
+		const VICUS::Network * network = m_currentNetwork;
 		const NANDRAD::HydraulicNetworkComponent *comp = VICUS::Project::element(network->m_hydraulicComponents,
 																					 edges[0]->m_componentId);
 		if (comp != nullptr)
@@ -173,7 +177,7 @@ void SVPropNetworkEditWidget::updateEdgeProperties()
 
 void SVPropNetworkEditWidget::updateNetworkProperties()
 {
-	const VICUS::Network * network = currentNetwork();
+	const VICUS::Network * network = m_currentNetwork;
 	if (network == nullptr)
 		return;
 	m_ui->labelEdgeCount->setText(QString("%1").arg(network->m_edges.size()));
@@ -198,7 +202,7 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 
 
 void SVPropNetworkEditWidget::updateSizingParams() {
-	const VICUS::Network * network = currentNetwork();
+	const VICUS::Network * network = m_currentNetwork;
 	if (network != nullptr){
 		m_ui->doubleSpinBoxTemperatureSetpoint->setValue(network->m_sizingPara[VICUS::Network::SP_TemperatureSetpoint].get_value(IBK::Unit("C")));
 		m_ui->doubleSpinBoxTemperatureDifference->setValue(network->m_sizingPara[VICUS::Network::SP_TemperatureDifference].value);
@@ -209,7 +213,7 @@ void SVPropNetworkEditWidget::updateSizingParams() {
 
 void SVPropNetworkEditWidget::setupComboboxPipeDB()
 {
-	const VICUS::Network * network = currentNetwork();
+	const VICUS::Network * network = m_currentNetwork;
 	if (network == nullptr)
 		return;
 	m_mapDBPipes.clear();
@@ -225,7 +229,7 @@ void SVPropNetworkEditWidget::setupComboboxPipeDB()
 
 void SVPropNetworkEditWidget::setupComboBoxComponents()
 {
-	const VICUS::Network * network = currentNetwork();
+	const VICUS::Network * network = m_currentNetwork;
 	if (network == nullptr)
 		return;
 	m_mapComponents.clear();
@@ -253,85 +257,16 @@ void SVPropNetworkEditWidget::modifySizingParams()
 }
 
 
-bool SVPropNetworkEditWidget::setNetwork()
-{
-	const VICUS::Network * networkC = currentNetwork();
-	if (networkC == nullptr)
+bool SVPropNetworkEditWidget::setNetwork() {
+	if (m_currentNetwork == nullptr)
 		return false;
 	VICUS::Project p = project();
-	m_network = *p.element(p.m_geometricNetworks, networkC->m_id);
+	m_network = *p.element(p.m_geometricNetworks, m_currentNetwork->m_id);
 	return true;
 }
 
 
-const VICUS::Network * SVPropNetworkEditWidget::currentNetwork()
-{
-	if (m_selection == S_SingleObject){
-		const VICUS::Project & p = project();
-		const VICUS::Object * obj = p.objectById(m_treeItemId);
-		if (dynamic_cast<const VICUS::Network *>(obj) != nullptr)
-			return dynamic_cast<const VICUS::Network *>(obj);
-		else if (dynamic_cast<const VICUS::Network *>(obj->m_parent) != nullptr)
-			return dynamic_cast<const VICUS::Network *>(obj->m_parent);
-	}
-	else if(m_selection == S_MultipleObjects){
-		Q_ASSERT(!m_selectedObjects.empty());
-		for (const VICUS::Object * obj : m_selectedObjects) {
-			if (dynamic_cast<const VICUS::Network *>(obj) != nullptr)
-				return dynamic_cast<const VICUS::Network *>(obj);
-			else if (dynamic_cast<const VICUS::Network *>(obj->m_parent) != nullptr)
-				return dynamic_cast<const VICUS::Network *>(obj->m_parent);
-		}
-	}
-
-	return nullptr;
-}
-
-
-std::vector<const VICUS::NetworkEdge *> SVPropNetworkEditWidget::currentNetworkEdges()
-{
-	if (m_selection == S_SingleObject){
-		const VICUS::Project & p = project();
-		const VICUS::Object * obj = p.objectById(m_treeItemId);
-		return {dynamic_cast<const VICUS::NetworkEdge *>(obj)};
-	}
-	else if(m_selection == S_MultipleObjects){
-		std::vector <const VICUS::NetworkEdge *> currentEdges;
-		for (const VICUS::Object * obj : m_selectedObjects) {
-			const VICUS::NetworkEdge * edge = dynamic_cast<const VICUS::NetworkEdge *>(obj);
-			if (edge != nullptr)
-				currentEdges.push_back(edge);
-		}
-		if (!currentEdges.empty())
-			return currentEdges;
-	}
-	return {nullptr};
-}
-
-
-std::vector <const VICUS::NetworkNode *> SVPropNetworkEditWidget::currentNetworkNodes()
-{
-	if (m_selection == S_SingleObject){
-		const VICUS::Project & p = project();
-		const VICUS::Object * obj = p.objectById(m_treeItemId);
-		return {dynamic_cast<const VICUS::NetworkNode *>(obj)};
-	}
-	else if(m_selection == S_MultipleObjects){
-		std::vector <const VICUS::NetworkNode *> currentNodes;
-		for (const VICUS::Object * obj : m_selectedObjects) {
-			const VICUS::NetworkNode * node = dynamic_cast<const VICUS::NetworkNode *>(obj);
-			if (node != nullptr)
-				currentNodes.push_back(node);
-		}
-		if (!currentNodes.empty())
-			return currentNodes;
-	}
-	return {nullptr};
-}
-
-
-void SVPropNetworkEditWidget::showNetworkProperties()
-{
+void SVPropNetworkEditWidget::showNetworkProperties() {
 	m_ui->labelSelectionInfo->setVisible(false);
 	m_ui->groupBoxNode->setVisible(false);
 	m_ui->groupBoxEdge->setVisible(false);
@@ -340,8 +275,8 @@ void SVPropNetworkEditWidget::showNetworkProperties()
 	m_ui->groupBoxHeatExchange->setVisible(false);
 }
 
-void SVPropNetworkEditWidget::showNodeProperties()
-{
+
+void SVPropNetworkEditWidget::showNodeProperties() {
 	m_ui->labelSelectionInfo->setVisible(false);
 	m_ui->groupBoxNode->setVisible(true);
 	m_ui->groupBoxEdge->setVisible(false);
@@ -350,8 +285,8 @@ void SVPropNetworkEditWidget::showNodeProperties()
 	m_ui->groupBoxHeatExchange->setVisible(true);
 }
 
-void SVPropNetworkEditWidget::showEdgeProperties()
-{
+
+void SVPropNetworkEditWidget::showEdgeProperties() {
 	m_ui->labelSelectionInfo->setVisible(false);
 	m_ui->groupBoxNode->setVisible(false);
 	m_ui->groupBoxEdge->setVisible(true);
@@ -360,8 +295,8 @@ void SVPropNetworkEditWidget::showEdgeProperties()
 	m_ui->groupBoxHeatExchange->setVisible(true);
 }
 
-void SVPropNetworkEditWidget::showMixedSelectionInfo()
-{
+
+void SVPropNetworkEditWidget::showMixedSelectionInfo() {
 	showNetworkProperties();
 	m_ui->labelSelectionInfo->setVisible(true);
 }
@@ -373,7 +308,7 @@ void SVPropNetworkEditWidget::onModified(int modificationType, ModificationInfo 
 		case SVProjectHandler::NetworkModified:
 		case SVProjectHandler::AllModified:
 		case SVProjectHandler::NodeStateModified:
-			selectionChanged();
+			selectionChanged(); // updates m_currentXXXX and the UI
 		break;
 
 		default: ; // just to make compiler happy
@@ -444,19 +379,19 @@ void SVPropNetworkEditWidget::selectionChanged() {
 	// get all selected objects of type network, objects must be visible
 	project().selectObjects(objs, VICUS::Project::SG_Network, true, true);
 
-	std::vector<const VICUS::NetworkEdge*> edges;
-	std::vector<const VICUS::NetworkNode*> nodes;
+	m_currentNetworkEdges.clear();
+	m_currentNetworkNodes.clear();
 	std::vector<const VICUS::Network*> networks;
 
 	for (const VICUS::Object* o : objs) {
 		const VICUS::NetworkEdge * edge = dynamic_cast<const VICUS::NetworkEdge*>(o);
 		if (edge != nullptr) {
-			edges.push_back(edge);
+			m_currentNetworkEdges.push_back(edge);
 			continue;
 		}
 		const VICUS::NetworkNode * node = dynamic_cast<const VICUS::NetworkNode*>(o);
 		if (node != nullptr) {
-			nodes.push_back(node);
+			m_currentNetworkNodes.push_back(node);
 			continue;
 		}
 		const VICUS::Network * nw = dynamic_cast<const VICUS::Network*>(o);
@@ -468,14 +403,21 @@ void SVPropNetworkEditWidget::selectionChanged() {
 
 	// now we have all selected network-type objects nicely sorted in vectors
 
+	if (networks.empty())
+		m_currentNetwork = nullptr;
+	else
+		// TODO : Hauke, what happens if nodes of several networks are concurrently selected?
+		m_currentNetwork = networks[0];
+
+
 	// TODO : Hauke, implement
 }
 
 
 void SVPropNetworkEditWidget::on_pushButtonEditComponents_clicked() {
-	const VICUS::Network * network = currentNetwork();
-	std::vector<const VICUS::NetworkNode *> nodes = currentNetworkNodes();
-	std::vector<const VICUS::NetworkEdge *> edges = currentNetworkEdges();
+	const VICUS::Network * network = m_currentNetwork;
+	std::vector<const VICUS::NetworkNode *> nodes = m_currentNetworkNodes;
+	std::vector<const VICUS::NetworkEdge *> edges = m_currentNetworkEdges;
 	unsigned int componentId = 0;
 	if (nodes[0] != nullptr)
 		componentId = nodes[0]->m_componentId;
@@ -593,7 +535,7 @@ void SVPropNetworkEditWidget::modifyEdgeProperty(TEdgeProp property, const Tval 
 {
 	if (!setNetwork())
 		return;
-	std::vector<const VICUS::NetworkEdge *> edges = currentNetworkEdges();
+	const std::vector<const VICUS::NetworkEdge *> & edges = m_currentNetworkEdges;
 	if (edges[0] == nullptr)
 		return;
 	for (const VICUS::NetworkEdge * edgeConst: edges){
@@ -612,7 +554,7 @@ void SVPropNetworkEditWidget::modifyNodeProperty(TNodeProp property, const Tval 
 {
 	if (!setNetwork())
 		return;
-	std::vector<const VICUS::NetworkNode *> nodes = currentNetworkNodes();
+	std::vector<const VICUS::NetworkNode *> nodes = m_currentNetworkNodes;
 	if (nodes[0] == nullptr)
 		return;
 	for (const VICUS::NetworkNode * nodeConst: nodes){
