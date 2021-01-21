@@ -43,11 +43,19 @@ void SVPropModeSelectionWidget::selectionChanged() {
 		}
 		// only nodes selected?
 		if (haveNode && !haveEdge) {
-			m_ui->comboBoxNetworkProperties->setCurrentIndex(1);	// sends a signal to change property widget
+			if (m_ui->comboBoxNetworkProperties->currentIndex() == 1)
+				emit networkPropertiesSelected(1);
+			else
+				m_ui->comboBoxNetworkProperties->setCurrentIndex(1);	// sends a signal to change property widget
 		}
 		if (!haveNode && haveEdge) {
-			m_ui->comboBoxNetworkProperties->setCurrentIndex(2);	// sends a signal to change property widget
+			if (m_ui->comboBoxNetworkProperties->currentIndex() == 2)
+				emit networkPropertiesSelected(2);
+			else
+				m_ui->comboBoxNetworkProperties->setCurrentIndex(2);	// sends a signal to change property widget
+
 		}
+
 	}
 
 	// TODO : what about building editing default mode?
