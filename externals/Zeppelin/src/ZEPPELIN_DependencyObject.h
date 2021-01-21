@@ -112,29 +112,6 @@ protected:
 }; // DependencyObject
 
 
-inline bool operator==(const DependencyObject &obj1, const DependencyObject &obj2) {
-	if (obj1.dependencies().size() != obj2.dependencies().size())
-		return false;
-
-	DependencyObject::DependencySequence::const_iterator deps1 = obj1.dependencies().begin();
-	DependencyObject::DependencySequence::const_iterator deps2 = obj2.dependencies().begin();
-	for (; deps1 != obj1.dependencies().end(); ++deps1, ++deps2) {
-		if(*deps1 != *deps2)
-			return false;
-	}
-
-	if (obj1.parents().size() != obj2.parents().size())
-		return false;
-
-	DependencyObject::DependencySequence::const_iterator pars1 = obj1.parents().begin();
-	DependencyObject::DependencySequence::const_iterator pars2 = obj2.parents().begin();
-	for (; pars1 != obj1.parents().end(); ++pars1, ++pars2) {
-		if(*pars1 != *pars2)
-			return false;
-	}
-	return true;
-}
-
 } // namespace ZEPPELIN
 
 #endif // ZEPPELIN_DependencyObjectH
