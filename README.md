@@ -6,7 +6,7 @@ We have a continuous integration scripts running (build-test of all C/C++ code w
 |-----|-----|
 | CI - Linux 64-bit (Ubuntu 18.04) | ![CI](https://baukli01.arch.tu-dresden.de/jenkins/job/NR-Linux-SimVicus-Trunk/badge)  |
 | CI - Windows 64-bit (Win10, VC14) | ![CI](https://baukli01.arch.tu-dresden.de/jenkins/job/NR64-Win-SimVicus-Trunk/badge)  |
-| CI - MacOS 64-bit (10.11 "El Capitan") | ![CI](https://baukli01.arch.tu-dresden.de/jenkins/job/NR-IOS-SimVicus-Trunk/badge)  |
+| CI - MacOS 64-bit (10.11 "El Capitan") | [![Build Status](https://baukli01.arch.tu-dresden.de/jenkins/buildStatus/icon?job=NR-IOS-SimVicus-Trunk)](https://baukli01.arch.tu-dresden.de/jenkins/job/NR-IOS-SimVicus-Trunk/) |
 | Solver regression test (correctly simulating test suite) | ![RegressionTest](https://baukli01.arch.tu-dresden.de/jenkins/view/Daily-Tests/job/Daily-Test-SimVicus_Nandrad2/badge)  |
 
 Tests are located in `data/tests`, the validation suite(s) are in `data/validation` with summary given on the [Validation-Wiki-readme](https://github.com/ghorwin/SIM-VICUS/tree/master/data/validation/SimQuality) page.
