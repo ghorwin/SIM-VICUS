@@ -53,6 +53,7 @@ private slots:
 	void on_toolButtonSelectBoundaryConditionSideAName_clicked();
 	void on_toolButtonSelectBoundaryConditionSideBName_clicked();
 
+	void on_pushButtonComponentColor_colorChanged();
 
 private:
 	Ui::SVDBComponentEditWidget *m_ui;

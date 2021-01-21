@@ -76,6 +76,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 		m_ui->lineEditDaylightName->setText("");
 		m_ui->lineEditRoughness->setText("");
 		m_ui->lineEditSpecularity->setText("");
+		m_ui->pushButtonComponentColor->setColor(Qt::black);
 
 		return;
 	}
@@ -91,6 +92,10 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	int typeIdx = m_ui->comboBoxComponentType->findData(comp->m_type);
 	m_ui->comboBoxComponentType->setCurrentIndex(typeIdx);
 	m_ui->comboBoxComponentType->blockSignals(false);
+
+	m_ui->pushButtonComponentColor->blockSignals(true);
+	m_ui->pushButtonComponentColor->setColor(m_current->m_color);
+	m_ui->pushButtonComponentColor->blockSignals(false);
 
 	m_ui->lineEditBoundaryConditionSideAName->setEnabled(true);
 	m_ui->lineEditBoundaryConditionSideBName->setEnabled(true);
@@ -203,5 +208,18 @@ void SVDBComponentEditWidget::on_toolButtonSelectBoundaryConditionSideBName_clic
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		updateInput(m_current->m_id);
 	}
+}
+
+
+void SVDBComponentEditWidget::on_pushButtonComponentColor_colorChanged() {
+	Q_ASSERT(m_current != nullptr);
+
+	if (m_current->m_color != m_ui->pushButtonComponentColor->color()) {
+		m_current->m_color = m_ui->pushButtonComponentColor->color();
+		m_db->m_components.m_modified = true;
+		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		emit tableDataChanged();
+	}
+
 }
 
