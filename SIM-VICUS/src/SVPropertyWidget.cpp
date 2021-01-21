@@ -68,8 +68,11 @@ void SVPropertyWidget::onViewStateChanged() {
 		case SVViewState::VM_GeometryEditMode:
 			m_propModeSelectionWidget->setVisible(false);
 		break;
-		case SVViewState::VM_PropertyEditMode:
+		case SVViewState::VM_PropertyEditMode: {
 			m_propModeSelectionWidget->setVisible(true);
+			// ask propModeSelectionWidget which property widget to show
+			m = m_propModeSelectionWidget->currentPropertyWidgetMode();
+		}
 		break;
 		case SVViewState::NUM_VM: break; // just to make compiler happy
 	}

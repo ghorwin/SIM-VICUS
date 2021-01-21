@@ -2,6 +2,7 @@
 #define SVPropModeSelectionWidgetH
 
 #include <QWidget>
+#include "SVViewState.h"
 
 namespace Ui {
 	class SVPropModeSelectionWidget;
@@ -25,6 +26,9 @@ public:
 		the selected objects.
 	*/
 	void selectionChanged();
+
+	/*! Returns a recommendation on which property widget to show. */
+	SVViewState::PropertyWidgetMode currentPropertyWidgetMode() const;
 
 signals:
 

@@ -1182,6 +1182,8 @@ void SVMainWindow::on_actionViewToggleGeometryMode_triggered() {
 void SVMainWindow::on_actionViewToggleParametrizationMode_triggered() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	vs.m_viewMode = SVViewState::VM_PropertyEditMode;
+	// select property mode based on what's being selected in the mode selection
+	// property widget
 	vs.m_propertyWidgetMode = SVViewState::PM_SiteProperties;
 	vs.m_sceneOperationMode = SVViewState::NUM_OM;
 	SVViewStateHandler::instance().setViewState(vs);

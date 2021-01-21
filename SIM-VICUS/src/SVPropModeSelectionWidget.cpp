@@ -70,7 +70,17 @@ void SVPropModeSelectionWidget::selectionChanged() {
 }
 
 
-void SVPropModeSelectionWidget::on_pushButtonBuilding_toggled(bool) {
+SVViewState::PropertyWidgetMode SVPropModeSelectionWidget::currentPropertyWidgetMode() const {
+	if (m_ui->pushButtonBuilding->isChecked())
+		return SVViewState::PM_BuildingProperties;
+	if (m_ui->pushButtonNetwork->isChecked())
+		return SVViewState::PM_NetworkProperties;
+	return SVViewState::PM_SiteProperties;
+}
+
+
+void SVPropModeSelectionWidget::on_pushButtonBuilding_toggled(bool on) {
+	if (!on) return;
 	updateWidgetVisibility();
 	blockSignals(true);
 	selectionChanged();
@@ -80,7 +90,8 @@ void SVPropModeSelectionWidget::on_pushButtonBuilding_toggled(bool) {
 }
 
 
-void SVPropModeSelectionWidget::on_pushButtonNetwork_toggled(bool) {
+void SVPropModeSelectionWidget::on_pushButtonNetwork_toggled(bool on) {
+	if (!on) return;
 	updateWidgetVisibility();
 	blockSignals(true);
 	selectionChanged();
@@ -90,7 +101,8 @@ void SVPropModeSelectionWidget::on_pushButtonNetwork_toggled(bool) {
 }
 
 
-void SVPropModeSelectionWidget::on_pushButtonSite_toggled(bool) {
+void SVPropModeSelectionWidget::on_pushButtonSite_toggled(bool on) {
+	if (!on) return;
 	updateWidgetVisibility();
 	blockSignals(true);
 	selectionChanged();

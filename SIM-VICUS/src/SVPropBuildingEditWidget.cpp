@@ -14,6 +14,7 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui(new Ui::SVPropBuildingEditWidget)
 {
 	m_ui->setupUi(this);
+	m_ui->verticalLayout->setMargin(0);
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropBuildingEditWidget::onModified);
@@ -33,6 +34,7 @@ void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
 	m_ui->widgetStretch->setVisible(true);
 	switch ((BuildingPropertyTypes)buildingPropertyType) {
 		case BT_Components: {
+			m_ui->groupBoxObjectList->setTitle(tr("Building components"));
 			m_ui->groupBoxObjectList->setVisible(true);
 			m_ui->widgetStretch->setVisible(false);
 			// tell scene to change coloring of visible objects and retrieve map of
