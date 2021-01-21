@@ -1,11 +1,13 @@
 # SIM-VICUS
 
-We have a continuous integration scripts running (build-test of all C/C++ code without UI) and solver regression tests. For details, see [Actions/build](../../actions).
+We have a continuous integration scripts running (build-test of all C/C++ code without UI) and solver regression tests. For details, see [Jenkins](https://baukli01.arch.tu-dresden.de/jenkins).
 
 | Test | Result|
 |-----|-----|
-| Continuous Integration (CI) (successfully building code) | ![CI](https://github.com/ghorwin/SIM-VICUS/workflows/CI/badge.svg)  |
-| Solver regression test (correctly simulating test suite) | ![RegressionTest](https://github.com/ghorwin/SIM-VICUS/workflows/RegressionTest/badge.svg)  |
+| CI - Linux 64-bit (Ubuntu 18.04) | ![CI](https://baukli01.arch.tu-dresden.de/jenkins/job/NR-Linux-SimVicus-Trunk/badge)  |
+| CI - Windows 64-bit (Win10, VC14) | ![CI](https://baukli01.arch.tu-dresden.de/jenkins/job/NR64-Win-SimVicus-Trunk/badge)  |
+| CI - MacOS 64-bit (10.11 "El Capitan") | ![CI](https://baukli01.arch.tu-dresden.de/jenkins/job/NR-IOS-SimVicus-Trunk/badge)  |
+| Solver regression test (correctly simulating test suite) | ![RegressionTest](https://baukli01.arch.tu-dresden.de/jenkins/view/Daily-Tests/NR-Linux-SimVicus-Trunk/badge)  |
 
 Tests are located in `data/tests`, the validation suite(s) are in `data/validation` with summary given on the [Validation-Wiki-readme](https://github.com/ghorwin/SIM-VICUS/tree/master/data/validation/SimQuality) page.
 
