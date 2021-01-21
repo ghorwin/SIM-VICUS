@@ -47,27 +47,6 @@ SVPropNetworkEditWidget::~SVPropNetworkEditWidget() {
 }
 
 
-void SVPropNetworkEditWidget::updateUi() {
-//	m_selection = selectionState;
-//	switch (m_selection) {
-//		case S_SingleObject: {// get single object from currently selected node in tree widget
-//			m_treeItemId = SVViewStateHandler::instance().m_navigationTreeWidget->selectedNodeID();
-//			break;
-//		}
-//		case S_MultipleObjects: {// get multiple selected objects (checked nodes in tree widget or selected in 3d scene)
-//			m_selectedObjects = SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects;
-//			break;
-//		}
-//		default: return;
-//	}
-
-	updateNetworkProperties();
-	updateSizingParams();
-	updateNodeProperties();
-	updateEdgeProperties();
-
-}
-
 void SVPropNetworkEditWidget::setPropertyMode(int propertyIndex) {
 	qDebug() << "SVPropNetworkEditWidget::setPropertyMode: propertyIndex =" << propertyIndex;
 
@@ -81,25 +60,76 @@ void SVPropNetworkEditWidget::setPropertyMode(int propertyIndex) {
 }
 
 
+void SVPropNetworkEditWidget::selectionChanged() {
+	std::set<const VICUS::Object *> objs;
+	// get all selected objects of type network, objects must be visible
+	project().selectObjects(objs, VICUS::Project::SG_Network, true, true);
+
+	m_currentEdges.clear();
+	m_currentNodes.clear();
+	std::vector<const VICUS::Network*> networks;
+
+	// cast objects to nodes, edges and network
+	for (const VICUS::Object* o : objs) {
+		const VICUS::Network * network = dynamic_cast<const VICUS::Network*>(o);
+		if (network != nullptr) {
+			networks.push_back(network);
+			continue;
+		}
+		network = dynamic_cast<const VICUS::Network*>(o->m_parent);
+		if (network != nullptr && std::find(networks.begin(), networks.end(), network) == networks.end()) {
+			networks.push_back(network);
+		}
+		const VICUS::NetworkEdge * edge = dynamic_cast<const VICUS::NetworkEdge*>(o);
+		if (edge != nullptr) {
+			m_currentEdges.push_back(edge);
+			continue;
+		}
+		const VICUS::NetworkNode * node = dynamic_cast<const VICUS::NetworkNode*>(o);
+		if (node != nullptr) {
+			m_currentNodes.push_back(node);
+			continue;
+		}
+	}
+
+	// assign current network only if there is exactly one selected,
+	// if more than one network was selected: clear all, nothing should be shown or edited
+	if (networks.empty())
+		m_currentNetwork = nullptr;
+	else if (networks.size()>1){
+		m_currentNetwork = nullptr;
+		m_currentEdges.clear();
+		m_currentNodes.clear();
+	}
+	else
+		m_currentNetwork = networks[0];
+
+	// now update UI
+	updateNetworkProperties();
+	updateNodeProperties();
+	updateEdgeProperties();
+	updateSizingParams();
+}
+
+
 void SVPropNetworkEditWidget::updateNodeProperties()
 {
-	std::vector<const VICUS::NetworkNode *> nodes = m_currentNetworkNodes;
-	if (nodes[0] == nullptr)
+	if (m_currentNodes.size() == 0)
 		return;
 
 	setupComboBoxComponents();
 
 	// if node type is not uniform, no editing will be allowed
-	bool uniformNodeType = uniformProperty(nodes, &VICUS::NetworkNode::m_type);
+	bool uniformNodeType = uniformProperty(m_currentNodes, &VICUS::NetworkNode::m_type);
 	m_ui->groupBoxNode->setEnabled(uniformNodeType);
 	m_ui->groupBoxComponent->setEnabled(uniformNodeType);
-	m_ui->comboBoxNodeType->setCurrentText(m_mapNodeTypes.key(nodes[0]->m_type));
-	m_ui->lineEditNodeHeatingDemand->setEnabled(nodes[0]->m_type == VICUS::NetworkNode::NT_Building);
+	m_ui->comboBoxNodeType->setCurrentText(m_mapNodeTypes.key(m_currentNodes[0]->m_type));
+	m_ui->lineEditNodeHeatingDemand->setEnabled(m_currentNodes[0]->m_type == VICUS::NetworkNode::NT_Building);
 
-	if (nodes.size() == 1){
-		m_ui->labelNodeId->setText(QString("%1").arg(nodes[0]->m_id));
-		m_ui->lineEditNodeX->setValue(nodes[0]->m_position.m_x);
-		m_ui->lineEditNodeY->setValue(nodes[0]->m_position.m_y);
+	if (m_currentNodes.size() == 1){
+		m_ui->labelNodeId->setText(QString("%1").arg(m_currentNodes[0]->m_id));
+		m_ui->lineEditNodeX->setValue(m_currentNodes[0]->m_position.m_x);
+		m_ui->lineEditNodeY->setValue(m_currentNodes[0]->m_position.m_y);
 	}
 	else{
 		m_ui->labelNodeId->setText("");
@@ -107,17 +137,17 @@ void SVPropNetworkEditWidget::updateNodeProperties()
 		m_ui->lineEditNodeY->clear();
 	}
 
-	if (uniformProperty(nodes, &VICUS::NetworkNode::m_maxHeatingDemand))
-		m_ui->lineEditNodeHeatingDemand->setValue(nodes[0]->m_maxHeatingDemand);
+	if (uniformProperty(m_currentNodes, &VICUS::NetworkNode::m_maxHeatingDemand))
+		m_ui->lineEditNodeHeatingDemand->setValue(m_currentNodes[0]->m_maxHeatingDemand);
 	else
 		m_ui->lineEditNodeHeatingDemand->clear();
 
-	if (uniformProperty(nodes, &VICUS::NetworkNode::m_componentId)){
-		QString test = m_mapComponents.key(nodes[0]->m_componentId);
-		m_ui->comboBoxComponent->setCurrentText(m_mapComponents.key(nodes[0]->m_componentId));
+	if (uniformProperty(m_currentNodes, &VICUS::NetworkNode::m_componentId)){
+		QString test = m_mapComponents.key(m_currentNodes[0]->m_componentId);
+		m_ui->comboBoxComponent->setCurrentText(m_mapComponents.key(m_currentNodes[0]->m_componentId));
 		const VICUS::Network * network = m_currentNetwork;
 		const NANDRAD::HydraulicNetworkComponent *comp = VICUS::Project::element(network->m_hydraulicComponents,
-																					 nodes[0]->m_componentId);
+																					 m_currentNodes[0]->m_componentId);
 		if (comp != nullptr)
 			m_ui->groupBoxHeatExchange->setEnabled(NANDRAD::HydraulicNetworkComponent::hasHeatExchange(comp->m_modelType)
 							&& comp->m_heatExchangeType != NANDRAD::HydraulicNetworkComponent::NUM_HT);
@@ -131,33 +161,33 @@ void SVPropNetworkEditWidget::updateNodeProperties()
 
 
 void SVPropNetworkEditWidget::updateEdgeProperties() {
-	const std::vector<const VICUS::NetworkEdge *> & edges = m_currentNetworkEdges;
-	if (edges[0] == nullptr)
+
+	if (m_currentEdges.size() == 0)
 		return;
 
 	setupComboBoxComponents();
 	setupComboboxPipeDB();
 
-	if (edges.size() == 1)
-		m_ui->labelPipeLength->setText(QString("%1 m").arg(edges[0]->length()));
+	if (m_currentEdges.size() == 1)
+		m_ui->labelPipeLength->setText(QString("%1 m").arg(m_currentEdges[0]->length()));
 	else
 		m_ui->labelPipeLength->setText("");
 
-	if (uniformProperty(edges, &VICUS::NetworkEdge::m_pipeId))
-		m_ui->comboBoxPipeDB->setCurrentText(m_mapDBPipes.key(edges[0]->m_pipeId));
+	if (uniformProperty(m_currentEdges, &VICUS::NetworkEdge::m_pipeId))
+		m_ui->comboBoxPipeDB->setCurrentText(m_mapDBPipes.key(m_currentEdges[0]->m_pipeId));
 	else
 		m_ui->comboBoxPipeDB->setCurrentText(m_mapDBPipes.key(VICUS::INVALID_ID));
 
-	if (uniformProperty(edges, &VICUS::NetworkEdge::m_supply))
-		m_ui->checkBoxSupplyPipe->setChecked(edges[0]->m_supply);
+	if (uniformProperty(m_currentEdges, &VICUS::NetworkEdge::m_supply))
+		m_ui->checkBoxSupplyPipe->setChecked(m_currentEdges[0]->m_supply);
 	else
 		m_ui->checkBoxSupplyPipe->setCheckState(Qt::CheckState::PartiallyChecked);
 
-	if (uniformProperty(edges, &VICUS::NetworkEdge::m_componentId)){
-		m_ui->comboBoxComponent->setCurrentText(m_mapComponents.key(edges[0]->m_componentId));
+	if (uniformProperty(m_currentEdges, &VICUS::NetworkEdge::m_componentId)){
+		m_ui->comboBoxComponent->setCurrentText(m_mapComponents.key(m_currentEdges[0]->m_componentId));
 		const VICUS::Network * network = m_currentNetwork;
 		const NANDRAD::HydraulicNetworkComponent *comp = VICUS::Project::element(network->m_hydraulicComponents,
-																					 edges[0]->m_componentId);
+																					 m_currentEdges[0]->m_componentId);
 		if (comp != nullptr)
 			m_ui->groupBoxHeatExchange->setEnabled(NANDRAD::HydraulicNetworkComponent::hasHeatExchange(comp->m_modelType)
 							&& comp->m_heatExchangeType != NANDRAD::HydraulicNetworkComponent::NUM_HT);
@@ -178,12 +208,12 @@ void SVPropNetworkEditWidget::updateEdgeProperties() {
 
 void SVPropNetworkEditWidget::updateNetworkProperties()
 {
-	const VICUS::Network * network = m_currentNetwork;
-	if (network == nullptr)
+	if (m_currentNetwork == nullptr)
 		return;
-	m_ui->labelEdgeCount->setText(QString("%1").arg(network->m_edges.size()));
-	m_ui->labelNodeCount->setText(QString("%1").arg(network->m_nodes.size()));
-	if (network->checkConnectedGraph()){
+
+	m_ui->labelEdgeCount->setText(QString("%1").arg(m_currentNetwork->m_edges.size()));
+	m_ui->labelNodeCount->setText(QString("%1").arg(m_currentNetwork->m_nodes.size()));
+	if (m_currentNetwork->checkConnectedGraph()){
 		m_ui->labelNetworkConnected->setText("Network is connected");
 		m_ui->labelNetworkConnected->setStyleSheet("QLabel {color: green}");
 	}
@@ -191,35 +221,33 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 		m_ui->labelNetworkConnected->setText("Network is unconnected");
 		m_ui->labelNetworkConnected->setStyleSheet("QLabel {color: red}");
 	}
-	m_ui->labelTotalLength->setText(QString("%1 m").arg(network->totalLength()));
-	m_ui->pushButtonConnectBuildings->setEnabled(network->nextUnconnectedBuilding()>=0);
-	m_ui->pushButtonReduceDeadEnds->setEnabled(network->checkConnectedGraph() && network->numberOfBuildings() > 0);
-	m_ui->labelLargestDiameter->setText(QString("%1 mm").arg(network->largestDiameter()));
-	m_ui->labelSmallestDiameter->setText(QString("%1 mm").arg(network->smallestDiameter()));
+	m_ui->labelTotalLength->setText(QString("%1 m").arg(m_currentNetwork->totalLength()));
+	m_ui->pushButtonConnectBuildings->setEnabled(m_currentNetwork->nextUnconnectedBuilding()>=0);
+	m_ui->pushButtonReduceDeadEnds->setEnabled(m_currentNetwork->checkConnectedGraph() && m_currentNetwork->numberOfBuildings() > 0);
+	m_ui->labelLargestDiameter->setText(QString("%1 mm").arg(m_currentNetwork->largestDiameter()));
+	m_ui->labelSmallestDiameter->setText(QString("%1 mm").arg(m_currentNetwork->smallestDiameter()));
 
-	m_ui->horizontalSliderScaleEdges->setValue(network->m_scaleEdges);
-	m_ui->horizontalSliderScaleNodes->setValue(network->m_scaleNodes);
+	m_ui->horizontalSliderScaleEdges->setValue(m_currentNetwork->m_scaleEdges);
+	m_ui->horizontalSliderScaleNodes->setValue(m_currentNetwork->m_scaleNodes);
 }
 
 
 void SVPropNetworkEditWidget::updateSizingParams() {
-	const VICUS::Network * network = m_currentNetwork;
-	if (network != nullptr){
-		m_ui->doubleSpinBoxTemperatureSetpoint->setValue(network->m_sizingPara[VICUS::Network::SP_TemperatureSetpoint].get_value(IBK::Unit("C")));
-		m_ui->doubleSpinBoxTemperatureDifference->setValue(network->m_sizingPara[VICUS::Network::SP_TemperatureDifference].value);
-		m_ui->doubleSpinBoxMaximumPressureLoss->setValue(network->m_sizingPara[VICUS::Network::SP_MaxPressureLoss].value);
+	if (m_currentNetwork != nullptr){
+		m_ui->doubleSpinBoxTemperatureSetpoint->setValue(m_currentNetwork->m_sizingPara[VICUS::Network::SP_TemperatureSetpoint].get_value(IBK::Unit("C")));
+		m_ui->doubleSpinBoxTemperatureDifference->setValue(m_currentNetwork->m_sizingPara[VICUS::Network::SP_TemperatureDifference].value);
+		m_ui->doubleSpinBoxMaximumPressureLoss->setValue(m_currentNetwork->m_sizingPara[VICUS::Network::SP_MaxPressureLoss].value);
 	}
 }
 
 
 void SVPropNetworkEditWidget::setupComboboxPipeDB()
 {
-	const VICUS::Network * network = m_currentNetwork;
-	if (network == nullptr)
+	if (m_currentNetwork == nullptr)
 		return;
 	m_mapDBPipes.clear();
 	m_mapDBPipes.insert("", VICUS::INVALID_ID);
-	for (auto it = network->m_networkPipeDB.begin(); it!= network->m_networkPipeDB.end(); ++it){
+	for (auto it = m_currentNetwork->m_networkPipeDB.begin(); it!= m_currentNetwork->m_networkPipeDB.end(); ++it){
 		m_mapDBPipes.insert(QString::fromStdString(""+IBK::FormatString("%1 [%2 mm]").arg(it->m_displayName)
 												   .arg(it->m_diameterOutside)), it->m_id);
 	}
@@ -375,50 +403,10 @@ void SVPropNetworkEditWidget::on_horizontalSliderScaleEdges_valueChanged(int val
 }
 
 
-void SVPropNetworkEditWidget::selectionChanged() {
-	std::set<const VICUS::Object *> objs;
-	// get all selected objects of type network, objects must be visible
-	project().selectObjects(objs, VICUS::Project::SG_Network, true, true);
-
-	m_currentNetworkEdges.clear();
-	m_currentNetworkNodes.clear();
-	std::vector<const VICUS::Network*> networks;
-
-	for (const VICUS::Object* o : objs) {
-		const VICUS::NetworkEdge * edge = dynamic_cast<const VICUS::NetworkEdge*>(o);
-		if (edge != nullptr) {
-			m_currentNetworkEdges.push_back(edge);
-			continue;
-		}
-		const VICUS::NetworkNode * node = dynamic_cast<const VICUS::NetworkNode*>(o);
-		if (node != nullptr) {
-			m_currentNetworkNodes.push_back(node);
-			continue;
-		}
-		const VICUS::Network * nw = dynamic_cast<const VICUS::Network*>(o);
-		if (nw != nullptr) {
-			networks.push_back(nw);
-			continue;
-		}
-	}
-
-	// now we have all selected network-type objects nicely sorted in vectors
-
-	if (networks.empty())
-		m_currentNetwork = nullptr;
-	else
-		// TODO : Hauke, what happens if nodes of several networks are concurrently selected?
-		m_currentNetwork = networks[0];
-
-
-	// TODO : Hauke, implement
-}
-
-
 void SVPropNetworkEditWidget::on_pushButtonEditComponents_clicked() {
 	const VICUS::Network * network = m_currentNetwork;
-	std::vector<const VICUS::NetworkNode *> nodes = m_currentNetworkNodes;
-	std::vector<const VICUS::NetworkEdge *> edges = m_currentNetworkEdges;
+	std::vector<const VICUS::NetworkNode *> nodes = m_currentNodes;
+	std::vector<const VICUS::NetworkEdge *> edges = m_currentEdges;
 	unsigned int componentId = 0;
 	if (nodes[0] != nullptr)
 		componentId = nodes[0]->m_componentId;
@@ -536,7 +524,7 @@ void SVPropNetworkEditWidget::modifyEdgeProperty(TEdgeProp property, const Tval 
 {
 	if (!setNetwork())
 		return;
-	const std::vector<const VICUS::NetworkEdge *> & edges = m_currentNetworkEdges;
+	const std::vector<const VICUS::NetworkEdge *> & edges = m_currentEdges;
 	if (edges[0] == nullptr)
 		return;
 	for (const VICUS::NetworkEdge * edgeConst: edges){
@@ -555,7 +543,7 @@ void SVPropNetworkEditWidget::modifyNodeProperty(TNodeProp property, const Tval 
 {
 	if (!setNetwork())
 		return;
-	std::vector<const VICUS::NetworkNode *> nodes = m_currentNetworkNodes;
+	std::vector<const VICUS::NetworkNode *> nodes = m_currentNodes;
 	if (nodes[0] == nullptr)
 		return;
 	for (const VICUS::NetworkNode * nodeConst: nodes){

@@ -24,10 +24,6 @@ public:
 	explicit SVPropNetworkEditWidget(QWidget *parent = nullptr);
 	~SVPropNetworkEditWidget();
 
-	/*! Called when widget is just shown, updates content to current project's data
-		and selected node. */
-	void updateUi();
-
 	/*! Selects the respective edit mode for the widget.
 		This function is called whenever a selection change or edit mode change has occurred
 		that needs an update of the scene mode or switch of active network.
@@ -136,25 +132,21 @@ private:
 
 	Ui::SVPropNetworkEditWidget		*m_ui;
 
-	VICUS::Network					m_network;
-
 	QMap<QString, unsigned>			m_mapComponents;
 
 	QMap<QString, unsigned>			m_mapNodeTypes;
 
 	QMap<QString, unsigned>			m_mapDBPipes;
 
-	unsigned int					m_treeItemId = 0;
-
-
-	/*! Contains the currently selected network, or the network, of the currently selected nodes/edges.
-		TODO : Hauke, what happens if nodes of several networks are concurrently selected?
-	*/
+	/*! Contains the currently selected network, or the network, of the currently selected nodes/edges.	*/
 	const VICUS::Network *			m_currentNetwork = nullptr;
 
-	std::vector<const VICUS::NetworkEdge *> m_currentNetworkEdges;
+	/*! Contains the currently selected network, or the network, of the currently selected nodes/edges.	*/
+	VICUS::Network					m_network;
 
-	std::vector<const VICUS::NetworkNode *> m_currentNetworkNodes;
+	std::vector<const VICUS::NetworkEdge *> m_currentEdges;
+
+	std::vector<const VICUS::NetworkNode *> m_currentNodes;
 };
 
 
