@@ -93,7 +93,7 @@ void SVStyle::formatDatabaseTableView(QTableView * v) {
 	v->setAlternatingRowColors(true);
 	v->setSortingEnabled(true);
 	v->sortByColumn(0, Qt::AscendingOrder);
-	QFont f = v->font();
+	QFont f;
 	f.setPointSizeF(f.pointSizeF()*0.8);
 	v->setFont(f);
 	v->horizontalHeader()->setFont(f);

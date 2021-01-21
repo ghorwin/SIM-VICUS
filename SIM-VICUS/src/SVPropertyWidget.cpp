@@ -56,8 +56,7 @@ SVPropertyWidget::SVPropertyWidget(QWidget * parent) :
 void SVPropertyWidget::onViewStateChanged() {
 
 	// hide all already created widgets
-	for (unsigned int i=0; i<SVViewState::NUM_PM; ++i) {
-		QWidget * w = m_propWidgets[i];
+	for (QWidget * w : m_propWidgets) {
 		if (w != nullptr)
 			w->setVisible(false);
 	}
@@ -105,10 +104,6 @@ void SVPropertyWidget::onViewStateChanged() {
 		case SVViewState::PM_NetworkProperties :
 			showPropertyWidget<SVPropNetworkEditWidget>(M_NetworkProperties);
 		break;
-
-		default : {
-			// set maximum size to 0, to avoid widget being expandible
-		}
 	}
 }
 
@@ -146,7 +141,7 @@ void SVPropertyWidget::onBuildingPropertiesSelected(int propertyIndex) {
 	SVViewStateHandler::instance().setViewState(vs);
 	// now the building property widget exists and is shown
 	// select highlighting/edit mode -> this will send a signal to update the scene's geometry coloring
-	qobject_cast<SVPropBuildingEditWidget*>(m_propWidgets[M_BuildingProperties])->setPropertyMode(propertyIndex);
+	qobject_cast<SVPropBuildingEditWidget*>(m_propWidgets[M_BuildingProperties])->setPropertyType(propertyIndex);
 }
 
 

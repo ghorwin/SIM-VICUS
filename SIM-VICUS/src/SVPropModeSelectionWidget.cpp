@@ -5,6 +5,7 @@
 
 #include "SVProjectHandler.h"
 #include "SVUndoSiteDataChanged.h"
+#include "SVConstants.h"
 
 SVPropModeSelectionWidget::SVPropModeSelectionWidget(QWidget *parent) :
 	QWidget(parent),
@@ -12,6 +13,12 @@ SVPropModeSelectionWidget::SVPropModeSelectionWidget(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 	m_ui->verticalLayout->setMargin(0);
+
+	m_ui->comboBoxBuildingProperties->blockSignals(true);
+	m_ui->comboBoxBuildingProperties->addItem(tr("Component"), BT_Components);
+	m_ui->comboBoxBuildingProperties->addItem(tr("Construction orientation"), BT_ComponentOrientation);
+	m_ui->comboBoxBuildingProperties->addItem(tr("Boundary conditions"), BT_BoundaryConditions);
+	m_ui->comboBoxBuildingProperties->blockSignals(false);
 
 	// we are in "Site" mode initially, so the rest is hidden
 	updateWidgetVisibility();
@@ -69,7 +76,7 @@ void SVPropModeSelectionWidget::on_pushButtonBuilding_toggled(bool) {
 	selectionChanged();
 	blockSignals(false);
 	// emit a signal with the information about the changed input
-	emit buildingPropertiesSelected(m_ui->comboBoxBuildingProperties->currentIndex());
+	emit buildingPropertiesSelected(m_ui->comboBoxBuildingProperties->currentData().toInt());
 }
 
 
@@ -105,7 +112,7 @@ void SVPropModeSelectionWidget::updateWidgetVisibility() {
 
 
 void SVPropModeSelectionWidget::on_comboBoxNetworkProperties_currentIndexChanged(int) {
-	emit networkPropertiesSelected(m_ui->comboBoxNetworkProperties->currentIndex());
+	emit networkPropertiesSelected(m_ui->comboBoxNetworkProperties->currentData().toInt());
 }
 
 

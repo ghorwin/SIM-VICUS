@@ -33,9 +33,9 @@ signals:
 
 	/*! Emitted when user activates building properties combo box or changes
 		the selection in the combo box.
-		\param propertyIndex Index of the selected property in the combo box
+		\param buildingPropertyType Type of selected (building) property, see BuildingPropertyTypes
 	*/
-	void buildingPropertiesSelected(int propertyIndex);
+	void buildingPropertiesSelected(int buildingPropertyType);
 
 	/*! Emitted when user activates network properties combo box or changes
 		the selection in the combo box.

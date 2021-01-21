@@ -91,28 +91,7 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QComboBox" name="comboBoxBuildingProperties">
-          <item>
-           <property name="text">
-            <string>Components</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Boundary conditions</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Surface materials</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Windows</string>
-           </property>
-          </item>
-         </widget>
+         <widget class="QComboBox" name="comboBoxBuildingProperties"/>
         </item>
         <item row="1" column="0">
          <widget class="QLabel" name="labelNetworkProperties">

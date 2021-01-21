@@ -48,6 +48,16 @@ enum DataRoles {
 /*! Threshold to accept distance/area/volume parameters as equal */
 extern const double SAME_DISTANCE_PARAMETER_ABSTOL;
 
+/*! Different edit/coloring modes. */
+enum BuildingPropertyTypes {
+	/*! Assigned component. */
+	BT_Components,
+	/*! Orientation of component (side A/B colors). */
+	BT_ComponentOrientation,
+	/*! Boundary conditions of component. */
+	BT_BoundaryConditions
+};
+
 /*! \file SVConstants.h
 	Contains constants which are used in several ui files. This is to
 	avoid multiple specifications of constants or even worse, the use of

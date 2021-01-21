@@ -310,10 +310,6 @@ void Project::updatePointers() {
 					s.m_componentInstance = nullptr;
 	// update pointers
 	for (VICUS::ComponentInstance & ci : m_componentInstances) {
-		ci.m_component = nullptr;
-		// Note: we cannot set the component pointer here, since we do not have access to the
-		//       component database here.
-
 		// lookup surfaces
 		ci.m_sideASurface = surfaceByID(ci.m_sideASurfaceID);
 		if (ci.m_sideASurface != nullptr) {

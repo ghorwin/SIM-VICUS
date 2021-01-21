@@ -45,7 +45,6 @@ public:
 	// These pointers are updated in VICUS::Project::updatePointers() and can be used
 	// to quicky travers the data model.
 
-	VICUS::Component	*m_component		= nullptr;
 	VICUS::Surface		*m_sideASurface		= nullptr;
 	VICUS::Surface		*m_sideBSurface		= nullptr;
 };
