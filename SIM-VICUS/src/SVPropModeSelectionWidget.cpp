@@ -82,6 +82,47 @@ int SVPropModeSelectionWidget::currentNetworkPropertyType() const {
 }
 
 
+void SVPropModeSelectionWidget::viewStateProperties(SVViewState & vs) const {
+	if (m_ui->pushButtonBuilding->isChecked())
+		vs.m_propertyWidgetMode = SVViewState::PM_BuildingProperties;
+	else if (m_ui->pushButtonNetwork->isChecked())
+		vs.m_propertyWidgetMode = SVViewState::PM_NetworkProperties;
+	else
+		vs.m_propertyWidgetMode = SVViewState::PM_SiteProperties;
+
+	// also set the scene coloring mode
+	switch (vs.m_propertyWidgetMode) {
+		case SVViewState::PM_SiteProperties:
+			// clear scene coloring
+			vs.m_objectColorMode = SVViewState::OCM_None;
+		break;
+
+		case SVViewState::PM_BuildingProperties:
+			switch ((BuildingPropertyTypes)m_ui->comboBoxBuildingProperties->currentData().toInt()) {
+				case BT_Components:				vs.m_objectColorMode = SVViewState::OCM_Components; break;
+				case BT_ComponentOrientation:	vs.m_objectColorMode = SVViewState::OCM_ComponentOrientation; break;
+				case BT_BoundaryConditions:		vs.m_objectColorMode = SVViewState::OCM_BoundaryConditions; break;
+			}
+		break;
+
+		case SVViewState::PM_NetworkProperties:
+			switch (m_ui->comboBoxNetworkProperties->currentIndex()) {
+				// network
+				case 0 : vs.m_objectColorMode = SVViewState::OCM_None; break;
+
+				// node: show component association
+				case 1 : vs.m_objectColorMode = SVViewState::OCM_NodeComponent; break;
+
+				// pipe : show pipe association
+				case 2 : vs.m_objectColorMode = SVViewState::OCM_EdgePipe; break;
+			}
+		break;
+
+		default:; // just to make compiler happy
+	}
+}
+
+
 void SVPropModeSelectionWidget::on_pushButtonBuilding_toggled(bool on) {
 	// Note: this slot is also called when the button is turned off due to another
 	//       button being turned on. But we don't want to change the view state twice,
@@ -155,43 +196,7 @@ void SVPropModeSelectionWidget::updateViewState() {
 	// user has selected a property in the combo box, property combo was changed due to selection change)
 
 	SVViewState vs = SVViewStateHandler::instance().viewState();
-	if (m_ui->pushButtonBuilding->isChecked())
-		vs.m_propertyWidgetMode = SVViewState::PM_BuildingProperties;
-	else if (m_ui->pushButtonNetwork->isChecked())
-		vs.m_propertyWidgetMode = SVViewState::PM_NetworkProperties;
-	else
-		vs.m_propertyWidgetMode = SVViewState::PM_SiteProperties;
-
-	// also set the scene coloring mode
-	switch (vs.m_propertyWidgetMode) {
-		case SVViewState::PM_SiteProperties:
-			// clear scene coloring
-			vs.m_objectColorMode = SVViewState::OCM_None;
-		break;
-
-		case SVViewState::PM_BuildingProperties:
-			switch ((BuildingPropertyTypes)m_ui->comboBoxBuildingProperties->currentData().toInt()) {
-				case BT_Components:				vs.m_objectColorMode = SVViewState::OCM_Components; break;
-				case BT_ComponentOrientation:	vs.m_objectColorMode = SVViewState::OCM_ComponentOrientation; break;
-				case BT_BoundaryConditions:		vs.m_objectColorMode = SVViewState::OCM_BoundaryConditions; break;
-			}
-		break;
-
-		case SVViewState::PM_NetworkProperties:
-			switch (m_ui->comboBoxNetworkProperties->currentIndex()) {
-				// network
-				case 0 : vs.m_objectColorMode = SVViewState::OCM_None; break;
-
-				// node: show component association
-				case 1 : vs.m_objectColorMode = SVViewState::OCM_NodeComponent; break;
-
-				// pipe : show pipe association
-				case 2 : vs.m_objectColorMode = SVViewState::OCM_EdgePipe; break;
-			}
-		break;
-
-		default:; // just to make compiler happy
-	}
+	viewStateProperties(vs);
 
 	// now set the new viewstate to update property widgets and scene coloring at the same time
 	SVViewStateHandler::instance().setViewState(vs);

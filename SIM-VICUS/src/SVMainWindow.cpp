@@ -53,6 +53,7 @@
 #include "SVViewStateHandler.h"
 #include "SVImportIDFDialog.h"
 #include "SVPropVertexListWidget.h"
+#include "SVPropModeSelectionWidget.h"
 #include "SVStyle.h"
 
 #include "SVDBMaterialEditDialog.h"
@@ -1181,17 +1182,18 @@ void SVMainWindow::on_actionViewToggleGeometryMode_triggered() {
 
 void SVMainWindow::on_actionViewToggleParametrizationMode_triggered() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
+	// switch to property edit mode
 	vs.m_viewMode = SVViewState::VM_PropertyEditMode;
-	// select property mode based on what's being selected in the mode selection
-	// property widget
-	vs.m_propertyWidgetMode = SVViewState::PM_SiteProperties;
+	// turn off any special scene modes
 	vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	// select property mode based on what's being selected in the mode selection
+	// property widget (this sets m_propertyWidgetMode and m_objectColorMode)
+	SVViewStateHandler::instance().m_propModeSelectionWidget->viewStateProperties(vs);
 	SVViewStateHandler::instance().setViewState(vs);
 
 	m_ui->actionViewToggleParametrizationMode->setChecked(true);
 	m_ui->actionViewToggleGeometryMode->setChecked(false);
 }
-
 
 
 void SVMainWindow::on_actionFileExportNANDRAD_triggered() {

@@ -42,6 +42,9 @@ public:
 	/*! Returns the currently selected choice in the network property selection combo. */
 	int currentNetworkPropertyType() const;
 
+	/*! Sets the properties m_propertyWidgetMode and m_objectColorMode based on current selections in the widget. */
+	void viewStateProperties(SVViewState & vs) const;
+
 private slots:
 	void on_pushButtonBuilding_toggled(bool checked);
 
