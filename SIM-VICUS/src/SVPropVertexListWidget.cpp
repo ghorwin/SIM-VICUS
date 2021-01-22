@@ -433,6 +433,7 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 		} break;
 
 		case Vic3D::NewGeometryObject::NGM_ZoneExtrusion : {
+
 			// we need a building level
 			if (m_ui->comboBoxBuildingLevel->currentIndex() == -1) {
 				QMessageBox::critical(this, QString(), tr("First select a building level to add the zone/room to!"));
@@ -455,13 +456,13 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 			double dotProduct = offset.scalarProduct(floor.normal());
 			if (dotProduct > 0) {
 				// same direction, we need to reverse floor polygon
-				qDebug() << "Upside" << dotProduct;
+				qDebug() << "Upside\n" << dotProduct;
 				floor.flip();
 			}
 			else {
 				// opposite direction, we need to reverse the ceiling polygon
 				ceiling.flip();
-				qDebug() << "Inverted" << dotProduct;
+				qDebug() << "Inverted\n" << dotProduct;
 			}
 
 			std::vector<VICUS::ComponentInstance> components;
@@ -510,11 +511,10 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 				// mind the winding order
 				// when looked from above, floor vertexes go clock-wise,
 				// and ceiling vertices go anti-clockwise
-				unsigned int vIdx1 = (2*nVert - 1 - i) % nVert;
-				unsigned int vIdx2 = (2*nVert - 2 - i) % nVert;
-				IBKMK::Vector3D p0 = floor.vertexes()[ vIdx1 ];
+				unsigned int vIdx2 = (i+1) % nVert;
+				IBKMK::Vector3D p0 = floor.vertexes()[ i ];
 				IBKMK::Vector3D p1 = floor.vertexes()[ vIdx2 ];
-				IBKMK::Vector3D p2 = ceiling.vertexes()[ i ];
+				IBKMK::Vector3D p2 = floor.vertexes()[ i ] + offset;	//take offset as last point for rectangle; rounding errors by vector-sum?
 
 				//				IBKMK::Vector3D a = p1-p0;
 				//				IBKMK::Vector3D b = p2-p0;
