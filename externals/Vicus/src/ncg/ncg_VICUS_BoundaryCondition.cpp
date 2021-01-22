@@ -60,7 +60,9 @@ void BoundaryCondition::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "InterfaceHeatConduction")
+			if (cName == "Color")
+				m_color.setNamedColor(QString::fromStdString(c->GetText()));
+			else if (cName == "InterfaceHeatConduction")
 				m_heatConduction.readXML(c);
 			else if (cName == "InterfaceSolarAbsorption")
 				m_solarAbsorption.readXML(c);
@@ -92,6 +94,8 @@ TiXmlElement * BoundaryCondition::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName.encodedString());
+	if (m_color.isValid())
+		TiXmlElement::appendSingleAttributeElement(e, "Color", nullptr, std::string(), m_color.name().toStdString());
 
 	m_heatConduction.writeXML(e);
 

@@ -52,6 +52,8 @@ private slots:
 	void on_comboBoxLWModelType_currentIndexChanged(int index);
 	void on_comboBoxSWModelType_currentIndexChanged(int index);
 
+	void on_pushButtonColor_colorChanged();
+
 
 private:
 	Ui::SVDBBoundaryConditionEditWidget *m_ui;

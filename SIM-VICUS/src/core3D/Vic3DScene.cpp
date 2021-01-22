@@ -1146,11 +1146,53 @@ void Vic3DScene::deselectAll() {
 	if (m_selectedGeometryObject.m_selectedObjects.empty())
 		return; // nothing selected, nothing to do
 
-	std::set<unsigned int> nodeIDs;
-	for (const VICUS::Object * o : m_selectedGeometryObject.m_selectedObjects)
-		nodeIDs.insert(o->uniqueID());
+	std::set<unsigned int> objIDs;
+	// add all selected objects, whether they are visible or not
+
+	// get VICUS project data
+	const VICUS::Project & p = project();
+	for (const VICUS::Building & b : p.m_buildings) {
+		if (b.m_selected)
+			objIDs.insert(b.uniqueID());
+		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+			if (bl.m_selected)
+				objIDs.insert(bl.uniqueID());
+			for (const VICUS::Room & r : bl.m_rooms) {
+				if (r.m_selected)
+					objIDs.insert(r.uniqueID());
+				for (const VICUS::Surface & s : r.m_surfaces) {
+					if (s.m_selected)
+						objIDs.insert(s.uniqueID());
+				}
+			}
+		}
+	}
+
+	// now the plain geometry
+	for (const VICUS::Surface & s : p.m_plainGeometry) {
+		if (s.m_selected)
+			objIDs.insert(s.uniqueID());
+	}
+
+	// now network stuff
+
+	// add cylinders for all pipes
+	for (const VICUS::Network & network : p.m_geometricNetworks) {
+		for (const VICUS::NetworkEdge & e : network.m_edges) {
+			if (e.m_selected)
+				objIDs.insert(e.uniqueID());
+		}
+
+		// add spheres for nodes
+		for (const VICUS::NetworkNode & no : network.m_nodes) {
+			if (no.m_selected)
+				objIDs.insert(no.uniqueID());
+		}
+		if (network.m_selected)
+			objIDs.insert(network.uniqueID());
+	}
 	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Selected cleared"),
-														 SVUndoTreeNodeState::SelectedState, nodeIDs, false);
+														 SVUndoTreeNodeState::SelectedState, objIDs, false);
 	undo->push();
 }
 

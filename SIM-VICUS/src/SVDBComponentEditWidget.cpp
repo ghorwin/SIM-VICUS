@@ -146,10 +146,10 @@ void SVDBComponentEditWidget::updateInput(int id) {
 
 	// for built-ins, disable editing/make read-only
 	bool isEditable = !comp->m_builtIn;
-	m_ui->lineEditName->setEnabled(true);
+	m_ui->lineEditName->setReadOnly(!isEditable);
+	m_ui->pushButtonComponentColor->setReadOnly(!isEditable);
 	m_ui->comboBoxComponentType->setEnabled(isEditable);
 	m_ui->toolButtonSelectConstruction->setEnabled(isEditable);
-	m_ui->pushButtonComponentColor->setEnabled(isEditable);
 	m_ui->toolButtonSelectBoundaryConditionSideAName->setEnabled(isEditable);
 	m_ui->toolButtonSelectBoundaryConditionSideBName->setEnabled(isEditable);
 	m_ui->pushButtonDaylight->setEnabled(isEditable);
@@ -163,8 +163,6 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	m_ui->lineEditRoughness->setText("---");
 	m_ui->lineEditSpecularity->setText("---");
 
-	//read only?
-	m_ui->lineEditName->setReadOnly(!isEditable);
 
 }
 
