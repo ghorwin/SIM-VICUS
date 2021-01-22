@@ -37,6 +37,8 @@ SVDBComponentEditDialog::SVDBComponentEditDialog(QWidget *parent) :
 	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn);
 	m_ui->tableView->setItemDelegate(dg);
 
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBComponentTableModel::ColCheck, QHeaderView::Fixed);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBComponentTableModel::ColColor, QHeaderView::Fixed);
 }
 
 
@@ -160,6 +162,7 @@ void SVDBComponentEditDialog::showEvent(QShowEvent * event) {
 	int width = m_ui->tableView->width()-2;
 	width -= m_ui->tableView->columnWidth(0);
 	width -= m_ui->tableView->columnWidth(1);
-	width -= m_ui->tableView->columnWidth(3);
-	m_ui->tableView->setColumnWidth(2, width);
+	width -= m_ui->tableView->columnWidth(2);
+	width -= m_ui->tableView->columnWidth(4);
+	m_ui->tableView->setColumnWidth(3, width);
 }

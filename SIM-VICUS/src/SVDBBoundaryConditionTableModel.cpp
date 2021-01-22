@@ -62,9 +62,26 @@ QVariant SVDBBoundaryConditionTableModel::data ( const QModelIndex & index, int 
 		case Qt::SizeHintRole :
 			switch (index.column()) {
 				case ColCheck :
+				case ColColor :
 					return QSize(22, 16);
 			} // switch
-			break;
+		break;
+
+		case Qt::DecorationRole : {
+			if (index.column() == ColCheck) {
+				// TODO : Dirk, add isValid() function to VICUS::BoundaryCondition
+//				if (it->second.isValid(m_db->m_materials, m_db->m_constructions, m_db->m_boundaryConditions))
+					return QIcon("://gfx/actions/16x16/ok.png");
+//					else
+//					return QIcon("://gfx/actions/16x16/error.png");
+			}
+		} break;
+
+		case Qt::BackgroundRole : {
+			if (index.column() == ColColor) {
+				return it->second.m_color;
+			}
+		} break;
 
 		case Role_Id :
 			return it->first;

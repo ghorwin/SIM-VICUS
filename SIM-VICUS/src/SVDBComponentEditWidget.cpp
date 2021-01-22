@@ -154,6 +154,9 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	m_ui->toolButtonSelectBoundaryConditionSideBName->setEnabled(isEditable);
 	m_ui->pushButtonDaylight->setEnabled(isEditable);
 
+	m_ui->lineEditBoundaryConditionSideAName->setReadOnly(!isEditable);
+	m_ui->lineEditBoundaryConditionSideBName->setReadOnly(!isEditable);
+
 	///TODO Dirk später durchführen wenn datenbanken da sind
 
 	m_ui->lineEditDaylightName->setEnabled(true);
