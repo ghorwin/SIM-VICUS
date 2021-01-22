@@ -4,7 +4,7 @@
 #include "SVConstants.h"
 #include "SVSettings.h"
 
-#include <VICUS_KeywordListQt.h>
+#include <NANDRAD_KeywordListQt.h>
 #include <NANDRAD_KeywordList.h>
 
 #include <QtExt_LanguageHandler.h>
@@ -26,18 +26,18 @@ SVDBBoundaryConditionEditWidget::SVDBBoundaryConditionEditWidget(QWidget *parent
 	m_ui->lineEditHeatTransferCoefficient->setup(0.001, 500, tr("Thermal conductivity"), true, true);
 
 	m_ui->comboBoxHeatTransferCoeffModelType->blockSignals(true);
-	for(unsigned int i=0; i < NANDRAD::InterfaceHeatConduction::NUM_MT; ++i)
-		m_ui->comboBoxHeatTransferCoeffModelType->addItem(tr("Constant"), static_cast<NANDRAD::InterfaceHeatConduction::modelType_t>(i));
+	for (unsigned int i=0; i < NANDRAD::InterfaceHeatConduction::NUM_MT; ++i)
+		m_ui->comboBoxHeatTransferCoeffModelType->addItem(NANDRAD::KeywordListQt::Keyword("InterfaceHeatConduction::modelType_t", (int)i), i);
 	m_ui->comboBoxHeatTransferCoeffModelType->blockSignals(false);
 
 	m_ui->comboBoxLWModelType->blockSignals(true);
 	for(unsigned int i=0; i < NANDRAD::InterfaceLongWaveEmission::NUM_MT; ++i)
-		m_ui->comboBoxLWModelType->addItem(tr("Constant"), static_cast<NANDRAD::InterfaceLongWaveEmission::modelType_t>(i));
+		m_ui->comboBoxLWModelType->addItem(NANDRAD::KeywordListQt::Keyword("InterfaceLongWaveEmission::modelType_t", (int)i), i);
 	m_ui->comboBoxLWModelType->blockSignals(false);
 
 	m_ui->comboBoxSWModelType->blockSignals(true);
 	for(unsigned int i=0; i < NANDRAD::InterfaceSolarAbsorption::NUM_MT; ++i)
-		m_ui->comboBoxSWModelType->addItem(tr("Constant"), static_cast<NANDRAD::InterfaceSolarAbsorption::modelType_t>(i));
+		m_ui->comboBoxSWModelType->addItem(NANDRAD::KeywordListQt::Keyword("InterfaceSolarAbsorption::modelType_t", (int)i), i);
 	m_ui->comboBoxSWModelType->blockSignals(false);
 
 
@@ -63,12 +63,12 @@ void SVDBBoundaryConditionEditWidget::updateInput(int id) {
 	bool isEnabled = id == -1 ? false : true;
 
 	m_ui->lineEditName->setEnabled(isEnabled);
-	m_ui->lineEditSolarAbsorptionCoefficient->setEnabled(isEnabled);
-	m_ui->lineEditLongWaveEmissivity->setEnabled(isEnabled);
-	m_ui->lineEditHeatTransferCoefficient->setEnabled(isEnabled);
-	m_ui->comboBoxHeatTransferCoeffModelType->setEnabled(isEnabled);
-	m_ui->comboBoxLWModelType->setEnabled(isEnabled);
-	m_ui->comboBoxSWModelType->setEnabled(isEnabled);
+	m_ui->pushButtonColor->setEnabled(isEnabled);
+	m_ui->labelDisplayName->setEnabled(isEnabled);
+	// disable all the group boxes - this disables all their subwidgets as well
+	m_ui->groupBox->setEnabled(isEnabled);
+	m_ui->groupBox_2->setEnabled(isEnabled);
+	m_ui->groupBox_3->setEnabled(isEnabled);
 
 	if (!isEnabled) {
 		// clear input controls
