@@ -251,8 +251,8 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 		}
 	}
 
-	// create geometry object (if already existing, nothing happens here)
 	if (updateBuilding) {
+		// create geometry object (if already existing, nothing happens here)
 		m_opaqueGeometryObject.create(m_buildingShader->shaderProgram()); // Note: does nothing, if already existing
 
 		// transfer data from building geometry to vertex array caches
@@ -269,11 +269,15 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 	}
 
 	// update all GPU buffers (transfer cached data to GPU)
-	m_opaqueGeometryObject.updateBuffers();
-	m_networkGeometryObject.updateBuffers();
+	if (updateBuilding || updateSelection)
+		m_opaqueGeometryObject.updateBuffers();
 
-	// transfer other properties
+	if (updateNetwork || updateSelection)
+		m_networkGeometryObject.updateBuffers();
 
+	// store current coloring mode
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	m_lastColorMode = vs.m_objectColorMode;
 }
 
 
@@ -898,8 +902,47 @@ void Vic3DScene::render() {
 void Vic3DScene::setViewState(const SVViewState & vs) {
 	// if we are currently constructing geometry, and we switch the view mode to
 	// "Parameter edit" mode, reset the new polygon object
+	bool colorUpdateNeeded = false;
 	if (vs.m_viewMode == SVViewState::VM_PropertyEditMode) {
 		m_newGeometryObject.clear();
+		// update scene coloring if in property edit mode
+		if (m_lastColorMode != vs.m_objectColorMode) {
+			colorUpdateNeeded = true;
+		}
+	}
+	else {
+		Q_ASSERT(vs.m_objectColorMode == SVViewState::OCM_None);
+		if (m_lastColorMode != vs.m_objectColorMode) {
+			colorUpdateNeeded = true;
+		}
+	}
+	if (colorUpdateNeeded) {
+
+		// different update handling
+		bool updateBuilding = false;
+		bool updateNetwork = false;
+		if (m_lastColorMode > 0 && m_lastColorMode < SVViewState::OCM_NodeComponent)
+			updateBuilding = true;
+		if (vs.m_objectColorMode > 0 && vs.m_objectColorMode < SVViewState::OCM_NodeComponent)
+			updateBuilding = true;
+		if (m_lastColorMode >= SVViewState::OCM_NodeComponent)
+			updateNetwork = true;
+		if (vs.m_objectColorMode >= SVViewState::OCM_NodeComponent)
+			updateNetwork = true;
+
+		recolorObjects(vs.m_objectColorMode);
+		if (updateBuilding) {
+			qDebug() << "Updating surface coloring of buildings";
+			generateBuildingGeometry();
+			m_opaqueGeometryObject.updateBuffers();
+		}
+		if (updateNetwork) {
+			qDebug() << "Updating surface coloring of networks";
+			generateNetworkGeometry();
+			m_networkGeometryObject.updateBuffers();
+		}
+
+		m_lastColorMode = vs.m_objectColorMode;
 	}
 }
 
@@ -1025,6 +1068,73 @@ void Vic3DScene::generateNetworkGeometry() {
 						m_networkGeometryObject.m_vertexBufferData,
 						m_networkGeometryObject.m_colorBufferData,
 						m_networkGeometryObject.m_indexBufferData);
+		}
+	}
+
+}
+
+
+void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm) const {
+	// get VICUS project data
+	const VICUS::Project & p = project();
+
+	// process all surfaces and initialize colors
+	for (const VICUS::Building & b : p.m_buildings) {
+		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+			for (const VICUS::Room & r : bl.m_rooms) {
+				for (const VICUS::Surface & s : r.m_surfaces) {
+
+					// update surface opaque color
+					// here, it does not matter if the surfaces is selected or invisible -
+					// we just update the color that would be used if the surface would be drawn
+
+					switch (ocm) {
+						case SVViewState::OCM_None:
+							// const cast is ok here, since color is not a project property
+							const_cast<VICUS::Surface&>(s).updateColor();
+						break;
+						case SVViewState::OCM_Components:
+							s.m_color = QColor(64,64,64); // dark gray
+						break;
+						case SVViewState::OCM_ComponentOrientation:
+							s.m_color = QColor(128,128,128); // gray (later semi-transparent)
+						break;
+						case SVViewState::OCM_BoundaryConditions:
+							s.m_color = QColor(64,64,128); // dark gray
+						break;
+
+						// the other cases are just to get rid of compiler warnings
+						case SVViewState::OCM_NodeComponent:
+						case SVViewState::OCM_EdgePipe: break;
+					}
+				}
+			}
+		}
+	}
+
+	const SVDatabase & db = SVSettings::instance().m_db;
+	if (ocm > 0 && ocm < SVViewState::OCM_NodeComponent) {
+		// now color all surfaces, this works by first looking up the components, associated with each surface
+		for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+			// lookup component definition
+			const VICUS::Component * comp = db.m_components[ci.m_componentID];
+			if (comp == nullptr)
+				continue; // no component definition - keep default (gray) color
+			switch (ocm) {
+				case SVViewState::OCM_Components:
+					if (ci.m_sideASurface != nullptr)
+						ci.m_sideASurface->m_color = comp->m_color;
+					if (ci.m_sideBSurface != nullptr)
+						ci.m_sideBSurface->m_color = comp->m_color;
+				break;
+				case SVViewState::OCM_ComponentOrientation:
+				break;
+				case SVViewState::OCM_BoundaryConditions:
+				break;
+				case SVViewState::OCM_None:
+				case SVViewState::OCM_NodeComponent:
+				case SVViewState::OCM_EdgePipe: break;
+			}
 		}
 	}
 

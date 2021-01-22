@@ -50,7 +50,7 @@ public:
 
 		Color is not a regular property of a surface, but rather of the associated parameter elements.
 	*/
-	QColor								m_color;
+	mutable QColor						m_color; // Note: mutable so that it can be modified on const project
 
 	/*! Runtime-only pointer to the associated component instance (or nullptr, if surface
 		is not yet connected to any component. This would be considered an incomplete

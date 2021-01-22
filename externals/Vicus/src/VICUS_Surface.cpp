@@ -3,8 +3,6 @@
 namespace VICUS {
 
 void Surface::updateColor() {
-	if (m_color != QColor::Invalid)
-		return;
 	// default color for walls
 	m_color = QColor(200,200,140,1);
 	const double angleForWalls = 0.707;

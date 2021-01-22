@@ -1174,6 +1174,7 @@ void SVMainWindow::on_actionViewToggleGeometryMode_triggered() {
 	vs.m_viewMode = SVViewState::VM_GeometryEditMode;
 	vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
 	vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	vs.m_objectColorMode = SVViewState::OCM_None;
 	SVViewStateHandler::instance().setViewState(vs);
 	m_ui->actionViewToggleGeometryMode->setChecked(true);
 	m_ui->actionViewToggleParametrizationMode->setChecked(false);

@@ -17,6 +17,8 @@
 #include "Vic3DNewGeometryObject.h"
 #include "Vic3DPickObject.h"
 
+#include "SVViewState.h"
+
 class ModificationInfo;
 
 namespace VICUS {
@@ -92,6 +94,9 @@ public:
 private:
 	void generateBuildingGeometry();
 	void generateNetworkGeometry();
+
+	/*! Processes all surfaces and assigns colors based on current object color mode. */
+	void recolorObjects(SVViewState::ObjectColorMode ocm) const;
 
 	/*! Mouse pick handler: collects all pickable objects/surfaces/planes along the line-of-sight and stores all possible
 		pick candidates in pickObject.
@@ -230,6 +235,11 @@ private:
 	QMatrix4x4				m_panOriginalTransformMatrix;
 
 	double					m_panCABARatio;
+
+	/*! Cached last scene coloring mode. Updated in onModified() and setViewState(). Used
+		to prevent excessive updates of geometry when unrelated view state properties change.
+	*/
+	SVViewState::ObjectColorMode	m_lastColorMode = SVViewState::OCM_None;
 
 	// vector with drawing helping planes
 	std::vector<VICUS::PlaneGeometry>	m_gridPlanes;
