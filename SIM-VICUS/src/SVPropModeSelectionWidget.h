@@ -2,16 +2,27 @@
 #define SVPropModeSelectionWidgetH
 
 #include <QWidget>
-#include "SVViewState.h"
+
+#include "SVConstants.h"
 
 namespace Ui {
 	class SVPropModeSelectionWidget;
 }
 
 class ModificationInfo;
+class SVViewState;
 
 
-/*! This widget is shown on top of the property widget page when in property-edit mode. */
+/*! This widget is shown on top of the property widget page when in property-edit mode.
+	In this widget the user selects the basic editing modes.
+
+	In addition to manual change by user, the property selection combo boxes can change when
+	user has switched the edit mode (to building, to network), or when the object selection changes.
+	This is done in function selectionChanged().
+
+	Whenever the edit mode has changed (basic mode or property combo box value), a new
+	viewstate is set in the view state handler.
+*/
 class SVPropModeSelectionWidget : public QWidget {
 	Q_OBJECT
 
@@ -19,33 +30,17 @@ public:
 	explicit SVPropModeSelectionWidget(QWidget *parent = nullptr);
 	~SVPropModeSelectionWidget();
 
-	/*! Called to update combo boxes. */
-	void updateUI();
-
 	/*! Based on selected properties, switch to one of the specific edit modes, based on
-		the selected objects.
+		the selected objects. Sends only out a view state change event, if the combo box value
+		has been modified.
 	*/
 	void selectionChanged();
 
-	/*! Returns a recommendation on which property widget to show. */
-	SVViewState::PropertyWidgetMode currentPropertyWidgetMode() const;
+	/*! Returns the currently selected choice in the building property selection combo. */
+	BuildingPropertyTypes currentBuildingPropertyType() const;
 
-signals:
-
-	/*! Emitted when user has selected the site properties. */
-	void sitePropertiesSelected();
-
-	/*! Emitted when user activates building properties combo box or changes
-		the selection in the combo box.
-		\param buildingPropertyType Type of selected (building) property, see BuildingPropertyTypes
-	*/
-	void buildingPropertiesSelected(int buildingPropertyType);
-
-	/*! Emitted when user activates network properties combo box or changes
-		the selection in the combo box.
-		\param propertyIndex Index of the selected network property in the combo box, 0 = network, 1 = node, 2 = element.
-	*/
-	void networkPropertiesSelected(int propertyIndex);
+	/*! Returns the currently selected choice in the network property selection combo. */
+	int currentNetworkPropertyType() const;
 
 private slots:
 	void on_pushButtonBuilding_toggled(bool checked);
@@ -54,15 +49,21 @@ private slots:
 
 	void on_pushButtonSite_toggled(bool checked);
 
-	void on_comboBoxNetworkProperties_currentIndexChanged(int index);
+	void on_comboBoxNetworkProperties_currentIndexChanged(int);
 
-	void on_comboBoxBuildingProperties_currentIndexChanged(int index);
+	void on_comboBoxBuildingProperties_currentIndexChanged(int);
 
 private:
 	/*! This is called whenever the user has made changes to any of the components in
 		this widget and updates the enabled/disabled states of all controls.
 	*/
 	void updateWidgetVisibility();
+
+	/*! Sets a new view state in the view state handler, which causes the rest of the
+		user interface to update its states accordingly.
+		This function is called from the slots and selectionChanged().
+	*/
+	void updateViewState();
 
 	Ui::SVPropModeSelectionWidget *m_ui;
 };

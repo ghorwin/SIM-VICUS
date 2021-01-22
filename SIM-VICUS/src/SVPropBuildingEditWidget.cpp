@@ -15,6 +15,17 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 	m_ui->verticalLayout->setMargin(0);
+	m_ui->verticalLayoutComponents->setMargin(0);
+
+	// configure tables
+	m_ui->tableWidgetComponents->setColumnCount(2);
+	m_ui->tableWidgetComponents->setHorizontalHeaderLabels(QStringList() << QString() << tr("Component name"));
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetComponents);
+	m_ui->tableWidgetComponents->setSortingEnabled(false);
+	m_ui->tableWidgetComponents->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
+	m_ui->tableWidgetComponents->horizontalHeader()->resizeSection(0,20);
+	m_ui->tableWidgetComponents->horizontalHeader()->setStretchLastSection(true);
+
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropBuildingEditWidget::onModified);
@@ -30,19 +41,10 @@ SVPropBuildingEditWidget::~SVPropBuildingEditWidget() {
 
 
 void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
-	m_ui->groupBoxObjectList->setVisible(false);
-	m_ui->widgetStretch->setVisible(true);
+	m_ui->stackedWidget->setCurrentIndex(0);
 	switch ((BuildingPropertyTypes)buildingPropertyType) {
 		case BT_Components: {
-			m_ui->groupBoxObjectList->setTitle(tr("Building components"));
-			m_ui->groupBoxObjectList->setVisible(true);
-			m_ui->widgetStretch->setVisible(false);
-			// tell scene to change coloring of visible objects and retrieve map of
-			// colored objects
-			SVViewState vs = SVViewStateHandler::instance().viewState();
-			vs.m_objectColorMode = SVViewState::OCM_Components;
-			// set view state - this will re-color the scene based on component association.
-			SVViewStateHandler::instance().setViewState(vs);
+			m_ui->stackedWidget->setCurrentIndex(1);
 			// get all visible "building" type objects in the scene
 			std::set<const VICUS::Object * > objs;
 			project().selectObjects(objs, VICUS::Project::SG_Building, false, true);
@@ -72,10 +74,8 @@ void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
 				}
 			}
 			// now put the data of the map into the table
-			m_ui->tableWidgetObjects->clear();
-			m_ui->tableWidgetObjects->setColumnCount(2);
-			m_ui->tableWidgetObjects->setHorizontalHeaderLabels(QStringList() << QString() << tr("Component name"));
-			m_ui->tableWidgetObjects->setRowCount(m_componentSurfacesMap.size());
+			m_ui->tableWidgetComponents->clearContents();
+			m_ui->tableWidgetComponents->setRowCount(m_componentSurfacesMap.size());
 			int row=0;
 			for (std::map<const VICUS::Component*, std::vector<const VICUS::Surface *> >::const_iterator
 				 it = m_componentSurfacesMap.begin(); it != m_componentSurfacesMap.end(); ++it, ++row)
@@ -87,7 +87,7 @@ void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
 				else
 					item->setBackground(it->first->m_color);
 				item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
-				m_ui->tableWidgetObjects->setItem(row, 0, item);
+				m_ui->tableWidgetComponents->setItem(row, 0, item);
 
 				item = new QTableWidgetItem();
 				if (it->first == nullptr)
@@ -95,17 +95,14 @@ void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
 				else
 					item->setText(QString::fromStdString(it->first->m_displayName.string(IBK::MultiLanguageString::m_language, "en")));
 				item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-				m_ui->tableWidgetObjects->setItem(row, 1, item);
+				m_ui->tableWidgetComponents->setItem(row, 1, item);
 			}
-			SVStyle::formatDatabaseTableView(m_ui->tableWidgetObjects);
-			m_ui->tableWidgetObjects->setSortingEnabled(false);
-			m_ui->tableWidgetObjects->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
-			m_ui->tableWidgetObjects->horizontalHeader()->resizeSection(0,20);
-			m_ui->tableWidgetObjects->horizontalHeader()->setStretchLastSection(true);
 
 		} break;
+
 		case BT_ComponentOrientation:
 		break;
+
 		case BT_BoundaryConditions:
 		break;
 	}
@@ -113,10 +110,26 @@ void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
 
 
 void SVPropBuildingEditWidget::onModified(int modificationType, ModificationInfo * data) {
-	// react on selection changes only, then update properties
+	// react on selection changes only, then update propertiess
 }
 
 
 void SVPropBuildingEditWidget::on_toolButtonEdit_clicked() {
+
+}
+
+
+void SVPropBuildingEditWidget::on_pushButtonEditComponents_clicked() {
+
+}
+
+
+void SVPropBuildingEditWidget::on_pushButtonExchangeComponents_clicked() {
+
+}
+
+
+void SVPropBuildingEditWidget::on_tableWidgetComponents_itemSelectionChanged() {
+
 
 }

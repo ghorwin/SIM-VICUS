@@ -7,6 +7,7 @@
 
 #include "SVViewStateHandler.h"
 #include "SVProjectHandler.h"
+#include "SVConstants.h"
 
 #include "SVPropVertexListWidget.h"
 #include "SVPropEditGeometry.h"
@@ -41,13 +42,6 @@ SVPropertyWidget::SVPropertyWidget(QWidget * parent) :
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropertyWidget::onModified);
 
-	connect(m_propModeSelectionWidget, &SVPropModeSelectionWidget::buildingPropertiesSelected,
-			this, &SVPropertyWidget::onBuildingPropertiesSelected);
-	connect(m_propModeSelectionWidget, &SVPropModeSelectionWidget::networkPropertiesSelected,
-			this, &SVPropertyWidget::onNetworkPropertiesSelected);
-	connect(m_propModeSelectionWidget, &SVPropModeSelectionWidget::sitePropertiesSelected,
-			this, &SVPropertyWidget::onSitePropertiesSelected);
-
 	onViewStateChanged();
 }
 
@@ -61,24 +55,21 @@ void SVPropertyWidget::onViewStateChanged() {
 			w->setVisible(false);
 	}
 
-	const SVViewState & vs = SVViewStateHandler::instance().viewState();
-	SVViewState::PropertyWidgetMode m = vs.m_propertyWidgetMode;
+	SVViewState vs = SVViewStateHandler::instance().viewState();
 
 	switch (vs.m_viewMode) {
 		case SVViewState::VM_GeometryEditMode:
 			m_propModeSelectionWidget->setVisible(false);
 		break;
-		case SVViewState::VM_PropertyEditMode: {
+		case SVViewState::VM_PropertyEditMode:
 			m_propModeSelectionWidget->setVisible(true);
-			// ask propModeSelectionWidget which property widget to show
-			m = m_propModeSelectionWidget->currentPropertyWidgetMode();
-		}
 		break;
 		case SVViewState::NUM_VM: break; // just to make compiler happy
 	}
 
 
 	// now show the respective property widget
+	SVViewState::PropertyWidgetMode m = vs.m_propertyWidgetMode;
 	switch (m) {
 		case SVViewState::PM_EditGeometry :
 		case SVViewState::PM_AddGeometry : {
@@ -100,13 +91,19 @@ void SVPropertyWidget::onViewStateChanged() {
 			showPropertyWidget<SVPropSiteWidget>(M_SiteProperties);
 		break;
 
-		case SVViewState::PM_BuildingProperties :
+		case SVViewState::PM_BuildingProperties : {
 			showPropertyWidget<SVPropBuildingEditWidget>(M_BuildingProperties);
-		break;
+			// select highlighting/edit mode -> this will send a signal to update the scene's geometry coloring
+			BuildingPropertyTypes buildingPropertyType = m_propModeSelectionWidget->currentBuildingPropertyType();
+			qobject_cast<SVPropBuildingEditWidget*>(m_propWidgets[M_BuildingProperties])->setPropertyType(buildingPropertyType);
+		} break;
 
-		case SVViewState::PM_NetworkProperties :
+		case SVViewState::PM_NetworkProperties : {
 			showPropertyWidget<SVPropNetworkEditWidget>(M_NetworkProperties);
-		break;
+			// select highlighting/edit mode -> this will send a signal to update the scene's geometry coloring
+			int networkPropertyType = m_propModeSelectionWidget->currentNetworkPropertyType();
+			qobject_cast<SVPropNetworkEditWidget*>(m_propWidgets[M_NetworkProperties])->setPropertyMode(networkPropertyType);
+		} break;
 	}
 }
 
@@ -122,42 +119,11 @@ void SVPropertyWidget::onModified(int modificationType, ModificationInfo * ) {
 			// based on the current selection. For example, when "Network" mode is selected
 			// and a node is selected, we automatically switch to "Node" edit mode.
 			m_propModeSelectionWidget->selectionChanged();
+			// Note: the call above may results in a view state change, when the selection causes
+			//		 the network property selection to change.
 		break;
 
 		default: ; // just to make compiler happy
 	}
 }
-
-
-void SVPropertyWidget::onSitePropertiesSelected() {
-	// change view state to "edit site properties"
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	vs.m_propertyWidgetMode = SVViewState::PM_SiteProperties;
-	SVViewStateHandler::instance().setViewState(vs);
-}
-
-
-void SVPropertyWidget::onBuildingPropertiesSelected(int propertyIndex) {
-	// change view state to "edit building properties"
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	vs.m_propertyWidgetMode = SVViewState::PM_BuildingProperties;
-	SVViewStateHandler::instance().setViewState(vs);
-	// now the building property widget exists and is shown
-	// select highlighting/edit mode -> this will send a signal to update the scene's geometry coloring
-	qobject_cast<SVPropBuildingEditWidget*>(m_propWidgets[M_BuildingProperties])->setPropertyType(propertyIndex);
-}
-
-
-void SVPropertyWidget::onNetworkPropertiesSelected(int propertyIndex) {
-	// change view state to "edit network properties"
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-
-	vs.m_propertyWidgetMode = SVViewState::PM_NetworkProperties;
-	SVViewStateHandler::instance().setViewState(vs);
-	// now the network property widget exists and is shown
-	// select highlighting/edit mode -> this will send a signal to update the scene's geometry coloring
-	qobject_cast<SVPropNetworkEditWidget*>(m_propWidgets[M_NetworkProperties])->setPropertyMode(propertyIndex);
-}
-
-
 

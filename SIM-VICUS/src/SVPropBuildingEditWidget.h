@@ -14,7 +14,23 @@ namespace VICUS {
 
 class ModificationInfo;
 
-/*! A widget to edit site (and grid) related properties. */
+/*! A widget to edit building properties.
+	The type of property to be edited is set with function setPropertyType(). This switches between
+	different widgets (in the stacked widget).
+
+	Note: the highlighting mode of the scene is not set here, but rather in the edit mode
+	selection widget.
+
+	The content of the tables is updated whenever the respective data changes. This is somewhat tricky,
+	since some properties (like component colors) are not part of the project, but user-database content.
+
+	Hence, we need to listen to the following change events:
+
+	Components:
+	- changes in project (might be a component association)
+	- changes in selection (updates selected component info)
+	- changes in component DB
+*/
 class SVPropBuildingEditWidget : public QWidget {
 	Q_OBJECT
 
@@ -34,6 +50,12 @@ public slots:
 
 private slots:
 	void on_toolButtonEdit_clicked();
+
+	void on_pushButtonEditComponents_clicked();
+
+	void on_pushButtonExchangeComponents_clicked();
+
+	void on_tableWidgetComponents_itemSelectionChanged();
 
 private:
 	Ui::SVPropBuildingEditWidget *m_ui;

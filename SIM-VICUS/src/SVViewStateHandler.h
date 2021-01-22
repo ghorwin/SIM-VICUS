@@ -15,6 +15,7 @@ class SVNavigationTreeWidget;
 class SVPropEditGeometry;
 class SVPropVertexListWidget;
 class SVGeometryView;
+class SVPropModeSelectionWidget;
 
 /*! This singleton makes the current UI view state available to all.
 	Widgets that need to be informed from view state changes, should
@@ -71,8 +72,13 @@ public:
 	/*! Pointer to geometry edit widget - is needed to set the absolute scale factor ( bounding box) on selection change. */
 	SVPropEditGeometry					*m_propEditGeometryWidget = nullptr;
 
-	/*! Pointer to place vertex edit widget - is needed to clear the vertex list when a new polygon/geometrical object is being drawn. */
+	/*! Pointer to "place vertex" widget - is needed to clear the vertex list when a new polygon/geometrical object is being drawn. */
 	SVPropVertexListWidget				*m_propVertexListWidget = nullptr;
+
+	/*! Pointer to property mode selection widget - can be used to query required view state properties
+		when switching edit modes.
+	*/
+	SVPropModeSelectionWidget			*m_propModeSelectionWidget = nullptr;
 
 signals:
 	/*! Emitted, when the state has changed. */

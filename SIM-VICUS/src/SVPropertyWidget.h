@@ -51,23 +51,6 @@ public slots:
 	/*! Connected to SVProjectHandler::modified() */
 	void onModified( int modificationType, ModificationInfo * data );
 
-private slots:
-
-	/*! Emitted when user has selected the site properties. */
-	void onSitePropertiesSelected();
-
-	/*! Emitted when user activates building properties combo box or changes
-		the selection in the combo box.
-		\param propertyIndex Index of the selected property in the combo box
-	*/
-	void onBuildingPropertiesSelected(int propertyIndex);
-
-	/*! Emitted when user activates network properties combo box or changes
-		the selection in the combo box.
-		\param propertyIndex Index of the selected network property in the combo box, 0 = network, 1 = node, 2 = element.
-	*/
-	void onNetworkPropertiesSelected(int propertyIndex);
-
 private:
 	/*! Convenience function for creating a widget, if not existing yet, adding it to
 		the layout and showing it.
@@ -82,6 +65,11 @@ private:
 		m_propWidgets[propWidget]->setVisible(true);
 	}
 
+	/*! This function configures the viewstate object vs in property-edit-mode to match the
+		edit mode selection in the SVPropModeSelectionWidget.
+		This function should be called when the property mode is just switched on.
+	*/
+	void updateViewStateToEditMode(SVViewState & vs) const;
 
 	/*! The layout, that holds all widgets. */
 	QVBoxLayout				*m_layout = nullptr;

@@ -164,7 +164,8 @@ void SceneView::onStyleChanged() {
 
 void SceneView::onViewStateChanged() {
 	// tell scene view about the viewstate change
-	m_mainScene.setViewState(SVViewStateHandler::instance().viewState());
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	m_mainScene.setViewState(vs);
 
 	// and call renderLater(), to update the view when geometry modification is through or objects have been added
 	renderLater();

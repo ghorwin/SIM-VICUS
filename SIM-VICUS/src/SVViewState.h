@@ -21,7 +21,6 @@
 */
 class SVViewState {
 public:
-	SVViewState();
 
 	/*! Different basic view modes.
 		Depending on the view mode, different actions are available and
