@@ -100,29 +100,48 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	m_ui->lineEditBoundaryConditionSideAName->setEnabled(true);
 	m_ui->lineEditBoundaryConditionSideBName->setEnabled(true);
 
-	const VICUS::Construction *con = m_db->m_constructions[comp->m_idConstruction];
-	if (con != nullptr) {
-		m_ui->lineEditConstructionName->setText(QString::fromStdString(con->m_displayName.string(QtExt::LanguageHandler::langId().toStdString(), "en")));
-		double UValue;
-		bool validUValue = con->calculateUValue(UValue, m_db->m_materials, 0.13, 0.04);
-		if (validUValue)
-			m_ui->lineEditUValue->setText(QString("%L1").arg(UValue, 0, 'f', 4));
-	}
-	else {
-		m_ui->lineEditUValue->setText("---");
-		m_ui->lineEditConstructionName->setText("");
-	}
+	double surfaceResistanceSideA = 0;
+	double surfaceResistanceSideB = 0;
 
 	const VICUS::BoundaryCondition *bcA = m_db->m_boundaryConditions[comp->m_idSideABoundaryCondition];
 	if (bcA != nullptr){
 		m_ui->lineEditBoundaryConditionSideAName->setText(QString::fromStdString(bcA->m_displayName.string(QtExt::LanguageHandler::langId().toStdString(), std::string("en"))));
 		// TODO : generate HTML description text with info about boundary condition
+		if(bcA->m_heatConduction.m_modelType == NANDRAD::InterfaceHeatConduction::MT_Constant){
+			double hc = bcA->m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
+			surfaceResistanceSideA = hc > 0 ? 1/hc : 0;
+		}
 	}
 
 	const VICUS::BoundaryCondition *bcB = m_db->m_boundaryConditions[comp->m_idSideBBoundaryCondition];
 	if (bcB != nullptr){
 		m_ui->lineEditBoundaryConditionSideBName->setText(QString::fromStdString(bcB->m_displayName.string(QtExt::LanguageHandler::langId().toStdString(), std::string("en"))));
 		// TODO : generate HTML description text with info about boundary condition
+		if(bcB->m_heatConduction.m_modelType == NANDRAD::InterfaceHeatConduction::MT_Constant){
+			double hc = bcB->m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
+			surfaceResistanceSideB = hc > 0 ? 1/hc : 0;
+		}
+	}
+
+	const VICUS::Construction *con = m_db->m_constructions[comp->m_idConstruction];
+	if (con != nullptr) {
+		m_ui->lineEditConstructionName->setText(QString::fromStdString(con->m_displayName.string(QtExt::LanguageHandler::langId().toStdString(), "en")));
+		double UValue;
+		/* Take for uvalue calculation the surface resistance from the side A and B if this exist.
+			If all resistance are zero -> take standard resistance of 0.17+0.04 = 0.21
+		*/
+		bool validUValue = false;
+		if(surfaceResistanceSideA>0 || surfaceResistanceSideB>0)
+			validUValue = con->calculateUValue(UValue, m_db->m_materials, surfaceResistanceSideA, surfaceResistanceSideB);
+		else
+			validUValue = con->calculateUValue(UValue, m_db->m_materials, 0.13, 0.04);
+
+		if (validUValue)
+			m_ui->lineEditUValue->setText(QString("%L1").arg(UValue, 0, 'f', 4));
+	}
+	else {
+		m_ui->lineEditUValue->setText("---");
+		m_ui->lineEditConstructionName->setText("");
 	}
 
 	// for built-ins, disable editing/make read-only

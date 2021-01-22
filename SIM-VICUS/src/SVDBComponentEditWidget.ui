@@ -13,8 +13,8 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
-   <item>
+  <layout class="QGridLayout" name="gridLayout_7">
+   <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout_4">
      <item row="0" column="0">
       <widget class="QLabel" name="labelDisplayName">
@@ -59,16 +59,40 @@
        </property>
       </widget>
      </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="labelUValue">
+       <property name="text">
+        <string>UValue:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="lineEditUValue">
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="QLabel" name="labelUValue_2">
+       <property name="text">
+        <string>W/m2K</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
-   <item>
+   <item row="1" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
       <number>0</number>
      </property>
      <widget class="QWidget" name="tabConstructionType">
       <attribute name="title">
-       <string>Definition</string>
+       <string>Construction</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0" colspan="3">
@@ -89,30 +113,6 @@
          </item>
         </layout>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="labelUValue">
-         <property name="text">
-          <string>UValue:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="lineEditUValue">
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2">
-        <widget class="QLabel" name="labelUValue_2">
-         <property name="text">
-          <string>W/m2K</string>
-         </property>
-        </widget>
-       </item>
        <item row="2" column="0" colspan="3">
         <widget class="QGraphicsView" name="graphicsViewConstruction"/>
        </item>
@@ -125,7 +125,7 @@
      </widget>
     </widget>
    </item>
-   <item>
+   <item row="2" column="0">
     <layout class="QGridLayout" name="gridLayout_5">
      <item row="0" column="0">
       <widget class="QGroupBox" name="groupBox_2">
