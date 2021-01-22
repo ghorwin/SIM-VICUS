@@ -25,6 +25,22 @@ SVDBBoundaryConditionEditWidget::SVDBBoundaryConditionEditWidget(QWidget *parent
 	m_ui->lineEditLongWaveEmissivity->setup(0, 1, tr("Thermal Absorption (long wave)"), true, true);
 	m_ui->lineEditHeatTransferCoefficient->setup(0.001, 500, tr("Thermal conductivity"), true, true);
 
+	m_ui->comboBoxHeatTransferCoeffModelType->blockSignals(true);
+	for(unsigned int i=0; i < NANDRAD::InterfaceHeatConduction::NUM_MT; ++i)
+		m_ui->comboBoxHeatTransferCoeffModelType->addItem(tr("Constant"), static_cast<NANDRAD::InterfaceHeatConduction::modelType_t>(i));
+	m_ui->comboBoxHeatTransferCoeffModelType->blockSignals(false);
+
+	m_ui->comboBoxLWModelType->blockSignals(true);
+	for(unsigned int i=0; i < NANDRAD::InterfaceLongWaveEmission::NUM_MT; ++i)
+		m_ui->comboBoxLWModelType->addItem(tr("Constant"), static_cast<NANDRAD::InterfaceLongWaveEmission::modelType_t>(i));
+	m_ui->comboBoxLWModelType->blockSignals(false);
+
+	m_ui->comboBoxSWModelType->blockSignals(true);
+	for(unsigned int i=0; i < NANDRAD::InterfaceSolarAbsorption::NUM_MT; ++i)
+		m_ui->comboBoxSWModelType->addItem(tr("Constant"), static_cast<NANDRAD::InterfaceSolarAbsorption::modelType_t>(i));
+	m_ui->comboBoxSWModelType->blockSignals(false);
+
+
 	// initial state is "nothing selected"
 	updateInput(-1);
 }
@@ -50,6 +66,9 @@ void SVDBBoundaryConditionEditWidget::updateInput(int id) {
 	m_ui->lineEditSolarAbsorptionCoefficient->setEnabled(isEnabled);
 	m_ui->lineEditLongWaveEmissivity->setEnabled(isEnabled);
 	m_ui->lineEditHeatTransferCoefficient->setEnabled(isEnabled);
+	m_ui->comboBoxHeatTransferCoeffModelType->setEnabled(isEnabled);
+	m_ui->comboBoxLWModelType->setEnabled(isEnabled);
+	m_ui->comboBoxSWModelType->setEnabled(isEnabled);
 
 	if (!isEnabled) {
 		// clear input controls
@@ -70,6 +89,19 @@ void SVDBBoundaryConditionEditWidget::updateInput(int id) {
 	m_ui->lineEditHeatTransferCoefficient->setValue(bc->m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value);
 	m_ui->lineEditSolarAbsorptionCoefficient->setValue(bc->m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].value);
 	m_ui->lineEditLongWaveEmissivity->setValue(bc->m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value);
+	//ToDo wie greife ich auf ein item zu das im
+
+	m_ui->comboBoxHeatTransferCoeffModelType->blockSignals(true);
+	m_ui->comboBoxHeatTransferCoeffModelType->setCurrentIndex(m_ui->comboBoxHeatTransferCoeffModelType->findData(bc->m_heatConduction.m_modelType));
+	m_ui->comboBoxHeatTransferCoeffModelType->blockSignals(false);
+
+	m_ui->comboBoxLWModelType->blockSignals(true);
+	m_ui->comboBoxLWModelType->setCurrentIndex(m_ui->comboBoxLWModelType->findData(bc->m_longWaveEmission.m_modelType));
+	m_ui->comboBoxLWModelType->blockSignals(false);
+
+	m_ui->comboBoxSWModelType->blockSignals(true);
+	m_ui->comboBoxSWModelType->setCurrentIndex(m_ui->comboBoxSWModelType->findData(bc->m_solarAbsorption.m_modelType));
+	m_ui->comboBoxSWModelType->blockSignals(false);
 
 	// for built-ins, disable editing/make read-only
 	bool isEditable = true;
@@ -80,7 +112,13 @@ void SVDBBoundaryConditionEditWidget::updateInput(int id) {
 	m_ui->lineEditSolarAbsorptionCoefficient->setReadOnly(!isEditable);
 	m_ui->lineEditLongWaveEmissivity->setReadOnly(!isEditable);
 	m_ui->lineEditHeatTransferCoefficient->setReadOnly(!isEditable);
+	m_ui->comboBoxHeatTransferCoeffModelType->setEnabled(isEditable);
+	m_ui->comboBoxLWModelType->setEnabled(isEditable);
+	m_ui->comboBoxSWModelType->setEnabled(isEditable);
+
 }
+
+
 
 
 void SVDBBoundaryConditionEditWidget::on_lineEditName_editingFinished() {
@@ -145,6 +183,45 @@ void SVDBBoundaryConditionEditWidget::on_lineEditLongWaveEmissivity_editingFinis
 			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 			emit tableDataChanged();
 		}
+	}
+}
+
+void SVDBBoundaryConditionEditWidget::on_comboBoxHeatTransferCoeffModelType_currentIndexChanged(int index)
+{
+	Q_ASSERT(m_current != nullptr);
+	// update database but only if different from original
+	if (index != (int)m_current->m_heatConduction.m_modelType)
+	{
+		m_current->m_heatConduction.m_modelType = static_cast<NANDRAD::InterfaceHeatConduction::modelType_t>(index);
+		m_db->m_boundaryConditions.m_modified = true;
+		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		emit tableDataChanged();
+	}
+}
+
+void SVDBBoundaryConditionEditWidget::on_comboBoxLWModelType_currentIndexChanged(int index)
+{
+	Q_ASSERT(m_current != nullptr);
+	// update database but only if different from original
+	if (index != (int)m_current->m_longWaveEmission.m_modelType)
+	{
+		m_current->m_longWaveEmission.m_modelType = static_cast<NANDRAD::InterfaceLongWaveEmission::modelType_t>(index);
+		m_db->m_boundaryConditions.m_modified = true;
+		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		emit tableDataChanged();
+	}
+}
+
+void SVDBBoundaryConditionEditWidget::on_comboBoxSWModelType_currentIndexChanged(int index)
+{
+	Q_ASSERT(m_current != nullptr);
+	// update database but only if different from original
+	if (index != (int)m_current->m_solarAbsorption.m_modelType)
+	{
+		m_current->m_solarAbsorption.m_modelType = static_cast<NANDRAD::InterfaceSolarAbsorption::modelType_t>(index);
+		m_db->m_boundaryConditions.m_modified = true;
+		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		emit tableDataChanged();
 	}
 }
 
