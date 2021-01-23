@@ -33,14 +33,14 @@ SVDBBoundaryConditionEditWidget::SVDBBoundaryConditionEditWidget(QWidget *parent
 	m_ui->comboBoxHeatTransferCoeffModelType->blockSignals(false);
 
 	m_ui->comboBoxLWModelType->blockSignals(true);
-	for(unsigned int i=0; i < NANDRAD::InterfaceLongWaveEmission::NUM_MT; ++i)
+	for(unsigned int i=0; i <= NANDRAD::InterfaceLongWaveEmission::NUM_MT; ++i)
 		m_ui->comboBoxLWModelType->addItem(QString("%1 [%2]")
 			.arg(NANDRAD::KeywordListQt::Description("InterfaceLongWaveEmission::modelType_t", (int)i))
 			.arg(NANDRAD::KeywordListQt::Keyword("InterfaceLongWaveEmission::modelType_t", (int)i)), i);
 	m_ui->comboBoxLWModelType->blockSignals(false);
 
 	m_ui->comboBoxSWModelType->blockSignals(true);
-	for(unsigned int i=0; i < NANDRAD::InterfaceSolarAbsorption::NUM_MT; ++i)
+	for(unsigned int i=0; i <= NANDRAD::InterfaceSolarAbsorption::NUM_MT; ++i)
 		m_ui->comboBoxSWModelType->addItem(QString("%1 [%2]")
 			.arg(NANDRAD::KeywordListQt::Description("InterfaceSolarAbsorption::modelType_t", (int)i))
 			.arg(NANDRAD::KeywordListQt::Keyword("InterfaceSolarAbsorption::modelType_t", (int)i)), i);
@@ -72,9 +72,9 @@ void SVDBBoundaryConditionEditWidget::updateInput(int id) {
 	m_ui->pushButtonColor->setEnabled(isEnabled);
 	m_ui->labelDisplayName->setEnabled(isEnabled);
 	// disable all the group boxes - this disables all their subwidgets as well
-	m_ui->groupBox->setEnabled(isEnabled);
-	m_ui->groupBox_2->setEnabled(isEnabled);
-	m_ui->groupBox_3->setEnabled(isEnabled);
+	m_ui->groupBoxHeatTransfer->setEnabled(isEnabled);
+	m_ui->groupBoxLongWaveExchange->setEnabled(isEnabled);
+	m_ui->groupBoxShortWaveRad->setEnabled(isEnabled);
 
 	if (!isEnabled) {
 		// clear input controls
@@ -95,14 +95,20 @@ void SVDBBoundaryConditionEditWidget::updateInput(int id) {
 	m_ui->comboBoxHeatTransferCoeffModelType->blockSignals(true);
 	m_ui->comboBoxHeatTransferCoeffModelType->setCurrentIndex(m_ui->comboBoxHeatTransferCoeffModelType->findData(bc->m_heatConduction.m_modelType));
 	m_ui->comboBoxHeatTransferCoeffModelType->blockSignals(false);
+	// update model-specific input states
+	on_comboBoxHeatTransferCoeffModelType_currentIndexChanged(m_ui->comboBoxHeatTransferCoeffModelType->currentIndex());
 
 	m_ui->comboBoxLWModelType->blockSignals(true);
 	m_ui->comboBoxLWModelType->setCurrentIndex(m_ui->comboBoxLWModelType->findData(bc->m_longWaveEmission.m_modelType));
 	m_ui->comboBoxLWModelType->blockSignals(false);
+	// update model-specific input states
+	on_comboBoxLWModelType_currentIndexChanged(m_ui->comboBoxLWModelType->currentIndex());
 
 	m_ui->comboBoxSWModelType->blockSignals(true);
 	m_ui->comboBoxSWModelType->setCurrentIndex(m_ui->comboBoxSWModelType->findData(bc->m_solarAbsorption.m_modelType));
 	m_ui->comboBoxSWModelType->blockSignals(false);
+	// update model-specific input states
+	on_comboBoxSWModelType_currentIndexChanged(m_ui->comboBoxSWModelType->currentIndex());
 
 	m_ui->lineEditHeatTransferCoefficient->setValue(bc->m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value);
 	m_ui->lineEditSolarAbsorptionCoefficient->setValue(bc->m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].value);
@@ -211,7 +217,7 @@ void SVDBBoundaryConditionEditWidget::on_comboBoxHeatTransferCoeffModelType_curr
 	m_ui->labelHeatTransferCoefficient->setEnabled(false);
 	m_ui->lineEditHeatTransferCoefficient->setEnabled(false);
 	// enable/disable inputs based on selected model type, but only if our groupbox itself is enabled
-	if (m_ui->groupBox->isEnabled()) {
+	if (m_ui->groupBoxHeatTransfer->isEnabled()) {
 		switch (m_current->m_heatConduction.m_modelType) {
 			case NANDRAD::InterfaceHeatConduction::MT_Constant:
 				m_ui->labelHeatTransferCoefficient->setEnabled(true);
@@ -226,12 +232,24 @@ void SVDBBoundaryConditionEditWidget::on_comboBoxHeatTransferCoeffModelType_curr
 void SVDBBoundaryConditionEditWidget::on_comboBoxLWModelType_currentIndexChanged(int index) {
 	Q_ASSERT(m_current != nullptr);
 	// update database but only if different from original
-	if (index != (int)m_current->m_longWaveEmission.m_modelType)
-	{
+	if (index != (int)m_current->m_longWaveEmission.m_modelType) {
 		m_current->m_longWaveEmission.m_modelType = static_cast<NANDRAD::InterfaceLongWaveEmission::modelType_t>(index);
 		m_db->m_boundaryConditions.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		emit tableDataChanged();
+	}
+	// by default disable all inputs
+	m_ui->labelLongWaveEmissivity->setEnabled(false);
+	m_ui->lineEditLongWaveEmissivity->setEnabled(false);
+	// enable/disable inputs based on selected model type, but only if our groupbox itself is enabled
+	if (m_ui->groupBoxLongWaveExchange->isEnabled()) {
+		switch (m_current->m_longWaveEmission.m_modelType) {
+			case NANDRAD::InterfaceLongWaveEmission::MT_Constant:
+				m_ui->labelLongWaveEmissivity->setEnabled(true);
+				m_ui->lineEditLongWaveEmissivity->setEnabled(true);
+			break;
+			case NANDRAD::InterfaceLongWaveEmission::NUM_MT: break;
+		}
 	}
 }
 
@@ -245,6 +263,19 @@ void SVDBBoundaryConditionEditWidget::on_comboBoxSWModelType_currentIndexChanged
 		m_db->m_boundaryConditions.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		emit tableDataChanged();
+	}
+	// by default disable all inputs
+	m_ui->labelSolarAbsorptionCoefficient->setEnabled(false);
+	m_ui->lineEditSolarAbsorptionCoefficient->setEnabled(false);
+	// enable/disable inputs based on selected model type, but only if our groupbox itself is enabled
+	if (m_ui->groupBoxShortWaveRad->isEnabled()) {
+		switch (m_current->m_solarAbsorption.m_modelType) {
+			case NANDRAD::InterfaceSolarAbsorption::MT_Constant:
+				m_ui->labelSolarAbsorptionCoefficient->setEnabled(true);
+				m_ui->lineEditSolarAbsorptionCoefficient->setEnabled(true);
+			break;
+			case NANDRAD::InterfaceSolarAbsorption::NUM_MT: break;
+		}
 	}
 }
 
