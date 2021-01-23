@@ -176,7 +176,10 @@ void SVProjectHandler::loadProject(QWidget * parent, const QString & fileName,	b
 	try {
 		bool have_modified_project = false;
 
-		/// \todo implement and project data checks with automatic fixes and set have_modified_project to true
+		/// \todo Dirk: add code merge embedded project database with built-in/user db
+
+		/// \todo Andreas: implement and project data checks with automatic fixes and
+		///		  set have_modified_project to true
 		///		  in such cases, so that the project starts up in "modified" state.
 
 		setModified(AllModified); // notify all views that the entire data has changed
@@ -333,7 +336,7 @@ void SVProjectHandler::updateLastReadTime() {
 
 IBK::Path SVProjectHandler::replacePathPlaceholders(const IBK::Path & stringWithPlaceholders) {
 	std::map<std::string, IBK::Path> mergedPlaceholders; // = project().m_placeholders;
-	/// \todo insert placeholders into map
+	/// \todo All: discuss placeholder handling in SIM-VICUS
 
 
 	if (!projectFile().isEmpty())
@@ -462,7 +465,7 @@ bool SVProjectHandler::write(const QString & fname) const {
 		}
 
 
-		/// \todo replace all absolute file names with relative file paths (using placeholders)
+		/// \todo Andreas: replace all absolute file names with relative file paths (using placeholders)
 
 		// filename is converted to utf8 before calling writeXML
 		m_project->writeXML(IBK::Path(fname.toStdString()) );

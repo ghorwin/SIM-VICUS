@@ -66,7 +66,7 @@ void SVPostProcBindings::generateDefaultSessionFile(const QString & projectFile)
 
 //	const VICUS::Project & prj = project();
 
-	/// \todo populate "mappers" string with predefined mapper configurations
+	/// \todo Andreas: populate "mappers" string with predefined mapper configurations
 
 	// replace placeholders
 	IBK::Path projectFilePath = IBK::Path(projectFile.trimmed().toStdString() );

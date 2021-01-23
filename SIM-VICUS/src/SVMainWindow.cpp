@@ -1139,7 +1139,7 @@ void SVMainWindow::onOpenTemplateByFilename(const QString & filename) {
 
 void SVMainWindow::onWorkerThreadFinished() {
 
-	/// \todo Figure out why thread sends finished signal twice when terminated
+	/// \todo Andreas: Figure out why thread sends finished signal twice when terminated
 	//SVThreadBase * b = (SVThreadBase *)sender();
 	if ( m_threadPool.isEmpty() ) {
 		return;
@@ -1163,7 +1163,7 @@ void SVMainWindow::onWorkerThreadFinished() {
 void SVMainWindow::onFixProjectAfterRead() {
 	// here we do all entry checks that will tell users about suggested changes in project
 
-	/// \todo implement interactive fixes here with dialogs and user-confirmations
+	/// \todo Andreas: implement interactive fixes here with dialogs and user-confirmations
 
 }
 
@@ -1395,8 +1395,6 @@ void SVMainWindow::processThread() {
 
 	// for now we expect the thread to
 	m_threadPool[0]->start(QThread::LowPriority); // always start on low priority
-
-	/// \todo What happens if the thread fails to start?
 }
 
 

@@ -34,7 +34,7 @@ const float MOUSE_ROTATION_SPEED = 0.5f;
 // Size of the local coordinate system window
 const int SUBWINDOWSIZE = 150;
 
-/// \todo adjust the THRESHOLD based on DPI/Screenresolution or have it as user option
+/// \todo All: adjust the THRESHOLD based on DPI/Screenresolution or have it as user option
 const float MOUSE_MOVE_DISTANCE_ORBIT_CONTROLLER = 1;
 
 namespace Vic3D {
@@ -458,7 +458,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 				IBKMK::Vector3D nearestPoint = pickObject.m_candidates.front().m_pickPoint;
 				// if we hit the a plane, limit the orbit controller to the extends of the grid
 				if (pickObject.m_candidates.front().m_snapPointType == PickObject::RT_GridPlane) {
-					/// \todo add support for several grid planes
+					/// \todo Andreas: add support for several grid planes
 					nearestPoint.m_x = std::min(nearestPoint.m_x, m_gridObject.m_maxGrid);
 					nearestPoint.m_y = std::min(nearestPoint.m_y, m_gridObject.m_maxGrid);
 					nearestPoint.m_x = std::max(nearestPoint.m_x, m_gridObject.m_minGrid);
@@ -821,7 +821,7 @@ void Vic3DScene::render() {
 	// tell OpenGL to show only faces whose normal vector points towards us
 	glEnable(GL_CULL_FACE);
 
-	/// \todo render dumb background geometry
+	/// \todo Andreas: render dumb background geometry
 
 
 	// *** opaque building geometry ***
@@ -933,11 +933,13 @@ void Vic3DScene::setViewState(const SVViewState & vs) {
 		recolorObjects(vs.m_objectColorMode);
 		if (updateBuilding) {
 			qDebug() << "Updating surface coloring of buildings";
+			// TODO : Andreas, Performance update, only update and transfer color buffer
 			generateBuildingGeometry();
 			m_opaqueGeometryObject.updateBuffers();
 		}
 		if (updateNetwork) {
 			qDebug() << "Updating surface coloring of networks";
+			// TODO : Andreas, Performance update, only update and transfer color buffer
 			generateNetworkGeometry();
 			m_networkGeometryObject.updateBuffers();
 		}
@@ -1581,7 +1583,7 @@ void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 				if (snapOptions & SVViewState::Snap_GridPlane) {
 					// now determine which grid line is closest
 					QVector3D closestPoint;
-					/// \todo add support for several grid objects, or one grid object with several planes
+					/// \todo Andreas: add support for several grid objects, or one grid object with several planes
 					///		  r.m_uniqueObjectID -> index of plane that we hit.
 					if (m_gridObject.closestSnapPoint(VICUS::IBKVector2QVector(r.m_pickPoint), closestPoint)) {
 						// this is in world coordinates, use this as transformation vector for the

@@ -47,7 +47,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		case SVProjectHandler::NetworkModified :
 		case SVProjectHandler::BuildingGeometryChanged :
 		case SVProjectHandler::BuildingTopologyChanged :
-			/// \todo parse 'data' to determine what has changed and avoid updating entire tree (and losing collapsed state)
+			/// \todo Andreas: parse 'data' to determine what has changed and avoid updating entire tree (and losing collapsed state)
 			break;
 
 		case SVProjectHandler::NodeStateModified : {

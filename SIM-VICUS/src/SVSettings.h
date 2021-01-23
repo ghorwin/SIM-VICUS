@@ -115,7 +115,7 @@ public:
 	/*! Recursive directory search function.
 		Collects list of all files in directory 'baseDir' and all its child directories that
 		match any of the extensions in stringlist 'extensions'.
-		\todo Move to a different class, or make this a free function in QtExt
+		\todo Heiko: Make this a free function in QtExt
 	*/
 	static void recursiveSearch(QDir baseDir, QStringList & files, const QStringList & extensions);
 
