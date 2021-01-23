@@ -1133,8 +1133,28 @@ void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm) const {
 						ci.m_sideBSurface->m_color = comp->m_color;
 				break;
 				case SVViewState::OCM_ComponentOrientation:
+					/// \todo filter out only a single component
+
+					// color side A surfaces with blue,
+					// side B surfaces with orange
+					if (ci.m_sideASurface != nullptr)
+						ci.m_sideASurface->m_color = QColor(47,125,212);
+					if (ci.m_sideBSurface != nullptr)
+						ci.m_sideBSurface->m_color = QColor(255, 206, 48);
 				break;
 				case SVViewState::OCM_BoundaryConditions:
+					if (ci.m_sideASurface != nullptr && comp->m_idSideABoundaryCondition != VICUS::INVALID_ID) {
+						// lookup boundary condition definition
+						const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
+						if (bc != nullptr)
+							ci.m_sideASurface->m_color = bc->m_color;
+					}
+					if (ci.m_sideBSurface != nullptr && comp->m_idSideBBoundaryCondition != VICUS::INVALID_ID) {
+						// lookup boundary condition definition
+						const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
+						if (bc != nullptr)
+							ci.m_sideBSurface->m_color = bc->m_color;
+					}
 				break;
 				case SVViewState::OCM_None:
 				case SVViewState::OCM_NodeComponent:
