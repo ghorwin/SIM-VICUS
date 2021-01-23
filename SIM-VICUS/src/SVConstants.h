@@ -5,11 +5,6 @@
 
 /*! To be used as institution/organization in SVSettings. */
 extern const char * const ORG_NAME;
-/*! Program name, also used as registry/settings key for saving the user
-	defined settings and the MRU list.
-	To be used as application name in SVSettings.
-*/
-extern const char * const PROGRAM_NAME;
 /*! E-mail address for support requests. */
 extern const char * const SUPPORT_EMAIL;
 
