@@ -34,13 +34,13 @@ public:
 
 	/*! Model types supported by the solar absorption model. */
 	enum modelType_t {
-		MT_Constant,				// Keyword: Constant		'Constant model.'
+		MT_Constant,				// Keyword: Constant		'Constant model'
 		NUM_MT						// Keyword: None			'No short wave radiation exchange'
 	};
 
-	/*! Parameters to be defined for the various window model types. */
+	/*! Parameters. */
 	enum para_t {
-		P_AbsorptionCoefficient,	// Keyword: AbsorptionCoefficient [---]			'Constant Absorption coefficient [0,...,1].'
+		P_AbsorptionCoefficient,	// Keyword: AbsorptionCoefficient [---]		'Solar absorption coefficient'
 		NUM_P
 	};
 
@@ -61,7 +61,7 @@ public:
 
 	/*! Model type. */
 	modelType_t							m_modelType = NUM_MT;					// XML:A:required
-	/*! List of constant parameters.*/
+	/*! List of constant parameters. */
 	IBK::Parameter						m_para[NUM_P];							// XML:E
 
 }; // InterfaceSolarAbsorption
