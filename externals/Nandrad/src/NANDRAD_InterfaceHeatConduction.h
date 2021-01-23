@@ -33,18 +33,18 @@ namespace NANDRAD {
 class InterfaceHeatConduction  {
 	NANDRAD_READWRITE_PRIVATE
 public:
+	/*! Model types supported by this model. */
+	enum modelType_t {
+		/*! Constant transfer coefficient. */
+		MT_Constant,				// Keyword: Constant		'Constant heat exchange coefficient'
+		NUM_MT						// Keyword: None			'No convective heat exchange'
+	};
 
 	/*! Parameters to be defined for the various window model types. */
 	enum para_t {
 		/*! 'Constant heat transfer coefficient [W/m2K].' */
-		P_HeatTransferCoefficient,	// Keyword: HeatTransferCoefficient [W/m2K]		'Constant heat transfer coefficient.'
+		P_HeatTransferCoefficient,	// Keyword: HeatTransferCoefficient [W/m2K]		'Constant heat transfer coefficient'
 		NUM_P
-	};
-	/*! Model types supported by this model. */
-	enum modelType_t {
-		/*! Constant transfer coefficient. */
-		MT_Constant,				// Keyword: Constant		'Constant model.'
-		NUM_MT
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***

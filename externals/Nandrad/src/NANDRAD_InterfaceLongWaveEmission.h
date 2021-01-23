@@ -32,15 +32,16 @@ class InterfaceLongWaveEmission {
 	NANDRAD_READWRITE_PRIVATE
 public:
 
+	/*! Model types supported by the window model. */
+	enum modelType_t {
+		MT_Constant,				// Keyword: Constant		'Constant model.'
+		NUM_MT						// Keyword: None			'No long wave radiation exchange'
+	};
+
 	/*! Parameters to be defined for the various window model types. */
 	enum para_t {
 		P_Emissivity,				// Keyword: Emissivity [---] 'Constant Long wave emissivity.'
 		NUM_P
-	};
-	/*! Model types supported by the window model. */
-	enum modelType_t {
-		MT_Constant,				// Keyword: Constant		'Constant model.'
-		NUM_MT
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***

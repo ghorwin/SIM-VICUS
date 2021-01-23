@@ -133,7 +133,7 @@ KeywordListQt::KeywordListQt() {
 }
 
 
-QString KeywordListQt::Description( const std::string & category, unsigned int keywordId) { 
+QString KeywordListQt::Description( const std::string & category, int keywordId) { 
 
 	std::string description = KeywordList::Description(category.c_str(), keywordId);
 	return tr(description.c_str());
