@@ -25,6 +25,7 @@
 #include "SVSettings.h"
 #include "SVConstants.h"
 #include "SVLogFileDialog.h"
+#include "SVViewStateHandler.h"
 
 SVProjectHandler * SVProjectHandler::m_self = nullptr;
 
@@ -62,6 +63,10 @@ bool SVProjectHandler::newProject(VICUS::Project * project) {
 		// update all internal pointers
 		m_project->updatePointers();
 	}
+
+	// initialize viewstate
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	SVViewStateHandler::instance().setViewState(vs);
 
 	setModified(AllModified);
 

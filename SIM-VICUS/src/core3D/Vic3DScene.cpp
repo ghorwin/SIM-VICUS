@@ -88,10 +88,12 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			updateSelection = true;
 			// clear new polygon drawing object
 			m_newGeometryObject.clear();
-			// set scene operation mode to "normal"
+			// set scene operation mode to "normal" if we are in place vertex mode
 			SVViewState vs = SVViewStateHandler::instance().viewState();
-			vs.m_sceneOperationMode = SVViewState::NUM_OM;
-			vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+			if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
+				vs.m_sceneOperationMode = SVViewState::NUM_OM;
+				vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+			}
 
 			// clear selection object, to avoid accessing invalidated pointers
 			m_selectedGeometryObject.m_selectedObjects.clear();
@@ -1105,7 +1107,7 @@ void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm) const {
 							s.m_color = QColor(128,128,128); // gray (later semi-transparent)
 						break;
 						case SVViewState::OCM_BoundaryConditions:
-							s.m_color = QColor(64,64,128); // dark gray
+							s.m_color = QColor(64,64,64); // dark gray
 						break;
 
 						// the other cases are just to get rid of compiler warnings

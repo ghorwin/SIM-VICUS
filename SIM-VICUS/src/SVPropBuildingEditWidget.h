@@ -10,6 +10,7 @@ namespace Ui {
 namespace VICUS {
 	class Component;
 	class Surface;
+	class BoundaryCondition;
 }
 
 class ModificationInfo;
@@ -62,6 +63,7 @@ private:
 
 	/*! This maps holds component->surface associations when in BM_Components mode. */
 	std::map<const VICUS::Component*, std::vector<const VICUS::Surface *> > m_componentSurfacesMap;
+	std::map<const VICUS::BoundaryCondition*, std::vector<const VICUS::Surface *> > m_bcSurfacesMap;
 
 };
 
