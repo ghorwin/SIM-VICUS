@@ -26,18 +26,24 @@ SVDBBoundaryConditionEditWidget::SVDBBoundaryConditionEditWidget(QWidget *parent
 	m_ui->lineEditHeatTransferCoefficient->setup(0.001, 500, tr("Thermal conductivity"), true, true);
 
 	m_ui->comboBoxHeatTransferCoeffModelType->blockSignals(true);
-	for (unsigned int i=0; i < NANDRAD::InterfaceHeatConduction::NUM_MT; ++i)
-		m_ui->comboBoxHeatTransferCoeffModelType->addItem(NANDRAD::KeywordListQt::Keyword("InterfaceHeatConduction::modelType_t", (int)i), i);
+	for (unsigned int i=0; i <= NANDRAD::InterfaceHeatConduction::NUM_MT; ++i)
+		m_ui->comboBoxHeatTransferCoeffModelType->addItem(QString("%1 [%2]")
+			.arg(NANDRAD::KeywordListQt::Description("InterfaceHeatConduction::modelType_t", (int)i))
+			.arg(NANDRAD::KeywordListQt::Keyword("InterfaceHeatConduction::modelType_t", (int)i)), i);
 	m_ui->comboBoxHeatTransferCoeffModelType->blockSignals(false);
 
 	m_ui->comboBoxLWModelType->blockSignals(true);
 	for(unsigned int i=0; i < NANDRAD::InterfaceLongWaveEmission::NUM_MT; ++i)
-		m_ui->comboBoxLWModelType->addItem(NANDRAD::KeywordListQt::Keyword("InterfaceLongWaveEmission::modelType_t", (int)i), i);
+		m_ui->comboBoxLWModelType->addItem(QString("%1 [%2]")
+			.arg(NANDRAD::KeywordListQt::Description("InterfaceLongWaveEmission::modelType_t", (int)i))
+			.arg(NANDRAD::KeywordListQt::Keyword("InterfaceLongWaveEmission::modelType_t", (int)i)), i);
 	m_ui->comboBoxLWModelType->blockSignals(false);
 
 	m_ui->comboBoxSWModelType->blockSignals(true);
 	for(unsigned int i=0; i < NANDRAD::InterfaceSolarAbsorption::NUM_MT; ++i)
-		m_ui->comboBoxSWModelType->addItem(NANDRAD::KeywordListQt::Keyword("InterfaceSolarAbsorption::modelType_t", (int)i), i);
+		m_ui->comboBoxSWModelType->addItem(QString("%1 [%2]")
+			.arg(NANDRAD::KeywordListQt::Description("InterfaceSolarAbsorption::modelType_t", (int)i))
+			.arg(NANDRAD::KeywordListQt::Keyword("InterfaceSolarAbsorption::modelType_t", (int)i)), i);
 	m_ui->comboBoxSWModelType->blockSignals(false);
 
 
@@ -86,11 +92,6 @@ void SVDBBoundaryConditionEditWidget::updateInput(int id) {
 	// now update the GUI controls
 	m_ui->lineEditName->setString(bc->m_displayName);
 
-	m_ui->lineEditHeatTransferCoefficient->setValue(bc->m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value);
-	m_ui->lineEditSolarAbsorptionCoefficient->setValue(bc->m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].value);
-	m_ui->lineEditLongWaveEmissivity->setValue(bc->m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value);
-	//ToDo wie greife ich auf ein item zu das im
-
 	m_ui->comboBoxHeatTransferCoeffModelType->blockSignals(true);
 	m_ui->comboBoxHeatTransferCoeffModelType->setCurrentIndex(m_ui->comboBoxHeatTransferCoeffModelType->findData(bc->m_heatConduction.m_modelType));
 	m_ui->comboBoxHeatTransferCoeffModelType->blockSignals(false);
@@ -102,6 +103,10 @@ void SVDBBoundaryConditionEditWidget::updateInput(int id) {
 	m_ui->comboBoxSWModelType->blockSignals(true);
 	m_ui->comboBoxSWModelType->setCurrentIndex(m_ui->comboBoxSWModelType->findData(bc->m_solarAbsorption.m_modelType));
 	m_ui->comboBoxSWModelType->blockSignals(false);
+
+	m_ui->lineEditHeatTransferCoefficient->setValue(bc->m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value);
+	m_ui->lineEditSolarAbsorptionCoefficient->setValue(bc->m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].value);
+	m_ui->lineEditLongWaveEmissivity->setValue(bc->m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value);
 
 	m_ui->pushButtonColor->blockSignals(true);
 	m_ui->pushButtonColor->setColor(m_current->m_color);
@@ -196,12 +201,24 @@ void SVDBBoundaryConditionEditWidget::on_lineEditLongWaveEmissivity_editingFinis
 void SVDBBoundaryConditionEditWidget::on_comboBoxHeatTransferCoeffModelType_currentIndexChanged(int index) {
 	Q_ASSERT(m_current != nullptr);
 	// update database but only if different from original
-	if (index != (int)m_current->m_heatConduction.m_modelType)
-	{
+	if (index != (int)m_current->m_heatConduction.m_modelType) {
 		m_current->m_heatConduction.m_modelType = static_cast<NANDRAD::InterfaceHeatConduction::modelType_t>(index);
 		m_db->m_boundaryConditions.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		emit tableDataChanged();
+	}
+	// by default disable all inputs
+	m_ui->labelHeatTransferCoefficient->setEnabled(false);
+	m_ui->lineEditHeatTransferCoefficient->setEnabled(false);
+	// enable/disable inputs based on selected model type, but only if our groupbox itself is enabled
+	if (m_ui->groupBox->isEnabled()) {
+		switch (m_current->m_heatConduction.m_modelType) {
+			case NANDRAD::InterfaceHeatConduction::MT_Constant:
+				m_ui->labelHeatTransferCoefficient->setEnabled(true);
+				m_ui->lineEditHeatTransferCoefficient->setEnabled(true);
+			break;
+			case NANDRAD::InterfaceHeatConduction::NUM_MT: break;
+		}
 	}
 }
 
