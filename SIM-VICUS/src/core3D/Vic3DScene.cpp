@@ -1144,10 +1144,6 @@ void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm) const {
 
 
 void Vic3DScene::deselectAll() {
-	// compose undo-action of objects currently selected
-	if (m_selectedGeometryObject.m_selectedObjects.empty())
-		return; // nothing selected, nothing to do
-
 	std::set<unsigned int> objIDs;
 	// add all selected objects, whether they are visible or not
 
