@@ -1019,6 +1019,8 @@ void Vic3DScene::generateBuildingGeometry() {
 
 
 void Vic3DScene::generateNetworkGeometry() {
+	QElapsedTimer t;
+	t.start();
 	// get VICUS project data
 	const VICUS::Project & p = project();
 
@@ -1046,7 +1048,7 @@ void Vic3DScene::generateNetworkGeometry() {
 		for (const VICUS::NetworkEdge & e : network.m_edges) {
 			double radius = e.m_visualizationRadius;
 			QColor pipeColor = Qt::red;
-			if (!e.m_visible || !network.m_visible || e.m_selected)
+			if (!e.m_visible || e.m_selected)
 				pipeColor.setAlpha(0);
 
 			m_networkGeometryObject.m_vertexStartMap[e.uniqueID()] = currentVertexIndex;
@@ -1073,6 +1075,7 @@ void Vic3DScene::generateNetworkGeometry() {
 		}
 	}
 
+	qDebug() << t.elapsed() << "ms for network generation";
 }
 
 
