@@ -28,6 +28,7 @@ signals:
 	void hideSelected();
 	void showSelected();
 	void selectAll();
+	void deselectAll();
 
 private slots:
 	void on_treeWidget_itemCollapsed(QTreeWidgetItem *item);
@@ -39,6 +40,8 @@ private slots:
 	void on_actionHideSelected_triggered();
 
 	void on_actionSelect_all_triggered();
+
+	void on_actionDeselect_all_triggered();
 
 private:
 	/*! Recursively collapses all children. */

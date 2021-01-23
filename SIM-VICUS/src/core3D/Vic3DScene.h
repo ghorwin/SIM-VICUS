@@ -72,6 +72,8 @@ public:
 	*/
 	void setViewState(const SVViewState & vs);
 
+	/*! Select all objects like surfaces, rooms, buildings, etc. */
+	void selectAll();
 	/*! When Escape was pressed, all selected objects become un-selected again. */
 	void deselectAll();
 	/*! Removes all selected geometry (creates an undo-action on the selected geometry). */
@@ -81,8 +83,6 @@ public:
 	/*! Shows all selected geometry. */
 	void hideSelected();
 
-	/*! Select all objects like surfaces, rooms, buildings, etc. */
-	void selectAll();
 
 	/*! Toggles "align coordinate system" mode on. */
 	void enterCoordinateSystemAdjustmentMode();

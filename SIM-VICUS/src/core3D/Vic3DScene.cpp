@@ -1146,6 +1146,25 @@ void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm) const {
 }
 
 
+void Vic3DScene::selectAll() {
+	std::set<const VICUS::Object *> selObjects;
+	// select all objects, wether they are selected already or not, and whether they are visible or not
+	project().selectObjects(selObjects, VICUS::Project::SG_All, false, false);
+
+	// get a list of IDs of nodes to be selected (only those who are not yet selected)
+	std::set<unsigned int> nodeIDs;
+	for (const VICUS::Object * o : selObjects) {
+		if (!o->m_selected)
+			nodeIDs.insert(o->uniqueID());
+	}
+
+	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("All objects selected"),
+														 SVUndoTreeNodeState::SelectedState, nodeIDs, true);
+	// select all
+	undo->push();
+}
+
+
 void Vic3DScene::deselectAll() {
 	std::set<unsigned int> objIDs;
 	// add all selected objects, whether they are visible or not
@@ -1251,25 +1270,6 @@ void Vic3DScene::hideSelected() {
 														   selectedObjectIDs,
 														   false);
 	action->push();
-}
-
-
-void Vic3DScene::selectAll() {
-	std::set<const VICUS::Object *> selObjects;
-	// select all objects, wether they are selected already or not, and whether they are visible or not
-	project().selectObjects(selObjects, VICUS::Project::SG_All, false, false);
-
-	// get a list of IDs of nodes to be selected (only those who are not yet selected)
-	std::set<unsigned int> nodeIDs;
-	for (const VICUS::Object * o : selObjects) {
-		if (!o->m_selected)
-			nodeIDs.insert(o->uniqueID());
-	}
-
-	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("All objects selected"),
-														 SVUndoTreeNodeState::SelectedState, nodeIDs, true);
-	// select all
-	undo->push();
 }
 
 

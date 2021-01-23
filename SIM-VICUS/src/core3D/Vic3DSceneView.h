@@ -51,8 +51,11 @@ public slots:
 	/*! Action to delete all selected objects. */
 	void onDeleteSelected();
 
-	/*! Action to show all selected objects. */
+	/*! Action to select all objects. */
 	void onSelectAll();
+
+	/*! Action to deselect all selected objects. */
+	void onDeselectAll();
 
 signals:
 	/*! Emitted when numbers where typed.

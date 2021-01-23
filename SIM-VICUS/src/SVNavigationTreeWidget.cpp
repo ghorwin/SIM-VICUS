@@ -29,6 +29,8 @@ SVNavigationTreeWidget::SVNavigationTreeWidget(QWidget *parent) :
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVNavigationTreeWidget::onModified);
+
+	addAction(m_ui->actionDeselect_all);
 }
 
 
@@ -238,4 +240,8 @@ void SVNavigationTreeWidget::on_actionHideSelected_triggered() {
 
 void SVNavigationTreeWidget::on_actionSelect_all_triggered() {
 	emit selectAll();
+}
+
+void SVNavigationTreeWidget::on_actionDeselect_all_triggered() {
+	emit deselectAll();
 }
