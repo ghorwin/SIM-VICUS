@@ -216,6 +216,8 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 		m_selectedGeometryObject.create(m_fixedColorTransformShader);
 		m_selectedGeometryObject.updateBuffers();
 
+		// TODO : Stephan, move the bounding box calculation code and m_propEditGeometryWidget update to SVPropEditGeometry and call this from
+		//        SVPropertyWidget::onModified()
 		// if we are in "Geometry editing" mode, we also show and update the property widget
 		SVViewState vs = SVViewStateHandler::instance().viewState();
 		if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
@@ -248,6 +250,8 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 				vs.m_sceneOperationMode = SVViewState::NUM_OM;
 				vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
 			}
+
+
 			// now tell all UI components to toggle their view state
 			SVViewStateHandler::instance().setViewState(vs);
 		}
