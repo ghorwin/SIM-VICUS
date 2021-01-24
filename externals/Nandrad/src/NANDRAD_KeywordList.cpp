@@ -1155,29 +1155,29 @@ namespace NANDRAD {
 			// InterfaceHeatConduction::para_t
 			case 14 :
 			switch (t) {
-				case 0 : return "Constant heat transfer coefficient";
+				case 0 : return "Convective heat transfer coefficient";
 			} break;
 			// InterfaceLongWaveEmission::modelType_t
 			case 15 :
 			switch (t) {
-				case 0 : return "Constant model.";
+				case 0 : return "Constant model";
 				case 1 : return "No long wave radiation exchange";
 			} break;
 			// InterfaceLongWaveEmission::para_t
 			case 16 :
 			switch (t) {
-				case 0 : return "Constant Long wave emissivity.";
+				case 0 : return "Long wave emissivity";
 			} break;
 			// InterfaceSolarAbsorption::modelType_t
 			case 17 :
 			switch (t) {
-				case 0 : return "Constant model.";
+				case 0 : return "Constant model";
 				case 1 : return "No short wave radiation exchange";
 			} break;
 			// InterfaceSolarAbsorption::para_t
 			case 18 :
 			switch (t) {
-				case 0 : return "Constant Absorption coefficient [0,...,1].";
+				case 0 : return "Solar absorption coefficient";
 			} break;
 			// InterfaceVaporDiffusion::para_t
 			case 19 :

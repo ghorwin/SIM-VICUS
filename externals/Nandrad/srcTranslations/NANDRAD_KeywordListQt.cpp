@@ -75,13 +75,13 @@ KeywordListQt::KeywordListQt() {
 	tr("Use results from external wind flow calculation.");
 	tr("Constant heat exchange coefficient");
 	tr("No convective heat exchange");
-	tr("Constant heat transfer coefficient");
-	tr("Constant model.");
+	tr("Convective heat transfer coefficient");
+	tr("Constant model");
 	tr("No long wave radiation exchange");
-	tr("Constant Long wave emissivity.");
-	tr("Constant model.");
+	tr("Long wave emissivity");
+	tr("Constant model");
 	tr("No short wave radiation exchange");
-	tr("Constant Absorption coefficient [0,...,1].");
+	tr("Solar absorption coefficient");
 	tr("Vapor Transfer Coefficient.");
 	tr("Constant model.");
 	tr("Constant internal loads");
