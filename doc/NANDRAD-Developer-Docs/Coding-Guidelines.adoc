@@ -55,6 +55,40 @@ Also, some of the naming conventions below help in an IDE to be fast, for exampl
 - File name pattern:   `<lib>_<NameInCamelCase>.*`, for example: `IBK_ArgsParser.h` or `NANDRAD_Project.h`
 - Header guards: `#ifndef <filenameWithoutExtension>H`, example: `#ifndef NANDRAD_ArgsParserH`
 
+[TIP]
+====
+
+**Rationale**
+
+When header guards, filenames and class names use all the same strings (case-sensitive same strings), this makes refactoring a lot easier! And refactoring is something we need to do quite often. For example, if you need to fix a spelling mistake in:
+
+[source,c++]
+----
+NANDRAD_GlasingModel.h
+
+with 
+
+#ifndef NANDRAD_GlasingModelH
+#define NANDRAD_GlasingModelH
+
+...
+
+namespace NANDRAD {
+
+class GlasingModel {
+
+...
+
+}; // GlasingModel
+
+} // namespace NANDRAD
+
+#endif // NANDRAD_GlasingModelH
+
+----
+and similar for `NANDRAD_GlasingModel.cpp`, renaming everything in a consistent way is just a matter of search and replace "GlasingModel" with, for example, "GlazingSystem". This way you will not forget to rename include guards or comments - something, that otherwise happens very freqently during refactoring. 
+====
+
 ## Namespaces
 
 Each library has its own namespace, matching the file prefix. Example: `NANDRAD::Project` get `NANDRAD_Project.h`
@@ -399,4 +433,21 @@ You can use one of the provided code model configurations, but that might lead t
 
 ## Efficient use of the Qt Creator IDE
 
-... TODO ... (maybe a video will be better?)
+- Use F2 to lookup declaration/definitions of symbols (that means: variable, function declaration, type, ...)
+- Use F4 to switch between header and cpp file
+- Use Shift-F4 to switch between UI-designer and h/cpp file
+- Ctrl+Shift+R - rename symbol using refacturing (i.e. everywhere that this symbol occurs in the source code)
+- "Alle Verweise" anzeigen im Kontextmenü (wenn man auf ein Symbol rechts-klickt)
+
+### Refactoring feature
+
+See https://doc.qt.io/qtcreator/creator-editor-refactoring.html for a comprehensive list!
+
+Make use of the refactoring feature (right-click on a symbol/variable/function/switch...) and select "Refacture" in the context menu.
+
+Useful features are:
+
+- add definition in C++-File (when clicking on a function declaration)
+- add getter/setter functions (when clicking on a member variable with m_xxxYyyyZzzz naming)
+- complete switch clause (when clicking on a switch clause)
+- rename (Ctrl+Shift+R shortcut) 
