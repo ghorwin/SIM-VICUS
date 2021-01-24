@@ -56,6 +56,7 @@ SVPropBuildingEditWidget::~SVPropBuildingEditWidget() {
 
 
 void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
+	m_propertyType = buildingPropertyType;
 	m_ui->stackedWidget->setCurrentIndex(0);
 	const SVDatabase & db = SVSettings::instance().m_db;
 	switch ((BuildingPropertyTypes)buildingPropertyType) {
@@ -183,16 +184,34 @@ void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
 			}
 		} break;
 	}
+	// finally update everything related to selection
+	objectSelectionChanged();
 }
 
 
 void SVPropBuildingEditWidget::onModified(int modificationType, ModificationInfo * data) {
-	// react on selection changes only, then update propertiess
+	// react on selection changes only, then update properties
+	switch ((SVProjectHandler::ModificationTypes)modificationType) {
+		case SVProjectHandler::AllModified:
+		case SVProjectHandler::BuildingGeometryChanged:
+		case SVProjectHandler::ComponentInstancesModified:
+		case SVProjectHandler::NodeStateModified:
+			// the selection has changed, update widgets related to selection
+			setPropertyType(m_propertyType);
+		break;
+	}
 }
 
 
 void SVPropBuildingEditWidget::on_toolButtonEdit_clicked() {
+	const VICUS::Component * comp = currentlySelectedComponent();
+	Q_ASSERT(comp != nullptr); // if nullptr, the button should be disabled!
+	SVMainWindow::instance().dbComponentEditDialog()->edit();
+	// TODO : signal a "recoloring needed" signal to scene in case any of the colors have changed
+	// update table (in case user has deleted some components or changed colors
+	setPropertyType(BT_Components); // Note: this invalidates "comp"!
 
+	// Note: project data isn't modified, since only user DB data was changed.
 }
 
 
@@ -272,5 +291,49 @@ const VICUS::Component * SVPropBuildingEditWidget::currentlySelectedComponent() 
 	std::map<const VICUS::Component*, std::vector<const VICUS::Surface *> >::const_iterator cit = m_componentSurfacesMap.begin();
 	std::advance(cit, r);
 	return cit->first;
+}
+
+void SVPropBuildingEditWidget::objectSelectionChanged() {
+	switch ((BuildingPropertyTypes)m_propertyType) {
+		case BT_Components: {
+			// process all selected surfaces and determine which component they have assigned
+			std::vector<const VICUS::Surface*> surfaces;
+			project().selectedSurfaces(surfaces);
+			if (surfaces.empty()) {
+				m_ui->labelSelectedComponents->setText("");
+				m_ui->groupBoxSelectedComponent->setEnabled(false);
+				return;
+			}
+			m_ui->groupBoxSelectedComponent->setEnabled(true);
+			std::set<const VICUS::Component *> selectedComponents;
+			const SVDatabase & db = SVSettings::instance().m_db;
+			for (const VICUS::Surface* s : surfaces) {
+				if (s->m_componentInstance != nullptr) {
+					const VICUS::Component * surfcomp = db.m_components[s->m_componentInstance->m_componentID];
+					selectedComponents.insert(surfcomp);
+				}
+			}
+			if (selectedComponents.empty()) {
+				m_ui->labelSelectedComponents->setText(tr("No components"));
+			}
+			else if (selectedComponents.size() == 1) {
+				m_ui->labelSelectedComponents->setText(tr("Component %1 [%2]")
+				   .arg(VICUS::MultiLangString2QString((*selectedComponents.begin())->m_displayName)).arg((*selectedComponents.begin())->m_id));
+			}
+			else {
+				m_ui->labelSelectedComponents->setText(tr("%1 different components")
+				   .arg(selectedComponents.size()));
+			}
+		} break;
+
+		case BT_ComponentOrientation:
+			// TODO : Andreas
+		break;
+
+		case BT_BoundaryConditions:
+			// TODO : Andreas
+		break;
+	}
+
 }
 

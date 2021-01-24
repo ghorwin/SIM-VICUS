@@ -121,6 +121,10 @@ void SVPropertyWidget::onModified(int modificationType, ModificationInfo * ) {
 			m_propModeSelectionWidget->selectionChanged();
 			// Note: the call above may results in a view state change, when the selection causes
 			//		 the network property selection to change.
+
+			// Note: the individual property widgets should listen themselves to onModified() signals
+			//		 and react on selection/visibility changed signals accordingly. Alternatively,
+			//		 the modification info can be triggered from here as well, but not both at the same time.
 		break;
 
 		default: ; // just to make compiler happy

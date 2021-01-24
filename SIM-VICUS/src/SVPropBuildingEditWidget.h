@@ -64,10 +64,17 @@ private:
 	/*! Returns a pointer to the currently selected component in the component table. */
 	const VICUS::Component * currentlySelectedComponent() const;
 
-	Ui::SVPropBuildingEditWidget *m_ui;
+	/*! Called when the visibility/selection state of objects has changed.
+		Updates the selection-specific properties.
+	*/
+	void objectSelectionChanged();
 
+	Ui::SVPropBuildingEditWidget	*m_ui;
+
+	/*! Stores the current property type (set in setPropertyType()). */
+	int								m_propertyType = -1;
 	/*! This maps holds component->surface associations when in BM_Components mode. */
-	std::map<const VICUS::Component*, std::vector<const VICUS::Surface *> > m_componentSurfacesMap;
+	std::map<const VICUS::Component*, std::vector<const VICUS::Surface *> >			m_componentSurfacesMap;
 	std::map<const VICUS::BoundaryCondition*, std::vector<const VICUS::Surface *> > m_bcSurfacesMap;
 
 };
