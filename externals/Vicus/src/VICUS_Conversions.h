@@ -5,6 +5,7 @@
 #include <QVector4D>
 #include <IBKMK_Vector3D.h>
 #include <QColor>
+#include <IBK_MultiLanguageString.h>
 
 namespace VICUS {
 
@@ -30,6 +31,9 @@ inline QString IBKVector2String(const IBKMK::Vector3D & v) {
 	return QString("[%1,%2,%3]").arg(v.m_x).arg(v.m_y).arg(v.m_z);
 }
 
+inline QString MultiLangString2QString(const IBK::MultiLanguageString & mls) {
+	return QString::fromStdString(mls.string(IBK::MultiLanguageString::m_language, "en"));
+}
 
 } // VICUS
 
