@@ -50,15 +50,27 @@ public slots:
 	void onModified( int modificationType, ModificationInfo * data );
 
 private slots:
-	void on_toolButtonEdit_clicked();
 
+	// *** Component property mode ***
+
+	/*! Launches component db edit dialog. */
 	void on_pushButtonEditComponents_clicked();
 
+	/*! Action to swap all occurances of currently selected component with newly selected component. */
 	void on_pushButtonExchangeComponents_clicked();
 
+	/*! Triggered when user switches component in table. */
 	void on_tableWidgetComponents_itemSelectionChanged();
 
+	/*! All surfaces that reference the currently selected component (in the table) will be selected. */
 	void on_pushButtonSelectObjectsWithComponent_clicked();
+
+	/*! The user selects a component from the database and this will be assigned to all selected surfaces,
+		possibly overwriting previously assigned components.
+		If a surface does not yet have an association to a ComponentInstance, a new one will be created
+		where the selected surface is assigned to side A.
+	*/
+	void on_pushButtonAssignComponent_clicked();
 
 private:
 	/*! Returns a pointer to the currently selected component in the component table. */

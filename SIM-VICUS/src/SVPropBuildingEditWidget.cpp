@@ -203,23 +203,12 @@ void SVPropBuildingEditWidget::onModified(int modificationType, ModificationInfo
 }
 
 
-void SVPropBuildingEditWidget::on_toolButtonEdit_clicked() {
-	const VICUS::Component * comp = currentlySelectedComponent();
-	Q_ASSERT(comp != nullptr); // if nullptr, the button should be disabled!
-	SVMainWindow::instance().dbComponentEditDialog()->edit();
-	// TODO : signal a "recoloring needed" signal to scene in case any of the colors have changed
-	// update table (in case user has deleted some components or changed colors
-	setPropertyType(BT_Components); // Note: this invalidates "comp"!
-
-	// Note: project data isn't modified, since only user DB data was changed.
-}
-
-
 void SVPropBuildingEditWidget::on_pushButtonEditComponents_clicked() {
 	SVMainWindow::instance().dbComponentEditDialog()->edit();
 	// TODO : signal a "recoloring needed" signal to scene in case any of the colors have changed
 	// update table (in case user has deleted some components or changed colors
 	setPropertyType(BT_Components);
+	// Note: project data isn't modified, since only user DB data was changed.
 }
 
 
@@ -337,3 +326,53 @@ void SVPropBuildingEditWidget::objectSelectionChanged() {
 
 }
 
+
+void SVPropBuildingEditWidget::on_pushButtonAssignComponent_clicked() {
+	// ask user to select a new component
+	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoAssignComponent",
+		tr("Assign component"), tr("You may now select a component from the component database, which will then be"
+								   "assigned to all selected surfaces."));
+	int newId = SVMainWindow::instance().dbComponentEditDialog()->select(0);
+	if (newId == -1)
+		return; // user aborted the dialog
+
+	std::vector<const VICUS::Surface*> surfaces;
+	project().selectedSurfaces(surfaces);
+	Q_ASSERT(!surfaces.empty());
+	std::set<const VICUS::Surface*> selSurfaces(surfaces.begin(), surfaces.end());
+
+	// now create a copy of the currently defined componentInstances
+	std::vector<VICUS::ComponentInstance> compInstances = project().m_componentInstances;
+	// process all componentInstances and for all that reference any of the selected surfaces, replace component
+	for (VICUS::ComponentInstance & ci : compInstances) {
+		std::set<const VICUS::Surface*>::iterator it = selSurfaces.find(ci.m_sideASurface);
+		if (it != selSurfaces.end()) {
+			ci.m_componentID = (unsigned int)newId;
+			selSurfaces.erase(it);
+			continue;
+		}
+		it = selSurfaces.find(ci.m_sideBSurface);
+		if (it != selSurfaces.end()) {
+			ci.m_componentID = (unsigned int)newId;
+			selSurfaces.erase(it);
+		}
+	}
+
+	// now all surfaces still left in selSurfaces are not yet referenced in ComponentInstances
+	// hence, we need to create a new componentInstance for each of them
+	if (!selSurfaces.empty()) {
+		unsigned int nextId = VICUS::Project::largestUniqueId(compInstances);
+		for (const VICUS::Surface * s : selSurfaces) {
+			VICUS::ComponentInstance c;
+			c.m_id = nextId++;
+			c.m_sideASurfaceID = s->m_id;
+			c.m_componentID = (unsigned int)newId;
+			compInstances.push_back(c);
+		}
+	}
+
+	// create the undo action and modify project
+	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Components assigned"), compInstances);
+	undo->push();
+
+}
