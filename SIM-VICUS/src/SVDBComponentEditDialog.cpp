@@ -64,6 +64,8 @@ void SVDBComponentEditDialog::edit(unsigned int initialId) {
 		if (proxyIndex.isValid())
 			m_ui->tableView->setCurrentIndex(proxyIndex);
 	}
+	else
+		onCurrentIndexChanged(QModelIndex(), QModelIndex());
 
 	m_ui->tableView->resizeColumnsToContents();
 
@@ -87,8 +89,11 @@ int SVDBComponentEditDialog::select(unsigned int initialId) {
 		if (proxyIndex.isValid())
 			m_ui->tableView->setCurrentIndex(proxyIndex);
 	}
+	else
+		onCurrentIndexChanged(QModelIndex(), QModelIndex());
 
 	m_ui->tableView->resizeColumnsToContents();
+
 
 	int res = exec();
 	if (res == QDialog::Accepted) {

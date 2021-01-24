@@ -114,6 +114,14 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			updateSelection = true;
 			break;
 
+		case SVProjectHandler::ComponentInstancesModified : {
+			const SVViewState & vs = SVViewStateHandler::instance().viewState();
+			if (vs.m_viewMode == SVViewState::VM_PropertyEditMode) {
+				recolorObjects(vs.m_objectColorMode);
+			}
+			return;
+		}
+
 		// *** selection and visibility properties changed ***
 		case SVProjectHandler::NodeStateModified : {
 			// we need to implement the following logic:
