@@ -129,8 +129,8 @@ void SVDialogHydraulicComponents::updateTableView()
 }
 
 
-void SVDialogHydraulicComponents::modifyComponent()
-{
+
+void SVDialogHydraulicComponents::modifyComponent() {
 	const VICUS::Network * network = currentNetwork();
 	HydraulicComponentItem *item = dynamic_cast<HydraulicComponentItem* >(m_ui->listWidget->currentItem());
 	const NANDRAD::HydraulicNetworkComponent *tmpComp = VICUS::Project::element(network->m_hydraulicComponents, item->id());
@@ -146,24 +146,26 @@ void SVDialogHydraulicComponents::modifyComponent()
 	if (component.m_modelType == NANDRAD::HydraulicNetworkComponent::NUM_MT)
 		return;
 
-	SVUndoModifyNetworkHydraulicComponent *undo = new SVUndoModifyNetworkHydraulicComponent("modified comp",
-																							network->m_id, component);
+	// get index of modified component
+	unsigned int compIndex = std::distance(&network->m_hydraulicComponents.front(), tmpComp);
+	SVUndoModifyNetworkHydraulicComponent *undo = new SVUndoModifyNetworkHydraulicComponent(
+				"Modified network component", network->m_id, compIndex, component);
 	undo->push();
 
 	updateComponent();
 }
 
 
-void SVDialogHydraulicComponents::modifyTableView()
-{
+void SVDialogHydraulicComponents::modifyTableView() {
 	HydraulicComponentItem *item = dynamic_cast<HydraulicComponentItem* >(m_ui->listWidget->currentItem());
 	const VICUS::Network * network = currentNetwork();
 	const NANDRAD::HydraulicNetworkComponent *tmpComp = VICUS::Project::element(network->m_hydraulicComponents, item->id());
 	IBK_ASSERT(tmpComp != nullptr);
 	NANDRAD::HydraulicNetworkComponent component = *tmpComp;
 	m_componentParModel->getComponentParameter(component.m_para);
-	SVUndoModifyNetworkHydraulicComponent *undo = new SVUndoModifyNetworkHydraulicComponent("modified comp",
-																							network->m_id, component);
+	unsigned int compIndex = std::distance(&network->m_hydraulicComponents.front(), tmpComp);
+	SVUndoModifyNetworkHydraulicComponent *undo = new SVUndoModifyNetworkHydraulicComponent(
+				"Modified network component", network->m_id, compIndex, component);
 	undo->push();
 }
 
@@ -187,9 +189,10 @@ void SVDialogHydraulicComponents::addComponent(const std::string & name, const N
 	component.m_displayName = name;
 	component.m_id = id;
 
-	SVUndoModifyNetworkHydraulicComponent *undo = new SVUndoModifyNetworkHydraulicComponent("modified comp",
-																							network->m_id, component);
-	undo->push();
+	// TODO : Hauke, add and use new undo action "SVUndoAddNetworkHydraulicComponent"
+//	SVUndoModifyNetworkHydraulicComponent *undo = new SVUndoModifyNetworkHydraulicComponent("modified comp",
+//																							network->m_id, component);
+//	undo->push();
 
 	updateComponent();
 }

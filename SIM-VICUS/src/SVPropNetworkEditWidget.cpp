@@ -281,7 +281,8 @@ void SVPropNetworkEditWidget::modifySizingParams()
 									 m_ui->doubleSpinBoxTemperatureDifference->value());
 	VICUS::KeywordList::setParameter(m_network.m_sizingPara, "Network::SizingParam", VICUS::Network::SP_MaxPressureLoss,
 									 m_ui->doubleSpinBoxMaximumPressureLoss->value());
-	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
+	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentNetwork);
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Network sizing parameters modified"), networkIndex, m_network);
 	undo->push(); // modifies project and updates views
 }
 
@@ -389,7 +390,8 @@ void SVPropNetworkEditWidget::on_horizontalSliderScaleNodes_valueChanged(int val
 	if (!setNetwork())
 		return;
 	m_network.m_scaleNodes = value;
-	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
+	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentNetwork);
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Network visualization properties updated"), networkIndex, m_network);
 	undo->push(); // modifies project and updates views
 }
 
@@ -398,7 +400,8 @@ void SVPropNetworkEditWidget::on_horizontalSliderScaleEdges_valueChanged(int val
 	if (!setNetwork())
 		return;
 	m_network.m_scaleEdges = value;
-	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
+	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentNetwork);
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Network visualization properties updated"), networkIndex, m_network);
 	undo->push(); // modifies project and updates views
 }
 
@@ -451,7 +454,8 @@ void SVPropNetworkEditWidget::on_pushButtonSizePipeDimensions_clicked()
 		throw IBK::Exception(IBK::FormatString("Could not find fluid with id %1 in fluid database")
 							.arg(m_network.m_fluidID), FUNC_ID);
 	m_network.sizePipeDimensions(fluid);
-	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
+	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentNetwork);
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Network modified"), networkIndex, m_network);
 	undo->push(); // modifies project and updates views
 	updateNetworkProperties();
 	updateSizingParams();
@@ -463,7 +467,8 @@ void SVPropNetworkEditWidget::on_pushButtonGenerateIntersections_clicked()
 		return;
 	m_network.updateNodeEdgeConnectionPointers();
 	m_network.generateIntersections();
-	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
+	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentNetwork);
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Network modified"), networkIndex, m_network);
 	undo->push(); // modifies project and updates views
 	updateNetworkProperties();
 }
@@ -474,7 +479,8 @@ void SVPropNetworkEditWidget::on_pushButtonConnectBuildings_clicked()
 		return;
 	m_network.updateNodeEdgeConnectionPointers();
 	m_network.connectBuildings(false);
-	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), m_network);
+	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentNetwork);
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Network modified"), networkIndex, m_network);
 	undo->push(); // modifies project and updates views
 	updateNetworkProperties();
 }
@@ -487,7 +493,8 @@ void SVPropNetworkEditWidget::on_pushButtonReduceDeadEnds_clicked()
 	tmp.clear();
 	m_network.updateNodeEdgeConnectionPointers();
 	m_network.cleanDeadEnds(tmp);
-	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified network"), tmp);
+	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentNetwork);
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Network modified"), networkIndex, m_network);
 	undo->push(); // modifies project and updates views
 	updateNetworkProperties();
 }
@@ -499,7 +506,8 @@ void SVPropNetworkEditWidget::on_pushButtonReduceRedundantNodes_clicked()
 
 	// set current network invisible
 	m_network.m_visible = false;
-	SVUndoModifyExistingNetwork * undoMod = new SVUndoModifyExistingNetwork(tr("mod network"), m_network);
+	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentNetwork);
+	SVUndoModifyExistingNetwork * undoMod = new SVUndoModifyExistingNetwork(tr("Network modified"), networkIndex, m_network);
 	undoMod->push(); // modifies project and updates views
 
 	// make copy with reduced edges
@@ -532,7 +540,8 @@ void SVPropNetworkEditWidget::modifyEdgeProperty(TEdgeProp property, const Tval 
 		Q_ASSERT(edge != nullptr);
 		edge->*property = value;
 	}
-	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified edge"), m_network);
+	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentNetwork);
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Network modified"), networkIndex, m_network);
 	undo->push(); // modifies project and updates views
 	return;
 }
@@ -550,7 +559,8 @@ void SVPropNetworkEditWidget::modifyNodeProperty(TNodeProp property, const Tval 
 		m_network.m_nodes[nodeConst->m_id].*property = value;
 	}
 	m_network.updateNodeEdgeConnectionPointers();
-	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("modified node"), m_network);
+	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentNetwork);
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Network modified"), networkIndex, m_network);
 	undo->push(); // modifies project and updates views
 }
 

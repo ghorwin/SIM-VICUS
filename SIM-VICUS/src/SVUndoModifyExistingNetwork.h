@@ -1,5 +1,5 @@
-#ifndef SVUNDOMODIFYEXISTINGNETWORK_H
-#define SVUNDOMODIFYEXISTINGNETWORK_H
+#ifndef SVUndoModifyExistingNetworkH
+#define SVUndoModifyExistingNetworkH
 
 #include <VICUS_Network.h>
 
@@ -8,20 +8,17 @@
 class SVUndoModifyExistingNetwork : public SVUndoCommandBase {
 	Q_DECLARE_TR_FUNCTIONS(SVUndoModifyExistingNetwork)
 public:
-	SVUndoModifyExistingNetwork(const QString & label, const VICUS::Network & modNetwork);
+	SVUndoModifyExistingNetwork(const QString & label, unsigned int networkIndex, const VICUS::Network & modNetwork);
 
 	virtual void undo();
 	virtual void redo();
 
 private:
 
+	/*! Index of modified network. */
+	unsigned int m_networkIndex;
 	/*! Cache for added network. */
-	VICUS::Network	m_oldNetwork;
-	VICUS::Network	m_newNetwork;
-
-	double			m_gridWidth;
-	double			m_gridSpacing;
-	double			m_farDistance;
+	VICUS::Network	m_network;
 };
 
-#endif // SVUNDOMODIFYEXISTINGNETWORK_H
+#endif // SVUndoModifyExistingNetworkH
