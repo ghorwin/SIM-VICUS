@@ -6,6 +6,7 @@
 
 #include "SVUndoCommandBase.h"
 
+/*! Modification of component instances (associations between surfaces and components). */
 class SVUndoModifyComponentInstances : public SVUndoCommandBase {
 	Q_DECLARE_TR_FUNCTIONS(SVUndoModifyComponentInstances)
 public:

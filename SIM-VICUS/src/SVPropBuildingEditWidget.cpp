@@ -6,13 +6,14 @@
 
 #include "SVViewStateHandler.h"
 #include "SVProjectHandler.h"
-#include "SVUndoSiteDataChanged.h"
 #include "SVConstants.h"
 #include "SVStyle.h"
 #include "SVSettings.h"
 #include "SVMainWindow.h"
 #include "SVDBComponentEditDialog.h"
+
 #include "SVUndoTreeNodeState.h"
+#include "SVUndoModifyComponentInstances.h"
 
 SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	QWidget(parent),
@@ -234,7 +235,8 @@ void SVPropBuildingEditWidget::on_pushButtonExchangeComponents_clicked() {
 			ci.m_componentID = (unsigned int)newId;
 	}
 	// create the undo action and modify project
-
+	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Components exchanged"), modCI);
+	undo->push();
 }
 
 
