@@ -96,7 +96,7 @@ private:
 	void generateNetworkGeometry();
 
 	/*! Processes all surfaces and assigns colors based on current object color mode. */
-	void recolorObjects(SVViewState::ObjectColorMode ocm) const;
+	void recolorObjects(SVViewState::ObjectColorMode ocm, int id) const;
 
 	/*! Mouse pick handler: collects all pickable objects/surfaces/planes along the line-of-sight and stores all possible
 		pick candidates in pickObject.
@@ -240,6 +240,7 @@ private:
 		to prevent excessive updates of geometry when unrelated view state properties change.
 	*/
 	SVViewState::ObjectColorMode	m_lastColorMode = SVViewState::OCM_None;
+	int								m_lastColorObjectID = 0;
 
 	// vector with drawing helping planes
 	std::vector<VICUS::PlaneGeometry>	m_gridPlanes;

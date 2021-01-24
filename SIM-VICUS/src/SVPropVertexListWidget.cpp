@@ -465,7 +465,7 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 				qDebug() << "Inverted\n" << dotProduct;
 			}
 
-			std::vector<VICUS::ComponentInstance> components;
+			std::vector<VICUS::ComponentInstance> componentInstances;
 			VICUS::Room r;
 			r.m_displayName = m_ui->lineEditName->text().trimmed();
 			// now we can create the surfaces for top and bottom
@@ -488,15 +488,15 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 
 			sFloor.updateColor();
 			// get the smallest yet free ID for component instances/construction instances
-			unsigned int conInstID = 1000;
-			for (const VICUS::ComponentInstance & cinst : project().m_componentInstances)
-				conInstID = std::max(conInstID, cinst.m_id);
-			components.push_back(VICUS::ComponentInstance(++conInstID,
-				 m_ui->comboBoxComponentFloor->currentData().toUInt(), VICUS::INVALID_ID, sFloor.m_id));
+			unsigned int conInstID = VICUS::Project::largestUniqueId(project().m_componentInstances);
+			// Note: surface is attached to "Side A"
+			componentInstances.push_back(VICUS::ComponentInstance(++conInstID,
+				 m_ui->comboBoxComponentFloor->currentData().toUInt(), sFloor.m_id, VICUS::INVALID_ID));
 
 			sCeiling.updateColor();
-			components.push_back(VICUS::ComponentInstance(++conInstID,
-				 m_ui->comboBoxComponentCeiling->currentData().toUInt(), VICUS::INVALID_ID, sCeiling.m_id));
+			// Note: surface is attached to "Side A"
+			componentInstances.push_back(VICUS::ComponentInstance(++conInstID,
+				 m_ui->comboBoxComponentCeiling->currentData().toUInt(), sCeiling.m_id, VICUS::INVALID_ID));
 
 			r.m_id = r.uniqueID();
 			r.m_surfaces.push_back(sFloor);
@@ -526,8 +526,9 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 				sWall.m_displayName = tr("Wall %1").arg(i+1);
 				sWall.m_geometry = VICUS::PlaneGeometry( VICUS::PlaneGeometry::T_Rectangle, p0, p1, p2);
 				sWall.updateColor();
-				components.push_back(VICUS::ComponentInstance(++conInstID,
-															  wallComponentID, VICUS::INVALID_ID, sWall.m_id));
+				// wall surface is attached to "Side A"
+				componentInstances.push_back(VICUS::ComponentInstance(++conInstID,
+															  wallComponentID, sWall.m_id, VICUS::INVALID_ID));
 
 				r.m_surfaces.push_back(sWall);
 			}
@@ -541,7 +542,7 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 			Q_ASSERT(buildingLevelUid != 0);
 			SVUndoAddZone * undo = new SVUndoAddZone(tr("Adding new zone '%1'").arg(r.m_displayName),
 													 buildingLevelUid,
-													 r, false, &components);
+													 r, false, &componentInstances);
 			undo->push();
 		}
 		break;

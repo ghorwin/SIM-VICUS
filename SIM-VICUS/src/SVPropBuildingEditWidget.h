@@ -72,6 +72,14 @@ private slots:
 	*/
 	void on_pushButtonAssignComponent_clicked();
 
+	void on_checkBoxShowAllComponentOrientations_toggled(bool checked);
+
+	void on_pushButtonAlignComponentToSideA_clicked();
+
+	void on_pushButtonAlignComponentToSideB_clicked();
+
+	void on_comboBoxComponentSelection_currentIndexChanged(int);
+
 private:
 	/*! Returns a pointer to the currently selected component in the component table. */
 	const VICUS::Component * currentlySelectedComponent() const;

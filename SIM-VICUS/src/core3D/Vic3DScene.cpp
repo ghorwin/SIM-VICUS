@@ -117,7 +117,7 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 		case SVProjectHandler::ComponentInstancesModified : {
 			const SVViewState & vs = SVViewStateHandler::instance().viewState();
 			if (vs.m_viewMode == SVViewState::VM_PropertyEditMode) {
-				recolorObjects(vs.m_objectColorMode);
+				recolorObjects(vs.m_objectColorMode, vs.m_colorModePropertyID);
 			}
 			return;
 		}
@@ -920,7 +920,9 @@ void Vic3DScene::setViewState(const SVViewState & vs) {
 	if (vs.m_viewMode == SVViewState::VM_PropertyEditMode) {
 		m_newGeometryObject.clear();
 		// update scene coloring if in property edit mode
-		if (m_lastColorMode != vs.m_objectColorMode) {
+		if (m_lastColorMode != vs.m_objectColorMode ||
+			m_lastColorObjectID != vs.m_colorModePropertyID)
+		{
 			colorUpdateNeeded = true;
 		}
 	}
@@ -944,7 +946,7 @@ void Vic3DScene::setViewState(const SVViewState & vs) {
 		if (vs.m_objectColorMode >= SVViewState::OCM_NodeComponent)
 			updateNetwork = true;
 
-		recolorObjects(vs.m_objectColorMode);
+		recolorObjects(vs.m_objectColorMode, vs.m_colorModePropertyID);
 		if (updateBuilding) {
 			qDebug() << "Updating surface coloring of buildings";
 			// TODO : Andreas, Performance update, only update and transfer color buffer
@@ -959,6 +961,7 @@ void Vic3DScene::setViewState(const SVViewState & vs) {
 		}
 
 		m_lastColorMode = vs.m_objectColorMode;
+		m_lastColorObjectID = vs.m_colorModePropertyID;
 	}
 }
 
@@ -1093,7 +1096,7 @@ void Vic3DScene::generateNetworkGeometry() {
 }
 
 
-void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm) const {
+void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm, int id) const {
 	// get VICUS project data
 	const VICUS::Project & p = project();
 
@@ -1147,14 +1150,16 @@ void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm) const {
 						ci.m_sideBSurface->m_color = comp->m_color;
 				break;
 				case SVViewState::OCM_ComponentOrientation:
-					/// \todo filter out only a single component
-
-					// color side A surfaces with blue,
-					// side B surfaces with orange
-					if (ci.m_sideASurface != nullptr)
-						ci.m_sideASurface->m_color = QColor(47,125,212);
-					if (ci.m_sideBSurface != nullptr)
-						ci.m_sideBSurface->m_color = QColor(255, 206, 48);
+					// color surfaces when either filtering is off (id == 0)
+					// or when component ID matches selected id
+					if (id == 0 || ci.m_componentID == id) {
+						// color side A surfaces with blue,
+						// side B surfaces with orange
+						if (ci.m_sideASurface != nullptr)
+							ci.m_sideASurface->m_color = QColor(47,125,212);
+						if (ci.m_sideBSurface != nullptr)
+							ci.m_sideBSurface->m_color = QColor(255, 206, 48);
+					}
 				break;
 				case SVViewState::OCM_BoundaryConditions:
 					if (ci.m_sideASurface != nullptr && comp->m_idSideABoundaryCondition != VICUS::INVALID_ID) {

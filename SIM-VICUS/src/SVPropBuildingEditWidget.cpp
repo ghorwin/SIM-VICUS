@@ -42,6 +42,11 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->tableWidgetBoundaryConditions->horizontalHeader()->resizeSection(0,20);
 	m_ui->tableWidgetBoundaryConditions->horizontalHeader()->setStretchLastSection(true);
 
+	// init widget to correct initial state
+	m_ui->labelComponentSelection->setEnabled(false);
+	m_ui->comboBoxComponentSelection->setEnabled(false);
+
+
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropBuildingEditWidget::onModified);
 
@@ -59,37 +64,39 @@ void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
 	m_propertyType = buildingPropertyType;
 	m_ui->stackedWidget->setCurrentIndex(0);
 	const SVDatabase & db = SVSettings::instance().m_db;
+
+	// get all visible "building" type objects in the scene
+	std::set<const VICUS::Object * > objs;
+	project().selectObjects(objs, VICUS::Project::SG_Building, false, true);
+	// now build a map of component IDs versus visible surfaces
+	m_componentSurfacesMap.clear();
+	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+		// component ID assigned?
+		if (ci.m_componentID == VICUS::INVALID_ID)
+			continue; // no component, skip
+		// lookup component in DB
+		const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_componentID];
+		if (comp == nullptr) {
+			// invalid component ID... should we notify the user about that somehow?
+			// for now we keep the nullptr and use this to identify "invalid component" in the table
+		}
+		// side A
+		if (ci.m_sideASurface != nullptr) {
+			std::set<const VICUS::Object * >::const_iterator it_A = objs.find(ci.m_sideASurface);
+			if (it_A != objs.end())
+				m_componentSurfacesMap[comp].push_back(ci.m_sideASurface);
+		}
+		// side B
+		if (ci.m_sideBSurface != nullptr) {
+			std::set<const VICUS::Object * >::const_iterator it_B = objs.find(ci.m_sideBSurface);
+			if (it_B != objs.end())
+				m_componentSurfacesMap[comp].push_back(ci.m_sideBSurface);
+		}
+	}
+
 	switch ((BuildingPropertyTypes)buildingPropertyType) {
 		case BT_Components: {
 			m_ui->stackedWidget->setCurrentIndex(1);
-			// get all visible "building" type objects in the scene
-			std::set<const VICUS::Object * > objs;
-			project().selectObjects(objs, VICUS::Project::SG_Building, false, true);
-			// now build a map of component IDs versus visible surfaces
-			m_componentSurfacesMap.clear();
-			for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
-				// component ID assigned?
-				if (ci.m_componentID == VICUS::INVALID_ID)
-					continue; // no component, skip
-				// lookup component in DB
-				const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_componentID];
-				if (comp == nullptr) {
-					// invalid component ID... should we notify the user about that somehow?
-					// for now we keep the nullptr and use this to identify "invalid component" in the table
-				}
-				// side A
-				if (ci.m_sideASurface != nullptr) {
-					std::set<const VICUS::Object * >::const_iterator it_A = objs.find(ci.m_sideASurface);
-					if (it_A != objs.end())
-						m_componentSurfacesMap[comp].push_back(ci.m_sideASurface);
-				}
-				// side B
-				if (ci.m_sideBSurface != nullptr) {
-					std::set<const VICUS::Object * >::const_iterator it_B = objs.find(ci.m_sideBSurface);
-					if (it_B != objs.end())
-						m_componentSurfacesMap[comp].push_back(ci.m_sideBSurface);
-				}
-			}
 			// now put the data of the map into the table
 			m_ui->tableWidgetComponents->clearContents();
 			m_ui->tableWidgetComponents->setRowCount(m_componentSurfacesMap.size());
@@ -120,6 +127,17 @@ void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
 
 		case BT_ComponentOrientation:
 			m_ui->stackedWidget->setCurrentIndex(2);
+			m_ui->comboBoxComponentSelection->blockSignals(true);
+			m_ui->comboBoxComponentSelection->clear();
+			for (std::map<const VICUS::Component*, std::vector<const VICUS::Surface *> >::const_iterator
+				 it = m_componentSurfacesMap.begin(); it != m_componentSurfacesMap.end(); ++it)
+			{
+				if (it->first == nullptr)
+					return;
+				m_ui->comboBoxComponentSelection->addItem(QString::fromStdString(it->first->m_displayName.string(IBK::MultiLanguageString::m_language, "en")), it->first->m_id);
+			}
+			m_ui->comboBoxComponentSelection->setCurrentIndex(m_ui->comboBoxComponentSelection->count()-1);
+			m_ui->comboBoxComponentSelection->blockSignals(false);
 		break;
 
 		case BT_BoundaryConditions: {
@@ -377,4 +395,42 @@ void SVPropBuildingEditWidget::on_pushButtonAssignComponent_clicked() {
 	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Components assigned"), compInstances);
 	undo->push();
 
+}
+
+
+void SVPropBuildingEditWidget::on_checkBoxShowAllComponentOrientations_toggled(bool checked) {
+	m_ui->labelComponentSelection->setEnabled(!checked);
+	m_ui->comboBoxComponentSelection->setEnabled(!checked);
+	if (checked) {
+		SVViewState vs = SVViewStateHandler::instance().viewState();
+		vs.m_colorModePropertyID = 0; // disable filter
+		SVViewStateHandler::instance().setViewState(vs);
+	}
+	else {
+		on_comboBoxComponentSelection_currentIndexChanged(m_ui->comboBoxComponentSelection->currentIndex());
+	}
+}
+
+
+void SVPropBuildingEditWidget::on_pushButtonAlignComponentToSideA_clicked() {
+
+}
+
+
+void SVPropBuildingEditWidget::on_pushButtonAlignComponentToSideB_clicked() {
+
+}
+
+
+void SVPropBuildingEditWidget::on_comboBoxComponentSelection_currentIndexChanged(int index) {
+	// set index/id of selected component in view manager and update coloring
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	if (m_ui->comboBoxComponentSelection->currentIndex() == -1)
+		vs.m_colorModePropertyID = 0;
+	else
+		vs.m_colorModePropertyID = m_ui->comboBoxComponentSelection->currentData().toInt();
+	SVViewStateHandler::instance().setViewState(vs);
+	m_ui->comboBoxComponentSelection->blockSignals(true);
+	m_ui->comboBoxComponentSelection->setCurrentIndex(index);
+	m_ui->comboBoxComponentSelection->blockSignals(false);
 }
