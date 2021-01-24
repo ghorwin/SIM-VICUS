@@ -96,6 +96,7 @@ public:
 	/*! This function checks all surfaces in the project if they are selected or not.
 		\returns Returns true, if any surface is selected, and if so, stores the arithmetic average of all
 				 surface vertexes in variable centerPoint.
+		\todo Stephan, remove and use selectObjects() with subsequent bounding box calculation instead.
 	*/
 	bool haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const;
 
@@ -111,8 +112,10 @@ public:
 					   bool takeSelected,
 					   bool takeVisible) const;
 
-	/*! This function collects the pointers to all selected surfaces
-		\returns Returns true if any surface is selected
+	/*! This function collects the pointers to all selected surfaces.
+		This is a convenience function which essentially does the same as selectObjects, but
+		only returns visible and selected objects of type Surface.
+		\returns Returns true if any surface is selected (same as surfaces.size() > 0).
 	*/
 	bool selectedSurfaces(std::vector<const Surface*> & surfaces) const;
 

@@ -488,33 +488,17 @@ void Project::selectObjects(std::set<const Object*> &selectedObjs, SelectionGrou
 
 
 bool Project::selectedSurfaces(std::vector<const Surface*> &surfaces) const {
-	bool haveSelectedPolys = false;
+	std::set<const Object*> objs;
+	selectObjects(objs, SG_Building, true, true);
 
-	// we go through all dump surfaces in m_plaingeometry
-	// if surface is selected and visible, we store its coordinates and its coordinates count
-	for (const Surface &s : m_plainGeometry) {
-		if ( s.m_visible && s.m_selected ) {
-			!haveSelectedPolys ? haveSelectedPolys = true : haveSelectedPolys;
-			surfaces.push_back(&s);
-		}
+	surfaces.clear();
+	for (const Object * o : objs) {
+		const Surface * s = dynamic_cast<const Surface *>(o);
+		if (s != nullptr)
+			surfaces.push_back(s);
 	}
 
-	// we go through all surfaces inside the buildings
-	// if surface is selected and visible, we store its coordinates and its coordinates count
-	for (const  Building & b : m_buildings) {
-		for (const BuildingLevel & bl : b.m_buildingLevels) {
-			for (const Room & r : bl.m_rooms) {
-				for (const Surface & s : r.m_surfaces) {
-					if ( s.m_visible && s.m_selected ) {
-						!haveSelectedPolys ? haveSelectedPolys = true : haveSelectedPolys;
-						surfaces.push_back(&s);
-					}
-				}
-			}
-		}
-	}
-
-	return haveSelectedPolys;
+	return !surfaces.empty();
 }
 
 
