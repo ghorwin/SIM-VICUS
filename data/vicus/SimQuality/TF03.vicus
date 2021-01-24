@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<VicusProject fileVersion="0.2">
+	<ProjectInfo>
+		<Created>So. Jan. 24 20:48:25 2021</Created>
+		<LastEdited>So. Jan. 24 21:26:46 2021</LastEdited>
+	</ProjectInfo>
+	<Project>
+		<SolverParameter />
+		<SimulationParameter>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
+		<Location>
+			<TimeZone>13</TimeZone>
+		</Location>
+		<ViewSettings>
+			<GridSpacing>10</GridSpacing>
+			<GridWidth>100</GridWidth>
+			<CameraTranslation>-5.86307 -79.1167 36.886</CameraTranslation>
+			<RotationMatrix>
+				<Wp>0.823867</Wp>
+				<X>0.566376</X>
+				<Y>-0.0118244</Y>
+				<Z>-0.0175375</Z>
+			</RotationMatrix>
+			<FarDistance>1000</FarDistance>
+		</ViewSettings>
+		<Buildings>
+			<Building id="1" displayName="SimQuality Testhaus">
+				<BuildingLevels>
+					<BuildingLevel id="1" displayName="Erdgeschoss">
+						<Rooms>
+							<Room id="10" displayName="TF 03.1">
+								<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+								<Surfaces>
+									<Surface id="11" displayName="Floor">
+										<PlaneGeometry type="Rectangle">-20 5 0, -18 5 0, -18 0 0, -20 0 0</PlaneGeometry>
+									</Surface>
+									<Surface id="12" displayName="Ceiling">
+										<PlaneGeometry type="Rectangle">-20 0 3, -18 0 3, -18 5 3, -20 5 3</PlaneGeometry>
+									</Surface>
+									<Surface id="13" displayName="Wall 1">
+										<PlaneGeometry type="Rectangle">-20 5 0, -18 5 0, -18 5 3, -20 5 3</PlaneGeometry>
+									</Surface>
+									<Surface id="14" displayName="Wall 2">
+										<PlaneGeometry type="Rectangle">-18 5 0, -18 0 0, -18 0 3, -18 5 3</PlaneGeometry>
+									</Surface>
+									<Surface id="15" displayName="Wall 3">
+										<PlaneGeometry type="Rectangle">-18 0 0, -20 0 0, -20 0 3, -18 0 3</PlaneGeometry>
+									</Surface>
+									<Surface id="16" displayName="Wall 4">
+										<PlaneGeometry type="Rectangle">-20 0 0, -20 5 0, -20 5 3, -20 0 3</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="24" displayName="TF 03.2">
+								<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+								<Surfaces>
+									<Surface id="25" displayName="Floor">
+										<PlaneGeometry type="Rectangle">-10 5 0, -8 5 0, -8 0 0, -10 0 0</PlaneGeometry>
+									</Surface>
+									<Surface id="26" displayName="Ceiling">
+										<PlaneGeometry type="Rectangle">-10 0 3, -8 0 3, -8 5 3, -10 5 3</PlaneGeometry>
+									</Surface>
+									<Surface id="27" displayName="Wall 1">
+										<PlaneGeometry type="Rectangle">-10 5 0, -8 5 0, -8 5 3, -10 5 3</PlaneGeometry>
+									</Surface>
+									<Surface id="28" displayName="Wall 2">
+										<PlaneGeometry type="Rectangle">-8 5 0, -8 0 0, -8 0 3, -8 5 3</PlaneGeometry>
+									</Surface>
+									<Surface id="29" displayName="Wall 3">
+										<PlaneGeometry type="Rectangle">-8 0 0, -10 0 0, -10 0 3, -8 0 3</PlaneGeometry>
+									</Surface>
+									<Surface id="30" displayName="Wall 4">
+										<PlaneGeometry type="Rectangle">-10 0 0, -10 5 0, -10 5 3, -10 0 3</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="31" displayName="TF 03.3">
+								<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+								<Surfaces>
+									<Surface id="32" displayName="Floor">
+										<PlaneGeometry type="Rectangle">0 5 0, 2 5 0, 2 0 0, 0 0 0</PlaneGeometry>
+									</Surface>
+									<Surface id="33" displayName="Ceiling">
+										<PlaneGeometry type="Rectangle">0 0 3, 2 0 3, 2 5 3, 0 5 3</PlaneGeometry>
+									</Surface>
+									<Surface id="34" displayName="Wall 1">
+										<PlaneGeometry type="Rectangle">0 5 0, 2 5 0, 2 5 3, 0 5 3</PlaneGeometry>
+									</Surface>
+									<Surface id="35" displayName="Wall 2">
+										<PlaneGeometry type="Rectangle">2 5 0, 2 0 0, 2 0 3, 2 5 3</PlaneGeometry>
+									</Surface>
+									<Surface id="36" displayName="Wall 3">
+										<PlaneGeometry type="Rectangle">2 0 0, 0 0 0, 0 0 3, 2 0 3</PlaneGeometry>
+									</Surface>
+									<Surface id="37" displayName="Wall 4">
+										<PlaneGeometry type="Rectangle">0 0 0, 0 5 0, 0 5 3, 0 0 3</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="38" displayName="TF 03.4">
+								<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+								<Surfaces>
+									<Surface id="39" displayName="Floor">
+										<PlaneGeometry type="Rectangle">10 5 0, 12 5 0, 12 0 0, 10 0 0</PlaneGeometry>
+									</Surface>
+									<Surface id="40" displayName="Ceiling">
+										<PlaneGeometry type="Rectangle">10 0 3, 12 0 3, 12 5 3, 10 5 3</PlaneGeometry>
+									</Surface>
+									<Surface id="41" displayName="Wall 1">
+										<PlaneGeometry type="Rectangle">10 5 0, 12 5 0, 12 5 3, 10 5 3</PlaneGeometry>
+									</Surface>
+									<Surface id="42" displayName="Wall 2">
+										<PlaneGeometry type="Rectangle">12 5 0, 12 0 0, 12 0 3, 12 5 3</PlaneGeometry>
+									</Surface>
+									<Surface id="43" displayName="Wall 3">
+										<PlaneGeometry type="Rectangle">12 0 0, 10 0 0, 10 0 3, 12 0 3</PlaneGeometry>
+									</Surface>
+									<Surface id="44" displayName="Wall 4">
+										<PlaneGeometry type="Rectangle">10 0 0, 10 5 0, 10 5 3, 10 0 3</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+						</Rooms>
+					</BuildingLevel>
+				</BuildingLevels>
+			</Building>
+		</Buildings>
+		<ComponentInstances>
+			<ComponentInstance id="1001" componentID="1001" sideBSurfaceID="11" />
+			<ComponentInstance id="1002" componentID="1001" sideBSurfaceID="12" />
+			<ComponentInstance id="1003" componentID="1001" sideBSurfaceID="13" />
+			<ComponentInstance id="1004" componentID="1001" sideBSurfaceID="14" />
+			<ComponentInstance id="1005" componentID="1001" sideBSurfaceID="15" />
+			<ComponentInstance id="1006" componentID="1001" sideBSurfaceID="16" />
+			<ComponentInstance id="1007" componentID="1002" sideBSurfaceID="25" />
+			<ComponentInstance id="1008" componentID="1002" sideBSurfaceID="26" />
+			<ComponentInstance id="1009" componentID="1002" sideBSurfaceID="27" />
+			<ComponentInstance id="1010" componentID="1002" sideBSurfaceID="28" />
+			<ComponentInstance id="1011" componentID="1002" sideBSurfaceID="29" />
+			<ComponentInstance id="1012" componentID="1002" sideBSurfaceID="30" />
+			<ComponentInstance id="1013" componentID="1003" sideBSurfaceID="32" />
+			<ComponentInstance id="1014" componentID="1003" sideBSurfaceID="33" />
+			<ComponentInstance id="1015" componentID="1003" sideBSurfaceID="34" />
+			<ComponentInstance id="1016" componentID="1003" sideBSurfaceID="35" />
+			<ComponentInstance id="1017" componentID="1003" sideBSurfaceID="36" />
+			<ComponentInstance id="1018" componentID="1003" sideBSurfaceID="37" />
+			<ComponentInstance id="1019" componentID="1004" sideBSurfaceID="39" />
+			<ComponentInstance id="1020" componentID="1004" sideBSurfaceID="40" />
+			<ComponentInstance id="1021" componentID="1004" sideBSurfaceID="41" />
+			<ComponentInstance id="1022" componentID="1004" sideBSurfaceID="42" />
+			<ComponentInstance id="1023" componentID="1004" sideBSurfaceID="43" />
+			<ComponentInstance id="1024" componentID="1004" sideBSurfaceID="44" />
+		</ComponentInstances>
+	</Project>
+</VicusProject>
