@@ -324,6 +324,9 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 	// this set collects all component instances that are actually used/referenced by zone surfaces
 	// for now, unassociated components are ignored
 	std::set<const VICUS::ComponentInstance*> usedComponentInstances;
+	//key -> surface id
+	//value ->
+	std::map<unsigned int, VICUS::Surface>	mapIdToSurface;
 
 	for (const VICUS::Building & b : project().m_buildings) {
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
@@ -351,6 +354,8 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 
 					// if we have a component associated, remember its ID
 					usedComponentInstances.insert(s.m_componentInstance);
+					mapIdToSurface[s.m_id] = s;
+
 				}
 			}
 		}
@@ -365,7 +370,7 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 	for (const VICUS::ComponentInstance * ci : usedComponentInstances) {
 		if (ci == nullptr)
 			continue; // skip invalid
-		// lookup component that's referenced by componantInstance
+		// lookup component that's referenced by componentInstance
 		Q_ASSERT(ci->m_componentID != VICUS::INVALID_ID);
 		// Note: component ID may be invalid or component may have been deleted from DB already
 		const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci->m_componentID];
@@ -408,14 +413,16 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 					return false;
 				}
 				/// TODO : Dirk, we have orientation of side A and B... which one do we use?
+				/// for internal and adiabatic walls/floors/ceilings orientation and inclination is not important
+				/// so delete these parameters
 				double orientation = 0;
 				double inclination = 0;
 
 				// set parameters
-				NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
-												   NANDRAD::ConstructionInstance::P_Inclination, inclination);
-				NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
-												   NANDRAD::ConstructionInstance::P_Orientation, orientation);
+//				NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
+//												   NANDRAD::ConstructionInstance::P_Inclination, inclination);
+//				NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
+//												   NANDRAD::ConstructionInstance::P_Orientation, orientation);
 
 				cinst.m_displayName = tr("Internal wall between surfaces '%1' and '%2'")
 						.arg(ci->m_sideASurface->m_displayName).arg(ci->m_sideBSurface->m_displayName).toStdString();
@@ -423,16 +430,13 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 			else {
 
 				// we only have side A, take orientation and inclination from side A
-
-				/// TODO : Dirk, berechnen
-				double orientation = 0;
-				double inclination = 0;
+				const VICUS::Surface &s = mapIdToSurface[ci->m_sideASurfaceID];
 
 				// set parameters
 				NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
-												   NANDRAD::ConstructionInstance::P_Inclination, inclination);
+												   NANDRAD::ConstructionInstance::P_Inclination, s.m_geometry.inclination());
 				NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
-												   NANDRAD::ConstructionInstance::P_Orientation, orientation);
+												   NANDRAD::ConstructionInstance::P_Orientation, s.m_geometry.orientation());
 
 				cinst.m_displayName = ci->m_sideASurface->m_displayName.toStdString();
 			}
@@ -444,16 +448,13 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 			Q_ASSERT(ci->m_sideBSurface != nullptr);
 
 			// we only have side B, take orientation and inclination from side B
-
-			/// TODO : Dirk, berechnen
-			double orientation = 0;
-			double inclination = 0;
+			const VICUS::Surface &s = mapIdToSurface[ci->m_sideBSurfaceID];
 
 			// set parameters
 			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
-											   NANDRAD::ConstructionInstance::P_Inclination, inclination);
+											   NANDRAD::ConstructionInstance::P_Inclination, s.m_geometry.inclination());
 			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
-											   NANDRAD::ConstructionInstance::P_Orientation, orientation);
+											   NANDRAD::ConstructionInstance::P_Orientation, s.m_geometry.orientation());
 
 			// set area parameter
 			double area = ci->m_sideBSurface->m_geometry.area();

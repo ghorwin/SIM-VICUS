@@ -112,6 +112,19 @@ TiXmlElement * PlaneGeometry::writeXML(TiXmlElement * parent) const {
 		return nullptr;
 }
 
+double PlaneGeometry::inclination() const
+{
+	return std::acos(normal().m_z) / IBK::DEG2RAD;
+}
+
+double PlaneGeometry::orientation() const
+{
+	double val = 90 - std::atan2(normal().m_y, normal().m_x) / IBK::DEG2RAD;
+	if(val<0)
+		val += 360;
+	return  val;
+}
+
 
 void PlaneGeometry::addVertex(const QPointF & v) {
 	m_polygon.append(v);
