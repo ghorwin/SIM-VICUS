@@ -204,7 +204,9 @@ void SVPropBuildingEditWidget::onModified(int modificationType, ModificationInfo
 
 
 void SVPropBuildingEditWidget::on_pushButtonEditComponents_clicked() {
-	SVMainWindow::instance().dbComponentEditDialog()->edit();
+	const VICUS::Component * comp = currentlySelectedComponent();
+	Q_ASSERT(comp != nullptr); // if nullptr, the button should be disabled!
+	SVMainWindow::instance().dbComponentEditDialog()->edit(comp->m_id);
 	// TODO : signal a "recoloring needed" signal to scene in case any of the colors have changed
 	// update table (in case user has deleted some components or changed colors
 	setPropertyType(BT_Components);

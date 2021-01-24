@@ -46,6 +46,11 @@ public:
 	*/
 	QModelIndex addNewItem(VICUS::Component c);
 
+	/*! Locates the item with the requested ID and returns the matching model index (to first column), or
+		an invalid model index, if item cannot be found.
+	*/
+	QModelIndex findItem(unsigned int componentId) const;
+
 	/*! Removes a selected item.
 		\return Returns true on success, false if the item wasn't deleted (invalid index etc.)
 	*/

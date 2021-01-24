@@ -1,4 +1,4 @@
-#include "Vic3DScene.h"
+﻿#include "Vic3DScene.h"
 
 #include <QOpenGLShaderProgram>
 #include <QDebug>
@@ -1253,7 +1253,6 @@ void Vic3DScene::deleteSelected() {
 		return;
 
 	// clear selected objects (since they are now removed)
-//	m_selectedGeometryObject.m_selectedObjects.clear();
 	SVUndoDeleteSelected * undo = new SVUndoDeleteSelected(tr("Removing selected geometry"),
 														   selectedObjectIDs);
 	// clear selection

@@ -12,6 +12,7 @@ SVUndoModifyComponentInstances::SVUndoModifyComponentInstances(	const QString & 
 void SVUndoModifyComponentInstances::undo() {
 	// exchange Project data
 	std::swap( theProject().m_componentInstances, m_componentInstances);
+	theProject().updatePointers();
 
 	// tell project that the grid has changed
 	SVProjectHandler::instance().setModified( SVProjectHandler::ComponentInstancesModified);

@@ -20,8 +20,10 @@ public:
 	explicit SVDBComponentEditDialog(QWidget *parent = nullptr);
 	~SVDBComponentEditDialog() override;
 
-	/*! Starts the dialog in "edit" mode. */
-	void edit();
+	/*! Starts the dialog in "edit" mode.
+		\param id Optional id of element to be initially selected.
+	*/
+	void edit(unsigned int initialId = 0);
 
 	/*! Starts the dialog in "select mode".
 		\param initialId The component indicated by this ID is initially selected.
