@@ -1,5 +1,5 @@
-#include "SVDBComponentEditDialog.h"
-#include "ui_SVDBComponentEditDialog.h"
+#include "SVDBWindowEditDialog.h"
+#include "ui_SVDBWindowEditDialog.h"
 
 #include <QItemSelectionModel>
 #include <QTableView>
@@ -9,26 +9,40 @@
 #include "SVStyle.h"
 #include "SVConstants.h"
 #include "SVDBModelDelegate.h"
+//#include "SVDBWindowTableModel.h"
+//#include "SVDBWindowEditWidget.h"
+#include "SVMainWindow.h"
 
-#include "SVDBComponentTableModel.h"
-#include "SVDBComponentEditWidget.h"
-
-SVDBComponentEditDialog::SVDBComponentEditDialog(QWidget *parent) :
+SVDBWindowEditDialog::SVDBWindowEditDialog(QWidget *parent) :
 	QDialog(parent),
-	m_ui(new Ui::SVDBComponentEditDialog)
+	m_ui(new Ui::SVDBWindowEditDialog)
 {
+	// Must only be created from main window. */
+	Q_ASSERT(dynamic_cast<SVMainWindow*>(parent) != nullptr);
 	m_ui->setupUi(this);
 
 	SVStyle::formatDatabaseTableView(m_ui->tableView);
 	m_ui->tableView->horizontalHeader()->setVisible(true);
 
-	m_dbModel = new SVDBComponentTableModel(this, SVSettings::instance().m_db);
+	// TODO : Dirk, uncomment when implemented
+#if 0
+
+	m_dbModel = new SVDBConstructionTableModel(this, SVSettings::instance().m_db);
 
 	m_proxyModel = new QSortFilterProxyModel(this);
 	m_proxyModel->setSourceModel(m_dbModel);
 	m_ui->tableView->setModel(m_proxyModel);
 
 	m_ui->editWidget->setup(&SVSettings::instance().m_db, m_dbModel);
+
+	// specific setup for construction DB table
+
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBConstructionTableModel::ColId, QHeaderView::Fixed);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBConstructionTableModel::ColCheck, QHeaderView::Fixed);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBConstructionTableModel::ColName, QHeaderView::Stretch);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBConstructionTableModel::ColNumLayers, QHeaderView::ResizeToContents);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBConstructionTableModel::ColUValue, QHeaderView::ResizeToContents);
+#endif
 
 	connect(m_ui->tableView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)),
 			this, SLOT(onCurrentIndexChanged(const QModelIndex &, const QModelIndex &)) );
@@ -37,40 +51,41 @@ SVDBComponentEditDialog::SVDBComponentEditDialog(QWidget *parent) :
 	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn);
 	m_ui->tableView->setItemDelegate(dg);
 
-	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBComponentTableModel::ColCheck, QHeaderView::Fixed);
-	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBComponentTableModel::ColColor, QHeaderView::Fixed);
 }
 
 
-SVDBComponentEditDialog::~SVDBComponentEditDialog() {
+SVDBWindowEditDialog::~SVDBWindowEditDialog() {
 	delete m_ui;
 }
 
 
-void SVDBComponentEditDialog::edit() {
+void SVDBWindowEditDialog::edit() {
 
 	// hide select/cancel buttons, and show "close" button
 	m_ui->pushButtonClose->setVisible(true);
 	m_ui->pushButtonSelect->setVisible(false);
 	m_ui->pushButtonCancel->setVisible(false);
 
-	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
+	// TODO : Dirk, uncomment when implemented
+//	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
 
+	// resize columns
 	m_ui->tableView->resizeColumnsToContents();
 
 	exec();
 }
 
-
-int SVDBComponentEditDialog::select(unsigned int initialId) {
+int SVDBWindowEditDialog::select(unsigned int initialId) {
 
 	m_ui->pushButtonClose->setVisible(false);
 	m_ui->pushButtonSelect->setVisible(true);
 	m_ui->pushButtonCancel->setVisible(true);
 
+	// TODO : Dirk, uncomment when implemented
+#if 0
 	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
 
-	// select component with given matId
+	// select construction with given matId
 	for (int i=0, count = m_dbModel->rowCount(); i<count; ++i) {
 		QModelIndex sourceIndex = m_dbModel->index(i,0);
 		if (m_dbModel->data(sourceIndex, Role_Id).toUInt() == initialId) {
@@ -81,7 +96,9 @@ int SVDBComponentEditDialog::select(unsigned int initialId) {
 			break;
 		}
 	}
-
+#endif
+	// ask database model to update its content
+	// TODO : smart resizing of columns - restore user-defined column widths if adjusted by user
 	m_ui->tableView->resizeColumnsToContents();
 
 	int res = exec();
@@ -100,62 +117,71 @@ int SVDBComponentEditDialog::select(unsigned int initialId) {
 }
 
 
-void SVDBComponentEditDialog::on_pushButtonSelect_clicked() {
+void SVDBWindowEditDialog::on_pushButtonSelect_clicked() {
 	accept();
 }
 
 
-void SVDBComponentEditDialog::on_pushButtonCancel_clicked() {
+void SVDBWindowEditDialog::on_pushButtonCancel_clicked() {
 	reject();
 }
 
 
-void SVDBComponentEditDialog::on_pushButtonClose_clicked() {
+void SVDBWindowEditDialog::on_pushButtonClose_clicked() {
 	accept();
 }
 
 
-void SVDBComponentEditDialog::on_toolButtonAdd_clicked() {
-	// add new item
+void SVDBWindowEditDialog::on_toolButtonAdd_clicked() {
+	// TODO : Dirk, uncomment when implemented
+#if 0
+	// add new construction
 	QModelIndex sourceIndex = m_dbModel->addNewItem();
 	QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
 	m_ui->tableView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
 	// resize ID column
-	sourceIndex = m_dbModel->index(0,SVDBComponentTableModel::ColId);
+	sourceIndex = m_dbModel->index(0,SVDBConstructionTableModel::ColId);
 	proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
 	if (proxyIndex.isValid())
 		m_ui->tableView->resizeColumnToContents(proxyIndex.column());
+#endif
 }
 
 
-void SVDBComponentEditDialog::on_toolButtonCopy_clicked() {
+void SVDBWindowEditDialog::on_toolButtonCopy_clicked() {
+	// TODO : Dirk, uncomment when implemented
+#if 0
 	// determine current item
 	QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
 	Q_ASSERT(currentProxyIndex.isValid());
 	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
 
 	unsigned int id = m_dbModel->data(sourceIndex, Role_Id).toUInt();
-	const VICUS::Component * comp = SVSettings::instance().m_db.m_components[id];
+	const VICUS::Construction * con = SVSettings::instance().m_db.m_constructions[id];
 
 	// add item as copy
-	sourceIndex = m_dbModel->addNewItem(*comp);
+	sourceIndex = m_dbModel->addNewItem(*con);
 	QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
 	m_ui->tableView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
+#endif
 }
 
 
-void SVDBComponentEditDialog::on_toolButtonRemove_clicked() {
+void SVDBWindowEditDialog::on_toolButtonRemove_clicked() {
+	// TODO : Dirk, uncomment when implemented
+#if 0
 	QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
 	Q_ASSERT(currentProxyIndex.isValid());
 	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
 	m_dbModel->deleteItem(sourceIndex);
-	// last boundary condition removed? clear input widget
+	// last construction removed? clear input widget
 	if (m_dbModel->rowCount() == 0)
 		onCurrentIndexChanged(QModelIndex(), QModelIndex());
+#endif
 }
 
 
-void SVDBComponentEditDialog::onCurrentIndexChanged(const QModelIndex &current, const QModelIndex & /*previous*/) {
+void SVDBWindowEditDialog::onCurrentIndexChanged(const QModelIndex &current, const QModelIndex & /*previous*/) {
 	// if there is no selection, deactivate all buttons that need a selection
 	if (!current.isValid()) {
 		m_ui->pushButtonSelect->setEnabled(false);
@@ -171,35 +197,30 @@ void SVDBComponentEditDialog::onCurrentIndexChanged(const QModelIndex &current, 
 
 		m_ui->toolButtonCopy->setEnabled(true);
 		m_ui->tableView->selectRow(current.row());
-		// retrieve current component ID
-		int compId = current.data(Role_Id).toInt();
-		m_ui->editWidget->updateInput(compId);
+		// retrieve current construction ID
+		int conId = current.data(Role_Id).toInt();
+		m_ui->editWidget->updateInput(conId);
 	}
 }
 
 
-
-void SVDBComponentEditDialog::on_pushButtonReloadUserDB_clicked() {
+void SVDBWindowEditDialog::on_pushButtonReloadUserDB_clicked() {
+	// TODO : Dirk, uncomment when implemented
+#if 0
 	if (QMessageBox::question(this, QString(), tr("Reloading the user database from file will revert all changes made in this dialog since the program was started. Continue?"),
 							  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
 	{
-		// tell db to drop all user-defined elements and re-read the DB
-		SVSettings::instance().m_db.m_components.removeUserElements();
-		SVSettings::instance().m_db.readDatabases(SVDatabase::DT_Components);
+		// tell db to drop all user-defined materials and re-read the construction DB
+		SVSettings::instance().m_db.m_constructions.removeUserElements();
+		SVSettings::instance().m_db.readDatabases(SVDatabase::DT_Constructions);
 		// tell model to reset completely
 		m_dbModel->resetModel();
 	}
-
+#endif
 }
 
 
-void SVDBComponentEditDialog::showEvent(QShowEvent * event) {
-	QWidget::showEvent(event);
-	// now resize name column to span the available space
-	int width = m_ui->tableView->width()-2;
-	width -= m_ui->tableView->columnWidth(0);
-	width -= m_ui->tableView->columnWidth(1);
-	width -= m_ui->tableView->columnWidth(2);
-	width -= m_ui->tableView->columnWidth(4);
-	m_ui->tableView->setColumnWidth(3, width);
+void SVDBWindowEditDialog::on_tableView_doubleClicked(const QModelIndex &index) {
+	if (m_ui->pushButtonSelect->isVisible() && index.isValid())
+		accept();
 }

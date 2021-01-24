@@ -8,6 +8,9 @@
 #include "SVUndoSiteDataChanged.h"
 #include "SVConstants.h"
 #include "SVStyle.h"
+#include "SVSettings.h"
+#include "SVMainWindow.h"
+#include "SVDBComponentEditDialog.h"
 
 SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	QWidget(parent),
@@ -107,7 +110,8 @@ void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
 				item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 				m_ui->tableWidgetComponents->setItem(row, 1, item);
 			}
-
+			// update button states
+			on_tableWidgetComponents_itemSelectionChanged();
 		} break;
 
 		case BT_ComponentOrientation:
@@ -190,16 +194,38 @@ void SVPropBuildingEditWidget::on_toolButtonEdit_clicked() {
 
 
 void SVPropBuildingEditWidget::on_pushButtonEditComponents_clicked() {
-
+	SVMainWindow::instance().dbComponentEditDialog()->edit();
+	// TODO : signal a "recoloring needed" signal to scene of any of the colors have changed
+	// update table (in case user has deleted some components or changed colors
+	setPropertyType(BT_Components);
 }
 
 
 void SVPropBuildingEditWidget::on_pushButtonExchangeComponents_clicked() {
+	const VICUS::Component * comp = currentlySelectedComponent();
+	Q_ASSERT(comp != nullptr); // if nullptr, the button should be disabled!
+	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoReplaceComponent",
+		tr("Replace component"), tr("This will replace all associations with component '%1 [%2]' with another component.")
+			 .arg(QString::fromStdString(comp->m_displayName.string(IBK::MultiLanguageString::m_language, "en"))).arg(comp->m_id));
+	int newId = SVMainWindow::instance().dbComponentEditDialog()->select(comp->m_id);
+	// update table (in case user has deleted some components or changed colors
+	setPropertyType(BT_Components);
+	// now compose an undo action and modify the project
 
 }
 
 
 void SVPropBuildingEditWidget::on_tableWidgetComponents_itemSelectionChanged() {
+	// enable/disable buttons based on selection changed signal
+	bool enabled = (currentlySelectedComponent() != nullptr);
+	m_ui->pushButtonEditComponents->setEnabled(enabled);
+	m_ui->pushButtonExchangeComponents->setEnabled(enabled);
+}
 
-
+const VICUS::Component * SVPropBuildingEditWidget::currentlySelectedComponent() const {
+	// check if selected "component" is actually a missing component
+	int r = m_ui->tableWidgetComponents->currentRow();
+	std::map<const VICUS::Component*, std::vector<const VICUS::Surface *> >::const_iterator cit = m_componentSurfacesMap.begin();
+	std::advance(cit, r);
+	return cit->first;
 }

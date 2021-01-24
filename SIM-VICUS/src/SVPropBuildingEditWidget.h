@@ -59,6 +59,9 @@ private slots:
 	void on_tableWidgetComponents_itemSelectionChanged();
 
 private:
+	/*! Returns a pointer to the currently selected component in the component table. */
+	const VICUS::Component * currentlySelectedComponent() const;
+
 	Ui::SVPropBuildingEditWidget *m_ui;
 
 	/*! This maps holds component->surface associations when in BM_Components mode. */

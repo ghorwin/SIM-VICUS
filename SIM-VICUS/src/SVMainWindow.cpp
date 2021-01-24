@@ -58,7 +58,7 @@
 
 #include "SVDBMaterialEditDialog.h"
 #include "SVDBConstructionEditDialog.h"
-#include "SVDBWindowEditWidget.h"
+#include "SVDBWindowEditDialog.h"
 #include "SVDBComponentEditDialog.h"
 #include "SVDBBoundaryConditionEditDialog.h"
 #include "SVDBPipeEditDialog.h"
@@ -206,10 +206,23 @@ SVDBConstructionEditDialog * SVMainWindow::dbConstructionEditDialog() {
 	return m_dbConstructionEditDialog;
 }
 
+SVDBComponentEditDialog * SVMainWindow::dbComponentEditDialog() {
+	if (m_dbComponentEditDialog == nullptr)
+		m_dbComponentEditDialog = new SVDBComponentEditDialog(this);
+	return m_dbComponentEditDialog;
+
+}
+
 SVDBBoundaryConditionEditDialog * SVMainWindow::dbBoundaryConditionEditDialog() {
 	if (m_dbBoundaryConditionEditDialog == nullptr)
 		m_dbBoundaryConditionEditDialog = new SVDBBoundaryConditionEditDialog(this);
 	return m_dbBoundaryConditionEditDialog;
+}
+
+SVDBWindowEditDialog * SVMainWindow::dbWindowEditDialog() {
+	if (m_dbWindowEditDialog == nullptr)
+		m_dbWindowEditDialog = new SVDBWindowEditDialog(this);
+	return m_dbWindowEditDialog;
 }
 
 SVDBPipeEditDialog *SVMainWindow::dbPipeEditDialog(){
@@ -234,17 +247,12 @@ void SVMainWindow::on_actionDBConstructions_triggered() {
 
 
 void SVMainWindow::on_actionDBWindows_triggered() {
-	if (m_dbWindowEditWidget == nullptr) {
-		m_dbWindowEditWidget = new SVDBWindowEditWidget(nullptr); // global widget, not inside main window
-	}
-	m_dbWindowEditWidget->edit();
+	dbWindowEditDialog()->edit();
 }
 
 
 void SVMainWindow::on_actionDBComponents_triggered() {
-	if (m_dbComponentEditDialog == nullptr)
-		m_dbComponentEditDialog = new SVDBComponentEditDialog(nullptr);
-	m_dbComponentEditDialog->edit();
+	dbComponentEditDialog()->edit();
 	// update all widgets that show the components somewhere (in a combo box or else)
 	if (SVViewStateHandler::instance().m_propVertexListWidget != nullptr) // guard against not yet created property widget
 		SVViewStateHandler::instance().m_propVertexListWidget->updateComponentComboBoxes();
@@ -256,8 +264,7 @@ void SVMainWindow::on_actionDBBoundaryConditions_triggered() {
 }
 
 
-void SVMainWindow::on_actionPipes_triggered()
-{
+void SVMainWindow::on_actionPipes_triggered() {
 	dbPipeEditDialog()->edit();
 }
 // *** protected functions ***
