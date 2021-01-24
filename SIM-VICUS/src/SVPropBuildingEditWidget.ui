@@ -10,9 +10,15 @@
     <height>503</height>
    </rect>
   </property>
+  <property name="toolTip">
+   <string>Selects all objects/surfaces which are associated with the selected component.</string>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
      <widget class="QWidget" name="pageEmpty"/>
      <widget class="QWidget" name="pageComponents">
       <layout class="QVBoxLayout" name="verticalLayoutComponents">
@@ -22,9 +28,6 @@
           <string>Building components</string>
          </property>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="0" colspan="3">
-           <widget class="QTableWidget" name="tableWidgetComponents"/>
-          </item>
           <item row="1" column="0">
            <widget class="QPushButton" name="pushButtonEditComponents">
             <property name="text">
@@ -40,12 +43,18 @@
           </item>
           <item row="1" column="1">
            <widget class="QPushButton" name="pushButtonExchangeComponents">
+            <property name="toolTip">
+             <string>Replaces the component association of all objects with the currently selected component.</string>
+            </property>
             <property name="text">
              <string>Exchange...</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
+          <item row="0" column="0" colspan="4">
+           <widget class="QTableWidget" name="tableWidgetComponents"/>
+          </item>
+          <item row="1" column="3">
            <spacer name="horizontalSpacer">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -57,6 +66,13 @@
              </size>
             </property>
            </spacer>
+          </item>
+          <item row="1" column="2">
+           <widget class="QPushButton" name="pushButtonSelectObjectsWithComponent">
+            <property name="text">
+             <string>Select</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

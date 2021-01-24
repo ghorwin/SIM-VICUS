@@ -2,6 +2,7 @@
 #include "ui_SVPropBuildingEditWidget.h"
 
 #include <VICUS_Component.h>
+#include <VICUS_Conversions.h>
 
 #include "SVViewStateHandler.h"
 #include "SVProjectHandler.h"
@@ -11,6 +12,7 @@
 #include "SVSettings.h"
 #include "SVMainWindow.h"
 #include "SVDBComponentEditDialog.h"
+#include "SVUndoTreeNodeState.h"
 
 SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	QWidget(parent),
@@ -195,7 +197,7 @@ void SVPropBuildingEditWidget::on_toolButtonEdit_clicked() {
 
 void SVPropBuildingEditWidget::on_pushButtonEditComponents_clicked() {
 	SVMainWindow::instance().dbComponentEditDialog()->edit();
-	// TODO : signal a "recoloring needed" signal to scene of any of the colors have changed
+	// TODO : signal a "recoloring needed" signal to scene in case any of the colors have changed
 	// update table (in case user has deleted some components or changed colors
 	setPropertyType(BT_Components);
 }
@@ -206,12 +208,48 @@ void SVPropBuildingEditWidget::on_pushButtonExchangeComponents_clicked() {
 	Q_ASSERT(comp != nullptr); // if nullptr, the button should be disabled!
 	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoReplaceComponent",
 		tr("Replace component"), tr("This will replace all associations with component '%1 [%2]' with another component.")
-			 .arg(QString::fromStdString(comp->m_displayName.string(IBK::MultiLanguageString::m_language, "en"))).arg(comp->m_id));
-	int newId = SVMainWindow::instance().dbComponentEditDialog()->select(comp->m_id);
+			 .arg(VICUS::MultiLangString2QString(comp->m_displayName)).arg(comp->m_id));
+	unsigned int oldId = comp->m_id;
+	int newId = SVMainWindow::instance().dbComponentEditDialog()->select(oldId);
+	if (newId == -1)
+		return; // user has aborted the dialog
+	// TODO : signal a "recoloring needed" signal to scene in case any of the colors have changed
 	// update table (in case user has deleted some components or changed colors
-	setPropertyType(BT_Components);
+	setPropertyType(BT_Components); // Note: this invalidates "comp"!
+
 	// now compose an undo action and modify the project
 
+	// first, we need to find the component instances which reference the "old" id
+	comp = SVSettings::instance().m_db.m_components[oldId];
+	if (comp == nullptr) {
+		// the user has done something stupid and deleted the component that he wanted to replace. In this
+		// case there is no longer a component with this ID and we have a nullptr
+		QMessageBox::critical(this, tr("Replace component"), tr("Component with id %1 no longer found in component DB.").arg(oldId));
+		return;
+	}
+	// now process all component instances and modify the component
+	std::vector<VICUS::ComponentInstance> modCI = project().m_componentInstances;
+	for (VICUS::ComponentInstance & ci : modCI) {
+		if (ci.m_componentID == oldId)
+			ci.m_componentID = (unsigned int)newId;
+	}
+	// create the undo action and modify project
+
+}
+
+
+void SVPropBuildingEditWidget::on_pushButtonSelectObjectsWithComponent_clicked() {
+	const VICUS::Component * comp = currentlySelectedComponent();
+	Q_ASSERT(comp != nullptr); // if nullptr, the button should be disabled!
+	// compose set of objects to be selected
+	std::set<unsigned int> objs;
+	for (auto s : m_componentSurfacesMap[comp])
+		objs.insert(s->uniqueID());
+
+	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Select objects with component '%1'")
+		.arg(VICUS::MultiLangString2QString(comp->m_displayName)), SVUndoTreeNodeState::SelectedState,
+														 objs, true);
+	undo->push();
 }
 
 
@@ -220,12 +258,17 @@ void SVPropBuildingEditWidget::on_tableWidgetComponents_itemSelectionChanged() {
 	bool enabled = (currentlySelectedComponent() != nullptr);
 	m_ui->pushButtonEditComponents->setEnabled(enabled);
 	m_ui->pushButtonExchangeComponents->setEnabled(enabled);
+	m_ui->pushButtonSelectObjectsWithComponent->setEnabled(enabled);
 }
+
 
 const VICUS::Component * SVPropBuildingEditWidget::currentlySelectedComponent() const {
 	// check if selected "component" is actually a missing component
 	int r = m_ui->tableWidgetComponents->currentRow();
+	if (r == -1 || m_componentSurfacesMap.empty())
+		return nullptr;
 	std::map<const VICUS::Component*, std::vector<const VICUS::Surface *> >::const_iterator cit = m_componentSurfacesMap.begin();
 	std::advance(cit, r);
 	return cit->first;
 }
+

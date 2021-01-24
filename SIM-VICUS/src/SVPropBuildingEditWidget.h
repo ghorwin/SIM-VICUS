@@ -58,6 +58,8 @@ private slots:
 
 	void on_tableWidgetComponents_itemSelectionChanged();
 
+	void on_pushButtonSelectObjectsWithComponent_clicked();
+
 private:
 	/*! Returns a pointer to the currently selected component in the component table. */
 	const VICUS::Component * currentlySelectedComponent() const;
