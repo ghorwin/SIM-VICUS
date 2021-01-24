@@ -59,6 +59,11 @@ public:
 			of buildings, levels, zones.
 		*/
 		BuildingTopologyChanged,
+		/*! Building component instance definitions have changed, that means surfaces - component associations.
+			Usually requires just recoloring of surfaces if in property edit mode, and if in "show surface-surface links"-mode,
+			update of the link 3D objects.
+		*/
+		ComponentInstancesModified,
 		/*! Network hydraulic component changed. */
 		NetworkHydraulicComponentModified,
 		/*! The state (visibility/selection) of a node in the tree view/surface in the scene has changed.
