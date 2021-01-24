@@ -31,6 +31,11 @@ public:
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
+
+	/*! Checks if all parameters are valid. */
+	bool isValid() const;
+
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of boundary condition. */
