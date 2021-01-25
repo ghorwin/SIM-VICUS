@@ -68,8 +68,8 @@ private:
 	/*! roughness of pipe wall in m */
 	double							m_roughness;
 
-	/*! Fluid temperature, for now constant, will be an input reference and retrieved from network-thermal-balances model. */
-	double							m_fluidTemperature = 20;
+	/*! Fluid temperature [K], for now constant, will be an input reference and retrieved from network-thermal-balances model. */
+	double							m_fluidTemperature = 293.15;
 
 };
 

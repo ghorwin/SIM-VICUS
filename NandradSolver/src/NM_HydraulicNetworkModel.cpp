@@ -190,7 +190,7 @@ void HydraulicNetworkModel::setup() {
 			{
 				// lookup pipe
 				std::vector<NANDRAD::HydraulicNetworkPipeProperties>::const_iterator pipe_it =
-						std::find(m_hydraulicNetwork->m_pipeProperties.begin(), m_hydraulicNetwork->m_pipeProperties.end(), e.m_pipeId);
+						std::find(m_hydraulicNetwork->m_pipeProperties.begin(), m_hydraulicNetwork->m_pipeProperties.end(), e.m_pipePropertiesId);
 				if (pipe_it == m_hydraulicNetwork->m_pipeProperties.end()) {
 					throw IBK::Exception(IBK::FormatString("Missing pipe properties reference in hydraulic network element '%1' (id=%2).")
 										 .arg(e.m_displayName).arg(e.m_id), FUNC_ID);
@@ -253,15 +253,21 @@ void HydraulicNetworkModel::setup() {
 
 
 void HydraulicNetworkModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
-	if(!resDesc.empty())
-		resDesc.clear();
 	// mass flux vector is a result
-	QuantityDescription desc("FluidMassFlux", "kg/s", "Fluid mass flux trough all flow elements", false);
-	// deactivate description;
-	if(m_p->m_flowElements.empty())
-		desc.m_size = 0;
+	QuantityDescription desc("FluidMassFluxes", "kg/s", "Fluid mass flux trough all flow elements", false);
+	// this has been checked already in NANDRAD::HydraulicNetwork::checkParameters()
+	IBK_ASSERT(!m_p->m_flowElements.empty());
 	resDesc.push_back(desc);
+
+	// we cannot use IndexKeyType Index for vector value quantities below,
+	// because we want to request flow element properties by providing flow element IDs!
+
 	// set a description for each flow element
+	desc.m_name = "FluidMassFlux";
+	desc.m_description = "Fluid mass flux through a flow element";
+
+	// Important: change reftype to MRT_NETWORKELEMENT, because it otherwise defaults to the reftype of this
+	//            object.
 	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 	// loop through all flow elements
 	for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
@@ -270,12 +276,9 @@ void HydraulicNetworkModel::resultDescriptions(std::vector<QuantityDescription> 
 	}
 
 	// inlet node pressure vector is a result
-	desc = QuantityDescription("InletNodePressure", "Pa", "Fluid pressure at inlet node of all flow elements", false);
-	// deactivate description;
-	if(m_p->m_flowElements.empty())
-		desc.m_size = 0;
-	resDesc.push_back(desc);
-	// set a description for each flow element
+	desc = QuantityDescription("InletNodePressure", "Pa", "Fluid pressure at inlet node of a flow element", false);
+	// Important: change reftype to MRT_NETWORKELEMENT, because it otherwise defaults to the reftype of this
+	//            object.
 	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 	// loop through all flow elements
 	for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
@@ -284,12 +287,9 @@ void HydraulicNetworkModel::resultDescriptions(std::vector<QuantityDescription> 
 	}
 
 	// outlet node pressure vector is a result
-	desc = QuantityDescription("OutletNodePressure", "Pa", "Fluid pressure at outlet node of all flow elements", false);
-	// deactivate description;
-	if(m_p->m_flowElements.empty())
-		desc.m_size = 0;
-	resDesc.push_back(desc);
-	// set a description for each flow element
+	desc = QuantityDescription("OutletNodePressure", "Pa", "Fluid pressure at outlet node of a flow element", false);
+	// Important: change reftype to MRT_NETWORKELEMENT, because it otherwise defaults to the reftype of this
+	//            object.
 	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 	// loop through all flow elements
 	for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
@@ -300,8 +300,6 @@ void HydraulicNetworkModel::resultDescriptions(std::vector<QuantityDescription> 
 
 
 void HydraulicNetworkModel::resultValueRefs(std::vector<const double *> & res) const {
-	if(!res.empty())
-		res.clear();
 	// mass flux vector is a result quantity
 	for(unsigned int i = 0; i < m_p->m_fluidMassFluxes.size(); ++i)
 		res.push_back(&m_p->m_fluidMassFluxes[i]);
@@ -311,62 +309,34 @@ void HydraulicNetworkModel::resultValueRefs(std::vector<const double *> & res) c
 const double * HydraulicNetworkModel::resultValueRef(const InputReference & quantity) const {
 	const QuantityName & quantityName = quantity.m_name;
 	// return vector of mass fluxes
-	if(quantityName == std::string("FluidMassFlux")) {
-		if(quantity.m_id == id() && quantity.m_referenceType ==
-		   NANDRAD::ModelInputReference::MRT_NETWORK) {
-			if(!m_p->m_fluidMassFluxes.empty())
-				return &m_p->m_fluidMassFluxes[0];
-			return nullptr;
+	if (quantityName == std::string("FluidMassFluxes")) {
+		// id must be ID of network, and reftype must be NETWORK
+		if (quantity.m_id == id() && quantity.m_referenceType == NANDRAD::ModelInputReference::MRT_NETWORK) {
+			return &m_p->m_fluidMassFluxes[0];
 		}
-		IBK_ASSERT(quantity.m_referenceType == NANDRAD::ModelInputReference::MRT_NETWORKELEMENT);
-		// access to an element mass flux
-		std::vector<unsigned int>::const_iterator fIt =
-				std::find(m_elementIds.begin(), m_elementIds.end(),
-						  (unsigned int) quantity.m_id);
-		// invalid index access
-		if(fIt == m_elementIds.end())
-			return nullptr;
-		unsigned int pos = (unsigned int) std::distance(m_elementIds.begin(), fIt);
+		return nullptr; // invalid ID or reftype...
+	}
+
+	// everything below will be reftype NETWORKELEMENT, so ignore everything else
+	if (quantity.m_referenceType != NANDRAD::ModelInputReference::MRT_NETWORKELEMENT)
+		return nullptr;
+
+	// lookup element index based on given ID
+	std::vector<unsigned int>::const_iterator fIt =
+			std::find(m_elementIds.begin(), m_elementIds.end(), (unsigned int) quantity.m_id);
+	// invalid ID?
+	if (fIt == m_elementIds.end())
+		return nullptr;
+	unsigned int pos = (unsigned int) std::distance(m_elementIds.begin(), fIt);
+
+	if (quantityName == std::string("FluidMassFlux"))
 		return &m_p->m_fluidMassFluxes[pos];
-	}
-	// return vector of inlet node pressures
-	if(quantityName == std::string("InletNodePressure")) {
-		if(quantity.m_id == id() && quantity.m_referenceType ==
-		   NANDRAD::ModelInputReference::MRT_NETWORK) {
-			if(!m_p->m_fluidMassFluxes.empty())
-				return &m_p->m_inletNodePressures[0];
-			return nullptr;
-		}
-		IBK_ASSERT(quantity.m_referenceType == NANDRAD::ModelInputReference::MRT_NETWORKELEMENT);
-		// access to an single inlet node
-		std::vector<unsigned int>::const_iterator fIt =
-				std::find(m_elementIds.begin(), m_elementIds.end(),
-						  (unsigned int) quantity.m_id);
-		// invalid index access
-		if(fIt == m_elementIds.end())
-			return nullptr;
-		unsigned int pos = (unsigned int) std::distance(m_elementIds.begin(), fIt);
+	else if (quantityName == std::string("InletNodePressure"))
 		return &m_p->m_inletNodePressures[pos];
-	}
-	// return vector of outlet node pressures
-	if(quantityName == std::string("OutletNodePressure")) {
-		if(quantity.m_id == id() && quantity.m_referenceType ==
-		   NANDRAD::ModelInputReference::MRT_NETWORK) {
-			if(!m_p->m_fluidMassFluxes.empty())
-				return &m_p->m_outletNodePressures[0];
-			return nullptr;
-		}
-		IBK_ASSERT(quantity.m_referenceType == NANDRAD::ModelInputReference::MRT_NETWORKELEMENT);
-		// access to an single inlet node
-		std::vector<unsigned int>::const_iterator fIt =
-				std::find(m_elementIds.begin(), m_elementIds.end(),
-						  (unsigned int) quantity.m_id);
-		// invalid index access
-		if(fIt == m_elementIds.end())
-			return nullptr;
-		unsigned int pos = (unsigned int) std::distance(m_elementIds.begin(), fIt);
+	else if (quantityName == std::string("OutletNodePressure"))
 		return &m_p->m_outletNodePressures[pos];
-	}
+
+	// unknown quantity name
 	return nullptr;
 }
 
@@ -377,39 +347,43 @@ void HydraulicNetworkModel::initInputReferences(const std::vector<AbstractModel 
 
 
 void HydraulicNetworkModel::inputReferences(std::vector<InputReference> & inputRefs) const {
-	// enforce access to internal fluid temperatures
-	if(!inputRefs.empty())
-		inputRefs.clear();
-	// use hydraulic network model to generate mass flux references
-	InputReference inputRef;
-	inputRef.m_id = id();
-	inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORK;
-	inputRef.m_name = std::string("FluidTemperature");
-	inputRef.m_required = true;
-	// register reference
-	inputRefs.push_back(inputRef);
-
+	// only require input references (to temperatures) if we compute ThermalHydraulicNetworks
+	if (m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
+		// use hydraulic network model to generate temperature references
+		InputReference inputRef;
+		inputRef.m_id = id();
+		inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORK;
+		inputRef.m_name = std::string("FluidTemperatures");
+		inputRef.m_required = true;
+		// register reference
+		inputRefs.push_back(inputRef);
+	}
 }
 
 
 void HydraulicNetworkModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/, const std::vector<const double *> & resultValueRefs) {
-	IBK_ASSERT(resultValueRefs.size() == 1);
-	// copy references into mass flux vector
-	m_fluidTemperatures = resultValueRefs[0];
+	if (resultValueRefs.size() == 1) {
+		// copy references into mass flux vector
+		m_fluidTemperatures = resultValueRefs[0];
+	}
 }
 
 
 void HydraulicNetworkModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & /*resultInputValueReferences*/) const {
 	// no state dependencies for now
+	// TODO : thermal-interactions
 }
 
 
 int HydraulicNetworkModel::update() {
 	FUNCID(HydraulicNetworkModel::update);
-	// set all fluid temperatures
-	for(unsigned int i = 0; i < m_p->m_flowElements.size(); ++i) {
-		HydraulicNetworkAbstractFlowElement *fe = m_p->m_flowElements[i];
-		fe->setFluidTemperature(m_fluidTemperatures[i]);
+
+	if (m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
+		// set all fluid temperatures
+		for(unsigned int i = 0; i < m_p->m_flowElements.size(); ++i) {
+			HydraulicNetworkAbstractFlowElement *fe = m_p->m_flowElements[i];
+			fe->setFluidTemperature(m_fluidTemperatures[i]);
+		}
 	}
 
 	// re-compute hydraulic network

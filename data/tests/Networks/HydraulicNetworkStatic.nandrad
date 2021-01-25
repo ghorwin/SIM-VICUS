@@ -56,13 +56,13 @@
 				</Components>
 				<Elements>
 					<HydraulicNetworkElement id="1" inletNodeId="101" outletNodeId="0" componentId="1" displayName="node 0" />
-					<HydraulicNetworkElement id="2" inletNodeId="0" outletNodeId="1" componentId="3" pipeId="1">
+					<HydraulicNetworkElement id="2" inletNodeId="0" outletNodeId="1" componentId="3" pipePropertiesId="1">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="3" inletNodeId="1" outletNodeId="100" componentId="2" displayName="node 1">
 						<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
 					</HydraulicNetworkElement>
-					<HydraulicNetworkElement id="4" inletNodeId="100" outletNodeId="101" componentId="3" pipeId="1">
+					<HydraulicNetworkElement id="4" inletNodeId="100" outletNodeId="101" componentId="3" pipePropertiesId="1">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 					</HydraulicNetworkElement>
 				</Elements>

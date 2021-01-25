@@ -317,7 +317,11 @@ Als Konvention damit gesetzt, dass Einlass- und Auslassknoten nicht mit dem phys
 
 Damit ergeben sich die folgenden Ergebnisgrößen:
 
-Jedes Strömungselement hat eine (mittlere) Temperatur, welche über die Ausgabegröße `Temperature[<id>]` abgefragt werden kann. Die ID entspricht hier der Element-ID (siehe <<HydraulicNetworkElement>>).
+
+TODO : Document, Anne
+
+
+Jedes Strömungselement hat eine (mittlere) Temperatur, welche über die Ausgabegröße `FluidTemperature[<id>]` abgefragt werden kann. Die ID entspricht hier der Element-ID (siehe <<HydraulicNetworkElement>>).
 
 [NOTE]
 ====
@@ -329,13 +333,13 @@ Die mittlere Temperatur einen Strömungselements kann zur Visualisierung/Farbgeb
 Je nach physikalischer Modellierung eines Strömungselements muss die Mitteltemperatur einen Strömungselements nicht mit der Auslasstemperatur übereinstimmen (siehe Modelldokumentation). Beispiele dafür sind Speicher oder lange verlustbehaftete Rohre.
 ====
 
-Jedes Strömungselement hat auch einen Massestrom, wobei die Strömungsrichtung immer von _inletNode_ zu _outletNode_ positiv definiert ist. Der Massestrom kann über die Größe `MassFlux[<id>]` abgefragt werden.
+Jedes Strömungselement hat auch einen Massestrom, wobei die Strömungsrichtung immer von _inletNode_ zu _outletNode_ positiv definiert ist. Der Massestrom kann über die Größe `FluidMassFlux[<id>]` abgefragt werden.
 
 
-Zur Vereinfachung dienen die Variablennamen `Temperatures` und `MassFluxes`, welche jeweils Ausgaben für alle Strömungselemente anfordern.
+Zur Vereinfachung dienen die Variablennamen `FluidTemperatures` und `FluidMassFluxes`, welche jeweils Ausgaben für alle Strömungselemente anfordern.
 
 
-Die Variablen werden in den Ausgabedateien wie folgt angegeben: `Network(id=3).Temperature(id=101)` wobei hier `id=3` die ID des ausgewählten Netzwerks angibt und `id=101` das Strömungselement, dessen Temperatur ausgegeben wird.
+Die Variablen werden in den Ausgabedateien wie folgt angegeben: `Network(id=3).FluidTemperature(id=101)` wobei hier `id=3` die ID des ausgewählten Netzwerks angibt und `id=101` das Strömungselement, dessen Temperatur ausgegeben wird.
 
 Des Weiteren sind die Fluidtemperaturen an Anschlussstellen von Interesse. Hierbei werden die Einlassknoten und Auslassknoten eines Elementes verwendet, um eine eindeutige Zuordnung zu erlauben. In der Ausgabe erscheinen dann die zusätzlichen Einträge:
 
@@ -348,11 +352,14 @@ Die Temperaturpunkte entsprechen dabei exakt den mit `inletNodeId` und `outletNo
 
 Bei Strömungselementen mit mehreren Segmenten und Temperaturverteilungen werden bei Abfrage der Temperatur mittels `Temperature[<id>]` stets alle Segmenttemperaturen ausgegeben. In der Ausgabedatei werden diese wie folgt kodiert:
 
-`Network(id=3).Temperature(id=101).1`, `Network(id=3).Temperature(id=101).2`, ...,  `Network(id=3).Temperature(id=101).<n>`
+`Network(id=3).FluidTemperature(id=101).1`, `Network(id=3).FluidTemperature(id=101).2`, ...,  `Network(id=3).FluidTemperature(id=101).<n>`
+
+
+
 
 [NOTE]
 ====
-Die Benennung der Variablennamen wird intern in einer `InputReference` Klasse beschrieben. `Network` entspricht dem Referenzierungstyp, `Temperature` ist der `QuantityName` und `id=<id>` ergibt sich bei vektorwertigen Größen aus der ID/Index.
+Die Benennung der Variablennamen wird intern in einer `InputReference` Klasse beschrieben. `Network` entspricht dem Referenzierungstyp, `FluidTemperature` ist der `QuantityName` und `id=<id>` ergibt sich bei vektorwertigen Größen aus der ID/Index.
 
 DAHER GIBT ES DERZEIT KEINE MÖGLICHKEIT, VEKTORWERTIGE ERGEBNISSE EINER VEKTORVERTIGEN AUSGABE AUSZUGEBEN!!! Das funktioniert also so nicht...
 ====

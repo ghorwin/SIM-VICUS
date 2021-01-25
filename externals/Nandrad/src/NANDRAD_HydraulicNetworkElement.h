@@ -87,8 +87,8 @@ public:
 
 	// *** Variables used only during simulation ***
 
-	const HydraulicNetworkComponent			*m_component	= nullptr;
-	const HydraulicNetworkPipeProperties	*m_pipe			= nullptr;
+	const HydraulicNetworkComponent			*m_component				= nullptr;
+	const HydraulicNetworkPipeProperties	*m_pipeProperties			= nullptr;
 
 };
 

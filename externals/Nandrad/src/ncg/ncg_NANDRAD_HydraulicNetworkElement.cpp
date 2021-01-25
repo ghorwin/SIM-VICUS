@@ -66,7 +66,7 @@ void HydraulicNetworkElement::readXML(const TiXmlElement * element) {
 				m_outletNodeId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "componentId")
 				m_componentId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "pipeId")
+			else if (attribName == "pipePropertiesId")
 				m_pipePropertiesId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName = attrib->ValueStr();
@@ -132,7 +132,7 @@ TiXmlElement * HydraulicNetworkElement::writeXML(TiXmlElement * parent) const {
 	if (m_componentId != NANDRAD::INVALID_ID)
 		e->SetAttribute("componentId", IBK::val2string<unsigned int>(m_componentId));
 	if (m_pipePropertiesId != NANDRAD::INVALID_ID)
-		e->SetAttribute("pipeId", IBK::val2string<unsigned int>(m_pipePropertiesId));
+		e->SetAttribute("pipePropertiesId", IBK::val2string<unsigned int>(m_pipePropertiesId));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
 
