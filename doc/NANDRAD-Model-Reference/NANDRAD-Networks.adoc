@@ -68,7 +68,17 @@ XML-tag `HydraulicNetwork` hat folgende Attribute:
 | Attribute  | Description | Format | Usage 
 | `id` |  Unique identifier of the network | ({nbsp}>{nbsp}0{nbsp})  | _required_
 | `displayName`  |  Display name of the network. | string | _optional_
+| `modelType`  |  Specifies a particular network calculation mode. | string | _optional_ (defaults to "ThermalNetwork")
 |====================
+
+TODO : Andreas, document model type
+
+### Parameter
+
+Je nach Modelltyp können mehrere Netzwerkparameter definiert werden. 
+
+TODO : Andreas,
+
 
 Innerhalb des Netzwerk-Definitionsblocks gibt es vier Kind-Elemente.
 

@@ -1563,7 +1563,12 @@ maybe give an example for an analytical approximation here, such as the
 \begin_inset Formula $\nu$
 \end_inset
 
- kinematic viscosity [m2/s] (temperature dependet, fluid parameter)
+ kinematic viscosity [m2/s] (temperature dependent, fluid parameter)
+\end_layout
+
+\begin_layout Standard
+For adiabatic networks the fluid temperature to be used to evaluate kinematic
+ viscosity is a network parameter (constant).
 \end_layout
 
 \begin_layout Subsubsection
@@ -1573,7 +1578,7 @@ Reynolds number
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align}
-Re & =\frac{vd}{\nu}\label{eq:Reynolds}
+Re & =\frac{\left|v\right|d}{\nu}\label{eq:Reynolds}
 \end{align}
 
 \end_inset
@@ -1663,6 +1668,54 @@ W/mK]
 \end_layout
 
 \begin_layout Subsection
+General system function for friction-based flow elements
+\end_layout
+
+\begin_layout Standard
+The system equation for general flow elements is
+\begin_inset Formula 
+\begin{equation}
+0=p_{in}-p_{out}-\Delta p\left(\dot{m}\right)\label{eq:FlowElementSystemFunctionFriction}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $p_{in}$
+\end_inset
+
+ and 
+\begin_inset Formula $p_{out}$
+\end_inset
+
+ are the pressures at either side of the flow element.
+ 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\dot{m}$
+\end_inset
+
+ mass flux defined in the direction from inlet to outlet (may be negative
+ if flow goes from outlet to inlet)
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ pressure loss due to mass flux 
+\begin_inset Formula $\dot{m}$
+\end_inset
+
+ from through the flow element (may be negative)
+\end_layout
+
+\begin_layout Subsection
 Flow equations for pipes
 \end_layout
 
@@ -1678,14 +1731,32 @@ name "subsec:General-Hydraulic-Pipe"
 \end_layout
 
 \begin_layout Standard
+Equation
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:FlowElementSystemFunctionFriction"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ is used for pipes.
+\end_layout
+
+\begin_layout Standard
 Pipe parameters:
 \end_layout
 
 \begin_layout Itemize
-\begin_inset Formula $l$
+\begin_inset Formula $\ell$
 \end_inset
 
- length [m]
+ pipe length [m]
 \end_layout
 
 \begin_layout Itemize
@@ -1702,12 +1773,26 @@ Pipe parameters:
  roughness [m]
 \end_layout
 
+\begin_layout Itemize
+\begin_inset Formula $f$
+\end_inset
+
+ Darcy friction factor/flow coefficient [—]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\zeta$
+\end_inset
+
+ pressure loss coefficient [—]
+\end_layout
+
 \begin_layout Standard
 The fluid flow velocity is 
 \begin_inset Formula 
-\begin{align*}
-v & =\frac{\dot{m}}{\rho\frac{\pi}{4}d^{2}}
-\end{align*}
+\begin{align}
+v & =\frac{\dot{m}}{\rho\frac{\pi}{4}d^{2}}\label{eq:FlowVelocity}
+\end{align}
 
 \end_inset
 
@@ -1720,14 +1805,14 @@ For laminar flows (
 \end_inset
 
 ) the Darcy friction factor/flow coefficient 
-\begin_inset Formula $\lambda$
+\begin_inset Formula $f$
 \end_inset
 
  is
 \begin_inset Formula 
-\begin{align*}
-\lambda & =\frac{64}{Re}
-\end{align*}
+\begin{align}
+f & =\frac{64}{Re}\label{eq:Reynolds_laminar}
+\end{align}
 
 \end_inset
 
@@ -1739,11 +1824,62 @@ For turbulent flows (
 \begin_inset Formula $Re>1e4)$
 \end_inset
 
- we use the equation from Colebrook
+ we use the equation from Colebrook (
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+TODO, Gleichung aktualisieren
+\end_layout
+
+\end_inset
+
+)
 \begin_inset Formula 
-\begin{align*}
-\lambda & =\left[-2log_{10}\left(\frac{2.51}{Re\sqrt{\lambda}}+\frac{k}{3,71d}\right)\right]^{-2}
-\end{align*}
+\begin{align}
+f & =\left[-2log_{10}\left(\frac{2.51}{Re\sqrt{f}}+\frac{k}{3,71d}\right)\right]^{-2}\label{eq:Reynolds_turbulentColebrook}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Hauke
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Illustratration of friction factor vs.
+ Reynolds number
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
 
 \end_inset
 
@@ -1756,20 +1892,43 @@ For
 \end_inset
 
  we use linear interpolation between the two equations.
-\end_layout
+ Hereby the values for 
+\begin_inset Formula $f\left(2300\right)$
+\end_inset
 
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-TODO : express this more clearly, how the interpolation is done (see next
- section)
-\end_layout
-
+ obtained with equation
+\begin_inset space ~
 \end_inset
 
 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:Reynolds_laminar"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and 
+\begin_inset Formula $f\left(10^{4}\right)$
+\end_inset
+
+ obtained with equation
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:Reynolds_turbulentColebrook"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ are interpolated linearly.
 \end_layout
 
 \begin_layout Standard
@@ -1778,13 +1937,13 @@ The pressure loss coefficient
 \end_inset
 
  can be expressed by the pipe friction factor 
-\begin_inset Formula $\lambda$
+\begin_inset Formula $f$
 \end_inset
 
 , where
 \begin_inset Formula 
 \begin{align*}
-\text{\ensuremath{\zeta}} & =\lambda\frac{l}{d}
+\text{\ensuremath{\zeta}} & =f\frac{\ell}{d}
 \end{align*}
 
 \end_inset
@@ -1796,12 +1955,34 @@ The pressure loss coefficient
 The pressure drop is
 \begin_inset Formula 
 \begin{align}
-\Delta p & =\zeta\frac{\rho}{2}v^{2}\label{eq:pressureLossPipe}
+\Delta p & =\zeta\frac{\rho}{2}\left|v\right|v\label{eq:pressureLossPipe}
 \end{align}
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+Note: To allow reverse flow, equation
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:pressureLossPipe"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ expresses 
+\begin_inset Formula $v^{2}$
+\end_inset
+
+ as product of absolute and signed velocity.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1914,56 +2095,7 @@ Static adiabatic pipe
 \end_layout
 
 \begin_layout Standard
-This model considers pressure loss according as described in section
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "subsec:General-Hydraulic-Pipe"
-plural "false"
-caps "false"
-noprefix "false"
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-The system equation is
-\begin_inset Formula 
-\begin{equation}
-0=p_{in}-p_{out}-\Delta p\left(\dot{m}\right)
-\end{equation}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-with 
-\begin_inset Formula $\Delta p\left(\dot{m}\right)$
-\end_inset
-
- evaluated with equation
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:pressureLossPipe"
-plural "false"
-caps "false"
-noprefix "false"
-
-\end_inset
-
-.
- The fluid properties are evaluated using the temperature from the inlet
+The fluid properties are evaluated using the temperature from the inlet
  node (
 \begin_inset Formula $T=T_{in}$
 \end_inset
@@ -3349,8 +3481,120 @@ The total heat flux to the ambient is
 Pumps
 \end_layout
 
+\begin_layout Subsubsection
+System function
+\end_layout
+
+\begin_layout Standard
+The system function for pumps
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+0=p_{in}-p_{out}-\Delta p
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+uses a fixed, predefined pressure drop 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ (can be negative).
+ Different pump models are used to compute this pressure difference.
+\end_layout
+
+\begin_layout Subsubsection
+Constant pressure pump
+\end_layout
+
+\begin_layout Standard
+The pressure difference is a constant pump parameter.
+\end_layout
+
 \begin_layout Subsection
 Heat Exchangers
+\end_layout
+
+\begin_layout Standard
+Equation
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:FlowElementSystemFunctionFriction"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ is used for heat exchangers.
+ The pressure drop 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ is computed with equation
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:pressureLossPipe"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, yet with fixed, predefined 
+\begin_inset Formula $\zeta$
+\end_inset
+
+ (constant parameter).
+ The diameter 
+\begin_inset Formula $d$
+\end_inset
+
+ to evaluate equation
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:FlowVelocity"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ is an equivalent diameter, specific to the heat exchanger component, and
+ is provided as constant parameter.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Hauke, check if use of equivalent flow cross section as parameter is more
+ common.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
