@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<meta name="author" content="Andreas Nicolai &lt;andreas.nicolai@tu-dresden.de&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski">
+<meta name="author" content="Andreas Nicolai &lt;andreas.nicolai@tu-dresden.de&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski, Hauke Hirsch, Anne Paepcke">
 <title>NANDRAD Model Reference</title>
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -71,8 +71,8 @@ table {
 <div id="header">
 <h1>NANDRAD Model Reference</h1>
 <div class="details">
-<span id="author" class="author">Andreas Nicolai &lt;andreas.nicolai@tu-dresden.de&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski</span><br>
-<span id="revdate">(14.01.2021)</span>
+<span id="author" class="author">Andreas Nicolai &lt;andreas.nicolai@tu-dresden.de&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski, Hauke Hirsch, Anne Paepcke</span><br>
+<span id="revnumber">version 0.2 (25.01.2021)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -169,26 +169,26 @@ table {
 <li><a href="#_definition_eines_hydraulischen_netzwerks">2.16.1. Definition eines hydraulischen Netzwerks</a></li>
 <li><a href="#_medieneigenschaften">2.16.2. Medieneigenschaften</a></li>
 <li><a href="#_rohreigenschaften">2.16.3. Rohreigenschaften</a></li>
-<li><a href="#_komponentendefinitionen">2.16.4. Komponentendefinitionen</a></li>
+<li><a href="#component_definition">2.16.4. Komponentendefinitionen</a></li>
 <li><a href="#HydraulicNetworkElement">2.16.5. Strömungselemente</a></li>
 <li><a href="#_ausgaben">2.16.6. Ausgaben</a></li>
 </ul>
 </li>
-<li><a href="#_reference">2.17. Reference</a>
-<ul class="sectlevel3">
-<li><a href="#units">2.17.1. Unit Definitions</a></li>
-<li><a href="#quantities">2.17.2. Quantity References</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li><a href="#tutorials">3. Tutorials</a>
+<li><a href="#_reference">3. Reference</a>
 <ul class="sectlevel2">
-<li><a href="#Tutorial1">3.1. Tutorial 1 - Simple Single Room</a>
+<li><a href="#units">3.1. Unit Definitions</a></li>
+<li><a href="#quantities">3.2. Quantity References</a></li>
+</ul>
+</li>
+<li><a href="#tutorials">4. Tutorials</a>
+<ul class="sectlevel2">
+<li><a href="#Tutorial1">4.1. Tutorial 1 - Simple Single Room</a>
 <ul class="sectlevel3">
-<li><a href="#_introduction">3.1.1. Introduction</a></li>
-<li><a href="#_workflow">3.1.2. Workflow</a></li>
-<li><a href="#_materials_and_constructions">3.1.3. Materials and Constructions</a></li>
+<li><a href="#_introduction">4.1.1. Introduction</a></li>
+<li><a href="#_workflow">4.1.2. Workflow</a></li>
+<li><a href="#_materials_and_constructions">4.1.3. Materials and Constructions</a></li>
 </ul>
 </li>
 </ul>
@@ -5560,7 +5560,7 @@ If the model type <code>Scheduled</code> is being used, the actual loads are tak
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Die einzelnen Netzwerke sind hydraulisch unabhängig, d.h. es gibt keinen Fluidaustausch zwischen Netzwerken. Die Netzwerke können aber thermisch verknüpft sein, z.B. kann ein Quartierswärmenetz mit einem Gebäudeanlagennetz Wärme austauschen.</p>
+<p>Die einzelnen Netzwerke sind hydraulisch unabhängig, d.h. es gibt keinen Fluidaustausch zwischen Netzwerken. Die Netzwerke können aber thermisch verknüpft sein, z.B. kann ein Quartierswärmenetz mit einem Gebäudeanlagennetz Wärme austauschen. Dies bedingt auch eine ID Wahl der hydraulischen Netzwerkkomponenten.</p>
 </div>
 </td>
 </tr>
@@ -5569,14 +5569,14 @@ If the model type <code>Scheduled</code> is being used, the actual loads are tak
 <div class="sect3">
 <h4 id="_definition_eines_hydraulischen_netzwerks">2.16.1. Definition eines hydraulischen Netzwerks</h4>
 <div class="paragraph">
-<p>Ein einzelnen Netzwerk wird im XML-tag <code>HydraulicNetwork</code> definiert, wie im folgenden Beispiel:</p>
+<p>Ein einzelnes Netzwerk wird im XML-tag <code>HydraulicNetwork</code> definiert, wie im folgenden Beispiel:</p>
 </div>
 <div class="exampleblock">
 <div class="title">Example 49. Typische Definition eines einzelnen Netzwerks</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;HydraulicNetwork</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">displayName=</span><span class="s">"Simple network"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;HydraulicNetwork</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">displayName=</span><span class="s">"Simple network"</span> <span class="na">modelType=</span><span class="s">"ThermoHydraulicNetwork"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;HydraulicFluid</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">displayName=</span><span class="s">"Water"</span><span class="nt">&gt;</span>
         ... <span class="c">&lt;!-- fluid parameters --&gt;</span>
     <span class="nt">&lt;/HydraulicFluid&gt;</span>
@@ -5605,9 +5605,9 @@ If the model type <code>Scheduled</code> is being used, the actual loads are tak
 <caption class="title">Table 29. Attributes</caption>
 <colgroup>
 <col style="width: 20%;">
-<col style="width: 60%;">
+<col style="width: 40%;">
 <col style="width: 10%;">
-<col style="width: 10%;">
+<col style="width: 30%;">
 </colgroup>
 <thead>
 <tr>
@@ -5621,7 +5621,7 @@ If the model type <code>Scheduled</code> is being used, the actual loads are tak
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Unique identifier of the network</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">(&#160;&gt;&#160;0&#160;)</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
 </tr>
 <tr>
@@ -5630,10 +5630,86 @@ If the model type <code>Scheduled</code> is being used, the actual loads are tak
 <td class="tableblock halign-center valign-top"><p class="tableblock">string</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>modelType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies a particular network calculation mode.</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em>
+ (defaults to <code>ThermalHydraulicNetwork</code>)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Das optionale Attribut <code>modelType</code> beschreibt konkret, welches Berechnungsmodell zu verwenden ist. Folgende Optionen sind möglich:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 30. Werte für Attribut <code>modelType</code></caption>
+<colgroup>
+<col style="width: 30%;">
+<col style="width: 70%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>HydraulicNetwork</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Only the hydraulic network calculation is done, i.e. mass flux and pressure calculation.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ThermoHydraulicNetwork</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Network is calculated with thermal balances enabled. Each flow element corresponds to at least one energy/enthalpy balance equation.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Die Wahl des Netzwerkberechnungsmodells hat Auswirkungen auf die benötigte Parametrisierung der beteiligten Komponenten.</p>
+</div>
+<div class="sect4">
+<h5 id="_parameter">Parameter</h5>
+<div class="paragraph">
+<p>Je nach Modelltyp können mehrere Netzwerkparameter definiert werden.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 30%;">
+<col style="width: 10%;">
+<col style="width: 30%;">
+<col style="width: 12%;">
+<col style="width: 18%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-center valign-top">Unit</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-center valign-top">Value Range</th>
+<th class="tableblock halign-center valign-top">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DefaultFluidTemperature</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">C</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">einheitliche, konstante Fluidtemperatur zur Verwendung mit einem rein hydraulischen Modell</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required for model type</em>  <code>HydraulicNetwork</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>InitialFluidTemperature</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">C</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Anfangsfluidtemperatur</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required for model type</em> <code>ThermoHydraulicNetwork</code></p></td>
+</tr>
 </tbody>
 </table>
 <div class="paragraph">
 <p>Innerhalb des Netzwerk-Definitionsblocks gibt es vier Kind-Elemente.</p>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -5649,7 +5725,7 @@ If the model type <code>Scheduled</code> is being used, the actual loads are tak
 </td>
 <td class="content">
 <div class="paragraph">
-<p>In jedem Netzwerk gibt es nur ein einziges Fluid, und deshalb ist auch nur eine einzige Instanz des <code>HydraulicFluid</code> tags erlaubt.</p>
+<p>In jedem Netzwerk gibt es nur ein einziges Fluid, und deshalb ist auch nur eine einzige Instanz des <code>HydraulicFluid</code> Tags erlaubt.</p>
 </div>
 </td>
 </tr>
@@ -5677,7 +5753,7 @@ If the model type <code>Scheduled</code> is being used, the actual loads are tak
 <p>XML-tag <code>HydraulicFluid</code> hat folgende Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 30. Attributes</caption>
+<caption class="title">Table 31. Attributes</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -5696,7 +5772,7 @@ If the model type <code>Scheduled</code> is being used, the actual loads are tak
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Unique identifier of the fluid</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">(&#160;&gt;&#160;0&#160;)</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
 </tr>
 <tr>
@@ -5813,31 +5889,449 @@ If the model type <code>Scheduled</code> is being used, the actual loads are tak
 <div class="sect3">
 <h4 id="_rohreigenschaften">2.16.3. Rohreigenschaften</h4>
 <div class="paragraph">
-<p>TODO</p>
+<p>Die Rohreigenschaften <code>HydraulicNetworkPipeProperties</code> legen die physikalische/geometrischen Eigenschaften eines Rohrtyps fest. Diese werden in dem Katalog <code>PipeProperties</code> mit eindeutigen IDs aufgelistet.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 51. Definition von Rohreigenschaften</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;PipeProperties&gt;</span>
+  <span class="nt">&lt;HydraulicNetworkPipeProperties</span> <span class="na">id=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"PipeRoughness"</span> <span class="na">unit=</span><span class="s">"m"</span><span class="nt">&gt;</span>0.007<span class="nt">&lt;/IBK:Parameter&gt;</span>
+    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"PipeInnerDiameter"</span> <span class="na">unit=</span><span class="s">"mm"</span><span class="nt">&gt;</span>25.6<span class="nt">&lt;/IBK:Parameter&gt;</span>
+    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"PipeOuterDiameter"</span> <span class="na">unit=</span><span class="s">"mm"</span><span class="nt">&gt;</span>32<span class="nt">&lt;/IBK:Parameter&gt;</span>
+    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"UValuePipeWall"</span> <span class="na">unit=</span><span class="s">"W/m2K"</span><span class="nt">&gt;</span>5<span class="nt">&lt;/IBK:Parameter&gt;</span>
+  <span class="nt">&lt;/HydraulicNetworkPipeProperties&gt;</span>
+
+  ...
+<span class="nt">&lt;/PipeProperties&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Wenn ein <code>HydraulicNetworkElement</code> ein Rohr repräsentiert, können ihm über den den XML-tag <code>pipePropertyId</code> entsprechende  <code>HydraulicNetworkPipeProperties</code> zugewiesen werden.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 32. Attributes</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 60%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-center valign-top">Format</th>
+<th class="tableblock halign-center valign-top">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique identifier of the pipe properties.</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Parameter der Rohreigenschaftem (see section <a href="#IBK_Parameter">IBK:Parameter</a> for a description of the <code>IBK:Parameter</code> tag):</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 17.8217%;">
+<col style="width: 14.8514%;">
+<col style="width: 37.6237%;">
+<col style="width: 19.8019%;">
+<col style="width: 9.9013%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-center valign-top">Unit</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-center valign-top">Value Range</th>
+<th class="tableblock halign-center valign-top">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PipeRoughness</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">mm</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Roughness of pipe wall</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PipeInnerDiameter</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">mm</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inner diameter of pipe</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PipeOuterDiameter</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">mm</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Outer diameter of pipe</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>(*)</em> <code>UValuePipeWall</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">W/m2K</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">U-Value of pipe wall (including insulation)</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><em>(*) - not yet used</em></p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_komponentendefinitionen">2.16.4. Komponentendefinitionen</h4>
+<h4 id="component_definition">2.16.4. Komponentendefinitionen</h4>
 <div class="paragraph">
-<p>TODO</p>
+<p>Eine <code>HydraulicNetworkComponent</code> definiert die Basiseigenschaften eines Strömungselements. Diese werden in dem Katalog <code>Components</code> mit eindeutigen IDs aufgelistet.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 52. Definition einer Komponente</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Components&gt;</span>
+    <span class="nt">&lt;HydraulicNetworkComponent</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">modelType=</span><span class="s">"ConstantPressurePumpModel"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"PressureHead"</span> <span class="na">unit=</span><span class="s">"Pa"</span><span class="nt">&gt;</span>1000<span class="nt">&lt;/IBK:Parameter&gt;</span>
+      <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Volume"</span> <span class="na">unit=</span><span class="s">"m3"</span><span class="nt">&gt;</span>0.01<span class="nt">&lt;/IBK:Parameter&gt;</span>
+    <span class="nt">&lt;/HydraulicNetworkComponent&gt;</span>
+
+    ...
+<span class="nt">&lt;/Components&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 33. Attributes</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 60%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-center valign-top">Format</th>
+<th class="tableblock halign-center valign-top">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique identifier of the component</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>modelType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type of component</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Die Parameter und Attribute sind dann abhängig vom <code>modelType</code> der Komponente und dem <code>modelType</code> des Netzwerks.</p>
+</div>
+<div class="sect4">
+<h5 id="_staticadiabaticpipe">StaticAdiabaticPipe</h5>
+<div class="paragraph">
+<p>Für das Model <code>StaticAdiabaticPipe</code> werden keine weiteren Parameter benötigt.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_constantpressurepump">ConstantPressurePump</h5>
+<div class="paragraph">
+<p>Für das Model <code>ConstantPressurePump</code> werden diese Parameter benötigt:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 22%;">
+<col style="width: 10%;">
+<col style="width: 38%;">
+<col style="width: 12%;">
+<col style="width: 18%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-center valign-top">Unit</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-center valign-top">Value Range</th>
+<th class="tableblock halign-center valign-top">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PressureHead</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">Pa</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Constant pressure added by the pump</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">any</p></td>
+<td class="tableblock halign-center valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>(*)</em> <code>PumpEfficiency</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Hydraulic efficiency of pump</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0&#160;&lt;&#160;&#8230;&#8203;1</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">only <code>ThermalHydraulicNetwork</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>(*)</em> <code>MotorEfficiency</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Efficiency of motor</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0&#160;&lt;&#160;&#8230;&#8203;1</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">only <code>ThermalHydraulicNetwork</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>(*)</em> <code>Volume</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">m3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fluid volume inside the pump</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">only <code>ThermalHydraulicNetwork</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><em>(*) - not yet used</em></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_heatexchanger">HeatExchanger</h5>
+<div class="paragraph">
+<p>Für das Model <code>HeatExchanger</code> werden diese Parameter benötigt:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 22%;">
+<col style="width: 10%;">
+<col style="width: 38%;">
+<col style="width: 12%;">
+<col style="width: 18%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-center valign-top">Unit</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-center valign-top">Value Range</th>
+<th class="tableblock halign-center valign-top">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>HydraulicDiameter</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">mm</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">equivalent hydraulic diameter (needed to compute flow cross section and flow velocity)</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PressureLossCoefficient</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">effective pressure loss coefficient</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>(*)</em> <code>Volume</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">m3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fluid volume inside the heat exchanger</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">only <code>ThermalHydraulicNetwork</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><em>(*) - not yet used</em></p>
+</div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="HydraulicNetworkElement">2.16.5. Strömungselemente</h4>
-<div class="paragraph">
-<p>Ein Netzwerk besteht aus vielen durchströmten Bauteilen, sogenannten <em>Strömungselementen</em> (engl. <em>flow elements</em>).</p>
+<div class="exampleblock">
+<div class="title">Example 53. Definition einer Komponente</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Elements&gt;</span>
+  <span class="nt">&lt;HydraulicNetworkElement</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">inletNodeId=</span><span class="s">"5"</span> <span class="na">outletNodeId=</span><span class="s">"6"</span> <span class="na">componentId=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Length"</span> <span class="na">unit=</span><span class="s">"m"</span><span class="nt">&gt;</span>100<span class="nt">&lt;/IBK:Parameter&gt;</span>
+    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Temperature"</span> <span class="na">unit=</span><span class="s">"C"</span><span class="nt">&gt;</span>10<span class="nt">&lt;/IBK:Parameter&gt;</span>
+  <span class="nt">&lt;/HydraulicNetworkElement&gt;</span>
+  <span class="nt">&lt;HydraulicNetworkElement</span> <span class="na">id=</span><span class="s">"2"</span> <span class="na">inletNodeId=</span><span class="s">"6"</span> <span class="na">outletNodeId=</span><span class="s">"7"</span> <span class="na">componentId=</span><span class="s">"2"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"HeatFlux"</span> <span class="na">unit=</span><span class="s">"W"</span><span class="nt">&gt;</span>100<span class="nt">&lt;/IBK:Parameter&gt;</span>
+  <span class="nt">&lt;/HydraulicNetworkElement&gt;</span>
+  ...
+<span class="nt">&lt;/Elements&gt;</span></code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="paragraph">
-<p>TODO</p>
+<p>Die tatsächlichen Strömungselemente des Netzwerks, werden unter <code>Elements</code> mit dem XML-tag <code>HydraulicNetworkElement</code> definiert. Diese haben die folgenden Attribute:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 34. Attributes</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 60%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-center valign-top">Format</th>
+<th class="tableblock halign-center valign-top">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique ID of the <code>HydraulicNetworkElement</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>inletNodeId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique ID of inlet node</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>outletNodeId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique ID of outlet node</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>componentId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique ID of referenced <code>HydraulicNetworkComponent</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pipePropertiesId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique ID of referenced <code>HydraulicNetworkPipeProperties</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em> (<em>required</em> for pipes)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>displayName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Display name of the element (used for error/informative messages)</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Die ID eines <code>HydraulicNetworkElement</code> muss global eindeutig sein, d.h. Netzwerkübergreifend müssen `HydraulicNetworkElement`s mit einer eindeutigen ID bezeichnet werden.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Die Strömungselemente sind miteinander durch Knoten verknüpft. In jedem Strömungselement fließt das Fluid von dem Knoten mit der <code>inletNodeId</code> zu dem Knoten mit der <code>outletNodeId</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Verschiedene Strömungselemente sind durch die Knoten IDs <code>inletNodeId</code> und <code>outletNodeId</code> verknüpft. Die Knoten-IDs referenzieren keine Strömungselemente, sondern "virtuelle" Knoten.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Jedes Strömungselement referenziert jeweils eine Komponente mit der <code>componentId</code>.</p>
+</div>
+<div class="sect4">
+<h5 id="_rohr_elemente">Rohr-Elemente</h5>
+<div class="paragraph">
+<p>Ist eine Komponente ein Rohr (z.B. <code>DynamicPipe</code>), <strong>müssen</strong> entsprechende Rohrparameter mit der <code>pipePropertiesId</code> referenziert werden.</p>
+</div>
+<div class="paragraph">
+<p>Weiterhin <strong>muss</strong> für ein Rohrelement der Parameter <code>Length</code> definiert werden (siehe auch <a href="#ex_pipe_element">Example 54</a>):</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 17.8217%;">
+<col style="width: 14.8514%;">
+<col style="width: 37.6237%;">
+<col style="width: 19.8019%;">
+<col style="width: 9.9013%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-center valign-top">Unit</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-center valign-top">Value Range</th>
+<th class="tableblock halign-center valign-top">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Length</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">m</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Length of pipe</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
+</tr>
+</tbody>
+</table>
+<div id="ex_pipe_element" class="exampleblock">
+<div class="title">Example 54. Definition eines Rohrelements</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;HydraulicNetworkElement</span> <span class="na">id=</span><span class="s">"2"</span> <span class="na">inletNodeId=</span><span class="s">"0"</span> <span class="na">outletNodeId=</span><span class="s">"1"</span> <span class="na">componentId=</span><span class="s">"3"</span> <span class="na">pipePropertiesId=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Length"</span> <span class="na">unit=</span><span class="s">"m"</span><span class="nt">&gt;</span>100<span class="nt">&lt;/IBK:Parameter&gt;</span>
+<span class="nt">&lt;/HydraulicNetworkElement&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_ausgaben">2.16.6. Ausgaben</h4>
 <div class="paragraph">
-<p>Die Ergebnisgrößen eines thermo-hydraulischen Netzwerkmodells werden wie folgt definiert. Also Referenzierungstyp dient <code>Network</code>, welche in der entsprechenden <code>ObjectList</code> angegeben wird.</p>
+<p>Die Ergebnisgrößen eines thermo-hydraulischen Netzwerkmodells werden wie folgt definiert. Als Referenzierungstyp dient entweder <code>Network</code> für Ausgaben des Netzwerks insgesamt, oder <code>NetworkElement</code> für die Adressierung individueller Strömungselemente (siehe <a href="#ex_objectList_networks">Example 55</a>).</p>
 </div>
-<div class="exampleblock">
-<div class="title">Example 51. Objektlist für die Referenzierung des Netzwerks mit der ID 1</div>
+<div id="ex_objectList_networks" class="exampleblock">
+<div class="title">Example 55. Objektlist für die Referenzierung eines Netzwerks mit der ID 1 und ausgewählter Elemente des Netzwerks</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -5845,6 +6339,10 @@ If the model type <code>Scheduled</code> is being used, the actual loads are tak
   <span class="nt">&lt;ObjectList</span> <span class="na">name=</span><span class="s">"the Network"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;FilterID&gt;</span>1<span class="nt">&lt;/FilterID&gt;</span> <span class="c">&lt;!-- ID of network --&gt;</span>
     <span class="nt">&lt;ReferenceType&gt;</span>Network<span class="nt">&lt;/ReferenceType&gt;</span>
+  <span class="nt">&lt;/ObjectList&gt;</span>
+  <span class="nt">&lt;ObjectList</span> <span class="na">name=</span><span class="s">"Pipes"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;FilterID&gt;</span>1,3<span class="nt">&lt;/FilterID&gt;</span> <span class="c">&lt;!-- IDs of flow elements --&gt;</span>
+    <span class="nt">&lt;ReferenceType&gt;</span>NetworkElement<span class="nt">&lt;/ReferenceType&gt;</span>
   <span class="nt">&lt;/ObjectList&gt;</span>
 <span class="nt">&lt;/ObjectLists&gt;</span></code></pre>
 </div>
@@ -5857,7 +6355,49 @@ If the model type <code>Scheduled</code> is being used, the actual loads are tak
 <p>Das Netzwerk-Objekt liefert eine Vielzahl von Ergebnisgrößen für die einzelnen Strömungselemente.</p>
 </div>
 <div class="paragraph">
-<p>Jedes Strömungselement hat eine (mittlere) Temperatur, welche über die Ausgabegröße <code>Temperature[&lt;id&gt;]</code> abgefragt werden kann. Die ID entspricht hier der Element-ID (siehe <a href="#HydraulicNetworkElement">Strömungselemente</a>).</p>
+<p>Die Anforderungen an die Netzwerkausgaben richten sich allerdings nach der späteren Visualisierungsebene. Grundlegend ist davon auszugehen, dass im Postprozessing eine weitere Sicht erforderlich sein wird, welche neben dem Gebäude eine Auswertung der hydraulischen Netzwerke erlaubt. Um die Übersichtlichkeit zu wahren, wird diese Sicht von derjenigen des Gebäudes getrennt sein.</p>
+</div>
+<div class="paragraph">
+<p>Die Netzwerkausgaben werden von daher räumlich getrennt in einer eigenen Datei abgelegt. Dafür wird ein neuer Ausgabetyp eingeführt:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>network &#8594; <code>network_&lt;gridname&gt;.tsv</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Für Analyse der Netzwerke und Übergabesysteme sind sowohl die Masseströme und Temperaturen im Innere eines Verbindungselementes, aber auch an den Verbindungsstellen zwischen zwei Elementen von Interesse. Letzerer Fall ist beispielsweise typisch für gekoppelte Erzeuger- und Verbraucherkreisläufe, wobei eine Kontrolle der Zulauf- und Rücklauftemperatur möglich sein muss.</p>
+</div>
+<div class="paragraph">
+<p>Da die Netzwerkvisualisierungsebene keine Knoten kennt, müssen Knotentemperaturen am Ein- und Auslass des Verbindungselementes abgegriffen werden. Ein- und Auslässe sind unabhängig von der Strömungsrichtung entsprechend der Netzwerktopologie definiert.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Es wird bei der Topologiedefinition eines Netzwerks mittels der <code>HydraulicNetworkElement</code> tags von einer nominalen Strömungsrichtung ausgegangen. Deshalb werden Einlass- und Auslassknoten mittels der IDs <code>inletNodeId</code> und <code>outletNodeId</code> referenziert.</p>
+</div>
+<div class="paragraph">
+<p>Je nach Bedingungen im Netzwerk ist es jedoch auch möglich, dass sich die Strömungsrichtung umkehrt, und das Medium nun auf der Einströmseite eines Rohres ausströmt. Dies wirkt sich zwar im Vorzeichen des Massestroms aus, jedoch nicht in der Bezeichung der <em>geometrischen</em> Ein- und Auslässe eines Strömungselements.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Es sind folgenden Ergebnisgrößen definiert:</p>
+</div>
+<div class="paragraph">
+<p>TODO Andreas</p>
+</div>
+<div class="paragraph">
+<p>Jedes Strömungselement hat eine (mittlere) Temperatur, welche über die Ausgabegröße <code>FluidTemperature[&lt;id&gt;]</code> abgefragt werden kann. Die ID entspricht hier der Element-ID (siehe <a href="#HydraulicNetworkElement">Section 2.16.5</a>).</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -5888,13 +6428,22 @@ If the model type <code>Scheduled</code> is being used, the actual loads are tak
 </table>
 </div>
 <div class="paragraph">
-<p>Jedes Strömungselement hat auch einen Massestrom, wobei die Strömungsrichtung immer von <em>inletNode</em> zu <em>outletNode</em> positiv definiert ist. Der Massestrom kann über die Größe <code>MassFlux[&lt;id&gt;]</code> abgefragt werden.</p>
+<p>Jedes Strömungselement hat auch einen Massestrom, wobei die Strömungsrichtung immer von <em>inletNode</em> zu <em>outletNode</em> positiv definiert ist. Der Massestrom kann über die Größe <code>FluidMassFlux[&lt;id&gt;]</code> abgefragt werden.</p>
 </div>
 <div class="paragraph">
-<p>Zur Vereinfachung dienen die Variablennamen <code>Temperatures</code> und <code>MassFluxes</code>, welche jeweils Ausgaben für alle Strömungselemente anfordern.</p>
+<p>Zur Vereinfachung dienen die Variablennamen <code>FluidTemperatures</code> und <code>FluidMassFluxes</code>, welche jeweils Ausgaben für alle Strömungselemente anfordern.</p>
 </div>
 <div class="paragraph">
-<p>Die Variablen werden in den Ausgabedateien wie folgt angegeben: <code>Network(id=3).Temperature(id=101)</code> wobei hier <code>id=3</code> die ID des ausgewählten Netzwerks angibt und <code>id=101</code> das Strömungselement, dessen Temperatur ausgegeben wird.</p>
+<p>Die Variablen werden in den Ausgabedateien wie folgt angegeben: <code>Network(id=3).FluidTemperature(id=101)</code> wobei hier <code>id=3</code> die ID des ausgewählten Netzwerks angibt und <code>id=101</code> das Strömungselement, dessen Temperatur ausgegeben wird.</p>
+</div>
+<div class="paragraph">
+<p>Des Weiteren sind die Fluidtemperaturen an Anschlussstellen von Interesse. Hierbei werden die Einlassknoten und Auslassknoten eines Elementes verwendet, um eine eindeutige Zuordnung zu erlauben. In der Ausgabe erscheinen dann die zusätzlichen Einträge:</p>
+</div>
+<div class="paragraph">
+<p><code>Network(id=3).InletNodeTemperature(id=101)</code>, <code>Network(id=3).OutletNodeTemperature(id=101)</code>.</p>
+</div>
+<div class="paragraph">
+<p>Die Temperaturpunkte entsprechen dabei exakt den mit <code>inletNodeId</code> und <code>outletNodeId</code> gekennzeichneten Anschlussstellen.</p>
 </div>
 </div>
 <div class="sect4">
@@ -5903,7 +6452,7 @@ If the model type <code>Scheduled</code> is being used, the actual loads are tak
 <p>Bei Strömungselementen mit mehreren Segmenten und Temperaturverteilungen werden bei Abfrage der Temperatur mittels <code>Temperature[&lt;id&gt;]</code> stets alle Segmenttemperaturen ausgegeben. In der Ausgabedatei werden diese wie folgt kodiert:</p>
 </div>
 <div class="paragraph">
-<p><code>Network(id=3).Temperature(id=101).1</code>, <code>Network(id=3).Temperature(id=101).2</code>, &#8230;&#8203;,  <code>Network(id=3).Temperature(id=101).&lt;n&gt;</code></p>
+<p><code>Network(id=3).FluidTemperature(id=101).1</code>, <code>Network(id=3).FluidTemperature(id=101).2</code>, &#8230;&#8203;,  <code>Network(id=3).FluidTemperature(id=101).&lt;n&gt;</code></p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -5913,7 +6462,7 @@ If the model type <code>Scheduled</code> is being used, the actual loads are tak
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Die Benennung der Variablennamen wird intern in einer <code>InputReference</code> Klasse beschrieben. <code>Network</code> entspricht dem Referenzierungstyp, <code>Temperature</code> ist der <code>QuantityName</code> und <code>id=&lt;id&gt;</code> ergibt sich bei vektorwertigen Größen aus der ID/Index.</p>
+<p>Die Benennung der Variablennamen wird intern in einer <code>InputReference</code> Klasse beschrieben. <code>Network</code> entspricht dem Referenzierungstyp, <code>FluidTemperature</code> ist der <code>QuantityName</code> und <code>id=&lt;id&gt;</code> ergibt sich bei vektorwertigen Größen aus der ID/Index.</p>
 </div>
 <div class="paragraph">
 <p>DAHER GIBT ES DERZEIT KEINE MÖGLICHKEIT, VEKTORWERTIGE ERGEBNISSE EINER VEKTORVERTIGEN AUSGABE AUSZUGEBEN!!! Das funktioniert also so nicht&#8230;&#8203;</p>
@@ -5923,16 +6472,84 @@ If the model type <code>Scheduled</code> is being used, the actual loads are tak
 </table>
 </div>
 <div class="paragraph">
-<p>TODO weitere Ausgaben</p>
+<p>Alternative 1:</p>
+</div>
+<div class="paragraph">
+<p>Es kann davon ausgegangen werden, dass die Temperaturstratifierung in einem einzelnen Strömungselement nur auf der Ebene des einzelnen Bauteils von Interesse ist, so zum Beispiel, wenn die Temperaturverteilung in einem Speicher verfolgt werden soll.
+Solche Analysen finden nicht auf der globalen Netzwerkebene statt, sondern haben stets das Einzelbauteil im Fokus.</p>
+</div>
+<div class="paragraph">
+<p>Passend dazu kann die Ausgabe der Segmenttemperaturen als raumaufgelöste Spezialinformation gedeutet werden, die auch in einer späteren Visualisierung eine eigene vom Netzwerk unabhängige Sicht erhält.</p>
+</div>
+<div class="paragraph">
+<p>Daher erscheint die Ausgabe von Segmenttemperaturen in vom Netzwerk unabhängige Dateien schlüssig:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>networkelement &#8594; <code>networkelement(id=101)_&lt;gridname&gt;.tsv</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Innerhalb der Datei kann die Benennung der Temperaturen wie folgt vorgenommen werden:</p>
+</div>
+<div class="paragraph">
+<p><code>Temperature[0]</code>, <code>Temperature[1]</code>, &#8230;&#8203;, <code>Temperature[n]</code></p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Um die Namensgebung für diesen Fall nicht zu sehr zu überfrachten, wäre ja ein gemeinsamer Id-Raum für alle Netzwerkelemente - unabhängig von der Zugehörigkeit zu einem konkreten Netzwerk - u.U. zielführend. Bei Betrachtung einer Einzelkomponente interessiert ja nicht ihre Netzwerkzugehörigkeit, sondern ihre speziellen physikalischen Eigenschaften.</p>
+</div>
+<div class="paragraph">
+<p>Die eindeutige Identifierung einer Netzwerkkomponente via Id - auch ohne Kenntnis des umgebenden Netzwerkes - erscheint auch in diesem Zusammenhang als zielführend. Auch andere Argumente sprechen dafür:</p>
+</div>
+<div class="paragraph">
+<p>Beispielsweise können Komponenten wie Wärmetauscher auftreten, die zu zwei unterschiedlichen Netzwerken gehören, aber trotzdem als eine Einheit sichtbar sein müssen. Es gilt zu klären, wie damit umzugehen ist.</p>
+</div>
+<div class="paragraph">
+<p>TODO: Ideen gesucht</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Alternative 2:</p>
+</div>
+<div class="paragraph">
+<p>Mehrere Elemente werden in einer Datei zusammengefasst, also</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>network &#8594; <code>network(id=1)_&lt;gridname&gt;.tsv</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>mit den Dateieinträgen</p>
+</div>
+<div class="paragraph">
+<p><code>Networkelement(id=101).Temperature[0]</code>, <code>Networkelement(id=101).Temperature[1]</code>, &#8230;&#8203;, <code>Networkelement(id=101).Temperature[n]</code></p>
 </div>
 <hr>
 </div>
 </div>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_reference">3. Reference</h2>
+<div class="sectionbody">
 <div class="sect2">
-<h3 id="_reference">2.17. Reference</h3>
-<div class="sect3">
-<h4 id="units">2.17.1. Unit Definitions</h4>
+<h3 id="units">3.1. Unit Definitions</h3>
 <div class="paragraph">
 <p>Throughout the NANDRAD solver, units are <em>only</em> used for input/output purposes. Within the calculation functions, <em>always</em> the base SI units are used, hereby avoiding problems from unit conversions.</p>
 </div>
@@ -6294,8 +6911,8 @@ If the model type <code>Scheduled</code> is being used, the actual loads are tak
 </table>
 </div>
 </div>
-<div class="sect3">
-<h4 id="quantities">2.17.2. Quantity References</h4>
+<div class="sect2">
+<h3 id="quantities">3.2. Quantity References</h3>
 <div class="paragraph">
 <p>The following list of quantities is an overview of all available results that can be requested as outputs. Which outputs are actually available  depends on the project and will be printed into the file <code>var/output_reference_list.txt</code> (see discussion in section <a href="#outputs">Outputs/Results</a>).</p>
 </div>
@@ -6497,17 +7114,16 @@ If the model type <code>Scheduled</code> is being used, the actual loads are tak
 </div>
 </div>
 </div>
-</div>
 <div class="sect1">
-<h2 id="tutorials">3. Tutorials</h2>
+<h2 id="tutorials">4. Tutorials</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This section contains several tutorials for different use cases in NANDRAD2. It will start with a simple tutorial for a single room.</p>
 </div>
 <div class="sect2">
-<h3 id="Tutorial1">3.1. Tutorial 1 - Simple Single Room</h3>
+<h3 id="Tutorial1">4.1. Tutorial 1 - Simple Single Room</h3>
 <div class="sect3">
-<h4 id="_introduction">3.1.1. Introduction</h4>
+<h4 id="_introduction">4.1.1. Introduction</h4>
 <div class="paragraph">
 <p>In this example a single thermal zone modelling is described. The main focus is put on the geometry, material and construction parametrization. The temperature of the freely oscillating room is given as the result output. The dimensions of the room are <code>l = 2.0 m</code> length, <code>w = 5.0 m</code> width and <code>h = 3.0 m</code> height. This leads to an air volume of <code>V = 30.0 m³</code>. All further characteristic values are specified in the following.</p>
 </div>
@@ -6516,13 +7132,13 @@ If the model type <code>Scheduled</code> is being used, the actual loads are tak
 </div>
 </div>
 <div class="sect3">
-<h4 id="_workflow">3.1.2. Workflow</h4>
+<h4 id="_workflow">4.1.2. Workflow</h4>
 <div class="paragraph">
 <p>First all materials inside <code>Materials</code> and the used constructions inside <code>ConstructionTypes</code> are defined, which are needed for the test zone. Afterwards all enveloping surfaces inside <code>ConstructionInstances</code> are parametrized and the output parameters inside <code>Outputs</code> are set. Finally, the climate is specified inside <code>Location</code> and further simulation settings inside <code>SimulationParameter</code>.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_materials_and_constructions">3.1.3. Materials and Constructions</h4>
+<h4 id="_materials_and_constructions">4.1.3. Materials and Constructions</h4>
 <div class="paragraph">
 <p>The building consists of a floor, a wall and a roof construction. The constructions are shown in the following table.</p>
 </div>
@@ -6852,7 +7468,8 @@ The example below shows how the output of the models is referenced via the objec
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-01-14 21:11:34 +0100
+Version 0.2 (25.01.2021)<br>
+Last updated 2021-01-25 22:36:12 +0100
 </div>
 </div>
 <style>

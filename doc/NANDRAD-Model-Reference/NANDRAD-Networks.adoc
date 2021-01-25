@@ -65,10 +65,10 @@ Ein einzelnes Netzwerk wird im XML-tag `HydraulicNetwork` definiert, wie im folg
 XML-tag `HydraulicNetwork` hat folgende Attribute:
 
 .Attributes
-[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+[options="header",cols="20%,40%,^ 10%,^ 30%",width="100%"]
 |====================
 | Attribute  | Description | Format | Usage 
-| `id` |  Unique identifier of the network | ({nbsp}>{nbsp}0{nbsp})  | _required_
+| `id` |  Unique identifier of the network | {nbsp}>{nbsp}0{nbsp}  | _required_
 | `displayName`  |  Display name of the network. | string | _optional_
 | `modelType`  |  Specifies a particular network calculation mode. | string | _optional_ 
  (defaults to `ThermalHydraulicNetwork`)
@@ -90,7 +90,7 @@ Die Wahl des Netzwerkberechnungsmodells hat Auswirkungen auf die benötigte Para
 
 Je nach Modelltyp können mehrere Netzwerkparameter definiert werden. 
 
-[options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
+[options="header",cols="30%,^ 10%, 30%,^ 12%,^ 18%",width="100%"]
 |====================
 |Name|Unit|Description|Value Range |Usage
 | `DefaultFluidTemperature` | C | einheitliche, konstante Fluidtemperatur zur Verwendung mit einem rein hydraulischen Modell | {nbsp}>{nbsp}0.0{nbsp} | _required for model type_  `HydraulicNetwork`
@@ -105,7 +105,7 @@ Der XML-tag `HydraulicFluid` enthält die Definition des im Netzwerk strömenden
 
 [IMPORTANT]
 ====
-In jedem Netzwerk gibt es nur ein einziges Fluid, und deshalb ist auch nur eine einzige Instanz des `HydraulicFluid` tags erlaubt.
+In jedem Netzwerk gibt es nur ein einziges Fluid, und deshalb ist auch nur eine einzige Instanz des `HydraulicFluid` Tags erlaubt.
 ====
 
 .Definition eines Netzwerkfluids
@@ -130,7 +130,7 @@ XML-tag `HydraulicFluid` hat folgende Attribute:
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Attribute  | Description | Format | Usage 
-| `id` |  Unique identifier of the fluid | ({nbsp}>{nbsp}0{nbsp})  | _required_
+| `id` |  Unique identifier of the fluid | {nbsp}>{nbsp}0{nbsp}  | _required_
 | `displayName`  |  Display name of the network. | string | _optional_
 |====================
 
@@ -190,7 +190,7 @@ Wenn ein `HydraulicNetworkElement` ein Rohr repräsentiert, können ihm über de
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Attribute  | Description | Format | Usage 
-| `id` |  Unique identifier of the pipe properties. | ({nbsp}>{nbsp}0{nbsp})  | _required_
+| `id` |  Unique identifier of the pipe properties. | {nbsp}>{nbsp}0{nbsp}  | _required_
 |====================
 
 Parameter der Rohreigenschaftem (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
@@ -198,13 +198,13 @@ Parameter der Rohreigenschaftem (see section <<IBK_Parameter>> for a description
 [options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
 |====================
 |Name|Unit|Description|Value Range |Usage
-| `PipeRoughness` | mm | Roughness of pipe wall | ({nbsp}>{nbsp}0{nbsp})  | _required_
-| `PipeInnerDiameter` | mm | Inner diameter of pipe | ({nbsp}>{nbsp}0{nbsp})  | _required_
-| `PipeOuterDiameter` | mm | Outer diameter of pipe | ({nbsp}>{nbsp}0{nbsp})  | _required_
-| `UValuePipeWall` | W/m2K | U-Value of pipe wall (including insulation) | ({nbsp}>{nbsp}0{nbsp})  | _required_
+| `PipeRoughness` | mm | Roughness of pipe wall | {nbsp}>{nbsp}0.0{nbsp}  | _required_
+| `PipeInnerDiameter` | mm | Inner diameter of pipe | {nbsp}>{nbsp}0.0{nbsp}  | _required_
+| `PipeOuterDiameter` | mm | Outer diameter of pipe | {nbsp}>{nbsp}0.0{nbsp}  | _required_
+|_(*)_ `UValuePipeWall` | W/m2K | U-Value of pipe wall (including insulation) | {nbsp}>{nbsp}0.0{nbsp}  | _required_ 
 |====================
 
-
+_(*) - not yet used_
 
 [[component_definition]]
 ## Komponentendefinitionen
@@ -230,34 +230,46 @@ Eine `HydraulicNetworkComponent` definiert die Basiseigenschaften eines Strömun
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Attribute  | Description | Format | Usage 
-| `id` |  Unique identifier of the component | ({nbsp}>{nbsp}0{nbsp})  | _required_
+| `id` |  Unique identifier of the component | {nbsp}>{nbsp}0{nbsp}  | _required_
 | `modelType` |  Type of component  | - | _required_
 |====================
 
 
 Die Parameter und Attribute sind dann abhängig vom `modelType` der Komponente und dem `modelType` des Netzwerks.
 
+### StaticAdiabaticPipe
+
+Für das Model `StaticAdiabaticPipe` werden keine weiteren Parameter benötigt.
+
+
+### ConstantPressurePump
+
 Für das Model `ConstantPressurePump` werden diese Parameter benötigt:
 
-[options="header",cols="18%,^ 15%,38%,^ 20%, ^ 10%",width="100%"]
+[options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
 |====================
 |Name|Unit|Description|Value Range | Usage 
 | `PressureHead` | Pa | Constant pressure added by the pump | any | 
-| `PumpEfficiency` | - | Hydraulic efficiency of pump | (0>...<1) | 
-| `MotorEfficiency` | - | Efficiency of motor | (0>...<1) | 
-| `Volume` | m3 | Fluid volume inside the pump | ({nbsp}>{nbsp}0{nbsp}) | only `ThermalHydraulicNetwork`
+| _(*)_ `PumpEfficiency` | - | Hydraulic efficiency of pump | 0{nbsp}<{nbsp}...1 | only `ThermalHydraulicNetwork`
+| _(*)_ `MotorEfficiency` | - | Efficiency of motor | 0{nbsp}<{nbsp}...1 | only `ThermalHydraulicNetwork`
+| _(*)_ `Volume` | m3 | Fluid volume inside the pump | {nbsp}>{nbsp}0.0{nbsp} | only `ThermalHydraulicNetwork`
 |====================
 
+_(*) - not yet used_
+
+### HeatExchanger
 
 Für das Model `HeatExchanger` werden diese Parameter benötigt:
 
-[options="header",cols="18%,^ 15%,38%,^ 20%, ^ 10%",width="100%"]
+[options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
 |====================
 |Name|Unit|Description|Value Range | Usage 
-| `Volume` | m3 | Fluid volume inside the heat exchanger | ({nbsp}>{nbsp}0{nbsp}) | only `ThermalHydraulicNetwork`
+| `HydraulicDiameter` | mm | equivalent hydraulic diameter (needed to compute flow cross section and flow velocity) | {nbsp}>{nbsp}0.0{nbsp} | _required_
+| `PressureLossCoefficient` | --- | effective pressure loss coefficient | {nbsp}>{nbsp}0.0{nbsp} | _required_
+| _(*)_ `Volume` | m3 | Fluid volume inside the heat exchanger | {nbsp}>{nbsp}0.0{nbsp} | only `ThermalHydraulicNetwork`
 |====================
 
-
+_(*) - not yet used_
 
 
 [[HydraulicNetworkElement]]
@@ -286,26 +298,12 @@ Die tatsächlichen Strömungselemente des Netzwerks, werden unter `Elements` mit
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Attribute  | Description | Format | Usage 
-| `id` |  Unique ID of the `HydraulicNetworkElement` | ({nbsp}>{nbsp}0{nbsp})  | _required_
-| `inletNodeId` |  Unique ID of inlet node  | ({nbsp}>{nbsp}0{nbsp})  | _required_
-| `outletNodeId` |  Unique ID of outlet node  | ({nbsp}>{nbsp}0{nbsp})  | _required_
-| `componentId` |  Unique ID of referenced `HydraulicNetworkComponent`  | ({nbsp}>{nbsp}0{nbsp})  | _required_
-| `pipePropertiesId` |  Unique ID of referenced `HydraulicNetworkPipeProperties` | ({nbsp}>{nbsp}0{nbsp})  | _optional_
-| `displayName`  |  Display name of the element. | string | _optional_
-|====================
-
-Die Strömungselemente sind miteinander durch Knoten verknüpft. In jedem Strömungselement fließt das Fluid von dem Knoten mit der `inletNodeId` zu dem Knoten mit der `outletNodeId`. 
-
-[NOTE]
-====
-Verschiedene Strömungselemente sind durch die Knoten IDs `inletNodeId` und `outletNodeId` verknüpft verknüpft. Die Knoten IDs referenzieren keine Strömungselemente sondern "virtuelle" Knoten.
-====
-Jedes Strömungselement referenziert jeweils eine Komponente mit der `componentID`. Ist diese Komponente ein Rohr (z.B. `DynamicPipe`), müssen entsprechende Rohrparameter mit der `pipePropertiesID` referenziert werden. Diese Komponente kann dann weiter spezifiert werden über die folgenden Parameter:
-
-[options="header",cols="18%,^ 15%,38%,^ 20%, ^ 10%",width="100%"]
-|====================
-|Name|Unit|Description|Value Range | Usage 
-| `Length` | m | Length of pipe | ({nbsp}>{nbsp}0{nbsp}) | _optional_
+| `id` |  Unique ID of the `HydraulicNetworkElement` | {nbsp}>{nbsp}0{nbsp}  | _required_
+| `inletNodeId` |  Unique ID of inlet node  | {nbsp}>{nbsp}0{nbsp}  | _required_
+| `outletNodeId` |  Unique ID of outlet node  | {nbsp}>{nbsp}0{nbsp}  | _required_
+| `componentId` |  Unique ID of referenced `HydraulicNetworkComponent`  | {nbsp}>{nbsp}0{nbsp}  | _required_
+| `pipePropertiesId` |  Unique ID of referenced `HydraulicNetworkPipeProperties` | {nbsp}>{nbsp}0{nbsp}  | _optional_ (_required_ for pipes)
+| `displayName`  |  Display name of the element (used for error/informative messages) | string | _optional_
 |====================
 
 [IMPORTANT]
@@ -313,12 +311,49 @@ Jedes Strömungselement referenziert jeweils eine Komponente mit der `componentI
 Die ID eines `HydraulicNetworkElement` muss global eindeutig sein, d.h. Netzwerkübergreifend müssen `HydraulicNetworkElement`s mit einer eindeutigen ID bezeichnet werden.
 ====
 
+Die Strömungselemente sind miteinander durch Knoten verknüpft. In jedem Strömungselement fließt das Fluid von dem Knoten mit der `inletNodeId` zu dem Knoten mit der `outletNodeId`. 
+
+[NOTE]
+====
+Verschiedene Strömungselemente sind durch die Knoten IDs `inletNodeId` und `outletNodeId` verknüpft. Die Knoten-IDs referenzieren keine Strömungselemente, sondern "virtuelle" Knoten.
+====
+
+Jedes Strömungselement referenziert jeweils eine Komponente mit der `componentId`. 
+
+
+### Rohr-Elemente
+
+Ist eine Komponente ein Rohr (z.B. `DynamicPipe`), **müssen** entsprechende Rohrparameter mit der `pipePropertiesId` referenziert werden. 
+
+:xrefstyle: short
+
+Weiterhin **muss** für ein Rohrelement der Parameter `Length` definiert werden (siehe auch <<ex_pipe_element>>):
+
+[options="header",cols="18%,^ 15%,38%,^ 20%, ^ 10%",width="100%"]
+|====================
+|Name|Unit|Description|Value Range | Usage 
+| `Length` | m | Length of pipe | {nbsp}>{nbsp}0.0{nbsp} | _optional_
+|====================
+
+[[ex_pipe_element]]
+.Definition eines Rohrelements
+====
+[source,xml]
+----
+<HydraulicNetworkElement id="2" inletNodeId="0" outletNodeId="1" componentId="3" pipePropertiesId="1">
+	<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+</HydraulicNetworkElement>
+----
+====
+
+
 
 ## Ausgaben
 
-Die Ergebnisgrößen eines thermo-hydraulischen Netzwerkmodells werden wie folgt definiert. Also Referenzierungstyp dient `Network`, welche in der entsprechenden `ObjectList` angegeben wird.
+Die Ergebnisgrößen eines thermo-hydraulischen Netzwerkmodells werden wie folgt definiert. Als Referenzierungstyp dient entweder `Network` für Ausgaben des Netzwerks insgesamt, oder `NetworkElement` für die Adressierung individueller Strömungselemente (siehe <<ex_objectList_networks>>).
 
-.Objektlist für die Referenzierung des Netzwerks mit der ID 1
+[[ex_objectList_networks]]
+.Objektlist für die Referenzierung eines Netzwerks mit der ID 1 und ausgewählter Elemente des Netzwerks
 ====
 [source,xml]
 ----
@@ -327,29 +362,19 @@ Die Ergebnisgrößen eines thermo-hydraulischen Netzwerkmodells werden wie folgt
 		<FilterID>1</FilterID> <!-- ID of network -->
 		<ReferenceType>Network</ReferenceType>
 	</ObjectList>
+	<ObjectList name="Pipes">
+		<FilterID>1,3</FilterID> <!-- IDs of flow elements -->
+		<ReferenceType>NetworkElement</ReferenceType>
+	</ObjectList>
 </ObjectLists>
 ----
-====
-
-[NOTE]
-==== 
-Gibt es eventuell Alternativen zum Zugriff? 
-
-Das Netzwerk enthält derzeit die Temperaturen und Masseströme aller Komponenten. Wünschenswert wäre hingegen, nur ausgewählte Elemente auszugeben. Dies ist mit den
-jetzigen Konventionen nur möglich, wenn alle dafür relevanten Temperatur- und Massestromeinträge jeweils als einzelne Ausgabedefinition aufgelistet werden.
-
-Denkbar wäre, statt auf das Netzwerk direkt auf die Netzwerkelemente zu referenzieren, also mit `ReferenceType` `NetworkElement` und `FilterID` die Ids aller Netzwerkelemente.
-Soll dies funktionieren, so müssen alle Netzwerkelemente einem gemeinsamen ID-Raum uterliegen, siehe Kommentar unten.
-
-Ein Referenzierung eines konkreten Netzwerkes, zusammen mit ausgewählten Netzwerkelementen, ist auf diesem Wege nicht möglich - man bräuchte dazu sowohl den Referenztyp und Id-Filter des Netzwerkes, aber
-gleichzeitig für seine Elemente. 
 ====
 
 ### Verfügbare Ausgaben
 
 Das Netzwerk-Objekt liefert eine Vielzahl von Ergebnisgrößen für die einzelnen Strömungselemente.
 
-Die Anforderungen an die Netzwerkausgaben richten sich allerdings nach der späteren Visualisierungsebene. Grundlegend ist davon auszugehen, dass neben dem Gebäude für das Postprozessing eine weitere Sicht erforderlich sein wird, welche eine Auswertung der hydraulischen Netzwerke erlaubt. Um die Übersichtlichkeit zu wahren, wird diese Sicht von derjenigen des Gebäudes getrennt sein. 
+Die Anforderungen an die Netzwerkausgaben richten sich allerdings nach der späteren Visualisierungsebene. Grundlegend ist davon auszugehen, dass im Postprozessing eine weitere Sicht erforderlich sein wird, welche neben dem Gebäude eine Auswertung der hydraulischen Netzwerke erlaubt. Um die Übersichtlichkeit zu wahren, wird diese Sicht von derjenigen des Gebäudes getrennt sein. 
 
 Die Netzwerkausgaben werden von daher räumlich getrennt in einer eigenen Datei abgelegt. Dafür wird ein neuer Ausgabetyp eingeführt:
 
@@ -358,14 +383,20 @@ Die Netzwerkausgaben werden von daher räumlich getrennt in einer eigenen Datei 
 
 Für Analyse der Netzwerke und Übergabesysteme sind sowohl die Masseströme und Temperaturen im Innere eines Verbindungselementes, aber auch an den Verbindungsstellen zwischen zwei Elementen von Interesse. Letzerer Fall ist beispielsweise typisch für gekoppelte Erzeuger- und Verbraucherkreisläufe, wobei eine Kontrolle der Zulauf- und Rücklauftemperatur möglich sein muss. 
 
-Da die Netzwerkvisualisierungsebene keine Knoten kennt, müssen Knotentemperaturen am Ein- und Auslass des Verbindungselementes abgegriffen werden. Ein- und Auslässe sind physikalisch abhängig von der Strömungsrichtung definiert. Angesichts dessen, dass stets die Zustände an einem physisch definierten Punkt gemessen werden, ist die klassische Definition ungeeignet. Geometrisch eindeutig hingegen ist die Zuweisung von Temperaturen an den Einlass- und Auslassknoten der Netzwerkelemente. 
+Da die Netzwerkvisualisierungsebene keine Knoten kennt, müssen Knotentemperaturen am Ein- und Auslass des Verbindungselementes abgegriffen werden. Ein- und Auslässe sind unabhängig von der Strömungsrichtung entsprechend der Netzwerktopologie definiert. 
 
-Als Konvention damit gesetzt, dass Einlass- und Auslassknoten nicht mit dem physikalischem Einlass- oder Auslass des Fluides übereinstimmen müssen!
+[NOTE]
+====
+Es wird bei der Topologiedefinition eines Netzwerks mittels der `HydraulicNetworkElement` tags von einer nominalen Strömungsrichtung ausgegangen. Deshalb werden Einlass- und Auslassknoten mittels der IDs `inletNodeId` und `outletNodeId` referenziert. 
 
-Damit ergeben sich die folgenden Ergebnisgrößen:
+Je nach Bedingungen im Netzwerk ist es jedoch auch möglich, dass sich die Strömungsrichtung umkehrt, und das Medium nun auf der Einströmseite eines Rohres ausströmt. Dies wirkt sich zwar im Vorzeichen des Massestroms aus, jedoch nicht in der Bezeichung der _geometrischen_ Ein- und Auslässe eines Strömungselements.
+====
+
+Es sind folgenden Ergebnisgrößen definiert:
 
 
-TODO : Document, Anne
+TODO Andreas
+
 
 
 Jedes Strömungselement hat eine (mittlere) Temperatur, welche über die Ausgabegröße `FluidTemperature[<id>]` abgefragt werden kann. Die ID entspricht hier der Element-ID (siehe <<HydraulicNetworkElement>>).
@@ -449,4 +480,6 @@ mit den Dateieinträgen
 
 `Networkelement(id=101).Temperature[0]`, `Networkelement(id=101).Temperature[1]`, ..., `Networkelement(id=101).Temperature[n]` 
 
+
+:xrefstyle: basic
 
