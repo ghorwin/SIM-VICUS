@@ -31,6 +31,8 @@ In einer Projektdatei kann es mehrere Netzwerke geben. Diese sind im XML tag `Hy
 Die einzelnen Netzwerke sind hydraulisch unabhängig, d.h. es gibt keinen Fluidaustausch zwischen Netzwerken. Die Netzwerke können aber thermisch verknüpft sein, z.B. kann ein Quartierswärmenetz mit einem Gebäudeanlagennetz Wärme austauschen. Dies bedingt auch eine ID Wahl der hydraulischen Netzwerkkomponenten.
 ====
 
+
+
 ## Definition eines hydraulischen Netzwerks
 
 Ein einzelnes Netzwerk wird im XML-tag `HydraulicNetwork` definiert, wie im folgenden Beispiel:
@@ -73,6 +75,8 @@ XML-tag `HydraulicNetwork` hat folgende Attribute:
 
 TODO : Andreas, document model type
 
+
+
 ### Parameter
 
 Je nach Modelltyp können mehrere Netzwerkparameter definiert werden. 
@@ -81,6 +85,8 @@ TODO : Andreas,
 
 
 Innerhalb des Netzwerk-Definitionsblocks gibt es vier Kind-Elemente.
+
+
 
 ## Medieneigenschaften
 
@@ -122,7 +128,6 @@ XML-tag `HydraulicFluid` hat folgende Attribute:
 Da es nur eine Fluid-Definition per Netzwerk geben darf, ist das _id_ Attribut eigentlich überflüssig. Es wird lediglich zur Aktualisierung der Programmdatenbank beim Import eines Projekts benötigt.
 ====
 
-
 Parameter des Netzwerkfluids (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
 
 [options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
@@ -147,9 +152,6 @@ Desweiteren gibt es noch temperaturabhängige Parameter, welche in linear interp
 |====================
 
 
-
-
-
 ## Rohreigenschaften
 
 Die Rohreigenschaften `HydraulicNetworkPipeProperties` legen die physikalische/geometrischen Eigenschaften eines Rohrtyps fest. Diese werden in dem Katalog `PipeProperties` mit eindeutigen IDs aufgelistet. 
@@ -171,7 +173,7 @@ Die Rohreigenschaften `HydraulicNetworkPipeProperties` legen die physikalische/g
 ----
 ====
 
-Ein Rohrtyp kann einem `HydraulicNetworkElement` über dessen XML-tag `pipePropertyId` zugewiesen werden. 
+Wenn ein `HydraulicNetworkElement` ein Rohr repräsentiert, können ihm über den den XML-tag `pipePropertyId` entsprechende  `HydraulicNetworkPipeProperties` zugewiesen werden. 
 
 .Attributes
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
@@ -213,32 +215,37 @@ Eine `HydraulicNetworkComponent` definiert die Basiseigenschaften eines Strömun
 ----
 ====
 
-Ein Rohrtyp kann einem `HydraulicNetworkElement` über dessen XML-tag `pipePropertyId` zugewiesen werden. 
+
 
 .Attributes
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Attribute  | Description | Format | Usage 
 | `id` |  Unique identifier of the pipe properties. | ({nbsp}>{nbsp}0{nbsp})  | _required_
-| `modelType` |  ... | ...  | _required_
+| `modelType` |  Type of component  | - | _required_
 |====================
 
 
-Die Parameter und Attribute sind dann abhängig vom jeweiligen Modelltyp.
+Die Parameter und Attribute sind dann abhängig vom `modelType` der Komponente und dem `modelType` des Netzwerks.
 
-### TODO 
+Für das Model `ConstantPressurePump` werden diese Parameter benötigt:
 
-...
-
-Parameter der Rohreigenschaftem (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
-
-[options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
+[options="header",cols="18%,^ 15%,38%,^ 20%, ^ 10%",width="100%"]
 |====================
-|Name|Unit|Description|Value Range |Usage
-| `PipeRoughness` | mm | Roughness of pipe wall | ({nbsp}>{nbsp}0{nbsp})  | _required_
-| `PipeInnerDiameter` | mm | Inner diameter of pipe | ({nbsp}>{nbsp}0{nbsp})  | _required_
-| `PipeOuterDiameter` | mm | Outer diameter of pipe | ({nbsp}>{nbsp}0{nbsp})  | _required_
-| `UValuePipeWall` | W/m2K | U-Value of pipe wall (including insulation) | ({nbsp}>{nbsp}0{nbsp})  | _required_
+|Name|Unit|Description|Value Range | Comment 
+| `PressureHead` | Pa | Constant pressure added by the pump | any | 
+| `PumpEfficiency` | - | Hydraulic efficiency of pump | (0>...<1) | 
+| `MotorEfficiency` | - | Efficiency of motor | (0>...<1) | 
+| `Volume` | m3 | Fluid volume inside the pump | ({nbsp}>{nbsp}0{nbsp}) | only `ThermalHydraulicNetwork`
+|====================
+
+
+Für das Model `HeatExchanger` werden diese Parameter benötigt:
+
+[options="header",cols="18%,^ 15%,38%,^ 20%, ^ 10%",width="100%"]
+|====================
+|Name|Unit|Description|Value Range | Comment 
+| `Volume` | m3 | Fluid volume inside the pump | ({nbsp}>{nbsp}0{nbsp}) | only `ThermalHydraulicNetwork`
 |====================
 
 
