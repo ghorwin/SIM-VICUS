@@ -215,13 +215,11 @@ Eine `HydraulicNetworkComponent` definiert die Basiseigenschaften eines Strömun
 ----
 ====
 
-
-
 .Attributes
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Attribute  | Description | Format | Usage 
-| `id` |  Unique identifier of the pipe properties. | ({nbsp}>{nbsp}0{nbsp})  | _required_
+| `id` |  Unique identifier of the component | ({nbsp}>{nbsp}0{nbsp})  | _required_
 | `modelType` |  Type of component  | - | _required_
 |====================
 
@@ -232,7 +230,7 @@ Für das Model `ConstantPressurePump` werden diese Parameter benötigt:
 
 [options="header",cols="18%,^ 15%,38%,^ 20%, ^ 10%",width="100%"]
 |====================
-|Name|Unit|Description|Value Range | Comment 
+|Name|Unit|Description|Value Range | Usage 
 | `PressureHead` | Pa | Constant pressure added by the pump | any | 
 | `PumpEfficiency` | - | Hydraulic efficiency of pump | (0>...<1) | 
 | `MotorEfficiency` | - | Efficiency of motor | (0>...<1) | 
@@ -244,34 +242,65 @@ Für das Model `HeatExchanger` werden diese Parameter benötigt:
 
 [options="header",cols="18%,^ 15%,38%,^ 20%, ^ 10%",width="100%"]
 |====================
-|Name|Unit|Description|Value Range | Comment 
-| `Volume` | m3 | Fluid volume inside the pump | ({nbsp}>{nbsp}0{nbsp}) | only `ThermalHydraulicNetwork`
+|Name|Unit|Description|Value Range | Usage 
+| `Volume` | m3 | Fluid volume inside the heat exchanger | ({nbsp}>{nbsp}0{nbsp}) | only `ThermalHydraulicNetwork`
 |====================
+
 
 
 
 [[HydraulicNetworkElement]]
 ## Strömungselemente
 
-Ein Netzwerk besteht aus vielen durchströmten Bauteilen, sogenannten _Strömungselementen_ (engl. _flow elements_).
+.Definition einer Komponente
+====
+[source,xml]
+----
+<Elements>
+	<HydraulicNetworkElement id="1" inletNodeId="5" outletNodeId="6" componentId="1">
+		<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+		<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+	</HydraulicNetworkElement>
+	<HydraulicNetworkElement id="2" inletNodeId="6" outletNodeId="7" componentId="2">
+		<IBK:Parameter name="HeatFlux" unit="W">100</IBK:Parameter>
+	</HydraulicNetworkElement>
+	...
+</Elements>
+----
+====
 
-XML-tag `HydraulicNetworkElement` hat folgende Attribute:
+Die tatsächlichen Strömungselemente des Netzwerks, werden unter `Elements` mit dem XML-tag `HydraulicNetworkElement` definiert. Diese haben die folgenden Attribute:
 
 .Attributes
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Attribute  | Description | Format | Usage 
-| `id` |  Unique identifier of the network element. | ({nbsp}>{nbsp}0{nbsp})  | _required_
+| `id` |  Unique ID of the `HydraulicNetworkElement` | ({nbsp}>{nbsp}0{nbsp})  | _required_
+| `inletNodeId` |  Unique ID of inlet node  | ({nbsp}>{nbsp}0{nbsp})  | _required_
+| `outletNodeId` |  Unique ID of outlet node  | ({nbsp}>{nbsp}0{nbsp})  | _required_
+| `componentId` |  Unique ID of referenced `HydraulicNetworkComponent`  | ({nbsp}>{nbsp}0{nbsp})  | _required_
+| `pipePropertiesId` |  Unique ID of referenced `HydraulicNetworkPipeProperties` | ({nbsp}>{nbsp}0{nbsp})  | _optional_
 | `displayName`  |  Display name of the element. | string | _optional_
+|====================
+
+Die Strömungselemente sind miteinander durch Knoten verknüpft. In jedem Strömungselement fließt das Fluid von dem Knoten mit der `inletNodeId` zu dem Knoten mit der `outletNodeId`. 
+
+[NOTE]
+====
+Verschiedene Strömungselemente sind durch die Knoten IDs `inletNodeId` und `outletNodeId` verknüpft verknüpft. Die Knoten IDs referenzieren keine Strömungselemente sondern "virtuelle" Knoten.
+====
+Jedes Strömungselement referenziert jeweils eine Komponente mit der `componentID`. Ist diese Komponente ein Rohr (z.B. `DynamicPipe`), müssen entsprechende Rohrparameter mit der `pipePropertiesID` referenziert werden. Diese Komponente kann dann weiter spezifiert werden über die folgenden Parameter:
+
+[options="header",cols="18%,^ 15%,38%,^ 20%, ^ 10%",width="100%"]
+|====================
+|Name|Unit|Description|Value Range | Usage 
+| `Length` | m | Length of pipe | ({nbsp}>{nbsp}0{nbsp}) | _optional_
 |====================
 
 [IMPORTANT]
 ====
-Die ID eines Netzwerkelements muss global eindeutig sein, d.h. Netzwerkübergreifend müssen Strömungselemente mit einer eindeutigen ID bezeichnet werden.
+Die ID eines `HydraulicNetworkElement` muss global eindeutig sein, d.h. Netzwerkübergreifend müssen `HydraulicNetworkElement`s mit einer eindeutigen ID bezeichnet werden.
 ====
-
-TODO 
-
 
 
 ## Ausgaben
