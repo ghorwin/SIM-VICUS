@@ -36,6 +36,10 @@ KeywordListQt::KeywordListQt() {
 	tr("Dry density of the material.");
 	tr("Specific heat capacity of the material.");
 	tr("Thermal conductivity of the dry material.");
+	tr("Temperature in entire network is constant, and predefined");
+	tr("A thermo-hydraulic network is calculated");
+	tr("Default temperature for HydraulicNetwork models");
+	tr("Initial temperature of the fluid");
 	tr("Simple pipe at stationary flow conditions without heat exchange");
 	tr("Simple pipe at stationary flow conditions with heat exchange");
 	tr("Pipe with a discretized fluid volume, without heat exchange");
