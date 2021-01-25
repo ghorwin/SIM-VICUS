@@ -393,42 +393,42 @@ Surface * Project::surfaceByID(unsigned int surfaceID) {
 }
 
 
-bool Project::haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const {
-	size_t coordsCount=0;
+//bool Project::haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const {
+//	size_t coordsCount=0;
 
-	// we go through all dump surfaces in m_plaingeometry
-	// if surface is selected and visible, we store its coordinates and its coordinates count
-	for ( const Surface &s : m_plainGeometry) {
-		if ( s.m_visible && s.m_selected ) {
-			for ( const IBKMK::Vector3D &v : s.m_geometry.vertexes()  ) {
-				centerPoint += v;
-				++coordsCount;
-			}
-		}
-	}
+//	// we go through all dump surfaces in m_plaingeometry
+//	// if surface is selected and visible, we store its coordinates and its coordinates count
+//	for ( const Surface &s : m_plainGeometry) {
+//		if ( s.m_visible && s.m_selected ) {
+//			for ( const IBKMK::Vector3D &v : s.m_geometry.vertexes()  ) {
+//				centerPoint += v;
+//				++coordsCount;
+//			}
+//		}
+//	}
 
-	// we go through all surfaces inside the buildings
-	// if surface is selected and visible, we store its coordinates and its coordinates count
-	for ( const Building &b : m_buildings) {
-		for ( const BuildingLevel &bl : b.m_buildingLevels) {
-			for ( const Room &r : bl.m_rooms) {
-				for ( const Surface &s : r.m_surfaces) {
-					if ( s.m_visible && s.m_selected ) {
-						for ( const IBKMK::Vector3D &v : s.m_geometry.vertexes()  ) {
-							centerPoint += v;
-							++coordsCount;
-						}
-					}
-				}
-			}
-		}
-	}
+//	// we go through all surfaces inside the buildings
+//	// if surface is selected and visible, we store its coordinates and its coordinates count
+//	for ( const Building &b : m_buildings) {
+//		for ( const BuildingLevel &bl : b.m_buildingLevels) {
+//			for ( const Room &r : bl.m_rooms) {
+//				for ( const Surface &s : r.m_surfaces) {
+//					if ( s.m_visible && s.m_selected ) {
+//						for ( const IBKMK::Vector3D &v : s.m_geometry.vertexes()  ) {
+//							centerPoint += v;
+//							++coordsCount;
+//						}
+//					}
+//				}
+//			}
+//		}
+//	}
 
-	if (coordsCount > 0)
-		centerPoint/=static_cast<double>(coordsCount);
+//	if (coordsCount > 0)
+//		centerPoint/=static_cast<double>(coordsCount);
 
-	return (coordsCount > 0);
-}
+//	return (coordsCount > 0);
+//}
 
 
 bool selectionCheck(const VICUS::Object & o, bool takeSelected, bool takeVisible) {
@@ -487,9 +487,10 @@ void Project::selectObjects(std::set<const Object*> &selectedObjs, SelectionGrou
 }
 
 
-bool Project::selectedSurfaces(std::vector<const Surface*> &surfaces) const {
+bool Project::selectedSurfaces(std::vector<const Surface*> &surfaces, const VICUS::Project::SelectionGroups &sg) const {
 	std::set<const Object*> objs;
-	selectObjects(objs, SG_Building, true, true);
+//	selectObjects(objs, SG_Building, true, true);
+	selectObjects(objs, sg, true, true);
 
 	surfaces.clear();
 	for (const Object * o : objs) {
@@ -502,12 +503,11 @@ bool Project::selectedSurfaces(std::vector<const Surface*> &surfaces) const {
 }
 
 
-bool Project::boundingBoxofSelectedSurfaces(IBKMK::Vector3D &boundingbox) const {
-	std::vector<const VICUS::Surface*> surfaces;
+IBKMK::Vector3D Project::boundingBox(std::vector<const Surface*> &surfaces, IBKMK::Vector3D &center) {
 
 	// store selected surfaces
-	if ( !selectedSurfaces(surfaces) )
-		return false;
+	if ( surfaces.empty() )
+		return IBKMK::Vector3D ( 0,0,0 );
 
 	double maxX = std::numeric_limits<double>::min();
 	double maxY = std::numeric_limits<double>::min();
@@ -526,10 +526,15 @@ bool Project::boundingBoxofSelectedSurfaces(IBKMK::Vector3D &boundingbox) const 
 			( v.m_z < minZ ) ? minZ = v.m_z : 0;
 		}
 	}
-	// set bounding box;
-	boundingbox.set( maxX -minX,  maxY -minY, maxZ -minZ );
 
-	return true;
+	double dX = maxX - minX;
+	double dY = maxY - minY;
+	double dZ = maxZ - minZ;
+
+	center.set( minX + 0.5*dX, minY + 0.5*dY, minZ + 0.5*dZ);
+
+	// set bounding box;
+	return IBKMK::Vector3D ( dX, dY, dZ );
 }
 
 } // namespace VICUS

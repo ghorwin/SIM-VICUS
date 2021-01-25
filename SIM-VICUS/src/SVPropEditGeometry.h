@@ -5,6 +5,8 @@
 
 #include <IBKMK_Vector3D.h>
 
+#include <VICUS_Surface.h>
+
 namespace Vic3D {
 class Transform3D;
 }
@@ -19,6 +21,7 @@ class SVPropEditGeometry;
 
 class SVProjectHandler;
 class SVUndoModifySurfaceGeometry;
+class VICUS_Project;
 
 /*! This widget is shown when the scene is put into geometry editing mode. */
 class SVPropEditGeometry : public QWidget {
@@ -54,6 +57,11 @@ public:
 		as normal
 	*/
 	void setRotation(const IBKMK::Vector3D &normal);
+
+	/*! Updates the property widget regarding to all geometry data
+		Takes a vector of pointers to all selected surfaces
+	*/
+	void update();
 
 private slots:
 

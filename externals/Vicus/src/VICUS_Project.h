@@ -93,12 +93,12 @@ public:
 	*/
 	VICUS::Surface * surfaceByID(unsigned int surfaceID);
 
-	/*! This function checks all surfaces in the project if they are selected or not.
-		\returns Returns true, if any surface is selected, and if so, stores the arithmetic average of all
-				 surface vertexes in variable centerPoint.
-		\todo Stephan, remove and use selectObjects() with subsequent bounding box calculation instead.
-	*/
-	bool haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const;
+//	/*! This function checks all surfaces in the project if they are selected or not.
+//		\returns Returns true, if any surface is selected, and if so, stores the arithmetic average of all
+//				 surface vertexes in variable centerPoint.
+//		\todo Stephan, remove and use selectObjects() with subsequent bounding box calculation instead.
+//	*/
+//	bool haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const;
 
 	/*! Selects objects and return set with pointers according to additional filters.
 		\param selectedObjs Here the pointers to selected objects are returned.
@@ -115,14 +115,17 @@ public:
 	/*! This function collects the pointers to all selected surfaces.
 		This is a convenience function which essentially does the same as selectObjects, but
 		only returns visible and selected objects of type Surface.
+		Type of wich should be returned can be set with
+		\param selectedObjects
+		\param sg				is the type of surfaces that has to be set
 		\returns Returns true if any surface is selected (same as surfaces.size() > 0).
 	*/
-	bool selectedSurfaces(std::vector<const Surface*> & surfaces) const;
+	bool selectedSurfaces(std::vector<const Surface*> & surfaces, const VICUS::Project::SelectionGroups &sg) const;
 
 	/*! This function returns the Bounding Box of all selected surfaces
 		\returns Returns true, if any surface is selected
 	*/
-	bool boundingBoxofSelectedSurfaces(IBKMK::Vector3D & boundingbox) const;
+	static IBKMK::Vector3D boundingBox(std::vector<const Surface*> &surfaces, IBKMK::Vector3D &center);
 
 	// *** FUNCTIONS ***
 

@@ -125,6 +125,10 @@ void SVPropertyWidget::onModified(int modificationType, ModificationInfo * ) {
 			// Note: the individual property widgets should listen themselves to onModified() signals
 			//		 and react on selection/visibility changed signals accordingly. Alternatively,
 			//		 the modification info can be triggered from here as well, but not both at the same time.
+		case SVProjectHandler::BuildingGeometryChanged:
+			// We have to call to update the properties in edit geometry mode
+			// therefore we need to store a pointer to it
+			qobject_cast<SVPropEditGeometry *>(m_propWidgets[M_Geometry])->update();
 		break;
 
 		default: ; // just to make compiler happy

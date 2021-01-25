@@ -307,7 +307,7 @@ void SVPropBuildingEditWidget::objectSelectionChanged() {
 		case BT_Components: {
 			// process all selected surfaces and determine which component they have assigned
 			std::vector<const VICUS::Surface*> surfaces;
-			project().selectedSurfaces(surfaces);
+			project().selectedSurfaces(surfaces, VICUS::Project::SG_Building);
 			if (surfaces.empty()) {
 				m_ui->labelSelectedComponents->setText("");
 				m_ui->groupBoxSelectedComponent->setEnabled(false);
@@ -357,7 +357,7 @@ void SVPropBuildingEditWidget::on_pushButtonAssignComponent_clicked() {
 		return; // user aborted the dialog
 
 	std::vector<const VICUS::Surface*> surfaces;
-	project().selectedSurfaces(surfaces);
+	project().selectedSurfaces(surfaces, VICUS::Project::SG_Building);
 	Q_ASSERT(!surfaces.empty());
 	std::set<const VICUS::Surface*> selSurfaces(surfaces.begin(), surfaces.end());
 

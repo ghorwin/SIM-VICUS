@@ -15,7 +15,7 @@ void SVUndoModifySurfaceGeometry::undo() {
 
 	// since selection change is also an undo property, we can rely on having the same selection
 	// here as when the surface properties were modified
-	theProject().selectedSurfaces(surfacesProject);
+	theProject().selectedSurfaces(surfacesProject, VICUS::Project::SG_All);
 
 	for (const VICUS::Surface *sOld : surfacesProject ) {
 		for ( VICUS::Surface &sNew : m_surfaces ) {

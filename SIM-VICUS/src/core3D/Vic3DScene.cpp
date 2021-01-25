@@ -224,45 +224,6 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 		m_selectedGeometryObject.create(m_fixedColorTransformShader);
 		m_selectedGeometryObject.updateBuffers();
 
-		// TODO : Stephan, move the bounding box calculation code and m_propEditGeometryWidget update to SVPropEditGeometry and call this from
-		//        SVPropertyWidget::onModified()
-		// if we are in "Geometry editing" mode, we also show and update the property widget
-		SVViewState vs = SVViewStateHandler::instance().viewState();
-		if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
-
-			IBKMK::Vector3D centerPoint;
-			if ( project().haveSelectedSurfaces(centerPoint) ) {
-				vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-				vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
-				m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(centerPoint) );
-				IBKMK::Vector3D v;
-				project().boundingBoxofSelectedSurfaces(v);
-
-				std::vector<const VICUS::Surface *> surfaces;
-				project().selectedSurfaces(surfaces);
-
-				if ( surfaces.size() == 1 ) {
-					const VICUS::Surface *s = surfaces[0];
-					SVViewStateHandler::instance().m_propEditGeometryWidget->setRotation(s->m_geometry.normal() );
-				}
-				else
-					SVViewStateHandler::instance().m_propEditGeometryWidget->setRotation(
-								VICUS::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localXAxis() ) );
-
-				vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-				vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
-				SVViewStateHandler::instance().m_propEditGeometryWidget->setBoundingBox(v);
-				m_coordinateSystemObject.setTranslation( VICUS::IBKVector2QVector(centerPoint) );
-			}
-			else {
-				vs.m_sceneOperationMode = SVViewState::NUM_OM;
-				vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
-			}
-
-
-			// now tell all UI components to toggle their view state
-			SVViewStateHandler::instance().setViewState(vs);
-		}
 	}
 
 	if (updateBuilding) {

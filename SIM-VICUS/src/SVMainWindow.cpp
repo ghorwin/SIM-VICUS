@@ -400,7 +400,6 @@ void SVMainWindow::setup() {
 	// *** Create splitter that holds navigation tree view and geometry view
 
 	m_geometryViewSplitter = new QSplitter(this);
-	// TODO : Stephan SVStyle::formatSplitter(m_geometryViewSplitter);
 	lay->addWidget(m_geometryViewSplitter);
 
 	// *** Navigation tree

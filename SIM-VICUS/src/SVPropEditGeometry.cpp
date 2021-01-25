@@ -112,6 +112,46 @@ void SVPropEditGeometry::setRotation(const IBKMK::Vector3D &normal) {
 
 }
 
+void SVPropEditGeometry::update()
+{
+	// first we get how many surfaces are selected
+	std::vector<const VICUS::Surface *> surfaces;
+	project().selectedSurfaces(surfaces, VICUS::Project::SG_All);
+//	project().selectObjects(surfaces, VICUS::Project::SG_All, true, true);
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+
+	if ( surfaces.size() > 0 ) {
+		// we get the view state
+		vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+		vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
+
+		if ( surfaces.size() == 1 ) {
+			const VICUS::Surface *s = surfaces[0];
+			SVViewStateHandler::instance().m_propEditGeometryWidget->setRotation(s->m_geometry.normal() );
+		}
+		else
+			SVViewStateHandler::instance().m_propEditGeometryWidget->setRotation(
+						VICUS::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localXAxis() ) );
+		IBKMK::Vector3D center;
+
+		// update local coordinates
+		setBoundingBox(project().boundingBox(surfaces, center));
+		Vic3D::Transform3D t;
+		t.setTranslation(VICUS::IBKVector2QVector(center) );
+		setCoordinates( t );
+
+		SVViewStateHandler::instance().m_coordinateSystemObject->setTranslation(VICUS::IBKVector2QVector(center) );
+	}
+	else {
+		vs.m_sceneOperationMode = SVViewState::NUM_OM;
+		vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+
+	}
+
+	SVViewStateHandler::instance().setViewState(vs);
+
+}
+
 
 // *** slots ***
 
@@ -173,7 +213,7 @@ void SVPropEditGeometry::on_pushButtonTranslate_clicked() {
 
 	IBKMK::Vector3D centerPoint;
 	std::vector<const VICUS::Surface*> surfaces;
-	project().selectedSurfaces(surfaces);
+	project().selectedSurfaces(surfaces, VICUS::Project::SG_All);
 
 	if ( m_ui->radioButtonRelative->isChecked() ) {
 		for (const VICUS::Surface* s : surfaces ) {
@@ -211,7 +251,7 @@ void SVPropEditGeometry::on_pushButtonTranslate_clicked() {
 		}
 	}
 	else {
-		project().haveSelectedSurfaces(centerPoint);
+		project().boundingBox(surfaces, centerPoint);
 		for (const VICUS::Surface* s : surfaces ) {
 			std::vector<IBKMK::Vector3D> vs;
 			for ( IBKMK::Vector3D v : s->m_geometry.vertexes() ) {
@@ -249,9 +289,8 @@ void SVPropEditGeometry::on_pushButtonScale_clicked() {
 	IBKMK::Vector3D centerPointLocal;
 	IBKMK::Vector3D boundingBox;
 
-	project().selectedSurfaces(surfaces);
-	project().haveSelectedSurfaces(centerPointLocal);
-	project().boundingBoxofSelectedSurfaces(boundingBox);
+	project().selectedSurfaces(surfaces, VICUS::Project::SG_All);
+	project().boundingBox(surfaces, centerPointLocal);
 
 	// check if scale factor is not Null
 	if ( IBK::nearly_equal<3>( scaleVec.length(), 0.0 ) )
@@ -356,8 +395,8 @@ void SVPropEditGeometry::on_pushButtonRotate_clicked() {
 	IBKMK::Vector3D centerPoint (0,0,0);
 	IBKMK::Vector3D centerPointLocal;
 
-	project().selectedSurfaces(surfaces);
-	project().haveSelectedSurfaces(centerPointLocal);
+	project().selectedSurfaces(surfaces, VICUS::Project::SG_All);
+	project().boundingBox(surfaces, centerPointLocal);
 
 	for (const VICUS::Surface* s : surfaces ) {
 		std::vector<IBKMK::Vector3D> vs;
@@ -447,11 +486,11 @@ void SVPropEditGeometry::on_pushButtonRotate_clicked() {
 
 
 void SVPropEditGeometry::on_radioButtonScaleAbsolute_toggled(bool absScale) {
-	IBKMK::Vector3D v;
 
-	project().boundingBoxofSelectedSurfaces(v);
-
-	setBoundingBox(v);
+	std::vector<const VICUS::Surface*> surfaces;
+	project().selectedSurfaces(surfaces, VICUS::Project::SG_All);
+	IBKMK::Vector3D center;
+	setBoundingBox(project().boundingBox(surfaces, center ) );
 }
 
 
@@ -467,7 +506,7 @@ void SVPropEditGeometry::on_radioButtonRotateAbsolute_toggled(bool absRotate)
 		IBKMK::Vector3D centerPoint (0,0,0);
 		IBKMK::Vector3D centerPointLocal;
 
-		project().selectedSurfaces(surfaces);
+		project().selectedSurfaces(surfaces, VICUS::Project::SG_All);
 
 		m_ui->labelRotateInclinationAbs->setEnabled(true);
 		m_ui->labelRotateOrientationAbs->setEnabled(true);
