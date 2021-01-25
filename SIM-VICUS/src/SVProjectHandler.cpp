@@ -183,6 +183,8 @@ void SVProjectHandler::loadProject(QWidget * parent, const QString & fileName,	b
 
 		/// \todo Dirk: add code merge embedded project database with built-in/user db
 
+		/// \todo Hauke, check uniqueness of IDs in networks
+
 		/// \todo Andreas: implement and project data checks with automatic fixes and
 		///		  set have_modified_project to true
 		///		  in such cases, so that the project starts up in "modified" state.
