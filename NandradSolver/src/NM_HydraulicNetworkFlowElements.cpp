@@ -80,7 +80,8 @@ double HNPipeElement::pressureLossFriction(const double &mdot) const{
 double HNPipeElement::frictionFactorSwamee(const double &Re, const double &diameter, const double &roughness){
 	if (Re < RE_LAMINAR)
 		return 64/Re;
-	else if (Re < RE_TURBULENT){
+	else if (Re < RE_TURBULENT) {
+		// TODO : rewrite
 		double fTurb = std::log10((roughness / diameter) / 3.7 + 5.74 / std::pow(RE_TURBULENT, 0.9) );
 		return 64/RE_LAMINAR + (Re - RE_LAMINAR) * (0.25/(fTurb*fTurb) - 64/RE_LAMINAR) / (RE_TURBULENT - RE_LAMINAR);
 	}
@@ -156,13 +157,13 @@ HNConstantPressurePump::HNConstantPressurePump(const NANDRAD::HydraulicNetworkEl
 }
 
 
-double HNConstantPressurePump::systemFunction(double mdot, double p_inlet, double p_outlet) const
+double HNConstantPressurePump::systemFunction(double /*mdot*/, double p_inlet, double p_outlet) const
 {
 	return p_inlet - p_outlet + m_pressureHead;
 
 }
 
-void HNConstantPressurePump::partials(double mdot, double p_inlet, double p_outlet,
+void HNConstantPressurePump::partials(double /*mdot*/, double /*p_inlet*/, double /*p_outlet*/,
 							 double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
 {
 	// partial derivatives of the system function to pressures are constants

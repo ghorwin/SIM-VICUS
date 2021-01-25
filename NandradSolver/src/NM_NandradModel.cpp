@@ -1380,21 +1380,23 @@ void NandradModel::initNetworks() {
 			// register model for evaluation
 			registerStateDependendModel(nwmodel);
 			// add thermal network states model
-			ThermalNetworkStatesModel *statesModel = new ThermalNetworkStatesModel(nw.m_id, nw.m_displayName);
-			m_modelContainer.push_back(statesModel); // transfer ownership
-			// initialize
-			statesModel->setup(nw, *nwmodel);
-			// add to thermal network states container
-			m_networkStatesModelContainer.push_back(statesModel);
-			// add thermal network balance model
-			ThermalNetworkBalanceModel *balanceModel = new ThermalNetworkBalanceModel(nw.m_id, nw.m_displayName);
-			m_modelContainer.push_back(balanceModel); // transfer ownership
-			// initialize
-			balanceModel->setup(statesModel);
-			// register model for evaluation
-			registerStateDependendModel(balanceModel);
-			// add to thermal network balance container
-			m_networkBalanceModelContainer.push_back(balanceModel);
+			if (nw.m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
+				ThermalNetworkStatesModel *statesModel = new ThermalNetworkStatesModel(nw.m_id, nw.m_displayName);
+				m_modelContainer.push_back(statesModel); // transfer ownership
+				// initialize
+				statesModel->setup(nw, *nwmodel);
+				// add to thermal network states container
+				m_networkStatesModelContainer.push_back(statesModel);
+				// add thermal network balance model
+				ThermalNetworkBalanceModel *balanceModel = new ThermalNetworkBalanceModel(nw.m_id, nw.m_displayName);
+				m_modelContainer.push_back(balanceModel); // transfer ownership
+				// initialize
+				balanceModel->setup(statesModel);
+				// register model for evaluation
+				registerStateDependendModel(balanceModel);
+				// add to thermal network balance container
+				m_networkBalanceModelContainer.push_back(balanceModel);
+			}
 		}
 	}
 	m_nNetworks = (unsigned int) m_networkBalanceModelContainer.size();

@@ -634,7 +634,7 @@ void HydraulicNetworkModelImpl::setup() {
 	// count number of nodes
 	unsigned int n = m_nodeCount + m_elementCount;
 
-	// set initial conditions
+	// set initial conditions (pressures and mass fluxes)
 	m_y.resize(n, 10);
 
 	m_G.resize(n);
