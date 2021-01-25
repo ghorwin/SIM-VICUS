@@ -34,14 +34,18 @@ bool InterfaceSolarAbsorption::operator!=(const InterfaceSolarAbsorption & other
 
 void InterfaceSolarAbsorption::checkParameters() const {
 	// only check parameters if model is enable
-	if (m_modelType == NUM_MT)
+
+
+	switch (m_modelType) {
+		case MT_Constant:
+			m_para[P_AbsorptionCoefficient].checkedValue("---", "---",
+													   0, true,
+													   1, true,
+									   "Solar absorption coefficient must between 0 and 1.");
+		break;
+		case NUM_MT:
 		return;
-
-	m_para[P_AbsorptionCoefficient].checkedValue("---", "---",
-												   0, true,
-												   1, true,
-								   "Solar absorption coefficient must between 0 and 1.");
-
+	}
 }
 
 

@@ -34,13 +34,18 @@ bool InterfaceHeatConduction::operator!=(const InterfaceHeatConduction & other) 
 
 void InterfaceHeatConduction::checkParameters() const {
 	// only check parameters if model is enable
-	if (m_modelType == NUM_MT)
+
+	switch (m_modelType) {
+		case MT_Constant:
+			m_para[P_HeatTransferCoefficient].checkedValue("W/m2K", "W/m2K",
+													   0, true,
+													   std::numeric_limits<double>::max(), true,
+													   "Heat transfer coefficient must be >= 0 W/m2K.");
+		break;
+		case NUM_MT:
 		return;
-	else if(m_modelType == MT_Constant)
-		m_para[P_HeatTransferCoefficient].checkedValue("W/m2K", "W/m2K",
-												   0, true,
-												   std::numeric_limits<double>::max(), true,
-												   "Heat transfer coefficient must be >= 0 W/m2K.");
+	}
+
 }
 
 } // namespace NANDRAD
