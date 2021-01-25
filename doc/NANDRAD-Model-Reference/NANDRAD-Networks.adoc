@@ -41,7 +41,7 @@ Ein einzelnes Netzwerk wird im XML-tag `HydraulicNetwork` definiert, wie im folg
 ====
 [source,xml]
 ----
-<HydraulicNetwork id="1" displayName="Simple network">
+<HydraulicNetwork id="1" displayName="Simple network" modelType="ThermoHydraulicNetwork">
 	<HydraulicFluid id="1" displayName="Water">
         ... <!-- fluid parameters -->
     </HydraulicFluid>
@@ -70,23 +70,34 @@ XML-tag `HydraulicNetwork` hat folgende Attribute:
 | Attribute  | Description | Format | Usage 
 | `id` |  Unique identifier of the network | ({nbsp}>{nbsp}0{nbsp})  | _required_
 | `displayName`  |  Display name of the network. | string | _optional_
-| `modelType`  |  Specifies a particular network calculation mode. | string | _optional_ (defaults to "ThermalNetwork")
+| `modelType`  |  Specifies a particular network calculation mode. | string | _optional_ 
+ (defaults to `ThermalHydraulicNetwork`)
 |====================
 
-TODO : Andreas, document model type
+Das optionale Attribut `modelType` beschreibt konkret, welches Berechnungsmodell zu verwenden ist. Folgende Optionen sind möglich:
 
+.Werte für Attribut `modelType`
+[options="header",cols="30%,70%",width="100%"]
+|====================
+| Attribute  | Description  
+| `HydraulicNetwork` |  Only the hydraulic network calculation is done, i.e. mass flux and pressure calculation.
+| `ThermoHydraulicNetwork`  |  Network is calculated with thermal balances enabled. Each flow element corresponds to at least one energy/enthalpy balance equation.
+|====================
 
+Die Wahl des Netzwerkberechnungsmodells hat Auswirkungen auf die benötigte Parametrisierung der beteiligten Komponenten.
 
 ### Parameter
 
 Je nach Modelltyp können mehrere Netzwerkparameter definiert werden. 
 
-TODO : Andreas,
-
+[options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
+|====================
+|Name|Unit|Description|Value Range |Usage
+| `DefaultFluidTemperature` | C | einheitliche, konstante Fluidtemperatur zur Verwendung mit einem rein hydraulischen Modell | {nbsp}>{nbsp}0.0{nbsp} | _required for model type_  `HydraulicNetwork`
+| `InitialFluidTemperature` | C | Anfangsfluidtemperatur | {nbsp}>{nbsp}0.0{nbsp} | _required for model type_ `ThermoHydraulicNetwork`
+|====================
 
 Innerhalb des Netzwerk-Definitionsblocks gibt es vier Kind-Elemente.
-
-
 
 ## Medieneigenschaften
 
