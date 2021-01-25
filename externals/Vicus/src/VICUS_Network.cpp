@@ -775,7 +775,7 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &hydraulic
 			NANDRAD::KeywordList::setParameter(inletPipe.m_para, "HydraulicNetworkElement::para_t",
 											   NANDRAD::HydraulicNetworkElement::P_Temperature,
 											   edge->m_ambientTemperature.get_value(IBK::Unit("C")));
-			inletPipe.m_pipeId = pipeProp.m_id;
+			inletPipe.m_pipePropertiesId = pipeProp.m_id;
 			hydraulicNetwork.m_elements.push_back(inletPipe);
 
 			// add outlet pipe element
@@ -789,7 +789,7 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &hydraulic
 			NANDRAD::KeywordList::setParameter(outletPipe.m_para, "HydraulicNetworkElement::para_t",
 											   NANDRAD::HydraulicNetworkElement::P_Temperature,
 											   edge->m_ambientTemperature.get_value(IBK::Unit("C")));
-			outletPipe.m_pipeId = pipeProp.m_id;
+			outletPipe.m_pipePropertiesId = pipeProp.m_id;
 			hydraulicNetwork.m_elements.push_back(outletPipe);
 		}
 	}

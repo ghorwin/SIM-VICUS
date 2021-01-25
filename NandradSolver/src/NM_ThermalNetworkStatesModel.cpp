@@ -94,7 +94,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				{
 					// lookup pipe
 					std::vector<NANDRAD::HydraulicNetworkPipeProperties>::const_iterator itPipe =
-							std::find(m_network->m_pipeProperties.begin(), m_network->m_pipeProperties.end(), e.m_pipeId);
+							std::find(m_network->m_pipeProperties.begin(), m_network->m_pipeProperties.end(), e.m_pipePropertiesId);
 					if (itPipe == m_network->m_pipeProperties.end()) {
 						throw IBK::Exception(IBK::FormatString("Missing pipe properties reference in hydraulic network element '%1' (id=%2).")
 											 .arg(e.m_displayName).arg(e.m_id), FUNC_ID);

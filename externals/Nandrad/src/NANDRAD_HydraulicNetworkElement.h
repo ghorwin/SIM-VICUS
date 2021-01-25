@@ -26,7 +26,7 @@ public:
 		m_inletNodeId(inletNodeId),
 		m_outletNodeId(outletNodeId),
 		m_componentId(componentId),
-		m_pipeId(INVALID_ID)
+		m_pipePropertiesId(INVALID_ID)
 	{}
 
 	/*! Specific constructor to create pipe elements. */
@@ -64,24 +64,24 @@ public:
 		ID is used for outputs and to reference heat sources/sinks connected to this element. For active elements,
 		this ID is used to connect control models.
 	*/
-	unsigned int					m_id			= NANDRAD::INVALID_ID;				// XML:A:required
+	unsigned int					m_id				= NANDRAD::INVALID_ID;				// XML:A:required
 	/*! Inlet node ID. */
-	unsigned int					m_inletNodeId	= NANDRAD::INVALID_ID;				// XML:A:required
+	unsigned int					m_inletNodeId		= NANDRAD::INVALID_ID;				// XML:A:required
 	/*! Outlet node ID. */
-	unsigned int					m_outletNodeId	= NANDRAD::INVALID_ID;				// XML:A:required
+	unsigned int					m_outletNodeId		= NANDRAD::INVALID_ID;				// XML:A:required
 	/*! Hydraulic component ID. */
-	unsigned int					m_componentId	= NANDRAD::INVALID_ID;				// XML:A:required
+	unsigned int					m_componentId		= NANDRAD::INVALID_ID;				// XML:A:required
 	/*! Pipe ID (only needed for elements that are pipes). */
-	unsigned int					m_pipeId		= NANDRAD::INVALID_ID;				// XML:A
+	unsigned int					m_pipePropertiesId	= NANDRAD::INVALID_ID;				// XML:A
 
 	/*! Display name. */
-	std::string						m_displayName;										// XML:A
+	std::string						m_displayName;											// XML:A
 
 	/*! Parameters of the flow component. */
-	IBK::Parameter					m_para[NUM_P];										// XML:E
+	IBK::Parameter					m_para[NUM_P];											// XML:E
 
 	/*! Integer parameters. */
-	IBK::IntPara					m_intPara[NUM_IP];									// XML:E
+	IBK::IntPara					m_intPara[NUM_IP];										// XML:E
 
 };
 
